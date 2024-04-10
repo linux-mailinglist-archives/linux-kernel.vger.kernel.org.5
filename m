@@ -1,39 +1,73 @@
-Return-Path: <linux-kernel+bounces-137864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CB4989E875
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:35:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 826E489E87F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:47:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F02B41F24EB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:35:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34F2E285571
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB87C122;
-	Wed, 10 Apr 2024 03:35:13 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245DE8F4E;
-	Wed, 10 Apr 2024 03:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C97ABE49;
+	Wed, 10 Apr 2024 03:47:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mJcIp/YS"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084398828
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:47:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712720112; cv=none; b=AO62VJYVpgw8+NwfELOt/1QnF3dXlGJANPakOfkc5b/BbbO9PUoaS9DaT23Jp/ob453gBQoJjdTAVFScEqzbhPxYf8wSQNZKszTltAqV0IRYOGPA7dakTjS5PZViEyPlEIKPPi/HnX5V2/O9QZoUjIYTXfbPvWrNCBUUovniiw0=
+	t=1712720839; cv=none; b=sYO9DoEnHcYLCgceqmRyM3YH1rRl4BsBszBLUK8XVoY/uft1Q9MwRTLWOQSbWKPixxBcC8BAFO396V7uuUowS0bRShMkgSlk7pCZESaG8t8l41aLgYmHnYKjvP1nDTwZCs47EtUoD5HlUJnJ7PD8yW90ctl5Yamg2iJaOxIJnXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712720112; c=relaxed/simple;
-	bh=c+7ZAy2CudaAOXrHKv5vJc7LzLN8G3OwL/hongXFgSI=;
+	s=arc-20240116; t=1712720839; c=relaxed/simple;
+	bh=5fGiF7BYzkTZhFaW0xs9ZlAF3EoXM0Yrlw+8r1VOnUw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GQGzHZ6kfLmWBgZ+FrhYF8665F8QWoZ/AXUA41d2k3gvt5CudFbndrm5boVjdwUKQke2wcOdFinC68xbCuewRsUgofGZYFNopH9RByyN+vPHGejRAVFK8PArlNJEgn4oTL33RRG8yDXR5Q1mvpj2hkt/4eNJd8JefuO6jWmA4ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D714F139F;
-	Tue,  9 Apr 2024 20:35:38 -0700 (PDT)
-Received: from [10.163.58.237] (unknown [10.163.58.237])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 631153F6C4;
-	Tue,  9 Apr 2024 20:34:59 -0700 (PDT)
-Message-ID: <8f7e67aa-3746-405d-9258-579343349be4@arm.com>
-Date: Wed, 10 Apr 2024 09:04:15 +0530
+	 In-Reply-To:Content-Type; b=qcmLnh4C6xOn5BE/wxJZkfxUE0bUPRzOx9dNF48kxC0Bj7d6Mm66C1VBwI40/XBvpwecyVYy7ksgsYEsS5X5XLUpHmoTOmAH8YHfDw2NuWayym/BcXrBSbWJc5XUJDMDsLw3XX/yturF/K/Pho0V1VviIoKR9f8l40FbIepDzGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mJcIp/YS; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e6b22af648so5129722b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 20:47:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712720837; x=1713325637; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3ScVv2cVL2IqKu4xZ+K+tP2lIBxE9zyAR4grQNU+Bjo=;
+        b=mJcIp/YSTuXsFnB1OYwyfm7nRz5W1h3ka7ok8zV+P3EMm1BjkmoSEBmZh+F6CRxVXM
+         0H2wowTVtqMv5DzPSa03+I6V5+cnikQwhawxvbpXH95fS8VnPzvuqKPMC/aJx1RWA4gy
+         sxltE1+4+eW/BtXtLMovTpwrE4Lcmm9efAYKG4YbPHQaAt7xQcmEk7tjGAbv4i1UgjfI
+         GDYzUCmM0hW9Cv2hv0bMswzhgQ5lw+DVc/rZ9w9NXVlKxj0BNk0WY/ZeTOw/o0pn2TSa
+         zOjaK3H6zSAow7BgZuiTTg4WnpnmAsg403euW0xnvvsYSQEMtGrtcxs1EnFXG8sCtKfW
+         ZeQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712720837; x=1713325637;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3ScVv2cVL2IqKu4xZ+K+tP2lIBxE9zyAR4grQNU+Bjo=;
+        b=eSneJYlOuJkYmCjma5Bh8gYafdAzUAeMz04DN1ehDo1FV3cUnOlBDcVIJt4xAxYfJk
+         n7ncKiBX/+sWwvHPBWv7Qu74h/J0FrVlBwPHU6bNeNUxOcybbKpt6oC+p5YHUXazOjkZ
+         y1W1wNt+oGu1LYbduLLT3bvMrCMDJrhvfACdDPxO8KiR4efdEifxQqS79g8Rn4owAJJs
+         mvYkrqSlLrMAQqCNrvtI1ZmYcWWvJmFJVRk+5KJDFxPYSCatqKWrDQ5Toaz/AGeke9Xg
+         aZZu98htQPEBaFczfbNRhho0hYZOwRA+MxagP6WXjMSKAI9Jw5R0pWkJq2FP/iNZT96I
+         F2QA==
+X-Forwarded-Encrypted: i=1; AJvYcCVuuTnM32pTcpeea2wuZ3qgjt28qHg6LJ9a/9KJAOaer7tsNBLmXMau2hYoJBwfHVZGuGzAFyIJiRAtN5Z70VvIGX3owrH9plwXl59e
+X-Gm-Message-State: AOJu0YwkGQyW8jTJub/yRG9Qb5q4o6PkADkoQblRq2UbV05J2JYth4Wa
+	r4st/g0fUuV1w+9+xNFhPx7WONDg56VSkNFcqp1wGYB+FOD7dJrS
+X-Google-Smtp-Source: AGHT+IFiB5jsn3AGo/5iAgNUbHEhKu4d5iOYuirmAZu/Ka6Satlkn8EVmM7q7CuefwC6pNruOCFhXw==
+X-Received: by 2002:a05:6a20:9185:b0:1a8:6727:1c6 with SMTP id v5-20020a056a20918500b001a8672701c6mr2242227pzd.14.1712720837184;
+        Tue, 09 Apr 2024 20:47:17 -0700 (PDT)
+Received: from [192.168.255.10] ([43.132.141.21])
+        by smtp.gmail.com with ESMTPSA id f24-20020a631018000000b005f07f34eb59sm9050174pgl.27.2024.04.09.20.47.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 20:47:16 -0700 (PDT)
+Message-ID: <c35fcdca-bec9-4a68-99dd-dbc9b3ad97a5@gmail.com>
+Date: Wed, 10 Apr 2024 11:47:12 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,168 +75,118 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 0/8] perf tools: Fix test "perf probe of function from
- different CU"
-To: linux-perf-users@vger.kernel.org
-Cc: anshuman.khandual@arm.com, james.clark@arm.com,
- Josh Poimboeuf <jpoimboe@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
- <mike.leach@linaro.org>, John Garry <john.g.garry@oracle.com>,
- Will Deacon <will@kernel.org>, Leo Yan <leo.yan@linaro.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
- Adrian Hunter <adrian.hunter@intel.com>, Chenyuan Mi <cymi20@fudan.edu.cn>,
- Masami Hiramatsu <mhiramat@kernel.org>, Ravi Bangoria
- <ravi.bangoria@amd.com>,
- =?UTF-8?Q?Ahelenia_Ziemia=C5=84ska?= <nabijaczleweli@nabijaczleweli.xyz>,
- Colin Ian King <colin.i.king@gmail.com>, Changbin Du
- <changbin.du@huawei.com>, Kan Liang <kan.liang@linux.intel.com>,
- Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
- Tiezhu Yang <yangtiezhu@loongson.cn>, Alexey Dobriyan <adobriyan@gmail.com>,
- =?UTF-8?Q?Georg_M=C3=BCller?= <georgmueller@gmx.net>,
- Liam Howlett <liam.howlett@oracle.com>, bpf@vger.kernel.org,
- coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+Subject: Re: [PATCH v4 8/9] mm/ksm: Convert chain series funcs and replace
+ get_ksm_page
+To: David Hildenbrand <david@redhat.com>, alexs@kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
  linux-kernel@vger.kernel.org
-References: <20240408062230.1949882-1-ChaitanyaS.Prakash@arm.com>
+Cc: Izik Eidus <izik.eidus@ravellosystems.com>,
+ Matthew Wilcox <willy@infradead.org>, Andrea Arcangeli
+ <aarcange@redhat.com>, Hugh Dickins <hughd@google.com>,
+ Chris Wright <chrisw@sous-sol.org>
+References: <20240409092826.1733637-1-alexs@kernel.org>
+ <20240409092826.1733637-9-alexs@kernel.org>
+ <7a8d8005-3cec-4647-82b0-2d55d0ef34fc@redhat.com>
 Content-Language: en-US
-From: Chaitanya S Prakash <ChaitanyaS.Prakash@arm.com>
-In-Reply-To: <20240408062230.1949882-1-ChaitanyaS.Prakash@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Alex Shi <seakeel@gmail.com>
+In-Reply-To: <7a8d8005-3cec-4647-82b0-2d55d0ef34fc@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Link to V1: 
-https://lore.kernel.org/all/20240220042957.2022391-1-ChaitanyaS.Prakash@arm.com/
 
-On 4/8/24 11:52, Chaitanya S Prakash wrote:
-> From: Chaitanya S Prakash <chaitanyas.prakash@arm.com>
+
+On 4/9/24 7:02 PM, David Hildenbrand wrote:
+> On 09.04.24 11:28, alexs@kernel.org wrote:
+>> From: "Alex Shi (tencent)" <alexs@kernel.org>
+>>
+>> In ksm stable tree all page are single, let's convert them to use and
+>> folios as well as stable_tree_insert/stable_tree_search funcs.
+>> And replace get_ksm_page() by ksm_get_folio() since there is no more
+>> needs.
+>>
+>> It could save a few compound_head calls.
+>>
+>> Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
+>> Cc: Izik Eidus <izik.eidus@ravellosystems.com>
+>> Cc: Matthew Wilcox <willy@infradead.org>
+>> Cc: Andrea Arcangeli <aarcange@redhat.com>
+>> Cc: Hugh Dickins <hughd@google.com>
+>> Cc: Chris Wright <chrisw@sous-sol.org>
+>> Reviewed-by: David Hildenbrand <david@redhat.com>
+> 
+> I don't recall giving that yet :)
+
+Ops... 
+Sorry for misunderstand!
+
+> 
+> You could have kept some get_ksm_page()->ksm_get_folio() into a separate patch.
+> 
+> i.e., "[PATCH v3 11/14] mm/ksm: remove get_ksm_page and related info" from your old series could have mostly stayed separately.
+> 
+
+Yes, but the 12th and 11th patches are kind of depends each other, like after merge 8,9,10,12th with get_ksm_page replaced,
+
+./mm/ksm.c:993:21: error: ‘get_ksm_page’ defined but not used [-Werror=unused-function]
+  993 | static struct page *get_ksm_page(struct ksm_stable_node *stable_node,
+      |                     ^~~~~~~~~~~~
+
+so we have to squash the 11th and 12th if we want to merge 12th with 8,9,10...
+or we can do just merge the 8,9,10 and keep 11th, 12th as your first suggestion?
+
+> [...]
+> 
+>>   /*
+>> @@ -1829,7 +1821,7 @@ static __always_inline struct page *chain(struct ksm_stable_node **s_n_d,
+>>    * This function returns the stable tree node of identical content if found,
+>>    * NULL otherwise.
+>>    */
+>> -static struct page *stable_tree_search(struct page *page)
+>> +static void *stable_tree_search(struct page *page)
+> 
+> There is one caller of stable_tree_search() in cmp_and_merge_page().
+> 
+> Why the change from page* to void* ?
+
+Uh, a bit more changes needs if we want to remove void*. 
+
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 0d703c3da9d8..cd414a9c33ad 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -1815,7 +1815,7 @@ static __always_inline struct folio *chain(struct ksm_stable_node **s_n_d,
+  * This function returns the stable tree node of identical content if found,
+  * NULL otherwise.
+  */
+-static void *stable_tree_search(struct page *page)
++static struct folio *stable_tree_search(struct page *page)
+ {
+        int nid;
+        struct rb_root *root;
+@@ -2308,6 +2308,7 @@ static void cmp_and_merge_page(struct page *page, struct ksm_rmap_item *rmap_ite
+        struct page *tree_page = NULL;
+        struct ksm_stable_node *stable_node;
+        struct page *kpage;
++       struct folio *folio;
+        unsigned int checksum;
+        int err;
+        bool max_page_sharing_bypass = false;
+@@ -2333,7 +2334,8 @@ static void cmp_and_merge_page(struct page *page, struct ksm_rmap_item *rmap_ite
+        }
+ 
+        /* We first start with searching the page inside the stable tree */
+-       kpage = stable_tree_search(page);
++       folio = stable_tree_search(page);
++       kpage = &folio->page;
+        if (kpage == page && rmap_item->head == stable_node) {
+                put_page(kpage);
+                return;
+
+> I suspect cmp_and_merge_page() could similarly be converted to some degree to let kpage be a folio (separate patch).
 >
-> Defconfig doesn't provide all the necessary configs required for the
-> test "perf probe of function from different CU" to run successfully on
-> all platforms. Therefore the required configs have been added to
-> config fragments to resolve this issue. On further investigation it was
-> seen that the Perf treated all files beginning with "/tmp/perf-" as a
-> map file despite them always ending in ".map", this caused the test to
-> fail when Perf was built with NO_DWARF=1. As the file was parsed as a
-> map file, the probe...--funcs command output garbage values instead of
-> listing the functions in the binary. After fixing the issue an
-> additional check to test the output of the probe...--funcs command has
-> been added.
->
-> Additionally, various functions within the codebase have been refactored
-> and restructured. The definition of str_has_suffix() has been adopted
-> from tools/bpf/bpftool/gen.c and added to tools/lib/string.c in an
-> attempt to make the function more generic. The implementation has been
-> retained but the return values have been modified to resemble that of
-> str_has_prefix(), i.e., return strlen(suffix) on success and 0 on
-> failure. In light of the new addition, "ends_with()", a locally defined
-> function used for checking if a string had a given suffix has been
-> deleted and str_has_suffix() has replaced its usage. A call to
-> strtailcmp() has also been replaced as str_has_suffix() seemed more
-> suited for that particular use case.
->
-> Finally str_has_prefix() is adopted from the kernel and is added to
-> tools/lib/string.c, following which strstarts() is deleted and its use
-> has been replaced with str_has_prefix().
->
-> This patch series has been tested on 6.9-rc2 mainline kernel, both on
-> arm64 and x86 platforms.
->
-> Changes in V2:
-> - Add str_has_suffix() and str_has_prefix() to tools/lib/string.c
-> - Delete ends_with() and replace its usage with str_has_suffix()
-> - Replace an instance of strtailcmp() with str_has_suffix()
-> - Delete strstarts() from tools/include/linux/string.h and replace its
->    usage with str_has_prefix()
->
-> Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: John Garry <john.g.garry@oracle.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Chenyuan Mi <cymi20@fudan.edu.cn>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Ravi Bangoria <ravi.bangoria@amd.com>
-> Cc: Ahelenia Ziemiańska <nabijaczleweli@nabijaczleweli.xyz>
-> Cc: Colin Ian King <colin.i.king@gmail.com>
-> Cc: Changbin Du <changbin.du@huawei.com>
-> Cc: Kan Liang <kan.liang@linux.intel.com>
-> Cc: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-> Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Cc: Alexey Dobriyan <adobriyan@gmail.com>
-> Cc: Georg Müller <georgmueller@gmx.net>
-> Cc: Liam Howlett <liam.howlett@oracle.com>
-> Cc: bpf@vger.kernel.org
-> Cc: coresight@lists.linaro.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-perf-users@vger.kernel.org
->
-> Chaitanya S Prakash (8):
->    tools lib: adopt str_has_suffix() from bpftool/gen.c
->    perf util: Delete ends_with() and replace its use with
->      str_has_suffix()
->    perf util: Replace an instance of strtailcmp() by str_has_suffix()
->    tools lib: Adopt str_has_prefix() from kernel
->    tools: Delete strstarts() and replace its usage with str_has_prefix()
->    perf tools: Enable configs required for
->      test_uprobe_from_different_cu.sh
->    perf tools: Only treat files as map files when they have the extension
->      .map
->    perf test: Check output of the probe ... --funcs command
->
->   tools/include/linux/string.h                  | 12 ++----
->   tools/lib/string.c                            | 42 +++++++++++++++++++
->   tools/lib/subcmd/help.c                       |  2 +-
->   tools/lib/subcmd/parse-options.c              | 18 ++++----
->   tools/objtool/check.c                         |  2 +-
->   tools/perf/arch/arm/util/pmu.c                |  4 +-
->   tools/perf/arch/x86/annotate/instructions.c   | 14 +++----
->   tools/perf/arch/x86/util/env.c                |  2 +-
->   tools/perf/builtin-c2c.c                      |  4 +-
->   tools/perf/builtin-config.c                   |  2 +-
->   tools/perf/builtin-daemon.c                   |  2 +-
->   tools/perf/builtin-ftrace.c                   |  2 +-
->   tools/perf/builtin-help.c                     |  6 +--
->   tools/perf/builtin-kmem.c                     |  2 +-
->   tools/perf/builtin-kvm.c                      | 14 +++----
->   tools/perf/builtin-kwork.c                    | 10 ++---
->   tools/perf/builtin-lock.c                     |  6 +--
->   tools/perf/builtin-mem.c                      |  4 +-
->   tools/perf/builtin-sched.c                    |  6 +--
->   tools/perf/builtin-script.c                   | 30 ++++---------
->   tools/perf/builtin-stat.c                     |  4 +-
->   tools/perf/builtin-timechart.c                |  2 +-
->   tools/perf/builtin-trace.c                    |  6 +--
->   tools/perf/perf.c                             | 12 +++---
->   tools/perf/tests/config-fragments/config      |  3 ++
->   .../shell/test_uprobe_from_different_cu.sh    |  2 +-
->   tools/perf/tests/symbols.c                    |  2 +-
->   tools/perf/ui/browser.c                       |  2 +-
->   tools/perf/ui/browsers/scripts.c              |  2 +-
->   tools/perf/ui/stdio/hist.c                    |  2 +-
->   tools/perf/util/amd-sample-raw.c              |  4 +-
->   tools/perf/util/annotate.c                    |  2 +-
->   tools/perf/util/callchain.c                   |  2 +-
->   tools/perf/util/config.c                      | 12 +++---
->   tools/perf/util/map.c                         |  8 ++--
->   tools/perf/util/pmus.c                        |  2 +-
->   tools/perf/util/probe-event.c                 |  2 +-
->   tools/perf/util/sample-raw.c                  |  2 +-
->   tools/perf/util/symbol-elf.c                  |  4 +-
->   tools/perf/util/symbol.c                      |  4 +-
->   40 files changed, 146 insertions(+), 117 deletions(-)
->
+
+Yes, there are couple of changes needed for cmp_and_merge_page() and series try_to_merge_xx_pages(), I am going to change them on the next series patches. Guess 2 phases patches are better for a big/huge one, is this right?
+
+Thanks
+Alex 
 
