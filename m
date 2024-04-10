@@ -1,147 +1,164 @@
-Return-Path: <linux-kernel+bounces-139035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D686789FDB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:05:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 012DC89FDC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:06:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1438B1C22FB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:05:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAC2F28BB45
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:06:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D65B17BB3B;
-	Wed, 10 Apr 2024 17:04:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648AF17F369;
+	Wed, 10 Apr 2024 17:05:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IL23dQAu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="HIQl2Kh9"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2068.outbound.protection.outlook.com [40.107.94.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDFCE17B4F5;
-	Wed, 10 Apr 2024 17:04:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712768693; cv=none; b=deJ0L8F2+uxhRHGsHeNnV0L6SQk2zeujsCuvrDe/sHLfaVptMh+DDH9v3aGUTvDI4/t5KD8BoFOF4pfIoKXcT4I7xaOwvtKAel6ibWX+hR06ihShqkpADKln3hYC4OmLvAEkGk7eh6acVLOGuXkjcsEHBzqSqSL67wyd7xgaMOM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712768693; c=relaxed/simple;
-	bh=lGUayZ0NERip+JtN2fxcFADYK4Fi8n9sC6/iV/waWTA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nY47TYPETcHdmjfgrE0X0zXfftsdpAbX4J6oUUv/J992LDvVnh6S6NI6a+0kPk6vYXn7EpC/IHLnX6m7502WSYANq787XJDtgvIvkQaC98h316ImAF9bGUvJbHgmdNFxEKA2FUblVDoMNTEkyGKQQzAiqMQM1LGbEp1K991cXEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IL23dQAu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED1EFC433F1;
-	Wed, 10 Apr 2024 17:04:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712768693;
-	bh=lGUayZ0NERip+JtN2fxcFADYK4Fi8n9sC6/iV/waWTA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IL23dQAuS21Z7Jri7a6tuqD9tixV+AyBTokcwo1EI/YAsR4S6ofOcLw7pBWUV6TRk
-	 XcoCJapTePCjvMsMxK8dY7Q0uHUz+ZXL9nZgBZ2D7DURT+9UG8ZKJ4fcRM8QzdN69W
-	 LtPrDLJ3HsC6Ej3jSQdp5hZHWPKD7NQII//DoX5Atb/RveQobO+xP9VbiBF9SmjZ26
-	 sCnqHBUNHvfcAPi091DcmS/Y3RloyUM9DtRU/qDmNn9T7PYIJyOb2sk+seRlRRhFJE
-	 8IoK+5TVhq45Xq8t6JK7e+FZggEzv/pRbLL8SleuxRtwSFDfdPi4PkUDMl1pPIMGrp
-	 DjOMpj3/J95EA==
-Date: Wed, 10 Apr 2024 10:04:50 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Calvin Owens <calvin@wbinvd.org>
-Cc: linux-kernel@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH] kbuild: buildtar: Add arm support
-Message-ID: <20240410170450.GA1828262@dev-arch.thelio-3990X>
-References: <e7c14a0d329e28bdcda21376b54a43c85a4aaf3f.1712682861.git.calvin@wbinvd.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE67178CC3;
+	Wed, 10 Apr 2024 17:05:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.68
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712768731; cv=fail; b=bfJtY6a1L0IJSwl4uPOLRkZBgBP8hjFYNPEQZrCcqK2m+YS1EftGSKH/5N6jZNU0ulf6E2Ie2wTVF8uI6YdSC/G2QJORC4xuNmmUeEQBKqdE1TwgEIJivgOngBF6JFTfeIa0VTSnsPK4MU2YUBxfAoB50Vp6sl0SpzfA+cJvgGU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712768731; c=relaxed/simple;
+	bh=PhT86y2dxGOMQhogoKPupnB7FJ7xsTVmreWnQfdJLvU=;
+	h=From:To:CC:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID:Date; b=OLWHp+OWsYCyVz5DvRgnbdqjukXOvUdw4nXwqfL+j7rQiVk0wkCy7S+HavMo4+SxdbZ9tcXjPjWx2vfIybp0/xkAbkazicpuMZ4AyVWHEdTdujglEvPvoUqFIwte3viL4OP88m+GkSFeYZHKS0rKmpwTjcTQWm/ycJjUOm8Jk3s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=HIQl2Kh9; arc=fail smtp.client-ip=40.107.94.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a8k3YLlq4H8N4b5HE7FjFJ0MUTC3QlY5GVR6vKDXZwARwp0+1MuVBDXLeGCAnBtiO4e/r0MG406B+8nIG3355v1P+wM4e1YdNPu/OfN1XVErmd8KCV+N+C3015QYbeQNz/6R4tc/fd94JU7J4YOYooTS5w/oRMih+1QfMS9x46LndcmCmmNX6k4aZh+eeUFBbV4CTA03i0CyXmojZFL+KKv9X2VjDvs4NsTcVzidDL/rjc74+PBt5BwSEIDDRG6OY4inU7V576fdS01K2DRyf/e7umDxJbbbJF4Fp448qkAELVNC4wss2j2cyEiiaJEifU7Mlscp1S+8se00AngRfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7/vXweFLUtkXeVY+WeJ8g4jnamMbwfrG8ROrCo5x2M0=;
+ b=WS6I1qcO8uzjbOJ9wJXS6mto8rf+v3ywtzb612L89Ra0W+TGTV3hItE9CWVZ/Vu+k3bj3cgWkqr12axjLHhPxD9oh0UqgOp8G8utWhX3g3TiJAP2o4fvAhh6xoY3azCAd0Gw225OGfXcr4YyLng6cwq852JafDv9fMdVKUxfy86hOxh8bLE7HO6ZZ/xmRNUdQqBLAMnTWccYRvIObTJOblUBIE80/gy36susDdOBtG8rZ29j3LPgOnn/hFItzB+uejhzN4vAvCajHNwrA7bX5ftouWhVCxPD9mC3pO+/6phUSHLXPd+lZSpn2A+D67eJwcqVt8pZKy3pq3ThyGAQgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=linuxfoundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7/vXweFLUtkXeVY+WeJ8g4jnamMbwfrG8ROrCo5x2M0=;
+ b=HIQl2Kh9U9OYUuxIoakj6JLoyxxNDuWo2ESqirVazx9WW3euL9sViI90Y8deUOQH6VTor87e+GvvmTBNBmKta+BXGq+8ELS8S9rlMXdOa2n/57Bo/LpqAgrIdaySxFPgCaIgy5NRehCLMyNu97Faz6+8hagOz/T98WAeFsgQUhiCCrP7uFHoIECPrYTuVGdoCXpN0rBGOLXwHZMaC188iOQOQ9E1ASFKUFFq73tMWWUVHdM8h33pQVOtIzXM9xdCToeHu66es54gzhnbxgZE/BAupyu2xLEj8zit5N5WTjMTSJ/iU9f8DEY4/s0bFHyrWkZX0oYdowTTZXenjskCzg==
+Received: from BL1PR13CA0026.namprd13.prod.outlook.com (2603:10b6:208:256::31)
+ by SA1PR12MB7150.namprd12.prod.outlook.com (2603:10b6:806:2b4::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 10 Apr
+ 2024 17:05:23 +0000
+Received: from BL6PEPF0001AB51.namprd04.prod.outlook.com
+ (2603:10b6:208:256:cafe::87) by BL1PR13CA0026.outlook.office365.com
+ (2603:10b6:208:256::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.7 via Frontend
+ Transport; Wed, 10 Apr 2024 17:05:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ BL6PEPF0001AB51.mail.protection.outlook.com (10.167.242.75) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.22 via Frontend Transport; Wed, 10 Apr 2024 17:05:23 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 10 Apr
+ 2024 10:04:53 -0700
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Wed, 10 Apr
+ 2024 10:04:52 -0700
+Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12 via Frontend
+ Transport; Wed, 10 Apr 2024 10:04:52 -0700
+From: Jon Hunter <jonathanh@nvidia.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	<patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+	<torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+	<linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+	<lkft-triage@lists.linaro.org>, <pavel@denx.de>, <jonathanh@nvidia.com>,
+	<f.fainelli@gmail.com>, <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+	<rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>,
+	<broonie@kernel.org>, <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH 6.1 000/138] 6.1.85-rc3 review
+In-Reply-To: <20240409173524.517362803@linuxfoundation.org>
+References: <20240409173524.517362803@linuxfoundation.org>
+X-NVConfidentiality: public
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e7c14a0d329e28bdcda21376b54a43c85a4aaf3f.1712682861.git.calvin@wbinvd.org>
+Message-ID: <52ece696-9087-4ccd-a703-e741270cd2e8@rnnvmail201.nvidia.com>
+Date: Wed, 10 Apr 2024 10:04:52 -0700
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB51:EE_|SA1PR12MB7150:EE_
+X-MS-Office365-Filtering-Correlation-Id: b5bcdc27-fbe1-4d29-de4b-08dc59806923
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	j6QAvnM/jvpRLGqEA6ZDE0hI4glbyI892CjXNp6mz5Yyn08x64vkDwbTdxEH/uBQ+pCL1vkj+zqOnZ2XtkiKUCSB237KIdwo0DekB0BVDYfk29+XJAAB+T6wrvuOC/uSPHHzqz+FjantC+USChDg3xc4dXaKfgkfEoBb9v8VlrCa3/8gOsMvFO6NN898wUoMeUxv4UYqBtocueh1R+awNoRL8ZU93omZarjbzG2+WQL6REnPA1nbT2KjDaRYiV2/mxex7td9F7x+stbmWzHy+MfSandxj4SSvnH72lZSfS7Ei0w4lRHPWdoBUARUPM0j6X/f6g750Wijzniaumtd7tn8ZaOzoQO1tfCXp5ZUbqH3a6ybKT8WCtzhXL/0UJ0SKEKy9Uj47NYpDlPAWel7pIXLbFJ/KraBB7tMMIe8+kySo4SHM+Fc81RSlUxIvnhSsjCl3M1ocOsNAs4ryJNH08S2XgQ/S5wuAanxKrMw6mYuDOc9TK7Wwo18fw/xpxrfoZseMs0sIkD1E8qNKNBNYxEEWGC8U8KBcmZ20Fuf/eJvEUfodVJkPE27Dh7q/uCgSeJ7cemuzXPe0LIC35eXoGOLthaijqAmTHekfIfgs81PkFK/JuFKldVO8cXI6t8mUsyB0kmofq5SqqTzuCKGe2GwcCkqC9ofs4Hqlgc8p2soylwLJiqT5lSnjibRNfFIUnqkunArdHb+2D3PqFUj+yueiqaVETVCMqwDlxAG9y9nDWlZYmOOzNVMECxBt797
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(7416005)(82310400014)(36860700004)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 17:05:23.2380
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b5bcdc27-fbe1-4d29-de4b-08dc59806923
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB51.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7150
 
-Hi Calvin,
-
-Thanks for the patch!
-
-On Tue, Apr 09, 2024 at 10:17:07AM -0700, Calvin Owens wrote:
-> Make 'make tar-pkg' and friends work on 32-bit arm.
+On Tue, 09 Apr 2024 19:44:28 +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.85 release.
+> There are 138 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Calvin Owens <calvin@wbinvd.org>
-
-Technically speaking, buildtar works for 32-bit ARM right now (I use it
-almost daily), this is just explicitly adding it to the supported list
-to avoid the warning and putting zImage at vmlinuz-${KERNELRELEASE}
-instead of vmlinux-kbuild-${KERNELRELEASE}, right?
-
-That said, looks mostly fine to me, one comment below.
-
-Before:
-
-  './System.map' -> 'tar-install/boot/System.map-6.9.0-rc3-00023-g2c71fdf02a95'
-  '.config' -> 'tar-install/boot/config-6.9.0-rc3-00023-g2c71fdf02a95'
-  './vmlinux' -> 'tar-install/boot/vmlinux-6.9.0-rc3-00023-g2c71fdf02a95'
-  'arch/arm/boot/zImage' -> 'tar-install/boot/vmlinux-kbuild-6.9.0-rc3-00023-g2c71fdf02a95'
-
-  ** ** **  WARNING  ** ** **
-
-  Your architecture did not define any architecture-dependent files
-  to be placed into the tarball. Please add those to scripts/package/buildtar ...
-
-After:
-
-  './System.map' -> 'tar-install/boot/System.map-6.9.0-rc3-00023-g2c71fdf02a95-dirty'
-  '.config' -> 'tar-install/boot/config-6.9.0-rc3-00023-g2c71fdf02a95-dirty'
-  './vmlinux' -> 'tar-install/boot/vmlinux-6.9.0-rc3-00023-g2c71fdf02a95-dirty'
-  './arch/arm/boot/zImage' -> 'tar-install/boot/vmlinuz-6.9.0-rc3-00023-g2c71fdf02a95-dirty'
-
-and the location of zImage is the only thing that changes as expected.
-
-> ---
->  scripts/package/buildtar | 3 +++
->  1 file changed, 3 insertions(+)
+> Responses should be made by Thu, 11 Apr 2024 17:35:00 +0000.
+> Anything received after that time might be too late.
 > 
-> diff --git a/scripts/package/buildtar b/scripts/package/buildtar
-> index 72c91a1b832f..0939f9eabbf2 100755
-> --- a/scripts/package/buildtar
-> +++ b/scripts/package/buildtar
-> @@ -101,6 +101,9 @@ case "${ARCH}" in
->  			fi
->  		done
->  		;;
-> +	arm)
-> +		[ -f "${objtree}/arch/arm/boot/zImage" ] && cp -v -- "${objtree}/arch/arm/boot/zImage" "${tmpdir}/boot/vmlinuz-${KERNELRELEASE}"
-
-While it probably does not matter too much, it would be more proper to
-make this
-
-  [ -f "${KBUILD_IMAGE}" ] && cp -v -- "${KBUILD_IMAGE}" "${tmpdir}/boot/vmlinuz-${KERNELRELEASE}"
-
-as the current line does not work with CONFIG_XIP_KERNEL=y, since zImage
-does not exist (KBUILD_IMAGE is arch/arm/boot/xipImage with this
-configuration)
-
-  $ ls arch/arm/boot
-  compressed  dts  xipImage
-
-resulting in buildtar failing because
-
-  [ -f "${objtree}/arch/arm/boot/zImage" ]
-
-fails and is the last statement that runs in the script (and the tar
-package is not really complete in this configuration anyways).
-
-Prior to this change, the correct image would get placed into the
-tarball.
-
-  'arch/arm/boot/xipImage' -> 'tar-install/boot/vmlinux-kbuild-6.9.0-rc3-00023-g2c71fdf02a95'
-
-> +		;;
->  	*)
->  		[ -f "${KBUILD_IMAGE}" ] && cp -v -- "${KBUILD_IMAGE}" "${tmpdir}/boot/vmlinux-kbuild-${KERNELRELEASE}"
->  		echo "" >&2
-> -- 
-> 2.39.2
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.85-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
 > 
+> thanks,
+> 
+> greg k-h
 
-Cheers,
-Nathan
+All tests passing for Tegra ...
+
+Test results for stable-v6.1:
+    10 builds:	10 pass, 0 fail
+    26 boots:	26 pass, 0 fail
+    102 tests:	102 pass, 0 fail
+
+Linux version:	6.1.85-rc3-g9b31003bbfa7
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
+                tegra20-ventana, tegra210-p2371-2180,
+                tegra210-p3450-0000, tegra30-cardhu-a04
+
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+
+Jon
 
