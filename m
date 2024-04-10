@@ -1,121 +1,161 @@
-Return-Path: <linux-kernel+bounces-138212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33FA889EE29
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B99E89EE2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:07:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3B53284F48
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:07:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA164285395
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:07:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5941552FE;
-	Wed, 10 Apr 2024 09:07:33 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959CF19BA6;
-	Wed, 10 Apr 2024 09:07:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 755931553BB;
+	Wed, 10 Apr 2024 09:07:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hFx8RxOY"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E078D19BA6;
+	Wed, 10 Apr 2024 09:07:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712740053; cv=none; b=K+p90tKzVV+pSdWEXvshyya9F38v5dE25JFf4aEtAq67BI8YoPTrgg1U2bxWzZdTYIBIZhdtxt0fUXzenfmtvd1WCWlU4PK88h08fom2+2r6qk5JSbuHukUIPPXqW8ti17/clztQx2bHyabswvfZqz4kUSaa4U9eiyMvfFhZEYY=
+	t=1712740061; cv=none; b=L+C7hOnreyUsB598ckGys+8mVBkwA5eYFYrU6viyRJtJySa47L0pUAZwyW/x7VYTrjG2fMr5822NnZ7reJHd+AQU7X+I/YA5YLu5nvCDynFbOiCemTqZliq8fVOJyhoz0pLYQ+fsxa2IUHU4frNeZwdMufZuZr/YeXJHaXn56Es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712740053; c=relaxed/simple;
-	bh=DCFRPg6qIxiB1ACreiHrvx9LkKXCawxI0vGuJQNuNrs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VH0Z5pizymuyzUOGKRZpCSeX8j4lo7TyB47NormIdBzBvEsuk51VCrM2lkXT88KakRaKC953WFjhaYKlSGplGScIHaWXxz4K2ZXRXBV5ymFu5p+6IZLRXldV9c5No8BlNDbGXvpLhzWPG2Absh+B/UeUzKEudfnoM6Pe9RuPmHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 98140139F;
-	Wed, 10 Apr 2024 02:07:59 -0700 (PDT)
-Received: from [192.168.1.100] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ED0143F6C4;
-	Wed, 10 Apr 2024 02:07:27 -0700 (PDT)
-Message-ID: <8d776c30-0e5c-4caf-9b7e-52adb6115eab@arm.com>
-Date: Wed, 10 Apr 2024 10:07:26 +0100
+	s=arc-20240116; t=1712740061; c=relaxed/simple;
+	bh=V+liulKAtSoyNMjfM1JBqrUTw3SMU8b19KrXLY09SMo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L9q909c6goAq+iB9dE8yoE/7e9HLuRxIDo4pozZjwULDkpF21Gg2Vx4ysyJAIcYo52qpxslnFNw5+RFzhXWC2X2EjKQzBDq59nG8ya/zz5op02RgLOWVy52rK/M060o2fdU6YhGz/e7vGM8g/ed44pT99c/GatojCBIqO4CfQbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hFx8RxOY; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712740060; x=1744276060;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=V+liulKAtSoyNMjfM1JBqrUTw3SMU8b19KrXLY09SMo=;
+  b=hFx8RxOYZeZr7FShUMy2NDGPqBR8j5YHklr2pLXF62aj/jeCZzclYGZP
+   G5FxKn97ZC7gomjpEy9SN/lBG59OHMjn4pxPZ014wF4Tg3yc4jFDGq1fT
+   bWJV+o0WVPsszGiZ4DjN4Z/Q3vdvUFDr8bBJrGH0c/skD/ZhHGv+OBAgM
+   nLVQ/GgriinN8yNIKOUxShcjjFpq3EM4EBubHwCIyTxoD7jnxefrQan7Y
+   gZ8EUoSfDvO56HGDbeVwZxH/m0Yr8lJzNpnp9ssA+a1rRcMI9QDxnl/Vs
+   2vpaz9iu1EZFTjIm9fe0w7seB96UZCb+aLw4fUqe8T8j57iXYFexsXpvK
+   A==;
+X-CSE-ConnectionGUID: x10F2hVcSGG5Gw53Ydb84w==
+X-CSE-MsgGUID: 265CPGygQwuWgykrZgTtxA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7948567"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="7948567"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 02:07:39 -0700
+X-CSE-ConnectionGUID: UXF2mQdURRiCTuaMhqsM4A==
+X-CSE-MsgGUID: uA0ST9FTTee0gRBBRInCJw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="51720328"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 02:07:37 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id EC23E11FC46;
+	Wed, 10 Apr 2024 12:07:34 +0300 (EEST)
+Date: Wed, 10 Apr 2024 09:07:34 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Umang Jain <umang.jain@ideasonboard.com>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	hdegoede@redhat.com
+Subject: Re: [PATCH v2 1/9] media: subdev: Add privacy led helpers
+Message-ID: <ZhZW1hiv9X7JCQ7O@kekkonen.localdomain>
+References: <20240405-enable-streams-impro-v2-0-22bca967665d@ideasonboard.com>
+ <20240405-enable-streams-impro-v2-1-22bca967665d@ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] perf tests: Skip "test data symbol" on Neoverse N1
-To: Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>
-Cc: linux-perf-users@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
- Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- "Liang, Kan" <kan.liang@linux.intel.com>,
- Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Leo Yan <leo.yan@linux.dev>,
- linux-kernel@vger.kernel.org
-References: <20240409084741.405433-1-james.clark@arm.com>
- <20240409084741.405433-4-james.clark@arm.com>
- <CAP-5=fXRODCKJexjxqkW_Wkf5MTxFJeq8zmu-iUbpEJM-9gjgg@mail.gmail.com>
- <CAM9d7cio+JYnzwtiVSpsmGrxJWyqv3m0ppmqGidHs5psZdi93w@mail.gmail.com>
-Content-Language: en-US
-From: James Clark <james.clark@arm.com>
-In-Reply-To: <CAM9d7cio+JYnzwtiVSpsmGrxJWyqv3m0ppmqGidHs5psZdi93w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240405-enable-streams-impro-v2-1-22bca967665d@ideasonboard.com>
 
+Moi,
 
-
-On 10/04/2024 00:17, Namhyung Kim wrote:
-> Hi Ian and James,
+On Fri, Apr 05, 2024 at 12:14:19PM +0300, Tomi Valkeinen wrote:
+> Add helper functions to enable and disable the privacy led. This moves
+> the #if from the call site to the privacy led functions, and makes
+> adding privacy led support to v4l2_subdev_enable/disable_streams()
+> cleaner.
 > 
-> On Tue, Apr 9, 2024 at 8:39 AM Ian Rogers <irogers@google.com> wrote:
->>
->> On Tue, Apr 9, 2024 at 1:48 AM James Clark <james.clark@arm.com> wrote:
->>>
->>> To prevent anyone from seeing a test failure appear as a regression and
->>> thinking that it was caused by their code change, just skip the test on
->>> N1.
->>>
->>> It can be caused by any unrelated change that shifts the loop into an
->>> unfortunate position in the Perf binary which is almost impossible to
->>> debug as the root cause of the test failure. Ultimately it's caused by
->>> the referenced errata.
->>>
->>> Fixes: 60abedb8aa90 ("perf test: Introduce script for data symbol testing")
->>> Signed-off-by: James Clark <james.clark@arm.com>
->>
->> This change makes me sad :-( Is there no hope of aligning the loop? We
->> have little enough testing coverage for memory events and even precise
->> events on ARM that anything take away testing coverage feels like we
->> should try to do better.
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+>  drivers/media/v4l2-core/v4l2-subdev.c | 31 ++++++++++++++++++++++---------
+>  1 file changed, 22 insertions(+), 9 deletions(-)
 > 
-> Can we just add some noise in the loop?
-> 
-> Thanks,
-> Namhyung
-> 
-
-Yes that would probably work. I decided to skip rather than touch the
-test because I didn't want the errata on one specific core to affect
-testing everywhere else.
-
-But if we don't think that it's too hacky to include that in the test
-then I can add it. To be honest maybe it makes the test more "realistic"
-because a very short infinite loop doesn't really represent a real workload.
-
-> 
-> diff --git a/tools/perf/tests/workloads/datasym.c
-> b/tools/perf/tests/workloads/datasym.c
-> index ddd40bc63448..e2514bf393cd 100644
-> --- a/tools/perf/tests/workloads/datasym.c
-> +++ b/tools/perf/tests/workloads/datasym.c
-> @@ -16,6 +16,8 @@ static int datasym(int argc __maybe_unused, const
-> char **argv __maybe_unused)
+> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+> index 4c6198c48dd6..942c7a644033 100644
+> --- a/drivers/media/v4l2-core/v4l2-subdev.c
+> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
+> @@ -148,6 +148,23 @@ static int subdev_close(struct file *file)
+>  }
+>  #endif /* CONFIG_VIDEO_V4L2_SUBDEV_API */
+>  
+> +static void v4l2_subdev_enable_privacy_led(struct v4l2_subdev *sd)
+> +{
+> +#if IS_REACHABLE(CONFIG_LEDS_CLASS)
+> +	if (!IS_ERR_OR_NULL(sd->privacy_led))
+> +		led_set_brightness(sd->privacy_led,
+> +				   sd->privacy_led->max_brightness);
+> +#endif
+> +}
+> +
+> +static void v4l2_subdev_disable_privacy_led(struct v4l2_subdev *sd)
+> +{
+> +#if IS_REACHABLE(CONFIG_LEDS_CLASS)
+> +	if (!IS_ERR_OR_NULL(sd->privacy_led))
+> +		led_set_brightness(sd->privacy_led, 0);
+> +#endif
+> +}
+> +
+>  static inline int check_which(u32 which)
 >  {
->         for (;;) {
->                 buf1.data1++;
-> +               if ((buf1.data1 % 100129) == 0)
-> +                       buf1.data1++;
->                 buf1.data2 += buf1.data1;
->         }
->         return 0;
+>  	if (which != V4L2_SUBDEV_FORMAT_TRY &&
+> @@ -412,15 +429,11 @@ static int call_s_stream(struct v4l2_subdev *sd, int enable)
+>  	if (WARN_ON(!!sd->enabled_streams == !!enable))
+>  		return 0;
+>  
+> -#if IS_REACHABLE(CONFIG_LEDS_CLASS)
+> -	if (!IS_ERR_OR_NULL(sd->privacy_led)) {
+> -		if (enable)
+> -			led_set_brightness(sd->privacy_led,
+> -					   sd->privacy_led->max_brightness);
+> -		else
+> -			led_set_brightness(sd->privacy_led, 0);
+> -	}
+> -#endif
+> +	if (enable)
+> +		v4l2_subdev_enable_privacy_led(sd);
+> +	else
+> +		v4l2_subdev_disable_privacy_led(sd);
+> +
+>  	ret = sd->ops->video->s_stream(sd, enable);
+
+I see that you're only making changes before the s_stream call which also
+reveals a bug here: if streaming on fails, the LED will remain lit. It
+should be fixed before this set.
+
+I cc'd Hans de Goede.
+
+>  
+>  	if (!enable && ret < 0) {
 > 
+
+-- 
+Kind regards,
+
+Sakari Ailus
 
