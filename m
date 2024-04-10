@@ -1,183 +1,143 @@
-Return-Path: <linux-kernel+bounces-137764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137765-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ED1889E6D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:28:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A35AA89E6D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:28:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D08AB282FDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:28:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AF35283B5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4534625;
-	Wed, 10 Apr 2024 00:27:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33553625;
+	Wed, 10 Apr 2024 00:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YZ67S2aJ"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="s43aOJgZ"
+Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADF7372
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 00:27:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4DDE19F;
+	Wed, 10 Apr 2024 00:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712708877; cv=none; b=f7QGEvbwzGbSWx8rv8yv5JyUqiS+FhfY0MFsGbG5IkVxvmWS7jtijed0mGBsULdSsccxRqmDr3AZoByO/f5YcuKPU44rUf7fgL30/bkC6vA0bZdjjlH+HAsYOxFGy/588+BHuYHewWyoAifmxjgAaYFV9Cr6OtE9prkqfBvTENE=
+	t=1712708894; cv=none; b=jP0ER3w5cUO7ONRZLMgJXkq0R1xjj8y4ifjLJb/bxKdFkz4PgIDWYy7w9zRJut3pJl4F3wHpvoAJJffy+udIf6/8i1Tv82103jniN90kXMf8l45ScLGKD64BwkoU9Vav2PorrJN0OI5z5Te6xJVRjnF9T0RFZd9GHCbpjM220Kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712708877; c=relaxed/simple;
-	bh=1g3Jwd101yosBOnAamyJC+sD1SyFil7LtbqBjatinpg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HIiMpwC3Ft+XZkyxnSPVimeWybS8rAuPvtw54HEi/3mFYveZ6CaQVDgCfJbNl6rGdQRUwGZ1qcW+oD4YaQ/O8zoii1/gZaalwYth0qlh4jZYTd0iu9+zsT/O5bk/lWLN81SxofdG7tV2+/+Ecta7CzlIiUAD2CtVUr9ob3DryTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YZ67S2aJ; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56e509baddaso3037350a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 17:27:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712708872; x=1713313672; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GJMJEkzZNvW9+O43vYppDJCzIvChB6Myj7KkmaC6Lng=;
-        b=YZ67S2aJsxuW7ZWwhDrapvfXVU0Uv3tDTcQpvJzB1gq3eVO+2/VDwMBKTa4+Zi+1Ls
-         fc9uRvM+LosX4JDX/eha18nxd7OXK+OODFIVxNKXW0DiDN9//FK27rFf+svUEg24Q6Jy
-         9pxn3/4dNqDywU/1VQSXuDL5VC6Cl4rUPiH2F4OZ25MOWgLvdHzJYd7oIyc0by71ihOS
-         ZkcPdQgTBV9kG9+oafaQil+2dsbi1CDKnSKNM797lZlzFZYtiVt7tRKkt9bVbAzB92Lk
-         7fMPMs8v9m93E9x60R+D5LVWzKmegoYIHZboTJqWiqOx9FTHd+mnJjj07dP4jUzCDMKz
-         CcLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712708872; x=1713313672;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GJMJEkzZNvW9+O43vYppDJCzIvChB6Myj7KkmaC6Lng=;
-        b=YH/LBCFYnzjHhnNlaJeSfeZbi7My8PAInkUmYCa3TUyfLMttaB6/PsOa9V37uT6ZNo
-         lbL0W2gnksGL3lQXlMRKBjm6SWQNVEHS1KCs93z8bG0ouBkkND8dxupVMcLgagcdrMUb
-         dFEV+kWzFOTFEUWTqkiF2GmBHCQM5ar5vc3haRH85w401l3r6kBBSpvzFBrwamdhPzQY
-         frBRaYcigEWBhOKrYfp0qA/blsuxJm3EItFAWPS2V3+VrApiexJWjw9nRxLlzGv8Aum/
-         3obfZQ1SUpSgNxLCASOeP0+v6kgZl+kSVcBwJ3jl8N5/9J1R7G2qPld49UxjD0S1gLfs
-         dyCw==
-X-Forwarded-Encrypted: i=1; AJvYcCWZcTLUTtXKCfeeY4Ih5t6qPouwRjS/cr9TSe45Kr8G3IeSnSNHw/HtBEcvp040d5crTNBd5eYKGAXzmK/7Lluc0CFpAtpzP62bgnfr
-X-Gm-Message-State: AOJu0YzgqIrD+zAyABZZANKGJmySjQsGxxTiKJwx6j9qHd7FwQJJoc5T
-	Ydp6HUsAh0jFB/5CyZugDecx6bUY2qFO7VNt7BlGmN2iVAFEP9uDMb3UOPwexS0k08swxTU3Twz
-	V1ZGGh6GohU4NudV7/4vgfxU4r8cwxfLFf8MG
-X-Google-Smtp-Source: AGHT+IGStqxWPH5ahxvU9bcdmddGl/48mJ9/LNQW4hznFXCzuZH/DVbrRH2nwiaQ/F1lKkgsTNqDC26Qe6ALxXgjzDM=
-X-Received: by 2002:a50:96c4:0:b0:56d:f035:7db2 with SMTP id
- z4-20020a5096c4000000b0056df0357db2mr517493eda.24.1712708872102; Tue, 09 Apr
- 2024 17:27:52 -0700 (PDT)
+	s=arc-20240116; t=1712708894; c=relaxed/simple;
+	bh=W+pYLXuRXB0jH5q5NK82XfEzLZKFNQRH5v63Njz4D2o=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=Zg1/EPrpdmxBKoeLRaSiEPll6NVL2pE9Zc95jEbLMm6jIAVdAf3msvpDaCt3yBrv+r9FyRUB/mubvmxQK7qBPTKNXTP1lZ4JvAntbqoGa9btwaiJdGjpEhPGBmemEzwVJZB1vCFzV7pLvjPPEq+5MrPfpcaeFXe8xb0cvptYxCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=s43aOJgZ; arc=none smtp.client-ip=162.62.57.252
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1712708885; bh=ovDthVW7r0uBySIExmKxz78q0JYqkQ5bKXWaw7WizAg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=s43aOJgZZE5lccYurgJjlLZrnGsonBdCd6x1V9v9PM+pcMuc4zj7hnomuzngN4Xaz
+	 rn3WF7lm18QD9TBDPEa265RJRyO5vRG38X2kRoh7TzLk9CeirGyAYk25flr4xifqA9
+	 riRoVm7trSsARxUOP0z4gqtDmxOiA6cxFhk9z0R0=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrszc19-0.qq.com (NewEsmtp) with SMTP
+	id 701004C9; Wed, 10 Apr 2024 08:28:01 +0800
+X-QQ-mid: xmsmtpt1712708881ta4aorxgu
+Message-ID: <tencent_FB85678A3DC136BE969236344B0A74177709@qq.com>
+X-QQ-XMAILINFO: N5sfBKY/oC4kM+iGSm6/9VCLVz8SGTECWfptp5OikjMSRFNCCQNfxKXST3r33W
+	 DUPiklFjqBdyQutO5oxysWrhjgBej1LJjDMWS8LRdP7P8NF+U3+gOOCRxd3ul1RIj6fyGaDLAUWJ
+	 Cyw6qH5JBlfQcJhcychPjL7LB1dyqJbq9t39TK2mooK3ycFVzt1LFCi6m9LYbYmSuJV64tpbMBfl
+	 H2Jhwz0UisNyNfKavN8h2oz56RGgzk4GoyqKqZ8eh7Zt3yCsHE/VmIFq2FdI7YyhGDjGtFZkOT4r
+	 tGL/tBnLlx8ttq8CFkrJJadd4KypmeZe59v7wErxdJ+91h/S2su4ypgeNeflhCIh7rJ/Kuhw5B6P
+	 Ly9nW62wG61vrwHQGYpV3DJqziJpKChqLH8AkparwEm0DMlsZ9FKtAEG7MaTfAYXdYJLEvQQU183
+	 yH0jnZPw3bj/d2gau3MZUXy3EPtsKAxF0N1h/IeKc4N9r6KTP2jT4CiCY9aD097qMPlYA/BiuP1J
+	 h8dTgeF1f6VJ2TvcRHkTTFXr/3fhDPVcAHn32PB8MmpYzkjjtc6Ey5M0eLU9nwH67ZZHFG916ntY
+	 d5rlqEA5xBoJ3iCMX0bjHnO8EfNvqOnTAt5LU7BRBjBrsxz7vIXbt420Zqbu8GywWAHwCtrtEeb7
+	 Zw3e38wHADGvZyI9LE+Dz+irtAUsLMsPhzMetrI4QWUThiMXX0odv6fSj6eSzRndE4ozLvjKunyu
+	 MJl9k/whTFP9yAuG2NcyGPFiXQe9UoLndaGbK1ji/7rGeIajCPKU/11ho7+7fkCVUQs6MdcMkMih
+	 qTyuSi1w6d/4pRchxLOgtltkh9McWO8cNGSIC06k+qas4i+LJ4KJigbNx7xfdwB+GttQXYFwlq/0
+	 IY3Z6TEzAJ4MfQ2AcrOO78x6WlMDUkNX49BP5LzdJsqO3cQpKGdzPACVb60Vjemsh8eG5+W8fDSt
+	 Y4+q9EIUs=
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: martin.lau@linux.dev
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eadavis@qq.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	sdf@google.com,
+	song@kernel.org,
+	syzbot+9b8be5e35747291236c8@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com,
+	yonghong.song@linux.dev
+Subject: Re: [PATCH] bpf: fix uninit-value in strnchr
+Date: Wed, 10 Apr 2024 08:28:01 +0800
+X-OQ-MSGID: <20240410002800.176768-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <3cbc70e6-04e9-4523-9d4d-84d0794cfc74@linux.dev>
+References: <3cbc70e6-04e9-4523-9d4d-84d0794cfc74@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240405-strncpy-xattr-split2-v1-1-90ab18232407@google.com>
- <ZhVDgbRoF9X7JSdt@infradead.org> <CAFhGd8pwoBSvLDRLX8ekRk+u9uX6s6mcAfTz8E15E6EBsvuSag@mail.gmail.com>
-In-Reply-To: <CAFhGd8pwoBSvLDRLX8ekRk+u9uX6s6mcAfTz8E15E6EBsvuSag@mail.gmail.com>
-From: Justin Stitt <justinstitt@google.com>
-Date: Tue, 9 Apr 2024 17:27:34 -0700
-Message-ID: <CAFhGd8qwCwycW=PpUWUGxAdU54jwi9D=k3xrNgC62CvM-Q+ukg@mail.gmail.com>
-Subject: Re: [PATCH] xfs: xattr: replace strncpy and check for truncation
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Chandan Babu R <chandan.babu@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>, 
-	linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 9, 2024 at 5:23=E2=80=AFPM Justin Stitt <justinstitt@google.com=
-> wrote:
->
-> Hi,
->
-> On Tue, Apr 9, 2024 at 6:32=E2=80=AFAM Christoph Hellwig <hch@infradead.o=
-rg> wrote:
+On Tue, 9 Apr 2024 10:59:17 -0700, Martin KaFai Lau wrote:
+> > diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> > index 449b9a5d3fe3..07490eba24fe 100644
+> > --- a/kernel/bpf/helpers.c
+> > +++ b/kernel/bpf/helpers.c
+> > @@ -826,7 +826,7 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
+> >   	u64 cur_arg;
+> >   	char fmt_ptype, cur_ip[16], ip_spec[] = "%pXX";
 > >
-> > On Fri, Apr 05, 2024 at 07:45:08PM +0000, Justin Stitt wrote:
-> > > -     memcpy(offset, prefix, prefix_len);
-> > > -     offset +=3D prefix_len;
-> > > -     strncpy(offset, (char *)name, namelen);                 /* real=
- name */
-> > > -     offset +=3D namelen;
-> > > -     *offset =3D '\0';
-> > > +
-> > > +     combined_len =3D prefix_len + namelen;
-> > > +
-> > > +     /* plus one byte for \0 */
-> > > +     actual_len =3D scnprintf(offset, combined_len + 1, "%s%s", pref=
-ix, name);
-> > > +
-> > > +     if (actual_len < combined_len)
-> >
-> > Shouldn't this be a !=3D ?
->
-> I guess it could be. It's a truncation check so I figured just
-> checking if the amount of bytes actually copied was less than the
-> total would suffice.
->
-> >
-> > That being said I think this is actually wrong - the attr names are
-> > not NULL-terminated on disk, which is why we have the explicit
-> > zero terminataion above.
->
-> Gotcha, in which case we could use the "%.*s" format specifier which
-> allows for a length argument. Does something like this look better?
->
-> diff --git a/fs/xfs/xfs_xattr.c b/fs/xfs/xfs_xattr.c
-> index 364104e1b38a..1b7e886e0f29 100644
-> --- a/fs/xfs/xfs_xattr.c
-> +++ b/fs/xfs/xfs_xattr.c
-> @@ -206,6 +206,7 @@ __xfs_xattr_put_listent(
->  {
->   char *offset;
->   int arraytop;
-> + size_t combined_len, actual_len;
->
->   if (context->count < 0 || context->seen_enough)
->   return;
-> @@ -220,11 +221,16 @@ __xfs_xattr_put_listent(
->   return;
->   }
->   offset =3D context->buffer + context->count;
-> - memcpy(offset, prefix, prefix_len);
-> - offset +=3D prefix_len;
-> - strncpy(offset, (char *)name, namelen); /* real name */
-> - offset +=3D namelen;
-> - *offset =3D '\0';
-> +
-> + combined_len =3D prefix_len + namelen;
-> +
-> + /* plus one byte for \0 */
-> + actual_len =3D scnprintf(offset, combined_len + 1, "%.*s%.*s",
-> +        prefix_len, prefix, namelen, name);
-> +
-> + if (actual_len < combined_len)
-> + xfs_warn(context->dp->i_mount,
-> + "cannot completely copy context buffer resulting in truncation");
->
->  compute_size:
->   context->count +=3D prefix_len + namelen + 1;
-> ---
+> > -	fmt_end = strnchr(fmt, fmt_size, 0);
+> > +	fmt_end = strnchrnul(fmt, fmt_size, 0);
+> 
+> I don't think it is correct either.
+> 
+> >   	if (!fmt_end)
+> 
+> e.g. what will strnchrnul return if fmt is not NULL terminated?
+> 
+> The current code is correct as is. Comment snippet from strnchr:
+> 
+> /*
+>   * ...
+>   *
+>   * Note that the %NUL-terminator is considered part of the string, and can
+>   * be searched for.
+>   */
+> char *strnchr(const char *s, size_t count, int c)
+lib/string.c
+  9 /**
+  8  * strnchr - Find a character in a length limited string
+  7  * @s: The string to be searched
+  6  * @count: The number of characters to be searched
+  5  * @c: The character to search for
+  4  *
+  3  * Note that the %NUL-terminator is considered part of the string, and can
+  2  * be searched for.
+  1  */
+384 char *strnchr(const char *s, size_t count, int c) 
+  1 {
+  2         while (count--) {
+  3                 if (*s == (char)c)           // Only when the length of s is 1, can NUL char be obtained
+  4                         return (char *)s;
+  5                 if (*s++ == '\0')            // When the length of s is greater than 1, the loop will terminate and return NULL, without obtaining a pointer to a NUL char
+  6                         break;
+  7         }
+  8         return NULL;
+  9 }
+> 
+> 
+> >   		return -EINVAL;
+> >   	fmt_size = fmt_end - fmt;
 
-I copy pasted from vim -> gmail and it completely ate all my tabs.
-When I actually send the new patch, if needed, it will be formatted
-correctly :)
 
->
->
->
-> >
-> > How was this tested?
->
-> With https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/about/
->
-> but using scripts + image from: https://github.com/tytso/xfstests-bld
->
-> here's the output log: https://pastebin.com/V2gFhbNZ wherein I ran the
-> 5 default ones (I think?):
->
-> |        Ran: generic/475 generic/476 generic/521 generic/522 generic/642
-> |        Passed all 5 tests
->
-> Thanks
-> Justin
 
