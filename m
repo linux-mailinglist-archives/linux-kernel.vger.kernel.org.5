@@ -1,543 +1,453 @@
-Return-Path: <linux-kernel+bounces-138049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB5B089EB83
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:11:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20B7389EB80
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:11:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0E49B25587
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:11:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DACF1F22734
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:11:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15BFA13CA88;
-	Wed, 10 Apr 2024 07:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE5F13C9A7;
+	Wed, 10 Apr 2024 07:11:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="KUhBgg2x"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bxtvidWP"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A1713C905;
-	Wed, 10 Apr 2024 07:10:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9022F13AD30
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:10:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712733062; cv=none; b=lESTFVwj+89yExskVQv+qFKzn4Bz5CDtBOPhq0QoiVCowVgJhv21idJv8xGe3+SMfrM/5UDWkXLSNCW+nGT3azKDbLKtzyOmKaGYqcRsn/+KaHkCi7dhozEYbW7/33XY+bC2mXz0ecGr06lNSpqBLPMJI4EPoPGV9GCezpq7Hvk=
+	t=1712733060; cv=none; b=Z82sjJit/VkeekmBT6MDz6Z8IzR7RaHmuao/OM9s0fgXdlsukd2UVOZgdDRUqng9YMsNFcEu2v+xxJjerI7VnCfiaSMuIrR1aUFr8wqTRe1wD8+yXu7fqndJ9qFsFC2Oa+Gcra+eNYyLE5kKm70R33oD4vzANnUq70+QZGiqGFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712733062; c=relaxed/simple;
-	bh=iIhTqQKGFYGbMX+0WhDDRmnoQ6sHNC2UxWsKCD/mCsI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=kiVANZmEmYaRnI3DObWc/KKrDi8Crd95BjIZ3LvHLoetB//YEfxuoZnVAEKt2NRzJ4lgHMeV6wBC521Bjnqcx31BQFjWa9xx7xt5TsvubdXpH9eXqplHSrkh8y5BTtNl3oMKxtwbvVk4z+djB2MRHQs+lXYIqDdEPVPVyC/r88c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=KUhBgg2x; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 309DCE0003;
-	Wed, 10 Apr 2024 07:10:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712733058;
+	s=arc-20240116; t=1712733060; c=relaxed/simple;
+	bh=oLr5eorqj9ems6/Tyu3Cd1/1uYi1eIn97zY8yhYq/qw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GEPoXeShffdsMo+Fa/XEB16VLXZxgXo9EFFkVNKu+4xFfBbUIb2hwIYZFGny24VJ5SeQzB6RZuI3saNRr49x56l2yKkbrHl7LCsP1HLoHP7M3uiDaWYUZff9V072+OL6bybyj1IlVFo1jOoUOrb5AuZbSrXGlaOtOdJhovhY4E4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bxtvidWP; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712733057;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uM2ai5Wl9STzyxfvvo0m0/G2zlemCl8YkRDBrWtIT1c=;
-	b=KUhBgg2xeu8HecQD265ZFSEj8IsuJDB4A3PRy6hzw3htLxdT5CP4DbBC8p1JRB7K5dRUC/
-	hlGWF/L2sMJIRrgM4cks6tYqz9pQnWcJIcW658fcpp419b+ARUwn+4O0KTsYCe/fMacVBc
-	+k5Ju6zHy/zzHZOTRLo+V314A8W8iSbrl1+xTECrylw17QoPe9OTTWBtID9lo52Vt9axol
-	1gfLSzMo+HiFH2qk1EN3g79N18BHBArqfNzLaMwWUGbsotvn4t2ssBDHrHtOvOkN4mvNB1
-	yjKyvR0m9CYnotu6532JqAIbzFCEsVlUIMNPy0bijbxbRzJzOckKJp86c83EqQ==
-From: =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-Date: Wed, 10 Apr 2024 09:10:34 +0200
-Subject: [PATCH 2/2] wifi: wilc1000: convert list management to RCU
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=s8nt20JHKbl6hgq58I8i9JSUR+bBGffR/IYRpP43/0E=;
+	b=bxtvidWP/PcgqcxPkrsjFMvziERRDKN3UxAmE6mmr72BYdAYZmV1PSCIwrKjEHQWjyuIvb
+	kx7wblt3nl6BaflMCPpydJGGZ5dE/YucA845Q5HSZ4oM6o2TwQRfXKBJroX6qQUDJjukwz
+	jzhPmy9yj2WIyXa3FA5MkdZlgVoefio=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-297-OkImDpe-M4adHh7Hm1YszQ-1; Wed, 10 Apr 2024 03:10:55 -0400
+X-MC-Unique: OkImDpe-M4adHh7Hm1YszQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-416542ed388so15872665e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 00:10:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712733054; x=1713337854;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=s8nt20JHKbl6hgq58I8i9JSUR+bBGffR/IYRpP43/0E=;
+        b=REp5A8xF29QfSCN1pYB68YQdn8KAYo9i4q8Ly8fTTr2qA406iFhARWVQIyY2nB3BAc
+         7XWOLDPDL4nsnlc+ReOlce43YGjRhbRa3LpxMeJ5terVw1qw95ggVGxHnxWR8M6zyhiW
+         8D2R9A6SZfHngfjaAXQcKPd2SS+NCUT6Dnb0hGY1j/sn/oslogiL/vr9fR3oCO2mduNq
+         w0ozHkfevOviDzQfq7LsEXL1XMp8Kon0PUoZkFyIDnKai5ydWDRf5MnbGs/aaash+SwD
+         dF2Rh2aNB2209iFY96ucO7yx6LhkNKMlkB9lTUqsllPkUh9iKYhDZeTCfUMhithh73SU
+         tVjw==
+X-Forwarded-Encrypted: i=1; AJvYcCXwIz7VDJShDV9DXHceMFGuh/142Jo/hlOJXSie+RRzeyN4m0xoTJ3dhOLR117qW+AjZ8Xja0uuJcz83ZdaKIxmi1bqeynRXxl5N5Tf
+X-Gm-Message-State: AOJu0YwWixVCNdSeLUjmQXAfg+nrRT/Ty73nRaQ2bcgfcnOPxOo7+qeQ
+	0CjMwxDjo9oSAqYg8dbDags42LpGSvl3POp3u52FdCkqv9fumLoWbn5MZoxKSA89adhGhcrsyDV
+	sm9GiJlmS4Y9vUDbXouaQnY5R/P0GY2mZupovIUZszaRR5er/bSAHCOqsumsw8g==
+X-Received: by 2002:a05:600c:1e84:b0:417:451f:4f62 with SMTP id be4-20020a05600c1e8400b00417451f4f62mr571750wmb.1.1712733053958;
+        Wed, 10 Apr 2024 00:10:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFMVdu3ZGjjvhV6GEt1P3qVnMKhzO9bXMAuHBSeK/L+Xa0jZJoutzVzd7PhhLnbWeYI55rrMQ==
+X-Received: by 2002:a05:600c:1e84:b0:417:451f:4f62 with SMTP id be4-20020a05600c1e8400b00417451f4f62mr571729wmb.1.1712733053440;
+        Wed, 10 Apr 2024 00:10:53 -0700 (PDT)
+Received: from [192.168.3.108] (p5b0c60c1.dip0.t-ipconnect.de. [91.12.96.193])
+        by smtp.gmail.com with ESMTPSA id bg25-20020a05600c3c9900b004162d06768bsm1362070wmb.21.2024.04.10.00.10.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 00:10:52 -0700 (PDT)
+Message-ID: <c2ab8854-66f9-4b26-bcbc-c138918f0e91@redhat.com>
+Date: Wed, 10 Apr 2024 09:10:51 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/4] Speed up boot with faster linear map creation
+To: Itaru Kitayama <itaru.kitayama@linux.dev>
+Cc: Ryan Roberts <ryan.roberts@arm.com>,
+ Catalin Marinas <Catalin.Marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mark Rutland <Mark.Rutland@arm.com>, Ard Biesheuvel <ardb@kernel.org>,
+ Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240404143308.2224141-1-ryan.roberts@arm.com>
+ <Zg+qwooaWFNL7KIg@vm3> <fd4aed3a-42be-44e0-b3bb-12f77c5911a1@arm.com>
+ <ZhEkif45F0aVvKPx@vm3> <533adb77-8c2b-40db-84cb-88de77ab92bb@arm.com>
+ <FCDCBCEE-7D97-4769-AB95-7294A9CE18E0@linux.dev>
+ <1d5abb48-08a8-4d83-a681-6915bc7b6907@arm.com>
+ <268FBD1C-B102-4726-A7F4-1125123BDA7A@linux.dev>
+ <5e4dc2fe-2945-4fc5-a533-c8b2d04668a0@redhat.com>
+ <d02959bc-84d8-4c74-a0da-9ad1159502e1@redhat.com>
+ <c0d66e0d-f492-49ba-b79a-9215317bd65f@redhat.com>
+ <b5e68f81-f917-4f82-8e86-a691a0721291@arm.com>
+ <d1aca51c-2433-4e06-a3ef-842e27371db6@redhat.com>
+ <e7af023f-39cd-4aa4-aa13-dd6aabea4cdf@arm.com>
+ <156cf812-a2de-4480-80dc-31c38ca0eb57@redhat.com>
+ <8AA82C6E-F7E7-40A3-952D-392735E1405A@linux.dev>
+ <1E3DBD5D-0EF2-472B-8164-DBC1368C22B4@linux.dev>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <1E3DBD5D-0EF2-472B-8164-DBC1368C22B4@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240410-wilc_srcu_to_rcu-v1-2-a9ff5b10feaa@bootlin.com>
-References: <20240410-wilc_srcu_to_rcu-v1-0-a9ff5b10feaa@bootlin.com>
-In-Reply-To: <20240410-wilc_srcu_to_rcu-v1-0-a9ff5b10feaa@bootlin.com>
-To: Ajay Singh <ajay.kathat@microchip.com>, 
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, Kalle Valo <kvalo@kernel.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, 
- =?utf-8?q?Alexis_Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-X-Mailer: b4 0.13.0
-X-GND-Sasl: alexis.lothore@bootlin.com
 
-wilc1000 driver currently uses SRCU API to manage vif list. There is no
-real reason to use SRCU API here, and it makes things slightly more
-complicated (we need to handle a SRCU index as well as a srcu_struct) than
-classical RCU.
+On 10.04.24 08:47, Itaru Kitayama wrote:
+> 
+> 
+>> On Apr 10, 2024, at 8:30, Itaru Kitayama <itaru.kitayama@linux.dev> wrote:
+>>
+>> Hi David,
+>>
+>>> On Apr 9, 2024, at 23:45, David Hildenbrand <david@redhat.com> wrote:
+>>>
+>>> On 09.04.24 16:39, Ryan Roberts wrote:
+>>>> On 09/04/2024 15:29, David Hildenbrand wrote:
+>>>>> On 09.04.24 16:13, Ryan Roberts wrote:
+>>>>>> On 09/04/2024 12:51, David Hildenbrand wrote:
+>>>>>>> On 09.04.24 13:29, David Hildenbrand wrote:
+>>>>>>>> On 09.04.24 13:22, David Hildenbrand wrote:
+>>>>>>>>> On 09.04.24 12:13, Itaru Kitayama wrote:
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>>> On Apr 9, 2024, at 19:04, Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>>>>>>>
+>>>>>>>>>>> On 09/04/2024 01:10, Itaru Kitayama wrote:
+>>>>>>>>>>>> Hi Ryan,
+>>>>>>>>>>>>
+>>>>>>>>>>>>> On Apr 8, 2024, at 16:30, Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> On 06/04/2024 11:31, Itaru Kitayama wrote:
+>>>>>>>>>>>>>> Hi Ryan,
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> On Sat, Apr 06, 2024 at 09:32:34AM +0100, Ryan Roberts wrote:
+>>>>>>>>>>>>>>> Hi Itaru,
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> On 05/04/2024 08:39, Itaru Kitayama wrote:
+>>>>>>>>>>>>>>>> On Thu, Apr 04, 2024 at 03:33:04PM +0100, Ryan Roberts wrote:
+>>>>>>>>>>>>>>>>> Hi All,
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> It turns out that creating the linear map can take a significant
+>>>>>>>>>>>>>>>>> proportion of
+>>>>>>>>>>>>>>>>> the total boot time, especially when rodata=full. And most of the
+>>>>>>>>>>>>>>>>> time is spent
+>>>>>>>>>>>>>>>>> waiting on superfluous tlb invalidation and memory barriers. This
+>>>>>>>>>>>>>>>>> series reworks
+>>>>>>>>>>>>>>>>> the kernel pgtable generation code to significantly reduce the number
+>>>>>>>>>>>>>>>>> of those
+>>>>>>>>>>>>>>>>> TLBIs, ISBs and DSBs. See each patch for details.
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> The below shows the execution time of map_mem() across a couple of
+>>>>>>>>>>>>>>>>> different
+>>>>>>>>>>>>>>>>> systems with different RAM configurations. We measure after applying
+>>>>>>>>>>>>>>>>> each patch
+>>>>>>>>>>>>>>>>> and show the improvement relative to base (v6.9-rc2):
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>                    | Apple M2 VM | Ampere Altra| Ampere Altra| Ampere
+>>>>>>>>>>>>>>>>> Altra
+>>>>>>>>>>>>>>>>>                    | VM, 16G     | VM, 64G     | VM, 256G    | Metal,
+>>>>>>>>>>>>>>>>> 512G
+>>>>>>>>>>>>>>>>> ---------------|-------------|-------------|-------------|-------------
+>>>>>>>>>>>>>>>>>                    |   ms    (%) |   ms    (%) |   ms    (%) |
+>>>>>>>>>>>>>>>>> ms    (%)
+>>>>>>>>>>>>>>>>> ---------------|-------------|-------------|-------------|-------------
+>>>>>>>>>>>>>>>>> base           |  153   (0%) | 2227   (0%) | 8798   (0%) | 17442
+>>>>>>>>>>>>>>>>> (0%)
+>>>>>>>>>>>>>>>>> no-cont-remap  |   77 (-49%) |  431 (-81%) | 1727 (-80%) |  3796
+>>>>>>>>>>>>>>>>> (-78%)
+>>>>>>>>>>>>>>>>> batch-barriers |   13 (-92%) |  162 (-93%) |  655 (-93%) |  1656
+>>>>>>>>>>>>>>>>> (-91%)
+>>>>>>>>>>>>>>>>> no-alloc-remap |   11 (-93%) |  109 (-95%) |  449 (-95%) |  1257
+>>>>>>>>>>>>>>>>> (-93%)
+>>>>>>>>>>>>>>>>> lazy-unmap     |    6 (-96%) |   61 (-97%) |  257 (-97%) |   838
+>>>>>>>>>>>>>>>>> (-95%)
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> This series applies on top of v6.9-rc2. All mm selftests pass. I've
+>>>>>>>>>>>>>>>>> compile and
+>>>>>>>>>>>>>>>>> boot tested various PAGE_SIZE and VA size configs.
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> ---
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> Changes since v1 [1]
+>>>>>>>>>>>>>>>>> ====================
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>       - Added Tested-by tags (thanks to Eric and Itaru)
+>>>>>>>>>>>>>>>>>       - Renamed ___set_pte() -> __set_pte_nosync() (per Ard)
+>>>>>>>>>>>>>>>>>       - Reordered patches (biggest impact & least controversial first)
+>>>>>>>>>>>>>>>>>       - Reordered alloc/map/unmap functions in mmu.c to aid reader
+>>>>>>>>>>>>>>>>>       - pte_clear() -> __pte_clear() in clear_fixmap_nosync()
+>>>>>>>>>>>>>>>>>       - Reverted generic p4d_index() which caused x86 build error.
+>>>>>>>>>>>>>>>>> Replaced with
+>>>>>>>>>>>>>>>>>         unconditional p4d_index() define under arm64.
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> [1]
+>>>>>>>>>>>>>>>>> https://lore.kernel.org/linux-arm-kernel/20240326101448.3453626-1-ryan.roberts@arm.com/<https://lore.kernel.org/linux-arm-kernel/20240326101448.3453626-1-ryan.roberts@arm.com/>
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> Thanks,
+>>>>>>>>>>>>>>>>> Ryan
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> Ryan Roberts (4):
+>>>>>>>>>>>>>>>>>       arm64: mm: Don't remap pgtables per-cont(pte|pmd) block
+>>>>>>>>>>>>>>>>>       arm64: mm: Batch dsb and isb when populating pgtables
+>>>>>>>>>>>>>>>>>       arm64: mm: Don't remap pgtables for allocate vs populate
+>>>>>>>>>>>>>>>>>       arm64: mm: Lazily clear pte table mappings from fixmap
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> arch/arm64/include/asm/fixmap.h  |   5 +-
+>>>>>>>>>>>>>>>>> arch/arm64/include/asm/mmu.h     |   8 +
+>>>>>>>>>>>>>>>>> arch/arm64/include/asm/pgtable.h |  13 +-
+>>>>>>>>>>>>>>>>> arch/arm64/kernel/cpufeature.c   |  10 +-
+>>>>>>>>>>>>>>>>> arch/arm64/mm/fixmap.c           |  11 +
+>>>>>>>>>>>>>>>>> arch/arm64/mm/mmu.c              | 377 +++++++++++++++++++++++--------
+>>>>>>>>>>>>>>>>> 6 files changed, 319 insertions(+), 105 deletions(-)
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>> -- 
+>>>>>>>>>>>>>>>>> 2.25.1
+>>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>> I've build and boot tested the v2 on FVP, base is taken from your
+>>>>>>>>>>>>>>>> linux-rr repo. Running run_vmtests.sh on v2 left some gup longterm not
+>>>>>>>>>>>>>>>> oks, would you take a look at it? The mm ksefltests used is from your
+>>>>>>>>>>>>>>>> linux-rr repo too.
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> Thanks for taking a look at this.
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> I can't reproduce your issue unfortunately; steps as follows on Apple
+>>>>>>>>>>>>>>> M2 VM:
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> Config: arm64 defconfig + the following:
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> # Squashfs for snaps, xfs for large file folios.
+>>>>>>>>>>>>>>> ./scripts/config --enable CONFIG_SQUASHFS_LZ4
+>>>>>>>>>>>>>>> ./scripts/config --enable CONFIG_SQUASHFS_LZO
+>>>>>>>>>>>>>>> ./scripts/config --enable CONFIG_SQUASHFS_XZ
+>>>>>>>>>>>>>>> ./scripts/config --enable CONFIG_SQUASHFS_ZSTD
+>>>>>>>>>>>>>>> ./scripts/config --enable CONFIG_XFS_FS
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> # For general mm debug.
+>>>>>>>>>>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM
+>>>>>>>>>>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_MAPLE_TREE
+>>>>>>>>>>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_RB
+>>>>>>>>>>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_PGFLAGS
+>>>>>>>>>>>>>>> ./scripts/config --enable CONFIG_DEBUG_VM_PGTABLE
+>>>>>>>>>>>>>>> ./scripts/config --enable CONFIG_PAGE_TABLE_CHECK
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> # For mm selftests.
+>>>>>>>>>>>>>>> ./scripts/config --enable CONFIG_USERFAULTFD
+>>>>>>>>>>>>>>> ./scripts/config --enable CONFIG_TEST_VMALLOC
+>>>>>>>>>>>>>>> ./scripts/config --enable CONFIG_GUP_TEST
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> Running on VM with 12G memory, split across 2 (emulated) NUMA nodes
+>>>>>>>>>>>>>>> (needed by
+>>>>>>>>>>>>>>> some mm selftests), with kernel command line to reserve hugetlbs and
+>>>>>>>>>>>>>>> other
+>>>>>>>>>>>>>>> features required by some mm selftests:
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> "
+>>>>>>>>>>>>>>> transparent_hugepage=madvise earlycon root=/dev/vda2 secretmem.enable
+>>>>>>>>>>>>>>> hugepagesz=1G hugepages=0:2,1:2 hugepagesz=32M hugepages=0:2,1:2
+>>>>>>>>>>>>>>> default_hugepagesz=2M hugepages=0:64,1:64 hugepagesz=64K
+>>>>>>>>>>>>>>> hugepages=0:2,1:2
+>>>>>>>>>>>>>>> "
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> Ubuntu userspace running off XFS rootfs. Build and run mm selftests
+>>>>>>>>>>>>>>> from same
+>>>>>>>>>>>>>>> git tree.
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> Although I don't think any of this config should make a difference to
+>>>>>>>>>>>>>>> gup_longterm.
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> Looks like your errors are all "ftruncate() failed". I've seen this
+>>>>>>>>>>>>>>> problem on
+>>>>>>>>>>>>>>> our CI system. There it is due to running the tests from NFS file
+>>>>>>>>>>>>>>> system. What
+>>>>>>>>>>>>>>> filesystem are you using? Perhaps you are sharing into the FVP using
+>>>>>>>>>>>>>>> 9p? That
+>>>>>>>>>>>>>>> might also be problematic.
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> That was it. This time I booted up the kernel including your series on
+>>>>>>>>>>>>>> QEMU on my M1 and executed the gup_longterm program without the ftruncate
+>>>>>>>>>>>>>> failures. When testing your kernel on FVP, I was executing the script
+>>>>>>>>>>>>>> from the FVP's host filesystem using 9p.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> I'm not sure exactly what the root cause is. Perhaps there isn't enough
+>>>>>>>>>>>>> space on
+>>>>>>>>>>>>> the disk? It might be worth enhancing the error log to provide the
+>>>>>>>>>>>>> errno in
+>>>>>>>>>>>>> tools/testing/selftests/mm/gup_longterm.c.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> Attached is the strace’d gup_longterm executiong log on your
+>>>>>>>>>>>> pgtable-boot-speedup-v2 kernel.
+>>>>>>>>>>>
+>>>>>>>>>>> Sorry are you saying that it only fails with the pgtable-boot-speedup-v2
+>>>>>>>>>>> patch
+>>>>>>>>>>> set applied? I thought we previously concluded that it was independent of
+>>>>>>>>>>> that?
+>>>>>>>>>>> I was under the impression that it was filesystem related and not something
+>>>>>>>>>>> that
+>>>>>>>>>>> I was planning to investigate.
+>>>>>>>>>>
+>>>>>>>>>> No, irrespective of the kernel, if using 9p on FVP the test program fails.
+>>>>>>>>>> It is indeed 9p filesystem related, as I switched to using NFS all the
+>>>>>>>>>> issues are gone.
+>>>>>>>>>
+>>>>>>>>> Did it never work on 9p? If so, we might have to SKIP that test.
+>>>>>>>>>
+>>>>>>>>> openat(AT_FDCWD, "gup_longterm.c_tmpfile_BLboOt", O_RDWR|O_CREAT|O_EXCL,
+>>>>>>>>> 0600) = 3
+>>>>>>>>> unlinkat(AT_FDCWD, "gup_longterm.c_tmpfile_BLboOt", 0) = 0
+>>>>>>>>> fstatfs(3, 0xffffe505a840)              = -1 EOPNOTSUPP (Operation not
+>>>>>>>>> supported)
+>>>>>>>>> ftruncate(3, 4096)                      = -1 ENOENT (No such file or
+>>>>>>>>> directory)
+>>>>>>>>
+>>>>>>>> Note: I'm wondering if the unlinkat here is the problem that makes
+>>>>>>>> ftruncate() with 9p result in weird errors (e.g., the hypervisor
+>>>>>>>> unlinked the file and cannot reopen it for the fstatfs/ftruncate. ...
+>>>>>>>> which gives us weird errors here).
+>>>>>>>>
+>>>>>>>> Then, we should lookup the fs type in run_with_local_tmpfile() before
+>>>>>>>> the unlink() and simply skip the test if it is 9p.
+>>>>>>>
+>>>>>>> The unlink with 9p most certainly was a known issue in the past:
+>>>>>>>
+>>>>>>> https://gitlab.com/qemu-project/qemu/-/issues/103
+>>>>>>>
+>>>>>>> Maybe it's still an issue with older hypervisors (QEMU?)? Or it was never
+>>>>>>> completely resolved?
+>>>>>>
+>>>>>> I believe Itaru is running on FVP (Fixed Virtual Platform - "fast model" -
+>>>>>> Arm's architecture emulator). So QEMU won't be involved here. The FVP emulates
+>>>>>> a 9p device, so perhaps the bug is in there.
+>>>>>
+>>>>> Very likely.
+>>>>>
+>>>>>>
+>>>>>> Note that I see lots of "fallocate() failed" failures in gup_longterm when
+>>>>>> running on our CI system. This is a completely different setup; Real HW with
+>>>>>> Linux running bare metal using an NFS rootfs. I'm not sure if this is related.
+>>>>>> Logs show it failing consistently for the "tmpfile" and "local tmpfile" test
+>>>>>> configs. I also see a couple of these fails in the cow tests.
+>>>>>
+>>>>> What is the fallocate() errno you are getting? strace log would help (to see if
+>>>>> statfs also fails already)! Likely a similar NFS issue.
+>>>> Unfortunately this is a system I don't have access to. I've requested some of
+>>>> this triage to be done, but its fairly low priority unfortunately.
+>>>
+>>> To work around these BUGs (?) elsewhere, we could simply skip the test if get_fs_type() is not able to detect the FS type. Likely that's an early indicator that the unlink() messed something up.
+>>>
+>>> ... doesn't feel right, though.
+>>
+>> I think it’s a good idea so that the mm kselftests results look reasonable.
 
-Switch SRCU APIs to RCU APIs.
+Yeah, but this will hide BUGs elsewhere. I suspect that in Ryan's NFS setup is
+also a BUG lurking somewhere in the NFS implementation. But that's just a guess
+until we have more details.
 
-Signed-off-by: Alexis Lothoré <alexis.lothore@bootlin.com>
----
- drivers/net/wireless/microchip/wilc1000/cfg80211.c | 41 +++++++++------------
- drivers/net/wireless/microchip/wilc1000/hif.c      | 15 +++-----
- drivers/net/wireless/microchip/wilc1000/netdev.c   | 43 +++++++++-------------
- drivers/net/wireless/microchip/wilc1000/netdev.h   |  5 +--
- drivers/net/wireless/microchip/wilc1000/wlan.c     |  5 +--
- 5 files changed, 45 insertions(+), 64 deletions(-)
+>> Since you’re an expert on GUP-fast (or fast-GUP?), when you update the code, could you print out errno as well like the split_huge_page_test.c does
 
-diff --git a/drivers/net/wireless/microchip/wilc1000/cfg80211.c b/drivers/net/wireless/microchip/wilc1000/cfg80211.c
-index 089102ed9ae5..7d9fb9f2d527 100644
---- a/drivers/net/wireless/microchip/wilc1000/cfg80211.c
-+++ b/drivers/net/wireless/microchip/wilc1000/cfg80211.c
-@@ -237,12 +237,11 @@ static int set_channel(struct wiphy *wiphy,
- 	struct wilc_vif *vif;
- 	u32 channelnum;
- 	int result;
--	int srcu_idx;
- 
--	srcu_idx = srcu_read_lock(&wl->srcu);
-+	rcu_read_lock();
- 	vif = wilc_get_wl_to_vif(wl);
- 	if (IS_ERR(vif)) {
--		srcu_read_unlock(&wl->srcu, srcu_idx);
-+		rcu_read_unlock();
- 		return PTR_ERR(vif);
- 	}
- 
-@@ -253,7 +252,7 @@ static int set_channel(struct wiphy *wiphy,
- 	if (result)
- 		netdev_err(vif->ndev, "Error in setting channel\n");
- 
--	srcu_read_unlock(&wl->srcu, srcu_idx);
-+	rcu_read_unlock();
- 	return result;
- }
- 
-@@ -806,9 +805,8 @@ static int set_wiphy_params(struct wiphy *wiphy, u32 changed)
- 	struct wilc *wl = wiphy_priv(wiphy);
- 	struct wilc_vif *vif;
- 	struct wilc_priv *priv;
--	int srcu_idx;
- 
--	srcu_idx = srcu_read_lock(&wl->srcu);
-+	rcu_read_lock();
- 	vif = wilc_get_wl_to_vif(wl);
- 	if (IS_ERR(vif))
- 		goto out;
-@@ -863,7 +861,7 @@ static int set_wiphy_params(struct wiphy *wiphy, u32 changed)
- 		netdev_err(priv->dev, "Error in setting WIPHY PARAMS\n");
- 
- out:
--	srcu_read_unlock(&wl->srcu, srcu_idx);
-+	rcu_read_unlock();
- 	return ret;
- }
- 
-@@ -1539,20 +1537,19 @@ static struct wireless_dev *add_virtual_intf(struct wiphy *wiphy,
- 
- 	if (type == NL80211_IFTYPE_MONITOR) {
- 		struct net_device *ndev;
--		int srcu_idx;
- 
--		srcu_idx = srcu_read_lock(&wl->srcu);
-+		rcu_read_lock();
- 		vif = wilc_get_vif_from_type(wl, WILC_AP_MODE);
- 		if (!vif) {
- 			vif = wilc_get_vif_from_type(wl, WILC_GO_MODE);
- 			if (!vif) {
--				srcu_read_unlock(&wl->srcu, srcu_idx);
-+				rcu_read_unlock();
- 				goto validate_interface;
- 			}
- 		}
- 
- 		if (vif->monitor_flag) {
--			srcu_read_unlock(&wl->srcu, srcu_idx);
-+			rcu_read_unlock();
- 			goto validate_interface;
- 		}
- 
-@@ -1560,12 +1557,12 @@ static struct wireless_dev *add_virtual_intf(struct wiphy *wiphy,
- 		if (ndev) {
- 			vif->monitor_flag = 1;
- 		} else {
--			srcu_read_unlock(&wl->srcu, srcu_idx);
-+			rcu_read_unlock();
- 			return ERR_PTR(-EINVAL);
- 		}
- 
- 		wdev = &vif->priv.wdev;
--		srcu_read_unlock(&wl->srcu, srcu_idx);
-+		rcu_read_unlock();
- 		return wdev;
- 	}
- 
-@@ -1613,7 +1610,7 @@ static int del_virtual_intf(struct wiphy *wiphy, struct wireless_dev *wdev)
- 	list_del_rcu(&vif->list);
- 	wl->vif_num--;
- 	mutex_unlock(&wl->vif_mutex);
--	synchronize_srcu(&wl->srcu);
-+	synchronize_rcu();
- 	return 0;
- }
- 
-@@ -1638,25 +1635,23 @@ static void wilc_set_wakeup(struct wiphy *wiphy, bool enabled)
- {
- 	struct wilc *wl = wiphy_priv(wiphy);
- 	struct wilc_vif *vif;
--	int srcu_idx;
- 
--	srcu_idx = srcu_read_lock(&wl->srcu);
-+	rcu_read_lock();
- 	vif = wilc_get_wl_to_vif(wl);
- 	if (IS_ERR(vif)) {
--		srcu_read_unlock(&wl->srcu, srcu_idx);
-+		rcu_read_unlock();
- 		return;
- 	}
- 
- 	netdev_info(vif->ndev, "cfg set wake up = %d\n", enabled);
- 	wilc_set_wowlan_trigger(vif, enabled);
--	srcu_read_unlock(&wl->srcu, srcu_idx);
-+	rcu_read_unlock();
- }
- 
- static int set_tx_power(struct wiphy *wiphy, struct wireless_dev *wdev,
- 			enum nl80211_tx_power_setting type, int mbm)
- {
- 	int ret;
--	int srcu_idx;
- 	s32 tx_power = MBM_TO_DBM(mbm);
- 	struct wilc *wl = wiphy_priv(wiphy);
- 	struct wilc_vif *vif;
-@@ -1664,10 +1659,10 @@ static int set_tx_power(struct wiphy *wiphy, struct wireless_dev *wdev,
- 	if (!wl->initialized)
- 		return -EIO;
- 
--	srcu_idx = srcu_read_lock(&wl->srcu);
-+	rcu_read_lock();
- 	vif = wilc_get_wl_to_vif(wl);
- 	if (IS_ERR(vif)) {
--		srcu_read_unlock(&wl->srcu, srcu_idx);
-+		rcu_read_unlock();
- 		return -EINVAL;
- 	}
- 
-@@ -1679,7 +1674,7 @@ static int set_tx_power(struct wiphy *wiphy, struct wireless_dev *wdev,
- 	ret = wilc_set_tx_power(vif, tx_power);
- 	if (ret)
- 		netdev_err(vif->ndev, "Failed to set tx power\n");
--	srcu_read_unlock(&wl->srcu, srcu_idx);
-+	rcu_read_unlock();
- 
- 	return ret;
- }
-@@ -1762,7 +1757,6 @@ static void wlan_init_locks(struct wilc *wl)
- 	init_completion(&wl->cfg_event);
- 	init_completion(&wl->sync_event);
- 	init_completion(&wl->txq_thread_started);
--	init_srcu_struct(&wl->srcu);
- }
- 
- void wlan_deinit_locks(struct wilc *wilc)
-@@ -1773,7 +1767,6 @@ void wlan_deinit_locks(struct wilc *wilc)
- 	mutex_destroy(&wilc->txq_add_to_head_cs);
- 	mutex_destroy(&wilc->vif_mutex);
- 	mutex_destroy(&wilc->deinit_lock);
--	cleanup_srcu_struct(&wilc->srcu);
- }
- 
- int wilc_cfg80211_init(struct wilc **wilc, struct device *dev, int io_type,
-diff --git a/drivers/net/wireless/microchip/wilc1000/hif.c b/drivers/net/wireless/microchip/wilc1000/hif.c
-index 3925ca653e80..919de6ffb821 100644
---- a/drivers/net/wireless/microchip/wilc1000/hif.c
-+++ b/drivers/net/wireless/microchip/wilc1000/hif.c
-@@ -1570,12 +1570,11 @@ void wilc_network_info_received(struct wilc *wilc, u8 *buffer, u32 length)
- 	struct host_if_drv *hif_drv;
- 	struct host_if_msg *msg;
- 	struct wilc_vif *vif;
--	int srcu_idx;
- 	int result;
- 	int id;
- 
- 	id = get_unaligned_le32(&buffer[length - 4]);
--	srcu_idx = srcu_read_lock(&wilc->srcu);
-+	rcu_read_lock();
- 	vif = wilc_get_vif_from_idx(wilc, id);
- 	if (!vif)
- 		goto out;
-@@ -1607,7 +1606,7 @@ void wilc_network_info_received(struct wilc *wilc, u8 *buffer, u32 length)
- 		kfree(msg);
- 	}
- out:
--	srcu_read_unlock(&wilc->srcu, srcu_idx);
-+	rcu_read_unlock();
- }
- 
- void wilc_gnrl_async_info_received(struct wilc *wilc, u8 *buffer, u32 length)
-@@ -1615,14 +1614,13 @@ void wilc_gnrl_async_info_received(struct wilc *wilc, u8 *buffer, u32 length)
- 	struct host_if_drv *hif_drv;
- 	struct host_if_msg *msg;
- 	struct wilc_vif *vif;
--	int srcu_idx;
- 	int result;
- 	int id;
- 
- 	mutex_lock(&wilc->deinit_lock);
- 
- 	id = get_unaligned_le32(&buffer[length - 4]);
--	srcu_idx = srcu_read_lock(&wilc->srcu);
-+	rcu_read_lock();
- 	vif = wilc_get_vif_from_idx(wilc, id);
- 	if (!vif)
- 		goto out;
-@@ -1649,7 +1647,7 @@ void wilc_gnrl_async_info_received(struct wilc *wilc, u8 *buffer, u32 length)
- 		kfree(msg);
- 	}
- out:
--	srcu_read_unlock(&wilc->srcu, srcu_idx);
-+	rcu_read_unlock();
- 	mutex_unlock(&wilc->deinit_lock);
- }
- 
-@@ -1657,12 +1655,11 @@ void wilc_scan_complete_received(struct wilc *wilc, u8 *buffer, u32 length)
- {
- 	struct host_if_drv *hif_drv;
- 	struct wilc_vif *vif;
--	int srcu_idx;
- 	int result;
- 	int id;
- 
- 	id = get_unaligned_le32(&buffer[length - 4]);
--	srcu_idx = srcu_read_lock(&wilc->srcu);
-+	rcu_read_lock();
- 	vif = wilc_get_vif_from_idx(wilc, id);
- 	if (!vif)
- 		goto out;
-@@ -1687,7 +1684,7 @@ void wilc_scan_complete_received(struct wilc *wilc, u8 *buffer, u32 length)
- 		}
- 	}
- out:
--	srcu_read_unlock(&wilc->srcu, srcu_idx);
-+	rcu_read_unlock();
- }
- 
- int wilc_remain_on_channel(struct wilc_vif *vif, u64 cookie, u16 chan,
-diff --git a/drivers/net/wireless/microchip/wilc1000/netdev.c b/drivers/net/wireless/microchip/wilc1000/netdev.c
-index 710e29bea560..73f56f7b002b 100644
---- a/drivers/net/wireless/microchip/wilc1000/netdev.c
-+++ b/drivers/net/wireless/microchip/wilc1000/netdev.c
-@@ -127,30 +127,28 @@ void wilc_wlan_set_bssid(struct net_device *wilc_netdev, const u8 *bssid,
- 
- int wilc_wlan_get_num_conn_ifcs(struct wilc *wilc)
- {
--	int srcu_idx;
- 	u8 ret_val = 0;
- 	struct wilc_vif *vif;
- 
--	srcu_idx = srcu_read_lock(&wilc->srcu);
-+	rcu_read_lock();
- 	wilc_for_each_vif(wilc, vif) {
- 		if (!is_zero_ether_addr(vif->bssid))
- 			ret_val++;
- 	}
--	srcu_read_unlock(&wilc->srcu, srcu_idx);
-+	rcu_read_unlock();
- 	return ret_val;
- }
- 
- static void wilc_wake_tx_queues(struct wilc *wl)
- {
--	int srcu_idx;
- 	struct wilc_vif *ifc;
- 
--	srcu_idx = srcu_read_lock(&wl->srcu);
-+	rcu_read_lock();
- 	wilc_for_each_vif(wl, ifc) {
- 		if (ifc->mac_opened && netif_queue_stopped(ifc->ndev))
- 			netif_wake_queue(ifc->ndev);
- 	}
--	srcu_read_unlock(&wl->srcu, srcu_idx);
-+	rcu_read_unlock();
- }
- 
- static int wilc_txq_task(void *vp)
-@@ -655,7 +653,6 @@ static int wilc_set_mac_addr(struct net_device *dev, void *p)
- 	struct sockaddr *addr = (struct sockaddr *)p;
- 	unsigned char mac_addr[ETH_ALEN];
- 	struct wilc_vif *tmp_vif;
--	int srcu_idx;
- 
- 	if (!is_valid_ether_addr(addr->sa_data))
- 		return -EADDRNOTAVAIL;
-@@ -667,19 +664,19 @@ static int wilc_set_mac_addr(struct net_device *dev, void *p)
- 
- 	/* Verify MAC Address is not already in use: */
- 
--	srcu_idx = srcu_read_lock(&wilc->srcu);
-+	rcu_read_lock();
- 	wilc_for_each_vif(wilc, tmp_vif) {
- 		wilc_get_mac_address(tmp_vif, mac_addr);
- 		if (ether_addr_equal(addr->sa_data, mac_addr)) {
- 			if (vif != tmp_vif) {
--				srcu_read_unlock(&wilc->srcu, srcu_idx);
-+				rcu_read_unlock();
- 				return -EADDRNOTAVAIL;
- 			}
--			srcu_read_unlock(&wilc->srcu, srcu_idx);
-+			rcu_read_unlock();
- 			return 0;
- 		}
- 	}
--	srcu_read_unlock(&wilc->srcu, srcu_idx);
-+	rcu_read_unlock();
- 
- 	result = wilc_set_mac_address(vif, (u8 *)addr->sa_data);
- 	if (result)
-@@ -767,15 +764,14 @@ netdev_tx_t wilc_mac_xmit(struct sk_buff *skb, struct net_device *ndev)
- 						wilc_tx_complete);
- 
- 	if (queue_count > FLOW_CONTROL_UPPER_THRESHOLD) {
--		int srcu_idx;
- 		struct wilc_vif *vif;
- 
--		srcu_idx = srcu_read_lock(&wilc->srcu);
-+		rcu_read_lock();
- 		wilc_for_each_vif(wilc, vif) {
- 			if (vif->mac_opened)
- 				netif_stop_queue(vif->ndev);
- 		}
--		srcu_read_unlock(&wilc->srcu, srcu_idx);
-+		rcu_read_unlock();
- 	}
- 
- 	return NETDEV_TX_OK;
-@@ -819,13 +815,12 @@ void wilc_frmw_to_host(struct wilc *wilc, u8 *buff, u32 size,
- 	unsigned int frame_len = 0;
- 	struct wilc_vif *vif;
- 	struct sk_buff *skb;
--	int srcu_idx;
- 	int stats;
- 
- 	if (!wilc)
- 		return;
- 
--	srcu_idx = srcu_read_lock(&wilc->srcu);
-+	rcu_read_lock();
- 	wilc_netdev = get_if_handler(wilc, buff);
- 	if (!wilc_netdev)
- 		goto out;
-@@ -853,15 +848,14 @@ void wilc_frmw_to_host(struct wilc *wilc, u8 *buff, u32 size,
- 		netdev_dbg(wilc_netdev, "netif_rx ret value is: %d\n", stats);
- 	}
- out:
--	srcu_read_unlock(&wilc->srcu, srcu_idx);
-+	rcu_read_unlock();
- }
- 
- void wilc_wfi_mgmt_rx(struct wilc *wilc, u8 *buff, u32 size, bool is_auth)
- {
--	int srcu_idx;
- 	struct wilc_vif *vif;
- 
--	srcu_idx = srcu_read_lock(&wilc->srcu);
-+	rcu_read_lock();
- 	wilc_for_each_vif(wilc, vif) {
- 		struct ieee80211_mgmt *mgmt = (struct ieee80211_mgmt *)buff;
- 		u16 type = le16_to_cpup((__le16 *)buff);
-@@ -882,7 +876,7 @@ void wilc_wfi_mgmt_rx(struct wilc *wilc, u8 *buff, u32 size, bool is_auth)
- 		if (vif->monitor_flag)
- 			wilc_wfi_monitor_rx(wilc->monitor_dev, buff, size);
- 	}
--	srcu_read_unlock(&wilc->srcu, srcu_idx);
-+	rcu_read_unlock();
- }
- 
- static const struct net_device_ops wilc_netdev_ops = {
-@@ -912,7 +906,7 @@ void wilc_netdev_cleanup(struct wilc *wilc)
- 		list_del_rcu(&vif->list);
- 		wilc->vif_num--;
- 		mutex_unlock(&wilc->vif_mutex);
--		synchronize_srcu(&wilc->srcu);
-+		synchronize_rcu();
- 		if (vif->ndev)
- 			unregister_netdev(vif->ndev);
- 	}
-@@ -931,16 +925,15 @@ static u8 wilc_get_available_idx(struct wilc *wl)
- {
- 	int idx = 0;
- 	struct wilc_vif *vif;
--	int srcu_idx;
- 
--	srcu_idx = srcu_read_lock(&wl->srcu);
-+	rcu_read_lock();
- 	wilc_for_each_vif(wl, vif) {
- 		if (vif->idx == 0)
- 			idx = 1;
- 		else
- 			idx = 0;
- 	}
--	srcu_read_unlock(&wl->srcu, srcu_idx);
-+	rcu_read_unlock();
- 	return idx;
- }
- 
-@@ -990,7 +983,7 @@ struct wilc_vif *wilc_netdev_ifc_init(struct wilc *wl, const char *name,
- 	list_add_tail_rcu(&vif->list, &wl->vif_list);
- 	wl->vif_num += 1;
- 	mutex_unlock(&wl->vif_mutex);
--	synchronize_srcu(&wl->srcu);
-+	synchronize_rcu();
- 
- 	return vif;
- 
-diff --git a/drivers/net/wireless/microchip/wilc1000/netdev.h b/drivers/net/wireless/microchip/wilc1000/netdev.h
-index 5937d6d45695..eecee3973d6a 100644
---- a/drivers/net/wireless/microchip/wilc1000/netdev.h
-+++ b/drivers/net/wireless/microchip/wilc1000/netdev.h
-@@ -32,8 +32,8 @@
- 
- #define wilc_for_each_vif(w, v) \
- 	struct wilc *_w = w; \
--	list_for_each_entry_srcu(v, &_w->vif_list, list, \
--				 srcu_read_lock_held(&_w->srcu))
-+	list_for_each_entry_rcu(v, &_w->vif_list, list, \
-+				 rcu_read_lock_held())
- 
- struct wilc_wfi_stats {
- 	unsigned long rx_packets;
-@@ -220,7 +220,6 @@ struct wilc {
- 
- 	/* protect vif list */
- 	struct mutex vif_mutex;
--	struct srcu_struct srcu;
- 	u8 open_ifcs;
- 
- 	/* protect head of transmit queue */
-diff --git a/drivers/net/wireless/microchip/wilc1000/wlan.c b/drivers/net/wireless/microchip/wilc1000/wlan.c
-index a9e872a7b2c3..37c32d17856e 100644
---- a/drivers/net/wireless/microchip/wilc1000/wlan.c
-+++ b/drivers/net/wireless/microchip/wilc1000/wlan.c
-@@ -712,7 +712,6 @@ int wilc_wlan_handle_txq(struct wilc *wilc, u32 *txq_count)
- 	u32 *vmm_table = wilc->vmm_table;
- 	u8 ac_pkt_num_to_chip[NQUEUES] = {0, 0, 0, 0};
- 	const struct wilc_hif_func *func;
--	int srcu_idx;
- 	u8 *txb = wilc->tx_buffer;
- 	struct wilc_vif *vif;
- 
-@@ -724,10 +723,10 @@ int wilc_wlan_handle_txq(struct wilc *wilc, u32 *txq_count)
- 
- 	mutex_lock(&wilc->txq_add_to_head_cs);
- 
--	srcu_idx = srcu_read_lock(&wilc->srcu);
-+	rcu_read_lock();
- 	wilc_for_each_vif(wilc, vif)
- 		wilc_wlan_txq_filter_dup_tcp_ack(vif->ndev);
--	srcu_read_unlock(&wilc->srcu, srcu_idx);
-+	rcu_read_unlock();
- 
- 	for (ac = 0; ac < NQUEUES; ac++)
- 		tqe_q[ac] = wilc_wlan_txq_get_first(wilc, ac);
+While we could, I don't see much value in that for selftests. strace log is of much
+more valuable to understand what is actually happening (e.g., fstatfs failing), and
+quite easy to obtain.
+
+>> Thanks,
+>> Itaru.
+> 
+> David, attached is the straced execution log of the gup_longterm kselftest over the NFS case.
+> I’m running the program on FVP, let me know if you need other logs or test results.
+
+For your run, it all looks good:
+
+openat(AT_FDCWD, "/tmp", O_RDWR|O_EXCL|O_TMPFILE, 0600) = 3
+fcntl(3, F_GETFL)                       = 0x424002 (flags O_RDWR|O_LARGEFILE|O_TMPFILE)
+fstatfs(3, {f_type=TMPFS_MAGIC, f_bsize=4096, f_blocks=416015, f_bfree=415997, f_bavail=415997, f_files=416015, f_ffree=416009, f_fsid={val=[0x8e6b7ce6, 0xe1737440]}, f_namelen=255, f_frsize=4096, f_flags=ST_VALID|ST_RELATIME}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+
+-> TMPFS/SHMEM, works as expected
+
+openat(AT_FDCWD, "gup_longterm.c_tmpfile_WMLTNf", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
+unlinkat(AT_FDCWD, "gup_longterm.c_tmpfile_WMLTNf", 0) = 0
+fstatfs(3, {f_type=NFS_SUPER_MAGIC, f_bsize=1048576, f_blocks=112200, f_bfree=27954, f_bavail=23296, f_files=7307264, f_ffree=4724815, f_fsid={val=[0, 0]}, f_namelen=255, f_frsize=1048576, f_flags=ST_VALID|ST_RELATIME}) = 0
+ftruncate(3, 4096)                      = 0
+fallocate(3, 0, 0, 4096)                = 0
+
+-> NFS, works as expected
+
+Note that you get all skips (not fails), because your kernel is not compiled with CONFIG_GUP_TEST.
+
+ok 1 # SKIP gup_test not available
 
 -- 
-2.44.0
+Cheers,
+
+David / dhildenb
 
 
