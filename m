@@ -1,152 +1,160 @@
-Return-Path: <linux-kernel+bounces-139089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6CE289FE66
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:24:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D3789FEDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:45:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65ADF2846DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:24:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03AED1C22C38
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:45:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D50D7194C6E;
-	Wed, 10 Apr 2024 17:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DE1180A6C;
+	Wed, 10 Apr 2024 17:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dybj+T4M"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="AvdRggsv"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022D019069E;
-	Wed, 10 Apr 2024 17:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E7AF17F372;
+	Wed, 10 Apr 2024 17:44:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712769627; cv=none; b=mWzVhmoLde9+wOBUVaMqmvTn+g5Q+z6/xBLI1i8d5VZWj1LQOxTLx7pWMnJqOfurhtpwzLcsD0RiHb3GHCyCeSe/5HmkRHcZWlmuJN8WnGQqF5ZqF4MhgCyXxSGD3mChVKDyc5TNLIwkuB5CWIkaKuFaAXd2MA8dgK04y/PzgHg=
+	t=1712771099; cv=none; b=c1LLnNXL0LpNwv0xzfLjz6jTzr/s9B5dUvi1pVx/O6LyeXfypKOpztXgpR0S1B+8i5hkTOqGigbhEm84nJiT9gD7omniOtq7cfMXqryl5gI8XpriimcEAy7tRiqqLeQgUWYVDk62ZVPHxKa9i5AVQz/LGBuyI4dRT3wg/qo2Rlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712769627; c=relaxed/simple;
-	bh=cW39rxLL7SNmaGCvHGHkPuHo9w+dGTGLLZl6+MwFSus=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=fjbKOnjF/O+jGlsJagm2a+y+4xBwjDYVlrtTXP+r9sKM8LOP/JFJyJzbpkQ8Hp/EOqkkwzKzQcyHRFCWGyzf8gjep0yV4MkGxcKEOA+QxyBVSl2IAdLRSOR4qsS1PIZ6DTGatwArBJSrN9PHyoAQPr0yWeYWufm5kLIRzTohp3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dybj+T4M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 778BAC433B1;
-	Wed, 10 Apr 2024 17:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712769626;
-	bh=cW39rxLL7SNmaGCvHGHkPuHo9w+dGTGLLZl6+MwFSus=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Dybj+T4MZ+9xXcNecuCD8ZyeFdCL0cI8dfA80X31p9Jtktjy0NTiodPrgm4IPCSZc
-	 LR78+QVgM6GkQhy/qSwkuggiO7+XpyWZsUXZoomAFNQvW6E/5dJIDSK8UC9zrA3b9F
-	 sDfhkogd6x1cO2oNk2Ue1JUEPXrmURtI6PBOEdHnRcVPIkid9YVURZaN2iewx0fR5q
-	 lwgaQyFSNd1MJuLQ5zpB731ZPlPexVeNJ9OdRbgOTPYqW1zRHP/9SUKb6UVdWeHLOn
-	 A6DE0zMuOv39xBEvc8N17GZWAsPhbNZcjpiGFmR/Sz+N+SEDL7wrmn3/hQVljvgO+V
-	 xOMwQ0Z+QfmDQ==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Wed, 10 Apr 2024 19:19:38 +0200
-Subject: [PATCH 18/18] selftests/hid: add tests for the Raptor Mach 2
- joystick
+	s=arc-20240116; t=1712771099; c=relaxed/simple;
+	bh=zd72EbgmhFsdvxrkydv/54uHUjTmye/iH4W+WqdNsUE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=R6ZHA683a57UdRuopwier3g978ep3bG4ARz8F8u1LnXAq7+C7/4SmpBwtitMo0FuCEADLWR3ci4wqDGdv9rnmVFK8hkeD78XTZs7hLYKUcL3XcHrw1nzsdgXPwddb13ULODIGdnVM5UsH5yJLgryo8HrSykKJjHXp4y8ncgxq+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=AvdRggsv; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43AHWfCE027558;
+	Wed, 10 Apr 2024 17:44:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=lnjnE8ATros47CvItPMr0cyRhNnNvF8qFBKBUXO4nZg=;
+ b=AvdRggsvVtfgVMcGf1LWwC2cpuVNYpVhS/VYxYE9Sa3p4sFXBVjl7jzeNO6F073J9Nvo
+ U/omTieaaEzZ9iD3ZCm0neCWSCfXvA0GzxtoIiqcdGK3gHAZLspWVEuHytY3J84MjoQx
+ ayRhg5ymc0FZxffaz06ZSdk85D+tGzbMpnhl3pXD5WzkMUuS61HR3k5zobEiiTXr4mfE
+ aPExz9a/LEYnpzV0AquFSh0M+E6qN0Qzcuh8zIdM9fBKiFEglM8nF8UGdhj9tkRd9+95
+ UdHJ6D3BsaA9Mo+udUJFIPIVi7kU1CZa9KrIfl8ncgejC8UTn5EWJywBiOQoXslw55Zk ng== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdy8j00rf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 17:44:42 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43AHige7011949;
+	Wed, 10 Apr 2024 17:44:42 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdy8j00ra-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 17:44:41 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43AH29f6029904;
+	Wed, 10 Apr 2024 17:44:40 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbj7me5h5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 17:44:40 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43AHiZpp50856364
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Apr 2024 17:44:37 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EC8DD20043;
+	Wed, 10 Apr 2024 17:44:34 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B400C20040;
+	Wed, 10 Apr 2024 17:44:34 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.152.224.66])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 10 Apr 2024 17:44:34 +0000 (GMT)
+Date: Wed, 10 Apr 2024 19:19:44 +0200
+From: Claudio Imbrenda <imbrenda@linux.ibm.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        Matthew Wilcox
+ <willy@infradead.org>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
+ <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian
+ Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle
+ <svens@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Gerald
+ Schaefer <gerald.schaefer@linux.ibm.com>,
+        Thomas Huth <thuth@redhat.com>
+Subject: Re: [PATCH v1 4/5] s390/uv: update PG_arch_1 comment
+Message-ID: <20240410191944.72c84b2e@p-imbrenda>
+In-Reply-To: <20240404163642.1125529-5-david@redhat.com>
+References: <20240404163642.1125529-1-david@redhat.com>
+	<20240404163642.1125529-5-david@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240410-bpf_sources-v1-18-a8bf16033ef8@kernel.org>
-References: <20240410-bpf_sources-v1-0-a8bf16033ef8@kernel.org>
-In-Reply-To: <20240410-bpf_sources-v1-0-a8bf16033ef8@kernel.org>
-To: Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>, 
- Shuah Khan <shuah@kernel.org>, Peter Hutterer <peter.hutterer@who-t.net>
-Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712769589; l=3284;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=cW39rxLL7SNmaGCvHGHkPuHo9w+dGTGLLZl6+MwFSus=;
- b=ywHPEum0yoe1I9JQLPf4Fgbqf+WbEPJv48/GuUbFojAlXhjBfEQsHpTV0VwwNsJ/4bu42zsuZ
- hiQSyFEopFgAAYKB5BvwabsLbDizKbJqfaLUdrQXZGlgT+UOvLjhrQj
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 8zhlPPNcuaeSlcywV_RLHDG0nrUNh0XR
+X-Proofpoint-GUID: 53w3kbTBb5T7QS82YxhvL0E5DyEKQP8o
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 malwarescore=0 spamscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=907 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404100130
 
-The only interesting bit is the HAT switch, and we use a BPF program
-to fix it. So ensure this works correctly.
+On Thu,  4 Apr 2024 18:36:41 +0200
+David Hildenbrand <david@redhat.com> wrote:
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
----
- tools/testing/selftests/hid/tests/test_gamepad.py | 47 ++++++++++++++++++++++-
- 1 file changed, 46 insertions(+), 1 deletion(-)
+> We removed the usage of PG_arch_1 for page tables in commit
+> a51324c430db ("s390/cmma: rework no-dat handling").
+> 
+> Let's update the comment in UV to reflect that.
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-diff --git a/tools/testing/selftests/hid/tests/test_gamepad.py b/tools/testing/selftests/hid/tests/test_gamepad.py
-index bd30dadbeb7d..8d5b5ffdae49 100644
---- a/tools/testing/selftests/hid/tests/test_gamepad.py
-+++ b/tools/testing/selftests/hid/tests/test_gamepad.py
-@@ -10,7 +10,7 @@ from . import base
- import libevdev
- import pytest
- 
--from .base_gamepad import BaseGamepad, JoystickGamepad
-+from .base_gamepad import BaseGamepad, JoystickGamepad, AxisMapping
- from hidtools.util import BusType
- 
- import logging
-@@ -609,6 +609,40 @@ class AsusGamepad(BaseGamepad):
-         self.buttons = (1, 2, 4, 5, 7, 8, 14, 15, 13)
- 
- 
-+class RaptorMach2Joystick(JoystickGamepad):
-+    axes_map = {
-+        "left_stick": {
-+            "x": AxisMapping("x"),
-+            "y": AxisMapping("y"),
-+        },
-+        "right_stick": {
-+            "x": AxisMapping("z"),
-+            "y": AxisMapping("Rz"),
-+        },
-+    }
-+
-+    def __init__(
-+        self,
-+        name,
-+        rdesc=None,
-+        application="Joystick",
-+        input_info=(BusType.USB, 0x11C0, 0x5606),
-+    ):
-+        super().__init__(rdesc, application, name, input_info)
-+        self.buttons = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
-+        self.hat_switch = 240  # null value is 240 as max is 239
-+
-+    def event(
-+        self, *, left=(None, None), right=(None, None), hat_switch=None, buttons=None
-+    ):
-+        if hat_switch is not None:
-+            hat_switch *= 30
-+
-+        return super().event(
-+            left=left, right=right, hat_switch=hat_switch, buttons=buttons
-+        )
-+
-+
- class TestSaitekGamepad(BaseTest.TestGamepad):
-     def create_device(self):
-         return SaitekGamepad()
-@@ -617,3 +651,14 @@ class TestSaitekGamepad(BaseTest.TestGamepad):
- class TestAsusGamepad(BaseTest.TestGamepad):
-     def create_device(self):
-         return AsusGamepad()
-+
-+
-+class TestRaptorMach2Joystick(BaseTest.TestGamepad):
-+    hid_bpfs = [("FR-TEC__Raptor-Mach-2.bpf.o", True)]
-+
-+    def create_device(self):
-+        return RaptorMach2Joystick(
-+            "uhid test Sanmos Group FR-TEC Raptor MACH 2",
-+            rdesc="05 01 09 04 a1 01 05 01 85 01 05 01 09 30 75 10 95 01 15 00 26 ff 07 46 ff 07 81 02 05 01 09 31 75 10 95 01 15 00 26 ff 07 46 ff 07 81 02 05 01 09 33 75 10 95 01 15 00 26 ff 03 46 ff 03 81 02 05 00 09 00 75 10 95 01 15 00 26 ff 03 46 ff 03 81 02 05 01 09 32 75 10 95 01 15 00 26 ff 03 46 ff 03 81 02 05 01 09 35 75 10 95 01 15 00 26 ff 03 46 ff 03 81 02 05 01 09 34 75 10 95 01 15 00 26 ff 07 46 ff 07 81 02 05 01 09 36 75 10 95 01 15 00 26 ff 03 46 ff 03 81 02 05 09 19 01 2a 1d 00 15 00 25 01 75 01 96 80 00 81 02 05 01 09 39 26 ef 00 46 68 01 65 14 75 10 95 01 81 42 05 01 09 00 75 08 95 1d 81 01 15 00 26 ef 00 85 58 26 ff 00 46 ff 00 75 08 95 3f 09 00 91 02 85 59 75 08 95 80 09 00 b1 02 c0",
-+            input_info=(BusType.USB, 0x11C0, 0x5606),
-+        )
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 
--- 
-2.44.0
+> ---
+>  arch/s390/kernel/uv.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> index 9c0113b26735..76fc61333fae 100644
+> --- a/arch/s390/kernel/uv.c
+> +++ b/arch/s390/kernel/uv.c
+> @@ -471,13 +471,12 @@ int arch_make_page_accessible(struct page *page)
+>  		return 0;
+>  
+>  	/*
+> -	 * PG_arch_1 is used in 3 places:
+> -	 * 1. for kernel page tables during early boot
+> -	 * 2. for storage keys of huge pages and KVM
+> -	 * 3. As an indication that this small folio might be secure. This can
+> +	 * PG_arch_1 is used in 2 places:
+> +	 * 1. for storage keys of hugetlb folios and KVM
+> +	 * 2. As an indication that this small folio might be secure. This can
+>  	 *    overindicate, e.g. we set the bit before calling
+>  	 *    convert_to_secure.
+> -	 * As secure pages are never huge, all 3 variants can co-exists.
+> +	 * As secure pages are never large folios, both variants can co-exists.
+>  	 */
+>  	if (!test_bit(PG_arch_1, &folio->flags))
+>  		return 0;
 
 
