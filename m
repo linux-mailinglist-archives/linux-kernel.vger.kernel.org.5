@@ -1,104 +1,155 @@
-Return-Path: <linux-kernel+bounces-139295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10E098A0113
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:12:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2E148A0115
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:13:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D0241C22549
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:12:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABF7D28B896
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:13:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B39181B94;
-	Wed, 10 Apr 2024 20:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D1D181CE7;
+	Wed, 10 Apr 2024 20:12:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WtU7HoIA"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="sXBQMsjo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70FD431A60
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 20:12:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6BE031A60;
+	Wed, 10 Apr 2024 20:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712779968; cv=none; b=k1PkeaZfZHL3scAFsBKKbyYQvY0EJYpl3Y+gklJ5Vvfuy38/PjP7xfVq+y/kQZibeV3I/Ot5tmb9PRU7rGuNzNcnYt1WnFxnunr1fnUj/4EWX9QFdqo/U+m3q6bq6Aeby5+WXVfcZGqDxLAOGqD0/lWEIOjHnTJnkg5f+a7SMuE=
+	t=1712779974; cv=none; b=ZhMlO+6johCTf1xfvww4gelfZUBCUV0T+t39ohpSuBr5pJ7xkUjE3ONPfB0PCAyI+dSjoO6YMkiCbICN07xuFdviKYS1Z7x41ZHBLkvTlPTAvorPKVTAIsA2P/3NIfK4yiQi4YOrlyE42j9A0i72QO24jFfaLbNiP55iCww1AYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712779968; c=relaxed/simple;
-	bh=MQqS0yV7s4VtYWiXLHaJi4gPzGWrodgYI+vYYMo1Cgo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pqrtCUOspcfE/IfgCc9ckGiFPwb2/1BOgmqyjS4loDpwKFcAnPzxvPh2W5dYcjn3axyaa6Xp3PkYKmaNIHzJGuI9TDRe1zGBzYxMiFom6FXdSsSGLlEQR2YSw9soKgbGUnbolg4nxZnuDMACCZgtCaxjlwhkjDLdkbe3f+1j9NM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WtU7HoIA; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712779968; x=1744315968;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MQqS0yV7s4VtYWiXLHaJi4gPzGWrodgYI+vYYMo1Cgo=;
-  b=WtU7HoIA/ihutzobYJR259A6AWyti6bcTLiOecB5TQo2nbX6R1bdPxW6
-   eGob3bftw1GCJR9880AFO6IYw4ypicsIYJ/rikod3PzKFROK6gi+jnlK2
-   OabAnb5AlEJne8MZLplMEMh2S5fARirMYUFT6tohWgj+x3qUXlPgSLfyq
-   bg+OQwFJ9hgsNfEYfgdt6RF6RUafBNlaSPPgwz7paMKlQ0QccKPq/a4n1
-   KkvzX/pSP349bvlJPUZyDnE7ia9sY00ZJQmD8PDiwb0u4jjAJ6xgAn09c
-   WpyB+Dfd8oH6GdxgRWPAwZzBZzp3dUxnkfwqafs+84kQJPYxEtoC7OANW
-   g==;
-X-CSE-ConnectionGUID: +9jLLLOxRdySB5HM5+vSTw==
-X-CSE-MsgGUID: xUgcpTMwSB2SMZET3pjyjQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8021253"
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="8021253"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 13:12:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="915441993"
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="915441993"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 13:12:45 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rueJH-00000003BCX-1Ztm;
-	Wed, 10 Apr 2024 23:12:43 +0300
-Date: Wed, 10 Apr 2024 23:12:43 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v1 1/1] regmap: spi: Add missing MODULE_DESCRIPTION()
-Message-ID: <Zhbyu-qI97eBxtxU@smile.fi.intel.com>
-References: <20240410200031.1656581-1-andriy.shevchenko@linux.intel.com>
- <3602aa7a-15c9-4e77-8aa9-a12f2136530c@sirena.org.uk>
+	s=arc-20240116; t=1712779974; c=relaxed/simple;
+	bh=bKXTwEG9V/7gGFzi/nyfEqGiaBgclvN4MQublr5sz80=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=SCSERQU/MvL99EzH/D5Ot8N55qLRUWvoJ3Lj17jmK5Jh3RGcodpD7VcORNSIKJ3jBe7/Nl1igjRD5IG5Dh4I2QTz9nG80uOW0jHNs9MDiigSrY/cEUgwET6vOZoXq/Hsq8hcRiDK2PZp0j+3C9ujuy9jqkQuAcU7cTi7+rYbFLw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=sXBQMsjo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E20D2C433F1;
+	Wed, 10 Apr 2024 20:12:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1712779973;
+	bh=bKXTwEG9V/7gGFzi/nyfEqGiaBgclvN4MQublr5sz80=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=sXBQMsjoj5uKsr9LmT+OooLDlwYt4YcTHKM6vzXBNrCG67rEEi7TQ0JN6rZ0WY8hn
+	 vd+WikGTb95drIxuerlIJJsUEPwInCKguinDAK3geNfIlKkGVTtrHZzqT+atKs2XkF
+	 /8T8Y1KtIpOeTdFjZLGaNwKYWKzWq/s5npDtdbmg=
+Date: Wed, 10 Apr 2024 13:12:52 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+ linux-s390@vger.kernel.org, kvm@vger.kernel.org, Yonghua Huang
+ <yonghua.huang@intel.com>, Fei Li <fei1.li@intel.com>, Christoph Hellwig
+ <hch@lst.de>, Gerald Schaefer <gerald.schaefer@linux.ibm.com>, Heiko
+ Carstens <hca@linux.ibm.com>, Ingo Molnar <mingo@redhat.com>, Alex
+ Williamson <alex.williamson@redhat.com>, Paolo Bonzini
+ <pbonzini@redhat.com>
+Subject: Re: [PATCH v1 1/3] drivers/virt/acrn: fix PFNMAP PTE checks in
+ acrn_vm_ram_map()
+Message-Id: <20240410131252.3ff0e92cfeccc4435bcdcdd2@linux-foundation.org>
+In-Reply-To: <20240410155527.474777-2-david@redhat.com>
+References: <20240410155527.474777-1-david@redhat.com>
+	<20240410155527.474777-2-david@redhat.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3602aa7a-15c9-4e77-8aa9-a12f2136530c@sirena.org.uk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 10, 2024 at 09:05:17PM +0100, Mark Brown wrote:
-> On Wed, Apr 10, 2024 at 11:00:31PM +0300, Andy Shevchenko wrote:
+On Wed, 10 Apr 2024 17:55:25 +0200 David Hildenbrand <david@redhat.com> wrote:
+
+> We currently miss to handle various cases, resulting in a dangerous
+> follow_pte() (previously follow_pfn()) usage.
 > 
-> > +MODULE_DESCRIPTION("Regmap SPI Module");
+> (1) We're not checking PTE write permissions.
 > 
-> regmap.
+> Maybe we should simply always require pte_write() like we do for
+> pin_user_pages_fast(FOLL_WRITE)? Hard to tell, so let's check for
+> ACRN_MEM_ACCESS_WRITE for now.
+> 
+> (2) We're not rejecting refcounted pages.
+> 
+> As we are not using MMU notifiers, messing with refcounted pages is
+> dangerous and can result in use-after-free. Let's make sure to reject them.
+> 
+> (3) We are only looking at the first PTE of a bigger range.
+> 
+> We only lookup a single PTE, but memmap->len may span a larger area.
+> Let's loop over all involved PTEs and make sure the PFN range is
+> actually contiguous. Reject everything else: it couldn't have worked
+> either way, and rather made use access PFNs we shouldn't be accessing.
+> 
 
-Hmm...
+This all sounds rather nasty and the maintainers of this driver may
+choose to turn your fixes into something suitable for current mainline
+and for -stable backporting.
 
-drivers/base/regmap/regmap-i3c.c:59:MODULE_DESCRIPTION("Regmap I3C Module");
-drivers/base/regmap/regmap-mdio.c:120:MODULE_DESCRIPTION("Regmap MDIO Module");
-drivers/base/regmap/regmap-sdw-mbq.c:100:MODULE_DESCRIPTION("Regmap SoundWire MBQ Module");
-drivers/base/regmap/regmap-sdw.c:101:MODULE_DESCRIPTION("Regmap SoundWire Module");
-drivers/base/regmap/regmap-spi.c:168:MODULE_DESCRIPTION("Regmap SPI Module");
+If they choose to do this then please just go ahead.  Once such a
+change appear in linux-next the mm-unstable patch "virt: acrn: stop
+using follow_pfn" will start generating rejects, which will be easy
+enough to handle.  Of they may choose to incorporate that change at the
+same time.  Here it is:
 
--- 
-With Best Regards,
-Andy Shevchenko
 
+From: Christoph Hellwig <hch@lst.de>
+Subject: virt: acrn: stop using follow_pfn
+Date: Mon, 25 Mar 2024 07:45:40 +0800
+
+Switch from follow_pfn to follow_pte so that we can get rid of follow_pfn.
+Note that this doesn't fix any of the pre-existing raciness and lack of
+permission checking in the code.
+
+Link: https://lkml.kernel.org/r/20240324234542.2038726-1-hch@lst.de
+Link: https://lkml.kernel.org/r/20240324234542.2038726-2-hch@lst.de
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Fei Li <fei1.li@intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ drivers/virt/acrn/mm.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+--- a/drivers/virt/acrn/mm.c~virt-acrn-stop-using-follow_pfn
++++ a/drivers/virt/acrn/mm.c
+@@ -172,18 +172,24 @@ int acrn_vm_ram_map(struct acrn_vm *vm,
+ 	mmap_read_lock(current->mm);
+ 	vma = vma_lookup(current->mm, memmap->vma_base);
+ 	if (vma && ((vma->vm_flags & VM_PFNMAP) != 0)) {
++		spinlock_t *ptl;
++		pte_t *ptep;
++
+ 		if ((memmap->vma_base + memmap->len) > vma->vm_end) {
+ 			mmap_read_unlock(current->mm);
+ 			return -EINVAL;
+ 		}
+ 
+-		ret = follow_pfn(vma, memmap->vma_base, &pfn);
+-		mmap_read_unlock(current->mm);
++		ret = follow_pte(vma->vm_mm, memmap->vma_base, &ptep, &ptl);
+ 		if (ret < 0) {
++			mmap_read_unlock(current->mm);
+ 			dev_dbg(acrn_dev.this_device,
+ 				"Failed to lookup PFN at VMA:%pK.\n", (void *)memmap->vma_base);
+ 			return ret;
+ 		}
++		pfn = pte_pfn(ptep_get(ptep));
++		pte_unmap_unlock(ptep, ptl);
++		mmap_read_unlock(current->mm);
+ 
+ 		return acrn_mm_region_add(vm, memmap->user_vm_pa,
+ 			 PFN_PHYS(pfn), memmap->len,
+_
 
 
