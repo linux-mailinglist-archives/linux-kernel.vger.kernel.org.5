@@ -1,153 +1,102 @@
-Return-Path: <linux-kernel+bounces-138665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7958F89F8D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:52:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6661289F941
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:04:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18B9B1F2F712
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:52:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54F8AB27B99
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:51:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF97181BAF;
-	Wed, 10 Apr 2024 13:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="cN9CkAvP"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE270181309;
+	Wed, 10 Apr 2024 13:41:25 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949BC181327
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD9F2180A69
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:41:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712756488; cv=none; b=ozT1z6r2kRbnyohLP48cFMQaT2szTVKq9Jjk5NEBOuhvg8Q3RS5F5j0luR/Fc0Q3hExo3CE/R84rB6D+CGxa5BfLYw0kIPngwz7/dkV5idrtVmpZuZC9gKOlBMb/sfHucNO5X1sWYH+c9Ekgr8mjBKEJ6GZs/gu39YdKL6VuaNY=
+	t=1712756485; cv=none; b=Exzf30JhYWnUOiHO/fJovRpERZbu5F3XTDUfYgLt024y+14s6tLYxeQh/P9UzwSi5k5Aq0hQ7XxFDs5/wfBQkjfrRE4Wf28jsN6rcEc3ZAXW5Y1fBf4xE/jdnX+JllZKmiZ4RoCQsCjjCss8BnGoPrqKK5aFJxA+LdT2sbfr0eg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712756488; c=relaxed/simple;
-	bh=GXy2NCi8uXzU6Hc5qvGIBLwCCNQ9bIeLqQeevRksNVo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZUb6SVCQTTTGxwnk1AYbABHASVLnWt3lHzU+fhAMBMe1qq0CSciXoEvY5Pz0Ww1RswOTwmlyjnmxPqUMAn3QcL8bOJ+KUfY4W/bw98w/Qc6P04ZFMBGQSQcIz0hUsUkfE6dTLRzJo1HUCYDU22YFxtW+nLE5qruGqxt2iyzpwKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=cN9CkAvP; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d8743ecebdso48571451fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:41:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1712756485; x=1713361285; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qI23KqzcJt38Hlh/8lKvteGzbiZhgHD+Qy4akVKdJqc=;
-        b=cN9CkAvPGfmMvZq2/2zFbXC8/W29pbAQQnDraDkOj7Y7KKgZgTKr0MDcaFVkNzwV45
-         UuffDlTPvw4Kfmd/ua7N7I7k4ZY1iYaCw6hgoKueKUI9txx5EvtruQpq2NE5UrJcgbmw
-         mKvxjOQ/JyHeqAWTUP8EqDMD0SXjj5QAezwejWEzuBwxZKJN50iEq/QuW0FHrBABf3Vv
-         Hs3yXrAkYnjO0kU0YXza2uyAjvk9i0htoLTI+oE3OI1NRhevF0X0CP/ssELZNKrN+Xfj
-         M6bi9WjOdBh2rhbGg7YsZ4onA4UtqaAFpajGMe2ayUbxeOfRiGOnVOsmwYY07cWcw9O4
-         heIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712756485; x=1713361285;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qI23KqzcJt38Hlh/8lKvteGzbiZhgHD+Qy4akVKdJqc=;
-        b=o6/KLAwc+YXg8VBjydC2RGCnjosTCX6gz7EHZyU5ysyeLhRWwqhmau90NTAa69YsKp
-         qXznB9gjJEq8FZ1BlFxWlg0jBBaWzmZeUcu4Gx/YOHHdzUJuY0jtj5eBYsV385u7Nmbt
-         RNJB69nlAj2T37KYKvibYmrJ2jfiJDcztoOqTg6oWjzTG4d2EVVj51iln2VcBIm+jKul
-         4cZf5Ik8Oc1py5767/kMD3M9wtw63cyEuza09s6/Yeg9zZbeqD4P0pUhb0e24tpYkhij
-         pm8k7rPxWgWL4XnfsdpV/pzW1CPqCZfICfK+Lf///gmVaQRWtDnfCVABYIS4EmaziG39
-         8XfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVr60G72Z6S9lIk4H/UXHIh6X8LupFl561aj2rL79CH88jT4/SwIP88b0XViLjCUgIoF9JHuYDxbFLqTNhyRSsCECeH+oF3/D3UeUey
-X-Gm-Message-State: AOJu0YyQkJsC+BIbVIu6rW+46D3meADgEuzl6Uwa3r0qbZ4ioSr6HEc/
-	hV/GhGS0nttx3fSEV1myiZ/bndQmnyx47MXHdmgcUVEMTg4v4h4NHNDz2xsgn8A=
-X-Google-Smtp-Source: AGHT+IFhrlweALOximZcC0BHFuTkzJPdrxOAXLFJAQUUC628k9E6cX0jEMuaEZy3td7RELRpQOev1A==
-X-Received: by 2002:a2e:8682:0:b0:2d7:f07:89f8 with SMTP id l2-20020a2e8682000000b002d70f0789f8mr2135166lji.45.1712756484813;
-        Wed, 10 Apr 2024 06:41:24 -0700 (PDT)
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.8])
-        by smtp.gmail.com with ESMTPSA id n15-20020a05600c500f00b00417c0fa4b82sm872528wmr.25.2024.04.10.06.41.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 06:41:24 -0700 (PDT)
-From: Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To: wim@linux-watchdog.org,
-	linux@roeck-us.net,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	p.zabel@pengutronix.de,
-	geert+renesas@glider.be,
-	magnus.damm@gmail.com,
-	biju.das.jz@bp.renesas.com
-Cc: linux-watchdog@vger.kernel.org,
-	devicetree@vger.kernel.org,
+	s=arc-20240116; t=1712756485; c=relaxed/simple;
+	bh=/hnmB2uN6mPShM5rRzYJFYniz17di1xl7Dd/Cl6n3ko=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Q+aK5rOnJhRzLQDvpjWE9hIvVkaqNAiE9I2nQfnj/GpmJL3wWTKVv8ahWqyKeS1FKgyT2tnXLI6QN1xwFw4J6nyoJMpaQx9I/UTdvlF9cCAqCgKLwmfkq3tFJdvobuPllJZQeJZGi4Lm7qPIBphYI914apLbXWX7g6WYXBQeJfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ruYCT-0003pl-Hk; Wed, 10 Apr 2024 15:41:17 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ruYCS-00BVN3-MP; Wed, 10 Apr 2024 15:41:16 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ruYCS-00HaVg-1w;
+	Wed, 10 Apr 2024 15:41:16 +0200
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Sebastian Reichel <sre@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Rob Herring <robh@kernel.org>,
 	linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	claudiu.beznea@tuxon.dev,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH RESEND v8 10/10] dt-bindings: watchdog: renesas,wdt: Document RZ/G3S support
-Date: Wed, 10 Apr 2024 16:40:44 +0300
-Message-Id: <20240410134044.2138310-11-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240410134044.2138310-1-claudiu.beznea.uj@bp.renesas.com>
-References: <20240410134044.2138310-1-claudiu.beznea.uj@bp.renesas.com>
+	kernel@pengutronix.de,
+	Osama Muhammad <osmtendev@gmail.com>
+Subject: [PATCH 0/2] HSI: Convert to platform remove callback returning void
+Date: Wed, 10 Apr 2024 15:41:09 +0200
+Message-ID: <cover.1712756364.git.u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=938; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=/hnmB2uN6mPShM5rRzYJFYniz17di1xl7Dd/Cl6n3ko=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBmFpb2x5JfA9sZSMTffKMLV0t6JPtrDtdseWrLX GGW5s6plhCJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZhaW9gAKCRCPgPtYfRL+ TncTB/4+kQQOFC7X0h8K++nGW4ld9vNL9WLycKWaKUvjmKfP8C9QxutZklcA+XA57lJyAeVjpdq Mut0sErNsFCHSZSjuDVBqEuWa3zT7cK+R5klovRBNq90IO0dDlIyIl4tIzW390jMVCDuJ1kDMCD 6XfvESiVYVDy4DvfHKTuYp5XONIct33jodB6OVpsKL2rDqKhGoVgIUOJcrMoNAdT6WQKKogdA2M mCJ9iQGQXKJldDhyFbeuBfig+JPWFEGn42Gn65CluaT/hhxf5kjzv5pSwHLHiYEIk7mD92ad9sj W9gRTn5HwZFDJQh6II9t6k2RYOSghm7DFnqJkhkkWoQrG4pj
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Hello,
 
-Document the support for the watchdog IP available on RZ/G3S SoC. The
-watchdog IP available on RZ/G3S SoC is identical to the one found on
-RZ/G2L SoC.
+this series converts all platform drivers below drivers/hsi/ to not use
+struct platform_device::remove() any more. See commit 5c5a7680e67b
+("platform: Provide a remove callback that returns no value") for an
+extended explanation and the eventual goal.
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
+All conversations are trivial, because the driver's .remove() callbacks
+returned zero unconditionally.
 
-Changes in v8:
-- none
+There are no interdependencies between these patches, so they can be
+applied independently if needed. This is merge window material.
 
-Changes in v7:
-- none
+Best regards
+Uwe
 
-Changes in v6:
-- none
 
-Changes in v5:
-- none
+Uwe Kleine-König (2):
+  HSI: omap_ssi_core: Convert to platform remove callback returning void
+  HSI: omap_ssi_port: Convert to platform remove callback returning void
 
-Changes in v4:
-- none
+ drivers/hsi/controllers/omap_ssi_core.c | 6 ++----
+ drivers/hsi/controllers/omap_ssi_port.c | 6 ++----
+ 2 files changed, 4 insertions(+), 8 deletions(-)
 
-Changes in v3:
-- re-arranged the tags as my b4 am/shazam placed previously the
-  Ab, Rb tags before the author's Sob
 
-Changes in v2:
-- collected tags
-- s/G2UL/G2L in patch description
-
- Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml b/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
-index ffb17add491a..eba454d1680f 100644
---- a/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
-+++ b/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
-@@ -29,6 +29,7 @@ properties:
-               - renesas,r9a07g043-wdt    # RZ/G2UL and RZ/Five
-               - renesas,r9a07g044-wdt    # RZ/G2{L,LC}
-               - renesas,r9a07g054-wdt    # RZ/V2L
-+              - renesas,r9a08g045-wdt    # RZ/G3S
-           - const: renesas,rzg2l-wdt
- 
-       - items:
+base-commit: 6ebf211bb11dfc004a2ff73a9de5386fa309c430
 -- 
-2.39.2
+2.43.0
 
 
