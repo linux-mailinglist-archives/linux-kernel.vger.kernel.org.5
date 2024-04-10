@@ -1,187 +1,123 @@
-Return-Path: <linux-kernel+bounces-139166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49E0E89FF63
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:04:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58C5B89FF65
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:06:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DE0A1C22B68
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:04:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15366285EAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:06:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7913A17F39E;
-	Wed, 10 Apr 2024 18:03:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0066717F395;
+	Wed, 10 Apr 2024 18:06:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U/H41PwO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lu35qvDv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A515F17F38D;
-	Wed, 10 Apr 2024 18:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D81168DC;
+	Wed, 10 Apr 2024 18:06:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712772232; cv=none; b=sa/sPWS4T2GcVWJfg0ucc1/e8uzfaxbohI/VI0bJBV7lyAh6clsXIil1MWJXXRsMexG0p7KqAsZbLO6XfwyNty+QGXwabr/pkQLOBUgHdLlH+HSebErRhHv7iCVqDMtZnOTnbHSYbgk9KG7+qu2mefKMQ467gSsL3kzxTwB5ZsM=
+	t=1712772409; cv=none; b=cvVhkt10WA5E3n8qKxX3rqMgOO4Bj3zTqjq9auucAgElsxEt8UaaV8rC8ndsFiSUxeR1BuL+B2NOJKKKkJaa38RCpFG9gZXhniZeyTLxAWK2qD6p5y1aECBaBTWJjnu6rpBPdJXCW5eBMYKW/uw1tOAyVjta13wN/WjEITaT4oA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712772232; c=relaxed/simple;
-	bh=60Tcl77NvZCMeT8KikNHcqBwOc2g8JbUZGX1cNmVaxg=;
+	s=arc-20240116; t=1712772409; c=relaxed/simple;
+	bh=9mHUvsMCvHI/lEf3R28H/lWIRLZtajg6D7uHi+gu8Xc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yj93UOjEMtuNOOaRZeQ+AlXBojrPHRPXtWn1oWAjHTeuYFqkCbjGfG/ECVb75ldPjODycOaa9h7AApm3Fh1lZNDCf4cGSdE34xgnUNlEKkfrlkbmjKItAgDi0W2N8J6WkxA7QhNxU8nLC2ygX4l8aKuxhnINF68611Kbwrnv3aE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U/H41PwO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4C2CC433F1;
-	Wed, 10 Apr 2024 18:03:47 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=r8twqME6l/et37TLPfTs6QuxMvdt9P7kS9QlHkHZQK5g3sTCXs18LZdJCpCm1C9ZsnC+Z7yMWO6hrVQ94ALN3IGiPd0ZragT3bzos3XeOIH9i7FJdO7olABbuziAvCSPq9TXbf+QPPnyMeuAnC6lht+uRU2wkN3nUb2HVeARjZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lu35qvDv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55443C433C7;
+	Wed, 10 Apr 2024 18:06:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712772232;
-	bh=60Tcl77NvZCMeT8KikNHcqBwOc2g8JbUZGX1cNmVaxg=;
+	s=k20201202; t=1712772408;
+	bh=9mHUvsMCvHI/lEf3R28H/lWIRLZtajg6D7uHi+gu8Xc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=U/H41PwOpSK1LtcWh1b0nJT2kOvGIKRG24KhoBT9YXx16AAs+c9AvK/6pNWgJvTaj
-	 CIQghGKSH/LE+bdfeWzLyLNDjgYD/FlJT5p3hRDkaqo0xh1JafXcUuE9Q3CSrRvEal
-	 H7lgYxTd19uvBm4MT4g3kwKB8SPPDjqSXEZ1iBZ+TgBnNG3TBJHdnxHGHS3tHJx+7m
-	 5RNhYKdPH8dzyX1JKTRMB3G89pDDNZx3ff6yds4DKHa34/Q/MsPgOoDiuw0MQ6h+69
-	 OtclP5s95pBFZqPI+fNvTTSbFdkWUenCM1/KOu9AXHA+7VzXpni3MP6aTeob3pJrif
-	 pQ5ge0kAkW80g==
-Date: Wed, 10 Apr 2024 23:33:41 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Frank Li <Frank.Li@nxp.com>, helgaas@kernel.org, bhelgaas@google.com,
-	gustavo.pimentel@synopsys.com, imx@lists.linux.dev,
-	jdmason@kudzu.us, jingoohan1@gmail.com, kw@linux.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, mani@kernel.org, robh@kernel.org
-Subject: Re: [PATCH v3 1/1] PCI: dwc: Fix index 0 incorrectly being
- interpreted as a free ATU slot
-Message-ID: <20240410180341.GF16629@thinkpad>
-References: <20240326193540.3610570-1-Frank.Li@nxp.com>
- <ZhPFmFYorWa-sfLp@ryzen>
+	b=Lu35qvDvmqNkvq1o9nxg+w5hL5Uh7lDNWfNvkA5+kkFTIkp1zcQ2dCvhQ7Bmyxiky
+	 srIkPzXyQsbllzfitfQ3qBA04frMons8w+N3qunJ0qiyagfuyd8VP3Wuf7DsDyJCX4
+	 sADFRrR0lpwBWt2T/VQjb2jupa0lm1/2y1SDR5He9xfnB53rtkenMoKQxAXzpQxaIg
+	 g/QgpMxZFgNPTpg/nPfDmiJRljqUaN2o19G9m8w1lUwu/8qPu2foYaJ0CJBQaut8gi
+	 mhsGnnBNyndkfB8TLRrdqBenQDhN1PWT6Wo8fCofnQbnBcmDG7c1G0chPGnp2afnGE
+	 5WTuil65Gnjfg==
+Date: Wed, 10 Apr 2024 19:06:39 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Jani Nikula <jani.nikula@intel.com>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>,
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+	Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+	Samuel Holland <samuel@sholland.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Alexander Stein <alexander.stein@ew.tq-group.com>,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, imx@lists.linux.dev,
+	linux-sunxi@lists.linux.dev, linux-mips@vger.kernel.org,
+	kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH 0/7] drm/display: Fix display helpers depends on fallouts
+Message-ID: <117b0d3b-a60b-4bc0-9f2c-f0e4fffe634a@sirena.org.uk>
+References: <20240403-fix-dw-hdmi-kconfig-v1-0-afbc4a835c38@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="m8uHuXe8Pt8zgPJR"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZhPFmFYorWa-sfLp@ryzen>
+In-Reply-To: <20240403-fix-dw-hdmi-kconfig-v1-0-afbc4a835c38@kernel.org>
+X-Cookie: A bachelor is an unaltared male.
 
-On Mon, Apr 08, 2024 at 12:23:20PM +0200, Niklas Cassel wrote:
-> On Tue, Mar 26, 2024 at 03:35:40PM -0400, Frank Li wrote:
-> > When PERST# assert and deassert happens on the PERST# supported platforms,
-> > the both iATU0 and iATU6 will map inbound window to BAR0. DMA will access
-> > to the area that was previously allocated (iATU0) for BAR0, instead of the
-> > new area (iATU6) for BAR0.
-> 
-> Nit: If we want additional clarity, we could also add:
-> ""
-> Right now, we dodge the bullet because both iATU0 and iATU6 should currently
-> translate inbound accesses to BAR0 to the same allocated memory area. However,
-> having two separate inbound mappings for the same BAR is a disaster waiting to
-> happen.
-> ""
 
-Since Bjorn asked for the above info, it should get added.
+--m8uHuXe8Pt8zgPJR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-With that,
+On Wed, Apr 03, 2024 at 12:56:18PM +0200, Maxime Ripard wrote:
+> Hi,
+>=20
+> Here's a series addressing the various regressions that were reported
+> after the Kconfig rework for the DRM display helpers.
+>=20
+> Let me know what you think,
+> Maxime
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Is there any news on getting the rest of this merged?  It's been more
+than a week now and the Designware display controllers are all still
+broken in -next, causing widespread breakage in CI.  For bisection
+purposes it probably makes sense for the defconfig updates to go along
+with the changes to the Kconfig for the driver...
 
-- Mani
+--m8uHuXe8Pt8zgPJR
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
-> If the maintainers feel like this additional information is important, I think
-> it could be added while applying. (But I also think that the existing commit
-> message is detailed enough to be applied as is.)
-> 
-> 
-> > 
-> > The mapping between PCI BAR and iATU inbound window are maintained in the
-> > dw_pcie_ep::bar_to_atu[] array. While allocating a new inbound iATU map for
-> > a BAR, dw_pcie_ep_inbound_atu() API will first check for the availability
-> > of the existing mapping in the array and if it is not found (i.e., value in
-> > the array indexed by the BAR is found to be 0), then it will allocate a new
-> > map value using find_first_zero_bit().
-> > 
-> > The issue here is, the existing logic failed to consider the fact that the
-> > map value '0' is a valid value for BAR0. Because, find_first_zero_bit()
-> > will return '0' as the map value for BAR0 (note that it returns the first
-> > zero bit position).
-> > 
-> > Due to this, when PERST# assert + deassert happens on the PERST# supported
-> > platforms, the inbound window allocation restarts from BAR0 and the
-> > existing logic to find the BAR mapping will return '6' for BAR0 instead of
-> > '0' due to the fact that it considers '0' as an invalid map value.
-> > 
-> > So fix this issue by always incrementing the map value before assigning to
-> > bar_to_atu[] array and then decrementing it while fetching. This will make
-> > sure that the map value '0' always represents the invalid mapping."
-> > 
-> > Reported-by: Niklas Cassel <Niklas.Cassel@wdc.com>
-> > Closes: https://lore.kernel.org/linux-pci/ZXsRp+Lzg3x%2Fnhk3@x1-carbon/
-> > Tested-by: Niklas Cassel <niklas.cassel@wdc.com>
-> > Fixes: 4284c88fff0e ("PCI: designware-ep: Allow pci_epc_set_bar() update inbound map address")
-> > Reviewed-by: Niklas Cassel <niklas.cassel@wdc.com>
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> > 
-> > Notes:
-> >     Change from v2 to v3
-> >     - Add impact in commit message
-> >     - Add mani's detail description
-> >     - Fix Closes link
-> >     
-> >     Change from v1 to v2
-> >     - update subject
-> >     - use free_win + 1 solution
-> >     - still leave MAX_IATU_IN as 256. I am not sure if there are platfrom have
-> >     256 ATU. Suppose it only use max 6 in current EP framework.
-> >     - @Niklas, can you help test it. My platform become unstable today.
-> > 
-> >  drivers/pci/controller/dwc/pcie-designware-ep.c | 13 ++++++++++---
-> >  1 file changed, 10 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > index 5befed2dc02b7..ba932bafdb230 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > @@ -139,7 +139,7 @@ static int dw_pcie_ep_inbound_atu(struct dw_pcie_ep *ep, u8 func_no, int type,
-> >  	if (!ep->bar_to_atu[bar])
-> >  		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
-> >  	else
-> > -		free_win = ep->bar_to_atu[bar];
-> > +		free_win = ep->bar_to_atu[bar] - 1;
-> >  
-> >  	if (free_win >= pci->num_ib_windows) {
-> >  		dev_err(pci->dev, "No free inbound window\n");
-> > @@ -153,7 +153,11 @@ static int dw_pcie_ep_inbound_atu(struct dw_pcie_ep *ep, u8 func_no, int type,
-> >  		return ret;
-> >  	}
-> >  
-> > -	ep->bar_to_atu[bar] = free_win;
-> > +	/*
-> > +	 * Always increment free_win before assignment, since value 0 is used to identify
-> > +	 * unallocated mapping.
-> > +	 */
-> > +	ep->bar_to_atu[bar] = free_win + 1;
-> >  	set_bit(free_win, ep->ib_window_map);
-> >  
-> >  	return 0;
-> > @@ -190,7 +194,10 @@ static void dw_pcie_ep_clear_bar(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
-> >  	struct dw_pcie_ep *ep = epc_get_drvdata(epc);
-> >  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-> >  	enum pci_barno bar = epf_bar->barno;
-> > -	u32 atu_index = ep->bar_to_atu[bar];
-> > +	u32 atu_index = ep->bar_to_atu[bar] - 1;
-> > +
-> > +	if (!ep->bar_to_atu[bar])
-> > +		return;
-> >  
-> >  	__dw_pcie_ep_reset_bar(pci, func_no, bar, epf_bar->flags);
-> >  
-> > -- 
-> > 2.34.1
-> > 
-> 
+-----BEGIN PGP SIGNATURE-----
 
--- 
-மணிவண்ணன் சதாசிவம்
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYW1S4ACgkQJNaLcl1U
+h9DOSwf/cU2i83arQzeCO07s0n4/uba3xhNrWfvc7xN0GLO+Z8KtAnVQfRMhXF5j
+ayRYwyjGMYcJmGugvdeX68HEbnVSq3PF1F0CSIjX4ElPZ9S7Wbiik4vnL45HJP6c
+IveEkj+HqtAvILP5/07YrflUuqawBsUKDiELWs2p8AqwcpiDy4j6sMJpPZd6n9gf
+9GzlZ5KCvzOua+GmCz9skxnIsXwSIB2HQ2y2zA0hyBbte7XjFFBUE36JW/kSt4z5
+eRZ8AW4MG2hO6f/x965L+SShk1aLPhnYQXx/683Eu5MhYCGzGW7XPuGQDJJ1rAZU
+YkvZX/nVERJeD10LMsjYYPcH/8N8Cw==
+=swV+
+-----END PGP SIGNATURE-----
+
+--m8uHuXe8Pt8zgPJR--
 
