@@ -1,102 +1,164 @@
-Return-Path: <linux-kernel+bounces-138203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E87D489EE03
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:51:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4C0389EE05
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:53:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A426028394E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:51:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F8261F22572
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:53:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239D8154C0B;
-	Wed, 10 Apr 2024 08:51:46 +0000 (UTC)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0945154BFF;
+	Wed, 10 Apr 2024 08:53:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="jPGHdLkF";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="MO178eB9";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="jPGHdLkF";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="MO178eB9"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 533A213C9C2;
-	Wed, 10 Apr 2024 08:51:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BA3113D51C
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:52:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712739105; cv=none; b=a1VKv3hOsFeg0GgEej+FLfB9FbK7URpQKXncp91Otfw0Wvq0gEVHy6fNZzjUmtA/Ehzf5sRnaID9EpzTc+22ZSQPfV+ULrXJ7FAE+S5vMe+oq/TbKPPxV7S5pOR6Dqk9MF81z2vNJpdPHYEszWUCL6J55+Y93+gI1jDmy06fj+w=
+	t=1712739180; cv=none; b=uOdzmMTelH43Gu4p+bpm5ahSVyQWlkR71aGtD/zPQ2peAmWySZQJDLOAyX45hjftIlxDcKBrP6qcbKyFkrmNhbFPJaR46fh0d2DXt/9A0l09bon07cQgNdghr2p7hV2FCAvw30IXlB3QNUgGcioYggP2R1SKyo59FjEv9XfUiKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712739105; c=relaxed/simple;
-	bh=Jta1oDcbHz9bEzgiV8Kxi3isoYY2p/IT5RWmu7gcHVY=;
-	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
-	 Message-ID:Subject; b=irunqHcFMOMrgecbDOlVTzDuU5avIWj4S9V9J2h1hTBkXQNnIGcUmUdhwhjHPKB+Tm7JXtAEsLXEzWgVXumk1mnpw977bX7SoonGtrXjgWw4Xv0QLE0W5RlHR1KXAKkm86B2N/s64lqegaPtqWBBgknKv2e1cGITHKubd1Xp3D0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
-	by madrid.collaboradmins.com (Postfix) with ESMTP id 00C7E3781453;
-	Wed, 10 Apr 2024 08:51:40 +0000 (UTC)
-From: "Shreeya Patel" <shreeya.patel@collabora.com>
-In-Reply-To: <20240409172824.552652165@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-References: <20240409172824.552652165@linuxfoundation.org>
-Date: Wed, 10 Apr 2024 09:51:40 +0100
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
-	padovan@web.codeaurora.org
-To: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+	s=arc-20240116; t=1712739180; c=relaxed/simple;
+	bh=NOqyjJWsjrdxDG8MZMYxjXVWFooGfAjTrCWU5XEubeI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e4WU9VUB5TracVSl2odZZo3Ye+MUzmZkB41khhmLVflQMzXH4Up8sq9PsuGX+zYz0AgQZZvQUqRmj7grP6mEM2Op/MYAGqRboFI+X0s1yL4mnFl4pJ6GBj5EYym91YAjgGvol+EtSQ/k4/kkWYiTrkTZhrfPJESAJ05qI0URi98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=jPGHdLkF; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=MO178eB9; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=jPGHdLkF; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=MO178eB9; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3281A5C8C1;
+	Wed, 10 Apr 2024 08:52:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712739176; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a4/3Q4DJ9o/sc+7kC2HhXGX78ya0FrJXHzbJCF/H0r8=;
+	b=jPGHdLkFAW9b9GD4dsBdDAaVAWrr3d7nadyMQlBfXlDj6j6x7p6Jx4JSl47UkEV77fYEmy
+	G3hqNvrzH3Yc6UIqJqRee1+zjqhz21bzolVKxhBvBhofJw2IlAcc8nagCFOZT3blHLRSJC
+	nq64WvUf4uVyForMkjt6AlLr7vegrVQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712739176;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a4/3Q4DJ9o/sc+7kC2HhXGX78ya0FrJXHzbJCF/H0r8=;
+	b=MO178eB9uPnWzO2/WxY/xl4HlULtieXGKwMjyrsNF5sggJA1ozfvLh6yxatquurgq8zwON
+	5dx5rShwTg0411DQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712739176; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a4/3Q4DJ9o/sc+7kC2HhXGX78ya0FrJXHzbJCF/H0r8=;
+	b=jPGHdLkFAW9b9GD4dsBdDAaVAWrr3d7nadyMQlBfXlDj6j6x7p6Jx4JSl47UkEV77fYEmy
+	G3hqNvrzH3Yc6UIqJqRee1+zjqhz21bzolVKxhBvBhofJw2IlAcc8nagCFOZT3blHLRSJC
+	nq64WvUf4uVyForMkjt6AlLr7vegrVQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712739176;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a4/3Q4DJ9o/sc+7kC2HhXGX78ya0FrJXHzbJCF/H0r8=;
+	b=MO178eB9uPnWzO2/WxY/xl4HlULtieXGKwMjyrsNF5sggJA1ozfvLh6yxatquurgq8zwON
+	5dx5rShwTg0411DQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CB17E1390D;
+	Wed, 10 Apr 2024 08:52:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id RwnqLmdTFmZwVwAAn2gu4w
+	(envelope-from <osalvador@suse.de>); Wed, 10 Apr 2024 08:52:55 +0000
+Date: Wed, 10 Apr 2024 10:52:54 +0200
+From: Oscar Salvador <osalvador@suse.de>
+To: Miaohe Lin <linmiaohe@huawei.com>
+Cc: akpm@linux-foundation.org, naoya.horiguchi@nec.com, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/memory-failure: fix deadlock when
+ hugetlb_optimize_vmemmap is enabled
+Message-ID: <ZhZTZtzyMpMMowoD@localhost.localdomain>
+References: <20240407085456.2798193-1-linmiaohe@huawei.com>
+ <ZhVMThr9TNeP6SWj@localhost.localdomain>
+ <ZhVoatdJZ1RWu2r3@localhost.localdomain>
+ <13aa38af-46a1-3894-32bd-c3eb6ef67359@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <3c0c9c-66165300-1b-194ac52@218876937>
-Subject: =?utf-8?q?Re=3A?= [PATCH =?utf-8?q?6=2E8?= 000/279] 
- =?utf-8?q?6=2E8=2E5-rc2?= review
-User-Agent: SOGoMail 5.10.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <13aa38af-46a1-3894-32bd-c3eb6ef67359@huawei.com>
+X-Spam-Flag: NO
+X-Spam-Score: -4.30
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
 
-On Tuesday, April 09, 2024 23:00 IST, Greg Kroah-Hartman <gregkh@linuxf=
-oundation.org> wrote:
+On Wed, Apr 10, 2024 at 03:52:14PM +0800, Miaohe Lin wrote:
+> AFAICS, iff check_pages_enabled static key is enabled and in hard offline mode,
+> check_new_pages() will prevent those pages from ending up in a PCP queue again
+> when refilling PCP list. Because PageHWPoison pages will be taken as 'bad' pages
+> and skipped when refill PCP list.
 
-> This is the start of the stable review cycle for the 6.8.5 release.
-> There are 279 patches in this series, all will be posted as a respons=
-e
-> to this one.  If anyone has any issues with these being applied, plea=
-se
-> let me know.
->=20
-> Responses should be made by Thu, 11 Apr 2024 17:27:40 +0000.
-> Anything received after that time might be too late.
->=20
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.8=
-5-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc=
-git linux-6.8.y
-> and the diffstat can be found below.
->=20
+Yes, but check_pages_enabled static key is only enabled when
+either CONFIG_DEBUG_PAGEALLOC or CONFIG_DEBUG_VM are set, which means
+that under most of the systems that protection will not take place.
 
-KernelCI report for stable-rc/linux-6.8.y for this week :-
+Which takes me to a problem we had in the past where we were handing
+over hwpoisoned pages from PCP lists happily.
+Now, with for soft-offline mode, we worked hard to stop doing that
+because soft-offline is a non-disruptive operation and no one should get 
+killed.
+hard-offline is another story, but still I think that extending the
+comment to include the following would be a good idea:
 
-## stable-rc HEAD for linux-6.8.y:
-Date: 2024-04-10
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.=
-git/log/?h=3D6d08df6c401e210cdf4959cc3249188ac6083489
+"Disabling pcp before dissolving the page was a deterministic approach
+ because we made sure that those pages cannot end up in any PCP list.
+ Draining PCP lists expels those pages to the buddy system, but nothing
+ guarantees that those pages do not get back to a PCP queue if we need
+ to refill those."
 
-## Build failures:
-No build failures seen for the stable-rc/linux-6.8.y commit head \o/
+ Just to remind ourselves of the dangers of a non-deterministic
+ approach.
 
-## Boot failures:
-No **new** boot failures seen for the stable-rc/linux-6.8.y commit head=
- \o/
 
-Tested-by: kernelci.org bot <bot@kernelci.org>
+Thanks
 
-Thanks,
-Shreeya Patel
 
+-- 
+Oscar Salvador
+SUSE Labs
 
