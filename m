@@ -1,193 +1,113 @@
-Return-Path: <linux-kernel+bounces-139513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7931B8A03DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:06:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0E818A03E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:11:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA79DB2165D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:06:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 402EA1F23B38
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:11:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC8201DFC6;
-	Wed, 10 Apr 2024 23:05:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ThWRElSG"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709861F602;
+	Wed, 10 Apr 2024 23:11:14 +0000 (UTC)
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DAD8138E
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:05:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9C24138E
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:11:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712790354; cv=none; b=kLyiMBmBt5/weH4L+H2/8ICMMfvO295YkrQJnhNKD9+kGntQhwbDvQet2qMUCmWq7QuUNlyBhsm0NtEsZvgEVbWn1yVct7BlsyXyGQuCCTxaKknkJX/G3YjaOqD//HepJ2BeyGTnnk3Qj+MnwQmdyKeqGh7zTLBtvYl4U6N47bc=
+	t=1712790674; cv=none; b=qDWRxXqNa7o1yWkJgWVvBfGBPhSOIVV4XSrGgGTtZcIRGWDr5DgjAgxPjGXthkoRGut/b0T4EK8Wlmz+P717IIRHIMIerF1pESYqIZ71fW8AKyacK0ONZfG/plWiOUgj0zj/gO20ASPzSVsDryOYmeQeVOuCKbfb83hp0Xzs018=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712790354; c=relaxed/simple;
-	bh=2bu610YQYpTjByau9vg7/MQ9WKXVxxQoLxE3fc0Zqro=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=PJ7ZUf2/5m+PqNKj3NmJE7w90iENKuETeoAyDxz6s5PjSEznXExC2PJEVtYMyIPs1slC9jirXHoj9onas8V75GMdlsODf0wsK1etq24l39T1CnfzrOM/etMlpHWcpckb3fAcNe1IvbiMoHPKfzpG1EeQUC3YLatdBbghY0gVhe0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ThWRElSG; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712790353; x=1744326353;
-  h=date:from:to:cc:subject:message-id;
-  bh=2bu610YQYpTjByau9vg7/MQ9WKXVxxQoLxE3fc0Zqro=;
-  b=ThWRElSGgbpIuLGupnpHjGXiWhtvGUrCL2La/ImjcZs39+TrmzFhhl1I
-   1DjxfV2TfRHEPQHx29qFPcDLLauHMHR2lsN731vs/cjouWWqbJ+oK6VD8
-   Qwe2PxvNWQGMUzP8YMG53SJ1rAoXLr0IJLjQVL1sFTpv5R4rgKihgmUjn
-   6Bd0sDr75Dny8JwrM9xEw2oGBzMnSzZfoFn1lIIdnjdk25G57L+yGj1AF
-   okibzppwt7+06SdZDpb9+XZtY6RAHmlrCn9rbWxtB4dtL/IlZJ1QMPmvW
-   cHVQ+m/rmaA3+mlErCTjTEkyOtH/qyxHIIYYxyguWQAiNeEdTnfCMRStM
-   w==;
-X-CSE-ConnectionGUID: l3rfpPVqQpCIq4Nvlj48fQ==
-X-CSE-MsgGUID: fXWF+CF4TOKyO5WRPluVCw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11145080"
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="11145080"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 16:05:52 -0700
-X-CSE-ConnectionGUID: dheaDrHhTUid4TR1Czsazw==
-X-CSE-MsgGUID: fy3J6MkRREixUEsGjTx6DQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="51685511"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 10 Apr 2024 16:05:52 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1ruh0m-0007vO-2s;
-	Wed, 10 Apr 2024 23:05:48 +0000
-Date: Thu, 11 Apr 2024 07:05:20 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/merge] BUILD SUCCESS
- f72ec8989cd1591b1c567b336e0bb4a78536ce39
-Message-ID: <202404110718.b64GzeMx-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1712790674; c=relaxed/simple;
+	bh=lzJuj20VpCLHchg2/Zfcm06SxrZ/tTwWdpqLy19ZBN4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sNlh1p66agHCNh368+xVTbuzHLMnk9ri5TMP97HZI8ZyoY2+SmQRGb67sAb/lGn3Dfk8oeAiEnkiPUvgjhQywBk/GZkF3UPN/VkXw8vAr2ch1SbWwRpipNsYClnpet86kqGqzn0L/3Bk2OGmwHP5UCjFKL47jN+VFM7bK/9u77g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1ruh5l-0002ER-22;
+	Wed, 10 Apr 2024 23:10:57 +0000
+Date: Thu, 11 Apr 2024 00:10:55 +0100
+From: Daniel Golle <daniel@makrotopia.org>
+To: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: richard@nod.at, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] ubi: ubi_init: Fix missed ubiblock cleanup in error
+ handling path
+Message-ID: <Zhccfw4HbC_MKj65@makrotopia.org>
+References: <20240410074033.2523399-1-chengzhihao1@huawei.com>
+ <20240410074033.2523399-3-chengzhihao1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410074033.2523399-3-chengzhihao1@huawei.com>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/merge
-branch HEAD: f72ec8989cd1591b1c567b336e0bb4a78536ce39  Merge branch 'x86/cleanups' into x86/merge, to resolve conflict
+Hi!
 
-elapsed time: 1127m
+On Wed, Apr 10, 2024 at 03:40:33PM +0800, Zhihao Cheng wrote:
+> The ubiblock_init called by ubi_init will register device number, but
+> device number is not released in error handling path of ubi_init when
+> ubi is loaded by inserting module (eg. attaching failure), which leads
+> to subsequent ubi_init calls failed by running out of device number
+> (dmesg shows that "__register_blkdev: failed to get major for ubiblock").
+> Fix it by invoking ubiblock_exit() in corresponding error handling path.
 
-configs tested: 101
-configs skipped: 138
+Thank you for taking care of this issue.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+See my comment inline below:
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                     haps_hs_smp_defconfig   gcc  
-arc                     nsimosci_hs_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                        keystone_defconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   clang
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240410   gcc  
-i386         buildonly-randconfig-001-20240411   clang
-i386         buildonly-randconfig-002-20240411   clang
-i386         buildonly-randconfig-003-20240411   clang
-i386         buildonly-randconfig-004-20240410   clang
-i386         buildonly-randconfig-004-20240411   clang
-i386         buildonly-randconfig-005-20240410   gcc  
-i386         buildonly-randconfig-005-20240411   clang
-i386         buildonly-randconfig-006-20240410   gcc  
-i386         buildonly-randconfig-006-20240411   clang
-i386                                defconfig   clang
-i386                  randconfig-002-20240410   clang
-i386                  randconfig-003-20240410   gcc  
-i386                  randconfig-003-20240411   clang
-i386                  randconfig-004-20240410   gcc  
-i386                  randconfig-004-20240411   clang
-i386                  randconfig-005-20240410   gcc  
-i386                  randconfig-006-20240410   clang
-i386                  randconfig-006-20240411   clang
-i386                  randconfig-011-20240410   clang
-i386                  randconfig-011-20240411   clang
-i386                  randconfig-012-20240410   clang
-i386                  randconfig-013-20240410   gcc  
-i386                  randconfig-014-20240410   clang
-i386                  randconfig-015-20240410   gcc  
-i386                  randconfig-015-20240411   clang
-i386                  randconfig-016-20240410   gcc  
-i386                  randconfig-016-20240411   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          sun3x_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     cu1830-neo_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                 mpc832x_rdb_defconfig   gcc  
-powerpc                    mvme5100_defconfig   gcc  
-powerpc                 xes_mpc85xx_defconfig   gcc  
-riscv                             allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          rsk7203_defconfig   gcc  
-sh                           se7722_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          alldefconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allyesconfig   gcc  
-um                             i386_defconfig   gcc  
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
+> 
+> Fixes: 927c145208b0 ("mtd: ubi: attach from device tree")
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> ---
+>  drivers/mtd/ubi/build.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> index 7f95fd7968a8..354517194099 100644
+> --- a/drivers/mtd/ubi/build.c
+> +++ b/drivers/mtd/ubi/build.c
+> @@ -1380,12 +1380,13 @@ static int __init ubi_init(void)
+>  	if (ubi_is_module()) {
+>  		err = ubi_init_attach();
+>  		if (err)
+> -			goto out_mtd_notifier;
+> +			goto out_block_exit;
+>  	}
+>  
+>  	return 0;
+>  
+> -out_mtd_notifier:
+> +out_block_exit:
+> +	ubiblock_exit();
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I believe that this call is the reason for the section mismatch we
+are seeing on Intel's kernel test builds:
+
+https://lore.kernel.org/oe-kbuild-all/202404110656.wLLc5mHR-lkp@intel.com/
+
+Also note that Ben Hutchings has supplied a more complete and imho
+better solution for this problem, which yet still suffers from the
+same problem (calling __exit function from __init function which
+results in section mismatch).
+
+
+>  	unregister_mtd_user(&ubi_mtd_notifier);
+>  out_debugfs:
+>  	ubi_debugfs_exit();
+> -- 
+> 2.39.2
+> 
 
