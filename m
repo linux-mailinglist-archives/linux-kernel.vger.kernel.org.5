@@ -1,179 +1,121 @@
-Return-Path: <linux-kernel+bounces-139332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D1EE8A0182
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FA748A0184
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:53:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4D1FB22788
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:52:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B24E1B2557E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A39181CFF;
-	Wed, 10 Apr 2024 20:52:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 447DE181D04;
+	Wed, 10 Apr 2024 20:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DTkCloQ+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="bUQi+HCP"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A50F315EFAD;
-	Wed, 10 Apr 2024 20:52:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B186D15EFAD
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 20:53:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712782367; cv=none; b=fMoEo2fARRjUHGWvwQ6CmKLKsPKvS2WrK2AJSzoXaeiUDXzPpucIR6ed1usCncbwXEXN3R9ZlCgPDU6+uhKifzvP5c/YIX11fCGBtlTKX63nE2dkEcU1+aIA/a7fPZtWjksbWIudJmSjp11uZog0EaUXNUnMOl+/DaEPTdHyQsY=
+	t=1712782413; cv=none; b=WvzHJwyfD0wEC9jkXzBuc6EA8WRsOc099q7+zb63kI1fqJ2d/ymTL5P/5DPdvv60KaFSoNc+hQVZe8mTK6kv0o6KyItASgNuAR93WL0KLySTWAwXWp8Gq2l3h+ujYl3C/MpiNul8Y0RnafIhqeh6LrFg16ywDcGB0062bar+Ruk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712782367; c=relaxed/simple;
-	bh=N38KD+SiZS1U4XcfM3Ay0nwghgVyE56H0CZwBOKGYX4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dIxT73oR4kX8doguqzS8Jqs7zeD+8+1jT7G69JbniSCNipryiI6Tesdi8KTpaBuBGwVt0u1COgUY7+djwIqIggoevOiA+Ey2vdakCxTwREzai6eZXK+2T+AoK3v8teaiDTWG4dy1NkDSqWzNfNZS+BG9tOi6uMuMICXQ965XEyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DTkCloQ+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E348CC433C7;
-	Wed, 10 Apr 2024 20:52:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712782367;
-	bh=N38KD+SiZS1U4XcfM3Ay0nwghgVyE56H0CZwBOKGYX4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DTkCloQ+PnMVIErVzlkWkCxPmRqK8GauL+JqEFrb48YRzYgVQyV8Aip9J0UvT9En9
-	 LsfpdpHQ/+duzNJhs65P56FnjIgvs31L2TfFRv3p0y5CZI1eCnyu6P+IvQ2sR1hrTe
-	 faZahArzV7TpookNkNNoXWLEyRUB3KfCcd31MFueXfG55TGHVwDBeYFHzRMrfM0zI9
-	 irHJ2heLvubaXvjDDDSfpB0FhmZukUp37jpytNLTTtXCoJ+WORQOLcRc4YjhAcxQuK
-	 yBOJVUklSAsD4G2z2dSuFjBTOUMX9J2cDdJclsrySj7+TVPEH/oFinnojQL9GLhAkG
-	 3aCZNFFH1bAZg==
-Date: Wed, 10 Apr 2024 15:52:44 -0500
-From: Rob Herring <robh@kernel.org>
-To: Conor Dooley <conor@kernel.org>
-Cc: Zhi Mao <zhi.mao@mediatek.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Paul Elder <paul.elder@ideasonboard.com>,
-	Mehdi Djait <mehdi.djait@bootlin.com>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>,
-	Bingbu Cao <bingbu.cao@intel.com>, linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, shengnan.wang@mediatek.com,
-	yaya.chang@mediatek.com, yunkec@chromium.org, 10572168@qq.com
-Subject: Re: [PATCH 1/2] media: dt-bindings: i2c: add Giantec GT97xx VCM
- driver
-Message-ID: <20240410205244.GA1290088-robh@kernel.org>
-References: <20240410104002.1197-1-zhi.mao@mediatek.com>
- <20240410104002.1197-2-zhi.mao@mediatek.com>
- <20240410-rice-fringe-4ae992217a2f@spud>
+	s=arc-20240116; t=1712782413; c=relaxed/simple;
+	bh=dN9QAFFSPnKO+kppDSwGYQaQqQZPMRvjy+igFIMMS0I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bDbSzcuvQzFDqAwEJ5plV7IeKb4DlwvnUk6p4vz31aO5zrJ4rpWHZbeG7rBbsd1E4vG4cfHdjPz71Sm4Wky9M6A6IiJQ9GJmRHu4HhL2NjPnXyLdeTnuppmaCAIsPJZahG9EsPFf/kH+dMGLSrgAPYnhMPSJYpWLMWmVPzs0UdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=bUQi+HCP; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56c404da0ebso10659987a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:53:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1712782410; x=1713387210; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HFiQhEOGgH7BulX7PcWOBKJwuVCh69V2zXaiyRkXXhg=;
+        b=bUQi+HCPfJAEz4kdR2cwMuH26//p8PlGJF+UK/ul+umkE003gRrBYIi3zi8P1axbS3
+         lN2GO5qu/wTj4qsjyXoIhzcpN7k1vWDGybquxxejHjA0a2ZLAWvf0nfqgY3kcZmMnlaI
+         IVUAiDTBmfwVv3Sn6v6K//F0kikMl9v9PXngo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712782410; x=1713387210;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HFiQhEOGgH7BulX7PcWOBKJwuVCh69V2zXaiyRkXXhg=;
+        b=VCn+DSdQdxKHHmx8CHaMJOG0I2Ofs4TURkh+qEI3bw6sbznqksTsS8nnx1Xyx7yPL1
+         nOa/7Lmkz3JGDxls9M7KCeBa7O/FHC76Ai7R8OuDWvBB0iooy6OtcnPFpI1MXtoymmsO
+         kKwFTSYACH8wd4JGyiCkzOwZEx8n8aiAXVuprqkAhJeQYeeO+j7VrFyx26/fZHoWRhBC
+         OmrPgUI8rQdog2G8pjefsZit5imt2/2EHy6DoikMcAiqf7F39rBo2HiIhpGHU4Uqza37
+         qRsG8iBaCTL5sZt49yTV5UDncGtpAAX8EPKYPaQUSyuNfgXkDq27uYVLeC3YCcsPANNv
+         poIw==
+X-Forwarded-Encrypted: i=1; AJvYcCVzIb+ZE5d/43ztEFp/4hbtK23v6MAETT2ARyvqAe1L6ByMP1H1RwT9nu2mj64ZinGdnJlU9BqY9vc18XtyJgw2p1Ervs5lMCD13iW9
+X-Gm-Message-State: AOJu0YxNiyOgpk15Usa9sK33yVs0IFTln3UKhlJT8fyfC3vz+Qm0LIsk
+	H0BXdr/udEm4YC7AFpMEGYnZnoVnItf/6YRzB7ego++ZYfxB7iN2o9v8toarL+S+s8Md9w72Hy2
+	Mw3YLbg==
+X-Google-Smtp-Source: AGHT+IGssipc33veXdfxDEWhvd7oIqBoLQ7iLJi8nlkDG0NQ//eJ38en5rTo00pWsNkquJXDiAsOVw==
+X-Received: by 2002:a17:907:7208:b0:a51:e05b:a168 with SMTP id dr8-20020a170907720800b00a51e05ba168mr2785536ejc.16.1712782409851;
+        Wed, 10 Apr 2024 13:53:29 -0700 (PDT)
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
+        by smtp.gmail.com with ESMTPSA id my42-20020a1709065a6a00b00a51dccd16d9sm43322ejc.99.2024.04.10.13.53.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 13:53:29 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a51b008b3aeso585689766b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:53:29 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXNheV/vmkUcgWYd3Jx6P0iDIwtxUC00DbALgjh4GBXvcw8T0UwTzNjT6IvOzUoBbkFaJ+HBWUaYO1+vwwiv5FR0uklqvwY5G6ypvqH
+X-Received: by 2002:a17:907:c789:b0:a52:1635:9e05 with SMTP id
+ tz9-20020a170907c78900b00a5216359e05mr1520228ejc.13.1712782408768; Wed, 10
+ Apr 2024 13:53:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410-rice-fringe-4ae992217a2f@spud>
+References: <20240410183852.6df5011e@coco.lan>
+In-Reply-To: <20240410183852.6df5011e@coco.lan>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 10 Apr 2024 13:53:12 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiwn2VamMH-o2zmk0d__GtEPTjL=x3QSEC0MHEt30=g1Q@mail.gmail.com>
+Message-ID: <CAHk-=wiwn2VamMH-o2zmk0d__GtEPTjL=x3QSEC0MHEt30=g1Q@mail.gmail.com>
+Subject: Re: [GIT PULL for v6.9-rc4] media fixes
+To: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Linux Media Mailing List <linux-media@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Apr 10, 2024 at 12:27:07PM +0100, Conor Dooley wrote:
-> Hey,
-> 
-> On Wed, Apr 10, 2024 at 06:40:01PM +0800, Zhi Mao wrote:
-> > Add YAML device tree binding for GT97xx VCM driver,
-> 
-> Please don't mention drivers here, bindings are for hardware.
-> 
-> > and the relevant MAINTAINERS entries.
-> > 
-> > Signed-off-by: Zhi Mao <zhi.mao@mediatek.com>
-> > ---
-> >  .../bindings/media/i2c/giantec,gt97xx.yaml    | 91 +++++++++++++++++++
-> >  1 file changed, 91 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/media/i2c/giantec,gt97xx.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/i2c/giantec,gt97xx.yaml b/Documentation/devicetree/bindings/media/i2c/giantec,gt97xx.yaml
-> > new file mode 100644
-> > index 000000000000..8c9f1eb4dac8
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/media/i2c/giantec,gt97xx.yaml
-> > @@ -0,0 +1,91 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +# Copyright (c) 2020 MediaTek Inc.
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/media/i2c/giantec,gt97xx.yaml#
-> 
-> Filename patching compatible please.
-> 
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Giantec Semiconductor, Crop. GT97xx Voice Coil Motor (VCM)
-> > +
-> > +maintainers:
-> > +  - Zhi Mao <zhi.mao@mediatek.com>
-> > +
-> > +description: |-
-> > +  The Giantec GT97xx is a 10-bit DAC with current sink capability.
-> > +  The DAC is controlled via I2C bus that operates at clock rates up to 1MHz.
-> > +  This chip integrates Advanced Actuator Control (AAC) technology
-> > +  and is intended for driving voice coil lens in camera modules.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - giantec,gt9768 # for GT9768 VCM
-> > +      - giantec,gt9769 # for GT9769 VCM
-> 
-> I don't think these comments are needed, they should be clear from the
-> compatibles, no?
-> 
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  vin-supply: true
-> > +
-> > +  vdd-supply: true
-> > +
-> > +  giantec,aac-mode:
-> > +    description:
-> > +      Indication of AAC mode select.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    enum:
-> > +      - 1    #  AAC2 mode(operation time# 0.48 x Tvib)
-> > +      - 2    #  AAC3 mode(operation time# 0.70 x Tvib)
-> > +      - 3    #  AAC4 mode(operation time# 0.75 x Tvib)
-> > +      - 5    #  AAC8 mode(operation time# 1.13 x Tvib)
-> 
-> I dislike these enum based properties and I would rather this either be
-> the values themselves (0.48, 0.70 etc).
+On Wed, 10 Apr 2024 at 09:39, Mauro Carvalho Chehab <mchehab@kernel.org> wrote:
+>
+>   - some fixes causing oops on mediatec vcodec encoder/decoder.
 
-Except that those would have to be strings for floats or fractions. For 
-properties which have little chance of being something common and aren't 
-any form of standard unit, I think it is fine to just use the h/w 
-specific values. 
+Well, I certainly hope it's not the fixes that cause oopses. That
+would be the opposite of a fix.
 
-The first question to ask whether these parameters are common to 
-all/many voice coil motors?
+However, having fixed that, I also find some of the fixes in here
+rather broken: commit d353c3c34af0 ("media: mediatek: vcodec: support
+36 bits physical address") has a "fix" for a cast like this:
 
+-       dec->bs_dma = (unsigned long)bs->dma_addr;
++       dec->bs_dma = (uint64_t)bs->dma_addr;
 
-> > +    default: 2
-> > +
-> > +  giantec,aac-timing:
-> > +    description:
-> > +      Number of AAC Timing count that controlled by one 6-bit period of
-> > +      vibration register AACT[5:0], the unit of which is 100 us.
-> 
-> Then the property should be in a standard unit of time, not "random" hex
-> numbers that correspond to register values.
+but the underlying problem was in fact that the cast was WRONG TO EVEN EXIST.
 
-Here, I agree.
+Both 'bs_dma' and 'dma_addr' are integers. The cast is pointless and
+wrong. It makes the code look like it is doing something else than
+what it's doing, and that something else would be wrong anyway (ie if
+it is a cast from a pointer, it would be doubly wrong).
 
-Rob
+IOW, as far as I can tell, the fix *should* have been to just remove
+the cast entirely since it was pointless.
+
+I've pulled this, but please people - make the pull request
+description make sense, and when fixing bugs, please think about the
+code a bit more than just do a mindless conversion.
+
+           Linus
 
