@@ -1,91 +1,128 @@
-Return-Path: <linux-kernel+bounces-139309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2A628A013C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 03A588A012D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:21:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30F1B1C24A7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:23:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 354551C23710
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:21:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C097181BAD;
-	Wed, 10 Apr 2024 20:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WAxFe44W"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC49C181BAE;
+	Wed, 10 Apr 2024 20:21:00 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3C5F1836D8;
-	Wed, 10 Apr 2024 20:22:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E7E1DFC7;
+	Wed, 10 Apr 2024 20:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712780575; cv=none; b=EWSYAMWiyvvkGL+77UTeAEvAtQ9HgjKsCevp5UhPom5o+fe5izq6gBBm9spX1B2d3JpUMYgT6BEo4TGXTwOHaTMPbuqpmj99R09yEXgP2g3hkfyCry+rzbYE0APMOGqtuIbjsE292GvXRgOay78vUQSrYj7jfYxVGwlaqwBg25k=
+	t=1712780460; cv=none; b=I4SX3AkiCvTx8MFCKUozORiH8KN6dsT5/KRR9eXHpDGtam3xd3zqzh09UHceFfhcYEP+IHxpSn1zA8BtKFqvLqDxnPH4JHQmDR7dS8EJRY9fyGF1XoC1uPn7Zz6eRbyCiM+Co4cmnfJbA/gv7hONLvGSMDBGgQ7gZTXrYp2RVfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712780575; c=relaxed/simple;
-	bh=zvb47o4mf8GUH8SVKa0m5GiIb1eeKuKunwVjqMtmuhk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N/WU2SLFYdPINbqqPOWlP0CF9Dzkli8br1yc/1m8bcicWCsSSOzKmh/sxO7dabVtpRV9Lnxl+1i1LKmWtCuDx8rn5TwZHGQnfpRGjS7LZtUqjNERSojjZoFnTuMjVuGCPagCuH8Qmm/CCBzFvuRlasiLUe4t5bAScihBTnKmJK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WAxFe44W; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 759F2C43394;
-	Wed, 10 Apr 2024 20:22:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712780575;
-	bh=zvb47o4mf8GUH8SVKa0m5GiIb1eeKuKunwVjqMtmuhk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WAxFe44Wo9BGnqrVxsazyCzHllK6MSAnUlKym5Kj51SsjK0vgNjrmieVANrt6HX+G
-	 qQLEKWx5FAWHk42/PSn8UCU0XiCsvKwv1Cq1RSNJUoLiAFYldoa/naDB8idGENz8Cn
-	 7oaS8fmWVd8LGC+mpBxWyO9BkTmLMG2xmtXojemYJ2E8ZuB5gv7BUjUJkUXZjsQuTi
-	 8hfn7TaJBDH9fQGzY4heUCmkhNs7SP6C5BcAUavExJ3xURQKb5RfB7P5FtiJsckTuB
-	 Av0L+T7ZKoZJ3/W/1a7E40itpF9Rznpyxv9yEZNFHQ9IL/FCJMS9TEDk01ZV6G6XbU
-	 BcF363w7Bc0Ug==
-Date: Wed, 10 Apr 2024 15:22:53 -0500
-From: Rob Herring <robh@kernel.org>
-To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	Mark Brown <broonie@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	devicetree@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	Vaishnav Achath <vaishnav.a@ti.com>, linux-kernel@vger.kernel.org,
-	linux-spi@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-	linux-mips@vger.kernel.org
-Subject: Re: [PATCH v3 3/9] spi: dt-bindings: cdns,qspi-nor: make
- cdns,fifo-depth optional
-Message-ID: <171278057106.1281345.946727466928284923.robh@kernel.org>
-References: <20240410-cdns-qspi-mbly-v3-0-7b7053449cf7@bootlin.com>
- <20240410-cdns-qspi-mbly-v3-3-7b7053449cf7@bootlin.com>
+	s=arc-20240116; t=1712780460; c=relaxed/simple;
+	bh=NHRDwWW5UUprKx17r2oT7Bz2q4irLQyN/KXXpfQZsKw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qWUb4grt4qXagE5jSRQOYERAHxe9AdWBZS/94pNBNtAkevP8KWHUpb/08cdC7e/ni/y5+laUO3ibsxd8kmOSqOiHTaxUl2BvPSBI2Lw0R+1Qo6/ofl+EVRjd8J5mxp90eambSe3mUoLRO6CY+DsEk65GjcYF4zu9TgSlera65Y0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A2FDC433C7;
+	Wed, 10 Apr 2024 20:20:59 +0000 (UTC)
+Date: Wed, 10 Apr 2024 16:23:36 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Ali Zahraee <ahzahraee@gmail.com>
+Cc: mhiramat@kernel.org, mathieu.desnoyers@efficios.com, corbet@lwn.net,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, skhan@linuxfoundation.org,
+ javier.carrasco.cruz@gmail.com
+Subject: Re: [PATCH] Documentation: tracing: update format of sched_wakeup
+ in example
+Message-ID: <20240410162336.618371dd@gandalf.local.home>
+In-Reply-To: <20240314144136.19727-1-ahzahraee@gmail.com>
+References: <20240314144136.19727-1-ahzahraee@gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240410-cdns-qspi-mbly-v3-3-7b7053449cf7@bootlin.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Thu, 14 Mar 2024 15:41:36 +0100
+Ali Zahraee <ahzahraee@gmail.com> wrote:
 
-On Wed, 10 Apr 2024 11:29:06 +0200, Théo Lebrun wrote:
-> Make cdns,fifo-depth devicetree property optional.
-> Value can be detected at runtime.
+> The format of the sched_wakeup event is used as an example in the
+> documentation. But the given format is obsolete. This patch updates the
+> format in the example to match the current format of this event.
 > 
-> Upper SRAMPARTITION register bits are read-only. Procedure to find FIFO
-> depth is therefore to write 0xFFFFFFFF and read back to get amount of
-> writeable bits.
-> 
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> Signed-off-by: Ali Zahraee <ahzahraee@gmail.com>
 > ---
->  Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml | 1 -
->  1 file changed, 1 deletion(-)
+>  Documentation/trace/events.rst | 25 +++++++++++++------------
+>  1 file changed, 13 insertions(+), 12 deletions(-)
 > 
+> diff --git a/Documentation/trace/events.rst b/Documentation/trace/events.rst
+> index 759907c20e75..65fe205c95e6 100644
+> --- a/Documentation/trace/events.rst
+> +++ b/Documentation/trace/events.rst
+> @@ -129,24 +129,25 @@ event::
+>  	# cat /sys/kernel/tracing/events/sched/sched_wakeup/format
+>  
+>  	name: sched_wakeup
+> -	ID: 60
+> +	ID: 70
 
-Acked-by: Rob Herring <robh@kernel.org>
+Really don't need to change that, as it's defined at compile time and may
+be different. For example, I have:
+
+ system: sched
+ name: sched_wakeup
+ ID: 297
+
+
+>  	format:
+>  		field:unsigned short common_type;	offset:0;	size:2;
+> +                	signed:0;
+
+Don't line break the fields, as new lines are part of the format.
+
+
+>  		field:unsigned char common_flags;	offset:2;	size:1;
+> -		field:unsigned char common_preempt_count;	offset:3;	size:1;
+> -		field:int common_pid;	offset:4;	size:4;
+> -		field:int common_tgid;	offset:8;	size:4;
+> +                	signed:0;
+> +		field:unsigned char common_preempt_count;	offset:3;
+> +                	size:1; signed:0;
+
+Again, the above needs to be on one line.
+
+Thanks,
+
+-- Steve
+
+> +		field:int common_pid;	offset:4;	size:4;	signed:1;
+>  
+> -		field:char comm[TASK_COMM_LEN];	offset:12;	size:16;
+> -		field:pid_t pid;	offset:28;	size:4;
+> -		field:int prio;	offset:32;	size:4;
+> -		field:int success;	offset:36;	size:4;
+> -		field:int cpu;	offset:40;	size:4;
+> +		field:char comm[16];	offset:8;	size:16;	signed:0;
+> +		field:pid_t pid;	offset:24;	size:4;	signed:1;
+> +		field:int prio;	offset:28;	size:4;	signed:1;
+> +		field:int target_cpu;	offset:32;	size:4;	signed:1;
+>  
+> -	print fmt: "task %s:%d [%d] success=%d [%03d]", REC->comm, REC->pid,
+> -		   REC->prio, REC->success, REC->cpu
+> +	print fmt: "comm=%s pid=%d prio=%d target_cpu=%03d", REC->comm, REC->pid,
+> +        	        REC->prio, REC->target_cpu
+>  
+> -This event contains 10 fields, the first 5 common and the remaining 5
+> +This event contains 8 fields, the first 4 common and the remaining 4
+>  event-specific.  All the fields for this event are numeric, except for
+>  'comm' which is a string, a distinction important for event filtering.
+>  
 
 
