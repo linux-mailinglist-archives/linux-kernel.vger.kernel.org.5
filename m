@@ -1,190 +1,158 @@
-Return-Path: <linux-kernel+bounces-138908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF29289FBE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:42:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADE8D89FBEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:46:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C1421F21B5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:42:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF4391C21CED
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:46:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A07B16F0FA;
-	Wed, 10 Apr 2024 15:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44B0716F0E9;
+	Wed, 10 Apr 2024 15:45:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QooDu5VM"
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hztov4Vi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC43816EC1D;
-	Wed, 10 Apr 2024 15:42:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769631E878;
+	Wed, 10 Apr 2024 15:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712763739; cv=none; b=TDLufEM0UAXOS8i6UtKOVJchMLPPTZBNELLS5T135xtIdCU/UrQNVwfzDVF/ZbBO99Xa8LhUneA+j90FeueVzJEi6SIwXf8x/+slmQEGwUkaVJesSGgFGA/YgPbZC7mU5P5DI1YBhc1+hPQS/KkyVSFSV50cd7IgP58vC7SR2kw=
+	t=1712763955; cv=none; b=CkmtlIp7JkCNQer5QB2yRfHCRA+EE1uMyXOWee/SjiXCI+CH7hAoYuv6AXFMUm5+FKVqax2feClSMRKZTkwy181E1k/3sWpp38yyeoxhHfW46rbsXfOhIJPB4Rn5wAkWSxyifUzfiwu06SpCHeQdmJ3dyCvdcx1cU87OmCSScJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712763739; c=relaxed/simple;
-	bh=bIYuIMobN4c7QVS8/DFCKFrNDf/uvx+QUbwB6/Ik8qs=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=o4eyv+G0nDa6pUyA2uKvJgTcHju6bZZpZZgCBS0BC40bGZQ3q9iXQ/eCaZ8TElHpJUdBnhVOpqsdbGZ0mfCZwD/W/Vg4JVVGuNXC29xDSdNrlhKLEaNpzHaf7VcgVixKhAu2cUuEv45AAVnZsl3CK50Z9AsIwAr5hpKRnZkb71Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QooDu5VM; arc=none smtp.client-ip=209.85.222.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-78d62c1e82bso261365385a.3;
-        Wed, 10 Apr 2024 08:42:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712763737; x=1713368537; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8zRUuA7h1m8dPrK2eFWYrvmvpUZ/gqDhSGLftQ4YK8M=;
-        b=QooDu5VM3QlNarMMplZotesJrGOPI4rIXkXlQsF7HJSK8IEEobT+NHGTt7bP2PL2AN
-         SMFBIMahgMEhy0EH+hrZYGs1pSmrH1uyQvPydtUq2/DZO1Xzo2O7vQH/26HBxZGb4PCY
-         CedXd8d2HdhFiOrMsB+Vbtouk2qHj6hpvVqBxCu17cp/BmfMUhkYcDRbrYPgZVyui5Zb
-         L47Gn6tWMoXgBwmFjjE0RpFaQg806vETNzM7E4HTvn7LPcqwbwafsXnaf2vNkrXmKZwA
-         ecUua4VvLZMj5VZzTY/67tC+A5pEKlg1UJ49nzvy4AmmRTEb3TUlxl204eJ8ilLa4aPP
-         Jbnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712763737; x=1713368537;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8zRUuA7h1m8dPrK2eFWYrvmvpUZ/gqDhSGLftQ4YK8M=;
-        b=hn+fK/9NOj3W4Z61R8i8gsAWcuHP4bSzlvZjuff07/092nZhaksfv2fTtw/GTYWERB
-         BRYPxUhmvxG7RRubhF9swVWF/UBqBEOOOJYs9IzmRKd51q9mljJDhGn4CtE/e/Ybl8dz
-         Jb/rttX9tWCPsmZ1Moxx76bui3h5V+IpRP0bviGr12IlvtZUTrfQhZNDQm1CS7av78xu
-         dGULFu4zufEPcmukB2B903u7a2inKbz+dUFTgEsGn4JF8Etl6Kihm36B1rU/SYrTqxGh
-         /kDBQEXrMPnVSh/klMuSeJh1KNeNBxiVKRuGMyzcr9xfq0udx5CaaR2JLzMtMAmc0dAs
-         8QQA==
-X-Forwarded-Encrypted: i=1; AJvYcCWXBUzwNbbB7bNPVhiM8O2Z+jVcWzHMSYHbO5orID1b7x62nbtH29emu0OoubMf4yqTp9RKpBsngkkPKcrnUCw21Ldw3oQYCmP6+o1sdjltaS+jyPxDTP0PxvLl4ffJO1Ubrx49e+sEKRkZceY5zrug1zFav7/VE3GD
-X-Gm-Message-State: AOJu0YzU49awHomh0+/zp952N3Ygos56H7ADun9nFLwK06DJO5C1OGcA
-	8LNNZ7ZI4D5ucwcyDniN/O00SDypuzwMM+11sxH+SH86A3PrBjf9
-X-Google-Smtp-Source: AGHT+IEZhcmcOP0DfRYpnTQkbaXNlRT9QT3bt6hOGI8ZueLGbjAPe/HOaEXcim4f/379gTUyPzra7A==
-X-Received: by 2002:a05:620a:1035:b0:78b:c6c4:a6c8 with SMTP id a21-20020a05620a103500b0078bc6c4a6c8mr2699168qkk.5.1712763736648;
-        Wed, 10 Apr 2024 08:42:16 -0700 (PDT)
-Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
-        by smtp.gmail.com with ESMTPSA id c19-20020a05620a135300b0078d5ef01b24sm4053408qkl.25.2024.04.10.08.42.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 08:42:16 -0700 (PDT)
-Date: Wed, 10 Apr 2024 11:42:16 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Abhishek Chauhan <quic_abchauha@quicinc.com>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Andrew Halaney <ahalaney@redhat.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Martin KaFai Lau <martin.lau@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- bpf <bpf@vger.kernel.org>
-Cc: kernel@quicinc.com
-Message-ID: <6616b3587520_2a98a5294db@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20240409210547.3815806-4-quic_abchauha@quicinc.com>
-References: <20240409210547.3815806-1-quic_abchauha@quicinc.com>
- <20240409210547.3815806-4-quic_abchauha@quicinc.com>
-Subject: Re: [RFC PATCH bpf-next v1 3/3] net: Add additional bit to support
- userspace timestamp type
+	s=arc-20240116; t=1712763955; c=relaxed/simple;
+	bh=Iws5TST+OzZUPfFNgljptP+ZHHp7PyVhznvweeW0O3I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NrXEVQoxKJYPovdGpwE5LZ0bNA+YfJokKOUIMA6IzE0sS+CqUsKuZhjqe4knKSGFArZBZ4hgyoWlTXvo+HZolatSYS6xzHxfbTLNs0w39jhWL47Zwiov7Xtw2PQ5QwIzQtcYIQLl21/cHumO8pf0314JkfdkGZI9g1RqTnrNfQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hztov4Vi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9686BC433C7;
+	Wed, 10 Apr 2024 15:45:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712763955;
+	bh=Iws5TST+OzZUPfFNgljptP+ZHHp7PyVhznvweeW0O3I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Hztov4Vi8VkLznfPfx81BXFAyzQZRGXg8qs8z09Njupjvxnx0lq8moLtVwrtZ4ugW
+	 PC8HjJtzouaE2i7H0Fns76YObHbCk/NIkxZi/v36frgl5gP0eRQU6Yy7FjaIqmZeAs
+	 yNY4mKMoX/OlZUES+oyLQeYbXzLk0cWgTsFnn7t3QV1WdJLLJuUAVd7YTMtMU8Z6XV
+	 uXmd1hMQlpO7+R0QCk1KOHaVrg4BK2KNNGvLQuukpT85ZEkIGDSmtDjxdF08TxWyci
+	 FgVLt/uUPuyMo/JzX/4rG9ptLVA+EK4KPlPluLZ+tn/CzS8LgW5E+NzCSeU7Q5n+76
+	 +mWkohOqm0IwQ==
+Date: Wed, 10 Apr 2024 16:45:47 +0100
+From: Will Deacon <will@kernel.org>
+To: Xu Yang <xu.yang_2@nxp.com>
+Cc: Frank Li <frank.li@nxp.com>,
+	"mark.rutland@arm.com" <mark.rutland@arm.com>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"shawnguo@kernel.org" <shawnguo@kernel.org>,
+	"s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+	"kernel@pengutronix.de" <kernel@pengutronix.de>,
+	"festevam@gmail.com" <festevam@gmail.com>,
+	"john.g.garry@oracle.com" <john.g.garry@oracle.com>,
+	"jolsa@kernel.org" <jolsa@kernel.org>,
+	"namhyung@kernel.org" <namhyung@kernel.org>,
+	"irogers@google.com" <irogers@google.com>,
+	"mike.leach@linaro.org" <mike.leach@linaro.org>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"acme@kernel.org" <acme@kernel.org>,
+	"alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>,
+	"adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+	"imx@lists.linux.dev" <imx@lists.linux.dev>
+Subject: Re: [EXT] Re: [PATCH v8 3/8] perf: imx_perf: let the driver manage
+ the counter usage rather the user
+Message-ID: <20240410154546.GA25225@willie-the-truck>
+References: <20240322063930.749126-1-xu.yang_2@nxp.com>
+ <20240322063930.749126-3-xu.yang_2@nxp.com>
+ <20240409152627.GA23621@willie-the-truck>
+ <DU2PR04MB882209413AB62531713166B38C062@DU2PR04MB8822.eurprd04.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DU2PR04MB882209413AB62531713166B38C062@DU2PR04MB8822.eurprd04.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Abhishek Chauhan wrote:
-> tstamp_type can be real, mono or userspace timestamp.
+On Wed, Apr 10, 2024 at 07:39:46AM +0000, Xu Yang wrote:
+> > On Fri, Mar 22, 2024 at 02:39:25PM +0800, Xu Yang wrote:
+> > > In current design, the user of perf app needs to input counter ID to count
+> > > events. However, this is not user-friendly since the user needs to lookup
+> > > the map table to find the counter. Instead of letting the user to input
+> > > the counter, let this driver to manage the counters in this patch.
+> > 
+> > I think we still have to support the old interface so that we don't break
+> > those existing users (even if the driver just ignores whatever counter ID
+> > is provided in a backwards-compatible way).
+> > 
+> > > This will be implemented by:
+> > >  1. allocate counter 0 for cycle event.
+> > >  2. find unused counter from 1-10 for reference events.
+> > >  3. allocate specific counter for counter-specific events.
+> > >
+> > > In this patch, counter attribute is removed too. To mark counter-specific
+> > > events, counter ID will be encoded into perf_pmu_events_attr.id.
+> > >
+> > > Reviewed-by: Frank Li <Frank.Li@nxp.com>
+> > > Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
+> > >
+> > > ---
+> > > Changes in v6:
+> > >  - new patch
+> > > Changes in v7:
+> > >  - no changes
+> > > Changes in v8:
+> > >  - add Rb tag
+> > > ---
+> > >  drivers/perf/fsl_imx9_ddr_perf.c | 168 ++++++++++++++++++-------------
+> > >  1 file changed, 99 insertions(+), 69 deletions(-)
+> > >
+> > > diff --git a/drivers/perf/fsl_imx9_ddr_perf.c b/drivers/perf/fsl_imx9_ddr_perf.c
+> > > index 0017f2c9ef91..b728719b494c 100644
+> > > --- a/drivers/perf/fsl_imx9_ddr_perf.c
+> > > +++ b/drivers/perf/fsl_imx9_ddr_perf.c
+> > > @@ -245,14 +249,12 @@ static const struct attribute_group ddr_perf_events_attr_group = {
+> > >       .attrs = ddr_perf_events_attrs,
+> > >  };
+> > >
+> > > -PMU_FORMAT_ATTR(event, "config:0-7");
+> > > -PMU_FORMAT_ATTR(counter, "config:8-15");
+> > > +PMU_FORMAT_ATTR(event, "config:0-15");
+> > 
+> > Sadly, this is a user-visible change so I think it will break old tools,
+> > won't it?
 > 
-> This commit adds userspace timestamp and sets it if there is
-> valid transmit_time available in socket coming from userspace.
+> For imx ddr pmu, most of the people will use metrics rather event itself,
+> and we have speficy the format of event parameters in metrics table.
+> The parameters is also updated in this patchset.
 > 
-> To make the design scalable for future needs this commit bring in
-> the change to extend the tstamp_type:1 to tstamp_type:2 to support
-> userspace timestamp.
+> And to easy use for user, the counter should be hidden (transparent) to
+> user after I had talk with Frank. Then, the user need't to look up the event
+> table to find which counter to use. 
 > 
-> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
-> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
-> ---
->  include/linux/skbuff.h | 19 +++++++++++++++++--
->  net/ipv4/ip_output.c   |  2 +-
->  net/ipv4/raw.c         |  2 +-
->  net/ipv6/ip6_output.c  |  2 +-
->  net/ipv6/raw.c         |  2 +-
->  net/packet/af_packet.c |  6 +++---
->  6 files changed, 24 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index 6160185f0fe0..2f91a8a2157a 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -705,6 +705,9 @@ typedef unsigned char *sk_buff_data_t;
->  enum skb_tstamp_type {
->  	SKB_TSTAMP_TYPE_RX_REAL = 0,    /* A RX (receive) time in real */
->  	SKB_TSTAMP_TYPE_TX_MONO = 1,    /* A TX (delivery) time in mono */
-> +	SKB_TSTAMP_TYPE_TX_USER = 2,    /* A TX (delivery) time and its clock
-> +									 * is in skb->sk->sk_clockid.
-> +									 */
+> So this patchset will basically not break the usage of perf tools and will
+> improve practicality.
 
-Weird indentation?
+Sorry, but I don't agree. The original commit adding this driver
+(55691f99d417) gives the following examples in the commit message:
 
-More fundamentally: instead of defining a type TX_USER, can we use a
-real clockid (e.g., CLOCK_TAI) based on skb->sk->sk_clockid? Rather
-than store an id that means "go look at sk_clockid".
+For example:
+      perf stat -a -I 1000 -e imx9_ddr0/eddrtq_pm_rd_trans_filt,counter=2,axi_mask=ID_MASK,axi_id=ID/
+      perf stat -a -I 1000 -e imx9_ddr0/eddrtq_pm_wr_trans_filt,counter=3,axi_mask=ID_MASK,axi_id=ID/
+      perf stat -a -I 1000 -e imx9_ddr0/eddrtq_pm_rd_beat_filt,counter=4,axi_mask=ID_MASK,axi_id=ID/
 
->  };
->  
->  /**
-> @@ -830,6 +833,9 @@ enum skb_tstamp_type {
->   *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
->   *		skb->tstamp has the (rcv) timestamp at ingress and
->   *		delivery_time at egress.
-> + *		delivery_time in mono clock base (i.e., EDT) or a clock base chosen
-> + *		by SO_TXTIME. If zero, skb->tstamp has the (rcv) timestamp at
-> + *		ingress.
->   *	@napi_id: id of the NAPI struct this skb came from
->   *	@sender_cpu: (aka @napi_id) source CPU in XPS
->   *	@alloc_cpu: CPU which did the skb allocation.
-> @@ -960,7 +966,7 @@ struct sk_buff {
->  	/* private: */
->  	__u8			__mono_tc_offset[0];
->  	/* public: */
-> -	__u8			tstamp_type:1;	/* See SKB_MONO_DELIVERY_TIME_MASK */
-> +	__u8			tstamp_type:2;	/* See SKB_MONO_DELIVERY_TIME_MASK */
->  #ifdef CONFIG_NET_XGRESS
->  	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
->  	__u8			tc_skip_classify:1;
+I don't think these will work any more if we apply this patch.
 
-With pahole, does this have an effect on sk_buff layout?
-
-> @@ -4274,7 +4280,16 @@ static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
->  					enum skb_tstamp_type tstamp_type)
->  {
->  	skb->tstamp = kt;
-> -	skb->tstamp_type = kt && tstamp_type;
-> +
-> +	if (skb->tstamp_type)
-> +		return;
-> +
-
-Why bail if a type is already set? And what if
-skb->tstamp_type != tstamp_type? Should skb->tstamp then not be
-written to (i.e., the test moved up), and perhaps a rate limited
-warning.
-
-> +	if (kt && tstamp_type == SKB_TSTAMP_TYPE_TX_MONO)
-> +		skb->tstamp_type = SKB_TSTAMP_TYPE_TX_MONO;
-> +
-> +	if (kt && tstamp_type == SKB_TSTAMP_TYPE_TX_USER)
-> +		skb->tstamp_type = SKB_TSTAMP_TYPE_TX_USER;
-
-Simpler
-
-    if (kt)
-        skb->tstamp_type = tstamp_type;
+Will
 
