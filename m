@@ -1,107 +1,101 @@
-Return-Path: <linux-kernel+bounces-139098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE5A089FE88
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:29:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56D6289FE8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:29:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E04041C217F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:29:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 845751C220E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:29:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D2717BB2C;
-	Wed, 10 Apr 2024 17:29:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0520A17BB2C;
+	Wed, 10 Apr 2024 17:29:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nlJJ3J4H"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="1uyU8lgt"
+Received: from 009.lax.mailroute.net (009.lax.mailroute.net [199.89.1.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15A44178CEE;
-	Wed, 10 Apr 2024 17:29:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949C9178CEE;
+	Wed, 10 Apr 2024 17:29:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712770167; cv=none; b=LeQThXHn/NfWSrKj77ZRhFQWbYqtlF067naUA3cBfsKXla5v1jjddUm4lVFIV3ODiWfFFLOgZhXfKZJdIihIXJJvsR3zm8vhfaY2vp1TWVi62MIIRPfz2K796+NfZv4m3AdPLkq0ERVbIiw1c6MpJNcPCs7rGFtD6Ll1kXVS2hM=
+	t=1712770181; cv=none; b=hFPnpgR/yQo36uNVoWpsIuY73yTjUOwLn36+N4S+oGGcx8bz+Ncl/iqWC8NGx1MgyysvzqisppPc+LcQM7EkXcxOAIBocvDLihwcg13yU5OfzNcMPcOMtt5CmBDq4eqEhS5yd36LPStCHP1kqmnKGkScRUgCuC6q7i8pXxfiKVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712770167; c=relaxed/simple;
-	bh=kKy/KkBjkWZbvlopf+v401WCCnoGXIliP5F7ZNV9yIs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rMIFrk2cj07xgSPsJCllgb+oATNC5RbQL4dqQDJxGLMQqiNe5GreNUPRCpv9q86xKcS62iNd9jSG60ss5QfYdPA4Kg6CWrquc6XUh0t4tNCLex4YgO8HROSIT2+nGcsoqCXIMTQNBDwyXVOpny+1689K5Gv+6xhJXKTs7ipXTzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nlJJ3J4H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A734CC433C7;
-	Wed, 10 Apr 2024 17:29:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712770166;
-	bh=kKy/KkBjkWZbvlopf+v401WCCnoGXIliP5F7ZNV9yIs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nlJJ3J4HT50hadj+1d/lz0xRzTzb5GeCtya2+Cc8lcfxz9pWNZXQ3zT5vdi6NAbeU
-	 Gz+t0h+fPb6sIhdXIBQMKgAix6DnLgS3R2KPwaBLYs3wzebhyXjsuw0MtxcVyo0Hq0
-	 9LwEb7x024/I86PfKizx7SLRp3WmyFHI2ix5zJgIGSb+6dPkEHKlScKPbapMO8S2jM
-	 8BBfe0OIYPunXnX3MkNInb7lFsVMuMMow6wMLlzdQTgmRYR9G9RQkSK3Z8jgRhICVM
-	 G0nwpufPRxE0mPi5WDSh2EpyUHVTIynzAkavDyfTMu/9IzcsXCrKFjxQ2E53roj0SM
-	 TJgMR9Z18HhOg==
-Date: Wed, 10 Apr 2024 12:29:24 -0500
-From: Rob Herring <robh@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: matthew.gerlach@linux.intel.com, bhelgaas@google.com,
-	lpieralisi@kernel.org, kw@linux.com,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: PCI: altera: Convert to YAML
-Message-ID: <20240410172924.GA622917-robh@kernel.org>
-References: <20240405145322.3805828-1-matthew.gerlach@linux.intel.com>
- <2ece9ac2-899c-4185-b0f3-8ab939afc1e5@linaro.org>
- <alpine.DEB.2.22.394.2404081309050.381257@sj-4150-psse-sw-opae-dev2>
- <d079bf4d-ebfe-4d98-b718-0c545aabbd30@linaro.org>
+	s=arc-20240116; t=1712770181; c=relaxed/simple;
+	bh=FOUarcCd37+mdyoB5X+/EZhHU0hgvYzQS2orUbaNveg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ppttTWivc+J6lANqpqLIlrhjssByJPnMYmdY7Bo5T5XxncQfs4uHuSim4f7fFAwgo9jsA/BaV+JM2+anGQYxfdkjd6XxUqM5WQ+VvLOeen6rLfuxrfUZ2V7Pi+9d31Yg6C0uAmqTGTR8qtaNE4kDsv7v3caio/YuVuIRI+/b62A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=1uyU8lgt; arc=none smtp.client-ip=199.89.1.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 009.lax.mailroute.net (Postfix) with ESMTP id 4VF8vx1X6NzlgVnF;
+	Wed, 10 Apr 2024 17:29:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:references:content-language:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1712770171; x=1715362172; bh=/ejLhzmQMUqK5UmgZEEMQYhm
+	2HOU1qT+IdJIitt7/54=; b=1uyU8lgtDUWhSfRwtwlS+jbrXEXd/mro0Fa9pG2a
+	BnDV8TDIVggxjeOCobxsdRGEq5v7oZWJ0iMyaNHJNuwwFPP3/h0WU03w22GCGc+X
+	Ulgvb4Jdp9JdIVCfaUx3Ezmf3OiCx1tzpX5BPBIen02Uy4IT9JXruG8OPeEm1n+c
+	LR6c0VLnJItLeGtFU4GKHd3OBqG//RDV1RhaxVSWPKWvG1MdVRA4hXodOYwlVd8/
+	QFaRJlByCB0q9U3gVbC12yT2kM/9OXRCFqRrUH7Orx3DIGNLgZfe2NQkG2s+0cRS
+	Y2UnJHrxlpBznDCsTMZrJQfFmIrb+e5/3tQ359JvYF01XQ==
+X-Virus-Scanned: by MailRoute
+Received: from 009.lax.mailroute.net ([127.0.0.1])
+ by localhost (009.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id Lhg5OmLnP2t5; Wed, 10 Apr 2024 17:29:31 +0000 (UTC)
+Received: from [100.125.77.89] (unknown [104.132.0.89])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 009.lax.mailroute.net (Postfix) with ESMTPSA id 4VF8vs1DCxzlgTsK;
+	Wed, 10 Apr 2024 17:29:28 +0000 (UTC)
+Message-ID: <8b3fd7b3-3fad-4baf-8df5-55fe0fdc9438@acm.org>
+Date: Wed, 10 Apr 2024 10:29:26 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d079bf4d-ebfe-4d98-b718-0c545aabbd30@linaro.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] scsi: ufs: Remove support for old UFSHCI versions
+Content-Language: en-US
+To: Avri Altman <Avri.Altman@wdc.com>,
+ "James E . J . Bottomley" <jejb@linux.ibm.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc: "hch@infradead.org" <hch@infradead.org>, Bean Huo <beanhuo@micron.com>,
+ "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240407060412.856-1-avri.altman@wdc.com>
+ <20240407060412.856-2-avri.altman@wdc.com>
+ <37c51970-1408-4a71-926a-780c663e5572@acm.org>
+ <DM6PR04MB657551A7FAB39883B3D890F1FC062@DM6PR04MB6575.namprd04.prod.outlook.com>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <DM6PR04MB657551A7FAB39883B3D890F1FC062@DM6PR04MB6575.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 09, 2024 at 08:29:07AM +0200, Krzysztof Kozlowski wrote:
-> On 08/04/2024 22:34, matthew.gerlach@linux.intel.com wrote:
-> >>> diff --git a/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml b/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
-> >>> new file mode 100644
-> >>> index 000000000000..999dcda05f55
-> >>> --- /dev/null
-> >>> +++ b/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
-> >>> @@ -0,0 +1,106 @@
-> >>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> >>> +# Copyright (C) 2024, Intel Corporation
-> >>
-> >> This is derivative of previous work, which is easily visible by doing
-> >> the same mistakes in DTS as they were before.
-> > 
-> > This is definitely derivative of previous work, and I want to fix the 
-> > DTS mistakes too.
-> > 
-> >>
-> >> You now added fresh copyrights ignoring all previous work, even though
-> >> you copied it. I don't agree.
-> >>
-> >> If you want to ignore previous copyrights, then at least don't copy
-> >> existing code... although even that would not be sufficient.
-> > 
-> > Ignoring previous copyrights was not my intent. There is no copyright 
-> > statement in the original text version of the device tree bindings. Should 
-> > that lack of copyright statement carry forward?
+On 4/10/24 00:06, Avri Altman wrote:
+> And the commit log say:
+> To be extra cautious, leave out support for
+> UFSHCI2.0 as well, and just remove support of host controllers prior
+> to UFS2.0.
 > 
-> All the authors are copyright holders automatically, at least in some or
-> maybe most jurisdictions. You do not need to add copyright label for
-> material to be copyrighted. That's why you are not allowed to relicense
-> the work for example, without other authors' agreement.
+> Isn't that clear enough?
 
-The only thing I see as missing is some years. All the authors were 
-Altera which is now Intel, so Intel is the sole copyright holder. 
-Whether is says 2015 contributions were Altera or Intel is probably 
-immaterial.  There were also contributions by Google (Bjorn), but those 
-were purely editorial.
+In the description of this patch I see "leave out support for
+UFSHCI2.0 as well". I read this as "leave out UFSHCI 2.0 support from
+the driver". Apparently you meant "leave out removal of UFSHCI 2.0 
+support from this patch"?
 
-Rob
+Thanks,
+
+Bart.
+
 
