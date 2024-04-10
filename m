@@ -1,165 +1,146 @@
-Return-Path: <linux-kernel+bounces-138330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E4E989EFDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:32:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AE1C89EFE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:32:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E0AD1C21094
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:32:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBA991C20825
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8678B159214;
-	Wed, 10 Apr 2024 10:32:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E98B159211;
+	Wed, 10 Apr 2024 10:32:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KzalsUOm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="aNDYDSLL"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5DC8C157;
-	Wed, 10 Apr 2024 10:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC47D13D60C
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:32:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712745125; cv=none; b=ZmKKzlG500g2ZsSrP94U/Va4UL+nuToYgUC0nRO/26hP7wHG7qKXLaeRlF3vIIUuci92GjEeltOxy8iHpMjYTIuQ8NSHvWrnxp7fveKi8XqJ0t6tIelxQ/8ZYtALFtQVEtoI4IcpYG1LXb7PRAWfxjBknJxcBRpDELVya8Uv6W0=
+	t=1712745157; cv=none; b=QPahsETzb/8MLQBcpnO36Aelm9r67O7UruXDCE2dAkmzlH3+z+unJNhaNy57xH8jG3JbID9QMBTqff/W/NF991MNA3C9HkWo+7RzlDhexLWYrc3bAzzxJwugpDUwZiBw5sCJ68ZLb1HV1CBFcSTS5wn4hj2HedyjL0O0Y4gKmy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712745125; c=relaxed/simple;
-	bh=OzNxKoT6rtjavH+sSKdTA2aMIU0990lfBRRYYlSp7XA=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=feKDrXhCCL6T2+UqZkQfZgeLH8Kmhaj4bifMXew/8xX5wRmwRpWhV1RvE8M25+evx6Gejpb5LI5+aVchC9n0mEkGhtMDo/X2vncczQTn7M86EqfvZJ33KFnvU3biKrdOk/BScaSNmWAYy4Ul3uMky5jVYD7zSJP1J7tyYazyupc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KzalsUOm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C0D0C433F1;
-	Wed, 10 Apr 2024 10:32:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712745125;
-	bh=OzNxKoT6rtjavH+sSKdTA2aMIU0990lfBRRYYlSp7XA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=KzalsUOmcblbIZ97GurA1rdPl9SC/8tq1vtLK++nVmvjVqR9HNbhdulCsgNlNpZUj
-	 NhO4HaeutbcfxdSMSiqUGFVU9mek+M+PfbLiaK11UZ2O3Pcm1Mc6zY7XAj8g8UbSaE
-	 6lkkhGnAxVFqTDIIrcjTnF3NVdW+jFwkEWP5fqybV7kidLwDueM6sPMB+OgxKrRLvV
-	 10I2eCvh2td9EFeowCycDH7ErIUGJUsVYaVx/+/g6ilmIJedkvHTmHYxFyRHGtKmvh
-	 hLtqtr2WwFmFYoQtdoA/57HlbU1WoYW7Bi6w8Te9JxTp9jOoVuF78A9vuezWC0U/rN
-	 DW7g6eiwYTL1A==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1ruVFK-0036qE-TU;
-	Wed, 10 Apr 2024 11:32:02 +0100
-Date: Wed, 10 Apr 2024 11:32:02 +0100
-Message-ID: <86ttk9se3h.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Dave Martin <Dave.Martin@arm.com>,
-	kvmarm@lists.linux.dev,
-	linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v6 2/5] KVM: arm64: Add newly allocated ID registers to register descriptions
-In-Reply-To: <73c6012f-adb0-470b-bd47-6093d28aea97@sirena.org.uk>
-References: <20240329-arm64-2023-dpisa-v6-0-ba42db6c27f3@kernel.org>
-	<20240329-arm64-2023-dpisa-v6-2-ba42db6c27f3@kernel.org>
-	<87le5ysm4l.wl-maz@kernel.org>
-	<73c6012f-adb0-470b-bd47-6093d28aea97@sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1712745157; c=relaxed/simple;
+	bh=m3Nofq8nnTcdPA9w3dqHCTAf3BKyCsncf1j3teeV6vI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=py2BQtKpyyl39617fBW3U1uAldSfq0iJcdi4vKX8hIMJ/x/taYQ3HMyTxlNh9m7UoiYAju9ovZadICE2e0ZGtCnmdfH2NfwaLKiCeDDir0M1EAjJbH8G13bXYa0pK0UmuDpRyAdyZpq2FBW1a2vKL5x6c4EqsNjkv1mZAj1WyE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=aNDYDSLL; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a5213f0f85dso33308866b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:32:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1712745153; x=1713349953; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6MEcCmEoW0htF0gEeNXuNZYs1zBV/uinaZ06hXC1M6g=;
+        b=aNDYDSLLfCTAgvaHBy944SZdfJJ/oK5nG2BfGvAFYVx9e0rqoiF8y3q8A7/mPD/U7h
+         4aZm29P6seTzqGwoptdyM4hqELLkAid61QvfauafhWwwR4Dn/cx2LFdk/69v+kndN6VX
+         j0E6iGeLS3NOmRUrCuex+MTuwSmFEToV5/JLUipSm5cXhxNFI/NeViATN+7/U0vaoqvI
+         1Lea5H2wXGAUcZHva8+R8tZ714Q/rv7u5TUjL1HAM0G4K8YILXaRIkMuZ8HsPoJE3rO7
+         SPY3pdaiClgHdzGSmdGvoqBr/VCVbl+c7JgFSB8yt8oNY2b6MSHZ9M0liUSZIb3oO9ec
+         NCBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712745153; x=1713349953;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6MEcCmEoW0htF0gEeNXuNZYs1zBV/uinaZ06hXC1M6g=;
+        b=glYNXl3e6pI4NBK/QrzuP9oESvBHx8+s+A/9CkCGIrohPu/dvco0mPlYeCrV09lr05
+         xZCen79SDvARWz7PQDpoHT4199PwYLV0qtThpenykMtEhSynZU/eDYhmtWmwtTPThRHl
+         CgUV2c3PGxduR0DWSwLbMevJTr+AWjDTMOtG3a999v7QPKYPsvPw5pnt9FPhGEcI7jiP
+         wxhH7xZimRpQ5vWhumRJBzLZMs+StSR2AiBldEjRO8QdJTQ3CSZfrVYBm/BDrVcxwifY
+         bM3ydFT1v0EO8AAYOyra2d86/ACiKZW89VyAWZa8XcdzSIGijC2sbouv3CS197/mAJW6
+         aWFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU55oeuM/kUxH7ikj41wimjybiDaN3y8XY7U3yJSmgfwBFS2WMVPsavmQJV59KhN5FXT5F8PBk60Pqec9FJJErnyhrv/h2enbMbNNAL
+X-Gm-Message-State: AOJu0YyGNIiSi2j7jO/RVstU4S9HC/Wd6Py03yDbdSxpbfrFK+SJevvV
+	1BAHOavKBH4ASUcg0/TgnSqo389Ow/1xhgoAMXByxijzB5sMOy4deHdobSQA1wM=
+X-Google-Smtp-Source: AGHT+IEu+HLG7Hf7fv03wqRzissU4p/7W8RIcsudExySNDSbRbaHSDj+oW8GDZ5KlSNJJ8JMviQLRg==
+X-Received: by 2002:a17:907:7e8e:b0:a46:3ce4:5acb with SMTP id qb14-20020a1709077e8e00b00a463ce45acbmr1479637ejc.75.1712745153037;
+        Wed, 10 Apr 2024 03:32:33 -0700 (PDT)
+Received: from [192.168.50.4] ([82.78.167.8])
+        by smtp.gmail.com with ESMTPSA id ml16-20020a170906cc1000b00a4e670414ffsm6811000ejb.109.2024.04.10.03.32.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 03:32:32 -0700 (PDT)
+Message-ID: <58d90c1c-0c3c-4818-9d5c-d0c7661d0cf4@tuxon.dev>
+Date: Wed, 10 Apr 2024 13:32:31 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: broonie@kernel.org, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, corbet@lwn.net, shuah@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, kvmarm@lists.linux.dev, linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 07/10] clk: renesas: r9a08g045: Add support for power
+ domains
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ magnus.damm@gmail.com, linux-renesas-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240307140728.190184-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240307140728.190184-8-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdXQ=m2BJ3Tjt0m8Q_H6dLh62sXjd2EMBTc+kuAwtc5B7A@mail.gmail.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+Content-Language: en-US
+In-Reply-To: <CAMuHMdXQ=m2BJ3Tjt0m8Q_H6dLh62sXjd2EMBTc+kuAwtc5B7A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, 02 Apr 2024 18:21:55 +0100,
-Mark Brown <broonie@kernel.org> wrote:
+Hi, Geert,
+
+On 14.03.2024 18:01, Geert Uytterhoeven wrote:
+> On Thu, Mar 7, 2024 at 3:07 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> Instantiate power domains for the currently enabled IPs of R9A08G045 SoC.
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> ---
+>>
+>> Change in v2:
+>> - used DEF_REG_CONF() to describe register offests and bits
+>> - updated MSTOP bitmask for ddr domain
+>> - updated MSTOP config for oftde_ddr
+>> - kept the same description for gic as the CPG_BUS_ACPU_MSTOP register
+>>   documentation in the latest HW manual version is wrong and it will be
+>>   fixed; proper description for GIC is located in "Registers for Module
+>>   Standby Mode" table
+>> - haven't added watchdog domain (was missing in v1, too, by mistake) as
+>>   the watchdog restart handler will fail w/o patch [1]; with this pm domain
+>>   support the watchdog will fail to probe; not sure what is the best
+>>   option until [1] will be integrated
+>>
+>> [1] https://patchwork.kernel.org/project/linux-renesas-soc/patch/20240228083253.2640997-10-claudiu.beznea.uj@bp.renesas.com
 > 
-> On Sun, Mar 31, 2024 at 11:59:06AM +0100, Marc Zyngier wrote:
-> > Mark Brown <broonie@kernel.org> wrote:
+> I guess we'll have to wait until that dependency is integrated,
+
+I opt for this option to not break the reset support currently integrated.
+I don't have any feedback from maintainers yet on [1], though. I don't know
+how long it will take.
+
+Thank you,
+Claudiu Beznea
+
+
+> or use an immutable branch?
 > 
-> > > The 2023 architecture extensions have allocated some new ID registers, add
-> > > them to the KVM system register descriptions so that they are visible to
-> > > guests.
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > 
-> > > We make the newly introduced dpISA features writeable, as well as
-> > > allowing writes to ID_AA64ISAR3_EL1.CPA for FEAT_CPA which only
-> > > introduces straigforward new instructions with no additional
-> > > architectural state or traps.
+> Gr{oetje,eeting}s,
 > 
-> > FPMR actively gets trapped by HCRX_EL2.
+>                         Geert
 > 
-> Sure, I'm not clear what you're trying to say here?
-
-I'm saying (and not trying to say) that there are traps implied by the
-features that you are adding.
-
-> The "no additional" bit is referring to FEAT_CPA.
-
-Well, that wasn't clear to me.
-
-And when it comes to CPA, there are additional controls in SCTLR2_ELx,
-which doesn't even gets context switched for EL1. What could possibly
-go wrong?
-
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 > 
-> > > -	ID_UNALLOCATED(6,3),
-> > > +	ID_WRITABLE(ID_AA64ISAR3_EL1, ~(ID_AA64ISAR2_EL1_RES0 |
-> > > +					ID_AA64ISAR3_EL1_PACM |
-> > > +					ID_AA64ISAR3_EL1_TLBIW)),
-> > >  	ID_UNALLOCATED(6,4),
-> > >  	ID_UNALLOCATED(6,5),
-> > >  	ID_UNALLOCATED(6,6),
-> 
-> > Where is the code that enforces the lack of support for MTEFAR,
-> > MTESTOREONLY, and MTEPERM for SCTLR_ELx, EnPACM and EnFPM in HCRX_EL2?
-> 
-> Could you please be more explicit regarding what you're expecting to see
-> here?
-
-I'm expecting you to add all the required masking and fine-grained
-disabling of features that are not explicitly advertised to the guest.
-
-This should translate into additional init code in kvm_init_sysreg(),
-kvm_init_nv_sysregs() and limit_nv_id_reg(). You also should update
-the exception triaging infrastructure in emulate-nested.c.
-
-> Other than the writeability mask for the ID register I would have
-> expected to need explicit code to enable new features rather than
-> explicit code to keep currently unsupported features unsupported.  I'm
-> sure what you're referencing will be obvious once I see it but I'm
-> drawing a blank.
-> 
-> > And I haven't checked whether TLBI VMALLWS2 can be trapped.
-> 
-> I didn't see anything but I might not be aware of where to look, there
-> doesn't seem to be anything for that specifically in HFGITR_EL2 or
-> HFGITR2_EL2 which would be the main places I'd expect to find
-> something.
-
-That's a really odd place to look. This is a S2 invalidation
-primitive, which by definition is under the sole control of EL2, and
-therefore cannot be trapped by any of the FGT registers, as they only
-affect lesser-privileged ELs.
-
-The instruction is described in the XML:
-
-https://developer.arm.com/documentation/ddi0601/2024-03/AArch64-Instructions/TLBI-VMALLWS2E1--TLB-Invalidate-stage-2-dirty-state-by-VMID--EL1-0
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
 
