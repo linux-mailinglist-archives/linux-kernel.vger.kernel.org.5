@@ -1,141 +1,95 @@
-Return-Path: <linux-kernel+bounces-138849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E0E389FB21
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:11:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE20089FB7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:27:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC847287F94
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:11:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BBECB28C4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:10:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B222716E86E;
-	Wed, 10 Apr 2024 15:10:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0227316DEDC;
+	Wed, 10 Apr 2024 15:10:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="tlnG1Ifk"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gyujga+H"
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820EF13A414;
-	Wed, 10 Apr 2024 15:10:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B852A16D9D6
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:09:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712761840; cv=none; b=lG+ODZKTxR22J8A6MhfnsDv4eSWTW7LtE+GG/DkYLEc5WTRiRqjbZD2hCO3JR3lnF2LPmM9kv4PYeTGxLT3TuVkhb9Rc2wHtdF/XTc5ZXaRaLYjZnogevoUcLy5bM+IEc42Ku/Bjs5c+rIxom/3JtCyHqp7qTBIihIyLGWOlvIk=
+	t=1712761800; cv=none; b=EZHmY7evIN7XywZUMvIEbI79PdHiNfIkd4SiB6j4MOK5uOb465UTrBiN4kQgCfaS/P5GwQQIoZkGCLHQOCGwLsYDLkZoBmBI01cWXqU0j+tjv6WjYyvTR5Dyxr5a7yRn7Df3uI6tqN4v1GxTYi7uaSMm4HGQREswte4ldQtk0FQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712761840; c=relaxed/simple;
-	bh=oIQ5ixyZVUtaITgpCYO6cxZijRq/1Oi5Mu9UXRRodeE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mu8IJuYzpU8Y5zLBR1JrJgUvWDB/kGydsr3aZNq9AemYEMW0m6N7Zbb6Sasiuyibkr+HRZ4JySww+W5fll4U7hk0pmLH8/mOKffNsABUkaGZ2ZMYhdZLr0WvnLqOxg8rpkowaf4l3m7nSjCvzGMfQkXf66oIELntek6D5o1WArQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=tlnG1Ifk; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43AE2SgW003190;
-	Wed, 10 Apr 2024 15:09:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=goIiqaO1e1ZadVL5tmtv4UVpZpbODSAt3kyKMNXwyEY=;
- b=tlnG1IfkgPpDczlaelVaestqGHLNMYNirD81o9vWXW/y6P+tcyYyJkA5Y/RJfm9vkS8M
- lZEpxUxjscOqgysuqg4M9TNYSIHRjZQDSlbi71bjsTYxKtd79YeUSwVH03h8OBH59sCd
- a0z/KXmMU37V2A0bj4TQ8k1PMnCrG1Qh8XaT40TM8UVjyfO9TNdY/NKpyJgD99hVXnhA
- ugKVdhpWmpv/D8M1MaAOKQTdZrDi8Uwbq7BFhMHzXDqkyXLA6LbsxiAEtqszXfcEUcZr
- QAWyINq5TA5rHE4S3I6IblOR+hiuf5bJzOgrh1irV8olGLcLOga2u7QC2fJRSIl2/iiV SA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdv63g6qf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 15:09:56 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43AF9ueq023382;
-	Wed, 10 Apr 2024 15:09:56 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdv63g6qa-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 15:09:55 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43ACB0Br016965;
-	Wed, 10 Apr 2024 15:09:55 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xbke2n0jk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 15:09:54 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43AF9ntp47776096
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 10 Apr 2024 15:09:51 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2753C2004D;
-	Wed, 10 Apr 2024 15:09:49 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 135D320040;
-	Wed, 10 Apr 2024 15:09:49 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 10 Apr 2024 15:09:49 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55669)
-	id CBE8FE0628; Wed, 10 Apr 2024 17:09:48 +0200 (CEST)
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH v2 RESEND 1/5] sched/vtime: remove confusing arch_vtime_task_switch() declaration
-Date: Wed, 10 Apr 2024 17:09:44 +0200
-Message-Id: <783d7c611864f82b0fb9edf01890b9396f3a549a.1712760275.git.agordeev@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <cover.1712760275.git.agordeev@linux.ibm.com>
-References: <cover.1712760275.git.agordeev@linux.ibm.com>
+	s=arc-20240116; t=1712761800; c=relaxed/simple;
+	bh=JBToPHsKyA1IBRYoalpk1N7HunyLQxVk5LEZ5W4MlOs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Qg0xXNRnKVRQ7jbShKsAjC05aBjce7U6Y/n948udiblO0CM4TY+8VA261xYEq0/4jBw4sF4D5NMuKlzBGPatuLCNVFcRru+wkSkCT+e6aGRrjIANhMFRMzHgEF5LQl3ee0XiJjXC0Pdl2g9KyMffdKfZ/0emnNxHPenIOGycpP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gyujga+H; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <4bfc3494-a3e9-4b4c-9d93-fa1049a10235@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712761795;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Cy4xebQzWg8ALuOLJMZcZOAIDsJ9HQugVvvvnFO1U9g=;
+	b=gyujga+HaZvsTQ7G3DmgTeft/hcI9fL/iS3AKqRtU5+stijNTdql8qDujHFNsjLn8ti84u
+	LaATm+Wy2MzAHhA6g3V5ezs1I5QHVmJxvhUjpyeVBtlJdHU/Q2ueaMlrY+dJMoldGCfTYB
+	ojlT6FDWBvgWlw+0ANXTkxkOOiKzkc8=
+Date: Wed, 10 Apr 2024 08:09:45 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -VpHnQUY1cWPNEXUu0pXzC6Op3cby8Ep
-X-Proofpoint-GUID: qUKdOFIbZu7Jrmu--JI7KXOlVpdGr0OS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=849 priorityscore=1501 lowpriorityscore=0 impostorscore=0
- bulkscore=0 clxscore=1015 suspectscore=0 adultscore=0 phishscore=0
- spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404100109
+Subject: Re: [PATCH] bpf: strnchr not suitable for getting NUL-terminator
+Content-Language: en-GB
+To: Edward Adam Davis <eadavis@qq.com>, bpf@vger.kernel.org
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+ kpsingh@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev,
+ sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com
+References: <tencent_EC72CD3879FA6F102FC56E4495F0E822EC0A@qq.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <tencent_EC72CD3879FA6F102FC56E4495F0E822EC0A@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Callback arch_vtime_task_switch() is only defined when
-CONFIG_VIRT_CPU_ACCOUNTING_NATIVE is selected. Yet, the
-function prototype forward declaration is present for
-CONFIG_VIRT_CPU_ACCOUNTING_GEN variant. Remove it.
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
----
- include/linux/vtime.h | 1 -
- 1 file changed, 1 deletion(-)
+On 4/9/24 5:33 PM, Edward Adam Davis wrote:
+> The strnchr() is not suitable for obtaining the end of a string with a length
+> exceeding 1 and ending with a NUL character.
 
-diff --git a/include/linux/vtime.h b/include/linux/vtime.h
-index 3684487d01e1..593466ceebed 100644
---- a/include/linux/vtime.h
-+++ b/include/linux/vtime.h
-@@ -18,7 +18,6 @@ extern void vtime_account_idle(struct task_struct *tsk);
- #endif /* !CONFIG_VIRT_CPU_ACCOUNTING */
- 
- #ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN
--extern void arch_vtime_task_switch(struct task_struct *tsk);
- extern void vtime_user_enter(struct task_struct *tsk);
- extern void vtime_user_exit(struct task_struct *tsk);
- extern void vtime_guest_enter(struct task_struct *tsk);
--- 
-2.40.1
+Could you give more detailed explanation with specific examples? I think
+strnchr() does the right thing here. Note that if fmt is not NULL,
+strnchrnul() never returns NULL pointer so in the change below,
+'if (!fmt_end)' will be always false.
 
+>
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>   kernel/bpf/helpers.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 449b9a5d3fe3..07490eba24fe 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -826,7 +826,7 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
+>   	u64 cur_arg;
+>   	char fmt_ptype, cur_ip[16], ip_spec[] = "%pXX";
+>   
+> -	fmt_end = strnchr(fmt, fmt_size, 0);
+> +	fmt_end = strnchrnul(fmt, fmt_size, 0);
+>   	if (!fmt_end)
+>   		return -EINVAL;
+>   	fmt_size = fmt_end - fmt;
 
