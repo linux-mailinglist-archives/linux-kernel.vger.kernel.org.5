@@ -1,104 +1,86 @@
-Return-Path: <linux-kernel+bounces-137950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39EF089EA35
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:55:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90D0089EA32
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:55:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2A821F231FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:55:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44A4928300D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:55:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FF281CAA9;
-	Wed, 10 Apr 2024 05:55:51 +0000 (UTC)
-Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CE451CA80;
+	Wed, 10 Apr 2024 05:55:05 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 344A764A;
-	Wed, 10 Apr 2024 05:55:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.191.123.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6521F64A
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 05:55:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712728551; cv=none; b=Xj5jOSZflDL5NhbWJWnBz9JfeF3iP+xgPY9S5m354dlGtRkSVe82bEkyYcxoleAY8bAAPMNFldg0IyC9qMCdZxbXCAbeLNLxYk9+uAEWFRs6GSE3c1TyQ689UUX0yDHSFTAZqz5cGNPLnM8xC8V/Jpd2HYQ8Z1T7mr+y8hjsNro=
+	t=1712728504; cv=none; b=e+A/XZFicwxheGof361dO5QXSiE7kDBLOwvun2Q9iTCnJgJjm3wMae3N1MIySA+fgPMdLYz7jTwQujGY/Tm67Bqd5D2eDnWsFkHvlYHG/ZunAiiZZOQ7xrFvkuPjTM49Zww3glcPkAF9I8YnJvN6OeQjd8pkUo5nmYxtL+/B+io=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712728551; c=relaxed/simple;
-	bh=igMcFDMxvu2p9U20IbqyeRQJRA/g0Q0NAOMiAPdkpwM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=AEZ79mjuNwfPL8Tu0hORVpnCT7JES/1HkaC2XTtcSexzcnqccjhXTyXbv3nBTf1TS5V/YQTS1INxjNpUN1W2Nb43fmyplZ/5AzEPq10Yy6j5G2I4HPoJM5vnbEU1S4JfmZJHSQaL7qLO18EWWCesVy/Qs73bBsNz1ZE0umOadnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com; spf=pass smtp.mailfrom=h3c.com; arc=none smtp.client-ip=60.191.123.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
-Received: from mail.maildlp.com ([172.25.15.154])
-	by h3cspam02-ex.h3c.com with ESMTP id 43A5s7Wa084336;
-	Wed, 10 Apr 2024 13:54:07 +0800 (GMT-8)
-	(envelope-from liu.yeC@h3c.com)
-Received: from DAG6EX08-BJD.srv.huawei-3com.com (unknown [10.153.34.10])
-	by mail.maildlp.com (Postfix) with ESMTP id CEF182004BC2;
-	Wed, 10 Apr 2024 13:56:16 +0800 (CST)
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) by
- DAG6EX08-BJD.srv.huawei-3com.com (10.153.34.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.27; Wed, 10 Apr 2024 13:54:08 +0800
-Received: from DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4])
- by DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4%16]) with
- mapi id 15.02.1258.027; Wed, 10 Apr 2024 13:54:08 +0800
-From: Liuye <liu.yeC@h3c.com>
-To: Greg KH <gregkh@linuxfoundation.org>,
-        "andy.shevchenko@gmail.com"
-	<andy.shevchenko@gmail.com>
-CC: "daniel.thompson@linaro.org" <daniel.thompson@linaro.org>,
-        "dianders@chromium.org" <dianders@chromium.org>,
-        "jason.wessel@windriver.com"
-	<jason.wessel@windriver.com>,
-        "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "kgdb-bugreport@lists.sourceforge.net"
-	<kgdb-bugreport@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "linux-serial@vger.kernel.org"
-	<linux-serial@vger.kernel.org>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIIFYxMF0ga2RiOiBGaXggdGhlIGRlYWRsb2NrIGlzc3Vl?=
- =?gb2312?Q?_in_KDB_debugging.?=
-Thread-Topic: [PATCH V10] kdb: Fix the deadlock issue in KDB debugging.
-Thread-Index: AQHaiuuw81gSSyk26Eq+v/7KfdTz2LFgdGkAgACJimA=
-Date: Wed, 10 Apr 2024 05:54:08 +0000
-Message-ID: <0c004dd44ad5478eba9451186f4ec962@h3c.com>
-References: <20240409020326.2125332-1-liu.yec@h3c.com>
- <20240410020615.2885000-1-liu.yec@h3c.com>
- <2024041014-padlock-aggregate-4705@gregkh>
-In-Reply-To: <2024041014-padlock-aggregate-4705@gregkh>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-sender-location: DAG2
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1712728504; c=relaxed/simple;
+	bh=XKFmoqBQ3aYCT/vTnRH7eq0c8XeBxPHMPKhb8wd44c4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=X6WcORgvplGBAhTQTjRPXe5gPdCxa/ADunuJeo/5PXMFC+VUx5jRpU2ouYrAlqhSlx1EHY83Z7vHW/fNs9+wS6kTrGONMzZ1mCPytN8+Uk0rsJyFbh3+2UnoylCRjv2xTY8rHly9QtCuQhnwqyTwi1qv4suEXFuKZGQBV00u7OM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36a201729cfso32740945ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 22:55:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712728502; x=1713333302;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SE7fBbBjhAQTmqzw/vQJNTz5YtaAcqgHqBwF0555kMA=;
+        b=foatqWzgM9iSAjJlb5r45+EHKybfPhv0SaFRQuOp3HiUI6LVKCkZEVN6NFfyi8E1Fh
+         DJ5DXLDGHeY8Lj98MWM7qvhk3AKwwXaoZhIaoStpUpVRz0S3CIjWBL5w75u8kW6Gz7eK
+         B6WXttw/aXD4+3O+bUdk9ezpzCLSYuIvtDVzGaObUpiqRZf8vQ12qIgeYInnvI4+AvfC
+         S80UulNhdLcMHntEat03X0Tq4YzLVKX7CzjqYqx500cNq34b1WgUladiS9WmZFbgcyd3
+         KGH+I/9Xdh+UfMlysQQyRogcH+SA7yVsT1LmcTemijm2Y2HwPjpRWC9Gd2kSYHj+Lk+K
+         A6ww==
+X-Forwarded-Encrypted: i=1; AJvYcCUDLNSY8IMPWoG3h+AyKS9dFOcDR1EUW6gg81OqaSP4vOtADKK+5ZYJwstzVLX3iGTaeCOONMr2oh0t0p6YP+17ysfxpCvXEkg5G1VF
+X-Gm-Message-State: AOJu0YzTlgGPed4S9afcR26dvwH8PPgaJeh3UCvRQctK6EntVsKoBNDk
+	eGAbzWA6g7gp67ggtswkiUKEzikOEEvNM6bwMq8za+WvS2dF+WuutpRUDa9B7NMQCCIIXhdwNH6
+	A1kjuWrWfNrojh9riiL7Vqf8q/orn0PnmHeH+LH0nMCh2z5geG892y/E=
+X-Google-Smtp-Source: AGHT+IHoVRPXjJSko/oVJk6XQLUlDlqqsMLB5B/ZQJNfS0Yri+R7JvKhiNMD0tH+lXe9qY5ESV4PFnlvfBQLZCQrs39UX8IZDVaS
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL:h3cspam02-ex.h3c.com 43A5s7Wa084336
+X-Received: by 2002:a05:6e02:1d99:b0:369:943c:d26 with SMTP id
+ h25-20020a056e021d9900b00369943c0d26mr42136ila.3.1712728502732; Tue, 09 Apr
+ 2024 22:55:02 -0700 (PDT)
+Date: Tue, 09 Apr 2024 22:55:02 -0700
+In-Reply-To: <tencent_971B5DBEDDD41947CFF98DA0A5FB8D9B9207@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000009a1a0615b7aef1@google.com>
+Subject: Re: [syzbot] [hfs?] KMSAN: uninit-value in hfsplus_listxattr (2)
+From: syzbot <syzbot+01ade747b16e9c8030e0@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Pj4gU2lnbmVkLW9mZi1ieTogR3JlZyBLSCA8Z3JlZ2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+DQo+
-DQo+SSBoYXZlIE5PVCBzaWduZWQgb2ZmIG9uIHRoaXMgY29tbWl0LiAgWW91IGp1c3Qgc2FpZCB0
-aGF0IEkgbWFkZSBhIGxlZ2FsIHN0YXRlbWVudCBhYm91dCB0aGlzIGNvbW1pdCB3aXRob3V0IHRo
-YXQgYWN0dWFsbHkgYmVpbmcgdHJ1ZT8/Pw0KPg0KPlNvcnJ5LCBidXQgdGhhdCBpcyBmbGF0IG91
-dCBub3QgYWNjZXB0YWJsZSBhdCBhbGwuICBQbGVhc2UgZ28gd29yayB3aXRoIHlvdXIgY29tcGFu
-eSBsYXd5ZXJzIHRvIGZpZ3VyZSBvdXQgd2hhdCB5b3UgZGlkIGFuZCBjb21lIGJhY2sgd2l0aCBh
-biBleHBsYWluYXRpb24gb2YgZXhhY3RseSB3aGF0IHRoaXMgaXMgYW5kIGhvdyBpdCB3aWxsIG5v
-dCBoYXBwZW4gYWdhaW4uDQo+DQoNCj4+IFNpZ25lZC1vZmYtYnk6IEFuZHkgU2hldmNoZW5rbyA8
-YW5keS5zaGV2Y2hlbmtvQGdtYWlsLmNvbT4NCj4NCj4+IFY5IC0+IFYxMCA6IEFkZCBTaWduZWQt
-b2ZmLWJ5IG9mIEdyZWcgS0ggYW5kIEFuZHkgU2hldmNoZW5rbywgQWNrZWQtYnkgDQo+PiBvZiBE
-YW5pZWwgVGhvbXBzb24NCj4NCj5IdWg/IQ0KDQpAZ3JlZyBrLWggo7oNCkBBbmR5IFNoZXZjaGVu
-a28go7oNCg0KU29ycnksIGl0IHdhcyBteSBtaXN0YWtlLiBJIG1pc3VuZGVyc3Rvb2QgdGhlIG1l
-YW5pbmcgb2YgInNpZ25lZC1vZmYtYnkiLCB3aGljaCBsZWQgdG8gdXNhZ2UgaXNzdWVzLg0KDQpJ
-IHdhbnQgdG8gZXhwcmVzcyBteSBncmF0aXR1ZGUgZm9yIHRoZSBzdWdnZXN0aW9ucyBvbiB0aGUg
-cGF0Y2ggZnJvbSB0aGUgdHdvIG9mIHlvdS4gDQoNCldoYXQgZG8gSSBuZWVkIHRvIGRvIG5vdz8g
-UmVsZWFzZSBQQVRDSCBWMTEgYW5kIGRlbGV0ZSB0aGVzZSB0d28gc2lnbmF0dXJlcyBpbiBpdCA/
-DQo=
+Hello,
+
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+
+Reported-and-tested-by: syzbot+01ade747b16e9c8030e0@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         fec50db7 Linux 6.9-rc3
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1451495b180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=13e7da432565d94c
+dashboard link: https://syzkaller.appspot.com/bug?extid=01ade747b16e9c8030e0
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1613e213180000
+
+Note: testing is done by a robot and is best-effort only.
 
