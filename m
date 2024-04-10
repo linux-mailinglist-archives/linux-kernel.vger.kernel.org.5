@@ -1,134 +1,130 @@
-Return-Path: <linux-kernel+bounces-138319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3664B89EFC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A602989F000
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:38:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2D3D28195B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:24:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F677289257
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:38:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B34E4158DB0;
-	Wed, 10 Apr 2024 10:24:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BEA315921D;
+	Wed, 10 Apr 2024 10:37:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="GMoX2O1G"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GJSundnX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78FA2158A24;
-	Wed, 10 Apr 2024 10:24:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B927C15B0F0;
+	Wed, 10 Apr 2024 10:37:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712744651; cv=none; b=kjru5aYNmNrO878Q3HgzxP8QYHVp9uce5eZc+bdeNH3wtb64b296c5OSUSQHU5WXR4MX2+kW5NTn21lfFCRftCW0H/YdJC2689l+6kwWowucxGaMh+wdFIDiqeq5aQV7DRWHBRVOkKJxk06KHeJEEWeUPIhxN/2QWjAAD0bzIR8=
+	t=1712745465; cv=none; b=r0oBnxOc3KPkfRX/G6kIUN2OyIXD4e+fN/x5Z/882OiPg1QBkCAkbaafPcmtE1HeFxubqsiVeCE4t0RIAq5HRQ0YqcBU0gCKgEG2dc92TinlVBpNpd/jch/f7RFRHedKNaBb2E4tAXS5x5exA1kXqKhztf390vgh6Tym62Yt9PE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712744651; c=relaxed/simple;
-	bh=RMe4Zpgtu5lgHf/0r65e7RdGffT8CNspf79NQcq4bhI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=moKBFmDG/flrnjHMXe7v0YVGhvhx+LLg7t3Ah/7UW6yDno+HOKFy1cNfnRSjD98UOYtRkgQDBhMO1d9NkI+elRtU3ts2Y7A83lhovDG9xHdBXYZ//PX51IYFiavDdsg8BoSSZH/cJkNqJLKTC/DEnqwWj9V2vZq2dCjOjl6Zkc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=GMoX2O1G; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DAACEFF802;
-	Wed, 10 Apr 2024 10:23:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712744641;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4/SknAElnT6j5HCw0JAN47JCCpbMZWq8jCtLo3WbP8M=;
-	b=GMoX2O1GLeEWdq3Ksgs4NQSytZdT94CWaTvbV8+vCpznmR3+YvQhX86Se1T5n+sa9UYRRu
-	7sjR5RBaUY5F9OCxxf1NscWUs7f2wbWClLClCmeEK6Cvxkez43ejEhudPvS4NM4t7arQr7
-	jKkUYBRl0tF1IxAILLgPRxiiF9SkKaT67sb3JFsmx4YtoQMVoh0FHDgEQVuvj3kSDBlyl5
-	xmwSOspIEDT2CRKLnCHlo1FIKJrdZ3ORsr81S3sZdPMXraiktKbHQKuZ6nieI6lnDqUNJD
-	NpkrMsVyGQnGmRiH1ICqf2VIohsqjE9P06sFV08Z0MMrun8zZ9JfMFBuKfeJ5w==
-Date: Wed, 10 Apr 2024 12:23:56 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
- <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman
- <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, Martin
- Blumenstingl <martin.blumenstingl@googlemail.com>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>,
- <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <oxffffaa@gmail.com>, <kernel@sberdevices.ru>
-Subject: Re: [PATCH v3 1/2] dt-bindings: mtd: amlogic,meson-nand: support
- fields for boot ROM code
-Message-ID: <20240410122356.30852b3c@xps-13>
-In-Reply-To: <20240409181025.55504-2-avkrasnov@salutedevices.com>
-References: <20240409181025.55504-1-avkrasnov@salutedevices.com>
-	<20240409181025.55504-2-avkrasnov@salutedevices.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712745465; c=relaxed/simple;
+	bh=V6nc2YAKdgKWZHfMO2mdSMDfQwBidaZh7CVlmeQ/RdU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZPqEU1no1u6HmqPmcSMW30kNMeuokGmV3p6X0YtamkCIpGVO2E8/ytPmpCuOjz5gsnx3HvANvVX9Y7GJAnHLYLMN5JvxxisBlzdgjjSIYGTPQKB49dSHfbtrjfZWZdVom6f4WsDEofqz3xwiERduiHR2dI4acd4X0AENYo5sA0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GJSundnX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71876C433F1;
+	Wed, 10 Apr 2024 10:37:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712745465;
+	bh=V6nc2YAKdgKWZHfMO2mdSMDfQwBidaZh7CVlmeQ/RdU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GJSundnX+JygdMMTXQhsQvXdAUdTSBEnAWses4V2MkmKT6RU2v7u1bBHWViP4nhOV
+	 hmRE6TrSpSr/OukV8DB98dCuiH3oV+7b1g94qsVe23pmwp83G8CqpK4BX0ZgaVCdZU
+	 qwDUlnRnarHC/3Q0uMj/feOBJIprsLyHzP52RzrpwaMMMCsjUO/zd/+Qp8grH3GmWU
+	 xCs+Z9JvsGIOFEKB/juDLMTu/pDe64Dg+CMCh48WceL1y1dO1Jf8DGySeDpyMYw8f8
+	 jnzJYgMQABhIosVmdnijjnE8hzMWTWXlgy45WBSX+h2rcULdQ4yhEYl40BhK89tzws
+	 v30JLUDt92KHw==
+Date: Wed, 10 Apr 2024 18:24:18 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Inochi Amaoto <inochiama@outlook.com>
+Cc: Michael Opdenacker <michael.opdenacker@bootlin.com>,
+	Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chen Wang <unicorn_wang@outlook.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: dts: sophgo: add initial Milk-V Duo S board
+ device tree
+Message-ID: <ZhZo0iJFSn1te-6d@xhacker>
+References: <20240409064504.4010353-1-michael.opdenacker@bootlin.com>
+ <IA1PR20MB49532A8D4294ADCE0C33A654BB072@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <20240409-prevent-deepness-2d22bf009b16@spud>
+ <IA1PR20MB49534E00CAE29D24F7D7E718BB072@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <1514d28a-5e96-4531-a972-894e41902efa@bootlin.com>
+ <IA1PR20MB4953CA04D33EA0C7902DFA3ABB062@IA1PR20MB4953.namprd20.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <IA1PR20MB4953CA04D33EA0C7902DFA3ABB062@IA1PR20MB4953.namprd20.prod.outlook.com>
 
-Hi Arseniy,
+On Wed, Apr 10, 2024 at 09:24:40AM +0800, Inochi Amaoto wrote:
+> On Tue, Apr 09, 2024 at 03:08:17PM +0200, Michael Opdenacker wrote:
+> > Hi Inochi
+> > 
+> > On 4/9/24 at 14:27, Inochi Amaoto wrote:
+> > > On Tue, Apr 09, 2024 at 01:13:32PM +0100, Conor Dooley wrote:
+> > > > On Tue, Apr 09, 2024 at 03:17:35PM +0800, Inochi Amaoto wrote:
+> > > > > On Tue, Apr 09, 2024 at 08:45:04AM +0200, michael.opdenacker@bootlin.com wrote:
+> > > > > > From: Michael Opdenacker <michael.opdenacker@bootlin.com>
+> > > > > > 
+> > > > > > This adds initial support for the Milk-V Duo S board
+> > > > > > (https://milkv.io/duo-s), enabling the serial port and
+> > > > > > read-only SD card support, allowing to boot Linux to the
+> > > > > > command line.
+> > > > > > 
+> > > > > Hi Michael,
+> > > > > 
+> > > > > I think your patch losts the board binding and have wrong compatiable.
+> > > > > Also, the SD can have rw support with proper property. See link [1]
+> > > > > (need 'disable-wp').
+> > > > [1] doesn't go anywhere useful.
+> > > > 
+> > > This is my fault, I copied the wrong url. The right patch is
+> > > https://lore.kernel.org/r/20240217144826.3944-1-jszhang@kernel.org.
+> > 
+> > 
+> > No problem, I found out.
+> > I confirm that using the "disable-wp;" property does the trick to make the
+> > MMC writable.
+> > 
+> > However, it wasn't mentioned in the above URL...
+> > 
+> > By the way, do I really need those under &sdhci0?
+> > 
+> > + bus-width = <4>; + no-1-8-v; + no-mmc; + no-sdio;
+> > 
+> > My board looks happy so far without them ;-)
 
-avkrasnov@salutedevices.com wrote on Tue, 9 Apr 2024 21:10:24 +0300:
+setting the correct bus-width is necessary for better performance
+no-1-8-v can be removed, but it doesn't harm anything because
+the board doesn't supply 1.8v
 
-> Boot ROM code on Meson requires that some pages on NAND must be written
-> in special mode: "short" ECC mode where each block is 384 bytes and
-> scrambling mode is on. Such pages located with the specified interval
-> within specified offset. Both interval and offset are located in the
-> device tree and used by driver if 'nand-is-boot-medium' is set for
-> NAND chip.
->=20
-> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
-> ---
->  .../bindings/mtd/amlogic,meson-nand.yaml           | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yam=
-l b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> index 57b6957c8415..b86a1953056b 100644
-> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
-> @@ -64,11 +64,25 @@ patternProperties:
->          items:
->            maximum: 0
-> =20
-> +      amlogic,boot-page-last:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description:
-> +          The NFC driver needs this information to select ECC
-> +          algorithms supported by the boot ROM.
+no-mmc and no-sdio to make the probe a bit quicker
 
-Shall we have a length rather than the last page?
-
-> +
-> +      amlogic,boot-page-step:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description:
-> +          The NFC driver needs this information to select ECC
-> +          algorithms supported by the boot ROM (in pages).
-> +
->      unevaluatedProperties: false
-> =20
->      dependencies:
->        nand-ecc-strength: [nand-ecc-step-size]
->        nand-ecc-step-size: [nand-ecc-strength]
-> +      amlogic,boot-page-last: [nand-is-boot-medium, "amlogic,boot-page-s=
-tep"]
-> +      amlogic,boot-page-step: [nand-is-boot-medium, "amlogic,boot-page-l=
-ast"]
-> =20
-> =20
->  required:
-
-
-Thanks,
-Miqu=C3=A8l
+> 
+> FYI, Jisheng. Could you share some suggestions?
+> 
+> > Thanks again for your help
+> > Cheers
+> > Michael.
+> > 
+> > -- 
+> > Michael Opdenacker, Bootlin
+> > Embedded Linux and Kernel engineering
+> > https://bootlin.com
+> > 
 
