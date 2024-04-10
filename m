@@ -1,126 +1,181 @@
-Return-Path: <linux-kernel+bounces-138457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5450D89F18D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:58:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D75989F192
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:59:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09DD11F216CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:58:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEBD3B24412
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0434115B0F8;
-	Wed, 10 Apr 2024 11:58:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC3415D5B3;
+	Wed, 10 Apr 2024 11:58:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CzWGbFT0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ki2sL3Mh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 330D01494D6;
-	Wed, 10 Apr 2024 11:58:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B84A115CD56
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 11:58:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712750289; cv=none; b=cs600o/+zWgpkPKooha44d3/MDQgeO4dniFxJsxThV4Uxk2uxuPwLH/hQaW6iQBt4J6TPiAlIpCEtSzLhaBNNgQcNGLTM9JJXDzjE+t1XXmtYU1AC4iPO+sbI4arvO3wdUYH59vBJ0OtaAPoNVEihsuAfIUuNZteRJMHkKNJ/wo=
+	t=1712750328; cv=none; b=Q4/RUb/v8EF9OjUFt8zNKa4v0/ETKP5B8J+/tlbJHExFPtPnp3oxoNqqSwAslhUcsUhNU9yKKCNUaGckb1pO6pSfhqH9ZoPrS8y3A9TmPBnLk1vyyLjEvLylHzZSJqHX9eevf+BX5sX83JEaP7cv+/VYzjvqQCwvsdP1R+Ivlkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712750289; c=relaxed/simple;
-	bh=NNn9PFSTYD7cqCl6hz0HImhdmwtK0pBHKxKy9hV4DKE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P7gmFfTG3LUU4byB8dPK7jeaQCE6tB90HFYz3xAh4x4odKHgr/dTl6A7nn1mDXeo0WSPzga+R+FfxK2IGWU2AbQPuf8XOLSKXpr2hFnu0wDDzXrf7Ge9+AvqklFYCY4eCOyqBE7LRHfxEVzz0fXwzhWYKantmSYUpPvaeylkVdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CzWGbFT0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79EFAC433F1;
-	Wed, 10 Apr 2024 11:58:08 +0000 (UTC)
+	s=arc-20240116; t=1712750328; c=relaxed/simple;
+	bh=zozmtpGCyzauq3lW42w4fnyusZzE+3jFnWSCycg+74w=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=lomaPJYTwAZ+2H68pi/QQLk6wsgu7fdPGNvFKvtIu5n35SnbY6WTRNa4i+CtuFFFp5iGHjQx/bs9POghCbWF3K/JmW1WqbQLu0AmEOmGsT3qURJgoPAhZYTSGeJOcTCs+mWA/n6thkgzsQz4fBUP0wARkCvuRlkblxZvvDcJtqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ki2sL3Mh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEC8FC43390;
+	Wed, 10 Apr 2024 11:58:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712750288;
-	bh=NNn9PFSTYD7cqCl6hz0HImhdmwtK0pBHKxKy9hV4DKE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CzWGbFT0pQPr5PGe5Mcpjxw+oeW+QocsoylRdvqaI5HLgB/f62hSvN+KLluR14H3A
-	 smtVRLg7hWq30aJc0OtF9AkgPjXk4vdGiUZTqVnIiCWiuq9ym6kXsvJrz/sR+f8LIX
-	 3vG8UsYAU08EoVHW7xqRYL0OeFU0whxwBhRaKMuYc1emqwVMTYOQOxCy69w1IsYpjy
-	 qvvpk7I1MXLnliKVw6Eh0e9XcgtmXLAOtcLSyXjCnUFC1C1G5UjslgeuhsKAJC80VB
-	 JVZz7+uAoUUFLtMnpOcf4GaFRMGB86qujVcjf2mXX39UZ0Elock/AgrsExJQtkfL2a
-	 7xzQfVgNVQLxg==
-Date: Wed, 10 Apr 2024 06:58:06 -0500
-From: Rob Herring <robh@kernel.org>
-To: Deepak Gupta <debug@rivosinc.com>
-Cc: paul.walmsley@sifive.com, rick.p.edgecombe@intel.com,
-	broonie@kernel.org, Szabolcs.Nagy@arm.com, kito.cheng@sifive.com,
-	keescook@chromium.org, ajones@ventanamicro.com,
-	conor.dooley@microchip.com, cleger@rivosinc.com,
-	atishp@atishpatra.org, alex@ghiti.fr, bjorn@rivosinc.com,
-	alexghiti@rivosinc.com, samuel.holland@sifive.com, conor@kernel.org,
-	linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-mm@kvack.org, linux-arch@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, corbet@lwn.net, palmer@dabbelt.com,
-	aou@eecs.berkeley.edu, krzysztof.kozlowski+dt@linaro.org,
-	oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de,
-	ebiederm@xmission.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
-	lstoakes@gmail.com, shuah@kernel.org, brauner@kernel.org,
-	andy.chiu@sifive.com, jerry.shih@sifive.com,
-	hankuan.chen@sifive.com, greentime.hu@sifive.com, evan@rivosinc.com,
-	xiao.w.wang@intel.com, charlie@rivosinc.com,
-	apatel@ventanamicro.com, mchitale@ventanamicro.com,
-	dbarboza@ventanamicro.com, sameo@rivosinc.com,
-	shikemeng@huaweicloud.com, willy@infradead.org,
-	vincent.chen@sifive.com, guoren@kernel.org, samitolvanen@google.com,
-	songshuaishuai@tinylab.org, gerg@kernel.org, heiko@sntech.de,
-	bhe@redhat.com, jeeheng.sia@starfivetech.com, cyy@cyyself.name,
-	maskray@google.com, ancientmodern4@gmail.com,
-	mathis.salmen@matsal.de, cuiyunhui@bytedance.com,
-	bgray@linux.ibm.com, mpe@ellerman.id.au, baruch@tkos.co.il,
-	alx@kernel.org, david@redhat.com, catalin.marinas@arm.com,
-	revest@chromium.org, josh@joshtriplett.org, shr@devkernel.io,
-	deller@gmx.de, omosnace@redhat.com, ojeda@kernel.org,
-	jhubbard@nvidia.com
-Subject: Re: [PATCH v3 04/29] riscv: zicfilp / zicfiss in dt-bindings
- (extensions.yaml)
-Message-ID: <20240410115806.GA4044117-robh@kernel.org>
-References: <20240403234054.2020347-1-debug@rivosinc.com>
- <20240403234054.2020347-5-debug@rivosinc.com>
+	s=k20201202; t=1712750328;
+	bh=zozmtpGCyzauq3lW42w4fnyusZzE+3jFnWSCycg+74w=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Ki2sL3MhTeMJTG3avbeH1rzNAe7ciJKLADcUu1fQX6z8ruJDN7zDZ+xQ8xSe28t4h
+	 YhkH6vqfVaZHU9te9wWvdi5pPKlKDCnRBeBnjIV+Rc48jKhTKBYFD9oeQnL8J4GVZb
+	 HVMEZKtFzlB2SOMIasbDU9Gzk2dtbZAuEFDIbmsoSKiape4vzIXXDm8sijBmwY5Sti
+	 iWJMcaxZjcQBA1vjeI1rInOjnB4e6VQaeljR0Y+zBZYvOIb0L+mTukLCuWeoyiufay
+	 ojFtgFrSaLueQnp9nfK2cr9h0aQ0arl+iRMn1B6ZC2csTJ49/U9Iqe4gmILb/nxfra
+	 gCiQ6tAqghoyw==
+From: Conor Dooley <conor@kernel.org>
+To: linux-riscv@lists.infradead.org
+Cc: conor@kernel.org,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Cyril Jean <cyril.jean@microchip.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1 4/5] firmware: microchip: move buffer allocation into mpfs_auto_update_set_image_address()
+Date: Wed, 10 Apr 2024 12:58:07 +0100
+Message-ID: <20240410-manhood-gathering-41ccbfdad649@spud>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240410-opulently-epic-8654bdac3422@spud>
+References: <20240410-opulently-epic-8654bdac3422@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403234054.2020347-5-debug@rivosinc.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4105; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=wFllIaLoSb4Gw+0g2yEUZWRr6LUeHyCfKeT7QJ6ExZU=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDGlidVd1lBOmeBjKi02Xe3uSP7V/Pf+C1dOcTPVPX1Z9I PRvlXV4RykLgxgHg6yYIkvi7b4WqfV/XHY497yFmcPKBDKEgYtTACbS6srIMPltMsdPBVHxzU9W FgTfqeLbN4m7+g1P2V2hKvkzOg+vpjEyXJ/q3iv1ePUiRh2XM1fvnfeUiNvy4aifBX/iRq4z6fp 57AA=
+X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 03, 2024 at 04:34:52PM -0700, Deepak Gupta wrote:
-> Make an entry for cfi extensions in extensions.yaml.
-> 
-> Signed-off-by: Deepak Gupta <debug@rivosinc.com>
-> ---
->  .../devicetree/bindings/riscv/extensions.yaml          | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> index 63d81dc895e5..45b87ad6cc1c 100644
-> --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> @@ -317,6 +317,16 @@ properties:
->              The standard Zicboz extension for cache-block zeroing as ratified
->              in commit 3dd606f ("Create cmobase-v1.0.pdf") of riscv-CMOs.
->  
-> +        - const: zicfilp
-> +          description:
-> +            The standard Zicfilp extension for enforcing forward edge control-flow
-> +            integrity in commit 3a20dc9 of riscv-cfi and is in public review.
+From: Conor Dooley <conor.dooley@microchip.com>
 
-Does in public review mean the commit sha is going to change?
+This buffer is used exclusively by mpfs_auto_update_set_image_address(),
+so move the management of it there, employing the recently added cleanup
+infrastructure to avoid littering the function with gotos.
 
-> +
-> +        - const: zicfiss
-> +          description:
-> +            The standard Zicfiss extension for enforcing backward edge control-flow
-> +            integrity in commit 3a20dc9 of riscv-cfi and is in publc review.
-> +
->          - const: zicntr
->            description:
->              The standard Zicntr extension for base counters and timers, as
-> -- 
-> 2.43.2
-> 
+Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+---
+ drivers/firmware/microchip/mpfs-auto-update.c | 32 ++++++++-----------
+ 1 file changed, 13 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/firmware/microchip/mpfs-auto-update.c b/drivers/firmware/microchip/mpfs-auto-update.c
+index 078ff328f261..d7ce27f4ba1b 100644
+--- a/drivers/firmware/microchip/mpfs-auto-update.c
++++ b/drivers/firmware/microchip/mpfs-auto-update.c
+@@ -9,6 +9,7 @@
+  *
+  * Author: Conor Dooley <conor.dooley@microchip.com>
+  */
++#include <linux/cleanup.h>
+ #include <linux/debugfs.h>
+ #include <linux/firmware.h>
+ #include <linux/math.h>
+@@ -233,15 +234,17 @@ static int mpfs_auto_update_verify_image(struct fw_upload *fw_uploader)
+ 	return ret;
+ }
+ 
+-static int mpfs_auto_update_set_image_address(struct mpfs_auto_update_priv *priv, char *buffer,
++static int mpfs_auto_update_set_image_address(struct mpfs_auto_update_priv *priv,
+ 					      u32 image_address, loff_t directory_address)
+ {
+ 	struct erase_info erase;
+-	size_t erase_size = AUTO_UPDATE_DIRECTORY_SIZE;
++	size_t erase_size = round_up(AUTO_UPDATE_DIRECTORY_SIZE, (u64)priv->flash->erasesize);
+ 	size_t bytes_written = 0, bytes_read = 0;
++	char *buffer __free(kfree) = kzalloc(erase_size, GFP_KERNEL);
+ 	int ret;
+ 
+-	erase_size = round_up(erase_size, (u64)priv->flash->erasesize);
++	if (!buffer)
++		return -ENOMEM;
+ 
+ 	erase.addr = AUTO_UPDATE_DIRECTORY_BASE;
+ 	erase.len = erase_size;
+@@ -287,7 +290,7 @@ static int mpfs_auto_update_set_image_address(struct mpfs_auto_update_priv *priv
+ 		return ret;
+ 
+ 	if (bytes_written != erase_size)
+-		return ret;
++		return -EIO;
+ 
+ 	return 0;
+ }
+@@ -297,7 +300,6 @@ static int mpfs_auto_update_write_bitstream(struct fw_upload *fw_uploader, const
+ {
+ 	struct mpfs_auto_update_priv *priv = fw_uploader->dd_handle;
+ 	struct erase_info erase;
+-	char *buffer;
+ 	loff_t directory_address = AUTO_UPDATE_UPGRADE_DIRECTORY;
+ 	size_t erase_size = AUTO_UPDATE_DIRECTORY_SIZE;
+ 	size_t bytes_written = 0;
+@@ -313,16 +315,12 @@ static int mpfs_auto_update_write_bitstream(struct fw_upload *fw_uploader, const
+ 		image_address = AUTO_UPDATE_BITSTREAM_BASE +
+ 				AUTO_UPDATE_UPGRADE_INDEX * priv->size_per_bitstream;
+ 
+-	buffer = devm_kzalloc(priv->dev, erase_size, GFP_KERNEL);
+-	if (!buffer)
+-		return -ENOMEM;
+-
+ 	/*
+ 	 * For bitstream info, the descriptor is written to a fixed offset,
+ 	 * so there is no need to set the image address.
+ 	 */
+ 	if (!is_info) {
+-		ret = mpfs_auto_update_set_image_address(priv, buffer, image_address, directory_address);
++		ret = mpfs_auto_update_set_image_address(priv, image_address, directory_address);
+ 		if (ret) {
+ 			dev_err(priv->dev, "failed to set image address in the SPI directory: %d\n", ret);
+ 			return ret;
+@@ -345,7 +343,7 @@ static int mpfs_auto_update_write_bitstream(struct fw_upload *fw_uploader, const
+ 	dev_info(priv->dev, "Erasing the flash at address (0x%x)\n", image_address);
+ 	ret = mtd_erase(priv->flash, &erase);
+ 	if (ret)
+-		goto out;
++		return ret;
+ 
+ 	/*
+ 	 * No parsing etc of the bitstream is required. The system controller
+@@ -355,19 +353,15 @@ static int mpfs_auto_update_write_bitstream(struct fw_upload *fw_uploader, const
+ 	dev_info(priv->dev, "Writing the image to the flash at address (0x%x)\n", image_address);
+ 	ret = mtd_write(priv->flash, (loff_t)image_address, size, &bytes_written, data);
+ 	if (ret)
+-		goto out;
++		return ret;
+ 
+-	if (bytes_written != size) {
+-		ret = -EIO;
+-		goto out;
+-	}
++	if (bytes_written != size)
++		return -EIO;
+ 
+ 	*written = bytes_written;
+ 	dev_info(priv->dev, "Wrote 0x%zx bytes to the flash\n", bytes_written);
+ 
+-out:
+-	devm_kfree(priv->dev, buffer);
+-	return ret;
++	return 0;
+ }
+ 
+ static enum fw_upload_err mpfs_auto_update_write(struct fw_upload *fw_uploader, const u8 *data,
+-- 
+2.43.0
+
 
