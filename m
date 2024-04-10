@@ -1,166 +1,134 @@
-Return-Path: <linux-kernel+bounces-138320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 902CF89EFC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:24:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3664B89EFC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:24:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12D45B2318B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:24:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2D3D28195B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:24:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A5D31591E1;
-	Wed, 10 Apr 2024 10:24:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B34E4158DB0;
+	Wed, 10 Apr 2024 10:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Sc66azfd"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="GMoX2O1G"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18860158D94;
-	Wed, 10 Apr 2024 10:24:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78FA2158A24;
+	Wed, 10 Apr 2024 10:24:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712744669; cv=none; b=miUk5hoKR6v2NC0NxIoIld7Lx4Fv4UZ1qCWrsnVhKyTONhcFn/qTXpw4jnAwVtfxKrEBu2LXRt/efQDRZuscv42gczVeZICn3jTAWYvfZFYM/T6a/VutyajL4EVGkx230ewL22Vn7uiXUgVMGGXPybojUwKNWCUHM324fk+DnIE=
+	t=1712744651; cv=none; b=kjru5aYNmNrO878Q3HgzxP8QYHVp9uce5eZc+bdeNH3wtb64b296c5OSUSQHU5WXR4MX2+kW5NTn21lfFCRftCW0H/YdJC2689l+6kwWowucxGaMh+wdFIDiqeq5aQV7DRWHBRVOkKJxk06KHeJEEWeUPIhxN/2QWjAAD0bzIR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712744669; c=relaxed/simple;
-	bh=ebbxEm39CjWYFC6IF/Qa9Ng63Zx8Wwaf4wL+lGqTjNw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L3SPyLVI1aWmU771d/jJdN9vtk6A6wtFoMLEqoBPHtKCE9pRo20JOQmtq3BkTB6XCR8GokoaFRthBEDqPnZW8IpspnJnOs8yHrA1PqfldMzzjODqGpD2dk6qs+ymPYfDDtfcRqjYSOF2YY0vvRw+lsPqZHaH+dYNtcgKXg89jpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Sc66azfd; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712744668; x=1744280668;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=ebbxEm39CjWYFC6IF/Qa9Ng63Zx8Wwaf4wL+lGqTjNw=;
-  b=Sc66azfdkVe3zz7jy0TBbV+UCVoHJ3Bt0RUQGHYX4Jx+yWrMo8fstSUN
-   JJNK8mgPsQDfSfPrZWXMEiQ/RSL23JFVZVMUEUjEGu4YGZ9091eBPDGsC
-   tuGoO7L5c7ykkCNy1n235OYcG5e+UUxDCSAbJsX9sDjDBzAG0jp7AD0nT
-   i8Vrbq9HJ4rcW9riTiMjLOO6iOBcju9egzNK1h6vqiDSmTVof2Q9GxmEK
-   lNClYTWpiT7jdAuZBr6oDmQdWZjw1NafgWPO2iwJlfdi8X2GHqTaYB1un
-   hBXjhdyj7eJj2keRP7qojdmFF26KB4obkNR3ecdgw8A74+pIx7/8FhXJ2
-   A==;
-X-CSE-ConnectionGUID: nXPEC85WSmmG0RSCrPZ+0A==
-X-CSE-MsgGUID: f/H3utzNQlK8JOIgAXaqHw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8224430"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="8224430"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 03:24:28 -0700
-X-CSE-ConnectionGUID: Nrqx7/0BSJWJvICVK9O+Qg==
-X-CSE-MsgGUID: s3AwXsfhQfq6IXM8QWLN+Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="25283031"
-Received: from unknown (HELO chenyu-dev.sh.intel.com) ([10.239.62.107])
-  by orviesa004.jf.intel.com with ESMTP; 10 Apr 2024 03:24:26 -0700
-From: Chen Yu <yu.c.chen@intel.com>
-To: linux-efi@vger.kernel.org
-Cc: Ard Biesheuvel <ardb@kernel.org>,
-	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-	Chao Gao <chao.gao@intel.com>,
-	linux-kernel@vger.kernel.org,
-	Chen Yu <yu.c.chen@intel.com>,
-	"Hossain, Md Iqbal" <md.iqbal.hossain@intel.com>
-Subject: [PATCH] efi/unaccepted: touch soft lockup during memory accept
-Date: Wed, 10 Apr 2024 18:23:01 +0800
-Message-Id: <20240410102301.634677-1-yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712744651; c=relaxed/simple;
+	bh=RMe4Zpgtu5lgHf/0r65e7RdGffT8CNspf79NQcq4bhI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=moKBFmDG/flrnjHMXe7v0YVGhvhx+LLg7t3Ah/7UW6yDno+HOKFy1cNfnRSjD98UOYtRkgQDBhMO1d9NkI+elRtU3ts2Y7A83lhovDG9xHdBXYZ//PX51IYFiavDdsg8BoSSZH/cJkNqJLKTC/DEnqwWj9V2vZq2dCjOjl6Zkc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=GMoX2O1G; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DAACEFF802;
+	Wed, 10 Apr 2024 10:23:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712744641;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4/SknAElnT6j5HCw0JAN47JCCpbMZWq8jCtLo3WbP8M=;
+	b=GMoX2O1GLeEWdq3Ksgs4NQSytZdT94CWaTvbV8+vCpznmR3+YvQhX86Se1T5n+sa9UYRRu
+	7sjR5RBaUY5F9OCxxf1NscWUs7f2wbWClLClCmeEK6Cvxkez43ejEhudPvS4NM4t7arQr7
+	jKkUYBRl0tF1IxAILLgPRxiiF9SkKaT67sb3JFsmx4YtoQMVoh0FHDgEQVuvj3kSDBlyl5
+	xmwSOspIEDT2CRKLnCHlo1FIKJrdZ3ORsr81S3sZdPMXraiktKbHQKuZ6nieI6lnDqUNJD
+	NpkrMsVyGQnGmRiH1ICqf2VIohsqjE9P06sFV08Z0MMrun8zZ9JfMFBuKfeJ5w==
+Date: Wed, 10 Apr 2024 12:23:56 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman
+ <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, Martin
+ Blumenstingl <martin.blumenstingl@googlemail.com>,
+ <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>,
+ <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <oxffffaa@gmail.com>, <kernel@sberdevices.ru>
+Subject: Re: [PATCH v3 1/2] dt-bindings: mtd: amlogic,meson-nand: support
+ fields for boot ROM code
+Message-ID: <20240410122356.30852b3c@xps-13>
+In-Reply-To: <20240409181025.55504-2-avkrasnov@salutedevices.com>
+References: <20240409181025.55504-1-avkrasnov@salutedevices.com>
+	<20240409181025.55504-2-avkrasnov@salutedevices.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-Commit 50e782a86c98 ("efi/unaccepted: Fix soft lockups caused
-by parallel memory acceptance") has released the spinlock so
-other CPUs can do memory acceptance in parallel and not
-triggers softlockup on other CPUs.
+Hi Arseniy,
 
-However the softlock up was intermittent shown up if the memory
-of the TD guest is large, and the timeout of softlockup is set
-to 1 second:
+avkrasnov@salutedevices.com wrote on Tue, 9 Apr 2024 21:10:24 +0300:
 
- RIP: 0010:_raw_spin_unlock_irqrestore
- Call Trace:
- ? __hrtimer_run_queues
- <IRQ>
- ? hrtimer_interrupt
- ? watchdog_timer_fn
- ? __sysvec_apic_timer_interrupt
- ? __pfx_watchdog_timer_fn
- ? sysvec_apic_timer_interrupt
- </IRQ>
- ? __hrtimer_run_queues
- <TASK>
- ? hrtimer_interrupt
- ? asm_sysvec_apic_timer_interrupt
- ? _raw_spin_unlock_irqrestore
- ? __sysvec_apic_timer_interrupt
- ? sysvec_apic_timer_interrupt
- accept_memory
- try_to_accept_memory
- do_huge_pmd_anonymous_page
- get_page_from_freelist
- __handle_mm_fault
- __alloc_pages
- __folio_alloc
- ? __tdx_hypercall
- handle_mm_fault
- vma_alloc_folio
- do_user_addr_fault
- do_huge_pmd_anonymous_page
- exc_page_fault
- ? __do_huge_pmd_anonymous_page
- asm_exc_page_fault
- __handle_mm_fault
+> Boot ROM code on Meson requires that some pages on NAND must be written
+> in special mode: "short" ECC mode where each block is 384 bytes and
+> scrambling mode is on. Such pages located with the specified interval
+> within specified offset. Both interval and offset are located in the
+> device tree and used by driver if 'nand-is-boot-medium' is set for
+> NAND chip.
+>=20
+> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+> ---
+>  .../bindings/mtd/amlogic,meson-nand.yaml           | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yam=
+l b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+> index 57b6957c8415..b86a1953056b 100644
+> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+> @@ -64,11 +64,25 @@ patternProperties:
+>          items:
+>            maximum: 0
+> =20
+> +      amlogic,boot-page-last:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description:
+> +          The NFC driver needs this information to select ECC
+> +          algorithms supported by the boot ROM.
 
-When the local irq is enabled at the end of accept_memory(),
-the softlockup detects that the watchdog on single CPU has
-not been fed for a while. That is to say, even other CPUs
-will not be blocked by spinlock, the current CPU might be
-stunk with local irq disabled for a while, which hurts not
-only nmi watchdog but also softlockup.
+Shall we have a length rather than the last page?
 
-Chao Gao pointed out that the memory accept could be time
-costly and there was similar report before. Thus to avoid
-any softlocup detection during this stage, give the
-softlockup a flag to skip the timeout check at the end of
-accept_memory(), by invoking touch_softlockup_watchdog().
+> +
+> +      amlogic,boot-page-step:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description:
+> +          The NFC driver needs this information to select ECC
+> +          algorithms supported by the boot ROM (in pages).
+> +
+>      unevaluatedProperties: false
+> =20
+>      dependencies:
+>        nand-ecc-strength: [nand-ecc-step-size]
+>        nand-ecc-step-size: [nand-ecc-strength]
+> +      amlogic,boot-page-last: [nand-is-boot-medium, "amlogic,boot-page-s=
+tep"]
+> +      amlogic,boot-page-step: [nand-is-boot-medium, "amlogic,boot-page-l=
+ast"]
+> =20
+> =20
+>  required:
 
-Reported-by: "Hossain, Md Iqbal" <md.iqbal.hossain@intel.com>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- drivers/firmware/efi/unaccepted_memory.c | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/firmware/efi/unaccepted_memory.c b/drivers/firmware/efi/unaccepted_memory.c
-index 5b439d04079c..50f6503fe49f 100644
---- a/drivers/firmware/efi/unaccepted_memory.c
-+++ b/drivers/firmware/efi/unaccepted_memory.c
-@@ -4,6 +4,7 @@
- #include <linux/memblock.h>
- #include <linux/spinlock.h>
- #include <linux/crash_dump.h>
-+#include <linux/nmi.h>
- #include <asm/unaccepted_memory.h>
- 
- /* Protects unaccepted memory bitmap and accepting_list */
-@@ -149,6 +150,9 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
- 	}
- 
- 	list_del(&range.list);
-+
-+	touch_softlockup_watchdog();
-+
- 	spin_unlock_irqrestore(&unaccepted_memory_lock, flags);
- }
- 
--- 
-2.25.1
-
+Thanks,
+Miqu=C3=A8l
 
