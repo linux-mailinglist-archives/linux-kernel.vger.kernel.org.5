@@ -1,100 +1,111 @@
-Return-Path: <linux-kernel+bounces-139310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 848538A013E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:24:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C7F68A013F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:24:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06469B21BDB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:23:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28353281075
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:24:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F95181BAF;
-	Wed, 10 Apr 2024 20:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D02C1181CEF;
+	Wed, 10 Apr 2024 20:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bWfND4+z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XWZ3RALe"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40AEC181B8B;
-	Wed, 10 Apr 2024 20:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD8A6181CE8
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 20:23:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712780631; cv=none; b=FM/1Mo/W2y1GBQx7UEvPHlhM5GHq4euohAVQVZQq0ee65/V/6xaeDvRTuFxjQHLzYpLj80GAR4AMCT/6+YPlyfVnBx5+Eyi5zom+zN1Sb6d6b/2ZWeNCFbidnD6b20MtXWxFHGCJgQ/4flLCZoDcwjnO6vV47HYOO0dDU8MdGEY=
+	t=1712780635; cv=none; b=Jijl8I3ymIxJB+nSkXbb0+eUqpkbQPes4wT/aqQw3PRnh8ZrlJbm/GdhQOmYUJzhBptTO/dBC7cdM8khxwgv2tsUP/63EQZ6dST/YA5owkN0aGfV9hc2+Kb+uEQDTvKwGhK9RLmwVVBxANPbAXrkYrsL2GH/ox5v0l/A9ZyUsXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712780631; c=relaxed/simple;
-	bh=h2S8k2uo3F0CoEmDk/7q8dSzWeVwKRVs/lxza4rRZhA=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=BiyYj+otpO7vAOupDPtwrusGwyxrQK7OnpfbKHT7oECmhYKri7bTLPe4KkBVGL3n954iD1W5Etr9eN8eQrsc1QUHxkrZ1iA1CgJ2JpJt/4oyJbYmNw8ZFrcBlHOTtZh+dRKix64BVMgrGn+f99odGfpNOphQcwGdc8D8mRHeb2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bWfND4+z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FE3EC433C7;
-	Wed, 10 Apr 2024 20:23:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712780630;
-	bh=h2S8k2uo3F0CoEmDk/7q8dSzWeVwKRVs/lxza4rRZhA=;
-	h=From:To:In-Reply-To:References:Subject:Date:From;
-	b=bWfND4+zlLUp504AK8AGL9ZsDeHilvWsR57l/RmT6F8zbik+7f3ejq0TEXlFIsW7x
-	 gEH3yLYDiFVmAYhUFHhJXoB97aAK+TrKeEjBAbzg4nUCvfitdPMT7ik+fEjrItfGTR
-	 rD/U+jYAE5+TkUwseUfG26NlhdBpNCGnwgT7O/pMaGFwtVvZrDOK49RrFdvisTCZCy
-	 HOzIXqZnHb4IA1h7rfEE+CX7IyXSoCroKRQSbzZ2KJQFPeNq7aXft/AyQvgu+RCost
-	 lU3+/WtemdyYGWg5yNjnnBShLA+7KHToeOZ6l9hlyELFZDfbaTyRnG4OiesKSVYZdz
-	 AIwZ5V403si8g==
-From: Mark Brown <broonie@kernel.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Liam Girdwood <lgirdwood@gmail.com>, Robert Marko <robert.marko@sartura.hr>, 
- Luka Perkov <luka.perkov@sartura.hr>, linux-arm-msm@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <20240410172615.255424-1-krzk@kernel.org>
-References: <20240410172615.255424-1-krzk@kernel.org>
-Subject: Re: [PATCH 1/2] regulator: qcom-refgen: fix module autoloading
-Message-Id: <171278062883.65289.6340690792039519391.b4-ty@kernel.org>
-Date: Wed, 10 Apr 2024 21:23:48 +0100
+	s=arc-20240116; t=1712780635; c=relaxed/simple;
+	bh=wKAN+1801N1Qbn4Fd48EWlQQ/8yKmqseKjyTtp2yqN0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nVZMBK/ELnb7rUfvRI8ZsBvB4IltkHCn9dRmdPrSG0VrDeBxqVW4Uy8jm8qtYptMbxkh8KWrJDl5fAiR+Cb/MuBxlU09p4+onVXI3q6/uQq6bBM1krxFy4vjjxRdIUVCYw7R/lx2iGs0DePxiE6pfZXZEeIhAd499Q2iTsXjnFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XWZ3RALe; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712780633; x=1744316633;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wKAN+1801N1Qbn4Fd48EWlQQ/8yKmqseKjyTtp2yqN0=;
+  b=XWZ3RALeSbJgy+xbKp8ob8j0kntWy1vBKPvKV62qyEBRn3qVpZQIPhiJ
+   RWPEcrUWdyWnOMjCowTIVaE740yTOUwi6IN8t6LdazOY9OAu1A2B3O3rQ
+   oiLX3+3ol8fLUMcmK8NwIUP6alVmG3roJ8zxke6mS3qxzfAvX6xraIrtI
+   S5burvDHz2o+9UPY2fZqme7x3OQW5a4pUz4weXSqzw04XjqkwXHsrbiJN
+   7IOjKgQN8DqJUz0v0vyzI8Q/FI5laBy9B5TmInlX1CVWVAHIYyNDgTGa5
+   n16ippEcA4xiUEXYhc9B5ojv8YZZmEp/2CGN9i+9/xBAOIA61uh0SxMH7
+   A==;
+X-CSE-ConnectionGUID: 4fV6zArvSdGx9c6w1ZJJuA==
+X-CSE-MsgGUID: QofyvwXESbWhdAq6ljXWvw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8022148"
+X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
+   d="scan'208";a="8022148"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 13:23:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="915442223"
+X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
+   d="scan'208";a="915442223"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 13:23:51 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rueU1-00000003BLA-1hVA;
+	Wed, 10 Apr 2024 23:23:49 +0300
+Date: Wed, 10 Apr 2024 23:23:49 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v1 1/1] regmap: spi: Add missing MODULE_DESCRIPTION()
+Message-ID: <Zhb1VSXYAwnKbx0I@smile.fi.intel.com>
+References: <20240410200031.1656581-1-andriy.shevchenko@linux.intel.com>
+ <3602aa7a-15c9-4e77-8aa9-a12f2136530c@sirena.org.uk>
+ <Zhbyu-qI97eBxtxU@smile.fi.intel.com>
+ <8dd5a474-ec45-4f0d-b1a9-e91e54c990fc@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8dd5a474-ec45-4f0d-b1a9-e91e54c990fc@sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, 10 Apr 2024 19:26:14 +0200, Krzysztof Kozlowski wrote:
-> Add MODULE_DEVICE_TABLE(), so the module could be properly autoloaded
-> based on the alias from of_device_id table.
+On Wed, Apr 10, 2024 at 09:16:26PM +0100, Mark Brown wrote:
+> On Wed, Apr 10, 2024 at 11:12:43PM +0300, Andy Shevchenko wrote:
+> > On Wed, Apr 10, 2024 at 09:05:17PM +0100, Mark Brown wrote:
 > 
+> > > regmap.
 > 
+> > Hmm...
+> 
+> > drivers/base/regmap/regmap-i3c.c:59:MODULE_DESCRIPTION("Regmap I3C Module");
+> > drivers/base/regmap/regmap-mdio.c:120:MODULE_DESCRIPTION("Regmap MDIO Module");
+> > drivers/base/regmap/regmap-sdw-mbq.c:100:MODULE_DESCRIPTION("Regmap SoundWire MBQ Module");
+> > drivers/base/regmap/regmap-sdw.c:101:MODULE_DESCRIPTION("Regmap SoundWire Module");
+> > drivers/base/regmap/regmap-spi.c:168:MODULE_DESCRIPTION("Regmap SPI Module");
+> 
+> Feel free to fix the others as well.
 
-Applied to
+OK. Will do in v2.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+Btw, any news about PXA2xx cleanup?
 
-Thanks!
+-- 
+With Best Regards,
+Andy Shevchenko
 
-[1/2] regulator: qcom-refgen: fix module autoloading
-      commit: ddd3f34c10002e41ed3cd89c9bd8f1d05a22506a
-[2/2] regulator: vqmmc-ipq4019: fix module autoloading
-      commit: 68adb581a39ae63a0ed082c47f01fbbe515efa0e
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
 
 
