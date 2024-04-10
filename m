@@ -1,268 +1,139 @@
-Return-Path: <linux-kernel+bounces-138381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 588E589F061
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:10:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED57289F068
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:11:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D95CD1F239B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:10:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9212283CC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:11:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028211598F2;
-	Wed, 10 Apr 2024 11:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64B8F159599;
+	Wed, 10 Apr 2024 11:11:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IcUQGu0g"
-Received: from wfhigh8-smtp.messagingengine.com (wfhigh8-smtp.messagingengine.com [64.147.123.159])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="mgQg8l4t"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1381115957E;
-	Wed, 10 Apr 2024 11:10:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EC23156C4C;
+	Wed, 10 Apr 2024 11:11:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712747417; cv=none; b=M+zACvcooxZDKmSmuEgdJ2uylDJHw78gzVsfyF+/qLmY8lc2Wbq0/IwVJvvp3y0a9AY6I1xsUcyKqJrJ17jZhE7fudrmpzShcE4PDS7g3ohq3DSK6H5o9Lwzs2HU2YJvLpgEOsIF9BV5C6dFNt712IT2vaMiTSSoS8PZx04LGlc=
+	t=1712747490; cv=none; b=bqrm8fkD+PsqzSat1Ox9qICL36U0hENKq64Eyvm3SLnsxvu3JikjNmc82pl3i1wIL8EnYQKe+ZT4qqLwCv+cRtDI6e7wLe3t1LgDcMvm30smFkcQmt+6TKJjU9fqpLwtxRwDCUX7vb8My3LPCnwl4QUxJav+cpAtFuT0G5vvR60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712747417; c=relaxed/simple;
-	bh=jFsdfhaiocpkta4ERYnJWOjDCQJsKVXmRXsHZr/6Kf8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qz5fOT3Wf2Bwug/lLO6f1DP97IO3VBQ9ob0lVoC/UzTIZqFJUy7mQ+IdIFhSEiA8DLtryldkHiof4cL1MnaTAT/pKTkf/TpKMVy9vp9ZLYNoz/zeA87e2KX1S6q3udm6+hFRnRRVpJY4dg9wg2xD7O9ttfGT5Cin6a1fm4WI2JA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org; spf=none smtp.mailfrom=idosch.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=IcUQGu0g; arc=none smtp.client-ip=64.147.123.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=idosch.org
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 4A868180014A;
-	Wed, 10 Apr 2024 07:10:11 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 10 Apr 2024 07:10:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712747410; x=1712833810; bh=5RenAIti6McvKXi8QC4qbp24wHgG
-	zwtMM+b1Bo/azeU=; b=IcUQGu0gk2uB/Yhz0/r7dNBgzhSphX87liEpsU+lEIRO
-	pjyz7Mlw3krXVffkC1hxXjuRwJlcJOWvfEUddF2beeXcDZTQL8vDSIeyZtwgJuoP
-	gX1cjd1MKRSrnSlooQrVEI3HaLyuUbRZNqdk4MiB0bUfgI/Qp8MZHLWjtV0riweV
-	mFFsdXqfeJgIX/nS1ttboWDQTKA8Jdp+HXQ3llM10Fq1Tvzbw5cQ/LPBF2flJPXi
-	tf+nqBi8xCLZ3C7J6cBMLgf1XkLrSFq6b7ZJXyab1IZNV9ZW4vkFEt7htTDoS+gj
-	WD+bRPLJTKM9nYMO0YEZxf4g0lSStTSr5rls+i21Nw==
-X-ME-Sender: <xms:kXMWZofoAeyyMdCE3dmynplzzSoFKTyN85lWhp2jBx0Hi6pVC5zqcQ>
-    <xme:kXMWZqNnI-plEFyUJeVGicC0I2cMQ31244zdFSpFp_sKinA3ltCWl2rkS5wgo0bDW
-    YSqUvRHOmrLKs0>
-X-ME-Received: <xmr:kXMWZpjq01vNRiIYThXjvgHhCF_SuUNHfrc4Y6ZrAvLG36niqPrKVNTY1J3B>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehiedgfeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtrodttddtvdenucfhrhhomhepkfguohcu
-    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
-    htvghrnhepffeuvefhhfduvdejteefuedugfehgeelvdevheehueeuuddvheegtdetfeeh
-    geefnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:kXMWZt_eAtfa-EaklNydcuKWlGjEY2Faip1ejvKC_lnZEPEee2kQlQ>
-    <xmx:kXMWZksDTTRNKl0lc_dUTlAsoumtMRtFadGWloYnamM62xDZPtZZ0w>
-    <xmx:kXMWZkFlygm2o9GsOcU5af3hMO1J50NeXdRA-aQScGE9uHOFn54e1Q>
-    <xmx:kXMWZjMUryqdsI04l8sMM1902wmmuzAxIQaT9NV9doZGjVFdo_-Zmg>
-    <xmx:knMWZjVX2uhgJxerY0XjCVM6wuenfy3ZzJ1xbR-XbUjrDGyEe38MYUL2>
-Feedback-ID: i494840e7:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 10 Apr 2024 07:10:08 -0400 (EDT)
-Date: Wed, 10 Apr 2024 14:10:04 +0300
-From: Ido Schimmel <idosch@idosch.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: aleksander.lobakin@intel.com, kuba@kernel.org, davem@davemloft.net,
-	pabeni@redhat.com, edumazet@google.com, elder@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, nbd@nbd.name,
-	sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
-	lorenzo@kernel.org, taras.chornyi@plvision.eu,
-	ath11k@lists.infradead.org, ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org, geomatsi@gmail.com,
-	kvalo@kernel.org, quic_jjohnson@quicinc.com, leon@kernel.org,
-	dennis.dalessandro@cornelisnetworks.com,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, Jiri Pirko <jiri@resnulli.us>,
-	Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	amcohen@nvidia.com
-Subject: Re: [PATCH net-next v4 2/9] net: create a dummy net_device allocator
-Message-ID: <ZhZzjNDRaHtdYjDg@shredder>
-References: <20240409125738.1824983-1-leitao@debian.org>
- <20240409125738.1824983-3-leitao@debian.org>
+	s=arc-20240116; t=1712747490; c=relaxed/simple;
+	bh=/VeiGzK8lC3FVg2lRwCpx8Hm9fTsDx2RHhQLKAONLqc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DSfXyUe+aAojTQIhS4RQ6dRjLktZF3bSWUwoiSPQsgwDZYfy17PRNja5cc66/a5j/9QKug2W5li/j9KkfM0xUHMcb/QOORcjrn9xicgCRijvbxkqymMBt1fqd36PvaPFRk/hTBEGRRcPrLfIymgsqn6bNq4wpfUrb9+BP45XAfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=mgQg8l4t; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id A3CA4741;
+	Wed, 10 Apr 2024 13:10:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1712747445;
+	bh=/VeiGzK8lC3FVg2lRwCpx8Hm9fTsDx2RHhQLKAONLqc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=mgQg8l4t09o5g0UmavOhXgAGn1qjP3Zh/RXRb7FApGEUzT//zYQMuyq+Az9GLg3Pj
+	 0vF72/zCXKUFrAty95MfnmdNah7e15BHQQxDy0fQJr5p+41JkO6wb4Qeh50vlfqjqi
+	 kepxIKlmgTNAyj3CumLC7Kb6sXFfZXKGXC6jaDTs=
+Message-ID: <0b4f1714-2c63-4cc5-9288-f419512bf3d4@ideasonboard.com>
+Date: Wed, 10 Apr 2024 14:11:23 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240409125738.1824983-3-leitao@debian.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm: xlnx: db: fix a memory leak in probe
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+ Rohit Visavalia <rohit.visavalia@amd.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Michal Simek <michal.simek@amd.com>, Vishal Sagar <vishal.sagar@amd.com>,
+ dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <86def134-9537-4939-912e-3a424e3a75b6@moroto.mountain>
+Content-Language: en-US
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <86def134-9537-4939-912e-3a424e3a75b6@moroto.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 09, 2024 at 05:57:16AM -0700, Breno Leitao wrote:
-> It is impossible to use init_dummy_netdev together with alloc_netdev()
-> as the 'setup' argument.
+On 04/04/2024 10:32, Dan Carpenter wrote:
+> Free "dp" before returning.
 > 
-> This is because alloc_netdev() initializes some fields in the net_device
-> structure, and later init_dummy_netdev() memzero them all. This causes
-> some problems as reported here:
+> Fixes: be318d01a903 ("drm: xlnx: dp: Reset DisplayPort IP")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> ---
+>   drivers/gpu/drm/xlnx/zynqmp_dp.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> 	https://lore.kernel.org/all/20240322082336.49f110cc@kernel.org/
-> 
-> Split the init_dummy_netdev() function in two. Create a new function called
-> init_dummy_netdev_core() that does not memzero the net_device structure.
-> Then have init_dummy_netdev() memzero-ing and calling
-> init_dummy_netdev_core(), keeping the old behaviour.
-> 
-> init_dummy_netdev_core() is the new function that could be called as an
-> argument for alloc_netdev().
-> 
-> Also, create a helper to allocate and initialize dummy net devices,
-> leveraging init_dummy_netdev_core() as the setup argument. This function
-> basically simplify the allocation of dummy devices, by allocating and
-> initializing it. Freeing the device continue to be done through
-> free_netdev()
-> 
-> Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> index 5a40aa1d4283..8a15d18a65a6 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> @@ -1716,7 +1716,7 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub)
+>   
+>   	ret = zynqmp_dp_reset(dp, true);
+>   	if (ret < 0)
+> -		return ret;
+> +		goto err_free;
+>   
+>   	ret = zynqmp_dp_reset(dp, false);
+>   	if (ret < 0)
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Thanks, applying to drm-misc-next.
 
-We were about to submit another user of init_dummy_netdev() when I
-noticed this patch. Converted the code to use alloc_netdev_dummy() [1]
-and it seems to be working fine. Will submit after your patch is
-accepted.
+  Tomi
 
-See a few minor comments below.
-
-[...]
-
-> +/**
-> + *	init_dummy_netdev	- init a dummy network device for NAPI
-> + *	@dev: device to init
-> + *
-> + *	This takes a network device structure and initialize the minimum
-
-s/initialize/initializes/
-
-> + *	amount of fields so it can be used to schedule NAPI polls without
-> + *	registering a full blown interface. This is to be used by drivers
-> + *	that need to tie several hardware interfaces to a single NAPI
-> + *	poll scheduler due to HW limitations.
-> + */
-> +void init_dummy_netdev(struct net_device *dev)
-> +{
-> +	/* Clear everything. Note we don't initialize spinlocks
-> +	 * are they aren't supposed to be taken by any of the
-
-I assume you meant s/are/as/ ?
-
-> +	 * NAPI code and this dummy netdev is supposed to be
-> +	 * only ever used for NAPI polls
-> +	 */
-> +	memset(dev, 0, sizeof(struct net_device));
-> +	init_dummy_netdev_core(dev);
-> +}
-> +EXPORT_SYMBOL_GPL(init_dummy_netdev);
-
-[1]
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/pci.c b/drivers/net/ethernet/mellanox/mlxsw/pci.c
-index db2950baf6b4..bf66d996e32e 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/pci.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/pci.c
-@@ -132,20 +132,40 @@ struct mlxsw_pci {
-        u8 num_cqs; /* Number of CQs */
-        u8 num_sdqs; /* Number of SDQs */
-        bool skip_reset;
--       struct net_device napi_dev_tx;
--       struct net_device napi_dev_rx;
-+       struct net_device *napi_dev_tx;
-+       struct net_device *napi_dev_rx;
- };
- 
--static void mlxsw_pci_napi_devs_init(struct mlxsw_pci *mlxsw_pci)
-+static int mlxsw_pci_napi_devs_init(struct mlxsw_pci *mlxsw_pci)
- {
--       init_dummy_netdev(&mlxsw_pci->napi_dev_tx);
--       strscpy(mlxsw_pci->napi_dev_tx.name, "mlxsw_tx",
--               sizeof(mlxsw_pci->napi_dev_tx.name));
-+       int err;
-+
-+       mlxsw_pci->napi_dev_tx = alloc_netdev_dummy(0);
-+       if (!mlxsw_pci->napi_dev_tx)
-+               return -ENOMEM;
-+       strscpy(mlxsw_pci->napi_dev_tx->name, "mlxsw_tx",
-+               sizeof(mlxsw_pci->napi_dev_tx->name));
-+
-+       mlxsw_pci->napi_dev_rx = alloc_netdev_dummy(0);
-+       if (!mlxsw_pci->napi_dev_rx) {
-+               err = -ENOMEM;
-+               goto err_alloc_rx;
-+       }
-+       strscpy(mlxsw_pci->napi_dev_rx->name, "mlxsw_rx",
-+               sizeof(mlxsw_pci->napi_dev_rx->name));
-+       dev_set_threaded(mlxsw_pci->napi_dev_rx, true);
-+
-+       return 0;
- 
--       init_dummy_netdev(&mlxsw_pci->napi_dev_rx);
--       strscpy(mlxsw_pci->napi_dev_rx.name, "mlxsw_rx",
--               sizeof(mlxsw_pci->napi_dev_rx.name));
--       dev_set_threaded(&mlxsw_pci->napi_dev_rx, true);
-+err_alloc_rx:
-+       free_netdev(mlxsw_pci->napi_dev_tx);
-+       return err;
-+}
-+
-+static void mlxsw_pci_napi_devs_fini(struct mlxsw_pci *mlxsw_pci)
-+{
-+       free_netdev(mlxsw_pci->napi_dev_rx);
-+       free_netdev(mlxsw_pci->napi_dev_tx);
- }
- 
- static char *__mlxsw_pci_queue_elem_get(struct mlxsw_pci_queue *q,
-@@ -804,11 +824,11 @@ static void mlxsw_pci_cq_napi_setup(struct mlxsw_pci_queue *q,
- 
-        switch (cq_type) {
-        case MLXSW_PCI_CQ_SDQ:
--               netif_napi_add(&mlxsw_pci->napi_dev_tx, &q->u.cq.napi,
-+               netif_napi_add(mlxsw_pci->napi_dev_tx, &q->u.cq.napi,
-                               mlxsw_pci_napi_poll_cq_tx);
-                break;
-        case MLXSW_PCI_CQ_RDQ:
--               netif_napi_add(&mlxsw_pci->napi_dev_rx, &q->u.cq.napi,
-+               netif_napi_add(mlxsw_pci->napi_dev_rx, &q->u.cq.napi,
-                               mlxsw_pci_napi_poll_cq_rx);
-                break;
-        }
-@@ -1793,7 +1813,10 @@ static int mlxsw_pci_init(void *bus_priv, struct mlxsw_core *mlxsw_core,
-        if (err)
-                goto err_requery_resources;
- 
--       mlxsw_pci_napi_devs_init(mlxsw_pci);
-+       err = mlxsw_pci_napi_devs_init(mlxsw_pci);
-+       if (err)
-+               goto err_napi_devs_init;
-+
-        err = mlxsw_pci_aqs_init(mlxsw_pci, mbox);
-        if (err)
-                goto err_aqs_init;
-@@ -1811,6 +1834,8 @@ static int mlxsw_pci_init(void *bus_priv, struct mlxsw_core *mlxsw_core,
- err_request_eq_irq:
-        mlxsw_pci_aqs_fini(mlxsw_pci);
- err_aqs_init:
-+       mlxsw_pci_napi_devs_fini(mlxsw_pci);
-+err_napi_devs_init:
- err_requery_resources:
- err_config_profile:
- err_cqe_v_check:
-@@ -1838,6 +1863,7 @@ static void mlxsw_pci_fini(void *bus_priv)
- 
-        free_irq(pci_irq_vector(mlxsw_pci->pdev, 0), mlxsw_pci);
-        mlxsw_pci_aqs_fini(mlxsw_pci);
-+       mlxsw_pci_napi_devs_fini(mlxsw_pci);
-        mlxsw_pci_fw_area_fini(mlxsw_pci);
-        mlxsw_pci_free_irq_vectors(mlxsw_pci);
- }
 
