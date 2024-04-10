@@ -1,177 +1,167 @@
-Return-Path: <linux-kernel+bounces-138314-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A32489EFB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:17:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0691589EFB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:18:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70514B22F78
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:17:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29F991C20D69
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:18:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B3BD156F2F;
-	Wed, 10 Apr 2024 10:17:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FE04158D62;
+	Wed, 10 Apr 2024 10:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="lVh6aH4t"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12olkn2059.outbound.protection.outlook.com [40.92.23.59])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BKC+a3Ye"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48046158A3A;
-	Wed, 10 Apr 2024 10:16:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.23.59
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712744221; cv=fail; b=BJM7YcXWty9csP1Vw7iRS8jkpZRkYRxpwv19DA/llz7ZeITR8tVl2maBwU+BYv1+M5I7ISGrvNInkQiGTNN7fUrcGEaxhK7MYQho+UYloiSVW4XvnaUZuXMkLeRHnEwkh7mbM5bu4Nyro1lZsPtD/xlXyRKXsDBFhoWyByiUThc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712744221; c=relaxed/simple;
-	bh=CMHg7h2YNN+2xSD2uqAmVhPkqfTg3g2Izpa/RLoN+ns=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=G6meWj67ueMwUIlAYBfhMNw/vg2ngOCrCB2ZGJomrp6QH9XixDt9qTokaKn35kRSu+buqXOB1+kFoXggmiNKS2HxymBkLdRfnG8A460HDt+vpIbWC/0oo8on3lzpxtqkrI5CXvVl2hUT8621ZoBIdRT58ysj0lRjLm2aQP/+M20=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=lVh6aH4t; arc=fail smtp.client-ip=40.92.23.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P9iAKgpTtquGKCkZkRrfY4c8T+cYAluLIUWCz56cgHcPb2fLcw42HJ8C/7mRepjhXQeJq1RqvMvvmdvum9nS6T+8wPYw6SUyVRvkGVzmJ+0iigL3ftBPYfFoes+Y+437sZGAvJjbG6zj4GzEeeT2XjbSfBSungZhFJ5wNskpoSTpzRuEgcSMREfePfBef/TfTPFQ/OUqf4zPIA5KoNMmbpNwQbhSlemC6gPD8/JH6zrUZSHmkNdBO+U53EnUVavgIZ8MhLbkM/ynBBwek/6yt8vv5hlaIjYYvJVsb2WXz4/80rt4Gclug+d8m57T6HibaClXyKLorJdF4VoZPYhToA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Gn2f5ff8033IAMmi+7JVYLxi/c2u3VBTYdBB/CJnqNc=;
- b=P6eDfor1prMXxu+PKoH3C2B7pig2MOvNFwKekjWGEDrbZitye3nY9FaBwL9I5jKYdf+Mo7/RSCbXEvjiPWD6QQYIYwbddddWIpwetuv5w8KUMLnkqQ3suiiPJvSyzHmgsDDo/szYYHStoiyuRboh/2poT6wUWQPOoIbHniSC4AwLJ0k0x03/+I2a45E7tcDu5LpQKOnXOifFfMC9KRoeK2cSIm17rbTivf4FHKo9FgcAH+Vlsct/8O33qhTCBQshzBFK79Zn8WH3PKVk59on5BiSfwBAZMUe4Wsc2txWMVezS834V1O8jVEq6QgADDLvEgt8pNzRhPgn6dPZZxpiPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Gn2f5ff8033IAMmi+7JVYLxi/c2u3VBTYdBB/CJnqNc=;
- b=lVh6aH4thobfuJtpbeEUxQXbCRKUHvveCZtHsDiWvDbVrehqZMwFO4YipRwvlNs0fQyghg5gUexeC0IUPPemJ+z5Ww+x8jbgwMLIbYZ8gdnyG5BywQytwQh1pCTgUhoOxVqkXe0zGIarbhrEL8bWNWpKVg6XTMK4h7QH3YsfB73E773mllZ08+gAMTPai6/n7sKss2eJBpgBfV1N6yt/tBS18LOrvU4LjjHdsGEuEVpBpXg71m3f9WWTFMTcxs1dPHumnxl5OyhYoLuHSK29e91IPRuyDpt1lczwyCm8o/a8LVxZbDcP0igYp+Z+9naHbhI54eZxGz7fQ6LYVbMcew==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by PH7PR20MB5257.namprd20.prod.outlook.com (2603:10b6:510:1af::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 10 Apr
- 2024 10:16:57 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7409.042; Wed, 10 Apr 2024
- 10:16:56 +0000
-Date: Wed, 10 Apr 2024 18:17:14 +0800
-From: Inochi Amaoto <inochiama@outlook.com>
-To: Michael Opdenacker <michael.opdenacker@bootlin.com>, 
-	Inochi Amaoto <inochiama@outlook.com>, Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Chen Wang <unicorn_wang@outlook.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Chao Wei <chao.wei@sophgo.com>
-Cc: linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: riscv: add Milk-V Duo S board
- compatibles
-Message-ID:
- <IA1PR20MB49538EC805A17513DF396820BB062@IA1PR20MB4953.namprd20.prod.outlook.com>
-References: <20240410062254.2955647-1-michael.opdenacker@bootlin.com>
- <20240410062254.2955647-2-michael.opdenacker@bootlin.com>
- <IA1PR20MB49532EC9B654B5B1C2538851BB062@IA1PR20MB4953.namprd20.prod.outlook.com>
- <115662f6-a390-497e-903e-5a9bbb15e08b@bootlin.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <115662f6-a390-497e-903e-5a9bbb15e08b@bootlin.com>
-X-TMN: [/kqvkq5bJNnQgR90TdcyEw6kzjs7e7jLq9SwCRz5ToI=]
-X-ClientProxiedBy: TYCP286CA0229.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:3c7::8) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID:
- <yj5oxxquzg4zrbqvvlsaj77n2cmbbp2uwtbjkhwkk3lrr6v72y@tbwnm67qtgyv>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A63EE158204
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:18:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712744304; cv=none; b=DjRlIrMlZwwzjR9Dx518stkni/n6R9zWHuUjCEyGsenpAFtGynA1BxxM44yUvZJMFeGGXYkE1ln7l0/KxADCLmjStI0ZiBxqo9Xt8E8M8Lz4kzjsHBoIdFlKMEV6lf84xGS6ajGOJr0FMcdXwF9Lfu412BZ6BCjd43mqemegni0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712744304; c=relaxed/simple;
+	bh=QNa9q7fl0QpNcL5PdvTdh8BoZUPCJ2zBMZ3FZ5JDDRQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OpnIYcn2nCKvjfSYDQzHDJh0GAUqZOxhcyswp3YaTwF0AezdXups4QGRDrQmwdO+ieioPODEmIsjguZV6JbhcEBx80egq0KnFhp/4HBnP6eDhGTrONtL2n8mVmn2r6G4kqwD84UVWDgIyghYPxDoPpPCpW67vtdfCkOY3CXUzYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BKC+a3Ye; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-41641a889ccso48865e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:18:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712744301; x=1713349101; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vT68oS4RVQULaWAEFFaBC6rqDsXdkDc5eppWUMWD6Io=;
+        b=BKC+a3YefzFPDPuWK8dTQhZP1Tu8aSyDCJK8i8Io41ZMGrGc2W0zM/5+s8b5OCus+0
+         Y04nu3tOihfOdy+mVWlgUQDeYnbR/KohQHWCLWi/3vBK7+aPLIww/NI7uot8mzvGWOW7
+         GL266Dfhu90eK6J4HekL1iEKku11Fz95Z2aUnYAMJ2eByTvuZ6C1n1n/MGP+DvlOwB4g
+         vYan8h2Tvu4+aERFiykhewNXZLTlo7PIufK7S7XIsIM7/gQKR8DiJR6YMqJRzA1LxYB3
+         SrCYib8SlojVOclpMW3TsoEt9NQkVFwDcq5OiY5uBG+KwnodcCrEG9CTjGFHgJRDYcTn
+         K/7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712744301; x=1713349101;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vT68oS4RVQULaWAEFFaBC6rqDsXdkDc5eppWUMWD6Io=;
+        b=MF18hIt8+tWuWPx+Q3scQhwpNkVdmeh9i9fUMph6A/doAafuDqNUZHGyUHe3fSBUex
+         iQMU9orW6WwnpZW+BEOKTMMsZP1xuK8zgfMDkGtnap2cmPsHULqELUVJ/wTygmf1MxN5
+         KCnwcbFix2RPfy0C5HBCF1WKwwjJNm37aIuQhMz051YAfe63XdWceFm/3SgkaZGfTZ5J
+         JtdQp3oov3Io14ZRLIXNVj+pWseY1NRkDah8JYz2KRa3oIixFPm2qOfbW+Q91opXeSt6
+         D1ha0D7zjqQl25lPBgJnsjM6k4kmiCzNQ5tyoXdTAO4IgiSXTDi1yY1dC8AKlL6N5qCa
+         BYQA==
+X-Forwarded-Encrypted: i=1; AJvYcCWCGvNtksnSf+aMzl9prZPkhA54JdiuTcPUjuyxAucgztW9OUlhphtOWldZqOSXCvEt57rJu3z8pEfzksjo7q+gtfPDIBU4rK6S/Wvl
+X-Gm-Message-State: AOJu0YygZaVJJWV4pM6HhfynTcK4CDeDjmRhL1y6iO1kY5f76vt1fPZ3
+	IqSx4BnK68RJe3GzOgpzhDRj6dQJ60hw75fEf0Et0WB79Qkl9qbmz0uLJDmw/A==
+X-Google-Smtp-Source: AGHT+IF04oIgLfak4zpgaHX/QvWLj2Gry8uOBqaulhtF8YFr4xta0pvMXzu6sMK/eZd+mX/Vi1I/5w==
+X-Received: by 2002:a05:600c:5105:b0:414:1400:a776 with SMTP id o5-20020a05600c510500b004141400a776mr111247wms.5.1712744300762;
+        Wed, 10 Apr 2024 03:18:20 -0700 (PDT)
+Received: from google.com (248.199.140.34.bc.googleusercontent.com. [34.140.199.248])
+        by smtp.gmail.com with ESMTPSA id r6-20020a05600c458600b004162a9f03a6sm1832887wmo.7.2024.04.10.03.18.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 03:18:19 -0700 (PDT)
+Date: Wed, 10 Apr 2024 10:18:18 +0000
+From: Sebastian Ene <sebastianene@google.com>
+To: Vincent Donnefort <vdonnefort@google.com>
+Cc: catalin.marinas@arm.com, james.morse@arm.com, jean-philippe@linaro.org,
+	maz@kernel.org, oliver.upton@linux.dev, qperret@google.com,
+	qwandor@google.com, sudeep.holla@arm.com, suzuki.poulose@arm.com,
+	tabba@google.com, will@kernel.org, yuzenghui@huawei.com,
+	kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH] KVM: arm64: Add support for FFA_PARTITION_INFO_GET
+Message-ID: <ZhZnaibTBaa2J4a5@google.com>
+References: <20240409151908.541589-1-sebastianene@google.com>
+ <ZhVpmF2js1NJp1qF@google.com>
+ <ZhZYsuqggl_Hzv8X@google.com>
+ <ZhZhm4UXyClAqXDM@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|PH7PR20MB5257:EE_
-X-MS-Office365-Filtering-Correlation-Id: f6fa1d1d-d1ad-4234-389a-08dc594759e3
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	n+KNaoQq+1q/TdEh+kUYZ6F+OtGPZ2Dw8WCthKQ6ntBc8Uvr9kCgY0xuRkM1j3QNW7eR9pcPhd+L/rkwt0xk9iqB3SpYAVZUvWS/lNuQMKd33zYDxEnRve2mR/i5bb0YhKVu/RR7uVn9F9aj7L1OE6IjEUtg9Aignum3f++Umep6lI2dgYel/V3217+I9y7JONFjXYteKVpzJc/wXTyrF6uhMiUuHt3Q3oMx9b2gdLrM7wmUdLXl+Ni/iLkU10QBNHxqeIPWUmxOEXNvSvH8QiekMekDwAiymexXFkVWBCNK0+iSQGHCj13TYb2PX5jPYG0pnQRoGIlA6cyFA4In86gZSJOaG4u1+Qf6LcbC1yC4xon6VNywGPBYwsVKJJ6fl7jyez7DO1dAmVDPUqDMINiVC/c9RIkyGQkyt5n79bUoej5Qa2vQSIlnozGiNUeCECwN/OSmXn7rKimpZGHh8Hf49DqgD80CtLimkXJ6ubLHW+W8usz4EsXK+vSkJV5XE1I3H9p9CAqjx3O7uun9T48hRspPxXI1bIg/Ue42KCj625BKeZTlS3o54ACh5XRucLRga2YrQCa2SKcmY/6q/Ak+3aidkFdd9Lu0BC7hQTQbYomej7QBVqGpTMDNnnPETttW0igcICjIk2CpI/vLJqotR+0OE/R/S9QhG82n8RNMEp4y4Lh8Z23oZoaSlU8t
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?JTGe9Bx1r2wqJLRZNQCw3QCaDihYTUf/EKmOTlI657bnKV3jFm0yDkp9pyfG?=
- =?us-ascii?Q?ctZLGmV9N02aiRv6cPzhCTz9hstCbk5mfAStPQp8RUYjnq1hR6aEZ1nB9qk2?=
- =?us-ascii?Q?toEkF7/RzkU3w9GNoD31z0+kJHMLoX0stwrHZx0RPoGBTC7LLSBFhLVDQb77?=
- =?us-ascii?Q?RUenM8PcdLUyJ1IbC5HIKwFVe1D2yN44nOzERAYtpTLTqh0+zk9vUWEDCne5?=
- =?us-ascii?Q?LjeBrFuUqUF3nPouu5XZzSx9w5BPAAlH78FJ1Smo3uUT/hq86r1wMnvQ1IFE?=
- =?us-ascii?Q?0YnUAsluZb4fFKgxzVxvCDTDfEpKe6UUlTb9Lr4wUgEOMh5mJE+RLJ6g0+kX?=
- =?us-ascii?Q?vGF0o4lMYFSUDJ+4u054M77SNdR+FnTReRk5iKR2Y5s6Qf4S/6W37OLQDNvE?=
- =?us-ascii?Q?kKjnYvH9e+2pV06246hNxE1wrypYaD+iGqwKN3LvuBEySkgVbRQTBnTbYKI8?=
- =?us-ascii?Q?wVRd9j9F9IXjkLv89xkS03G6tDOKFUxev5gEY5/dLrvx1bi5fZPqU7kBNxTH?=
- =?us-ascii?Q?yCtmlKHNrNO1MIVNSHjh7PbYeV4dW3yRf59S3PHx1A3Q6oACMBkUgxC2Zk5n?=
- =?us-ascii?Q?tkJWU3Sf9yewalpgYFPR12O/H6rSBnHdUVPTKzfycFp5bsy3eXW5elxuIkVz?=
- =?us-ascii?Q?BNlxj5nxB5zgl7K29DvVCd8dt+PaGGs6ggCm1rj7HmNGusi3CeX2MwcB/m0W?=
- =?us-ascii?Q?OIwhuBYUXC6rDfksmrIE1bh5ONzI4bDKzIBhTnctIIYmeqsZ6GfS0npOrzfa?=
- =?us-ascii?Q?zRS1RThZymmaLqRIJpNqTnVXQ76SPhLZ5Tr3V1o02LqAnVBM5C+5u8Zk770n?=
- =?us-ascii?Q?TJektZ/tRR84j9TdErtRzOl+mrxpMEPtDqXcUF96yPhPWwE6SbAvT/+n+G7M?=
- =?us-ascii?Q?c6uHawanDcG8elbxG8gvZo+UvS3AQDKuH+CYVGe05QLRIYERwWYzV75nrMYc?=
- =?us-ascii?Q?TqpNnKBNX0PdaP9IdD74JLnb1YLCmb8fd9JRPylA5gzAcpJnbD/TBl3ABEUm?=
- =?us-ascii?Q?K83jTTjH4fcr++onUz1RkW9zWYQt2Qhk9MoWmIWfrHCpis620B2iB1xrABNt?=
- =?us-ascii?Q?SFs1m2BV1hIb1Qd3ekjyoLPZVnRjfG8zozTxt/c24y0n4FKH/lj7Gk8mN1aX?=
- =?us-ascii?Q?hcEcJRyOuhSaHxnV+4VjRDZVITI+wAO7GkeJuElck+2NldkQ0DkzgucWUSIG?=
- =?us-ascii?Q?DvEevsRMQQa+VnHIfUReDjkUgL8VV0t1nsgK4aK0ntmD3/wTKLuXdBOYAamd?=
- =?us-ascii?Q?Jdk2v43LXgsNm5af8CPs?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6fa1d1d-d1ad-4234-389a-08dc594759e3
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 10:16:56.7689
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR20MB5257
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhZhm4UXyClAqXDM@google.com>
 
-On Wed, Apr 10, 2024 at 09:55:17AM +0200, Michael Opdenacker wrote:
-> Hi Inochi
+On Wed, Apr 10, 2024 at 10:53:31AM +0100, Vincent Donnefort wrote:
+> [...]
 > 
-> Thanks for the reviews!
+> > > > +static void do_ffa_part_get(struct arm_smccc_res *res,
+> > > > +			    struct kvm_cpu_context *ctxt)
+> > > > +{
+> > > > +	DECLARE_REG(u32, uuid0, ctxt, 1);
+> > > > +	DECLARE_REG(u32, uuid1, ctxt, 2);
+> > > > +	DECLARE_REG(u32, uuid2, ctxt, 3);
+> > > > +	DECLARE_REG(u32, uuid3, ctxt, 4);
+> > > > +	DECLARE_REG(u32, flags, ctxt, 5);
+> > > > +	u32 off, count, sz, buf_sz;
+> > > > +
+> > > > +	hyp_spin_lock(&host_buffers.lock);
+> > > > +	if (!host_buffers.rx) {
+> > > > +		ffa_to_smccc_res(res, FFA_RET_INVALID_PARAMETERS);
+> > > > +		goto out_unlock;
+> > > > +	}
+> > > > +
+> > > > +	arm_smccc_1_1_smc(FFA_PARTITION_INFO_GET, uuid0, uuid1,
+> > > > +			  uuid2, uuid3, flags, 0, 0,
+> > > > +			  res);
+> > > > +
+> > > > +	if (res->a0 != FFA_SUCCESS)
+> > > > +		goto out_unlock;
+> > > > +
+> > > > +	count = res->a2;
+> > > > +	if (!count)
+> > > > +		goto out_unlock;
+> > > 
+> > > Looking at the table 13.34, it seems what's in "count" depends on the flag.
+> > > Shouldn't we check its value, and only memcpy into the host buffers if the flag
+> > > is 0?
+> > > 
+> > 
+> > When the flag is `1` the count referes to the number of partitions
+> > deployed. In both cases we have to copy something unless count == 0.
 > 
-> On 4/10/24 at 09:19, Inochi Amaoto wrote:
-> > On Wed, Apr 10, 2024 at 08:22:53AM +0200, michael.opdenacker@bootlin.com wrote:
-> > > From: Michael Opdenacker <michael.opdenacker@bootlin.com>
-> > > 
-> > > Document the compatible strings for the Milk-V Duo S board[1] which uses
-> > > the SOPHGO SG2000 SoC, compatible with the SOPHGO CV1800B SoC[2].
-> > > 
-> > > Link: https://milkv.io/duo-s [1]
-> > > Link: https://en.sophgo.com/product/introduce/cv180xB.html [2]
-> > > 
-> > > Signed-off-by: Michael Opdenacker <michael.opdenacker@bootlin.com>
-> > > ---
-> > >   Documentation/devicetree/bindings/riscv/sophgo.yaml | 1 +
-> > >   1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/riscv/sophgo.yaml b/Documentation/devicetree/bindings/riscv/sophgo.yaml
-> > > index 9bc813dad098..1837bc550056 100644
-> > > --- a/Documentation/devicetree/bindings/riscv/sophgo.yaml
-> > > +++ b/Documentation/devicetree/bindings/riscv/sophgo.yaml
-> > > @@ -21,6 +21,7 @@ properties:
-> > >         - items:
-> > >             - enum:
-> > >                 - milkv,duo
-> > > +              - milkv,duos
-> > >             - const: sophgo,cv1800b
-> > Why not adding sg2000 property? They are different series.
-> > IIRC, it at least a cv1813h not cv1800b. I suggest checking
-> > the vendor SDK to get the right board compatibles.
+> I see "Return the count of partitions deployed in the system corresponding to
+> the specified UUID in w2"
 > 
-> Here's what there was in the vendor provided DTB, if I noted it correctly:
-> compatible = "cvitek,cv181x";
+> Which I believe means nothing has been copied in the buffer?
 > 
-> Cheers
-> Michael
 
-That's true, the chipcode can be only see in the build script or
-the board dts. You can use this as a base. For example, sg2000 
-can be something like: "sophgo,sg2000", "sophgo,cv1813h". 
-But in fact, I do not prefer to add "sophgo,cv1813h". Because
-sg2000 can also boot as an aarch64 board, but cv1813h can't.
+When the flag in w5 is 1 the size argument stored in w3 will be zero and
+the loop will not be executed, so nothing will be copied to the host
+buffers.
 
+> > 
+> > > > +
+> > > > +	if (ffa_version > FFA_VERSION_1_0) {
+> > > > +		buf_sz = sz = res->a3;
+> > > > +		if (sz > sizeof(struct ffa_partition_info))
+> > > > +			buf_sz = sizeof(struct ffa_partition_info);
+> > > 
+> > > What are you trying to protect against here? We have to trust EL3 anyway, (as
+> > > other functions do).
+> > > 
+> > > The WARN() could be kept though to make sure we won't overflow our buffer. But
+> > > it could be transformed into an error? FFA_RET_ABORTED?
+> > > 
+> > >
+> > 
+> > I think we can keep it as a WARN_ON because it is not expected to have
+> > a return code of FFA_SUCCESS but the buffer to be overflown. The TEE is
+> > expected to return NO_MEMORY in w2 if the results cannot fit in the RX
+> > buffer.
+> 
+> WARN() is crashing the hypervisor. It'd be a shame here as we can easily recover
+> by just sending an error back to the caller.
+
+I agree with you but this is not expected to happen unless TZ messes up
+something/is not complaint with the spec, in which case I would like to
+catch this.
 
