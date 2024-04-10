@@ -1,266 +1,119 @@
-Return-Path: <linux-kernel+bounces-138312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE99C89EFA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:15:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E96589EFA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:15:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DA4128514F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:15:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE94A28533B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:15:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57B3158217;
-	Wed, 10 Apr 2024 10:15:15 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA0D158D94;
+	Wed, 10 Apr 2024 10:15:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b="i5qBhIEP"
+Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0331553B7
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:15:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2926155737;
+	Wed, 10 Apr 2024 10:15:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712744115; cv=none; b=qT3NdLAZpMHZMSJSfTSA5/8bIOKMDuw83LaLMbYT4WN68IhLVFvOT+ylsyEN4BgM3/kukj8dLY7dCbtBRMFI23Zu/BHG+BKnLnGCK6FVgNlbiCQux1X9iaOSLN+o9zpT7oUkcq1lc2ggV2ivfXw44eM/rQBmhSTtIldxfi2bw7E=
+	t=1712744137; cv=none; b=X+kHfgKZ9c218yENLF9d+QFe1TdhRQwrkgpi3lFWscsa8G8f0I77lr7ePZu2Fh8b2nFuFGwwcsjCku33Wp6AANcldUqz9bjSnnjmZnKeKC3/wFBmhha807mB6pqlwQgqTFfqiGJrHMryOxKsFmvy8jpca0z+JVd50EDXQiYBUj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712744115; c=relaxed/simple;
-	bh=bPj6QlcLi4XrRHYufTRYNiCGvg+NUZoj2xCvdt9IAsc=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BqZ5WETgbKq6KBlUgnA9wnF/RelnIvlRC7btR27v4Y+Asb7Byu/CsFpKcZ3xRf5Mg0aRBdKnr3OMW7OgQjAQcnxaisnFA7seD78k/2/QJXIL6IgVyy59Sj/M2Q3FA4zrhVRVooX2Bv7GjqtpJZ9L3HVCRIZEiadvUQKlumwm31Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 43AAElCp055314;
-	Wed, 10 Apr 2024 18:14:48 +0800 (+08)
-	(envelope-from Dongliang.Cui@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4VDzCn4321z2K5bqN;
-	Wed, 10 Apr 2024 18:12:37 +0800 (CST)
-Received: from tj10379pcu.spreadtrum.com (10.5.32.15) by
- BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Wed, 10 Apr 2024 18:14:45 +0800
-From: Dongliang Cui <dongliang.cui@unisoc.com>
-To: <axboe@kernel.dk>, <rostedt@goodmis.org>, <mhiramat@kernel.org>,
-        <mathieu.desnoyers@efficios.com>
-CC: <ke.wang@unisoc.com>, <hongyu.jin.cn@gmail.com>, <niuzhiguo84@gmail.com>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <cuidongliang390@gmail.com>,
-        Dongliang
- Cui <dongliang.cui@unisoc.com>
-Subject: [PATCH] block: Add ioprio to block_rq tracepoint
-Date: Wed, 10 Apr 2024 18:14:36 +0800
-Message-ID: <20240410101436.1148905-1-dongliang.cui@unisoc.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712744137; c=relaxed/simple;
+	bh=YC5mpI3zmUDjy80vR1JbXqLidS+Mq+LuGjUVGLaf+NY=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:Content-Type:
+	 MIME-Version; b=pGCRTpXEUt/GPbA6ndenSju7dZjzpNBDhjrtGk2eh3sLRi9SewgQyXHYWAz7LsHmKjpSpeXntw45TBP/3kjQqTadEnyvdZ5YaYl6rpqsVsPfF0jeGubetxPJsXk9Hqa1SV1HXP0YvBFq9snYdfJv758+Sb/Wc/PIdxSgFPtFYz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b=i5qBhIEP; arc=none smtp.client-ip=52.119.213.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
+  s=amazon201209; t=1712744133; x=1744280133;
+  h=from:to:cc:subject:date:message-id:in-reply-to:reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=YC5mpI3zmUDjy80vR1JbXqLidS+Mq+LuGjUVGLaf+NY=;
+  b=i5qBhIEPOnQe4iL6q2UhWD4hLxpcf6C+3vEA1w8un/WPc0HSNdh4I2/6
+   O+1RlZ2Pwextq6kidyrlpdnajEM3Ik0QhMdRtexZIQArccb+EGpLxrQY2
+   FwSIEFe/w3pBW+ip1JOSNWxz6qdjwbzMgLtlUqbQNrWDJXr/otPoAnsG0
+   M=;
+X-IronPort-AV: E=Sophos;i="6.07,190,1708387200"; 
+   d="scan'208";a="197624342"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.43.8.2])
+  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 10:15:31 +0000
+Received: from EX19MTAEUC001.ant.amazon.com [10.0.43.254:28828]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.25.48:2525] with esmtp (Farcaster)
+ id 4757ae82-0365-4d6b-a303-bd85ff575e01; Wed, 10 Apr 2024 10:15:29 +0000 (UTC)
+X-Farcaster-Flow-ID: 4757ae82-0365-4d6b-a303-bd85ff575e01
+Received: from EX19D033EUC001.ant.amazon.com (10.252.61.132) by
+ EX19MTAEUC001.ant.amazon.com (10.252.51.155) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Wed, 10 Apr 2024 10:15:29 +0000
+Received: from EX19D033EUC004.ant.amazon.com (10.252.61.133) by
+ EX19D033EUC001.ant.amazon.com (10.252.61.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Wed, 10 Apr 2024 10:15:29 +0000
+Received: from EX19D033EUC004.ant.amazon.com ([fe80::8359:4d84:fb19:f6e9]) by
+ EX19D033EUC004.ant.amazon.com ([fe80::8359:4d84:fb19:f6e9%3]) with mapi id
+ 15.02.1258.028; Wed, 10 Apr 2024 10:15:29 +0000
+From: "Allister, Jack" <jalliste@amazon.co.uk>
+To: "dongli.zhang@oracle.com" <dongli.zhang@oracle.com>
+CC: "corbet@lwn.net" <corbet@lwn.net>, "kvm@vger.kernel.org"
+	<kvm@vger.kernel.org>, "shuah@kernel.org" <shuah@kernel.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"seanjc@google.com" <seanjc@google.com>, "mingo@redhat.com"
+	<mingo@redhat.com>, "pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>, "dwmw2@infradead.org"
+	<dwmw2@infradead.org>, "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>, "hpa@zytor.com" <hpa@zytor.com>, "paul@xen.org"
+	<paul@xen.org>, "bp@alien8.de" <bp@alien8.de>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"Allister, Jack" <jalliste@amazon.co.uk>, "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH 2/2] KVM: selftests: Add KVM/PV clock selftest to prove
+ timer drift correction
+Thread-Topic: [PATCH 2/2] KVM: selftests: Add KVM/PV clock selftest to prove
+ timer drift correction
+Thread-Index: AQHaizADgCaxniBg/kihxnKaQcWS/w==
+Date: Wed, 10 Apr 2024 10:15:29 +0000
+Message-ID: <4f1ca4e1a8a9a31eae8057f9a813fc13d3172f77.camel@amazon.co.uk>
+In-Reply-To: <9377995a-26a4-2523-e421-be1cd92bdc34@oracle.com>
+Reply-To: "9377995a-26a4-2523-e421-be1cd92bdc34@oracle.com"
+	<9377995a-26a4-2523-e421-be1cd92bdc34@oracle.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FA4954794EA1A8499DCB60759E1D7EB2@amazon.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-X-MAIL:SHSQR01.spreadtrum.com 43AAElCp055314
 
-Sometimes we need to track the processing order of requests with
-ioprio set. So the ioprio of request can be useful information.
-
-Example：
-
-block_rq_insert: 8,0 WS 4096 () 16573296 + 8 rt,4 [highpool[1]]
-block_rq_issue: 8,0 WS 4096 () 16573296 + 8 rt,4 [kworker/7:0H]
-block_rq_complete: 8,0 WS () 16573296 + 8 rt,4 [0]
-
-Signed-off-by: Dongliang Cui <dongliang.cui@unisoc.com>
----
- include/linux/blktrace_api.h |  2 ++
- include/trace/events/block.h | 63 ++++++++++++++++++++++--------------
- kernel/trace/blktrace.c      | 11 +++++++
- 3 files changed, 51 insertions(+), 25 deletions(-)
-
-diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
-index 122c62e561fc..adb0333efbdb 100644
---- a/include/linux/blktrace_api.h
-+++ b/include/linux/blktrace_api.h
-@@ -112,6 +112,8 @@ struct compat_blk_user_trace_setup {
- 
- void blk_fill_rwbs(char *rwbs, blk_opf_t opf);
- 
-+void blk_fill_ioprio(u32 ioprio, char *ioprio_class, u32 *ioprio_value);
-+
- static inline sector_t blk_rq_trace_sector(struct request *rq)
- {
- 	/*
-diff --git a/include/trace/events/block.h b/include/trace/events/block.h
-index 0e128ad51460..1d41fade160a 100644
---- a/include/trace/events/block.h
-+++ b/include/trace/events/block.h
-@@ -10,7 +10,8 @@
- #include <linux/buffer_head.h>
- #include <linux/tracepoint.h>
- 
--#define RWBS_LEN	8
-+#define RWBS_LEN		8
-+#define IOPRIO_CLASS_LEN	8
- 
- #ifdef CONFIG_BUFFER_HEAD
- DECLARE_EVENT_CLASS(block_buffer,
-@@ -79,11 +80,13 @@ TRACE_EVENT(block_rq_requeue,
- 	TP_ARGS(rq),
- 
- 	TP_STRUCT__entry(
--		__field(  dev_t,	dev			)
--		__field(  sector_t,	sector			)
--		__field(  unsigned int,	nr_sector		)
--		__array(  char,		rwbs,	RWBS_LEN	)
--		__dynamic_array( char,	cmd,	1		)
-+		__field(  dev_t,	dev				)
-+		__field(  sector_t,	sector				)
-+		__field(  unsigned int,	nr_sector			)
-+		__array(  char,		rwbs,	RWBS_LEN		)
-+		__array(  char,		ioprio_class, IOPRIO_CLASS_LEN	)
-+		__field(  unsigned int, ioprio_value			)
-+		__dynamic_array( char,	cmd,	1			)
- 	),
- 
- 	TP_fast_assign(
-@@ -92,14 +95,16 @@ TRACE_EVENT(block_rq_requeue,
- 		__entry->nr_sector = blk_rq_trace_nr_sectors(rq);
- 
- 		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
-+		blk_fill_ioprio(rq->ioprio, __entry->ioprio_class, &__entry->ioprio_value);
- 		__get_str(cmd)[0] = '\0';
- 	),
- 
--	TP_printk("%d,%d %s (%s) %llu + %u [%d]",
-+	TP_printk("%d,%d %s (%s) %llu + %u %s,%u [%d]",
- 		  MAJOR(__entry->dev), MINOR(__entry->dev),
- 		  __entry->rwbs, __get_str(cmd),
- 		  (unsigned long long)__entry->sector,
--		  __entry->nr_sector, 0)
-+		  __entry->nr_sector, __entry->ioprio_class,
-+		  __entry->ioprio_value, 0)
- );
- 
- DECLARE_EVENT_CLASS(block_rq_completion,
-@@ -109,12 +114,14 @@ DECLARE_EVENT_CLASS(block_rq_completion,
- 	TP_ARGS(rq, error, nr_bytes),
- 
- 	TP_STRUCT__entry(
--		__field(  dev_t,	dev			)
--		__field(  sector_t,	sector			)
--		__field(  unsigned int,	nr_sector		)
--		__field(  int	,	error			)
--		__array(  char,		rwbs,	RWBS_LEN	)
--		__dynamic_array( char,	cmd,	1		)
-+		__field(  dev_t,	dev				)
-+		__field(  sector_t,	sector				)
-+		__field(  unsigned int,	nr_sector			)
-+		__field(  int,		error				)
-+		__array(  char,		rwbs,	RWBS_LEN		)
-+		__array(  char,		ioprio_class, IOPRIO_CLASS_LEN	)
-+		__field(  unsigned int,	ioprio_value			)
-+		__dynamic_array( char,	cmd,	1			)
- 	),
- 
- 	TP_fast_assign(
-@@ -124,14 +131,16 @@ DECLARE_EVENT_CLASS(block_rq_completion,
- 		__entry->error     = blk_status_to_errno(error);
- 
- 		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
-+		blk_fill_ioprio(rq->ioprio, __entry->ioprio_class, &__entry->ioprio_value);
- 		__get_str(cmd)[0] = '\0';
- 	),
- 
--	TP_printk("%d,%d %s (%s) %llu + %u [%d]",
-+	TP_printk("%d,%d %s (%s) %llu + %u %s,%u [%d]",
- 		  MAJOR(__entry->dev), MINOR(__entry->dev),
- 		  __entry->rwbs, __get_str(cmd),
- 		  (unsigned long long)__entry->sector,
--		  __entry->nr_sector, __entry->error)
-+		  __entry->nr_sector, __entry->ioprio_class,
-+		  __entry->ioprio_value, __entry->error)
- );
- 
- /**
-@@ -176,13 +185,15 @@ DECLARE_EVENT_CLASS(block_rq,
- 	TP_ARGS(rq),
- 
- 	TP_STRUCT__entry(
--		__field(  dev_t,	dev			)
--		__field(  sector_t,	sector			)
--		__field(  unsigned int,	nr_sector		)
--		__field(  unsigned int,	bytes			)
--		__array(  char,		rwbs,	RWBS_LEN	)
--		__array(  char,         comm,   TASK_COMM_LEN   )
--		__dynamic_array( char,	cmd,	1		)
-+		__field(  dev_t,	dev				)
-+		__field(  sector_t,	sector				)
-+		__field(  unsigned int,	nr_sector			)
-+		__field(  unsigned int,	bytes				)
-+		__array(  char,		rwbs,	RWBS_LEN		)
-+		__array(  char,		ioprio_class, IOPRIO_CLASS_LEN	)
-+		__field(  unsigned int,	ioprio_value			)
-+		__array(  char,		comm,   TASK_COMM_LEN		)
-+		__dynamic_array( char,	cmd,	1			)
- 	),
- 
- 	TP_fast_assign(
-@@ -192,15 +203,17 @@ DECLARE_EVENT_CLASS(block_rq,
- 		__entry->bytes     = blk_rq_bytes(rq);
- 
- 		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
-+		blk_fill_ioprio(rq->ioprio, __entry->ioprio_class, &__entry->ioprio_value);
- 		__get_str(cmd)[0] = '\0';
- 		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
- 	),
- 
--	TP_printk("%d,%d %s %u (%s) %llu + %u [%s]",
-+	TP_printk("%d,%d %s %u (%s) %llu + %u %s,%u [%s]",
- 		  MAJOR(__entry->dev), MINOR(__entry->dev),
- 		  __entry->rwbs, __entry->bytes, __get_str(cmd),
- 		  (unsigned long long)__entry->sector,
--		  __entry->nr_sector, __entry->comm)
-+		  __entry->nr_sector, __entry->ioprio_class,
-+		  __entry->ioprio_value, __entry->comm)
- );
- 
- /**
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index d5d94510afd3..e55aa49f94db 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -19,6 +19,7 @@
- #include <linux/uaccess.h>
- #include <linux/list.h>
- #include <linux/blk-cgroup.h>
-+#include <linux/ioprio.h>
- 
- #include "../../block/blk.h"
- 
-@@ -26,6 +27,9 @@
- 
- #include "trace_output.h"
- 
-+/* Type of ioprio */
-+static char *classes[] = {"none", "rt", "be", "idle"};
-+
- #ifdef CONFIG_BLK_DEV_IO_TRACE
- 
- static unsigned int blktrace_seq __read_mostly = 1;
-@@ -1914,5 +1918,12 @@ void blk_fill_rwbs(char *rwbs, blk_opf_t opf)
- }
- EXPORT_SYMBOL_GPL(blk_fill_rwbs);
- 
-+void blk_fill_ioprio(u32 ioprio, char *ioprio_class, u32 *ioprio_value)
-+{
-+	memcpy(ioprio_class, classes[(ioprio >> IOPRIO_CLASS_SHIFT) & 0x3], IOPRIO_CLASS_LEN);
-+	*ioprio_value = ioprio & 0xff;
-+}
-+EXPORT_SYMBOL_GPL(blk_fill_ioprio);
-+
- #endif /* CONFIG_EVENT_TRACING */
- 
--- 
-2.25.1
-
+PiBBRkFJUiwgSSBjb3BpZWQgY2hlY2tfY2xvY2tzb3VyY2UoKSBmcm9tIGV4aXN0aW5nIGNvZGUg
+ZHVyaW5nIHRoYXQgPg0KdGltZS4NCg0KPiBUaGUgY29tbWl0IGU0NDBjNWYyZSAoIktWTTogc2Vs
+ZnRlc3RzOiBHZW5lcmFsaXplIGNoZWNrX2Nsb2Nrc291cmNlKCkNCj4gZnJvbSBrdm1fY2xvY2tf
+dGVzdCIpIGhhcyBpbnRyb2R1Y2VkIHN5c19jbG9ja3NvdXJjZV9pc190c2MoKS4gTGF0ZXINCj4g
+aXQgaXMgcmVuYW1lZCB0byBzeXNfY2xvY2tzb3VyY2VfaXNfYmFzZWRfb25fdHNjKCkuDQo+IEFu
+eSBjaGFuY2UgdG8gcmUtdXNlIHN5c19jbG9ja3NvdXJjZV9pc19iYXNlZF9vbl90c2MoKT8NCg0K
+WWVzIEknbSBtb3JlIHRoYW4gaGFwcHkgdG8gY2hhbmdlIGl0IHRvIHRoYXQuIEkgd2FzIHVzaW5n
+IHlvdXIgb3JpZ2luYWwNCm1haWwgYXMgYSByZWZlcmVuY2UgYW5kIGRpZCBub3QgcmVhbGlzZSB0
+aGVyZSB3YXMgYSB1dGlsaXR5IHByZXNlbnQgZm9yDQp0aGlzLg0KDQo+IElzIGNvbmZpZ3VyZV9z
+Y2FsZWRfdHNjKCkgYW5lY2Vzc2FyeT8gT3IgaG93IGFib3V0IHRvIG1ha2UgaXQgYW4gID4NCm9w
+dGlvbi9hcmc/DQo+IFRoZW4gSSB3aWxsIGJlIGFibGUgdG8gdGVzdCBpdCBvbiBhIFZNL3NlcnZl
+ciB3aXRob3V0IFRTQyBzY2FsaW5nLg0KDQpTbyBpZiBUU0Mgc2NhbGluZyBmcm9tIDNHSHogKGhv
+c3QpIC0+IDEuNUdIeiAoZ3Vlc3QpIEkgZG8gc2VlIGEgc2tldyBvZg0KfjM1MDBucyBhZnRlciB0
+aGUgdXBkYXRlLiBXaGVyZSBhcyB3aXRob3V0IHNjYWxpbmcgYSBkZWx0YSBjYW4gYmUgc2Vlbg0K
+YnV0IGlzIHJvdWdobHkgfjE4MG5zLg0KDQpJbiBWMiBJJ3ZlIGFkanVzdGVkIHRoZSB0ZXN0IHNv
+IHRoYXQgbm93IGJ5IGRlZmF1bHQgc2NhbGluZyB3b24ndCB0YWtlDQpwbGFjZSwgaG93ZXZlciBp
+ZiBzb21lb25lIHdhbnRzIHRvIHRlc3Qgd2l0aCBpdCBlbmFibGVkIHRoZXkgY2FuIHBhc3MNCiIt
+cy8tLXNjYWxlLXRzYyIgdG8gaW5kdWNlIHRoZSBncmVhdGVyIGRlbHRhLg0KDQoNClRoYW5rcyB5
+b3UgZm9yIHRoZSBmZWVkYmFjaywNCkphY2sgQWxsaXN0ZXINCg0KDQoNCg==
 
