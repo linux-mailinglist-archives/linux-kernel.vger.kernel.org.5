@@ -1,174 +1,137 @@
-Return-Path: <linux-kernel+bounces-138176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7080489EDC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:38:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A32489EDCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:39:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F15CE1F21E9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:38:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 009CAB22016
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:39:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96797154C0F;
-	Wed, 10 Apr 2024 08:37:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TGO9oWBZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BF5D155300;
+	Wed, 10 Apr 2024 08:39:27 +0000 (UTC)
+Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCEFB13D607;
-	Wed, 10 Apr 2024 08:37:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D4F154BF7;
+	Wed, 10 Apr 2024 08:39:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.191.123.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712738276; cv=none; b=jz2I4emDBYohjlhehEcsNiAjjmdcqvaiTxQJPRq5DeSarjwoNs3wtDUU7RDMMjsKtxgNMmRgI7LjkjEMhtJiBZw3ioF+TS3IaDHoGo7cq1OiagauSSv8TRi6YQLRlf1dTbtzaDefZPu4qD2DPLAH2ni7q6mrFUbD4hQjyeCpwhU=
+	t=1712738367; cv=none; b=qeKOQY0WNbejj4T3h3o0uFhOQmWhLXmFFxqdcuaN/uy8mvSNNOW6WE29omsi4Oan4b0tz65MPGDVw6DI8RIkKDlDwt5EMaD2y5zcQ+SFGA24sC8WsrewugdUaSly+1XB22yDnl8CcF4KC8vnlXLveKVyBhx5TYqqNTg9CQignY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712738276; c=relaxed/simple;
-	bh=yIdIemOnTziXqNpLh8yEnKKFNrbqsF06OfPzOTHOcbY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TJBItvxM+FwovXWJB0ul/mwYdvs7WCbIrDrfJZWZ0oZ74s0RbH5DhhNZD9TRg6yVpFioo1rUVnX/GK5CnuHiwGDiNWTnIvAWSoKs3ZviQ65F5VU/N6UgBM5WYgJRU+kI+gYhf1QjJRaw0Uy2ckll/W29Wq+icSNweBnAs/A4kAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TGO9oWBZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45198C433C7;
-	Wed, 10 Apr 2024 08:37:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712738276;
-	bh=yIdIemOnTziXqNpLh8yEnKKFNrbqsF06OfPzOTHOcbY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=TGO9oWBZCnrkYFJOnvj3/5hP17eIupKKEZ7xBFRoxiLlPLTvn+gRNNzzRUi2KKZEN
-	 JDSJOtOkQQg0c6febzk8GxIYwf/bESKqGHh3gkuUfGL+v6JpdH16QE5FdIKENbrVCB
-	 MoojmL+l1IUBPUj+2W+EccTK/yPb75RcBdxCvKen/9FACh7XU/Ry6MPQUg3h6YRxMJ
-	 uGq39KL1RYomMCTLpqziztv377/AjsBrqOPJIuZduu3ZSrq/x5QpjW0KIW5iYnB9A6
-	 HCkYQ47agBokjq1I5snV56G3pj7m21ataYtEhKEnPPjgiKM2chSFf71hdYCkrV3gPy
-	 h/vxegaUrI3CQ==
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d858501412so82635331fa.0;
-        Wed, 10 Apr 2024 01:37:56 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWVsc6dFgsAV6NvHL1biywmssl/Wl1cEsatiCczFqm7Me+40Ff711Bn2PtUoVOaL3TDP0s0mlcsMldMeOU9q8iVVDuemuoIPGJjMpiMuAXvLTM1na1omLtw+MVFZTk6sDEmJckeFh87KPjrC+41HpjpAJFraOHvE/HcXezbexX5WQoTr9/d6YBrUJTDrXsWUO+eMeOzEAydxg/t3w==
-X-Gm-Message-State: AOJu0Yw3NCoMiDlC2o4pzTGFSiOUt5sgSYLETq0ec1mE2yz5w2+dVvsg
-	TKqdc6t+Ap/hlMFsbqlz1peX5hgdsdHhe5GVW49fuTCqdQF9rg3oKdMu8btv4w/CMwNMWI/U/NV
-	hEkDBfK4KLRoeS0jJXN5JX0kENRM=
-X-Google-Smtp-Source: AGHT+IErSky0zBx8VsJq18v2HDQ+IG2X2DLhHy2ORhAG5DQJYR3dQ/hVwRYoQ6FiWK4PuY4e2gnC4YDKAM8JXi22gts=
-X-Received: by 2002:a05:651c:169c:b0:2d6:ff04:200f with SMTP id
- bd28-20020a05651c169c00b002d6ff04200fmr1261201ljb.33.1712738274441; Wed, 10
- Apr 2024 01:37:54 -0700 (PDT)
+	s=arc-20240116; t=1712738367; c=relaxed/simple;
+	bh=ZO2PG/fMQB+8VlbmBQVf9zcfZmh9qOkdCf4vHQD3Px4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=BYqA0l70I+izV+kSHXzpA1EKgBW2pBZEixp09gB1t4Kx1HZdxDmq5zwk4ZqUxs2xuIJxpVYIRzkwF5KJJiBHaWc4mOkmt3CrfLyEdI3n+WxGspMut5uV4F9HKjfH/ptjujUdeJfRaQ5aPqi93NdCcfLvgNh/qqs99YZEzlqI79U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com; spf=pass smtp.mailfrom=h3c.com; arc=none smtp.client-ip=60.191.123.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
+Received: from mail.maildlp.com ([172.25.15.154])
+	by h3cspam02-ex.h3c.com with ESMTP id 43A8c4T8014703;
+	Wed, 10 Apr 2024 16:38:04 +0800 (GMT-8)
+	(envelope-from liu.yeC@h3c.com)
+Received: from DAG6EX11-BJD.srv.huawei-3com.com (unknown [10.153.34.13])
+	by mail.maildlp.com (Postfix) with ESMTP id CB763235AF7B;
+	Wed, 10 Apr 2024 16:40:14 +0800 (CST)
+Received: from DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) by
+ DAG6EX11-BJD.srv.huawei-3com.com (10.153.34.13) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.27; Wed, 10 Apr 2024 16:38:06 +0800
+Received: from DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4])
+ by DAG6EX02-IMDC.srv.huawei-3com.com ([fe80::4c21:7c89:4f9d:e4c4%16]) with
+ mapi id 15.02.1258.027; Wed, 10 Apr 2024 16:38:06 +0800
+From: Liuye <liu.yeC@h3c.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+CC: "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
+        "daniel.thompson@linaro.org" <daniel.thompson@linaro.org>,
+        "dianders@chromium.org" <dianders@chromium.org>,
+        "jason.wessel@windriver.com"
+	<jason.wessel@windriver.com>,
+        "jirislaby@kernel.org" <jirislaby@kernel.org>,
+        "kgdb-bugreport@lists.sourceforge.net"
+	<kgdb-bugreport@lists.sourceforge.net>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        "linux-serial@vger.kernel.org"
+	<linux-serial@vger.kernel.org>
+Subject: =?utf-8?B?562U5aSNOiDnrZTlpI06IOetlOWkjTog562U5aSNOiBbUEFUQ0ggVjEwXSBr?=
+ =?utf-8?Q?db:_Fix_the_deadlock_issue_in_KDB_debugging.?=
+Thread-Topic: =?utf-8?B?562U5aSNOiDnrZTlpI06IOetlOWkjTogW1BBVENIIFYxMF0ga2RiOiBGaXgg?=
+ =?utf-8?Q?the_deadlock_issue_in_KDB_debugging.?=
+Thread-Index: AQHaiuuw81gSSyk26Eq+v/7KfdTz2LFgdGkAgACJimD//36cAIAAh7Hw//98qQCAAIohAP//mg0AABEeCaA=
+Date: Wed, 10 Apr 2024 08:38:06 +0000
+Message-ID: <8f0487eaf15442f5b0bf7a6cafa5b973@h3c.com>
+References: <20240409020326.2125332-1-liu.yec@h3c.com>
+ <20240410020615.2885000-1-liu.yec@h3c.com>
+ <2024041014-padlock-aggregate-4705@gregkh>
+ <0c004dd44ad5478eba9451186f4ec962@h3c.com>
+ <2024041001-retaliate-cork-1fe5@gregkh>
+ <5c659d5f41ff4cf69ea9467b62d74e9b@h3c.com>
+ <2024041022-electable-unblock-5077@gregkh>
+ <567857bab013409ca53fa7c36292f4b0@h3c.com>
+ <2024041007-busload-equipment-b673@gregkh>
+In-Reply-To: <2024041007-busload-equipment-b673@gregkh>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-sender-location: DAG2
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409150132.4097042-5-ardb+git@google.com> <20240409150132.4097042-8-ardb+git@google.com>
- <ZhZMITbXAR63hkoD@krava>
-In-Reply-To: <ZhZMITbXAR63hkoD@krava>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Wed, 10 Apr 2024 10:37:42 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHuHVJn9H62GeA8kHNXm8L39BdCowebFkeCcNfYN29DjA@mail.gmail.com>
-Message-ID: <CAMj1kXHuHVJn9H62GeA8kHNXm8L39BdCowebFkeCcNfYN29DjA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] btf: Avoid weak external references
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
-	Masahiro Yamada <masahiroy@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, linux-arch@vger.kernel.org, 
-	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org, 
-	Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL:h3cspam02-ex.h3c.com 43A8c4T8014703
 
-On Wed, 10 Apr 2024 at 10:22, Jiri Olsa <olsajiri@gmail.com> wrote:
->
-> On Tue, Apr 09, 2024 at 05:01:36PM +0200, Ard Biesheuvel wrote:
-> > From: Ard Biesheuvel <ardb@kernel.org>
-> >
-> > If the BTF code is enabled in the build configuration, the start/stop
-> > BTF markers are guaranteed to exist in the final link but not during the
-> > first linker pass.
-> >
-> > Avoid GOT based relocations to these markers in the final executable by
-> > providing preliminary definitions that will be used by the first linker
-> > pass, and superseded by the actual definitions in the subsequent ones.
-> >
-> > Make the preliminary definitions dependent on CONFIG_DEBUG_INFO_BTF so
-> > that inadvertent references to this section will trigger a link failure
-> > if they occur in code that does not honour CONFIG_DEBUG_INFO_BTF.
-> >
-> > Note that Clang will notice that taking the address of__start_BTF cannot
-> > yield NULL any longer, so testing for that condition is no longer
-> > needed.
-> >
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > ---
-> >  include/asm-generic/vmlinux.lds.h | 9 +++++++++
-> >  kernel/bpf/btf.c                  | 4 ++--
-> >  kernel/bpf/sysfs_btf.c            | 6 +++---
-> >  3 files changed, 14 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> > index e8449be62058..4cb3d88449e5 100644
-> > --- a/include/asm-generic/vmlinux.lds.h
-> > +++ b/include/asm-generic/vmlinux.lds.h
-> > @@ -456,6 +456,7 @@
-> >   * independent code.
-> >   */
-> >  #define PRELIMINARY_SYMBOL_DEFINITIONS                                       \
-> > +     PRELIMINARY_BTF_DEFINITIONS                                     \
-> >       PROVIDE(kallsyms_addresses = .);                                \
-> >       PROVIDE(kallsyms_offsets = .);                                  \
-> >       PROVIDE(kallsyms_names = .);                                    \
-> > @@ -466,6 +467,14 @@
-> >       PROVIDE(kallsyms_markers = .);                                  \
-> >       PROVIDE(kallsyms_seqs_of_names = .);
-> >
-> > +#ifdef CONFIG_DEBUG_INFO_BTF
-> > +#define PRELIMINARY_BTF_DEFINITIONS                                  \
-> > +     PROVIDE(__start_BTF = .);                                       \
-> > +     PROVIDE(__stop_BTF = .);
-> > +#else
-> > +#define PRELIMINARY_BTF_DEFINITIONS
-> > +#endif
->
-> hi,
-> I'm getting following compilation fail when CONFIG_DEBUG_INFO_BTF is disabled
->
->         [jolsa@krava linux-qemu]$ make
->           CALL    scripts/checksyscalls.sh
->           DESCEND objtool
->           INSTALL libsubcmd_headers
->           UPD     include/generated/utsversion.h
->           CC      init/version-timestamp.o
->           LD      .tmp_vmlinux.kallsyms1
->         ld: kernel/bpf/btf.o: in function `btf_parse_vmlinux':
->         /home/jolsa/kernel/linux-qemu/kernel/bpf/btf.c:5988: undefined reference to `__start_BTF'
->         ld: /home/jolsa/kernel/linux-qemu/kernel/bpf/btf.c:5989: undefined reference to `__stop_BTF'
->         ld: /home/jolsa/kernel/linux-qemu/kernel/bpf/btf.c:5989: undefined reference to `__start_BTF'
->         make[2]: *** [scripts/Makefile.vmlinux:37: vmlinux] Error 1
->         make[1]: *** [/home/jolsa/kernel/linux-qemu/Makefile:1160: vmlinux] Error 2
->         make: *** [Makefile:240: __sub-make] Error 2
->
-> maybe the assumption was that kernel/bpf/btf.o is compiled only
-> for CONFIG_DEBUG_INFO_BTF, but it's actually:
->
->   obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o
->
-
-Interesting. I did build test this with and without
-CONFIG_DEBUG_INFO_BTF, but not with CONFIG_BPF_SYSCALL=y and
-CONFIG_DEBUG_INFO_BTF=n.
-
-> I guess we just need !CONFIG_DEBUG_INFO_BTF version of btf_parse_vmlinux
-> function
->
-
-The below gives me a working build.
-
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -5971,6 +5971,9 @@ struct btf *btf_parse_vmlinux(void)
-        struct btf *btf = NULL;
-        int err;
-
-+       if (!IS_ENABLED(CONFIG_DEBUG_INFO_BTF))
-+               return ERR_PTR(-ENOENT);
-+
-        env = kzalloc(sizeof(*env), GFP_KERNEL | __GFP_NOWARN);
-        if (!env)
-                return ERR_PTR(-ENOMEM);
+Pk9uIFdlZCwgQXByIDEwLCAyMDI0IGF0IDA2OjMwOjU5QU0gKzAwMDAsIExpdXllIHdyb3RlOg0K
+Pj4gPk9uIFdlZCwgQXByIDEwLCAyMDI0IGF0IDA2OjEwOjEwQU0gKzAwMDAsIExpdXllIHdyb3Rl
+Og0KPj4gPj4gPk9uIFdlZCwgQXByIDEwLCAyMDI0IGF0IDA1OjU0OjA4QU0gKzAwMDAsIExpdXll
+IHdyb3RlOg0KPj4gPj4gPj4gPj4gU2lnbmVkLW9mZi1ieTogR3JlZyBLSCA8Z3JlZ2toQGxpbnV4
+Zm91bmRhdGlvbi5vcmc+DQo+PiA+PiA+PiA+DQo+PiA+PiA+PiA+SSBoYXZlIE5PVCBzaWduZWQg
+b2ZmIG9uIHRoaXMgY29tbWl0LiAgWW91IGp1c3Qgc2FpZCB0aGF0IEkgbWFkZSBhIGxlZ2FsIHN0
+YXRlbWVudCBhYm91dCB0aGlzIGNvbW1pdCB3aXRob3V0IHRoYXQgYWN0dWFsbHkgYmVpbmcgdHJ1
+ZT8/Pw0KPj4gPj4gPj4gPg0KPj4gPj4gPj4gPlNvcnJ5LCBidXQgdGhhdCBpcyBmbGF0IG91dCBu
+b3QgYWNjZXB0YWJsZSBhdCBhbGwuICBQbGVhc2UgZ28gd29yayB3aXRoIHlvdXIgY29tcGFueSBs
+YXd5ZXJzIHRvIGZpZ3VyZSBvdXQgd2hhdCB5b3UgZGlkIGFuZCBjb21lIGJhY2sgd2l0aCBhbiBl
+eHBsYWluYXRpb24gb2YgZXhhY3RseSB3aGF0IHRoaXMgaXMgYW5kIGhvdyBpdCB3aWxsIG5vdCBo
+YXBwZW4gYWdhaW4uDQo+PiA+PiA+PiA+DQo+PiA+PiA+PiANCj4+ID4+ID4+ID4+IFNpZ25lZC1v
+ZmYtYnk6IEFuZHkgU2hldmNoZW5rbyA8YW5keS5zaGV2Y2hlbmtvQGdtYWlsLmNvbT4NCj4+ID4+
+ID4+ID4NCj4+ID4+ID4+ID4+IFY5IC0+IFYxMCA6IEFkZCBTaWduZWQtb2ZmLWJ5IG9mIEdyZWcg
+S0ggYW5kIEFuZHkgU2hldmNoZW5rbywgDQo+PiA+PiA+PiA+PiBBY2tlZC1ieSBvZiBEYW5pZWwg
+VGhvbXBzb24NCj4+ID4+ID4+ID4NCj4+ID4+ID4+ID5IdWg/IQ0KPj4gPj4gPj4gDQo+PiA+PiA+
+PiBAZ3JlZyBrLWgg77yaDQo+PiA+PiA+PiBAQW5keSBTaGV2Y2hlbmtvIO+8mg0KPj4gPj4gPj4g
+DQo+PiA+PiA+PiBTb3JyeSwgaXQgd2FzIG15IG1pc3Rha2UuIEkgbWlzdW5kZXJzdG9vZCB0aGUg
+bWVhbmluZyBvZiAic2lnbmVkLW9mZi1ieSIsIHdoaWNoIGxlZCB0byB1c2FnZSBpc3N1ZXMuDQo+
+PiA+PiA+PiANCj4+ID4+ID4+IEkgd2FudCB0byBleHByZXNzIG15IGdyYXRpdHVkZSBmb3IgdGhl
+IHN1Z2dlc3Rpb25zIG9uIHRoZSBwYXRjaCBmcm9tIHRoZSB0d28gb2YgeW91LiANCj4+ID4+ID4+
+IA0KPj4gPj4gPj4gV2hhdCBkbyBJIG5lZWQgdG8gZG8gbm93PyBSZWxlYXNlIFBBVENIIFYxMSBh
+bmQgZGVsZXRlIHRoZXNlIHR3byBzaWduYXR1cmVzIGluIGl0ID8NCj4+ID4+ID4NCj4+ID4+ID5B
+cyBJIHNhaWQsIGdvIHdvcmsgd2l0aCB5b3VyIGNvcnBvcmF0ZSBsYXd5ZXJzIG9uIHRoaXMgdG8g
+dW5kZXJzdGFuZCB3aGF0IGp1c3QgaGFwcGVuZWQgYW5kIGhhdmUgdGhlbSBsZXQgdXMga25vdyBo
+b3cgaXQgd2lsbCBub3QgaGFwcGVuIGFnYWluLg0KPj4gPj4gDQo+PiA+PiBJJ20gdmVyeSBzb3Jy
+eSwgdGhpcyBpcyBteSBmaXJzdCB0aW1lIHN1Ym1pdHRpbmcgYSBwYXRjaCBhbmQgSSBtYWRlIGEg
+c2lnbmlmaWNhbnQgbWlzdGFrZSBpbiB1c2luZyAiU2lnbmVkLW9mZi1ieSIuIEkgbm93IHVuZGVy
+c3RhbmQgdGhlIG1lYW5pbmcgb2YgdGhpcyBmaWVsZCBhbmQgd2lsbCBub3QgbWFrZSB0aGUgc2Ft
+ZSBtaXN0YWtlIGFnYWluIGluIHRoZSBmdXR1cmUuDQo+PiA+DQo+PiA+VW5kZXJzdG9vZCwgYnV0
+IHlvdSBzdGlsbCBuZWVkIHRvIGdvIHdvcmsgd2l0aCB5b3VyIGNvcnBvcmF0ZSBsZWdhbCBncm91
+cCBzbyB0aGF0IHlvdSBhbGwgZW5zdXJlIHRoaXMgZG9lcyBub3QgaGFwcGVuIGFnYWluIGZvciBh
+bnkgb3RoZXIgZGV2ZWxvcGVyIGluIHlvdXIgY29tcGFueSwgYXMgSSBhbSBzdXJlIHRoZXkgd2ls
+bCB3YW50IHRvIGtub3cgYWJvdXQgdGhpcy4NCj4+IA0KPj4gT2ssIEkgd2lsbCByZXBvcnQgdGhp
+cyB0byB0aGUgY29tcGFueS4gQXQgdGhlIHNhbWUgdGltZSwgSSB3aWxsIGFkZCBhbiBhdWRpdCBt
+ZWNoYW5pc20gdG8gdGhlIHBhdGNoIHN1Ym1pc3Npb24gcHJvY2Vzcy4gVGhhbmtzIGFnYWluIGZv
+ciB5b3VyIHJlbWluZGVyLg0KPj4gDQo+PiBJIHdpbGwgcmVtb3ZlIHRoaXMgcGFydCBpbiBQQVRD
+SCBWMTEuDQo+DQo+Tm8sIHlvdSB3aWxsIG5lZWQgdG8gZG8gdGhpcyBiZWZvcmUgd2UgY2FuIGFj
+Y2VwdCB5b3VyIGNoYW5nZS4gIEFuZCBzb21lIHNvcnQgb2YgdmVyaWZpY2F0aW9uIHRoYXQgdGhp
+cyBpcyBub3cgaW4gcGxhY2UgcHJvcGVybHkgZm9yIG9idmlvdXMgcmVhc29ucy4NCg0KV2hhdCBk
+b2VzICJObyIgbWVhbj8gQXJlIHlvdSB0YWxraW5nIGFib3V0IGdpdmluZyBmZWVkYmFjayB0byB0
+aGUgY29tcGFueSB0byBwcmV2ZW50IHRoaXMgaW5jaWRlbnQgZnJvbSBoYXBwZW5pbmc/IE9yIHN1
+Ym1pdHRpbmcgUEFUQ0ggVjExPyBJZiBpdCdzIHRoZSBmb3JtZXIsIGhvdyBzaG91bGQgSSBnaXZl
+IHlvdSBmZWVkYmFjaz8iDQo=
 
