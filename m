@@ -1,165 +1,197 @@
-Return-Path: <linux-kernel+bounces-139178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FDA789FF92
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:16:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A00E89FF99
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:16:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A873283AE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:16:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F65C283AE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:16:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99B0180A83;
-	Wed, 10 Apr 2024 18:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C597417B517;
+	Wed, 10 Apr 2024 18:15:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l5kT48PE"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="K2t/6UA1"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BC4F1802C9;
-	Wed, 10 Apr 2024 18:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1BF180A97
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 18:15:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712772938; cv=none; b=RQw1+B6xaNQt+MdyOVBBhoBc71s57UpSxUfLP7xPgCGxRSO7DZmq3SnXfGTwimHTsIBdzF9iQA43WLgj4Bq1NKaSyRJjZEKpfiopjd+t5pjkf5JL0aIvjvrtmppKNYE2sLLKkRQTwD7NsLYcowsd0ewmKOsRd+IwDbOZSw0Qi+M=
+	t=1712772942; cv=none; b=qb1JSLYdkLTynDyMEWYbm6xSXWM32xpWll3rqScoVOap6l4K01y1i6JW9K3TiqwPAJ3a7db2twGyUb4Rq/vxYYcQik7aX+jAhVwu+Vf2LSLHBonJ3o2Sg4zwzWDPlNzRjJTFnaENG//G0B7CtCrq/SpH7cOhHDRgW89Bjh+zsFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712772938; c=relaxed/simple;
-	bh=f8a/TLwsLee1zdQDc56/1tetJJOm12AaYUksCA+5quQ=;
+	s=arc-20240116; t=1712772942; c=relaxed/simple;
+	bh=I7w75JKCRyKbAmEW3pStOguyIrdpPPhkqLTig6UY8/8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F3uHZaIzInQOoZVgAH1NL6WdPn/gzR9zDrkvBuXZe6OWrYVteQxbxKYRdQttET1USm+2Tu6Eh+5dFtjoSplU3ltJPxv2GwZaGU0pGJBELGg5s+Dbs59Fv+3xNurjcdZd7sg0PcP4gNV/GZPwG7Q65LtPztf1dCX+/YaJWrNHJi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l5kT48PE; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712772935; x=1744308935;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=f8a/TLwsLee1zdQDc56/1tetJJOm12AaYUksCA+5quQ=;
-  b=l5kT48PEFSzMc84ohP762sEtE2L7iB7euMTsJe/psGLuimzNjWDoHaee
-   TlZ83QlMVkxAuCzWZNzlXwLh+tEidjH5Z2lm6OydmHh6ETzrLiB7MoeeM
-   kxjTxo3fJglsrbYoK+uDvwnnIFTiIegXW4LO2OPIHDO/rpndWDxp7Lfsj
-   NUKZi/1PJqWe+wODSh827sW4Bd+v1O3p1vXjQoiAVhHVtCZA4go8XZ5yy
-   KQUZmxTEVTRCDkViUiWJI6/tyUBoprXenAwy5GlZyjQefGCINBqbcxWaZ
-   0/zkYvXC0Rpj8nnr1rV16m7ljOTqGZ+SfSchUai3V2BQ/QS3J05DrLRCT
-   g==;
-X-CSE-ConnectionGUID: keUz0/w5Qmaf6deUCocCTQ==
-X-CSE-MsgGUID: SwNsv0N3SJCFZ2oxhTyZpw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="18759298"
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="18759298"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 11:15:34 -0700
-X-CSE-ConnectionGUID: jZZoytjVS6mnXiysOWcfNg==
-X-CSE-MsgGUID: GAuSsfWBRg2/hfigVtzpKw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="58070512"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.255.230.146])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 11:15:34 -0700
-Date: Wed, 10 Apr 2024 11:15:32 -0700
-From: Alison Schofield <alison.schofield@intel.com>
-To: ira.weiny@intel.com
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/26] cxl/mbox: Flag support for Dynamic Capacity
- Devices (DCD)
-Message-ID: <ZhbXRL16cneVXxpw@aschofie-mobl2>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-1-b7b00d623625@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=rj1YRYbTG4XpKpDfgDCndgMeB6vJ0Bi/qb6dc0ELdjYa0OWO5LJIIIQRdrKvYz7kcRjH7puKEo7bad++RBqlhNuiWQs1b26ZgGc6j+RX4MgmxQb4mE9GLrneiM0rNdT1YDuudK4yKL1He5AIEtKF+lp11/NOCJec5U71W0ijTBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=K2t/6UA1; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6eaf9565e6bso4960257b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 11:15:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1712772939; x=1713377739; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UCu3vAa+tXcoFNa1tysLxOJ5zWMnnTVGFp6Jd0UonFc=;
+        b=K2t/6UA10SQIPe3bYIl6dzI/OdAncXmidrYgpsEJf8x9WH/bdYlVLh2/dutIuNUB3I
+         8ofirz+72by3iYq3Ffn3qkRT+gIR1+oxNvHnGxXG5G3Fi+/Myyx3MEfIybsHCfoapa/l
+         /uS2olH/gKal27COqaLPjl9jQ84AZjZWM0EHeZZWnyx3Gnl1BRIaE5SWKRrewbPV15S4
+         1F8/FAb6STLt8seijc2/oWS5KwTgtabDUde7559Bsx/hAV7BtIvXNeBz8jeUkdp27U2I
+         hDgKgkJefZj7QoIgUX5yrkQw0kPLrU8bKNwSMAin3URbfrKgNquPeNEIQzPNlMIRCbiF
+         4NQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712772939; x=1713377739;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UCu3vAa+tXcoFNa1tysLxOJ5zWMnnTVGFp6Jd0UonFc=;
+        b=Z4C2CsFCxnRQ7CRFz/kWf+NOcMfFaxU+MLfVd1FmoBeazpX5ckvapJIaXe6ObFO2tR
+         Ene7vL71sbz4JWne3sR57Lr+EnkoTHSOmIsuLCpsacMq5Q+7nuXnjN119/uzRUAPgPGp
+         Dcr2XVRd/WBEcqr2YVbYroTY94bTmnQkl7sgFHtDxZQYV7+15GdIgX9lfs10v36GQ5Fx
+         9229jT/ZVJsUBdn65exnKgZp1lfdFtdwcsrjEMNGGoEwR2zkoeahgjeGTaFqjdw3MerA
+         tfjsQMSfstcHfx4BiWoPkl1+pFsjlSJKQI98VFU+AUE/BTdsi/XSJMTzaYnYCIc0lWCa
+         yf9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXSvIOecrw0asMgA5UPxxTMOBvUzwvhEALRezAb2PtrfRFlA9r95XVf3v1z7a8fT/lj4f1y9FJFdW+8Y9U9yalkNa8Urk9QyViWdisM
+X-Gm-Message-State: AOJu0Yw/RSp9k6htdHt23flFzvjJH6XhzQv4DDXiQP+zuZ7Rxk3BKtQ9
+	cJ+SXDN3xevuzW5cF8lp8EKN8CL+j6x4F0mJQOuRyuFW/oHdVJQj6jXkTjDaGo0=
+X-Google-Smtp-Source: AGHT+IEYs1FkUZ/HZ0wZiL1iLIrRzC0Z3BEge6bs6qjHNR5sPLQMAjNa7/usFj5Mm9nVIbWuqhT+Fw==
+X-Received: by 2002:a05:6a20:4391:b0:1a1:878d:d3f6 with SMTP id i17-20020a056a20439100b001a1878dd3f6mr4316748pzl.26.1712772939458;
+        Wed, 10 Apr 2024 11:15:39 -0700 (PDT)
+Received: from airbuntu ([104.132.0.101])
+        by smtp.gmail.com with ESMTPSA id k3-20020aa79d03000000b006ecca2f2a32sm10322177pfp.168.2024.04.10.11.15.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 11:15:39 -0700 (PDT)
+Date: Wed, 10 Apr 2024 19:15:37 +0100
+From: Qais Yousef <qyousef@layalina.io>
+To: John Stultz <jstultz@google.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	linux-kernel@vger.kernel.org, Yabin Cui <yabinc@google.com>
+Subject: Re: [PATCH] sched/pi: Reweight fair_policy() tasks when inheriting
+ prio
+Message-ID: <20240410181537.fqpix44uo43jvwct@airbuntu>
+References: <20240404220500.dmfl2krll37znbi5@airbuntu>
+ <CAKfTPtDP7if0gozSrnj+E_hH5xR-vpGAM2TwN4qWXcg5BtrEtw@mail.gmail.com>
+ <20240405171653.boxbylrdak5fopjv@airbuntu>
+ <20240407122700.ns7gknqwqkpjjyd4@airbuntu>
+ <CAKfTPtBZao-Ry=sdAV=rtTwbxbEJmwb-_gNceSjV6u-6EXTY-w@mail.gmail.com>
+ <CANDhNCq5HZvecSe9_9f7j5koY2VNdyjM_b3csL6=U1A_8J2ksw@mail.gmail.com>
+ <20240409061909.tb3vxc27h2eawiwg@airbuntu>
+ <CAKfTPtC4hdbBhn+-hkK9i4vkjO5fBGfsxjESkBrvyOwN6oHCdA@mail.gmail.com>
+ <20240410065901.ruzhjsmtmpsnl4qe@airbuntu>
+ <CANDhNCr=S8b5MyDa9xp9D08FcsG6VGrHQjkj5CW3iFzuFO-4Xg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-1-b7b00d623625@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANDhNCr=S8b5MyDa9xp9D08FcsG6VGrHQjkj5CW3iFzuFO-4Xg@mail.gmail.com>
 
-On Sun, Mar 24, 2024 at 04:18:04PM -0700, Ira Weiny wrote:
-> From: Navneet Singh <navneet.singh@intel.com>
+On 04/10/24 10:30, John Stultz wrote:
+> On Tue, Apr 9, 2024 at 11:59 PM Qais Yousef <qyousef@layalina.io> wrote:
+> >
+> > On 04/09/24 14:35, Vincent Guittot wrote:
+> > > On Tue, 9 Apr 2024 at 08:19, Qais Yousef <qyousef@layalina.io> wrote:
+> > > >
+> > > > On 04/08/24 12:51, John Stultz wrote:
+> > > > > On Mon, Apr 8, 2024 at 12:17 AM Vincent Guittot
+> > > > > <vincent.guittot@linaro.org> wrote:
+> > > > > >
+> > > > > > On Sun, 7 Apr 2024 at 14:27, Qais Yousef <qyousef@layalina.io> wrote:
+> > > > > > >
+> > > > > > > On 04/05/24 18:16, Qais Yousef wrote:
+> > > > > > >
+> > > > > > > > >
+> > > > > > > > > All that to say that I think the weight is not applied on purpose.
+> > > > > > > > > This might work for your particular case but there are more changes to
+> > > > > > > > > be done if you want to apply prio inheritance between cfs tasks.
+> > > > > > > > >
+> > > > > > > > > As an example, what about the impact of cgroup on the actual weight
+> > > > > > > > > and the inherited priority of a task ? If the owner and the waiter
+> > > > > > > > > don't belong to the same cgroup their own prio is meaningless... task
+> > > > > > > > > nice -20 in a group with a weight equal to nice 19 vs a task nice 19
+> > > > > > > > > in a group with a weight equals to nice -20
+> > > > > > > >
+> > > > > > > > That is on my mind actually. But I thought it's a separate problem. That has to
+> > > > > > > > do with how we calculate the effective priority of the pi_task. And probably
+> > > > > > > > the sorting order to if we agree we need to revert the above. If that is done
+> > > > > > >
+> > > > > > > Thinking more about it the revert is not the right thing to do. We want fair
+> > > > > > > tasks to stay ordered in FIFO for better fairness and avoid potential
+> > > > > > > starvation issues. It's just the logic for searching the top_waiter need to be
+> > > > > > > different. If the top_waiter is fair, then we need to traverse the tree to find
+> > > > > > > the highest nice value. We probably can keep track of this while adding items
+> > > > > > > to the tree to avoid the search.
+> > > > > > >
+> > > > > > > For cgroup; is it reasonable (loosely speaking) to keep track of pi_cfs_rq and
+> > > > > > > detach_attach_task_cfs_rq() before the reweight? This seems the most
+> > > > > > > straightforward solution and will contain the complexity to keeping track of
+> > > > > > > cfs_rq. But it'll have similar issue to proxy execution where a task that
+> > > > > > > doesn't belong to the cgroup will consume its share..
+> > > > > >
+> > > > > > That's a good point, Would proxy execution be the simplest way to fix all this ?
+> > > >
+> > > > Is it? Over 4.5 years ago Unity reported to me about performance inversion
+> > > > problem and that's when proxy execution work was revived as simplest way to fix
+> > > > all of this. But still no end in sight from what I see. I was and still think
+> > > > an interim solution in rt_mutex could help a lot of use cases already without
+> > > > being too complex. Not as elegant and comprehensive like proxy execution, but
+> > > > given the impact on both userspace and out of tree kernel hacks are growing
+> > > > waiting for this to be ready, the cost of waiting is high IMHO.
+> > > >
+> > > > FWIW, I already heard several feedbacks that PTHREAD_PRIO_INHERIT does nothing.
+> > > > I think this reweight issue is more serious problem and likely why I heard this
+> > > > feedback. I could be underestimating the complexity of the fix though. So I'll
+> > >
+> > > Without cgroup, the solution could be straightforward but android uses
+> > > extensively cgroup AFAICT and update_cfs_group() makes impossible to
+> > > track the top cfs waiter and its "prio"
+> >
+> > :(
+> >
+> > IIUC the issue is that we can't easily come up with a single number of
+> > 'effective prio' for N level hierarchy and compare it with another M level
+> > hierarchy..
+> >
+> > Does proxy execution fix this problem then? If we can't find the top waiter,
+> > I can't see how proxy execution would work here too. To my understanding it's
+> > more about how we apply inheritance (by donating execution context of the top
+> > waiter) instead of manually applying inheritance like we're doing now.
 > 
-> Per the CXL 3.1 specification software must check the Command Effects
-> Log (CEL) to know if a device supports dynamic capacity (DC).  If the
-> device does support DC the specifics of the DC Regions (0-7) are read
-> through the mailbox.
-
-Do I need to know this 'If the device...' piece to understand this
-patch?  I like that below you say 'Subsequent patches will...'
-That seems enough to set the scene.
-
+> So, while proxy provides a sort of generalized inheritance, it isn't
+> deep enough in the class scheduler logic to need to really think about
+> priority/cgroups.
 > 
-> Flag DC Device (DCD) commands in a device if they are supported.
-Why be vague w 'Flag'. How about 'Add a bitmap of DCD enabled
-commands to the driver device state structure.'
-
-> Subsequent patches will key off these bits to configure DCD.
+> It just looks at what gets selected to run. That's the most important
+> task at that moment. It doesn't really need to care about how/why,
+> that's left to pick_next_task().
 > 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
-> Changes for v1
-> [iweiny: update to latest master]
-> [iweiny: update commit message]
-> [iweiny: Based on the fix:
-> 	https://lore.kernel.org/all/20230903-cxl-cel-fix-v1-1-e260c9467be3@intel.com/
-> [jonathan: remove unneeded format change]
-> [jonathan: don't split security code in mbox.c]
-> ---
->  drivers/cxl/core/mbox.c | 33 +++++++++++++++++++++++++++++++++
->  drivers/cxl/cxlmem.h    | 15 +++++++++++++++
->  2 files changed, 48 insertions(+)
-> 
+> Since it leaves mutex blocked tasks on the RQ, it allows the class
+> scheduler logic to pick the most important task (mutex-blocked or not)
+> to run. Then if a mutex-blocked task gets selected, we will then find
+> the mutex owner and run it instead so it can release the lock.  When
+> locks are released, if the owner has a "donor" task, the lock is
+> handed off to the donor.  So, this basically uses the
+> pick_next_task()'s evaluation of what it wanted to run to effectively
+> provide the "top waiter".
 
-snip
-
-
->  /* Device enabled poison commands */
->  enum poison_cmd_enabled_bits {
->  	CXL_POISON_ENABLED_LIST,
-> @@ -454,6 +463,7 @@ struct cxl_dev_state {
->   *                (CXL 2.0 8.2.9.5.1.1 Identify Memory Device)
->   * @mbox_mutex: Mutex to synchronize mailbox access.
->   * @firmware_version: Firmware version for the memory device.
-> + * @dcd_cmds: List of DCD commands implemented by memory device
->   * @enabled_cmds: Hardware commands found enabled in CEL.
->   * @exclusive_cmds: Commands that are kernel-internal only
-
-It's not a 'List' it's a bitmap. How about mimicing 'enabled_cmds' 
-description:
-
-* @dcd_cmds: DCD commands found enabled in CEL
-
->   * @total_bytes: sum of all possible capacities
-> @@ -481,6 +491,7 @@ struct cxl_memdev_state {
->  	size_t lsa_size;
->  	struct mutex mbox_mutex; /* Protects device mailbox and firmware */
->  	char firmware_version[0x10];
-> +	DECLARE_BITMAP(dcd_cmds, CXL_DCD_ENABLED_MAX);
->  	DECLARE_BITMAP(enabled_cmds, CXL_MEM_COMMAND_ID_MAX);
->  	DECLARE_BITMAP(exclusive_cmds, CXL_MEM_COMMAND_ID_MAX);
->  	u64 total_bytes;
-> @@ -551,6 +562,10 @@ enum cxl_opcode {
->  	CXL_MBOX_OP_UNLOCK		= 0x4503,
->  	CXL_MBOX_OP_FREEZE_SECURITY	= 0x4504,
->  	CXL_MBOX_OP_PASSPHRASE_SECURE_ERASE	= 0x4505,
-> +	CXL_MBOX_OP_GET_DC_CONFIG	= 0x4800,
-> +	CXL_MBOX_OP_GET_DC_EXTENT_LIST	= 0x4801,
-> +	CXL_MBOX_OP_ADD_DC_RESPONSE	= 0x4802,
-> +	CXL_MBOX_OP_RELEASE_DC		= 0x4803,
->  	CXL_MBOX_OP_MAX			= 0x10000
->  };
->  
-> 
-> -- 
-> 2.44.0
-> 
+Thanks John. So there's no top waiter and all tasks are left runnable, makes
+sense.
 
