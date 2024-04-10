@@ -1,121 +1,149 @@
-Return-Path: <linux-kernel+bounces-139333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FA748A0184
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:53:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E896D8A0018
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:54:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B24E1B2557E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:53:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89D211F28333
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:54:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 447DE181D04;
-	Wed, 10 Apr 2024 20:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C398417BB2D;
+	Wed, 10 Apr 2024 18:54:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="bUQi+HCP"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O6BdMVwY"
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B186D15EFAD
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 20:53:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACF4963E;
+	Wed, 10 Apr 2024 18:54:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712782413; cv=none; b=WvzHJwyfD0wEC9jkXzBuc6EA8WRsOc099q7+zb63kI1fqJ2d/ymTL5P/5DPdvv60KaFSoNc+hQVZe8mTK6kv0o6KyItASgNuAR93WL0KLySTWAwXWp8Gq2l3h+ujYl3C/MpiNul8Y0RnafIhqeh6LrFg16ywDcGB0062bar+Ruk=
+	t=1712775273; cv=none; b=gulFIRdLf4dxWDd9sc5yCkUcODrozfHlZn9C49S415Pw81dcE1agpW0kmqg4UZHTkGlCNvi/UhRZIEBy9r+YXUD2WxD2Rvf1ZFD+JPisX/TkyX86RH4AP5/t7XsUkuSz8jRfjYya2VoRm5vV7v5wv9eF43GL+IJ6zri9gVmqHjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712782413; c=relaxed/simple;
-	bh=dN9QAFFSPnKO+kppDSwGYQaQqQZPMRvjy+igFIMMS0I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bDbSzcuvQzFDqAwEJ5plV7IeKb4DlwvnUk6p4vz31aO5zrJ4rpWHZbeG7rBbsd1E4vG4cfHdjPz71Sm4Wky9M6A6IiJQ9GJmRHu4HhL2NjPnXyLdeTnuppmaCAIsPJZahG9EsPFf/kH+dMGLSrgAPYnhMPSJYpWLMWmVPzs0UdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=bUQi+HCP; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56c404da0ebso10659987a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:53:31 -0700 (PDT)
+	s=arc-20240116; t=1712775273; c=relaxed/simple;
+	bh=RH0CGcQudRQ007V38SiSJ7/a6bBa9HHc37Qr4ZBEku4=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=WBpwTW7ofFZgtNPJhSIgBBNQHkjFBhhlNd4JqtNRhVWjAyugzFxMZAhJs3kI9lXR7Na3FTwl0FqYjrdRzezTvH+AolROoIr11BGOO2VadS3CtFABSX5nlZbZrP5eKGLOsZYcCElzS8qrrb9Y+QeWpMKTajk/fSo0OO/cI9yk6uk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O6BdMVwY; arc=none smtp.client-ip=209.85.167.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3bbbc6e51d0so3015311b6e.3;
+        Wed, 10 Apr 2024 11:54:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1712782410; x=1713387210; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HFiQhEOGgH7BulX7PcWOBKJwuVCh69V2zXaiyRkXXhg=;
-        b=bUQi+HCPfJAEz4kdR2cwMuH26//p8PlGJF+UK/ul+umkE003gRrBYIi3zi8P1axbS3
-         lN2GO5qu/wTj4qsjyXoIhzcpN7k1vWDGybquxxejHjA0a2ZLAWvf0nfqgY3kcZmMnlaI
-         IVUAiDTBmfwVv3Sn6v6K//F0kikMl9v9PXngo=
+        d=gmail.com; s=20230601; t=1712775271; x=1713380071; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0xD9LsoG01n3s9+dlYoOVodKafjjk33yWzb85+W56js=;
+        b=O6BdMVwYeFKS+EAO00v2p76wAvq7taFJxvXZ+mqfra/Ug9B3/a0Zxd6PJvNx9BaV24
+         QpQQpnrJHVkV6FNkwtXpsWgSsxi3ZP/mmHZGnXZcj+YtmW+cqhFJMNm4q9Jhc5+LCxyb
+         fVPWyCAIhrvCG7ndQWTj/Pzvcqx8pkGEyfAwbdRTOcugS+y6pd23qTlPI18VNmp8vOif
+         E1FkDQPa6Dt1JiOHc3fDIjUZYS8k/Sn39w6Lu6ZJpe2Xpc6E6qYApROkGz6M0+E4iiub
+         h95ZHsbg2f4NLUOOZ+gKrbTZ/gWQI1ujgrmgukWmGNv0SNqV2tOUVGf1YfsjNBK9IXi7
+         54Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712782410; x=1713387210;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HFiQhEOGgH7BulX7PcWOBKJwuVCh69V2zXaiyRkXXhg=;
-        b=VCn+DSdQdxKHHmx8CHaMJOG0I2Ofs4TURkh+qEI3bw6sbznqksTsS8nnx1Xyx7yPL1
-         nOa/7Lmkz3JGDxls9M7KCeBa7O/FHC76Ai7R8OuDWvBB0iooy6OtcnPFpI1MXtoymmsO
-         kKwFTSYACH8wd4JGyiCkzOwZEx8n8aiAXVuprqkAhJeQYeeO+j7VrFyx26/fZHoWRhBC
-         OmrPgUI8rQdog2G8pjefsZit5imt2/2EHy6DoikMcAiqf7F39rBo2HiIhpGHU4Uqza37
-         qRsG8iBaCTL5sZt49yTV5UDncGtpAAX8EPKYPaQUSyuNfgXkDq27uYVLeC3YCcsPANNv
-         poIw==
-X-Forwarded-Encrypted: i=1; AJvYcCVzIb+ZE5d/43ztEFp/4hbtK23v6MAETT2ARyvqAe1L6ByMP1H1RwT9nu2mj64ZinGdnJlU9BqY9vc18XtyJgw2p1Ervs5lMCD13iW9
-X-Gm-Message-State: AOJu0YxNiyOgpk15Usa9sK33yVs0IFTln3UKhlJT8fyfC3vz+Qm0LIsk
-	H0BXdr/udEm4YC7AFpMEGYnZnoVnItf/6YRzB7ego++ZYfxB7iN2o9v8toarL+S+s8Md9w72Hy2
-	Mw3YLbg==
-X-Google-Smtp-Source: AGHT+IGssipc33veXdfxDEWhvd7oIqBoLQ7iLJi8nlkDG0NQ//eJ38en5rTo00pWsNkquJXDiAsOVw==
-X-Received: by 2002:a17:907:7208:b0:a51:e05b:a168 with SMTP id dr8-20020a170907720800b00a51e05ba168mr2785536ejc.16.1712782409851;
-        Wed, 10 Apr 2024 13:53:29 -0700 (PDT)
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com. [209.85.218.50])
-        by smtp.gmail.com with ESMTPSA id my42-20020a1709065a6a00b00a51dccd16d9sm43322ejc.99.2024.04.10.13.53.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 13:53:29 -0700 (PDT)
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a51b008b3aeso585689766b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:53:29 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXNheV/vmkUcgWYd3Jx6P0iDIwtxUC00DbALgjh4GBXvcw8T0UwTzNjT6IvOzUoBbkFaJ+HBWUaYO1+vwwiv5FR0uklqvwY5G6ypvqH
-X-Received: by 2002:a17:907:c789:b0:a52:1635:9e05 with SMTP id
- tz9-20020a170907c78900b00a5216359e05mr1520228ejc.13.1712782408768; Wed, 10
- Apr 2024 13:53:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712775271; x=1713380071;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0xD9LsoG01n3s9+dlYoOVodKafjjk33yWzb85+W56js=;
+        b=q8l7Du3Qdra8I7mzBnzIU0BGDtcw9HixsS2ryMOd88TOBxfLbNn0CDmVqJlq2t8EVw
+         UBIn7eiFVZGEetarLm+xHNiuxvbN25GHoySfNQjweD4KWktJzq5VL9laiQ6O6sM+qTdE
+         AELmvCinDSDIvGSEK4O3yJ+r0/fEpwGFgkXjg2R3QlzZRPF4sPqvtHSxDSBJksym8JeN
+         jXADGSVAquJn/cLca9lIFRZNg8WoOrPn9y+ZzTMBXynfZAMN4JYiz16DGY/7qklJqxWT
+         itkNu9X/PdBySWI9NfyoJwJw5NOB1gSEoHNvozjucB9GHAnkbh/FGQsMY7RBmuztnNAX
+         FCRg==
+X-Forwarded-Encrypted: i=1; AJvYcCXOyrTgIr2OvZeqQK9RF+FS3qFu1T01osAdjwwBtiyCPjL7Yv7ZIF1A1xPkSKTiVhW6UCTo43yy/7jbg4MAozdAuPc03IvsFhOt
+X-Gm-Message-State: AOJu0Yw99QtGHSFodCNMHip97RjvGrYpMBxJiD5eZlrcSAkvwtq/TvGA
+	5XDZiT1eFfmJXrrjw4l8OFh80+PJH3Riu5lezhCjq+P2x1mM/8UqVYTBrIC6U04Bog2V6xypX8t
+	IliaGislZyiPSeKlM3f3WZOSxWJqVa0nci1o=
+X-Google-Smtp-Source: AGHT+IFzn2cqcJVegdHH0Ndtyd3UPoZJjLO/IIhkvUc33AmEqXh30mM2e8NZ5Y+R3eqS39+r9T+ZvNbMEDfJEufgufs=
+X-Received: by 2002:a05:6808:18f:b0:3c6:be9:f4f9 with SMTP id
+ w15-20020a056808018f00b003c60be9f4f9mr2438849oic.28.1712775270737; Wed, 10
+ Apr 2024 11:54:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410183852.6df5011e@coco.lan>
-In-Reply-To: <20240410183852.6df5011e@coco.lan>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 10 Apr 2024 13:53:12 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiwn2VamMH-o2zmk0d__GtEPTjL=x3QSEC0MHEt30=g1Q@mail.gmail.com>
-Message-ID: <CAHk-=wiwn2VamMH-o2zmk0d__GtEPTjL=x3QSEC0MHEt30=g1Q@mail.gmail.com>
-Subject: Re: [GIT PULL for v6.9-rc4] media fixes
-To: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Linux Media Mailing List <linux-media@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From: arlr <carl.rosdahl05@gmail.com>
+Date: Wed, 10 Apr 2024 22:54:18 +0200
+Message-ID: <CAGfdVaw_TU__+XJQyOSHncGFziE206c7=UVbfjvPHnq14xOVjg@mail.gmail.com>
+Subject: [PATCH] uapi: add missing const qualifier to cast in some byteorder functions
+To: linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 10 Apr 2024 at 09:39, Mauro Carvalho Chehab <mchehab@kernel.org> wrote:
->
->   - some fixes causing oops on mediatec vcodec encoder/decoder.
+Add missing const qualifiers to cast in __{le,be}{16,32,64}_to_cpup.
 
-Well, I certainly hope it's not the fixes that cause oopses. That
-would be the opposite of a fix.
+Signed-off-by: Carl Rosdahl <carl.rosdahl05@gmail.com>
+---
+reduced testcase (on exported headers):
+$ cc -c -o /dev/null -Wcast-qual -xc usr/include/linux/byteorder/big_endian.h
+$ cc -c -o /dev/null -Wcast-qual -xc usr/include/linux/byteorder/little_endian.h
 
-However, having fixed that, I also find some of the fixes in here
-rather broken: commit d353c3c34af0 ("media: mediatek: vcodec: support
-36 bits physical address") has a "fix" for a cast like this:
-
--       dec->bs_dma = (unsigned long)bs->dma_addr;
-+       dec->bs_dma = (uint64_t)bs->dma_addr;
-
-but the underlying problem was in fact that the cast was WRONG TO EVEN EXIST.
-
-Both 'bs_dma' and 'dma_addr' are integers. The cast is pointless and
-wrong. It makes the code look like it is doing something else than
-what it's doing, and that something else would be wrong anyway (ie if
-it is a cast from a pointer, it would be doubly wrong).
-
-IOW, as far as I can tell, the fix *should* have been to just remove
-the cast entirely since it was pointless.
-
-I've pulled this, but please people - make the pull request
-description make sense, and when fixing bugs, please think about the
-code a bit more than just do a mindless conversion.
-
-           Linus
+diff --git a/include/uapi/linux/byteorder/big_endian.h
+b/include/uapi/linux/byteorder/big_endian.h
+index 80aa5c41a763..e59ec4f8bd92 100644
+--- a/include/uapi/linux/byteorder/big_endian.h
++++ b/include/uapi/linux/byteorder/big_endian.h
+@@ -48,7 +48,7 @@ static __always_inline __le64 __cpu_to_le64p(const __u64 *p)
+ }
+ static __always_inline __u64 __le64_to_cpup(const __le64 *p)
+ {
+-    return __swab64p((__u64 *)p);
++    return __swab64p((const __u64 *)p);
+ }
+ static __always_inline __le32 __cpu_to_le32p(const __u32 *p)
+ {
+@@ -56,7 +56,7 @@ static __always_inline __le32 __cpu_to_le32p(const __u32 *p)
+ }
+ static __always_inline __u32 __le32_to_cpup(const __le32 *p)
+ {
+-    return __swab32p((__u32 *)p);
++    return __swab32p((const __u32 *)p);
+ }
+ static __always_inline __le16 __cpu_to_le16p(const __u16 *p)
+ {
+@@ -64,7 +64,7 @@ static __always_inline __le16 __cpu_to_le16p(const __u16 *p)
+ }
+ static __always_inline __u16 __le16_to_cpup(const __le16 *p)
+ {
+-    return __swab16p((__u16 *)p);
++    return __swab16p((const __u16 *)p);
+ }
+ static __always_inline __be64 __cpu_to_be64p(const __u64 *p)
+ {
+diff --git a/include/uapi/linux/byteorder/little_endian.h
+b/include/uapi/linux/byteorder/little_endian.h
+index cd98982e7523..65204e600fbf 100644
+--- a/include/uapi/linux/byteorder/little_endian.h
++++ b/include/uapi/linux/byteorder/little_endian.h
+@@ -72,7 +72,7 @@ static __always_inline __be64 __cpu_to_be64p(const __u64 *p)
+ }
+ static __always_inline __u64 __be64_to_cpup(const __be64 *p)
+ {
+-    return __swab64p((__u64 *)p);
++    return __swab64p((const __u64 *)p);
+ }
+ static __always_inline __be32 __cpu_to_be32p(const __u32 *p)
+ {
+@@ -80,7 +80,7 @@ static __always_inline __be32 __cpu_to_be32p(const __u32 *p)
+ }
+ static __always_inline __u32 __be32_to_cpup(const __be32 *p)
+ {
+-    return __swab32p((__u32 *)p);
++    return __swab32p((const __u32 *)p);
+ }
+ static __always_inline __be16 __cpu_to_be16p(const __u16 *p)
+ {
+@@ -88,7 +88,7 @@ static __always_inline __be16 __cpu_to_be16p(const __u16 *p)
+ }
+ static __always_inline __u16 __be16_to_cpup(const __be16 *p)
+ {
+-    return __swab16p((__u16 *)p);
++    return __swab16p((const __u16 *)p);
+ }
+ #define __cpu_to_le64s(x) do { (void)(x); } while (0)
+ #define __le64_to_cpus(x) do { (void)(x); } while (0)
 
