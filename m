@@ -1,147 +1,153 @@
-Return-Path: <linux-kernel+bounces-139074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E30B89FE30
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:21:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94BC689FE1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:19:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D82BA1F21DFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:21:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35A241F22913
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:19:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EEE9180A65;
-	Wed, 10 Apr 2024 17:20:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B51117BB21;
+	Wed, 10 Apr 2024 17:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UFxkdC1z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g8R+u2Lc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84BDA1802CF;
-	Wed, 10 Apr 2024 17:20:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 488D3176FDB;
+	Wed, 10 Apr 2024 17:19:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712769602; cv=none; b=QfeeRc+UrdrjjKrGVwBGBa2VruYOXWxNsa45UQI8hkc3F/vC6GR0bTkEcfHY60jfSQfHMaExYY7chNK3y1M8eLmAu/wMAZWrRDMRYD83pT5ToBUb5lmilhKiKxjAj2/X0n7ARM+H4GefI9Z21taWYCan1WsU0BDukea2phA3GXY=
+	t=1712769568; cv=none; b=tyIe5js0Y8bMEotV3Bj00d6TsBkx0wD/CT0uHzc0pPu05+N00LmN4emviz0Au0WlCZHg4tXlwD2wo5oi+CrtpU0zUPOq+fU4F/ocSBouRxLu+PJGgnR5XIiwohlu9Uq0BO9rQAfeAMZlqdbqi9Vc5dWiG/lK2X7v+7Ij3kJw+q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712769602; c=relaxed/simple;
-	bh=3thyF8TXi2zqo/LMZKFE+HSC98gQ0GfLX2rEdsYzQSA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=es2o613xR/XUe4PDd2yXtwZN8rwknqhb0RQGo10jsVC2IpOmjwNwEO+Jc79dGia6ZQUQm1GFlaeAlC0rrBD+Q65a7SXAicnM6B5nFT/PYi7PHiAtRRUqcgyOvX/uE4l+b0j6hQrteJ7sUrMLVk5jRzcbzeCWfBVkLaW4M6Fs2jg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UFxkdC1z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47940C433A6;
-	Wed, 10 Apr 2024 17:20:00 +0000 (UTC)
+	s=arc-20240116; t=1712769568; c=relaxed/simple;
+	bh=W5eX1rU/9P9HprqQ9cPTQC7SCZNm4aigfiIYicPhLKs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SKblNNuSWyJPUv2X9SC1bbUypqDpptpkN3/q+DzK/IvCty31pRdpqYA4rFkEIcsJHQyef4H5xykNLwwW8i2iindizIC8TKaQIM/1fNFVQjYIi4sEhmHSWKijIdRfWM8z0nWa8GhqVv3R62MxaW1q0KfyTEi65dgQzARgdDlIByw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g8R+u2Lc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 919E3C433F1;
+	Wed, 10 Apr 2024 17:19:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712769601;
-	bh=3thyF8TXi2zqo/LMZKFE+HSC98gQ0GfLX2rEdsYzQSA=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=UFxkdC1z/1kzNDFHk/lL9Acl/OWASq+lO3vjVB3EzB5Ae0cx45LgvXiOMccVQtl1g
-	 Tb19YvxSbUMzCllxAozmZ6oIyfgOYulnX72u/WiqVadRdNytf6zaS6BXCkHXrgroOe
-	 NAs8MSYBwct3e7FYN80+PGP9eBfBURg7C0wr/F7DdT+cn95frKtIz6yww0VKy0/vPx
-	 0ok64eLaZ5x1MPHrxeCvgiPgJwRxw/xvq7YkFsir5K6ZP/An66dsWnlJ3WDGUJ19Ic
-	 GT8TafZAeQsEbXXJkgSF1elA/k+amsu3smKMJEpUglwecnclSx3Sm6VAqpyx2Uj+XP
-	 mhUoHFHXOdOFQ==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Wed, 10 Apr 2024 19:19:25 +0200
-Subject: [PATCH 05/18] HID: bpf: add in-tree HID-BPF fix for the IOGear
- Kaliber Gaming MMOmentum mouse
+	s=k20201202; t=1712769567;
+	bh=W5eX1rU/9P9HprqQ9cPTQC7SCZNm4aigfiIYicPhLKs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=g8R+u2LcMjuhESgE2vdJd7RAdvDYicV1iPM5LiK+Cex1rJ4Kn+rqiOOKA4YgGBKvU
+	 6wirhtTbJho6uV8fUZjciCHslvPTUwhW4UtoLt0zHxFxemaIr2QGwk1TON+DL5DPwh
+	 h4NyvSfMciSRUzEYpe0gpKjAsugwpEW/EoOvZdRYg0QWazSXf8I5sdanN5s321ELEa
+	 WJiUI7rmI6eD2Nw2Re3rpobNscN0B/NJ0kDU++7gyEtBdjRNw250mUOIQAgU3B7lA7
+	 XlYVjideFzkiT88e516rW9xYi1ojtQpflKSFz+BxOzTxZ829xErrWrYMEn+5+DHuMX
+	 ZuGXuEGz8Zh6A==
+Date: Wed, 10 Apr 2024 12:19:25 -0500
+From: Rob Herring <robh@kernel.org>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Cristian Marussi <cristian.marussi@arm.com>,
+	Peng Fan <peng.fan@nxp.com>, devicetree@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] dt-bindings: firmware: add i.MX SCMI Extension
+ protocol
+Message-ID: <20240410171925.GA564262-robh@kernel.org>
+References: <20240405-imx95-bbm-misc-v2-v2-0-9fc9186856c2@nxp.com>
+ <20240405-imx95-bbm-misc-v2-v2-2-9fc9186856c2@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240410-bpf_sources-v1-5-a8bf16033ef8@kernel.org>
-References: <20240410-bpf_sources-v1-0-a8bf16033ef8@kernel.org>
-In-Reply-To: <20240410-bpf_sources-v1-0-a8bf16033ef8@kernel.org>
-To: Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>, 
- Shuah Khan <shuah@kernel.org>, Peter Hutterer <peter.hutterer@who-t.net>
-Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712769589; l=2107;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=3thyF8TXi2zqo/LMZKFE+HSC98gQ0GfLX2rEdsYzQSA=;
- b=jhTpFpQs9b6BoaUe/jvmEzLqj2oCWq84Eg42H5tmhv1rdYa6AH3HhdHhdeZUxrxURtkSl3Z/D
- ZsgdHI0Mwr5CcUUp+rPiabsXUHmNlFIerl5uiE74pUhh1Llm9Qr2rAw
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240405-imx95-bbm-misc-v2-v2-2-9fc9186856c2@nxp.com>
 
-Allows to export more than 5 buttons on this 12 buttons mouse.
+On Fri, Apr 05, 2024 at 08:39:24PM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Add i.MX SCMI Extension protocols bindings for:
+>  - Battery Backed Secure Module(BBSM)
+>  - MISC settings such as General Purpose Registers settings.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  .../devicetree/bindings/firmware/imx,scmi.yaml     | 80 ++++++++++++++++++++++
+>  1 file changed, 80 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/firmware/imx,scmi.yaml b/Documentation/devicetree/bindings/firmware/imx,scmi.yaml
+> new file mode 100644
+> index 000000000000..7ee19a661d83
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/firmware/imx,scmi.yaml
+> @@ -0,0 +1,80 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2024 NXP
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/firmware/imx,scmi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: i.MX System Control and Management Interface(SCMI) Vendor Protocols Extension
+> +
+> +maintainers:
+> +  - Peng Fan <peng.fan@nxp.com>
+> +
+> +allOf:
+> +  - $ref: arm,scmi.yaml#
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
----
- .../hid/bpf/progs/IOGEAR__Kaliber-MMOmentum.bpf.c  | 59 ++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+This needs to be the other way around. Add a ref to this file in 
+arm,scmi.yaml under an 'anyOf' entry.
 
-diff --git a/drivers/hid/bpf/progs/IOGEAR__Kaliber-MMOmentum.bpf.c b/drivers/hid/bpf/progs/IOGEAR__Kaliber-MMOmentum.bpf.c
-new file mode 100644
-index 000000000000..225cbefdbf0e
---- /dev/null
-+++ b/drivers/hid/bpf/progs/IOGEAR__Kaliber-MMOmentum.bpf.c
-@@ -0,0 +1,59 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2023 Benjamin Tissoires
-+ */
-+
-+#include "vmlinux.h"
-+#include "hid_bpf.h"
-+#include "hid_bpf_helpers.h"
-+#include <bpf/bpf_tracing.h>
-+
-+#define VID_IOGEAR 0x258A /* VID is shared with SinoWealth and Glorious and prob others */
-+#define PID_MOMENTUM 0x0027
-+
-+HID_BPF_CONFIG(
-+	HID_DEVICE(BUS_USB, HID_GROUP_GENERIC, VID_IOGEAR, PID_MOMENTUM)
-+);
-+
-+/*
-+ * The IOGear Kaliber Gaming MMOmentum Pro mouse has multiple buttons (12)
-+ * but only 5 are accessible out of the box because the report descriptor
-+ * marks the other buttons as constants.
-+ * We just fix the report descriptor to enable those missing 7 buttons.
-+ */
-+
-+SEC("fmod_ret/hid_bpf_rdesc_fixup")
-+int BPF_PROG(hid_fix_rdesc, struct hid_bpf_ctx *hctx)
-+{
-+	const u8 offsets[] = {84, 112, 140};
-+	__u8 *data = hid_bpf_get_data(hctx, 0 /* offset */, 4096 /* size */);
-+
-+	if (!data)
-+		return 0; /* EPERM check */
-+
-+	/* if not Keyboard */
-+	if (data[3] != 0x06)
-+		return 0;
-+
-+	for (int idx = 0; idx < ARRAY_SIZE(offsets); idx++) {
-+		u8 offset = offsets[idx];
-+
-+		/* if Input (Cnst,Var,Abs) , make it Input (Data,Var,Abs) */
-+		if (data[offset] == 0x81 && data[offset + 1] == 0x03)
-+			data[offset + 1] = 0x02;
-+	}
-+
-+	return 0;
-+}
-+
-+SEC("syscall")
-+int probe(struct hid_bpf_probe_args *ctx)
-+{
-+	/* only bind to the keyboard interface */
-+	ctx->retval = ctx->rdesc_size != 213;
-+	if (ctx->retval)
-+		ctx->retval = -EINVAL;
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+> +
+> +properties:
+> +  protocol@81:
+> +    $ref: 'arm,scmi.yaml#/$defs/protocol-node'
+> +    unevaluatedProperties: false
+> +    description:
+> +      The BBM Protocol is for managing Battery Backed Secure Module (BBSM) RTC
+> +      and the ON/OFF Key
+> +
+> +    properties:
+> +      reg:
+> +        const: 0x81
+> +
+> +    required:
+> +      - reg
+> +
+> +  protocol@84:
+> +    $ref: 'arm,scmi.yaml#/$defs/protocol-node'
+> +    unevaluatedProperties: false
+> +    description:
+> +      The MISC Protocol is for managing SoC Misc settings, such as GPR settings
+> +
+> +    properties:
+> +      reg:
+> +        const: 0x84
+> +
+> +      wakeup-sources:
+> +        description:
+> +          Each entry consists of 2 integers, represents the source and electric signal edge
+> +        items:
+> +          items:
+> +            - description: the wakeup source
+> +            - description: the wakeup electric signal edge
 
--- 
-2.44.0
+No constraints on the entry values?
 
+> +        $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> +
+> +    required:
+> +      - reg
+> +
+> +additionalProperties: false
+
+And then this can be true.
+
+Rob
 
