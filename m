@@ -1,169 +1,121 @@
-Return-Path: <linux-kernel+bounces-139497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A1C78A03BA
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BEA88A03B9
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:56:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE994B267E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:56:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C974C28BB45
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:56:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1996136662;
-	Wed, 10 Apr 2024 22:47:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A6740BF5;
+	Wed, 10 Apr 2024 22:47:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="InxdgZCZ"
-Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jUaOE1Vx";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="65/gtTev"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D889C13281D
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:47:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C5A134723
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:47:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712789252; cv=none; b=OzMctTqqt9CSeVWIiqbvCHuVNNlR/h9hGaSjm4/kYDPpYSw3dPQpXsd8AjDrmzrE6r2pXu22K/65iVLsxdy4mD/Vd1gmRy1Cab9u9cCa/yV9asxYU+ZesJ1pYEpzFjWNsXisDniT8gLEFE571T1OJGK9iAeZfxM6u/a4rXlAsto=
+	t=1712789253; cv=none; b=NYGTWEzhInV97UzmW2cUqSizMmcwOm7Ftxn8Ay8raRoQHFRrAhs6jpRdANTQl9KJ+joXLYSnlFVekRJma42KkrU0r7UQdK5fkNq9vF3hID1qQRuaaynic78z6d7gM+4Qoa1EbxEyJTi8xl5zOkblTkfWhyQZhJxMWnIe36GPn3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712789252; c=relaxed/simple;
-	bh=uDU3PtkfpbBDGwJOViI0NFiMEmcXnUAvLCRTEusiKVk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Tb6uvKxKCxw7GfD8TjuRSQFmyWjHLoDtWcZ6OSjVeey/aZ6LGqtAqLvItnKYV7FT2XxX+wieP+SRARzxBoUv5zqyEzkBlj+rYEeS3AqXIatR7E51xhE6FWa2rbHTtsbtDR9dHxCaDLW/66bSosftzBsLt2geSYDZAPr/e5T6YxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=InxdgZCZ; arc=none smtp.client-ip=209.85.160.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-22f746c56a2so1400542fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:47:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1712789250; x=1713394050; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jexQJX0oM9fCmEvziBSolme7TKZ0EEYhwHpwJAChgvs=;
-        b=InxdgZCZ3tXHTxDN2HsO5Qj8K94kQvCrSlHJ4gVr0UU4P7owLbbLzxcN5yVcHFP+NH
-         4Eo//eSwguEo82JBtG2Ns8sya0EkSysyHOUnfp4ou7S7LpxrV0E0/QTH2BFUeHrT3tLS
-         6FK5+9wDjmXzugmO/o6KpTcqdkdPrsWKjJMeAd6xg11sz1rsdjl7+8jtGpX1iOxhUgtl
-         d46yk0vjJZDHOsDg5ATxjQOZ8lpMLYa6AaflNtnBZMW50Pa4Ilw6TrhHakgd4TMArPoe
-         2raTiyl9JBb+KJI0nqedu6OhGlEw5rRKcLgKbZxhizQzUJ/ANVW/8gBvTiTNVsVUK/0V
-         zh0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712789250; x=1713394050;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jexQJX0oM9fCmEvziBSolme7TKZ0EEYhwHpwJAChgvs=;
-        b=Bz0lM+9E/xdu9wXFr3FOmVQRT1S102JaRlCSi++2NU87CWxwWryc/68zWCE4dI9EJa
-         yEp/uJ17xpVAZV9URPKLux1OemC5TyPR38vj6MrUtIDKxELGxWgC2/Mq4iKeoioLQyVY
-         AEclFd94vUbzkP8UCYEo1vz0JyciT+/9jNlmCctGAe3sAzCqtC+JXwu6Uegvbb5SdbqS
-         rdtcNx/jfwrrA6OxJop1gbvIhQWWu1gvGAKop/FBIjaFQzNoSaQ7Udu+jvNrYFBUR9xu
-         VXcXoVT3RoIYG6CC03HyjjwWmk4C2Uva7Gz8h3ihc4L9n8p/uISA6E7CmpmtLA6ibj2B
-         kf8g==
-X-Forwarded-Encrypted: i=1; AJvYcCU1TrAEMSyxItG/AIfTYM5XcTc3pcdzKvGtnxo4nNMB0whwVWnSyJpn0WrlOK3Hhc6vs438xZWre9D1e4WJSGtvNs6qWW7RcyLAfxTk
-X-Gm-Message-State: AOJu0YzIPnFSxZqCvYuQe4w+efiXWciM+/oKadJuTxvZpv6gdfWE20Xp
-	Zcgbw7uWRirQrYUwvvF6tMgl+iP6agSGRHF3koOvZjfbCHi1TbZvfuPBh7RciAc=
-X-Google-Smtp-Source: AGHT+IHLiKUoeBUB4OwLHReX4a7dcUh2Eqxld9pK8ip3FgSpidJgLmLzuSWt1Fnkq1wrPVQWu86Qjg==
-X-Received: by 2002:a05:6871:80a:b0:22d:f859:2225 with SMTP id q10-20020a056871080a00b0022df8592225mr3914938oap.6.1712789249782;
-        Wed, 10 Apr 2024 15:47:29 -0700 (PDT)
-Received: from [100.64.0.1] ([170.85.8.167])
-        by smtp.gmail.com with ESMTPSA id lf3-20020a0568700c4300b0022eba51882fsm75970oab.53.2024.04.10.15.47.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 15:47:29 -0700 (PDT)
-Message-ID: <75a37a4b-f516-40a3-b6b5-4aa1636f9b60@sifive.com>
-Date: Wed, 10 Apr 2024 17:47:27 -0500
+	s=arc-20240116; t=1712789253; c=relaxed/simple;
+	bh=cp19dVUb7xvWUsokdlmPF5WkDY+X0uWwwuOAQ7Ty6Vc=;
+	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type:Date; b=rqdFF+64BWxz8sZKTJL5EU7XE9EcwPpgKYbJs09oq5DlMalq1mUBkUvU5CSkoM7rgFy5or7Z49Ub6HP5H6zWKyZp/f/qEJ+zQmP/QY6pGXkTerIa/1zOLQrDOKCmiDGY8nyS75pAg3W0whVl2MQZWJpsXN4Qqu59OVuGfBLzNnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jUaOE1Vx; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=65/gtTev; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Message-ID: <20240410165553.699821482@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712789250;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 references:references; bh=pv6YrQN2ETIiH5UgbcE48m3AAv3y/nIIur52dGrER6A=;
+	b=jUaOE1VxK0rkmAl5Q50vmOUaJIP24WYKpeBT9ld8uKfYKCb23U5uzyQHzO7obq6pBZIF8E
+	HCe7glmNlBbc/ciYExpG/z4mY+mSsIW50zkbuloJTh05+/tBqqv1/x1lWnFdNbk/0WSGPn
+	uesy6o6gv78OwT3V3QEML+cRKgxGyn8O+4IbBvMVVMpJXV+v8x3FBhYv05lXYqgXrvQ7bP
+	neuztj+7bFE9QywjjIQqVgN5gAqS/fh2wCzQm7UT/MAoQUNv08UueRkiA4kWzpd6UeKicp
+	l+AX/y8OODO+V/ayugdTQ54lX40+T6hoW0ap875xTgQWv73N1UK9267pEbsSnQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712789250;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 references:references; bh=pv6YrQN2ETIiH5UgbcE48m3AAv3y/nIIur52dGrER6A=;
+	b=65/gtTev2nEhnOx3GTX9mzsFaXErSxtYWTmSWv4oAE7m3TOOcc+WKKiULC7QIuRY+KACcs
+	gP9CJMyfsQ4zHBDw==
+From: Thomas Gleixner <tglx@linutronix.de>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ John Stultz <jstultz@google.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>,
+ Stephen Boyd <sboyd@kernel.org>,
+ Eric Biederman <ebiederm@xmission.com>,
+ Oleg Nesterov <oleg@redhat.com>
+Subject: [patch V2 44/50] signal: Provide ignored_posix_timers list
+References: <20240410164558.316665885@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 13/15] drm/amd/display: Use ARCH_HAS_KERNEL_FPU_SUPPORT
-To: Thiago Jung Bauermann <thiago.bauermann@linaro.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- linux-arm-kernel@lists.infradead.org, x86@kernel.org,
- linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- Christoph Hellwig <hch@lst.de>, loongarch@lists.linux.dev,
- amd-gfx@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>
-References: <20240329072441.591471-1-samuel.holland@sifive.com>
- <20240329072441.591471-14-samuel.holland@sifive.com>
- <87wmp4oo3y.fsf@linaro.org>
-Content-Language: en-US
-From: Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <87wmp4oo3y.fsf@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Date: Thu, 11 Apr 2024 00:47:29 +0200 (CEST)
 
-Hi Thiago,
+To prepare for handling posix timer signals on sigaction(SIG_IGN) properly,
+add a list to task::signal.
 
-On 2024-04-10 5:21 PM, Thiago Jung Bauermann wrote:
-> Samuel Holland <samuel.holland@sifive.com> writes:
-> 
->> Now that all previously-supported architectures select
->> ARCH_HAS_KERNEL_FPU_SUPPORT, this code can depend on that symbol instead
->> of the existing list of architectures. It can also take advantage of the
->> common kernel-mode FPU API and method of adjusting CFLAGS.
->>
->> Acked-by: Alex Deucher <alexander.deucher@amd.com>
->> Reviewed-by: Christoph Hellwig <hch@lst.de>
->> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> 
-> Unfortunately this patch causes build failures on arm with allyesconfig
-> and allmodconfig. Tested with next-20240410.
-> 
-> Error with allyesconfig:
-> 
-> $ make -j 8 \
->     O=$HOME/.cache/builds/linux-cross-arm \
->     ARCH=arm \
->     CROSS_COMPILE=arm-linux-gnueabihf-
-> make[1]: Entering directory '/home/bauermann/.cache/builds/linux-cross-arm'
->     ⋮
-> arm-linux-gnueabihf-ld: drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.o: in function `dcn20_populate_dml_pipes_from_context':
-> dcn20_fpu.c:(.text+0x20f4): undefined reference to `__aeabi_l2d'
-> arm-linux-gnueabihf-ld: dcn20_fpu.c:(.text+0x210c): undefined reference to `__aeabi_l2d'
-> arm-linux-gnueabihf-ld: dcn20_fpu.c:(.text+0x2124): undefined reference to `__aeabi_l2d'
-> arm-linux-gnueabihf-ld: dcn20_fpu.c:(.text+0x213c): undefined reference to `__aeabi_l2d'
-> arm-linux-gnueabihf-ld: drivers/gpu/drm/amd/display/dc/dml/calcs/dcn_calcs.o: in function `pipe_ctx_to_e2e_pipe_params':
-> dcn_calcs.c:(.text+0x390): undefined reference to `__aeabi_l2d'
-> arm-linux-gnueabihf-ld: drivers/gpu/drm/amd/display/dc/dml/calcs/dcn_calcs.o:dcn_calcs.c:(.text+0x3a4): more undefined references to `__aeabi_l2d' follow
-> arm-linux-gnueabihf-ld: drivers/gpu/drm/amd/display/dc/dml2/dml2_wrapper.o: in function `optimize_configuration':
-> dml2_wrapper.c:(.text+0xcbc): undefined reference to `__aeabi_d2ulz'
-> arm-linux-gnueabihf-ld: drivers/gpu/drm/amd/display/dc/dml2/dml2_translation_helper.o: in function `populate_dml_plane_cfg_from_plane_state':
-> dml2_translation_helper.c:(.text+0x9e4): undefined reference to `__aeabi_l2d'
-> arm-linux-gnueabihf-ld: dml2_translation_helper.c:(.text+0xa20): undefined reference to `__aeabi_l2d'
-> arm-linux-gnueabihf-ld: dml2_translation_helper.c:(.text+0xa58): undefined reference to `__aeabi_l2d'
-> arm-linux-gnueabihf-ld: dml2_translation_helper.c:(.text+0xa90): undefined reference to `__aeabi_l2d'
-> make[3]: *** [/home/bauermann/src/linux/scripts/Makefile.vmlinux:37: vmlinux] Error 1
-> make[2]: *** [/home/bauermann/src/linux/Makefile:1165: vmlinux] Error 2
-> make[1]: *** [/home/bauermann/src/linux/Makefile:240: __sub-make] Error 2
-> make[1]: Leaving directory '/home/bauermann/.cache/builds/linux-cross-arm'
-> make: *** [Makefile:240: __sub-make] Error 2
-> 
-> The error with allmodconfig is slightly different:
-> 
-> $ make -j 8 \
->     O=$HOME/.cache/builds/linux-cross-arm \
->     ARCH=arm \
->     CROSS_COMPILE=arm-linux-gnueabihf-
-> make[1]: Entering directory '/home/bauermann/.cache/builds/linux-cross-arm'
->     ⋮
-> ERROR: modpost: "__aeabi_d2ulz" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
-> ERROR: modpost: "__aeabi_l2d" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] undefined!
-> make[3]: *** [/home/bauermann/src/linux/scripts/Makefile.modpost:145: Module.symvers] Error 1
-> make[2]: *** [/home/bauermann/src/linux/Makefile:1876: modpost] Error 2
-> make[1]: *** [/home/bauermann/src/linux/Makefile:240: __sub-make] Error 2
-> make[1]: Leaving directory '/home/bauermann/.cache/builds/linux-cross-arm'
-> make: *** [Makefile:240: __sub-make] Error 2
+This list will be used to queue posix timers so their signal can be
+requeued when SIG_IGN is lifted later.
 
-In both cases, the issue is that the toolchain requires runtime support to
-convert between `unsigned long long` and `double`, even when hardware FP is
-enabled. There was some past discussion about GCC inlining some of these
-conversions[1], but that did not get implemented.
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ include/linux/sched/signal.h |    1 +
+ init/init_task.c             |    5 +++--
+ kernel/fork.c                |    1 +
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
-The short-term fix would be to drop the `select ARCH_HAS_KERNEL_FPU_SUPPORT` for
-32-bit arm until we can provide these runtime library functions.
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -138,6 +138,7 @@ struct signal_struct {
+ 	/* POSIX.1b Interval Timers */
+ 	unsigned int		next_posix_timer_id;
+ 	struct hlist_head	posix_timers;
++	struct hlist_head	ignored_posix_timers;
+ 
+ 	/* ITIMER_REAL timer for the process */
+ 	struct hrtimer real_timer;
+--- a/init/init_task.c
++++ b/init/init_task.c
+@@ -29,8 +29,9 @@ static struct signal_struct init_signals
+ 	.cred_guard_mutex = __MUTEX_INITIALIZER(init_signals.cred_guard_mutex),
+ 	.exec_update_lock = __RWSEM_INITIALIZER(init_signals.exec_update_lock),
+ #ifdef CONFIG_POSIX_TIMERS
+-	.posix_timers	= HLIST_HEAD_INIT,
+-	.cputimer	= {
++	.posix_timers		= HLIST_HEAD_INIT,
++	.ignored_posix_timers	= HLIST_HEAD_INIT,
++	.cputimer		= {
+ 		.cputime_atomic	= INIT_CPUTIME_ATOMIC,
+ 	},
+ #endif
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1877,6 +1877,7 @@ static int copy_signal(unsigned long clo
+ 
+ #ifdef CONFIG_POSIX_TIMERS
+ 	INIT_HLIST_HEAD(&sig->posix_timers);
++	INIT_HLIST_HEAD(&sig->ignored_posix_timers);
+ 	hrtimer_init(&sig->real_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+ 	sig->real_timer.function = it_real_fn;
+ #endif
 
-Regards,
-Samuel
-
-[1]: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=91970
 
