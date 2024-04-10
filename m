@@ -1,248 +1,414 @@
-Return-Path: <linux-kernel+bounces-138730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6828789F9A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:14:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 726E489F9A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:14:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5E181F30740
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:14:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 182B62837BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:14:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3B0D15FA9F;
-	Wed, 10 Apr 2024 14:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF53C15EFA2;
+	Wed, 10 Apr 2024 14:13:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="rnrzmenf"
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2132.outbound.protection.outlook.com [40.107.114.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="F3KEbZzP"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63BD15F403;
-	Wed, 10 Apr 2024 14:13:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.114.132
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712758391; cv=fail; b=BbG0v3ZemSRmv6eicdUw0rkapBzJpB38oDH2eIeLWrnFAba67lqYeYbiQ45+DRSCw2+3AQ6axrcISY5AedKJwZQ8xl13LOncnaDSOAaqgD7Sstld4AJNDImPoW62AUrIKKGiizSPC08NhRWYIWEOL3hEzyxwKx1imEwLP4EB7C8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712758391; c=relaxed/simple;
-	bh=FpQSV/XQmEJb6PZTNhkEN1J70tc2CggUnR3NKjYT/ak=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=OBLrTDa6TUid17a2lBfWwdpiX9D9xXW2pCxIGPXpgif57kD1LT0o1VMjMCLFmER+PirmeuJg9H5mT3LEFpBXszu6JZk4AGeb/IIIn3WxcJugVnwmu/cn9vwAyieICacURUNJFmfYDn1RZVodJAPvGJjv9/ivEfcSTBHqW8nS+Us=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=rnrzmenf; arc=fail smtp.client-ip=40.107.114.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dc6FnpqYvmPXZxNSzhzxa+1bT2R/pcYFu5LCYFhzyEnwtdyKg6ZG3woroBmV/HrfrPg/xwI8UeBM3HFaFSa3QutNELK/ezg6ujCawXATjVuzXwFaDeH7Nba8+dy9qEt5qarTZzQzO6jDSPW2Qfjw46+nstL+Kuy90dIKSBJB6W/TRnt1ojzjaxTDs79OlZEzHZfMVzz64bPtpHDDBedO9ocoZce76iT1sbRZ1UF0IO2mKfI985iCa1IodVHZZXujv4souQncEkHzU9RSy72Fjy60786HnDCHI9Ifr6vvtH16L+FuK08YeZDgV51mvkVu3P6okiJ7iJBEzSB6Xv2SQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rtNLIbHuSsCvfBKKJrjoE+nGBsyn2BCeDsmTOYhNLco=;
- b=ay4hHdInxxgk8lDQxFlmIcnnXQElwT8l8vBGZD2D/1xuP7J8t5joiGacQl6kNbi3xj81Pb0GNmWeTck6oFSNZ9hCwQwHTtTD547pfBPv0AsJEo8yi8jK7g2cIGW+xgMKeyzPdekmpVuuNsmPWvarwO2LV/KxpI7FYX2J6JdM3DoJFcyO2QWQBnEIJd6zNKXJMsq/IiwOwls1KJSnUqrJQ31yZod8tAWPWijpX/9B3F/1wNp6NQGROEBq7z5es+UhpT90/ZgeNsJrhOYunu0GG3dHq9LioS2+NkgwGl8lmlpuxzd8ZxYvrgscJmlrQPsSofkTL77szrEdyt47cUJ80A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rtNLIbHuSsCvfBKKJrjoE+nGBsyn2BCeDsmTOYhNLco=;
- b=rnrzmenfP8ljw3iDhI19Go+cmp3+EURb0sxiSm/XevH9Ytf8A+v1rraUSW5FmsreyZ4+s4QVCDhT5HEiyk2dxqbDv//MijbLgBFOhaMuEQCTj2ySY2vZjdxopdHuCFnrWZo3KakefX17UC4fNILWm2sWi/BbStEqtxN/44oF+Yw=
-Received: from OSAPR01MB1587.jpnprd01.prod.outlook.com (2603:1096:603:2e::16)
- by OS3PR01MB8368.jpnprd01.prod.outlook.com (2603:1096:604:193::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 10 Apr
- 2024 14:13:03 +0000
-Received: from OSAPR01MB1587.jpnprd01.prod.outlook.com
- ([fe80::fda5:45f9:f1b2:cbce]) by OSAPR01MB1587.jpnprd01.prod.outlook.com
- ([fe80::fda5:45f9:f1b2:cbce%3]) with mapi id 15.20.7409.042; Wed, 10 Apr 2024
- 14:13:03 +0000
-From: Biju Das <biju.das.jz@bp.renesas.com>
-To: Claudiu.Beznea <claudiu.beznea@tuxon.dev>, "wim@linux-watchdog.org"
-	<wim@linux-watchdog.org>, "linux@roeck-us.net" <linux@roeck-us.net>,
-	"robh@kernel.org" <robh@kernel.org>, "krzk+dt@kernel.org"
-	<krzk+dt@kernel.org>, "conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"p.zabel@pengutronix.de" <p.zabel@pengutronix.de>, "geert+renesas@glider.be"
-	<geert+renesas@glider.be>, "magnus.damm@gmail.com" <magnus.damm@gmail.com>
-CC: "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
-	Claudiu.Beznea <claudiu.beznea@tuxon.dev>, Claudiu Beznea
-	<claudiu.beznea.uj@bp.renesas.com>
-Subject: RE: [PATCH RESEND v8 03/10] watchdog: rzg2l_wdt: Use
- pm_runtime_resume_and_get()
-Thread-Topic: [PATCH RESEND v8 03/10] watchdog: rzg2l_wdt: Use
- pm_runtime_resume_and_get()
-Thread-Index: AQHai0zBWu2V0gpeGk2Rf6eyLae+ArFhiuxg
-Date: Wed, 10 Apr 2024 14:13:03 +0000
-Message-ID:
- <OSAPR01MB158744E15B527496A8ABA4CE86062@OSAPR01MB1587.jpnprd01.prod.outlook.com>
-References: <20240410134044.2138310-1-claudiu.beznea.uj@bp.renesas.com>
- <20240410134044.2138310-4-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240410134044.2138310-4-claudiu.beznea.uj@bp.renesas.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OSAPR01MB1587:EE_|OS3PR01MB8368:EE_
-x-ld-processed: 53d82571-da19-47e4-9cb4-625a166a4a2a,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- Y9jdzQSTLy4+PXBPPNud1GoJMnDfTjCQ0lN06KjiCwzetIOLPRzT9uRSXvrFtOOEjIzrqaZZRlqrEWLffPt8U+UDDv9X8StzFi31WCggafs6wvY5e2/wNi1s52VIKDZxk2a4dmSXyqJwT3ul2kcRGLPRwgWEQC8aRUz4lDj3JQJZbG8QGN3hR1xbw8MXYenOOAsiXt8HD4fG+9dcDJtUCB/msGZR2b2ijDvBjnZMlMu/2oJ6dQHIoGTlvQ/q7DW9+XQjUUwAZTHmXVeAtGd+OsgGVGXxstY0+FdkG+smyqrf4IH0H03rv0pN8b3S633MKk9adyftTjFxjbNy44JMHtBrI+LylHv7BH/oIvuoIuz4VfHwQIbS7zNTWNqWdK0GXM2uLeIQhl4jxebNDwQ4Gm4AAuA6RkElDitnIgSbaa3kw+yA9mYjzTT7mz++HQKinDfoGor8Z1oxa4hFPMdYgcMF9dJzTynN8vu42DaBw2T0Ya2OW2b47lHxLxM5R37EdJ3InEk7pVgnmjNPKbqvyLiKAF/UuE5ZDVzmCfnfLMIYCa4esWpGN/23s2MJ4cCRXNlgY36HnZd9OM/eV2yng3DR7LgGLWRnTQ2Z+vPmd2F3gr1mg7qtAa38pYGwQ9O2SxDpm8DgEa6Z7+zS6S0z5ISfxs44V2ePs0L/LP0GMpA=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB1587.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?pTIkHJWP87KQD4JrDRFc+ZYSGKZl31B1Ek9lYJSL20dezIu6j/R3Msa/ydKD?=
- =?us-ascii?Q?TYSRt0q08RaQEXk8PLjetMx5TCxenqNY9Ef178YugwE0MV+YU7HMgUQAW6oL?=
- =?us-ascii?Q?MKVyRo70vyaUhPiWd3Lnq/k7jffsDbnpYv/8qouSzUNUTpklNuT90vXmo9Xf?=
- =?us-ascii?Q?HANuwFC+YXmIzFI8EdmlKPF4pUzu/KO6cbq7cOWG8oR8Pl0C3o9ws7LlVAKi?=
- =?us-ascii?Q?jM7g2uUNrwlMjAkCeWB9LuhSqL9S9YktHbiWy/R7Ybqm+9D9B5xf7lER1kRg?=
- =?us-ascii?Q?+Eexc460BCv9/damc3z072wxfxej2R/7GkvIfMIJ0TbWz8Q1WdTLGweefnvs?=
- =?us-ascii?Q?OCICHagLmlhXFb/FhG1Sf2n4tckAEg2KtgXysqCTyewjQTxdEt1j4jh1K0vL?=
- =?us-ascii?Q?UIh+CsrDcnkWDWmap8g2DFD9ZBrMTn6wTiFoTrwGenPH6TC+OSbqHJvij5cb?=
- =?us-ascii?Q?+3opPFxvoIP7NR3LwWpa+ZHlDFwi4JExEbA50jDrougEE6RJjRR9uQZLu962?=
- =?us-ascii?Q?1giJICz6DkJmJgQ2jjJo30jCULDyJip15hpOqqoZcUMUNGQdsPRDJKGgCzQX?=
- =?us-ascii?Q?nVEtXjvfZHaD6fVE5v1hYZa8e09yV+7Ka5rOAIvf8pwJr6xX0DTDDhF3hS6C?=
- =?us-ascii?Q?SZ261d4B00swMf9mIHAVDdxkciU13jq3REKxS3gwrPbK8Ju6wCJE71FA8Av5?=
- =?us-ascii?Q?frWBjQTlE4p5HW0d2A+Dii0nirxQ59RucBR6jhF7WjWm/XEIlAVc3ailoy/9?=
- =?us-ascii?Q?lkPPc+tKgBJEJSH/bt7Uc7g5Ni6wIkP+rrGtWIOZmSmPCQDt1AzNs1o7SgpN?=
- =?us-ascii?Q?QCfEZBrHGVt4GFu7u+mH+9J6VkARBdSk3+92d5RgK2iezJOEDk/xF+XNqDfS?=
- =?us-ascii?Q?RVHfikcV+3JgmTmaSYQ8OTfONahYFABQhp/LhEtirNyvV2AsG5u98IErsE2g?=
- =?us-ascii?Q?lvtIKZdZZaRsbbpAL6Cq1OW1c3DLBG6BNHYQ6UpS1ovCgxBXXBdMGYun+Wrn?=
- =?us-ascii?Q?rCd/Unf8xIz8DSr+V70G92txIGTvVpPP38eLWYPh8rUV6kExvTUF+P9FBg6x?=
- =?us-ascii?Q?SQXlPs4E5tmaNiCALAx7bl00XcmtKMCBpZfQYyfkLr3NW/pISH7wG0tDs7M8?=
- =?us-ascii?Q?/jYwJG7cLwouHl/8V4YL47j2OHdr4H8gm2ZvbBfr3FALsBJp5I74xSvBkj7f?=
- =?us-ascii?Q?rOtwIjQKg1sLbpPx0ut82HPQe+H5humG6aoUAYd2FLkJqASzcw3eZzv1kObc?=
- =?us-ascii?Q?hmPchX0fbSJ+JhZUtIIuvPqdjRmEmjf6XGvIZjJjIEM/p6OnXeiuL8WHv+hI?=
- =?us-ascii?Q?9pCxSyZs8f22Z/eTmzidSm/9h4Ts1vkO1NL20X9RCZvO+DB5/q6oLCAqczCG?=
- =?us-ascii?Q?agiVsyseyeDXOpBSavlAzYVNL6vPo9mpPSitvh9WTMui041nZj4wFZKAPgBt?=
- =?us-ascii?Q?HxY2WQjNMLMm6oxZeDJtE909BIU6qu2Wd7NywM1CwEmzQp80UF2RYNRKUFWq?=
- =?us-ascii?Q?mOuzRuTnTaaSaOrY8/z3Q+xlK2kigwSykimom8P0btWCE06uhKf2dXxhngQX?=
- =?us-ascii?Q?7g7wPOZ9qYrsCM/MGzN3ZBWSBnIZWRsufp+xidyDfmhzIw6rDBDNmsyLEJ5f?=
- =?us-ascii?Q?/g=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CA815CD4B
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 14:13:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712758415; cv=none; b=iElRVh7ahpJ4LnS/8NlwvjkrfvG4ltlQ7Cn/52fec76KU7h+VrU/2gDYsYwspGkO2/bITqHd0eVZPTPfP1YkT6XtID4Ox+xkZkYS4timQFHQf+OtZmifK28NtKRA7F7W+jqAyq5NkcBsSMTQq1uWY5iUQ/zd4klxfQVdBVAkBWs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712758415; c=relaxed/simple;
+	bh=IbhnFjjMDWtqE87xzrTp4ZTJN/VNhKnCteChTCXYxsQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eBTWoJ4gxPOEIMdzDcb0/GFrpX3gtO4DaDJ7Ut8jvj54IVcqcOdj22WPrSS12sb8nzRbOiN+Zevv6E4nEJ4p9yJfgtIaLTRz3kG8nc/Qc4J5WcsqTvVsICnjXF3rdY79/QxumRXRcuROv184NlEYMScoZ6LXRT/EXhhNELNpuwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=F3KEbZzP; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a46ea03c2a5so1120693366b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:13:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1712758411; x=1713363211; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vDpK/3WQjVbeikam+hAfuyMA1XIDGJ8Ln1Tz+atruM0=;
+        b=F3KEbZzPScYL1vjdIrd1qV6yl5KcFUXAur7muh58wrOMScmKgGklzAC8Q5HWTBM+VS
+         awM9ATsOE90xOYpA4PM8/p0VcN65vhOVc52zBZqaj1EKbxau8x77Qf+aewQJNYEqyZ95
+         Af1e8Krf3cqDbmrZot1u+9YJVBu58VPpi6m+prBOGTmE+Zy9c0P5UI6VyRk2KpykOT4q
+         5nIJR2JNipP7cCjBL5lf5q0KyDmCCSIUIDQ+iwnxPPY9WQEiw0RehHraPBo9ukErvdzq
+         NWeDoujp04LeRxna3uTouIeYk6Cy6QDFECz6nGzESk0a+X4oJtIPJoCEqX8pqf77ABmO
+         M63g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712758411; x=1713363211;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vDpK/3WQjVbeikam+hAfuyMA1XIDGJ8Ln1Tz+atruM0=;
+        b=AyOCXlAul9TK0Uxbv+/EPAY0eLVgnDByBPlQgXXs2gNgtrOFIbGIgSUI7/n3ksSXdV
+         5T2YX08W2H8dxa25AYTL3aMdu5sGGYbqYB+WveHHE608UcPA4+Pi1t/14SxJ1lZkSvN+
+         uFMXS2mckoNSkmohHhRlWvhgF68Z4fM9oX0LaG0e5elvTKeOG5IOFeaCqUJXgMeOG0Je
+         Cw/bA8Jnd/eoZJLZW9JvLO5LZO+YORx9I+w5+Q1tZK02uuNZTiiEOMOTS9qeaohCuOAG
+         PP/XNmvpv1vPp0tQi3FBuYswXzxHcRQNOFJ/g84Xr5HC3JvjiGwKxu0eb6r/dwsAzllc
+         8ryg==
+X-Gm-Message-State: AOJu0Yw+ApxeBcVQiD8yoxjd+iQ3NUiwSn6rqvwlgGRPEubbhxePZxWG
+	sd7eu1AQgSe5M8Df+r+6sdU+BgStIO1TLJgdOguMWQ05I6KU3W+stdifbxwBMLWWkHyCDRAfXYm
+	X
+X-Google-Smtp-Source: AGHT+IG//o2hSrl1V8BVIIurZsctw3ES6spYWYRLuk2P/pNTWjV+L9bcGgL69go/rwrLf1sT4SSsfg==
+X-Received: by 2002:a17:906:3b9b:b0:a4f:193e:9600 with SMTP id u27-20020a1709063b9b00b00a4f193e9600mr5028138ejf.18.1712758410890;
+        Wed, 10 Apr 2024 07:13:30 -0700 (PDT)
+Received: from ?IPV6:2003:e5:8705:9b00:4df1:9dd5:4f97:24a? (p200300e587059b004df19dd54f97024a.dip0.t-ipconnect.de. [2003:e5:8705:9b00:4df1:9dd5:4f97:24a])
+        by smtp.gmail.com with ESMTPSA id l15-20020a170906414f00b00a519de61bebsm6998316ejk.137.2024.04.10.07.13.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 07:13:30 -0700 (PDT)
+Message-ID: <78018558-35d9-41de-947d-3b0a2c72b616@suse.com>
+Date: Wed, 10 Apr 2024 16:13:29 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB1587.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3320a258-9fc7-47ae-7d14-08dc596855d7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Apr 2024 14:13:03.1155
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: z4vOBiCEpUS+AqWrBdvfaR+nEA2F/Du41Z+ysLOOW08hiOLEcOqnpSahRa6DiqL3JFTVPNs5jH5tqwWsnipd6y7wWoEE++UFvFaWGYt2kAQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB8368
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/pat: fix W^X violation false-positives when running
+ as Xen PV guest
+Content-Language: en-US
+To: Ingo Molnar <mingo@kernel.org>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ xen-devel@lists.xenproject.org, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+ Jason Andryuk <jandryuk@gmail.com>
+References: <20240409094712.21285-1-jgross@suse.com>
+ <ZhaYsAuhhqomQUWT@gmail.com>
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+In-Reply-To: <ZhaYsAuhhqomQUWT@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Claudiu,
+On 10.04.24 15:48, Ingo Molnar wrote:
+> 
+> * Juergen Gross <jgross@suse.com> wrote:
+> 
+>> When running as Xen PV guest in some cases W^X violation WARN()s have
+>> been observed. Those WARN()s are produced by verify_rwx(), which looks
+>> into the PTE to verify that writable kernel pages have the NX bit set
+>> in order to avoid code modifications of the kernel by rogue code.
+>>
+>> As the NX bits of all levels of translation entries are or-ed and the
+>> RW bits of all levels are and-ed, looking just into the PTE isn't enough
+>> for the decision that a writable page is executable, too. When running
+>> as a Xen PV guest, kernel initialization will set the NX bit in PMD
+>> entries of the initial page tables covering the .data segment.
+>>
+>> When finding the PTE to have set the RW bit but no NX bit, higher level
+>> entries must be looked at. Only when all levels have the RW bit set and
+>> no NX bit set, the W^X violation should be flagged.
+>>
+>> Additionally show_fault_oops() has a similar problem: it will issue the
+>> "kernel tried to execute NX-protected page" message only if it finds
+>> the NX bit set in the leaf translation entry, while any NX bit in
+>> non-leaf entries are being ignored for issuing the message.
+>>
+>> Modify lookup_address_in_pgd() to return the effective NX and RW bit
+>> values of the non-leaf translation entries and evaluate those as well
+>> in verify_rwx() and show_fault_oops().
+> 
+> Ok, this fix makes sense, as that's how the hardware works and we interpret
+> the pagetables poorly.
 
-> -----Original Message-----
-> From: Claudiu <claudiu.beznea@tuxon.dev>
-> Sent: Wednesday, April 10, 2024 2:41 PM
-> Subject: [PATCH RESEND v8 03/10] watchdog: rzg2l_wdt: Use pm_runtime_resu=
-me_and_get()
->=20
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->=20
-> pm_runtime_get_sync() may return with error. In case it returns with erro=
-r
-> dev->power.usage_count needs to be decremented.
-> dev->pm_runtime_resume_and_get()
-> takes care of this. Thus use it.
->=20
-> Along with it the rzg2l_wdt_set_timeout() function was updated to propaga=
-te the result of
-> rzg2l_wdt_start() to its caller.
->=20
-> Fixes: 2cbc5cd0b55f ("watchdog: Add Watchdog Timer driver for RZ/G2L")
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->=20
-> Changes in v8:
-> - none
->=20
-> Changes in v7:
-> - none
->=20
-> Changes in v6:
-> - none
->=20
-> Changes in v5:
-> - none
->=20
-> Changes in v4:
-> - none
->=20
-> Changes in v3:
-> - none
->=20
-> Changes in v2:
-> - propagate the return code of rzg2l_wdt_start() to it's callers
->=20
->=20
->  drivers/watchdog/rzg2l_wdt.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/watchdog/rzg2l_wdt.c b/drivers/watchdog/rzg2l_wdt.c =
-index
-> 1741f98ca67c..d87d4f50180c 100644
-> --- a/drivers/watchdog/rzg2l_wdt.c
-> +++ b/drivers/watchdog/rzg2l_wdt.c
-> @@ -123,8 +123,11 @@ static void rzg2l_wdt_init_timeout(struct watchdog_d=
-evice *wdev)  static int
-> rzg2l_wdt_start(struct watchdog_device *wdev)  {
->  	struct rzg2l_wdt_priv *priv =3D watchdog_get_drvdata(wdev);
-> +	int ret;
->=20
-> -	pm_runtime_get_sync(wdev->parent);
-> +	ret =3D pm_runtime_resume_and_get(wdev->parent);
+Thanks for confirmation that my approach is sane.
 
-Do we need this change at all? If we have balanced usage then
-this won't be a issue. Did any unbalanced usage count popup
-during the testing?
+> 
+>> Fixes: 652c5bf380ad ("x86/mm: Refuse W^X violations")
+>> Reported-by: Jason Andryuk <jandryuk@gmail.com>
+>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>> ---
+>>   arch/x86/include/asm/pgtable_types.h |  2 +-
+>>   arch/x86/kernel/sev.c                |  3 +-
+>>   arch/x86/mm/fault.c                  |  7 ++--
+>>   arch/x86/mm/pat/set_memory.c         | 56 +++++++++++++++++++++-------
+>>   arch/x86/virt/svm/sev.c              |  3 +-
+>>   5 files changed, 52 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+>> index 0b748ee16b3d..91ab538d3872 100644
+>> --- a/arch/x86/include/asm/pgtable_types.h
+>> +++ b/arch/x86/include/asm/pgtable_types.h
+>> @@ -565,7 +565,7 @@ static inline void update_page_count(int level, unsigned long pages) { }
+>>    */
+>>   extern pte_t *lookup_address(unsigned long address, unsigned int *level);
+>>   extern pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+>> -				    unsigned int *level);
+>> +				    unsigned int *level, bool *nx, bool *rw);
+>>   extern pmd_t *lookup_pmd_address(unsigned long address);
+>>   extern phys_addr_t slow_virt_to_phys(void *__address);
+>>   extern int __init kernel_map_pages_in_pgd(pgd_t *pgd, u64 pfn,
+> 
+> Please introduce a new lookup_address_in_pgd_attr() function or so, which
+> is used by code intentionally.
+> 
+> This avoids changing the arch/x86/kernel/sev.c and arch/x86/virt/svm/sev.c
+> uses, that retrieve these attributes but don't do anything with them:
 
-Cheers,
-Biju
+Okay.
 
-> +	if (ret)
-> +		return ret;
->=20
->  	/* Initialize time out */
->  	rzg2l_wdt_init_timeout(wdev);
-> @@ -150,6 +153,8 @@ static int rzg2l_wdt_stop(struct watchdog_device *wde=
-v)
->=20
->  static int rzg2l_wdt_set_timeout(struct watchdog_device *wdev, unsigned =
-int timeout)  {
-> +	int ret =3D 0;
-> +
->  	wdev->timeout =3D timeout;
->=20
->  	/*
-> @@ -159,10 +164,10 @@ static int rzg2l_wdt_set_timeout(struct watchdog_de=
-vice *wdev, unsigned int
-> time
->  	 */
->  	if (watchdog_active(wdev)) {
->  		rzg2l_wdt_stop(wdev);
-> -		rzg2l_wdt_start(wdev);
-> +		ret =3D rzg2l_wdt_start(wdev);
->  	}
->=20
-> -	return 0;
-> +	return ret;
->  }
->=20
->  static int rzg2l_wdt_restart(struct watchdog_device *wdev,
-> --
-> 2.39.2
+> 
+>> diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+>> index 38ad066179d8..adba581e999d 100644
+>> --- a/arch/x86/kernel/sev.c
+>> +++ b/arch/x86/kernel/sev.c
+>> @@ -516,12 +516,13 @@ static enum es_result vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt
+>>   	unsigned long va = (unsigned long)vaddr;
+>>   	unsigned int level;
+>>   	phys_addr_t pa;
+>> +	bool nx, rw;
+>>   	pgd_t *pgd;
+>>   	pte_t *pte;
+>>   
+>>   	pgd = __va(read_cr3_pa());
+>>   	pgd = &pgd[pgd_index(va)];
+>> -	pte = lookup_address_in_pgd(pgd, va, &level);
+>> +	pte = lookup_address_in_pgd(pgd, va, &level, &nx, &rw);
+>>   	if (!pte) {
+>>   		ctxt->fi.vector     = X86_TRAP_PF;
+>>   		ctxt->fi.cr2        = vaddr;
+>> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+>> index 622d12ec7f08..eb8e897a5653 100644
+>> --- a/arch/x86/mm/fault.c
+>> +++ b/arch/x86/mm/fault.c
+>> @@ -514,18 +514,19 @@ show_fault_oops(struct pt_regs *regs, unsigned long error_code, unsigned long ad
+>>   
+>>   	if (error_code & X86_PF_INSTR) {
+>>   		unsigned int level;
+>> +		bool nx, rw;
+>>   		pgd_t *pgd;
+>>   		pte_t *pte;
+>>   
+>>   		pgd = __va(read_cr3_pa());
+>>   		pgd += pgd_index(address);
+>>   
+>> -		pte = lookup_address_in_pgd(pgd, address, &level);
+>> +		pte = lookup_address_in_pgd(pgd, address, &level, &nx, &rw);
+>>   
+>> -		if (pte && pte_present(*pte) && !pte_exec(*pte))
+>> +		if (pte && pte_present(*pte) && (!pte_exec(*pte) || nx))
+>>   			pr_crit("kernel tried to execute NX-protected page - exploit attempt? (uid: %d)\n",
+>>   				from_kuid(&init_user_ns, current_uid()));
+>> -		if (pte && pte_present(*pte) && pte_exec(*pte) &&
+>> +		if (pte && pte_present(*pte) && pte_exec(*pte) && !nx &&
+>>   				(pgd_flags(*pgd) & _PAGE_USER) &&
+>>   				(__read_cr4() & X86_CR4_SMEP))
+>>   			pr_crit("unable to execute userspace code (SMEP?) (uid: %d)\n",
+> 
+> This should be a separate patch - as it might change observed behavior.
+
+Fine with me.
+
+> 
+>> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+>> index 80c9037ffadf..baa4dc4748e9 100644
+>> --- a/arch/x86/mm/pat/set_memory.c
+>> +++ b/arch/x86/mm/pat/set_memory.c
+>> @@ -619,7 +619,8 @@ static inline pgprot_t static_protections(pgprot_t prot, unsigned long start,
+>>    * Validate strict W^X semantics.
+>>    */
+>>   static inline pgprot_t verify_rwx(pgprot_t old, pgprot_t new, unsigned long start,
+>> -				  unsigned long pfn, unsigned long npg)
+>> +				  unsigned long pfn, unsigned long npg,
+>> +				  bool nx, bool rw)
+>>   {
+>>   	unsigned long end;
+>>   
+>> @@ -641,6 +642,10 @@ static inline pgprot_t verify_rwx(pgprot_t old, pgprot_t new, unsigned long star
+>>   	if ((pgprot_val(new) & (_PAGE_RW | _PAGE_NX)) != _PAGE_RW)
+>>   		return new;
+>>   
+>> +	/* Non-leaf translation entries can disable writing or execution. */
+>> +	if (!rw || nx)
+>> +		return new;
+>> +
+>>   	end = start + npg * PAGE_SIZE - 1;
+>>   	WARN_ONCE(1, "CPA detected W^X violation: %016llx -> %016llx range: 0x%016lx - 0x%016lx PFN %lx\n",
+>>   		  (unsigned long long)pgprot_val(old),
+>> @@ -660,17 +665,22 @@ static inline pgprot_t verify_rwx(pgprot_t old, pgprot_t new, unsigned long star
+>>    * Return a pointer to the entry and the level of the mapping.
+>>    */
+>>   pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+>> -			     unsigned int *level)
+>> +			     unsigned int *level, bool *nx, bool *rw)
+>>   {
+>>   	p4d_t *p4d;
+>>   	pud_t *pud;
+>>   	pmd_t *pmd;
+>>   
+>>   	*level = PG_LEVEL_NONE;
+>> +	*nx = false;
+>> +	*rw = true;
+>>   
+>>   	if (pgd_none(*pgd))
+>>   		return NULL;
+>>   
+>> +	*nx |= pgd_flags(*pgd) & _PAGE_NX;
+>> +	*rw &= pgd_flags(*pgd) & _PAGE_RW;
+>> +
+>>   	p4d = p4d_offset(pgd, address);
+>>   	if (p4d_none(*p4d))
+>>   		return NULL;
+>> @@ -679,6 +689,9 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+>>   	if (p4d_leaf(*p4d) || !p4d_present(*p4d))
+>>   		return (pte_t *)p4d;
+>>   
+>> +	*nx |= p4d_flags(*p4d) & _PAGE_NX;
+>> +	*rw &= p4d_flags(*p4d) & _PAGE_RW;
+>> +
+>>   	pud = pud_offset(p4d, address);
+>>   	if (pud_none(*pud))
+>>   		return NULL;
+>> @@ -687,6 +700,9 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+>>   	if (pud_leaf(*pud) || !pud_present(*pud))
+>>   		return (pte_t *)pud;
+>>   
+>> +	*nx |= pud_flags(*pud) & _PAGE_NX;
+>> +	*rw &= pud_flags(*pud) & _PAGE_RW;
+>> +
+>>   	pmd = pmd_offset(pud, address);
+>>   	if (pmd_none(*pmd))
+>>   		return NULL;
+>> @@ -695,6 +711,9 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+>>   	if (pmd_leaf(*pmd) || !pmd_present(*pmd))
+>>   		return (pte_t *)pmd;
+>>   
+>> +	*nx |= pmd_flags(*pmd) & _PAGE_NX;
+>> +	*rw &= pmd_flags(*pmd) & _PAGE_RW;
+>> +
+>>   	*level = PG_LEVEL_4K;
+>>   
+> 
+> This should be a separate preparatory patch that also introduces the new
+> method - without changing any behavior.
+
+Okay.
+
+> 
+>    	return pte_offset_kernel(pmd, address);
+>> @@ -710,18 +729,24 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+>>    */
+>>   pte_t *lookup_address(unsigned long address, unsigned int *level)
+>>   {
+>> -	return lookup_address_in_pgd(pgd_offset_k(address), address, level);
+>> +	bool nx, rw;
+>> +
+>> +	return lookup_address_in_pgd(pgd_offset_k(address), address, level,
+>> +				     &nx, &rw);
+>>   }
+>>   EXPORT_SYMBOL_GPL(lookup_address);
+>>   
+>>   static pte_t *_lookup_address_cpa(struct cpa_data *cpa, unsigned long address,
+>> -				  unsigned int *level)
+>> +				  unsigned int *level, bool *nx, bool *rw)
+>>   {
+>> -	if (cpa->pgd)
+>> -		return lookup_address_in_pgd(cpa->pgd + pgd_index(address),
+>> -					       address, level);
+>> +	pgd_t *pgd;
+>> +
+>> +	if (!cpa->pgd)
+>> +		pgd = pgd_offset_k(address);
+>> +	else
+>> +		pgd = cpa->pgd + pgd_index(address);
+>>   
+>> -	return lookup_address(address, level);
+>> +	return lookup_address_in_pgd(pgd, address, level, nx, rw);
+> 
+> I think it would be better to split out this change as well into a separate
+> patch. It changes the flow from lookup_address_in_pgd() + lookup_address()
+> to only use lookup_address_in_pgd(), which is an identity transformation
+> that should be better done separately.
+
+Okay.
+
+> 
+>>   }
+>>   
+>>   /*
+>> @@ -849,12 +874,13 @@ static int __should_split_large_page(pte_t *kpte, unsigned long address,
+>>   	pgprot_t old_prot, new_prot, req_prot, chk_prot;
+>>   	pte_t new_pte, *tmp;
+>>   	enum pg_level level;
+>> +	bool nx, rw;
+>>   
+>>   	/*
+>>   	 * Check for races, another CPU might have split this page
+>>   	 * up already:
+>>   	 */
+>> -	tmp = _lookup_address_cpa(cpa, address, &level);
+>> +	tmp = _lookup_address_cpa(cpa, address, &level, &nx, &rw);
+>>   	if (tmp != kpte)
+>>   		return 1;
+>>   
+>> @@ -965,7 +991,8 @@ static int __should_split_large_page(pte_t *kpte, unsigned long address,
+>>   	new_prot = static_protections(req_prot, lpaddr, old_pfn, numpages,
+>>   				      psize, CPA_DETECT);
+>>   
+>> -	new_prot = verify_rwx(old_prot, new_prot, lpaddr, old_pfn, numpages);
+>> +	new_prot = verify_rwx(old_prot, new_prot, lpaddr, old_pfn, numpages,
+>> +			      nx, rw);
+>>   
+>>   	/*
+>>   	 * If there is a conflict, split the large page.
+>> @@ -1046,6 +1073,7 @@ __split_large_page(struct cpa_data *cpa, pte_t *kpte, unsigned long address,
+>>   	pte_t *pbase = (pte_t *)page_address(base);
+>>   	unsigned int i, level;
+>>   	pgprot_t ref_prot;
+>> +	bool nx, rw;
+>>   	pte_t *tmp;
+>>   
+>>   	spin_lock(&pgd_lock);
+>> @@ -1053,7 +1081,7 @@ __split_large_page(struct cpa_data *cpa, pte_t *kpte, unsigned long address,
+>>   	 * Check for races, another CPU might have split this page
+>>   	 * up for us already:
+>>   	 */
+>> -	tmp = _lookup_address_cpa(cpa, address, &level);
+>> +	tmp = _lookup_address_cpa(cpa, address, &level, &nx, &rw);
+>>   	if (tmp != kpte) {
+>>   		spin_unlock(&pgd_lock);
+>>   		return 1;
+>> @@ -1594,10 +1622,11 @@ static int __change_page_attr(struct cpa_data *cpa, int primary)
+>>   	int do_split, err;
+>>   	unsigned int level;
+>>   	pte_t *kpte, old_pte;
+>> +	bool nx, rw;
+>>   
+>>   	address = __cpa_addr(cpa, cpa->curpage);
+>>   repeat:
+>> -	kpte = _lookup_address_cpa(cpa, address, &level);
+>> +	kpte = _lookup_address_cpa(cpa, address, &level, &nx, &rw);
+>>   	if (!kpte)
+>>   		return __cpa_process_fault(cpa, address, primary);
+>>   
+>> @@ -1619,7 +1648,8 @@ static int __change_page_attr(struct cpa_data *cpa, int primary)
+>>   		new_prot = static_protections(new_prot, address, pfn, 1, 0,
+>>   					      CPA_PROTECT);
+>>   
+>> -		new_prot = verify_rwx(old_prot, new_prot, address, pfn, 1);
+>> +		new_prot = verify_rwx(old_prot, new_prot, address, pfn, 1,
+>> +				      nx, rw);
+>>   
+>>   		new_prot = pgprot_clear_protnone_bits(new_prot);
+> 
+> And then this should be the final patch, which fixes RWX verification
+> within the CPA code.
+
+Agreed.
+
+
+Juergen
 
 
