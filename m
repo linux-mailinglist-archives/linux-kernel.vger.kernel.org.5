@@ -1,192 +1,123 @@
-Return-Path: <linux-kernel+bounces-137866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 826E489E87F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:47:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95D3489E883
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:49:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34F2E285571
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:47:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFCCF1C2135F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:49:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C97ABE49;
-	Wed, 10 Apr 2024 03:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mJcIp/YS"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084398828
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65512C132;
+	Wed, 10 Apr 2024 03:49:24 +0000 (UTC)
+Received: from zg8tmja2lje4os43os4xodqa.icoremail.net (zg8tmja2lje4os43os4xodqa.icoremail.net [206.189.79.184])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD057BA2B;
+	Wed, 10 Apr 2024 03:49:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.79.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712720839; cv=none; b=sYO9DoEnHcYLCgceqmRyM3YH1rRl4BsBszBLUK8XVoY/uft1Q9MwRTLWOQSbWKPixxBcC8BAFO396V7uuUowS0bRShMkgSlk7pCZESaG8t8l41aLgYmHnYKjvP1nDTwZCs47EtUoD5HlUJnJ7PD8yW90ctl5Yamg2iJaOxIJnXY=
+	t=1712720964; cv=none; b=m4imI2Esg5Pc4nlCbIVp+YFGp1F2tEmQ2MTCyyOushrt1zkqsparYr9Cocon1sxYStMetoMVTB1eJUR0kyRilPdHaECTbgTwddkwwPFoz2E26DC7FyJ0vfemoXRNBzeh7nURoAjynDBzGInw1d5dQNYCopBmc2VQrtj2W3mWhHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712720839; c=relaxed/simple;
-	bh=5fGiF7BYzkTZhFaW0xs9ZlAF3EoXM0Yrlw+8r1VOnUw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qcmLnh4C6xOn5BE/wxJZkfxUE0bUPRzOx9dNF48kxC0Bj7d6Mm66C1VBwI40/XBvpwecyVYy7ksgsYEsS5X5XLUpHmoTOmAH8YHfDw2NuWayym/BcXrBSbWJc5XUJDMDsLw3XX/yturF/K/Pho0V1VviIoKR9f8l40FbIepDzGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mJcIp/YS; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e6b22af648so5129722b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 20:47:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712720837; x=1713325637; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3ScVv2cVL2IqKu4xZ+K+tP2lIBxE9zyAR4grQNU+Bjo=;
-        b=mJcIp/YSTuXsFnB1OYwyfm7nRz5W1h3ka7ok8zV+P3EMm1BjkmoSEBmZh+F6CRxVXM
-         0H2wowTVtqMv5DzPSa03+I6V5+cnikQwhawxvbpXH95fS8VnPzvuqKPMC/aJx1RWA4gy
-         sxltE1+4+eW/BtXtLMovTpwrE4Lcmm9efAYKG4YbPHQaAt7xQcmEk7tjGAbv4i1UgjfI
-         GDYzUCmM0hW9Cv2hv0bMswzhgQ5lw+DVc/rZ9w9NXVlKxj0BNk0WY/ZeTOw/o0pn2TSa
-         zOjaK3H6zSAow7BgZuiTTg4WnpnmAsg403euW0xnvvsYSQEMtGrtcxs1EnFXG8sCtKfW
-         ZeQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712720837; x=1713325637;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3ScVv2cVL2IqKu4xZ+K+tP2lIBxE9zyAR4grQNU+Bjo=;
-        b=eSneJYlOuJkYmCjma5Bh8gYafdAzUAeMz04DN1ehDo1FV3cUnOlBDcVIJt4xAxYfJk
-         n7ncKiBX/+sWwvHPBWv7Qu74h/J0FrVlBwPHU6bNeNUxOcybbKpt6oC+p5YHUXazOjkZ
-         y1W1wNt+oGu1LYbduLLT3bvMrCMDJrhvfACdDPxO8KiR4efdEifxQqS79g8Rn4owAJJs
-         mvYkrqSlLrMAQqCNrvtI1ZmYcWWvJmFJVRk+5KJDFxPYSCatqKWrDQ5Toaz/AGeke9Xg
-         aZZu98htQPEBaFczfbNRhho0hYZOwRA+MxagP6WXjMSKAI9Jw5R0pWkJq2FP/iNZT96I
-         F2QA==
-X-Forwarded-Encrypted: i=1; AJvYcCVuuTnM32pTcpeea2wuZ3qgjt28qHg6LJ9a/9KJAOaer7tsNBLmXMau2hYoJBwfHVZGuGzAFyIJiRAtN5Z70VvIGX3owrH9plwXl59e
-X-Gm-Message-State: AOJu0YwkGQyW8jTJub/yRG9Qb5q4o6PkADkoQblRq2UbV05J2JYth4Wa
-	r4st/g0fUuV1w+9+xNFhPx7WONDg56VSkNFcqp1wGYB+FOD7dJrS
-X-Google-Smtp-Source: AGHT+IFiB5jsn3AGo/5iAgNUbHEhKu4d5iOYuirmAZu/Ka6Satlkn8EVmM7q7CuefwC6pNruOCFhXw==
-X-Received: by 2002:a05:6a20:9185:b0:1a8:6727:1c6 with SMTP id v5-20020a056a20918500b001a8672701c6mr2242227pzd.14.1712720837184;
-        Tue, 09 Apr 2024 20:47:17 -0700 (PDT)
-Received: from [192.168.255.10] ([43.132.141.21])
-        by smtp.gmail.com with ESMTPSA id f24-20020a631018000000b005f07f34eb59sm9050174pgl.27.2024.04.09.20.47.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 20:47:16 -0700 (PDT)
-Message-ID: <c35fcdca-bec9-4a68-99dd-dbc9b3ad97a5@gmail.com>
-Date: Wed, 10 Apr 2024 11:47:12 +0800
+	s=arc-20240116; t=1712720964; c=relaxed/simple;
+	bh=m/XzA/BouYpHqicJ8NPirMN1TboF0HFVrEzhS/t7dHs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gcoURyarvcK/sd0w314r5PQUcdla5YKpcoA6Gos1GblvVcHFTq8yPnmuNW1fe1eNN1z3HYz1DcInJSihIIUM0/LCi39KKyT+3+oKKbIvivCJ35bUJ8s7vWAr3mITcfQk7lZfCLUNpWqacmzKrUcByCaqByLyrYIVJsGj6I8eHQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=206.189.79.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from gui.. (unknown [115.195.151.65])
+	by mail-app3 (Coremail) with SMTP id cC_KCgA3Cu0mDBZmkjmBAA--.60221S4;
+	Wed, 10 Apr 2024 11:48:55 +0800 (CST)
+From: Lin Ma <linma@zju.edu.cn>
+To: krzysztof.kozlowski@linaro.org,
+	andreyknvl@google.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Lin Ma <linma@zju.edu.cn>
+Subject: [PATCH net-next v1] net: nfc: remove inappropriate attrs check
+Date: Wed, 10 Apr 2024 11:48:46 +0800
+Message-Id: <20240410034846.167421-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 8/9] mm/ksm: Convert chain series funcs and replace
- get_ksm_page
-To: David Hildenbrand <david@redhat.com>, alexs@kernel.org,
- Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-Cc: Izik Eidus <izik.eidus@ravellosystems.com>,
- Matthew Wilcox <willy@infradead.org>, Andrea Arcangeli
- <aarcange@redhat.com>, Hugh Dickins <hughd@google.com>,
- Chris Wright <chrisw@sous-sol.org>
-References: <20240409092826.1733637-1-alexs@kernel.org>
- <20240409092826.1733637-9-alexs@kernel.org>
- <7a8d8005-3cec-4647-82b0-2d55d0ef34fc@redhat.com>
-Content-Language: en-US
-From: Alex Shi <seakeel@gmail.com>
-In-Reply-To: <7a8d8005-3cec-4647-82b0-2d55d0ef34fc@redhat.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cC_KCgA3Cu0mDBZmkjmBAA--.60221S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7tFykXw13GF18Xw1UKw4xtFb_yoW8ZFyrpF
+	y8JFyktF4jqryrWFsYy3WUu3W2vw1DGry7KrnxCa1xCFy3Gay2qFWakr95Ar47CrZ5X3sx
+	AFn09w42kw4DZ3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvq14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
+	tVW8ZwCY02Avz4vE14v_Gr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+	14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+	IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
+	87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0x
+	ZFpf9x0JU-a9-UUUUU=
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
 
+Revert "NFC: fix attrs checks in netlink interface"
+This reverts commit 18917d51472fe3b126a3a8f756c6b18085eb8130.
 
+Our checks found weird attrs present check in function
+nfc_genl_dep_link_down() and nfc_genl_llc_get_params(), which are
+introduced by commit 18917d51472f ("NFC: fix attrs checks in netlink
+interface").
 
-On 4/9/24 7:02 PM, David Hildenbrand wrote:
-> On 09.04.24 11:28, alexs@kernel.org wrote:
->> From: "Alex Shi (tencent)" <alexs@kernel.org>
->>
->> In ksm stable tree all page are single, let's convert them to use and
->> folios as well as stable_tree_insert/stable_tree_search funcs.
->> And replace get_ksm_page() by ksm_get_folio() since there is no more
->> needs.
->>
->> It could save a few compound_head calls.
->>
->> Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
->> Cc: Izik Eidus <izik.eidus@ravellosystems.com>
->> Cc: Matthew Wilcox <willy@infradead.org>
->> Cc: Andrea Arcangeli <aarcange@redhat.com>
->> Cc: Hugh Dickins <hughd@google.com>
->> Cc: Chris Wright <chrisw@sous-sol.org>
->> Reviewed-by: David Hildenbrand <david@redhat.com>
-> 
-> I don't recall giving that yet :)
+According to its message, it should add checks for functions
+nfc_genl_deactivate_target() and nfc_genl_fw_download(). However, it
+didn't do that. In fact, the expected checks are added by
+(1) commit 385097a36757 ("nfc: Ensure presence of required attributes in
+the deactivate_target handler") and
+(2) commit 280e3ebdafb8 ("nfc: Ensure presence of NFC_ATTR_FIRMWARE_NAME
+attribute in nfc_genl_fw_download()"). Perhaps something went wrong.
 
-Ops... 
-Sorry for misunderstand!
+Anyway, the attr NFC_ATTR_TARGET_INDEX is never accessed in callback
+nfc_genl_dep_link_down() and same for NFC_ATTR_FIRMWARE_NAME and
+nfc_genl_llc_get_params(). Thus, remove those checks.
 
-> 
-> You could have kept some get_ksm_page()->ksm_get_folio() into a separate patch.
-> 
-> i.e., "[PATCH v3 11/14] mm/ksm: remove get_ksm_page and related info" from your old series could have mostly stayed separately.
-> 
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+---
+ net/nfc/netlink.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Yes, but the 12th and 11th patches are kind of depends each other, like after merge 8,9,10,12th with get_ksm_page replaced,
-
-./mm/ksm.c:993:21: error: ‘get_ksm_page’ defined but not used [-Werror=unused-function]
-  993 | static struct page *get_ksm_page(struct ksm_stable_node *stable_node,
-      |                     ^~~~~~~~~~~~
-
-so we have to squash the 11th and 12th if we want to merge 12th with 8,9,10...
-or we can do just merge the 8,9,10 and keep 11th, 12th as your first suggestion?
-
-> [...]
-> 
->>   /*
->> @@ -1829,7 +1821,7 @@ static __always_inline struct page *chain(struct ksm_stable_node **s_n_d,
->>    * This function returns the stable tree node of identical content if found,
->>    * NULL otherwise.
->>    */
->> -static struct page *stable_tree_search(struct page *page)
->> +static void *stable_tree_search(struct page *page)
-> 
-> There is one caller of stable_tree_search() in cmp_and_merge_page().
-> 
-> Why the change from page* to void* ?
-
-Uh, a bit more changes needs if we want to remove void*. 
-
-diff --git a/mm/ksm.c b/mm/ksm.c
-index 0d703c3da9d8..cd414a9c33ad 100644
---- a/mm/ksm.c
-+++ b/mm/ksm.c
-@@ -1815,7 +1815,7 @@ static __always_inline struct folio *chain(struct ksm_stable_node **s_n_d,
-  * This function returns the stable tree node of identical content if found,
-  * NULL otherwise.
-  */
--static void *stable_tree_search(struct page *page)
-+static struct folio *stable_tree_search(struct page *page)
- {
-        int nid;
-        struct rb_root *root;
-@@ -2308,6 +2308,7 @@ static void cmp_and_merge_page(struct page *page, struct ksm_rmap_item *rmap_ite
-        struct page *tree_page = NULL;
-        struct ksm_stable_node *stable_node;
-        struct page *kpage;
-+       struct folio *folio;
-        unsigned int checksum;
-        int err;
-        bool max_page_sharing_bypass = false;
-@@ -2333,7 +2334,8 @@ static void cmp_and_merge_page(struct page *page, struct ksm_rmap_item *rmap_ite
-        }
+diff --git a/net/nfc/netlink.c b/net/nfc/netlink.c
+index aa1dbf654c3e..dd2ce73a24fb 100644
+--- a/net/nfc/netlink.c
++++ b/net/nfc/netlink.c
+@@ -969,8 +969,7 @@ static int nfc_genl_dep_link_down(struct sk_buff *skb, struct genl_info *info)
+ 	int rc;
+ 	u32 idx;
  
-        /* We first start with searching the page inside the stable tree */
--       kpage = stable_tree_search(page);
-+       folio = stable_tree_search(page);
-+       kpage = &folio->page;
-        if (kpage == page && rmap_item->head == stable_node) {
-                put_page(kpage);
-                return;
+-	if (!info->attrs[NFC_ATTR_DEVICE_INDEX] ||
+-	    !info->attrs[NFC_ATTR_TARGET_INDEX])
++	if (!info->attrs[NFC_ATTR_DEVICE_INDEX])
+ 		return -EINVAL;
+ 
+ 	idx = nla_get_u32(info->attrs[NFC_ATTR_DEVICE_INDEX]);
+@@ -1018,8 +1017,7 @@ static int nfc_genl_llc_get_params(struct sk_buff *skb, struct genl_info *info)
+ 	struct sk_buff *msg = NULL;
+ 	u32 idx;
+ 
+-	if (!info->attrs[NFC_ATTR_DEVICE_INDEX] ||
+-	    !info->attrs[NFC_ATTR_FIRMWARE_NAME])
++	if (!info->attrs[NFC_ATTR_DEVICE_INDEX])
+ 		return -EINVAL;
+ 
+ 	idx = nla_get_u32(info->attrs[NFC_ATTR_DEVICE_INDEX]);
+-- 
+2.34.1
 
-> I suspect cmp_and_merge_page() could similarly be converted to some degree to let kpage be a folio (separate patch).
->
-
-Yes, there are couple of changes needed for cmp_and_merge_page() and series try_to_merge_xx_pages(), I am going to change them on the next series patches. Guess 2 phases patches are better for a big/huge one, is this right?
-
-Thanks
-Alex 
 
