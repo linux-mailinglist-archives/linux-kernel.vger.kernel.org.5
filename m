@@ -1,167 +1,146 @@
-Return-Path: <linux-kernel+bounces-138947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D8B389FC6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:05:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2172389FF01
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:48:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAD181C216D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:05:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B43DF1F271D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:48:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 657F91779B4;
-	Wed, 10 Apr 2024 16:05:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2601199EAC;
+	Wed, 10 Apr 2024 17:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Q+l4o94X"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="Gy7gmy0E"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963E917799E
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C97181339;
+	Wed, 10 Apr 2024 17:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712765147; cv=none; b=iGizPqVOq4ySCDs3vJLxIlCwfwybRe3eHeF0JbTxU7J/6KUCJPHOf/IQMXSaWPe2s74hSVKVLF6xkGfn1plwUDxNK+GiQJjjwWSFQ0OCX3cQVov2r5w6MbYPm4XexkcQuYlQIcYzxfo3RMpEXGGIMsJZEIBiOPZQSDY50viFl0k=
+	t=1712771104; cv=none; b=Xaer4+RZCLZCt4wlPQ+kJhFZgvyq7E4EqS4l4o4W6kmHLbatVX0PlO31PUDrizJF0zCQx/lxWJuN5t6A7mC66f89FrIAPPJNhpoXexrckwVlk+7sAB1IZ5rTc02O3k9lA42lPGuu/K0xceYv0kJJ799XzTZQcr50RQf2RNVaFoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712765147; c=relaxed/simple;
-	bh=q1OwM/lv+mNRKAhZnlp5C9erYbH16E1eoGwveTPoZSM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IuEEM5KzCZgNM/sZqDpTqPymiai8lKQqkGAXlL4x0loas53Jene78J6n9qvlz3Jzuzz9y14fg1fw0nMTeRkXi3IwDvLfUq7Agqp3X3DPeGMGLl2ozozIGT8mr8ZNuaGzHjoCwutKr120v7uxDEGTaqyg6nZxPkDCsgEJ2t7E+Qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Q+l4o94X; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 291F31C0008;
-	Wed, 10 Apr 2024 16:05:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712765141;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I215nULcXPcF0y4OSCeEiUCWZw5Ocb6jrBa8iKPsC5w=;
-	b=Q+l4o94XcAvQAG2s24PmwyXjNTWY3aepzHU+T5wiG0UqEWwaiCJ2pxnEN2PMZc7M+TqsZf
-	PyQNcqaPhhToFwYjwWelmdYgHxRFmBXf2lrBpI2TVlZZOCGjzJktT1O4N5ryxK+kmLBN2M
-	+3gXgl4sWDnfc1/LmC29b9gTYzLpCb13alnrtlNE/pAkKVzBm6broWFrjg3loRDIUL7pjD
-	8WpuJMuznSfn1GwIcad4Vt3yUvRqQk8d4furjmr6X7RuUBhdyxV8vOzuoGo+uliOQ499vX
-	FfSW/mPqrRVQgyi1Yplef/1k+1rOCPu3YaeoSaUPRtqcJ+vPQJoOQPTamlZz+A==
-Message-ID: <27196117-32bc-4892-b545-d9cf43a89f0a@bootlin.com>
-Date: Wed, 10 Apr 2024 18:05:40 +0200
+	s=arc-20240116; t=1712771104; c=relaxed/simple;
+	bh=S3GudwWSPWDgCp0Uz2WARPZEeLaa6Uxnwns5ZDR22LY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=seKIvrge4V8B7OCGwOFJ/K9XgBeQPmn7QPBXAMxUbQs8j2ZnrSTt1tiP94RME8KPrLkfpibocXRsYHoinQELP/XgNSr/qTAxlOZm6ET5+zUDdpStQ21MJ7JEfmMS9oOKAuax/u7Dn5xUubzRRS+vo/yHiBr5DVtzbhXXX7aX8IA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=Gy7gmy0E reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
+ id ad53043102c6b081; Wed, 10 Apr 2024 19:44:59 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 5982266C66F;
+	Wed, 10 Apr 2024 19:44:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1712771099;
+	bh=S3GudwWSPWDgCp0Uz2WARPZEeLaa6Uxnwns5ZDR22LY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=Gy7gmy0EsJ4Mhd3c3IPn7pXYRr3r7D7JsIaEVxbzXvws4yT8hX4K4bxTaAgDmuxVN
+	 KT5l8O95R8ZH04uRIPvPwR6979n4jzvolj5JqXBGAtlU/SmSuzUzYCJraQtqfV/eig
+	 jHRK2l87eX5dsgpFLRESJjb5G2G28Oc+6TCG2B3xf8qMuHVYFdQaCYIVa6b5zaEPUe
+	 tVJ+Z2pgTPNxfsHx7e16VsbvNixKribRCTJq/K1L+aZOu0sb5CfPdsL+Nl7yKgR0Vo
+	 i6jpmhf7NnitOBmLbI5WoMfi2eh/HTsCQL2TeLtKHXpgwweNymDVUT67+/dJuboukP
+	 Oiy+iYKO4yLYA==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Lukasz Luba <lukasz.luba@arm.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject:
+ [PATCH v1 03/16] thermal: gov_bang_bang: Clean up thermal_zone_trip_update()
+Date: Wed, 10 Apr 2024 18:05:44 +0200
+Message-ID: <22273122.EfDdHjke4D@kreacher>
+In-Reply-To: <13515747.uLZWGnKmhe@kreacher>
+References: <13515747.uLZWGnKmhe@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] pps: clients: gpio: Bypass edge's direction check
- when not needed
-To: Rodolfo Giometti <giometti@enneenne.com>
-Cc: linux-kernel@vger.kernel.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
- christophercordahi@nanometrics.ca
-References: <20240410113502.73038-1-bastien.curutchet@bootlin.com>
- <1f7f5b2f-54d4-4dc1-90ff-b896c930faed@enneenne.com>
- <5bda0980-2373-4284-bda4-89f0c6944e76@bootlin.com>
- <eb64ec08-2ae3-48bb-9f84-3cec362280b2@enneenne.com>
-Content-Language: en-US
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-In-Reply-To: <eb64ec08-2ae3-48bb-9f84-3cec362280b2@enneenne.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: bastien.curutchet@bootlin.com
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudehiedguddufecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtohepshhr
+ ihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
+Do the following cleanups in thermal_zone_trip_update():
+
+ * Drop the useless "zero hysteresis" message.
+ * Eliminate the trip_index local variable that is redundant.
+ * Drop 2 comments that are not useful.
+ * Downgrade a diagnostic message from pr_warn() to pr_debug().
+ * Use consistent field formatting in diagnostic messages.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/thermal/gov_bang_bang.c |   19 ++++++-------------
+ 1 file changed, 6 insertions(+), 13 deletions(-)
+
+Index: linux-pm/drivers/thermal/gov_bang_bang.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/gov_bang_bang.c
++++ linux-pm/drivers/thermal/gov_bang_bang.c
+@@ -17,29 +17,23 @@ static void thermal_zone_trip_update(str
+ 				     const struct thermal_trip *trip,
+ 				     bool crossed_up)
+ {
+-	int trip_index = thermal_zone_trip_id(tz, trip);
+ 	struct thermal_instance *instance;
+ 
+-	if (!trip->hysteresis)
+-		dev_info_once(&tz->device,
+-			      "Zero hysteresis value for thermal zone %s\n", tz->type);
+-
+ 	dev_dbg(&tz->device, "Trip%d[temp=%d]:temp=%d:hyst=%d\n",
+-				trip_index, trip->temperature, tz->temperature,
+-				trip->hysteresis);
++		thermal_zone_trip_id(tz, trip), trip->temperature,
++		tz->temperature, trip->hysteresis);
+ 
+ 	list_for_each_entry(instance, &tz->thermal_instances, tz_node) {
+ 		if (instance->trip != trip)
+ 			continue;
+ 
+-		/* in case fan is in initial state, switch the fan off */
+ 		if (instance->target == THERMAL_NO_TARGET)
+ 			instance->target = 0;
+ 
+-		/* in case fan is neither on nor off set the fan to active */
+ 		if (instance->target != 0 && instance->target != 1) {
+-			pr_warn("Thermal instance %s controlled by bang-bang has unexpected state: %ld\n",
+-					instance->name, instance->target);
++			pr_debug("Unexpected state %ld of thermal instance %s in bang-bang\n",
++				 instance->target, instance->name);
++
+ 			instance->target = 1;
+ 		}
+ 
+@@ -52,8 +46,7 @@ static void thermal_zone_trip_update(str
+ 		else if (instance->target == 1 && !crossed_up)
+ 			instance->target = 0;
+ 
+-		dev_dbg(&instance->cdev->device, "target=%d\n",
+-					(int)instance->target);
++		dev_dbg(&instance->cdev->device, "target=%ld\n", instance->target);
+ 
+ 		mutex_lock(&instance->cdev->lock);
+ 		instance->cdev->updated = false; /* cdev needs update */
 
 
 
-On 4/10/24 17:24, Rodolfo Giometti wrote:
-> On 10/04/24 16:46, Bastien Curutchet wrote:
->> Hi Rodolfo,
->>
->> On 4/10/24 16:23, Rodolfo Giometti wrote:
->>> On 10/04/24 13:35, Bastien Curutchet wrote:
->>>> In the IRQ handler, the GPIO's state is read to verify the direction of
->>>> the edge that triggered the interruption before generating the PPS 
->>>> event.
->>>> If a pulse is too short, the GPIO line can reach back its original 
->>>> state
->>>> before this verification and the PPS event is lost.
->>>>
->>>> This check is needed when info->capture_clear is set because it needs
->>>> interruptions on both rising and falling edges. When 
->>>> info->capture_clear
->>>> is not set, interruption is triggered by one edge only so this check 
->>>> can
->>>> be omitted.
->>>>
->>>> Bypass the edge's direction verification when info->capture_clear is 
->>>> not
->>>> set.
->>>>
->>>> Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
->>>> ---
->>>>   drivers/pps/clients/pps-gpio.c | 9 +++++++++
->>>>   1 file changed, 9 insertions(+)
->>>>
->>>> diff --git a/drivers/pps/clients/pps-gpio.c 
->>>> b/drivers/pps/clients/pps-gpio.c
->>>> index 2f4b11b4dfcd..c2a96e3e3836 100644
->>>> --- a/drivers/pps/clients/pps-gpio.c
->>>> +++ b/drivers/pps/clients/pps-gpio.c
->>>> @@ -52,6 +52,15 @@ static irqreturn_t pps_gpio_irq_handler(int irq, 
->>>> void *data)
->>>>       info = data;
->>>> +    if (!info->capture_clear) {
->>>> +        /*
->>>> +         * If capture_clear is unset, IRQ is triggered by one edge 
->>>> only.
->>>> +         * So the check on edge direction is not needed here
->>>> +         */
->>>> +        pps_event(info->pps, &ts, PPS_CAPTUREASSERT, data);
->>>> +        return IRQ_HANDLED;
->>>> +    }
->>>> +
->>>>       rising_edge = gpiod_get_value(info->gpio_pin);
->>>>       if ((rising_edge && !info->assert_falling_edge) ||
->>>>               (!rising_edge && info->assert_falling_edge))
->>>
->>> Apart the code duplication, which are the real benefits of doing so?
->>>
->>
->> It prevents from losing a PPS event when the pulse is so short (or the
->> kernel so busy) that the trailing edge of the pulse occurs before the
->> interrupt handler can read the state of the GPIO pin.
-> 
-> Have you a real case when this happens?
-> 
-
-Yes, on my use case, a GPS provides a tiny pulse (~10 us) that is
-sometimes missed when CPU is very busy.
-
-> In any cases we should avoid code duplication... so I think we should do 
-> something as below:
-> 
-> diff --git a/drivers/pps/clients/pps-gpio.c 
-> b/drivers/pps/clients/pps-gpio.c
-> index 2f4b11b4dfcd..f05fb15ed7f4 100644
-> --- a/drivers/pps/clients/pps-gpio.c
-> +++ b/drivers/pps/clients/pps-gpio.c
-> @@ -52,7 +52,9 @@ static irqreturn_t pps_gpio_irq_handler(int irq, void 
-> *data)
-> 
->          info = data;
-> 
-> -       rising_edge = gpiod_get_value(info->gpio_pin);
-> +       rising_edge = info->capture_clear ? \
-> +                       gpiod_get_value(info->gpio_pin) : \
-> +                       !info->assert_falling_edge;
->          if ((rising_edge && !info->assert_falling_edge) ||
->                          (!rising_edge && info->assert_falling_edge))
->                  pps_event(info->pps, &ts, PPS_CAPTUREASSERT, data);
-> 
-> Please, review and test it before resubmitting. :)
-> 
-
-I'll try this and send a V2 after my tests, thank you.
-
-Best regards,
-Bastien
 
