@@ -1,135 +1,173 @@
-Return-Path: <linux-kernel+bounces-138273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5114189EF12
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:46:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D450789EF14
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:46:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 971CEB21767
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:46:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 893261F220FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BFF9156865;
-	Wed, 10 Apr 2024 09:46:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nMFOBT6x"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07209125CD;
-	Wed, 10 Apr 2024 09:46:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B080155A33;
+	Wed, 10 Apr 2024 09:46:36 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715FA13D288
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712742370; cv=none; b=YOymUHFXrQNcfD2aBGKxJ5FmMQPCiBS/G/gBvZ0gf4CwL1WncWugOV6YiLox98SdAEyDdcz25wS5ejVZ2vT1e/7BFrZS49V2Ge91c/rL1XKK009ZhFoH1Iy1iu2tekNcBacQw85xUIxyTllR4XkizKKPrfSL9cubYXLZeNubl9w=
+	t=1712742395; cv=none; b=O29pma36qEoQoxlDc/esjkJM1hn3CcxJaNC82TJ6mvWEP0+u6wEbCDSB92v/5NyUNYBvwXYwzDxiraxspLrsg5/Nc/hqZUVa45JDwXlG6XnUXuWMw/y26xZk7p4ZKVSCZkHpM8Ly0HmE61lNb6WOoPtqRyk472GXr2VyGtUxwy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712742370; c=relaxed/simple;
-	bh=2Q+KRTHpRgdRUsUD7FxZmGhMQwfpvVD7f1DhqQpdJSk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Yeb/cr2aSoECa+193f50G+gZbQPflyGWWdtwGRplqo/+7uRyyVf/V/bWgCNGvPtXrheGaVYc8xFwA0E5nA9k/kBVr8ix5HaApqBSIBUQSUbKKvUC1JKK+oZN3mfMa4r7af6lyVvm4EdC3nOkCf7h1yEL4bhkz65XCjRZHbeamxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nMFOBT6x; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56bdf81706aso8668653a12.2;
-        Wed, 10 Apr 2024 02:46:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712742367; x=1713347167; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2Q+KRTHpRgdRUsUD7FxZmGhMQwfpvVD7f1DhqQpdJSk=;
-        b=nMFOBT6xMub3+Uhz1NeIKvQb4C0fHwt2HvIfz6T2vnOuHGPv/ZMpwHm5KamC86N+3j
-         NLsXQOJSCjNyXjbQd5zbaVdg6FoiCpxoRAT+iSgeZHWOaewj2wMcjEAA8t5Mm9bUUF2c
-         8bqe0lbLiSF304g5Pa4xO9FYouK8gV7rVFhOf4yVtdzCERpq7Hs48sgD52rQrtH2h2jq
-         ms/FaMpGWrTNZsGKROO72JYr7oy9xPzUHkkygxp+ZSqLtatUtK6hRnDTQxsazjooSk/u
-         ub6N6bw9S/DW4cFBXmZH1etpf9PTCIfnWGzYUuPOrS6t8EoI7LDcT2MytLnbxIS4jQSB
-         ny7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712742367; x=1713347167;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2Q+KRTHpRgdRUsUD7FxZmGhMQwfpvVD7f1DhqQpdJSk=;
-        b=ZsxTaJbGZPcKJm3nbw6e/8DQ15h/q0tHwiZfewb4u4/RHUXL2YU3lDyStTaAomHuzs
-         cKD3rKZnDfgqUh+OrJ8TCG5n6A9xUCoe9QV9/3+O2ZPC+Yb280Yqr1ROYtdUo4MXTsCh
-         dlrq0XPFlG4e5VqQEQPu+4WJ/X6OLsOngixo2SQMzq5jPetQyyCK32Xl3Qi1PaSlRxsC
-         1y/xImsKzdx0z3ob1Tgb0PbPiJAfiVC7lVeP7GLeKmLn2EpootT8bOuncg3vTznwCkPX
-         TWLbqGgBtgIxsM+mwqfSAxmna62eJ9LK0syh/FKj3utAT5mzaG129/dfKSLElcyPHkSH
-         AWvw==
-X-Forwarded-Encrypted: i=1; AJvYcCWY94Cvq1kNadSdqZxIKdL8K0OhqS8HmWf7UUe2+4ceIxeZMWr8J01pys5WKcO0CvoHTw+jaqT3BwBclveJZIhD8E4y4mFncjB0gbNFvqkODXhsv0m5dASLFNDDC3lQK35YSZUErE9z
-X-Gm-Message-State: AOJu0Yy1p9ci1f84cxI+3Xc91KH8gVx4XUm/GergNR5bGGt6fVCe6wv2
-	hdM1rdxarYeCSegT1L1UntHQK6Qjzc7PiIeWrO7sEYg4VNpcXTuy
-X-Google-Smtp-Source: AGHT+IGWl6bnDupDikFXTK6BY6vxUeZtVZq0+rKCvusjW/N/joJZ4+thYc4Ul5yN3JS0TSPZzg6spw==
-X-Received: by 2002:a17:907:9496:b0:a51:d0e6:57ff with SMTP id dm22-20020a170907949600b00a51d0e657ffmr1533222ejc.45.1712742366938;
-        Wed, 10 Apr 2024 02:46:06 -0700 (PDT)
-Received: from foxbook (acgm220.neoplus.adsl.tpnet.pl. [83.9.240.220])
-        by smtp.gmail.com with ESMTPSA id dr19-20020a170907721300b00a4a33cfe593sm6729694ejc.39.2024.04.10.02.46.05
-        (version=TLS1_2 cipher=AES128-SHA bits=128/128);
-        Wed, 10 Apr 2024 02:46:06 -0700 (PDT)
-Date: Wed, 10 Apr 2024 11:46:01 +0200
-From: =?UTF-8?B?TWljaGHFgg==?= Pecio <michal.pecio@gmail.com>
-To: Mathias Nyman <mathias.nyman@linux.intel.com>
-Cc: Paul Menzel <pmenzel@molgen.mpg.de>, Mathias Nyman
- <mathias.nyman@intel.com>, LKML <linux-kernel@vger.kernel.org>,
- linux-usb@vger.kernel.org, Niklas Neronin <niklas.neronin@linux.intel.com>
-Subject: Re: xhci_hcd 0000:00:14.0: ERROR Transfer event TRB DMA ptr not
- part of current TD ep_index 1 comp_code 1
-Message-ID: <20240410114601.0e25a46d@foxbook>
-In-Reply-To: <82113c7d-0405-ba11-94d9-5673593cec50@linux.intel.com>
-References: <58bca6f2-797a-4e20-a476-2294309afdd5@molgen.mpg.de>
-	<20240405113247.743e34b2@foxbook>
-	<7090d3af-18ce-40e1-8ac2-bf18152e5c4a@molgen.mpg.de>
-	<20240406183659.3daf4fa0@foxbook>
-	<c57f2116-8c42-44fb-9c32-6115ad88f914@molgen.mpg.de>
-	<20240407142542.036fb02f@foxbook>
-	<1f64af9a-0618-a7da-4acc-f043b6580308@linux.intel.com>
-	<20240408210541.771253ff@foxbook>
-	<82113c7d-0405-ba11-94d9-5673593cec50@linux.intel.com>
+	s=arc-20240116; t=1712742395; c=relaxed/simple;
+	bh=UNoP2XVBI7wf8bVP3cYd6NyBVQ0hNUiOERKtJo55hUs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aiElFaM7zwGx7gBUi20V0g0qjmW8IO3Mon8MG0KxvfXQ/ExLlBUJQQcRYtiuZBY1SkYC6XzYkWvv5GSUu2iUr4kFKtrHdwwsVEC5yMvzyd/z6psq5Ae/HrvAaU72r9XanHI1Bmsushiz4joWI7pjLnoLI/NZKH0hzA/9B+5QHbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB0B8139F;
+	Wed, 10 Apr 2024 02:47:01 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.17.100])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F38383F6C4;
+	Wed, 10 Apr 2024 02:46:29 -0700 (PDT)
+Date: Wed, 10 Apr 2024 10:46:24 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	David Hildenbrand <david@redhat.com>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Itaru Kitayama <itaru.kitayama@fujitsu.com>
+Subject: Re: [PATCH v2 1/4] arm64: mm: Don't remap pgtables per-cont(pte|pmd)
+ block
+Message-ID: <ZhZf8P_FedVSq6Wu@FVFF77S0Q05N>
+References: <20240404143308.2224141-1-ryan.roberts@arm.com>
+ <20240404143308.2224141-2-ryan.roberts@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240404143308.2224141-2-ryan.roberts@arm.com>
 
-> Driver can cope with these extra events, but if this is common we
-> should probably handle it silently and not concern users with that
-> ERROR message.
+On Thu, Apr 04, 2024 at 03:33:05PM +0100, Ryan Roberts wrote:
+> A large part of the kernel boot time is creating the kernel linear map
+> page tables. When rodata=full, all memory is mapped by pte. And when
+> there is lots of physical ram, there are lots of pte tables to populate.
+> The primary cost associated with this is mapping and unmapping the pte
+> table memory in the fixmap; at unmap time, the TLB entry must be
+> invalidated and this is expensive.
+> 
+> Previously, each pmd and pte table was fixmapped/fixunmapped for each
+> cont(pte|pmd) block of mappings (16 entries with 4K granule). This means
+> we ended up issuing 32 TLBIs per (pmd|pte) table during the population
+> phase.
+> 
+> Let's fix that, and fixmap/fixunmap each page once per population, for a
+> saving of 31 TLBIs per (pmd|pte) table. This gives a significant boot
+> speedup.
+> 
+> Execution time of map_mem(), which creates the kernel linear map page
+> tables, was measured on different machines with different RAM configs:
+> 
+>                | Apple M2 VM | Ampere Altra| Ampere Altra| Ampere Altra
+>                | VM, 16G     | VM, 64G     | VM, 256G    | Metal, 512G
+> ---------------|-------------|-------------|-------------|-------------
+>                |   ms    (%) |   ms    (%) |   ms    (%) |    ms    (%)
+> ---------------|-------------|-------------|-------------|-------------
+> before         |  153   (0%) | 2227   (0%) | 8798   (0%) | 17442   (0%)
+> after          |   77 (-49%) |  431 (-81%) | 1727 (-80%) |  3796 (-78%)
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> Tested-by: Itaru Kitayama <itaru.kitayama@fujitsu.com>
+> Tested-by: Eric Chanudet <echanude@redhat.com>
+> ---
+>  arch/arm64/mm/mmu.c | 32 ++++++++++++++++++--------------
+>  1 file changed, 18 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index 495b732d5af3..fd91b5bdb514 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -172,12 +172,9 @@ bool pgattr_change_is_safe(u64 old, u64 new)
+>  	return ((old ^ new) & ~mask) == 0;
+>  }
+>  
+> -static void init_pte(pmd_t *pmdp, unsigned long addr, unsigned long end,
+> -		     phys_addr_t phys, pgprot_t prot)
+> +static pte_t *init_pte(pte_t *ptep, unsigned long addr, unsigned long end,
+> +		       phys_addr_t phys, pgprot_t prot)
+>  {
+> -	pte_t *ptep;
+> -
+> -	ptep = pte_set_fixmap_offset(pmdp, addr);
+>  	do {
+>  		pte_t old_pte = __ptep_get(ptep);
+>  
+> @@ -193,7 +190,7 @@ static void init_pte(pmd_t *pmdp, unsigned long addr, unsigned long end,
+>  		phys += PAGE_SIZE;
+>  	} while (ptep++, addr += PAGE_SIZE, addr != end);
+>  
+> -	pte_clear_fixmap();
+> +	return ptep;
+>  }
+>  
+>  static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
+> @@ -204,6 +201,7 @@ static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
+>  {
+>  	unsigned long next;
+>  	pmd_t pmd = READ_ONCE(*pmdp);
+> +	pte_t *ptep;
+>  
+>  	BUG_ON(pmd_sect(pmd));
+>  	if (pmd_none(pmd)) {
+> @@ -219,6 +217,7 @@ static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
+>  	}
+>  	BUG_ON(pmd_bad(pmd));
+>  
+> +	ptep = pte_set_fixmap_offset(pmdp, addr);
+>  	do {
+>  		pgprot_t __prot = prot;
+>  
+> @@ -229,20 +228,20 @@ static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
+>  		    (flags & NO_CONT_MAPPINGS) == 0)
+>  			__prot = __pgprot(pgprot_val(prot) | PTE_CONT);
+>  
+> -		init_pte(pmdp, addr, next, phys, __prot);
+> +		ptep = init_pte(ptep, addr, next, phys, __prot);
+>  
+>  		phys += next - addr;
+>  	} while (addr = next, addr != end);
 
-The error message in itself is harmless, it means the driver gets an
-event it doesn't know how to handle and ignores it. Further events are
-processed normally (in this specific case).
+I reckon it might be better to leave init_pte() returning void, and move the
+ptep along here, e.g.
 
-What's problematic is that the controller is apparently still working
-on a TD which the driver considers to be finished already. The driver
-can overwrite the TD and reuse its data buffer for other transfers,
-while the hardware may still need the original TD for proper operation
-and, if we are very unlucky, could attempt DMA to/from the data buffer,
-causing data corruption or information leak to a malicious USB dongle.
+	ptep = pte_set_fixmap_offset(pmdp, addr);
+	do {
+		...
 
-For all we know, Paul's buggy chipset may not only be confirming the
-transfer twice, but really performing it twice for some stupid reason.
+		init_pte(ptep, addr, next, phys, __prot);
+
+		ptep += pte_index(next) - pte_index(addr);
+		phys += next - addr;
+	} while (addr = next, addr != end);
 
 
-> We are actually at the moment looking at improving handle_tx_event()
-> with Niklas (cc), and will take this into consideration.
+.. as that keeps the relationship between 'ptep' and 'phys' clear since
+they're manipulated in the same way, adjacent to one another.
 
-Given the number of bugs so far, maybe it would make sense to count
-transfer ring slots of the last completed TD as still "in use" until
-the next TD is known to at least begin executing.
+Regardless this looks good, so with that change or as-is:
 
-Unfortunately, "quarantining" URB data buffers in similar manner would
-be harder AFAIK.
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-I recently found one more bug of this kind: the Etron EJ168 controller
-produces two events for failed single-TRB isochronous IN transfers -
-one event indicating the failure, and then a "success". The full extent
-of the bug (does it affect OUT or non-isoch, what happens on multi-TRB)
-is unknown because the controller is very prone to crashing under my
-workloads, which doesn't help debugging.
+.. though I would prefer with that change. ;)
 
-Regards,
-Michal
+Mark.
 
