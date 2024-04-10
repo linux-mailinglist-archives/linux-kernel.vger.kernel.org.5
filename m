@@ -1,187 +1,153 @@
-Return-Path: <linux-kernel+bounces-139155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50F5789FF32
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:55:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8106889FF39
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:55:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82BD01C22DAA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:55:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E43DEB25AF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:55:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5D817F395;
-	Wed, 10 Apr 2024 17:55:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14F4E1802A3;
+	Wed, 10 Apr 2024 17:55:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NjN/qLo+"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YpUzsLSG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A5F817F37B
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:55:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3632E17F376;
+	Wed, 10 Apr 2024 17:55:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712771720; cv=none; b=s7spg0S+UW9Crt/IOG4HZ2EBhegMOi5CZBjGqS4KyRRj1/q8T/I7a8L5HI4hx/V+/R7XJIQrWoZftzS79+ZpCop4muYFZAZtqkbjKJs0ESOUFRSt3SgNZpWhk0ZARFkXHHvMuTVgNXGcnOOnJBugIs+1w6RbAPUB5J1UxRhJYAQ=
+	t=1712771743; cv=none; b=g1RKcSAOsEMRcbC09AccrTPHDDMCZC2JFhjl9XHWlstxPOs3gAAGBdQ85/VHYA2yNEAoaY6Lnd/oU/iFI90rdMNSxsbEn7+dE5mxY/pEtCY+nmCdeoxeOmM1+cq2YsttygFZlrivux8qirBiCPo+HphO+BrwQ9JRNXIoJ92yLuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712771720; c=relaxed/simple;
-	bh=c5vOu3wln/bzFkI50zK54TLDDdF576q5OSt+R4RYCW0=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=hZP3OR8efw1YV1tVuV+el/9YIqo9OV+vbXcDY7xvSK7HlUzG9qgyTzb9py/wtHpAHjsrPLmUsMclRP0Gd18wsg7ieyzXTwYS5dx+4vgwYFrq+Gyu+g8uXU2xorDa9vUFD38joAI/x3j54zZjoIrgg/6EiZ4ibnkYpEguAS8Rjbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--coltonlewis.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NjN/qLo+; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--coltonlewis.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60ab69a9e6fso1224377b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:55:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712771718; x=1713376518; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=oTRds48YQAuzki9smTU0zbOfJX16SMcTfKd42zPqGTw=;
-        b=NjN/qLo+8P4Ap71VpMAba/PrNVkDASi5njcnBqX0uUTk3wi1eVRMkoCmBsqzwaUb0M
-         hlD+OdgY5qbavZHavTXev59BojFGj0Oz1Myv7wEOGykrx6Qu8YekKG11yNiLsPiOJFOX
-         SjQ0wJhfb5vblmXhXN159ObhMthOTHRPkQJqFd00G6Z0RgLxOfmjyj+5yguRJ3su1cYf
-         fFZeMx8ZcLrZ9O35KLZKnUJUZM0PFWQrafA7OAp3u+IepSTcg6/oI/4H4kYeNlqEmZPG
-         jq5WVf1CQvYXGeRN8bWmSIXr4Iu08Q9bZUmmE2PCKSF9TBJ0p+btW6Nmlts02+uqqRKV
-         EJAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712771718; x=1713376518;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oTRds48YQAuzki9smTU0zbOfJX16SMcTfKd42zPqGTw=;
-        b=gXg240ZI7n9EvfUWQIn6pOdPTSxP0HKYT1qaIDEWt3ini8/msyYEJIL0C5HUnjPsst
-         OAeFTRlEkqw5rhzZoq4kYsBvxUjB/QN1bsUKPWtESWe0pcUNxwjJpAJepXHMfjByWabR
-         sUmFrebvgt2MxlkXZZhvGwaIhQG6YLxcCU8Lu6n3Y7qv9NuAHyuJGwyv79AYVLzu5aIJ
-         Z0N7e0K3ck7Wa5trgXk/iO7tlprky56ZyqR3eaZiPKeurH/a3UXHPxJQtonqAZAUeoE/
-         ZwE4MqZbGMx3l161SB/SrcB/7qnyV43/XmpBbCq3/Q7kw8AJKqSkIFLVE87/X6uewta+
-         YTBg==
-X-Forwarded-Encrypted: i=1; AJvYcCUdozR84LR5Og2947eRcdyniPLOr0KsE2i2Gdbr0aKPOA1k/O/lZtlRryB3kZfDdnsD8BSO55khRGU6ufldlkp7anWMm+Ed4rRelBFX
-X-Gm-Message-State: AOJu0YwQrlRCwWoMjD+u1rS9B9sNue//77zEy65lMqcJ6wmD0pQQWMfM
-	H8Uza2+P2MkMDQXn46Vgg8+dJBwhum7MBWkGX8//h6DxdrlpMP3cT39gs6g/TTy15ekBI1YPwTW
-	VYN2T8cuyehHQuMfxdQqBEA==
-X-Google-Smtp-Source: AGHT+IFGk/yictiXP/bmh1HJDKurTfI9OfoF/LDokYTgZALVerLy33LdKx5oD0s+3wIFHKHy3OTGRtA6WddrXew0Eg==
-X-Received: from coltonlewis-kvm.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:14ce])
- (user=coltonlewis job=sendgmr) by 2002:a05:6902:1148:b0:dd9:20c1:85b6 with
- SMTP id p8-20020a056902114800b00dd920c185b6mr109753ybu.2.1712771718281; Wed,
- 10 Apr 2024 10:55:18 -0700 (PDT)
-Date: Wed, 10 Apr 2024 17:54:37 +0000
+	s=arc-20240116; t=1712771743; c=relaxed/simple;
+	bh=dn3s9v+ugyPIbkJ82h/zTt6Aiku1UOONkbAxvrR7jyA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=piKo4W7u5epNBK4tDBjHl8LtrNiZuRdwMRGRsrgahm1tEW8zLgul1xFtrCUScU1NR2rk/7oheajPCjgydLLQ53hWUsHic85tuaYR9h+eAWjIg0MDsE027+RpIAXSAALjQtgj2g49Snp1TzSLKdMGyG7dv04ec5XgkcCOPJdDNfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YpUzsLSG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8713FC433C7;
+	Wed, 10 Apr 2024 17:55:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712771742;
+	bh=dn3s9v+ugyPIbkJ82h/zTt6Aiku1UOONkbAxvrR7jyA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YpUzsLSGnL5sS1FPnbAHM+SupDJSYxEEhgxEXj/LIJrVoazOecimqvkwlMp/t5gpz
+	 o91wT8i8WD1ZZbuBSACUvKLBe6clAAnDzFYVDT6fk7nxnaGOgy/lXWLfQH+fi0lJLB
+	 z8hmwmaKhAiBHMSC0vAR4C7GuRooP4Z33TKH0BUGNCxbnqltNkzFfk7y3VMzTIMXfe
+	 PI/XPibfx+hhhGRQumNTUvoPYuff9ZgSlCnUjG6Kav98xRFY6exPQd4ScbYn4tdJIY
+	 LHHOXgAjpI6EUH5zBHSbyoOlKWZzoKUTt5K4Tjb7Go4tL3CrnVYgvvNd1GF3z7kBQg
+	 MHLNVbkrGV+oA==
+Date: Wed, 10 Apr 2024 12:55:40 -0500
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Jim Quinlan <jim2101024@gmail.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Will Deacon <will@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Srikanth Thokala <srikanth.thokala@intel.com>,
+	Ryder Lee <ryder.lee@mediatek.com>,
+	Jianjun Wang <jianjun.wang@mediatek.com>,
+	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Shawn Lin <shawn.lin@rock-chips.com>,
+	Heiko Stuebner <heiko@sntech.de>, Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
+	Michal Simek <michal.simek@amd.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Mark Kettenis <kettenis@openbsd.org>,
+	Tom Joseph <tjoseph@cadence.com>,
+	Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, asahi@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH 3/3] dt-bindings: PCI: host-bridges: switch from
+ deprecated pci-bus.yaml
+Message-ID: <20240410175540.GA802090-robh@kernel.org>
+References: <20240407102000.37213-1-krzysztof.kozlowski@linaro.org>
+ <20240407102000.37213-3-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240410175437.793508-1-coltonlewis@google.com>
-Subject: [PATCH v3] KVM: arm64: Add early_param to control WFx trapping
-From: Colton Lewis <coltonlewis@google.com>
-To: kvm@vger.kernel.org
-Cc: Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
-	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	Zenghui Yu <yuzenghui@huawei.com>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org, 
-	kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	Colton Lewis <coltonlewis@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240407102000.37213-3-krzysztof.kozlowski@linaro.org>
 
-Add an early_param to control WFx (WFI or WFE) trapping. This is so
-interrupts can be passed through if the CPU has support for direct
-interrupt injection, a feature of GICv4. This is described as an
-enumeration with three possible behaviors, always passthrough (never
-trap), never passthrough (always trap), or default (trap if more than
-one task is running. Default matches the current behavior.
+On Sun, Apr 07, 2024 at 12:20:00PM +0200, Krzysztof Kozlowski wrote:
+> dtschema package with core schemas deprecated pci-bus.yaml schema in
+> favor of pci-host-bridge.yaml.  Update all bindings to use the latter
+> one.
+> 
+> The difference between pci-bus.yaml and pci-host-bridge.yaml is only in
+> lack of "reg" property defined by the latter, which should not have any
+> effect here, because all these bindings define the "reg".
+> 
+> The change is therefore quite trivial, except mediatek,mt7621-pcie.yaml
+> binding which have children nodes being also host bridges, apparently.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/pci/amlogic,axg-pcie.yaml   | 2 +-
+>  Documentation/devicetree/bindings/pci/apple,pcie.yaml         | 2 +-
+>  Documentation/devicetree/bindings/pci/brcm,iproc-pcie.yaml    | 2 +-
+>  Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml      | 2 +-
+>  Documentation/devicetree/bindings/pci/cdns-pcie-host.yaml     | 2 +-
+>  Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml   | 2 +-
+>  Documentation/devicetree/bindings/pci/host-generic-pci.yaml   | 2 +-
+>  Documentation/devicetree/bindings/pci/intel,ixp4xx-pci.yaml   | 2 +-
+>  Documentation/devicetree/bindings/pci/intel,keembay-pcie.yaml | 2 +-
+>  Documentation/devicetree/bindings/pci/loongson.yaml           | 2 +-
+>  .../devicetree/bindings/pci/mediatek,mt7621-pcie.yaml         | 4 ++--
+>  Documentation/devicetree/bindings/pci/mediatek-pcie-gen3.yaml | 2 +-
+>  .../devicetree/bindings/pci/microchip,pcie-host.yaml          | 2 +-
+>  Documentation/devicetree/bindings/pci/qcom,pcie-common.yaml   | 2 +-
+>  Documentation/devicetree/bindings/pci/qcom,pcie.yaml          | 2 +-
+>  Documentation/devicetree/bindings/pci/rcar-pci-host.yaml      | 2 +-
+>  .../devicetree/bindings/pci/renesas,pci-rcar-gen2.yaml        | 2 +-
+>  .../devicetree/bindings/pci/rockchip,rk3399-pcie.yaml         | 2 +-
+>  Documentation/devicetree/bindings/pci/snps,dw-pcie.yaml       | 2 +-
+>  Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml   | 2 +-
+>  Documentation/devicetree/bindings/pci/versatile.yaml          | 2 +-
+>  Documentation/devicetree/bindings/pci/xilinx-versal-cpm.yaml  | 2 +-
+>  Documentation/devicetree/bindings/pci/xlnx,axi-pcie-host.yaml | 2 +-
+>  Documentation/devicetree/bindings/pci/xlnx,nwl-pcie.yaml      | 2 +-
+>  Documentation/devicetree/bindings/pci/xlnx,xdma-host.yaml     | 2 +-
+>  25 files changed, 26 insertions(+), 26 deletions(-)
 
-Signed-off-by: Colton Lewis <coltonlewis@google.com>
----
-v3:
-* Changed control mechanism to an early_param on Marc's advice this should be
-  a system level decision and not exposed via uapi
-* Reduced behavior to an enum from an integer as there are only a few options
-  that make logical sense
-* Limit option for always passthrough to systems with GICv4 since the primary
-  case for always passthrough is systems with direct interrupt injection
+This implicitly bumps the minimum version for dtschema. That's fine, but 
+it should be explicit since we set it explicitly.
 
-v2:
-https://lore.kernel.org/kvmarm/20240319164341.1674863-1-coltonlewis@google.com/
-
-v1:
-https://lore.kernel.org/kvmarm/20240129213918.3124494-1-coltonlewis@google.com/
-
-arch/arm64/include/asm/kvm_host.h |  7 +++++++
- arch/arm64/kvm/arm.c              | 30 +++++++++++++++++++++++++++++-
- 2 files changed, 36 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 21c57b812569..e9225b1d0e9b 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -67,6 +67,13 @@ enum kvm_mode {
- 	KVM_MODE_NV,
- 	KVM_MODE_NONE,
- };
-+
-+enum kvm_interrupt_passthrough {
-+	KVM_INTERRUPT_PASSTHROUGH_DEFAULT,
-+	KVM_INTERRUPT_PASSTHROUGH_ALWAYS,
-+	KVM_INTERRUPT_PASSTHROUGH_NEVER,
-+};
-+
- #ifdef CONFIG_KVM
- enum kvm_mode kvm_get_mode(void);
- #else
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index a25265aca432..5d0ea6b2c652 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -46,6 +46,7 @@
- #include <kvm/arm_psci.h>
-
- static enum kvm_mode kvm_mode = KVM_MODE_DEFAULT;
-+static enum kvm_interrupt_passthrough kvm_interrupt_passthrough = KVM_INTERRUPT_PASSTHROUGH_DEFAULT;
-
- DECLARE_KVM_HYP_PER_CPU(unsigned long, kvm_hyp_vector);
-
-@@ -456,7 +457,10 @@ void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 	if (kvm_arm_is_pvtime_enabled(&vcpu->arch))
- 		kvm_make_request(KVM_REQ_RECORD_STEAL, vcpu);
-
--	if (single_task_running())
-+	if ((kvm_interrupt_passthrough == KVM_INTERRUPT_PASSTHROUGH_ALWAYS
-+	     && kvm_vgic_global_state.has_gicv4) ||
-+	    (kvm_interrupt_passthrough == KVM_INTERRUPT_PASSTHROUGH_DEFAULT
-+	     && single_task_running()))
- 		vcpu_clear_wfx_traps(vcpu);
- 	else
- 		vcpu_set_wfx_traps(vcpu);
-@@ -2654,6 +2658,30 @@ static int __init early_kvm_mode_cfg(char *arg)
- }
- early_param("kvm-arm.mode", early_kvm_mode_cfg);
-
-+static int __init early_kvm_interrupt_passthrough_cfg(char *arg)
-+{
-+	if (!arg)
-+		return -EINVAL;
-+
-+	if (strcmp(arg, "always") == 0) {
-+		kvm_interrupt_passthrough = KVM_INTERRUPT_PASSTHROUGH_ALWAYS;
-+		return 0;
-+	}
-+
-+	if (strcmp(arg, "never") == 0) {
-+		kvm_interrupt_passthrough = KVM_INTERRUPT_PASSTHROUGH_NEVER;
-+		return 0;
-+	}
-+
-+	if (strcmp(arg, "default") == 0) {
-+		kvm_interrupt_passthrough = KVM_INTERRUPT_PASSTHROUGH_DEFAULT;
-+		return 0;
-+	}
-+
-+	return -EINVAL;
-+}
-+early_param("kvm-arm.interrupt-passthrough", early_kvm_interrupt_passthrough_cfg);
-+
- enum kvm_mode kvm_get_mode(void)
- {
- 	return kvm_mode;
---
-2.44.0.478.gd926399ef9-goog
+Rob
 
