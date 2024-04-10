@@ -1,138 +1,100 @@
-Return-Path: <linux-kernel+bounces-137891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAE0C89E908
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:38:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9CF689E90A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:38:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91783286E05
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:38:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B4971F23973
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:38:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49CB8D515;
-	Wed, 10 Apr 2024 04:38:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8255FD30B;
+	Wed, 10 Apr 2024 04:38:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VQ+WTVxy"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="CG27sSJQ"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6FBE8F44;
-	Wed, 10 Apr 2024 04:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C0E5C8E2
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 04:38:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712723882; cv=none; b=P1b7j84Xdjy8yZ7nFEYrP4ghSl1w4xYHXsaFpsavh2D2dvegW0OG4HtFrYZwGNPxPaT2OFiYb/VO9L/GEGnNg67/4lNMNJzfkamog6Vqq0cuy3Lmfzir7y/ZQ8eTEAJVU4EufiLjMammpamyTe2jyoZEnH+pAPj5w2IGVQtpqyA=
+	t=1712723905; cv=none; b=lRB6cqnqiMV3lKJtamqcbtsWrmSsmln+jyPxSiUECqZG4yi6aIAxKbsUyp2F+7XW/hYdT7YIaph1gfQr5ADJDkwx4cjetguFbdcxl1BySWyNX4ZaNgHDLwUaOAOd28UB/XbYa+KLRwXGt2P9F/Q0mjMyBnzpBf6Ynp60FUM/jL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712723882; c=relaxed/simple;
-	bh=J0UScVBRlk/e4+RNWwr7TLOzzdH0Oc58gx0hIRgRxcU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Lf1a+najN5JheTM/NvFVnto2PrHlKlO3euJkevZDkqkmGHLFrfqBclZZ+v8OfdHMvpS5PmT26nq8epos1D4ok0Ge83rh3cAO0RD/uutsRPmxd+/kJOaB6ia6Njsumn4DX3ssdg1PyVZHsIfwKGuIB2EX0cKsgubgNqDxCgEgBjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VQ+WTVxy; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a51a1c8d931so589131766b.0;
-        Tue, 09 Apr 2024 21:38:00 -0700 (PDT)
+	s=arc-20240116; t=1712723905; c=relaxed/simple;
+	bh=GhLfFhswyuT6yatVhkdfTmGtXJIemf7JS4rdcw6A2kg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=owy9bivxxBB2BrlOCUEAyzmW2Azn5dBwgFH+7uQXFgT2t5F4xu8NH65oXrDAwgfn8BjE+0wTum+Q/yYWdXkKKoQVxv4mqpJWNNy7N9XpUahdR5PXSPMZ8tXqEICYECpoEwbOHORFN2+PGC9l+jy4QSJT6ep1AphJG6kCha+7AV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=CG27sSJQ; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-516cbf3fd3dso7294778e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 21:38:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712723879; x=1713328679; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Jm0JxZnb/pakogDNODxljR3KWZzk+j8pV3D1TFW1krA=;
-        b=VQ+WTVxy1DEO+/g5LWVJNBDTygUz+E8MUdgKM1DXozCUz7RJOAaFRwV/N8Mqcmq1g4
-         HilDyRVrIR/ADsD2kae73N8b1TwPkAJNxUGjzerXhpx9uqQ6qsIVHglarFKMQoEAvvlC
-         1zjrH9AVsOva5JwDnTc1OhY8MKVX35ulEWxFLmtBw62rXR3GGgP7qQSGmwPFduwcmWSs
-         LxRAo6Gfi1xvZiFafc1Vx3q+cmA4jOs3HJkXw/NeWaF6y/CtB1T8YmF4qQYqwwP20NI6
-         SwJsJey0Gf64rJzQYaBSCgUM9vfoh/zLv9h0dB8apl6mYdezd2jEczmKJjV1C72Lm36O
-         ZHfg==
+        d=chromium.org; s=google; t=1712723902; x=1713328702; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8TKJkBRRRuNaS92klijTOM4fdg+X+Lbr2orTtPNdiy8=;
+        b=CG27sSJQeoQ3cBwZde3cgTHEEf1WZppaVMy/IvFaOL7R/mBCmTojZEk/o89BIzJoxV
+         9GAb2/1IN6M3uhPOuL4PTvTvd/taRC/HpYaVyvNE/kBiBYm/TYye3YuF7TrRxT9imniy
+         U7SqFhjvKigGtr054+fFGdiTQ3VTJ0M4xG+tw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712723879; x=1713328679;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1712723902; x=1713328702;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Jm0JxZnb/pakogDNODxljR3KWZzk+j8pV3D1TFW1krA=;
-        b=HgF2eKJFY8XCyIkYamRh+ZRFw1/EbjGNQY8ygLc19zeadCYoRSoUvbvMSxen52BV2l
-         D+RoX7/p+NvapfGnfXRmRdU6fUcjIV7W1HmagnHWfLPabH0UvbKDFzev9RCb4MHWrv32
-         SLPpzI6uL7k3VrwyELioxmuCODzUlzDLe+Vag8/w4YW/BtMbDtIkgryzTsBXiZkIfpfF
-         qHNIkJk99fkT/BawARHY1AZgopx7eHAE3WgO2Jx22fqXI/uBFXM/oujIWmKj1wpfmM/q
-         ftejrskdUTmBXeefWknC01ee6E3xUFAqtR+Dw+TWJhbQJbCQnF50lyty8Rz4yvCocr3Z
-         tzTw==
-X-Forwarded-Encrypted: i=1; AJvYcCXJdYyxK01LRahv4gsKF0gU29XznacpXpTGFUSS0kRp+0+0hDJ/FLf06WUchL62igHieYynbXTe+dSa8kRNrK6yLUAU6+nCQl7+VeKZszaUozzQihPsleE9xnnyS6dxXg63
-X-Gm-Message-State: AOJu0YzpDw9iez5fiLfhb9tzl43HBkVZWotPVppuVWzOJBUzKU1WdIaJ
-	vzWKX2Y1KPBcQny/Nvo/hkTUCFX7+wfMv7Gnpg6Xzmx/IRfHfIzK
-X-Google-Smtp-Source: AGHT+IGYAgmktYepGxQFDDL7nr0LOPJPRI/X8Uqsna37nY6dc4Lg1uDSowTGfuvpoKIPSN0B7OESAw==
-X-Received: by 2002:a17:906:5a95:b0:a51:d2e1:695b with SMTP id l21-20020a1709065a9500b00a51d2e1695bmr817026ejq.49.1712723879020;
-        Tue, 09 Apr 2024 21:37:59 -0700 (PDT)
-Received: from gmail.com (1F2EF1A5.nat.pool.telekom.hu. [31.46.241.165])
-        by smtp.gmail.com with ESMTPSA id dm10-20020a170907948a00b00a3efa4e033asm6463372ejc.151.2024.04.09.21.37.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 21:37:58 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Wed, 10 Apr 2024 06:37:56 +0200
-From: Ingo Molnar <mingo@kernel.org>
-To: Kyle Huey <me@kylehuey.com>
-Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Marco Elver <elver@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Robert O'Callahan <robert@ocallahan.org>, bpf@vger.kernel.org
-Subject: Re: [RESEND PATCH v5 0/4] Combine perf and bpf for fast eval of hw
- breakpoint conditions]
-Message-ID: <ZhYXpNu0c/rcjf0r@gmail.com>
-References: <20240214173950.18570-1-khuey@kylehuey.com>
+        bh=8TKJkBRRRuNaS92klijTOM4fdg+X+Lbr2orTtPNdiy8=;
+        b=t6igAkd7aBEM7RAKIbVMI7u8/b4nhksm/w/iJT19LM0ZjtS+hhjPo/ramNn03AFCUB
+         QqdVB4JBneJdvyOMEraCaOwk+ZWdqAZpvN2navyAvk1kinZhPPvjKgNvLSDrJ5cPNu0H
+         vKxER/IiaaJVQ4BlSfiQN9958oZOrjcWIpwm0+0xNhKsXVtpxS+Iwk4LuAspp7KgrOff
+         z6jJIb0zGx74d021WVTw8Bdh0W6y1NiquZinPrYWaTpWg/Xk/YbAZCatAZxM8BQFEoDk
+         2fhmVeCdWo4cPd8PenfxWz7IsjU/+m9b85qLzyLshbMjZIHgloEtqkis2Jgun5Y6s2k3
+         +6JA==
+X-Forwarded-Encrypted: i=1; AJvYcCVkbyOd2E/xG1BY9Flc/bJi0FVu1ISpyStEJGI+sp3/i7SwN7NrAY1y7vafAQ6ytBLmXBPnSM9jxoQbdE++U5IfdOZRXAY4QGD4jqay
+X-Gm-Message-State: AOJu0YxY5iZomyx0ptcOcsQrW1c9Qw4gb9TyAoLAofk3OU8ARkCIEtZM
+	YKEKxIY10E7TVnnSm+g87O/jlNGtrcrJ/ZTHI+0sO5D+m0gv9UIL1kdugEH72VicnULvgW/+lFS
+	nr6i/LpbmHQn9sFTjAfPbQdkPzil/MzovUuxz
+X-Google-Smtp-Source: AGHT+IEfhT9L1lVwha8NF93s8qNR0rQx1xZquNhLUkjAkkjDod/md17HI/TEr2fAp5m3WSO3Hk99DnE+Z0bxhgjxKDo=
+X-Received: by 2002:a19:3852:0:b0:516:be41:5092 with SMTP id
+ d18-20020a193852000000b00516be415092mr1096245lfj.13.1712723902339; Tue, 09
+ Apr 2024 21:38:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214173950.18570-1-khuey@kylehuey.com>
+References: <20240410000730.628043-1-treapking@chromium.org>
+In-Reply-To: <20240410000730.628043-1-treapking@chromium.org>
+From: Chen-Yu Tsai <wenst@chromium.org>
+Date: Wed, 10 Apr 2024 12:38:11 +0800
+Message-ID: <CAGXv+5ETAPVRuWaLDFJChpa55tYDACNzXQdE_-ubSjL=L8tpVg@mail.gmail.com>
+Subject: Re: [PATCH] thermal/drivers/mediatek/lvts_thermal: Remove redundant
+ code in lvts_ctrl_configure
+To: Pin-yen Lin <treapking@chromium.org>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, "Rafael J . Wysocki" <rafael@kernel.org>, 
+	Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Minjie Du <duminjie@vivo.com>, 
+	=?UTF-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4gUHJhZG8=?= <nfraprado@collabora.com>, 
+	Alexandre Mergnat <amergnat@baylibre.com>, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, Balsam CHIHI <bchihi@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Apr 10, 2024 at 8:07=E2=80=AFAM Pin-yen Lin <treapking@chromium.org=
+> wrote:
+>
+> The removed variable assignment is never written to the register, so it
+> has no effect on the device behavior.  Mediatek has confirmed that it
+> is not required to initialize this register for current platforms, so
+> remove this segment to avoid confusion.
+>
+> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
 
-* Kyle Huey <me@kylehuey.com> wrote:
-
-> Peter, Ingo, could you take a look at this?
-> 
-> ----
-> 
-> rr, a userspace record and replay debugger[0], replays asynchronous 
-> events such as signals and context switches by essentially[1] setting a 
-> breakpoint at the address where the asynchronous event was delivered 
-> during recording with a condition that the program state matches the 
-> state when the event was delivered.
-> 
-> Currently, rr uses software breakpoints that trap (via ptrace) to the 
-> supervisor, and evaluates the condition from the supervisor. If the 
-> asynchronous event is delivered in a tight loop (thus requiring the 
-> breakpoint condition to be repeatedly evaluated) the overhead can be 
-> immense. A patch to rr that uses hardware breakpoints via perf events 
-> with an attached BPF program to reject breakpoint hits where the 
-> condition is not satisfied reduces rr's replay overhead by 94% on a 
-> pathological (but a real customer-provided, not contrived) rr trace.
-> 
-> The only obstacle to this approach is that while the kernel allows a BPF 
-> program to suppress sample output when a perf event overflows it does not 
-> suppress signalling the perf event fd or sending the perf event's 
-> SIGTRAP. This patch set redesigns __perf_overflow_handler() and 
-> bpf_overflow_handler() so that the former invokes the latter directly 
-> when appropriate rather than through the generic overflow handler 
-> machinery, passes the return code of the BPF program back to 
-> __perf_overflow_handler() to allow it to decide whether to execute the 
-> regular overflow handler, reorders bpf_overflow_handler() and the side 
-> effects of perf event overflow, changes __perf_overflow_handler() to 
-> suppress those side effects if the BPF program returns zero, and adds a 
-> selftest.
-
-I suppose this optimization makes sense.
-
-Patch quality still needs to be improved though - see my review comments.
-
-Thanks,
-
-	Ingo
+Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
 
