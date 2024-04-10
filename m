@@ -1,277 +1,315 @@
-Return-Path: <linux-kernel+bounces-138750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1723489F9E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:29:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B86989FA25
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:41:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39D031C2114C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:29:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0066228A467
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:41:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 876A115F3EA;
-	Wed, 10 Apr 2024 14:29:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=danelec365.onmicrosoft.com header.i=@danelec365.onmicrosoft.com header.b="V/S2vex6"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2108.outbound.protection.outlook.com [40.107.22.108])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA28F171E5B;
+	Wed, 10 Apr 2024 14:38:33 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB99615CD4B;
-	Wed, 10 Apr 2024 14:29:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.108
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712759347; cv=fail; b=Urwf3YhEYidirzQYmsamyO4JZ2/2eEVVMpPvFWzu1512zOMQHPGMgaiqU4MatDwbQjyyVOTH1BPv1RPZ9HgYUDS66lxX3H7mvfjONa/hNkKDnlzZ8rhNbTQqaKI+bbRhYuBVvssUYI9KnyrdWaQsz6/7P7DBFrsumMfaTPG969c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712759347; c=relaxed/simple;
-	bh=qPb7ttGNMkXLNtyFMQK6Dn2lpe6W8pfsxzRgpEqAoQk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=lzEybHrgKIebSRuS6vuUqFwJONtdwLxWz3MGguyPaX1zJ0c/hV7MgCNrXJ3Sr42yUiSlZGxtmcV0ZLtBgygraw+qe5TDogusMdyG9SBldIZi1kB8v05giB3eFhfTLW4OVXmWHH65Da0Cn7eSDTxdCjDIGnqYkBdGivITywF4oow=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danelec.com; spf=pass smtp.mailfrom=danelec.com; dkim=pass (2048-bit key) header.d=danelec365.onmicrosoft.com header.i=@danelec365.onmicrosoft.com header.b=V/S2vex6; arc=fail smtp.client-ip=40.107.22.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=danelec.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=danelec.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SPwra0jd0eoyoT4bxrt2eyRuNlVdm3PAtED/aTrCShAK0NNu1hH1MFJj2cB2hR0IK4OLRWzB+TxHIWo+CFPOf8IPTKC9vsjs676ZX53anZbIHhtuCnmAZkb4ah75x0aIFt0VFgUClNQyacyNJWs4DWOzWmIWtGEbaUH4T42xMq/kdbOoi7YXPnaBtryQIGwon9D8UWFAtlAzCcYzbAxWBdMuzrdjGr4vyChSBc297n2mwJPIo4Y6HIPNAh3s6T+xtiJkNTFr08evjiFMfY2NrVVhA+lL204gkdTAFAgFDcGJvXNkfyrzKCI2m2xCWXs/JWhlF3bROxBPwTh6hhS7nw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qPb7ttGNMkXLNtyFMQK6Dn2lpe6W8pfsxzRgpEqAoQk=;
- b=J+LZbi1wcSepme+Pogn75pfTLwLXcj/chsNtZQz37tTAK0fl7JysP63c8hSO6XK/K80/4uCzHQlAP5m1B2o3X5ncCwSJCfg5ko2WRd5KKbTw/0z7In4RdU/o2NyH8tcOJxCZcaQNshzTdItAHUH991q3NmYpHTTbqbrlQ0qLJg3/kBftE6dQjlX/NYnyXFBjwFPoqYNwmsMVW5VfrB/7R06pK0tGW0X8YTk763e/CQR+WbINbDGGKE73oBKZTffWd0F6vwOcz0HvA9mI/AFn1G0otTFcNVgZzb9sPYr0JvFfNX8yoa/h5DBA9V9ou4UrVT1zbCUuYF4ovMgzLj455A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=danelec.com; dmarc=pass action=none header.from=danelec.com;
- dkim=pass header.d=danelec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=danelec365.onmicrosoft.com; s=selector1-danelec365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qPb7ttGNMkXLNtyFMQK6Dn2lpe6W8pfsxzRgpEqAoQk=;
- b=V/S2vex6/r3Hl9WlAkgswJ0mPkZFnX5O8vpqsDbVaFseBnUeZfzJtEoO/VuqbtjZ3k/15uYhgQMq0/+vzZblYTzFVVodT7QYUEixFrQ5pZeNlsz7vvIFfmHlTZZaFw60QrM2nFIIWfmIjpUGOwzrfORdvibYjhaOV3xrsKmRB6jdm/cgqRyn2Hx59RG6CGwH38baJb9GvCRzk35YZZaQtGqnzUULe8lN6iDR9UkjUewLtW3t97TRjNXA+JRtuBTzK0VEGRqioWAaS/plCFZ5axksXE+goYH+59xjLPkGOWyEqCwkXdLn1BlQwN5GoAnRU1I6GydWG6llNYfeoxbPRQ==
-Received: from AS4P189MB2133.EURP189.PROD.OUTLOOK.COM (2603:10a6:20b:518::15)
- by PAVP189MB2620.EURP189.PROD.OUTLOOK.COM (2603:10a6:102:2fd::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 10 Apr
- 2024 14:29:00 +0000
-Received: from AS4P189MB2133.EURP189.PROD.OUTLOOK.COM
- ([fe80::834a:241:19fa:337d]) by AS4P189MB2133.EURP189.PROD.OUTLOOK.COM
- ([fe80::834a:241:19fa:337d%5]) with mapi id 15.20.7409.042; Wed, 10 Apr 2024
- 14:29:00 +0000
-From: Mikael Lund Jepsen <mlj@danelec.com>
-To: Armin Wolf <W_Armin@gmx.de>, "rafael.j.wysocki@intel.com"
-	<rafael.j.wysocki@intel.com>, "lenb@kernel.org" <lenb@kernel.org>
-CC: "jdelvare@suse.com" <jdelvare@suse.com>, "linux@roeck-us.net"
-	<linux@roeck-us.net>, "linux@weissschuh.net" <linux@weissschuh.net>,
-	"ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	"linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>
-Subject: RE: [PATCH v2] ACPI: fan: Add hwmon support
-Thread-Topic: [PATCH v2] ACPI: fan: Add hwmon support
-Thread-Index: AQHaisWWJAW1xvpH9EeSbpUMmFocC7Fhhz9Q
-Date: Wed, 10 Apr 2024 14:29:00 +0000
-Message-ID:
- <AS4P189MB21333C826C173582E12FFE3EBA062@AS4P189MB2133.EURP189.PROD.OUTLOOK.COM>
-References: <20240409213323.8031-1-W_Armin@gmx.de>
-In-Reply-To: <20240409213323.8031-1-W_Armin@gmx.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-xink-handled: Yes
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS4P189MB2133:EE_|PAVP189MB2620:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- goECHYCWOTDo5/Uxmdp1PU1/7IhYeA6kkEp7rXjApjD0qc7ZoD83N4LeY05yIlQY6Qt38adCXQt275Rle7Iu6mJMnL+pqIKrs1ksdX8jziHR7TnSdas7HVkehZrvdD9Z24noWzob0fMpe23qcMSWkXUU2AggZmGRRiclPfZyPKn6izorAF7oIWQa79DZHSCJbR5n2iCrUAyG3T91CPRtmk71dEKKI+kc0CozRqHseuy9BGmZKaEeZd8/LMOn4oIFxG2LZaf3ticwSRzdVSZjoicWC6mmc4UkLcLGRxOdEc4LZuArZJ/jKydrNRTdRkJQ/aosal8eGwcSqmzwYkmH62Yt6MeUSlJfbvAjCeDFnXBB/jLAIsWXsX40EWgXyQHheuRqHsTARML6mLZhc90+uwOMtFp3yU1kjwQL0xwYhonIWawvutGWwTJI9NUl1hBJbVjosIskVqr7Z6NMYqWOg3ehIRCuBEVQZ3xcd+A3FiIBY9/uYNuhascWqeKVlwp4EkwU1I7TN8GEflaQFiz6CZdm2I2FmBguR3XPSgiAXrAYHz5PNpFrROu9yF4PuHzoJ63Pm7puvcCe4SmfD4uSSXC3dh/NPOe5FfF5m9JkvVUiP1owU4PAXc0g4lDB7nMmEXlbqG9E02WmMikLmyHQd1WaOlxVAeNt5LigXiYiVZc=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4P189MB2133.EURP189.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?Q05pRUlGM1hEakxsMS9OeGlNU3BKdTVDRmNzWGlCZlVUdTVjd3VKL2NMblI2?=
- =?utf-8?B?VGE1aHBRQUNIam1wdDlkQUNaKzBPTERiWkxWbGVWQkJ2YUpFZ2t0Y0FGYVdl?=
- =?utf-8?B?ZzN3VWtiblRnQk5FdFN4MVYweWxpWXdsQ0RBR083V3BiZzVqY3V0WkFKY0k0?=
- =?utf-8?B?VHlINjJKRncxZjJYcmQrbnVmQmtya0xhcE1WQnBEVkl4TWMvcGR2YWxud0dq?=
- =?utf-8?B?dWNwaXVEMU9ERDF5eXl3WVpZZ3EvM25QSmRDNGpPSzRWbmpRNjhPSHNKcVJV?=
- =?utf-8?B?MWl3STV6QkpERXJoWlRGZGtKU2FZdWpodGhUL2xlSis3RVVrNC96NUNDU1Vl?=
- =?utf-8?B?VWhLZ0ptR2JMRmhBbGI5SkRjYXprVWJlVzkyakNkQlpnaDd2QXpleTQwTDRH?=
- =?utf-8?B?bUxqVVdCc3UwS0lYSXhPSzYremtwQ0RUZDFYQS9GdUN3eFdxRFgrQSszaVl6?=
- =?utf-8?B?RERiTk5HbURiWkNUN0crcXJQeSt2NzVxazNVYXB3d2dYd3Izd2x2QVZnaUZu?=
- =?utf-8?B?UndWdndFVk9tcTFJL2paR2FPM3FWZzErd3VaaG1tK0xPQ2ZCeTV2R3NKQks1?=
- =?utf-8?B?TjZONzNsK1RoSXRLb2xUSU9JWXFBck1McnBDd0ZFYXJwWmwyUE8zaWRpYy9n?=
- =?utf-8?B?bUlYeDNUSnNqaVpVUDRKYVVxMyt1YnNFelgxM0VNMlJ5Qk5WdVVvWjBFa1pi?=
- =?utf-8?B?TVNvR21jNU9mTTNxMXhOckppcGdRSDBjMFk2VkRDdWg5UTlCUVFsY1BsMHRF?=
- =?utf-8?B?VGUwNnhHS2tCU3JwaCtYKzRJNVdvd0lEUGRzelVYK1g5eUwySE5PSGpoTkdq?=
- =?utf-8?B?alRvZDVDRWh5TUx3bE54SUlOSUtiaXZxZ0NkemNicmNMaVgrK2VHdkdQZ3Jn?=
- =?utf-8?B?empjVnRHaGt4T3dZNDBYV0ZvczZPZXRFVWg2WlBMN2JSSUpvZFdjU0JiOUs3?=
- =?utf-8?B?T1E4cUcvazM3dzFjbDdJSHZWSkg5ZXoxVkVUaXVNekNsL0ZRZ1cwbmJ2c0Vn?=
- =?utf-8?B?NHp3ZGRqdFNkRU5NVzJjcm5zdkJONHNNM0syUEhRN0FkQmVQZllWVEFWTUc3?=
- =?utf-8?B?UlVaMitmNXBXTU40elNVd1lUOEhiZmdsZ0FtcjVkcDdqb3hPOXpxa3RjL2xB?=
- =?utf-8?B?eGdYUC80ZnZpOVhIazN1NlYxb3ZIL3BEUitUdnQxWTFkQ1N0bHdnUjZxdElV?=
- =?utf-8?B?RTNld05ZY3FnempYcFcwMGVvM1VFa21ocHhYaEE4c2ZJVWFRY0dLdm5nZUJV?=
- =?utf-8?B?SGxyUkNBWUZ4dHl2UjNMcTkrTHBVK2VMa05oOXhoa2FTdDNhejdwZHhMSkVl?=
- =?utf-8?B?ME03QjJQYWlaa3Axelg1R2xUWllZTUJlcXFZL3crTEE1d0RWYWV2b3lobzhV?=
- =?utf-8?B?T1ZZQ2duZDJYZVBuZzBaeXh1UXlVb2tjYUhzUE9USTZDaVo5UmZ6QXE5K3Jo?=
- =?utf-8?B?NHhxTmZQTW1IVkxhSEFqTjQ4SXAwNEFpTDREM3VLSVJUY25aUkcyeFNNKzVu?=
- =?utf-8?B?NnlwR1BVQThDbUlsdFdBa0E0QkhxeUhKa2dibjZ0WUtSSFQyMDFiNzlmU2c3?=
- =?utf-8?B?VEpkWjdPWVIrTFEzZjBiNXRKK0ozNElMbjd4VGlvZ3FJVFNCV0NlbTJHU24z?=
- =?utf-8?B?OWRyYzJMSWJmNTMwUVB4YzdLS1Q1UzRGNi8ycDFEQ04zVTFicUZrZjc1MFlh?=
- =?utf-8?B?d1kwMm5qNUhOODMwbTZVNEpIU3lqWmxtUzlFZkhKaWpBTkJYeUlEVkFFLy8x?=
- =?utf-8?B?WDdiVm12WitYSkxmMEJmc3V5U2IrcTF3Y1FxeGxobE1EZkNpckpWTkRLcHds?=
- =?utf-8?B?NU5zRjNrRGFtT2FDNGp5S09TbUlzYWRGWjl3a0thUDJDdzMzTlhNZC9qeE5B?=
- =?utf-8?B?Q3B3U1lCSkNtcEY1UDkycENocVpibGNOeG92NjBRUnFzRlJkbjhxM0RScVZJ?=
- =?utf-8?B?RTRnZEVYSmcvUVFReXd3dmxzZWM0Z1Y0QlBmSDZiSm11SVhsMHlJSlhyaWtQ?=
- =?utf-8?B?dk1Za2wvM0V0eXlFL1orNmNRZDVsZkpxY1Rpb0hIbGhtUWhwSGNTakVNd0pC?=
- =?utf-8?B?L3VHQXBnZE9lZmNQSU8wVjZTck9Lc1g0NlUvVjhHcTZwR1phTURzOVVwMlVt?=
- =?utf-8?Q?a3pY=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41ABE16E861;
+	Wed, 10 Apr 2024 14:38:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712759912; cv=none; b=BcgZ4BnuKf3bjUD2eaw2+osqKRZ2t3Yp9XT3V5dxAj1d6tXtQOvDVHD6ziN4EL09UOXR+t2w+SS8THX+E5TBnR6M0DpzWszEsyMwzCnM5N+IlIIgA3+fyKq3GfBuhGqz7/uL8dub9USoVNrHZEyLgRW92676qFvqOpCEOI/7PFQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712759912; c=relaxed/simple;
+	bh=NI3hafwnkJ6oUCdoMETsCzPIX2o4YWf6XB410k1+oek=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=q+V6S2xYkq1ojaQpyP5s5+VrC8B5KabkWF3WYaqL9QzwihXKlUtm2l5xYPcZZe6xzqqm0MIPdyUgpREwBZh8WM/+2j613bW8Bv69qEbJB7QGzX1NtOCdpnm0YwIRXY1/WJyymMsfpxZqjpz+YYb2lnp+dV9szwuCVb5Rwkww6bY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VF56L6y6Gz4f3kG1;
+	Wed, 10 Apr 2024 22:38:18 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id C995E1A0175;
+	Wed, 10 Apr 2024 22:38:25 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgAX6RFSpBZmcwR8Jg--.63000S4;
+	Wed, 10 Apr 2024 22:38:25 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	ritesh.list@gmail.com,
+	hch@infradead.org,
+	djwong@kernel.org,
+	david@fromorbit.com,
+	willy@infradead.org,
+	zokeefe@google.com,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com,
+	wangkefeng.wang@huawei.com
+Subject: [RESEND RFC PATCH v4 00/34] ext4: use iomap for regular file's buffered IO path and enable large folio
+Date: Wed, 10 Apr 2024 22:29:14 +0800
+Message-Id: <20240410142948.2817554-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: danelec.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS4P189MB2133.EURP189.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb5663ea-1288-4542-f5a4-08dc596a907d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Apr 2024 14:29:00.5013
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d6bfedfe-b78c-47c3-8370-03356c3b6cf5
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4Nbo0tI64UnJzSx4Zr0DWWg23lwWVI+DshHkDrmV8RsIAVXkQTamBWaN975CEHcM
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAVP189MB2620
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAX6RFSpBZmcwR8Jg--.63000S4
+X-Coremail-Antispam: 1UD129KBjvJXoWfGFyDKw47WryxZF4UtF13urg_yoWDtrykpF
+	WakF13tr1kWw1UuaykAw1Utr40g3W5XF4UGw1fW3y8ZF4DCFyxuFn7KF4F9FW5ArW7Ja4Y
+	vF4Iy348uayvk37anT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBF14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
+	6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72
+	CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7
+	M4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS14v26r4a6rW5MxAIw28IcxkI7VAKI4
+	8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
+	wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjx
+	v20xvE14v26F1j6w1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k2
+	6cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVW8Jr0_Cr1UMIIF0xvEx4A2jsIEc7
+	CjxVAFwI0_Cr1j6rxdYxBIdaVFxhVjvjDU0xZFpf9x0pRDKIiUUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-T24gOS4gYXByaWwgMjAyNCBBcm1pbiBXb2xmIHdyb3RlOg0KPlRvOiBNaWthZWwgTHVuZCBKZXBz
-ZW4gPG1sakBkYW5lbGVjLmNvbT47IHJhZmFlbC5qLnd5c29ja2lAaW50ZWwuY29tOyBsZW5iQGtl
-cm5lbC5vcmcNCj5DYzogamRlbHZhcmVAc3VzZS5jb207IGxpbnV4QHJvZWNrLXVzLm5ldDsgbGlu
-dXhAd2Vpc3NzY2h1aC5uZXQ7IGlscG8uamFydmluZW5AbGludXguaW50ZWwuY29tOyBsaW51eC1h
-Y3BpQHZnZXIua2VybmVsLm9yZzsgbGludXgtaHdtb25Admdlci5rZXJuZWwub3JnOyBsaW51eC1r
-ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBwbGF0Zm9ybS1kcml2ZXIteDg2QHZnZXIua2VybmVsLm9y
-Zw0KPlN1YmplY3Q6IFtQQVRDSCB2Ml0gQUNQSTogZmFuOiBBZGQgaHdtb24gc3VwcG9ydA0KPg0K
-PkNhdXRpb246IEV4dGVybmFsIGVtYWlsLiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRh
-Y2htZW50cyB1bmxlc3MgeW91IHJlY29nbml6ZSB0aGUgc2VuZGVyIGFuZCBrbm93IHRoZSBjb250
-ZW50IGlzIHNhZmUuDQo+DQo+DQo+Q3VycmVudGx5LCB0aGUgZHJpdmVyIGRvZXMgb25seSBzdXBw
-b3J0IGEgY3VzdG9tIHN5c2ZzIHRvIGFsbG93IHVzZXJzcGFjZSB0byByZWFkIHRoZSBmYW4gc3Bl
-ZWQuDQo+QWRkIHN1cHBvcnQgZm9yIHRoZSBzdGFuZGFyZCBod21vbiBpbnRlcmZhY2Ugc28gdXNl
-cnMgY2FuIHJlYWQgdGhlIGZhbiBzcGVlZCB3aXRoIHN0YW5kYXJkIHRvb2xzIGxpa2UgInNlbnNv
-cnMiLg0KPg0KPkNvbXBpbGUtdGVzdGVkIG9ubHkuDQo+DQo+U2lnbmVkLW9mZi1ieTogQXJtaW4g
-V29sZiA8V19Bcm1pbkBnbXguZGU+DQo+LS0tDQo+Q2hhbmdlcyBzaW5jZSB2MToNCj4tIGZpeCB1
-bmRlZmluZWQgcmVmZXJlbmNlIGVycm9yDQo+LSBmaXggZmFuIHNwZWVkIHZhbGlkYXRpb24NCj4t
-IGNvZGluZyBzdHlsZSBmaXhlcw0KPi0gY2xhcmlmeSB0aGF0IHRoZSBjaGFuZ2VzIGFyZSBjb21w
-aWxlLXRlc3RlZCBvbmx5DQo+LSBhZGQgaHdtb24gbWFpbnRhaW5lcnMgdG8gY2MgbGlzdA0KPg0K
-PlRoZSBjaGFuZ2VzIHdpbGwgYmUgdGVzdGVkIGJ5IE1pa2FlbCBMdW5kIEplcHNlbiBmcm9tIERh
-bmVsZWMgYW5kIHNob3VsZCBiZSBtZXJnZWQgb25seSBhZnRlciB0aG9zZSB0ZXN0cy4NCj4tLS0N
-Cj4gZHJpdmVycy9hY3BpL01ha2VmaWxlICAgIHwgIDEgKw0KPiBkcml2ZXJzL2FjcGkvZmFuLmgg
-ICAgICAgfCAgOSArKysrKw0KPiBkcml2ZXJzL2FjcGkvZmFuX2NvcmUuYyAgfCAgNCArKw0KPiBk
-cml2ZXJzL2FjcGkvZmFuX2h3bW9uLmMgfCA4MyArKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrDQo+IDQgZmlsZXMgY2hhbmdlZCwgOTcgaW5zZXJ0aW9ucygrKQ0KPiBjcmVh
-dGUgbW9kZSAxMDA2NDQgZHJpdmVycy9hY3BpL2Zhbl9od21vbi5jDQo+DQo+ZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvYWNwaS9NYWtlZmlsZSBiL2RyaXZlcnMvYWNwaS9NYWtlZmlsZSBpbmRleCBkNjlk
-NTQ0NGFjZGIuLmMyNzJhYjJjOTNiOSAxMDA2NDQNCj4tLS0gYS9kcml2ZXJzL2FjcGkvTWFrZWZp
-bGUNCj4rKysgYi9kcml2ZXJzL2FjcGkvTWFrZWZpbGUNCj5AQCAtODMsNiArODMsNyBAQCBvYmot
-JChDT05GSUdfQUNQSV9USU5ZX1BPV0VSX0JVVFRPTikgICs9IHRpbnktcG93ZXItYnV0dG9uLm8N
-Cj4gb2JqLSQoQ09ORklHX0FDUElfRkFOKSAgICAgICAgICs9IGZhbi5vDQo+IGZhbi1vYmpzICAg
-ICAgICAgICAgICAgICAgICAgICA6PSBmYW5fY29yZS5vDQo+IGZhbi1vYmpzICAgICAgICAgICAg
-ICAgICAgICAgICArPSBmYW5fYXR0ci5vDQo+K2Zhbi0kKENPTkZJR19IV01PTikgICAgICAgICAg
-ICArPSBmYW5faHdtb24ubw0KPg0KPiBvYmotJChDT05GSUdfQUNQSV9WSURFTykgICAgICAgKz0g
-dmlkZW8ubw0KPiBvYmotJChDT05GSUdfQUNQSV9UQUQpICAgICAgICAgKz0gYWNwaV90YWQubw0K
-PmRpZmYgLS1naXQgYS9kcml2ZXJzL2FjcGkvZmFuLmggYi9kcml2ZXJzL2FjcGkvZmFuLmggaW5k
-ZXggZTdiNGI0ZTRhNTVlLi45Nzg2M2JkYjYzMDMgMTAwNjQ0DQo+LS0tIGEvZHJpdmVycy9hY3Bp
-L2Zhbi5oDQo+KysrIGIvZHJpdmVycy9hY3BpL2Zhbi5oDQo+QEAgLTEwLDYgKzEwLDggQEANCj4g
-I2lmbmRlZiBfQUNQSV9GQU5fSF8NCj4gI2RlZmluZSBfQUNQSV9GQU5fSF8NCj4NCj4rI2luY2x1
-ZGUgPGxpbnV4L2tjb25maWcuaD4NCj4rDQo+ICNkZWZpbmUgQUNQSV9GQU5fREVWSUNFX0lEUyAg
-ICBcDQo+ICAgICAgICB7IklOVDM0MDQiLCB9LCAvKiBGYW4gKi8gXA0KPiAgICAgICAgeyJJTlRD
-MTA0NCIsIH0sIC8qIEZhbiBmb3IgVGlnZXIgTGFrZSBnZW5lcmF0aW9uICovIFwgQEAgLTU2LDQg
-KzU4LDExIEBAIHN0cnVjdCBhY3BpX2ZhbiB7ICBpbnQgYWNwaV9mYW5fZ2V0X2ZzdChzdHJ1Y3Qg
-YWNwaV9kZXZpY2UgKmRldmljZSwgc3RydWN0IGFjcGlfZmFuX2ZzdCAqZnN0KTsgIGludCBhY3Bp
-X2Zhbl9jcmVhdGVfYXR0cmlidXRlcyhzdHJ1Y3QgYWNwaV9kZXZpY2UgKmRldmljZSk7ICB2b2lk
-IGFjcGlfZmFuX2RlbGV0ZV9hdHRyaWJ1dGVzKHN0cnVjdCBhY3BpX2RldmljZSAqZGV2aWNlKTsN
-Cj4rDQo+KyNpZiBJU19SRUFDSEFCTEUoQ09ORklHX0hXTU9OKQ0KPitpbnQgZGV2bV9hY3BpX2Zh
-bl9jcmVhdGVfaHdtb24oc3RydWN0IGFjcGlfZGV2aWNlICpkZXZpY2UpOyAjZWxzZSANCj4rc3Rh
-dGljIGlubGluZSBpbnQgZGV2bV9hY3BpX2Zhbl9jcmVhdGVfaHdtb24oc3RydWN0IGFjcGlfZGV2
-aWNlIA0KPisqZGV2aWNlKSB7IHJldHVybiAwOyB9OyAjZW5kaWYNCj4rDQo+ICNlbmRpZg0KPmRp
-ZmYgLS1naXQgYS9kcml2ZXJzL2FjcGkvZmFuX2NvcmUuYyBiL2RyaXZlcnMvYWNwaS9mYW5fY29y
-ZS5jIGluZGV4IGZmNzJlNGVmODczOC4uN2NlYTQ0OTVmMTliIDEwMDY0NA0KPi0tLSBhL2RyaXZl
-cnMvYWNwaS9mYW5fY29yZS5jDQo+KysrIGIvZHJpdmVycy9hY3BpL2Zhbl9jb3JlLmMNCj5AQCAt
-MzM2LDYgKzMzNiwxMCBAQCBzdGF0aWMgaW50IGFjcGlfZmFuX3Byb2JlKHN0cnVjdCBwbGF0Zm9y
-bV9kZXZpY2UgKnBkZXYpDQo+ICAgICAgICAgICAgICAgIGlmIChyZXN1bHQpDQo+ICAgICAgICAg
-ICAgICAgICAgICAgICAgcmV0dXJuIHJlc3VsdDsNCj4NCj4rICAgICAgICAgICAgICAgcmVzdWx0
-ID0gZGV2bV9hY3BpX2Zhbl9jcmVhdGVfaHdtb24oZGV2aWNlKTsNCj4rICAgICAgICAgICAgICAg
-aWYgKHJlc3VsdCkNCj4rICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gcmVzdWx0Ow0KPisN
-Cj4gICAgICAgICAgICAgICAgcmVzdWx0ID0gYWNwaV9mYW5fY3JlYXRlX2F0dHJpYnV0ZXMoZGV2
-aWNlKTsNCj4gICAgICAgICAgICAgICAgaWYgKHJlc3VsdCkNCj4gICAgICAgICAgICAgICAgICAg
-ICAgICByZXR1cm4gcmVzdWx0Ow0KPmRpZmYgLS1naXQgYS9kcml2ZXJzL2FjcGkvZmFuX2h3bW9u
-LmMgYi9kcml2ZXJzL2FjcGkvZmFuX2h3bW9uLmMgbmV3IGZpbGUgbW9kZSAxMDA2NDQgaW5kZXgg
-MDAwMDAwMDAwMDAwLi5iMDEwNTU0MzJkZWQNCj4tLS0gL2Rldi9udWxsDQo+KysrIGIvZHJpdmVy
-cy9hY3BpL2Zhbl9od21vbi5jDQo+QEAgLTAsMCArMSw4MyBAQA0KPisvLyBTUERYLUxpY2Vuc2Ut
-SWRlbnRpZmllcjogR1BMLTIuMC1vci1sYXRlcg0KPisvKg0KPisgKiBmYW5faHdtb24uYyAtIGh3
-bW9uIGludGVyZmFjZSBmb3IgdGhlIEFDUEkgRmFuIGRyaXZlcg0KPisgKg0KPisgKiBDb3B5cmln
-aHQgKEMpIDIwMjQgQXJtaW4gV29sZiA8V19Bcm1pbkBnbXguZGU+ICAqLw0KPisNCj4rI2luY2x1
-ZGUgPGxpbnV4L2FjcGkuaD4NCj4rI2luY2x1ZGUgPGxpbnV4L2h3bW9uLmg+DQo+KyNpbmNsdWRl
-IDxsaW51eC9saW1pdHMuaD4NCj4rDQo+KyNpbmNsdWRlICJmYW4uaCINCj4rDQo+Ky8qIFJldHVy
-bmVkIHdoZW4gdGhlIEFDUEkgZmFuIGRvZXMgbm90IHN1cHBvcnQgc3BlZWQgcmVwb3J0aW5nICov
-IA0KPisjZGVmaW5lIEZBTl9TUEVFRF9VTkFWQUlMQUJMRSAgMHhmZmZmZmZmZg0KPisNCj4rc3Rh
-dGljIHVtb2RlX3QgYWNwaV9mYW5faXNfdmlzaWJsZShjb25zdCB2b2lkICpkcnZkYXRhLCBlbnVt
-IGh3bW9uX3NlbnNvcl90eXBlcyB0eXBlLCB1MzIgYXR0ciwNCj4rICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIGludCBjaGFubmVsKSB7DQo+KyAgICAgICByZXR1cm4gMDQ0NDsNCj4r
-fQ0KPisNCj4rc3RhdGljIGludCBhY3BpX2Zhbl9yZWFkKHN0cnVjdCBkZXZpY2UgKmRldiwgZW51
-bSBod21vbl9zZW5zb3JfdHlwZXMgdHlwZSwgdTMyIGF0dHIsIGludCBjaGFubmVsLA0KPisgICAg
-ICAgICAgICAgICAgICAgICAgICBsb25nICp2YWwpDQo+K3sNCj4rICAgICAgIHN0cnVjdCBhY3Bp
-X2RldmljZSAqYWRldiA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KPisgICAgICAgc3RydWN0IGFj
-cGlfZmFuX2ZzdCBmc3Q7DQo+KyAgICAgICBpbnQgcmV0Ow0KPisNCj4rICAgICAgIHN3aXRjaCAo
-dHlwZSkgew0KPisgICAgICAgY2FzZSBod21vbl9mYW46DQo+KyAgICAgICAgICAgICAgIHJldCA9
-IGFjcGlfZmFuX2dldF9mc3QoYWRldiwgJmZzdCk7DQo+KyAgICAgICAgICAgICAgIGlmIChyZXQg
-PCAwKQ0KPisgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiByZXQ7DQo+Kw0KPisgICAgICAg
-ICAgICAgICBzd2l0Y2ggKGF0dHIpIHsNCj4rICAgICAgICAgICAgICAgY2FzZSBod21vbl9mYW5f
-aW5wdXQ6DQo+KyAgICAgICAgICAgICAgICAgICAgICAgaWYgKGZzdC5zcGVlZCA9PSBGQU5fU1BF
-RURfVU5BVkFJTEFCTEUpDQo+KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4g
-LUVOT0RBVEE7DQo+Kw0KPisgICAgICAgICAgICAgICAgICAgICAgIGlmIChmc3Quc3BlZWQgPiBM
-T05HX01BWCkNCj4rICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAtRU9WRVJG
-TE9XOw0KPisNCj4rICAgICAgICAgICAgICAgICAgICAgICAqdmFsID0gZnN0LnNwZWVkOw0KPisg
-ICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAwOw0KPisgICAgICAgICAgICAgICBjYXNlIGh3
-bW9uX2Zhbl9mYXVsdDoNCj4rICAgICAgICAgICAgICAgICAgICAgICAqdmFsID0gKGZzdC5zcGVl
-ZCA9PSBGQU5fU1BFRURfVU5BVkFJTEFCTEUpOw0KPisgICAgICAgICAgICAgICAgICAgICAgIHJl
-dHVybiAwOw0KPisgICAgICAgICAgICAgICBkZWZhdWx0Og0KPisgICAgICAgICAgICAgICAgICAg
-ICAgIGJyZWFrOw0KPisgICAgICAgICAgICAgICB9DQo+KyAgICAgICAgICAgICAgIGJyZWFrOw0K
-PisgICAgICAgZGVmYXVsdDoNCj4rICAgICAgICAgICAgICAgYnJlYWs7DQo+KyAgICAgICB9DQo+
-Kw0KPisgICAgICAgcmV0dXJuIC1FT1BOT1RTVVBQOw0KPit9DQo+Kw0KPitzdGF0aWMgY29uc3Qg
-c3RydWN0IGh3bW9uX29wcyBhY3BpX2Zhbl9vcHMgPSB7DQo+KyAgICAgICAuaXNfdmlzaWJsZSA9
-IGFjcGlfZmFuX2lzX3Zpc2libGUsDQo+KyAgICAgICAucmVhZCA9IGFjcGlfZmFuX3JlYWQsDQo+
-K307DQo+Kw0KPitzdGF0aWMgY29uc3Qgc3RydWN0IGh3bW9uX2NoYW5uZWxfaW5mbyAqIGNvbnN0
-IGFjcGlfZmFuX2luZm9bXSA9IHsNCj4rICAgICAgIEhXTU9OX0NIQU5ORUxfSU5GTyhmYW4sIEhX
-TU9OX0ZfSU5QVVQgfCBIV01PTl9GX0ZBVUxUKSwNCj4rICAgICAgIE5VTEwNCj4rfTsNCj4rDQo+
-K3N0YXRpYyBjb25zdCBzdHJ1Y3QgaHdtb25fY2hpcF9pbmZvIGFjcGlfZmFuX2NoaXBfaW5mbyA9
-IHsNCj4rICAgICAgIC5vcHMgPSAmYWNwaV9mYW5fb3BzLA0KPisgICAgICAgLmluZm8gPSBhY3Bp
-X2Zhbl9pbmZvLA0KPit9Ow0KPisNCj4raW50IGRldm1fYWNwaV9mYW5fY3JlYXRlX2h3bW9uKHN0
-cnVjdCBhY3BpX2RldmljZSAqZGV2aWNlKSB7DQo+KyAgICAgICBzdHJ1Y3QgZGV2aWNlICpoZGV2
-Ow0KPisNCj4rICAgICAgIGhkZXYgPSBkZXZtX2h3bW9uX2RldmljZV9yZWdpc3Rlcl93aXRoX2lu
-Zm8oJmRldmljZS0+ZGV2LCAiYWNwaV9mYW4iLCBkZXZpY2UsDQo+KyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICZhY3BpX2Zhbl9jaGlwX2luZm8sIA0K
-PisgTlVMTCk7DQo+Kw0KPisgICAgICAgcmV0dXJuIFBUUl9FUlJfT1JfWkVSTyhoZGV2KTsNCj4r
-fQ0KPi0tDQo+Mi4zOS4yDQo+DQoNClNvcnJ5IGFib3V0IHRoZSBkZWxheSwgbmV3IHRvIEFDUEkg
-YW5kIG5lZWRlZCB0byBjcmVhdGUgdGhlIG1pc3NpbmcgdGFibGVzIHRvIGRlZmluZSB0aGUgZmFu
-IGFzIGFuIEFDUEl2NCBmYW4gYW5kIG1ha2UgaXQgdGFsayB0byB0aGUgcHNlL2VjbGl0ZSBmaXJt
-d2FyZS4NCg0KSSd2ZSB0ZXN0ZWQgcGF0Y2ggdjIgb24ga2VybmVsIDYuNi4xNSBvbiBteSBJbnRl
-bCBFbGtoYXJ0TGFrZSBDUkIgYm9hcmQsIGFuZCBpdCB3b3JrcyBmaW5lIGZvciBtZToNCkZhbiB0
-YWNobyB2YWx1ZSBpcyBzaG93biBjb3JyZWN0bHkgYW5kIEZBVUxUIGlzIHJlcG9ydGVkIGlmIGlz
-aHRwX2VjbGl0ZSBkcml2ZXIgaXMgbm90IGxvYWRlZC4NCg0KRm9yIHJlZmVyZW5jZSwgbXkgdGVz
-dCBzZXR1cDoNCi0gSW50ZWwgRWxraGFydExha2UgQ1JCIGJvYXJkIHcvIEludGVsIEF0b20geDY0
-MjVSRQ0KLSBTbGltYm9vdGxvYWRlcjogSW50ZWwgTVI3IHJlbGVhc2UsIHdpdGggY3VzdG9tIEFD
-UEkgZGVmaW5pdGlvbnMgZm9yIHRoZSBmYW4sIGFuZCBJZiBJIHJlbWVtYmVyIGNvcnJlY3RseSwg
-SSBhbHNvIG5lZWRlZCB0byBjb3JyZWN0IHNvbWUgVEdQSU8gc29mdHN0cmFwcyBjb21wYXJlZCB0
-byByZWxlYXNlIGRlZmF1bHRzDQotIFBzZUZXOiBJbnRlbCBNUjcgcmVsZWFzZSwgd2l0aCBmaXhl
-cyB0byBlbmFibGUgVEdQSU8vVGFjaG8gcmVhZGluZyAod2hpY2ggd2FzIG5vdCBlbmFibGVkIGlu
-IHJlbGVhc2UgZGVmYXVsdHMpIGFuZCB0byBtYWtlIHN1cmUgdGFjaG8gdmFsdWUgaXMgcmVhZCBl
-dmVuIHdoZW4gZmFuIGlzIHR1cm5pbmcgb2ZmIChkZWZhdWx0IFBTRSBGVyBza2lwcGVkIHJlYWRp
-bmcgdGFjaG8gaWYgY29udHJvbCB2YWx1ZSB3YXMgMCwgc28gbGFzdCB0YWNobyB2YWx1ZSByZWFk
-IHdoaWxlIGZhbiB3YXMgdHVybmVkIG9uIHdvdWxkIHBlcnNpc3QpLg0KDQpPbmUgdGhpbmcgdGhh
-dCBvY2N1cnJlZCB0byBtZTogVGhlIGZhbiBjb250cm9sIHZhbHVlIGlzIHJlcG9ydGVkIGluIF9G
-U1QsIGJ1dCBub3QgdXNlZCBpbiBhY3BpLWZhbiwgc28gaG93IGNhbiB3ZSBmbGFnIGFuIGVycm9y
-IGluIGh3bW9uIGlmIHRoZSBmYW4gaXMgYnJva2VuLCBidXQgc2hhbGwgbm90IGFsd2F5cyBiZSBy
-dW5uaW5nPw0KSWYgdGhlIGNvbnRyb2wgdmFsdWUgd2FzIGV4cG9ydGVkLCB0aGVuIHdlIGNhbiBh
-bGVydCBpZiB0YWNobyBpcyB6ZXJvIHdoZW4gY29udHJvbCA+IDAuIEkgdGhpbmsgSSdtIG1pc3Np
-bmcgc29tZXRoaW5nIGhlcmU/DQoNClRoYW5rcywNCk1pa2FlbA0KDQo=
+Hello!
+
+This is the fourth version of RFC patch series that convert ext4 regular
+file's buffered IO path to iomap and enable large folio. I've rebased it
+on 6.9-rc3, it also **depends on my xfs/iomap fix series** which has
+been reviewed but not merged yet[1]. Compared to the third vesion, this
+iteration fixes an issue discovered in current ext4 code, and contains
+another two main changes, 1) add bigalloc support and 2) simplify the
+updating logic of reserved delalloc data block, both changes could be
+sent out as preliminary patch series, besides these, others are some
+small code cleanups, performance optimize and commit log improvements.
+Please take a look at this series and any comments are welcome.
+
+This series supports ext4 with the default features and mount
+options(bigalloc is also supported), doesn't support non-extent(ext3),
+inline_data, dax, fs_verity, fs_crypt and data=journal mode, ext4 would
+fall back to buffer_head path automatically if you enabled those
+features or options. Although it has many limitations now, it can satisfy
+the requirements of most common cases and bring a significant performance
+benefit for large IOs.
+
+The iomap path would be simpler than the buffer_head path to some extent,
+please note that there are 4 major differences:
+1. Always allocate unwritten extent for new blocks, it means that it's
+   not controlled by dioread_nolock mount option.
+2. Since 1, there is no risk of exposing stale data during the append
+   write, so we don't need to write back data before metadata, it's time
+   to drop 'data = ordered' mode automatically.
+3. Since 2, we don't need to reserve journal credits and use reserved
+   handle for the extent status conversion during writeback.
+4. We could postpone updating the i_disksize to the endio, it could
+   avoid exposing zero data during append write and instantaneous power
+   failure.
+
+Series details:
+Patch 1-9: this is the part 2 preparation series, it fix a problem
+first, and makes ext4_insert_delayed_block() call path support inserting
+multiple delalloc blocks (also support bigalloc), finally make
+ext4_da_map_blocks() buffer_head unaware, I've send it out separately[2]
+and hope this could be merged first.
+
+Patch 10-19: this is the part 3 prepartory changes(picked out from my
+metadata reservation series[3], these are not a strong dependency
+patches, but I'd suggested these could be merged before the iomap
+conversion). These patches moves ext4_da_update_reserve_space() to
+ext4_es_insert_extent(), and always set EXT4_GET_BLOCKS_DELALLOC_RESERVE
+when allocating delalloc blocks, no matter it's from delayed allocate or
+non-delayed allocate (fallocate) path, it makes delalloc extents always
+delonly. These can make delalloc reservation simpler and cleaner than
+before.
+
+Patch 20-34: These patches are the main implements of the buffered IO
+iomap conversion, It first introduce a sequence counter for extent
+status tree, then add a new iomap aops for read, write, mmap, replace
+current buffered_head path. Finally, enable iomap path besides inline
+data, non-extent, dax, fs_verity, fs_crypt, defrag and data=journal
+mode, if user specify "buffered_iomap" mount option, also enable large
+folio. Please look at the following patch for details.
+
+About Tests:
+ - Pass kvm-xfstests in auto mode, and the keep running stress tests and
+   fault injection tests.
+ - A performance tests below (tested on my version 3 series,
+   theoretically there won't be much difference in this version).
+
+   Fio tests with psync on my machine with Intel Xeon Gold 6240 CPU
+   with 400GB system ram, 200GB ramdisk and 1TB nvme ssd disk.
+
+   == buffer read ==
+
+                  buffer head        iomap + large folio
+   type     bs    IOPS    BW(MiB/s)  IOPS    BW(MiB/s)
+   ----------------------------------------------------
+   hole     4K    565k    2206       811k    3167
+   hole     64K   45.1k   2820       78.1k   4879
+   hole     1M    2744    2744       4890    4891
+   ramdisk  4K    436k    1703       554k    2163
+   ramdisk  64K   29.6k   1848       44.0k   2747
+   ramdisk  1M    1994    1995       2809    2809
+   nvme     4K    306k    1196       324k    1267
+   nvme     64K   19.3k   1208       24.3k   1517
+   nvme     1M    1694    1694       2256    2256
+
+   == buffer write ==
+
+                                        buffer head  iomap + large folio
+   type   Overwrite Sync Writeback bs   IOPS   BW    IOPS   BW
+   ------------------------------------------------------------
+   cache    N       N    N         4K   395k   1544  415k   1621
+   cache    N       N    N         64K  30.8k  1928  80.1k  5005
+   cache    N       N    N         1M   1963   1963  5641   5642
+   cache    Y       N    N         4K   423k   1652  443k   1730
+   cache    Y       N    N         64K  33.0k  2063  80.8k  5051
+   cache    Y       N    N         1M   2103   2103  5588   5589
+   ramdisk  N       N    Y         4K   362k   1416  307k   1198
+   ramdisk  N       N    Y         64K  22.4k  1399  64.8k  4050
+   ramdisk  N       N    Y         1M   1670   1670  4559   4560
+   ramdisk  N       Y    N         4K   9830   38.4  13.5k  52.8
+   ramdisk  N       Y    N         64K  5834   365   10.1k  629
+   ramdisk  N       Y    N         1M   1011   1011  2064   2064
+   ramdisk  Y       N    Y         4K   397k   1550  409k   1598
+   ramdisk  Y       N    Y         64K  29.2k  1827  73.6k  4597
+   ramdisk  Y       N    Y         1M   1837   1837  4985   4985
+   ramdisk  Y       Y    N         4K   173k   675   182k   710
+   ramdisk  Y       Y    N         64K  17.7k  1109  33.7k  2105
+   ramdisk  Y       Y    N         1M   1128   1129  1790   1791
+   nvme     N       N    Y         4K   298k   1164  290k   1134
+   nvme     N       N    Y         64K  21.5k  1343  57.4k  3590
+   nvme     N       N    Y         1M   1308   1308  3664   3664
+   nvme     N       Y    N         4K   10.7k  41.8  12.0k  46.9
+   nvme     N       Y    N         64K  5962   373   8598   537
+   nvme     N       Y    N         1M   676    677   1417   1418
+   nvme     Y       N    Y         4K   366k   1430  373k   1456
+   nvme     Y       N    Y         64K  26.7k  1670  56.8k  3547
+   nvme     Y       N    Y         1M   1745   1746  3586   3586
+   nvme     Y       Y    N         4K   59.0k  230   61.2k  239
+   nvme     Y       Y    N         64K  13.0k  813   21.0k  1311
+   nvme     Y       Y    N         1M   683    683   1368   1369
+ 
+TODO
+ - Keep on doing stress tests and fixing.
+ - Reserve enough space for delalloc metadata blocks and try to drop
+   ext4_nonda_switch().
+ - First support defrag and then support other more unsupported features
+   and mount options.
+
+Changes since v3:
+ - Drop the part 1 prepartory patches which have been merged [4].
+ - Drop the two iomap patches since I've submitted separately [1].
+ - Fix an incorrect reserved delalloc blocks count and incorrect extent
+   status cache issue found on current ext4 code.
+ - Pick out part 2 prepartory patch series [2], it make
+   ext4_insert_delayed_block() call path support inserting multiple
+   delalloc blocks (also support bigalloc )and make ext4_da_map_blocks()
+   buffer_head unaware.
+ - Adjust and simplify the reserved delalloc blocks updating logic,
+   preparing for reserving meta data blocks for delalloc.
+ - Drop datasync dirty check in ext4_set_iomap() for buffered
+   read/write, improves the concurrent performance on small I/Os.
+ - Prevent always hold invalid_lock in page_cache_ra_order(), add
+   lockless check.
+ - Disable iomap path by default since it's experimental new, add a
+   mount option "buffered_iomap" to enable it.
+ - Some other minor fixes and change log improvements.
+Changes since v2:
+ - Update patch 1-6 to v3.
+ - iomap_zero and iomap_unshare don't need to update i_size and call
+   iomap_write_failed(), introduce a new helper iomap_write_end_simple()
+   to avoid doing that.
+ - Factor out ext4_[ext|ind]_map_blocks() parts from ext4_map_blocks(),
+   introduce a new helper ext4_iomap_map_one_extent() to allocate
+   delalloc blocks in writeback, which is always under i_data_sem in
+   write mode. This is done to prevent the writing back delalloc
+   extents become stale if it raced by truncate.
+ - Add a lock detection in mapping_clear_large_folios().
+Changes since v1:
+ - Introduce seq count for iomap buffered write and writeback to protect
+   races from extents changes, e.g. truncate, mwrite.
+ - Always allocate unwritten extents for new blocks, drop dioread_lock
+   mode, and make no distinctions between dioread_lock and
+   dioread_nolock.
+ - Don't add ditry data range to jinode, drop data=ordered mode, and
+   make no distinctions between data=ordered and data=writeback mode.
+ - Postpone updating i_disksize to endio.
+ - Allow splitting extents and use reserved space in endio.
+ - Instead of reimplement a new delayed mapping helper
+   ext4_iomap_da_map_blocks() for buffer write, try to reuse
+   ext4_da_map_blocks().
+ - Add support for disabling large folio on active inodes.
+ - Support online defragmentation, make file fall back to buffer_head
+   and disable large folio in ext4_move_extents().
+ - Move ext4_nonda_switch() in advance to prevent deadlock in mwrite.
+ - Add dirty_len and pos trace info to trace_iomap_writepage_map().
+ - Update patch 1-6 to v2.
+
+[1] https://lore.kernel.org/linux-xfs/20240320110548.2200662-1-yi.zhang@huaweicloud.com/
+[2] https://lore.kernel.org/linux-ext4/20240410034203.2188357-1-yi.zhang@huaweicloud.com/
+[3] https://lore.kernel.org/linux-ext4/20230824092619.1327976-1-yi.zhang@huaweicloud.com/
+[4] https://lore.kernel.org/linux-ext4/20240105033018.1665752-1-yi.zhang@huaweicloud.com/
+
+Thanks,
+Yi.
+
+---
+v3: https://lore.kernel.org/linux-ext4/20240127015825.1608160-1-yi.zhang@huaweicloud.com/
+v2: https://lore.kernel.org/linux-ext4/20240102123918.799062-1-yi.zhang@huaweicloud.com/
+v1: https://lore.kernel.org/linux-ext4/20231123125121.4064694-1-yi.zhang@huaweicloud.com/
+
+Zhang Yi (34):
+  ext4: factor out a common helper to query extent map
+  ext4: check the extent status again before inserting delalloc block
+  ext4: trim delalloc extent
+  ext4: drop iblock parameter
+  ext4: make ext4_es_insert_delayed_block() insert multi-blocks
+  ext4: make ext4_da_reserve_space() reserve multi-clusters
+  ext4: factor out check for whether a cluster is allocated
+  ext4: make ext4_insert_delayed_block() insert multi-blocks
+  ext4: make ext4_da_map_blocks() buffer_head unaware
+  ext4: factor out ext4_map_create_blocks() to allocate new blocks
+  ext4: optimize the EXT4_GET_BLOCKS_DELALLOC_RESERVE flag set
+  ext4: don't set EXTENT_STATUS_DELAYED on allocated blocks
+  ext4: let __revise_pending() return newly inserted pendings
+  ext4: count removed reserved blocks for delalloc only extent entry
+  ext4: update delalloc data reserve spcae in ext4_es_insert_extent()
+  ext4: drop ext4_es_delayed_clu()
+  ext4: use ext4_map_query_blocks() in ext4_map_blocks()
+  ext4: drop ext4_es_is_delonly()
+  ext4: drop all delonly descriptions
+  ext4: use reserved metadata blocks when splitting extent on endio
+  ext4: introduce seq counter for the extent status entry
+  ext4: add a new iomap aops for regular file's buffered IO path
+  ext4: implement buffered read iomap path
+  ext4: implement buffered write iomap path
+  ext4: implement writeback iomap path
+  ext4: implement mmap iomap path
+  ext4: implement zero_range iomap path
+  ext4: writeback partial blocks before zeroing out range
+  ext4: fall back to buffer_head path for defrag
+  ext4: partial enable iomap for regular file's buffered IO path
+  filemap: support disable large folios on active inode
+  ext4: enable large folio for regular file with iomap buffered IO path
+  ext4: don't mark IOMAP_F_DIRTY for buffer write
+  ext4: add mount option for buffered IO iomap path
+
+-- 
+2.39.2
+
 
