@@ -1,251 +1,176 @@
-Return-Path: <linux-kernel+bounces-138875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC88089FB8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:29:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2BFF89FBA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:32:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55EBC1F2AF90
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:29:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A81CDB297CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:23:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F30F16EC11;
-	Wed, 10 Apr 2024 15:29:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262D316E87F;
+	Wed, 10 Apr 2024 15:23:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="AijiieaE"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jh7bbOFp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F70215EFAE;
-	Wed, 10 Apr 2024 15:29:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EEBC16D30E
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:23:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712762975; cv=none; b=WBIBhGkhLfKB2Rspe/zt9LqInuPQJNxI9SuUqTd36cnRJkHnIO+LEDrPVcGXa9aVTq44xvXrSCEceTEsY+uID3azaWrgbr89zynKX+cyc6uQknTXm8HHoOqXS7+bnouTc9SnEqGHcPCsnXE9NcAjaMSeSMDEZ+7/6DoAQIgSK3w=
+	t=1712762595; cv=none; b=Or3bQK5QECMVUcKw4ksh6oM2gXlBRERlv7PBLDfotj/n/LiTyXTw9jg65oy3SJbJ3aOjF9tyR2HKyCHo1uPmJM2iC0NkcVXS+L0cSVUlKTb9UqMF0MupeE8pVOMG+5kHI1XS/8LXse6xSY3OXz0hHOWhA9iy3D7PI/zLnqFFmEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712762975; c=relaxed/simple;
-	bh=D6tHl94Mqj+YhPbkPg+wHj8JPc4IGyn8BYCHVddbrgY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Xgv30t7TIVxvxjWawrnk+Buf0lNhUviCm0KmbXrJk+qFt8QiYS+WXUB6FoQTh9SX8aOgfSq9GVxH+rReAE8T2bWev/fNsIThYpMmSGV+KUE6G/vDuwtqAjzov+gFbiVLnvIlp5YblCQtaJ9zogLm9E0tazqGUirltM3L/95/OOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=AijiieaE; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1712762536;
-	bh=D6tHl94Mqj+YhPbkPg+wHj8JPc4IGyn8BYCHVddbrgY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=AijiieaEGfw7A7pM0mjmSo8sVX6CMr/cpz12PzZzOquRvaJij36ufyzMY0u0hdCyC
-	 ZAGHedAKIakAvMptB0kqkD9KFC+0ja0ugryHuMNJ1scMqCyny2e+teq9W48o7tFfuL
-	 EH8VzABUdA+CMndHWNjO77acaUjAqbuIEv0w+h2WJ40vyoRmgzH5DFTHq7b6rc+fJS
-	 Ccv89+sQANkzISzE+Noaao87phvo9TkQnsZMePrZ8hWkW11Fx/zBqertHiJ8qi1Z4u
-	 qn9mwK2/+L0kvf3tlLe4MRgHkKd02sUcaXKzQp7c98MKPYQw2bTTUVGwrfdGXE6Vbw
-	 76Jc1Ii82FDtQ==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4VF6540SSfzrWT;
-	Wed, 10 Apr 2024 11:22:16 -0400 (EDT)
-Message-ID: <41bbe236-5c61-4a0e-91b1-b292179cde78@efficios.com>
-Date: Wed, 10 Apr 2024 11:22:51 -0400
+	s=arc-20240116; t=1712762595; c=relaxed/simple;
+	bh=qong20A2q8VuJFceVdjuzWHoeVW8ztpf3kivweA1hjU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZeVSUozkFU0w4IrIDP4fSIytBuNIefVTrMjPQQqy/o+j1OL/xFt+zEs2le8sC4Oi/na/dOAzE4ddfLI9YbC8vCIJ8GUWOdiW6lEmZ3csPK6twGQxFP4a9h921CtnW4n2IrDUva7I3Q+8ZQMfZH+HWVtwjoS2Cgb0GqpaPC+ow/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jh7bbOFp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8BCDC433C7;
+	Wed, 10 Apr 2024 15:23:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712762594;
+	bh=qong20A2q8VuJFceVdjuzWHoeVW8ztpf3kivweA1hjU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Jh7bbOFpXM1Lxz2NQS37GnYcPpzq2E7dOfRc3hgWgcpfX0hPh6bsDDGDdNE9GkYqx
+	 RHduVY4RPISLjitQwrS7TtMa30PWDCdHVlWog64NmKwUOwA2zD5OmRAZRQFASNCNTE
+	 6c0djUvrpdmeCRkQoTjM8ghqkd+R+psFH6mWWMVgBlkTkpOwemP7iHbBrcE1ajS8AI
+	 Vd9hFEv9+p4HKu0HTl9suh5Qv/40oQH5zePwaUxJo2zUNowELSP2QtyplVCvzWcw+w
+	 gQS9n3NYIpMBAMcLRUFbxmjeLW3pl7uop3MkQXqoUPdiH9fep7Ot/NSV92uuGEsHoq
+	 +JqfuG9oPCE/Q==
+Date: Wed, 10 Apr 2024 16:23:08 +0100
+From: Will Deacon <will@kernel.org>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>, mic@digikod.net,
+	keescook@chromium.org, davidgow@google.com, rmoar@google.com
+Cc: lkft-triage@lists.linaro.org, kunit-dev@googlegroups.com,
+	linux-kernel@vger.kernel.org, peterz@infradead.org,
+	mingo@redhat.com, longman@redhat.com, boqun.feng@gmail.com,
+	anders.roxell@linaro.org, dan.carpenter@linaro.org, arnd@arndb.de,
+	linux@roeck-us.net,
+	Linux Kernel Functional Testing <lkft@linaro.org>
+Subject: Re: BUG: KASAN: null-ptr-deref in _raw_spin_lock_irq next-20240410
+Message-ID: <20240410152307.GA25111@willie-the-truck>
+References: <20240410102710.35911-1-naresh.kamboju@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sched: Add missing memory barrier in switch_mm_cid
-To: Yeo Reum Yun <YeoReum.Yun@arm.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>,
- Steven Rostedt <rostedt@goodmis.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Dietmar Eggemann <Dietmar.Eggemann@arm.com>, Ben Segall
- <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Valentin Schneider <vschneid@redhat.com>,
- Catalin Marinas <Catalin.Marinas@arm.com>,
- Mark Rutland <Mark.Rutland@arm.com>, Will Deacon <will@kernel.org>,
- Aaron Lu <aaron.lu@intel.com>
-References: <20240308150719.676738-1-mathieu.desnoyers@efficios.com>
- <AM0PR08MB42895432478A020E2C5B6C5FFB2C2@AM0PR08MB4289.eurprd08.prod.outlook.com>
- <AM0PR08MB428921B21B38D517A8A61FC4FB002@AM0PR08MB4289.eurprd08.prod.outlook.com>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Language: en-US
-In-Reply-To: <AM0PR08MB428921B21B38D517A8A61FC4FB002@AM0PR08MB4289.eurprd08.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240410102710.35911-1-naresh.kamboju@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Peter, Ingo, can you please consider merging this fix ?
+On Wed, Apr 10, 2024 at 03:57:10PM +0530, Naresh Kamboju wrote:
+> Following kernel crash noticed on Linux next-20240410 tag while running
+> kunit testing on qemu-arm64 and qemu-x86_64.
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> 
+> Crash log on qemu-arm64:
+> ----------------
+> <3>[ 30.465716] BUG: KASAN: null-ptr-deref in _raw_spin_lock_irq (include/linux/instrumented.h:96 include/linux/atomic/atomic-instrumented.h:1301 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:120 kernel/locking/spinlock.c:170) 
+> <3>[   30.467097] Write of size 4 at addr 0000000000000008 by task swapper/0/1
+> <3>[   30.468059]
+> <3>[   30.468393] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G    B            N 6.9.0-rc3-next-20240410 #1
+> <3>[   30.469209] Hardware name: linux,dummy-virt (DT)
+> <3>[   30.469645] Call trace:
+> <3>[ 30.469919] dump_backtrace (arch/arm64/kernel/stacktrace.c:319) 
+> <3>[ 30.471622] show_stack (arch/arm64/kernel/stacktrace.c:326) 
+> <3>[ 30.472124] dump_stack_lvl (lib/dump_stack.c:117) 
+> <3>[ 30.472947] print_report (mm/kasan/report.c:493) 
+> <3>[ 30.473755] kasan_report (mm/kasan/report.c:603) 
+> <3>[ 30.474524] kasan_check_range (mm/kasan/generic.c:175 mm/kasan/generic.c:189) 
+> <3>[ 30.475094] __kasan_check_write (mm/kasan/shadow.c:38) 
+> <3>[ 30.475683] _raw_spin_lock_irq (include/linux/instrumented.h:96 include/linux/atomic/atomic-instrumented.h:1301 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:120 kernel/locking/spinlock.c:170) 
+> <3>[ 30.476257] wait_for_completion_timeout (kernel/sched/completion.c:84 kernel/sched/completion.c:116 kernel/sched/completion.c:127 kernel/sched/completion.c:167) 
+> <3>[ 30.476909] kunit_try_catch_run (lib/kunit/try-catch.c:86) 
+> <3>[ 30.477628] kunit_run_case_catch_errors (lib/kunit/test.c:544) 
+> <3>[ 30.478311] kunit_run_tests (lib/kunit/test.c:635) 
+> <3>[ 30.478865] __kunit_test_suites_init (lib/kunit/test.c:729 (discriminator 1)) 
+> <3>[ 30.479482] kunit_run_all_tests (lib/kunit/executor.c:276 lib/kunit/executor.c:392) 
+> <3>[ 30.480079] kernel_init_freeable (init/main.c:1578) 
+> <3>[ 30.480747] kernel_init (init/main.c:1465) 
+> <3>[ 30.481474] ret_from_fork (arch/arm64/kernel/entry.S:861) 
+> <3>[   30.482080] ==================================================================
+> <1>[   30.484503] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
+> <1>[   30.485369] Mem abort info:
+> <1>[   30.485923]   ESR = 0x000000009600006b
+> <1>[   30.486943]   EC = 0x25: DABT (current EL), IL = 32 bits
+> <1>[   30.487540]   SET = 0, FnV = 0
+> <1>[   30.488007]   EA = 0, S1PTW = 0
+> <1>[   30.488509]   FSC = 0x2b: level -1 translation fault
+> <1>[   30.489150] Data abort info:
+> <1>[   30.489610]   ISV = 0, ISS = 0x0000006b, ISS2 = 0x00000000
+> <1>[   30.490360]   CM = 0, WnR = 1, TnD = 0, TagAccess = 0
+> <1>[   30.491057]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+> <1>[   30.491822] [0000000000000008] user address but active_mm is swapper
+> <0>[   30.493008] Internal error: Oops: 000000009600006b [#1] PREEMPT SMP
+> <4>[   30.494105] Modules linked in:
+> <4>[   30.496244] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G    B            N 6.9.0-rc3-next-20240410 #1
+> <4>[   30.497171] Hardware name: linux,dummy-virt (DT)
+> <4>[   30.497905] pstate: 224000c9 (nzCv daIF +PAN -UAO +TCO -DIT -SSBS BTYPE=--)
+> <4>[ 30.498895] pc : _raw_spin_lock_irq (arch/arm64/include/asm/atomic_lse.h:271 arch/arm64/include/asm/cmpxchg.h:120 arch/arm64/include/asm/cmpxchg.h:169 include/linux/atomic/atomic-arch-fallback.h:2055 include/linux/atomic/atomic-arch-fallback.h:2173 include/linux/atomic/atomic-instrumented.h:1302 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:120 kernel/locking/spinlock.c:170) 
+> <4>[ 30.499542] lr : _raw_spin_lock_irq (include/linux/atomic/atomic-arch-fallback.h:2172 (discriminator 1) include/linux/atomic/atomic-instrumented.h:1302 (discriminator 1) include/asm-generic/qspinlock.h:111 (discriminator 1) include/linux/spinlock.h:187 (discriminator 1) include/linux/spinlock_api_smp.h:120 (discriminator 1) kernel/locking/spinlock.c:170 (discriminator 1)) 
+> 
+> <trim>
 
-It adds a missing memory barrier in switch_mm_cid(), which is a
-no-op on x86 because switch_mm already provides it. This issue was
-reported more than a month ago.
+It's a shame that you have trimmed the register dump here.
 
-Thanks,
+> <4>[   30.511022] Call trace:
+> <4>[ 30.511437] _raw_spin_lock_irq (arch/arm64/include/asm/atomic_lse.h:271 arch/arm64/include/asm/cmpxchg.h:120 arch/arm64/include/asm/cmpxchg.h:169 include/linux/atomic/atomic-arch-fallback.h:2055 include/linux/atomic/atomic-arch-fallback.h:2173 include/linux/atomic/atomic-instrumented.h:1302 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:120 kernel/locking/spinlock.c:170) 
+> <4>[ 30.512013] wait_for_completion_timeout (kernel/sched/completion.c:84 kernel/sched/completion.c:116 kernel/sched/completion.c:127 kernel/sched/completion.c:167) 
+> <4>[ 30.512627] kunit_try_catch_run (lib/kunit/try-catch.c:86) 
+> <4>[ 30.513188] kunit_run_case_catch_errors (lib/kunit/test.c:544) 
+> <4>[ 30.513801] kunit_run_tests (lib/kunit/test.c:635) 
 
-Mathieu
+Ok, so 'task_struct->vfork_done' is NULL. Looks like this code was added
+recently, so adding Mickaël to cc.
 
-On 2024-04-08 05:38, Yeo Reum Yun wrote:
-> Gentle ping...
+Will
+
+> <4>[ 30.514674] __kunit_test_suites_init (lib/kunit/test.c:729 (discriminator 1)) 
+> <4>[ 30.515259] kunit_run_all_tests (lib/kunit/executor.c:276 lib/kunit/executor.c:392) 
+> <4>[ 30.515831] kernel_init_freeable (init/main.c:1578) 
+> <4>[ 30.516384] kernel_init (init/main.c:1465) 
+> <4>[ 30.516900] ret_from_fork (arch/arm64/kernel/entry.S:861) 
+> <0>[ 30.518151] Code: 93407c02 d503201f 2a0003e1 52800022 (88e17e62)
+> All code
+> ========
+>    0:	93407c02 	sxtw	x2, w0
+>    4:	d503201f 	nop
+>    8:	2a0003e1 	mov	w1, w0
+>    c:	52800022 	mov	w2, #0x1                   	// #1
+>   10:*	88e17e62 	casa	w1, w2, [x19]		<-- trapping instruction
 > 
-> ________________________________________
-> From: Yeo Reum Yun <YeoReum.Yun@arm.com>
-> Sent: 19 March 2024 09:20
-> To: Mathieu Desnoyers; Ingo Molnar; Peter Zijlstra
-> Cc: linux-kernel@vger.kernel.org; stable@vger.kernel.org; Steven Rostedt; Vincent Guittot; Juri Lelli; Dietmar Eggemann; Ben Segall; Mel Gorman; Daniel Bristot de Oliveira; Valentin Schneider; Catalin Marinas; Mark Rutland; Will Deacon; Aaron Lu
-> Subject: Re: [PATCH] sched: Add missing memory barrier in switch_mm_cid
+> Code starting with the faulting instruction
+> ===========================================
+>    0:	88e17e62 	casa	w1, w2, [x19]
+> <4>[   30.519501] ---[ end trace 0000000000000000 ]---
+> <6>[   30.520317] note: swapper/0[1] exited with irqs disabled
+> <6>[   30.521355] note: swapper/0[1] exited with preempt_count 1
+> <0>[   30.523129] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> <2>[   30.524397] SMP: stopping secondary CPUs
+> <0>[   30.525553] Kernel Offset: 0x25148d400000 from 0xffff800080000000
+> <0>[   30.528341] PHYS_OFFSET: 0x40000000
+> <0>[   30.529003] CPU features: 0x0,00000006,8f17bd7c,6766773f
+> <0>[   30.530313] Memory Limit: none
+> <0>[   30.531319] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
 > 
-> Gentle ping.
-> 
-> ________________________________________
-> From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Sent: 08 March 2024 15:07
-> To: Ingo Molnar; Peter Zijlstra
-> Cc: linux-kernel@vger.kernel.org; Mathieu Desnoyers; Yeo Reum Yun; stable@vger.kernel.org; Steven Rostedt; Vincent Guittot; Juri Lelli; Dietmar Eggemann; Ben Segall; Mel Gorman; Daniel Bristot de Oliveira; Valentin Schneider; Catalin Marinas; Mark Rutland; Will Deacon; Aaron Lu
-> Subject: [PATCH] sched: Add missing memory barrier in switch_mm_cid
-> 
-> Many architectures' switch_mm() (e.g. arm64) do not have an smp_mb()
-> which the core scheduler code has depended upon since commit:
-> 
->      commit 223baf9d17f25 ("sched: Fix performance regression introduced by mm_cid")
-> 
-> If switch_mm() doesn't call smp_mb(), sched_mm_cid_remote_clear() can
-> unset the actively used cid when it fails to observe active task after it
-> sets lazy_put.
-> 
-> There *is* a memory barrier between storing to rq->curr and _return to
-> userspace_ (as required by membarrier), but the rseq mm_cid has stricter
-> requirements: the barrier needs to be issued between store to rq->curr
-> and switch_mm_cid(), which happens earlier than:
-> 
-> - spin_unlock(),
-> - switch_to().
-> 
-> So it's fine when the architecture switch_mm happens to have that barrier
-> already, but less so when the architecture only provides the full barrier
-> in switch_to() or spin_unlock().
-> 
-> It is a bug in the rseq switch_mm_cid() implementation. All architectures
-> that don't have memory barriers in switch_mm(), but rather have the full
-> barrier either in finish_lock_switch() or switch_to() have them too late
-> for the needs of switch_mm_cid().
-> 
-> Introduce a new smp_mb__after_switch_mm(), defined as smp_mb() in the
-> generic barrier.h header, and use it in switch_mm_cid() for scheduler
-> transitions where switch_mm() is expected to provide a memory barrier.
-> 
-> Architectures can override smp_mb__after_switch_mm() if their
-> switch_mm() implementation provides an implicit memory barrier.
-> Override it with a no-op on x86 which implicitly provide this memory
-> barrier by writing to CR3.
-> 
-> Link: https://lore.kernel.org/lkml/20240305145335.2696125-1-yeoreum.yun@arm.com/
-> Reported-by: levi.yun <yeoreum.yun@arm.com>
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Fixes: 223baf9d17f2 ("sched: Fix performance regression introduced by mm_cid")
-> Cc: <stable@vger.kernel.org> # 6.4.x
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Ben Segall <bsegall@google.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Valentin Schneider <vschneid@redhat.com>
-> Cc: levi.yun <yeoreum.yun@arm.com>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Aaron Lu <aaron.lu@intel.com>
+> Steps to reproduce:
 > ---
->   arch/x86/include/asm/barrier.h |  3 +++
->   include/asm-generic/barrier.h  |  8 ++++++++
->   kernel/sched/sched.h           | 20 ++++++++++++++------
->   3 files changed, 25 insertions(+), 6 deletions(-)
+> https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2etdCz631GU6PILJzs8reteba8i/reproducer
 > 
-> diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
-> index 35389b2af88e..0d5e54201eb2 100644
-> --- a/arch/x86/include/asm/barrier.h
-> +++ b/arch/x86/include/asm/barrier.h
-> @@ -79,6 +79,9 @@ do {                                                                  \
->   #define __smp_mb__before_atomic()      do { } while (0)
->   #define __smp_mb__after_atomic()       do { } while (0)
+> Links:
+>  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240410/testrun/23381881/suite/log-parser-test/tests/
+>  - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2etdCz631GU6PILJzs8reteba8i
+>  - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2etdDjlx3eRFhhK9cy2UsEHAXTr
 > 
-> +/* Writing to CR3 provides a full memory barrier in switch_mm(). */
-> +#define smp_mb__after_switch_mm()      do { } while (0)
-> +
->   #include <asm-generic/barrier.h>
-> 
->   /*
-> diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
-> index 961f4d88f9ef..5a6c94d7a598 100644
-> --- a/include/asm-generic/barrier.h
-> +++ b/include/asm-generic/barrier.h
-> @@ -296,5 +296,13 @@ do {                                                                       \
->   #define io_stop_wc() do { } while (0)
->   #endif
-> 
-> +/*
-> + * Architectures that guarantee an implicit smp_mb() in switch_mm()
-> + * can override smp_mb__after_switch_mm.
-> + */
-> +#ifndef smp_mb__after_switch_mm
-> +#define smp_mb__after_switch_mm()      smp_mb()
-> +#endif
-> +
->   #endif /* !__ASSEMBLY__ */
->   #endif /* __ASM_GENERIC_BARRIER_H */
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 2e5a95486a42..044d842c696c 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -79,6 +79,8 @@
->   # include <asm/paravirt_api_clock.h>
->   #endif
-> 
-> +#include <asm/barrier.h>
-> +
->   #include "cpupri.h"
->   #include "cpudeadline.h"
-> 
-> @@ -3481,13 +3483,19 @@ static inline void switch_mm_cid(struct rq *rq,
->                   * between rq->curr store and load of {prev,next}->mm->pcpu_cid[cpu].
->                   * Provide it here.
->                   */
-> -               if (!prev->mm)                          // from kernel
-> +               if (!prev->mm) {                        // from kernel
->                          smp_mb();
-> -               /*
-> -                * user -> user transition guarantees a memory barrier through
-> -                * switch_mm() when current->mm changes. If current->mm is
-> -                * unchanged, no barrier is needed.
-> -                */
-> +               } else {                                // from user
-> +                       /*
-> +                        * user -> user transition relies on an implicit
-> +                        * memory barrier in switch_mm() when
-> +                        * current->mm changes. If the architecture
-> +                        * switch_mm() does not have an implicit memory
-> +                        * barrier, it is emitted here.  If current->mm
-> +                        * is unchanged, no barrier is needed.
-> +                        */
-> +                       smp_mb__after_switch_mm();
-> +               }
->          }
->          if (prev->mm_cid_active) {
->                  mm_cid_snapshot_time(rq, prev->mm);
 > --
-> 2.39.2
-> 
-> IMPORTANT NOTICE: The contents of this email and any attachments are confidential and may also be privileged. If you are not the intended recipient, please notify the sender immediately and do not disclose the contents to any other person, use it for any purpose, or store or copy the information in any medium. Thank you.
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+> Linaro LKFT
+> https://lkft.linaro.org
 
