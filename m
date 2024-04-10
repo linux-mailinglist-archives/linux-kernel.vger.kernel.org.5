@@ -1,142 +1,135 @@
-Return-Path: <linux-kernel+bounces-138385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 537C389F085
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:17:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABFFB89F087
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:17:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0736B1F22181
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:17:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B0A91F243D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:17:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED8A31598EC;
-	Wed, 10 Apr 2024 11:17:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F88615A4A0;
+	Wed, 10 Apr 2024 11:17:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ezlcjtmD"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="U+Y67atA"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C7615957C;
-	Wed, 10 Apr 2024 11:17:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F132415957C
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 11:17:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712747847; cv=none; b=qN6yI+AqQOSVowOydKxwoRL5NZ7mePVs8MEGK1zts+0XTOrQE86DmMQnycmU95jCCTlLv+2EcKC0AYpQHFow9UENsxfDblxdDdukMgw/ujCWg9DuFoRUWxafIkS3Jzdhxu0JjtJB8qAd1uUi3EJYglsREL/edgRT19GtXMjtXN8=
+	t=1712747854; cv=none; b=T2SfNL7tJUlBWFU+LsWu0qgy1RJqU3Jdi400gGu8lsV2C9G7sr3YRjLYAtSS30p5/U7jXcov4m2BaqgmyZHmzbj2s68sKdUNkY/nWjFkvpwPThxhpAraXJCnrTRu3nKVswiNzRiWRZoOYLxj7YT/ysh2rkbFWpQ4fOuS7GEh5hU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712747847; c=relaxed/simple;
-	bh=pER0NM4vYBrvd5XYubWKnRCsZIKjQJ16u1XGT5yrFT4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=me942siNDx7SkVnUqlxxZ9v+qmASqNx/0gw1pue7DjjnfPnzPTiBUJfC09tBITp1rj7ngY8bqkZSiaL0YV9nQIxTnWNNG2dZjm6zTuUffCVJ/BCqaSu4FbHRt6XjZoY4HeZTrncS+rPnDr3LlbjJFxj5T2m30hZFUtC3igE9gis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ezlcjtmD; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712747846; x=1744283846;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=pER0NM4vYBrvd5XYubWKnRCsZIKjQJ16u1XGT5yrFT4=;
-  b=ezlcjtmD/ktM6A92Py7vXB7YFnk1c6cdDfeOBpHDfbA+wwGqPx9W8qta
-   6zcTrCwQGG8oPzEewnKcnbkmgUKJTEqVlcfVuWjoZgsfIP3CqRUEo/9kY
-   vR8L2BbkyRRg8qFzCX58ZvqPJLWi7iQLG694Ah1F+fk1OlSW26NDxQO1g
-   JOqmKhI76pBighwbRjpqrkicDWoriHADgX7zW6kT5rX8y7SDMAQGifs9J
-   8pBNVbrptXfDnBbAEYbU/jz1lj3sAqFgwuCx1nXcIS7kY6Ktf9rKQpJJV
-   fF82IlVyiM1pZTwjsMTLroW7iBeGqR9thp3S8poamNqxaHpZOCpDzDn4S
-   A==;
-X-CSE-ConnectionGUID: xXbGhC6MSze6amyX8fKQTA==
-X-CSE-MsgGUID: MrYdJLMeRXuqA6InNhIaDw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="18816381"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="18816381"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 04:17:25 -0700
-X-CSE-ConnectionGUID: C7AjCQ9rTfCAdoyAp2k11Q==
-X-CSE-MsgGUID: 3r34T1WgR5imCm5yu/AUJg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="20414713"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 04:17:23 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 4FAAC1203E6;
-	Wed, 10 Apr 2024 14:17:20 +0300 (EEST)
-Date: Wed, 10 Apr 2024 11:17:20 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Umang Jain <umang.jain@ideasonboard.com>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 8/9] media: subdev: Refactor
- v4l2_subdev_enable/disable_streams()
-Message-ID: <ZhZ1QNAaRtplcero@kekkonen.localdomain>
-References: <20240405-enable-streams-impro-v2-0-22bca967665d@ideasonboard.com>
- <20240405-enable-streams-impro-v2-8-22bca967665d@ideasonboard.com>
- <ZhZmNC4hQv1leL-y@kekkonen.localdomain>
- <ec113029-bf85-44c7-9e56-d242e5eecba0@ideasonboard.com>
+	s=arc-20240116; t=1712747854; c=relaxed/simple;
+	bh=/u1p56tdaXxp2yK56jG72UzjVc+r2CoFz/j0yhGHom8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=jGqF4SXYbbXEd9csGoiCxbIFChEw9OJvnG3KaOxQgkEorsb+Jjm6SZ+yqgVpBWM3P09M9AqIfBrkmY/N1V9wqAY2vc/hn8fK1tUeXL0/aWyFAkVIJxriSf5Hmaj/AxbIPLP+YLNgpYz0pQYO0IbyYJFOvhBnf2+CtnQz2REN9L8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=U+Y67atA; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id AFCD1741;
+	Wed, 10 Apr 2024 13:16:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1712747809;
+	bh=/u1p56tdaXxp2yK56jG72UzjVc+r2CoFz/j0yhGHom8=;
+	h=Date:Subject:To:References:From:Cc:In-Reply-To:From;
+	b=U+Y67atAvRJ7sAxq/fm0pC4bnVp4j8JrlaROuK4Xc6lRd+9g3uR57WmDd1BY0C4Uk
+	 nwS+vVeWdiYQ3ZOueJL5irITlyOwOHcbnvffwJhBY5ExCWQ7DVsEEQMNtaPRyMXxG1
+	 PdQiL5cNF44beNwDz4AaawyLpRZvx2s4G7Vsqto8=
+Message-ID: <37a20f0c-3911-4fa5-a5be-88e1d7fe4c50@ideasonboard.com>
+Date: Wed, 10 Apr 2024 14:17:27 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ec113029-bf85-44c7-9e56-d242e5eecba0@ideasonboard.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/omap: dmm_tiler: drop driver owner assignment
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+References: <20240330202804.83936-1-krzysztof.kozlowski@linaro.org>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Content-Language: en-US
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ xsFNBE6ms0cBEACyizowecZqXfMZtnBniOieTuFdErHAUyxVgtmr0f5ZfIi9Z4l+uUN4Zdw2
+ wCEZjx3o0Z34diXBaMRJ3rAk9yB90UJAnLtb8A97Oq64DskLF81GCYB2P1i0qrG7UjpASgCA
+ Ru0lVvxsWyIwSfoYoLrazbT1wkWRs8YBkkXQFfL7Mn3ZMoGPcpfwYH9O7bV1NslbmyJzRCMO
+ eYV258gjCcwYlrkyIratlHCek4GrwV8Z9NQcjD5iLzrONjfafrWPwj6yn2RlL0mQEwt1lOvn
+ LnI7QRtB3zxA3yB+FLsT1hx0va6xCHpX3QO2gBsyHCyVafFMrg3c/7IIWkDLngJxFgz6DLiA
+ G4ld1QK/jsYqfP2GIMH1mFdjY+iagG4DqOsjip479HCWAptpNxSOCL6z3qxCU8MCz8iNOtZk
+ DYXQWVscM5qgYSn+fmMM2qN+eoWlnCGVURZZLDjg387S2E1jT/dNTOsM/IqQj+ZROUZuRcF7
+ 0RTtuU5q1HnbRNwy+23xeoSGuwmLQ2UsUk7Q5CnrjYfiPo3wHze8avK95JBoSd+WIRmV3uoO
+ rXCoYOIRlDhg9XJTrbnQ3Ot5zOa0Y9c4IpyAlut6mDtxtKXr4+8OzjSVFww7tIwadTK3wDQv
+ Bus4jxHjS6dz1g2ypT65qnHen6mUUH63lhzewqO9peAHJ0SLrQARAQABzTBUb21pIFZhbGtl
+ aW5lbiA8dG9taS52YWxrZWluZW5AaWRlYXNvbmJvYXJkLmNvbT7CwY4EEwEIADgWIQTEOAw+
+ ll79gQef86f6PaqMvJYe9QUCX/HruAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRD6
+ PaqMvJYe9WmFD/99NGoD5lBJhlFDHMZvO+Op8vCwnIRZdTsyrtGl72rVh9xRfcSgYPZUvBuT
+ VDxE53mY9HaZyu1eGMccYRBaTLJSfCXl/g317CrMNdY0k40b9YeIX10feiRYEWoDIPQ3tMmA
+ 0nHDygzcnuPiPT68JYZ6tUOvAt7r6OX/litM+m2/E9mtp8xCoWOo/kYO4mOAIoMNvLB8vufi
+ uBB4e/AvAjtny4ScuNV5c5q8MkfNIiOyag9QCiQ/JfoAqzXRjVb4VZG72AKaElwipiKCWEcU
+ R4+Bu5Qbaxj7Cd36M/bI54OrbWWETJkVVSV1i0tghCd6HHyquTdFl7wYcz6cL1hn/6byVnD+
+ sR3BLvSBHYp8WSwv0TCuf6tLiNgHAO1hWiQ1pOoXyMEsxZlgPXT+wb4dbNVunckwqFjGxRbl
+ Rz7apFT/ZRwbazEzEzNyrBOfB55xdipG/2+SmFn0oMFqFOBEszXLQVslh64lI0CMJm2OYYe3
+ PxHqYaztyeXsx13Bfnq9+bUynAQ4uW1P5DJ3OIRZWKmbQd/Me3Fq6TU57LsvwRgE0Le9PFQs
+ dcP2071rMTpqTUteEgODJS4VDf4lXJfY91u32BJkiqM7/62Cqatcz5UWWHq5xeF03MIUTqdE
+ qHWk3RJEoWHWQRzQfcx6Fn2fDAUKhAddvoopfcjAHfpAWJ+ENc7BTQROprNHARAAx0aat8GU
+ hsusCLc4MIxOQwidecCTRc9Dz/7U2goUwhw2O5j9TPqLtp57VITmHILnvZf6q3QAho2QMQyE
+ DDvHubrdtEoqaaSKxKkFie1uhWNNvXPhwkKLYieyL9m2JdU+b88HaDnpzdyTTR4uH7wk0bBa
+ KbTSgIFDDe5lXInypewPO30TmYNkFSexnnM3n1PBCqiJXsJahE4ZQ+WnV5FbPUj8T2zXS2xk
+ 0LZ0+DwKmZ0ZDovvdEWRWrz3UzJ8DLHb7blPpGhmqj3ANXQXC7mb9qJ6J/VSl61GbxIO2Dwb
+ xPNkHk8fwnxlUBCOyBti/uD2uSTgKHNdabhVm2dgFNVuS1y3bBHbI/qjC3J7rWE0WiaHWEqy
+ UVPk8rsph4rqITsj2RiY70vEW0SKePrChvET7D8P1UPqmveBNNtSS7In+DdZ5kUqLV7rJnM9
+ /4cwy+uZUt8cuCZlcA5u8IsBCNJudxEqBG10GHg1B6h1RZIz9Q9XfiBdaqa5+CjyFs8ua01c
+ 9HmyfkuhXG2OLjfQuK+Ygd56mV3lq0aFdwbaX16DG22c6flkkBSjyWXYepFtHz9KsBS0DaZb
+ 4IkLmZwEXpZcIOQjQ71fqlpiXkXSIaQ6YMEs8WjBbpP81h7QxWIfWtp+VnwNGc6nq5IQDESH
+ mvQcsFS7d3eGVI6eyjCFdcAO8eMAEQEAAcLBXwQYAQIACQUCTqazRwIbDAAKCRD6PaqMvJYe
+ 9fA7EACS6exUedsBKmt4pT7nqXBcRsqm6YzT6DeCM8PWMTeaVGHiR4TnNFiT3otD5UpYQI7S
+ suYxoTdHrrrBzdlKe5rUWpzoZkVK6p0s9OIvGzLT0lrb0HC9iNDWT3JgpYDnk4Z2mFi6tTbq
+ xKMtpVFRA6FjviGDRsfkfoURZI51nf2RSAk/A8BEDDZ7lgJHskYoklSpwyrXhkp9FHGMaYII
+ m9EKuUTX9JPDG2FTthCBrdsgWYPdJQvM+zscq09vFMQ9Fykbx5N8z/oFEUy3ACyPqW2oyfvU
+ CH5WDpWBG0s5BALp1gBJPytIAd/pY/5ZdNoi0Cx3+Z7jaBFEyYJdWy1hGddpkgnMjyOfLI7B
+ CFrdecTZbR5upjNSDvQ7RG85SnpYJTIin+SAUazAeA2nS6gTZzumgtdw8XmVXZwdBfF+ICof
+ 92UkbYcYNbzWO/GHgsNT1WnM4sa9lwCSWH8Fw1o/3bX1VVPEsnESOfxkNdu+gAF5S6+I6n3a
+ ueeIlwJl5CpT5l8RpoZXEOVtXYn8zzOJ7oGZYINRV9Pf8qKGLf3Dft7zKBP832I3PQjeok7F
+ yjt+9S+KgSFSHP3Pa4E7lsSdWhSlHYNdG/czhoUkSCN09C0rEK93wxACx3vtxPLjXu6RptBw
+ 3dRq7n+mQChEB1am0BueV1JZaBboIL0AGlSJkm23kw==
+In-Reply-To: <20240330202804.83936-1-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 10, 2024 at 01:35:41PM +0300, Tomi Valkeinen wrote:
-> On 10/04/2024 13:13, Sakari Ailus wrote:
-> > Moi,
-> > 
-> > Thank you for working on this.
-> > 
-> > On Fri, Apr 05, 2024 at 12:14:26PM +0300, Tomi Valkeinen wrote:
-> > > Add two internal helper functions, v4l2_subdev_collect_streams() and
-> > > v4l2_subdev_set_streams_enabled(), which allows us to refactor
-> > > v4l2_subdev_enable/disable_streams() functions.
-> > > 
-> > > This (I think) makes the code a bit easier to read, and lets us more
-> > > easily add new functionality in the helper functions in the following
-> > > patch.
-> > > 
-> > > Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> > > ---
-> > >   drivers/media/v4l2-core/v4l2-subdev.c | 111 +++++++++++++++++++---------------
-> > >   1 file changed, 62 insertions(+), 49 deletions(-)
-> > > 
-> > > diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> > > index 015f2fb423c9..6c3c9069f1e2 100644
-> > > --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> > > +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> > > @@ -2099,6 +2099,44 @@ int v4l2_subdev_routing_validate(struct v4l2_subdev *sd,
-> > >   }
-> > >   EXPORT_SYMBOL_GPL(v4l2_subdev_routing_validate);
-> > > +static void v4l2_subdev_collect_streams(struct v4l2_subdev *sd,
-> > > +					struct v4l2_subdev_state *state,
-> > > +					u32 pad, u64 streams_mask,
-> > > +					u64 *found_streams,
-> > > +					u64 *enabled_streams)
-> > > +{
-> > > +	*found_streams = 0;
-> > > +	*enabled_streams = 0;
-> > > +
-> > > +	for (unsigned int i = 0; i < state->stream_configs.num_configs; ++i) {
-> > > +		const struct v4l2_subdev_stream_config *cfg;
-> > > +
-> > > +		cfg = &state->stream_configs.configs[i];
-> > 
-> > You can do the assignment in declaration.
+On 30/03/2024 22:28, Krzysztof Kozlowski wrote:
+> Core in platform_driver_register() already sets the .owner, so driver
+> does not need to.  Whatever is set here will be anyway overwritten by
+> main driver calling platform_driver_register().
 > 
-> I can, but you want the lines to be split at 80, so that'll end up being in
-> two lines, which, I think, looks messier than the one above.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>   drivers/gpu/drm/omapdrm/omap_dmm_tiler.c | 1 -
+>   1 file changed, 1 deletion(-)
 > 
-> Usually I think doing initialization when declaring the variable is best
-> done if it fits into one line.
+> diff --git a/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c b/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+> index 9753c1e1f994..1aca3060333e 100644
+> --- a/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+> +++ b/drivers/gpu/drm/omapdrm/omap_dmm_tiler.c
+> @@ -1212,7 +1212,6 @@ struct platform_driver omap_dmm_driver = {
+>   	.probe = omap_dmm_probe,
+>   	.remove_new = omap_dmm_remove,
+>   	.driver = {
+> -		.owner = THIS_MODULE,
+>   		.name = DMM_DRIVER_NAME,
+>   		.of_match_table = of_match_ptr(dmm_of_match),
+>   		.pm = &omap_dmm_pm_ops,
 
-I don't consider a line break being an issue here (or almost anywhere else,
-except possibly for arrays of definitions).
+Thanks, applying to drm-misc-next.
 
--- 
-Sakari Ailus
+  Tomi
+
 
