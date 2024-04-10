@@ -1,131 +1,164 @@
-Return-Path: <linux-kernel+bounces-137850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A8C489E83D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:35:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF0598A1C38
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:41:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EACB288E5A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:35:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FB751F260C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:41:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8379112E5E;
-	Wed, 10 Apr 2024 02:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79ED415ADBF;
+	Thu, 11 Apr 2024 16:12:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IKtPTZq/"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XKhyR30J"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60043BE62;
-	Wed, 10 Apr 2024 02:34:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3436F171B6
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:12:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712716489; cv=none; b=bPI3jiWDSZlk7tByX2Fp6qE/F3rOy75mxqRyOGIZNcssYt2lFWq4T2v6m/otuvzIuUVN7h5peYu3602GRGPOo4tANApZ4d4z9aT4Ds05Owy4BKU5XRtUuroeow6yexZLAjvbuDUQiL8/J595L7JN/0RN7z43N3+rVizZW26P0cg=
+	t=1712851924; cv=none; b=SOlPJL3h9zPIZapyR8rRjtgdYK84lNWAAumj/jmf7bb049iVj1MIVB0xMwXKnb3ypJnh/wdEXyUh2hlbYi2m3/XqMbLtrC5ISMSgeNeMmb02spgF3gsdjCr8BOnYDNhwIQHQS+z5EMsXQvZ5LAQS3n/IVRY9FL1GT4acNdcf+Iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712716489; c=relaxed/simple;
-	bh=97waEfdu4g/jn/zcy7Jw0obSybbX1Ba1zMABmsAkRe0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=l6xSvJNT5PZNg8FiHyQXkBeTD9mNI77DTvNmhsiug5+EntlJEulqKbKWzAt4k+S6FRVYL8zxKen46+fUrA3i3UqdMohVIj6Q59LT12BirC2D2Yur0M6x7rmsoXo2aXL8mvLgSNIKTniQclfxEUW66GH3LhhfjE0kTEf21HegFvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IKtPTZq/; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712716489; x=1744252489;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=97waEfdu4g/jn/zcy7Jw0obSybbX1Ba1zMABmsAkRe0=;
-  b=IKtPTZq/GO8UJKZ0y3F99sPupBomTAaYRkcTo4Pq2oQUE01m3A6msakE
-   jHxyvXM3eePerAwNaUOOgdFdry3EXw/RfdPYJeYjPrcAVahq8hQzI2dpY
-   tdJMCvL2siq4qlMH+gaW/dewrzwKLnzN3gaQ4zLQxgwanoFU2Ga4nkO8c
-   MWb1jpEdLgrIfM+mm/3iKYLOPJg+wx9h4yFoRFMYJutIwB/d8Wq2nq50B
-   InzGMJSMTPq5lkimD0c4dgTI+OH7iybOnDuFILdEy4Ft29mVteA3iyTJ+
-   Hgj3TjTvmzLJXwwus8I/qnCu7fYFNaniSQzp+CEiNRaUlZQxAwFdk+FJj
-   A==;
-X-CSE-ConnectionGUID: YfQZkmRMQ9SrGgdx4nM6KA==
-X-CSE-MsgGUID: jzvd2IvLQUaF7Sgng1BLag==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11900180"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="11900180"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 19:34:45 -0700
-X-CSE-ConnectionGUID: C0dh7/ybRy+ntOWUiALZEw==
-X-CSE-MsgGUID: V6jwpZppQZCusLJQQRHtzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="43658584"
-Received: from yungchua-ws.ostc.intel.com (HELO yungchua-ws.intel.com) ([10.54.69.90])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 19:34:44 -0700
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
-To: linux-sound@vger.kernel.org,
-	vkoul@kernel.org,
-	broonie@kernel.org,
-	tiwai@suse.de
-Cc: vinod.koul@linaro.org,
-	linux-kernel@vger.kernel.org,
-	pierre-louis.bossart@linux.intel.com,
-	bard.liao@intel.com
-Subject: [PATCH 4/4] soundwire: intel_init: resume all devices on exit.
-Date: Wed, 10 Apr 2024 02:34:38 +0000
-Message-Id: <20240410023438.487017-5-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240410023438.487017-1-yung-chuan.liao@linux.intel.com>
-References: <20240410023438.487017-1-yung-chuan.liao@linux.intel.com>
+	s=arc-20240116; t=1712851924; c=relaxed/simple;
+	bh=iZJ65E4jwpdPJWy55MJCZoVveyH46gJ2hl1C21236H4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JSdBfZUUZTL09Lqv6M645tFr8GK91VOdzkFNtNhtfGkAcL4Nc4HsBZXjW6b1jLSFiIkDPta7BIq464u2YUQ/1v8QylvL+Cz98iNREx/avvRU58Ed3EquTX0SIt8Y0ntNkjRlZOik9fLY/6Wti501t7nzJMF/qXTacL588Atm/J4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XKhyR30J; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712851922;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WMYXluZdka6NWHeIT5ZbQJbQ6V8bbh3I4kjosa1hc3E=;
+	b=XKhyR30J5aF+2fyV2VG8xOTn+MbR+q7eUFNdRzopaqyqarw66+t06o7Op4aX8VM0/WLn72
+	PAQZPn/o4pqKS6eyhXPkiz4kNTd1WA58XQQ4vMi7i6GHVee9M1DSkFAXhedemWUfis9kL3
+	Dv3J71mL+7j6fxX8rFWHOikngzUAQDY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-178-CUvC8KVAOeeiiVXbQ2VcNQ-1; Thu, 11 Apr 2024 12:11:56 -0400
+X-MC-Unique: CUvC8KVAOeeiiVXbQ2VcNQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CE1C61887318;
+	Thu, 11 Apr 2024 16:11:54 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.7])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id E9657490E8;
+	Thu, 11 Apr 2024 16:11:53 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id 439A1400DCB1A; Tue,  9 Apr 2024 23:39:16 -0300 (-03)
+Date: Tue, 9 Apr 2024 23:39:16 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
+	Leonardo Bras <leobras@redhat.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
+Message-ID: <ZhX71JRK0W+BaeXR@tpad>
+References: <20240328171949.743211-1-leobras@redhat.com>
+ <ZgsXRUTj40LmXVS4@google.com>
+ <ZhAAg8KNd8qHEGcO@tpad>
+ <ZhAN28BcMsfl4gm-@google.com>
+ <a7398da4-a72c-4933-bb8b-5bc8965d96d0@paulmck-laptop>
+ <ZhQmaEXPCqmx1rTW@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhQmaEXPCqmx1rTW@google.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-When the manager becomes pm_runtime active in the remove procedure,
-peripherals will become attached, and do the initialization
-process. We have to wait until all the devices are fully resumed
-before the cleanup, otherwise there is a possible race condition where
-asynchronous workqueues initiate transfers on the bus that cannot
-complete. This will ensure there are no SoundWire registers accessed
-after the bus is powered-down.
+On Mon, Apr 08, 2024 at 10:16:24AM -0700, Sean Christopherson wrote:
+> On Fri, Apr 05, 2024, Paul E. McKenney wrote:
+> > On Fri, Apr 05, 2024 at 07:42:35AM -0700, Sean Christopherson wrote:
+> > > On Fri, Apr 05, 2024, Marcelo Tosatti wrote:
+> > > > rcuc wakes up (which might exceed the allowed latency threshold
+> > > > for certain realtime apps).
+> > > 
+> > > Isn't that a false negative? (RCU doesn't detect that a CPU is about to (re)enter
+> > > a guest)  I was trying to ask about the case where RCU thinks a CPU is about to
+> > > enter a guest, but the CPU never does (at least, not in the immediate future).
+> > > 
+> > > Or am I just not understanding how RCU's kthreads work?
+> > 
+> > It is quite possible that the current rcu_pending() code needs help,
+> > given the possibility of vCPU preemption.  I have heard of people doing
+> > nested KVM virtualization -- or is that no longer a thing?
+> 
+> Nested virtualization is still very much a thing, but I don't see how it is at
+> all unique with respect to RCU grace periods and quiescent states.  More below.
+> 
+> > But the help might well involve RCU telling the hypervisor that a given
+> > vCPU needs to run.  Not sure how that would go over, though it has been
+> > prototyped a couple times in the context of RCU priority boosting.
+> >
+> > > > > > 3 - It checks if the guest exit happened over than 1 second ago. This 1
+> > > > > >     second value was copied from rcu_nohz_full_cpu() which checks if the
+> > > > > >     grace period started over than a second ago. If this value is bad,
+> > > > > >     I have no issue changing it.
+> > > > > 
+> > > > > IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
+> > > > > of what magic time threshold is used.  
+> > > > 
+> > > > Why? It works for this particular purpose.
+> > > 
+> > > Because maintaining magic numbers is no fun, AFAICT the heurisitic doesn't guard
+> > > against edge cases, and I'm pretty sure we can do better with about the same amount
+> > > of effort/churn.
+> > 
+> > Beyond a certain point, we have no choice.  How long should RCU let
+> > a CPU run with preemption disabled before complaining?  We choose 21
+> > seconds in mainline and some distros choose 60 seconds.  Android chooses
+> > 20 milliseconds for synchronize_rcu_expedited() grace periods.
+> 
+> Issuing a warning based on an arbitrary time limit is wildly different than using
+> an arbitrary time window to make functional decisions.  My objection to the "assume
+> the CPU will enter a quiescent state if it exited a KVM guest in the last second"
+> is that there are plenty of scenarios where that assumption falls apart, i.e. where
+> _that_ physical CPU will not re-enter the guest.
+> 
+> Off the top of my head:
+> 
+>  - If the vCPU is migrated to a different physical CPU (pCPU), the *old* pCPU
+>    will get false positives, and the *new* pCPU will get false negatives (though
+>    the false negatives aren't all that problematic since the pCPU will enter a
+>    quiescent state on the next VM-Enter.
+> 
+>  - If the vCPU halts, in which case KVM will schedule out the vCPU/task, i.e.
+>    won't re-enter the guest.  And so the pCPU will get false positives until the
+>    vCPU gets a wake event or the 1 second window expires.
+> 
+>  - If the VM terminates, the pCPU will get false positives until the 1 second
+>    window expires.
+> 
+> The false positives are solvable problems, by hooking vcpu_put() to reset
+> kvm_last_guest_exit.  And to help with the false negatives when a vCPU task is
+> scheduled in on a different pCPU, KVM would hook vcpu_load().
 
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/intel_init.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Sean,
 
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index 534c8795e7e8..a09134b97cd6 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -16,6 +16,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/soundwire/sdw_intel.h>
- #include "cadence_master.h"
-+#include "bus.h"
- #include "intel.h"
- #include "intel_auxdevice.h"
- 
-@@ -356,6 +357,19 @@ EXPORT_SYMBOL_NS(sdw_intel_startup, SOUNDWIRE_INTEL_INIT);
-  */
- void sdw_intel_exit(struct sdw_intel_ctx *ctx)
- {
-+	struct sdw_intel_link_res *link;
-+
-+	/* we first resume links and devices and wait synchronously before the cleanup */
-+	list_for_each_entry(link, &ctx->link_list, list) {
-+		struct sdw_bus *bus = &link->cdns->bus;
-+		int ret;
-+
-+		ret = device_for_each_child(bus->dev, NULL, intel_resume_child_device);
-+		if (ret < 0)
-+			dev_err(bus->dev, "%s: intel_resume_child_device failed: %d\n",
-+				__func__, ret);
-+	}
-+
- 	sdw_intel_cleanup(ctx);
- 	kfree(ctx->ids);
- 	kfree(ctx->ldev);
--- 
-2.34.1
+It seems that fixing the problems you pointed out above is a way to go.
 
 
