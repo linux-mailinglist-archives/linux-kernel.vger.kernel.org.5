@@ -1,77 +1,80 @@
-Return-Path: <linux-kernel+bounces-137787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F5A589E7A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:13:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E90989E7A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:14:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 030C7282E84
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:13:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32CBC284157
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:14:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA64710E3;
-	Wed, 10 Apr 2024 01:13:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4EA524C;
+	Wed, 10 Apr 2024 01:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jaXN0y7b"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HPmLMzBb"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F411388
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 01:13:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A4DCA5F
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 01:13:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712711630; cv=none; b=flsToIfyXqi9PDz7D1EsksPSizxK8hNL8R/k2VvbreZROYNW9ixoklFlyirz9NBG4JaZ9ZrQK+lHrnxr7qFaFAUplYuXW07SlomyB6PfmYDNX+3RzeaH7MIisTCCCCkiynC00bFlpND1sEqbEdOqemfgO7ZV/b/k+5N6NUClzTA=
+	t=1712711632; cv=none; b=sRCu5muiHRiFT1v1jHwC0Ok7p2Dwijm/IzINc7ECsRbl1aYyVmD/ynxI7SOomQELbJXW2ctbTl3UMAhlN8LkOIIQmQhOZimMSmZ+Sxo2eWC50S4UM3cVm5JhPhPw1bm5LNFFhedLSKPzPQlDtyFpKHegmmEH3myzN15MlDx/F+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712711630; c=relaxed/simple;
-	bh=M65fNwSwh9BiHq0mV3DNrUCgN4AR1tOb0IGVZ7OHmRM=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=c6Z99zT5l1tMpBLXQ6AgELFwBfw40gZLHKhWjNpY4Hoq4Kr2xO18in6D0T7cM5gIWBd8RCOz/ufqVxBm6AELMdqsLAn5f45VprMgdQhsju8R6Zu8IxbEcIvif/4FTJIBjYuVlwxiQhgsU/vlw+Lw6hbKfko1QMmqcwUDSLkFbso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jaXN0y7b; arc=none smtp.client-ip=209.85.219.202
+	s=arc-20240116; t=1712711632; c=relaxed/simple;
+	bh=3gZCR/oI52h5oQWn/HwEs5tiS4Zkp/wa/QiF4W4R/qM=;
+	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
+	 To:Content-Type; b=lDLCDht3M4fLg+AQPjp7qRFigcJc8XX3Eoge+oyg9ZwWi4Gf60xrwt03dj+BCMKeykPom6jwlWZn3ZQNTMpwo7jUxgUIs2yx7L4EQze06r/TAK0s/QBoW6+ZTjR63BjVkfW5trtL8K9mvff9mvi2id+7w1WrU3MwoXD8X/UcX4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HPmLMzBb; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc647f65573so10505968276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 18:13:48 -0700 (PDT)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dced704f17cso10808131276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 18:13:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712711627; x=1713316427; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4xie8uj9BDUohl4DePeQplLYd8kg2wj+kRcizQZi2K0=;
-        b=jaXN0y7bsyPwi1Nww/SfFCmeugTSX1r9stnqc3zbqdZsVHk7peZvCENoHXygadcpa9
-         JvXKdhbMBYcWoIaGJtm11UX5J1ipQxMNiIQQxYgbjwYIoHzNbGc/eGIRPIRUQWsknmwY
-         hbcfUyHsGTbISpzXk9FFoKfoQUFrHU7miXV+xXkX/7kqy1WlQDJ9MaXyrAs6B0nBYgVt
-         aDI55LmpQ9UZvIldSYAdMYkkV58YBBY1xu8Xgwqema+ygXMmRu2wX3BL4b8H1tU2yHaF
-         CbKdfIL5DcDhsq+pUFsbVF34h8qzNHBteH4Bpyksz4L7KJxEB2OzwI8jr1Y/dq4lQbX7
-         8FkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712711627; x=1713316427;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+        d=google.com; s=20230601; t=1712711629; x=1713316429; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4xie8uj9BDUohl4DePeQplLYd8kg2wj+kRcizQZi2K0=;
-        b=Mtjd5z5PXrVTbGEiVuxqMwPjrXIkxj95mxB8HGCsUqsF02TQ4uyqaeGpRGJ/dH/1ad
-         YGd+m1IXFZ/a1gfB3940l1opu/s9wg4rOI1RdhDF3lOk2SaQXIqCudK+Yw2jOAMNmKal
-         2vyNphl0yWssC3j3158WkZ2zd6ANAMPMeeXfYRHvGsTnSsA6aC+jbke+XV5Fjb1TBNWC
-         41qq1z9Kukb3mQwSVOCnuLtsmsPGH8ef3D1FF5sNsFRgWANh0s0AWOlrAzN82b9dsu43
-         VX/0vWWdFCOgdG+TleALKA5XvXuvak/04XreBTKEyi4AYubxHeXuCoZ6qZPOr/wtmyZw
-         LUWA==
-X-Forwarded-Encrypted: i=1; AJvYcCXC3XLZbzgudhuYX4raCyYovxWK7ep+LLaS/uKG5ADJ/cjXMAGwnxshm0PQaSFMv3BwkxsVX9A6VfzJaIpxMl/pB8GRxSc0OzKnBPl3
-X-Gm-Message-State: AOJu0Yyr9bnzr0OSmLqiGJ7TVlIsGRL0gsa+A8LXfpVVwyphIhywZdLQ
-	4y2HayvN9u32DQKipnw88JWzTAypJtYyOd2ksfXQMp7OWs4qiYjoBtKrklKz1YOBisonKtaEJCV
-	gD3cujA==
-X-Google-Smtp-Source: AGHT+IFXnwJ2Ug+QEhcW0ZJoGPfOLzsOTd8PV/DiPVs5SLQPV0sIwoyzSuuw/OBefxW9OQGegwA4OAImf+Tk
+        bh=1cn09GYr5ta/Z+upjf7mxVRyOt2fkI4BgGzEZQrJxdg=;
+        b=HPmLMzBbITQdJqBLtK3zeM5Ut90LU8zVllLcZ+7QJUOUFBLiEWUzGcS7a2vUpcJhh2
+         dZdMnwU3Y4OLo2kB+R9q5w0pCv0DLOrqmy4TxnXJa4EQExK+6kPAgSXTONnXkAGjmcvU
+         kAItwzSW4YR6y0r77d67a92jyIcvGPpUTq3phFJoL1LsAK3VZWBHki8iYcfalQxmjS3t
+         HKTaeYL0sNnTU8z6f15E6C99MjST3GT1DxVOUlpGeJpb53wNHDblLEXi/hg6O+/8CvL5
+         KnTrQdYlrIp5xY41f/1Htpk+GZRjExSjVdRUpbDtGo2w8Sbe1vxFlxd8Keo243tRZTIY
+         xAzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712711629; x=1713316429;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1cn09GYr5ta/Z+upjf7mxVRyOt2fkI4BgGzEZQrJxdg=;
+        b=WF7lrFB1xNGU+QlEVmmyCHxk1vKhQ5JUVF/dQhbmIArpgz4S8Mo1zmkJB7PFKaYRAF
+         FW7LrVOXqTFUSE+6GjwH3H4pGbkDeNCcIt0OhiH/eTDSTklSjMSkjsBeCaxcmS1HaFU7
+         sCbZa81D8MQiwZH+/m+hHwXoDEzbSaKbUaoe16nD8v0rivz/6GTNb/osmiWSeeYfd9m3
+         qRE/Fmzz3iM2YkOQ/4cL6BpgQY0vGVYBP6dnfIIN5Utz+Jxgpo9jddWOT5dOOpp/b92h
+         9r9/MGKEMLc0a7IzAR/JT+IK7NCSfUh48xb3jXXlP7yneb88DdC/b8cq8EbfiDO+Soe+
+         616A==
+X-Forwarded-Encrypted: i=1; AJvYcCXpR7OQ80cSOATEmZIIz25G90i4MaxXLMFmt2AKzWvvHOkZBjXXZVQS23135SBac0j/S+HBEoXBIyR0VYuuceM0KLqrRKzu+nPeWe75
+X-Gm-Message-State: AOJu0YzpjlRKuxTzXBXlrSS6qUXTBce9tlm4DoEOOBqy0huWHaFV5lk5
+	c5OYJtgNgStXgcolkgv3KpXtb9Lkkk5euRv3+mowUuqUO88/YaywzGWNSqtAykYD3tblsUnQu2d
+	nBU66fQ==
+X-Google-Smtp-Source: AGHT+IF3vVs0WTI0FKPFI7X5BHCZFvn1C4F3fCW2CxNBg+rtZ0F7OpXEraenZ1kq02SwwGiFkVUbeIiRvbvR
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:18c5:d9c6:d1d6:a3ec])
- (user=irogers job=sendgmr) by 2002:a05:6902:1242:b0:dcd:3172:7265 with SMTP
- id t2-20020a056902124200b00dcd31727265mr404933ybu.8.1712711627256; Tue, 09
- Apr 2024 18:13:47 -0700 (PDT)
-Date: Tue,  9 Apr 2024 18:13:12 -0700
-Message-Id: <20240410011313.2556848-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a05:6902:10c3:b0:de1:21b4:76a5 with SMTP
+ id w3-20020a05690210c300b00de121b476a5mr116447ybu.13.1712711629664; Tue, 09
+ Apr 2024 18:13:49 -0700 (PDT)
+Date: Tue,  9 Apr 2024 18:13:13 -0700
+In-Reply-To: <20240410011313.2556848-1-irogers@google.com>
+Message-Id: <20240410011313.2556848-2-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240410011313.2556848-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Subject: [PATCH v2 1/2] perf pmus: Sort/merge/aggregate PMUs like mrvl_ddr_pmu
+Subject: [PATCH v2 2/2] perf tests: Add a pmus core functionality test suite
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -85,161 +88,176 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	Will Deacon <will@kernel.org>, Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-The mrvl_ddr_pmu is uncore and has a hexadecimal address suffix while
-the previous PMU sorting/merging code assumes uncore PMU names start
-with uncore_ and have a decimal suffix. Because of the previous
-assumption it isn't possible to wildcard the mrvl_ddr_pmu.
-
-Modify pmu_name_len_no_suffix but also remove the suffix number out
-argument, this is because we don't know if a suffix number of say 10
-is in hexadecimal or decimal. As the only use of the suffix number is
-in comparisons, it is safe there to compare the values as hexadecimal.
+Test behavior of PMU names and comparisons wrt suffixes using Intel
+uncore_cha and marvell mrvl_ddr_pmu as examples.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/pmu.c  |  2 +-
- tools/perf/util/pmus.c | 51 ++++++++++++++++++++++--------------------
- tools/perf/util/pmus.h |  7 +++++-
- 3 files changed, 34 insertions(+), 26 deletions(-)
+ tools/perf/tests/Build          |   1 +
+ tools/perf/tests/builtin-test.c |   1 +
+ tools/perf/tests/pmus.c         | 108 ++++++++++++++++++++++++++++++++
+ tools/perf/tests/tests.h        |   2 +
+ 4 files changed, 112 insertions(+)
+ create mode 100644 tools/perf/tests/pmus.c
 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index f39cbbc1a7ec..b0cca5841f90 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -1657,7 +1657,7 @@ static char *format_alias(char *buf, int len, const struct perf_pmu *pmu,
- {
- 	struct parse_events_term *term;
- 	int pmu_name_len = skip_duplicate_pmus
--		? pmu_name_len_no_suffix(pmu->name, /*num=*/NULL)
-+		? pmu_name_len_no_suffix(pmu->name)
- 		: (int)strlen(pmu->name);
- 	int used = snprintf(buf, len, "%.*s/%s", pmu_name_len, pmu->name, alias->name);
- 
-diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
-index 16505071d362..b4ddcd0ade26 100644
---- a/tools/perf/util/pmus.c
-+++ b/tools/perf/util/pmus.c
-@@ -39,31 +39,44 @@ static bool read_sysfs_all_pmus;
- 
- static void pmu_read_sysfs(bool core_only);
- 
--int pmu_name_len_no_suffix(const char *str, unsigned long *num)
-+int pmu_name_len_no_suffix(const char *str)
- {
- 	int orig_len, len;
- 
- 	orig_len = len = strlen(str);
- 
--	/* Non-uncore PMUs have their full length, for example, i915. */
--	if (!strstarts(str, "uncore_"))
--		return len;
--
- 	/*
- 	 * Count trailing digits and '_', if '_{num}' suffix isn't present use
- 	 * the full length.
- 	 */
--	while (len > 0 && isdigit(str[len - 1]))
-+	while (len > 0 && isxdigit(str[len - 1]))
- 		len--;
- 
--	if (len > 0 && len != orig_len && str[len - 1] == '_') {
--		if (num)
--			*num = strtoul(&str[len], NULL, 10);
-+	if (len > 0 && len != orig_len && str[len - 1] == '_')
- 		return len - 1;
--	}
+diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
+index c7f9d9676095..a7bab6e9300f 100644
+--- a/tools/perf/tests/Build
++++ b/tools/perf/tests/Build
+@@ -14,6 +14,7 @@ perf-y += perf-record.o
+ perf-y += evsel-roundtrip-name.o
+ perf-$(CONFIG_LIBTRACEEVENT) += evsel-tp-sched.o
+ perf-y += fdarray.o
++perf-y += pmus.o
+ perf-y += pmu.o
+ perf-y += pmu-events.o
+ perf-y += hists_common.o
+diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+index d13ee7683d9d..c90f270a469a 100644
+--- a/tools/perf/tests/builtin-test.c
++++ b/tools/perf/tests/builtin-test.c
+@@ -68,6 +68,7 @@ static struct test_suite *generic_tests[] = {
+ 	&suite__parse_events,
+ 	&suite__expr,
+ 	&suite__PERF_RECORD,
++	&suite__pmus,
+ 	&suite__pmu,
+ 	&suite__pmu_events,
+ 	&suite__dso_data,
+diff --git a/tools/perf/tests/pmus.c b/tools/perf/tests/pmus.c
+new file mode 100644
+index 000000000000..6279c925e689
+--- /dev/null
++++ b/tools/perf/tests/pmus.c
+@@ -0,0 +1,108 @@
++// SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
++#include "pmus.h"
++#include "tests.h"
++#include <string.h>
++#include <linux/kernel.h>
 +
- 	return orig_len;
- }
- 
-+int pmu_name_cmp(const char *lhs_pmu_name, const char *rhs_pmu_name)
++static const char * const uncore_chas[] = {
++	"uncore_cha_0",
++	"uncore_cha_1",
++	"uncore_cha_2",
++	"uncore_cha_3",
++	"uncore_cha_4",
++	"uncore_cha_5",
++	"uncore_cha_6",
++	"uncore_cha_7",
++	"uncore_cha_8",
++	"uncore_cha_9",
++	"uncore_cha_10",
++	"uncore_cha_11",
++	"uncore_cha_12",
++	"uncore_cha_13",
++	"uncore_cha_14",
++	"uncore_cha_15",
++	"uncore_cha_16",
++	"uncore_cha_17",
++	"uncore_cha_18",
++	"uncore_cha_19",
++	"uncore_cha_20",
++	"uncore_cha_21",
++	"uncore_cha_22",
++	"uncore_cha_23",
++	"uncore_cha_24",
++	"uncore_cha_25",
++	"uncore_cha_26",
++	"uncore_cha_27",
++	"uncore_cha_28",
++	"uncore_cha_29",
++	"uncore_cha_30",
++	"uncore_cha_31",
++};
++
++static const char * const mrvl_ddrs[] = {
++	"mrvl_ddr_pmu_87e1b0000000",
++	"mrvl_ddr_pmu_87e1b1000000",
++	"mrvl_ddr_pmu_87e1b2000000",
++	"mrvl_ddr_pmu_87e1b3000000",
++	"mrvl_ddr_pmu_87e1b4000000",
++	"mrvl_ddr_pmu_87e1b5000000",
++	"mrvl_ddr_pmu_87e1b6000000",
++	"mrvl_ddr_pmu_87e1b7000000",
++	"mrvl_ddr_pmu_87e1b8000000",
++	"mrvl_ddr_pmu_87e1b9000000",
++	"mrvl_ddr_pmu_87e1ba000000",
++	"mrvl_ddr_pmu_87e1bb000000",
++	"mrvl_ddr_pmu_87e1bc000000",
++	"mrvl_ddr_pmu_87e1bd000000",
++	"mrvl_ddr_pmu_87e1be000000",
++	"mrvl_ddr_pmu_87e1bf000000",
++};
++
++static int test__name_len(struct test_suite *test __maybe_unused, int subtest __maybe_unused)
 +{
-+	unsigned long lhs_num = 0, rhs_num = 0;
-+	int lhs_pmu_name_len = pmu_name_len_no_suffix(lhs_pmu_name);
-+	int rhs_pmu_name_len = pmu_name_len_no_suffix(rhs_pmu_name);
-+	int ret = strncmp(lhs_pmu_name, rhs_pmu_name,
-+			lhs_pmu_name_len < rhs_pmu_name_len ? lhs_pmu_name_len : rhs_pmu_name_len);
-+
-+	if (lhs_pmu_name_len != rhs_pmu_name_len || ret != 0 || lhs_pmu_name_len == 0)
-+		return ret;
-+
-+	if (lhs_pmu_name_len + 1 < (int)strlen(lhs_pmu_name))
-+		lhs_num = strtoul(&lhs_pmu_name[lhs_pmu_name_len + 1], NULL, 16);
-+	if (rhs_pmu_name_len + 1 < (int)strlen(rhs_pmu_name))
-+		rhs_num = strtoul(&rhs_pmu_name[rhs_pmu_name_len + 1], NULL, 16);
-+
-+	return lhs_num < rhs_num ? -1 : (lhs_num > rhs_num ? 1 : 0);
++	TEST_ASSERT_EQUAL("cpu", pmu_name_len_no_suffix("cpu"), (int)strlen("cpu"));
++	TEST_ASSERT_EQUAL("i915", pmu_name_len_no_suffix("i915"), (int)strlen("i915"));
++	for (size_t i = 0; i < ARRAY_SIZE(uncore_chas); i++) {
++		TEST_ASSERT_EQUAL("Strips uncore_cha suffix",
++				pmu_name_len_no_suffix(uncore_chas[i]),
++				(int)strlen("uncore_cha"));
++	}
++	for (size_t i = 0; i < ARRAY_SIZE(mrvl_ddrs); i++) {
++		TEST_ASSERT_EQUAL("Strips mrvl_ddr_pmu suffix",
++				pmu_name_len_no_suffix(mrvl_ddrs[i]),
++				(int)strlen("mrvl_ddr_pmu"));
++	}
++	return TEST_OK;
 +}
 +
- void perf_pmus__destroy(void)
- {
- 	struct perf_pmu *pmu, *tmp;
-@@ -164,20 +177,10 @@ static struct perf_pmu *perf_pmu__find2(int dirfd, const char *name)
- static int pmus_cmp(void *priv __maybe_unused,
- 		    const struct list_head *lhs, const struct list_head *rhs)
- {
--	unsigned long lhs_num = 0, rhs_num = 0;
- 	struct perf_pmu *lhs_pmu = container_of(lhs, struct perf_pmu, list);
- 	struct perf_pmu *rhs_pmu = container_of(rhs, struct perf_pmu, list);
--	const char *lhs_pmu_name = lhs_pmu->name ?: "";
--	const char *rhs_pmu_name = rhs_pmu->name ?: "";
--	int lhs_pmu_name_len = pmu_name_len_no_suffix(lhs_pmu_name, &lhs_num);
--	int rhs_pmu_name_len = pmu_name_len_no_suffix(rhs_pmu_name, &rhs_num);
--	int ret = strncmp(lhs_pmu_name, rhs_pmu_name,
--			lhs_pmu_name_len < rhs_pmu_name_len ? lhs_pmu_name_len : rhs_pmu_name_len);
- 
--	if (lhs_pmu_name_len != rhs_pmu_name_len || ret != 0 || lhs_pmu_name_len == 0)
--		return ret;
--
--	return lhs_num < rhs_num ? -1 : (lhs_num > rhs_num ? 1 : 0);
-+	return pmu_name_cmp(lhs_pmu->name ?: "", rhs_pmu->name ?: "");
- }
- 
- /* Add all pmus in sysfs to pmu list: */
-@@ -297,11 +300,11 @@ static struct perf_pmu *perf_pmus__scan_skip_duplicates(struct perf_pmu *pmu)
- 		pmu_read_sysfs(/*core_only=*/false);
- 		pmu = list_prepare_entry(pmu, &core_pmus, list);
- 	} else
--		last_pmu_name_len = pmu_name_len_no_suffix(pmu->name ?: "", NULL);
-+		last_pmu_name_len = pmu_name_len_no_suffix(pmu->name ?: "");
- 
- 	if (use_core_pmus) {
- 		list_for_each_entry_continue(pmu, &core_pmus, list) {
--			int pmu_name_len = pmu_name_len_no_suffix(pmu->name ?: "", /*num=*/NULL);
-+			int pmu_name_len = pmu_name_len_no_suffix(pmu->name ?: "");
- 
- 			if (last_pmu_name_len == pmu_name_len &&
- 			    !strncmp(last_pmu_name, pmu->name ?: "", pmu_name_len))
-@@ -313,7 +316,7 @@ static struct perf_pmu *perf_pmus__scan_skip_duplicates(struct perf_pmu *pmu)
- 		pmu = list_prepare_entry(pmu, &other_pmus, list);
- 	}
- 	list_for_each_entry_continue(pmu, &other_pmus, list) {
--		int pmu_name_len = pmu_name_len_no_suffix(pmu->name ?: "", /*num=*/NULL);
-+		int pmu_name_len = pmu_name_len_no_suffix(pmu->name ?: "");
- 
- 		if (last_pmu_name_len == pmu_name_len &&
- 		    !strncmp(last_pmu_name, pmu->name ?: "", pmu_name_len))
-diff --git a/tools/perf/util/pmus.h b/tools/perf/util/pmus.h
-index 94d2a08d894b..624c2d53fc30 100644
---- a/tools/perf/util/pmus.h
-+++ b/tools/perf/util/pmus.h
-@@ -2,10 +2,15 @@
- #ifndef __PMUS_H
- #define __PMUS_H
- 
-+#include <stdbool.h>
-+#include <linux/list.h>
++static int test__name_cmp(struct test_suite *test __maybe_unused, int subtest __maybe_unused)
++{
++	TEST_ASSERT_EQUAL("cpu", pmu_name_cmp("cpu", "cpu"), 0);
++	TEST_ASSERT_EQUAL("i915", pmu_name_cmp("i915", "i915"), 0);
++	TEST_ASSERT_VAL("i915", pmu_name_cmp("cpu", "i915") < 0);
++	TEST_ASSERT_VAL("i915", pmu_name_cmp("i915", "cpu") > 0);
++	for (size_t i = 1; i < ARRAY_SIZE(uncore_chas); i++) {
++		TEST_ASSERT_VAL("uncore_cha suffixes ordered lt",
++				pmu_name_cmp(uncore_chas[i-1], uncore_chas[i]) < 0);
++		TEST_ASSERT_VAL("uncore_cha suffixes ordered gt",
++				pmu_name_cmp(uncore_chas[i], uncore_chas[i-1]) > 0);
++	}
++	for (size_t i = 1; i < ARRAY_SIZE(mrvl_ddrs); i++) {
++		TEST_ASSERT_VAL("mrvl_ddr_pmu suffixes ordered lt",
++				pmu_name_cmp(mrvl_ddrs[i-1], mrvl_ddrs[i]) < 0);
++		TEST_ASSERT_VAL("mrvl_ddr_pmu suffixes ordered gt",
++				pmu_name_cmp(mrvl_ddrs[i], mrvl_ddrs[i-1]) > 0);
++	}
++	return TEST_OK;
++}
 +
- struct perf_pmu;
- struct print_callbacks;
++static struct test_case tests__pmus[] = {
++	TEST_CASE("PMU name combining", name_len),
++	TEST_CASE("PMU name comparison", name_cmp),
++	{	.name = NULL, }
++};
++
++struct test_suite suite__pmus = {
++	.desc = "PMUs test",
++	.test_cases = tests__pmus,
++};
+diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+index 3aa7701ee0e9..03278f0f7698 100644
+--- a/tools/perf/tests/tests.h
++++ b/tools/perf/tests/tests.h
+@@ -3,6 +3,7 @@
+ #define TESTS_H
  
--int pmu_name_len_no_suffix(const char *str, unsigned long *num);
-+int pmu_name_len_no_suffix(const char *str);
-+/* Exposed for testing only. */
-+int pmu_name_cmp(const char *lhs_pmu_name, const char *rhs_pmu_name);
+ #include <stdbool.h>
++#include <debug.h>
  
- void perf_pmus__destroy(void);
- 
+ enum {
+ 	TEST_OK   =  0,
+@@ -81,6 +82,7 @@ DECLARE_SUITE(PERF_RECORD);
+ DECLARE_SUITE(perf_evsel__roundtrip_name_test);
+ DECLARE_SUITE(perf_evsel__tp_sched_test);
+ DECLARE_SUITE(syscall_openat_tp_fields);
++DECLARE_SUITE(pmus);
+ DECLARE_SUITE(pmu);
+ DECLARE_SUITE(pmu_events);
+ DECLARE_SUITE(attr);
 -- 
 2.44.0.478.gd926399ef9-goog
 
