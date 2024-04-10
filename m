@@ -1,167 +1,189 @@
-Return-Path: <linux-kernel+bounces-138315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0691589EFB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:18:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E46989EFB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:18:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29F991C20D69
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:18:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 613691C20E75
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:18:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FE04158D62;
-	Wed, 10 Apr 2024 10:18:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C96FB15920F;
+	Wed, 10 Apr 2024 10:18:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BKC+a3Ye"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aVCNWJNm"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A63EE158204
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:18:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 519E6158DC9
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:18:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712744304; cv=none; b=DjRlIrMlZwwzjR9Dx518stkni/n6R9zWHuUjCEyGsenpAFtGynA1BxxM44yUvZJMFeGGXYkE1ln7l0/KxADCLmjStI0ZiBxqo9Xt8E8M8Lz4kzjsHBoIdFlKMEV6lf84xGS6ajGOJr0FMcdXwF9Lfu412BZ6BCjd43mqemegni0=
+	t=1712744308; cv=none; b=A5dltw61X617Np98JRavTYO/KNfJLrYAPYmiir63ekyBlCWN4uaw+YsO5jsX0fNY6qT/xgB/JfzNyPKf87PVuEnsAEs49gpPcd364AGsbfYdw5mwasgQD9fMN0+z4/4buqtOfa5YiDpCBkRerJwbFcg+miy4ygbsj5Bo6hWIvC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712744304; c=relaxed/simple;
-	bh=QNa9q7fl0QpNcL5PdvTdh8BoZUPCJ2zBMZ3FZ5JDDRQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OpnIYcn2nCKvjfSYDQzHDJh0GAUqZOxhcyswp3YaTwF0AezdXups4QGRDrQmwdO+ieioPODEmIsjguZV6JbhcEBx80egq0KnFhp/4HBnP6eDhGTrONtL2n8mVmn2r6G4kqwD84UVWDgIyghYPxDoPpPCpW67vtdfCkOY3CXUzYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BKC+a3Ye; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-41641a889ccso48865e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:18:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712744301; x=1713349101; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vT68oS4RVQULaWAEFFaBC6rqDsXdkDc5eppWUMWD6Io=;
-        b=BKC+a3YefzFPDPuWK8dTQhZP1Tu8aSyDCJK8i8Io41ZMGrGc2W0zM/5+s8b5OCus+0
-         Y04nu3tOihfOdy+mVWlgUQDeYnbR/KohQHWCLWi/3vBK7+aPLIww/NI7uot8mzvGWOW7
-         GL266Dfhu90eK6J4HekL1iEKku11Fz95Z2aUnYAMJ2eByTvuZ6C1n1n/MGP+DvlOwB4g
-         vYan8h2Tvu4+aERFiykhewNXZLTlo7PIufK7S7XIsIM7/gQKR8DiJR6YMqJRzA1LxYB3
-         SrCYib8SlojVOclpMW3TsoEt9NQkVFwDcq5OiY5uBG+KwnodcCrEG9CTjGFHgJRDYcTn
-         K/7A==
+	s=arc-20240116; t=1712744308; c=relaxed/simple;
+	bh=rnIXbOwnqOQM5j1jbv3CHZoW9NXHrM7BZa2pt9AYbCs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DHxIeF23SeuoSh6N6WLK1B880rFhIsQqniEgrDU/twsdxMOG9M6Jybulm/murotI+Np1Ge25GF4iOqrZQCgLBthDEZt0tzfblA2fuSknaFd05PDRyjr7KSlZKDgTO3cRkbBlHLCN62qVLmvAoBRakkQclWKiOPm55SknEuWjWs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aVCNWJNm; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712744305;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yK1ndb0HEzjHhWCscmXGR+/VhC+xm8vRidFQegZ1QFI=;
+	b=aVCNWJNmSETy3P1cbLEF35evnI8OPt0c9V/02IvLoKLYE7L6QdNKV+n2xDljQ7lHFKbiyQ
+	yyXjeOkxyrNEP1gm0Ksu4Ygjg1xChqaRgrQBtlf1MaoQ2su068XmTgTY5Mw9s2Zh+StNWG
+	Bj7FBhOUVsysN6lYammDodTaZhxnHAc=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-85-_KLIltnQOFOEG6v6l0Vznw-1; Wed, 10 Apr 2024 06:18:23 -0400
+X-MC-Unique: _KLIltnQOFOEG6v6l0Vznw-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-56e242ec7ffso3324966a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:18:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712744301; x=1713349101;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vT68oS4RVQULaWAEFFaBC6rqDsXdkDc5eppWUMWD6Io=;
-        b=MF18hIt8+tWuWPx+Q3scQhwpNkVdmeh9i9fUMph6A/doAafuDqNUZHGyUHe3fSBUex
-         iQMU9orW6WwnpZW+BEOKTMMsZP1xuK8zgfMDkGtnap2cmPsHULqELUVJ/wTygmf1MxN5
-         KCnwcbFix2RPfy0C5HBCF1WKwwjJNm37aIuQhMz051YAfe63XdWceFm/3SgkaZGfTZ5J
-         JtdQp3oov3Io14ZRLIXNVj+pWseY1NRkDah8JYz2KRa3oIixFPm2qOfbW+Q91opXeSt6
-         D1ha0D7zjqQl25lPBgJnsjM6k4kmiCzNQ5tyoXdTAO4IgiSXTDi1yY1dC8AKlL6N5qCa
-         BYQA==
-X-Forwarded-Encrypted: i=1; AJvYcCWCGvNtksnSf+aMzl9prZPkhA54JdiuTcPUjuyxAucgztW9OUlhphtOWldZqOSXCvEt57rJu3z8pEfzksjo7q+gtfPDIBU4rK6S/Wvl
-X-Gm-Message-State: AOJu0YygZaVJJWV4pM6HhfynTcK4CDeDjmRhL1y6iO1kY5f76vt1fPZ3
-	IqSx4BnK68RJe3GzOgpzhDRj6dQJ60hw75fEf0Et0WB79Qkl9qbmz0uLJDmw/A==
-X-Google-Smtp-Source: AGHT+IF04oIgLfak4zpgaHX/QvWLj2Gry8uOBqaulhtF8YFr4xta0pvMXzu6sMK/eZd+mX/Vi1I/5w==
-X-Received: by 2002:a05:600c:5105:b0:414:1400:a776 with SMTP id o5-20020a05600c510500b004141400a776mr111247wms.5.1712744300762;
-        Wed, 10 Apr 2024 03:18:20 -0700 (PDT)
-Received: from google.com (248.199.140.34.bc.googleusercontent.com. [34.140.199.248])
-        by smtp.gmail.com with ESMTPSA id r6-20020a05600c458600b004162a9f03a6sm1832887wmo.7.2024.04.10.03.18.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 03:18:19 -0700 (PDT)
-Date: Wed, 10 Apr 2024 10:18:18 +0000
-From: Sebastian Ene <sebastianene@google.com>
-To: Vincent Donnefort <vdonnefort@google.com>
-Cc: catalin.marinas@arm.com, james.morse@arm.com, jean-philippe@linaro.org,
-	maz@kernel.org, oliver.upton@linux.dev, qperret@google.com,
-	qwandor@google.com, sudeep.holla@arm.com, suzuki.poulose@arm.com,
-	tabba@google.com, will@kernel.org, yuzenghui@huawei.com,
-	kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH] KVM: arm64: Add support for FFA_PARTITION_INFO_GET
-Message-ID: <ZhZnaibTBaa2J4a5@google.com>
-References: <20240409151908.541589-1-sebastianene@google.com>
- <ZhVpmF2js1NJp1qF@google.com>
- <ZhZYsuqggl_Hzv8X@google.com>
- <ZhZhm4UXyClAqXDM@google.com>
+        d=1e100.net; s=20230601; t=1712744302; x=1713349102;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yK1ndb0HEzjHhWCscmXGR+/VhC+xm8vRidFQegZ1QFI=;
+        b=Gw1y1ehnWjt+pisshqK1bmPWhxkl8bqHRR2KnwpoqPkYEkPAEAkea95rc8tCjiclTR
+         iMLDyhi5hEZ0UvAvkmscbIRGxmsMFEVehhDY6AKsDiTDZOWIZKFFFOj3BnyylqTZWiJ2
+         RGinKEbeVSWGnr+85etNa44jWABIAWZRzeEgp9jBE9191D1TzPPZPX4ysj6OsWJ4PVQW
+         vdNfGWSqXY8iEUwW8nqxyqIuYMVUoknX/UFINvP5tyFNqGk5tGy/vSJCzCUEYEUyWUhD
+         L/Jiz64+g8CKrTeMV3nAqkZnE0guVXFjjcdc26vBu3gVG3Q3mQPyFgQxQ3SaTl9G0Db+
+         o0sQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUtJv63jYn/wRRGfuAcsk0e/TECL0mnjCPYsBl9ymHJgyzYFoVfUlvNjvv0540pHaVeVdZb07CXQE0v3eox5aBigpzE6GthdgSWtji7
+X-Gm-Message-State: AOJu0YxV+7lKMAo1lAKQBvVain6VmeicbvZCHSbwmqFNJO0aTrBP28zv
+	XuhMHCiNjRGRwmNSU1bZL+jTNRhcyp4/xc3FCEZvx9iS6tfqBPPjeoOKPB0pb3PxaL4eZ+yecRK
+	Wx8agBk4o1KNt7tfa1vb+RwdifqiACovxUqTIOibxwi85aO56nvSmtptAyOWp2g==
+X-Received: by 2002:a50:bb03:0:b0:56e:2e62:cbec with SMTP id y3-20020a50bb03000000b0056e2e62cbecmr1386171ede.12.1712744302246;
+        Wed, 10 Apr 2024 03:18:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE13rcGio4p/46wokBP534XSQ9edk7PhKUzOKNFUJuCKCy7I0U2bBMLFIeoRzMKERPPlkBH1w==
+X-Received: by 2002:a50:bb03:0:b0:56e:2e62:cbec with SMTP id y3-20020a50bb03000000b0056e2e62cbecmr1386155ede.12.1712744301837;
+        Wed, 10 Apr 2024 03:18:21 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id b11-20020a0564021f0b00b0056e743c2d3fsm1723434edb.46.2024.04.10.03.18.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 03:18:21 -0700 (PDT)
+Message-ID: <bed0c56a-666d-4992-bb23-32b5883d51ae@redhat.com>
+Date: Wed, 10 Apr 2024 12:18:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhZhm4UXyClAqXDM@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] staging: media: atomisp: Fix various multiline block
+ comment formatting instances
+To: Jonathan Bergh <bergh.jonathan@gmail.com>
+Cc: mchehab@kernel.org, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240227163043.112162-1-bergh.jonathan@gmail.com>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240227163043.112162-1-bergh.jonathan@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 10, 2024 at 10:53:31AM +0100, Vincent Donnefort wrote:
-> [...]
-> 
-> > > > +static void do_ffa_part_get(struct arm_smccc_res *res,
-> > > > +			    struct kvm_cpu_context *ctxt)
-> > > > +{
-> > > > +	DECLARE_REG(u32, uuid0, ctxt, 1);
-> > > > +	DECLARE_REG(u32, uuid1, ctxt, 2);
-> > > > +	DECLARE_REG(u32, uuid2, ctxt, 3);
-> > > > +	DECLARE_REG(u32, uuid3, ctxt, 4);
-> > > > +	DECLARE_REG(u32, flags, ctxt, 5);
-> > > > +	u32 off, count, sz, buf_sz;
-> > > > +
-> > > > +	hyp_spin_lock(&host_buffers.lock);
-> > > > +	if (!host_buffers.rx) {
-> > > > +		ffa_to_smccc_res(res, FFA_RET_INVALID_PARAMETERS);
-> > > > +		goto out_unlock;
-> > > > +	}
-> > > > +
-> > > > +	arm_smccc_1_1_smc(FFA_PARTITION_INFO_GET, uuid0, uuid1,
-> > > > +			  uuid2, uuid3, flags, 0, 0,
-> > > > +			  res);
-> > > > +
-> > > > +	if (res->a0 != FFA_SUCCESS)
-> > > > +		goto out_unlock;
-> > > > +
-> > > > +	count = res->a2;
-> > > > +	if (!count)
-> > > > +		goto out_unlock;
-> > > 
-> > > Looking at the table 13.34, it seems what's in "count" depends on the flag.
-> > > Shouldn't we check its value, and only memcpy into the host buffers if the flag
-> > > is 0?
-> > > 
-> > 
-> > When the flag is `1` the count referes to the number of partitions
-> > deployed. In both cases we have to copy something unless count == 0.
-> 
-> I see "Return the count of partitions deployed in the system corresponding to
-> the specified UUID in w2"
-> 
-> Which I believe means nothing has been copied in the buffer?
-> 
+Hi Jonathan,
 
-When the flag in w5 is 1 the size argument stored in w3 will be zero and
-the loop will not be executed, so nothing will be copied to the host
-buffers.
-
-> > 
-> > > > +
-> > > > +	if (ffa_version > FFA_VERSION_1_0) {
-> > > > +		buf_sz = sz = res->a3;
-> > > > +		if (sz > sizeof(struct ffa_partition_info))
-> > > > +			buf_sz = sizeof(struct ffa_partition_info);
-> > > 
-> > > What are you trying to protect against here? We have to trust EL3 anyway, (as
-> > > other functions do).
-> > > 
-> > > The WARN() could be kept though to make sure we won't overflow our buffer. But
-> > > it could be transformed into an error? FFA_RET_ABORTED?
-> > > 
-> > >
-> > 
-> > I think we can keep it as a WARN_ON because it is not expected to have
-> > a return code of FFA_SUCCESS but the buffer to be overflown. The TEE is
-> > expected to return NO_MEMORY in w2 if the results cannot fit in the RX
-> > buffer.
+On 2/27/24 5:30 PM, Jonathan Bergh wrote:
+> This patch makes the following fixes:
+>  * Reformats a number of multiline block comments to ensure * and */ align
+>    correctly
 > 
-> WARN() is crashing the hypervisor. It'd be a shame here as we can easily recover
-> by just sending an error back to the caller.
+> Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
 
-I agree with you but this is not expected to happen unless TZ messes up
-something/is not complaint with the spec, in which case I would like to
-catch this.
+Thank you for your patch.
+
+I have merged patches 1-2 of this series, as well as your previous
+2 separate patches and your previous 6 patch patch-series into
+my media-atomisp branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/hansg/linux.git/log/?h=media-atomisp
+
+And these patches will be included in my next
+pull-request to Mauro (to media subsystem maintainer)
+
+I did not merge patch 3/3 of this series since the msleep which is
+being modified there has been removed in the latest version of the code.
+
+Regards,
+
+Hans
+
+
+
+
+> ---
+>  .../staging/media/atomisp/pci/atomisp_v4l2.c  | 34 ++++++++++---------
+>  1 file changed, 18 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+> index 547e1444ad97..77809e88da83 100644
+> --- a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+> +++ b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
+> @@ -78,13 +78,15 @@ static char firmware_name[256];
+>  module_param_string(firmware_name, firmware_name, sizeof(firmware_name), 0);
+>  MODULE_PARM_DESC(firmware_name, "Firmware file name. Allows overriding the default firmware name.");
+>  
+> -/*set to 16x16 since this is the amount of lines and pixels the sensor
+> -exports extra. If these are kept at the 10x8 that they were on, in yuv
+> -downscaling modes incorrect resolutions where requested to the sensor
+> -driver with strange outcomes as a result. The proper way tot do this
+> -would be to have a list of tables the specify the sensor res, mipi rec,
+> -output res, and isp output res. however since we do not have this yet,
+> -the chosen solution is the next best thing. */
+> +/*
+> + * Set to 16x16 since this is the amount of lines and pixels the sensor
+> + * exports extra. If these are kept at the 10x8 that they were on, in yuv
+> + * downscaling modes incorrect resolutions where requested to the sensor
+> + * driver with strange outcomes as a result. The proper way tot do this
+> + * would be to have a list of tables the specify the sensor res, mipi rec,
+> + * output res, and isp output res. however since we do not have this yet,
+> + * the chosen solution is the next best thing.
+> + */
+>  int pad_w = 16;
+>  module_param(pad_w, int, 0644);
+>  MODULE_PARM_DESC(pad_w, "extra data for ISP processing");
+> @@ -507,12 +509,12 @@ static int atomisp_mrfld_pre_power_down(struct atomisp_device *isp)
+>  	}
+>  done:
+>  	/*
+> -	* MRFLD WORKAROUND:
+> -	* before powering off IUNIT, clear the pending interrupts
+> -	* and disable the interrupt. driver should avoid writing 0
+> -	* to IIR. It could block subsequent interrupt messages.
+> -	* HW sighting:4568410.
+> -	*/
+> +	 * MRFLD WORKAROUND:
+> +	 * before powering off IUNIT, clear the pending interrupts
+> +	 * and disable the interrupt. driver should avoid writing 0
+> +	 * to IIR. It could block subsequent interrupt messages.
+> +	 * HW sighting:4568410.
+> +	 */
+>  	pci_read_config_dword(pdev, PCI_INTERRUPT_CTRL, &irq);
+>  	irq &= ~BIT(INTR_IER);
+>  	pci_write_config_dword(pdev, PCI_INTERRUPT_CTRL, irq);
+> @@ -525,9 +527,9 @@ static int atomisp_mrfld_pre_power_down(struct atomisp_device *isp)
+>  }
+>  
+>  /*
+> -* WA for DDR DVFS enable/disable
+> -* By default, ISP will force DDR DVFS 1600MHz before disable DVFS
+> -*/
+> + * WA for DDR DVFS enable/disable
+> + * By default, ISP will force DDR DVFS 1600MHz before disable DVFS
+> + */
+>  static void punit_ddr_dvfs_enable(bool enable)
+>  {
+>  	int reg;
+
 
