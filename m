@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-139532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4684A8A0405
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B7A08A0407
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:27:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01BD8282588
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:26:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB365283C84
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:27:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4CF3D978;
-	Wed, 10 Apr 2024 23:26:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0FC11CA80;
+	Wed, 10 Apr 2024 23:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="B8nxfyCx"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2bAxsRGs"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE44E36B08
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:26:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 935D23AC16
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712791606; cv=none; b=DNXrG9WI1ZJWjBq9dMGDVPhmV10FLoKAfa1QthsRl4rWLPw+QzJKjHdJZeyGBuenOUfPrFPxDoEghvVFnMwous1hTONXkxVuisZ7mAZo8x5cUO9A3Eg9jNlcfM1lLbDk9GLmVmui1otHkRwOsH2MGmsecb8LPgzQchWksLDHKVk=
+	t=1712791608; cv=none; b=E5jlAIkYGh8F2BYnL09YLYP5uIV4KeDIXffxHYILWc/lGOKWYnuAjgyhwFz2eaWyP7YBRuV8HxAHcEzxgaP+lVz7aRg3ygOfmuEQ+9XEh3rxrdoEYf5V4g00flsoQoWvj7W5s2zmox2vKCrMkU6Z++lmnh7t+hgEubzxZvw1g98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712791606; c=relaxed/simple;
-	bh=VoLCsCIDC0AKpRM6tLqdI9FChyNA7KdpvNzq3N9K8Qg=;
+	s=arc-20240116; t=1712791608; c=relaxed/simple;
+	bh=QVx11GFaCCb7N4Yio7fGICCAENUW3V/BWi5Vnx+PoZQ=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=JTe3BtPhq7mGRYKZVF1bZFN/Yn0wkCvY6ndpRdoHZcpvjqLh69PhBTMEr238kgyUY+JEaVP9t46GR6yFcZFE6espwim1AHrfKv6pouDgxFOLwQyRNwSwzLXVFZxSWDzllU9n6BPuIHKKJH4N8C6aRO0PlRNvqglhgkUAdV+aV/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B8nxfyCx; arc=none smtp.client-ip=209.85.219.201
+	 To:Cc:Content-Type; b=o6iG0XDjnszWftYqCoxjMOdFt7EugBJEfNPWkuLHm3M3fsmltQuPfkim6JizmEeQlTh2Cdtr8HSl69XrSDUKEupX+Cd12HtIx0DyX1pJumg3aXGdmwJQuagBn5CtWlmmLNQRlhaQLJJRUmHJQOeDmKx1wfw9nl2nBaTw4pOft6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2bAxsRGs; arc=none smtp.client-ip=209.85.215.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbf216080f5so11634051276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:26:44 -0700 (PDT)
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5f0382f688fso5170716a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:26:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712791604; x=1713396404; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712791606; x=1713396406; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zlurd5WmAU6KZdndMyIzN+3lsSewcbke/BSJIsyJm9I=;
-        b=B8nxfyCxhDMThVF8zrt7SlovVFFHXvqnZ3GmzKuwzdPdWMG9HPNltDFwfxYkkCiRxU
-         NNIK+zVM0AIDmui549+UA/PEgS801IW0MJlyVDye3dCdHUTd+o5R9SmDQ7LleNbATH8L
-         EcQVo9AGQ59obMXD4eT8A1oRES0Rbuxd2pcvdW6Y/58tWuhnotdjrph3G++4ncTGYlg/
-         J2hfQkGmQVImjSkEuamjDFFyNC36nEP0rscpSG9Og7COoOql5Ya0LvwusPsXAo4RFPUe
-         dOqCXd0II4ZGmVtPMmz7v6cnFxvnBiwW09SZHxxSfZbV7vMmuKJOt8bnuflCyPAlsn8c
-         vK0w==
+        bh=YqMlKesOrPLSfKThat23VwjdSe9gCiof2Hkve//abGE=;
+        b=2bAxsRGs/vAdnVweQ+LLBJ6rSvemZw9Iv/VYWQij7estfWltypbn51JkVgHb1z30DK
+         JBgx063VJ4PIkSTROBL5m2smau21aSUKqVbV5G+3mMO4K+U3YTPNcHFECyKGjC/RMKNP
+         939UEp98XTzhXBqV5So7ZxkoEdsKeMRFYdYw6mDFYG/6+9T21ApLAL8TBuMKDOZrwif5
+         fCsp0urUhTy9yIsz9u6lYmKf41xhWUYDASELO7KBeSA5mIpcOY+yoqA87mATeThAhn2R
+         hX2Z/ARNtPrYrGAC31tdF4MdoNIHqxWqng8wC/8qhvual0Aadqnf40bSMgqcbq2C+Pya
+         U7gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712791604; x=1713396404;
+        d=1e100.net; s=20230601; t=1712791606; x=1713396406;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zlurd5WmAU6KZdndMyIzN+3lsSewcbke/BSJIsyJm9I=;
-        b=lyrDSK6j1scKOYcPprQh9eH4Pgi5aWDfjjiDwXj0+OFMmglogVCf4385k7EFgCIVSx
-         lmGlGzTksGzbN579LxBWtyk0982IxdmJIyFI3YCkcZMAbthS6Dmnf/u4+UPjFAj6F3eP
-         qZS855uRrf/+sShtoFCp9Ka7vKJxWXOk8ACJ72Yv+bRODJIZsv3emV7WHAzGOG5LtdoM
-         3ry/Ni0UD6koUOwr8l9vq2wKxcJu/Gy4wIzN8Ba3Wyx78U0GdETyqKSyna+5PnYhGBmm
-         PdzlOXs7NuM4BE8vvekr4oxzMh4x+1pEyIlzH9wMX8mz3irbpHbZv5JJV2GdZYopCltu
-         w2Sg==
-X-Gm-Message-State: AOJu0YyA6qdOWM+1PCDyUXy9R89V3iaBenhmqGPkQhuk6ZgS8W4aEQzW
-	cjqm3BIdk1OyueFURT3LOEx9BU40dG1Th3Fu2cOGVd3ObzubKvAfEK8pnZT9KfZnyrwOh0L0ZQ8
-	aImBYpDjaGf/kGyNU3tdlGrMP9n9vgi6hEZJq+GpVFj5bxZwWpCDv1BOFrjT3SBQtMFtIjLwEwb
-	kR8I0CkXfK764oVcNw/5S/BVukBV/mxzwY2XdVKtAKsuqr
-X-Google-Smtp-Source: AGHT+IHlbDC6ToGv1bXxA7Ao7B2WmThFk0HhdVs5BWSwsysizqGhpLzvpd+POKg06SuokF65H5Kbm0yuXOGl
+        bh=YqMlKesOrPLSfKThat23VwjdSe9gCiof2Hkve//abGE=;
+        b=IT9YBbA3QA+cTSbqF/s0kmUj2nbEjiXrW8EuZGwKU2gh7nlI2cBJCNG9Kd/Nkmjgow
+         miNLN6LVEV0AwP7EekF6dPJkASjbHrXBiZcjxK7fHo4TsXZd0gWtatn+gvP4hYQvLC7k
+         RJxU6YJ9+bTKzxRjVCj6p0kc7lSwvgMoJdT3QbzyD5RdOiLxVjhw53/w7KhXNKTZLRIU
+         QfW3oYNhLF5Nj6nfUmSFIGXYW/ncjO5RCvDqC1j8SNFacV2D1njEEaWp+UKLLncBvrUU
+         ewqYaaB3OqTLsj5puFB76bGBoHQgKsW6gsaxPLQZ9veXRiHZnKbXjx4/IhKglgUP/tAt
+         hJDQ==
+X-Gm-Message-State: AOJu0Yza5cNj2uaWmqM2t6KnhqOXiAGluAdqFn5xJHrgpbmaypHB15Px
+	VIIB8PC39O56f3CzmErV1Uq3UnVVZSbHT9CwCvO1J/unXPoRvbr+nBS56s7hxPJbdPhPg7JEJR4
+	gEIn8j8vUJlO+bIwIUpGk0DybcyuooZWA0BAoswyL/w9twwq4bCko+a3RqJUbgT7jjZtpl0FJE/
+	ByTLGrHPakhliClqJFvCgP/eZo0IrY3wtbQFLpzGrh9EW9
+X-Google-Smtp-Source: AGHT+IHouF3P+iPzjB2QiKGl6ZZPLBEONmG9rrx+ed3xbWsI4elR12lweA0nFbIvZPSYd5HufyBuz5M+ZKmN
 X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a25:a124:0:b0:dcc:54d0:85e0 with SMTP id
- z33-20020a25a124000000b00dcc54d085e0mr1134663ybh.11.1712791603824; Wed, 10
- Apr 2024 16:26:43 -0700 (PDT)
-Date: Wed, 10 Apr 2024 16:26:29 -0700
+ (user=jstultz job=sendgmr) by 2002:a17:902:e80c:b0:1e0:feef:5c1d with SMTP id
+ u12-20020a170902e80c00b001e0feef5c1dmr311262plg.10.1712791605672; Wed, 10 Apr
+ 2024 16:26:45 -0700 (PDT)
+Date: Wed, 10 Apr 2024 16:26:30 -0700
 In-Reply-To: <20240410232637.4135564-1-jstultz@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,8 +73,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240410232637.4135564-1-jstultz@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240410232637.4135564-2-jstultz@google.com>
-Subject: [PATCH 2/3] selftests: timers: Fix uninitialized variable warning in ksft_min_kernel_version
+Message-ID: <20240410232637.4135564-3-jstultz@google.com>
+Subject: [PATCH 3/3] selftests: timers: Fix abs() warning in posix_timers test
 From: John Stultz <jstultz@google.com>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: John Stultz <jstultz@google.com>, Shuah Khan <shuah@kernel.org>, 
@@ -87,21 +87,14 @@ Cc: John Stultz <jstultz@google.com>, Shuah Khan <shuah@kernel.org>,
 	linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Building with clang, I see the following warning:
+Building with clang, I'm seeing:
+posix_timers.c:69:6: warning: absolute value function 'abs' given an
+argument of type 'long long' but has parameter of type 'int' which may
+cause truncation of value [-Wabsolute-value]
+        if (abs(diff - DELAY * USECS_PER_SEC) > USECS_PER_SEC / 2) {
+            ^
 
-In file included from posix_timers.c:17:
-/../kselftest.h:398:6: warning: variable 'major' is used uninitialized whenever '||' condition is true [-Wsometimes-uninitialized]
-        if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor) != 2)
-            ^~~~~~~~~~~~
-/../kselftest.h:401:9: note: uninitialized use occurs here
-        return major > min_major || (major == min_major && minor >= min_minor);
-               ^~~~~
-
-This is a bit of a red-herring as if the uname() call did fail,
-we would hit ksft_exit_fail_msg() which should exit.
-
-But to make clang happpy, lets initialize the major/minor values
-to zero.
+So switch to using llabs() instead.
 
 Cc: Shuah Khan <shuah@kernel.org>
 Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
@@ -118,25 +111,25 @@ Cc: Edward Liaw <edliaw@google.com>
 Cc: Carlos Llamas <cmllamas@google.com>
 Cc: kernel-team@android.com
 Cc: linux-kselftest@vger.kernel.org
-Fixes: 6d029c25b71f ("selftests/timers/posix_timers: Reimplement check_timer_distribution()")
+Fixes: 0bc4b0cf1570 ("selftests: add basic posix timers selftests")
 Signed-off-by: John Stultz <jstultz@google.com>
 ---
- tools/testing/selftests/kselftest.h | 2 +-
+ tools/testing/selftests/timers/posix_timers.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kselftest.h b/tools/testing/selftests/kselftest.h
-index 973b18e156b2..12e2f3ab8b13 100644
---- a/tools/testing/selftests/kselftest.h
-+++ b/tools/testing/selftests/kselftest.h
-@@ -392,7 +392,7 @@ static inline __printf(1, 2) int ksft_exit_skip(const char *msg, ...)
- static inline int ksft_min_kernel_version(unsigned int min_major,
- 					  unsigned int min_minor)
- {
--	unsigned int major, minor;
-+	unsigned int major = 0, minor = 0;
- 	struct utsname info;
+diff --git a/tools/testing/selftests/timers/posix_timers.c b/tools/testing/selftests/timers/posix_timers.c
+index 348f47176e0a..c001dd79179d 100644
+--- a/tools/testing/selftests/timers/posix_timers.c
++++ b/tools/testing/selftests/timers/posix_timers.c
+@@ -66,7 +66,7 @@ static int check_diff(struct timeval start, struct timeval end)
+ 	diff = end.tv_usec - start.tv_usec;
+ 	diff += (end.tv_sec - start.tv_sec) * USECS_PER_SEC;
  
- 	if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor) != 2)
+-	if (abs(diff - DELAY * USECS_PER_SEC) > USECS_PER_SEC / 2) {
++	if (llabs(diff - DELAY * USECS_PER_SEC) > USECS_PER_SEC / 2) {
+ 		printf("Diff too high: %lld..", diff);
+ 		return -1;
+ 	}
 -- 
 2.44.0.478.gd926399ef9-goog
 
