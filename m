@@ -1,73 +1,80 @@
-Return-Path: <linux-kernel+bounces-138500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E8E489F251
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:33:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C17B289F255
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:34:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 456952868B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:33:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78BDA284050
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:34:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9E069DF4;
-	Wed, 10 Apr 2024 12:33:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93C8158D6A;
+	Wed, 10 Apr 2024 12:34:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="my+Ci1EC"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HrOLe9+q"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683942BAFC
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:33:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6443E22066
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712752421; cv=none; b=WRyLp0cmBCN699sxoloRFWbP3Lct1KNtGO/J/hNR8b1Ly5Jdf9gXTv3+6WstI5k/St1Xg1yGYHkA46JH0Ip5e9pgNxeQY8M9Mg1oR/sydwWL8EcblSrTaz1EFpVOgCFEBvZhMTEVNQuH4OZiHpCg/pne/oNg/0ZaiFD6BR5laaU=
+	t=1712752483; cv=none; b=uwheDVQVy0+zh4QKPz2VAlGKwx41GLYh9Y4NTptD3Qj0GpjJKk930Dc6Q8AImg0Hqs5PtQg0yTvKgcPJ2P7qCmiaAPYyJsddtPIgUR2JkuN9ZFMa+jCkQk6tyis8ijIXVUiBLliSQf0kZQ9DHrUA0rT6PNctTz5m5xBdDrCQ4+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712752421; c=relaxed/simple;
-	bh=kc0dZ0e3JBP4lFFSI4x6NCpdXrRlKfuJR7I+rUGURhM=;
+	s=arc-20240116; t=1712752483; c=relaxed/simple;
+	bh=pkstAhEZCvjIMm3/KfVddEa0JmzJ8EuXOJY+A9bV6Pk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hHIKuqSZ4kWtbCcOsD0doWvHUmCDS08BOTv/hU7eGyaeRi4wUQ4cFyr9C5b4UAfjHxdyfE8Wc9zMNdBbQQAh6hakljH9/69dHimuePO4vFdtmKUUm4uIUtHtshA2UzGzAJOszGFonB5akwcOLGfbIrmU0q0rr87JQhWAZCcSxi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=my+Ci1EC; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-516d727074eso6235971e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 05:33:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712752418; x=1713357218; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MDmd9nV27QdHdemsMkqkYQn+1GeM6AqMiOUOo3y6Fjw=;
-        b=my+Ci1EC6LFP1uNlc+2L9Q7QG94FJ9VneXVizCT5QCKFlmuzMsiz/cSSHQ2qROw4X5
-         z1YYWQz/bAJK+bbkmipK9Ry9eFIL9n+Cp7vWOfap5+W91fRBb9pfaxTsY6SGu0qJQfut
-         GxItmnci9XDh1ug+p/VWWe8uM70NR9LG+IPtNIj7PvnaQQWf5b5B8MJOcsgImfzlGUK6
-         p0LmjzUwotV864u5ItbNFNqVVp6CgeI+/5A3y0hOMEAhgHy02xQokRnO2NVC5a+limFW
-         oZhqguAv4RhIKxwS2w7cOoJfQogMHZOhm6H4Nxz9RyObmdTTHGRRNZOMcVYz3310YHCl
-         r5tw==
+	 In-Reply-To:Content-Type; b=Hb39OEbW9+yTDxptG5qoK/u4kXCzVdOrgc2YTRcA9QxdTbQoU4q+uCtR6sWij5k4JvIMLuWkek8X9qwJ0GUtFBK3pRIuTJct99ym5WBSlrNKI9xZkQNhZ0uLZRfJKA1oj0WdduHJ3lQjKTQ/c0apgqCSDZ/pr3GM97mGWguxm74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HrOLe9+q; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712752480;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=SGeEQTYX/N6LJYhZCdDmcWoBaL25Lib85+jnSFUMr0o=;
+	b=HrOLe9+qy/uR0mN75ujQ7l1wb4A5HaMxamhn9dUwFwis+UFyUwFm+CSRWdGwXxXTajRkOW
+	j29cVJnPkoc9FOr2RlPp6nnf1rxz6nVPcN+KJhVUUlt1VTZOJZ41KE6tIiRDN3FyyK7mgG
+	BcslFmaCZzFwryla73OXtKn8swHyi2g=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-564-cX0bOnY5NWSQSswnW4aBHQ-1; Wed, 10 Apr 2024 08:34:38 -0400
+X-MC-Unique: cX0bOnY5NWSQSswnW4aBHQ-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-516d440f4d5so4693523e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 05:34:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712752418; x=1713357218;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MDmd9nV27QdHdemsMkqkYQn+1GeM6AqMiOUOo3y6Fjw=;
-        b=V/ZisK05qtWjcnQMFoPZ5xshzGTGte1zazzF9KQ2X8dcFrU4sGW7bDV2bb22dKv5yY
-         IgevaTpQwAg+crk1SjDlwXBYAo9JCXnH+VQhg0KARf+mk7xPqD/d9Ui6XopGeQAOFN17
-         tph41MOv/B1wOJLvTCmVGAv/ctHh+GvILlqzk6ozHxbuY+Qfo6DN/vn53c2qv+8nX7yw
-         IivUHG+2Ih6Q0ZZYPCN1ao2/4Z7jSf8B5sK4CTOVVg1yuEyM9261pYd8TdGZcwe5T9gW
-         3Pibpf5SAW+SqX0dQ/nPOm7WpqQouqcinZyePs//hb3Q9YAkQcbM2J2JPHwYsPqShYFu
-         C2LQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVrTiy2pJ8Euuef532svJZACG44Uf58/eg8sxvLNUcQIuFv7HjdfhQuthO0wnOb2cOW0cMMdVH2E9q++ryUljIWKT5gCLToK9gl3HVz
-X-Gm-Message-State: AOJu0Yw67ncbPh5WqmmYf4myHBmvFkSGkptHROPTMN4S+ZgoVXvk7Vsf
-	DkLBqrCim1AW++98mqUyU/wFP9QDtOk8HJ9gWeMM8O0PftKpb0SS4t6SJ7PhhIE=
-X-Google-Smtp-Source: AGHT+IFTii5izHkTaj9l6tWb307f9H7wWwEJ+dZ19x9pLNKHm+gaZZyS5VFsXUAMjzM4j2enKnHtww==
-X-Received: by 2002:a05:6512:484d:b0:517:b2b:6ca7 with SMTP id ep13-20020a056512484d00b005170b2b6ca7mr1521768lfb.59.1712752417721;
-        Wed, 10 Apr 2024 05:33:37 -0700 (PDT)
-Received: from [172.30.204.89] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id a3-20020a056512020300b00516d63a315bsm1737647lfo.104.2024.04.10.05.33.36
+        d=1e100.net; s=20230601; t=1712752477; x=1713357277;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SGeEQTYX/N6LJYhZCdDmcWoBaL25Lib85+jnSFUMr0o=;
+        b=G/lKXJoXlBvGVApA9yvLZZsw6ZwTta5xmEPgiaBqdGXqpVQ/VWuY5tpOI2YXmOT6y3
+         NjrFMkCLoV+hrvIOCAm0ZRL7DXaN6mMYYI+nZJM5KFpi87wEx4LDUQ+qh2Nb0IZCpg1k
+         9O456ACyaV5ovLMF+KPRXQT23md6Bia0n/beXN+a5OvwCWdGUOQg7wPrbDyqFRCkvowv
+         MhwoHRXpgYVGFvNdzbq/7OFDYIPTXjf7174OjMjqBE5XN5+72GOJ75g1l49p/6eVsdnj
+         1uNqwNAH965WaNKSB75XoQb2OlJbjr3fRMk5dRFcqoe8lpn+isUNqjSj1uSl1crTYZNA
+         dDDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUcFHUHm5rJP4XiRwC2msUyce0mVW/HVN+K7EgPF2uW+hXaQRPpKm5Aw7KzTYRcZnqbnGaLbmKMA6J0cYS9zMtrnO1o9PYZQvgTKQTX
+X-Gm-Message-State: AOJu0YxFwbXcApfU9KKzx2Rq9Hm7QBo+T9FvojYRoxiFp3StDUWFl4s0
+	vMkeEABSpW3BublZQtDDyfqcoFCYJLlV0k7bqo94gFpQNKLwaUSxksBLoWXsgHmpsuGKJYTQooi
+	CzhR+FVP4C+d/nTa5Bd1XEH5ggHUCQwuq8PxoxOSK6jZvTKh+jB5SbUiPOmsMbg==
+X-Received: by 2002:a05:6512:1249:b0:516:a302:f29c with SMTP id fb9-20020a056512124900b00516a302f29cmr2497242lfb.55.1712752477519;
+        Wed, 10 Apr 2024 05:34:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGdIoQWgnS6VH8XnM/nKKzpVauhZ/seIZDhMORj8oKiPpegF33cCQt2WaXIAM0gbW4TLiGR9g==
+X-Received: by 2002:a05:6512:1249:b0:516:a302:f29c with SMTP id fb9-20020a056512124900b00516a302f29cmr2497221lfb.55.1712752477099;
+        Wed, 10 Apr 2024 05:34:37 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c712:fa00:38eb:93ad:be38:d469? (p200300cbc712fa0038eb93adbe38d469.dip0.t-ipconnect.de. [2003:cb:c712:fa00:38eb:93ad:be38:d469])
+        by smtp.gmail.com with ESMTPSA id d11-20020adff84b000000b0033e7a102cfesm13679872wrq.64.2024.04.10.05.34.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 05:33:37 -0700 (PDT)
-Message-ID: <17b279d9-e353-4d72-8606-0780ef7194cf@linaro.org>
-Date: Wed, 10 Apr 2024 14:33:36 +0200
+        Wed, 10 Apr 2024 05:34:36 -0700 (PDT)
+Message-ID: <594dbec7-b560-44e5-a684-93dcb8ba85df@redhat.com>
+Date: Wed, 10 Apr 2024 14:34:35 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,41 +82,88 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/9] arm64: dts: qcom: sc8180x: switch USB+DP QMP PHYs
- to new bindings
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
-References: <20240401-typec-fix-sm8250-v3-0-604dce3ad103@linaro.org>
- <20240401-typec-fix-sm8250-v3-5-604dce3ad103@linaro.org>
+Subject: Re: [PATCH] mm/shmem: Inline shmem_is_huge() for disabled transparent
+ hugepages
+To: Sumanth Korikkar <sumanthk@linux.ibm.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org
+Cc: hughd@google.com, hca@linux.ibm.com, gor@linux.ibm.com,
+ agordeev@linux.ibm.com, iii@linux.ibm.com, linux-s390@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240409155407.2322714-1-sumanthk@linux.ibm.com>
+From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240401-typec-fix-sm8250-v3-5-604dce3ad103@linaro.org>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240409155407.2322714-1-sumanthk@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-
-
-On 4/1/24 22:33, Dmitry Baryshkov wrote:
-> To follow other Qualcomm platforms, update QMP USB+DP PHYs to use newer
-> bindings rather than old bindings which had PHYs as subdevices.
+On 09.04.24 17:54, Sumanth Korikkar wrote:
+> In order to  minimize code size (CONFIG_CC_OPTIMIZE_FOR_SIZE=y),
+> compiler might choose to make a regular function call (out-of-line) for
+> shmem_is_huge() instead of inlining it. When transparent hugepages are
+> disabled (CONFIG_TRANSPARENT_HUGEPAGE=n), it can cause compilation
+> error.
 > 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
+> mm/shmem.c: In function ‘shmem_getattr’:
+> ./include/linux/huge_mm.h:383:27: note: in expansion of macro ‘BUILD_BUG’
+>    383 | #define HPAGE_PMD_SIZE ({ BUILD_BUG(); 0; })
+>        |                           ^~~~~~~~~
+> mm/shmem.c:1148:33: note: in expansion of macro ‘HPAGE_PMD_SIZE’
+>   1148 |                 stat->blksize = HPAGE_PMD_SIZE;
+> 
+> To prevent the possible error, always inline shmem_is_huge() when
+> transparent hugepages are disabled.
+> 
 
-[...]
+Do you know which commit introduced that?
 
->   		usb_sec_qmpphy: phy@88ee000 {
+-- 
+Cheers,
 
-This unit address also needs to be updated
+David / dhildenb
 
-LGTM otherwise
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-Konrad
 
