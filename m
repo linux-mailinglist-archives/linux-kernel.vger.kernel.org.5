@@ -1,251 +1,215 @@
-Return-Path: <linux-kernel+bounces-138967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EE9B89FCC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:24:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC14389FCC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:24:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36CAA1C227A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:24:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 562801F22B90
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:24:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEF7F17A93D;
-	Wed, 10 Apr 2024 16:24:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 272E217A937;
+	Wed, 10 Apr 2024 16:24:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="vM/wKYIg"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11olkn2105.outbound.protection.outlook.com [40.92.20.105])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FdgeLxez"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B8CA16F0EE;
-	Wed, 10 Apr 2024 16:23:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.20.105
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712766239; cv=fail; b=Ca/MzeDWjeEyZAUhyy8lJAa3x1SbpeO+l8cH49o2ncxAPch5djnvRywdW3HaHOwD5alcuAt+QAYeAglTaBJPifWWZrVAUOkSkjZ8rbWZcrCRZWMcMJjUMgW4thLYsSbKQIlCAlw6PZu4XPUhrHljB5vqvtWe1/WriFBVv6Ceg/M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712766239; c=relaxed/simple;
-	bh=CwdD5TnRukEHsTHZh9591rqPL5SeBfYXkZRGUhIixNU=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=ZQVNqppckHiA9NA0bJU23p/f6xniMCfEBAAN2Lovs+elPBwAV6w/tHcXM04LHt7Io3NI1hh2N7RiOcDayv4rYc3EoEUbL8sy5Z0hlirP55yEwsaVSAGptjCc4He2+QEicWnWqStohIww848UNX7D2TtTZXRf7sjfeiZU6HVKUSA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com; spf=pass smtp.mailfrom=hotmail.com; dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b=vM/wKYIg; arc=fail smtp.client-ip=40.92.20.105
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m6GDnJcIGchSNwCHbO+uEN2zwbt/ProzTpvMWG2a8C8RRRghhmN25IJc3Gyy1gXdMtR4IH7tZNEIyatm3bGtiA+zUa58eHUWAi79wZu3HtO51LehJ5RQrZ5VD5JOHER/oBjeNnBiSBo1pZxLescgKIfTgChpxGFtifqT8Dd48X26pmJo74DvxXNLnZPhuoL/2g1VtZ1OsB62r8BJgle3stVh7Nx9YTy5KSiQI4khhe2r7OfAhEKHe4d/3u3FR0YR4uZv46wo5twFVGqFQrd3GQ4kaGz1VJEcgGzgbojvo6erBd0yza4Z6Ps8ponyTRwUdrCQMttzvVXRbKueXQxVMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PmpRt412lq24ynXv8uaK41Cj3hG91nJB0S7j0V1z/0Y=;
- b=BP4UN94U8YqZyhOeNjX/Pg8jZVvtGujAbrKwlxoGVTczcmhoN+ZRU7ShoAnWxVBcDkrZO4+ReWJ99qlFJ+7YrUqSOWNjhxH00sHUjGbqIoS5ltp5OqnUAjyPRaP5nrXg0UvmGcQFDrwRSr5RUOsXIQpEsbBm8fqTfaRw+6asY+FNbyCvRhNm3FCNbXpTNn9+AvNaAzpOBIX5+KXjw9ayEVkrzOV5jjfA21w5QIjmePCK+p+mnUEIxhnP8JLMBeZUClhE3y01NFFsp4SqmkCxIM93lMNEeaB4pCZ3zWBoZoA9I/pHCJf6mpg/FWNcqe0jK5gHytws18T7J3wj/jvw2g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PmpRt412lq24ynXv8uaK41Cj3hG91nJB0S7j0V1z/0Y=;
- b=vM/wKYIg0bwkosLgwSzz+J59E7PjAFPmovFLlnb1USrotvStGh1MLw0lz4AvlVIhTBv50lHX9WtIeCUrY2PHQzlNeUwwFEjHBeZ4hRfI9oAsxcUrfaA5NMB5zoysLpQxPii4lqN5mVLd94MHp868andn1OO6kbCeb+6YOQSoKo2RXA8j7Qm8RlxkQA2I/2wKIFIM6cr7UtKl/jo7LlO8plISzmLXp7p+yQ7hAy+VtTmUEyypRS6rxX6tRYiSkWfI7f+i1yUEKQlh+yttGrmK1OhyylPwRrnJrcPkfZCb1aE5/iIt7qXSxZJg5G65yWZNytpEd7BHUPySc8ivvaa+iA==
-Received: from LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM (2603:10b6:408:1ac::6)
- by IA2P220MB1967.NAMP220.PROD.OUTLOOK.COM (2603:10b6:208:4ab::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 10 Apr
- 2024 16:23:55 +0000
-Received: from LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
- ([fe80::57aa:102b:db4b:e05]) by LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
- ([fe80::57aa:102b:db4b:e05%7]) with mapi id 15.20.7409.042; Wed, 10 Apr 2024
- 16:23:55 +0000
-From: Min Li <lnimi@hotmail.com>
-To: richardcochran@gmail.com,
-	lee@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Min Li <min.li.xe@renesas.com>
-Subject: [PATCH net-next v2 1/1] ptp: 82p33: move register definitions out of ptp folder
-Date: Wed, 10 Apr 2024 12:23:42 -0400
-Message-ID:
- <LV3P220MB12026EB15790ABE932799E53A0062@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.39.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [cW9zTqJ7KTggZCJrgIh5SYLG9NQ9x48O]
-X-ClientProxiedBy: YQZPR01CA0046.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:86::25) To LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:408:1ac::6)
-X-Microsoft-Original-Message-ID: <20240410162342.9516-1-lnimi@hotmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 928C617A931
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:24:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712766268; cv=none; b=OHhEyBWgm9AvVfPINA/lxMaypzC4gY/d80sM/n6skQf7ECjAfe4H9duW4c6zDF/uATXwxxE6lOmW0eTX3KHwWgGHqrPGTUQTK1PteTvcVdXWvOf0qrsPfcxbNECC2LVVKjyp2Q/9gCbGj4DgV7msG2GEra4GmzDcpiYTLBUq0dA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712766268; c=relaxed/simple;
+	bh=nr8Iy+0ZhJ8G9Kh9PGTHX/4nkYkZYKhNpi7Ct2uRhuw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZbDnmRWtamu4bHd+/D+jfL6f1mFG4pjJdB6CfjlvlLA7j4P0PCtr6Yy5Rqg+IHgnx9H2EVHw0TyLgsAGJvCtJPRBhNrReDoCUbc/UaOagfjVsh5twHpXa/KcT/z3iCYBUzaT2UnM13mfNWUFPUF6JmzNESX+eY1y/hrKf+OArYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FdgeLxez; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712766265;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SR+1AW9M2A3GnVPo72SCiXJczoeqweAOw7eIFhYpkyg=;
+	b=FdgeLxeztcl5LaYNc0AyZJ6Zwlprdg5pZgHEHH9WcPuTUDPpr3ZmQQPv/EjVQQSNJR29rf
+	ShG04Sn6y2YyhKlfbGWzsSFDgQ7uBkzrGOpJN199Qlx1CFQqOVbaxrAlMv9fWOOs0iMO7j
+	B4+2b5VBM37C2KnVj45EqKh00f32ZxU=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-13-n0DR8fDDMuSsb-SVENnUSQ-1; Wed, 10 Apr 2024 12:24:24 -0400
+X-MC-Unique: n0DR8fDDMuSsb-SVENnUSQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-343bb240f70so3309966f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:24:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712766263; x=1713371063;
+        h=content-transfer-encoding:in-reply-to:organization:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SR+1AW9M2A3GnVPo72SCiXJczoeqweAOw7eIFhYpkyg=;
+        b=v3bALhceehmqyroYPOgJiU4eYw0+u47YmVggxDlV5xdtY8SHfbYnjlJvY2nh2vLLOC
+         iPLoWM8KqMw0ApH07WBk/MN9VpP1byf5sFduwK5Wd7Rk13ak2lAyWHwrNDzg/91TqjRU
+         mSr3S2aJO2StpsrJnS2oPd0GPyJpi88q03kE8lVlpBm6/UlN7FzsCejnOrI9hkdeZ4Yj
+         WnLwkbAPgPdXE+Yk7UYD+nTadDuf1/ufNxC5jeRf55iou6Zu11UJ94nLZylwHpfHhcFF
+         vVdaGEpDWggUFUk/BZN2XXkSoLhW7WTf3LRyR1hC/+zwwnsPigBM6FkGY2mRV551nwEk
+         woog==
+X-Forwarded-Encrypted: i=1; AJvYcCWWW+RPxd0PdRqIxwSTiGaP8Lil8IpecxoJqe9VUaPx1PRPwHqUUEbMa4meCmUYZeqWqknJm5vKk+Nl4AlB6OtvrnnVIsAmJzKE1I0V
+X-Gm-Message-State: AOJu0Ywlud7iaM3c2SAsEFZjypgkOj6Vtnb6EdyRYOlP3KilPagcp/Mr
+	d5nfD9aCtZwkZtpe41PXG6qJdCT1P4IW50ghbscKZrbcbme/jxQdeZGOlYQnVMne///51UBUm72
+	8nM9peWbSTnWr4wdWri7MYHD7ncRC/cJEANoKX79b2Tpj5bwia8nyXObgF3fqtw==
+X-Received: by 2002:a5d:46c4:0:b0:343:44cd:7d1e with SMTP id g4-20020a5d46c4000000b0034344cd7d1emr118386wrs.17.1712766262835;
+        Wed, 10 Apr 2024 09:24:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEMW1X5i7lkXvrY5pH8/hRbgfI9LM1AIWY8oZ53l2ukbPKVk1TIMAo3XiLMuX7AI0rT7T6YFg==
+X-Received: by 2002:a5d:46c4:0:b0:343:44cd:7d1e with SMTP id g4-20020a5d46c4000000b0034344cd7d1emr118363wrs.17.1712766262429;
+        Wed, 10 Apr 2024 09:24:22 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:4b3f:ee94:abf:b8ff:feee:998b? ([2a02:810d:4b3f:ee94:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id y13-20020a5d4acd000000b00343eac2acc4sm13444649wrs.111.2024.04.10.09.24.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 09:24:22 -0700 (PDT)
+Message-ID: <cd044176-ebd3-4fd8-94ca-6630cd3211a8@redhat.com>
+Date: Wed, 10 Apr 2024 18:24:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3P220MB1202:EE_|IA2P220MB1967:EE_
-X-MS-Office365-Filtering-Correlation-Id: ce366b45-86b4-458f-eb58-08dc597a9e1a
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	GwJSuvmC+enB1M0Dq1gR212B5r5qIvzCi2zTyQEfjR+NUICLRnZXi12d+hQ43Js5kLmvvtgTgCzajS3zyXR5LAh9MMtNGWPg+d0n2sB2qlgB6CIfpdxTHnhAEGRygi382+vJu3li+Cbt92mgBz+xej9eZ5ANRZNF1jiAEhIWPaai/H3HcIT+6LXxZno1QSDL6gLrldnqrRYRyRm+5JTLXx5N/fIxU6TVo2a5fcDu0Nm9p7YqFssC4mFbQZwWMiOKGDje7v9+XQeHB+Fw+HLhZ9ETe4LfaezXpHbSgVQJplJ2qiW6gR2bJtWFc/wFVeB3zyo3ZhpgpyXBbRU9GeyzMVvTSdIIYrMC9wAIUT+rroHjDbvgdBmV9wSw7PCn0FaRBRuv0Eu9yt3pImVXnBDRA2LOOk4ANjhCszCpEdDKJMPw3JlBw1NZcObR/lQM2HJD0b2bWfli0FfDCOvsMeDorIopILyIWXhysFTBPnKeCcgktDKAEHS7JV+r93ZysnvOJfYUd2bFIYfwSVATDVRpaaA9DLuWI8VmArAjs/Klv+cw6B7khlq7JxZEMr7lHOT5
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?qmeCs3yHVv32553n5TjSYrvyUoKK/QDlzTqYExghukFvYTwl8KJefMprbBrM?=
- =?us-ascii?Q?ghPQQ/mfmbvA4OPlSqZZ42lvyTYSlsu8Sgysdrt9yroxSC/NitlXVVc/o0AB?=
- =?us-ascii?Q?tJHQCloMiG0YLaibt/T5XSJ22432Axjgfm07/8Snt12+e5wBtfh13VLpkLDX?=
- =?us-ascii?Q?2a7M8vl9zxX61XXM3oQLvz9Khe5LXg9c01aeN01ZbktWg9GO12lQVPJFSjvg?=
- =?us-ascii?Q?+FXIkV/uJWwC8mTC/KJb2jDkAMl9QYyjAadKhhS47IrURbEjTCoeaYBowSPZ?=
- =?us-ascii?Q?bPgtL24kjVhHNvr3ZHCKs8lYm4dvmvXDYiKONxvfMW+GlsdQvaxC6+j/NmP/?=
- =?us-ascii?Q?1H/D0fCKgoyZXvSwRBMk6U3m8wS5k+RdC4OWI8+fh+fOR7LmvXwCM33vlfwJ?=
- =?us-ascii?Q?vfwWAzPdIDxwzUBJM9fhhC1i4kmSlh23oWE9igJKJlZOuUF3Crz/+r/E/FRm?=
- =?us-ascii?Q?kZ4lkpRDDFAUFmzkSczAR/7Rt4p75dBZPfw9Sk8cGOaciy6C3SPbT5EgOjDh?=
- =?us-ascii?Q?ZSMqX9VSV8F65cGZ1P0ORRH8O6N/gKkstEPMpJJwGPpBVw0vhe7TZUQtLumi?=
- =?us-ascii?Q?x/MXKTVT0sOgFupZQLaTVoCVV0J9NIkDFZSzDuWys54OfRrS1yscgRoHCKaR?=
- =?us-ascii?Q?djai78/C9joOp4xHSAiyCP4elURVIIHaSR/wtCGlQsfVYUzIPih9nY5md4zZ?=
- =?us-ascii?Q?a509w6a+vzrQxOzuHaLu0w0BCKnfvsZKnH3BZtnXfIfIKaoGNHsJFed8BSwE?=
- =?us-ascii?Q?p8LaGjypQJ819c6Xvoce5qAlw2caYj9rzDvbSesb33s1qzEoK3rSfflmHPHh?=
- =?us-ascii?Q?2NXKtrQMLXp34QxgtYtAAPm5+jt5Y1R8EzGfgeN8IOvsJvsh//wkulzqbfnK?=
- =?us-ascii?Q?RJ7sMf+O1Uo4bEjLGfL0ilDtUDwReEVObAsLyb9oo8aRK/hFhf1iYxi8eCOE?=
- =?us-ascii?Q?uopRnIfOUxRVkoBPD/X88ADVnDz6Un7c6wA7ZagJ8z5sAtoqzQn1dtB9qxt8?=
- =?us-ascii?Q?AMrHFZNkPCN5cD97GAuB4hNFExUTQRoEn3prz5qPfZKhC+t0TpvI6zhSACxI?=
- =?us-ascii?Q?v5Oo+XibXj4b40t7hss/cf9COgtxZ1o6ikX2uDV1Qul2HBXYhXudXR9Pg8qM?=
- =?us-ascii?Q?TOf0gbRntR2PgN8GVdWGGcS/oa8SIoN8YT2UMmHZZK3LC67DnWtdOaBw1OB+?=
- =?us-ascii?Q?0sgTur6zlBG1qW3ucbki1Zel8T+3GFycuM4DJU59fKBpKaK+Vt6hcHwpGVg?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-3458f.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce366b45-86b4-458f-eb58-08dc597a9e1a
-X-MS-Exchange-CrossTenant-AuthSource: LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 16:23:55.8222
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA2P220MB1967
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm: nv04: Add check to avoid out of bounds access
+To: Mikhail Kobuk <m.kobuk@ispras.ru>, Danilo Krummrich <me@dakr.org>,
+ Lyude Paul <lyude@redhat.com>, Karol Herbst <kherbst@redhat.com>
+Cc: David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Francisco Jerez <currojerez@riseup.net>, dri-devel@lists.freedesktop.org,
+ nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ lvc-project@linuxtesting.org, Fedor Pchelkin <pchelkin@ispras.ru>,
+ Alexey Khoroshilov <khoroshilov@ispras.ru>
+References: <20240331064552.6112-1-m.kobuk@ispras.ru>
+ <c3253f8a-e654-4016-b0c6-d92703107c48@redhat.com>
+ <11096e558e67f2fea2aee976c70a19af1b7c212b.camel@redhat.com>
+ <03263130-0627-45c4-ab14-aa0e3b597442@dakr.org>
+ <624ee851-162b-4490-8444-0d9e06b5863b@ispras.ru>
+Content-Language: en-US
+From: Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <624ee851-162b-4490-8444-0d9e06b5863b@ispras.ru>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-From: Min Li <min.li.xe@renesas.com>
+On 4/10/24 17:39, Mikhail Kobuk wrote:
+> On 08/04/2024 16:23, Danilo Krummrich wrote:
+>> On 4/5/24 22:05, Lyude Paul wrote:
+>>> On Fri, 2024-04-05 at 17:53 +0200, Danilo Krummrich wrote:
+>>>> On 3/31/24 08:45, Mikhail Kobuk wrote:
+>>>>> Output Resource (dcb->or) value is not guaranteed to be non-zero
+>>>>> (i.e.
+>>>>> in drivers/gpu/drm/nouveau/nouveau_bios.c, in
+>>>>> 'fabricate_dcb_encoder_table()'
+>>>>> 'dcb->or' is assigned value '0' in call to
+>>>>> 'fabricate_dcb_output()').
+>>>>
+>>>> I don't really know much about the semantics of this code.
+>>>>
+>>>> Looking at fabricate_dcb_output() though I wonder if the intention
+>>>> was to assign
+>>>> BIT(or) to entry->or.
+>>>>
+>>>> @Lyude, can you help here?
+>>>
+>>> This code is definitely a bit before my time as well - but I think
+>>> you're completely correct. Especially considering this bit I found in
+>>> nouveau_bios.h:
+>>
+>> Thanks for confirming.
+>>
+>> @Mikhail, I think we should rather fix this assignment then.
+> 
+> Thank you all for a thorough look!
+> 
+>>
+>> - Danilo
+>>
+>>>
+>>> enum nouveau_or {
+>>>     DCB_OUTPUT_A = (1 << 0),
+>>>     DCB_OUTPUT_B = (1 << 1),
+>>>     DCB_OUTPUT_C = (1 << 2)
+>>> };
+>>>
+>>>
+> 
+> Considering this code bit, and the fact that fabricate_dcb_output() is called in drivers/gpu/drm/nouveau/nouveau_bios.c only, there's option to adjust function calls instead of adding BIT(or), i.e.:
+> 
+> fabricate_dcb_output(dcb, DCB_OUTPUT_TMDS, 0, all_heads, DCB_OUTPUT_B);
+> 
+> instead of current:
+> 
+> fabricate_dcb_output(dcb, DCB_OUTPUT_TMDS, 0, all_heads, 1);
+> 
+> and etc.
+> 
+> Should I make a new patch with adjusted calls or stick with BIT(or)?
 
-Relocate idt82p33 register definitions so that other multi-functional
-devices can access those definitions.
+Please send a new patch adjusting the calls using enum nouveau_or, that
+seems to be cleaner.
 
-Signed-off-by: Min Li <min.li.xe@renesas.com>
----
-Submit to net-next and add driver name suggested by Jakub
+- Danilo
 
- drivers/ptp/ptp_idt82p33.h       | 27 -----------------------
- include/linux/mfd/idt82p33_reg.h | 38 +++++++++++++++++++++++++++++---
- 2 files changed, 35 insertions(+), 30 deletions(-)
-
-diff --git a/drivers/ptp/ptp_idt82p33.h b/drivers/ptp/ptp_idt82p33.h
-index 6a63c14b6966..b4f3ee40389f 100644
---- a/drivers/ptp/ptp_idt82p33.h
-+++ b/drivers/ptp/ptp_idt82p33.h
-@@ -23,25 +23,6 @@
- #define DDCO_THRESHOLD_NS	(5)
- #define IDT82P33_MAX_WRITE_COUNT	(512)
- 
--#define PLLMASK_ADDR_HI	0xFF
--#define PLLMASK_ADDR_LO	0xA5
--
--#define PLL0_OUTMASK_ADDR_HI	0xFF
--#define PLL0_OUTMASK_ADDR_LO	0xB0
--
--#define PLL1_OUTMASK_ADDR_HI	0xFF
--#define PLL1_OUTMASK_ADDR_LO	0xB2
--
--#define PLL2_OUTMASK_ADDR_HI	0xFF
--#define PLL2_OUTMASK_ADDR_LO	0xB4
--
--#define PLL3_OUTMASK_ADDR_HI	0xFF
--#define PLL3_OUTMASK_ADDR_LO	0xB6
--
--#define DEFAULT_PLL_MASK	(0x01)
--#define DEFAULT_OUTPUT_MASK_PLL0	(0xc0)
--#define DEFAULT_OUTPUT_MASK_PLL1	DEFAULT_OUTPUT_MASK_PLL0
--
- /**
-  * @brief Maximum absolute value for write phase offset in nanoseconds
-  */
-@@ -103,12 +84,4 @@ struct idt82p33 {
- 	s64			tod_write_overhead_ns;
- };
- 
--/* firmware interface */
--struct idt82p33_fwrc {
--	u8 hiaddr;
--	u8 loaddr;
--	u8 value;
--	u8 reserved;
--} __packed;
--
- #endif /* PTP_IDT82P33_H */
-diff --git a/include/linux/mfd/idt82p33_reg.h b/include/linux/mfd/idt82p33_reg.h
-index 1db532feeb91..15828e205fa8 100644
---- a/include/linux/mfd/idt82p33_reg.h
-+++ b/include/linux/mfd/idt82p33_reg.h
-@@ -22,6 +22,12 @@
- #define DPLL1_OPERATING_MODE_CNFG 0x120
- #define DPLL2_OPERATING_MODE_CNFG 0x1A0
- 
-+#define DPLL1_HOLDOVER_MODE_CNFG_LSB 0x12A
-+#define DPLL1_HOLDOVER_MODE_CNFG_MSB 0x12B
-+
-+#define DPLL2_HOLDOVER_MODE_CNFG_LSB 0x1A9
-+#define DPLL2_HOLDOVER_MODE_CNFG_MSB 0x1AA
-+
- #define DPLL1_HOLDOVER_FREQ_CNFG 0x12C
- #define DPLL2_HOLDOVER_FREQ_CNFG 0x1AC
- 
-@@ -43,7 +49,6 @@
- #define REG_SOFT_RESET 0X381
- 
- #define OUT_MUX_CNFG(outn) REG_ADDR(0x6, (0xC * (outn)))
--#define TOD_TRIGGER(wr_trig, rd_trig) ((wr_trig & 0xf) << 4 | (rd_trig & 0xf))
- 
- /* Register bit definitions */
- #define SYNC_TOD BIT(1)
-@@ -101,7 +106,7 @@ enum hw_tod_trig_sel {
- 	WR_TRIG_SEL_MAX = HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
- };
- 
--/** @brief Enumerated type listing DPLL operational modes */
-+/* Enumerated type listing DPLL operational modes */
- enum dpll_state {
- 	DPLL_STATE_FREERUN = 1,
- 	DPLL_STATE_HOLDOVER = 2,
-@@ -109,7 +114,34 @@ enum dpll_state {
- 	DPLL_STATE_PRELOCKED2 = 5,
- 	DPLL_STATE_PRELOCKED = 6,
- 	DPLL_STATE_LOSTPHASE = 7,
--	DPLL_STATE_MAX
-+	DPLL_STATE_MAX = DPLL_STATE_LOSTPHASE,
- };
- 
-+/* firmware interface */
-+struct idt82p33_fwrc {
-+	u8 hiaddr;
-+	u8 loaddr;
-+	u8 value;
-+	u8 reserved;
-+} __packed;
-+
-+#define PLLMASK_ADDR_HI	0xFF
-+#define PLLMASK_ADDR_LO	0xA5
-+
-+#define PLL0_OUTMASK_ADDR_HI	0xFF
-+#define PLL0_OUTMASK_ADDR_LO	0xB0
-+
-+#define PLL1_OUTMASK_ADDR_HI	0xFF
-+#define PLL1_OUTMASK_ADDR_LO	0xB2
-+
-+#define PLL2_OUTMASK_ADDR_HI	0xFF
-+#define PLL2_OUTMASK_ADDR_LO	0xB4
-+
-+#define PLL3_OUTMASK_ADDR_HI	0xFF
-+#define PLL3_OUTMASK_ADDR_LO	0xB6
-+
-+#define DEFAULT_PLL_MASK	(0x01)
-+#define DEFAULT_OUTPUT_MASK_PLL0	(0xc0)
-+#define DEFAULT_OUTPUT_MASK_PLL1	DEFAULT_OUTPUT_MASK_PLL0
-+
- #endif
--- 
-2.39.2
+> 
+>>>>
+>>>> Otherwise, for parsing the DCB entries, it seems that the bound
+>>>> checks are
+>>>> happening in olddcb_outp_foreach() [1].
+>>>>
+>>>> [1]
+>>>> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/nouveau/nouveau_bios.c#L1331
+>>>>
+>>>>>
+>>>>> Add check to validate 'dcb->or' before it's used.
+>>>>>
+>>>>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>>>>>
+>>>>> Fixes: 2e5702aff395 ("drm/nouveau: fabricate DCB encoder table for
+>>>>> iMac G4")
+>>>>> Signed-off-by: Mikhail Kobuk <m.kobuk@ispras.ru>
+>>>>> ---
+>>>>>    drivers/gpu/drm/nouveau/dispnv04/dac.c | 4 ++--
+>>>>>    1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/gpu/drm/nouveau/dispnv04/dac.c
+>>>>> b/drivers/gpu/drm/nouveau/dispnv04/dac.c
+>>>>> index d6b8e0cce2ac..0c8d4fc95ff3 100644
+>>>>> --- a/drivers/gpu/drm/nouveau/dispnv04/dac.c
+>>>>> +++ b/drivers/gpu/drm/nouveau/dispnv04/dac.c
+>>>>> @@ -428,7 +428,7 @@ void nv04_dac_update_dacclk(struct drm_encoder
+>>>>> *encoder, bool enable)
+>>>>>        struct drm_device *dev = encoder->dev;
+>>>>>        struct dcb_output *dcb = nouveau_encoder(encoder)->dcb;
+>>>>> -    if (nv_gf4_disp_arch(dev)) {
+>>>>> +    if (nv_gf4_disp_arch(dev) && ffs(dcb->or)) {
+>>>>>            uint32_t *dac_users = &nv04_display(dev)-
+>>>>>> dac_users[ffs(dcb->or) - 1];
+>>>>>            int dacclk_off = NV_PRAMDAC_DACCLK +
+>>>>> nv04_dac_output_offset(encoder);
+>>>>>            uint32_t dacclk = NVReadRAMDAC(dev, 0,
+>>>>> dacclk_off);
+>>>>> @@ -453,7 +453,7 @@ bool nv04_dac_in_use(struct drm_encoder
+>>>>> *encoder)
+>>>>>        struct drm_device *dev = encoder->dev;
+>>>>>        struct dcb_output *dcb = nouveau_encoder(encoder)->dcb;
+>>>>> -    return nv_gf4_disp_arch(encoder->dev) &&
+>>>>> +    return nv_gf4_disp_arch(encoder->dev) && ffs(dcb->or) &&
+>>>>>            (nv04_display(dev)->dac_users[ffs(dcb->or) - 1] &
+>>>>> ~(1 << dcb->index));
+>>>>>    }
+>>>>
+>>>
+> 
 
 
