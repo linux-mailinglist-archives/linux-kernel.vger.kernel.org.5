@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-137916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B7B489E985
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:15:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA04889E98B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:15:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F21C3B21FB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:15:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBA70287893
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:15:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CD2715E90;
-	Wed, 10 Apr 2024 05:15:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18DE92A1CA;
+	Wed, 10 Apr 2024 05:15:20 +0000 (UTC)
 Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82BB31119F;
-	Wed, 10 Apr 2024 05:15:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398C414A8C;
+	Wed, 10 Apr 2024 05:15:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712726116; cv=none; b=dc5cyR0ioWrxoahbfK7VKIVojfIkeibOYf8PWVfPjjLC23Kbu3jyWi92uCbU5dRFRj5CLp+Jo2sTwOrcPuxvLmdCIh4RelYhqA4An5o4w6YbZTpqYqwpAi8qH2bpcyHhg2JyrgMjnkvNk7Bfbjk2FToW5y7S3nr+ZhGGRUlhelA=
+	t=1712726119; cv=none; b=tXaZiwTcPk3m7d5Pj31KECIwB4sUm8oRQfPoj790dyr+WV6lJyPN+SCwFRzN+yD0PadT9pcfCJ2gJRyBLvNONs4PQpkTXqNdv0bTt+cAw2k1n+1rx1y7TeWsdRTM1cO5Q0Jw/BOKdgli4WbfjKwtp9DHsfLf9BvAKIwjZVTJk9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712726116; c=relaxed/simple;
-	bh=A4QV62qYSkw4FzaRG3KsH05efNPZfKUGtURiKjwZg0g=;
+	s=arc-20240116; t=1712726119; c=relaxed/simple;
+	bh=b/pf4aX7b3wDd9ZG/avGC3si3RwDD97KfmsmPG6vnM0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XCzwYbV1mbzBVQrMxxTTSZ8DWEFi/SJDmiTwL6crX2zeP7yZdQJqwsnNW8s/qTfAjWIgQJBAG/ptqZ+KfPBYil+nBTtYRMeZCfBRjPw96uu8C+9R1isbaXKCFDk2z6ZeZxqo5c5L/mjfLuip06me2MPMipXB0FILHb8QhlTpLzM=
+	 MIME-Version:Content-Type; b=JOusu9EpTfv+XB5SZgx/B3PPK8UmxEqwCuoY+oWdk5hp0MoPESW/wnpaMTxYTHxLSK0sRHUDpQhNLYYnmv2zrZWO5TTNvWllU0sA372pneixENV7gZHNnNMPxuNpwx3x89F85pje+Hog83lbYK742kU2hjvkgCqFw0fS2xovsXM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
@@ -32,23 +32,25 @@ Received: from ip-185-104-138-50.ptr.icomera.net ([185.104.138.50] helo=phil..)
 	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <heiko@sntech.de>)
-	id 1ruQIi-0008Ut-76; Wed, 10 Apr 2024 07:15:12 +0200
+	id 1ruQIj-0008Ut-Kq; Wed, 10 Apr 2024 07:15:13 +0200
 From: Heiko Stuebner <heiko@sntech.de>
 To: linux-rockchip@lists.infradead.org,
-	Dmitry Yashin <dmt.yashin@gmail.com>
+	efectn@6tel.net
 Cc: Heiko Stuebner <heiko@sntech.de>,
 	devicetree@vger.kernel.org,
+	conor+dt@kernel.org,
+	robh+dt@kernel.org,
 	linux-kernel@vger.kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
 	linux-arm-kernel@lists.infradead.org,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 0/3] arm64: dts: rockchip: add Forlinx OK3588-C
-Date: Wed, 10 Apr 2024 07:15:00 +0200
-Message-Id: <171272604793.1867483.15724948920615504695.b4-ty@sntech.de>
+	sebastian.reichel@collabora.com,
+	Muhammed Efe Cetin <efectn@protonmail.com>
+Subject: Re: [PATCH] arm64: dts: rockchip: mark system power controller and fix typo on orangepi-5-plus
+Date: Wed, 10 Apr 2024 07:15:02 +0200
+Message-Id: <171272604790.1867483.16170217183416866311.b4-ty@sntech.de>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240403151229.30577-1-dmt.yashin@gmail.com>
-References: <20240403151229.30577-1-dmt.yashin@gmail.com>
+In-Reply-To: <20240407173210.372585-1-efectn@6tel.net>
+References: <20240407173210.372585-1-efectn@6tel.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,40 +60,18 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Wed, 3 Apr 2024 20:12:26 +0500, Dmitry Yashin wrote:
-> This series add support for Forlinx RK3588 based SoM and carrier board.
-> Devicetree split into .dtsi (FET3588-C SoM) and .dts (OK3588-C Board).
+On Sun, 7 Apr 2024 20:32:10 +0300, efectn@6tel.net wrote:
+> From: Muhammed Efe Cetin <efectn@protonmail.com>
 > 
-> v1 Link: https://lore.kernel.org/all/cover.1710506373.git.dmt.yashin@gmail.com/
+> Mark the PMIC as system power controller, so the board will shut-down
+> properly and fix the typo on rk806_dvs1_null pins property.
 > 
-> Changes in v2:
-> Patch 1:
-> - no changes
-> Patch 2:
-> - rename dtsi to rk3588-fet3588-c.dtsi
-> - reorder regulator nodes
-> - reorder properties in sdhci
-> - drop regulator-always-on from vdd_gpu_s0
-> - enable tsadc
-> Patch 3:
-> - update dtsi include
-> - set more generic names for tca6424a, nau8822 and sound nodes
-> - reorder regulator and nodes in pinctrl
-> - reorder properties in gmac and sdmmc
-> - drop vmmc-supply from sdmmc and update max-frequency
-> - enable gpu (depends on for-next branch)
-> - enable usb_host nodes
 > 
-> [...]
 
 Applied, thanks!
 
-[1/3] dt-bindings: arm: rockchip: add Forlinx FET3588-C
-      commit: dbda7254e7df661fd4022c07dda3a7c9660eee47
-[2/3] arm64: dts: rockchip: add Forlinx FET3588-C
-      commit: f7a9a80da93178fe43b72f13dd55d717b5efff21
-[3/3] arm64: dts: rockchip: add Forlinx OK3588-C
-      commit: ae914513b2f566d995a41638b643ac8589b6275e
+[1/1] arm64: dts: rockchip: mark system power controller and fix typo on orangepi-5-plus
+      commit: 08cd20bdecd9cfde5c1aec6146fa22ca753efea1
 
 Best regards,
 -- 
