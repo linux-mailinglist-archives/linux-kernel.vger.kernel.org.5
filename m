@@ -1,806 +1,251 @@
-Return-Path: <linux-kernel+bounces-138353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B008589F012
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:41:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7C4989F014
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:41:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 655312830CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:41:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB8D31C22825
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83FAE159583;
-	Wed, 10 Apr 2024 10:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8F8A159573;
+	Wed, 10 Apr 2024 10:41:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="aMw+V4mo"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QDB50z+p"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E545159570;
-	Wed, 10 Apr 2024 10:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1D4C159564
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:41:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712745645; cv=none; b=eTnbpnh/ThTxTlzen3yyi8j18coH9C93VGvXnG8t5RlLlfufvr/uLTTO9YENtZvQw3VhkGYNaWN2Kp+63SjGePcPm8felAukH4G9vXjIRvuapEBnjiJ5TC17in4uj5POSkXP4V2Gi7Yc4v0jH2WQHcSVbFhf/QH2qcCxwDKPtoM=
+	t=1712745665; cv=none; b=XyN7AgvfHBW2N7SlpJSTIDlQhwurG+Jj/+ovg5cTpbVj/qgCRueWM/wBANLq5L/qqWCzhSTlO8W3AGR4Z6Pyz5zuxQgSc1tsStiXPIJhisO6qiT7LaNr6MMLy3wnMBGM5EjntoPdMEtdQD8HuYGIYtXoBZt+XhWJP118AsPRixQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712745645; c=relaxed/simple;
-	bh=q1irJWxB8tD2HNGt1c41YE6Q6vsCNZ0KDdeT90xsXAo=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cAR+f+I+6CQ11bwm2+w5a56jgLJ701c7hnRN6fPrwJu6k1Ko3fRzXUA3I42Wi7x97mFyNZxN7N8L/+7I8NC8BehZ6CxqnQCftuwkAsvhYSjDAG60p+vsjTkJUm11wCHkiZ52SLbyZNhwiJpRDFcsEgkzFAwr5QDO5fZF64cheNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=aMw+V4mo; arc=none smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: c5b08ac8f72611ee935d6952f98a51a9-20240410
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=Y2nGKyYGIfib5EujU7UZEr+eGWw05GutWkxCpvQ21Ms=;
-	b=aMw+V4mobUmmeILKulPalGX9Y/XpTv6AQvT7isvfy2OzKfvbQ5mgxgXmdORPwqWpOZ/GG9o3yw3c+cGVyIr9oJflJnwkLQ2V3yLVb9PVotwozFdrAMFD2GrkToals9O9+SIrX7JhxhdpyC/o/s7FOgakyVFW3XeUFfRQo+rNmWM=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:67cc3104-0150-4da9-8026-5f97bdf694ce,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:6f543d0,CLOUDID:eed58282-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: c5b08ac8f72611ee935d6952f98a51a9-20240410
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
-	(envelope-from <zhi.mao@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 2077058293; Wed, 10 Apr 2024 18:40:39 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 10 Apr 2024 18:40:36 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 10 Apr 2024 18:40:35 +0800
-From: Zhi Mao <zhi.mao@mediatek.com>
-To: Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
-CC: Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, Zhi Mao <zhi.mao@mediatek.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>, Laurent Pinchart
-	<laurent.pinchart+renesas@ideasonboard.com>, Heiko Stuebner
-	<heiko@sntech.de>, Sakari Ailus <sakari.ailus@linux.intel.com>, Hans Verkuil
-	<hverkuil-cisco@xs4all.nl>, Hans de Goede <hdegoede@redhat.com>, "Tomi
- Valkeinen" <tomi.valkeinen@ideasonboard.com>, Alain Volmat
-	<alain.volmat@foss.st.com>, Paul Elder <paul.elder@ideasonboard.com>, "Mehdi
- Djait" <mehdi.djait@bootlin.com>, Andy Shevchenko
-	<andy.shevchenko@gmail.com>, Bingbu Cao <bingbu.cao@intel.com>,
-	<linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>, <shengnan.wang@mediatek.com>,
-	<yaya.chang@mediatek.com>, <yunkec@chromium.org>, <10572168@qq.com>
-Subject: [PATCH 2/2] media: i2c: Add GT97xx VCM driver
-Date: Wed, 10 Apr 2024 18:40:02 +0800
-Message-ID: <20240410104002.1197-3-zhi.mao@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240410104002.1197-1-zhi.mao@mediatek.com>
-References: <20240410104002.1197-1-zhi.mao@mediatek.com>
+	s=arc-20240116; t=1712745665; c=relaxed/simple;
+	bh=d2rePbaAXYB09qw9YelL3lAO5AZZaCWIiQiczn1FsTs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BB7fzsFgaG2uiDTQJ0SPKrKZQoyNxYIntwodJsIdlUXDRz1qfavPgTh8ymYDXy7qH5+8sgZQcFLNLTYbr1pNExgpGKQXNYqtxvGuHMbkkbTBQ79KtRub+jyEVbzdloBj3yAxFEN2sDPgwDdsTsPVS5rJfKTvo6n6nbLnSa0ntwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QDB50z+p; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712745661;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+TeWdebrCO/in8a4ZQ+ikj065Xf+M/htxdxpFkTfUTI=;
+	b=QDB50z+pVS+08OmdLDS91ewirx0W1Ys53aFqHwaUyG2w5pPNe7c/TXbRi+JPSrwhR13IOb
+	bEtbI8ugu9p0xnuTNV3Kx54Qh+HNUjvy9vO2TPxXCFtti9OJh9Zbqdgz6DWDE6Jzwj2ZsG
+	txagQ+jFOcFkFAfofUFbbqE+iX7/GOY=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-423-VtkE7CCZP_GBsb8J5bOD8A-1; Wed, 10 Apr 2024 06:40:58 -0400
+X-MC-Unique: VtkE7CCZP_GBsb8J5bOD8A-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a519e05fe4fso380434466b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:40:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712745657; x=1713350457;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+TeWdebrCO/in8a4ZQ+ikj065Xf+M/htxdxpFkTfUTI=;
+        b=kOneDInT1UkCVus5tu/8TK0cTuu6GzE4SIma+sIDsbQQVosD6pAOW6OSPIsWhU7vG8
+         kxzq5aDPyVcy4atyuEZYfFk4fsTq2KWQ5tokesdy2NaBcZfP7mTS2A068+rZq5bW2oQs
+         MtKHFNF3h8GDMEo1s2XAv+hkopT0r9rC5StrnBR53c5My4qJPD1cuQpW9bm1WBRZGKjg
+         jB0mfa9W78AZ/amaAjFQ0C3gCnOqvHxUBuwD4InXx3srl9CBE4W+ybbCnQZh36wIArmv
+         Q+w1x5PTNoSivRiXqSZUD0vMMiQG/5sP/2QYaJafJnlhy+58r6QbLPwRQ32IR1pedcj+
+         p/XQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW2TNLGbv/yqM2G6QmCTboJXvQAvxXYVZjQlmUFVkVls15+786wf6cHzNH+bYuTi373C/TTBb37Yejz65e8e7/3qB4aWzGuZ5Rf/nvj
+X-Gm-Message-State: AOJu0YyXjYwo+t7sI1PTDCrvO1kaF51sl5rC5dyPD7uiwXpc8hyP1yAC
+	2Y6IhrCET2rJgTFDwC0/7G4zg3O5oEr2EDIn3OqVQr6uyBWpUyOW+UPDp17TUCKhnd6YblqmCBS
+	ygR3iNlI7SfhRfrt7ZRaHxq7w802t3bECR7Sfxr06fGKzzbskED/2g5tdiWiMQg==
+X-Received: by 2002:a17:906:f116:b0:a52:10dc:4ca8 with SMTP id gv22-20020a170906f11600b00a5210dc4ca8mr946679ejb.72.1712745657377;
+        Wed, 10 Apr 2024 03:40:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHhdJBzUX4DuqZ2uULshWmUbL6QUe6whMHXJ3hUs3QrHGHJpjCoySP9VM42gaV/tN/8rWUJoQ==
+X-Received: by 2002:a17:906:f116:b0:a52:10dc:4ca8 with SMTP id gv22-20020a170906f11600b00a5210dc4ca8mr946665ejb.72.1712745657028;
+        Wed, 10 Apr 2024 03:40:57 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id lg11-20020a170906f88b00b00a4e2db8ffdcsm6790801ejb.111.2024.04.10.03.40.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 03:40:55 -0700 (PDT)
+Message-ID: <39268d69-7a40-4891-847a-af167faa8581@redhat.com>
+Date: Wed, 10 Apr 2024 12:40:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--8.399800-8.000000
-X-TMASE-MatchedRID: 4je3esFcrFmuhCBFl/b63m3NvezwBrVmK2i9pofGVSvvSbc8qoHu0V/2
-	zKXxjR59dilmHfdk4Tzvl3F3WAnK8EgYkh+Pnbt/uIwLnB3Aqp2WHGENdT+VP8SiwizsgluQEXF
-	HklABLo4L/rn9cjOlgV7bEojljVTyWELDcKwGO25AwvZYEy8IBQeCHewokHM/vDa284z78ydRUm
-	37T3QxGdPcPSKth3KMrXycfZUapf3Ii7cjtJh/qO0yyL51qL/Recvjbu/xDjoICvU2ldz9nPG39
-	9+Ui/tdDLpQmsyyTdHxKKMU+AEVB2DSz0Ilzxe8SxG/I0MjmF7m1SQ5tAvJowqiCYa6w8tvbspa
-	lvknN/SshdvVUTn+vXkNrWD+KBWtkCbHRyY/mHh1e7Xbb6Im2juvYa1v2IFhRQ0dAChl/ly8KbV
-	ax4fgHae3n2JYRI7aflkRI5fbnRK2hcz59QjjVm095hplj6TXYpovC7zX5q9GLFOR6NNrKUA80c
-	np3WUbHOEcT8k/SUnEN6pAvUdaaxXfDcvxC40QQuFiD+xrWCzvkROLxAaM3Lqln+jYe7ZhYyRCC
-	UIJqJD4TgXj1oYZ2cX5+MUrTWe6hrD3pNcSx1Yo19GoN4WoGPqtWPv3hAK2al05V6RMtNGjxYyR
-	Ba/qJcFwgTvxipFajoczmuoPCq2f3HOOMOLv4plY9pu8EYtAVYT3VJVOBgvPISuleFpwTVlbUWa
-	H89qG
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--8.399800-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: CD5922993DB11F85A4B44BB15E802D87827F4F74A06D0977CF35421BEA8C44EE2000:8
-X-MTK: N
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] media: atomisp: Remove unsused macros
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-staging@lists.linux.dev
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20240326190903.1422069-1-andriy.shevchenko@linux.intel.com>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240326190903.1422069-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add a V4L2 sub-device driver for Giantec GT97xx VCM.
+Hi,
 
-Signed-off-by: Zhi Mao <zhi.mao@mediatek.com>
----
- drivers/media/i2c/Kconfig  |  13 +
- drivers/media/i2c/Makefile |   1 +
- drivers/media/i2c/gt97xx.c | 640 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 654 insertions(+)
- create mode 100644 drivers/media/i2c/gt97xx.c
+On 3/26/24 8:09 PM, Andy Shevchenko wrote:
+> Entire defs.h can be killed, so do that.
+> Also kill same macro definitions in hive_types.h
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
-index 56f276b920ab..fcb330cebfe0 100644
---- a/drivers/media/i2c/Kconfig
-+++ b/drivers/media/i2c/Kconfig
-@@ -759,6 +759,19 @@ config VIDEO_DW9807_VCM
- 	  capability. This is designed for linear control of
- 	  voice coil motors, controlled via I2C serial interface.
- 
-+config VIDEO_GT97XX
-+	tristate "GT97xx lens voice coil support"
-+	depends on I2C && VIDEO_DEV
-+	select MEDIA_CONTROLLER
-+	select VIDEO_V4L2_SUBDEV_API
-+	select V4L2_FWNODE
-+	select V4L2_CCI_I2C
-+	help
-+	  This is a driver for the GT97xx camera lens voice coil.
-+	  GT97xx is a 10 bit DAC with 100mA output current sink
-+	  capability. It is designed for linear control of
-+	  voice coil motors, controlled via I2C serial interface.
-+
- endmenu
- 
- menu "Flash devices"
-diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
-index dfbe6448b549..af36a7aa3d12 100644
---- a/drivers/media/i2c/Makefile
-+++ b/drivers/media/i2c/Makefile
-@@ -39,6 +39,7 @@ obj-$(CONFIG_VIDEO_DW9807_VCM) += dw9807-vcm.o
- obj-$(CONFIG_VIDEO_ET8EK8) += et8ek8/
- obj-$(CONFIG_VIDEO_GC0308) += gc0308.o
- obj-$(CONFIG_VIDEO_GC2145) += gc2145.o
-+obj-$(CONFIG_VIDEO_GT97XX) += gt97xx.o
- obj-$(CONFIG_VIDEO_HI556) += hi556.o
- obj-$(CONFIG_VIDEO_HI846) += hi846.o
- obj-$(CONFIG_VIDEO_HI847) += hi847.o
-diff --git a/drivers/media/i2c/gt97xx.c b/drivers/media/i2c/gt97xx.c
-new file mode 100644
-index 000000000000..d91314b872fa
---- /dev/null
-+++ b/drivers/media/i2c/gt97xx.c
-@@ -0,0 +1,640 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Driver for Giantec gt97xx VCM lens device
-+ *
-+ * Copyright 2024 MediaTek
-+ *
-+ * Zhi Mao <zhi.mao@mediatek.com>
-+ */
-+#include <linux/array_size.h>
-+#include <linux/bits.h>
-+#include <linux/clk.h>
-+#include <linux/container_of.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/err.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/property.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/types.h>
-+#include <linux/units.h>
-+
-+#include <media/v4l2-cci.h>
-+#include <media/v4l2-ctrls.h>
-+#include <media/v4l2-event.h>
-+#include <media/v4l2-fwnode.h>
-+#include <media/v4l2-subdev.h>
-+
-+/* gt97xx chip info register and name */
-+#define GT97XX_IC_INFO_REG CCI_REG8(0x00)
-+#define GT9768_ID 0xE9
-+#define GT9769_ID 0xE1
-+#define GT97XX_NAME "gt97xx"
-+
-+/*
-+ * Ring control and Power control register
-+ * Bit[1] RING_EN
-+ * 0: Direct mode
-+ * 1: AAC mode (ringing control mode)
-+ * Bit[0] PD
-+ * 0: Normal operation mode
-+ * 1: Power down mode
-+ * gt97xx requires waiting time of Topr after PD reset takes place.
-+ */
-+#define GT97XX_RING_PD_CONTROL_REG CCI_REG8(0x02)
-+#define GT97XX_PD_MODE_OFF 0x00
-+#define GT97XX_PD_MODE_EN BIT(0)
-+#define GT97XX_AAC_MODE_EN BIT(1)
-+
-+/*
-+ * gt97xx separates two registers to control the VCM position.
-+ * One for MSB value, another is LSB value.
-+ * DAC_MSB: D[9:8] (ADD: 0x03)
-+ * DAC_LSB: D[7:0] (ADD: 0x04)
-+ * D[9:0] DAC data input: positive output current = D[9:0] / 1023 * 100[mA]
-+ */
-+#define GT97XX_MSB_ADDR_REG CCI_REG16(0x03)
-+
-+/*
-+ * AAC mode control & prescale register
-+ * Bit[7:5] Namely AC[2:0], decide the VCM mode and operation time.
-+ * 001 AAC2 0.48 x Tvib
-+ * 010 AAC3 0.70 x Tvib
-+ * 011 AAC4 0.75 x Tvib
-+ * 101 AAC8 1.13 x Tvib
-+ * Bit[2:0] Namely PRESC[2:0], set the internal clock dividing rate as follow.
-+ * 000 2
-+ * 001 1
-+ * 010 1/2
-+ * 011 1/4
-+ * 100 8
-+ * 101 4
-+ */
-+#define GT97XX_AAC_PRESC_REG CCI_REG8(0x06)
-+#define GT97XX_AAC_MODE_SEL_MASK GENMASK(7, 5)
-+#define GT97XX_CLOCK_PRE_SCALE_SEL_MASK GENMASK(2, 0)
-+
-+/*
-+ * VCM period of vibration register
-+ * Bit[5:0] Defined as VCM rising periodic time (Tvib) together with PRESC[2:0]
-+ * Tvib = (6.3ms + AACT[5:0] * 0.1ms) * Dividing Rate
-+ * Dividing Rate is the internal clock dividing rate that is defined at
-+ * PRESCALE register (ADD: 0x06)
-+ */
-+#define GT97XX_AAC_TIME_REG CCI_REG8(0x07)
-+
-+/*
-+ * gt97xx requires waiting time (delay time) of t_OPR after power-up,
-+ * or in the case of PD reset taking place.
-+ */
-+#define GT97XX_T_OPR_US (1 * USEC_PER_MSEC)
-+#define GT97XX_TVIB_MS_BASE10 (64 - 1)
-+#define GT97XX_AAC_MODE_DEFAULT 2
-+#define GT97XX_AAC_TIME_DEFAULT 0x20
-+#define GT97XX_CLOCK_PRE_SCALE_DEFAULT 1
-+
-+/*
-+ * This acts as the minimum granularity of lens movement.
-+ * Keep this value power of 2, so the control steps can be
-+ * uniformly adjusted for gradual lens movement, with desired
-+ * number of control steps.
-+ */
-+#define GT97XX_MOVE_STEPS 16
-+#define GT97XX_MAX_FOCUS_POS (1024 - 1)
-+
-+/*
-+ * This sets the minimum granularity for the focus positions.
-+ * A value of 1 gives maximum accuracy for a desired focus position
-+ */
-+#define GT97XX_FOCUS_STEPS 1
-+
-+enum vcm_giantec_reg_desc {
-+	GT_IC_INFO_REG,
-+	GT_RING_PD_CONTROL_REG,
-+	GT_MSB_ADDR_REG,
-+	GT_AAC_PRESC_REG,
-+	GT_AAC_TIME_REG,
-+	GT_MAX_REG,
-+};
-+
-+struct vcm_giantec_of_data {
-+	unsigned int id;
-+	unsigned int regs[GT_MAX_REG];
-+};
-+
-+static const char *const gt97xx_supply_names[] = {
-+	"vin", /* Digital I/O power */
-+	"vdd", /* Digital core power */
-+};
-+
-+/* gt97xx device structure */
-+struct gt97xx {
-+	struct v4l2_subdev sd;
-+
-+	struct regulator_bulk_data supplies[ARRAY_SIZE(gt97xx_supply_names)];
-+
-+	struct v4l2_ctrl_handler ctrls;
-+	struct v4l2_ctrl *focus;
-+
-+	u32 aac_mode;
-+	u32 aac_timing;
-+	u32 clock_presc;
-+	u32 move_delay_us;
-+
-+	struct regmap *regmap;
-+
-+	const struct vcm_giantec_of_data *chip;
-+};
-+
-+static inline struct gt97xx *sd_to_gt97xx(struct v4l2_subdev *subdev)
-+{
-+	return container_of(subdev, struct gt97xx, sd);
-+}
-+
-+struct regval_list {
-+	u8 reg_num;
-+	u8 value;
-+};
-+
-+struct gt97xx_aac_mode_ot_multi {
-+	u32 aac_mode_enum;
-+	u32 ot_multi_base100;
-+};
-+
-+struct gt97xx_clk_presc_dividing_rate {
-+	u32 clk_presc_enum;
-+	u32 dividing_rate_base100;
-+};
-+
-+static const struct gt97xx_aac_mode_ot_multi aac_mode_ot_multi[] = {
-+	{ 1, 48 },
-+	{ 2, 70 },
-+	{ 3, 75 },
-+	{ 5, 113 },
-+};
-+
-+static const struct gt97xx_clk_presc_dividing_rate presc_dividing_rate[] = {
-+	{ 0, 200 }, { 1, 100 }, { 2, 50 }, { 3, 25 }, { 4, 800 }, { 5, 400 },
-+};
-+
-+static u32 gt97xx_find_ot_multi(u32 aac_mode_param)
-+{
-+	u32 cur_ot_multi_base100 = 70;
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(aac_mode_ot_multi); i++) {
-+		if (aac_mode_ot_multi[i].aac_mode_enum == aac_mode_param) {
-+			cur_ot_multi_base100 =
-+				aac_mode_ot_multi[i].ot_multi_base100;
-+		}
-+	}
-+
-+	return cur_ot_multi_base100;
-+}
-+
-+static u32 gt97xx_find_dividing_rate(u32 presc_param)
-+{
-+	u32 cur_clk_dividing_rate_base100 = 100;
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(presc_dividing_rate); i++) {
-+		if (presc_dividing_rate[i].clk_presc_enum == presc_param) {
-+			cur_clk_dividing_rate_base100 =
-+				presc_dividing_rate[i].dividing_rate_base100;
-+		}
-+	}
-+
-+	return cur_clk_dividing_rate_base100;
-+}
-+
-+/*
-+ * GT97xx_AAC_PRESC_REG & GT97xx_AAC_TIME_REG determine VCM operation time.
-+ * For current VCM mode: AAC3, Operation Time would be 0.70 x Tvib.
-+ * Tvib = (6.3ms + AACT[5:0] * 0.1MS) * Dividing Rate.
-+ * Below is calculation of the operation delay for each step.
-+ */
-+static inline u32 gt97xx_cal_move_delay(u32 aac_mode_param, u32 presc_param,
-+					u32 aac_timing_param)
-+{
-+	u32 tvib_us;
-+	u32 ot_multi_base100;
-+	u32 clk_dividing_rate_base100;
-+
-+	ot_multi_base100 = gt97xx_find_ot_multi(aac_mode_param);
-+
-+	clk_dividing_rate_base100 = gt97xx_find_dividing_rate(presc_param);
-+
-+	tvib_us = (GT97XX_TVIB_MS_BASE10 + aac_timing_param) *
-+		  clk_dividing_rate_base100;
-+
-+	return tvib_us * ot_multi_base100 / 100;
-+}
-+
-+static int gt97xx_mod_reg(struct gt97xx *gt97xx, u32 reg, u8 mask, u8 val)
-+{
-+	u64 read_val;
-+	int ret;
-+
-+	ret = cci_read(gt97xx->regmap, reg, &read_val, NULL);
-+	if (ret < 0)
-+		return ret;
-+
-+	val = ((unsigned char)read_val & ~mask) | (val & mask);
-+
-+	return cci_write(gt97xx->regmap, reg, val, NULL);
-+}
-+
-+static int gt97xx_set_dac(struct gt97xx *gt97xx, u16 val)
-+{
-+	/* Write VCM position to registers */
-+	return cci_write(gt97xx->regmap,
-+			 gt97xx->chip->regs[GT_MSB_ADDR_REG], val, NULL);
-+}
-+
-+static int gt97xx_identify_module(struct gt97xx *gt97xx)
-+{
-+	int ret;
-+	u64 ic_id;
-+	struct i2c_client *client = v4l2_get_subdevdata(&gt97xx->sd);
-+
-+	ret = cci_read(gt97xx->regmap, gt97xx->chip->regs[GT_IC_INFO_REG],
-+		       &ic_id, NULL);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ic_id != gt97xx->chip->id) {
-+		dev_err(&client->dev, "chip id mismatch: 0x%x!=0x%llx",
-+			gt97xx->chip->id, ic_id);
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int gt97xx_init(struct gt97xx *gt97xx)
-+{
-+	int ret, val;
-+
-+	ret = gt97xx_identify_module(gt97xx);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Reset GT97xx_RING_PD_CONTROL_REG to default status 0x00 */
-+	ret = cci_write(gt97xx->regmap,
-+			gt97xx->chip->regs[GT_RING_PD_CONTROL_REG],
-+			GT97XX_PD_MODE_OFF, NULL);
-+	if (ret < 0)
-+		return ret;
-+
-+	/*
-+	 * GT97xx requires waiting delay time of t_OPR
-+	 * after PD reset takes place.
-+	 */
-+	fsleep(GT97XX_T_OPR_US);
-+
-+	/* Set GT97xx_RING_PD_CONTROL_REG to GT97xx_AAC_MODE_EN(0x01) */
-+	ret = cci_write(gt97xx->regmap,
-+			gt97xx->chip->regs[GT_RING_PD_CONTROL_REG],
-+			GT97XX_AAC_MODE_EN, NULL);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Set AAC mode */
-+	ret = gt97xx_mod_reg(gt97xx, gt97xx->chip->regs[GT_AAC_PRESC_REG],
-+			     GT97XX_AAC_MODE_SEL_MASK, gt97xx->aac_mode << 5);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Set clock presc */
-+	if (gt97xx->clock_presc != GT97XX_CLOCK_PRE_SCALE_DEFAULT) {
-+		ret = gt97xx_mod_reg(gt97xx,
-+				     gt97xx->chip->regs[GT_AAC_PRESC_REG],
-+				     GT97XX_CLOCK_PRE_SCALE_SEL_MASK,
-+				     gt97xx->clock_presc);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	/* Set AAC Timing */
-+	if (gt97xx->aac_timing != GT97XX_AAC_TIME_DEFAULT) {
-+		ret = cci_write(gt97xx->regmap,
-+				gt97xx->chip->regs[GT_AAC_TIME_REG],
-+				gt97xx->aac_timing, NULL);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	for (val = gt97xx->focus->val % GT97XX_MOVE_STEPS;
-+	     val <= gt97xx->focus->val; val += GT97XX_MOVE_STEPS) {
-+		ret = gt97xx_set_dac(gt97xx, val);
-+		if (ret)
-+			return ret;
-+
-+		fsleep(gt97xx->move_delay_us);
-+	}
-+
-+	return 0;
-+}
-+
-+static int gt97xx_release(struct gt97xx *gt97xx)
-+{
-+	int ret, val;
-+
-+	val = round_down(gt97xx->focus->val, GT97XX_MOVE_STEPS);
-+	for (; val >= 0; val -= GT97XX_MOVE_STEPS) {
-+		ret = gt97xx_set_dac(gt97xx, val);
-+		if (ret)
-+			return ret;
-+
-+		fsleep(gt97xx->move_delay_us);
-+	}
-+
-+	return 0;
-+}
-+
-+static int gt97xx_power_on(struct device *dev)
-+{
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-+	struct gt97xx *gt97xx = sd_to_gt97xx(sd);
-+	int ret;
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(gt97xx_supply_names),
-+				    gt97xx->supplies);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to enable regulators\n");
-+		return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+static int gt97xx_power_off(struct device *dev)
-+{
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-+	struct gt97xx *gt97xx = sd_to_gt97xx(sd);
-+	int ret;
-+
-+	ret = regulator_bulk_disable(ARRAY_SIZE(gt97xx_supply_names),
-+				     gt97xx->supplies);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to disable regulators\n");
-+		return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+static int gt97xx_runtime_suspend(struct device *dev)
-+{
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-+	struct gt97xx *gt97xx = sd_to_gt97xx(sd);
-+
-+	gt97xx_release(gt97xx);
-+	gt97xx_power_off(dev);
-+
-+	return 0;
-+}
-+
-+static int gt97xx_runtime_resume(struct device *dev)
-+{
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-+	struct gt97xx *gt97xx = sd_to_gt97xx(sd);
-+	int ret;
-+
-+	ret = gt97xx_power_on(dev);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to power_on\n");
-+		return ret;
-+	}
-+
-+	/*
-+	 * The datasheet refers to t_OPR that needs to be waited before sending
-+	 * I2C commands after power-up.
-+	 */
-+	fsleep(GT97XX_T_OPR_US);
-+
-+	ret = gt97xx_init(gt97xx);
-+	if (ret < 0)
-+		goto disable_power;
-+
-+	return 0;
-+
-+disable_power:
-+	gt97xx_power_off(dev);
-+
-+	return ret;
-+}
-+
-+static int gt97xx_set_ctrl(struct v4l2_ctrl *ctrl)
-+{
-+	struct gt97xx *gt97xx =
-+		container_of(ctrl->handler, struct gt97xx, ctrls);
-+
-+	if (ctrl->id == V4L2_CID_FOCUS_ABSOLUTE)
-+		return gt97xx_set_dac(gt97xx, ctrl->val);
-+
-+	return 0;
-+}
-+
-+static const struct v4l2_ctrl_ops gt97xx_ctrl_ops = {
-+	.s_ctrl = gt97xx_set_ctrl,
-+};
-+
-+static int gt97xx_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
-+{
-+	return pm_runtime_resume_and_get(sd->dev);
-+}
-+
-+static int gt97xx_close(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
-+{
-+	return pm_runtime_put(sd->dev);
-+}
-+
-+static const struct v4l2_subdev_internal_ops gt97xx_int_ops = {
-+	.open = gt97xx_open,
-+	.close = gt97xx_close,
-+};
-+
-+static const struct v4l2_subdev_core_ops gt97xx_core_ops = {
-+	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
-+	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
-+};
-+
-+static const struct v4l2_subdev_ops gt97xx_ops = {
-+	.core = &gt97xx_core_ops,
-+};
-+
-+static int gt97xx_init_controls(struct gt97xx *gt97xx)
-+{
-+	struct v4l2_ctrl_handler *hdl = &gt97xx->ctrls;
-+	const struct v4l2_ctrl_ops *ops = &gt97xx_ctrl_ops;
-+
-+	v4l2_ctrl_handler_init(hdl, 1);
-+
-+	gt97xx->focus = v4l2_ctrl_new_std(hdl, ops, V4L2_CID_FOCUS_ABSOLUTE, 0,
-+					  GT97XX_MAX_FOCUS_POS,
-+					  GT97XX_FOCUS_STEPS, 0);
-+
-+	if (hdl->error)
-+		return hdl->error;
-+
-+	gt97xx->sd.ctrl_handler = hdl;
-+
-+	return 0;
-+}
-+
-+static int gt97xx_probe(struct i2c_client *client)
-+{
-+	struct device *dev = &client->dev;
-+	struct gt97xx *gt97xx;
-+	unsigned int i;
-+	int ret;
-+
-+	gt97xx = devm_kzalloc(dev, sizeof(*gt97xx), GFP_KERNEL);
-+	if (!gt97xx)
-+		return -ENOMEM;
-+
-+	gt97xx->regmap = devm_cci_regmap_init_i2c(client, 8);
-+	if (IS_ERR(gt97xx->regmap))
-+		return dev_err_probe(dev, PTR_ERR(gt97xx->regmap),
-+				     "failed to init CCI\n");
-+
-+	/* Initialize subdev */
-+	v4l2_i2c_subdev_init(&gt97xx->sd, client, &gt97xx_ops);
-+
-+	gt97xx->chip = of_device_get_match_data(dev);
-+
-+	gt97xx->aac_mode = GT97XX_AAC_MODE_DEFAULT;
-+	gt97xx->aac_timing = GT97XX_AAC_TIME_DEFAULT;
-+	gt97xx->clock_presc = GT97XX_CLOCK_PRE_SCALE_DEFAULT;
-+
-+	/* Optional indication of AAC mode select */
-+	fwnode_property_read_u32(dev_fwnode(dev), "giantec,aac-mode",
-+				 &gt97xx->aac_mode);
-+
-+	/* Optional indication of clock pre-scale select */
-+	fwnode_property_read_u32(dev_fwnode(dev), "giantec,clock-presc",
-+				 &gt97xx->clock_presc);
-+
-+	/* Optional indication of AAC Timing */
-+	fwnode_property_read_u32(dev_fwnode(dev), "giantec,aac-timing",
-+				 &gt97xx->aac_timing);
-+
-+	gt97xx->move_delay_us = gt97xx_cal_move_delay(gt97xx->aac_mode,
-+						      gt97xx->clock_presc,
-+						      gt97xx->aac_timing);
-+
-+	for (i = 0; i < ARRAY_SIZE(gt97xx_supply_names); i++)
-+		gt97xx->supplies[i].supply = gt97xx_supply_names[i];
-+
-+	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(gt97xx_supply_names),
-+				      gt97xx->supplies);
-+	if (ret < 0)
-+		return dev_err_probe(dev, ret,
-+				     "failed to get regulators\n");
-+
-+	/* Initialize controls */
-+	ret = gt97xx_init_controls(gt97xx);
-+	if (ret)
-+		goto err_free_handler;
-+
-+	/* Initialize subdev */
-+	gt97xx->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
-+	gt97xx->sd.internal_ops = &gt97xx_int_ops;
-+	gt97xx->sd.entity.function = MEDIA_ENT_F_LENS;
-+
-+	ret = media_entity_pads_init(&gt97xx->sd.entity, 0, NULL);
-+	if (ret < 0)
-+		goto err_free_handler;
-+
-+	/*power on and Initialize hw*/
-+	ret = gt97xx_runtime_resume(dev);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to power on: %d\n", ret);
-+		goto err_clean_entity;
-+	}
-+
-+	pm_runtime_set_active(dev);
-+	pm_runtime_enable(dev);
-+	pm_runtime_set_autosuspend_delay(dev, 1000);
-+	pm_runtime_use_autosuspend(dev);
-+	pm_runtime_idle(dev);
-+
-+	ret = v4l2_async_register_subdev(&gt97xx->sd);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to register V4L2 subdev: %d", ret);
-+		goto err_power_off;
-+	}
-+
-+	return 0;
-+
-+err_power_off:
-+	pm_runtime_disable(dev);
-+err_clean_entity:
-+	media_entity_cleanup(&gt97xx->sd.entity);
-+err_free_handler:
-+	v4l2_ctrl_handler_free(&gt97xx->ctrls);
-+
-+	return ret;
-+}
-+
-+static void gt97xx_remove(struct i2c_client *client)
-+{
-+	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-+	struct gt97xx *gt97xx = sd_to_gt97xx(sd);
-+
-+	v4l2_async_unregister_subdev(&gt97xx->sd);
-+	v4l2_ctrl_handler_free(&gt97xx->ctrls);
-+	media_entity_cleanup(&gt97xx->sd.entity);
-+	pm_runtime_disable(&client->dev);
-+	if (!pm_runtime_status_suspended(&client->dev))
-+		gt97xx_runtime_suspend(&client->dev);
-+	pm_runtime_set_suspended(&client->dev);
-+}
-+
-+static DEFINE_RUNTIME_DEV_PM_OPS(gt97xx_pm_ops,
-+				 gt97xx_runtime_suspend,
-+				 gt97xx_runtime_resume,
-+				 NULL);
-+
-+static const struct vcm_giantec_of_data gt9768_data = {
-+	.id = GT9768_ID,
-+	.regs[GT_IC_INFO_REG] = GT97XX_IC_INFO_REG,
-+	.regs[GT_RING_PD_CONTROL_REG] = GT97XX_RING_PD_CONTROL_REG,
-+	.regs[GT_MSB_ADDR_REG] = GT97XX_MSB_ADDR_REG,
-+	.regs[GT_AAC_PRESC_REG] = GT97XX_AAC_PRESC_REG,
-+	.regs[GT_AAC_TIME_REG] = GT97XX_AAC_TIME_REG,
-+};
-+
-+static const struct vcm_giantec_of_data gt9769_data = {
-+	.id = GT9769_ID,
-+	.regs[GT_IC_INFO_REG] = GT97XX_IC_INFO_REG,
-+	.regs[GT_RING_PD_CONTROL_REG] = GT97XX_RING_PD_CONTROL_REG,
-+	.regs[GT_MSB_ADDR_REG] = GT97XX_MSB_ADDR_REG,
-+	.regs[GT_AAC_PRESC_REG] = GT97XX_AAC_PRESC_REG,
-+	.regs[GT_AAC_TIME_REG] = GT97XX_AAC_TIME_REG,
-+};
-+
-+static const struct of_device_id gt97xx_of_table[] = {
-+	{ .compatible = "giantec,gt9768", .data = &gt9768_data },
-+	{ .compatible = "giantec,gt9769", .data = &gt9769_data },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, gt97xx_of_table);
-+
-+static struct i2c_driver gt97xx_i2c_driver = {
-+	.driver = {
-+		.name = GT97XX_NAME,
-+		.pm = pm_ptr(&gt97xx_pm_ops),
-+		.of_match_table = gt97xx_of_table,
-+	},
-+	.probe = gt97xx_probe,
-+	.remove = gt97xx_remove,
-+};
-+module_i2c_driver(gt97xx_i2c_driver);
-+
-+MODULE_AUTHOR("Zhi Mao <zhi.mao@mediatek.com>");
-+MODULE_DESCRIPTION("GT97xx VCM driver");
-+MODULE_LICENSE("GPL");
--- 
-2.25.1
+Thank you for your patch.
+
+I have merged this in my media-atomisp branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/hansg/linux.git/log/?h=media-atomisp
+
+And this patch will be included in my next
+pull-request to Mauro (to media subsystem maintainer)
+
+Regards,
+
+Hans
+
+
+> ---
+>  drivers/staging/media/atomisp/pci/bits.h      |  4 +-
+>  drivers/staging/media/atomisp/pci/defs.h      | 37 -------------------
+>  .../pci/hive_isp_css_common/host/dma_local.h  |  1 -
+>  .../staging/media/atomisp/pci/hive_types.h    | 19 ----------
+>  .../pci/runtime/debug/src/ia_css_debug.c      |  3 +-
+>  5 files changed, 4 insertions(+), 60 deletions(-)
+>  delete mode 100644 drivers/staging/media/atomisp/pci/defs.h
+> 
+> diff --git a/drivers/staging/media/atomisp/pci/bits.h b/drivers/staging/media/atomisp/pci/bits.h
+> index 9fab02ebddc5..f7a66287d763 100644
+> --- a/drivers/staging/media/atomisp/pci/bits.h
+> +++ b/drivers/staging/media/atomisp/pci/bits.h
+> @@ -16,9 +16,9 @@
+>  #ifndef _HRT_BITS_H
+>  #define _HRT_BITS_H
+>  
+> -#include "defs.h"
+> +#include <linux/args.h>
+>  
+> -#define _hrt_ones(n) HRTCAT(_hrt_ones_, n)
+> +#define _hrt_ones(n)	CONCATENATE(_hrt_ones_, n)
+>  #define _hrt_ones_0x0  0x00000000U
+>  #define _hrt_ones_0x1  0x00000001U
+>  #define _hrt_ones_0x2  0x00000003U
+> diff --git a/drivers/staging/media/atomisp/pci/defs.h b/drivers/staging/media/atomisp/pci/defs.h
+> deleted file mode 100644
+> index 785e7a670a00..000000000000
+> --- a/drivers/staging/media/atomisp/pci/defs.h
+> +++ /dev/null
+> @@ -1,37 +0,0 @@
+> -/* SPDX-License-Identifier: GPL-2.0 */
+> -/*
+> - * Support for Intel Camera Imaging ISP subsystem.
+> - * Copyright (c) 2015, Intel Corporation.
+> - *
+> - * This program is free software; you can redistribute it and/or modify it
+> - * under the terms and conditions of the GNU General Public License,
+> - * version 2, as published by the Free Software Foundation.
+> - *
+> - * This program is distributed in the hope it will be useful, but WITHOUT
+> - * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+> - * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+> - * more details.
+> - */
+> -
+> -#ifndef _HRT_DEFS_H_
+> -#define _HRT_DEFS_H_
+> -
+> -#ifndef HRTCAT
+> -#define _HRTCAT(m, n)     m##n
+> -#define HRTCAT(m, n)      _HRTCAT(m, n)
+> -#endif
+> -
+> -#ifndef HRTSTR
+> -#define _HRTSTR(x)   #x
+> -#define HRTSTR(x)    _HRTSTR(x)
+> -#endif
+> -
+> -#ifndef HRTMIN
+> -#define HRTMIN(a, b) (((a) < (b)) ? (a) : (b))
+> -#endif
+> -
+> -#ifndef HRTMAX
+> -#define HRTMAX(a, b) (((a) > (b)) ? (a) : (b))
+> -#endif
+> -
+> -#endif /* _HRT_DEFS_H_ */
+> diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/dma_local.h b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/dma_local.h
+> index 48a1ace79897..1a71dbebbbe2 100644
+> --- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/dma_local.h
+> +++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/dma_local.h
+> @@ -19,7 +19,6 @@
+>  #include <type_support.h>
+>  #include "dma_global.h"
+>  
+> -#include <defs.h>				/* HRTCAT() */
+>  #include <bits.h>				/* _hrt_get_bits() */
+>  #include <hive_isp_css_defs.h>		/* HIVE_DMA_NUM_CHANNELS */
+>  #include <dma_v2_defs.h>
+> diff --git a/drivers/staging/media/atomisp/pci/hive_types.h b/drivers/staging/media/atomisp/pci/hive_types.h
+> index 55d36931f079..34f462c0c9f9 100644
+> --- a/drivers/staging/media/atomisp/pci/hive_types.h
+> +++ b/drivers/staging/media/atomisp/pci/hive_types.h
+> @@ -17,25 +17,6 @@
+>  #define _HRT_HIVE_TYPES_H
+>  
+>  #include "version.h"
+> -#include "defs.h"
+> -
+> -#ifndef HRTCAT3
+> -#define _HRTCAT3(m, n, o)     m##n##o
+> -#define HRTCAT3(m, n, o)      _HRTCAT3(m, n, o)
+> -#endif
+> -
+> -#ifndef HRTCAT4
+> -#define _HRTCAT4(m, n, o, p)     m##n##o##p
+> -#define HRTCAT4(m, n, o, p)      _HRTCAT4(m, n, o, p)
+> -#endif
+> -
+> -#ifndef HRTMIN
+> -#define HRTMIN(a, b) (((a) < (b)) ? (a) : (b))
+> -#endif
+> -
+> -#ifndef HRTMAX
+> -#define HRTMAX(a, b) (((a) > (b)) ? (a) : (b))
+> -#endif
+>  
+>  /* boolean data type */
+>  typedef unsigned int hive_bool;
+> diff --git a/drivers/staging/media/atomisp/pci/runtime/debug/src/ia_css_debug.c b/drivers/staging/media/atomisp/pci/runtime/debug/src/ia_css_debug.c
+> index 3e92794555ec..3807b31bb98f 100644
+> --- a/drivers/staging/media/atomisp/pci/runtime/debug/src/ia_css_debug.c
+> +++ b/drivers/staging/media/atomisp/pci/runtime/debug/src/ia_css_debug.c
+> @@ -31,6 +31,7 @@
+>  #define __INLINE_STREAM2MMIO__
+>  #endif
+>  
+> +#include <linux/args.h>
+>  #include <linux/string.h> /* for strscpy() */
+>  
+>  #include "ia_css_debug.h"
+> @@ -861,7 +862,7 @@ void ia_css_debug_wake_up_sp(void)
+>  }
+>  
+>  #define FIND_DMEM_PARAMS_TYPE(stream, kernel, type) \
+> -	(struct HRTCAT(HRTCAT(sh_css_isp_, type), _params) *) \
+> +	(struct CONCATENATE(CONCATENATE(sh_css_isp_, type), _params) *) \
+>  	findf_dmem_params(stream, offsetof(struct ia_css_memory_offsets, dmem.kernel))
+>  
+>  #define FIND_DMEM_PARAMS(stream, kernel) FIND_DMEM_PARAMS_TYPE(stream, kernel, kernel)
 
 
