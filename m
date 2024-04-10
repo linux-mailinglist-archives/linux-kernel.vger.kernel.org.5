@@ -1,158 +1,157 @@
-Return-Path: <linux-kernel+bounces-138937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5920289FC3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:58:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D3F189FC1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:55:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B595B28E36F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:58:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 094081F247F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:55:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AA891791EE;
-	Wed, 10 Apr 2024 15:56:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3324116F264;
+	Wed, 10 Apr 2024 15:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dkZh4oMv"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cibvtzGM"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F4B5178CDF
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3AC915DBA9;
+	Wed, 10 Apr 2024 15:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712764571; cv=none; b=DEWNW8+5KCLH3uomAYZZvpSnMs48ngm6X29Coc43lzTFoWQLhas1e40YBGa/JVzIW2qlGnfrHIOiPcGKdVXBp4FYbyjcdSLkZa8JThYPZHhPE7cnfvAwdIXnE/p7lsq7pT3MdhvrASD6rVLixadaxiw9vHfD9OMGSS2BjUCn6xo=
+	t=1712764549; cv=none; b=ID/8n+AoVFXY7XTQiOsp0MoAqNX20dtUba3igBTx4ZPTBm4mJh1sDcVaA7KtQl9Bdjg/iHBjISr9dzmLM4l6QuInsXWCbQP5ZJozlqn6oiNRAHj+1dKAj3HMjZHxuaxdURflmwZUZkedDki3Y8ranMQ56ZG5+0Y/k/GyQDdKGRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712764571; c=relaxed/simple;
-	bh=ib/Czh9TMd/11JWLM99RkSfUuaLTcKgI+kz9vZpIItQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N0i43GF9SYIsk6ZXbKTr2rrXii+0XDzRzC4UnvRjZfcwxozg1R1+XaWGDMrZCkie1oQtqcRPGGVtibbftwdFfKmXHKPkxNB8vygQgIFMIvlSO/c8sRvlddCCCGyCCu9ZRCpNNwVider7DFmBLrQ3PagQN6g33lpKrLdYqpylL10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dkZh4oMv; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712764568;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P8ZsNI89NzeHBwo5bvI1yofxYUq5jUxcvm+li/FE14A=;
-	b=dkZh4oMv/vf3Q67wIKopWjS53RoA1TvxsQ2Km3Ap7CUM1LOl2sYjFVljHCKGfaCyAdcY4I
-	iVK7VSDSa16G9eckvhz8aIBcWUqBrgbomQeP83gZzQ/OkSKx/Wf8xoRPYxQlvu+dEN4bS5
-	a1w0sz3zLtG+xo5/N21k3bBhXkKGYk0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-591-sePtCS1xOjyfrSAEA2ASBA-1; Wed, 10 Apr 2024 11:56:04 -0400
-X-MC-Unique: sePtCS1xOjyfrSAEA2ASBA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8930C8007BA;
-	Wed, 10 Apr 2024 15:56:03 +0000 (UTC)
-Received: from t14s.fritz.box (unknown [10.39.193.162])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 82C97920;
-	Wed, 10 Apr 2024 15:56:00 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	x86@kernel.org,
-	linux-s390@vger.kernel.org,
-	kvm@vger.kernel.org,
-	David Hildenbrand <david@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Yonghua Huang <yonghua.huang@intel.com>,
-	Fei Li <fei1.li@intel.com>,
-	Christoph Hellwig <hch@lst.de>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH v1 3/3] mm: follow_pte() improvements
-Date: Wed, 10 Apr 2024 17:55:27 +0200
-Message-ID: <20240410155527.474777-4-david@redhat.com>
-In-Reply-To: <20240410155527.474777-1-david@redhat.com>
-References: <20240410155527.474777-1-david@redhat.com>
+	s=arc-20240116; t=1712764549; c=relaxed/simple;
+	bh=aG6841BM+IzaM2wdf6XPCQIKX1BJoLnJgWWJZ09aXUc=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=icqxXuA7W56Wib2Dr+9aqYblIep61FCRMg2wfylxtGXyvVDxRr25u6YQeZh8xqmTH+laWPQZBvWTyt+Vd+q5/VNIHOXpPLEM1LbJNDRvjMW4Pz9Wn5Xh1okp5vh0zRr3DoCd715gsLr2WRynQeplvRLmnOBzwTMwb4wotzVf03I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cibvtzGM; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a51c6e91793so647158766b.0;
+        Wed, 10 Apr 2024 08:55:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712764545; x=1713369345; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jsjr/EUpS7jHu9EoCoBO4JHqmCRBqh6/KIR1YSfDMJk=;
+        b=cibvtzGM27xJrL3OGoQAwLNAQsjGk9NjO++nx2UtiTmpkh1WjqImfJlAx8JMkL6bA1
+         SpkL8bfKpUsx10XJwyhrO0T/NDrfTikAB204NQvRIjpdUwJ8l4Za4zaVz0H+/SoTZ4xD
+         Xp1J081tMmel3/Oyh4DqiuDfkwwuJISZEIzGl2F0oUPB2FRbY9Tq8V26gXG6MJC16qRO
+         Vca8KjIf2XNnZoNmPoGwz55UxwmfHB9J1aCu8OEZujSLvW+zspHwlxkFr5iFUO8icvyV
+         /4CwmrKutnTipUhfqzHecwxvfLakRrS/14Q/1BqvM8ueWFAEGxpkSzHeRU1dSAYd7FW6
+         C5eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712764545; x=1713369345;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Jsjr/EUpS7jHu9EoCoBO4JHqmCRBqh6/KIR1YSfDMJk=;
+        b=GU0MaeSAuOfjRC5d7N8YxWpQ7fOCd9kynPZ+qIe4q03MAqvgyTSeZouvVxLA6IJdm7
+         BFRMBMItRXbxt7ENtwCgZLeAr/bdpDHoaJOWNgmaC6+Yy7uKaSP3JGFLvn+uG8PTBx34
+         PbmDx3H0QMBQdem1iJ4QpH5SRcrvlev7CC7ctcwFVrBEBD6KTet4Xbzh6bRyrp4ppSi1
+         xOhUxXm8w9ibP89lg95aZhY0pwMYLGEoPpPtG4ZdohPn0VXcMPv+Kw4fArpgHj7i8VZO
+         35IChgQUx0z8FHVWCdFMRb2wLNYSp6AVmZ+tvBkPZ/kk7J2oeEfPhFGL39M8KIcqBps7
+         wJWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW/Nv9c+ury4LGx1sQ/Pa+3CIGErJMAi3JRH6f8FJXmDSJ7kHdwDvvJ2TZysj1EmIKc6jy7hfuRi8NsiOlu2MkuDV+nJCMJhcd9aBCkwJxZ31+1998Cn0/pU2Gz6Sj1NwVIUP+f2HO8JQ==
+X-Gm-Message-State: AOJu0Yw25LpHwZpX/4CBXvUrE940zLNTsllRigeZzmfUhvpphTPFachT
+	tZZLRVbOd80CDaXSEw/ISiPr5cojAxdEyYFR+gLUmWT9c+GwVlqK28qjM+KK1yHzgw==
+X-Google-Smtp-Source: AGHT+IF1ADAUkQmkGJcp6oXbVsO2NNUVSgumq2+R9/e1RDxEbeDdhWqKmtLj8qqMmKKxMxSasjIpVQ==
+X-Received: by 2002:a17:906:46db:b0:a51:d056:d08b with SMTP id k27-20020a17090646db00b00a51d056d08bmr90851ejs.0.1712764545559;
+        Wed, 10 Apr 2024 08:55:45 -0700 (PDT)
+Received: from [127.0.1.1] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
+        by smtp.gmail.com with ESMTPSA id qw6-20020a1709066a0600b00a52172808c9sm279884ejc.56.2024.04.10.08.55.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 08:55:44 -0700 (PDT)
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Subject: [PATCH v2 0/4] rtc: convert multiple bindings into dtschema
+Date: Wed, 10 Apr 2024 17:55:32 +0200
+Message-Id: <20240410-rtc_dtschema-v2-0-d32a11ab0745@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHS2FmYC/1XMQQrCMBCF4auUWRtJprEWV95DipTptB0wjSQlK
+ CV3NxZcuPwfvG+DyEE4wqXaIHCSKH4pgYcKaO6XiZUMpQE1Wm11o8JK92GNNLPrVa2xRTsYJtR
+ QLs/Ao7x27taVniWuPrx3PZnv+oPafygZpRVZez5ZHKlu8Dq5Xh5H8g66nPMHsJC+eqgAAAA=
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
+ Vladimir Zapolskiy <vz@mleia.com>, Joel Stanley <joel@jms.id.au>, 
+ Andrew Jeffery <andrew@codeconstruct.com.au>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-aspeed@lists.ozlabs.org, linux-stm32@st-md-mailman.stormreply.com, 
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712764543; l=2589;
+ i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
+ bh=aG6841BM+IzaM2wdf6XPCQIKX1BJoLnJgWWJZ09aXUc=;
+ b=vE6WWKn/PfJQl6Z2mF/T4S+0ooamNPIyWAComjIMzpGZf3t4nblGf7WzRI3Gd5nnqgkkLJ54Z
+ rg1MNNHQsJxBMn808RjLrAfEPSzorjoLsdzH843SWqOs2s8K41Q8LrA
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
 
-follow_pte() is now our main function to lookup PTEs in VM_PFNMAP/VM_IO
-VMAs. Let's perform some more sanity checks to make this exported function
-harder to abuse.
+This series converts the following bindings into dtschema, moving them
+to trivial-rtc whenever possible:
 
-Further, extend the doc a bit, it still focuses on the KVM use case with
-MMU notifiers. Drop the KVM+follow_pfn() comment, follow_pfn() is no more,
-and we have other users nowadays.
+- orion-rtc: trival-rtc, referenced in arm arch.
+- google,goldfish-rtc: trivial-rtc, referenced in mips arch.
+- lpc32xx-rtc: add missing property and convert, referenced in arm arch.
+- maxim,ds1742: trivial-rtc, not referenced in arch, cheap conversion.
+- rtc-aspeed: 3 devices to trivial-rtc, all referenced in arm arch.
+- pxa-rtc: add missing properties and convert. Referenced in arm arch.
+- st,spear600-rtc: trivial-rtc, referenced in arm arch.
+- stmp3xxx-rtc: add compatibles and convert, referenced in arm arch.
+- via,vt8500-rtc: trivial-rtc, referenced in arm arch.
 
-Also extend the doc regarding refcounted pages and the interaction with MMU
-notifiers.
-
-KVM is one example that uses MMU notifiers and can deal with refcounted
-pages properly. VFIO is one example that doesn't use MMU notifiers, and
-to prevent use-after-free, rejects refcounted pages:
-pfn_valid(pfn) && !PageReserved(pfn_to_page(pfn)). Protection changes are
-less of a concern for users like VFIO: the behavior is similar to
-longterm-pinning a page, and getting the PTE protection changed afterwards.
-
-The primary concern with refcounted pages is use-after-free, which
-callers should be aware of.
-
-Signed-off-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
- mm/memory.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+Changes in v2:
+- General: squash all moves to trivial-rtc into a single patch.
+- MAINTAINERS: remove reference to google,goldfish-rtc.txt
+- lpc32xx-rtc: create own binding to add the undocumented 'clocks'
+  property.
+- fsl,stmp3xxx-rtc.yaml: document missing compatibles.
+- Link to v1: https://lore.kernel.org/r/20240408-rtc_dtschema-v1-0-c447542fc362@gmail.com
 
-diff --git a/mm/memory.c b/mm/memory.c
-index ab01fb69dc72..535ef2686f95 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -5935,15 +5935,21 @@ int __pmd_alloc(struct mm_struct *mm, pud_t *pud, unsigned long address)
-  *
-  * On a successful return, the pointer to the PTE is stored in @ptepp;
-  * the corresponding lock is taken and its location is stored in @ptlp.
-- * The contents of the PTE are only stable until @ptlp is released;
-- * any further use, if any, must be protected against invalidation
-- * with MMU notifiers.
-+ *
-+ * The contents of the PTE are only stable until @ptlp is released using
-+ * pte_unmap_unlock(). This function will fail if the PTE is non-present.
-+ * Present PTEs may include PTEs that map refcounted pages, such as
-+ * anonymous folios in COW mappings.
-+ *
-+ * Callers must be careful when relying on PTE content after
-+ * pte_unmap_unlock(). Especially if the PTE maps a refcounted page,
-+ * callers must protect against invalidation with MMU notifiers; otherwise
-+ * access to the PFN at a later point in time can trigger use-after-free.
-  *
-  * Only IO mappings and raw PFN mappings are allowed.  The mmap semaphore
-  * should be taken for read.
-  *
-- * KVM uses this function.  While it is arguably less bad than the historic
-- * ``follow_pfn``, it is not a good general-purpose API.
-+ * This function must not be used to modify PTE content.
-  *
-  * Return: zero on success, -ve otherwise.
-  */
-@@ -5957,6 +5963,10 @@ int follow_pte(struct vm_area_struct *vma, unsigned long address,
- 	pmd_t *pmd;
- 	pte_t *ptep;
- 
-+	mmap_assert_locked(mm);
-+	if (unlikely(address < vma->vm_start || address >= vma->vm_end))
-+		goto out;
-+
- 	if (!(vma->vm_flags & (VM_IO | VM_PFNMAP)))
- 		goto out;
- 
+---
+Javier Carrasco (4):
+      dt-bindings: rtc: convert trivial devices into dtschema
+      dt-bindings: rtc: lpc32xx-rtc: convert to dtschema
+      dt-bindings: rtc: pxa-rtc: convert to dtschema
+      dt-bindings: rtc: stmp3xxx-rtc: convert to dtschema
+
+ .../devicetree/bindings/rtc/fsl,stmp3xxx-rtc.yaml  | 51 ++++++++++++++++++++++
+ .../bindings/rtc/google,goldfish-rtc.txt           | 17 --------
+ .../devicetree/bindings/rtc/lpc32xx-rtc.txt        | 15 -------
+ .../devicetree/bindings/rtc/marvell,pxa-rtc.yaml   | 40 +++++++++++++++++
+ .../devicetree/bindings/rtc/maxim,ds1742.txt       | 12 -----
+ .../devicetree/bindings/rtc/nxp,lpc32xx-rtc.yaml   | 41 +++++++++++++++++
+ .../devicetree/bindings/rtc/orion-rtc.txt          | 18 --------
+ Documentation/devicetree/bindings/rtc/pxa-rtc.txt  | 14 ------
+ .../devicetree/bindings/rtc/rtc-aspeed.txt         | 22 ----------
+ .../devicetree/bindings/rtc/spear-rtc.txt          | 15 -------
+ .../devicetree/bindings/rtc/stmp3xxx-rtc.txt       | 21 ---------
+ .../devicetree/bindings/rtc/trivial-rtc.yaml       | 16 +++++++
+ .../devicetree/bindings/rtc/via,vt8500-rtc.txt     | 15 -------
+ MAINTAINERS                                        |  1 -
+ 14 files changed, 148 insertions(+), 150 deletions(-)
+---
+base-commit: fec50db7033ea478773b159e0e2efb135270e3b7
+change-id: 20240406-rtc_dtschema-302824d1ec20
+
+Best regards,
 -- 
-2.44.0
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
 
