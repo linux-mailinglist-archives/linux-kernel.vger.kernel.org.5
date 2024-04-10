@@ -1,155 +1,106 @@
-Return-Path: <linux-kernel+bounces-138521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C797989F294
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:46:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC5D489F295
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:46:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F47B1F21A6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:46:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66A2C284932
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F119615B990;
-	Wed, 10 Apr 2024 12:45:49 +0000 (UTC)
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B2FB15B545;
+	Wed, 10 Apr 2024 12:46:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kQ2v6edF"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B67CF158DB9;
-	Wed, 10 Apr 2024 12:45:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163B3158D6B;
+	Wed, 10 Apr 2024 12:46:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712753149; cv=none; b=pwFcqdp/TPgbLmtge9pfcY7DyR25sUImWc4GSLRcK7jpIFtKZW4Twoue0w8p81TxKc6EN+5tBIrss4QgPM6TH8GFKFfd1zD79Ah4kJ5P7h4i8hmYYEEu6TbgnLWFYSAOZzY3AoqZikHdndly7Nt+4eRb0dc2eGiGhGVqDdx+Pd4=
+	t=1712753170; cv=none; b=g4CSDRwD2e18rl7igT31I42XK8ctNburE+GX20B63bNaV5r75bf6/YQxlX8SF9uNdCgN0Ira764qHWXuzoa83tQVRa6MMuvspLzBkUxhCHS7KnLMpyFl1h1EeeaKTJCvIaGgc+A+dFhmPEP5a4qsaRt+p7mMpZq8Q32JDVA3eXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712753149; c=relaxed/simple;
-	bh=tD4QkZOAj61aCZGjCPwk6wEvCiQTwcMYYHOPnCN8QvY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=caLjvBYQF2gG3KQLDtNgX6WwWMt01kt1OgJZjkCueVgqJ+Hzi2qgyPubdIwSXUpOXUgmJZqmMxqY4GJam2GHX37zvw0hXNbk7zLRPd/F0/LOWtXLx/6kx265ISAtQtHl24xL6t6M8x5L+UPdLEekUrc5crJ+3gXJPXVcEQOP7Zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a51beae2f13so478433466b.1;
-        Wed, 10 Apr 2024 05:45:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712753146; x=1713357946;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0v050svZEeKX6xCxDWehqmojLYZEjuvnVFUXjaedZaw=;
-        b=oM4wLB39UtR0jl7LNNK73uySSZsDUcXqjMr08JwAQt6iA5zVWcmCEQ7AuUwNbHul51
-         fQ1yoIGjLgCKmo7oFhqLj1YoRCHm87qmCyN0KBfYLBmx63QT6ckzbzTwJgkYizU1MdgZ
-         xtXdvlSsOEsPEOz9F6Vjk7fG4kkUdePf34+jeQ90vINYOLzn4qB0MG3ndybCijEaotFp
-         rRiP9dMFzp+iEHPyO2UgJyaJ5wIisRqAIjVJwpwlURkl777dUfDr7WySAMpmZ+tNRpaV
-         qmdP+afNTN1QIE5bDvOG9thW/L2uHyTFg15YbEs5s5UcbkdVtpCQP5Icf3uN+4XFFT2+
-         AQ2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWqEHAnxPxseS6ZbAWYAiPOsM5ePTbpU97taATHRGZEoK8MWtko540Y93K2Yo+D7lN1/aMGyHxjL5+bNS8pcZzVwrxe5vahnog6sz7bYnrUkHWZyHkNmCNX59gn66+8KZXEtjmwbreaMRDkMY7FSPvQpq3WeMJekiwUQf8jcfoN8TTx2OMxCdTtWQIC0D9GzwsWSQrgPWGkUfg=
-X-Gm-Message-State: AOJu0YwWsSuTyF+03FPZ9BsTbv2sKbxotTbpw1eVBw4NrVLTgSGu3bBn
-	3zTC4U73YTorMM/g1IaewTfAA2SK22WXk96VqNzcs67e0qEBlfKn
-X-Google-Smtp-Source: AGHT+IGHTIvSnYbc16oL+rmZ6uXCsyNfTppKX/R1tU+P7ojp/FGa9JEJ+FKYxGWNNfYEH5ZZNCyv/A==
-X-Received: by 2002:a17:907:7da8:b0:a51:dd50:6a with SMTP id oz40-20020a1709077da800b00a51dd50006amr2008839ejc.66.1712753145630;
-        Wed, 10 Apr 2024 05:45:45 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id jg18-20020a170907971200b00a51a60bf400sm6765658ejc.76.2024.04.10.05.45.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 05:45:45 -0700 (PDT)
-Date: Wed, 10 Apr 2024 05:45:41 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Ido Schimmel <idosch@idosch.org>
-Cc: aleksander.lobakin@intel.com, kuba@kernel.org, davem@davemloft.net,
-	pabeni@redhat.com, edumazet@google.com, elder@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, nbd@nbd.name,
-	sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
-	lorenzo@kernel.org, taras.chornyi@plvision.eu,
-	ath11k@lists.infradead.org, ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org, geomatsi@gmail.com,
-	kvalo@kernel.org, quic_jjohnson@quicinc.com, leon@kernel.org,
-	dennis.dalessandro@cornelisnetworks.com,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, Jiri Pirko <jiri@resnulli.us>,
-	Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	amcohen@nvidia.com
-Subject: Re: [PATCH net-next v4 2/9] net: create a dummy net_device allocator
-Message-ID: <ZhaJ9WkG2OYXkvGo@gmail.com>
-References: <20240409125738.1824983-1-leitao@debian.org>
- <20240409125738.1824983-3-leitao@debian.org>
- <ZhZzjNDRaHtdYjDg@shredder>
+	s=arc-20240116; t=1712753170; c=relaxed/simple;
+	bh=y88MBYlQ9Vn1GxCUH/pBqLSD46qh3QpyvM/4Oz5AzN0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=n20sw5URfLnDwmh8zi1WjJkQ99iCLIuQsKBxQ3ujo6Lag5KIEW7oOJ9DJ4LZEfXrTLLD7pwI3w6l6vJVmQ9ppbSgnV6pqLomalSlCEe2uFnzYMOEjUCo1huvq+VsKwV9qvV0mCiG3NoAAzk8hVsK1gQSttkObOPrgt9huSDzJ4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kQ2v6edF; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712753168; x=1744289168;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=y88MBYlQ9Vn1GxCUH/pBqLSD46qh3QpyvM/4Oz5AzN0=;
+  b=kQ2v6edFXsNCBOcFKOg3d6fycHOwS/3lHKUwehIIkWVubh2Zb6HkSUKI
+   UN+8NEvnIgiciGgcWQCg4q4TD5bmjf8VtH3YewqIy0m/wrdnECWB/s60m
+   7N6l13WDkIalUgGF9f+c0396Kv3Oi6kT7MCPcKwiznq0QQa2Nrgix1hJ2
+   kBx5DGecocdGREomg1Sl2WNqIdAwePN5xnTtWHqCsrAfhtizhnjo5Q6sZ
+   AZUkh3G++K/tcO1nEVgIj2l2CNo9WDwVOxb0Y1AfLDIAbQC9G4TYwq19I
+   S0YuVr4AFcYMN9L4k1U0F1XEj8c9QSvWbbebCisIdd1WJuboTaqI0tPeN
+   g==;
+X-CSE-ConnectionGUID: wlH4+A8ETJa0Y8BCQOqEbA==
+X-CSE-MsgGUID: WP//m2Y/T9eVn7FlCci5RA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7968057"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="7968057"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 05:46:07 -0700
+X-CSE-ConnectionGUID: xnH+AlkxQIySdeV9X2oaOg==
+X-CSE-MsgGUID: zwecYDiaQt2ShG+9zT12RA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="51519981"
+Received: from lshi12-mobl.ccr.corp.intel.com (HELO rzhang1-mobl7.ccr.corp.intel.com) ([10.255.30.130])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 05:46:03 -0700
+From: Zhang Rui <rui.zhang@intel.com>
+To: peterz@infradead.org
+Cc: mingo@redhat.com,
+	tglx@linutronix.de,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ak@linux.intel.com,
+	kan.liang@linux.intel.com
+Subject: [PATCH 1/2] perf/x86/rapl: Add support for Intel Arrow Lake
+Date: Wed, 10 Apr 2024 20:45:53 +0800
+Message-Id: <20240410124554.448987-1-rui.zhang@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhZzjNDRaHtdYjDg@shredder>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 10, 2024 at 02:10:04PM +0300, Ido Schimmel wrote:
-> On Tue, Apr 09, 2024 at 05:57:16AM -0700, Breno Leitao wrote:
-> > It is impossible to use init_dummy_netdev together with alloc_netdev()
-> > as the 'setup' argument.
-> > 
-> > This is because alloc_netdev() initializes some fields in the net_device
-> > structure, and later init_dummy_netdev() memzero them all. This causes
-> > some problems as reported here:
-> > 
-> > 	https://lore.kernel.org/all/20240322082336.49f110cc@kernel.org/
-> > 
-> > Split the init_dummy_netdev() function in two. Create a new function called
-> > init_dummy_netdev_core() that does not memzero the net_device structure.
-> > Then have init_dummy_netdev() memzero-ing and calling
-> > init_dummy_netdev_core(), keeping the old behaviour.
-> > 
-> > init_dummy_netdev_core() is the new function that could be called as an
-> > argument for alloc_netdev().
-> > 
-> > Also, create a helper to allocate and initialize dummy net devices,
-> > leveraging init_dummy_netdev_core() as the setup argument. This function
-> > basically simplify the allocation of dummy devices, by allocating and
-> > initializing it. Freeing the device continue to be done through
-> > free_netdev()
-> > 
-> > Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
-> 
-> Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-> 
-> We were about to submit another user of init_dummy_netdev() when I
-> noticed this patch. Converted the code to use alloc_netdev_dummy() [1]
-> and it seems to be working fine. Will submit after your patch is
-> accepted.
+Arrow Lake RAPL support is the same as previous Sky Lake.
+Add Arrow Lake model for RAPL.
 
-Thanks. It seems that this patch is close to get accepted. Let's see...
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+---
+ arch/x86/events/rapl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> See a few minor comments below.
-> 
-> [...]
-> 
-> > +/**
-> > + *	init_dummy_netdev	- init a dummy network device for NAPI
-> > + *	@dev: device to init
-> > + *
-> > + *	This takes a network device structure and initialize the minimum
-> 
-> s/initialize/initializes/
-> 
-> > + *	amount of fields so it can be used to schedule NAPI polls without
-> > + *	registering a full blown interface. This is to be used by drivers
-> > + *	that need to tie several hardware interfaces to a single NAPI
-> > + *	poll scheduler due to HW limitations.
-> > + */
-> > +void init_dummy_netdev(struct net_device *dev)
-> > +{
-> > +	/* Clear everything. Note we don't initialize spinlocks
-> > +	 * are they aren't supposed to be taken by any of the
-> 
-> I assume you meant s/are/as/ ?
+diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+index fb2b1961e5a3..6bfb78d5b37e 100644
+--- a/arch/x86/events/rapl.c
++++ b/arch/x86/events/rapl.c
+@@ -808,6 +808,8 @@ static const struct x86_cpu_id rapl_model_match[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(RAPTORLAKE_S,	&model_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(METEORLAKE,		&model_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(METEORLAKE_L,	&model_skl),
++	X86_MATCH_INTEL_FAM6_MODEL(ARROWLAKE_H,		&model_skl),
++	X86_MATCH_INTEL_FAM6_MODEL(ARROWLAKE,		&model_skl),
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(x86cpu, rapl_model_match);
+-- 
+2.34.1
 
-Thanks for the feedback, I agree with all of them.
-
-Since these lines were not introduced by this patch, and this patch is
-just moving code (and comments) around, I would add a new patch to the
-patch series fixing the grammar errors.
 
