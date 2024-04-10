@@ -1,49 +1,54 @@
-Return-Path: <linux-kernel+bounces-137811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3A5E89E7F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:50:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEA0989E7F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:57:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07D5E283C98
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:50:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8361B1F226B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:57:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1942524C;
-	Wed, 10 Apr 2024 01:50:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="peqvizFg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2BCC523A;
+	Wed, 10 Apr 2024 01:57:29 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1032964A;
-	Wed, 10 Apr 2024 01:50:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7718A1C2D;
+	Wed, 10 Apr 2024 01:57:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712713829; cv=none; b=sVUYbyCciamlherocGTfNzYEISq0SL2x0m/12XACj75A/0bp8kJEgR/Rdiv1y9otNHAoYqDSVk5dd/aikOLgyJ6dwbdLRh3S83RUj1NxDbh137U74at9Fxy/Yd2T0qLTZn3A4zp28a8T3Yvqq51HR801tYv9FZaRtb1lrP62aIg=
+	t=1712714249; cv=none; b=ILD8sfEjznHLVuKKGlD+IRW8LLQOOJlo/RuFhFFTdFgv68ziYMaPHpJu6pyUauCYrwqFqsMWwrOwIGhY0agKz8YhXROk7tJTbXn/kWVnIuGU8PC8gjMR20IKSloOGVO9slLqtgcjTglCTOIFMfXg+OfGmTND9M8nrViqGZ0SA4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712713829; c=relaxed/simple;
-	bh=C7uzs+pRecO5vt0/mJMXKHRDYPy1ocmPRZF7qiuwzcU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=I6I9wMoRqfxjRbPUDtN8POQlAEXScT9rBn8gE2oTwxbFVC1Un3MdPpZM05582edF6W2gFEh9bcNga5mMfdPdnzL/fachqlPS/BHa+NOEdjI4oUoq/ALBmtPo2vj7nzVrEeLcmHemlPv/sOULkoiK8Cvu10CKIIKweev7b8WRbqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=peqvizFg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CCE9EC43390;
-	Wed, 10 Apr 2024 01:50:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712713828;
-	bh=C7uzs+pRecO5vt0/mJMXKHRDYPy1ocmPRZF7qiuwzcU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=peqvizFg2+AZZ1hTZ+ii7ZBDykemh1OdN+i0jnc8+UX/RYNgE84XGWAdhntfxmJGZ
-	 iToKsl2zFVXcgPYQ0x/WD8lCAlcAax+7bMePFOHubiGlomfppRX02XtONeyrl/pnNW
-	 nvsqBvtd+XkEV+HegrWRVzG1eIYYE3+2+WwVPTNqMc79IgF6kuylBV4+4eiMf1Ubex
-	 CTxAYiqHDGWXyPeilvolTQs4c2/JyaMFZQAdRori7S87lG5W9zM83oJkWVC9mrA8/6
-	 M3SU5b38X8t2joqmoXxfh/Obm4NmJtYNTP8VINTcwqvxvomcx7uvSjL2VpHQFaRdbO
-	 fWGb8n2paHimg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B830FC395F6;
-	Wed, 10 Apr 2024 01:50:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1712714249; c=relaxed/simple;
+	bh=9cgwPmb8EOYreT5OW6HYIHKNYI4ODMVvRnFtVH07r+g=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SJno9v8zHEgob2Vvh67o3pN/dX3h/MrC5cIkXpFuowcwu7Yt1jg2m31KPOt/53wFWGwO5kjcXMoZIiMqrCASare1RFPkpNPJ0RGaZaGsz5tG56RclzrAPHfU3mbfhzPdvqMz9bZW2U3KHjbqDam6vNur2LmWaikhTYgKTipzlvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VDmCJ0WNqz21kcl;
+	Wed, 10 Apr 2024 09:56:28 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (unknown [7.185.36.15])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5A1A2180063;
+	Wed, 10 Apr 2024 09:57:23 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 10 Apr 2024 09:57:23 +0800
+From: Zheng Yejian <zhengyejian1@huawei.com>
+To: <mhiramat@kernel.org>
+CC: <anil.s.keshavamurthy@intel.com>, <davem@davemloft.net>,
+	<naveen.n.rao@linux.ibm.com>, <linux-kernel@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>, <zhengyejian1@huawei.com>
+Subject: [PATCH v3] kprobes: Fix possible use-after-free issue on kprobe registration
+Date: Wed, 10 Apr 2024 09:58:02 +0800
+Message-ID: <20240410015802.265220-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240407035904.2556645-1-zhengyejian1@huawei.com>
+References: <20240407035904.2556645-1-zhengyejian1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,51 +56,85 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v5 0/3] Minor cleanups to skb frag ref/unref
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171271382875.18237.12454972110569663249.git-patchwork-notify@kernel.org>
-Date: Wed, 10 Apr 2024 01:50:28 +0000
-References: <20240408153000.2152844-1-almasrymina@google.com>
-In-Reply-To: <20240408153000.2152844-1-almasrymina@google.com>
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- ayush.sawal@chelsio.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, hawk@kernel.org,
- ilias.apalodimas@linaro.org, steffen.klassert@secunet.com,
- herbert@gondor.apana.org.au, dsahern@kernel.org, borisp@nvidia.com,
- john.fastabend@gmail.com, dtatulea@nvidia.com
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
 
-Hello:
+When unloading a module, its state is changing MODULE_STATE_LIVE ->
+ MODULE_STATE_GOING -> MODULE_STATE_UNFORMED. Each change will take
+a time. `is_module_text_address()` and `__module_text_address()`
+works with MODULE_STATE_LIVE and MODULE_STATE_GOING.
+If we use `is_module_text_address()` and `__module_text_address()`
+separately, there is a chance that the first one is succeeded but the
+next one is failed because module->state becomes MODULE_STATE_UNFORMED
+between those operations.
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+In `check_kprobe_address_safe()`, if the second `__module_text_address()`
+is failed, that is ignored because it expected a kernel_text address.
+But it may have failed simply because module->state has been changed
+to MODULE_STATE_UNFORMED. In this case, arm_kprobe() will try to modify
+non-exist module text address (use-after-free).
 
-On Mon,  8 Apr 2024 08:29:55 -0700 you wrote:
-> v5:
-> - Applied feedback from Eric to inline napi_pp_get_page().
-> - Applied Reviewed-By's.
-> 
-> v4:
-> - Rebased to net-next.
-> - Clarified skb_shift() code change in commit message.
-> - Use skb->pp_recycle in a couple of places where I previously hardcoded
->   'false'.
-> 
-> [...]
+To fix this problem, we should not use separated `is_module_text_address()`
+and `__module_text_address()`, but use only `__module_text_address()`
+once and do `try_module_get(module)` which is only available with
+MODULE_STATE_LIVE.
 
-Here is the summary with links:
-  - [net-next,v5,1/3] net: make napi_frag_unref reuse skb_page_unref
-    https://git.kernel.org/netdev/net-next/c/959fa5c188bf
-  - [net-next,v5,2/3] net: mirror skb frag ref/unref helpers
-    (no matching commit)
-  - [net-next,v5,3/3] net: remove napi_frag_unref
-    https://git.kernel.org/netdev/net-next/c/f58f3c956340
+Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+---
+ kernel/kprobes.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-You are awesome, thank you!
+v3:
+ - Update commit messages as suggested by Masami.
+   Link: https://lore.kernel.org/all/20240409224922.5f192e8ace5f7a90937bfa69@kernel.org/
+ - Also change to a more appropriate title.
+
+v2:
+ - Update commit messages and comments as suggested by Masami.
+   Link: https://lore.kernel.org/all/20240408115038.b0c85767bf1f249eccc32fff@kernel.org/
+ - Link: https://lore.kernel.org/all/20240408083403.3302274-1-zhengyejian1@huawei.com/
+
+v1:
+ - Link: https://lore.kernel.org/all/20240407035904.2556645-1-zhengyejian1@huawei.com/
+
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 9d9095e81792..65adc815fc6e 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1567,10 +1567,17 @@ static int check_kprobe_address_safe(struct kprobe *p,
+ 	jump_label_lock();
+ 	preempt_disable();
+ 
+-	/* Ensure it is not in reserved area nor out of text */
+-	if (!(core_kernel_text((unsigned long) p->addr) ||
+-	    is_module_text_address((unsigned long) p->addr)) ||
+-	    in_gate_area_no_mm((unsigned long) p->addr) ||
++	/* Ensure the address is in a text area, and find a module if exists. */
++	*probed_mod = NULL;
++	if (!core_kernel_text((unsigned long) p->addr)) {
++		*probed_mod = __module_text_address((unsigned long) p->addr);
++		if (!(*probed_mod)) {
++			ret = -EINVAL;
++			goto out;
++		}
++	}
++	/* Ensure it is not in reserved area. */
++	if (in_gate_area_no_mm((unsigned long) p->addr) ||
+ 	    within_kprobe_blacklist((unsigned long) p->addr) ||
+ 	    jump_label_text_reserved(p->addr, p->addr) ||
+ 	    static_call_text_reserved(p->addr, p->addr) ||
+@@ -1580,8 +1587,7 @@ static int check_kprobe_address_safe(struct kprobe *p,
+ 		goto out;
+ 	}
+ 
+-	/* Check if 'p' is probing a module. */
+-	*probed_mod = __module_text_address((unsigned long) p->addr);
++	/* Get module refcount and reject __init functions for loaded modules. */
+ 	if (*probed_mod) {
+ 		/*
+ 		 * We must hold a refcount of the probed module while updating
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
 
