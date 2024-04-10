@@ -1,51 +1,54 @@
-Return-Path: <linux-kernel+bounces-139452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40E008A038A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:46:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 817A48A038B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:46:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC4031F2342C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:46:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A54B91C225DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 289C410A1D;
-	Wed, 10 Apr 2024 22:46:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07C3D28370;
+	Wed, 10 Apr 2024 22:46:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jukuL98k";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="KMnenegG"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yazMrQE5";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="nS289D/Y"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACCE5BA49
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A77C8DE
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:46:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712789176; cv=none; b=Lxz0S47JgP3KFgIuGsKh2t3r9hOJsE4O1MoBTxYLDUt4/VnDYOgfVatO93m/QnGHu1hwrxrtqMSxDDz+Gp4HPi7srcyHOOl4hBrgXjMhhcRw91MQ+hTkHdnxD+6DPrKyY/P+AGEij8hSmIrChtL/vevprwndqZVRQmR+YPGlec4=
+	t=1712789178; cv=none; b=ceZoWN0vOvmbfcsIbNpz3oi4+Jdb5r1UqGTmRlRlR5DSVlPSCskpfj+/P8zN/cmSlG7kEn68CkpH0R9ZTO2rFwJ0bMVwRF/XDdY7PP0aOd0umf4zhdaDJW691hltcQtuM82BpXA2C87gVkmEwpM6Xkh81tdV0q76lJB1c7DaQBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712789176; c=relaxed/simple;
-	bh=qBubWXQbBIq6P4Kw2H8EobgXNMlS2x+iH1nFOnrDOQQ=;
-	h=Message-ID:From:To:Cc:Subject:Date; b=mM8Rj/ExWWnaFjkdTQ9w86AEMCtrFMOne5IOHGze7j5l65OvfGlAOLpKmku0LqLLOgZNeMhdgABt7PVXGODHJfmgMiqZ3mwAOL5XNOGit4FEvoFST+Gf8td3LpMGUOHCSqDGsCQ0QU/tEx33X0iCZ2AkK4/HD4+2HfPra2GfJrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jukuL98k; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=KMnenegG; arc=none smtp.client-ip=193.142.43.55
+	s=arc-20240116; t=1712789178; c=relaxed/simple;
+	bh=mcxTls6lDnCzT+ZsVcDw2cF9I39ULaXnSI2HylG/01A=;
+	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type:Date; b=KkFoglTCfsjThjvprkSL19LcZ+HyoKzTHU0xKMzD4wsNbwcxnEyiaZoAnVlBou0sn4VvWpUk/drbWl8EKPs/GZr9UCPclzSnDq6VIXaYaoCDA75YkYqkzNwbSEMC4Js0t5XKSrqM1pHVp9C6w/LmodnCdx1Iqt+hBLzzs5bYgOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yazMrQE5; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=nS289D/Y; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240410164558.316665885@linutronix.de>
+Message-ID: <20240410165551.001110156@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712789172;
+	s=2020; t=1712789174;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc; bh=O7Dfk2XBW3xV635fF4z7Tq7JJbMTU+/tQLvji5B+0ek=;
-	b=jukuL98kzCufhpC1QVoxBcgVIHMMvgtVFXaa1nFoygzt2TliWnLYtbENaASnaBa83xZ5xI
-	3EPmTj+PgKR1F6PBkofY4pJNCWuhZbJJTxQLsHzf8J20IN6f95M3R78VEguo1bQhI8QTfp
-	AhYTDm9K1L7vd6E018j0llKVlAzzRnX3BDu/bCZDF37a4OuiP1XjLEpGrr5+2b0QTO1G3+
-	AlAkqnpeEaXMbVTGprvxdPe8mkL/wrG9RgeIYCUsWDBIvGXityxFJ5XKKm52dIVQTOpvM5
-	CwnTjZK4chyDPXAzwsTQWrSqc0IHsDfbjhqRSkTLE+15weW62pBpkWNUWd7sGw==
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 references:references; bh=8A7Q0gydwJDE3JFyRi4LCQ2XYlaCSue7mg8fs/zz4UA=;
+	b=yazMrQE5/BqzU4lFK3LhH+zJ0r4h5G0u7/OZ4KC3tGv7RKtrFvAqTbCxsjKzBbLH/pMr57
+	EKaPgCRWdf4x4th0RvhK9ME49mU1Bajo+2u/Z1Ig8Tor0Nyl+YmZJZugwINzdRI0dX6PoD
+	RvvnKu3bEZSO2c6z3BZouuj9mAnQUXeE7g5vqWtLMZwmbeYv1dIvD9kN6GpHc02ERjh4Mt
+	LtF5NeZy7T+lKJAL2p2TDZgVJnF5IuBifE7iL6RURyrx7O6UGZNibCZvKjPHKAwLT1J/j5
+	/fDbrcXK1yKElv1HHSu6CVZl7CA7ug1hO8O9Zczt7Q4Xv0r6MV6XeWzu57VinQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712789172;
+	s=2020e; t=1712789174;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc; bh=O7Dfk2XBW3xV635fF4z7Tq7JJbMTU+/tQLvji5B+0ek=;
-	b=KMnenegGN19JwKoo3AKss9kpMXWL2aDIgUuxYYIDyyO37ijEv9chuOFi5MRiY619+TRrWE
-	h2g+TW50D69F/6Aw==
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 references:references; bh=8A7Q0gydwJDE3JFyRi4LCQ2XYlaCSue7mg8fs/zz4UA=;
+	b=nS289D/YmgRWQxo2sSCQ4mmIMTPsVNsJ6mnGKaDv5zCRJm4NEEVVgbS+c/972KGPWNdS2o
+	m1zChOXpYCYBteAA==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>,
@@ -56,158 +59,281 @@ Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>,
  Stephen Boyd <sboyd@kernel.org>,
  Eric Biederman <ebiederm@xmission.com>,
  Oleg Nesterov <oleg@redhat.com>
-Subject: [patch V2 00/50] posix-timers: Cure inconsistencies and the SIG_IGN
- mess
-Date: Thu, 11 Apr 2024 00:46:12 +0200 (CEST)
+Subject: [patch V2 01/50] selftests/timers/posix_timers: Simplify error
+ handling
+References: <20240410164558.316665885@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 11 Apr 2024 00:46:13 +0200 (CEST)
 
-This is the second attempt of cleaning this up. Version 1 can be found
-here:
+No point in returning to main() on fatal errors. Just exit right away.
 
-   https://lore.kernel.org/lkml/20230606132949.068951363@linutronix.de/
-
-Last year I reread a 15 years old comment about the SIG_IGN problem:
-
- "FIXME: What we really want, is to stop this timer completely and restart
-  it in case the SIG_IGN is removed. This is a non trivial change which
-  involves sighand locking (sigh !), which we don't want to do late in the
-  release cycle.  ...  A more complex fix which solves also another related
-  inconsistency is already in the pipeline."
-
-The embarrasing part was that I put that comment in back then. So I went
-back and rumaged through old notes as I completely had forgotten why our
-attempts to fix this back then failed.
-
-It turned out that the comment is about right: sighand locking and life
-time issues. So I sat down with the old notes and started to wrap my head
-around this again.
-
-The problem to solve:
-
-Posix interval timers are not rearmed automatically by the kernel for
-various reasons:
-
-   1) To prevent DoS by extremly short intervals.
-   2) To avoid timer overhead when a signal is pending and has not
-      yet been delivered.
-
-This is achieved by queueing the signal at timer expiry and rearming the
-timer at signal delivery to user space. This puts the rearming basically
-under scheduler control and the work happens in context of the task which
-asked for the signal.
-
-There is a problem with that vs. SIG_IGN. If a signal has SIG_IGN installed
-as handler the related signals are discarded. So in case of posix interval
-timers this means that such a timer is never rearmed even when SIG_IGN is
-replaced later with a real handler (including SIG_DFL).
-
-To work around that the kernel self rearms those timers and throttles them
-when the interval is smaller than a tick to prevent a DoS.
-
-That just keeps timers ticking, which obviously has effects on power and
-just creates work for nothing.
-
-So ideally these timers should be stopped and rearmed when SIG_IGN is
-replaced, which aligns with the regular handling of posix timers.
-
-Sounds trivial, but isn't:
-
-  1) Lock ordering.
-
-     The timer lock cannot be taken with sighand lock held which is
-     problematic vs. the atomicity of sigaction().
-
-  2) Life time rules
-
-     The timer and the sigqueue are separate entities which requires a
-     lookup of the timer ID in the signal rearm code. This can be handled,
-     but the separate life time rules are not necessarily robust.
-
-  3) Finding the relevant timers
-
-     Obviosly it is possible to walk the posix timer list under sighand
-     lock and handle it from there. That can be expensive especially in the
-     case that there are no affected timers as the walk would just end up
-     doing nothing.
-
-The following series is a new and this time actually working attempt to
-solve this. It addresses it by:
-
-  1) Embedding the preallocated sigqueue into struct k_itimer, which makes
-     the life time rules way simpler and just needs a trivial reference
-     count.
-
-  2) Having a separate list in task::signal on which ignored timers are
-     queued.
-
-     This avoids walking a potentially large timer list for nothing on a
-     SIG_IGN to handler transition.
-
-  3) Requeueing the timers signal in the relevant signal queue so the timer
-     is rearmed when the signal is actually delivered
-
-     That turned out to be the least complicated way to address the sighand
-     lock vs. timer lock ordering issue.
-
-With that timers which have their signal ignored are not longer self
-rearmed and the relevant workarounds including throttling for DoS
-prevention are removed.
-
-Aside of the SIG_IGN issues it also addresses a few inconsistencies in
-posix CPU timers and the general inconsistency of signal handling
-vs. disarmed, reprogrammed and deleted timers.
-
-To actually validate the fixes the posix timer self test has been expanded
-with tests which cover not only the simple SIG IGN case but also more
-complex scenarios which have never been handled correctly by the current
-self rearming work around.
-
-The series is based on:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/urgent
-
-and is also available from git:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git timers/posix
-
-Changes vs. V1:
-
-    - Dropped the timer distribution check changes as that has been handled
-      upstream differently (it's in timers/urgent and soon in Linus tree)
-
-    - Split up patch 9 for the sake of easier review - Frederic
-
-    - Addressed the review comments from Frederic
-
-    - Picked up Reviewed-by tags where appropriate
-
-Thanks,
-
-	tglx
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/signal_32.c                   |    2 
- arch/x86/kernel/signal_64.c                   |    2 
- drivers/power/supply/charger-manager.c        |    3 
- fs/proc/base.c                                |   10 
- fs/signalfd.c                                 |    4 
- fs/timerfd.c                                  |    4 
- include/linux/alarmtimer.h                    |   10 
- include/linux/posix-timers.h                  |   69 ++-
- include/linux/sched/signal.h                  |   11 
- include/uapi/asm-generic/siginfo.h            |    2 
- init/init_task.c                              |    5 
- kernel/fork.c                                 |    3 
- kernel/signal.c                               |  486 +++++++++++++---------
- kernel/time/alarmtimer.c                      |   82 ---
- kernel/time/itimer.c                          |   22 -
- kernel/time/posix-cpu-timers.c                |  231 ++++------
- kernel/time/posix-timers.c                    |  276 ++++++-------
- kernel/time/posix-timers.h                    |    9 
- net/netfilter/xt_IDLETIMER.c                  |    4 
- tools/testing/selftests/timers/posix_timers.c |  550 +++++++++++++++++++++-----
- 20 files changed, 1092 insertions(+), 693 deletions(-)
+ tools/testing/selftests/timers/posix_timers.c |  151 ++++++++------------------
+ 1 file changed, 52 insertions(+), 99 deletions(-)
+
+--- a/tools/testing/selftests/timers/posix_timers.c
++++ b/tools/testing/selftests/timers/posix_timers.c
+@@ -10,6 +10,7 @@
+ #include <sys/time.h>
+ #include <stdio.h>
+ #include <signal.h>
++#include <string.h>
+ #include <unistd.h>
+ #include <time.h>
+ #include <pthread.h>
+@@ -19,6 +20,20 @@
+ #define DELAY 2
+ #define USECS_PER_SEC 1000000
+ 
++static void __fatal_error(const char *test, const char *name, const char *what)
++{
++	char buf[64];
++
++	strerror_r(errno, buf, sizeof(buf));
++
++	if (name && strlen(name))
++		ksft_exit_fail_msg("%s %s %s %s\n", test, name, what, buf);
++	else
++		ksft_exit_fail_msg("%s %s %s\n", test, what, buf);
++}
++
++#define fatal_error(name, what)	__fatal_error(__func__, name, what)
++
+ static volatile int done;
+ 
+ /* Busy loop in userspace to elapse ITIMER_VIRTUAL */
+@@ -74,24 +89,13 @@ static int check_diff(struct timeval sta
+ 	return 0;
+ }
+ 
+-static int check_itimer(int which)
++static void check_itimer(int which, const char *name)
+ {
+-	const char *name;
+-	int err;
+ 	struct timeval start, end;
+ 	struct itimerval val = {
+ 		.it_value.tv_sec = DELAY,
+ 	};
+ 
+-	if (which == ITIMER_VIRTUAL)
+-		name = "ITIMER_VIRTUAL";
+-	else if (which == ITIMER_PROF)
+-		name = "ITIMER_PROF";
+-	else if (which == ITIMER_REAL)
+-		name = "ITIMER_REAL";
+-	else
+-		return -1;
+-
+ 	done = 0;
+ 
+ 	if (which == ITIMER_VIRTUAL)
+@@ -101,17 +105,11 @@ static int check_itimer(int which)
+ 	else if (which == ITIMER_REAL)
+ 		signal(SIGALRM, sig_handler);
+ 
+-	err = gettimeofday(&start, NULL);
+-	if (err < 0) {
+-		ksft_perror("Can't call gettimeofday()");
+-		return -1;
+-	}
++	if (gettimeofday(&start, NULL) < 0)
++		fatal_error(name, "gettimeofday()");
+ 
+-	err = setitimer(which, &val, NULL);
+-	if (err < 0) {
+-		ksft_perror("Can't set timer");
+-		return -1;
+-	}
++	if (setitimer(which, &val, NULL) < 0)
++		fatal_error(name, "setitimer()");
+ 
+ 	if (which == ITIMER_VIRTUAL)
+ 		user_loop();
+@@ -120,68 +118,41 @@ static int check_itimer(int which)
+ 	else if (which == ITIMER_REAL)
+ 		idle_loop();
+ 
+-	err = gettimeofday(&end, NULL);
+-	if (err < 0) {
+-		ksft_perror("Can't call gettimeofday()");
+-		return -1;
+-	}
++	if (gettimeofday(&end, NULL) < 0)
++		fatal_error(name, "gettimeofday()");
+ 
+ 	ksft_test_result(check_diff(start, end) == 0, "%s\n", name);
+-
+-	return 0;
+ }
+ 
+-static int check_timer_create(int which)
++static void check_timer_create(int which, const char *name)
+ {
+-	const char *type;
+-	int err;
+-	timer_t id;
+ 	struct timeval start, end;
+ 	struct itimerspec val = {
+ 		.it_value.tv_sec = DELAY,
+ 	};
+-
+-	if (which == CLOCK_THREAD_CPUTIME_ID) {
+-		type = "thread";
+-	} else if (which == CLOCK_PROCESS_CPUTIME_ID) {
+-		type = "process";
+-	} else {
+-		ksft_print_msg("Unknown timer_create() type %d\n", which);
+-		return -1;
+-	}
++	timer_t id;
+ 
+ 	done = 0;
+-	err = timer_create(which, NULL, &id);
+-	if (err < 0) {
+-		ksft_perror("Can't create timer");
+-		return -1;
+-	}
+-	signal(SIGALRM, sig_handler);
+ 
+-	err = gettimeofday(&start, NULL);
+-	if (err < 0) {
+-		ksft_perror("Can't call gettimeofday()");
+-		return -1;
+-	}
++	if (timer_create(which, NULL, &id) < 0)
++		fatal_error(name, "timer_create()");
+ 
+-	err = timer_settime(id, 0, &val, NULL);
+-	if (err < 0) {
+-		ksft_perror("Can't set timer");
+-		return -1;
+-	}
++	if (signal(SIGALRM, sig_handler) == SIG_ERR)
++		fatal_error(name, "signal()");
++
++	if (gettimeofday(&start, NULL) < 0)
++		fatal_error(name, "gettimeofday()");
++
++	if (timer_settime(id, 0, &val, NULL) < 0)
++		fatal_error(name, "timer_settime()");
+ 
+ 	user_loop();
+ 
+-	err = gettimeofday(&end, NULL);
+-	if (err < 0) {
+-		ksft_perror("Can't call gettimeofday()");
+-		return -1;
+-	}
++	if (gettimeofday(&end, NULL) < 0)
++		fatal_error(name, "gettimeofday()");
+ 
+ 	ksft_test_result(check_diff(start, end) == 0,
+-			 "timer_create() per %s\n", type);
+-
+-	return 0;
++			 "timer_create() per %s\n", name);
+ }
+ 
+ static pthread_t ctd_thread;
+@@ -209,15 +180,14 @@ static void *ctd_thread_func(void *arg)
+ 
+ 	ctd_count = 100;
+ 	if (timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id))
+-		return "Can't create timer\n";
++		fatal_error(NULL, "timer_create()");
+ 	if (timer_settime(id, 0, &val, NULL))
+-		return "Can't set timer\n";
+-
++		fatal_error(NULL, "timer_settime()");
+ 	while (ctd_count > 0 && !ctd_failed)
+ 		;
+ 
+ 	if (timer_delete(id))
+-		return "Can't delete timer\n";
++		fatal_error(NULL, "timer_delete()");
+ 
+ 	return NULL;
+ }
+@@ -225,19 +195,16 @@ static void *ctd_thread_func(void *arg)
+ /*
+  * Test that only the running thread receives the timer signal.
+  */
+-static int check_timer_distribution(void)
++static void check_timer_distribution(void)
+ {
+-	const char *errmsg;
+-
+-	signal(SIGALRM, ctd_sighandler);
++	if (signal(SIGALRM, ctd_sighandler) == SIG_ERR)
++		fatal_error(NULL, "signal()");
+ 
+-	errmsg = "Can't create thread\n";
+ 	if (pthread_create(&ctd_thread, NULL, ctd_thread_func, NULL))
+-		goto err;
++		fatal_error(NULL, "pthread_create()");
+ 
+-	errmsg = "Can't join thread\n";
+-	if (pthread_join(ctd_thread, (void **)&errmsg) || errmsg)
+-		goto err;
++	if (pthread_join(ctd_thread, NULL))
++		fatal_error(NULL, "pthread_join()");
+ 
+ 	if (!ctd_failed)
+ 		ksft_test_result_pass("check signal distribution\n");
+@@ -245,10 +212,6 @@ static int check_timer_distribution(void
+ 		ksft_test_result_fail("check signal distribution\n");
+ 	else
+ 		ksft_test_result_skip("check signal distribution (old kernel)\n");
+-	return 0;
+-err:
+-	ksft_print_msg(errmsg);
+-	return -1;
+ }
+ 
+ int main(int argc, char **argv)
+@@ -259,17 +222,10 @@ int main(int argc, char **argv)
+ 	ksft_print_msg("Testing posix timers. False negative may happen on CPU execution \n");
+ 	ksft_print_msg("based timers if other threads run on the CPU...\n");
+ 
+-	if (check_itimer(ITIMER_VIRTUAL) < 0)
+-		return ksft_exit_fail();
+-
+-	if (check_itimer(ITIMER_PROF) < 0)
+-		return ksft_exit_fail();
+-
+-	if (check_itimer(ITIMER_REAL) < 0)
+-		return ksft_exit_fail();
+-
+-	if (check_timer_create(CLOCK_THREAD_CPUTIME_ID) < 0)
+-		return ksft_exit_fail();
++	check_itimer(ITIMER_VIRTUAL, "ITIMER_VIRTUAL");
++	check_itimer(ITIMER_PROF, "ITIMER_PROF");
++	check_itimer(ITIMER_REAL, "ITIMER_REAL");
++	check_timer_create(CLOCK_THREAD_CPUTIME_ID, "CLOCK_THREAD_CPUTIME_ID");
+ 
+ 	/*
+ 	 * It's unfortunately hard to reliably test a timer expiration
+@@ -280,11 +236,8 @@ int main(int argc, char **argv)
+ 	 * to ensure true parallelism. So test only one thread until we
+ 	 * find a better solution.
+ 	 */
+-	if (check_timer_create(CLOCK_PROCESS_CPUTIME_ID) < 0)
+-		return ksft_exit_fail();
+-
+-	if (check_timer_distribution() < 0)
+-		return ksft_exit_fail();
++	check_timer_create(CLOCK_PROCESS_CPUTIME_ID, "CLOCK_PROCESS_CPUTIME_ID");
++	check_timer_distribution();
+ 
+ 	ksft_finished();
+ }
+
 
