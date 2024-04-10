@@ -1,201 +1,158 @@
-Return-Path: <linux-kernel+bounces-138932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 833BA89FC2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:56:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5885589FC31
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:57:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1098B1F24855
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:56:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10E0428E3AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:57:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4445917555A;
-	Wed, 10 Apr 2024 15:55:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5789176FBD;
+	Wed, 10 Apr 2024 15:55:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WWQn15zL"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="i7TC513M"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3B03172792;
-	Wed, 10 Apr 2024 15:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2BCD17554D
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:55:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712764555; cv=none; b=a7r6+K/v3LCp3EvCHJsBcYHk0ZtYbYTdsaII/mc8l7iJ2PfYE3W5q0crsDcGqKQW+F4Bh4n6PfdGh/fN9U4pVAJE69j6jvmlQVVY+rcKi5uK75YI7g93o6IsDHgr1a1WDqEVrbnOATS6uny2bmF6z4XuYeDTthTs+rQhuG+XzTA=
+	t=1712764557; cv=none; b=hi7b8mBbFTE1vQQiC93/9vN+tk32+W4FDYVwvoIoBf05acVjLs4hWxXJRA3biT4ezc/Bl2gZ/aOrURHvXeHjCHRwAeCBmIkcgTwqbn8TUeuhEmW6cmnlPR//EbJo/tYgwJ0udDmz3jxhXrKC/IrqWrHG6yck7O7+pzwfa7C04fU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712764555; c=relaxed/simple;
-	bh=BajpLIZvweL+aLqlkIOgDvaU5J35KCKUJstIeHQsxoU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=sQdooi4cnkqcyOeYb8Q0xEuMXn/cLGgwCV4Yi+6HkH0MMg2OfjgzFXo2hX8e5WwOm5Y2gbcWZkM5qdLVwYmhPX4f7XlIcKgEdfUFoksabHevS6nbVw3zLlR88nscQu1VDNXdMBLK3E1qe4+zAfngqwKfOPs9Pt6e40vySjBMmUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WWQn15zL; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a51d3193e54so413590366b.2;
-        Wed, 10 Apr 2024 08:55:53 -0700 (PDT)
+	s=arc-20240116; t=1712764557; c=relaxed/simple;
+	bh=PG5sFp0A4g6NIomxLWHs95V4FEpSYSwegOg8mPFCvUE=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:References:
+	 In-Reply-To:Content-Type; b=efWznsD5xANmJCfCpkLwAdT2EBSs85JbXdCV3ng8dS2dL/qpe0t1arc2cTTJvqnCNoIQpPZCQgoeCqtnfpA4EteY9Q+tzpYWI7FQH3TaDzLKmV3f6koK23w5k0f+ASdZosC8i++tfz3BnPguoKAGtAJmYt7C8cZCTy8JFhRc8Yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=i7TC513M; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-41739e4f8caso3968175e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:55:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712764552; x=1713369352; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1712764554; x=1713369354; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=bf5pKtth7HyQMR2CRAxRCRRYX77dJfg+HACjzgrcpPA=;
-        b=WWQn15zLbrR5gE3ib7x086IA5mM+4b7ze/Apdh7KDM/OzRG+YermrqePrsjP5W36ku
-         viq8OKMBpn7jvJhLFQhGfSDgV0vvkujAKQ7NlyPEvjoWmWKq0UN8Hby1QbtHeqxe4uQH
-         btU10RJfP0rpLR16Iu0jKBxvvOAY/GWbNiAdxyxk+JAnqU+LyndT7Mjxu2dQb0LXK0Xz
-         8T6HFrnWJzPA2Q3okPl1rLrlw17iRVZZUz8IZ5i/k8Bno8ZsykxQNjN+5EEqenqWqoVn
-         TpCThESrNjwBCjxrGa70sbDy7NZJmzZ0zXT3/52BaArNCKTqqVF9shNOvu3uLWgE7Og7
-         5+Fw==
+        bh=/Y95uWlPjr3MmH9j9cyBlMM8xwJEau1Gnn9pV4tIaP0=;
+        b=i7TC513MqfoKhLv9OmDCVuFuZBXtQYwgyR8lsdxqUwCOE03/zzjDE2g08S9lxF892x
+         GctlRp1YNUIwXhowp1vn/E3Uw1T+OXKQL58X1I19Assp0essj+j9fc4qN5sHTTrcYRfa
+         gJnzpyqZFUzFH/q0E+IWwJf90zTCEeT2tK7IZwO+gb/zI0QX7OvNzfQK+X+d5cLH074h
+         eA/37mKHvFbpOeqfCNdKcxJo8YDCv38noSyi53FQ9+CY/tMaFvafcotnLgqGzfCBW4C4
+         l2LcOkJ7DAl09e5O6jxS9NpRxQE/N69e6I6471bd8KmDYtG2b0GN+9cKqPvgkGqQdVeg
+         +/Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712764552; x=1713369352;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bf5pKtth7HyQMR2CRAxRCRRYX77dJfg+HACjzgrcpPA=;
-        b=RNQ8tq4llUKdv03Jj5BhTmShOyGPmJplGrnLckMzZ97vQDRoIHaqqzA+lLpZnkrTOZ
-         aB5VsLpFRg/MTxk4ixhy9E2ob5nssrjY7Vv67B3mR1KIk8zKrtIef96GNntjUE4bf6SA
-         pUCNn710KHF9npO4xDoID2JwK2UfOaoFKM9Z2QQNUFyq8m4RMZows9pEoDZC8R5gwHIK
-         7Mk9VF7xV3kwNPJd+DckqMwH7BogGopPnwDFG+boEXZEZh8kKoMyv3V/9spacfWh6Ksk
-         eNWOp5cz7aaY/HMl1dPqGpepi/wLYE6gvWX1xvKmDzA6Oselns0gfaoEb2hWf0yC3+YX
-         CjDg==
-X-Forwarded-Encrypted: i=1; AJvYcCXprpjCS3/+YHc8N5Puwgh75a5gqWOx2+djVAWNTZ0+YJsP+aim7DPiYiDsF+v4dC2aPLzWXydIdoIBm/BP8jdMjQnG/VSoQXTTRq7SxSnI7nFWc5O5SNUqqM6UPnvXN20ggYv3gSwNWw==
-X-Gm-Message-State: AOJu0Yx4p9cbIxeOtfjF/v0vm0hnKhO8yaAkQArclqxKPBVkOiyB6gxK
-	LFhFFbE91hNtJgCKmvK9+mS5vGqz0b49xlsfun4sYZybZv/eaYDNSMMgR6Pb5QEp7Q==
-X-Google-Smtp-Source: AGHT+IH9ECOyJ4wkkOwf2xtDjNIpUsIMg8Pw0iVdXkQDB4YvgTtP4jNyI9hrkYj+EGDElqvho8fUmA==
-X-Received: by 2002:a17:907:368e:b0:a51:d605:49e6 with SMTP id bi14-20020a170907368e00b00a51d60549e6mr2268733ejc.10.1712764551807;
-        Wed, 10 Apr 2024 08:55:51 -0700 (PDT)
-Received: from [127.0.1.1] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
-        by smtp.gmail.com with ESMTPSA id qw6-20020a1709066a0600b00a52172808c9sm279884ejc.56.2024.04.10.08.55.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 08:55:51 -0700 (PDT)
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Wed, 10 Apr 2024 17:55:36 +0200
-Subject: [PATCH v2 4/4] dt-bindings: rtc: stmp3xxx-rtc: convert to dtschema
+        d=1e100.net; s=20230601; t=1712764554; x=1713369354;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/Y95uWlPjr3MmH9j9cyBlMM8xwJEau1Gnn9pV4tIaP0=;
+        b=ZJh96RuwaeLa8tuSEJXUt+0017CVnfWTwHPLAt1Lzxw9rgv0WqzPwQ+F5HMiW0nDqC
+         w/ekx/UYYPV5Lt8mqH2/voRQSBpsqeK+pOrI846MrnBj7971ao7cbZPcYx55+mz5aHPw
+         rMTJnK2jHVlRv3+nJn4AZUIuBh8/2HexX7jWbTW1Ka4JAl+AQty/NKOJK/xPufb8O802
+         g4TX6dWwai4Wu7+OkN2ef2tiGxEO63O8Kz41YQCWU4gNf1I1xiHJsoQDwop9vS00XlpN
+         nOy2rlLAu7PkS5wN3sunta2jNgtaNexYMt8003WezvdDQdC9286ZhSkcpVnAmGwO0PCD
+         tyGA==
+X-Forwarded-Encrypted: i=1; AJvYcCW473UHmljnVMecbgq273GAZ/fEM1oH5RVEbvJfAsOnpbjLRLTmxD2kMUpqnhwI+8DHIn0LqOG0hC0KitFqlwB8ie+BUTIDN5QFKHZP
+X-Gm-Message-State: AOJu0YzzTguDYlU+UdRffYVUCYvPpA6XfC1mdMrnJBdjwSpvgUNT7Y9f
+	ZpdaXkdD6sfiEgWa2XdmAczxpAmMBAJCYmpQwec+MgWEp3CLDe23i8pcJ4Devdc=
+X-Google-Smtp-Source: AGHT+IHW6x6HUMvGoC6y0vrk8e/XA0YiesateG2RI9Bg2DRVnfVvm+OFOxbdSrej5+vqjr7YqetnSA==
+X-Received: by 2002:a05:600c:3504:b0:416:bc6d:e8bb with SMTP id h4-20020a05600c350400b00416bc6de8bbmr2231879wmq.0.1712764553849;
+        Wed, 10 Apr 2024 08:55:53 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:760d:c2fa:a66b:fed3? ([2a01:e0a:982:cbb0:760d:c2fa:a66b:fed3])
+        by smtp.gmail.com with ESMTPSA id je7-20020a05600c1f8700b00416a43d60e6sm2625547wmb.39.2024.04.10.08.55.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 08:55:53 -0700 (PDT)
+Message-ID: <0a93713a-efd4-4b9a-b9e0-50631cb69e2d@linaro.org>
+Date: Wed, 10 Apr 2024 17:55:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] clk: qcom: fix module autoloading
+To: Krzysztof Kozlowski <krzk@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240410155356.224098-1-krzk@kernel.org>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <20240410155356.224098-1-krzk@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240410-rtc_dtschema-v2-4-d32a11ab0745@gmail.com>
-References: <20240410-rtc_dtschema-v2-0-d32a11ab0745@gmail.com>
-In-Reply-To: <20240410-rtc_dtschema-v2-0-d32a11ab0745@gmail.com>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>, 
- Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
- Vladimir Zapolskiy <vz@mleia.com>, Joel Stanley <joel@jms.id.au>, 
- Andrew Jeffery <andrew@codeconstruct.com.au>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-aspeed@lists.ozlabs.org, linux-stm32@st-md-mailman.stormreply.com, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712764543; l=2723;
- i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
- bh=BajpLIZvweL+aLqlkIOgDvaU5J35KCKUJstIeHQsxoU=;
- b=pHkT9z1UD5fi/tDYwREkpPZ6fWm/TGqk61RmoCGhwk+BHlwI0iLZdJFdVAqFoKOsy/rcgBj0N
- Wk7MHzYGe96AFVsO8eT0lvMCZduQXAoKHmPHQxBN9O9UBFkbRd66w35
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
 
-Convert existing binding to dtschema to support validation and
-add the undocumented compatible 'fsl,imx23-rtc'.
+On 10/04/2024 17:53, Krzysztof Kozlowski wrote:
+> Add MODULE_DEVICE_TABLE(), so modules could be properly autoloaded
+> based on the alias from of_device_id table.  Clocks are considered core
+> components, so usually they are built-in, however these can be built and
+> used as modules on some generic kernel.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>   drivers/clk/qcom/gcc-msm8917.c | 1 +
+>   drivers/clk/qcom/gcc-msm8953.c | 1 +
+>   2 files changed, 2 insertions(+)
+> 
+> diff --git a/drivers/clk/qcom/gcc-msm8917.c b/drivers/clk/qcom/gcc-msm8917.c
+> index f2dd132e2fb1..f2b8729e4198 100644
+> --- a/drivers/clk/qcom/gcc-msm8917.c
+> +++ b/drivers/clk/qcom/gcc-msm8917.c
+> @@ -3278,6 +3278,7 @@ static const struct of_device_id gcc_msm8917_match_table[] = {
+>   	{ .compatible = "qcom,gcc-qm215", .data = &gcc_qm215_desc },
+>   	{},
+>   };
+> +MODULE_DEVICE_TABLE(of, gcc_msm8917_match_table);
+>   
+>   static struct platform_driver gcc_msm8917_driver = {
+>   	.probe = gcc_msm8917_probe,
+> diff --git a/drivers/clk/qcom/gcc-msm8953.c b/drivers/clk/qcom/gcc-msm8953.c
+> index 68359534ff25..7563bff58118 100644
+> --- a/drivers/clk/qcom/gcc-msm8953.c
+> +++ b/drivers/clk/qcom/gcc-msm8953.c
+> @@ -4227,6 +4227,7 @@ static const struct of_device_id gcc_msm8953_match_table[] = {
+>   	{ .compatible = "qcom,gcc-msm8953" },
+>   	{},
+>   };
+> +MODULE_DEVICE_TABLE(of, gcc_msm8953_match_table);
+>   
+>   static struct platform_driver gcc_msm8953_driver = {
+>   	.probe = gcc_msm8953_probe,
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- .../devicetree/bindings/rtc/fsl,stmp3xxx-rtc.yaml  | 51 ++++++++++++++++++++++
- .../devicetree/bindings/rtc/stmp3xxx-rtc.txt       | 21 ---------
- 2 files changed, 51 insertions(+), 21 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/rtc/fsl,stmp3xxx-rtc.yaml b/Documentation/devicetree/bindings/rtc/fsl,stmp3xxx-rtc.yaml
-new file mode 100644
-index 000000000000..534de4196a4f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/rtc/fsl,stmp3xxx-rtc.yaml
-@@ -0,0 +1,51 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/rtc/fsl,stmp3xxx-rtc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: STMP3xxx/i.MX28 Time Clock Controller
-+
-+maintainers:
-+  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
-+
-+allOf:
-+  - $ref: rtc.yaml#
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - fsl,imx28-rtc
-+              - fsl,imx23-rtc
-+          - const: fsl,stmp3xxx-rtc
-+      - const: fsl,stmp3xxx-rtc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  stmp,crystal-freq:
-+    description:
-+      Override crystal frequency as determined from fuse bits.
-+      Use <0> for "no crystal".
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0, 32000, 32768]
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    rtc@80056000 {
-+        compatible = "fsl,imx28-rtc", "fsl,stmp3xxx-rtc";
-+        reg = <0x80056000 2000>;
-+        interrupts = <29>;
-+    };
-diff --git a/Documentation/devicetree/bindings/rtc/stmp3xxx-rtc.txt b/Documentation/devicetree/bindings/rtc/stmp3xxx-rtc.txt
-deleted file mode 100644
-index fa6a94226669..000000000000
---- a/Documentation/devicetree/bindings/rtc/stmp3xxx-rtc.txt
-+++ /dev/null
-@@ -1,21 +0,0 @@
--* STMP3xxx/i.MX28 Time Clock controller
--
--Required properties:
--- compatible: should be one of the following.
--    * "fsl,stmp3xxx-rtc"
--- reg: physical base address of the controller and length of memory mapped
--  region.
--- interrupts: rtc alarm interrupt
--
--Optional properties:
--- stmp,crystal-freq: override crystal frequency as determined from fuse bits.
--  Only <32000> and <32768> are possible for the hardware.  Use <0> for
--  "no crystal".
--
--Example:
--
--rtc@80056000 {
--	compatible = "fsl,imx28-rtc", "fsl,stmp3xxx-rtc";
--	reg = <0x80056000 2000>;
--	interrupts = <29>;
--};
-
--- 
-2.40.1
-
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
