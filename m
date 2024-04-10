@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-137972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72DA189EA99
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:15:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44BE089EA9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:16:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8893C1C22B1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:15:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C67B82831F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:16:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605E8288D1;
-	Wed, 10 Apr 2024 06:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5082A28363;
+	Wed, 10 Apr 2024 06:16:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nftInk5i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oyRfzvKE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8132E20309;
-	Wed, 10 Apr 2024 06:15:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A5071CAA9;
+	Wed, 10 Apr 2024 06:16:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712729737; cv=none; b=LZNXxrNG8wcTWHxlSNC5fYKfa+cnJPIG8oFCLcERO43rVHV9hW9oM8aY3OpbsLa+XTi1a941LRUHsmP96kORca/t+fwZ97TQmoeQoPopyXLTj9doItVsm8TZHxOHRrkvTAvd29ABYAvcVPr/0n6V8si8NqI2abGVutVJgnTV/Kc=
+	t=1712729779; cv=none; b=u68s2W415g3fg/Hl1L3u33RqeQgn2oGNafgHKjcDsyktJvVP2XGJZiumqBdeCCOATB1M0mJopt84hLBjjbS6tui09s0n7QCDqM6HOTrSZ+7JII5+6iwBoXlbVGYGC0TCvOhepx6ueVUMtoBk6iCwzn1pcWOWeaCzCGNGLpCyHPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712729737; c=relaxed/simple;
-	bh=WaVfCLsnOxqfmDiHc19FZF8OccbJOp3OuAbPrtbtGn4=;
+	s=arc-20240116; t=1712729779; c=relaxed/simple;
+	bh=DPpvZcvQ6kvz/nUa81slxbvOIx3m99IS9oIiJBMpv8M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ouH1tmljBUah4Wd4S/Tms2jwkWA6dHHsh2k9zujyexNz3GARoe5j6MefMkI03hIfxENRsvOGFeA9A25eyOAnrQaZmIMIxbhCBMi93jukgirzN/WR2XyajLJXnmhj5c2rg/6nQgCA7cZTbimSPZMWDbJZTdgwB2WBI5X3hJqvHjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nftInk5i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89DE1C433C7;
-	Wed, 10 Apr 2024 06:15:32 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=A6BYBAh4OtSxPhieNkGffJ6/sNmV1pxGvYFIvcrGNzIeJ6dSZwH7KGBSIhHW61iBfKxw/uy2IlNPEvCqzoOCRvDPFxG/8+QWJQmcM9qFmDlZYQvl93NFaZorpFA0Zza/ny4sS0BE7Vu7tCa0C70dzFh9uANzY1A7VXjUWJQzQBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oyRfzvKE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51854C433C7;
+	Wed, 10 Apr 2024 06:16:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712729737;
-	bh=WaVfCLsnOxqfmDiHc19FZF8OccbJOp3OuAbPrtbtGn4=;
+	s=k20201202; t=1712729779;
+	bh=DPpvZcvQ6kvz/nUa81slxbvOIx3m99IS9oIiJBMpv8M=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=nftInk5idOsoqTik2M8PXD4+3gbgmg7TTBFF1i54LQh1yUltogB3NaTImw1XwEyLc
-	 7hwsxq7yjSiuHpB4sFvUIc5QQvDlSh3O/VTRVXw7BiZIYFQ9VNnUrJsq3PFPj7yXvH
-	 gigRl5d6HQx6zQHDJ05KuA7bkb89QikYxEAFMl7K1e+sIl3YmyogppXvdE0xLV/C4m
-	 UdVhdqnHkzZjxMecSfzNR1gKlzbWFYASCikK0IwUftik5phk7uQ4VCStO7Q3cYhg1G
-	 kNxPyTqLeAjuZztIemRxs2xd/Hrdhc3Q2WEbhPIGBQU7vjD5vyjifOcW7kojIrpdDP
-	 aqeFxI7wLf/AA==
-Message-ID: <40f0ed86-b38c-4592-9161-6d7c949c80e5@kernel.org>
-Date: Wed, 10 Apr 2024 08:15:30 +0200
+	b=oyRfzvKE1fP/eVpFuEMaCxS9bU95+8MWBglw3TUXYOCDpVmVQGfhKfZdawZuQW297
+	 ew9dMA3LrYme06QML2zeBcnXniWFZTijKv35ruNhyRQjZ8tC4XNXyllqEx4BzWEjrO
+	 +cdp8o13jKQkJlMowMBsdROgGAUMJt6RsOJa3udwQ7mHQHUGx+HNQCo+wBuxkHs22j
+	 DgICLrkPJtf/GkbKB3cE+8pO2ZEw/N4q5gvqaegYsAnKaNr5srv/Y7GcNuS/GNeAag
+	 MGeHMj7HTLFKxJW7tr2XhzvIjFo82FA4S2eHKwYp6iVG91ersNe/JAbiVhhT8dkUdL
+	 lZRz/X3XYBVVg==
+Message-ID: <55484f58-f593-4449-b136-e8919234bc91@kernel.org>
+Date: Wed, 10 Apr 2024 08:16:13 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,17 +49,16 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] ARM: dts: qcom: msm8974-hammerhead: Update gpio
- hog node name
-To: Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
- phone-devel@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240409-qcom-pmic-gpio-hog-v2-0-5ff812d2baed@z3ntu.xyz>
- <20240409-qcom-pmic-gpio-hog-v2-2-5ff812d2baed@z3ntu.xyz>
+Subject: Re: [PATCH v2 1/5] dt-bindings: soc: qcom: pmic-glink: allow
+ orientation-gpios
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240409-hdk-orientation-gpios-v2-0-658efd993987@linaro.org>
+ <20240409-hdk-orientation-gpios-v2-1-658efd993987@linaro.org>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -105,19 +104,23 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240409-qcom-pmic-gpio-hog-v2-2-5ff812d2baed@z3ntu.xyz>
+In-Reply-To: <20240409-hdk-orientation-gpios-v2-1-658efd993987@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 09/04/2024 20:36, Luca Weiss wrote:
-> Follow the gpio-hog bindings and use otg-hog as node name.
+On 09/04/2024 16:28, Dmitry Baryshkov wrote:
+> The orientation GPIOs are not limited to sm8450/sm8550/x1e8000
+> platforms. Allow corresponding property to be used on all Qualcom
+> platforms.
 > 
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> Fixes: 65682407f8f4 ("dt-bindings: soc: qcom: qcom,pmic-glink: add a gpio used to determine the Type-C port plug orientation")
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > ---
->  arch/arm/boot/dts/qcom/qcom-msm8974-lge-nexus5-hammerhead.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml      | 14 --------------
+>  1 file changed, 14 deletions(-)
+> 
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 Best regards,
 Krzysztof
