@@ -1,135 +1,134 @@
-Return-Path: <linux-kernel+bounces-139530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5D778A03FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:26:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 981018A0403
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:26:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB4DB1C21B3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:26:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C97EA1C21A58
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:26:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B722374C1;
-	Wed, 10 Apr 2024 23:26:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA80A38DE5;
+	Wed, 10 Apr 2024 23:26:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Va+Qlm+5"
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xQC5MJhR"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B5C2C695
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:26:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815B538DD8
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:26:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712791570; cv=none; b=q9X1q+H6fifCH207U+gfam2Xh/OflgjTtlWtp2cotF+2Pvp37RVIc04Jw/0nB+4GJngZvdU9FXtqj/nGpX5wSXlIKrcRUjRoCFrx+nZUPUo1mGipi+mpirJOIr/JDJWfrBZ4QAeMUISMO0gEyNPyEgxySVIphysJvJp3T7tCxP0=
+	t=1712791605; cv=none; b=s4wN8LYVYXvfwFzTRqZJEFKm7QEwEc7GEB9oFlzC4DKqd9y3nKu9xzGLZJeErgaDRx7ropRypjvbwaEMIGNtCLNg1JJOFv5H0ASiKSnYaqJzcgRwgXL7bWu/eSeIsBseCFA4WrlFj0WRX7B3tapkyE1/8hsAO/U+vivLqGdzInA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712791570; c=relaxed/simple;
-	bh=6bECfZivveGXwjc0wz2UlMqxN5Fu6aMgKDLIjMEVkeI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Vhi3UFezYOIlUSwfWxXBSOooiXAXne+r5opSSEt3ZCMCanQh7TTSXFYxuKoteNkn+OUjIh0+uR4ut2GZHoZgF4TPsa9K8XTQCiGcu8Qs6pUhV2Mq/WFYqEnIynxVhF8AIpWx78n7gfASgF5DcSoKDlHiEkYrKML+pqaUAiGrZ9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Va+Qlm+5; arc=none smtp.client-ip=95.215.58.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <fcdf6dc6-81ff-48b8-822b-80c097efc07d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712791564;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tRA6/DFmK/DJmNTAFNW2xE1W38sOhbq7XMudIRt8ihs=;
-	b=Va+Qlm+515KjcFBzYljKyDI9a7OtxhslpQ7SCXUQrXWPNmJ2MeRhfsO4Y1YG9QWHJwkl5T
-	YjvrFFXb5n5JQj/wScwLuRr7vpe9OqGLs2TdrTzYZkxU5LECaqHEzoNuOqXIbjBjKdLFav
-	DnKEyl/TQyRlVIkVNoRbmSsz9FOINjM=
-Date: Wed, 10 Apr 2024 16:25:57 -0700
+	s=arc-20240116; t=1712791605; c=relaxed/simple;
+	bh=5Uh22vIKOPqTl08nz2cIcEKFa+Ku5iV4cUKiaiK6UwA=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=hPATgjQinlJ1Q/XUeJ+qZZ0wZXGPI9klyJhChpqrGNofaS59ITHevg+SKHVyVkG6VwQNvBVCl3c5+htdCOrA9Ptd9iEuhHL2mkn+w8cbudVo2EUeJwhZzRHJC09UxZcktnyVefIaWKWGo2ZjnNxilSxrXIguOSdjVda0RQtWEJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xQC5MJhR; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc0bcf9256so9189211276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712791602; x=1713396402; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=7JUe0tFRaoQ0RUO8nlo0bS/Trq4cm4/yvOCnk0PY7Tw=;
+        b=xQC5MJhR8h16ucTxDkSCS0kzlCzvIGb4c/lM4x7/hgiNv6msb6mBXrxe3ZnHBB+U1u
+         dvHKh132tWkCey+vRuwgAjQhTrM7FP+Sz51ZFvv+5pZ+KHRnO6Fum9SD7CU/EnugHNpX
+         p6vc2VNhd/iDFrS5J2ePxqVfBzQU4LJEU3To13fBjQa7vdwVNW0tgNcGCdY/RKM8DycF
+         eJjjS+npP5fAMAeCTsGqwSpacmS0jSJ5AuBvAP6e9yZkNcFH0b4KfPwQGpjVn6ztKH97
+         y8Iq8d/rZI/ZxoH9U8Jjp54/MNbZc62rXXCIBNF3zf9j/0exPwKotDSOEGV1lJTKG3TG
+         n+bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712791602; x=1713396402;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7JUe0tFRaoQ0RUO8nlo0bS/Trq4cm4/yvOCnk0PY7Tw=;
+        b=cKOa35WcWDWC49lDxTUkMrktoXf22j7wwnL8AACh4yWsX6af6hlkOHIzWN9dSpJn1A
+         2sWkAxPJdXlodXKf9vO0le9rndQTpMKJlYp07c1l9gaZ2Aaazair3y3OPR2lQWw9rjcn
+         IPF1RMgiqqD+LESosEyV+lHNQjuyYxuldl/oLsqF6S9GRqima5IvCRfbgMw2FEHrySD4
+         TjRvdcdI3Kdmu46RDyoyNKWupPd8smBQzBgUh0QmqJXIOm3mgPR9fejzhg1kwxqugbvh
+         n8ldchZD3Ndld2+05rarQ67XG5i4l5s6iupgenc/tdDbjcWFUqYfX9DfRd7YSjNWrhOF
+         hIvQ==
+X-Gm-Message-State: AOJu0YwLCgpy02Hp37vUUL9ilCVP0PBOq387x3Aq1Txif55jvOHNjjec
+	6oCF02q1/xFLBTNxIaP+MFXYvcdvFbgi496cHwRSEB4XWFa50N4QVuFpmR7PrnfbhtCLyK5NAWF
+	ZDAOvOPtwcTBqNcn2F+4/MUX0MfUCGHR0RgX0MHvRLh21v5to/Xa5j8ZZuMaRSvKgiGEWpmEsJq
+	3iEjLnTMAkPaY9Rnxs+2GS+LvylFR90+NggP+/9BUWezJM
+X-Google-Smtp-Source: AGHT+IHn3qElAk799zrmqQpVWrjI3Xobk90HnjvS6MfZsB7fQ82snexs+qbkA8nn2poKmRJTuL3bOeMuPJfp
+X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
+ (user=jstultz job=sendgmr) by 2002:a05:6902:18ca:b0:dc6:b813:5813 with SMTP
+ id ck10-20020a05690218ca00b00dc6b8135813mr358269ybb.9.1712791601994; Wed, 10
+ Apr 2024 16:26:41 -0700 (PDT)
+Date: Wed, 10 Apr 2024 16:26:28 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next v1 3/3] net: Add additional bit to support
- userspace timestamp type
-To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Andrew Halaney <ahalaney@redhat.com>,
- Martin KaFai Lau <martin.lau@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
- kernel@quicinc.com
-References: <20240409210547.3815806-1-quic_abchauha@quicinc.com>
- <20240409210547.3815806-4-quic_abchauha@quicinc.com>
- <6616b3587520_2a98a5294db@willemb.c.googlers.com.notmuch>
- <f28de1e7-4a9b-4a97-b4f9-723425725b58@quicinc.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <f28de1e7-4a9b-4a97-b4f9-723425725b58@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240410232637.4135564-1-jstultz@google.com>
+Subject: [PATCH 1/3] selftests: timers: Fix posix_timers ksft_print_msg warning
+From: John Stultz <jstultz@google.com>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: John Stultz <jstultz@google.com>, Shuah Khan <shuah@kernel.org>, 
+	Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Oleg Nesterov <oleg@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Edward Liaw <edliaw@google.com>, Carlos Llamas <cmllamas@google.com>, kernel-team@android.com, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 4/10/24 1:25 PM, Abhishek Chauhan (ABC) wrote:
->>> @@ -830,6 +833,9 @@ enum skb_tstamp_type {
->>>    *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
->>>    *		skb->tstamp has the (rcv) timestamp at ingress and
->>>    *		delivery_time at egress.
->>> + *		delivery_time in mono clock base (i.e., EDT) or a clock base chosen
->>> + *		by SO_TXTIME. If zero, skb->tstamp has the (rcv) timestamp at
->>> + *		ingress.
->>>    *	@napi_id: id of the NAPI struct this skb came from
->>>    *	@sender_cpu: (aka @napi_id) source CPU in XPS
->>>    *	@alloc_cpu: CPU which did the skb allocation.
->>> @@ -960,7 +966,7 @@ struct sk_buff {
->>>   	/* private: */
->>>   	__u8			__mono_tc_offset[0];
->>>   	/* public: */
->>> -	__u8			tstamp_type:1;	/* See SKB_MONO_DELIVERY_TIME_MASK */
->>> +	__u8			tstamp_type:2;	/* See SKB_MONO_DELIVERY_TIME_MASK */
->>>   #ifdef CONFIG_NET_XGRESS
->>>   	__u8			tc_at_ingress:1;	/* See TC_AT_INGRESS_MASK */
+After commit 6d029c25b71f ("selftests/timers/posix_timers:
+Reimplement check_timer_distribution()") I started seeing the
+following warning building with an older gcc:
 
-The above "tstamp_type:2" change shifted the tc_at_ingress bit.
-TC_AT_INGRESS_MASK needs to be adjusted.
+posix_timers.c:250:2: warning: format not a string literal and no format arguments [-Wformat-security]
+  250 |  ksft_print_msg(errmsg);
+      |  ^~~~~~~~~~~~~~
 
->>>   	__u8			tc_skip_classify:1;
->>
->> With pahole, does this have an effect on sk_buff layout?
->>
-> I think it does and it also impacts BPF testing. Hence in my cover letter i have mentioned that these
-> changes will impact BPF. My level of expertise is very limited to BPF hence the reason for RFC.
-> That being said i am actually trying to understand/learn BPF instructions to know things better.
-> I think we need to also change the offset SKB_MONO_DELIVERY_TIME_MASK and TC_AT_INGRESS_MASK
-> 
-> 
-> #ifdef __BIG_ENDIAN_BITFIELD
-> #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 7) //Suspecting changes here too
-> #define TC_AT_INGRESS_MASK		(1 << 6) // and here
-> #else
-> #define SKB_MONO_DELIVERY_TIME_MASK	(1 << 0)
-> #define TC_AT_INGRESS_MASK		(1 << 1) (this might have to change to 1<<2 )
+Fix this up by changing it to ksft_print_msg("%s", errmsg)
 
-This should be (1 << 2) now. Similar adjustment for the big endian.
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Bill Wendling <morbo@google.com>
+Cc: Justin Stitt <justinstitt@google.com>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Edward Liaw <edliaw@google.com>
+Cc: Carlos Llamas <cmllamas@google.com>
+Cc: kernel-team@android.com
+Cc: linux-kselftest@vger.kernel.org
+Fixes: 6d029c25b71f ("selftests/timers/posix_timers: Reimplement check_timer_distribution()")
+Signed-off-by: John Stultz <jstultz@google.com>
+---
+ tools/testing/selftests/timers/posix_timers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> #endif
-> #define SKB_BF_MONO_TC_OFFSET		offsetof(struct sk_buff, __mono_tc_offset)
-> 
-> Also i suspect i change in /selftests/bpf/prog_tests/ctx_rewrite.c
-
-ctx_rewrite.c tests the bpf ctx rewrite code. In this particular case, it tests
-the bpf_convert_tstamp_read() and bpf_convert_tstamp_write() generate the
-correct bpf instructions.
-e.g. "w11 &= 3;" is testing the following in bpf_convert_tstamp_read():
-		*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
-	 				TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK);
-
-The existing "TC_AT_INGRESS_MASK | SKB_MONO_DELIVERY_TIME_MASK" is 0x3
-and it should become 0x5 if my hand counts correctly.
-
-The patch set cannot be applied to the bpf-next:
-https://patchwork.kernel.org/project/netdevbpf/patch/20240409210547.3815806-4-quic_abchauha@quicinc.com/
-, so bpf CI cannot run to reproduce the issue.
+diff --git a/tools/testing/selftests/timers/posix_timers.c b/tools/testing/selftests/timers/posix_timers.c
+index d86a0e00711e..348f47176e0a 100644
+--- a/tools/testing/selftests/timers/posix_timers.c
++++ b/tools/testing/selftests/timers/posix_timers.c
+@@ -247,7 +247,7 @@ static int check_timer_distribution(void)
+ 		ksft_test_result_skip("check signal distribution (old kernel)\n");
+ 	return 0;
+ err:
+-	ksft_print_msg(errmsg);
++	ksft_print_msg("%s", errmsg);
+ 	return -1;
+ }
+ 
+-- 
+2.44.0.478.gd926399ef9-goog
 
 
