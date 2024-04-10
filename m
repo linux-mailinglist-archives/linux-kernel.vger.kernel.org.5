@@ -1,157 +1,130 @@
-Return-Path: <linux-kernel+bounces-138601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED75989F443
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:28:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8843C89F44D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:30:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EE5F28C890
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:28:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 416E8281FB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:30:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA4C15EFA4;
-	Wed, 10 Apr 2024 13:28:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C51A15ECDF;
+	Wed, 10 Apr 2024 13:30:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iubVYXfK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="W5q2o3oi"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9744315ADA2;
-	Wed, 10 Apr 2024 13:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223F415B153
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:30:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712755711; cv=none; b=O/M9uf7vji4Ave9amjru6NyNlQA3EDkla8qZGZQMb5iUwoYIS3kUat4RrLUZEijh9HdvxrA/LdSZgn2tH7vqus6dGqpPXt4P02Eyehr3pADBkNVuDeUszF9ijQAWDIco1g6FE4DMuhXZbTvqTB7wBzfykeUFwjGGbrIJoOn0f5s=
+	t=1712755802; cv=none; b=D3/4DX46DGr/I+hM8rFMFvOzOSMGoAiC1PyqsWb4JMiHcgnBD2CBiZRZ5eCflKvcrhniXTPOk6JmLDu8wPgHlgydeulrCnkvPX4SlQ+854PsQK9VLdal7hqYEOGIb9fSNLlEefntG4Wc4r24aN2zA5mBSbcaRhdgBrB49FpJn2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712755711; c=relaxed/simple;
-	bh=vG/etX9uFWDRMQyM96dxgcCHcoWyYgwQIb4SGb4iHUc=;
+	s=arc-20240116; t=1712755802; c=relaxed/simple;
+	bh=8zjJ6ZBa1WPpcfT5AqTQ2kfZwxMK33wI+BmE18967eA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Milf5EHTOqdLYwAyKHZTQlTSuq938u+2iRPrWIp907ZhHSVBK8dudVj1Ln19aZDvvyYa7+i72OuVNnl2wLWHHZL+tiYq1XRNemPygq2JXgu1G8ozB9f3Rx3KDIjB5uUiQEr8zuA7y8qvqkrPk63fp5tWLo3F6n6w7d5ORUSu9g4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iubVYXfK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 420B6C43390;
-	Wed, 10 Apr 2024 13:28:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712755711;
-	bh=vG/etX9uFWDRMQyM96dxgcCHcoWyYgwQIb4SGb4iHUc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=iubVYXfK6JPDhhN9TmRS0x6QzxNaToPZCeVJnHP93bzsfQkb7YaWzUGU5fvosdVlK
-	 1iYtCJ+3WmeWgXErCaKKoO8GwwKCAVsPQSeaDEZwvjhLCuOC89oo5gQpo6M/afAEAy
-	 4yeMyJV1phaU5H/syWUh2fS6hJ6AmMPbK9BuOo+0TU6FA/S11ekIIS3LR1gsLiMZaG
-	 mJvEUbFS4EnjHWHw0mmkVeePQ3ozflixNW+Mf7PgkbFPaNxs5zDRXrhRsUvsJ6qIwh
-	 nvaEhh/w7672EUsnJyENttVNo1/Exy/MsDqmdMXp6iyLxGelAPVwHWr0EhfXbeuCBH
-	 DtboMbnFmvheg==
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-22f0429c1ebso185206fac.0;
-        Wed, 10 Apr 2024 06:28:31 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUUcst/lEX0TrGqaZcggeqiPU+99cGmB4KLjRYNj6ZHx6CvmX/0iux/PHrv9BkgPQhexl4/cAYo0E0X+DFH2SO8qCqp2crdxsi365sCWaHER2kck0+6g38wJ68p4wvsVU4wZT2We0W5OpCOLe1es/4Y0h+vrO6jFdicgDUpj+xm3oC4hjBUAvc8D3wJav6dc5iwuiE/ycdF7RYhFpQjNAnJYiIh0S3CkHKextzPzsYbdHoQT1k7ZVZ9F50NXJiTN65baYuCYKMgUrhNTHSCxxLDlmL7vtAhwlgXEi7p0zvSAxOgh7W85X18LeMstJ2xREHVhvyR5CjdsUHC9hNm/xV5hPn9JnO0Bu5osE2rLGHH
-X-Gm-Message-State: AOJu0YzEIW7zi+uQ3p6nnF2pVZwTJrnvJ+NcJT5qcWoP830PtPnIukE+
-	MFAibq2RZZXmrqB0AcDGutcTJsd2vyDnkNo9oEkBzx7IKMfLSyj18pTebcrb5MZhaaedunYN+o3
-	kUeOk+d8GCg4/+1GbCQBzvGyTeUs=
-X-Google-Smtp-Source: AGHT+IFL5SftybRh1r8JWNftMLn5Ll2W8+pkIYo7YlzdluWnaIUYaO6UpMp9mGVfMWaTjUBfbyWqBLpc+8TxlkLduX4=
-X-Received: by 2002:a05:6871:a00a:b0:22d:fb4b:9d11 with SMTP id
- vp10-20020a056871a00a00b0022dfb4b9d11mr2534660oab.4.1712755710509; Wed, 10
- Apr 2024 06:28:30 -0700 (PDT)
+	 To:Cc:Content-Type; b=bV/seVG7SrJjAufl13ooQur/vK44dlO1ysG6gFFEmk/ra/lgo8c/nIwX4u+wcVs3MewnABlUEqoOtxv29E1TwjiOIxLSXcqIJ6KEbbapEEE9vFjofmHc/oEkpG4xegZi3DNyQLt5MAnV0kFSzeb3+sp1zbsQ0lrnjHHUNELneoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=W5q2o3oi; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ecec796323so6296166b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:30:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712755800; x=1713360600; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=d+ZKdreMATSwQqMGT62EKEHEgtqgyDRXS0nrvXJUw5Q=;
+        b=W5q2o3oiVaMt5b0BdkNgqIY6lWwesK7W1BG48miUOeO+UTgt1ApPjGq6IlPhyL6zUK
+         tFj/KnDBIM4aSjIdeaGi3bPZl3CqeTCf8xz5DIGb+bgvgqWYwVGlByGK74KPkcrQ6JUV
+         2XcDnmpN8aTHilMz3MeBMyirnFe732diHSJGpjn7PX4fNyFEVn/KEhPm54ovxCJiUhBI
+         axaGd7aBbbEoei6Rm4rd9MJOa+KdAvTMAGhW8eH2BxhMvq/HW1/FL0cuXpRR9WKSGRf/
+         9Q7frzsFXXe/2zJ6POPfJnxfi36fruNQajhv4lcOM6gvH/WYR4fjlSyHEU3SUvZMPOWJ
+         skTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712755800; x=1713360600;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d+ZKdreMATSwQqMGT62EKEHEgtqgyDRXS0nrvXJUw5Q=;
+        b=kgdwPVK5lT3txJgHIcgsrbzHxZ+RyGKZHY9Xh0GfTkiTeznSLAXIuLXBDu7Odj4Gue
+         SJ84jUm8QVQx7oGcc2R8JIhgv05z50l2vo5Qvjh87FZP4o44XGFrDxaqqEgLSL5ERQhq
+         vd3H+gMCV46jnCO1Y20xhWKSGoBPB3PPbCnXXX8ts6Xk692W0sUNPv3j/QpaFWIgT6xZ
+         br42JquIwDQ35xM1qrp3971eZuzSkK4t340IBZSQFgjPkDotjqRd/TzQJymf77xEpuEe
+         I/NvO28OemdwLVOrhCuopTACjiaeI2zqs8v6wNC09CviA+5YbyfBv+VKvEcEZAasIH//
+         21pw==
+X-Forwarded-Encrypted: i=1; AJvYcCWDnTXBLmDXlVQ9Yw47YJUCQdG2mjbMLI+YGmWiHtryCoz09UcgT55UMQGVknPBi980T4QgdLTxn0NwjFV9slj4f/uPFlGl926hxlNE
+X-Gm-Message-State: AOJu0YweZLTNO22Kuw2oi1Ji27hba+n24g4Yl/GiHT8bu0mxaedINYhF
+	dNfyCHEZq0gEJCIiuQk4AyIXv+B0cCO9WjaQu++QXS0vNLOCHqRUfTfkHYtNq6XBhpnzdKMpB7+
+	qQiG3LEK5O5AYHiNVo5sgaAHEFoTh4Scf3ibZUQ==
+X-Google-Smtp-Source: AGHT+IFkpir98n+iHWgeoq34noWYibeJrXfqpQ5TomXGbZcGlk3Jq5i5QFghljhQQlx6S174fWjHkA+6Y8JCP1KmxLQ=
+X-Received: by 2002:a05:6a20:3c88:b0:1a7:58ca:cdf3 with SMTP id
+ b8-20020a056a203c8800b001a758cacdf3mr3482363pzj.8.1712755800460; Wed, 10 Apr
+ 2024 06:30:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk> <E1rVDmU-0027YP-Jz@rmk-PC.armlinux.org.uk>
- <CAJZ5v0iiJpUWq5GMSnKFWQTzn_bdwoQz9m=hDaXNg4Lj_ePF4g@mail.gmail.com>
- <20240322185327.00002416@Huawei.com> <20240410134318.0000193c@huawei.com>
-In-Reply-To: <20240410134318.0000193c@huawei.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 10 Apr 2024 15:28:18 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0ggD042sfz3jDXQVDUxQZu_AWaF2ox-Me8CvFeRB8nczw@mail.gmail.com>
-Message-ID: <CAJZ5v0ggD042sfz3jDXQVDUxQZu_AWaF2ox-Me8CvFeRB8nczw@mail.gmail.com>
-Subject: Re: [PATCH RFC v4 02/15] ACPI: processor: Register all CPUs from acpi_processor_get_info()
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Russell King <rmk+kernel@armlinux.org.uk>, 
-	linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
-	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
-	James Morse <james.morse@arm.com>
+References: <20240410045417.3048209-1-quic_atulpant@quicinc.com>
+ <20240410085441.GA21455@noisy.programming.kicks-ass.net> <20240410112933.GA3190796@hu-atulpant-hyd.qualcomm.com>
+ <20240410114609.GA40213@noisy.programming.kicks-ass.net> <88144494-33f1-4f43-88c0-885ea6b87e07@redhat.com>
+In-Reply-To: <88144494-33f1-4f43-88c0-885ea6b87e07@redhat.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Wed, 10 Apr 2024 15:29:48 +0200
+Message-ID: <CAKfTPtDbXZbCR9u8+Fm1d05Z+rAnxn4sx5WXbA_aKyRD5GDzfQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/2] Disable RT-throttling for idle-inject threads
+To: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Atul Kumar Pant <quic_atulpant@quicinc.com>, mingo@redhat.com, 
+	juri.lelli@redhat.com, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, rafael@kernel.org, 
+	daniel.lezcano@linaro.org, kernel@quicinc.com, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 10, 2024 at 2:43=E2=80=AFPM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
+On Wed, 10 Apr 2024 at 14:24, Daniel Bristot de Oliveira
+<bristot@redhat.com> wrote:
 >
-> > >
-> > > > diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-> > > > index 47de0f140ba6..13d052bf13f4 100644
-> > > > --- a/drivers/base/cpu.c
-> > > > +++ b/drivers/base/cpu.c
-> > > > @@ -553,7 +553,11 @@ static void __init cpu_dev_register_generic(vo=
-id)
-> > > >  {
-> > > >         int i, ret;
-> > > >
-> > > > -       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES))
-> > > > +       /*
-> > > > +        * When ACPI is enabled, CPUs are registered via
-> > > > +        * acpi_processor_get_info().
-> > > > +        */
-> > > > +       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES) || !acpi_disabl=
-ed)
-> > > >                 return;
-> > >
-> > > Honestly, this looks like a quick hack to me and it absolutely
-> > > requires an ACK from the x86 maintainers to go anywhere.
-> > Will address this separately.
-> >
+> On 4/10/24 13:46, Peter Zijlstra wrote:
+> > Also, we'll be replacing the throttling code with DL servers 'soonish'
+> > at which point all this will stop working anyway, since DL will preempt
+> > anything FIFO, including your idle injection crud.
+
+The DL server could make things better for idle injection as it will
+let the idle RT threads running on the CPU as long as there is no cfs
+thread enqueued whereas the current rt throttling force throttling RT
+even if there is no enqueued cfs task. So as long as you have been
+able to move things on other cpus, your idle rt thread should keep
+running.
+
 >
-> So do people prefer this hack, or something along lines of the following?
+> +1
 >
-> static int __init cpu_dev_register_generic(void)
-> {
->         int i, ret =3D 0;
+> also, given that the code spins with preempt disabled, with dl server it could
+> even become a non-rt thread...
 >
->         for_each_online_cpu(i) {
->                 if (!get_cpu_device(i)) {
->                         ret =3D arch_register_cpu(i);
->                         if (ret)
->                                 pr_warn("register_cpu %d failed (%d)\n", =
-i, ret);
->                 }
->         }
->         //Probably just eat the error.
->         return 0;
-> }
-> subsys_initcall_sync(cpu_dev_register_generic);
-
-I would prefer something like the above.
-
-I actually thought that arch_register_cpu() might return something
-like -EPROBE_DEFER when it cannot determine whether or not the CPU is
-really available.
-
-Then, the ACPI processor enumeration path may take care of registering
-CPU that have not been registered so far and in the more-or-less the
-same way regardless of the architecture (modulo some arch-specific
-stuff).
-
-In the end, it should be possible to avoid changing the behavior of
-x86 and loongarch in this series.
-
-> Which may look familiar at it's effectively patch 3 from v3 which was dea=
-ling
-> with CPUs missing from DSDT (something we think doesn't happen).
+> FIFO RUNNING
+>         DL_SERVER activates
+>                 their loop
+>                         disables preemption()
+>                         run()
+>                         enable preemption()
+>         DL_SERVE throttled
+> FIFO BACK
 >
-> It might be possible to elide the arch_register_cpu() in
-> make_present() but that will mean we use different flows in this patch se=
-t
-> for the hotplug and initially present cases which is a bit messy.
+> So, there will be no need for this busy loop to be RT.
 >
-> I've tested this lightly on arm64 and x86 ACPI + DT booting and it "seems=
-" fine.
-
-Sounds promising.
-
-Thanks!
+> Anyways, it breaks RT and DL if it keeps running for too long... It can
+> also cause complaints like RCU stalls and loong wait on locks, e.g., on
+> kworkers...
+>
+> -- Daniel
+>
+>
+>
+>
+>
 
