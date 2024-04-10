@@ -1,189 +1,254 @@
-Return-Path: <linux-kernel+bounces-138316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E46989EFB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:18:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 450F789EFB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:19:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 613691C20E75
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:18:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 689121C22900
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C96FB15920F;
-	Wed, 10 Apr 2024 10:18:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aVCNWJNm"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6F9D158D94;
+	Wed, 10 Apr 2024 10:19:23 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 519E6158DC9
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6288154BF8;
+	Wed, 10 Apr 2024 10:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712744308; cv=none; b=A5dltw61X617Np98JRavTYO/KNfJLrYAPYmiir63ekyBlCWN4uaw+YsO5jsX0fNY6qT/xgB/JfzNyPKf87PVuEnsAEs49gpPcd364AGsbfYdw5mwasgQD9fMN0+z4/4buqtOfa5YiDpCBkRerJwbFcg+miy4ygbsj5Bo6hWIvC4=
+	t=1712744363; cv=none; b=j6VGhdyM9HKu/xGdXjNvp3B/N2XmKGgIB8bLSBotzd0vMnJmepdwDZk0spRVnNf1UvIYPVaQvjNfdTpssekcUTndxw3rWQ12M8Y49rcUlkQNRgqix63xKATa3GqaMqchQcyXDPk9cXoOIW+9AdhiKo/An4R5IJLgThDxwiilo50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712744308; c=relaxed/simple;
-	bh=rnIXbOwnqOQM5j1jbv3CHZoW9NXHrM7BZa2pt9AYbCs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DHxIeF23SeuoSh6N6WLK1B880rFhIsQqniEgrDU/twsdxMOG9M6Jybulm/murotI+Np1Ge25GF4iOqrZQCgLBthDEZt0tzfblA2fuSknaFd05PDRyjr7KSlZKDgTO3cRkbBlHLCN62qVLmvAoBRakkQclWKiOPm55SknEuWjWs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aVCNWJNm; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712744305;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yK1ndb0HEzjHhWCscmXGR+/VhC+xm8vRidFQegZ1QFI=;
-	b=aVCNWJNmSETy3P1cbLEF35evnI8OPt0c9V/02IvLoKLYE7L6QdNKV+n2xDljQ7lHFKbiyQ
-	yyXjeOkxyrNEP1gm0Ksu4Ygjg1xChqaRgrQBtlf1MaoQ2su068XmTgTY5Mw9s2Zh+StNWG
-	Bj7FBhOUVsysN6lYammDodTaZhxnHAc=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-85-_KLIltnQOFOEG6v6l0Vznw-1; Wed, 10 Apr 2024 06:18:23 -0400
-X-MC-Unique: _KLIltnQOFOEG6v6l0Vznw-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-56e242ec7ffso3324966a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:18:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712744302; x=1713349102;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yK1ndb0HEzjHhWCscmXGR+/VhC+xm8vRidFQegZ1QFI=;
-        b=Gw1y1ehnWjt+pisshqK1bmPWhxkl8bqHRR2KnwpoqPkYEkPAEAkea95rc8tCjiclTR
-         iMLDyhi5hEZ0UvAvkmscbIRGxmsMFEVehhDY6AKsDiTDZOWIZKFFFOj3BnyylqTZWiJ2
-         RGinKEbeVSWGnr+85etNa44jWABIAWZRzeEgp9jBE9191D1TzPPZPX4ysj6OsWJ4PVQW
-         vdNfGWSqXY8iEUwW8nqxyqIuYMVUoknX/UFINvP5tyFNqGk5tGy/vSJCzCUEYEUyWUhD
-         L/Jiz64+g8CKrTeMV3nAqkZnE0guVXFjjcdc26vBu3gVG3Q3mQPyFgQxQ3SaTl9G0Db+
-         o0sQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUtJv63jYn/wRRGfuAcsk0e/TECL0mnjCPYsBl9ymHJgyzYFoVfUlvNjvv0540pHaVeVdZb07CXQE0v3eox5aBigpzE6GthdgSWtji7
-X-Gm-Message-State: AOJu0YxV+7lKMAo1lAKQBvVain6VmeicbvZCHSbwmqFNJO0aTrBP28zv
-	XuhMHCiNjRGRwmNSU1bZL+jTNRhcyp4/xc3FCEZvx9iS6tfqBPPjeoOKPB0pb3PxaL4eZ+yecRK
-	Wx8agBk4o1KNt7tfa1vb+RwdifqiACovxUqTIOibxwi85aO56nvSmtptAyOWp2g==
-X-Received: by 2002:a50:bb03:0:b0:56e:2e62:cbec with SMTP id y3-20020a50bb03000000b0056e2e62cbecmr1386171ede.12.1712744302246;
-        Wed, 10 Apr 2024 03:18:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE13rcGio4p/46wokBP534XSQ9edk7PhKUzOKNFUJuCKCy7I0U2bBMLFIeoRzMKERPPlkBH1w==
-X-Received: by 2002:a50:bb03:0:b0:56e:2e62:cbec with SMTP id y3-20020a50bb03000000b0056e2e62cbecmr1386155ede.12.1712744301837;
-        Wed, 10 Apr 2024 03:18:21 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id b11-20020a0564021f0b00b0056e743c2d3fsm1723434edb.46.2024.04.10.03.18.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 03:18:21 -0700 (PDT)
-Message-ID: <bed0c56a-666d-4992-bb23-32b5883d51ae@redhat.com>
-Date: Wed, 10 Apr 2024 12:18:20 +0200
+	s=arc-20240116; t=1712744363; c=relaxed/simple;
+	bh=Wlt5TYwemaRDasTDIslgfyRVjbLy54/727IWt5nC2e0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CyXD6FVMjKx4F5dbBIb6YBaYzNpvX9NTKRHJqJq02WIyKwb4o/PdOIItOFfzK6qVz+3okf2CCjeRGz2BDTJdvzkcbYLpnp0XWafnvoCgLMxscWmfzDlP2M7dQ1KUThzu4qCbGNDNkbK/ZvN41zRzHqtv3UGmaN5RBwROnsbYqww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 43AAJ6oK062742;
+	Wed, 10 Apr 2024 18:19:06 +0800 (+08)
+	(envelope-from Dongliang.Cui@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4VDzJm1xS6z2MfQWC;
+	Wed, 10 Apr 2024 18:16:56 +0800 (CST)
+Received: from tj10379pcu.spreadtrum.com (10.5.32.15) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Wed, 10 Apr 2024 18:19:04 +0800
+From: Dongliang Cui <dongliang.cui@unisoc.com>
+To: <axboe@kernel.dk>
+CC: <ke.wang@unisoc.com>, <hongyu.jin.cn@gmail.com>, <niuzhiguo84@gmail.com>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <cuidongliang390@gmail.com>, Dongliang Cui <dongliang.cui@unisoc.com>
+Subject: [PATCH] block: add max_dispatch to sysfs
+Date: Wed, 10 Apr 2024 18:18:58 +0800
+Message-ID: <20240410101858.1149134-1-dongliang.cui@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] staging: media: atomisp: Fix various multiline block
- comment formatting instances
-To: Jonathan Bergh <bergh.jonathan@gmail.com>
-Cc: mchehab@kernel.org, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240227163043.112162-1-bergh.jonathan@gmail.com>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240227163043.112162-1-bergh.jonathan@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL:SHSQR01.spreadtrum.com 43AAJ6oK062742
 
-Hi Jonathan,
+The default configuration in the current code is that when the device
+is not busy, a single dispatch will attempt to pull 'nr_requests'
+requests out of the schedule queue.
 
-On 2/27/24 5:30 PM, Jonathan Bergh wrote:
-> This patch makes the following fixes:
->  * Reformats a number of multiline block comments to ensure * and */ align
->    correctly
-> 
-> Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
+I tried to track the dispatch process:
 
-Thank you for your patch.
+COMM            TYPE    SEC_START       IOPRIO       INDEX
+fio-17304       R	196798040	0x2005	     0
+fio-17306       R	197060504	0x2005	     1
+fio-17307       R	197346904	0x2005	     2
+fio-17308       R	197609400	0x2005	     3
+fio-17309       R	197873048	0x2005	     4
+fio-17310       R	198134936	0x2005	     5
+..
+fio-17237       R	197122936	  0x0	    57
+fio-17238       R	197384984	  0x0	    58
+<...>-17239     R	197647128	  0x0	    59
+fio-17240       R	197909208	  0x0	    60
+fio-17241       R	198171320	  0x0	    61
+fio-17242       R	198433432	  0x0	    62
+fio-17300       R	195744088	0x2005	     0
+fio-17301       R	196008504	0x2005	     0
 
-I have merged patches 1-2 of this series, as well as your previous
-2 separate patches and your previous 6 patch patch-series into
-my media-atomisp branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/hansg/linux.git/log/?h=media-atomisp
+The above data is calculated based on the block event trace, with each
+column containing: process name, request type, sector start address,
+IO priority.
 
-And these patches will be included in my next
-pull-request to Mauro (to media subsystem maintainer)
+The INDEX represents the order in which the requests are extracted from
+the scheduler queue during a single dispatch process.
 
-I did not merge patch 3/3 of this series since the msleep which is
-being modified there has been removed in the latest version of the code.
+Some low-speed devices cannot process these requests at once, and they will
+be requeued to hctx->dispatch and wait for the next issuance.
 
-Regards,
+There will be a problem here, when the IO priority is enabled, if you try
+to dispatch "nr_request" requests at once, the IO priority will be ignored
+from the scheduler queue and all requests will be extracted.
 
-Hans
+In this scenario, if a high priority request is inserted into the scheduler
+queue, it needs to wait for the low priority request in the hctx->dispatch
+to be processed first.
 
+--------------------dispatch 1st----------------------
+fio-17241       R       198171320         0x0       61
+fio-17242       R       198433432         0x0       62
+--------------------dispatch 2nd----------------------
+fio-17300       R       195744088       0x2005       0
 
+In certain scenarios, we hope that requests can be processed in order of io
+priority as much as possible.
 
+Maybe max_dispatch should not be a fixed value, but can be adjusted
+according to device conditions.
 
-> ---
->  .../staging/media/atomisp/pci/atomisp_v4l2.c  | 34 ++++++++++---------
->  1 file changed, 18 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-> index 547e1444ad97..77809e88da83 100644
-> --- a/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-> +++ b/drivers/staging/media/atomisp/pci/atomisp_v4l2.c
-> @@ -78,13 +78,15 @@ static char firmware_name[256];
->  module_param_string(firmware_name, firmware_name, sizeof(firmware_name), 0);
->  MODULE_PARM_DESC(firmware_name, "Firmware file name. Allows overriding the default firmware name.");
->  
-> -/*set to 16x16 since this is the amount of lines and pixels the sensor
-> -exports extra. If these are kept at the 10x8 that they were on, in yuv
-> -downscaling modes incorrect resolutions where requested to the sensor
-> -driver with strange outcomes as a result. The proper way tot do this
-> -would be to have a list of tables the specify the sensor res, mipi rec,
-> -output res, and isp output res. however since we do not have this yet,
-> -the chosen solution is the next best thing. */
-> +/*
-> + * Set to 16x16 since this is the amount of lines and pixels the sensor
-> + * exports extra. If these are kept at the 10x8 that they were on, in yuv
-> + * downscaling modes incorrect resolutions where requested to the sensor
-> + * driver with strange outcomes as a result. The proper way tot do this
-> + * would be to have a list of tables the specify the sensor res, mipi rec,
-> + * output res, and isp output res. however since we do not have this yet,
-> + * the chosen solution is the next best thing.
-> + */
->  int pad_w = 16;
->  module_param(pad_w, int, 0644);
->  MODULE_PARM_DESC(pad_w, "extra data for ISP processing");
-> @@ -507,12 +509,12 @@ static int atomisp_mrfld_pre_power_down(struct atomisp_device *isp)
->  	}
->  done:
->  	/*
-> -	* MRFLD WORKAROUND:
-> -	* before powering off IUNIT, clear the pending interrupts
-> -	* and disable the interrupt. driver should avoid writing 0
-> -	* to IIR. It could block subsequent interrupt messages.
-> -	* HW sighting:4568410.
-> -	*/
-> +	 * MRFLD WORKAROUND:
-> +	 * before powering off IUNIT, clear the pending interrupts
-> +	 * and disable the interrupt. driver should avoid writing 0
-> +	 * to IIR. It could block subsequent interrupt messages.
-> +	 * HW sighting:4568410.
-> +	 */
->  	pci_read_config_dword(pdev, PCI_INTERRUPT_CTRL, &irq);
->  	irq &= ~BIT(INTR_IER);
->  	pci_write_config_dword(pdev, PCI_INTERRUPT_CTRL, irq);
-> @@ -525,9 +527,9 @@ static int atomisp_mrfld_pre_power_down(struct atomisp_device *isp)
->  }
->  
->  /*
-> -* WA for DDR DVFS enable/disable
-> -* By default, ISP will force DDR DVFS 1600MHz before disable DVFS
-> -*/
-> + * WA for DDR DVFS enable/disable
-> + * By default, ISP will force DDR DVFS 1600MHz before disable DVFS
-> + */
->  static void punit_ddr_dvfs_enable(bool enable)
->  {
->  	int reg;
+So we give a interface to control the maximum value of single dispatch
+so that users can configure it according to devices characteristics.
+
+Signed-off-by: Dongliang Cui <dongliang.cui@unisoc.com>
+---
+ block/blk-core.c       |  1 +
+ block/blk-mq-sched.c   |  4 +++-
+ block/blk-mq.c         |  3 +++
+ block/blk-sysfs.c      | 32 ++++++++++++++++++++++++++++++++
+ include/linux/blkdev.h |  2 ++
+ 5 files changed, 41 insertions(+), 1 deletion(-)
+
+diff --git a/block/blk-core.c b/block/blk-core.c
+index de771093b526..f5a917085eae 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -442,6 +442,7 @@ struct request_queue *blk_alloc_queue(int node_id)
+ 
+ 	blk_set_default_limits(&q->limits);
+ 	q->nr_requests = BLKDEV_DEFAULT_RQ;
++	q->max_dispatch = BLKDEV_DEFAULT_RQ;
+ 
+ 	return q;
+ 
+diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+index 451a2c1f1f32..019958c0a4c3 100644
+--- a/block/blk-mq-sched.c
++++ b/block/blk-mq-sched.c
+@@ -97,7 +97,7 @@ static int __blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
+ 	if (hctx->dispatch_busy)
+ 		max_dispatch = 1;
+ 	else
+-		max_dispatch = hctx->queue->nr_requests;
++		max_dispatch = hctx->queue->max_dispatch;
+ 
+ 	do {
+ 		struct request *rq;
+@@ -454,6 +454,8 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
+ 	q->nr_requests = 2 * min_t(unsigned int, q->tag_set->queue_depth,
+ 				   BLKDEV_DEFAULT_RQ);
+ 
++	q->max_dispatch = q->nr_requests;
++
+ 	if (blk_mq_is_shared_tags(flags)) {
+ 		ret = blk_mq_init_sched_shared_tags(q);
+ 		if (ret)
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 2dc01551e27c..9c286001f429 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -4285,6 +4285,7 @@ int blk_mq_init_allocated_queue(struct blk_mq_tag_set *set,
+ 	spin_lock_init(&q->requeue_lock);
+ 
+ 	q->nr_requests = set->queue_depth;
++	q->max_dispatch = set->queue_depth;
+ 
+ 	blk_mq_init_cpu_queues(q, set->nr_hw_queues);
+ 	blk_mq_add_queue_tag_set(set, q);
+@@ -4634,6 +4635,8 @@ int blk_mq_update_nr_requests(struct request_queue *q, unsigned int nr)
+ 	}
+ 	if (!ret) {
+ 		q->nr_requests = nr;
++		if (q->max_dispatch > nr)
++			q->max_dispatch = nr;
+ 		if (blk_mq_is_shared_tags(set->flags)) {
+ 			if (q->elevator)
+ 				blk_mq_tag_update_sched_shared_tags(q);
+diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+index 6b2429cad81a..909b5f158bd3 100644
+--- a/block/blk-sysfs.c
++++ b/block/blk-sysfs.c
+@@ -100,6 +100,36 @@ queue_ra_store(struct request_queue *q, const char *page, size_t count)
+ 	return ret;
+ }
+ 
++static ssize_t queue_max_dispatch_show(struct request_queue *q, char *page)
++{
++	unsigned long max_dispatch;
++
++	if (!q->disk)
++		return -EINVAL;
++	max_dispatch = q->max_dispatch;
++	return queue_var_show(max_dispatch, page);
++}
++
++static ssize_t
++queue_max_dispatch_store(struct request_queue *q, const char *page, size_t count)
++{
++	unsigned long max_dispatch;
++	ssize_t ret;
++
++	if (!q->disk)
++		return -EINVAL;
++
++	ret = queue_var_store(&max_dispatch, page, count);
++	if (ret < 0)
++		return ret;
++
++	if (max_dispatch > q->nr_requests)
++		max_dispatch = q->nr_requests;
++
++	q->max_dispatch = max_dispatch;
++	return ret;
++}
++
+ static ssize_t queue_max_sectors_show(struct request_queue *q, char *page)
+ {
+ 	int max_sectors_kb = queue_max_sectors(q) >> 1;
+@@ -484,6 +514,7 @@ static struct queue_sysfs_entry _prefix##_entry = {	\
+ QUEUE_RW_ENTRY(queue_requests, "nr_requests");
+ QUEUE_RW_ENTRY(queue_ra, "read_ahead_kb");
+ QUEUE_RW_ENTRY(queue_max_sectors, "max_sectors_kb");
++QUEUE_RW_ENTRY(queue_max_dispatch, "max_dispatch");
+ QUEUE_RO_ENTRY(queue_max_hw_sectors, "max_hw_sectors_kb");
+ QUEUE_RO_ENTRY(queue_max_segments, "max_segments");
+ QUEUE_RO_ENTRY(queue_max_integrity_segments, "max_integrity_segments");
+@@ -614,6 +645,7 @@ QUEUE_RW_ENTRY(queue_wb_lat, "wbt_lat_usec");
+ static struct attribute *queue_attrs[] = {
+ 	&queue_ra_entry.attr,
+ 	&queue_max_hw_sectors_entry.attr,
++	&queue_max_dispatch_entry.attr,
+ 	&queue_max_sectors_entry.attr,
+ 	&queue_max_segments_entry.attr,
+ 	&queue_max_discard_segments_entry.attr,
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 99e4f5e72213..a96791b83977 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -434,6 +434,8 @@ struct request_queue {
+ 	 */
+ 	unsigned long		nr_requests;	/* Max # of requests */
+ 
++	unsigned long		max_dispatch;	/* Max # of single dispatch */
++
+ #ifdef CONFIG_BLK_INLINE_ENCRYPTION
+ 	struct blk_crypto_profile *crypto_profile;
+ 	struct kobject *crypto_kobject;
+-- 
+2.25.1
 
 
