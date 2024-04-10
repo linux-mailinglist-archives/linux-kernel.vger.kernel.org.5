@@ -1,265 +1,163 @@
-Return-Path: <linux-kernel+bounces-139102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16C9F89FE8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:32:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A71589FEF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:47:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96A131F24AC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:32:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AA111C23317
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:47:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C822A17BB36;
-	Wed, 10 Apr 2024 17:32:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5CEC184105;
+	Wed, 10 Apr 2024 17:45:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ELJtWoV/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="m3kgc7rW"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56E53EA69;
-	Wed, 10 Apr 2024 17:32:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B31021802C5;
+	Wed, 10 Apr 2024 17:44:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712770322; cv=none; b=pj8i6NTwpRz21cSvIDvWRmoi60O70T3veJQYbh3uFzlA1TziwemzhEySWKogme7pKA8MwpgTTLn1kMbqf5tgAiDgK/+V+wDJ0NB4BydfAW8tPenskKy28jnnWvpM/md6fVLMYZlbc674Zv0ToFDwAtEocRJ+pgDe+e3oMoPdkWY=
+	t=1712771101; cv=none; b=d9L2vuLc2uTZcWWkBfg7qp1ujL7dTOtofZ7dDvwbVYapA3aoscPq1GwqR3fFnirQzxD1knzlNoETIC50NGDdGRj27xMGHbXKRhl39SXH7F4GeV8N6q7IbVc5etemVrO/615fFiIVs90GBmnJaOuYlbRR2Y3i3nQG0T+AevsvNdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712770322; c=relaxed/simple;
-	bh=WLlddfp2+ZgiviFBbFbot52MremZ90azsOwdk9ybE0g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hCm79jL5wFIGzZQmVlTBqusrIwUB+GzyRWG5yHl7SuVLFU8MzOStynYju4GimAcYCY3ESue5eAB/bQ/EokkaKbDFnXNGDwH5PSR4KfAVYevLKMb3xXZruFXLYvvI/sdWOqr9FUeIsAuQNDrZlyfbDRMLOxu2/pnkwF8NjgnJpIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ELJtWoV/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CDF9C433F1;
-	Wed, 10 Apr 2024 17:32:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712770321;
-	bh=WLlddfp2+ZgiviFBbFbot52MremZ90azsOwdk9ybE0g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ELJtWoV/Y36h5tXrUe6/rj19IYt0LypzyGhqI+vvVHOeHEaQ8LCVFGgi/hhb+CMUx
-	 /sGdSD2ND5S8HGawQtQqa8HOrYlRG9o7dQ6iT7T5elxPo8+6gMC/SptqCBppGbFlZj
-	 ZRd8hv1xDoKg2jYQIPOWlg7TbgSNHSSxky30KnqjsNdZwPXVNZA0O0Xa0+44h6INtU
-	 uSFxSZvRJ+wc9JcHYl9sgf3FHYmLypmtS/ybizS77bBMKk0cmOCsr+Q/crbVo4v+Sk
-	 nyyZNSLhM+lG/zRPu+Pr4zA28EogSTPk/R9NUrhm11lryT7AshkFTjz/JzzaPLHvDK
-	 NVuOGiiL38UVg==
-Date: Wed, 10 Apr 2024 12:31:59 -0500
-From: Rob Herring <robh@kernel.org>
-To: matthew.gerlach@linux.intel.com
-Cc: bhelgaas@google.com, lpieralisi@kernel.org, kw@linux.com,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: PCI: altera: Convert to YAML
-Message-ID: <20240410173159.GA733161-robh@kernel.org>
-References: <20240405145322.3805828-1-matthew.gerlach@linux.intel.com>
+	s=arc-20240116; t=1712771101; c=relaxed/simple;
+	bh=MYZ49kfUTmA96CPgAoFfywkkTAq54Nvfjl0/Ad61t+Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sPTE7mxL9tIeXDHinFKgCMrRHrUDJB3BDJAskLhrJoCtdeCb+RxWQWPlfwB7vy9FDEeqNtFDPTQA4Xt6mH9fd8iUPC5YF7+vnOQ+ipIOCEmcHqUHE0XGzsAe8ay8V6j7gnb32LPSnxOOdw6dSJqPhP/yAc8dPkHMCTU1VzvzxVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=m3kgc7rW; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43AH7f3K030658;
+	Wed, 10 Apr 2024 17:44:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=BJcgfHWq1ewryUx+vAe2bkNgQ5hFSsCInNCGSnrsG4k=;
+ b=m3kgc7rWgxTRGnsouMF4gpEkqCnFMARnpicpmJGytmYmFFy1A3OG0sLO286qWmL0oJid
+ 31+tKZP1xWmVQr7dJTfsFaJNRSgRYZhO7WesQHB8BfbmTcvRLWpmQBjFCTrh3kqRp7dr
+ jd05SgKWUgD3wb9Ojsy6A6MaDsxVS7I+nnrQWeH6qraLCZWg2UCLnv6WEaRk48f5HdUH
+ H4kZ/iuAV1bh5aCI8aJcauHbKIv4dNcqF45ta8oJIg0fjHxTJ/KeWFZSab5J1QHsQBGX
+ q5E9X6p75zELYjZ70oFfxOdYlactMKA1/bItRuPF1m1isuwqjZ6WbaSKhwSJNzNifymn 9g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdxnrr59s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 17:44:48 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43AHfA31026191;
+	Wed, 10 Apr 2024 17:44:47 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdxnrr59p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 17:44:47 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43AGDLsm019092;
+	Wed, 10 Apr 2024 17:44:46 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbh40ef8k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 17:44:46 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43AHiexZ51249428
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Apr 2024 17:44:42 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C543320043;
+	Wed, 10 Apr 2024 17:44:40 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 982C120040;
+	Wed, 10 Apr 2024 17:44:40 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.152.224.66])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 10 Apr 2024 17:44:40 +0000 (GMT)
+Date: Wed, 10 Apr 2024 19:32:10 +0200
+From: Claudio Imbrenda <imbrenda@linux.ibm.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        Heiko
+ Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander
+ Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger
+ <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Janosch
+ Frank <frankja@linux.ibm.com>,
+        Gerald Schaefer
+ <gerald.schaefer@linux.ibm.com>,
+        Thomas Huth <thuth@redhat.com>
+Subject: Re: [PATCH v1 2/5] s390/uv: convert gmap_make_secure() to work on
+ folios
+Message-ID: <20240410193210.61f3e069@p-imbrenda>
+In-Reply-To: <67557c5b-afd8-4578-a00d-6750accc1026@redhat.com>
+References: <20240404163642.1125529-1-david@redhat.com>
+	<20240404163642.1125529-3-david@redhat.com>
+	<Zg9wNKTu4JxGXrHs@casper.infradead.org>
+	<67557c5b-afd8-4578-a00d-6750accc1026@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240405145322.3805828-1-matthew.gerlach@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Cunzjy_HxNYjM4_b2ia_0WbkCwexYEl6
+X-Proofpoint-GUID: df6pIICEe-2EkmOQDiuilxJEEgdxbzxm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ malwarescore=0 mlxlogscore=909 bulkscore=0 adultscore=0 phishscore=0
+ priorityscore=1501 mlxscore=0 spamscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404100130
 
-On Fri, Apr 05, 2024 at 09:53:22AM -0500, matthew.gerlach@linux.intel.com wrote:
-> From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+On Fri, 5 Apr 2024 09:09:30 +0200
+David Hildenbrand <david@redhat.com> wrote:
+
+> On 05.04.24 05:29, Matthew Wilcox wrote:
+> > On Thu, Apr 04, 2024 at 06:36:39PM +0200, David Hildenbrand wrote:  
+> >> +		/* We might get PTE-mapped large folios; split them first. */
+> >> +		if (folio_test_large(folio)) {
+> >> +			rc = -E2BIG;  
+> > 
+> > We agree to this point.  I just turned this into -EINVAL.
+> >   
+> >>   
+> >> +	if (rc == -E2BIG) {
+> >> +		/*
+> >> +		 * Splitting might fail with -EBUSY due to unexpected folio
+> >> +		 * references, just like make_folio_secure(). So handle it
+> >> +		 * ahead of time without the PTL being held.
+> >> +		 */
+> >> +		folio_lock(folio);
+> >> +		rc = split_folio(folio);
+> >> +		folio_unlock(folio);
+> >> +		folio_put(folio);
+> >> +	}  
+> > 
+> > Ummm ... if split_folio() succeeds, aren't we going to return 0 from
+> > this function, which will be interpreted as make_folio_secure() having
+> > succeeded?  
 > 
-> Convert the device tree bindings for the Altera Root Port PCIe controller
-> from text to YAML.
+> I assume the code would have to handle that, because it must deal with 
+> possible races that would try to convert the folio page.
 > 
-> Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> ---
-> v2:
->  - Move allOf: to bottom of file, just like example-schema is showing
->  - add constraint for reg and reg-names
->  - remove unneeded device_type
->  - drop #address-cells and #size-cells
->  - change minItems to maxItems for interrupts:
->  - change msi-parent to just "msi-parent: true"
->  - cleaned up required:
->  - make subject consistent with other commits coverting to YAML
->  - s/overt/onvert/g
-> ---
->  .../devicetree/bindings/pci/altera-pcie.txt   |  50 ---------
->  .../bindings/pci/altr,pcie-root-port.yaml     | 106 ++++++++++++++++++
->  2 files changed, 106 insertions(+), 50 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pci/altera-pcie.txt
->  create mode 100644 Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
+> But the right thing to do is
 > 
-> diff --git a/Documentation/devicetree/bindings/pci/altera-pcie.txt b/Documentation/devicetree/bindings/pci/altera-pcie.txt
-> deleted file mode 100644
-> index 816b244a221e..000000000000
-> --- a/Documentation/devicetree/bindings/pci/altera-pcie.txt
-> +++ /dev/null
-> @@ -1,50 +0,0 @@
-> -* Altera PCIe controller
-> -
-> -Required properties:
-> -- compatible :	should contain "altr,pcie-root-port-1.0" or "altr,pcie-root-port-2.0"
-> -- reg:		a list of physical base address and length for TXS and CRA.
-> -		For "altr,pcie-root-port-2.0", additional HIP base address and length.
-> -- reg-names:	must include the following entries:
-> -		"Txs": TX slave port region
-> -		"Cra": Control register access region
-> -		"Hip": Hard IP region (if "altr,pcie-root-port-2.0")
-> -- interrupts:	specifies the interrupt source of the parent interrupt
-> -		controller.  The format of the interrupt specifier depends
-> -		on the parent interrupt controller.
-> -- device_type:	must be "pci"
-> -- #address-cells:	set to <3>
-> -- #size-cells:		set to <2>
-> -- #interrupt-cells:	set to <1>
-> -- ranges:	describes the translation of addresses for root ports and
-> -		standard PCI regions.
-> -- interrupt-map-mask and interrupt-map: standard PCI properties to define the
-> -		mapping of the PCIe interface to interrupt numbers.
-> -
-> -Optional properties:
-> -- msi-parent:	Link to the hardware entity that serves as the MSI controller
-> -		for this PCIe controller.
-> -- bus-range:	PCI bus numbers covered
-> -
-> -Example
-> -	pcie_0: pcie@c00000000 {
-> -		compatible = "altr,pcie-root-port-1.0";
-> -		reg = <0xc0000000 0x20000000>,
-> -			<0xff220000 0x00004000>;
-> -		reg-names = "Txs", "Cra";
-> -		interrupt-parent = <&hps_0_arm_gic_0>;
-> -		interrupts = <0 40 4>;
-> -		interrupt-controller;
-> -		#interrupt-cells = <1>;
-> -		bus-range = <0x0 0xFF>;
-> -		device_type = "pci";
-> -		msi-parent = <&msi_to_gic_gen_0>;
-> -		#address-cells = <3>;
-> -		#size-cells = <2>;
-> -		interrupt-map-mask = <0 0 0 7>;
-> -		interrupt-map = <0 0 0 1 &pcie_0 1>,
-> -			            <0 0 0 2 &pcie_0 2>,
-> -			            <0 0 0 3 &pcie_0 3>,
-> -			            <0 0 0 4 &pcie_0 4>;
-> -		ranges = <0x82000000 0x00000000 0x00000000 0xc0000000 0x00000000 0x10000000
-> -			  0x82000000 0x00000000 0x10000000 0xd0000000 0x00000000 0x10000000>;
-> -	};
-> diff --git a/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml b/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
-> new file mode 100644
-> index 000000000000..999dcda05f55
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pci/altr,pcie-root-port.yaml
-> @@ -0,0 +1,106 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright (C) 2024, Intel Corporation
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/altr,pcie-root-port.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Altera PCIe Root Port
-> +
-> +maintainers:
-> +  - Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - altr,pcie-root-port-1.0
-> +          - altr,pcie-root-port-2.0
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  interrupt-map-mask:
-> +    items:
-> +      - const: 0
-> +      - const: 0
-> +      - const: 0
-> +      - const: 7
-> +
-> +  interrupt-map:
-> +    maxItems: 4
-> +
-> +  "#interrupt-cells":
-> +    const: 1
-
-Already defined in the common schema, drop.
-
-> +
-> +  msi-parent: true
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - device_type
-
-Drop.
-
-> +  - interrupts
-> +  - interrupt-map
-> +  - interrupt-map-mask
-> +
-> +unevaluatedProperties: false
-> +
-> +allOf:
-> +  - $ref: /schemas/pci/pci-bus.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          enum:
-> +            - altr,pcie-root-port-1.0
-> +    then:
-> +      properties:
-> +        reg:
-> +          items:
-> +            - description: TX slave port region
-> +            - description: Control register access region
-> +
-> +        reg-names:
-> +          items:
-> +            - const: Txs
-> +            - const: Cra
-> +
-> +    else:
-> +      properties:
-> +        reg:
-> +          items:
-> +            - description: Hard IP region
-> +            - description: TX slave port region
-> +            - description: Control register access region
-> +
-> +        reg-names:
-> +          items:
-> +            - const: Hip
-> +            - const: Txs
-> +            - const: Cra
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    pcie_0: pcie@c00000000 {
-> +        compatible = "altr,pcie-root-port-1.0";
-> +        reg = <0xc0000000 0x20000000>,
-> +              <0xff220000 0x00004000>;
-> +        reg-names = "Txs", "Cra";
-> +        interrupt-parent = <&hps_0_arm_gic_0>;
-> +        interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
-> +        #interrupt-cells = <1>;
-> +        bus-range = <0x0 0xff>;
-> +        device_type = "pci";
-> +        msi-parent = <&msi_to_gic_gen_0>;
-> +        #address-cells = <3>;
-> +        #size-cells = <2>;
-> +        interrupt-map-mask = <0 0 0 7>;
-> +        interrupt-map = <0 0 0 1 &pcie_intc 1>,
-> +                        <0 0 0 2 &pcie_intc 2>,
-> +                        <0 0 0 3 &pcie_intc 3>,
-> +                        <0 0 0 4 &pcie_intc 4>;
-> +        ranges = <0x82000000 0x00000000 0x00000000 0xc0000000 0x00000000 0x10000000
-> +                  0x82000000 0x00000000 0x10000000 0xd0000000 0x00000000 0x10000000>;
-> +    };
-> -- 
-> 2.34.1
+> if (!rc)
+> 	goto again;
 > 
+> after the put.
+
+yes please
+
 
