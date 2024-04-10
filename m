@@ -1,161 +1,149 @@
-Return-Path: <linux-kernel+bounces-139327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 564808A0174
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:49:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FD088A0164
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:43:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1B5A1F21E9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:49:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3EC728BDAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED46181CF8;
-	Wed, 10 Apr 2024 20:49:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202A9181CE8;
+	Wed, 10 Apr 2024 20:43:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="YO9MziK5";
-	dkim=permerror (0-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="wwvRbXhR"
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DoLxMmlR"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CD546110;
-	Wed, 10 Apr 2024 20:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.167
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712782162; cv=pass; b=uKJEdva/in5iTz2b5rMkoupJDIegAgPeDWlEeNCB/5KCIaxcke6zxhi4sut2+hW1580R3VmyxIJfdAlIEGIgZViXelOERJrZAwtrL0wTABg53kv+HFpIMNn8GCDwg107YUZhA3tzxEZ57MWqBoPrrSkd8B1pS5H73DFhlv4jNpY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712782162; c=relaxed/simple;
-	bh=JXzrQDFJA0Gu3q5+SC+IUPYAr8WcoxjCQZzQ+7wZQBE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mcIeDtxzUz0SOAmX3TFK32xNQ6tec4RbYnHI9F8Mgksxlv/6c/xp4E2i5RR347s+X6in9yB+YL2CuAzpqSLJQaEd4nkq667Pd9ngJtGJImmW21GZ1QAGM8lC6NpvpMB9zpg39j7VESBbX+vE81JsHAMl/VF6E4gPRp3d5MEPmwE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net; spf=none smtp.mailfrom=gerhold.net; dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b=YO9MziK5; dkim=permerror (0-bit key) header.d=gerhold.net header.i=@gerhold.net header.b=wwvRbXhR; arc=pass smtp.client-ip=81.169.146.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=gerhold.net
-ARC-Seal: i=1; a=rsa-sha256; t=1712781796; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=VRrGJxDdjSj0eYQRxuN/VAe1NsDhyTIqNYIPVb/8hkcWZnYnwGxexZ0epk2mcy780f
-    3SSJIC1UZjL3PqC3Nxr3kWSbHVtUk63Fr6r8g/6nk+5hKVoSm4pPkFl9AAPLPFc3K/r7
-    HycRXYASZz12w0EZyed51RmjataQ/jdEUkOsDFG7DxmEZzLUjx3AA5jVjNpdLvZCokCm
-    BX+yGmNRzqt2f68O8HhTCvYxXtDq1sATFkrLf8rERH5f+860VZRfrAhv7pqqs6wbtgLH
-    6nTf65fCAJJRkwPq8t55nppe9d7umkx+OD4i+ftXUvDOcyKvUozwakZMzBa+ru7SZE5o
-    3o1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1712781796;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Vpm3WBEjx8xKzxZVlVGQ1gTHDj3B3Wv4u8I0wkcfzI0=;
-    b=gkZyG4G9JWypkieMj5V/t4+eo+llXYW4tvAiN7h7IPfgATixUO1RCxZVE+sYVt77Rn
-    P6emEef6SGNpQ+EpdU6pFpvMN46B4el9N7kyqhPsNwBlWqfPhJXEAczpaf9+30tNdElB
-    H1I4AiSrFSDVw0m8eHRBk9TTeCYRZqnROqi1SlqmndIF475ORk57b6oKD5bQVHWcbJts
-    P3/8vD9xZFxg1Z7hnWFtFs/BwUnGin2DzAELJEoLFZuCQHgZ0h3Wylr4J7KlcV10dTVr
-    OyOd0x9Y7RdgQ8qJEhQ1XFCrmrIbaYAX27BMPvn4riZmJn6SPhi4Ed7BjgcYYliYGKi+
-    qVpw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1712781796;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Vpm3WBEjx8xKzxZVlVGQ1gTHDj3B3Wv4u8I0wkcfzI0=;
-    b=YO9MziK5sx06hRa5+VPky8b3qszJAGOvCRTCL5ckPLXoNzGda8jhI6mKbu6z37AkLi
-    ZflMD+vD53oKx/eWWu0fo+1Wi0wgWoqwico9mT+CLw9+pNbZdd3QFLHtYSMqYgt8V85f
-    1ISsBPxzrlcvvbFdWTxGhrQJHTgFidVcAwxd4Gu/y5+l5jQqOak1R0t9/b4u8Fg2uohh
-    92TWRiUJNApWb5QD/diCoKjxPcsBCBgsBWzrjkAqW6gkQZKzGmGSj6RGlFKrCZoYGlVq
-    kuji2HyeOuA3RxmWyGm49H5LsZyNaO0KXeUn6dFCrJLoXqepooHRHJ3k+jQsgNkw3xWz
-    xnFg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1712781796;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Vpm3WBEjx8xKzxZVlVGQ1gTHDj3B3Wv4u8I0wkcfzI0=;
-    b=wwvRbXhRIDqEqW6toXziGAqzIQ4rCOEOHiAbzLbwttV82qUpiQZxaYJYlrCck2s9dx
-    sDgfOmoTcDnjSPSTF+AQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA8pqN1A=="
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 50.3.2 DYNA|AUTH)
-    with ESMTPSA id Raf12503AKhFYPX
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 10 Apr 2024 22:43:15 +0200 (CEST)
-Date: Wed, 10 Apr 2024 22:43:10 +0200
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Volodymyr Babchuk <Volodymyr_Babchuk@epam.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: qcom: sa8155p-adp: use correct gpio for
- SDHC2 CD
-Message-ID: <Zhb53i8-pJhDMVZM@gerhold.net>
-References: <20240410134022.732767-1-volodymyr_babchuk@epam.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B2817F37A
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 20:43:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712781818; cv=none; b=pxQN8t/LELwQ0teGCAnU0jL3mvY+FJaREFu7EUTmXssn+aDB9dc2WOUQGEN4/gr0o6VXgWHuLdE1SHC3S43sc+wK57gV+sKpzPlk19zpHB9NRSQBaUY7G5d+PixXTg/qJ5TTEhYSjo6pSygF6hR+w1gchUj6LhiT1cCV/FbTqd4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712781818; c=relaxed/simple;
+	bh=haeE2c1uQMVwuBCh6nmKoLx0syvsO5cganYlWpRKAFo=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=LytSTIXlCZrjJbU94fhJS/UUn5dHQ9ef82jZiecIQ1NnOrFG5Jq1CMvp0aDCBifI8E4zGTzSjGmRjQweInRQFJRoHN0HmXxE+U1eDd/xuQY04zJkt2Csqx/ujs6piTNZtgUdLNRoyeMqCbNGOmOPJijw02h8hiCBz4lHpbdyRDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DoLxMmlR; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-de0b4063e59so4796665276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:43:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712781816; x=1713386616; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=K4SubXYu8kjsVJfXEh2At6iMxBrwK+80VVQTqnF6NMs=;
+        b=DoLxMmlRxqj9arQZ7eoYfdnWzW8J0AVmixqNjiiG3oQSzMGOioMmkIKAszPVstbEAa
+         /d1pqu+Q+Zcc9iUvLEf7EoST606wod6KCurrvT4gkY1qP9HaqkaukVfz/NbfgccpOrey
+         37XxLpYfGaMNqVvy4kubX8ofDT6F5f7QkmQwkmrHB02DzFINctIA8dFnGvnC1AfBbXeS
+         RIlmpAkcPVqXKBfPyp29lBncfRqxFrrTtWJM2665utW5mkE9mNbN+plZLcfprZzjGyVj
+         P8qN5xisr9vXjuDUjB/SUVXhDfHjefxSx1ddQqKfFwv5Xgfx+8C8PbweB02cMPnRzLUN
+         fiLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712781816; x=1713386616;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=K4SubXYu8kjsVJfXEh2At6iMxBrwK+80VVQTqnF6NMs=;
+        b=kbrdPBbhe+iE7Lzt7rN9y6PF/QEfKOiU+Y3eVOQpXl+aWhtTEnxbZC8h3j1XdYQDfX
+         83GELKEn9NP2VpAFtLYWW81UHfCoCz1+R66/vgGwA2N49rZxVRLufmPiS9RnrAjDofUl
+         Uu71pdA1tF9lW+rk8oujlPR85kbzojBRg8jISYqR4T7ee4YNGiv7XWEjXDfmL8B7mBSe
+         nk2TprCU7Bo68fVMSWUMdCt++FFHq9iW4G0kYcdjq+E0WkMlpku8Qb17TdfyYSS1OeNK
+         CIZoGLrwDPCIaCkumLoAJAZX0e8sNVJIINer1KWg/y+3XEcVBibCCyqvkvk+Q/uSZWA8
+         19tQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVflTlfGJgAKMhKmrIEadrXFz/Xm7uqvSu5M6pEKji5HhCE3UNsHd0qfvPwM/Nm1MVQVLyPbe4v018aoD1Lmwmxgk/FEVUm7EshcZ0y
+X-Gm-Message-State: AOJu0Yy7y5ESPfFX4AwCntucIAvvM7D3/N5tU1xDcHjpFOOaHldMDfa1
+	CpLfwTlFkYTRFWnO8jwqnFnCirqPOc+OjOQ7s1LyiCdTTeQXDUXnbqjMSx2LEGwotPIeQTq5uzC
+	9OeyA5eJZnjZ5rarSbyk3Ww==
+X-Google-Smtp-Source: AGHT+IG8XPLzn461t7HYg7HcnLuaG3TVHzRMb9P4mUgIRvjW7s/eDccTG/ZbSuOJUAz9pc1Ch9tK3cW5uAl1bxnTTA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:2b83:b0:dd9:1db5:8348 with
+ SMTP id fj3-20020a0569022b8300b00dd91db58348mr1031841ybb.8.1712781815890;
+ Wed, 10 Apr 2024 13:43:35 -0700 (PDT)
+Date: Wed, 10 Apr 2024 20:43:33 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410134022.732767-1-volodymyr_babchuk@epam.com>
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAPX5FmYC/32NQQqDMBBFryKz7pQkRqld9R7FhcZRB6wJGRFFv
+ HtTD9Dle/DfP0AoMgk8swMirSzs5wTmloEbm3kg5C4xGGWssqpAWeLswo5bLyhh4kVjY5xVj7b
+ KrSshDUOknrcr+q4TjyyLj/v1seqf/ZtbNWrMKe96WxZN11avwfthorvzH6jP8/wCoGz2orUAA AA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712781815; l=2128;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=haeE2c1uQMVwuBCh6nmKoLx0syvsO5cganYlWpRKAFo=; b=MhjGam0PtObrc68tbZTGvY4oh5Wwyx6w16vBGbchHocaRdOCwzZBBtx0op7ozZ3jmt6i7GPf0
+ AHDzHrYUreVB0COSb1VjQEFFd78V5pwZ7RkSJJY/rJb9V3oI6KkT8tN
+X-Mailer: b4 0.12.3
+Message-ID: <20240410-strncpy-xfs-split1-v2-1-7c651502bcb0@google.com>
+Subject: [PATCH v2] xfs: replace deprecated strncpy with memtostr_pad
+From: Justin Stitt <justinstitt@google.com>
+To: Chandan Babu R <chandan.babu@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>, linux-xfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-On Wed, Apr 10, 2024 at 01:41:30PM +0000, Volodymyr Babchuk wrote:
-> Card Detect pin for SHDC2 on SA8155P-ADP is connected to GPIO4 of
-> PMM8155AU_1, not to internal TLMM. This change fixes two issues at
-> once: not working ethernet (because GPIO4 is used for MAC TX) and SD
-> detection.
-> 
-> Signed-off-by: Volodymyr Babchuk <volodymyr_babchuk@epam.com>
-> ---
->  arch/arm64/boot/dts/qcom/sa8155p-adp.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sa8155p-adp.dts b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-> index 5e4287f8c8cd1..6b08ce246b78c 100644
-> --- a/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-> @@ -384,7 +384,7 @@ &remoteproc_cdsp {
->  &sdhc_2 {
->  	status = "okay";
->  
-> -	cd-gpios = <&tlmm 4 GPIO_ACTIVE_LOW>;
-> +	cd-gpios = <&pmm8155au_1_gpios 4 GPIO_ACTIVE_LOW>;
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-Good catch!
+sbp->sb_fname may not be NUL-terminated while label is expected to be.
+memtostr best describes this behavior, specifically, use the pad variant
+since we're copying out to userspace.
 
->  	pinctrl-names = "default", "sleep";
->  	pinctrl-0 = <&sdc2_on>;
->  	pinctrl-1 = <&sdc2_off>;
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
 
-These two pinctrl configure "gpio96" for "sd-cd-pins". Yet another wrong
-GPIO? Should probably drop that and add proper pinctrl for the actual
-GPIO in the PMIC. Seems like Qualcomm configured the PMIC GPIO with
-pull-up downstream [1] (not sure if this is the right file). It might be
-redundant if there is an external pull-up on the board, but only the
-schematic could tell that for sure.
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Changes in v2:
+- use memtostr_pad (thanks Kees)
+- Link to v1: https://lore.kernel.org/r/20240405-strncpy-xfs-split1-v1-1-3e3df465adb9@google.com
+---
+Note: This patch relies on the memtostr{_pad} implementation from Kees' patch:
+https://lore.kernel.org/all/20240410023155.2100422-1-keescook@chromium.org/
 
-FWIW: Looking closer at the broken commit, the regulator voltage setup
-of &sdhc_2 looks suspicious too. Typically one would want a 1.8V capable
-regulator for the vqmmc-supply to properly use ultra high-speed modes,
-but &vreg_l13c_2p96 seems to be configured with 2.504V-2.960V at the
-moment. On downstream it seems to be 1.8V-2.96V [2] (again, not sure if
-this is the right file). I would recommend re-checking this too and
-testing if UHS cards are detected correctly (if you have the board).
+Split from https://lore.kernel.org/all/20240401-strncpy-fs-xfs-xfs_ioctl-c-v1-1-02b9feb1989b@google.com/
+with feedback from Christoph H.
+---
+ fs/xfs/xfs_ioctl.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-&vreg_l17a_2p96 has the same 2.504V-2.960V, but has 2.704V-2.960V
-downstream [3]. This is close at least, might be fine as-is (but I'm not
-convinced there is a good reason to differ there).
+diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
+index d0e2cec6210d..7ed7a5d57094 100644
+--- a/fs/xfs/xfs_ioctl.c
++++ b/fs/xfs/xfs_ioctl.c
+@@ -1750,15 +1750,14 @@ xfs_ioc_getlabel(
+ 	char			__user *user_label)
+ {
+ 	struct xfs_sb		*sbp = &mp->m_sb;
++	/* 1 larger than sb_fname, for a NULL byte */
+ 	char			label[XFSLABEL_MAX + 1];
+ 
+ 	/* Paranoia */
+ 	BUILD_BUG_ON(sizeof(sbp->sb_fname) > FSLABEL_MAX);
+ 
+-	/* 1 larger than sb_fname, so this ensures a trailing NUL char */
+-	memset(label, 0, sizeof(label));
+ 	spin_lock(&mp->m_sb_lock);
+-	strncpy(label, sbp->sb_fname, XFSLABEL_MAX);
++	memtostr_pad(label, sbp->sb_fname);
+ 	spin_unlock(&mp->m_sb_lock);
+ 
+ 	if (copy_to_user(user_label, label, sizeof(label)))
 
-Thanks,
-Stephan
+---
+base-commit: c85af715cac0a951eea97393378e84bb49384734
+change-id: 20240405-strncpy-xfs-split1-a2c408b934c6
 
-[1]: https://git.codelinaro.org/clo/la/kernel/msm-4.14/-/blob/484af352989c912db8f3b6393fc090006029066f/arch/arm64/boot/dts/qcom/sa8155-pmic-overlay.dtsi#L206-214
-[2]: https://git.codelinaro.org/clo/la/kernel/msm-4.14/-/blob/484af352989c912db8f3b6393fc090006029066f/arch/arm64/boot/dts/qcom/sa8155-regulator.dtsi#L635-642
-[3]: https://git.codelinaro.org/clo/la/kernel/msm-4.14/-/blob/484af352989c912db8f3b6393fc090006029066f/arch/arm64/boot/dts/qcom/sa8155-regulator.dtsi#L363-370
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
 
