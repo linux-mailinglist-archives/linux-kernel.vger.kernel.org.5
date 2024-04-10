@@ -1,82 +1,94 @@
-Return-Path: <linux-kernel+bounces-138841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CB3789FB00
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:05:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A64489FB07
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:06:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BC501F2B4D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:05:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 563D728BF56
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:06:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 582AD16D9D6;
-	Wed, 10 Apr 2024 15:04:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A4116DEDA;
+	Wed, 10 Apr 2024 15:05:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lXUuGRA/"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SNGUDwkX"
+Received: from wfhigh3-smtp.messagingengine.com (wfhigh3-smtp.messagingengine.com [64.147.123.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47E0316D4FC;
-	Wed, 10 Apr 2024 15:04:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 953A416C877;
+	Wed, 10 Apr 2024 15:05:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712761492; cv=none; b=LVJ8lRdh5HQJzu0n6hU4Q/M3ccFY0ThOtHO9J5tw0BmGiCeEY8oGN5qWfh9mAu5SmeUQlu2QzUZVx45z7Ykd/v24xY3wcTNAo2MpKrbe+pYFMMArzIUhSeWDCXsWJg7zorH0xrS7nn0Vu56kKoMRJCZDqbcVYgxbZV9ZgZ1xXMU=
+	t=1712761558; cv=none; b=A1DlDub83agIsr1T1YkejQwXrshTqYEUXRXDltLuKLzvCkWH8UzexbygWKEu60lQ2aX7+Be/X8aWBkzxnmW2Atk/+bEi6H0BpoTcIAG2v9+a2WFU7jRUrIn7YN6uTt4hvz28bxKgmYiNF0vTo6QcjYRrJlC3/p9y05s8JBxnwZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712761492; c=relaxed/simple;
-	bh=606InkRvK/dlHpYD43cGJij0ajX9okU8yUZJCc6teXo=;
+	s=arc-20240116; t=1712761558; c=relaxed/simple;
+	bh=cUzFDAS3EbYkXdW7wC2mTAuzm+O4VDnkMYMj/YD+Qr0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dwEjBX9Ry0h79q8fn/Ti1bPgn4HWrZzG7mSdRI/IqeOJB4Cw6TSyRBL9x2VS0JXGFjnJzh3CIocJMTa+OFW8OmlhdneYyVT64vcukn/6A+SqkrUTt/J5o/CPw1XRylGILU3MlEA8Nqx3iYFo8bAIGGuewtOxZlfuGEfPlpAlxPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lXUuGRA/; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ecf3943040so4833626b3a.0;
-        Wed, 10 Apr 2024 08:04:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712761490; x=1713366290; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nFpL+4mlA3tx5oFHifIbD95lvoxumVXpRzVu2uSfsSs=;
-        b=lXUuGRA/EHwG/qL1xHBhLqCKgoeMPiVllXRxaY0pWzhSf1BpXMOw4Npfr3Vz/lq5Rg
-         bNijKcrN82QEq2kfqWdQF15YXGKpoE1SesYJdsgrOnsSLbBWCmkXNQxXP/4bSlPT377O
-         g4GdFSJ49y3v8IoirksrSpv8J+sJNI2vhUU8GPU/k5JM0qvv8sd2v9jx+PONcg+2ln/S
-         7TxRlhZ29OXyXjct1NJxrzUNnyVljGFvMBwGBis7Q6Att+FzyZFZ1jm+b1K9vA5cw0pi
-         Pv7xy8oeogosQ0hH9weYyqBOvAE4Z6Nx5M0w0uGRGFsAucXw7l8kaUBUbr5aep1Bp/1/
-         pKLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712761490; x=1713366290;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nFpL+4mlA3tx5oFHifIbD95lvoxumVXpRzVu2uSfsSs=;
-        b=GbSHA7AXBygm1bI7htCiTVOMPe7bDuW2+k3ChJfKScleNaVaty6J83p7KlwJ9gbjuO
-         b+KfNjEOfBzcBqQuStfnoZMPk7OvVUjpXhCQ8xvRupEAoJsuZfNJ3LWRMaRqyGI9GUqA
-         KkmDHJErckaKMdcdGeslbwklIubGlizYFkZlvTlHIFxb6e2MCDSxoF4s7/Xrgm5Vpbkz
-         NLVse3GtJmSo4Bo+Hv3/7ORvuaUm/uI01JurQU5fAnLx1AFwV+f4G7yPmP4l2KeD/SiX
-         jAWtMsviSNdv0fO4ab8TYpwfyHMGzyhScI1x1OmZut9OEjV2EopODDDdzzsn2cFLhDdC
-         XG8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX7Wq+8b4yfnhHGSGO//w2nGep4/m4cB+JvYCe2EtYY/OXbI+tia/Paq1Vb7f0NUE2zjnkQklLDBBXtROsFX87sFffzyKubmLwnNH+6+sMVhYwnMZG2iuxW1dWC7PiKdYllu+ILIbp2869u3pxZC0Mk6CPE68oCL1SZzoAtw8BnaJixMtP0wqtMQQU=
-X-Gm-Message-State: AOJu0YwJt+Tn16E6I3L7Y62g8ngkehY9G4ctm8/iucOUzBTUb4DRjbSB
-	d1NNPqRGG83lsrZLead9a5ME+tt2JNXWMPAWYNbmxJ4CBULwAVbM
-X-Google-Smtp-Source: AGHT+IFgprUO/jWxcLfYBYXKoWcGjoBPYkdmZChAbWrjLuVEUoTSapZCimoluIMwv3QiUah2F3Y6Gw==
-X-Received: by 2002:a05:6a20:2584:b0:1a9:5136:13ba with SMTP id k4-20020a056a20258400b001a9513613bamr3072919pzd.14.1712761490560;
-        Wed, 10 Apr 2024 08:04:50 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 77-20020a630050000000b005f3c5cf33b5sm9936799pga.37.2024.04.10.08.04.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 08:04:50 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 10 Apr 2024 08:04:49 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: Jean Delvare <jdelvare@suse.com>, Radu Sabau <radu.sabau@analog.com>,
-	linux-hwmon@vger.kernel.org, kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: repair file entry in ADP1050 HARDWARE
- MONITOR DRIVER
-Message-ID: <3c601c2d-94d5-419c-bf9f-988596365335@roeck-us.net>
-References: <20240402134203.8297-1-lukas.bulwahn@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=aaHShbInXeEJ9YENnC/6jkDq7rvwUNIbe1y4X1JmHzQ/lWQIfKxJIMQ0ZK8f9zcDnhr+7omm0Z1y7h9aeuNnUT7K5V6MvXWfqZMQP0uhjdPu63eXXQ/cyuFOplPxOOoePs5TlDwHil8hbqA4up8ObWOtja3uEUWohXirpx0ynhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org; spf=none smtp.mailfrom=idosch.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SNGUDwkX; arc=none smtp.client-ip=64.147.123.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=idosch.org
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id AF66B18000F0;
+	Wed, 10 Apr 2024 11:05:52 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 10 Apr 2024 11:05:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1712761552; x=1712847952; bh=TDGvkul+Q73nN0fHZOhTAHooDQZw
+	t3FC9x/QxxSs3zo=; b=SNGUDwkXjBq6YtQxxM3lA3GMHmXSrT2cy2J4JaBa5KHE
+	Hc+xeukLb0K8D1cZxsH4khv3vX5w4V26Ev7YwRBsBzEtfVxXcQG/DDo7Wq92YHEw
+	dcfJTEmtqnjPnc9NgFt/el+AJwp41r1btXkQrABaZ7W99StTxiXT58NBJ8p2lltD
+	iUKRp+tK1x7+tt/v5GS20dHXtRAxxLkSGlKzr4tdgJHRLM34nG7atn/SqZAqyZjE
+	Kghp5JrU2hT2wOiFqGuku2InwpV8r62JpiCDJeaLhY1qurB+4dCCtq3yEjCwQQhp
+	exn1cwQNlaGDPugyI06Ob69hDT0wm+lzpi7kihAHuA==
+X-ME-Sender: <xms:z6oWZirsV-nMSlBJ_lJHht3gSOq-1b8CG2vrEJEIev3ET7Gg5BIBhw>
+    <xme:z6oWZgpmS8OJjlntZPqhKVYsG_Ms_fMU82xVOyAvV8_0Lf8-lfkq0Hq4pN2Xy7GMZ
+    deF3Ovb49n63Gc>
+X-ME-Received: <xmr:z6oWZnPGX5nP-7JRHmiHleiBxQF-dNbP1wTCXQU8oUbIv9e_gjPq_L4IW_Kc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehiedgkedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcu
+    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
+    htvghrnhepvddufeevkeehueegfedtvdevfefgudeifeduieefgfelkeehgeelgeejjeeg
+    gefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
+    guohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:z6oWZh49-kpbe5t6iou3vs4d-1A5eJnaI5xAIu1_4gCElWtyVPM-Cw>
+    <xmx:z6oWZh6-YFeqxhU1DrfRO3jic7Oo4N5ICNItdUDiCIzLDV9VlwEIDQ>
+    <xmx:z6oWZhiDjueR4bTXrVLEOVXiuABAM3tjPYq_DnwRZaBQzewPK0MBUA>
+    <xmx:z6oWZr7yMr5pEO2Zbdcw9y9CBMvABVOix3FefIk--Aup764a9f9V1w>
+    <xmx:0KoWZumSlhW9MHX9P70o-XAB3cMSnYOwHvogsN-suiaqrMuljzfLXBGb>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 10 Apr 2024 11:05:50 -0400 (EDT)
+Date: Wed, 10 Apr 2024 18:05:47 +0300
+From: Ido Schimmel <idosch@idosch.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: aleksander.lobakin@intel.com, kuba@kernel.org, davem@davemloft.net,
+	pabeni@redhat.com, edumazet@google.com, elder@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, nbd@nbd.name,
+	sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
+	lorenzo@kernel.org, taras.chornyi@plvision.eu,
+	ath11k@lists.infradead.org, ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org, geomatsi@gmail.com,
+	kvalo@kernel.org, quic_jjohnson@quicinc.com, leon@kernel.org,
+	dennis.dalessandro@cornelisnetworks.com,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, Jiri Pirko <jiri@resnulli.us>,
+	Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH net-next v5 02/10] net: free_netdev: exit earlier if dummy
+Message-ID: <Zhaqyyk9CUaUvMDy@shredder>
+References: <20240410131407.3897251-1-leitao@debian.org>
+ <20240410131407.3897251-3-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,22 +97,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240402134203.8297-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20240410131407.3897251-3-leitao@debian.org>
 
-On Tue, Apr 02, 2024 at 03:42:03PM +0200, Lukas Bulwahn wrote:
-> Commit 4e1008d8aae5 ("dt-bindings: hwmon: pmbus: adp1050: add bindings")
-> adds the ADP1050 HARDWARE MONITOR DRIVER section, but slips in a typo in
-> its file entry.
+On Wed, Apr 10, 2024 at 06:13:43AM -0700, Breno Leitao wrote:
+> For dummy devices, exit earlier at free_netdev() instead of executing
+> the whole function. This is necessary, because dummy devices are
+> special, and shouldn't have the second part of the function executed.
 > 
-> Fortunately, ./scripts/get_maintainer.pl --self-test=patterns complains
-> about this broken reference.
+> Otherwise reg_state, which is NETREG_DUMMY, will be overwritten and
+> there will be no way to identify that this is a dummy device. Also, this
+> device do not need the final put_device(), since dummy devices are not
+> registered (through register_netdevice()), where the device reference is
+> increased (at netdev_register_kobject()/device_add()).
 > 
-> Remove the typo in ADP1050 HARDWARE MONITOR DRIVER.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-Applied.
-
-Thanks,
-Guenter
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
 
