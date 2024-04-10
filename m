@@ -1,140 +1,170 @@
-Return-Path: <linux-kernel+bounces-138299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A10F89EF7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:06:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52B1D89EF82
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:06:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1496F284E1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:06:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F1451C22468
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:06:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9757E156861;
-	Wed, 10 Apr 2024 10:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E9D3158206;
+	Wed, 10 Apr 2024 10:06:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="G03OLYCa"
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lPB1FYWV";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BGqfAdXl";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lPB1FYWV";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BGqfAdXl"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8744D59F
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:06:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91624D59F
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:06:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712743571; cv=none; b=Gjk57GTHjZ8Q7vFCLrYDn0xSw0jhlt4S9w6OzdbSIeqRd3fPEEzbDQpgrfAPq6LSuiWxHmQAtEZ2xMymAVeKRvAUqWrRhL8kXJTCyEzpFAEXD/j+FGA3ZH1+eNB8kasErb9D9rwia1mVp+DzjBSpHcBP1HIajbZinJqNQqHW6K8=
+	t=1712743582; cv=none; b=YxaqlV6keTux1BbTsaNVYbOgngAc0z76r0ec2VfTh3OATs2xY6L6REYYsUdtdAsPLMXQW15utM8lFUgpsqqUf7PErZNR2XQgRshfS08rhG5KGZyncrWVZGCSP7a6w5dBQrF+qRm1vueXtBLcJF6aJrUbLx1S406Vr3vUj8bDPwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712743571; c=relaxed/simple;
-	bh=j7jhjPXzHWwRadactMkVoJM5y4LJns+b5jjXbm6w+Hk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=gQe6hpgYrxHoMoSO1f+3o7/gc2TnzQ7Qc61XHZXhwsY3Y1wmgS20xZQnUlV4bqaca1RACyNMXhJeQtkcvhEqDPlBEVYl9vZC7Q0Q2xqqIQwX3NXqjMU3SyBff9H98n0vJ8oWeEbhMeGu7TZIOS0QfVo/Kv5GsW7TJi/CNDPt0Aw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=G03OLYCa; arc=none smtp.client-ip=209.85.216.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2a5ef566c7aso100896a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:06:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712743569; x=1713348369; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=T1LpKFL+yI+IpX+c47vgJ/x998fTDNJ7BUtB4SB1yXE=;
-        b=G03OLYCabSasZG4X0lQPnSwxyswsZ5dXyZ1vMfV2pfL64kL2NSTIHSIcBW3nEXK69W
-         edCg2jhxwSwDUYpmW03kpPh6lUkH+mlBYTVi4BnAcOoSXJgTR/9sIeIG2EOybpFvXapM
-         UkTE+DUXtWQAE14Ov4oKzLmhn1NbM58cRqn8s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712743569; x=1713348369;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T1LpKFL+yI+IpX+c47vgJ/x998fTDNJ7BUtB4SB1yXE=;
-        b=QfMDF+DC1mIuuRiTgYChvegg+WCWxqQYT76UangaeCjq8cCXqhLNp4Kna6flA+dGTo
-         j8nVDnEHQ1qOsIXY15q3sDnjFV075q7rQNTLprn5NwAQw1a+kQMm+j4aHiYpId+MW8Vb
-         Vs5TFUk0CLry5faIQrgalmK81xzQbTN1h/ZmhwOEv1LxHrsrSGAJ10eGpTLwC0dwHcLL
-         M+KAwwpaTS3CEqVkfSvuqh8wcGxIjE87dK7U3CZr6vk2cIfZ+QCQNJyP5GLHjlTFPqGL
-         VR7NgsAOtsOAnPWXvgx3ZsSjs6+jthfoM0p5HlX9MMsDYgoMOrcV1/LwgX121xhXBtSj
-         qY+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUVUII9sx3LBYW7yMH9hGSRiZJ1zoVdHqSXjQo3i10Z3EMfm7DBghmx++u/30bfOl/mKao703yvgtzVN+xrRI4jVZwjhE4Va1IEqvLX
-X-Gm-Message-State: AOJu0YxY8Jay/I2Zi+qi+gfTB9330H14+N1J+rSYlRueA91V8KV01AmK
-	u1Kkba8IKGAyyRbtyf/MkMwPgWEv3blYAL8R4u3E0+vtDvrit1y1IxYd/TZbJw==
-X-Google-Smtp-Source: AGHT+IEgWW/yvuflbCPPd3wcdtqJfAQHQgU5ksKHqoN0JvvBwSkc10gWcYuN/ly4S2nYghQ9sKh4yg==
-X-Received: by 2002:a17:90a:e514:b0:2a2:672f:ef66 with SMTP id t20-20020a17090ae51400b002a2672fef66mr1861559pjy.7.1712743569253;
-        Wed, 10 Apr 2024 03:06:09 -0700 (PDT)
-Received: from yuanhsinte1.c.googlers.com (88.216.124.34.bc.googleusercontent.com. [34.124.216.88])
-        by smtp.gmail.com with ESMTPSA id a11-20020a17090a740b00b002a4ce78e3e8sm1014434pjg.35.2024.04.10.03.06.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 03:06:08 -0700 (PDT)
-From: Hsin-Te Yuan <yuanhsinte@chromium.org>
-Date: Wed, 10 Apr 2024 10:06:04 +0000
-Subject: [PATCH] thermal/drivers/mediatek/lvts_thermal: Add coeff for
- mt8192
+	s=arc-20240116; t=1712743582; c=relaxed/simple;
+	bh=ICCVsvv1oFh7Mpy2AZgqS3nTixbRpJsflLizmXA3ZkE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YDerB4VrVHAbl2crc93XcoVRegQeX1zJLW334t3FksL4vGsz5L8MzhWZ1tpFR7cgToJ2zbefGuDjsKBkODhJKbNJ48GbtZycogFAipuGlsVWLr6gXJBz+ilxqt7Kfu7InRI6Sv68aYAWaj+u1/7dVBR0285lvRjiVh/+9T253UU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lPB1FYWV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BGqfAdXl; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lPB1FYWV; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BGqfAdXl; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CAACE5CA2C;
+	Wed, 10 Apr 2024 10:06:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712743577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4TpUgcWW5x0vb4JdI1qMHUTdMa7eR+Z/vXiUTvIkUX8=;
+	b=lPB1FYWVxPMycAN8jS+EPKYsLaR0LuMfBUqgvQ/+sDdU2UMR7/CDXktQ+WvkD86V5ezca/
+	1JrY9pvYxiwSjB3R1hwJiZmlTMFh39JmC4WLYEPmVmZpbZehT6AMh0OtWgU3C+4X3l0nbv
+	pGymrKLOHMKxPDKqPLX6dX1G6WS0xBU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712743577;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4TpUgcWW5x0vb4JdI1qMHUTdMa7eR+Z/vXiUTvIkUX8=;
+	b=BGqfAdXlNIhgRpo6x/D1j1Z1wF1oFhMcxl69GYYP+zJMTIch16TkOFPq9k7CvGYyckNRSH
+	gfGCTXLUSj9z24Cg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712743577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4TpUgcWW5x0vb4JdI1qMHUTdMa7eR+Z/vXiUTvIkUX8=;
+	b=lPB1FYWVxPMycAN8jS+EPKYsLaR0LuMfBUqgvQ/+sDdU2UMR7/CDXktQ+WvkD86V5ezca/
+	1JrY9pvYxiwSjB3R1hwJiZmlTMFh39JmC4WLYEPmVmZpbZehT6AMh0OtWgU3C+4X3l0nbv
+	pGymrKLOHMKxPDKqPLX6dX1G6WS0xBU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712743577;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4TpUgcWW5x0vb4JdI1qMHUTdMa7eR+Z/vXiUTvIkUX8=;
+	b=BGqfAdXlNIhgRpo6x/D1j1Z1wF1oFhMcxl69GYYP+zJMTIch16TkOFPq9k7CvGYyckNRSH
+	gfGCTXLUSj9z24Cg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B69AE13A92;
+	Wed, 10 Apr 2024 10:06:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id qxcfK5lkFmYmaAAAn2gu4w
+	(envelope-from <dwagner@suse.de>); Wed, 10 Apr 2024 10:06:17 +0000
+Date: Wed, 10 Apr 2024 12:06:17 +0200
+From: Daniel Wagner <dwagner@suse.de>
+To: Sagi Grimberg <sagi@grimberg.me>
+Cc: Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>, 
+	James Smart <james.smart@broadcom.com>, Hannes Reinecke <hare@suse.de>, linux-nvme@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/6] nvme-tcp: short-circuit reconnect retries
+Message-ID: <ejsaj5wnhlukb5rbjtnxh7vxpakcd62ee5cimb35mcvv7jqxod@5cnmbyfmnnwn>
+References: <20240409093510.12321-1-dwagner@suse.de>
+ <20240409093510.12321-4-dwagner@suse.de>
+ <91c49412-4251-4e13-80df-9148208aeac7@grimberg.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240410-lvts_thermal-v1-1-ee50b29c1756@chromium.org>
-X-B4-Tracking: v=1; b=H4sIAItkFmYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDE0MD3ZyykuL4kozUotzEHF3jFGMzUwsT88TktDQloJaCotS0zAqwcdG
- xtbUAtac9M14AAAA=
-To: "Rafael J. Wysocki" <rafael@kernel.org>, 
- Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
- Lukasz Luba <lukasz.luba@arm.com>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>, 
- =?utf-8?q?Bernhard_Rosenkr=C3=A4nzer?= <bero@baylibre.com>, 
- Balsam CHIHI <bchihi@baylibre.com>
-Cc: Alexandre Mergnat <amergnat@baylibre.com>, linux-pm@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-mediatek@lists.infradead.org, Hsin-Te Yuan <yuanhsinte@chromium.org>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <91c49412-4251-4e13-80df-9148208aeac7@grimberg.me>
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
 
-In order for lvts_raw_to_temp to function properly on mt8192,
-temperature coefficients for mt8192 need to be added.
+On Tue, Apr 09, 2024 at 11:40:03PM +0300, Sagi Grimberg wrote:
+> > +/*
+> > + * Evaluate the status information returned by the LLDD
+> 
+> We usually say transport, less so LLDD.
 
-Fixes: 288732242db4 ("thermal/drivers/mediatek/lvts_thermal: Add mt8192 support")
-Signed-off-by: Hsin-Te Yuan <yuanhsinte@chromium.org>
----
- drivers/thermal/mediatek/lvts_thermal.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Updated the documentation accordingly.
 
-diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
-index fd4bd650c77a6..6d226c3e135ca 100644
---- a/drivers/thermal/mediatek/lvts_thermal.c
-+++ b/drivers/thermal/mediatek/lvts_thermal.c
-@@ -80,6 +80,8 @@
- #define LVTS_SENSOR_MAX				4
- #define LVTS_GOLDEN_TEMP_MAX		62
- #define LVTS_GOLDEN_TEMP_DEFAULT	50
-+#define LVTS_COEFF_A_MT8192			-250460
-+#define LVTS_COEFF_B_MT8192			250460
- #define LVTS_COEFF_A_MT8195			-250460
- #define LVTS_COEFF_B_MT8195			250460
- #define LVTS_COEFF_A_MT7988			-204650
-@@ -1530,11 +1532,15 @@ static const struct lvts_data mt7988_lvts_ap_data = {
- static const struct lvts_data mt8192_lvts_mcu_data = {
- 	.lvts_ctrl	= mt8192_lvts_mcu_data_ctrl,
- 	.num_lvts_ctrl	= ARRAY_SIZE(mt8192_lvts_mcu_data_ctrl),
-+	.temp_factor	= LVTS_COEFF_A_MT8192,
-+	.temp_offset	= LVTS_COEFF_B_MT8192,
- };
- 
- static const struct lvts_data mt8192_lvts_ap_data = {
- 	.lvts_ctrl	= mt8192_lvts_ap_data_ctrl,
- 	.num_lvts_ctrl	= ARRAY_SIZE(mt8192_lvts_ap_data_ctrl),
-+	.temp_factor	= LVTS_COEFF_A_MT8192,
-+	.temp_offset	= LVTS_COEFF_B_MT8192,
- };
- 
- static const struct lvts_data mt8195_lvts_mcu_data = {
+> > + * 1) The LLDD reports an negative status. There was an error (e.g. no
+> > + *    memory) on the host side and thus abort the operation.
+> > + *    Note, there are exception such as ENOTCONN which is
+> > + *    not an internal driver error, thus we filter these errors
+> > + *    out and retry later.
+>
+> What is this ENOTCONN here? From what I see its just a random
+> escape value to bypass the status check. I think that 0 would do the same
+> wouldn't it?
 
----
-base-commit: 20cb38a7af88dc40095da7c2c9094da3873fea23
-change-id: 20240410-lvts_thermal-3d365847acff
+ENOTCONN is issued by the reset handler. Sure, 0 will work as well, so
+if the consense is that the reset handler should do that. see below.
 
-Best regards,
--- 
-Hsin-Te Yuan <yuanhsinte@chromium.org>
+> > -	if (nvmf_should_reconnect(ctrl)) {
+> > +	if (recon && nvmf_should_reconnect(ctrl)) {
+> 
+> its weird to have a condition that checks _and_ condition
+> of two different "should reconnect" conditions.
+> 
+> Why don't we simply pass the status to nvmf_should_reconnect()
+> and evaluate there?
 
+Sure, makes sense.
+
+> >   static void nvme_tcp_error_recovery_work(struct work_struct *work)
+> > @@ -2295,7 +2300,7 @@ static void nvme_tcp_error_recovery_work(struct work_struct *work)
+> >   		return;
+> >   	}
+> > -	nvme_tcp_reconnect_or_remove(ctrl);
+> > +	nvme_tcp_reconnect_or_remove(ctrl, -ENOTCONN);
+
+Here is the source of ENOTCONN.
 
