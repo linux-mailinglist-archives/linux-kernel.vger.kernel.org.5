@@ -1,128 +1,156 @@
-Return-Path: <linux-kernel+bounces-139125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D7AF89FEF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:46:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 691ED89FC99
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:13:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29E091F24063
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:46:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 967E81C220B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:13:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1B70181D17;
-	Wed, 10 Apr 2024 17:45:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C70317967B;
+	Wed, 10 Apr 2024 16:13:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="UG3RqXFW"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jT74nrU5"
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5BC417F375;
-	Wed, 10 Apr 2024 17:44:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165CF15F3F1;
+	Wed, 10 Apr 2024 16:13:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712771099; cv=none; b=QJN2Vmxwj4JsJMNnO8zT2LrjqqpwIT8STtNtSOLpGQ/BzHv+rJ9DGwp/dZkVFb/2k9MMcCxNEJkdL0zZB++uITCTHP1WrmeKKmuz2a1IfJ3np9RWNtBPNi3vvRvAlhhCIeo66dtrlEMOdhj6O8kSNhJO4gDWuewmhBH55PNpezs=
+	t=1712765587; cv=none; b=hx3BqmpWQrjYKu/HZurU1oisDOA8IIB35A49wyPiln0IWzRnE1A6j20BrQasnj6rsfpmTFb6YK2xZ//Q6ESJ/ZbRHmNOI+7Y6X462BwawVoYN2Zg/+bpv+JUb3MRUN8nHgq2jqTXdzT3CzFp4N4X0rQ/Nw644ZGLVnKG4tx452c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712771099; c=relaxed/simple;
-	bh=jZ42qBAOVfXfjDC/gxg6TKm2g0q8hkME0qL1SccI63w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aYMqPjvUfOpk3eEEKGCZuTjzYerF+ydnt61Xqzvimb3GVT1UrNrLsQIA63ZW/ag3FyePWp7/mWBsQmBHdbmg7c/tJgCFe2K1NQSJrt/5iwX7+TO1lNccuK4wwCoRnUdWymDqmP+xVDDU1CE65ilmAWPUAtg42jQWRnCpWx9Vbz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=UG3RqXFW reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
- id 2915b8068ed30433; Wed, 10 Apr 2024 19:44:55 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 37C9C66C66F;
-	Wed, 10 Apr 2024 19:44:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1712771095;
-	bh=jZ42qBAOVfXfjDC/gxg6TKm2g0q8hkME0qL1SccI63w=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=UG3RqXFWFOLKMOX4IoF4HNLP+dfdQ3sRfdSrc3uSmyDXCP+4JLt5RUtS8vDFcgWBG
-	 Oz0Y0+qCWK3W+jMJHeChNUL8uiMwvr/lxzbVFmf5jowd2EQhXHFc+bVILc/Szv7PDa
-	 w0c8tjyL4TyRR7kOs3oEAx8XD2HwwyzNuWq+/lTIBi2V2R5zrFpQuykzs1o3Wal2+T
-	 npZ6Iubb828hRYBbalL8unut4mSK3ZDPtUp99mWqNTG4O3IQzsPVA0nawSvpZUD0Zo
-	 Pgiy5vJSs7Tnp0RP3xtdo73VgfRziAuw7qFdYPcAeq/icdyiOaMc/HhaWGjBXnt+RQ
-	 MWGiSU74t7PRQ==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Lukasz Luba <lukasz.luba@arm.com>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject:
- [PATCH v1 07/16] thermal: gov_power_allocator: Eliminate a redundant variable
-Date: Wed, 10 Apr 2024 18:12:45 +0200
-Message-ID: <1913649.CQOukoFCf9@kreacher>
-In-Reply-To: <13515747.uLZWGnKmhe@kreacher>
-References: <13515747.uLZWGnKmhe@kreacher>
+	s=arc-20240116; t=1712765587; c=relaxed/simple;
+	bh=FQCYN6IqaR3axpJN1TW2Hx67diOfXeWRYKQJ0xq71j4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rOY4hX9uQ1zM6/UhSobL9s8gbc9hyM8KgrGTz2n6PFisi/+RG0OHjWw41hH4plMRNKXJpTvCKnI/t5bXNbUrDZzEx0h9WZ4LXP14L/EOzU7caKlvOGs9RQtSbtcBaz921Ra69+qs542WPFI8lSC2HMe82d2sNQSRbfhk3Upf3oM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jT74nrU5; arc=none smtp.client-ip=209.85.161.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5a7d6bc81c6so4898648eaf.2;
+        Wed, 10 Apr 2024 09:13:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712765585; x=1713370385; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WD4ah+6AHBgHczyWQvPumlZfTe3vXiDmawFaF5dvJH8=;
+        b=jT74nrU5aAw3ghIC9lGCLYli1VrbQGslVxGGOAkluTme6oQEVmgyVEmNtfikDL5+RX
+         xohRC5YJ1zjmNG83GYfD444tBOC/mEsOZyq7MPWhtDIiJwrLOk/6oY5gnR1uy3CMfOsx
+         s0c6XwglrY08Fkk6fmqB55lC4ISJu+UF5irtOgMvl5hKKhWCXg/k6mcUvsP8y4b5W9gn
+         OS+HbbHoY0cFs704UboPGKaLeSnzALW5VrVQX0UXjzzHMRuc2twvnqEp0Iw3WT+uvGM4
+         2Qhv5ZGWKM7l/AKKnNNaygr4+BCP77qOHrYhGIaBV/glrVP5Q7JGLYbpxFrZbzbffAnq
+         08hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712765585; x=1713370385;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WD4ah+6AHBgHczyWQvPumlZfTe3vXiDmawFaF5dvJH8=;
+        b=iDbnv2+rH5x3Qzamwm5+XnMcvMZJ5QVax4MqRB3a+qLvqMwtQAyxfXNyBYyRAcl1UC
+         CbH+tUvEKGfSfAZHxkQlalUNkSj+ykQJWAU5WnrV3pn+3BKu2+daprR3OsO9Nd3+SzuM
+         PZPO1mUJcHtEureYD6b8k+wS9a30qJ0Eeh20xLoxsA4MAM2nDHO87aPQYNn5MiBF06OT
+         ALMLyYOvuAPF14eG9lDTr5LZQb7u50nHMniIKZoCfAxkqW8D7Z8c9qI71msikQP76c6V
+         Rmd2EV+OeVm3+8t3efzXygjTukYSc2XdgPjUvWaC0z7+qQmuh5ot29Bz4EJ+54D26cR9
+         AEEg==
+X-Forwarded-Encrypted: i=1; AJvYcCVRKf4WAtsbd2uCrwznmeET3ztLApvt1nufKJcY0AVIe6c0lrglFL7CXM/fnLRMXss2fmqUOd8+B7gtBZFHKrHMPAScvPIHqsuAQddp
+X-Gm-Message-State: AOJu0YwyyAkCbYUxIqAF/kgLrjoj6Sy5ZPb85woF0l+zthTKTGStZ4Ha
+	dQNkbV2tE4hLqdbykAN0kt0n2k3cgx9zZanoIelFmB9NMZvQ0eUN
+X-Google-Smtp-Source: AGHT+IG8kseDukhMLLg4zaEnxqa7XZcV89fTCiN8y3vTuHgCKPjxUjwFtcJutGdwfyAsrnnkZ4P62A==
+X-Received: by 2002:a05:6871:7801:b0:22a:582a:9bcc with SMTP id oy1-20020a056871780100b0022a582a9bccmr3234482oac.53.1712765585061;
+        Wed, 10 Apr 2024 09:13:05 -0700 (PDT)
+Received: from [192.168.20.112] (76-251-167-31.lightspeed.austtx.sbcglobal.net. [76.251.167.31])
+        by smtp.gmail.com with ESMTPSA id vq10-20020a056871a08a00b0022eac68988esm3172220oab.20.2024.04.10.09.13.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 09:13:04 -0700 (PDT)
+Message-ID: <037179a4-5e7e-47cf-b0c2-ed6035df6041@gmail.com>
+Date: Wed, 10 Apr 2024 11:13:03 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudehiedguddugecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtohepshhr
- ihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
-
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-Notice that the passive field in struct thermal_zone_device is not
-used by the Power Allocator governor itself and so the ordering of
-its updates with respect to allow_maximum_power() or allocate_power()
-does not matter.
-
-Accordingly, make power_allocator_manage() update that field right
-before returning, which allows the current value of it to be passed
-directly to allow_maximum_power() without using the additional update
-variable that can be dropped.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/thermal/gov_power_allocator.c |    9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-Index: linux-pm/drivers/thermal/gov_power_allocator.c
-===================================================================
---- linux-pm.orig/drivers/thermal/gov_power_allocator.c
-+++ linux-pm/drivers/thermal/gov_power_allocator.c
-@@ -747,21 +747,18 @@ static void power_allocator_manage(struc
- {
- 	struct power_allocator_params *params = tz->governor_data;
- 	const struct thermal_trip *trip = params->trip_switch_on;
--	bool update;
- 
- 	lockdep_assert_held(&tz->lock);
- 
- 	if (trip && tz->temperature < trip->temperature) {
--		update = tz->passive;
--		tz->passive = 0;
- 		reset_pid_controller(params);
--		allow_maximum_power(tz, update);
-+		allow_maximum_power(tz, tz->passive);
-+		tz->passive = 0;
- 		return;
- 	}
- 
--	tz->passive = 1;
--
- 	allocate_power(tz, params->trip_max->temperature);
-+	tz->passive = 1;
- }
- 
- static struct thermal_governor thermal_gov_power_allocator = {
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] PCI: Add a quirk for preventing D3 on a bridge
+To: Mario Limonciello <mario.limonciello@amd.com>,
+ Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Eric Heintzmann <heintzmann.eric@free.fr>,
+ Mika Westerberg <mika.westerberg@linux.intel.com>
+References: <20240307163709.323-1-mario.limonciello@amd.com>
+Content-Language: en-US
+From: Mario Limonciello <superm1@gmail.com>
+In-Reply-To: <20240307163709.323-1-mario.limonciello@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
 
+On 3/7/24 10:37, Mario Limonciello wrote:
+> Hewlett-Packard HP Pavilion 17 Notebook PC/1972 is an Intel Ivy Bridge
+> system with a muxless AMD Radeon dGPU.  Attempting to use the dGPU fails
+> with the following sequence:
+> 
+> ```
+> ACPI Error: Aborting method \AMD3._ON due to previous error (AE_AML_LOOP_TIMEOUT) (20230628/psparse-529)
+> radeon 0000:01:00.0: not ready 1023ms after resume; waiting
+> radeon 0000:01:00.0: not ready 2047ms after resume; waiting
+> radeon 0000:01:00.0: not ready 4095ms after resume; waiting
+> radeon 0000:01:00.0: not ready 8191ms after resume; waiting
+> radeon 0000:01:00.0: not ready 16383ms after resume; waiting
+> radeon 0000:01:00.0: not ready 32767ms after resume; waiting
+> radeon 0000:01:00.0: not ready 65535ms after resume; giving up
+> radeon 0000:01:00.0: Unable to change power state from D3cold to D0, device inaccessible
+> radeon 0000:01:00.0: Unable to change power state from D3cold to D0, device inaccessible
+> ```
+> 
+> The issue is that the root port the dGPU is connected to can't handle
+> the transition from D3cold to D0 so the dGPU can't properly exit runpm.
+> 
+> The existing logic in pci_bridge_d3_possible() checks for systems that
+> are newer than 2015 to decide that D3 is safe.  This would nominally work
+> for an Ivy Bridge system (which was discontinued in 2015), but this system
+> appears to have continued to receive BIOS updates until 2017 and so this
+> existing logic doesn't appropriately capture it.
+> 
+> Add the system to bridge_d3_blacklist to prevent port pm from being used.
+> 
+> Reported-and-tested-by: Eric Heintzmann <heintzmann.eric@free.fr>
+> Closes: https://gitlab.freedesktop.org/drm/amd/-/issues/3229
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+>   drivers/pci/pci.c | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index c3585229c12a..9d5d08a420f1 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -3102,6 +3102,18 @@ static const struct dmi_system_id bridge_d3_blacklist[] = {
+>   			DMI_MATCH(DMI_BOARD_VERSION, "Continental Z2"),
+>   		},
+>   	},
+> +	{
+> +		/*
+> +		 * Changing power state of root port dGPU is connected fails
+> +		 * https://gitlab.freedesktop.org/drm/amd/-/issues/3229
+> +		 */
+> +		.ident = "Hewlett-Packard HP Pavilion 17 Notebook PC/1972",
+> +		.matches = {
+> +			DMI_MATCH(DMI_BOARD_VENDOR, "Hewlett-Packard"),
+> +			DMI_MATCH(DMI_BOARD_NAME, "1972"),
+> +			DMI_MATCH(DMI_BOARD_VERSION, "95.33"),
+> +		},
+> +	},
+>   #endif
+>   	{ }
+>   };
+
+Bjorn,
+
+Ping on this quirk.
 
