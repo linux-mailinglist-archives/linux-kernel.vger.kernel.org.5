@@ -1,209 +1,165 @@
-Return-Path: <linux-kernel+bounces-138329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9C6989EFDA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:31:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E4E989EFDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:32:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09708B22414
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:31:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E0AD1C21094
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:32:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D66515920E;
-	Wed, 10 Apr 2024 10:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8678B159214;
+	Wed, 10 Apr 2024 10:32:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="UDXT/o2A"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KzalsUOm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182B1158A24
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:31:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5DC8C157;
+	Wed, 10 Apr 2024 10:32:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712745103; cv=none; b=H0/micDX/rY8pLxUochamONextbHanvyYZpmzb33tNdHhpnzlOTWmLB/WP9+5/5+z06EBzYoTnUKOk+R5qMKpTNfpX1JCjsdGdxSLR8wmN/GUYsbvwXWku4BtKEuDfHOeNJdYyjhEgx14U1lJuYhljyO3R7/ph2gP4s9hmzqYv8=
+	t=1712745125; cv=none; b=ZmKKzlG500g2ZsSrP94U/Va4UL+nuToYgUC0nRO/26hP7wHG7qKXLaeRlF3vIIUuci92GjEeltOxy8iHpMjYTIuQ8NSHvWrnxp7fveKi8XqJ0t6tIelxQ/8ZYtALFtQVEtoI4IcpYG1LXb7PRAWfxjBknJxcBRpDELVya8Uv6W0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712745103; c=relaxed/simple;
-	bh=iICQtskbqMFkYw9gL5hU6mYX2XOrlY3PR/l9E6BwGyU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gZ8elo2ZtooC52k1EUJrY8gfpIrvOZDca/qdS+MIC1DYelUsSUGyvRw9v6J1LerasjWr6GOmN6vm3nzId7e0k0rx+Ev+yUYZxAofwNJYP5YyWnys5DUqAGJeUa6V7tPhXehlk/ojgP8daCTkLBceFkj/gFnIEsMj99iupY81HvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=UDXT/o2A; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a450bedffdfso917171866b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1712745098; x=1713349898; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=t2cJahpKiT81XBZYJgPZW1e7iLd0A/fWtraJwcFfugY=;
-        b=UDXT/o2Ajx8xJci7Yf+lU/BsCoqxGHu8Ud7S0dHzAcGm+IsCAJ5gG20amNlDmfAbxS
-         ng699kaPhnx419p4otsXbI//P/GBJk5Rz8bp6M9Jb8hiKmmkXlS2tDaiv56lBFHIIQQu
-         j2t3fdJsWVgI9ZQqB5+xTYhx8KoCIudXeSYKJWfv5nbMbVMfmx/9gCtMrjpbqKI1rux3
-         LPPH6PG2yGYh61nfTSjWJ92mFSytcSXXnwPSg9ncsqob5KkUIBfAl5xcfqtf1DIOeEwf
-         W9DUBtQD+Ugc3IC3jEPBR6DymRqmySOruqFutuxLwKJlmDSiflUtNZm6HtLn0ZQAv3gz
-         QqBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712745098; x=1713349898;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=t2cJahpKiT81XBZYJgPZW1e7iLd0A/fWtraJwcFfugY=;
-        b=SRX1d9tCslh8eJQPX/FtLd7A5jvKu/63+i8hlG/QMSQMRHhISCg5KQ7+88SA1JU8cB
-         NlGp+VwCWybL0sRoGxPM4zbjfmJRsz2GdaffDqpzWfOJr1E3u5xHoZuBRBGxSg13+TsW
-         /PJOzazSKzjCNmOdV+bdeUB7m6bnCOENge9A9/fBVTAnkdxQV0juzPAxezqzOf18VjzK
-         NQHIZzOYMJbMAVufcHav9Akg1nM2dwXRrYhzvifJt0YR5DzMKGFjU+K4Sy+gAy4ih0A0
-         Pv9R3cBWyAlUh0nWwpvBZ9i0Bn3cVHRCqZIpR0X2r02LA48PCpCAgrK0U0I+lGite8NS
-         TVVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX2ISadz4IpNSXN9VicJEZdGrcD0NGfXIPeT7uJXxb/CZKIed7LDVr543wcwzOVVD+hh8Vi81pWCLm085z8yi/14CXp7bMLbCOTPtXp
-X-Gm-Message-State: AOJu0YxPZo4HGz04X5B52qidXg6edPDPj4CCPeJeU5bN0md0FOXe8OpT
-	YPx0s8KeJcGvAci97ivYCVhi8yWmriWhRynKnD3w/Ke6mjzR3OOSxuPcbL3B4Zg=
-X-Google-Smtp-Source: AGHT+IGXgc4szc6/2H8e3NH8Atr59PVFG1sF1pIp8usS+QI+TfgAtWxl817vYLjg7YLm/NrXAjrMpw==
-X-Received: by 2002:a17:907:2d12:b0:a52:3d1:6768 with SMTP id gs18-20020a1709072d1200b00a5203d16768mr1529361ejc.1.1712745098139;
-        Wed, 10 Apr 2024 03:31:38 -0700 (PDT)
-Received: from [192.168.50.4] ([82.78.167.8])
-        by smtp.gmail.com with ESMTPSA id ml16-20020a170906cc1000b00a4e670414ffsm6811000ejb.109.2024.04.10.03.31.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 03:31:37 -0700 (PDT)
-Message-ID: <00b6c73b-d57f-4520-b1af-d2ad2a88240d@tuxon.dev>
-Date: Wed, 10 Apr 2024 13:31:35 +0300
+	s=arc-20240116; t=1712745125; c=relaxed/simple;
+	bh=OzNxKoT6rtjavH+sSKdTA2aMIU0990lfBRRYYlSp7XA=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=feKDrXhCCL6T2+UqZkQfZgeLH8Kmhaj4bifMXew/8xX5wRmwRpWhV1RvE8M25+evx6Gejpb5LI5+aVchC9n0mEkGhtMDo/X2vncczQTn7M86EqfvZJ33KFnvU3biKrdOk/BScaSNmWAYy4Ul3uMky5jVYD7zSJP1J7tyYazyupc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KzalsUOm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C0D0C433F1;
+	Wed, 10 Apr 2024 10:32:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712745125;
+	bh=OzNxKoT6rtjavH+sSKdTA2aMIU0990lfBRRYYlSp7XA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=KzalsUOmcblbIZ97GurA1rdPl9SC/8tq1vtLK++nVmvjVqR9HNbhdulCsgNlNpZUj
+	 NhO4HaeutbcfxdSMSiqUGFVU9mek+M+PfbLiaK11UZ2O3Pcm1Mc6zY7XAj8g8UbSaE
+	 6lkkhGnAxVFqTDIIrcjTnF3NVdW+jFwkEWP5fqybV7kidLwDueM6sPMB+OgxKrRLvV
+	 10I2eCvh2td9EFeowCycDH7ErIUGJUsVYaVx/+/g6ilmIJedkvHTmHYxFyRHGtKmvh
+	 hLtqtr2WwFmFYoQtdoA/57HlbU1WoYW7Bi6w8Te9JxTp9jOoVuF78A9vuezWC0U/rN
+	 DW7g6eiwYTL1A==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1ruVFK-0036qE-TU;
+	Wed, 10 Apr 2024 11:32:02 +0100
+Date: Wed, 10 Apr 2024 11:32:02 +0100
+Message-ID: <86ttk9se3h.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <shuah@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Dave Martin <Dave.Martin@arm.com>,
+	kvmarm@lists.linux.dev,
+	linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v6 2/5] KVM: arm64: Add newly allocated ID registers to register descriptions
+In-Reply-To: <73c6012f-adb0-470b-bd47-6093d28aea97@sirena.org.uk>
+References: <20240329-arm64-2023-dpisa-v6-0-ba42db6c27f3@kernel.org>
+	<20240329-arm64-2023-dpisa-v6-2-ba42db6c27f3@kernel.org>
+	<87le5ysm4l.wl-maz@kernel.org>
+	<73c6012f-adb0-470b-bd47-6093d28aea97@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 08/10] clk: renesas: rzg2l-cpg: Add suspend/resume
- support for power domains
-Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- magnus.damm@gmail.com, linux-renesas-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20240307140728.190184-1-claudiu.beznea.uj@bp.renesas.com>
- <20240307140728.190184-9-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdVdn9K1gKJAKyyDz8ObaJboknE_qqYfS_vyxNU+zhRWPA@mail.gmail.com>
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <CAMuHMdVdn9K1gKJAKyyDz8ObaJboknE_qqYfS_vyxNU+zhRWPA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: broonie@kernel.org, catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, corbet@lwn.net, shuah@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, kvmarm@lists.linux.dev, linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Hi, Geert,
+On Tue, 02 Apr 2024 18:21:55 +0100,
+Mark Brown <broonie@kernel.org> wrote:
+> 
+> On Sun, Mar 31, 2024 at 11:59:06AM +0100, Marc Zyngier wrote:
+> > Mark Brown <broonie@kernel.org> wrote:
+> 
+> > > The 2023 architecture extensions have allocated some new ID registers, add
+> > > them to the KVM system register descriptions so that they are visible to
+> > > guests.
+> 
+> > > We make the newly introduced dpISA features writeable, as well as
+> > > allowing writes to ID_AA64ISAR3_EL1.CPA for FEAT_CPA which only
+> > > introduces straigforward new instructions with no additional
+> > > architectural state or traps.
+> 
+> > FPMR actively gets trapped by HCRX_EL2.
+> 
+> Sure, I'm not clear what you're trying to say here?
 
-Sorry for replying that late to this one.
+I'm saying (and not trying to say) that there are traps implied by the
+features that you are adding.
 
-On 18.03.2024 18:48, Geert Uytterhoeven wrote:
-> Hi Claudiu,
-> 
-> On Thu, Mar 7, 2024 at 3:07 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
->> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> RZ/G3S supports deep sleep states that it can reach with the help of the
->> TF-A.
->>
->> RZ/G3S has a few power domains (e.g. GIC) that need to be always-on while
->> Linux is running. These domains are initialized (and powered on) when
->> clock driver is probed.
->>
->> As the TF-A takes control at the very last(suspend)/first(resume)
->> phase of configuring the deep sleep state, it can do it's own settings on
->> power domains.
->>
->> Thus, to restore the proper Linux state, add rzg2l_cpg_resume() which
->> powers on the always-on domains and rzg2l_cpg_complete() which activates
->> the power down mode for the IPs selected through CPG_PWRDN_IP{1, 2}.
->>
->> Along with it, added the suspend_check member to the RZ/G2L power domain
->> data structure whose purpose is to checks if a domain can be powered off
->> while the system is going to suspend. This is necessary for the serial
->> console domain which needs to be powered on if no_console_suspend is
->> available in bootargs.
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->> ---
->>
->> Changes in v2:
->> - none; this patch is new
-> 
-> Thanks for your patch!
-> 
->> --- a/drivers/clk/renesas/rzg2l-cpg.c
->> +++ b/drivers/clk/renesas/rzg2l-cpg.c
->> @@ -1700,6 +1719,8 @@ static int __init rzg2l_cpg_pd_setup(struct rzg2l_cpg_pd *pd, bool always_on)
->>         } else {
->>                 pd->genpd.power_on = rzg2l_cpg_power_on;
->>                 pd->genpd.power_off = rzg2l_cpg_power_off;
->> +               if (flags & RZG2L_PD_F_CONSOLE)
-> 
-> I think this should be replaced by some dynamic check, cfr. my comments
-> on PATCH 9/10.
+> The "no additional" bit is referring to FEAT_CPA.
 
-I agree.
+Well, that wasn't clear to me.
+
+And when it comes to CPA, there are additional controls in SCTLR2_ELx,
+which doesn't even gets context switched for EL1. What could possibly
+go wrong?
 
 > 
->> +                       pd->suspend_check = rzg2l_pd_suspend_check_console;
->>                 governor = &simple_qos_governor;
->>         }
->>
+> > > -	ID_UNALLOCATED(6,3),
+> > > +	ID_WRITABLE(ID_AA64ISAR3_EL1, ~(ID_AA64ISAR2_EL1_RES0 |
+> > > +					ID_AA64ISAR3_EL1_PACM |
+> > > +					ID_AA64ISAR3_EL1_TLBIW)),
+> > >  	ID_UNALLOCATED(6,4),
+> > >  	ID_UNALLOCATED(6,5),
+> > >  	ID_UNALLOCATED(6,6),
 > 
->> @@ -1890,9 +1911,43 @@ static int __init rzg2l_cpg_probe(struct platform_device *pdev)
->>         if (error)
->>                 return error;
->>
->> +       dev_set_drvdata(dev, priv);
->> +
->>         return 0;
->>  }
->>
->> +static int rzg2l_cpg_resume(struct device *dev)
->> +{
->> +       struct rzg2l_cpg_priv *priv = dev_get_drvdata(dev);
->> +       const struct rzg2l_cpg_info *info = priv->info;
->> +
->> +       /* Power on always ON domains. */
->> +       for (unsigned int i = 0; i < info->num_pm_domains; i++) {
->> +               if (info->pm_domains[i].flags & RZG2L_PD_F_ALWAYS_ON) {
+> > Where is the code that enforces the lack of support for MTEFAR,
+> > MTESTOREONLY, and MTEPERM for SCTLR_ELx, EnPACM and EnFPM in HCRX_EL2?
 > 
-> If you would check "priv-domains[i].flags & GENPD_FLAG_ALWAYS_ON"
-> instead, I think you can make r9a08g045_pm_domains[] __initconst.
-> You may need to make a copy of the name for pd->genpd.name, though.
+> Could you please be more explicit regarding what you're expecting to see
+> here?
 
-I wanted to avoid this copy.
+I'm expecting you to add all the required masking and fine-grained
+disabling of features that are not explicitly advertised to the guest.
 
+This should translate into additional init code in kvm_init_sysreg(),
+kvm_init_nv_sysregs() and limit_nv_id_reg(). You also should update
+the exception triaging infrastructure in emulate-nested.c.
+
+> Other than the writeability mask for the ID register I would have
+> expected to need explicit code to enable new features rather than
+> explicit code to keep currently unsupported features unsupported.  I'm
+> sure what you're referencing will be obvious once I see it but I'm
+> drawing a blank.
 > 
->> +                       int ret = rzg2l_cpg_power_on(priv->domains[i]);
+> > And I haven't checked whether TLBI VMALLWS2 can be trapped.
 > 
-> I assume you are sure none of these domains are enabled by TF/A after
-> system resume, or by the pmdomain core code?
+> I didn't see anything but I might not be aware of where to look, there
+> doesn't seem to be anything for that specifically in HFGITR_EL2 or
+> HFGITR2_EL2 which would be the main places I'd expect to find
+> something.
 
-Out of TF-A the MSTOP and PWRDN bits for these ones are set and setting
-CPG_PWRDN_MSTOP though rzg2l_cpg_complete() leads to system being blocked.
-It is the same as in booting case exlained in cover letter.
+That's a really odd place to look. This is a S2 invalidation
+primitive, which by definition is under the sole control of EL2, and
+therefore cannot be trapped by any of the FGT registers, as they only
+affect lesser-privileged ELs.
 
-"the DDR, TZCDDR, OTFDE_DDR were also added, to avoid system being blocked
-due to the following lines of code from patch 6/10.
+The instruction is described in the XML:
 
-+       /* Prepare for power down the BUSes in power down mode. */
-+       if (info->pm_domain_pwrdn_mstop)
-+               writel(CPG_PWRDN_MSTOP_ENABLE, priv->base + CPG_PWRDN_MSTOP);
+https://developer.arm.com/documentation/ddi0601/2024-03/AArch64-Instructions/TLBI-VMALLWS2E1--TLB-Invalidate-stage-2-dirty-state-by-VMID--EL1-0
 
-Domain IDs were added to all SoC specific bindings.
-"
+	M.
 
-The PM domain core code doesn't touch these domains while resuming as of my
-checkings.
-
-Thank you,
-Claudiu Beznea
-
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+-- 
+Without deviation from the norm, progress is not possible.
 
