@@ -1,142 +1,102 @@
-Return-Path: <linux-kernel+bounces-138202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69DD189EE01
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:50:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E87D489EE03
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:51:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22CBF2833B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:50:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A426028394E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 072BE154C18;
-	Wed, 10 Apr 2024 08:50:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C7AtuZ+a"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239D8154C0B;
+	Wed, 10 Apr 2024 08:51:46 +0000 (UTC)
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5039213C9C2
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:50:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 533A213C9C2;
+	Wed, 10 Apr 2024 08:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712739023; cv=none; b=N+AhSDnnkjUEeWmH3lMY3TczuDxcMfYUZqfkYiQlMrbo/u3IZgy6xDQouIo2SW0axF7t9iU4tG4sppLwoTlGvxPcQTHqYt3Fgh9rdPc+cIqCFnINIqOcZzBHXyTddryNBMm6s0PyPezk68oFS2ydExE2ac2oRByB+zTNXqJtJ8s=
+	t=1712739105; cv=none; b=a1VKv3hOsFeg0GgEej+FLfB9FbK7URpQKXncp91Otfw0Wvq0gEVHy6fNZzjUmtA/Ehzf5sRnaID9EpzTc+22ZSQPfV+ULrXJ7FAE+S5vMe+oq/TbKPPxV7S5pOR6Dqk9MF81z2vNJpdPHYEszWUCL6J55+Y93+gI1jDmy06fj+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712739023; c=relaxed/simple;
-	bh=mREyrzvoUM7UuFGn1kCnxfo+7q349N2icGn7lRUNV+g=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=esqIUDQTvJ/ViXHbqDDj2O0Xi28BS/xtqJ3k6guMqbu/UpZ4tRQBNbW/nGJtfmcudNcBVH3El+PJnJ08+nW7pdLSe0XeWAIEOGHImk6r3Zelaf5nzvlWOmdBoJvPbx07WTfVsbX8KW5+nHE0MHtH2UpMYXwg/LkjoqcqCAvmeLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C7AtuZ+a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9FE6C433F1;
-	Wed, 10 Apr 2024 08:50:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712739022;
-	bh=mREyrzvoUM7UuFGn1kCnxfo+7q349N2icGn7lRUNV+g=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=C7AtuZ+aFExyX1OzrWiO3avS8l8UAzvvnXOIpHSGp5wGrQsTag/FUrTxMcgnuo6l6
-	 fFuLNZe8zteJevwbS1jBge9ft0g/GSzpCdXyruYVTBqLr1J59DFZ1vsGgntNYIeQf0
-	 u7blDHT7QDvbnsY+figC8UgIm678hMgH5DqteA8G8o2TsWNldtdjJiVysR0ajm0WNO
-	 njeygczxlR14neXcplmhq/vl0JMaLr2aO7rMEwst16L8HDrZ3vm/CrCWHebZO1LeVF
-	 44gFNrKf3aOguMSUsCqgIuUlmmkYsIkdfmClX1DP80FtyMdRZmPwunYorZilvFN5Kk
-	 8dL8DVUzfdDsQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1ruTeu-0034xO-ET;
-	Wed, 10 Apr 2024 09:50:20 +0100
-Date: Wed, 10 Apr 2024 09:50:20 +0100
-Message-ID: <86v84psisz.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Gavin Shan <gshan@redhat.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	catalin.marinas@arm.com,
-	will@kernel.org,
-	akpm@linux-foundation.org,
-	oliver.upton@linux.dev,
-	apopple@nvidia.com,
-	rananta@google.com,
-	mark.rutland@arm.com,
-	v-songbaohua@oppo.com,
-	yangyicong@hisilicon.com,
-	shahuang@redhat.com,
-	yihyu@redhat.com,
-	shan.gavin@gmail.com
-Subject: Re: [PATCH v3 3/3] arm64: tlb: Allow range operation for MAX_TLBI_RANGE_PAGES
-In-Reply-To: <27718d41-32cb-4976-b50e-e9237da7aedf@arm.com>
-References: <20240405035852.1532010-1-gshan@redhat.com>
-	<20240405035852.1532010-4-gshan@redhat.com>
-	<27718d41-32cb-4976-b50e-e9237da7aedf@arm.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1712739105; c=relaxed/simple;
+	bh=Jta1oDcbHz9bEzgiV8Kxi3isoYY2p/IT5RWmu7gcHVY=;
+	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
+	 Message-ID:Subject; b=irunqHcFMOMrgecbDOlVTzDuU5avIWj4S9V9J2h1hTBkXQNnIGcUmUdhwhjHPKB+Tm7JXtAEsLXEzWgVXumk1mnpw977bX7SoonGtrXjgWw4Xv0QLE0W5RlHR1KXAKkm86B2N/s64lqegaPtqWBBgknKv2e1cGITHKubd1Xp3D0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
+	by madrid.collaboradmins.com (Postfix) with ESMTP id 00C7E3781453;
+	Wed, 10 Apr 2024 08:51:40 +0000 (UTC)
+From: "Shreeya Patel" <shreeya.patel@collabora.com>
+In-Reply-To: <20240409172824.552652165@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"
+X-Forward: 127.0.0.1
+References: <20240409172824.552652165@linuxfoundation.org>
+Date: Wed, 10 Apr 2024 09:51:40 +0100
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
+	padovan@web.codeaurora.org
+To: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: ryan.roberts@arm.com, gshan@redhat.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, akpm@linux-foundation.org, oliver.upton@linux.dev, apopple@nvidia.com, rananta@google.com, mark.rutland@arm.com, v-songbaohua@oppo.com, yangyicong@hisilicon.com, shahuang@redhat.com, yihyu@redhat.com, shan.gavin@gmail.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Message-ID: <3c0c9c-66165300-1b-194ac52@218876937>
+Subject: =?utf-8?q?Re=3A?= [PATCH =?utf-8?q?6=2E8?= 000/279] 
+ =?utf-8?q?6=2E8=2E5-rc2?= review
+User-Agent: SOGoMail 5.10.0
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 08 Apr 2024 09:43:44 +0100,
-Ryan Roberts <ryan.roberts@arm.com> wrote:
-> 
-> On 05/04/2024 04:58, Gavin Shan wrote:
-> > MAX_TLBI_RANGE_PAGES pages is covered by SCALE#3 and NUM#31 and it's
-> > supported now. Allow TLBI RANGE operation when the number of pages is
-> > equal to MAX_TLBI_RANGE_PAGES in __flush_tlb_range_nosync().
-> > 
-> > Suggested-by: Marc Zyngier <maz@kernel.org>
-> > Signed-off-by: Gavin Shan <gshan@redhat.com>
-> 
-> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
-> 
-> > ---
-> >  arch/arm64/include/asm/tlbflush.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-> > index 243d71f7bc1f..95fbc8c05607 100644
-> > --- a/arch/arm64/include/asm/tlbflush.h
-> > +++ b/arch/arm64/include/asm/tlbflush.h
-> > @@ -446,11 +446,11 @@ static inline void __flush_tlb_range_nosync(struct vm_area_struct *vma,
-> >  	 * When not uses TLB range ops, we can handle up to
-> >  	 * (MAX_DVM_OPS - 1) pages;
-> >  	 * When uses TLB range ops, we can handle up to
-> > -	 * (MAX_TLBI_RANGE_PAGES - 1) pages.
-> > +	 * MAX_TLBI_RANGE_PAGES pages.
-> >  	 */
-> >  	if ((!system_supports_tlb_range() &&
-> >  	     (end - start) >= (MAX_DVM_OPS * stride)) ||
-> > -	    pages >= MAX_TLBI_RANGE_PAGES) {
-> > +	    pages > MAX_TLBI_RANGE_PAGES) {
-> 
-> As a further enhancement, I wonder if it might be better to test:
-> 
-> 	pages * 4 / MAX_TLBI_RANGE_PAGES > MAX_DVM_OPS
-> 
-> Then add an extra loop over __flush_tlb_range_op(), like KVM does.
-> 
-> The math is trying to express that there are a maximum of 4 tlbi range
-> instructions for MAX_TLBI_RANGE_PAGES pages (1 per scale) and we only need to
-> fall back to flushing the whole mm if it could generate more than MAX_DVM_OPS ops.
+On Tuesday, April 09, 2024 23:00 IST, Greg Kroah-Hartman <gregkh@linuxf=
+oundation.org> wrote:
 
-That'd be a good enhancement indeed, although I wonder if that occurs
-as often as we see it on the KVM side. But in any case, adding
-consistency amongst the users of __flush_tlb_range_op() can only be
-beneficial.
+> This is the start of the stable review cycle for the 6.8.5 release.
+> There are 279 patches in this series, all will be posted as a respons=
+e
+> to this one.  If anyone has any issues with these being applied, plea=
+se
+> let me know.
+>=20
+> Responses should be made by Thu, 11 Apr 2024 17:27:40 +0000.
+> Anything received after that time might be too late.
+>=20
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.8=
+5-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc=
+git linux-6.8.y
+> and the diffstat can be found below.
+>=20
+
+KernelCI report for stable-rc/linux-6.8.y for this week :-
+
+## stable-rc HEAD for linux-6.8.y:
+Date: 2024-04-10
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.=
+git/log/?h=3D6d08df6c401e210cdf4959cc3249188ac6083489
+
+## Build failures:
+No build failures seen for the stable-rc/linux-6.8.y commit head \o/
+
+## Boot failures:
+No **new** boot failures seen for the stable-rc/linux-6.8.y commit head=
+ \o/
+
+Tested-by: kernelci.org bot <bot@kernelci.org>
 
 Thanks,
+Shreeya Patel
 
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
 
