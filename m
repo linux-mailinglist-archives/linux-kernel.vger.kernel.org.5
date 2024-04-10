@@ -1,93 +1,139 @@
-Return-Path: <linux-kernel+bounces-138123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76A0989ECDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 18CAF89ECDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:59:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CAE61F21513
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:58:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2C021F222B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:59:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7621A13D2BE;
-	Wed, 10 Apr 2024 07:58:28 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D47C13D277
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:58:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 821BE13D513;
+	Wed, 10 Apr 2024 07:58:37 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32DF713C901
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:58:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712735908; cv=none; b=EdCdAZoSUSJLuki3UkQ0Zrst8wIvw61CGmg3lredFexBTUpqOd9hdAk7DaA0btIyDBBXfL5CwHuc5DAuuwlVDeuUodFqBT20e2CPkN9qFZZTaFjTaA8hmN1OliA0t1U1tbHiNWdEZ9FWtS5eHPoEgiinMUf8czlGOLnSHm8fppg=
+	t=1712735917; cv=none; b=aLHxyxZvZ9sqXkw5M8DBJuU0jyvHbsQ3q3dbbl/5ARuG/uf1Ebw9Ec5yRPSlLRcMuT0eIcK5MYAuOUdjTwCQ4JkPbjsIezp9EoiI7iyRrCQRTETFG9P8mpA5xELOZLe8RvaOoVuyoprO4ABdftZuay2e7OZYYWVslBopHWtGKEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712735908; c=relaxed/simple;
-	bh=SVFpJC7hpWdsEN6oXEfmHE/kIbC1/z81n1486492/eI=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=nprBeHRl4r5uMpyPJC7sZ8yL37VcZU3EtJ/tismQoXymI+yRjmoRPm4u7HMCyRFYw1aHiYUv6skDFMnfZ+YP2aT2817Pw8WSqpe6/FxImza14nRd/wcl+9HmWiI4X0QgcSxwObRwA/SmFGWuhYyZ4tEkJCOTuRpNRtsUGeOwas8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D3D251480;
-	Wed, 10 Apr 2024 00:58:55 -0700 (PDT)
-Received: from [10.162.43.6] (a077893.blr.arm.com [10.162.43.6])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 802AF3F766;
-	Wed, 10 Apr 2024 00:58:20 -0700 (PDT)
-Message-ID: <bcc75076-3baa-4a23-8709-0012456f30a2@arm.com>
-Date: Wed, 10 Apr 2024 13:28:20 +0530
+	s=arc-20240116; t=1712735917; c=relaxed/simple;
+	bh=nKJBodP5bAnf+nL27eO3VqssbnJkiUNxzOo7xkepETQ=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=DdTgNgPzK76qqceM5+zuPPpvZ6Sjrdl2caWD6D8Om/uhsJi/HyD3AZMjsEqNHjls4D/jA/PkjIfMHKD9YZnmzi2U+HA8V905GmwD3U0RcNxwJ0K8Ia83UirQnrmaX+3uZbfvKcbm3lADwXXFdZpZD7BHQw3725yWis9Ior5VxiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VDw9h2wwPzwRcF;
+	Wed, 10 Apr 2024 15:55:36 +0800 (CST)
+Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
+	by mail.maildlp.com (Postfix) with ESMTPS id BFAFB140159;
+	Wed, 10 Apr 2024 15:58:31 +0800 (CST)
+Received: from [10.173.135.154] (10.173.135.154) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 10 Apr 2024 15:58:31 +0800
+Subject: Re: [PATCH] mm,swap: add document about RCU read lock and swapoff
+ interaction
+To: Huang Ying <ying.huang@intel.com>
+CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>, Ryan Roberts
+	<ryan.roberts@arm.com>, David Hildenbrand <david@redhat.com>, Hugh Dickins
+	<hughd@google.com>, Minchan Kim <minchan@kernel.org>, Andrew Morton
+	<akpm@linux-foundation.org>
+References: <20240407065450.498821-1-ying.huang@intel.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <62d09dae-39b9-f235-9786-6e12302425a0@huawei.com>
+Date: Wed, 10 Apr 2024 15:58:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH v3 3/3] arm64: tlb: Allow range operation for
- MAX_TLBI_RANGE_PAGES
-To: Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: catalin.marinas@arm.com, will@kernel.org, akpm@linux-foundation.org,
- maz@kernel.org, oliver.upton@linux.dev, ryan.roberts@arm.com,
- apopple@nvidia.com, rananta@google.com, mark.rutland@arm.com,
- v-songbaohua@oppo.com, yangyicong@hisilicon.com, shahuang@redhat.com,
- yihyu@redhat.com, shan.gavin@gmail.com
-References: <20240405035852.1532010-1-gshan@redhat.com>
- <20240405035852.1532010-4-gshan@redhat.com>
+In-Reply-To: <20240407065450.498821-1-ying.huang@intel.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-In-Reply-To: <20240405035852.1532010-4-gshan@redhat.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500002.china.huawei.com (7.192.104.244)
 
-On 4/5/24 09:28, Gavin Shan wrote:
-> MAX_TLBI_RANGE_PAGES pages is covered by SCALE#3 and NUM#31 and it's
-> supported now. Allow TLBI RANGE operation when the number of pages is
-> equal to MAX_TLBI_RANGE_PAGES in __flush_tlb_range_nosync().
+On 2024/4/7 14:54, Huang Ying wrote:
+> During reviewing a patch to fix the race condition between
+> free_swap_and_cache() and swapoff() [1], it was found that the
+> document about how to prevent racing with swapoff isn't clear enough.
+> Especially RCU read lock can prevent swapoff from freeing data
+> structures.  So, the document is added as comments.
 > 
-> Suggested-by: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> [1] https://lore.kernel.org/linux-mm/c8fe62d0-78b8-527a-5bef-ee663ccdc37a@huawei.com/
+> 
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Ryan Roberts <ryan.roberts@arm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Miaohe Lin <linmiaohe@huawei.com>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Minchan Kim <minchan@kernel.org>
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Thanks for your work.
+
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
+.
 
 > ---
->  arch/arm64/include/asm/tlbflush.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  mm/swapfile.c | 26 +++++++++++++-------------
+>  1 file changed, 13 insertions(+), 13 deletions(-)
 > 
-> diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-> index 243d71f7bc1f..95fbc8c05607 100644
-> --- a/arch/arm64/include/asm/tlbflush.h
-> +++ b/arch/arm64/include/asm/tlbflush.h
-> @@ -446,11 +446,11 @@ static inline void __flush_tlb_range_nosync(struct vm_area_struct *vma,
->  	 * When not uses TLB range ops, we can handle up to
->  	 * (MAX_DVM_OPS - 1) pages;
->  	 * When uses TLB range ops, we can handle up to
-> -	 * (MAX_TLBI_RANGE_PAGES - 1) pages.
-> +	 * MAX_TLBI_RANGE_PAGES pages.
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 4919423cce76..6925462406fa 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -1226,16 +1226,15 @@ static unsigned char __swap_entry_free_locked(struct swap_info_struct *p,
+>  
+>  /*
+>   * When we get a swap entry, if there aren't some other ways to
+> - * prevent swapoff, such as the folio in swap cache is locked, page
+> - * table lock is held, etc., the swap entry may become invalid because
+> - * of swapoff.  Then, we need to enclose all swap related functions
+> - * with get_swap_device() and put_swap_device(), unless the swap
+> - * functions call get/put_swap_device() by themselves.
+> + * prevent swapoff, such as the folio in swap cache is locked, RCU
+> + * reader side is locked, etc., the swap entry may become invalid
+> + * because of swapoff.  Then, we need to enclose all swap related
+> + * functions with get_swap_device() and put_swap_device(), unless the
+> + * swap functions call get/put_swap_device() by themselves.
+>   *
+> - * Note that when only holding the PTL, swapoff might succeed immediately
+> - * after freeing a swap entry. Therefore, immediately after
+> - * __swap_entry_free(), the swap info might become stale and should not
+> - * be touched without a prior get_swap_device().
+> + * RCU reader side lock (including any spinlock) is sufficient to
+> + * prevent swapoff, because synchronize_rcu() is called in swapoff()
+> + * before freeing data structures.
+>   *
+>   * Check whether swap entry is valid in the swap device.  If so,
+>   * return pointer to swap_info_struct, and keep the swap entry valid
+> @@ -2495,10 +2494,11 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+>  
+>  	/*
+>  	 * Wait for swap operations protected by get/put_swap_device()
+> -	 * to complete.
+> -	 *
+> -	 * We need synchronize_rcu() here to protect the accessing to
+> -	 * the swap cache data structure.
+> +	 * to complete.  Because of synchronize_rcu() here, all swap
+> +	 * operations protected by RCU reader side lock (including any
+> +	 * spinlock) will be waited too.  This makes it easy to
+> +	 * prevent folio_test_swapcache() and the following swap cache
+> +	 * operations from racing with swapoff.
 >  	 */
->  	if ((!system_supports_tlb_range() &&
->  	     (end - start) >= (MAX_DVM_OPS * stride)) ||
-> -	    pages >= MAX_TLBI_RANGE_PAGES) {
-> +	    pages > MAX_TLBI_RANGE_PAGES) {
->  		flush_tlb_mm(vma->vm_mm);
->  		return;
->  	}
+>  	percpu_ref_kill(&p->users);
+>  	synchronize_rcu();
+> 
+
 
