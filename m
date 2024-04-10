@@ -1,129 +1,171 @@
-Return-Path: <linux-kernel+bounces-137884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C2B589E8E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:32:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BFCC89E8E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:32:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD251B2452B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:32:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FCCD1C22763
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D3110A2E;
-	Wed, 10 Apr 2024 04:32:11 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 708BFC8DE;
+	Wed, 10 Apr 2024 04:32:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OVLg6fXH"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4FA910A13;
-	Wed, 10 Apr 2024 04:32:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D466910A09;
+	Wed, 10 Apr 2024 04:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712723530; cv=none; b=C69BhU2xs5oc6283MPzZnmt/e5fZ+KhbBhneyD/lFrZMfs+pYNdQl7fwSVVmKIu9aFOwBiOLG6FCA8wsDhyHc29UItg7LOQPZ2G8FoyZloxrnc6Ne8ZJpWr4YxqAmMdqQc6GiTnxdG9cjarwSB90m78TaXJcU95buaO9q+KtLkQ=
+	t=1712723523; cv=none; b=G3HSDW16qzi4q0POyCNYB6UXB39Y8euXlgK6w297SkBCdwHrHZ4lvfro5MlNC/r+AZ45UEwqZlU5g2D1vtrxKgcDIkS8XJSEwxc1meLkNz452iZdnmwyW1cpDP3AoPx2T3EJ2j0X/wsCKaqjo/UYR0s4FdK2KD0d4j3F+O9FTeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712723530; c=relaxed/simple;
-	bh=siZOQ+4XPskfy2znOMEDWoSkPbfewpmOGbasV0ucBXs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NyRdRuEqSzFgfm0jicmlBDlq6o01vywuQ6BkKPHk4Gc0/0HWRVX+MGhOKcsiz491jXqFdSfLEJhUTJGEbpKJn/cEpYfyQltsrW0NJOCVv3ww0eWLGz68n1ol7kbZefhL8qynaV4GdpetGNqNnO88C/xR5g4PR1HcGX9ljUmgLgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from ip-185-104-138-50.ptr.icomera.net ([185.104.138.50] helo=phil.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1ruPcr-0007Sx-9l; Wed, 10 Apr 2024 06:31:57 +0200
-From: Heiko Stuebner <heiko@sntech.de>
-To: Jianfeng Liu <liujianfeng1994@gmail.com>
-Cc: conor+dt@kernel.org, devicetree@vger.kernel.org,
- krzysztof.kozlowski+dt@linaro.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
- liujianfeng1994@gmail.com, robh@kernel.org, sfr@canb.auug.org.au
-Subject:
- Re: [PATCH] arm64: dts: rockchip: remove startup-delay-us from
- vcc3v3_pcie2x1l0 on rock-5b
-Date: Wed, 10 Apr 2024 06:31:48 +0200
-Message-ID: <3879529.iIbC2pHGDl@phil>
-In-Reply-To: <20240403075916.1025550-1-liujianfeng1994@gmail.com>
-References:
- <2535182.Sgy9Pd6rRy@diego>
- <20240403075916.1025550-1-liujianfeng1994@gmail.com>
+	s=arc-20240116; t=1712723523; c=relaxed/simple;
+	bh=rMVm9URc9I8cVqvGGbdYnQEP4nxrZ957jULQWF63OlI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eCBZI6KzPc4wiqy+soxvw8sWyETW/+J2ousyWBIws/a/S9BjS5fxIMPVfCL2PJsQ35o1eJOxm/4FksB22pWDDnyL/K34RpZiIPg2S8sksfYtirQs4iQRNqV9mU8sLecs4zk29gTUKRvfk3vjdvyOL5OQSS7jsb4q1/poqgwlxsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OVLg6fXH; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a51c8274403so420889266b.1;
+        Tue, 09 Apr 2024 21:32:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712723520; x=1713328320; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xNrSwE+dolE2QA8qHvdLe8vM7FO2G4niuceuaP/S8AE=;
+        b=OVLg6fXHFIWZErKmVfCiM1MKvWZsrWNKL/7OqSft/IhpQzSlR/Q+I0pHGK1Xbu3RAu
+         K8lNKMYTRXVf+TfUZC9QbGYoPw2bwguJeck8OQtLygXB9JjSgGvSoIacQd9hEXEXw27u
+         WLEOPZF6NJTLL1f94UCGRnL4YOMVh3T7tU0Mgm5VhK3mPwCKARC6SWwHbkCTdeylWLmD
+         GMZE4lqm28/qsLQckxEHKSw/gAr9IU6MtTdMnrDWKfrlblX9v/m8YMkftcn2x5kKyERR
+         yhrC6yl3FYXiCubKISZTTKwjVKkO2juVJ7ZknYVpT5e63o1w/UorIZDBOenGE0EH/4dX
+         YiyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712723520; x=1713328320;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xNrSwE+dolE2QA8qHvdLe8vM7FO2G4niuceuaP/S8AE=;
+        b=TL7pTOFnhQxJUXi/rGaKGfQOBdLbwRRdHCZuxkQxTAsL6Aes764AphE/l37ToXdT6m
+         DeKA8jHfN3sBZnvwnln5gjz5WIyH2SB79rFH6Rjm5fNQKdV8+u1XI0VGZg+djWQWvxfw
+         tyGsLFJBK0Eb5DEPmsqSZw94i+rt3xZhtGUJJmJGcc3WfK85RabAefpUvpgE4bZ+5CfU
+         2LHGSylhL3XjpjpPW/43vSTFQLgeLZ4SKjuDAHPWfc70g+zh7dW9Qooqz703DUfhZMxJ
+         yyBINs9P96QBLbWaNb2pKvtr15eFtb1SBf9AlQhc2GJFvvL638fCl/GY1jJ6wjTRtjxQ
+         Ry/w==
+X-Forwarded-Encrypted: i=1; AJvYcCUA9vIO8aNisIoxtN7m2qA46R1XwlAA/PWIqgZ5FbYxOB02IYiP0waNUh+cRZwF5ksXAJ9ZxbIDHFWr6VrvFTGX4IksXFxUS/IHW7+xkyJDDt0+vnBu8Rio43ZlNsxg99hUWE2uuNt+r0OAoep8e+D3ZBhG4KhRhqyM8HI+SnBZKQrtuQ==
+X-Gm-Message-State: AOJu0YxXp1xEAnTUmZTXFK1QBdMk+Kf26NfCsJveNA9j3nnJ/EdaFgLZ
+	0xSNaNilQnQAIOfqRqO5cYvD76FaWAwTaGWyRME/iVvGxsMnTvfs
+X-Google-Smtp-Source: AGHT+IEFsrpybLrAxP55MzTpaSrenlWTPHzaVeLem3lu9vpNOhH0S2cMYNX2Xn5nmDfbQ8RsQjL+Bw==
+X-Received: by 2002:a17:906:7192:b0:a51:c191:c0a0 with SMTP id h18-20020a170906719200b00a51c191c0a0mr693725ejk.43.1712723519698;
+        Tue, 09 Apr 2024 21:31:59 -0700 (PDT)
+Received: from gmail.com (1F2EF1A5.nat.pool.telekom.hu. [31.46.241.165])
+        by smtp.gmail.com with ESMTPSA id h19-20020a1709070b1300b00a51971dd79csm6586263ejl.143.2024.04.09.21.31.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 21:31:58 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Wed, 10 Apr 2024 06:31:56 +0200
+From: Ingo Molnar <mingo@kernel.org>
+To: Kyle Huey <me@kylehuey.com>
+Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Marco Elver <elver@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Robert O'Callahan <robert@ocallahan.org>,
+	Song Liu <song@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RESEND PATCH v5 1/4] perf/bpf: Call bpf handler directly, not
+ through overflow machinery
+Message-ID: <ZhYWPGX0RzamxOHx@gmail.com>
+References: <20240214173950.18570-1-khuey@kylehuey.com>
+ <20240214173950.18570-2-khuey@kylehuey.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-
-Am Mittwoch, 3. April 2024, 09:59:16 CEST schrieb Jianfeng Liu:
-> Hi Heiko,
->=20
-> Tue, 02 Apr 2024 12:39:17 +0200, Heiko St=FCbner wrote:
-> >Does the pcie driver enable the regulator too late somehow?
-> The pcie driver will enable the regulator imediately when it is probed.
-> I added log at when driver is probed and when regulator is enabled.
-> Here is the log with "startup-delay-us =3D <50000>":
-> ```
-> [    1.572991] rockchip-dw-pcie a40800000.pcie: rockchip_pcie_probe start
-> [    1.573697] rockchip-dw-pcie a40800000.pcie: going to enable vpcie3v3 =
-regulator
-> [    1.575194] rockchip-dw-pcie a40800000.pcie: enable vpcie3v3 regulator=
- done
-> ```
->=20
-> And here is the log without "startup-delay-us":
-> ```
-> [    1.518490] rockchip-dw-pcie a40800000.pcie: rockchip_pcie_probe start
-> [    1.518603] rockchip-dw-pcie a40800000.pcie: going to enable vpcie3v3 =
-regulator
-> [    1.518610] rockchip-dw-pcie a40800000.pcie: enable vpcie3v3 regulator=
- done
-> ```
->=20
-> We can see startup-delay-us will delay the driver probe.
->=20
-> I also take a look at rockchip's SDK kernel, their pci driver is probed
-> very late:
-> ```
-> [    3.398682] dw-pcie fe170000.pcie: invalid resource
-> [    3.398686] dw-pcie fe170000.pcie: Failed to initialize host
-> [    3.398688] dw-pcie: probe of fe170000.pcie failed with error -22
-> [    3.399396] rk-pcie fe170000.pcie: invalid prsnt-gpios property in node
-> [    3.399410] rk-pcie fe170000.pcie: Looking up vpcie3v3-supply from dev=
-ice tree
-> [    3.405195] rk-pcie fe170000.pcie: host bridge /pcie@fe170000 ranges:
-> [    3.405253] rk-pcie fe170000.pcie:       IO 0x00f2100000..0x00f21fffff=
- -> 0x00f2100000
-> [    3.405283] rk-pcie fe170000.pcie:      MEM 0x00f2200000..0x00f2ffffff=
- -> 0x00f2200000
-> [    3.405310] rk-pcie fe170000.pcie:      MEM 0x0980000000..0x09bfffffff=
- -> 0x0980000000
-> [    3.405372] rk-pcie fe170000.pcie: iATU unroll: enabled
-> [    3.405381] rk-pcie fe170000.pcie: iATU regions: 8 ob, 8 ib, align 64K=
-, limit 8G
-> [    3.666917] rk-pcie fe170000.pcie: PCIe Link up, LTSSM is 0x30011
-> [    3.666932] rk-pcie fe170000.pcie: PCIe Gen.1 x1 link up
-> [    3.667139] rk-pcie fe170000.pcie: PCI host bridge to bus 0002:20
-> ```
->=20
-> And it is reported that startup-delay-us is necessary in rockchip's SDK
-> kernel. But in mainline kernel it is different.
-
-that's not directly what I meant.
-
-I.e. if the behaviour changes with arbitary delay changes, it points
-very much to some sort of timing issue in the pcie driver itself.
-
-That's why I asked about the regulator turning on, because if the enable
-call returns 50ms earlier or later should never influence the behaviour
-of the driver.
-
-=46or example other threads could also just hinder the kernel from
-continuing the pcie probe even after the regulator is on - again
-leading to undefined behaviour, as you seem to be experiencing as
-described in your mail from yesterday.
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214173950.18570-2-khuey@kylehuey.com>
 
 
+* Kyle Huey <me@kylehuey.com> wrote:
+
+> To ultimately allow bpf programs attached to perf events to completely
+> suppress all of the effects of a perf event overflow (rather than just the
+> sample output, as they do today), call bpf_overflow_handler() from
+> __perf_event_overflow() directly rather than modifying struct perf_event's
+> overflow_handler. Return the bpf program's return value from
+> bpf_overflow_handler() so that __perf_event_overflow() knows how to
+> proceed. Remove the now unnecessary orig_overflow_handler from struct
+> perf_event.
+> 
+> This patch is solely a refactoring and results in no behavior change.
+> 
+> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> Suggested-by: Namhyung Kim <namhyung@kernel.org>
+> Acked-by: Song Liu <song@kernel.org>
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  include/linux/perf_event.h |  6 +-----
+>  kernel/events/core.c       | 28 +++++++++++++++-------------
+>  2 files changed, 16 insertions(+), 18 deletions(-)
+> 
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index d2a15c0c6f8a..c7f54fd74d89 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -810,7 +810,6 @@ struct perf_event {
+>  	perf_overflow_handler_t		overflow_handler;
+>  	void				*overflow_handler_context;
+>  #ifdef CONFIG_BPF_SYSCALL
+> -	perf_overflow_handler_t		orig_overflow_handler;
+>  	struct bpf_prog			*prog;
+>  	u64				bpf_cookie;
+>  #endif
+
+Could we reduce the #ifdeffery please?
+
+On distros CONFIG_BPF_SYSCALL is almost always enabled, so it's not like 
+this truly saves anything on real systems.
+
+I'd suggest making the perf_event::prog and perf_event::bpf_cookie fields 
+unconditional.
+
+> +#ifdef CONFIG_BPF_SYSCALL
+> +static int bpf_overflow_handler(struct perf_event *event,
+> +				struct perf_sample_data *data,
+> +				struct pt_regs *regs);
+> +#endif
+
+If the function definitions are misordered then first do a patch that moves 
+the function earlier in the file, instead of slapping a random prototype 
+into a random place.
+
+> -	READ_ONCE(event->overflow_handler)(event, data, regs);
+> +#ifdef CONFIG_BPF_SYSCALL
+> +	if (!(event->prog && !bpf_overflow_handler(event, data, regs)))
+> +#endif
+> +		READ_ONCE(event->overflow_handler)(event, data, regs);
+
+This #ifdef would go away too - on !CONFIG_BPF_SYSCALL event->prog should 
+always be NULL.
+
+Please keep the #ifdeffery reduction and function-moving patches separate 
+from these other changes.
+
+Thanks,
+
+	Ingo
 
