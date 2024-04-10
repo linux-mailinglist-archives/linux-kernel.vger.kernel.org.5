@@ -1,588 +1,236 @@
-Return-Path: <linux-kernel+bounces-138983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26AE889FD01
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:35:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68C4689FD05
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:36:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DEECCB28A66
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:34:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F92128196E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:36:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B4FE17BB0D;
-	Wed, 10 Apr 2024 16:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 491E617A933;
+	Wed, 10 Apr 2024 16:35:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WdGJ+FMW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="iwLCy8It"
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2114.outbound.protection.outlook.com [40.107.105.114])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8294C17B50C;
-	Wed, 10 Apr 2024 16:33:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712766839; cv=none; b=pKngH3RDXki3SCVZOcaJAIQREdSKzbv7Ei7faQFHCu5dKCvX2AKCKCxvHgdl1DRa2i1/lS0Tu2u58JiYz7mVSAB9/NjpXqRFLy5/MEC7BxUxOS2YkhnrSVeE8r3l14FTlSaOkedRqCBe4XhGPPQFZ8iLdjLaEfgrV3y1WffwRCU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712766839; c=relaxed/simple;
-	bh=+FUDvwQv/pjc3SPd6m6Xsh3tVWiCUKkTIowQBF/v+bo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c+3EZTijvPOhfUwsue0tqD8ht138ovkc8AADz+/f7EL2U2p9dKn3nFhoqx1xHTwctj3Y68IuPtaKlSJ5NXskDoGfsC3uwgyvnZNOBbYfkvtiMTWPLOxo7kJ48er2vrbiD6FEDHLSNyHrjSNW+M0fFHWxYQc422I8RLGfJnFFI84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WdGJ+FMW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8EBAC43390;
-	Wed, 10 Apr 2024 16:33:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712766839;
-	bh=+FUDvwQv/pjc3SPd6m6Xsh3tVWiCUKkTIowQBF/v+bo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WdGJ+FMWdhh0ULfdq8PAMBRkV2D07vdl12esxN36qRc7iBlgF3igm9UnHdW77OuFa
-	 R1W0JHu1+BnlUhglO03XjKxuV9Rt2mCMQCaSdrf4IRQD0U8D5g/dqXC0haKnWOYlx/
-	 Tpra8k4KGnwJ3YtphgLmFLiVaTX5TNMexFojRyJ3FaJEvmdbDTS+6N7skMgDaQOFuC
-	 eztJG/y+UXXqSBx5CDHVTVqVsnm+aGnXcRti6BXckFmR/c5/oCclxaYHn2HoTwNkOd
-	 FGC8MSUR8t8sqTz/1pWkII2Z0fI6j2RDG+Ademt/aK0H+PfBHKuXYMf9JZ5TszgGZX
-	 22ZZhsz28q9gg==
-Date: Wed, 10 Apr 2024 11:33:55 -0500
-From: Rob Herring <robh@kernel.org>
-To: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>,
-	Heiko Stuebner <heiko.stuebner@cherry.de>,
-	Shawn Guo <shawnguo@kernel.org>, Sebastian Reichel <sre@kernel.org>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Arnd Bergmann <arnd@arndb.de>, David Rientjes <rientjes@google.com>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Guo Ren <guoren@kernel.org>, Azeem Shaikh <azeemshaikh38@gmail.com>,
-	Max Filippov <jcmvbkbc@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
-	Jacky Huang <ychuang3@nuvoton.com>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Manikanta Guntupalli <manikanta.guntupalli@amd.com>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-	linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-fbdev@vger.kernel.org
-Subject: Re: [RESEND v7 22/37] dt-bindings: display: smi,sm501: SMI SM501
- binding json-schema
-Message-ID: <20240410163355.GA386057-robh@kernel.org>
-References: <cover.1712207606.git.ysato@users.sourceforge.jp>
- <9858ef1c149bd27b27594b3bd388601681d83460.1712207606.git.ysato@users.sourceforge.jp>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B08B176FD8;
+	Wed, 10 Apr 2024 16:35:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.105.114
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712766957; cv=fail; b=FqZsfCIhzy+n/OMns4mzY8IesN2BvIy10jKi7n1mwCL0g+MMlmMpP8s551V18dChcx5Re4WvHY82gY39dtrezX8Oss6JYNGz6rB2ZmWczU64BTtYO++ftYc0aaGVL3H0Q476c+4UeNppgt1e2BAXQ2JshnxvdPwlLjLmhQC3MxQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712766957; c=relaxed/simple;
+	bh=PVslibFE9ZhXLiWDhpaLymwOrVw+EF9iOvWK5Hxc0gE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=QWwvxsMAbsULEydYaC8wsubm+2lVSEAbl4XAORq3iigd7IQoR2uB+/ppJLfA+b1gdE8FHCQ2v6U0vt9AIkd4K0ejmn4zU8160552hWCZyO1Zb8BnptTaLyFgd/UuPD2UeORwV10yTTL8Yf06ydGxHEXfSSpsb585OSoPnxevcak=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=iwLCy8It; arc=fail smtp.client-ip=40.107.105.114
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VPfu1s2Os2olOBdRNt9oi1KiZKwGJugtzKvWY8B/zdKW3794g21wOZR3obGGtFE2KRBdbbbjHM8c6F3tJuIQ+2l9ItXXwEcPXSZ2YWehA3Llx2XJkjpLLvBc5BUzNHtMLWIQmoIOLignpUu8J33RAykV8AtFECwdG2F6Ivnm6Z2TP/YCvUYFCROz6noJmKGUuRHo0oiJrXe0L9Jl8kI8cx+KK2MOfXFND8b8X66g/8iLNEtq/3PZf8eGlsdS4WQ9SFK+1IKKaeS8Vb3uGV3DNAzhs6OtpvVVMBTQlOps9o6MTdpgVVJ0Fpo/m6phvrz97tNrFHxp4c5Wtd23R/WnXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dNDT8d2lq2iWjo1rdorTyo9MCI56lfg+PWhx+mrBj4E=;
+ b=nteNsa+85Pk9aGWGlYv1DuGVuvh1iSX7DLtDpYHPuMk6EFqd1JLRh/2lbHIgmf4AdMZpagR5EkiEULMnc073T98RkTnI7HLXQlmq6rYbXZAX0jk0RhmCdOtZonEMH0J83+wprbfpQLMP+RoWuQPKXwqJ3pnshjfgb0ZJ/kiXOiQJx5s8j+8XAXNZkiZhVxIj8/eFpcEOdISVTNrFAJJc0ukojOb4JiQdL37j/QZ5Gww+P+so9nzn7u7/gfW4fD8uya6CyvqReL8MdMl9/Sj7e5DM/EUtaPdNGGhif/T4soP6DhyOWP22VlbEPBQz6K4BpcPRQIitjRyeWHoxVyHJUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dNDT8d2lq2iWjo1rdorTyo9MCI56lfg+PWhx+mrBj4E=;
+ b=iwLCy8ItaSm9BQhfWfMBSYC8RYpyHot2lp/UhaVWhjpPNoPe43JU68nE6u4z1q7REvn0Booei28f8VacQnNvYVafl49oXBf7vR4eYpAdL7iz80mgalM1D4Y1ePb3XdkhKLu3FHtib4qb2usEHggQeVU0E5jy/ga8C5lLcf/cwmg=
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by PAXPR04MB8638.eurprd04.prod.outlook.com (2603:10a6:102:21d::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.53; Wed, 10 Apr
+ 2024 16:35:52 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7409.042; Wed, 10 Apr 2024
+ 16:35:52 +0000
+Date: Wed, 10 Apr 2024 12:35:42 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Will Deacon <will@kernel.org>
+Cc: Xu Yang <xu.yang_2@nxp.com>,
+	"mark.rutland@arm.com" <mark.rutland@arm.com>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"shawnguo@kernel.org" <shawnguo@kernel.org>,
+	"s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+	"kernel@pengutronix.de" <kernel@pengutronix.de>,
+	"festevam@gmail.com" <festevam@gmail.com>,
+	"john.g.garry@oracle.com" <john.g.garry@oracle.com>,
+	"jolsa@kernel.org" <jolsa@kernel.org>,
+	"namhyung@kernel.org" <namhyung@kernel.org>,
+	"irogers@google.com" <irogers@google.com>,
+	"mike.leach@linaro.org" <mike.leach@linaro.org>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"acme@kernel.org" <acme@kernel.org>,
+	"alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>,
+	"adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+	"imx@lists.linux.dev" <imx@lists.linux.dev>
+Subject: Re: [EXT] Re: [PATCH v8 3/8] perf: imx_perf: let the driver manage
+ the counter usage rather the user
+Message-ID: <Zha/3tsYQMBI652O@lizhi-Precision-Tower-5810>
+References: <20240322063930.749126-1-xu.yang_2@nxp.com>
+ <20240322063930.749126-3-xu.yang_2@nxp.com>
+ <20240409152627.GA23621@willie-the-truck>
+ <DU2PR04MB882209413AB62531713166B38C062@DU2PR04MB8822.eurprd04.prod.outlook.com>
+ <20240410154546.GA25225@willie-the-truck>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410154546.GA25225@willie-the-truck>
+X-ClientProxiedBy: SJ0PR13CA0114.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c5::29) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9858ef1c149bd27b27594b3bd388601681d83460.1712207606.git.ysato@users.sourceforge.jp>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PAXPR04MB8638:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ZZWBsf7UAMEK0GPvLzk4ie7u1j1K+A4e0ekgLRtppIlWzRLM/hj0QLsSOmW5EQNl/PU6IV/ahpOusSWpvive4H/LVQ1+UPlPmA8VNT+hMRRDqUEZS8Xvsv8LIg/4cJNyWwe14XPBF03xfq+VGRS/hZ7IdkQYfJeH7ZWaR4GqIGbCbbx1vh7T54cbKhbs0Nuo1OKg6Emes/5e6+5ue11EhndkC9n9s912XbYUdsrGLLCodxlag+BKCLhvZzcPTUyU4Nq5b5j4rAyR0SUUH3E+tfhpOVwjgueV09lz+ohAXY0tCYqn2ZbyV9zFcrx9bfoLOPG8e9T1d4OL/U6O+4DC8ALW+9YZluXcyvVfbXXz8Vk11u5QGD03HkelyaHm/IUDnskVpdN3FvHdCHbTW6tahpuK7+6fSmoMl7e+rx/lGm1TA1yOmdx5dQ7mwvGvXQsuGiHP7MNtwqExGviCnkEmlE88GBr8erZyPpKfaDjfDgYNQjbf1FrgnAWDTgahzCHqosRNSderx8IfDjty/ufdBO+Kye+m1+pX/Y5R8+n48gpMlt3be4uxmhBh++sU5+5Lcq2jm7D3H/cZnN1Vtayn/8MByBALboCFGL1TQ7VAQ8PK0lMfLFvNrt7uFoJXn/LMxkHLdpDgUO2LSEyBGdo24Tt/HGku2VMqdi1UQlZFKPwBwRWfSGAfgY4oKRix/f+2PKmnIFzUs//DP3VsVnTvnw==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(1800799015)(7416005)(376005)(366007)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?kaz5WuQ6C0wcmX0BR1iuc5kwpxUxKWkeQ3VEpDg6S24rqxyufcjvnZUAO5XY?=
+ =?us-ascii?Q?t8JW8onf+NiSst2yI13gc6bk1mOptIVn34r/4AbLQNbc+EbXJxRyVga41GAk?=
+ =?us-ascii?Q?B3AaV0O8nl3TQqCO8JPwhf1/TWG1IxyC6a88EOB+z/vD4SefPb7ecMycyMiE?=
+ =?us-ascii?Q?LRHeETFQ0Yjig7MYo9LxWV43SWMMoooIvs7bxgBKKrunZGRr24GVem6F8JOm?=
+ =?us-ascii?Q?XspmdrAOKbX63PDTgZHo1SEmP+Gwf5WQa5ZGsxUviCeltrwpYF9qFJSpAMhE?=
+ =?us-ascii?Q?FN6FAGhPAnFUyPnvv2aP5OeeJhqX2wJLSATPp8C6RhRzrKECPptP9e9k3mz6?=
+ =?us-ascii?Q?kG1xOG9fN04JZs1FwPSLGx4int1zKtFYJ3xDduw2ZeBE+cJc6+gs0GjyJaTY?=
+ =?us-ascii?Q?m0flVELjFp4M61xl0WvPGR94RAXoSwD2ncw9t4colLdL0Fi8ccbZEtAxstnf?=
+ =?us-ascii?Q?ZMZBfxHgd8Y04p0Q2/6BE9hIIFvkYfOZ+fgkNgUoW8MIEQNl8/kjyE7jC4bV?=
+ =?us-ascii?Q?kiW0YzP+C4R6NaHSg1PA7sH4CxwGh3zC76UUMTEcM25uo6kk+kOYAaoXvhQA?=
+ =?us-ascii?Q?ab5N2ANLykIpQcGZdyqSn8/A2yqINqdF0+fyhlDFLk7R59eB7kwJJI0JjYGX?=
+ =?us-ascii?Q?KyyTUwyGbKv5Aq2ikkv3tWIZmmtiQ83/LhyBIDEBocGITkmWqGnkDUURwXQn?=
+ =?us-ascii?Q?EqsiVZ/wJVQXMovRjemXmFEXxa11QvC8owWQqhXOoyeLgaW6P4/jF6ZIfzlR?=
+ =?us-ascii?Q?o9TPeRKh725JJJj8Hz78tssACP/bo+L8fINIrY9hmTIbf/uK9WaHTJvrQ94u?=
+ =?us-ascii?Q?uGdfGYa+2W9M7LoNWAFPK1tbFAzru/fjHj7mRvyxnEJrWmKAydPK5CjG4us6?=
+ =?us-ascii?Q?6sb1OFDtUR4beSEcP3Zar5Uv9eAq7DDxBmUwbv39L/LvLwotdbp8Hy407ceu?=
+ =?us-ascii?Q?9uP0x9H3zcpjMY80qs9dAT79v94KBTA5MSCtt14YZIkoRHnZGsgDOkvKU7JQ?=
+ =?us-ascii?Q?e3qwQu+q7n5QpYZXfsPX3d5WFYfwzC8Yf+biAXK59kkIKFvhxRO0QG7G8fqL?=
+ =?us-ascii?Q?h0QhrBJsiK6c+2iQaAwv6lYcca9JaSv/jfOKSe8p61264T+NR40lN30eOCs/?=
+ =?us-ascii?Q?i0IfYGUK9v2fIJUrZTlOIO0l2xFTn36dkWJVewcgrP18Q4xQRg0IJbaKc+zw?=
+ =?us-ascii?Q?Q+vwN2cl5cosUgpFz/O/6lZTlYiQh16gXoegBfAbZ7RY/x1ViYuugHIDv4F0?=
+ =?us-ascii?Q?Rmy0VOzlZC4JRwcFl0VQh86XRbzljYrppBGfotQCRDjdHnlWQlUQA/X/4cWd?=
+ =?us-ascii?Q?GYLxgiaOe1uuGBLI/HZMfG6mw9qzCPyMPzan2bHLXpB4FoVES58hudWs+kjF?=
+ =?us-ascii?Q?KYffuOjAYx+b5jY6wu6YXjz4Zog1V0ASz9M20F+Ya8UqzZsGUj8GYLmUaAxk?=
+ =?us-ascii?Q?+sSB/exRzipuTZYDmTHS7B8TKcB9YqWMUGFf6P7N+t4LbtNckfMeaRlCukfP?=
+ =?us-ascii?Q?q7eYbkAWIDcCeBgftDHiDomVuQf+NdODCzfrjEpjKkyhZRgdvoo8ULbA1cWq?=
+ =?us-ascii?Q?VwCTgYdZ3PHP4gSxss9+AWI3jXRRojSyMYw3w22F?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 49a15624-7b81-46a2-bea8-08dc597c49a4
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 16:35:52.7044
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Q9Ocy21G4TwlJNhKp+Ec/OEbA2YmSQL2vipVjo7sV4KaHTcq9bIDyzFfk50ZAgoJdUX9KW8QeJgtaQuR5fT+2w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8638
 
-On Thu, Apr 04, 2024 at 02:14:33PM +0900, Yoshinori Sato wrote:
-> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
-> ---
->  .../bindings/display/smi,sm501.yaml           | 398 ++++++++++++++++++
->  1 file changed, 398 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/smi,sm501.yaml
+On Wed, Apr 10, 2024 at 04:45:47PM +0100, Will Deacon wrote:
+> On Wed, Apr 10, 2024 at 07:39:46AM +0000, Xu Yang wrote:
+> > > On Fri, Mar 22, 2024 at 02:39:25PM +0800, Xu Yang wrote:
+> > > > In current design, the user of perf app needs to input counter ID to count
+> > > > events. However, this is not user-friendly since the user needs to lookup
+> > > > the map table to find the counter. Instead of letting the user to input
+> > > > the counter, let this driver to manage the counters in this patch.
+> > > 
+> > > I think we still have to support the old interface so that we don't break
+> > > those existing users (even if the driver just ignores whatever counter ID
+> > > is provided in a backwards-compatible way).
+> > > 
+> > > > This will be implemented by:
+> > > >  1. allocate counter 0 for cycle event.
+> > > >  2. find unused counter from 1-10 for reference events.
+> > > >  3. allocate specific counter for counter-specific events.
+> > > >
+> > > > In this patch, counter attribute is removed too. To mark counter-specific
+> > > > events, counter ID will be encoded into perf_pmu_events_attr.id.
+> > > >
+> > > > Reviewed-by: Frank Li <Frank.Li@nxp.com>
+> > > > Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
+> > > >
+> > > > ---
+> > > > Changes in v6:
+> > > >  - new patch
+> > > > Changes in v7:
+> > > >  - no changes
+> > > > Changes in v8:
+> > > >  - add Rb tag
+> > > > ---
+> > > >  drivers/perf/fsl_imx9_ddr_perf.c | 168 ++++++++++++++++++-------------
+> > > >  1 file changed, 99 insertions(+), 69 deletions(-)
+> > > >
+> > > > diff --git a/drivers/perf/fsl_imx9_ddr_perf.c b/drivers/perf/fsl_imx9_ddr_perf.c
+> > > > index 0017f2c9ef91..b728719b494c 100644
+> > > > --- a/drivers/perf/fsl_imx9_ddr_perf.c
+> > > > +++ b/drivers/perf/fsl_imx9_ddr_perf.c
+> > > > @@ -245,14 +249,12 @@ static const struct attribute_group ddr_perf_events_attr_group = {
+> > > >       .attrs = ddr_perf_events_attrs,
+> > > >  };
+> > > >
+> > > > -PMU_FORMAT_ATTR(event, "config:0-7");
+> > > > -PMU_FORMAT_ATTR(counter, "config:8-15");
+> > > > +PMU_FORMAT_ATTR(event, "config:0-15");
+> > > 
+> > > Sadly, this is a user-visible change so I think it will break old tools,
+> > > won't it?
+> > 
+> > For imx ddr pmu, most of the people will use metrics rather event itself,
+> > and we have speficy the format of event parameters in metrics table.
+> > The parameters is also updated in this patchset.
+> > 
+> > And to easy use for user, the counter should be hidden (transparent) to
+> > user after I had talk with Frank. Then, the user need't to look up the event
+> > table to find which counter to use. 
+> > 
+> > So this patchset will basically not break the usage of perf tools and will
+> > improve practicality.
 > 
-> diff --git a/Documentation/devicetree/bindings/display/smi,sm501.yaml b/Documentation/devicetree/bindings/display/smi,sm501.yaml
-> new file mode 100644
-> index 000000000000..06c6af4fa4a9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/smi,sm501.yaml
-> @@ -0,0 +1,398 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/smi,sm501.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Silicon Motion SM501 Mobile Multimedia Companion Chip
-> +
-> +maintainers:
-> +  - Yoshinori Sato <ysato@user.sourceforge.jp>
-> +
-> +description: |
-
-Don't need '|'
-
-> +  These DT bindings describe the SM501.
-
-Drop "These DT bindings describe" and just describe what the h/w is.
-
-> +
-> +properties:
-> +  compatible:
-> +    const:
-> +      smi,sm501
-> +
-> +  reg:
-> +    maxItems: 2
-> +    description: |
-> +     First entry: System Configuration register
-> +     Second entry: IO space (Display Controller register)
-
-items:
-  - description: System Configuration register
-  - description: IO space (Display Controller register)
-
-Is it just 1 register in each or should be "registers"?
-
-
-> +
-> +  interrupts:
-> +    description: SM501 interrupt to the cpu should be described here.
-> +
-> +  mode:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description: select a video mode
-> +
-> +  edid:
-> +    description: |
-
-Don't need '|'.
-
-> +      verbatim EDID data block describing attached display.
-
-s/verbatim/Verbatim/
-
-> +      Data from the detailed timing descriptor will be used to
-> +      program the display controller.
-> +
-> +  little-endian:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: available on big endian systems, to set different foreign endian.
-> +  big-endian:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: available on little endian systems, to set different foreign endian.
-> +
-> +  swap-fb-endian:
-
-All these custom properties need vendor prefix.
-
-But really, why are so many custom properties needed? Other display 
-controllers don't need so many, why does this one? Do you actually have 
-users of all of them.
-
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: swap framebuffer byteorder.
-> +
-> +  route-crt-panel:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: Panel output merge to CRT.
-> +
-> +  crt:
-> +    type: object
-> +    description: CRT output control
-> +    properties:
-> +      edid:
-
-Huh? You already defined edid elsewhere.
-
-> +        $ref: /schemas/types.yaml#/definitions/uint8-array
-> +        description: |
-> +          verbatim EDID data block describing attached display.
-> +          Data from the detailed timing descriptor will be used to
-> +          program the display controller.
-> +
-> +      smi,flags:
-> +        $ref: /schemas/types.yaml#/definitions/string-array
-> +        description: Display control flags.
-> +        items:
-> +          anyOf:
-> +            - const: use-init-done
-> +            - const: disable-at-exit
-> +            - const: use-hwcursor
-> +            - const: use-hwaccel
-> +            - const: panel-no-fpen
-> +            - const: panel-no-vbiasen
-> +            - const: panel-inv-fpen
-> +            - const: panel-inv-vbiasen
-> +        maxItems: 8
-> +
-> +      bpp:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: Color depth
-> +
-> +  panel:
-
-Isn't this just the same as 'crt'?
-
-> +    type: object
-> +    description: Panel output control
-> +    properties:
-> +      edid:
-> +        $ref: /schemas/types.yaml#/definitions/uint8-array
-> +        description: |
-> +          verbatim EDID data block describing attached display.
-> +          Data from the detailed timing descriptor will be used to
-> +          program the display controller.
-> +
-> +      smi,flags:
-> +        $ref: /schemas/types.yaml#/definitions/string-array
-> +        description: Display control flags.
-> +        items:
-> +          anyOf:
-> +            - const: use-init-done
-> +            - const: disable-at-exit
-> +            - const: use-hwcursor
-> +            - const: use-hwaccel
-> +            - const: panel-no-fpen
-> +            - const: panel-no-vbiasen
-> +            - const: panel-inv-fpen
-> +            - const: panel-inv-vbiasen
-> +        maxItems: 8
-> +
-> +      bpp:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: Color depth
-> +
-> +  smi,devices:
-> +    $ref: /schemas/types.yaml#/definitions/string-array
-> +    description: Select SM501 device functions.
-> +    items:
-> +      anyOf:
-> +        - const: usb-host
-> +        - const: usb-slave
-> +        - const: ssp0
-> +        - const: ssp1
-> +        - const: uart0
-> +        - const: uart1
-> +        - const: fbaccel
-> +        - const: ac97
-> +        - const: i2s
-> +        - const: gpio
-> +    minItems: 1
-> +    maxItems: 10
-> +
-> +  smi,mclk:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: mclk frequency.
-> +
-> +  smi,m1xclk:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: m1xclk frequency.
-
-Clock stuff? Use the clock binding.
-
-> +
-> +  misc-timing:
-> +    type: object
-> +    description: Miscellaneous Timing register values.
-> +    properties:
-> +      ex:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: Extend bus holding time.
-> +
-> +      xc:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: Xscale clock input select.
-> +
-> +      usb-over-current-detect-disable:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: USB host current detection disable (Us=0).
-> +
-> +      usb-over-current-detect-enable:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: USB host current detection disable (Us=1).
-> +
-> +      sdram-clock-mode1-288mhz:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: SSM1 bit is clear.
-> +
-> +      sdram-clock-mode1-div:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: SSM1 bit is set.
-> +
-> +      sm1:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: SDRAM clock divider for PW mode 1.
-> +
-> +      sdram-clock-mode0-288mhz:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: SSM0 bit is clear.
-> +
-> +      sdram-clock-mode0-div:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: SSM0 bit is set.
-> +
-> +      sm0:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: SDRAM clock divider for PW mode 0.
-> +
-> +      pll-debug-input:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: 96MHz PLL debug input reference frequency (Deb=0).
-> +
-> +      pll-debug-output:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: 96MHz PLL debug output frequency (Deb=1).
-> +
-> +      no-acpi-control:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: No ACPI control (A=0).
-> +
-> +      acpi-control:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: No ACPI control (A=1).
-> +
-> +      divider:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: Second PLL output frequency.
-> +
-> +      usb-host-normal:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: USB Host normal mode.
-> +
-> +      usb-host-simulation:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: USB Host simulation mode.
-> +
-> +      delay:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: Delay time to latch read data. Set the value to 10x.
-> +
-> +  misc-control:
-> +    type: object
-> +    description: Miscellaneous Control register values.
-> +    properties:
-> +      pad:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: PCI Pad drive strength.
-> +
-> +      usbclk:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: USB Clcok Select.
-> +
-> +      uart1:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: UART1 (SSP=0)
-> +
-> +      ssp1:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: SSP1 (SSP=1)
-> +
-> +      latch-address-disable:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: 8051 Latch disable (Lat=0).
-> +
-> +      latch-address-enable:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: 8051 Latch enable (Lat=1).
-> +
-> +      panel-data-18bit:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: Flat Panel data 18bit (FP=0).
-> +
-> +      panel-data-24bit:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: Flat Panel data 24bit (FP=1).
-> +
-
-> +      xtal-freq-24mhz:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: Crystal frequency 24MHz (Freq=0).
-> +
-> +      xtal-freq-12mhz:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: Crystal frequency 12MHz (Freq=1).
-
-What's the relationship between these 2 properties? What if neither is 
-present? What if both are? Define properties such that you can't have 
-invalid combinations. Yes, we could just handle that with constraints, 
-but why start with a bad design. There's other cases of this same 
-pattern here.
-
-
-> +
-> +      refresh:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: Internal memory refresh timing.
-> +
-> +      hold:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description: BUS Hold time.
-> +
-> +      sh-ready-low:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: SuperH ready polarity active low (SH=0).
-> +
-> +      sh-ready-high:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: SuperH ready polarity active high (SH=1).
-> +
-> +      interrupt-normal:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: Interrupt normal (II=0).
-> +
-> +      interrupt-inverted:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: Interrupt Inverting (II=1).
-> +
-> +      pll-clock-count-disable:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: PLL clock count disable.
-> +
-> +      pll-clock-count-enaable:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: PLL clock count enable.
-> +
-> +      dac-power-enable:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: DAC Power enable (DAC=0).
-> +
-> +      dac-power-disable:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: DAC Power disable (DAC=1).
-> +
-> +      usb-slave-cpu:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: USB slave controller cpu (MC=0).
-> +
-> +      usb-slave-8051:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: USB slave controller 8051MCU (MC=1).
-> +
-> +      burst-length-8:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: CPU Master burst length 8 (BL=0).
-> +
-> +      burst-length-1:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: CPU Master burst length 1 (BL=1).
-> +
-> +      usb-port-master:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: USB port master.
-> +
-> +      usb-port-slave:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: USB port slave.
-> +
-> +      vr-mmio-30mb:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: NEC VR Memory map MMIO locatedat 30MB (VR=0)
-> +
-> +      vr-mmio-62mb:
-> +        $ref: /schemas/types.yaml#/definitions/flag
-> +        description: NEC VR Memory map MMIO locatedat 62MB (VR=1)
-> +
-> +  gpio-pin-control:
-> +    type: object
-> +    description: GPIO control configuration.
-> +    properties:
-> +      pin:
-> +        type: object
-> +        properties:
-> +          gpio:
-
-'gpio' is already in use as a property name.
-
-> +            $ref: /schemas/types.yaml#/definitions/flag
-> +            description: pin in/out use GPIO.
-> +          function:
-> +            $ref: /schemas/types.yaml#/definitions/flag
-> +            description: pin in/out use function.
-
-Why do you need 2 nodes and 2 properties to define 3 possible states? 
-There is not present, 'gpio', or 'function'. That's a single 
-tri-state property. What does not present mean?
-
-> +
-> +  gpio-i2c:
-> +    type: object
-> +    description: GPIO I2C definition.
-> +    properties:
-> +      i2c:
-> +        type: object
-> +        properties:
-> +          bus:
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: I2C bus number.
-
-How is bus number a property of the h/w?
-
-> +
-> +          sda:
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: I2C SDA pin port number.
-> +
-> +          scl:
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: I2C SCL pin port number.
-> +
-> +          delay:
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: bit transmission delay.
-> +
-> +          timeout:
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +            description: transmission timeout.
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +
-> +examples:
-> +  # MPC5200
-> +  - |
-> +    display@1,0 {
-
-Not a correct unit address.
-
-> +        compatible = "smi,sm501";
-> +        reg = <0x00000000 0x00800000
-> +               0x03e00000 0x00200000>;
-> +        interrupts = <1 1 3>;
-> +        mode = "640x480-32@60";
-> +        edid = [00 ff ff ff ff ff ff 00 00 00 00 00 00 00 00 00
-> +                00 00 01 04 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 f0 0a 80 fb 20 e0 25 10 32 60
-> +                02 00 00 00 00 00 00 06 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> +                00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 bd];
-
-Kind of a sparse example. Please make examples using optional 
-properties.
-
-> +    };
-> -- 
-> 2.39.2
+> Sorry, but I don't agree. The original commit adding this driver
+> (55691f99d417) gives the following examples in the commit message:
 > 
+> For example:
+>       perf stat -a -I 1000 -e imx9_ddr0/eddrtq_pm_rd_trans_filt,counter=2,axi_mask=ID_MASK,axi_id=ID/
+>       perf stat -a -I 1000 -e imx9_ddr0/eddrtq_pm_wr_trans_filt,counter=3,axi_mask=ID_MASK,axi_id=ID/
+>       perf stat -a -I 1000 -e imx9_ddr0/eddrtq_pm_rd_beat_filt,counter=4,axi_mask=ID_MASK,axi_id=ID/
+> 
+> I don't think these will work any more if we apply this patch.
+
+Yang:
+
+    keep compatible is important. Please try well's suggestion
+    "if the driver just ignores whatever counter ID is provided in a 
+backwards-compatible way)." 
+
+    If you have further question, you can ping directly. Please avoid
+use outlook to reply community email. It always append annoised "EXT".
+
+Frank
+
+> 
+> Will
 
