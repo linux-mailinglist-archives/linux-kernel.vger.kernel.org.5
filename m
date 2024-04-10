@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-139500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D3588A03BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:56:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F4E38A03BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:57:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B4651F29A24
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:56:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AF7628C8C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:57:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D387136E0D;
-	Wed, 10 Apr 2024 22:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 005104174C;
+	Wed, 10 Apr 2024 22:47:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wPQqvvBO";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YhNl7uJX"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZULKCBP7";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="A+aDrg01"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE8E136E00
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:47:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C927E137746
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:47:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712789256; cv=none; b=PINF3qYgDRnhJR0DL5QSj7zx+NFB53OBFKwwcE+xrDE8wUhg+2MaVJEBjnCX1iyzOS5QoPBToXAN+H4ZYv8aR6HQv/jF1gyMLaYcSh9K1SxPgaZFJk3JPfGMAJ/J6LCCg344Oeu7mb2AJCsJYt7i7ztMF5+x9OVEnx1WHDGPEoA=
+	t=1712789258; cv=none; b=tW59qm3Q1H7c9qJvBMs1qfNShjPFy3NZWwlrHDwzlN55CyNfzMPMyLuLGJD/eGjlsnJibP3Na4s2YYFdIkb/YjZLf0zxob3yvC34vZjVYqxKWL76z4ynOyaE8Ldhu2tVz8pvcVrnsv2RHA6lSuGcqVAvYdpGGAwvOv8pSYqt7Iw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712789256; c=relaxed/simple;
-	bh=Kaitif/719xp2xVCsTipKGEhafvxHZw3eYIDLxrxhD4=;
+	s=arc-20240116; t=1712789258; c=relaxed/simple;
+	bh=ojSHAmzDSUCtV20tG0Eic6qt8OMUSGLWdNQCp73/DO0=;
 	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Date; b=tVbk0+cuU6+c0+jBQHC9ya4haCIh0LA/hSrzYbpTjV+Rv66ElnkvDNYWq7CHH+Q7pXu3VgctROKE/IVLZurr66Q16Z5XenbZaFqs64wPr6XsfJmWPoHoqCp7Ga353sixD0UlZm/epxstUk92JYE1+VdjfOhbjAlb53EGNjNTuR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wPQqvvBO; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YhNl7uJX; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Date; b=CFYeSx/Y0L/tuiAkMmPx4tmFtgFMzc5XV63U9xWqI0FEyk5ysu413aEbeAPAclJDfJFvfo/kfGHvcH2fmZ3UUFZ9K03Q/ezue+fOEsJv3qq7pD+2yrY28koXVv0tJKjPX7aXDIz7suTdAQi9hjm9gcbEsezE+YftPWoYMDJaozs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZULKCBP7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=A+aDrg01; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240410165553.820640735@linutronix.de>
+Message-ID: <20240410165553.882049383@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712789253;
+	s=2020; t=1712789255;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=TLf+HH0NPG+O40MqHfVvMTLhniRUMJJ6i8JJ174+iCU=;
-	b=wPQqvvBOu/geE0SSLMNT8rSv5WiV+XmXZL+SewO9aQzpikSOothjioLtJqbS/WBSWwwF1b
-	rUf/UzvgrzQg8B6KsjHCTQ9csFJ/DjxUGtvPCxI4Hy8BV/s61msp7GF0oJPK6OPXJa1f4f
-	4q2SVh6d4BCaBJBtvZVm0bEAy5tDmvA5z9zg3NXYBZhu/h2hRK7bBBqV61fmmrhuKugV5Z
-	eVNQ/YY4mgHcn3Ls8tcd5FUZRGvwMB4F0P6uFYdKjO2KwKgszfLK3RacYR3+5i2Enn7V2E
-	oXqln6OpykbL+HIX+iYERgTRQRzpuqLFkxNNnWnJx1LymRm/0TP2VBZqOqNPtg==
+	 references:references; bh=bzEboz8AUjwt0LmBupDNjtajHSCekoKcw08hOKXcNgs=;
+	b=ZULKCBP76zpp9/bl0KZoilv8DFZ/NLPLD4CS6xtmVCfo5zqztBAhbPUwmCNzkKCA4xc8/m
+	wyIHhJQPtDu+O5+eM+r64YmfrKgXlk38qIVp2dqTTtQVC83g/RtNo8GlIq6nvRrW05KKTe
+	5oqbnZmdGqqBmdOvhqMCsxd4HUH8IjgRehupAvb+ZbIu+emUdznD7vK9ZlvglgTs4E9ZFe
+	xCV0rORN7i/lVC6yIohKT+1N7TV+/CgNxbIq44K4Ad65sNP/Tus6ETKYWI0eVe1X9Hfc79
+	JC+80h1LZJVEr9/2mH6e1dW+iVVyvI9tmYOlD55IE5xpCuP2VNlLPTLnpydpAw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712789253;
+	s=2020e; t=1712789255;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=TLf+HH0NPG+O40MqHfVvMTLhniRUMJJ6i8JJ174+iCU=;
-	b=YhNl7uJXnHg0KUvq8XAAfyDPEd8bbrLHrifvknMG2s3N+AoTMHhELDkkswXGxb95u8rQkX
-	z2Nsj9uKn8d7HLCw==
+	 references:references; bh=bzEboz8AUjwt0LmBupDNjtajHSCekoKcw08hOKXcNgs=;
+	b=A+aDrg01PivhTTdDSGJ0HCSDxhdjuor8i5KU9ixzsV0uwoO8VO/Zr4oM6XTWohXKMPl/PL
+	bWV/A8Rp5J2tZZDw==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>,
@@ -59,8 +59,7 @@ Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>,
  Stephen Boyd <sboyd@kernel.org>,
  Eric Biederman <ebiederm@xmission.com>,
  Oleg Nesterov <oleg@redhat.com>
-Subject: [patch V2 46/50] signal: Handle ignored signals in
- do_sigaction(action != SIG_IGN)
+Subject: [patch V2 47/50] signal: Queue ignored posixtimers on ignore list
 References: <20240410164558.316665885@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -69,103 +68,124 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Thu, 11 Apr 2024 00:47:33 +0200 (CEST)
+Date: Thu, 11 Apr 2024 00:47:34 +0200 (CEST)
 
-When a real handler (including SIG_DFL) is installed for a signal, which
-had previously SIG_IGN set, then the list of ignored posix timers has to be
-checked for timers which are affected by this change.
+Queue posixtimers which have their signal ignored on the ignored list:
 
-Add a list walk function which checks for the matching signal number and if
-found requeues the timers signal, so the timer is rearmed on signal
-delivery.
+   1) When the timer fires and the signal has SIG_IGN set
 
-Rearming the timer right away is not possible because that requires to drop
-sighand lock.
+   2) When SIG_IGN is installed via sigaction() and a timer signal
+      is queued
 
-No functional change as the counter part which queues the timers on the
-ignored list is still missing.
+This completes the SIG_IGN handling and such timers are not longer self
+rearmed which avoids pointless wakeups.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- kernel/signal.c |   54 +++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 53 insertions(+), 1 deletion(-)
+ kernel/signal.c |   44 ++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 36 insertions(+), 8 deletions(-)
 
 --- a/kernel/signal.c
 +++ b/kernel/signal.c
-@@ -2035,7 +2035,55 @@ int posixtimer_send_sigqueue(struct k_it
- 	rcu_read_unlock();
- 	return ret;
+@@ -722,6 +722,16 @@ void signal_wake_up_state(struct task_st
+ 		kick_process(t);
  }
--#endif /* CONFIG_POSIX_TIMERS */
+ 
++static inline void posixtimer_sig_ignore(struct task_struct *tsk, struct sigqueue *q);
 +
-+static void posixtimer_sig_unignore(struct task_struct *tsk, int sig)
++static void sigqueue_free_ignored(struct task_struct *ptmr_tsk, struct sigqueue *q)
 +{
-+	struct hlist_head *head = &tsk->signal->ignored_posix_timers;
-+	struct hlist_node *tmp;
-+	struct k_itimer *tmr;
-+
-+	if (likely(hlist_empty(head)))
-+		return;
-+
-+	/*
-+	 * Rearming a timer with sighand lock held is not possible due to
-+	 * lock ordering vs. tmr::it_lock. Just stick the sigqueue back and
-+	 * let the signal delivery path deal with it whether it needs to be
-+	 * rearmed or not. This cannot be decided here w/o dropping sighand
-+	 * lock and creating a loop retry horror show.
-+	 */
-+	hlist_for_each_entry_safe(tmr, tmp , head, ignored_list) {
-+		struct task_struct *target;
-+
-+		/*
-+		 * tmr::sigq.info.si_signo is immutable, so accessing it
-+		 * without holding tmr::it_lock is safe.
-+		 */
-+		if (tmr->sigq.info.si_signo != sig)
-+			continue;
-+
-+		hlist_del_init(&tmr->ignored_list);
-+
-+		/* This should never happen and leaks a reference count */
-+		if (WARN_ON_ONCE(!list_empty(&tmr->sigq.list)))
-+			continue;
-+
-+		/*
-+		 * Get the target for the signal. If target is a thread and
-+		 * has exited by now, drop the reference count.
-+		 */
-+		rcu_read_lock();
-+		target = posixtimer_get_target(tmr);
-+		if (target)
-+			posixtimer_queue_sigqueue(&tmr->sigq, target, tmr->it_pid_type);
-+		else
-+			posixtimer_putref(tmr);
-+		rcu_read_unlock();
-+	}
++	if (likely(!ptmr_tsk || q->info.si_code != SI_TIMER))
++		__sigqueue_free(q);
++	else
++		posixtimer_sig_ignore(ptmr_tsk, q);
 +}
-+#else /* CONFIG_POSIX_TIMERS */
-+static inline void posixtimer_sig_unignore(struct task_struct *tsk, int sig) { }
-+#endif /* !CONFIG_POSIX_TIMERS */
- 
- void do_notify_pidfd(struct task_struct *task)
- {
-@@ -4205,6 +4253,8 @@ int do_sigaction(int sig, struct k_sigac
- 	sigaction_compat_abi(act, oact);
- 
- 	if (act) {
-+		bool was_ignored = k->sa.sa_handler == SIG_IGN;
 +
- 		sigdelsetmask(&act->sa.sa_mask,
- 			      sigmask(SIGKILL) | sigmask(SIGSTOP));
- 		*k = *act;
-@@ -4225,6 +4275,8 @@ int do_sigaction(int sig, struct k_sigac
- 			flush_sigqueue_mask(&mask, &p->signal->shared_pending, NULL);
- 			for_each_thread(p, t)
- 				flush_sigqueue_mask(&mask, &t->pending, NULL);
-+		} else if (was_ignored) {
-+			posixtimer_sig_unignore(p, sig);
+ /*
+  * Remove signals in mask from the pending set and queue.
+  *
+@@ -740,7 +750,7 @@ static void flush_sigqueue_mask(sigset_t
+ 	list_for_each_entry_safe(q, n, &s->list, list) {
+ 		if (sigismember(mask, q->info.si_signo)) {
+ 			list_del_init(&q->list);
+-			__sigqueue_free(q);
++			sigqueue_free_ignored(ptmr_tsk, q);
  		}
  	}
+ }
+@@ -1964,9 +1974,8 @@ int posixtimer_send_sigqueue(struct k_it
+ 	int sig = q->info.si_signo;
+ 	struct task_struct *t;
+ 	unsigned long flags;
+-	int ret, result;
++	int result;
  
+-	ret = -1;
+ 	rcu_read_lock();
+ 
+ 	t = posixtimer_get_target(tmr);
+@@ -2012,13 +2021,24 @@ int posixtimer_send_sigqueue(struct k_it
+ 	 */
+ 	q->info.si_overrun = 0;
+ 
+-	ret = 1; /* the signal is ignored */
+ 	if (!prepare_signal(sig, t, false)) {
+ 		result = TRACE_SIGNAL_IGNORED;
++
++		/* Paranoia check. Try to survive. */
++		if (WARN_ON_ONCE(!list_empty(&q->list)))
++			goto out;
++
++		if (hlist_unhashed(&tmr->ignored_list)) {
++			hlist_add_head(&tmr->ignored_list, &t->signal->ignored_posix_timers);
++			posixtimer_sigqueue_getref(q);
++		}
+ 		goto out;
+ 	}
+ 
+-	ret = 0;
++	/* This should never happen and leaks a reference count */
++	if (WARN_ON_ONCE(!hlist_unhashed(&tmr->ignored_list)))
++		hlist_del_init(&tmr->ignored_list);
++
+ 	if (unlikely(!list_empty(&q->list))) {
+ 		/* This holds a reference count already */
+ 		result = TRACE_SIGNAL_ALREADY_PENDING;
+@@ -2033,7 +2053,14 @@ int posixtimer_send_sigqueue(struct k_it
+ 	unlock_task_sighand(t, &flags);
+ ret:
+ 	rcu_read_unlock();
+-	return ret;
++	return 0;
++}
++
++static inline void posixtimer_sig_ignore(struct task_struct *tsk, struct sigqueue *q)
++{
++	struct k_itimer *tmr = container_of(q, struct k_itimer, sigq);
++
++	hlist_add_head(&tmr->ignored_list, &tsk->signal->ignored_posix_timers);
+ }
+ 
+ static void posixtimer_sig_unignore(struct task_struct *tsk, int sig)
+@@ -2082,6 +2109,7 @@ static void posixtimer_sig_unignore(stru
+ 	}
+ }
+ #else /* CONFIG_POSIX_TIMERS */
++static inline void posixtimer_sig_ignore(struct task_struct *tsk, struct sigqueue *q) { }
+ static inline void posixtimer_sig_unignore(struct task_struct *tsk, int sig) { }
+ #endif /* !CONFIG_POSIX_TIMERS */
+ 
+@@ -4272,9 +4300,9 @@ int do_sigaction(int sig, struct k_sigac
+ 		if (sig_handler_ignored(sig_handler(p, sig), sig)) {
+ 			sigemptyset(&mask);
+ 			sigaddset(&mask, sig);
+-			flush_sigqueue_mask(&mask, &p->signal->shared_pending, NULL);
++			flush_sigqueue_mask(&mask, &p->signal->shared_pending, p);
+ 			for_each_thread(p, t)
+-				flush_sigqueue_mask(&mask, &t->pending, NULL);
++				flush_sigqueue_mask(&mask, &t->pending, p);
+ 		} else if (was_ignored) {
+ 			posixtimer_sig_unignore(p, sig);
+ 		}
 
 
