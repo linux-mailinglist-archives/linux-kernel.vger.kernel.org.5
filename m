@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-137920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E302989E98D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:16:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66AC389E995
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:17:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65B0CB209BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:16:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 066AB1F23CD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0574437169;
-	Wed, 10 Apr 2024 05:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C2F23F9D9;
+	Wed, 10 Apr 2024 05:15:28 +0000 (UTC)
 Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FCD92A1D8;
-	Wed, 10 Apr 2024 05:15:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94ACBB676;
+	Wed, 10 Apr 2024 05:15:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712726121; cv=none; b=USiBjLfoT+4Eaf2hgidr+ezvbcODkBcjiao5oowl++8VxQK40CrH/5MWYT5SkUbZstI927BrDooPDWaVrdPvAw++Yq8qgBsu4N0+kxUwM8Nt5ptHBIl8aGnXTN53SJMiHNLJbLHGUFUUDyRwlGzmIkLDyjEwFS1nJFnCa5fJiWM=
+	t=1712726128; cv=none; b=Z3qry13t6KzgBlOF12GpEC6Uu1IY5w323nkQoytVi9szo2jq05IyW0HfB/RfjRkHiZnEnVwn4Iku0EDL5qnE//+Ls/k88Iyfi1UDIHMJzEA7Mc4VOmdcF31U71E0/yy/qyTV7EiNhpw7sOKPBqV6ZUZJG/nr3HwqwAGlO2Ih8HY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712726121; c=relaxed/simple;
-	bh=R9C8kZGloRnrK7WuDh1oAE9KcOnWmUEfqZNePFGUNBM=;
+	s=arc-20240116; t=1712726128; c=relaxed/simple;
+	bh=wupLBeH52WYuu08SB8OdZb8dy8SXdlV2nrfdO4R1nIM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bh0h1SHsFECi4gfxuFklpJdQ6AS2HcND/AcdZMi2FoPmH/GVRADYPD0hQeXblO7O/Op8orY6FdTYnSKqNb9bzJlH5d0KpoDAUkebsdmCDHv8oCFwDm+x4gxdZqwNvxU6BLTHjpJkGDSa2YUB3L3Zh5Bgy+bWJ+/IKPl1Xkr/TP0=
+	 MIME-Version:Content-Type; b=Zl+mJkxCCdnacI0SZuQP5lVeA8dNQHU7CBdROvXfpTeUsVHo/LJ3AMNZlyX9G1UGNV50cUnC66OvJgQq8f8w+fziEJrq3Ikqncyd1WQC1Fl0KUNz9Mti5GmZv7pcWzQFq7HYZSenSnpW65KlhQ+LaXRg6aNXhbqAA12u+WmMHHE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
@@ -32,25 +32,39 @@ Received: from ip-185-104-138-50.ptr.icomera.net ([185.104.138.50] helo=phil..)
 	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <heiko@sntech.de>)
-	id 1ruQIm-0008Ut-Ly; Wed, 10 Apr 2024 07:15:16 +0200
+	id 1ruQIo-0008Ut-9s; Wed, 10 Apr 2024 07:15:18 +0200
 From: Heiko Stuebner <heiko@sntech.de>
-To: Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Rob Herring <robh@kernel.org>
+To: hverkuil-cisco@xs4all.nl,
+	mchehab@kernel.org,
+	Shreeya Patel <shreeya.patel@collabora.com>,
+	sebastian.reichel@collabora.com,
+	jose.abreu@synopsys.com,
+	nelson.costa@synopsys.com,
+	p.zabel@pengutronix.de,
+	dmitry.osipenko@collabora.com,
+	nicolas.dufresne@collabora.com,
+	krzysztof.kozlowski+dt@linaro.org,
+	hverkuil@xs4all.nl,
+	mturquette@baylibre.com,
+	sboyd@kernel.org,
+	robh@kernel.org,
+	conor+dt@kernel.org,
+	shawn.wen@rock-chips.com
 Cc: Heiko Stuebner <heiko@sntech.de>,
 	devicetree@vger.kernel.org,
 	linux-rockchip@lists.infradead.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-media@vger.kernel.org,
+	linux-clk@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
-	David Jander <david@protonic.nl>
-Subject: Re: [PATCH v2 0/2] Add Protonic MECSBC board support
-Date: Wed, 10 Apr 2024 07:15:06 +0200
-Message-Id: <171272604792.1867483.1217258129041362039.b4-ty@sntech.de>
+	linux-arm@lists.infradead.org,
+	kernel@collabora.com
+Subject: Re: (subset) [PATCH v3 0/6] Add Synopsys DesignWare HDMI RX Controller
+Date: Wed, 10 Apr 2024 07:15:07 +0200
+Message-Id: <171272604798.1867483.3380752860192123035.b4-ty@sntech.de>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240405-protonic-mecsbc-v2-0-0a6fedc78b9f@pengutronix.de>
-References: <20240405-protonic-mecsbc-v2-0-0a6fedc78b9f@pengutronix.de>
+In-Reply-To: <20240327225057.672304-1-shreeya.patel@collabora.com>
+References: <20240327225057.672304-1-shreeya.patel@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,23 +74,24 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Fri, 05 Apr 2024 12:14:24 +0200, Sascha Hauer wrote:
-> This series adds support for the Protonic MECSBC. MECSBC is a single
-> board computer for blood analysis machines from RR-Mechatronics,
-> designed and manufactured by Protonic Holland, based on the Rockchip
-> RK3568 SoC.
+On Thu, 28 Mar 2024 04:20:51 +0530, Shreeya Patel wrote:
+> This series implements support for the Synopsys DesignWare
+> HDMI RX Controller, being compliant with standard HDMI 1.4b
+> and HDMI 2.0.
 > 
+> Features that are currently supported by the HDMI RX driver
+> have been tested on rock5b board using a HDMI to micro-HDMI cable.
+> It is recommended to use a good quality cable as there were
+> multiple issues seen during testing the driver.
 > 
+> [...]
 
 Applied, thanks!
 
-[1/2] dt-bindings: arm: rockchip: Add Protonic MECSBC board
-      commit: 6eb006d7c8271d4ff811b8f13b40e527d35d88e1
-[2/2] arm64: dts: rockchip: add Protonic MECSBC device-tree
-      commit: 6f9dfb7358535136e49d6fe9d31409f20f8cb9a7
-
-Adjusted the node-sorting some more to honor our alphabetical
-paradigm.
+[1/6] dt-bindings: reset: Define reset id used for HDMI Receiver
+      commit: ca151fd56b5736a7adbdba5675b9d87d70f20b23
+[2/6] clk: rockchip: rst-rk3588: Add reset line for HDMI Receiver
+      commit: 7af67019cd78d028ef377df689ac103d51905518
 
 Best regards,
 -- 
