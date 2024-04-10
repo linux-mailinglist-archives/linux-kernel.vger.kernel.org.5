@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-139024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67EDF89FD99
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:02:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7046C89FD9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:02:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A3CD1F21952
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:02:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23E9A28376F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:02:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8883117BB34;
-	Wed, 10 Apr 2024 17:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1947417F366;
+	Wed, 10 Apr 2024 17:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZACkiovP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="an6fpQQP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAAF917BB08;
-	Wed, 10 Apr 2024 17:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5377517BB00;
+	Wed, 10 Apr 2024 17:02:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712768538; cv=none; b=NRpMphFvNcNOD9+px7Lm/0guLlYRfQRRm4WCVX+6PBRQcS4bPL1fvnOsuSOio5OC0NvkQh9T+f8WGIO3K+ewBuFA728+/9U7/0ELNQStolgcstKB9PaNAw1K+2XdYj2NH9QzujPeLJGFK7AFsZCZw/bUbKJI2oYEmsHYu6N1+Bk=
+	t=1712768545; cv=none; b=bM9wREkysy6Q4uGC4aMYMlMR4aXvCfDjGiouUUUXBIGLMRdwSCeMCEV1NzbKWyPz2Ij3m8t1js76uVW5XKPs/Hfbtuv1F3TedLqJ5ft24yGh7kxiHftNNkfwxKe/KO3mIC/W551fRzKPluGyHwnHyUTK61JdL1G4nSoNptXSdTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712768538; c=relaxed/simple;
-	bh=J8Xz0tO7wTFJkDIRc8XHLYUNNwxXvSfpj3JcT9M6hUo=;
+	s=arc-20240116; t=1712768545; c=relaxed/simple;
+	bh=QjOnUyfopFRRMcjgTW7txOdo+Ae88Ip/13leO2FO7/w=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PCfOSbSdmmtGOkprZv6i9ay4Mk4QEZqrUmb1RPEijKtIG783UEUC3ZYjBgfswmrY0i8I96Rkwp4bp64zrxvnCHzM4EUb0sYvUiRwI02fO0nB4zbDzaUkgO7/7lBqttrCs7G0ggtjPUvC3M81yfD2tJypDHzUp9OvoOshSIEi5iU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZACkiovP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49A5BC433C7;
-	Wed, 10 Apr 2024 17:02:12 +0000 (UTC)
+	 MIME-Version; b=tN8PaeWuKNi/IrNwoMsDi0o1ycOGy/BZOimPiJFUULCyRkjlww1x7GKlo4IGRcEAjqdI+VrY/MqNrgxiJiQ0hIVeq/TCv0xqZF/DnWgOgFA6IVDnEj/Li91auLlNah+YuYeDqkRnhw3Zu0ijcGhIx9H3SD7SPW6vHRVFmJHGt5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=an6fpQQP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E86DDC43390;
+	Wed, 10 Apr 2024 17:02:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712768538;
-	bh=J8Xz0tO7wTFJkDIRc8XHLYUNNwxXvSfpj3JcT9M6hUo=;
+	s=k20201202; t=1712768544;
+	bh=QjOnUyfopFRRMcjgTW7txOdo+Ae88Ip/13leO2FO7/w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZACkiovPiGAvRBWw0ptxzDvez/h/OO9ESEpjSpxcblWyNi8XG5hw6rSN0T8jO7Ztv
-	 qNSb/TVDDZGnyYwLmv0S6BNnqWDnRluQh52PV1ER1KzulQCG8y0ZqJovttvtgenbGZ
-	 +Y6ahqjQ5hK6ZdZSL37/EASTHl3YlFSkpOv/oqCrbZTfQ1s82s4MYFUwqDWI4GQjQd
-	 6ITbtEspXCEjlyY9jRsN7qsNYh9g7HJC7aPcJGu9JK4s4OkOMeeyNI3obYx6c/tPot
-	 +9dUiEowanr2b+hHORsbTnvY5fk+csFAQoQnHysD/IMls9R+5Sm9NDQ7+h18lzkQL5
-	 ALkigSot+8hMA==
+	b=an6fpQQPjKNGuD77EbqSH2lJ37F5yaVuRShnLg5EpdBkj0jCqjrASa7BRLmolzFZO
+	 IymiKzEkAhpZg7WE865Sg3BtlYm1Y3IZo5xEr2cIKPyA9pH3AULFNEUSaGikP8UIRQ
+	 zpiQhRQkWVdduoDXcCGI9Nypuy0N4/mIAfqhQNnbPHuHzCaj2gbIei1AQZZ5iPtfwN
+	 oWBB88KfTt1YqYzElCyMJw+DB806oMjcryH0JNwA3bP6om43Xw763sxs3J/LmL3BV0
+	 mEA3CpgV3MYzUx0kkDiKXCs4j1FTvECLbGkkFxAskhX+jxKnl3hVJXzOAdac+DoQ2r
+	 NyeDxzKNMxfjw==
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Dong Aisheng <aisheng.dong@nxp.com>,
 	Fabio Estevam <festevam@gmail.com>,
@@ -62,9 +62,9 @@ To: Dong Aisheng <aisheng.dong@nxp.com>,
 	linux-mediatek@lists.infradead.org,
 	linux-arm-msm@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 3/5] pinctrl: loongson2: fix module autoloading
-Date: Wed, 10 Apr 2024 19:01:48 +0200
-Message-Id: <20240410170150.248428-3-krzk@kernel.org>
+Subject: [PATCH 4/5] pinctrl: qcom: sm7150: fix module autoloading
+Date: Wed, 10 Apr 2024 19:01:49 +0200
+Message-Id: <20240410170150.248428-4-krzk@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240410170150.248428-1-krzk@kernel.org>
 References: <20240410170150.248428-1-krzk@kernel.org>
@@ -83,21 +83,21 @@ can be built and used as modules on some generic kernel.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/pinctrl/pinctrl-loongson2.c | 1 +
+ drivers/pinctrl/qcom/pinctrl-sm7150.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pinctrl/pinctrl-loongson2.c b/drivers/pinctrl/pinctrl-loongson2.c
-index a72ffeca26fb..4d4fbeadafb7 100644
---- a/drivers/pinctrl/pinctrl-loongson2.c
-+++ b/drivers/pinctrl/pinctrl-loongson2.c
-@@ -286,6 +286,7 @@ static const struct of_device_id loongson2_pinctrl_dt_match[] = {
- 	},
- 	{ }
+diff --git a/drivers/pinctrl/qcom/pinctrl-sm7150.c b/drivers/pinctrl/qcom/pinctrl-sm7150.c
+index c25357ca1963..c542f9bc6bcd 100644
+--- a/drivers/pinctrl/qcom/pinctrl-sm7150.c
++++ b/drivers/pinctrl/qcom/pinctrl-sm7150.c
+@@ -1246,6 +1246,7 @@ static const struct of_device_id sm7150_tlmm_of_match[] = {
+ 	{ .compatible = "qcom,sm7150-tlmm", },
+ 	{ },
  };
-+MODULE_DEVICE_TABLE(of, loongson2_pinctrl_dt_match);
++MODULE_DEVICE_TABLE(of, sm7150_tlmm_of_match);
  
- static struct platform_driver loongson2_pinctrl_driver = {
- 	.probe		= loongson2_pinctrl_probe,
+ static struct platform_driver sm7150_tlmm_driver = {
+ 	.driver = {
 -- 
 2.34.1
 
