@@ -1,295 +1,266 @@
-Return-Path: <linux-kernel+bounces-138311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF82289EFA5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:13:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE99C89EFA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:15:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16AE7B22922
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:13:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DA4128514F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:15:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C7B0158D60;
-	Wed, 10 Apr 2024 10:13:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aRcu97lE"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57B3158217;
+	Wed, 10 Apr 2024 10:15:15 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF15C1553B7;
-	Wed, 10 Apr 2024 10:13:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0331553B7
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:15:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712743994; cv=none; b=qxr26Zic8HiEoE2o+vGyfSlwplNsYuMetR+mfQawlyOCcx3kiK47Ob0SFA1e/hnC6IrhfoO/7EutsZZpLJI/5lj2erZNUTCYkqePC/L5lcnkPGwLr9C8IT7qv+aFPKb8eRgh5Ka8IeHfy4cV7FnnPZbYcdmm+BhbNpKso84QysE=
+	t=1712744115; cv=none; b=qT3NdLAZpMHZMSJSfTSA5/8bIOKMDuw83LaLMbYT4WN68IhLVFvOT+ylsyEN4BgM3/kukj8dLY7dCbtBRMFI23Zu/BHG+BKnLnGCK6FVgNlbiCQux1X9iaOSLN+o9zpT7oUkcq1lc2ggV2ivfXw44eM/rQBmhSTtIldxfi2bw7E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712743994; c=relaxed/simple;
-	bh=Fm/vsQdK2f/ltSg8PL9DqXonhPLc+qGLPRsT23RtPAc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CMekbeIIH+2TYMclVzzsbm0l2DQOyUauE1U2L+YKE8GLiCW4dKmbsi6T2AZT05uYiO0Nofg84+PyD/n4AJY7QRA/MY/BWxka3W5ew5HUnjb9PoRDktXic9EW6khc49sFlfx+QJ+JOkJjmlBMV5NBlCP6KBexdn5FI6Q4k9Cf3So=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aRcu97lE; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712743993; x=1744279993;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Fm/vsQdK2f/ltSg8PL9DqXonhPLc+qGLPRsT23RtPAc=;
-  b=aRcu97lEUE38PB0hpVMmwGSU8Qh7TP0AYMrv2LpbrFCs+BPmTJ13D696
-   iWep+pKD8J6Z5V7AN+qYKA+QSsO0EarVxXSiaelU57VfhGb+a6+5dk81f
-   7vlH0l8101brHGXYK4krEQL9Gt6W5kqZu+K10YA/KzpahGO/uZPbCWi9H
-   AiLYs9nnsH/8SH/NdJ/lr9pr9d8Y3ntpd50uvb4z+yZLaj3tvKX0jeKNb
-   2x3Xc8kbPkDJFqlXdJey1tS0UdFtGRXo5WSwhUkmqr1Q+tYT+qA/RWPwh
-   KnrB+1wXyVlk40GbeIWru+FuTkbQ5fkUr6tpkXI2juqyuxJ/09foRJgXs
-   g==;
-X-CSE-ConnectionGUID: ywDcd/O0Qvu4T6bBQ3MhTg==
-X-CSE-MsgGUID: DLMYrwDqRMyEqmnBVac1rg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11889127"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="11889127"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 03:13:12 -0700
-X-CSE-ConnectionGUID: HU9HBfqDTe+kCgZJrpMofg==
-X-CSE-MsgGUID: gWJh9my8TFyL8oPHnXrjRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="25197692"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 03:13:11 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 3FDE311FC46;
-	Wed, 10 Apr 2024 13:13:08 +0300 (EEST)
-Date: Wed, 10 Apr 2024 10:13:08 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Umang Jain <umang.jain@ideasonboard.com>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 8/9] media: subdev: Refactor
- v4l2_subdev_enable/disable_streams()
-Message-ID: <ZhZmNC4hQv1leL-y@kekkonen.localdomain>
-References: <20240405-enable-streams-impro-v2-0-22bca967665d@ideasonboard.com>
- <20240405-enable-streams-impro-v2-8-22bca967665d@ideasonboard.com>
+	s=arc-20240116; t=1712744115; c=relaxed/simple;
+	bh=bPj6QlcLi4XrRHYufTRYNiCGvg+NUZoj2xCvdt9IAsc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BqZ5WETgbKq6KBlUgnA9wnF/RelnIvlRC7btR27v4Y+Asb7Byu/CsFpKcZ3xRf5Mg0aRBdKnr3OMW7OgQjAQcnxaisnFA7seD78k/2/QJXIL6IgVyy59Sj/M2Q3FA4zrhVRVooX2Bv7GjqtpJZ9L3HVCRIZEiadvUQKlumwm31Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 43AAElCp055314;
+	Wed, 10 Apr 2024 18:14:48 +0800 (+08)
+	(envelope-from Dongliang.Cui@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4VDzCn4321z2K5bqN;
+	Wed, 10 Apr 2024 18:12:37 +0800 (CST)
+Received: from tj10379pcu.spreadtrum.com (10.5.32.15) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Wed, 10 Apr 2024 18:14:45 +0800
+From: Dongliang Cui <dongliang.cui@unisoc.com>
+To: <axboe@kernel.dk>, <rostedt@goodmis.org>, <mhiramat@kernel.org>,
+        <mathieu.desnoyers@efficios.com>
+CC: <ke.wang@unisoc.com>, <hongyu.jin.cn@gmail.com>, <niuzhiguo84@gmail.com>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <cuidongliang390@gmail.com>,
+        Dongliang
+ Cui <dongliang.cui@unisoc.com>
+Subject: [PATCH] block: Add ioprio to block_rq tracepoint
+Date: Wed, 10 Apr 2024 18:14:36 +0800
+Message-ID: <20240410101436.1148905-1-dongliang.cui@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240405-enable-streams-impro-v2-8-22bca967665d@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL:SHSQR01.spreadtrum.com 43AAElCp055314
 
-Moi,
+Sometimes we need to track the processing order of requests with
+ioprio set. So the ioprio of request can be useful information.
 
-Thank you for working on this.
+Example：
 
-On Fri, Apr 05, 2024 at 12:14:26PM +0300, Tomi Valkeinen wrote:
-> Add two internal helper functions, v4l2_subdev_collect_streams() and
-> v4l2_subdev_set_streams_enabled(), which allows us to refactor
-> v4l2_subdev_enable/disable_streams() functions.
-> 
-> This (I think) makes the code a bit easier to read, and lets us more
-> easily add new functionality in the helper functions in the following
-> patch.
-> 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
->  drivers/media/v4l2-core/v4l2-subdev.c | 111 +++++++++++++++++++---------------
->  1 file changed, 62 insertions(+), 49 deletions(-)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> index 015f2fb423c9..6c3c9069f1e2 100644
-> --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> @@ -2099,6 +2099,44 @@ int v4l2_subdev_routing_validate(struct v4l2_subdev *sd,
->  }
->  EXPORT_SYMBOL_GPL(v4l2_subdev_routing_validate);
->  
-> +static void v4l2_subdev_collect_streams(struct v4l2_subdev *sd,
-> +					struct v4l2_subdev_state *state,
-> +					u32 pad, u64 streams_mask,
-> +					u64 *found_streams,
-> +					u64 *enabled_streams)
-> +{
-> +	*found_streams = 0;
-> +	*enabled_streams = 0;
-> +
-> +	for (unsigned int i = 0; i < state->stream_configs.num_configs; ++i) {
-> +		const struct v4l2_subdev_stream_config *cfg;
-> +
-> +		cfg = &state->stream_configs.configs[i];
+block_rq_insert: 8,0 WS 4096 () 16573296 + 8 rt,4 [highpool[1]]
+block_rq_issue: 8,0 WS 4096 () 16573296 + 8 rt,4 [kworker/7:0H]
+block_rq_complete: 8,0 WS () 16573296 + 8 rt,4 [0]
 
-You can do the assignment in declaration.
+Signed-off-by: Dongliang Cui <dongliang.cui@unisoc.com>
+---
+ include/linux/blktrace_api.h |  2 ++
+ include/trace/events/block.h | 63 ++++++++++++++++++++++--------------
+ kernel/trace/blktrace.c      | 11 +++++++
+ 3 files changed, 51 insertions(+), 25 deletions(-)
 
-Same for streams_enabled() below.
-
-> +
-> +		if (cfg->pad != pad || !(streams_mask & BIT_ULL(cfg->stream)))
-> +			continue;
-> +
-> +		*found_streams |= BIT_ULL(cfg->stream);
-> +		if (cfg->enabled)
-> +			*enabled_streams |= BIT_ULL(cfg->stream);
-> +	}
-> +}
-> +
-> +static void v4l2_subdev_set_streams_enabled(struct v4l2_subdev *sd,
-> +					    struct v4l2_subdev_state *state,
-> +					    u32 pad, u64 streams_mask,
-> +					    bool enabled)
-> +{
-> +	for (unsigned int i = 0; i < state->stream_configs.num_configs; ++i) {
-> +		struct v4l2_subdev_stream_config *cfg;
-> +
-> +		cfg = &state->stream_configs.configs[i];
-> +
-> +		if (cfg->pad == pad && (streams_mask & BIT_ULL(cfg->stream)))
-> +			cfg->enabled = enabled;
-> +	}
-> +}
-> +
->  static int v4l2_subdev_enable_streams_fallback(struct v4l2_subdev *sd, u32 pad,
->  					       u64 streams_mask)
->  {
-> @@ -2150,8 +2188,8 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
->  	struct device *dev = sd->entity.graph_obj.mdev->dev;
->  	struct v4l2_subdev_state *state;
->  	bool already_streaming;
-> -	u64 found_streams = 0;
-> -	unsigned int i;
-> +	u64 enabled_streams;
-> +	u64 found_streams;
->  	int ret;
->  
->  	/* A few basic sanity checks first. */
-> @@ -2172,22 +2210,9 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
->  	 * Verify that the requested streams exist and that they are not
->  	 * already enabled.
->  	 */
-> -	for (i = 0; i < state->stream_configs.num_configs; ++i) {
-> -		struct v4l2_subdev_stream_config *cfg =
-> -			&state->stream_configs.configs[i];
->  
-> -		if (cfg->pad != pad || !(streams_mask & BIT_ULL(cfg->stream)))
-> -			continue;
-> -
-> -		found_streams |= BIT_ULL(cfg->stream);
-> -
-> -		if (cfg->enabled) {
-> -			dev_dbg(dev, "stream %u already enabled on %s:%u\n",
-> -				cfg->stream, sd->entity.name, pad);
-> -			ret = -EALREADY;
-> -			goto done;
-> -		}
-> -	}
-> +	v4l2_subdev_collect_streams(sd, state, pad, streams_mask,
-> +				    &found_streams, &enabled_streams);
->  
->  	if (found_streams != streams_mask) {
->  		dev_dbg(dev, "streams 0x%llx not found on %s:%u\n",
-> @@ -2196,6 +2221,13 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
->  		goto done;
->  	}
->  
-> +	if (enabled_streams) {
-> +		dev_dbg(dev, "streams 0x%llx already enabled on %s:%u\n",
-> +			enabled_streams, sd->entity.name, pad);
-> +		ret = -EINVAL;
-> +		goto done;
-> +	}
-> +
->  	dev_dbg(dev, "enable streams %u:%#llx\n", pad, streams_mask);
->  
->  	already_streaming = v4l2_subdev_is_streaming(sd);
-> @@ -2213,13 +2245,7 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
->  	}
->  
->  	/* Mark the streams as enabled. */
-> -	for (i = 0; i < state->stream_configs.num_configs; ++i) {
-> -		struct v4l2_subdev_stream_config *cfg =
-> -			&state->stream_configs.configs[i];
-> -
-> -		if (cfg->pad == pad && (streams_mask & BIT_ULL(cfg->stream)))
-> -			cfg->enabled = true;
-> -	}
-> +	v4l2_subdev_set_streams_enabled(sd, state, pad, streams_mask, true);
->  
->  done:
->  	if (ret && !already_streaming)
-> @@ -2281,8 +2307,8 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
->  {
->  	struct device *dev = sd->entity.graph_obj.mdev->dev;
->  	struct v4l2_subdev_state *state;
-> -	u64 found_streams = 0;
-> -	unsigned int i;
-> +	u64 enabled_streams;
-> +	u64 found_streams;
->  	int ret;
->  
->  	/* A few basic sanity checks first. */
-> @@ -2303,22 +2329,9 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
->  	 * Verify that the requested streams exist and that they are not
->  	 * already disabled.
->  	 */
-> -	for (i = 0; i < state->stream_configs.num_configs; ++i) {
-> -		struct v4l2_subdev_stream_config *cfg =
-> -			&state->stream_configs.configs[i];
->  
-> -		if (cfg->pad != pad || !(streams_mask & BIT_ULL(cfg->stream)))
-> -			continue;
-> -
-> -		found_streams |= BIT_ULL(cfg->stream);
-> -
-> -		if (!cfg->enabled) {
-> -			dev_dbg(dev, "stream %u already disabled on %s:%u\n",
-> -				cfg->stream, sd->entity.name, pad);
-> -			ret = -EALREADY;
-> -			goto done;
-> -		}
-> -	}
-> +	v4l2_subdev_collect_streams(sd, state, pad, streams_mask,
-> +				    &found_streams, &enabled_streams);
->  
->  	if (found_streams != streams_mask) {
->  		dev_dbg(dev, "streams 0x%llx not found on %s:%u\n",
-> @@ -2327,6 +2340,13 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
->  		goto done;
->  	}
->  
-> +	if (enabled_streams != streams_mask) {
-> +		dev_dbg(dev, "streams 0x%llx already disabled on %s:%u\n",
-> +			streams_mask & ~enabled_streams, sd->entity.name, pad);
-> +		ret = -EINVAL;
-> +		goto done;
-> +	}
-> +
->  	dev_dbg(dev, "disable streams %u:%#llx\n", pad, streams_mask);
->  
->  	/* Call the .disable_streams() operation. */
-> @@ -2338,14 +2358,7 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
->  		goto done;
->  	}
->  
-> -	/* Mark the streams as disabled. */
-> -	for (i = 0; i < state->stream_configs.num_configs; ++i) {
-> -		struct v4l2_subdev_stream_config *cfg =
-> -			&state->stream_configs.configs[i];
-> -
-> -		if (cfg->pad == pad && (streams_mask & BIT_ULL(cfg->stream)))
-> -			cfg->enabled = false;
-> -	}
-> +	v4l2_subdev_set_streams_enabled(sd, state, pad, streams_mask, false);
->  
->  done:
->  	if (!v4l2_subdev_is_streaming(sd))
-> 
-
+diff --git a/include/linux/blktrace_api.h b/include/linux/blktrace_api.h
+index 122c62e561fc..adb0333efbdb 100644
+--- a/include/linux/blktrace_api.h
++++ b/include/linux/blktrace_api.h
+@@ -112,6 +112,8 @@ struct compat_blk_user_trace_setup {
+ 
+ void blk_fill_rwbs(char *rwbs, blk_opf_t opf);
+ 
++void blk_fill_ioprio(u32 ioprio, char *ioprio_class, u32 *ioprio_value);
++
+ static inline sector_t blk_rq_trace_sector(struct request *rq)
+ {
+ 	/*
+diff --git a/include/trace/events/block.h b/include/trace/events/block.h
+index 0e128ad51460..1d41fade160a 100644
+--- a/include/trace/events/block.h
++++ b/include/trace/events/block.h
+@@ -10,7 +10,8 @@
+ #include <linux/buffer_head.h>
+ #include <linux/tracepoint.h>
+ 
+-#define RWBS_LEN	8
++#define RWBS_LEN		8
++#define IOPRIO_CLASS_LEN	8
+ 
+ #ifdef CONFIG_BUFFER_HEAD
+ DECLARE_EVENT_CLASS(block_buffer,
+@@ -79,11 +80,13 @@ TRACE_EVENT(block_rq_requeue,
+ 	TP_ARGS(rq),
+ 
+ 	TP_STRUCT__entry(
+-		__field(  dev_t,	dev			)
+-		__field(  sector_t,	sector			)
+-		__field(  unsigned int,	nr_sector		)
+-		__array(  char,		rwbs,	RWBS_LEN	)
+-		__dynamic_array( char,	cmd,	1		)
++		__field(  dev_t,	dev				)
++		__field(  sector_t,	sector				)
++		__field(  unsigned int,	nr_sector			)
++		__array(  char,		rwbs,	RWBS_LEN		)
++		__array(  char,		ioprio_class, IOPRIO_CLASS_LEN	)
++		__field(  unsigned int, ioprio_value			)
++		__dynamic_array( char,	cmd,	1			)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -92,14 +95,16 @@ TRACE_EVENT(block_rq_requeue,
+ 		__entry->nr_sector = blk_rq_trace_nr_sectors(rq);
+ 
+ 		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
++		blk_fill_ioprio(rq->ioprio, __entry->ioprio_class, &__entry->ioprio_value);
+ 		__get_str(cmd)[0] = '\0';
+ 	),
+ 
+-	TP_printk("%d,%d %s (%s) %llu + %u [%d]",
++	TP_printk("%d,%d %s (%s) %llu + %u %s,%u [%d]",
+ 		  MAJOR(__entry->dev), MINOR(__entry->dev),
+ 		  __entry->rwbs, __get_str(cmd),
+ 		  (unsigned long long)__entry->sector,
+-		  __entry->nr_sector, 0)
++		  __entry->nr_sector, __entry->ioprio_class,
++		  __entry->ioprio_value, 0)
+ );
+ 
+ DECLARE_EVENT_CLASS(block_rq_completion,
+@@ -109,12 +114,14 @@ DECLARE_EVENT_CLASS(block_rq_completion,
+ 	TP_ARGS(rq, error, nr_bytes),
+ 
+ 	TP_STRUCT__entry(
+-		__field(  dev_t,	dev			)
+-		__field(  sector_t,	sector			)
+-		__field(  unsigned int,	nr_sector		)
+-		__field(  int	,	error			)
+-		__array(  char,		rwbs,	RWBS_LEN	)
+-		__dynamic_array( char,	cmd,	1		)
++		__field(  dev_t,	dev				)
++		__field(  sector_t,	sector				)
++		__field(  unsigned int,	nr_sector			)
++		__field(  int,		error				)
++		__array(  char,		rwbs,	RWBS_LEN		)
++		__array(  char,		ioprio_class, IOPRIO_CLASS_LEN	)
++		__field(  unsigned int,	ioprio_value			)
++		__dynamic_array( char,	cmd,	1			)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -124,14 +131,16 @@ DECLARE_EVENT_CLASS(block_rq_completion,
+ 		__entry->error     = blk_status_to_errno(error);
+ 
+ 		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
++		blk_fill_ioprio(rq->ioprio, __entry->ioprio_class, &__entry->ioprio_value);
+ 		__get_str(cmd)[0] = '\0';
+ 	),
+ 
+-	TP_printk("%d,%d %s (%s) %llu + %u [%d]",
++	TP_printk("%d,%d %s (%s) %llu + %u %s,%u [%d]",
+ 		  MAJOR(__entry->dev), MINOR(__entry->dev),
+ 		  __entry->rwbs, __get_str(cmd),
+ 		  (unsigned long long)__entry->sector,
+-		  __entry->nr_sector, __entry->error)
++		  __entry->nr_sector, __entry->ioprio_class,
++		  __entry->ioprio_value, __entry->error)
+ );
+ 
+ /**
+@@ -176,13 +185,15 @@ DECLARE_EVENT_CLASS(block_rq,
+ 	TP_ARGS(rq),
+ 
+ 	TP_STRUCT__entry(
+-		__field(  dev_t,	dev			)
+-		__field(  sector_t,	sector			)
+-		__field(  unsigned int,	nr_sector		)
+-		__field(  unsigned int,	bytes			)
+-		__array(  char,		rwbs,	RWBS_LEN	)
+-		__array(  char,         comm,   TASK_COMM_LEN   )
+-		__dynamic_array( char,	cmd,	1		)
++		__field(  dev_t,	dev				)
++		__field(  sector_t,	sector				)
++		__field(  unsigned int,	nr_sector			)
++		__field(  unsigned int,	bytes				)
++		__array(  char,		rwbs,	RWBS_LEN		)
++		__array(  char,		ioprio_class, IOPRIO_CLASS_LEN	)
++		__field(  unsigned int,	ioprio_value			)
++		__array(  char,		comm,   TASK_COMM_LEN		)
++		__dynamic_array( char,	cmd,	1			)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -192,15 +203,17 @@ DECLARE_EVENT_CLASS(block_rq,
+ 		__entry->bytes     = blk_rq_bytes(rq);
+ 
+ 		blk_fill_rwbs(__entry->rwbs, rq->cmd_flags);
++		blk_fill_ioprio(rq->ioprio, __entry->ioprio_class, &__entry->ioprio_value);
+ 		__get_str(cmd)[0] = '\0';
+ 		memcpy(__entry->comm, current->comm, TASK_COMM_LEN);
+ 	),
+ 
+-	TP_printk("%d,%d %s %u (%s) %llu + %u [%s]",
++	TP_printk("%d,%d %s %u (%s) %llu + %u %s,%u [%s]",
+ 		  MAJOR(__entry->dev), MINOR(__entry->dev),
+ 		  __entry->rwbs, __entry->bytes, __get_str(cmd),
+ 		  (unsigned long long)__entry->sector,
+-		  __entry->nr_sector, __entry->comm)
++		  __entry->nr_sector, __entry->ioprio_class,
++		  __entry->ioprio_value, __entry->comm)
+ );
+ 
+ /**
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index d5d94510afd3..e55aa49f94db 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -19,6 +19,7 @@
+ #include <linux/uaccess.h>
+ #include <linux/list.h>
+ #include <linux/blk-cgroup.h>
++#include <linux/ioprio.h>
+ 
+ #include "../../block/blk.h"
+ 
+@@ -26,6 +27,9 @@
+ 
+ #include "trace_output.h"
+ 
++/* Type of ioprio */
++static char *classes[] = {"none", "rt", "be", "idle"};
++
+ #ifdef CONFIG_BLK_DEV_IO_TRACE
+ 
+ static unsigned int blktrace_seq __read_mostly = 1;
+@@ -1914,5 +1918,12 @@ void blk_fill_rwbs(char *rwbs, blk_opf_t opf)
+ }
+ EXPORT_SYMBOL_GPL(blk_fill_rwbs);
+ 
++void blk_fill_ioprio(u32 ioprio, char *ioprio_class, u32 *ioprio_value)
++{
++	memcpy(ioprio_class, classes[(ioprio >> IOPRIO_CLASS_SHIFT) & 0x3], IOPRIO_CLASS_LEN);
++	*ioprio_value = ioprio & 0xff;
++}
++EXPORT_SYMBOL_GPL(blk_fill_ioprio);
++
+ #endif /* CONFIG_EVENT_TRACING */
+ 
 -- 
-Terveisin,
+2.25.1
 
-Sakari Ailus
 
