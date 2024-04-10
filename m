@@ -1,77 +1,80 @@
-Return-Path: <linux-kernel+bounces-139531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 981018A0403
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:26:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4684A8A0405
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:26:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C97EA1C21A58
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:26:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01BD8282588
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:26:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA80A38DE5;
-	Wed, 10 Apr 2024 23:26:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4CF3D978;
+	Wed, 10 Apr 2024 23:26:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xQC5MJhR"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="B8nxfyCx"
 Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815B538DD8
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:26:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE44E36B08
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:26:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712791605; cv=none; b=s4wN8LYVYXvfwFzTRqZJEFKm7QEwEc7GEB9oFlzC4DKqd9y3nKu9xzGLZJeErgaDRx7ropRypjvbwaEMIGNtCLNg1JJOFv5H0ASiKSnYaqJzcgRwgXL7bWu/eSeIsBseCFA4WrlFj0WRX7B3tapkyE1/8hsAO/U+vivLqGdzInA=
+	t=1712791606; cv=none; b=DNXrG9WI1ZJWjBq9dMGDVPhmV10FLoKAfa1QthsRl4rWLPw+QzJKjHdJZeyGBuenOUfPrFPxDoEghvVFnMwous1hTONXkxVuisZ7mAZo8x5cUO9A3Eg9jNlcfM1lLbDk9GLmVmui1otHkRwOsH2MGmsecb8LPgzQchWksLDHKVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712791605; c=relaxed/simple;
-	bh=5Uh22vIKOPqTl08nz2cIcEKFa+Ku5iV4cUKiaiK6UwA=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=hPATgjQinlJ1Q/XUeJ+qZZ0wZXGPI9klyJhChpqrGNofaS59ITHevg+SKHVyVkG6VwQNvBVCl3c5+htdCOrA9Ptd9iEuhHL2mkn+w8cbudVo2EUeJwhZzRHJC09UxZcktnyVefIaWKWGo2ZjnNxilSxrXIguOSdjVda0RQtWEJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xQC5MJhR; arc=none smtp.client-ip=209.85.219.201
+	s=arc-20240116; t=1712791606; c=relaxed/simple;
+	bh=VoLCsCIDC0AKpRM6tLqdI9FChyNA7KdpvNzq3N9K8Qg=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=JTe3BtPhq7mGRYKZVF1bZFN/Yn0wkCvY6ndpRdoHZcpvjqLh69PhBTMEr238kgyUY+JEaVP9t46GR6yFcZFE6espwim1AHrfKv6pouDgxFOLwQyRNwSwzLXVFZxSWDzllU9n6BPuIHKKJH4N8C6aRO0PlRNvqglhgkUAdV+aV/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B8nxfyCx; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc0bcf9256so9189211276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:26:43 -0700 (PDT)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbf216080f5so11634051276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:26:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712791602; x=1713396402; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=7JUe0tFRaoQ0RUO8nlo0bS/Trq4cm4/yvOCnk0PY7Tw=;
-        b=xQC5MJhR8h16ucTxDkSCS0kzlCzvIGb4c/lM4x7/hgiNv6msb6mBXrxe3ZnHBB+U1u
-         dvHKh132tWkCey+vRuwgAjQhTrM7FP+Sz51ZFvv+5pZ+KHRnO6Fum9SD7CU/EnugHNpX
-         p6vc2VNhd/iDFrS5J2ePxqVfBzQU4LJEU3To13fBjQa7vdwVNW0tgNcGCdY/RKM8DycF
-         eJjjS+npP5fAMAeCTsGqwSpacmS0jSJ5AuBvAP6e9yZkNcFH0b4KfPwQGpjVn6ztKH97
-         y8Iq8d/rZI/ZxoH9U8Jjp54/MNbZc62rXXCIBNF3zf9j/0exPwKotDSOEGV1lJTKG3TG
-         n+bQ==
+        d=google.com; s=20230601; t=1712791604; x=1713396404; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zlurd5WmAU6KZdndMyIzN+3lsSewcbke/BSJIsyJm9I=;
+        b=B8nxfyCxhDMThVF8zrt7SlovVFFHXvqnZ3GmzKuwzdPdWMG9HPNltDFwfxYkkCiRxU
+         NNIK+zVM0AIDmui549+UA/PEgS801IW0MJlyVDye3dCdHUTd+o5R9SmDQ7LleNbATH8L
+         EcQVo9AGQ59obMXD4eT8A1oRES0Rbuxd2pcvdW6Y/58tWuhnotdjrph3G++4ncTGYlg/
+         J2hfQkGmQVImjSkEuamjDFFyNC36nEP0rscpSG9Og7COoOql5Ya0LvwusPsXAo4RFPUe
+         dOqCXd0II4ZGmVtPMmz7v6cnFxvnBiwW09SZHxxSfZbV7vMmuKJOt8bnuflCyPAlsn8c
+         vK0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712791602; x=1713396402;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7JUe0tFRaoQ0RUO8nlo0bS/Trq4cm4/yvOCnk0PY7Tw=;
-        b=cKOa35WcWDWC49lDxTUkMrktoXf22j7wwnL8AACh4yWsX6af6hlkOHIzWN9dSpJn1A
-         2sWkAxPJdXlodXKf9vO0le9rndQTpMKJlYp07c1l9gaZ2Aaazair3y3OPR2lQWw9rjcn
-         IPF1RMgiqqD+LESosEyV+lHNQjuyYxuldl/oLsqF6S9GRqima5IvCRfbgMw2FEHrySD4
-         TjRvdcdI3Kdmu46RDyoyNKWupPd8smBQzBgUh0QmqJXIOm3mgPR9fejzhg1kwxqugbvh
-         n8ldchZD3Ndld2+05rarQ67XG5i4l5s6iupgenc/tdDbjcWFUqYfX9DfRd7YSjNWrhOF
-         hIvQ==
-X-Gm-Message-State: AOJu0YwLCgpy02Hp37vUUL9ilCVP0PBOq387x3Aq1Txif55jvOHNjjec
-	6oCF02q1/xFLBTNxIaP+MFXYvcdvFbgi496cHwRSEB4XWFa50N4QVuFpmR7PrnfbhtCLyK5NAWF
-	ZDAOvOPtwcTBqNcn2F+4/MUX0MfUCGHR0RgX0MHvRLh21v5to/Xa5j8ZZuMaRSvKgiGEWpmEsJq
-	3iEjLnTMAkPaY9Rnxs+2GS+LvylFR90+NggP+/9BUWezJM
-X-Google-Smtp-Source: AGHT+IHn3qElAk799zrmqQpVWrjI3Xobk90HnjvS6MfZsB7fQ82snexs+qbkA8nn2poKmRJTuL3bOeMuPJfp
+        d=1e100.net; s=20230601; t=1712791604; x=1713396404;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zlurd5WmAU6KZdndMyIzN+3lsSewcbke/BSJIsyJm9I=;
+        b=lyrDSK6j1scKOYcPprQh9eH4Pgi5aWDfjjiDwXj0+OFMmglogVCf4385k7EFgCIVSx
+         lmGlGzTksGzbN579LxBWtyk0982IxdmJIyFI3YCkcZMAbthS6Dmnf/u4+UPjFAj6F3eP
+         qZS855uRrf/+sShtoFCp9Ka7vKJxWXOk8ACJ72Yv+bRODJIZsv3emV7WHAzGOG5LtdoM
+         3ry/Ni0UD6koUOwr8l9vq2wKxcJu/Gy4wIzN8Ba3Wyx78U0GdETyqKSyna+5PnYhGBmm
+         PdzlOXs7NuM4BE8vvekr4oxzMh4x+1pEyIlzH9wMX8mz3irbpHbZv5JJV2GdZYopCltu
+         w2Sg==
+X-Gm-Message-State: AOJu0YyA6qdOWM+1PCDyUXy9R89V3iaBenhmqGPkQhuk6ZgS8W4aEQzW
+	cjqm3BIdk1OyueFURT3LOEx9BU40dG1Th3Fu2cOGVd3ObzubKvAfEK8pnZT9KfZnyrwOh0L0ZQ8
+	aImBYpDjaGf/kGyNU3tdlGrMP9n9vgi6hEZJq+GpVFj5bxZwWpCDv1BOFrjT3SBQtMFtIjLwEwb
+	kR8I0CkXfK764oVcNw/5S/BVukBV/mxzwY2XdVKtAKsuqr
+X-Google-Smtp-Source: AGHT+IHlbDC6ToGv1bXxA7Ao7B2WmThFk0HhdVs5BWSwsysizqGhpLzvpd+POKg06SuokF65H5Kbm0yuXOGl
 X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a05:6902:18ca:b0:dc6:b813:5813 with SMTP
- id ck10-20020a05690218ca00b00dc6b8135813mr358269ybb.9.1712791601994; Wed, 10
- Apr 2024 16:26:41 -0700 (PDT)
-Date: Wed, 10 Apr 2024 16:26:28 -0700
+ (user=jstultz job=sendgmr) by 2002:a25:a124:0:b0:dcc:54d0:85e0 with SMTP id
+ z33-20020a25a124000000b00dcc54d085e0mr1134663ybh.11.1712791603824; Wed, 10
+ Apr 2024 16:26:43 -0700 (PDT)
+Date: Wed, 10 Apr 2024 16:26:29 -0700
+In-Reply-To: <20240410232637.4135564-1-jstultz@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240410232637.4135564-1-jstultz@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240410232637.4135564-1-jstultz@google.com>
-Subject: [PATCH 1/3] selftests: timers: Fix posix_timers ksft_print_msg warning
+Message-ID: <20240410232637.4135564-2-jstultz@google.com>
+Subject: [PATCH 2/3] selftests: timers: Fix uninitialized variable warning in ksft_min_kernel_version
 From: John Stultz <jstultz@google.com>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: John Stultz <jstultz@google.com>, Shuah Khan <shuah@kernel.org>, 
@@ -84,15 +87,21 @@ Cc: John Stultz <jstultz@google.com>, Shuah Khan <shuah@kernel.org>,
 	linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-After commit 6d029c25b71f ("selftests/timers/posix_timers:
-Reimplement check_timer_distribution()") I started seeing the
-following warning building with an older gcc:
+Building with clang, I see the following warning:
 
-posix_timers.c:250:2: warning: format not a string literal and no format arguments [-Wformat-security]
-  250 |  ksft_print_msg(errmsg);
-      |  ^~~~~~~~~~~~~~
+In file included from posix_timers.c:17:
+/../kselftest.h:398:6: warning: variable 'major' is used uninitialized whenever '||' condition is true [-Wsometimes-uninitialized]
+        if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor) != 2)
+            ^~~~~~~~~~~~
+/../kselftest.h:401:9: note: uninitialized use occurs here
+        return major > min_major || (major == min_major && minor >= min_minor);
+               ^~~~~
 
-Fix this up by changing it to ksft_print_msg("%s", errmsg)
+This is a bit of a red-herring as if the uname() call did fail,
+we would hit ksft_exit_fail_msg() which should exit.
+
+But to make clang happpy, lets initialize the major/minor values
+to zero.
 
 Cc: Shuah Khan <shuah@kernel.org>
 Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
@@ -112,22 +121,22 @@ Cc: linux-kselftest@vger.kernel.org
 Fixes: 6d029c25b71f ("selftests/timers/posix_timers: Reimplement check_timer_distribution()")
 Signed-off-by: John Stultz <jstultz@google.com>
 ---
- tools/testing/selftests/timers/posix_timers.c | 2 +-
+ tools/testing/selftests/kselftest.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/timers/posix_timers.c b/tools/testing/selftests/timers/posix_timers.c
-index d86a0e00711e..348f47176e0a 100644
---- a/tools/testing/selftests/timers/posix_timers.c
-+++ b/tools/testing/selftests/timers/posix_timers.c
-@@ -247,7 +247,7 @@ static int check_timer_distribution(void)
- 		ksft_test_result_skip("check signal distribution (old kernel)\n");
- 	return 0;
- err:
--	ksft_print_msg(errmsg);
-+	ksft_print_msg("%s", errmsg);
- 	return -1;
- }
+diff --git a/tools/testing/selftests/kselftest.h b/tools/testing/selftests/kselftest.h
+index 973b18e156b2..12e2f3ab8b13 100644
+--- a/tools/testing/selftests/kselftest.h
++++ b/tools/testing/selftests/kselftest.h
+@@ -392,7 +392,7 @@ static inline __printf(1, 2) int ksft_exit_skip(const char *msg, ...)
+ static inline int ksft_min_kernel_version(unsigned int min_major,
+ 					  unsigned int min_minor)
+ {
+-	unsigned int major, minor;
++	unsigned int major = 0, minor = 0;
+ 	struct utsname info;
  
+ 	if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor) != 2)
 -- 
 2.44.0.478.gd926399ef9-goog
 
