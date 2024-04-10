@@ -1,87 +1,59 @@
-Return-Path: <linux-kernel+bounces-139255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139256-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B20938A008E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:26:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E6B68A0094
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:28:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 676E81F27A70
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:26:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0687B24903
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:28:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BCAA18131A;
-	Wed, 10 Apr 2024 19:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6CFA18132D;
+	Wed, 10 Apr 2024 19:28:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HDVm4d17"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V4KcJiaC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEF5E13C9BB
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 19:26:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32CC317F370;
+	Wed, 10 Apr 2024 19:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712777203; cv=none; b=SYQqScj4/iUCslf/MDOudVtIVgbG2dLmxtFtYZloM1i7rBkBHZZVtEM44/e6ojroXafrUO+OTd+Oaf9Foap6VT72V/SyEJ5Z9Ep9R/t/T+J1d34ierKvQFucYkmSOHYJ5IlWPS9H6HFlnUO38fb9+ndPFGMraEcIxLL9YmDDUlQ=
+	t=1712777323; cv=none; b=u/+CwLzWMaOYNdxa+aDhQwdFIMey22efMw64wRfbU1KJqXAoTw1FYM2LddlhzB1izQTqRTolo152MfVYM8Yfvn9Jtsq21I/zq8d3Pdv93D6GwIPtGl4L6xfh0eHOsnDseWpLJq4mJBVcXYbH7qzmJse345qMIR0S7E8Kv7xPooU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712777203; c=relaxed/simple;
-	bh=AMqlBZLFJT51AESr/QfuR/fFI09Sip8DaT6BxjSLNiQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OkPGX4g/3oDKRq0HM+edCU4czvMQ67YoZ1rxU80mYmsnxidqG93KjifG9gUES+tuDmKArAhpxWnMPq2ywNZOvI+URoxMvTkNm0fZMr3gGj0/E8+wQ+2gaxICCcjnWXGVazUIc/C0+B5AZNzKN/NqWaoKBmP5Df8uHhm3MOUYWu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HDVm4d17; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-516d0161e13so8186423e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:26:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712777200; x=1713382000; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oql17Fqd5Jg6+8RYI68vlFWWGpYVeFoSsC2gYOuJOyU=;
-        b=HDVm4d1763wqDWlp21v1uApnIRTHTAHFmQ1mmgP4tGVluYPKOqA8QY6VgQV5vITWfB
-         CtryNqjgQYoDWTXvxjnoahmkIrsqeuTUrbqDmvExjz9rwfeo8J1+PceGD2SV0wVrfYL1
-         nz+CkBtn92gEsFOVOekO4X6+G8vqTQ3Asu8AMCXtZy7+Kk1e7MiNYKwOzVuBpxtkwOAF
-         l2G7NmrpM65h2oxCGJgLGwa1OVjMe2Km83HhT5DZMwXbgPhSgGhXNND4r9IPctJPc5Zd
-         +MBsjv+deBWzQ8KhAwP6+jZO0kWXNrbcHDWZNdJQN19XGgT9Ha4hj3U4LZpHz5mOTIdA
-         JEqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712777200; x=1713382000;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Oql17Fqd5Jg6+8RYI68vlFWWGpYVeFoSsC2gYOuJOyU=;
-        b=QitB22afe1LdvhelfuzeJCcI1F8ELjSuCH938JdfkXa+Nkvy45ZUiRc2YKMRhXy3Rl
-         +PQAQjZvXn+mkUI8InO7frylLUWZF5a1qGoMBpT94jQtA9j3Rxj5Jtrl4KwvOGjuTaoL
-         4CSA5omtB60fSNy0AxS17ZFn3OOXQWd2pUEvSsVEXyTLeIIvBjHfLrCngug+FDqUJ6md
-         0YtxVZhqRKW0N9klFm4Vqe/FPQrC5AO/AWtvniz99hKfuqgwY0hJ/QyOz2vdAQ46ux+6
-         9mNF+U1ZWAQuFXD5zaerLM3xyAuAOQe8JbiFz0+phJf8opi+scVevO+Tt/0gOJeYxfXv
-         mTXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVl1qBZbh97G4CWx7abgl77S8M6iN9hONrRN+9yda9nMpO4xmwVML2AGgNerDgKmiWoiqLufZHrP1rAP7h8MYqGEIJpACk9henmc4e6
-X-Gm-Message-State: AOJu0YxqQ+TuhZn3jLXH3jKoj4OGQKXZNRvtBOD12PQZ7p1i7K43eX6C
-	2sod6BKK6UyK6wiiBF7Ebs8uBnlaXisMlmmlRoVWFdq6FE33+M+6ph35vOeCCJg=
-X-Google-Smtp-Source: AGHT+IEJyevAVtPCLcTaJGYyYSGZelO6kzFGO1RxVTJJabuGr3OAqPR7yMBG4cD0OBvbeQOjPS5GUQ==
-X-Received: by 2002:a19:e00f:0:b0:513:ec32:aa81 with SMTP id x15-20020a19e00f000000b00513ec32aa81mr2418754lfg.13.1712777199719;
-        Wed, 10 Apr 2024 12:26:39 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
-        by smtp.gmail.com with ESMTPSA id x27-20020ac259db000000b00516b061e091sm1924951lfn.4.2024.04.10.12.26.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 12:26:39 -0700 (PDT)
-Date: Wed, 10 Apr 2024 22:26:37 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, 
-	Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	Neil Armstrong <neil.armstrong@linaro.org>
-Subject: Re: [PATCH 4/6] drm/msm/adreno: Implement SMEM-based speed bin
-Message-ID: <33qyr6cfruczllvavvwtbkyuqxmtao4bya4j32zhjx6ni27c6d@rxjehsw54l32>
-References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
- <20240405-topic-smem_speedbin-v1-4-ce2b864251b1@linaro.org>
- <scvwfj44z3wpp7phvesfwjuv5awtlkwby2vvrpaq4i5fircrt3@i3ebya4iymf3>
- <730d6b9e-d6b4-41fd-bef3-b1fa6e914a35@linaro.org>
+	s=arc-20240116; t=1712777323; c=relaxed/simple;
+	bh=WOeeQkSWa4cC+JdRWhi+F3uBgT2A/qX4BlXL0RnkUCI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Rpg8Awrzuecq5aZxtisoWwVZZJ7G/NusLTPMZyWljALC43sMyoT4d/F3L4n7AqMvakeyjxvI+gjf2yzYSQ+U2q8S8onv2iChH8oGQyXd8ezHcgKU7OMqp6tee8F99AYliTBck3WvGQf9/xPwrtH13RFV04ypINydCe+c+Izhm4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V4KcJiaC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5928DC433F1;
+	Wed, 10 Apr 2024 19:28:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712777322;
+	bh=WOeeQkSWa4cC+JdRWhi+F3uBgT2A/qX4BlXL0RnkUCI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=V4KcJiaCI8JlpuHxsNMA2kz2SSkPb8I65KHr01c0bKDpPWkjrrN9fJ2uS8aDjHR1d
+	 npEtvjCySIDywAXfkqTrCw05tsQT7NvA1DrpALdePR392tb4lVeuk8u4c3879QTyCO
+	 BiJpuEt1IfiHGy/dBiQQ/T0yyIUDSWLo1LI4o/QIB/wePkwZs+peO8FEj6rJa1P1cV
+	 seUk5IOw7Xzt9xUoOmk+c15h4jYVYuQ0sjaGT2Da2fQ7KBzNqr97uoDgXec2wvB33/
+	 oWNw3w/JrPhXPs6vWXZ6chIdKRXa19HVfg9mzOE0GHvFFPF6wchSzhAZA4CYXL8XL7
+	 YcYPIZwuxh3JA==
+Date: Wed, 10 Apr 2024 14:28:40 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Vidya Sagar <vidyas@nvidia.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+	Shanker Donthineni <sdonthineni@nvidia.com>,
+	Krishna Thota <kthota@nvidia.com>, Will Deacon <will@kernel.org>,
+	Joerg Roedel <joro@8bytes.org>
+Subject: Re: [Query] ACS enablement in the DT based boot flow
+Message-ID: <20240410192840.GA2147526@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,74 +62,106 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <730d6b9e-d6b4-41fd-bef3-b1fa6e914a35@linaro.org>
+In-Reply-To: <PH8PR12MB667446D4A4CAD6E0A2F488B5B83F2@PH8PR12MB6674.namprd12.prod.outlook.com>
 
-On Wed, Apr 10, 2024 at 01:42:33PM +0200, Konrad Dybcio wrote:
-> 
-> 
-> On 4/6/24 05:23, Dmitry Baryshkov wrote:
-> > On Fri, Apr 05, 2024 at 10:41:32AM +0200, Konrad Dybcio wrote:
-> > > On recent (SM8550+) Snapdragon platforms, the GPU speed bin data is
-> > > abstracted through SMEM, instead of being directly available in a fuse.
-> > > 
-> > > Add support for SMEM-based speed binning, which includes getting
-> > > "feature code" and "product code" from said source and parsing them
-> > > to form something that lets us match OPPs against.
-> > > 
-> > > Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> > > ---
-> 
-> [...]
-> 
-> > 
-> > > +	}
-> > > +
-> > > +	ret = qcom_smem_get_product_code(&pcode);
-> > > +	if (ret) {
-> > > +		dev_err(dev, "Couldn't get product code from SMEM!\n");
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	/* Don't consider fcode for external feature codes */
-> > > +	if (fcode <= SOCINFO_FC_EXT_RESERVE)
-> > > +		fcode = SOCINFO_FC_UNKNOWN;
-> > > +
-> > > +	*speedbin = FIELD_PREP(ADRENO_SKU_ID_PCODE, pcode) |
-> > > +		    FIELD_PREP(ADRENO_SKU_ID_FCODE, fcode);
-> > 
-> > What about just asking the qcom_smem for the 'gpu_bin' and hiding gory
-> > details there? It almost feels that handling raw PCODE / FCODE here is
-> > too low-level and a subject to change depending on the socinfo format.
-> 
-> No, the FCODE & PCODE can be interpreted differently across consumers.
+[+cc Will, Joerg]
 
-That's why I wrote about asking for 'gpu_bin'.
-
+On Mon, Apr 01, 2024 at 10:40:15AM +0000, Vidya Sagar wrote:
+> Hi folks,
+> ACS (Access Control Services) is configured for a PCI device through
+> pci_enable_acs().  The first thing pci_enable_acs() checks for is
+> whether the global flag 'pci_acs_enable' is set or not.  The global
+> flag 'pci_acs_enable' is set by the function pci_request_acs().
 > 
-> > 
-> > > +
-> > > +	return ret;
-> > >   }
-> > >   int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
-> > > @@ -1098,9 +1129,9 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
-> > >   			devm_pm_opp_set_clkname(dev, "core");
-> > >   	}
-> > > -	if (adreno_read_speedbin(dev, &speedbin) || !speedbin)
-> > > +	if (adreno_read_speedbin(adreno_gpu, dev, &speedbin) || !speedbin)
-> > >   		speedbin = 0xffff;
-> > > -	adreno_gpu->speedbin = (uint16_t) (0xffff & speedbin);
-> > 
-> > the &= 0xffff should probably go to the adreno_read_speedbin / nvmem
-> > case. WDYT?
+> pci_enable_acs() function is called whenever a new PCI device is
+> added to the system
 > 
-> Ok, I can keep it, though realistically if this ever does anything
-> useful, it likely means the dt is wrong
+>  pci_enable_acs+0x4c/0x2a4
+>  pci_acs_init+0x38/0x60
+>  pci_device_add+0x1a0/0x670
+>  pci_scan_single_device+0xc4/0x100
+>  pci_scan_slot+0x6c/0x1e0
+>  pci_scan_child_bus_extend+0x48/0x2e0
+>  pci_scan_root_bus_bridge+0x64/0xf0
+>  pci_host_probe+0x18/0xd0
+> 
+> In the case of a system that boots using device-tree blob,
+> pci_request_acs() is called when the device driver binds with the
+> respective device
+> 
+> of_iommu_configure+0xf4/0x230
+> of_dma_configure_id+0x110/0x340
+> pci_dma_configure+0x54/0x120
+> really_probe+0x80/0x3e0
+> __driver_probe_device+0x88/0x1c0
+> driver_probe_device+0x3c/0x140
+> __device_attach_driver+0xe8/0x1e0
+> bus_for_each_drv+0x78/0xf0
+> __device_attach+0x104/0x1e0
+> device_attach+0x14/0x30
+> pci_bus_add_device+0x50/0xd0
+> pci_bus_add_devices+0x38/0x90
+> pci_host_probe+0x40/0xd0
+> 
+> Since the device addition always happens first followed by the
+> driver binding, this flow effectively makes sure that ACS never gets
+> enabled.
+> 
+> Ideally, I would expect the pci_request_acs() get called (probably
+> by the OF framework itself) before calling pci_enable_acs().
+> 
+> This happens in the ACPI flow where pci_request_acs() is called
+> during IORT node initialization (i.e. iort_init_platform_devices()
+> function).
+> 
+> Is this understanding correct? If yes, would it make sense to call
+> pci_request_acs() during OF initialization (similar to IORT
+> initialization in ACPI flow)?
 
-Yes, but if DT is wrong, we should probably fail in a sensible way. I
-just wanted to point out that previously we had this &0xffff, while your
-patch silently removes it.
+Your understanding looks correct to me.  My call graph notes, FWIW:
 
--- 
-With best wishes
-Dmitry
+  mem_init
+    pci_iommu_alloc                   # x86 only
+      amd_iommu_detect                # init_state = IOMMU_START_STATE
+        iommu_go_to_state(IOMMU_IVRS_DETECTED)
+          state_next
+            switch (init_state)
+            case IOMMU_START_STATE:
+              detect_ivrs
+                pci_request_acs
+                  pci_acs_enable = 1  # <--
+      detect_intel_iommu
+        pci_request_acs
+          pci_acs_enable = 1          # <--
+
+  pci_scan_single_device              # PCI enumeration
+    ...
+      pci_init_capabilities
+        pci_acs_init
+          pci_enable_acs
+            if (pci_acs_enable)       # <--
+              pci_std_enable_acs
+
+  __driver_probe_device
+    really_probe
+      pci_dma_configure               # pci_bus_type.dma_configure
+        if (OF)
+          of_dma_configure
+            of_dma_configure_id
+              of_iommu_configure
+                pci_request_acs       # <-- 6bf6c24720d3
+                iommu_probe_device
+        else if (ACPI)
+          acpi_dma_configure
+            acpi_dma_configure_id
+              acpi_iommu_configure_id
+                iommu_probe_device
+
+The pci_request_acs() in of_iommu_configure(), which happens too late
+to affect pci_enable_acs(), was added by 6bf6c24720d3 ("iommu/of:
+Request ACS from the PCI core when configuring IOMMU linkage"), so I
+cc'd Will and Joerg.  I don't know if that *used* to work and got
+broken somehow, or if it never worked as intended.
+
+Bjorn
 
