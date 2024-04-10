@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-138551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B27E389F342
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:00:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDAD289F33E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:59:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D60011C27637
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:00:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F10741C273D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBE5215EFCF;
-	Wed, 10 Apr 2024 12:59:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBB1815EFA4;
+	Wed, 10 Apr 2024 12:59:02 +0000 (UTC)
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7F5159571;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD83D15ECD2;
 	Wed, 10 Apr 2024 12:58:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712753942; cv=none; b=EhP3SxlRkhikX87FqlYjBhDwoIeqYQdBrIn0zXWlXBs2oMD5KjLeF6RcJY2+sVX6QPkoimapZ+88PkXvOmzISfoBvo6a5B6HRmD11OLq1V+/RhgthzsogQUxAv4P/W0+Ezr7IXXyist1NoVYfMefj0UG9kIfZGiBV0ehfA4dzt8=
+	t=1712753942; cv=none; b=T2Qxi+KpGpi9dxaNZxewH5WEBJ+AR7gvnABmSYjr0zBZpaXgM0v0VHGtW1anEr3iw3XU0FiZjlQOGYs9mMwmwEhG6iNEaGLaLMta5OYf8FiuFnYekYllHNHM3m/gPRQQwTwD2KK0C08M+gSlxmNBFYAWG2OVORyq/NE6vxlWyUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712753942; c=relaxed/simple;
-	bh=tydN6pnciB435EnsPFZsbwFtPIX6zj0s3oek+tIYguU=;
+	bh=jv/pgS1SJO38B/Xr7ZsJWndgzVy/EbjDklNQIfLO0pE=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=g4QslA45ex5c5ykuUbFNfgJM8XIbGGITmivvlA8gw5zDPGOXOJp3mUQ8at6oFs4+LsEdjufx39Vp/s7IBmyV8a/M3S0tM+3ReYFU+TLa5wAxwMGMPSmzG8iHkgRZcVlIJUqkSVut86oSwvHA5AmOzPGrWwX9KptXmcoWhXi3sGs=
+	 MIME-Version:Content-Type; b=WzBb+tE+TBXPieCkF74kE7q3HrwiSYSaRUOQgWnID0OuIlJTXT2VVteRnug55tINqXQDrHLAvSufGnWz5dG55b3HULxa2b0wjGn+G4xXGC3bhnZDXpDPDfSejYm8YZA+0g3f4AX3PvpEcpm4aSgTiuZhP4mrObcYI55r2bu9BSI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VF2qz2MdhzXl0Y;
-	Wed, 10 Apr 2024 20:55:43 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VF2tV0lMVzShMC;
+	Wed, 10 Apr 2024 20:57:54 +0800 (CST)
 Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
-	by mail.maildlp.com (Postfix) with ESMTPS id AE1A51403D5;
-	Wed, 10 Apr 2024 20:58:51 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 4AEAE18005D;
+	Wed, 10 Apr 2024 20:58:52 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 10 Apr 2024 20:58:50 +0800
+ 15.1.2507.35; Wed, 10 Apr 2024 20:58:51 +0800
 From: Jijie Shao <shaojijie@huawei.com>
 To: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
 	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
@@ -46,9 +46,9 @@ To: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
 CC: <shenjian15@huawei.com>, <wangjie125@huawei.com>,
 	<liuyonglong@huawei.com>, <shaojijie@huawei.com>, <chenhao418@huawei.com>,
 	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH V7 net-next 3/4] net: hns3: dump more reg info based on ras mod
-Date: Wed, 10 Apr 2024 20:53:53 +0800
-Message-ID: <20240410125354.2177067-4-shaojijie@huawei.com>
+Subject: [PATCH V7 net-next 4/4] net: hns3: add support to query scc version by devlink info
+Date: Wed, 10 Apr 2024 20:53:54 +0800
+Message-ID: <20240410125354.2177067-5-shaojijie@huawei.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240410125354.2177067-1-shaojijie@huawei.com>
 References: <20240410125354.2177067-1-shaojijie@huawei.com>
@@ -63,666 +63,200 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm600007.china.huawei.com (7.193.23.208)
 
-From: Peiyang Wang <wangpeiyang1@huawei.com>
+From: Hao Chen <chenhao418@huawei.com>
 
-When the driver received an interrupte for hardware error,
-it will try to restore by resetting. But the hardware registers
-will also be reset at this case, which make it hard to analysis
-why the hardware error occurs.
+Add support to query scc version by devlink info for device V3.
 
-This patch dumps these registers before resetting to help
-analyze the hardware error occurs.
-
-Signed-off-by: Peiyang Wang <wangpeiyang1@huawei.com>
+Signed-off-by: Hao Chen <chenhao418@huawei.com>
 Signed-off-by: Jijie Shao <shaojijie@huawei.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
 ---
- drivers/net/ethernet/hisilicon/hns3/hnae3.h   |   4 +
- .../hns3/hns3_common/hclge_comm_cmd.c         |   1 +
- .../hns3/hns3_common/hclge_comm_cmd.h         |   2 +
- .../hisilicon/hns3/hns3pf/hclge_debugfs.c     |   6 +-
- .../hisilicon/hns3/hns3pf/hclge_debugfs.h     |   3 +
- .../hisilicon/hns3/hns3pf/hclge_err.c         | 433 +++++++++++++++++-
- .../hisilicon/hns3/hns3pf/hclge_err.h         |  36 ++
- 7 files changed, 477 insertions(+), 8 deletions(-)
+ Documentation/networking/devlink/hns3.rst     |  3 ++
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h   |  9 ++++
+ .../hns3/hns3_common/hclge_comm_cmd.h         |  8 ++++
+ .../hisilicon/hns3/hns3pf/hclge_devlink.c     | 44 +++++++++++++++++--
+ .../hisilicon/hns3/hns3pf/hclge_devlink.h     |  2 +
+ .../hisilicon/hns3/hns3pf/hclge_main.c        | 18 ++++++++
+ .../hisilicon/hns3/hns3pf/hclge_main.h        |  1 +
+ 7 files changed, 82 insertions(+), 3 deletions(-)
 
+diff --git a/Documentation/networking/devlink/hns3.rst b/Documentation/networking/devlink/hns3.rst
+index 4562a6e4782f..e19dea8ef924 100644
+--- a/Documentation/networking/devlink/hns3.rst
++++ b/Documentation/networking/devlink/hns3.rst
+@@ -23,3 +23,6 @@ The ``hns3`` driver reports the following versions
+    * - ``fw``
+      - running
+      - Used to represent the firmware version.
++   * - ``fw.scc``
++     - running
++     - Used to represent the soft congestion control firmware version.
 diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-index f19f1e1d1f9f..e9266c65b331 100644
+index e9266c65b331..7c2c8bea4c06 100644
 --- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
 +++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
-@@ -104,6 +104,7 @@ enum HNAE3_DEV_CAP_BITS {
- 	HNAE3_DEV_SUPPORT_WOL_B,
- 	HNAE3_DEV_SUPPORT_TM_FLUSH_B,
- 	HNAE3_DEV_SUPPORT_VF_FAULT_B,
-+	HNAE3_DEV_SUPPORT_ERR_MOD_GEN_REG_B,
- };
+@@ -366,6 +366,15 @@ struct hnae3_vector_info {
+ #define HNAE3_FW_VERSION_BYTE0_SHIFT	0
+ #define HNAE3_FW_VERSION_BYTE0_MASK	GENMASK(7, 0)
  
- #define hnae3_ae_dev_fd_supported(ae_dev) \
-@@ -181,6 +182,9 @@ enum HNAE3_DEV_CAP_BITS {
- #define hnae3_ae_dev_vf_fault_supported(ae_dev) \
- 	test_bit(HNAE3_DEV_SUPPORT_VF_FAULT_B, (ae_dev)->caps)
- 
-+#define hnae3_ae_dev_gen_reg_dfx_supported(hdev) \
-+	test_bit(HNAE3_DEV_SUPPORT_ERR_MOD_GEN_REG_B, (hdev)->ae_dev->caps)
++#define HNAE3_SCC_VERSION_BYTE3_SHIFT	24
++#define HNAE3_SCC_VERSION_BYTE3_MASK	GENMASK(31, 24)
++#define HNAE3_SCC_VERSION_BYTE2_SHIFT	16
++#define HNAE3_SCC_VERSION_BYTE2_MASK	GENMASK(23, 16)
++#define HNAE3_SCC_VERSION_BYTE1_SHIFT	8
++#define HNAE3_SCC_VERSION_BYTE1_MASK	GENMASK(15, 8)
++#define HNAE3_SCC_VERSION_BYTE0_SHIFT	0
++#define HNAE3_SCC_VERSION_BYTE0_MASK	GENMASK(7, 0)
 +
- enum HNAE3_PF_CAP_BITS {
- 	HNAE3_PF_SUPPORT_VLAN_FLTR_MDF_B = 0,
- };
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c
-index 11df6fbd641d..ea40b594dbac 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.c
-@@ -158,6 +158,7 @@ static const struct hclge_comm_caps_bit_map hclge_pf_cmd_caps[] = {
- 	{HCLGE_COMM_CAP_WOL_B, HNAE3_DEV_SUPPORT_WOL_B},
- 	{HCLGE_COMM_CAP_TM_FLUSH_B, HNAE3_DEV_SUPPORT_TM_FLUSH_B},
- 	{HCLGE_COMM_CAP_VF_FAULT_B, HNAE3_DEV_SUPPORT_VF_FAULT_B},
-+	{HCLGE_COMM_CAP_ERR_MOD_GEN_REG_B, HNAE3_DEV_SUPPORT_ERR_MOD_GEN_REG_B},
- };
- 
- static const struct hclge_comm_caps_bit_map hclge_vf_cmd_caps[] = {
+ struct hnae3_ring_chain_node {
+ 	struct hnae3_ring_chain_node *next;
+ 	u32 tqp_index;
 diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
-index e6a087576df6..a2bc5a9adaa3 100644
+index a2bc5a9adaa3..2c2a2f1e0d7a 100644
 --- a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
 +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_cmd.h
-@@ -91,6 +91,7 @@ enum hclge_opcode_type {
- 	HCLGE_OPC_DFX_RCB_REG		= 0x004D,
- 	HCLGE_OPC_DFX_TQP_REG		= 0x004E,
- 	HCLGE_OPC_DFX_SSU_REG_2		= 0x004F,
-+	HCLGE_OPC_DFX_GEN_REG		= 0x7038,
+@@ -247,6 +247,9 @@ enum hclge_opcode_type {
+ 	HCLGE_OPC_QCN_AJUST_INIT	= 0x1A07,
+ 	HCLGE_OPC_QCN_DFX_CNT_STATUS    = 0x1A08,
  
- 	HCLGE_OPC_QUERY_DEV_SPECS	= 0x0050,
- 	HCLGE_OPC_GET_QUEUE_ERR_VF      = 0x0067,
-@@ -353,6 +354,7 @@ enum HCLGE_COMM_CAP_BITS {
- 	HCLGE_COMM_CAP_LANE_NUM_B = 27,
- 	HCLGE_COMM_CAP_WOL_B = 28,
- 	HCLGE_COMM_CAP_TM_FLUSH_B = 31,
-+	HCLGE_COMM_CAP_ERR_MOD_GEN_REG_B = 32,
++	/* SCC commands */
++	HCLGE_OPC_QUERY_SCC_VER		= 0x1A84,
++
+ 	/* Mailbox command */
+ 	HCLGEVF_OPC_MBX_PF_TO_VF	= 0x2000,
+ 	HCLGEVF_OPC_MBX_VF_TO_PF	= 0x2001,
+@@ -394,6 +397,11 @@ struct hclge_comm_query_version_cmd {
+ 	__le32 caps[HCLGE_COMM_QUERY_CAP_LENGTH]; /* capabilities of device */
  };
  
- enum HCLGE_COMM_API_CAP_BITS {
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-index 243be19a7557..debf143e9940 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
-@@ -801,10 +801,8 @@ static int hclge_dbg_get_dfx_bd_num(struct hclge_dev *hdev, int offset,
- 	return 0;
++struct hclge_comm_query_scc_cmd {
++	__le32 scc_version;
++	u8 rsv[20];
++};
++
+ #define HCLGE_DESC_DATA_LEN		6
+ struct hclge_desc {
+ 	__le16 opcode;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c
+index 9a939c0b217f..a1571c108678 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c
+@@ -5,6 +5,34 @@
+ 
+ #include "hclge_devlink.h"
+ 
++static int hclge_devlink_scc_info_get(struct devlink *devlink,
++				      struct devlink_info_req *req)
++{
++	struct hclge_devlink_priv *priv = devlink_priv(devlink);
++	char scc_version[HCLGE_DEVLINK_FW_SCC_LEN];
++	struct hclge_dev *hdev = priv->hdev;
++	u32 scc_version_tmp;
++	int ret;
++
++	ret = hclge_query_scc_version(hdev, &scc_version_tmp);
++	if (ret) {
++		dev_err(&hdev->pdev->dev,
++			"failed to get scc version, ret = %d\n", ret);
++		return ret;
++	}
++
++	snprintf(scc_version, sizeof(scc_version), "%lu.%lu.%lu.%lu",
++		 hnae3_get_field(scc_version_tmp, HNAE3_SCC_VERSION_BYTE3_MASK,
++				 HNAE3_FW_VERSION_BYTE3_SHIFT),
++		 hnae3_get_field(scc_version_tmp, HNAE3_SCC_VERSION_BYTE2_MASK,
++				 HNAE3_FW_VERSION_BYTE2_SHIFT),
++		 hnae3_get_field(scc_version_tmp, HNAE3_SCC_VERSION_BYTE1_MASK,
++				 HNAE3_FW_VERSION_BYTE1_SHIFT),
++		 hnae3_get_field(scc_version_tmp, HNAE3_SCC_VERSION_BYTE0_MASK,
++				 HNAE3_FW_VERSION_BYTE0_SHIFT));
++	return devlink_info_version_running_put(req, "fw.scc", scc_version);
++}
++
+ static int hclge_devlink_info_get(struct devlink *devlink,
+ 				  struct devlink_info_req *req,
+ 				  struct netlink_ext_ack *extack)
+@@ -13,6 +41,7 @@ static int hclge_devlink_info_get(struct devlink *devlink,
+ 	struct hclge_devlink_priv *priv = devlink_priv(devlink);
+ 	char version_str[HCLGE_DEVLINK_FW_STRING_LEN];
+ 	struct hclge_dev *hdev = priv->hdev;
++	int ret;
+ 
+ 	snprintf(version_str, sizeof(version_str), "%lu.%lu.%lu.%lu",
+ 		 hnae3_get_field(hdev->fw_version, HNAE3_FW_VERSION_BYTE3_MASK,
+@@ -24,9 +53,18 @@ static int hclge_devlink_info_get(struct devlink *devlink,
+ 		 hnae3_get_field(hdev->fw_version, HNAE3_FW_VERSION_BYTE0_MASK,
+ 				 HNAE3_FW_VERSION_BYTE0_SHIFT));
+ 
+-	return devlink_info_version_running_put(req,
+-						DEVLINK_INFO_VERSION_GENERIC_FW,
+-						version_str);
++	ret = devlink_info_version_running_put(req,
++					       DEVLINK_INFO_VERSION_GENERIC_FW,
++					       version_str);
++	if (ret) {
++		dev_err(&hdev->pdev->dev, "failed to set running version of fw\n");
++		return ret;
++	}
++
++	if (hdev->pdev->revision > HNAE3_DEVICE_VERSION_V2)
++		ret = hclge_devlink_scc_info_get(devlink, req);
++
++	return ret;
  }
  
--static int hclge_dbg_cmd_send(struct hclge_dev *hdev,
--			      struct hclge_desc *desc_src,
--			      int index, int bd_num,
--			      enum hclge_opcode_type cmd)
-+int hclge_dbg_cmd_send(struct hclge_dev *hdev, struct hclge_desc *desc_src,
-+		       int index, int bd_num, enum hclge_opcode_type cmd)
- {
- 	struct hclge_desc *desc = desc_src;
- 	int ret, i;
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h
-index 31a775fb032b..2b998cbed826 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.h
-@@ -131,4 +131,7 @@ struct hclge_dbg_vlan_cfg {
- 	u8 pri_only2;
- };
+ static int hclge_devlink_reload_down(struct devlink *devlink, bool netns_change,
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.h
+index 918be04507a5..148effa5ea89 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.h
+@@ -6,6 +6,8 @@
  
-+int hclge_dbg_cmd_send(struct hclge_dev *hdev, struct hclge_desc *desc_src,
-+		       int index, int bd_num, enum hclge_opcode_type cmd);
-+
- #endif
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c
-index d63e114f93d0..e132c2f09560 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.c
-@@ -1198,6 +1198,425 @@ static const struct hclge_hw_error hclge_rocee_qmm_ovf_err_int[] = {
- 	}
- };
+ #include "hclge_main.h"
  
-+static const struct hclge_mod_reg_info hclge_ssu_reg_0_info[] = {
-+	{
-+		.reg_name = "SSU_BP_STATUS_0~5",
-+		.reg_offset_group = { 5, 6, 7, 8, 9, 10},
-+		.group_size = 6
-+	}, {
-+		.reg_name = "LO_PRI_UNICAST_CUR_CNT",
-+		.reg_offset_group = {54},
-+		.group_size = 1
-+	}, {
-+		.reg_name = "HI/LO_PRI_MULTICAST_CUR_CNT",
-+		.reg_offset_group = {55, 56},
-+		.group_size = 2
-+	}, {
-+		.reg_name = "SSU_MB_RD_RLT_DROP_CNT",
-+		.reg_offset_group = {29},
-+		.group_size = 1
-+	}, {
-+		.reg_name = "SSU_PPP_MAC_KEY_NUM",
-+		.reg_offset_group = {31, 30},
-+		.group_size = 2
-+	}, {
-+		.reg_name = "SSU_PPP_HOST_KEY_NUM",
-+		.reg_offset_group = {33, 32},
-+		.group_size = 2
-+	}, {
-+		.reg_name = "PPP_SSU_MAC/HOST_RLT_NUM",
-+		.reg_offset_group = {35, 34, 37, 36},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "FULL/PART_DROP_NUM",
-+		.reg_offset_group = {18, 19},
-+		.group_size = 2
-+	}, {
-+		.reg_name = "PPP_KEY/RLT_DROP_NUM",
-+		.reg_offset_group = {20, 21},
-+		.group_size = 2
-+	}, {
-+		.reg_name = "NIC/ROC_L2_ERR_DROP_PKT_CNT",
-+		.reg_offset_group = {48, 49},
-+		.group_size = 2
-+	}, {
-+		.reg_name = "NIC/ROC_L2_ERR_DROP_PKT_CNT_RX",
-+		.reg_offset_group = {50, 51},
-+		.group_size = 2
-+	},
-+};
++#define	HCLGE_DEVLINK_FW_SCC_LEN	32
 +
-+static const struct hclge_mod_reg_info hclge_ssu_reg_1_info[] = {
-+	{
-+		.reg_name = "RX_PACKET_IN/OUT_CNT",
-+		.reg_offset_group = {13, 12, 15, 14},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "TX_PACKET_IN/OUT_CNT",
-+		.reg_offset_group = {17, 16, 19, 18},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "RX_PACKET_TC0_IN/OUT_CNT",
-+		.reg_offset_group = {25, 24, 41, 40},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "RX_PACKET_TC1_IN/OUT_CNT",
-+		.reg_offset_group = {27, 26, 43, 42},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "RX_PACKET_TC2_IN/OUT_CNT",
-+		.reg_offset_group = {29, 28, 45, 44},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "RX_PACKET_TC3_IN/OUT_CNT",
-+		.reg_offset_group = {31, 30, 47, 46},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "RX_PACKET_TC4_IN/OUT_CNT",
-+		.reg_offset_group = {33, 32, 49, 48},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "RX_PACKET_TC5_IN/OUT_CNT",
-+		.reg_offset_group = {35, 34, 51, 50},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "RX_PACKET_TC6_IN/OUT_CNT",
-+		.reg_offset_group = {37, 36, 53, 52},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "RX_PACKET_TC7_IN/OUT_CNT",
-+		.reg_offset_group = {39, 38, 55, 54},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "TX_PACKET_TC0_IN/OUT_CNT",
-+		.reg_offset_group = {57, 56, 73, 72},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "TX_PACKET_TC1_IN/OUT_CNT",
-+		.reg_offset_group = {59, 58, 75, 74},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "TX_PACKET_TC2_IN/OUT_CNT",
-+		.reg_offset_group = {61, 60, 77, 76},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "TX_PACKET_TC3_IN/OUT_CNT",
-+		.reg_offset_group = {63, 62, 79, 78},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "TX_PACKET_TC4_IN/OUT_CNT",
-+		.reg_offset_group = {65, 64, 81, 80},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "TX_PACKET_TC5_IN/OUT_CNT",
-+		.reg_offset_group = {67, 66, 83, 82},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "TX_PACKET_TC6_IN/OUT_CNT",
-+		.reg_offset_group = {69, 68, 85, 84},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "TX_PACKET_TC7_IN/OUT_CNT",
-+		.reg_offset_group = {71, 70, 87, 86},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "PACKET_TC0~3_CURR_BUFFER_CNT",
-+		.reg_offset_group = {1, 2, 3, 4},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "PACKET_TC4~7_CURR_BUFFER_CNT",
-+		.reg_offset_group = {5, 6, 7, 8},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "ROC_RX_PACKET_IN_CNT",
-+		.reg_offset_group = {21, 20},
-+		.group_size = 2
-+	}, {
-+		.reg_name = "ROC_TX_PACKET_OUT_CNT",
-+		.reg_offset_group = {23, 22},
-+		.group_size = 2
-+	}
-+};
-+
-+static const struct hclge_mod_reg_info hclge_rpu_reg_0_info[] = {
-+	{
-+		.reg_name = "RPU_FSM_DFX_ST0/ST1_TNL",
-+		.has_suffix = true,
-+		.reg_offset_group = {1, 2},
-+		.group_size = 2
-+	}, {
-+		.reg_name = "RPU_RX_PKT_DROP_CNT_TNL",
-+		.has_suffix = true,
-+		.reg_offset_group = {3},
-+		.group_size = 1
-+	}
-+};
-+
-+static const struct hclge_mod_reg_info hclge_rpu_reg_1_info[] = {
-+	{
-+		.reg_name = "FIFO_DFX_ST0_1_2_4",
-+		.reg_offset_group = {1, 2, 3, 5},
-+		.group_size = 4
-+	}
-+};
-+
-+static const struct hclge_mod_reg_info hclge_igu_egu_reg_info[] = {
-+	{
-+		.reg_name = "IGU_RX_ERR_PKT",
-+		.reg_offset_group = {1},
-+		.group_size = 1
-+	}, {
-+		.reg_name = "IGU_RX_OUT_ALL_PKT",
-+		.reg_offset_group = {29, 28},
-+		.group_size = 2
-+	}, {
-+		.reg_name = "EGU_TX_OUT_ALL_PKT",
-+		.reg_offset_group = {39, 38},
-+		.group_size = 2
-+	}, {
-+		.reg_name = "EGU_TX_ERR_PKT",
-+		.reg_offset_group = {5},
-+		.group_size = 1
-+	}
-+};
-+
-+static const struct hclge_mod_reg_info hclge_gen_reg_info_tnl[] = {
-+	{
-+		.reg_name = "SSU2RPU_TNL_WR_PKT_CNT_TNL",
-+		.has_suffix = true,
-+		.reg_offset_group = {1},
-+		.group_size = 1
-+	}, {
-+		.reg_name = "RPU2HST_TNL_WR_PKT_CNT_TNL",
-+		.has_suffix = true,
-+		.reg_offset_group = {12},
-+		.group_size = 1
-+	}
-+};
-+
-+static const struct hclge_mod_reg_info hclge_gen_reg_info[] = {
-+	{
-+		.reg_name = "SSU_OVERSIZE_DROP_CNT",
-+		.reg_offset_group = {12},
-+		.group_size = 1
-+	}, {
-+		.reg_name = "ROCE_RX_BYPASS_5NS_DROP_NUM",
-+		.reg_offset_group = {13},
-+		.group_size = 1
-+	}, {
-+		.reg_name = "RX_PKT_IN/OUT_ERR_CNT",
-+		.reg_offset_group = {15, 14, 19, 18},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "TX_PKT_IN/OUT_ERR_CNT",
-+		.reg_offset_group = {17, 16, 21, 20},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "ETS_TC_READY",
-+		.reg_offset_group = {22},
-+		.group_size = 1
-+	}, {
-+		.reg_name = "MIB_TX/RX_BAD_PKTS",
-+		.reg_offset_group = {19, 18, 29, 28},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "MIB_TX/RX_GOOD_PKTS",
-+		.reg_offset_group = {21, 20, 31, 30},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "MIB_TX/RX_TOTAL_PKTS",
-+		.reg_offset_group = {23, 22, 33, 32},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "MIB_TX/RX_PAUSE_PKTS",
-+		.reg_offset_group = {25, 24, 35, 34},
-+		.group_size = 4
-+	}, {
-+		.reg_name = "MIB_TX_ERR_ALL_PKTS",
-+		.reg_offset_group = {27, 26},
-+		.group_size = 2
-+	}, {
-+		.reg_name = "MIB_RX_FCS_ERR_PKTS",
-+		.reg_offset_group = {37, 36},
-+		.group_size = 2
-+	}, {
-+		.reg_name = "IGU_EGU_AUTO_GATE_EN",
-+		.reg_offset_group = {42},
-+		.group_size = 1
-+	}, {
-+		.reg_name = "IGU_EGU_INT_SRC",
-+		.reg_offset_group = {43},
-+		.group_size = 1
-+	}, {
-+		.reg_name = "EGU_READY_NUM_CFG",
-+		.reg_offset_group = {44},
-+		.group_size = 1
-+	}, {
-+		.reg_name = "IGU_EGU_TNL_DFX",
-+		.reg_offset_group = {45},
-+		.group_size = 1
-+	}, {
-+		.reg_name = "TX_TNL_NOTE_PKT",
-+		.reg_offset_group = {46},
-+		.group_size = 1
-+	}
-+};
-+
-+static const struct hclge_mod_reg_common_msg hclge_ssu_reg_common_msg[] = {
-+	{
-+		.cmd = HCLGE_OPC_DFX_SSU_REG_0,
-+		.result_regs = hclge_ssu_reg_0_info,
-+		.bd_num = HCLGE_BD_NUM_SSU_REG_0,
-+		.result_regs_size = ARRAY_SIZE(hclge_ssu_reg_0_info)
-+	}, {
-+		.cmd = HCLGE_OPC_DFX_SSU_REG_1,
-+		.result_regs = hclge_ssu_reg_1_info,
-+		.bd_num = HCLGE_BD_NUM_SSU_REG_1,
-+		.result_regs_size = ARRAY_SIZE(hclge_ssu_reg_1_info)
-+	}, {
-+		.cmd = HCLGE_OPC_DFX_RPU_REG_0,
-+		.result_regs = hclge_rpu_reg_0_info,
-+		.bd_num = HCLGE_BD_NUM_RPU_REG_0,
-+		.result_regs_size = ARRAY_SIZE(hclge_rpu_reg_0_info),
-+		.need_para = true
-+	}, {
-+		.cmd = HCLGE_OPC_DFX_RPU_REG_1,
-+		.result_regs = hclge_rpu_reg_1_info,
-+		.bd_num = HCLGE_BD_NUM_RPU_REG_1,
-+		.result_regs_size = ARRAY_SIZE(hclge_rpu_reg_1_info)
-+	}, {
-+		.cmd = HCLGE_OPC_DFX_IGU_EGU_REG,
-+		.result_regs = hclge_igu_egu_reg_info,
-+		.bd_num = HCLGE_BD_NUM_IGU_EGU_REG,
-+		.result_regs_size = ARRAY_SIZE(hclge_igu_egu_reg_info)
-+	}, {
-+		.cmd = HCLGE_OPC_DFX_GEN_REG,
-+		.result_regs = hclge_gen_reg_info_tnl,
-+		.bd_num = HCLGE_BD_NUM_GEN_REG,
-+		.result_regs_size = ARRAY_SIZE(hclge_gen_reg_info_tnl),
-+		.need_para = true
-+	}, {
-+		.cmd = HCLGE_OPC_DFX_GEN_REG,
-+		.result_regs = hclge_gen_reg_info,
-+		.bd_num = HCLGE_BD_NUM_GEN_REG,
-+		.result_regs_size = ARRAY_SIZE(hclge_gen_reg_info)
-+	}
-+};
-+
-+static int
-+hclge_print_mod_reg_info(struct device *dev, struct hclge_desc *desc,
-+			 const struct hclge_mod_reg_info *reg_info, int size)
+ struct hclge_devlink_priv {
+ 	struct hclge_dev *hdev;
+ };
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+index eb31a7e9c8fc..28336cf17170 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
+@@ -10883,6 +10883,24 @@ static u32 hclge_get_fw_version(struct hnae3_handle *handle)
+ 	return hdev->fw_version;
+ }
+ 
++int hclge_query_scc_version(struct hclge_dev *hdev, u32 *scc_version)
 +{
-+	int i, j, pos, actual_len;
-+	u8 offset, bd_idx, index;
-+	char *buf;
++	struct hclge_comm_query_scc_cmd *resp;
++	struct hclge_desc desc;
++	int ret;
 +
-+	buf = kzalloc(HCLGE_MOD_REG_INFO_LEN_MAX, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
++	hclge_cmd_setup_basic_desc(&desc, HCLGE_OPC_QUERY_SCC_VER, 1);
++	resp = (struct hclge_comm_query_scc_cmd *)desc.data;
 +
-+	for (i = 0; i < size; i++) {
-+		actual_len = strlen(reg_info[i].reg_name) +
-+			     HCLGE_MOD_REG_EXTRA_LEN +
-+			     HCLGE_MOD_REG_VALUE_LEN * reg_info[i].group_size;
-+		if (actual_len > HCLGE_MOD_REG_INFO_LEN_MAX) {
-+			dev_info(dev, "length of reg(%s) is invalid, len=%d\n",
-+				 reg_info[i].reg_name, actual_len);
-+			continue;
-+		}
++	ret = hclge_cmd_send(&hdev->hw, &desc, 1);
++	if (ret)
++		return ret;
 +
-+		pos = scnprintf(buf, HCLGE_MOD_REG_INFO_LEN_MAX, "%s",
-+				reg_info[i].reg_name);
-+		if (reg_info[i].has_suffix)
-+			pos += scnprintf(buf + pos,
-+					 HCLGE_MOD_REG_INFO_LEN_MAX - pos, "%u",
-+					 le32_to_cpu(desc->data[0]));
-+		pos += scnprintf(buf + pos,
-+				 HCLGE_MOD_REG_INFO_LEN_MAX - pos,
-+				 ":");
-+		for (j = 0; j < reg_info[i].group_size; j++) {
-+			offset = reg_info[i].reg_offset_group[j];
-+			index = offset % HCLGE_DESC_DATA_LEN;
-+			bd_idx = offset / HCLGE_DESC_DATA_LEN;
-+			pos += scnprintf(buf + pos,
-+					 HCLGE_MOD_REG_INFO_LEN_MAX - pos,
-+					 " %08x",
-+					 le32_to_cpu(desc[bd_idx].data[index]));
-+		}
-+		dev_info(dev, "%s\n", buf);
-+	}
++	*scc_version = le32_to_cpu(resp->scc_version);
 +
-+	kfree(buf);
 +	return 0;
 +}
 +
-+static bool hclge_err_mod_check_support_cmd(enum hclge_opcode_type opcode,
-+					    struct hclge_dev *hdev)
-+{
-+	if (opcode == HCLGE_OPC_DFX_GEN_REG &&
-+	    !hnae3_ae_dev_gen_reg_dfx_supported(hdev))
-+		return false;
-+	return true;
-+}
-+
-+/* For each common msg, send cmdq to IMP and print result reg info.
-+ * If there is a parameter, loop it and request.
-+ */
-+static void
-+hclge_query_reg_info(struct hclge_dev *hdev,
-+		     struct hclge_mod_reg_common_msg *msg, u32 loop_time,
-+		     u32 *loop_para)
-+{
-+	int desc_len, i, ret;
-+
-+	desc_len = msg->bd_num * sizeof(struct hclge_desc);
-+	msg->desc = kzalloc(desc_len, GFP_KERNEL);
-+	if (!msg->desc) {
-+		dev_err(&hdev->pdev->dev, "failed to query reg info, ret=%d",
-+			-ENOMEM);
-+		return;
-+	}
-+
-+	for (i = 0; i < loop_time; i++) {
-+		ret = hclge_dbg_cmd_send(hdev, msg->desc, *loop_para,
-+					 msg->bd_num, msg->cmd);
-+		loop_para++;
-+		if (ret)
-+			continue;
-+		ret = hclge_print_mod_reg_info(&hdev->pdev->dev, msg->desc,
-+					       msg->result_regs,
-+					       msg->result_regs_size);
-+		if (ret)
-+			dev_err(&hdev->pdev->dev, "failed to print mod reg info, ret=%d\n",
-+				ret);
-+	}
-+
-+	kfree(msg->desc);
-+}
-+
-+static void hclge_query_reg_info_of_ssu(struct hclge_dev *hdev)
-+{
-+	u32 loop_para[HCLGE_MOD_MSG_PARA_ARRAY_MAX_SIZE] = {0};
-+	struct hclge_mod_reg_common_msg msg;
-+	u8 i, j, num;
-+	u32 loop_time;
-+
-+	num = ARRAY_SIZE(hclge_ssu_reg_common_msg);
-+	for (i = 0; i < num; i++) {
-+		msg = hclge_ssu_reg_common_msg[i];
-+		if (!hclge_err_mod_check_support_cmd(msg.cmd, hdev))
-+			continue;
-+		loop_time = 1;
-+		loop_para[0] = 0;
-+		if (msg.need_para) {
-+			loop_time = hdev->ae_dev->dev_specs.tnl_num;
-+			for (j = 0; j < loop_time; j++)
-+				loop_para[j] = j + 1;
-+		}
-+		hclge_query_reg_info(hdev, &msg, loop_time, loop_para);
-+	}
-+}
-+
- static const struct hclge_hw_module_id hclge_hw_module_id_st[] = {
- 	{
- 		.module_id = MODULE_NONE,
-@@ -1210,7 +1629,8 @@ static const struct hclge_hw_module_id hclge_hw_module_id_st[] = {
- 		.msg = "MODULE_GE"
- 	}, {
- 		.module_id = MODULE_IGU_EGU,
--		.msg = "MODULE_IGU_EGU"
-+		.msg = "MODULE_IGU_EGU",
-+		.query_reg_info = hclge_query_reg_info_of_ssu
- 	}, {
- 		.module_id = MODULE_LGE,
- 		.msg = "MODULE_LGE"
-@@ -1231,7 +1651,8 @@ static const struct hclge_hw_module_id hclge_hw_module_id_st[] = {
- 		.msg = "MODULE_RTC"
- 	}, {
- 		.module_id = MODULE_SSU,
--		.msg = "MODULE_SSU"
-+		.msg = "MODULE_SSU",
-+		.query_reg_info = hclge_query_reg_info_of_ssu
- 	}, {
- 		.module_id = MODULE_TM,
- 		.msg = "MODULE_TM"
-@@ -2762,7 +3183,7 @@ void hclge_handle_occurred_error(struct hclge_dev *hdev)
- }
- 
- static bool
--hclge_handle_error_type_reg_log(struct device *dev,
-+hclge_handle_error_type_reg_log(struct hclge_dev *hdev,
- 				struct hclge_mod_err_info *mod_info,
- 				struct hclge_type_reg_err_info *type_reg_info)
+ static void hclge_set_flowctrl_adv(struct hclge_dev *hdev, u32 rx_en, u32 tx_en)
  {
-@@ -2770,6 +3191,7 @@ hclge_handle_error_type_reg_log(struct device *dev,
- #define HCLGE_ERR_TYPE_IS_RAS_OFFSET 7
- 
- 	u8 mod_id, total_module, type_id, total_type, i, is_ras;
-+	struct device *dev = &hdev->pdev->dev;
- 	u8 index_module = MODULE_NONE;
- 	u8 index_type = NONE_ERROR;
- 	bool cause_by_vf = false;
-@@ -2810,6 +3232,9 @@ hclge_handle_error_type_reg_log(struct device *dev,
- 	for (i = 0; i < type_reg_info->reg_num; i++)
- 		dev_err(dev, "0x%08x\n", type_reg_info->hclge_reg[i]);
- 
-+	if (hclge_hw_module_id_st[index_module].query_reg_info)
-+		hclge_hw_module_id_st[index_module].query_reg_info(hdev);
-+
- 	return cause_by_vf;
- }
- 
-@@ -2850,7 +3275,7 @@ static void hclge_handle_error_module_log(struct hnae3_ae_dev *ae_dev,
- 
- 			type_reg_info = (struct hclge_type_reg_err_info *)
- 					    &buf[offset++];
--			if (hclge_handle_error_type_reg_log(dev, mod_info,
-+			if (hclge_handle_error_type_reg_log(hdev, mod_info,
- 							    type_reg_info))
- 				cause_by_vf = true;
- 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h
-index 68b738affa66..45a783a50643 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_err.h
-@@ -5,6 +5,7 @@
- #define __HCLGE_ERR_H
- 
- #include "hclge_main.h"
-+#include "hclge_debugfs.h"
- #include "hnae3.h"
- 
- #define HCLGE_MPF_RAS_INT_MIN_BD_NUM	10
-@@ -115,6 +116,18 @@
- #define HCLGE_REG_NUM_MAX			256
- #define HCLGE_DESC_NO_DATA_LEN			8
- 
-+#define HCLGE_BD_NUM_SSU_REG_0		10
-+#define HCLGE_BD_NUM_SSU_REG_1		15
-+#define HCLGE_BD_NUM_RPU_REG_0		1
-+#define HCLGE_BD_NUM_RPU_REG_1		2
-+#define HCLGE_BD_NUM_IGU_EGU_REG	9
-+#define HCLGE_BD_NUM_GEN_REG		8
-+#define HCLGE_MOD_REG_INFO_LEN_MAX	256
-+#define HCLGE_MOD_REG_EXTRA_LEN		11
-+#define HCLGE_MOD_REG_VALUE_LEN		9
-+#define HCLGE_MOD_REG_GROUP_MAX_SIZE	6
-+#define HCLGE_MOD_MSG_PARA_ARRAY_MAX_SIZE	8
-+
- enum hclge_err_int_type {
- 	HCLGE_ERR_INT_MSIX = 0,
- 	HCLGE_ERR_INT_RAS_CE = 1,
-@@ -191,6 +204,7 @@ struct hclge_hw_error {
- struct hclge_hw_module_id {
- 	enum hclge_mod_name_list module_id;
- 	const char *msg;
-+	void (*query_reg_info)(struct hclge_dev *hdev);
- };
- 
- struct hclge_hw_type_id {
-@@ -218,6 +232,28 @@ struct hclge_type_reg_err_info {
- 	u32 hclge_reg[HCLGE_REG_NUM_MAX];
- };
- 
-+struct hclge_mod_reg_info {
-+	const char *reg_name;
-+	bool has_suffix; /* add suffix for register name */
-+	/* the positions of reg values in hclge_desc.data */
-+	u8 reg_offset_group[HCLGE_MOD_REG_GROUP_MAX_SIZE];
-+	u8 group_size;
-+};
-+
-+/* This structure defines cmdq used to query the hardware module debug
-+ * regisgers.
-+ */
-+struct hclge_mod_reg_common_msg {
-+	enum hclge_opcode_type cmd;
-+	struct hclge_desc *desc;
-+	u8 bd_num; /* the bd number of hclge_desc used */
-+	bool need_para; /* whether this cmdq needs to add para */
-+
-+	/* the regs need to print */
-+	const struct hclge_mod_reg_info *result_regs;
-+	u16 result_regs_size;
-+};
-+
- int hclge_config_mac_tnl_int(struct hclge_dev *hdev, bool en);
- int hclge_config_nic_hw_error(struct hclge_dev *hdev, bool state);
- int hclge_config_rocee_ras_interrupt(struct hclge_dev *hdev, bool en);
+ 	struct phy_device *phydev = hdev->hw.mac.phydev;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
+index e821dd2f1528..df3c10098349 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.h
+@@ -1169,4 +1169,5 @@ int hclge_enable_vport_vlan_filter(struct hclge_vport *vport, bool request_en);
+ int hclge_mac_update_stats(struct hclge_dev *hdev);
+ struct hclge_vport *hclge_get_vf_vport(struct hclge_dev *hdev, int vf);
+ int hclge_inform_vf_reset(struct hclge_vport *vport, u16 reset_type);
++int hclge_query_scc_version(struct hclge_dev *hdev, u32 *scc_version);
+ #endif
 -- 
 2.30.0
 
