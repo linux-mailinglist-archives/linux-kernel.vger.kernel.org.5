@@ -1,108 +1,121 @@
-Return-Path: <linux-kernel+bounces-138693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BAE489F91B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:01:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D8C889F920
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:01:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E723828A81E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:00:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC35028C1FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0479615EFD2;
-	Wed, 10 Apr 2024 13:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6F7316D9D7;
+	Wed, 10 Apr 2024 13:59:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L42VrYWg"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="FIe9lP7p"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF82415E7E6;
-	Wed, 10 Apr 2024 13:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58C5515F400;
+	Wed, 10 Apr 2024 13:59:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712757575; cv=none; b=XFOTsb3/77r0o2GCEDGZjazB4FEIBy6K4r8qnv5eUdKMWuOmFmHz+k9OFLEdtvAC8Nc2pXQC3YogpaBFKxIKM8HWIx7S1t+33c7zF8JU43+O88qQPkW2O0MM/jUkxEjXmCb9MtZi0JY5iwYNLGhMN2d7+cYGGU7o47vGqtiPIPU=
+	t=1712757590; cv=none; b=SBZbLA44sy7i07j1YAHNUP8Q4zGa6zJIere8MvpeS1SY6I4eS0QC2TpcwKWhdFmSGQEpc9Ku4hKc+JG96BIOnEQ+rr/XkGxX+zuVzvjnhahCB7TWKRcyGWZtYmpdc/61pXrSSHQTXcPzt9aRHkkLEnklzNbi0Izwdw6cjtXPXeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712757575; c=relaxed/simple;
-	bh=KzIwAs0WuSRVdxrxETt53ZODVPWPZANummHTPBLM92g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=btU3Gz6gq1I14cLFzpmqA2rJYObyucTUsgGpYC+U4hSti4beQqFibzKRTSYNPnOZTLPgTlKb88TQGQJtVbQwRT8r6sMDouhap1zFynHIYX6AULIV7UV4qolJYz9TNyS+Hasq3pbC5eShmPvzMkb2YvVD8WoILSwmMszGdQqMbsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L42VrYWg; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712757574; x=1744293574;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KzIwAs0WuSRVdxrxETt53ZODVPWPZANummHTPBLM92g=;
-  b=L42VrYWgU6IzUNSnkINbQMgH4duX2iZ591pjCnZ80afEty4yJJtjZMie
-   s6P0fWcePfbnMleZSFDGdaDnCGB7plOPWl9oB/kN2XOWV6lAHt50KxP2D
-   Kt5epZYmAyLYrgtw0DbWfgUp6XYnARBBJqccJjj7LKNmOu1tXPGlsN2YK
-   k2Sb2LnnnaY/5g7MACGZu+kcbvPz7ZblOOwzHFWSE49q0ULLpLVhbBbyf
-   cdAmSNQbz4vgCSzXTXTVphakAbjEAmp5MzQ9cEOND3c59YgdK5PBNXnU8
-   UyWbUs9W/Tz5zDY5jQm43wMn+odkdKPwFcIRwIyFUh7G0An/vG4XKYuFn
-   w==;
-X-CSE-ConnectionGUID: UoQNj6plTdqvTSajANgE4Q==
-X-CSE-MsgGUID: h9eqBgaCSiqIlkbNKePQYA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7993181"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="7993181"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 06:59:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="915433717"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="915433717"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 06:59:28 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1ruYU0-000000035Gi-3T2g;
-	Wed, 10 Apr 2024 16:59:24 +0300
-Date: Wed, 10 Apr 2024 16:59:24 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: lakshmi.sowjanya.d@intel.com
-Cc: tglx@linutronix.de, jstultz@google.com, giometti@enneenne.com,
-	corbet@lwn.net, linux-kernel@vger.kernel.org, x86@kernel.org,
-	netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-	intel-wired-lan@lists.osuosl.org, eddie.dong@intel.com,
-	christopher.s.hall@intel.com, jesse.brandeburg@intel.com,
-	davem@davemloft.net, alexandre.torgue@foss.st.com,
-	joabreu@synopsys.com, mcoquelin.stm32@gmail.com, perex@perex.cz,
-	linux-sound@vger.kernel.org, anthony.l.nguyen@intel.com,
-	peter.hilber@opensynergy.com, pandith.n@intel.com,
-	subramanian.mohan@intel.com, thejesh.reddy.t.r@intel.com
-Subject: Re: [PATCH v6 11/11] ABI: pps: Add ABI documentation for Intel TIO
-Message-ID: <ZhabPIK_zDJgVf4c@smile.fi.intel.com>
-References: <20240410114828.25581-1-lakshmi.sowjanya.d@intel.com>
- <20240410114828.25581-12-lakshmi.sowjanya.d@intel.com>
+	s=arc-20240116; t=1712757590; c=relaxed/simple;
+	bh=VyssH3HwGA8ttPNbt05cbLQnHU3BKOP+QGZgSD7GjKs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tEFwWrKipnWFTY95n/rcboxemIbojvtISiXBIWrLWwPjU+T3+x5MHhsXjzm6ZdgY8GyMAa+iGJkXfLCEEmLzY9YtmfqPmXnkIY82UErn/nheRXQh753cjQjMccMJwjfaCU+RWUfSnjkASSftXiFdAJA//7sYSMuxPRDwZPPgZbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=FIe9lP7p; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43ADximh056735;
+	Wed, 10 Apr 2024 08:59:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712757584;
+	bh=wohS1UWkRM7giv/XyIaRHM0QVxnTPGRnJbLhd8440+w=;
+	h=From:To:CC:Subject:Date;
+	b=FIe9lP7pGVrH5IL58fh9ZElM9Hmi0tbJdEBi2sBHgQHRXnzU9nBU0NQJZAOugYrwY
+	 wxt7pXt+x0GEG2aWgfrRJ36NIWGt9YXiA3ynDMz/KrmT6lzr0tPW9GKRjbylL0CoXZ
+	 gWS2TcnZVca1VSjrM6TRbA0S/OMD8JFk9cf8uW+M=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43ADxhP1011473
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 10 Apr 2024 08:59:44 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 10
+ Apr 2024 08:59:43 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 10 Apr 2024 08:59:43 -0500
+Received: from fllvsmtp8.itg.ti.com ([10.249.42.149])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43ADxhak067183;
+	Wed, 10 Apr 2024 08:59:43 -0500
+From: Andrew Davis <afd@ti.com>
+To: Jassi Brar <jassisinghbrar@gmail.com>, Hari Nagalla <hnagalla@ti.com>,
+        Nick Saulnier <nsaulnier@ti.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC: <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew
+ Davis <afd@ti.com>
+Subject: [PATCH v2 00/13] OMAP mailbox FIFO removal
+Date: Wed, 10 Apr 2024 08:59:29 -0500
+Message-ID: <20240410135942.61667-1-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410114828.25581-12-lakshmi.sowjanya.d@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Wed, Apr 10, 2024 at 05:18:28PM +0530, lakshmi.sowjanya.d@intel.com wrote:
-> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-> 
-> Document sysfs interface for Intel Timed I/O PPS driver.
+Hello all,
 
-..
+Core of this series is the last patch removing the message FIFO
+from OMAP mailbox. This hurts our real-time performance. It was a
+legacy leftover from before the common mailbox framework anyway.
 
-> +Date:		March 2024
-> +KernelVersion	6.9
+The rest of the patches are cleanups found along the way.
 
-This boat is already sailed...
+Thanks,
+Andrew
+
+Changes for v2:
+ - Use threaded irq as suggested by Hari and to
+     fix possible "scheduling while atomic" issue
+ - Use oneshot irq as we do not want to enable the
+     irq again until we clear our the messages
+ - Rebase on v6.9-rc3
+
+Andrew Davis (13):
+  mailbox: omap: Remove unused omap_mbox_{enable,disable}_irq()
+    functions
+  mailbox: omap: Remove unused omap_mbox_request_channel() function
+  mailbox: omap: Move omap_mbox_irq_t into driver
+  mailbox: omap: Move fifo size check to point of use
+  mailbox: omap: Remove unneeded header omap-mailbox.h
+  mailbox: omap: Remove device class
+  mailbox: omap: Use devm_pm_runtime_enable() helper
+  mailbox: omap: Merge mailbox child node setup loops
+  mailbox: omap: Use function local struct mbox_controller
+  mailbox: omap: Use mbox_controller channel list directly
+  mailbox: omap: Remove mbox_chan_to_omap_mbox()
+  mailbox: omap: Reverse FIFO busy check logic
+  mailbox: omap: Remove kernel FIFO message queuing
+
+ drivers/mailbox/Kconfig        |   9 -
+ drivers/mailbox/omap-mailbox.c | 519 +++++++--------------------------
+ include/linux/omap-mailbox.h   |  13 -
+ 3 files changed, 108 insertions(+), 433 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.39.2
 
 
