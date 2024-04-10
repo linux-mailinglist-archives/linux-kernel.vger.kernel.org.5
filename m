@@ -1,120 +1,86 @@
-Return-Path: <linux-kernel+bounces-138120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF18289ECD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:58:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AD4F89ECD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:58:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E7D51F234EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:58:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8A09B2564B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:58:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E7313D506;
-	Wed, 10 Apr 2024 07:57:50 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B029613D2BC
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:57:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1388313D500;
+	Wed, 10 Apr 2024 07:58:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bFupmW7T"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B8813D29E;
+	Wed, 10 Apr 2024 07:58:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712735870; cv=none; b=S+4PNKnT8vgD3WbqkFByWnqboS7c2thCDwjjZXpwEwThh+0iH/k8O/bUX+zCWe/2/JlrdcWtLjv5DQYEbaD8JXezZalModSltuDus13hkK8bkpb/1j1gsyJteHinSg4yT9h4yQCm6hvTxwk8srciDOL+0TcyWUMu314J05kD9H0=
+	t=1712735895; cv=none; b=PNwqSxobsYGAC3OGyGbddkUBkQq2ABu1mZWaHOfT0uWZd/BGOlcKvuBRFroEoX1vKBkwlhbc6AEbfp8AHO46bjGcjbW6TBwsIJqEDWDYmRcvkVfIqY0xzJwBIZOFhcVKjb41dxiJewxx1oeH5IVJAeDfpd8XoszvL/oiMObTlO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712735870; c=relaxed/simple;
-	bh=zSqtZOr6T9tpCLOf2qNdLQbDEt4yULfVFFG7OBHKU5Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gCg70VFnO3kVWFlxlwktcoQXAl6LYqgoF/kPtk/IfX0GcGHefXBjYnsLIaP/94GJwdfqTFhowCN9L4eWyxsrRKTp4uDWCADyQbJLm3fWlLRWEajSgsUlmnecX42F1tOnmyY7uUf57NxXFsROrCm2oBffpXW3WbmCFWeYE9W9uAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D915B1480;
-	Wed, 10 Apr 2024 00:58:17 -0700 (PDT)
-Received: from [10.162.43.6] (a077893.blr.arm.com [10.162.43.6])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 81A413F766;
-	Wed, 10 Apr 2024 00:57:42 -0700 (PDT)
-Message-ID: <32ddd2a6-22c6-49d2-aebb-da5a2e99748d@arm.com>
-Date: Wed, 10 Apr 2024 13:27:39 +0530
+	s=arc-20240116; t=1712735895; c=relaxed/simple;
+	bh=K/eDjeU8Zri/YVQwV2qqe0Qm0px/fLneFb5gHVWAUxo=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=GPb9s0pQNrXPLoP7LRITx38Z55dUL+XHkZi2OdcIHSgA+okh2+SPbIrU1ZY+oN3TwLYEweasw7iQ0wadaM1hq5kj+4BZ/1JOtm/sHlHLW9xs7CzXiRQyeiHWc4o5GvvXRJTZsASXvaENMURQ6OYxpHWvK0d87qbngqFJ2tgL344=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bFupmW7T; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7EDBC433C7;
+	Wed, 10 Apr 2024 07:58:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712735894;
+	bh=K/eDjeU8Zri/YVQwV2qqe0Qm0px/fLneFb5gHVWAUxo=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=bFupmW7Tlfsnv2qcx3KCImDyVWL/qCvyNMXXxmV16EXbhEDlOjSy/aTx1HPNnvwBJ
+	 H0RSqWI31Fnv1gaZsQo9a4FQvHrUqKBZ0kG69NT6sSfjx8b3C2ZF+/AoDL5BkmSuGS
+	 1iL+tHfz4Lj4uzZwblWR3k3ffJ4NB274arbgIdFRcp8aIJZ2XJ/4NuAhwNPceq5TeT
+	 gvVkuCXzL2XbYKS+8i6utnWpuU7qZKYBS+CPXmKfGqAXfOBCHt0fhR1vUWR2u4h3AG
+	 xJz4MKuRRQ66aOqWxpoQqze6Wo2RRA0LQDz43l/xDbjhPRQe4DzAqB9qYGIto54H57
+	 q0DgaMBDq7t4Q==
+Message-ID: <858299c27c63aa2974b169f9adf624e9.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] arm64: tlb: Improve __TLBI_VADDR_RANGE()
-Content-Language: en-US
-To: Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: catalin.marinas@arm.com, will@kernel.org, akpm@linux-foundation.org,
- maz@kernel.org, oliver.upton@linux.dev, ryan.roberts@arm.com,
- apopple@nvidia.com, rananta@google.com, mark.rutland@arm.com,
- v-songbaohua@oppo.com, yangyicong@hisilicon.com, shahuang@redhat.com,
- yihyu@redhat.com, shan.gavin@gmail.com
-References: <20240405035852.1532010-1-gshan@redhat.com>
- <20240405035852.1532010-3-gshan@redhat.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20240405035852.1532010-3-gshan@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240410033148.213991-2-xingyu.wu@starfivetech.com>
+References: <20240410033148.213991-1-xingyu.wu@starfivetech.com> <20240410033148.213991-2-xingyu.wu@starfivetech.com>
+Subject: Re: [PATCH v4 1/2] clk: starfive: jh7110-sys: Add notifier for PLL clock
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: Emil Renner Berthing <kernel@esmil.dk>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Hal Feng <hal.feng@starfivetech.com>, Xingyu Wu <xingyu.wu@starfivetech.com>, linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org, devicetree@vger.kernel.org
+To: Conor Dooley <conor@kernel.org>, Emil Renner Berthing <emil.renner.berthing@canonical.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Rob Herring <robh@kernel.org>, Xingyu Wu <xingyu.wu@starfivetech.com>
+Date: Wed, 10 Apr 2024 00:58:12 -0700
+User-Agent: alot/0.10
 
+Quoting Xingyu Wu (2024-04-09 20:31:47)
+> diff --git a/drivers/clk/starfive/clk-starfive-jh7110-sys.c b/drivers/clk=
+/starfive/clk-starfive-jh7110-sys.c
+> index 8f5e5abfa178..adf62e4d94e4 100644
+> --- a/drivers/clk/starfive/clk-starfive-jh7110-sys.c
+> +++ b/drivers/clk/starfive/clk-starfive-jh7110-sys.c
+> @@ -385,6 +385,32 @@ int jh7110_reset_controller_register(struct jh71x0_c=
+lk_priv *priv,
+>  }
+>  EXPORT_SYMBOL_GPL(jh7110_reset_controller_register);
+> =20
+> +/*
+> + * This clock notifier is called when the rate of PLL0 clock is to be ch=
+ange,
 
+s/change,/changed./
 
-On 4/5/24 09:28, Gavin Shan wrote:
-> The macro returns the operand of TLBI RANGE instruction. A mask needs
-> to be applied to each individual field upon producing the operand, to
-> avoid the adjacent fields can interfere with each other when invalid
-> arguments have been provided. The code looks more tidy at least with
-> a mask and FIELD_PREP().
-> 
-> Suggested-by: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> + * The cpu_root clock should save curent parent clock and swicth its par=
+ent
 
-This looks much better.
+s/swicth/switch/
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
-
-> ---
->  arch/arm64/include/asm/tlbflush.h | 29 ++++++++++++++++++-----------
->  1 file changed, 18 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-> index a75de2665d84..243d71f7bc1f 100644
-> --- a/arch/arm64/include/asm/tlbflush.h
-> +++ b/arch/arm64/include/asm/tlbflush.h
-> @@ -142,17 +142,24 @@ static inline unsigned long get_trans_granule(void)
->   * EL1, Inner Shareable".
->   *
->   */
-> -#define __TLBI_VADDR_RANGE(baddr, asid, scale, num, ttl)			\
-> -	({									\
-> -		unsigned long __ta = (baddr);					\
-> -		unsigned long __ttl = (ttl >= 1 && ttl <= 3) ? ttl : 0;		\
-> -		__ta &= GENMASK_ULL(36, 0);					\
-> -		__ta |= __ttl << 37;						\
-> -		__ta |= (unsigned long)(num) << 39;				\
-> -		__ta |= (unsigned long)(scale) << 44;				\
-> -		__ta |= get_trans_granule() << 46;				\
-> -		__ta |= (unsigned long)(asid) << 48;				\
-> -		__ta;								\
-> +#define TLBIR_ASID_MASK		GENMASK_ULL(63, 48)
-> +#define TLBIR_TG_MASK		GENMASK_ULL(47, 46)
-> +#define TLBIR_SCALE_MASK	GENMASK_ULL(45, 44)
-> +#define TLBIR_NUM_MASK		GENMASK_ULL(43, 39)
-> +#define TLBIR_TTL_MASK		GENMASK_ULL(38, 37)
-> +#define TLBIR_BADDR_MASK	GENMASK_ULL(36,  0)
-> +
-> +#define __TLBI_VADDR_RANGE(baddr, asid, scale, num, ttl)		\
-> +	({								\
-> +		unsigned long __ta = 0;					\
-> +		unsigned long __ttl = (ttl >= 1 && ttl <= 3) ? ttl : 0;	\
-> +		__ta |= FIELD_PREP(TLBIR_BADDR_MASK, baddr);		\
-> +		__ta |= FIELD_PREP(TLBIR_TTL_MASK, __ttl);		\
-> +		__ta |= FIELD_PREP(TLBIR_NUM_MASK, num);		\
-> +		__ta |= FIELD_PREP(TLBIR_SCALE_MASK, scale);		\
-> +		__ta |= FIELD_PREP(TLBIR_TG_MASK, get_trans_granule());	\
-> +		__ta |= FIELD_PREP(TLBIR_ASID_MASK, asid);		\
-> +		__ta;							\
->  	})
->  
->  /* These macros are used by the TLBI RANGE feature. */
+> + * clock to osc before PLL0 rate will be changed. And switch its parent =
+clock
+> + * back after PLL rate finished.
 
