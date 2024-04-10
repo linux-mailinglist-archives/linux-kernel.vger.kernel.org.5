@@ -1,156 +1,108 @@
-Return-Path: <linux-kernel+bounces-138557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D392E89F34F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:03:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D94F989F392
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:06:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86C3428C183
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:03:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 446D5B252B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:06:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92EE15B577;
-	Wed, 10 Apr 2024 13:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D92715D5CE;
+	Wed, 10 Apr 2024 13:06:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AmoWUq/S"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fW4mbz1e"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F48815B154
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:03:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C6C615B54E
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712754207; cv=none; b=n/fCH+b6hM3Q82UYf7h2TpNYeWmREjlhyuVwSX8u+Yf1RY8uWvlfoK/FJ7sxo5tINW4scTbLUV2nuOvYLEJ5tucYSD2+aMKJx+xbvl0fHphzaLqUTFdLqo1gUYZiHvX5Dzs4OhhPh0BaSLbbpFsQ/cbvnkpK4E8zkYsaLdvpeq4=
+	t=1712754387; cv=none; b=B/4NUFxRoHgxoobzkaCWKusM8zR9Nux4KEKYOUOHUQbDAVVihrTNPylfgHmH2GDToG3Px3XtwqWF6LeaOUJuPkf6xXA+8mT7kEEg7bXk+bbIw+dmzZ1i/zfsbcFgCdGYpNFS2ysFeudUNSgPwgcy7GLftdsBWVgBBZyXYzWktMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712754207; c=relaxed/simple;
-	bh=UW+YjKe/SSODcQQ6LYMimv0tZKSU2Le4NnPmmrfldhY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BJiL2ERZK1Un532JBnCxLMQM/HKnmNuDMvbHO8SlqjirWN11l+VXi7R7JmmaZf/K8RiHrKsuQ71wgem/LZGO4o6g7Vl60Wx/pZe12zhzZ3lmJUAVRc3OE/DLEUS21YkjgEohJbUqbDKvMaluNoqrzeH27u3FF8Phf5YTAhftvPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AmoWUq/S; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712754206; x=1744290206;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=UW+YjKe/SSODcQQ6LYMimv0tZKSU2Le4NnPmmrfldhY=;
-  b=AmoWUq/SSPNbCBYlQMwek4LSjP3hiwH36G/Y7WZdSiVem9Zjgk/33h6V
-   J70ejfZ7dX4qAHsYM9fjWAqXT37l4o41LkdUg6t2Aq6fJuIUDbdFsREfi
-   JRfUVVrbAjT8BMnesMeH+epUSkF4q19tpmaWHQYvoN3TBh0PScHjejfW9
-   8T7vlug0h3u74SQlSh8EKxAH+WBqrHsdkm0t9yPGGAtcQ/mYE7YG/0PJq
-   C2lD/76ZIR0UWiAxpBr7ruEOtA+TGKDfay/0nGyL+8vhbnlEYFU6Rf+7b
-   p2H6vzzOooSemHzPNP0O5KAGgfF/1QHRa/gEp9MRrdCia4lgwDPWkNHML
-   Q==;
-X-CSE-ConnectionGUID: /g49CbRATwqJUNgYkq7pAw==
-X-CSE-MsgGUID: 8fAQZ/dfQZKA2HRVlrDOFQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7971107"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="7971107"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 06:03:25 -0700
-X-CSE-ConnectionGUID: ZjJTaaeLSO6YKJPNdSTLRg==
-X-CSE-MsgGUID: QdEW8+lKTw+h72LHZ2yrmw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="20520492"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.214.234])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 06:03:22 -0700
-Message-ID: <52cf2d1a-76ec-48cb-96c3-211fa1eb721a@intel.com>
-Date: Wed, 10 Apr 2024 16:03:16 +0300
+	s=arc-20240116; t=1712754387; c=relaxed/simple;
+	bh=hOwpvQla7asma1yn+lUp8NUECXNmemIO2Gbo0NVpx+Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LhmKtOMxRhdNbCm0wKGSFWf9x7ogPvAfAPydxmqYyah7tKm43ni22v5uhA/svVwvjnKZ4pA7Va+H2YamRHfuPTsJZAIHiA31Yn0h9S79Wm41YNCet+Do6EBThZrIQkLN7somKmkcPSuIKucEIyLGCqxTleZpvVuER7n+2HABBYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fW4mbz1e; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d87450361fso58768511fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 06:06:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1712754384; x=1713359184; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=b3F26X8KjuosBmiP6LxnCx7dNTrwfYeDh4qGzxMKBto=;
+        b=fW4mbz1ey32xt45OmE0zSh34vom3oTjUr+H8vs195yem0IzhkO/5+C8/i1g3jLMl4X
+         paffC6iydu8fFmYRN89KL9qi6rKAiD1kehCOUnv9TCgGt9l+LOLP8dVnLBEY+CZyQckR
+         l/r+KD2wMxPq6/MN41yz+IS18Q+JH0dWqJU6PIlnPXKXHhX/XV5FoFY8tdysce/xnVjb
+         FYX4cly/kaDPWzrxUg7jgVnBB+Fr9+4YxyUAWZZ1xr9mKzenEqVN+VChmXmpGfvAy/fP
+         f/KJo7hUFSnX83aEH/9YpMC1sbgXrw+DZ8DOLR/FctU9JEAlUvCIDtWAGs6sV699QYpL
+         I0mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712754384; x=1713359184;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b3F26X8KjuosBmiP6LxnCx7dNTrwfYeDh4qGzxMKBto=;
+        b=Xo72reQU68bkMJ1C6t7a+WZMiDwQduSTEK4g3zHhU5hWdike0QhQMkxyR2TPF/PCAe
+         EVdqfSQpVO1RvrBE5kbH5kKgkc/IXcBPcywiXGHzNdOVQMssp99/XQUWzNK9zy74Iq0Y
+         JGP446KCjy4on6uWGUkRrYiynPmqRS/ipcV9Fy/yuosoGSOdg3123r6BG0M19oIQ9amp
+         TLTEyQ9Yu7KUgN2QF9+sdmFyJBiaV2tOo9uTUi7EuxG0qU/qluvBIxClZ1cD7zKCpORR
+         CRTl4D8zGRGr3QasqFc6TQRSOwYP+vXHF/+MAN2EttG74ZmhbVd9YfRvamrIlIi4NOVb
+         76VA==
+X-Forwarded-Encrypted: i=1; AJvYcCVu55X/MGakJNBVkIZa/OAZm6zl5RGRWuM5qlASSmVJevPPzYOt86zu1yeAGXRq8GfG5dBNEWuh+JRInDYn6O54SGj4K0I/qWtSi5K3
+X-Gm-Message-State: AOJu0Ywkf53mVNpXpJNZj+MUkOpxqrYNzC0Oj08mnFbbtkNEi42AGxZL
+	f1XM3MNcLQttaXs3vHg8ZDNUYPEKyvvkkGlAF+olyeFN6dWcdcLbmnQOTwFdLeeh0aCMH6iuyXN
+	B
+X-Google-Smtp-Source: AGHT+IECNTinesnpMbCpWxYz68kYBcmpk87IabL89YQLuMvPsMVXs1UQ6BeIm/wSQ4uZEq/cbjA77A==
+X-Received: by 2002:a2e:a58a:0:b0:2d8:a82c:9e1e with SMTP id m10-20020a2ea58a000000b002d8a82c9e1emr2679657ljp.15.1712754383665;
+        Wed, 10 Apr 2024 06:06:23 -0700 (PDT)
+Received: from localhost.localdomain ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id c8-20020adfe748000000b00343a0e2375esm13688183wrn.27.2024.04.10.06.06.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 06:06:23 -0700 (PDT)
+Date: Wed, 10 Apr 2024 15:06:21 +0200
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH printk v4 10/27] printk: nbcon: Do not rely on proxy
+ headers
+Message-ID: <ZhaOzfXYdeur2Mid@localhost.localdomain>
+References: <20240402221129.2613843-1-john.ogness@linutronix.de>
+ <20240402221129.2613843-11-john.ogness@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: tinyconfig: kernel/time/timekeeping.c:286:1: error: no return
- statement in function returning non-void [-Werror=return-type]
-To: Naresh Kamboju <naresh.kamboju@linaro.org>,
- open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org,
- Linux Regressions <regressions@lists.linux.dev>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>,
- John Stultz <jstultz@google.com>, Arnd Bergmann <arnd@arndb.de>,
- Dan Carpenter <dan.carpenter@linaro.org>,
- Anders Roxell <anders.roxell@linaro.org>
-References: <CA+G9fYvjdZCW=7ZGxS6A_3bysjQ56YF7S-+PNLQ_8a4DKh1Bhg@mail.gmail.com>
-Content-Language: en-US
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CA+G9fYvjdZCW=7ZGxS6A_3bysjQ56YF7S-+PNLQ_8a4DKh1Bhg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402221129.2613843-11-john.ogness@linutronix.de>
 
-On 10/04/24 13:56, Naresh Kamboju wrote:
-> The powerpc,s390, superSh and sparc tinyconfig builds failed due to
-> following build
-> warnings / errors on the Linux next-20240410 with gcc-13 and gcc-11.
+On Wed 2024-04-03 00:17:12, John Ogness wrote:
+> The headers kernel.h, serial_core.h, and console.h allow for the
+> definitions of many types and functions from other headers.
+> Rather than relying on these as proxy headers, explicitly
+> include all headers providing needed definitions. Also sort the
+> list alphabetically to be able to easily detect duplicates.
 > 
-> List build failures:
-> ---
-> * s390, build
->   - gcc-13-tinyconfig - failed
->   - gcc-8-tinyconfig - failed
-> 
-> * sh, build
->   - gcc-11-tinyconfig - failed
-> 
-> * sparc, build
->   - gcc-11-tinyconfig - failed
-> 
-> * mips, build
->   - gcc-12-tinyconfig - failed
->   - gcc-8-tinyconfig - failed
-> 
-> * powerpc, build
->   - gcc-13-tinyconfig - failed
->   - gcc-8-tinyconfig - failed
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> Build log:
-> --------
-> kernel/time/timekeeping.c: In function 'timekeeping_debug_get_ns':
-> kernel/time/timekeeping.c:286:1: error: no return statement in
-> function returning non-void [-Werror=return-type]
->   286 | }
->       | ^
-> cc1: some warnings being treated as errors
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-Using unreachable() in the default BUG() seems to make this go
-away.
+Looks good. Well, I haven't really checked the list of includes one by
+one, so I only provide:
 
-diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
-index 6e794420bd39..891bd9b0be70 100644
---- a/include/asm-generic/bug.h
-+++ b/include/asm-generic/bug.h
-@@ -156,7 +156,7 @@ extern __printf(1, 2) void __warn_printk(const char *fmt, ...);
- 
- #else /* !CONFIG_BUG */
- #ifndef HAVE_ARCH_BUG
--#define BUG() do {} while (1)
-+#define BUG() do { do {} while (1) ; unreachable(); } while (0)
- #endif
- 
- #ifndef HAVE_ARCH_BUG_ON
+Acked-by: Petr Mladek <pmladek@suse.com>
 
-
-> 
-> steps to reproduce:
-> ---
-> # tuxmake --runtime podman --target-arch powerpc --toolchain gcc-13
-> --kconfig tinyconfig
-> 
-> Links:
->  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240410/testrun/23380322/suite/build/test/gcc-13-tinyconfig/details/
->  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240410/testrun/23380301/suite/build/test/gcc-11-tinyconfig/history/
->  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240410/testrun/23380301/suite/build/tests/
-> 
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
-
+Best Regards,
+Petr
 
