@@ -1,58 +1,54 @@
-Return-Path: <linux-kernel+bounces-139096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1B1B89FE76
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A478589FE7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:27:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08F2B1C230FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:27:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6E691C219D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D6817F36F;
-	Wed, 10 Apr 2024 17:26:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A66A17BB26;
+	Wed, 10 Apr 2024 17:27:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dI4+G5Cb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CVkRjWbV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A1217BB3D
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87CC017BB10
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:27:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712770009; cv=none; b=M/EdFTCXL4DjaU3atpzfqufBa3HVuHfCyDyPQfIj66FtRNnJxxB+FO/YQ8nyPoSNi21I+fQC7gDgNIXoewI0T6uAFg9iMYo96XdEF2TLdZduUit6MhkblJHLZOij/9cHEpKppplqc7Bf2V/JlqU6V+gkyquFcIzS3EM17NsWRAI=
+	t=1712770020; cv=none; b=b++Urhd1dT6QZapp7C9Ke29mVd+HcRuVrnrI4V0uI2e+FsQk118WLEd9KklNARA+RL+4U+DkKBvqDsMmeZxOWkRhrlgz5HAFy23vuQHmCJl+uo0Hd0fIhare8jAzfc9Cw0kbyTpLxB03GXAUwclbexofyEtPbVVgFt2o3VWK60w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712770009; c=relaxed/simple;
-	bh=r04eHSYv2SWZsHc1lZDgJPbGcXw9A/LFXCeLzTLjbZA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ssMu1F2hr4yHCHxz2P8NQoSuOkfRm4RwnnlZ79kMaBDwDG4Fjh8XY9K2xsgV1f3eNs1EaEAPFOS2AjJQwGGguVAdB9fKM8lQXWJjqK/J1YySZ2go+83bf/qdopmLeIVhcC7MaGNVP7oNaK1UrfvgCTelthanLPapY4d6Vo6lTeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dI4+G5Cb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B72FFC43390;
-	Wed, 10 Apr 2024 17:26:46 +0000 (UTC)
+	s=arc-20240116; t=1712770020; c=relaxed/simple;
+	bh=PyToWV/okY5b6RHThwqWggcm0DKW3OA4KIKTaosbhUc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=E8/JDl/rnBapOHC8CeEKbamQpPR8kC9ahqfxowDKpASQlDIeq7J2OP3ZfI1hdeVhSOtTdlkQPjy0TPhCZxwaDYMvNnuPHp9pWI4EDEEYkancKim6FZ2DSCoGbo2jNvyZSjaDOJI/GWQrFdHtrOrT3ofTaROuwOzZAnU0Hj3Uu6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CVkRjWbV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75A19C433F1;
+	Wed, 10 Apr 2024 17:26:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712770008;
-	bh=r04eHSYv2SWZsHc1lZDgJPbGcXw9A/LFXCeLzTLjbZA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dI4+G5CbKfBwQxnmV4SYym9uuaKo6qpEvyVqA8fTgMsrPVCzmCgTPtF6jlglN81V+
-	 3KO5ji2+UwbxhjaWxEmD5d+ojywCl7q1UfyF/KeXqrHl935vgu5yRJBPErYd2liK11
-	 k+uPgOQkB975zLI3wFFe1Xgwp0jYgB1UUEfcVTtt8UHIzeYrKZBfR3GLHCMEokgFyC
-	 CIhJMmJdDSF5aEVjk8Pcdh2nq+zWvt2EeXs5BhUPRS7FRiQDgGfm8f//1dL8CNrVx7
-	 Mn+pggmN257W4llNnMIZ8F303k4oWZMnZF+JV+uiApvPrdDpDVYQ7nKRCca5SkRqYm
-	 dXJEZUSyTa0eQ==
+	s=k20201202; t=1712770020;
+	bh=PyToWV/okY5b6RHThwqWggcm0DKW3OA4KIKTaosbhUc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CVkRjWbVMx1VhxmiwdzkgS/29EysYmq/NAhzg6MuCDJmZmtvuB5ZM2BHbGmgANqVW
+	 8naqltGLSkvunA54vsXUV9qoX8VNmW1wnquntHJRZ4y98UCvg86RMB8i+JUSkc6xZk
+	 x+Jh4Drp20aF4riEjJDfFe1hSeVHU9bPqDJ+r5RwtfeybplZoxWt6X05vJXSKmKrCh
+	 LVwaKDwq6s941Leml35idQCbiIgPQ1W4vIQwOP6ehfCAFpkyvIbx6bc+UG17naw5Ve
+	 v7XplMu2HBeQH3yVx6YYXjGdAWiW6oOIcjUjVboFEYmZdunXJ0hxtATu5PamqzJ5Zn
+	 xbCiX7uDtGQLQ==
 From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Orson Zhai <orsonzhai@gmail.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Chunyan Zhang <zhang.lyra@gmail.com>,
+To: Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH 2/2] nvmem: sprd: fix module autoloading
-Date: Wed, 10 Apr 2024 19:26:34 +0200
-Message-Id: <20240410172634.255480-2-krzk@kernel.org>
+Subject: [PATCH] bus: brcmstb_gisb: fix module autoloading
+Date: Wed, 10 Apr 2024 19:26:54 +0200
+Message-Id: <20240410172654.255525-1-krzk@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240410172634.255480-1-krzk@kernel.org>
-References: <20240410172634.255480-1-krzk@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,21 +62,21 @@ based on the alias from of_device_id table.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- drivers/nvmem/sprd-efuse.c | 1 +
+ drivers/bus/brcmstb_gisb.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
-index bb3105f3291f..1a7e4e5d8b86 100644
---- a/drivers/nvmem/sprd-efuse.c
-+++ b/drivers/nvmem/sprd-efuse.c
-@@ -426,6 +426,7 @@ static const struct of_device_id sprd_efuse_of_match[] = {
- 	{ .compatible = "sprd,ums312-efuse", .data = &ums312_data },
- 	{ }
+diff --git a/drivers/bus/brcmstb_gisb.c b/drivers/bus/brcmstb_gisb.c
+index 65ae758f3194..ee29162da4ee 100644
+--- a/drivers/bus/brcmstb_gisb.c
++++ b/drivers/bus/brcmstb_gisb.c
+@@ -410,6 +410,7 @@ static const struct of_device_id brcmstb_gisb_arb_of_match[] = {
+ 	{ .compatible = "brcm,bcm74165-gisb-arb", .data = gisb_offsets_bcm74165 },
+ 	{ },
  };
-+MODULE_DEVICE_TABLE(of, sprd_efuse_of_match);
++MODULE_DEVICE_TABLE(of, brcmstb_gisb_arb_of_match);
  
- static struct platform_driver sprd_efuse_driver = {
- 	.probe = sprd_efuse_probe,
+ static int __init brcmstb_gisb_arb_probe(struct platform_device *pdev)
+ {
 -- 
 2.34.1
 
