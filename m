@@ -1,124 +1,174 @@
-Return-Path: <linux-kernel+bounces-138808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0A5189FA9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:54:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82E0C89FAE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:00:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D28741C20908
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:53:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3961A28695E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:00:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC03A178CE9;
-	Wed, 10 Apr 2024 14:48:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5ECA16E874;
+	Wed, 10 Apr 2024 14:58:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kSFIF/sV"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="kNvpm2A5"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AA1C178CDC;
-	Wed, 10 Apr 2024 14:48:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3270D15EFAD;
+	Wed, 10 Apr 2024 14:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712760487; cv=none; b=QRafj0hzBHk0Xr0Fqu7vmWS/KhSUP5WS3EAJ7BHlt6kxTxBrmhmFsaaOVaP/yJjAbDV52tto/UrgqvWgwCZ041pbYCwT8ePUK5wF0lJAVEM5CYikxq3ryQS4Bowqo950IT6riCz34k5lw0LBYVf/FftpKdvzTmRs/IXH4h2IfgY=
+	t=1712761133; cv=none; b=H8jbyt8Ut3boEFBbaWBQIgVWAtRNBMUvRL32Hri6gbkTDZz9l5FxFnU+uBxRjsoqLhYgti2kBdBi6pxUL0QuS4QmkL3yIN8DEY+QNeoRwLDgvQU6WJ7gsNpL9GW+4u4IPHlt/N0KymwaOU8oba9uQfj63WPnY5NDQ3ivQ95CEEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712760487; c=relaxed/simple;
-	bh=83IlgsIBGdPvvy7KkGpKf6FCNdqnXmoF3sXAeFZbVzc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LHcs1A2eTC4KSjAgwy04wWhiOsPrS4I1ivkutUp8FrYB82HqRj3eR/4yHPkhVhGTPW5ufeTm5pGVJlNYqZu02D4lwMMpSxeCjL7cpEmyzyFTYMN5/vAh1BFierr4iaNsgFXx41/POsGLaVRAGNrgTRlG44noww+r+5I8IUN4iLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kSFIF/sV; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e40042c13eso24381135ad.2;
-        Wed, 10 Apr 2024 07:48:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712760485; x=1713365285; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cJsjVxj31Zb9TXNhUKJteq2QrNcPPYlblcldkHbg4vw=;
-        b=kSFIF/sVSh6sH9YAm+o2S3wb5Hrsj5gVKH3UoWvifLfL7Fj6gfE+60QjAhAApyOVuw
-         WvtWijrsKRii9TAU63n0rJ6ChDIOsHAlilUE4KIhccl1HRyAgVP56yQB9pPC/TLCms0m
-         PM/xf4lJ+dYwq2bl1ui26hMjOhXi6aLHc3IjXRCYjpJUYZpTl3irK9s5/Iw0y9TfTmkC
-         QzijDZsi9y+2+aYZf4n2QIfoguK0zh4tkXd6LySeZZRQIIAkvURnPcJP4swekC8+jd91
-         vWGn8Bx1YnVJ0jarYe8cICbs0K27EglMh3kkxMano36JUtPIwf/5n4TSEtBGYuUNIIOS
-         r9Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712760485; x=1713365285;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cJsjVxj31Zb9TXNhUKJteq2QrNcPPYlblcldkHbg4vw=;
-        b=i6Kz45bfSnrlcA6gD0oJbZQVZW8u5l4jUrkUSz62/cdTSOrikB2m+j33Zz08iEbEi/
-         +W8KKz+C5wf0rbV1cjWzOp7Etv05XdKHaI4L6d4sNfLN9hHLUdpqEA8bJSc5CF+IeA3W
-         uww0Gurryl9KePnb1XThicEui1BneojNos8d3SadTc24Pq2C9hu69YjA2e3/rueYjej2
-         7YklX+vuLTa0xfUn6yelt4dS3w/9+1VaicIkUmtbvY/uhmgt5IyS5zipE81EkIxgFCsT
-         QSUe8hW4S4O7R8mXouuLNT3vgIjZZzGyFbzfWtWjCovHGDE/NPqY16DAHQDfF5blcO6W
-         t/hw==
-X-Forwarded-Encrypted: i=1; AJvYcCX6iiU5r4kCoVPabJH/pGimCMD1SAWutXSz9czRWFq5toIM6v9pT7BDToY5Ku6qaUW0I7QnEhdlOy6oIqhfR/11TqBGLYuy4czcyZyUWxLbFnjPkTwBQm6kMNa9sTvTRZCe/wAlj8kwGrO7sU8=
-X-Gm-Message-State: AOJu0YwYihjMyIYDwoJJplVCe2bcp38fu4it8sUHRorX798Exm3XB8I5
-	IhobYPnMnSGIc9ErFUuDaAZzDEqGsNKU8PxEqZp14n/JYEEzXZGuwOIGjl4q
-X-Google-Smtp-Source: AGHT+IHgUs6DSJo0qANFWn7VNXEYT+7xHCJ+Qx2wGWRLICPDNOrJeaLSkQUdnEu6IEZYPeu6Xe5hCw==
-X-Received: by 2002:a17:902:7c8e:b0:1e0:a4c9:84cd with SMTP id y14-20020a1709027c8e00b001e0a4c984cdmr2450375pll.60.1712760484583;
-        Wed, 10 Apr 2024 07:48:04 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id ky13-20020a170902f98d00b001e0f5034e95sm10875689plb.288.2024.04.10.07.48.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 07:48:03 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 10 Apr 2024 07:48:02 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Dawei Li <set_pte_at@outlook.com>
-Cc: wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] watchdog/wdt-main: Use cpumask_of() to avoid cpumask var
- on stack
-Message-ID: <8be5a179-df13-4441-8276-504dcb925026@roeck-us.net>
-References: <TYTP286MB3564B037A81DAAE1AC3A16F3CA062@TYTP286MB3564.JPNP286.PROD.OUTLOOK.COM>
+	s=arc-20240116; t=1712761133; c=relaxed/simple;
+	bh=YsqK/mjEyW8jty8w2OzNqu7tqQVF9pS7pFR7q1iAm0U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=iNya8snI8IytKk/OQmm4BGJPUMyD6iGAUH7Ov7gK25HDHXjdipOpORwDAayd41E/3WQw4LZSCA+011oPVR4KHLFlloKsp6OXF0lQJWwjEb/kFQ7HLVIB3n98SL2odIk3wWXWDNOaY9W5eCBrul7L/2HSQrUGzhKj2RUxvCPaXuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=kNvpm2A5; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 4853A120059;
+	Wed, 10 Apr 2024 17:58:46 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4853A120059
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1712761126;
+	bh=s8Jp2yeif5VAKKBhmostp0DMhMpyI/I2d+WdPlscn4o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=kNvpm2A569qLsm12AbdnxFN2hRYvCoaeNhjiEX+qvGKsT2W11zx/mFp2JAssoqg09
+	 H2TjeqWCzQrzqD0eX33JsivX/pPqjxg5F7fPCC/ICrLpuCG7p6TUmw3wSY4UE0e9Uc
+	 jz2U7hgt4oIX62djwoWtgBl/KthdYsev7KrjllD8GvrSdK6MF3aVOUbEf4qzOfzY89
+	 mX98Vkp6snHHsTWIC9a76cfNgWea/ax4mSqhHzpfaTuMu+3nSzygkarfdJCoURIicR
+	 tJU8WJfiSl4PvnL/OjwzRbOln170pZ4I/Gqk4/5ilaPxaIaErqOrghRbWlIK2zhmK3
+	 CEvveW0HHXdbQ==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Wed, 10 Apr 2024 17:58:46 +0300 (MSK)
+Received: from [172.28.64.75] (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 10 Apr 2024 17:58:45 +0300
+Message-ID: <588551c9-3426-e623-e2aa-70b040c9324a@salutedevices.com>
+Date: Wed, 10 Apr 2024 17:48:02 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <TYTP286MB3564B037A81DAAE1AC3A16F3CA062@TYTP286MB3564.JPNP286.PROD.OUTLOOK.COM>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v3 1/2] dt-bindings: mtd: amlogic,meson-nand: support
+ fields for boot ROM code
+Content-Language: en-US
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Richard Weinberger <richard@nod.at>, Vignesh Raghavendra
+	<vigneshr@ti.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Neil
+ Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>,
+	Jerome Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
+	<martin.blumenstingl@googlemail.com>, <linux-mtd@lists.infradead.org>,
+	<devicetree@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<oxffffaa@gmail.com>, <kernel@sberdevices.ru>
+References: <20240409181025.55504-1-avkrasnov@salutedevices.com>
+ <20240409181025.55504-2-avkrasnov@salutedevices.com>
+ <20240410122356.30852b3c@xps-13>
+From: Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <20240410122356.30852b3c@xps-13>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184655 [Apr 10 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 16 0.3.16 6e64c33514fcbd07e515710c86ba61de7f56194e, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/10 11:03:00 #24738255
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Wed, Apr 10, 2024 at 09:13:59PM +0800, Dawei Li wrote:
-> In general it's preferable to avoid placing cpumasks on the stack, as
-> for large values of NR_CPUS these can consume significant amounts of
-> stack space and make stack overflows more likely.
-> 
-> Use cpumask_of() to avoid the need for a temporary cpumask on the stack
-> 
-> Signed-off-by: Dawei Li <set_pte_at@outlook.com>
+Hi,
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+On 10.04.2024 13:23, Miquel Raynal wrote:
+> Hi Arseniy,
+> 
+> avkrasnov@salutedevices.com wrote on Tue, 9 Apr 2024 21:10:24 +0300:
+> 
+>> Boot ROM code on Meson requires that some pages on NAND must be written
+>> in special mode: "short" ECC mode where each block is 384 bytes and
+>> scrambling mode is on. Such pages located with the specified interval
+>> within specified offset. Both interval and offset are located in the
+>> device tree and used by driver if 'nand-is-boot-medium' is set for
+>> NAND chip.
+>>
+>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>> ---
+>>  .../bindings/mtd/amlogic,meson-nand.yaml           | 14 ++++++++++++++
+>>  1 file changed, 14 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+>> index 57b6957c8415..b86a1953056b 100644
+>> --- a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+>> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.yaml
+>> @@ -64,11 +64,25 @@ patternProperties:
+>>          items:
+>>            maximum: 0
+>>  
+>> +      amlogic,boot-page-last:
+>> +        $ref: /schemas/types.yaml#/definitions/uint32
+>> +        description:
+>> +          The NFC driver needs this information to select ECC
+>> +          algorithms supported by the boot ROM.
+> 
+> Shall we have a length rather than the last page?
 
-> ---
->  drivers/watchdog/octeon-wdt-main.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
+You mean rename it to "amlogic,boot-pages-length" or something like that ? But I think
+length in bytes is useless here:
+1) boot rom needs that only some single pages are written in special mode (and as I see in
+   vendor's driver it also works in pages).
+2) NAND driver operates in pages during write/read such pages.
+
+So length in bytes will be converted to pages anyway.
+
+What do You think ?
+
+Thanks, Arseniy
+
 > 
-> diff --git a/drivers/watchdog/octeon-wdt-main.c b/drivers/watchdog/octeon-wdt-main.c
-> index 0fe71f7e66d5..52d49e4e35a0 100644
-> --- a/drivers/watchdog/octeon-wdt-main.c
-> +++ b/drivers/watchdog/octeon-wdt-main.c
-> @@ -381,11 +381,7 @@ static int octeon_wdt_cpu_online(unsigned int cpu)
->  
->  	/* Must set the irq affinity here */
->  	if (octeon_has_feature(OCTEON_FEATURE_CIU3)) {
-> -		cpumask_t mask;
-> -
-> -		cpumask_clear(&mask);
-> -		cpumask_set_cpu(cpu, &mask);
-> -		irq_set_affinity(irq, &mask);
-> +		irq_set_affinity(irq, cpumask_of(cpu));
->  	}
->  
->  	cpumask_set_cpu(cpu, &irq_enabled_cpus);
-> -- 
-> 2.25.1
+>> +
+>> +      amlogic,boot-page-step:
+>> +        $ref: /schemas/types.yaml#/definitions/uint32
+>> +        description:
+>> +          The NFC driver needs this information to select ECC
+>> +          algorithms supported by the boot ROM (in pages).
+>> +
+>>      unevaluatedProperties: false
+>>  
+>>      dependencies:
+>>        nand-ecc-strength: [nand-ecc-step-size]
+>>        nand-ecc-step-size: [nand-ecc-strength]
+>> +      amlogic,boot-page-last: [nand-is-boot-medium, "amlogic,boot-page-step"]
+>> +      amlogic,boot-page-step: [nand-is-boot-medium, "amlogic,boot-page-last"]
+>>  
+>>  
+>>  required:
 > 
+> 
+> Thanks,
+> Miquèl
 
