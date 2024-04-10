@@ -1,100 +1,121 @@
-Return-Path: <linux-kernel+bounces-138984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD5CF89FD03
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C62889FD27
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:38:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEBFF1C2223A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:35:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E72A1C21282
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:38:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CF2917B4E7;
-	Wed, 10 Apr 2024 16:35:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6C517B509;
+	Wed, 10 Apr 2024 16:38:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R1E3obt2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EA315444A;
-	Wed, 10 Apr 2024 16:35:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DE2C15B10A;
+	Wed, 10 Apr 2024 16:38:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712766938; cv=none; b=IygiXPSvFsPGlHqzLaEJeOm5Mh2kTmqi/2uoCgfPThmP4YbIWRfGB8PaO9oLxCzxy2gHq+GuffSIVuMqWVoVVd5ubj1vidw5+jbqHK7sFkOWmLZKhn5dgTgpZdQQwMnqWFKn1ESygx1yfPI+LiNfHgLoW5caHhsQqEQMA0gowCM=
+	t=1712767111; cv=none; b=q2sguF1cPG65C2gtDPYg+SYdM48B9YCiLnH7kLGPXvtCBQnvQAPhuDofURhrff1L3q2u0bdNLo06Syl8UoebRCp6IYIIGCNxKdfIO4NBQy+6wIFH4XCO75dm1AQcWLDnyHHYXRATPN4bRlJ0Gf0i5PKMarXGgC+E0w2GNgLzaBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712766938; c=relaxed/simple;
-	bh=Wr2v7oPzKVYPKYtdpNS5Yk5ayJokTx7rSACaIZwFBe0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=lOQvsLo6u/r6Bet6/BUEEgGqhzeXqY4wcfO+lvV2A5kIQu5ITtXMj3uZcTSTeTrMOD336I2F9i+UlwhW8hQKnd4W4VyxssQnj28LuSDvWghjuGgQZEF1AnK27Fkg5hShV0oIjHb8OjIF7w4+Rr21UYEpyBRwT3T9xVWV3k52daU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3395BC433F1;
-	Wed, 10 Apr 2024 16:35:37 +0000 (UTC)
-Date: Wed, 10 Apr 2024 12:38:13 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Chuck Lever <chuck.lever@oracle.com>,
- Jeff Layton <jlayton@kernel.org>, Anna Schumaker
- <Anna.Schumaker@Netapp.com>, linux-nfs@vger.kernel.org
-Subject: [PATCH] SUNRPC: Fix rpcgss_context trace event acceptor field
-Message-ID: <20240410123813.2b109227@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712767111; c=relaxed/simple;
+	bh=iX3oV/OqzRjgmC93miXiwRYAlMbRuyED7tJL1s5mjUg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iaSGPH3JKU6cP6eHgDYy/inGNXFdslviSFuAlBX2DFRQ7h+by2/nQQ5jbvrX398tA3vnhi8MRIitzV+ms1EVwNWjj1Jz/O6KLsMvRtoB/Fgni5hr06fPE1AUI3zrTIpukk9n6qSy65sd6uGMI+z8smoX3B+TguvxP4dc+YxMqho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R1E3obt2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCBACC433F1;
+	Wed, 10 Apr 2024 16:38:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712767111;
+	bh=iX3oV/OqzRjgmC93miXiwRYAlMbRuyED7tJL1s5mjUg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R1E3obt2kD4S6U3A41s/x8MeAVa76xSg0hM9zZpclfIcJGjDZd7Z+Z0oYq9MJjeZ4
+	 mwBHLzTYLuLg32YIyFi4t8HXlKgVkKjrVp9rxxwggjzoxqfaLdenVywR8GgmFSF/nD
+	 Vbvb/AgS/82DgK2Sxcu9t0GA3TuHZQ2bppmX/BLPI4zdDSn/nywvxiFRXBCLLA3tFb
+	 t1cPPDYPyzH9e3FbeBPvEotYVc9H71bVUbed6R4mKRqmKAPiVjl98z2F4BZeB6v60q
+	 htHY38WGEOQju1dBN7aXVO99lAXTd3Jkj5EdTaOHm4i56ebD+dIvmin4tPSylnAF9J
+	 xPvGnvbDpXI/Q==
+Date: Wed, 10 Apr 2024 11:38:28 -0500
+From: Rob Herring <robh@kernel.org>
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: David Rientjes <rientjes@google.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Max Filippov <jcmvbkbc@gmail.com>,
+	Biju Das <biju.das.jz@bp.renesas.com>, Helge Deller <deller@gmx.de>,
+	linux-pci@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
+	linux-clk@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Azeem Shaikh <azeemshaikh38@gmail.com>, Lee Jones <lee@kernel.org>,
+	Magnus Damm <magnus.damm@gmail.com>, linux-serial@vger.kernel.org,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	linux-renesas-soc@vger.kernel.org,
+	Manikanta Guntupalli <manikanta.guntupalli@amd.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko.stuebner@cherry.de>,
+	Jonathan Corbet <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Maxime Ripard <mripard@kernel.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Sebastian Reichel <sre@kernel.org>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Guenter Roeck <linux@roeck-us.net>, linux-ide@vger.kernel.org,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Stephen Boyd <sboyd@kernel.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Niklas Cassel <cassel@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Baoquan He <bhe@redhat.com>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-fbdev@vger.kernel.org, Anup Patel <apatel@ventanamicro.com>,
+	David Airlie <airlied@gmail.com>, linux-sh@vger.kernel.org,
+	Jiri Slaby <jirislaby@kernel.org>, Rich Felker <dalias@libc.org>,
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
+	Jacky Huang <ychuang3@nuvoton.com>
+Subject: Re: [RESEND v7 28/37] dt-bindings: soc: renesas: sh: Add SH7751
+ based target
+Message-ID: <171276710677.411211.12362682268802975581.robh@kernel.org>
+References: <cover.1712207606.git.ysato@users.sourceforge.jp>
+ <3c2937039026fdb827709b2584528aca263f2668.1712207606.git.ysato@users.sourceforge.jp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3c2937039026fdb827709b2584528aca263f2668.1712207606.git.ysato@users.sourceforge.jp>
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-The rpcgss_context trace event acceptor field is a dynamically sized
-string that records the "data" parameter. But this parameter is also
-dependent on the "len" field to determine the size of the data.
+On Thu, 04 Apr 2024 14:14:39 +0900, Yoshinori Sato wrote:
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
+> ---
+>  .../devicetree/bindings/soc/renesas/sh.yaml   | 27 +++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/renesas/sh.yaml
+> 
 
-It needs to use __string_len() helper macro where the length can be passed
-in. It also incorrectly uses strncpy() to save it instead of
-__assign_str(). As these macros can change, it is not wise to open code
-them in trace events.
-
-As of commit c759e609030c ("tracing: Remove __assign_str_len()"),
-__assign_str() can be used for both __string() and __string_len() fields.
-Before that commit, __assign_str_len() is required to be used. This needs
-to be noted for backporting. (In actuality, commit c1fa617caeb0 ("tracing:
-Rework __assign_str() and __string() to not duplicate getting the string")
-is the commit that makes __string_str_len() obsolete).
-
-Cc: stable@vger.kernel.org
-Fixes: 0c77668ddb4e7 ("SUNRPC: Introduce trace points in rpc_auth_gss.ko")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/trace/events/rpcgss.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/trace/events/rpcgss.h b/include/trace/events/rpcgss.h
-index ba2d96a1bc2f..f50fcafc69de 100644
---- a/include/trace/events/rpcgss.h
-+++ b/include/trace/events/rpcgss.h
-@@ -609,7 +609,7 @@ TRACE_EVENT(rpcgss_context,
- 		__field(unsigned int, timeout)
- 		__field(u32, window_size)
- 		__field(int, len)
--		__string(acceptor, data)
-+		__string_len(acceptor, data, len)
- 	),
- 
- 	TP_fast_assign(
-@@ -618,7 +618,7 @@ TRACE_EVENT(rpcgss_context,
- 		__entry->timeout = timeout;
- 		__entry->window_size = window_size;
- 		__entry->len = len;
--		strncpy(__get_str(acceptor), data, len);
-+		__assign_str(acceptor, data);
- 	),
- 
- 	TP_printk("win_size=%u expiry=%lu now=%lu timeout=%u acceptor=%.*s",
--- 
-2.43.0
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 
