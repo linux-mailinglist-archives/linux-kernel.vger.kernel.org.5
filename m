@@ -1,217 +1,243 @@
-Return-Path: <linux-kernel+bounces-139157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E015C89FF3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:56:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8AE889FF2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:53:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D56F1F28542
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:56:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FB222832FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE5F317F392;
-	Wed, 10 Apr 2024 17:55:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="aPGyd6ti"
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9176C17F38A;
+	Wed, 10 Apr 2024 17:53:37 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 035C617F376
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:55:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AFBC17F36D;
+	Wed, 10 Apr 2024 17:53:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712771752; cv=none; b=XS5HVbuoixY6fpDwHxCNOdHXHKd4NWJs8w3oUo5W5aiDjTRI9CKS7of1ks2C85ct4TNhriK+sr1Ip9BNqd6aW4ZbZ0mX2ncqH+UzUiOPjcyZDdu4peZRUse6l3j1SgMRdzap9X3+9r0mJw9XewVoTfA56HGHlOM4fhXG8E4PNIg=
+	t=1712771617; cv=none; b=FWDwrgU8uLD2k+s5bVMjn6VNL94S5p6N3fprp9NmKLoNQ7uP9XHKc0KSb/9dflIGFPH5KWgaIiji+CvupcLRFDAZMGIA/6oPpZVf61xGU5uEve4bM14t3wyMfbBlua0Hk5CLZQyQ+A35NSo1UE7/T09C0zCIgY/ufZtlgYW2wAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712771752; c=relaxed/simple;
-	bh=AfdnkWDPHunvIwxkOBw8vls7YQ7McNqhwWUGEBcgd38=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=IPzvjbXgFoGbEryOOIT1c7Hpwrr9PFZUNYKljtgtDtDY6+zpL2nfTTX0bwbfWSXCuiGPEQR7XMFn981or8s+NOimjqoWneboyoY8kzkUNqnPTyv3Z8G3CsxrGWqn2umD/c5sRpNoNamX+c5VO3aqkpCrW68po9ZETkx/5RNIaBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=aPGyd6ti; arc=none smtp.client-ip=209.85.222.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-78d723c0dc5so134943185a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:55:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1712771750; x=1713376550; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AEgt6+LOpA2hVzqtMYr+dU1E2aaoNF8Wbr2mHpCeUMs=;
-        b=aPGyd6ti3ckSIMukIQeXKuJVE3/+IfUdica3Z6YiRp1PmAPKFEggUxuFDlabzG9MnM
-         kP5rVh980TyDfEFwvlYmuz2Hq+J1pSI/LAQ/yAP9sN2RjaqfOrKc5ilXWaJLAHprcg1z
-         mxS0KuJTvsskRFByERX+Mrelj/BXu0/aQPkwg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712771750; x=1713376550;
-        h=in-reply-to:autocrypt:from:references:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=AEgt6+LOpA2hVzqtMYr+dU1E2aaoNF8Wbr2mHpCeUMs=;
-        b=Eu1XIN5SLh6VmFXG76sbviu2+KT77W0XdNHlz8f6QWK9HCTsZpZjJ5rLHj0YccL2Cj
-         iQ4RyyK+2C58CC/+YMSs/BRMctbkeFL2Ux74pEzpqJ0tUk0G4cn24BakVJ4v3zfaK9C/
-         gFzBQteAaMsOMghfXZPBfYITVIRz4QLacBgy+bEPkjmTJloGK98+1NnjbjktWxPo4sYs
-         3a4oMf75scKmK6vt43zm2snvT3f+w1eWhtOmDn4olT4H4lE7It5ngfUC6n2UBgjRjcRp
-         cp/EedfZIb5PY+zS9Lg4WHUDLf2sxXhqrELngZF7sZfZUQ/wMIVikI/cSdm0brQ0Brez
-         YZxg==
-X-Forwarded-Encrypted: i=1; AJvYcCWrywHCRQuLeY8PwBQbR25M/oJMWi4bsbPu7yGAD57H8UP+zRUdnXTJ3MpuR1lYKwmD11a5wqZSfUEbH8wDeB0ilOw0Z7dVaBkImsLf
-X-Gm-Message-State: AOJu0YyiRWNLLm4dQPA6WxnQGSkQeAAWQfRYyIpmVgkKLwoniIcbBOrE
-	hLNWNUgZRsLZJ8V+YT8PccHaOwqHtahn6yJrh+VjsO2TlCM0bWVbHiEL+fLdRg==
-X-Google-Smtp-Source: AGHT+IEFb3BlWbLa0Hh6IyuqJZzwZWStcZ5MACgJnAjheQZLkLY1Sh7zvAzxRWrfuuTkDWgqbVW54A==
-X-Received: by 2002:a05:6214:27ec:b0:69b:a44:bb71 with SMTP id jt12-20020a05621427ec00b0069b0a44bb71mr2908814qvb.54.1712771749852;
-        Wed, 10 Apr 2024 10:55:49 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id h4-20020a0ceec4000000b006986db59235sm5297246qvs.68.2024.04.10.10.55.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 10:55:49 -0700 (PDT)
-Message-ID: <3e92eab9-ff5e-4c0e-bb1f-b66f0f3c8546@broadcom.com>
-Date: Wed, 10 Apr 2024 10:55:46 -0700
+	s=arc-20240116; t=1712771617; c=relaxed/simple;
+	bh=3/m6CnlZT8WDYrp1oFmaSDvXJdpwkiKKCHdd+w0rOqs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DJcJqPvTSak3Z84Mk9BIBxmw3EgBoZc9AhlomTN1ThZkQ6oAiO3R1ju3GORmXkZvgLm2vV+20YqgHc/DQoOxQNPAMKXFc+oW8UDUZDDKgwmAsZ8rN89KLTo2VaOz2o2Urbvu8bUn17tUCVonuwrRMQ9ZNvidEvmSV2NEzcbVgro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53D9CC433C7;
+	Wed, 10 Apr 2024 17:53:35 +0000 (UTC)
+Date: Wed, 10 Apr 2024 13:56:12 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Andrew Morton <akpm@linux-foundation.org>, "Liam R. Howlett"
+ <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@suse.cz>, Lorenzo
+ Stoakes <lstoakes@gmail.com>
+Cc: Vincent Donnefort <vdonnefort@google.com>, mhiramat@kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ mathieu.desnoyers@efficios.com, kernel-team@android.com,
+ rdunlap@infradead.org
+Subject: Re: [PATCH v20 0/5] Introducing trace buffer mapping by user-space
+Message-ID: <20240410135612.5dc362e3@gandalf.local.home>
+In-Reply-To: <20240406173649.3210836-1-vdonnefort@google.com>
+References: <20240406173649.3210836-1-vdonnefort@google.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bus: brcmstb_gisb: fix module autoloading
-To: Krzysztof Kozlowski <krzk@kernel.org>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240410172654.255525-1-krzk@kernel.org>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
- M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
- JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
- PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
- KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
- AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
- IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
- ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
- bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
- Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
- tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
- TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
- zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
- WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
- IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
- U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
- 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
- pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
- MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
- IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
- gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
- obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
- N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
- CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
- C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
- wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
- EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
- fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
- MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
- 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
- 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20240410172654.255525-1-krzk@kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000bf74f60615c1bf0e"
-
---000000000000bf74f60615c1bf0e
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
 
+Hi Andrew, et.al.
 
-On 4/10/2024 10:26 AM, Krzysztof Kozlowski wrote:
-> Add MODULE_DEVICE_TABLE(), so the module could be properly autoloaded
-> based on the alias from of_device_id table.
+Linus said it's a hard requirement that this code gets an Acked-by (or
+Reviewed-by) from the memory sub-maintainers before he will accept it.
+He was upset that we faulted in pages one at a time instead of mapping it
+in one go:
+
+  https://lore.kernel.org/all/CAHk-=wh5wWeib7+kVHpBVtUn7kx7GGadWqb5mW5FYTdewEfL=w@mail.gmail.com/
+
+Could you take a look at patches 1-3 to make sure they look sane from a
+memory management point of view?
+
+I really want this applied in the next merge window.
+
+Thanks!
+
+-- Steve
+
+
+On Sat,  6 Apr 2024 18:36:44 +0100
+Vincent Donnefort <vdonnefort@google.com> wrote:
+
+> The tracing ring-buffers can be stored on disk or sent to network
+> without any copy via splice. However the later doesn't allow real time
+> processing of the traces. A solution is to give userspace direct access
+> to the ring-buffer pages via a mapping. An application can now become a
+> consumer of the ring-buffer, in a similar fashion to what trace_pipe
+> offers.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Support for this new feature can already be found in libtracefs from
+> version 1.8, when built with EXTRA_CFLAGS=-DFORCE_MMAP_ENABLE.
+> 
+> Vincent
+> 
+> v19 -> v20:
+>   * Fix typos in documentation.
+>   * Remove useless mmap open and fault callbacks.
+>   * add mm.h include for vm_insert_pages
+> 
+> v18 -> v19:
+>   * Use VM_PFNMAP and vm_insert_pages
+>   * Allocate ring-buffer subbufs with __GFP_COMP
+>   * Pad the meta-page with the zero-page to align on the subbuf_order
+>   * Extend the ring-buffer test with mmap() dedicated suite
+> 
+> v17 -> v18:
+>   * Fix lockdep_assert_held
+>   * Fix spin_lock_init typo
+>   * Fix CONFIG_TRACER_MAX_TRACE typo
+> 
+> v16 -> v17:
+>   * Documentation and comments improvements.
+>   * Create get/put_snapshot_map() for clearer code.
+>   * Replace kzalloc with kcalloc.
+>   * Fix -ENOMEM handling in rb_alloc_meta_page().
+>   * Move flush(cpu_buffer->reader_page) behind the reader lock.
+>   * Move all inc/dec of cpu_buffer->mapped behind reader lock and buffer
+>     mutex. (removes READ_ONCE/WRITE_ONCE accesses).
+> 
+> v15 -> v16:
+>   * Add comment for the dcache flush.
+>   * Remove now unnecessary WRITE_ONCE for the meta-page.
+> 
+> v14 -> v15:
+>   * Add meta-page and reader-page flush. Intends to fix the mapping
+>     for VIVT and aliasing-VIPT data caches.
+>   * -EPERM on VM_EXEC.
+>   * Fix build warning !CONFIG_TRACER_MAX_TRACE.
+> 
+> v13 -> v14:
+>   * All cpu_buffer->mapped readers use READ_ONCE (except for swap_cpu)
+>   * on unmap, sync meta-page teardown with the reader_lock instead of
+>     the synchronize_rcu.
+>   * Add a dedicated spinlock for trace_array ->snapshot and ->mapped.
+>     (intends to fix a lockdep issue)
+>   * Add kerneldoc for flags and Reserved fields.
+>   * Add kselftest for snapshot/map mutual exclusion.
+> 
+> v12 -> v13:
+>   * Swap subbufs_{touched,lost} for Reserved fields.
+>   * Add a flag field in the meta-page.
+>   * Fix CONFIG_TRACER_MAX_TRACE.
+>   * Rebase on top of trace/urgent.
+>   * Add a comment for try_unregister_trigger()
+> 
+> v11 -> v12:
+>   * Fix code sample mmap bug.
+>   * Add logging in sample code.
+>   * Reset tracer in selftest.
+>   * Add a refcount for the snapshot users.
+>   * Prevent mapping when there are snapshot users and vice versa.
+>   * Refine the meta-page.
+>   * Fix types in the meta-page.
+>   * Collect Reviewed-by.
+> 
+> v10 -> v11:
+>   * Add Documentation and code sample.
+>   * Add a selftest.
+>   * Move all the update to the meta-page into a single
+>     rb_update_meta_page().
+>   * rb_update_meta_page() is now called from
+>     ring_buffer_map_get_reader() to fix NOBLOCK callers.
+>   * kerneldoc for struct trace_meta_page.
+>   * Add a patch to zero all the ring-buffer allocations.
+> 
+> v9 -> v10:
+>   * Refactor rb_update_meta_page()
+>   * In-loop declaration for foreach_subbuf_page()
+>   * Check for cpu_buffer->mapped overflow
+> 
+> v8 -> v9:
+>   * Fix the unlock path in ring_buffer_map()
+>   * Fix cpu_buffer cast with rb_work_rq->is_cpu_buffer
+>   * Rebase on linux-trace/for-next (3cb3091138ca0921c4569bcf7ffa062519639b6a)
+> 
+> v7 -> v8:
+>   * Drop the subbufs renaming into bpages
+>   * Use subbuf as a name when relevant
+> 
+> v6 -> v7:
+>   * Rebase onto lore.kernel.org/lkml/20231215175502.106587604@goodmis.org/
+>   * Support for subbufs
+>   * Rename subbufs into bpages
+> 
+> v5 -> v6:
+>   * Rebase on next-20230802.
+>   * (unsigned long) -> (void *) cast for virt_to_page().
+>   * Add a wait for the GET_READER_PAGE ioctl.
+>   * Move writer fields update (overrun/pages_lost/entries/pages_touched)
+>     in the irq_work.
+>   * Rearrange id in struct buffer_page.
+>   * Rearrange the meta-page.
+>   * ring_buffer_meta_page -> trace_buffer_meta_page.
+>   * Add meta_struct_len into the meta-page.
+> 
+> v4 -> v5:
+>   * Trivial rebase onto 6.5-rc3 (previously 6.4-rc3)
+> 
+> v3 -> v4:
+>   * Add to the meta-page:
+>        - pages_lost / pages_read (allow to compute how full is the
+> 	 ring-buffer)
+>        - read (allow to compute how many entries can be read)
+>        - A reader_page struct.
+>   * Rename ring_buffer_meta_header -> ring_buffer_meta
+>   * Rename ring_buffer_get_reader_page -> ring_buffer_map_get_reader_page
+>   * Properly consume events on ring_buffer_map_get_reader_page() with
+>     rb_advance_reader().
+> 
+> v2 -> v3:
+>   * Remove data page list (for non-consuming read)
+>     ** Implies removing order > 0 meta-page
+>   * Add a new meta page field ->read
+>   * Rename ring_buffer_meta_page_header into ring_buffer_meta_header
+> 
+> v1 -> v2:
+>   * Hide data_pages from the userspace struct
+>   * Fix META_PAGE_MAX_PAGES
+>   * Support for order > 0 meta-page
+>   * Add missing page->mapping.
+> 
+> Vincent Donnefort (5):
+>   ring-buffer: allocate sub-buffers with __GFP_COMP
+>   ring-buffer: Introducing ring-buffer mapping functions
+>   tracing: Allow user-space mapping of the ring-buffer
+>   Documentation: tracing: Add ring-buffer mapping
+>   ring-buffer/selftest: Add ring-buffer mapping test
+> 
+>  Documentation/trace/index.rst                 |   1 +
+>  Documentation/trace/ring-buffer-map.rst       | 106 +++++
+>  include/linux/ring_buffer.h                   |   6 +
+>  include/uapi/linux/trace_mmap.h               |  48 +++
+>  kernel/trace/ring_buffer.c                    | 403 +++++++++++++++++-
+>  kernel/trace/trace.c                          | 113 ++++-
+>  kernel/trace/trace.h                          |   1 +
+>  tools/testing/selftests/ring-buffer/Makefile  |   8 +
+>  tools/testing/selftests/ring-buffer/config    |   2 +
+>  .../testing/selftests/ring-buffer/map_test.c  | 302 +++++++++++++
+>  10 files changed, 979 insertions(+), 11 deletions(-)
+>  create mode 100644 Documentation/trace/ring-buffer-map.rst
+>  create mode 100644 include/uapi/linux/trace_mmap.h
+>  create mode 100644 tools/testing/selftests/ring-buffer/Makefile
+>  create mode 100644 tools/testing/selftests/ring-buffer/config
+>  create mode 100644 tools/testing/selftests/ring-buffer/map_test.c
+> 
+> 
+> base-commit: 7604256cecef34a82333d9f78262d3180f4eb525
 
-Applied thanks!
--- 
-Florian
-
---000000000000bf74f60615c1bf0e
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIQeQYJKoZIhvcNAQcCoIIQajCCEGYCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg3QMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
-MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
-vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
-rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
-aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
-e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
-cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
-MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
-KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
-/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
-TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
-YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
-b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
-c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
-CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
-BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
-jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
-9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
-/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
-jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
-AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
-dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
-MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
-IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
-SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
-XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
-J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
-nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIBg0djZRrEgTAQMt
-qHkNqjquwYmP1NTshdn8JxWuUjdQMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDQxMDE3NTU1MFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBYQKeoI9HcUgklS7R36JyZkig5rQOEmJ5w
-vf0NOdyCzJyWXDPg3oGfzsORwtr8CCzOQH/VkeK5D8jIFmASLSpSzBdU4MNyZtawftZRiMV5gu4l
-izpXtBgWDITTx9fNOs/nhaD6kIYjhluoH5/lwydsfiayGqapQJGE9RRhr1A9bKo3U8LnRxsuTu55
-GQWAGK3NpLqz6U3wbayKgK35snR9hXwWp8IUaLPd8g/fbaT6+RzuVYeOtn1MB9IUVKTEGBXkNRmG
-bMYOxHWq4x1uU9YCh60CrPJRxexQPePb0574tba9Ya4OYTtasne9ibT1IDWUpro81wrRYbeN7NKK
-6zxn
---000000000000bf74f60615c1bf0e--
 
