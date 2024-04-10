@@ -1,149 +1,154 @@
-Return-Path: <linux-kernel+bounces-139321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FD088A0164
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:43:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 366A78A0167
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:44:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3EC728BDAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:43:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A4711C24583
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:44:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202A9181CE8;
-	Wed, 10 Apr 2024 20:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC39181CE3;
+	Wed, 10 Apr 2024 20:43:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DoLxMmlR"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Jd/GHqN2"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5B2817F37A
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 20:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1960D31A60
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 20:43:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712781818; cv=none; b=pxQN8t/LELwQ0teGCAnU0jL3mvY+FJaREFu7EUTmXssn+aDB9dc2WOUQGEN4/gr0o6VXgWHuLdE1SHC3S43sc+wK57gV+sKpzPlk19zpHB9NRSQBaUY7G5d+PixXTg/qJ5TTEhYSjo6pSygF6hR+w1gchUj6LhiT1cCV/FbTqd4=
+	t=1712781839; cv=none; b=tjWt+0BXsF5nU0g72J28d4Ig8KyeLhN4cdLnz5A24lxFzkhAIamcB7QYoS45KiMn9yKMzy3BDo1dMRQZQVTY7qlq5SJkbbxAq/2L+VShk196xWM0yPQu587gPuEV+7wn43ZQI5+MLx2DOYs0BpsUkLY6ZHuH9bZjlw3Atjg2C5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712781818; c=relaxed/simple;
-	bh=haeE2c1uQMVwuBCh6nmKoLx0syvsO5cganYlWpRKAFo=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=LytSTIXlCZrjJbU94fhJS/UUn5dHQ9ef82jZiecIQ1NnOrFG5Jq1CMvp0aDCBifI8E4zGTzSjGmRjQweInRQFJRoHN0HmXxE+U1eDd/xuQY04zJkt2Csqx/ujs6piTNZtgUdLNRoyeMqCbNGOmOPJijw02h8hiCBz4lHpbdyRDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DoLxMmlR; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-de0b4063e59so4796665276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:43:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712781816; x=1713386616; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=K4SubXYu8kjsVJfXEh2At6iMxBrwK+80VVQTqnF6NMs=;
-        b=DoLxMmlRxqj9arQZ7eoYfdnWzW8J0AVmixqNjiiG3oQSzMGOioMmkIKAszPVstbEAa
-         /d1pqu+Q+Zcc9iUvLEf7EoST606wod6KCurrvT4gkY1qP9HaqkaukVfz/NbfgccpOrey
-         37XxLpYfGaMNqVvy4kubX8ofDT6F5f7QkmQwkmrHB02DzFINctIA8dFnGvnC1AfBbXeS
-         RIlmpAkcPVqXKBfPyp29lBncfRqxFrrTtWJM2665utW5mkE9mNbN+plZLcfprZzjGyVj
-         P8qN5xisr9vXjuDUjB/SUVXhDfHjefxSx1ddQqKfFwv5Xgfx+8C8PbweB02cMPnRzLUN
-         fiLg==
+	s=arc-20240116; t=1712781839; c=relaxed/simple;
+	bh=T4tfJ+FYEO50sBmKw6wz2gtPCBR/RgMOuZ1SbykJ3JY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QNGbRUWaU6hraWWvpk50LorE/R4rBBOWCx9k6QI4yQscBsUHYzhwy9+sVCy9u+AFK+Ym7G2IDAZRGtsWhQOQnc4d6z6oF+h8H555H9Pi3iVedDFbqCAgl1egxMwcBSYyvDSg+DEDbcGr4I5UP05OOuanGPC1/xF1kXmE/TYSxjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Jd/GHqN2; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712781836;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UBcG336jXcDynX0hKtU5PSOfrByL4AcpxPfaW9145Qs=;
+	b=Jd/GHqN23F5n6+rV5Pxcah98gKbg1Y/xe9K/UZyV5HgFh0GndwRen0BxZ3PdFlDFtNy6kg
+	mRHlKeVP+9fz+HUZy5AdyXNiCt82ciJ+55yPfZr1p3YqJAHTgxQ0mM0Uju+i76R7sK7In3
+	+y2oi2y8b1UfQ7rFtbDLvaaZQz3xi7E=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-434-GoVYLnLZNJqdNlgFQnQvjg-1; Wed, 10 Apr 2024 16:43:54 -0400
+X-MC-Unique: GoVYLnLZNJqdNlgFQnQvjg-1
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3c5f0e4c257so673025b6e.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 13:43:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712781816; x=1713386616;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=K4SubXYu8kjsVJfXEh2At6iMxBrwK+80VVQTqnF6NMs=;
-        b=kbrdPBbhe+iE7Lzt7rN9y6PF/QEfKOiU+Y3eVOQpXl+aWhtTEnxbZC8h3j1XdYQDfX
-         83GELKEn9NP2VpAFtLYWW81UHfCoCz1+R66/vgGwA2N49rZxVRLufmPiS9RnrAjDofUl
-         Uu71pdA1tF9lW+rk8oujlPR85kbzojBRg8jISYqR4T7ee4YNGiv7XWEjXDfmL8B7mBSe
-         nk2TprCU7Bo68fVMSWUMdCt++FFHq9iW4G0kYcdjq+E0WkMlpku8Qb17TdfyYSS1OeNK
-         CIZoGLrwDPCIaCkumLoAJAZX0e8sNVJIINer1KWg/y+3XEcVBibCCyqvkvk+Q/uSZWA8
-         19tQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVflTlfGJgAKMhKmrIEadrXFz/Xm7uqvSu5M6pEKji5HhCE3UNsHd0qfvPwM/Nm1MVQVLyPbe4v018aoD1Lmwmxgk/FEVUm7EshcZ0y
-X-Gm-Message-State: AOJu0Yy7y5ESPfFX4AwCntucIAvvM7D3/N5tU1xDcHjpFOOaHldMDfa1
-	CpLfwTlFkYTRFWnO8jwqnFnCirqPOc+OjOQ7s1LyiCdTTeQXDUXnbqjMSx2LEGwotPIeQTq5uzC
-	9OeyA5eJZnjZ5rarSbyk3Ww==
-X-Google-Smtp-Source: AGHT+IG8XPLzn461t7HYg7HcnLuaG3TVHzRMb9P4mUgIRvjW7s/eDccTG/ZbSuOJUAz9pc1Ch9tK3cW5uAl1bxnTTA==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:2b83:b0:dd9:1db5:8348 with
- SMTP id fj3-20020a0569022b8300b00dd91db58348mr1031841ybb.8.1712781815890;
- Wed, 10 Apr 2024 13:43:35 -0700 (PDT)
-Date: Wed, 10 Apr 2024 20:43:33 +0000
+        d=1e100.net; s=20230601; t=1712781834; x=1713386634;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UBcG336jXcDynX0hKtU5PSOfrByL4AcpxPfaW9145Qs=;
+        b=rqSzcnGlRt6nkt1SCvHEcDeeMiqw3/07jUMZOaON8GiNRo2V5tA3GvXBoErG4aCAx5
+         ljZ7v4M9YDZgcOxajtGN8ID8emOI8nmCXVFjwdjbkZKBRttQWEfPGQJUWnCG3g5Vu3KO
+         8u8/vkkXRZYYH3GzkeVs8XxEwO96jNknSWmEWnGc46NkvitPTstaWO1KIIbjk1Rghw39
+         9IZiOExl5XlM3tVCfJs0dGGy02MX6YroolJ9NT4IfArWQTwAHFjpzeACSkcMi6Tl12Tg
+         0ObJ8cQhA94+ioolgUFO1ig9OrHCLvq0qQw3U4hSV66Hkqr18oby1UMgyFi7Lk1+zx93
+         vVeg==
+X-Gm-Message-State: AOJu0YwIc4fmWyEvUztt47D2+JkBSk1B36JOBK0mcj3mCUjP7ZmHkae/
+	/s6jsGosfXnPbx+31opzIaRE7qEz5KT7mmjQ232rKZGWLueEbUM0QRuSK9XD2EYs/EYtjo63llW
+	8eEdYR6+s/IiHcK7xdIMj9NiJ9QizvaYi7FsfmZGlEDSTQymDYGAnZulW005KcQ==
+X-Received: by 2002:a05:6808:1155:b0:3c5:d7ff:1214 with SMTP id u21-20020a056808115500b003c5d7ff1214mr3981895oiu.1.1712781833666;
+        Wed, 10 Apr 2024 13:43:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGxKK9XK8HKuZ6UDFf98/ZcwlGpmhlfpIse9Lq2ewTMFBD351jt8yTn3mFtY/un/kXnMXnDwQ==
+X-Received: by 2002:a05:6808:1155:b0:3c5:d7ff:1214 with SMTP id u21-20020a056808115500b003c5d7ff1214mr3981870oiu.1.1712781833164;
+        Wed, 10 Apr 2024 13:43:53 -0700 (PDT)
+Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id ka2-20020a05622a440200b00434c680abbasm2585004qtb.93.2024.04.10.13.43.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 13:43:52 -0700 (PDT)
+Date: Wed, 10 Apr 2024 16:43:51 -0400
+From: Peter Xu <peterx@redhat.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Lokesh Gidra <lokeshgidra@google.com>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Alistair Popple <apopple@nvidia.com>
+Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
+Message-ID: <Zhb6B8UsidEEbFu3@x1n>
+References: <20240410170621.2011171-1-peterx@redhat.com>
+ <Zhb2BWntckP3ZhDc@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAPX5FmYC/32NQQqDMBBFryKz7pQkRqld9R7FhcZRB6wJGRFFv
- HtTD9Dle/DfP0AoMgk8swMirSzs5wTmloEbm3kg5C4xGGWssqpAWeLswo5bLyhh4kVjY5xVj7b
- KrSshDUOknrcr+q4TjyyLj/v1seqf/ZtbNWrMKe96WxZN11avwfthorvzH6jP8/wCoGz2orUAA AA=
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712781815; l=2128;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=haeE2c1uQMVwuBCh6nmKoLx0syvsO5cganYlWpRKAFo=; b=MhjGam0PtObrc68tbZTGvY4oh5Wwyx6w16vBGbchHocaRdOCwzZBBtx0op7ozZ3jmt6i7GPf0
- AHDzHrYUreVB0COSb1VjQEFFd78V5pwZ7RkSJJY/rJb9V3oI6KkT8tN
-X-Mailer: b4 0.12.3
-Message-ID: <20240410-strncpy-xfs-split1-v2-1-7c651502bcb0@google.com>
-Subject: [PATCH v2] xfs: replace deprecated strncpy with memtostr_pad
-From: Justin Stitt <justinstitt@google.com>
-To: Chandan Babu R <chandan.babu@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>, linux-xfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Zhb2BWntckP3ZhDc@casper.infradead.org>
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On Wed, Apr 10, 2024 at 09:26:45PM +0100, Matthew Wilcox wrote:
+> On Wed, Apr 10, 2024 at 01:06:21PM -0400, Peter Xu wrote:
+> > anon_vma is a tricky object in the context of per-vma lock, because it's
+> > racy to modify it in that context and mmap lock is needed if it's not
+> > stable yet.
+> 
+> I object to this commit message.  First, it's not a "sanity check".  It's
+> a check to see if we already have an anon VMA.  Second, it's not "racy
+> to modify it" at all.  The problem is that we need to look at other
+> VMAs, for which we do not hold the lock.
 
-sbp->sb_fname may not be NUL-terminated while label is expected to be.
-memtostr best describes this behavior, specifically, use the pad variant
-since we're copying out to userspace.
+For that "do not hold locks" part, isn't that "racy"?
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
+When it's racy in that case, can I still word it as "racy to modify"?  We
+can't modify it because it's racy to read the other vmas.
 
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v2:
-- use memtostr_pad (thanks Kees)
-- Link to v1: https://lore.kernel.org/r/20240405-strncpy-xfs-split1-v1-1-3e3df465adb9@google.com
----
-Note: This patch relies on the memtostr{_pad} implementation from Kees' patch:
-https://lore.kernel.org/all/20240410023155.2100422-1-keescook@chromium.org/
+For "sanity check".. well, that falls into this category for me but I'm not
+a native speaker. So I am open to any rewords for any of above.
 
-Split from https://lore.kernel.org/all/20240401-strncpy-fs-xfs-xfs_ioctl-c-v1-1-02b9feb1989b@google.com/
-with feedback from Christoph H.
----
- fs/xfs/xfs_ioctl.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> > So the trivial side effect of such patch is:
+> > 
+> >   - We may do slightly better on the first WRITE of a private file mapping,
+> >   because we can retry earlier (in lock_vma_under_rcu(), rather than
+> >   vmf_anon_prepare() later).
+> > 
+> >   - We may always use mmap lock for the initial READs on a private file
+> >   mappings, while before this patch it _can_ (only when no WRITE ever
+> >   happened... but it doesn't make much sense for a MAP_PRIVATE..) do the
+> >   read fault with per-vma lock.
+> 
+> But that's a super common path!  Look at 'cat /proc/self/maps'.  All
+> your program text (including libraries) is mapped PRIVATE, and never
+> written to (except by ptrace, I guess).
+> 
+> NAK this patch.
 
-diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-index d0e2cec6210d..7ed7a5d57094 100644
---- a/fs/xfs/xfs_ioctl.c
-+++ b/fs/xfs/xfs_ioctl.c
-@@ -1750,15 +1750,14 @@ xfs_ioc_getlabel(
- 	char			__user *user_label)
- {
- 	struct xfs_sb		*sbp = &mp->m_sb;
-+	/* 1 larger than sb_fname, for a NULL byte */
- 	char			label[XFSLABEL_MAX + 1];
- 
- 	/* Paranoia */
- 	BUILD_BUG_ON(sizeof(sbp->sb_fname) > FSLABEL_MAX);
- 
--	/* 1 larger than sb_fname, so this ensures a trailing NUL char */
--	memset(label, 0, sizeof(label));
- 	spin_lock(&mp->m_sb_lock);
--	strncpy(label, sbp->sb_fname, XFSLABEL_MAX);
-+	memtostr_pad(label, sbp->sb_fname);
- 	spin_unlock(&mp->m_sb_lock);
- 
- 	if (copy_to_user(user_label, label, sizeof(label)))
+We're talking about any vma that will first benefit from a per-vma lock
+here, right?
 
----
-base-commit: c85af715cac0a951eea97393378e84bb49384734
-change-id: 20240405-strncpy-xfs-split1-a2c408b934c6
+I think it should be only relevant to some major VMA or bunch of VMAs that
+an userspace maps explicitly, then iiuc the goal is we want to reduce the
+cache bouncing of the lock when it used to be per-mm, by replacing it with
+a finer lock.  It doesn't sound right that these libraries even fall into
+this category as they should just get loaded soon enough when the program
+starts.
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+IOW, my understanding is that per-vma lock doesn't benefit from such normal
+vmas or simple programs that much; we take either per-vma read lock, or
+mmap read lock, and I would expect similar performance when such cache
+bouncing isn't heavy.
+
+I can do some tests later today or tomorrow. Any suggestion you have on
+amplifying such effect that you have concern with?
+
+-- 
+Peter Xu
 
 
