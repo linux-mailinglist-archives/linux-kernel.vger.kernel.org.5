@@ -1,220 +1,102 @@
-Return-Path: <linux-kernel+bounces-139298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3590B8A011A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:14:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ECDB8A011C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:16:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E12512867A5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:14:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 305BC1F24AD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83514181BB0;
-	Wed, 10 Apr 2024 20:14:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C864181B94;
+	Wed, 10 Apr 2024 20:16:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="k7ZalnCH";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vcT1xXkr"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fe1rQ3cG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17809181B8E;
-	Wed, 10 Apr 2024 20:14:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5212E3FE
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 20:16:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712780068; cv=none; b=lXQ/hGrRmu5f52iPW4Os1QL8iwfp4ME++3R/KyqPdG49KZ4DjqwFI+8eTQBzVCG3il5j1BDWhKF3Wpi8anHnMgKlO1B7PDfyb7fhIXMFXJVNhNxJwEiix+LEhT5k+W672DO7m4uxtGiHC9dN+MYMo5qwqH5iWKQDh8OtVFM16WU=
+	t=1712780192; cv=none; b=nnGBN67r7xKgp6qhYUDtUvjMZwNJG3Kg8XNYvVSxoZXokHMHKPc+JgueFNtynGXnAG5x5UnsPPa3nG9GTz+8BRXxxTNqQl4j3DRkXowWzwRags9ugYQ9BD1EyhtUnYo8TYmk/VjhnIccQI8OWRp6O2C0D2P6xGH5S/TfWtV4MzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712780068; c=relaxed/simple;
-	bh=Rqy6Xs2fyCvZ69aDntTlbG095epWeaAAKb5UV4cLrco=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=XK7uL1Kwgg5KRueNSfPT28u1LxcPt7UhEapLPz2NVP8XNoh/GV3INZhBDHn5ERqtWjzrUKdwNZGX+tZ1KaYIldFeSkmTQjUrtyvUIfYBOc4QA9LzS+TVTEknu/SjnKVeRCm63DYuqTzWop9N+nUMMAAFQhcMQ2SNXmX7LonyaqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=k7ZalnCH; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vcT1xXkr; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 10 Apr 2024 20:14:24 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712780065;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tDXuJbRR0DIfp06MkOUcJdP+NuBmCt9MmdpCM5pWau4=;
-	b=k7ZalnCHhnXHt1jKDkjyanzMFHM17hLw1h9GtCdraguNNVtQkRW5o8v1Y4TLpv90/yDbEt
-	nNzLqhvILkRmunE283kDMgkGgKz/Jf4iwiYdAG7gpnsxXyeXCmUraEFHbdZ+WhuE2C3VqK
-	Oh/XYVekXBtN3jeXKq8qtW5c65TNV1jcTPZfb8LPpkQx6Mn1X6+i6p6qFC30/u1w+ILtgL
-	zmEO4rbEY4wuGT/raDa+BD1R7t60Dyqs1VpOn/2SIeIwUJHB9++WLHkwI3Jz91rvLrQtGs
-	d4aJQWf7zTruXcihX5RUHXOxwF93JUSNA6CXMTB7XLSpyDX/JupZbp6ZNayuaA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712780065;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tDXuJbRR0DIfp06MkOUcJdP+NuBmCt9MmdpCM5pWau4=;
-	b=vcT1xXkrduEAlqZyXpLIc86hmMWnNZmOUVX5kHZXEv9w+l9S18gZCdgz8r9z1UER4TjPgg
-	orl0Z+PkvejFwsBw==
-From: "tip-bot2 for John Stultz" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/urgent] selftests: timers: Fix valid-adjtimex signed
- left-shift undefined behavior
-Cc: Lee Jones <joneslee@google.com>,
- Muhammad Usama Anjum <usama.anjum@collabora.com>,
- John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240409202222.2830476-1-jstultz@google.com>
-References: <20240409202222.2830476-1-jstultz@google.com>
+	s=arc-20240116; t=1712780192; c=relaxed/simple;
+	bh=OFX3cJHQcAd/OU+KZoF9dby2TwnpRJ+fJmkGn3cUSSo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lD4ERHothPgqm5BF8jBGoOjuGrgOJBZdE8xCp2TmcD3QcbZ3VHj4ZXx8QZTZ0Ta53oZ3uITFtAygqrWYHTGsdr++13wyK6en+QWYRqdhC0EHKcJjIvv1aBKWgZExRmiWjNgAkcW9pL+6fXugN3cHlBy0sdd3yQ3Qe7lDoxEHvvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fe1rQ3cG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6552C433F1;
+	Wed, 10 Apr 2024 20:16:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712780190;
+	bh=OFX3cJHQcAd/OU+KZoF9dby2TwnpRJ+fJmkGn3cUSSo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fe1rQ3cGeVTVqifr/j+elAtxe0KM6R8Iu2HRWRCwOcNprOGKwOsKX945yp/L4NcL/
+	 e2PoqUC/MWQh10WmvYh/RXCY0U45Pjipyffx5Fdx8NUHamvdwq6eh/GBl/dFKiH7A9
+	 xo8h4bgvweiFYkWSIq9/uCF96IT7LKJj8sRKg49j1tHQouIwkDuM1wySvo5QZiZJ6T
+	 xfgpCYTaB0/k+3q0sOKP432sDbMjRLg6LiIIn8KGb5h0VWqfuSDktFHtgdcPWzpJb+
+	 uIyJ1fpo1a1n3L+KzSQusc5g9aqutx931P7L/X8ktrBVs3HvlTvOpt6Q2pzJ8UCuDD
+	 f5qCuVVe/zs3w==
+Date: Wed, 10 Apr 2024 21:16:26 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v1 1/1] regmap: spi: Add missing MODULE_DESCRIPTION()
+Message-ID: <8dd5a474-ec45-4f0d-b1a9-e91e54c990fc@sirena.org.uk>
+References: <20240410200031.1656581-1-andriy.shevchenko@linux.intel.com>
+ <3602aa7a-15c9-4e77-8aa9-a12f2136530c@sirena.org.uk>
+ <Zhbyu-qI97eBxtxU@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171278006447.10875.16088506063251759811.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="maigQXm7iw5LCTEy"
+Content-Disposition: inline
+In-Reply-To: <Zhbyu-qI97eBxtxU@smile.fi.intel.com>
+X-Cookie: A bachelor is an unaltared male.
 
-The following commit has been merged into the timers/urgent branch of tip:
 
-Commit-ID:     076361362122a6d8a4c45f172ced5576b2d4a50d
-Gitweb:        https://git.kernel.org/tip/076361362122a6d8a4c45f172ced5576b2d4a50d
-Author:        John Stultz <jstultz@google.com>
-AuthorDate:    Tue, 09 Apr 2024 13:22:12 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 10 Apr 2024 22:07:42 +02:00
+--maigQXm7iw5LCTEy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-selftests: timers: Fix valid-adjtimex signed left-shift undefined behavior
+On Wed, Apr 10, 2024 at 11:12:43PM +0300, Andy Shevchenko wrote:
+> On Wed, Apr 10, 2024 at 09:05:17PM +0100, Mark Brown wrote:
 
-The struct adjtimex freq field takes a signed value who's units are in
-shifted (<<16) parts-per-million.
+> > regmap.
 
-Unfortunately for negative adjustments, the straightforward use of:
+> Hmm...
 
-  freq = ppm << 16 trips undefined behavior warnings with clang:
+> drivers/base/regmap/regmap-i3c.c:59:MODULE_DESCRIPTION("Regmap I3C Module");
+> drivers/base/regmap/regmap-mdio.c:120:MODULE_DESCRIPTION("Regmap MDIO Module");
+> drivers/base/regmap/regmap-sdw-mbq.c:100:MODULE_DESCRIPTION("Regmap SoundWire MBQ Module");
+> drivers/base/regmap/regmap-sdw.c:101:MODULE_DESCRIPTION("Regmap SoundWire Module");
+> drivers/base/regmap/regmap-spi.c:168:MODULE_DESCRIPTION("Regmap SPI Module");
 
-valid-adjtimex.c:66:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
-        -499<<16,
-        ~~~~^
-valid-adjtimex.c:67:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
-        -450<<16,
-        ~~~~^
-.
+Feel free to fix the others as well.
 
-Fix it by using a multiply by (1 << 16) instead of shifting negative values
-in the valid-adjtimex test case. Align the values for better readability.
+--maigQXm7iw5LCTEy
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Reported-by: Lee Jones <joneslee@google.com>
-Reported-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Signed-off-by: John Stultz <jstultz@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Link: https://lore.kernel.org/r/20240409202222.2830476-1-jstultz@google.com
-Link: https://lore.kernel.org/lkml/0c6d4f0d-2064-4444-986b-1d1ed782135f@collabora.com/
----
- tools/testing/selftests/timers/valid-adjtimex.c | 73 +++++++---------
- 1 file changed, 36 insertions(+), 37 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/tools/testing/selftests/timers/valid-adjtimex.c b/tools/testing/selftests/timers/valid-adjtimex.c
-index 48b9a80..d13ebde 100644
---- a/tools/testing/selftests/timers/valid-adjtimex.c
-+++ b/tools/testing/selftests/timers/valid-adjtimex.c
-@@ -21,9 +21,6 @@
-  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  *   GNU General Public License for more details.
-  */
--
--
--
- #include <stdio.h>
- #include <stdlib.h>
- #include <time.h>
-@@ -62,45 +59,47 @@ int clear_time_state(void)
- #define NUM_FREQ_OUTOFRANGE 4
- #define NUM_FREQ_INVALID 2
- 
-+#define SHIFTED_PPM (1 << 16)
-+
- long valid_freq[NUM_FREQ_VALID] = {
--	-499<<16,
--	-450<<16,
--	-400<<16,
--	-350<<16,
--	-300<<16,
--	-250<<16,
--	-200<<16,
--	-150<<16,
--	-100<<16,
--	-75<<16,
--	-50<<16,
--	-25<<16,
--	-10<<16,
--	-5<<16,
--	-1<<16,
-+	 -499 * SHIFTED_PPM,
-+	 -450 * SHIFTED_PPM,
-+	 -400 * SHIFTED_PPM,
-+	 -350 * SHIFTED_PPM,
-+	 -300 * SHIFTED_PPM,
-+	 -250 * SHIFTED_PPM,
-+	 -200 * SHIFTED_PPM,
-+	 -150 * SHIFTED_PPM,
-+	 -100 * SHIFTED_PPM,
-+	  -75 * SHIFTED_PPM,
-+	  -50 * SHIFTED_PPM,
-+	  -25 * SHIFTED_PPM,
-+	  -10 * SHIFTED_PPM,
-+	   -5 * SHIFTED_PPM,
-+	   -1 * SHIFTED_PPM,
- 	-1000,
--	1<<16,
--	5<<16,
--	10<<16,
--	25<<16,
--	50<<16,
--	75<<16,
--	100<<16,
--	150<<16,
--	200<<16,
--	250<<16,
--	300<<16,
--	350<<16,
--	400<<16,
--	450<<16,
--	499<<16,
-+	    1 * SHIFTED_PPM,
-+	    5 * SHIFTED_PPM,
-+	   10 * SHIFTED_PPM,
-+	   25 * SHIFTED_PPM,
-+	   50 * SHIFTED_PPM,
-+	   75 * SHIFTED_PPM,
-+	  100 * SHIFTED_PPM,
-+	  150 * SHIFTED_PPM,
-+	  200 * SHIFTED_PPM,
-+	  250 * SHIFTED_PPM,
-+	  300 * SHIFTED_PPM,
-+	  350 * SHIFTED_PPM,
-+	  400 * SHIFTED_PPM,
-+	  450 * SHIFTED_PPM,
-+	  499 * SHIFTED_PPM,
- };
- 
- long outofrange_freq[NUM_FREQ_OUTOFRANGE] = {
--	-1000<<16,
--	-550<<16,
--	550<<16,
--	1000<<16,
-+	-1000 * SHIFTED_PPM,
-+	 -550 * SHIFTED_PPM,
-+	  550 * SHIFTED_PPM,
-+	 1000 * SHIFTED_PPM,
- };
- 
- #define LONG_MAX (~0UL>>1)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYW85oACgkQJNaLcl1U
+h9CAZAf/eo8p+blYn6Ptv4IHfGKv5fowJJJkA/vXGxE0KHyi0C++PboD8/0YAAe7
+fNymUUJSxbKn8M/EZhc/4H/n0ksbDRaNqj44p6oySzH3BQi23vcosGsXPJiCsULU
+oZHx0VZPLZKyULvdjkG+qVpbDSsPl8Dr+GCzu/8C/eGFqslSEpNi7JtdJQeOskWT
+DCHB/nTxtVusLcExNXSIQphTdrd0nUFARauynLxxQcpoSnZ4KlLMFwVGinddfAma
+IybhopoAynXKLlzZa/bxBEHafO2V9p7RMqJNpDHEUBl256xX0CqRbGo8McFupKMm
+CQEXCCnejDRZN3KNoGI+UcubgtRatg==
+=+aeD
+-----END PGP SIGNATURE-----
+
+--maigQXm7iw5LCTEy--
 
