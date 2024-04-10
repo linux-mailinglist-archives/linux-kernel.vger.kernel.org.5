@@ -1,146 +1,129 @@
-Return-Path: <linux-kernel+bounces-138370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E3BF89F039
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:56:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4904889F037
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:56:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 402181C2267E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:56:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAC041F22CD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:56:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1214159573;
-	Wed, 10 Apr 2024 10:56:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08B66159571;
+	Wed, 10 Apr 2024 10:56:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gehealthcare.com header.i=@gehealthcare.com header.b="Dktcxcjj"
-Received: from mx0a-00176a03.pphosted.com (mx0b-00176a03.pphosted.com [67.231.157.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dyu4rfUA"
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0CF315956B;
-	Wed, 10 Apr 2024 10:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.157.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB36F158D99
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:56:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712746593; cv=none; b=I6/JlUyyAXgYlPoidmzsaWaJYh9QplowpoT5IicBo1uT+Gj3h0SWfztktj8FMqkkTAzWHmtT7xPCxs2fNDvE+AarejFYsjcgYwPVeLZCI8UPGFfZXT6WWGDU4otamJfgHn0X63vPL4MEE2R4eXwUufrRX1ZcrJKKzyoTvqihFbk=
+	t=1712746587; cv=none; b=TKdPwjaZTfzpNmZbaQtMv2IzYaIU5g6smWdFn/JlOCk0Wn+yTdfd2hvObPnMn6+iTsJa+Fgim6ms5/kFum3lNLGoLd3O2oZ7AyjvxqaP/JsH3BRMdnnydm8nJ1T2P92S8715gG98sePTdIBmryMkVfVWSidaE51r2dXkVM1tL5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712746593; c=relaxed/simple;
-	bh=T2Cxr4cQmLbIrGYgWWPyBq4OPBDB8i8INtNZfa2a06o=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=er8Ie671hPRQMdI1xwGqrmZHbXKT+obyDuXmHVO5BJaqEShwxi5YxW+4iD43lB49c5GWXUbuGDNpxqsdTXLRSWGjZ0LpTm998Tt64iRgLz0DXZSwNk5X2p/5OagtlpH6IcUmLXjcNV522n5Rqqgkq/KhM9D90ws4Wx75h5s4KZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gehealthcare.com; spf=pass smtp.mailfrom=gehealthcare.com; dkim=pass (2048-bit key) header.d=gehealthcare.com header.i=@gehealthcare.com header.b=Dktcxcjj; arc=none smtp.client-ip=67.231.157.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gehealthcare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gehealthcare.com
-Received: from pps.filterd (m0048206.ppops.net [127.0.0.1])
-	by m0048206.ppops.net-00176a03. (8.17.1.24/8.17.1.24) with ESMTP id 43A898Ms004481;
-	Wed, 10 Apr 2024 06:56:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	gehealthcare.com; h=from:to:cc:subject:date:message-id
-	:in-reply-to:references:mime-version:content-transfer-encoding;
-	 s=outbound; bh=9nrWY9DytoleI3fgu32cTyh5F+jGWl2jyLpk3CAefTg=; b=
-	DktcxcjjbVf0H9wQkAN91LDTjutpxi9qX+PdOnqHzioZlEIuxHN1l+u1TCtpkx+h
-	HjI28Qg13/Jm+KCN5iBPg6/YiUrp3GM3J1chZ8HETYF1mcLEo3EOy9Iwmjb53y5o
-	/PPvUolyIrbYcEi6S3uaflybnk6Fw4nTEVTh+2PU44jBOLDvb8h0ecr/v6aTgSoJ
-	JE/8bGaIPBEkAf0xHaGKi5GLNZGlamGbOvnjLhWxQ+iV/fgl+S9KR20a5TtB9k1e
-	0EVC//d7GNIB8Ntk+zc04tgHKLbXK84nG1y67ypVE/ntQxf2kKwWX2MmEtP14iqo
-	kJb2FEHG0kuF2wQRrDXMRQ==
-From: Ian Ray <ian.ray@gehealthcare.com>
-To: Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>
-Cc: Ian Ray <ian.ray@gehealthcare.com>, devicetree@vger.kernel.org,
-        imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3 2/2] arm64: dts: imx8mp-msc-sm2s: Add i2c{1,6} sda-/scl-gpios
-Date: Wed, 10 Apr 2024 13:56:11 +0300
-Message-Id: <20240410105612.982-2-ian.ray@gehealthcare.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240410105612.982-1-ian.ray@gehealthcare.com>
-References: <20240410105612.982-1-ian.ray@gehealthcare.com>
+	s=arc-20240116; t=1712746587; c=relaxed/simple;
+	bh=PkLomg3XZoAJg3TSd9x2y2XkV+U9wN5WgCjvRqpTvr4=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=jjubR5sc5oz/YuvS7KISSbaHzy2edA/Fvmyv6H5qFn7DXvOL725s16vcfHBX3B2/F7/euG3eYxMS5zOtnRRDwnLQn3aYYWXjgwi9qhSyABuHwbAiQu9PEi0P9nqlXcM1502TAcNse41P7B3FeZqJO+xGUZFDOodxsXSNI/0sz2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dyu4rfUA; arc=none smtp.client-ip=209.85.221.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4dad331b828so1151693e0c.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:56:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712746584; x=1713351384; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=A4P1zHA79cNSOqe5dhAPt9YiRo8Ig2ZEUFz6PytxSbs=;
+        b=dyu4rfUAF+ZM5C9oe+bUPaWJBhYlk3LtXvVEWZF2n5zcG9Zrx0nH/pkaeAMNXfzoyh
+         NXZ3A2dAQh0tvtasYGGI9oDuNws9lWh8Mi3bGRyzvwqdIIclTljKPQ9DxLSng8zRy8BY
+         fwELXU5JtHnTY8YW3O8tfZCoJeOeL4yG5XtZfhHpFHfB8/GZlgR3Kfvnf1sXOMeOll3G
+         I26uLx8BuP7Iww0m7Sd6ccB3vLtSDsOqMmmccyWeRiB5Ol9le7Pa2X0x96Z0aRJV0QNi
+         FmccazTQDlhaUeWg2VxgmyEgkTJSBFHfDKJ/93dhr6IlgphQC1dGbQhsT8hToP5wNatR
+         i+Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712746584; x=1713351384;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=A4P1zHA79cNSOqe5dhAPt9YiRo8Ig2ZEUFz6PytxSbs=;
+        b=VX2a1Sm9Rwyv9TrEEg7uXJWH0C9YO7ftD9/A6VIdEdO/vz0kK1TvknAvJkKKnyEssY
+         tCAMRUA5cTnNvE4VrV5s8H2z4MFB/oaXwXdrYOUGO8wHwfDioTpBg8lfmHj6i4nP24Y1
+         jx1U7YakjlqSkTjOPNU4gd6kJGm7WxI8QKc5/Pby/S23ZoNIkEknRXJ00p1YRftS77DT
+         ye8PpU5T3AXTW2rsg1+P4JODnBSY+dqG27CeL5MsYyLjwqzTAUx3wPV9G3m7xYYRsnKw
+         tHJ4Xsr428UnLQzXntbnRqwioGQsxdDoP5Z3wwfbqIm2Vd91YA3nmMOWZfYkaSPM70I/
+         ZbqA==
+X-Gm-Message-State: AOJu0Ywkb0tmYkoGvP/qWSH662rfRWWhG4mJhmr/L2ZyInfGch6hbOf/
+	LKn2xvwuItVR4Ql9mNmlXplhYO670BCDAgDYAIqNFWWGIeH/jRDRuwZQqxN20dQiFhqGOB8OAb0
+	ALnN5fVeE06S7muGgnzpg1/LXm4XmQapATvvSrVcQLcZle4TZY4A=
+X-Google-Smtp-Source: AGHT+IGvDtSipGLN4V+a5OK8F15/LzzDmS0siND2Ax9vMFlFPnR/b9TAjNiJAXVFQnE88ZlIPrSPfifC/IbqQFAdzjw=
+X-Received: by 2002:a05:6122:a22:b0:4cd:20ea:35aa with SMTP id
+ 34-20020a0561220a2200b004cd20ea35aamr2414982vkn.8.1712746584230; Wed, 10 Apr
+ 2024 03:56:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: zzNEZ2C6v6r31bR0u8LXi5DxSsUwnH2k
-X-Proofpoint-ORIG-GUID: zzNEZ2C6v6r31bR0u8LXi5DxSsUwnH2k
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 impostorscore=0
- adultscore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1015
- malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404100078
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 10 Apr 2024 16:26:12 +0530
+Message-ID: <CA+G9fYvjdZCW=7ZGxS6A_3bysjQ56YF7S-+PNLQ_8a4DKh1Bhg@mail.gmail.com>
+Subject: tinyconfig: kernel/time/timekeeping.c:286:1: error: no return
+ statement in function returning non-void [-Werror=return-type]
+To: open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org, 
+	Linux Regressions <regressions@lists.linux.dev>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Stephen Boyd <sboyd@kernel.org>, John Stultz <jstultz@google.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Dan Carpenter <dan.carpenter@linaro.org>, Anders Roxell <anders.roxell@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Add i2c{1,6} sda-/scl-gpios with the corresponding pinmux entries.
+The powerpc,s390, superSh and sparc tinyconfig builds failed due to
+following build
+warnings / errors on the Linux next-20240410 with gcc-13 and gcc-11.
 
-Signed-off-by: Ian Ray <ian.ray@gehealthcare.com>
+List build failures:
 ---
- .../boot/dts/freescale/imx8mp-msc-sm2s.dtsi   | 22 +++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+* s390, build
+  - gcc-13-tinyconfig - failed
+  - gcc-8-tinyconfig - failed
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi
-index e794f05cf5aa..0fd5c3abcdb7 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-msc-sm2s.dtsi
-@@ -200,8 +200,11 @@ ethphy1: ethernet-phy@1 {
- };
- 
- &i2c1 {
--	pinctrl-names = "default";
-+	pinctrl-names = "default", "gpio";
- 	pinctrl-0 = <&pinctrl_i2c1>;
-+	pinctrl-1 = <&pinctrl_i2c1_gpio>;
-+	scl-gpios = <&gpio5 14 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	sda-gpios = <&gpio5 15 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
- 	clock-frequency = <400000>;
- 	status = "okay";
- 
-@@ -241,8 +244,11 @@ &i2c5 {
- };
- 
- &i2c6 {
--	pinctrl-names = "default";
-+	pinctrl-names = "default", "gpio";
- 	pinctrl-0 = <&pinctrl_i2c6>;
-+	pinctrl-1 = <&pinctrl_i2c6_gpio>;
-+	scl-gpios = <&gpio3 19 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	sda-gpios = <&gpio3 20 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
- 	clock-frequency = <400000>;
- 	status = "okay";
- 
-@@ -606,6 +612,12 @@ pinctrl_i2c1: i2c1grp {
- 			<MX8MP_IOMUXC_I2C1_SDA__I2C1_SDA		0x400001e0>;
- 	};
- 
-+	pinctrl_i2c1_gpio: i2c1gpiogrp {
-+		fsl,pins =
-+			<MX8MP_IOMUXC_I2C1_SCL__GPIO5_IO14		0x1e0>,
-+			<MX8MP_IOMUXC_I2C1_SDA__GPIO5_IO15		0x1e0>;
-+	};
-+
- 	pinctrl_i2c2: i2c2grp {
- 		fsl,pins =
- 			<MX8MP_IOMUXC_I2C2_SCL__I2C2_SCL		0x400001e0>,
-@@ -636,6 +648,12 @@ pinctrl_i2c6: i2c6grp {
- 			<MX8MP_IOMUXC_SAI5_RXC__I2C6_SDA		0x400001e0>;
- 	};
- 
-+	pinctrl_i2c6_gpio: i2c6gpiogrp {
-+		fsl,pins =
-+			<MX8MP_IOMUXC_SAI5_RXFS__GPIO3_IO19		0x1e0>,
-+			<MX8MP_IOMUXC_SAI5_RXC__GPIO3_IO20		0x1e0>;
-+	};
-+
- 	pinctrl_lcd0_backlight: lcd0-backlightgrp {
- 		fsl,pins =
- 			<MX8MP_IOMUXC_GPIO1_IO05__GPIO1_IO05		0x41>;
--- 
-2.39.2
+* sh, build
+  - gcc-11-tinyconfig - failed
 
+* sparc, build
+  - gcc-11-tinyconfig - failed
+
+* mips, build
+  - gcc-12-tinyconfig - failed
+  - gcc-8-tinyconfig - failed
+
+* powerpc, build
+  - gcc-13-tinyconfig - failed
+  - gcc-8-tinyconfig - failed
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Build log:
+--------
+kernel/time/timekeeping.c: In function 'timekeeping_debug_get_ns':
+kernel/time/timekeeping.c:286:1: error: no return statement in
+function returning non-void [-Werror=return-type]
+  286 | }
+      | ^
+cc1: some warnings being treated as errors
+
+steps to reproduce:
+---
+# tuxmake --runtime podman --target-arch powerpc --toolchain gcc-13
+--kconfig tinyconfig
+
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240410/testrun/23380322/suite/build/test/gcc-13-tinyconfig/details/
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240410/testrun/23380301/suite/build/test/gcc-11-tinyconfig/history/
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240410/testrun/23380301/suite/build/tests/
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
