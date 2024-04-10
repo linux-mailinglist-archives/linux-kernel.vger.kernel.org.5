@@ -1,133 +1,85 @@
-Return-Path: <linux-kernel+bounces-138592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138594-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6831089F424
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:25:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EF2B89F42A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:26:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A1721C23780
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:25:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19A4828763C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:26:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0189F15EFD6;
-	Wed, 10 Apr 2024 13:24:07 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A4E15E801;
+	Wed, 10 Apr 2024 13:24:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Eaok+4aH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8EB115E7FD;
-	Wed, 10 Apr 2024 13:24:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F4B15F3F4;
+	Wed, 10 Apr 2024 13:24:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712755446; cv=none; b=Pj/pvOy8GxzMrR5yb5Z3ECKagAFsbH6hYP4K4nMAgZjpeUU5dgErz+epnhXoH4pfRFmjxS1hPICj0Pf24Ni5THZYC07lGiDzdUut4sVM2WqefP2X1bKNb3V8JRvxfoo1CEb3mIM037g9dmKI4KJkKKthOqldipQGL0Co3UDvrY0=
+	t=1712755454; cv=none; b=D6HWwzr+MBGLrzWOGAsVpHV6+9UnVn8PUldVKdEqNbjm5dzn4Jl25h6gyq8ciOIYlT20wybaSZggdNs4PmO0fON2Nj82kakUn+fdYmnJd9p06OJeD4sMFCbMI36WFnVAlHd8KjMoHW2YemsJj6c0tMkBQEJSaqZqBrB+7W1eQ+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712755446; c=relaxed/simple;
-	bh=smc0dd2Hljy1BFflS7XGq1OlXzh6nMSx794vVITK+uM=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gyLYDWS3oVYaFdvYuDqTElkwvUvWx1vwQtQjz4+xxQhdiXGfIKGU+kg61NpPQjmLP7aO7UnSURRpUFXUNTYqwpeTrE7IevAD0vaouHTtldPnFi9nZHophCcDvI1+Hr8Yi+TTbF7ym0MGKDK8qW8sVMR1QROQm21zFxPe1O72LIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VF3Qk73l2z67G9n;
-	Wed, 10 Apr 2024 21:22:22 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id CB063140CF4;
-	Wed, 10 Apr 2024 21:24:00 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 10 Apr
- 2024 14:24:00 +0100
-Date: Wed, 10 Apr 2024 14:23:59 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Miguel Luis <miguel.luis@oracle.com>
-CC: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
-	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<rmk+kernel@armlinux.org.uk>
-Subject: Re: [RFC PATCH 3/4] ACPI: processor: refactor
- acpi_processor_get_info: isolate acpi_{map|unmap}_cpu under
- CONFIG_ACPI_HOTPLUG_CPU
-Message-ID: <20240410142359.00003dea@Huawei.com>
-In-Reply-To: <20240409150536.9933-4-miguel.luis@oracle.com>
-References: <20240409150536.9933-1-miguel.luis@oracle.com>
-	<20240409150536.9933-4-miguel.luis@oracle.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712755454; c=relaxed/simple;
+	bh=WNjHEnZYwyX9uPtDNGEk3WQ8G2R5IDZTvmlqm+KjAj0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=biQbzswzLB8++EZzG4YT8WmS0mYCSjdH8aL6koahrkRNxdNGxz1eMWQawhxxqH3u0ZObHHU0EypFR5xt4DY3wjhDg5oBqEL4bkIo95x222JEOqbVA4Lb+1asIMHoZeJTiZCZsF7dZXFz9CZXpr1Zuop1T7ELWgaH5f3F4Tua5B8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Eaok+4aH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 937DEC433C7;
+	Wed, 10 Apr 2024 13:24:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712755453;
+	bh=WNjHEnZYwyX9uPtDNGEk3WQ8G2R5IDZTvmlqm+KjAj0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Eaok+4aHCN8wUZsm/y/+J4rMX5hOhpAUn+GHi2BkviKOJj4O6qyRbFsHL0J9wQuCZ
+	 560bix0pr3PEB/C9zVVqMNGYqnP4ZoKcqkWr1p2f+nFAGK8cJ7spiwTQOswhxqvExb
+	 Ryx/qOriQaDG4VeHIrGx1qnyG/YSzsFgGkQWmBGyL4UaIR7rjlnyS7aLURSgStOPRY
+	 SCieJNwJtB9OYFZ1/2Go6Ge3afIsIHlWx3mV25b1kHMwjmywQ6pefbCWzol/PP87Y/
+	 P/+zK//v1smceidm0Nxh1TQiamFqM5w8nkfg9wUQRY2J0yhk0TLMGTRXQjBMLJpTLZ
+	 4KB0dvQbOnRlg==
+Date: Wed, 10 Apr 2024 06:24:11 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Julien Panis <jpanis@baylibre.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Russell King
+ <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Sumit Semwal
+ <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
+ <christian.koenig@amd.com>, Simon Horman <horms@kernel.org>, Andrew Lunn
+ <andrew@lunn.ch>, Ratheesh Kannoth <rkannoth@marvell.com>, Naveen
+ Mamindlapalli <naveenm@marvell.com>, danishanwar@ti.com,
+ yuehaibing@huawei.com, rogerq@kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH net-next v8 2/3] net: ethernet: ti: Add desc_infos
+ member to struct k3_cppi_desc_pool
+Message-ID: <20240410062411.1096c881@kernel.org>
+In-Reply-To: <6f356fec-4384-4367-8812-a18b71156116@baylibre.com>
+References: <20240223-am65-cpsw-xdp-basic-v8-0-f3421b58da09@baylibre.com>
+	<20240223-am65-cpsw-xdp-basic-v8-2-f3421b58da09@baylibre.com>
+	<20240409173948.66abe6fa@kernel.org>
+	<6f356fec-4384-4367-8812-a18b71156116@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Tue,  9 Apr 2024 15:05:32 +0000
-Miguel Luis <miguel.luis@oracle.com> wrote:
+On Wed, 10 Apr 2024 10:36:16 +0200 Julien Panis wrote:
+> Also, about mem alloc failures, shouldn't we free 'pool' on kstrdup_const()
+> error at the beginning of k3_cppi_desc_pool_create_name() ?
+> I mean, it's not visible in my patch but I now wonder if this was done
+> properly even before I modify the file.
 
-> mapping and unmaping a cpu at the stage of extra cpu enumeration is
-> architecture specific which depends on CONFIG_ACPI_HOTPLUG_CPU so let's
-> isolate that functionality from architecture independent one.
-
-Should we consider renaming acpi_map_cpu() to arch_acpi_map_cpu()
-to make the arch specific nature of that call more obvious?
-I think that has caused more confusion in the discussion than
-whether it is hotplug specific or not.
-
-As mentioned in patch 2, fairly sure this needs to go before that
-patch.
-
-Jonathan
-
-> 
-> Signed-off-by: Miguel Luis <miguel.luis@oracle.com>
-> ---
->  drivers/acpi/acpi_processor.c | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> index 9ea58b61d741..c6e2f64a056b 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -194,8 +194,21 @@ static void acpi_processor_hotplug_delay_init(struct acpi_processor *pr)
->  	pr_info("CPU%d has been hot-added\n", pr->id);
->  	pr->flags.need_hotplug_init = 1;
->  }
-> +static int acpi_processor_hotplug_map_cpu(struct acpi_processor *pr)
-> +{
-> +	return acpi_map_cpu(pr->handle, pr->phys_id, pr->acpi_id, &pr->id);
-> +}
-> +static void acpi_processor_hotplug_unmap_cpu(struct acpi_processor *pr)
-> +{
-> +	acpi_unmap_cpu(pr->id);
-> +}
->  #else
->  static void acpi_processor_hotplug_delay_init(struct acpi_processor *pr) {}
-> +static int acpi_processor_hotplug_map_cpu(struct acpi_processor *pr)
-> +{
-> +	return 0;
-> +}
-> +static void acpi_processor_hotplug_unmap_cpu(struct acpi_processor *pr) {}
->  #endif /* CONFIG_ACPI_HOTPLUG_CPU */
->  
->  /* Enumerate extra CPUs */
-> @@ -215,13 +228,13 @@ static int acpi_processor_enumerate_extra(struct acpi_processor *pr)
->  	cpu_maps_update_begin();
->  	cpus_write_lock();
->  
-> -	ret = acpi_map_cpu(pr->handle, pr->phys_id, pr->acpi_id, &pr->id);
-> +	ret = acpi_processor_hotplug_map_cpu(pr);
->  	if (ret)
->  		goto out;
->  
->  	ret = arch_register_cpu(pr->id);
->  	if (ret) {
-> -		acpi_unmap_cpu(pr->id);
-> +		acpi_processor_hotplug_unmap_cpu(pr);
->  		goto out;
->  	}
->  
-
+Yes, it uses managed memory (devm_*) but prueth (I didn't check other
+callers) calls it from .ndo_open. So while not technically a full leak
+we can accumulate infinite memory by repeatedly failing here :S
 
