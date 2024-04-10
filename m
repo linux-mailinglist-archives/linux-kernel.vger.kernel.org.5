@@ -1,121 +1,142 @@
-Return-Path: <linux-kernel+bounces-139223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92A7D8A0010
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:52:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 073DE8A0014
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:53:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFAA82841DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:52:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B13DC1F23E41
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:53:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C9DA17F376;
-	Wed, 10 Apr 2024 18:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I6OuxsVT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5506A17F36E;
+	Wed, 10 Apr 2024 18:53:06 +0000 (UTC)
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E41A16F0DF;
-	Wed, 10 Apr 2024 18:52:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0A992E405;
+	Wed, 10 Apr 2024 18:53:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712775142; cv=none; b=sLhWb8bu+Xr78gnHNTKCsJJnX3WxaL4QfEt0UVeySYPu+9qGdAQDLNKYMNYliAjFgcFxp8N9G6q7/eIc1NCeq+TCj3atLfBS6MGpGU3uJWzN3R3p+nKeE7uj0Aylmcn2YqKF1ExqTD/CVg0hi1tThbqN15InqYCss3geYaG4f3M=
+	t=1712775185; cv=none; b=VT/TvYBVFVmpaODPA3ip1pjqrecNi1xeLq3r+RzcHwCDFUh2w9OtSJOdviARYW8z3h8Gd2AjHWLXIA6CZ0E7EiUZA0Ee4bMCib9vLoc1W4SjXRj/1emWIK3Ia3BTiDt9zR95sM4c/Hp5s0pXpXNCOUydqOZKvCPHRoNqJJpSzvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712775142; c=relaxed/simple;
-	bh=z5JVLaH+fp0+7NF0boo5IQT2gY7gn3yvbn52zrvcvJ0=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=o90WXOtYo2qlap/p+3CUY6xbgD8+uB+483Sgrdn8VEy+UOV/Yco3t4pnczQK3acsz0wtOxPiPe9U2333UhQIGIJEaP6THoFpD3+LrWAc/SMpt1zNQWVIe9GUy/mAXBoKF1VtPMez0NVgtQo+77w1ZIR7om0cqsAh4jPNGnpV3+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I6OuxsVT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F86AC433F1;
-	Wed, 10 Apr 2024 18:52:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712775141;
-	bh=z5JVLaH+fp0+7NF0boo5IQT2gY7gn3yvbn52zrvcvJ0=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=I6OuxsVT4AkYCNqtMs94w+YdgDTmc7sZi1OxRFxEEY7TdKkHVJLcff0Ns9HQaWzZJ
-	 CJzELzUg6LhW/Zb2WUONLbjORl/K/NFFYoiLPrAM9BlAsKDbk2d0opNG3Oe/mBsz/f
-	 LSIY661NBeHfccgnhAeH1yRgTFxTnGCfX5FWEGYNzFHgzKfk7qsgH8sc5xD/S3x/DU
-	 svDLtE/k8eLctNrc8VUwJn+aoiuNdhTEFhChq/a7rgOmJGEr6sHa+OUHyvvjVUkKaR
-	 mxiam+sNWKUBU7VM5dtuK6YPrlAybjIy+Uubf/kxua+j/QwydgWgS+mGV46n6F7ekT
-	 1tGYgjy5Mebig==
-Date: Wed, 10 Apr 2024 13:52:20 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1712775185; c=relaxed/simple;
+	bh=MB/GDTg7r7l13A4bD83ZT67rRbSgLdSJjmRK2twUutQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Nokbph4ybGfF7b8riGLiwpXcSVo5WAQzTGKWGUMpTi61JQ06Bu850fn15scJvsld60lo/Rluv/zQf5HicV6rpPHCY3WwJDJBN8GI3TYMrbbRZnUggnc/n34oh1d/I+pkyMqAG7DNiZoWzixIBnhpeREGo8HVTyahydD5FVdPgGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1rud3c-0001D4-1U;
+	Wed, 10 Apr 2024 18:52:28 +0000
+Date: Wed, 10 Apr 2024 19:52:24 +0100
+From: Daniel Golle <daniel@makrotopia.org>
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: arinc.unal@arinc9.com, DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	=?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
+	Russell King <linux@armlinux.org.uk>,
+	SkyLake Huang <SkyLake.Huang@mediatek.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
+	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	Florian Fainelli <florian.fainelli@broadcom.com>
+Subject: Re: [PATCH net v3] net: dsa: mt7530: fix enabling EEE on MT7531
+ switch on all boards
+Message-ID: <Zhbf6AtfBfxXMIGc@makrotopia.org>
+References: <20240408-for-net-mt7530-fix-eee-for-mt7531-mt7988-v3-1-84fdef1f008b@arinc9.com>
+ <1f2bc5416a0a73756cc1f45f3300619eb201b0a4.camel@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Cc: Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
- Philipp Zabel <p.zabel@pengutronix.de>, 
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- linux-gpio@vger.kernel.org, Michael Turquette <mturquette@baylibre.com>, 
- linux-clk@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Stephen Boyd <sboyd@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
- linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
-In-Reply-To: <20240410-mbly-olb-v1-1-335e496d7be3@bootlin.com>
-References: <20240410-mbly-olb-v1-0-335e496d7be3@bootlin.com>
- <20240410-mbly-olb-v1-1-335e496d7be3@bootlin.com>
-Message-Id: <171277513936.883835.18187305941709008733.robh@kernel.org>
-Subject: Re: [PATCH 01/11] dt-bindings: soc: mobileye: add EyeQ5 OLB system
- controller
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1f2bc5416a0a73756cc1f45f3300619eb201b0a4.camel@redhat.com>
 
-
-On Wed, 10 Apr 2024 19:12:30 +0200, Théo Lebrun wrote:
-> Add documentation to describe the "Other Logic Block" syscon.
+On Tue, Apr 09, 2024 at 01:58:56PM +0200, Paolo Abeni wrote:
+> On Mon, 2024-04-08 at 10:08 +0300, Arınç ÜNAL via B4 Relay wrote:
+> > From: Arınç ÜNAL <arinc.unal@arinc9.com>
+> > 
+> > The commit 40b5d2f15c09 ("net: dsa: mt7530: Add support for EEE features")
+> > brought EEE support but did not enable EEE on MT7531  MACs. EEE is
+> > enabled on MT7531 switch MACs by pulling the LAN2LED0 pin low on the board
+> > (bootstrapping), unsetting the EEE_DIS bit on the trap register, or setting
+> > the internal EEE switch bit on the CORE_PLL_GROUP4 register. Thanks to
+> > SkyLake Huang (黃啟澤) from MediaTek for providing information on the
+> > internal EEE switch bit.
+> > 
+> > There are existing boards that were not designed to pull the pin low.
+> > Because of that, the EEE status currently depends on the board design.
+> > 
+> > The EEE_DIS bit on the trap pertains to the LAN2LED0 pin which is usually
+> > used to control an LED. Once the bit is unset, the pin will be low. That
+> > will make the active low LED turn on. The pin is controlled by the switch
+> > PHY. It seems that the PHY controls the pin in the way that it inverts the
+> > pin state. That means depending on the wiring of the LED connected to
+> > LAN2LED0 on the board, the LED may be on without an active link.
+> > 
+> > To not cause this unwanted behaviour whilst enabling EEE on all boards, set
+> > the internal EEE switch bit on the CORE_PLL_GROUP4 register.
+> > 
+> > My testing on MT7531 shows a certain amount of traffic loss when EEE is
+> > enabled. That said, I haven't come across a board that enables EEE. So
+> > enable EEE on the switch MACs but disable EEE advertisement on the switch
+> > PHYs. This way, we don't change the behaviour of the majority of the boards
+> > that have this switch. The mediatek-ge PHY driver already disables EEE
+> > advertisement on the switch PHYs but my testing shows that it is somehow
+> > enabled afterwards. Disabling EEE advertisement before the PHY driver
+> > initialises keeps it off.
+> > 
+> > With this change, EEE can now be enabled using ethtool.
+> > 
+> > Fixes: 40b5d2f15c09 ("net: dsa: mt7530: Add support for EEE features")
+> > Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> > Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> > ---
+> > Here's some information for the record. EEE could not be enabled on MT7531
+> > on most boards using ethtool before this. On MT7988 SoC switch, EEE is
+> > disabled by default but can be turned on normally using ethtool. EEE is
+> > enabled by default on MT7530 and there's no need to make changes on the DSA
+> > subdriver for it.
+> > ---
+> > Changes in v3:
+> > - Remove patch 2, it was revealed that it doesn't fix a bug.
+> > - Patch 1
+> >   - Use the internal EEE switch bit provided by SkyLake Huang (黃啟澤). It
+> >     is a better method compared to unsetting the EEE_DIS bit of the trap as
+> >     the latter method causes unwanted behaviour on the LED connected to the
+> >     pin that pertains to the EEE_DIS bit.
 > 
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-> ---
->  .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 125 +++++++++++++++++++++
->  MAINTAINERS                                        |   1 +
->  2 files changed, 126 insertions(+)
-> 
+> Since this leverages something relatively obscure, it would be great if
+> someone in the CC list could independently test it. Let's wait a bit
+> more.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+I've excessively tested this patch on MT7531 today, and reviewed it
+today and yesterday. I've also picked it as downstream patch[1] to
+OpenWrt, so an even wider audience will have the pleasure of working
+EEE on those switch ICs and in-SoC switches.
 
-yamllint warnings/errors:
+Tested-by: Daniel Golle <daniel@makrotopia.org>
+Reviewed-by: Daniel Golle <daniel@makrotopia.org>
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: system-controller@d2003000: clock-controller@d2003040:compatible:0: 'mobileye,eyeq5-clk' was expected
-	from schema $id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: system-controller@d2003000: clock-controller@d2003040:reg: [[64, 56]] is too short
-	from schema $id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: system-controller@d2003000: clock-controller@d2003040: 'reg-names' is a required property
-	from schema $id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: system-controller@d2003000: reset-controller@d2003000:compatible:0: 'mobileye,eyeq5-reset' was expected
-	from schema $id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: system-controller@d2003000: reset-controller@d2003000:reg: [[0, 60]] is too short
-	from schema $id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: system-controller@d2003000: reset-controller@d2003000:#reset-cells:0:0: 2 was expected
-	from schema $id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: system-controller@d2003000: reset-controller@d2003000: 'reg-names' is a required property
-	from schema $id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
-Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: /example-1/soc/system-controller@d2003000/reset-controller@d2003000: failed to match any schema with compatible: ['mobileye,eyeq6h-acc-reset']
-Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.example.dtb: /example-1/soc/system-controller@d2003000/clock-controller@d2003040: failed to match any schema with compatible: ['mobileye,eyeq6h-acc-clk']
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240410-mbly-olb-v1-1-335e496d7be3@bootlin.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+[1]: https://git.openwrt.org/?p=openwrt/openwrt.git;a=commit;h=98f9154316fe8371c709bd11ae8f263e22075ec6
 
