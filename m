@@ -1,88 +1,146 @@
-Return-Path: <linux-kernel+bounces-139379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91BD88A023B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:35:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCD178A023F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:37:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55F78288694
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:35:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42A041F21257
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:37:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD79F184111;
-	Wed, 10 Apr 2024 21:35:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59FF01836F2;
+	Wed, 10 Apr 2024 21:37:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jg8erTdu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="KiVwqHtB"
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 271D8181CE4;
-	Wed, 10 Apr 2024 21:35:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 173D8181CE4
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 21:37:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712784929; cv=none; b=k/DGcBo0YeCMpfBORw7IQBYHdRzgphjGDNy1+CKe5Tdd7yW5SkY8iXH57NEOrQmu1eaqxJZa3uRIgIqiMc0due3S8KWFMyMKkYwHhyCiSkQ2E0EyBmyhdA24oe151vS0lAu6/9eBIhWBaPVmlq7a6/sHuSw2Rwidy0LCV/lrdTQ=
+	t=1712785057; cv=none; b=tgArxr0dXHmlBOctyBIjqEPlSm66mn03qlZ/bhIzhHBmMdx8tLiK8wWBuVeeOyJBt5qEFgbxOO96AjxF+8u7WC4VXWBitBcAaN9EYEbpPGXrH1x6kSw5Qvp9lK1ew6r8isMM8uBmvZ3cEl7snD2WolDq2nuLEZaowkoMLiWx2Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712784929; c=relaxed/simple;
-	bh=OXgBqlxk0qfqjPkRHk2SQ7gLnxvgx2Y9gMbYHf2KM4A=;
+	s=arc-20240116; t=1712785057; c=relaxed/simple;
+	bh=4GvtKHSmijEdL/CsYuX2Z0N3Y9AqHnP3iFWsMznXnNQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ip76GaWQH0a4wlq8Up5fpM02LKi0YcQognKlDqi46XZGgPwaFJGpuWEacZl1hjN78nqcSerpi+/v6AeqULpFqe8DInvgmG/OVY/LGdEYegpMF+px7fyg071RfnhWw5j0pVJIDthBVyA46U70XY9Q/fgFEyvgtg7h4lrLl6qlvug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jg8erTdu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF0AAC433F1;
-	Wed, 10 Apr 2024 21:35:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712784928;
-	bh=OXgBqlxk0qfqjPkRHk2SQ7gLnxvgx2Y9gMbYHf2KM4A=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Jg8erTduvZwcjaZJ0Id3S7iHPRio9XT7hrg3QZgtjc+l1rc/WUyIuXTNxEgUPeqP7
-	 8j6ye0W7zGuDAwZx1iTY8Zu9mONJR/ol1Mu1W5P/NZKdDJS1ptXIfNRBhSL9EyG+eh
-	 BMABOmOJzcRK2QsRjm21cDzPjssR2AcjxIlwTkaKz7/VUzOIIB2i3oAh0HoxXVoTUF
-	 cLEcj2MksNJ/5rM3wlo0lr6qzbWy4AuHamTrOELIY3+hULbuzbFvk6HrHfqRw1kIA4
-	 iBQmq1R6xSuSG9s+BkpPENsDsNM/3obksxP9vtDcRRRDAtZb31/4Z5Pcp8kIpFbCc/
-	 FGCkYJs25FlTw==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-516cbf3fd3dso8348786e87.2;
-        Wed, 10 Apr 2024 14:35:28 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW/Ro3Ykewu/4TYjBlYEnLoGAmji/2f2ZpNsDOtOW1hc6kjH989nc0sg+1B7uJ5hHbNZ9+IPpEBw4DPjpjoz4yAqxTr6lHQT7K+PgZjv/0WvZrOYRYHt0Zx8oAsiQ1SEoWzZOuZPGVffTScMmp12sxTQ/joRnXpd0WLrNNDyqi7wU3SQePU
-X-Gm-Message-State: AOJu0Yy/Dvwbsj+FCjSQWkU0Xr8ORzNUw6iTovbOl7l6ZLN4zlxRc/RZ
-	8phC6eQ5rZlyluAm0bnGU4ALnafoi1qt3IRhVcEjzLXTAhgX7LAEQP3+Qh+SOd2ALOebTeJrlzo
-	o2yQplQTVE6B7IfFVzDfxhL7eqwc=
-X-Google-Smtp-Source: AGHT+IGLYP6IXrn5tCbA98R6PCrGHmaai+mo4RkNrl8YoflBpWV+5J4Q5aOsRBZPCvCQt8Iw/pw55F/JZnjRMqEHeZg=
-X-Received: by 2002:a05:6512:2c95:b0:516:c600:64e8 with SMTP id
- dw21-20020a0565122c9500b00516c60064e8mr3017080lfb.1.1712784927037; Wed, 10
- Apr 2024 14:35:27 -0700 (PDT)
+	 To:Cc:Content-Type; b=D1qi/RMB3MNE3lWTpIKVgcuzmjWG+Cgrn56D5UA/Kob7+jjchqePnI5B7ZNTkKxN/9OMXzkl/m3u/jzrAs7ZWIr1gYySe+XYLbSlSCHZh41ylmSf8NU0DwCHRzp5tlwyJGOmHkoBWtLjYMBlPgAZej9NeK8zWqDDEyzswWqCvt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=KiVwqHtB; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-61814e68cfcso37845617b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 14:37:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712785055; x=1713389855; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XPYtaW73cXDTPjMujaADVZvLP6wj8QcIF+jSWGr8Oms=;
+        b=KiVwqHtBFDGaTHxkLwpBJZ8nZtOaAMtftz4m9SplzBL/szgqU2Lg2cMpixSvpMpYte
+         rHRYAWiaT6P1SIg+LkCbWptwiHwhSBI7Rn0pmXKQDiawvH70WAxy4E9b/6bUZTgItkPr
+         orfuGcRRw1sAwoiTppDx7ppCAUotzO76vVUeEV2chTGX/EtVPKF4km8Thh8lUOLWSGpM
+         RwOhhtg6wH/N93iBzX4rpUfjKukCQQT1XY/iH8NwaQqWjP8jPGodmPU1IOLhfUc5g5Nr
+         SLleFet3R1LIwzJ/L/d8anCH4SJHal4Y6gYrXoBMlIa5wQ4VnCw2FUecgPONCuD6byMa
+         i6fA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712785055; x=1713389855;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XPYtaW73cXDTPjMujaADVZvLP6wj8QcIF+jSWGr8Oms=;
+        b=vnyi7hkuALJMrFZVjOs/OAOWXQEW4vWNfOLoYspwl2XaZj7sODC62IJQsl+jj6T83f
+         cSSLxkb3o6IOpGMkQmU1t6RrPoNyJm0cnNWheza2jrTcMZ/7CY/6Wf296X8QFPnGt2mx
+         pvOQ1scV6pdPCwE0BVHrEvy7Qa8j09o7ync80DuGa34EcbtQM+pzfm9TT5nvFzZCMt/D
+         C7Ux+XCCj9uokcWzSVG+6wQTmMYZFcrieH/aGAAH1IO99R/4zJwEucmDy8l89wOctu+2
+         mqzCBecOHoN3bF0sIpo5CN+M4Q0F0L5R6Q+wt3K/dWWEQ+Eo4QQTpnKdjzJnsjpnQfbV
+         hSpg==
+X-Forwarded-Encrypted: i=1; AJvYcCWjIB/8YeOGc7tP0xwA1riNQNPSW3BiWANXanDVa7Twx2tSL09TymRxfmR0ejOXWFJhkJfU8A0t17ODnP7wvyXpprehxdlhX5HH1tRr
+X-Gm-Message-State: AOJu0YwMlOvadCOiMx0vKlITR8q0v9cJ2J+HnO9PMt1/2K4q0A9lkNov
+	TzKFQFEVmmCnfQxgRFZuAHerqgSais5bS6dQg3ydfeXR2wcS5LDsqXByi/KU4WFnERJS0n0LHk7
+	oJy4KSGUSNfr/WuQUh+3qVMv1h2O66q9sKSBZZQ==
+X-Google-Smtp-Source: AGHT+IF51UvfuZW8F9SKiS3fB7NFequCpltyvy4yxCVwUJis6yJOQ1I5zvJY27CgXu6F/WYzUCxY2XbedDRG3tneEwI=
+X-Received: by 2002:a0d:c306:0:b0:615:4700:94c5 with SMTP id
+ f6-20020a0dc306000000b00615470094c5mr4293525ywd.22.1712785055129; Wed, 10 Apr
+ 2024 14:37:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240117031946.2324519-1-linan666@huaweicloud.com>
-In-Reply-To: <20240117031946.2324519-1-linan666@huaweicloud.com>
-From: Song Liu <song@kernel.org>
-Date: Wed, 10 Apr 2024 14:35:15 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW5uWPGUNCf_49Vo5paX+T05XnJRR4_PzKyms3g9eEa6Dg@mail.gmail.com>
-Message-ID: <CAPhsuW5uWPGUNCf_49Vo5paX+T05XnJRR4_PzKyms3g9eEa6Dg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] md: fix is_mddev_idle()
-To: linan666@huaweicloud.com
-Cc: axboe@kernel.dk, linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-block@vger.kernel.org, yukuai3@huawei.com, yi.zhang@huawei.com, 
-	houtao1@huawei.com, yangerkun@huawei.com
+References: <20240403234054.2020347-1-debug@rivosinc.com> <20240403234054.2020347-5-debug@rivosinc.com>
+ <20240410115806.GA4044117-robh@kernel.org>
+In-Reply-To: <20240410115806.GA4044117-robh@kernel.org>
+From: Deepak Gupta <debug@rivosinc.com>
+Date: Wed, 10 Apr 2024 14:37:21 -0700
+Message-ID: <CAKC1njSsZ6wfvJtXkp4J4J6wXFtU92W9JGca-atKxBy8UvUwRg@mail.gmail.com>
+Subject: Re: [PATCH v3 04/29] riscv: zicfilp / zicfiss in dt-bindings (extensions.yaml)
+To: Rob Herring <robh@kernel.org>
+Cc: paul.walmsley@sifive.com, rick.p.edgecombe@intel.com, broonie@kernel.org, 
+	Szabolcs.Nagy@arm.com, kito.cheng@sifive.com, keescook@chromium.org, 
+	ajones@ventanamicro.com, conor.dooley@microchip.com, cleger@rivosinc.com, 
+	atishp@atishpatra.org, alex@ghiti.fr, bjorn@rivosinc.com, 
+	alexghiti@rivosinc.com, samuel.holland@sifive.com, conor@kernel.org, 
+	linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-mm@kvack.org, 
+	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, corbet@lwn.net, 
+	palmer@dabbelt.com, aou@eecs.berkeley.edu, krzysztof.kozlowski+dt@linaro.org, 
+	oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de, 
+	ebiederm@xmission.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
+	lstoakes@gmail.com, shuah@kernel.org, brauner@kernel.org, 
+	andy.chiu@sifive.com, jerry.shih@sifive.com, hankuan.chen@sifive.com, 
+	greentime.hu@sifive.com, evan@rivosinc.com, xiao.w.wang@intel.com, 
+	charlie@rivosinc.com, apatel@ventanamicro.com, mchitale@ventanamicro.com, 
+	dbarboza@ventanamicro.com, sameo@rivosinc.com, shikemeng@huaweicloud.com, 
+	willy@infradead.org, vincent.chen@sifive.com, guoren@kernel.org, 
+	samitolvanen@google.com, songshuaishuai@tinylab.org, gerg@kernel.org, 
+	heiko@sntech.de, bhe@redhat.com, jeeheng.sia@starfivetech.com, 
+	cyy@cyyself.name, maskray@google.com, ancientmodern4@gmail.com, 
+	mathis.salmen@matsal.de, cuiyunhui@bytedance.com, bgray@linux.ibm.com, 
+	mpe@ellerman.id.au, baruch@tkos.co.il, alx@kernel.org, david@redhat.com, 
+	catalin.marinas@arm.com, revest@chromium.org, josh@joshtriplett.org, 
+	shr@devkernel.io, deller@gmx.de, omosnace@redhat.com, ojeda@kernel.org, 
+	jhubbard@nvidia.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 16, 2024 at 7:23=E2=80=AFPM <linan666@huaweicloud.com> wrote:
+On Wed, Apr 10, 2024 at 4:58=E2=80=AFAM Rob Herring <robh@kernel.org> wrote=
+:
 >
-> From: Li Nan <linan122@huawei.com>
+> On Wed, Apr 03, 2024 at 04:34:52PM -0700, Deepak Gupta wrote:
+> > Make an entry for cfi extensions in extensions.yaml.
+> >
+> > Signed-off-by: Deepak Gupta <debug@rivosinc.com>
+> > ---
+> >  .../devicetree/bindings/riscv/extensions.yaml          | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/=
+Documentation/devicetree/bindings/riscv/extensions.yaml
+> > index 63d81dc895e5..45b87ad6cc1c 100644
+> > --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
+> > +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> > @@ -317,6 +317,16 @@ properties:
+> >              The standard Zicboz extension for cache-block zeroing as r=
+atified
+> >              in commit 3dd606f ("Create cmobase-v1.0.pdf") of riscv-CMO=
+s.
+> >
+> > +        - const: zicfilp
+> > +          description:
+> > +            The standard Zicfilp extension for enforcing forward edge =
+control-flow
+> > +            integrity in commit 3a20dc9 of riscv-cfi and is in public =
+review.
 >
-> Changes in v4:
->  - patch 2, add the check of 'init', update last_events even if iostat
->    is disabled.
+> Does in public review mean the commit sha is going to change?
 >
-> Li Nan (2):
->   md: Fix overflow in is_mddev_idle
->   md: don't account sync_io if iostats of the disk is disabled
 
-Applied to md-6.10. Thanks!
-
-Song
+Less likely. Next step after public review is to gather comments from
+public review.
+If something is really pressing and needs to be addressed, then yes
+this will change.
+Else this gets ratified as it is.
 
