@@ -1,92 +1,114 @@
-Return-Path: <linux-kernel+bounces-138104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71CFF89ECAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:52:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B64889ECAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:52:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 682A61C21782
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:52:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04C21B22DEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5501B13D2A8;
-	Wed, 10 Apr 2024 07:52:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="1FBMhjvz"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A57313D293;
+	Wed, 10 Apr 2024 07:52:20 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49FF28BE8;
-	Wed, 10 Apr 2024 07:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C4B613D26E
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:52:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712735523; cv=none; b=SsRTxttaetLQLALFFIh6dmNmNpgkLnG6Eaq3wQPU7s8Zg5wl5LcenpYoWEtCWebHLpPHQD/C3Ca7KHBqbNFpaaNY1ALQWVxzcwoJCH1ECXp6ZJXjv39BFzSmR72X37c1Mk0UuDVQJ2VJhK7M6/tYQdncEKn7kFpCqlNeI2VDSSg=
+	t=1712735539; cv=none; b=CJkM5AC924ltZ/uO+gUNWAsVke6nSyksCpRq5GExQFOsukWK1h2YqB+oo8FaTS4vtm7rR7u7EJIZmLRPdfhoBrDBHzr6EdORpIAIaV8B8hEtKe2Euz+YGnjYAPnXCFJRV/OpSrzOJGEYu+9i2zGVcNxGrBgUveUc7H/E8xjHp98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712735523; c=relaxed/simple;
-	bh=siJ2QNW2b3ebPf5Jy5J3KNvU1Jw8yyo8OvyNbFZ7pRk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WubqBXIgCdrUu4Ovx/ahoYhLK0dGhBM8XDFBNbi/Qrl+K6otkRsI8rTFf7FJCYG7eNWOcNGJ3KiV7DfC86uAGU54KNZPrEABErCwHh2pPwLsiJ9+YYwVvWtHB6pECqyco0127NOFHhdSZ447aDUmjnmWnAtFUt8vvoAGpQ79B1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=1FBMhjvz; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id E3FA21F9C5;
-	Wed, 10 Apr 2024 09:51:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1712735516;
-	bh=Rf9tbmyHVVZAveMk9B3qlTo48OjSr4wSqvHKOQgw4WY=; h=From:To:Subject;
-	b=1FBMhjvzVLPhdRUPpxqL+ggGPFh8OQluY/51j/ktYpw5jg5BKtEEj0UiWFswmx4HY
-	 AhPpbmaJiF/zqrCZIz5xQslhKx9lEerphyQNoQPVvR1QkMAnWezd8PY1vnhmh7YCPv
-	 UyPjN12ZckhNMKaN+dXi/dqVHbWiLvW0N86ZoxgZ1mNe37rmllXlpZ/O0F5hj7cB2H
-	 q8iB1HWNUCCxfdq+dYWekLIWrie+uNmEmz7i5Sb1HYJkB42gdGCcxeJkG+MZhgtRps
-	 /gZMljhuJvgcyMTD0yw5Hr+9hXxQ1q8b4S5LYaj1hqDTmcctAjvjwtIixXAYzFdQWU
-	 vuLayzDsOM4Zg==
-Date: Wed, 10 Apr 2024 09:51:52 +0200
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Thomas Richard <thomas.richard@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Andy Shevchenko <andy@kernel.org>, Tony Lindgren <tony@atomide.com>,
-	Haojian Zhuang <haojian.zhuang@linaro.org>,
-	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
-	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
-	u-kumar1@ti.com
-Subject: Re: [PATCH v4 16/18] PCI: j721e: Use dev_err_probe() in the probe()
- function
-Message-ID: <20240410075152.GA7748@francesco-nb>
-References: <20240102-j7200-pcie-s2r-v4-0-6f1f53390c85@bootlin.com>
- <20240102-j7200-pcie-s2r-v4-16-6f1f53390c85@bootlin.com>
+	s=arc-20240116; t=1712735539; c=relaxed/simple;
+	bh=I/V05aiGaG9DgCuWQfpuJZjIjOPLnQWzeU4KSMRGet4=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ov1Vmy6U9HpYBxYwaJg9+SaBfclt4GWx71zoz+u9kDlnJzZJGmrOEPtUqY+fFPuDWV0jzEj6xS1izywNSnfv0M6Cif4pLx/xqq2iP3/4ezJQFrHpRJOI6S7TEtgrFG84+yy1RCSbm1mOnYVWTzVGxArkv99vZICvXswfyR9NF5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VDw2W64L9z29dP9;
+	Wed, 10 Apr 2024 15:49:23 +0800 (CST)
+Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
+	by mail.maildlp.com (Postfix) with ESMTPS id A34C81A0172;
+	Wed, 10 Apr 2024 15:52:15 +0800 (CST)
+Received: from [10.173.135.154] (10.173.135.154) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 10 Apr 2024 15:52:15 +0800
+Subject: Re: [PATCH] mm/memory-failure: fix deadlock when
+ hugetlb_optimize_vmemmap is enabled
+To: Oscar Salvador <osalvador@suse.de>
+CC: <akpm@linux-foundation.org>, <naoya.horiguchi@nec.com>,
+	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+References: <20240407085456.2798193-1-linmiaohe@huawei.com>
+ <ZhVMThr9TNeP6SWj@localhost.localdomain>
+ <ZhVoatdJZ1RWu2r3@localhost.localdomain>
+From: Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <13aa38af-46a1-3894-32bd-c3eb6ef67359@huawei.com>
+Date: Wed, 10 Apr 2024 15:52:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240102-j7200-pcie-s2r-v4-16-6f1f53390c85@bootlin.com>
+In-Reply-To: <ZhVoatdJZ1RWu2r3@localhost.localdomain>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500002.china.huawei.com (7.192.104.244)
 
-On Mon, Mar 04, 2024 at 04:35:59PM +0100, Thomas Richard wrote:
-> Use dev_err_probe() instead of dev_err() in the probe() function to
-> simplify the code and standardize the error output.
+On 2024/4/10 0:10, Oscar Salvador wrote:
+> On Tue, Apr 09, 2024 at 04:10:22PM +0200, Oscar Salvador wrote:
+>> On Sun, Apr 07, 2024 at 04:54:56PM +0800, Miaohe Lin wrote:
+>>> In short, below scene breaks the lock dependency chain:
+>>>
+>>>  memory_failure
+>>>   __page_handle_poison
+>>>    zone_pcp_disable -- lock(pcp_batch_high_lock)
+>>>    dissolve_free_huge_page
+>>>     __hugetlb_vmemmap_restore_folio
+>>>      static_key_slow_dec
+>>>       cpus_read_lock -- rlock(cpu_hotplug_lock)
+>>>
+>>> Fix this by calling drain_all_pages() instead.
+>>>
+>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>
+>> Acked-by: Oscar Salvador <osalvador@suse.de>
+
+Thanks.
+
 > 
-> Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+> On a second though,
+> 
+> disabling pcp via zone_pcp_disable() was a deterministic approach.
+> Now, with drain_all_pages() we drain PCP queues to buddy, but nothing
+> guarantees that those pages do not end up in a PCP queue again before we
+> the call to take_page_off_budy() if we
+> need refilling, right?
 
-Reviewed-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+AFAICS, iff check_pages_enabled static key is enabled and in hard offline mode,
+check_new_pages() will prevent those pages from ending up in a PCP queue again
+when refilling PCP list. Because PageHWPoison pages will be taken as 'bad' pages
+and skipped when refill PCP list.
 
-Franceco
+> 
+> I guess we can live with that because we will let the system know that we
+> failed to isolate that page.
+
+We're trying best to isolate that page anyway. :)
+
+Thanks for your thought.
+.
+
+> 
+> 
 
 
