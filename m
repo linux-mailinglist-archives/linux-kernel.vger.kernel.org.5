@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-138359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 721F089F01B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:44:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DABC89F01C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:44:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 355F0282AAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:44:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08FB2B238A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:44:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E369159219;
-	Wed, 10 Apr 2024 10:44:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 768E815958A;
+	Wed, 10 Apr 2024 10:44:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xz7tCpLG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q7YDymAQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 834EE13DB9F
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:44:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD34213DB9F
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:44:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712745863; cv=none; b=B50oAjPwn14S5ulafMFjR7SNRHFSMm9SrMaLm2W25NYG2Yzb4V5uGPENSWcfXz5Fob+bKF+ZCNnbiMfQMKr8BEwMW0t84kC9FMUtf5Er8MyHv2HdxnJQqNgOKwyWBDdFAnU8PBm67llMsjuwpSdMMLHCwSKDdCsZ2hCWspByg4I=
+	t=1712745866; cv=none; b=KULeEb1slMp9LYHoOSAc5SkPddeBsMBABdsZXkYn1jtjeMUKhj7XsERZ5LcH50ZldRy4K3eEqAxhraOke7e+sTQVwiFi2HtZZSzivsN4rLFPb/6XKLFykUEazJOUhtE2L1tv4mAwMq1LZk8f3xYzSJpHac7SNk8HgQsBKHml4sQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712745863; c=relaxed/simple;
-	bh=Bk3mwOlBc8d/2rqp8L4enHpQiDZEZfTlKgGkqsDe1Zo=;
+	s=arc-20240116; t=1712745866; c=relaxed/simple;
+	bh=fYk3nBBGlFBQJPElvPTH64JaR+If9kx9CukBMxWQFGU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=M/0yvVW3O8tbuDyxzKyeEYP/LUlwBRGuL1sBxEKahmjtmUn2FZ6hZdl6SyqtugINv2Jqnzfb40gQ8HfiyxxdfqWhWwo/vbMpReiz7Wb+uyl7GC4ejviKzbn971YvjxQqc/smUFcPrEdwEfzLSwf79r3O6jOk+36Sy/iq74Lyy6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xz7tCpLG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82CEFC433F1;
-	Wed, 10 Apr 2024 10:44:21 +0000 (UTC)
+	 MIME-Version:Content-Type; b=WTdslWF6/0oKHTg9jy7RxLEKrH/9MF2x8eUWw2D/Y3xN059eHQGlXM4D72xs59EaKBAo2mNw3tJbNqds+cBbATUIvmth5hxJT7fizakwWjoz5WWqd8cZ66XIXYxDr/lvJz9DW47x6qm4PZeHlB7EhUoJ+CJXQfVUN7iU9t4Hj+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q7YDymAQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2755C433C7;
+	Wed, 10 Apr 2024 10:44:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712745863;
-	bh=Bk3mwOlBc8d/2rqp8L4enHpQiDZEZfTlKgGkqsDe1Zo=;
+	s=k20201202; t=1712745866;
+	bh=fYk3nBBGlFBQJPElvPTH64JaR+If9kx9CukBMxWQFGU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Xz7tCpLG9ar6z+Y/r9n8bZ7HT+B/o0Kk0fIXgtfjbVmFvZM5xEtkHSkhZ8+LyfE+H
-	 4brxdgGzZmLals5+10vmSg0PtVo9Aj5MyhWaqSz4UtvdcoVE7za1I5z64KMlvbpskT
-	 pmhFklgSupwkOlgipyPVGSJCLBshLwyPQIMjdpIGXeggHuNVNdUwD9OfS0DesealuZ
-	 vPOgEy8lXk3DlNeeNKH0sH8VM9CPDNixtnJl4qMY9UKp1eDERR9zYGH9ss40YUA01d
-	 CSgTppu4qDzUnN3WUMwwjyJmQLVo/OlmLIG0GN9N9UqPwieRgrsSodST9FS0K/pNPQ
-	 l7++WqZZPT6aw==
+	b=q7YDymAQJVozwyQzPzc9SZxfU/W9u3a7s8WiiV6mZiu3zXuqOoE/3ara3RdQ5peMM
+	 C2EGfoCI7fuXbW3RiacPSSDVFwQYjnYoPOUfgVVx71PfNpo3nx+lsZPdtDMvx3XuMs
+	 b9VlyBJvUVioJKv4eG0FEJW7cYrXtsGA2GCCAWcXgSaN9CCNvB2XAVoj8YxtICxol4
+	 OKwJYvk2Pr0mZbYFr4w2s5uBs3y7fefvN1hJ3chssnzXmAQHhDNhmJl+8j/qghkiCU
+	 2HybU8SSrz3xoQfzo3F9d0HTmJw0D7v7Q84IpPXGNgquiWF2PDTgjrxcYjJ426N7gr
+	 nn1wROlWURCIA==
 From: Conor Dooley <conor@kernel.org>
 To: linux-riscv@lists.infradead.org,
 	Conor Dooley <conor@kernel.org>
@@ -48,12 +48,12 @@ Cc: Conor Dooley <conor.dooley@microchip.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Albert Ou <aou@eecs.berkeley.edu>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] RISC-V: drop SOC_SIFIVE for ARCH_SIFIVE
-Date: Wed, 10 Apr 2024 11:44:15 +0100
-Message-ID: <20240410-scarce-lyrically-63677063159d@spud>
+Subject: Re: [PATCH v1] RISC-V: drop SOC_MICROCHIP_POLARFIRE for ARCH_MICROCHIP
+Date: Wed, 10 Apr 2024 11:44:16 +0100
+Message-ID: <20240410-ungreased-boxlike-0320ceca8b75@spud>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240305-praying-clad-c4fbcaa7ed0a@spud>
-References: <20240305-praying-clad-c4fbcaa7ed0a@spud>
+In-Reply-To: <20240305-fled-undrilled-41dc0c46bb29@spud>
+References: <20240305-fled-undrilled-41dc0c46bb29@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,25 +61,26 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=488; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=L9aP10EtX7u+zgE1Cd5w8MLZr4gSnhW66FKNakw9VNQ=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDGliuQ33vDnsWFucnITXK1U6yXStCpwc3szavJtvb5d9z KvlLB0dpSwMYhwMsmKKLIm3+1qk1v9x2eHc8xZmDisTyBAGLk4BmAjLe4bfbEzP79St4gv+eDLr rcMFDfHCY1eWCFflzv0XcubPRs5/qYwMnXm/RTfs3/XF8nDVa0a/Qyah/inztBdv+yRSqLxJxiy OBwA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=626; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=yZUChBQdk1aSe2qT7yxOp2VJrbn9RBukfIadlOPY69Y=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDGliuQ05u3wXfjF8OfvbrbTDOX7S50t1szbenLDdW9Srq 27xu4kWHaUsDGIcDLJiiiyJt/tapNb/cdnh3PMWZg4rE8gQBi5OAZjIhjkMf/jvXZm0Q8M+piX8 7YFY2asPvC4dPHfEdL3qwofz7ohnBf1l+CuT8kxHZSE7c9I7yz28vC2JJUt0Dy00+nPD6Z7xrfs X2DgA
 X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
 Content-Transfer-Encoding: 8bit
 
 From: Conor Dooley <conor.dooley@microchip.com>
 
-On Tue, 05 Mar 2024 18:37:05 +0000, Conor Dooley wrote:
-> All the users in the kernel are gone and generated .config files from
-> previous LTS kernels will contain ARCH_SIFIVE. Drop SOC_SIFIVE and
-> update the defconfig.
+On Tue, 05 Mar 2024 19:20:28 +0000, Conor Dooley wrote:
+> SOC_MICROCHIP_POLARFIRE doesn't have any remaining in-kernel users, so
+> time has come to remove it. Foolish auld me left the "POLARFIRE" in the
+> new, hidden, config option when I renamed it and changed all of the
+> users however. As HPSC has been announced, and is not a PolarFire,
+> drop mention of that specific FPGA family from the new user-visible
+> config option.
 > 
-> 
+> [...]
 
 Applied to riscv-soc-for-next, thanks!
 
-[1/2] RISC-V: drop SOC_SIFIVE for ARCH_SIFIVE
-      https://git.kernel.org/conor/c/d2a351e63779
-[2/2] RISC-V: drop SOC_VIRT for ARCH_VIRT
-      https://git.kernel.org/conor/c/1553a1c48281
+[1/1] RISC-V: drop SOC_MICROCHIP_POLARFIRE for ARCH_MICROCHIP
+      https://git.kernel.org/conor/c/37c09ed41925
 
 Thanks,
 Conor.
