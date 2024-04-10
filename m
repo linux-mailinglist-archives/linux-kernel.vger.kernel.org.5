@@ -1,116 +1,104 @@
-Return-Path: <linux-kernel+bounces-138839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E2ED89FAFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:03:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87E9D89FAFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:03:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C01D41C21915
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:03:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 288EC1F231C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:03:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C991316DEA8;
-	Wed, 10 Apr 2024 15:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD80016E86E;
+	Wed, 10 Apr 2024 15:03:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="WFYVPKzf"
-Received: from wfout3-smtp.messagingengine.com (wfout3-smtp.messagingengine.com [64.147.123.146])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K31y8OJr"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6C915958E;
-	Wed, 10 Apr 2024 15:03:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63332AF16;
+	Wed, 10 Apr 2024 15:03:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712761407; cv=none; b=oFzSzD/lvZgS9umfgeLShlioiE1f5NtK0YMHbwHBqM1TCBM+DXEzzvoJa+e8JbG/UsHCouvOmW7UnRX6GzzorojpDkHl7t9B1oatOxlmWZM/nosL3uW0vD3yZHHqc21qw++WA0cknEb96PDczYLTS9PbxqalbYAoA9iVz6JqmCo=
+	t=1712761415; cv=none; b=i8MYKQMCH1RtRzB+SrA5I8wY8EPUwfDTEccd+iYa+Ubb7sOd+BgGqECpkzMHg8ELWMxJCWD2TUdUeLdcrArgaPAp6wyvvl+UhDdjMDPJcydNt+1j07MlwPV/vVwF9BDYaa+LaAUFBtHz8gXE+sxGuoCG0ZPe6bfDBgFi3Xe32Q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712761407; c=relaxed/simple;
-	bh=VQyzQjJQejCEPzKQvU827ei9/KK+y+ux8JjA9cJgxVk=;
+	s=arc-20240116; t=1712761415; c=relaxed/simple;
+	bh=iawgCrylgKQ0k8TPg1yh8V+I8IYyrXYjDnLKunNPd0k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aPxzUOAkJVmZQ2GITtZHmBMVN+kiN1nmgM7VGtLjUtamSwaYnIdNX/x74171kR3eVcTFvrAbt0v/T/42XrGwU5bQkt9PcWiQETLMiHudm4Ml90MLNYTNSXKCxC0oSAuPmpUUVMmpO9HcGfWzlsPEGRGWnilxQONb5ldTXB8j9EE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org; spf=none smtp.mailfrom=idosch.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=WFYVPKzf; arc=none smtp.client-ip=64.147.123.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=idosch.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=idosch.org
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfout.west.internal (Postfix) with ESMTP id C043C1C00081;
-	Wed, 10 Apr 2024 11:03:21 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Wed, 10 Apr 2024 11:03:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712761401; x=1712847801; bh=fDN7LNg3MU1SeI2iaSN0kzB8FZeK
-	umLZXWxQhW85B6o=; b=WFYVPKzf+WTlvkgORk5e+JbUnduryZ++mSz035b372fQ
-	nuuwL97dI7BBVgjaBXXEKiIFzh1Xyv01xkS/cq15Jf/6yZYpZtPHaLiypshuFuF3
-	pdNQ89u0rPhqaZ0v4nEn/rH0Pm4IWN/RmYSgWwTslJtiTZfFs9TnrC1vfw7hS6cS
-	slsC7omM+v2bCRAG4tS98FRNeLa9r/PsYaf6q3SMIfjSW26kXJOAuPipp0e1V/1t
-	1gSSXfltOJA0rvVU/U6Bt1i1CuIc3N5d2S3+iWEu2lw7ds4BFcIWg5HbAgpKfY7A
-	//X3QyB6pnzMMsz5r74VsH5uH5SzoBvlIUGD+3U+Ug==
-X-ME-Sender: <xms:OKoWZqnU0_nEs71C46y4upxl7qPl4h1wr0ptDI2N1EkWGPuRowxEOQ>
-    <xme:OKoWZh1-A5K0sHS6Pz9MY-Jkcho3tPyb0Ezz3esBLHAFD3WITI1k-Dra9lZtBIzMW
-    GnK_CXTzQcXB7M>
-X-ME-Received: <xmr:OKoWZooY5673t2tsp3KDlWLQHLuu_S2mDs72czBwe9btkSIQlt6gBKV7kcyQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehiedgkeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtrodttddtvdenucfhrhhomhepkfguohcu
-    ufgthhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrth
-    htvghrnhepfeefueegheehleelgeehjefgieeltdeuteekkeefheejudffleefgfeludeh
-    hfejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepih
-    guohhstghhsehiughoshgthhdrohhrgh
-X-ME-Proxy: <xmx:OKoWZunajKgXJvlzXySKL6AtIdjUEocGwBl1aQWCUN20yrdhYwhE6A>
-    <xmx:OKoWZo1PtmmB9RkBuY-kuLKW7T5dem6xCJWre-MPRzex3HJzmqr_EA>
-    <xmx:OKoWZlsp--rAHoLzaGyDDV9iW1zsiKd9Rl-zswd2O8QO_HZxOI8W5g>
-    <xmx:OKoWZkXvmTDOCoYgZzXSBYss2L67git07oFAdqTQjzSm7k4qlvQHtg>
-    <xmx:OaoWZt9mVLzcYFfWAX767iMyveSzZBJ9U9WoRGWckea2lIuLxllqdVCr>
-Feedback-ID: i494840e7:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 10 Apr 2024 11:03:18 -0400 (EDT)
-Date: Wed, 10 Apr 2024 18:03:16 +0300
-From: Ido Schimmel <idosch@idosch.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: aleksander.lobakin@intel.com, kuba@kernel.org, davem@davemloft.net,
-	pabeni@redhat.com, edumazet@google.com, elder@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, nbd@nbd.name,
-	sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
-	lorenzo@kernel.org, taras.chornyi@plvision.eu,
-	ath11k@lists.infradead.org, ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org, geomatsi@gmail.com,
-	kvalo@kernel.org, quic_jjohnson@quicinc.com, leon@kernel.org,
-	dennis.dalessandro@cornelisnetworks.com,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH net-next v5 01/10] net: core: Fix documentation
-Message-ID: <ZhaqNOCeCFSObcPS@shredder>
-References: <20240410131407.3897251-1-leitao@debian.org>
- <20240410131407.3897251-2-leitao@debian.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dXuDffIPea4fS7VUau6t9+Rl4jrESoVSmVAPZ+G73KGUrpJ1rJsjlDOkGC8Jozbj+KjHMBzPglvU3ARW3OtbNFaf+Evdh0NdqIB+sli/VknelBDmka0jWTGdYaFQAChJ8OEPilbl9iC7hsB+MPMhXMtGlndRSufTLkq7bwgttSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K31y8OJr; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso3485386b3a.2;
+        Wed, 10 Apr 2024 08:03:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712761413; x=1713366213; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q84pyOmktSDtbHVv7AvfbbqPfRUwNQXxhjLV3bogMfI=;
+        b=K31y8OJrqqVSa8/WfHW52RUbg7Y81jov5bppGs81xdYu8K65m1d4yP13sQMWnYX5nT
+         7hfeC8RZOPKxtpWdYYUTrAnwnXvM9/u6ZJWGffbi3MwxGqOHhiCtJxI8Q84BOeyadScO
+         cH4xxk1ycYK57qudf8vP14ZROZXfD71p7bFdUQooCeb3WfEMWNl/wFTNG+zaP0jWQPS3
+         JEihHR54zPhGwacGidCPqzV1+/FdX0IXEHFtfy7c/NDFf6X4NxR2PdRkRLKeydwEmGnM
+         dSMjxareLwmlHwRGOyEAG83pzQHA9HJV5bUlqr3g34sHLdms2hpZfQ8zyHS9EQJqcsdG
+         p++A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712761413; x=1713366213;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q84pyOmktSDtbHVv7AvfbbqPfRUwNQXxhjLV3bogMfI=;
+        b=UlnM17fswjMtBgGorguhLh74FsQ3cva1PhOw6+hwkS4Bd37MKKTxHFf3eLiKYw34n6
+         GNyomRYmOtOZoGtUZmok8f9wYBu+cyKDXyid3wfOeQ2JAvTMJiA2WJGOJn4wqVoM5Bb0
+         f+sSpCtS+f6pv5iPpNpYUAMB4yrG3Wuz4hxnlPHEwWJQuPR/K+Ipu2f6Y/kP39qgm6ne
+         sm7ziXafzlQF4k3vSc+t/qpeZRc8Xy/8DTJLwJrAJi9jSiSbHiuc30ID8h+x6j+LndOD
+         ijniOFX88T9rER//0Ogu2s47/3LN4xijQQm0fnqMeOHrFVjcx3EV+dSqY6ZwKTKqOvXr
+         Orzg==
+X-Forwarded-Encrypted: i=1; AJvYcCUy8TEiKp7rMKmNsFIizOvYvv08HIeqKLoIIKftK7QisAxiobfNaU0IKg0Y5elzqTEBnqXpjeii+xP7dvj8Y6Xc0abBU9As9ch83Pmm
+X-Gm-Message-State: AOJu0YytvAYc85iRROA6m5O0Swwaoq61kOCLSCTUYrf3auwpFBB0Izvv
+	96Y4fm5XTHhXbr4Am8kS7rh6EP6yISa6WcodNQ7Gp0RZ/2/G31/T
+X-Google-Smtp-Source: AGHT+IHL9+G/8yIJZc9Qz+E6DGgZQnuTdVymlz/OcV5N3Ur6iRkLoTQ9WlEwNldhRnitKrbXwjuPAQ==
+X-Received: by 2002:a05:6a20:da9f:b0:1a7:3b7c:3126 with SMTP id iy31-20020a056a20da9f00b001a73b7c3126mr3013153pzb.5.1712761412971;
+        Wed, 10 Apr 2024 08:03:32 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v14-20020a056a00148e00b006ed64f4767asm4105877pfu.112.2024.04.10.08.03.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 08:03:32 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Wed, 10 Apr 2024 08:03:31 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Jean Delvare <jdelvare@suse.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH v2 2/2] hwmon: (pwm-fan) Make use of device properties
+Message-ID: <4d64436c-993d-4f41-821f-faa31d521da7@roeck-us.net>
+References: <20240404191323.3547465-1-andriy.shevchenko@linux.intel.com>
+ <20240404191323.3547465-3-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240410131407.3897251-2-leitao@debian.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240404191323.3547465-3-andriy.shevchenko@linux.intel.com>
 
-On Wed, Apr 10, 2024 at 06:13:42AM -0700, Breno Leitao wrote:
-> Fix bad grammer in description of init_dummy_netdev() functio.  This
-> topic showed up in the review of the "allocate dummy device dynamically"
-> patchset.
+On Thu, Apr 04, 2024 at 10:11:39PM +0300, Andy Shevchenko wrote:
+> Convert the module to be property provider agnostic and allow
+> it to be used on non-OF platforms.
 > 
-> Suggested-by: Ido Schimmel <idosch@nvidia.com>
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+> Add mod_devicetable.h include.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Applied.
 
-In case you need to send another version:
-
-s/grammer/grammar/
-s/functio/function/
+Thanks,
+Guenter
 
