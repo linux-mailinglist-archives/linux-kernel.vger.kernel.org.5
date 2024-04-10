@@ -1,156 +1,175 @@
-Return-Path: <linux-kernel+bounces-139141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE3EE89FF06
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:50:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E23489FF05
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:49:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E806B239BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:50:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A65C51C22930
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:49:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BE2E1A38CC;
-	Wed, 10 Apr 2024 17:45:15 +0000 (UTC)
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11C2D1A0AFF;
+	Wed, 10 Apr 2024 17:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yBxxYVQ5";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wcXOFf+8";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hTuKFvG7";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="elXsFP10"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 977481802A1;
-	Wed, 10 Apr 2024 17:45:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F42F194C9B;
+	Wed, 10 Apr 2024 17:45:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712771115; cv=none; b=L7DHqllPBAtMxv8n/4AYFuIFELPzNX+vkZqPNdaN5e0AgUiDz2EsZkMRlb8R4HHQ/yLFWBbh0RHc7pPkPSYc/Nk0BbdXmFxL8oPa6TMPBeX9zJLoowzR4bkrlKGEL+CAk7Zu+vHvEbgXLKLBvght3cjcnRtSn1Qr7mrLeoti5Vc=
+	t=1712771109; cv=none; b=CKn3fOrCNwA6YWy7+Q9pMhEzHj6uEK8qH7pVEi3VdGuJo7yqt/GtsTz7KxzumxiS5rD7QYyO44jNpJPbCFLKBiA7JW9+uETRG1c23McDsU38hJA4wDIc5b9COKWYEKL0aM8rHYfYFsLzufvTRz5KRnYGWeI5nR/i9h5nHHPvoss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712771115; c=relaxed/simple;
-	bh=Wj6ZRvlrOSDMBt6W7n9IjAZ7AZ//hA1fkrsJS10CLKY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fi0xT0i61XOVV/0xLK41tH/g6Pk1jb/WZaMtPB0PSaA+Qi4FnkIuQ8hmSkUwhSOQYlTmlJUYbIMRCxPDxzLvsos6R17WgnRVqzCfDT/nktN9I/0Tz7CEPdZzBasV7sks8wwnbKNuXPkYHr6GoJak574SLcLw5JjQxpBfkfy/PbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5dcc4076c13so63023a12.0;
-        Wed, 10 Apr 2024 10:45:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712771113; x=1713375913;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l6yLmtZ0A7ipNhWm4F0IrALVPTgUBnQRDTiWvpPH58w=;
-        b=dqyQZVpHdH23KwIqFXX4O4Uvu9Q2boFA6jOYHfDl0o+ib0YsuILdwZrAzU4vib5PB0
-         bAWSuO54bJojiUPHyKgjjdpPUrh1IJkJqaAfckI4N6lM9+7RBp9ytxyE7YlY1+f/TOqW
-         cfstgQxzfuB2oyHEmAOaZFY6aVu4x/cZY/SgWTsVaTQvBzcdjEJICPRyqmzN7HbeTzm1
-         pwOFEBCZOJfJD7Akq6n6nfTUevOVP0EtxZd63y1/Or23ByG3JHe3b9Pk+aqPiGeUzPsu
-         hqPnib0qKjkCZlZZEDmppmJsFIVYSwHtanKO00hhlKEHjlxgsdVpml5a8ZpH678b9qVL
-         +o5w==
-X-Forwarded-Encrypted: i=1; AJvYcCUrSlTfa+kf8JhIGKRrTnnb+rHNtdPBKL8ZbSTBrxqTQqBKZNAq+f7ObcxGhZZ/in9Y4+67/QjmCaYBJ1OpdFodhs8Eke5wzMVuloOHgNczJxDjx+lLbxa/IzQLUn6Kfdg9tuMvbhLPO0r7WRd3rw==
-X-Gm-Message-State: AOJu0YySWQCu09y2nvKNuK0VcGj0+CXQDclC1mD2aX/ywFxdFQVPUa5d
-	EOlv2NWj2gaHbQIQMC4OCvUuEDlFrHpdMKltnD6mOzKmP2gwdRqVIuVN744S460t28E9ut0yMWC
-	rkpYf87T/ximnfGlQ+Wn0OreKoSk=
-X-Google-Smtp-Source: AGHT+IGR5Q/4Md6XRPDFOZYZCA29OSHEwciU9ZcwjlSpvOPYr1vpBgVJGEcgGhvz5WXiumG4zrUPoZKHzxQHmQg+fC8=
-X-Received: by 2002:a17:90a:7281:b0:2a0:78f4:2dc5 with SMTP id
- e1-20020a17090a728100b002a078f42dc5mr415791pjg.22.1712771112758; Wed, 10 Apr
- 2024 10:45:12 -0700 (PDT)
+	s=arc-20240116; t=1712771109; c=relaxed/simple;
+	bh=FfbM6dBK2mr783lz2Tf1oTCDjUnulOUEAmCPb7EW5VM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EVhfzyIvjTg3zPUrTr2bhwuR+ZjNqdJ2+0Gk2xyvaXckh7VbS7Nzv8guE70sN231L64WPu1ypVkzatK/MmqsBlA3tvicCUyZ0g9bEp3KyfKf2Qlwbg2sJlm4ECsLVBviyf0klnDLOOcuM8B/caDmtBWtiYeMglUhdqg/hcE65E8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yBxxYVQ5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wcXOFf+8; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hTuKFvG7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=elXsFP10; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E2696205D3;
+	Wed, 10 Apr 2024 17:45:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712771105; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gaFrwClPngI9/zE0tUKh4ZF3uG/AFy0qWp2ynKlaVw4=;
+	b=yBxxYVQ5qlkPxthan7rOZuqjvdWMlGiSEckUBrhGCntgkxyBe3cH6Ca8fevLcFoHomITZe
+	GDShA6eK07x/fuR/cCKQCz9o1H2C4pSgFxoHQfFbh6Ty4vOurIPSuL+JlC00mbz+3ABl9L
+	/Rto2067OhB/bbb+TJMGwpWTA9UqGSM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712771105;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gaFrwClPngI9/zE0tUKh4ZF3uG/AFy0qWp2ynKlaVw4=;
+	b=wcXOFf+8TTqZkLO7ZAhXTaXf3LTZxdBgkYcJdIsbyfKZFrJ17TDcW2kx+A7ppzhqACHlAU
+	PPHEyqM26cUBTBDQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712771103; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gaFrwClPngI9/zE0tUKh4ZF3uG/AFy0qWp2ynKlaVw4=;
+	b=hTuKFvG7HdUAjobTA8wbNFYw60I0pmphQSN0CmvsMdtMGMFYFXdR0htXCBrBVrI4cFBFkw
+	S8vHT8ZXd/VMO5YXqB8Q+5TknHMO3o+n3q080BriaRpBvbFfQAQeuYpN89CAkxmovsePsW
+	TbuHCdx83Zr++KxAycUsj31w5E8JkAY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712771103;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gaFrwClPngI9/zE0tUKh4ZF3uG/AFy0qWp2ynKlaVw4=;
+	b=elXsFP10Kw0MWNWMmYdgHRNgO7EAK34dkQ60DZwM9dLMUhg3O251X/W6J7IptLR/IlRGjv
+	goedGCkJGw7ylaBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D458E13691;
+	Wed, 10 Apr 2024 17:45:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id s0yPMx/QFmYTXAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 10 Apr 2024 17:45:03 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 73BD9A0681; Wed, 10 Apr 2024 19:45:03 +0200 (CEST)
+Date: Wed, 10 Apr 2024 19:45:03 +0200
+From: Jan Kara <jack@suse.cz>
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] fs/direct-io: remove redundant assignment to
+ variable retval
+Message-ID: <20240410174503.wycdhqsglx4pms4q@quack3>
+References: <20240410162221.292485-1-colin.i.king@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410104450.15602-1-adrian.hunter@intel.com> <CAP-5=fXw+HEnyiry=6LWhpPcexbNu=CzknNfcjr=MHa78ujkpw@mail.gmail.com>
-In-Reply-To: <CAP-5=fXw+HEnyiry=6LWhpPcexbNu=CzknNfcjr=MHa78ujkpw@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 10 Apr 2024 10:45:00 -0700
-Message-ID: <CAM9d7cg54QYtyOO0986ffBFU2yV49RV7OgTmX5drRAqV84aKSQ@mail.gmail.com>
-Subject: Re: [PATCH] perf tools: Simplify is_event_supported()
-To: Ian Rogers <irogers@google.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410162221.292485-1-colin.i.king@gmail.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-1.65 / 50.00];
+	BAYES_HAM(-2.35)[96.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	ARC_NA(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email]
+X-Spam-Score: -1.65
+X-Spam-Flag: NO
 
-On Wed, Apr 10, 2024 at 9:08=E2=80=AFAM Ian Rogers <irogers@google.com> wro=
-te:
->
-> On Wed, Apr 10, 2024 at 3:45=E2=80=AFAM Adrian Hunter <adrian.hunter@inte=
-l.com> wrote:
-> >
-> > Simplify is_event_supported by using sys_perf_event_open() directly lik=
-e
-> > other perf API probe functions and move it into perf_api_probe.c where
-> > other perf API probe functions reside.
-> >
-> > A side effect is that the probed events do not appear when debug prints
-> > are enabled, which is beneficial because otherwise they can be confused
-> > with selected events.
-> >
-> > This also affects "Test per-thread recording" in
-> > "Miscellaneous Intel PT testing" which expects the debug prints of
-> > only selected events to appear between the debug prints:
-> > "perf record opening and mmapping events" and
-> > "perf record done opening and mmapping events"
-> >
-> > Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
->
-> nit:
-> Closes: https://lore.kernel.org/lkml/ZhVfc5jYLarnGzKa@x1/
->
-> > ---
-> >  tools/perf/util/perf_api_probe.c | 40 +++++++++++++++++++++++++
-> >  tools/perf/util/perf_api_probe.h |  2 ++
-> >  tools/perf/util/pmus.c           |  1 +
-> >  tools/perf/util/print-events.c   | 50 +-------------------------------
-> >  tools/perf/util/print-events.h   |  1 -
-> >  5 files changed, 44 insertions(+), 50 deletions(-)
-> >
-> > diff --git a/tools/perf/util/perf_api_probe.c b/tools/perf/util/perf_ap=
-i_probe.c
-> > index 1de3b69cdf4a..13acb34a4e1c 100644
-> > --- a/tools/perf/util/perf_api_probe.c
-> > +++ b/tools/perf/util/perf_api_probe.c
-> > @@ -195,3 +195,43 @@ bool perf_can_record_cgroup(void)
-> >  {
-> >         return perf_probe_api(perf_probe_cgroup);
-> >  }
-> > +
-> > +bool is_event_supported(u8 type, u64 config)
-> > +{
-> > +       struct perf_event_attr attr =3D {
-> > +               .type =3D type,
-> > +               .config =3D config,
-> > +               .disabled =3D 1,
-> > +       };
-> > +       int fd =3D sys_perf_event_open(&attr, 0, -1, -1, 0);
->
-> It looks like this is a change to the actual perf_event_open
-> arguments, I don't think it is an issue but wanted to flag it.
->
-> > +
-> > +       if (fd < 0) {
-> > +               /*
-> > +                * The event may fail to open if the paranoid value
-> > +                * /proc/sys/kernel/perf_event_paranoid is set to 2
-> > +                * Re-run with exclude_kernel set; we don't do that by
-> > +                * default as some ARM machines do not support it.
-> > +                */
-> > +               attr.exclude_kernel =3D 1;
->
-> I worry about the duplicated fallback logic getting out of sync,
-> perhaps we could have a quiet option for evsel__open option, or better
-> delineate the particular log entries. I don't really have a good
-> alternative idea and kind of like that detecting an event is available
-> loses the evsel baggage. I would kind of like event parsing just to
-> give 1 or more perf_event_attr for similar reasons.
+On Wed 10-04-24 17:22:21, Colin Ian King wrote:
+> The variable retval is being assigned a value that is not being read,
+> it is being re-assigned later on in the function. The assignment
+> is redundant and can be removed.
+> 
+> Cleans up clang scan build warning:
+> fs/direct-io.c:1220:2: warning: Value stored to 'retval' is never
+> read [deadcode.DeadStores]
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-We have the missing feature check in the evsel open code,
-and I think we should check the exclude-bits first than others.
-Currently struct pmu has missing_features.exclude_guest only
-and it can have exclude_kernel or others too.
+Indeed it's assigned a few lines below. Feel free to add:
 
-Anyway, I'm ok with this change.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+								Honza
 
-Thanks,
-Namhyung
+> ---
+>  fs/direct-io.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/fs/direct-io.c b/fs/direct-io.c
+> index 62c97ff9e852..b0aafe640fa4 100644
+> --- a/fs/direct-io.c
+> +++ b/fs/direct-io.c
+> @@ -1217,7 +1217,6 @@ ssize_t __blockdev_direct_IO(struct kiocb *iocb, struct inode *inode,
+>  	 */
+>  	inode_dio_begin(inode);
+>  
+> -	retval = 0;
+>  	sdio.blkbits = blkbits;
+>  	sdio.blkfactor = i_blkbits - blkbits;
+>  	sdio.block_in_file = offset >> blkbits;
+> -- 
+> 2.39.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
