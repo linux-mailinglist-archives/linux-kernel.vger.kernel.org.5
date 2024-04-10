@@ -1,126 +1,156 @@
-Return-Path: <linux-kernel+bounces-139119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9065289FED9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:45:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE3EE89FF06
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:50:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C27701C22B62
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:45:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E806B239BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:50:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EAF71802BF;
-	Wed, 10 Apr 2024 17:44:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="oxbOfCp3"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BE2E1A38CC;
+	Wed, 10 Apr 2024 17:45:15 +0000 (UTC)
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E9317F369;
-	Wed, 10 Apr 2024 17:44:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 977481802A1;
+	Wed, 10 Apr 2024 17:45:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712771098; cv=none; b=LMGNZRPL1HkWjyS3bzqLgompBt/WIJH6vIysgtIf2PvE5xZZVDdM8ULLev6jXWTdMbG+RMW1RKl/OLfzdg2nMIppkna8+k2f+3T/+xF7yfku1jPknkI7Nlmm/xWxyQDB12RFQcKx4cn0baMigKg49cvUyZqgvGpSB3S0y0H8vEg=
+	t=1712771115; cv=none; b=L7DHqllPBAtMxv8n/4AYFuIFELPzNX+vkZqPNdaN5e0AgUiDz2EsZkMRlb8R4HHQ/yLFWBbh0RHc7pPkPSYc/Nk0BbdXmFxL8oPa6TMPBeX9zJLoowzR4bkrlKGEL+CAk7Zu+vHvEbgXLKLBvght3cjcnRtSn1Qr7mrLeoti5Vc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712771098; c=relaxed/simple;
-	bh=J3FVnwDh/KGiA6tpfeXzIKlz2LWvlujkzxc+I0KPgFU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XxhlSZ+zWzhZbeqR99972jFZTxzK7w520UfGZXCpZ4Yly6JPtNt8PnpXSVYaeuyKPkJ9NijexG5TWOR8j+j2DDcloHZTtrDFbCZV8+nWXMfFUb0etrdi0cpT32t3KSFeZfY1qykKB+M7V1p7VCUs9FuqW6yYdPCyjYTyfQxQHes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=oxbOfCp3 reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
- id 65631d58b4123eed; Wed, 10 Apr 2024 19:44:47 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 59FAD66C66F;
-	Wed, 10 Apr 2024 19:44:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1712771087;
-	bh=J3FVnwDh/KGiA6tpfeXzIKlz2LWvlujkzxc+I0KPgFU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=oxbOfCp34dSikTSvRh20E+pQNQ5B0RJPEGlIv4//yecq30J08PCq7hJIfAZeWIzwm
-	 MbHIkinVq86zESqyD049uRYJ5CXO+Z953AhLmbEPVJWzaeRU6+yMoKwdvpMT6GZ0Tp
-	 bnDfOlfer4EWovhKfzbQOvjwaY8E8mHSnF1n4Vj+70jlQgSq6DDVEYnIOnjKgyeK5S
-	 uB/6xVcuPbxZdWoMWSkogMvL5gDsaGxFOW9IrwOG2qSKRCP50L5Wv/FLiR7gjx62v1
-	 WB1qGUZXOVOj1HlD9vgxQK8LLL7QhVOF5IpI+UwJrle1CRCugEWcPc5dBkyWZIpDV9
-	 PUip6MCY/oHTw==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Lukasz Luba <lukasz.luba@arm.com>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject:
- [PATCH v1 16/16] thermal: core: Relocate critical and hot trip handling
-Date: Wed, 10 Apr 2024 19:44:34 +0200
-Message-ID: <9337957.rMLUfLXkoz@kreacher>
-In-Reply-To: <13515747.uLZWGnKmhe@kreacher>
-References: <13515747.uLZWGnKmhe@kreacher>
+	s=arc-20240116; t=1712771115; c=relaxed/simple;
+	bh=Wj6ZRvlrOSDMBt6W7n9IjAZ7AZ//hA1fkrsJS10CLKY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fi0xT0i61XOVV/0xLK41tH/g6Pk1jb/WZaMtPB0PSaA+Qi4FnkIuQ8hmSkUwhSOQYlTmlJUYbIMRCxPDxzLvsos6R17WgnRVqzCfDT/nktN9I/0Tz7CEPdZzBasV7sks8wwnbKNuXPkYHr6GoJak574SLcLw5JjQxpBfkfy/PbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5dcc4076c13so63023a12.0;
+        Wed, 10 Apr 2024 10:45:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712771113; x=1713375913;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l6yLmtZ0A7ipNhWm4F0IrALVPTgUBnQRDTiWvpPH58w=;
+        b=dqyQZVpHdH23KwIqFXX4O4Uvu9Q2boFA6jOYHfDl0o+ib0YsuILdwZrAzU4vib5PB0
+         bAWSuO54bJojiUPHyKgjjdpPUrh1IJkJqaAfckI4N6lM9+7RBp9ytxyE7YlY1+f/TOqW
+         cfstgQxzfuB2oyHEmAOaZFY6aVu4x/cZY/SgWTsVaTQvBzcdjEJICPRyqmzN7HbeTzm1
+         pwOFEBCZOJfJD7Akq6n6nfTUevOVP0EtxZd63y1/Or23ByG3JHe3b9Pk+aqPiGeUzPsu
+         hqPnib0qKjkCZlZZEDmppmJsFIVYSwHtanKO00hhlKEHjlxgsdVpml5a8ZpH678b9qVL
+         +o5w==
+X-Forwarded-Encrypted: i=1; AJvYcCUrSlTfa+kf8JhIGKRrTnnb+rHNtdPBKL8ZbSTBrxqTQqBKZNAq+f7ObcxGhZZ/in9Y4+67/QjmCaYBJ1OpdFodhs8Eke5wzMVuloOHgNczJxDjx+lLbxa/IzQLUn6Kfdg9tuMvbhLPO0r7WRd3rw==
+X-Gm-Message-State: AOJu0YySWQCu09y2nvKNuK0VcGj0+CXQDclC1mD2aX/ywFxdFQVPUa5d
+	EOlv2NWj2gaHbQIQMC4OCvUuEDlFrHpdMKltnD6mOzKmP2gwdRqVIuVN744S460t28E9ut0yMWC
+	rkpYf87T/ximnfGlQ+Wn0OreKoSk=
+X-Google-Smtp-Source: AGHT+IGR5Q/4Md6XRPDFOZYZCA29OSHEwciU9ZcwjlSpvOPYr1vpBgVJGEcgGhvz5WXiumG4zrUPoZKHzxQHmQg+fC8=
+X-Received: by 2002:a17:90a:7281:b0:2a0:78f4:2dc5 with SMTP id
+ e1-20020a17090a728100b002a078f42dc5mr415791pjg.22.1712771112758; Wed, 10 Apr
+ 2024 10:45:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20240410104450.15602-1-adrian.hunter@intel.com> <CAP-5=fXw+HEnyiry=6LWhpPcexbNu=CzknNfcjr=MHa78ujkpw@mail.gmail.com>
+In-Reply-To: <CAP-5=fXw+HEnyiry=6LWhpPcexbNu=CzknNfcjr=MHa78ujkpw@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Wed, 10 Apr 2024 10:45:00 -0700
+Message-ID: <CAM9d7cg54QYtyOO0986ffBFU2yV49RV7OgTmX5drRAqV84aKSQ@mail.gmail.com>
+Subject: Re: [PATCH] perf tools: Simplify is_event_supported()
+To: Ian Rogers <irogers@google.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudehiedguddugecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtohepshhr
- ihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+Content-Transfer-Encoding: quoted-printable
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Subject: [PATCH v1] 
+On Wed, Apr 10, 2024 at 9:08=E2=80=AFAM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> On Wed, Apr 10, 2024 at 3:45=E2=80=AFAM Adrian Hunter <adrian.hunter@inte=
+l.com> wrote:
+> >
+> > Simplify is_event_supported by using sys_perf_event_open() directly lik=
+e
+> > other perf API probe functions and move it into perf_api_probe.c where
+> > other perf API probe functions reside.
+> >
+> > A side effect is that the probed events do not appear when debug prints
+> > are enabled, which is beneficial because otherwise they can be confused
+> > with selected events.
+> >
+> > This also affects "Test per-thread recording" in
+> > "Miscellaneous Intel PT testing" which expects the debug prints of
+> > only selected events to appear between the debug prints:
+> > "perf record opening and mmapping events" and
+> > "perf record done opening and mmapping events"
+> >
+> > Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+>
+> nit:
+> Closes: https://lore.kernel.org/lkml/ZhVfc5jYLarnGzKa@x1/
+>
+> > ---
+> >  tools/perf/util/perf_api_probe.c | 40 +++++++++++++++++++++++++
+> >  tools/perf/util/perf_api_probe.h |  2 ++
+> >  tools/perf/util/pmus.c           |  1 +
+> >  tools/perf/util/print-events.c   | 50 +-------------------------------
+> >  tools/perf/util/print-events.h   |  1 -
+> >  5 files changed, 44 insertions(+), 50 deletions(-)
+> >
+> > diff --git a/tools/perf/util/perf_api_probe.c b/tools/perf/util/perf_ap=
+i_probe.c
+> > index 1de3b69cdf4a..13acb34a4e1c 100644
+> > --- a/tools/perf/util/perf_api_probe.c
+> > +++ b/tools/perf/util/perf_api_probe.c
+> > @@ -195,3 +195,43 @@ bool perf_can_record_cgroup(void)
+> >  {
+> >         return perf_probe_api(perf_probe_cgroup);
+> >  }
+> > +
+> > +bool is_event_supported(u8 type, u64 config)
+> > +{
+> > +       struct perf_event_attr attr =3D {
+> > +               .type =3D type,
+> > +               .config =3D config,
+> > +               .disabled =3D 1,
+> > +       };
+> > +       int fd =3D sys_perf_event_open(&attr, 0, -1, -1, 0);
+>
+> It looks like this is a change to the actual perf_event_open
+> arguments, I don't think it is an issue but wanted to flag it.
+>
+> > +
+> > +       if (fd < 0) {
+> > +               /*
+> > +                * The event may fail to open if the paranoid value
+> > +                * /proc/sys/kernel/perf_event_paranoid is set to 2
+> > +                * Re-run with exclude_kernel set; we don't do that by
+> > +                * default as some ARM machines do not support it.
+> > +                */
+> > +               attr.exclude_kernel =3D 1;
+>
+> I worry about the duplicated fallback logic getting out of sync,
+> perhaps we could have a quiet option for evsel__open option, or better
+> delineate the particular log entries. I don't really have a good
+> alternative idea and kind of like that detecting an event is available
+> loses the evsel baggage. I would kind of like event parsing just to
+> give 1 or more perf_event_attr for similar reasons.
 
-Modify handle_thermal_trip() to call handle_critical_trips() only after
-finding that the trip temperature has been crossed on the way up and
-remove the redundant temperature check from the latter.
+We have the missing feature check in the evsel open code,
+and I think we should check the exclude-bits first than others.
+Currently struct pmu has missing_features.exclude_guest only
+and it can have exclude_kernel or others too.
 
-No intentional functional impact.
+Anyway, I'm ok with this change.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/thermal/thermal_core.c |   11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Index: linux-pm/drivers/thermal/thermal_core.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_core.c
-+++ linux-pm/drivers/thermal/thermal_core.c
-@@ -350,10 +350,6 @@ void thermal_zone_device_critical_reboot
- static void handle_critical_trips(struct thermal_zone_device *tz,
- 				  const struct thermal_trip *trip)
- {
--	/* If we have not crossed the trip_temp, we do not care. */
--	if (trip->temperature <= 0 || tz->temperature < trip->temperature)
--		return;
--
- 	trace_thermal_zone_trip(tz, thermal_zone_trip_id(tz, trip), trip->type);
- 
- 	if (trip->type == THERMAL_TRIP_CRITICAL)
-@@ -405,10 +401,11 @@ static void handle_thermal_trip(struct t
- 		list_add_tail(&td->notify_list_node, way_up_list);
- 		td->notify_temp = trip->temperature;
- 		td->threshold -= trip->hysteresis;
--	}
- 
--	if (trip->type == THERMAL_TRIP_CRITICAL || trip->type == THERMAL_TRIP_HOT)
--		handle_critical_trips(tz, trip);
-+		if (trip->type == THERMAL_TRIP_CRITICAL ||
-+		    trip->type == THERMAL_TRIP_HOT)
-+			handle_critical_trips(tz, trip);
-+	}
- }
- 
- static void update_temperature(struct thermal_zone_device *tz)
-
-
-
+Thanks,
+Namhyung
 
