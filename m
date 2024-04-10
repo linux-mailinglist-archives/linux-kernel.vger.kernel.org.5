@@ -1,168 +1,287 @@
-Return-Path: <linux-kernel+bounces-137784-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99D5789E794
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:07:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 693EE89E79D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:09:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD9B41C2126F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:07:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D38EB228F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762551FB4;
-	Wed, 10 Apr 2024 01:07:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75FDD1388;
+	Wed, 10 Apr 2024 01:09:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="j+KtM6pv"
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mo24+tjy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AECBA5F
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 01:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21662EC2;
+	Wed, 10 Apr 2024 01:09:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712711235; cv=none; b=OAb8DRgCRFNzlNVbj3klLwBzHQ7lrIYKj3X/fuJLImTuk0eeLn5xgS0oFTqVODCaOrdS9E+NA+qoqZiwYM5cFWPIaJSN8Shn2u+a9iYCdzLdObGlX95eUfXiG0sQieuFQDnODYHVxcWW3sw3Fj1RxsHiCuzLh5d9gJdCwKr/2kM=
+	t=1712711359; cv=none; b=Xv47slR7gRvIucDxThV0hwHu0FMx5nIVNxZ5Tfgv6SphTkgtQ4xJA+nlqV9fXk8dj4iBRe+k7z+iSSxfQLfHzX2EH0A+pfwMotb/HZGTi88kypDghCwGTILtutttc3Ps18E4FaR+6DlMOsNvja0h6+i7Tp1yulOuIprgciLCWqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712711235; c=relaxed/simple;
-	bh=qLm+VnepHhI+0yQ/tu/mdPDhXXh30RnD3IF2V76MbZs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hMRNqhV2TIS1+xqsbRMdMnLPOhgEEPTF31QYVO9GWHblBEYJEQZZC3h/BpfhX/MM8vt1n9FzB7ADBiCXMHJDDc50NnxsiHe4pQYaijVXp+gr0Z4UZa14ucWRwzqodIlz9GXXf4uQgjiccqH6nosHTImvqr9+BRSf5WSsCWrqMDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=j+KtM6pv; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-43477091797so90951cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 18:07:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712711233; x=1713316033; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OnUy9Dgxuu/dnE4qVLvSmNOrCGCLASYP8tq9YkPoGpw=;
-        b=j+KtM6pvp+EHNopINMD2RJAGceIlIoI0FdTMk772kYHAizd0+R9dNEMM0LwpwieEjf
-         j7ZN14mjgh69kNoGQJ/WApv7N//BaIIxsOez/nlX4QNS4SGAIH6r90Cn+WR8JsxqHlu7
-         TFuBRS4AxSPV48tTsHwVpSptISB2WCtyHctDYYcS3/UkvHTzPZKXLWog9dJ96DQgzGch
-         9bT7rR3dRKOcDN40aGeb7xFydQSt6FmHdzDuLVBtwQqLqAcfILGdz7KVMIVtKZvkaZq6
-         MVe+HvHFnfJJvCLDSRu+b9th4T3aJ9dRG91+xREQpyuxivkDbOZg4KhnpbBjf3XAU5WZ
-         FcXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712711233; x=1713316033;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OnUy9Dgxuu/dnE4qVLvSmNOrCGCLASYP8tq9YkPoGpw=;
-        b=WcgBQVK+Xs+qMdZCojF2MfPKdjzelu4Kc6zaN1oM4hXgJEGGlqfy5N4zOUxwZ79U7I
-         5tm480xIRY/LMJiDYbBlSVZ5t1UK0PVrLC1oQgqvpMDSxcMe/iW6vRXZaZCkacRBrQYq
-         cwU5pPkg+y14IbabA+NB5Q1eLoRlt/42aXzR9ARpx3Cu/PIZPwhOmIko+KosXjb6+X1d
-         qbnfvGkxlTDJVKVxJNLNhNuPvDdQ/OWxvo+ts4d6O3i8b6N0zxxH8Ns4Nu96iFpoeXiT
-         fYYOof6Hzb3JZuJu1/JbaKpMrlg9HTB+JgbB78waq7E9LWpc+SIT+hP5SphpjQjvVnl8
-         Occg==
-X-Forwarded-Encrypted: i=1; AJvYcCVaSLmoL+kkej8t5+ve4SNnPXqAN+YfG18fckyibJCBK5K8YGkHij3jyi8lOI2+b/LFMV6C2oenGftjcdTfNMwz4CTcZy1ITklw6kbP
-X-Gm-Message-State: AOJu0Yz1y0/Ly6+L7UjEKRFYdO7qQvOyXKdk144s/77ZPe0r9O/BSqRX
-	kirVo6ZZAva/WaI7oSE49hE8qxZCJnca8pZnhdx2BWxKLU/XAVEbsuqrVeuFPvCaoXCz1ZX5Zce
-	54/bfCdyNS9eDIVEwcwcnvpiNN0oROYOxpnX7
-X-Google-Smtp-Source: AGHT+IEnYGYE7m3kixf85CnlpYGzZvRPhp8krudkLaSycG1wisGydnCUIvWGp+zYdJGwFxhq8++4pWL/y3KX54K3Dyo=
-X-Received: by 2002:a05:622a:22a8:b0:434:a690:e328 with SMTP id
- ay40-20020a05622a22a800b00434a690e328mr77260qtb.17.1712711232788; Tue, 09 Apr
- 2024 18:07:12 -0700 (PDT)
+	s=arc-20240116; t=1712711359; c=relaxed/simple;
+	bh=eL6a5t8vX8PGaPaVLWFsiCZLKvjf4hQdCUzYh+1VraA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cxLrFj+GD1HTU+3PQKBj856E5Ol2cZQy6X9fhXlfJ3uUq6fM79DEvwxhQcfIhtDu+4wxKhOd67C4FBpQ2MwkA8kVW4lgHLXGQq8eB22wOU68sUsafvM4szPiRQdeQYN++SlJGe+tP4FBJ1HPXT1ty7c2Bcj4QuGF3C9II4pd74A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mo24+tjy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00785C433C7;
+	Wed, 10 Apr 2024 01:09:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712711359;
+	bh=eL6a5t8vX8PGaPaVLWFsiCZLKvjf4hQdCUzYh+1VraA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Mo24+tjyLUjk+1qrvFgkkmuG60hyD6Ky+oOPZ4nQ7Din1FBAHEpOs17r2qTCFCxWn
+	 51fJno8GO4sSoO/xBPcbP/1Lp2HCT3lsouqO4qlZCadAjWk0lNAf0DVqWKcP+MS5Ye
+	 6Mvt8UAB8nl3cgI9KSp1HkmdL4b+5QCJ/KZOn2gPlLzyv8rz+wba1Tsmq/daK302XM
+	 OvqRaHEQFqSkNnIoa1oyXOVJv5eF1cjjH4AZ8gPNecc4AdpQ2WeI3B8aN8KFH1fbaH
+	 h/9uiN+2jzacBm7l1zDtIw8UrzYShnM/xPLGoLE8Z605N9FqTVipKB79WT6hs16RWs
+	 VugGvU3cr5yAg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 91E10CE2D22; Tue,  9 Apr 2024 18:09:18 -0700 (PDT)
+Date: Tue, 9 Apr 2024 18:09:18 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: kernel test robot <lkp@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [paulmck-rcu:dev.2024.04.04a 17/74] mm/memcontrol.c:1200:31:
+ sparse: sparse: incorrect type in argument 2 (different base types)
+Message-ID: <db824d75-6d6e-4390-899e-6e9ea5159c20@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <202404100829.OchVjDmF-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409053704.428336-1-saravanak@google.com> <20240409150247.61e30a86@bootlin.com>
-In-Reply-To: <20240409150247.61e30a86@bootlin.com>
-From: Saravana Kannan <saravanak@google.com>
-Date: Tue, 9 Apr 2024 18:06:33 -0700
-Message-ID: <CAGETcx-Yxtkdfytsota3AciS6M9UeOaKSRtaHfH5pm60KWVmJA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/2] fw_devlink overlay fix
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Rob Herring <robh@kernel.org>, kernel-team@android.com, 
-	linux-kernel@vger.kernel.org, imx@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-spi@vger.kernel.org, 
-	linux-acpi@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202404100829.OchVjDmF-lkp@intel.com>
 
-On Tue, Apr 9, 2024 at 6:02=E2=80=AFAM Herve Codina <herve.codina@bootlin.c=
-om> wrote:
->
-> Hi Saravana,
->
-> +CC Luca and Thomas
->
-> On Mon,  8 Apr 2024 22:37:01 -0700
-> Saravana Kannan <saravanak@google.com> wrote:
->
-> > Don't bother reviewing this patch. It needs to be tested and possibly
-> > refactored first.
-> >
-> > Geert and Herve,
-> >
-> > This patch serious should hopefully fix both of your use cases
-> > [1][2][3]. Can you please check to make sure the device links created
-> > to/from the overlay devices are to/from the right ones?
-> >
-> > I've only compile tested it. If I made some obvious mistake, feel free
-> > to fix it and give it a shot.
-> >
-> > Cc: Rob Herring <robh@kernel.org>
-> >
-> > [1] - https://lore.kernel.org/lkml/CAMuHMdXEnSD4rRJ-o90x4OprUacN_rJgyo8=
-x6=3D9F9rZ+-KzjOg@mail.gmail.com/
-> > [2] - https://lore.kernel.org/all/20240221095137.616d2aaa@bootlin.com/
-> > [3] - https://lore.kernel.org/lkml/20240312151835.29ef62a0@bootlin.com/
-> >
->
-> I tested your patches.
->
-> Concerning my use cases, they fix the issue described in
->   https://lore.kernel.org/all/20240221095137.616d2aaa@bootlin.com/
+On Wed, Apr 10, 2024 at 08:08:14AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2024.04.04a
+> head:   e2a520f3f3921cb5d3c9631917fccf8c215991ce
+> commit: 27011e7159ef6e100e9ae1debb01a8e180ee94bf [17/74] riscv: Emulate one-byte cmpxchg
+> config: riscv-randconfig-r122-20240409 (https://download.01.org/0day-ci/archive/20240410/202404100829.OchVjDmF-lkp@intel.com/config)
+> compiler: riscv64-linux-gcc (GCC) 13.2.0
+> reproduce: (https://download.01.org/0day-ci/archive/20240410/202404100829.OchVjDmF-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202404100829.OchVjDmF-lkp@intel.com/
 
-I went back and looked at the example. I'm not even sure I understand
-that example. In that example at the link above, are you saying
-without any changes to upstream reg_dock_sys_3v3 was listing it's
-supplier as i2c5 instead of tca6424_dock_1? Why wasn't Geert's
-existing changes in of_i2c_notify not sufficient? Looking at it, it
-does:
-rd->dn->fwnode.flags &=3D ~FWNODE_FLAG_NOT_DEVICE;
+I believe these to be fixed by the addition of casts by this new
+version of the above commit:
 
-Which should clear the flag for tca6424_dock_1. Can you help me
-understand why it's not getting cleared?
+4d5c72a34948 ("riscv: Emulate one-byte cmpxchg")
 
-> But not the one described in
->   https://lore.kernel.org/lkml/20240312151835.29ef62a0@bootlin.com/
-> A link is still present between the i2c@600 and the PCI device.
-> instead of the i2c@600 and the pci-ep-bus.
+As always, please let me know if I am missing something.
 
-What do you mean by PCI device here? You say the same thing in the
-link, but I don't understand what you mean. Can you clarify what
-exactly gets added by the overlay? Please use the fwnode name in all
-the descriptions, even when talking about device links. That should
-help avoid the confusion.
+							Thanx, Paul
 
-Also, if you can show what the target node of the overlay looks like,
-that'd help too.
-
-> Adding the patch clearing the FWNODE_FLAG_NOT_DEVICE in device_add() avai=
-lable
-> at [1] on top of your patches fixes the link issue.
-> With this additional patch applied, the link is present between the i2c@6=
-00
-> and the pci-ep-bus.
-
-I know the problem with this patch series. But to fix it properly, I
-need to understand the root of the overlay node in your examples and
-the target it's applied to.
-
--Saravana
-
->
-> [1] https://lore.kernel.org/lkml/20240220111044.133776-2-herve.codina@boo=
-tlin.com/
->
-> Best regards,
-> Herv=C3=A9
+> sparse warnings: (new ones prefixed by >>)
+> >> mm/memcontrol.c:1200:31: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned long [usertype] old @@     got struct mem_cgroup *__old @@
+>    mm/memcontrol.c:1200:31: sparse:     expected unsigned long [usertype] old
+>    mm/memcontrol.c:1200:31: sparse:     got struct mem_cgroup *__old
+> >> mm/memcontrol.c:1200:31: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long [usertype] new @@     got struct mem_cgroup *__new @@
+>    mm/memcontrol.c:1200:31: sparse:     expected unsigned long [usertype] new
+>    mm/memcontrol.c:1200:31: sparse:     got struct mem_cgroup *__new
+>    mm/memcontrol.c:1240:23: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned long [usertype] old @@     got struct mem_cgroup *__old @@
+>    mm/memcontrol.c:1240:23: sparse:     expected unsigned long [usertype] old
+>    mm/memcontrol.c:1240:23: sparse:     got struct mem_cgroup *__old
+>    mm/memcontrol.c:1240:23: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long [usertype] new @@     got struct mem_cgroup *__new @@
+>    mm/memcontrol.c:1240:23: sparse:     expected unsigned long [usertype] new
+>    mm/memcontrol.c:1240:23: sparse:     got struct mem_cgroup *__new
+>    mm/memcontrol.c:1281:17: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned long [usertype] old @@     got struct mem_cgroup *__old @@
+>    mm/memcontrol.c:1281:17: sparse:     expected unsigned long [usertype] old
+>    mm/memcontrol.c:1281:17: sparse:     got struct mem_cgroup *__old
+>    mm/memcontrol.c:1281:17: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long [usertype] new @@     got struct mem_cgroup *__new @@
+>    mm/memcontrol.c:1281:17: sparse:     expected unsigned long [usertype] new
+>    mm/memcontrol.c:1281:17: sparse:     got struct mem_cgroup *__new
+> >> mm/memcontrol.c:3184:19: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned long [usertype] old @@     got struct obj_cgroup *__old @@
+>    mm/memcontrol.c:3184:19: sparse:     expected unsigned long [usertype] old
+>    mm/memcontrol.c:3184:19: sparse:     got struct obj_cgroup *__old
+> >> mm/memcontrol.c:3184:19: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long [usertype] new @@     got struct obj_cgroup *__new @@
+>    mm/memcontrol.c:3184:19: sparse:     expected unsigned long [usertype] new
+>    mm/memcontrol.c:3184:19: sparse:     got struct obj_cgroup *__new
+>    mm/memcontrol.c:4408:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>    mm/memcontrol.c:4408:21: sparse:    struct mem_cgroup_threshold_ary [noderef] __rcu *
+>    mm/memcontrol.c:4408:21: sparse:    struct mem_cgroup_threshold_ary *
+>    mm/memcontrol.c:4410:21: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>    mm/memcontrol.c:4410:21: sparse:    struct mem_cgroup_threshold_ary [noderef] __rcu *
+>    mm/memcontrol.c:4410:21: sparse:    struct mem_cgroup_threshold_ary *
+>    mm/memcontrol.c:4566:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>    mm/memcontrol.c:4566:9: sparse:    struct mem_cgroup_threshold_ary [noderef] __rcu *
+>    mm/memcontrol.c:4566:9: sparse:    struct mem_cgroup_threshold_ary *
+>    mm/memcontrol.c:4660:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+>    mm/memcontrol.c:4660:9: sparse:    struct mem_cgroup_threshold_ary [noderef] __rcu *
+>    mm/memcontrol.c:4660:9: sparse:    struct mem_cgroup_threshold_ary *
+>    mm/memcontrol.c: note: in included file:
+>    include/linux/memcontrol.h:761:9: sparse: sparse: context imbalance in 'folio_lruvec_lock' - wrong count at exit
+>    include/linux/memcontrol.h:761:9: sparse: sparse: context imbalance in 'folio_lruvec_lock_irq' - wrong count at exit
+>    include/linux/memcontrol.h:761:9: sparse: sparse: context imbalance in 'folio_lruvec_lock_irqsave' - wrong count at exit
+>    mm/memcontrol.c:2185:6: sparse: sparse: context imbalance in 'folio_memcg_lock' - wrong count at exit
+>    mm/memcontrol.c:2232:17: sparse: sparse: context imbalance in '__folio_memcg_unlock' - unexpected unlock
+> --
+> >> fs/fs-writeback.c:291:13: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned long [usertype] old @@     got struct bdi_writeback *__old @@
+>    fs/fs-writeback.c:291:13: sparse:     expected unsigned long [usertype] old
+>    fs/fs-writeback.c:291:13: sparse:     got struct bdi_writeback *__old
+> >> fs/fs-writeback.c:291:13: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long [usertype] new @@     got struct bdi_writeback *__new @@
+>    fs/fs-writeback.c:291:13: sparse:     expected unsigned long [usertype] new
+>    fs/fs-writeback.c:291:13: sparse:     got struct bdi_writeback *__new
+>    fs/fs-writeback.c:753:15: sparse: sparse: context imbalance in 'wbc_attach_and_unlock_inode' - unexpected unlock
+>    fs/fs-writeback.c:1804:20: sparse: sparse: context imbalance in 'writeback_single_inode' - different lock contexts for basic block
+>    fs/fs-writeback.c:1990:9: sparse: sparse: context imbalance in 'writeback_sb_inodes' - different lock contexts for basic block
+>    fs/fs-writeback.c:2580:20: sparse: sparse: context imbalance in '__mark_inode_dirty' - unexpected unlock
+> --
+>    fs/bcachefs/btree_cache.c: note: in included file:
+>    fs/bcachefs/bcachefs.h:1023:9: sparse: sparse: array of flexible structures
+> >> fs/bcachefs/btree_cache.c:534:15: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned long [usertype] old @@     got struct task_struct *__old @@
+>    fs/bcachefs/btree_cache.c:534:15: sparse:     expected unsigned long [usertype] old
+>    fs/bcachefs/btree_cache.c:534:15: sparse:     got struct task_struct *__old
+> >> fs/bcachefs/btree_cache.c:534:15: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long [usertype] new @@     got struct task_struct *__new @@
+>    fs/bcachefs/btree_cache.c:534:15: sparse:     expected unsigned long [usertype] new
+>    fs/bcachefs/btree_cache.c:534:15: sparse:     got struct task_struct *__new
+>    fs/bcachefs/btree_cache.c:546:15: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected unsigned long [usertype] old @@     got struct task_struct *__old @@
+>    fs/bcachefs/btree_cache.c:546:15: sparse:     expected unsigned long [usertype] old
+>    fs/bcachefs/btree_cache.c:546:15: sparse:     got struct task_struct *__old
+>    fs/bcachefs/btree_cache.c:546:15: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected unsigned long [usertype] new @@     got struct task_struct *__new @@
+>    fs/bcachefs/btree_cache.c:546:15: sparse:     expected unsigned long [usertype] new
+>    fs/bcachefs/btree_cache.c:546:15: sparse:     got struct task_struct *__new
+> 
+> vim +1200 mm/memcontrol.c
+> 
+> 4b569387c0d566 Nhat Pham         2023-10-06  1138  
+> 5660048ccac873 Johannes Weiner   2012-01-12  1139  /**
+> 5660048ccac873 Johannes Weiner   2012-01-12  1140   * mem_cgroup_iter - iterate over memory cgroup hierarchy
+> 5660048ccac873 Johannes Weiner   2012-01-12  1141   * @root: hierarchy root
+> 5660048ccac873 Johannes Weiner   2012-01-12  1142   * @prev: previously returned memcg, NULL on first invocation
+> 5660048ccac873 Johannes Weiner   2012-01-12  1143   * @reclaim: cookie for shared reclaim walks, NULL for full walks
+> 5660048ccac873 Johannes Weiner   2012-01-12  1144   *
+> 5660048ccac873 Johannes Weiner   2012-01-12  1145   * Returns references to children of the hierarchy below @root, or
+> 5660048ccac873 Johannes Weiner   2012-01-12  1146   * @root itself, or %NULL after a full round-trip.
+> 5660048ccac873 Johannes Weiner   2012-01-12  1147   *
+> 5660048ccac873 Johannes Weiner   2012-01-12  1148   * Caller must pass the return value in @prev on subsequent
+> 5660048ccac873 Johannes Weiner   2012-01-12  1149   * invocations for reference counting, or use mem_cgroup_iter_break()
+> 5660048ccac873 Johannes Weiner   2012-01-12  1150   * to cancel a hierarchy walk before the round-trip is complete.
+> 5660048ccac873 Johannes Weiner   2012-01-12  1151   *
+> 05bdc520b3ad39 Miaohe Lin        2020-10-13  1152   * Reclaimers can specify a node in @reclaim to divide up the memcgs
+> 05bdc520b3ad39 Miaohe Lin        2020-10-13  1153   * in the hierarchy among all concurrent reclaimers operating on the
+> 05bdc520b3ad39 Miaohe Lin        2020-10-13  1154   * same node.
+> 5660048ccac873 Johannes Weiner   2012-01-12  1155   */
+> 694fbc0fe78518 Andrew Morton     2013-09-24  1156  struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
+> 9f3a0d0933de07 Johannes Weiner   2012-01-12  1157  				   struct mem_cgroup *prev,
+> 694fbc0fe78518 Andrew Morton     2013-09-24  1158  				   struct mem_cgroup_reclaim_cookie *reclaim)
+> 7d74b06f240f1b KAMEZAWA Hiroyuki 2010-10-27  1159  {
+> 3f649ab728cda8 Kees Cook         2020-06-03  1160  	struct mem_cgroup_reclaim_iter *iter;
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1161  	struct cgroup_subsys_state *css = NULL;
+> 9f3a0d0933de07 Johannes Weiner   2012-01-12  1162  	struct mem_cgroup *memcg = NULL;
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1163  	struct mem_cgroup *pos = NULL;
+> 711d3d2c9bc3fb KAMEZAWA Hiroyuki 2010-10-27  1164  
+> 694fbc0fe78518 Andrew Morton     2013-09-24  1165  	if (mem_cgroup_disabled())
+> 694fbc0fe78518 Andrew Morton     2013-09-24  1166  		return NULL;
+> 5660048ccac873 Johannes Weiner   2012-01-12  1167  
+> 9f3a0d0933de07 Johannes Weiner   2012-01-12  1168  	if (!root)
+> 9f3a0d0933de07 Johannes Weiner   2012-01-12  1169  		root = root_mem_cgroup;
+> 9f3a0d0933de07 Johannes Weiner   2012-01-12  1170  
+> 542f85f9ae4acd Michal Hocko      2013-04-29  1171  	rcu_read_lock();
+> 14067bb3e24b96 KAMEZAWA Hiroyuki 2009-04-02  1172  
+> 527a5ec9a53471 Johannes Weiner   2012-01-12  1173  	if (reclaim) {
+> ef8f2327996b5c Mel Gorman        2016-07-28  1174  		struct mem_cgroup_per_node *mz;
+> 527a5ec9a53471 Johannes Weiner   2012-01-12  1175  
+> a3747b53b1771a Johannes Weiner   2021-04-29  1176  		mz = root->nodeinfo[reclaim->pgdat->node_id];
+> 9da83f3fc74b80 Yafang Shao       2019-11-30  1177  		iter = &mz->iter;
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1178  
+> a9320aae68a1cd Wei Yang          2022-04-28  1179  		/*
+> a9320aae68a1cd Wei Yang          2022-04-28  1180  		 * On start, join the current reclaim iteration cycle.
+> a9320aae68a1cd Wei Yang          2022-04-28  1181  		 * Exit when a concurrent walker completes it.
+> a9320aae68a1cd Wei Yang          2022-04-28  1182  		 */
+> a9320aae68a1cd Wei Yang          2022-04-28  1183  		if (!prev)
+> a9320aae68a1cd Wei Yang          2022-04-28  1184  			reclaim->generation = iter->generation;
+> a9320aae68a1cd Wei Yang          2022-04-28  1185  		else if (reclaim->generation != iter->generation)
+> 542f85f9ae4acd Michal Hocko      2013-04-29  1186  			goto out_unlock;
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1187  
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1188  		while (1) {
+> 4db0c3c2983cc6 Jason Low         2015-04-15  1189  			pos = READ_ONCE(iter->position);
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1190  			if (!pos || css_tryget(&pos->css))
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1191  				break;
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1192  			/*
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1193  			 * css reference reached zero, so iter->position will
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1194  			 * be cleared by ->css_released. However, we should not
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1195  			 * rely on this happening soon, because ->css_released
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1196  			 * is called from a work queue, and by busy-waiting we
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1197  			 * might block it. So we clear iter->position right
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1198  			 * away.
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1199  			 */
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29 @1200  			(void)cmpxchg(&iter->position, pos, NULL);
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1201  		}
+> 89d8330ccf2ad4 Wei Yang          2022-04-28  1202  	} else if (prev) {
+> 89d8330ccf2ad4 Wei Yang          2022-04-28  1203  		pos = prev;
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1204  	}
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1205  
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1206  	if (pos)
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1207  		css = &pos->css;
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1208  
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1209  	for (;;) {
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1210  		css = css_next_descendant_pre(css, &root->css);
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1211  		if (!css) {
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1212  			/*
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1213  			 * Reclaimers share the hierarchy walk, and a
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1214  			 * new one might jump in right at the end of
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1215  			 * the hierarchy - make sure they see at least
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1216  			 * one group and restart from the beginning.
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1217  			 */
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1218  			if (!prev)
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1219  				continue;
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1220  			break;
+> 542f85f9ae4acd Michal Hocko      2013-04-29  1221  		}
+> 5f578161971863 Michal Hocko      2013-04-29  1222  
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1223  		/*
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1224  		 * Verify the css and acquire a reference.  The root
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1225  		 * is provided by the caller, so we know it's alive
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1226  		 * and kicking, and don't take an extra reference.
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1227  		 */
+> 41555dadbff8d2 Wei Yang          2022-04-28  1228  		if (css == &root->css || css_tryget(css)) {
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1229  			memcg = mem_cgroup_from_css(css);
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1230  			break;
+> 41555dadbff8d2 Wei Yang          2022-04-28  1231  		}
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1232  	}
+> 9f3a0d0933de07 Johannes Weiner   2012-01-12  1233  
+> 527a5ec9a53471 Johannes Weiner   2012-01-12  1234  	if (reclaim) {
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1235  		/*
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1236  		 * The position could have already been updated by a competing
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1237  		 * thread, so check that the value hasn't changed since we read
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1238  		 * it to avoid reclaiming from the same cgroup twice.
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1239  		 */
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1240  		(void)cmpxchg(&iter->position, pos, memcg);
+> 6df38689e0e9a0 Vladimir Davydov  2015-12-29  1241  
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1242  		if (pos)
+> 5ac8fb31ad2ebd Johannes Weiner   2014-12-10  1243  			css_put(&pos->css);
+> 542f85f9ae4acd Michal Hocko      2013-04-29  1244  
+> 19f39402864ea3 Michal Hocko      2013-04-29  1245  		if (!memcg)
+> 527a5ec9a53471 Johannes Weiner   2012-01-12  1246  			iter->generation++;
+> 527a5ec9a53471 Johannes Weiner   2012-01-12  1247  	}
+> 14067bb3e24b96 KAMEZAWA Hiroyuki 2009-04-02  1248  
+> 542f85f9ae4acd Michal Hocko      2013-04-29  1249  out_unlock:
+> 542f85f9ae4acd Michal Hocko      2013-04-29  1250  	rcu_read_unlock();
+> c40046f3ad5e87 Michal Hocko      2013-04-29  1251  	if (prev && prev != root)
+> c40046f3ad5e87 Michal Hocko      2013-04-29  1252  		css_put(&prev->css);
+> c40046f3ad5e87 Michal Hocko      2013-04-29  1253  
+> 9f3a0d0933de07 Johannes Weiner   2012-01-12  1254  	return memcg;
+> 9f3a0d0933de07 Johannes Weiner   2012-01-12  1255  }
+> 14067bb3e24b96 KAMEZAWA Hiroyuki 2009-04-02  1256  
+> 
+> :::::: The code at line 1200 was first introduced by commit
+> :::::: 6df38689e0e9a07ff4f42c06b302e203b33667e9 mm: memcontrol: fix possible memcg leak due to interrupted reclaim
+> 
+> :::::: TO: Vladimir Davydov <vdavydov@virtuozzo.com>
+> :::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
 
