@@ -1,141 +1,121 @@
-Return-Path: <linux-kernel+bounces-138609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6CBA89F45C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:33:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8E6389F82C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:35:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86B4A1F257A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:33:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 68C961F2668A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:35:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0974115ECF1;
-	Wed, 10 Apr 2024 13:33:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Q8g+2dUB";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="T2V3VAFr"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AE9715EFA0;
+	Wed, 10 Apr 2024 13:35:32 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFC0215ADBF;
-	Wed, 10 Apr 2024 13:33:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DCF415DBC4;
+	Wed, 10 Apr 2024 13:35:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712756001; cv=none; b=rAAGWTFT3J5GwkniIOboMWTDr3bPOKUqV5QJkh9ZKI2kR9OzFa2EZXMSYTtg6CYudqJzTjyE1IG1fUIzmAmKlfaUHPLxT+po/oxxZqFojdDmv+J68gH7ou0MpPWV1To8kkodDlZ7mQHrTLBlV5wGefaTKZaI+Ivc6KARK0Oa34s=
+	t=1712756131; cv=none; b=fNT0MHZ09/adnjNc98v6ZsM3XgHCC90GR6a18zLiyTokvi6KoMHjPa93vveYIcO4+3KNsaEOwULYci9nXxTTO11khGAhiAwcQ29glSBeuk/0+MuG7lxnsje/mmcaI/HOkJC27TyuCX11x/gycWgfppsC4ec9djxrH5JzMVTkXw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712756001; c=relaxed/simple;
-	bh=FIObw+nkd3bM6GB0vbvXE8UQ7qTFir/wKkV2t7da6Go=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=K4dV/xYlabK77fxbGKhHCYZ7/1fCGS1cy1UuMn+wNYYA5G7/vi+d4hr2pI6xqQw/Zjv0BwMQ+zsvcnyG5AIzPHH1bPeL6Txk4YalNZa5xiQ9LTQg76AUTk9BgIbmuwhXOjSk2LXHJG/WwYLLYVjyPrWdEURBzVbsHwexFb8ZydM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Q8g+2dUB; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=T2V3VAFr; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 10 Apr 2024 13:33:17 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712755998;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KvcjXtJHxGZvszgd21JjPouK1zZmiXf4vKLraFZNs7g=;
-	b=Q8g+2dUBle1+qFcvpD1qzY+6c1Qki3GGQ32/5t3c74xpNujXq/Xkw7qh1mI3qd+hgvUSJs
-	x2wNIEIsSLRz9PSph2hHWdrZhAGWL+OLMMUSlCUPo3i/kPQQIJXG6FmOdfmMbcThHlms81
-	YISG9qe2iJA0epKc1iuJbZBh74r5gKT64jnh94ijDzXUueipIRGXx8p1CtZLkcq6DVqILA
-	VfYSkrDh+8LIwrWScOS2caXDNsX1n0yYVksG1HC9JW9f2kpdS4+EjdnDMFQrGvJO7VHc30
-	pfcbKKysa9F3IwNEA60pMTzji/2UjcK/1CYvgYnHMAp52szTjE3w9LTC+z6O5w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712755998;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KvcjXtJHxGZvszgd21JjPouK1zZmiXf4vKLraFZNs7g=;
-	b=T2V3VAFrsfQG28ICTD/LrSkDnoldfwsZFJSSELgYoHnUe+KUJ3iIeLdDlpsQf0cLfRwxfl
-	/cuvNwg1rdvn2rDg==
-From: "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/alternatives] x86/topology: Don't update cpu_possible_map
- in topo_set_cpuids()
-Cc: Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
- Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <87ttkc6kwx.ffs@tglx>
-References: <87ttkc6kwx.ffs@tglx>
+	s=arc-20240116; t=1712756131; c=relaxed/simple;
+	bh=DEngBseA5QdXJf4v5A8FOKLkLRqL3wSCn7bc2Hv/DbU=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jO+0FXH25HHd5mKaDCgEQsO8Buetd22xqWObWZwDyfK72s3wShOiE0vJ900YiwplZXWEBsmCQyBhAZJsAO1sxkamms73eg8hxHbrkVfmeCS6IEfk4J6NLNwaZrIbB5YTfP85a+l3AGAKFC9khlHLyizP9N0h92Ql/DDIcEXkhkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VF3gw6K6yz6K64Y;
+	Wed, 10 Apr 2024 21:33:48 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id B906F1400CA;
+	Wed, 10 Apr 2024 21:35:26 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 10 Apr
+ 2024 14:35:26 +0100
+Date: Wed, 10 Apr 2024 14:35:25 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Miguel Luis <miguel.luis@oracle.com>
+CC: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<rmk+kernel@armlinux.org.uk>
+Subject: Re: [RFC PATCH 0/4] ACPI: processor: refactor
+ acpi_processor_{get_info|remove}
+Message-ID: <20240410143525.0000620a@Huawei.com>
+In-Reply-To: <20240409150536.9933-1-miguel.luis@oracle.com>
+References: <20240409150536.9933-1-miguel.luis@oracle.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171275599725.10875.2334973841173648754.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-The following commit has been merged into the x86/alternatives branch of tip:
+On Tue,  9 Apr 2024 15:05:29 +0000
+Miguel Luis <miguel.luis@oracle.com> wrote:
 
-Commit-ID:     675ae1aac0572595999e6f78a16e51351291f7aa
-Gitweb:        https://git.kernel.org/tip/675ae1aac0572595999e6f78a16e51351291f7aa
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 08 Apr 2024 15:22:01 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 10 Apr 2024 15:24:27 +02:00
+> Both acpi_processor_get_info and acpi_processor_remove functions have
+> architecture dependent functionality enabled via CONFIG_ACPI_HOTPLUG_CPU.
+> 
+> Current pre-processor guards are restricting too much of functionality which
+> makes it dificult to integrate other features such as Virtual CPU
+> hotplug/unplug for arm64.
+> 
+> This series, applied on top of v6.9-rc3, suggests a refactoring on these two
+> functions with the intent to understand them better and hopefully ease
+> integration of more functionality.
+> 
+> Apart from patches 2/4 and 3/4, which could be squashed but left them separated
+> intentionally so it would ease reviewing, changes are self-contained.
+> 
+> So far I've boot tested it successfully alone and as a prefix for vCPU hotplug/unplug
+> patches [1], on arm64.
 
-x86/topology: Don't update cpu_possible_map in topo_set_cpuids()
+Hi Miguel,
 
-topo_set_cpuids() updates cpu_present_map and cpu_possible map. It is
-invoked during enumeration and "physical hotplug" operations. In the
-latter case this results in a kernel crash because cpu_possible_map is
-marked read only after init completes.
+Great to see an attempt to keep this moving. My apologies that I've been rather
+quiet on this so far this cycle - a few things came up that ended up more urgent :(
 
-There is no reason to update cpu_possible_map in that function. During
-enumeration cpu_possible_map is not relevant and gets fully initialized
-after enumeration completed. On "physical hotplug" the bit is already set
-because the kernel allows only CPUs to be plugged which have been
-enumerated and associated to a CPU number during early boot.
+In the thread you link there was a discussion on whether to stub out these functions
+as a possible way forwards. I did some analysis of what was going on in 
 
-Remove the bogus update of cpu_possible_map.
+https://lore.kernel.org/linux-arm-kernel/20240322185327.00002416@Huawei.com/
 
-Fixes: 0e53e7b656cf ("x86/cpu/topology: Sanitize the APIC admission logic")
-Reported-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/87ttkc6kwx.ffs@tglx
+and my conclusion was that to do so would mostly be misleading.
+The flows for make present and make enabled are and should be different
+(though not as different as they were in v4!)
 
----
- arch/x86/kernel/cpu/topology.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Jonathan
 
-diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
-index aaca8d2..d17c9b7 100644
---- a/arch/x86/kernel/cpu/topology.c
-+++ b/arch/x86/kernel/cpu/topology.c
-@@ -123,7 +123,6 @@ static void topo_set_cpuids(unsigned int cpu, u32 apic_id, u32 acpi_id)
- 	early_per_cpu(x86_cpu_to_apicid, cpu) = apic_id;
- 	early_per_cpu(x86_cpu_to_acpiid, cpu) = acpi_id;
- #endif
--	set_cpu_possible(cpu, true);
- 	set_cpu_present(cpu, true);
- }
- 
-@@ -210,7 +209,11 @@ static __init void topo_register_apic(u32 apic_id, u32 acpi_id, bool present)
- 		topo_info.nr_disabled_cpus++;
- 	}
- 
--	/* Register present and possible CPUs in the domain maps */
-+	/*
-+	 * Register present and possible CPUs in the domain
-+	 * maps. cpu_possible_map will be updated in
-+	 * topology_init_possible_cpus() after enumeration is done.
-+	 */
- 	for (dom = TOPO_SMT_DOMAIN; dom < TOPO_MAX_DOMAIN; dom++)
- 		set_bit(topo_apicid(apic_id, dom), apic_maps[dom].map);
- }
+> 
+> [1]: https://lore.kernel.org/linux-arm-kernel/Zbp5xzmFhKDAgHws@shell.armlinux.org.uk/
+> 
+> Miguel Luis (4):
+>   ACPI: processor: refactor acpi_processor_get_info: evaluation of
+>     processor declaration
+>   ACPI: processor: refactor acpi_processor_get_info: isolate cpu hotpug
+>     init delay
+>   ACPI: processor: refactor acpi_processor_get_info: isolate
+>     acpi_{map|unmap}_cpu under CONFIG_ACPI_HOTPLUG_CPU
+>   ACPI: processor: refactor acpi_processor_remove: isolate
+>     acpi_unmap_cpu under CONFIG_ACPI_HOTPLUG_CPU
+> 
+>  drivers/acpi/acpi_processor.c | 138 ++++++++++++++++++++++------------
+>  1 file changed, 91 insertions(+), 47 deletions(-)
+> 
+> --
+> 2.43.0
+> 
+
 
