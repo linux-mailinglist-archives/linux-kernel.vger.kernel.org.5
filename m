@@ -1,256 +1,149 @@
-Return-Path: <linux-kernel+bounces-138415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64C8789F0F0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:32:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16DB089F0F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:32:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A38828C020
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:32:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93CB21F244BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E5B15990D;
-	Wed, 10 Apr 2024 11:32:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 307DF15991C;
+	Wed, 10 Apr 2024 11:32:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oPAENpGo"
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="gwayz7mQ"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 801891598EB
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 11:32:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2031598EB;
+	Wed, 10 Apr 2024 11:32:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712748737; cv=none; b=dOhrSy2i8NonnCSgwyWZ1oGcIotIUYp+i7+yBPPQZanlXo1OIwOjU/AP7ZPjzzvURYA6nRSev4S5X4EL7pEdkdb0OLNZPvj480MTdM1elj6TjyzNtXVinmWEjMZvaPRETCsvdSyDo7Ym8s1Iw+q2rNtgw9Ykpf5S1wlZoMNxRbs=
+	t=1712748753; cv=none; b=CK6bwO0hX3okxx9ovTN56kj4Bs2HdHysQamAKWF6ysdAifmfWJGz4WRIvXcE/5WwoOEv9bpz6Azs6e0VCTs7xRPpTMd4C/XGuwI5aQZiWFXuUhLwa0viRg22jIf+AIOU32QLyhT4JUO4Oasf+qcGJKq1cls8Dwutk/1LESERW14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712748737; c=relaxed/simple;
-	bh=LMXzBsCBkD5PGmPWNDZ56ClOzx9ewbOx15xHxK1A9cM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KEmlupy8jHu++wxQ38NtyTezfiWQDgFw4EdpIxRYmJNSPs9fNN7ayflxMIBmfOvWC5pHfUPJx+kNol9Yo9KR7MjEPp5HyQYLXxiQVDDGzykCvwIRv6pppzOLB2tMCjocUzO9Ho6t/MZG6aFPq0UTrdY9EarpAJEFW88FFH3hs9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oPAENpGo; arc=none smtp.client-ip=209.85.167.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c603f6eb37so482084b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 04:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712748733; x=1713353533; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7JvKG5w4RwC7ETFUBrTzr99BNRj7EiMJi8Q/PGI+6f0=;
-        b=oPAENpGoGhrSVIhYjmNr1bTzPIW3jWqVKliA3k6fwu9U1XEUA9opP0NSPqhFGiFtXJ
-         H//95BfvBMStIDsQW+lRl/WmYx8XyUC2Pv2uP/SfFqDmFL5mSryMxI5dLd764xkRShWY
-         9kZRu9B/e/KnmZp5pk8+aU0P0tb+fdF/I3z0RvJUj0X5qVxP1EGQX5nq64wope2UUBCZ
-         j5qY+eaWRgXd1MzgLipCqwr6zjnKHWYMRcrfvn5D9TwKoKoKYeTUBJ+bvOWXPpK7YZqP
-         CySevwsFSU4iREW2qYtWbOfhoH2GMxRFhEz6TvS2KCPd9hjVW728d9/+GstGumGv7huF
-         yKNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712748733; x=1713353533;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7JvKG5w4RwC7ETFUBrTzr99BNRj7EiMJi8Q/PGI+6f0=;
-        b=TTt5IIMAWQ1qiThgXZZnhq7uHrKX48Qg7cTGkDzD0j2PSmQajZwOU/HbDJDqNBgSCt
-         uRaNRgZlW2wEAb5UFOG2NWgaaXeYEa5JQGVXwkEMsC1kiUgkclJ6qqschs+EJdJ7fUjT
-         0WWnYJcZCjVxdJxD0Ey4SaCc6fdXszIAgY7MfhMHUpvJIfbUJuXLIRXM+oPakMsfC11x
-         EYvBGmAl4JNgI27pLhPjYvSYzFypzDd48u3AGifVy+Lf1F1t0XN0k36H91+Z4tYAMV2z
-         0D6aCxXfouGo00nzamVinTdJYCKnXZnK04s8uC+JdHQASH14awGDR4sb4Q3soP5Ds4qF
-         JECg==
-X-Forwarded-Encrypted: i=1; AJvYcCXfmD19BYhRMkNPU6Dx6avtakrK5fmakr+zVvvtLNRm80ODHUU4c5pxAelBlD2QVaIuXsZt9IkRB2YSB4jjOKmXuC78vLm1NeztYZHg
-X-Gm-Message-State: AOJu0Yx4Ky8lQdAcPbW5PYl6+5dTH3tiCDsFceFYnU9GIcYCIUaWoNbK
-	nTU2scj2EqUcJZJWRAQ4wgeOBNPGH7Kp+PaWT8IQ7IJfwAQCv1K23/VzEiux/H5UjbjNT00+MkY
-	JmrOobDEFsocfVk2yKaxvKiOl0NbELWtjAmh/gw==
-X-Google-Smtp-Source: AGHT+IHnESeFbylzD7DsY/rZ/yOCyt6H+JQI+c768R+T1SiiVV41DvW9OL0gkD4KowAYkHM6epWfo2sYkXQE8/LcfmY=
-X-Received: by 2002:a05:6808:1815:b0:3c3:b623:1d21 with SMTP id
- bh21-20020a056808181500b003c3b6231d21mr2580110oib.4.1712748733490; Wed, 10
- Apr 2024 04:32:13 -0700 (PDT)
+	s=arc-20240116; t=1712748753; c=relaxed/simple;
+	bh=VG85eirFHChd1svVi0CFPjLxBM2ZZf5eSOZGPm4+ZWk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OrNXOVm4KuKCRYfC6AD5jBdsv/xMX5cyk5k4UNIS1chwuyTF5yxZTu3M4p6ciWw3ZBpuyI5BWvGsX3Nt6XaL8IKNRx9JxCFifdg+Gtz6chxTgenk0vlEnfgGtbWyQsQUILwfxdazFQZIRnQs5wGd/gdkD2RJg6hJLQCmbVtngME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=gwayz7mQ; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1712748747; bh=VG85eirFHChd1svVi0CFPjLxBM2ZZf5eSOZGPm4+ZWk=;
+	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+	b=gwayz7mQmP3mruRQtN/CjRosweQBlw/ZKVLEFtWkVFZxOiaYBVAaZwxx+DalbBqIb
+	 gW9N2yjfhAc8hgZoee13SS65u2oyBAVCmaEk2l9OryW2AmPpRL555w2BFMNPksFSe9
+	 hQMvb3Y2R7vsku4+jJ5aPM+v92fmULPsSpwP9GWM=
+Date: Wed, 10 Apr 2024 13:32:26 +0200
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Pavel Machek <pavel@ucw.cz>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, phone-devel@vger.kernel.org, 
+	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
+	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCHv3 2/2] usb: typec: anx7688: Add driver for ANX7688 USB-C
+ HDMI bridge
+Message-ID: <2panrf3dgpwkwywf4vv676tjlbdqpzjb75vpfhiohabhrxc6h2@tmouy7prgikm>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Pavel Machek <pavel@ucw.cz>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, phone-devel@vger.kernel.org, 
+	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
+	gregkh@linuxfoundation.org, linux-usb@vger.kernel.org
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <ZhPMHdt6r/4D99Zg@duo.ucw.cz>
+ <ZhPM4XU8ttsFftBd@duo.ucw.cz>
+ <ZhUQ6kzV5ARlkfPC@kuha.fi.intel.com>
+ <ZhUgrNwRYoaV1AIJ@duo.ucw.cz>
+ <4q7o5vb26ibkbvqal5nn4kdnc32rrajhtszrf4fnuisnlfcsg5@6322saeu7qoe>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409173628.028890390@linuxfoundation.org>
-In-Reply-To: <20240409173628.028890390@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 10 Apr 2024 17:02:01 +0530
-Message-ID: <CA+G9fYvUqvQyaG+OFLMpjtrkFJ0wPWFEsw_wjs8o11WL2LyJ3Q@mail.gmail.com>
-Subject: Re: [PATCH 5.15 000/697] 5.15.154-rc3 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
-	broonie@kernel.org, Anders Roxell <anders.roxell@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4q7o5vb26ibkbvqal5nn4kdnc32rrajhtszrf4fnuisnlfcsg5@6322saeu7qoe>
 
-On Tue, 9 Apr 2024 at 23:15, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.15.154 release.
-> There are 697 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 11 Apr 2024 17:35:00 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.15.154-rc3.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.15.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Tue, Apr 09, 2024 at 06:35:50PM GMT, Dmitry Baryshkov wrote:
+> On Tue, Apr 09, 2024 at 01:04:12PM +0200, Pavel Machek wrote:
+> > Hi!
+> > 
+> > > > This is driver for ANX7688 USB-C HDMI, with flashing and debugging
+> > > > features removed. ANX7688 is rather criticial piece on PinePhone,
+> > > > there's no display and no battery charging without it.
+> > > > 
+> > > > There's likely more work to be done here, but having basic support
+> > > > in mainline is needed to be able to work on the other stuff
+> > > > (networking, cameras, power management).
+> > > > 
+> > > > Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> > > > Co-developed-by: Martijn Braam <martijn@brixit.nl>
+> > > > Co-developed-by: Samuel Holland <samuel@sholland.org>
+> > > > Signed-off-by: Pavel Machek <pavel@ucw.cz>
+> > > 
+> > > Just couple of quick comments below - I did not have time to go over
+> > > this very thoroughly, but I think you need to make a new version in
+> > > any case because of comments in 1/2.
+> > 
+> 
+> [skipped]
+> 
+> > 
+> > > > +static int anx7688_connect(struct anx7688 *anx7688)
+> > > > +{
+> > > > +	struct typec_partner_desc desc = {};
+> > > > +	int ret, i;
+> > > > +	u8 fw[2];
+> > > > +	const u8 dp_snk_identity[16] = {
+> > > > +		0x00, 0x00, 0x00, 0xec,	/* id header */
+> > > > +		0x00, 0x00, 0x00, 0x00,	/* cert stat */
+> > > > +		0x00, 0x00, 0x00, 0x00,	/* product type */
+> > > > +		0x39, 0x00, 0x00, 0x51	/* alt mode adapter */
+> > > > +	};
+> > > > +	const u8 svid[4] = {
+> > > > +		0x00, 0x00, 0x01, 0xff,
+> > > > +	};
+> > > 
+> > > Why not get those from DT?
+> > 
+> > Are you sure it belongs to the DT (and that DT people will agree)?
+> 
+> From Documentation/devicetree/bindings/connector/usb-connector.yaml:
+> 
+>             altmodes {
+>                 displayport {
+>                     svid = /bits/ 16 <0xff01>;
+>                     vdo = <0x00001c46>;
+>                 };
+>             };
+> 
+> BTW, I don't see the VDO for the DP altmode in your code. Maybe I missed
+> it at a quick glance.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+VDO is set via TYPE_DP_SNK_CFG message to the firmware. There may be some
+default in the firmware which matches Pinephone receptacle configuration.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+I guess the driver can send the VDO value from DT after firmware is
+initialized. Other values can be set in DT too, but extreme care needs to
+ne take, because firmware has some bugs, which cause it to request
+high voltage from PD PSU when it's in fact not part of PDO, potentially
+destroying the device. So I'd rather not expose at least PDOs in DT to random
+unsuspecting DT users who just copy paste and edit DT without reading the driver
+code or some obscure notes somewhere.
 
-## Build
-* kernel: 5.15.154-rc3
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.15.y
-* git commit: 8bdd6a2f1b3b20acaf3db5dfde2da36cbafc3cd4
-* git describe: v5.15.153-698-g8bdd6a2f1b3b
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15=
-153-698-g8bdd6a2f1b3b
+kind regards,
+	o.
 
-## Test Regressions (compared to v5.15.152)
-
-## Metric Regressions (compared to v5.15.152)
-
-## Test Fixes (compared to v5.15.152)
-
-## Metric Fixes (compared to v5.15.152)
-
-## Test result summary
-total: 95232, pass: 75353, fail: 2545, skip: 17268, xfail: 66
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 104 total, 104 passed, 0 failed
-* arm64: 31 total, 31 passed, 0 failed
-* i386: 25 total, 25 passed, 0 failed
-* mips: 22 total, 22 passed, 0 failed
-* parisc: 3 total, 3 passed, 0 failed
-* powerpc: 24 total, 24 passed, 0 failed
-* riscv: 8 total, 8 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 6 total, 6 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mm
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-smoketest
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> > 
+> > > > +	u32 caps[8];
+> > > > +
+> 
+> 
+> -- 
+> With best wishes
+> Dmitry
 
