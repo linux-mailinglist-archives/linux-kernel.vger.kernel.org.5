@@ -1,184 +1,229 @@
-Return-Path: <linux-kernel+bounces-139253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0C9D8A0089
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:23:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BF2B8A0088
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:23:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BE3E1F27094
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:23:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70EC5B23514
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:23:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4112918131B;
-	Wed, 10 Apr 2024 19:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF68181304;
+	Wed, 10 Apr 2024 19:23:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IPY0K8DI"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="E92qv500"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C577017F370
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 19:23:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9048B17F370
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 19:23:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712777001; cv=none; b=o5LNL1wxqGtUybyiTp0Sa7VK7bHBdmyPg3o7Aa8ey5ft0kIxTIYBF1z7LCXLGyEyeEThCUBX7uPXRVBoSo7P5/VAvjmoFpqnd8Vs8SrFx/8KZD+FIk1i4VmQBNH9mFVuZys4DmiJu9lL2QcaviOexKACQhsye5lVSapF36e4ej0=
+	t=1712776992; cv=none; b=dUGBVy1SilZBorUA4a6shBRouy8gzdUuCd0Ekm3JgdqOJMakCHmLon0bNRoAdkSGVplr7F/4+601auXrb8s/OmXcvFjHGlM3xOx/wp7arlH4/deNMdnW5l9jBD1PdHg6sFlflwl0I+CHrwHTxTWpAhMG7qLSxws04Q48p5pvcFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712777001; c=relaxed/simple;
-	bh=lT1Zm8JHcfddh2weMtUQK4dvHTVIqbaTDfgt1QyEJTM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aBhmR+aUOQEUngEG0oZpO9MEkxO2sBiY+L9zHn1E3lv77D6cp6Ih++blFL0Id4doRZS+YeX57TcYc+YvN7VPBPTsCaIikyMY7llu+nL/cKSWyCT5zwDcRw0JhW4D5TpO+QhJK4bAzJE//r9S9P+1ZECHAVt3ocnNncyC9imbShw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IPY0K8DI; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56fd95160e5so91a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:23:19 -0700 (PDT)
+	s=arc-20240116; t=1712776992; c=relaxed/simple;
+	bh=KIKKA6Hcj7j4sB9R2gmnBeE9kkzXSDQYIfa9ZbHULD8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jyKNgjGN4lsQLvwVjrafKzy19wr6+W7RlkHxPskWymkmsssSUUUqq8LP8J7uCpXN7rSQ1eWCtK+xcfMAb79W4CiKdxVrMv5vdMoiQzR7iyO4lLxFG84yfHBQy0gf74g1KtVU75RKTkJ4lpNtWBnMvWm55soSYhhDGgg3q9l5VAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=E92qv500; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3462178fbf9so1061751f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:23:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712776998; x=1713381798; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MqRnr/YaOnp8eBWYbEFORhlsTmhT0mCO9vyhiwgW7oI=;
-        b=IPY0K8DIB4JxcC1O1tITCzfEPe7nEDDPSB4R6eVXZTp2p+3EStTKbTr3quYdBNemW7
-         Q0RB66OTIWxS92Hww8VzFN+Qu4jP/U0VkzK8/Ut+UmfKOhVTlQUXmeBokSRzgRmczcSU
-         ekg8cNL24/jAD3D9HXZ3p3JnQ86vbrWVd7SWzT96PnwpxraaN2UjVvzOvdasYpRUdcUc
-         L2apEcnlP+02032C8GvwUA7xXZQYjlhAthutKgIusASeklyJ7b1mjQHgh2mYa7TO2kxt
-         394JlFxvoUE/jb0W6dBCFuQrItx8mvc5aAIPh8J0YMJOgIBndJ5UJRSXrvHc/EtlRL4J
-         0sRw==
+        d=linaro.org; s=google; t=1712776989; x=1713381789; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=znrjsGL5C+KjaLJ4d7djZKSZEjO8u83UZVncMVhpCco=;
+        b=E92qv500ORrW53IdGB8YMp+ijUmeY734VYgWIW1Ea0g2K+VqFnEZpO4d4BAWSuNfD0
+         uQbDr+5bTwljIAP6MysLtR5BvfupFKNZ5W8vfNMCdl/gsAs17r+ekyQ/pjponTDOYwZl
+         DAu8i+T2SquD+XSNYQwTaif+abaEdZMVliPUcn+HXcs8A/OeHTZMWt/NcGV61P1dfLph
+         ZGm9YMP4SM8ZEP5FKxdH5d80biNEw67XmCXuIXJfMHi+jM8r7U7AVwF8ETf6coJS5FMo
+         8kngQkgr0UqNCSiJNzHyOEJSOjaSY6x0/m8TsGBT7Uj4/hhJA5izk42x7p7CH8g5u76s
+         ZESg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712776998; x=1713381798;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MqRnr/YaOnp8eBWYbEFORhlsTmhT0mCO9vyhiwgW7oI=;
-        b=P5okikkbCb95ufmLthUYQjq4x/qJnc6MCshjJZhLFo4tmbNY9oW8Nsan7gPmmJGB4I
-         9X1WQoP5gKaP3+k6W2HqdmNJn+U4YcPU94nL0BtfM9bfowB8IdyLUzld1FJ4bXaOlC2H
-         WiY4+8WYV7ykErdRp/pvgaHkOPmCE8MIcom6CLoDiialeE2N8lCrqGnc9+UbqQl6tAGg
-         SP8DrHYbDHMIweWqujQOwKdHFOSjVJaGfVOuWFCgbjqrPD6XXIsrazKvvkfcQcyF+YDd
-         FJPF+1fcxF7Io+Qoc5yfOhcYg4mMXMb/GC2zTPVf6wJsB9jrBPVzIdUhhLHDOqMrB6yf
-         a68A==
-X-Forwarded-Encrypted: i=1; AJvYcCWu+7Hg9yCzGRbkG49PqNBVpoHMviqm0OoAi9RJwKHdpH6kVrKX0cjqE9cXtehuFPVNGER7wgEaergW7MYJ9uXbqx7J9MKoG3QWBa0U
-X-Gm-Message-State: AOJu0YwoVkVftdlHAlRHD2XoQ1MQe/5fuCYnCUI/xigE0DlTt/L30BMr
-	/SnqtyR5g4sgUj+WsS+tUqoW9jIY363I5o004YD5+7Kp3v98V6n3XDeiFRojYk3GSfr6vaVRY51
-	FdSmg0Zh/OqlI+qmNjWWIkGI1APd8r1CVH9k=
-X-Google-Smtp-Source: AGHT+IFAOIO1d/iE/5tpsvrjq0hzFjN9sk6VBlLidVlN49CH1ZkO6MA65QTtwl46FDq7idQCIyEQI7r1t4J0W6UQ5z8=
-X-Received: by 2002:a05:6402:214d:b0:56e:72a3:e5a8 with SMTP id
- bq13-20020a056402214d00b0056e72a3e5a8mr25655edb.3.1712776997947; Wed, 10 Apr
- 2024 12:23:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712776989; x=1713381789;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=znrjsGL5C+KjaLJ4d7djZKSZEjO8u83UZVncMVhpCco=;
+        b=Xr5RxaPQKAQn1U7038zWHQ8snZunyVdRI+uFvgpYx4RreYubQXO2Iie79EhaqDNjRr
+         +h9FavvJI4C5HMaIbcrH1LoKHVuMNoVVicD2FPEQljj/70TVWiyugCXWMHD5rgumhivM
+         lhxAr5u4v40ZVDlXaj/1oZXcsRETNszF34u3ORlGN55vvoCJKJ5x7frz48Mjcrz3hTxN
+         FDv5jivIQ5n/m/jhHqpKuKbgCU9K1ZIkTA76vILCZWAU+YKQfWDwzVhh8yjrmlbOXTKq
+         ZYqCZ9ZkQOosvGlKCg58aevvt/wsGnffhiNetyqJxP0RtuWMcLjw4SYFdeMJAfyesb9C
+         Cikw==
+X-Forwarded-Encrypted: i=1; AJvYcCXOH9tk2V6DYF+IKzkYhltePkrhIpvGt7MofQcc/oWaKFkefe8ts7lfGjYQm/YkuJgSVnZumcBKQz9K1fhGChEYkiA+YoT6Zgy3NYWm
+X-Gm-Message-State: AOJu0YxweFVz3z3s8iAM5lY3xKL3AIl5ygwkk5CJhu2na8Z2RDmdLKPn
+	m3Psl+zHJQzmrb52P+1QqKsSM1Wnb474Tl/SbhbkL085jr4LpPCyGk0wHNkj7Sk=
+X-Google-Smtp-Source: AGHT+IEX7550cBHUcy/0/2zwmjA2HA5+ybi+x+c0lyy/72b2nYn5cD9QRdR+1lYfMfjPMgPARX8cbQ==
+X-Received: by 2002:adf:f209:0:b0:343:420a:c70b with SMTP id p9-20020adff209000000b00343420ac70bmr3378939wro.62.1712776988905;
+        Wed, 10 Apr 2024 12:23:08 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id e38-20020a5d5966000000b003437ad152f9sm14382647wri.105.2024.04.10.12.23.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 12:23:08 -0700 (PDT)
+Message-ID: <27d755b5-dd26-4bef-9d92-1633409e14fb@linaro.org>
+Date: Wed, 10 Apr 2024 21:23:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHk-=whHWjKK1TOMT1XvxFj8e-_uctJnXPxM=SyWHmW63B_EDw@mail.gmail.com>
- <20240408084934.GC21904@noisy.programming.kicks-ass.net> <CAHk-=witEwVvJ6Wh4xdP-sUkLQSwcRTtg_NSuGMMgvYmcs3teQ@mail.gmail.com>
- <CAHk-=wg=Wdct5f9W2-tvwfRefv3xmw1-9Ko+RG+6=xjLu4ndFg@mail.gmail.com>
- <20240409104540.GB21779@noisy.programming.kicks-ass.net> <CAKwvOdktV5vnKwET1PhM8x0urK+LUhAC=uc28RXHUsvq-7_vbA@mail.gmail.com>
-In-Reply-To: <CAKwvOdktV5vnKwET1PhM8x0urK+LUhAC=uc28RXHUsvq-7_vbA@mail.gmail.com>
-From: Bill Wendling <morbo@google.com>
-Date: Wed, 10 Apr 2024 12:23:01 -0700
-Message-ID: <CAGG=3QWEbY0UbMHBkFMm6RxEz=CG8mauztsc1sT9efcy_MMjUA@mail.gmail.com>
-Subject: Re: More annoying code generation by clang
-To: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Peter Anvin <hpa@zytor.com>, 
-	"the arch/x86 maintainers" <x86@kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	clang-built-linux <llvm@lists.linux.dev>, Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/1] dt-bindings: ptp: Add device tree binding
+ for IDT FemtoClock
+To: Min Li <lnimi@hotmail.com>, richardcochran@gmail.com, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, Min Li <min.li.xe@renesas.com>
+References: <LV3P220MB1202BACF71E85F949FC09A29A0062@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <LV3P220MB1202BACF71E85F949FC09A29A0062@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 9, 2024 at 8:37=E2=80=AFAM Nick Desaulniers <ndesaulniers@googl=
-e.com> wrote:
->
-> On Tue, Apr 9, 2024 at 3:45=E2=80=AFAM Peter Zijlstra <peterz@infradead.o=
-rg> wrote:
-> >
-> > On Mon, Apr 08, 2024 at 12:42:31PM -0700, Linus Torvalds wrote:
-> >
-> > > Actually, one of the github issues pages has more of an explanation
-> > > (and yes, it's tied to impedance issues between the inline asm syntax
-> > > and how clang works):
-> > >
-> > >       https://github.com/llvm/llvm-project/issues/20571#issuecomment-=
-980933442
-> > >
-> >
-> > So that same issue seems to suggest Nick is actually working on this an=
-d
-> > got stuff merged. Nick, what is the status of your efforts and should w=
-e
-> > indeed do the below as Linus suggests or should he upgrade his compiler=
-?
->
-> Sorry, I'm no longer working on the issue.  I should mark that as such.
->
-> The feature got hung up on rewriting one of the register allocation
-> frameworks in llvm.
-> https://github.com/llvm/llvm-project/pull/74344
->
-> I have a new set of responsibilities at work so I probably wont be
-> working on that issue any time soon.
->
-I plan on picking this up. Could you please create a WIP branch on
-GitHub with your current work?
+On 10/04/2024 20:41, Min Li wrote:
+> From: Min Li <min.li.xe@renesas.com>
+> 
+> Add device tree binding doc for the IDT FemtoClock Frequency
+> Clock Synthesizers.
 
--bw
+A nit, subject: drop second/last, redundant "device tree binding for"
+The "dt-bindings" prefix is already stating that these are bindings.
+See also:
+https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
 
-> >
-> > > diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-=
-clang.h
-> > > index 49feac0162a5..0dee061fd7a6 100644
-> > > --- a/include/linux/compiler-clang.h
-> > > +++ b/include/linux/compiler-clang.h
-> > > @@ -118,3 +118,15 @@
-> > >
-> > >  #define __diag_ignore_all(option, comment) \
-> > >       __diag_clang(13, ignore, option)
-> > > +
-> > > +/*
-> > > + * clang has horrible behavior with "g" or "rm" constraints for asm
-> > > + * inputs, turning them into something worse than "m". Avoid using
-> > > + * constraints with multiple possible uses (but "ir" seems to be ok)=
-:
-> > > + *
-> > > + *   https://github.com/llvm/llvm-project/issues/20571
-> > > + *   https://github.com/llvm/llvm-project/issues/30873
-> > > + *   https://github.com/llvm/llvm-project/issues/34837
->
-> 20571 is the cannonical bug for this.
->
-> > > + */
-> > > +#define ASM_INPUT_G "ir"
-> > > +#define ASM_INPUT_RM "r"
-> > > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_=
-types.h
-> > > index 2abaa3a825a9..e53acd310545 100644
-> > > --- a/include/linux/compiler_types.h
-> > > +++ b/include/linux/compiler_types.h
-> > > @@ -380,6 +380,15 @@ struct ftrace_likely_data {
-> > >  #define asm_goto_output(x...) asm volatile goto(x)
-> > >  #endif
-> > >
-> > > +/*
-> > > + * Clang has trouble with constraints with multiple
-> > > + * alternative behaviors (mainly "g" and "rm").
-> > > + */
-> > > +#ifndef ASM_INPUT_G
-> > > +  #define ASM_INPUT_G "g"
-> > > +  #define ASM_INPUT_RM "rm"
-> > > +#endif
-> > > +
-> > >  #ifdef CONFIG_CC_HAS_ASM_INLINE
-> > >  #define asm_inline asm __inline
-> > >  #else
-> > > --
-> > > 2.44.0.330.g4d18c88175
-> > >
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
->
+> 
+> Signed-off-by: Min Li <min.li.xe@renesas.com>
+> ---
+>  .../devicetree/bindings/ptp/ptp-idtfc3.yaml   | 47 +++++++++++++++++++
+
+Filename based on compatible, e.g. idt,rc38xxx.yaml
+
+>  1 file changed, 47 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/ptp/ptp-idtfc3.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/ptp/ptp-idtfc3.yaml b/Documentation/devicetree/bindings/ptp/ptp-idtfc3.yaml
+> new file mode 100644
+> index 000000000000..3e1c3135df5a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/ptp/ptp-idtfc3.yaml
+> @@ -0,0 +1,47 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/ptp/ptp-idtfc3.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: RENESAS FemtoClock (TM) Frequency Clock Synthesizers
+> +
+> +maintainers:
+> +  - Min Li <min.li.xe@renesas.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      # For System Synchronizer
+> +      - idt,rc38xxx0
+> +      - idt,rc38xxx1
+> +      - idt,rc38xxx2
+> +      - idt,rc38xxx3
+> +      - idt,rc38xxx4
+> +      - idt,rc38xxx5
+> +      - idt,rc38xxx6
+> +      - idt,rc38xxx7
+> +      - idt,rc38xxx8
+> +      - idt,rc38xxx9
+
+What are the "xxx"? Wild-cards? Are these compatible? Please read
+writing-bindings.
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description:
+> +      I2C slave address of the device.
+
+Drop description, it is redundant.
+
+This looks quite incomplete. Why it cannot be part of existing idt binding?
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +	phc@9 { /* FemtoClock3 */
+
+You have totally messed indentation. What's more, this was not tested.
+
+What is "FemtoClock3" doing here? What is it exactly?
+
+> +		compatible = "idt,rc38xxx0";
+> +		reg = <0x9>;
+
+What's more, where is any user of it? What's the point of adding binding
+without any users? Please read submitting patches in DT bindings directory.
+
+Best regards,
+Krzysztof
+
 
