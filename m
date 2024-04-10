@@ -1,90 +1,96 @@
-Return-Path: <linux-kernel+bounces-138167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9869589ED9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FC7889EDA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:30:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 037CCB2293D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:29:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 143FEB22DFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:30:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B918113D617;
-	Wed, 10 Apr 2024 08:29:30 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7785113D634;
+	Wed, 10 Apr 2024 08:30:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="0CzQTEv5"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0633FBA37
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB0213D60F;
+	Wed, 10 Apr 2024 08:30:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712737770; cv=none; b=ayJoZQSg3+dzC6Ul+6nvPEG7tRhsGIFND/pkwGuvevW5nr5KZCn5sAnjoMCe4iwAEQghgsGzgUhe1uA+ibfFIRIl69CI/YrJLGZtwJtyyklKO+GiTeeDicm4oStGVwhh7u4r2ocbH00oAulZdUf7iKKqC8L4QvCyMTHzO4JEE8Q=
+	t=1712737813; cv=none; b=qnmPlbmoMo4ONHbdC5ZOtwTv7JRIk3NMnTVt30qY1ll88xvKBQRr4IFu1jzQRNouEp+WIjMwT37m6kllqE+EkaPAICXPdwchFedIpT5CbQbyBKdOT5LiBDPKntHM7e8yG010pZZYhCirB/UGriFSAJS3J70yRodcNEDqV15aaBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712737770; c=relaxed/simple;
-	bh=oA1OroOV76SMR8urGwhuYEaO4AxVjvhxMhUOgmibY7k=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=u7SQv/VIb0zfHQIAO2tfDQDzqepxESsae4MHr2sdv5MoW4XiN2JlwGcdY3jd+n45kDcNsQaro60HGQHh+sLXRkvL9m9+1LbMRpEaCFabEyttC9X+zkQFM68n0TixGHNp28A3HdItV8xegkxNJSOu/JI9ZOlbk2euInrk5q/cPZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1ruTKg-0007cr-Fg; Wed, 10 Apr 2024 10:29:26 +0200
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1ruTKf-00BSdI-RC; Wed, 10 Apr 2024 10:29:25 +0200
-Received: from pza by lupine with local (Exim 4.96)
-	(envelope-from <p.zabel@pengutronix.de>)
-	id 1ruTKf-000463-2X;
-	Wed, 10 Apr 2024 10:29:25 +0200
-Message-ID: <4969fb7a602fca2354b8d812a0f48bf495d7941e.camel@pengutronix.de>
-Subject: Re: [PATCH 4/4] gpu: ipu-v3: Convert to platform remove callback
- returning void
-From: Philipp Zabel <p.zabel@pengutronix.de>
-To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Date: Wed, 10 Apr 2024 10:29:25 +0200
-In-Reply-To: <dee3c0e1c8c6bd1027a91c65be55ac1d6ba9e099.1712681770.git.u.kleine-koenig@pengutronix.de>
-References: <cover.1712681770.git.u.kleine-koenig@pengutronix.de>
-	 <dee3c0e1c8c6bd1027a91c65be55ac1d6ba9e099.1712681770.git.u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1712737813; c=relaxed/simple;
+	bh=g0inTgKrdcNpJsKqCIJbmzWiWIcGhn7etTaylPEt72k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kQoI8f3scWIWwHIAlbteYDSMf4FfGK9+6huZDIJAxSoRcpHUzKjwmXQOf7NA8MFfkt5HXnrtVb8Hvnt81UmUUEGRTNwk2WpviJGwKdnpzbMb+aDVx4RJPCDOTTHzbxexcI4JrZzBKbPOiG+nlF/d/RK4ChWj6pGky/4Wp6aldNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=0CzQTEv5; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712737810;
+	bh=g0inTgKrdcNpJsKqCIJbmzWiWIcGhn7etTaylPEt72k=;
+	h=From:To:Cc:Subject:Date:From;
+	b=0CzQTEv5Is0lS8S/YQQiHjx1OCNaRTRntcQuHvj2PqUhv0hRT+AXsBKYzNwQOAOvU
+	 js3m81Vjg3RoXEW5QokN5ZcgjuIJBI1h7DRkwmy9jmpUTlw7+GD4DiSga3eK4BKVuG
+	 mtn35/hYjST820f9JfrNAdoi26UssBcmEJl1eUVlXKWOGag953/+ZT0ap/XGXo14TJ
+	 5iklUxWTh1CEuvSJ4tlte7BErnKVO6C4+QChJlpVTHFyJJbg23DVXLMzCfB/821pxH
+	 J5IO2rwrvSqCDcHBKkogEdj9L+EtHjLKhZgM8i6R0v9HethsgAVzw3GsICG2o2gzP7
+	 4Inr5VhcxnStQ==
+Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 252C0378208C;
+	Wed, 10 Apr 2024 08:30:09 +0000 (UTC)
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+To: linux-mediatek@lists.infradead.org
+Cc: robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	matthias.bgg@gmail.com,
+	angelogioacchino.delregno@collabora.com,
+	bchihi@baylibre.com,
+	bero@baylibre.com,
+	amergnat@baylibre.com,
+	nfraprado@collabora.com,
+	michael.kao@mediatek.com,
+	mka@chromium.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	kernel@collabora.com
+Subject: [PATCH 0/3] Address thermal zone issues on MT8183/95/92
+Date: Wed, 10 Apr 2024 10:29:59 +0200
+Message-ID: <20240410083002.1357857-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
-On Di, 2024-04-09 at 19:02 +0200, Uwe Kleine-K=C3=B6nig wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
->=20
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new(), which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
->=20
-> Trivially convert the ipu-v3 platform drivers from always returning zero
-> in the remove callback to the void returning variant.
->=20
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+Thermal zones on some MediaTek device trees either have cryptic
+names or wrong ones.
+Having the right names is important for both human readability and
+for MediaTek SVS functionality: fix those.
 
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+AngeloGioacchino Del Regno (3):
+  arm64: dts: mediatek: mt8195: Fix GPU thermal zone name for SVS
+  arm64: dts: mediatek: mt8192: Fix GPU thermal zone name for SVS
+  arm64: dts: mediatek: mt8183: Refactor thermal zones
 
-regards
-Philipp
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi | 136 +++++++++++++++++------
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi |   2 +-
+ arch/arm64/boot/dts/mediatek/mt8195.dtsi |   2 +-
+ 3 files changed, 104 insertions(+), 36 deletions(-)
+
+-- 
+2.44.0
+
 
