@@ -1,192 +1,286 @@
-Return-Path: <linux-kernel+bounces-138324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9722889EFCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:27:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4147089EFD1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:29:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C8642824F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:27:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 768E2B2215A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:29:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27551158D97;
-	Wed, 10 Apr 2024 10:27:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6631591F3;
+	Wed, 10 Apr 2024 10:29:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HNLA7Tdj"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GJ3OcgYX"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B667154BEE
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:27:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130EA156F27;
+	Wed, 10 Apr 2024 10:29:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712744841; cv=none; b=scIwZzCDqATOvR1xR3a38B5wHGJEOhy5mv7Xk52dOqx5jn90rvbnyLfO8p46/Wdcfrktu+jS7B2VxeNZv/U9Jl2SIZFQrXT8Gxd9tFCpc5bPycVE/r6v5b+CJhQY17ebwlibInwdiiOGtykHjxb37OyZANefDVOn1OPEVvzaYrs=
+	t=1712744959; cv=none; b=NHZhzlS+GwGaXtW0H0asdhN900ZOz9cwLMG8k8bCeYo65t0kM4+o0egx6M43FzVLP9ClHSs9byM7gG4+RT88rZDeb/0fvX4ptpzmqH/IRohdMUoYc0Wy4M982B/b8rVd1gt+oO8bPH3+yEEPv6sDvKSk7jMS/PgO/Kki4YZXujk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712744841; c=relaxed/simple;
-	bh=0Lq08+IjLLZBrFtz4LDPMM4rFRn/yzENsF29mP27i0k=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UihgldLLC/MzzR4/7R4FkKFRNU10Go2+oQrB9mUtKVwsaQ3RC9/rVM8SvbPlC1PBxv5c1pEmtGKUHlWtyQkDHm1MXya6AMVj5IJkWqHMRP9DiLnkZ84bu263MQbcRlO3HnIR8s/6bYVjh8BpcsAdnFex0EH6X+BCi0UgqBxTpI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HNLA7Tdj; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e0bec01232so53654075ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:27:19 -0700 (PDT)
+	s=arc-20240116; t=1712744959; c=relaxed/simple;
+	bh=AFjF4CiJb6IGV3uwNnUlkIJ7muZXr8iTZi2kT1N6Y3w=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ADSNgjgLW1eNuauSWvHyibGvPJUa2lFx3Sybc+33gj3T70etdWmWq+prlEU/IsskMCFb9JJhfjuWCmKQGgVwJKdO4QVGkyuvFEd1M5c3iEme8T40MmoccHQ792Msr73XCPZNAWqRLWc29WaVheGC8a/4vMtOApLbCUnFoVCjLCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GJ3OcgYX; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-417c4bd59b3so47895e9.2;
+        Wed, 10 Apr 2024 03:29:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712744839; x=1713349639; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=opuo7Ydaxm/K6zjzo+nQLmHyUVs/0K11f0aTIiezFNo=;
-        b=HNLA7TdjmFO5zl30T4NbKdsgeC6AuFMplmE1YVkdl81bf2vpLIxt4k11PCYosdKyEh
-         K3W/RNvfT2h1WUZ4871qR7rAp4MJDfZjgRjRvEaydabMeA7vAudQXmJYnJ7b2iBtUH6q
-         M0wL2qcsw32RPrq4JrDR5ab4l/xnLTi9Wqb6f0aSAzfiwlOZep9ZS/SrWypqfKM5HAes
-         TDBFK+4Hp1KuylQ2le56xQpskyQHfrXOIP39cdcH1oTg0qkTa8hPdntKySlCuGvxlJMz
-         mgAX6gT3lqAr75fBvvzFLUkWvEhyqs7DpQO/3b1XY/usVsCQfB2SxpU8IyyR/bkTbcmW
-         JuCA==
+        d=gmail.com; s=20230601; t=1712744955; x=1713349755; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ggmDJ4ODuoznnH+obJkgP9ZZPSU+EvIoCqrdrLvAFiU=;
+        b=GJ3OcgYXt8oeE8XF+t+r6hE95Xf50vr15178oaK2z40HRHlCtDMOqEE8FIPKaTPBMB
+         LgIG0ziEF6rP3yN0Qwi3/PXTRxXrXSN3GxBq+egDoshBBgpzSfvlW8LMiu8IIpupMWKm
+         7xGI+QE7JOEe+wqOr2GcWvDkvmcN3BlczBsyIBvDxXP1Ma3G+6mQ4e09ehCJN0uFPOT9
+         AvmpfR+vvxBGgD6bJkbXQkWxDafPbFlCJmuT4g4nrJ0dT3G+vBTFSbmMwrhSjH9P6odP
+         yqTPUPNQ+qNMSfHBnOcwvqr5V16aol7tH4KWhI9/od5hQbbbA0YTNo2Abq7ud29WO38T
+         2YdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712744839; x=1713349639;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=opuo7Ydaxm/K6zjzo+nQLmHyUVs/0K11f0aTIiezFNo=;
-        b=S6HmyHuYIb62MCJvRSpQOFJOgCih3Iv5+BSjynJp49ui3XC5vq++ufXqjXUvWtHf9i
-         KHDL96DuYlra/giE64LKvgayu0bJLXJDrVB60ikWdcVjuftordW/VcaT8vWJ4BqtAFex
-         5Nl8erGYNvfOOSmwVJref3rjJw5G2l8JqIpC5LGnima7pnRo1OUr57hhC/PsMOXQvcdK
-         bCEyJji82a+br+Mqsf6NBq+J6DF9e3LIRn45hjmLKKHHfqKAfPYFtQwXeFeBwSc3v0Jh
-         UiNbkdqGkhXJ3XBwoL8VK0IeprPeDTDQ/wBsbTuJlA8wyJE/Owbi9eOwfSDQzK6C+eQj
-         AfJg==
-X-Forwarded-Encrypted: i=1; AJvYcCUyxbBRUB0tWYCbf96PjTL+g6YKTkMdZtVhGkL9FdXN/mWVCqtxTY0DGC+lalZ0tpijQEwcg3wXooq2jjuGOLjain/DpJOsqHF5BTZP
-X-Gm-Message-State: AOJu0YwgxADewehAalv4iL1x3y4830tqaCdtVx9vKh7ous9FqJ4KRQ4B
-	cRHLSZbfPtTPJx5kf7h45wfu8QnwOMkqvpNQeCfozu5cd3NqaLv3Np0GIphPFg8=
-X-Google-Smtp-Source: AGHT+IGvzWg3OcsdlV+PuYJDV5K2XtH1kMIFCR3N5/l1CMWKVb74rw8WBNvqRMoI3WKueRWlumuslA==
-X-Received: by 2002:a17:903:2d2:b0:1e4:7ca3:8a33 with SMTP id s18-20020a17090302d200b001e47ca38a33mr2096315plk.17.1712744838634;
-        Wed, 10 Apr 2024 03:27:18 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:c00c:2308:dfb0:469d:eb46:b70f])
-        by smtp.gmail.com with ESMTPSA id b7-20020a170902d50700b001e27c404922sm2695814plg.130.2024.04.10.03.27.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 03:27:17 -0700 (PDT)
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-To: lkft-triage@lists.linaro.org,
-	kunit-dev@googlegroups.com,
-	linux-kernel@vger.kernel.org
-Cc: peterz@infradead.org,
-	mingo@redhat.com,
-	will@kernel.org,
-	longman@redhat.com,
-	boqun.feng@gmail.com,
-	anders.roxell@linaro.org,
-	dan.carpenter@linaro.org,
-	arnd@arndb.de,
-	linux@roeck-us.net,
-	Linux Kernel Functional Testing <lkft@linaro.org>
-Subject: BUG: KASAN: null-ptr-deref in _raw_spin_lock_irq next-20240410
-Date: Wed, 10 Apr 2024 15:57:10 +0530
-Message-Id: <20240410102710.35911-1-naresh.kamboju@linaro.org>
-X-Mailer: git-send-email 2.30.2
+        d=1e100.net; s=20230601; t=1712744955; x=1713349755;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ggmDJ4ODuoznnH+obJkgP9ZZPSU+EvIoCqrdrLvAFiU=;
+        b=tzrUjjYky502z415dy5H5FPG97r5FnoS63gyiuhCzNkGO8gjdFsuSFH8aEAWEUbkhW
+         nuy8LlBr4fszb1thozqAtfAHo//atDFWXggWE2ePRbFHX3WSgvRu4txYZ0hYiRGrNNaO
+         XKcbgW57I6kb8ps+2MICjjp+c3P7cyKHX0r5BaDSwpZijsyoz5k9ZrRplsCqPUxbT0Fi
+         D6QftRD/HsgY9r/XBuMGAIexIjSK979y3RhlniTQJ1nFwNu/WO5pJ2EqKkhoBizuw1DJ
+         dk3e6scX9deFVxUi9ucWtCN99hjCqLp5vDAjQpZpc7w7CL5P2dsU1g+kquA+lFjncjoL
+         Wh7A==
+X-Forwarded-Encrypted: i=1; AJvYcCVaQwE73OAwWBeaLpoiy+8QUY/I8Kk69NRZV3KvPxIO2ErD7dUHtdGpXVQucoxMgGTbyGjfKZRleRvycys1HByoN/uqxrTDzs86NJ7k7dtatT94zmsFolgyDSyvkDSAwdkNGdg7eLeCt+dr7VQzEw7R0T5lj243h+bXuAkE
+X-Gm-Message-State: AOJu0YzojwSjwlaHnCksAuIdoI+pgF03zlnGXY9Nvd8ZK96XqbwUJdvY
+	MgK/mLBv7iqbJQStoyTIns5sO7teASdGCg0IheFcyEm1yw4O94Df
+X-Google-Smtp-Source: AGHT+IHADtDbmvyWOUf7FMr11Y6g7lUUheaSHO6bMTumsllgsuIqktWh38pmVeYji+J9lQz1rhMELA==
+X-Received: by 2002:a05:600c:4fd4:b0:416:7b2c:def5 with SMTP id o20-20020a05600c4fd400b004167b2cdef5mr1600159wmq.2.1712744955025;
+        Wed, 10 Apr 2024 03:29:15 -0700 (PDT)
+Received: from [192.168.12.203] (54-240-197-228.amazon.com. [54.240.197.228])
+        by smtp.gmail.com with ESMTPSA id f18-20020a05600c4e9200b0041632fcf272sm1864338wmq.22.2024.04.10.03.29.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 03:29:14 -0700 (PDT)
+From: Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <005911c5-7f9d-4397-8145-a1ad4494484d@xen.org>
+Date: Wed, 10 Apr 2024 11:29:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v2 1/2] KVM: x86: Add KVM_[GS]ET_CLOCK_GUEST for accurate
+ KVM clock migration
+To: Jack Allister <jalliste@amazon.com>
+Cc: bp@alien8.de, corbet@lwn.net, dave.hansen@linux.intel.com,
+ dwmw2@infradead.org, hpa@zytor.com, kvm@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
+ pbonzini@redhat.com, seanjc@google.com, tglx@linutronix.de, x86@kernel.org,
+ Dongli Zhang <dongli.zhang@oracle.com>
+References: <20240408220705.7637-1-jalliste@amazon.com>
+ <20240410095244.77109-1-jalliste@amazon.com>
+ <20240410095244.77109-2-jalliste@amazon.com>
+Content-Language: en-US
+Organization: Xen Project
+In-Reply-To: <20240410095244.77109-2-jalliste@amazon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Following kernel crash noticed on Linux next-20240410 tag while running
-kunit testing on qemu-arm64 and qemu-x86_64.
+On 10/04/2024 10:52, Jack Allister wrote:
+> In the common case (where kvm->arch.use_master_clock is true), the KVM
+> clock is defined as a simple arithmetic function of the guest TSC, based on
+> a reference point stored in kvm->arch.master_kernel_ns and
+> kvm->arch.master_cycle_now.
+> 
+> The existing KVM_[GS]ET_CLOCK functionality does not allow for this
+> relationship to be precisely saved and restored by userspace. All it can
+> currently do is set the KVM clock at a given UTC reference time, which is
+> necessarily imprecise.
+> 
+> So on live update, the guest TSC can remain cycle accurate at precisely the
+> same offset from the host TSC, but there is no way for userspace to restore
+> the KVM clock accurately.
+> 
+> Even on live migration to a new host, where the accuracy of the guest time-
+> keeping is fundamentally limited by the accuracy of wallclock
+> synchronization between the source and destination hosts, the clock jump
+> experienced by the guest's TSC and its KVM clock should at least be
+> *consistent*. Even when the guest TSC suffers a discontinuity, its KVM
+> clock should still remain the *same* arithmetic function of the guest TSC,
+> and not suffer an *additional* discontinuity.
+> 
+> To allow for accurate migration of the KVM clock, add per-vCPU ioctls which
+> save and restore the actual PV clock info in pvclock_vcpu_time_info.
+> 
+> The restoration in KVM_SET_CLOCK_GUEST works by creating a new reference
+> point in time just as kvm_update_masterclock() does, and calculating the
+> corresponding guest TSC value. This guest TSC value is then passed through
+> the user-provided pvclock structure to generate the *intended* KVM clock
+> value at that point in time, and through the *actual* KVM clock calculation.
+> Then kvm->arch.kvmclock_offset is adjusted to eliminate for the difference.
+> 
+> Where kvm->arch.use_master_clock is false (because the host TSC is
+> unreliable, or the guest TSCs are configured strangely), the KVM clock
+> is *not* defined as a function of the guest TSC so KVM_GET_CLOCK_GUEST
+> returns an error. In this case, as documented, userspace shall use the
+> legacy KVM_GET_CLOCK ioctl. The loss of precision is acceptable in this
+> case since the clocks are imprecise in this mode anyway.
+> 
+> On *restoration*, if kvm->arch.use_master_clock is false, an error is
+> returned for similar reasons and userspace shall fall back to using
+> KVM_SET_CLOCK. This does mean that, as documented, userspace needs to use
+> *both* KVM_GET_CLOCK_GUEST and KVM_GET_CLOCK and send both results with the
+> migration data (unless the intent is to refuse to resume on a host with bad
+> TSC).
+> 
+> (It may have been possible to make KVM_SET_CLOCK_GUEST "good enough" in the
+> non-masterclock mode, as that mode is necessarily imprecise anyway. The
+> explicit fallback allows userspace to deliberately fail migration to a host
+> with misbehaving TSC where master clock mode wouldn't be active.)
+> 
+> Suggested-by: David Woodhouse <dwmw2@infradead.org>
+> Signed-off-by: Jack Allister <jalliste@amazon.com>
+> CC: Paul Durrant <paul@xen.org>
+> CC: Dongli Zhang <dongli.zhang@oracle.com>
+> ---
+>   Documentation/virt/kvm/api.rst |  37 ++++++++++
+>   arch/x86/kvm/x86.c             | 124 +++++++++++++++++++++++++++++++++
+>   include/uapi/linux/kvm.h       |   3 +
+>   3 files changed, 164 insertions(+)
+> 
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index 0b5a33ee71ee..80fcd93bba1b 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -6352,6 +6352,43 @@ a single guest_memfd file, but the bound ranges must not overlap).
+>   
+>   See KVM_SET_USER_MEMORY_REGION2 for additional details.
+>   
+> +4.143 KVM_GET_CLOCK_GUEST
+> +----------------------------
+> +
+> +:Capability: none
+> +:Architectures: x86
+> +:Type: vcpu ioctl
+> +:Parameters: struct pvclock_vcpu_time_info (out)
+> +:Returns: 0 on success, <0 on error
+> +
+> +Retrieves the current time information structure used for KVM/PV clocks,
+> +in precisely the form advertised to the guest vCPU, which gives parameters
+> +for a direct conversion from a guest TSC value to nanoseconds.
+> +
+> +When the KVM clock not is in "master clock" mode, for example because the
+> +host TSC is unreliable or the guest TSCs are oddly configured, the KVM clock
+> +is actually defined by the host CLOCK_MONOTONIC_RAW instead of the guest TSC.
+> +In this case, the KVM_GET_CLOCK_GUEST ioctl returns -EINVAL.
+> +
+> +4.144 KVM_SET_CLOCK_GUEST
+> +----------------------------
+> +
+> +:Capability: none
+> +:Architectures: x86
+> +:Type: vcpu ioctl
+> +:Parameters: struct pvclock_vcpu_time_info (in)
+> +:Returns: 0 on success, <0 on error
+> +
+> +Sets the KVM clock (for the whole VM) in terms of the vCPU TSC, using the
+> +pvclock structure as returned by KVM_GET_CLOCK_GUEST. This allows the precise
+> +arithmetic relationship between guest TSC and KVM clock to be preserved by
+> +userspace across migration.
+> +
+> +When the KVM clock is not in "master clock" mode, and the KVM clock is actually
+> +defined by the host CLOCK_MONOTONIC_RAW, this ioctl returns -EINVAL.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+EINVAL doesn't seem appropriate. ENOTSUP perhaps? Same for getting the 
+clock info I suppose.
 
-Crash log on qemu-arm64:
-----------------
-<3>[ 30.465716] BUG: KASAN: null-ptr-deref in _raw_spin_lock_irq (include/linux/instrumented.h:96 include/linux/atomic/atomic-instrumented.h:1301 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:120 kernel/locking/spinlock.c:170) 
-<3>[   30.467097] Write of size 4 at addr 0000000000000008 by task swapper/0/1
-<3>[   30.468059]
-<3>[   30.468393] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G    B            N 6.9.0-rc3-next-20240410 #1
-<3>[   30.469209] Hardware name: linux,dummy-virt (DT)
-<3>[   30.469645] Call trace:
-<3>[ 30.469919] dump_backtrace (arch/arm64/kernel/stacktrace.c:319) 
-<3>[ 30.471622] show_stack (arch/arm64/kernel/stacktrace.c:326) 
-<3>[ 30.472124] dump_stack_lvl (lib/dump_stack.c:117) 
-<3>[ 30.472947] print_report (mm/kasan/report.c:493) 
-<3>[ 30.473755] kasan_report (mm/kasan/report.c:603) 
-<3>[ 30.474524] kasan_check_range (mm/kasan/generic.c:175 mm/kasan/generic.c:189) 
-<3>[ 30.475094] __kasan_check_write (mm/kasan/shadow.c:38) 
-<3>[ 30.475683] _raw_spin_lock_irq (include/linux/instrumented.h:96 include/linux/atomic/atomic-instrumented.h:1301 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:120 kernel/locking/spinlock.c:170) 
-<3>[ 30.476257] wait_for_completion_timeout (kernel/sched/completion.c:84 kernel/sched/completion.c:116 kernel/sched/completion.c:127 kernel/sched/completion.c:167) 
-<3>[ 30.476909] kunit_try_catch_run (lib/kunit/try-catch.c:86) 
-<3>[ 30.477628] kunit_run_case_catch_errors (lib/kunit/test.c:544) 
-<3>[ 30.478311] kunit_run_tests (lib/kunit/test.c:635) 
-<3>[ 30.478865] __kunit_test_suites_init (lib/kunit/test.c:729 (discriminator 1)) 
-<3>[ 30.479482] kunit_run_all_tests (lib/kunit/executor.c:276 lib/kunit/executor.c:392) 
-<3>[ 30.480079] kernel_init_freeable (init/main.c:1578) 
-<3>[ 30.480747] kernel_init (init/main.c:1465) 
-<3>[ 30.481474] ret_from_fork (arch/arm64/kernel/entry.S:861) 
-<3>[   30.482080] ==================================================================
-<1>[   30.484503] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000008
-<1>[   30.485369] Mem abort info:
-<1>[   30.485923]   ESR = 0x000000009600006b
-<1>[   30.486943]   EC = 0x25: DABT (current EL), IL = 32 bits
-<1>[   30.487540]   SET = 0, FnV = 0
-<1>[   30.488007]   EA = 0, S1PTW = 0
-<1>[   30.488509]   FSC = 0x2b: level -1 translation fault
-<1>[   30.489150] Data abort info:
-<1>[   30.489610]   ISV = 0, ISS = 0x0000006b, ISS2 = 0x00000000
-<1>[   30.490360]   CM = 0, WnR = 1, TnD = 0, TagAccess = 0
-<1>[   30.491057]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-<1>[   30.491822] [0000000000000008] user address but active_mm is swapper
-<0>[   30.493008] Internal error: Oops: 000000009600006b [#1] PREEMPT SMP
-<4>[   30.494105] Modules linked in:
-<4>[   30.496244] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G    B            N 6.9.0-rc3-next-20240410 #1
-<4>[   30.497171] Hardware name: linux,dummy-virt (DT)
-<4>[   30.497905] pstate: 224000c9 (nzCv daIF +PAN -UAO +TCO -DIT -SSBS BTYPE=--)
-<4>[ 30.498895] pc : _raw_spin_lock_irq (arch/arm64/include/asm/atomic_lse.h:271 arch/arm64/include/asm/cmpxchg.h:120 arch/arm64/include/asm/cmpxchg.h:169 include/linux/atomic/atomic-arch-fallback.h:2055 include/linux/atomic/atomic-arch-fallback.h:2173 include/linux/atomic/atomic-instrumented.h:1302 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:120 kernel/locking/spinlock.c:170) 
-<4>[ 30.499542] lr : _raw_spin_lock_irq (include/linux/atomic/atomic-arch-fallback.h:2172 (discriminator 1) include/linux/atomic/atomic-instrumented.h:1302 (discriminator 1) include/asm-generic/qspinlock.h:111 (discriminator 1) include/linux/spinlock.h:187 (discriminator 1) include/linux/spinlock_api_smp.h:120 (discriminator 1) kernel/locking/spinlock.c:170 (discriminator 1)) 
+> Userspace
+> +may choose to set the clock using the less precise KVM_SET_CLOCK ioctl, or may
+> +choose to fail, denying migration to a host whose TSC is misbehaving.
+> +
+>   5. The kvm_run structure
+>   ========================
+>   
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 47d9f03b7778..d5cae3ead04d 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -5859,6 +5859,124 @@ static int kvm_vcpu_ioctl_enable_cap(struct kvm_vcpu *vcpu,
+>   	}
+>   }
+>   
+> +static int kvm_vcpu_ioctl_get_clock_guest(struct kvm_vcpu *v, void __user *argp)
+> +{
+> +	struct pvclock_vcpu_time_info *vcpu_pvti = &v->arch.hv_clock;
+> +	struct pvclock_vcpu_time_info local_pvti = { 0 };
+> +	struct kvm_arch *ka = &v->kvm->arch;
+> +	uint64_t host_tsc, guest_tsc;
+> +	bool use_master_clock;
+> +	uint64_t kernel_ns;
+> +	unsigned int seq;
+> +
+> +	/*
+> +	 * CLOCK_MONOTONIC_RAW is not suitable for GET/SET API,
+> +	 * see kvm_vcpu_ioctl_set_clock_guest equivalent comment.
+> +	 */
+> +	if (!static_cpu_has(X86_FEATURE_CONSTANT_TSC))
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * Querying needs to be performed in a seqcount loop as it's possible
+> +	 * another vCPU has triggered an update of the master clock. If so we
+> +	 * should store the host TSC & time at this point.
+> +	 */
+> +	do {
+> +		seq = read_seqcount_begin(&ka->pvclock_sc);
+> +		use_master_clock = ka->use_master_clock;
+> +		if (use_master_clock) {
+> +			host_tsc = ka->master_cycle_now;
+> +			kernel_ns = ka->master_kernel_ns;
+> +		}
+> +	} while (read_seqcount_retry(&ka->pvclock_sc, seq));
 
-<trim>
+You could bail from the loop if `use_master_clock` is false, couldn't you?
 
-<4>[   30.511022] Call trace:
-<4>[ 30.511437] _raw_spin_lock_irq (arch/arm64/include/asm/atomic_lse.h:271 arch/arm64/include/asm/cmpxchg.h:120 arch/arm64/include/asm/cmpxchg.h:169 include/linux/atomic/atomic-arch-fallback.h:2055 include/linux/atomic/atomic-arch-fallback.h:2173 include/linux/atomic/atomic-instrumented.h:1302 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:120 kernel/locking/spinlock.c:170) 
-<4>[ 30.512013] wait_for_completion_timeout (kernel/sched/completion.c:84 kernel/sched/completion.c:116 kernel/sched/completion.c:127 kernel/sched/completion.c:167) 
-<4>[ 30.512627] kunit_try_catch_run (lib/kunit/try-catch.c:86) 
-<4>[ 30.513188] kunit_run_case_catch_errors (lib/kunit/test.c:544) 
-<4>[ 30.513801] kunit_run_tests (lib/kunit/test.c:635) 
-<4>[ 30.514674] __kunit_test_suites_init (lib/kunit/test.c:729 (discriminator 1)) 
-<4>[ 30.515259] kunit_run_all_tests (lib/kunit/executor.c:276 lib/kunit/executor.c:392) 
-<4>[ 30.515831] kernel_init_freeable (init/main.c:1578) 
-<4>[ 30.516384] kernel_init (init/main.c:1465) 
-<4>[ 30.516900] ret_from_fork (arch/arm64/kernel/entry.S:861) 
-<0>[ 30.518151] Code: 93407c02 d503201f 2a0003e1 52800022 (88e17e62)
-All code
-========
-   0:	93407c02 	sxtw	x2, w0
-   4:	d503201f 	nop
-   8:	2a0003e1 	mov	w1, w0
-   c:	52800022 	mov	w2, #0x1                   	// #1
-  10:*	88e17e62 	casa	w1, w2, [x19]		<-- trapping instruction
+> +
+> +	if (!use_master_clock)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * It's possible that this vCPU doesn't have a HVCLOCK configured
+> +	 * but the other vCPUs may. If this is the case calculate based
+> +	 * upon the time gathered in the seqcount but do not update the
+> +	 * vCPU specific PVTI. If we have one, then use that.
 
-Code starting with the faulting instruction
-===========================================
-   0:	88e17e62 	casa	w1, w2, [x19]
-<4>[   30.519501] ---[ end trace 0000000000000000 ]---
-<6>[   30.520317] note: swapper/0[1] exited with irqs disabled
-<6>[   30.521355] note: swapper/0[1] exited with preempt_count 1
-<0>[   30.523129] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-<2>[   30.524397] SMP: stopping secondary CPUs
-<0>[   30.525553] Kernel Offset: 0x25148d400000 from 0xffff800080000000
-<0>[   30.528341] PHYS_OFFSET: 0x40000000
-<0>[   30.529003] CPU features: 0x0,00000006,8f17bd7c,6766773f
-<0>[   30.530313] Memory Limit: none
-<0>[   30.531319] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+Given this is a per-vCPU ioctl, why not fail in the case the vCPU 
+doesn't have HVCLOCK configured? Or is your intention that a GET/SET 
+should always work if TSC is stable?
 
-Steps to reproduce:
----
-https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2etdCz631GU6PILJzs8reteba8i/reproducer
+> +	 */
+> +	if (!vcpu_pvti->tsc_timestamp && !vcpu_pvti->system_time) {
+> +		guest_tsc = kvm_read_l1_tsc(v, host_tsc);
+> +
+> +		local_pvti.tsc_timestamp = guest_tsc;
+> +		local_pvti.system_time = kernel_ns + ka->kvmclock_offset;
+> +	} else {
+> +		local_pvti = *vcpu_pvti;
+> +	}
+> +
+> +	if (copy_to_user(argp, &local_pvti, sizeof(local_pvti)))
+> +		return -EFAULT;
+> +
+> +	return 0;
+> +}
+> +
 
-Links:
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240410/testrun/23381881/suite/log-parser-test/tests/
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2etdCz631GU6PILJzs8reteba8i
- - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2etdDjlx3eRFhhK9cy2UsEHAXTr
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
