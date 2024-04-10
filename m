@@ -1,127 +1,116 @@
-Return-Path: <linux-kernel+bounces-139249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139250-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68A728A0067
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:15:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABAA18A0080
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:19:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19FDC286BFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:15:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A3E4B2235F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:19:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 894B5181304;
-	Wed, 10 Apr 2024 19:15:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1055181313;
+	Wed, 10 Apr 2024 19:19:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O6D/MyhR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jr0apBBM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C866417F370;
-	Wed, 10 Apr 2024 19:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FAEF53372;
+	Wed, 10 Apr 2024 19:19:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712776527; cv=none; b=BfJZnbt2Z5sDAXnIrmUt3HlJkwW4z/X6n9OPG66FbZUEhjLiky2fwsjrBrZ4Aob9HGmVaOKo0fA2w79rz/qXU0Qc2FKAWV24gJAqMviKEdzFXyUl6rGQirMZlg37i/XhAcAb+yMWhEjB2Ssq0WeoFX8nlgLaAxu9BKjtF5IruQA=
+	t=1712776775; cv=none; b=iAaPDy8LaSzh1fX3GvyPHK+7PQdkjrncCszuImRn0WrFXESfwYf7VjmA9KNgpuSRbnlbXSXsYSOyjCDCKVoqDmgsBirEhfpzDnhfZZRgakWiD5pYat0hVAL4lIih86oSMUf5I/DTKHJn7SO6DYq0XmWl6PAY2dFHWKRq8icUAuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712776527; c=relaxed/simple;
-	bh=Y8HrYr9N2X54zlXcRSCoc2hhNScMqkdWP9FAh9Krwpo=;
+	s=arc-20240116; t=1712776775; c=relaxed/simple;
+	bh=K++b5c401KCoXtWP4zJWdo7+5dgf/l3qUVTQ7zgCO1A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A084uA4dNvH4idQ6Z5B4G+hJKsct0gr1DEg08JZxh6+5TATgYtZgwg0l0jYjE3w+RQ/lCMahLvvv6y7LAod/Iq0iAzjmZDdduKOVZn+47wev+4UsJNQLODr0hFj9wRONRdd2O8WK7qTCeoIatCdkwi87QaYxklDqEeVRx47twpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O6D/MyhR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3F79C433C7;
-	Wed, 10 Apr 2024 19:15:26 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fnbr9yvWXCtiQto2MjqaBDPlQBJN4JNEVCP0ELvn5S8fKlGxl+7bORrooIsQo5N6DDI6rL9sUtgIhRCRxgBslVFhAqVT/+ut8Lo40Er1xiHpSogtOMnrNuqtOz1Jv77KPPBf/1w+6May7IMpQbhbiMJvDvTp1mCMLwK5QU94u6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jr0apBBM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC58FC433C7;
+	Wed, 10 Apr 2024 19:19:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712776527;
-	bh=Y8HrYr9N2X54zlXcRSCoc2hhNScMqkdWP9FAh9Krwpo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O6D/MyhRjX4ilUEZ8v2TxELy3AD7IFMbhHI+0f3QYn6legTjbs42EOHPa6Zy/N1Cv
-	 8YdZnZW13beNY1N/uwPLTXi/TBR2m5pfJzQ48FsByqAFNfWGKYGXjP3lH8eU47iMcN
-	 CSB/bud3Vs5fHAeuVXp7i9I4vmDpFB5W2U1iP6Z8oHNACDu9ZoGsmH7b8xVMCdLRjm
-	 giGQSJMdm9AAKD2Q+Mar3iE5l6Pq7TiMnEkuHcnLw+Xl8E8yOeEpYeAO4VuVf0msiJ
-	 CDs7PTm8dmFC/Pzq/Jg8gMPDsu6+wGfX2fqBHzQvlC4gxjU8Lrg0WmgZQrSfZDqG3+
-	 92LTTQTuF6w+g==
-Date: Wed, 10 Apr 2024 14:15:24 -0500
-From: Rob Herring <robh@kernel.org>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: chunkuang.hu@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, p.zabel@pengutronix.de, airlied@gmail.com,
-	daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org, tzimmermann@suse.de, matthias.bgg@gmail.com,
-	shawn.sung@mediatek.com, yu-chang.lee@mediatek.com,
-	ck.hu@mediatek.com, jitao.shi@mediatek.com,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, wenst@chromium.org,
-	kernel@collabora.com
-Subject: Re: [PATCH v2 2/3] dt-bindings: arm: mediatek: mmsys: Add OF graph
- support for board path
-Message-ID: <20240410191524.GA903053-robh@kernel.org>
-References: <20240409120211.321153-1-angelogioacchino.delregno@collabora.com>
- <20240409120211.321153-3-angelogioacchino.delregno@collabora.com>
+	s=k20201202; t=1712776774;
+	bh=K++b5c401KCoXtWP4zJWdo7+5dgf/l3qUVTQ7zgCO1A=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=jr0apBBMdx0mEdxt0iMc+VLX/jeBy0z1fRlAU7NTEQ8bA/wmki/1aNR1Nut6vg5Yb
+	 SzNq+XpsWcfBelYlt1OBrEN169bwu2SI5dLlxni9jHDVNl9mHf/QTeCaCR3QRgn1BH
+	 5/2QSshwjRl0RoYGGjmWQZ4eOOzaQriZ7DhyFkWlcu3zMw2m89mBOpdlQchWL8XGtR
+	 HA/rqPWtDdiY3UjlrkV2YeyqTxMm5oryZT3KR+t5BlQ7oBL0HaTyhwHjWICFqFmJ+S
+	 /Q/q3U+QYGd/fPVzyn25z8qIzFRVe6djGrhawlStV1coNIkISsMSyiVkWWAw5WP/PR
+	 wF5mannKW7g9A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 70856CE1104; Wed, 10 Apr 2024 12:19:34 -0700 (PDT)
+Date: Wed, 10 Apr 2024 12:19:34 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Valentin Schneider <vschneid@redhat.com>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH 2/2] context_tracking, rcu: Rename RCU_DYNTICKS_IDX to
+ CT_DYNTICKS_IDX
+Message-ID: <af3eed7e-a889-4008-ba47-045483ab79fc@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240327112902.1184822-1-vschneid@redhat.com>
+ <20240327112902.1184822-3-vschneid@redhat.com>
+ <Zg6tYD-9AFPkOOsW@localhost.localdomain>
+ <1ef9d1f9-16a2-4ddc-abd5-6c3b7cde290f@paulmck-laptop>
+ <ZhZqX0YqlzPoOK2b@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240409120211.321153-3-angelogioacchino.delregno@collabora.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZhZqX0YqlzPoOK2b@localhost.localdomain>
 
-On Tue, Apr 09, 2024 at 02:02:10PM +0200, AngeloGioacchino Del Regno wrote:
-> Document OF graph on MMSYS/VDOSYS: this supports up to three DDP paths
-> per HW instance (so potentially up to six displays for multi-vdo SoCs).
+On Wed, Apr 10, 2024 at 12:30:55PM +0200, Frederic Weisbecker wrote:
+> Le Tue, Apr 09, 2024 at 12:53:03PM -0700, Paul E. McKenney a écrit :
+> > On Thu, Apr 04, 2024 at 03:38:40PM +0200, Frederic Weisbecker wrote:
+> > > Le Wed, Mar 27, 2024 at 12:29:02PM +0100, Valentin Schneider a écrit :
+> > > > The symbols relating to the CT_STATE part of context_tracking.state are now
+> > > > all prefixed with CT_STATE.
+> > > > 
+> > > > The RCU dynticks counter part of that atomic variable still involves
+> > > > symbols with different prefixes, align them all to be prefixed with
+> > > > CT_DYNTICKS, as CT_DYNTICKS_MASK already is.
+> > > > 
+> > > > Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+> > > 
+> > > It used to be that RCU extended quiescent state and dynticks enter/exit
+> > > were coupled. But this isn't the case anymore. Nowadays RCU stops watching
+> > > some time later after dynticks is entered.
+> > 
+> > I knew that consolidation of atomic operations was too good to last...
+> > 
+> > > I wonder if we shouldn't take advantage of that cleanup for a meaning that
+> > > really reflect that RCU stops watching from there.
+> > > 
+> > > Paul what do you think? CT_EQS_IDX ? CT_RCUEQS_IDX? CT_RCUOFF_IDX? ...?
+> > 
+> > "After what you just did?  You can just RCU off!!!"
+> > 
+> > Sorry, couldn't resist...
+> > 
+> > I am having a hard time getting too excited about the name.  I could
+> > suggest CT_RCU_WATCHING_IDX, but that isn't exactly the shortest
+> > possible name.
 > 
-> The MMSYS or VDOSYS is always the first component in the DDP pipeline,
-> so it only supports an output port with multiple endpoints - where each
-> endpoint defines the starting point for one of the (currently three)
-> possible hardware paths.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
->  .../bindings/arm/mediatek/mediatek,mmsys.yaml | 23 +++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
-> index b3c6888c1457..4e9acd966aa5 100644
-> --- a/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
-> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
-> @@ -93,6 +93,29 @@ properties:
->    '#reset-cells':
->      const: 1
->  
-> +  port:
-> +    $ref: /schemas/graph.yaml#/properties/port
-> +    description:
-> +      Output port node. This port connects the MMSYS/VDOSYS output to
-> +      the first component of one display pipeline, for example one of
-> +      the available OVL or RDMA blocks.
-> +      Some MediaTek SoCs support up to three display outputs per MMSYS.
+> I really like CT_RCU_WATCHING. It says everything. The _IDX isn't even
+> needed after all. What do you think?
 
-I'm have a hard time understanding this, but is it 3 outputs 
-simultaneously or connect mmsys to 1 of 3. Generally it's multiple ports 
-for the former and endpoints for the latter.
+Works for me!
 
-> +    properties:
-> +      endpoint@0:
-> +        $ref: /schemas/graph.yaml#/properties/endpoint
-> +        description: Output to the primary display pipeline
-> +
-> +      endpoint@1:
-> +        $ref: /schemas/graph.yaml#/properties/endpoint
-> +        description: Output to the secondary display pipeline
-> +
-> +      endpoint@2:
-> +        $ref: /schemas/graph.yaml#/properties/endpoint
-> +        description: Output to the tertiary display pipeline
-> +
-> +    required:
-> +      - endpoint@0
-> +
->  required:
->    - compatible
->    - reg
-> -- 
-> 2.44.0
-> 
+							Thanx, Paul
 
