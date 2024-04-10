@@ -1,91 +1,127 @@
-Return-Path: <linux-kernel+bounces-138356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B2DA89F017
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:42:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85EDD89F01A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:44:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B86CE1C21F7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:42:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45A8F1F22CFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:44:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B32F15921B;
-	Wed, 10 Apr 2024 10:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 264BA159218;
+	Wed, 10 Apr 2024 10:43:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g9JGd3eU"
-Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m4qWInpE"
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3773613DB9F
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:42:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0087D155385;
+	Wed, 10 Apr 2024 10:43:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712745751; cv=none; b=uorJHe0kJDMI5VvL1TL595UY7aoNlyHGjzVZdNWqhLmy8NpYqEsEJrzDGjpss2UVec/LonzY3fIJa8778sWHjH+pmuzPRe1XZHkuH4oAShCC1G6iZrGFiei0HYKJPZ6l4s7sqG+THRfz3RceUHIqvkioCtGqUKj61namrld0GYA=
+	t=1712745835; cv=none; b=sCwg2RNkR+0cwO39tLWXHMcj153lLmvpsjk8VZOtBDMX315BClZP7wg6vlb+o2pc/6C9+ul7HCoD2HY4ObHHUuaw2rDqYMYyuQ+Z7lWy11zp9yPcw1PkXaIp+YQ0fKm+OFNVp0I+PdFuI9s2jpS6U9YFDuA2wAwcvm27HR2P3WQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712745751; c=relaxed/simple;
-	bh=AbyfJgbEqm3y8eA/5R8TMVFQDOgrDw8mMvC2Hb5f9hg=;
+	s=arc-20240116; t=1712745835; c=relaxed/simple;
+	bh=CMXlteTKOwFAuVMW0aMjJuXqhJP5cUNUL11/P+b21/8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aUW62xiwg3g7UohPQH6XXe9/0mdh8wHpTqZxTDjfEvUVkDVVxRS0aJTBGlZc+0bf+FNh3T+OfO0YoG4aQWCItsKWtytz7oNc7cCk5BzeA6ykleqV6QGzXpZm5PAqHQemdVEAhSaxkyfBdXP433ARBapjvJanLoAT6Ml9vMscNqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g9JGd3eU; arc=none smtp.client-ip=209.85.218.65
+	 To:Cc:Content-Type; b=G1Mhy+FomU48vR8aq8pXg+Jw2j+HvDovNfdv7nkG/rryE2LG+mxWLkvhGQC+q6PuuaiXdiOOruwcHw7p58ppQQfCQ6L364qOzfwN6FQ2VCUVq/pK4w3lM8tHkDsMgRSELQEUKabXrAR3XBWDBDP9V67UkFO9/Y2CdyP4fGlNdK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m4qWInpE; arc=none smtp.client-ip=209.85.160.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-a5213f0f85dso34446266b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:42:29 -0700 (PDT)
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-23333dddd8aso54356fac.1;
+        Wed, 10 Apr 2024 03:43:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712745748; x=1713350548; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AbyfJgbEqm3y8eA/5R8TMVFQDOgrDw8mMvC2Hb5f9hg=;
-        b=g9JGd3eUtS2J1wd2Ui2MOiriZ2BQ3bbLcWc3AnHxFu82wnrUz9StfUFoQOdWF8pd1/
-         JQVpTNfGXGzE50dYwcsDYNDx/xghEe6UtJ1XcNCEJdJjJ3QJK+7t9Dk0hDSdivAXMbQ4
-         xsVYs46clTVG/LNYlxHvO4dN06e0f9WorO0q+uXwcZEoGRS6Ovh7rei9+qhhAh94E6Xv
-         5vo3/xRZlHqwiMA0EZkgIFIGwHBpjovav53fUUXIHAk291nbIhDbaMfheoO+BDVVMkGC
-         tnFxJV34jNKByAtKVtMbwbg/ry7HC01k6QyLHDRaD70HYnRWdscRuEHsaVH/lkMt/tlP
-         1MRQ==
+        d=gmail.com; s=20230601; t=1712745833; x=1713350633; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D1Sp7n1FvxcNzxiV/M3Whh5xnznJqzGBI91xq3AgOsc=;
+        b=m4qWInpEPQTK9n7pQpzT31t1omK0K8TSleOPXKDBI9LQh4tZv1MdhH/O0xKDlfEAxX
+         sOVehc+QaG8mTxlJ5SAwJwKc7xLTN94ACvbBPeebkNPTbo0utQrxomxDYMCKA6aaMme4
+         eAs7IuKkfwHjtk6tZg9WRN2lsURdmSdx9uXIxRmeHKxcN2Fq7fWZW5GqJFhqz3vCjSg7
+         hS0h0Gsa70YtMnaSGPWugFNEyC1RnINpfgiVk5s3UkGFVRiOERwWD9Gxdtqy/tJauToV
+         /zuzlqzzsRj1h1SbP7LB9PSa7EMDJiVlaw5btP76zwWH2XfCkwQOtH2ShzyCfmm3Y/oI
+         2psA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712745748; x=1713350548;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AbyfJgbEqm3y8eA/5R8TMVFQDOgrDw8mMvC2Hb5f9hg=;
-        b=KjOzMViRO6wp+qycA4hUzzI2Lqy5Ehe/PtGIkeJhHJC8w7QjX9kibsUIyA9lSxg0aP
-         mQuH5e9XfP725neVuaT6wIfyT4I59P7cuXoyTCpmu4aly0d95KNrtxQcpEfcRutLWovi
-         WiBUkz6bPqvVSdTg6KUOR3FKAgrGoAeO+7SHaUZWyjWX8HSo1Aub2P9hSmu+fpww7Nn0
-         OtYWbF7J9q/lr+D84F1gBBYM8GGIuNo1IV/+uuJV/gLrHuzAvyUWJRPcUQamM9AzL8n8
-         Bprh4Mjw1uk5pvqaE6DdXm5jK/NoRkbOkUuOAaZ6UPKcVro/vLWjVo6D4e7csQDVEHsi
-         pjnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUgksABf8bNa8hSyiv25obFrv3i8RhxnETOxzUlbQb9vEGp3kP2a7COJyjQyqJlDwenORUPUs9uTPVzVsXnRRlJwEku8tbY2ew/fWJ2
-X-Gm-Message-State: AOJu0YwSN8BvLmXLbDPKhHbven3YV8oaE3xbTVRHSWgyUV/NfAhGkchA
-	iseqxyRzg/iq4a3ItQS8VpJySCUiktV70xnYWl40kYjbLLkxH9grZNDtf1MJzS9/1ECj/xqAX7k
-	SHZbeVC//8H2Y3m8O/sFE39MUm3U=
-X-Google-Smtp-Source: AGHT+IEGFJO0BaJk999ZrILsT2hCzk6kVrd4mglOI/cbkdQghXzCGcxkWrmTrLybQSXUmJLhAVXSq7OJMRq5CyIMS2k=
-X-Received: by 2002:a17:906:f9d1:b0:a51:9cee:4718 with SMTP id
- lj17-20020a170906f9d100b00a519cee4718mr1256690ejb.38.1712745748304; Wed, 10
- Apr 2024 03:42:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712745833; x=1713350633;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D1Sp7n1FvxcNzxiV/M3Whh5xnznJqzGBI91xq3AgOsc=;
+        b=RQIzXWGNQJ93L/h222WePSASPA2GBawxW28OEYsG9+GWs9PcmkxxbVHt8Rc2+zrCv4
+         /X2U9viCXqb7wqQ/+F1I9aGmnlmOiYnK6M/+PWPqVaMD8Bvobym6WdyKrsLICy21MjN6
+         SGPulGSdSycgzEptLAcARUhJudBIBHLLXiX9sT/kB2qlofFIMGr3VTWg5VB+R6xwmUok
+         jnUV2gE5xbeHWfAFlk/Kv0JYh5d6Ys/jqJNL9wOtFm9aq7ye8YABu8WfmJU8t5x6DFpU
+         Z3tpZdTaMWL6zGhS6mBcnDEsfVNHZYiVDCBnbB93UbbMnYkjtKjFZoiZ/AmpSavgGMPu
+         UJ1g==
+X-Forwarded-Encrypted: i=1; AJvYcCWDVFe6HWN8xn0QKceaE4KS161a5x/O9YtVvwdeODJWCYqOU7gMoJDRXrlToY84LEFGDuG4jUB+6ChnsdfpNeSK38NsZKzYKKi7i36Zqk0e4c56HlR8lMHdg8TM/sDfC1SDgxS5wuFRjw==
+X-Gm-Message-State: AOJu0YyA40LI0MMM1vjQb3FIITmLXObFuI11eGsyFDslpMpOUEK5ouoq
+	LvQ8ypj7lQ0EUYXlB664FmIxSeO3VONImfouV7iVV7/YWOyi8Yvclahrm3Yu2YGcTfEJbU20080
+	lAd9VLiZdvUfOygBiefBQlmjpCY8=
+X-Google-Smtp-Source: AGHT+IEGPf5fgJ+Ji13oItqw8ThUKQ2lo5EoXR03Lt9sU+JG4aSaJBKXhCfpCYKEoA5qiJCcmGLynCsasGEkZeYqbCg=
+X-Received: by 2002:a05:6870:1682:b0:22e:bd35:d3fb with SMTP id
+ j2-20020a056870168200b0022ebd35d3fbmr2593686oae.22.1712745833092; Wed, 10 Apr
+ 2024 03:43:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240407080358.8635-1-qq810974084@gmail.com> <559293f8-0291-4059-95ac-99c5c106320a@wanadoo.fr>
-In-Reply-To: <559293f8-0291-4059-95ac-99c5c106320a@wanadoo.fr>
-From: Huai-Yuan Liu <qq810974084@gmail.com>
-Date: Wed, 10 Apr 2024 18:41:50 +0800
-Message-ID: <CAH9++vFxvYkQocw+=rtF=5B=Cfg_uwfL+Ac-vncLrSqMTuUDFw@mail.gmail.com>
-Subject: Re: [PATCH V2] ppdev: Add an error check in register_device
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: sudipm.mukherjee@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org, 
-	linux-kernel@vger.kernel.org
+References: <20240409153519.291205-2-thorsten.blum@toblux.com>
+In-Reply-To: <20240409153519.291205-2-thorsten.blum@toblux.com>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date: Wed, 10 Apr 2024 12:43:41 +0200
+Message-ID: <CAMhs-H8EByNhBAkhDvtHL_ZUgLnMFQcR1zeYhaKQSg-13uFnVQ@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: ralink: Use min() to fix Coccinelle warning
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: John Crispin <john@phrozen.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi Thorsten,
 
-Thanks for CJ's suggestion. I have modified and sent the
-[PATCH V3] email.
+On Tue, Apr 9, 2024 at 5:36=E2=80=AFPM Thorsten Blum <thorsten.blum@toblux.=
+com> wrote:
+>
+> Fixes the following Coccinelle/coccicheck warning reported by
+> minmax.cocci:
+>
+>         WARNING opportunity for min()
+>
+> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+> ---
+>  arch/mips/ralink/timer.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+>
+> diff --git a/arch/mips/ralink/timer.c b/arch/mips/ralink/timer.c
+> index 54094f6e033e..d271ac98312a 100644
+> --- a/arch/mips/ralink/timer.c
+> +++ b/arch/mips/ralink/timer.c
+> @@ -75,11 +75,7 @@ static int rt_timer_request(struct rt_timer *rt)
+>
+>  static int rt_timer_config(struct rt_timer *rt, unsigned long divisor)
+>  {
+> -       if (rt->timer_freq < divisor)
+> -               rt->timer_div =3D rt->timer_freq;
+> -       else
+> -               rt->timer_div =3D divisor;
+> -
+> +       rt->timer_div =3D min(rt->timer_freq, divisor);
+
+I do find the original code more readable.
 
 Best regards,
+    Sergio Paracuellos
 
-Liu.
+>         rt_timer_w32(rt, TIMER_REG_TMR0LOAD, rt->timer_freq / rt->timer_d=
+iv);
+>
+>         return 0;
+> --
+> 2.44.0
+>
 
