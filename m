@@ -1,311 +1,161 @@
-Return-Path: <linux-kernel+bounces-138950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C44389FC78
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:08:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7EEF89FC7F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:08:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02A4F28E48B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:08:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8624B27C24
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE541791FB;
-	Wed, 10 Apr 2024 16:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98CB617920F;
+	Wed, 10 Apr 2024 16:08:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="G55rm0Mp"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bz+xp+Vq"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30AFA1791E8
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:07:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 674A71791FB;
+	Wed, 10 Apr 2024 16:08:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712765280; cv=none; b=h/MDR7Ovp1/R/JH/F6P9Xffkn36Be9mfGWdvTkmA5eM2fIc0PX7azLK+/thjWCTlYe+30pzKPTzPk19kEbY+4+xmpMjKKeRLaAjBldIBzkBioqpwZn5HYdPAj8J8rOfl/PHMSon1j5Rb4vNaN/wMRcexmT2ZdRsRvgCqBsZgP1Y=
+	t=1712765292; cv=none; b=IqXr/chaEaa0tPq1BYRFWFIlaJT1UwUysI8Dmhcr5ryMTifIqt8eVckz9anQXvWT5l3z4JbwoXg6jOU9b5FAwxqXQX/RrRZzQ8c9BovItQ1uU7tnEsiMSMsVtc0qTmqWQqcplbc9wpN9tWLvPjNFiFo7tSOV/RFMozAOgNHDZL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712765280; c=relaxed/simple;
-	bh=O9vyfiYW4qJ4aR4aUCNu5ffJRmKK3JS+Eqhztirud48=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TT3Cozil6ne6yKlwZFajtlvMvE16N69z8uIzDBGhGzYQbuiCGVlrMm2ga8qbkXFqETY5fMVHy6EYg1MyIXYmu6NQF+0gv5w+PTQ4RyIYr6p+CJlDJ6oo4sKKLe0F8/Zv23LOzSTCaCdVcHl5NPnQqB6JxehN5JhQyAxT4+UBRpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=G55rm0Mp; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e062f3a47bso176935ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:07:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712765278; x=1713370078; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jQntAKieGT0i/s8HiScw2bDeUzaEYfiblRtqNRVHdc4=;
-        b=G55rm0MpB+CuWSLQ4HA9r/JG8GQ2mmtobGvRzbxtVwHW6XaU+jfhREkJzBKApFwt3z
-         IeiMfaZOWuY8LeJ9rqc/sUCi/nkpm831h7BrnXdOit7EtV8tjxvWIP7LjvPKqxp0uJKw
-         mCkyBTmhfJLh+lqBaPwWZQ+4DAsevlyapaGbx57g6FMWS3SuobM6F3QZczsrbODUgROD
-         6EMYa8pGYbh7vhT/6n+g7nPUUSBMBXtWHtcv5hM+/w1StyVaLEzL7yte8VwuL1LN5PSA
-         AUgBLfyjojBL/nyg/vC3u2a5Uz5Llag/LozY6rpb18zLb7cgS8KI7YzKdP5c+JAXRV6/
-         lOBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712765278; x=1713370078;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jQntAKieGT0i/s8HiScw2bDeUzaEYfiblRtqNRVHdc4=;
-        b=elsejRUvPxjjWI/uv9vH6PTi1GygOu6VP2L3IcOEBuOUpoJ12R5ZVrDoG6y1SQrVGI
-         CduITttjbDWlsFybyzvlqmEcKZitkoqb5mEADSYlbpLL+kkY9tri6rSXeZLrEZkiO5Xi
-         QkhqiVpeqzgZYDTytwGvtub2TObUaKofas/Ur1cWzYZzoCPEMUg3LbaPZnuDg5RfWPIt
-         c33VHeisD8eNwZiighMp3tcWTKe1b325FjS8CxtmWMIWZ1/+H38CGLVklbzT4cwC8ABO
-         HvoYj26W6zHkJIgiRI6rhrA3urjmGV+9OiLK4EtFPKMK3ARL6L+jBI6wY+VozjE+VqPE
-         eU1A==
-X-Forwarded-Encrypted: i=1; AJvYcCV2I/YlZPQsyxCvXpUpAwdV10EKX9b6CHnQkFJiFimeoHsZAwuCH/Gis66xNAsIJJe6hyLgy/kSzSE/0dov2MpINKgGZZOgCsiOaZm9
-X-Gm-Message-State: AOJu0Yw5b5UMBAhSPMdXmkO/I+f1+cdFJZA0KQo6KlMHjfkmPZ3HlllR
-	Tv4gR7knb0yZof6ny46YefbiQdogsGgg+GnU/4BDrNS/3IJ3BzhmwqFipsnAPi+eKdjop7i8rdV
-	9Ygfx8sUWx5ijEjg+duDhVugsImK6d5r+EXJY
-X-Google-Smtp-Source: AGHT+IGJstmEj1XUFY34LSDgFUBaClLQ/9p78uMzbyL2cRc7G5dE+yDawDKh0XUCAv7+t9BJLvl36zI/jgsD4Ixi/Zs=
-X-Received: by 2002:a17:902:e842:b0:1e2:3991:9e9 with SMTP id
- t2-20020a170902e84200b001e2399109e9mr261613plg.0.1712765278065; Wed, 10 Apr
- 2024 09:07:58 -0700 (PDT)
+	s=arc-20240116; t=1712765292; c=relaxed/simple;
+	bh=TYSbglhUGKkp+nQF65/gBniM6ORpHD/r7dxLRKAY3CU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mfgOJiSpPoDPvzh9VdbJbNiXMdfIBZXbXLGT0h5JKCE+zXA+/IUykvF//WmyEgkIkPx6hH7Grq+5pISxaUQbLPF5M6NyLkEqnTKAmXgkaYWQL7NY+an+PXdbZUOME2CvJmJx/HDyy9u7RB5NtAN8XDa1XUguFt0k36PW00R849o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bz+xp+Vq; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43AG3vwA016370;
+	Wed, 10 Apr 2024 16:08:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=n+nI9qSzX6fe4b6bLe/CP34ytrHVPciQDdwr8ktXFOM=;
+ b=bz+xp+VqP3XyScImRa/54OkA6ZyBSnmwJML+NPsZc9HvwLrSe4pll8LRwua2lGCHnqRX
+ wzVatIm2SwqrmKhtCEQ25WsXRsOMxNobbAKWtdR4eEnevIMwLEpYNp06ggrcw+wE0+T9
+ q4wFD0JNXoCh+9oVcM/ZeZanGvocN6yOJ7o2giFY2sOnrh1mh7eWY4D+pg1b9T9fcYKO
+ mcIoGs/hlqIjjvGAiiWJMW5Xh70ny4dPMtl3+5nYxvNZxA8NoCpZ/0nYJiU/TpBRIO9S
+ 27jwqq+FES0JeZj+DFirQXgg2G4Sbje/Wvo6IpQN+6sYOP4tG9v/QofmnpoF6Rv9uc2G 3A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdwxsr0hy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 16:08:00 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43AG80sP022647;
+	Wed, 10 Apr 2024 16:08:00 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdwxsr0hu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 16:08:00 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43AFb0J0016996;
+	Wed, 10 Apr 2024 16:07:59 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xbke2nbgn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 16:07:59 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43AG7sWf33161638
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Apr 2024 16:07:56 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EFB302004D;
+	Wed, 10 Apr 2024 16:07:53 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 451BD20043;
+	Wed, 10 Apr 2024 16:07:53 +0000 (GMT)
+Received: from li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com (unknown [9.171.29.198])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 10 Apr 2024 16:07:53 +0000 (GMT)
+Date: Wed, 10 Apr 2024 18:07:51 +0200
+From: Sumanth Korikkar <sumanthk@linux.ibm.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org, hughd@google.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        iii@linux.ibm.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/shmem: Inline shmem_is_huge() for disabled
+ transparent hugepages
+Message-ID: <Zha5V0QxODZR4qOW@li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com>
+References: <20240409155407.2322714-1-sumanthk@linux.ibm.com>
+ <594dbec7-b560-44e5-a684-93dcb8ba85df@redhat.com>
+ <Zhavr9NxvayDhU9X@li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com>
+ <29b613a8-f0d5-4f5f-adbc-d64ed8908044@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410104450.15602-1-adrian.hunter@intel.com>
-In-Reply-To: <20240410104450.15602-1-adrian.hunter@intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Wed, 10 Apr 2024 09:07:42 -0700
-Message-ID: <CAP-5=fXw+HEnyiry=6LWhpPcexbNu=CzknNfcjr=MHa78ujkpw@mail.gmail.com>
-Subject: Re: [PATCH] perf tools: Simplify is_event_supported()
-To: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <29b613a8-f0d5-4f5f-adbc-d64ed8908044@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: diLl3fzGZHAouOz23n5C0cevWaObunjs
+X-Proofpoint-GUID: _1YMLRsYJXVgNhSs5Kv8fJoHDrrYdjkM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 spamscore=0 bulkscore=0 clxscore=1015 mlxlogscore=699
+ malwarescore=0 adultscore=0 suspectscore=0 phishscore=0 lowpriorityscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404100117
 
-On Wed, Apr 10, 2024 at 3:45=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.=
-com> wrote:
->
-> Simplify is_event_supported by using sys_perf_event_open() directly like
-> other perf API probe functions and move it into perf_api_probe.c where
-> other perf API probe functions reside.
->
-> A side effect is that the probed events do not appear when debug prints
-> are enabled, which is beneficial because otherwise they can be confused
-> with selected events.
->
-> This also affects "Test per-thread recording" in
-> "Miscellaneous Intel PT testing" which expects the debug prints of
-> only selected events to appear between the debug prints:
-> "perf record opening and mmapping events" and
-> "perf record done opening and mmapping events"
->
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+On Wed, Apr 10, 2024 at 05:51:28PM +0200, David Hildenbrand wrote:
+> On 10.04.24 17:26, Sumanth Korikkar wrote:
+> > On Wed, Apr 10, 2024 at 02:34:35PM +0200, David Hildenbrand wrote:
+> > > On 09.04.24 17:54, Sumanth Korikkar wrote:
+> > > > In order to  minimize code size (CONFIG_CC_OPTIMIZE_FOR_SIZE=y),
+> > > > compiler might choose to make a regular function call (out-of-line) for
+> > > > shmem_is_huge() instead of inlining it. When transparent hugepages are
+> > > > disabled (CONFIG_TRANSPARENT_HUGEPAGE=n), it can cause compilation
+> > > > error.
+> > > > 
+> > > > mm/shmem.c: In function ‘shmem_getattr’:
+> > > > ./include/linux/huge_mm.h:383:27: note: in expansion of macro ‘BUILD_BUG’
+> > > >     383 | #define HPAGE_PMD_SIZE ({ BUILD_BUG(); 0; })
+> > > >         |                           ^~~~~~~~~
+> > > > mm/shmem.c:1148:33: note: in expansion of macro ‘HPAGE_PMD_SIZE’
+> > > >    1148 |                 stat->blksize = HPAGE_PMD_SIZE;
+> > > > 
+> > > > To prevent the possible error, always inline shmem_is_huge() when
+> > > > transparent hugepages are disabled.
+> > > > 
+> > > 
+> > > Do you know which commit introduced that?
+> > Hi David,
+> > 
+> > Currently with CONFIG_CC_OPTIMIZE_FOR_SIZE=y and expirementing with
+> > -fPIC kernel compiler option, I could see this error on s390.
+> 
+> Got it. I assume on Linus' tree, not mm/unstable?
 
-nit:
-Closes: https://lore.kernel.org/lkml/ZhVfc5jYLarnGzKa@x1/
+It's not yet upstream.
+> 
+> > 
+> > However, default kernel compiler options doesnt end up with the above
+> > pattern right now.
+> 
+> Okay, just asking if this is related to recent HPAGE_PMD_SIZE changes:
+> 
+> commit c1a1e497a3d5711dbf8fa6d7432d6b83ec18c26f
+> Author: Peter Xu <peterx@redhat.com>
+> Date:   Wed Mar 27 11:23:22 2024 -0400
+> 
+>     mm: make HPAGE_PXD_* macros even if !THP
+> 
+> Which is still in mm-unstable and not upstream.
 
-> ---
->  tools/perf/util/perf_api_probe.c | 40 +++++++++++++++++++++++++
->  tools/perf/util/perf_api_probe.h |  2 ++
->  tools/perf/util/pmus.c           |  1 +
->  tools/perf/util/print-events.c   | 50 +-------------------------------
->  tools/perf/util/print-events.h   |  1 -
->  5 files changed, 44 insertions(+), 50 deletions(-)
->
-> diff --git a/tools/perf/util/perf_api_probe.c b/tools/perf/util/perf_api_=
-probe.c
-> index 1de3b69cdf4a..13acb34a4e1c 100644
-> --- a/tools/perf/util/perf_api_probe.c
-> +++ b/tools/perf/util/perf_api_probe.c
-> @@ -195,3 +195,43 @@ bool perf_can_record_cgroup(void)
->  {
->         return perf_probe_api(perf_probe_cgroup);
->  }
-> +
-> +bool is_event_supported(u8 type, u64 config)
-> +{
-> +       struct perf_event_attr attr =3D {
-> +               .type =3D type,
-> +               .config =3D config,
-> +               .disabled =3D 1,
-> +       };
-> +       int fd =3D sys_perf_event_open(&attr, 0, -1, -1, 0);
-
-It looks like this is a change to the actual perf_event_open
-arguments, I don't think it is an issue but wanted to flag it.
-
-> +
-> +       if (fd < 0) {
-> +               /*
-> +                * The event may fail to open if the paranoid value
-> +                * /proc/sys/kernel/perf_event_paranoid is set to 2
-> +                * Re-run with exclude_kernel set; we don't do that by
-> +                * default as some ARM machines do not support it.
-> +                */
-> +               attr.exclude_kernel =3D 1;
-
-I worry about the duplicated fallback logic getting out of sync,
-perhaps we could have a quiet option for evsel__open option, or better
-delineate the particular log entries. I don't really have a good
-alternative idea and kind of like that detecting an event is available
-loses the evsel baggage. I would kind of like event parsing just to
-give 1 or more perf_event_attr for similar reasons.
-
-Assuming there are no better ideas on how to approach this:
-Reviewed-by: Ian Rogers <irogers@google.com>
+Not related to this commit. I tried on master branch.
 
 Thanks,
-Ian
-
-> +               fd =3D sys_perf_event_open(&attr, 0, -1, -1, 0);
-> +       }
-> +
-> +       if (fd < 0) {
-> +               /*
-> +                * The event may fail to open if the PMU requires
-> +                * exclude_guest to be set (e.g. as the Apple M1 PMU
-> +                * requires).
-> +                * Re-run with exclude_guest set; we don't do that by
-> +                * default as it's equally legitimate for another PMU
-> +                * driver to require that exclude_guest is clear.
-> +                */
-> +               attr.exclude_guest =3D 1;
-> +               fd =3D sys_perf_event_open(&attr, 0, -1, -1, 0);
-> +       }
-> +
-> +       if (fd < 0)
-> +               return false;
-> +
-> +       close(fd);
-> +       return true;
-> +}
-> diff --git a/tools/perf/util/perf_api_probe.h b/tools/perf/util/perf_api_=
-probe.h
-> index b104168efb15..820f6a03221a 100644
-> --- a/tools/perf/util/perf_api_probe.h
-> +++ b/tools/perf/util/perf_api_probe.h
-> @@ -4,6 +4,7 @@
->  #define __PERF_API_PROBE_H
->
->  #include <stdbool.h>
-> +#include <linux/types.h>
->
->  bool perf_can_aux_sample(void);
->  bool perf_can_comm_exec(void);
-> @@ -13,5 +14,6 @@ bool perf_can_record_text_poke_events(void);
->  bool perf_can_sample_identifier(void);
->  bool perf_can_record_build_id(void);
->  bool perf_can_record_cgroup(void);
-> +bool is_event_supported(u8 type, u64 config);
->
->  #endif // __PERF_API_PROBE_H
-> diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
-> index 2fd369e45832..5442442e0508 100644
-> --- a/tools/perf/util/pmus.c
-> +++ b/tools/perf/util/pmus.c
-> @@ -13,6 +13,7 @@
->  #include "cpumap.h"
->  #include "debug.h"
->  #include "evsel.h"
-> +#include "perf_api_probe.h"
->  #include "pmus.h"
->  #include "pmu.h"
->  #include "print-events.h"
-> diff --git a/tools/perf/util/print-events.c b/tools/perf/util/print-event=
-s.c
-> index 3f38c27f0157..a25be2b2c774 100644
-> --- a/tools/perf/util/print-events.c
-> +++ b/tools/perf/util/print-events.c
-> @@ -20,6 +20,7 @@
->  #include "evsel.h"
->  #include "metricgroup.h"
->  #include "parse-events.h"
-> +#include "perf_api_probe.h"
->  #include "pmu.h"
->  #include "pmus.h"
->  #include "print-events.h"
-> @@ -239,55 +240,6 @@ void print_sdt_events(const struct print_callbacks *=
-print_cb, void *print_state)
->         strlist__delete(sdtlist);
->  }
->
-> -bool is_event_supported(u8 type, u64 config)
-> -{
-> -       bool ret =3D true;
-> -       struct evsel *evsel;
-> -       struct perf_event_attr attr =3D {
-> -               .type =3D type,
-> -               .config =3D config,
-> -               .disabled =3D 1,
-> -       };
-> -       struct perf_thread_map *tmap =3D thread_map__new_by_tid(0);
-> -
-> -       if (tmap =3D=3D NULL)
-> -               return false;
-> -
-> -       evsel =3D evsel__new(&attr);
-> -       if (evsel) {
-> -               ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
-> -
-> -               if (!ret) {
-> -                       /*
-> -                        * The event may fail to open if the paranoid val=
-ue
-> -                        * /proc/sys/kernel/perf_event_paranoid is set to=
- 2
-> -                        * Re-run with exclude_kernel set; we don't do th=
-at by
-> -                        * default as some ARM machines do not support it=
-.
-> -                        */
-> -                       evsel->core.attr.exclude_kernel =3D 1;
-> -                       ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
-> -               }
-> -
-> -               if (!ret) {
-> -                       /*
-> -                        * The event may fail to open if the PMU requires
-> -                        * exclude_guest to be set (e.g. as the Apple M1 =
-PMU
-> -                        * requires).
-> -                        * Re-run with exclude_guest set; we don't do tha=
-t by
-> -                        * default as it's equally legitimate for another=
- PMU
-> -                        * driver to require that exclude_guest is clear.
-> -                        */
-> -                       evsel->core.attr.exclude_guest =3D 1;
-> -                       ret =3D evsel__open(evsel, NULL, tmap) >=3D 0;
-> -               }
-> -
-> -               evsel__delete(evsel);
-> -       }
-> -
-> -       perf_thread_map__put(tmap);
-> -       return ret;
-> -}
-> -
->  int print_hwcache_events(const struct print_callbacks *print_cb, void *p=
-rint_state)
->  {
->         struct perf_pmu *pmu =3D NULL;
-> diff --git a/tools/perf/util/print-events.h b/tools/perf/util/print-event=
-s.h
-> index bf4290bef0cd..5d241b33b5a3 100644
-> --- a/tools/perf/util/print-events.h
-> +++ b/tools/perf/util/print-events.h
-> @@ -38,6 +38,5 @@ void print_symbol_events(const struct print_callbacks *=
-print_cb, void *print_sta
->                          unsigned int max);
->  void print_tool_events(const struct print_callbacks *print_cb, void *pri=
-nt_state);
->  void print_tracepoint_events(const struct print_callbacks *print_cb, voi=
-d *print_state);
-> -bool is_event_supported(u8 type, u64 config);
->
->  #endif /* __PERF_PRINT_EVENTS_H */
-> --
-> 2.34.1
->
+Sumanth
 
