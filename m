@@ -1,259 +1,243 @@
-Return-Path: <linux-kernel+bounces-138864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3362B89FB63
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:22:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34E6E89FB69
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:23:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5840285308
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:22:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E07B1F23B0A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:23:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9A016E87F;
-	Wed, 10 Apr 2024 15:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391AF16E871;
+	Wed, 10 Apr 2024 15:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DU1E3bze"
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Fpcj2kka"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7425416DEDA
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FAA516D30E
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:23:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712762521; cv=none; b=LsC7EF2vPmScWSUZl7Xinwgf2K7Hv+o50eTI1HX5gY0yRchkpo/0tgjO12ehXD8DmXypBnEaL6hFeNCU4KHGAWvT+XZgDrJHW7gN7fVAv479CpOAgCUzCFXDhsbe+QjHiyNl9oSBYIX8UMn8sKEJv/Lo27J+IDdvhgzSh7rrUWE=
+	t=1712762587; cv=none; b=RteHCbBTZ6xLdpKyLGGtW9tyPQBiiIUIpFQq0Y1e3+2CJb427LVlHuUkmy5gkLmld1B53Hp6ESjJtzcIsrGuAKVby7JuWPwfvI59towDLLztMJiY+7csWtu2q2xqu4QzIML+x2mv9hRvEMy8gJcVKZKXYyMt1fqOXoXzi8vUyDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712762521; c=relaxed/simple;
-	bh=wBuC0Illl84xEqp/FbzFcOry0Ue7T9qc2B0qD8mOj9Q=;
+	s=arc-20240116; t=1712762587; c=relaxed/simple;
+	bh=2YA6ScZP2GPnSctrWzlZF+AF+jlSQgnZuSK6LYSu3Wo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ua+OoI1DWBw3JJfANoEwz9G/5qaKX/7t/DwNsBxN92E2B0bic3AyddLcq9OSxMcHZYoNgU+vxCq6xPrXSbVZAEjlnv6qQ3eVZWo641pRYfBsTau8W1aBq9WkaS40u2r2fnpt3DKUn6KehF5IbLHGCLGae+x6gMVC69o0X5Uz900=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DU1E3bze; arc=none smtp.client-ip=209.85.167.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3c6088df378so229875b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:21:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712762518; x=1713367318; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vh/+kENzI9+iNwdhm7uqEGlO03O1/nvUgo6PDioMQQE=;
-        b=DU1E3bzeeQNfZFuTHvQIOThxVIcP+28X7jPPLhRTSWzMRA1hgRSoW0/nCUeG3QbXhz
-         YeGfXIZKewo69wZOUTT3sLa1kNIH+U7m6WD6QVHwz5dAAT33lzKNVYZa/Zq2bGXTtHc9
-         4Uq629pmvbcaa+ZspM+rREXzm3hXjRVx4p6FwPCsS3+qfmijujUy9oDYGx2eQv725Cd6
-         R4iNaQSx+vjOnqboxuv5ZB5MqZZgB8UvWWAmhjZCSol5/V+0MdqJ66pFil0WHLRs5Rjm
-         WP64pI+y/jyixVLYcXLpmpcw5BGSb1YdMYPxgP2pi8cgQpc5fFqINd9AjeY8ZAfrxfI0
-         8IGw==
+	 To:Cc:Content-Type; b=ME5voR/NCfgIEC03QLuhVNTASWzHqbaOYh2sfc3m+gZVDum55E1NnRtOZYFySnu3oJfl3bnZgcgs/UAnDSIDl99Him4va+DM08kS61xYD88XM8UD45z8qe3f7qlVQ6Om5IOjWRKO6nTqcaJIuw+t7IEdAZzjoGtQFpcBeGs5WzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Fpcj2kka; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712762584;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IVcVKrk4PzUgF4HuIkdKngsDaWK3az1O5+iMCoeeUwY=;
+	b=Fpcj2kkacXVBs91eS6FDxP4GtLk3y7UKIwgiWh7VpaHMZruCFYkpi7CLlDdRIfFwbU+oq1
+	DnAANK9WcHxshTz4gkeu0mNoowpc6Vz5LE9ux59WDYZ/BeT2aGAe69Fkyg5IG1uWIIgoa0
+	HOGmqzndwlk7DwID6KFJlUf2Bdt6fRw=
+Received: from mail-vk1-f197.google.com (mail-vk1-f197.google.com
+ [209.85.221.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-408-X3ym9ZzXONqLdowp-1PJrA-1; Wed, 10 Apr 2024 11:23:03 -0400
+X-MC-Unique: X3ym9ZzXONqLdowp-1PJrA-1
+Received: by mail-vk1-f197.google.com with SMTP id 71dfb90a1353d-4daa117d98fso2689661e0c.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:23:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712762518; x=1713367318;
+        d=1e100.net; s=20230601; t=1712762582; x=1713367382;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Vh/+kENzI9+iNwdhm7uqEGlO03O1/nvUgo6PDioMQQE=;
-        b=d16gz3O8k/5oG9SlDY/q+iLuAGSPbbZvLc++aNfsO+sLzcVNXgnI4wLds3VYLTc0JH
-         IuAwhIjEq88FjeQIsseLbjl3ORL9gWjMMwWaZW61L04yDaMU4R3qJ+7xo1weRkVrl+zW
-         TTKs6xm4UZgCFK+5vgwcI2Rwj8TGRhV6gLQobUNcGh4XmSj3MVrPnfewxYEtuJq1Qv01
-         MIdlgXkF9r9o21ijA0hv/ImOcL3/OoYhEKqENUJPfUEYAlsjtxGT/5hd2LvnnKn76Kdf
-         BPW5SG818EH+YWh2Y6s1WiQYUV4Za0ws03VAQk27Xs3mYLPigzf3/deB/tJt61F/Ff8N
-         EWZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUyqtmm4hb5uFOaktuMgqFfSTF69tR9/ewPtO3NdnM4ZQWNzddhkV5wTXlDtp4e7YI72MJphIq33PWhPo+0pYsuM29klXEeSER4ocii
-X-Gm-Message-State: AOJu0YwnaQacksLNh5kLHsJ3IcPs/lOuJe2DAxatgTNf6OhOZEdFjKwC
-	mzfyqqVx67c1hi2O7s46dCjS+sQ1NF7/90dECjFyBhuQmHoSUf8SpOt3No6EzhiTSh0xOHTZvaP
-	g/YMJcwM0YFkql3S8dYWjlTvhZJmfw/EpthdJAA==
-X-Google-Smtp-Source: AGHT+IHs1rMwruPktCfgMf42wwout+1xiC6AIC+tzXJFoyH3OJnndfX/9PeFn8BiOrx62T7JXVLcseVgv5m84290LxQ=
-X-Received: by 2002:a05:6808:2a67:b0:3c6:6c3:76e9 with SMTP id
- fu7-20020a0568082a6700b003c606c376e9mr2564860oib.50.1712762517818; Wed, 10
- Apr 2024 08:21:57 -0700 (PDT)
+        bh=IVcVKrk4PzUgF4HuIkdKngsDaWK3az1O5+iMCoeeUwY=;
+        b=Rtu92W+lrmFmVxvq6vsNBdaQh0Un7ilg/xPxOKkrTCnLXzW9i8S8iM/33Idm2vdg8+
+         dIvDD301Tlz8W+Nht79lHPztdx8yVdxquD+ccxHNxDtGUEVZbkQqD4Y9FPjfT/MPoVXs
+         sfUfrTkP7qHLSlXkMmBO075ZpeG2VxPLka0Nt/wzkTZ1w0vK2iZBxW7swnv869F6q96K
+         8had1amOpiLYs5MQbBgBdIfjapd7aNsLe4WJSpu3rgO4U+21Dzr9CBg0V/uFdqx50YSI
+         egd6029s83B7qOvrqAKSnop858LLsBD4xxSSh4IFyk6g47aol4CoABlM51mrOGacPQue
+         UEGA==
+X-Gm-Message-State: AOJu0YykSbfDRZ2dKEEymkGG8vNy020xtu6XblUT5sbXxlSv1WYtf2IT
+	94ZT6AGJhXh3qz+e/0VcU2d5JYtWWiz1sGI/8Clj8ZAT22lPULE1u7nSwWE35Lxatx5x/FZFLzk
+	RbYNuymkNKMoYLsuYL4LQ83cMHFuWcL8du3h6EHQYzrfMo5TvmkdL46ZFzD9fHDBytRaGdGZ1tB
+	gvEfL5dGSXV3NRMT8vfMLau0uHR5EuLrIeHGXulF2Hpq0tVx4=
+X-Received: by 2002:a05:6122:180a:b0:4d4:5d86:b2d with SMTP id ay10-20020a056122180a00b004d45d860b2dmr3229323vkb.16.1712762581867;
+        Wed, 10 Apr 2024 08:23:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGJWo2zPN31Xwn+WhgCfznSm122A5t6DqHNfh/1O9Ip5bewsx/OT7yR409bQ3WLhcc2xiDSSP0AdARyJNyKtt4=
+X-Received: by 2002:a05:6122:180a:b0:4d4:5d86:b2d with SMTP id
+ ay10-20020a056122180a00b004d45d860b2dmr3229309vkb.16.1712762581508; Wed, 10
+ Apr 2024 08:23:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409173540.185904475@linuxfoundation.org>
-In-Reply-To: <20240409173540.185904475@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 10 Apr 2024 20:51:46 +0530
-Message-ID: <CA+G9fYuYu=8ih7B++PxDhNar4Vkzdxj8PbO-VRNvk+EPVAd+vQ@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/255] 6.6.26-rc3 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
-	broonie@kernel.org
+References: <20240301203023.2197451-1-jsavitz@redhat.com> <87jzmduiva.fsf@kernel.org>
+ <CAL1p7m5BoxFDeK0MryQCmTDCeBLN3rMLRGx3cHa6teS02wsgZw@mail.gmail.com> <CAL1p7m5VHGL+-st7zgGA9LPft6DND=qz0ifiD_ki1hLvfRv=7Q@mail.gmail.com>
+In-Reply-To: <CAL1p7m5VHGL+-st7zgGA9LPft6DND=qz0ifiD_ki1hLvfRv=7Q@mail.gmail.com>
+From: Joel Savitz <jsavitz@redhat.com>
+Date: Wed, 10 Apr 2024 11:22:45 -0400
+Message-ID: <CAL1p7m7f=b_qJrU8qea2n1+-1KzEVLMOpY9ov5fH2ZZxGrDK5A@mail.gmail.com>
+Subject: Re: [PATCH] powerpc: align memory_limit to 16MB in early_parse_mem
+To: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Benjamin Gray <bgray@linux.ibm.com>, 
+	Paul Mackerras <paulus@ozlabs.org>, linuxppc-dev@lists.ozlabs.org, 
+	Gonzalo Siero <gsierohu@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 9 Apr 2024 at 23:14, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Mon, Apr 1, 2024 at 10:17=E2=80=AFAM Joel Savitz <jsavitz@redhat.com> wr=
+ote:
 >
-> This is the start of the stable review cycle for the 6.6.26 release.
-> There are 255 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Tue, Mar 26, 2024 at 12:45=E2=80=AFAM Joel Savitz <jsavitz@redhat.com>=
+ wrote:
+> >
+> > On Fri, Mar 8, 2024 at 5:18=E2=80=AFAM Aneesh Kumar K.V <aneesh.kumar@k=
+ernel.org> wrote:
+> > >
+> > > Joel Savitz <jsavitz@redhat.com> writes:
+> > >
+> > > > On 64-bit powerpc, usage of a non-16MB-aligned value for the mem=3D=
+ kernel
+> > > > cmdline parameter results in a system hang at boot.
+> > > >
+> > > > For example, using 'mem=3D4198400K' will always reproduce this issu=
+e.
+> > > >
+> > > > This patch fixes the problem by aligning any argument to mem=3D to =
+16MB
+> > > > corresponding with the large page size on powerpc.
+> > > >
+> > > > Fixes: 2babf5c2ec2f ("[PATCH] powerpc: Unify mem=3D handling")
+> > > > Co-developed-by: Gonzalo Siero <gsierohu@redhat.com>
+> > > > Signed-off-by: Gonzalo Siero <gsierohu@redhat.com>
+> > > > Signed-off-by: Joel Savitz <jsavitz@redhat.com>
+> > > > ---
+> > > >  arch/powerpc/kernel/prom.c | 6 +++++-
+> > > >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.=
+c
+> > > > index 0b5878c3125b..8cd3e2445d8a 100644
+> > > > --- a/arch/powerpc/kernel/prom.c
+> > > > +++ b/arch/powerpc/kernel/prom.c
+> > > > @@ -82,8 +82,12 @@ static int __init early_parse_mem(char *p)
+> > > >  {
+> > > >       if (!p)
+> > > >               return 1;
+> > > > -
+> > > > +#ifdef CONFIG_PPC64
+> > > > +     /* Align to 16 MB =3D=3D size of ppc64 large page */
+> > > > +     memory_limit =3D ALIGN(memparse(p, &p), 0x1000000);
+> > > > +#else
+> > > >       memory_limit =3D PAGE_ALIGN(memparse(p, &p));
+> > > > +#endif
+> > > >       DBG("memory limit =3D 0x%llx\n", memory_limit);
+> > > >
+> > > >       return 0;
+> > > > --
+> > > > 2.43.0
+> > >
+> > > Can you try this change?
+> > >
+> > > commit 5555bc55e1aa71f545cff31e1eccdb4a2e39df84
+> > > Author: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
+> > > Date:   Fri Mar 8 14:45:26 2024 +0530
+> > >
+> > >     powerpc/mm: Align memory_limit value specified using mem=3D kerne=
+l parameter
+> > >
+> > >     The value specified for the memory limit is used to set a restric=
+tion on
+> > >     memory usage. It is important to ensure that this restriction is =
+within
+> > >     the linear map kernel address space range. The hash page table
+> > >     translation uses a 16MB page size to map the kernel linear map ad=
+dress
+> > >     space. htab_bolt_mapping() function aligns down the size of the r=
+ange
+> > >     while mapping kernel linear address space. Since the memblock lim=
+it is
+> > >     enforced very early during boot, before we can detect the type of=
+ memory
+> > >     translation (radix vs hash), we align the memory limit value spec=
+ified
+> > >     as a kernel parameter to 16MB. This alignment value will work for=
+ both
+> > >     hash and radix translations.
+> > >
+> > >     Signed-off-by: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
+> > >
+> > > diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+> > > index 0b5878c3125b..9bd965d35352 100644
+> > > --- a/arch/powerpc/kernel/prom.c
+> > > +++ b/arch/powerpc/kernel/prom.c
+> > > @@ -824,8 +824,11 @@ void __init early_init_devtree(void *params)
+> > >                 reserve_crashkernel();
+> > >         early_reserve_mem();
+> > >
+> > > -       /* Ensure that total memory size is page-aligned. */
+> > > -       limit =3D ALIGN(memory_limit ?: memblock_phys_mem_size(), PAG=
+E_SIZE);
+> > > +       if (memory_limit > memblock_phys_mem_size())
+> > > +               memory_limit =3D 0;
+> > > +
+> > > +       /* Align down to 16 MB which is large page size with hash pag=
+e translation */
+> > > +       limit =3D ALIGN_DOWN(memory_limit ?: memblock_phys_mem_size()=
+, SZ_16M);
+> > >         memblock_enforce_memory_limit(limit);
+> > >
+> > >  #if defined(CONFIG_PPC_BOOK3S_64) && defined(CONFIG_PPC_4K_PAGES)
+> > > diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/pr=
+om_init.c
+> > > index e67effdba85c..d6410549e141 100644
+> > > --- a/arch/powerpc/kernel/prom_init.c
+> > > +++ b/arch/powerpc/kernel/prom_init.c
+> > > @@ -817,8 +817,8 @@ static void __init early_cmdline_parse(void)
+> > >                 opt +=3D 4;
+> > >                 prom_memory_limit =3D prom_memparse(opt, (const char =
+**)&opt);
+> > >  #ifdef CONFIG_PPC64
+> > > -               /* Align to 16 MB =3D=3D size of ppc64 large page */
+> > > -               prom_memory_limit =3D ALIGN(prom_memory_limit, 0x1000=
+000);
+> > > +               /* Align down to 16 MB which is large page size with =
+hash page translation */
+> > > +               prom_memory_limit =3D ALIGN_DOWN(prom_memory_limit, S=
+Z_16M);
+> > >  #endif
+> > >         }
+> > >
+> > >
+> >
+> > Sorry for the delayed reply. I just tested this patch and it fixes the
+> > bug for me.
 >
-> Responses should be made by Thu, 11 Apr 2024 17:35:00 +0000.
-> Anything received after that time might be too late.
+> Hi,
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.6.26-rc3.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.6.y
-> and the diffstat can be found below.
+> Just a quick follow up on this.
 >
-> thanks,
+> The above patch fixed the bug for me.
 >
-> greg k-h
+> How do we want to proceed?
+>
+> Best,
+> Joel Savitz
 
+Hi,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+I haven't heard anything on this thread so I'm just sending a quick follow =
+up.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Do we want to merge this
 
-## Build
-* kernel: 6.6.26-rc3
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.6.y
-* git commit: 63547075e080d3f850b89cf107e49946c3b7c4eb
-* git describe: v6.6.25-256-g63547075e080
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.2=
-5-256-g63547075e080
+Best,
+Joel Savitz
 
-## Test Regressions (compared to v6.6.25)
-
-## Metric Regressions (compared to v6.6.25)
-
-## Test Fixes (compared to v6.6.25)
-
-## Metric Fixes (compared to v6.6.25)
-
-## Test result summary
-total: 173151, pass: 149294, fail: 2238, skip: 21459, xfail: 160
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 129 total, 129 passed, 0 failed
-* arm64: 38 total, 38 passed, 0 failed
-* i386: 29 total, 29 passed, 0 failed
-* mips: 24 total, 24 passed, 0 failed
-* parisc: 3 total, 3 passed, 0 failed
-* powerpc: 34 total, 34 passed, 0 failed
-* riscv: 16 total, 16 passed, 0 failed
-* s390: 12 total, 12 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 6 total, 6 passed, 0 failed
-* x86_64: 33 total, 33 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mm
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-smoketest
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
