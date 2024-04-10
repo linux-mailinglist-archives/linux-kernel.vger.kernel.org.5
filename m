@@ -1,279 +1,260 @@
-Return-Path: <linux-kernel+bounces-139432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A2308A0341
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:24:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DAA48A0344
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:27:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D4F11C2282A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:24:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01F341F23747
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:27:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35B91190665;
-	Wed, 10 Apr 2024 22:24:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A63184130;
+	Wed, 10 Apr 2024 22:27:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M+MEdY6q"
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BOAYagvh"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA08912FF7C;
-	Wed, 10 Apr 2024 22:24:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712787875; cv=none; b=BHvB4jMX541wEU+94r3nQ8DP02j7ZuAWkBQUHOu2oErtnQPtHPVg7hGFarBWWiYnlDYwGyPjahxVPnDD8BOVbJjcEIEY0Oi3Jrrnx7BQhIlM3oUuSYCMRD/T9M6QYqlGf4PLaHXUyiaoTcnC3ENflXXukClPbhs1KwlBkdjFHWs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712787875; c=relaxed/simple;
-	bh=OkZRHG4OUP0/Mknu1H2qrXOnItaKgi574B2w63UEBQc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qMVvCVVmbfX68RWFxptsakVqI3KHIADpGfDc5WPcoh3Nc8w7mpVYdipVW+yRjlQUeA8rqDO8cpDDFvNwORchT4tTlr4MwTrO5uyqYk/IK/gD9K++xa9B2f6fTDjswcDnbkHnypwTgIdllOGF147C89Bv64WUaTW7M5OPCy/rcjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M+MEdY6q; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5cdbc4334edso4471139a12.3;
-        Wed, 10 Apr 2024 15:24:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712787873; x=1713392673; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3oArjKw8wsID4rCgeuLIYE0lPG2MnYnaXMSAIhN+7kM=;
-        b=M+MEdY6q1JSEVJ2CM0TCRARTQ4IOOE7RDiBgvzy9CgO3TLi0Z/gsheWiyPzYL1joYp
-         Cg/BM2tpYhwquU/MmUJ3Nqc8MoVpwYlW2aO93ek9AWLUaj5jTCPEVotnBshBigVBbQ+8
-         0Zt0YIBkP6bD82/y/KLDBF4PIq1XMP2yraoA4bBEJf1nATum5lT1FwcUrLRsNZlmkiYJ
-         PfHbdgeWrkRC4Dy+AewxfbcRp1q45D3YzLqeW9YllhsLaDEsCc4GeNaRaR1A2jVGjwwp
-         M4jV13HNAk6yYCUD8b/G4oYenEUF9MDpC5Ziu99yL/CyCK4dDhnSdJGnOz4RK3yqwB1D
-         YT4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712787873; x=1713392673;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3oArjKw8wsID4rCgeuLIYE0lPG2MnYnaXMSAIhN+7kM=;
-        b=G6oVWpKKmw03b7tUgP0PwQzhglmZ49YWz74z/PTxZtlpq9T7FQSBXS+P+U+9c6lbd/
-         iXQ11xUNkrkCYcd3dBsXQBhiDQcv2WOuEr2OeTq1pxwLdFX67iDKrof0lUiUctoGzIER
-         Z4EbUaE9f0dPRw4wa+EQ5jlE/uCZnnzjTUhkcIEjK76BmsDsY9Xy9dSzkvhrJstCdMJz
-         M4Rb4uXCHhS/NcpzaY2TnGpJ7qdPoEz15Hwd5betzMaTcbcElQbZCgMc5W9w6VpijZdp
-         aZFAKW3wzxRCCvPEsnrkSD3HzlagZL64x86CRzWyO7C1VMPqS5CwgEYnbzDA1WYr1OT/
-         e91Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWeqOA1+KISVk3ISBRfgwieJVix83sE4WK6p+mWsmB6lPUPtBIjtMxobhzak77I3WWl1nIvPVUU820bfR3+YRCuoB5ZQ4DsAy3+Xd77m9Swc9zF70kas7qBuR/DbGHhlVS11crOirSnWPEqWKNmtm5BEGmQ4MJiop3r7h4ou9I0Le+givlLGuCvk8rL
-X-Gm-Message-State: AOJu0Yzk2sZEqhUnMBdoqpsbvy8C1SVVfT5lWJzKkAJI0q5JiolxRqxR
-	saJn6u96qiOteIMOdOUqEyNRUGEWngDNRDud2caXEAyAm4Hp4FAV
-X-Google-Smtp-Source: AGHT+IFVnyKFHxzbXF0rWfmn+H6GI+i3o48dP8yMzH2AEvNtJYBPKOB4FqLuIDM0ICI6BEl+/AwPTw==
-X-Received: by 2002:a05:6a20:1585:b0:1a9:4055:6dce with SMTP id h5-20020a056a20158500b001a940556dcemr4693410pzj.58.1712787872754;
-        Wed, 10 Apr 2024 15:24:32 -0700 (PDT)
-Received: from tahera-OptiPlex-5000 ([136.159.49.124])
-        by smtp.gmail.com with ESMTPSA id ge7-20020a056a00838700b006e567c81d14sm145086pfb.43.2024.04.10.15.24.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 15:24:32 -0700 (PDT)
-Date: Wed, 10 Apr 2024 16:24:30 -0600
-From: Tahera Fahimi <fahimitahera@gmail.com>
-To: =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc: Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
-	outreachy@lists.linux.dev, netdev@vger.kernel.org,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Jann Horn <jannh@google.com>
-Subject: Re: [PATCH v2] landlock: Add abstract unix socket connect
- restrictions
-Message-ID: <ZhcRnhVKFUgCleDi@tahera-OptiPlex-5000>
-References: <ZgX5TRTrSDPrJFfF@tahera-OptiPlex-5000>
- <20240401.ieC2uqua5sha@digikod.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6495F168DC
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712788028; cv=fail; b=KFIMXoFJzSmAMyuzoYIRkk9gzL/3Cg4jv8VoZqUUHN1mdG6uvYq9LNtHckPJZMHIeURhBeLPYnSTszJoUb/5bttdM46mE7DhS8Jo4xkO4lNeQ+xQgRCgm+GxQpylvJWN7etl3yWnZqQ2ad/BBwZ3yEyJbUNJslaM7fQKW++bzTQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712788028; c=relaxed/simple;
+	bh=4/XS5JBY+dqMMFBTxa4ADxRsJSMJVbckMJ8sKMeYZes=;
+	h=Message-ID:Date:Subject:References:From:To:CC:In-Reply-To:
+	 Content-Type:MIME-Version; b=TWvlacdGbFKsbLIjpQObzYy99r/Gj01R88UBbTW+DVNg8htS754pV80aM5O7u3ctu751Ku3ExYxvIjjfcCXOXeE1dVCeoG2oBLQDHrA/8GUKZz8KK3DRXC7p2EYUMaACN74FGf+MmtfNTQQIgoi2SNma/ZIo6Xjv4n6kNHkCeUo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BOAYagvh; arc=fail smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712788026; x=1744324026;
+  h=message-id:date:subject:references:from:to:cc:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=4/XS5JBY+dqMMFBTxa4ADxRsJSMJVbckMJ8sKMeYZes=;
+  b=BOAYagvhIAadBHfzLtdgQBbpsnjUiCshXX/d1EAS/n4B3hWDHzx8SiH0
+   mdYXmImj/tBUuX0GSvEJE0qGw6ZQ3f/6npFpuzNzxyW8VMBp2zII28mdx
+   fu0hBk8EOLHmy9DFbHfMJNVqVGh394p7qiKIqd0W+HjJ9cxdG30lgG6Vf
+   MTWXsVagkoEXgdScbE/XUMzt+UkSCfNfQEoVmQFbJUUH14YMrCMF9mcgU
+   mTCA/bdtb0Ceq2y9AFUP3WdnQMlPu0KfDAkSo5ZPgHCuTabs9fOD2GFk8
+   pkTNfsLiRaSFVG1xZ96fiTL++P6+zA/8L11TBaBNLYqeSFwvWdwGfcMgK
+   w==;
+X-CSE-ConnectionGUID: 5iptrtOkQ7+RvC+hRDvesw==
+X-CSE-MsgGUID: nXPSxDZwQaiwLQbIfmWDXQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="19571060"
+X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
+   d="scan'208";a="19571060"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 15:27:05 -0700
+X-CSE-ConnectionGUID: DppDV+GfTSypKR6AhULDiw==
+X-CSE-MsgGUID: 21U/At7RQo2aAVr3MmMEJw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
+   d="scan'208";a="20740533"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Apr 2024 15:27:05 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 10 Apr 2024 15:27:04 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 10 Apr 2024 15:27:04 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 10 Apr 2024 15:27:03 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Go4SPHOWn2tOVC/+jhCnBww9LxI/7/H0i1D41HnL9iw7O/OLA+oBzdi63O2OoN3mNJuaaQ694Zszrix0ew4aPVRjuqN+IZcpuNitWFb3rI88PiKVCfShV5OkRpNI4N7s3vLDzpOremEIKuV+lc/QyCpRGRsopxYc5w++/jhtnYT9nVkgPeyL1PIAihNYZZoGDOt3eeERVoIe8uJosKXd2Ib5uH7A7j8VCZ+nuuAGyH2hmVvKYT+Mlw5IVfSUDShD4GQGlIRmTzn+5NwCetxV8uAHxlLpbfeJeoCyP9hRyXv4qv4Zo83MGrJenpaXY6mspRzk138NK3+czJv+LyiFdw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=n8qWiHm6nwC4mAOn7KSx5XZPfPljqW/bD7nFtVyInAI=;
+ b=VHyw/q6LN/G2/58QkryvP9oP5tKlaJfeqFg7g083a04ZGsrbisMV1hy600JCFznWn2o41HoV4Ox2pdDMGFuuFQbu2miR3PCpvMSbGE9itBvE1XFln+g5/ENsIM0YE3a0NaylG7aMKgK0prnklnmWVIGMS2GAHge//Z5wELothl7zOv9ymQrZ3xGqYa4421PghBHXzWw5NX1GeHxlKbQwyci9sSzT6THsazaIRvnXHQNf6kn5Rx3jzENuryz+8PGZJ2BpWLWGcWuhx+0LnJAeHCp1jmCvqKe6/KGtOLIfkixFmeZ1Awp0PCs3h6qwSsjJ9P9nJXqGtfyxRMJGGA041A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by SA1PR11MB7013.namprd11.prod.outlook.com (2603:10b6:806:2be::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7430.46; Wed, 10 Apr
+ 2024 22:27:02 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7452.019; Wed, 10 Apr 2024
+ 22:27:02 +0000
+Message-ID: <e24e0de1-d984-474a-8b79-ea0934ac668e@intel.com>
+Date: Thu, 11 Apr 2024 10:26:50 +1200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/5] x86/kexec: do unconditional WBINVD for bare-metal
+ in stop_this_cpu()
+References: <cover.1712493366.git.kai.huang@intel.com>
+ <33b985a8f4346f4bcf0944eaf37193a906b11af3.1712493366.git.kai.huang@intel.com>
+ <e94d208e-964f-cfc0-60a4-fe70db52bec1@amd.com>
+ <cbf171e1-a518-429b-fd07-3526a0b252bf@amd.com>
+Content-Language: en-US
+From: "Huang, Kai" <kai.huang@intel.com>
+To: Tom Lendacky <thomas.lendacky@amd.com>, <linux-kernel@vger.kernel.org>
+CC: <x86@kernel.org>, <dave.hansen@intel.com>, <bp@alien8.de>,
+	<kirill.shutemov@linux.intel.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+	<hpa@zytor.com>, <luto@kernel.org>, <peterz@infradead.org>,
+	<rick.p.edgecombe@intel.com>, <ashish.kalra@amd.com>, <chao.gao@intel.com>,
+	<bhe@redhat.com>, <nik.borisov@suse.com>, <pbonzini@redhat.com>,
+	<seanjc@google.com>
+In-Reply-To: <cbf171e1-a518-429b-fd07-3526a0b252bf@amd.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR02CA0030.namprd02.prod.outlook.com
+ (2603:10b6:303:16d::18) To BL1PR11MB5978.namprd11.prod.outlook.com
+ (2603:10b6:208:385::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240401.ieC2uqua5sha@digikod.net>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|SA1PR11MB7013:EE_
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oIbEVPwQ8E1eo7T8rA5DWfbdiy6jaoXBUvOL/6JgGNAxVtK4oPM+ynnkcr32W+UNeK8qqMgGWO6jRUCi/wvdIaaK2FFrui78kSkm+7hrWIaZVsBZk8wtH/4TmatkAbmAahdlNJSguPNL13jlDLBm2ITeby0M/uaQyeVF/JgTL79shQy+FsBR/JTvbudL5HcD8bdjrB8jF3ITL3KWvO1CwtsGrK8QzfEeGbzORz6ZSKZa03AvDJoi7aS67B5NR3rGnIsDKFEtP2PjoKTw/ELEifdIDwZo6/el93On6e6M7x2FwmppRL0arFVLElul3yeGD9Gg3LFGgTGjGmUzSzCmNZOOuE25oZZSJ7N1z0zEFz96CdcjcJ0Mgjoe+O9lbLxfhf8/0swIglmlqSd782n0a09S7qz37ECq71PPCIyYmWeo5eeV8Vl9t/CPj9Lbw4fWyog3ojt4GoyMvVbFlWO1lEEN2i57HKui2pLbvaByh3Fa0JAhd3KpIr1in6+jMRg1rj/eCgmVMeWzFmdoOyyxEsguWhf1z2+xalfq2GJzlakJUQklNoDwAMXH7xo0+9mB3hOzS4zHJpavGB6q12f6LCwaXKur80I6SuJ5+gSI/kollfGJZSfXpDPG2M1/JyFw661B97MwM+regN1ZnkQ3AnBeXIeDpa07VdaPTnms4YU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b3NJTEoydUtTb1IxQWxXVUZRWGpOZ1lxRlhFR21talFhdklqbVBScTlTd1dY?=
+ =?utf-8?B?YzV6WWNPcUk2MlFaZ3VENGZpOVEzZmNTU2xkMEhGL0tYRkhlUkl1ZnlRTy9m?=
+ =?utf-8?B?cWZwUWxzMkhrQUY5MHZQck43U0grN04wVE1aQ2hhb2hCWmZiajdSVnJtanNi?=
+ =?utf-8?B?Y0lXVFkzTFpldC84NkJ5N3B0L0NWaEI4emV0ZXprM3RteG5Ja3dLTGJOcUVV?=
+ =?utf-8?B?a3crSTNyRWU2MWl3Rm1YeFJkRUFUQ3AvYmJETDBHZzQ3ZytBelZtejh4eVpi?=
+ =?utf-8?B?cHhyWnduTFV6eFNVS0lES29DMXI3MldBYmN2RnVzOXJIUld4Q3dwcnpobE1v?=
+ =?utf-8?B?MjJHMUpCVkdyTWU3TUdWeVZlNStFOG5HbEpKUEYvNk5iall6djRodkRQMi8x?=
+ =?utf-8?B?VU9hKzRGV1ZzbGh1V3JKQnNnN0ZWTjUzQWFRRFFMQ29zbC9YUS83VTF4dmNB?=
+ =?utf-8?B?UWd2V1pPNmU0S3B0THRJdDRreGxaUTlid2Z0OVY2M0R4QUZ3UUY0NGhtNnFS?=
+ =?utf-8?B?TDJNWWdhbDdLYnRqMERXeTZXVXd4Y3Q4dGtzeDNWdld3SFMrNzFHTWl5U0Rz?=
+ =?utf-8?B?Tkl6dFFmdVhMenorR2ovVU8zSGtzYURsMGRHSUlyM0NpYlNZb1ZXZlRKN2hL?=
+ =?utf-8?B?VmJFTlFwOWwwcVE3cWYrcUtGTzV2c29wVFFkNGFEQndsU1JyWjIxTmZYVzJp?=
+ =?utf-8?B?SGZoT1NvRmVjcjEzZ3BDazNzc1Y0SlVYNnhlY1A2R0V3V2hLbXl0bFpJaXQ2?=
+ =?utf-8?B?aDVZMWQ2bzJ1TUc2cThjbzNKb0UwMmdKcG1HN2l2RERTakFMQk0xeXBLcVp4?=
+ =?utf-8?B?NmhvcHM4S1V3Qkc0RndnbE4rK0RPazhqbnpUTUxGT20wUWw0NFRGTGVrOVND?=
+ =?utf-8?B?WVJ2cVJUUGZRVDU2Sk5OcEI2YjJQMG95eXoyQ0VLOEltbXBYNWFGbHJhcDB2?=
+ =?utf-8?B?UmxDRzJEbkNjUHkrUzR4NEtxSFhJWkJsWXdRSTFtNXhrbHc0U1FkVEl6Tmlz?=
+ =?utf-8?B?MkVKSVZmUHFrQWRsQldiU0J0VEtNSExQNFBwSEpyTDlxU0MzdVR3Tm5ueG95?=
+ =?utf-8?B?dWMwdnZzZW1CNEoydkdPdHdveDNXcXlXdk5nRUp3ZWc4clZxWmxIRlRRZUdj?=
+ =?utf-8?B?MEdabHgxV0dXT2hNNmtVV3Y4MmQrWW1qeGFramNLY2xMMFVGajhMR1dVWFlL?=
+ =?utf-8?B?NklLdzFtczlYZEF5QS85N3NFZ1JoMURmT2QxRUJtT0dwTVREMytBZHFEMXYv?=
+ =?utf-8?B?dW00U1BPMy9Fa0FBZUZNWjl1OFNvS2FlRGljSHVnOTBKL05seWQvT0hZYTBQ?=
+ =?utf-8?B?ZXJaSDlrV0tDdW1LODJteEgydjlUWWJGNHFsaG9lNFUvSC9JOVU5dVlyenov?=
+ =?utf-8?B?NE13ZnpCTGhZdWxMaTU4aEV3aTFpWEE3TjlPVnl1SWhONXpwNXRxYXZvMUMw?=
+ =?utf-8?B?YUhXUDFMWjU2UUU3Ykl2bG1FM0hQMUtXbWtTajdiT0kydVZ2bFBkOEVoemJD?=
+ =?utf-8?B?WTE1QW16YVBZdE9RV1NXS2gyeGdZa0tmak5uVzdxamxjbUpLL1lhRzB6bjk0?=
+ =?utf-8?B?K3VCczJwbkhsYUFkbW5sUWpRa2NENnErdmFucFBBbWZoTWZmckVCYVR6K2JV?=
+ =?utf-8?B?enBmV1pFSXlVTkRSSXdxR0VLRVRKbG8wTXpzTzZybWFjdlZHTHd1MTcyYVBk?=
+ =?utf-8?B?Y0JYUlBNeFZqT1FSZTJYWCt2bVBvWCsyKysybmNWR3V0OTJzdU9lNG9mRWdm?=
+ =?utf-8?B?czZZUDBicEhaNHZqRVI4eHZqNUlDSGpRUXM2ajd6bnJUeWNaK0pWamFBckE3?=
+ =?utf-8?B?MnN1TkZReUpKZnVpZVR6WVFobitqY2N5a2Zhb1lIaDg0cjgyd3lsOTl5dkJS?=
+ =?utf-8?B?U0NwcWxDY3BCRDlhTnloVWhPNGFnYmJyc1dMNjkyWTRaRmJ1d29ucG1nakE1?=
+ =?utf-8?B?MXA5RnNkdUQrb0tYRHRKSGxsMGhFdFFLd2RPR3V1SFRydWozeGZFZUVzc1ZK?=
+ =?utf-8?B?SC9VTTZTWEhhVWdiaVhSRHlSK3NjWGRDZk5RUktBWHFObkNCOWI2WjNuaFU1?=
+ =?utf-8?B?cGpEb01sS2FOV1c4MnRsRkdNVTBhcDE3Z1cyRmpmdlp4Z21rM1pJVUJRblly?=
+ =?utf-8?Q?MFb6JZPWVa+o3ByDuBWgYgCjS?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce2a7808-d511-4693-dbd8-08dc59ad5805
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 22:27:02.2575
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 32lI7a3ByhMrdCKTDgINT0w5yz6ahcJ3lBwpu8nC0S8XgKAjY2rwLe+4u9nruTW3nHLSL2HF7ZKuipGDXOf/TQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB7013
+X-OriginatorOrg: intel.com
 
-On Tue, Apr 02, 2024 at 11:53:09AM +0200, Mickaël Salaün wrote:
-> Thanks for this patch.  Please CC the netdev mailing list too, they may
-> be interested by this feature. I also added a few folks that previously
-> showed their interest for this feature.
-> 
-> On Thu, Mar 28, 2024 at 05:12:13PM -0600, TaheraFahimi wrote:
-> > Abstract unix sockets are used for local interprocess communication without
-> > relying on filesystem. Since landlock has no restriction for connecting to
-> > a UNIX socket in the abstract namespace, a sandboxed process can connect to
-> > a socket outside the sandboxed environment. Access to such sockets should
-> > be scoped the same way ptrace access is limited.
-> 
-> This is good but it would be better to explain that Landlock doesn't
-> currently control abstract unix sockets and that it would make sense for
-> a sandbox.
-> 
-> 
-> > 
-> > For a landlocked process to be allowed to connect to a target process, it
-> > must have a subset of the target process’s rules (the connecting socket
-> > must be in a sub-domain of the listening socket). This patch adds a new
-> > LSM hook for connect function in unix socket with the related access rights.
-> 
-> Because of compatibility reasons, and because Landlock should be
-> flexible, we need to extend the user space interface.  As explained in
-> the GitHub issue, we need to add a new "scoped" field to the
-> landlock_ruleset_attr struct. This field will optionally contain a
-> LANDLOCK_RULESET_SCOPED_ABSTRACT_UNIX_SOCKET flag to specify that this
-> ruleset will deny any connection from within the sandbox to its parents
-> (i.e. any parent sandbox or not-sandboxed processes).
-Thanks for the feedback. Here is what I understood, please correct me if
-I am wrong. First, I should add another field to the
-landlock_ruleset_attr (a field like handled_access_net, but for the unix
-sockets) with a flag LANDLOCK_ACCESS_UNIX_CONNECT (it is a flag like
-LANDLOCK_ACCESS_NET_CONNECT_TCP but fot the unix sockets connect).
 
-> > 
-> > Link to first draft:
-> > 	https://lore.kernel.org/outreachy/20240328.ShoR4Iecei8o@digikod.net/
+
+On 11/04/2024 4:14 am, Tom Lendacky wrote:
+> On 4/10/24 11:08, Tom Lendacky wrote:
+>> On 4/7/24 07:44, Kai Huang wrote:
+>>
+>>> diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+>>> index b8441147eb5e..5ba8a9c1e47a 100644
+>>> --- a/arch/x86/kernel/process.c
+>>> +++ b/arch/x86/kernel/process.c
+>>> @@ -813,18 +813,16 @@ void __noreturn stop_this_cpu(void *dummy)
+>>>       mcheck_cpu_clear(c);
+>>>       /*
+>>> -     * Use wbinvd on processors that support SME. This provides support
+>>> -     * for performing a successful kexec when going from SME inactive
+>>> -     * to SME active (or vice-versa). The cache must be cleared so that
+>>> -     * if there are entries with the same physical address, both 
+>>> with and
+>>> -     * without the encryption bit, they don't race each other when 
+>>> flushed
+>>> -     * and potentially end up with the wrong entry being committed to
+>>> -     * memory.
+>>> +     * The kernel could leave caches in incoherent state on SME/TDX
+>>> +     * capable platforms.  Flush cache to avoid silent memory
+>>> +     * corruption for these platforms.
+>>>        *
+>>> -     * Test the CPUID bit directly because the machine might've cleared
+>>> -     * X86_FEATURE_SME due to cmdline options.
+>>> +     * stop_this_cpu() is not a fast path, just do unconditional
+>>> +     * WBINVD for simplicity.  But only do WBINVD for bare-metal
+>>> +     * as TDX guests and SEV-ES/SEV-SNP guests will get unexpected
+>>> +     * (and unnecessary) #VE and may unable to handle.
+>>
+>> In addition to Kirill's comment on #VE...
+>>
+>> This last part of the comment reads a bit odd since you say 
+>> unconditional and then say only do WBINVD for bare-metal. Maybe 
+>> something like this makes it a bit clearer?:
+>>
+>> For TDX and SEV-ES/SEV-SNP guests, a WBINVD may cause an exception 
+>> (#VE or #VC). However, all exception handling has been torn down at 
+>> this point, so this would cause the guest to crash. Since memory 
+>> within these types of guests is coherent only issue the WBINVD on 
+>> bare-metal.
 > 
-> You can move this sentence in the below changelog.
+> Hmmm... actually it was the other WBINVD in patch #2 that caused the 
+> crash, so what I wrote above isn't accurate. You might want to re-word 
+> as appropriate.
+
+Yeah that's why I used "may unable to handle" in the comment, as I 
+thought there's no need to be that specific?
+
+I tend not to mention "memory within these types of guests is coherent". 
+  I mean the current upstream kernel _ONLY_ does WBINVD for SME, that 
+means for all non-SME environment there's no concern to do WBINVD here.
+
+Here we only extend to do WBINVD on more environments, so as long as 
+there's no harm to do WBINVD for them it's OK.
+
+How about below?
+
+	/*
+	 * The kernel could leave caches in incoherent state on SME/TDX
+	 * capable platforms.  Flush cache to avoid silent memory
+	 * corruption for these platforms.
+	 *
+	 * For TDX and SEV-ES/SEV-SNP guests, a WBINVD causes an
+	 * exception (#VE or #VC), and the kernel may not be able
+	 * to handle such exception (e.g., TDX guest panics if it
+	 * sees #VE).  Since stop_this_cpu() isn't a fast path, just
+	 * issue the WBINVD on bare-metal instead of sprinkling
+	 * around vendor-specific checks.
+	 */
 > 
-> > 
+> Thanks,
+> Tom
 > 
-> You can add this:
-> 
-> Closes: https://github.com/landlock-lsm/linux/issues/7
-> 
-> > Signed-off-by: Tahera Fahimi <fahimitahera@gmail.com>
-> 
-> Your Git (or email app) configuration doesn't use the same name as here.
-> 
-> Please run ./scripts/checkpatch.pl on this patch and fix the warnings.
-> 
-> > 
-> > ----
-> > Changes in v2:
-> > - Remove wrapper functions, noted by Casey Schaufler <casey@schaufler-ca.com>
-> > ---
-> >  security/landlock/task.c | 40 ++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 40 insertions(+)
-> > 
-> > diff --git a/security/landlock/task.c b/security/landlock/task.c
-> > index 849f5123610b..67528f87b7de 100644
-> > --- a/security/landlock/task.c
-> > +++ b/security/landlock/task.c
-> > @@ -13,6 +13,7 @@
-> >  #include <linux/lsm_hooks.h>
-> >  #include <linux/rcupdate.h>
-> >  #include <linux/sched.h>
-> > +#include <net/sock.h>
-> >  
-> >  #include "common.h"
-> >  #include "cred.h"
-> > @@ -108,9 +109,48 @@ static int hook_ptrace_traceme(struct task_struct *const parent)
-> >  	return task_ptrace(parent, current);
-> >  }
-> >  
-> > +static bool unix_sock_is_scoped(struct sock *const sock,
-> 
-> For consistency with task_is_scoped(), you can rename this to
-> sock_is_scoped().
-> 
-> > +				struct sock *const other)
-> > +{
-> > +	bool is_scoped = true;
-> > +
-> > +	/* get the ruleset of connecting sock*/
-> 
-> These comments don't help more than the following line, you can remove
-> them.
-> 
-> > +	const struct landlock_ruleset *const dom_sock =
-> 
-> According to the name it looks like the domain of the socket but it is
-> just the domain of the current task. Just "dom" would be clearer and
-> more consistent with security/landlock/fs.c
-> 
-> > +		landlock_get_current_domain();
-> > +
-> > +	if (!dom_sock)
-> > +		return true;
-> > +
-> > +	/* get credential of listening sock*/
-> > +	const struct cred *cred_other = get_cred(other->sk_peer_cred);
-> 
-> We have a get but not a put call, so the credentials will never be
-> freed.  The put call must be called before any return, so you
-> probably need to follow the goto/error pattern.
-> 
-> In the context of these LSM hooks, only unix_listen() sets the "other"
-> socket credential, and unix_listen() is guarded by unix_state_lock()
-> which locks unix_sk(s)->lock .  When security_unix_stream_connect() or
-> security_unix_may_send() are called, unix_sk(s)->lock is locked as well,
-> which protects the credentials against race-conditions (TOCTOU:
-> time-of-check to time-of-use).  We should then make that explicit with
-> this assertion (which also documents it):
-> 
-> lockdep_assert_held(&unix_sk(other)->lock);
-> 
-> In theory it is then not required to call get_cred().  However, because
-> the performance impact should be negligible and to avoid a potential
-> use-after-free (not possible in theory with the current code), it would
-> be safer to still call get/put.  It would be worse to have a
-> use-after-free rather than an access control issue.
-> 
-> Another thing to keep in mind is that for this hook to be
-> race-condition-free, the credential must not change anyway.  A comment
-> should highlight that.
-> 
-> > +
-> > +	if (!cred_other)
-> > +		return true;
-> > +
-> > +	/* retrieve the landlock_rulesets */
-> > +	const struct landlock_ruleset *dom_parent;
-> 
-> All declarations should be at the top of functions.
-> 
-> > +
-> > +	rcu_read_lock();
-> 
-> No need for this RCU lock because the lock is managed by
-> unix_state_lock() in this case.
-> 
-> > +	dom_parent = landlock_cred(cred_other)->domain;
-> > +	is_scoped = domain_scope_le(dom_parent, dom_sock);
-> > +	rcu_read_unlock();
-> > +
-> > +	return is_scoped;
-> > +}
-> > +
-> > +static int hook_unix_stream_connect(struct sock *const sock,
-> > +				    struct sock *const other,
-> > +				    struct sock *const newsk)
-> > +{
-> > +	if (unix_sock_is_scoped(sock, other))
-> > +		return 0;
-> > +	return -EPERM;
-> > +}
-> > +
-> >  static struct security_hook_list landlock_hooks[] __ro_after_init = {
-> >  	LSM_HOOK_INIT(ptrace_access_check, hook_ptrace_access_check),
-> >  	LSM_HOOK_INIT(ptrace_traceme, hook_ptrace_traceme),
-> > +	LSM_HOOK_INIT(unix_stream_connect, hook_unix_stream_connect),
-> 
-> Please add a hook for security_unix_may_send() too, it should be quite
-> similar, and simplify the patch's subject accordingly.
-> 
-> You now need to add tests (in a dedicated patch) extending
-> tools/testing/selftests/landlock/ptrace_test.c (I'll rename the file
-> later).
-> 
-> These tests should also check with unnamed and named unix sockets.  I
-> guess the current code doesn't differentiate them and control all kind
-> of unix sockets.  Because they must explicitly be passed, sockets
-> created with socketpair(2) (i.e. unnamed socket) should never be denied.
-> 
-> >  };
-> >  
-> >  __init void landlock_add_task_hooks(void)
-> > -- 
-> > 2.34.1
-> > 
-> > 
+>>
+>> And you can expand the comment block out to at least 80 characters to 
+>> make it more compact.
+
+OK I can do.  I guess I have to change my vim setting to do so, though :-)
 
