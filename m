@@ -1,121 +1,196 @@
-Return-Path: <linux-kernel+bounces-138814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14C1689FAAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:55:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FF9E89FAB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:56:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C05A61F3119E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:55:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BD081F3112B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:56:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E43A116C86C;
-	Wed, 10 Apr 2024 14:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16A616E86D;
+	Wed, 10 Apr 2024 14:52:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GQFzNF0B";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rz7yx78a"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KG4YXjQ+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEA0316D9B7
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 14:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B939B1591E1;
+	Wed, 10 Apr 2024 14:52:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712760740; cv=none; b=nvHkUui28LaLSsu2BlC05AwZdgTDjeblEVqP9UlL6zwKrnxVllHN3DhHU2kGVtQ4Cn/UtLbTHauKpTEdbRQiG7BJRkovHJHuJu2tEtw+EuVNzjZ6t4Ux9Tnd1scunbWZej7GL7VkxOTdMU3mNcDo3DNN01jwnr3zzJroe3Ry5YQ=
+	t=1712760744; cv=none; b=movAJwJrP82ouT0yfuJ2ysOT21JucN8idnnJKGujkAghSY26SCS3V4VjMO0wWzfcf5aHnnKtmAWRL9EpjI5/CZatefMXvzOzyMb0STdH7ZLgbKJ0NeEoknIAEQ2xliltHUvey0OLBEcEjbQnhV7ZA/J65zXe9ArgDoR9Z7FGm3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712760740; c=relaxed/simple;
-	bh=V/whf2NgJi4jjsL/BuQVyIZUl0yZ8lKE0/G90die/Go=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Fquszngni9naZtMjINNC5oz6N3IUbMgX+w+dwd6btVxOLGDmgOWebVTrflc7dlhsIpq7IPtv8fWzy/Vr8N8lcmQBcOh7K7dxM+exXjAaQQFGC2yzLLfpZiIWylm4wMHSs7l71sjNPD9Jm9ujTXhzmzBsaPwDfBm6heFcaPYRMQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=GQFzNF0B; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rz7yx78a; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712760737;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ohxUODTZAldM0Ht/9Tv92UeRT+mq+q4icxH6L3Lk8tQ=;
-	b=GQFzNF0Bg+4k7nNSSdY5l/ZgMCwL5A7Ej6m72NDN5ma9AlLvCtkvlcB+NdU+AVtWoxlihj
-	8GW/qHneqjCt78BgB8PqAwURYjkT/lEOksxe3NN/5XIqnOutAmnJCi4qN+gBKDTFmu4+Tp
-	vKIMWx5c9SR3oLX9OZlKNHN9vbu3WIK3e/NjS56mrD7/o/GG2+1SrUHAOfXVOk8ogmhut2
-	opqTxWyA3ZbLCq78fbWbCrGueDg/xQXh0R7CgV1qBaLcQIB3XHGKh4L+BDGnafVjLVrtdu
-	c41PKab4toQQTWXNRICaVxjG7mT7EYYS/h4JKRfjwhVbeCmcH2VPrXM2Sg/ETg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712760737;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ohxUODTZAldM0Ht/9Tv92UeRT+mq+q4icxH6L3Lk8tQ=;
-	b=rz7yx78aiQwqLc36Qkc3Ic5L1U38cgWJsjDy+sM0mxaPPWOmgxetSEvO9ZVMX9p9RSGvFo
-	bp+Ar6onyszePSCA==
-To: Thorsten Leemhuis <regressions@leemhuis.info>, Linux kernel regressions
- list <regressions@lists.linux.dev>
-Cc: LKML <linux-kernel@vger.kernel.org>, xiangfeix.ma@intel.com
-Subject: Re: Call Trace when adding vCPU to guest
-In-Reply-To: <b9e54d33-7f5e-45a5-b215-d3f9daef5a8e@leemhuis.info>
-References: <b4929457-23b8-4ad4-8324-cc1cde5ecece@leemhuis.info>
- <87bk6h49tq.ffs@tglx> <b9e54d33-7f5e-45a5-b215-d3f9daef5a8e@leemhuis.info>
-Date: Wed, 10 Apr 2024 16:52:16 +0200
-Message-ID: <871q7d46e7.ffs@tglx>
+	s=arc-20240116; t=1712760744; c=relaxed/simple;
+	bh=pHb6JorI0DA1E9/KxEhk+TcTp1ctv1kMIlPonkHp88A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s9aN4SoqTSo+VRLyiHZGeaya1/DAFCg8Rgksn6ZNfW1ppGXFWi3ocF1ct4RJPuFBh9HPtZ43S5URawg8HpYsYX0seX0fvqOakeeTNdzohigvmbnTgLfgoeP/b3jum4VcA1J286nsZlu1mTcyRY92u8w0Wl1gkzzkL3pNDkeojbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KG4YXjQ+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AE85C433B1;
+	Wed, 10 Apr 2024 14:52:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712760744;
+	bh=pHb6JorI0DA1E9/KxEhk+TcTp1ctv1kMIlPonkHp88A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KG4YXjQ+NS5vFj41o9mKwCum3LunWyYZBmYGkhyjynAgWYI4/rsBAtUik8xXtUBaf
+	 /ZM4pZSRsn4aFsS6KYZj8zHmjpCNJHPh1O/Rvv/Ii8jeRh4G45vZGvYYYenvSPnb7z
+	 0j4DiTE9tp/n5psLqSBe0W+ZyH72HpnCPJWRpTgJrxCQYZF7AIE3aV4cFkfQ580lOO
+	 AcSjFh2Q0thU0PZsDzyQp00RBVlkjavi7dfHRRL0KojvUJHfIcaZ+sh5M8LYIj3kJT
+	 j9zF4LJjGu3t4UIvbfUOCbka6vKWWj08J4UPWUBH5BYDDDUGbBZwYl3rOD+gQQ26ug
+	 3jd6iL8j7RiqA==
+Date: Wed, 10 Apr 2024 16:52:18 +0200
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mhi@lists.linux.dev, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 10/10] PCI: qcom: Implement shutdown() callback to
+ properly reset the endpoint devices
+Message-ID: <Zhanol2xi_E2Ypv3@ryzen>
+References: <20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org>
+ <20240401-pci-epf-rework-v2-10-970dbe90b99d@linaro.org>
+ <ZgvpnqdjQ39JMRiV@ryzen>
+ <20240403133217.GK25309@thinkpad>
+ <Zg22Dhi2c7U5oqoz@ryzen>
+ <20240410105410.GC2903@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410105410.GC2903@thinkpad>
 
-On Wed, Apr 10 2024 at 15:48, Thorsten Leemhuis wrote:
+On Wed, Apr 10, 2024 at 04:24:10PM +0530, Manivannan Sadhasivam wrote:
+> On Wed, Apr 03, 2024 at 10:03:26PM +0200, Niklas Cassel wrote:
+> > On Wed, Apr 03, 2024 at 07:02:17PM +0530, Manivannan Sadhasivam wrote:
+> > > On Tue, Apr 02, 2024 at 01:18:54PM +0200, Niklas Cassel wrote:
+> > > > On Mon, Apr 01, 2024 at 09:20:36PM +0530, Manivannan Sadhasivam wrote:
+> > > > > PCIe host controller drivers are supposed to properly reset the endpoint
+> > > > > devices during host shutdown/reboot. Currently, Qcom driver doesn't do
+> > > > > anything during host shutdown/reboot, resulting in both PERST# and refclk
+> > > > > getting disabled at the same time. This prevents the endpoint device
+> > > > > firmware to properly reset the state machine. Because, if the refclk is
+> > > > > cutoff immediately along with PERST#, access to device specific registers
+> > > > > within the endpoint will result in a firmware crash.
+> > > > > 
+> > > > > To address this issue, let's call qcom_pcie_host_deinit() inside the
+> > > > > shutdown callback, that asserts PERST# and then cuts off the refclk with a
+> > > > > delay of 1ms, thus allowing the endpoint device firmware to properly
+> > > > > cleanup the state machine.
+> > > > 
+> > > > Hm... a QCOM EP device could be attached to any of the PCIe RC drivers that
+> > > > we have in the kernel, so it seems a bit weird to fix this problem by
+> > > > patching the QCOM RC driver only.
+> > > > 
+> > > > Which DBI call is it that causes this problem during perst assert on EP side?
+> > > > 
+> > > > I assume that it is pci-epf-test:deinit() callback that calls
+> > > > pci_epc_clear_bar(), which calls dw_pcie_ep_clear_bar(), which will both:
+> > > > -clear local data structures, e.g.
+> > > > ep->epf_bar[bar] = NULL;
+> > > > ep->bar_to_atu[bar] = 0;
+> > > > 
+> > > > but also call:
+> > > > __dw_pcie_ep_reset_bar()
+> > > > dw_pcie_disable_atu()
+> > > > 
+> > > > 
+> > > > Do we perhaps need to redesign the .deinit EPF callback?
+> > > > 
+> > > > Considering that we know that .deinit() will only be called on platforms
+> > > > where there will be a fundamental core reset, I guess we could do something
+> > > > like introduce a __dw_pcie_ep_clear_bar() which will only clear the local
+> > > > data structures. (It might not need to do any DBI writes, since the
+> > > > fundamental core reset should have reset all values.)
+> > > > 
+> > > > Or perhaps instead of letting pci_epf_test_epc_deinit() call
+> > > > pci_epf_test_clear_bar()/__pci_epf_test_clear_bar() directly, perhaps let
+> > > > pci_epf_test_epc_deinit() call add a .deinit()/.cleanup() defined in the
+> > > > EPC driver.
+> > > > 
+> > > > This EPC .deinit()/.cleanup() callback would then only clear the
+> > > > local data structures (no DBI writes...).
+> > > > 
+> > > > Something like that?
+> > > > 
+> > > 
+> > > It is not just about the EPF test driver. A function driver may need to do many
+> > > things to properly reset the state machine. Like in the case of MHI driver, it
+> > > needs to reset channel state, mask interrupts etc... and all requires writing to
+> > > some registers. So certainly there should be some time before cutting off the
+> > > refclk.
+> > 
+> > I was more thinking that perhaps we should think of .deinit() as in how
+> > dw_pcie_ep_init() used to be. It was not allowed to have any DBI writes.
+> > (The DBI writes were all in dw_pcie_ep_init_complete()).
+> > So perhaps we could define that a EPF .deinit() callback is not allowed
+> > to have any DBI writes.
+> > 
+> > If we take qcom-ep as an example, as soon as you get a PERST assertion
+> > the qcom-ep driver calls notify_deinit(), then asserts the reset control,
+> > disables clocks and regulators.
+> > 
+> > Since the PCIe core is held in reset, the hardware is in a well defined
+> > state, no? Sure, the data structures e.g. bar_to_iatu[], etc., might be
+> > out of sync, but these could be memset():ed no? Since this is a fundamental
+> > reset, all registers should be reset to their default state (once reset
+> > is deasserted).
+> > 
+> 
+> Well, we could prevent the register access during PERST# assert time in the
+> endpoint, but my worry is that we will end up with 2 version of the cleanup
+> APIs. Lets take an example of dw_pcie_edma_remove() API which gets called
+> during deinit and it touches some eDMA registers.
+> 
+> So should we introduce another API which just clears the sw data structure and
+> not touching the registers? And this may be needed for other generic APIs as
+> well.
 
-> On 10.04.24 15:38, Thomas Gleixner wrote:
->> On Wed, Apr 10 2024 at 09:34, Linux regression tracking (Thorsten Leemhuis) wrote:
->>> To quote from https://bugzilla.kernel.org/show_bug.cgi?id=218698
->> [...]
->>>>
->>>> When hot adding a vCPU to the guest, the guest happens Call Trace and reboot.
->> 
->> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=x86/urgent&id=a9025cd1c673a8d6eefc79d911075b8b452eba8f
->> 
->> It'll be in rc4
->
-> Ahh, splendid, thx for replying! Ciao, Thorsten
->
-> #regzbot fix: a9025cd1c673a8d6eefc79d911075b8b452eb
+I agree that it will be hard to come up with an elegant solution to this
+problem.
 
-Ooops. No!
+These endpoint controllers that cannot do register accesses to their own
+controllers' DBI/register space without the RC providing a refclock are
+really becoming a pain... and the design and complexity of the PCI endpoint
+APIs is what suffers as a result.
 
-I just read back and noticed that this is a report against some whatever
-kernel:
+PERST could be asserted at any time.
+So for your system to not crash/hang by accessing registers in the controller,
+an EPF driver must be designed with great care to never do any register access
+when it is not safe...
 
-> [   49.782913] Call Trace:
-> [   49.783039]  <TASK>
-> [   49.783147]  ? __die+0x24/0x70
-> [   49.783309]  ? page_fault_oops+0x82/0x150
-> [   49.783518]  ? kernelmode_fixup_or_oops+0x84/0x110
-> [   49.783753]  ? exc_page_fault+0xb9/0x160
-> [   49.783948]  ? asm_exc_page_fault+0x26/0x30
-> [   49.784144]  ? cpu_update_apic+0x1c/0x70
-> [   49.784327]  generic_processor_info+0x7e/0x160
-> [   49.784541]  acpi_register_lapic+0x19/0x80
-
-# cd linus/linux
-# gcur
-master 2c71fdf02a95: Merge tag 'drm-fixes-2024-04-09' of https://gitlab.freedesktop.org/drm/kernel
-# git grep generic_processor_info
-#
-
-generic_processor_info() was removed during the 6.9 merge window with
-the topology rework before v6.9-rc1.
-
-So the guest kernel _cannot_ be v6.9-rc2 at all.
-
-Thanks,
-
-        tglx
+Perhaps the the EPF core should set the state (i.e. init_complete = false,
+even before calling the deinit callback in EPF driver, and perhaps even add
+safe-guards against init_complete in some APIs, so that e.g. a set_bar() call
+cannot trigger a crash because PERST# is asserted.. but even then, it could
+still be asserted in the middle of set_bar()'s execution.)
 
 
+Looking at the databook, it looks like core_clk is derived from pipe_clk
+output of the PHY. The PHY will either use external clock or internal clock.
 
+4.6.2 DBI Protocol Transactions
+it looks like core_clk must be active to read/write the DBI.
+
+I really wish those controllers could e.g. change the clock temporarily
+using a mux, so that it could still perform DBI read/writes when there is
+not external refclk... Something like pm_sel_aux_clk selecting to use the
+aux clk instead of core_clk when in low power states.
+But I don't know the hardware well enough to know if that is possible for
+the DBI, so that might just be wishful thinking...
+
+
+Kind regards,
+Niklas
 
