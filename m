@@ -1,243 +1,140 @@
-Return-Path: <linux-kernel+bounces-139152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8AE889FF2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:53:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AE4689FF3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:57:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FB222832FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:53:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45D49286100
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:56:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9176C17F38A;
-	Wed, 10 Apr 2024 17:53:37 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69F0D17F38D;
+	Wed, 10 Apr 2024 17:56:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="SihY/Zf0"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AFBC17F36D;
-	Wed, 10 Apr 2024 17:53:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36CEF172BBA;
+	Wed, 10 Apr 2024 17:56:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712771617; cv=none; b=FWDwrgU8uLD2k+s5bVMjn6VNL94S5p6N3fprp9NmKLoNQ7uP9XHKc0KSb/9dflIGFPH5KWgaIiji+CvupcLRFDAZMGIA/6oPpZVf61xGU5uEve4bM14t3wyMfbBlua0Hk5CLZQyQ+A35NSo1UE7/T09C0zCIgY/ufZtlgYW2wAc=
+	t=1712771811; cv=none; b=pC5kyqS2cIEM1rBrIRNQtV2HAizwCebAGMDk7t+lZXmc0XUSkssYtX/U1rmDTCA7pGlU7SclXE6jIfXibx5yTfa3v8nnbOtKedHspj9qmabR0f/BWUvJTls7OuXZBYs+mwF8TG6iFKF/DCtgVskO6OX89GokY0qGHziUyKRVaKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712771617; c=relaxed/simple;
-	bh=3/m6CnlZT8WDYrp1oFmaSDvXJdpwkiKKCHdd+w0rOqs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DJcJqPvTSak3Z84Mk9BIBxmw3EgBoZc9AhlomTN1ThZkQ6oAiO3R1ju3GORmXkZvgLm2vV+20YqgHc/DQoOxQNPAMKXFc+oW8UDUZDDKgwmAsZ8rN89KLTo2VaOz2o2Urbvu8bUn17tUCVonuwrRMQ9ZNvidEvmSV2NEzcbVgro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53D9CC433C7;
-	Wed, 10 Apr 2024 17:53:35 +0000 (UTC)
-Date: Wed, 10 Apr 2024 13:56:12 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Andrew Morton <akpm@linux-foundation.org>, "Liam R. Howlett"
- <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@suse.cz>, Lorenzo
- Stoakes <lstoakes@gmail.com>
-Cc: Vincent Donnefort <vdonnefort@google.com>, mhiramat@kernel.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- mathieu.desnoyers@efficios.com, kernel-team@android.com,
- rdunlap@infradead.org
-Subject: Re: [PATCH v20 0/5] Introducing trace buffer mapping by user-space
-Message-ID: <20240410135612.5dc362e3@gandalf.local.home>
-In-Reply-To: <20240406173649.3210836-1-vdonnefort@google.com>
-References: <20240406173649.3210836-1-vdonnefort@google.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712771811; c=relaxed/simple;
+	bh=iEuQdqKd9H5/BlcT+O9gIZxVL7+0ZlEWbRJc2ARTWSw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=l6jkaUmKfTa1LxC80gXJkdSFuqC3Lc2egwVwW6+jEFUJRUvk89hfHfxkKUCTzYnuDIvxNBCARRgVfzrkb/Z0GLBii2rzsN5mgajzdee4Uk+t6ENxSmRl+V7XttYFEBTKEavu71t4Qfsw57pdSH4LAkFvHsq/9VlyT9enlyMcJQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=SihY/Zf0; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=iEuQdqKd9H5/BlcT+O9gIZxVL7+0ZlEWbRJc2ARTWSw=;
+	t=1712771808; x=1713981408; b=SihY/Zf063sJ9Y6S7UQjjb179Xso7UAQ+xdv86DFZKIST5l
+	7nJOEq1Z1IPn0ubF0hYP/o9/ahdnV7S+JNQCnKM/h+p2hq2Z//ytMl4IuKKd5OvtFEXsCjAFdwaKW
+	AcWjCSTF+73SaNVYWs+CtwL/CX62wFdNlwcldEqFOsX+ges+aeDh9WQh5RJ99+i0aMOVnFEzyki5/
+	dLS7XzvVSqM4+SSBWeI663l4tmWzlQrgicWjg5MebAj+eYp/2ZLt3eR79+JAZ8EicVOISTAyWxos5
+	RO/jYPH7ZN1GKZVsYd1Ei+GavTe2L9sb7OTk1kk4kXru9GvIDIjYEAyNFfEC2TnA==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rucBh-00000001a9V-1iYv;
+	Wed, 10 Apr 2024 19:56:45 +0200
+Message-ID: <7af985e13d3254de73f9d68e1ad4ad1f81b5fd59.camel@sipsolutions.net>
+Subject: Re: [EXT] Re: [PATCH v9 0/2] wifi: mwifiex: add code to support
+ host mlme
+From: Johannes Berg <johannes@sipsolutions.net>
+To: David Lin <yu-hao.lin@nxp.com>, Brian Norris <briannorris@chromium.org>
+Cc: Francesco Dolcini <francesco@dolcini.it>, "kvalo@kernel.org"
+ <kvalo@kernel.org>, "linux-wireless@vger.kernel.org"
+ <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Pete Hsieh <tsung-hsien.hsieh@nxp.com>, 
+ "rafael.beims" <rafael.beims@toradex.com>, Francesco Dolcini
+ <francesco.dolcini@toradex.com>
+Date: Wed, 10 Apr 2024 19:56:44 +0200
+In-Reply-To: <DU0PR04MB96366A0E1FEBD7440F7536D0D1062@DU0PR04MB9636.eurprd04.prod.outlook.com>
+References: <ZfTspRKFgrO9xCTH@google.com>
+	 <969e95ccc4a1d35b45212b7fcb536ee90995e3b5.camel@sipsolutions.net>
+	 <PA4PR04MB9638D253189D6DD330B198B2D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
+	 <PA4PR04MB9638BE73DDBCE1CE8AA32BA8D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
+	 <b2d9a7ef53c5ab4212617e8edf202bbafe52e2f8.camel@sipsolutions.net>
+	 <ZftaJEIeNfV7YrVo@google.com>
+	 <PA4PR04MB9638F5037D1AB9BCF51CC9D9D1322@PA4PR04MB9638.eurprd04.prod.outlook.com>
+	 <Zf4rDifM6bLuqpX2@google.com>
+	 <4e5f3741819e457c5c79d825c6520cb9ee531b95.camel@sipsolutions.net>
+	 <PA4PR04MB96386917877832602F221282D13A2@PA4PR04MB9638.eurprd04.prod.outlook.com>
+	 <ZgxCngq_Rguc4qs8@google.com>
+	 <DU0PR04MB96365F2B6AFD856655D6A66CD1062@DU0PR04MB9636.eurprd04.prod.outlook.com>
+	 <5cf6b243c3967cd5a630f8f8e5bf17f7c9010f01.camel@sipsolutions.net>
+	 <DU0PR04MB96366A0E1FEBD7440F7536D0D1062@DU0PR04MB9636.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 
+On Wed, 2024-04-10 at 10:33 +0000, David Lin wrote:
+>=20
+>=20
+> Take Rx data path as an example,
+> In current FW, BA stream setup and de-ampdu are handled in FW. Packet is =
+converted to 802.3 before passing to host. Ampdu reordering is handled in h=
+ost driver (Mwifiex) due to memory consideration. We used to work on a driv=
+er that uses RX_FLAG_8023. It was on an older Wi-Fi part which has more mem=
+ory and powerful processor. But with this chip buffer required for reorderi=
+ng doesn=E2=80=99t fit FW memory.=20
+>=20
+> Ampdu reordering needs MAC 802.11 header, FW keeps the MAC header in pack=
+et descriptor since packet already 802.3 when arrive at driver. As packet d=
+escriptor only accessible in the driver, Mwifiex handles the reordering ins=
+tead of using mac80211 reordering.=20
+>=20
+> With current FW design, to apply mac802.11 we either change FW to pass pa=
+cket in 802.11 format or driver needs to do the conversion back to 802.11 (=
+which I think doesn=E2=80=99t make sense)=20
+>=20
+> Given existing FW design, we think it=E2=80=99s difficult to apply mac802=
+11.
 
-Hi Andrew, et.al.
+Hmm, I don't think so? If you have a mac80211 driver with RX_FLAG_8023,
+then of course mac80211 cannot do reordering, and you have to do it
+somewhere below. But that doesn't mean you necessarily _have_ to do it
+in hardware/firmware? You could do it in the driver, which you also have
+to do in a cfg80211 driver anyway, and that's OK. Due to usage of RSS,
+iwlwifi/mvm even does it internally, although it doesn't even have
+RX_FLAG_8023.
 
-Linus said it's a hard requirement that this code gets an Acked-by (or
-Reviewed-by) from the memory sub-maintainers before he will accept it.
-He was upset that we faulted in pages one at a time instead of mapping it
-in one go:
+But that goes into the direction I was talking about: the boundaries are
+getting fuzzier all the time, because offloads happen and get supported
+in mac80211. So if you have offloads for header conversion and only get
+some reordering data "out of band", then you have to handle that in the
+driver. Using mac80211 doesn't mean you have to use _all_ of it.
+Originally, mac80211 didn't even have RX_FLAG_8023 after all. But
+obviously adding something like that also requires more upstream
+engagement :)
 
-  https://lore.kernel.org/all/CAHk-=wh5wWeib7+kVHpBVtUn7kx7GGadWqb5mW5FYTdewEfL=w@mail.gmail.com/
+I think the question is about the design, but I also think the
+differences in the association process are much more fundamental, and
+you _don't_ (seem to) handle that in the way mac80211 does/expects,
+though you also don't seem to handle it in the way most other full-MAC
+devices do (which [can] offload even BSS selection.)
 
-Could you take a look at patches 1-3 to make sure they look sane from a
-memory management point of view?
+The thing I want you to understand is the relative architecture and how
+your work fits into this. I'm not telling you have to change it right
+now or do this work differently, I just want to make sure you actually
+understand it. The above argument goes some way, showing you've actually
+looked at the differences mac80211 would imply, where before I felt you
+were pretty much handwaving it away as if irrelevant to the discussion.
 
-I really want this applied in the next merge window.
-
-Thanks!
-
--- Steve
-
-
-On Sat,  6 Apr 2024 18:36:44 +0100
-Vincent Donnefort <vdonnefort@google.com> wrote:
-
-> The tracing ring-buffers can be stored on disk or sent to network
-> without any copy via splice. However the later doesn't allow real time
-> processing of the traces. A solution is to give userspace direct access
-> to the ring-buffer pages via a mapping. An application can now become a
-> consumer of the ring-buffer, in a similar fashion to what trace_pipe
-> offers.
-> 
-> Support for this new feature can already be found in libtracefs from
-> version 1.8, when built with EXTRA_CFLAGS=-DFORCE_MMAP_ENABLE.
-> 
-> Vincent
-> 
-> v19 -> v20:
->   * Fix typos in documentation.
->   * Remove useless mmap open and fault callbacks.
->   * add mm.h include for vm_insert_pages
-> 
-> v18 -> v19:
->   * Use VM_PFNMAP and vm_insert_pages
->   * Allocate ring-buffer subbufs with __GFP_COMP
->   * Pad the meta-page with the zero-page to align on the subbuf_order
->   * Extend the ring-buffer test with mmap() dedicated suite
-> 
-> v17 -> v18:
->   * Fix lockdep_assert_held
->   * Fix spin_lock_init typo
->   * Fix CONFIG_TRACER_MAX_TRACE typo
-> 
-> v16 -> v17:
->   * Documentation and comments improvements.
->   * Create get/put_snapshot_map() for clearer code.
->   * Replace kzalloc with kcalloc.
->   * Fix -ENOMEM handling in rb_alloc_meta_page().
->   * Move flush(cpu_buffer->reader_page) behind the reader lock.
->   * Move all inc/dec of cpu_buffer->mapped behind reader lock and buffer
->     mutex. (removes READ_ONCE/WRITE_ONCE accesses).
-> 
-> v15 -> v16:
->   * Add comment for the dcache flush.
->   * Remove now unnecessary WRITE_ONCE for the meta-page.
-> 
-> v14 -> v15:
->   * Add meta-page and reader-page flush. Intends to fix the mapping
->     for VIVT and aliasing-VIPT data caches.
->   * -EPERM on VM_EXEC.
->   * Fix build warning !CONFIG_TRACER_MAX_TRACE.
-> 
-> v13 -> v14:
->   * All cpu_buffer->mapped readers use READ_ONCE (except for swap_cpu)
->   * on unmap, sync meta-page teardown with the reader_lock instead of
->     the synchronize_rcu.
->   * Add a dedicated spinlock for trace_array ->snapshot and ->mapped.
->     (intends to fix a lockdep issue)
->   * Add kerneldoc for flags and Reserved fields.
->   * Add kselftest for snapshot/map mutual exclusion.
-> 
-> v12 -> v13:
->   * Swap subbufs_{touched,lost} for Reserved fields.
->   * Add a flag field in the meta-page.
->   * Fix CONFIG_TRACER_MAX_TRACE.
->   * Rebase on top of trace/urgent.
->   * Add a comment for try_unregister_trigger()
-> 
-> v11 -> v12:
->   * Fix code sample mmap bug.
->   * Add logging in sample code.
->   * Reset tracer in selftest.
->   * Add a refcount for the snapshot users.
->   * Prevent mapping when there are snapshot users and vice versa.
->   * Refine the meta-page.
->   * Fix types in the meta-page.
->   * Collect Reviewed-by.
-> 
-> v10 -> v11:
->   * Add Documentation and code sample.
->   * Add a selftest.
->   * Move all the update to the meta-page into a single
->     rb_update_meta_page().
->   * rb_update_meta_page() is now called from
->     ring_buffer_map_get_reader() to fix NOBLOCK callers.
->   * kerneldoc for struct trace_meta_page.
->   * Add a patch to zero all the ring-buffer allocations.
-> 
-> v9 -> v10:
->   * Refactor rb_update_meta_page()
->   * In-loop declaration for foreach_subbuf_page()
->   * Check for cpu_buffer->mapped overflow
-> 
-> v8 -> v9:
->   * Fix the unlock path in ring_buffer_map()
->   * Fix cpu_buffer cast with rb_work_rq->is_cpu_buffer
->   * Rebase on linux-trace/for-next (3cb3091138ca0921c4569bcf7ffa062519639b6a)
-> 
-> v7 -> v8:
->   * Drop the subbufs renaming into bpages
->   * Use subbuf as a name when relevant
-> 
-> v6 -> v7:
->   * Rebase onto lore.kernel.org/lkml/20231215175502.106587604@goodmis.org/
->   * Support for subbufs
->   * Rename subbufs into bpages
-> 
-> v5 -> v6:
->   * Rebase on next-20230802.
->   * (unsigned long) -> (void *) cast for virt_to_page().
->   * Add a wait for the GET_READER_PAGE ioctl.
->   * Move writer fields update (overrun/pages_lost/entries/pages_touched)
->     in the irq_work.
->   * Rearrange id in struct buffer_page.
->   * Rearrange the meta-page.
->   * ring_buffer_meta_page -> trace_buffer_meta_page.
->   * Add meta_struct_len into the meta-page.
-> 
-> v4 -> v5:
->   * Trivial rebase onto 6.5-rc3 (previously 6.4-rc3)
-> 
-> v3 -> v4:
->   * Add to the meta-page:
->        - pages_lost / pages_read (allow to compute how full is the
-> 	 ring-buffer)
->        - read (allow to compute how many entries can be read)
->        - A reader_page struct.
->   * Rename ring_buffer_meta_header -> ring_buffer_meta
->   * Rename ring_buffer_get_reader_page -> ring_buffer_map_get_reader_page
->   * Properly consume events on ring_buffer_map_get_reader_page() with
->     rb_advance_reader().
-> 
-> v2 -> v3:
->   * Remove data page list (for non-consuming read)
->     ** Implies removing order > 0 meta-page
->   * Add a new meta page field ->read
->   * Rename ring_buffer_meta_page_header into ring_buffer_meta_header
-> 
-> v1 -> v2:
->   * Hide data_pages from the userspace struct
->   * Fix META_PAGE_MAX_PAGES
->   * Support for order > 0 meta-page
->   * Add missing page->mapping.
-> 
-> Vincent Donnefort (5):
->   ring-buffer: allocate sub-buffers with __GFP_COMP
->   ring-buffer: Introducing ring-buffer mapping functions
->   tracing: Allow user-space mapping of the ring-buffer
->   Documentation: tracing: Add ring-buffer mapping
->   ring-buffer/selftest: Add ring-buffer mapping test
-> 
->  Documentation/trace/index.rst                 |   1 +
->  Documentation/trace/ring-buffer-map.rst       | 106 +++++
->  include/linux/ring_buffer.h                   |   6 +
->  include/uapi/linux/trace_mmap.h               |  48 +++
->  kernel/trace/ring_buffer.c                    | 403 +++++++++++++++++-
->  kernel/trace/trace.c                          | 113 ++++-
->  kernel/trace/trace.h                          |   1 +
->  tools/testing/selftests/ring-buffer/Makefile  |   8 +
->  tools/testing/selftests/ring-buffer/config    |   2 +
->  .../testing/selftests/ring-buffer/map_test.c  | 302 +++++++++++++
->  10 files changed, 979 insertions(+), 11 deletions(-)
->  create mode 100644 Documentation/trace/ring-buffer-map.rst
->  create mode 100644 include/uapi/linux/trace_mmap.h
->  create mode 100644 tools/testing/selftests/ring-buffer/Makefile
->  create mode 100644 tools/testing/selftests/ring-buffer/config
->  create mode 100644 tools/testing/selftests/ring-buffer/map_test.c
-> 
-> 
-> base-commit: 7604256cecef34a82333d9f78262d3180f4eb525
-
+johannes
 
