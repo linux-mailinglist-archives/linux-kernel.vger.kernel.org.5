@@ -1,149 +1,100 @@
-Return-Path: <linux-kernel+bounces-139535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D0AA8A040C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 06D648A0414
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:34:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D50512835CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:28:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B60F928478C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:34:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F983E494;
-	Wed, 10 Apr 2024 23:28:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66AC63FB3B;
+	Wed, 10 Apr 2024 23:34:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fXrj4RLu"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JE2fo2vX"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A5D28370
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:28:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64CAF3BB43;
+	Wed, 10 Apr 2024 23:34:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712791715; cv=none; b=L9QC0v+Mjyn/DOonjMAMzFJ7+SQEdnbUEuTKP0VBzS16eiG81bC1Gt+A3FwRVprzmvLHrizsllNEGep34KU43XQF3mE61E3P/caPYskwuP+UMpNvDhWVWha3ne4qbpTn3qL/CZ1bPfP0UDny6va5HRdl0uTJzmwMJPjtuR6XJW0=
+	t=1712792069; cv=none; b=IO6YmtdnzC0O1EEdaWy5VZp7427gTTOSu+wo+4HuZ2iWmVdJxZRAWRgdFBNGdttieJNJvDddOyLowKhqIr/GXTAdTu3TMjXQhELC4ziuwGnT+YvJv4Br1NccbN4hiUki+k2Wy1K4+6GC3E7dpr1hCgDSbdnMkFoagyfx76nqrbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712791715; c=relaxed/simple;
-	bh=IskzSE1OOdWxLV4wEIgj5iiPGJft461h1onztXKb1j4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=poe/GKkhepcYcRbGLCDVOxZgjPovgykp/KbsGcmvFlaD8Fw+0DQqPH5hkwLKc6TNEoDPMeY7Wa74yFTa653B8yWVHHSuW9TiOGlTodPPRYBnf3Ya4/6RhZilabDO+HrLDcvyzpyHXavsxIn+HT6ckPCt1Jutq6kLEkCV1wbLtyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fXrj4RLu; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56e48d0a632so7772676a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:28:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712791712; x=1713396512; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8xY8IaUaFZA+Gv7USloz4HDmI2WsvnF1MlA0Fl2dmZs=;
-        b=fXrj4RLu9sAbZ7sPAQd32d1M4R4GFFtoFGqGHumpuco1APIGovQQ3ZCrddAMz0qADz
-         G3mM9QrLb5lBhszOKSHy7fy18jZEzwi5lXlsqc0pCo1cluQTqPGzKQ3zI86LCAGJ6a1r
-         gwaNU72pQeBZFqq7cy8I2qu3w2Whu02yKxnexdPQSKqGKqj4FusJ05jHAvRaA/scixFe
-         +NthHyjYmN66k7EUDDQgOxDqXew/jeIMaKbHFFAJXoMPtQBMu8QNUNrGmBGX4kxFSbvs
-         1feVp9/fpGC8pCrdFmzdF3hL6oVWB2HCKOk+5kcaZyuZdbCzP6zZeLutKv9ug5EvXiYi
-         W2jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712791712; x=1713396512;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8xY8IaUaFZA+Gv7USloz4HDmI2WsvnF1MlA0Fl2dmZs=;
-        b=XNvly7iqTZREmztzDZCsyyeI8Zt3TztUCBlFxpravs2tQHotxrxm2rm7yX42S/NIe8
-         4oMUU53Sx4K8lPQxZ8HQqGqVvAAj+T7+eNb5GyPNlPT5b9qxLPwFuBj/baOn3DkHmeaI
-         FAElC1R5vNpOULEatwJWBonKFBekHbQtUof3u+96wE/wIL7I0HtRmpqLifGl4KDskC2/
-         vtXdCkCL0GA9w84DxTzrTnyft4YA2M6dhlL29W9f0hM1KCmPGhBVxWtebtpeeukZaupE
-         RNd7+fyjaEEU33poCF7jFT3t+qHGUjF1q8ffwUlbfZcibDmUKSSlp7d6x6b4SL2808Sw
-         JD/Q==
-X-Gm-Message-State: AOJu0YzaoI8+QsMb85xQIhSB9ousz907CourcX4t321qB4u4ugqA2a4t
-	ctirx3ZJ5S7wxTfHxpoyldFe7FDlN0TPwpGhvauj7g7GHs98kmcNNf9aFTv20Dhx6riPkOraAGC
-	DtwTjgViuRpSrsJuuox7lQQwNn/9tiF65n2QO
-X-Google-Smtp-Source: AGHT+IFmOsrz5Hq/L8KjpOuaXMrNhjFmuTtpfw3wP32V8jN+t6rexPb4kfOSRskN6xAUqM5KYt/4+RS5HeJCyNqNRcY=
-X-Received: by 2002:a50:9512:0:b0:56e:3172:20dd with SMTP id
- u18-20020a509512000000b0056e317220ddmr3084056eda.27.1712791711605; Wed, 10
- Apr 2024 16:28:31 -0700 (PDT)
+	s=arc-20240116; t=1712792069; c=relaxed/simple;
+	bh=uqzNxqrBph2PlRsjh6hC900ySu85OHtjJiS7mW6FX+M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ljUZ65MQLt0UejX/zHvA6Dr0tpSyhPPYF3sKHOtHrLtc8rpFxwb40MJ3f2qJbRBiz8jMy4BYOdOh6wKb+Ecs4SNoLiUhuKORQRuYeVUHKTrXacqBNCDTuGd98hXXR8VA3ZAIvgpgebdLz2ubF+u0+37Z9o6ghBcIFeqmHX8+PVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=JE2fo2vX; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=FXmAKscTbgNJ1p29Two6+cxbrIyx3G8HLoeSBvRIChc=; b=JE2fo2vXsHYBjNsZu7z66/oeOy
+	TmDFDhmMWI9DAzYzarLq47L936opk3bRPR+HQRcRAPsrypIYPj5IBH+1d79t1LK+AnBA+5NqwzAXv
+	TNWkEFAYnKtYuy0h5tNyXJoPw6mPA/ZLGwkw/Vn/jRQml7vmt1L232DP97jJ5uLt2PaI8tFK42Rre
+	a1JqxOrlDlkYEwwZOATQlvCzzPoVitwEw5sALBZYIINr8eL0SYCToM8rS1J4KPxntH2tebwotXZtC
+	7VN7jbR6LjOg1f1PqKaNoltS7oh8wdYpnuu9FXnUjmMvryJcahiQgKb2l/KRMQpv94xvskr6zJLmZ
+	jPffkkNw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ruhSN-00000009Tii-29zF;
+	Wed, 10 Apr 2024 23:34:19 +0000
+Date: Wed, 10 Apr 2024 16:34:19 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
+	kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, djwong@kernel.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
+	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, nilay@linux.ibm.com,
+	ritesh.list@gmail.com, willy@infradead.org,
+	Himanshu Madhani <himanshu.madhani@oracle.com>
+Subject: Re: [PATCH v6 05/10] block: Add core atomic write support
+Message-ID: <Zhch-6XSPYxM4ku3@bombadil.infradead.org>
+References: <20240326133813.3224593-1-john.g.garry@oracle.com>
+ <20240326133813.3224593-6-john.g.garry@oracle.com>
+ <0a9fb564-7129-4153-97d6-76e9b3a1b6c1@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410232637.4135564-1-jstultz@google.com>
-In-Reply-To: <20240410232637.4135564-1-jstultz@google.com>
-From: Justin Stitt <justinstitt@google.com>
-Date: Wed, 10 Apr 2024 16:28:19 -0700
-Message-ID: <CAFhGd8oRJG6Amrr8VxriXP11NgVPbPBdaKKWbuCSowSxrGEcMg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] selftests: timers: Fix posix_timers ksft_print_msg warning
-To: John Stultz <jstultz@google.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Shuah Khan <shuah@kernel.org>, 
-	Anna-Maria Behnsen <anna-maria@linutronix.de>, Frederic Weisbecker <frederic@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Oleg Nesterov <oleg@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Edward Liaw <edliaw@google.com>, 
-	Carlos Llamas <cmllamas@google.com>, kernel-team@android.com, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0a9fb564-7129-4153-97d6-76e9b3a1b6c1@infradead.org>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Wed, Apr 10, 2024 at 4:26=E2=80=AFPM John Stultz <jstultz@google.com> wr=
-ote:
->
-> After commit 6d029c25b71f ("selftests/timers/posix_timers:
-> Reimplement check_timer_distribution()") I started seeing the
-> following warning building with an older gcc:
->
-> posix_timers.c:250:2: warning: format not a string literal and no format =
-arguments [-Wformat-security]
->   250 |  ksft_print_msg(errmsg);
->       |  ^~~~~~~~~~~~~~
->
-> Fix this up by changing it to ksft_print_msg("%s", errmsg)
->
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Bill Wendling <morbo@google.com>
-> Cc: Justin Stitt <justinstitt@google.com>
-> Cc: Oleg Nesterov <oleg@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Edward Liaw <edliaw@google.com>
-> Cc: Carlos Llamas <cmllamas@google.com>
-> Cc: kernel-team@android.com
-> Cc: linux-kselftest@vger.kernel.org
-> Fixes: 6d029c25b71f ("selftests/timers/posix_timers: Reimplement check_ti=
-mer_distribution()")
-> Signed-off-by: John Stultz <jstultz@google.com>
+On Tue, Mar 26, 2024 at 10:11:50AM -0700, Randy Dunlap wrote:
+> Hi,
+> 
+> On 3/26/24 06:38, John Garry wrote:
+> > diff --git a/Documentation/ABI/stable/sysfs-block b/Documentation/ABI/stable/sysfs-block
+> > index 1fe9a553c37b..4c775f4bdefe 100644
+> > --- a/Documentation/ABI/stable/sysfs-block
+> > +++ b/Documentation/ABI/stable/sysfs-block
+> > +What:		/sys/block/<disk>/atomic_write_boundary_bytes
+> > +Date:		February 2024
+> > +Contact:	Himanshu Madhani <himanshu.madhani@oracle.com>
+> > +Description:
+> > +		[RO] A device may need to internally split I/Os which
+> > +		straddle a given logical block address boundary. In that
+> > +		case a single atomic write operation will be processed as
+> > +		one of more sub-operations which each complete atomically.
+> 
+> 		    or
 
-Yep, makes sense.
+If *or* was meant, wouldn't it be better just to say one or more
+operations may be processed as one atomically in this situation?
 
-Acked-by: Justin Stitt <justinstitt@google.com>
-
-> ---
->  tools/testing/selftests/timers/posix_timers.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/timers/posix_timers.c b/tools/testin=
-g/selftests/timers/posix_timers.c
-> index d86a0e00711e..348f47176e0a 100644
-> --- a/tools/testing/selftests/timers/posix_timers.c
-> +++ b/tools/testing/selftests/timers/posix_timers.c
-> @@ -247,7 +247,7 @@ static int check_timer_distribution(void)
->                 ksft_test_result_skip("check signal distribution (old ker=
-nel)\n");
->         return 0;
->  err:
-> -       ksft_print_msg(errmsg);
-> +       ksft_print_msg("%s", errmsg);
->         return -1;
->  }
->
-> --
-> 2.44.0.478.gd926399ef9-goog
->
+  Luis
 
