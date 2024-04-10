@@ -1,263 +1,221 @@
-Return-Path: <linux-kernel+bounces-138597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DCC889F433
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8578C89F435
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:27:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A09B91C24B25
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:27:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A922B1C2562A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:27:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E6216D9B0;
-	Wed, 10 Apr 2024 13:25:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 019AB15ECF4;
+	Wed, 10 Apr 2024 13:26:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="S3DCsCud"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="H00M0j8v"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1EF16D4DC;
-	Wed, 10 Apr 2024 13:25:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF3415CD4B;
+	Wed, 10 Apr 2024 13:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712755516; cv=none; b=XQ/vFhoX8UkA6RwmfwLLRJuEzdAksV8SYpweNHQlBblyeZV2nhGcT7QwXMFYZ1rF8/vpxO/piGLQ0bvh1srwXIJ7Re86Jpk2xIDhXSBMg8DfLleHgYuxRF7sbvNHg+2Jcms6EyyWbKtIBH6vpMDmmfrXSr5vyCTf3rV3MeLInKc=
+	t=1712755566; cv=none; b=TXhlEegt6cHMPDj2hynE+dwOpE55Jxha7yxuXCLm2wbsjcN3R6AtZbo8T/07K5heyzKTNx49QM8mg/2xr/kEhB3nYLYFzJi6e94flB5CbUZ9ww/+QDJ9FEWAQoNrphrkXU7FQ+pMJ7HNGucNptbpDS4jo9ypjxoO55Xm/2HiWEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712755516; c=relaxed/simple;
-	bh=YEgxSiJQ6+8XzHuDVtPSY4JWVKnnzs/GTZAPs278iMA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i7Lc1pKPj72TeWh0Bb5Iz6XDkFTWvFm9eU5cf8d1vj6Q+aL4jfP4BwyVuL16WrzfAXd+iSpqGA2Vj2p/1k+m9VvfeFqT3lD//AQ4Pm1LTReueIzcQ+OF2CtZQ1cbTRcwRr2zRLkdFXDgDWe/i3O10RVai8pV0LfpB7v7f6I4ws0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=S3DCsCud; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1712755498; x=1713360298; i=deller@gmx.de;
-	bh=AZ+e7abeuMAbqw5DuoP6+wi7y8hthSxtAmUf+jW6o2Q=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=S3DCsCudv3+cTiXQb4nAlzsx341FtS8rfjx76fVEVGmFqTSEL/AnyJvFxSs1VB9G
-	 5IRbXjCwBj8i7dWnAevyR515OmuTWnb1yK0W7Hhj0JxGDVw8uk/8Rm+7OUh4rg3OY
-	 v+exwBhp17cJy8mcxylOYMtDSyUfQJV/mdMlVJV7xSLwuO+4yJ9QlTWOe7lJXzF7Q
-	 fdoD5F7HG7GiO7FMbRZWEfXmgHGEbm7rkd7gMWqBOc8U5fmm067A1rZCzWXmGIUBW
-	 Cw6fW5mGobY66Pt5diWVp13yFiSEbD/5fr5uKRyXwB2REUsjHQjD5Hfrb16RQjzpH
-	 afIV/wlKSZPLkTwJ6g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.8.0.6] ([78.94.87.245]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mf0BG-1sQqYq1LDe-00gWPK; Wed, 10
- Apr 2024 15:24:58 +0200
-Message-ID: <d701de84-8ee3-40a5-9dc8-575f516560e8@gmx.de>
-Date: Wed, 10 Apr 2024 15:24:57 +0200
+	s=arc-20240116; t=1712755566; c=relaxed/simple;
+	bh=brNg8ofcrj5O3U+cLXDIyxsMcvxFUyO1BEFHPk9RRMs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kH+X54ElsWnDD/l2WI0pJoW4I4CfZhJIpaA3MVSjKIN3NZpg7x2KFoqY+kvceVHlctBcVUoFquxWWGyDTPSX6ZtU5B1mRaCCZSIwQjMqVCMawwb709LmIDNKi+I/paFF+yejy6S+z7clwIfSzEGOt39Iz6pdxkzRwj/c6cmtk8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=H00M0j8v; arc=none smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43A8XcJE022602;
+	Wed, 10 Apr 2024 06:25:44 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	pfpt0220; bh=RRkwBEE8Zpq+ymv4uQ9hqryhYJ2lfarH1FbeDd0cP4Y=; b=H00
+	M0j8vzo5xtYsPs3nYmDKOB/cKKRSmfY7Mb1I7Ihr3VLZq5HvNg1ySMFfcb08wduR
+	I7sll6XG4lURpxwwwCXeIcvJwSRGQZNJnTO15LrY2DdIvZakvGP20qBL81rgnSrg
+	FTM2hr/XLFgoGJV0KKA1XJUhDhtzaG907jZUGh0nzjobNGhmGMzYb4oLyiukewsb
+	qlYpU9YRt651TB07kde9DZmJR0J9Pif8WYPFXcsLUDwdg49BhA8jzsaEigj8pHy7
+	VAhWTHr4QbbwI5djeE9vxpy/UjG9ztdrU5LPgxc9j5068Hi16oaNL30w1WvDYPx4
+	1fw58ThkpkER6C2yWUg==
+Received: from dc6wp-exch02.marvell.com ([4.21.29.225])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3xdqc2k184-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 06:25:44 -0700 (PDT)
+Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
+ DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Wed, 10 Apr 2024 06:25:43 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
+ (10.76.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Wed, 10 Apr 2024 06:25:43 -0700
+Received: from hyd1soter3.marvell.com (unknown [10.29.37.12])
+	by maili.marvell.com (Postfix) with ESMTP id 5ED0E3F7081;
+	Wed, 10 Apr 2024 06:25:39 -0700 (PDT)
+From: Hariprasad Kelam <hkelam@marvell.com>
+To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <kuba@kernel.org>, <davem@davemloft.net>, <sgoutham@marvell.com>,
+        <gakula@marvell.com>, <jerinj@marvell.com>, <lcherian@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>, <naveenm@marvell.com>,
+        <edumazet@google.com>, <pabeni@redhat.com>
+Subject: [net-next PatchV2] octeontx2-af: map management port always to first PF
+Date: Wed, 10 Apr 2024 18:55:38 +0530
+Message-ID: <20240410132538.20158-1-hkelam@marvell.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] fbdev: add HAS_IOPORT dependencies
-To: Niklas Schnelle <schnelle@linux.ibm.com>
-Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Arnd Bergmann <arnd@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
- linux-kernel@vger.kernel.org
-References: <20240410105626.2743168-1-schnelle@linux.ibm.com>
- <20240410105626.2743168-2-schnelle@linux.ibm.com>
-Content-Language: en-US
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <20240410105626.2743168-2-schnelle@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:rQPro57Z0kJml3t3HN1mQ0FvFH7vtFvCNogl7+aH8zpDy2cEFBy
- eQMW1T35AXZUaK7U0PXZL7EFvDzXZ4M/kHZY2eFCG6tGNBzVVlK+RadJd0gAgxhBXHihk/Q
- 0gWUoq9ScbabBFtb4SpngDFQkKvzNQDRd1zSLM49sAOEY2pP1CCpyqeC3Zx0yqalrgZ9B0P
- oL2uqBIVGlK6E2Dk0Z42w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:cjDSlXYddeI=;bDiKn/4hxaA4+RMSabL+P4ZVhsA
- d/7kasFxfO/I0VjxyUAEoy7EKAkxqAGcdPXAZATIq68BdV34qyNpC/Qfet/3iP6qACccia8JV
- u/vD9O0esAb7Nr939bjSR4wFIynTS0Kc1A9+4J71Lsj8pPZdBo6F3xnoqUIG2WwLR5A3emaRp
- PTEDnKF0p7uIb+c4Xm+tbhva39CSfM6XM2wwTskA15qW/iqxm+Xe1o84OylIezxpJ85fUPBe9
- rqXku6dclDTCIkaJQa0KL8kTW0l1VBTn09jQKypDaft4rTrYdV7Ro/o71JVeB6c1RXsYXQsW5
- VoriEQxfIQpLBzYgeagrSYvu/SrT1wbdKOSkAgKK07UANkrnPddQ7oPE5sceV3vcSS9GM6D0u
- NyLcx6V+960QOWbxE3Sg5D0uhT+ZJCUfbtR/gd9Uvu0642amORduJUiV920+1pn/RfTrQvaE8
- 80uFJHatvmUtXshQViFbrkuM71bbiVIvzMlxtBoYW3Ed4NhmgEDzdW/eFeFqS8W6toXqj4hGR
- q3TFiOag+eTJSAF5U4yRPase3gbpRPRAqkW7Yzw8bbtgN5qrdNk9OHd8b8LMZALusudHbnI5X
- U4isBcQWEaphGTXOjr8Z72Ok2/0/7MgP4+IYoouhQM937MZLX8oaSNTl1iTtXPYC8q96AN+vv
- RdIDu+msZ6FxXA10HYFt+vXHCS8a0rHJiEwp6vi3Z1jRfu6oDNf+GsGYwAY90J4YEqlLL+Pw0
- S1EJxQBRS7S8jkqUM3Hnn8PzgWyut1+pvi3kZefm7FLqS7Esf7S+LVvALILGDII8zXI9HPJkY
- fnRrSCef/hjxe3VZcFWm0Tch+G8ue8Bu8RmvKrr0i7M/0=
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 3-vYbEfnWhOld4n8k9OKVI0paNsK8kjR
+X-Proofpoint-GUID: 3-vYbEfnWhOld4n8k9OKVI0paNsK8kjR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
 
-On 4/10/24 12:56, Niklas Schnelle wrote:
-> In a future patch HAS_IOPORT=3Dn will disable inb()/outb() and friends a=
-t
-> compile time. We thus need to add HAS_IOPORT as dependency for those
-> drivers using them.
->
-> Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+The user can enable or disable any MAC block or a few ports of the
+block. The management port's interface name varies depending on the
+setup of the user if its not mapped to the first pf.
 
-added to fbdev git tree.
+The management port mapping is now configured to always connect to the
+first PF. This patch implements this change.
 
-Thanks!
-Helge
+Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
+Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
+---
+v2 * Refactor code to avoid code duplication.
 
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |  5 +-
+ .../ethernet/marvell/octeontx2/af/rvu_cgx.c   | 84 +++++++++++++------
+ 2 files changed, 63 insertions(+), 26 deletions(-)
 
-> ---
-> Note: This patch does not depend any not-yet-mainline HAS_IOPORT changes
-> and may be merged via subsystem specific trees at your earliest
-> convenience.
->
-> v1 -> v2:
-> - Add dependency for FB_ARC
->
->   drivers/video/fbdev/Kconfig | 22 +++++++++++-----------
->   1 file changed, 11 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
-> index 197b6d5268e9..76bbfd3767da 100644
-> --- a/drivers/video/fbdev/Kconfig
-> +++ b/drivers/video/fbdev/Kconfig
-> @@ -157,7 +157,7 @@ config FB_IMX
->
->   config FB_CYBER2000
->   	tristate "CyberPro 2000/2010/5000 support"
-> -	depends on FB && PCI && (BROKEN || !SPARC64)
-> +	depends on FB && PCI && HAS_IOPORT && (BROKEN || !SPARC64)
->   	select FB_IOMEM_HELPERS
->   	help
->   	  This enables support for the Integraphics CyberPro 20x0 and 5000
-> @@ -245,7 +245,7 @@ config FB_FM2
->
->   config FB_ARC
->   	tristate "Arc Monochrome LCD board support"
-> -	depends on FB && (X86 || COMPILE_TEST)
-> +	depends on FB && HAS_IOPORT && (X86 || COMPILE_TEST)
->   	select FB_SYSMEM_HELPERS_DEFERRED
->   	help
->   	  This enables support for the Arc Monochrome LCD board. The board
-> @@ -1046,7 +1046,7 @@ config FB_ATY_BACKLIGHT
->
->   config FB_S3
->   	tristate "S3 Trio/Virge support"
-> -	depends on FB && PCI
-> +	depends on FB && PCI && HAS_IOPORT
->   	select FB_CFB_FILLRECT
->   	select FB_CFB_COPYAREA
->   	select FB_CFB_IMAGEBLIT
-> @@ -1107,7 +1107,7 @@ config FB_SAVAGE_ACCEL
->
->   config FB_SIS
->   	tristate "SiS/XGI display support"
-> -	depends on FB && PCI
-> +	depends on FB && PCI && HAS_IOPORT
->   	select BOOT_VESA_SUPPORT if FB_SIS =3D y
->   	select FB_CFB_FILLRECT
->   	select FB_CFB_COPYAREA
-> @@ -1138,7 +1138,7 @@ config FB_SIS_315
->
->   config FB_VIA
->   	tristate "VIA UniChrome (Pro) and Chrome9 display support"
-> -	depends on FB && PCI && GPIOLIB && I2C && (X86 || COMPILE_TEST)
-> +	depends on FB && PCI && GPIOLIB && I2C && HAS_IOPORT && (X86 || COMPIL=
-E_TEST)
->   	select FB_CFB_FILLRECT
->   	select FB_CFB_COPYAREA
->   	select FB_CFB_IMAGEBLIT
-> @@ -1177,7 +1177,7 @@ endif
->
->   config FB_NEOMAGIC
->   	tristate "NeoMagic display support"
-> -	depends on FB && PCI
-> +	depends on FB && PCI && HAS_IOPORT
->   	select FB_CFB_FILLRECT
->   	select FB_CFB_COPYAREA
->   	select FB_CFB_IMAGEBLIT
-> @@ -1204,7 +1204,7 @@ config FB_KYRO
->
->   config FB_3DFX
->   	tristate "3Dfx Banshee/Voodoo3/Voodoo5 display support"
-> -	depends on FB && PCI
-> +	depends on FB && PCI && HAS_IOPORT
->   	select FB_CFB_FILLRECT
->   	select FB_CFB_COPYAREA
->   	select FB_CFB_IMAGEBLIT
-> @@ -1252,7 +1252,7 @@ config FB_VOODOO1
->
->   config FB_VT8623
->   	tristate "VIA VT8623 support"
-> -	depends on FB && PCI
-> +	depends on FB && PCI && HAS_IOPORT
->   	select FB_CFB_FILLRECT
->   	select FB_CFB_COPYAREA
->   	select FB_CFB_IMAGEBLIT
-> @@ -1267,7 +1267,7 @@ config FB_VT8623
->
->   config FB_TRIDENT
->   	tristate "Trident/CyberXXX/CyberBlade support"
-> -	depends on FB && PCI
-> +	depends on FB && PCI && HAS_IOPORT
->   	select FB_CFB_FILLRECT
->   	select FB_CFB_COPYAREA
->   	select FB_CFB_IMAGEBLIT
-> @@ -1290,7 +1290,7 @@ config FB_TRIDENT
->
->   config FB_ARK
->   	tristate "ARK 2000PV support"
-> -	depends on FB && PCI
-> +	depends on FB && PCI && HAS_IOPORT
->   	select FB_CFB_FILLRECT
->   	select FB_CFB_COPYAREA
->   	select FB_CFB_IMAGEBLIT
-> @@ -1814,7 +1814,7 @@ config FB_SSD1307
->
->   config FB_SM712
->   	tristate "Silicon Motion SM712 framebuffer support"
-> -	depends on FB && PCI
-> +	depends on FB && PCI && HAS_IOPORT
->   	select FB_IOMEM_HELPERS
->   	help
->   	  Frame buffer driver for the Silicon Motion SM710, SM712, SM721
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+index 4a77f6fe2622..88cced83bf23 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+@@ -639,7 +639,10 @@ struct cgx_lmac_fwdata_s {
+ 	/* Only applicable if SFP/QSFP slot is present */
+ 	struct sfp_eeprom_s sfp_eeprom;
+ 	struct phy_s phy;
+-#define LMAC_FWDATA_RESERVED_MEM 1021
++	u32 lmac_type;
++	u32 portm_idx;
++	u64 mgmt_port:1;
++#define LMAC_FWDATA_RESERVED_MEM 1019
+ 	u64 reserved[LMAC_FWDATA_RESERVED_MEM];
+ };
 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+index 266ecbc1b97a..8cc17d7e368d 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
+@@ -118,15 +118,67 @@ static void rvu_map_cgx_nix_block(struct rvu *rvu, int pf,
+ 		pfvf->nix_blkaddr = BLKADDR_NIX1;
+ }
+
+-static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
++static bool rvu_cgx_is_mgmt_port(struct rvu *rvu, int cgx_id, int lmac_id)
++{
++	struct cgx_lmac_fwdata_s *fwdata;
++
++	fwdata =  &rvu->fwdata->cgx_fw_data_usx[cgx_id][lmac_id];
++	return !!fwdata->mgmt_port;
++}
++
++static void __rvu_map_cgx_lmac_pf(struct rvu *rvu, unsigned int pf,
++				  int cgx, int lmac)
+ {
+ 	struct npc_pkind *pkind = &rvu->hw->pkind;
+-	int cgx_cnt_max = rvu->cgx_cnt_max;
+-	int pf = PF_CGXMAP_BASE;
++	int numvfs, hwvfs;
++	int free_pkind;
++
++	rvu->pf2cgxlmac_map[pf] = cgxlmac_id_to_bmap(cgx, lmac);
++	rvu->cgxlmac2pf_map[CGX_OFFSET(cgx) + lmac] = 1 << pf;
++	free_pkind = rvu_alloc_rsrc(&pkind->rsrc);
++	pkind->pfchan_map[free_pkind] = ((pf) & 0x3F) << 16;
++	rvu_map_cgx_nix_block(rvu, pf, cgx, lmac);
++	rvu->cgx_mapped_pfs++;
++	rvu_get_pf_numvfs(rvu, pf, &numvfs, &hwvfs);
++	rvu->cgx_mapped_vfs += numvfs;
++}
++
++static void rvu_cgx_map_mgmt_port(struct rvu *rvu, int cgx_cnt_max,
++				  unsigned int *pf, bool req_map_mgmt)
++{
+ 	unsigned long lmac_bmap;
+-	int size, free_pkind;
+ 	int cgx, lmac, iter;
+-	int numvfs, hwvfs;
++
++	for (cgx = 0; cgx < cgx_cnt_max; cgx++) {
++		if (!rvu_cgx_pdata(cgx, rvu))
++			continue;
++		lmac_bmap = cgx_get_lmac_bmap(rvu_cgx_pdata(cgx, rvu));
++		for_each_set_bit(iter, &lmac_bmap, rvu->hw->lmac_per_cgx) {
++			if (iter >= MAX_LMAC_COUNT)
++				continue;
++			lmac = cgx_get_lmacid(rvu_cgx_pdata(cgx, rvu), iter);
++			/* Map management port always to first PF */
++			if (req_map_mgmt &&
++			    rvu_cgx_is_mgmt_port(rvu, cgx, lmac)) {
++				__rvu_map_cgx_lmac_pf(rvu, *pf, cgx, lmac);
++				(*pf)++;
++				return;
++			}
++			/* Non management port mapping */
++			if (!req_map_mgmt &&
++			    !rvu_cgx_is_mgmt_port(rvu, cgx, lmac)) {
++				__rvu_map_cgx_lmac_pf(rvu, *pf, cgx, lmac);
++				(*pf)++;
++			}
++		}
++	}
++}
++
++static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
++{
++	int cgx_cnt_max = rvu->cgx_cnt_max;
++	unsigned int pf = PF_CGXMAP_BASE;
++	int size;
+
+ 	if (!cgx_cnt_max)
+ 		return 0;
+@@ -155,26 +207,8 @@ static int rvu_map_cgx_lmac_pf(struct rvu *rvu)
+ 		return -ENOMEM;
+
+ 	rvu->cgx_mapped_pfs = 0;
+-	for (cgx = 0; cgx < cgx_cnt_max; cgx++) {
+-		if (!rvu_cgx_pdata(cgx, rvu))
+-			continue;
+-		lmac_bmap = cgx_get_lmac_bmap(rvu_cgx_pdata(cgx, rvu));
+-		for_each_set_bit(iter, &lmac_bmap, rvu->hw->lmac_per_cgx) {
+-			if (iter >= MAX_LMAC_COUNT)
+-				continue;
+-			lmac = cgx_get_lmacid(rvu_cgx_pdata(cgx, rvu),
+-					      iter);
+-			rvu->pf2cgxlmac_map[pf] = cgxlmac_id_to_bmap(cgx, lmac);
+-			rvu->cgxlmac2pf_map[CGX_OFFSET(cgx) + lmac] = 1 << pf;
+-			free_pkind = rvu_alloc_rsrc(&pkind->rsrc);
+-			pkind->pfchan_map[free_pkind] = ((pf) & 0x3F) << 16;
+-			rvu_map_cgx_nix_block(rvu, pf, cgx, lmac);
+-			rvu->cgx_mapped_pfs++;
+-			rvu_get_pf_numvfs(rvu, pf, &numvfs, &hwvfs);
+-			rvu->cgx_mapped_vfs += numvfs;
+-			pf++;
+-		}
+-	}
++	rvu_cgx_map_mgmt_port(rvu, cgx_cnt_max, &pf, true);
++	rvu_cgx_map_mgmt_port(rvu, cgx_cnt_max, &pf, false);
+ 	return 0;
+ }
+
+--
+2.17.1
 
