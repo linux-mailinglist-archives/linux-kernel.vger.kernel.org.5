@@ -1,70 +1,50 @@
-Return-Path: <linux-kernel+bounces-139066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A377489FE15
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A54E889FE17
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:18:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AF8D1F21EB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:18:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CB3C1F22C16
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:18:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C73B17BB0A;
-	Wed, 10 Apr 2024 17:18:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D65B617BB10;
+	Wed, 10 Apr 2024 17:18:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="AjgyTGpL"
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="nRgG8DJh"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F6F16E865
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:18:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BFAF15B0E4;
+	Wed, 10 Apr 2024 17:18:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712769487; cv=none; b=sDmNlTopkTYX7SAw7JRkbYQlQVp1sNPlviVOPhzmlVrldd/HzrW0wakcGu/+YkZGq7B7ty25+Jlh2oekdyUiNWjVhYjk/hA/6KBgtoQZh+rAyMVpUzhFSmhXXf24AzKkzxvMMCBrOVCdRIef+XPPDN8m5iZ7hALzUqLtynrq06s=
+	t=1712769498; cv=none; b=oWCLReUF8GCARojV+bP6g8lhF9wAxezZ+LSbjv/lTlepUVS+jNpxmz7LkLvD9tyTXqSauQsQ4vEVzwN/JJ44NW+amDE4n5G1Vn5xLKXRaxjzLQ9JAruY/OSDrQqMo4zyKMMtRtxaGgW5MYRPzEoGhIOQNz9CxvFRy5mOs+NQ50Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712769487; c=relaxed/simple;
-	bh=097JfY+yr96kmzsP/tDLYqeVoxtkd5FgcGYuStdIP1U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=uNtRJ2I57OHFIzrWdxVgocgp6O1GqgYxbXRNjdgim4LmR/Nzz16PvCvglRhdH1tJi62nCxHhDBS8VSlqkuuz68TOQOdf08VTFurigcrmP6TwBYUtoaJ1D+qyz3EtIUNVnOZted5BgJdNzuWAxbYua9HJFV1FgzKUnmY6a6q5ZWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=AjgyTGpL; arc=none smtp.client-ip=209.85.160.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-43651b7004bso1377921cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:18:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1712769485; x=1713374285; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZEEvJsjKuDkBdAbKtTrKw2s1EXornaYA2k/la092A8c=;
-        b=AjgyTGpLPa8nxOWMzul1YftDlU7IO9QTpVvBRlVJT6gnLeFvMygdVx5uYmLJmDfPqn
-         1OqQFR/XRBGkHl2l2ScmHbh49TpqFaHNezM3P3RQS+WrGNbtSmAITSiKRCtXBVYSbS7K
-         Q6wiOQy8bKw1qeojL30O6riVkEj41KHuM2jI8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712769485; x=1713374285;
-        h=in-reply-to:autocrypt:from:references:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZEEvJsjKuDkBdAbKtTrKw2s1EXornaYA2k/la092A8c=;
-        b=a9Gq6x9Ivg9EjnrGJL43ZiNSj077lzffJnLxgmRQlUv0Z+xdlo02Itf5IsZNcm7XWU
-         KBS8/c4Js06UJu7dbMIxbxp35kGxO3F20WuEouWZmo9BKRjGrY0MS8/r5bCA1enISuga
-         lfbFc8cx15GrZHZ3KS4XMdBKW1GtAPOilUPhgKDmWk0PSBf51mEfCfSyj+IADf8n1gu+
-         yqOmEGV3XZFX6Yb7lxPnbcM/wSdLCqOWRej/ZUBWZjl3QKBEb5AqpIAoGIcXOESayhBW
-         qewX7D4YIxxJeivVCjKQ8pL2BBYSfr8zlvEJHh6H4vVBdGFqV++urLHOWeeXabpss9hS
-         XAeA==
-X-Forwarded-Encrypted: i=1; AJvYcCWUZyr2ZDV8qC+N8vE3UCnqHtspr5rYGjQIhlUp61PXM6D2x54mj6jjvjmPp/trnMuoSIBketSWT7s90sbQfsJeveNh3BLtBAwGb3v9
-X-Gm-Message-State: AOJu0Yy09loLzk9gFo/oc5lHEmLoWqS+2a4MrO9bQJSJU+WMJRzlzky9
-	RZl1oRFEyQaRQZ6g+4gj/H+8jSwpC9MrywelfoOMrUEM9rc2Bxvqc7CIkw6R4g==
-X-Google-Smtp-Source: AGHT+IHccyydKZiCa6lGuNNkegpCvl2d9Gh0lqgF7E4hGHVwgD0/GkxiVM4HQeONhEYw7BpGP7Dnsg==
-X-Received: by 2002:a05:622a:60e:b0:436:3ee4:5e9f with SMTP id z14-20020a05622a060e00b004363ee45e9fmr1826763qta.60.1712769484975;
-        Wed, 10 Apr 2024 10:18:04 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id e8-20020ac86708000000b0043496bcfc2esm3524966qtp.12.2024.04.10.10.18.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 10:18:04 -0700 (PDT)
-Message-ID: <5bf1e41b-ca9a-4464-aaee-5dea6cca9330@broadcom.com>
-Date: Wed, 10 Apr 2024 10:18:01 -0700
+	s=arc-20240116; t=1712769498; c=relaxed/simple;
+	bh=pze+/ST5lcAZTgLL3MfKRc3IpTaWq5E06McQnCfjJ/Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Yb7fjTG2VUQNwQJYK/NJvxV7xbZKLrG7/k/IxLKb8p0W+nqbbAYM2tCWHpEyS/ubUGL5jrrUrYFJXg+6AaZzEXvvjJ8q7qPqtU3igI9gVaxMVO2sgEAsiICmN99SQ7v7F7fZtg9AcEuj6SBYtpG2wgf70WjwVaTw5nHkw2DFfQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=nRgG8DJh; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1712769494;
+	bh=pze+/ST5lcAZTgLL3MfKRc3IpTaWq5E06McQnCfjJ/Y=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=nRgG8DJhJ13BdD61Q3w8naE9a2X1LePlOfIzh/QEHhsIgxml+OllqXJnI2aGkkCUU
+	 IW7pyhy7e8muOfPAlLZu3CvUOil600Ss2GqkwF11seZ+g6see0sF0jmRlul+zp14gL
+	 QhGquyTurkELLfrh/zYxo3ZjedAgEEmCYLpoT6Yg4IEZrj3hThU6MMMlqwVrBBK0sM
+	 OfLal2lbNT3Wn8a8JHi8lzAuG0KlcOpKuVT09QrTTKHD4TghBp1cDNKeSYLfIZMLqG
+	 NpVSCoHphmq9wtRTOhxpexDt50+5h3r9rpvEUVT0s7XqRVLg7sWib6mzNMj3Bb15JN
+	 Hc9Fgt6sBa10Q==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4VF8fs2KdQzrmj;
+	Wed, 10 Apr 2024 13:18:13 -0400 (EDT)
+Message-ID: <18f5d6e7-9e33-419a-bd15-fd4fa34a69c8@efficios.com>
+Date: Wed, 10 Apr 2024 13:18:45 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,148 +52,176 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] memory: brcmstb_memc: fix module autoloading
-To: Krzysztof Kozlowski <krzk@kernel.org>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240410170241.248626-1-krzk@kernel.org>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
- M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
- JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
- PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
- KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
- AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
- IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
- ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
- bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
- Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
- tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
- TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
- zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
- WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
- IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
- U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
- 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
- pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
- MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
- IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
- gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
- obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
- N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
- CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
- C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
- wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
- EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
- fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
- MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
- 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
- 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20240410170241.248626-1-krzk@kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000c00b1a0615c138ef"
-
---000000000000c00b1a0615c138ef
+Subject: Re: [PATCH] sched: Add missing memory barrier in switch_mm_cid
+To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H . Peter Anvin" <hpa@zytor.com>
+Cc: linux-kernel@vger.kernel.org, "levi . yun" <yeoreum.yun@arm.com>,
+ stable@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
+ <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Valentin Schneider <vschneid@redhat.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>, Will Deacon <will@kernel.org>,
+ Aaron Lu <aaron.lu@intel.com>
+References: <20240308150719.676738-1-mathieu.desnoyers@efficios.com>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Content-Language: en-US
+In-Reply-To: <20240308150719.676738-1-mathieu.desnoyers@efficios.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
+This fix has received an Acked-by from ARM64 maintainer Catalin Marinas. [1]
 
+I'm CCing x86 maintainers whom are not also scheduler maintainers
+as well so they can give their input.
 
-On 4/10/2024 10:02 AM, Krzysztof Kozlowski wrote:
-> Add MODULE_DEVICE_TABLE(), so the module could be properly autoloaded
-> based on the alias from of_device_id table.
+This is still waiting for feedback from scheduler maintainers.
+
+[1] https://lore.kernel.org/lkml/ZhUVpwwqKxWKgU0Q@arm.com/
+
+On 2024-03-08 10:07, Mathieu Desnoyers wrote:
+> Many architectures' switch_mm() (e.g. arm64) do not have an smp_mb()
+> which the core scheduler code has depended upon since commit:
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+>      commit 223baf9d17f25 ("sched: Fix performance regression introduced by mm_cid")
+> 
+> If switch_mm() doesn't call smp_mb(), sched_mm_cid_remote_clear() can
+> unset the actively used cid when it fails to observe active task after it
+> sets lazy_put.
+> 
+> There *is* a memory barrier between storing to rq->curr and _return to
+> userspace_ (as required by membarrier), but the rseq mm_cid has stricter
+> requirements: the barrier needs to be issued between store to rq->curr
+> and switch_mm_cid(), which happens earlier than:
+> 
+> - spin_unlock(),
+> - switch_to().
+> 
+> So it's fine when the architecture switch_mm happens to have that barrier
+> already, but less so when the architecture only provides the full barrier
+> in switch_to() or spin_unlock().
+> 
+> It is a bug in the rseq switch_mm_cid() implementation. All architectures
+> that don't have memory barriers in switch_mm(), but rather have the full
+> barrier either in finish_lock_switch() or switch_to() have them too late
+> for the needs of switch_mm_cid().
+> 
+> Introduce a new smp_mb__after_switch_mm(), defined as smp_mb() in the
+> generic barrier.h header, and use it in switch_mm_cid() for scheduler
+> transitions where switch_mm() is expected to provide a memory barrier.
+> 
+> Architectures can override smp_mb__after_switch_mm() if their
+> switch_mm() implementation provides an implicit memory barrier.
+> Override it with a no-op on x86 which implicitly provide this memory
+> barrier by writing to CR3.
+> 
+> Link: https://lore.kernel.org/lkml/20240305145335.2696125-1-yeoreum.yun@arm.com/
+> Reported-by: levi.yun <yeoreum.yun@arm.com>
+> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Fixes: 223baf9d17f2 ("sched: Fix performance regression introduced by mm_cid")
+> Cc: <stable@vger.kernel.org> # 6.4.x
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> Cc: Valentin Schneider <vschneid@redhat.com>
+> Cc: levi.yun <yeoreum.yun@arm.com>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Aaron Lu <aaron.lu@intel.com>
+> ---
+>   arch/x86/include/asm/barrier.h |  3 +++
+>   include/asm-generic/barrier.h  |  8 ++++++++
+>   kernel/sched/sched.h           | 20 ++++++++++++++------
+>   3 files changed, 25 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
+> index 35389b2af88e..0d5e54201eb2 100644
+> --- a/arch/x86/include/asm/barrier.h
+> +++ b/arch/x86/include/asm/barrier.h
+> @@ -79,6 +79,9 @@ do {									\
+>   #define __smp_mb__before_atomic()	do { } while (0)
+>   #define __smp_mb__after_atomic()	do { } while (0)
+>   
+> +/* Writing to CR3 provides a full memory barrier in switch_mm(). */
+> +#define smp_mb__after_switch_mm()	do { } while (0)
+> +
+>   #include <asm-generic/barrier.h>
+>   
+>   /*
+> diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
+> index 961f4d88f9ef..5a6c94d7a598 100644
+> --- a/include/asm-generic/barrier.h
+> +++ b/include/asm-generic/barrier.h
+> @@ -296,5 +296,13 @@ do {									\
+>   #define io_stop_wc() do { } while (0)
+>   #endif
+>   
+> +/*
+> + * Architectures that guarantee an implicit smp_mb() in switch_mm()
+> + * can override smp_mb__after_switch_mm.
+> + */
+> +#ifndef smp_mb__after_switch_mm
+> +#define smp_mb__after_switch_mm()	smp_mb()
+> +#endif
+> +
+>   #endif /* !__ASSEMBLY__ */
+>   #endif /* __ASM_GENERIC_BARRIER_H */
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 2e5a95486a42..044d842c696c 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -79,6 +79,8 @@
+>   # include <asm/paravirt_api_clock.h>
+>   #endif
+>   
+> +#include <asm/barrier.h>
+> +
+>   #include "cpupri.h"
+>   #include "cpudeadline.h"
+>   
+> @@ -3481,13 +3483,19 @@ static inline void switch_mm_cid(struct rq *rq,
+>   		 * between rq->curr store and load of {prev,next}->mm->pcpu_cid[cpu].
+>   		 * Provide it here.
+>   		 */
+> -		if (!prev->mm)                          // from kernel
+> +		if (!prev->mm) {                        // from kernel
+>   			smp_mb();
+> -		/*
+> -		 * user -> user transition guarantees a memory barrier through
+> -		 * switch_mm() when current->mm changes. If current->mm is
+> -		 * unchanged, no barrier is needed.
+> -		 */
+> +		} else {				// from user
+> +			/*
+> +			 * user -> user transition relies on an implicit
+> +			 * memory barrier in switch_mm() when
+> +			 * current->mm changes. If the architecture
+> +			 * switch_mm() does not have an implicit memory
+> +			 * barrier, it is emitted here.  If current->mm
+> +			 * is unchanged, no barrier is needed.
+> +			 */
+> +			smp_mb__after_switch_mm();
+> +		}
+>   	}
+>   	if (prev->mm_cid_active) {
+>   		mm_cid_snapshot_time(rq, prev->mm);
 
-Acked-by: Florian Fainelli <florian.fainelli@broadcom.com>
-
-Thanks!
 -- 
-Florian
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
---000000000000c00b1a0615c138ef
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFmMS/T4dbiAvy1A
-57Twx5/iD9WrGBqBLamoKObgfY30MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDQxMDE3MTgwNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCEzX95w4EreP4fa+oZZ4F+r46nhJtBasqD
-7MCyijdy7i9mNIe9gEht333RTiFaqAVGPx4x4dVPsje6GBOY1jk/dwQWi4OXZHMrfKGtJwaRHmtQ
-wMPF9EBpYallN5a1UdwkL69KQLfJWjrDmrRtHT3da/LEK/TxzY55tZuqrwl5a+GBchF5y4TcpL0L
-k8uEt17TszEwv1AWFwWCTxzd3tKW1wSbtAy3YHgzCv0ZGPO0+o4CUWix4hA8YTe37oLEddYunPSr
-AJzkDO2lTMXEJxxoKoa42O7paGybTjzrvaDpy9CMhScOdsF0uUqtv0iBnsEIn+Ulb5iYdnrG5Ct+
-3b93
---000000000000c00b1a0615c138ef--
 
