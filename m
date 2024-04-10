@@ -1,311 +1,180 @@
-Return-Path: <linux-kernel+bounces-139120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E59AA89FEE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C0B689FE8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:32:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11D4D1C22B1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:45:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F3FB1C233BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C240180A73;
-	Wed, 10 Apr 2024 17:45:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FDD717BB3B;
+	Wed, 10 Apr 2024 17:32:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sJSz3ERr"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="VtkQZYXf";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="a5EFFFOO"
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6938013D502;
-	Wed, 10 Apr 2024 17:44:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712771099; cv=none; b=hL7X6cTBiVZSW8N2JXWc4pJTmE0zb7Dne4NbvqA4ZvAWonVE4PYPP+tM7lzIjSI3LhodT/BJreXIW5Uwge7o0U8rTzKdySw9KUdLuhnXJ7Kik0peukPFUDshhORR2seM154OCHyuy4qLLCZU33DoyNNiqretMrvfB4ZycI/uByQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712771099; c=relaxed/simple;
-	bh=/BMaKXEy6NNnwFMwmVk9KIRRaSKysgILBBq5AXYyV/w=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QiGbn/PWF4xfkw2PcwjGl0CNq72Xe0hKqF776uwwlvv1f3wmzVxQtoW5d8N5/rL8tgqcKDmB9h7RwHOlY9Z4DaGxTneV2oFu5b6EoYxF+DJXmnAkcZB7t+OX5bhQK/zWWf7qYg9w3+NivhuebAGn8z7rMAMCUYICZQAr1Fc6RfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sJSz3ERr; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43AHW32D027181;
-	Wed, 10 Apr 2024 17:44:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=NcCV+vYF6bMCP5PVebzSA3U7LOVkS5kUCoHa1vCxPrs=;
- b=sJSz3ERrXB216gg8xrrXCN9+IMLNefnQMvzHDHZqMKFGtnKCe20Cc9cU0vXipoYDDg2C
- 6kdq0Ix2I3HXc1sjqhsSdz42J7cNfkCnJJR7pDIoOdDA8zysxox87aGN96qxNx8RjtQa
- 8gcKzA4xy7etKCCdz2kIdc762QWkgdmGusCbV0a2PIpAtqRNfECkvnaxqhSt5fsvLpSW
- HuNO0xpM3YrkL8h261znCFaC3yzd0M1TLfn71q2ExBOdoifYYnwLyol8jAkvhDsrNSnE
- wd/t3RHg0BO/DG8U8nJXATh0CIlY167Jr80kwVYfYwonIF8cUDixsyd7Z/PyvB9X1GVd CA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdy8j00rk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 17:44:44 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43AHihtw011980;
-	Wed, 10 Apr 2024 17:44:43 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdy8j00rh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 17:44:43 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43AFqkcu019119;
-	Wed, 10 Apr 2024 17:44:42 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbh40ef83-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 17:44:42 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43AHia1Y16187780
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 10 Apr 2024 17:44:38 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 69E3F2004B;
-	Wed, 10 Apr 2024 17:44:36 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3B2B720040;
-	Wed, 10 Apr 2024 17:44:36 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.152.224.66])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 10 Apr 2024 17:44:36 +0000 (GMT)
-Date: Wed, 10 Apr 2024 19:31:50 +0200
-From: Claudio Imbrenda <imbrenda@linux.ibm.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-        Matthew Wilcox
- <willy@infradead.org>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
- <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian
- Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle
- <svens@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Gerald
- Schaefer <gerald.schaefer@linux.ibm.com>,
-        Thomas Huth <thuth@redhat.com>
-Subject: Re: [PATCH v1 2/5] s390/uv: convert gmap_make_secure() to work on
- folios
-Message-ID: <20240410193150.655df790@p-imbrenda>
-In-Reply-To: <20240404163642.1125529-3-david@redhat.com>
-References: <20240404163642.1125529-1-david@redhat.com>
-	<20240404163642.1125529-3-david@redhat.com>
-Organization: IBM
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8D417BB27;
+	Wed, 10 Apr 2024 17:32:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.143.124
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712770341; cv=fail; b=NdYlMYhJmePiQQOB2R+aUyvkyd0g9McfGZc7Rc8hq8RFk8c1tYWTXNJPdWcZlqE5ymvWfe0mvCELhFO80qB2YSjt5ndHN+gggaxxHfNDTxkrMVxnz93pFlmreIi0jVcAR/JORibxx6gUnmdvfrOnA98/1Qae9X530PuqOHTo1lk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712770341; c=relaxed/simple;
+	bh=jp0RGr4RkEoWdTJYZj7X+HS3y0hA143RDdPzxsx/bPU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=VgV25dEC0B61lKADWa4GMpZyzSDTiarwU1xyO1d0koZIHEI26s3G1qXvtyRizeMZjKhU+S63+BdY6VS/lEyq7mRQWa/VBNPmV3+e040hgwtc0vq2aP0Bjw6m7oCO3AfpLeLZ+tDm0hiPrufOoE4Du0E0thUUeaRypeyWLdUBjSw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=VtkQZYXf; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=a5EFFFOO; arc=fail smtp.client-ip=68.232.143.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1712770339; x=1744306339;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=jp0RGr4RkEoWdTJYZj7X+HS3y0hA143RDdPzxsx/bPU=;
+  b=VtkQZYXfHkfl/DywDHajo9EUPdJkX0RxrgzczhjS2Hmn/tOk35xeGn7Y
+   nV0L0RKCmqo2v//sxnyuLcPntz4n+GLdJUenfp3QKsUj//j+1iDLBFByZ
+   nFAxjzQZQnQ0xXAm39/P9z/iFvcJ2BDfzxH6+Qt+mxkbDLMivp20jivh/
+   lr9/rHqq4Iq/jhRLKRvmaqn8MacEsQtRpG9UGn8gsZDTFC5my2OzbCs10
+   FyG4og8bAyDWbeNLb25F3Sa3sOOj8ISI8JEQ4+dRaYI1JYG6DHOAxzVf5
+   RGaZnudOIGgAHVYOjEv56S2t9+pFevj9lN6vlRp+YzwcteNDShavXgj00
+   g==;
+X-CSE-ConnectionGUID: 3qovEnvCRUW2/x5UomnHVA==
+X-CSE-MsgGUID: qpeBPRXiSL2wjwyhJY3q8w==
+X-IronPort-AV: E=Sophos;i="6.07,191,1708358400"; 
+   d="scan'208";a="13703239"
+Received: from mail-sn1nam02lp2041.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.57.41])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Apr 2024 01:32:00 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z0N8LvRCrFaWO4r/d0H9RCs6nDCW4Is1B8gqRU7IDeadDwhF1YSqdNxClse7gREkuJoa9Eej2Xwhs8ZZ+vkMd9gewtYZuqBxf9IsXE/lC5nPGg6gIlXuMvVJQNuejW61l/+8Nj7lSWvB9DTqQdGClARjC2+CiOd/crb/h4DRSIntPgemvAY7RacEBsU/evriksWYYNcvTmnJMYB+O0AebPRUeA1AwBv3AE0crE/gvjjnOX/DFxVCrXsJoOa0NNKHnLzFREc4RKHJ3Iv++4HqTSYqQUq+iNf4y49OeH/Ab6uB0IJXXZCbtGI/xcLKhWjSnMM2aOMQZukAeiQrloINqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jp0RGr4RkEoWdTJYZj7X+HS3y0hA143RDdPzxsx/bPU=;
+ b=jZV9Cw2sACHMjlSQcgduaCcfCfiDSygqK0eQlW5gKdLl8xaZa7+KIYN37pc1GwZQ6hLwkSslRL9KiviF34KW0kwffdgP1RABeSJ/Iam3XWO+uXd19s/2yhhX0uTkiAfq6jTPH5iqBBwsuvCVJMmDxE80+MN8kitTOKszsITSKB8BjYUvGH6sqxD+6VElnH2ysi4bJ0j3HaA3StLzNgqt6MYUQJNvOgPXOUF73UPME7CLiLO0scDVUBnh5iVHmeuAo1J67UWAAQYWnn5WbY3VwKMP4U6oPquciYwIawoncXe76aP7Gg3GYRS1XWB0os9A4elRIBDbHRipcAGziSl9/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jp0RGr4RkEoWdTJYZj7X+HS3y0hA143RDdPzxsx/bPU=;
+ b=a5EFFFOOtBS71SOLdiyWE9807jP/TiFh/NmhHntnzOzpYZzODJJ+JOHbd3LpICPMcro2QTFHLwkdb+QZKIbdQYHcGC82OJGURGs3yI15fGEKd3kMZOhhXQZnuGz+u/6oEneok8k0c8Dtj6IG99S3RlvJN9OLrH1cThouhsr7RpY=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ CH2PR04MB6855.namprd04.prod.outlook.com (2603:10b6:610:a2::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.55; Wed, 10 Apr 2024 17:31:58 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::5395:f1:f080:8605]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::5395:f1:f080:8605%3]) with mapi id 15.20.7409.053; Wed, 10 Apr 2024
+ 17:31:58 +0000
+From: Avri Altman <Avri.Altman@wdc.com>
+To: Bart Van Assche <bvanassche@acm.org>, "James E . J . Bottomley"
+	<jejb@linux.ibm.com>, "Martin K . Petersen" <martin.petersen@oracle.com>
+CC: "hch@infradead.org" <hch@infradead.org>, Bean Huo <beanhuo@micron.com>,
+	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 1/1] scsi: ufs: Remove support for old UFSHCI versions
+Thread-Topic: [PATCH v3 1/1] scsi: ufs: Remove support for old UFSHCI versions
+Thread-Index: AQHaiLFx8LxfQ5dil0mKLRXAtAu0DLFgmbGAgAB/P+CAAK7yAIAAAJxw
+Date: Wed, 10 Apr 2024 17:31:58 +0000
+Message-ID:
+ <DM6PR04MB6575A2115B4CD3CC11BCBAA2FC062@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20240407060412.856-1-avri.altman@wdc.com>
+ <20240407060412.856-2-avri.altman@wdc.com>
+ <37c51970-1408-4a71-926a-780c663e5572@acm.org>
+ <DM6PR04MB657551A7FAB39883B3D890F1FC062@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <8b3fd7b3-3fad-4baf-8df5-55fe0fdc9438@acm.org>
+In-Reply-To: <8b3fd7b3-3fad-4baf-8df5-55fe0fdc9438@acm.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR04MB6575:EE_|CH2PR04MB6855:EE_
+x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 1837RhqL5S6N0j/N+8Rb5i8JL/fdkOUzdZf21yeEaSCtJgWJVkwvluLbieW3kB3WolGLNKO1a2m469yk8ngsmst+P+ZLeWdqBOCSL0LJth8P38rhPrGj+stlWvFN7swYk179CIpARzBDWTRR6tO0RJ7RyFBjqAkBLuLgkfLsbNjFF/l4GYRqy2JfrCZAOturxwQhzAJdDt713IO9HzXO20GrWYbAEbJIyWSzn2A0zqC7irb5ztyCgc9wdVojlUVrcD5t/Ud0oJBZ7HqsOT9sAgujajFf89bJBfop+wl0erG3DxejoaPEOjn0hUS6VLf2fW++tWCxCD7SmExYwEpB9WB+mheYsvPRLUNoyjvf2TlBpo8GGJr35pHn1EOrUZDJKyzONxzT+LWcHRUkEpGh9OWexfPCRjmcdxwgyK79sTB4bHsvQyrIj29B3GBpYoUeEb1jszl4XseLRD4Bq7O9OD+4P1Eu8TU8e0yTXhoaa6GmUTUGIDgbs0VnwLf3MHrFOhHr+US+/Gaq7k+wPeo/VoVKxj9PFC7y7nICQnVK3jVqQdCjMMgsEbljpDu2pCTP//TKuS5IHgLR89Hdm5vHSN8CnFPaXABfFBUMpq5gOC+x/oGJSHcTRtGUQxx6mqRKnPDKM6hJPIqWt0YIlFAC+PRUNlHYwLwhxtBHXrwT2vA=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?ekVTZTVmQ3ppTWROSDNrSzdaQmFUS2RzNEhaSkZvVEUvL3dNamxGcGo4Zk5u?=
+ =?utf-8?B?QmorcUczSThRVnN6S3hyQXFEWUNuUGZhOHVIYzFJK2ZhSkcwSE1kTFBjQWRi?=
+ =?utf-8?B?THVPd1ZMSWlvbmZDN0pmTXBSTHZSTnB5eS90UmI2cGIrYkRhN281TlJRWE9M?=
+ =?utf-8?B?YkI4c3BPVGJOZ2pxSUZOTjh4YlBOWDIzTGdTdUtQOENVbWIxN2xDU2hKWEFZ?=
+ =?utf-8?B?Z09HMmN5MU1JRmp0dklnVGtIT25JYllNKzJKZzl0VjVkcWFoWWVvSnNVV2kw?=
+ =?utf-8?B?bys1WVVYNENnVDBKd0YwbXFqQVJLOTdqNnpGUWpIMHBkVVN3cE1EdlpGd1pJ?=
+ =?utf-8?B?ejlLcXVnOWxhSHpHQTN1Z3lEQktYaFpYNlJFZC82ZWx1VTdTTXhtVGxCK29Y?=
+ =?utf-8?B?dTFmVmFGY05zRERJblJxSW1UV244aExJc2pGaDlRdm5EdXFlRi84SHdDb3Vl?=
+ =?utf-8?B?bWI4UTdITzV4Y2FLRTZqejlSR1pOUk9PbnRVNXRUVTVaZklEUldVOEd0REh4?=
+ =?utf-8?B?MEVnaDJmSlpMb3N2cnVaajZvVFdOK3E4Z3NWdU1ueWNLcXRNSHZHcnpuSi9G?=
+ =?utf-8?B?bXJGR3lDNGxTQUFnVERYS0JMYXZWZWlPN29heWVSbW9jYzZHZG01U1F0UHFw?=
+ =?utf-8?B?Q1dGQld2S2dYWWczWlNTSnAyR2tVZVNZNXRHZGE3OHA4ZWMvdVpaZXV1eGFv?=
+ =?utf-8?B?RzYvK2xzalcxQmVTUG9nYU9oU0k4MTJnYUlSK1JGekc3a3BadzdteEJvb2Q4?=
+ =?utf-8?B?S2JkQkw2QWVtT0JrR2Ird1RWKzJyYkE2b1ZoaHk1ZGtWcjc4Q0J0NUFQRWlG?=
+ =?utf-8?B?cWlCZk9WZEVaRW9GZDVUNTg1UnExeGR6WExodEt4OEg5MWRST3dsZjBWdnEy?=
+ =?utf-8?B?V2xpeFFzOXA5WE5vSVM4eTRoMTc4REFCU1ZHQ0hHS1JTWXloQzhZaXFmbVh2?=
+ =?utf-8?B?OEUyaXlpK2IzbURaMUc5NFZ6aXd0VGN1NzFPS3RTbFpML2pyWjI2Y09FWjZk?=
+ =?utf-8?B?Rzh2QlBrQXducUErKy9TUEtXZ3V0aVVFRjBBSGg3a0lUNmlRWUFPTU9WaDB1?=
+ =?utf-8?B?WUZxd2tqM0tIWHBTRXF1ZXE2TGtSOW9lOHFDK1RNT0ZFS0FELzJhejJSdUdZ?=
+ =?utf-8?B?VThXZjlPMkdsS3pkeFdVMjJWWkJxRHNRTFdON0VmczRKS2xFaXVJTWFtbFI0?=
+ =?utf-8?B?YnZyTEdtNDJ1Q0p1Nk1DMjhTS3Y1a3Bjd3YvQUtYdlM5SGh5bUp2d1ppMnZ2?=
+ =?utf-8?B?NnJjNnltMnFSUmFaNUhwaE82TUVBaUs2M1hNWWRMMEtNcDRwb00va25oWC9P?=
+ =?utf-8?B?SjlVbFRiVzUzUm94bXN4ZGMzRGhocG53MzA0d25jbG4xMVkyTXNTYjFKdEc1?=
+ =?utf-8?B?dWRqMmVJQWZZZVluMDNCVkIwOTRsOXJIU3haUmdrdFdrSS9IVmNtdHJySGxV?=
+ =?utf-8?B?Q2Zhdlo0amJUWXNvS2Z5NnNDSHlhblhqM2RvV3RNZXROaUhJMi82cGNlTmg0?=
+ =?utf-8?B?b2x0TGhHYU5kaHdrUENhWlZtejRRWE5NRDJIaW1rUGE1Y1o2THFDcjBtK1Bl?=
+ =?utf-8?B?dk9kS0dsMVVwdWNhYlRiQko1aTVYOFhtaTNYb3k2YXdGdnF5dUYzc0tPOEpW?=
+ =?utf-8?B?ZG5VeEp5Sk9OQ1gyeVNqNTdyTEE5RHdGU3l0V0dIT0N0SFF0Sm1icC96L3Rr?=
+ =?utf-8?B?d1ZTaGUzTkxPYjNyU0cvZE03SlpsVjdvR05XQTd6YjF2RmIwWU5vc2pYVGFh?=
+ =?utf-8?B?cWIrRU5TUXdLUXQzaHZoNENHTjQvbjgwZkFSenlIWDdjS0FJc2djVEVBSUdx?=
+ =?utf-8?B?WUhPeXlHY3BxazBVdE5rbWFmZFduRmRnTVlDSmdGZHNlbXpVUGlqaEE2SzFk?=
+ =?utf-8?B?d1h2ei8wOU1ZRVJFalI0QXR0VDFrWVNGUkR3QzlGVkhpdk1FWkVON1NVcW1q?=
+ =?utf-8?B?dTZYeHVGQ2Q2SGYybXhvVlNNZTRabDVtWTVzSVE5N2RxZzc0MmN0MVhUQUNY?=
+ =?utf-8?B?NG1qUVluYnlkbjVnZ1hTYXhvVlRuNTVpRUhuWE9wb0xHbUVCcUpRVkVuTkIw?=
+ =?utf-8?B?OEt4VENlVkJPV05YeTIzNG43VzlUZlFYVUl6M2luVlM0dkJMU2VqTDhTR0VM?=
+ =?utf-8?Q?cbh5/rGMhwMVYTeUvqPXxUvmE?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: rkGJLSWwyI4FSBzce00f3hjUwHMGtIj8
-X-Proofpoint-GUID: g0vFXYAqO7tLKK4XeNGPxST4QRrLVVev
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 malwarescore=0 spamscore=0
- phishscore=0 suspectscore=0 mlxlogscore=858 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404100130
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	QnlLi/T+NvKgJl9i1FvryzHXVIyB714+sD9jduD/kUbhS0TtW/Gb+jLgHgTgD4leV5QUE44o0pIhRhvASJHGiAnfd9rqivynG8n95WJIUdVKoQslnAmRLzPLT6Tleoj3Kvp8TLjDbkGt9K+BI0B2Wi+BsV4+nBT7xTXCorpa2HwpqsT4khKCnZBNFzDNTVyjpg75pSTxa0Arhl3coAHOmo6qYcnbBcjpQGcedSU5IKtKgH+L32CSHzbCubjRGXesQ/x2p7SoVno7gxO8aIbwOXV4dRG6jdKfp89Nx2UnXt4uJ53IuMe9clYI08GkV1tXcRGpEC4+u7d6VPStD2ZQG4jzmPZfcEOUXh1FvYUVza1ZUTGhlC1FDu1joSooEY43Mx42mb7/jiFNS+zu1QH9Dj6M61vJSqeeofMmtt6PK4i4IQU92Pp8l3dcIcBsR6+79w98sL20iDKoy/vFzsPSxPxaLC+Zu33hS8RrsGJZ1zmPMtXZFKrv08ij+9MtZXWNxQeH/i9DV6BMyaXtES5thQM6F/YwdSQibKz7MaOg34q9XbU5253fOA4Iyau0QgfpN3b/+H/MFcj5lZrvYas0+ndcXIWxZt8DggcyU8MEYKgF2SVppgAUWnn772Czgjab
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cde30655-f4c4-464b-1707-08dc5984200c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Apr 2024 17:31:58.7641
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZlCCBKqLnyCjns4Q9VABA817stKjaasa4o5B/O6oi3wbsJu7R0T2ctoLvBD2LJW2Ie8vna6ctf7tYdX6HgvJOg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB6855
 
-On Thu,  4 Apr 2024 18:36:39 +0200
-David Hildenbrand <david@redhat.com> wrote:
-
-> We have various goals that require gmap_make_secure() to only work on
-> folios. We want to limit the use of page_mapcount() to the places where it
-> is absolutely necessary, we want to avoid using page flags of tail
-> pages, and we want to remove page_has_private().
-> 
-> So, let's convert gmap_make_secure() to folios. While s390x makes sure
-> to never have PMD-mapped THP in processes that use KVM -- by remapping
-> them using PTEs in thp_split_walk_pmd_entry()->split_huge_pmd() -- we might
-> still find PTE-mapped THPs and could end up working on tail pages of
-> such large folios for now.
-> 
-> To handle that cleanly, let's simply split any PTE-mapped large folio,
-> so we can be sure that we are always working with small folios and never
-> on tail pages.
-> 
-> There is no real change: splitting will similarly fail on unexpected folio
-> references, just like it would already when we try to freeze the folio
-> refcount.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  arch/s390/include/asm/page.h |  1 +
->  arch/s390/kernel/uv.c        | 66 ++++++++++++++++++++++--------------
->  2 files changed, 42 insertions(+), 25 deletions(-)
-> 
-> diff --git a/arch/s390/include/asm/page.h b/arch/s390/include/asm/page.h
-> index 9381879f7ecf..54d015bcd8e3 100644
-> --- a/arch/s390/include/asm/page.h
-> +++ b/arch/s390/include/asm/page.h
-> @@ -215,6 +215,7 @@ static inline unsigned long __phys_addr(unsigned long x, bool is_31bit)
->  
->  #define phys_to_page(phys)	pfn_to_page(phys_to_pfn(phys))
->  #define page_to_phys(page)	pfn_to_phys(page_to_pfn(page))
-> +#define folio_to_phys(page)	pfn_to_phys(folio_pfn(folio))
->  
->  static inline void *pfn_to_virt(unsigned long pfn)
->  {
-> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-> index 7401838b960b..adcbd4b13035 100644
-> --- a/arch/s390/kernel/uv.c
-> +++ b/arch/s390/kernel/uv.c
-> @@ -181,36 +181,36 @@ int uv_convert_owned_from_secure(unsigned long paddr)
->  }
->  
->  /*
-> - * Calculate the expected ref_count for a page that would otherwise have no
-> + * Calculate the expected ref_count for a folio that would otherwise have no
->   * further pins. This was cribbed from similar functions in other places in
->   * the kernel, but with some slight modifications. We know that a secure
-> - * page can not be a huge page for example.
-> + * folio can only be a small folio for example.
->   */
-> -static int expected_page_refs(struct page *page)
-> +static int expected_folio_refs(struct folio *folio)
->  {
->  	int res;
->  
-> -	res = page_mapcount(page);
-> -	if (PageSwapCache(page)) {
-> +	res = folio_mapcount(folio);
-> +	if (folio_test_swapcache(folio)) {
->  		res++;
-> -	} else if (page_mapping(page)) {
-> +	} else if (folio_mapping(folio)) {
->  		res++;
-> -		if (page_has_private(page))
-> +		if (folio_has_private(folio))
->  			res++;
->  	}
->  	return res;
->  }
->  
-> -static int make_page_secure(struct page *page, struct uv_cb_header *uvcb)
-> +static int make_folio_secure(struct folio *folio, struct uv_cb_header *uvcb)
->  {
->  	int expected, cc = 0;
->  
-> -	if (PageWriteback(page))
-> +	if (folio_test_writeback(folio))
->  		return -EAGAIN;
-> -	expected = expected_page_refs(page);
-> -	if (!page_ref_freeze(page, expected))
-> +	expected = expected_folio_refs(folio);
-> +	if (!folio_ref_freeze(folio, expected))
->  		return -EBUSY;
-> -	set_bit(PG_arch_1, &page->flags);
-> +	set_bit(PG_arch_1, &folio->flags);
->  	/*
->  	 * If the UVC does not succeed or fail immediately, we don't want to
->  	 * loop for long, or we might get stall notifications.
-> @@ -220,9 +220,9 @@ static int make_page_secure(struct page *page, struct uv_cb_header *uvcb)
->  	 * -EAGAIN and we let the callers deal with it.
->  	 */
->  	cc = __uv_call(0, (u64)uvcb);
-> -	page_ref_unfreeze(page, expected);
-> +	folio_ref_unfreeze(folio, expected);
->  	/*
-> -	 * Return -ENXIO if the page was not mapped, -EINVAL for other errors.
-> +	 * Return -ENXIO if the folio was not mapped, -EINVAL for other errors.
->  	 * If busy or partially completed, return -EAGAIN.
->  	 */
->  	if (cc == UVC_CC_OK)
-> @@ -277,7 +277,7 @@ int gmap_make_secure(struct gmap *gmap, unsigned long gaddr, void *uvcb)
->  	bool local_drain = false;
->  	spinlock_t *ptelock;
->  	unsigned long uaddr;
-> -	struct page *page;
-> +	struct folio *folio;
->  	pte_t *ptep;
->  	int rc;
->  
-> @@ -306,33 +306,49 @@ int gmap_make_secure(struct gmap *gmap, unsigned long gaddr, void *uvcb)
->  	if (!ptep)
->  		goto out;
->  	if (pte_present(*ptep) && !(pte_val(*ptep) & _PAGE_INVALID) && pte_write(*ptep)) {
-> -		page = pte_page(*ptep);
-> +		folio = page_folio(pte_page(*ptep));
->  		rc = -EAGAIN;
-> -		if (trylock_page(page)) {
-> +
-> +		/* We might get PTE-mapped large folios; split them first. */
-> +		if (folio_test_large(folio)) {
-> +			rc = -E2BIG;
-> +		} else if (folio_trylock(folio)) {
->  			if (should_export_before_import(uvcb, gmap->mm))
-> -				uv_convert_from_secure(page_to_phys(page));
-> -			rc = make_page_secure(page, uvcb);
-> -			unlock_page(page);
-> +				uv_convert_from_secure(folio_to_phys(folio));
-> +			rc = make_folio_secure(folio, uvcb);
-> +			folio_unlock(folio);
->  		}
->  
->  		/*
-> -		 * Once we drop the PTL, the page may get unmapped and
-> +		 * Once we drop the PTL, the folio may get unmapped and
->  		 * freed immediately. We need a temporary reference.
->  		 */
-> -		if (rc == -EAGAIN)
-> -			get_page(page);
-> +		if (rc == -EAGAIN || rc == -E2BIG)
-> +			folio_get(folio);
->  	}
->  	pte_unmap_unlock(ptep, ptelock);
->  out:
->  	mmap_read_unlock(gmap->mm);
->  
-> +	if (rc == -E2BIG) {
-> +		/*
-> +		 * Splitting might fail with -EBUSY due to unexpected folio
-> +		 * references, just like make_folio_secure(). So handle it
-> +		 * ahead of time without the PTL being held.
-> +		 */
-> +		folio_lock(folio);
-> +		rc = split_folio(folio);
-
-if split_folio returns -EAGAIN...
-
-> +		folio_unlock(folio);
-> +		folio_put(folio);
-> +	}
-> +
->  	if (rc == -EAGAIN) {
-
-.. we will not skip this ...
-
->  		/*
->  		 * If we are here because the UVC returned busy or partial
->  		 * completion, this is just a useless check, but it is safe.
->  		 */
-> -		wait_on_page_writeback(page);
-> -		put_page(page);
-> +		folio_wait_writeback(folio);
-> +		folio_put(folio);
-
-.. and we will do one folio_put() too many
-
->  	} else if (rc == -EBUSY) {
->  		/*
->  		 * If we have tried a local drain and the page refcount
-
-are we sure that split_folio() can never return -EAGAIN now and in the
-future too?
-
-maybe just change it to  } else if (...   ?
-
+PiANCj4gT24gNC8xMC8yNCAwMDowNiwgQXZyaSBBbHRtYW4gd3JvdGU6DQo+ID4gQW5kIHRoZSBj
+b21taXQgbG9nIHNheToNCj4gPiBUbyBiZSBleHRyYSBjYXV0aW91cywgbGVhdmUgb3V0IHN1cHBv
+cnQgZm9yDQo+ID4gVUZTSENJMi4wIGFzIHdlbGwsIGFuZCBqdXN0IHJlbW92ZSBzdXBwb3J0IG9m
+IGhvc3QgY29udHJvbGxlcnMgcHJpb3INCj4gPiB0byBVRlMyLjAuDQo+ID4NCj4gPiBJc24ndCB0
+aGF0IGNsZWFyIGVub3VnaD8NCj4gDQo+IEluIHRoZSBkZXNjcmlwdGlvbiBvZiB0aGlzIHBhdGNo
+IEkgc2VlICJsZWF2ZSBvdXQgc3VwcG9ydCBmb3INCj4gVUZTSENJMi4wIGFzIHdlbGwiLiBJIHJl
+YWQgdGhpcyBhcyAibGVhdmUgb3V0IFVGU0hDSSAyLjAgc3VwcG9ydCBmcm9tIHRoZQ0KPiBkcml2
+ZXIiLiBBcHBhcmVudGx5IHlvdSBtZWFudCAibGVhdmUgb3V0IHJlbW92YWwgb2YgVUZTSENJIDIu
+MCBzdXBwb3J0IGZyb20NCj4gdGhpcyBwYXRjaCI/DQpXaWxsIGZpeC4NCg0KVGhhbmtzLA0KQXZy
+aQ0KDQo+IA0KPiBUaGFua3MsDQo+IA0KPiBCYXJ0Lg0KDQo=
 
