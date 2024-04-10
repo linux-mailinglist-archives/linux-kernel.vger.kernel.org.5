@@ -1,163 +1,191 @@
-Return-Path: <linux-kernel+bounces-138846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2479F89FB1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3419C89FB41
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:14:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD8D61F2D6EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:10:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B36CB1F2C198
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:14:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1207516E873;
-	Wed, 10 Apr 2024 15:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF83316E879;
+	Wed, 10 Apr 2024 15:12:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="IAlzCajU"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KRH0rJEh"
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22C4C16DEAF;
-	Wed, 10 Apr 2024 15:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557D516D9D6;
+	Wed, 10 Apr 2024 15:12:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712761823; cv=none; b=EPz2LReKEHdFXxgHMd1EIZ4pZAvOW0VCeGB8jjwLoRZz6ch1Xlj1v9lefei1HQOUUXF0H4SeXGC0hyDtOOSYlIvd/lsO2DeLyoQ9/6hJ7w+QNKuJq5xSBmW+rfBO6WfXoR6UCb2mkgFJeqjXFtQVoAulbViMxup5xRt2gJr4UhU=
+	t=1712761930; cv=none; b=rg7nMqQJFr+E86qzPsRiuKqUevbIqGVmcpovyI2B/w4HJjIcT0skxzXpxtLa15pbvuonEx1i0Ho35qgNIOONxsR4wX+E2oCzZCgaEHIpMgtoQHseyz2Nh2ZYaLcQ+FwGl99X9vHzIN6YBk7d5FIcUr5D4pNNqGxqgCcHhClvEqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712761823; c=relaxed/simple;
-	bh=p5H3Bv4tVGThtwm8JdlNN4AbejaJjK6u1h3NLZF4mMM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=O48IEDTnDT46b6AWuce+3ICeeSpfLvJtxcujMTppYKtoEcIcb56PoFKolYFAijbMgERsb2i4F0VByRV5HFQTjoRqK4J1CiAtrvVzRK10cVQ123pcDy/7BPM6xHqfXkHNjz0ODmnRjlpvfys9R+KjvwLs/cwf9SYACew1xK8vHPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=IAlzCajU; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43AEQNDs007925;
-	Wed, 10 Apr 2024 15:09:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=Zx1bK32W6TAbYPYJEc5GfShqv+HBx8ibIf0/tgpNitQ=;
- b=IAlzCajUNcXtukGVHIZUHI3xOK3sY+G7red86dZpRsBAnyPMK4N2fBBSY94DLoe2OjI+
- yGrfwCOwPk1nh7xmuSYiNPloGiuDVSAa+XJP+7LDuqv1MtoVyU76P9HmZuzWdtUcRaxa
- DjPYoc44tAPbbj2ojG8xQpOg+5M0stboqueD8rRwjNRzm7pPACqxWYEEmrU67vRX+kjE
- 3ccboOQ59Cawkz17pbTR6+5avBqUhZI9aUDLCT1KBLGU7arwyimUjtUAJ45FDFlmgeze
- IxX8gjk+N30oKFCbQdlDPRBogotZ4wpNlVPr1Tjs5GJVlQS5ZFYyZbDAovOLwDJkPcHR 2A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdrh70qka-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 15:09:56 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43AF9t8p012895;
-	Wed, 10 Apr 2024 15:09:55 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdrh70qk3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 15:09:55 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43ADNLFi013550;
-	Wed, 10 Apr 2024 15:09:55 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xbgqtnpna-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 15:09:54 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43AF9nIO47776096
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 10 Apr 2024 15:09:51 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 52D0A20049;
-	Wed, 10 Apr 2024 15:09:49 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 410D220040;
-	Wed, 10 Apr 2024 15:09:49 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 10 Apr 2024 15:09:49 +0000 (GMT)
-Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55669)
-	id D575AE0A83; Wed, 10 Apr 2024 17:09:48 +0200 (CEST)
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc: linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH v2 RESEND 5/5] sched/vtime: do not include <asm/vtime.h> header
-Date: Wed, 10 Apr 2024 17:09:48 +0200
-Message-Id: <f7cd245668b9ae61a55184871aec494ec9199c4a.1712760275.git.agordeev@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <cover.1712760275.git.agordeev@linux.ibm.com>
-References: <cover.1712760275.git.agordeev@linux.ibm.com>
+	s=arc-20240116; t=1712761930; c=relaxed/simple;
+	bh=PnLlpX0dYoTh3H+VJ66VFsqkSeqUQJ+av22z2WeY/Vw=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=Fme7KYhi5BIy5PAI16W+BQuRdHaKwDDCQgkhRC7xut6Cy3H5ASFU/FJbgefyElUhEaLkH8ZioapXVBmHlck+a1GmFNzlJTqn3IiMpeF63/zRYGSgesz6z2ySksZmLGAB6iChXREGM/tmeZ9gVnZH+RAu3Eie+bWamiMe1lEagUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KRH0rJEh; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-78d5e80bc42so325571585a.0;
+        Wed, 10 Apr 2024 08:12:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712761927; x=1713366727; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0buxD5ergyhlwM/bRZhq0kApiLYLTYaqWVCh0lur+7o=;
+        b=KRH0rJEhqlmQ90CUCQF/L7ZUhbfpufi04WSvIQucnf4vb88pn3dKlcgLWUFeky97XP
+         QRIGJ4JMZ4YwK8NRQTSNbC9SQlYRqxONgWhTucdoIc+QurWaaWy1eqLcBC9yR2zbiZ54
+         uXFkBGP1X+bUc9ae90RwpP63Kj/+4pdpKPM5AUWgkufseRq7tf5naZP99BFlAF7bkN+W
+         URsZedJ/fZlEIFYWmIIVXuk1gs+B4XzX1/Kn13IRQne3iDtRG8bIL3neo1JMDLRkhYRz
+         ZKIZB++pQ+DPF5uGEEp/prf/MAIxeUHYB/DswHChaLA0C0F98XmG+ly6CvWLa2nRsikR
+         wfXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712761927; x=1713366727;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=0buxD5ergyhlwM/bRZhq0kApiLYLTYaqWVCh0lur+7o=;
+        b=B4HHI1dMnb6+l+T+0ZBqTxrVZMaAYaAlxDNJ/s44D5SheADHC0/Ua7CqsPE8JidmDF
+         D7otlvPBmgnzREdc5lfBylQ2YdzpW5lgFn25U/ED7hSIfZUQ9yxc3VHlQo5DR1mMR1k+
+         p9GMj7ZA0mCHfUv3uiynzK/bIs6jPd8kAXin4nR08dvl/eNNvMVI2t7KQcIIinsNlSa5
+         gXTsASD+eEQC9fF/5JW5eQ00QYzlBsGeIMqrMt8oRIWNSXp3DDTZ1j5ckItSZuh5tPa8
+         uTY5Zl3Ci4vgYJzDC5N76TB+4nfvIur8qRJNNUdYoSPNWlSetX9pEn+6ZWRdqi+zYWdU
+         YpLw==
+X-Forwarded-Encrypted: i=1; AJvYcCUzfnquCbfq9s+ixeD6AtmwqMdZOocQKcHNibsJmtY+ai7pGzXz+Fnprjhg7uvzKimONFJdH/BXVTq/T09ZZ/bNItHy8GI7qYcrGiJ2dsXbhbIfVpy4V+D2BnsGXnDXIo+7+6Lv
+X-Gm-Message-State: AOJu0YwJTab4H0DcqqkJI7jUEEHdC6nRr9NNU1+LSsAi11IR2N+a8Dls
+	qCod4gTl6A+vgatENAqTt3+zTNedseh+skQUxaQdIiXEjtfFH/M9
+X-Google-Smtp-Source: AGHT+IHJoIt77ZZ/Sf8A2EyQW5gFaUj6YT0Erl2mWhULF1CQepi/9pSvO8uF7i1PtRhlCiuN+Gm9uw==
+X-Received: by 2002:a05:6214:c26:b0:698:f66f:bdf3 with SMTP id a6-20020a0562140c2600b00698f66fbdf3mr2930121qvd.28.1712761927259;
+        Wed, 10 Apr 2024 08:12:07 -0700 (PDT)
+Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
+        by smtp.gmail.com with ESMTPSA id f4-20020ad45584000000b0069937049aadsm5178528qvx.88.2024.04.10.08.12.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 08:12:06 -0700 (PDT)
+Date: Wed, 10 Apr 2024 11:12:06 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Lei Chen <lei.chen@smartx.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Jason Wang <jasowang@redhat.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>
+Cc: Lei Chen <lei.chen@smartx.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+Message-ID: <6616ac464484f_2a98a52941f@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240410042245.2044516-1-lei.chen@smartx.com>
+References: <20240410042245.2044516-1-lei.chen@smartx.com>
+Subject: Re: [PATCH v2] net:tun: limit printing rate when illegal packet
+ received by tun dev
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: PhHAGOebuS-pQnlFIAJNlnbig77rp3LI
-X-Proofpoint-GUID: nIQyHe-A-QkTzBE-rcyPg6MkKyjCAA30
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 mlxlogscore=538 suspectscore=0 phishscore=0 clxscore=1015
- malwarescore=0 bulkscore=0 impostorscore=0 priorityscore=1501 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404100109
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-There is no architecture-specific code or data left
-that generic <linux/vtime.h> needs to know about.
-Thus, avoid the inclusion of <asm/vtime.h> header.
+For a next patch, include the target branch: [PATCH net-next v2]
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Acked-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
----
- arch/powerpc/include/asm/Kbuild | 1 -
- include/asm-generic/vtime.h     | 1 -
- include/linux/vtime.h           | 4 ----
- 3 files changed, 6 deletions(-)
- delete mode 100644 include/asm-generic/vtime.h
+Lei Chen wrote:
+> vhost_worker will call tun call backs to receive packets. If too many
+> illegal packets arrives, tun_do_read will keep dumping packet contents.
+> When console is enabled, it will costs much more cpu time to dump
+> packet and soft lockup will be detected.
+> 
+> net_ratelimit mechanism can be used to limit the dumping rate.
+> 
+> PID: 33036    TASK: ffff949da6f20000  CPU: 23   COMMAND: "vhost-32980"
+>  #0 [fffffe00003fce50] crash_nmi_callback at ffffffff89249253
+>  #1 [fffffe00003fce58] nmi_handle at ffffffff89225fa3
+>  #2 [fffffe00003fceb0] default_do_nmi at ffffffff8922642e
+>  #3 [fffffe00003fced0] do_nmi at ffffffff8922660d
+>  #4 [fffffe00003fcef0] end_repeat_nmi at ffffffff89c01663
+>     [exception RIP: io_serial_in+20]
+>     RIP: ffffffff89792594  RSP: ffffa655314979e8  RFLAGS: 00000002
+>     RAX: ffffffff89792500  RBX: ffffffff8af428a0  RCX: 0000000000000000
+>     RDX: 00000000000003fd  RSI: 0000000000000005  RDI: ffffffff8af428a0
+>     RBP: 0000000000002710   R8: 0000000000000004   R9: 000000000000000f
+>     R10: 0000000000000000  R11: ffffffff8acbf64f  R12: 0000000000000020
+>     R13: ffffffff8acbf698  R14: 0000000000000058  R15: 0000000000000000
+>     ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+>  #5 [ffffa655314979e8] io_serial_in at ffffffff89792594
+>  #6 [ffffa655314979e8] wait_for_xmitr at ffffffff89793470
+>  #7 [ffffa65531497a08] serial8250_console_putchar at ffffffff897934f6
+>  #8 [ffffa65531497a20] uart_console_write at ffffffff8978b605
+>  #9 [ffffa65531497a48] serial8250_console_write at ffffffff89796558
+>  #10 [ffffa65531497ac8] console_unlock at ffffffff89316124
+>  #11 [ffffa65531497b10] vprintk_emit at ffffffff89317c07
+>  #12 [ffffa65531497b68] printk at ffffffff89318306
+>  #13 [ffffa65531497bc8] print_hex_dump at ffffffff89650765
+>  #14 [ffffa65531497ca8] tun_do_read at ffffffffc0b06c27 [tun]
+>  #15 [ffffa65531497d38] tun_recvmsg at ffffffffc0b06e34 [tun]
+>  #16 [ffffa65531497d68] handle_rx at ffffffffc0c5d682 [vhost_net]
+>  #17 [ffffa65531497ed0] vhost_worker at ffffffffc0c644dc [vhost]
+>  #18 [ffffa65531497f10] kthread at ffffffff892d2e72
+>  #19 [ffffa65531497f50] ret_from_fork at ffffffff89c0022f
+> 
+> Signed-off-by: Lei Chen <lei.chen@smartx.com>
 
-diff --git a/arch/powerpc/include/asm/Kbuild b/arch/powerpc/include/asm/Kbuild
-index 61a8d5555cd7..e5fdc336c9b2 100644
---- a/arch/powerpc/include/asm/Kbuild
-+++ b/arch/powerpc/include/asm/Kbuild
-@@ -6,5 +6,4 @@ generic-y += agp.h
- generic-y += kvm_types.h
- generic-y += mcs_spinlock.h
- generic-y += qrwlock.h
--generic-y += vtime.h
- generic-y += early_ioremap.h
-diff --git a/include/asm-generic/vtime.h b/include/asm-generic/vtime.h
-deleted file mode 100644
-index b1a49677fe25..000000000000
---- a/include/asm-generic/vtime.h
-+++ /dev/null
-@@ -1 +0,0 @@
--/* no content, but patch(1) dislikes empty files */
-diff --git a/include/linux/vtime.h b/include/linux/vtime.h
-index 593466ceebed..29dd5b91dd7d 100644
---- a/include/linux/vtime.h
-+++ b/include/linux/vtime.h
-@@ -5,10 +5,6 @@
- #include <linux/context_tracking_state.h>
- #include <linux/sched.h>
- 
--#ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
--#include <asm/vtime.h>
--#endif
--
- /*
-  * Common vtime APIs
-  */
--- 
-2.40.1
+Reviewed-by: Willem de Bruijn <willemb@google.com>
+> 
+> ---
+> Changes from v1:
+> https://lore.kernel.org/all/20240409062407.1952728-1-lei.chen@smartx.com/
+>  1. Use net_ratelimit instead of raw __ratelimit.
+>  2. Use netdev_err instead of pr_err to print more info abort net dev.
+>  3. Adjust git commit message to make git am happy.
+> 
+>  drivers/net/tun.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index 0b3f21cba552..ca9b4bc89de7 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -2125,14 +2125,16 @@ static ssize_t tun_put_user(struct tun_struct *tun,
+>  					    tun_is_little_endian(tun), true,
+>  					    vlan_hlen)) {
+>  			struct skb_shared_info *sinfo = skb_shinfo(skb);
+> -			pr_err("unexpected GSO type: "
+> -			       "0x%x, gso_size %d, hdr_len %d\n",
+> -			       sinfo->gso_type, tun16_to_cpu(tun, gso.gso_size),
+> -			       tun16_to_cpu(tun, gso.hdr_len));
+> -			print_hex_dump(KERN_ERR, "tun: ",
+> -				       DUMP_PREFIX_NONE,
+> -				       16, 1, skb->head,
+> -				       min((int)tun16_to_cpu(tun, gso.hdr_len), 64), true);
+> +
+> +			if (net_ratelimit()) {
+> +				netdev_err(tun->dev, "unexpected GSO type: 0x%x, gso_size %d, hdr_len %d\n",
+> +				       sinfo->gso_type, tun16_to_cpu(tun, gso.gso_size),
+> +				       tun16_to_cpu(tun, gso.hdr_len));
+> +				print_hex_dump(KERN_ERR, "tun: ",
+> +					       DUMP_PREFIX_NONE,
+> +					       16, 1, skb->head,
+> +					       min((int)tun16_to_cpu(tun, gso.hdr_len), 64), true);
+> +			}
+>  			WARN_ON_ONCE(1);
+>  			return -EINVAL;
+>  		}
+> 
+> base-commit: fec50db7033ea478773b159e0e2efb135270e3b7
+> prerequisite-patch-id: 8952e320c0272899e153c953db09446879ed0d87
+> prerequisite-patch-id: 2f1e3234a4ac0bf421df2061505612538f128672
+
+Where does this footer come from? Should not be present.
+
+> -- 
+> 2.44.0
+> 
+
 
 
