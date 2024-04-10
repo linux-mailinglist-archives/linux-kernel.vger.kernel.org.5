@@ -1,115 +1,118 @@
-Return-Path: <linux-kernel+bounces-138544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E466E89F32D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 46E1489F332
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:58:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21CF51C26687
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:58:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78F641C26982
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:58:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57EC915ECE8;
-	Wed, 10 Apr 2024 12:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E86F15EFCB;
+	Wed, 10 Apr 2024 12:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="X42OOBzd";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/OZ8txp7"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iw2pEUtO";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="V7JASDXn"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 264A015B995;
-	Wed, 10 Apr 2024 12:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CEC115B995;
+	Wed, 10 Apr 2024 12:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712753484; cv=none; b=LPNtSc84VpkowrJNfM0FANoJI4SwNpRNr1geM3+dFg8kR6GDDkFYR3HU/GL7QPaWGfnIu8gKUPssrf33THZ8c+29Ludi+tngDQtBA+hCdpYTIpTYHmlFxVWQV5XG5StBYC+K/NYtGyE+/n3eaEItlttV9cvHMdcV4uPKlU3Or6M=
+	t=1712753491; cv=none; b=WGgzaL13acGzADfvkoAWn0xauCPEURexuld0Ozm9+WuBNrzibWcp8McQuvR2ZOobf62P24r3o7SRdw2gYjKNy/gf5NTFFnUzMLX6cRI0ZJu81NA6PgmGAWqOO+DGDSgj7mnZ8IrIhzZgjiRpBEcHyL0NZrSCJc07j9lprsRzvDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712753484; c=relaxed/simple;
-	bh=cM6A+Xk2OG5fISGCj0T0XNaIFkJMvw+kZGGMI+IkR/g=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=UtXQu7g8CrzF/utQsYypoteoZUL+VENnk5uXA4+W7uxpt636w/xGX+AfxQf5IM8FikuyqlNHyV+iJVNwiZGqBS0gZTgr9mU6LB8WnYzl5jtTWkJc2JoYa/OEvifvV5vAhdLC5eRljahMUPv+IFMKQBeMuJZFamS1RHYE20Jowx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=X42OOBzd; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=/OZ8txp7; arc=none smtp.client-ip=193.142.43.55
+	s=arc-20240116; t=1712753491; c=relaxed/simple;
+	bh=LLMGp714NUJtAYoSJJfvg+tAURcKNyM+caOeo+Zjxmg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QNjOoaefTaayF9W1iF/fQLjzadMFe4c9fjf28mlF9GqBopjQmj5t5RDpCnX/MMfBm9HzYbTZmcBcMKe23qcL7rsQHB2qHLdVhByZtY6zVxUuM+hZNCrTrmmWnOCjl3F9k2rg1xKz4jGR8P3k2XLqIZn6F+OHtxdb9kef3eQTOKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iw2pEUtO; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=V7JASDXn; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 10 Apr 2024 12:51:20 -0000
+Date: Wed, 10 Apr 2024 14:51:26 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712753481;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	s=2020; t=1712753488;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DFTEqggYA6/wL0n9G9Dk02hSulCtz93zOGRV+5cK6EU=;
-	b=X42OOBzdvfYzAULqzs1goXO3yHw4HcnNC2mB8Bt+DXfinzTxmn6lLTeyQnPIuizVmd0/Mf
-	WzGPIywWOqB4E4tPxrXZuiKnt3eTGsAfDr1qFONh8QfGGngpcC2+LCeV9nxYic1Q2V0Avt
-	ksuNEcQ76BazSUtbu0NEah4nIA/T+nC+Qpa/DNxBDi2GkaY5+Z9USo75uFwnuVEqasxVHT
-	xzeX36CNHRof/Ph1s1uC8mx3u3CUWJzqqFcsNKLWR14651U86RlQtl5o0/SnGv1HC2LFNi
-	oZjRbPBAhJaBOjaXtAssA0Z3D3aSz24vG0MhmSmZbzVVeJG/CrdzmmZ9DzpYWQ==
+	bh=e4QXXsu71JXQrIDib+0DcdWbOZC0pgoPfrFmZFNP9YI=;
+	b=iw2pEUtOI2eZiBNUtW4AgZjjSQmLZy0yBPIv5T+wXGvsHP/vuXHFfAEk+2JDNji2JuZLsQ
+	Ab9vPegknyD5vGwSW1VGmsRYvrkc6QhlWj4C7ORnw/Hc35OFqr2Nsni17Zdvxtmmt12WSN
+	Cnk7cFq/zsyrE985StGzJ6ugfTxqdCGYaCsj0bO3s+4fmd9+ObbRJAUezu8vuWqrbs4mTF
+	f9+qNqR5q2gKGWAuoUl4QYUsayf4PCjKySbF32oNI0NktBVhyyH/rofwjqVDcPHiipmtF5
+	2nI8U2Si4vQxzDOcWhypE9RX2EYJFsyFh9Jftyq0U5sS76/6Ezesxl38Jjp+3A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712753481;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	s=2020e; t=1712753488;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DFTEqggYA6/wL0n9G9Dk02hSulCtz93zOGRV+5cK6EU=;
-	b=/OZ8txp7s+2Q48Hm1YUqhmi0VoE6yuavOeCdUPLX4Cd0VTsfOI7ODQJjzSD0sljyFKGFgP
-	Q1yQCphIwVf74eBA==
-From: "tip-bot2 for Zhang Rui" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/rapl: Add support for Intel Arrow Lake
-Cc: Zhang Rui <rui.zhang@intel.com>, Ingo Molnar <mingo@kernel.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240410124554.448987-1-rui.zhang@intel.com>
-References: <20240410124554.448987-1-rui.zhang@intel.com>
+	bh=e4QXXsu71JXQrIDib+0DcdWbOZC0pgoPfrFmZFNP9YI=;
+	b=V7JASDXnjHUwWxLVi//k+JlpDl2zSCScJLqjUnDnxSA1Nx3xsauxDrCktOo/z8fugJI5aN
+	t2jNcUrovOpx6uDg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH v3 3/4] perf: Remove perf_swevent_get_recursion_context()
+ from perf_pending_task().
+Message-ID: <20240410125126.X26tR8tM@linutronix.de>
+References: <20240322065208.60456-1-bigeasy@linutronix.de>
+ <20240322065208.60456-4-bigeasy@linutronix.de>
+ <ZhRqSEbyd1rqVwfN@pavilion.home>
+ <20240409062501.h4rA_ck4@linutronix.de>
+ <ZhUaAjhQXN6ahtpS@localhost.localdomain>
+ <20240409105405.TXUU--_W@linutronix.de>
+ <ZhUt8XMndGSwNuwx@localhost.localdomain>
+ <20240409133336.Y4Io-16-@linutronix.de>
+ <ZhZsOvM3uTP6nTnZ@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171275348068.10875.8784047144132819163.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZhZsOvM3uTP6nTnZ@localhost.localdomain>
 
-The following commit has been merged into the perf/core branch of tip:
+On 2024-04-10 12:38:50 [+0200], Frederic Weisbecker wrote:
+> > Anyway, I misunderstood the concept
+> > before. That means we need to keep that counter here and a
+> > migrate_disable() is needed to avoid CPU migration which is sad.
+> 
+> I fear that won't work either. The task is then pinned but another
+> task can come up on that CPU and its software events will be ignored...
 
-Commit-ID:     fb70fe74beaa809e13e7f469b116d54ef7cd19e9
-Gitweb:        https://git.kernel.org/tip/fb70fe74beaa809e13e7f469b116d54ef7cd19e9
-Author:        Zhang Rui <rui.zhang@intel.com>
-AuthorDate:    Wed, 10 Apr 2024 20:45:53 +08:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 10 Apr 2024 14:48:18 +02:00
+oh, right.
 
-perf/x86/rapl: Add support for Intel Arrow Lake
+> Some alternatives:
+> 
+> _ Clear event->pending_work = 0 after perf_sigtrap(), preventing an
+> event in there from adding a new task work. We may miss a signal though...
+> 
+> _ Make the recursion context per task on -RT...
 
-Arrow Lake RAPL support is the same as previous Sky Lake.
-Add Arrow Lake model for RAPL.
+The per-task counter would be indeed the easiest thing to do. But then
+only for task context, right?
 
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20240410124554.448987-1-rui.zhang@intel.com
----
- arch/x86/events/rapl.c | 2 ++
- 1 file changed, 2 insertions(+)
+But why would we miss a signal if we clean event->pending_work late?
+Isn't cleaning late same as clearing in
+perf_swevent_put_recursion_context()?
+If clearing pending_work late works, I would prefer to avoid yet another
+per-task counter if possible.
 
-diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
-index 8ef08b5..00bb6ea 100644
---- a/arch/x86/events/rapl.c
-+++ b/arch/x86/events/rapl.c
-@@ -806,6 +806,8 @@ static const struct x86_cpu_id rapl_model_match[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(RAPTORLAKE_S,	&model_skl),
- 	X86_MATCH_INTEL_FAM6_MODEL(METEORLAKE,		&model_skl),
- 	X86_MATCH_INTEL_FAM6_MODEL(METEORLAKE_L,	&model_skl),
-+	X86_MATCH_INTEL_FAM6_MODEL(ARROWLAKE_H,		&model_skl),
-+	X86_MATCH_INTEL_FAM6_MODEL(ARROWLAKE,		&model_skl),
- 	{},
- };
- MODULE_DEVICE_TABLE(x86cpu, rapl_model_match);
+> > > Thanks.
+
+Sebastian
 
