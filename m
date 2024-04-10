@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-138169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1F2289EDA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:30:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D225089EDA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:30:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F38731C2174C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:30:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D548282BCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:30:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74D7513D8B8;
-	Wed, 10 Apr 2024 08:30:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA1F28472;
+	Wed, 10 Apr 2024 08:30:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="AE8fvlol"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="OgzLBbgp"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4993613D60A;
-	Wed, 10 Apr 2024 08:30:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C60213D605;
+	Wed, 10 Apr 2024 08:30:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712737814; cv=none; b=XGRCkY32U5n2kVdQLAQjYqjBva6Pu8FzH9GaouiJ7O3B5tQID9NEr6FLxtKjgSz/WzG7ekoX3o6Aw9QZCIUG0fNO7/SZJfmZcjhMkIeTpLEEVU55RosfRACAe/8MZ0LAXABubdSKdTTo7tixBc6JgrkD5iJ5XD6G87UjyPuSTxM=
+	t=1712737816; cv=none; b=agYgzqtzCF+3D5EC0EeEh2uieIl/rsSnGYw5/sr3wa1JBzTC1k9FECcEgAP+KAiKQL+jYA7CH+n6dD3al+uVmbS1OsuAnOIIBCNmJU+9r0w9TASp4NWRexD+Ey3DFBEETW5/95Sav2VyUvYnbVWGXXTIifoUUYZpCbkR9d6EUwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712737814; c=relaxed/simple;
-	bh=+nU/7bNYGGkqgDvePENQLG3lijjBSCCDYfWzHR3Q5Qk=;
+	s=arc-20240116; t=1712737816; c=relaxed/simple;
+	bh=DDjimJ60wn8VcBGQiRwLupdMEtQ+UOvMdvJ7mEWJSwQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gJdI3cXL4uoudOVLcCTgiBje69WTom6vXmMH8lQ9Uo9T08H4lbwjvTCmZ3TNqIE4K13v2cBqEv61WoB0ljre7IQfazFK/QyaNa1nwl6OdN8iUCvHz8FIwN58NpEiWCdd/igQDTw0PR/EI/COvkKXlt2pEsHkZcGmMGTkoIeh508=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=AE8fvlol; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version; b=IfKLtkpywnTz6AFDRTw4ttUKPvLSaBG/3dDYdnrrmh+rFyUlLoQqowvT1kHJmeVzIva8KO5yUHuGTO4XkNoK2XVo2nu7AKYTG+oMq7JAmciQE75HaScx4GB6vUkIZjfkSjc4q9y58PvUfeGn1vIVp6QKvG8HXpT9ARP6w2wROu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=OgzLBbgp; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712737811;
-	bh=+nU/7bNYGGkqgDvePENQLG3lijjBSCCDYfWzHR3Q5Qk=;
+	s=mail; t=1712737812;
+	bh=DDjimJ60wn8VcBGQiRwLupdMEtQ+UOvMdvJ7mEWJSwQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AE8fvlolajpaZ0UHcpOutZ5YLh0h2EOsLJfr4dn0DyNGKn7ELAmdA+6n+ZyXcTc3i
-	 TMften1Ff6dqXwhGWuidRTqYol6HEKFpkFa9Oh1mNEK4ATgq3acAQ7yt4eJ+jT/MYW
-	 A0N0FbrCyT8sRBRn7BKulmYi/1uMt79XmdH4MtFx3V7Dag9VcJaaZyH+5xGg+3Utb7
-	 YC3f2yI07bdtfJfXhbw2XTJFdPzxpdMzK11igcGxUZ8cUaGWjEoqWNWceT5eUgdDr+
-	 TWZTy/tF5/ieEgGGK4zaaNVSVldJqVygTGLuAqYE0Dn1hBo8sFZs7cVVmszBrdAOmT
-	 /E1+rV3GBjljw==
+	b=OgzLBbgp3jJviltWg9d7VOkXZa+d+H5tGdI/r03Gb7MDUOSO2dp0902/lIH5n6HZI
+	 fEUmFiBcYMR2Haq5A8EozQ/78OMyld51RsuQdrrk3RsrTPWzVEQiOuDzBQ3moAQzSF
+	 sYrIKshCKWd5Z+UOiwZrX9LHld9WMjiITr+EYdIN8ZcEhUQY9PHJeTOAEgBdG8ExcH
+	 StKK/wB39V+alkABl5b+5S9S27DWaH7lgT8GVus2wH0jcDt9mMm5syAmIqeQGeW5aL
+	 aPKsoqg1b6rCpC98rUJc3CeLXk2tSp+00ExVAoVslvqv8carrv7UlmmTLaNgIZApVZ
+	 A3naNNJ2msdVg==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 73C933781453;
-	Wed, 10 Apr 2024 08:30:10 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B197B37820FA;
+	Wed, 10 Apr 2024 08:30:11 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: linux-mediatek@lists.infradead.org
 Cc: robh@kernel.org,
@@ -64,9 +64,9 @@ Cc: robh@kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	kernel@collabora.com
-Subject: [PATCH 1/3] arm64: dts: mediatek: mt8195: Fix GPU thermal zone name for SVS
-Date: Wed, 10 Apr 2024 10:30:00 +0200
-Message-ID: <20240410083002.1357857-2-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH 2/3] arm64: dts: mediatek: mt8192: Fix GPU thermal zone name for SVS
+Date: Wed, 10 Apr 2024 10:30:01 +0200
+Message-ID: <20240410083002.1357857-3-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240410083002.1357857-1-angelogioacchino.delregno@collabora.com>
 References: <20240410083002.1357857-1-angelogioacchino.delregno@collabora.com>
@@ -81,17 +81,17 @@ Content-Transfer-Encoding: 8bit
 This SoC has two GPU related thermal zones: the primary zone must be
 called "gpu-thermal" for SVS to pick it up.
 
-Fixes: 1e5b6725199f ("arm64: dts: mediatek: mt8195: Add AP domain thermal zones")
+Fixes: c7a728051f4e ("arm64: dts: mediatek: mt8192: Add thermal nodes and thermal zones")
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- arch/arm64/boot/dts/mediatek/mt8195.dtsi | 2 +-
+ arch/arm64/boot/dts/mediatek/mt8192.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-index 30ee39045e7b..d3254ff74953 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-@@ -3877,7 +3877,7 @@ vpu1_crit: trip-crit {
+diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+index f3b0da2399a0..1f0f076272a3 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+@@ -2236,7 +2236,7 @@ vpu1_crit: trip-crit {
  			};
  		};
  
@@ -99,7 +99,7 @@ index 30ee39045e7b..d3254ff74953 100644
 +		gpu-thermal {
  			polling-delay = <1000>;
  			polling-delay-passive = <250>;
- 			thermal-sensors = <&lvts_ap MT8195_AP_GPU0>;
+ 			thermal-sensors = <&lvts_ap MT8192_AP_GPU0>;
 -- 
 2.44.0
 
