@@ -1,117 +1,179 @@
-Return-Path: <linux-kernel+bounces-138946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2BBC89FC68
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:03:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0AB889FF02
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:49:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0A0EB238D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:03:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D47391C22E4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:49:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44922176FB8;
-	Wed, 10 Apr 2024 16:03:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 233FA19DF46;
+	Wed, 10 Apr 2024 17:45:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="GiiVbYIn"
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="SRhvLYbz"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F2F817557F
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:03:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D741836C0;
+	Wed, 10 Apr 2024 17:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712764995; cv=none; b=VxyYbHzzuj6JsFHzsFDvShso/b9gXgJATFsNST9e6kY45thG0dW6kZztccPt+hwOuYTsDl9ny1BPBupW0BIeBi/9Rbih9LzVHieSl7s6pSZtVmJhuHsHCL2EXORGtlmlU4cNQW8jSiYKe11oT4xiuDB/QOxiOyij7fjsKMcwanY=
+	t=1712771106; cv=none; b=okwRsNrwFaVSXFF2eo20i0jl3RltcSlqUiktE7ba7cAFxFKstIWqom+Xw+ylU36IYTHBrdfn2u/Hi4FpLIoRZj5msK0rS/anN3SptkKcmiqnnTvIbrSXGMkr0RWuw7RgLqRLO8PnqU6qAtlLYRRFvKBjT+IuCyA58ebphf0rNtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712764995; c=relaxed/simple;
-	bh=Z2KoNMVIM0fdcqZSkRqHwewpqp01dFwksePmZ9zuE/w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=EYA266INfwze40rIP/f4jccIRBsfIzAA6xr+2H4IvsYvXBg5vmIQjor1MMaW7JZ1Upp2yVHWzekRB7F/xV9QBY8m4jTpB5trh/nCiagHUMyJ1gS083xDYahlw9R7G7zE7hC+vFswD0T4IluLmVDJMuv4Jg/9Xn+RceZaoYS+rag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=GiiVbYIn; arc=none smtp.client-ip=209.85.167.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3c5ed27114bso758281b6e.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:03:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1712764993; x=1713369793; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=QqluekjGgYcc63to1H69mMjnF5MI34zE+Mk4XaesivU=;
-        b=GiiVbYIn2Mm2PrbnE2t/l/EI1zR1ly6xW9pmFKBfARxeHsBoe35SDgBXNjRzVmgxsn
-         oaU/DrRBJElLfKq85gXxauE5ZGri33PR/CtwcwqRGmrd37yd9w9iYpi6w2vt+P/yRkZQ
-         bwf02QPiKOglVBo4VYn3aE0Cfv2GvYBFxdSOxFb6ug2eXbOsIuWfy4eWPs7mQzaAw1GE
-         B5YhuzdIFgqdUBsGaKD02Lt58UYVMgJHRnWq8DPHksjAOGkUcA8n/boNdDaTVclWc4JV
-         jZVMsGdqy9T/3rW2ytrApGeuzRw191Ij2Omo8ca4SEK48Yx3t8tJOdmKhfTGnQBDqFb7
-         ZSFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712764993; x=1713369793;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QqluekjGgYcc63to1H69mMjnF5MI34zE+Mk4XaesivU=;
-        b=YcsxMTHlRQP6lnstLHFVo8ZQcoEbxt4cPR/8f7Vlf+kDMnSdJa7ZEplr8tc/eyVzE8
-         fK+FA0ux1MIGbapf08AwUMhFEClTFfISdxSz6de/R2n5bARh6D1izSNOBZqjjlIZlok5
-         OxCKoEMjBK6G/SGr2DAZ6V443pxpiwx1KTKNLxK+QQL9vkYUVMKc4AffXjOrugEwXD6J
-         SJselAHCCx/Tc8DZ06f/IRYOOwQUqXHU5Hjl1JNQ6FOIdiN6cyxdOlqOFf1CFMNuc3UO
-         LVQ45zeBzsiQwgY9sBWWHxcIZpnleHD+Rf8qt2EoFv4W0PI5ob7TGVw0cLr0u4mDqGJs
-         3tLg==
-X-Forwarded-Encrypted: i=1; AJvYcCWVAZShoj8R25PkhsW2OGQUCWtbAxTQXnUKdlZI3WZJr5Oaj4Kj171MJI+queQugj/0Ds0H4nZz5Wp/vwwmEd9WVVAWFU5QGlsGGPhg
-X-Gm-Message-State: AOJu0YxtJEMGIFrhGmRazp8IO+/rMXXV9Zz3dgpo5tvgFmmL9Od/MG4y
-	LgH1cRwo7L8nN0e/gin7pjZqRcQDi/hTbwFbOgv9GC3IhF9DnauyAm5I0sO/Vs0=
-X-Google-Smtp-Source: AGHT+IHzP8P9A44EU0tio9BUIAfSMKe/XNB5s1q15KBSLlEMuCYnD+nKfQOO6R2Enhdqd8abgspEVQ==
-X-Received: by 2002:a05:6808:1488:b0:3c5:eed7:4cef with SMTP id e8-20020a056808148800b003c5eed74cefmr22560oiw.20.1712764993145;
-        Wed, 10 Apr 2024 09:03:13 -0700 (PDT)
-Received: from [100.64.0.1] ([170.85.8.167])
-        by smtp.gmail.com with ESMTPSA id n1-20020a0568080a0100b003c5eeb1bc64sm1337572oij.1.2024.04.10.09.03.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 09:03:12 -0700 (PDT)
-Message-ID: <23c88f5b-177d-4698-afa8-211a2bf07597@sifive.com>
-Date: Wed, 10 Apr 2024 11:03:11 -0500
+	s=arc-20240116; t=1712771106; c=relaxed/simple;
+	bh=O4fc6NcbFmDtcu5Mpz4hlacgxv2TpLc3B9RGa8Nme0s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fuWcxxuUnjRagF9zPq/ukzDTeNcJhqQfmt1ybzkLLTGvhT31XsQAYz8JX6MnqS3PnnlqJ2VXm7/gcxINBmWJic3XXtzHUH/z/5iDTsinoTfkQn+WuiXohA0PH3kQSToxtBFP7gMk17AlPK7urNEVo24sP35jePESjgkn8E6aCn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=SRhvLYbz reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
+ id bb772444a988b3f5; Wed, 10 Apr 2024 19:45:00 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 31B2666C66F;
+	Wed, 10 Apr 2024 19:45:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1712771100;
+	bh=O4fc6NcbFmDtcu5Mpz4hlacgxv2TpLc3B9RGa8Nme0s=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=SRhvLYbzwUbjbbB+rh71vwG0EtJ9YzgpOngRxzfdN/W2k4R1cTGiSM6Ojd96fiHnk
+	 gAs8MqLt+9dXZ7Q1+YdfFHURbUvmfB6S7PwpOo9TV85i2cZmBqnvwgnevA8sY3CyKP
+	 LWzA018gPOwTB3N6LD4q1VzfPmAoEXqT4fsNQWLTRr6uxkhjYSQQAZh1DDj+3giJkU
+	 jV0+/H4XY5FnYGsOPdKMsfYnIGqUCSOdFwBOwpImUCyd+n8QYXmhr+D8BUKZGNPgiq
+	 rhjF1gOiIfvAwK7PrOs0GFTQh1MXl8qgVSjsYX8lXGNNyO04420Sff0Nh1E0AQX94I
+	 Bzng0OWja8fPA==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Lukasz Luba <lukasz.luba@arm.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject:
+ [PATCH v1 02/16] thermal: gov_bang_bang: Use .trip_crossed() instead of
+ .throttle()
+Date: Wed, 10 Apr 2024 18:04:39 +0200
+Message-ID: <2289003.iZASKD2KPV@kreacher>
+In-Reply-To: <13515747.uLZWGnKmhe@kreacher>
+References: <13515747.uLZWGnKmhe@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: sifive: prci: fix module autoloading
-To: Krzysztof Kozlowski <krzk@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
- linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240410155342.224061-1-krzk@kernel.org>
-Content-Language: en-US
-From: Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <20240410155342.224061-1-krzk@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudehiedguddugecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtohepshhr
+ ihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
 
-On 2024-04-10 10:53 AM, Krzysztof Kozlowski wrote:
-> Add MODULE_DEVICE_TABLE(), so modules could be properly autoloaded
-> based on the alias from of_device_id table.  Clocks are considered core
-> components, so usually they are built-in, however these can be built and
-> used as modules on some generic kernel.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  drivers/clk/sifive/sifive-prci.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/clk/sifive/sifive-prci.c b/drivers/clk/sifive/sifive-prci.c
-> index 25b8e1a80ddc..700a1be9ec47 100644
-> --- a/drivers/clk/sifive/sifive-prci.c
-> +++ b/drivers/clk/sifive/sifive-prci.c
-> @@ -611,6 +611,7 @@ static const struct of_device_id sifive_prci_of_match[] = {
->  	{.compatible = "sifive,fu740-c000-prci", .data = &prci_clk_fu740},
->  	{}
->  };
-> +MODULE_DEVICE_TABLE(of, sifive_prci_of_match);
->  
->  static struct platform_driver sifive_prci_driver = {
->  	.driver = {
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+The Bang-Bang governor really is only concerned about trip point
+crossing, so it can use the new .trip_crossed() callback instead of
+throttle() that is not particularly suitable for it.
+
+Modify it to do so which also takes trip hysteresis into account, so the
+governor does not need to use it directly any more.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/thermal/gov_bang_bang.c |   31 +++++++++++++------------------
+ 1 file changed, 13 insertions(+), 18 deletions(-)
+
+Index: linux-pm/drivers/thermal/gov_bang_bang.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/gov_bang_bang.c
++++ linux-pm/drivers/thermal/gov_bang_bang.c
+@@ -13,8 +13,9 @@
+ 
+ #include "thermal_core.h"
+ 
+-static int thermal_zone_trip_update(struct thermal_zone_device *tz,
+-				    const struct thermal_trip *trip)
++static void thermal_zone_trip_update(struct thermal_zone_device *tz,
++				     const struct thermal_trip *trip,
++				     bool crossed_up)
+ {
+ 	int trip_index = thermal_zone_trip_id(tz, trip);
+ 	struct thermal_instance *instance;
+@@ -43,13 +44,12 @@ static int thermal_zone_trip_update(stru
+ 		}
+ 
+ 		/*
+-		 * enable fan when temperature exceeds trip_temp and disable
+-		 * the fan in case it falls below trip_temp minus hysteresis
++		 * Enable the fan when the trip is crossed on the way up and
++		 * disable it when the trip is crossed on the way down.
+ 		 */
+-		if (instance->target == 0 && tz->temperature >= trip->temperature)
++		if (instance->target == 0 && crossed_up)
+ 			instance->target = 1;
+-		else if (instance->target == 1 &&
+-			 tz->temperature < trip->temperature - trip->hysteresis)
++		else if (instance->target == 1 && !crossed_up)
+ 			instance->target = 0;
+ 
+ 		dev_dbg(&instance->cdev->device, "target=%d\n",
+@@ -59,14 +59,13 @@ static int thermal_zone_trip_update(stru
+ 		instance->cdev->updated = false; /* cdev needs update */
+ 		mutex_unlock(&instance->cdev->lock);
+ 	}
+-
+-	return 0;
+ }
+ 
+ /**
+  * bang_bang_control - controls devices associated with the given zone
+  * @tz: thermal_zone_device
+  * @trip: the trip point
++ * @crossed_up: whether or not the trip has been crossed on the way up
+  *
+  * Regulation Logic: a two point regulation, deliver cooling state depending
+  * on the previous state shown in this diagram:
+@@ -90,26 +89,22 @@ static int thermal_zone_trip_update(stru
+  *     (trip_temp - hyst) so that the fan gets turned off again.
+  *
+  */
+-static int bang_bang_control(struct thermal_zone_device *tz,
+-			     const struct thermal_trip *trip)
++static void bang_bang_control(struct thermal_zone_device *tz,
++			      const struct thermal_trip *trip,
++			      bool crossed_up)
+ {
+ 	struct thermal_instance *instance;
+-	int ret;
+ 
+ 	lockdep_assert_held(&tz->lock);
+ 
+-	ret = thermal_zone_trip_update(tz, trip);
+-	if (ret)
+-		return ret;
++	thermal_zone_trip_update(tz, trip, crossed_up);
+ 
+ 	list_for_each_entry(instance, &tz->thermal_instances, tz_node)
+ 		thermal_cdev_update(instance->cdev);
+-
+-	return 0;
+ }
+ 
+ static struct thermal_governor thermal_gov_bang_bang = {
+ 	.name		= "bang_bang",
+-	.throttle	= bang_bang_control,
++	.trip_crossed	= bang_bang_control,
+ };
+ THERMAL_GOVERNOR_DECLARE(thermal_gov_bang_bang);
+
+
 
 
