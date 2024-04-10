@@ -1,133 +1,168 @@
-Return-Path: <linux-kernel+bounces-137831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D6BC89E818
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:17:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4469589E822
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:26:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61A851C2360D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:17:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEBF02859C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:26:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90C598C09;
-	Wed, 10 Apr 2024 02:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 446238F44;
+	Wed, 10 Apr 2024 02:26:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JSBUiON5"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="pAq+m9yk"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B74120EB
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:17:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E97510E3;
+	Wed, 10 Apr 2024 02:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712715430; cv=none; b=pL7/GnvVnWHC0j422ADSrVM88zGXSMpHy64Fndtk1/U+jQAVoib8CTSBrHAZ/z0Eb5lZ24mfghg8v1O3rp7uX8phf64eMyRfio1//aJohAGBMk7LHJppNwXLPFvT/BQYLzXLZlLpG428vn5+lnLTiGSMwzOxhiyxZxu8PcOUhzQ=
+	t=1712715974; cv=none; b=B6P31dAMTghbiC9UFrJ/uGQ5J/KAO6K5MZ4CQUfvpVTg9wEZVJqCyl7MC8hVighUigs+CnHXfawVJ+Ph9RmRc3bQ9FQQXuMFVt0P8DyhNx9GVlWxzY4WNIOrxAUDZAqaZt4GfLezev18da5cuQKzeD1f0hiWPDrl7s+OQ7z/4lA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712715430; c=relaxed/simple;
-	bh=O6C6n9pybJTJLPJy1c8WzpgKVw+uUnnwKizzYQ7blj4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XBoGfB7QH6+x+G0evRgFs4kUhL1hVyuN8vsNfTmi46RK5GT1UVIqJYXUYEUFVnRrkMzRx0UrJO32hXm6Eh3pBzsSkAz97Ft72J5LPUjozcB9RGDQIpzcW6QQo8eJzQygt6CO+Hz7sfqYvHiHutORmOkv2XSSBDSQxGk0HPv0JNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JSBUiON5; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712715430; x=1744251430;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=O6C6n9pybJTJLPJy1c8WzpgKVw+uUnnwKizzYQ7blj4=;
-  b=JSBUiON5P+HMBeBGx6j8oZByqAqn7X09CG+tkBbUQjNv2iJ32IQaJ3Lf
-   bXBfSsbvGbwhZYZtyfgmpxZY3k+QtRJZAXksI3zzPyKbtJERN/yPw2woN
-   FlrxZDhKZ2U0ks5488x50LpNfWTQMzmzKFknkeoJnic/Jvz6Rolm9fYQx
-   bW/WA4PV+xMDyIPlFIdV1vgDb09N2IVC5gWeD0sa7/m1+hSHx5s6tGVUB
-   hshL4jOMQtCPvPqPREuvEkocEPcMZWtd9HrMV/yeK3LazzdfIZcdD+KP0
-   oRrDnpKHRrQ8OJ6qdZMBkbxN6hAZ45Uaz/XV1Ar5U7dY9NpoD+ENox5Xy
-   w==;
-X-CSE-ConnectionGUID: JNWCY562TVupDYaxbxsa4A==
-X-CSE-MsgGUID: TTkrDxjfQCqYYBjVDUN1KA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8161293"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="8161293"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 19:17:10 -0700
-X-CSE-ConnectionGUID: TXOFrYDjTyiFtmhcOf1iKQ==
-X-CSE-MsgGUID: PGZlSwBjSt+v7vtpIZ8YWA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="24908586"
-Received: from amatsuba-mobl2.amr.corp.intel.com (HELO [10.209.3.203]) ([10.209.3.203])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 19:17:10 -0700
-Message-ID: <19a3c2890b18ce230a9e147c0eeee27caf0c4137.camel@linux.intel.com>
-Subject: Re: [RFC] mm: get_mm_counter() get the total memory usage of the
- process
-From: Tim Chen <tim.c.chen@linux.intel.com>
-To: Chen Taotao <chentt10@chinatelecom.cn>, akpm@linux-foundation.org
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Date: Tue, 09 Apr 2024 19:17:08 -0700
-In-Reply-To: <20240322151139.7417-1-chentt10@chinatelecom.cn>
-References: <20240322151139.7417-1-chentt10@chinatelecom.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+	s=arc-20240116; t=1712715974; c=relaxed/simple;
+	bh=J7vXo8gnzotGaAOZGaEFsf6LKD7BLcr3tjED66ZNRx4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nM5n12/wfQa9oo/flFW/uk2ViVC6GLpf9PHovQiZn+Y7mEzWiyPbS1RqYSQFQp36Ok52qOlrL1IVUkrIToX5aNlRjqwVNxxkfLWuuxGJFqg3FVb010BVhIOxRsxjlY4i9jh49bAsvWvozXSryz3Wh0q3eBieFc7ezgKmIq+SVRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=pAq+m9yk; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1712715645; bh=J7vXo8gnzotGaAOZGaEFsf6LKD7BLcr3tjED66ZNRx4=;
+	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
+	b=pAq+m9ykq3MBG8HAZqb5dhlh+bkT/EAkF76/uquZ0HDh4Lsh/kM8MVI+u0ZZbX9vl
+	 mVNwgt3Bza4HRAYznNQ2l3Rf/mybYp1gjdllrS0BWbrL8NUP/ALM76OKZaIyWY1aPl
+	 NVc0Woczth0IrK95PL/s8qaMFne2NEXykKreSVm4=
+Date: Wed, 10 Apr 2024 04:20:44 +0200
+From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Pavel Machek <pavel@ucw.cz>, phone-devel@vger.kernel.org, 
+	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
+	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org
+Subject: Re: [PATCHv3 1/2] dt-bindings: usb: typec: anx7688: start a binding
+ document
+Message-ID: <ounfv3vgg2esvxk2cxckeqyy52mghiyps2rszh7sf5poryyjzs@ftumsalmthza>
+Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Pavel Machek <pavel@ucw.cz>, phone-devel@vger.kernel.org, 
+	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
+	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org
+X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
+ <https://xff.cz/key.txt>
+References: <ZhPMHdt6r/4D99Zg@duo.ucw.cz>
+ <ab9affc8-de68-4ec9-bdfc-02131191bc3a@linaro.org>
+ <ZhPTTxI4oTF3pgrk@duo.ucw.cz>
+ <e7841ad2-fa3d-442d-804d-51f12e05c234@linaro.org>
+ <e6vvuttix5k5fioy7q44ick5wj6u5gleh7mht36s4zjjcym7vy@bziejyohtc4b>
+ <7976e254-ed1e-406d-870b-1ecdc4b1e23c@linaro.org>
+ <uoo7xltbfx7u6iai7urj3wez7cwotokxt6lwjhff57xbljusqn@fr2xejnrlak7>
+ <1502383c-9caf-4362-8bd6-ed719a304f08@linaro.org>
+ <vbo7bacecuagu4qzrr6tsdh4qlejrv7ia67yylf6ay4u7qnwge@kqj27bun2m7d>
+ <97f2d38d-c863-4c76-91f1-52cd250759d7@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <97f2d38d-c863-4c76-91f1-52cd250759d7@linaro.org>
 
-On Fri, 2024-03-22 at 23:11 +0800, Chen Taotao wrote:
-> Currently, the get_mm_counter() function returns only the value of
-> the process memory counter percpu_counter ->count record, ignoring
-> the memory usage count maintained by each CPU in the
-> percpu_counter->counters array, which leads to an error in obtaining
-> the memory usage count of a process, especially when there are many
-> CPU cores. counts, especially when there are many CPU cores.
->=20
-> It is now possible to have get_mm_counter() get the memory count of a
-> process by adding the memory counts maintained by each cpu, thus getting
-> an accurate memory count of the process.
->=20
-> This patch is an unofficial version that simply fixes the above problem,
-> as I'm not sure if it makes sense to do so.
+On Mon, Apr 08, 2024 at 10:12:30PM GMT, Krzysztof Kozlowski wrote:
+> On 08/04/2024 17:17, Ondřej Jirman wrote:
+> > 
+> > Now for things to not fail during suspend/resume based on PM callbacks
+> > invocation order, anx7688 driver needs to enable this regulator too, as long
+> > as it needs it.
+> 
+> No, the I2C bus driver needs to manage it. Not one individual I2C
+> device. Again, why anx7688 is specific? If you next phone has anx8867,
+> using different driver, you also add there i2c-supply? And if it is
+> nxp,ptn5100 as well?
 
-Summing up the mm counts maintained in every cpu is expensive,
-especially if we are doing the read often.  More so
-when there are a large number of cores on large servers or
-newer CPU with high core counts.
+Yes, that could work, if I2C core would manage this.
 
-For mm counters,the count in fbc->count is good enough we
-don't need to correct fbc->count with the the small counts
-update (< percpu_counter_batch) cached in per cpu counts.
+> > 
+> > I can put bus-supply to I2C controller node, and read it from the ANX7688 driver
+> > I guess, by going up a DT node. Whether that's going to be acceptable, I don't
+> > know. 
+> > 
+> > 
+> > VCONN regulator I don't know where else to put either. It doesn't seem to belong
+> > anywhere. It's not something directly connected to Type-C connector, so
+> > not part of connector bindings, and there's nothing else I can see, other
+> > than anx7688 device which needs it for core functionality.
+> 
+> That sounds like a GPIO, not regulator. anx7688 has GPIOs, right? On
+> Pinephone they go to regulator, but on FooPhone also using anx7688 they
+> go somewhere else, so why this anx7688 assumes this is a regulator?
 
-So do you have a mm count use case where you really need the precise
-count with get_mm_counter?
+CC1/CC2_VCONN control pins are "GPIO" of anx7688, sort of. They have fixed
+purpose of switching external 5V regulator output to one of the CC pins
+on type-c port. I don't care what other purpose with some other firmware
+someone puts to those pins. It's irrelevant to the use case of anx7688
+as a type-c controller/HDMI bridge, which we're describing here.
 
-I do not think we should make the change you suggested.
+VCONN regulator is an actual GPIO controlled regulator on the board, and
+needs to be controlled by the anx7688 driver. So that CC1/CC2_VCONN control
+pins driven by the firmware actually do what they're supposed to do.
 
-Tim
+Not sure why it would be a business of anything else but anx7688 driver
+enabling this regulator, because only this driver knows and cares about this.
+If some other board doesn't have the need to manually enable the regulator, or
+doesn't have the regulator, it can simply be optional.
 
+There are also some other funky supplies in the bindings, that are not connected
+to the chip in any way, but need to be controlled by the driver:
 
->=20
-> Signed-off-by: Chen Taotao <chentt10@chinatelecom.cn>
-> ---
->  include/linux/mm.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index f5a97dec5..5cf6443aa 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2569,7 +2569,7 @@ static inline bool get_user_page_fast_only(unsigned=
- long addr,
->   */
->  static inline unsigned long get_mm_counter(struct mm_struct *mm, int mem=
-ber)
->  {
-> -	return percpu_counter_read_positive(&mm->rss_stat[member]);
-> +	return percpu_counter_sum_positive(&mm->rss_stat[member]);
->  }
-> =20
->  void mm_trace_rss_stat(struct mm_struct *mm, int member);
++  vbus-supply: true
++  vbus-in-supply: true
 
+First one can be on the connector node instead, where the driver can fetch
+it from.
+
+The purpose of the second one is to link the Phone's PMIC's USB power input with
+the type-c controller (anx7688), to make sure the PMIC has information about how
+much power it can draw from external PSU.
+
+The second one can be replaced by rewriting the anx7688 driver so that it
+creates a power supply representing the USB PSU connected to the phone, and by
+linking to anx7688 DT node from x-powers,axp813-usb-power-supply via
+a power-supplies property, which would mean that USB input of the phone is
+supplied by the external USB PSU. PMIC driver can be modified to watch
+the power supply provided by anx7688 driver for information it detected
+via USB-PD and update its input current limit via a standard helper function.
+
+This is how eg. fusb302 works. Not sure if that's any better from the PoV of
+DT bindings, though. Because power-supplies = <&anx7688>; will not look any
+greater in DT bindings, IMO. It will just link the same nodes in the other
+direction.
+
+Anyway, the HW is that there's an external PSU (detected by type c controller)
+and internal USB power input, and they are connected and one has to respect the
+limits of the other. I guess I shouldn't be adding a device node for external PSU,
+since it's not part of the phone. But that's what's trully being linked on
+HW level.
+
+Kind regards,
+	o.
+
+> 
+> > 
+> > ANX7688 chip desing doesn't have integrated VCONN mosfet switches so it always
+> > needs external supply + switches that are controlled by the chip itself. There's
+> > no sensible design where someone would not want this and the driver needs
+> > to get this regulator reference from somewhere. The switches are sort of an
+> > extension of the chip.
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
 
