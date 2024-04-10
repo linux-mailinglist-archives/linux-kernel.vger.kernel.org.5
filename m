@@ -1,164 +1,210 @@
-Return-Path: <linux-kernel+bounces-139039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139040-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 012DC89FDC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:06:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB33C89FDC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:06:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAC2F28BB45
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:06:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A278E28BEC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:06:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648AF17F369;
-	Wed, 10 Apr 2024 17:05:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD3B17BB10;
+	Wed, 10 Apr 2024 17:06:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="HIQl2Kh9"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2068.outbound.protection.outlook.com [40.107.94.68])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jVGeG/Ex"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE67178CC3;
-	Wed, 10 Apr 2024 17:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.68
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712768731; cv=fail; b=bfJtY6a1L0IJSwl4uPOLRkZBgBP8hjFYNPEQZrCcqK2m+YS1EftGSKH/5N6jZNU0ulf6E2Ie2wTVF8uI6YdSC/G2QJORC4xuNmmUeEQBKqdE1TwgEIJivgOngBF6JFTfeIa0VTSnsPK4MU2YUBxfAoB50Vp6sl0SpzfA+cJvgGU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712768731; c=relaxed/simple;
-	bh=PhT86y2dxGOMQhogoKPupnB7FJ7xsTVmreWnQfdJLvU=;
-	h=From:To:CC:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID:Date; b=OLWHp+OWsYCyVz5DvRgnbdqjukXOvUdw4nXwqfL+j7rQiVk0wkCy7S+HavMo4+SxdbZ9tcXjPjWx2vfIybp0/xkAbkazicpuMZ4AyVWHEdTdujglEvPvoUqFIwte3viL4OP88m+GkSFeYZHKS0rKmpwTjcTQWm/ycJjUOm8Jk3s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=HIQl2Kh9; arc=fail smtp.client-ip=40.107.94.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a8k3YLlq4H8N4b5HE7FjFJ0MUTC3QlY5GVR6vKDXZwARwp0+1MuVBDXLeGCAnBtiO4e/r0MG406B+8nIG3355v1P+wM4e1YdNPu/OfN1XVErmd8KCV+N+C3015QYbeQNz/6R4tc/fd94JU7J4YOYooTS5w/oRMih+1QfMS9x46LndcmCmmNX6k4aZh+eeUFBbV4CTA03i0CyXmojZFL+KKv9X2VjDvs4NsTcVzidDL/rjc74+PBt5BwSEIDDRG6OY4inU7V576fdS01K2DRyf/e7umDxJbbbJF4Fp448qkAELVNC4wss2j2cyEiiaJEifU7Mlscp1S+8se00AngRfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7/vXweFLUtkXeVY+WeJ8g4jnamMbwfrG8ROrCo5x2M0=;
- b=WS6I1qcO8uzjbOJ9wJXS6mto8rf+v3ywtzb612L89Ra0W+TGTV3hItE9CWVZ/Vu+k3bj3cgWkqr12axjLHhPxD9oh0UqgOp8G8utWhX3g3TiJAP2o4fvAhh6xoY3azCAd0Gw225OGfXcr4YyLng6cwq852JafDv9fMdVKUxfy86hOxh8bLE7HO6ZZ/xmRNUdQqBLAMnTWccYRvIObTJOblUBIE80/gy36susDdOBtG8rZ29j3LPgOnn/hFItzB+uejhzN4vAvCajHNwrA7bX5ftouWhVCxPD9mC3pO+/6phUSHLXPd+lZSpn2A+D67eJwcqVt8pZKy3pq3ThyGAQgw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7/vXweFLUtkXeVY+WeJ8g4jnamMbwfrG8ROrCo5x2M0=;
- b=HIQl2Kh9U9OYUuxIoakj6JLoyxxNDuWo2ESqirVazx9WW3euL9sViI90Y8deUOQH6VTor87e+GvvmTBNBmKta+BXGq+8ELS8S9rlMXdOa2n/57Bo/LpqAgrIdaySxFPgCaIgy5NRehCLMyNu97Faz6+8hagOz/T98WAeFsgQUhiCCrP7uFHoIECPrYTuVGdoCXpN0rBGOLXwHZMaC188iOQOQ9E1ASFKUFFq73tMWWUVHdM8h33pQVOtIzXM9xdCToeHu66es54gzhnbxgZE/BAupyu2xLEj8zit5N5WTjMTSJ/iU9f8DEY4/s0bFHyrWkZX0oYdowTTZXenjskCzg==
-Received: from BL1PR13CA0026.namprd13.prod.outlook.com (2603:10b6:208:256::31)
- by SA1PR12MB7150.namprd12.prod.outlook.com (2603:10b6:806:2b4::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 10 Apr
- 2024 17:05:23 +0000
-Received: from BL6PEPF0001AB51.namprd04.prod.outlook.com
- (2603:10b6:208:256:cafe::87) by BL1PR13CA0026.outlook.office365.com
- (2603:10b6:208:256::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7495.7 via Frontend
- Transport; Wed, 10 Apr 2024 17:05:23 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- BL6PEPF0001AB51.mail.protection.outlook.com (10.167.242.75) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.22 via Frontend Transport; Wed, 10 Apr 2024 17:05:23 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 10 Apr
- 2024 10:04:53 -0700
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Wed, 10 Apr
- 2024 10:04:52 -0700
-Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12 via Frontend
- Transport; Wed, 10 Apr 2024 10:04:52 -0700
-From: Jon Hunter <jonathanh@nvidia.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	<patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-	<torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-	<linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-	<lkft-triage@lists.linaro.org>, <pavel@denx.de>, <jonathanh@nvidia.com>,
-	<f.fainelli@gmail.com>, <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-	<rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>,
-	<broonie@kernel.org>, <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 6.1 000/138] 6.1.85-rc3 review
-In-Reply-To: <20240409173524.517362803@linuxfoundation.org>
-References: <20240409173524.517362803@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD100178CC3
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:06:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712768789; cv=none; b=Cv4/FRWrHpLErHMU/aC2elmxSxd5BlYX8CtLhtc3ruUp4LSrMGPuqUc+H41k2PAoYxafpoOV2yGtwNd/YTaQItdxCfZMu7rY/sDHVvynjJw1obP3N7OlHRHJmFSarWhq8bpDZKgXSwb+ymL+13JHwot6nb0l8Px8uLfcBFmYBXo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712768789; c=relaxed/simple;
+	bh=3nM8zE8UKeAfNYBPcfNp2tnoOKSVOBu4iheL6OKfX1I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=e1q1lwIYpthzLj6c1go6F6FZJdkAI9wn1VH+XQYB0XomyqmAF5TTlGAKCetAgFokgiag0Kssj4U7kO7lVCCeOIkwC9Hmr+HYfJ8txKxzfQ83f9QM7jA6RRmzUQk4shEt+ZcAYFpiTs9FcnI57/dN1JjJ88DE6Ng/Od1dNAQ3Jgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jVGeG/Ex; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712768786;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=WEqgvwhAAzls4ErH8/osuK7rTIzstVDebZ900Wgu7zY=;
+	b=jVGeG/ExGSyihzPpvYtBcMgz/LXSuap6qzNEhKAjSNUDRGD97O1rFuA0X5n15MmQblQ92x
+	QAkyI4usvhTtNZmSwDUFWanLTubCAZxkuEmmMfh4oZ3neVwl8wMQg+IkPi5z42ilLcbofQ
+	2x3xz3kSkkQUUudYmjHO5HanDTY6rGA=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-157-j-8baX9-P4mDMm9b9Gu24g-1; Wed, 10 Apr 2024 13:06:25 -0400
+X-MC-Unique: j-8baX9-P4mDMm9b9Gu24g-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-69b37bbded3so3545586d6.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:06:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712768785; x=1713373585;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WEqgvwhAAzls4ErH8/osuK7rTIzstVDebZ900Wgu7zY=;
+        b=M+jt9z/gpWqyVY3EOJLrQIUL8J3Yr2bV6PLMdtOcIgKmqlRj+cBXpzKkvNxSTXYyud
+         Dj4kMsZSvt1KbAttKgQDIxlpE2/TjbxzVkgfpUXvqtK3+J5KFs4wCzk7ZsU/WNqBKVvY
+         ECWDykV+nk76d+t+3CxyjZnbEsCEuNZG9h5sphrwil7erIl7yUIymcYg+8NsfI+d4mR+
+         3LedMIqC1lENUxltsnqpd7NzETBSSCQHN4GyDokxyMBmdlqOfrBibjyLAzLIlQWWzFIp
+         RYbaVT48x+H+/scMZ8l3YueK3a/Lx7pYz4BgBxK3bXlqVAoq1TiupRb2wV444xxiSTrp
+         ar4w==
+X-Gm-Message-State: AOJu0YzHRw4netA/4hWYYmzLDECcAABVmJhZNvS2t0xXot/Jbitr6OvB
+	E9sXI7QnVWAl8uh/+CmuqOxYTpehNSI6iTvQy6O+q+VpDuGPXZbqnZgw2ja2ESEoPyrP6RMvhQF
+	PsnJGDMO4fWdmHl8dilqW0qVZ6/uu/IshlfY1JMXSfPcPTy5ZFG3pBeVFQ5Z7WJDSfPiYULGT73
+	Eqq9X8sJw9qrh5tWZlsNG+VJ6j44jaZNXvG5Q07wTALvU=
+X-Received: by 2002:a05:6214:d6a:b0:699:1907:7676 with SMTP id 10-20020a0562140d6a00b0069919077676mr3352862qvs.5.1712768784471;
+        Wed, 10 Apr 2024 10:06:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFRTPN2u1lI3LzFyPnWWbnzQkk1fo+PcFa8nRoXNuHB2BWBkwYg/viSYICcc2wh/uVZXRgS+A==
+X-Received: by 2002:a05:6214:d6a:b0:699:1907:7676 with SMTP id 10-20020a0562140d6a00b0069919077676mr3352794qvs.5.1712768783582;
+        Wed, 10 Apr 2024 10:06:23 -0700 (PDT)
+Received: from x1n.redhat.com (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id dv15-20020ad44eef000000b0069b1dd6f141sm2956574qvb.137.2024.04.10.10.06.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 10:06:23 -0700 (PDT)
+From: Peter Xu <peterx@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: peterx@redhat.com,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Lokesh Gidra <lokeshgidra@google.com>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Alistair Popple <apopple@nvidia.com>
+Subject: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
+Date: Wed, 10 Apr 2024 13:06:21 -0400
+Message-ID: <20240410170621.2011171-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <52ece696-9087-4ccd-a703-e741270cd2e8@rnnvmail201.nvidia.com>
-Date: Wed, 10 Apr 2024 10:04:52 -0700
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB51:EE_|SA1PR12MB7150:EE_
-X-MS-Office365-Filtering-Correlation-Id: b5bcdc27-fbe1-4d29-de4b-08dc59806923
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	j6QAvnM/jvpRLGqEA6ZDE0hI4glbyI892CjXNp6mz5Yyn08x64vkDwbTdxEH/uBQ+pCL1vkj+zqOnZ2XtkiKUCSB237KIdwo0DekB0BVDYfk29+XJAAB+T6wrvuOC/uSPHHzqz+FjantC+USChDg3xc4dXaKfgkfEoBb9v8VlrCa3/8gOsMvFO6NN898wUoMeUxv4UYqBtocueh1R+awNoRL8ZU93omZarjbzG2+WQL6REnPA1nbT2KjDaRYiV2/mxex7td9F7x+stbmWzHy+MfSandxj4SSvnH72lZSfS7Ei0w4lRHPWdoBUARUPM0j6X/f6g750Wijzniaumtd7tn8ZaOzoQO1tfCXp5ZUbqH3a6ybKT8WCtzhXL/0UJ0SKEKy9Uj47NYpDlPAWel7pIXLbFJ/KraBB7tMMIe8+kySo4SHM+Fc81RSlUxIvnhSsjCl3M1ocOsNAs4ryJNH08S2XgQ/S5wuAanxKrMw6mYuDOc9TK7Wwo18fw/xpxrfoZseMs0sIkD1E8qNKNBNYxEEWGC8U8KBcmZ20Fuf/eJvEUfodVJkPE27Dh7q/uCgSeJ7cemuzXPe0LIC35eXoGOLthaijqAmTHekfIfgs81PkFK/JuFKldVO8cXI6t8mUsyB0kmofq5SqqTzuCKGe2GwcCkqC9ofs4Hqlgc8p2soylwLJiqT5lSnjibRNfFIUnqkunArdHb+2D3PqFUj+yueiqaVETVCMqwDlxAG9y9nDWlZYmOOzNVMECxBt797
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(7416005)(82310400014)(36860700004)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 17:05:23.2380
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5bcdc27-fbe1-4d29-de4b-08dc59806923
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BL6PEPF0001AB51.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7150
+Content-Transfer-Encoding: 8bit
 
-On Tue, 09 Apr 2024 19:44:28 +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.85 release.
-> There are 138 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 11 Apr 2024 17:35:00 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.85-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+anon_vma is a tricky object in the context of per-vma lock, because it's
+racy to modify it in that context and mmap lock is needed if it's not
+stable yet.
 
-All tests passing for Tegra ...
+So far there are three places that sanity checks anon_vma for that:
 
-Test results for stable-v6.1:
-    10 builds:	10 pass, 0 fail
-    26 boots:	26 pass, 0 fail
-    102 tests:	102 pass, 0 fail
+  - lock_vma_under_rcu(): this is the major entrance of per-vma lock, where
+    we have taken care of anon memory v.s. potential anon_vma allocations.
 
-Linux version:	6.1.85-rc3-g9b31003bbfa7
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
-                tegra20-ventana, tegra210-p2371-2180,
-                tegra210-p3450-0000, tegra30-cardhu-a04
+  - lock_vma(): even if it looks so generic as an API, it's only used in
+    userfaultfd context to leverage per-vma locks.  It does extra check
+    over MAP_PRIVATE file mappings for the same anon_vma issue.
 
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
+  - vmf_anon_prepare(): it works for private file mapping faults just like
+    what lock_vma() wanted to cover above.  One trivial difference is in
+    some extremely corner case, the fault handler will still allow per-vma
+    fault to happen, like a READ on a privately mapped file.
 
-Jon
+The question is whether that's intended to make it as complicated.  Per my
+question in the thread, it is not intended, and Suren also seems to agree [1].
+
+So the trivial side effect of such patch is:
+
+  - We may do slightly better on the first WRITE of a private file mapping,
+  because we can retry earlier (in lock_vma_under_rcu(), rather than
+  vmf_anon_prepare() later).
+
+  - We may always use mmap lock for the initial READs on a private file
+  mappings, while before this patch it _can_ (only when no WRITE ever
+  happened... but it doesn't make much sense for a MAP_PRIVATE..) do the
+  read fault with per-vma lock.
+
+Then noted that right after any WRITE the anon_vma will be stablized, then
+there will be no difference.  And I believe that should be the majority
+cases too; I also did try to run a program, writting to MAP_PRIVATE file
+memory (that I pre-headed in the page cache) and I can hardly measure a
+difference in performance.
+
+Let's simply ignore all those trivial corner cases and unify the anon_vma
+check from three places into one.  I also didn't check the rest users of
+lock_vma_under_rcu(), where in a !fault context it could even fix something
+that used to race with private file mappings but I didn't check further.
+
+I still left a WARN_ON_ONCE() in vmf_anon_prepare() to double check we're
+all good.
+
+[1] https://lore.kernel.org/r/CAJuCfpGj5xk-NxSwW6Mt8NGZcV9N__8zVPMGXDPAYKMcN9=Oig@mail.gmail.com
+
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Lokesh Gidra <lokeshgidra@google.com>
+Cc: Liam R. Howlett <Liam.Howlett@oracle.com>
+Cc: Alistair Popple <apopple@nvidia.com>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ mm/memory.c      | 10 ++++------
+ mm/userfaultfd.c | 13 ++-----------
+ 2 files changed, 6 insertions(+), 17 deletions(-)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index 78422d1c7381..4e2a9c4d9776 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3219,10 +3219,8 @@ vm_fault_t vmf_anon_prepare(struct vm_fault *vmf)
+ 
+ 	if (likely(vma->anon_vma))
+ 		return 0;
+-	if (vmf->flags & FAULT_FLAG_VMA_LOCK) {
+-		vma_end_read(vma);
+-		return VM_FAULT_RETRY;
+-	}
++	/* We shouldn't try a per-vma fault at all if anon_vma isn't solid */
++	WARN_ON_ONCE(vmf->flags & FAULT_FLAG_VMA_LOCK);
+ 	if (__anon_vma_prepare(vma))
+ 		return VM_FAULT_OOM;
+ 	return 0;
+@@ -5826,9 +5824,9 @@ struct vm_area_struct *lock_vma_under_rcu(struct mm_struct *mm,
+ 	 * find_mergeable_anon_vma uses adjacent vmas which are not locked.
+ 	 * This check must happen after vma_start_read(); otherwise, a
+ 	 * concurrent mremap() with MREMAP_DONTUNMAP could dissociate the VMA
+-	 * from its anon_vma.
++	 * from its anon_vma.  This applies to both anon or private file maps.
+ 	 */
+-	if (unlikely(vma_is_anonymous(vma) && !vma->anon_vma))
++	if (unlikely(!(vma->vm_flags & VM_SHARED) && !vma->anon_vma))
+ 		goto inval_end_read;
+ 
+ 	/* Check since vm_start/vm_end might change before we lock the VMA */
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index f6267afe65d1..61f21da77dcd 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -72,17 +72,8 @@ static struct vm_area_struct *lock_vma(struct mm_struct *mm,
+ 	struct vm_area_struct *vma;
+ 
+ 	vma = lock_vma_under_rcu(mm, address);
+-	if (vma) {
+-		/*
+-		 * lock_vma_under_rcu() only checks anon_vma for private
+-		 * anonymous mappings. But we need to ensure it is assigned in
+-		 * private file-backed vmas as well.
+-		 */
+-		if (!(vma->vm_flags & VM_SHARED) && unlikely(!vma->anon_vma))
+-			vma_end_read(vma);
+-		else
+-			return vma;
+-	}
++	if (vma)
++		return vma;
+ 
+ 	mmap_read_lock(mm);
+ 	vma = find_vma_and_prepare_anon(mm, address);
+-- 
+2.44.0
+
 
