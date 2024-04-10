@@ -1,101 +1,103 @@
-Return-Path: <linux-kernel+bounces-138840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87E9D89FAFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:03:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CB3789FB00
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:05:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 288EC1F231C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:03:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BC501F2B4D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:05:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD80016E86E;
-	Wed, 10 Apr 2024 15:03:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 582AD16D9D6;
+	Wed, 10 Apr 2024 15:04:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K31y8OJr"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lXUuGRA/"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63332AF16;
-	Wed, 10 Apr 2024 15:03:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47E0316D4FC;
+	Wed, 10 Apr 2024 15:04:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712761415; cv=none; b=i8MYKQMCH1RtRzB+SrA5I8wY8EPUwfDTEccd+iYa+Ubb7sOd+BgGqECpkzMHg8ELWMxJCWD2TUdUeLdcrArgaPAp6wyvvl+UhDdjMDPJcydNt+1j07MlwPV/vVwF9BDYaa+LaAUFBtHz8gXE+sxGuoCG0ZPe6bfDBgFi3Xe32Q8=
+	t=1712761492; cv=none; b=LVJ8lRdh5HQJzu0n6hU4Q/M3ccFY0ThOtHO9J5tw0BmGiCeEY8oGN5qWfh9mAu5SmeUQlu2QzUZVx45z7Ykd/v24xY3wcTNAo2MpKrbe+pYFMMArzIUhSeWDCXsWJg7zorH0xrS7nn0Vu56kKoMRJCZDqbcVYgxbZV9ZgZ1xXMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712761415; c=relaxed/simple;
-	bh=iawgCrylgKQ0k8TPg1yh8V+I8IYyrXYjDnLKunNPd0k=;
+	s=arc-20240116; t=1712761492; c=relaxed/simple;
+	bh=606InkRvK/dlHpYD43cGJij0ajX9okU8yUZJCc6teXo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dXuDffIPea4fS7VUau6t9+Rl4jrESoVSmVAPZ+G73KGUrpJ1rJsjlDOkGC8Jozbj+KjHMBzPglvU3ARW3OtbNFaf+Evdh0NdqIB+sli/VknelBDmka0jWTGdYaFQAChJ8OEPilbl9iC7hsB+MPMhXMtGlndRSufTLkq7bwgttSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K31y8OJr; arc=none smtp.client-ip=209.85.210.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=dwEjBX9Ry0h79q8fn/Ti1bPgn4HWrZzG7mSdRI/IqeOJB4Cw6TSyRBL9x2VS0JXGFjnJzh3CIocJMTa+OFW8OmlhdneYyVT64vcukn/6A+SqkrUTt/J5o/CPw1XRylGILU3MlEA8Nqx3iYFo8bAIGGuewtOxZlfuGEfPlpAlxPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lXUuGRA/; arc=none smtp.client-ip=209.85.210.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso3485386b3a.2;
-        Wed, 10 Apr 2024 08:03:33 -0700 (PDT)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ecf3943040so4833626b3a.0;
+        Wed, 10 Apr 2024 08:04:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712761413; x=1713366213; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Q84pyOmktSDtbHVv7AvfbbqPfRUwNQXxhjLV3bogMfI=;
-        b=K31y8OJrqqVSa8/WfHW52RUbg7Y81jov5bppGs81xdYu8K65m1d4yP13sQMWnYX5nT
-         7hfeC8RZOPKxtpWdYYUTrAnwnXvM9/u6ZJWGffbi3MwxGqOHhiCtJxI8Q84BOeyadScO
-         cH4xxk1ycYK57qudf8vP14ZROZXfD71p7bFdUQooCeb3WfEMWNl/wFTNG+zaP0jWQPS3
-         JEihHR54zPhGwacGidCPqzV1+/FdX0IXEHFtfy7c/NDFf6X4NxR2PdRkRLKeydwEmGnM
-         dSMjxareLwmlHwRGOyEAG83pzQHA9HJV5bUlqr3g34sHLdms2hpZfQ8zyHS9EQJqcsdG
-         p++A==
+        d=gmail.com; s=20230601; t=1712761490; x=1713366290; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nFpL+4mlA3tx5oFHifIbD95lvoxumVXpRzVu2uSfsSs=;
+        b=lXUuGRA/EHwG/qL1xHBhLqCKgoeMPiVllXRxaY0pWzhSf1BpXMOw4Npfr3Vz/lq5Rg
+         bNijKcrN82QEq2kfqWdQF15YXGKpoE1SesYJdsgrOnsSLbBWCmkXNQxXP/4bSlPT377O
+         g4GdFSJ49y3v8IoirksrSpv8J+sJNI2vhUU8GPU/k5JM0qvv8sd2v9jx+PONcg+2ln/S
+         7TxRlhZ29OXyXjct1NJxrzUNnyVljGFvMBwGBis7Q6Att+FzyZFZ1jm+b1K9vA5cw0pi
+         Pv7xy8oeogosQ0hH9weYyqBOvAE4Z6Nx5M0w0uGRGFsAucXw7l8kaUBUbr5aep1Bp/1/
+         pKLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712761413; x=1713366213;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q84pyOmktSDtbHVv7AvfbbqPfRUwNQXxhjLV3bogMfI=;
-        b=UlnM17fswjMtBgGorguhLh74FsQ3cva1PhOw6+hwkS4Bd37MKKTxHFf3eLiKYw34n6
-         GNyomRYmOtOZoGtUZmok8f9wYBu+cyKDXyid3wfOeQ2JAvTMJiA2WJGOJn4wqVoM5Bb0
-         f+sSpCtS+f6pv5iPpNpYUAMB4yrG3Wuz4hxnlPHEwWJQuPR/K+Ipu2f6Y/kP39qgm6ne
-         sm7ziXafzlQF4k3vSc+t/qpeZRc8Xy/8DTJLwJrAJi9jSiSbHiuc30ID8h+x6j+LndOD
-         ijniOFX88T9rER//0Ogu2s47/3LN4xijQQm0fnqMeOHrFVjcx3EV+dSqY6ZwKTKqOvXr
-         Orzg==
-X-Forwarded-Encrypted: i=1; AJvYcCUy8TEiKp7rMKmNsFIizOvYvv08HIeqKLoIIKftK7QisAxiobfNaU0IKg0Y5elzqTEBnqXpjeii+xP7dvj8Y6Xc0abBU9As9ch83Pmm
-X-Gm-Message-State: AOJu0YytvAYc85iRROA6m5O0Swwaoq61kOCLSCTUYrf3auwpFBB0Izvv
-	96Y4fm5XTHhXbr4Am8kS7rh6EP6yISa6WcodNQ7Gp0RZ/2/G31/T
-X-Google-Smtp-Source: AGHT+IHL9+G/8yIJZc9Qz+E6DGgZQnuTdVymlz/OcV5N3Ur6iRkLoTQ9WlEwNldhRnitKrbXwjuPAQ==
-X-Received: by 2002:a05:6a20:da9f:b0:1a7:3b7c:3126 with SMTP id iy31-20020a056a20da9f00b001a73b7c3126mr3013153pzb.5.1712761412971;
-        Wed, 10 Apr 2024 08:03:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712761490; x=1713366290;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nFpL+4mlA3tx5oFHifIbD95lvoxumVXpRzVu2uSfsSs=;
+        b=GbSHA7AXBygm1bI7htCiTVOMPe7bDuW2+k3ChJfKScleNaVaty6J83p7KlwJ9gbjuO
+         b+KfNjEOfBzcBqQuStfnoZMPk7OvVUjpXhCQ8xvRupEAoJsuZfNJ3LWRMaRqyGI9GUqA
+         KkmDHJErckaKMdcdGeslbwklIubGlizYFkZlvTlHIFxb6e2MCDSxoF4s7/Xrgm5Vpbkz
+         NLVse3GtJmSo4Bo+Hv3/7ORvuaUm/uI01JurQU5fAnLx1AFwV+f4G7yPmP4l2KeD/SiX
+         jAWtMsviSNdv0fO4ab8TYpwfyHMGzyhScI1x1OmZut9OEjV2EopODDDdzzsn2cFLhDdC
+         XG8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCX7Wq+8b4yfnhHGSGO//w2nGep4/m4cB+JvYCe2EtYY/OXbI+tia/Paq1Vb7f0NUE2zjnkQklLDBBXtROsFX87sFffzyKubmLwnNH+6+sMVhYwnMZG2iuxW1dWC7PiKdYllu+ILIbp2869u3pxZC0Mk6CPE68oCL1SZzoAtw8BnaJixMtP0wqtMQQU=
+X-Gm-Message-State: AOJu0YwJt+Tn16E6I3L7Y62g8ngkehY9G4ctm8/iucOUzBTUb4DRjbSB
+	d1NNPqRGG83lsrZLead9a5ME+tt2JNXWMPAWYNbmxJ4CBULwAVbM
+X-Google-Smtp-Source: AGHT+IFgprUO/jWxcLfYBYXKoWcGjoBPYkdmZChAbWrjLuVEUoTSapZCimoluIMwv3QiUah2F3Y6Gw==
+X-Received: by 2002:a05:6a20:2584:b0:1a9:5136:13ba with SMTP id k4-20020a056a20258400b001a9513613bamr3072919pzd.14.1712761490560;
+        Wed, 10 Apr 2024 08:04:50 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v14-20020a056a00148e00b006ed64f4767asm4105877pfu.112.2024.04.10.08.03.31
+        by smtp.gmail.com with ESMTPSA id 77-20020a630050000000b005f3c5cf33b5sm9936799pga.37.2024.04.10.08.04.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 08:03:32 -0700 (PDT)
+        Wed, 10 Apr 2024 08:04:50 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 10 Apr 2024 08:03:31 -0700
+Date: Wed, 10 Apr 2024 08:04:49 -0700
 From: Guenter Roeck <linux@roeck-us.net>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Jean Delvare <jdelvare@suse.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v2 2/2] hwmon: (pwm-fan) Make use of device properties
-Message-ID: <4d64436c-993d-4f41-821f-faa31d521da7@roeck-us.net>
-References: <20240404191323.3547465-1-andriy.shevchenko@linux.intel.com>
- <20240404191323.3547465-3-andriy.shevchenko@linux.intel.com>
+To: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: Jean Delvare <jdelvare@suse.com>, Radu Sabau <radu.sabau@analog.com>,
+	linux-hwmon@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: repair file entry in ADP1050 HARDWARE
+ MONITOR DRIVER
+Message-ID: <3c601c2d-94d5-419c-bf9f-988596365335@roeck-us.net>
+References: <20240402134203.8297-1-lukas.bulwahn@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240404191323.3547465-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240402134203.8297-1-lukas.bulwahn@gmail.com>
 
-On Thu, Apr 04, 2024 at 10:11:39PM +0300, Andy Shevchenko wrote:
-> Convert the module to be property provider agnostic and allow
-> it to be used on non-OF platforms.
+On Tue, Apr 02, 2024 at 03:42:03PM +0200, Lukas Bulwahn wrote:
+> Commit 4e1008d8aae5 ("dt-bindings: hwmon: pmbus: adp1050: add bindings")
+> adds the ADP1050 HARDWARE MONITOR DRIVER section, but slips in a typo in
+> its file entry.
 > 
-> Add mod_devicetable.h include.
+> Fortunately, ./scripts/get_maintainer.pl --self-test=patterns complains
+> about this broken reference.
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> Remove the typo in ADP1050 HARDWARE MONITOR DRIVER.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
 Applied.
 
