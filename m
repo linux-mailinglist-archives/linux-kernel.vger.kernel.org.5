@@ -1,152 +1,158 @@
-Return-Path: <linux-kernel+bounces-139007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DC3089FD5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:43:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E722489FD5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:44:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56F56283589
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:43:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B585283775
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:44:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC7317B515;
-	Wed, 10 Apr 2024 16:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D73417B506;
+	Wed, 10 Apr 2024 16:44:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BG29tawy"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="IYwTlzuq"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 910B917B4FF;
-	Wed, 10 Apr 2024 16:43:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08BD053361
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:44:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712767413; cv=none; b=At1sucPnPuHX7jWMGTBAPH31ZcXLlFoxVYHkIHkF3Xxe6xTnoVXr0XrX3gA5bcYZdvW4uNtKUk/QTX6Rcgwb6OqDbsdl8WtsbK39wbs3QjwBxbdSxSGqkVpgPjXaZTlSsDOcXmxCV0SnVdoXBJhRI5/NgV7EQ13iAtbeblsP37g=
+	t=1712767483; cv=none; b=S+3qQj/8z0GjYofYAP+Yv41kIefwhYTjXSxexdV7zJ95zXboMETjnXdvHXZ0H6nM9l3+hr1E0j4+QacyjrzORbp8Ui65IOGT1APoBmdFkPOj29qfQifimVXfbi+T9nFu0t5wk61qQ7vK+jvilxmsPNelMKDzEYn3ObkWt9gbj9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712767413; c=relaxed/simple;
-	bh=qP4rwcDDBXWsYnnCO06i7GA685vxVAn/SFCuKVL5ymk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uhV/tfQl2zv25Bc7lAE3nhGFPJCJD9iIX0C66CVhKmiKRoBy+mX9YJL0q1hVQSV4nJ3h57fHiYpuqJS2LOceUl95wzmQ/UpSyrEjl8nqZfPAZnep3PI+3UT7+i1Amgss+gH+cNs7JGUM7oT5QD68cr3ULPf7K/rAHRyHwbP/P2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BG29tawy; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6eddff25e4eso296087b3a.3;
-        Wed, 10 Apr 2024 09:43:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712767410; x=1713372210; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Awh8ecAEWQZ1WcJzJZ+Zpya1KnuzGUc8tEokrA81tso=;
-        b=BG29tawyLg6MJBxfO9YMPP3PN0FOh7+ntNPrIFASsTQkc7Pufpr8pfR6A0viww10Vh
-         +NI5hMGZXCtcpv5a1Blo4EECiq18kTuZ9ohQULSBcup6D8oBP2Yjf4OopqH7DUXuWy75
-         T4ARM7WoC3uKC07YoIhH+Xqc+GUAlNgh31OrdPUsvytjApu6J+aRN6MH9QEYEiMwuNwr
-         7oVPGFytvhViojS3NvtTXrYC70jxSqvhC8DchDaaanvRANIEKCG5sm+mmu9M8ikf0K/t
-         OmOYnzbcllA+WeIFTbVO+w47xaTQCjTpgLjubAKxA8aEnVP5zi1tp19R6cDJMk226SDC
-         UEvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712767410; x=1713372210;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Awh8ecAEWQZ1WcJzJZ+Zpya1KnuzGUc8tEokrA81tso=;
-        b=GrDngHgy9xwmZEDd1HK6wFHhVeCSW7rhpAaNLfdmvX5B8ftxXBKaMtSGXEfaDVxXbw
-         0fMfxQ4XBBTi2GBNPCj9ulNBOqITrog/a/GyzcZ+JcSWCHZqJECaknrcYx0mxu6z0uxD
-         0tfHgp9/SmGQGlHy5uMPDdu5r3ntsc/fGwlK4RlzXUJAqtotiar8zFUjMgreUkJVqpUQ
-         sPk7TE8Hx4fWItfQ+BA7CuBpFZ7F+GnHYfvB7V2MHfNLJqa0ThvfIrwwHtQMw5OVzsse
-         /ZK8DashCBNO+TaH/gmwRxpkG0fP4Q2tc1//JrpBRm1F8YSQSHBePyVV3vpSsP4nd35/
-         BNTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX+wPD53SalWl8n1xK72FJi4643ilVrL1yZz40PxNU3qAjUbjQnT0aoivRmS1mgQJSbLFw1jwi46APEOZneVF39WqPb0Eg1VwjP7jn4mwo1qOo9lkmOfDf4cecrYucWX+NxwdfFi8xEuZ+joVXWMnE7V2Tvat/QLd0dIYiPQ+jymxpaROcwV9EfosGTGqly/vvwgrupxMyKHiAqPmz1Mt8fenMa6OjfL6I+G+w=
-X-Gm-Message-State: AOJu0YzPOMMjGopgMMR64oAOx8Ac4sJlm6QZOuqM+dDHAm3TwSfMbY7f
-	Q2GC77fj9jNYDyfslUsupGCs8MoP/R4yJTTIKt7Go1juG7arTX8R
-X-Google-Smtp-Source: AGHT+IGowoxPbo5rXFumvdr4rBUE6oPeTkSAeAkpKiGPVElZ0Zqp0XkSo3uaxirSokB6jzLHky18fg==
-X-Received: by 2002:a05:6a21:3d95:b0:1a7:507a:c9f4 with SMTP id bj21-20020a056a213d9500b001a7507ac9f4mr3348678pzc.30.1712767410142;
-        Wed, 10 Apr 2024 09:43:30 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l9-20020a17090a408900b002a26430fc7bsm1578654pjg.2.2024.04.10.09.43.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 09:43:29 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 10 Apr 2024 09:43:28 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: wim@linux-watchdog.org, robh@kernel.org, krzk+dt@kernel.org,
-	conor+dt@kernel.org, p.zabel@pengutronix.de,
-	geert+renesas@glider.be, magnus.damm@gmail.com,
-	biju.das.jz@bp.renesas.com, linux-watchdog@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH RESEND v8 10/10] dt-bindings: watchdog: renesas,wdt:
- Document RZ/G3S support
-Message-ID: <c6467ae4-c3f7-4a2c-abf9-8428bc068d42@roeck-us.net>
-References: <20240410134044.2138310-1-claudiu.beznea.uj@bp.renesas.com>
- <20240410134044.2138310-11-claudiu.beznea.uj@bp.renesas.com>
+	s=arc-20240116; t=1712767483; c=relaxed/simple;
+	bh=KYqxPLjGchAVH6LOyWzpzPmrZc8Z3MDyX8I+W5aD6iM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eU0pNeF2Fs4mU1nODALCuCqDnHBje5h4YWq+qldA9tacvoiSDLoV6L3RERTEOiD54neqTKEsthzVvx918Ni5eYSk51SS8YQ8dX8NjkHBpypN/dFpgKILAqG6qvee7gRziYUR8RwTUsbp2UxLWBYh+X5yy3rcrDdhsVR7yTZqNDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=IYwTlzuq; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [192.168.7.187] ([71.202.166.45])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 43AGi8px093222
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Wed, 10 Apr 2024 09:44:08 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 43AGi8px093222
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024031401; t=1712767449;
+	bh=Q4i5zF3JlPOe0pe5gL//wwtov+DnMAVQ3hl4Mq5jlV8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=IYwTlzuq0roOPqoLMKkd+OomhmU/KTk9r6Zj3n32btRqfBPDteH5yoz8lYGmJ9dBY
+	 ULAKGNpG/GBUZnPWuNbZO7rRBTtVd9JZTwzHKMMn1AmOwYt9xozUauouiSINvBnRMT
+	 G9yqDio2/pPBEx4kSmJGrpvyYtuoNd/oZaCsC0EX6rXwlIP8Npu/PqPDFn2K10ineC
+	 5oBsRpFTvSybWGnP0AsmD5FTYxZP8AzB5DnhHoUXihsO8aANgkp3sFoQHQL08Fg7Ul
+	 wHHBQKdQfIRVdXgIaqsKn3Qh1SflVWZzl9A4Y9tuVN744aGrpTmW63GqAZbeJtyW1I
+	 imc/18fumqGOQ==
+Message-ID: <ad5bd7f5-3290-4ddc-83bd-41a18fa1beee@zytor.com>
+Date: Wed, 10 Apr 2024 09:44:05 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410134044.2138310-11-claudiu.beznea.uj@bp.renesas.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] x86/entry/64: Skip SYSRET validation tests when
+ FRED is enabled
+To: "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Cc: luto@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, brgerst@gmail.com
+References: <20240403062404.2956240-1-xin@zytor.com>
+ <56cbf1f0-0867-44c2-a9fd-712bf3549cbb@zytor.com>
+Content-Language: en-US
+From: Xin Li <xin@zytor.com>
+Autocrypt: addr=xin@zytor.com; keydata=
+ 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
+ l75w1xInsg==
+In-Reply-To: <56cbf1f0-0867-44c2-a9fd-712bf3549cbb@zytor.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 10, 2024 at 04:40:44PM +0300, Claudiu wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> Document the support for the watchdog IP available on RZ/G3S SoC. The
-> watchdog IP available on RZ/G3S SoC is identical to the one found on
-> RZ/G2L SoC.
-> 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On 4/9/2024 4:35 PM, H. Peter Anvin wrote:
+> Now, for a FRED system the return value is ignored anyway, so the only 
+> benefit of this is skipping the test, correct?
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Yes, and as syscalls are hot paths, we should save some cycles.
 
-> ---
 > 
-> Changes in v8:
-> - none
+> I do observe than what is left of do_fast_syscall_32 is a single 
+> assignment followed by __do_fast_syscall_32(), which could be turned 
+> into a tailcall.
+
+Ah, I didn't realize this is a better way, will change.
+
 > 
-> Changes in v7:
-> - none
+> Another thing that has been added lately is a bunch of tests on the int 
+> $0x80 path. This is a slow path *on legacy hardware*, but on FRED 
+> systems it is the *fast* path for IA32 emulation. These tests are also 
+> totally unnecessary *AND IN FACT, WRONG* on a FRED system, as FRED 
+> distinguishes external interrupts from software interrupts.
 > 
-> Changes in v6:
-> - none
+> Furthermore, under FRED interrupt 0x80 is available as a hardware 
+> interrupt (since there is no reason to block it out.) Therefore, going 
+> and poking the APIC as in int80_is_external() is INCORRECT and possibly 
+> fatal.
 > 
-> Changes in v5:
-> - none
+> Again, the easiest way to fix that is to follow what XenPV does in 
+> int80_is_external(), but there is more unnecessary stuff: 
+> !user_mode(regs) cannot happen on FRED, and the stuff in the 
+> int80_emulation assembly function should, if it is needed at all on any 
+> FRED-compatible hardware (I don't believe so) should be done in the FRED 
+> user mode assembly entry stub.
 > 
-> Changes in v4:
-> - none
+> Thus, it might be better to strip down do_int80_emulation() to a lean 
+> fred_int80_emulation().
+
+Yeah, FRED is fundamentally better with its nature.  Will do!
+
+Thanks!
+     Xin
+
 > 
-> Changes in v3:
-> - re-arranged the tags as my b4 am/shazam placed previously the
->   Ab, Rb tags before the author's Sob
+>      -hpa
 > 
-> Changes in v2:
-> - collected tags
-> - s/G2UL/G2L in patch description
-> 
->  Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml b/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
-> index ffb17add491a..eba454d1680f 100644
-> --- a/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/renesas,wdt.yaml
-> @@ -29,6 +29,7 @@ properties:
->                - renesas,r9a07g043-wdt    # RZ/G2UL and RZ/Five
->                - renesas,r9a07g044-wdt    # RZ/G2{L,LC}
->                - renesas,r9a07g054-wdt    # RZ/V2L
-> +              - renesas,r9a08g045-wdt    # RZ/G3S
->            - const: renesas,rzg2l-wdt
->  
->        - items:
-> -- 
-> 2.39.2
-> 
+> On 4/2/24 23:24, Xin Li (Intel) wrote:
+>> Don't do SYSRET validation tests when FRED is enabled, since ERETU is
+>> the only legit instruction to return to user level.
+>>
+>> Signed-off-by: Xin Li (Intel) <xin@zytor.com>
+>> ---
+>>   arch/x86/entry/common.c | 12 ++++++++++--
+>>   1 file changed, 10 insertions(+), 2 deletions(-)
+
+
 
