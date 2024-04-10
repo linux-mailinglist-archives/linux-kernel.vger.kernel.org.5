@@ -1,51 +1,76 @@
-Return-Path: <linux-kernel+bounces-138970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 084CC89FCC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:25:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 539CA89FCCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:27:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1B9E28521A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:25:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3FEC1F22ACE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:27:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F41817B4ED;
-	Wed, 10 Apr 2024 16:25:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 199F317A93C;
+	Wed, 10 Apr 2024 16:27:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="r+aUGJgf"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ItZiX76g"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECA8617994F;
-	Wed, 10 Apr 2024 16:25:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 695D6178CC3
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:27:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712766316; cv=none; b=UiWdsis9emmW2j1uJn1D9cWA8hd5uD4iTuRyrMSDa5Z0Coggxkp6Rrk9hNzPwrRion16VAZZ8JRSg/XLpbboUiEfNTetvWNxIZeMRblM6Dq5wsPzOaRrv/ZDapU6eLaM9bFlKj539ukoiziv0odgg5EJci1E8tnhOjUHaGi/kw8=
+	t=1712766423; cv=none; b=VSzzqx8NhD6ovalf0eQHN+Dn3vo59mZzjCF2i1Y/n83QQdHKUSJ/k0ug7iyj/SRoNNVbk517qjz6pQzZEcZqR74VBAIJ69OIvIfmE3kXmFKXrhTeT76yeXRmRA/25wdjDMs9FYP/nsLoW87LbUeSghKNqWo2TzXbKveLg7DFJb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712766316; c=relaxed/simple;
-	bh=2gJA4rHfL9dqsK+eNOjwMwvOJeLBWc3X+6nAzu05HEE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ufVyR5YDeVSWWjb2ig3T4Tsa8RLDccw2RMD3cu4JUQ4vhYyACpQINu/bwLV9HhyeHpOsZue5BjZggkIwSWvfjoEtsO3lp6xuw7pRjb27U5Fs6JUykg0eyArDjWhKpWcRdkXlxcOeBpBtETGkzSzQL2kbwfmpwwuWojYLh+pGn8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=r+aUGJgf; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=saGSvct2JZoYZcslUnIdtJoxuWNfItAItxmptfx5t6M=;
-	t=1712766314; x=1713198314; b=r+aUGJgf8xm3u77kE9ptxkegeVph9f2z7n3wpEwnr4yuKVd
-	19aNP1xkwuX3slHGqyVNozyy0fC06js0jnO4unvgUlhcGumJ764UOdCqbbYHQZzMgSAJMw+XnsX2R
-	yxZ4dCRY5TB/grqagu2czxg5MGnqeNWbiS/+N17n0O4m1bUsTf0aUB2q3Gjw+ZnNib2vKU/slnUyi
-	9V62ZswmwtkZmvcPQepZubdEMoa9T9wWNRXsewFNw5hS9hoQfVS/G1l12ZUJ5/t5yzEj8R4h8GCMU
-	X1vu6FfQqQXCq7CQUBPrwHqA8Nuji/RuT1b/tO9zfMebCvO9r/utaB5lOnjOy0Uw==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rual2-0000tR-J1; Wed, 10 Apr 2024 18:25:08 +0200
-Message-ID: <842fde07-d532-4c9e-8b4e-3447509e040e@leemhuis.info>
-Date: Wed, 10 Apr 2024 18:25:08 +0200
+	s=arc-20240116; t=1712766423; c=relaxed/simple;
+	bh=e/GEkf8P0wYBm5uig9U0DNz2a6t7yeVNyXGJwgHgSm4=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=IKv5TtqArRo6pg33vCJ1ScgZz8RYpA0zL7CsmIrt3Z44IVNdM5fA7RlWbj4YbV4xNm+HUJgz4V5zTDZsOYeN+BDNT3rkXI8wzeJmu6LQNsGF4XssFepD3DvPeZBm7I4RMK6hrhYoCoEulHZXxnurl+P+9T+bzJNuSTrrWmegfZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ItZiX76g; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-343b7c015a8so4335894f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712766420; x=1713371220; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lxVQh9SSU/d8FDSoMYuLyU8JV5z5DA+pxMW1PQ1kSMc=;
+        b=ItZiX76gwklJE9GnpuQz8o5CVL4ijJAmQ5TlfiZrkD9hyfXtVUdKkSAt1q3PdXsxl+
+         rVCah2fVODqed5WPnno1XEgpZlUyxuJtkls6Bu6DR7lkojtwePHuN3YtXI6JoSizR2fZ
+         zXRV+WuPNzi6/IYYF4rMJPL2HFM0Z3tZuVApxobEf4Tur5thpJY+NZvJIldlWY5Xujk7
+         FsJNWh62hotvGD8I9D3wsJFjtQgl15hGHqRBbl6jXk9YNrCDG4yh2yZ5YwC0WHrL2ZMg
+         0LIOvkQBVzk970XAqAJXTUkADpQKjrZvcsj9OsTUOgcgFoh4RdgLQ5jB5UhkimaLjJKl
+         2CGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712766420; x=1713371220;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=lxVQh9SSU/d8FDSoMYuLyU8JV5z5DA+pxMW1PQ1kSMc=;
+        b=XFtRxg8noIj/AkRN5N0ZJCubv0OOpMCtA4efQ5hn3iYZdeFO+1+DwZUUhEvwMgwYEh
+         ZE8uz81IvhEiXsK17AqsbttxU3zxtOyz1AJnF4h7dMoLt8J6yjSf9w4+dywymvp94ITa
+         o2B4H2Thhv73CVxkzhdygyEC6fx4Cse0LBQ6gN9lUlK1mmN78pMfkXWGAVGfK4G4dNXg
+         Np0EDrqcYdtCyFc2HwOSJp9Wu2HTHYUjID02ZWTsS0PVlTlmlu++rpFoyPAn1iXAxTjH
+         w7v6fmcEA11mzNDxLkHDnXFFWKFAyExauvlf/xfE5LQ+5MK78+nWes/ggnw8ZxI4t+AE
+         sbmw==
+X-Forwarded-Encrypted: i=1; AJvYcCVdaujkheVNqzxeQdZoKVgECBk98WBfIqK5/1uR1r88RBjLnRyFMk5eneRhk95WfOfKFSIG3+gme9OWLqONJAdqZcYWDFFSJCr11BXo
+X-Gm-Message-State: AOJu0YwW+jFebl33BY7NAUxIFJPQW23F/KsdmENaIgNLfHvdnscAslGa
+	lUqrYNYvnsEN2MYzrpSNDhuwnh1fUjwdb3dJE2Fz2P8TI8NXKw1EtUMOlDokuMQGWt+E66+FfWw
+	/DQ4=
+X-Google-Smtp-Source: AGHT+IHZFc/6pVRJCyCR14e1nWlCRAHaazj0LCJPd45I2qCAAvypTz4MNRFZ/Iepmeg8s6A9JnS5xg==
+X-Received: by 2002:a5d:4e52:0:b0:341:ab37:6a25 with SMTP id r18-20020a5d4e52000000b00341ab376a25mr1992881wrt.43.1712766419581;
+        Wed, 10 Apr 2024 09:26:59 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:760d:c2fa:a66b:fed3? ([2a01:e0a:982:cbb0:760d:c2fa:a66b:fed3])
+        by smtp.gmail.com with ESMTPSA id dx18-20020a0560000e1200b00343d840b3f8sm14039138wrb.33.2024.04.10.09.26.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 09:26:59 -0700 (PDT)
+Message-ID: <068ea75e-9c8a-45b7-8472-995a462c6c55@linaro.org>
+Date: Wed, 10 Apr 2024 18:26:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,143 +78,145 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Call Trace when adding vCPU to guest
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, xiangfeix.ma@intel.com,
- Dongli Zhang <dongli.zhang@oracle.com>,
- Linux kernel regressions list <regressions@lists.linux.dev>
-References: <b4929457-23b8-4ad4-8324-cc1cde5ecece@leemhuis.info>
- <87bk6h49tq.ffs@tglx> <b9e54d33-7f5e-45a5-b215-d3f9daef5a8e@leemhuis.info>
- <871q7d46e7.ffs@tglx>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <871q7d46e7.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 3/4] clk: qcom: dispcc-sm8550: fix DisplayPort clocks
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Konrad Dybcio <konrad.dybcio@somainline.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240408-dispcc-dp-clocks-v1-0-f9e44902c28d@linaro.org>
+ <20240408-dispcc-dp-clocks-v1-3-f9e44902c28d@linaro.org>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <20240408-dispcc-dp-clocks-v1-3-f9e44902c28d@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1712766314;ba62f412;
-X-HE-SMSGID: 1rual2-0000tR-J1
 
-On 10.04.24 16:52, Thomas Gleixner wrote:
-> On Wed, Apr 10 2024 at 15:48, Thorsten Leemhuis wrote:
->> On 10.04.24 15:38, Thomas Gleixner wrote:
->>> On Wed, Apr 10 2024 at 09:34, Linux regression tracking (Thorsten Leemhuis) wrote:
->>>> To quote from https://bugzilla.kernel.org/show_bug.cgi?id=218698
->>> [...]
->>>>> When hot adding a vCPU to the guest, the guest happens Call Trace and reboot.
->>> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=x86/urgent&id=a9025cd1c673a8d6eefc79d911075b8b452eba8f
->>> It'll be in rc4
->> Ahh, splendid, thx for replying! Ciao, Thorsten
->>
->> #regzbot fix: a9025cd1c673a8d6eefc79d911075b8b452eb
+On 08/04/2024 13:47, Dmitry Baryshkov wrote:
+> On SM8550 DisplayPort link clocks use frequency tables inherited from
+> the vendor kernel, it is not applicable in the upstream kernel. Drop
+> frequency tables and use clk_byte2_ops for those clocks.
 > 
-> Ooops. No!
-> [...] 
-
-Ha, happens. :-D
-
-> generic_processor_info() was removed during the 6.9 merge window with
-> the topology rework before v6.9-rc1.
+> Fixes: 90114ca11476 ("clk: qcom: add SM8550 DISPCC driver")
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>   drivers/clk/qcom/dispcc-sm8550.c | 20 ++++----------------
+>   1 file changed, 4 insertions(+), 16 deletions(-)
 > 
-> So the guest kernel _cannot_ be v6.9-rc2 at all.
+> diff --git a/drivers/clk/qcom/dispcc-sm8550.c b/drivers/clk/qcom/dispcc-sm8550.c
+> index 3672c73ac11c..38ecea805503 100644
+> --- a/drivers/clk/qcom/dispcc-sm8550.c
+> +++ b/drivers/clk/qcom/dispcc-sm8550.c
+> @@ -345,26 +345,17 @@ static struct clk_rcg2 disp_cc_mdss_dptx0_aux_clk_src = {
+>   	},
+>   };
+>   
+> -static const struct freq_tbl ftbl_disp_cc_mdss_dptx0_link_clk_src[] = {
+> -	F(162000, P_DP0_PHY_PLL_LINK_CLK, 1, 0, 0),
+> -	F(270000, P_DP0_PHY_PLL_LINK_CLK, 1, 0, 0),
+> -	F(540000, P_DP0_PHY_PLL_LINK_CLK, 1, 0, 0),
+> -	F(810000, P_DP0_PHY_PLL_LINK_CLK, 1, 0, 0),
+> -	{ }
+> -};
+> -
+>   static struct clk_rcg2 disp_cc_mdss_dptx0_link_clk_src = {
+>   	.cmd_rcgr = 0x8170,
+>   	.mnd_width = 0,
+>   	.hid_width = 5,
+>   	.parent_map = disp_cc_parent_map_7,
+> -	.freq_tbl = ftbl_disp_cc_mdss_dptx0_link_clk_src,
+>   	.clkr.hw.init = &(struct clk_init_data) {
+>   		.name = "disp_cc_mdss_dptx0_link_clk_src",
+>   		.parent_data = disp_cc_parent_data_7,
+>   		.num_parents = ARRAY_SIZE(disp_cc_parent_data_7),
+>   		.flags = CLK_SET_RATE_PARENT,
+> -		.ops = &clk_rcg2_ops,
+> +		.ops = &clk_byte2_ops,
+>   	},
+>   };
+>   
+> @@ -418,13 +409,12 @@ static struct clk_rcg2 disp_cc_mdss_dptx1_link_clk_src = {
+>   	.mnd_width = 0,
+>   	.hid_width = 5,
+>   	.parent_map = disp_cc_parent_map_3,
+> -	.freq_tbl = ftbl_disp_cc_mdss_dptx0_link_clk_src,
+>   	.clkr.hw.init = &(struct clk_init_data) {
+>   		.name = "disp_cc_mdss_dptx1_link_clk_src",
+>   		.parent_data = disp_cc_parent_data_3,
+>   		.num_parents = ARRAY_SIZE(disp_cc_parent_data_3),
+>   		.flags = CLK_SET_RATE_PARENT,
+> -		.ops = &clk_rcg2_ops,
+> +		.ops = &clk_byte2_ops,
+>   	},
+>   };
+>   
+> @@ -478,13 +468,12 @@ static struct clk_rcg2 disp_cc_mdss_dptx2_link_clk_src = {
+>   	.mnd_width = 0,
+>   	.hid_width = 5,
+>   	.parent_map = disp_cc_parent_map_3,
+> -	.freq_tbl = ftbl_disp_cc_mdss_dptx0_link_clk_src,
+>   	.clkr.hw.init = &(struct clk_init_data) {
+>   		.name = "disp_cc_mdss_dptx2_link_clk_src",
+>   		.parent_data = disp_cc_parent_data_3,
+>   		.num_parents = ARRAY_SIZE(disp_cc_parent_data_3),
+>   		.flags = CLK_SET_RATE_PARENT,
+> -		.ops = &clk_rcg2_ops,
+> +		.ops = &clk_byte2_ops,
+>   	},
+>   };
+>   
+> @@ -538,13 +527,12 @@ static struct clk_rcg2 disp_cc_mdss_dptx3_link_clk_src = {
+>   	.mnd_width = 0,
+>   	.hid_width = 5,
+>   	.parent_map = disp_cc_parent_map_3,
+> -	.freq_tbl = ftbl_disp_cc_mdss_dptx0_link_clk_src,
+>   	.clkr.hw.init = &(struct clk_init_data) {
+>   		.name = "disp_cc_mdss_dptx3_link_clk_src",
+>   		.parent_data = disp_cc_parent_data_3,
+>   		.num_parents = ARRAY_SIZE(disp_cc_parent_data_3),
+>   		.flags = CLK_SET_RATE_PARENT,
+> -		.ops = &clk_rcg2_ops,
+> +		.ops = &clk_byte2_ops,
+>   	},
+>   };
+>   
+> 
 
-Ma, XiangfeiX (the reporter) is CCed and might be able to clarify.
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8550-HDK
 
-Meanwhile Dongli Zhang (now CCed, too) also joined the bug report and
-added this comment:
+Fixes the:
+[   25.428008] msm-dp-display ae90000.displayport-controller: _opp_config_clk_single: failed to set clock rate: -22
 
-"""
-I can reproduce as well. But the callstack is different. It finally
-reaches at topo_set_cpuids().
+Thanks !
 
-/home/zhang/kvm/qemu-8.2.0/build/qemu-system-x86_64 \
--hda disk.qcow2 -m 8G -smp 4,maxcpus=128 -vnc :5 -enable-kvm -cpu host \
--netdev user,id=user0,hostfwd=tcp::5025-:22 \
--device virtio-net-pci,netdev=user0,id=net0,mac=12:14:10:12:14:16,bus=pci.0,addr=0x3 \
--kernel /home/zhang/img/debug/mainline-linux/arch/x86_64/boot/bzImage \
--append "root=/dev/sda3 init=/sbin/init text loglevel=7 console=ttyS0" \
--monitor stdio
-
-(qemu) device_add driver=host-x86_64-cpu,socket-id=0,core-id=4,thread-id=0
-
-
-[   27.060885] BUG: unable to handle page fault for address: ffffffff83a69778
-[   27.061954] #PF: supervisor write access in kernel mode
-[   27.062604] #PF: error_code(0x0003) - permissions violation
-[   27.063286] PGD 40c49067 P4D 40c49067 PUD 40c4a063 PMD 102213063 PTE 8000000040a69021
-[   27.064273] Oops: 0003 [#1] PREEMPT SMP PTI
-[   27.064799] CPU: 2 PID: 39 Comm: kworker/u256:1 Not tainted 6.9.0-rc3 #1
-[   27.065611] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
-[   27.066992] Workqueue: kacpi_hotplug acpi_hotplug_work_fn
-[   27.067669] RIP: 0010:topo_set_cpuids+0x26/0x70
-[   27.068242] Code: 90 90 90 90 48 8b 05 d9 bd da 01 48 85 c0 74 31 89 ff 48 8d 04 b8 89 30 48 8b 05 bd bd da 01 48 85 c0 74 3c 48 8d 04 b8 89 10 <f0> 48 0f ab 3d 79 9e 97 01 f0 48 0f ab 3d 40 03 df 01 c3 cc cc cc
-[   27.070471] RSP: 0018:ffffc3980034bc28 EFLAGS: 00010286
-[   27.071130] RAX: ffffa0bbb6f15160 RBX: 0000000000000004 RCX: 0000000000000040
-[   27.072004] RDX: 0000000000000004 RSI: 0000000000000004 RDI: 0000000000000004
-[   27.072858] RBP: ffffa0ba80d68540 R08: 000000000001d4c0 R09: 0000000000000001
-[   27.073713] R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000004
-[   27.074565] R13: ffffa0ba883b6c10 R14: ffffa0ba809a9040 R15: 0000000000000000
-[   27.075418] FS:  0000000000000000(0000) GS:ffffa0bbb6e80000(0000) knlGS:0000000000000000
-[   27.076424] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   27.077121] CR2: ffffffff83a69778 CR3: 000000010f946006 CR4: 0000000000370ef0
-[   27.077976] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   27.078830] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[   27.079685] Call Trace:
-[   27.080031]  <TASK>
-[   27.080341]  ? __die+0x1f/0x70
-[   27.080755]  ? page_fault_oops+0x17b/0x490
-[   27.081305]  ? search_exception_tables+0x37/0x50
-[   27.081897]  ? exc_page_fault+0xba/0x160
-[   27.082402]  ? asm_exc_page_fault+0x26/0x30
-[   27.082929]  ? topo_set_cpuids+0x26/0x70
-[   27.083432]  topology_hotplug_apic+0x54/0xa0
-[   27.083979]  acpi_map_cpu+0x1c/0x80
-[   27.084437]  acpi_processor_add+0x361/0x630
-[   27.084968]  acpi_bus_attach+0x151/0x230
-[   27.085473]  ? __pfx_acpi_dev_for_one_check+0x10/0x10
-[   27.086091]  device_for_each_child+0x68/0xb0
-[   27.086638]  acpi_dev_for_each_child+0x37/0x60
-[   27.087197]  ? __pfx_acpi_bus_attach+0x10/0x10
-[   27.087757]  acpi_bus_attach+0x89/0x230
-[   27.088251]  acpi_bus_scan+0x77/0x1f0
-[   27.088753]  acpi_scan_rescan_bus+0x3c/0x70
-[   27.089300]  acpi_device_hotplug+0x3a3/0x480
-[   27.089840]  acpi_hotplug_work_fn+0x19/0x30
-[   27.090369]  process_one_work+0x14c/0x360
-[   27.090880]  worker_thread+0x2c5/0x3d0
-[   27.091387]  ? __pfx_worker_thread+0x10/0x10
-[   27.091941]  kthread+0xd3/0x100
-[   27.092361]  ? __pfx_kthread+0x10/0x10
-[   27.092843]  ret_from_fork+0x2f/0x50
-[   27.093309]  ? __pfx_kthread+0x10/0x10
-[   27.093788]  ret_from_fork_asm+0x1a/0x30
-[   27.094293]  </TASK>
-[   27.094601] Modules linked in:
-[   27.095007] CR2: ffffffff83a69778
-[   27.095444] ---[ end trace 0000000000000000 ]---
-[   27.096018] RIP: 0010:topo_set_cpuids+0x26/0x70
-[   27.096590] Code: 90 90 90 90 48 8b 05 d9 bd da 01 48 85 c0 74 31 89 ff 48 8d 04 b8 89 30 48 8b 05 bd bd da 01 48 85 c0 74 3c 48 8d 04 b8 89 10 <f0> 48 0f ab 3d 79 9e 97 01 f0 48 0f ab 3d 40 03 df 01 c3 cc cc cc
-[   27.098808] RSP: 0018:ffffc3980034bc28 EFLAGS: 00010286
-[   27.099452] RAX: ffffa0bbb6f15160 RBX: 0000000000000004 RCX: 0000000000000040
-[   27.100305] RDX: 0000000000000004 RSI: 0000000000000004 RDI: 0000000000000004
-[   27.101153] RBP: ffffa0ba80d68540 R08: 000000000001d4c0 R09: 0000000000000001
-[   27.102141] R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000004
-[   27.102995] R13: ffffa0ba883b6c10 R14: ffffa0ba809a9040 R15: 0000000000000000
-[   27.103851] FS:  0000000000000000(0000) GS:ffffa0bbb6e80000(0000) knlGS:0000000000000000
-[   27.104857] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   27.105559] CR2: ffffffff83a69778 CR3: 000000010f946006 CR4: 0000000000370ef0
-[   27.106411] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[   27.107264] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-----------------------
-
-I am not able to reproduce with the below:
-
-x86/topology: Don't update cpu_possible_map in topo_set_cpuids()
-https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=x86/urgent&id=a9025cd1c673a8d6eefc79d911075b8b452eba8f
-"""
-
-Ciao, Thorsten (who hopes that people will continue on the list now,
-as playing man-in-the middle is tedious)
+Neil
 
