@@ -1,144 +1,161 @@
-Return-Path: <linux-kernel+bounces-138190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D06789EDE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:45:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8675589EDFE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:48:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EF261C20F9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:45:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B7CE71C20D92
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:48:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7C31552F2;
-	Wed, 10 Apr 2024 08:44:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F12154C0A;
+	Wed, 10 Apr 2024 08:48:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fB0n+DJw"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mZ3Kc7cz"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA21154C15
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:44:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B75C513D274;
+	Wed, 10 Apr 2024 08:48:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712738649; cv=none; b=OeOHakt7iQUvfblwB/Ex37fqJYIBTpoeuAS26D+GRquOn7cDPkV7uDpXL7gi5iO+sL3RrvDWazidUWZW6fALZ4zrhBsqq9PcdeCvpBUGULkjar80M6RryN9rc7SZwigDE6b3NMGhPP0l9h0b6rtifKOxd1PwuQQMhdu4xFgt1vc=
+	t=1712738912; cv=none; b=XsLE082xazRZvzaYJzg3Bi76xQ2f0pRb2P6xmTDP5gTLwbyDOFtGTmXYnAY6sAf8I8j/JmsIB2RyUVEzWILywGCseYIaDCYJdNjX/t6wjpJX4xuUtMG+CUdVD1M310+2OhICTjRZ/MtUuys8NxqQMhyadqpVVaIJDkyiT7gVSWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712738649; c=relaxed/simple;
-	bh=pZU/9L9pIBcm+gJ2VeSziov6XOhPFwUwPxGpBchtOaw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dmv+owItorK+/bCWX6G2aGW2aJtl325NpJOZ7FuCZxGaeTV6lKQRWQ6V9T+Z5IhSqKiAMYZ0Sw47m1bnznHzporBV9bwAEze9diNOw2pxtC4sWWnIYhJT3LloJsZN9+5Ed5MTPm38xJ+vFVI8BjMLWI4xKB7BuvOxBXC3elGnow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fB0n+DJw; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712738646;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R/8u8RiACrjH0Ov6QIh5KlQeJMTBnHt53gJzaMO3RSU=;
-	b=fB0n+DJwJ8hbRNIKgHxGASCRnAqB7x1S2fkZhhzhFW17NP8I/vysXWc55fzTV1rGP4djDU
-	7mgj8xm3PFzeHtq3A02LUnpm6xGp4ED2/uWL/okf7bKozd1yiqAiOId9wxA+z61lXcFwwT
-	iZb/wCUwA9nr1CXx1RPxZ3saR8+IgnE=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-670-aH8WnQUyOQu-_p1o0tHZ5w-1; Wed, 10 Apr 2024 04:44:00 -0400
-X-MC-Unique: aH8WnQUyOQu-_p1o0tHZ5w-1
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1e50208ebe6so716845ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 01:43:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712738639; x=1713343439;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R/8u8RiACrjH0Ov6QIh5KlQeJMTBnHt53gJzaMO3RSU=;
-        b=ogk2zGyGnPfr8jclQW7223HOMXyXPZQmJ+z3DT926+5FoQCsDlbtxhP/Izl9VekyLz
-         pXGUzfzRmVx51cp9ulKqFVGzQ/5HggAGtwV6tqfqJctflO0EGTDs389VlJgKaDTd75CZ
-         KKMPXY/h8esxPTqPCEDeA7s1cjFgOKYq0FKoEN1T1o77andpSrT9TYDDvq8rFw0ae6NO
-         C4sgwRkVFue/GmG8Z4pt3xugy64mfQqurSPIRsyzuNyKTBVg06OPtV5/0Zm2aG8iAl14
-         8jJ8tirwZuOlF15fEWDXSJG/Zo2Iet/N5LutYEbAIPgbrJiiDuT7VssnojY+6iJooEZe
-         APTA==
-X-Forwarded-Encrypted: i=1; AJvYcCWZXPTJ+hHyHCcqjBwLYavWGYM7wemM/8z3L0VqImGVtu/Ro2InjulzRRgbrP2FPDIrkg2mCXWpEAQnMpvCGBrzsaqxsoOoduQxyTyo
-X-Gm-Message-State: AOJu0YwNbssBlemO5nYYQHGNC00taWrAaTsHlqEwJZzuffwqPj1KbaLE
-	OC9mZVjLoU2+U+YyZx5ziHR7yeALLV4FU16swziQcIpoq/d9ipCC4DNKAfZFX4OpgvVzs2yjwwB
-	NQ1lRlUzBr+bd1ygnC64Z4+JibhaJ82V67KjaBjZXOGVHMVUivhTo8SsmjrhLMg==
-X-Received: by 2002:a05:6a20:12c4:b0:1a8:2d22:2025 with SMTP id v4-20020a056a2012c400b001a82d222025mr2338666pzg.0.1712738638915;
-        Wed, 10 Apr 2024 01:43:58 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHwC+8hP4eRdQdzrRF5bUoyS6m0uCyKGnyeK7ZzH2kCnq17IDQmsibqG2jjTB0pS4pE6MLXUA==
-X-Received: by 2002:a05:6a20:12c4:b0:1a8:2d22:2025 with SMTP id v4-20020a056a2012c400b001a82d222025mr2338643pzg.0.1712738638521;
-        Wed, 10 Apr 2024 01:43:58 -0700 (PDT)
-Received: from [10.66.61.39] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id d8-20020a170902cec800b001e41e968a61sm5696540plg.223.2024.04.10.01.43.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 01:43:58 -0700 (PDT)
-Message-ID: <25764b88-d1a5-4b9f-b2a1-2923f1adb979@redhat.com>
-Date: Wed, 10 Apr 2024 16:43:53 +0800
+	s=arc-20240116; t=1712738912; c=relaxed/simple;
+	bh=61jPHnCZ/8pf2B+mY3nN/ZOKCq8JfMnl5uS92Vb8dAA=;
+	h=From:To:Cc:Date:Subject:Message-ID:MIME-Version:Content-Type; b=eL8Gx+V2mmWnRozzvefSzncbQZkX9OSmY6GSDUoG6tQ4iNS8FKkHz5TAgz2CXbmeUoQQXEpBo9d+AV6OEzU3nhDOmtz3B2tUsMuQn5Np1Y5jwH4YCpJt8s8JskmjBKAVRLJi7t8EV3FEFlIFh3MoLwWvouP6S2PIDA6gepbx5WI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mZ3Kc7cz; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712738911; x=1744274911;
+  h=from:to:cc:date:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=61jPHnCZ/8pf2B+mY3nN/ZOKCq8JfMnl5uS92Vb8dAA=;
+  b=mZ3Kc7cz1W3LCLHg4AQGkF48tmZDTL6J1cOFOV6YYgl/rGdi27YVZud4
+   5Eoz1Wl5JCRRY47N9v9wduM+J8o6LBuPbf3C8j7hrSe9tkixe6q7vQ1ad
+   sca34h3JPH+mlENUCKujPV3tMCSW8TkmqytwKDfvNFjM1mbLbv73kadA1
+   jvlJfkOzMEhEkLmpM4wOb5xoQd4FLSykacuRIVwWhIhpL1EM/V8yowzPj
+   7FmD75kYE82ypApKaUPdNS+XHskCgn9PGh9UnH69wHHaGWJo2vN9j0zcc
+   evOp3NAyQjDwGjldR36jdhVDUPrHo+uFjtRwTtbqqDapc14c+CRz8SCs3
+   A==;
+X-CSE-ConnectionGUID: eslKSWjRR+qU247JBTo/CA==
+X-CSE-MsgGUID: OV3N/o0gSVCnsqh2yOND8Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7946191"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="7946191"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 01:48:30 -0700
+X-CSE-ConnectionGUID: EcNDN0JxSceH1mlDremgeQ==
+X-CSE-MsgGUID: czqeVPCiQTiKstaCEPtrfA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="51457052"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.29])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 01:48:28 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, PDx86 <platform-driver-x86@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy Shevchenko <andy@kernel.org>
+Date: Wed, 10 Apr 2024 11:43:57 +0300
+Subject: [GIT PULL] platform-drivers-x86 for v6.9-2
+Message-ID: <pdx86-pr-20240410114357-295477719@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/3] arm64: tlb: Fix TLBI RANGE operand
-To: Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Cc: catalin.marinas@arm.com, will@kernel.org, akpm@linux-foundation.org,
- maz@kernel.org, oliver.upton@linux.dev, ryan.roberts@arm.com,
- apopple@nvidia.com, rananta@google.com, mark.rutland@arm.com,
- v-songbaohua@oppo.com, yangyicong@hisilicon.com, yihyu@redhat.com,
- shan.gavin@gmail.com
-References: <20240405035852.1532010-1-gshan@redhat.com>
-Content-Language: en-US
-From: Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <20240405035852.1532010-1-gshan@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Hi Linus,
+
+Here is a platform-drivers-x86 fixes PR for v6.9.
+
+Fixes:
+ - intel/hid: Solve spurious hibernation aborts (power button release)
+ - toshiba_acpi: Ignore 2 keys to avoid log noise during suspend/resume
+ - intel-vbtn: Fix probe by restoring VBDL and VGBS evalutation order
+ - lg-laptop: Fix W=1 %s null argument warning
+
+New HW Support:
+ - acer-wmi: PH18-71 mode button and fan speed sensor
+ - intel/hid: Lunar Lake and Arrow Lake HID IDs
+
+Regards, i.
 
 
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
 
-On 4/5/24 11:58, Gavin Shan wrote:
-> A kernel crash on the destination VM after the live migration was
-> reported by Yihuang Yu. The issue is only reproducible on NVidia's
-> grace-hopper where TLBI RANGE feature is available. The kernel crash
-> is caused by incomplete TLB flush and missed dirty page. For the
-> root cause and analysis, please refer to PATCH[v3 1/3]'s commit log.
-> 
-> Thanks to Marc Zyngier who proposed all the code changes.
-> 
-> PATCH[1] fixes the kernel crash by extending __TLBI_RANGE_NUM() so that
->           the TLBI RANGE on the area with MAX_TLBI_RANGE_PAGES pages can
->           be supported
-> PATCH[2] improves __TLBI_VADDR_RANGE() with masks and FIELD_PREP()
-> PATCH[3] allows TLBI RANGE operation on the area with MAX_TLBI_RANGE_PAGES
->           pages in __flush_tlb_range_nosync()
-> 
-> v2: https://lists.infradead.org/pipermail/linux-arm-kernel/2024-April/917432.html
-> v1: https://lists.infradead.org/pipermail/linux-arm-kernel/2024-April/916972.html
-> 
-> Changelog
-> =========
-> v3:
->    Improve __TLBI_RANGE_NUM() and its comments. Added patches
->    to improve __TLBI_VADDR_RANGE() and __flush_tlb_range_nosync() (Marc)
-> v2:
->    Improve __TLBI_RANGE_NUM()                                     (Marc)
-> 
-> Gavin Shan (3):
->    arm64: tlb: Fix TLBI RANGE operand
->    arm64: tlb: Improve __TLBI_VADDR_RANGE()
->    arm64: tlb: Allow range operation for MAX_TLBI_RANGE_PAGES
-> 
->   arch/arm64/include/asm/tlbflush.h | 53 ++++++++++++++++++-------------
->   1 file changed, 31 insertions(+), 22 deletions(-)
-> 
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
 
-For the series.
+are available in the Git repository at:
 
-Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+  https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v6.9-2
 
--- 
-Shaoqin
+for you to fetch changes up to e71c8481692582c70cdfd0996c20cdcc71e425d3:
 
+  platform/x86: lg-laptop: fix %s null argument warning (2024-04-08 18:32:14 +0300)
+
+----------------------------------------------------------------
+platform-drivers-x86 for v6.9-2
+
+Fixes:
+ - intel/hid: Solve spurious hibernation aborts (power button release)
+ - toshiba_acpi: Ignore 2 keys to avoid log noise during suspend/resume
+ - intel-vbtn: Fix probe by restoring VBDL and VGBS evalutation order
+ - lg-laptop: Fix W=1 %s null argument warning
+
+New HW Support:
+ - acer-wmi: PH18-71 mode button and fan speed sensor
+ - intel/hid: Lunar Lake and Arrow Lake HID IDs
+
+The following is an automated shortlog grouped by driver:
+
+acer-wmi:
+ -  Add support for Acer PH18-71
+
+intel/hid:
+ -  Add Lunar Lake and Arrow Lake support
+ -  Don't wake on 5-button releases
+
+intel-vbtn:
+ -  Update tablet mode switch at end of probe
+ -  Use acpi_has_method to check for switch
+
+lg-laptop:
+ -  fix %s null argument warning
+
+toshiba_acpi:
+ -  Silence logging for some events
+
+----------------------------------------------------------------
+Bernhard Rosenkränzer (1):
+      platform/x86: acer-wmi: Add support for Acer PH18-71
+
+David McFarland (1):
+      platform/x86/intel/hid: Don't wake on 5-button releases
+
+Gergo Koteles (1):
+      platform/x86: lg-laptop: fix %s null argument warning
+
+Gwendal Grignou (2):
+      platform/x86: intel-vbtn: Use acpi_has_method to check for switch
+      platform/x86: intel-vbtn: Update tablet mode switch at end of probe
+
+Hans de Goede (1):
+      platform/x86: toshiba_acpi: Silence logging for some events
+
+Sumeet Pawnikar (1):
+      platform/x86/intel/hid: Add Lunar Lake and Arrow Lake support
+
+ drivers/platform/x86/acer-wmi.c     |  9 +++++++++
+ drivers/platform/x86/intel/hid.c    |  9 ++++++++-
+ drivers/platform/x86/intel/vbtn.c   | 11 ++++-------
+ drivers/platform/x86/lg-laptop.c    |  2 +-
+ drivers/platform/x86/toshiba_acpi.c |  4 +++-
+ 5 files changed, 25 insertions(+), 10 deletions(-)
 
