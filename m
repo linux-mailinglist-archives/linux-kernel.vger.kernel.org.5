@@ -1,264 +1,228 @@
-Return-Path: <linux-kernel+bounces-138477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36B2A89F1E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:19:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E664589F1DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:16:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58FF51C23514
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:19:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C486285DD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:16:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B66E115B14C;
-	Wed, 10 Apr 2024 12:19:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85ED15B54D;
+	Wed, 10 Apr 2024 12:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="gAwdpUNh"
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55AF515B10A;
-	Wed, 10 Apr 2024 12:19:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+G9RV4B"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9376715957F;
+	Wed, 10 Apr 2024 12:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712751546; cv=none; b=daur5z7/d5dCTsCyAW7dYBHYmG9Hl8iYClxJ/v0CBN6v2L+hgQUYvtEI4ug11NFY+ev6/W4bdRlGfZf2PEV4isAm4IbCC24yZbPS45H9h5Vz+ubg/y7ahdOSMke9F5cgqB101VLXHsrgAXKB7tJR4/J9usHDEcOyqlf0dQbuaWA=
+	t=1712751390; cv=none; b=nj71+ZIRUaj0Zz6aX1kTOKWhgSVMM4iC+Fe0WuOSkycpGefrzkn7kjDfuhll1WrG328UnnBeMd/2o0i90cFMaIVOENmdWGEvziZQynQKDqVQuoNXtrRoNK9UV5qbXaf+2fMGO5oM+i9fWTnIVxKRc0d241g4ehc09aPL4eCxErk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712751546; c=relaxed/simple;
-	bh=ciCyitloPJUj9l9pbQATwhGeyRiLDR+ZOvHOcClUbn8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SH6nFJ0suAxt1ZL+PHUAiPrmxDaTIUF6l/A8RA7cNJ5D/+tJJmdALO3keGM3OLcNk1iay6AgyNqhJUgbUp/25XrHkjdHqOm/e31Wuasa2qV7/LJTLOvQmDTO04kul7nXbY4T87FMIPkYi2BK7c1tA5yFrBnAMNQwuyAave3Hyy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=gAwdpUNh; arc=none smtp.client-ip=220.197.31.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=BC4Af
-	LdQra70q2ATsF29iy5NzMY1RVurEWX8+rpgn+c=; b=gAwdpUNhD/e86lpsVcbB8
-	PjWCQbNQFngVTeCBdpg4tiQDOHekgwCIx+PwFLt7qNJwvGYVyvRJRg440/QvyC/N
-	9Kf9kp1Izhu/RND7v6Gvb6ULSavGzw6C5EYACIi/QrEtFmeHGrrQhGoam/n/na31
-	EXBEt1sazrLbjI6bDi1fD8=
-Received: from localhost.localdomain (unknown [193.203.214.57])
-	by gzga-smtp-mta-g1-2 (Coremail) with SMTP id _____wDnF9IGgxZmHGTPAg--.23250S2;
-	Wed, 10 Apr 2024 20:16:07 +0800 (CST)
-From: Peilin He <peilinhe2020@163.com>
-To: kerneljasonxing@gmail.com
-Cc: davem@davemloft.net,
-	dsahern@kernel.org,
-	edumazet@google.com,
-	fan.yu9@zte.com.cn,
-	he.peilin@zte.com.cn,
-	jiang.xuexin@zte.com.cn,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	liu.chun2@zte.com.cn,
-	mhiramat@kernel.org,
-	netdev@vger.kernel.org,
-	qiu.yutan@zte.com.cn,
-	rostedt@goodmis.org,
-	xu.xin16@zte.com.cn,
-	yang.yang29@zte.com.cn,
-	zhang.yunkai@zte.com.cn
-Subject: Re: Re: Subject: [PATCH net-next v4] net/ipv4: add tracepoint for icmp_send
-Date: Wed, 10 Apr 2024 12:16:05 +0000
-Message-Id: <20240410121605.132052-1-peilinhe2020@163.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAL+tcoAcagGKkzJLrgCmFRv52uBbdAN_ufspvmkbG2MaFw2_tQ@mail.gmail.com>
-References: <CAL+tcoAcagGKkzJLrgCmFRv52uBbdAN_ufspvmkbG2MaFw2_tQ@mail.gmail.com>
+	s=arc-20240116; t=1712751390; c=relaxed/simple;
+	bh=uqgIbQjDdQ7mXlLuRp0MGBFFQHK0OHDSrqq0mSqlVPU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qZGekQ+2MB6KFpKG5NNIIcMnNGFEdE9L8QYVnySrTXJYSHZ4819R2dDVPfa/umWbhKGrm5k/cCqJZDOk54JACrE/8Kjz1oUahAGqloDmCdE97KKgEzjQ5YZ5jrGmwLwyPOWtsEPZAqQ87sy0C06nXpvs2yVsmCxbdu/knyc7aVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g+G9RV4B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA30DC433C7;
+	Wed, 10 Apr 2024 12:16:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712751390;
+	bh=uqgIbQjDdQ7mXlLuRp0MGBFFQHK0OHDSrqq0mSqlVPU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=g+G9RV4BO0X3JsN/4qj/fub/YCO1DybeOA5yiCnNbFx3qhkImsTvXTWQ79tkGkp1i
+	 VUYo/Xh+LaQIJ3EyEZ1gfvBdVXQWpImOH3Ks5aDGqrtuu7ZRf959UinfC11+FR7nNy
+	 4M0WFulk4cnWOsQA0YA7SEISW7DLRwmtgHTwDf4pplsY9D5Ikf0fH3zDjT6Jr5Wui1
+	 s8N61TgN8zWUlMmCSoSOF5Xa1dspvlcq51zUskwiRaJ36rsGZ5wf89rT5r8fxFRZpk
+	 xf931uUP91Pl/8O+3CN2NdTNbzb6pEmifUJujQp40Mr7p3mYKFDqrmXin8Na+GBtLB
+	 T6FpY0ioZg8og==
+Date: Wed, 10 Apr 2024 07:16:27 -0500
+From: Rob Herring <robh@kernel.org>
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>,
+	Niklas Cassel <cassel@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Rich Felker <dalias@libc.org>,
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+	Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>,
+	Heiko Stuebner <heiko.stuebner@cherry.de>,
+	Shawn Guo <shawnguo@kernel.org>, Sebastian Reichel <sre@kernel.org>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Arnd Bergmann <arnd@arndb.de>, David Rientjes <rientjes@google.com>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Guo Ren <guoren@kernel.org>, Azeem Shaikh <azeemshaikh38@gmail.com>,
+	Max Filippov <jcmvbkbc@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Manikanta Guntupalli <manikanta.guntupalli@amd.com>,
+	Anup Patel <apatel@ventanamicro.com>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Sergey Shtylyov <s.shtylyov@omp.ru>,
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+	linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-fbdev@vger.kernel.org
+Subject: Re: [RESEND v7 12/37] dt-bindings: pci: pci-sh7751: Add SH7751 PCI
+Message-ID: <20240410121627.GA4069350-robh@kernel.org>
+References: <cover.1712207606.git.ysato@users.sourceforge.jp>
+ <5ab3c5952b49d7998734855e2ec1ee980795a724.1712207606.git.ysato@users.sourceforge.jp>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDnF9IGgxZmHGTPAg--.23250S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3WF1fAr17tF13KFWUKr4Uurg_yoWxXFW8pF
-	yUAFn5Grs7trsrCryxuw4aqF15WrW8uryUKryIqw4IkwnFvrnrt3yvqr1YkFykZrs8Krya
-	v3WYk3s8Cwn8ZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UuKZXUUUUU=
-X-CM-SenderInfo: xshlzxhqkhjiisq6il2tof0z/1tbiZQi8sWXAlEnhJAAAsd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5ab3c5952b49d7998734855e2ec1ee980795a724.1712207606.git.ysato@users.sourceforge.jp>
 
->> From: hepeilin <he.peilin@zte.com.cn>
->>
->> Introduce a tracepoint for icmp_send, which can help users to get more
->> detail information conveniently when icmp abnormal events happen.
->>
->> 1. Giving an usecase example:
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
->=3D=3D=3D=3D=3D
->> When an application experiences packet loss due to an unreachable UDP
->> destination port, the kernel will send an exception message through the
->> icmp_send function. By adding a trace point for icmp_send, developers or
->> system administrators can obtain detailed information about the UDP
->> packet loss, including the type, code, source address, destination addres=
->s,
->> source port, and destination port. This facilitates the trouble-shooting
->> of UDP packet loss issues especially for those network-service
->> applications.
->>
->> 2. Operation Instructions:
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
->=3D=3D
->> Switch to the tracing directory.
->>         cd /sys/kernel/tracing
->> Filter for destination port unreachable.
->>         echo "type=3D=3D3 && code=3D=3D3" > events/icmp/icmp_send/filter
->> Enable trace event.
->>         echo 1 > events/icmp/icmp_send/enable
->>
->> 3. Result View:
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>  udp_client_erro-11370   [002] ...s.12   124.728002:
->>  icmp_send: icmp_send: type=3D3, code=3D3.
->>  From 127.0.0.1:41895 to 127.0.0.1:6666 ulen=3D23
->>  skbaddr=3D00000000589b167a
->>
->> v3->v4:
->> Some fixes according to
->> https://lore.kernel.org/all/CANn89i+EFEr7VHXNdOi59Ba_R1nFKSBJzBzkJFVgCTdX=
->Bx=3DYBg@mail.gmail.com/
->> 1.Add legality check for UDP header in SKB.
->
->I think my understanding based on what Eric depicted differs from you:
->we're supposed to filter out those many invalid cases and only trace
->the valid action of sending a icmp, so where to add a new tracepoint
->is important instead of adding more checks in the tracepoint itself.
->Please refer to what trace_tcp_retransmit_skb() does :)
->
->Thanks,
->Jason
-Okay, thank you for your suggestion. In order to avoid filtering out
-those many invalid cases and only tracing the valid action of sending
-a icmp, the next patch will add udd_fail_no_port trancepoint to the
-include/trace/events/udp.h. This will solve the problem you mentioned
-very well. At this point, only UDP protocol exceptions will be tracked,
-without the need to track them in icmp_send.
+On Thu, Apr 04, 2024 at 02:14:23PM +0900, Yoshinori Sato wrote:
+> Renesas SH7751 PCI Controller json-schema.
+> 
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
+> ---
+>  .../bindings/pci/renesas,sh7751-pci.yaml      | 89 +++++++++++++++++++
+>  1 file changed, 89 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pci/renesas,sh7751-pci.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/renesas,sh7751-pci.yaml b/Documentation/devicetree/bindings/pci/renesas,sh7751-pci.yaml
+> new file mode 100644
+> index 000000000000..115c2bb67339
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/renesas,sh7751-pci.yaml
+> @@ -0,0 +1,89 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pci/renesas,sh7751-pci.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Renesas SH7751 PCI Host controller
+> +
+> +maintainers:
+> +  - Yoshinori Sato <ysato@users.sourceforge.jp>
+> +
+> +allOf:
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: renesas,sh7751-pci
+> +
+> +  reg:
+> +    minItems: 2
+> +    maxItems: 2
+> +
+> +  reg-names:
+> +    items:
+> +      - const: PCI Controller
+> +      - const: Bus State Controller
+> +
 
->> 2.Target this patch for net-next.
->>
->> v2->v3:
->> Some fixes according to
->> https://lore.kernel.org/all/20240319102549.7f7f6f53@gandalf.local.home/
->> 1. Change the tracking directory to/sys/kernel/tracking.
->> 2. Adjust the layout of the TP-STRUCT_entry parameter structure.
->>
->> v1->v2:
->> Some fixes according to
->> https://lore.kernel.org/all/CANn89iL-y9e_VFpdw=3DsZtRnKRu_tnUwqHuFQTJvJsv=
->-nz1xPDw@mail.gmail.com/
->> 1. adjust the trace_icmp_send() to more protocols than UDP.
->> 2. move the calling of trace_icmp_send after sanity checks
->> in __icmp_send().
->>
->> Signed-off-by: Peilin He<he.peilin@zte.com.cn>
->> Reviewed-by: xu xin <xu.xin16@zte.com.cn>
->> Reviewed-by: Yunkai Zhang <zhang.yunkai@zte.com.cn>
->> Cc: Yang Yang <yang.yang29@zte.com.cn>
->> Cc: Liu Chun <liu.chun2@zte.com.cn>
->> Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
->> ---
->>  include/trace/events/icmp.h | 65 +++++++++++++++++++++++++++++++++++++
->>  net/ipv4/icmp.c             |  4 +++
->>  2 files changed, 69 insertions(+)
->>  create mode 100644 include/trace/events/icmp.h
->>
->> diff --git a/include/trace/events/icmp.h b/include/trace/events/icmp.h
->> new file mode 100644
->> index 000000000000..7d5190f48a28
->> --- /dev/null
->> +++ b/include/trace/events/icmp.h
->> @@ -0,0 +1,65 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#undef TRACE_SYSTEM
->> +#define TRACE_SYSTEM icmp
->> +
->> +#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
->> +#define _TRACE_ICMP_H
->> +
->> +#include <linux/icmp.h>
->> +#include <linux/tracepoint.h>
->> +
->> +TRACE_EVENT(icmp_send,
->> +
->> +               TP_PROTO(const struct sk_buff *skb, int type, int code),
->> +
->> +               TP_ARGS(skb, type, code),
->> +
->> +               TP_STRUCT__entry(
->> +                       __field(const void *, skbaddr)
->> +                       __field(int, type)
->> +                       __field(int, code)
->> +                       __array(__u8, saddr, 4)
->> +                       __array(__u8, daddr, 4)
->> +                       __field(__u16, sport)
->> +                       __field(__u16, dport)
->> +                       __field(unsigned short, ulen)
->> +               ),
->> +
->> +               TP_fast_assign(
->> +                       struct iphdr *iph =3D ip_hdr(skb);
->> +                       int proto_4 =3D iph->protocol;
->> +                       __be32 *p32;
->> +
->> +                       __entry->skbaddr =3D skb;
->> +                       __entry->type =3D type;
->> +                       __entry->code =3D code;
->> +
->> +                       struct udphdr *uh =3D udp_hdr(skb);
->> +                       if (proto_4 !=3D IPPROTO_UDP || (u8 *)uh < skb->h=
->ead ||
->> +                               (u8 *)uh + sizeof(struct udphdr) > skb_ta=
->il_pointer(skb)) {
->> +                               __entry->sport =3D 0;
->> +                               __entry->dport =3D 0;
->> +                               __entry->ulen =3D 0;
->> +                       } else {
->> +                               __entry->sport =3D ntohs(uh->source);
->> +                               __entry->dport =3D ntohs(uh->dest);
->> +                               __entry->ulen =3D ntohs(uh->len);
->> +                       }
->> +
->> +                       p32 =3D (__be32 *) __entry->saddr;
->> +                       *p32 =3D iph->saddr;
->> +
->> +                       p32 =3D (__be32 *) __entry->daddr;
->> +                       *p32 =3D iph->daddr;
->> +               ),
->> +
->> +               TP_printk("icmp_send: type=3D%d, code=3D%d. From %pI4:%u =
->to %pI4:%u ulen=3D%d skbaddr=3D%p",
->> +                       __entry->type, __entry->code,
->> +                       __entry->saddr, __entry->sport, __entry->daddr,
->> +                       __entry->dport, __entry->ulen, __entry->skbaddr)
->> +);
->> +
->> +#endif /* _TRACE_ICMP_H */
->> +
->> +/* This part must be outside protection */
->> +#include <trace/define_trace.h>
->> \ No newline at end of file
->> diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
->> index 8cebb476b3ab..224551d75c02 100644
->> --- a/net/ipv4/icmp.c
->> +++ b/net/ipv4/icmp.c
->> @@ -92,6 +92,8 @@
->>  #include <net/inet_common.h>
->>  #include <net/ip_fib.h>
->>  #include <net/l3mdev.h>
->> +#define CREATE_TRACE_POINTS
->> +#include <trace/events/icmp.h>
->>
->>  /*
->>   *     Build xmit assembly blocks
->> @@ -672,6 +674,8 @@ void __icmp_send(struct sk_buff *skb_in, int type, in=
->t code, __be32 info,
->>                 }
->>         }
->>
->> +       trace_icmp_send(skb_in, type, code);
->> +
->>         /* Needed by both icmp_global_allow and icmp_xmit_lock */
->>         local_bh_disable();
->>
->> --
->> 2.25.1
+> +  "#interrupt-cells":
+> +    const: 1
+> +
+> +  "#address-cells":
+> +    const: 3
+> +
+> +  "#size-cells":
+> +    const: 2
+> +
+> +  ranges: true
+> +
+> +  dma-ranges: true
 
+All 5 of these are defined in pci-bus-common.yaml, so you can drop them.
+
+> +
+> +  interrupt-controller: true
+> +
+> +  renesas,bus-arbit-round-robin:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: |
+
+Don't need '|'.
+
+> +      Set DMA bus arbitration to round robin.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#interrupt-cells"
+
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +  - ranges
+
+These 3 are already required, so drop.
+
+> +  - interrupt-map
+> +  - interrupt-map-mask
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    pci@fe200000 {
+> +            compatible = "renesas,sh7751-pci";
+> +            #address-cells = <3>;
+> +            #size-cells = <2>;
+> +            #interrupt-cells = <1>;
+> +            interrupt-controller;
+> +            device_type = "pci";
+> +            bus-range = <0 0>;
+> +            ranges = <0x02000000 0 0xfd000000 0xfd000000 0 0x01000000>,
+> +                     <0x01000000 0 0x00000000 0xfe240000 0 0x00040000>;
+> +            dma-ranges = <0x02000000 0 0xc000000 0x0c000000 0 0x04000000>;
+> +            reg = <0xfe200000 0x0400>,
+> +                  <0xff800000 0x0100>;
+> +            interrupt-map = <0x0000 0 0 1 &julianintc 5 IRQ_TYPE_LEVEL_LOW>,
+> +                            <0x0000 0 0 2 &julianintc 6 IRQ_TYPE_LEVEL_LOW>,
+> +                            <0x0000 0 0 3 &julianintc 7 IRQ_TYPE_LEVEL_LOW>,
+> +                            <0x0000 0 0 4 &julianintc 8 IRQ_TYPE_LEVEL_LOW>,
+> +                            <0x0800 0 0 1 &julianintc 6 IRQ_TYPE_LEVEL_LOW>,
+> +                            <0x0800 0 0 2 &julianintc 7 IRQ_TYPE_LEVEL_LOW>,
+> +                            <0x0800 0 0 3 &julianintc 8 IRQ_TYPE_LEVEL_LOW>,
+> +                            <0x0800 0 0 4 &julianintc 5 IRQ_TYPE_LEVEL_LOW>,
+> +                            <0x1000 0 0 1 &julianintc 7 IRQ_TYPE_LEVEL_LOW>,
+> +                            <0x1000 0 0 2 &julianintc 8 IRQ_TYPE_LEVEL_LOW>,
+> +                            <0x1000 0 0 3 &julianintc 5 IRQ_TYPE_LEVEL_LOW>,
+> +                            <0x1000 0 0 4 &julianintc 6 IRQ_TYPE_LEVEL_LOW>;
+> +            interrupt-map-mask = <0x1800 0 0 7>;
+> +    };
+> -- 
+> 2.39.2
+> 
 
