@@ -1,208 +1,270 @@
-Return-Path: <linux-kernel+bounces-138239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6415089EE97
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:19:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4DB589EE57
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:14:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92B95B24CAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:19:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14E831C211EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:14:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDFC9155741;
-	Wed, 10 Apr 2024 09:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C10C156C6B;
+	Wed, 10 Apr 2024 09:11:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iguVEViO"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="acs1jdIA"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B430155393
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:13:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712740399; cv=none; b=e9bY5yQWJKexj3jocWDknMIXIR+fUTSp5RYF09N/5d2iNwUzGjrQMlnNw/EQwG1soMhL3VYsTsEq89WZ4VFfB7t73rptz9B5CB+hCVSrbvaGXYLP777RF7QHdYGrS8nymqLONe7vJ+t1deuFEl3mTKWLQwKnhueLbQ9GnU4DY4I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712740399; c=relaxed/simple;
-	bh=747hwwI/9YEbtqGw/BZYY5aPIyGCxcAHjcyu86npB9A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DfvWy6hxq+foZvw1hv/NIVGzdcrsKv2h3VhkAE8eB30OYx8Sxd9Begn2xeCwLKGqf6NtWjOxV0YLKYznw+C55OkG//Fnee/HNanWy1XJgX+Mbg+D0giuEAl4x/JPcsRzU6h08+6uFZhFRFvFbpyhNFHm5IZcfj4cbHiq83Uur/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iguVEViO; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5dca1efad59so4616856a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:13:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712740397; x=1713345197; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=747hwwI/9YEbtqGw/BZYY5aPIyGCxcAHjcyu86npB9A=;
-        b=iguVEViOMpo9tpWmLm72ISEvyDI+QJIMZw8Wl8E5zrheC0OeOUap1I3jfBQypo/6FD
-         0+7JhFYw1pGwfP4q2VfU+na+NZ3s5/8OHEIaqYl2Yp+p0vi+Jf1OeuetFLBU/+4jbzSn
-         nRMJvnrBiFcaAsL3eqjHU+QZYRGdjD9LAvrFUm5SMjLt5PX8jN1GVUp7oeEIcphL1KD4
-         LwyJXFZ+Knr6gkP2YrcrfbY9PgtVWXFtGAlubqr6+/4uwm7pZFJoZvpJLAYp6bxcnKhC
-         45dgMesaOso5jFINH714r3b1TH4WW+1wf0WLNJxrsdRpWqcXMWzOq9ua3EmJnh+08Ydf
-         ln/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712740397; x=1713345197;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=747hwwI/9YEbtqGw/BZYY5aPIyGCxcAHjcyu86npB9A=;
-        b=rASchSxOsoKtTahjBt2p+CIIXbY0xWKHbCoDqhYKwqJTNRKr0cy1cR3r7IM3EDiiQo
-         YzFhML+09OQW6DIeGE/Gmwju0dKtXCbf492P3s3RDt1cJvrF/zCCoREGDqPNGPr5I1W9
-         J/lRKP6OFttjQyAumiU84v6Ycv5CQfMz7VRJ4lYk8Ezlg+neIwQqhKBJRHgklItHhIOz
-         NOnVof9nKd1tZrUEQIHmD6DTYngP7yq+RvDOXSbE/whszwgJdT58T5iB57MNoIIE6CeB
-         pU0VeVXvG0mcIFicWTgyPtnS8b/JRsUxOcwsn1LDWQgrWp+BzFyN7SO6VAdgXo8/udTp
-         n93w==
-X-Forwarded-Encrypted: i=1; AJvYcCUKpitamHA8qu9rW5zScWfMPr5mZ2pskHrmqkJ1z/m5qBNuB2ufRy64UXT5H4MTo40ZYKNW8P6NfRzCjbY54anhLAd7immNhtU0clNV
-X-Gm-Message-State: AOJu0YwTCpamCHX+/BACnGOhKMRe8VzFa5w/hiNT42EYRVJOto/+6K7M
-	nu3vI9hKz2UYYXJkHW184HynuV0hpN+9vMCiP3r2Hvy+C3562Gu+ua8rbMptQXpumUjJSo+41Rs
-	P5ZEDWsO3cHvq5sNK2HIQ0FEEy2wlk7C8hOinlQ==
-X-Google-Smtp-Source: AGHT+IFtiHhjryYsOV4095JXEzRNDfVTs/PKiPustZNKOQaI3lZeyTvS3gYiwpaUh0qrUoKzXy/ySr9mjAULOpoe53A=
-X-Received: by 2002:a05:6a21:186:b0:1a9:500c:d3e1 with SMTP id
- le6-20020a056a21018600b001a9500cd3e1mr1857329pzb.50.1712740397608; Wed, 10
- Apr 2024 02:13:17 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AA1A156C61
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:11:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.16
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712740277; cv=fail; b=pxOsIahDlJN1fnyVQsg7uR9Rv2G11T8d3FVuxC2mAWGB3PoiDFqiNXGvEVbpF309VGbJ3dVoo1tbqTCT1sll4l1wqdAza3Sy2RW1nDXnUOXOBFWJRH/ap32J4E5p96dWqEVpdbZbpE2b8X5vyVYy+JTlkW40E1jxrSMHRzd90Iw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712740277; c=relaxed/simple;
+	bh=D4Ff4atjaDLKyWK/D4uQ4OmK2TD/EcmsKozWbYH28tQ=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Z9ziKIBNevJqdlV50JGAEI5VNXHAMrfw0zOrt3ZShTf5OaUG2W1wywhFNhshIlqZqJn3YwYkGgTWmQ4BJBirM+3IN5HkvCBzUsNkcrOuhwV1WiRM/+iNVGpHtBgQ2UFRKc97igjnU2uxeAvAGbYz/78k0BzOP9g142MRwH/Jm2g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=acs1jdIA; arc=fail smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712740275; x=1744276275;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=D4Ff4atjaDLKyWK/D4uQ4OmK2TD/EcmsKozWbYH28tQ=;
+  b=acs1jdIAmYTlJh5bWC9LBkmBC0GTxCHoDhQsAlIrjR0QIY8FRg7O6aXM
+   7X+Q1+ll4811p4mfREMwjrI3jUMjRzRyYyKtqTh3RmcdP5mKthTzQlLbv
+   81OwR5CxoIGkdp5HOCNx3JJTD4+1vSrbuYv60sXk9tATaP1A9cmJVKCHf
+   c3ZYzZgh62qol/5sHUof7/iYMbwamznbk1ftGO8eupaKRujA97/vaUVDw
+   /613UTnT+axuTYVasRmJiEUiQvV4RDFxYAknoTPa/brthoMAYV4B0QkKx
+   7bGrNxTxSv3QVAAZUf4n0SvvMBdWY05jO21bZv6T7cmWQnkwKmd03XI03
+   A==;
+X-CSE-ConnectionGUID: Mcb8ZFSGQCeqXxhCDUlBQQ==
+X-CSE-MsgGUID: 7Xb3VUyDSwaceWtzCVNJ5g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8216544"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="8216544"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 02:11:14 -0700
+X-CSE-ConnectionGUID: z/WB9vKITau+I+5fWry1AA==
+X-CSE-MsgGUID: 5ionESW5TUOS+ramTyoHEw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="20928224"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Apr 2024 02:11:14 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 10 Apr 2024 02:11:14 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 10 Apr 2024 02:11:14 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 10 Apr 2024 02:11:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C8SDA8RREmGVmwV9YMhdgg/H8mx8dwQkAbTm6kn3z6nmXikTvE91W9hU2LH80qg/X0hNaLbfQLC2UnFI5liW/r0gBrhHoZL+uRtPEjykwcBIVBcL1SG9Om1JYL4ixZGrdKZ47Jd5sSHpFBoKR1srNMHZAPcy/yg19wzvob8kiXoREczR+2Ww4cq7V+3xRiSuGSJ1hc3+f00OXGpW4F12vvd2+4Cb0hCLYuR7h3VMPp3QbxReXQKetNhwXDF9jrDhZ8M1YUKbHYhANioS6aFb2hs04RIEFaF69VNOA3yqKqSCQvfIEHi/NS+dp6/4IXcEQyyJri8ZVGoNzpDrILLGnw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AsFFlQcrPzRiWPOuvw7VeAZvtVxC0OOCboN5MpTSxcE=;
+ b=J6PBvdOuBeiqjZsqxxbPegz/585NGZ1ObsRuQWMhprJ7vFjPGNwAANsli0zyCBBLFBmMjFAZSiBiAjGdQU+KxxGDy9nml1bPrN7I/lFJLmtp33eElWOz8/0hub9HTvbcY3WdWj65o7Cv03/qQsII/67dNgoH0z3H6lYaSGFACsCB1hVrM8BQKbaozqxcYdu//0VLibx+tuoa4E0Duq51beAVtUQNhFnjDWW++jhIOyRU2UGr5rhZuQifq0Ief38jNDphW+d0JYhnnpoA08r2us45YXclKymE+1eyMntahSgSdW/f/KpvAxuRrOdVqACyIUBL3hHoJSpWlF2bHYSQ/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
+ by MW4PR11MB6936.namprd11.prod.outlook.com (2603:10b6:303:226::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.25; Wed, 10 Apr
+ 2024 09:11:05 +0000
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::b1f5:9d1f:f510:d54c]) by DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::b1f5:9d1f:f510:d54c%3]) with mapi id 15.20.7452.019; Wed, 10 Apr 2024
+ 09:11:05 +0000
+Message-ID: <be0b254d-d6c0-4a94-8234-936f40538bbc@intel.com>
+Date: Wed, 10 Apr 2024 17:14:38 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] iommu/vt-d: Remove caching mode check before
+ device TLB flush
+Content-Language: en-US
+To: Baolu Lu <baolu.lu@linux.intel.com>, <iommu@lists.linux.dev>
+CC: Kevin Tian <kevin.tian@intel.com>, Jacob Pan
+	<jacob.jun.pan@linux.intel.com>, Joerg Roedel <joro@8bytes.org>, Will Deacon
+	<will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	<linux-kernel@vger.kernel.org>
+References: <20240410055823.264501-1-baolu.lu@linux.intel.com>
+ <7e78917f-f84c-4e98-a612-73b8013ae367@intel.com>
+ <0231631b-44ca-45ee-adf9-0a5c8852cc27@linux.intel.com>
+From: Yi Liu <yi.l.liu@intel.com>
+In-Reply-To: <0231631b-44ca-45ee-adf9-0a5c8852cc27@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR06CA0218.apcprd06.prod.outlook.com
+ (2603:1096:4:68::26) To DS0PR11MB7529.namprd11.prod.outlook.com
+ (2603:10b6:8:141::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403005930.1587032-1-qyousef@layalina.io> <CAKfTPtDB8D6bouxJN9q8gXqG+BQYcsrJYEodDWtOB2kQwPH53A@mail.gmail.com>
- <20240404220500.dmfl2krll37znbi5@airbuntu> <CAKfTPtDP7if0gozSrnj+E_hH5xR-vpGAM2TwN4qWXcg5BtrEtw@mail.gmail.com>
- <20240405171653.boxbylrdak5fopjv@airbuntu> <20240407122700.ns7gknqwqkpjjyd4@airbuntu>
- <CAKfTPtBZao-Ry=sdAV=rtTwbxbEJmwb-_gNceSjV6u-6EXTY-w@mail.gmail.com>
- <CANDhNCq5HZvecSe9_9f7j5koY2VNdyjM_b3csL6=U1A_8J2ksw@mail.gmail.com>
- <20240409061909.tb3vxc27h2eawiwg@airbuntu> <CAKfTPtC4hdbBhn+-hkK9i4vkjO5fBGfsxjESkBrvyOwN6oHCdA@mail.gmail.com>
- <20240410065901.ruzhjsmtmpsnl4qe@airbuntu>
-In-Reply-To: <20240410065901.ruzhjsmtmpsnl4qe@airbuntu>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Wed, 10 Apr 2024 11:13:06 +0200
-Message-ID: <CAKfTPtD-J37Q1SL2HqZLvfNtW9LY34C-d-t6-0KU4DxkUmvHzQ@mail.gmail.com>
-Subject: Re: [PATCH] sched/pi: Reweight fair_policy() tasks when inheriting prio
-To: Qais Yousef <qyousef@layalina.io>
-Cc: John Stultz <jstultz@google.com>, Ingo Molnar <mingo@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Joel Fernandes <joel@joelfernandes.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	linux-kernel@vger.kernel.org, Yabin Cui <yabinc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|MW4PR11MB6936:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jm1hxM8b6HpvoENxa775GsLel8DeT2HCz3Y2L5MaCkEs6vT3p4mT5n4DuyMfk7M6GiMUQCR/L6+uvNCG2NrHaF3Og5VFB0wtZgnhvUcrokVHxXo3jJZts5dquSB/urk8K8R4hLm7n6kn4NypwD+owc19qIk2SOOXrW2j+/gH7heul7GTOCgNnfSSkWl18wRdbBQhFHjnkr+G0o+6epWPb1e13kdNM45njtPEURP8RIHm9UZ6GX14bQ4WzYkWUSB9ESfUsxXtNh+QlKUaG4I5KzdOBAer6ogVvZrgztk0YuGK1+bVTUbjHag2IlfYHaOG9LtwpzYARk+W/q64Hi6Lv9sVVbNXAh2F2HVgz/5jE0xElcK5lGsVCF3xM9YD+aHxBr5IoavMn6tXSG6s4r8XBuO6dwtne9AuHSeauMuP2qUcv/rEyQkcosXM7xRbfXtSdhdL6stPnB7aw1g1b/Jho+jfybbCclNSg0Ki2oCg9CiPZnSi1tvPlaZ9zUkWEIdXx7ZvOfrsErvdi2Dg3UBN4SaIEoK0830SYOd2nrA0PSG20/J78hZnhGUI2sH0tld8AQcjC22854KyzpXslTXx4++8F9Oanrodq+Pk2BP52siJAC9jruiCr7t4WYBIq6+I3baKkU53/PG5vTZHRq3Zqc9uMRLp8rcWcV04XRz/nh8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eGcxSTVjbk9nOUIxR3poZ3NQMlltdmtQL3BtRHR3enJvUXhFbzBSYVB6am11?=
+ =?utf-8?B?VE1kRG42NFk1OUVLdzZyV3NDcENEWXNvbzVFV0RYQm81QmRpbjhETTVaR0JZ?=
+ =?utf-8?B?bGo5WlFWY0FZMzhBaVpuUzlSY2RDeC9CanBZdU1WR2hRY3hvR3hsU3E3aXlB?=
+ =?utf-8?B?N2JlaHd5VnU2a2Z3eTIxQlI5bDcxMlhqbjJ4bHE3SjUzckpWZDA0RUFUak5H?=
+ =?utf-8?B?ZUNLcE5XS29zZ2JkZThXUW5CTVVodDdzSG90Y0pkbGN3Vm9qR2JaQVlQSTR2?=
+ =?utf-8?B?REg3cnR0OUYvRFlvajdjYTAwaUwvYitqWXpkd3ZkdlFiL1FoSHBwaEF0OW1X?=
+ =?utf-8?B?U05LZnVrTU5IcjN6T2ZwTHpBSTNSakVud1BkOHMxSEF0NzFxNFR4aEZIRE9t?=
+ =?utf-8?B?VEwxQW5LbWR2UFNicThqZHRUdGxrdUV0Y1I4Z0VYWmtUSTh5OFJMbEpVcWVE?=
+ =?utf-8?B?TTVXS20rRmVzOFRCN3dwNkN4R2h5a1dWdTRFbXo5blo1QjhHL2JLU09vRVZF?=
+ =?utf-8?B?Vm1USytVd0xndjZKeUxmdnZTeENtZWdrYmtpc2tZR1ArSTJnZ2x0OVFqa2JM?=
+ =?utf-8?B?cVZoQmVGMFdIdVdKYUhVK0RRRVBydElVWWhQTnNSZnFlRHZuV3FQRjJ3Vmxr?=
+ =?utf-8?B?NUxWaDRKbmczaW1hMlE5dmc3blFaUFpkb0Y5RTUwM1dBOWYrUG5Sck4wTmsw?=
+ =?utf-8?B?MEttaXBiU3B4U29ub09RdnA1djgvc0lvelAwU2NXZDdzTUhoaWlibW9ydzRR?=
+ =?utf-8?B?ZXh3aW1mUXNvM2hEQ3QyZFdVOHRBUVVUYzFnZkVnRFpqMENURWgzQktpbWVM?=
+ =?utf-8?B?VC9KZVBDMXZCZFF6REhkMDk5ZHkxQmhrQWhJYkwwdmUwNlQ4di9HNjlKOUJ4?=
+ =?utf-8?B?U01QNFRBOXpyUmVqQ2d1TjlDVmIzb3NGT3c4cjdtVys4QXJ3clpXeFVZREl2?=
+ =?utf-8?B?dklidjcvcjRXek50REdqcFZiZzNXbWphYVZwK1AxVC9vUFYwRjRUUFdNbzJl?=
+ =?utf-8?B?YkVDYTlybkIxcU5GMkVFL3htUHpOdmxYQy9UekYzNEdRaEduMnJBY2xYWnUw?=
+ =?utf-8?B?c2lVdDRPNUJJUkFVNVBSSWxZTXRnazk4TnRFSG40dk9XbHZUVnp0WmFPbHM2?=
+ =?utf-8?B?aFQyR2hZaWpPVFdHK0ZnTnl5djVHYi9FcHU2akp0RkltazBCMjdPaWNXVEJr?=
+ =?utf-8?B?YlEzMVFrNm8waHVXMVhWWEREc2VBN284T3ljWDRxL1l6WEFXR3lRRFRpN1hX?=
+ =?utf-8?B?OTQvM2xHbUpvbjdGb0JZSjBzU0RyVEFST3dOd2dIOGhoTnRqbHJlS2FCR2hY?=
+ =?utf-8?B?RkdBMmltYzhDZEgyN3ZUZ1oxNU9rdjRvTzBRWjBlaWlwSUhIbWF1T2NOWjlQ?=
+ =?utf-8?B?WGFjemZ0UmpEL2FrWmMvd05FdWF3Vzljd3hTOGZycU0wT3Q0WGQ0bUFzd1hu?=
+ =?utf-8?B?Mkp1Yi9Jc3MwazhvRlRjczhGZ0gySnU4RkdXN3VjdHUxd2F6Vi9YVjIwVXE5?=
+ =?utf-8?B?UnIrTTlPekVneERPNUx2MSs4S1VGZDJucU9wOGR2TndFWUxJbnBYRkdTa3Jw?=
+ =?utf-8?B?RDEwSFpNUmFOVnNiVjBCbWZwd0JHRXFRT2tDUDEySWJ0RzhOaS82QVhVbFhV?=
+ =?utf-8?B?VjVrSGZ6eklXNkV4RnVLVGJVcjN1WitZNllOQ3BTcnFUVTlOSW1ZNjV6alQ5?=
+ =?utf-8?B?eVFxb29rYkNxL3A1ODlVSFlpNmVodXU1dklpcGxSeW9tdWQ2cWtIWlJFcmpa?=
+ =?utf-8?B?bnRiTFo4V1cxTnJGa3NkWWpBZ1ZLQWJJNW05M2ZudGVQekdnU2lTME1nVFdQ?=
+ =?utf-8?B?Nmx1MVQ1cW1SREl0MVppbEFDclNxMldsb0dSNEExTWJ4d0Uxd2RhOWxuYnJx?=
+ =?utf-8?B?UXpLSFFyb0dNb01TcVRDS0lsbGZIWGcxWEt2OEVWOHM4cHNDVnltNGlTcE1i?=
+ =?utf-8?B?cmgyRUNSdE1hdlY2TTZIZFhPWk1qODNCZDk0K2htbHJ6TU93OUVQM2ZpYUtY?=
+ =?utf-8?B?VWQ3WHpzbFpMTUlZMTQ2UCtJOXgxbXF5TnhQeUZ5UTdDM1FmTFc0aFl6amVM?=
+ =?utf-8?B?OUxObWlhS09yeHRvUWtoOVpxYitLS1JkVFY5TkkwUU1hdXhnYjV0OXYycUlL?=
+ =?utf-8?Q?ic65lkp0TzY1LOOfOUuiRewXF?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 218ce489-244c-41bf-dfd5-08dc593e26d4
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 09:11:05.7530
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6bpRvwQ3ERq9VQd+8tQK9MehUuF0mc9lvro4obXfIwdSw5itk0zshgByAUlG+OtUqyjASywoc4dktvXsm6dMCQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6936
+X-OriginatorOrg: intel.com
 
-On Wed, 10 Apr 2024 at 08:59, Qais Yousef <qyousef@layalina.io> wrote:
->
-> On 04/09/24 14:35, Vincent Guittot wrote:
-> > On Tue, 9 Apr 2024 at 08:19, Qais Yousef <qyousef@layalina.io> wrote:
-> > >
-> > > On 04/08/24 12:51, John Stultz wrote:
-> > > > On Mon, Apr 8, 2024 at 12:17=E2=80=AFAM Vincent Guittot
-> > > > <vincent.guittot@linaro.org> wrote:
-> > > > >
-> > > > > On Sun, 7 Apr 2024 at 14:27, Qais Yousef <qyousef@layalina.io> wr=
-ote:
-> > > > > >
-> > > > > > On 04/05/24 18:16, Qais Yousef wrote:
-> > > > > >
-> > > > > > > >
-> > > > > > > > All that to say that I think the weight is not applied on p=
-urpose.
-> > > > > > > > This might work for your particular case but there are more=
- changes to
-> > > > > > > > be done if you want to apply prio inheritance between cfs t=
-asks.
-> > > > > > > >
-> > > > > > > > As an example, what about the impact of cgroup on the actua=
-l weight
-> > > > > > > > and the inherited priority of a task ? If the owner and the=
- waiter
-> > > > > > > > don't belong to the same cgroup their own prio is meaningle=
-ss... task
-> > > > > > > > nice -20 in a group with a weight equal to nice 19 vs a tas=
-k nice 19
-> > > > > > > > in a group with a weight equals to nice -20
-> > > > > > >
-> > > > > > > That is on my mind actually. But I thought it's a separate pr=
-oblem. That has to
-> > > > > > > do with how we calculate the effective priority of the pi_tas=
-k. And probably
-> > > > > > > the sorting order to if we agree we need to revert the above.=
- If that is done
-> > > > > >
-> > > > > > Thinking more about it the revert is not the right thing to do.=
- We want fair
-> > > > > > tasks to stay ordered in FIFO for better fairness and avoid pot=
-ential
-> > > > > > starvation issues. It's just the logic for searching the top_wa=
-iter need to be
-> > > > > > different. If the top_waiter is fair, then we need to traverse =
-the tree to find
-> > > > > > the highest nice value. We probably can keep track of this whil=
-e adding items
-> > > > > > to the tree to avoid the search.
-> > > > > >
-> > > > > > For cgroup; is it reasonable (loosely speaking) to keep track o=
-f pi_cfs_rq and
-> > > > > > detach_attach_task_cfs_rq() before the reweight? This seems the=
- most
-> > > > > > straightforward solution and will contain the complexity to kee=
-ping track of
-> > > > > > cfs_rq. But it'll have similar issue to proxy execution where a=
- task that
-> > > > > > doesn't belong to the cgroup will consume its share..
-> > > > >
-> > > > > That's a good point, Would proxy execution be the simplest way to=
- fix all this ?
-> > >
-> > > Is it? Over 4.5 years ago Unity reported to me about performance inve=
-rsion
-> > > problem and that's when proxy execution work was revived as simplest =
-way to fix
-> > > all of this. But still no end in sight from what I see. I was and sti=
-ll think
-> > > an interim solution in rt_mutex could help a lot of use cases already=
- without
-> > > being too complex. Not as elegant and comprehensive like proxy execut=
-ion, but
-> > > given the impact on both userspace and out of tree kernel hacks are g=
-rowing
-> > > waiting for this to be ready, the cost of waiting is high IMHO.
-> > >
-> > > FWIW, I already heard several feedbacks that PTHREAD_PRIO_INHERIT doe=
-s nothing.
-> > > I think this reweight issue is more serious problem and likely why I =
-heard this
-> > > feedback. I could be underestimating the complexity of the fix though=
- So I'll
-> >
-> > Without cgroup, the solution could be straightforward but android uses
-> > extensively cgroup AFAICT and update_cfs_group() makes impossible to
-> > track the top cfs waiter and its "prio"
->
-> :(
->
-> IIUC the issue is that we can't easily come up with a single number of
-> 'effective prio' for N level hierarchy and compare it with another M leve=
-l
-> hierarchy..
 
-And then how do you apply it on the hierarchy ?
 
+On 2024/4/10 16:02, Baolu Lu wrote:
+> On 2024/4/10 14:30, Yi Liu wrote:
+>> On 2024/4/10 13:58, Lu Baolu wrote:
+>>> The Caching Mode (CM) of the Intel IOMMU indicates if the hardware
+>>> implementation caches not-present or erroneous translation-structure
+>>> entries except the first-stage translation. The caching mode is
+>>> irrelevant to the device TLB , therefore there is no need to check
+>>> it before a device TLB invalidation operation.
+>>>
+>>> iommu_flush_iotlb_psi() is called in map and unmap paths. The caching
+>>> mode check before device TLB invalidation will cause device TLB
+>>> invalidation always issued if IOMMU is not running in caching mode.
+>>> This is wrong and causes unnecessary performance overhead.
+>>
+>> I don't think the original code is wrong. As I replied before, if CM==0,
+>> the iommu_flush_iotlb_psi() is only called in unmap path, in which the
+>> @map is false. [1] The reason to make the change is to make the logic
+>> simpler. 🙂
+> 
+> Oh, I see. There is a magic
+> 
+>          if (cap_caching_mode(iommu->cap) && !domain->use_first_level)
+>                  iommu_flush_iotlb_psi(iommu, domain, pfn, pages, 0, 1);
+> 
+> in __mapping_notify_one().
+> 
+> So if it's caching mode, then
+> 
+>   - iommu_flush_iotlb_psi() will be called with @map=1 from
+>     __mapping_notify_one(), "!cap_caching_mode(iommu->cap) || !map" is
+>     not true, and device TLB is not invalidated.
+>   - iommu_flush_iotlb_psi() will also be called with @map=0 from
+>     intel_iommu_tlb_sync(), device TLB is issued there.
+> 
+> That's the expected behavior for caching mode.
+> 
+> If it's not the caching mode, then
+> 
+>   - iommu_flush_iotlb_psi() will be called with @map=0 from
+>     intel_iommu_tlb_sync(), device TLB is issued there.
+> 
+> That's also the expected behavior.
 >
-> Does proxy execution fix this problem then? If we can't find the top wait=
-er,
+> So the existing code is correct but obscure and difficult to understand,
+> right? If so, we should make this patch as a cleanup rather than a fix.
 
-I haven't dug enough in the patchset. John ?
+aha, yes. As the below table, iommu_flush_iotlb_psi() does flush device TLB
+as expected. But there is a NA case. When CM==0, it should not be possible
+to call iommu_flush_iotlb_psi() with @map==1 as cache invalidation is not
+required when CM==0. So the existing code logic is really confusing,
+checking @map is enough and clearer. Since the old code works, so perhaps
+no fix tag is needed. :)
 
-> I can't see how proxy execution would work here too. To my understanding =
-it's
-> more about how we apply inheritance (by donating execution context of the=
- top
-> waiter) instead of manually applying inheritance like we're doing now.
->
-> But the logic of finding the top waiter should remain the same, no?
->
-> Need to extend my test case to cover this scenario.
++----+------+-----------+------------+
+|  \       |            |            |
+|   \ @map |            |            |
+| CM \     |      0     |     1      |
+|     \    |            |            |
++------+---+------------+------------+
+|          |            |            |
+|     0    |      Y     |     NA     |
++----------+------------+------------+
+|          |            |            |
+|     1    |      Y     |     N      |
++----------+------------+------------+
+
+Y means flush dev-TLB please
+N means no need to flush dev-TLB
+NA means not applied
+
+BTW. I think it is better to have the below change in a separate patch.
+The below change does fix a improper dev-TLB flushing behavior. Also
+how about Kevin's concern in the end of [1]. I didn't see your respond
+about it.
+
+@@ -1579,8 +1575,7 @@ static void intel_flush_iotlb_all(struct iommu_domain 
+*domain)
+  			iommu->flush.flush_iotlb(iommu, did, 0, 0,
+  						 DMA_TLB_DSI_FLUSH);
+
+-		if (!cap_caching_mode(iommu->cap))
+-			iommu_flush_dev_iotlb(dmar_domain, 0, MAX_AGAW_PFN_WIDTH);
++		iommu_flush_dev_iotlb(dmar_domain, 0, MAX_AGAW_PFN_WIDTH);
+  	}
+
+  	if (dmar_domain->nested_parent)
+
+
+[1] 
+https://lore.kernel.org/linux-iommu/BN9PR11MB52764F42C20B6B18DDE7E66B8C072@BN9PR11MB5276.namprd11.prod.outlook.com/
+
+-- 
+Regards,
+Yi Liu
 
