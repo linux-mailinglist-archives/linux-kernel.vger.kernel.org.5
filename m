@@ -1,118 +1,122 @@
-Return-Path: <linux-kernel+bounces-139109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3243289FEB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:36:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 326C989FEAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:35:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47276B286FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:35:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 637EA1C20FCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF51617F375;
-	Wed, 10 Apr 2024 17:35:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0360A17F374;
+	Wed, 10 Apr 2024 17:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mk302nIC"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AKuTdcBD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC0617BB2B
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:35:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B95315B0E4;
+	Wed, 10 Apr 2024 17:35:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712770533; cv=none; b=jM+Q9zYNvu1IQM7xfiUyfdIrdb29bROvLnjD6f52ThqWmZ/2PWu/jyJTUDewaaDyol2SmAgTCsfn0HNe/Mx8oncV7ci2RXRFrmjeJJ4z17UgByRAtj+x5C36w5pEcoNh7+lbJDr/6HsvGAJ9ROk+SxTckbbytSlrM7X5WEs3kLc=
+	t=1712770516; cv=none; b=damVUClWM2V0pGe5i0jJlNr+sOSY6RHyw/5GWynD0SMIkqMdJ5QBYwLcIcUfbqBYhOmzHL8CyttUNZu63uCxwxhOq6XZdyeH1LNiw4pKgLlqpoPh4DqzDWLX+eVcJfmO9lgk1YJXW/lnIuXnwyBy7gfcxXlV10O9lnjAYmgcYP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712770533; c=relaxed/simple;
-	bh=kSsnprb5ot5xTSzm+63wz6uK88AXMiaUB1TKq2hEgyw=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=e7zL5MrzYC6lRafdRC2pCjnGsdoeu7KVIC3Qd3sBbkfdfCXEe+ahUWFPrIBxaPmuwV/dN9wU7442u8Ul/LP/5LaorSLtAewWwqtY5ya7hsBItoylEifDEVgaF+0FVgziw3o8vn4+WF6zKQtjCUiwg4DbT4T8Jg1sdJWIWoXflK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mk302nIC; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712770531; x=1744306531;
-  h=date:from:to:cc:subject:message-id;
-  bh=kSsnprb5ot5xTSzm+63wz6uK88AXMiaUB1TKq2hEgyw=;
-  b=mk302nICNKEf7Svw6PdO1fQtYCilnvGlaPyp4OzQ6IkAYnP1ll6T+bfe
-   Rz51yvdndRon+j8oYVRO4MtMVc5DRvSUNlOSyCLqmBJZVqUnB1OLhOnH4
-   ISk5ZBdRjZhhIQVXnlGEpesxe8qXEc0ChrapCPbF48Y368NDQkl6cw25m
-   fRDdMitgkQLuCB5PC2NjIuatih5AYspToieAvSokTEux747g9hXTWLTib
-   FFxk914wQbKKDkjWejf3XJhX0TnLeI9fPTqrrZXah5VFN8baoY/Mms/IE
-   u5DQq+ZO5Hyg4Tb/TlHnfcqqsBp/2cW9Lz2/YNMGJGqLj4uAVtxgNi/HP
-   Q==;
-X-CSE-ConnectionGUID: rZfHn7vZSBC2Xsw+Q3XFxw==
-X-CSE-MsgGUID: MHZUC78wQY2iaqpOzTKuaA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8007388"
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="8007388"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 10:35:21 -0700
-X-CSE-ConnectionGUID: tFgysQJURzOd0fWhE0tFog==
-X-CSE-MsgGUID: NygBX2pXR6mnu/Jy7K+pwA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="21062382"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by orviesa006.jf.intel.com with ESMTP; 10 Apr 2024 10:35:21 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rubqv-0007dh-2d;
-	Wed, 10 Apr 2024 17:35:17 +0000
-Date: Thu, 11 Apr 2024 01:34:24 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:perf/urgent] BUILD SUCCESS
- dec8ced871e17eea46f097542dd074d022be4bd1
-Message-ID: <202404110122.jhn2oyMn-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1712770516; c=relaxed/simple;
+	bh=VQcH65WHqA/FS4uddL5zUJwX+BidAKnJYJdgb3MS8lk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lq0dCbnWzPbrDRx+UW2FFdan1+gRxs+3/jjOs1hD94xp+NKoWzy/sU2Kfee01W5x0zjP8eoBMmK3/hSvBZvW5crn2x9IeD7nqJP8pAXL6ClrfV1rsLabRReRe66qoP8B1/QxZWG7/By6kKK0fF5I8RZdt+ZzBMfA1jyMKrbP2kY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AKuTdcBD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8678C433C7;
+	Wed, 10 Apr 2024 17:35:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712770516;
+	bh=VQcH65WHqA/FS4uddL5zUJwX+BidAKnJYJdgb3MS8lk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AKuTdcBDWerDwjKr3wEagpSw7BfaYoAXlOYEPY1HHrIQnQupK0az+5WFmhYNEKTUB
+	 vQhp2T8kjdsj9V1lGZzOq+Jmv8XJn72N1Ac3f058geLGA7P1GNtjvHAQk9e1gqituj
+	 BrDcAFeKc4sugwHyGJ9801R0GJKa5T7qdFRIqR7UIl6a98qbGS0q9kO4CNrkAL6/uf
+	 MJuMEvyla07qZ+4Hq+hTO09S8LuKbG3A2Sl5HKiYXTnsS9XI9KCSdTvL+dqjU9BTZr
+	 GUdwqTTXsSFkucF0Pa5wvW/43dtwxTA6XuGHYSf09CItKdCMRLF9eSTZ6ar6cXTH5d
+	 otR8iI9lpsx4g==
+Date: Wed, 10 Apr 2024 12:35:13 -0500
+From: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Tom Joseph <tjoseph@cadence.com>,
+	Magnus Damm <magnus.damm@gmail.com>, linux-arm-msm@vger.kernel.org,
+	Ray Jui <rjui@broadcom.com>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Shawn Lin <shawn.lin@rock-chips.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Mark Kettenis <kettenis@openbsd.org>,
+	Sven Peter <sven@svenpeter.dev>,
+	Alyssa Rosenzweig <alyssa@rosenzweig.io>, linux-pci@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	Michal Simek <michal.simek@amd.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	Jianjun Wang <jianjun.wang@mediatek.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Srikanth Thokala <srikanth.thokala@intel.com>,
+	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>, asahi@lists.linux.dev,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Jim Quinlan <jim2101024@gmail.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	devicetree@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
+	linux-rockchip@lists.infradead.org,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
+	Scott Branden <sbranden@broadcom.com>,
+	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Hector Martin <marcan@marcan.st>,
+	Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	linux-kernel@vger.kernel.org,
+	Matthias Brugger <matthias.bgg@gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: PCI: cdns,cdns-pcie-host: drop
+ redundant msi-parent and pci-bus.yaml
+Message-ID: <171277051181.788021.12147595660219307279.robh@kernel.org>
+References: <20240407102000.37213-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240407102000.37213-1-krzysztof.kozlowski@linaro.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/urgent
-branch HEAD: dec8ced871e17eea46f097542dd074d022be4bd1  perf/x86: Fix out of range data
 
-elapsed time: 737m
+On Sun, 07 Apr 2024 12:19:58 +0200, Krzysztof Kozlowski wrote:
+> The binding reference common cdns-pcie-host.yaml, which already defines
+> msi-parent and has a reference to pci-bus.yaml schema.  Drop redundant
+> pieces here to make it a bit smaller.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/pci/cdns,cdns-pcie-host.yaml | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
 
-configs tested: 26
-configs skipped: 135
+Acked-by: Rob Herring <robh@kernel.org>
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240410   gcc  
-i386         buildonly-randconfig-002-20240410   clang
-i386         buildonly-randconfig-003-20240410   clang
-i386         buildonly-randconfig-004-20240410   clang
-i386         buildonly-randconfig-005-20240410   gcc  
-i386         buildonly-randconfig-006-20240410   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240410   clang
-i386                  randconfig-002-20240410   clang
-i386                  randconfig-003-20240410   gcc  
-i386                  randconfig-004-20240410   gcc  
-i386                  randconfig-005-20240410   gcc  
-i386                  randconfig-006-20240410   clang
-i386                  randconfig-011-20240410   clang
-i386                  randconfig-012-20240410   clang
-i386                  randconfig-013-20240410   gcc  
-i386                  randconfig-014-20240410   clang
-i386                  randconfig-015-20240410   gcc  
-i386                  randconfig-016-20240410   gcc  
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
