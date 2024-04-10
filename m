@@ -1,129 +1,133 @@
-Return-Path: <linux-kernel+bounces-138071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D68789EBCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:24:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FFB889EBD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:26:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DBB52828F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:24:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C07A1C2134D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:26:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60E6613CF90;
-	Wed, 10 Apr 2024 07:24:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4A8713CF8F;
+	Wed, 10 Apr 2024 07:26:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="Ic42icFt"
-Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uoMORzkv"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E8D413CFA5;
-	Wed, 10 Apr 2024 07:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85A3A26AC7
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 07:26:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712733849; cv=none; b=VPkB34bmjg0aEfgvx1bPuEutkWApbrG39vHYpMFnOsET/TUwN+H63rlHC7J14AIgs+xGzeWqdzRfzNO1b4fU4WBYI8qyCBuAgzyJKBXEp+W83+JLlfZQ0E+tIoItZIZr8TAIjbz7roOICqoPXwXmon1PBnUKuX2glh2WYhQkYkY=
+	t=1712733983; cv=none; b=J6nwkTXJOnR87NSe/Sw95T/91Yrku1GHUWi2ky1Doq0DmrxAtQwXvwF0mq53b3ztrJhqA9rrTDbAFiLzrwGGLNM6yd2DqpNbhxEF+qIk2rLrK+4j29EN/I1GQcIhDFrM79uUunjOnyIdniqFdliOKOOJP+ge9glEkfc3E86lW/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712733849; c=relaxed/simple;
-	bh=plKIsQqad7OUKBDvXgrgFhGbOn+DnejZorpcSCoN6rw=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=Gb+Fw1wGXogQEvIjEFRyuY/DSib++LJ5NMImfuS52JG6yIgFhLQniP39p37tsikRyyl3tMFB6B3JPN0K4PfCwadIJmWpATba/FxAsXFH5jq3qz7kWSl4sYNu23k1qc/lwtW9ooVhJofXHGJR1qSWWGYQxGY+mt8VMwSfunopoSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=Ic42icFt; arc=none smtp.client-ip=162.62.57.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712733842; bh=ywal0kjEywMRpEv8bhSwZ1X9+BZ/7cgHpt4FFL9X9lo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Ic42icFtf62/8/91p3JiPpSy4ZPTXVOe6HfWYJMIZRDbnRj74/6FnRrDwqjCVNlj/
-	 j6PaKJdI5ektrWltMSUyvaBy+xkx05RfZEFCE16GqcjjZ5TkgdgQ7Gnqz28OXSo0j4
-	 dltNBoAAfNfpJhrJoU61/Q/cF0N0ZI6I5BVF4Q9I=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrszc19-0.qq.com (NewEsmtp) with SMTP
-	id 600B4EB7; Wed, 10 Apr 2024 15:24:00 +0800
-X-QQ-mid: xmsmtpt1712733840tvm5kf4hx
-Message-ID: <tencent_616C382D056E049418E83AEE9ACCBC79060A@qq.com>
-X-QQ-XMAILINFO: OKkKo7I1HxIebw1DV93UFccpJjp+ZYS3u5weSNv9lcVPAQfvNGW/2pa9u+c2+K
-	 R9Dn+8gPk/+hP1tMlUUKAiSPBbfFwKwSJNuR+w1Yu+rKbB3kMCPJxMq3cYVBRY+YrDDwC39I4bJr
-	 4MTNHkaRfVzBfo3WMjUtH2dn7oxfrFlMC9xkgVFz5/1k1akRBFIvb/8jh3wtThKJw2yECfkk5Q0G
-	 9e4aAB+7rKgohPBUgYdgLQsnoLEx3qH4ndh+KzWKDKm3wufFLnHFVMzEW4g5Q3neGJifEbGrc+fS
-	 ZtwPD0H4nx9b+dRfDzmzX8KPeSzGq3zywBHPnlIR73fnA2bD1bMvo46Mnd3LtlGN0F6fV8AZaVjU
-	 /SwvrN97w9Zzt5LPhdNHoHVfF1HCEOUaKVWnpKOLNo3ElTGO58dwpIsjq7XvhRzI3/gX3qzhSpoM
-	 tkGCTfiA+2dQhIw7BJDiDJxCH9/6rvXPyJnxd0SuprTulIv+atbZR0YxoDH+RdMNDY6lj4F6sB9k
-	 kEj308Nb/Migro3KF2TgtKernyHWE7YNWMOwc5SZdtM8Q9CBzmlFLXcKtB80Jw9G8PoOxiwWTX+J
-	 0yFEObHNN7RrruRAb0hgr0iccS/5csM5+OcN69gVxCsJfVmO8gZZ+2iLglsJc5o0Q2kFJvfLnRVY
-	 D1X+aIfetgwovww66/vUrYt2Sk0SOL55Sl5M32KIWYWz8wqAqfKfRd6HIZj4cH9sYFGyBAqgWgDH
-	 IoTjwRSYuiY9WjhSfKOuvzhwcKgXkA4sCnj4fOSAlR0Kn4I6+MaMtU048mZVb+tnRC9IvKreWayS
-	 NLH4wJguAMBwwWcNixyUUVaPrJPV2g0KIRO2UftAfe6fhQuc1CT5JRHaxiaZdI01KlkCS/7ywxxh
-	 +VdSIflU1Gqizd4wvdYz9KPAu8bv2gEyP8UO8aEw6RWcaDL2qM7mh89OACPGLaZ/hjmC+aOvTL
-X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+01ade747b16e9c8030e0@syzkaller.appspotmail.com
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH] hfsplus: fix uninit-value in hfsplus_listxattr
-Date: Wed, 10 Apr 2024 15:24:01 +0800
-X-OQ-MSGID: <20240410072400.750441-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000fefd040615a5bef6@google.com>
-References: <000000000000fefd040615a5bef6@google.com>
+	s=arc-20240116; t=1712733983; c=relaxed/simple;
+	bh=s2k1ouNV35zF+1dBdzATsz5bImit+heSjpkBXxYGZ8I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=M7V872smM+5TRv/gWPCcLbSVoiX2SMjCw54ADUDgqHmFi6b+/Y4EPIpQoTK6xm+04ivWEXSrzHFReaocepiJqL6B1dVsADVYADzCCogVZVaxLEOEBHyjpapKa1hnxeueYsvChLoxRg3PQtXQ9arVX95yvtN07dyktS3xn64h/K0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uoMORzkv; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e3c7549078so29426005ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 00:26:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712733981; x=1713338781; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=V+D5Z65HMJHZbVna0dIsXP4PfyW82zjn+oyWq3eUZQQ=;
+        b=uoMORzkvUkn5xAYSHRYWX3hNA2EztdH8Eu8hudjuNj6jS5yaAk8T/tTF96zm/FO0EI
+         s9PuNWuePUHjIlT7GK/Vy1vbLYVE81DHygrtwVdlKF2fJMVYuoGoWQmv+cSkexllDoN3
+         NO/yeaNGfA8+ST3FvlRCqDEzM0z3IVp50AnvzBrDOYuYIm2HM9Lqe6mMSeG8XxoxAB5X
+         Fv4iTHpLwOdnzsBaxy7Uun7nbIRXwihUwZ3AjeBjXAc1uVhcTZeq5Q36Gx7qVEE8Wsk4
+         2bvltoJRqajWLVAXqr+rpEGnD4zxALwz05wcQcER0Uc6P+eRK+/xgDxWXxc7QgmQEJ1B
+         BrCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712733981; x=1713338781;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V+D5Z65HMJHZbVna0dIsXP4PfyW82zjn+oyWq3eUZQQ=;
+        b=tuZa9IkztavqCDWGeg+c5bI9q5gRe6jiW0QUdnV/lZHv3z1qfIIQyXBWLG/1J+ayOT
+         QaUW6/jniGwyXBDprHassDJOqlA7ihgi5y9UfHuMZi7gZHJ939TfxP0iFomL5t5TWY4Z
+         Ry2ZsMYZOrIYMzykm6mSUH0xgC2VbPoalvp6Et0Jdnr6yANfsVLAyOkKwxiYTNQdt6eZ
+         vDrsMamLBy2trvumEN/eueo/57/mdx+O7K3BUIdr9RhHMNYs2P4YUOIao5mU1MV9x82b
+         RXXEqcHkIreMkd8EuRQc5TFTT5dNGP8gVwxyKJ3r5bDrpLHYR8HRWl4d8JXzU19+f/IC
+         VCUQ==
+X-Gm-Message-State: AOJu0YwnGuW+jdi+TWN0Dj43f3/4NPJpBz2fsL23xKhwQKgsVSBDqCwm
+	1K8MEno9vCtLkCISGbC57BmZSg4qh9mWqVSYmhYkuOO6xx9R2Kg+xtAbhARDmJZoGE1rwvuFdUD
+	k0HhxnK3fTeesXQUfNG43Fv9yo0ZLFuyy4zPDbA==
+X-Google-Smtp-Source: AGHT+IHc8iy5jpANvXJrZBp73iRmK4mDGBZwDIgJAGp7g/7omiXWjTNaaHDhS+jG4SPOe1EjpY7Yefhi09BunmsuBnY=
+X-Received: by 2002:a17:902:6546:b0:1e2:aa5b:bcfe with SMTP id
+ d6-20020a170902654600b001e2aa5bbcfemr6177722pln.22.1712733980791; Wed, 10 Apr
+ 2024 00:26:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240409155250.3660517-1-kyle.meyer@hpe.com> <20240409155250.3660517-2-kyle.meyer@hpe.com>
+In-Reply-To: <20240409155250.3660517-2-kyle.meyer@hpe.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Wed, 10 Apr 2024 09:26:08 +0200
+Message-ID: <CAKfTPtC+d++V0T+C-O5fBy=i4BpEzvMib6eQYsPt-trhx2a1Jw@mail.gmail.com>
+Subject: Re: [PATCH 1/2 RESEND] cpumask: Add for_each_cpu_from()
+To: Kyle Meyer <kyle.meyer@hpe.com>
+Cc: linux-kernel@vger.kernel.org, yury.norov@gmail.com, 
+	andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk, mingo@redhat.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
+	vschneid@redhat.com, russ.anderson@hpe.com, dimitri.sivanich@hpe.com, 
+	steve.wahl@hpe.com
+Content-Type: text/plain; charset="UTF-8"
 
-[syzbot reported]
-BUG: KMSAN: uninit-value in strncmp+0x11e/0x180 lib/string.c:291
- strncmp+0x11e/0x180 lib/string.c:291
- hfsplus_listxattr+0x97d/0x1a60
- vfs_listxattr fs/xattr.c:493 [inline]
- listxattr+0x1f3/0x6b0 fs/xattr.c:840
- path_listxattr fs/xattr.c:864 [inline]
- __do_sys_listxattr fs/xattr.c:876 [inline]
- __se_sys_listxattr fs/xattr.c:873 [inline]
- __x64_sys_listxattr+0x16b/0x2f0 fs/xattr.c:873
- do_syscall_64+0xd5/0x1f0
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
+On Tue, 9 Apr 2024 at 17:54, Kyle Meyer <kyle.meyer@hpe.com> wrote:
+>
+> Add for_each_cpu_from() as a generic cpumask macro.
+>
+> for_each_cpu_from() is the same as for_each_cpu(), except it starts at
+> @cpu instead of zero.
+>
+> Signed-off-by: Kyle Meyer <kyle.meyer@hpe.com>
+> Acked-by: Yury Norov <yury.norov@gmail.com>
+> ---
+>  include/linux/cpumask.h | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> index 1c29947db848..655211db38ff 100644
+> --- a/include/linux/cpumask.h
+> +++ b/include/linux/cpumask.h
+> @@ -368,6 +368,16 @@ unsigned int __pure cpumask_next_wrap(int n, const struct cpumask *mask, int sta
+>  #define for_each_cpu_or(cpu, mask1, mask2)                             \
+>         for_each_or_bit(cpu, cpumask_bits(mask1), cpumask_bits(mask2), small_cpumask_bits)
+>
+> +/**
+> + * for_each_cpu_from - iterate over every cpu present in @mask, starting at @cpu
 
-Uninit was created at:
- slab_post_alloc_hook mm/slub.c:3804 [inline]
- slab_alloc_node mm/slub.c:3845 [inline]
- kmalloc_trace+0x578/0xba0 mm/slub.c:3992
- kmalloc include/linux/slab.h:628 [inline]
- hfsplus_listxattr+0x4cc/0x1a60 fs/hfsplus/xattr.c:701
- vfs_listxattr fs/xattr.c:493 [inline]
- listxattr+0x1f3/0x6b0 fs/xattr.c:840
- path_listxattr fs/xattr.c:864 [inline]
- __do_sys_listxattr fs/xattr.c:876 [inline]
- __se_sys_listxattr fs/xattr.c:873 [inline]
- __x64_sys_listxattr+0x16b/0x2f0 fs/xattr.c:873
- do_syscall_64+0xd5/0x1f0
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
-[Fix]
-When allocating memory to strbuf, initialize memory to 0.
+So I was confused why you were not using for_each_cpu_wrap while
+reading the description which has the same comment :
+"
+ * for_each_cpu_wrap - iterate over every cpu in a mask, starting at a
+specified location
+"
+Could you clarify that it's not "every cpu present in @mask" but only
+those after @cpu ?
 
-Reported-and-tested-by: syzbot+01ade747b16e9c8030e0@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- fs/hfsplus/xattr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/hfsplus/xattr.c b/fs/hfsplus/xattr.c
-index 9c9ff6b8c6f7..858029b1c173 100644
---- a/fs/hfsplus/xattr.c
-+++ b/fs/hfsplus/xattr.c
-@@ -698,7 +698,7 @@ ssize_t hfsplus_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 		return err;
- 	}
- 
--	strbuf = kmalloc(NLS_MAX_CHARSET_SIZE * HFSPLUS_ATTR_MAX_STRLEN +
-+	strbuf = kzalloc(NLS_MAX_CHARSET_SIZE * HFSPLUS_ATTR_MAX_STRLEN +
- 			XATTR_MAC_OSX_PREFIX_LEN + 1, GFP_KERNEL);
- 	if (!strbuf) {
- 		res = -ENOMEM;
--- 
-2.43.0
-
+> + * @cpu: the (optionally unsigned) integer iterator
+> + * @mask: the cpumask pointer
+> + *
+> + * After the loop, cpu is >= nr_cpu_ids.
+> + */
+> +#define for_each_cpu_from(cpu, mask)                           \
+> +       for_each_set_bit_from(cpu, cpumask_bits(mask), small_cpumask_bits)
+> +
+>  /**
+>   * cpumask_any_but - return a "random" in a cpumask, but not this one.
+>   * @mask: the cpumask to search
+> --
+> 2.44.0
+>
 
