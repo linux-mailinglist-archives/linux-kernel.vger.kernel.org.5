@@ -1,114 +1,119 @@
-Return-Path: <linux-kernel+bounces-138484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DD5489F1FB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:25:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB42989F1FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:25:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 683B7B22F50
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:25:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 913DA1F229AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E36C515DBBA;
-	Wed, 10 Apr 2024 12:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 330DA15E81C;
+	Wed, 10 Apr 2024 12:24:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DgKr42tu"
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kz/0yk2P"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD04215B549
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 12:24:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7521415E219;
+	Wed, 10 Apr 2024 12:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712751884; cv=none; b=RRXBnkPrrui5ka7zvc/YSb8bMHf/fXxOKjBcHmQGd7uJnlRdgpt/vLfYG3XQ2+8dFOfCvjXw3MLorX6BLmspx9B/U0FLKCtBJvKin2xUrgX/gO0p5+DuazXj/Gw9KQguPfrWA00Dv3gw47ciPDvrLVYKSHf6+XIddvlfQEg7PAI=
+	t=1712751888; cv=none; b=Pww3n9DOQRZbViFUswNQsGFmjSPMZsYRgrLuNo2vA0gVw68e3Ar+NkpFWnYr4QJgWJ3PoxDTefJI+M3HS2F9h599uHSYEGqiOGqZup8YhQ5ybH31tj8Tj3RbPsiHwWd0EhN8vYF7ZeF4BvnWcNDzoorNz3FSxRjjpFOxTKPVeHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712751884; c=relaxed/simple;
-	bh=tqy5RaJiXteDvdC/cyKO+b2613HwrFfwHfeUjkXSy8w=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=BrGRwm3IwDmF/Wa9ftHO7nZO7q5gXnlYIqvzCKWmoRYjnsDVcV4TsXrPLeCAu0CtASoSfBfIwC1lhwQhlgR0HIh2/1FjW/Y3zlOCWF0kc49cQ8GtbJ3pxHRKm+CiIHY03aifn6DG/DX+NYUgNTxG7Ds8K7qqnLNqM7eHjrm6JlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DgKr42tu; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-434b7ab085fso24137581cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 05:24:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712751881; x=1713356681; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MfpAXz8Bcfy/TLkzFPLD2yYUR7bPCnwgt9TJrWa9s1U=;
-        b=DgKr42tuIiVRjo3s/bmAVguAs4KQ8U0+lvepaCv2uiJcNXVIgBEpsbS7Y8Y9ytc7yJ
-         shZi0m7M9iW/9pBYnSn6NfjjLyCd2jp9e3xttu4eoMGAnrINhIy/s0ncNDExPvyj9Zlm
-         Qhq0YIcCcyslyR9ZSS2C7BTBSdin+Ql9f4exc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712751881; x=1713356681;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MfpAXz8Bcfy/TLkzFPLD2yYUR7bPCnwgt9TJrWa9s1U=;
-        b=DuEafAJqgzqAcG6rAr9bGpCBeoHT9gg60s2j75OFnCw+T5+u0Dy7cbHAWsoDFZhcaU
-         nMjn9gvU6IOVyMTOkS21vKZVa7eV+rGW5it1Hf4aZCtCWBYNLrHOfPc4PrN+zZQQw6uM
-         TLqaAp9lw1d7uWgwRJ3+FSthNl95vNkV5poapveKXJoxeqo8CJfnrpr3XzRF+rwq9QpN
-         rw9lUldQ/3J9l6lrYsL6MzO6UrkNEc7OXW4PPYz2/lNcXCOgtZvzCro0FKlCQGvW3X+i
-         9crJU55QLtbOmMwnZp11dRh26kxYwGhPrdljkHf6WvzHEKd+gjxVGpv8y4FObqra0gIT
-         sMcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXEly2ModdBNlhrpKUMqH19UCEmHKBJV9Kiw8qCp8r8Xk+X+FQV0oNxnxjDCuZtzzi4Nrf/Di+mtjgmnEwIjeXemtUKLNF6iU6ynn39
-X-Gm-Message-State: AOJu0Yw8usX+0xr2263IE2hJQK+sB3KfwRHarM22j95zsrRWHYHK0oVK
-	2gIVGLLPslNW66K1kFrYC8G1VggD1wxBOpBgYHdGCEmxCJ8J8g4DYc7Y0YzjDw==
-X-Google-Smtp-Source: AGHT+IHniFHijne50ct4dDiCfXqrYaE0q7Ul3bSD5D/xopuvSqykSDUiWPdCd6gCi40hRkdVKi8rNg==
-X-Received: by 2002:a05:622a:19a1:b0:434:6fee:5983 with SMTP id u33-20020a05622a19a100b004346fee5983mr8687083qtc.7.1712751881654;
-        Wed, 10 Apr 2024 05:24:41 -0700 (PDT)
-Received: from denia.c.googlers.com (188.173.86.34.bc.googleusercontent.com. [34.86.173.188])
-        by smtp.gmail.com with ESMTPSA id jy14-20020a05622a818e00b00434ce53c664sm1921579qtb.80.2024.04.10.05.24.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 05:24:41 -0700 (PDT)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Wed, 10 Apr 2024 12:24:39 +0000
-Subject: [PATCH 3/3] media: videodev2: Fix v4l2_ext-control packing.
+	s=arc-20240116; t=1712751888; c=relaxed/simple;
+	bh=C6TTaj8C3gGDyMgcwpzgLzOx1oB8jniHUKHvI6XaAHM=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=VRTUhhmYEOxbuvblwYYCvpmSJj8oXj5ljwEV8zPw4eESQaBv9/A42KJwgQwQI9/4YqsxwWimkDmuhUwcy/ONyX193zJLIMIu5ohR3oRQA5fS3nM3iWBFB1GITPwcPer0j94MwsQY77McfBS7rMhIWqVagXJJXoL5ChhmX0Cj2TY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=kz/0yk2P; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 68EDD1C0002;
+	Wed, 10 Apr 2024 12:24:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712751883;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l3ws31mOJD6WJ5PiqoLqg0x1rdfJP9Z5AmhmFZmsojA=;
+	b=kz/0yk2P0u15uvLO3V2bIiiBeyKMosuhBgHxZkWris1gH74OkoU5jCPXSknQz1fwnbqCjo
+	WU93j8pFtyf1I68J1uRLHRNfAg5gHZOVcMlMzHVsVuI0NHrTx8HflyI9e+u4/KSZym1ID/
+	dLY1ynmBrfb0tNGPH9M0ukL+GBN7W+zJIfMTRlKVe+QSU7q152nT7Stn4Lg2mBWWFD4IAz
+	is0Ld37Wwxu3wR4M4tX6oiZtMUnmBiv5xa+BA5V0S6lyrm4TKrsHU9+Xh30ivTw3v9rkKM
+	KjmEQ3u/Z+jx+Z9jJ5DewvT9iMBn+e0lu7mg7yh+wHeLPrLuMrtg83iOywZIEQ==
+Date: Wed, 10 Apr 2024 14:25:18 +0200 (CEST)
+From: Romain Gantois <romain.gantois@bootlin.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+cc: Romain Gantois <romain.gantois@bootlin.com>, 
+    "David S. Miller" <davem@davemloft.net>, 
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+    Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+    Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+    Conor Dooley <conor+dt@kernel.org>, 
+    Geert Uytterhoeven <geert+renesas@glider.be>, 
+    Magnus Damm <magnus.damm@gmail.com>, 
+    Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+    Jose Abreu <joabreu@synopsys.com>, 
+    Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+    Russell King <linux@armlinux.org.uk>, 
+    =?ISO-8859-15?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>, 
+    Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
+    devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+    linux-renesas-soc@vger.kernel.org, 
+    linux-stm32@st-md-mailman.stormreply.com, 
+    linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next v2 4/5] net: stmmac: add support for RZ/N1
+ GMAC
+In-Reply-To: <CAMuHMdX-F8LXWx=Ras4f+Dt_r485HKjRDLydDXZsnZBW8HJzxw@mail.gmail.com>
+Message-ID: <9bd8eee4-952d-d5b2-c462-45c1466c54d6@bootlin.com>
+References: <20240409-rzn1-gmac1-v2-0-79ca45f2fc79@bootlin.com> <20240409-rzn1-gmac1-v2-4-79ca45f2fc79@bootlin.com> <CAMuHMdX-F8LXWx=Ras4f+Dt_r485HKjRDLydDXZsnZBW8HJzxw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240410-pack-v1-3-70f287dd8a66@chromium.org>
-References: <20240410-pack-v1-0-70f287dd8a66@chromium.org>
-In-Reply-To: <20240410-pack-v1-0-70f287dd8a66@chromium.org>
-To: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>, linux-media@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.4
+Content-Type: multipart/mixed; boundary="1582177605-1727822458-1712751921=:538696"
+X-GND-Sasl: romain.gantois@bootlin.com
 
-The structure is packed, which requires that all its fields need to be
-also packed.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-/include/uapi/linux/videodev2.h:1810:2: warning: field  within 'struct v4l2_ext_control' is less aligned than 'union v4l2_ext_control::(anonymous at ./include/uapi/linux/videodev2.h:1810:2)' and is usually due to 'struct v4l2_ext_control' being packed, which can lead to unaligned accesses [-Wunaligned-access]
+--1582177605-1727822458-1712751921=:538696
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Explicitly set the inner union as packed.
+Hi Geert,
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- include/uapi/linux/videodev2.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Tue, 9 Apr 2024, Geert Uytterhoeven wrote:
 
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index 2663213b76a49..bf12860d570af 100644
---- a/include/uapi/linux/videodev2.h
-+++ b/include/uapi/linux/videodev2.h
-@@ -1842,7 +1842,7 @@ struct v4l2_ext_control {
- 		struct v4l2_ctrl_hdr10_cll_info __user *p_hdr10_cll_info;
- 		struct v4l2_ctrl_hdr10_mastering_display __user *p_hdr10_mastering_display;
- 		void __user *ptr;
--	};
-+	} __attribute__ ((packed));
- } __attribute__ ((packed));
- 
- struct v4l2_ext_controls {
+> > +config DWMAC_RZN1
+> > +       tristate "Renesas RZ/N1 dwmac support"
+> > +       default ARCH_RZN1
+> 
+> Why default to enabled?
+> 
+> > +       depends on OF && (ARCH_RZN1 || COMPILE_TEST)
+
+The kernel doc states this as one of the possible cases where setting default 
+y/m makes sense:
+
+```
+Sub-driver behavior or similar options for a driver that is “default n”. This 
+allows you to provide sane defaults.
+```
+
+In the case of DWMAC_RZN1, it is a suboption of stmmac which is "default n", and 
+I think it makes sense to enable the RZN1 ethernet controller driver if both the 
+stmmac driver and the RZN1 architecture were explicitely selected.
+
+Best Regards,
 
 -- 
-2.44.0.478.gd926399ef9-goog
-
+Romain Gantois, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+--1582177605-1727822458-1712751921=:538696--
 
