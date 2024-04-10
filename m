@@ -1,84 +1,67 @@
-Return-Path: <linux-kernel+bounces-139350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D7D08A01B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:09:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF6158A01BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:10:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4406D285AC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:09:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89FE92859CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 751C61836D4;
-	Wed, 10 Apr 2024 21:09:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441B41836EB;
+	Wed, 10 Apr 2024 21:10:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yadLgMaq"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kq7zG0h5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AACA715AAD6
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 21:09:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6350D15AAD6;
+	Wed, 10 Apr 2024 21:10:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712783377; cv=none; b=oCByRiOIwkX0I2bI5XL1Cgte1nTtJ9eX2eiXMjRoTud6KogD/MkmZ9E8XIsc9wdcO7RMqnEkoU+JpWO+ksBOMBCDlnUhMnqG4mhXeUpYg1ghg+lTWTJEpNrgpZU3WyY0IKPxxjdNi5x3q5pIaBQ1lDKw0qUO7PE1008ZGLomNDA=
+	t=1712783407; cv=none; b=gAgOmrBUaMDifRh1wcZiA9f1ToqWr9kOIfxP/CC/aAsHbgMFvF23JFclFYle+wlG93nBcv3+bXWf+D2M02RJiAjFBzNdwoJbdmh8E1ZYcDKpG6RrKyFiR74jO6rJjN62KticPnMWZ8tMJSToWskt+0g7Ue6R4lg4ApPtGA7y/Tk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712783377; c=relaxed/simple;
-	bh=WAW9t2DThjMy2xKQv7rDe/rTV+u/8A0589ytEQxdCh0=;
+	s=arc-20240116; t=1712783407; c=relaxed/simple;
+	bh=epqxiRJJT06ouxXsQ6dNk3Sxe1Z+04pN0RBFaN6a68g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UgtW4pHSKHg1sE54jyA2f1+ZH9d1LjKS5ULrdiplh9SNa62uiRFzePiHsZgaJGbHNaygKZHHIx/C0sY5SJ2QmqhfTUNgcsQ6FsoPLsZxk1joPRzRD/bdpyszGDB4FZ6bzH8IXnafCuFReraI5pfw6rDH1xiSZcYd9w4OsEbTbss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yadLgMaq; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-516d68d7a8bso206526e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 14:09:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712783374; x=1713388174; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3sq6cL+yZCWXGwoBU9BEGIVYWjjNj7BcR817H9ZPTm4=;
-        b=yadLgMaqD5Y+LhN4ER0Yq/z64krORJjXS3JhVmz8/mneaN10jSbQtit4Kjo6e5gaPp
-         DUeaM7mMyq5yJakto0gG9rtUfzg+/DyQQlsalSPYS4InA36xZhe/mSD96BWOcXZ8yz9K
-         wAOj9JI3xtOUPufllaLucdsWDKtyamEI4+A3oJWzh48YCElLJVQ4r7/Tjh6z0jhA9diy
-         AJyEyj8YA45EdInT/NnjnzFJAKj82xzYD6smu7Tv4jTuMO838tdb1D2Bpe42ySP2yWQ/
-         GpoRnPQgmXVHU/aWMH8PdcP+Lf5TpleJqWkiD2me/N/G0ZXDayDM5KZwas5QCVgMgL+4
-         MFIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712783374; x=1713388174;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3sq6cL+yZCWXGwoBU9BEGIVYWjjNj7BcR817H9ZPTm4=;
-        b=WYBFbvqjqAUR1SyvbcZJbjrE7ieYQwypuCCxIqCO2mdhqme/uAbBVLUVuNd3E7/Y3X
-         d9SmtVhagGO0o+GGX//XSAS7g9R+Ws/xseMslhikAAl8HjFu7WdLzUV8hn4/lwV4GRpQ
-         iGspF/dT9o93OKWUOYBubQ/yadsImk2ofne/MXpuQxDtmTPcCg7G1G9X/fTWymLs3tR6
-         VgfeVVLPbouIBZUrf/LCKZDMuEGslbkcwp3stntJ1mvmKd4o8u5MdRNW8LEAM6jJBD5M
-         /stn5aZ7mq/RFCRrKD4Jt6bT8DsqGMXdsG8/60VFIudNr1JSSqmwroSZcIIUksWTcJti
-         6KRw==
-X-Forwarded-Encrypted: i=1; AJvYcCUprzpTXnskVP5vwtv30fUg4XMfO4nN5sMVdY+yWYPdW60JU+Id+VW4eqzVa6D+zRdBnsj0yeBI8E/ujh+xaSz8dwn2cMzs339mXuai
-X-Gm-Message-State: AOJu0Yx8osBy4ieVLUkxk+hs6kyf+1WU0SzqLX2xz/AiryU+FL17bODV
-	GQwN/8iwzc3xYLP+pNZyPwgZj/cOwdM6kzblEDCx/ZFR7+bFXZMyLL7gFR4ztgk=
-X-Google-Smtp-Source: AGHT+IEqfZtA5IXLhzSXHUGyAGjypXAWIlAlr+3Je8YOnecyrhDB0Jb266QBNeEz0oVkfnh/ZR74OQ==
-X-Received: by 2002:a05:6512:11ed:b0:513:c47e:d811 with SMTP id p13-20020a05651211ed00b00513c47ed811mr177254lfs.33.1712783373633;
-        Wed, 10 Apr 2024 14:09:33 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
-        by smtp.gmail.com with ESMTPSA id d10-20020ac24c8a000000b00516d2489f16sm14619lfl.260.2024.04.10.14.09.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 14:09:32 -0700 (PDT)
-Date: Thu, 11 Apr 2024 00:09:31 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: "Christian A. Ehrhardt" <lk@c--e.de>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] usb: typec: ucsi_glink: drop special handling for
- CCI_BUSY
-Message-ID: <s2w7qfrbm3lq46hp4r4grmljg7cs24d6lmpiqr2mllxszte6wc@w7rh47o3z6rc>
-References: <20240409-qcom-ucsi-fixes-bis-v2-0-6d3a09faec90@linaro.org>
- <20240409-qcom-ucsi-fixes-bis-v2-3-6d3a09faec90@linaro.org>
- <ZhWWYQMluJCvYFKF@cae.in-ulm.de>
- <CAA8EJprTbtTSkZ18dejEgvhJOEQKQiwpE+6JkbHiO4H-yeKuhg@mail.gmail.com>
- <ZhZCsyeXa093OZnR@cae.in-ulm.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=a1vV/cKp86XsE+TJGaMGhCAhQEcaj59JFa4Xp33aNtWmwrT0D0zsvVuq9e/vU9ZKE0YutSYyoyCyf1E+uCY4kaMxM2CDVXZnfcxckqDtGgb1NJDPQx/7htFFX9l7UO8ynEQPxnHJxZgXcKOZzCtFxbhKjz/BQtICUcVY4YCTNB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kq7zG0h5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26899C433F1;
+	Wed, 10 Apr 2024 21:10:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712783407;
+	bh=epqxiRJJT06ouxXsQ6dNk3Sxe1Z+04pN0RBFaN6a68g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Kq7zG0h5SrekrSqAIw+NC6D2j3BaZVhgpOgUGupokoJKCz/HQPs1FjTM9YwwSddb5
+	 3Lf/9jM6lYOXCaDYAEJKz6nOJaRNxrLdgjXk4KLULbnOkSbYPPAgmFjuc/+ubF3/Wt
+	 2tkB62Sfl43fSMYh1TsFufYeJE8pF8RFLEfCInX/FkEzajdkwrXY/4ocd9fdIynrbk
+	 ERYPKG7lYMb402h1QoFDUrswFeo3Z1NZ+1Vx4Nef3xRjot+Id3mXxPe/IS4xOwTQvg
+	 typpy3hFMCPinD6ZUiNAkUkjkqyk6LRQhGLDHnoIEUoX0Hlql4VWpK6cDJz0FMfBeo
+	 xkVxny7zNWdeQ==
+Date: Wed, 10 Apr 2024 23:10:01 +0200
+From: Niklas Cassel <cassel@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mhi@lists.linux.dev, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 10/10] PCI: qcom: Implement shutdown() callback to
+ properly reset the endpoint devices
+Message-ID: <ZhcAKSJCQag6AX09@ryzen>
+References: <20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org>
+ <20240401-pci-epf-rework-v2-10-970dbe90b99d@linaro.org>
+ <ZgvpnqdjQ39JMRiV@ryzen>
+ <20240403133217.GK25309@thinkpad>
+ <Zg22Dhi2c7U5oqoz@ryzen>
+ <20240410105410.GC2903@thinkpad>
+ <Zhanol2xi_E2Ypv3@ryzen>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,140 +70,77 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZhZCsyeXa093OZnR@cae.in-ulm.de>
+In-Reply-To: <Zhanol2xi_E2Ypv3@ryzen>
 
-On Wed, Apr 10, 2024 at 09:41:39AM +0200, Christian A. Ehrhardt wrote:
-> 
-> Hi Dmitry,
-> 
-> On Wed, Apr 10, 2024 at 01:58:58AM +0300, Dmitry Baryshkov wrote:
-> > On Tue, 9 Apr 2024 at 22:26, Christian A. Ehrhardt <lk@c--e.de> wrote:
-> > >
-> > >
-> > > Hi Dmitry,
-> > >
-> > > On Tue, Apr 09, 2024 at 06:29:18PM +0300, Dmitry Baryshkov wrote:
-> > > > Newer Qualcomm platforms (sm8450+) successfully handle busy state and
-> > > > send the Command Completion after sending the Busy state. Older devices
-> > > > have firmware bug and can not continue after sending the CCI_BUSY state,
-> > > > but the command that leads to CCI_BUSY is already forbidden by the
-> > > > NO_PARTNER_PDOS quirk.
-> > > >
-> > > > Follow other UCSI glue drivers and drop special handling for CCI_BUSY
-> > > > event. Let the UCSI core properly handle this state.
-> > > >
-> > > > Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > > ---
-> > > >  drivers/usb/typec/ucsi/ucsi_glink.c | 10 ++++------
-> > > >  1 file changed, 4 insertions(+), 6 deletions(-)
-> > > >
-> > > > diff --git a/drivers/usb/typec/ucsi/ucsi_glink.c b/drivers/usb/typec/ucsi/ucsi_glink.c
-> > > > index 9ffea20020e7..fe9b951f5228 100644
-> > > > --- a/drivers/usb/typec/ucsi/ucsi_glink.c
-> > > > +++ b/drivers/usb/typec/ucsi/ucsi_glink.c
-> > > > @@ -176,7 +176,8 @@ static int pmic_glink_ucsi_sync_write(struct ucsi *__ucsi, unsigned int offset,
-> > > >       left = wait_for_completion_timeout(&ucsi->sync_ack, 5 * HZ);
-> > > >       if (!left) {
-> > > >               dev_err(ucsi->dev, "timeout waiting for UCSI sync write response\n");
-> > > > -             ret = -ETIMEDOUT;
-> > > > +             /* return 0 here and let core UCSI code handle the CCI_BUSY */
-> > > > +             ret = 0;
-> > > >       } else if (ucsi->sync_val) {
-> > > >               dev_err(ucsi->dev, "sync write returned: %d\n", ucsi->sync_val);
-> > > >       }
-> > > > @@ -243,11 +244,8 @@ static void pmic_glink_ucsi_notify(struct work_struct *work)
-> > > >               ucsi_connector_change(ucsi->ucsi, con_num);
-> > > >       }
-> > > >
-> > > > -     if (ucsi->sync_pending && cci & UCSI_CCI_BUSY) {
-> > > > -             ucsi->sync_val = -EBUSY;
-> > > > -             complete(&ucsi->sync_ack);
-> > > > -     } else if (ucsi->sync_pending &&
-> > > > -                (cci & (UCSI_CCI_ACK_COMPLETE | UCSI_CCI_COMMAND_COMPLETE))) {
-> > > > +     if (ucsi->sync_pending &&
-> > > > +         (cci & (UCSI_CCI_ACK_COMPLETE | UCSI_CCI_COMMAND_COMPLETE))) {
-> > > >               complete(&ucsi->sync_ack);
-> > > >       }
-> > > >  }
-> > >
-> > > This handling of the command completion turned out to be racy in
-> > > the ACPI case: If a normal command was sent one should wait for
-> > > UCSI_CCI_COMMAND_COMPLETE only. In case of an UCSI_ACK_CC_CI
-> > > command the completion is indicated by UCSI_CCI_ACK_COMPLETE.
-> > >
-> > > While not directly related, a port of this
-> > >     https://lore.kernel.org/all/20240121204123.275441-3-lk@c--e.de/
-> > > would nicely fit into this series.
+On Wed, Apr 10, 2024 at 04:52:18PM +0200, Niklas Cassel wrote:
+> On Wed, Apr 10, 2024 at 04:24:10PM +0530, Manivannan Sadhasivam wrote:
 > > 
-> > Ack, I'll take a look.
+> > Well, we could prevent the register access during PERST# assert time in the
+> > endpoint, but my worry is that we will end up with 2 version of the cleanup
+> > APIs. Lets take an example of dw_pcie_edma_remove() API which gets called
+> > during deinit and it touches some eDMA registers.
+> > 
+> > So should we introduce another API which just clears the sw data structure and
+> > not touching the registers? And this may be needed for other generic APIs as
+> > well.
 > 
-> Thanks.
+> I agree that it will be hard to come up with an elegant solution to this
+> problem.
 > 
-> > However... I can not stop but notice that CCG and STM32 glue drivers
-> > use the same old approach as we do. Which probably means that they
-> > might have the same issue.
+> These endpoint controllers that cannot do register accesses to their own
+> controllers' DBI/register space without the RC providing a refclock are
+> really becoming a pain... and the design and complexity of the PCI endpoint
+> APIs is what suffers as a result.
 > 
-> I did ping the ccg people wrt. this but they have a different
-> workaround that saves them at least most of the time, so I let
-> this drop.
+> PERST could be asserted at any time.
+> So for your system to not crash/hang by accessing registers in the controller,
+> an EPF driver must be designed with great care to never do any register access
+> when it is not safe...
 > 
-> > Could you please consider pulling up that
-> > code into the UCSI driver? Maybe the low-level code really should just
-> > read/write the messages, leaving all completions and CCI parsing to
-> > the core layer?
+> Perhaps the the EPF core should set the state (i.e. init_complete = false,
+> even before calling the deinit callback in EPF driver, and perhaps even add
+> safe-guards against init_complete in some APIs, so that e.g. a set_bar() call
+> cannot trigger a crash because PERST# is asserted.. but even then, it could
+> still be asserted in the middle of set_bar()'s execution.)
 > 
-> I did consider that but one of the ideas behind the new API for
-> UCSI backends was that backends can send commands (e.g. as part of
-> a quirk) even in the middle of a ->sync_write() call. Currently,
-> I don't really see how to combine this with completion handling
-> in the UCSI core.
 > 
-> > > I don't have the hardware to do this myself.
+> Looking at the databook, it looks like core_clk is derived from pipe_clk
+> output of the PHY. The PHY will either use external clock or internal clock.
 > 
-> I did propose other changes to the API with little respone here:
->     https://lore.kernel.org/all/20240218222039.822040-1-lk@c--e.de/
-> That could possibly be extended to achieve this. But again, that
-> would require testers for all the backends.
+> 4.6.2 DBI Protocol Transactions
+> it looks like core_clk must be active to read/write the DBI.
+> 
+> I really wish those controllers could e.g. change the clock temporarily
+> using a mux, so that it could still perform DBI read/writes when there is
+> not external refclk... Something like pm_sel_aux_clk selecting to use the
+> aux clk instead of core_clk when in low power states.
+> But I don't know the hardware well enough to know if that is possible for
+> the DBI, so that might just be wishful thinking...
 
-Well, I think that the patchset is too intrusive and (from the
-pmic-glink perspective) is too low-level.
 
-I'd start by pulling the sync_write() into the core layer, leaving just
-async_write in the glue layer. The async_write() then can be renamed to
-something like send_cmd(). Once required we can add the data pointer to
-this callback.
+Looking at the rock5b SBC (rockchip rk3588), the PHY refclk can either
+be taken from
+-a PLL internally from the SoC.
+or
+-an external clock on the SBC.
 
-I liked the idea of getting the CCI from the notification (in case of
-pmic-glink it works this way on all platforms except sc8180x).
+There does not seem to be an option to get the refclk as an input from
+the PCIe slot. (The refclk can only be output to the PCIe slot.)
 
-So what about having a really simple interface:
+So when running two rock5b SBC, you cannot use a common clock for the RC
+and the EP side, you have to use a separate reference clock scheme,
+either SRNS or SRIS.
 
-sruct ucsi_operations {
-	/*
-	 * send the command without waiting for the result
-	 * can be extended with u8 *data, size_t data_len once
-	 * necessary.
-	 * maybe use u8 control[8] instead of u64 control.
-	 */
-	int send_command(struct ucsi *, u64 control);
+Since I assume that you use two qcom platforms of the same model
+(I remember that you wrote that you usually test with
+qcom,sdx55-pcie-ep somewhere.)
+Surely this board must be able to supply a reference clock?
+(How else does it send this clock to the EP side?)
 
-	int read_data(struct ucsi *, void *buf, size_t len);
-	int read_version(struct ucsi *, u16 *version);
-	/* to be used only for reset handling */
-	int read_cci(struct ucsi *, u32 cci);
+So... why can't you run in SRNS or SRIS mode, where the EP provides
+it's own clock?
 
-	// other ops like update_altmode, as is
-};
 
-/* to be called by the glue driver once it gets the notification from
- * PPM */
-void ucsi_notify(struct ucsi *ucsi, u32 cci);
-
-This way we can pull all the common ACK/connection_changed/completion
-code into the core, while keeping glue layers flexible enough.
-
--- 
-With best wishes
-Dmitry
+Kind regards,
+Niklas
 
