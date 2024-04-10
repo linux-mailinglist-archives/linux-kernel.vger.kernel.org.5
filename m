@@ -1,73 +1,75 @@
-Return-Path: <linux-kernel+bounces-138928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D3F189FC1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:55:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76F4089FC24
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:56:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 094081F247F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:55:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2976828E358
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:56:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3324116F264;
-	Wed, 10 Apr 2024 15:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CAAB17167C;
+	Wed, 10 Apr 2024 15:55:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cibvtzGM"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VJXbIxf9"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3AC915DBA9;
-	Wed, 10 Apr 2024 15:55:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52D111E86D;
+	Wed, 10 Apr 2024 15:55:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712764549; cv=none; b=ID/8n+AoVFXY7XTQiOsp0MoAqNX20dtUba3igBTx4ZPTBm4mJh1sDcVaA7KtQl9Bdjg/iHBjISr9dzmLM4l6QuInsXWCbQP5ZJozlqn6oiNRAHj+1dKAj3HMjZHxuaxdURflmwZUZkedDki3Y8ranMQ56ZG5+0Y/k/GyQDdKGRI=
+	t=1712764551; cv=none; b=k0kLfU5FYFdG0b9J+cH7jmVCoJd3F2qwG8OxG14+a6RgEdZTbLOju4YojrpVdpnYIWd3diuAOcx91JF5lYIE35TNPTozN7qJOX/8mu3BKKIn8cDIn3LHSKuDdgErTQUwflv5WLzoIFpNoSgqGr8WrHxDc7gPsF3yBhdz55bmrig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712764549; c=relaxed/simple;
-	bh=aG6841BM+IzaM2wdf6XPCQIKX1BJoLnJgWWJZ09aXUc=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=icqxXuA7W56Wib2Dr+9aqYblIep61FCRMg2wfylxtGXyvVDxRr25u6YQeZh8xqmTH+laWPQZBvWTyt+Vd+q5/VNIHOXpPLEM1LbJNDRvjMW4Pz9Wn5Xh1okp5vh0zRr3DoCd715gsLr2WRynQeplvRLmnOBzwTMwb4wotzVf03I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cibvtzGM; arc=none smtp.client-ip=209.85.218.50
+	s=arc-20240116; t=1712764551; c=relaxed/simple;
+	bh=iUosu5YsymPpKqNWdU+OWpw6XNZgSqKxxGsYBKQMjJI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=MAFeB03qIDegzaaR1pX8fBW5DwLoC2wr0eLnOJfZYdCLKYOPkbiNuYfylGxqICH8PFfjoiPaq+EQbQKYYyzpb1rr0+6Q5WcRINNBHUjywhPM6kMSzH1PdwJ5VoX259kIaZ+3F4uQWqHSU1R2C5qSyb1ADInIl9GZvrKZZFgb//k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VJXbIxf9; arc=none smtp.client-ip=209.85.167.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a51c6e91793so647158766b.0;
-        Wed, 10 Apr 2024 08:55:47 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516d47ce662so9292728e87.1;
+        Wed, 10 Apr 2024 08:55:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712764545; x=1713369345; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jsjr/EUpS7jHu9EoCoBO4JHqmCRBqh6/KIR1YSfDMJk=;
-        b=cibvtzGM27xJrL3OGoQAwLNAQsjGk9NjO++nx2UtiTmpkh1WjqImfJlAx8JMkL6bA1
-         SpkL8bfKpUsx10XJwyhrO0T/NDrfTikAB204NQvRIjpdUwJ8l4Za4zaVz0H+/SoTZ4xD
-         Xp1J081tMmel3/Oyh4DqiuDfkwwuJISZEIzGl2F0oUPB2FRbY9Tq8V26gXG6MJC16qRO
-         Vca8KjIf2XNnZoNmPoGwz55UxwmfHB9J1aCu8OEZujSLvW+zspHwlxkFr5iFUO8icvyV
-         /4CwmrKutnTipUhfqzHecwxvfLakRrS/14Q/1BqvM8ueWFAEGxpkSzHeRU1dSAYd7FW6
-         C5eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712764545; x=1713369345;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1712764547; x=1713369347; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Jsjr/EUpS7jHu9EoCoBO4JHqmCRBqh6/KIR1YSfDMJk=;
-        b=GU0MaeSAuOfjRC5d7N8YxWpQ7fOCd9kynPZ+qIe4q03MAqvgyTSeZouvVxLA6IJdm7
-         BFRMBMItRXbxt7ENtwCgZLeAr/bdpDHoaJOWNgmaC6+Yy7uKaSP3JGFLvn+uG8PTBx34
-         PbmDx3H0QMBQdem1iJ4QpH5SRcrvlev7CC7ctcwFVrBEBD6KTet4Xbzh6bRyrp4ppSi1
-         xOhUxXm8w9ibP89lg95aZhY0pwMYLGEoPpPtG4ZdohPn0VXcMPv+Kw4fArpgHj7i8VZO
-         35IChgQUx0z8FHVWCdFMRb2wLNYSp6AVmZ+tvBkPZ/kk7J2oeEfPhFGL39M8KIcqBps7
-         wJWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW/Nv9c+ury4LGx1sQ/Pa+3CIGErJMAi3JRH6f8FJXmDSJ7kHdwDvvJ2TZysj1EmIKc6jy7hfuRi8NsiOlu2MkuDV+nJCMJhcd9aBCkwJxZ31+1998Cn0/pU2Gz6Sj1NwVIUP+f2HO8JQ==
-X-Gm-Message-State: AOJu0Yw25LpHwZpX/4CBXvUrE940zLNTsllRigeZzmfUhvpphTPFachT
-	tZZLRVbOd80CDaXSEw/ISiPr5cojAxdEyYFR+gLUmWT9c+GwVlqK28qjM+KK1yHzgw==
-X-Google-Smtp-Source: AGHT+IF1ADAUkQmkGJcp6oXbVsO2NNUVSgumq2+R9/e1RDxEbeDdhWqKmtLj8qqMmKKxMxSasjIpVQ==
-X-Received: by 2002:a17:906:46db:b0:a51:d056:d08b with SMTP id k27-20020a17090646db00b00a51d056d08bmr90851ejs.0.1712764545559;
-        Wed, 10 Apr 2024 08:55:45 -0700 (PDT)
+        bh=CjWL5urfCD2suWbxASMh0ZFN/BJUloa3sSOiLzgPS7w=;
+        b=VJXbIxf9eEUDYTvynCJCJUTdW2jRMpQw92u8kWh7OzZfJ5/pJkCa02aay3eNMQRXgs
+         p0htsbTElrMzklbAAR4uvn+PEQ7D1zLaYxukK+wuUxh/8SpNukAYtPl+rrByo7VnX8qC
+         mlQ/X/rOSujn2gsZSZxKLyyDvzVN4UfwtpvZGbk0siH+lqCiUEq9rnhkxK7gJcIxd2Nd
+         axVRT+I3VpbvDQZ+xKf4z2XP2PHNyNW4lRuhNUABwpOS+030wWuqosg0w8gIQTptdNlR
+         ptYdcZ5/FzQmjdmS4OmxVBtcKdqr24xLUBNoMuxZbBoc6Iy6KwuwUYJp2+/nA57IhCtv
+         WiDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712764547; x=1713369347;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CjWL5urfCD2suWbxASMh0ZFN/BJUloa3sSOiLzgPS7w=;
+        b=A1g14XKlFYfg3Ehnkl9267Qdr1WD7X3Cf3pvOIYQRJ5nHPC0HYYYyrh8K7Pu9A7teP
+         LwY+W7aP6Jr+x1vpFfo31HZUz+Caa2b3tcsLA5o+bT5zNKCHao57vVwaykpL9+awNi/A
+         Gyk8600ZRXdStjL3Png6L8/loef6P7cGryTOztIE4UvE0v6/lha78Pl45CYm/qamCsMt
+         l4YXHkz+FW0GJYZ5E3rrIPJitx1Rig/RfhF+8dJ0y37JB8KmAuBvWGS8T7w5slaWUKhW
+         haXhmgu9AtSE8/JsElAuMOHNvy+HZgWWBRUp+68NNdht96n11Ws9yLL9dPaZecXV0FxG
+         7UKA==
+X-Forwarded-Encrypted: i=1; AJvYcCUmdubV/kVRHv1eMkEA2K5xc60o0A1VnyalvAHFQRwqzPPGLsE05j7CHtz2RGZ/7y6yNPqiBH92tgP4+uWD+taNoIyv+SFGJuovloDNM94oqZANgCBWH6nAiqHK7Bg7IgP1R8MfKthL8A==
+X-Gm-Message-State: AOJu0YyiUoOhgpo5bCS3LO/4GHQG+DV1SwuhgdUHpLoOw9AvNASurPqI
+	PMsybm1MfKl3vM5y7i4h+T/dEtBkN3qeRQLyIF0j66j1K+wlb/HVM6G+Ln+qY810mA==
+X-Google-Smtp-Source: AGHT+IEhZ1EhOuatHHJC6dOkQluG+xXK5rizjLmHKYICtQdqLLMxOuH3rslLtKvHjApmXWcEYzpUkg==
+X-Received: by 2002:a05:6512:3134:b0:516:d1f0:fbf7 with SMTP id p20-20020a056512313400b00516d1f0fbf7mr2608557lfd.42.1712764546832;
+        Wed, 10 Apr 2024 08:55:46 -0700 (PDT)
 Received: from [127.0.1.1] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
-        by smtp.gmail.com with ESMTPSA id qw6-20020a1709066a0600b00a52172808c9sm279884ejc.56.2024.04.10.08.55.43
+        by smtp.gmail.com with ESMTPSA id qw6-20020a1709066a0600b00a52172808c9sm279884ejc.56.2024.04.10.08.55.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 08:55:44 -0700 (PDT)
+        Wed, 10 Apr 2024 08:55:46 -0700 (PDT)
 From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Subject: [PATCH v2 0/4] rtc: convert multiple bindings into dtschema
-Date: Wed, 10 Apr 2024 17:55:32 +0200
-Message-Id: <20240410-rtc_dtschema-v2-0-d32a11ab0745@gmail.com>
+Date: Wed, 10 Apr 2024 17:55:33 +0200
+Subject: [PATCH v2 1/4] dt-bindings: rtc: convert trivial devices into
+ dtschema
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,9 +78,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAHS2FmYC/1XMQQrCMBCF4auUWRtJprEWV95DipTptB0wjSQlK
- CV3NxZcuPwfvG+DyEE4wqXaIHCSKH4pgYcKaO6XiZUMpQE1Wm11o8JK92GNNLPrVa2xRTsYJtR
- QLs/Ao7x27taVniWuPrx3PZnv+oPafygZpRVZez5ZHKlu8Dq5Xh5H8g66nPMHsJC+eqgAAAA=
+Message-Id: <20240410-rtc_dtschema-v2-1-d32a11ab0745@gmail.com>
+References: <20240410-rtc_dtschema-v2-0-d32a11ab0745@gmail.com>
+In-Reply-To: <20240410-rtc_dtschema-v2-0-d32a11ab0745@gmail.com>
 To: Alexandre Belloni <alexandre.belloni@bootlin.com>, 
  Rob Herring <robh@kernel.org>, 
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
@@ -93,65 +95,232 @@ Cc: linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
  Javier Carrasco <javier.carrasco.cruz@gmail.com>, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712764543; l=2589;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712764543; l=7413;
  i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
- bh=aG6841BM+IzaM2wdf6XPCQIKX1BJoLnJgWWJZ09aXUc=;
- b=vE6WWKn/PfJQl6Z2mF/T4S+0ooamNPIyWAComjIMzpGZf3t4nblGf7WzRI3Gd5nnqgkkLJ54Z
- rg1MNNHQsJxBMn808RjLrAfEPSzorjoLsdzH843SWqOs2s8K41Q8LrA
+ bh=iUosu5YsymPpKqNWdU+OWpw6XNZgSqKxxGsYBKQMjJI=;
+ b=owDeqWcOexlJxUWmQcrdxMqzT1gWgViU73lAqA5P6dc9IURx/jDGsvUcssKKup3YCc6xdTLiI
+ NASAfe9dsp1CPuYc/hs4k29Vy67X64HKj/oHJXdRY8l2lJn5PuvMHQu
 X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
  pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
 
-This series converts the following bindings into dtschema, moving them
-to trivial-rtc whenever possible:
+These RTCs meet the requirements for a direct conversion into
+trivial-rtc:
 
-- orion-rtc: trival-rtc, referenced in arm arch.
-- google,goldfish-rtc: trivial-rtc, referenced in mips arch.
-- lpc32xx-rtc: add missing property and convert, referenced in arm arch.
-- maxim,ds1742: trivial-rtc, not referenced in arch, cheap conversion.
-- rtc-aspeed: 3 devices to trivial-rtc, all referenced in arm arch.
-- pxa-rtc: add missing properties and convert. Referenced in arm arch.
-- st,spear600-rtc: trivial-rtc, referenced in arm arch.
-- stmp3xxx-rtc: add compatibles and convert, referenced in arm arch.
-- via,vt8500-rtc: trivial-rtc, referenced in arm arch.
+- orion-rtc
+- google,goldfish-rtc
+- maxim,ds1742
+- rtc-aspped
+- spear-rtc
+- via,vt8500-rtc
 
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
 Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
-Changes in v2:
-- General: squash all moves to trivial-rtc into a single patch.
-- MAINTAINERS: remove reference to google,goldfish-rtc.txt
-- lpc32xx-rtc: create own binding to add the undocumented 'clocks'
-  property.
-- fsl,stmp3xxx-rtc.yaml: document missing compatibles.
-- Link to v1: https://lore.kernel.org/r/20240408-rtc_dtschema-v1-0-c447542fc362@gmail.com
-
----
-Javier Carrasco (4):
-      dt-bindings: rtc: convert trivial devices into dtschema
-      dt-bindings: rtc: lpc32xx-rtc: convert to dtschema
-      dt-bindings: rtc: pxa-rtc: convert to dtschema
-      dt-bindings: rtc: stmp3xxx-rtc: convert to dtschema
-
- .../devicetree/bindings/rtc/fsl,stmp3xxx-rtc.yaml  | 51 ++++++++++++++++++++++
- .../bindings/rtc/google,goldfish-rtc.txt           | 17 --------
- .../devicetree/bindings/rtc/lpc32xx-rtc.txt        | 15 -------
- .../devicetree/bindings/rtc/marvell,pxa-rtc.yaml   | 40 +++++++++++++++++
- .../devicetree/bindings/rtc/maxim,ds1742.txt       | 12 -----
- .../devicetree/bindings/rtc/nxp,lpc32xx-rtc.yaml   | 41 +++++++++++++++++
- .../devicetree/bindings/rtc/orion-rtc.txt          | 18 --------
- Documentation/devicetree/bindings/rtc/pxa-rtc.txt  | 14 ------
- .../devicetree/bindings/rtc/rtc-aspeed.txt         | 22 ----------
- .../devicetree/bindings/rtc/spear-rtc.txt          | 15 -------
- .../devicetree/bindings/rtc/stmp3xxx-rtc.txt       | 21 ---------
- .../devicetree/bindings/rtc/trivial-rtc.yaml       | 16 +++++++
- .../devicetree/bindings/rtc/via,vt8500-rtc.txt     | 15 -------
+ .../bindings/rtc/google,goldfish-rtc.txt           | 17 -----------------
+ .../devicetree/bindings/rtc/maxim,ds1742.txt       | 12 ------------
+ .../devicetree/bindings/rtc/orion-rtc.txt          | 18 ------------------
+ .../devicetree/bindings/rtc/rtc-aspeed.txt         | 22 ----------------------
+ .../devicetree/bindings/rtc/spear-rtc.txt          | 15 ---------------
+ .../devicetree/bindings/rtc/trivial-rtc.yaml       | 16 ++++++++++++++++
+ .../devicetree/bindings/rtc/via,vt8500-rtc.txt     | 15 ---------------
  MAINTAINERS                                        |  1 -
- 14 files changed, 148 insertions(+), 150 deletions(-)
----
-base-commit: fec50db7033ea478773b159e0e2efb135270e3b7
-change-id: 20240406-rtc_dtschema-302824d1ec20
+ 8 files changed, 16 insertions(+), 100 deletions(-)
 
-Best regards,
+diff --git a/Documentation/devicetree/bindings/rtc/google,goldfish-rtc.txt b/Documentation/devicetree/bindings/rtc/google,goldfish-rtc.txt
+deleted file mode 100644
+index 634312dd95ca..000000000000
+--- a/Documentation/devicetree/bindings/rtc/google,goldfish-rtc.txt
++++ /dev/null
+@@ -1,17 +0,0 @@
+-Android Goldfish RTC
+-
+-Android Goldfish RTC device used by Android emulator.
+-
+-Required properties:
+-
+-- compatible : should contain "google,goldfish-rtc"
+-- reg        : <registers mapping>
+-- interrupts : <interrupt mapping>
+-
+-Example:
+-
+-	goldfish_timer@9020000 {
+-		compatible = "google,goldfish-rtc";
+-		reg = <0x9020000 0x1000>;
+-		interrupts = <0x3>;
+-	};
+diff --git a/Documentation/devicetree/bindings/rtc/maxim,ds1742.txt b/Documentation/devicetree/bindings/rtc/maxim,ds1742.txt
+deleted file mode 100644
+index d0f937c355b5..000000000000
+--- a/Documentation/devicetree/bindings/rtc/maxim,ds1742.txt
++++ /dev/null
+@@ -1,12 +0,0 @@
+-* Maxim (Dallas) DS1742/DS1743 Real Time Clock
+-
+-Required properties:
+-- compatible: Should contain "maxim,ds1742".
+-- reg: Physical base address of the RTC and length of memory
+-  mapped region.
+-
+-Example:
+-	rtc: rtc@10000000 {
+-		compatible = "maxim,ds1742";
+-		reg = <0x10000000 0x800>;
+-	};
+diff --git a/Documentation/devicetree/bindings/rtc/orion-rtc.txt b/Documentation/devicetree/bindings/rtc/orion-rtc.txt
+deleted file mode 100644
+index 3bf63ffa5160..000000000000
+--- a/Documentation/devicetree/bindings/rtc/orion-rtc.txt
++++ /dev/null
+@@ -1,18 +0,0 @@
+-* Mvebu Real Time Clock
+-
+-RTC controller for the Kirkwood, the Dove, the Armada 370 and the
+-Armada XP SoCs
+-
+-Required properties:
+-- compatible : Should be "marvell,orion-rtc"
+-- reg: physical base address of the controller and length of memory mapped
+-  region.
+-- interrupts: IRQ line for the RTC.
+-
+-Example:
+-
+-rtc@10300 {
+-        compatible = "marvell,orion-rtc";
+-        reg = <0xd0010300 0x20>;
+-        interrupts = <50>;
+-};
+diff --git a/Documentation/devicetree/bindings/rtc/rtc-aspeed.txt b/Documentation/devicetree/bindings/rtc/rtc-aspeed.txt
+deleted file mode 100644
+index 2e956b3dc276..000000000000
+--- a/Documentation/devicetree/bindings/rtc/rtc-aspeed.txt
++++ /dev/null
+@@ -1,22 +0,0 @@
+-ASPEED BMC RTC
+-==============
+-
+-Required properties:
+- - compatible: should be one of the following
+-   * aspeed,ast2400-rtc for the ast2400
+-   * aspeed,ast2500-rtc for the ast2500
+-   * aspeed,ast2600-rtc for the ast2600
+-
+- - reg: physical base address of the controller and length of memory mapped
+-   region
+-
+- - interrupts: The interrupt number
+-
+-Example:
+-
+-   rtc@1e781000 {
+-           compatible = "aspeed,ast2400-rtc";
+-           reg = <0x1e781000 0x18>;
+-           interrupts = <22>;
+-           status = "disabled";
+-   };
+diff --git a/Documentation/devicetree/bindings/rtc/spear-rtc.txt b/Documentation/devicetree/bindings/rtc/spear-rtc.txt
+deleted file mode 100644
+index fecf8e4ad4b4..000000000000
+--- a/Documentation/devicetree/bindings/rtc/spear-rtc.txt
++++ /dev/null
+@@ -1,15 +0,0 @@
+-* SPEAr RTC
+-
+-Required properties:
+-- compatible : "st,spear600-rtc"
+-- reg : Address range of the rtc registers
+-- interrupt: Should contain the rtc interrupt number
+-
+-Example:
+-
+-	rtc@fc000000 {
+-		compatible = "st,spear600-rtc";
+-		reg = <0xfc000000 0x1000>;
+-		interrupt-parent = <&vic1>;
+-		interrupts = <12>;
+-	};
+diff --git a/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml b/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
+index c9e3c5262c21..b590bf35d440 100644
+--- a/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
++++ b/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
+@@ -24,6 +24,12 @@ properties:
+       - abracon,abb5zes3
+       # AB-RTCMC-32.768kHz-EOZ9: Real Time Clock/Calendar Module with I2C Interface
+       - abracon,abeoz9
++      # ASPEED BMC ast2400 Real-time Clock
++      - aspeed,ast2400-rtc
++      # ASPEED BMC ast2500 Real-time Clock
++      - aspeed,ast2500-rtc
++      # ASPEED BMC ast2600 Real-time Clock
++      - aspeed,ast2600-rtc
+       # I2C, 32-Bit Binary Counter Watchdog RTC with Trickle Charger and Reset Input/Output
+       - dallas,ds1374
+       # Dallas DS1672 Real-time Clock
+@@ -41,10 +47,16 @@ properties:
+       - epson,rx8571
+       # I2C-BUS INTERFACE REAL TIME CLOCK MODULE
+       - epson,rx8581
++      # Android Goldfish Real-time Clock
++      - google,goldfish-rtc
+       # Intersil ISL1208 Low Power RTC with Battery Backed SRAM
+       - isil,isl1208
+       # Intersil ISL1218 Low Power RTC with Battery Backed SRAM
+       - isil,isl1218
++      # Mvebu Real-time Clock
++      - marvell,orion-rtc
++      # Maxim DS1742/DS1743 Real-time Clock
++      - maxim,ds1742
+       # SPI-BUS INTERFACE REAL TIME CLOCK MODULE
+       - maxim,mcp795
+       # Real Time Clock Module with I2C-Bus
+@@ -67,6 +79,10 @@ properties:
+       - ricoh,rv5c387a
+       # 2-wire CMOS real-time clock
+       - sii,s35390a
++      # ST SPEAr Real-time Clock
++      - st,spear600-rtc
++      # VIA/Wondermedia VT8500 Real-time Clock
++      - via,vt8500-rtc
+       # I2C bus SERIAL INTERFACE REAL-TIME CLOCK IC
+       - whwave,sd3078
+       # Xircom X1205 I2C RTC
+diff --git a/Documentation/devicetree/bindings/rtc/via,vt8500-rtc.txt b/Documentation/devicetree/bindings/rtc/via,vt8500-rtc.txt
+deleted file mode 100644
+index 3c0484c49582..000000000000
+--- a/Documentation/devicetree/bindings/rtc/via,vt8500-rtc.txt
++++ /dev/null
+@@ -1,15 +0,0 @@
+-VIA/Wondermedia VT8500 Realtime Clock Controller
+------------------------------------------------------
+-
+-Required properties:
+-- compatible : "via,vt8500-rtc"
+-- reg : Should contain 1 register ranges(address and length)
+-- interrupts : alarm interrupt
+-
+-Example:
+-
+-	rtc@d8100000 {
+-		compatible = "via,vt8500-rtc";
+-		reg = <0xd8100000 0x10000>;
+-		interrupts = <48>;
+-	};
+diff --git a/MAINTAINERS b/MAINTAINERS
+index aea47e04c3a5..f24469714f1e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1442,7 +1442,6 @@ F:	drivers/irqchip/irq-goldfish-pic.c
+ ANDROID GOLDFISH RTC DRIVER
+ M:	Jiaxun Yang <jiaxun.yang@flygoat.com>
+ S:	Supported
+-F:	Documentation/devicetree/bindings/rtc/google,goldfish-rtc.txt
+ F:	drivers/rtc/rtc-goldfish.c
+ 
+ AOA (Apple Onboard Audio) ALSA DRIVER
+
 -- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
+2.40.1
 
 
