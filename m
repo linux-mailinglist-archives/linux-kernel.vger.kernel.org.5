@@ -1,179 +1,167 @@
-Return-Path: <linux-kernel+bounces-139139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0AB889FF02
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:49:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0CFD89FC72
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:06:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D47391C22E4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:49:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2DB61C21B92
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 233FA19DF46;
-	Wed, 10 Apr 2024 17:45:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB2151791F6;
+	Wed, 10 Apr 2024 16:06:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="SRhvLYbz"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZthO1lbM"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D741836C0;
-	Wed, 10 Apr 2024 17:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FAE51779B6;
+	Wed, 10 Apr 2024 16:06:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712771106; cv=none; b=okwRsNrwFaVSXFF2eo20i0jl3RltcSlqUiktE7ba7cAFxFKstIWqom+Xw+ylU36IYTHBrdfn2u/Hi4FpLIoRZj5msK0rS/anN3SptkKcmiqnnTvIbrSXGMkr0RWuw7RgLqRLO8PnqU6qAtlLYRRFvKBjT+IuCyA58ebphf0rNtw=
+	t=1712765162; cv=none; b=OpTS7KzUcJCwJf/VqHXvK2DTkd28re5/2RCGvW/bKZkz9jSGASlyTD1NrWOi08thUiaHekKlvXvk5xkkxtMy+MuXxl8KqYBnxCCtFtyosebCmYitaouio9E/o5ZUvSSBNxZ5qhfvVGxuHekZOte2usV+CeMg/L4njj2Z83K1CTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712771106; c=relaxed/simple;
-	bh=O4fc6NcbFmDtcu5Mpz4hlacgxv2TpLc3B9RGa8Nme0s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fuWcxxuUnjRagF9zPq/ukzDTeNcJhqQfmt1ybzkLLTGvhT31XsQAYz8JX6MnqS3PnnlqJ2VXm7/gcxINBmWJic3XXtzHUH/z/5iDTsinoTfkQn+WuiXohA0PH3kQSToxtBFP7gMk17AlPK7urNEVo24sP35jePESjgkn8E6aCn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=SRhvLYbz reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
- id bb772444a988b3f5; Wed, 10 Apr 2024 19:45:00 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 31B2666C66F;
-	Wed, 10 Apr 2024 19:45:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1712771100;
-	bh=O4fc6NcbFmDtcu5Mpz4hlacgxv2TpLc3B9RGa8Nme0s=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=SRhvLYbzwUbjbbB+rh71vwG0EtJ9YzgpOngRxzfdN/W2k4R1cTGiSM6Ojd96fiHnk
-	 gAs8MqLt+9dXZ7Q1+YdfFHURbUvmfB6S7PwpOo9TV85i2cZmBqnvwgnevA8sY3CyKP
-	 LWzA018gPOwTB3N6LD4q1VzfPmAoEXqT4fsNQWLTRr6uxkhjYSQQAZh1DDj+3giJkU
-	 jV0+/H4XY5FnYGsOPdKMsfYnIGqUCSOdFwBOwpImUCyd+n8QYXmhr+D8BUKZGNPgiq
-	 rhjF1gOiIfvAwK7PrOs0GFTQh1MXl8qgVSjsYX8lXGNNyO04420Sff0Nh1E0AQX94I
-	 Bzng0OWja8fPA==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Lukasz Luba <lukasz.luba@arm.com>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject:
- [PATCH v1 02/16] thermal: gov_bang_bang: Use .trip_crossed() instead of
- .throttle()
-Date: Wed, 10 Apr 2024 18:04:39 +0200
-Message-ID: <2289003.iZASKD2KPV@kreacher>
-In-Reply-To: <13515747.uLZWGnKmhe@kreacher>
-References: <13515747.uLZWGnKmhe@kreacher>
+	s=arc-20240116; t=1712765162; c=relaxed/simple;
+	bh=piq+aZgljrVoCDKhCfSkoGK2WF2WNTFw7ziQ5tAjdOc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Lc8Ox9B9x8w7XPCLcLfCcVjyI54QwnThiRi3Jetn7rh+Bc2I46DOsfCHJI5sct4jW8p5Ku3jfL3FgOtOzR7JPJBG4zhoKAynlnaZmbHMQ3HI3fV6TZtLWYjUfF2vUEfvCsE9QfO9qoPes1KUY8vGBmzqDrTkHCaE+0mvFjI3DWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ZthO1lbM; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43AFr5a9030162;
+	Wed, 10 Apr 2024 16:05:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=gofH+p75A2H6MwZ+LcSc2nUNvgwMF53ULI8Ss/9g+q4=; b=Zt
+	hO1lbMnlBlYM6pnlELChyEfOLMh6lvk+6K4hFEz7irHMPx5GRtqr6QJL8OHa4STH
+	oY2274kPX9yaO21fipOT6y3smAhYzPP6GRS/B3aLVLAftOCeGcbeugvhU/G7yK29
+	05SlUnMnkyOMoDEzkj2dQ/8cr08q9dNwIbh/yvuEkLnP6wbKlqYmpXtMd9h/m2du
+	ui1PMRupXHY6oDfb2oMbIKBVK9Zl4o9ukJmcptWLKV/xFDZIsIyyxjPUTswV841P
+	1Jy+QeZYF7p3HG0g7Xb0a/Q2QTLXpZ5Cu4gXcK9WwsPFkTaadMR3vIQNdILQQ/IG
+	jFrXvEZsUHa3880I6uYQ==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xdskjha29-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 16:05:30 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43AG5T7f022079
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 16:05:29 GMT
+Received: from [10.110.37.144] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 10 Apr
+ 2024 09:05:27 -0700
+Message-ID: <c128cf9b-de30-49f1-9adb-8b03b61f4d51@quicinc.com>
+Date: Wed, 10 Apr 2024 09:05:26 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 16/16] PCI/pwrctl: add a PCI power control driver for
+ power sequenced devices
+Content-Language: en-US
+To: Bartosz Golaszewski <brgl@bgdev.pl>,
+        Marcel Holtmann
+	<marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David
+ S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub
+ Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Rob Herring
+	<robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+        Bjorn
+ Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+        Catalin
+ Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Bjorn
+ Helgaas <bhelgaas@google.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Geert
+ Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Neil
+ Armstrong <neil.armstrong@linaro.org>,
+        Marek Szyprowski
+	<m.szyprowski@samsung.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla
+	<srinivas.kandagatla@linaro.org>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Manivannan
+ Sadhasivam <mani@kernel.org>,
+        Lukas Wunner <lukas@wunner.de>,
+        Dmitry
+ Baryshkov <dmitry.baryshkov@linaro.org>,
+        Amit Pundir
+	<amit.pundir@linaro.org>, Xilin Wu <wuxilin123@gmail.com>
+CC: <linux-bluetooth@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>,
+        Bartosz Golaszewski
+	<bartosz.golaszewski@linaro.org>
+References: <20240410124628.171783-1-brgl@bgdev.pl>
+ <20240410124628.171783-17-brgl@bgdev.pl>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <20240410124628.171783-17-brgl@bgdev.pl>
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudehiedguddugecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeehpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtohepshhr
- ihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: DT7Wv9f2L7fktC3xWXbBoB4QdMNzyLRm
+X-Proofpoint-ORIG-GUID: DT7Wv9f2L7fktC3xWXbBoB4QdMNzyLRm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ clxscore=1015 adultscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 phishscore=0 impostorscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404100117
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 4/10/2024 5:46 AM, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> Add a PCI power control driver that's capable of correctly powering up
+> devices using the power sequencing subsystem. The first user of this
+> driver is the ath11k module on QCA6390.
+[...]
+> +config PCI_PWRCTL_PWRSEQ
+> +	tristate "PCI Power Control driver using the Power Sequencing subsystem"
+> +	select POWER_SEQUENCING
+> +	select PCI_PWRCTL
+> +	default m if (ATH11K_PCI && ARCH_QCOM)
+[...]
+> +static const struct of_device_id pci_pwrctl_pwrseq_of_match[] = {
+> +	{
+> +		/* ATH11K in QCA6390 package. */
+> +		.compatible = "pci17cb,1101",
+> +		.data = "wlan",
+> +	},
+> +	{
+> +		/* ATH12K in WCN7850 package. */
+> +		.compatible = "pci17cb,1107",
+> +		.data = "wlan",
 
-The Bang-Bang governor really is only concerned about trip point
-crossing, so it can use the new .trip_crossed() callback instead of
-throttle() that is not particularly suitable for it.
+since you are adding both ath11k and ath12k packages, should you update the
+commit text and the config "default m if" condition to include ath12k?
 
-Modify it to do so which also takes trip hysteresis into account, so the
-governor does not need to use it directly any more.
-
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/thermal/gov_bang_bang.c |   31 +++++++++++++------------------
- 1 file changed, 13 insertions(+), 18 deletions(-)
-
-Index: linux-pm/drivers/thermal/gov_bang_bang.c
-===================================================================
---- linux-pm.orig/drivers/thermal/gov_bang_bang.c
-+++ linux-pm/drivers/thermal/gov_bang_bang.c
-@@ -13,8 +13,9 @@
- 
- #include "thermal_core.h"
- 
--static int thermal_zone_trip_update(struct thermal_zone_device *tz,
--				    const struct thermal_trip *trip)
-+static void thermal_zone_trip_update(struct thermal_zone_device *tz,
-+				     const struct thermal_trip *trip,
-+				     bool crossed_up)
- {
- 	int trip_index = thermal_zone_trip_id(tz, trip);
- 	struct thermal_instance *instance;
-@@ -43,13 +44,12 @@ static int thermal_zone_trip_update(stru
- 		}
- 
- 		/*
--		 * enable fan when temperature exceeds trip_temp and disable
--		 * the fan in case it falls below trip_temp minus hysteresis
-+		 * Enable the fan when the trip is crossed on the way up and
-+		 * disable it when the trip is crossed on the way down.
- 		 */
--		if (instance->target == 0 && tz->temperature >= trip->temperature)
-+		if (instance->target == 0 && crossed_up)
- 			instance->target = 1;
--		else if (instance->target == 1 &&
--			 tz->temperature < trip->temperature - trip->hysteresis)
-+		else if (instance->target == 1 && !crossed_up)
- 			instance->target = 0;
- 
- 		dev_dbg(&instance->cdev->device, "target=%d\n",
-@@ -59,14 +59,13 @@ static int thermal_zone_trip_update(stru
- 		instance->cdev->updated = false; /* cdev needs update */
- 		mutex_unlock(&instance->cdev->lock);
- 	}
--
--	return 0;
- }
- 
- /**
-  * bang_bang_control - controls devices associated with the given zone
-  * @tz: thermal_zone_device
-  * @trip: the trip point
-+ * @crossed_up: whether or not the trip has been crossed on the way up
-  *
-  * Regulation Logic: a two point regulation, deliver cooling state depending
-  * on the previous state shown in this diagram:
-@@ -90,26 +89,22 @@ static int thermal_zone_trip_update(stru
-  *     (trip_temp - hyst) so that the fan gets turned off again.
-  *
-  */
--static int bang_bang_control(struct thermal_zone_device *tz,
--			     const struct thermal_trip *trip)
-+static void bang_bang_control(struct thermal_zone_device *tz,
-+			      const struct thermal_trip *trip,
-+			      bool crossed_up)
- {
- 	struct thermal_instance *instance;
--	int ret;
- 
- 	lockdep_assert_held(&tz->lock);
- 
--	ret = thermal_zone_trip_update(tz, trip);
--	if (ret)
--		return ret;
-+	thermal_zone_trip_update(tz, trip, crossed_up);
- 
- 	list_for_each_entry(instance, &tz->thermal_instances, tz_node)
- 		thermal_cdev_update(instance->cdev);
--
--	return 0;
- }
- 
- static struct thermal_governor thermal_gov_bang_bang = {
- 	.name		= "bang_bang",
--	.throttle	= bang_bang_control,
-+	.trip_crossed	= bang_bang_control,
- };
- THERMAL_GOVERNOR_DECLARE(thermal_gov_bang_bang);
-
-
-
+/jeff
 
