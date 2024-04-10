@@ -1,118 +1,108 @@
-Return-Path: <linux-kernel+bounces-138545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46E1489F332
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:58:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D04E8A38A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 00:44:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78F641C26982
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:58:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DF431F232D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:44:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E86F15EFCB;
-	Wed, 10 Apr 2024 12:51:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBB6C1482FA;
+	Fri, 12 Apr 2024 22:44:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iw2pEUtO";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="V7JASDXn"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="S9p6DXVR"
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CEC115B995;
-	Wed, 10 Apr 2024 12:51:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F97F225D7
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 22:44:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712753491; cv=none; b=WGgzaL13acGzADfvkoAWn0xauCPEURexuld0Ozm9+WuBNrzibWcp8McQuvR2ZOobf62P24r3o7SRdw2gYjKNy/gf5NTFFnUzMLX6cRI0ZJu81NA6PgmGAWqOO+DGDSgj7mnZ8IrIhzZgjiRpBEcHyL0NZrSCJc07j9lprsRzvDI=
+	t=1712961881; cv=none; b=ibocq9HvsjZa+vL35eMqfGujya4bHkMnEDTvokzZ1cdarVZmEgZGb7RPz2crM1X5VhvvVl5c151hDLVe1M2tsTqH2Q7VC61HdF3wd71yRBGHolihTMKRqv9uGQ14wsyA2s/58sGq/qGxF9YS1XyKdyJ7xAFZ2PxCuw1uG6KhUhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712753491; c=relaxed/simple;
-	bh=LLMGp714NUJtAYoSJJfvg+tAURcKNyM+caOeo+Zjxmg=;
+	s=arc-20240116; t=1712961881; c=relaxed/simple;
+	bh=2/G8pva0QKXdcG7pAlRPcQQaEkGLUnJpeXwjjOIqChY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QNjOoaefTaayF9W1iF/fQLjzadMFe4c9fjf28mlF9GqBopjQmj5t5RDpCnX/MMfBm9HzYbTZmcBcMKe23qcL7rsQHB2qHLdVhByZtY6zVxUuM+hZNCrTrmmWnOCjl3F9k2rg1xKz4jGR8P3k2XLqIZn6F+OHtxdb9kef3eQTOKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iw2pEUtO; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=V7JASDXn; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 10 Apr 2024 14:51:26 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712753488;
+	 Content-Type:Content-Disposition:In-Reply-To; b=i/xGacUho4Eu1q3lFEI1kVQnRN9Ri6knlooKyPgh54ogcF97+D+Rk02239ZgSkP4p/z7CBwjbFAZlVH9/RplrB5ThTVqyD259YxvM0/LIj5tNPPk46Z6x1fT+yOOOkcYHM+1/BBi0Uc68gXXp/nKDd+SZLt88TcTXKetdR9448M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=S9p6DXVR; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 10 Apr 2024 21:53:41 +0900
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712961877;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=e4QXXsu71JXQrIDib+0DcdWbOZC0pgoPfrFmZFNP9YI=;
-	b=iw2pEUtOI2eZiBNUtW4AgZjjSQmLZy0yBPIv5T+wXGvsHP/vuXHFfAEk+2JDNji2JuZLsQ
-	Ab9vPegknyD5vGwSW1VGmsRYvrkc6QhlWj4C7ORnw/Hc35OFqr2Nsni17Zdvxtmmt12WSN
-	Cnk7cFq/zsyrE985StGzJ6ugfTxqdCGYaCsj0bO3s+4fmd9+ObbRJAUezu8vuWqrbs4mTF
-	f9+qNqR5q2gKGWAuoUl4QYUsayf4PCjKySbF32oNI0NktBVhyyH/rofwjqVDcPHiipmtF5
-	2nI8U2Si4vQxzDOcWhypE9RX2EYJFsyFh9Jftyq0U5sS76/6Ezesxl38Jjp+3A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712753488;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e4QXXsu71JXQrIDib+0DcdWbOZC0pgoPfrFmZFNP9YI=;
-	b=V7JASDXnjHUwWxLVi//k+JlpDl2zSCScJLqjUnDnxSA1Nx3xsauxDrCktOo/z8fugJI5aN
-	t2jNcUrovOpx6uDg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Jiri Olsa <jolsa@kernel.org>, Marco Elver <elver@google.com>,
+	bh=bK7KfBMPyOIucwDtN0e7NfhXAX7dIzQN2rgbT78Breo=;
+	b=S9p6DXVRqT4Q3RBVm7Uq9aPDAJOOzIiSGngKqvRMvNWI8kHldgoRu+I3oxpRc8RPeCTXYE
+	rNPpTaRupbgiEaYYO+Wb9MdGx5CS1G/ZS+NpHFGPZgs4dI7FECqKaBUKjvrNuPLzlwPpCm
+	KonJVHhiEGrZwSX6WL6pvVmUyuIlROA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Itaru Kitayama <itaru.kitayama@linux.dev>
+To: Will Deacon <will@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
 	Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: [PATCH v3 3/4] perf: Remove perf_swevent_get_recursion_context()
- from perf_pending_task().
-Message-ID: <20240410125126.X26tR8tM@linutronix.de>
-References: <20240322065208.60456-1-bigeasy@linutronix.de>
- <20240322065208.60456-4-bigeasy@linutronix.de>
- <ZhRqSEbyd1rqVwfN@pavilion.home>
- <20240409062501.h4rA_ck4@linutronix.de>
- <ZhUaAjhQXN6ahtpS@localhost.localdomain>
- <20240409105405.TXUU--_W@linutronix.de>
- <ZhUt8XMndGSwNuwx@localhost.localdomain>
- <20240409133336.Y4Io-16-@linutronix.de>
- <ZhZsOvM3uTP6nTnZ@localhost.localdomain>
+	Ard Biesheuvel <ardb@kernel.org>,
+	David Hildenbrand <david@redhat.com>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Ryan Roberts <ryan.roberts@arm.com>, kernel-team@android.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] Speed up boot with faster linear map creation
+Message-ID: <ZhaL1TABj0Qf7UKR@vm3>
+References: <20240412131908.433043-1-ryan.roberts@arm.com>
+ <171293670589.3659902.6442840474459477952.b4-ty@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZhZsOvM3uTP6nTnZ@localhost.localdomain>
+In-Reply-To: <171293670589.3659902.6442840474459477952.b4-ty@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-On 2024-04-10 12:38:50 [+0200], Frederic Weisbecker wrote:
-> > Anyway, I misunderstood the concept
-> > before. That means we need to keep that counter here and a
-> > migrate_disable() is needed to avoid CPU migration which is sad.
+On Fri, Apr 12, 2024 at 05:06:41PM +0100, Will Deacon wrote:
+> On Fri, 12 Apr 2024 14:19:05 +0100, Ryan Roberts wrote:
+> > It turns out that creating the linear map can take a significant proportion of
+> > the total boot time, especially when rodata=full. And most of the time is spent
+> > waiting on superfluous tlb invalidation and memory barriers. This series reworks
+> > the kernel pgtable generation code to significantly reduce the number of those
+> > TLBIs, ISBs and DSBs. See each patch for details.
+> > 
+> > The below shows the execution time of map_mem() across a couple of different
+> > systems with different RAM configurations. We measure after applying each patch
+> > and show the improvement relative to base (v6.9-rc2):
+> > 
+> > [...]
 > 
-> I fear that won't work either. The task is then pinned but another
-> task can come up on that CPU and its software events will be ignored...
-
-oh, right.
-
-> Some alternatives:
+> Applied to arm64 (for-next/mm), thanks!
 > 
-> _ Clear event->pending_work = 0 after perf_sigtrap(), preventing an
-> event in there from adding a new task work. We may miss a signal though...
+> [1/3] arm64: mm: Don't remap pgtables per-cont(pte|pmd) block
+>       https://git.kernel.org/arm64/c/5c63db59c5f8
+> [2/3] arm64: mm: Batch dsb and isb when populating pgtables
+>       https://git.kernel.org/arm64/c/1fcb7cea8a5f
+> [3/3] arm64: mm: Don't remap pgtables for allocate vs populate
+>       https://git.kernel.org/arm64/c/0e9df1c905d8
+
+I confirm this series boots the system on FVP (with my .config and my
+buildroot rootfs using Shrinkwrap).
+
+Tested-by: Itaru Kitayama <itaru.kitayama@fujitsu.com>
+
+Thanks,
+Itaru.
+
 > 
-> _ Make the recursion context per task on -RT...
-
-The per-task counter would be indeed the easiest thing to do. But then
-only for task context, right?
-
-But why would we miss a signal if we clean event->pending_work late?
-Isn't cleaning late same as clearing in
-perf_swevent_put_recursion_context()?
-If clearing pending_work late works, I would prefer to avoid yet another
-per-task counter if possible.
-
-> > > Thanks.
-
-Sebastian
+> Cheers,
+> -- 
+> Will
+> 
+> https://fixes.arm64.dev
+> https://next.arm64.dev
+> https://will.arm64.dev
 
