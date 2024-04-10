@@ -1,62 +1,51 @@
-Return-Path: <linux-kernel+bounces-138948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0CFD89FC72
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:06:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D8B389FC6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:05:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2DB61C21B92
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:06:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAD181C216D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB2151791F6;
-	Wed, 10 Apr 2024 16:06:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 657F91779B4;
+	Wed, 10 Apr 2024 16:05:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZthO1lbM"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Q+l4o94X"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FAE51779B6;
-	Wed, 10 Apr 2024 16:06:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963E917799E
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:05:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712765162; cv=none; b=OpTS7KzUcJCwJf/VqHXvK2DTkd28re5/2RCGvW/bKZkz9jSGASlyTD1NrWOi08thUiaHekKlvXvk5xkkxtMy+MuXxl8KqYBnxCCtFtyosebCmYitaouio9E/o5ZUvSSBNxZ5qhfvVGxuHekZOte2usV+CeMg/L4njj2Z83K1CTg=
+	t=1712765147; cv=none; b=iGizPqVOq4ySCDs3vJLxIlCwfwybRe3eHeF0JbTxU7J/6KUCJPHOf/IQMXSaWPe2s74hSVKVLF6xkGfn1plwUDxNK+GiQJjjwWSFQ0OCX3cQVov2r5w6MbYPm4XexkcQuYlQIcYzxfo3RMpEXGGIMsJZEIBiOPZQSDY50viFl0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712765162; c=relaxed/simple;
-	bh=piq+aZgljrVoCDKhCfSkoGK2WF2WNTFw7ziQ5tAjdOc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Lc8Ox9B9x8w7XPCLcLfCcVjyI54QwnThiRi3Jetn7rh+Bc2I46DOsfCHJI5sct4jW8p5Ku3jfL3FgOtOzR7JPJBG4zhoKAynlnaZmbHMQ3HI3fV6TZtLWYjUfF2vUEfvCsE9QfO9qoPes1KUY8vGBmzqDrTkHCaE+0mvFjI3DWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ZthO1lbM; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43AFr5a9030162;
-	Wed, 10 Apr 2024 16:05:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=gofH+p75A2H6MwZ+LcSc2nUNvgwMF53ULI8Ss/9g+q4=; b=Zt
-	hO1lbMnlBlYM6pnlELChyEfOLMh6lvk+6K4hFEz7irHMPx5GRtqr6QJL8OHa4STH
-	oY2274kPX9yaO21fipOT6y3smAhYzPP6GRS/B3aLVLAftOCeGcbeugvhU/G7yK29
-	05SlUnMnkyOMoDEzkj2dQ/8cr08q9dNwIbh/yvuEkLnP6wbKlqYmpXtMd9h/m2du
-	ui1PMRupXHY6oDfb2oMbIKBVK9Zl4o9ukJmcptWLKV/xFDZIsIyyxjPUTswV841P
-	1Jy+QeZYF7p3HG0g7Xb0a/Q2QTLXpZ5Cu4gXcK9WwsPFkTaadMR3vIQNdILQQ/IG
-	jFrXvEZsUHa3880I6uYQ==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xdskjha29-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 16:05:30 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43AG5T7f022079
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 16:05:29 GMT
-Received: from [10.110.37.144] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 10 Apr
- 2024 09:05:27 -0700
-Message-ID: <c128cf9b-de30-49f1-9adb-8b03b61f4d51@quicinc.com>
-Date: Wed, 10 Apr 2024 09:05:26 -0700
+	s=arc-20240116; t=1712765147; c=relaxed/simple;
+	bh=q1OwM/lv+mNRKAhZnlp5C9erYbH16E1eoGwveTPoZSM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IuEEM5KzCZgNM/sZqDpTqPymiai8lKQqkGAXlL4x0loas53Jene78J6n9qvlz3Jzuzz9y14fg1fw0nMTeRkXi3IwDvLfUq7Agqp3X3DPeGMGLl2ozozIGT8mr8ZNuaGzHjoCwutKr120v7uxDEGTaqyg6nZxPkDCsgEJ2t7E+Qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Q+l4o94X; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 291F31C0008;
+	Wed, 10 Apr 2024 16:05:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712765141;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I215nULcXPcF0y4OSCeEiUCWZw5Ocb6jrBa8iKPsC5w=;
+	b=Q+l4o94XcAvQAG2s24PmwyXjNTWY3aepzHU+T5wiG0UqEWwaiCJ2pxnEN2PMZc7M+TqsZf
+	PyQNcqaPhhToFwYjwWelmdYgHxRFmBXf2lrBpI2TVlZZOCGjzJktT1O4N5ryxK+kmLBN2M
+	+3gXgl4sWDnfc1/LmC29b9gTYzLpCb13alnrtlNE/pAkKVzBm6broWFrjg3loRDIUL7pjD
+	8WpuJMuznSfn1GwIcad4Vt3yUvRqQk8d4furjmr6X7RuUBhdyxV8vOzuoGo+uliOQ499vX
+	FfSW/mPqrRVQgyi1Yplef/1k+1rOCPu3YaeoSaUPRtqcJ+vPQJoOQPTamlZz+A==
+Message-ID: <27196117-32bc-4892-b545-d9cf43a89f0a@bootlin.com>
+Date: Wed, 10 Apr 2024 18:05:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,104 +53,115 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 16/16] PCI/pwrctl: add a PCI power control driver for
- power sequenced devices
+Subject: Re: [PATCH 1/1] pps: clients: gpio: Bypass edge's direction check
+ when not needed
+To: Rodolfo Giometti <giometti@enneenne.com>
+Cc: linux-kernel@vger.kernel.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
+ christophercordahi@nanometrics.ca
+References: <20240410113502.73038-1-bastien.curutchet@bootlin.com>
+ <1f7f5b2f-54d4-4dc1-90ff-b896c930faed@enneenne.com>
+ <5bda0980-2373-4284-bda4-89f0c6944e76@bootlin.com>
+ <eb64ec08-2ae3-48bb-9f84-3cec362280b2@enneenne.com>
 Content-Language: en-US
-To: Bartosz Golaszewski <brgl@bgdev.pl>,
-        Marcel Holtmann
-	<marcel@holtmann.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David
- S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
-        Bjorn
- Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-        Catalin
- Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Bjorn
- Helgaas <bhelgaas@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Geert
- Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Neil
- Armstrong <neil.armstrong@linaro.org>,
-        Marek Szyprowski
-	<m.szyprowski@samsung.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla
-	<srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Manivannan
- Sadhasivam <mani@kernel.org>,
-        Lukas Wunner <lukas@wunner.de>,
-        Dmitry
- Baryshkov <dmitry.baryshkov@linaro.org>,
-        Amit Pundir
-	<amit.pundir@linaro.org>, Xilin Wu <wuxilin123@gmail.com>
-CC: <linux-bluetooth@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>,
-        Bartosz Golaszewski
-	<bartosz.golaszewski@linaro.org>
-References: <20240410124628.171783-1-brgl@bgdev.pl>
- <20240410124628.171783-17-brgl@bgdev.pl>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20240410124628.171783-17-brgl@bgdev.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: DT7Wv9f2L7fktC3xWXbBoB4QdMNzyLRm
-X-Proofpoint-ORIG-GUID: DT7Wv9f2L7fktC3xWXbBoB4QdMNzyLRm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- clxscore=1015 adultscore=0 priorityscore=1501 lowpriorityscore=0
- mlxscore=0 phishscore=0 impostorscore=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404100117
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+In-Reply-To: <eb64ec08-2ae3-48bb-9f84-3cec362280b2@enneenne.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: bastien.curutchet@bootlin.com
 
-On 4/10/2024 5:46 AM, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+
+
+On 4/10/24 17:24, Rodolfo Giometti wrote:
+> On 10/04/24 16:46, Bastien Curutchet wrote:
+>> Hi Rodolfo,
+>>
+>> On 4/10/24 16:23, Rodolfo Giometti wrote:
+>>> On 10/04/24 13:35, Bastien Curutchet wrote:
+>>>> In the IRQ handler, the GPIO's state is read to verify the direction of
+>>>> the edge that triggered the interruption before generating the PPS 
+>>>> event.
+>>>> If a pulse is too short, the GPIO line can reach back its original 
+>>>> state
+>>>> before this verification and the PPS event is lost.
+>>>>
+>>>> This check is needed when info->capture_clear is set because it needs
+>>>> interruptions on both rising and falling edges. When 
+>>>> info->capture_clear
+>>>> is not set, interruption is triggered by one edge only so this check 
+>>>> can
+>>>> be omitted.
+>>>>
+>>>> Bypass the edge's direction verification when info->capture_clear is 
+>>>> not
+>>>> set.
+>>>>
+>>>> Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
+>>>> ---
+>>>>   drivers/pps/clients/pps-gpio.c | 9 +++++++++
+>>>>   1 file changed, 9 insertions(+)
+>>>>
+>>>> diff --git a/drivers/pps/clients/pps-gpio.c 
+>>>> b/drivers/pps/clients/pps-gpio.c
+>>>> index 2f4b11b4dfcd..c2a96e3e3836 100644
+>>>> --- a/drivers/pps/clients/pps-gpio.c
+>>>> +++ b/drivers/pps/clients/pps-gpio.c
+>>>> @@ -52,6 +52,15 @@ static irqreturn_t pps_gpio_irq_handler(int irq, 
+>>>> void *data)
+>>>>       info = data;
+>>>> +    if (!info->capture_clear) {
+>>>> +        /*
+>>>> +         * If capture_clear is unset, IRQ is triggered by one edge 
+>>>> only.
+>>>> +         * So the check on edge direction is not needed here
+>>>> +         */
+>>>> +        pps_event(info->pps, &ts, PPS_CAPTUREASSERT, data);
+>>>> +        return IRQ_HANDLED;
+>>>> +    }
+>>>> +
+>>>>       rising_edge = gpiod_get_value(info->gpio_pin);
+>>>>       if ((rising_edge && !info->assert_falling_edge) ||
+>>>>               (!rising_edge && info->assert_falling_edge))
+>>>
+>>> Apart the code duplication, which are the real benefits of doing so?
+>>>
+>>
+>> It prevents from losing a PPS event when the pulse is so short (or the
+>> kernel so busy) that the trailing edge of the pulse occurs before the
+>> interrupt handler can read the state of the GPIO pin.
 > 
-> Add a PCI power control driver that's capable of correctly powering up
-> devices using the power sequencing subsystem. The first user of this
-> driver is the ath11k module on QCA6390.
-[...]
-> +config PCI_PWRCTL_PWRSEQ
-> +	tristate "PCI Power Control driver using the Power Sequencing subsystem"
-> +	select POWER_SEQUENCING
-> +	select PCI_PWRCTL
-> +	default m if (ATH11K_PCI && ARCH_QCOM)
-[...]
-> +static const struct of_device_id pci_pwrctl_pwrseq_of_match[] = {
-> +	{
-> +		/* ATH11K in QCA6390 package. */
-> +		.compatible = "pci17cb,1101",
-> +		.data = "wlan",
-> +	},
-> +	{
-> +		/* ATH12K in WCN7850 package. */
-> +		.compatible = "pci17cb,1107",
-> +		.data = "wlan",
+> Have you a real case when this happens?
+> 
 
-since you are adding both ath11k and ath12k packages, should you update the
-commit text and the config "default m if" condition to include ath12k?
+Yes, on my use case, a GPS provides a tiny pulse (~10 us) that is
+sometimes missed when CPU is very busy.
 
-/jeff
+> In any cases we should avoid code duplication... so I think we should do 
+> something as below:
+> 
+> diff --git a/drivers/pps/clients/pps-gpio.c 
+> b/drivers/pps/clients/pps-gpio.c
+> index 2f4b11b4dfcd..f05fb15ed7f4 100644
+> --- a/drivers/pps/clients/pps-gpio.c
+> +++ b/drivers/pps/clients/pps-gpio.c
+> @@ -52,7 +52,9 @@ static irqreturn_t pps_gpio_irq_handler(int irq, void 
+> *data)
+> 
+>          info = data;
+> 
+> -       rising_edge = gpiod_get_value(info->gpio_pin);
+> +       rising_edge = info->capture_clear ? \
+> +                       gpiod_get_value(info->gpio_pin) : \
+> +                       !info->assert_falling_edge;
+>          if ((rising_edge && !info->assert_falling_edge) ||
+>                          (!rising_edge && info->assert_falling_edge))
+>                  pps_event(info->pps, &ts, PPS_CAPTUREASSERT, data);
+> 
+> Please, review and test it before resubmitting. :)
+> 
+
+I'll try this and send a V2 after my tests, thank you.
+
+Best regards,
+Bastien
 
