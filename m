@@ -1,154 +1,91 @@
-Return-Path: <linux-kernel+bounces-139365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F1E08A01F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:26:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BADB8A01F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:27:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B20F11C21D5C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:26:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3148284D8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:27:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD721836FC;
-	Wed, 10 Apr 2024 21:26:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C741836EE;
+	Wed, 10 Apr 2024 21:27:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X7uw442U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="AznARsNl"
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32AE1836CE;
-	Wed, 10 Apr 2024 21:26:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FCED181BA1;
+	Wed, 10 Apr 2024 21:27:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712784401; cv=none; b=AdoObEr7Di2ZtUF4ipPNja3TUCdUKDfndtH1GaRgAYCVQEQ2QflGuB6L3fN3YeK2LJVNJPekEneyncpLsRNEmblHp7LKdMS19gaB+3DyUlNznBhgmOSGapaWr2w6q7UDf5Rw2qlcZpywRlOByfAMkOAkqTeM2WyQDqYSKDOSuDk=
+	t=1712784460; cv=none; b=QwwLYd7DE4cmzpvK6IIV/XTWzmLoBVYW13K1CdSdgEuf9MI/metlwog7Y6geyzbgfouazXOHXbJ0D+xqoC9qzGs0XJhEO40syzxiI09qhonRLTrfmarsacmIeNEF5OrySBA6gptojLyLLwGc28CN3bhrz7jKVsTEa9CfduRZgBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712784401; c=relaxed/simple;
-	bh=ZHY0Qb2p6hZj2F9UUpHFyF1+cCJBE7U8HaVGMIWgfJQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=gSC5sLKRCxDYWJbmzE9UalWM1Zp8qkjhwaoUoMR0dVba0Axb001SaEuyt0SZGt7AywHsJsMyJjmbA8YXGjiZeBIxHzwZubESgLCcMVGSnQDZtBhwNzEIbMwFM3zZXEG1zdM4qHtjp1Q5iplJRPLCbg0o1lJVrDCvnpahd+OPvc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X7uw442U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D5B8C433F1;
-	Wed, 10 Apr 2024 21:26:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712784400;
-	bh=ZHY0Qb2p6hZj2F9UUpHFyF1+cCJBE7U8HaVGMIWgfJQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=X7uw442UbgIpqeMvt0lGFcXg86xEWI2esbZmYrlcuSZ0IHUAEfYztCnABCY3OWfcN
-	 qha3LHFaAPenRfxa13l39CP+7GGIX0nvuojS+bJEjDEo/05E+SEw4/981rCoRB7mZ8
-	 AiCC0TmbExTNmCkcQyOEEymnER7zgHtneM1Ex3ay5q4H0OOK9cRxPP9m9yKRxq/6Zo
-	 Kd9xqDj2EzKSRE0wcXWJAeACN6Slg9b5ZPc42hYpHHJ/9g/3XlaGWpH6fKTo1jFdGv
-	 wtWzLc4tD0iN1BOu/0zmhzyFLK8qGFJjMIMUEWb18MkFUt8L+lqhYbq+ugp0UKiIGb
-	 RxRImDtJqxM1w==
-Date: Wed, 10 Apr 2024 16:26:38 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Jim Quinlan <jim2101024@gmail.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	Will Deacon <will@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	Ryder Lee <ryder.lee@mediatek.com>,
-	Jianjun Wang <jianjun.wang@mediatek.com>,
-	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Daire McNamara <daire.mcnamara@microchip.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Shawn Lin <shawn.lin@rock-chips.com>,
-	Heiko Stuebner <heiko@sntech.de>, Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Mark Kettenis <kettenis@openbsd.org>,
-	Tom Joseph <tjoseph@cadence.com>,
-	Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, asahi@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v2 2/4] dt-bindings: PCI: mediatek,mt7621: add missing
- child node reg
-Message-ID: <20240410212638.GA2159326@bhelgaas>
+	s=arc-20240116; t=1712784460; c=relaxed/simple;
+	bh=SOU/rQZS2o+jKf46j6gyPHpdHQ1JeR3VtxetWOGthQo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QP2lGbtgHrIidLk+wmwiGvgX0DujuitmNr92zQY+W5aVZbqNBh700v7MltPZLtVgXZsLdHXPQ3VLnQjk8idF6GN9lNnW4rjPYplZc1kjAIuyXR2BmDktWiijPYUQ6+39peMMEXfLZ7hvTpvjGLuMWKLyko2heuDKpZbRy2gpGR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=AznARsNl; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 2B86C47C26
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1712784458; bh=2h0mCjUz+lkc6cFoDOOjKY+TGil3wNwGsaSJv8rWfNQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=AznARsNlSmERn5KPFpkzeAVfvk7ZZTgSWFON+3Nt0MzBvzvqbLc+3rbbowmPD6y0t
+	 l31C65IPtWlwcu5S5+kfQaHaYvbSsYjIkYDBZh6cZPPenzlWC7E0uk3ApjdQGGw9U+
+	 vLx7jKQcH2M+5k89wd6Y4IS0i7EbNQnBMQLcV7rlsTgcpiZTdnW9qjm9pXFZw14Or2
+	 M4LJVIslbkY2504d226tTHN1+q9zqk6j32wGzQcy4hLdBIhDOsaPjtLxdznJLPSFXH
+	 dRR45/dwVXjnFby/N5aV7Ss5gTTvcUG6ndPbRvpqBws/K8hzRzJz74vwV0VTBwhTAA
+	 K9t+nRnuDIegA==
+Received: from localhost (unknown [IPv6:2601:280:5e00:625:67c:16ff:fe81:5f9b])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 2B86C47C26;
+	Wed, 10 Apr 2024 21:27:38 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Haoyang Liu <tttturtleruss@hust.edu.cn>, Alex Shi <alexs@kernel.org>,
+ Yanteng Si <siyanteng@loongson.cn>
+Cc: hust-os-kernel-patches@googlegroups.com, Haoyang Liu
+ <tttturtleruss@hust.edu.cn>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] docs/zh_CN: Add dev-tools/kmemleak Chinese translation
+In-Reply-To: <20240403052552.39292-1-tttturtleruss@hust.edu.cn>
+References: <20240403052552.39292-1-tttturtleruss@hust.edu.cn>
+Date: Wed, 10 Apr 2024 15:27:36 -0600
+Message-ID: <87zfu0sybb.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410181521.269431-2-krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain
 
-On Wed, Apr 10, 2024 at 08:15:19PM +0200, Krzysztof Kozlowski wrote:
-> MT7621 PCI host bridge has children which apparently are also PCI host
-> bridges, at least that's what the binding suggest.
+Haoyang Liu <tttturtleruss@hust.edu.cn> writes:
 
-What does it even mean for a PCI host bridge to have a child that is
-also a PCI host bridge?
-
-Does this mean a driver binds to the "parent" host bridge, enumerates
-the PCI devices below it, and finds a "child" host bridge?
-
-> The children have
-> "reg" property, but do not explicitly define it.  Instead they rely on
-> pci-bus.yaml schema, but that one has "reg" without any constraints.
-> 
-> Define the "reg" for the children, so the binding will be more specific
-> and later will allow dropping reference to deprecated pci-bus.yaml
-> schema.
-> 
-> Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
+> Translate dev-tools/kmemleak.rst into Chinese and add it into
+> zh_CN/dev-tools/index.rst.
+>
+> Signed-off-by: Haoyang Liu <tttturtleruss@hust.edu.cn>
 > ---
-> 
-> Changes in v2:
-> 1. Add tags.
-> ---
->  .../devicetree/bindings/pci/mediatek,mt7621-pcie.yaml          | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
-> index e63e6458cea8..61d027239910 100644
-> --- a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pcie.yaml
-> @@ -36,6 +36,9 @@ patternProperties:
->      $ref: /schemas/pci/pci-bus.yaml#
->  
->      properties:
-> +      reg:
-> +        maxItems: 1
-> +
->        resets:
->          maxItems: 1
->  
-> -- 
-> 2.34.1
-> 
+> v1 -> v2: Adjust line length and keep consistent with the original content
+>
+>  .../translations/zh_CN/dev-tools/index.rst    |   2 +-
+>  .../translations/zh_CN/dev-tools/kmemleak.rst | 229 ++++++++++++++++++
+>  2 files changed, 230 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/translations/zh_CN/dev-tools/kmemleak.rst
+
+Applied, thanks.
+
+Incidentally, I see you sent a v3 adding just the reviewed-by tag.  If
+you change a patch for other reasons, you should definitely add such
+tags (assuming the change isn't one that requires re-review, of course),
+but there is no need to send a new version just to be sure that the tag
+is picked up - b4 is great for that.
+
+jon
 
