@@ -1,128 +1,188 @@
-Return-Path: <linux-kernel+bounces-138248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E5E489EEB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:23:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20AFD89EEBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:27:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E2AE1F240DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:23:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8DDA284570
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:27:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B0E155396;
-	Wed, 10 Apr 2024 09:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 955641552EF;
+	Wed, 10 Apr 2024 09:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Y6JDi3vc"
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VN75rMXc"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E5D1552FB
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:23:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2551F154C04
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:27:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712741012; cv=none; b=ZMUHfZCzwVLx2zUAVwO6dpabdPCNgpOrXpqwgWVjiA29a2CQEsF1ZJjIiH8nFF+YxkbDLLkIyXwaheCat/CxesfBEfvFRRxg1DyNxtn9k914CQYBfeFZNgyHMfsWaB0/9ToxML4uoeaIiHLa/ERdh9oLmORHPl5E92BlXzSqRas=
+	t=1712741227; cv=none; b=rj8CTX4I1UINF1iAlhE+Woq/xr+9nd68y3GOMqHuRPWOHPjLgmZqFH2s/ngsF3OVCt+TPro/PlQ2psVWiCAiBQqh6ebnJqZw0PWCa0kDTrpDp4CvQdBZeVCap+dflIQALlAoCL4S+gE3TaDOihWu1C9KWsZD27cR6fT5cTgIRpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712741012; c=relaxed/simple;
-	bh=1dJzgv7gstQ/rUrx8GEvorTXHkgctjla3Zt8plI3ASI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iJlofSL59zYgfdoyJ1og/X/fB5Z5J9rOkL0kWPdEyHTsMQfl994iuEcRfSL5G6dfA7lH2VeVqPvikYTOSFzt8N18CAOcGki+jfzP/SRsg4jo/SFe2GiKAN8jogMKYB81YHx0CP8SviLjEtHn7OXgdzWHAFrO3MxHVzgfJHCJY4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=huaqin.corp-partner.google.com; spf=pass smtp.mailfrom=huaqin.corp-partner.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Y6JDi3vc; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=huaqin.corp-partner.google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaqin.corp-partner.google.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2a536b08d63so1930792a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:23:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712741010; x=1713345810; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uKpQ/L+90YOrIxKPpVkHyeppvZjvg0QRhX3flaz/X3Q=;
-        b=Y6JDi3vc74vdD5wTLc5Qrdkp5vKd/pURTUur1aj/HoP1DbH68KK24s9q5O7KK62oh1
-         5i1hLzahcoCR2L+5ipIvI178yGstWdCp2gUhLISFLT2wEE53NfrXZRvgGZIkUUVr4fXW
-         1p2U0gt01D+RtvatO5ust/1z23mv5eZSGlJ8cTEuXXJVmqKBeIg6tMIIRwtwwEdAajDI
-         ubX3iFH9Jndu2jCWDwFkycZTq05K/dhNBUQLvx2/NKWVnYExicRIoIi3LyV9niDrrNal
-         WrRFcia7xC7TaMD33YOJJKpnp63etVWF1bUtvxuGkz+KIo6WBrU85hb1rCW4PGyqCN4q
-         L6qQ==
+	s=arc-20240116; t=1712741227; c=relaxed/simple;
+	bh=pSe7lq4ETdkyDGVwIxwrzJl+72Ex61A/7Df7KH/1F1Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iLKctU3u6BRszLgUoWn63n0Xj2v6/NJ86X6SZXxUY3Yd3y/nIME9MOcwyRR6RtOmQgKIONmcua2dx5SgPK2/NZgKkcHriN9SK4R/Q1+J9k3VlV3R1LstacjAln4O3avnx4PsRC0NaIx+TgeEcXMEA1hEZ6q37phhYuWXLc4YBys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VN75rMXc; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712741225;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tUUtvbgdgDlDFSLXwbSrrz95gmxnQtf+mJADlO8y1TU=;
+	b=VN75rMXcQhDxlO8sTKbtmeZ2A/hnBMNynre7vtdsaywyyiS45lu2uJB7Jfy620xkJPmRDn
+	aDomtFTdsTZZBqC4tDiWE5ps939Y94kPs43oZqoO0g3N4ByzpL9uhU0sztYfQ21UitNk0b
+	tAnb8+VOqMgMu/50x7xy7CZ5OeXLRQo=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-465-M9XlUr8cNCeJOXl33hfyZQ-1; Wed, 10 Apr 2024 05:27:03 -0400
+X-MC-Unique: M9XlUr8cNCeJOXl33hfyZQ-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-56fd91d9ec0so186890a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:27:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712741010; x=1713345810;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uKpQ/L+90YOrIxKPpVkHyeppvZjvg0QRhX3flaz/X3Q=;
-        b=af1UBosQrkhD8K03E4OLcEt5kgfUg7dXH63wOq65qr8oIfXzrx7RnKfQ1y61j82an2
-         +HujilSgrbNEf0W7NbKmb8CcBZe+R+i5XU9ZhqkNZFqQaCeHKgV+lv82/2anRqgnsMXC
-         5Aq7T0tIEnDGCGRjF2FdwwlVC7rgPHibrIhXvijT/zk83R2HPR3R/gQhdVXnvVh59X0F
-         kiDYg9AmQ13bo811r8H1eI5It7JogK3joq6LbNOEI5QQnKkxOYZgPfyjpckKmIowrH2Q
-         j9t6winYOAcSPkwI8rCx1Z78WbV6GMIGUQzSfvaIEFwkTsKEMX6TGopR19NpOpcKkvtf
-         7Jig==
-X-Forwarded-Encrypted: i=1; AJvYcCWbRtGFKH4znNIG7I6mShl+71eu4tYhxIVigypZbciSHjRzKcAtJR/AjGZY9L6MjB83UeFmqRSh/Wqc8O9xXsYdVOHQIjmYcMwmabRV
-X-Gm-Message-State: AOJu0Yyu2o+j6NtXbtpsNOJKdpxndj4XqFNgQzwL1XtoTFk7Pg0DEw1Q
-	UfIvlUqEGjDBnbO3Ec1pA/+tEsASw520abNw7bI0w2f6nri28CH/iUT2D5a7xiih/IdIT4QR+GQ
-	fUyte2Nw7nU0yLQiKtrUZZ2tpnWL2ozqm4AKaCQ==
-X-Google-Smtp-Source: AGHT+IElz4DqrpJ78tcUJP8vBVt1F3CCqpzdboJS4Xw/zdtxyKv3r/O2V8DOVdDDoRjGh/Au6/LTGURoB0u7Q1jOkAo=
-X-Received: by 2002:a17:90b:1b08:b0:2a2:1900:493 with SMTP id
- nu8-20020a17090b1b0800b002a219000493mr1789164pjb.40.1712741009799; Wed, 10
- Apr 2024 02:23:29 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712741222; x=1713346022;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tUUtvbgdgDlDFSLXwbSrrz95gmxnQtf+mJADlO8y1TU=;
+        b=lga8gBlLemMCt8UU+7MXurSJUlIxtcGyZKc83hC1korQn7c2w+m8ikRVrK96X2iiDr
+         h3dPaomD89q4JMbNOjyVMO5WjloOdQ7mYLQ7pl6kBuvNsJkwjic/WyWGwKS7rEO/ypgN
+         rjC7TCBHN3e1VOq2gYMXm5KI3ri4tXVvcqoL6X5Xugr9+oVLh4K0Lv1VHYrMxXB9DI01
+         3OAR3xk7IMdEO/fGDXNaDTZAa3On/DMOCIU5/OpoiUAqjopIgqMSWkgwCV171up0aS9q
+         MJKedNt/PyTCHTGEU3ca0RiPaqyezt/VGG0tudMwTe5r8PyFhr1K7fK58Dt2tI0j3PU4
+         AzAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVBQoZZ0etMHouhGuCaR0Dd+QVc/i6VqwVkYHS8FIxIyWO6h9ccAlyafuIk/NrOI+6o+WmlKmADB+M1a5mfpB+mQsP5mbM8ZEysIFhC
+X-Gm-Message-State: AOJu0YweeHNwreRZQm9zAf+xTYUSELO2WXfxuycznvFkQsOJQVAaB1KE
+	iNIMx20BJ0wCDjbfikZY90xRNbayT0ZAo3CvPVF+leeyCLkW2KLLZwUPj1CDYgDrhiJNw8YzjL/
+	zLUYhvzjKc+PLNojAwQ+4fqCTAT0fLv5NGq5bn256BGRGdlNr1NtagU5OPiMfKw==
+X-Received: by 2002:a50:d71b:0:b0:56d:fb8c:de6b with SMTP id t27-20020a50d71b000000b0056dfb8cde6bmr1533693edi.6.1712741222436;
+        Wed, 10 Apr 2024 02:27:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEKHYXMCU7QFHxl5p7KvAICKjZ6okk0MOaf2fu6axloHVxrr/hZwgiBh/RTAATvtiTcuHDFKA==
+X-Received: by 2002:a50:d71b:0:b0:56d:fb8c:de6b with SMTP id t27-20020a50d71b000000b0056dfb8cde6bmr1533682edi.6.1712741222110;
+        Wed, 10 Apr 2024 02:27:02 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id y9-20020a056402440900b0056e3707323bsm5497620eda.97.2024.04.10.02.27.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 02:27:01 -0700 (PDT)
+Message-ID: <9c99ec26-74ad-41b4-99cd-23aac41efec6@redhat.com>
+Date: Wed, 10 Apr 2024 11:27:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410071439.2152588-1-yangcong5@huaqin.corp-partner.google.com>
- <20240410071439.2152588-2-yangcong5@huaqin.corp-partner.google.com> <0eed83f0-5f5e-41b3-a66c-f46845ddc3a3@linaro.org>
-In-Reply-To: <0eed83f0-5f5e-41b3-a66c-f46845ddc3a3@linaro.org>
-From: cong yang <yangcong5@huaqin.corp-partner.google.com>
-Date: Wed, 10 Apr 2024 17:23:18 +0800
-Message-ID: <CAHwB_N+X5v3nFhtWTH8TRv8to2tcBTu8hn1guGXa7T-MuV3L6A@mail.gmail.com>
-Subject: Re: [PATCH v1 1/4] dt-bindings: display: panel: Add compatible for
- BOE nv110wum-l60
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch, 
-	dianders@chromium.org, airlied@gmail.com, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/9] media: subdev: Add privacy led helpers
+To: Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Hans Verkuil <hverkuil@xs4all.nl>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Umang Jain <umang.jain@ideasonboard.com>, linux-media@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240405-enable-streams-impro-v2-0-22bca967665d@ideasonboard.com>
+ <20240405-enable-streams-impro-v2-1-22bca967665d@ideasonboard.com>
+ <ZhZW1hiv9X7JCQ7O@kekkonen.localdomain>
+Content-Language: en-US, nl
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <ZhZW1hiv9X7JCQ7O@kekkonen.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi=EF=BC=8C
+Hi,
 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> =E4=BA=8E2024=E5=B9=B4=
-4=E6=9C=8810=E6=97=A5=E5=91=A8=E4=B8=89 16:24=E5=86=99=E9=81=93=EF=BC=9A
->
-> On 10/04/2024 09:14, Cong Yang wrote:
-> > The BOE nv110wum-l60 is a 11.0" WUXGA TFT LCD panel, which fits in nice=
-ly
-> > with the existing panel-boe-tv101wum-nl6 driver. Hence, we add a new
-> > compatible with panel specific config.
-> >
-> > Signed-off-by: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
-> > ---
-> >  .../devicetree/bindings/display/panel/boe,tv101wum-nl6.yaml     | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/display/panel/boe,tv101w=
-um-nl6.yaml b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-=
-nl6.yaml
-> > index 906ef62709b8..50351dd3d6e5 100644
-> > --- a/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.=
-yaml
-> > +++ b/Documentation/devicetree/bindings/display/panel/boe,tv101wum-nl6.=
-yaml
-> > @@ -36,6 +36,8 @@ properties:
-> >        - starry,himax83102-j02
-> >          # STARRY ili9882t 10.51" WUXGA TFT LCD panel
-> >        - starry,ili9882t
-> > +        # Boe nv110wum-l60 11.0" WUXGA TFT LCD panel
-> > +      - boe,nv110wum-l60
->
-> Isn't the list ordered?
+On 4/10/24 11:07 AM, Sakari Ailus wrote:
+> Moi,
+> 
+> On Fri, Apr 05, 2024 at 12:14:19PM +0300, Tomi Valkeinen wrote:
+>> Add helper functions to enable and disable the privacy led. This moves
+>> the #if from the call site to the privacy led functions, and makes
+>> adding privacy led support to v4l2_subdev_enable/disable_streams()
+>> cleaner.
+>>
+>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>> ---
+>>  drivers/media/v4l2-core/v4l2-subdev.c | 31 ++++++++++++++++++++++---------
+>>  1 file changed, 22 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+>> index 4c6198c48dd6..942c7a644033 100644
+>> --- a/drivers/media/v4l2-core/v4l2-subdev.c
+>> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
+>> @@ -148,6 +148,23 @@ static int subdev_close(struct file *file)
+>>  }
+>>  #endif /* CONFIG_VIDEO_V4L2_SUBDEV_API */
+>>  
+>> +static void v4l2_subdev_enable_privacy_led(struct v4l2_subdev *sd)
+>> +{
+>> +#if IS_REACHABLE(CONFIG_LEDS_CLASS)
+>> +	if (!IS_ERR_OR_NULL(sd->privacy_led))
+>> +		led_set_brightness(sd->privacy_led,
+>> +				   sd->privacy_led->max_brightness);
+>> +#endif
+>> +}
+>> +
+>> +static void v4l2_subdev_disable_privacy_led(struct v4l2_subdev *sd)
+>> +{
+>> +#if IS_REACHABLE(CONFIG_LEDS_CLASS)
+>> +	if (!IS_ERR_OR_NULL(sd->privacy_led))
+>> +		led_set_brightness(sd->privacy_led, 0);
+>> +#endif
+>> +}
+>> +
+>>  static inline int check_which(u32 which)
+>>  {
+>>  	if (which != V4L2_SUBDEV_FORMAT_TRY &&
+>> @@ -412,15 +429,11 @@ static int call_s_stream(struct v4l2_subdev *sd, int enable)
+>>  	if (WARN_ON(!!sd->enabled_streams == !!enable))
+>>  		return 0;
+>>  
+>> -#if IS_REACHABLE(CONFIG_LEDS_CLASS)
+>> -	if (!IS_ERR_OR_NULL(sd->privacy_led)) {
+>> -		if (enable)
+>> -			led_set_brightness(sd->privacy_led,
+>> -					   sd->privacy_led->max_brightness);
+>> -		else
+>> -			led_set_brightness(sd->privacy_led, 0);
+>> -	}
+>> -#endif
+>> +	if (enable)
+>> +		v4l2_subdev_enable_privacy_led(sd);
+>> +	else
+>> +		v4l2_subdev_disable_privacy_led(sd);
+>> +
+>>  	ret = sd->ops->video->s_stream(sd, enable);
+> 
+> I see that you're only making changes before the s_stream call which also
+> reveals a bug here: if streaming on fails, the LED will remain lit. It
+> should be fixed before this set.
+> 
+> I cc'd Hans de Goede.
 
-Sorry, will be fix in V2 patch . Thanks.
->
-> Best regards,
-> Krzysztof
->
+Right that seems like a bug which I introduced. I think it would be
+best to move the setting of the LED on/off to after the s_stream()
+call in the:
+
+       if (!ret)
+                sd->enabled_streams = enable ? BIT(0) : 0;
+
+block, so that the LED is not touched when s_stream(sd, 1) fails.
+
+This delay enabling the LED slightly on stream start but IMHO
+that is not a bit issue.
+
+Regards,
+
+Hans
+
+
 
