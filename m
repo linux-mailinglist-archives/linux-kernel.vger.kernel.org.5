@@ -1,132 +1,86 @@
-Return-Path: <linux-kernel+bounces-139419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC95B8A0312
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B408B8A031A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:15:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BA671F24037
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:15:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52B7D1F23CF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:15:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD8619DF5E;
-	Wed, 10 Apr 2024 22:13:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F56E19069B;
+	Wed, 10 Apr 2024 22:14:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lgeTToln"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="RYdeK15Q"
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD5DB184134;
-	Wed, 10 Apr 2024 22:13:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE70F19068D
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:14:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712787209; cv=none; b=k5H7GvROlM5BjlyeE9+Z8SUW3sqebI408tlsrCAUOUuj/j0Q+PnJxx+2qOLqCRR9jh30sl1EUWvtskJU2P+VdqFXGj30XCYSgORG6DIjBH5H4SI1nE/GnizGwoxUVKGCtAvuC9gTkPgqeF2nfNuLO+4HM1LpjycsFosBNRuh9z8=
+	t=1712787286; cv=none; b=iiSoAKsLwH0xnelJG9auSsgurL2Qd4GJXJc6UpRhPchYBtH6+j81fS883/Qf+Mp3Y45BdotWCPu1SRpAs3nJOkErxVnlG9llyqzDoD0f9e0JAQvoTmc37P+5Slyn3dUWTPjUQ4MEoZe4y+Z2koCNsYmabXxG9UupkSuS5HhOqjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712787209; c=relaxed/simple;
-	bh=5nbfHeG60eNzQJI5iVciR/vfXygkXSoILlSxcVaWD5Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=StkHtUXaGvrUrJYq/CuK0YVed7viggIj9C8hdKuPxQjmTgngPZN1l/UpC/4m69xXu4Gyb11fwG/g9c1TQXbQRolz2Nz2YnAETCm8ErKl4/kV0SOh5Ixxqr0Jq8uDq5PkVGhe1HKWQRt2udzdjPTnpHW25BaF/VPzuiDeAOi6FRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lgeTToln; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54C25C433F1;
-	Wed, 10 Apr 2024 22:13:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712787209;
-	bh=5nbfHeG60eNzQJI5iVciR/vfXygkXSoILlSxcVaWD5Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lgeTTolnYlCAy8OAzdiKscXxM/dzYw15RbiM3PYRgReAZHNbB4uWRykeO5TnX+B9d
-	 T0hnL0JSff3HCkBFR1loHcYyJQcsrTB2OrX/20n+ga5yTsvDagkUyUxszEhr9DphZ+
-	 6vgaxNTTpN2CgruYbgNVDXCbYz1/cDOs7LFinWBik7WSiHNeQzKa1LlvfRId+gkekb
-	 d2C7n1vP7dJJ6FvCtzmYp8wFKZaEwReUkBPRfuY9s0N4HddmTiyQJHCCTb56uDRpvF
-	 DyCuN4wF0r85D+0olwK5kPOBeuO3enpcR8TUfYbgwN6EES7b9zgY0QO+IaaeByTcXN
-	 5TDPoDvTo61cg==
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: linux-pci@vger.kernel.org,
-	Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Megha Dey <megha.dey@intel.com>,
-	Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Lu Baolu <baolu.lu@linux.intel.com>,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH v2 7/7] Revert "genirq/msi: Provide constants for PCI/IMS support"
-Date: Wed, 10 Apr 2024 17:13:07 -0500
-Message-Id: <20240410221307.2162676-8-helgaas@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240410221307.2162676-1-helgaas@kernel.org>
-References: <20240410221307.2162676-1-helgaas@kernel.org>
+	s=arc-20240116; t=1712787286; c=relaxed/simple;
+	bh=d/PZVCXIhGvDMuyWk0WrFuAP3smrj3JCHcEtray0wQ8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LJbjuaP2GbLs2O/y50oyKBuLspUODwAiK8bQnw50SOb2FJJP1Wsnq+FW7E3X217VUS3jxFp2cFXjix5mSxljsAy4ffDa/4qtThJ+8DLF4tVo3IfQVji/qmWdPR+6ZK1F6iU3qKMtr7A2M/fVY1/P4eabN7jbgckWetvGt+IItRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=RYdeK15Q; arc=none smtp.client-ip=209.85.217.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-479e8e4ab6fso1717442137.0
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:14:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712787284; x=1713392084; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=d/PZVCXIhGvDMuyWk0WrFuAP3smrj3JCHcEtray0wQ8=;
+        b=RYdeK15QafMgA85JjH67MhD82XF5EOU5MZv4xC7ZJ88B6jaISMR4a4iZNVDmOlwP4l
+         UVfxKa7S4mEpuhpuR875BQYDCjLnOmpPYWTSFYhwXLQMLuOlItgeoDKyN9s+vW8uJB6t
+         449hOyyHCfX/MwcEDfQ9F49WIzIk/Kv+UH7g0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712787284; x=1713392084;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d/PZVCXIhGvDMuyWk0WrFuAP3smrj3JCHcEtray0wQ8=;
+        b=jbkkmXE8XsNHBTholQwmTfpynLna2sZ/XNjNAPUN4SJkeExzu15n2E5FOAuHxDGUjI
+         zNz0bjIfnCgPidKS9EC070eS1163DuaXYzIOHe5Gq9mVF3WVlNGSDu6Y1sI26meXZ7RV
+         g4eiTskF1SkXrw3xEeZv9PsNMvGE7n721sh8An/aV/mz8xDP4CvU4Mp0Cm9Q8ODmUaoI
+         bpm1ZDTLk6nTqs5cdJ4FtCd56/agRefWVQgQuQPSsTeQTbJW8HNJKYvqDewoHtDKyRjC
+         ezUYDYU280wtdRiKjIe2ZaL/YeuLWYRXefk3QbAbCTCtMx2XxDG9q3hT2XMQe3tDCE/s
+         vvkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWzX7rpuNAnpkbUToQuIdPOzUbxkTvMihIDQHAgQuED9u0tI00bDkqpfd8HTQkFieiEXDbOdG35aYGBVsK6ZnVsXmC1UMUanZZwx41A
+X-Gm-Message-State: AOJu0Yw5W+I4a0f5x/D8ZWy7pTyoLsi1dnyiOVZPTNU1JrPV3e7tMKve
+	Xbr6ewzmCUzAH/0SsT0MvbENRS5U1s1q9ogMZ4tTXUig4YSQKSh9auFVv4w982drjfBeUwUbrpu
+	A5TH+gwpQIkTYikiR6TDk/bC/dUmo2f6ZSbywrz0MbtDJ17Q=
+X-Google-Smtp-Source: AGHT+IFrChd80DZF7LJFx4Xkr2ghYzNtJ/zfR0j7guxDmH4LX1rsmKz3kvZDB9H/NExqbeD9Jxe5T1Yp+TSqQ6v4FcA=
+X-Received: by 2002:a05:6102:370a:b0:47a:26ed:8483 with SMTP id
+ s10-20020a056102370a00b0047a26ed8483mr2845023vst.14.1712787283771; Wed, 10
+ Apr 2024 15:14:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240409-public-ucsi-h-v4-0-e770735222a2@chromium.org>
+ <20240409-public-ucsi-h-v4-2-e770735222a2@chromium.org> <ZhUcu1k0Cum-IMVQ@google.com>
+In-Reply-To: <ZhUcu1k0Cum-IMVQ@google.com>
+From: Pavan Holla <pholla@chromium.org>
+Date: Wed, 10 Apr 2024 15:14:07 -0700
+Message-ID: <CAB2FV=7PWffxLR9yVq2MbVijEesSavKiXFT9ZKwJzDi3SnPQyQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] usb: typec: ucsi: Implement ChromeOS UCSI driver
+To: Tzung-Bi Shih <tzungbi@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, Benson Leung <bleung@chromium.org>, 
+	Guenter Roeck <groeck@chromium.org>, linux-kernel@vger.kernel.org, 
+	linux-usb@vger.kernel.org, 
+	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>, chrome-platform@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-From: Bjorn Helgaas <bhelgaas@google.com>
-
-This reverts commit e23d4192bf9b612bce5b24f22719fd3cc6edaa69.
-
-IMS (Interrupt Message Store) support appeared in v6.2, but there are no
-users yet.
-
-Remove it for now.  We can add it back when a user comes along.
-
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
----
- include/linux/irqdomain_defs.h | 1 -
- include/linux/msi.h            | 2 --
- include/linux/msi_api.h        | 1 -
- 3 files changed, 4 deletions(-)
-
-diff --git a/include/linux/irqdomain_defs.h b/include/linux/irqdomain_defs.h
-index 5c1fe6f1fcde..36653e2ee1c9 100644
---- a/include/linux/irqdomain_defs.h
-+++ b/include/linux/irqdomain_defs.h
-@@ -25,7 +25,6 @@ enum irq_domain_bus_token {
- 	DOMAIN_BUS_PCI_DEVICE_MSIX,
- 	DOMAIN_BUS_DMAR,
- 	DOMAIN_BUS_AMDVI,
--	DOMAIN_BUS_PCI_DEVICE_IMS,
- 	DOMAIN_BUS_DEVICE_MSI,
- 	DOMAIN_BUS_WIRED_TO_MSI,
- };
-diff --git a/include/linux/msi.h b/include/linux/msi.h
-index 26d07e23052e..84859a9aa091 100644
---- a/include/linux/msi.h
-+++ b/include/linux/msi.h
-@@ -573,8 +573,6 @@ enum {
- 	MSI_FLAG_MSIX_CONTIGUOUS	= (1 << 19),
- 	/* PCI/MSI-X vectors can be dynamically allocated/freed post MSI-X enable */
- 	MSI_FLAG_PCI_MSIX_ALLOC_DYN	= (1 << 20),
--	/* Support for PCI/IMS */
--	MSI_FLAG_PCI_IMS		= (1 << 21),
- };
- 
- /**
-diff --git a/include/linux/msi_api.h b/include/linux/msi_api.h
-index 391087ad99b1..5ae72d1912c4 100644
---- a/include/linux/msi_api.h
-+++ b/include/linux/msi_api.h
-@@ -15,7 +15,6 @@ struct device;
-  */
- enum msi_domain_ids {
- 	MSI_DEFAULT_DOMAIN,
--	MSI_SECONDARY_DOMAIN,
- 	MSI_MAX_DEVICE_IRQDOMAINS,
- };
- 
--- 
-2.34.1
-
+Ack to all comments.
+I plan to upload the next version after related EC changes land.
 
