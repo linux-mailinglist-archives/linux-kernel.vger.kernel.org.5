@@ -1,115 +1,133 @@
-Return-Path: <linux-kernel+bounces-138410-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75D7389F0D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:30:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D66F89F0EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:32:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3256C28B686
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:30:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 388B028BBE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:31:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAA3515B565;
-	Wed, 10 Apr 2024 11:28:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36A4315959A;
+	Wed, 10 Apr 2024 11:30:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U6LAVQo+"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="K0RMnapA"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2DA15B15A;
-	Wed, 10 Apr 2024 11:28:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5B0C2837B;
+	Wed, 10 Apr 2024 11:30:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712748489; cv=none; b=ZfUrPj64xURxvC4p29DNCq0/7bf9gT2KWhEiRAd/6mUAR/hq2EcDyqtkmBPuNEV6xXPl+Bb/6m/u0AC+3IMIevhzpAXsUf2J+QJbGpdGHhZZPYKeCKdcs2mijowcBlqo2x9Bn5f6t5/437t++q5D0Rlvg4k/7YAqZmbjtlDv1zY=
+	t=1712748610; cv=none; b=UVS+zTfCqY4fwpf9Q4HjReRuPTWQUYeprGqO93j3zNv4a3wUAcA3RkqM+tdwlLEY5EwCUXGhEiQuugIRZ0VQ/Ua62kl/+0IMdre/XNcLZQuyRipRaYVxtR9l9E8WiM5radJyKjoRLkM+EqhtmBuV27IPpZ7CUEtlm/FGq3Hz2vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712748489; c=relaxed/simple;
-	bh=zQD9reb1Og/2cv0dqHDZdUJcbucn8FwX4wKjO/1ShN0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=e4iGGhzm7HDG3RzfK03yutaU0C/DWIvUTSDOH+3HNlOEiMXmz9rvnH8oC6WFMZS9hhii99+Shei+1ptyx6oXgs/NYKedk26kwR+QN7UqrOuNR8TlAx9r+CFxwkFcgrstVOOEmn6uxT8Jj39fr/d18fKZXCD6JHQUJzo6VoydfBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U6LAVQo+; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516d756eb74so5912746e87.3;
-        Wed, 10 Apr 2024 04:28:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712748485; x=1713353285; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Di3el+9O+K85+qwRdX3FObg5JWhX17wOpW5ZhQZowA=;
-        b=U6LAVQo+e+3MHW/feKZDb2eLmL1Dg3ya1HICPgyXsrapgVhWFG2T1lofCvmh/uyfL3
-         I2qruVX+eyRtCHAPW5BA14+NE2INDgi0IIh7y2feQfzJIKhe0qZTipueIKj3SNtfNAIs
-         xHqmGD7llF+qwyo3OTe/RQm/bZMtbYlkqt9yYl33NS/SpD+nKsPLT0xozFOOufVctmMK
-         lNyv+FFSvwLWHpmg/jOEDTAbS+hROsj3rb4iOr5sjMqZK2n0fZ6U776MWSbyGQo643ft
-         g8Zve4kzSFqwRolHBcMPqvEy6pXapboZ+C6z8NFuupJ0dKiSDUCE6MBuSFyl0MmJ+ujU
-         Pcjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712748485; x=1713353285;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5Di3el+9O+K85+qwRdX3FObg5JWhX17wOpW5ZhQZowA=;
-        b=uwCHENxQOJeOmwQdpJuy2YHFM6a47A7gJdmjJEZpVMplDUk1f9IBK2Vd+JRDujZjMh
-         Xb58Z5M9ClRThUE494uTel2XI1RDbft0UX//m5+C5Xt6FbB+3wT8i9BcR2bXVeOp3a7q
-         pH1fBwOYCcQJCxuJWUfbPSuTpxIrZNQIqw58QLJLcEo7t6Cs/DSpHIhN6q5S7hwAJx0k
-         6xjz762P0O+Zyzn9jZKYXv0ha0fAMX+mV87ngKaXG9JGYy6ITPf2F3BQYUq2bz2KWLcU
-         NCx5CwaW5tgNIin2GN833WuPpr8vw1Nymw835Jze1QlyTfkq21hohUhd0YvV3szHl9eq
-         18Ww==
-X-Forwarded-Encrypted: i=1; AJvYcCWCgcLUimUpdgY5s/C0GjUPvmA7AKa/PITXhtMEi5WZ4dxDd4XBIPwdzKV18PpBYXRAv9bWXthHme1042DrAVkAz75B98/lxEiVqdt9g4FVwnmkZ99AKUmzEuYZv9X0ZA0YgJI4rEGhOg==
-X-Gm-Message-State: AOJu0Yyhgy8y3H76R74XvK3nX+/CHv2erYzJ2iCXBSxx+tlxkKgy61lE
-	SudJC/JbCbKr4+ceALBPKXCdeVPkEW6/D3boDo1ZJQk0OgsBq2bw
-X-Google-Smtp-Source: AGHT+IGf1h0UiA0XnNpSWQPwb+7C7LUshO+9D6IWkNrocMZzRR2s4bom2PG43tzhgkyK+fAY/XOupw==
-X-Received: by 2002:a19:a403:0:b0:515:8564:28c8 with SMTP id q3-20020a19a403000000b00515856428c8mr1236389lfc.67.1712748485357;
-        Wed, 10 Apr 2024 04:28:05 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id r6-20020a05600c458600b004162a9f03a6sm2001182wmo.7.2024.04.10.04.28.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 04:28:04 -0700 (PDT)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Theodore Ts'o <tytso@mit.edu>,
-	Jan Kara <jack@suse.com>,
-	linux-ext4@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] jbd2: remove redundant assignement to variable err
-Date: Wed, 10 Apr 2024 12:28:03 +0100
-Message-Id: <20240410112803.232993-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712748610; c=relaxed/simple;
+	bh=YZB+zpMuolGmgdG92DofGaTe2fyQ0gFaw353gbd2/4U=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CDMOD3jOn1Saz6AIAfpGdP9vgr/DaGUhq0mjIfGV+uqdp5zS1RRk8oTD/7klHAHTzxVzrPFteIoAQ1yAmTlpRSqbTftPrX8VRlVFkbL+Epw0wOqULk5JOyuSZlmtr8yPniCtw+L2KuNA9ATjMA3YJtrsR6snfqlCokFJNO+tKs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=K0RMnapA; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43A97lp5016153;
+	Wed, 10 Apr 2024 11:29:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=UabYkyhdrQmUkvj3/LTlT
+	8g57arwdsP/D2XBukOqTOs=; b=K0RMnapAhZXqYokubtMYbRT3kiED8IjCi2eVT
+	3dP5XV93w8aM3H+vordkDkRJn4IasFenatg1g/yB95Che2JBfHoIt4/SPSxwN+xG
+	SAKq8cH+fcM06IzXo/hgbEyLOsZ2tq/kKfJJtHdn5XqEDtB3qUSl8R2mjc76YLTc
+	omK/0ty4CAjw2GpVGLfReNqAiwLlrv04XgixIomBLoq4IBpuPiqiNXqDPuOxncuJ
+	wRMfE7PVeiPxuczMxF26PWBK01rdmpmi3Kf8b9heEzuS/HNJyG04C6Fr8k4WMMrz
+	UpGt/1ecbZrdXxVTCtDFWWFCTzZ1sOlkCwnkmDZ9wsN8z+dxw==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xdquhrqqy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 11:29:44 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43ABTiJQ013137
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 11:29:44 GMT
+Received: from hu-atulpant-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Wed, 10 Apr 2024 04:29:36 -0700
+Date: Wed, 10 Apr 2024 16:59:33 +0530
+From: Atul Kumar Pant <quic_atulpant@quicinc.com>
+To: Peter Zijlstra <peterz@infradead.org>
+CC: <mingo@redhat.com>, <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>, <bristot@redhat.com>,
+        <vschneid@redhat.com>, <rafael@kernel.org>,
+        <daniel.lezcano@linaro.org>, <kernel@quicinc.com>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/2] Disable RT-throttling for idle-inject threads
+Message-ID: <20240410112933.GA3190796@hu-atulpant-hyd.qualcomm.com>
+References: <20240410045417.3048209-1-quic_atulpant@quicinc.com>
+ <20240410085441.GA21455@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240410085441.GA21455@noisy.programming.kicks-ass.net>
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: JU3z3IG_6EdWT11hJ9dEADC79H8XVY3K
+X-Proofpoint-GUID: JU3z3IG_6EdWT11hJ9dEADC79H8XVY3K
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ adultscore=0 clxscore=1015 mlxscore=0 malwarescore=0 mlxlogscore=785
+ phishscore=0 lowpriorityscore=0 suspectscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404100082
 
-The variable err is being assigned a value that is never read, it
-is being re-assigned inside the following while loop and also
-after the while loop. The assignment is redundant and can be
-removed.
+On Wed, Apr 10, 2024 at 10:54:41AM +0200, Peter Zijlstra wrote:
+> On Wed, Apr 10, 2024 at 10:24:15AM +0530, Atul Pant wrote:
+> > We are trying to implement a solution for thermal mitigation by using
+> > idle injection on CPUs.  However we face some limitations with the
+> > current idle-inject framework. As per our need, we want to start
+> > injecting idle cycles on a cpu for indefinite time (until the
+> > temperature/power of the CPU falls below a threshold). This will allow
+> > to keep the hot CPUs in the sleep state until we see improvement in
+> > temperature/power. If we set idle duration to a large value or have an
+> > idle-injection ratio of 100%,  then the idle-inject RT thread suffers
+> > from RT throttling. This results in the CPU exiting from the sleep state
+> > and consume some power.
+> > 
+> > To solve this limitation, we propose a solution to disable RT-throttling
+> > whenever idle-inject threads run. We achieve this by not accounting the
+> > runtime for the idle-inject threads.
+> 
+> Running RT tasks for indefinite amounts of time will wreck the system.
+> Things like workqueues and other per-cpu threads expect service or
+> things will pile up and run to ground.
+> 
+> Idle injection, just like every other RT user must not be able to starve
+> the system of service.
+> 
+> If your system design requires this (I would argue it is broken), look
+> at other means, like CPU-hotplug (which I also really detest) -- which
+> takes down the CPU in a controlled manner and avoids the resource
+> issues.
 
-Cleans up clang scan build warning:
-fs/jbd2/commit.c:574:2: warning: Value stored to 'err' is never
-read [deadcode.DeadStores]
+Hi Peter,
+We are trying to add support for true 100% idle-injection ratio from
+idle-injection framework. It might happen that we want to run idle cycles for
+slightly more time than permitted by RT-bandwidth control.  We understand the
+concern about it hogging the cpu. Will it be better if we make it a choice for
+the user who uses idle-inject framework, whether to have true 100%
+idle-injection support or not?
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- fs/jbd2/commit.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-index 5e122586e06e..78a9d08ae9f8 100644
---- a/fs/jbd2/commit.c
-+++ b/fs/jbd2/commit.c
-@@ -571,7 +571,6 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 	J_ASSERT(commit_transaction->t_nr_buffers <=
- 		 atomic_read(&commit_transaction->t_outstanding_credits));
- 
--	err = 0;
- 	bufs = 0;
- 	descriptor = NULL;
- 	while (commit_transaction->t_buffers) {
--- 
-2.39.2
-
+Thanks
+Atul
 
