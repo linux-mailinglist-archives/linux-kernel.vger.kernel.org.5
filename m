@@ -1,246 +1,148 @@
-Return-Path: <linux-kernel+bounces-138871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3194089FBCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:37:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E9A989FB99
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:31:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22567B2BE1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:26:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1B631F2212A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:31:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0511C16E881;
-	Wed, 10 Apr 2024 15:26:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F3FC16EBED;
+	Wed, 10 Apr 2024 15:31:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="NM73iIay"
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="qViPEqHI"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06A4D15EFBF
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC9FB15B137;
+	Wed, 10 Apr 2024 15:31:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712762773; cv=none; b=IoBZub3+gqEaom5fiXS4DMksQic4ko2L94GnYAIk67gOhPnP4MAoGAbDbGox1ktHbo1xDe95l0Al4mHDQNBj+jgcFjU/SBdQ2gKzjGl8CW0YCY67k3uQZ7M2r/hbHb142G1aEaH8v4sAdZlWyVHWuQroNijoXkiDZeqCMSpLxAI=
+	t=1712763076; cv=none; b=dZy5fWsORkYP1p9y2V0qsLysqlHv0HDbMi7oaV5D5fh2/Iq4jAgE0Tu/w4dRMalUVtXicd0VvkIkM5YjQKJgrFw7yQjVXYoRGFCKwkNZwFlSXLBQN17qJDzya+McYjEMPWkxHGyqU8+eWmlEDU5VGwa4BNEwSfPvlaCIfoP4ecg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712762773; c=relaxed/simple;
-	bh=NjI5rFggc3aqQe0o+gfJSoRvtLTRJmexa+8r0p9Ntco=;
+	s=arc-20240116; t=1712763076; c=relaxed/simple;
+	bh=pH+z7kT+B4G554baL6gQ+2qPvr9hlaRu9zM0ygTBqww=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T8EVVqwYsDdBJUtHAPPatnd0EsiH3BQ9ln+7AFgWnLX2I+qNwXTLl0b6hfjvzp4YqMWsRvsP/fQPhoDMIXrV4PivUg0br3jjyK6rd4hMinF5COIscsa/tMNU/a8vOuL6fyn3bf1FLxrUv8Mtis39AZ03+6r1RHjOQ1np/VvAcBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=NM73iIay; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-78d70890182so146873785a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:26:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1712762769; x=1713367569; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AYtRG8OSIBC59TZF+GDLNPNPrXRQAi2vj0OFPl1DVg8=;
-        b=NM73iIayPApgw/qpHuDLwcEIMHOI3Nuv+t7T0P1lNUp/sml3y1JYp8ItEAy1TVKzCx
-         pd6Vv0a+TkpqgO3suAdflKV0/ZQh0UulTSFkq4tKWhmIbyez1plbvy8DbKR68m2DhomG
-         EMcjGimL6gZVAJwO5uJzvMezCQDK3Y2E6WgvZ3QubPCQF/fu3vGEdxlrxQCVL/o35YJA
-         u+EHKaWyDklZ5nwMa3cSIvuHQyGoe8TA4shxUHSKVACNeC+oeBHmACfijRUDjYXsc976
-         ihyGk0up0xreDjayYQ97Nh1AvmpJOddr3bsfI737chMJ3RjvJG3z6o/pYjEq3Q8hOVWw
-         glTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712762769; x=1713367569;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AYtRG8OSIBC59TZF+GDLNPNPrXRQAi2vj0OFPl1DVg8=;
-        b=q0lj+ZeMW3FK37iAhGgc3XmWWq3z/6Yf65XtzHz8ukQOnv5vdjIuIhDFO+IFEHfIHS
-         s9+NOYppMpb/n3yb62MlvHLsASlpKc1zA4tTQL/FTb5xH7riD1lSiXCatF+ITExGwOBA
-         yporPem1V9dB8psikfOJlRgHCMTMAO/9nxxx/XrU26eKlfPcZpzRB9DA23le9Uk64bhL
-         A2QdwiCuoosiViMlNS0gvmxP3KZUpKxZHuvmvrUAELsvXX95QZKAga8nYzIcdRcsNWgJ
-         l8Pzos0kD71UUyk2bXcI8memkXiYLHSmmgiBw3Pi2y2bZwvTWV2F5jfAQbsgvcsj5TwH
-         XlRg==
-X-Forwarded-Encrypted: i=1; AJvYcCXNSyEF25Ie5yIvRueanZeSkH7Oa8btur32RTkLE6aKIeTi7qTOQWhps22ON1XCHIoNfnpxD5lk0VSlHY7KlL7CE/a3JvIZxJx2hyQP
-X-Gm-Message-State: AOJu0Yxi0l3FP+jft663Pq0HcH0nBn6vi91rsd0fuLvHgMyYomXG5ZDI
-	VhcSOoWbuu3DJXv30phWbsxzaX+UxKYEdtbaBbrJEPUgq7/UScrTSSLs57tpf0UA89vY+DgEeVh
-	8
-X-Google-Smtp-Source: AGHT+IGLypAGDe3QxT1cY2n+wr00FUlMz9BvHKaU5Fchaycn6bNlZiKi4cPrlNk7kg+txx8meLFuYA==
-X-Received: by 2002:a05:620a:469f:b0:78e:9715:7dc5 with SMTP id bq31-20020a05620a469f00b0078e97157dc5mr2575426qkb.23.1712762768726;
-        Wed, 10 Apr 2024 08:26:08 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id a16-20020a05620a16d000b0078d6349aa03sm3525474qkn.103.2024.04.10.08.26.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 08:26:07 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1ruZpu-008Dhh-VX;
-	Wed, 10 Apr 2024 12:26:06 -0300
-Date: Wed, 10 Apr 2024 12:26:06 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Eric Badger <ebadger@purestorage.com>, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/5] iommu: Add static iommu_ops->release_domain
-Message-ID: <20240410152606.GF223006@ziepe.ca>
-References: <20240305013305.204605-1-baolu.lu@linux.intel.com>
- <20240305013305.204605-2-baolu.lu@linux.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bkHfowmXKOPXoI0lOHPSqwzbmJrMpLbLFjJ1gKQ/G46L+ju7kGdazzF3k6FtQOpoZP8hbjDCNwFaJMGCwhbYwbLc2nHUJaDDLE9rHSEM7+NbHfZkiaq1geVYosumYNUSUs8ciqK96FR+8njsB1iwcik0duza+QmtDOh2rRb6nnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=qViPEqHI; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43ADvQvd002584;
+	Wed, 10 Apr 2024 15:31:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=pp1;
+ bh=Cbi/eAWd7VhxaqxfaHTml+ueD1AIDaz+ba8OE4CCdvA=;
+ b=qViPEqHIuBk9CBux21zCp8UMLj//yBpq37q5ojeITXSi8J/V8GrSYW3oKyFtC8PKQ+S+
+ jr0OhNNdhKo+mOCUbqWdK/lNmqCc2cNxhf6ejca2zxlBcdRMMlsNZhh8pbBlSQTJ+cGT
+ GJSo67C6hCJT5OzwqYENJ/tcY43p+woUjruAfstycZ5vCHtTWkZO+L/3B8pPB3Qre+1A
+ kbCdGBSDon3MT4zO6YL1Ejx0HvY7IVWO2AVHuf7g7Z5i39EUrFtZIIwvsMa8nha9f8kJ
+ 1aAEDABtFv13w7dxCcY14UBIuYa+KqH3EXEgAv0JDBI2zgg1TKSAxI54/uxGqSwdt0K6 uQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xds6k8s0y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 15:31:03 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43AFV3XD021875;
+	Wed, 10 Apr 2024 15:31:03 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xds6k8s0n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 15:31:03 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43AEXDuU029966;
+	Wed, 10 Apr 2024 15:26:47 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbj7mdf1c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 15:26:47 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43AFQf4j30867974
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Apr 2024 15:26:44 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D3E2E20043;
+	Wed, 10 Apr 2024 15:26:41 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 32FE12004F;
+	Wed, 10 Apr 2024 15:26:41 +0000 (GMT)
+Received: from li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com (unknown [9.171.29.198])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 10 Apr 2024 15:26:41 +0000 (GMT)
+Date: Wed, 10 Apr 2024 17:26:39 +0200
+From: Sumanth Korikkar <sumanthk@linux.ibm.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org, hughd@google.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        iii@linux.ibm.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/shmem: Inline shmem_is_huge() for disabled
+ transparent hugepages
+Message-ID: <Zhavr9NxvayDhU9X@li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com>
+References: <20240409155407.2322714-1-sumanthk@linux.ibm.com>
+ <594dbec7-b560-44e5-a684-93dcb8ba85df@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240305013305.204605-2-baolu.lu@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <594dbec7-b560-44e5-a684-93dcb8ba85df@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: L612PNMowBeXj8vY2YP3t3EszkoVv0Uk
+X-Proofpoint-ORIG-GUID: GxlMHGTjvPmiE1LhuQok0TrbcWFwqCxD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
+ phishscore=0 clxscore=1015 mlxlogscore=368 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404100112
 
-On Tue, Mar 05, 2024 at 09:33:01AM +0800, Lu Baolu wrote:
-> The current device_release callback for individual iommu drivers does the
-> following:
+On Wed, Apr 10, 2024 at 02:34:35PM +0200, David Hildenbrand wrote:
+> On 09.04.24 17:54, Sumanth Korikkar wrote:
+> > In order to  minimize code size (CONFIG_CC_OPTIMIZE_FOR_SIZE=y),
+> > compiler might choose to make a regular function call (out-of-line) for
+> > shmem_is_huge() instead of inlining it. When transparent hugepages are
+> > disabled (CONFIG_TRANSPARENT_HUGEPAGE=n), it can cause compilation
+> > error.
+> > 
+> > mm/shmem.c: In function ‘shmem_getattr’:
+> > ./include/linux/huge_mm.h:383:27: note: in expansion of macro ‘BUILD_BUG’
+> >    383 | #define HPAGE_PMD_SIZE ({ BUILD_BUG(); 0; })
+> >        |                           ^~~~~~~~~
+> > mm/shmem.c:1148:33: note: in expansion of macro ‘HPAGE_PMD_SIZE’
+> >   1148 |                 stat->blksize = HPAGE_PMD_SIZE;
+> > 
+> > To prevent the possible error, always inline shmem_is_huge() when
+> > transparent hugepages are disabled.
+> > 
 > 
-> 1) Silent IOMMU DMA translation: It detaches any existing domain from the
->    device and puts it into a blocking state (some drivers might use the
->    identity state).
-> 2) Resource release: It releases resources allocated during the
->    device_probe callback and restores the device to its pre-probe state.
-> 
-> Step 1 is challenging for individual iommu drivers because each must check
-> if a domain is already attached to the device. Additionally, if a deferred
-> attach never occurred, the device_release should avoid modifying hardware
-> configuration regardless of the reason for its call.
-> 
-> To simplify this process, introduce a static release_domain within the
-> iommu_ops structure. It can be either a blocking or identity domain
-> depending on the iommu hardware. The iommu core will decide whether to
-> attach this domain before the device_release callback, eliminating the
-> need for repetitive code in various drivers.
-> 
-> Consequently, the device_release callback can focus solely on the opposite
-> operations of device_probe, including releasing all resources allocated
-> during that callback.
-> 
-> Co-developed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-> ---
->  include/linux/iommu.h |  1 +
->  drivers/iommu/iommu.c | 19 +++++++++++++++----
->  2 files changed, 16 insertions(+), 4 deletions(-)
+> Do you know which commit introduced that?
+Hi David,
 
-I looked at all the drivers:
- 1) Didn't spend time to guess what ipmmu-vmss is doing
- 2) Several drivers are obviously missing the release_domain behavior
-    and now be trivially fixed
- 3) amd, s390, virtio-iommu and arm-smmu should probably support
-    blocked_domain (I assume that is what their detach does)
- 4) arm-smmuv3 can use it too once disable_bypass is removed
- 5) Several drivers don't even have release_device functions.
-    Probably all of them can do their identiy domains too.
+Currently with CONFIG_CC_OPTIMIZE_FOR_SIZE=y and expirementing with
+-fPIC kernel compiler option, I could see this error on s390.
 
-This seems like a pretty reasonable thing to add to this series too:
+However, default kernel compiler options doesnt end up with the above
+pattern right now.
 
-diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
-index eb1e62cd499a58..3ddc4b4418a049 100644
---- a/drivers/iommu/apple-dart.c
-+++ b/drivers/iommu/apple-dart.c
-@@ -979,6 +979,7 @@ static void apple_dart_get_resv_regions(struct device *dev,
- static const struct iommu_ops apple_dart_iommu_ops = {
- 	.identity_domain = &apple_dart_identity_domain,
- 	.blocked_domain = &apple_dart_blocked_domain,
-+	.release_domain = &apple_dart_blocked_domain,
- 	.domain_alloc_paging = apple_dart_domain_alloc_paging,
- 	.probe_device = apple_dart_probe_device,
- 	.release_device = apple_dart_release_device,
-diff --git a/drivers/iommu/exynos-iommu.c b/drivers/iommu/exynos-iommu.c
-index d98c9161948a25..902dc4da44f987 100644
---- a/drivers/iommu/exynos-iommu.c
-+++ b/drivers/iommu/exynos-iommu.c
-@@ -1424,8 +1424,6 @@ static void exynos_iommu_release_device(struct device *dev)
- 	struct exynos_iommu_owner *owner = dev_iommu_priv_get(dev);
- 	struct sysmmu_drvdata *data;
- 
--	WARN_ON(exynos_iommu_identity_attach(&exynos_identity_domain, dev));
--
- 	list_for_each_entry(data, &owner->controllers, owner_node)
- 		device_link_del(data->link);
- }
-@@ -1471,6 +1469,7 @@ static int exynos_iommu_of_xlate(struct device *dev,
- 
- static const struct iommu_ops exynos_iommu_ops = {
- 	.identity_domain = &exynos_identity_domain,
-+	.release_domain = &exynos_identity_domain,
- 	.domain_alloc_paging = exynos_iommu_domain_alloc_paging,
- 	.device_group = generic_device_group,
- 	.probe_device = exynos_iommu_probe_device,
-diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index b8c47f18bc2612..b5693041b18dd4 100644
---- a/drivers/iommu/mtk_iommu.c
-+++ b/drivers/iommu/mtk_iommu.c
-@@ -1012,6 +1012,7 @@ static void mtk_iommu_get_resv_regions(struct device *dev,
- 
- static const struct iommu_ops mtk_iommu_ops = {
- 	.identity_domain = &mtk_iommu_identity_domain,
-+	.release_domain = &mtk_iommu_identity_domain,
- 	.domain_alloc_paging = mtk_iommu_domain_alloc_paging,
- 	.probe_device	= mtk_iommu_probe_device,
- 	.release_device	= mtk_iommu_release_device,
-diff --git a/drivers/iommu/mtk_iommu_v1.c b/drivers/iommu/mtk_iommu_v1.c
-index a9fa2a54dc9b39..9e7205af7d7316 100644
---- a/drivers/iommu/mtk_iommu_v1.c
-+++ b/drivers/iommu/mtk_iommu_v1.c
-@@ -580,6 +580,7 @@ static int mtk_iommu_v1_hw_init(const struct mtk_iommu_v1_data *data)
- 
- static const struct iommu_ops mtk_iommu_v1_ops = {
- 	.identity_domain = &mtk_iommu_v1_identity_domain,
-+	.release_domain = &mtk_iommu_v1_identity_domain,
- 	.domain_alloc_paging = mtk_iommu_v1_domain_alloc_paging,
- 	.probe_device	= mtk_iommu_v1_probe_device,
- 	.probe_finalize = mtk_iommu_v1_probe_finalize,
-diff --git a/drivers/iommu/omap-iommu.c b/drivers/iommu/omap-iommu.c
-index c9528065a59afa..c4c76aaec19e50 100644
---- a/drivers/iommu/omap-iommu.c
-+++ b/drivers/iommu/omap-iommu.c
-@@ -1725,6 +1725,7 @@ static void omap_iommu_release_device(struct device *dev)
- 
- static const struct iommu_ops omap_iommu_ops = {
- 	.identity_domain = &omap_iommu_identity_domain,
-+	.release_domain = &omap_iommu_identity_domain,
- 	.domain_alloc_paging = omap_iommu_domain_alloc_paging,
- 	.probe_device	= omap_iommu_probe_device,
- 	.release_device	= omap_iommu_release_device,
-diff --git a/drivers/iommu/rockchip-iommu.c b/drivers/iommu/rockchip-iommu.c
-index da79d9f4cf6371..e551c5b143bbd3 100644
---- a/drivers/iommu/rockchip-iommu.c
-+++ b/drivers/iommu/rockchip-iommu.c
-@@ -1162,6 +1162,7 @@ static int rk_iommu_of_xlate(struct device *dev,
- 
- static const struct iommu_ops rk_iommu_ops = {
- 	.identity_domain = &rk_identity_domain,
-+	.release_domain = &rk_identity_domain,
- 	.domain_alloc_paging = rk_iommu_domain_alloc_paging,
- 	.probe_device = rk_iommu_probe_device,
- 	.release_device = rk_iommu_release_device,
+I think, shmem_is_huge() for disabled transparent hugepages comes from:
+Commit 5e6e5a12a44c ("huge tmpfs: shmem_is_huge(vma, inode, index)")
 
-> +	if (!dev->iommu->attach_deferred && ops->release_domain)
-> +		ops->release_domain->ops->attach_dev(ops->release_domain, dev);
+However, HPAGE_PMD_SIZE macros for !CONFIG_TRANSPARENT_HUGEPAGE
+originates from:
+Commit d8c37c480678 ("thp: add HPAGE_PMD_* definitions for
+!CONFIG_TRANSPARENT_HUGEPAGE")
 
-We should probably be sensitive to the 
-dev->iommu->require_direct flag - generally drivers should prefer the
-blocked for the release domain, but in case the FW ias asking for
-require_direct we need to switch to identity.
-
-Also, may as well avoid switching a domain if the group is already
-correct and use the common attach function to get the tracing.. So
-like this?
-
-	if (!dev->iommu->attach_deferred) {
-		struct iommu_domain *release_domain = ops->release_domain;
-
-		if (dev->iommu->require_direct && ops->identity_domain)
-			release_domain = ops->identity_domain;
-
-		if (release_domain && group->domain != release_domain)
-			WARN_ON(__iommu_attach_device(release_domain, dev));
-	}
-
-Jason
+Thanks,
+Sumanth
 
