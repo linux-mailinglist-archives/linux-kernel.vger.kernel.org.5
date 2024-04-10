@@ -1,148 +1,190 @@
-Return-Path: <linux-kernel+bounces-138872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B131789FB84
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:28:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D571789FB76
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:26:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D1991F23850
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:28:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0490C1C229E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:26:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B1F16F0D2;
-	Wed, 10 Apr 2024 15:27:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="QMVx+iIj"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C9C16E889;
+	Wed, 10 Apr 2024 15:25:48 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5979D1591E1;
-	Wed, 10 Apr 2024 15:27:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B95416E878;
+	Wed, 10 Apr 2024 15:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712762861; cv=none; b=NWidxYlPHSnMdJEFE7OeK2PNFYl7/bjiBIbg8zUdwkqsNe78KwQ0e/D97cOgl+McVAu06xN1wJ5f0pnYXIg38SmQUX2ALY9TCoqiM+IFCHIgH2tQ49756w7tkZFGxkW8etscol5zjjA9Z4jKu5PDm2HTCULw4nlkK9y+VS0z+5Q=
+	t=1712762748; cv=none; b=uPwaDEWyFi1isjHGv10w0NB1c3pkI78rDXLmG74/9d3XRmof1E5LQlvpCCwcUlRU7Z7Vj6cMo66l6pm1jNeYDs1QGagOCS0GxDxeBKKs3c7ycJRYeKrt1LAWXAIPARWxweu5eTQejArS3/eDIMKc3Q2gum4VqAUHhrOVFsuaBrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712762861; c=relaxed/simple;
-	bh=yaqHM0962MfpM+OFdQda8fXPe0R1wO7c3AlNIHOVwdc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cIDr9b+TXaDzq5eq0ksIiA5LVmLWXAL58VAPt8bPBT3w2Lp5ptcZt8K1cJEot2DdXJ3ZHUQemGHmuSecBTA7AXhXPlN0qm0PEMop62C+J9yTcBqnLuD/AvZI5AbjTIKRvXHuWID3lh/GmRj4O/5b3B4A1rcFzaHvSVRZEpjeZtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=QMVx+iIj; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43A8bUQZ020430;
-	Wed, 10 Apr 2024 15:27:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=SeKInDMchgVr+fW9WAo6YizzoIlylrKBtPkpDrYflGc=; b=QM
-	Vx+iIjNoBxgbQhbk47P1pSkvCBi6kiaSSZFteiH8PqXWUF0Y7UYSWrwJ3USY+xai
-	GpMzaeDLZwM3AoGqxqUV9+ueya3RJGxE95WUHnvgCDFs5MzZP+Djd3mUZ8JzAwe0
-	6S2YEqGQJdphdetr8iOfJZaaPyjM5230lKtCzNV8IrViCObX5p7tH3axnILjKVCn
-	HrHWFKU22mBrjW0gJUsF1fI2uYWOU0hgzhaQSDLoYsE+Jpvut0geIRe/ud4DPPSJ
-	8fggfL5TrmQ7pfWvB/7hPSNjCQTZ3E7PVA4IghTfCh3TrgZ3LycX2IH7oruboSQa
-	QCfwL5e2a4lspc6371dA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xdnqtjn3f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 15:27:09 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43AFR8Ts012315
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 15:27:08 GMT
-Received: from [10.110.37.144] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 10 Apr
- 2024 08:27:06 -0700
-Message-ID: <d440d38f-f805-4c85-96b3-ae0b5ad2bbdc@quicinc.com>
-Date: Wed, 10 Apr 2024 08:27:05 -0700
+	s=arc-20240116; t=1712762748; c=relaxed/simple;
+	bh=Pk0thEfc+DKwTeAkAv2HFqvGA8+fNmNFZy9Fw5oWnfU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=u1SCwxMHNd6eWvwF+sklaMbhiPGIQbhF0oNp2of8oR1SEKuBxJ++fHSe1xkFiISXmaKezFKXphuonpUKFdCg4kUxIOKw1dStzBr0tt1FD6oy3YJ44FIFYOoLGxQYoerTkE7ikwnuFGhx7Bz1BwaQvPKpXr4tAXJrH0QmG6V56Bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31F05C433F1;
+	Wed, 10 Apr 2024 15:25:47 +0000 (UTC)
+Date: Wed, 10 Apr 2024 11:28:23 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Zheng Yejian <zhengyejian1@huawei.com>
+Cc: <mhiramat@kernel.org>, <mark.rutland@arm.com>,
+ <mathieu.desnoyers@efficios.com>, <linux-kernel@vger.kernel.org>,
+ <linux-trace-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ftrace: Fix use-after-free issue in ftrace_location()
+Message-ID: <20240410112823.1d084c8f@gandalf.local.home>
+In-Reply-To: <20240401125543.1282845-1-zhengyejian1@huawei.com>
+References: <20240401125543.1282845-1-zhengyejian1@huawei.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 05/16] dt-bindings: net: wireless: describe the ath12k
- PCI module
-Content-Language: en-US
-To: Bartosz Golaszewski <brgl@bgdev.pl>,
-        Marcel Holtmann
-	<marcel@holtmann.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David
- S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Rob Herring
-	<robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
-        Bjorn
- Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-        Catalin
- Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Bjorn
- Helgaas <bhelgaas@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Geert
- Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Neil
- Armstrong <neil.armstrong@linaro.org>,
-        Marek Szyprowski
-	<m.szyprowski@samsung.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla
-	<srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Manivannan
- Sadhasivam <mani@kernel.org>,
-        Lukas Wunner <lukas@wunner.de>,
-        Dmitry
- Baryshkov <dmitry.baryshkov@linaro.org>,
-        Amit Pundir
-	<amit.pundir@linaro.org>, Xilin Wu <wuxilin123@gmail.com>
-CC: <linux-bluetooth@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>,
-        Bartosz Golaszewski
-	<bartosz.golaszewski@linaro.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>
-References: <20240410124628.171783-1-brgl@bgdev.pl>
- <20240410124628.171783-6-brgl@bgdev.pl>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20240410124628.171783-6-brgl@bgdev.pl>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Wx5pfsg1IEL3FNsbq-QxsVprddWodQtT
-X-Proofpoint-GUID: Wx5pfsg1IEL3FNsbq-QxsVprddWodQtT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- lowpriorityscore=0 mlxscore=0 adultscore=0 impostorscore=0 phishscore=0
- bulkscore=0 priorityscore=1501 malwarescore=0 spamscore=0 mlxlogscore=826
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2404100112
 
-On 4/10/2024 5:46 AM, Bartosz Golaszewski wrote:
-[...]
-> +description:
-> +  Qualcomm Technologies IEEE 802.11ax PCIe devices.
+On Mon, 1 Apr 2024 20:55:43 +0800
+Zheng Yejian <zhengyejian1@huawei.com> wrote:
 
-if you respin, nit: s/11ax/11be/
+> KASAN reports a bug:
+> 
+>   BUG: KASAN: use-after-free in ftrace_location+0x90/0x120
+>   Read of size 8 at addr ffff888141d40010 by task insmod/424
+>   CPU: 8 PID: 424 Comm: insmod Tainted: G        W          6.9.0-rc2+ #213
+>   [...]
+>   Call Trace:
+>    <TASK>
+>    dump_stack_lvl+0x68/0xa0
+>    print_report+0xcf/0x610
+>    kasan_report+0xb5/0xe0
+>    ftrace_location+0x90/0x120
+>    register_kprobe+0x14b/0xa40
+>    kprobe_init+0x2d/0xff0 [kprobe_example]
+>    do_one_initcall+0x8f/0x2d0
+>    do_init_module+0x13a/0x3c0
+>    load_module+0x3082/0x33d0
+>    init_module_from_file+0xd2/0x130
+>    __x64_sys_finit_module+0x306/0x440
+>    do_syscall_64+0x68/0x140
+>    entry_SYSCALL_64_after_hwframe+0x71/0x79
+> 
+> The root cause is that when lookup_rec() is lookuping ftrace record of
+> an address in some module, and at the same time in ftrace_release_mod(),
+> the memory that saving ftrace records has been freed as that module is
+> being deleted.
+> 
+>   register_kprobes() {
+>     check_kprobe_address_safe() {
+>       arch_check_ftrace_location() {
+>         ftrace_location() {
+>           lookup_rec()  // access memory that has been freed by
+>                         // ftrace_release_mod() !!!
+> 
+> It seems that the ftrace_lock is required when lookuping records in
+> ftrace_location(), so is ftrace_location_range().
+> 
+> Fixes: ae6aa16fdc16 ("kprobes: introduce ftrace based optimization")
+> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+> ---
+>  kernel/trace/ftrace.c | 28 ++++++++++++++++++----------
+>  1 file changed, 18 insertions(+), 10 deletions(-)
+> 
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index da1710499698..838d175709c1 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -1581,7 +1581,7 @@ static struct dyn_ftrace *lookup_rec(unsigned long start, unsigned long end)
+>  }
+>  
+>  /**
+> - * ftrace_location_range - return the first address of a traced location
+> + * ftrace_location_range_locked - return the first address of a traced location
+>   *	if it touches the given ip range
+>   * @start: start of range to search.
+>   * @end: end of range to search (inclusive). @end points to the last byte
+> @@ -1592,7 +1592,7 @@ static struct dyn_ftrace *lookup_rec(unsigned long start, unsigned long end)
+>   * that is either a NOP or call to the function tracer. It checks the ftrace
+>   * internal tables to determine if the address belongs or not.
+>   */
+> -unsigned long ftrace_location_range(unsigned long start, unsigned long end)
+> +static unsigned long ftrace_location_range_locked(unsigned long start, unsigned long end)
+>  {
+>  	struct dyn_ftrace *rec;
+>  
+> @@ -1603,6 +1603,17 @@ unsigned long ftrace_location_range(unsigned long start, unsigned long end)
+>  	return 0;
+>  }
+>  
+> +unsigned long ftrace_location_range(unsigned long start, unsigned long end)
+> +{
+> +	unsigned long loc;
+> +
+> +	mutex_lock(&ftrace_lock);
+> +	loc = ftrace_location_range_locked(start, end);
+> +	mutex_unlock(&ftrace_lock);
+
+I'm not so sure we can take a mutex in all places that call this function.
+
+What about using RCU?
+
+	rcu_read_lock();
+	loc = ftrace_location_range_rcu(start, end);
+	rcu_read_unlock();
+
+Then in ftrace_release_mod() we can have:
+
+ out_unlock:
+	mutex_unlock();
+
+	/* Need to synchronize with ftrace_location() */
+	if (tmp_pages)
+		synchronize_rcu();
+
+-- Steve
+
+
+> +
+> +	return loc;
+> +}
+> +
+>  /**
+>   * ftrace_location - return the ftrace location
+>   * @ip: the instruction pointer to check
+> @@ -1614,25 +1625,22 @@ unsigned long ftrace_location_range(unsigned long start, unsigned long end)
+>   */
+>  unsigned long ftrace_location(unsigned long ip)
+>  {
+> -	struct dyn_ftrace *rec;
+> +	unsigned long loc;
+>  	unsigned long offset;
+>  	unsigned long size;
+>  
+> -	rec = lookup_rec(ip, ip);
+> -	if (!rec) {
+> +	loc = ftrace_location_range(ip, ip);
+> +	if (!loc) {
+>  		if (!kallsyms_lookup_size_offset(ip, &size, &offset))
+>  			goto out;
+>  
+>  		/* map sym+0 to __fentry__ */
+>  		if (!offset)
+> -			rec = lookup_rec(ip, ip + size - 1);
+> +			loc = ftrace_location_range(ip, ip + size - 1);
+>  	}
+>  
+> -	if (rec)
+> -		return rec->ip;
+> -
+>  out:
+> -	return 0;
+> +	return loc;
+>  }
+>  
+>  /**
 
 
