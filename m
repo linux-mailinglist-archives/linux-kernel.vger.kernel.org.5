@@ -1,144 +1,140 @@
-Return-Path: <linux-kernel+bounces-138879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B9A989FB98
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:31:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D809589FB97
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:31:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD4A41C21920
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:31:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 783401F239EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:31:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0522C16F0D4;
-	Wed, 10 Apr 2024 15:31:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3634D16EC19;
+	Wed, 10 Apr 2024 15:30:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="3DGe+Pxl"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eNyu4NcM"
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63A3A15EFAE
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:30:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C86415ADB0;
+	Wed, 10 Apr 2024 15:30:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712763059; cv=none; b=YjIL9wQr1fhmq1uC8xpHWe6Fe6PhIQWMHt75cemPoWCbDVns3JqsNCmW9W1Wj5FHQAjPGpAnizJff3olAUWvLe/ZBzCOaiWqJZhMBPZhLdEHmOpqpianE4Mp1heiO1OANCVEbAIKBWAEoaDZcNw50uOsEOlXElELGU503u1upro=
+	t=1712763058; cv=none; b=EwdvePX0uAJj3J3orchARYHCp1JbDITB4kHnPaskUzdK8Zm+mZhH6JYQXWSUzosaVEAhkLXs+4Zj5mdqnWKxNCvgC8NaeYEArC6kBVAHkflTYrLO2ptjHDx0Rdztp1WhZj8Pvq/PsM8RkYRzfSYop/mXm21z7Rh11HgW5/lDSho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712763059; c=relaxed/simple;
-	bh=u1eWAA/ThURkbCchsyub5PAfU1Ae5xWgAQKecjdCMoc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FUQZQxqG/EI9IZ5si7EVOWZFrP9yzSPQuhz98AQmz6ODHUBcqLH2WSbakBeRrhK6Oqv7MUd2OvhMc7cIdXvS7vSBr5dVZqDTXOIFa7hs6WbGCW6MCMIjuAE3J3uoN1SoekbqaozQWRwxSQt/IyexwGJIJj9/7QTwQbaiLqeSgDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=3DGe+Pxl; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-346407b8c9aso678515f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:30:57 -0700 (PDT)
+	s=arc-20240116; t=1712763058; c=relaxed/simple;
+	bh=OmeHXoy2ncpoQhQGyEMX/xcVd8Rz4jLJzk0iOK1XF+w=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=isr25YgUk+Qw/CvrBkMT4rTRvop3twJsy99nL0y5Ohs+BLUDH2Q8riNR/Uj3S3Oruxq5DyZmf1nMv9wQyq4ax6qgt0xSeM2YwHW9/Z7u412bGeXaXTO92cw7IGHR7CgHeGa19bNDJWxpeXucC9LwnA6NYj5LEmiTTO67drz7a9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eNyu4NcM; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-78d70890182so147319085a.0;
+        Wed, 10 Apr 2024 08:30:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712763056; x=1713367856; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OWBh7JXEUeIzo5KgJAd3zKBhqX2eLt0rOguALy1M0Kk=;
-        b=3DGe+PxlpcfHZknuci25H9JJ8XxKvRKUkr4G8+KGuK+bB4qPFRq2dbCRe2h6O2idIP
-         syOjYu0V0SI3s3T34XiQcPedAwPi2qj5sBrrFgX4/PzDoIJCu7TXtO4qgMmyv66LVZvX
-         16jPI9ZOLPWaKiW+paMrPmumMz3IKjqowyNVm7RqZ8e7/rOeSqCtDxBFeu734pi9Vko3
-         3Cf0J1B1eA4/eTCGza0f2dbKLEEaUCG9rM159fJr2GuyzpFlebzqr5H3ssHACw4s06DO
-         QVO0mQY4iSqtoNJfJM/rd//eZ1mSP9gXdlB5+o2EIkRAnn7KfxT73qfsTRjqgQUjey6j
-         b1PQ==
+        d=gmail.com; s=20230601; t=1712763056; x=1713367856; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xU1hy2U0mJLbOe7yjnAS91sF71BnTGdYJcXm1GozIKs=;
+        b=eNyu4NcMjqU3NSgFAwmiRI+fIsLMWLpcHQ8/HOhC5ez5ZHCFXblARQmb9ADbtwM/V4
+         utXpQsiyjg3khSonupaCbaiXXyVfT0xBs+7nyYBY8h+xO+DB5HV6UAVERYl1FrQNpfms
+         MMK06NHSH39I8CI242QoK+nxa0yHzspLwHy2sqLI2oFG6oXiuaRYpKkJzXxbRPLbYXyT
+         IWik5Jt0RnfJBySaC8mK/NK8J+F0XBKO22VltC1TEVLAUNSuyxp1hxkIr3ikWnW/n07Q
+         o6f1slrMTuxqwrJJ3s/W9uhF2rhHAASdq3/1OYNuCxE9gzqEjI6/TMET3N9r+cRoXOOI
+         9bVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1712763056; x=1713367856;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OWBh7JXEUeIzo5KgJAd3zKBhqX2eLt0rOguALy1M0Kk=;
-        b=pImCaPeur2bMDfSpAZILINuudRql50rDoFyZmamiip3Vz+0oyhAYUDvIzNpxjI9koI
-         65bBIvrmXpe1cixVyBtJxFPy8rjo/GHcG3AqmZhw7Mr7sPqd9oXUQWcr+SJouxGDDo/m
-         ZsZqLG/ZwIeIvebXypXH6xpZlXfhqYtDs7yWMHXL23Pb+fE79dVMcomy9TUo+BCtpFSC
-         vpO0oIGZolYA66D8rrFdv69M0qDwUOat0etZgnP0FJ0Zxln3Fs0rXwG0jwhfaXsKuy6d
-         1ToHK39gtHmcw3wzzDc3O5TjAusSGoBB+pe2NG6zx2oz5s+sOBtWvl38+Z4q7NWi0Bgw
-         e5tw==
-X-Forwarded-Encrypted: i=1; AJvYcCV1QYYl0mucH1LstDBR0c3gokUjdAB8dWucippK4TsfnVpktGRdjunZz6TwVVTd1KyRj2M/u203Cit/q3d99t/BnFhSzuykoa+nyvcb
-X-Gm-Message-State: AOJu0YzoYdmK6ZsryHZF5cU4ALmmYVAGu4N+7B3SaGJBisBpkrDzyUQf
-	08epPYkfH6qAC55iZJaGS+wC8dYM/NDptrckqe4x7jTvihaX+gDDkfelKGNjk0U=
-X-Google-Smtp-Source: AGHT+IGM+tKVXZHv9j2QFP6knh6WFNV2lFvfGgCYRQglQNtraXDOdyw8VxBYrHku61VtDa7HjL9l/w==
-X-Received: by 2002:a5d:64e3:0:b0:343:ba58:1297 with SMTP id g3-20020a5d64e3000000b00343ba581297mr2445689wri.3.1712763055716;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xU1hy2U0mJLbOe7yjnAS91sF71BnTGdYJcXm1GozIKs=;
+        b=XgNj3NhTsLVLsNOiK+93mLUU3ruI+qq7qw+s/nVXoWD13EsUFGgir5f03UohT5QJSC
+         IQEw6gqg/YjgA4wBD2Rfy0cuDVNDipKs4cCnKr9PEpjq3IrI13JXAAEHWP6mp/4SWrVW
+         ZGQ7RyCzQrYrsdQsASqPB7SOFQt/bvGJF4zdvfwoSKy2UUnnbPC+mNIpagmBy2M9AVAv
+         dxhPeACu/VGevz4qut/+9HwCCIpFL+6xgzeTmdoNI2E0YKUMLiRK2iH29HxoiqBjiObA
+         7YtTn6Vf8ghYfmzvji5RHdE9k/O1YgGdBWd8FksbdvGgiTi1BvFT1eyUr5KUsYpOOD2b
+         Y+7w==
+X-Forwarded-Encrypted: i=1; AJvYcCXyP9113+bTaSlJqd7uxzuDv/dwgRfT74ZhpTYNkT1e+BRoJ4Pfr5Zy5FAFNq0zNHzdzdQI3SV7EBV4H9Zat06kmJTkhUey+cbm6KgTjDFoT29vdUgPQmQeB9xnH6kH3zKhRl1E6z796f8mdK48DI9KGHMeNJc65rJO
+X-Gm-Message-State: AOJu0YyNWzieJfS0Uo/J9aSV2GgThDgai75XZAv/64jwz/jFaQETxKWX
+	V471waYkNrByXbJk/T+TfLsYH0ZZWYS/+35F61fc2zu0PCZPk0JhhKXZOdCO
+X-Google-Smtp-Source: AGHT+IFB+pgD8hxrIKgTzP3YjtD2OHAGa1mQ96FRMdZOBBQ0cIFvN5fLEXa221tsnI1J0I6dPOl+cA==
+X-Received: by 2002:a05:620a:e8b:b0:78b:d75c:f9f5 with SMTP id w11-20020a05620a0e8b00b0078bd75cf9f5mr4407896qkm.38.1712763055865;
         Wed, 10 Apr 2024 08:30:55 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:999:a3a0:d4a6:5856:3e6c:3dff? ([2a01:e0a:999:a3a0:d4a6:5856:3e6c:3dff])
-        by smtp.gmail.com with ESMTPSA id p19-20020a05600c1d9300b00416bf7b68f6sm2604986wms.31.2024.04.10.08.30.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
+        by smtp.gmail.com with ESMTPSA id d7-20020a05620a158700b0078d5f7b9a2dsm3952197qkk.15.2024.04.10.08.30.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 10 Apr 2024 08:30:55 -0700 (PDT)
-Message-ID: <ce7b7413-31ac-4c93-8970-e7cf0d6902cc@rivosinc.com>
-Date: Wed, 10 Apr 2024 17:30:54 +0200
+Date: Wed, 10 Apr 2024 11:30:55 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Abhishek Chauhan <quic_abchauha@quicinc.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ bpf <bpf@vger.kernel.org>
+Cc: kernel@quicinc.com
+Message-ID: <6616b0af63eed_2a98a52947e@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240409210547.3815806-2-quic_abchauha@quicinc.com>
+References: <20240409210547.3815806-1-quic_abchauha@quicinc.com>
+ <20240409210547.3815806-2-quic_abchauha@quicinc.com>
+Subject: Re: [RFC PATCH bpf-next v1 1/3] net: Rename mono_delivery_time to
+ tstamp_type for scalabilty
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] riscv: nommu: remove PAGE_OFFSET hardcoding
-To: Jisheng Zhang <jszhang@kernel.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Samuel Holland <samuel.holland@sifive.com>, Conor Dooley <conor@kernel.org>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240410142347.964-1-jszhang@kernel.org>
- <20240410142347.964-2-jszhang@kernel.org>
-Content-Language: en-US
-From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <20240410142347.964-2-jszhang@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-
-
-On 10/04/2024 16:23, Jisheng Zhang wrote:
-> Currently, PAGE_OFFSET is hardcoded as 0x8000_0000, it works fine since
-> there's only one nommu platform in the mainline. However, there are
-> many cases where the (S)DRAM base address isn't 0x8000_0000, so remove
-> the hardcoding value, and introduce DRAM_BASE which will be set by
-
-Hi Jisheng,
-
-Typo: s/harcoding/hardcoded
-
-> users during configuring. DRAM_BASE is 0x8000_0000 by default.
+Abhishek Chauhan wrote:
+> mono_delivery_time was added to check if skb->tstamp has delivery
+> time in mono clock base (i.e. EDT) otherwise skb->tstamp has
+> timestamp in ingress and delivery_time at egress.
 > 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> Renaming the bitfield from mono_delivery_time to tstamp_type is for
+> extensibilty for other timestamps such as userspace timestamp
+> (i.e. SO_TXTIME) set via sock opts.
+> 
+> Bridge driver today has no support to forward the userspace timestamp
+> packets and ends up resetting the timestamp. ETF qdisc checks the
+> packet coming from userspace and encounters to be 0 thereby dropping
+> time sensitive packets. These changes will allow userspace timestamps
+> packets to be forwarded from the bridge to NIC drivers.
+> 
+> In future tstamp_type:1 can be extended to support userspace timestamp
+> by increasing the bitfield.
+> 
+> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
 > ---
->  arch/riscv/Kconfig | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 7895c77545f1..b4af1df86352 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -247,10 +247,16 @@ config MMU
->  	  Select if you want MMU-based virtualised addressing space
->  	  support by paged memory management. If unsure, say 'Y'.
->  
-> +if !MMU
-> +config DRAM_BASE
-> +	hex '(S)DRAM Base Address'
-> +	default 0x80000000
-> +endif
+>  include/linux/skbuff.h                     | 18 +++++++++---------
+>  include/net/inet_frag.h                    |  4 ++--
+>  net/bridge/netfilter/nf_conntrack_bridge.c |  6 +++---
+>  net/core/dev.c                             |  2 +-
+>  net/core/filter.c                          |  8 ++++----
+>  net/ipv4/inet_fragment.c                   |  2 +-
+>  net/ipv4/ip_fragment.c                     |  2 +-
+>  net/ipv4/ip_output.c                       |  8 ++++----
+>  net/ipv6/ip6_output.c                      |  6 +++---
+>  net/ipv6/netfilter.c                       |  6 +++---
+>  net/ipv6/netfilter/nf_conntrack_reasm.c    |  2 +-
+>  net/ipv6/reassembly.c                      |  2 +-
+>  net/sched/act_bpf.c                        |  4 ++--
+>  net/sched/cls_bpf.c                        |  4 ++--
+>  14 files changed, 37 insertions(+), 37 deletions(-)
 
-I'm not sure but it feels odd to have this at top level config menu.
-Maybe it would make more sense for this to be located under the
-"Platform Type" section ?
-
-Thanks,
-
-Clément
-
-> +
->  config PAGE_OFFSET
->  	hex
->  	default 0xC0000000 if 32BIT && MMU
-> -	default 0x80000000 if !MMU
-> +	default DRAM_BASE if !MMU
->  	default 0xff60000000000000 if 64BIT
->  
->  config KASAN_SHADOW_OFFSET
+Since the next patch against touches many of the same lines, probably
+can just squash the two.
 
