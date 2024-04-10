@@ -1,128 +1,109 @@
-Return-Path: <linux-kernel+bounces-137773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 554D889E6EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:33:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAE4289E6E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:33:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4A9B1F24B2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:33:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 668DA28414F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 00:33:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE33B621;
-	Wed, 10 Apr 2024 00:33:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FD34623;
+	Wed, 10 Apr 2024 00:33:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="PngiYocr"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="JJ9fs9DU"
+Received: from out203-205-221-153.mail.qq.com (out203-205-221-153.mail.qq.com [203.205.221.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E530387
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 00:33:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 239CA19F;
+	Wed, 10 Apr 2024 00:33:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712709217; cv=none; b=BgXXMQVVQ9XIwVL6xiJzMq8KGndz7+ToGXGGoyBq7uRsF0TqsrbczHk4eWc8GN+pKnnVDTc8xjVwC/drtLH4hhIYP8ha4e8hRMv8xFsGvND5ULEYsq/5IFeyiEKV01NqM+luVmr1bxCX5T67/Ss+Oan0uKzR++ToZ9Ty5JrD550=
+	t=1712709196; cv=none; b=IzL5oNua90ZBnsDd/WpqyqKO5euyN9D57Tgf8wlFvVagNehpyDJINW/zBBrehnSPhTCKUJwewRHKlTg1LOX+6efxYQ6TVzgvvvt65iu9qBlpSIFEQXLh6FmGtj+joFBb81rRATwDkuTMDjfH9z7JSZQ3j2sEOqAdkHI14BEGs5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712709217; c=relaxed/simple;
-	bh=0n2PhpDbpHhkl4Tsxkqnkn1+lJ7eLXgO6RMQRArIl9s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oRrEWmXOyDRKkT9dtP97eAKxrzVhuFhJBNMtu3Lg9mtYThUZgbt8y7fgvojgjIvkZ+SgP7ciaKfW+MkZEoQmxizjASI6CPj6ICG3hdkZPkf51l/98b3fWKukcgICaSdDl3bf0/a/LG4CKH/FkB+nzkx4rFZrvCZJLfjOJgg0ko0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PngiYocr; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4154d38ce9dso18725e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 17:33:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712709214; x=1713314014; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9wEMmLHqOpGDwOlJzhH8hYIl54XmGd01Duj/DhYEOqA=;
-        b=PngiYocrG2ZS39bBzH9osobEu7su3tm3Lu04vgJje4Lj44Oxlv6yCNGY10fWqfMRLU
-         iKa4Hj40mM2X02EQkDzZKueKvNfEIKr6PA+yUKBu+O1GMQ1mS49MBJPY1wh5wlEH9E47
-         Bo8Y72MF5BYnRSQziq75b0+8rhV+7+zkeipkqVN3U72m0YKTrZFf0og/fIYAegoK7cXf
-         czHGdaf+Roh+OG1oOYMm+9tcuaHdk+sL59BNxNaJR1RIa59AP5MNVn0Q3fc+IsDGJmg2
-         PvC+9whgWc6eSbO6kDIWZYphO49X2NMPmubGyQHF4+6PJ90K4efk076PgRrxiQmGYf4U
-         caCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712709214; x=1713314014;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9wEMmLHqOpGDwOlJzhH8hYIl54XmGd01Duj/DhYEOqA=;
-        b=mxapipD3o7mhAqIcqgl6+a+5+62d55d2I388RWl9xG/I0XpO7vPz7hW9fdLUQu7LQT
-         xZxjaknuNR/qOe49RFxjpR9Xbar8RTdRBmJl3Vyl2U7LwYFTrIBGUtzjxODX+NffJpBh
-         xdajDXPqe8EED/cIiSQCct9sNMlZiHdI7N5ZCN/YiTAVtQs+5H2I0mIM3S/bDBM/TtzF
-         j5L/vzyHIg1IYHdeGRF/jO2CWhCPujotrIW8UF/cIVvZL1YRrPmEvzmE9qmJk8S2vffw
-         7+ZXPO9bdg5e/EZu1gnn7k43a3zKRx/ip38pwinbgM9bf9FGGp6t5llPYKmF0zSCQP6M
-         7SHA==
-X-Forwarded-Encrypted: i=1; AJvYcCWp9oyb8rPkGWrIpO3E4Ob/mNV/ux70TMiuu6JY4AlhWA4navAljBFRiG04JnCBfU9fdGPiAYcZWFZO24bmPrLPv1sAmgMVen9il+Yb
-X-Gm-Message-State: AOJu0YzQFfkDvNoKx5GGiyWpQJKOePB/YEH8xHj+5ibtEmUt9lTK8t/+
-	1DTEnup+By+i0+lVa4i8IshJtUFYQPh3khlSYcBf/+rK5336B0JoHWxMOnht7AzToI9hFgNMpP+
-	D00IRvwfMmEOEHaWnOxmbH82+EDNUlrCg7CLy
-X-Google-Smtp-Source: AGHT+IHJRUrU4ixa9UyoYrtG8Ohe2yj9EFPZVOjGqVwWKdGcIRmnsKK05rsFXPS2VSEHNkJY+LyTU8bPcxUHcJ5+1vY=
-X-Received: by 2002:a05:600c:348d:b0:416:235f:c41b with SMTP id
- a13-20020a05600c348d00b00416235fc41bmr83380wmq.2.1712709213721; Tue, 09 Apr
- 2024 17:33:33 -0700 (PDT)
+	s=arc-20240116; t=1712709196; c=relaxed/simple;
+	bh=7B3abChn6QeywU4/KUOFAabRB16trDidpC3z9pyRZA0=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=gqko8LFB3XxizZM06sQAGLnisKdL4jfJ5zmLHiV931lTru09njNQ/MjubJERemGDTkZg6QYm5gqZhl+RovX3jvF/VUZriF5hAG7KyjinvqdlZbGltvti6ySpwv0fH97O2/EAJ/K5D7PMSeisQtaqPfvsqDCMU1vosMQbvpiBixs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=JJ9fs9DU; arc=none smtp.client-ip=203.205.221.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1712709191; bh=u0Mv4a49i+HjEHT0FFM4iQe2j30d3IX7Cki+XJXwmi4=;
+	h=From:To:Cc:Subject:Date;
+	b=JJ9fs9DUjalxgP6hoYOQJJ9Yls5P56D1c+QeQd7/oX5wL1g9HDK2tHLz4G6TOuqD+
+	 /ui0OMkr2iFrCllzInGDWXZMgFFesmaW43d0YLvJ4Xg3auahw2anUwy9rF7ui5/6ih
+	 Zrv3K2JXmFGiBHij2tfJmPrgilma/+qwksthERK0=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id 8473001E; Wed, 10 Apr 2024 08:33:07 +0800
+X-QQ-mid: xmsmtpt1712709187tvku4af5a
+Message-ID: <tencent_EC72CD3879FA6F102FC56E4495F0E822EC0A@qq.com>
+X-QQ-XMAILINFO: OdIVOfqOaVcrMCJcWeDKI4Sr1b2eFxV1E7SSje18Q6CWk3Gxh2SfhZ9PSxAA7S
+	 UkgZ27DzHwI/c9SWJX4xTYSlvQ9E2qIXUwE+/AlR2a02H9Gjl77/l/258nwyq5TMUpeadvHU9ywc
+	 JBmKWDKzVDrCdLj9/MKGN7m8NJvkca9mFFSCuutDjDdrMvgtLEwSWSklPg5eZRmRC5u+Btt6GiPq
+	 8T9xFnp86QRPjfmm5L+kVy7LNLLr8UpcvTjogzZXXHcGhk1GPlTb4LWp7s5NODWYZX2oysh2UiDO
+	 P92iFOP6dHBxjtKGYiregsMZssZJZK4e03LOALSgptxd38xWCXGnciRzMRHYzPF0XIROz5Dt9okZ
+	 gAS+wN33i6FydwdQErurCXjNnw8SvGnHyZhY6TUyWjQnnhyDdyPhuqoA00W61YS7O3Iy2jbWOVlE
+	 aMIoqKRJM1Mq0yczEifyso0Q8K52YXRnG8dDrPXi1suyGH6LEH3garxNrSuLrDSes8+uqpMRgb3E
+	 RC5zhGknEmV/yvLYnvDFpcl0TVx/xYbpJPq46GqyKgp5BlaEkcTePYBS3htQ/KocbSV6icVNPGUF
+	 zxaL3MHcH9WcO60VnnCDwygsesh3515McMSBH+HwzfcJT/DJMt+l5NpEyC/EEOf/9F3XP2X6Dn6k
+	 pI8PJTUE15+19o9dNxbkm+wvH0c22e4KrYWFXGrJ/sIPnLN18GuXxsMy5QkXJYms80lFVxjnuT0I
+	 //7YldQYlPhYkbEziT7orMyGgnp2wSPbVYRh7D7KQ9zia67bWCYqhpwDpCME3ZS2Jc7D4BLf6hp5
+	 eTGztIGLFukdlI2VlQqqoM+KIKbQuF1NW/5VrZk4P01jm6qbFEJ1PyvRPqtYE/qZ354G3UmLvqJV
+	 MciLrqZ0X3fAvN5O+eQhRsr54MVQrC93f1+EPlTSeuBywbv6Alwwga4KHgsS/r7RaJURcInCZG70
+	 I5JQRaET0=
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: bpf@vger.kernel.org
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	sdf@google.com,
+	song@kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	yonghong.song@linux.dev
+Subject: [PATCH] bpf: strnchr not suitable for getting NUL-terminator
+Date: Wed, 10 Apr 2024 08:33:08 +0800
+X-OQ-MSGID: <20240410003307.181290-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0000000000009db84e0615a73698@google.com> <20240409164627.b4803e09c81c01ccb6f55601@linux-foundation.org>
-In-Reply-To: <20240409164627.b4803e09c81c01ccb6f55601@linux-foundation.org>
-From: "Zach O'Keefe" <zokeefe@google.com>
-Date: Tue, 9 Apr 2024 17:32:55 -0700
-Message-ID: <CAAa6QmQ-fSNHu0VWQod+Cz89zOtQ9Ayet_2OEQsrp2zeCfos3A@mail.gmail.com>
-Subject: Re: [syzbot] [mm?] general protection fault in hpage_collapse_scan_file
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: syzbot <syzbot+57adb2a4b9d206521bc2@syzkaller.appspotmail.com>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 9, 2024 at 4:46=E2=80=AFPM Andrew Morton <akpm@linux-foundation=
-org> wrote:
->
-> On Tue, 09 Apr 2024 03:16:20 -0700 syzbot <syzbot+57adb2a4b9d206521bc2@sy=
-zkaller.appspotmail.com> wrote:
->
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    8568bb2ccc27 Add linux-next specific files for 20240405
-> > git tree:       linux-next
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D152f4805180=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D48ca5acf8d2=
-eb3bc
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D57adb2a4b9d20=
-6521bc2
-> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for D=
-ebian) 2.40
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1268258d1=
-80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1256598d180=
-000
->
-> Help.  From a quick look this seems to be claiming that collapse_file()
-> got to
->
->         VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
->
-> with folio=3D=3DNULL, but the code look solid regarding this.
->
-> Given that we have a reproducer, can we expect the bot to perform a
-> bisection for us?
->
+The strnchr() is not suitable for obtaining the end of a string with a length
+exceeding 1 and ending with a NUL character.
 
-I often don't see a successful automatic bisect, even with
-reproducers. Hit or miss. I will take a closer look tomorrow -- the
-reproducer doesn't look to be doing anything crazy.
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ kernel/bpf/helpers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Zach
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 449b9a5d3fe3..07490eba24fe 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -826,7 +826,7 @@ int bpf_bprintf_prepare(char *fmt, u32 fmt_size, const u64 *raw_args,
+ 	u64 cur_arg;
+ 	char fmt_ptype, cur_ip[16], ip_spec[] = "%pXX";
+ 
+-	fmt_end = strnchr(fmt, fmt_size, 0);
++	fmt_end = strnchrnul(fmt, fmt_size, 0);
+ 	if (!fmt_end)
+ 		return -EINVAL;
+ 	fmt_size = fmt_end - fmt;
+-- 
+2.43.0
+
 
