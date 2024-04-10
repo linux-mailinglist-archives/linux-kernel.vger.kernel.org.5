@@ -1,76 +1,85 @@
-Return-Path: <linux-kernel+bounces-138868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10CF789FB73
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:25:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBF9489FB75
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:25:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A56DA1F21CBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:25:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28B001C22572
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:25:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF8AB16E87C;
-	Wed, 10 Apr 2024 15:25:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E032615EFBF;
+	Wed, 10 Apr 2024 15:25:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HXZkqCa5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gjZ2Bc+E"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E2F215EFBF;
-	Wed, 10 Apr 2024 15:25:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32DDA16DECB
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:25:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712762736; cv=none; b=XMJkNy2RjjmsT4IHN3ZFhVYbdFrfFGP0mYumOM9KqWm+yE5pW8f/rPtCDsEgv6d3ue7PWEKLI6syKCNV3PIrvxsDe4O+IVbJJIuAuEgLl4z9KJeAIooGGZ1lWgs7ArYdL8UbbQJ+OASj4gze5ENHPI0uGpF3QkHkKs0Vo7msB4w=
+	t=1712762741; cv=none; b=NuckSwRgdlpRakeF1L7HfCPwNLNrSa+UUttwHKX37Kjx+GFL4dqho8Jk/Hi/IvzCQk4e26MESPFuDreZtl5uQlvyTZWxQl5hSZb0L6fwLyyLYhPaUPq9bbTpu1x8uNKToAO9WwSD7iB13lS3DJRDSzlSY9j+lFUwiCKIqbPOI88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712762736; c=relaxed/simple;
-	bh=LQ/3a9IWIRDOqBxwrTVme9CWku1ILOMQBl7mQRLiAWo=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=suq5eW4F3qM4OOzKzI4p9KGWp58lYcw5CJSXEgqqMUNtr6mvDwT974SzlzeSNgZSpXCAp7o63cvOpH0lubo50Q1tUSa35FF/pGV/pzCDPkssDGi+ILeR/FRGb7GfdxtihOAsUiZvvhheq7wLvwefyBhsXH51gY0N5c9jmd7NVpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HXZkqCa5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 575CDC433F1;
-	Wed, 10 Apr 2024 15:25:35 +0000 (UTC)
+	s=arc-20240116; t=1712762741; c=relaxed/simple;
+	bh=Nqu+9dKEhjC9kwrawShWr3dtYD9VLYMStsi3if+IvzE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SAp/aKoUmdCEINAKF9J5NmLQs05AO0jiH4ehtkbwPv/RTkZRvlaiWAvCZHTibg9ZVvBlElgkmJF0jfEz05FBs1b9LB9PhV/t55jRSdeVy1a2i8eK/v9dKA9xr0MS441lEkaUN3jb8h4ZVz5jzvAYIxf2UnHocwqETN3hvc0xXIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gjZ2Bc+E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22978C43394;
+	Wed, 10 Apr 2024 15:25:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712762735;
-	bh=LQ/3a9IWIRDOqBxwrTVme9CWku1ILOMQBl7mQRLiAWo=;
-	h=Date:From:To:Subject:References:In-Reply-To:From;
-	b=HXZkqCa5C0cWESyOvDvsdJ7721ywkhj/ZHDFrvD0IPpt97pujLFOxypMEA9gROI/E
-	 2f60JkFVXQSBcP62ktSdW5Sp+dbS4S0iOCvLYqDeAIPwmVaEKjjIcRuNpBELHUXSp/
-	 4xe+yjxKl08Sp5q9dpHF4yKlqjz+YASdD6MPd/ZYSBkfk2eJfq+GTld7hZbIPJvrsZ
-	 /gcSdMLe0UdDc6O0EXmeEAO89UeSGXMOBdyx2yqqqPPnzUpGry+b2wf4PB7zAcLH3+
-	 3Bfkk2kgYJMrp39G0/2VtCdQe3R3wDp0gzMuxXGEGxNG8VCEY/8SdRUXL3ekVPbeVg
-	 YZ11CgOGXfeDQ==
-Date: Wed, 10 Apr 2024 17:25:31 +0200
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	linux-i2c@vger.kernel.org, Jochen Friedrich <jochen@scram.de>, 
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 14/64] i2c: cpm: reword according to newest specification
-Message-ID: <26y3smrxv3q56peuqatospr3q6annxvdmleyhykyrjrovne6mu@yg44mmr7aaqp>
-References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
- <20240322132619.6389-15-wsa+renesas@sang-engineering.com>
- <jpp67ejeropvsc6gwompwc5t2nbl6cde2o33vtf42e2on2ycal@42ovfdhp6oh4>
- <maxjcriuq6qfoeoing5ic7l5pnxdyylovjdoh4w3bzhnmco6ax@mslv35p4k35k>
+	s=k20201202; t=1712762740;
+	bh=Nqu+9dKEhjC9kwrawShWr3dtYD9VLYMStsi3if+IvzE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gjZ2Bc+E4cT3wA8GAem+w6X9VRG7fkY20Q4/K0PkLiL02OIaisKhKe+Wi8eMTIJWc
+	 Wr6sb3tUJxHK3ZlHalfgYtweIe4gLL8sJG7jNpvAG3/qxz8VdF12UmrLFIwrfeZyYQ
+	 1K/GSM1ZAhbuHTNmM84M/+f3mx0vJXtda+mGQWuhlExj8AlmHC27xBYDrrEMI367yl
+	 v3JiSCNeNP/+wAYreBOsx7442EXytLqS7mnbW4Y/QqWnu9C1lXRsGhfvQp01j7fmDw
+	 UhgSCaOBwbZuc1rfWIoB9ZD99Wq8OGMIrNeNJv1sNzxgoYv1Q32/9G4sQAWnCHnsG+
+	 yliVcTh1Q0JzQ==
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Jassi Brar <jassisinghbrar@gmail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Cc: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] mailbox: mtk-cmdq-mailbox: fix module autoloading
+Date: Wed, 10 Apr 2024 17:25:34 +0200
+Message-Id: <20240410152534.190326-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <maxjcriuq6qfoeoing5ic7l5pnxdyylovjdoh4w3bzhnmco6ax@mslv35p4k35k>
+Content-Transfer-Encoding: 8bit
 
-> > >  	out_8(&cpm->i2c_reg->i2mod, 0x00);
-> > > -	out_8(&cpm->i2c_reg->i2com, I2COM_MASTER);	/* Master mode */
-> > > +	out_8(&cpm->i2c_reg->i2com, I2COM_MASTER);	/* Host mode */
-> > 
-> > I2COM_MASTER might be coming from the datasheet.
-> 
-> Maybe we can just drop the comment? The value we write is pretty
-> self-explaining.
+Add MODULE_DEVICE_TABLE(), so this module could be properly autoloaded
+based on the alias from of_device_id table.
 
-indeed.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ drivers/mailbox/mtk-cmdq-mailbox.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Andi
+diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
+index ead2200f39ba..080d091e28ac 100644
+--- a/drivers/mailbox/mtk-cmdq-mailbox.c
++++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+@@ -765,6 +765,7 @@ static const struct of_device_id cmdq_of_ids[] = {
+ 	{.compatible = "mediatek,mt8195-gce", .data = (void *)&gce_plat_mt8195},
+ 	{}
+ };
++MODULE_DEVICE_TABLE(of, cmdq_of_ids);
+ 
+ static struct platform_driver cmdq_drv = {
+ 	.probe = cmdq_probe,
+-- 
+2.34.1
+
 
