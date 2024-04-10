@@ -1,361 +1,122 @@
-Return-Path: <linux-kernel+bounces-137828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B551189E812
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:13:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D84489E813
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:13:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19BA9B23AF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:13:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5373A1F256A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:13:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA652BB08;
-	Wed, 10 Apr 2024 02:10:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50FE6539A;
+	Wed, 10 Apr 2024 02:13:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ad3W7ixm"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ljTJW/Y0"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EA42AD21
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:10:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A8F18F5B
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:13:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712715037; cv=none; b=ntV8AInqrAlNhOBBpZrEFnUjd6h8LA1SpXqyK6RbC50GppI2wmXRsLyQWWk3nqfmIc79KNPGYZZoTZJ3g0RL6c9NlTKQT6NzGtB0oJeFPmrcnTXD8XDlfaz9k+XiKJZhtgoYDBomWSEUXiV7zxfNTV7axzPf0xQ+2aM3rXg74xM=
+	t=1712715182; cv=none; b=di+4gij0d2F3JGOPy8wCeyefPxOOt5VQYM6LwcJZ+GnDHldcO7MA4uiqUDnvQask2AidRGOBUEAaVLrAVAM3sli/HSclrl63XmR6Tg1KdvzcAHUeGpsWaKil8N6tsvuCWhnzUsldvKXgSTPN9NgTtxm7UMqa4JOILfcUQhzMoaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712715037; c=relaxed/simple;
-	bh=PpWRvG0ufJ/UB2ZXJs4tHv+Cjj7GBTUSH9Rn4/Owdn8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iT5x32AIa0IRKTc3vtNSA6Wo9bNpuXn0A2WqTUAMUU8WkA1bb7ssZqnDnCRZEWEX2dhmO21fXnnfN1UAY2hHYz2Qe0QY184vKVigfjDu7LOLeaq9gJ7KrQ+5JbFCe4J3c9zhfCgEfseGHx+ceH4zMUJKNW4KOAHb4X6UROv96hw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ad3W7ixm; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712715036; x=1744251036;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=PpWRvG0ufJ/UB2ZXJs4tHv+Cjj7GBTUSH9Rn4/Owdn8=;
-  b=Ad3W7ixmNqlTtN1mvAV99l98YNuOSVQAa0zgrzH58fzzayeMdirTP5I/
-   ZSre/D2E3aK6FaxEJXeg1oq/wVLkiVvJyovROnZ3y4Cn/I7FOqYrI4aZb
-   6gzrf8jFiVEbir0KCa9g1A39zwiFv8MTiTeveqH2e7rcmpSLa30isfsHO
-   GILKKGt7oUalXlMWcHjaTW/N6GTwBuONicv8Hc03VkoF9xn5aK1PFgX2c
-   lHZxQVEiBGcrKds1VSPRSxaJgGzMViZhwJKZSxW5OIZT6CGMp7nqTZnC4
-   69/RWmz/eZzuL1cBQ9C02Oo2FXJWaDxel/grYy3JkPR/SEYYi3R57qMKw
-   Q==;
-X-CSE-ConnectionGUID: RWWgyIHRSeeNpdFNdbTImg==
-X-CSE-MsgGUID: 8YD8piPXT16XniRKaMwv5g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7918636"
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="7918636"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2024 19:10:36 -0700
-X-CSE-ConnectionGUID: AfN4VIDxSJKd7mqzZ36GHQ==
-X-CSE-MsgGUID: 0blSaMAKT5mLW20WbhnUbw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
-   d="scan'208";a="20478947"
-Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
-  by fmviesa007.fm.intel.com with ESMTP; 09 Apr 2024 19:10:32 -0700
-From: Lu Baolu <baolu.lu@linux.intel.com>
-To: Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Tina Zhang <tina.zhang@intel.com>,
-	Yi Liu <yi.l.liu@intel.com>,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v2 12/12] iommu/vt-d: Retire struct intel_svm
-Date: Wed, 10 Apr 2024 10:08:44 +0800
-Message-Id: <20240410020844.253535-13-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240410020844.253535-1-baolu.lu@linux.intel.com>
-References: <20240410020844.253535-1-baolu.lu@linux.intel.com>
+	s=arc-20240116; t=1712715182; c=relaxed/simple;
+	bh=lK4P4UCMjiw2ZyFxCplRxGsdI2xx+6Y6j1/D98mAre8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SI1EKCjyWo1wgdw3hVl7veWwqq41Gpw7oe47pK+1K1hvQtSYjlJjyEnNMtgiwwFv4Hwa/66AKWa0N3wNz8OW/C0RwY8joC3uiMOr0S5SXqKhy5TdGHzc0ZJjJV9BxLPdUvfvPYEbdhIZysX0iRgRkPfcrDa+XtUZscXjDSqpdhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ljTJW/Y0; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ecec796323so5885733b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 19:13:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712715180; x=1713319980; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tfrQs+4JrCPHQuxPOBXPCCTtuoY+nVtkPvrmH/Y0bqU=;
+        b=ljTJW/Y0nL4mbXmGJxpce9S0uVts67YPZhjgPfE9wS6HLM8E9VGvLQCuADx1CR0jx/
+         CTioeXIMqITGy+qn5Ugyve6Z7PV4NeX0OHimDqgQfAtXn/sKGrYGfagE+SuxmUN4QhhJ
+         CISXAAmO2wKteghlwhg5RczV4zGcO/EB7+HtsPyfKEppg3bM7hkw6jAZJ/gIXnEYcgCs
+         AxqQf5ib0v/HmZ83eQ3+HlYayNtw4QM9yQOXCi0oS3FefnunoLCBr1W375b+TLi2VkI+
+         ggw6USdMFo0tl1T4DWukxZhpoc+JeJxKbFnARpx0047G2VQRPDhuFBZ7Ov/05sBXvxJo
+         2gHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712715180; x=1713319980;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tfrQs+4JrCPHQuxPOBXPCCTtuoY+nVtkPvrmH/Y0bqU=;
+        b=rKEdwPfLhbz/m8Di2CVpKheaietU0WTS2dT4l7YOcSHMxHBboKQefmpT9MliOx20so
+         Doy/Lo850UVS2pT5OYt9khQ5zaur+RC5c6KpkmwqLw/ZPP1J420gkEmmXSKMv7J1PdvQ
+         yFNh+qEf1rlnIOwcBUi9VQnhTh7+P5HPbMhOUfas+GD/soKirnb2yk2LyigsN/qQ0vcp
+         BASgADrsZ3Uxds7x5F9gmfMI80DmTAqLwUBvOT5T7wREcSZYeuj3bYQCf7eSywyMFXLm
+         5VS6ySgCLCdRevc0xbGZBCTr5ZFVbLPZ48QZ73zc82+bDhkxrEgC3KDN4Px8J+ZVGhvP
+         az7A==
+X-Forwarded-Encrypted: i=1; AJvYcCVu/03sLrSHZN/QnQD0fO/nd95yQxDveYZS2MrYVigi/LKb4b0lXWV04MAR86PoK2ZKHP/3Cj8XmLhCT1rZ0A8zzTOZuhGjQGXmTkG4
+X-Gm-Message-State: AOJu0Yw+XM1cD2so0AZF0GUhxEXXLmYuEciKVONDKvnCCW3jHTi9c/8y
+	cRtLf34JHEM7LV+l3HvkcBHk4VHxoGY9lqjKAIpkKNzNDNJYDqaL
+X-Google-Smtp-Source: AGHT+IFouD389XE/szQrJCFNEso8tE9jSmplHrRziy+SDkM2J+XStefDaKGhx/vrhu5RS4Nw4yM38w==
+X-Received: by 2002:a05:6a00:1ad2:b0:6ea:dfbf:13d4 with SMTP id f18-20020a056a001ad200b006eadfbf13d4mr1545511pfv.18.1712715180364;
+        Tue, 09 Apr 2024 19:13:00 -0700 (PDT)
+Received: from [192.168.255.10] ([43.132.141.20])
+        by smtp.gmail.com with ESMTPSA id le8-20020a056a004fc800b006ed2709ada6sm5199846pfb.65.2024.04.09.19.12.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Apr 2024 19:12:59 -0700 (PDT)
+Message-ID: <8836b1e2-f231-486e-9caf-757250e7a005@gmail.com>
+Date: Wed, 10 Apr 2024 10:12:56 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/9] mm/ksm: add ksm_get_folio
+To: David Hildenbrand <david@redhat.com>, alexs@kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+Cc: Izik Eidus <izik.eidus@ravellosystems.com>,
+ Matthew Wilcox <willy@infradead.org>, Andrea Arcangeli
+ <aarcange@redhat.com>, Hugh Dickins <hughd@google.com>,
+ Chris Wright <chrisw@sous-sol.org>
+References: <20240409092826.1733637-1-alexs@kernel.org>
+ <20240409092826.1733637-2-alexs@kernel.org>
+ <5b90db38-75fe-44fc-b4ca-55dd1b15724d@redhat.com>
+Content-Language: en-US
+From: Alex Shi <seakeel@gmail.com>
+In-Reply-To: <5b90db38-75fe-44fc-b4ca-55dd1b15724d@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The struct intel_svm was used for keeping attached devices info for sva
-domain. Since sva domain is a kind of iommu_domain, the struct
-dmar_domain should centralize all info of a sva domain, including the
-info of attached devices. Therefore, retire struct intel_svm to clean up
-the code.
 
-Besides, allocate sva domain in domain_alloc_sva() callback which allows
-the memory management notifier lifetime to follow the lifetime of the
-iommu_domain.
 
-Co-developed-by: Tina Zhang <tina.zhang@intel.com>
-Signed-off-by: Tina Zhang <tina.zhang@intel.com>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/iommu.h | 26 ++++------
- drivers/iommu/intel/iommu.c |  9 +---
- drivers/iommu/intel/svm.c   | 94 +++++++++----------------------------
- 3 files changed, 32 insertions(+), 97 deletions(-)
+On 4/9/24 6:50 PM, David Hildenbrand wrote:
+> On 09.04.24 11:28, alexs@kernel.org wrote:
+>> From: "Alex Shi (tencent)" <alexs@kernel.org>
+>>
+>> The ksm only contains single pages, so we could add a new func
+>> ksm_get_folio for get_ksm_page to use folio instead of pages to save a
+>> couple of compound_head calls.
+>>
+>> After all caller replaced, get_ksm_page will be removed.
+>>
+>> Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
+>> To: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Izik Eidus <izik.eidus@ravellosystems.com>
+>> Cc: Matthew Wilcox <willy@infradead.org>
+>> Cc: Andrea Arcangeli <aarcange@redhat.com>
+>> Cc: Hugh Dickins <hughd@google.com>
+>> Cc: Chris Wright <chrisw@sous-sol.org>
+>> Reviewed-by: David Hildenbrand <david@redhat.com>
+> 
+> Note that the more common way is to have RBs ets fist. Further, I haven't really seen "To:" that often :)
 
-diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-index 90611ec08a7c..0951be947ff9 100644
---- a/drivers/iommu/intel/iommu.h
-+++ b/drivers/iommu/intel/iommu.h
-@@ -649,8 +649,12 @@ struct dmar_domain {
- 			/* link to parent domain siblings */
- 			struct list_head s2_link;
- 		};
-+
-+		/* SVA domain */
-+		struct {
-+			struct mmu_notifier notifier;
-+		};
- 	};
--	struct intel_svm *svm;
- 
- 	struct iommu_domain domain;	/* generic domain data structure for
- 					   iommu core */
-@@ -1144,26 +1148,16 @@ int intel_svm_enable_prq(struct intel_iommu *iommu);
- int intel_svm_finish_prq(struct intel_iommu *iommu);
- void intel_svm_page_response(struct device *dev, struct iopf_fault *evt,
- 			     struct iommu_page_response *msg);
--struct iommu_domain *intel_svm_domain_alloc(void);
--void intel_svm_remove_dev_pasid(struct iommu_domain *domain);
-+struct iommu_domain *intel_svm_domain_alloc(struct device *dev,
-+					    struct mm_struct *mm);
- void intel_drain_pasid_prq(struct device *dev, u32 pasid);
--
--struct intel_svm {
--	struct mmu_notifier notifier;
--	struct mm_struct *mm;
--	u32 pasid;
--	struct dmar_domain *domain;
--};
- #else
- static inline void intel_svm_check(struct intel_iommu *iommu) {}
- static inline void intel_drain_pasid_prq(struct device *dev, u32 pasid) {}
--static inline struct iommu_domain *intel_svm_domain_alloc(void)
--{
--	return NULL;
--}
--
--static inline void intel_svm_remove_dev_pasid(struct iommu_domain *domain)
-+static inline struct iommu_domain *intel_svm_domain_alloc(struct device *dev,
-+							  struct mm_struct *mm)
- {
-+	return ERR_PTR(-ENODEV);
- }
- #endif
- 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index d7f205cd0aac..b8a0f759a24f 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -3680,8 +3680,6 @@ static struct iommu_domain *intel_iommu_domain_alloc(unsigned type)
- 		return domain;
- 	case IOMMU_DOMAIN_IDENTITY:
- 		return &si_domain->domain;
--	case IOMMU_DOMAIN_SVA:
--		return intel_svm_domain_alloc();
- 	default:
- 		return NULL;
- 	}
-@@ -4388,14 +4386,8 @@ static void intel_iommu_remove_dev_pasid(struct device *dev, ioasid_t pasid)
- 	WARN_ON_ONCE(!dev_pasid);
- 	spin_unlock_irqrestore(&dmar_domain->lock, flags);
- 
--	/*
--	 * The SVA implementation needs to handle its own stuffs like the mm
--	 * notification. Before consolidating that code into iommu core, let
--	 * the intel sva code handle it.
--	 */
- 	if (domain->type == IOMMU_DOMAIN_SVA) {
- 		cache_tag_unassign_domain(dmar_domain, FLPT_DEFAULT_DID, dev, pasid);
--		intel_svm_remove_dev_pasid(domain);
- 	} else {
- 		did = domain_id_iommu(dmar_domain, iommu);
- 		cache_tag_unassign_domain(dmar_domain, did, dev, pasid);
-@@ -4624,6 +4616,7 @@ const struct iommu_ops intel_iommu_ops = {
- 	.hw_info		= intel_iommu_hw_info,
- 	.domain_alloc		= intel_iommu_domain_alloc,
- 	.domain_alloc_user	= intel_iommu_domain_alloc_user,
-+	.domain_alloc_sva	= intel_svm_domain_alloc,
- 	.probe_device		= intel_iommu_probe_device,
- 	.probe_finalize		= intel_iommu_probe_finalize,
- 	.release_device		= intel_iommu_release_device,
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 0b767d16fb71..47e475f67046 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -26,23 +26,6 @@
- 
- static irqreturn_t prq_event_thread(int irq, void *d);
- 
--static DEFINE_XARRAY_ALLOC(pasid_private_array);
--static int pasid_private_add(ioasid_t pasid, void *priv)
--{
--	return xa_alloc(&pasid_private_array, &pasid, priv,
--			XA_LIMIT(pasid, pasid), GFP_ATOMIC);
--}
--
--static void pasid_private_remove(ioasid_t pasid)
--{
--	xa_erase(&pasid_private_array, pasid);
--}
--
--static void *pasid_private_find(ioasid_t pasid)
--{
--	return xa_load(&pasid_private_array, pasid);
--}
--
- int intel_svm_enable_prq(struct intel_iommu *iommu)
- {
- 	struct iopf_queue *iopfq;
-@@ -156,8 +139,7 @@ static void intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
- 					struct mm_struct *mm,
- 					unsigned long start, unsigned long end)
- {
--	struct intel_svm *svm = container_of(mn, struct intel_svm, notifier);
--	struct dmar_domain *domain = svm->domain;
-+	struct dmar_domain *domain = container_of(mn, struct dmar_domain, notifier);
- 
- 	if (start == 0 && end == -1UL) {
- 		cache_tag_flush_all(domain);
-@@ -169,8 +151,7 @@ static void intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
- 
- static void intel_mm_release(struct mmu_notifier *mn, struct mm_struct *mm)
- {
--	struct intel_svm *svm = container_of(mn, struct intel_svm, notifier);
--	struct dmar_domain *domain = svm->domain;
-+	struct dmar_domain *domain = container_of(mn, struct dmar_domain, notifier);
- 	struct dev_pasid_info *dev_pasid;
- 	struct device_domain_info *info;
- 	unsigned long flags;
-@@ -210,41 +191,13 @@ static int intel_svm_set_dev_pasid(struct iommu_domain *domain,
- 	struct intel_iommu *iommu = info->iommu;
- 	struct mm_struct *mm = domain->mm;
- 	struct dev_pasid_info *dev_pasid;
--	struct intel_svm *svm;
- 	unsigned long sflags;
- 	unsigned long flags;
- 	int ret = 0;
- 
--	svm = pasid_private_find(pasid);
--	if (!svm) {
--		svm = kzalloc(sizeof(*svm), GFP_KERNEL);
--		if (!svm)
--			return -ENOMEM;
--
--		svm->pasid = pasid;
--		svm->mm = mm;
--
--		svm->notifier.ops = &intel_mmuops;
--		svm->domain = to_dmar_domain(domain);
--		ret = mmu_notifier_register(&svm->notifier, mm);
--		if (ret) {
--			kfree(svm);
--			return ret;
--		}
--
--		ret = pasid_private_add(svm->pasid, svm);
--		if (ret) {
--			mmu_notifier_unregister(&svm->notifier, mm);
--			kfree(svm);
--			return ret;
--		}
--	}
--
--	dmar_domain->svm = svm;
--
- 	dev_pasid = kzalloc(sizeof(*dev_pasid), GFP_KERNEL);
- 	if (!dev_pasid)
--		goto free_svm;
-+		return -ENOMEM;
- 
- 	dev_pasid->dev = dev;
- 	dev_pasid->pasid = pasid;
-@@ -272,30 +225,10 @@ static int intel_svm_set_dev_pasid(struct iommu_domain *domain,
- 				  FLPT_DEFAULT_DID, dev, pasid);
- free_dev_pasid:
- 	kfree(dev_pasid);
--free_svm:
--	if (list_empty(&dmar_domain->dev_pasids)) {
--		mmu_notifier_unregister(&svm->notifier, mm);
--		pasid_private_remove(pasid);
--		kfree(svm);
--	}
- 
- 	return ret;
- }
- 
--void intel_svm_remove_dev_pasid(struct iommu_domain *domain)
--{
--	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
--	struct intel_svm *svm = dmar_domain->svm;
--	struct mm_struct *mm = domain->mm;
--
--	if (list_empty(&dmar_domain->dev_pasids)) {
--		if (svm->notifier.ops)
--			mmu_notifier_unregister(&svm->notifier, mm);
--		pasid_private_remove(svm->pasid);
--		kfree(svm);
--	}
--}
--
- /* Page request queue descriptor */
- struct page_req_dsc {
- 	union {
-@@ -663,7 +596,12 @@ void intel_svm_page_response(struct device *dev, struct iopf_fault *evt,
- 
- static void intel_svm_domain_free(struct iommu_domain *domain)
- {
--	kfree(to_dmar_domain(domain));
-+	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
-+
-+	if (dmar_domain->notifier.ops)
-+		mmu_notifier_unregister(&dmar_domain->notifier, domain->mm);
-+
-+	kfree(dmar_domain);
- }
- 
- static const struct iommu_domain_ops intel_svm_domain_ops = {
-@@ -671,13 +609,16 @@ static const struct iommu_domain_ops intel_svm_domain_ops = {
- 	.free			= intel_svm_domain_free
- };
- 
--struct iommu_domain *intel_svm_domain_alloc(void)
-+struct iommu_domain *intel_svm_domain_alloc(struct device *dev,
-+					    struct mm_struct *mm)
- {
- 	struct dmar_domain *domain;
-+	int ret;
- 
- 	domain = kzalloc(sizeof(*domain), GFP_KERNEL);
- 	if (!domain)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
-+
- 	domain->domain.ops = &intel_svm_domain_ops;
- 	domain->use_first_level = true;
- 	INIT_LIST_HEAD(&domain->dev_pasids);
-@@ -685,5 +626,12 @@ struct iommu_domain *intel_svm_domain_alloc(void)
- 	spin_lock_init(&domain->cache_lock);
- 	spin_lock_init(&domain->lock);
- 
-+	domain->notifier.ops = &intel_mmuops;
-+	ret = mmu_notifier_register(&domain->notifier, mm);
-+	if (ret) {
-+		kfree(domain);
-+		return ERR_PTR(ret);
-+	}
-+
- 	return &domain->domain;
- }
--- 
-2.34.1
+Hi David, 
 
+Thanks a lot for notice, will change it in next version. 
+> 
 
