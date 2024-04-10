@@ -1,166 +1,275 @@
-Return-Path: <linux-kernel+bounces-138453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25A3989F17B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:54:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7964889F181
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:55:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AC3DB24D2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:54:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E97428135B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:55:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C2515B113;
-	Wed, 10 Apr 2024 11:53:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="F1ivizkg"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CCBC15B0F8;
+	Wed, 10 Apr 2024 11:55:37 +0000 (UTC)
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9573F159909;
-	Wed, 10 Apr 2024 11:53:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22D70157E9B;
+	Wed, 10 Apr 2024 11:55:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712750024; cv=none; b=W5Zu699WOeWqa9w3AQqH9qVD4XxoZx45DcO8q5mF8j92CdYuKjN5PT4sUqyDRVPEIFKh0GkewRZe9ZqgsMn3+j35HEipuEAojd6hethT3jv80SGe/yQkecBmZc6whWsENhD+j29SnhvY2z8UeZq0luEvOHdtXQp+8HcOpYARH04=
+	t=1712750136; cv=none; b=c78b9EGVl7ZkuEblDVuetR8oEr8GudgHgIKOSvx+Fap5Ll43V0scRg4ArxeqYYHTvYEqCeQngV4b4xqbe7gGA6G4R7tH+GqWkKjailu27oMrOGIxmFU941WQty14PUqKK2CP5J431YZM2HP63hoJY3YzCkE3d2OizfeZ69nMxBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712750024; c=relaxed/simple;
-	bh=E1CQxYcDPU5PA3/EXITEwDScCFYDrWUQ4B5Rb3xLlJY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OEmfnO8fOg+6b0scbm530mik/l5dTTay3N2QGfmLZP7zrxs7eNF8jrbcNj3Z8qFTaZ9FUPUPnObSHagS2TQEHwXxIamXrQLdyhPXUblaqS0nQRlzESJBDOQ3184Ywqn6SWw8JDJj5tQsM2V5HLbW4qjeSTiyU1XQWrH2Wb49NfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=F1ivizkg; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 76AE4250;
-	Wed, 10 Apr 2024 13:52:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1712749978;
-	bh=E1CQxYcDPU5PA3/EXITEwDScCFYDrWUQ4B5Rb3xLlJY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=F1ivizkgxMuLbRy+5pLVp9KFE7YZUSN0IVk9S+wUXIIzomOuDrr1LGKJcpnBl1TjH
-	 duvzg58u5McDEYb9XC5a5Jw8Ri+CoRUtffv7QAJI02DP3y9+Egr0CVEjTaShySkzuS
-	 Mc+SNomckV4f8IVR7aZW4btN9EKenMIznYaszG+Y=
-Message-ID: <46d77706-6b07-4588-98a5-2dca01cfe077@ideasonboard.com>
-Date: Wed, 10 Apr 2024 14:53:37 +0300
+	s=arc-20240116; t=1712750136; c=relaxed/simple;
+	bh=QbFSrD46MpVlaF30cGhGFPmgcZzJioQRrMxpFuR7I9U=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=umxKbYol+0YoqdYAus23NzkjvhPt+LHDRxTcE3jVM99gzLhoyT4cUy5zWauUIsmZWdmUF4DKzovonfQT3O+YWNtyOtQLwAndQ1vYq2xG6HkNqt4kKMuyfPIparZNH6BBgz4+xoCFpddK6/uyUz6kDP/hMbIKgWKrOvHpbh1VNas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VF1RM0QQRz1R5SN;
+	Wed, 10 Apr 2024 19:52:47 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 642C114037D;
+	Wed, 10 Apr 2024 19:55:30 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 10 Apr
+ 2024 19:55:30 +0800
+Subject: Re: [PATCH net-next v1 00/12] First try to replace page_frag with
+ page_frag_cache
+To: Alexander Duyck <alexander.duyck@gmail.com>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Matthias Brugger
+	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<bpf@vger.kernel.org>
+References: <20240407130850.19625-1-linyunsheng@huawei.com>
+ <CAKgT0Uex+e_g9nyqk6DiB03U4zs_A1z2LoztHnpYbJ9LPm=NFA@mail.gmail.com>
+ <05c21500-033b-dfee-6aa7-1ee967616213@huawei.com>
+ <CAKgT0UdjBXguCudxM9-tzKx2qWYg18xp5cG2xaeY893rVbw5qQ@mail.gmail.com>
+ <e3e3ad18-8ed0-4bd3-8126-2f60e8d3ae28@huawei.com>
+ <CAKgT0UdvvwG7-tJLKcH2CZDAtObUbP2KHGaRo+setcq=Q26ieA@mail.gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <d30f837b-67ba-5ddb-bd2c-ad6b443a4b9e@huawei.com>
+Date: Wed, 10 Apr 2024 19:55:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] media: v4l: Don't turn on privacy LED if streamon
- fails
-To: Sakari Ailus <sakari.ailus@linux.intel.com>, linux-media@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Hans Verkuil
- <hverkuil@xs4all.nl>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Umang Jain <umang.jain@ideasonboard.com>, linux-kernel@vger.kernel.org
-References: <20240410114712.661186-1-sakari.ailus@linux.intel.com>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+In-Reply-To: <CAKgT0UdvvwG7-tJLKcH2CZDAtObUbP2KHGaRo+setcq=Q26ieA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240410114712.661186-1-sakari.ailus@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-On 10/04/2024 14:47, Sakari Ailus wrote:
-> Turn on the privacy LED only if streamon succeeds. This can be done after
-> enabling streaming on the sensor.
+On 2024/4/9 23:29, Alexander Duyck wrote:
+..
+
 > 
-> Fixes: b6e10ff6c23d ("media: v4l2-core: Make the v4l2-core code enable/disable the privacy LED if present")
-> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> ---
->   drivers/media/v4l2-core/v4l2-subdev.c | 22 ++++++++++++----------
->   1 file changed, 12 insertions(+), 10 deletions(-)
+> Well the socket code will be largely impacted by any changes to this.
+> Seems like it might make sense to think about coming up with a socket
+> based test for example that might make good use of the allocator
+> located there so we can test the consolidating of the page frag code
+> out of there.
+
+Does it make sense to use netcat + dummy netdev to test the socket code?
+Any better idea in mind?
+
 > 
-> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> index 4c6198c48dd6..012b757eac9f 100644
-> --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> @@ -412,15 +412,6 @@ static int call_s_stream(struct v4l2_subdev *sd, int enable)
->   	if (WARN_ON(!!sd->enabled_streams == !!enable))
->   		return 0;
->   
-> -#if IS_REACHABLE(CONFIG_LEDS_CLASS)
-> -	if (!IS_ERR_OR_NULL(sd->privacy_led)) {
-> -		if (enable)
-> -			led_set_brightness(sd->privacy_led,
-> -					   sd->privacy_led->max_brightness);
-> -		else
-> -			led_set_brightness(sd->privacy_led, 0);
-> -	}
-> -#endif
->   	ret = sd->ops->video->s_stream(sd, enable);
->   
->   	if (!enable && ret < 0) {
-> @@ -428,9 +419,20 @@ static int call_s_stream(struct v4l2_subdev *sd, int enable)
->   		ret = 0;
->   	}
->   
-> -	if (!ret)
-> +	if (!ret) {
->   		sd->enabled_streams = enable ? BIT(0) : 0;
->   
-> +#if IS_REACHABLE(CONFIG_LEDS_CLASS)
-> +		if (!IS_ERR_OR_NULL(sd->privacy_led)) {
-> +			if (enable)
-> +				led_set_brightness(sd->privacy_led,
-> +						   sd->privacy_led->max_brightness);
-> +			else
-> +				led_set_brightness(sd->privacy_led, 0);
-> +		}
-> +#endif
-> +	}
-> +
->   	return ret;
->   }
->   
+>>>
+>>>>> What is meant to be the benefit to the community for adding this? All
+>>>>> I am seeing is a ton of extra code to have to review as this
+>>>>> unification is adding an additional 1000+ lines without a good
+>>>>> explanation as to why they are needed.
+>>>>
+>>>> Some benefits I see for now:
+>>>> 1. Improve the maintainability of page frag's implementation:
+>>>>    (1) future bugfix and performance can be done in one place.
+>>>>        For example, we may able to save some space for the
+>>>>        'page_frag_cache' API user, and avoid 'get_page()' for
+>>>>        the old 'page_frag' API user.
+>>>
+>>> The problem as I see it is it is consolidating all the consumers down
+>>> to the least common denominator in terms of performance. You have
+>>> already demonstrated that with patch 2 which enforces that all drivers
+>>> have to work from the bottom up instead of being able to work top down
+>>> in the page.
+>>
+>> I am agreed that consolidating 'the least common denominator' is what we
+>> do when we design a subsystem/libary and sometimes we may need to have a
+>> trade off between maintainability and perfromance.
+>>
+>> But your argument 'having to load two registers with the values and then
+>> compare them which saves us a few cycles' in [1] does not seems to justify
+>> that we need to have it's own implementation of page_frag, not to mention
+>> the 'work top down' way has its own disadvantages as mentioned in patch 2.
+>>
+>> Also, in patch 5 & 6, we need to load 'size' to a register anyway so that we
+>> can remove 'pagecnt_bias' and 'pfmemalloc' from 'struct page_frag_cache', it
+>> would be better you can work through the whole patchset to get a bigger picture.
+>>
+>> 1. https://lore.kernel.org/all/f4abe71b3439b39d17a6fb2d410180f367cadf5c.camel@gmail.com/
+> 
+> I haven't had a chance to review the entire patch set yet. I am hoping
+> to get to it tomorrow. That said, my main concern is that this becomes
+> a slippery slope. Where one thing leads to another and eventually this
+> becomes some overgrown setup that is no longer performant and has
+> people migrating back to the slab cache.
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+The problem with slab cache is that it does not have a metadata that
+we can take extra reference to it, right?
 
-  Tomi
+> 
+>>>
+>>> This eventually leads you down the path where every time somebody has
+>>> a use case for it that may not be optimal for others it is going to be
+>>> a fight to see if the new use case can degrade the performance of the
+>>> other use cases.
+>>
+>> I think it is always better to have a disscusion[or 'fight'] about how to
+>> support a new use case:
+>> 1. refoctor the existing implementation to support the new use case, and
+>>    introduce a new API for it if have to.
+>> 2. if the above does not work, and the use case is important enough that
+>>    we might create/design a subsystem/libary for it.
+>>
+>> But from updating page_frag API, I do not see that we need the second
+>> option yet.
+> 
+> That is why we are having this discussion right now though. It seems
+> like you have your own use case that you want to use this for. So as a
+> result you are refactoring all the existing implementations and
+> crafting them to support your use case while trying to avoid
+> introducing regressions in the others. I would argue that based on
+> this set you are already trying to take the existing code and create a
+> "new" subsystem/library from it that is based on the original code
+> with only a few tweaks.
 
+Yes, in someway. Maybe the plan is something like taking the best out
+of all the existing implementations and form a "new" subsystem/library.
+
+> 
+>>>
+>>>>    (2) Provide a proper API so that caller does not need to access
+>>>>        internal data field. Exposing the internal data field may
+>>>>        enable the caller to do some unexpcted implementation of
+>>>>        its own like below, after this patchset the API user is not
+>>>>        supposed to do access the data field of 'page_frag_cache'
+>>>>        directly[Currently it is still acessable from API caller if
+>>>>        the caller is not following the rule, I am not sure how to
+>>>>        limit the access without any performance impact yet].
+>>>> https://elixir.bootlin.com/linux/v6.9-rc3/source/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_io.c#L1141
+>>>
+>>> This just makes the issue I point out in 1 even worse. The problem is
+>>> this code has to be used at the very lowest of levels and is as
+>>> tightly optimized as it is since it is called at least once per packet
+>>> in the case of networking. Networking that is still getting faster
+>>> mind you and demanding even fewer cycles per packet to try and keep
+>>> up. I just see this change as taking us in the wrong direction.
+>>
+>> Yes, I am agreed with your point about 'demanding even fewer cycles per
+>> packet', but not so with 'tightly optimized'.
+>>
+>> 'tightly optimized' may mean everybody inventing their own wheels.
+> 
+> I hate to break this to you but that is the nature of things. If you
+> want to perform with decent performance you can only be so abstracted
+> away from the underlying implementation. The more generic you go the
+> less performance you will get.
+
+But we need to have a balance between performance and maintainability,
+I think what we are arguing about is where the balance might be?
+
+> 
+>>>
+>>>> 2. page_frag API may provide a central point for netwroking to allocate
+>>>>    memory instead of calling page allocator directly in the future, so
+>>>>    that we can decouple 'struct page' from networking.
+>>>
+>>> I hope not. The fact is the page allocator serves a very specific
+>>> purpose, and the page frag API was meant to serve a different one and
+>>> not be a replacement for it. One thing that has really irked me is the
+>>> fact that I have seen it abused as much as it has been where people
+>>> seem to think it is just a page allocator when it was really meant to
+>>> just provide a way to shard order 0 pages into sizes that are half a
+>>> page or less in size. I really meant for it to be a quick-n-dirty slab
+>>> allocator for sizes 2K or less where ideally we are working with
+>>> powers of 2.
+>>>
+>>> It concerns me that you are talking about taking this down a path that
+>>> will likely lead to further misuse of the code as a backdoor way to
+>>> allocate order 0 pages using this instead of just using the page
+>>> allocator.
+>>
+>> Let's not get to a conclusion here and wait to see how thing evolve
+>> in the future.
+> 
+> I still have an open mind, but this is a warning on where I will not
+> let this go. This is *NOT* an alternative to the page allocator. If we
+> need order 0 pages we should be allocating order 0 pages. Ideally this
+> is just for cases where we need memory in sizes 2K or less.
+
+If the whole folio plan works, the page allocator may return a single
+pointer without the 'struct page' metadata for networking, I am not sure
+if I am worrying too much here, but we might need to prepare for that.
+
+> 
+>>>
+>>>>>
+>>>>> Also I wouldn't bother mentioning the 0.5+% performance gain as a
+>>>>> "bonus". Changes of that amount usually mean it is within the margin
+>>>>> of error. At best it likely means you haven't introduced a noticeable
+>>>>> regression.
+>>>>
+>>>> For micro-benchmark ko added in this patchset, performance gain seems quit
+>>>> stable from testing in system without any other load.
+>>>
+>>> Again, that doesn't mean anything. It could just be that the code
+>>> shifted somewhere due to all the code moved so a loop got more aligned
+>>> than it was before. To give you an idea I have seen performance gains
+>>> in the past from turning off Rx checksum for some workloads and that
+>>> was simply due to the fact that the CPUs were staying awake longer
+>>> instead of going into deep sleep states as such we could handle more
+>>> packets per second even though we were using more cycles. Without
+>>> significantly more context it is hard to say that the gain is anything
+>>> real at all and a 0.5% gain is well within that margin of error.
+>>
+>> As vhost_net_test added in [2] is heavily invovled with tun and virtio
+>> handling, the 0.5% gain does seems within that margin of error, there is
+>> why I added a micro-benchmark specificly for page_frag in this patchset.
+>>
+>> It is tested five times, three times with this patchset and two times without
+>> this patchset, the complete log is as below, even there is some noise, all
+>> the result with this patchset is better than the result without this patchset:
+> 
+> The problem is the vhost_net_test is you optimizing the page fragment
+> allocator for *YOUR* use case. I get that you want to show overall
+> improvement but that doesn't. You need to provide it with context for
+> the current users of the page fragment allocator in the form of
+> something other than one synthetic benchmark.
+> 
+> I could do the same thing by by tweaking the stack and making it drop
+> all network packets. The NICs would show a huge performance gain. It
+> doesn't mean it is usable by anybody. A benchmark is worthless without
+> the context about how it will impact other users.
+> 
+> Think about testing with real use cases for the areas that are already
+> making use of the page frags rather than your new synthetic benchmark
+> and the vhost case which you are optimizing for. Arguably this is why
+> so many implementations go their own way. It is difficult to optimize
+> for one use case without penalizing another and so the community needs
+> to be wiling to make that trade-off.
+> .
+> 
 
