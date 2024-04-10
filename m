@@ -1,117 +1,160 @@
-Return-Path: <linux-kernel+bounces-138250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58BF689EEC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:28:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E97289EEFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:34:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89D0E1C20D46
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:28:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6146A1C2172A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:34:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B375B155723;
-	Wed, 10 Apr 2024 09:28:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C818B15A480;
+	Wed, 10 Apr 2024 09:33:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="abHtNVPg"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="lq3OFtjb"
+Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2271F1552EF;
-	Wed, 10 Apr 2024 09:28:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C64E1598EA;
+	Wed, 10 Apr 2024 09:33:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712741295; cv=none; b=J6AFRe5/5TIkhfTY6f0U7HEKVg7xSSdPie9QWTxiEFqHytVAOjspR3ggryHcy6/pbfYQMzdZMpt0a1vpxbk8eKLt2YcNc2dNYfn6ESsBF8p8UXexi/MKHpbjUZnJew8Wi0/EsTFw98A0vmsHn83NrEtekA8mLyOn177LFs+XauI=
+	t=1712741588; cv=none; b=FoXAiMl872YVVzsDioZDzZOS2tcL9OdMXn5wccSluF7iOl6gkw26cWBduhC3aQAolLPDlj71OExZIBxkHECpjMFlZHbVXcH202mCCU+/AxFhFdUXrCTTgxfyZP8RRc3oGVUJaXDKp0l5teGGbF+w+PsIfoBmTPVcf1FnurC8DLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712741295; c=relaxed/simple;
-	bh=zsoYaP4ttIY6R/+fdqaCRZ/R7zwJWemSd7limzCI9I0=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=BJU0r0gdjtmTKIQftIFLY+MEmVuRqCXEU+b/RbyKFhMWO3+L4X81hyLASOjtW3O6hkrhAxB3xHRdrg1ldtGuwWL2zBXGYLYKViffylifKqdYzXjKtw5x9CHnK0g7AXNoKerPZ6EUgmRWB15h+nJPnAkTIJ112tpV6qC08R3LxZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=abHtNVPg; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1712741588; c=relaxed/simple;
+	bh=3vWRWxGstffzqNLW5/6mKLAWNYHCv7iLTBpmewWgXE8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Ebrr+mS2gA5iIP/j/H8WzMheeF52ZpCx4Jw28Fgkqu1m5pp1IoSJGGApvuJeQhnE2cmAmtgYyZ5cg+6ex08hzNg4tppngJxrjjASKpOaSCAsCHXSZNJo6Z6d8drO6CXAhnFlwt7womcl22kbwTWzjsYfRjt9kbqWP7PkFTNQPIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=lq3OFtjb; arc=none smtp.client-ip=217.70.178.240
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: from relay6-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::226])
+	by mslow1.mail.gandi.net (Postfix) with ESMTP id 9D294C5F26;
+	Wed, 10 Apr 2024 09:29:11 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 54410C0003;
+	Wed, 10 Apr 2024 09:29:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712741349;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Tg+gZ2Bg6yVJahNX0kkZdYlh/opG4Qc066zEoNLOrlo=;
+	b=lq3OFtjbylpQEyw4abJL9bQ2DdKZznZLPoHR4hWZTcQvvCldz63SG6Wd1Rxxa5wyPaHTmg
+	cx/0fnMdh4cmVg5/21ZXzo5aW9PmXmpIo/y0NXH9yqpW4vHEChruKw17IevfjB9bWzexjv
+	kcPKQZnCVBAEKwBgFW1WhEtmJcvdF6VB4eRnsYNPXqqnjBVRs72wk8d6/jOFfDW9KvJ4wt
+	rHKDOvTat1XYcHmK7iryU43mOty9iSFnpXWV7aU4Mr4mJ61U1QEkSBGiY7v3PdD2r/JC+q
+	rDf4UAMZeY8WFli4Hx3bU5yqv9IqrFQzYIAjrh9M01C0EjY3VHDHk5+osSZ3tg==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: [PATCH v3 0/9] spi: cadence-qspi: add Mobileye EyeQ5 support
+Date: Wed, 10 Apr 2024 11:29:03 +0200
+Message-Id: <20240410-cdns-qspi-mbly-v3-0-7b7053449cf7@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1712741290;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RiYdWuU6TA/MRaisJkvN1oi05HBnSA4JJqXFKW8pk3w=;
-	b=abHtNVPg9dPnB3ukM7+xz0G35WCgg6u8vPOyxisReIzDTWEfKOBvxo9dx+qa1/TAR+GQF3
-	+Z3ZNNgMSDrnnUGkamYkqWlDfofS646hD7T77g/GzFAHBQGStPmMU9ldYydE85W7oA1Sc5
-	MD7+cJt4LFCF5RLhEAt0MQ897p4uZJ/hgIBFvPuu7np1QFCMTCtQGo/zLuw9LuA1PHfxOP
-	dSHLs9caK6SSVb2GOvnPyab2fPaVUcmIzuUEVei7ML4A9K66r4ZXLw/5Jpw/uQyNFIbsmN
-	2PI/V1Q/GaRieWtjhBrHzYBqjhSRbHumZ2Qy5Tg8lvQYORUG4Dy8ZR64pLZJSw==
-Date: Wed, 10 Apr 2024 11:28:09 +0200
-From: Dragan Simic <dsimic@manjaro.org>
-To: Diederik de Haas <didi.debian@cknow.org>
-Cc: Alexey Charkov <alchark@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- linux-rockchip@lists.infradead.org, Daniel Lezcano
- <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu
- Tsai <wens@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] RK3588 and Rock 5B dts additions: thermal, OPP and
- fan
-In-Reply-To: <66689051.MzlzmSNrL9@bagend>
-References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
- <66689051.MzlzmSNrL9@bagend>
-Message-ID: <9f4c7615a6685ac42dccdbe35e57c357@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAN9bFmYC/2XMSw6CMBSF4a2Qjq259iU4ch/GQaFVbgIttqSRE
+ PZuwYFRh/9JzjeTaAPaSE7FTIJNGNG7HHxXkKbV7m4pmtyEARPAoKKNcZE+4oC0r7uJGssYSC2
+ ErjnJpyHYGz438HLN3WIcfZg2Px3W9U1xKH+pdKBAtQReSmVMVs+192OHbt/4nqxYYh9AgPwDW
+ AYqqdSxKpUyynwDy7K8AEalhPHvAAAA
+To: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Vaishnav Achath <vaishnav.a@ti.com>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Rob Herring <robh@kernel.org>
+Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13.0
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hello Diederik,
+Hi all,
 
-On 2024-04-10 11:19, Diederik de Haas wrote:
-> On Thursday, 29 February 2024 20:26:31 CEST Alexey Charkov wrote:
->> This enables thermal monitoring and CPU DVFS on RK3588(s), as well as
->> active cooling on Radxa Rock 5B via the provided PWM fan.
->> 
->> Some RK3588 boards use separate regulators to supply CPUs and their
->> respective memory interfaces, so this is handled by coupling those
->> regulators in affected boards' device trees to ensure that their
->> voltage is adjusted in step.
->> 
->> 
->> Signed-off-by: Alexey Charkov <alchark@gmail.com>
->> ---
->> Alexey Charkov (5):
->>       arm64: dts: rockchip: enable built-in thermal monitoring on 
->> RK3588
->>       arm64: dts: rockchip: enable automatic active cooling on Rock 5B
->>       arm64: dts: rockchip: Add CPU/memory regulator coupling for 
->> RK3588
->>       arm64: dts: rockchip: Add OPP data for CPU cores on RK3588
->>       arm64: dts: rockchip: Add further granularity in RK3588 CPU OPPs
->> 
->>  arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts   |  12 +
->>  .../arm64/boot/dts/rockchip/rk3588-quartzpro64.dts |  12 +
->>  arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts    |  30 +-
->>  arch/arm64/boot/dts/rockchip/rk3588s.dtsi          | 385
->> ++++++++++++++++++++- 4 files changed, 437 insertions(+), 2 
->> deletions(-)
->> ---
->> base-commit: cf1182944c7cc9f1c21a8a44e0d29abe12527412
->> change-id: 20240124-rk-dts-additions-a6d7b52787b9
-> 
-> Can you rebase this patch set on Heiko's for-next branch [1]?
-> And then also fix the ordering of the nodes and the elements within
-> those nodes so that they match the current conventions?
+V3 of this series adding octal SPI-NOR support to Mobileye EyeQ5
+platform. It has been tested on EyeQ5 hardware successfully.
+V1 cover letter [5] contains a brief summary of what gets added.
 
-Ah, thanks, this is a good reminder about the proposal for the plan
-for moving forward, which I promised to send a while ago. :)
+There is no dependency except if you want zero errors in devicetree:
+system-controller series [3] for <&clocks> phandle.
 
-> [1] 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip.git/log/?h=for-next
+Have a nice day,
+Théo
+
+[0]: https://lore.kernel.org/lkml/20240216174227.409400-1-gregory.clement@bootlin.com/
+[1]: https://lore.kernel.org/linux-mips/20240209-regname-v1-0-2125efa016ef@flygoat.com/
+[2]: https://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/log/
+[3]: https://lore.kernel.org/lkml/20240301-mbly-clk-v9-0-cbf06eb88708@bootlin.com/
+[4]: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/log/
+[5]: https://lore.kernel.org/lkml/20240308-cdns-qspi-mbly-v1-0-a503856dd205@bootlin.com/
+[6]: https://lore.kernel.org/lkml/171259906078.120310.15397790336440498713.b4-ty@kernel.org/
+
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+Changes in v3:
+- dt-bindings:
+  - Patch "sort compatibles alphabetically":
+    - Moved first.
+    - Take Reviewed-By Krzysztof.
+  - Patch "add mobileye,eyeq5-ospi compatible":
+  - EyeQ5 no longer implies no cdns,fifo-depth prop. Patch now only adds
+    compatible, no more property conditional.
+  - New "make cdns,fifo-depth optional" patch, for all compatibles.
+- Driver:
+  - FIFO depth detection is no longer a quirk. It is for all compatibles
+    if no DT property is provided.
+  - Rebase onto spi-next [4] to drop three patches. No-IRQ mode patch is
+    mentioned in email saying a subset of patches got applied [6].
+    However, it is not in spi-next, so it is kept in series.
+  - Busywait is no longer behind a quirk; it applies to all compatibles.
+  - No-IRQ mode patch got modified to change its quirk index because
+    previous quirk got removed.
+  - As we removed some quirks, we no longer overflow u8 quirks.
+- Link to v2: https://lore.kernel.org/r/20240405-cdns-qspi-mbly-v2-0-956679866d6d@bootlin.com
+
+Changes in v2:
+- Rebase upon v6.9-rc2.
+- Fix dt-bindings commit subject tags.
+- Take Reviewed-by: Krzysztof Kozlowski on dt-bindings commit.
+- Add dt-bindings commit to order compatibles alphabetically.
+  Krzysztof: unsure if you want this. It is second so that commit
+  adding EyeQ5 compatible can be taken alone easily.
+- Drop patch taken upstream:
+  spi: cadence-qspi: switch from legacy names to modern ones
+- Add To: Rob Herring, following get_maintainer.pl recommendation.
+- Link to v1: https://lore.kernel.org/r/20240308-cdns-qspi-mbly-v1-0-a503856dd205@bootlin.com
+
+---
+Théo Lebrun (9):
+      spi: dt-bindings: cdns,qspi-nor: sort compatibles alphabetically
+      spi: dt-bindings: cdns,qspi-nor: add mobileye,eyeq5-ospi compatible
+      spi: dt-bindings: cdns,qspi-nor: make cdns,fifo-depth optional
+      spi: cadence-qspi: allow FIFO depth detection
+      spi: cadence-qspi: add no-IRQ mode to indirect reads
+      spi: cadence-qspi: add early busywait to cqspi_wait_for_bit()
+      spi: cadence-qspi: add mobileye,eyeq5-ospi compatible
+      MIPS: mobileye: eyeq5: Add SPI-NOR controller node
+      MIPS: mobileye: eyeq5: add octal flash node to eval board DTS
+
+ .../devicetree/bindings/spi/cdns,qspi-nor.yaml     |  8 +-
+ arch/mips/boot/dts/mobileye/eyeq5-epm5.dts         | 15 ++++
+ arch/mips/boot/dts/mobileye/eyeq5.dtsi             | 15 ++++
+ drivers/spi/spi-cadence-quadspi.c                  | 93 +++++++++++++++++-----
+ 4 files changed, 108 insertions(+), 23 deletions(-)
+---
+base-commit: d442072c067c86787dcee22c5d30d36b14edbba7
+change-id: 20240209-cdns-qspi-mbly-de2205a44ab3
+
+Best regards,
+-- 
+Théo Lebrun <theo.lebrun@bootlin.com>
+
 
