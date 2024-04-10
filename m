@@ -1,149 +1,150 @@
-Return-Path: <linux-kernel+bounces-137886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F3D789E8EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:35:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 286E689E8F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:36:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1A2C286E1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:34:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C37531F26356
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFBCD515;
-	Wed, 10 Apr 2024 04:34:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78C4E199A2;
+	Wed, 10 Apr 2024 04:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=netflix.com header.i=@netflix.com header.b="R7ohwTgC"
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SjhUV3rF"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D48E7460
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 04:34:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 041782206C;
+	Wed, 10 Apr 2024 04:35:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712723687; cv=none; b=namMnNe0exLbKcTCajx/ON8Ng5Hn2u+z599AFJrrARD7V6TaLNk8pyLgmnedNl/HU/X6UK7KLj8OB/LUkdckGG2Ki9zoZlyUv0QHhnx0OOZobbcC/1o1fMnv/pPnMNdGMRmIoLz6UkkSgUuTbwfr+MUXEsRL+JXYghinQOch6GI=
+	t=1712723737; cv=none; b=iMNOEeZLVEsOjQ/ivcGEn5MVZOCOmlJPwJsYDIr1iUJXtsgz2e/3ybnSs50Trt51fXoF2XH+v5bSCCMk8hywOaDwV2z0/s3ZKu4N3DyBQfukFDq5PaXZXiGy4Hj5v6KYjrj/xUN4vlwtUjQtqWDe7IR5dTFOKgIkBR1lAY3jWPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712723687; c=relaxed/simple;
-	bh=EwGSVi8tsIBhQGwWzz1I/qZviamVBkcZz6+GbYrdYmk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ViCTaijU22Cpd6JSfGrlqrTRK60reChfeysqMjNvSzwxkQtBOI6CZvchUc5I5tkaYwsTg7n5dD2A3movh+Bw7UaGjy5MbTSkDU/aAF2JxqFWcb28RaL3RD4bijR45EW7pgQidNbtE9FDZs4oVWsFtqwSicSXGeBVP8ybsEekU7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=netflix.com; spf=pass smtp.mailfrom=netflix.com; dkim=pass (1024-bit key) header.d=netflix.com header.i=@netflix.com header.b=R7ohwTgC; arc=none smtp.client-ip=209.85.166.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=netflix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netflix.com
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-36a205e0f16so12294455ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 21:34:45 -0700 (PDT)
+	s=arc-20240116; t=1712723737; c=relaxed/simple;
+	bh=A5ocNCfCC13JQEwgLffXyCcRlMXUemMEj+WDWXuLyYo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CJEl6iAXGdpiNQN0YJ1sM0sVNNBkDuWMkbuywjKZonMOFnzyK6lK1844E8aZYTZ4Zt5NPbe2iRAlyrsN9jyIu8HA4G7v5RXMJgPsG9zo1dQ9Zw0AThXYASAHylv1pizgPmrkUynMjBYxo8UTaDXE1VkkiZpui9wdLfxWA4/YTsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SjhUV3rF; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a5200202c1bso134338366b.0;
+        Tue, 09 Apr 2024 21:35:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netflix.com; s=google; t=1712723685; x=1713328485; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=a/JPFUxV2ArWkhwNnn1v7zuWOs9XoBJjsryMcg9Mcoo=;
-        b=R7ohwTgCEg/QJQ8V7LMvmWQTuOLEBRgNpllbR4GDO7T5CaJMfUeK1/41c+FR32Ivxk
-         juiY1IZ6qPKDSLRYoJevxJ1JW4nzviRSSvvTm4TB34B7jlttE0qKamwkN3pxslxyHkvk
-         yj3gxdGRW6qRJLin03IKxXtVt/rxHDow0Tsv8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712723685; x=1713328485;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1712723734; x=1713328534; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=a/JPFUxV2ArWkhwNnn1v7zuWOs9XoBJjsryMcg9Mcoo=;
-        b=PSfyrYn5rhuJ4ib7X38fDDy6tgLRDgA4R/wbtpYZlppI9MI2Y2/AI7TmCY4Kk00q7f
-         NZ6jyWNPoGwcGHOoULmKuB3RYtVTiJPumCxj4NHa84oTQqwpsjg21gMnDbYu3J2408JA
-         8ipdPcVE4nC/+pvYsgEONtscPHmYf8MivMY9b9H7WRg3Pur+eF+3xfef30AawvJ9n6zL
-         jFAh4run15zZCa69XK+zNTBXuGgp/c6TxaCveluJB70qXi7rvO5pMDAwGDcUEk535PIq
-         5Zmkj6H5T/QSFHP3nCCvMIYcXPdKt8s9I7OQ5hsiHVYKW7/OUWo4dX6xdncYcKNr8o2y
-         IU6w==
-X-Gm-Message-State: AOJu0YxLQlBHJzHoPydqQtUR9gCeVmGC3CSi53xrK+paIB/KQfYwmbgn
-	+fxVKmUdrCdtBwtokXp9M3CKePW+iudhGGPRGS68GVeq9Lp78TBKuLa2JWmMOG4=
-X-Google-Smtp-Source: AGHT+IFILeN96Xd9wtsGDWKumJLAOJAbRVY+isMe2Tofq8xMm3T+C68RphVpIWdR/vNbrvujRnChCQ==
-X-Received: by 2002:a05:6e02:1607:b0:369:ed5b:dd56 with SMTP id t7-20020a056e02160700b00369ed5bdd56mr2350659ilu.17.1712723685172;
-        Tue, 09 Apr 2024 21:34:45 -0700 (PDT)
-Received: from localhost ([2601:285:8700:8f20:fa81:e682:614d:196f])
-        by smtp.gmail.com with UTF8SMTPSA id hb2-20020a0566386c0200b0048290482c7bsm2023528jab.54.2024.04.09.21.34.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Apr 2024 21:34:44 -0700 (PDT)
-From: Jose Fernandez <josef@netflix.com>
-To: Harry Wentland <harry.wentland@amd.com>,
-	Leo Li <sunpeng.li@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Wenjing Liu <wenjing.liu@amd.com>,
-	Alan Liu <haoping.liu@amd.com>,
-	George Shen <george.shen@amd.com>,
-	Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-	Ilya Bakoulin <ilya.bakoulin@amd.com>,
-	Nasir Osman <nasir.osman@amd.com>,
-	Hamza Mahfooz <hamza.mahfooz@amd.com>,
-	Fangzhi Zuo <jerry.zuo@amd.com>,
-	Leo Ma <hanghong.ma@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org
-Cc: linux-kernel@vger.kernel.org,
-	Jose Fernandez <josef@netflix.com>
-Subject: [PATCH] drm/amd/display: Fix division by zero in setup_dsc_config
-Date: Tue,  9 Apr 2024 22:34:33 -0600
-Message-Id: <20240410043433.12854-1-josef@netflix.com>
-X-Mailer: git-send-email 2.34.1
+        bh=/jBy/6Q3rVBWhWCAM1R1P2AD92VuX8BxxvAdftUWY5s=;
+        b=SjhUV3rFSb08/0JK7sa0OpEUrZuQ0vMpGmBka3TOk5Fw6Af6I4YWq/xPYoLN+PyWZJ
+         dzJv0nOFVVMFXg4Uo6SV7Y98cfqxptalSMIiuXyK9/rhkvAooQ0nj/wJj/oLkELlNxCV
+         Bsgb5SPwhRhkKnzFTLUKD9wzYP3Fv5rY5X6gq5AsATZkLUv24s2lZ9DW7F4aS4S6LL+g
+         tfUBIp1gDlYuvJDThNvWcWeqCf0w/r5sUh2m8kIqgTzxw98Ia8OWJkgky5Vbxb1z5SpY
+         Mnwn5kX1XMvx/2x3eQSC6BgxM7OeXwUdh0bzjCeAS/TCx1PMeztdQzDvn+BJwsg3eVWG
+         fCBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712723734; x=1713328534;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/jBy/6Q3rVBWhWCAM1R1P2AD92VuX8BxxvAdftUWY5s=;
+        b=Dhjiwf9msJ+I11I/slKAYs6GUp6/WKc5lszmWscfqD8bq1sDocNDKLArV8YvTBEPCF
+         31M6g4RrlJ8H/5QtQCLyYXjA0BNHMHYYiBXxB16nQx4igtSdcwjV5hqpMLPkz6HfDE8/
+         3seYLcPH7+tmUkz+TV5YCIARJwtRdAW2XSAoP2g5z7nhahfyVQ3V6SzuhurSSD8+TMoX
+         tntZ9GnLnXFyIQOwvrOhtPc/IynDOMbkSgVZ6TgHN1izADoFwmcNgA9nq7djVlRuHAtR
+         gpNDEjzBUndrY3ViIv3pnmIUjZ9UB3/NjELz4LcdDQfcOXEgbD2DWEEjQMvOG+8bul/K
+         lHBg==
+X-Forwarded-Encrypted: i=1; AJvYcCUEo4fm6r/McWlfGvRQ1nFJZ1RS4YliCQ0gzjSor/6BxIrRMz3igb8w2iFnSBkqmeaI8XNkoDnTUy3B+gxACuK99a70D7ZVGRfeDkHaS+oK+7WCMZh4VHH08Pq3QKUaJjYYUHLjIZ2y6krkClhwCELaJmUVQACTUCX1ZUZwaw5KRNEypw==
+X-Gm-Message-State: AOJu0YxJKbK7w3n9cEX/QA82P258YafF6dfOUQ6SJhbRomA9RJn16bSD
+	ZTbyxB73TM70yOwkYOpm9n4fkpR6nGeZThfWPnCWxvkXX8ejaLuRB7VCDwIeqM51Sg==
+X-Google-Smtp-Source: AGHT+IGw3pGdJNDGc36x5yeSbeGn3X2Wfz1ITzkM/g7HGnBIi9qtAcipDvdlkr1wPsLlzku3Rvcclg==
+X-Received: by 2002:a17:906:e288:b0:a52:a3a:3959 with SMTP id gg8-20020a170906e28800b00a520a3a3959mr662263ejb.23.1712723733985;
+        Tue, 09 Apr 2024 21:35:33 -0700 (PDT)
+Received: from gmail.com (1F2EF1A5.nat.pool.telekom.hu. [31.46.241.165])
+        by smtp.gmail.com with ESMTPSA id an3-20020a17090656c300b00a51cfd5c6ddsm3893091ejc.9.2024.04.09.21.35.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 21:35:33 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Wed, 10 Apr 2024 06:35:31 +0200
+From: Ingo Molnar <mingo@kernel.org>
+To: Kyle Huey <me@kylehuey.com>
+Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Marco Elver <elver@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Robert O'Callahan <robert@ocallahan.org>,
+	Will Deacon <will@kernel.org>, Song Liu <song@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RESEND PATCH v5 2/4] perf/bpf: Remove unneeded
+ uses_default_overflow_handler.
+Message-ID: <ZhYXEzGprOoZKrGv@gmail.com>
+References: <20240214173950.18570-1-khuey@kylehuey.com>
+ <20240214173950.18570-3-khuey@kylehuey.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214173950.18570-3-khuey@kylehuey.com>
 
-When slice_height is 0, the division by slice_height in the calculation
-of the number of slices will cause a division by zero driver crash. This
-leaves the kernel in a state that requires a reboot. This patch adds a
-check to avoid the division by zero.
 
-The stack trace below is for the 6.8.4 Kernel. I reproduced the issue on
-a Z16 Gen 2 Lenovo Thinkpad with a Apple Studio Display monitor
-connected via Thunderbolt. The amdgpu driver crashed with this exception
-when I rebooted the system with the monitor connected.
+* Kyle Huey <me@kylehuey.com> wrote:
 
-kernel: ? die (arch/x86/kernel/dumpstack.c:421 arch/x86/kernel/dumpstack.c:434 arch/x86/kernel/dumpstack.c:447)
-kernel: ? do_trap (arch/x86/kernel/traps.c:113 arch/x86/kernel/traps.c:154)
-kernel: ? setup_dsc_config (drivers/gpu/drm/amd/amdgpu/../display/dc/dsc/dc_dsc.c:1053) amdgpu
-kernel: ? do_error_trap (./arch/x86/include/asm/traps.h:58 arch/x86/kernel/traps.c:175)
-kernel: ? setup_dsc_config (drivers/gpu/drm/amd/amdgpu/../display/dc/dsc/dc_dsc.c:1053) amdgpu
-kernel: ? exc_divide_error (arch/x86/kernel/traps.c:194 (discriminator 2))
-kernel: ? setup_dsc_config (drivers/gpu/drm/amd/amdgpu/../display/dc/dsc/dc_dsc.c:1053) amdgpu
-kernel: ? asm_exc_divide_error (./arch/x86/include/asm/idtentry.h:548)
-kernel: ? setup_dsc_config (drivers/gpu/drm/amd/amdgpu/../display/dc/dsc/dc_dsc.c:1053) amdgpu
-kernel: dc_dsc_compute_config (drivers/gpu/drm/amd/amdgpu/../display/dc/dsc/dc_dsc.c:1109) amdgpu
+> Now that struct perf_event's orig_overflow_handler is gone, there's no need
+> for the functions and macros to support looking past overflow_handler to
+> orig_overflow_handler.
+> 
+> This patch is solely a refactoring and results in no behavior change.
+> 
+> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> Acked-by: Will Deacon <will@kernel.org>
+> Acked-by: Song Liu <song@kernel.org>
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  arch/arm/kernel/hw_breakpoint.c   |  8 ++++----
+>  arch/arm64/kernel/hw_breakpoint.c |  4 ++--
+>  include/linux/perf_event.h        | 16 ++--------------
+>  3 files changed, 8 insertions(+), 20 deletions(-)
+>
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index c7f54fd74d89..c8bd5bb6610c 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -1341,8 +1341,9 @@ extern int perf_event_output(struct perf_event *event,
+>  			     struct pt_regs *regs);
+>  
+>  static inline bool
+> -__is_default_overflow_handler(perf_overflow_handler_t overflow_handler)
+> +is_default_overflow_handler(struct perf_event *event)
+>  {
+> +	perf_overflow_handler_t overflow_handler = event->overflow_handler;
+>  	if (likely(overflow_handler == perf_event_output_forward))
 
-After applying this patch, the driver no longer crashes when the monitor
-is connected and the system is rebooted. I believe this is the same
-issue reported for 3113.
+Please read the CodingStyle section about variable definition blocks and 
+newlines...
 
-Signed-off-by: Jose Fernandez <josef@netflix.com>
-Closes: https://gitlab.freedesktop.org/drm/amd/-/issues/3113
----
- drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Also note the stray period in the title ...
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c b/drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c
-index ac41f9c0a283..597d5425d6cb 100644
---- a/drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c
-+++ b/drivers/gpu/drm/amd/display/dc/dsc/dc_dsc.c
-@@ -1055,7 +1055,12 @@ static bool setup_dsc_config(
- 	if (!is_dsc_possible)
- 		goto done;
- 
--	dsc_cfg->num_slices_v = pic_height/slice_height;
-+	if (slice_height > 0)
-+		dsc_cfg->num_slices_v = pic_height/slice_height;
-+	else {
-+		is_dsc_possible = false;
-+		goto done;
-+	}
- 
- 	if (target_bandwidth_kbps > 0) {
- 		is_dsc_possible = decide_dsc_target_bpp_x16(
--- 
-2.44.0
+How did this patch get to v5 and get acked by 3 people with such trivial 
+problems still present? ...
 
+Thanks,
+
+	Ingo
 
