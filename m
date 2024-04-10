@@ -1,268 +1,199 @@
-Return-Path: <linux-kernel+bounces-139239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DCA38A0048
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC9508A0019
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:55:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 020FD289369
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:05:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D17B2899CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 346C118133D;
-	Wed, 10 Apr 2024 19:05:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2288417BB11;
+	Wed, 10 Apr 2024 18:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="YXRKntLK"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bY5Q34+J"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1AA1180A75;
-	Wed, 10 Apr 2024 19:05:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B67C63E
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 18:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712775911; cv=none; b=eOcy+pzZiTU506U/8xknphOCfflk9z44KgOTmWFCeSTSBBFOAc5C5pTtbhZEIK5nCXzfV4r0lB9w9NT6AHFLBpmlK+V8HTagsedLyd8wl3AyecsTKqPQEvwBle24r9aLwu3TxiJF9L2iEIWNX9yp6xLB8xD2ja7J0zpUX0k5FjA=
+	t=1712775349; cv=none; b=kisyC1kUa2MI8IZJY4SCGjTobJ8QmEKxI6SA0sE2ZEl2yKWYoE+dRWbCyezC/t1fiW92zQ9iCDLYcf0Lr5d7cUsAwdNW8EAIHI+GBrmgXlYysh48WoyzzOYwTwNoHLaMwZlTO8GhOSwvOBRDAOAf+a4fLgkO2wNcpQykJp3G6CQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712775911; c=relaxed/simple;
-	bh=g/FqV19rKWb535cexKioS66bqLX57/QzG0Uv51rTSZs=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=O2KbJS27lFc564yyNDYZqiKkCqcn3C/qIqO651EgXnIoP9Ttp3cIqhB1Nx1OQb0eXVI0Wxkyt/P7O2otWUAl35gXS2mZB+VPdoZ0gzWw/sw0srOLLl6NaZw1gKzFxwWErWPB9YTRkra3SL0KCKJogtpykMmJC31u4wWVXWFeEg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=YXRKntLK; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id CC67B10007C;
-	Wed, 10 Apr 2024 22:04:59 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru CC67B10007C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1712775899;
-	bh=nlvCjxCsDmswnKHUR9zLC0s4ABtaZZnkhgMtH/U3PBg=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=YXRKntLKo5upqcu6QBNT6qnDkhTJScyKLOu+7vm7d2wRSrasEaKWxrGYJrfE2uSNP
-	 iA0PFOvbf01UwsWpCvTdlMQj+Nl7bLMqCEHhFW+HMbt43DXAotbY/EqyUjm8568Gem
-	 Oc7ARSAE+uoDA7CNEbHeTnE0xgeSer2l+VBC8Pr0p2JxLF6WOU1VmTT7TG/C/+Qts5
-	 GdspLkbLxj6cvaBwO55gaMy5xQIpX5lZdDIzSjAL6m5zF8bl2bfNbq/ankkftHJXtf
-	 SY7faaWAW9tdZNvc4WU5tzJh8+8MX8shxgi+N2D+o+wjsekSvShMCA7M8z21+lthBN
-	 zlR+HFV9Kw/3w==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Wed, 10 Apr 2024 22:04:59 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 10 Apr 2024 22:04:59 +0300
-From: Arseniy Krasnov <avkrasnov@salutedevices.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
-	<richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Neil
- Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>, Martin Blumenstingl
-	<martin.blumenstingl@googlemail.com>
-CC: <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-amlogic@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <oxffffaa@gmail.com>,
-	<kernel@sberdevices.ru>, Arseniy Krasnov <avkrasnov@salutedevices.com>
-Subject: [PATCH v4 2/2] mtd: rawnand: meson: support R/W mode for boot ROM
-Date: Wed, 10 Apr 2024 21:54:09 +0300
-Message-ID: <20240410185409.2635622-3-avkrasnov@salutedevices.com>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20240410185409.2635622-1-avkrasnov@salutedevices.com>
-References: <20240410185409.2635622-1-avkrasnov@salutedevices.com>
+	s=arc-20240116; t=1712775349; c=relaxed/simple;
+	bh=J991FT9jfRVYTUbgaIe7oj26wpuEPNq1SqOjrjc0wQA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=VoQehGa42t4s/FemG5PU21chY/sUrThyTkPKNpnZmxfeXRYg+Z4c5YLOdLJF+I2LanKz8PYIlLM4kbBh9u9CBDfQedXyD8UkRxgu8ClHMiezT/5vMNbwe0lJm78XaSEkaGnoT5Rxob2oMthU3YhfZRazoV8you0TulGfaBWr0PY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bY5Q34+J; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712775348; x=1744311348;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=J991FT9jfRVYTUbgaIe7oj26wpuEPNq1SqOjrjc0wQA=;
+  b=bY5Q34+J+X+MKkUPHp7sySVPeNBwGpV4iLdzOQn9sGR30gPWYsnqvpaE
+   JdK3uDd/0Lq85Q9lQOE+PJQXYh3Z0Q30Pjz7pIx5NoSy5Ds3qfSnZHfMl
+   dHjrJ/S0bh2zPxYe9CxD82CvXUQ75hNFKovHhM2QSwOy56mKernz8sW4E
+   q8z5z31i12G6VE27fta3ZHGBWKHK3EWaQtH5dvqSuNZfATtCJ1cFHGm31
+   VUxbZZQuL1c5wHcIaV9RP9L9ZInOeOJWHSAEdqMBcfdtWMf4d4bnX3iQk
+   3X6gt6YfWezn5SXnkNo1ubG+p6AMtSFdaRcVHin0I+AVVcTadvfF2xgWa
+   A==;
+X-CSE-ConnectionGUID: +tw1RXUIRwSWZ7fxV5nzVQ==
+X-CSE-MsgGUID: kvP++Yf6RlqS1nQPEatvvQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8289707"
+X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
+   d="scan'208";a="8289707"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 11:55:46 -0700
+X-CSE-ConnectionGUID: mqg2BM3xSUeGkesDmyF6sQ==
+X-CSE-MsgGUID: V8yCf90lSsqaGZINY2GqeQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
+   d="scan'208";a="25137609"
+Received: from sgollapu-mobl.amr.corp.intel.com (HELO [10.209.38.205]) ([10.209.38.205])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 11:55:44 -0700
+Message-ID: <801a0a7015137a7ef573e2cdd69dca019f328da7.camel@linux.intel.com>
+Subject: Re: [PATCH v2] mm: swap: prejudgement swap_has_cache to avoid page
+ allocation
+From: Tim Chen <tim.c.chen@linux.intel.com>
+To: Zhaoyu Liu <liuzhaoyu.zackary@bytedance.com>, akpm@linux-foundation.org,
+  ryncsn@gmail.com, nphamcs@gmail.com
+Cc: ying.huang@intel.com, songmuchun@bytedance.com, david@redhat.com, 
+	chrisl@kernel.org, guo.ziliang@zte.com.cn, yosryahmed@google.com, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Date: Wed, 10 Apr 2024 11:55:43 -0700
+In-Reply-To: <20240408121439.GA252652@bytedance>
+References: <20240408121439.GA252652@bytedance>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184659 [Apr 10 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 16 0.3.16 6e64c33514fcbd07e515710c86ba61de7f56194e, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;salutedevices.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/10 15:26:00 #24739493
-X-KSMG-AntiVirus-Status: Clean, skipped
 
-Boot ROM code on Meson requires that some pages on NAND must be written
-in special mode: "short" ECC mode where each block is 384 bytes and
-scrambling mode is on. Such pages located with the specified interval
-within specified offset. Both interval and offset are located in the
-device tree and used by driver if 'nand-is-boot-medium' is set for
-NAND chip.
+On Mon, 2024-04-08 at 20:14 +0800, Zhaoyu Liu wrote:
+> Based on qemu arm64 - latest kernel + 100M memory + 1024M swapfile.
+> Create 1G anon mmap and set it to shared, and has two processes
+> randomly access the shared memory. When they are racing on swap cache,
+> on average, each "alloc_pages_mpol + swapcache_prepare + folio_put"
+> took about 1475 us.
+>=20
+> So skip page allocation if SWAP_HAS_CACHE was set, just
+> schedule_timeout_uninterruptible and continue to acquire page
+> via filemap_get_folio() from swap cache, to speedup
+> __read_swap_cache_async.
+>=20
+> Signed-off-by: Zhaoyu Liu <liuzhaoyu.zackary@bytedance.com>
+> ---
+> Changes in v2:
+>   - Fix the patch format and rebase to latest linux-next.
+> ---
+>  include/linux/swap.h |  6 ++++++
+>  mm/swap_state.c      | 10 ++++++++++
+>  mm/swapfile.c        | 15 +++++++++++++++
+>  3 files changed, 31 insertions(+)
+>=20
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 11c53692f65f..a374070e05a7 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -492,6 +492,7 @@ extern sector_t swapdev_block(int, pgoff_t);
+>  extern int __swap_count(swp_entry_t entry);
+>  extern int swap_swapcount(struct swap_info_struct *si, swp_entry_t entry=
+);
+>  extern int swp_swapcount(swp_entry_t entry);
+> +extern bool swap_has_cache(struct swap_info_struct *si, swp_entry_t entr=
+y);
+>  struct swap_info_struct *swp_swap_info(swp_entry_t entry);
+>  struct backing_dev_info;
+>  extern int init_swap_address_space(unsigned int type, unsigned long nr_p=
+ages);
+> @@ -583,6 +584,11 @@ static inline int swp_swapcount(swp_entry_t entry)
+>  	return 0;
+>  }
+> =20
+> +static inline bool swap_has_cache(struct swap_info_struct *si, swp_entry=
+_t entry)
+> +{
+> +	return false;
+> +}
+> +
+>  static inline swp_entry_t folio_alloc_swap(struct folio *folio)
+>  {
+>  	swp_entry_t entry;
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index 642c30d8376c..f117fbf18b59 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -462,6 +462,15 @@ struct folio *__read_swap_cache_async(swp_entry_t en=
+try, gfp_t gfp_mask,
+>  		if (!swap_swapcount(si, entry) && swap_slot_cache_enabled)
+>  			goto fail_put_swap;
+> =20
+> +		/*
+> +		 * Skipping page allocation if SWAP_HAS_CACHE was set,
+> +		 * just schedule_timeout_uninterruptible and continue to
+> +		 * acquire page via filemap_get_folio() from swap cache,
+> +		 * to speedup __read_swap_cache_async.
+> +		 */
+> +		if (swap_has_cache(si, entry))
+> +			goto skip_alloc;
+> +
 
-Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
----
- drivers/mtd/nand/raw/meson_nand.c | 88 +++++++++++++++++++++----------
- 1 file changed, 59 insertions(+), 29 deletions(-)
+I think most of the cases where a page already exists will be caught by
+filemap_get_folio().  The cases caught by this extra check should be when w=
+e have races
+between page cache update and the read async, which may not be that
+often.  So please verify with benchmark that this extra check with its
+own overhead would buy us anything.
 
-diff --git a/drivers/mtd/nand/raw/meson_nand.c b/drivers/mtd/nand/raw/meson_nand.c
-index 00ce0e5bb970..9ee11243b257 100644
---- a/drivers/mtd/nand/raw/meson_nand.c
-+++ b/drivers/mtd/nand/raw/meson_nand.c
-@@ -35,6 +35,7 @@
- #define NFC_CMD_RB		BIT(20)
- #define NFC_CMD_SCRAMBLER_ENABLE	BIT(19)
- #define NFC_CMD_SCRAMBLER_DISABLE	0
-+#define NFC_CMD_SHORTMODE_ENABLE	1
- #define NFC_CMD_SHORTMODE_DISABLE	0
- #define NFC_CMD_RB_INT		BIT(14)
- #define NFC_CMD_RB_INT_NO_PIN	((0xb << 10) | BIT(18) | BIT(16))
-@@ -78,6 +79,8 @@
- #define DMA_DIR(dir)		((dir) ? NFC_CMD_N2M : NFC_CMD_M2N)
- #define DMA_ADDR_ALIGN		8
- 
-+#define NFC_SHORT_MODE_ECC_SZ	384
-+
- #define ECC_CHECK_RETURN_FF	(-1)
- 
- #define NAND_CE0		(0xe << 10)
-@@ -125,6 +128,8 @@ struct meson_nfc_nand_chip {
- 	u32 twb;
- 	u32 tadl;
- 	u32 tbers_max;
-+	u32 boot_pages;
-+	u32 boot_page_step;
- 
- 	u32 bch_mode;
- 	u8 *data_buf;
-@@ -298,28 +303,49 @@ static void meson_nfc_cmd_seed(struct meson_nfc *nfc, u32 seed)
- 	       nfc->reg_base + NFC_REG_CMD);
- }
- 
--static void meson_nfc_cmd_access(struct nand_chip *nand, int raw, bool dir,
--				 int scrambler)
-+static int meson_nfc_page_is_boot(struct nand_chip *nand, int page)
-+{
-+	const struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
-+
-+	return (nand->options & NAND_IS_BOOT_MEDIUM) &&
-+	       !(page % meson_chip->boot_page_step) &&
-+	       (page < meson_chip->boot_pages);
-+}
-+
-+static void meson_nfc_cmd_access(struct nand_chip *nand, bool raw, bool dir, int page)
- {
-+	const struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
- 	struct mtd_info *mtd = nand_to_mtd(nand);
- 	struct meson_nfc *nfc = nand_get_controller_data(mtd_to_nand(mtd));
--	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
--	u32 bch = meson_chip->bch_mode, cmd;
- 	int len = mtd->writesize, pagesize, pages;
-+	int scrambler;
-+	u32 cmd;
- 
--	pagesize = nand->ecc.size;
-+	if (nand->options & NAND_NEED_SCRAMBLING)
-+		scrambler = NFC_CMD_SCRAMBLER_ENABLE;
-+	else
-+		scrambler = NFC_CMD_SCRAMBLER_DISABLE;
- 
- 	if (raw) {
- 		len = mtd->writesize + mtd->oobsize;
- 		cmd = len | scrambler | DMA_DIR(dir);
--		writel(cmd, nfc->reg_base + NFC_REG_CMD);
--		return;
--	}
-+	} else if (meson_nfc_page_is_boot(nand, page)) {
-+		pagesize = NFC_SHORT_MODE_ECC_SZ >> 3;
-+		pages = mtd->writesize / 512;
-+
-+		scrambler = NFC_CMD_SCRAMBLER_ENABLE;
-+		cmd = CMDRWGEN(DMA_DIR(dir), scrambler, NFC_ECC_BCH8_1K,
-+			       NFC_CMD_SHORTMODE_ENABLE, pagesize, pages);
-+	} else {
-+		pagesize = nand->ecc.size >> 3;
-+		pages = len / nand->ecc.size;
- 
--	pages = len / nand->ecc.size;
-+		cmd = CMDRWGEN(DMA_DIR(dir), scrambler, meson_chip->bch_mode,
-+			       NFC_CMD_SHORTMODE_DISABLE, pagesize, pages);
-+	}
- 
--	cmd = CMDRWGEN(DMA_DIR(dir), scrambler, bch,
--		       NFC_CMD_SHORTMODE_DISABLE, pagesize, pages);
-+	if (scrambler == NFC_CMD_SCRAMBLER_ENABLE)
-+		meson_nfc_cmd_seed(nfc, page);
- 
- 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
- }
-@@ -743,15 +769,7 @@ static int meson_nfc_write_page_sub(struct nand_chip *nand,
- 	if (ret)
- 		return ret;
- 
--	if (nand->options & NAND_NEED_SCRAMBLING) {
--		meson_nfc_cmd_seed(nfc, page);
--		meson_nfc_cmd_access(nand, raw, DIRWRITE,
--				     NFC_CMD_SCRAMBLER_ENABLE);
--	} else {
--		meson_nfc_cmd_access(nand, raw, DIRWRITE,
--				     NFC_CMD_SCRAMBLER_DISABLE);
--	}
--
-+	meson_nfc_cmd_access(nand, raw, DIRWRITE, page);
- 	cmd = nfc->param.chip_select | NFC_CMD_CLE | NAND_CMD_PAGEPROG;
- 	writel(cmd, nfc->reg_base + NFC_REG_CMD);
- 	meson_nfc_queue_rb(nand, PSEC_TO_MSEC(sdr->tPROG_max), false);
-@@ -829,15 +847,7 @@ static int meson_nfc_read_page_sub(struct nand_chip *nand,
- 	if (ret)
- 		return ret;
- 
--	if (nand->options & NAND_NEED_SCRAMBLING) {
--		meson_nfc_cmd_seed(nfc, page);
--		meson_nfc_cmd_access(nand, raw, DIRREAD,
--				     NFC_CMD_SCRAMBLER_ENABLE);
--	} else {
--		meson_nfc_cmd_access(nand, raw, DIRREAD,
--				     NFC_CMD_SCRAMBLER_DISABLE);
--	}
--
-+	meson_nfc_cmd_access(nand, raw, DIRREAD, page);
- 	ret = meson_nfc_wait_dma_finish(nfc);
- 	meson_nfc_check_ecc_pages_valid(nfc, nand, raw);
- 
-@@ -1436,6 +1446,26 @@ meson_nfc_nand_chip_init(struct device *dev,
- 	if (ret)
- 		return ret;
- 
-+	if (nand->options & NAND_IS_BOOT_MEDIUM) {
-+		ret = of_property_read_u32(np, "amlogic,boot-pages",
-+					   &meson_chip->boot_pages);
-+		if (ret) {
-+			dev_err(dev, "could not retrieve 'amlogic,boot-pages' property: %d",
-+				ret);
-+			nand_cleanup(nand);
-+			return ret;
-+		}
-+
-+		ret = of_property_read_u32(np, "amlogic,boot-page-step",
-+					   &meson_chip->boot_page_step);
-+		if (ret) {
-+			dev_err(dev, "could not retrieve 'amlogic,boot-page-step' property: %d",
-+				ret);
-+			nand_cleanup(nand);
-+			return ret;
-+		}
-+	}
-+
- 	ret = mtd_device_register(mtd, NULL, 0);
- 	if (ret) {
- 		dev_err(dev, "failed to register MTD device: %d\n", ret);
--- 
-2.35.0
+Tim
+
+>  		/*
+>  		 * Get a new folio to read into from swap.  Allocate it now,
+>  		 * before marking swap_map SWAP_HAS_CACHE, when -EEXIST will
+> @@ -483,6 +492,7 @@ struct folio *__read_swap_cache_async(swp_entry_t ent=
+ry, gfp_t gfp_mask,
+>  		if (err !=3D -EEXIST)
+>  			goto fail_put_swap;
+> =20
+> +skip_alloc:
+>  		/*
+>  		 * Protect against a recursive call to __read_swap_cache_async()
+>  		 * on the same entry waiting forever here because SWAP_HAS_CACHE
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 3ee8957a46e6..b016ebc43b0d 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -1511,6 +1511,21 @@ int swp_swapcount(swp_entry_t entry)
+>  	return count;
+>  }
+> =20
+> +/*
+> + * Verify that a swap entry has been tagged with SWAP_HAS_CACHE
+> + */
+> +bool swap_has_cache(struct swap_info_struct *si, swp_entry_t entry)
+> +{
+> +	pgoff_t offset =3D swp_offset(entry);
+> +	struct swap_cluster_info *ci;
+> +	bool has_cache;
+> +
+> +	ci =3D lock_cluster_or_swap_info(si, offset);
+> +	has_cache =3D !!(si->swap_map[offset] & SWAP_HAS_CACHE);
+> +	unlock_cluster_or_swap_info(si, ci);
+> +	return has_cache;
+> +}
+> +
+>  static bool swap_page_trans_huge_swapped(struct swap_info_struct *si,
+>  					 swp_entry_t entry,
+>  					 unsigned int nr_pages)
 
 
