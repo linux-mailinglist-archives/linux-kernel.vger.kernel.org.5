@@ -1,360 +1,240 @@
-Return-Path: <linux-kernel+bounces-137800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70E8B89E7D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:30:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 305E989E7D5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 03:32:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDAFEB22977
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:30:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41EDE283AD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 01:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1D7C17FD;
-	Wed, 10 Apr 2024 01:30:02 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C875A5F;
-	Wed, 10 Apr 2024 01:29:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712712602; cv=none; b=Y/j4+sddqFNTSc1FvTdJ/fC6zIJcAf+38t3o7Q5h2jmd0jv+HfglDBv6hJPHwbSkEtUT9RlG195HxF/Hl0ToTZuN46qrdNTBuWWzCcgyTV6OpDM/IodLRnxJmViUFMoa6IbJSNT3cRxWh29cALWvYRZKOX9iIdmhDiqad/zlSrQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712712602; c=relaxed/simple;
-	bh=uHiFFSLsaidzauMwTuWuhmbVbMnJ0UgPuS4VYYB1YtQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Q5O3a17gZUwbQkPKRw/+3S1JyQ5Wdg6cKcxxDLs8FSTQuTnWRvz1XbgFAkjJVRZ1NzZxpZnMF5CMulp5LUy4HdgXz3wkYGtpO1gYwWCCWsbyWIf8l8b3Kzz6bYG17dwj8Cw4/cPUzlTv9qB+7xXnWSQ+2UgX6uPRzt6DXksLoGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 53E40139F;
-	Tue,  9 Apr 2024 18:30:28 -0700 (PDT)
-Received: from [172.27.42.111] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AE7793F6C4;
-	Tue,  9 Apr 2024 18:29:57 -0700 (PDT)
-Message-ID: <abd135fa-c432-4e37-9792-07a0e17e93d5@arm.com>
-Date: Tue, 9 Apr 2024 20:29:57 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 311C81FB4;
+	Wed, 10 Apr 2024 01:32:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="KVVxxQ05";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="qVxdQ4pI"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F66FA5F;
+	Wed, 10 Apr 2024 01:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712712724; cv=fail; b=S68INWbBQLGGzjlNVR/eiwGXnBkGw10ahBBWdqQK2ycWXz5yWKebvUOdJxAu9ZoIpAFebYp40Stgthl90pP4z2THfca1N9gtFH906f9x8GepdwCzzQLj3Cp7fdqqH2WS/IPg416GN1TD3PnpDjjumJQ/IfLvmiNgVZZofQV1Z7k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712712724; c=relaxed/simple;
+	bh=xiBd+3gfxEtiHzA6mUu0vRvrCwbUkdwU9s1pWLnIdE0=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=UOG5Gri7Dteku9eYpjLkTgOZyDQqLJo9/AzdWnfZYTwiTrWOo4t0AhdVaiCsJNkpsEkTLMjLvtpRrzn9Mz8ASD1zLVPo9Cd2H5IuwQR0Mb9jHPV1JKbPstba1MuklgaqbeR9HklBIq/3ULjXwhfao/TAddsv2ZvfLrzzncfexSs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=KVVxxQ05; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=qVxdQ4pI; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43A1F0UQ031543;
+	Wed, 10 Apr 2024 01:31:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=788JGESEkezGUArEdWzKO8JgAnXS5MWPJnWRiGUOxfk=;
+ b=KVVxxQ05LX3YfHmm7Uq8U51B8C2QiPEHxVD/0B82fQO4VTFvBLTDfJ2zWXrAsFCOFWlc
+ k3Zd31tDpIquzx4i+pGIq+3V1bmsZJWGg8Y8ZicbUOqELbw55pVw0FwlEk6Z3nGg5otp
+ MRU0RnMgiE9TQbqjUjlLL/L/yyBmE1HsWZi/S+iZggNuPPFzS0cCODv6GngW2GcDMuIj
+ lfIIuxiE79G6WQyl3Ns4nwSxJOe9VGBhhn2aIiumaqjwGUxsyTpCbvQngR9Z+AIpV3IN
+ 9TF9uLRu6DRwcan1Jmab9YdHBjZw0T/xBoPZvlznHvY1SZ/VLsCN5VaVG/4Psetjjo++ +Q== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xax9b680b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Apr 2024 01:31:55 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43A1Vq4L010592;
+	Wed, 10 Apr 2024 01:31:54 GMT
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2041.outbound.protection.outlook.com [104.47.51.41])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xavu7g27m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Apr 2024 01:31:54 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WrAJ7IUHCRmm+TPWfmZ4N2ZK/qgD+XJHzXW+SR3qI5yPcBrr2JZ7tWWPK6vUbEK+JsUTOjxKAUB1mAFNdOPMMySyleSl0Nk6fRqd88YMymdBQDatFVLrrf2OVy9yKBS9ty1C4IXLue8g6/y4LetXArg8UDzpMvIr24PcPlKF2hsLxuy2SNLLnHbao4a7QUfw3orcaZPAwe+iG+LgDTyXJG+cyXr4Pbhbtd9sn8WzXMP/gNsdbAunqIyWcmDkIil4rOtHwN+l60DKk/nqyK8xo6H9qRVhIwecunmdX6nYk7/5SOXA3PHlmJNazMc80ci8bjnExEoH38uAYv7XhBLSVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=788JGESEkezGUArEdWzKO8JgAnXS5MWPJnWRiGUOxfk=;
+ b=BFxeapQeEkSjQUjiRDN3iUPXi2jyMo9mtjbvrpcBqeFcUCBM0zlZdMkogjTUMLJrPZn7hvNtWFAW1INYXqGZk/hf/kcFqnSspn/KiWuzDNfg422U2yiRDRUz8P0rzO3MaJ2gdYnEVQU++WjdZGlPsQRsItB/oDkZR0rOyeEeH7PW4crRidbrx1OGrNx1QtRLI2WCrFfS383rjC3OXOSLhE4iEe556qIwuhLt7FQVJVi5svjWYAxXN+sbEA5cG//XF12TdAwni1NmQUFXiAALNRL5qMLJg1aNJ/MJqLbyxQisiBq2LEaCS30XR//+xpufNAnfgqEWO8OzCIZoa4X11g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=788JGESEkezGUArEdWzKO8JgAnXS5MWPJnWRiGUOxfk=;
+ b=qVxdQ4pIcrJ6Nt41jv6lKEIfARsojRwXklAkYd0QTd1TyrGrpdFSxnOrdSMojJWzo8jHjFgBJQGO/RVrvEQVkm3L0IsU6k9VwgF9TLUe1eynNwxxrQyfJ4hImbqCJ6NVkjPtem8kX163PQSxlEXxV4JoqdGokj0wS0VWmTvg1Do=
+Received: from DS7PR10MB5280.namprd10.prod.outlook.com (2603:10b6:5:3a7::5) by
+ DS7PR10MB4927.namprd10.prod.outlook.com (2603:10b6:5:3a2::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.55; Wed, 10 Apr 2024 01:31:52 +0000
+Received: from DS7PR10MB5280.namprd10.prod.outlook.com
+ ([fe80::c7cc:f6b7:386e:fd5d]) by DS7PR10MB5280.namprd10.prod.outlook.com
+ ([fe80::c7cc:f6b7:386e:fd5d%6]) with mapi id 15.20.7409.042; Wed, 10 Apr 2024
+ 01:31:52 +0000
+Message-ID: <98493056-4a75-46ad-be79-eb6784034394@oracle.com>
+Date: Tue, 9 Apr 2024 21:31:45 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 3/3] x86: KVM: stats: Add a stat counter for GALog events
+To: Chao Gao <chao.gao@intel.com>
+Cc: kvm@vger.kernel.org, seanjc@google.com, pbonzini@redhat.com,
+        linux-kernel@vger.kernel.org, joao.m.martins@oracle.com,
+        boris.ostrovsky@oracle.com, mark.kanda@oracle.com,
+        suravee.suthikulpanit@amd.com, mlevitsk@redhat.com
+References: <20240215160136.1256084-1-alejandro.j.jimenez@oracle.com>
+ <20240215160136.1256084-4-alejandro.j.jimenez@oracle.com>
+ <ZhTj8kdChoqSLpi8@chao-email>
+Content-Language: en-US
+From: Alejandro Jimenez <alejandro.j.jimenez@oracle.com>
+In-Reply-To: <ZhTj8kdChoqSLpi8@chao-email>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LNXP265CA0071.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:5d::35) To DS7PR10MB5280.namprd10.prod.outlook.com
+ (2603:10b6:5:3a7::5)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ACPI: PPTT: Populate cacheinfo entirely with PPTT
-Content-Language: en-US
-To: Yunhui Cui <cuiyunhui@bytedance.com>, rafael@kernel.org, lenb@kernel.org,
- linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
- paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
- linux-riscv@lists.infradead.org
-References: <20240407123829.36474-1-cuiyunhui@bytedance.com>
-From: Jeremy Linton <jeremy.linton@arm.com>
-In-Reply-To: <20240407123829.36474-1-cuiyunhui@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR10MB5280:EE_|DS7PR10MB4927:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	t0acVmrXYAWQYIthpMrQ1fMY6oEZrbsUmGF6guJSmFWH8fYovov8NNsnMmqixVjB4+JwyCqAksqHiXaxc6nchUHIsnyvsCbUG1yYRZsn+k/NucAuwZAF7zVNCSz0xEZWbARcpQDvSreeB+yyRRdDiW2RN6mFDM2s8M47RPZkEryaaAUrGWiXiuHNjCldaz7L3QGgFt0k08FkWlq/AWbNkgByRUaADjhZaPk3W1c/HQb7v2laMZ/ye70iKbt5x7lKVKxiTUlny+SE3NhH0V/moStipmTs2bBdGlz4uSv9fW8Oy1SINgxgd/WNKI/LT+u8DFAKXsUAF6YM4MrwnIuUY9BbMEpgfVOHN8LcVUrKRuulgkjmUnX4wSckYljaD+v+hG7vu4Amx0ueA0yOj6teno3AvxiRRy17SbGDObTrARqK8VirbN6s+gImdPukJeMX3QQW+iY5IvpBlpWHPRBZBGazn6bNTQQ2t3GFYjQupd4S4xQqeVYABmPmnnc0r6RyOe3++6UpyBOM3FOd40Mk5qgI5rtrR3QSJVbJqifx14v1wOB5TRNW2mYqfl4fjdNVlov49wCNyX6aMeRIS2rO7eU3tGezcTvwVaEDR/jgrCpt7XgcMMWAAyFkbfVKyE5eLrOiBD4tIgkhk830H8mYA285u/Dg8/5OTs9PEXMlVOM=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR10MB5280.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?TGwzUmFCWmJ4R2dNQ2lOZVhUeTFTb0dBUm1hM29VbnRJRVlVYkNiRG41RWRP?=
+ =?utf-8?B?cnVjQXEvVTJiNGEzSHJPemtpQWwvczdyTmdJV05ZU1pVUFoxZ2VvOVRKUkxR?=
+ =?utf-8?B?OUNWYU9hNnd5ZnI4SUp2ZmN0d0lteWhQYy9vZkszTVMxcXJFdkorM0U1d2dO?=
+ =?utf-8?B?L01BNXptTjRXSG5TQS9RRktoVkc3TnJMWlZHUU8zMzVNdXo5L3hrREV3aGFp?=
+ =?utf-8?B?V3pHM3QyWEFJcXU1OS9EQk9QREI1NUxvVjZ5NVVkMHowQ0lMMGE5TjBnK28r?=
+ =?utf-8?B?UWdLb0lpdHdqRE9VRGFuZVlFc2l3T0tydGQrT2dXaFpBQ1VmQUc5T3pMK0Js?=
+ =?utf-8?B?Q3JwOG9DanNtMmg0TE1ackpNNFVNZjBVZzRWQjBJcElrRnB3S05WMWJHVC9C?=
+ =?utf-8?B?aGE5SlliWXY3VDI3ZG4zQ3NjaTFoVGpUVmlZaWFYendBWXI0ZmRTWVFpZHdQ?=
+ =?utf-8?B?VTgvMkVVSGtKS3k2UndrQUNmMzRaZE9EVWpyajJXYmxRL2g3djRBR1VQSEtY?=
+ =?utf-8?B?Y1dpaDJHTXFKSFF1RCtPNWN3ZS9mRWdzaTA5Q2NyUzY2Q2VvaG9iSUkwZHdY?=
+ =?utf-8?B?NVV1RU1wUkhBZldvOGxVMHJwWE5VSmxBYkxwMjlFcFZPdy9XNkRQcU5CQU9F?=
+ =?utf-8?B?ZTV5c29Uc29oSWUwQjhzZmg1d3lJa0MwWjMwbVRPdWExdGZQR1hiQTZCUnNF?=
+ =?utf-8?B?cHFSWjFSYkQrRnZxWmRDdVBmUGlEK3pvS0VpYzExL1hQbFlNZmVjSkQ0YmNE?=
+ =?utf-8?B?SCtPQVVWZ0tHbFBDU0hrcFFjeUs4SkZ6UFNPb0tLZnBiWFdpRlkxeUlQa1kw?=
+ =?utf-8?B?ZmF6d1dpRHNwY0Z4c1BWa1k5Y0xNZjdsSmptM2pYY2p5RnVrZXRTYVl0TWQz?=
+ =?utf-8?B?djBhYmlUcUVBV3RjYk9ocWRsQkFCeEpQS1R5T2U0cXQ0T245MUV0MEdhMURk?=
+ =?utf-8?B?dGkyWXdSZ2l0MVhnOFQ2ZUhoOTgvcHZpc3VDK3JIaTlYeFRGc3prVC93VlZl?=
+ =?utf-8?B?R3cyMDJCdUVBanFjZWk2SStrcWVtVUVIWTNZNDFQZllhekJIY29MYlQ4MXVt?=
+ =?utf-8?B?bkozZFI3SjJXM01PWnRGVE9ja0xyMEFnNlhYS3prWDMzc0hpcHZtKzhmYUF6?=
+ =?utf-8?B?SXVXZ3hoa01uOVZHSDFhbUlZTFZsTWw3R3dhbUNDSEI0eVV3a0tQVTI0S2ZL?=
+ =?utf-8?B?WjRTNnFaRCswTlNTTkhkeEt1MWU5VDVQL0o5ZnZsMTM0S0JTVFJpZGRmMGl5?=
+ =?utf-8?B?aEUwS1kwZGYyYTRQamVIcUhxY3dWREhXYTB3eTQ4Zzh5aEtoeXBWclBIeEdF?=
+ =?utf-8?B?QWpqTURHeWo2VDFsSVo5NVRaQnAyT0tpaHlsTFpTNjVUZXlGQVNaSjV2UWZp?=
+ =?utf-8?B?bUUwUC81WXpUQ0xpcHNpQnJCQitDWkVsNk14b2dsMFhjYTR4elBZOERkdjM1?=
+ =?utf-8?B?aWEzRUs0ZERWWk5rZWk2U1JnMFNjN2ZtT3ZxeTNOdGdkakNjWElMTUQ3TzFk?=
+ =?utf-8?B?Y3p5VUhIaDhHdnZZWmZ6Q0tJS0xwOXN3RkpLVVpIaGE1R3QvTFVwZ1J3b2ZI?=
+ =?utf-8?B?SW9jUlpOMmRJQ255bDl4SUVIRzFIMUR0dEVuYVNLM1FlRys3S1NDRTJuaWhi?=
+ =?utf-8?B?UUFxSjM1bnRBK0IxZjA4YUh1cGJZR1RzSWZ5M0dPT3c5UUxLRFZRR00rNTRV?=
+ =?utf-8?B?eE93SE9jcm5qNjRJaW5uank2SmliWmR1TlFXUGNZVGhXWnZPVU1xemNXQ1Vm?=
+ =?utf-8?B?cDBZSlFLR3dtK0VIbUsrb0dEUjk2QjBvTnRtZ0d6dVlQc3B1aVYwU3VFNlhE?=
+ =?utf-8?B?L0RvenRTMTNQaVpyZm5QUzNtSTFNR2dSZ2NVU2lDN0pDMmJuV2xyWmZ6ekMy?=
+ =?utf-8?B?VVhDbEJJbjVvMzZ6VXZ2Ulg0eUluZ3VaeW5qcXNFSmZjWUpxaWMzbnlkK3p3?=
+ =?utf-8?B?RUcxanllWEJ5bEFxZ3Rjc2pEUUFUNGlqa3gwM3VRZjNvMHBxakdnTlNJdWNN?=
+ =?utf-8?B?aFRCRXQra2MxbVFlOERYU1FobFpXaVJwY2lnYmxTeCtueTY4bzhUZG1wWUZZ?=
+ =?utf-8?B?RG1XeElDK0g5dWVsSHJJNGlGNTB0OGc4eitSd0ZFTWZSMmJzYmtnTkdjQnFO?=
+ =?utf-8?B?cE4xSFI3Zm9RL0Q3bGNOTk9McnNuZHh5eVNKRG1oTVNUUndpY3puY2VZTmlS?=
+ =?utf-8?B?ZGc9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	QnkKklAeNRiI/sULYUxEDRwx/56natIFJ9ZNTDDmPvsTaPWGLCdJepDNvfEGij/zfjX6UHxJlDhCt1MvawJIy+HcK58lHU46VTv4CFeUlZwCH8pw4pBbD09IIOhfCDxy9iuhQA8u/90RyAHq1J+oOM7L0mBWxi6qYcIvL5dxlcm5IBYvte452WwziYSPS0+fLTdJNrBdP5veHB1fgFEnHwEKAZmgl72+VAjhysbonL7NdXNoZpvdpi+XlcGI3QX+gNwjnEV/vIhZRbPkf93Mq/cZpGjiym+VU2By/jWmyIIfCZOUO05nk/z8uXFqllzlKIhMJGvOMGp845ZbpitPe+PcbMB+WbYLWEbLREUoDX6qaBZ610vlBiewk1BTEcKclkw1FksfkX92K7kmqw3HGnp97tVK1QjSlHXmW/Z/HaCFvt2+CipiIq8hc7z9vH80nHsgePNyh5jxcLUyt/xwMY1TixFDF3Y0F4tREosY8dn9WI+8ApLsKo/uGS70TFXpMz/SlN3MJxnsmRuUlxDOfWXyiYmu6MV/Uh1x/Euz79YE7m1leJPRcXOwRVtyVp/qVAZn4HIIqxnX5FDwDDbh3TBXj6CaRos+6HRa8bRmLBo=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c5e5673-2114-4aaa-6cda-08dc58fdffc4
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR10MB5280.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 01:31:52.3935
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QbhKim65hE7XxkqOXjhfKMYpi7q0OsP0l+pU5OeZ8MDch76HwNzMFb7ETK2K+Q937yeiR4Yv3AHhJolmap7h9qQHnO6SiobYtp4s1QJ4lO8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB4927
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-09_12,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ suspectscore=0 spamscore=0 mlxscore=0 bulkscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404100009
+X-Proofpoint-GUID: aNR12FLWspkRq_ClfwAVYn4kgeoInLLh
+X-Proofpoint-ORIG-GUID: aNR12FLWspkRq_ClfwAVYn4kgeoInLLh
 
-Hi,
+
+On 4/9/24 02:45, Chao Gao wrote:
+>> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
+>> index 4b74ea91f4e6..853cafe4a9af 100644
+>> --- a/arch/x86/kvm/svm/avic.c
+>> +++ b/arch/x86/kvm/svm/avic.c
+>> @@ -165,8 +165,10 @@ int avic_ga_log_notifier(u32 ga_tag)
+>> 	 * bit in the vAPIC backing page. So, we just need to schedule
+>> 	 * in the vcpu.
+>> 	 */
+>> -	if (vcpu)
+>> +	if (vcpu) {
+>> 		kvm_vcpu_wake_up(vcpu);
+>> +		++vcpu->stat.ga_log_event;
+>> +	}
+>>
+> 
+> I am not sure why this is added for SVM only.
+
+I am mostly familiar with AVIC, and much less so with VMX's PI, so this is
+why I am likely missing potential stats that could be useful to expose from
+the VMX  side. I'll be glad to implement any other suggestions you have.
 
 
-First thanks for working on this.
+it looks to me GALog events are
+> similar to Intel IOMMU's wakeup events. Can we have a general name? maybe
+> iommu_wakeup_event
 
-On 4/7/24 07:38, Yunhui Cui wrote:
-> When the type and level information of this_leaf cannot be obtained
-> from arch, cacheinfo is completely filled in with the content of PPTT.
+I believe that after:
+d588bb9be1da ("KVM: VMX: enable IPI virtualization")
 
-I started reviewing this, based on what I understood to be the need to 
-generate the topology entirely from the PPTT. But, it was raising more 
-questions than answers because the PPTT is far too flexable in its 
-ability to represent cache hierachies that arn't logically useful. For 
-example multiple I or D caches at the same level, or I or D caches 
-higher in the topology than unified ones.
+both the VT-d PI and the virtualized IPIs code paths will use POSTED_INTR_WAKEUP_VECTOR
+for interrupts targeting a blocked vCPU. So on Intel hosts enabling IPI virtualization,
+a counter incremented in pi_wakeup_handler() would record interrupts from both virtualized
+IPIs and VT-d sources.
 
-At least for arm64 (and I think others) there is an understood 
-simplification that there will be N levels of split I/D caches and M 
-unified levels. And from that, the number of cache leaves are computed 
-and allocated, and then we go in and largly skip PPTT cache nodes which 
-don't make sense in view of a generic topology like that. (see the 
-comment in cacheinfo.c:506)
+I don't think it is correct to generalize this counter since AMD's implementation is
+different; when a blocked vCPU is targeted:
 
-Both of those pieces of information are available in 
-acpi_get_cache_info(). The missing part is marking those N levels of I/D 
-cache as such.
+- by device interrupts, it uses the GA Log mechanism
+- by an IPI, it generates an AVIC_INCOMPLETE_IPI #VMEXIT
 
-Looking at this code I don't really see all the error/allocation 
-logic/etc that assures the cache leaf indexing is allocated correctly 
-which worries me, although admidditly I could be missing something 
-important.
+If the reasoning above is correct, we can add a VMX specific counter (vmx_pi_wakeup_event?)
+that is increased in pi_wakeup_handler() as you suggest, and document the difference
+in behavior so that is not confused as equivalent with the ga_log_event counter.
 
-In summary, did you consider just allocating matching I/D caches from 
-the number of split levels in acpi_get_cache_info() then removing or 
-invalidating the ones that don't have matching PPTT entries after 
-running cache_setup_acpi()? Thats a fairly trivial change AFAIK if the 
-decision is based on the lack of a cache_id or just changing the 
-this_leaf->type = CACHE_TYPE_UNIFIED assignment to the correct type and 
-assuring left over CACHE_TYPE_NOCACHE entries are removed. I think much 
-of the "significant work" is likely fixed for that to work. Just 
-tweaking detect_cache_level()/get_cache_type() to set 
-CACHE_TYPE_SEPERATE if the level is less than the acpi_get_cache_info() 
-split_level value probably also does the majority of what you need 
-outside of having unequal counts of I and D caches.
+An alternative if we'd like to have a common 'iommu_wakeup_event' is to add filtering on
+pi_wakeup_handler() and only increment the common counter if IPI virtualization is not
+enabled (i.e. !vmx_can_use_ipiv()), in which case  we'd only handle device interrupts
+and it becomes the parallel case to GA Log events.
 
-There are probably other choices as well, thoughts?
+That leaves us with a VMX-specific counter (vmx_pi_wakeup_event) which provides no
+definition between interrupt sources when IPI virtualization is enabled, or when disabled
+we have a common/generic counter (iommu_wakeup_event) that applies to both vendors.
 
+Please let me know if you agree with this approach or have other suggestions.
 
-Thanks,
-
-
-
-
-
-
+Thank you,
+Alejandro
 
 > 
-> Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
-> ---
->   drivers/acpi/pptt.c | 135 ++++++++++++++++++++++++++++++++++++++++----
->   1 file changed, 124 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/acpi/pptt.c b/drivers/acpi/pptt.c
-> index a35dd0e41c27..6c54fc8e3039 100644
-> --- a/drivers/acpi/pptt.c
-> +++ b/drivers/acpi/pptt.c
-> @@ -21,6 +21,9 @@
->   #include <linux/cacheinfo.h>
->   #include <acpi/processor.h>
->   
-> +void acpi_fill_cacheinfo(struct acpi_pptt_cache *cache, struct acpi_table_header *table,
-> +			 int cpu, int level, int *index);
-> +
->   static struct acpi_subtable_header *fetch_pptt_subtable(struct acpi_table_header *table_hdr,
->   							u32 pptt_ref)
->   {
-> @@ -77,6 +80,18 @@ static inline bool acpi_pptt_match_type(int table_type, int type)
->   		table_type & ACPI_PPTT_CACHE_TYPE_UNIFIED & type);
->   }
->   
-> +static inline u32 get_cache_id(struct acpi_pptt_cache *cache)
-> +{
-> +	struct acpi_pptt_cache_v1 *cache_v1;
-> +
-> +	if (cache->flags & ACPI_PPTT_CACHE_ID_VALID) {
-> +		cache_v1 = ACPI_ADD_PTR(struct acpi_pptt_cache_v1,
-> +					cache, sizeof(struct acpi_pptt_cache));
-> +		return cache_v1->cache_id;
-> +	}
-> +	return 0;
-> +}
-> +
->   /**
->    * acpi_pptt_walk_cache() - Attempt to find the requested acpi_pptt_cache
->    * @table_hdr: Pointer to the head of the PPTT table
-> @@ -104,7 +119,7 @@ static unsigned int acpi_pptt_walk_cache(struct acpi_table_header *table_hdr,
->   					 unsigned int *split_levels,
->   					 struct acpi_subtable_header *res,
->   					 struct acpi_pptt_cache **found,
-> -					 unsigned int level, int type)
-> +					 unsigned int level, int type, int cpu, int *index)
->   {
->   	struct acpi_pptt_cache *cache;
->   
-> @@ -125,7 +140,7 @@ static unsigned int acpi_pptt_walk_cache(struct acpi_table_header *table_hdr,
->   		     acpi_pptt_match_type(cache->attributes, ACPI_PPTT_CACHE_TYPE_INSTR)))
->   			*split_levels = local_level;
->   
-> -		if (local_level == level &&
-> +		if (level && local_level == level &&
->   		    acpi_pptt_match_type(cache->attributes, type)) {
->   			if (*found != NULL && cache != *found)
->   				pr_warn("Found duplicate cache level/type unable to determine uniqueness\n");
-> @@ -137,7 +152,9 @@ static unsigned int acpi_pptt_walk_cache(struct acpi_table_header *table_hdr,
->   			 * to verify that we don't find a duplicate
->   			 * cache node.
->   			 */
-> -		}
-> +		} else
-> +			acpi_fill_cacheinfo(cache, table_hdr, cpu, local_level, index);
-> +
->   		cache = fetch_pptt_cache(table_hdr, cache->next_level_of_cache);
->   	}
->   	return local_level;
-> @@ -147,7 +164,7 @@ static struct acpi_pptt_cache *
->   acpi_find_cache_level(struct acpi_table_header *table_hdr,
->   		      struct acpi_pptt_processor *cpu_node,
->   		      unsigned int *starting_level, unsigned int *split_levels,
-> -		      unsigned int level, int type)
-> +		      unsigned int level, int type, int cpu, int *index)
->   {
->   	struct acpi_subtable_header *res;
->   	unsigned int number_of_levels = *starting_level;
-> @@ -161,7 +178,8 @@ acpi_find_cache_level(struct acpi_table_header *table_hdr,
->   
->   		local_level = acpi_pptt_walk_cache(table_hdr, *starting_level,
->   						   split_levels, res, &ret,
-> -						   level, type);
-> +						   level, type, cpu, index);
-> +
->   		/*
->   		 * we are looking for the max depth. Since its potentially
->   		 * possible for a given node to have resources with differing
-> @@ -197,7 +215,7 @@ static void acpi_count_levels(struct acpi_table_header *table_hdr,
->   			      unsigned int *levels, unsigned int *split_levels)
->   {
->   	do {
-> -		acpi_find_cache_level(table_hdr, cpu_node, levels, split_levels, 0, 0);
-> +		acpi_find_cache_level(table_hdr, cpu_node, levels, split_levels, 0, 0, 0, NULL);
->   		cpu_node = fetch_pptt_node(table_hdr, cpu_node->parent);
->   	} while (cpu_node);
->   }
-> @@ -316,6 +334,7 @@ static u8 acpi_cache_type(enum cache_type type)
->   }
->   
->   static struct acpi_pptt_cache *acpi_find_cache_node(struct acpi_table_header *table_hdr,
-> +						    int cpu,
->   						    u32 acpi_cpu_id,
->   						    enum cache_type type,
->   						    unsigned int level,
-> @@ -325,6 +344,7 @@ static struct acpi_pptt_cache *acpi_find_cache_node(struct acpi_table_header *ta
->   	struct acpi_pptt_cache *found = NULL;
->   	struct acpi_pptt_processor *cpu_node;
->   	u8 acpi_type = acpi_cache_type(type);
-> +	int index = 0;
->   
->   	pr_debug("Looking for CPU %d's level %u cache type %d\n",
->   		 acpi_cpu_id, level, acpi_type);
-> @@ -333,7 +353,7 @@ static struct acpi_pptt_cache *acpi_find_cache_node(struct acpi_table_header *ta
->   
->   	while (cpu_node && !found) {
->   		found = acpi_find_cache_level(table_hdr, cpu_node,
-> -					      &total_levels, NULL, level, acpi_type);
-> +					      &total_levels, NULL, level, acpi_type, cpu, &index);
->   		*node = cpu_node;
->   		cpu_node = fetch_pptt_node(table_hdr, cpu_node->parent);
->   	}
-> @@ -406,8 +426,14 @@ static void update_cache_properties(struct cacheinfo *this_leaf,
->   	 * specified in PPTT.
->   	 */
->   	if (this_leaf->type == CACHE_TYPE_NOCACHE &&
-> -	    found_cache->flags & ACPI_PPTT_CACHE_TYPE_VALID)
-> -		this_leaf->type = CACHE_TYPE_UNIFIED;
-> +	    found_cache->flags & ACPI_PPTT_CACHE_TYPE_VALID) {
-> +		if (acpi_pptt_match_type(found_cache->attributes, ACPI_PPTT_CACHE_TYPE_DATA))
-> +			this_leaf->type = CACHE_TYPE_DATA;
-> +		if (acpi_pptt_match_type(found_cache->attributes, ACPI_PPTT_CACHE_TYPE_INSTR))
-> +			this_leaf->type = CACHE_TYPE_INST;
-> +		if (acpi_pptt_match_type(found_cache->attributes, ACPI_PPTT_CACHE_TYPE_UNIFIED))
-> +			this_leaf->type = CACHE_TYPE_UNIFIED;
-> +	}
->   
->   	if (revision >= 3 && (found_cache->flags & ACPI_PPTT_CACHE_ID_VALID)) {
->   		found_cache_v1 = ACPI_ADD_PTR(struct acpi_pptt_cache_v1,
-> @@ -417,19 +443,106 @@ static void update_cache_properties(struct cacheinfo *this_leaf,
->   	}
->   }
->   
-> +static bool cache_is_filled_id(struct acpi_pptt_cache *cache, int cpu)
-> +{
-> +	u32 id = get_cache_id(cache);
-> +	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
-> +	struct cacheinfo *this_leaf;
-> +	int index = 0;
-> +
-> +	while (index < get_cpu_cacheinfo(cpu)->num_leaves) {
-> +		this_leaf = this_cpu_ci->info_list + index;
-> +		if (this_leaf->id == id)
-> +			return true;
-> +		index++;
-> +	}
-> +	return false;
-> +}
-> +
-> +static bool cache_is_filled_content(struct acpi_pptt_cache *cache,
-> +				    struct acpi_table_header *table,
-> +				    int cpu, int level, u8 revision)
-> +{
-> +	struct acpi_pptt_processor *cpu_node;
-> +	struct cacheinfo *this_leaf, *tleaf;
-> +	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
-> +	struct cacheinfo tmp_leaf = {0};
-> +	int index = 0;
-> +
-> +	cpu_node = acpi_find_processor_node(table, get_acpi_id_for_cpu(cpu));
-> +	tleaf = &tmp_leaf;
-> +	tleaf->level = level;
-> +
-> +	while (index < get_cpu_cacheinfo(cpu)->num_leaves) {
-> +		this_leaf = this_cpu_ci->info_list + index;
-> +		update_cache_properties(tleaf, cache,
-> +					ACPI_TO_POINTER(ACPI_PTR_DIFF(cpu_node, table)),
-> +					revision);
-> +		if (!memcmp(this_leaf, tleaf, sizeof(struct cacheinfo)))
-> +			return true;
-> +		index++;
-> +	}
-> +	return false;
-> +}
-> +
-> +static bool cache_is_filled(struct acpi_pptt_cache *cache, struct acpi_table_header *table,
-> +				   int cpu, int level)
-> +{
-> +	u8 revision = table->revision;
-> +
-> +	/*
-> +	 * If revision >= 3, compare the cacheid directly,
-> +	 * otherwise compare the entire contents of the cache.
-> +	 */
-> +	if (revision >= 3)
-> +		return cache_is_filled_id(cache, cpu);
-> +	else
-> +		return cache_is_filled_content(cache, table, cpu, level, revision);
-> +}
-> +
-> +void acpi_fill_cacheinfo(struct acpi_pptt_cache *cache,
-> +				struct acpi_table_header *table,
-> +				int cpu, int level, int *index)
-> +{
-> +	struct cacheinfo *this_leaf;
-> +	struct acpi_pptt_processor *cpu_node;
-> +	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
-> +
-> +	if (!index)
-> +		return;
-> +
-> +	cpu_node = acpi_find_processor_node(table, get_acpi_id_for_cpu(cpu));
-> +	this_leaf = this_cpu_ci->info_list + *index;
-> +	if (this_leaf) {
-> +		this_leaf->level = level;
-> +		if (cache_is_filled(cache, table, cpu, level))
-> +			return;
-> +		update_cache_properties(this_leaf, cache,
-> +					ACPI_TO_POINTER(ACPI_PTR_DIFF(cpu_node,
-> +							table)),
-> +					table->revision);
-> +		*index += 1;
-> +	}
-> +}
-> +
->   static void cache_setup_acpi_cpu(struct acpi_table_header *table,
->   				 unsigned int cpu)
->   {
->   	struct acpi_pptt_cache *found_cache;
->   	struct cpu_cacheinfo *this_cpu_ci = get_cpu_cacheinfo(cpu);
->   	u32 acpi_cpu_id = get_acpi_id_for_cpu(cpu);
-> -	struct cacheinfo *this_leaf;
-> +	struct cacheinfo *this_leaf = this_cpu_ci->info_list;
->   	unsigned int index = 0;
->   	struct acpi_pptt_processor *cpu_node = NULL;
->   
-> +	if (!this_leaf->type && !this_leaf->level) {
-> +		acpi_find_cache_node(table, acpi_cpu_id, cpu, 0, 0, &cpu_node);
-> +		return;
-> +	}
-> +
->   	while (index < get_cpu_cacheinfo(cpu)->num_leaves) {
->   		this_leaf = this_cpu_ci->info_list + index;
-> -		found_cache = acpi_find_cache_node(table, acpi_cpu_id,
-> +		found_cache = acpi_find_cache_node(table, acpi_cpu_id, cpu,
->   						   this_leaf->type,
->   						   this_leaf->level,
->   						   &cpu_node);
-
+> and increase the counter after the kvm_vcpu_wake_up() call in pi_wakeup_handler().
 
