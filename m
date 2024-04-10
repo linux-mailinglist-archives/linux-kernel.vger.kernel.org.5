@@ -1,208 +1,218 @@
-Return-Path: <linux-kernel+bounces-138156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4640589ED70
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:21:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A2B989ED75
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:22:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 912B3B21C05
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:21:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD6AD1C20B8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:22:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8002213D61D;
-	Wed, 10 Apr 2024 08:20:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D43F113D614;
+	Wed, 10 Apr 2024 08:22:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="URbQfQ8y"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VjdrlWMc"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0330713D523
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:20:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E701D13D523;
+	Wed, 10 Apr 2024 08:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712737256; cv=none; b=CDwTpkeXxTrt5evjgbutfsqMNX8L4vPf4zmdoGJNorX9Nmoj85haaDTAcYqDu+4PNeMPhQke9/Drf6JynWIMuaUornZlQUVN2QzGLdvcwew5apUFvwQRDlQtgfKMuYL/5rAA5aaXwKoRWyp8hPvD1mIHDvlYDH+0sfxxgGAHGDA=
+	t=1712737321; cv=none; b=Ym/ax79eJKlIMttu2jccZWD18FkjfanqO2mZg3VQbtnUEAAnU84dltc1niO1D0BwsTwxJMLs2nPqWba6RLGjbnhpJwO+V3qLyZXsu6guWCUc4ibZ0Xm1WEnlnr29r72XblzMM5RNsxdVHrzQJYZp20M9tFzhwte2smbWNNx5tnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712737256; c=relaxed/simple;
-	bh=PnYCXwqQXwIuIUdDv2sTWF+OEhZuSBXw+2zwh+CpxY0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dEW+bgTMICRjIc8l8od47heEdv3XwJExX7YXixw7VuC/kdyqO9hu65nmQ8WhoX3Pkmn1DgZxcG23mF+m9zAo5/gBngBD3oElx2TDZ0yaBiaYWgEsYvImAs4kt8btU5YvquSRFpob8IeYhPggDbQR4mwLq05kag0qrByTnzyTVbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=URbQfQ8y; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712737254;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=nXt9QgBL5KsCTsMhUv7LoBmgAUYvhj/Ac6lKPs0TUWs=;
-	b=URbQfQ8yN7KWoTPLa4pr6Sew5CBB0380BySkFWnWw7GCZNNQz17IlCRFiIIx1qqx/7msV/
-	zKM/ytAiqIUy2xzPwc0frtyfMyP6WchSV8CMUPLI9ZN1GH2Kt0e0YeQtOS6GRx+/4R3J/c
-	NUTJRZDVoOuMZyctM9YDfz6qPoQo+Lg=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-513-mHXGW5nFOJyg_2zeRczLCQ-1; Wed, 10 Apr 2024 04:20:49 -0400
-X-MC-Unique: mHXGW5nFOJyg_2zeRczLCQ-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-343bb240f70so3037417f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 01:20:49 -0700 (PDT)
+	s=arc-20240116; t=1712737321; c=relaxed/simple;
+	bh=T43KbF42fm8HsFmTxbZXO8nSYWOOBrDknmli7i2PLa4=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bK2zguNYq5YKbGAOi8oQ26ogHKG3WdO7jSTf2oN+08xeVYLoGKWEcV9OVt0zodSnBiZRk7QSVeTrfmJbhV0lS4+2psj/z/fhLp9HvrdH6mUq+fkkjigSRXQj0oa9W9k6pbdQ0e3HxDuLwtdHUsl4eMmXe3X+niCf3H+iLbbnr3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VjdrlWMc; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-516d0162fa1so7732942e87.3;
+        Wed, 10 Apr 2024 01:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712737316; x=1713342116; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=t9ncL6J099zDWm1volQeziNRO3e5GzIYLXP1BKZCft0=;
+        b=VjdrlWMcx2GmYhnOOC+t3fS5F4C0Q285sAAHxu0+9Gt8aruZzjouKTJ9D1gKP+v2GP
+         GhE+CBLfc7ssoXR7LHdHi7Zv91uIZ4U5FSdosQM6FAysyKeDs3jtPsgUAfiyDGYfzjWx
+         yBzH21rFkqjZVbgfXRSkqog6LLoxDAM8807C5OyCnfoqbEKzMJDiWJoCPqPOYH9I2KA5
+         Sd03jO7SkVrSpjMG7M7djzW0g2ssf2QWWJSOaFd+Gzk28MlCFJJVB23WhTbl1hXfA0uX
+         kQUDrB0RQhqLXSOS4pNdY/tJ4hjBfv1JxPCx7mS5LX3+KRSYaVhP5MgBqXpyFHFpcNH9
+         zKRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712737248; x=1713342048;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=nXt9QgBL5KsCTsMhUv7LoBmgAUYvhj/Ac6lKPs0TUWs=;
-        b=Ivz/TqvmIRnIKvRC00LhIRjoMyBhsIb81hbTEBdV2wftMo87aOBxx3Lugx3BwaltVu
-         lPqLF4+ItFUsDOQ25SWRW4TYDLRDyT7D4ydgi4nNqir6+VYNE0yeAHdp6cIJaT8jzt+t
-         /lllHNOthhH+sNkqZetcLbmcDw9I+7dBzMbx4DlSGOrPYcDwEZgtuFJTa12ELBq5x2FQ
-         5HN+vTeGlgOOJEb0dm7Ovu7lSXlSL9GAjsM3uKC/ttrMfqFWU9xap+EdrbwY9NZjxCfL
-         x55BifQr4WDarH6zAo6pDRoY+9zAI3ELBfaBvNBuihYMEKx/s4Y1IYRAsLI0Y8mr+ncC
-         4Bag==
-X-Gm-Message-State: AOJu0Yzs79kJXZ/jsapXjHOvgUo2hgfssqRT9UoJjtVnDtwO5q7Li7qg
-	ZQf8MUNBDEvx0rDQflNpqpNIUoxjUoTEs2+lUj1FpS8r9AcQsHwPzOaN87yqxYdeXLAfVp/Hfe3
-	6RYgU+RZE0c7JaPXCxVLrUnHifu0LAxBPTDPa23le8oYhnGuIzboNQ+PZV1QXsg==
-X-Received: by 2002:a05:6000:4595:b0:343:b5dd:fe1d with SMTP id gb21-20020a056000459500b00343b5ddfe1dmr3947591wrb.28.1712737248333;
-        Wed, 10 Apr 2024 01:20:48 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGMO7YVGXMtdwn7qyE6J9DfN53segr8TeIXW6v8wiHYh+AtmrCV1qpZvYljAfNwPFGdHoDF0A==
-X-Received: by 2002:a05:6000:4595:b0:343:b5dd:fe1d with SMTP id gb21-20020a056000459500b00343b5ddfe1dmr3947569wrb.28.1712737247924;
-        Wed, 10 Apr 2024 01:20:47 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c712:fa00:38eb:93ad:be38:d469? (p200300cbc712fa0038eb93adbe38d469.dip0.t-ipconnect.de. [2003:cb:c712:fa00:38eb:93ad:be38:d469])
-        by smtp.gmail.com with ESMTPSA id e27-20020a5d595b000000b003445bb2362esm10674889wri.65.2024.04.10.01.20.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 01:20:47 -0700 (PDT)
-Message-ID: <0e829c08-74f5-4487-97bd-4f81d8b70a2f@redhat.com>
-Date: Wed, 10 Apr 2024 10:20:45 +0200
+        d=1e100.net; s=20230601; t=1712737316; x=1713342116;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t9ncL6J099zDWm1volQeziNRO3e5GzIYLXP1BKZCft0=;
+        b=IG4cviILRNiJ+AwZHfKp6+U8X5XZ8hLzx44W7wkJUevUfjesTmkDiOZJgtJqcs55e2
+         nKlcv6yJl3cPifUJOxMtNDz8Ohdua2JRlyY/iuyh1+4mHMdZ+muMdXkhKH02HaPZxS8o
+         ngY++N911YguqlU+Mf1he+F8hsyOHK4vXiTj2aaDXzBXTVNTqTq/jL1kykGLBaj1XUp8
+         LB5q1ttvaradkMXOOT/FwZCZjnONpGACvYCqs88sCr6i1voJDAmoHZOjsaucHVSjyDy+
+         ebPEKP9e2fc7TbcOZ2a0AWxhWH3GjDRnS/2kIptRjpEmWOqqZVl0kISbbMD/mU7cXwOg
+         2IuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWB/NiqwZ6RfjHdbYu/3VhKerCgo/M/31QyIFvfKbhf8AcciKx0YrftwtztBy6wKk3YSEsUna0mwErufeM/HS+OJXfiJaDvoBMvv1M34PCWm/wCJsGXGw24EiA+AayCrXF9jSn89HkVGBGdKECUks6qRGXpFt+tsnx15vfYlA==
+X-Gm-Message-State: AOJu0YwS76Ist9Cc8UHr7dgBQMz6yc5PomHZICLOheOz6qOw93HEzDbs
+	/47CzLGEcfKc23syjuDpwdHCEs+xRb2rO/pHPfH2K5mCJMIiXzd2
+X-Google-Smtp-Source: AGHT+IH/iUhygMfoz7qE+pEGl264dmAwnbM0yE56uCPtfUVV0GoU8JOg2uu3MTmCQbspBueLcpmk4Q==
+X-Received: by 2002:a19:8c0c:0:b0:517:5ee6:4f5b with SMTP id o12-20020a198c0c000000b005175ee64f5bmr1477566lfd.43.1712737315665;
+        Wed, 10 Apr 2024 01:21:55 -0700 (PDT)
+Received: from krava ([2a02:168:f656:0:bbb9:17bc:93d7:223])
+        by smtp.gmail.com with ESMTPSA id y14-20020a5d4ace000000b00341dbb4a3a7sm13306716wrs.86.2024.04.10.01.21.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 01:21:55 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 10 Apr 2024 10:21:53 +0200
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Martin KaFai Lau <martin.lau@linux.dev>, linux-arch@vger.kernel.org,
+	linux-kbuild@vger.kernel.org, bpf@vger.kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH v2 3/3] btf: Avoid weak external references
+Message-ID: <ZhZMITbXAR63hkoD@krava>
+References: <20240409150132.4097042-5-ardb+git@google.com>
+ <20240409150132.4097042-8-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 04/18] mm: track mapcount of large folios in single
- value
-To: Zi Yan <ziy@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-doc@vger.kernel.org, cgroups@vger.kernel.org,
- linux-sh@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Peter Xu <peterx@redhat.com>,
- Ryan Roberts <ryan.roberts@arm.com>, Yin Fengwei <fengwei.yin@intel.com>,
- Yang Shi <shy828301@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- Hugh Dickins <hughd@google.com>, Yoshinori Sato
- <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Chris Zankel <chris@zankel.net>, Max Filippov <jcmvbkbc@gmail.com>,
- Muchun Song <muchun.song@linux.dev>, Miaohe Lin <linmiaohe@huawei.com>,
- Naoya Horiguchi <naoya.horiguchi@nec.com>,
- Richard Chang <richardycc@google.com>
-References: <20240409192301.907377-1-david@redhat.com>
- <20240409192301.907377-5-david@redhat.com>
- <1DFEC99F-6BCE-4E6D-9EF2-267E8A94A705@nvidia.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <1DFEC99F-6BCE-4E6D-9EF2-267E8A94A705@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240409150132.4097042-8-ardb+git@google.com>
 
-On 09.04.24 22:13, Zi Yan wrote:
-> On 9 Apr 2024, at 15:22, David Hildenbrand wrote:
+On Tue, Apr 09, 2024 at 05:01:36PM +0200, Ard Biesheuvel wrote:
+> From: Ard Biesheuvel <ardb@kernel.org>
 > 
->> Let's track the mapcount of large folios in a single value. The mapcount of
->> a large folio currently corresponds to the sum of the entire mapcount and
->> all page mapcounts.
->>
->> This sum is what we actually want to know in folio_mapcount() and it is
->> also sufficient for implementing folio_mapped().
->>
->> With PTE-mapped THP becoming more important and more widely used, we want
->> to avoid looping over all pages of a folio just to obtain the mapcount
->> of large folios. The comment "In the common case, avoid the loop when no
->> pages mapped by PTE" in folio_total_mapcount() does no longer hold for
->> mTHP that are always mapped by PTE.
->>
->> Further, we are planning on using folio_mapcount() more
->> frequently, and might even want to remove page mapcounts for large
->> folios in some kernel configs. Therefore, allow for reading the mapcount of
->> large folios efficiently and atomically without looping over any pages.
->>
->> Maintain the mapcount also for hugetlb pages for simplicity. Use the new
->> mapcount to implement folio_mapcount() and folio_mapped(). Make
->> page_mapped() simply call folio_mapped(). We can now get rid of
->> folio_large_is_mapped().
->>
->> _nr_pages_mapped is now only used in rmap code and for debugging
->> purposes. Keep folio_nr_pages_mapped() around, but document that its use
->> should be limited to rmap internals and debugging purposes.
->>
->> This change implies one additional atomic add/sub whenever
->> mapping/unmapping (parts of) a large folio.
->>
->> As we now batch RMAP operations for PTE-mapped THP during fork(),
->> during unmap/zap, and when PTE-remapping a PMD-mapped THP, and we adjust
->> the large mapcount for a PTE batch only once, the added overhead in the
->> common case is small. Only when unmapping individual pages of a large folio
->> (e.g., during COW), the overhead might be bigger in comparison, but it's
->> essentially one additional atomic operation.
->>
->> Note that before the new mapcount would overflow, already our refcount
->> would overflow: each mapping requires a folio reference. Extend the
->> focumentation of folio_mapcount().
+> If the BTF code is enabled in the build configuration, the start/stop
+> BTF markers are guaranteed to exist in the final link but not during the
+> first linker pass.
 > 
-> s/focumentation/documentation/  ;)
+> Avoid GOT based relocations to these markers in the final executable by
+> providing preliminary definitions that will be used by the first linker
+> pass, and superseded by the actual definitions in the subsequent ones.
+> 
+> Make the preliminary definitions dependent on CONFIG_DEBUG_INFO_BTF so
+> that inadvertent references to this section will trigger a link failure
+> if they occur in code that does not honour CONFIG_DEBUG_INFO_BTF.
+> 
+> Note that Clang will notice that taking the address of__start_BTF cannot
+> yield NULL any longer, so testing for that condition is no longer
+> needed.
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  include/asm-generic/vmlinux.lds.h | 9 +++++++++
+>  kernel/bpf/btf.c                  | 4 ++--
+>  kernel/bpf/sysfs_btf.c            | 6 +++---
+>  3 files changed, 14 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index e8449be62058..4cb3d88449e5 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -456,6 +456,7 @@
+>   * independent code.
+>   */
+>  #define PRELIMINARY_SYMBOL_DEFINITIONS					\
+> +	PRELIMINARY_BTF_DEFINITIONS					\
+>  	PROVIDE(kallsyms_addresses = .);				\
+>  	PROVIDE(kallsyms_offsets = .);					\
+>  	PROVIDE(kallsyms_names = .);					\
+> @@ -466,6 +467,14 @@
+>  	PROVIDE(kallsyms_markers = .);					\
+>  	PROVIDE(kallsyms_seqs_of_names = .);
+>  
+> +#ifdef CONFIG_DEBUG_INFO_BTF
+> +#define PRELIMINARY_BTF_DEFINITIONS					\
+> +	PROVIDE(__start_BTF = .);					\
+> +	PROVIDE(__stop_BTF = .);
+> +#else
+> +#define PRELIMINARY_BTF_DEFINITIONS
+> +#endif
 
-Thanks! :)
+hi,
+I'm getting following compilation fail when CONFIG_DEBUG_INFO_BTF is disabled
 
--- 
-Cheers,
+	[jolsa@krava linux-qemu]$ make 
+	  CALL    scripts/checksyscalls.sh
+	  DESCEND objtool
+	  INSTALL libsubcmd_headers
+	  UPD     include/generated/utsversion.h
+	  CC      init/version-timestamp.o
+	  LD      .tmp_vmlinux.kallsyms1
+	ld: kernel/bpf/btf.o: in function `btf_parse_vmlinux':
+	/home/jolsa/kernel/linux-qemu/kernel/bpf/btf.c:5988: undefined reference to `__start_BTF'
+	ld: /home/jolsa/kernel/linux-qemu/kernel/bpf/btf.c:5989: undefined reference to `__stop_BTF'
+	ld: /home/jolsa/kernel/linux-qemu/kernel/bpf/btf.c:5989: undefined reference to `__start_BTF'
+	make[2]: *** [scripts/Makefile.vmlinux:37: vmlinux] Error 1
+	make[1]: *** [/home/jolsa/kernel/linux-qemu/Makefile:1160: vmlinux] Error 2
+	make: *** [Makefile:240: __sub-make] Error 2
 
-David / dhildenb
+maybe the assumption was that kernel/bpf/btf.o is compiled only
+for CONFIG_DEBUG_INFO_BTF, but it's actually:
 
+  obj-$(CONFIG_BPF_SYSCALL) += btf.o memalloc.o
+
+I guess we just need !CONFIG_DEBUG_INFO_BTF version of btf_parse_vmlinux
+function
+
+jirka
+
+> +
+>  /*
+>   * Read only Data
+>   */
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 90c4a32d89ff..46a56bf067a8 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -5642,8 +5642,8 @@ static struct btf *btf_parse(const union bpf_attr *attr, bpfptr_t uattr, u32 uat
+>  	return ERR_PTR(err);
+>  }
+>  
+> -extern char __weak __start_BTF[];
+> -extern char __weak __stop_BTF[];
+> +extern char __start_BTF[];
+> +extern char __stop_BTF[];
+>  extern struct btf *btf_vmlinux;
+>  
+>  #define BPF_MAP_TYPE(_id, _ops)
+> diff --git a/kernel/bpf/sysfs_btf.c b/kernel/bpf/sysfs_btf.c
+> index ef6911aee3bb..fedb54c94cdb 100644
+> --- a/kernel/bpf/sysfs_btf.c
+> +++ b/kernel/bpf/sysfs_btf.c
+> @@ -9,8 +9,8 @@
+>  #include <linux/sysfs.h>
+>  
+>  /* See scripts/link-vmlinux.sh, gen_btf() func for details */
+> -extern char __weak __start_BTF[];
+> -extern char __weak __stop_BTF[];
+> +extern char __start_BTF[];
+> +extern char __stop_BTF[];
+>  
+>  static ssize_t
+>  btf_vmlinux_read(struct file *file, struct kobject *kobj,
+> @@ -32,7 +32,7 @@ static int __init btf_vmlinux_init(void)
+>  {
+>  	bin_attr_btf_vmlinux.size = __stop_BTF - __start_BTF;
+>  
+> -	if (!__start_BTF || bin_attr_btf_vmlinux.size == 0)
+> +	if (bin_attr_btf_vmlinux.size == 0)
+>  		return 0;
+>  
+>  	btf_kobj = kobject_create_and_add("btf", kernel_kobj);
+> -- 
+> 2.44.0.478.gd926399ef9-goog
+> 
+> 
 
