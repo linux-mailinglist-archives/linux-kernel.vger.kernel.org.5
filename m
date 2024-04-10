@@ -1,140 +1,94 @@
-Return-Path: <linux-kernel+bounces-138891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C9AD89FBB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:35:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 789D989FBAD
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:34:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E5C61C209E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:35:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB08E1C216F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:34:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD6E16F853;
-	Wed, 10 Apr 2024 15:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C3D316EC18;
+	Wed, 10 Apr 2024 15:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lUmhn/29"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CVbAmK+8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4714B16EBEF;
-	Wed, 10 Apr 2024 15:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3BBA16E871
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:34:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712763320; cv=none; b=YvoJVuyR/cToTaSIGfNzlZ8ixa8xZeufDdvoHvwlb+63v0+bsa1tFjbw3gl4Ey8VNWcOl9noBcoUxYx92qa91v2Lyhvf9hnneGqanyYJwuwYNZSNpe4BqfdkMAYt09+7OVSstUW2SiNYrNjFH5WktubeUjLapQloHBcsyDfTqVU=
+	t=1712763265; cv=none; b=e7iagwR7vJK3UVcIDTOmP6jDP6w1c2Hh/eLfefMYPNjdM7vcMaOIoRvLU5fA78hMmtqHZJZ12utVv3YImS08EJRCmkmfyHT7hCZ8/ZpflBjYPBF+U5APaU+Zn+Jqy3b/vqtJbRrogQFEqvUHu5b+4QAoct6Mo/lPNdsmbQwyzHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712763320; c=relaxed/simple;
-	bh=vWx8hjmgbGaYijZPOHAFQF3Diarftvn5nTcDZWxUfWQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NC6D1ojATcEyfcdbg3hJeozwzB7auAZ9nnyGPXWTdX9lwTjp2QuCeTZmE7yxXTE4BPpyZYPr/7gearDz3iEttWLEipp2/67rBsAlz4Vm5iHPsVh6cjaxmXV2V+nkml2BRCIl3HEiw1sayr30ieQmF0OpEuomF+dW7XONHXtQxgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lUmhn/29; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-343e46ec237so4116290f8f.2;
-        Wed, 10 Apr 2024 08:35:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712763317; x=1713368117; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=68baX53kYRdqiSV3OuL3sThzmNqdOFLBEOv/P9LxiMo=;
-        b=lUmhn/29r1jhMngW5rBuyxAxpzyouSBQc7BhiLnU7QSuAUUY1IoLnwGvoXFNAPS9+o
-         MCJdoX/M25J6nnBSL1OPsbV8uFAfleloNrDW0fS1LvX9MnIN5dAP9xWOrYuPsJbrJKsF
-         x6fyq87Yh0K74Iq9kXx3c79Ecm3RZpybAFRqMkmzMladSRu3CWx7CeSIqM8rqpZ3CIVU
-         PcuSpRkUMwr8fTf34+Ukjpti6l02M/r3vyzMkmzCMDgnNCpPrjllt2EKQEOCuTNj72Q+
-         yUL5gVKH1OApCTyfEIDo+IXJUJ9c5bYGZ1pqwToVySlZPS1GX3EJjGW0f/1QIE9Zqmmb
-         p9nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712763317; x=1713368117;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=68baX53kYRdqiSV3OuL3sThzmNqdOFLBEOv/P9LxiMo=;
-        b=Ht7Xk4I6LLPsj4VP8DKMyaYcjxiGa2Xx4VYjyJOrvnx6ev53eT1qJXrORHyLsx74cD
-         J1mhbJc9WN1ubd0bA0MbUJHVtbSfSNDRPx2CvHdHECD6PKqeggwwoxoqPjkN7i5f42Z/
-         Z87nXFq3dvNYyhP7zqXEo7ozdSyMAhMjaNBxaEU8TnzMz9+XoO9HHn9fDpDODo3RP3PS
-         fczEHlgW73flRNDEI/9S6t3ZHWqh1Inn3Jgxn+ZYIFcSnHUn1PzSq50MDtMwh8vJnXV+
-         SXklDiMbmoGraXxV5oKVD9i3vsvtb0q3/Sw11MBQ7a9lEfqLF3/2kT5ZZ7R+F629C8Bb
-         CNKw==
-X-Forwarded-Encrypted: i=1; AJvYcCXV4j+hWfgALjTUmAzGFSPkaxg2SCNCV/8QfwDpk+ogErJn4DPn+hBCngSGJeBzJwqpu1RDoWnhJJZP8tc6tNDejPPX6MMwrAL1lvBbYWD5Iq7pY73UjXYTKESy4Ba42nTBQy1od9sSGC0WcTclXQqaqOkQyOafl7Tp2/JodVGIkm/YiRFO
-X-Gm-Message-State: AOJu0YyjkoayZurNJwFXP+7850ONUUEaQmV51scBoHn4ToTsYhXNNpxF
-	YuvEdsDR3rket2pVbAVN8k4ysc6IgW2tlHAYaEJq460zRCPcmBfg
-X-Google-Smtp-Source: AGHT+IFpCTXftuYdAbu9wXWKxlU/Jww9KocYRa4/MBt6ILtJAroKsGboJFb5WMAzrx/I3nDy7QQrCg==
-X-Received: by 2002:adf:b312:0:b0:346:b6e:395 with SMTP id j18-20020adfb312000000b003460b6e0395mr2143793wrd.9.1712763317311;
-        Wed, 10 Apr 2024 08:35:17 -0700 (PDT)
-Received: from localhost ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id y14-20020a5d4ace000000b00341dbb4a3a7sm14043505wrs.86.2024.04.10.08.35.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 08:35:16 -0700 (PDT)
-From: Richard Gobert <richardbgobert@gmail.com>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	willemdebruijn.kernel@gmail.com,
-	shuah@kernel.org,
-	dsahern@kernel.org,
-	aduyck@mirantis.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Cc: Richard Gobert <richardbgobert@gmail.com>
-Subject: [PATCH net-next v6 1/6] net: gro: add flush check in udp_gro_receive_segment
-Date: Wed, 10 Apr 2024 17:34:18 +0200
-Message-Id: <20240410153423.107381-2-richardbgobert@gmail.com>
-In-Reply-To: <20240410153423.107381-1-richardbgobert@gmail.com>
-References: <20240410153423.107381-1-richardbgobert@gmail.com>
+	s=arc-20240116; t=1712763265; c=relaxed/simple;
+	bh=HnzozCvOS1q27gnKJVvpU7CHZz9gMEPBCAW7+Cc7CVs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JAwdYxz78MkZxi2hFDM2AsACnc5T6VK8ZLF9FX3C8ued7A3e0pnKiryQKKodgY9DBdnx2HpujHVhWmh9Fd0aIPvYLzEjmWYeP9a5MIibut4ajaypYT084J4uRmuH01/UvfKQGlpo99bhutik/sCxni4dac4zd5zutPv6aTlJs3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CVbAmK+8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88590C433F1;
+	Wed, 10 Apr 2024 15:34:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712763265;
+	bh=HnzozCvOS1q27gnKJVvpU7CHZz9gMEPBCAW7+Cc7CVs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CVbAmK+8SUeJoukHHawbCIya8ngLTbHf6Eg59RFqOJ5x5ulWk3u8qtRwZwRJAd+nh
+	 GpLmyqE2v9zegDypKQ1HJ83rAh/j+CAsf3CbVAiS2QtmmaFFBK/7CO1cGrgW9F6DrN
+	 oPc9Yk/dWpQglCJT9OU9dfkTjIfrcGHwwjo/x1phTjufzt5dkl/zpZQ/Zzaqtcx7Di
+	 7JHxqPh3rsy6LSxAjjHdJDjCJfmZwXuYvgwlWp8HUf54Y+TNs8/pnzvMkmcCZPiexG
+	 4BE7eDFabQGKPAShg6pUZR23tNxa0Pfd3sNx5uOrmiyGfWjj8gMM/J4ThnUk+etzA5
+	 9QY4KWuUWa0KQ==
+Date: Wed, 10 Apr 2024 16:34:19 +0100
+From: Will Deacon <will@kernel.org>
+To: Yicong Yang <yangyicong@huawei.com>
+Cc: mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, jonathan.cameron@huawei.com,
+	prime.zeng@hisilicon.com, linuxarm@huawei.com,
+	yangyicong@hisilicon.com
+Subject: Re: [PATCH 1/2] perf: arm_pmu: Only show online CPUs in device's
+ "cpus" attribute
+Message-ID: <20240410153419.GA25171@willie-the-truck>
+References: <20240410095833.63934-1-yangyicong@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410095833.63934-1-yangyicong@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-GRO-GSO path is supposed to be transparent and as such L3 flush checks are
-relevant to all flows which call skb_gro_receive. This patch uses the same
-logic and code from tcp_gro_receive but in the relevant flow path in
-udp_gro_receive_segment.
+On Wed, Apr 10, 2024 at 05:58:32PM +0800, Yicong Yang wrote:
+> From: Yicong Yang <yangyicong@hisilicon.com>
+> 
+> When there're CPUs offline after system booting, perf will failed:
+> [root@localhost ~]# /home/yang/perf stat -a -e armv8_pmuv3_0/cycles/
+> Error:
+> The sys_perf_event_open() syscall returned with 19 (No such device) for event (cpu-clock).
+> /bin/dmesg | grep -i perf may provide additional information.
+> 
+> This is due to PMU's "cpus" is not updated and still contains offline
+> CPUs and perf will try to open perf event on the offlined CPUs.
+> 
+> Make "cpus" attribute only shows online CPUs and introduced a new
+> "supported_cpus" where users can get the range of the CPUs this
+> PMU supported monitoring.
+> 
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> ---
+>  drivers/perf/arm_pmu.c | 24 +++++++++++++++++++++++-
+>  1 file changed, 23 insertions(+), 1 deletion(-)
 
-Fixes: 36707061d6ba ("udp: allow forwarding of plain (non-fraglisted) UDP GRO packets")
-Signed-off-by: Richard Gobert <richardbgobert@gmail.com>
----
- net/ipv4/udp_offload.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+Hmm. Is the complexity in the driver really worth it here? CPUs can be
+onlined and offlined after the perf_event_open() syscall has been
+executed, so this feels like something userspace should be aware of and
+handle on a best-effort basis anyway.
 
-diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-index 3498dd1d0694..1f4e08f43c4b 100644
---- a/net/ipv4/udp_offload.c
-+++ b/net/ipv4/udp_offload.c
-@@ -471,6 +471,7 @@ static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
- 	struct sk_buff *p;
- 	unsigned int ulen;
- 	int ret = 0;
-+	int flush;
- 
- 	/* requires non zero csum, for symmetry with GSO */
- 	if (!uh->check) {
-@@ -528,7 +529,17 @@ static struct sk_buff *udp_gro_receive_segment(struct list_head *head,
- 				skb_gro_postpull_rcsum(skb, uh,
- 						       sizeof(struct udphdr));
- 
--				ret = skb_gro_receive(p, skb);
-+				flush = NAPI_GRO_CB(p)->flush;
-+
-+				if (NAPI_GRO_CB(p)->flush_id != 1 ||
-+				    NAPI_GRO_CB(p)->count != 1 ||
-+				    !NAPI_GRO_CB(p)->is_atomic)
-+					flush |= NAPI_GRO_CB(p)->flush_id;
-+				else
-+					NAPI_GRO_CB(p)->is_atomic = false;
-+
-+				if (flush || skb_gro_receive(p, skb))
-+					ret = 1;
- 			}
- 		}
- 
--- 
-2.36.1
+Does x86 get away with this because CPU0 is never offlined?
 
+Will
 
