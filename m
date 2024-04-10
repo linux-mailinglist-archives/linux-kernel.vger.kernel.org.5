@@ -1,102 +1,123 @@
-Return-Path: <linux-kernel+bounces-139396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 257628A02D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 858978A02D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:06:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 530B41C21DB6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:06:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B69051C21FAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 22:06:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E71A518411E;
-	Wed, 10 Apr 2024 22:06:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E9D184122;
+	Wed, 10 Apr 2024 22:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="S/cTebfQ"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=noahloomans.com header.i=@noahloomans.com header.b="k/FASzBH";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="pSuCmUaH"
+Received: from fout6-smtp.messagingengine.com (fout6-smtp.messagingengine.com [103.168.172.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1EB0181D19;
-	Wed, 10 Apr 2024 22:06:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 915D818410C;
+	Wed, 10 Apr 2024 22:06:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712786793; cv=none; b=a4SZ0EbzDK73QRP42v4BL6jpwNuo6hkoFwxOv8/DMUKQgPVOivqZCMMlEeYoCK1uUV/zRNe0FYe6rgFXKb7Fwo6o5SPsEjHQqgK3ccs7IjNiROWIqdkfLt/nA+SvJO0e7cpUTHFDHgN4BXwDdBS0kJTi4txKILJQ3EONQvRcB00=
+	t=1712786803; cv=none; b=IHiQW/QLcC3sjoEdMk+DE19zjw0UiR7Ah2K9jNlKAPWA/AYd557FskP3t1ZquIRbuSNdaUCpmM6yxkj/80gxBs69YZET3sVDoZbdJJAgftO20jxCaPVD2NyUsqlQ0ViQLHqgfzZX4/O1EeESxlNj0vumz8EJ48fI8PkFIYt1loY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712786793; c=relaxed/simple;
-	bh=tzLPNab9cDBFOQCIOfRPLvL2TorxTyJquEWfKi5d7vo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=NPZIynYJKs4/OKIWBDk+9sI1fEJO9dBzkfdwsS4HP89uzdmwCnndxxtVkX+JuHp404Q+ApqgIJ/TyHSeQ0bVQ5BxId82rdUCdSMchg1QffiFXzhp75IwCjGyQXjyXBcprIs7IAIBRvTZc/5pLiEBZLhj2nRXWTTBRW9UWpd/ZXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=S/cTebfQ; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1712786786;
-	bh=v3Ontk0G4uRvi7NlVfYwfRYBBad9zzz0t6yR1UdbSDQ=;
-	h=Date:From:To:Cc:Subject:From;
-	b=S/cTebfQB4U9fGaSOyhAY8N9JD/+Xb/yHrRJKS616jSGXjhkSRAv6N4D9VjCv7ss4
-	 WX+vxPWGCu7WCKS5lzfQKvNz0EW6kMGMfXLsug+sY6SQbx+OPcurc3Qlejt+J0e0ST
-	 YtVsdfTG6w4BrqJKWIgokjoe0/UmdKEhRCoRS5DURmaAOLzO8Jw3dNCPT7N9Huaf/f
-	 Xa5ZUFqxZtk81U/6UXX9U1G7loqf9vKM3vRI9B/FhQR8qyMyZsCES/glzPB1659NgN
-	 82xMbBxwTWBtpW+CQKwFjhKo3xsVi3bmmu/dMDitV2kMaXKlNtbCiAVibnut/+eshe
-	 YcLuZre0tm6tA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VFH3P0MKlz4wby;
-	Thu, 11 Apr 2024 08:06:25 +1000 (AEST)
-Date: Thu, 11 Apr 2024 08:06:22 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the risc-v tree
-Message-ID: <20240411080622.0cd5502c@canb.auug.org.au>
+	s=arc-20240116; t=1712786803; c=relaxed/simple;
+	bh=hDr6Y9+XNRCuD5B6N5g7dzpvSY/j6WUCAujonwGLJBQ=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
+	 References:In-Reply-To; b=Q4EJiGcfVsJLaXQbFaajTbTGWxD1Ti9AFV2GG8zGxEUwNs7/vJEX0UTkac6zurg0BHLtzV6NQ5ILVdhlGtI5Ev21PwwlrqCiL2z789cvnX4iPY0Q1gBjaNh+qViWQK+SsEyDvMkwpS2lfWxqawPk+vYpfco1giZ45RnZFVKhOhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=noahloomans.com; spf=pass smtp.mailfrom=noahloomans.com; dkim=pass (2048-bit key) header.d=noahloomans.com header.i=@noahloomans.com header.b=k/FASzBH; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=pSuCmUaH; arc=none smtp.client-ip=103.168.172.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=noahloomans.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=noahloomans.com
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 6B4AA1380059;
+	Wed, 10 Apr 2024 18:06:39 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Wed, 10 Apr 2024 18:06:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=noahloomans.com;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm3;
+	 t=1712786799; x=1712873199; bh=hDr6Y9+XNRCuD5B6N5g7dzpvSY/j6WUC
+	AujonwGLJBQ=; b=k/FASzBHZ+y5S2Xb4n+1dhgDrinbaAnfbBOkMOTkdHXuFhBR
+	XY9y3kQCKR985aIw8u8PLMNHmcgdppdo0poKf8zvb1x9AGjqqR9C1sBxP6eFqkGi
+	cD/lbG64yw1a5CcxkNv7R0+/UusYaQXy/JdnPCG+EkkQXD1xT84y+4mkJvycfxTz
+	a8h+LzTTJko3i8sJScUlJqz4bGTg5Q91jAQLQoKR+wb0R7X7/Wm92V4BHaDP6hzy
+	zfuDtyLFdsT5qC3nRfsxiAAMagjZUIbl8djfn6FCyv2tvogWQq7nDV5/249M4e0q
+	satODWrMc2PDYqHHS5snrEapRzJxOZxfCm/vFA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712786799; x=
+	1712873199; bh=hDr6Y9+XNRCuD5B6N5g7dzpvSY/j6WUCAujonwGLJBQ=; b=p
+	SuCmUaHe17M4eLknY80Qv61Qm+xxC3FaKf3661SLoVko4ue37UJvyPWYxqx9vBGg
+	bb+7gErJRJw7XTLZXmoIB+pNReDnPXWxU9ytakhcIV8KZYH5LLa8X5/FbrDhN9OE
+	lXWizuq8TG88xUDKgunBY7bZ+MM9N4zjBX612NrVrdY1/LA703ioKUv8pS6Dnh4P
+	5nbYbfLuIi7harRfx3iUqBODvIL5sj/UVbrXT8CF0+J770vXmt3ygBBpTUTwJDAY
+	ta8hvQl4BB5D7GjHFqpJajCwlDWQauzGv5AtiTqCNXhDOp1+JWVpTXBw5QABt0z0
+	i2EB+FwULA/EPL9YwH02Q==
+X-ME-Sender: <xms:bg0XZlrJnCOcls6IjcMw70ozNf8tEoF3Postpr-Yu22Fa6tk2sWY-g>
+    <xme:bg0XZnqzlvlmnW3bwp4tsUO9r652PaseMPer6zmAIzplEivCZcvCaAjyq8qKO47dB
+    37MJWxtzsNFS0VwD9A>
+X-ME-Received: <xmr:bg0XZiNfQuKKLGLAYZZ3apnzIHZdgBvCMR00gpnX4jFkjO9kQMfxeeX21DDtLTOkBZHTuj-wyeVAdYLz6aIhww>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehjedgtdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepggfgtgffkffuhffvvefofhgjsehtqhertdertdejnecuhfhrohhmpedfpfho
+    rghhucfnohhomhgrnhhsfdcuoehnohgrhhesnhhorghhlhhoohhmrghnshdrtghomheqne
+    cuggftrfgrthhtvghrnhepvdeijeehteeggfefkeehleehkeevgfdvtdehgefgledtieff
+    ueeuleeffeeuhefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepnhhorghhsehnohgrhhhlohhomhgrnhhsrdgtohhm
+X-ME-Proxy: <xmx:bw0XZg5g40prx91R4lNAhgMe1gsbCC9THmEVprxNF2Yngq24lhcS_A>
+    <xmx:bw0XZk4-SBi_0pcalrQhF8F-NZzHHiFi1uoe_LzN-M98o1iIf4zszQ>
+    <xmx:bw0XZog3i9MOc0NizI0X0NQ6C3H5RNjOd9xAfNem76vJiR6BkOx1Lg>
+    <xmx:bw0XZm5mKLr8aMDUJ5NchY-8cWs7cs9juvuJqkYY-5cShdW4W2oQyQ>
+    <xmx:bw0XZlGg6K0TA8HL5HdhzDeGa9m6bSERYDe3NAy6Vw6uJbld6qM9d9Jl>
+Feedback-ID: i93394469:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 10 Apr 2024 18:06:36 -0400 (EDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/W7W8oCSC46HFikN3UWuV3vZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/W7W8oCSC46HFikN3UWuV3vZ
-Content-Type: text/plain; charset=US-ASCII
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 11 Apr 2024 00:06:33 +0200
+Message-Id: <D0GS8UL1WKI5.1PLEUUWOD7B8@noahloomans.com>
+Subject: Re: [PATCH] platform/chrome: cros_ec_uart: properly fix race
+ condition
+From: "Noah Loomans" <noah@noahloomans.com>
+To: "Guenter Roeck" <groeck@google.com>
+Cc: "Bhanu Prakash Maiya" <bhanumaiya@chromium.org>, "Benson Leung"
+ <bleung@chromium.org>, "Tzung-Bi Shih" <tzungbi@kernel.org>, "Guenter
+ Roeck" <groeck@chromium.org>, "Robert Zieba" <robertzieba@google.com>,
+ <chrome-platform@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+ <stable@vger.kernel.org>
+X-Mailer: aerc 0.17.0
+References: <20240410182618.169042-2-noah@noahloomans.com>
+ <CABXOdTe02ALsv6sghnhWMkn7-7kidXhjvWzpDn7dGh4zKEkO8g@mail.gmail.com>
+In-Reply-To: <CABXOdTe02ALsv6sghnhWMkn7-7kidXhjvWzpDn7dGh4zKEkO8g@mail.gmail.com>
 
-Hi all,
+On 2024-04-10 at 21:48 UTC+02, Guenter Roeck wrote:
+> On Wed, Apr 10, 2024 at 11:29=E2=80=AFAM Noah Loomans <noah@noahloomans.c=
+om> wrote:
+> > This is my first time contributing to Linux, I hope this is a good
+> > patch. Feedback on how to improve is welcome!
+>
+> The commit message is a bit long, but the patch itself looks good to me.
 
-The following commit is also in Linus Torvalds' tree as a different commit
-(but the same patch):
+Hmm yeah it's a bit on a long side. I'm not sure what could be removed
+though, it all seems relevant for understanding the bug and the fix.
 
-  36d37f11f555 ("export.h: remove include/asm-generic/export.h")
+> Reviewed-by: Guenter Roeck <groeck@chromium.org>
 
-This is commit
+Thanks!
 
-  0316e4b04e01 ("export.h: remove include/asm-generic/export.h")
-
-in Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/W7W8oCSC46HFikN3UWuV3vZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYXDV4ACgkQAVBC80lX
-0GzfDwf+LuuUAfFjnC2DXK+RvYe03U8eVboGDb1AwuG4HaKhqSwHzjgql8sGO5OK
-FYXQzmHLEplpTJYT1ljdgq1YcPe2HcNNvRo6CrS42MjAjdSDWC55FZ/QfNxIfYr1
-YOojGI7eAXjeky3xZO2VI/gWckcQPnfRNvo/43wGdxfIQqKdDXlxWAVaxrbViwfN
-Q3bDuk6ZFDxFP8WpR92s/wrSR0vUeWFoULGQtueo/jJQB2lpIHUQw/BkLosobwld
-PRbbL1DmxALcIITQnTgQAFkP8YNTas9StKfEFPw70tAqka6kZKrztm8OGDx7Leyp
-TyB6kRNxDiUrf4s0gNubLSHhd/oUEw==
-=s9EW
------END PGP SIGNATURE-----
-
---Sig_/W7W8oCSC46HFikN3UWuV3vZ--
+-Noah
 
