@@ -1,153 +1,142 @@
-Return-Path: <linux-kernel+bounces-138201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70F5889EDFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:50:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69DD189EE01
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:50:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCAF3B20FAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:49:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22CBF2833B3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 08:50:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE49154BFF;
-	Wed, 10 Apr 2024 08:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 072BE154C18;
+	Wed, 10 Apr 2024 08:50:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="gHQ8sX38"
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C7AtuZ+a"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E94413C90D
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:49:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5039213C9C2
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712738990; cv=none; b=hWeejR8xlqKVv0+5bKdlvcy3rKQ7WIvUc0DRtJOU7SRi92R1sz+yxj2Cft9nJf6osfg/IMVOfTP84fIrSwDX/ZJ6gqV+pCrEy3mPC6eL9FInOtoUQ/RVXxparL78R2n3pXB53GXdGgA0hLP/OUtXuV00r1XvDVDxSkWxK6bB+8M=
+	t=1712739023; cv=none; b=N+AhSDnnkjUEeWmH3lMY3TczuDxcMfYUZqfkYiQlMrbo/u3IZgy6xDQouIo2SW0axF7t9iU4tG4sppLwoTlGvxPcQTHqYt3Fgh9rdPc+cIqCFnINIqOcZzBHXyTddryNBMm6s0PyPezk68oFS2ydExE2ac2oRByB+zTNXqJtJ8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712738990; c=relaxed/simple;
-	bh=EuhUqKyi42jKQ13Gy6Zb/ZHyS6A85KCmaQdG5z7UwXo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rwX5RwXccJQ2u/ojTLeqdDuJMbCubK2C1YHNIqDdRxg0hOu6kHWxoeMNjVpHW0GF/HpVqpCSzmOiypYmzA3RqAMzwMkKcAuEiipSxDHmU9EKU9LRcIJjPci2R7d8p5C+oYw10UQqC656obYeMjdX3GyAahynFA+wEYG41sr3yIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=gHQ8sX38; arc=none smtp.client-ip=115.124.30.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1712738984; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=zi64y6gftwEUpOYycPmnGWa28oBRzWmtl7QJD3qYI3A=;
-	b=gHQ8sX38ka0Y/NtcChoLO3BQM3JDdurGMFPbPGtwMoIzv6HV2+IpccsNeu3hWiriMM0MIx4pG6sP3GvBNvXhGRfEzcF5u6xii/wwOImney5Y0eZE3bFjvJi8aGIvemBbGiz6pvGgWnOSt9eJ+sHZJ0xfGhb+C+zwz7Qb5L1F104=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W4HDLKP_1712738983;
-Received: from 30.97.56.65(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W4HDLKP_1712738983)
-          by smtp.aliyun-inc.com;
-          Wed, 10 Apr 2024 16:49:44 +0800
-Message-ID: <093e883e-4ac5-4772-9a85-0117c2d990f6@linux.alibaba.com>
-Date: Wed, 10 Apr 2024 16:49:42 +0800
+	s=arc-20240116; t=1712739023; c=relaxed/simple;
+	bh=mREyrzvoUM7UuFGn1kCnxfo+7q349N2icGn7lRUNV+g=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=esqIUDQTvJ/ViXHbqDDj2O0Xi28BS/xtqJ3k6guMqbu/UpZ4tRQBNbW/nGJtfmcudNcBVH3El+PJnJ08+nW7pdLSe0XeWAIEOGHImk6r3Zelaf5nzvlWOmdBoJvPbx07WTfVsbX8KW5+nHE0MHtH2UpMYXwg/LkjoqcqCAvmeLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C7AtuZ+a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9FE6C433F1;
+	Wed, 10 Apr 2024 08:50:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712739022;
+	bh=mREyrzvoUM7UuFGn1kCnxfo+7q349N2icGn7lRUNV+g=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=C7AtuZ+aFExyX1OzrWiO3avS8l8UAzvvnXOIpHSGp5wGrQsTag/FUrTxMcgnuo6l6
+	 fFuLNZe8zteJevwbS1jBge9ft0g/GSzpCdXyruYVTBqLr1J59DFZ1vsGgntNYIeQf0
+	 u7blDHT7QDvbnsY+figC8UgIm678hMgH5DqteA8G8o2TsWNldtdjJiVysR0ajm0WNO
+	 njeygczxlR14neXcplmhq/vl0JMaLr2aO7rMEwst16L8HDrZ3vm/CrCWHebZO1LeVF
+	 44gFNrKf3aOguMSUsCqgIuUlmmkYsIkdfmClX1DP80FtyMdRZmPwunYorZilvFN5Kk
+	 8dL8DVUzfdDsQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1ruTeu-0034xO-ET;
+	Wed, 10 Apr 2024 09:50:20 +0100
+Date: Wed, 10 Apr 2024 09:50:20 +0100
+Message-ID: <86v84psisz.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Gavin Shan <gshan@redhat.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	akpm@linux-foundation.org,
+	oliver.upton@linux.dev,
+	apopple@nvidia.com,
+	rananta@google.com,
+	mark.rutland@arm.com,
+	v-songbaohua@oppo.com,
+	yangyicong@hisilicon.com,
+	shahuang@redhat.com,
+	yihyu@redhat.com,
+	shan.gavin@gmail.com
+Subject: Re: [PATCH v3 3/3] arm64: tlb: Allow range operation for MAX_TLBI_RANGE_PAGES
+In-Reply-To: <27718d41-32cb-4976-b50e-e9237da7aedf@arm.com>
+References: <20240405035852.1532010-1-gshan@redhat.com>
+	<20240405035852.1532010-4-gshan@redhat.com>
+	<27718d41-32cb-4976-b50e-e9237da7aedf@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/10] mm: page_alloc: consolidate free page accounting
-To: Zi Yan <ziy@nvidia.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Vlastimil Babka <vbabka@suse.cz>,
- Andrew Morton <akpm@linux-foundation.org>,
- Mel Gorman <mgorman@techsingularity.net>, "Huang, Ying"
- <ying.huang@intel.com>, David Hildenbrand <david@redhat.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240320180429.678181-1-hannes@cmpxchg.org>
- <20240320180429.678181-11-hannes@cmpxchg.org>
- <7b3b7f2e-7109-4e72-b1cf-259cb56f3629@linux.alibaba.com>
- <ecb88320-9990-49e1-a58a-e8fc85b1da3f@suse.cz>
- <20240408142340.GA1057805@cmpxchg.org>
- <26cb722f-6e1c-4aaf-9edd-ed10a60e0018@linux.alibaba.com>
- <FA55690D-0532-48DE-A929-5FECCB667C86@nvidia.com>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <FA55690D-0532-48DE-A929-5FECCB667C86@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: ryan.roberts@arm.com, gshan@redhat.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, akpm@linux-foundation.org, oliver.upton@linux.dev, apopple@nvidia.com, rananta@google.com, mark.rutland@arm.com, v-songbaohua@oppo.com, yangyicong@hisilicon.com, shahuang@redhat.com, yihyu@redhat.com, shan.gavin@gmail.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-
-
-On 2024/4/9 22:46, Zi Yan wrote:
-> On 9 Apr 2024, at 5:31, Baolin Wang wrote:
+On Mon, 08 Apr 2024 09:43:44 +0100,
+Ryan Roberts <ryan.roberts@arm.com> wrote:
 > 
->> On 2024/4/8 22:23, Johannes Weiner wrote:
->>> On Mon, Apr 08, 2024 at 09:38:20AM +0200, Vlastimil Babka wrote:
->>>> On 4/7/24 12:19 PM, Baolin Wang wrote:
->>>>> On 2024/3/21 02:02, Johannes Weiner wrote:
->>>>>>    +	account_freepages(page, zone, 1 << order, migratetype);
->>>>>> +
->>>>>>     	while (order < MAX_PAGE_ORDER) {
->>>>>> -		if (compaction_capture(capc, page, order, migratetype)) {
->>>>>> -			__mod_zone_freepage_state(zone, -(1 << order),
->>>>>> -								migratetype);
->>>>>> +		int buddy_mt = migratetype;
->>>>>> +
->>>>>> +		if (compaction_capture(capc, page, order, migratetype))
->>>>>>     			return;
->>>>>> -		}
->>>>>
->>>>> IIUC, if the released page is captured by compaction, then the
->>>>> statistics for free pages should be correspondingly decreased,
->>>>> otherwise, there will be a slight regression for my thpcompact benchmark.
->>>>>
->>>>> thpcompact Percentage Faults Huge
->>>>>                              k6.9-rc2-base        base + patch10 + 2 fixes	
->>>>> Percentage huge-1        78.18 (   0.00%)       71.92 (  -8.01%)
->>>>> Percentage huge-3        86.70 (   0.00%)       86.07 (  -0.73%)
->>>>> Percentage huge-5        90.26 (   0.00%)       78.02 ( -13.57%)
->>>>> Percentage huge-7        92.34 (   0.00%)       78.67 ( -14.81%)
->>>>> Percentage huge-12       91.18 (   0.00%)       81.04 ( -11.12%)
->>>>> Percentage huge-18       89.00 (   0.00%)       79.57 ( -10.60%)
->>>>> Percentage huge-24       90.52 (   0.00%)       80.07 ( -11.54%)
->>>>> Percentage huge-30       94.44 (   0.00%)       96.28 (   1.95%)
->>>>> Percentage huge-32       93.09 (   0.00%)       99.39 (   6.77%)
->>>>>
->>>>> I add below fix based on your fix 2, then the thpcompact Percentage
->>>>> looks good. How do you think for the fix?
->>>>
->>>> Yeah another well spotted, thanks. "slight regression" is an understatement,
->>>> this affects not just a "statistics" but very important counter
->>>> NR_FREE_PAGES which IIUC would eventually become larger than reality, make
->>>> the watermark checks false positive and result in depleted reserves etc etc.
->>>> Actually wondering why we're not seeing -next failures already (or maybe I
->>>> just haven't noticed).
->>>
->>> Good catch indeed.
->>>
->>> Trying to understand why I didn't notice this during testing, and I
->>> think it's because I had order-10 pageblocks in my config. There is
->>> this in compaction_capture():
->>>
->>> 	if (order < pageblock_order && migratetype == MIGRATE_MOVABLE)
->>> 		return false;
->>>
->>> Most compaction is for order-9 THPs on movable blocks, so I didn't get
->>> much capturing in practice in order for that leak to be noticable.
->>
->> This makes me wonder why not use 'cc->migratetype' for migratetype comparison, so that low-order (like mTHP) compaction can directly get the released pages, which could avoid some compaction scans without mixing the migratetype?
->>
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index 2facf844ef84..7a64020f8222 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -622,7 +622,7 @@ compaction_capture(struct capture_control *capc, struct page *page,
->>           * and vice-versa but no more than normal fallback logic which can
->>           * have trouble finding a high-order free page.
->>           */
->> -       if (order < pageblock_order && migratetype == MIGRATE_MOVABLE)
->> +       if (order < pageblock_order && capc->cc->migratetype != migratetype)
->>                  return false;
->>
->>          capc->page = page;
+> On 05/04/2024 04:58, Gavin Shan wrote:
+> > MAX_TLBI_RANGE_PAGES pages is covered by SCALE#3 and NUM#31 and it's
+> > supported now. Allow TLBI RANGE operation when the number of pages is
+> > equal to MAX_TLBI_RANGE_PAGES in __flush_tlb_range_nosync().
+> > 
+> > Suggested-by: Marc Zyngier <maz@kernel.org>
+> > Signed-off-by: Gavin Shan <gshan@redhat.com>
 > 
-> It is worth trying, since at the original patch time mTHP was not present and
-> not capturing any MIGRATE_MOVABLE makes sense. But with your change, the capture
-> will lose the opportunity of letting an unmovable request use a reclaimable
-> pageblock and vice-versa, like the comment says. Please change the comment
-> as well and we should monitor potential unmovable and reclaimable regression.
+> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+> 
+> > ---
+> >  arch/arm64/include/asm/tlbflush.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
+> > index 243d71f7bc1f..95fbc8c05607 100644
+> > --- a/arch/arm64/include/asm/tlbflush.h
+> > +++ b/arch/arm64/include/asm/tlbflush.h
+> > @@ -446,11 +446,11 @@ static inline void __flush_tlb_range_nosync(struct vm_area_struct *vma,
+> >  	 * When not uses TLB range ops, we can handle up to
+> >  	 * (MAX_DVM_OPS - 1) pages;
+> >  	 * When uses TLB range ops, we can handle up to
+> > -	 * (MAX_TLBI_RANGE_PAGES - 1) pages.
+> > +	 * MAX_TLBI_RANGE_PAGES pages.
+> >  	 */
+> >  	if ((!system_supports_tlb_range() &&
+> >  	     (end - start) >= (MAX_DVM_OPS * stride)) ||
+> > -	    pages >= MAX_TLBI_RANGE_PAGES) {
+> > +	    pages > MAX_TLBI_RANGE_PAGES) {
+> 
+> As a further enhancement, I wonder if it might be better to test:
+> 
+> 	pages * 4 / MAX_TLBI_RANGE_PAGES > MAX_DVM_OPS
+> 
+> Then add an extra loop over __flush_tlb_range_op(), like KVM does.
+> 
+> The math is trying to express that there are a maximum of 4 tlbi range
+> instructions for MAX_TLBI_RANGE_PAGES pages (1 per scale) and we only need to
+> fall back to flushing the whole mm if it could generate more than MAX_DVM_OPS ops.
 
-Yes, but I think this case is easy to solve. Anyway let me try to do 
-some measurement for mTHP.
+That'd be a good enhancement indeed, although I wonder if that occurs
+as often as we see it on the KVM side. But in any case, adding
+consistency amongst the users of __flush_tlb_range_op() can only be
+beneficial.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
