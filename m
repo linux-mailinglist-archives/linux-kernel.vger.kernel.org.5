@@ -1,254 +1,102 @@
-Return-Path: <linux-kernel+bounces-139219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AABDB8A0005
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:49:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAD258A0008
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 20:50:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBAA41C2254C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:49:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 080D91C223CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 18:50:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441A517B4E6;
-	Wed, 10 Apr 2024 18:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XMMuFr7v"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B00616D33A;
+	Wed, 10 Apr 2024 18:50:03 +0000 (UTC)
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C6018E0E;
-	Wed, 10 Apr 2024 18:49:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AE19168D0;
+	Wed, 10 Apr 2024 18:50:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712774957; cv=none; b=lFqTgxG/AIZtAQwNFGVi+SATbD/ghPkplm+g4mOEKIMOlWwp8Y4thGPHEjQWmD4BIPkJcNb5zjoXl10CT51cNJJgXhMhQfmZ5PF25Lh/w7apkGgG/uovTdTZXsteMoi0c44ZDH7te982ovpJBvUcD6VnMEiz5B4Zp6NNkmFkDU0=
+	t=1712775003; cv=none; b=Qaw0ZhoIUUoomycCwDAOwQZZ894FpaMbFJDr9r9FIji91GQPd3q7rzgCZXCoRrrymcjkuDxqsZt/1ZEC+mmNCVSuN33pKWjIqP1pNKXh8b1EEIkuH1RmiBy6ax2wvYAO865V5J3rXVPzGrxQfLPpx4r9cYhKiiz+5GiCldrRcag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712774957; c=relaxed/simple;
-	bh=QM8Jb3Uz2AYesC7YWy8Mrr17tAqaCNoFBt/Sd7wQDX8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Za0gl5qFIihK659IBtXy891RgbnH2NTv0KvOwkZAfJW1O87BayP6H61G2LEm9R1qvG1HjcO8RAX2Bu6pAzwvTN3YRvWyefPfUuuqPVBR11wITT2EWh/HOcg8bg9sOm0IdJMrsoeSCJpY0/HHLOlbQhCjwZft0G5hKE07SFOZlv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XMMuFr7v; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712774955; x=1744310955;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QM8Jb3Uz2AYesC7YWy8Mrr17tAqaCNoFBt/Sd7wQDX8=;
-  b=XMMuFr7vMRCds3fyxeGhrkW+EzBTyPPgzGKtcTJiRLMWtg5qYyqNolsw
-   qOYXXx3BEkXJb4M/EVXMEGk/UfcxnS2a6DbUzXYIi3hcS4st/0l2Q+Nz5
-   Q1bPL8VmnOmdZ0vCe7bGRckRtx6/3TKiGFe5KsTvjx65ocfnkVl8GaVtd
-   WagwZRaKrFcl7lULGGG5mNDWoLsYlc1YjxOdzUd7trmUmpPFxvdyiugZw
-   lgXb0rplkhWGjHOal9RdVAwZilJyh+frVFT5U4RTz+6dX5RssgZHKtkru
-   CfsNNHrs9pLOLDMiznDfqcsmWVIu5u8Vxc5OLxKHJOWuXdMs09e+xXgGq
-   Q==;
-X-CSE-ConnectionGUID: Hvp3hMutRP+0ytcBmjpS2A==
-X-CSE-MsgGUID: DF+2kDYRT6CoSLf+GTacUA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="18719342"
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="18719342"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 11:49:14 -0700
-X-CSE-ConnectionGUID: T4aZJgEBQ52sbbWuz+Wzyw==
-X-CSE-MsgGUID: AA32th1QTB2ZpF7j19CTEw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,191,1708416000"; 
-   d="scan'208";a="25280570"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.255.230.146])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 11:49:13 -0700
-Date: Wed, 10 Apr 2024 11:49:11 -0700
-From: Alison Schofield <alison.schofield@intel.com>
-To: ira.weiny@intel.com
-Cc: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Navneet Singh <navneet.singh@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	linux-btrfs@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/26] cxl/core: Separate region mode from decoder mode
-Message-ID: <ZhbfJ5HRCFAhUy2I@aschofie-mobl2>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
- <20240324-dcd-type2-upstream-v1-2-b7b00d623625@intel.com>
+	s=arc-20240116; t=1712775003; c=relaxed/simple;
+	bh=c4pPwbgwiqqdJxaSc43yKqcDmd033xH91pHU/NqzXr0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=avf73qRsILk6hPGF4sG1cFDu+Ty43QbXEZw3jIe8N38a04ENDClyadHNnd+3cLLYxWZGlJFzczVYt45dkE55sBokePAMSgB5Mh5gySR91I9neDCA1wLA/91poXDZFnsTsjz4L10448s6v71vp1pxML/vZsjaCFMRJJTIDopMvYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5ce9555d42eso5034086a12.2;
+        Wed, 10 Apr 2024 11:50:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712775001; x=1713379801;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eKZAPT8QMTwCsUh3mwc8OzUalcUgWBk9/f9oj4LLoBc=;
+        b=SBsGdmMpvJVOZC1EjH5L+HuPRNvO5YpMfgHshTzznS8HLCK3JUI9NsvlOGtpURr86O
+         zbGcTXjlK8+YuTykpsKRng8cx9m1Bf04vjrnR/bsdjHAsVuS+wk/+2hM00lljg+jiDqH
+         YlrGiQ4bc/knaCVwv9kJy4oYCPilQ7PwbY/oHw12y86+7T/09ZwKpO6yViwD3F6GI38S
+         ff2zfVMEC9WEBzkfDexYdmZnchZcGDso2KXuIsO6PcqwlRG34EaG9q4MchlMcQpcQw9o
+         SU7kFBBxZRGcvF8QwxTNO32EBMUvtjJDKauwaI2KgXjiRbtm91MPV3H0ijHr7vJJPPBS
+         14WA==
+X-Forwarded-Encrypted: i=1; AJvYcCVxrPJrQ4NgPbmWD2ptP5VPWi4vo762BWRkQcveRAWj0akf4Ku5WyAg2i931ncP/62FFcPWLMsmliEHKBc7arvQcqwnGCcWq1EMaObV
+X-Gm-Message-State: AOJu0YwxNhl0Fz0wV3lnAerByeVOTQxHPgPfcTgfCVjaQ4DXnqTV6amv
+	GXZpZyspuDJri5rXibQBU86UWLZ7IeqS0rTZ/pYZOd4w/lLxTiwtc5UGTQxt5I18tctJ+AD/QfU
+	KgYWmPAIUPwAdy6Q4WXswI7cS3is=
+X-Google-Smtp-Source: AGHT+IHa4VEmFp63/vuLtvka86iGZNtwk97w/yuVqlNAhytps/Mldf4I/slLJqbiudfqebs9oLqf49xrmAAm1R2wAfc=
+X-Received: by 2002:a17:90a:b787:b0:2a0:7758:31ac with SMTP id
+ m7-20020a17090ab78700b002a0775831acmr3529896pjr.25.1712775000800; Wed, 10 Apr
+ 2024 11:50:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240324-dcd-type2-upstream-v1-2-b7b00d623625@intel.com>
+References: <20240410103458.813656-1-james.clark@arm.com>
+In-Reply-To: <20240410103458.813656-1-james.clark@arm.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Wed, 10 Apr 2024 11:49:49 -0700
+Message-ID: <CAM9d7ciyO0L61bSBZ73yGvBo6chhSEJK2WtVMV5BFT_0-tk7RQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] perf test: "object code reading" test fixes
+To: James Clark <james.clark@arm.com>
+Cc: linux-perf-users@vger.kernel.org, irogers@google.com, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, "Liang, Kan" <kan.liang@linux.intel.com>, 
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>, Spoorthy S <spoorts2@in.ibm.com>, 
+	Leo Yan <leo.yan@linux.dev>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 24, 2024 at 04:18:05PM -0700, Ira Weiny wrote:
-> From: Navneet Singh <navneet.singh@intel.com>
-> 
-> Until now region modes and decoder modes were equivalent in that they
-> were either PMEM or RAM.  With the upcoming addition of Dynamic Capacity
-> regions (which will represent an array of device regions [better named
-> partitions] the index of which could be different on different
-> interleaved devices), the mode of an endpoint decoder and a region will
-> no longer be equivalent.
-> 
-> Define a new region mode enumeration and adjust the code for it.
-> 
-> Suggested-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> ---
-> Changes for v1
-> <none>
-> ---
->  drivers/cxl/core/region.c | 77 +++++++++++++++++++++++++++++++++++------------
->  drivers/cxl/cxl.h         | 26 ++++++++++++++--
->  2 files changed, 81 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
-> index 4c7fd2d5cccb..1723d17f121e 100644
-> --- a/drivers/cxl/core/region.c
-> +++ b/drivers/cxl/core/region.c
-> @@ -40,7 +40,7 @@ static ssize_t uuid_show(struct device *dev, struct device_attribute *attr,
->  	rc = down_read_interruptible(&cxl_region_rwsem);
->  	if (rc)
->  		return rc;
-> -	if (cxlr->mode != CXL_DECODER_PMEM)
-> +	if (cxlr->mode != CXL_REGION_PMEM)
->  		rc = sysfs_emit(buf, "\n");
->  	else
->  		rc = sysfs_emit(buf, "%pUb\n", &p->uuid);
-> @@ -353,7 +353,7 @@ static umode_t cxl_region_visible(struct kobject *kobj, struct attribute *a,
->  	 * Support tooling that expects to find a 'uuid' attribute for all
->  	 * regions regardless of mode.
->  	 */
-> -	if (a == &dev_attr_uuid.attr && cxlr->mode != CXL_DECODER_PMEM)
-> +	if (a == &dev_attr_uuid.attr && cxlr->mode != CXL_REGION_PMEM)
->  		return 0444;
->  	return a->mode;
->  }
-> @@ -516,7 +516,7 @@ static ssize_t mode_show(struct device *dev, struct device_attribute *attr,
->  {
->  	struct cxl_region *cxlr = to_cxl_region(dev);
->  
-> -	return sysfs_emit(buf, "%s\n", cxl_decoder_mode_name(cxlr->mode));
-> +	return sysfs_emit(buf, "%s\n", cxl_region_mode_name(cxlr->mode));
->  }
->  static DEVICE_ATTR_RO(mode);
->  
-> @@ -542,7 +542,7 @@ static int alloc_hpa(struct cxl_region *cxlr, resource_size_t size)
->  
->  	/* ways, granularity and uuid (if PMEM) need to be set before HPA */
->  	if (!p->interleave_ways || !p->interleave_granularity ||
-> -	    (cxlr->mode == CXL_DECODER_PMEM && uuid_is_null(&p->uuid)))
-> +	    (cxlr->mode == CXL_REGION_PMEM && uuid_is_null(&p->uuid)))
->  		return -ENXIO;
->  
->  	div64_u64_rem(size, (u64)SZ_256M * p->interleave_ways, &remainder);
-> @@ -1683,6 +1683,17 @@ static int cxl_region_sort_targets(struct cxl_region *cxlr)
->  	return rc;
->  }
->  
-> +static bool cxl_modes_compatible(enum cxl_region_mode rmode,
-> +				 enum cxl_decoder_mode dmode)
-> +{
+Hello,
 
-Perhaps is_region_mode_compatible() ?  
+On Wed, Apr 10, 2024 at 3:35=E2=80=AFAM James Clark <james.clark@arm.com> w=
+rote:
+>
+> A few fixes around the object code reading test. The first patch
+> appears to be unrelated, but in this case the data symbol test is
+> broken on Arm N1 by the second commit.
+>
+> Changes since V1:
+>   * Put data symbol test fix first so that bisecting still works on N1
+>   * Instead of skipping "test data symbol" on N1, add some noise into
+>     the loop.
+>   * Add a commit to replace the only usage of lscpu in the tests with
+>     uname
+>
+> James Clark (4):
+>   perf tests: Make "test data symbol" more robust on Neoverse N1
+>   perf tests: Apply attributes to all events in object code reading test
+>   perf map: Remove kernel map before updating start and end addresses
+>   perf tests: Remove dependency on lscpu
 
-Seems we have precedence for asking these questions that have
-boolean responses. I picked 'region' because it is the region
-we are trying to construct.
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-
-> +	if (rmode == CXL_REGION_RAM && dmode == CXL_DECODER_RAM)
-> +		return true;
-> +	if (rmode == CXL_REGION_PMEM && dmode == CXL_DECODER_PMEM)
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
->  static int cxl_region_attach(struct cxl_region *cxlr,
->  			     struct cxl_endpoint_decoder *cxled, int pos)
->  {
-> @@ -1693,9 +1704,11 @@ static int cxl_region_attach(struct cxl_region *cxlr,
->  	struct cxl_dport *dport;
->  	int rc = -ENXIO;
->  
-> -	if (cxled->mode != cxlr->mode) {
-> -		dev_dbg(&cxlr->dev, "%s region mode: %d mismatch: %d\n",
-> -			dev_name(&cxled->cxld.dev), cxlr->mode, cxled->mode);
-> +	if (!cxl_modes_compatible(cxlr->mode, cxled->mode)) {
-> +		dev_dbg(&cxlr->dev, "%s region mode: %s mismatch decoder: %s\n",
-> +			dev_name(&cxled->cxld.dev),
-> +			cxl_region_mode_name(cxlr->mode),
-> +			cxl_decoder_mode_name(cxled->mode));
->  		return -EINVAL;
->  	}
-
-Does the above return bypass this next code segment (not in your diff):
-
-       if (cxled->mode == CXL_DECODER_DEAD) {
-                dev_dbg(&cxlr->dev, "%s dead\n", dev_name(&cxled->cxld.dev));
-                return -ENODEV;
-        }
-
-It seems we are changing the return value on DEAD.
-
-More below where a new check for DEAD is added ...
-
-snip
-
->  /* Establish an empty region covering the given HPA range */
->  static struct cxl_region *construct_region(struct cxl_root_decoder *cxlrd,
->  					   struct cxl_endpoint_decoder *cxled)
-> @@ -2808,12 +2840,17 @@ static struct cxl_region *construct_region(struct cxl_root_decoder *cxlrd,
->  	struct cxl_port *port = cxlrd_to_port(cxlrd);
->  	struct range *hpa = &cxled->cxld.hpa_range;
->  	struct cxl_region_params *p;
-> +	enum cxl_region_mode mode;
->  	struct cxl_region *cxlr;
->  	struct resource *res;
->  	int rc;
->  
-> +	if (cxled->mode == CXL_DECODER_DEAD)
-> +		return ERR_PTR(-EINVAL);
-
-I see this addition, but it is in a different place and with
-a different return value. Help me understand that this is no
-change in behavior.
-
-
-> +
-> +	mode = cxl_decoder_to_region_mode(cxled->mode);
->  	do {
-> -		cxlr = __create_region(cxlrd, cxled->mode,
-> +		cxlr = __create_region(cxlrd, mode,
->  				       atomic_read(&cxlrd->region_id));
->  	} while (IS_ERR(cxlr) && PTR_ERR(cxlr) == -EBUSY);
->  
-
-snip
-
->  /*
->   * Track whether this decoder is reserved for region autodiscovery, or
->   * free for userspace provisioning.
-> @@ -511,7 +532,8 @@ struct cxl_region_params {
->   * struct cxl_region - CXL region
->   * @dev: This region's device
->   * @id: This region's id. Id is globally unique across all regions
-> - * @mode: Endpoint decoder allocation / access mode
-> + * @mode: Region mode which defines which endpoint decoder mode the region is
-> + *        compatible with
-
-Maybe...
-@mode: Region mode used for decoder compatibility check
-
-snip to end
-
---Alison
-
-> 
+Thanks,
+Namhyung
 
