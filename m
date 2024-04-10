@@ -1,146 +1,92 @@
-Return-Path: <linux-kernel+bounces-139380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCD178A023F
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:37:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EB9C8A0243
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:38:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42A041F21257
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:37:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDDB71F2429C
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 21:38:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59FF01836F2;
-	Wed, 10 Apr 2024 21:37:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DF5B184107;
+	Wed, 10 Apr 2024 21:37:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="KiVwqHtB"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZAhqVLAr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 173D8181CE4
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 21:37:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC43181D0E;
+	Wed, 10 Apr 2024 21:37:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712785057; cv=none; b=tgArxr0dXHmlBOctyBIjqEPlSm66mn03qlZ/bhIzhHBmMdx8tLiK8wWBuVeeOyJBt5qEFgbxOO96AjxF+8u7WC4VXWBitBcAaN9EYEbpPGXrH1x6kSw5Qvp9lK1ew6r8isMM8uBmvZ3cEl7snD2WolDq2nuLEZaowkoMLiWx2Jg=
+	t=1712785069; cv=none; b=H5fcosc+VPa7hceSIj7M95h4j73qXPVBenJbPw0tAJNQoK0HXveAKvUWdG8mkzx+0BaYVsZHscCx2Dj1QzJ1onSkpJEZcMLWoMnViXPOSN/FbzRg1pws47rIrmvwgiQb9STjMv1e9MI1cT0Teffov7QEzHDl1xxQcTLZhIdyl6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712785057; c=relaxed/simple;
-	bh=4GvtKHSmijEdL/CsYuX2Z0N3Y9AqHnP3iFWsMznXnNQ=;
+	s=arc-20240116; t=1712785069; c=relaxed/simple;
+	bh=nM8tFnJ3b4IcOjThnUEgs03Kdst1jvcztzJykBzdF/w=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D1qi/RMB3MNE3lWTpIKVgcuzmjWG+Cgrn56D5UA/Kob7+jjchqePnI5B7ZNTkKxN/9OMXzkl/m3u/jzrAs7ZWIr1gYySe+XYLbSlSCHZh41ylmSf8NU0DwCHRzp5tlwyJGOmHkoBWtLjYMBlPgAZej9NeK8zWqDDEyzswWqCvt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=KiVwqHtB; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-61814e68cfcso37845617b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 14:37:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712785055; x=1713389855; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XPYtaW73cXDTPjMujaADVZvLP6wj8QcIF+jSWGr8Oms=;
-        b=KiVwqHtBFDGaTHxkLwpBJZ8nZtOaAMtftz4m9SplzBL/szgqU2Lg2cMpixSvpMpYte
-         rHRYAWiaT6P1SIg+LkCbWptwiHwhSBI7Rn0pmXKQDiawvH70WAxy4E9b/6bUZTgItkPr
-         orfuGcRRw1sAwoiTppDx7ppCAUotzO76vVUeEV2chTGX/EtVPKF4km8Thh8lUOLWSGpM
-         RwOhhtg6wH/N93iBzX4rpUfjKukCQQT1XY/iH8NwaQqWjP8jPGodmPU1IOLhfUc5g5Nr
-         SLleFet3R1LIwzJ/L/d8anCH4SJHal4Y6gYrXoBMlIa5wQ4VnCw2FUecgPONCuD6byMa
-         i6fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712785055; x=1713389855;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XPYtaW73cXDTPjMujaADVZvLP6wj8QcIF+jSWGr8Oms=;
-        b=vnyi7hkuALJMrFZVjOs/OAOWXQEW4vWNfOLoYspwl2XaZj7sODC62IJQsl+jj6T83f
-         cSSLxkb3o6IOpGMkQmU1t6RrPoNyJm0cnNWheza2jrTcMZ/7CY/6Wf296X8QFPnGt2mx
-         pvOQ1scV6pdPCwE0BVHrEvy7Qa8j09o7ync80DuGa34EcbtQM+pzfm9TT5nvFzZCMt/D
-         C7Ux+XCCj9uokcWzSVG+6wQTmMYZFcrieH/aGAAH1IO99R/4zJwEucmDy8l89wOctu+2
-         mqzCBecOHoN3bF0sIpo5CN+M4Q0F0L5R6Q+wt3K/dWWEQ+Eo4QQTpnKdjzJnsjpnQfbV
-         hSpg==
-X-Forwarded-Encrypted: i=1; AJvYcCWjIB/8YeOGc7tP0xwA1riNQNPSW3BiWANXanDVa7Twx2tSL09TymRxfmR0ejOXWFJhkJfU8A0t17ODnP7wvyXpprehxdlhX5HH1tRr
-X-Gm-Message-State: AOJu0YwMlOvadCOiMx0vKlITR8q0v9cJ2J+HnO9PMt1/2K4q0A9lkNov
-	TzKFQFEVmmCnfQxgRFZuAHerqgSais5bS6dQg3ydfeXR2wcS5LDsqXByi/KU4WFnERJS0n0LHk7
-	oJy4KSGUSNfr/WuQUh+3qVMv1h2O66q9sKSBZZQ==
-X-Google-Smtp-Source: AGHT+IF51UvfuZW8F9SKiS3fB7NFequCpltyvy4yxCVwUJis6yJOQ1I5zvJY27CgXu6F/WYzUCxY2XbedDRG3tneEwI=
-X-Received: by 2002:a0d:c306:0:b0:615:4700:94c5 with SMTP id
- f6-20020a0dc306000000b00615470094c5mr4293525ywd.22.1712785055129; Wed, 10 Apr
- 2024 14:37:35 -0700 (PDT)
+	 To:Cc:Content-Type; b=ogsuRfksjrFL+EtnmjS0h5x6X3+Q+v9YgR6rj3lDOMw3y3bruwiZOSQ/8kaoDixi1teliOHIGq0DaAEfgFDBmQWW6ebcFNJ7C1xuz0K8uGieszWsJg3a+sdXHrF3ViF2omaxAU0qhihurSiSkae335Z0xz55VkXBUd7ceVM73ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZAhqVLAr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC7E0C433A6;
+	Wed, 10 Apr 2024 21:37:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712785068;
+	bh=nM8tFnJ3b4IcOjThnUEgs03Kdst1jvcztzJykBzdF/w=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ZAhqVLArofwPn1VsdNt5uUNzfZUZkF2GCAaIpk33/fDL9pNd9J43v2y70Vj1dJzeY
+	 NT/3pFF/6DbKBK0Ju5SxsP4TPkE8UezaME9b/7WTif6kYm5AMP/vajfkjfasi1hmje
+	 JU5xU3BHtm7VM8gu6/fKzheBgoUMA0ueAw5OCaisWzTOdVPo35IRF193tsPY3OjA+X
+	 2egovVQi3BxTcbjXsPrVRmTwCIQ1GOIiWiaJpzUqQd3JNFpOGdK9Rygr3u3lk2cpup
+	 RfwbljJR/ab0Fi6CEqaw0srGI2DlWDgmaBDeW0L4yxb/tPFildBhnLea6faYfhbMAY
+	 0dew/zZvzBtUw==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5176f217b7bso1876057e87.0;
+        Wed, 10 Apr 2024 14:37:48 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUkbqfHrdEppjD7M9vJq+Zm7zEyq0o0HUkVx7jQg1GEfQ2Gckl/NA502Zc87MrrtAwpjlP/LdxweaasB4Zs1tU9wagLl/c3eX0Ee0X09s1rUd1mX1tmLUAlhh4vAXhCJ5LcY+qgD0lCOw==
+X-Gm-Message-State: AOJu0YwUQjHHV1MbX6SFIdYrztduzqYB89w7t7+ZYL9nyLDfSvDI36vY
+	OOXei37UQM0AsL+pOgHRqZPbHIXuAkA2qAst4kwcdJcBv5azdMlugWlmoUbh22/jwICgVfx/M9P
+	DSh6LhbYxeLOkSusTSaBkfzfCb5E=
+X-Google-Smtp-Source: AGHT+IFXWzd+u6HCGsAkZespxnjBVQGyzROoi7T6JcOTfo35KmjpLZxSVfES0MaiRKRXmZh80vp10HYZLkdmLozZ1w4=
+X-Received: by 2002:ac2:554c:0:b0:516:c44a:657d with SMTP id
+ l12-20020ac2554c000000b00516c44a657dmr2970482lfk.64.1712785067212; Wed, 10
+ Apr 2024 14:37:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403234054.2020347-1-debug@rivosinc.com> <20240403234054.2020347-5-debug@rivosinc.com>
- <20240410115806.GA4044117-robh@kernel.org>
-In-Reply-To: <20240410115806.GA4044117-robh@kernel.org>
-From: Deepak Gupta <debug@rivosinc.com>
-Date: Wed, 10 Apr 2024 14:37:21 -0700
-Message-ID: <CAKC1njSsZ6wfvJtXkp4J4J6wXFtU92W9JGca-atKxBy8UvUwRg@mail.gmail.com>
-Subject: Re: [PATCH v3 04/29] riscv: zicfilp / zicfiss in dt-bindings (extensions.yaml)
-To: Rob Herring <robh@kernel.org>
-Cc: paul.walmsley@sifive.com, rick.p.edgecombe@intel.com, broonie@kernel.org, 
-	Szabolcs.Nagy@arm.com, kito.cheng@sifive.com, keescook@chromium.org, 
-	ajones@ventanamicro.com, conor.dooley@microchip.com, cleger@rivosinc.com, 
-	atishp@atishpatra.org, alex@ghiti.fr, bjorn@rivosinc.com, 
-	alexghiti@rivosinc.com, samuel.holland@sifive.com, conor@kernel.org, 
-	linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-mm@kvack.org, 
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, corbet@lwn.net, 
-	palmer@dabbelt.com, aou@eecs.berkeley.edu, krzysztof.kozlowski+dt@linaro.org, 
-	oleg@redhat.com, akpm@linux-foundation.org, arnd@arndb.de, 
-	ebiederm@xmission.com, Liam.Howlett@oracle.com, vbabka@suse.cz, 
-	lstoakes@gmail.com, shuah@kernel.org, brauner@kernel.org, 
-	andy.chiu@sifive.com, jerry.shih@sifive.com, hankuan.chen@sifive.com, 
-	greentime.hu@sifive.com, evan@rivosinc.com, xiao.w.wang@intel.com, 
-	charlie@rivosinc.com, apatel@ventanamicro.com, mchitale@ventanamicro.com, 
-	dbarboza@ventanamicro.com, sameo@rivosinc.com, shikemeng@huaweicloud.com, 
-	willy@infradead.org, vincent.chen@sifive.com, guoren@kernel.org, 
-	samitolvanen@google.com, songshuaishuai@tinylab.org, gerg@kernel.org, 
-	heiko@sntech.de, bhe@redhat.com, jeeheng.sia@starfivetech.com, 
-	cyy@cyyself.name, maskray@google.com, ancientmodern4@gmail.com, 
-	mathis.salmen@matsal.de, cuiyunhui@bytedance.com, bgray@linux.ibm.com, 
-	mpe@ellerman.id.au, baruch@tkos.co.il, alx@kernel.org, david@redhat.com, 
-	catalin.marinas@arm.com, revest@chromium.org, josh@joshtriplett.org, 
-	shr@devkernel.io, deller@gmx.de, omosnace@redhat.com, ojeda@kernel.org, 
-	jhubbard@nvidia.com
+References: <20240322081005.1112401-1-yukuai1@huaweicloud.com>
+In-Reply-To: <20240322081005.1112401-1-yukuai1@huaweicloud.com>
+From: Song Liu <song@kernel.org>
+Date: Wed, 10 Apr 2024 14:37:36 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4XSdtSYxVu9rDzDZZfy3AzACJMCej=sC5hUO3QmJJpxg@mail.gmail.com>
+Message-ID: <CAPhsuW4XSdtSYxVu9rDzDZZfy3AzACJMCej=sC5hUO3QmJJpxg@mail.gmail.com>
+Subject: Re: [PATCH] md/raid5: fix deadlock that raid5d() wait for itself to
+ clear MD_SB_CHANGE_PENDING
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: logang@deltatee.com, dan@danm.net, junxiao.bi@oracle.com, xni@redhat.com, 
+	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, yukuai3@huawei.com, 
+	yi.zhang@huawei.com, yangerkun@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 10, 2024 at 4:58=E2=80=AFAM Rob Herring <robh@kernel.org> wrote=
-:
+On Fri, Mar 22, 2024 at 1:17=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+[...]
 >
-> On Wed, Apr 03, 2024 at 04:34:52PM -0700, Deepak Gupta wrote:
-> > Make an entry for cfi extensions in extensions.yaml.
-> >
-> > Signed-off-by: Deepak Gupta <debug@rivosinc.com>
-> > ---
-> >  .../devicetree/bindings/riscv/extensions.yaml          | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/=
-Documentation/devicetree/bindings/riscv/extensions.yaml
-> > index 63d81dc895e5..45b87ad6cc1c 100644
-> > --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
-> > +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
-> > @@ -317,6 +317,16 @@ properties:
-> >              The standard Zicboz extension for cache-block zeroing as r=
-atified
-> >              in commit 3dd606f ("Create cmobase-v1.0.pdf") of riscv-CMO=
-s.
-> >
-> > +        - const: zicfilp
-> > +          description:
-> > +            The standard Zicfilp extension for enforcing forward edge =
-control-flow
-> > +            integrity in commit 3a20dc9 of riscv-cfi and is in public =
-review.
+> Refer to the implementation from raid1 and raid10, fix this problem by
+> skipping issue IO if MD_SB_CHANGE_PENDING is still set after
+> md_check_recovery(), daemon thread will be woken up when 'reconfig_mutex'
+> is released. Meanwhile, the hang problem will be fixed as well.
 >
-> Does in public review mean the commit sha is going to change?
->
+> Fixes: 5e2cf333b7bd ("md/raid5: Wait for MD_SB_CHANGE_PENDING in raid5d")
+> Reported-and-tested-by: Dan Moulding <dan@danm.net>
+> Closes: https://lore.kernel.org/all/20240123005700.9302-1-dan@danm.net/
+> Investigated-by: Junxiao Bi <junxiao.bi@oracle.com>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-Less likely. Next step after public review is to gather comments from
-public review.
-If something is really pressing and needs to be addressed, then yes
-this will change.
-Else this gets ratified as it is.
+Applied to md-6.10. Thanks!
+
+Song
 
