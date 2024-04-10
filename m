@@ -1,154 +1,174 @@
-Return-Path: <linux-kernel+bounces-137878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A23BD89E8C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:22:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0FBB89E8C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 06:23:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D76A286B7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:22:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 206A81F2633A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:23:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69D00C157;
-	Wed, 10 Apr 2024 04:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB3BCD535;
+	Wed, 10 Apr 2024 04:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VUGE75SO"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b="kVT8cq7b"
+Received: from mail-oi1-f195.google.com (mail-oi1-f195.google.com [209.85.167.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1BC8F44;
-	Wed, 10 Apr 2024 04:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C2210A09
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 04:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712722964; cv=none; b=j3LhVIZSxEz3zdCTedZJEWJkvuiGm3d9mCWzbVbdSduMpG1RIiUummkYPUcI1x9/echo3/Pai061KXiFamM5QGz71n3+WtWOdIOs6qsbHfvIw/ya7460ai7NFmoATjxAe4fCQcuzdJo+IXt/mNiwaVE5GDFjsWDf6KGL1k0CqJ0=
+	t=1712722978; cv=none; b=NOb+0BS6R45BwgqfWcVaDx9eVdSE8v0fuR7leTflGjWiiHybIuH8MSKCIfhXhfw/rl/8wSF8ZAgq8IgefS0xelPs/w9imhosvXPn9JgkWmcRMfMXWErSztJk91pd+jFnNfMB5zVLV6FMTqzN2YdWiGrEB+g/Qh+cs2hjDNjkyqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712722964; c=relaxed/simple;
-	bh=8w/BdtBmOjOFnNyWhqSdLs2iYk08/1oMEjepAgqZSJ4=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=smSU90LcElZzM+4t4ZCB7+2qSmnG8MMqsUtWM90vqgrS+H177VKU7/y7yjN1Vvkh0hahVSidrQR0cKG2s1UxETJOHLOM+u+f10NOHFYXdj+0rpf6xwJFZZzd5hjwcGOhb8tA/V4X/nTMtBwLZsgrtn+ZPmUm8j8WYqqPXK3CMYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VUGE75SO; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-34641b7c49aso717827f8f.2;
-        Tue, 09 Apr 2024 21:22:42 -0700 (PDT)
+	s=arc-20240116; t=1712722978; c=relaxed/simple;
+	bh=9X8K69Z9AlUuQYNsXtc2K5ZmdBKKto46xQO0C62fowo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=atJYD1+Ysj4sIdcppYVHtgu9c3068AW7n1+FKMpYsBDSTrtyuhQnUx8A6y3DPHQmCedBh1vNilqnwMOLPoEY2vnJhVp9aU3c1L3kqWKdXYZ07Y+guOH/20Er1SuIFVjlW2+9M7yt7NSHSqHqEPZsSyosKYnh+OmUc0xNMuVGc3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com; spf=none smtp.mailfrom=smartx.com; dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b=kVT8cq7b; arc=none smtp.client-ip=209.85.167.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=smartx.com
+Received: by mail-oi1-f195.google.com with SMTP id 5614622812f47-3bbbc6b4ed1so4008112b6e.2
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 21:22:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712722961; x=1713327761; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=50/EoYp4xiPcQjk7THZgfgs+ueFYqdmiSEQ2Y/A5NR4=;
-        b=VUGE75SOYQyibLm8h71XMlrmnXGMiMslaF5LPny+V5DBBJ0PTyW6GHL+3BdzYUNzM+
-         fBOo+im7vwb9M+7QWFB1qhshAKV/UmOky9xML0LY74hqN0CBGcwBK018z7fa5uF7Qw/b
-         WepuEU/pl95JumFNLjDyeUavlsK7L0xepNs6zfB5Cz9I2jj7HmCozLqWDVehUyih518X
-         1bEBme+1kLjEvmEdxK0+hW3Tn/GyTY+whJBu/bmEEIdYKzGcXlDuC4d1U48qqd8H3btE
-         gvmghnAzWvcmArcrKSKaYwj8uy/XZBtcDym6rg9msTxefX9A7JnuVRwm5HRqRvYy83mc
-         hMHQ==
+        d=smartx-com.20230601.gappssmtp.com; s=20230601; t=1712722974; x=1713327774; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nel0BDOQg9x0X/rMPJc3bspVJYDD63CLeCUabNFV1dk=;
+        b=kVT8cq7bZMHPYj+CNS23cDd+bVTHdPfExOu37ikF+EXYDVtdu/rczdSIa8U97KjAEe
+         wyYDkHGYKUMTCI02XNAhqKsczUybCd8EyedWVWd3FcqhDS68fOsB5/09q8RGeJRXf2u0
+         7+Jtr3UgDKT3w7++8WR84XOo2KgL372KIHH/Yju8wlK+QkHQld/WWLZOoV/7MEvW3jqx
+         DJz68QwmKK/X1/DBEFLlBuvRr/HUZRBZx7iCGT4Hp3Hvdq61QE6MdIoPrlYoV/NrgOnI
+         egr3TBevlZ8hFoiOnCQZyRo9lms3iBA6pQ3cY/r05Zv8a1aKesYBx1EzVdmpN3l1rpuA
+         x3xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712722961; x=1713327761;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=50/EoYp4xiPcQjk7THZgfgs+ueFYqdmiSEQ2Y/A5NR4=;
-        b=UF+ZEyz4stmkYbVSIrFvs4sgVVp0V+lXPEnFG6TNASjh+tCFKc0gpf6rHWvustqxSq
-         oiywyV18EVSvnPdKprhaS1ONaRfvm8F57SFLuGgzgcwC/oGe+kVppSV4clxq3rWngd2g
-         MMOzVALSLLnAt2wLdMY6i41zrdeEOnx8hIXu6YKZZuoltxLjXxqatU9lAywsJfVtVgZn
-         L61VR+ZjkYy/vrhQQI1+ktOfSZySTAsYB7OuNvdJzLI93n6Z8cT4tEnQFEEDamAYxvBm
-         4U5zke1rb4AR5o/FtzSTSV74ItN3TTX4bZWMiUt8X2wwLgEtLgjYflDqNsboFSwQZgbP
-         hX5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWtPE972roTy2WhR214T4fbVQN7A+CCrxkECZGftEY4UHgJlQ7qegUZHFQcX7HTC1YnL26WfFqXsE/HgkT4Kms2/YF4aHUqgP1NP0Z+n3uOEVc+BmRmwMVhrPtvtNoFqfjg1Lb+GOuUjA==
-X-Gm-Message-State: AOJu0YyNIpPs/ovQ6Zk3Yw38mT4aMgJoR3yAM4+VmDkFqfrocEpYJxhf
-	Z9SjXyrQIU4oqFPlP2iptMuS8Znb6qAoCgWRP5OIA7dBVNx++PFB
-X-Google-Smtp-Source: AGHT+IHhKHEr3v3LDAgyhKHwIE9KipXbIkSHGprCwjFscoVbk1+9ZU+3a0NumbkHPHLpvO0f/FlwAg==
-X-Received: by 2002:adf:fc4b:0:b0:343:7d3c:ddcd with SMTP id e11-20020adffc4b000000b003437d3cddcdmr964972wrs.1.1712722961051;
-        Tue, 09 Apr 2024 21:22:41 -0700 (PDT)
-Received: from smtpclient.apple ([167.99.200.149])
-        by smtp.gmail.com with ESMTPSA id p13-20020a5d638d000000b00343ad4bca7dsm12898554wru.85.2024.04.09.21.22.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Apr 2024 21:22:40 -0700 (PDT)
-Content-Type: text/plain;
-	charset=utf-8
+        d=1e100.net; s=20230601; t=1712722974; x=1713327774;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Nel0BDOQg9x0X/rMPJc3bspVJYDD63CLeCUabNFV1dk=;
+        b=CNPyNjBRC5iCbsMrdwbSdHLhNHnzwQcOsHaXcgtRbXTQGeULXonbUl7qhTpTrmKpFJ
+         DwtEbi3FIWkUeiQZjRwwjF9ERP+V44djwqEN34hN4/qPQ5Q0KVfWwlwxiVdiR9wfTxQI
+         yVrWjeFxyo/pcx/ukurGJwm7fBEIipu/IC4swRlzH/TcIVH57N8Dy/Y8ENQhJ4kC5LOc
+         dS0D00zXlR7B4+4+1G9X1jxyk+II93SRB/umqC84pZ5vLg8JZN9w4XREykEFhusvOqc+
+         JGxvMUcR22nFosOn0Lx/X1RGeyUXSM7ckBhNvd7ipZFDPG8rSqda7AqQ8SPh2DTEHFQn
+         T9Nw==
+X-Forwarded-Encrypted: i=1; AJvYcCU2VYIFSOYeS0prbBS++akP+dHHnW5gyuoa9mF5GTk33O2KfurPAO+HdtBcn/x8F527ab+6uYLVTxlPcbQxvxVVAhcxtfroxZRDVD/+
+X-Gm-Message-State: AOJu0YywdxNHf22y+y/fYlV6FlhbNlQWqMjuxvfRjphoSHlvV4STKFKz
+	KWXRxE5mSpR/ZtQS4lrDuWiEQl5lDu4vIq0lphx6dyMULjfgFMeaf16jfMvvs6U=
+X-Google-Smtp-Source: AGHT+IEjLSHWQzsXdB08KDkWZi4Rm+0b46QwgSQ/meOmZHKvCWbCu4ldgeOC3Wi7WtNhudyHeXaKLQ==
+X-Received: by 2002:a54:4809:0:b0:3c6:5da:1635 with SMTP id j9-20020a544809000000b003c605da1635mr1705770oij.3.1712722973485;
+        Tue, 09 Apr 2024 21:22:53 -0700 (PDT)
+Received: from localhost.localdomain ([103.172.41.206])
+        by smtp.googlemail.com with ESMTPSA id ll24-20020a056a00729800b006ed97aa7975sm1722125pfb.111.2024.04.09.21.22.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 21:22:53 -0700 (PDT)
+From: Lei Chen <lei.chen@smartx.com>
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Jason Wang <jasowang@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>
+Cc: Lei Chen <lei.chen@smartx.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] net:tun: limit printing rate when illegal packet received by tun dev
+Date: Wed, 10 Apr 2024 00:22:44 -0400
+Message-ID: <20240410042245.2044516-1-lei.chen@smartx.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH 1/2] dt-bindings: panel-simple-dsi: add New Khadas TS050
- panel bindings
-From: Christian Hewitt <christianshewitt@gmail.com>
-In-Reply-To: <20240409082641.359627-1-jacobe.zang@wesion.com>
-Date: Wed, 10 Apr 2024 08:22:25 +0400
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
- Neil Armstrong <narmstrong@baylibre.com>,
- David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- quic_jesszhan@quicinc.com,
- sam@ravnborg.org,
- nick@khadas.com,
- thierry.reding@gmail.com,
- dri-devel@lists.freedesktop.org,
- devicetree <devicetree@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- AML <linux-amlogic@lists.infradead.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <3CCAF214-09FE-4580-99CD-AB95E78FFB8F@gmail.com>
-References: <20240409082641.359627-1-jacobe.zang@wesion.com>
-To: Jacobe Zang <jacobe.zang@wesion.com>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-> On 9 Apr 2024, at 12:26=E2=80=AFPM, Jacobe Zang =
-<jacobe.zang@wesion.com> wrote:
->=20
-> This add the bindings for the New Khadas TS050 1080x1920 5" LCD DSI =
-panel
-> designed to work with the Khadas VIM3 and VIM3L Single Board =
-Computers.
->=20
-> Signed-off-by: Jacobe Zang <jacobe.zang@wesion.com>
-> ---
-> .../devicetree/bindings/display/panel/panel-simple-dsi.yaml     | 2 ++
-> 1 file changed, 2 insertions(+)
->=20
-> diff --git =
-a/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml =
-b/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
-> index f9160d7bac3ca..e194309f31b72 100644
-> --- =
-a/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
-> +++ =
-b/Documentation/devicetree/bindings/display/panel/panel-simple-dsi.yaml
-> @@ -36,6 +36,8 @@ properties:
->       - jdi,fhd-r63452
->         # Khadas TS050 5" 1080x1920 LCD panel
->       - khadas,ts050
-> +        # Khadas NEW TS050 5" 1080x1920 LCD panel
-> +      - khadas,newts050
+vhost_worker will call tun call backs to receive packets. If too many
+illegal packets arrives, tun_do_read will keep dumping packet contents.
+When console is enabled, it will costs much more cpu time to dump
+packet and soft lockup will be detected.
 
-Products are only new until they are old. At some future point there =
-will
-inevitably be a third iteration requiring a =E2=80=98new new=E2=80=99 =
-name. IMHO it would
-be better to use something like khadas,ts050v2.
+net_ratelimit mechanism can be used to limit the dumping rate.
 
-CH.
+PID: 33036    TASK: ffff949da6f20000  CPU: 23   COMMAND: "vhost-32980"
+ #0 [fffffe00003fce50] crash_nmi_callback at ffffffff89249253
+ #1 [fffffe00003fce58] nmi_handle at ffffffff89225fa3
+ #2 [fffffe00003fceb0] default_do_nmi at ffffffff8922642e
+ #3 [fffffe00003fced0] do_nmi at ffffffff8922660d
+ #4 [fffffe00003fcef0] end_repeat_nmi at ffffffff89c01663
+    [exception RIP: io_serial_in+20]
+    RIP: ffffffff89792594  RSP: ffffa655314979e8  RFLAGS: 00000002
+    RAX: ffffffff89792500  RBX: ffffffff8af428a0  RCX: 0000000000000000
+    RDX: 00000000000003fd  RSI: 0000000000000005  RDI: ffffffff8af428a0
+    RBP: 0000000000002710   R8: 0000000000000004   R9: 000000000000000f
+    R10: 0000000000000000  R11: ffffffff8acbf64f  R12: 0000000000000020
+    R13: ffffffff8acbf698  R14: 0000000000000058  R15: 0000000000000000
+    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+ #5 [ffffa655314979e8] io_serial_in at ffffffff89792594
+ #6 [ffffa655314979e8] wait_for_xmitr at ffffffff89793470
+ #7 [ffffa65531497a08] serial8250_console_putchar at ffffffff897934f6
+ #8 [ffffa65531497a20] uart_console_write at ffffffff8978b605
+ #9 [ffffa65531497a48] serial8250_console_write at ffffffff89796558
+ #10 [ffffa65531497ac8] console_unlock at ffffffff89316124
+ #11 [ffffa65531497b10] vprintk_emit at ffffffff89317c07
+ #12 [ffffa65531497b68] printk at ffffffff89318306
+ #13 [ffffa65531497bc8] print_hex_dump at ffffffff89650765
+ #14 [ffffa65531497ca8] tun_do_read at ffffffffc0b06c27 [tun]
+ #15 [ffffa65531497d38] tun_recvmsg at ffffffffc0b06e34 [tun]
+ #16 [ffffa65531497d68] handle_rx at ffffffffc0c5d682 [vhost_net]
+ #17 [ffffa65531497ed0] vhost_worker at ffffffffc0c644dc [vhost]
+ #18 [ffffa65531497f10] kthread at ffffffff892d2e72
+ #19 [ffffa65531497f50] ret_from_fork at ffffffff89c0022f
 
->         # Kingdisplay KD097D04 9.7" 1536x2048 TFT LCD panel
->       - kingdisplay,kd097d04
->         # LG ACX467AKM-7 4.95" 1080=C3=971920 LCD Panel
-> --=20
-> 2.34.1
->=20
->=20
-> _______________________________________________
-> linux-amlogic mailing list
-> linux-amlogic@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-amlogic
+Signed-off-by: Lei Chen <lei.chen@smartx.com>
+
+---
+Changes from v1:
+https://lore.kernel.org/all/20240409062407.1952728-1-lei.chen@smartx.com/
+ 1. Use net_ratelimit instead of raw __ratelimit.
+ 2. Use netdev_err instead of pr_err to print more info abort net dev.
+ 3. Adjust git commit message to make git am happy.
+
+ drivers/net/tun.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 0b3f21cba552..ca9b4bc89de7 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -2125,14 +2125,16 @@ static ssize_t tun_put_user(struct tun_struct *tun,
+ 					    tun_is_little_endian(tun), true,
+ 					    vlan_hlen)) {
+ 			struct skb_shared_info *sinfo = skb_shinfo(skb);
+-			pr_err("unexpected GSO type: "
+-			       "0x%x, gso_size %d, hdr_len %d\n",
+-			       sinfo->gso_type, tun16_to_cpu(tun, gso.gso_size),
+-			       tun16_to_cpu(tun, gso.hdr_len));
+-			print_hex_dump(KERN_ERR, "tun: ",
+-				       DUMP_PREFIX_NONE,
+-				       16, 1, skb->head,
+-				       min((int)tun16_to_cpu(tun, gso.hdr_len), 64), true);
++
++			if (net_ratelimit()) {
++				netdev_err(tun->dev, "unexpected GSO type: 0x%x, gso_size %d, hdr_len %d\n",
++				       sinfo->gso_type, tun16_to_cpu(tun, gso.gso_size),
++				       tun16_to_cpu(tun, gso.hdr_len));
++				print_hex_dump(KERN_ERR, "tun: ",
++					       DUMP_PREFIX_NONE,
++					       16, 1, skb->head,
++					       min((int)tun16_to_cpu(tun, gso.hdr_len), 64), true);
++			}
+ 			WARN_ON_ONCE(1);
+ 			return -EINVAL;
+ 		}
+
+base-commit: fec50db7033ea478773b159e0e2efb135270e3b7
+prerequisite-patch-id: 8952e320c0272899e153c953db09446879ed0d87
+prerequisite-patch-id: 2f1e3234a4ac0bf421df2061505612538f128672
+-- 
+2.44.0
 
 
