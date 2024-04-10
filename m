@@ -1,79 +1,78 @@
-Return-Path: <linux-kernel+bounces-138648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E37A89F8B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:49:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF5A889F89E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:47:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A31FB2DD49
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:47:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D0E31F31B8B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:47:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7BCF16131C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD0C160885;
 	Wed, 10 Apr 2024 13:40:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rrwJUMSq";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tXtZWY5N"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rhFViKRS";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="hW6946aq"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70EF415ECFD;
-	Wed, 10 Apr 2024 13:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 918B415F3F2;
+	Wed, 10 Apr 2024 13:40:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712756448; cv=none; b=IYGZPgpZsSHrjuCSaDg+wVsbpWi04g7RVuPxVjeCM8BGyWnkX0VQ24By8a/E+Seat3Rt+gDA2tyfPgbIheUWQhegvZ9UAUjMcQxZDNnMfHDGHEW7P3WF1ffpT1cEDSFv7nshaYK/9luPi1Hez+7QDvc1gN4oYfyo11fsOxNHJCA=
+	t=1712756447; cv=none; b=iRHzcHSE/fkP8WAWP8x0+uzBKaunA58kpeSpOeo5HfhN58Uv6rdiKM8pFlD3+rwhE2pkNxcojHN983i6p8KcHmek47RHC6MnXM39n7kqNQCyxcLFCihMOfbmaANZKpwMyrifbtAWLg6IMn4XDyFMlUKT1z7Xe4BJ9OSDDrti4dI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712756448; c=relaxed/simple;
-	bh=Uka8o22NlM8PwJyIfHYqHnihMi8oLfrnhZ2gZYikHTM=;
+	s=arc-20240116; t=1712756447; c=relaxed/simple;
+	bh=r+YL/s4TO2w8eDSHzE746jw/Jqq9LchRmN1sUgRfVDI=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=STr5UX7nA1SRqAk4ILgxW4YgfUsYzp3/3kx9b5iUvsdSzZc55g1H4ZEMdFKWA6k2R8JT7FCPV7foTrljV4mqiot+sgrQF1x21BSs7rlvCEbbCIAxrzv56QGf1ECLFWQi1BKd7iZBKo7PGsohjAL9CiG3OJ3iiBom4XtAnqkgsr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rrwJUMSq; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tXtZWY5N; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=pcSSrNA5H/I62IyV8gadmHxlR+2sMS4rZK5q8ZqXfnaUbpGesRqePrDlBic+2MofJESx0lNX1ZtXFfNxcLkBBAZjjkMTSyUVjc7s1RqM4mMu1U+Dk9Tl6M/16JTmBv9oyKJn43M2eR49QwswNYxKZzYRtUjLI2Mh7h0THVJBMBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rhFViKRS; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=hW6946aq; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Date: Wed, 10 Apr 2024 13:40:43 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712756444;
+	s=2020; t=1712756443;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RMhJgy48U8xArHHRNmuKI/ZW03PB0fR9F3j3M9Dq+KA=;
-	b=rrwJUMSqbnHL54uFzz01AcpqOoJaArgGFWf0a/M4vYqj72eXcHjzoVJzCpP1GOg+cg50Yt
-	Oe5+ZYlCdLQv2UbH5Vgjjfh27C49vrD/kDsUWdu8XuoMFwJSn4RgRIDaMq9HrB3gKgGNkZ
-	jf27GYh2lIkIkdp2fX4XN4Dh3QUgDYIJ/pnCh+UvImGt+0WbRtMZ/SjcTCOFzH6+bP02gQ
-	XoCWskXgC0Sq6W2qScHfyfbzxohYkBp4/e35hNv3Sgu4Wlao/+2qOKZ5uYQIPKP7tOtPwP
-	4yaS6+gC5NTpPAWbnhXMoGCpmsFUQuI4r+8V3l3JasgrEHWGd8mrfpBDRqkwCg==
+	bh=G7UKQ4mEOM6UiOSUJ++bzGCRJzOETaASMTzibHrJaA0=;
+	b=rhFViKRSVqTbqRYEPBRsra3GligdoaVfllRMtS2epuOSLSQAXU8zpp3nZ/AuBz6j8Wo1K9
+	sQC2cj7Owq382ZtjbP1MKRTzDu8227SznFboV5rj2qS1PCDluFPS0UdZYM5W+QL3fO4duC
+	fwkrrcq6ca4EXII2iIIbXtjqitIwaiqQGbR5U/PHWspDGxqjEh/sv3BWcWQojfxavGRBef
+	vC5A3lgE9nj1UBnFl+p6C/pacGQmcm+YBCwDJTYj5RYwnZ14710wtOMX5BOn3AiNGdcGNQ
+	0697+UFJgsvgktYyAqVdFt3LBVQKnqgjdlWHfYiMFYg31wb87KougSkyfHPtDw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712756444;
+	s=2020e; t=1712756443;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RMhJgy48U8xArHHRNmuKI/ZW03PB0fR9F3j3M9Dq+KA=;
-	b=tXtZWY5NzlYFawxwLZdw5ZoU/DKsaCq/A3x7DJUeVa089M08QmvuyFnfjSvUR57+9Ts4bo
-	nWyCWn63Gh6Sr+DQ==
+	bh=G7UKQ4mEOM6UiOSUJ++bzGCRJzOETaASMTzibHrJaA0=;
+	b=hW6946aqQiXDld3M/HjGfw0Y94KM+oIPHORnuvO/ZEJ2DPR5KOM5ZZL7omEz3XrcVYLYwr
+	TwZi62heQp0E/WCQ==
 From: "tip-bot2 for Uros Bizjak" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/atomic/x86: Introduce
- arch_atomic64_read_nonatomic() to x86_32
-Cc: Mark Rutland <mark.rutland@arm.com>, Uros Bizjak <ubizjak@gmail.com>,
- Ingo Molnar <mingo@kernel.org>,
+Subject: [tip: locking/core] locking/atomic/x86: Rewrite x86_32
+ arch_atomic64_{,fetch}_{and,or,xor}() functions
+Cc: Uros Bizjak <ubizjak@gmail.com>, Ingo Molnar <mingo@kernel.org>,
  Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
  linux-kernel@vger.kernel.org
-In-Reply-To: <20240410062957.322614-2-ubizjak@gmail.com>
-References: <20240410062957.322614-2-ubizjak@gmail.com>
+In-Reply-To: <20240410062957.322614-3-ubizjak@gmail.com>
+References: <20240410062957.322614-3-ubizjak@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171275644380.10875.3875613605552134894.tip-bot2@tip-bot2>
+Message-ID: <171275644304.10875.8866491281215486852.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -83,65 +82,171 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     e73c4e34a0e9e3dfcb4e5ee4ccd3039a7b603218
-Gitweb:        https://git.kernel.org/tip/e73c4e34a0e9e3dfcb4e5ee4ccd3039a7b603218
+Commit-ID:     95ece48165c136b96fae0f6144f55cbf8b24aeb9
+Gitweb:        https://git.kernel.org/tip/95ece48165c136b96fae0f6144f55cbf8b24aeb9
 Author:        Uros Bizjak <ubizjak@gmail.com>
-AuthorDate:    Wed, 10 Apr 2024 08:29:34 +02:00
+AuthorDate:    Wed, 10 Apr 2024 08:29:35 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 10 Apr 2024 15:04:54 +02:00
+CommitterDate: Wed, 10 Apr 2024 15:04:55 +02:00
 
-locking/atomic/x86: Introduce arch_atomic64_read_nonatomic() to x86_32
+locking/atomic/x86: Rewrite x86_32 arch_atomic64_{,fetch}_{and,or,xor}() functions
 
-Introduce arch_atomic64_read_nonatomic() for 32-bit targets to load
-the value from atomic64_t location in a non-atomic way. This
-function is intended to be used in cases where a subsequent atomic
-operation will handle the torn value, and can be used to prime the
-first iteration of unconditional try_cmpxchg() loops.
+Rewrite x86_32 arch_atomic64_{,fetch}_{and,or,xor}() functions to
+use arch_atomic64_try_cmpxchg().  This implementation avoids one extra
+trip through the CMPXCHG loop.
 
-Suggested-by: Mark Rutland <mark.rutland@arm.com>
+The value preload before the cmpxchg loop does not need to be atomic.
+Use arch_atomic64_read_nonatomic(v) to load the value from atomic_t
+location in a non-atomic way.
+
+The generated code improves from:
+
+  1917d5:	31 c9                	xor    %ecx,%ecx
+  1917d7:	31 db                	xor    %ebx,%ebx
+  1917d9:	89 4c 24 3c          	mov    %ecx,0x3c(%esp)
+  1917dd:	8b 74 24 24          	mov    0x24(%esp),%esi
+  1917e1:	89 c8                	mov    %ecx,%eax
+  1917e3:	89 5c 24 34          	mov    %ebx,0x34(%esp)
+  1917e7:	8b 7c 24 28          	mov    0x28(%esp),%edi
+  1917eb:	21 ce                	and    %ecx,%esi
+  1917ed:	89 74 24 4c          	mov    %esi,0x4c(%esp)
+  1917f1:	21 df                	and    %ebx,%edi
+  1917f3:	89 de                	mov    %ebx,%esi
+  1917f5:	89 7c 24 50          	mov    %edi,0x50(%esp)
+  1917f9:	8b 54 24 4c          	mov    0x4c(%esp),%edx
+  1917fd:	8b 7c 24 2c          	mov    0x2c(%esp),%edi
+  191801:	8b 4c 24 50          	mov    0x50(%esp),%ecx
+  191805:	89 d3                	mov    %edx,%ebx
+  191807:	89 f2                	mov    %esi,%edx
+  191809:	f0 0f c7 0f          	lock cmpxchg8b (%edi)
+  19180d:	89 c1                	mov    %eax,%ecx
+  19180f:	8b 74 24 34          	mov    0x34(%esp),%esi
+  191813:	89 d3                	mov    %edx,%ebx
+  191815:	89 44 24 4c          	mov    %eax,0x4c(%esp)
+  191819:	8b 44 24 3c          	mov    0x3c(%esp),%eax
+  19181d:	89 df                	mov    %ebx,%edi
+  19181f:	89 54 24 44          	mov    %edx,0x44(%esp)
+  191823:	89 ca                	mov    %ecx,%edx
+  191825:	31 de                	xor    %ebx,%esi
+  191827:	31 c8                	xor    %ecx,%eax
+  191829:	09 f0                	or     %esi,%eax
+  19182b:	75 ac                	jne    1917d9 <...>
+
+to:
+
+  1912ba:	8b 06                	mov    (%esi),%eax
+  1912bc:	8b 56 04             	mov    0x4(%esi),%edx
+  1912bf:	89 44 24 3c          	mov    %eax,0x3c(%esp)
+  1912c3:	89 c1                	mov    %eax,%ecx
+  1912c5:	23 4c 24 34          	and    0x34(%esp),%ecx
+  1912c9:	89 d3                	mov    %edx,%ebx
+  1912cb:	23 5c 24 38          	and    0x38(%esp),%ebx
+  1912cf:	89 54 24 40          	mov    %edx,0x40(%esp)
+  1912d3:	89 4c 24 2c          	mov    %ecx,0x2c(%esp)
+  1912d7:	89 5c 24 30          	mov    %ebx,0x30(%esp)
+  1912db:	8b 5c 24 2c          	mov    0x2c(%esp),%ebx
+  1912df:	8b 4c 24 30          	mov    0x30(%esp),%ecx
+  1912e3:	f0 0f c7 0e          	lock cmpxchg8b (%esi)
+  1912e7:	0f 85 f3 02 00 00    	jne    1915e0 <...>
+
 Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/r/20240410062957.322614-2-ubizjak@gmail.com
+Link: https://lore.kernel.org/r/20240410062957.322614-3-ubizjak@gmail.com
 ---
- arch/x86/include/asm/atomic64_32.h | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ arch/x86/include/asm/atomic64_32.h | 43 ++++++++++++-----------------
+ 1 file changed, 18 insertions(+), 25 deletions(-)
 
 diff --git a/arch/x86/include/asm/atomic64_32.h b/arch/x86/include/asm/atomic64_32.h
-index ec217aa..bbdf174 100644
+index bbdf174..40ff73b 100644
 --- a/arch/x86/include/asm/atomic64_32.h
 +++ b/arch/x86/include/asm/atomic64_32.h
-@@ -14,6 +14,32 @@ typedef struct {
+@@ -227,69 +227,62 @@ static __always_inline s64 arch_atomic64_dec_if_positive(atomic64_t *v)
  
- #define ATOMIC64_INIT(val)	{ (val) }
+ static __always_inline void arch_atomic64_and(s64 i, atomic64_t *v)
+ {
+-	s64 old, c = 0;
++	s64 val = arch_atomic64_read_nonatomic(v);
  
-+/*
-+ * Read an atomic64_t non-atomically.
-+ *
-+ * This is intended to be used in cases where a subsequent atomic operation
-+ * will handle the torn value, and can be used to prime the first iteration
-+ * of unconditional try_cmpxchg() loops, e.g.:
-+ *
-+ * 	s64 val = arch_atomic64_read_nonatomic(v);
-+ * 	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val OP i);
-+ *
-+ * This is NOT safe to use where the value is not always checked by a
-+ * subsequent atomic operation, such as in conditional try_cmpxchg() loops
-+ * that can break before the atomic operation, e.g.:
-+ *
-+ * 	s64 val = arch_atomic64_read_nonatomic(v);
-+ * 	do {
-+ * 		if (condition(val))
-+ * 			break;
-+ * 	} while (!arch_atomic64_try_cmpxchg(v, &val, val OP i);
-+ */
-+static __always_inline s64 arch_atomic64_read_nonatomic(const atomic64_t *v)
-+{
-+	/* See comment in arch_atomic_read(). */
-+	return __READ_ONCE(v->counter);
-+}
-+
- #define __ATOMIC64_DECL(sym) void atomic64_##sym(atomic64_t *, ...)
- #ifndef ATOMIC64_EXPORT
- #define ATOMIC64_DECL_ONE __ATOMIC64_DECL
+-	while ((old = arch_atomic64_cmpxchg(v, c, c & i)) != c)
+-		c = old;
++	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val & i));
+ }
+ 
+ static __always_inline s64 arch_atomic64_fetch_and(s64 i, atomic64_t *v)
+ {
+-	s64 old, c = 0;
++	s64 val = arch_atomic64_read_nonatomic(v);
+ 
+-	while ((old = arch_atomic64_cmpxchg(v, c, c & i)) != c)
+-		c = old;
++	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val & i));
+ 
+-	return old;
++	return val;
+ }
+ #define arch_atomic64_fetch_and arch_atomic64_fetch_and
+ 
+ static __always_inline void arch_atomic64_or(s64 i, atomic64_t *v)
+ {
+-	s64 old, c = 0;
++	s64 val = arch_atomic64_read_nonatomic(v);
+ 
+-	while ((old = arch_atomic64_cmpxchg(v, c, c | i)) != c)
+-		c = old;
++	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val | i));
+ }
+ 
+ static __always_inline s64 arch_atomic64_fetch_or(s64 i, atomic64_t *v)
+ {
+-	s64 old, c = 0;
++	s64 val = arch_atomic64_read_nonatomic(v);
+ 
+-	while ((old = arch_atomic64_cmpxchg(v, c, c | i)) != c)
+-		c = old;
++	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val | i));
+ 
+-	return old;
++	return val;
+ }
+ #define arch_atomic64_fetch_or arch_atomic64_fetch_or
+ 
+ static __always_inline void arch_atomic64_xor(s64 i, atomic64_t *v)
+ {
+-	s64 old, c = 0;
++	s64 val = arch_atomic64_read_nonatomic(v);
+ 
+-	while ((old = arch_atomic64_cmpxchg(v, c, c ^ i)) != c)
+-		c = old;
++	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val ^ i));
+ }
+ 
+ static __always_inline s64 arch_atomic64_fetch_xor(s64 i, atomic64_t *v)
+ {
+-	s64 old, c = 0;
++	s64 val = arch_atomic64_read_nonatomic(v);
+ 
+-	while ((old = arch_atomic64_cmpxchg(v, c, c ^ i)) != c)
+-		c = old;
++	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val ^ i));
+ 
+-	return old;
++	return val;
+ }
+ #define arch_atomic64_fetch_xor arch_atomic64_fetch_xor
+ 
+ static __always_inline s64 arch_atomic64_fetch_add(s64 i, atomic64_t *v)
+ {
+-	s64 old, c = 0;
++	s64 val = arch_atomic64_read_nonatomic(v);
+ 
+-	while ((old = arch_atomic64_cmpxchg(v, c, c + i)) != c)
+-		c = old;
++	do { } while (!arch_atomic64_try_cmpxchg(v, &val, val + i));
+ 
+-	return old;
++	return val;
+ }
+ #define arch_atomic64_fetch_add arch_atomic64_fetch_add
+ 
 
