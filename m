@@ -1,66 +1,65 @@
-Return-Path: <linux-kernel+bounces-137928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7E0D89E9AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:26:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4355889E9B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:26:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BC81B224C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:26:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F38D3285BD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:26:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE14F168D0;
-	Wed, 10 Apr 2024 05:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C79AA17552;
+	Wed, 10 Apr 2024 05:26:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="MdYUda89"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DKJGJ4TU"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F03F8B676;
-	Wed, 10 Apr 2024 05:25:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9431614AA3;
+	Wed, 10 Apr 2024 05:26:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712726761; cv=none; b=D7kUYV96zUg96h+iw1G4CYXddbsI5mHAJbY3hu5shFv+BwZJdZXwiP24JqAd4WzLQ4QzUiYvXDoHQOGfyIrPFGwb/h1MVzqYcbKVlxZRkOHuFRN+nmrazvYQ0LVAv4xIsh2PUYIRE5nL38B3NF0dCFRDYw1CKOXTlb9lK6IaxoM=
+	t=1712726775; cv=none; b=lFjrNdtGNziwCw/CiHnA8g1oW7E8arwApWuUYAdYunMoIa+Ic7sTfQoVjKT341bbUmmcbZ+fTWzltWUMw9fqpevrUFSNaWttUKv0S7ir3GZdv+i+k0wHbXGON1QRFLY9iQ3IugP4V6/ocnkjilDjDxJL51V2IFlOwhj8WqbJOKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712726761; c=relaxed/simple;
-	bh=uemkmvspv5ZB3wuB0TCGG9ab6fnYyfqgNmfpNNRHrkE=;
+	s=arc-20240116; t=1712726775; c=relaxed/simple;
+	bh=Bmrmn+Z1e0QZcIQKtRBnRnegyNa+yT2pHcOA0yj1fKI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=r5GWiZN++IgdF0oDifW25iswzTeu52vyWvdZvKLCzMCssXI76JZBgzQZZzG6wkVUo5lAKy4IcjTiGj8X+q1i1am7xIn7EAsuvfX/gV0Q9Tfl96J9HoOeCjmdtd/MJZx5ZTx2ex6vAiQOeP6kjFuuixaxjwaf3ZQ0lBdsNsU4Heo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=MdYUda89; arc=none smtp.client-ip=217.70.183.200
+	 MIME-Version; b=VaBlfnmPDh9ZJSP+yEuj84uyTIKQe/MAEIbMBWdsxxeQNigoT09aXqeyQgVe7o2A8X7bEzdSAXhS06VGS2pcvA4aiux0QZFWMuF0oAOvtG/FkX0CQCCmhtvrlovvqSo5fGfxkn43G41hai2Ms79269gg47DhaialUsFmWEjqPPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=DKJGJ4TU; arc=none smtp.client-ip=217.70.183.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C971920003;
-	Wed, 10 Apr 2024 05:25:51 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1D39F40004;
+	Wed, 10 Apr 2024 05:26:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712726754;
+	t=1712726765;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pp6MTv8ndXhkZFAi0mOWfa7deuiDrn7kLeffrdA5z5g=;
-	b=MdYUda89nrrNToShetXSgAldJEpsyLQC36tFBUb/UHYzTsDvcF/BeLK/p0FO+at1aNg3xu
-	hj1ABRJmB2DsWkUGLeICvDT969+zaoqPWc7lcD24sfdVf2Q2Bxyol5GbJBDDG7LdnCSgQY
-	/9i6U7Z7vMnyABs5DU9z9yxF91zH9PBgYTnNNGTtEBICU7C0JPKRgkaeitRg/ygtX21lVL
-	YcJQDPO1zYgrn2hgtIKtnwaOfMntWL5HVIGfGz/SLTX85pesxhDtHt0+rtr3M00TclMd0s
-	VMjCT0KwDMAlCILpVPCnBUS+0XHx1yIjNGx6ttOqW5DR1p1J6EPibkMB4V8vMA==
+	bh=Um4WIpNb1+UQMrQR3QwYZbAFwR55RaRCf7rvIeJqRyQ=;
+	b=DKJGJ4TUpnK07O1tTxfbOo9Jn8xpVTX6kkZmlkw00Sk6w32AukkU75a+BZNFF3UIb4lUCn
+	xio1pN0aJjZhkrosFz8LwK1uxNOIIc4KfIeJJUKEmu2XZWVnwJ5/JVD57couggLOZ5uKvv
+	yA+X/UBKjnSwBajOr/NDc45wqbg1LZIR/oYW58Jel8PHi1wz4CYYHtkgg6m8C299V8uBeg
+	8vCRjeLn8JKgi6SQ0hQiSavczaBeG/8O+zh4PfXkAY1uKjjmtnTzJNR8TDbccGzWRVW2vx
+	foF/5dSDWVn2cuswImvQ/z7sHzbfSmzmT7QHfApy4C76BU04asG/iPyBuXygMw==
 From: michael.opdenacker@bootlin.com
-To: Conor Dooley <conor@kernel.org>,
-	Rob Herring <robh@kernel.org>,
+To: Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
 	Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Albert Ou <aou@eecs.berkeley.edu>,
 	Chen Wang <unicorn_wang@outlook.com>,
-	Inochi Amaoto <inochiama@outlook.com>,
-	Chao Wei <chao.wei@sophgo.com>
+	Inochi Amaoto <inochiama@outlook.com>
 Cc: Michael Opdenacker <michael.opdenacker@bootlin.com>,
-	linux-riscv@lists.infradead.org,
 	devicetree@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] dt-bindings: riscv: add Milk-V Duo S board compatibles
-Date: Wed, 10 Apr 2024 07:25:17 +0200
-Message-Id: <20240410052518.2945789-2-michael.opdenacker@bootlin.com>
+Subject: [PATCH v2 2/2] riscv: dts: sophgo: add initial Milk-V Duo S board support
+Date: Wed, 10 Apr 2024 07:25:18 +0200
+Message-Id: <20240410052518.2945789-3-michael.opdenacker@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240410052518.2945789-1-michael.opdenacker@bootlin.com>
 References: <20240410052518.2945789-1-michael.opdenacker@bootlin.com>
@@ -75,32 +74,74 @@ X-GND-Sasl: michael.opdenacker@bootlin.com
 
 From: Michael Opdenacker <michael.opdenacker@bootlin.com>
 
-Document the compatible strings for the Milk-V Duo S board[1] which uses
-the SOPHGO SG2000 SoC, compatible with the SOPHGO CV1800B SoC[2].
+This adds initial support for the Milk-V Duo S board
+(https://milkv.io/duo-s), enabling the serial port and
+SD card support, allowing to boot Linux to the command line.
 
-Link: https://milkv.io/duo-s [1]
-Link: https://en.sophgo.com/product/introduce/cv180xB.html [2]
+Link: https://lore.kernel.org/linux-riscv/171266958507.1032617.9460749136730849811.robh@kernel.org/T/#t
 
 Signed-off-by: Michael Opdenacker <michael.opdenacker@bootlin.com>
 ---
- Documentation/devicetree/bindings/riscv/sophgo.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/riscv/boot/dts/sophgo/Makefile           |  1 +
+ .../boot/dts/sophgo/sg2000-milkv-duos.dts     | 39 +++++++++++++++++++
+ 2 files changed, 40 insertions(+)
+ create mode 100644 arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts
 
-diff --git a/Documentation/devicetree/bindings/riscv/sophgo.yaml b/Documentation/devicetree/bindings/riscv/sophgo.yaml
-index 9bc813dad098..2bf58bd6f3a0 100644
---- a/Documentation/devicetree/bindings/riscv/sophgo.yaml
-+++ b/Documentation/devicetree/bindings/riscv/sophgo.yaml
-@@ -22,6 +22,10 @@ properties:
-           - enum:
-               - milkv,duo
-           - const: sophgo,cv1800b
-+      - items:
-+          - enum:
-+              - milkv,duos
-+          - const: sophgo,cv1800b
-       - items:
-           - enum:
-               - sophgo,huashan-pi
+diff --git a/arch/riscv/boot/dts/sophgo/Makefile b/arch/riscv/boot/dts/sophgo/Makefile
+index 57ad82a61ea6..e008acb5240f 100644
+--- a/arch/riscv/boot/dts/sophgo/Makefile
++++ b/arch/riscv/boot/dts/sophgo/Makefile
+@@ -1,4 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+ dtb-$(CONFIG_ARCH_SOPHGO) += cv1800b-milkv-duo.dtb
+ dtb-$(CONFIG_ARCH_SOPHGO) += cv1812h-huashan-pi.dtb
++dtb-$(CONFIG_ARCH_SOPHGO) += sg2000-milkv-duos.dtb
+ dtb-$(CONFIG_ARCH_SOPHGO) += sg2042-milkv-pioneer.dtb
+diff --git a/arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts b/arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts
+new file mode 100644
+index 000000000000..679d2854938a
+--- /dev/null
++++ b/arch/riscv/boot/dts/sophgo/sg2000-milkv-duos.dts
+@@ -0,0 +1,39 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright (C) 2024 Michael Opdenacker <michael.opdenacker@bootlin.com>
++ */
++
++/dts-v1/;
++
++#include "cv1800b.dtsi"
++
++/ {
++	model = "Milk-V Duo S";
++	compatible = "milkv,duos", "sophgo,cv1800b";
++
++	aliases {
++		serial0 = &uart0;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	memory@80000000 {
++		device_type = "memory";
++		reg = <0x80000000 0x20000000>;
++	};
++};
++
++&osc {
++	clock-frequency = <25000000>;
++};
++
++&sdhci0 {
++	status = "okay";
++	disable-wp;
++};
++
++&uart0 {
++	status = "okay";
++};
 -- 
 2.34.1
 
