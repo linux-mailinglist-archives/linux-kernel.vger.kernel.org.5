@@ -1,113 +1,138 @@
-Return-Path: <linux-kernel+bounces-138243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138244-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF33489EEA7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:21:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F0DB89EEA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 11:21:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B8101C21FA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:21:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19E921F2801B
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 09:21:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDE8115ADB6;
-	Wed, 10 Apr 2024 09:18:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD12B155385;
+	Wed, 10 Apr 2024 09:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="gYRcQVoh"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=cknow.org header.i=@cknow.org header.b="V5y6Vue/"
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AF1215573D;
-	Wed, 10 Apr 2024 09:18:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65AB15444A
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 09:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712740689; cv=none; b=lPB+WGotMT8o8b8RNuFi5Z3A97zBC+B8uJ3WXV9MFBagG1ukDKRS+oEPLup4HCtob7oC3n6rMMM8nvOxc1t/eo1uh1mf1+uyi0FvB2wt0lNuc7zwpNgLHXLfFjVf+nyuaaXkLbf3S1gwdoWW1XampowE13o6D67AqTNLO8P7tvQ=
+	t=1712740782; cv=none; b=tmoSA/ni2bRuZ7SRwNxj5p/INw8Em8IC0AgE0h/vn8BIkMF/3BvJ50Bmzr2HqsPU1PyFCUhMNLBEHyfcuizRXUkClF89QM+uFTvz+B0JPi57qOfPLvwvhOkj7g2kIIUKg4WGHo0F3Vnjrgii/t2rlnvoWDmLX3lKHUHqvLTZMRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712740689; c=relaxed/simple;
-	bh=buENw+YtfetZukl3wvHbHBQ7F3q5JUdS9DaF/JEENWk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a9XEF+QP/w2f/tDKcUEAql6wve28k1d/sI+CRHzcEsQNn1d9/ez/rWs15mwAgjsps7uQePUG2cQsp6TCwioSXut9oWwSTbzFjlRm32AvwprGZFdyXWUMsHVxJ/unWMQVnr2Inx3F9kX54nKFHSQBX/UQjHFtZR2Cg7eQRNtRvHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=gYRcQVoh; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=MG+8o97HbAfSpyN8cL56yv14qBVXuFd6KIelqD3DFmk=;
-	t=1712740687; x=1713172687; b=gYRcQVohw/RNKKHZ/QjVpxIsW6X4wqE2Dvagv3MrcJ+y77T
-	5r8/PfIqyAXoP68mhzuNhDS8NhjHechZ+lOf4HngqhhwVwDkwRoLrn2Z96AZH8Ma4/3ZMD3Ak4/Wm
-	X3HZRwTC5G3OmtvZxi3+mJvbznX1p7y2sNrjkmGH+S0FgUe+KSo7UIwVeLNxlak/ghzfU6BPfEIdD
-	g2oTrYBhdVsX9cd9gsbx+zj+K/1I8KQXl8Sy0cEQsbSUtpJpAijoPVLh+BW6A5ZQFZ+byAF3UhdL5
-	DTSW6PeX56+ftLnWfvuUOqoZp1IgnlwQ49eaQWsj4Alpd2D8qo2qO12Hsuxbf+OQ==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1ruU5k-0004w0-Oc; Wed, 10 Apr 2024 11:18:04 +0200
-Message-ID: <28c84b3b-f68f-4f45-8da1-9c3f9a342509@leemhuis.info>
-Date: Wed, 10 Apr 2024 11:18:04 +0200
+	s=arc-20240116; t=1712740782; c=relaxed/simple;
+	bh=evTv8De6lv1FsnypG6LZMsXywDGeAc/aRB/nBLtcl6E=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jS1wpHRCXC8Yv9FRTFCwj/TZMawPiGnFGK13psh1gtbYu2bTQRXaTlBc3oujpjk4BHcIkn1xHs83jFDMWopkLQjv9yVF22PPEY8Ooo0Y/wBK4rjtNiq4mXRjp0pQ19sRbv9R2rgOWAPCSFovBjrNWCgfJ5aTJXENSQE/I3cP6tg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cknow.org; spf=pass smtp.mailfrom=cknow.org; dkim=pass (2048-bit key) header.d=cknow.org header.i=@cknow.org header.b=V5y6Vue/; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cknow.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cknow.org
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cknow.org; s=key1;
+	t=1712740777;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7Fxnre8bEBsAfmvV59wTcaDrSTm/YPKF5xn8HG3MyBk=;
+	b=V5y6Vue/obAOV3r4CISyivKtBvFKMyxFE4KpcmotuE6QwDVZmrS5Jhc6DgbTDt8Pb3PCE+
+	Ywt7zJzqzRr3BTKhw9xHEC0tfIl7IFwcNc606f3EonourjaKvIvuA9kr+UQnIlE8viG+18
+	GBs6R4uZgTK/LW2aiGYe9tpnNPnwnax2B630P+vong0+Ez3gb+3gehUuOQ3/rt7o4OEUxC
+	pecGhfSEaFkdCGSxA+u6RUr2pviXPsZXP0qrgqLY5CHhnqiar5PVVzoOD5jBVWGHyCWllp
+	/qbWAe0VGY38OEgHEu+XkJIMP9FGhY8JyzqmTkNRPuxgwt5A99GDkE0HqpweJA==
+From: Diederik de Haas <didi.debian@cknow.org>
+To: Alexey Charkov <alchark@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+ linux-rockchip@lists.infradead.org,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Dragan Simic <dsimic@manjaro.org>, Viresh Kumar <viresh.kumar@linaro.org>,
+ Chen-Yu Tsai <wens@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Alexey Charkov <alchark@gmail.com>
+Subject: Re: [PATCH v3 0/5] RK3588 and Rock 5B dts additions: thermal,
+ OPP and fan
+Date: Wed, 10 Apr 2024 11:19:24 +0200
+Message-ID: <66689051.MzlzmSNrL9@bagend>
+Organization: Connecting Knowledge
+In-Reply-To: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
+References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Bug 218665 - nohz_full=0 prevents kernel from booting
-To: Bjorn Andersson <andersson@kernel.org>, Tejun Heo <tj@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-References: <5be248c6-cdda-4d2e-8fae-30fc2cc124c0@leemhuis.info>
- <enqg6mcuhvff7gujjbapdiclicl3z6f2vnggcsg65pexipyr3o@4men5fhyt3vb>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Content-Language: en-US, de-DE
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <enqg6mcuhvff7gujjbapdiclicl3z6f2vnggcsg65pexipyr3o@4men5fhyt3vb>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1712740687;59a061c0;
-X-HE-SMSGID: 1ruU5k-0004w0-Oc
+Content-Type: multipart/signed; boundary="nextPart7134483.Nosjqafpsc";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Migadu-Flow: FLOW_OUT
 
-On 08.04.24 00:52, Bjorn Andersson wrote:
-> On Tue, Apr 02, 2024 at 10:17:16AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
->>
->> I noticed a regression report in bugzilla.kernel.org. As many (most?)
->> kernel developers don't keep an eye on it, I decided to forward it by mail.
->>
->> Tejun, apparently it's cause by a change of yours.
->>
->> Note, you have to use bugzilla to reach the reporter, as I sadly[1] can
->> not CCed them in mails like this.
->>
->> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218665 :
->>
->>> booting the current kernel (6.9.0-rc1, master/712e1425) on x86_64
->>> with nohz_full=0 cause a page fault and prevents the kernel from
->>> booting.
-> [...]
-> In addition to this report, I have finally bisected another regression
-> to the same commit:
-> 
-> I start neovim, send SIGSTOP (i.e. ^Z) to it, start another neovim
-> instance and upon sending SIGSTOP to that instance all of userspace
-> locks up - 100% reproducible.
-> 
-> The kernel seems to continue to operate, and tapping the power button
-> dislodge the lockup and I get a clean shutdown.
-> 
-> This is seen on multiple Arm64 (Qualcomm) machines with upstream
-> defconfig since commit '5797b1c18919 ("workqueue: Implement system-wide
-> nr_active enforcement for unbound workqueues")'.
+--nextPart7134483.Nosjqafpsc
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Diederik de Haas <didi.debian@cknow.org>
+To: Alexey Charkov <alchark@gmail.com>
+Date: Wed, 10 Apr 2024 11:19:24 +0200
+Message-ID: <66689051.MzlzmSNrL9@bagend>
+Organization: Connecting Knowledge
+In-Reply-To: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
+References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
+MIME-Version: 1.0
 
-Hmmm, I had hoped Tejun would reply and share an opinion if these
-problems are related. But that didn't happen. :-/ So let me at least ask
-one question that might help to answer that question: is the machine
-using CPU isolation, like the two other reports about problems caused by
-this commit do (see the
-https://bugzilla.kernel.org/show_bug.cgi?id=218665 and
-https://lore.kernel.org/all/20240402105847.GA24832@redhat.com/ for
-details) ?
+On Thursday, 29 February 2024 20:26:31 CEST Alexey Charkov wrote:
+> This enables thermal monitoring and CPU DVFS on RK3588(s), as well as
+> active cooling on Radxa Rock 5B via the provided PWM fan.
+> 
+> Some RK3588 boards use separate regulators to supply CPUs and their
+> respective memory interfaces, so this is handled by coupling those
+> regulators in affected boards' device trees to ensure that their
+> voltage is adjusted in step.
+> 
+> 
+> Signed-off-by: Alexey Charkov <alchark@gmail.com>
+> ---
+> Alexey Charkov (5):
+>       arm64: dts: rockchip: enable built-in thermal monitoring on RK3588
+>       arm64: dts: rockchip: enable automatic active cooling on Rock 5B
+>       arm64: dts: rockchip: Add CPU/memory regulator coupling for RK3588
+>       arm64: dts: rockchip: Add OPP data for CPU cores on RK3588
+>       arm64: dts: rockchip: Add further granularity in RK3588 CPU OPPs
+> 
+>  arch/arm64/boot/dts/rockchip/rk3588-evb1-v10.dts   |  12 +
+>  .../arm64/boot/dts/rockchip/rk3588-quartzpro64.dts |  12 +
+>  arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts    |  30 +-
+>  arch/arm64/boot/dts/rockchip/rk3588s.dtsi          | 385
+> ++++++++++++++++++++- 4 files changed, 437 insertions(+), 2 deletions(-)
+> ---
+> base-commit: cf1182944c7cc9f1c21a8a44e0d29abe12527412
+> change-id: 20240124-rk-dts-additions-a6d7b52787b9
 
-Ciao, Thorsten
+Can you rebase this patch set on Heiko's for-next branch [1]?
+And then also fix the ordering of the nodes and the elements within
+those nodes so that they match the current conventions?
+
+Cheers,
+  Diederik
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/mmind/linux-rockchip.git/log/?h=for-next
+--nextPart7134483.Nosjqafpsc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQT1sUPBYsyGmi4usy/XblvOeH7bbgUCZhZZnAAKCRDXblvOeH7b
+brL0AP96KiehZ6mo0z6uX/FZeBYHChb+2/he7oAjmljWIz3ohQEAg/5R9SFlnLo0
+oT2M2B5cvMWaS/9RDlqmca2ZFO7w1wE=
+=KWnH
+-----END PGP SIGNATURE-----
+
+--nextPart7134483.Nosjqafpsc--
+
+
+
 
