@@ -1,268 +1,184 @@
-Return-Path: <linux-kernel+bounces-138873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138874-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7296D89FB88
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:29:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B5F589FB8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:29:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01DCC1F268DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:29:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B72EC1C220B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:29:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 819D416EC11;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE47F16EC1A;
 	Wed, 10 Apr 2024 15:28:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fKfXx6da"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="K1g8NZ9X"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62351E878
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 15:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55F5615D5C0;
+	Wed, 10 Apr 2024 15:28:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712762928; cv=none; b=SitxkNcsMUAlQFvUp8ylwyhtMF6wRlTgfx1lJxpoa+HgYOCNksaHX0ri1ZjCN6F51MHQIeT2a4R9KORDs/j+/k1eixe26zYE3FmmbKNKlSGY6bo+k0EfBo5nXaxJGa2kzp8kdA8+t0mVi5g3n5R3pu0zMl62rjEPXQNNsE9YAYQ=
+	t=1712762929; cv=none; b=UBD+HwTDxdsl0+qtuylTyyz//6sCxzfvA90hlXAi7nQgpukh8m03OHauBOEDyne1xLqMlT/v1Q0HalyD0P9962fpWM6gfjjUq+ZvqHm8EdrVXDttiMgtyDelhW5xCnMqX9Ut+S8r7XuvlRegW8cUIqHDRWriP23KikJj68WKoe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712762928; c=relaxed/simple;
-	bh=lSxDCqVmS49joX+KK2vOQBOuXPAF5oXxcuK+9LJdVFg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=grDD1CxGAM7qCUxDf1o4Bkzi6pZ+imRnS8sd3MpeYqDsxqoFHOwCueN3VDqzIeGNkRmddEuZOVsC+k8TaDJY0NbTSbDAtQ1lzHuLGmHq3aeBJa0oQCcmcAzwEBLwp6hgtLselaNT/6AgJbRcF+M++b/VxRmQjW89x6k4Jh2hqa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fKfXx6da; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712762925;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ci1baLlwDbOm6Wup8/nHleUUTbOV/R7CG6mxApYjz0M=;
-	b=fKfXx6daHhl5PrK4E9aFrZnlTgfulS/1gTixVI5lppIUn4QLmTYyjG7U4WgxMei2HJbxBT
-	7SVDXcWl22mWqiKidMiB7KG1dnUUDPhhg9qCiyxMp65QfNZ8hvoqNH50JXwt6dWgt5YVGi
-	M08HmR8HVH0LI9O+xUtY7i/e5LucBTw=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-390-AfH0EcHqMXSmp7c7iAiAdQ-1; Wed, 10 Apr 2024 11:28:44 -0400
-X-MC-Unique: AfH0EcHqMXSmp7c7iAiAdQ-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-69627b26a51so2057506d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 08:28:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712762923; x=1713367723;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ci1baLlwDbOm6Wup8/nHleUUTbOV/R7CG6mxApYjz0M=;
-        b=FVZ6uatgI+RSHU74x81lbNnQOh5a6EPBshQednr3olXMRH7RphuWAyIHRdimiSistw
-         Lw+wxQOiHxq1y05W42/6MZ9759NF+X4oWDzx7F/jM70X87E3kT/Z/PmNTRlMSph5IhNf
-         eHLAwe9DBD/sDAXGaHsT8v0bgwmF5qYW7pk66PZp1HkPMHmfvwdvZVUFKEtyK/QLWe7M
-         l5HHD0CITqE3VFW5npEiBmAUSa8gPipLT9ylrBwUdKLewUVPmQjWnf+TxlirccY0v+AG
-         4UmrMBVJ1Q86yXGgXkA4lOw+Ia9hvqt/OYpHDRJ+NIn1Un390UorGEXPXxqlIbF3OksS
-         Kxpw==
-X-Forwarded-Encrypted: i=1; AJvYcCVcVad48PgObdzYQx+jkIuiqP+Onor1J4LZrvAIUgAie3XAyERXVdeJ/VndoIYZRd2/0p7YWlPVunPSC+AxaNate0brYdPSMi3/OfB+
-X-Gm-Message-State: AOJu0YytSlGfBtIq77tNDDYaek4oPno3FlaPmPEnZuohxOU8Pc8yPD5i
-	VlllKKvVn07I7fXWPOERSQRVqjD/IYGd8oOZHGatiZ9gzk1p4owC+ecxYnGUyeE1jg1gV3BQzUf
-	kRHFWDgcYK/Qb6QEDS6rvPzNtJKLQW7UXLHKvOjvOTgRtfi4o+JIT1Z5dDiOrWA==
-X-Received: by 2002:a05:6214:5090:b0:69b:ce6:271b with SMTP id kk16-20020a056214509000b0069b0ce6271bmr3168089qvb.2.1712762923251;
-        Wed, 10 Apr 2024 08:28:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGZs5MCkL0IJwntJvXwMvElTS5kl/yk1ExPO6tDqr2NK62DfB6pdbW0p2/DjTaMvJz9lDcKPw==
-X-Received: by 2002:a05:6214:5090:b0:69b:ce6:271b with SMTP id kk16-20020a056214509000b0069b0ce6271bmr3168047qvb.2.1712762922544;
-        Wed, 10 Apr 2024 08:28:42 -0700 (PDT)
-Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id ek1-20020ad45981000000b00699032e555bsm5208543qvb.127.2024.04.10.08.28.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 08:28:42 -0700 (PDT)
-Date: Wed, 10 Apr 2024 11:28:39 -0400
-From: Peter Xu <peterx@redhat.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rik van Riel <riel@surriel.com>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yang Shi <shy828301@gmail.com>, John Hubbard <jhubbard@nvidia.com>,
-	linux-arm-kernel@lists.infradead.org,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Andrew Jones <andrew.jones@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Christoph Hellwig <hch@infradead.org>,
-	linux-riscv@lists.infradead.org,
-	James Houghton <jthoughton@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH v3 00/12] mm/gup: Unify hugetlb, part 2
-Message-ID: <ZhawJ-VD6DtLZ2Zm@x1n>
-References: <20240321220802.679544-1-peterx@redhat.com>
- <20240322161000.GJ159172@nvidia.com>
- <ZgHJaJSpoeJVEccN@x1n>
- <20240326140252.GH6245@nvidia.com>
- <Zg8gEyE4o_VJsTmx@x1n>
- <20240405181633.GH5383@nvidia.com>
- <ZhBwVLyHr8WEKSx2@x1n>
- <20240409234355.GJ5383@nvidia.com>
+	s=arc-20240116; t=1712762929; c=relaxed/simple;
+	bh=CKYJu7WyQjbgodgDBQk/bD0aZ+5Ih4b2bRRph8ajJNE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hUfXNTzDM+j2e+MTs1GZod6OhS0zB6zyLgeCRRXmv0db7/rc80xML9Z2ltTeQbogX5EQ6xp4idmSgqMhhyG+K+tvZHsB4/V6l2Sk+Ee9ZKis5aWc8Z8xlfDmzLoD0iu7MKmOSAqfYDv1pQucBSJU+sk7LKzH4KOwBPlEpUjm204=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=K1g8NZ9X; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712762924;
+	bh=CKYJu7WyQjbgodgDBQk/bD0aZ+5Ih4b2bRRph8ajJNE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=K1g8NZ9XR3lakU90fT945gzq+DiAo/FRpF8YT7T6u+aQZmErduUjLkdbPHkFjx8pu
+	 mzrRW1tBX48RU8nBach238E42fYVQLFIvISoTqSysZhQeyZRkdXYnEHB78EC60oPHs
+	 HcAah3gmFWgu5zRhllO7O8W1tC98QU5Xc6BgbldS76U0M9dPM1Vw68ZgGPP9D1G5R4
+	 dCTniLg2gjCeqAcr5rFQDwfICu23kOxzIWORkG44Xmu1YRVXkgd2ISRqssYHuleWcZ
+	 2riMyfqkOmZ9NXXLB+wUCSUs577ZiwKxtmL1FoSDrtAxskh8Uj1CoNZCDrihogfJW5
+	 HhS7bd8w+H66w==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 89F423780C13;
+	Wed, 10 Apr 2024 15:28:42 +0000 (UTC)
+Message-ID: <636411e6-05fd-4e32-8e3c-6bcc0c9ec063@collabora.com>
+Date: Wed, 10 Apr 2024 17:28:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240409234355.GJ5383@nvidia.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 05/18] ASoC: mediatek: mt8192: Migrate to
+ mtk_soundcard_common_probe
+To: Alexandre Mergnat <amergnat@baylibre.com>, broonie@kernel.org
+Cc: wenst@chromium.org, lgirdwood@gmail.com, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
+ trevor.wu@mediatek.com, maso.huang@mediatek.com,
+ xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de,
+ kuninori.morimoto.gx@renesas.com, shraash@google.com,
+ nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de,
+ dianders@chromium.org, frank.li@vivo.com, allen-kh.cheng@mediatek.com,
+ eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev,
+ jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com, alpernebiyasak@gmail.com,
+ ckeepax@opensource.cirrus.com, zhourui@huaqin.corp-partner.google.com,
+ nfraprado@collabora.com, alsa-devel@alsa-project.org,
+ shane.chien@mediatek.com, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ kernel@collabora.com
+References: <20240409113310.303261-1-angelogioacchino.delregno@collabora.com>
+ <20240409113310.303261-6-angelogioacchino.delregno@collabora.com>
+ <cf0184c4-2b3e-4074-9e30-bf65ec7f0aaa@baylibre.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <cf0184c4-2b3e-4074-9e30-bf65ec7f0aaa@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 09, 2024 at 08:43:55PM -0300, Jason Gunthorpe wrote:
-> On Fri, Apr 05, 2024 at 05:42:44PM -0400, Peter Xu wrote:
-> > In short, hugetlb mappings shouldn't be special comparing to other huge pXd
-> > and large folio (cont-pXd) mappings for most of the walkers in my mind, if
-> > not all.  I need to look at all the walkers and there can be some tricky
-> > ones, but I believe that applies in general.  It's actually similar to what
-> > I did with slow gup here.
+Il 10/04/24 15:59, Alexandre Mergnat ha scritto:
 > 
-> I think that is the big question, I also haven't done the research to
-> know the answer.
 > 
-> At this point focusing on moving what is reasonable to the pXX_* API
-> makes sense to me. Then reviewing what remains and making some
-> decision.
+> On 09/04/2024 13:32, AngeloGioacchino Del Regno wrote:
+>> @@ -1211,52 +1196,85 @@ static int mt8192_mt6359_dev_probe(struct platform_device 
+>> *pdev)
+>>           if (dai_link->num_codecs && dai_link->codecs[0].dai_name &&
+>>               strcmp(dai_link->codecs[0].dai_name, RT1015_CODEC_DAI) == 0)
+>>               dai_link->ops = &mt8192_rt1015_i2s_ops;
+>> -
+>> -        if (!dai_link->platforms->name)
+>> -            dai_link->platforms->of_node = platform_node;
+>> -    }
+>> -
+>> -    priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+>> -    if (!priv) {
+>> -        ret = -ENOMEM;
+>> -        goto err_probe;
+>> -    }
+>> -    snd_soc_card_set_drvdata(card, priv);
+>> -
+>> -    ret = mt8192_afe_gpio_init(&pdev->dev);
+>> -    if (ret) {
+>> -        dev_err_probe(&pdev->dev, ret, "%s init gpio error\n", __func__);
 > 
-> > Like this series, for cont-pXd we'll need multiple walks comparing to
-> > before (when with hugetlb_entry()), but for that part I'll provide some
-> > performance tests too, and we also have a fallback plan, which is to detect
-> > cont-pXd existance, which will also work for large folios.
+> I don't think __func__ is necessary.
 > 
-> I think we can optimize this pretty easy.
->  
-> > > I think if you do the easy places for pXX conversion you will have a
-> > > good idea about what is needed for the hard places.
-> > 
-> > Here IMHO we don't need to understand "what is the size of this hugetlb
-> > vma"
+>> -        goto err_probe;
+>>       }
+>> -    ret = devm_snd_soc_register_card(&pdev->dev, card);
+>> -    if (ret)
+>> -        dev_err_probe(&pdev->dev, ret, "%s snd_soc_register_card fail\n", 
+>> __func__);
 > 
-> Yeh, I never really understood why hugetlb was linked to the VMA.. The
-> page table is self describing, obviously.
+> I don't think __func__ is necessary.
 
-Attaching to vma still makes sense to me, where we should definitely avoid
-a mixture of hugetlb and !hugetlb pages in a single vma - hugetlb pages are
-allocated, managed, ...  totally differently.
-
-And since hugetlb is designed as file-based (which also makes sense to me,
-at least for now), it's also natural that it's vma-attached.
-
-> 
-> > or "which level of pgtable does this hugetlb vma pages locate",
-> 
-> Ditto
-> 
-> > because we may not need that, e.g., when we only want to collect some smaps
-> > statistics.  "whether it's hugetlb" may matter, though. E.g. in the mm
-> > walker we see a huge pmd, it can be a thp, it can be a hugetlb (when
-> > hugetlb_entry removed), we may need extra check later to put things into
-> > the right bucket, but for the walker itself it doesn't necessarily need
-> > hugetlb_entry().
-> 
-> Right, places may still need to know it is part of a huge VMA because we
-> have special stuff linked to that.
-> 
-> > > But then again we come back to power and its big list of page sizes
-> > > and variety :( Looks like some there have huge sizes at the pgd level
-> > > at least.
-> > 
-> > Yeah this is something I want to be super clear, because I may miss
-> > something: we don't have real pgd pages, right?  Powerpc doesn't even
-> > define p4d_leaf(), AFAICT.
-> 
-> AFAICT it is because it hides it all in hugepd.
-
-IMHO one thing we can benefit from such hugepd rework is, if we can squash
-all the hugepds like what Christophe does, then we push it one more layer
-down, and we have a good chance all things should just work.
-
-So again my Power brain is close to zero, but now I'm referring to what
-Christophe shared in the other thread:
-
-https://github.com/linuxppc/wiki/wiki/Huge-pages
-
-Together with:
-
-https://lore.kernel.org/r/288f26f487648d21fd9590e40b390934eaa5d24a.1711377230.git.christophe.leroy@csgroup.eu
-
-Where it has:
-
---- a/arch/powerpc/platforms/Kconfig.cputype
-+++ b/arch/powerpc/platforms/Kconfig.cputype
-@@ -98,6 +98,7 @@ config PPC_BOOK3S_64
-        select ARCH_ENABLE_HUGEPAGE_MIGRATION if HUGETLB_PAGE && MIGRATION
-        select ARCH_ENABLE_SPLIT_PMD_PTLOCK
-        select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
-+       select ARCH_HAS_HUGEPD if HUGETLB_PAGE
-        select ARCH_SUPPORTS_HUGETLBFS
-        select ARCH_SUPPORTS_NUMA_BALANCING
-        select HAVE_MOVE_PMD
-@@ -290,6 +291,7 @@ config PPC_BOOK3S
- config PPC_E500
-        select FSL_EMB_PERFMON
-        bool
-+       select ARCH_HAS_HUGEPD if HUGETLB_PAGE
-        select ARCH_SUPPORTS_HUGETLBFS if PHYS_64BIT || PPC64
-        select PPC_SMP_MUXED_IPI
-        select PPC_DOORBELL
-
-So I think it means we have three PowerPC systems that supports hugepd
-right now (besides the 8xx which Christophe is trying to drop support
-there), besides 8xx we still have book3s_64 and E500.
-
-Let's check one by one:
-
-  - book3s_64
-
-    - hash
-
-      - 64K: p4d is not used, largest pgsize pgd 16G @pud level.  It
-        means after squashing it'll be a bunch of cont-pmd, all good.
-
-      - 4K: p4d also not used, largest pgsize pgd 128G, after squashed
-        it'll be cont-pud. all good.
-
-    - radix
-
-      - 64K: largest 1G @pud, then cont-pmd after squashed. all good.
-
-      - 4K: largest 1G @pud, then cont-pmd, all good.
-
-  - e500 & 8xx
-
-    - both of them use 2-level pgtables (pgd + pte), after squashed hugepd
-      @pgd level they become cont-pte. all good.
-
-I think the trick here is there'll be no pgd leaves after hugepd squashing
-to lower levels, then since PowerPC seems to never have p4d, then all
-things fall into pud or lower.  We seem to be all good there?
+I am removing the line, here :-P
 
 > 
-> If the goal is to purge hugepd then some of the options might turn out
-> to convert hugepd into huge p4d/pgd, as I understand it. It would be
-> nice to have certainty on this at least.
-
-Right.  I hope the pmd/pud plan I proposed above can already work too with
-such ambicious goal too.  But review very welcomed from either you or
-Christophe.
-
-PS: I think I'll also have a closer look at Christophe's series this week
-or next.
-
+>> -
+>> -err_probe:
+>>       of_node_put(headset_codec);
+>>   err_headset_codec:
+>>       of_node_put(speaker_codec);
+>>   err_speaker_codec:
+>> -    of_node_put(platform_node);
+>> -err_platform_node:
+>> -    of_node_put(hdmi_codec);
+>> +    if (hdmi_codec)
+>> +        of_node_put(hdmi_codec);
+>> +
+>>       return ret;
+>>   }
+>> +static int mt8192_mt6359_soc_card_probe(struct mtk_soc_card_data *soc_card_data, 
+>> bool legacy)
+>> +{
+>> +    struct mtk_platform_card_data *card_data = soc_card_data->card_data;
+>> +    struct snd_soc_card *card = card_data->card;
+>> +    int ret;
+>> +
+>> +    if (legacy) {
+>> +        ret = mt8192_mt6359_legacy_probe(soc_card_data);
+>> +        if (ret)
+>> +            return ret;
+>> +    } else {
+>> +        struct snd_soc_dai_link *dai_link;
+>> +        int i;
+>> +
+>> +        for_each_card_prelinks(card, i, dai_link)
+>> +            if (dai_link->num_codecs && dai_link->codecs[0].dai_name &&
+>> +                strcmp(dai_link->codecs[0].dai_name, RT1015_CODEC_DAI) == 0)
+>> +                dai_link->ops = &mt8192_rt1015_i2s_ops;
+>> +    }
+>> +
+>> +    ret = mt8192_afe_gpio_init(card->dev);
+>> +    if (ret)
+>> +        return dev_err_probe(card->dev, ret, "%s init gpio error\n", __func__);
 > 
-> We have effectively three APIs to parse a single page table and
-> currently none of the APIs can return 100% of the data for power.
+> I don't think __func__ is necessary.
+> 
 
-Thanks,
+That was on purpose.
+I'm migrating things, but I am leaving the prints as they were.
 
--- 
-Peter Xu
+Cheers,
+Angelo
+
+>> +
+>> +    return 0;
+>> +}
+> 
+> Beside that,
+> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+> 
+
+
 
 
