@@ -1,98 +1,99 @@
-Return-Path: <linux-kernel+bounces-138607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB2CE89F453
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:31:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AA4689F455
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:31:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA8981C20E34
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:31:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CFE51F2EC9D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:31:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C8B915EFBF;
-	Wed, 10 Apr 2024 13:31:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA7015EFA4;
+	Wed, 10 Apr 2024 13:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qnpqka6z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XN6zeQN0"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF967158D76;
-	Wed, 10 Apr 2024 13:31:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C5B15ADBF;
+	Wed, 10 Apr 2024 13:31:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712755874; cv=none; b=kI/w4MjcjZ/9BzKu+4sSDAYwkk0T6tDj/D8jKyrrdM/h1V0FJu+kcvtOAhP9nzOQ2MqRou3Mxd5HYR8ZVf/NC2oSyIhFQ6Q1xa14CWorio+CXBfpja4xsSEmHTgA51viyeSap3zurqw5+2QWMFP2hM9ySQ5sWddixMBOuMxiu8g=
+	t=1712755884; cv=none; b=dYkb67X0k2wMIomnOlhnSbQEBsXigeJE2H7paVAdR4ycGbtGfCA9VBPJDBajFrFfWbhRmofKDNaQ7tLOgfygtXuVZYXGkXVsNw+jwjXj6JuqeGzNDifbklEqWddOkx21Njc4QLQzhHsyijB/0AISQeSTUrTaZUBg1LP0ETFu1vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712755874; c=relaxed/simple;
-	bh=zfLSD41E2JenoaoPH1O+sKGPiDJDFWMakf+QIw7ergc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d6QwoBdCc2KH32cAeHUxOckUMQa0LMVbXjnW/Qw7Y6y/weoRQvXwUA0oJgLBohe7aR9RoelcwTgubR/LbtKB91elBjpG4JW5yfIeSoX4Z58IvxkeamppTEXlBZRSFQ8B8IKwzbySOc2wMoOay/1NWp6FP9+wRte1qmpA3Sv+NQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qnpqka6z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FA84C433F1;
-	Wed, 10 Apr 2024 13:31:14 +0000 (UTC)
+	s=arc-20240116; t=1712755884; c=relaxed/simple;
+	bh=8/wXwcx5NajVLNTz4GkObpje3TaN5khbVxkN03PMLec=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WO8iKet3h2n5yfas3B0F6jWDqFUS78XRLGCJ9UWsm1Z9eWOyHOkhr4DaRDF886eFGorVft/up7t9ts0OgdYhzjBjLRJ2kceItxcbW9LFc5GLJtsDoYHn4SOgw6FOlhH8MowqDUhvjBXgT+dfsUB/+RR4Xw5nLxv7iMI0XEC2eeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XN6zeQN0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B10E8C433C7;
+	Wed, 10 Apr 2024 13:31:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712755874;
-	bh=zfLSD41E2JenoaoPH1O+sKGPiDJDFWMakf+QIw7ergc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Qnpqka6zLNqeggJmofQA0OUZ7ZlkJbBMHx4+OuNsjTjXSUuJ9LDLTt2zHxcjUt5sw
-	 aMH+FcnCv1y50Z1zNn8U1bidV1MDHYpSZZEFidGC2SlZ0R4SHQVcxwPeMSQX+GGcSc
-	 TDrKmenuipM4reDXNdlDIR8CSSdeG22Y1IQ720CYzmGa68atHK9vfdLDunQNRrpk/p
-	 liMn1wJJvqfyYy43T9v75bl7zG2Xf30CaR9FFCt09SMMASEwVgii/1t7c3fXgJZOF0
-	 bynlg8X59dn7iJTfDcUXAG0c8V/Sd0Q0QZIBUBgQMS2jO6jko2TGDll8k0VBl8b1xy
-	 rFqn1hwnaHKMg==
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6ea3855e873so59383a34.1;
-        Wed, 10 Apr 2024 06:31:14 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVxbZ0uTW0R6BeBi9Io1XvHxuB2Er0/L8xtZ5HbjwEZ9ueYQ88323idBBqyRpvLIWgwzpNf/bfMGvUFgUhntruGjt6usCDxJZNcaXWC7pJ1mC+7zni+mdjIq/R0Jbu9WcQnFhxsIh8S5Q==
-X-Gm-Message-State: AOJu0YwdSOZU3p22vPj9f15HFTgbrolVBQasUXleSTpfmVkFWtGHJIOF
-	OmKD/8O6hZGHcjMIVFYxTk2a/Qc0H2Evir8lsT86lPksHit6W+h7IU3Is5UP+WNIZY8uNr5CpCG
-	KDUMzU8uLntZWx2N9E+MTTbO14G0=
-X-Google-Smtp-Source: AGHT+IFYvZ6wewkoSuhtTaIF3PMZ+E+76ZGLEZUrYkszBd7MFEyZdSN3tcBqx1bogeh+Rx2RmSKe2XSA6KZHDhUFNNE=
-X-Received: by 2002:a05:6870:4687:b0:232:fa03:3736 with SMTP id
- a7-20020a056870468700b00232fa033736mr2649698oap.0.1712755873721; Wed, 10 Apr
- 2024 06:31:13 -0700 (PDT)
+	s=k20201202; t=1712755884;
+	bh=8/wXwcx5NajVLNTz4GkObpje3TaN5khbVxkN03PMLec=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XN6zeQN05eLen8fg+5sCAAEdjHNXR2mOh0YmTXlp+rL6lDKXZoy2mNpLFhxL73dR2
+	 gd0M+gKKu3Xykr4kbP3dfhXCI6qIoxhSH/BpJo7aE3ztAPIREHU3FTXiDlZhPaaSRf
+	 fLw+sUbJV6llvQXmthltyFuFI/wD1uO8p5iLi9FeE4cDccQLCY7NB7WvNyEv0Ah71m
+	 sanCsCg4cSn7R5BkD533dPWPaUSMwTnncoY0KumIIX/5FJ2JYEV5Nsse1N71XCgTfe
+	 HoG/owUUCbTbd5sSCthWIWTc8L+JZM0dRrCZkt89DuvMkgiQCnoVWypLaO5BKUX5jo
+	 8KVewOtWhuqow==
+Date: Wed, 10 Apr 2024 15:31:20 +0200
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Peter Korsgaard <peter@korsgaard.com>, Andrew Lunn <andrew@lunn.ch>, 
+	Arnd Bergmann <arnd@arndb.de>, Geert Uytterhoeven <geert@linux-m68k.org>, 
+	Wolfram Sang <wsa+renesas@sang-engineering.com>, Jarkko Nikula <jarkko.nikula@linux.intel.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Niklas Schnelle <schnelle@linux.ibm.com>, 
+	Samuel Holland <samuel.holland@sifive.com>, Gregor Herburger <gregor.herburger@tq-group.com>, 
+	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: ocores: convert to ioport_map() for IORESOURCE_IO
+Message-ID: <cwbht6xtv2nfqm7xz2ra52dtfwx3whjyyigbxxtdrwzcsq3llp@vhryqiyrjxqx>
+References: <20240408092923.2816928-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328035540.13194-1-raag.jadav@intel.com> <ZhYq_HDwAi4B49Zz@black.fi.intel.com>
-In-Reply-To: <ZhYq_HDwAi4B49Zz@black.fi.intel.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 10 Apr 2024 15:31:01 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0idPeRmx1oRHoVEZYmGm1D-5SFP9_C0Bu_fiuyf7YiYqQ@mail.gmail.com>
-Message-ID: <CAJZ5v0idPeRmx1oRHoVEZYmGm1D-5SFP9_C0Bu_fiuyf7YiYqQ@mail.gmail.com>
-Subject: Re: [PATCH v1] ACPI: bus: allow _UID matching for integer zero
-To: Raag Jadav <raag.jadav@intel.com>
-Cc: rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com, 
-	mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com, 
-	stanislaw.gruszka@linux.intel.com, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240408092923.2816928-1-arnd@kernel.org>
 
-On Wed, Apr 10, 2024 at 8:00=E2=80=AFAM Raag Jadav <raag.jadav@intel.com> w=
-rote:
->
-> On Thu, Mar 28, 2024 at 09:25:40AM +0530, Raag Jadav wrote:
-> > Commit b2b32a173881 ("ACPI: bus: update acpi_dev_hid_uid_match() to
-> > support multiple types") added _UID matching support for both integer
-> > and string types, which satisfies NULL @uid2 argument for string types
-> > using inversion, but this logic prevents _UID comparision in case the
-> > argument is integer 0, which may result in false positives.
-> >
-> > Fix this using _Generic(), which will allow NULL @uid2 argument for
-> > string types as well as _UID matching for all possible integer values.
-> >
-> > Fixes: b2b32a173881 ("ACPI: bus: update acpi_dev_hid_uid_match() to sup=
-port multiple types")
-> > Signed-off-by: Raag Jadav <raag.jadav@intel.com>
->
-> Bump.
->
-> Anything I can do to move this forward?
+Hi Arnd,
 
-Should be there in linux-next already, isn't it?
+On Mon, Apr 08, 2024 at 11:28:36AM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> There is at least one machine that uses this driver but does not
+> have support for inb()/outb() instructions.
+> 
+> Convert this to using ioport_map() so it can build on architectures
+> that don't provide these but work correctly on machines that require
+> using port I/O.
+> 
+> Fixes: 53f44c1005ba ("i2c: add HAS_IOPORT dependencies")
 
-Maybe I forgot to send an "applied" message.
+I had to update this Fixes tag as I have done a rebase.
+
+> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Link: https://lore.kernel.org/lkml/CAMuHMdVUQ2WgtpYPYfO2T=itMmZ7w=geREqDtsP8Q3ODh9rxdw@mail.gmail.com/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+This will go through i2c/i2c-host and sent in the merge window
+pull request.
+
+Applied to i2c/i2c-host on
+
+git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
+
+Thank you,
+Andi
+
+Patches applied
+===============
+[1/1] i2c: ocores: convert to ioport_map() for IORESOURCE_IO
+      commit: a43939d2d96aec5fcb77d0abd75bab5e6ab006d3
 
