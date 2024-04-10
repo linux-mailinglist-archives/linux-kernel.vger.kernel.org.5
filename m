@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-137919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA04889E98B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCB3889E987
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 07:15:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBA70287893
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:15:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 787ED283A7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 05:15:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18DE92A1CA;
-	Wed, 10 Apr 2024 05:15:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 433771CA94;
+	Wed, 10 Apr 2024 05:15:18 +0000 (UTC)
 Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398C414A8C;
-	Wed, 10 Apr 2024 05:15:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50B391170D;
+	Wed, 10 Apr 2024 05:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712726119; cv=none; b=tXaZiwTcPk3m7d5Pj31KECIwB4sUm8oRQfPoj790dyr+WV6lJyPN+SCwFRzN+yD0PadT9pcfCJ2gJRyBLvNONs4PQpkTXqNdv0bTt+cAw2k1n+1rx1y7TeWsdRTM1cO5Q0Jw/BOKdgli4WbfjKwtp9DHsfLf9BvAKIwjZVTJk9k=
+	t=1712726117; cv=none; b=q5xws+8budutgW4LpbVY6xaaJGkakLN49JCIGwuPjAR0HR7lbLnIYpGOfU+ZGobuNgBf8+F7EAVE05Aso7QNtvtoximRwPxGO7KWhaudIlzuOnaVILldgERH5Gc6i14q1zqzLbLMx+yPPc2Wp7+fPW0WiR9V4oNhLZ76+9Qm50A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712726119; c=relaxed/simple;
-	bh=b/pf4aX7b3wDd9ZG/avGC3si3RwDD97KfmsmPG6vnM0=;
+	s=arc-20240116; t=1712726117; c=relaxed/simple;
+	bh=0lgTCxeCSXrEBb75a6tl4Wk4OoNKx11iZYVxTbBA2a4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JOusu9EpTfv+XB5SZgx/B3PPK8UmxEqwCuoY+oWdk5hp0MoPESW/wnpaMTxYTHxLSK0sRHUDpQhNLYYnmv2zrZWO5TTNvWllU0sA372pneixENV7gZHNnNMPxuNpwx3x89F85pje+Hog83lbYK742kU2hjvkgCqFw0fS2xovsXM=
+	 MIME-Version:Content-Type; b=oM2PqgImIqzZcNG6SOA45I0ghOBgfYYm7VuvY5vyVhZ+AGTqYl+DS5m7UvMuEjzRksTg0sStf3JvY8N/+4PL16yJUWbym8MdNTrHfx3SVF+Dpdj2iHdFgsKgMiysVLAVx/cjLOECcm6ylLs9XgnPioJfv7FgysHGcoh8Fv7WptA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
@@ -32,25 +32,23 @@ Received: from ip-185-104-138-50.ptr.icomera.net ([185.104.138.50] helo=phil..)
 	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <heiko@sntech.de>)
-	id 1ruQIj-0008Ut-Kq; Wed, 10 Apr 2024 07:15:13 +0200
+	id 1ruQIk-0008Ut-As; Wed, 10 Apr 2024 07:15:14 +0200
 From: Heiko Stuebner <heiko@sntech.de>
-To: linux-rockchip@lists.infradead.org,
-	efectn@6tel.net
-Cc: Heiko Stuebner <heiko@sntech.de>,
+To: Krzysztof Kozlowski <krzk+dt@kernel.org>,
 	devicetree@vger.kernel.org,
-	conor+dt@kernel.org,
-	robh+dt@kernel.org,
+	linux-rockchip@lists.infradead.org,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
 	linux-kernel@vger.kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
 	linux-arm-kernel@lists.infradead.org,
-	sebastian.reichel@collabora.com,
-	Muhammed Efe Cetin <efectn@protonmail.com>
-Subject: Re: [PATCH] arm64: dts: rockchip: mark system power controller and fix typo on orangepi-5-plus
-Date: Wed, 10 Apr 2024 07:15:02 +0200
-Message-Id: <171272604790.1867483.16170217183416866311.b4-ty@sntech.de>
+	Conor Dooley <conor+dt@kernel.org>
+Cc: Heiko Stuebner <heiko@sntech.de>
+Subject: Re: (subset) [PATCH 1/4] arm64: dts: rockchip: drop redundant pcie-reset-suspend in Scarlet Dumo
+Date: Wed, 10 Apr 2024 07:15:03 +0200
+Message-Id: <171272604791.1867483.10125190310440634047.b4-ty@sntech.de>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240407173210.372585-1-efectn@6tel.net>
-References: <20240407173210.372585-1-efectn@6tel.net>
+In-Reply-To: <20240407102854.38672-1-krzysztof.kozlowski@linaro.org>
+References: <20240407102854.38672-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,18 +58,25 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Sun, 7 Apr 2024 20:32:10 +0300, efectn@6tel.net wrote:
-> From: Muhammed Efe Cetin <efectn@protonmail.com>
+On Sun, 7 Apr 2024 12:28:51 +0200, Krzysztof Kozlowski wrote:
+> There is no "pcie-reset-suspend" property in the PCI bindings or Linux
+> driver, so assume this was copied from downstream.  Drop the property,
+> but leave the comment, because it might be useful for someone.
 > 
-> Mark the PMIC as system power controller, so the board will shut-down
-> properly and fix the typo on rk806_dvs1_null pins property.
+> This fixes dtbs_check warning:
 > 
+>   rk3399-gru-scarlet-dumo.dtb: pcie@f8000000: Unevaluated properties are not allowed ('pcie-reset-suspend' was unexpected)
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] arm64: dts: rockchip: mark system power controller and fix typo on orangepi-5-plus
-      commit: 08cd20bdecd9cfde5c1aec6146fa22ca753efea1
+[1/4] arm64: dts: rockchip: drop redundant pcie-reset-suspend in Scarlet Dumo
+      commit: 29148d841edea9335141fae86a0742f539fe1327
+[3/4] arm64: dts: rockchip: drop redundant disable-gpios in Lubancat 1
+      commit: cd0793fc3b03985d90f24232056853ef79ff555e
+[4/4] arm64: dts: rockchip: drop redundant disable-gpios in Lubancat 2
+      commit: d892a6f34adc371ee0dbaa5ba684d02c4431f2e3
 
 Best regards,
 -- 
