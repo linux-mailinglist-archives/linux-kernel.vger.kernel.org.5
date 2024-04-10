@@ -1,161 +1,93 @@
-Return-Path: <linux-kernel+bounces-139552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B4C68A044C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:58:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E3E88A044E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:59:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51FC7288F6C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:58:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEFBBB24EA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 23:59:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB4D3FE46;
-	Wed, 10 Apr 2024 23:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B99C3FB3B;
+	Wed, 10 Apr 2024 23:59:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ul8dGcy7"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="AJFmOhDy"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E7553FB31
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F4FEAE5
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:59:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712793510; cv=none; b=OWUhKg1s+mM2/E3mf/wwinIYOy9lT9K2Q2J0I1vBEMnbH0TOJmvl6NuVwS/5ZK2XFsZI3ZvSHXtDa+oR9W9bZoFVke6nEMlBFFGyH6pVkjUQPKy0WbzBYRxiWTdefT7f/e/IOJdUgQzimsN9eOhJKgtKnI3y1I+pti4NvPBX4fE=
+	t=1712793563; cv=none; b=m4u5nkiIMZT0qbh+BnyaV2W/QyKC1JLbLT11/Q8L3BjfA0DXZb9LBqwU8cJKKrXuc4O5csJXm/vU4KZtnWsT3cwgzUkJ8TmXd9GHdTgbsE3zDxrzWZkwGsVDg9XR4e/NaMF15n6Zvhm3RkmATRFwlA5V9pNEYAyfo56sVWwGWIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712793510; c=relaxed/simple;
-	bh=bXItv4HYzVSIBt+RUD5HDA9HqlJYzm+XsjCsyrirxEM=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=FubVfCGPB/Xcuu3EXrvWs0OdRYcNuWzx1pj5UBK+lERms1feolcqO7pYKDAuh+GLbfI6sw7AYqbUTAWGC11OKp6/PUkpmHQNVXjZmwYLxB+min0u4Mmt2d7Rbo/Dok5eEzagVgJr1DcsHKhsdfhoDk1LWrACyKPQQxUHAuiMo6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ul8dGcy7; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e42a6158d5so36955ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 16:58:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712793508; x=1713398308; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1ZXB+0PtaF+vG2Eqe2ku2kHYSPF78NFZHwzDIf6uFVo=;
-        b=ul8dGcy7CrJ4QlBF847S23xeeYmdr1uFniE4EssnJuF9uVlt7XlFWP/5saKY3aGGW6
-         R/q84JQjdLY84gy2Yu+ZQ6zCcbXvw21T5S/DGqsB8NpeuJXPW59MsqZjy/XzAygRg3FO
-         DBBcBNWAd4ELo87Pj02kig4gcrMCTCo+FYBKF7n6m8I1/hq8MFyInnBIGKI437o+MHRF
-         Gnd16K0fGkceV/fcAMhxNA84MifHHBUF3AQe6/KoL1V4r0IS8vl8ts7kJVWiL8sCrkSy
-         LRhk5QIGmrXzoSMDm5WRzQs+21LKt/dozqUiJjUDTaEeKPpjutitrYmpRn0UFk88ARtF
-         jVKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712793508; x=1713398308;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1ZXB+0PtaF+vG2Eqe2ku2kHYSPF78NFZHwzDIf6uFVo=;
-        b=kkdJdsEMDojP1suzmNizqP0PdEyD/HqBaVeuguB56sidGCBAZKMLFAqYhwmYAr2Ek6
-         7ePgkHiq6bghTOA2BIzpaBJZFOhrJOjQUBfP2j2mHtmJUs5n6cVRPw9vSpmHWWpGB0e9
-         +6ZLDE+xj/pxlOVmiUXQ5ApbO/tY7cYCnjPtbSaPIAgnaB96VYMtWLlcIXMsoox5u735
-         tB64CHNNE81V71F4TfrMkV1z1+hGtNEC52Ps+8Xh9uPV8GJelgaLT/F9pIBqD3B099y6
-         7SeK2qnPfSsuY41dWp7+jblw1/uz6iuFMBNxxKBXNdyagOc7YnbGaaSCHG9gIOveEf0a
-         IAXg==
-X-Forwarded-Encrypted: i=1; AJvYcCUAkjMH+fq3qskVlz6fm9V++b0/edXgvDoEwfu1wqywUM45KeVafkQPe+vgLLNBxBDl7BR3Us+jaZiy9gKrqa+21xjifk5skAOMutJ8
-X-Gm-Message-State: AOJu0YyIYP1Ugtd1GFQv0PdMF6kjU6qmMg4yPjUBHxwdCECixiuNgF+D
-	X5+kpAmbP6stP+36ddIKCAjllBJ4PMUOHmdBvsZmn1DmFSJR3wDoSOua1WM7vw==
-X-Google-Smtp-Source: AGHT+IGd+QI2KOJ5c/8/pTyKY+Y+N0EZgS87fvMttED3Ds2Pyg5DEehZ91bfZhC4ZUFBKIIxCloFUA==
-X-Received: by 2002:a17:902:e743:b0:1e3:c01d:fb17 with SMTP id p3-20020a170902e74300b001e3c01dfb17mr55118plf.11.1712793508162;
-        Wed, 10 Apr 2024 16:58:28 -0700 (PDT)
-Received: from [2620:0:1008:15:2d0b:3c67:e0d1:ea8] ([2620:0:1008:15:2d0b:3c67:e0d1:ea8])
-        by smtp.gmail.com with ESMTPSA id ga18-20020a056a00621200b006edcf5533cesm214863pfb.79.2024.04.10.16.58.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 16:58:27 -0700 (PDT)
-Date: Wed, 10 Apr 2024 16:58:26 -0700 (PDT)
-From: David Rientjes <rientjes@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-cc: Sourav Panda <souravpanda@google.com>, corbet@lwn.net, 
-    gregkh@linuxfoundation.org, rafael@kernel.org, mike.kravetz@oracle.com, 
-    muchun.song@linux.dev, rppt@kernel.org, david@redhat.com, 
-    rdunlap@infradead.org, chenlinxuan@uniontech.com, yang.yang29@zte.com.cn, 
-    tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com, 
-    pasha.tatashin@soleen.com, yosryahmed@google.com, hannes@cmpxchg.org, 
-    shakeelb@google.com, kirill.shutemov@linux.intel.com, 
-    wangkefeng.wang@huawei.com, adobriyan@gmail.com, 
-    Vlastimil Babka <vbabka@suse.cz>, 
-    "Liam R. Howlett" <Liam.Howlett@oracle.com>, surenb@google.com, 
-    linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-    linux-doc@vger.kernel.org, linux-mm@kvack.org, 
-    Matthew Wilcox <willy@infradead.org>, weixugc@google.com
-Subject: Re: [PATCH v9 1/1] mm: report per-page metadata information
-In-Reply-To: <20240319143320.d1b1ef7f6fa77b748579ba59@linux-foundation.org>
-Message-ID: <65b77d3e-d683-1e90-ebb0-5c7758143048@google.com>
-References: <20240220214558.3377482-1-souravpanda@google.com> <20240220214558.3377482-2-souravpanda@google.com> <20240319143320.d1b1ef7f6fa77b748579ba59@linux-foundation.org>
+	s=arc-20240116; t=1712793563; c=relaxed/simple;
+	bh=oEZirylTvXWz1CmEJ8DBxu0TbNj1+ae9oUvgLTlYpJ8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IAiUCwiQ4+WPBsWWiOGUpu0/FNjFJKsOEkMnnjCX94uADOr4l+stq1kzLjaye2bnfeuWQTPScAcrvt293r+Nlborqm/FsCTmIguxqjhTj1fgT1vsOxLKQBBjGbwEL20aCa84N5632YjkF+hhHBD8K90y6UlRaTozoBIok0YnZVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=AJFmOhDy; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Oh9geONnOFhFyrtxPHhIzWGAqO2nRJc8KgJoEh6Vr7s=; b=AJFmOhDy4PdkswkZTKs462wEa1
+	Lu/ukDoNsEN6T3i0HFlxvk+AyFJ3r3n1a64GSJMrzX0Mzezv8ckgCw/vUSh3V/p3SYDn2c0WQKT/0
+	Db/z0S7hN/t8uycwVygZhkj/LB/X5iWRhOfI8B4JjTayb6rG1cAUH+atl89UphV+zjfJXfrA65xlW
+	+78Ih01QSBDUCn43vyJz7CANzkdsyYINaiiPMmCEP5s8LKmCEdCeoWN54vmb7OZBQM2D0dVKeLmGR
+	nO0v++oO/wBcNZIFaBGPke6ujFNnuhZwUqCdmJWs1YP9KPljmKUJlJAid//kcZa9/T+h6wx7Mg9r5
+	m7HRuUfQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ruhqP-00000005a1j-23rB;
+	Wed, 10 Apr 2024 23:59:09 +0000
+Date: Thu, 11 Apr 2024 00:59:09 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Peter Xu <peterx@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Lokesh Gidra <lokeshgidra@google.com>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Alistair Popple <apopple@nvidia.com>
+Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
+Message-ID: <ZhcnzS1S6zOMJwSL@casper.infradead.org>
+References: <20240410170621.2011171-1-peterx@redhat.com>
+ <Zhb2BWntckP3ZhDc@casper.infradead.org>
+ <Zhb6B8UsidEEbFu3@x1n>
+ <ZhcAVYVFSdX5Binc@casper.infradead.org>
+ <ZhcDRmyYkMGPgs4F@x1n>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhcDRmyYkMGPgs4F@x1n>
 
-On Tue, 19 Mar 2024, Andrew Morton wrote:
-
-> On Tue, 20 Feb 2024 13:45:58 -0800 Sourav Panda <souravpanda@google.com> wrote:
+On Wed, Apr 10, 2024 at 05:23:18PM -0400, Peter Xu wrote:
+> On Wed, Apr 10, 2024 at 10:10:45PM +0100, Matthew Wilcox wrote:
+> > > I can do some tests later today or tomorrow. Any suggestion you have on
+> > > amplifying such effect that you have concern with?
+> > 
+> > 8 socket NUMA system, 800MB text segment, 10,000 threads.  No, I'm not
+> > joking, that's a real customer workload.
 > 
-> > Adds two new per-node fields, namely nr_memmap and nr_memmap_boot,
-> > to /sys/devices/system/node/nodeN/vmstat and a global Memmap field
-> > to /proc/meminfo. This information can be used by users to see how
-> > much memory is being used by per-page metadata, which can vary
-> > depending on build configuration, machine architecture, and system
-> > use.
+> Well, I believe you, but even with this, that's a total of 800MB memory on
+> a giant moster system... probably just to fault in once.
 > 
-> I yield to no man in my admiration of changelogging but boy, that's a
-> lot of changelogging.  Would it be possible to consolidate the [0/N]
-> coverletter and the [1/N] changelog into a single thing please?
-> 
-> >  Documentation/filesystems/proc.rst |  3 +++
-> >  fs/proc/meminfo.c                  |  4 ++++
-> >  include/linux/mmzone.h             |  4 ++++
-> >  include/linux/vmstat.h             |  4 ++++
-> >  mm/hugetlb_vmemmap.c               | 17 ++++++++++++----
-> >  mm/mm_init.c                       |  3 +++
-> >  mm/page_alloc.c                    |  1 +
-> >  mm/page_ext.c                      | 32 +++++++++++++++++++++---------
-> >  mm/sparse-vmemmap.c                |  8 ++++++++
-> >  mm/sparse.c                        |  7 ++++++-
-> >  mm/vmstat.c                        | 26 +++++++++++++++++++++++-
-> >  11 files changed, 94 insertions(+), 15 deletions(-)
-> 
-> And yet we offer the users basically no documentation.  The new sysfs
-> file should be documented under Documentation/ABI somewhere and
-> perhaps we could prepare some more expansive user-facing documentation
-> elsewhere?
-> 
+> And even before we talk about that into details.. we're talking about such
+> giant program running acorss hundreds of cores with hundreds of MB text,
+> then... hasn't the program developer already considered mlockall() at the
+> entry of the program?  Wouldn't that greatly beneficial already with
+> whatever granule of locks that a future fault would take?
 
-Sourav, is it possible to refresh this series into a v10 on top of the 
-latest upstream kernel with a single condensed changelog that details the 
-current behavior, what extension this is adding, and how it is generally 
-useful?
-
-As noted here, the cover letter has great material that discusses the 
-rationale for this change but would be lost if only this patch is merged.  
-So typically the cover letter material gets concatenated into the 
-changelog, but in this case there's a lot of overlap.
-
-A single patch that includes a succinct changelog would be awesome.
-
-And then the requested documentation in Documentation/ABI either included 
-in the same patch or as a second patch in the series?
-
-I don't think the resulting patch series will actually need a cover letter 
-after that, it will be able to stand on its own.
-
-> I'd like to hear others' views on the overall usefulness/utility of this
-> change, please?
-> 
-
-Likely true for all hyperscalers, the immediate use case that this could 
-be applied to is to track boot memory overhead and any regression over 
-time (across kernel upgrades, firmware upgrades, etc) that may change the 
-amount of total memory available.  We'd want to subtract out the boot 
-overhead that we know about (like struct page here) and then alert on any 
-regression where we're losing memory from reboot to reboot for any reason.
-
-This increased visibility into boot memory overhead allows us to create a 
-mechanism to track changes over time when otherwise that attribution of 
-that memory is not available.
+I don't care what your theory is, or even what your benchmarking shows.
+I had basically the inverse of this patch, and my customer's workload
+showed significant improvement as a result.  Data talks, bullshit walks.
+Your patch is NAKed and will remain NAKed.
 
