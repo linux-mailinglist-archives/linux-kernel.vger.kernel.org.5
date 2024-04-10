@@ -1,215 +1,206 @@
-Return-Path: <linux-kernel+bounces-138466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1E7189F1A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:04:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62B6389F1A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:05:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 985B9B249D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:04:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 191C8281B5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:05:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 443F415B113;
-	Wed, 10 Apr 2024 12:04:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7357615B100;
+	Wed, 10 Apr 2024 12:05:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="oSs/2HU8"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HqqMgBR1"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2E2B1598F2;
-	Wed, 10 Apr 2024 12:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C105A159212;
+	Wed, 10 Apr 2024 12:05:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712750646; cv=none; b=jG0BK+C3rXv925IOWhNH7XM8ET++2RJOuikuL9ax/dVfIXzUtxXxFK1V4CAzxhEklyHPgN5TN0Ud5IeJAAjhQsH3Fn5S9m9qBaseelnUGiVu6yuYD9T21YgwJaBfIlN7uwpo7hrWAEDYVigdQcCktpQXDh3jy3x4fNfRvBI1RXw=
+	t=1712750727; cv=none; b=X8Adfmj5vyXTi4zMXiZa8uoUZcNFJitxeQXVxBrokwmkngDM130NhyQ+jDZbL36oQd0KjzHWJXUIJ4mv+kBXAVZs7TE8d50YjqekbUh+hedzucdwm11CAbsXHTWpvnzGUcr2saM5/Fy/x18+38La2Omj2OTOar7rvx387ibTmdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712750646; c=relaxed/simple;
-	bh=tdppY4tgi+O68xVH71ZZoSDz/OuC4sRNlpnC4mWN5pg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=o5rWY8T2xXC15LBEfNkyf8tPazKk08O6QnXosyqVaMc5JdePxM57jgVR/+EzdRkcz2VW8Fa7zgTGAvCXGc62hIS9A0ehWo5YLFVUQ2vCoEEdnLl+CnhBIvjCzlcy1ngoqzlQFTlV9mE6s49ofrwAOfZejcaX1EvBybOpPNTU3k4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=oSs/2HU8; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43ABZIp6001155;
-	Wed, 10 Apr 2024 12:03:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=uTWaQyaAK8NhCoIO96+/pn6A5LF/VnM/wHGGjKcjQ8w=; b=oS
-	s/2HU8bU+Rie6SvJigbM3kjYdhNwbUZmiFZ2uJ+88mWVu3ypGNkgFrzghrPWOjOv
-	59sa8sJg92314XGtFQ5kzZK701V3I0zS54MvMi/5mHUJNCSmK9dr0OU7gSdViTyM
-	T2Oz6+AIzbDXXJmV2BTF6+zMdPoBcAVnRFMh4XEIm/J5szsSNTp6alf32+z7pYBz
-	sO1keyMFuP8Twc6C6g0rmO9xhSfLnjnV+62nDvdN11aSq1GlvmvPPdtfYx5CjKYd
-	Z9uMIK8xyunFvwfi/49L666BpgJCAH3CJcWHdOxm0xFLMXC8AEIi5epx5ddmjVs3
-	EfbQXrIxc5Ea0G8HL2oQ==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xdpnfsaex-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 12:03:48 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43AC3l7W022559
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Apr 2024 12:03:47 GMT
-Received: from [10.206.101.41] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 10 Apr
- 2024 05:03:42 -0700
-Message-ID: <335d1eee-a6f1-6502-7f27-c7362a53b4ba@quicinc.com>
-Date: Wed, 10 Apr 2024 17:33:39 +0530
+	s=arc-20240116; t=1712750727; c=relaxed/simple;
+	bh=6UIvE1vJ9dY5K/ZKwsDosbMPf9oc8CxaWo6AitfqY2s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DoKvrro5TH6mMahQGdcb3iO3aBR7DrsVKNQzotzasARzwDJSSLprJW4+3ip0P6W+C0hk81ldhVrwCkpy5IxVdbFnJe2F0fqRwso3+tuCGEWoam6Vp0o1e7tn8JXqN5z/tkz2/PW6bL4bviHud0jd++0dau5NG//RopkgmH7Y5pU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HqqMgBR1; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a51ddc783e3so390249366b.0;
+        Wed, 10 Apr 2024 05:05:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712750724; x=1713355524; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=v0aRCEy+AeR0j13+VeOvZ523IAIwGMuni9MFBE/6V3A=;
+        b=HqqMgBR1qrTCX6hRiDGXXKgtxdOemI/x9IY/inxuhb/LPXlitWYCWznwub2Or/OlU5
+         oGbUZko/20R62+wRQwUITaOyHQXi+HiPhNVZrKLdYJPaP1knSf2YIDssO9VjaK8AlQw6
+         ZEWjz/gUSkaK+Eehm7ufs5QstAwVqomwSyvr6SRbsjUtMy/KXR4/aNXF0nUOCmmFe/gk
+         qyu3lp8CqR42xesApj2mDaxbSOyJzAdFxTGig9IsH0h4ofGJ4hEVV3/oCpJuVfP+tLtx
+         moE4Ipeh9W7oHUkO6IYCayZP6PPfZ2GKh6zRAzbBcIKblHK3h6gejuZgTl7QzD5sLvEj
+         kfxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712750724; x=1713355524;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v0aRCEy+AeR0j13+VeOvZ523IAIwGMuni9MFBE/6V3A=;
+        b=nyoxNRClU5XLx4ngzMArDQU4NglKg7qm7B5i1F/d7m+B2FtW0yPo3Xm1GughUCjIqb
+         gwsbE5I0khjCSNxLH0X2UKwgoZEbv3321VcqT7kspQIZUEhjX0kFHgDpTyM2214iRpsg
+         ZZUNa4guHuy+GcC9epLtrYZ/vSX2PleBoNE8ZMToll0iRaHHY+rAOxORtzMBr4Yn6FDZ
+         cx5NPJFdad6WrBYTqOvW0EOdVAs0aAwo4yd+1RLJGIGLcEBqhK9nwSrDDBcuFgcztCGH
+         SEtJnZ2GQG81DqY/6OLzSrKKwj65+5YpxnsF8sNmA1d27YsMmzd6ar5S/Y3FfWatfbHh
+         HkDg==
+X-Forwarded-Encrypted: i=1; AJvYcCWkLCDhjz/dL1gpw1OdnE275LEnPtwcHEwOWcn70o6AaEMlSqg0V6Dfs/+XGlMX+Yq5mdRB55bI3Q+edcr43tIxNlwNkRLwOFk61SCS
+X-Gm-Message-State: AOJu0Yz0gJDS9tq0unH5HmkBFy9TGV1bi+30thbnIkaZdIcPGuQXcVtm
+	CQ6xPudlfq8ccg8cCZMA+wxRTanLsSkDzGhviyrMRrtCCtmicosX
+X-Google-Smtp-Source: AGHT+IF/j0sWb/aMptVEJgkOiQNVrgnm5tFsy/qtZ6IYvYL6aXnAg5DbExaSAl8EFtjcp0n2/Cok4Q==
+X-Received: by 2002:a17:906:4159:b0:a51:cbbf:5214 with SMTP id l25-20020a170906415900b00a51cbbf5214mr1522609ejk.33.1712750723783;
+        Wed, 10 Apr 2024 05:05:23 -0700 (PDT)
+Received: from [192.168.42.195] ([163.114.131.193])
+        by smtp.gmail.com with ESMTPSA id gt17-20020a1709072d9100b00a51b3d4bb39sm5844229ejc.59.2024.04.10.05.05.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 05:05:23 -0700 (PDT)
+Message-ID: <8666ff9d-1cb6-4e92-a1b3-4f3b1fb0ac79@gmail.com>
+Date: Wed, 10 Apr 2024 13:05:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 03/19] media: venus: pm_helpers: Add kerneldoc to
- venus_clks_get()
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] io_uring: Add REQ_F_CQE_SKIP support for io_uring
+ zerocopy
+To: Oliver Crumrine <ozlinuxc@gmail.com>, axboe@kernel.dk
+Cc: io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1712268605.git.ozlinuxc@gmail.com>
+ <b1a047a1b2d55c1c245a78ca9772c31a9b3ceb12.1712268605.git.ozlinuxc@gmail.com>
+ <6850f08d-0e89-4eb3-bbfb-bdcc5d4e1b78@gmail.com>
+ <CAK1VsR17Ea6cmks7BcdvS4ZHQMRz_kWd1NhPh8J1fUpsgC7WFg@mail.gmail.com>
+ <c2e63753-5901-47b2-8def-1a98d8fcdd41@gmail.com>
+ <CAK1VsR210nrqtxWaVbQh00t_=7rhq9bwucFygGZaT=7N-t7E5Q@mail.gmail.com>
+ <CAK1VsR1b-dbAa8pMqGvfcAAcVP3ZkTYZdyqcaK4wJdbuAZtJsA@mail.gmail.com>
+ <09f1a8e9-d9ad-4b40-885b-21e1c2ba147b@gmail.com>
+ <CAK1VsR3QDh3WiR+r=30f0YQkiYN3hw071Hi9=dkd_xLQ2itdvw@mail.gmail.com>
 Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Dikshita Agarwal
-	<quic_dikshita@quicinc.com>,
-        Stanimir Varbanov
-	<stanimir.k.varbanov@gmail.com>,
-        Bryan O'Donoghue
-	<bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Philipp
- Zabel" <p.zabel@pengutronix.de>
-CC: Marijn Suijten <marijn.suijten@somainline.org>,
-        Stanimir Varbanov
-	<stanimir.varbanov@linaro.org>,
-        Mauro Carvalho Chehab
-	<mchehab+huawei@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230911-topic-mars-v3-0-79f23b81c261@linaro.org>
- <20230911-topic-mars-v3-3-79f23b81c261@linaro.org>
- <80c0ecb3-1157-1d7a-0829-c3b68b65f17f@quicinc.com>
- <66492657-3649-3bdb-b7df-0f5196418e06@quicinc.com>
- <b4c56cad-0a3c-4b74-b9fa-0931204d1514@linaro.org>
-From: Vikash Garodia <quic_vgarodia@quicinc.com>
-In-Reply-To: <b4c56cad-0a3c-4b74-b9fa-0931204d1514@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 92yuKVaf3duzItn5r642t-qWimk1U03P
-X-Proofpoint-ORIG-GUID: 92yuKVaf3duzItn5r642t-qWimk1U03P
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- mlxlogscore=999 malwarescore=0 clxscore=1015 spamscore=0 adultscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404100087
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAK1VsR3QDh3WiR+r=30f0YQkiYN3hw071Hi9=dkd_xLQ2itdvw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-On 4/9/2024 11:52 PM, Konrad Dybcio wrote:
-> 
-> 
-> On 4/5/24 14:44, Vikash Garodia wrote:
->> Hi Konrad,
+On 4/9/24 02:33, Oliver Crumrine wrote:
+> Pavel Begunkov wrote:
+>> On 4/7/24 20:14, Oliver Crumrine wrote:
+>>> Oliver Crumrine wrote:
+>>>> Pavel Begunkov wrote:
+>>>>> On 4/5/24 21:04, Oliver Crumrine wrote:
+>>>>>> Pavel Begunkov wrote:
+>>>>>>> On 4/4/24 23:17, Oliver Crumrine wrote:
+>>>>>>>> In his patch to enable zerocopy networking for io_uring, Pavel Begunkov
+>>>>>>>> specifically disabled REQ_F_CQE_SKIP, as (at least from my
+>>>>>>>> understanding) the userspace program wouldn't receive the
+>>>>>>>> IORING_CQE_F_MORE flag in the result value.
+>>>>>>>
+>>>>>>> No. IORING_CQE_F_MORE means there will be another CQE from this
+>>>>>>> request, so a single CQE without IORING_CQE_F_MORE is trivially
+>>>>>>> fine.
+>>>>>>>
+>>>>>>> The problem is the semantics, because by suppressing the first
+>>>>>>> CQE you're loosing the result value. You might rely on WAITALL
+>>>>>> That's already happening with io_send.
+>>>>>
+>>>>> Right, and it's still annoying and hard to use
+>>>> Another solution might be something where there is a counter that stores
+>>>> how many CQEs with REQ_F_CQE_SKIP have been processed. Before exiting,
+>>>> userspace could call a function like: io_wait_completions(int completions)
+>>>> which would wait until everything is done, and then userspace could peek
+>>>> the completion ring.
+>>>>>
+>>>>>>> as other sends and "fail" (in terms of io_uring) the request
+>>>>>>> in case of a partial send posting 2 CQEs, but that's not a great
+>>>>>>> way and it's getting userspace complicated pretty easily.
+>>>>>>>
+>>>>>>> In short, it was left out for later because there is a
+>>>>>>> better way to implement it, but it should be done carefully
+>>>>>> Maybe we could put the return values in the notifs? That would be a
+>>>>>> discrepancy between io_send and io_send_zc, though.
+>>>>>
+>>>>> Yes. And yes, having a custom flavour is not good. It'd only
+>>>>> be well usable if apart from returning the actual result
+>>>>> it also guarantees there will be one and only one CQE, then
+>>>>> the userspace doesn't have to do the dancing with counting
+>>>>> and checking F_MORE. In fact, I outlined before how a generic
+>>>>> solution may looks like:
+>>>>>
+>>>>> https://github.com/axboe/liburing/issues/824
+>>>>>
+>>>>> The only interesting part, IMHO, is to be able to merge the
+>>>>> main completion with its notification. Below is an old stash
+>>>>> rebased onto for-6.10. The only thing missing is relinking,
+>>>>> but maybe we don't even care about it. I need to cover it
+>>>>> well with tests.
+>>>> The patch looks pretty good. The only potential issue is that you store
+>>>> the res of the normal CQE into the notif CQE. This overwrites the
+>>>> IORING_CQE_F_NOTIF with IORING_CQE_F_MORE. This means that the notif would
+>>>> indicate to userspace that there will be another CQE, of which there
+>>>> won't.
+>>> I was wrong here; Mixed up flags and result value.
 >>
->> On 4/5/2024 1:56 PM, Dikshita Agarwal wrote:
->>>
->>>
->>> On 3/27/2024 11:38 PM, Konrad Dybcio wrote:
->>>> To make it easier to understand the various clock requirements within
->>>> this driver, add kerneldoc to venus_clk_get() explaining the fluff.
->>>>
->>>> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->>>> ---
->>>>   drivers/media/platform/qcom/venus/pm_helpers.c | 28
->>>> ++++++++++++++++++++++++++
->>>>   1 file changed, 28 insertions(+)
->>>>
->>>> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c
->>>> b/drivers/media/platform/qcom/venus/pm_helpers.c
->>>> index ac7c83404c6e..cf91f50a33aa 100644
->>>> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
->>>> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
->>>> @@ -23,6 +23,34 @@
->>>>     static bool legacy_binding;
->>>>   +/**
->>>> + * venus_clks_get() - Get Venus clocks that are not bound to a vcodec
->>>> + * @core: A pointer to the venus core resource
->>>> + *
->>>> + * The Venus block (depending on the generation) can be split into a couple
->>>> + * of clock domains: one for main logic and one for each video core (0-2
->>>> instances).
->> s/main logic/controller. Applies to below places as well.
-> 
-> Ok - so "controller" is the cortex-m3 (m5?) that power-sequences
-> the DSP etc.?
-Thats correct. The firmware runs on the controller and takes care of many
-aspects of hardware (dsp or core) programming.
-
+>> Right, it's fine. And it's synchronised by the ubuf refcounting,
+>> though it might get more complicated if I'd try out some counting
+>> optimisations.
 >>
->>>> + *
->>>> + * MSM8916 (and possibly other HFIv1 users) only feature the "main logic"
->>>> + * domain, so this function is the only kind if clk_get necessary there.
->> To be checked, unable to get the clock document to see why only core clocks
->> (VENUS0_VCODEC0_CLK). Will update.
-> 
-> FWIW 8916 only has GCC_VENUS0_VCODEC0_CLK (and _SRC) and AHB/AXI/TBU clocks,
-> no (currently registered) clock for the entire block.
-> 
->>
->>>> + *
->>>> + * MSM8996 (and other HFIv3 users) feature two video cores, with core0 being
->>>> + * statically defined a decoder and core1 an encoder, with both having
->>>> + * their own clock domains.
->>>> + *
->>>> + * SDM845 features two video cores, each one of which may or may not be
->> s/two video cores/two identical video cores
->>>> + * subdivided into two encoder/decoder threads.
->> decoder cannot be split into core threads. you can keep it like "each of which
->> is capable to do any encode or decode"
-> 
-> So it's not about any splitting, but rather the ability to do both encode
-> and decode, sort of like how the displayport controller can nowadays do both
-> eDP and DP, depending on what init data you send to it?
-It is precisely that way, just that there are cases of cores with dedicated
-codec support, hence identical implies that each of them can do same processing.
+>> FWIW, it shouldn't give any performance wins. The heavy stuff is
+>> notifications waking the task, which is still there. I can even
+>> imagine that having separate CQEs might be more flexible and would
+>> allow more efficient CQ batching.
+> I've actaully been working on this issue for a little while now. My current
+> idea is that an id is put into the optval section of the SQE, and then it
+> can be used to tag that req with a certain group. When a req has a flag
+> set on it, it can request for all of group's notifs to be "flushed" in one
+> notif that encompasses that entire group. If the id is zero, it won't be
+> associated with a group and will generate a notif. LMK if you see anything
+> in here that could overcomplicate userspace. I think it's pretty simple,
+> but you've had a crack at this before so I'd like to hear your opinion.
 
->>
->>>> + *
->>>> + * Other SoCs either feature a single video core (with its own clock domain)
->>>> + * or one video core and one CVP (Computer Vision Processor) core. In both
->>>> cases
->>>> + * we treat it the same way (CVP only happens to live near-by Venus on the
->>>> SoC).
->>>> + *
->>>> + * Due to unfortunate developments in the past, we need to support legacy
->>> why unfortunate? please re-phrase this.
->>>> + * bindings (MSM8996, SDM660, SDM845) that require specifying the clocks and
->>>> + * power-domains associated with a video core domain in a bogus sub-node,
->>>> + * which means that additional fluff is necessary.
->> Some background:
->> It was done that way to support decoder core with specific clocks and similarly
->> for encoder. Earlier architectures use to have different clock source for these
->> specific decoder/encoder core clocks, now there is a common clock source for
->> both the cores. Hence if any one is enabled, others gets enabled as it is
->> derived from same source.
->> So if we see the later bindings, the clocks were moved out of sub node to main
->> venus node.
-> 
-> Yeah and I don't really see the reason why the binding needed to be changed
-> for this, you can simply get the clocks by name and poke at the specific clk*
-> (or an array of them), no matter where they were _get()-ed from.
-I think the reason for not doing a name based clock as it might be possible that
-the clock is not available or applicable to subsequent SOC.
+You can take a look at early versions of the IORING_OP_SEND_ZC, e.g.
+patchset v1, probably even later ones. It was basically doing what
+you've described with minor uapi changes, like you had to declare groups
+(slots) in advance, i.e. register them.
 
-Regards,
-Vikash
+More flexible and so performant in some circumstances, but the overall
+feedback from people trying it is that it's complicated. The user should
+allocate group ids, track bound requests / buffers, do other management.
+The next question is how the user should decide what bind to what. There
+is some nastiness in using the same group for multiple sockets, and then
+what's the cut line to flush the previous notif? I probably forgot a
+couple more complaints.
+
+TL;DR;
+
+The performance is a bit of a longer story, problems are mostly coming
+from the async nature of io_uring, and it'd be nice to solve at least a
+part of it generically, not only for sendzc. The expensive stuff is
+waking up the task, it's not unique to notifications, recv will trigger
+it with polling as well as other opcodes. Then the key is completion
+batching.
+
+What's interesting, take for example some tx only toy benchmark with
+DEFER_TASKRUN (recommended to use in any case). If you always wait for
+sends without notifications and add eventual *_get_events(), that would
+completely avoid the wake up overhead if there are enough buffers,
+and if it's not it can 1:1 replace tx polling.
+
+Try groups, see if numbers are good. And a heads up, I'm looking at
+improving it a little bit for TCP because of a report, not changing
+uapi but might change performance math.
+
+-- 
+Pavel Begunkov
 
