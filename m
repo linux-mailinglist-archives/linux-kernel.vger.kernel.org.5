@@ -1,91 +1,119 @@
-Return-Path: <linux-kernel+bounces-138584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1124489F40D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 296BF89F415
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 15:24:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA4AF1F2C68B
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:23:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D507F1F2CCF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 13:24:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00D8A15F402;
-	Wed, 10 Apr 2024 13:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D23A916C45C;
+	Wed, 10 Apr 2024 13:20:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AmJGkZwR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="amlRCAAy"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E71915E7F3;
-	Wed, 10 Apr 2024 13:19:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7650916131C;
+	Wed, 10 Apr 2024 13:20:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712755170; cv=none; b=MFv5kMvvWq6MhAX6pOO8cBnE4+xSYfpCQulplP+x6vxZ4g/XH8PjGU9sFSBDosoCgqNF36gDA2CC4goftmN5D74foTKR5DDpYDQkUYObPIi9hrWJdraiWr9XwVCKDw0lc6PUbTVP0LQPeyuRg5dKPaOMNfFHCow/7rNokxXXyzU=
+	t=1712755213; cv=none; b=bVqE+FeO33Ntxo8FcetkH9vEe/9xXlv4xZxrWvNjIFZaZaKJ3x0SuH6ZREAk4qtoq0fkYlhC6NAgtAfE4E0hby320rdj0M4hjYWjirItwUbHOxwzaVwzneG8+9bKxNbe9LBBpi0JkU6wi6Gi4i1XhVmbPxwQ9Mp4bXVoHtOqTFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712755170; c=relaxed/simple;
-	bh=7se5ngO8xSqrBrYVcIfdidvmDgbPuUTqHOL6en4qQVU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CSEm0WdNgSgO3wikbkEtfF3dtZlqKMzMTUxRtibv/vF9eMsZTzdE5NYmF6kMxSSihpSsOxeYbdVqGrZyHg0b6M090pWFTSj6DhKWyq3Dg/A6rKs2hKT9nFDpbMTn8itEg5KGQ/hcRfpkrF79PGmckB+EHiF4YdI1B/2wlcHF4kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AmJGkZwR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15CDCC433C7;
-	Wed, 10 Apr 2024 13:19:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712755169;
-	bh=7se5ngO8xSqrBrYVcIfdidvmDgbPuUTqHOL6en4qQVU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AmJGkZwRmpXPRRQRM8thAnRLozPe+7AfndnUdcZZjePLeBqE8gLDqV85hwYfru1no
-	 OywxqhbWaSMnd3geADvxVHDihAnBTTlpe3zWU2AQqUGTklC9CXatBt/hMDMU6xnl83
-	 ZCVybJQcpQqGwcrXHwZqziKzpgF/lT1iAOV4PF5sthyOEkvFCmE7ah0ddmOkMGhnLv
-	 ZOu1TSWObnVHMGJUNiqJYdGI3zNFrS7y9V2hum085QrwnmtI42NgBuo1YlQbnu+ntn
-	 AWt2FurM4UTJX/+NHbbvvWNgsSof58OjhWS1ZgYxI6tI/Wk1STSbcr/PaSgQ9RuUVE
-	 jSXLbC/s/+2DA==
-Date: Wed, 10 Apr 2024 06:19:28 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, John Fraker
- <jfraker@google.com>, netdev@vger.kernel.org, Praveen  Kaligineedi
- <pkaligineedi@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>,
- Shailend Chand <shailend@google.com>, Willem de  Bruijn
- <willemb@google.com>, "David S. Miller" <davem@davemloft.net>, Junfeng Guo
- <junfeng.guo@intel.com>, Ziwei Xiao <ziweixiao@google.com>, Jeroen de Borst
- <jeroendb@google.com>, linux-kernel@vger.kernel.org,
- kory.maincent@bootlin.com, andrew@lunn.ch, richardcochran@gmail.com
-Subject: Re: [PATCH net-next] gve: Correctly report software timestamping
- capabilities
-Message-ID: <20240410061928.712ff9a3@kernel.org>
-In-Reply-To: <87jzl5akh5.fsf@nvidia.com>
-References: <20240408180918.2773238-1-jfraker@google.com>
-	<661550e348224_23a2b2294f7@willemb.c.googlers.com.notmuch>
-	<20240409172838.247738f3@kernel.org>
-	<87jzl5akh5.fsf@nvidia.com>
+	s=arc-20240116; t=1712755213; c=relaxed/simple;
+	bh=uHVxn6S6zS02geIFwmBs5SHYJUz02pa08bMj+uvJEIw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PM269erX+HQnG2+JC6DhYHeewdERzal8Op7wzfvTUZ/Xo4bRKzl5Qny5oVsgCqL+0QhPXxlbrG+imqQ0Je96e45yhlUaBunLlDG8YwRfFoaE/vca0O4SQe5kZr3He+CyT5c/DxV8fmNXt28skkFl3ZY393JomPJ6ZKQFwm6jQ3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=amlRCAAy; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712755211; x=1744291211;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=uHVxn6S6zS02geIFwmBs5SHYJUz02pa08bMj+uvJEIw=;
+  b=amlRCAAyA6a+vy7q/6P0ppurWsVmJLsuPuxAkvvM7lTLVmfDfgGPaITe
+   AuQnwqo2KaudXKWuJtktTZ+a8Z7mApoIuQ6RXOySEIMbOqjOmIXMS+3th
+   94N41a3qunFc9aDmGhNX0zLPCWXhiiJ0tk1i5+6nYg9THpLsbWuwSVsYW
+   uKpczIv3/Bm92mER6ESggqPWIOe333moWx/v7sTBF/w2F0tQ3GFmXA63r
+   KofUuymui/WaYlk1OB79jTiRZ6ffgGwM4W8MZuURlteiVcy55849qfDvS
+   YY0ub/nKkUggmCdowGkxmPZ1f/VnywtcesPxyP0OkDNnFCyWxUWqDMJJd
+   Q==;
+X-CSE-ConnectionGUID: WHiwNWEZRoyME+MhgQ4zTw==
+X-CSE-MsgGUID: Wh8fovDJRVG3S4sICspMVw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="7988973"
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="7988973"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 06:20:10 -0700
+X-CSE-ConnectionGUID: eycmoRiYS8y3Zs+HD8krtA==
+X-CSE-MsgGUID: AHdQNHWLRXqZQdb/dwvMfw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,190,1708416000"; 
+   d="scan'208";a="25186819"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 06:20:10 -0700
+Received: from [10.212.84.148] (kliang2-mobl1.ccr.corp.intel.com [10.212.84.148])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id 0066920B573A;
+	Wed, 10 Apr 2024 06:20:08 -0700 (PDT)
+Message-ID: <55528313-d858-41d2-b438-77bbc0e514f0@linux.intel.com>
+Date: Wed, 10 Apr 2024 09:20:08 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] perf/x86/rapl: Add support for Intel Arrow Lake
+To: Zhang Rui <rui.zhang@intel.com>, peterz@infradead.org
+Cc: mingo@redhat.com, tglx@linutronix.de, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org,
+ linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ak@linux.intel.com
+References: <20240410124554.448987-1-rui.zhang@intel.com>
+Content-Language: en-US
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20240410124554.448987-1-rui.zhang@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Tue, 09 Apr 2024 21:40:46 -0700 Rahul Rameshbabu wrote:
-> > My gut tells me we force drivers to set the ethtool op because
-> > while at it they will probably also implement tx stamping.  
-> 
-> I think the logic should be the other way (in terms of the
-> relationship). A call to skb_tx_timestamp should throw a warning if the
-> driver does not advertise its timestamping capabilities. This way, a
-> naive netdev driver for some lightweight device does not need to worry
-> about this. I agree that anyone implementing tx timestamping should have
-> this operation defined. An skb does not contain any mechanism to
-> reference the driver's ethtool callback. Maybe the right choice is to
-> have a ts capability function registered for each netdev that can be
-> used by the core stack and that powers the ethtool operation as well
-> instead of the existing callback for ethtool?
 
-Adding a check which only need to runs once in the lifetime of
-the driver to the fastpath may be a little awkward. Another option
-would be a sufficiently intelligent grep, which would understand
-which files constitute a driver. At which point grepping for 
-the ethtool op and skb_tx_timestamp would be trivial?
+
+On 2024-04-10 8:45 a.m., Zhang Rui wrote:
+> Arrow Lake RAPL support is the same as previous Sky Lake.
+> Add Arrow Lake model for RAPL.
+> 
+> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+
+The series looks good to me.
+
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+
+Thanks,
+Kan
+> ---
+>  arch/x86/events/rapl.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+> index fb2b1961e5a3..6bfb78d5b37e 100644
+> --- a/arch/x86/events/rapl.c
+> +++ b/arch/x86/events/rapl.c
+> @@ -808,6 +808,8 @@ static const struct x86_cpu_id rapl_model_match[] __initconst = {
+>  	X86_MATCH_INTEL_FAM6_MODEL(RAPTORLAKE_S,	&model_skl),
+>  	X86_MATCH_INTEL_FAM6_MODEL(METEORLAKE,		&model_skl),
+>  	X86_MATCH_INTEL_FAM6_MODEL(METEORLAKE_L,	&model_skl),
+> +	X86_MATCH_INTEL_FAM6_MODEL(ARROWLAKE_H,		&model_skl),
+> +	X86_MATCH_INTEL_FAM6_MODEL(ARROWLAKE,		&model_skl),
+>  	{},
+>  };
+>  MODULE_DEVICE_TABLE(x86cpu, rapl_model_match);
 
