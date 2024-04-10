@@ -1,169 +1,220 @@
-Return-Path: <linux-kernel+bounces-138735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8418689F9B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:18:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3353489F9BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 16:20:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0D041F28DAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:18:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 564FD1C20CB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 14:20:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA3415F3ED;
-	Wed, 10 Apr 2024 14:18:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7193D15F31F;
+	Wed, 10 Apr 2024 14:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G3PZRUvp"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s5PUTdDH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9438315ECF7;
-	Wed, 10 Apr 2024 14:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76F8315ECEA;
+	Wed, 10 Apr 2024 14:20:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712758707; cv=none; b=rsfjgUOV3zRZN9WebrkKJuGXKK9eMI9emY6vE+p/6o1+7v0QEolQEJV+6+dLKz+NJJK9XpOnCndPb8k8eYmJjRHTmyEDovw3kgBI5Zl0+VCRiOXoX4aYXf6jLT6C7QgNOwD1X9Fav07ZGmmlJikPyP5J+CL/q8g50iGwxbcTvac=
+	t=1712758803; cv=none; b=urMbRKSyZub3GgAWUGHx98bZPwDVufi7qhhKK1bYrW/8XqhtKf5qhrAu1tW7G44fet4dEOKn0CXyFCE2/fPe8PDHTm4zds/ab51wtxKsvgGVGGO1jyHgeO+KOM7jMRxmODXE3Zoh41RBTN6GNq2DTzqvE/0M7fC1oF261Lv5VDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712758707; c=relaxed/simple;
-	bh=43iHxXQ+Xn7lzGP2Qk3mNs64oX+sA9CuAlA0854WGcQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t9/HXBpBtkhLiO52nHJBcQTyo0dXcV4/gZDnJNHVH6e8kp1W+srTedycm45SG6sP2O74SOVrohjHCaTyUlbWXPm2CNger3DqdGDpifOa7rYh8jx3Q4SXkruT7JM0hHO4Po35NsMBEwl8eY+UqgBpy0mHCrh96mAWQYK0J+taifg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G3PZRUvp; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56c5d05128dso7649129a12.0;
-        Wed, 10 Apr 2024 07:18:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712758704; x=1713363504; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5GE1IW0Lti2OUmskUuiVrJg2UU8Baut/hi2lIaMb+BI=;
-        b=G3PZRUvpn50cX5dG2as6j+Dkc15fuuM1kslvuFHncG+UXGiDS8UJYbkfrl5wq/QmUx
-         jXTz7aTpdZdIG86SXXj3c45afr748+cqukcCeahz5aWvVYTCLTjri9rhcz8KqBS8K320
-         +Z/XCohsRCBjV0D5po6Z+pdo1JaQq5WYuwOY90rWdWSqKGvS38253c76gZKQDBGUkSbd
-         4MM5fPt195vFXj5DssY72kMPVzagHy+ggUIMCRJJfN7LfURhM+YzNd2AL65feyKMkRLU
-         sUn7cQ1gd6wQp9/T5QYJf3WuIRiVLYFnWdBMs7A5vmWWKXDHRv3DmUXrJ5eoKy0Kudau
-         +SUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712758704; x=1713363504;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5GE1IW0Lti2OUmskUuiVrJg2UU8Baut/hi2lIaMb+BI=;
-        b=ZrWUFJTs7bgvqJkA4gG8g0zdyAb2r9lcsHfdPOaK3KasvSBnIHEPwSylQ+5e65L61U
-         8am1KIZZgPiyUMSlC1+PSfpBFgada0XHrZcGB1tXHe7L+TVT3LzNMhZpC/ns0rtsxrwj
-         AQw2F9bmANLfFJlmAyP739W4yKYs56Z7DER89yrb104zDkrsOwdh++IDrDGL2So2RevB
-         WzjI9RwiJocou0jJnLDa72NhTDQKtAkGpkXAnJdEh6xb69TzddYWw0e9vi/dvuIYlsGM
-         SskMfARXmQ5mNzouqKBiLg1xI3daEOSlD0Chp25q+63A3PGf/I1ruesFd6J4FVdzdWFR
-         8HqA==
-X-Forwarded-Encrypted: i=1; AJvYcCWCD831vJFjJ7Bza94al8Vlkups4Nr4tH+y2dWeVk5nwpN02qw7CU/gG0GpjOl0H1pUZ6t8HLGkJW1w2EJ6pGHiUzAgZH8Y5L3MJr79+Z64gjpG7X3tsvznfElaIns7R4Nk88tqM+67
-X-Gm-Message-State: AOJu0Yx+WxZWMXTFJuZH86k/ihFVPiYwb4LWjCJgkgL04J6RiIsUqKJu
-	+I43R8+tNVex8lzy3PY8stgiwpNJ7x9jXPynfwFe98+OR5Jh4UQg
-X-Google-Smtp-Source: AGHT+IFgbRzN8EqG0LgVdM+i6UEVhaiP9sxgR4y2h+gWh3T543XQTaKg30zVjpcIQn4wX4m9qtdv+w==
-X-Received: by 2002:a17:907:7e97:b0:a4e:6223:2507 with SMTP id qb23-20020a1709077e9700b00a4e62232507mr2176259ejc.5.1712758703391;
-        Wed, 10 Apr 2024 07:18:23 -0700 (PDT)
-Received: from gmail.com (1F2EF1A5.nat.pool.telekom.hu. [31.46.241.165])
-        by smtp.gmail.com with ESMTPSA id qf31-20020a1709077f1f00b00a5208537b63sm1106506ejc.141.2024.04.10.07.18.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 07:18:22 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Wed, 10 Apr 2024 16:18:20 +0200
-From: Ingo Molnar <mingo@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>
-Subject: Re: [PATCH 3/3] x86/cpu: Ignore "mitigations" kernel parameter if
- SPECULATION_MITIGATIONS=n
-Message-ID: <ZhafrPn/2mOcP/FE@gmail.com>
-References: <20240409175108.1512861-1-seanjc@google.com>
- <20240409175108.1512861-4-seanjc@google.com>
+	s=arc-20240116; t=1712758803; c=relaxed/simple;
+	bh=OvoVNaySrcXw62YX7UG0Hd2hLfS04EbJaAtBVkIIqd8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KEZ6/gold/9XgML9VlulN89X4WvxRHpKk1ClhQXsW77K8KMSIZYzDpuI+hJWjvSifIzm4PziVqpGjPn7a4sBp5RkSIiL2yafMVkym4ig/fcR3BBPIv6Bf49rNSFriVHS4kMoFEdEKAyAQMK9UTynmRmBwHgmoS/wd/Vff5PaCnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s5PUTdDH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1516BC43330;
+	Wed, 10 Apr 2024 14:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712758803;
+	bh=OvoVNaySrcXw62YX7UG0Hd2hLfS04EbJaAtBVkIIqd8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=s5PUTdDHBVvTl0uWmYq/RKh8Aa8mIAETnLABi1L3GGcnVaDiAnN6DgdGTb4B1wwpX
+	 PQBJDnMksAax6GHrRfANFcQkVRxHXdz4xI6wV4SD/31BCwju1b3UJZhIIQ/i6+NuvZ
+	 AuCnnYt9U0fNVXvhwVsQPkJs9aysHYSdYvsHGQA6fyUgQwG86k6t+qDtL1nznrMudT
+	 dq/2gTJxzeqm7Jrd1OgDua4rSQnMVIlwNufz86jQyLGE0aUwkFmQn2ySsUivHJHam+
+	 5YdthBMby3c3qh9i3I47xtQsKEH+xSnd5/uOT+TTvCQwFW5oKjEm3i7aISHe3EGTs8
+	 7WHVpWvOL640Q==
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-22ec8db3803so548192fac.1;
+        Wed, 10 Apr 2024 07:20:03 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXzkfJeDHqYDufJHMAXVe4eQ3YxQggxVytyCcrlZKh8T+xk/BsN6a9tOPOYqOW4+1Dx7I7qdCJXHpj7pY3gBbRvLQjBXyBm0CmAH40YJlZf4hLyGwNhRw7HPFiY1UGhgk4GCSvSzFf6veAHhPd+YAyI8s//YR6RK7hLE1h7uLFxEW9Qze7PnvXA3jYiOScwH61CVCSi4XgvPbLaWspx+IeNvmtlq2JjwEaVN2EXzbu3caBk1ckKj3XGBGrDr+bDts3Sx6Qo8GgIjG2E+cLMbd5uRsO8BQgPKjqacpMKme6zcnn72ASxhCVrPkf/O7zRX9wWTRqzXqvwbP1bGQTQdUmOUXk6aK49yQ/5Q6LjJpED
+X-Gm-Message-State: AOJu0Yz6NiBOJIk4oTwJHT0+XhUQZRxPWc78yavsZVRYQ712E9cV4EbT
+	B/TErijrVyff83TyGsDu95Zi9vrZq61R/YLjs2H02+126z5Sd2cVxMJDDiBhz+4DFWlpnvxOQ4p
+	h8IPaEZqHE3+8NhHTrpW6yxKzcWo=
+X-Google-Smtp-Source: AGHT+IFUbYvctHLscpPyYTlJqJkvjz7Lv1BPzvm+G1krAlpB1R6DPKUMcWT+4z93yfQwfckyfvgV5dE3NAZ750FVX1Q=
+X-Received: by 2002:a05:6870:9e47:b0:22e:b175:3c22 with SMTP id
+ pt7-20020a0568709e4700b0022eb1753c22mr3170425oab.1.1712758802087; Wed, 10 Apr
+ 2024 07:20:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240409175108.1512861-4-seanjc@google.com>
+References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk> <E1rVDmU-0027YP-Jz@rmk-PC.armlinux.org.uk>
+ <CAJZ5v0iiJpUWq5GMSnKFWQTzn_bdwoQz9m=hDaXNg4Lj_ePF4g@mail.gmail.com>
+ <20240322185327.00002416@Huawei.com> <20240410134318.0000193c@huawei.com>
+ <CAJZ5v0ggD042sfz3jDXQVDUxQZu_AWaF2ox-Me8CvFeRB8nczw@mail.gmail.com> <20240410145005.00003050@Huawei.com>
+In-Reply-To: <20240410145005.00003050@Huawei.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 10 Apr 2024 16:19:50 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hRPFd7jmhJdCu8jVCRc4hZRUt9sKm6iWfynZH1mX7rCg@mail.gmail.com>
+Message-ID: <CAJZ5v0hRPFd7jmhJdCu8jVCRc4hZRUt9sKm6iWfynZH1mX7rCg@mail.gmail.com>
+Subject: Re: [PATCH RFC v4 02/15] ACPI: processor: Register all CPUs from acpi_processor_get_info()
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Russell King <rmk+kernel@armlinux.org.uk>, 
+	linux-pm@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev, x86@kernel.org, 
+	acpica-devel@lists.linuxfoundation.org, linux-csky@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org, 
+	linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, jianyong.wu@arm.com, justin.he@arm.com, 
+	James Morse <james.morse@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Apr 10, 2024 at 3:50=E2=80=AFPM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Wed, 10 Apr 2024 15:28:18 +0200
+> "Rafael J. Wysocki" <rafael@kernel.org> wrote:
+>
+> > On Wed, Apr 10, 2024 at 2:43=E2=80=AFPM Jonathan Cameron
+> > <Jonathan.Cameron@huawei.com> wrote:
+> > >
+> > > > >
+> > > > > > diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+> > > > > > index 47de0f140ba6..13d052bf13f4 100644
+> > > > > > --- a/drivers/base/cpu.c
+> > > > > > +++ b/drivers/base/cpu.c
+> > > > > > @@ -553,7 +553,11 @@ static void __init cpu_dev_register_generi=
+c(void)
+> > > > > >  {
+> > > > > >         int i, ret;
+> > > > > >
+> > > > > > -       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES))
+> > > > > > +       /*
+> > > > > > +        * When ACPI is enabled, CPUs are registered via
+> > > > > > +        * acpi_processor_get_info().
+> > > > > > +        */
+> > > > > > +       if (!IS_ENABLED(CONFIG_GENERIC_CPU_DEVICES) || !acpi_di=
+sabled)
+> > > > > >                 return;
+> > > > >
+> > > > > Honestly, this looks like a quick hack to me and it absolutely
+> > > > > requires an ACK from the x86 maintainers to go anywhere.
+> > > > Will address this separately.
+> > > >
+> > >
+> > > So do people prefer this hack, or something along lines of the follow=
+ing?
+> > >
+> > > static int __init cpu_dev_register_generic(void)
+> > > {
+> > >         int i, ret =3D 0;
+> > >
+> > >         for_each_online_cpu(i) {
+> > >                 if (!get_cpu_device(i)) {
+> > >                         ret =3D arch_register_cpu(i);
+> > >                         if (ret)
+> > >                                 pr_warn("register_cpu %d failed (%d)\=
+n", i, ret);
+> > >                 }
+> > >         }
+> > >         //Probably just eat the error.
+> > >         return 0;
+> > > }
+> > > subsys_initcall_sync(cpu_dev_register_generic);
+> >
+> > I would prefer something like the above.
+> >
+> > I actually thought that arch_register_cpu() might return something
+> > like -EPROBE_DEFER when it cannot determine whether or not the CPU is
+> > really available.
+>
+> Ok. That would end up looking much more like the original code I think.
+> So we wouldn't have this late registration at all, or keep it for DT
+> on arm64?  I'm not sure that's a clean solution though leaves
+> the x86 path alone.
 
-* Sean Christopherson <seanjc@google.com> wrote:
+I'm not sure why DT on arm64 would need to do late registration.
 
-> Explicitly disallow enabling mitigations at runtime for kernels that were
-> built with CONFIG_SPECULATION_MITIGATIONS=n.  Because more Kconfigs are
-> buried behind SPECULATION_MITIGATIONS, trying to provide sane behavior for
-> retroactively enabling mitigations is extremely difficult, bordering on
-> impossible.  E.g. page table isolation and call depth tracking requrie
-> build-time support, BHI mitigations will still be off without additional
-> kernel parameters, etc.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt |  3 +++
->  arch/x86/Kconfig                                | 10 +++++++---
->  kernel/cpu.c                                    |  2 ++
->  3 files changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 70046a019d42..7d623df11a1a 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -3423,6 +3423,9 @@
->  			arch-independent options, each of which is an
->  			aggregation of existing arch-specific options.
->  
-> +			Note, "mitigations" is supported on x86 if and only if
-> +			the kernel was built with SPECULATION_MITIGATIONS=y.
-> +
->  			off
->  				Disable all optional CPU mitigations.  This
->  				improves system performance, but it may also
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 10a6251f58f3..f4e4dd360636 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -2493,10 +2493,14 @@ menuconfig SPECULATION_MITIGATIONS
->  	default y
->  	help
->  	  Say Y here to enable options which enable mitigations for
-> -	  speculative execution hardware vulnerabilities.
-> +	  speculative execution hardware vulnerabilities.  Mitigations can
-> +	  be disabled or restricted to SMT systems at runtime via the
-> +	  "mitigations" kernel parameter.
->  
-> -	  If you say N, all mitigations will be disabled. You really
-> -	  should know what you are doing to say so.
-> +	  If you say N, all mitigations will be disabled.  This CANNOT be
-> +	  overridden at runtime.
-> +
-> +	  Say 'Y', unless you really know what you are doing.
->  
->  if SPECULATION_MITIGATIONS
->  
-> diff --git a/kernel/cpu.c b/kernel/cpu.c
-> index 07ad53b7f119..d445763d8047 100644
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -3214,6 +3214,8 @@ static int __init mitigations_parse_cmdline(char *arg)
->  {
->  	if (!strcmp(arg, "off"))
->  		cpu_mitigations = CPU_MITIGATIONS_OFF;
-> +	else if (!IS_ENABLED(CONFIG_SPECULATION_MITIGATIONS))
-> +		pr_crit("Kernel compiled without mitigations, system may still be vulnerable\n");
+There is this chain of calls in the mainline today:
 
-This doesn't really make it clear that the kernel is actively ignoring the 
-mitigations= command line. I think something like this would be more clear:
+driver_init()
+  cpu_dev_init()
+    cpu_dev_register_generic()
 
-> +		pr_crit("Kernel compiled without mitigations, ignoring mitigations= boot option. System may still be vulnerable\n");
+the last of which registers CPUs on arm64/DT systems IIUC. I don't see
+a need to change this behavior.
 
-Thanks,
+On arm64/ACPI, though, arch_register_cpu() cannot make progress until
+it can look into the ACPI Namespace, so I would just make it return
+-EPROBE_DEFER or equivalent then and the ACPI enumeration will find
+the CPU and basically treat it as one that has just appeared.
 
-	Ingo
+> If we get rid of this catch all, solution would be to move the
+> !acpi_disabled check into the arm64 version of arch_cpu_register()
+> because we would only want the delayed registration path to be
+> used on ACPI cases where the question of CPU availability can't
+> yet be resolved.
+
+Exactly.
+
+This is similar (if not equivalent even) to a CPU becoming available
+between the cpu_dev_register_generic() call and the ACPI enumeration.
+
+> >
+> > Then, the ACPI processor enumeration path may take care of registering
+> > CPU that have not been registered so far and in the more-or-less the
+> > same way regardless of the architecture (modulo some arch-specific
+> > stuff).
+>
+> If I understand correctly, in acpi_processor_get_info() we'd end up
+> with a similar check on whether it was already registered (the x86 path)
+> or had be deferred (arm64 / acpi).
+>
+> >
+> > In the end, it should be possible to avoid changing the behavior of
+> > x86 and loongarch in this series.
+>
+> Possible, yes, but result if I understand correctly is we end up with
+> very different flows and replication of functionality between the
+> early registration and the late one. I'm fine with that if you prefer it!
+
+But that's what is there today, isn't it?
+
+I think this can be changed to reduce the duplication, but I'd prefer
+to do that later, when the requisite functionality is in place and we
+just do the consolidation.  In that case, if anything goes wrong, we
+can take a step back and reconsider without deferring the arm64 CPU
+hotplug support.
+
+> >
+> > > Which may look familiar at it's effectively patch 3 from v3 which was=
+ dealing
+> > > with CPUs missing from DSDT (something we think doesn't happen).
+> > >
+> > > It might be possible to elide the arch_register_cpu() in
+> > > make_present() but that will mean we use different flows in this patc=
+h set
+> > > for the hotplug and initially present cases which is a bit messy.
+> > >
+> > > I've tested this lightly on arm64 and x86 ACPI + DT booting and it "s=
+eems" fine.
+> >
+> > Sounds promising.
+>
+> Possibly not that relevant though if proposal is to drop this approach. :=
+(
+> At least I now have test setups!
+
+Great!
 
