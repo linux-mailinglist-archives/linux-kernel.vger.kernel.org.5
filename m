@@ -1,129 +1,138 @@
-Return-Path: <linux-kernel+bounces-138369-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4904889F037
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:56:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF18689F03F
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:57:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAC041F22CD2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:56:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ED3E1F2260D
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:57:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08B66159571;
-	Wed, 10 Apr 2024 10:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C044159593;
+	Wed, 10 Apr 2024 10:56:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dyu4rfUA"
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="q8z1P9ZP"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB36F158D99
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37A2C15959D;
+	Wed, 10 Apr 2024 10:56:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712746587; cv=none; b=TKdPwjaZTfzpNmZbaQtMv2IzYaIU5g6smWdFn/JlOCk0Wn+yTdfd2hvObPnMn6+iTsJa+Fgim6ms5/kFum3lNLGoLd3O2oZ7AyjvxqaP/JsH3BRMdnnydm8nJ1T2P92S8715gG98sePTdIBmryMkVfVWSidaE51r2dXkVM1tL5I=
+	t=1712746600; cv=none; b=rX94EMsVR+2YE91TxDzHjIs5RNnTIXNpIBhRBENRCRgDDrdYmfcSjzduJx/UnVtEKLsxRVLL9ZYZUTbSEEEj/aLmsbBqT4fHiNbU4PH0h2oGtknMA+UO9iNawmM52HTsdFglkC8gzNzZ/zyoOncy2xjfzSJLCkoVM1HyBRTaJqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712746587; c=relaxed/simple;
-	bh=PkLomg3XZoAJg3TSd9x2y2XkV+U9wN5WgCjvRqpTvr4=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=jjubR5sc5oz/YuvS7KISSbaHzy2edA/Fvmyv6H5qFn7DXvOL725s16vcfHBX3B2/F7/euG3eYxMS5zOtnRRDwnLQn3aYYWXjgwi9qhSyABuHwbAiQu9PEi0P9nqlXcM1502TAcNse41P7B3FeZqJO+xGUZFDOodxsXSNI/0sz2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dyu4rfUA; arc=none smtp.client-ip=209.85.221.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4dad331b828so1151693e0c.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 03:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712746584; x=1713351384; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=A4P1zHA79cNSOqe5dhAPt9YiRo8Ig2ZEUFz6PytxSbs=;
-        b=dyu4rfUAF+ZM5C9oe+bUPaWJBhYlk3LtXvVEWZF2n5zcG9Zrx0nH/pkaeAMNXfzoyh
-         NXZ3A2dAQh0tvtasYGGI9oDuNws9lWh8Mi3bGRyzvwqdIIclTljKPQ9DxLSng8zRy8BY
-         fwELXU5JtHnTY8YW3O8tfZCoJeOeL4yG5XtZfhHpFHfB8/GZlgR3Kfvnf1sXOMeOll3G
-         I26uLx8BuP7Iww0m7Sd6ccB3vLtSDsOqMmmccyWeRiB5Ol9le7Pa2X0x96Z0aRJV0QNi
-         FmccazTQDlhaUeWg2VxgmyEgkTJSBFHfDKJ/93dhr6IlgphQC1dGbQhsT8hToP5wNatR
-         i+Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712746584; x=1713351384;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=A4P1zHA79cNSOqe5dhAPt9YiRo8Ig2ZEUFz6PytxSbs=;
-        b=VX2a1Sm9Rwyv9TrEEg7uXJWH0C9YO7ftD9/A6VIdEdO/vz0kK1TvknAvJkKKnyEssY
-         tCAMRUA5cTnNvE4VrV5s8H2z4MFB/oaXwXdrYOUGO8wHwfDioTpBg8lfmHj6i4nP24Y1
-         jx1U7YakjlqSkTjOPNU4gd6kJGm7WxI8QKc5/Pby/S23ZoNIkEknRXJ00p1YRftS77DT
-         ye8PpU5T3AXTW2rsg1+P4JODnBSY+dqG27CeL5MsYyLjwqzTAUx3wPV9G3m7xYYRsnKw
-         tHJ4Xsr428UnLQzXntbnRqwioGQsxdDoP5Z3wwfbqIm2Vd91YA3nmMOWZfYkaSPM70I/
-         ZbqA==
-X-Gm-Message-State: AOJu0Ywkb0tmYkoGvP/qWSH662rfRWWhG4mJhmr/L2ZyInfGch6hbOf/
-	LKn2xvwuItVR4Ql9mNmlXplhYO670BCDAgDYAIqNFWWGIeH/jRDRuwZQqxN20dQiFhqGOB8OAb0
-	ALnN5fVeE06S7muGgnzpg1/LXm4XmQapATvvSrVcQLcZle4TZY4A=
-X-Google-Smtp-Source: AGHT+IGvDtSipGLN4V+a5OK8F15/LzzDmS0siND2Ax9vMFlFPnR/b9TAjNiJAXVFQnE88ZlIPrSPfifC/IbqQFAdzjw=
-X-Received: by 2002:a05:6122:a22:b0:4cd:20ea:35aa with SMTP id
- 34-20020a0561220a2200b004cd20ea35aamr2414982vkn.8.1712746584230; Wed, 10 Apr
- 2024 03:56:24 -0700 (PDT)
+	s=arc-20240116; t=1712746600; c=relaxed/simple;
+	bh=RrgJMEdo0HWlyFVfTYt+YpX7OV/Mz6H1FMZoY2MWsJQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dv+ZjQMaaHQUkTYvXfMl1/PM6QUJ9SZhsLO87+l+hGl0Hu1O1IiSLzfdIlvTHGHK0qc652Kwcq6i6dKmrll4x3OjTyrfKajNM2alvi+okZafX/X8XBWklZdnd4lRO4k1m1aXMhln98ImVEiPzabFgte0fFeHqqiuUQoVFssrYMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=q8z1P9ZP; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43AAntHA016605;
+	Wed, 10 Apr 2024 10:56:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=R/RBhDHlEYdGNN5QMTvoxtO0im0LDZl5znVRnkSfqfo=;
+ b=q8z1P9ZP8NGYG9626sgM+CewjNpHhBGBSCbgYHEzq90F2WhGAvRNYSJqQZ0g2WwtNAVl
+ ZG3m3d3Tw/Rcz24nchvB3aPKY70iVeSWNuYsQDJjR5qvN3CpJW9O14T9V67WTfaIl73j
+ UaDN4LfayRsU6mjy6EuhYm5PegsDEl3paR8+XIkMXKpDLRL2heXWifMAwcZr513JlIAv
+ G9MfvJKceV2nPT69men3E+ZuxhH2Q0yIpy2GkftT0lXc8JDS3kJH8mFbyVauc8HCsRuw
+ PclGls14FWxSSe2V6O39grjLjLyk4jaSE+z3LTB1YSIGhhv8Pulmzvy6tYAAFTajHkX+ Yw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdr7j861s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 10:56:33 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43AAuXNA026677;
+	Wed, 10 Apr 2024 10:56:33 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdr7j861p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 10:56:33 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43A9iXWq013557;
+	Wed, 10 Apr 2024 10:56:32 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xbgqtmgy0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 10:56:32 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43AAuRIa49217812
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Apr 2024 10:56:29 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id F0C7620043;
+	Wed, 10 Apr 2024 10:56:26 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CC92020040;
+	Wed, 10 Apr 2024 10:56:26 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 10 Apr 2024 10:56:26 +0000 (GMT)
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Helge Deller <deller@gmx.de>
+Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Arnd Bergmann <arnd@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: [PATCH v2 0/1] fbdev: Handle HAS_IOPORT dependencies
+Date: Wed, 10 Apr 2024 12:56:25 +0200
+Message-Id: <20240410105626.2743168-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Zwbo5sy1ILBdDnQSeVUA7_LbHuTTNQRK
+X-Proofpoint-GUID: NGlUMgWUTSQQAh78zwa3P_4ALxo3e0VW
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 10 Apr 2024 16:26:12 +0530
-Message-ID: <CA+G9fYvjdZCW=7ZGxS6A_3bysjQ56YF7S-+PNLQ_8a4DKh1Bhg@mail.gmail.com>
-Subject: tinyconfig: kernel/time/timekeeping.c:286:1: error: no return
- statement in function returning non-void [-Werror=return-type]
-To: open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org, 
-	Linux Regressions <regressions@lists.linux.dev>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Stephen Boyd <sboyd@kernel.org>, John Stultz <jstultz@google.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Dan Carpenter <dan.carpenter@linaro.org>, Anders Roxell <anders.roxell@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ adultscore=0 lowpriorityscore=0 clxscore=1015 phishscore=0 mlxlogscore=999
+ priorityscore=1501 bulkscore=0 impostorscore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404100079
 
-The powerpc,s390, superSh and sparc tinyconfig builds failed due to
-following build
-warnings / errors on the Linux next-20240410 with gcc-13 and gcc-11.
+Hi Helge,
 
-List build failures:
----
-* s390, build
-  - gcc-13-tinyconfig - failed
-  - gcc-8-tinyconfig - failed
+This is a follow up in my ongoing effort of making inb()/outb() and
+similar I/O port accessors compile-time optional. Previously I sent this
+as a treewide series titled "treewide: Remove I/O port accessors for
+HAS_IOPORT=n" with the latest being its 5th version[0]. With a significant
+subset of patches merged I've changed over to per-subsystem series. These
+series are stand alone and should be merged via the relevant tree such
+that with all subsystems complete we can follow this up with the final
+patch that will make the I/O port accessors compile-time optional.
 
-* sh, build
-  - gcc-11-tinyconfig - failed
+The current state of the full series with changes to the remaining subsystems
+and the aforementioned final patch can be found for your convenience on my
+git.kernel.org tree in the has_ioport branch[1]. As for compile-time vs runtime
+see Linus' reply to my first attempt[2].
 
-* sparc, build
-  - gcc-11-tinyconfig - failed
+Thanks,
+Niklas
 
-* mips, build
-  - gcc-12-tinyconfig - failed
-  - gcc-8-tinyconfig - failed
+[0] https://lore.kernel.org/all/20230522105049.1467313-1-schnelle@linux.ibm.com/
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git/log/?h=has_ioport
+[2] https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
 
-* powerpc, build
-  - gcc-13-tinyconfig - failed
-  - gcc-8-tinyconfig - failed
+v1 -> v2:
+- Add dependency for FB_ARC
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Niklas Schnelle (1):
+  fbdev: add HAS_IOPORT dependencies
 
-Build log:
---------
-kernel/time/timekeeping.c: In function 'timekeeping_debug_get_ns':
-kernel/time/timekeeping.c:286:1: error: no return statement in
-function returning non-void [-Werror=return-type]
-  286 | }
-      | ^
-cc1: some warnings being treated as errors
+ drivers/video/fbdev/Kconfig | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-steps to reproduce:
----
-# tuxmake --runtime podman --target-arch powerpc --toolchain gcc-13
---kconfig tinyconfig
+-- 
+2.40.1
 
-Links:
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240410/testrun/23380322/suite/build/test/gcc-13-tinyconfig/details/
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240410/testrun/23380301/suite/build/test/gcc-11-tinyconfig/history/
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240410/testrun/23380301/suite/build/tests/
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
