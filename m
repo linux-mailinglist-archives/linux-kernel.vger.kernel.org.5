@@ -1,143 +1,160 @@
-Return-Path: <linux-kernel+bounces-137837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A2B789E828
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:31:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8F5389E832
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:32:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69DB11C22FE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:31:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D8A8286F56
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 847B28BF0;
-	Wed, 10 Apr 2024 02:31:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32EBC125CD;
+	Wed, 10 Apr 2024 02:32:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="t1NH+D0G"
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="H7CD6fRB"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B23944D
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:31:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FFDB9473
+	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:31:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712716275; cv=none; b=iolgS4jrbxLsCK/4WBjLt2i71eGjy/P11s3B4j2mAgdMRrMNwl4Rap0aVZ1sIevhXbu5gOGa7BXnq+UrUc4JbPZ81m87YXeaCQmM55bv5KyZXvJPOPApOss+TJ86eyF3FjkkcnaqEZO232eERkFwt/OpLgD7IJ3LtDJn/B5KHX0=
+	t=1712716322; cv=none; b=qHweKXVVkgAThGoeGD1byrUcsGfvXrrvyNqyxrX/BFeGDVTKQ03a2sbrJtIids0OaKDK3VlhGuDjni2PJ1FNRjQJuBP0RzLLKQUoBUzsYXkKzfk1zUDhNTsaLPtXmhVNfO/ZyW5CTAFNT+s70Ri5DbDI1I8+W/I9I3DL8ZeIOMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712716275; c=relaxed/simple;
-	bh=RxQ4w7eDmsIDInqOAbvW0AlFj3vygFD5++VGkUFw57A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EWeDJF4zR0hsVOPgawAZjq682sqmkeBr2nZG3nOr96PjHewhTvUJ45xkxlzNJaHJ/Gn8UFaunoYMKHIR0yHuvnNMdibJcFBcbZsQ0HNogekqiC7mD1Lgqc4MlbxrFsYDCjVCREkQr8oXMLy7ZtzmHP1ZmrFHDxEGwvlnvAJHE/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=t1NH+D0G; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a340fb1a-7225-42d6-8a66-c6ac63bccaaa@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712716271;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZXsqbKt2Eq9TaCWXeOVJD5QoPofr+kcc4LPka5x/Pxk=;
-	b=t1NH+D0Gpi+dF65xdmLCN/lM3ADPR+TwbKusm6AxJCdStLdRsbsZ+M8IztThDKjDbOdJ9q
-	0lcEVapmhLw5QOL416m/q4+eLpV77miJrYuRHj/oIJ4mfyUjODcMXd9q1tKFKwlpzyXmUq
-	Go569l/w9giiIBa5QIYvW2ZnAw3KDLQ=
-Date: Wed, 10 Apr 2024 10:31:04 +0800
+	s=arc-20240116; t=1712716322; c=relaxed/simple;
+	bh=KszawLlCfqBX5u3rVG0NvzmvK/754HFncGX7jVg0qxY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Vc+eY5VJ2woNa1zBwjpl55ws5HkDllKoMq25adEY2ttv+tDNYrlhGx+i0Zmz5X7xx2o9NHvBEtpwLYL8iaxXWxr8S77vzG1YiRLz3tW3y2EUCh1vZxBbL0Bgqo4BwUGU+rzAB47ZQv0cGFnSr79NMlUcft978/NR1i4VocsXIwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=H7CD6fRB; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e3e84a302eso23868395ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 19:31:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712716318; x=1713321118; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7sJB/mea+ne4UFf8C44UTKqaf9B7A57oFQubr1xCfoI=;
+        b=H7CD6fRBN5qrbJARl/fzdCmRnD3qqryKyynhwWbYSIxuVcnNMcgu2LivLl1N38rfVk
+         NJ6jVxygQ8pdSmMwk71ejOKTyBbFlIodb1fPNNHLSenGTReTqGzvM1n70V8LHZu7WBJF
+         W6HEEhhaFhKHNBjQZd8419vUqgIbmQC10u5Pc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712716318; x=1713321118;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7sJB/mea+ne4UFf8C44UTKqaf9B7A57oFQubr1xCfoI=;
+        b=jQITauyGwvfMvPv42SjRmlailUwMYyK26P1uvpk1d7JARAkk5JS/E+E5QgcC/lrF1c
+         GR35WVcEQ268KYhKdAvNiOXY5r+Rxnl/6bS5NH7A8uKtlrpXboESeHe1/UozjkqAQvkB
+         YNGE11/Zz69CwOIeIr7ZPiHfr0VZ+07uG6tXaA3sYEdgxHvEzAZ97QcUHTnsvMobkNdj
+         8kTHoRvb7dqT2hA2rjNBYPE3AvRPzBDERhroqRMY2OqglCpc13XnF6U64UDfZSHyK+fF
+         KoHnSDYUxC5nPTe1ZeJeghZZUQuOWPzAH+kAxnPNbHBjxQjLJ+GXpKG2slqM3vLxOGOp
+         KsMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUHNiJPZioiT64eAQhHrEpkflxg7IDtl/YbSHmfiDandNQRTj5qUyvK5B9qgiYUkV/fqs8PQ3UyKkQgiJjRl8/x/05kS7EhVeTVnPoP
+X-Gm-Message-State: AOJu0YxPqgEjzs4VGMuLXFWCRPCkq3BzZ7k5FfZGtPBCYDCP73X9Mx18
+	e0R52qH5t8PBf6w9LB7wJchycQQqZ5BPXzgO4p6MI+NhasVSgtchxe2IDvDITw==
+X-Google-Smtp-Source: AGHT+IHClp98RNXSKgnfnzn46Mc2LDj/wf+Cyy5uZfzjLtUAplxwmqUCk9V8CgCGYNbpysszUmj2iw==
+X-Received: by 2002:a17:902:7008:b0:1e4:3ad5:b6d6 with SMTP id y8-20020a170902700800b001e43ad5b6d6mr1512978plk.37.1712716318594;
+        Tue, 09 Apr 2024 19:31:58 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id b7-20020a170902d50700b001e3ee552999sm6406385plg.291.2024.04.09.19.31.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Apr 2024 19:31:58 -0700 (PDT)
+From: Kees Cook <keescook@chromium.org>
+To: "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc: Kees Cook <keescook@chromium.org>,
+	Charles Bertsch <cbertsch@cox.net>,
+	Justin Stitt <justinstitt@google.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Andy Shevchenko <andy@kernel.org>,
+	Sathya Prakash <sathya.prakash@broadcom.com>,
+	Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+	Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	Kashyap Desai <kashyap.desai@broadcom.com>,
+	Sumit Saxena <sumit.saxena@broadcom.com>,
+	Nilesh Javali <njavali@marvell.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Himanshu Madhani <himanshu.madhani@oracle.com>,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	MPT-FusionLinux.pdl@broadcom.com,
+	linux-scsi@vger.kernel.org,
+	mpi3mr-linuxdrv.pdl@broadcom.com,
+	GR-QLogic-Storage-Upstream@marvell.com
+Subject: [PATCH 0/5] scsi: Avoid possible run-time warning with long manufacturer strings
+Date: Tue,  9 Apr 2024 19:31:49 -0700
+Message-Id: <20240410021833.work.750-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 5/5] mm: zswap: remove same_filled module params
-Content-Language: en-US
-To: Yosry Ahmed <yosryahmed@google.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240405053510.1948982-1-yosryahmed@google.com>
- <20240405053510.1948982-6-yosryahmed@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <20240405053510.1948982-6-yosryahmed@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1911; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=KszawLlCfqBX5u3rVG0NvzmvK/754HFncGX7jVg0qxY=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBmFfoZGm+w5zIvLCsYnaFCm1zKDHNOj0+xiwYgY
+ QCyzpvIZWGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZhX6GQAKCRCJcvTf3G3A
+ Jo6wD/0QQk0StqwBxMN5hxnRxuq1LlsSW6z1VwPSQbvxTQhHewhbKVcSmede+va3JiKcOFnm8db
+ Z5tyz10tEr4E1gWXWMfMZvp3HtZQNej83u3OZdrdgfrHNr06E5twCcfmS/LEFwwqdsVSr1AsN6k
+ 8soxXZSYHKsCEyiYQGYGBIv/yTn91kepLo3oP6UE2sF0YF9th4p+yYovtTDtcVI06xFTPTimcOA
+ b4yivDJtG0MuKjJPtWCEeUSHRv7I55eY7Um9YoRMh6AwkgE6Sq4FuogJQjcQ0/cADCB9UiFMUmL
+ 5aQR30QXfusAOfgG4b8M/PJtfFHv0zf8gd8gYYiSxiR5DQ8eNKp4h4CdLEcHDYkpMOsW4J/mygX
+ 7jEPX/+3EiWE72P4eYnfnzhw5Gb28anIEI4gCcVOIGQT25H2FgFN/7srJ440W9vmlGOm/alkpBP
+ zMo4aorHp0hSy85xDtvmFbFM8tKG4tj5hOh5U4VPLVUlwzk8OH6sGJ0waSHdNIsQBScGBRk3kXG
+ MP+jzndBxOoaWnXkHrK1b3/wIPPlcYG5BkXxqALuRo63UucckCttvJcNPF75urxyQ/1nfgGfwNU
+ JJqca5Pli5JfQqGyfV+y32MEwpMfCj6JqHDwe4WUQDJfpZnS91bEvOepX7jB03lPrx+7ZrJ7Z7I
+ Dp8Y9D/ WtLzpPwA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On 2024/4/5 13:35, Yosry Ahmed wrote:
-> These knobs offer more fine-grained control to userspace than needed and
-> directly expose/influence kernel implementation; remove them.
-> 
-> For disabling same_filled handling, there is no logical reason to refuse
-> storing same-filled pages more efficiently and opt for compression.
-> Scanning pages for patterns may be an argument, but the page contents
-> will be read into the CPU cache anyway during compression. Also,
-> removing the same_filled handling code does not move the needle
-> significantly in terms of performance anyway [1].
-> 
-> For disabling non_same_filled handling, it was added when the compressed
-> pages in zswap were not being properly charged to memcgs, as workloads
-> could escape the accounting with compression [2]. This is no longer the
-> case after commit f4840ccfca25 ("zswap: memcg accounting"), and using
-> zswap without compression does not make much sense.
-> 
-> [1]https://lore.kernel.org/lkml/CAJD7tkaySFP2hBQw4pnZHJJwe3bMdjJ1t9VC2VJd=khn1_TXvA@mail.gmail.com/
-> [2]https://lore.kernel.org/lkml/19d5cdee-2868-41bd-83d5-6da75d72e940@maciej.szmigiero.name/
-> 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Hi,
 
-Nice cleanup!
+Another code pattern using the gloriously ambiguous strncpy() function was
+turning maybe not-NUL-terminated character arrays into NUL-terminated
+strings. In these cases, when strncpy() is replaced with strscpy()
+it creates a situation where if the non-terminated string takes up the
+entire character array (i.e. it is not terminated) run-time warnings
+from CONFIG_FORTIFY_SOURCE will trip, since strscpy() was expecting to
+find a NUL-terminated source but checking for the NUL would walk off
+the end of the source buffer.
 
-Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
+In doing an instrumented build of the kernel to find these cases, it
+seems it was almost entirely a code pattern used in the SCSI subsystem,
+so the creation of the new helper, memtostr(), can land via the SCSI
+tree. And, as it turns out, inappropriate conversions have been happening
+for several years now, some of which even moved through strlcpy() first
+(and were never noticed either).
 
-Thanks.
+This series fixes all 4 of the instances I could find in the SCSI
+subsystem.
 
-> ---
->  mm/zswap.c | 19 -------------------
->  1 file changed, 19 deletions(-)
-> 
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 13869d18c13bd..b738435215218 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -140,19 +140,6 @@ static const struct kernel_param_ops zswap_accept_thr_param_ops = {
->  module_param_cb(accept_threshold_percent, &zswap_accept_thr_param_ops,
->  		&zswap_accept_thr_percent, 0644);
->  
-> -/*
-> - * Enable/disable handling same-value filled pages (enabled by default).
-> - * If disabled every page is considered non-same-value filled.
-> - */
-> -static bool zswap_same_filled_pages_enabled = true;
-> -module_param_named(same_filled_pages_enabled, zswap_same_filled_pages_enabled,
-> -		   bool, 0644);
-> -
-> -/* Enable/disable handling non-same-value filled pages (enabled by default) */
-> -static bool zswap_non_same_filled_pages_enabled = true;
-> -module_param_named(non_same_filled_pages_enabled, zswap_non_same_filled_pages_enabled,
-> -		   bool, 0644);
-> -
->  /* Number of zpools in zswap_pool (empirically determined for scalability) */
->  #define ZSWAP_NR_ZPOOLS 32
->  
-> @@ -1421,9 +1408,6 @@ static bool zswap_is_folio_same_filled(struct folio *folio, unsigned long *value
->  	unsigned int pos, last_pos = PAGE_SIZE / sizeof(*page) - 1;
->  	bool ret = false;
->  
-> -	if (!zswap_same_filled_pages_enabled)
-> -		return false;
-> -
->  	page = kmap_local_folio(folio, 0);
->  	val = page[0];
->  
-> @@ -1512,9 +1496,6 @@ bool zswap_store(struct folio *folio)
->  		goto store_entry;
->  	}
->  
-> -	if (!zswap_non_same_filled_pages_enabled)
-> -		goto freepage;
-> -
->  	/* if entry is successfully added, it keeps the reference */
->  	entry->pool = zswap_pool_current_get();
->  	if (!entry->pool)
+Thanks,
+
+-Kees
+
+Kees Cook (5):
+  string.h: Introduce memtostr() and memtostr_pad()
+  scsi: mptfusion: Avoid possible run-time warning with long
+    manufacturer strings
+  scsi: mpt3sas: Avoid possible run-time warning with long manufacturer
+    strings
+  scsi: mpi3mr: Avoid possible run-time warning with long manufacturer
+    strings
+  scsi: qla2xxx: Avoid possible run-time warning with long model_num
+
+ drivers/message/fusion/mptsas.c          | 14 +++----
+ drivers/scsi/mpi3mr/mpi3mr_transport.c   | 14 +++----
+ drivers/scsi/mpt3sas/mpt3sas_base.c      |  2 +-
+ drivers/scsi/mpt3sas/mpt3sas_transport.c | 14 +++----
+ drivers/scsi/qla2xxx/qla_mr.c            |  6 +--
+ include/linux/string.h                   | 49 ++++++++++++++++++++++++
+ lib/strscpy_kunit.c                      | 26 +++++++++++++
+ 7 files changed, 93 insertions(+), 32 deletions(-)
+
+-- 
+2.34.1
+
 
