@@ -1,219 +1,311 @@
-Return-Path: <linux-kernel+bounces-139101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B513389FE9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:34:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E59AA89FEE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 19:45:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6813B219B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:31:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11D4D1C22B1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 17:45:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4926517BB21;
-	Wed, 10 Apr 2024 17:31:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C240180A73;
+	Wed, 10 Apr 2024 17:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="dDwf9cgJ"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sJSz3ERr"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4CE817B513
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:31:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6938013D502;
+	Wed, 10 Apr 2024 17:44:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712770272; cv=none; b=FyhBrIF58d9wJQTPKlvwJ/OHVtmKWzoYPwffneB0wJ69KLuuuCvDKNzIF3Wu3FiiluIUCs2nQvRdgfWuyfcke6MIZ2tTqzGJj6gQLkTV+O8dwGbl6ciz2u23Zy1FypS7GVI9qrZKH08k8KZrXaoTNJxUDduklUKECvubWjmBOyw=
+	t=1712771099; cv=none; b=hL7X6cTBiVZSW8N2JXWc4pJTmE0zb7Dne4NbvqA4ZvAWonVE4PYPP+tM7lzIjSI3LhodT/BJreXIW5Uwge7o0U8rTzKdySw9KUdLuhnXJ7Kik0peukPFUDshhORR2seM154OCHyuy4qLLCZU33DoyNNiqretMrvfB4ZycI/uByQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712770272; c=relaxed/simple;
-	bh=GyzVTM/nobFigo0gdaX0dkQ6qfqgd6/094uZmxhelDw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QTPq+tHWukfW9QwZRu1gX5MS+qmSX7uRhUXlOo8zP/cAGXNUR+0py2ZZs2sYo7/Jby60e1XgZiEmWpKwya2clBKqIfM6wJXyAvHANLJPItv0hvvkWqZAJUUJAvU/2Yd5VxR3zGL3/hd5r2EXqLQp3uPZq8O1afJf4SnWxDmb9y0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dDwf9cgJ; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41699bbfb91so8595e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 10:31:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712770269; x=1713375069; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Y9T4PDG3LECg285TrAcpIeJGNVoCKlbsl4TE7eGWPE=;
-        b=dDwf9cgJWk+fbxlDkW7c/zEcUou+816A/fB9rMTNKi8vXXT8ogSS7QnhqxhahKCyoG
-         zGYG05Cn89JDLaiCXgBH17eJwV7Dm3rGgzVjZkgGgxIVWJCX7RteAqaE1wOfkF2o83EZ
-         XVOgKzbi8C/W7GBtjdo+riKxCXAIOQMvVyQypxJtmTsJFPv60bcez6ogHcJvnxBv+239
-         ICveLho6fcCYgYjfYcv3tNcZprzA5V03e9R8DBF+k9Q1AeoMKQjLYbtqXILrf77Tggp9
-         whUvVheuwqT4VDoMFXd4FBpAIPcFI+gk3Ld/cNaLZwJZW2kOM5gEUw29FKTB0vVIleHM
-         6xCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712770269; x=1713375069;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/Y9T4PDG3LECg285TrAcpIeJGNVoCKlbsl4TE7eGWPE=;
-        b=oK5uQVZYhBmhuzX/6Mpf+C41WH7L9Q5ENypLsEDA1JAbtGUflTQFncnsBorIzDE9tG
-         4ORM8/+2YieSfmtOJRAl+01OAqyNSN2jQ+zNQCayAi5gpkaqCoUw5PJLGMVjU0gFeV+o
-         vqH9b2kPXC1GzJu2gNiaofoI/XygDrNR3yQN9ef4/WAlgY1LgC/fBCq77spWjBw1/Xor
-         +F1nOg5LsETlO16+cuKNhRMyU6eBGnid6TbDgTeDXrwJGI2zW/evuK1mPyb3I77e/kIE
-         9IXl6K82SvgXUwGglccTyna0cbFceFyTuKnuLEOuWDwmpHli0u9Ts4UdycPYdjxW7Hoo
-         ezJg==
-X-Forwarded-Encrypted: i=1; AJvYcCXvBTO8cbawvp6cmSalZwtLcxIzcEsi1txkWMAR9iA/hBVQamFQvoueamdE2OW/vH5jDXU3fOmMZNEmMMZpNXWk6V7nuo3nRIZgT5r9
-X-Gm-Message-State: AOJu0YwRmSvCPHPgmetC8r0JudWJTERuiY+l1cHAUuHwRqlRCzRWraic
-	cxpoXDpl75gs/gk/BdDjeGO/y2sFgeFgV+6VlgkVTXRoq6RS/DVxRgESOzqH6pqEUK7CcT6o2V0
-	VDmzAoiCc1lwVotVoz7eJk807h8KnrThO6Tc=
-X-Google-Smtp-Source: AGHT+IE5mNwdNBGpjBaaxKLYIuy8/+75QJpRIt9RsC51c2J9o+zPlCbk4wHhreCctsN59lrCdxxlqxVeQxseri5fULc=
-X-Received: by 2002:a05:600c:1c01:b0:416:7385:b675 with SMTP id
- j1-20020a05600c1c0100b004167385b675mr212414wms.7.1712770268815; Wed, 10 Apr
- 2024 10:31:08 -0700 (PDT)
+	s=arc-20240116; t=1712771099; c=relaxed/simple;
+	bh=/BMaKXEy6NNnwFMwmVk9KIRRaSKysgILBBq5AXYyV/w=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QiGbn/PWF4xfkw2PcwjGl0CNq72Xe0hKqF776uwwlvv1f3wmzVxQtoW5d8N5/rL8tgqcKDmB9h7RwHOlY9Z4DaGxTneV2oFu5b6EoYxF+DJXmnAkcZB7t+OX5bhQK/zWWf7qYg9w3+NivhuebAGn8z7rMAMCUYICZQAr1Fc6RfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sJSz3ERr; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43AHW32D027181;
+	Wed, 10 Apr 2024 17:44:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=NcCV+vYF6bMCP5PVebzSA3U7LOVkS5kUCoHa1vCxPrs=;
+ b=sJSz3ERrXB216gg8xrrXCN9+IMLNefnQMvzHDHZqMKFGtnKCe20Cc9cU0vXipoYDDg2C
+ 6kdq0Ix2I3HXc1sjqhsSdz42J7cNfkCnJJR7pDIoOdDA8zysxox87aGN96qxNx8RjtQa
+ 8gcKzA4xy7etKCCdz2kIdc762QWkgdmGusCbV0a2PIpAtqRNfECkvnaxqhSt5fsvLpSW
+ HuNO0xpM3YrkL8h261znCFaC3yzd0M1TLfn71q2ExBOdoifYYnwLyol8jAkvhDsrNSnE
+ wd/t3RHg0BO/DG8U8nJXATh0CIlY167Jr80kwVYfYwonIF8cUDixsyd7Z/PyvB9X1GVd CA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdy8j00rk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 17:44:44 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43AHihtw011980;
+	Wed, 10 Apr 2024 17:44:43 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xdy8j00rh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 17:44:43 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43AFqkcu019119;
+	Wed, 10 Apr 2024 17:44:42 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbh40ef83-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Apr 2024 17:44:42 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43AHia1Y16187780
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 10 Apr 2024 17:44:38 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 69E3F2004B;
+	Wed, 10 Apr 2024 17:44:36 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3B2B720040;
+	Wed, 10 Apr 2024 17:44:36 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.152.224.66])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 10 Apr 2024 17:44:36 +0000 (GMT)
+Date: Wed, 10 Apr 2024 19:31:50 +0200
+From: Claudio Imbrenda <imbrenda@linux.ibm.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        Matthew Wilcox
+ <willy@infradead.org>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
+ <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian
+ Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle
+ <svens@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Gerald
+ Schaefer <gerald.schaefer@linux.ibm.com>,
+        Thomas Huth <thuth@redhat.com>
+Subject: Re: [PATCH v1 2/5] s390/uv: convert gmap_make_secure() to work on
+ folios
+Message-ID: <20240410193150.655df790@p-imbrenda>
+In-Reply-To: <20240404163642.1125529-3-david@redhat.com>
+References: <20240404163642.1125529-1-david@redhat.com>
+	<20240404163642.1125529-3-david@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403005930.1587032-1-qyousef@layalina.io> <CAKfTPtDB8D6bouxJN9q8gXqG+BQYcsrJYEodDWtOB2kQwPH53A@mail.gmail.com>
- <20240404220500.dmfl2krll37znbi5@airbuntu> <CAKfTPtDP7if0gozSrnj+E_hH5xR-vpGAM2TwN4qWXcg5BtrEtw@mail.gmail.com>
- <20240405171653.boxbylrdak5fopjv@airbuntu> <20240407122700.ns7gknqwqkpjjyd4@airbuntu>
- <CAKfTPtBZao-Ry=sdAV=rtTwbxbEJmwb-_gNceSjV6u-6EXTY-w@mail.gmail.com>
- <CANDhNCq5HZvecSe9_9f7j5koY2VNdyjM_b3csL6=U1A_8J2ksw@mail.gmail.com>
- <20240409061909.tb3vxc27h2eawiwg@airbuntu> <CAKfTPtC4hdbBhn+-hkK9i4vkjO5fBGfsxjESkBrvyOwN6oHCdA@mail.gmail.com>
- <20240410065901.ruzhjsmtmpsnl4qe@airbuntu>
-In-Reply-To: <20240410065901.ruzhjsmtmpsnl4qe@airbuntu>
-From: John Stultz <jstultz@google.com>
-Date: Wed, 10 Apr 2024 10:30:56 -0700
-Message-ID: <CANDhNCr=S8b5MyDa9xp9D08FcsG6VGrHQjkj5CW3iFzuFO-4Xg@mail.gmail.com>
-Subject: Re: [PATCH] sched/pi: Reweight fair_policy() tasks when inheriting prio
-To: Qais Yousef <qyousef@layalina.io>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>, Ingo Molnar <mingo@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Joel Fernandes <joel@joelfernandes.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	linux-kernel@vger.kernel.org, Yabin Cui <yabinc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: rkGJLSWwyI4FSBzce00f3hjUwHMGtIj8
+X-Proofpoint-GUID: g0vFXYAqO7tLKK4XeNGPxST4QRrLVVev
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-10_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 malwarescore=0 spamscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=858 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404100130
 
-On Tue, Apr 9, 2024 at 11:59=E2=80=AFPM Qais Yousef <qyousef@layalina.io> w=
-rote:
->
-> On 04/09/24 14:35, Vincent Guittot wrote:
-> > On Tue, 9 Apr 2024 at 08:19, Qais Yousef <qyousef@layalina.io> wrote:
-> > >
-> > > On 04/08/24 12:51, John Stultz wrote:
-> > > > On Mon, Apr 8, 2024 at 12:17=E2=80=AFAM Vincent Guittot
-> > > > <vincent.guittot@linaro.org> wrote:
-> > > > >
-> > > > > On Sun, 7 Apr 2024 at 14:27, Qais Yousef <qyousef@layalina.io> wr=
-ote:
-> > > > > >
-> > > > > > On 04/05/24 18:16, Qais Yousef wrote:
-> > > > > >
-> > > > > > > >
-> > > > > > > > All that to say that I think the weight is not applied on p=
-urpose.
-> > > > > > > > This might work for your particular case but there are more=
- changes to
-> > > > > > > > be done if you want to apply prio inheritance between cfs t=
-asks.
-> > > > > > > >
-> > > > > > > > As an example, what about the impact of cgroup on the actua=
-l weight
-> > > > > > > > and the inherited priority of a task ? If the owner and the=
- waiter
-> > > > > > > > don't belong to the same cgroup their own prio is meaningle=
-ss... task
-> > > > > > > > nice -20 in a group with a weight equal to nice 19 vs a tas=
-k nice 19
-> > > > > > > > in a group with a weight equals to nice -20
-> > > > > > >
-> > > > > > > That is on my mind actually. But I thought it's a separate pr=
-oblem. That has to
-> > > > > > > do with how we calculate the effective priority of the pi_tas=
-k. And probably
-> > > > > > > the sorting order to if we agree we need to revert the above.=
- If that is done
-> > > > > >
-> > > > > > Thinking more about it the revert is not the right thing to do.=
- We want fair
-> > > > > > tasks to stay ordered in FIFO for better fairness and avoid pot=
-ential
-> > > > > > starvation issues. It's just the logic for searching the top_wa=
-iter need to be
-> > > > > > different. If the top_waiter is fair, then we need to traverse =
-the tree to find
-> > > > > > the highest nice value. We probably can keep track of this whil=
-e adding items
-> > > > > > to the tree to avoid the search.
-> > > > > >
-> > > > > > For cgroup; is it reasonable (loosely speaking) to keep track o=
-f pi_cfs_rq and
-> > > > > > detach_attach_task_cfs_rq() before the reweight? This seems the=
- most
-> > > > > > straightforward solution and will contain the complexity to kee=
-ping track of
-> > > > > > cfs_rq. But it'll have similar issue to proxy execution where a=
- task that
-> > > > > > doesn't belong to the cgroup will consume its share..
-> > > > >
-> > > > > That's a good point, Would proxy execution be the simplest way to=
- fix all this ?
-> > >
-> > > Is it? Over 4.5 years ago Unity reported to me about performance inve=
-rsion
-> > > problem and that's when proxy execution work was revived as simplest =
-way to fix
-> > > all of this. But still no end in sight from what I see. I was and sti=
-ll think
-> > > an interim solution in rt_mutex could help a lot of use cases already=
- without
-> > > being too complex. Not as elegant and comprehensive like proxy execut=
-ion, but
-> > > given the impact on both userspace and out of tree kernel hacks are g=
-rowing
-> > > waiting for this to be ready, the cost of waiting is high IMHO.
-> > >
-> > > FWIW, I already heard several feedbacks that PTHREAD_PRIO_INHERIT doe=
-s nothing.
-> > > I think this reweight issue is more serious problem and likely why I =
-heard this
-> > > feedback. I could be underestimating the complexity of the fix though=
- So I'll
-> >
-> > Without cgroup, the solution could be straightforward but android uses
-> > extensively cgroup AFAICT and update_cfs_group() makes impossible to
-> > track the top cfs waiter and its "prio"
->
-> :(
->
-> IIUC the issue is that we can't easily come up with a single number of
-> 'effective prio' for N level hierarchy and compare it with another M leve=
-l
-> hierarchy..
->
-> Does proxy execution fix this problem then? If we can't find the top wait=
-er,
-> I can't see how proxy execution would work here too. To my understanding =
-it's
-> more about how we apply inheritance (by donating execution context of the=
- top
-> waiter) instead of manually applying inheritance like we're doing now.
+On Thu,  4 Apr 2024 18:36:39 +0200
+David Hildenbrand <david@redhat.com> wrote:
 
-So, while proxy provides a sort of generalized inheritance, it isn't
-deep enough in the class scheduler logic to need to really think about
-priority/cgroups.
+> We have various goals that require gmap_make_secure() to only work on
+> folios. We want to limit the use of page_mapcount() to the places where it
+> is absolutely necessary, we want to avoid using page flags of tail
+> pages, and we want to remove page_has_private().
+> 
+> So, let's convert gmap_make_secure() to folios. While s390x makes sure
+> to never have PMD-mapped THP in processes that use KVM -- by remapping
+> them using PTEs in thp_split_walk_pmd_entry()->split_huge_pmd() -- we might
+> still find PTE-mapped THPs and could end up working on tail pages of
+> such large folios for now.
+> 
+> To handle that cleanly, let's simply split any PTE-mapped large folio,
+> so we can be sure that we are always working with small folios and never
+> on tail pages.
+> 
+> There is no real change: splitting will similarly fail on unexpected folio
+> references, just like it would already when we try to freeze the folio
+> refcount.
+> 
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  arch/s390/include/asm/page.h |  1 +
+>  arch/s390/kernel/uv.c        | 66 ++++++++++++++++++++++--------------
+>  2 files changed, 42 insertions(+), 25 deletions(-)
+> 
+> diff --git a/arch/s390/include/asm/page.h b/arch/s390/include/asm/page.h
+> index 9381879f7ecf..54d015bcd8e3 100644
+> --- a/arch/s390/include/asm/page.h
+> +++ b/arch/s390/include/asm/page.h
+> @@ -215,6 +215,7 @@ static inline unsigned long __phys_addr(unsigned long x, bool is_31bit)
+>  
+>  #define phys_to_page(phys)	pfn_to_page(phys_to_pfn(phys))
+>  #define page_to_phys(page)	pfn_to_phys(page_to_pfn(page))
+> +#define folio_to_phys(page)	pfn_to_phys(folio_pfn(folio))
+>  
+>  static inline void *pfn_to_virt(unsigned long pfn)
+>  {
+> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> index 7401838b960b..adcbd4b13035 100644
+> --- a/arch/s390/kernel/uv.c
+> +++ b/arch/s390/kernel/uv.c
+> @@ -181,36 +181,36 @@ int uv_convert_owned_from_secure(unsigned long paddr)
+>  }
+>  
+>  /*
+> - * Calculate the expected ref_count for a page that would otherwise have no
+> + * Calculate the expected ref_count for a folio that would otherwise have no
+>   * further pins. This was cribbed from similar functions in other places in
+>   * the kernel, but with some slight modifications. We know that a secure
+> - * page can not be a huge page for example.
+> + * folio can only be a small folio for example.
+>   */
+> -static int expected_page_refs(struct page *page)
+> +static int expected_folio_refs(struct folio *folio)
+>  {
+>  	int res;
+>  
+> -	res = page_mapcount(page);
+> -	if (PageSwapCache(page)) {
+> +	res = folio_mapcount(folio);
+> +	if (folio_test_swapcache(folio)) {
+>  		res++;
+> -	} else if (page_mapping(page)) {
+> +	} else if (folio_mapping(folio)) {
+>  		res++;
+> -		if (page_has_private(page))
+> +		if (folio_has_private(folio))
+>  			res++;
+>  	}
+>  	return res;
+>  }
+>  
+> -static int make_page_secure(struct page *page, struct uv_cb_header *uvcb)
+> +static int make_folio_secure(struct folio *folio, struct uv_cb_header *uvcb)
+>  {
+>  	int expected, cc = 0;
+>  
+> -	if (PageWriteback(page))
+> +	if (folio_test_writeback(folio))
+>  		return -EAGAIN;
+> -	expected = expected_page_refs(page);
+> -	if (!page_ref_freeze(page, expected))
+> +	expected = expected_folio_refs(folio);
+> +	if (!folio_ref_freeze(folio, expected))
+>  		return -EBUSY;
+> -	set_bit(PG_arch_1, &page->flags);
+> +	set_bit(PG_arch_1, &folio->flags);
+>  	/*
+>  	 * If the UVC does not succeed or fail immediately, we don't want to
+>  	 * loop for long, or we might get stall notifications.
+> @@ -220,9 +220,9 @@ static int make_page_secure(struct page *page, struct uv_cb_header *uvcb)
+>  	 * -EAGAIN and we let the callers deal with it.
+>  	 */
+>  	cc = __uv_call(0, (u64)uvcb);
+> -	page_ref_unfreeze(page, expected);
+> +	folio_ref_unfreeze(folio, expected);
+>  	/*
+> -	 * Return -ENXIO if the page was not mapped, -EINVAL for other errors.
+> +	 * Return -ENXIO if the folio was not mapped, -EINVAL for other errors.
+>  	 * If busy or partially completed, return -EAGAIN.
+>  	 */
+>  	if (cc == UVC_CC_OK)
+> @@ -277,7 +277,7 @@ int gmap_make_secure(struct gmap *gmap, unsigned long gaddr, void *uvcb)
+>  	bool local_drain = false;
+>  	spinlock_t *ptelock;
+>  	unsigned long uaddr;
+> -	struct page *page;
+> +	struct folio *folio;
+>  	pte_t *ptep;
+>  	int rc;
+>  
+> @@ -306,33 +306,49 @@ int gmap_make_secure(struct gmap *gmap, unsigned long gaddr, void *uvcb)
+>  	if (!ptep)
+>  		goto out;
+>  	if (pte_present(*ptep) && !(pte_val(*ptep) & _PAGE_INVALID) && pte_write(*ptep)) {
+> -		page = pte_page(*ptep);
+> +		folio = page_folio(pte_page(*ptep));
+>  		rc = -EAGAIN;
+> -		if (trylock_page(page)) {
+> +
+> +		/* We might get PTE-mapped large folios; split them first. */
+> +		if (folio_test_large(folio)) {
+> +			rc = -E2BIG;
+> +		} else if (folio_trylock(folio)) {
+>  			if (should_export_before_import(uvcb, gmap->mm))
+> -				uv_convert_from_secure(page_to_phys(page));
+> -			rc = make_page_secure(page, uvcb);
+> -			unlock_page(page);
+> +				uv_convert_from_secure(folio_to_phys(folio));
+> +			rc = make_folio_secure(folio, uvcb);
+> +			folio_unlock(folio);
+>  		}
+>  
+>  		/*
+> -		 * Once we drop the PTL, the page may get unmapped and
+> +		 * Once we drop the PTL, the folio may get unmapped and
+>  		 * freed immediately. We need a temporary reference.
+>  		 */
+> -		if (rc == -EAGAIN)
+> -			get_page(page);
+> +		if (rc == -EAGAIN || rc == -E2BIG)
+> +			folio_get(folio);
+>  	}
+>  	pte_unmap_unlock(ptep, ptelock);
+>  out:
+>  	mmap_read_unlock(gmap->mm);
+>  
+> +	if (rc == -E2BIG) {
+> +		/*
+> +		 * Splitting might fail with -EBUSY due to unexpected folio
+> +		 * references, just like make_folio_secure(). So handle it
+> +		 * ahead of time without the PTL being held.
+> +		 */
+> +		folio_lock(folio);
+> +		rc = split_folio(folio);
 
-It just looks at what gets selected to run. That's the most important
-task at that moment. It doesn't really need to care about how/why,
-that's left to pick_next_task().
+if split_folio returns -EAGAIN...
 
-Since it leaves mutex blocked tasks on the RQ, it allows the class
-scheduler logic to pick the most important task (mutex-blocked or not)
-to run. Then if a mutex-blocked task gets selected, we will then find
-the mutex owner and run it instead so it can release the lock.  When
-locks are released, if the owner has a "donor" task, the lock is
-handed off to the donor.  So, this basically uses the
-pick_next_task()'s evaluation of what it wanted to run to effectively
-provide the "top waiter".
+> +		folio_unlock(folio);
+> +		folio_put(folio);
+> +	}
+> +
+>  	if (rc == -EAGAIN) {
 
-thanks
--john
+.. we will not skip this ...
+
+>  		/*
+>  		 * If we are here because the UVC returned busy or partial
+>  		 * completion, this is just a useless check, but it is safe.
+>  		 */
+> -		wait_on_page_writeback(page);
+> -		put_page(page);
+> +		folio_wait_writeback(folio);
+> +		folio_put(folio);
+
+.. and we will do one folio_put() too many
+
+>  	} else if (rc == -EBUSY) {
+>  		/*
+>  		 * If we have tried a local drain and the page refcount
+
+are we sure that split_folio() can never return -EAGAIN now and in the
+future too?
+
+maybe just change it to  } else if (...   ?
+
 
