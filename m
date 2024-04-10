@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-138341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-138343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BA3389EFF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:37:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95FCB89EFFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 12:38:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D68471F230F4
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:37:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2D3EB23E91
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 10:38:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96A79159218;
-	Wed, 10 Apr 2024 10:37:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AEC81598E1;
+	Wed, 10 Apr 2024 10:37:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b="V1si9NZT"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2044.outbound.protection.outlook.com [40.107.8.44])
+	dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b="e3x84kve"
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2088.outbound.protection.outlook.com [40.107.14.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C64212AE75;
-	Wed, 10 Apr 2024 10:37:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F48715956B;
+	Wed, 10 Apr 2024 10:37:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.14.88
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712745448; cv=fail; b=iZYtyTLu0qNd4HNnS3CFg+Hy6MkISUg6dnAcJUMshp+ef2K0KtdAuhJlxoNXGdp9TNFezMie3VmCxUvn635+8xygaN1wgr2wMKZOPueQqStnsglZmTs2toUXKVDqdyPgomYN/xpMKou+xh3tiUV+9Iii3LYGYA5Mji9pXXpFIIY=
+	t=1712745453; cv=fail; b=a7tH4t8nuC56DGPmWneGSIDcpSeQ4ngEtRxCPYyjxtlCqomDtONzjdFjDAKw5MBknRaoqBNTsmbEwiowpxUVgBWTvRgw93OzBedrDw2eqEXwGt/+UsqXbLCmboQebicccArSI3jGUH8yR7Zhxk+haUyEhwTyU1PeXbOpw3O8zNs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712745448; c=relaxed/simple;
-	bh=U+J6y+7jl6TlckUmz5u5h9laca3pWwmI9CqGvncdL88=;
+	s=arc-20240116; t=1712745453; c=relaxed/simple;
+	bh=J/Z+cgfZRjTI10Oi5x8gMZYdVEkZALltGYXPsmb60Y4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RgZLMpVQ3ftyTCldCLYKEirw9L0cIfrMR7kHO3KAhpg03ZBYzw4m58BsHhESvBTjWkYm5GfcSB+vt0fRsA+IXXKUWgnLXD6nuvobSIfhZqfqQLRfU6DdK4+i8rYpeKROi5g/i8vCKWlIKcJqf9wnikez+OEHpTwvNLZJwbbwCII=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com; spf=fail smtp.mailfrom=leica-geosystems.com; dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b=V1si9NZT; arc=fail smtp.client-ip=40.107.8.44
+	 MIME-Version:Content-Type; b=VgEUnDxg5kHDcZGFvetvUGBCwN/JPd8w/DllAD6Krum+BZrw1yot5Y2LumHSOY8EOeCWhOjAGle/Jy4lpCsO4l1GtDLmENe284SbwVs9Zq35D0FeUFxUtbsobZeJ/IjPjiOn3oSp62ky0Lyaf1ygK8+rmetbQV1l+pqEJf56r9k=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com; spf=fail smtp.mailfrom=leica-geosystems.com; dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b=e3x84kve; arc=fail smtp.client-ip=40.107.14.88
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=leica-geosystems.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iG/PnCm3X+84yczPQOraZz4m1ja6XXXlk6EG90BIsv89t75fTEf52DAmnfxkZiB8xGsITbmAeMsGMhjbKpMdRO3yc/toIcesk3De29a0VQxSn9z28sHHVlYKszX8pL6DEHjQQik3XbYS2lFeFFBUaItZSrzaqb6ZJCm0czzYe8fIvzPDP59dLKit7MOLlURsVRIRhu2Oy1JWIUH4dT25RYDmIvsHPI67Nq/TYKx3RAQzbgIZN+BmEsAgS1vRo3bamoww3VIWbgZQ8LN23kVU7URQJq2TebvZW3RoOYUKY6ylHGF1PbLpboFe6tMDIy60o5bN9C0Kjv1zqH3wyy6NNA==
+ b=Yd734GgBx/VqqZ5EuB7kYfbij/DnlebkcRjVxTEdAyhQENc9zSC+DhK4bgtUKUOuVLJN+xmh2wVl5cX4PIFjBdVRfjuLtyov/Eq5LBc6v24xzURHE5O/Cgyjc9SaE7X3QVMgOn6adMJzFYHLnRvKMR6PysHfnlaCi9ngX4OQlbGSqIdlU29kCOTxyNzpYHXM8VHLUWOB7MVz4j4dbZpmGKVgtB5kKoSSEM6TDRUdIMMpMUmV6VA/Bnf4mFupPbs1b13MlLx/OiUMFTZf86TpZioO6YNtpO3cYCUXZTxCtegCfGLvtUBhMiVvddp8v7OglQ+e3qKMtHkLmfS5MN+wKA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xP6ADPSU3O+zHwfdZg4R+PXEk/FHqyuYmvRjtxC2TRw=;
- b=C8DWkq7zTt6gkXpMbuLeopb7Ivtk2PtMxE0CBa3f8IMHe0YS6NCaPPS7pGUuq5zmVCoLqV1gOUBMVfdi0rAYSMDbRcLDcM9TG14/CGlkiwevypd5AUifh28A/0YQ3GQh7CoOREFOp1W4ULOXRSsW454J1WHxhDyVje8LC1XV08JKGn9O9cxu4RdaREZdAyixPhGzjQhxQibtRIrLNEZBgSfoEXTAI5+NKXQnsJzgcgBDjViyETYRWIa0hnjhla99q2cbY+w7DnvANvXDYcG/KuXv1x64JLAddxPIga/yqolsUY+G78meCr9Q8sgqO/wr2Fmp3PL/ubxLPmPvx1BRug==
+ bh=fOKFOhUbeuGCzWyiFSospHVJO2QsE/EV5ojbt0OJhys=;
+ b=fTIgZrTZUYIBm+Kg9Et8D6905AJL+vqwvM9SqIGmE1L8u+WcOFUJMb2rO2bUrJ/2kOE0HiNpKC8DaOcdOtDMj1O/daaJGJYRUNJqJ/V27T0Vf2WGkDwIvLBnVQtRCtHNPSupHFs9PreTPhQaFX2YOgmwr0yFeFnKxTfYXzGgxyUmTMsfb7xqgWk2iy5ZzT+qYZA8g5jAnPmOrzOruAsI0iwoQtGw7NnRSGSpinGWfba7wFAYhlCwuL0r7CMaZpI+gCZP4VObIg6QqbwsdN4sVhOfCW83t840ZDEq7tLU+FPrFGel8nM/iwRMCR+3n/TTzomERrKFrmQIcMqdq1fLEw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  193.8.40.94) smtp.rcpttodomain=vger.kernel.org
  smtp.mailfrom=leica-geosystems.com; dmarc=pass (p=reject sp=reject pct=100)
@@ -45,18 +45,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xP6ADPSU3O+zHwfdZg4R+PXEk/FHqyuYmvRjtxC2TRw=;
- b=V1si9NZTNYwLz7aVyTkRp7jMqtz8pyerpXOqs/9p6Ei1aseY7eKAe9G/a7s1TG4YS+kPWUtBbZla+KAFH/8F2EzLz3iPfxI+HsakNKg8VyixOI47CEFe+VfkmLWlwuUxNMHGIOKMlFDVJr81U07dgWM9yb7S3Qdutb8aspNWcJg=
-Received: from AM6P192CA0062.EURP192.PROD.OUTLOOK.COM (2603:10a6:209:82::39)
- by PAXPR06MB8392.eurprd06.prod.outlook.com (2603:10a6:102:22a::9) with
+ bh=fOKFOhUbeuGCzWyiFSospHVJO2QsE/EV5ojbt0OJhys=;
+ b=e3x84kveM8zoz01XhBYutPVCEY0iR0ojTG74TbcmRnoQ4xtfnfGEaj/pTY4w8QHnNHnub7zoozaEWkHZfbOy9SCE3P0m73diT4xy0t5WdgbI3jwCTk2nR2XBFj90kDVPYL/xBKJAwfWi2QbPAx3aRkGxU60p0Z1UwzTSdUoy5h4=
+Received: from AM6PR08CA0004.eurprd08.prod.outlook.com (2603:10a6:20b:b2::16)
+ by GV1PR06MB9194.eurprd06.prod.outlook.com (2603:10a6:150:1a2::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.10; Wed, 10 Apr
- 2024 10:37:24 +0000
-Received: from AMS0EPF00000191.eurprd05.prod.outlook.com
- (2603:10a6:209:82:cafe::8c) by AM6P192CA0062.outlook.office365.com
- (2603:10a6:209:82::39) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.24; Wed, 10 Apr
+ 2024 10:37:25 +0000
+Received: from AMS0EPF00000195.eurprd05.prod.outlook.com
+ (2603:10a6:20b:b2:cafe::27) by AM6PR08CA0004.outlook.office365.com
+ (2603:10a6:20b:b2::16) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.19 via Frontend
- Transport; Wed, 10 Apr 2024 10:37:24 +0000
+ Transport; Wed, 10 Apr 2024 10:37:25 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 193.8.40.94)
  smtp.mailfrom=leica-geosystems.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=leica-geosystems.com;
@@ -64,11 +64,11 @@ Received-SPF: Pass (protection.outlook.com: domain of leica-geosystems.com
  designates 193.8.40.94 as permitted sender) receiver=protection.outlook.com;
  client-ip=193.8.40.94; helo=hexagon.com; pr=C
 Received: from hexagon.com (193.8.40.94) by
- AMS0EPF00000191.mail.protection.outlook.com (10.167.16.216) with Microsoft
+ AMS0EPF00000195.mail.protection.outlook.com (10.167.16.215) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7452.22 via Frontend Transport; Wed, 10 Apr 2024 10:37:23 +0000
+ 15.20.7452.22 via Frontend Transport; Wed, 10 Apr 2024 10:37:25 +0000
 Received: from aherlnxbspsrv01.lgs-net.com ([10.60.34.116]) by hexagon.com with Microsoft SMTPSVC(10.0.17763.1697);
-	 Wed, 10 Apr 2024 12:37:23 +0200
+	 Wed, 10 Apr 2024 12:37:25 +0200
 From: Thomas Haemmerle <thomas.haemmerle@leica-geosystems.com>
 To: joel@jms.id.au
 Cc: bsp-development.geo@leica-geosystems.com,
@@ -78,9 +78,9 @@ Cc: bsp-development.geo@leica-geosystems.com,
 	Lars-Peter Clausen <lars@metafoo.de>,
 	linux-iio@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/4] iio: pressure: dps310: support negative temperature values
-Date: Wed, 10 Apr 2024 12:36:01 +0200
-Message-Id: <20240410103604.992989-2-thomas.haemmerle@leica-geosystems.com>
+Subject: [PATCH v2 2/4] iio: pressure: dps310: introduce consistent error handling
+Date: Wed, 10 Apr 2024 12:36:02 +0200
+Message-Id: <20240410103604.992989-3-thomas.haemmerle@leica-geosystems.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240410103604.992989-1-thomas.haemmerle@leica-geosystems.com>
 References: <20240327084937.3801125-1-thomas.haemmerle@leica-geosystems.com>
@@ -92,84 +92,317 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-OriginalArrivalTime: 10 Apr 2024 10:37:23.0572 (UTC) FILETIME=[12CABB40:01DA8B33]
+X-OriginalArrivalTime: 10 Apr 2024 10:37:25.0353 (UTC) FILETIME=[13DA7D90:01DA8B33]
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AMS0EPF00000191:EE_|PAXPR06MB8392:EE_
+X-MS-TrafficTypeDiagnostic: AMS0EPF00000195:EE_|GV1PR06MB9194:EE_
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: c85dd139-b7f5-4ad8-18d7-08dc594a3569
+X-MS-Office365-Filtering-Correlation-Id: ce1541ad-67ee-4f9f-f02c-08dc594a367f
 X-SET-LOWER-SCL-SCANNER: YES
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	ftCzKrumD6+0rRqa8gnx2GsUK7/TONo2M8lAjQTAHOWYxUYrGNp5mela732+vNv6XaSrvgGOiMAJGPvxUgYBckhX5RHpro3Zexroa7tbK8PWjBr1BNFPuRfZag+6iXrSsw6pe1pm9F5bucUi4xFqiDlM9PicPh63yvwUHB6aY1K0ay5DuMhQawXpxuwS3yvdxgYdx9525V1Av2CF0h+5ByVrL4z0oodwuDrnrTbJZM96qX2f3IgLqc/Yq2A5rJWh+e4OjCtmJJd1+PSGgtap+r3P0fqhdr89cFwh1a+TfKWS96hTAeJ9QViXDSbX2XdSSwAblUjCAvnSAyw9vDPMb54Px+Xbko21Jg3+nOiPwrGq6RwRPp7KTvYZbLB11UhVhYnmu3tG4RBmJzDhpcawgIuPxU3OOsLZ+iZeMsYcKU0cfp/uGPw4OIirXg1JFyw8vyffYAOsFEOzGSrbxU7VzMX77lwraw0bl97IGLnrR/zYUEG5MARPda0iAbJLn2v/nOoqJQHe7KPe0Bq7VA+u0t2N/JUdnc1LTZa7TvCPDCzFBsd29ARsKMPpUHzZimEdPG7EuzlxR1yZAlmxmbnefiKWvpX+qiLvL0dI2MdNLifqiYClwyVN3lET31RihQsjurd9qKnONq/VvOLJd6r4TGJufE1frOb3V95SKCmuopjh8Lqy4GuAtAUzgWOIVquAx9c4ReV2WePSzGJOWyQeT1UPOo3uc0zOGU4zpSODuiO8o8WjlNgqbJPuaMlpVouG
+	4Mn6Xff0ebP4eHPFlCA3w1cGmq1YZ4wRnv9mt3mnk07f4wnF7xKdRRZnQAKEgj30/30+ZKnZSlJQ9yI4CCu/SmeOkYjZJ8XOb++2GxMqT2PEfXuUrOCigVT88GltH6NPRmB7sOkuSjdyl2nqdTFYI+fwjiNEbSJ01sXzIN50xrVGKa3rgI8xL/AURLJIc0ggoSAfYSL6BKMlU1CW5bNF9L4OrzczBJhAsS/Yzevo+TukDmA6FMO9esRYmlRun/8vydapftJx83jkWXadrQIv3coG39YkZLMUR1s4vFYd5DbScXRdvCcDvBGZdJEyzQ1txA5dCAcSszOP7lBJ+G02CdSwYiN1MyDEpzjCXslnnvuZYumyDqCjNjxOoMHMEXqGr2Nek5tFvwWPdjVIU3ln44UJUFwfmtOKNqJL05cbwSyHRRTOrtq1lyLgQAZTC8bue6LbEAO9MbkAstwlAqADJCam72A2rFbzZqkhnbj6AZKz1fLTUHvoctFbQhT8gBRVIQtD9NCsPfTPMBOjkvyabe2XGgAdN7CLv3RZioLAHNCpe8JsHTX9gafumrbZZomhozUcSchhcKNleNn5qm43L+Fo1JwAWj/FcSfOtWE0kZW2VbA2E4pGHdyNsLAcMn+O9fMruu99tno2LOvpAvvzfqE0gdH9hZCQRhltypqY/LkrHP2RAJU4C47juHx7554ZMts4RzcCXlLPZfZb1Kb/A7Jn2Ify2FpgujrJc0kqZZ+cqXjU4UkUgNs7yL5bPcA1
 X-Forefront-Antispam-Report:
-	CIP:193.8.40.94;CTRY:CH;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:hexagon.com;PTR:ahersrvdom50.leica-geosystems.com;CAT:NONE;SFS:(13230031)(82310400014)(376005)(36860700004)(1800799015);DIR:OUT;SFP:1101;
+	CIP:193.8.40.94;CTRY:CH;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:hexagon.com;PTR:ahersrvdom50.leica-geosystems.com;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(1800799015)(376005);DIR:OUT;SFP:1101;
 X-OriginatorOrg: leica-geosystems.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 10:37:23.7362
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2024 10:37:25.5480
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c85dd139-b7f5-4ad8-18d7-08dc594a3569
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce1541ad-67ee-4f9f-f02c-08dc594a367f
 X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a;Ip=[193.8.40.94];Helo=[hexagon.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	AMS0EPF00000191.eurprd05.prod.outlook.com
+	AMS0EPF00000195.eurprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR06MB8392
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR06MB9194
 
-The current implementation interprets negative values returned from
-`dps310_calculate_temp` as error codes.
-This has a side effect that when negative temperature values are
-calculated, they are interpreted as error.
+Align error handling with `dps310_calculate_temp`, where it's not
+possible to differentiate between errors and valid calculations by
+checking if the returned value is negative.
 
-Fix this by using the return value only for error handling and passing a
-pointer for the value.
-
-Fixes: ba6ec48e76bc ("iio: Add driver for Infineon DPS310")
 Signed-off-by: Thomas Haemmerle <thomas.haemmerle@leica-geosystems.com>
 ---
- drivers/iio/pressure/dps310.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/iio/pressure/dps310.c | 129 +++++++++++++++++++---------------
+ 1 file changed, 72 insertions(+), 57 deletions(-)
 
 diff --git a/drivers/iio/pressure/dps310.c b/drivers/iio/pressure/dps310.c
-index 1ff091b2f764..d0a516d56da4 100644
+index d0a516d56da4..a48e8adf63ae 100644
 --- a/drivers/iio/pressure/dps310.c
 +++ b/drivers/iio/pressure/dps310.c
-@@ -730,7 +730,7 @@ static int dps310_read_pressure(struct dps310_data *data, int *val, int *val2,
- 	}
+@@ -256,24 +256,24 @@ static int dps310_startup(struct dps310_data *data)
+ 	return dps310_temp_workaround(data);
  }
  
--static int dps310_calculate_temp(struct dps310_data *data)
-+static int dps310_calculate_temp(struct dps310_data *data, int *val)
+-static int dps310_get_pres_precision(struct dps310_data *data)
++static int dps310_get_pres_precision(struct dps310_data *data, int *val)
  {
- 	s64 c0;
- 	s64 t;
-@@ -746,7 +746,9 @@ static int dps310_calculate_temp(struct dps310_data *data)
- 	t = c0 + ((s64)data->temp_raw * (s64)data->c1);
+-	int rc;
+-	int val;
++	int reg_val, rc;
  
- 	/* Convert to milliCelsius and scale the temperature */
--	return (int)div_s64(t * 1000LL, kt);
-+	*val = (int)div_s64(t * 1000LL, kt);
+-	rc = regmap_read(data->regmap, DPS310_PRS_CFG, &val);
++	rc = regmap_read(data->regmap, DPS310_PRS_CFG, &reg_val);
+ 	if (rc < 0)
+ 		return rc;
+ 
+-	return BIT(val & GENMASK(2, 0));
++	*val = BIT(reg_val & GENMASK(2, 0));
 +
 +	return 0;
  }
  
- static int dps310_read_temp(struct dps310_data *data, int *val, int *val2,
-@@ -768,11 +770,10 @@ static int dps310_read_temp(struct dps310_data *data, int *val, int *val2,
- 		if (rc)
- 			return rc;
+-static int dps310_get_temp_precision(struct dps310_data *data)
++static int dps310_get_temp_precision(struct dps310_data *data, int *val)
+ {
+-	int rc;
+-	int val;
++	int reg_val, rc;
  
--		rc = dps310_calculate_temp(data);
+-	rc = regmap_read(data->regmap, DPS310_TMP_CFG, &val);
++	rc = regmap_read(data->regmap, DPS310_TMP_CFG, &reg_val);
+ 	if (rc < 0)
+ 		return rc;
+ 
+@@ -281,7 +281,9 @@ static int dps310_get_temp_precision(struct dps310_data *data)
+ 	 * Scale factor is bottom 4 bits of the register, but 1111 is
+ 	 * reserved so just grab bottom three
+ 	 */
+-	return BIT(val & GENMASK(2, 0));
++	*val = BIT(reg_val & GENMASK(2, 0));
++
++	return 0;
+ }
+ 
+ /* Called with lock held */
+@@ -350,48 +352,56 @@ static int dps310_set_temp_samp_freq(struct dps310_data *data, int freq)
+ 				  DPS310_TMP_RATE_BITS, val);
+ }
+ 
+-static int dps310_get_pres_samp_freq(struct dps310_data *data)
++static int dps310_get_pres_samp_freq(struct dps310_data *data, int *val)
+ {
+-	int rc;
+-	int val;
++	int reg_val, rc;
+ 
+-	rc = regmap_read(data->regmap, DPS310_PRS_CFG, &val);
++	rc = regmap_read(data->regmap, DPS310_PRS_CFG, &reg_val);
+ 	if (rc < 0)
+ 		return rc;
+ 
+-	return BIT((val & DPS310_PRS_RATE_BITS) >> 4);
++	*val = BIT((reg_val & DPS310_PRS_RATE_BITS) >> 4);
++
++	return 0;
+ }
+ 
+-static int dps310_get_temp_samp_freq(struct dps310_data *data)
++static int dps310_get_temp_samp_freq(struct dps310_data *data, int *val)
+ {
+-	int rc;
+-	int val;
++	int reg_val, rc;
+ 
+-	rc = regmap_read(data->regmap, DPS310_TMP_CFG, &val);
++	rc = regmap_read(data->regmap, DPS310_TMP_CFG, &reg_val);
+ 	if (rc < 0)
+ 		return rc;
+ 
+-	return BIT((val & DPS310_TMP_RATE_BITS) >> 4);
++	*val = BIT((reg_val & DPS310_TMP_RATE_BITS) >> 4);
++
++	return 0;
+ }
+ 
+-static int dps310_get_pres_k(struct dps310_data *data)
++static int dps310_get_pres_k(struct dps310_data *data, int *val)
+ {
+-	int rc = dps310_get_pres_precision(data);
++	int reg_val, rc;
+ 
+-	if (rc < 0)
++	rc = dps310_get_pres_precision(data, &reg_val);
++	if (rc)
+ 		return rc;
+ 
+-	return scale_factors[ilog2(rc)];
++	*val = scale_factors[ilog2(reg_val)];
++
++	return 0;
+ }
+ 
+-static int dps310_get_temp_k(struct dps310_data *data)
++static int dps310_get_temp_k(struct dps310_data *data, int *val)
+ {
+-	int rc = dps310_get_temp_precision(data);
++	int reg_val, rc;
+ 
+-	if (rc < 0)
++	rc = dps310_get_temp_precision(data, &reg_val);
++	if (rc)
+ 		return rc;
+ 
+-	return scale_factors[ilog2(rc)];
++	*val = scale_factors[ilog2(reg_val)];
++
++	return 0;
+ }
+ 
+ static int dps310_reset_wait(struct dps310_data *data)
+@@ -464,7 +474,10 @@ static int dps310_read_pres_raw(struct dps310_data *data)
+ 	if (mutex_lock_interruptible(&data->lock))
+ 		return -EINTR;
+ 
+-	rate = dps310_get_pres_samp_freq(data);
++	rc = dps310_get_pres_samp_freq(data, &rate);
++	if (rc)
++		return rc;
++
+ 	timeout = DPS310_POLL_TIMEOUT_US(rate);
+ 
+ 	/* Poll for sensor readiness; base the timeout upon the sample rate. */
+@@ -510,7 +523,10 @@ static int dps310_read_temp_raw(struct dps310_data *data)
+ 	if (mutex_lock_interruptible(&data->lock))
+ 		return -EINTR;
+ 
+-	rate = dps310_get_temp_samp_freq(data);
++	rc = dps310_get_temp_samp_freq(data, &rate);
++	if (rc)
++		return rc;
++
+ 	timeout = DPS310_POLL_TIMEOUT_US(rate);
+ 
+ 	/* Poll for sensor readiness; base the timeout upon the sample rate. */
+@@ -612,13 +628,13 @@ static int dps310_write_raw(struct iio_dev *iio,
+ 	return rc;
+ }
+ 
+-static int dps310_calculate_pressure(struct dps310_data *data)
++static int dps310_calculate_pressure(struct dps310_data *data, int *val)
+ {
+ 	int i;
+ 	int rc;
+ 	int t_ready;
+-	int kpi = dps310_get_pres_k(data);
+-	int kti = dps310_get_temp_k(data);
++	int kpi;
++	int kti;
+ 	s64 rem = 0ULL;
+ 	s64 pressure = 0ULL;
+ 	s64 p;
+@@ -629,11 +645,13 @@ static int dps310_calculate_pressure(struct dps310_data *data)
+ 	s64 kp;
+ 	s64 kt;
+ 
+-	if (kpi < 0)
+-		return kpi;
++	rc = dps310_get_pres_k(data, &kpi);
++	if (rc)
++		return rc;
+ 
+-	if (kti < 0)
+-		return kti;
++	rc = dps310_get_temp_k(data, &kti);
++	if (rc)
++		return rc;
+ 
+ 	kp = (s64)kpi;
+ 	kt = (s64)kti;
+@@ -687,7 +705,9 @@ static int dps310_calculate_pressure(struct dps310_data *data)
+ 	if (pressure < 0LL)
+ 		return -ERANGE;
+ 
+-	return (int)min_t(s64, pressure, INT_MAX);
++	*val = (int)min_t(s64, pressure, INT_MAX);
++
++	return 0;
+ }
+ 
+ static int dps310_read_pressure(struct dps310_data *data, int *val, int *val2,
+@@ -697,11 +717,10 @@ static int dps310_read_pressure(struct dps310_data *data, int *val, int *val2,
+ 
+ 	switch (mask) {
+ 	case IIO_CHAN_INFO_SAMP_FREQ:
+-		rc = dps310_get_pres_samp_freq(data);
 -		if (rc < 0)
-+		rc = dps310_calculate_temp(data, val);
++		rc = dps310_get_pres_samp_freq(data, val);
 +		if (rc)
  			return rc;
  
 -		*val = rc;
  		return IIO_VAL_INT;
  
+ 	case IIO_CHAN_INFO_PROCESSED:
+@@ -709,20 +728,17 @@ static int dps310_read_pressure(struct dps310_data *data, int *val, int *val2,
+ 		if (rc)
+ 			return rc;
+ 
+-		rc = dps310_calculate_pressure(data);
+-		if (rc < 0)
++		rc = dps310_calculate_pressure(data, val);
++		if (rc)
+ 			return rc;
+ 
+-		*val = rc;
+ 		*val2 = 1000; /* Convert Pa to KPa per IIO ABI */
+ 		return IIO_VAL_FRACTIONAL;
+ 
  	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
+-		rc = dps310_get_pres_precision(data);
+-		if (rc < 0)
++		rc = dps310_get_pres_precision(data, val);
++		if (rc)
+ 			return rc;
+-
+-		*val = rc;
+ 		return IIO_VAL_INT;
+ 
+ 	default:
+@@ -734,10 +750,11 @@ static int dps310_calculate_temp(struct dps310_data *data, int *val)
+ {
+ 	s64 c0;
+ 	s64 t;
+-	int kt = dps310_get_temp_k(data);
++	int kt, rc;
+ 
+-	if (kt < 0)
+-		return kt;
++	rc = dps310_get_temp_k(data, &kt);
++	if (rc)
++		return rc;
+ 
+ 	/* Obtain inverse-scaled offset */
+ 	c0 = div_s64((s64)kt * (s64)data->c0, 2);
+@@ -758,11 +775,10 @@ static int dps310_read_temp(struct dps310_data *data, int *val, int *val2,
+ 
+ 	switch (mask) {
+ 	case IIO_CHAN_INFO_SAMP_FREQ:
+-		rc = dps310_get_temp_samp_freq(data);
+-		if (rc < 0)
++		rc = dps310_get_temp_samp_freq(data, val);
++		if (rc)
+ 			return rc;
+ 
+-		*val = rc;
+ 		return IIO_VAL_INT;
+ 
+ 	case IIO_CHAN_INFO_PROCESSED:
+@@ -777,11 +793,10 @@ static int dps310_read_temp(struct dps310_data *data, int *val, int *val2,
+ 		return IIO_VAL_INT;
+ 
+ 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
+-		rc = dps310_get_temp_precision(data);
+-		if (rc < 0)
++		rc = dps310_get_temp_precision(data, val);
++		if (rc)
+ 			return rc;
+ 
+-		*val = rc;
+ 		return IIO_VAL_INT;
+ 
+ 	default:
 -- 
 2.34.1
 
