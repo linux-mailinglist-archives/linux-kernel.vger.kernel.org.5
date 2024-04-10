@@ -1,98 +1,204 @@
-Return-Path: <linux-kernel+bounces-137833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-137835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED62189E81D
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:24:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D68689E825
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 04:27:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F6D91C23CE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:24:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC34B1F25B75
+	for <lists+linux-kernel@lfdr.de>; Wed, 10 Apr 2024 02:27:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0299B8BF0;
-	Wed, 10 Apr 2024 02:24:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D207D8BF0;
+	Wed, 10 Apr 2024 02:27:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b="hpiJQFHg"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cIVXz2yV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60D1138C
-	for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 02:24:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E751C2E;
+	Wed, 10 Apr 2024 02:27:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712715881; cv=none; b=sy8q8o7o+6/TTurnfcc3VR4PHb/kz22vPazY0Ne/IgjQAjAt1mxXtCIvCVnmUhgbnQFGG9AKY6HfG8Up5dJZang0ih7/qrjiPV3F9bvUlM1ALTnRLZffMfYOh7ke0q2kpW6fvMxvu9JkWI9/xFdF/0MBVrd+IMqYbVTRo8swOAo=
+	t=1712716059; cv=none; b=YHk3Do2u8KRMexlFqt6qjlKOBi6ozyext75IAtOy4x2suOVTK/QAI1MmkBZMn+CusiQmksu62iNYBOWHgJjnqothySTmYfE2U2hdyRGoCZehgGJOIt/NCJpjSvS9LlfLcllRirOL4nuA9knUP7Hzin80n57ttmAu3W6gGHwXkj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712715881; c=relaxed/simple;
-	bh=Vk65zLEOHyz65cxDoyt3Cn3gBlwcWIXgVqjFJrJWXwk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WQG2dwzpmQuSfappne0JXSCuV4qbmndTL9DVfRyFoOa8tEfMU+eMu/q7hUMvPiuPURFi5h6W1L9CYT0FOR5raxIMIFLv9tbQpz8QU/7uBUlNIjKA025q7PknyE510xJfnmrgw46XaEdFRpu+gpHnUkqfny45mBLiDbZ5U4TRrSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com; spf=none smtp.mailfrom=smartx.com; dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b=hpiJQFHg; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=smartx.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-617d4797d9bso38647247b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 09 Apr 2024 19:24:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20230601.gappssmtp.com; s=20230601; t=1712715879; x=1713320679; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eWFwQDfL/X9Ah8K+tT4l6UKgiTB6JFFzOxSKcxIzX5U=;
-        b=hpiJQFHgm4OB8xAcJNAdoYA9S8p7Ly+NnQXxymoSO58hlYapeePCNManQnKoXUrRLe
-         l0Tgojus/032/Fhb0umJbRkSABkZiBzlHkw4XWlz2WwbYk2Bb+J8MpgXsaduJ4KDx5WZ
-         wAL5EcaDXcIVFyXko1gICLvDZdWu7sSNoEIIboVNI5vFeJlx3eyTCT5y++UjtyTQLrnw
-         b6aQ11j73g72wZElxCd/6p+IBd3rc19f9SFUkB8pIOqnKm8KnNeTZQcNslhUaXZkXTv2
-         HHjFdC4yiVygigpLd07G7uQ8LHJDJqBl5h1SnApP10HYiLUo5pYruebuIHYpWIdck4Bv
-         SpaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712715879; x=1713320679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eWFwQDfL/X9Ah8K+tT4l6UKgiTB6JFFzOxSKcxIzX5U=;
-        b=ShGpJEkjapAw/FAcQUBJz55eGrab6h5zWTZnFiedZ7QkSsEmxM9Kk2Xcg94T9FrL6f
-         WEflmLQ4XseJu/FNgYBTv0ntcRitNj8Nz0FKJQFQWRJMIpGOYDSbZVn2TE4I1NWkT1bo
-         KZA08YG5hfHwzCj3fVjCXTa8guygHQu6pD6Ap1kaggG99lqITv8Q17qy4Yx+mYcrGF3K
-         ekw73uyYorNdtoI/utgfQ0se9b2sepdQ0QEjBwFmxP/Ve6BAFnl/OlBSxbEUuljQx8Ta
-         3x6PgCkMMy2Rn2H6WhrCtFqQPAKFIr+m/XqnS8i8pq5BBVVavbhXWajX/AMllJv9g6wP
-         nyjw==
-X-Forwarded-Encrypted: i=1; AJvYcCVL3OdFetpxVw5NZ5nYvcUEjE5NVsOKzvsfAcAUX6qigZ+1tpAT2A84GMwyKoYOQ9KPOjKxO7CrJFQZ915ry7Re+ehzPFAb/e35f26Z
-X-Gm-Message-State: AOJu0YxxCI6OeSrroB7gcXCCH9af/ALTEVIdOkndHjEiEm8uLgiqb7vA
-	RtTv7YRMdvVB8Wq8dRpckXpSTwiI8CusXPasj44nj8ePK1p7I8o8e8a93yVkxt/3/qpkcGVjqVn
-	uMKNHdog/6Kk61UdM9ZFo08J3WLKsP1f5cgYw4+qdGtFHLUsCwQ2BlcxBsY8=
-X-Google-Smtp-Source: AGHT+IF0fFXPIj5xQwzDknu6VhWQ6LucNMUUiMp5+MYiPRoNAeNvB36ROJa2HQ15muqnIQn6oBi5o/T3s1Y8xNIz1bo=
-X-Received: by 2002:a05:690c:92:b0:618:4a3f:2752 with SMTP id
- be18-20020a05690c009200b006184a3f2752mr533296ywb.11.1712715878272; Tue, 09
- Apr 2024 19:24:38 -0700 (PDT)
+	s=arc-20240116; t=1712716059; c=relaxed/simple;
+	bh=KCZk5Jghp9ioOCljK8ePjGa/GSS059iFLxQINPpp1zg=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=Atw2RrmbHK5LxYkpT7snLzJrf4O6umXI12sEJapq0UPkBAzz5RlHPXepiuBvDWUDOisjG25aQhntasI9ddA3OfnOx6ttpo94iqAq/U1VMFzTUdKaICqHeV3XtlqH/N5l5rUAlQKiMz9k9JC0xKyPUUUjNx6EpbwSpUlGKb3Km8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cIVXz2yV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7921FC433C7;
+	Wed, 10 Apr 2024 02:27:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712716058;
+	bh=KCZk5Jghp9ioOCljK8ePjGa/GSS059iFLxQINPpp1zg=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=cIVXz2yVe7ImcNYM7wBUtIVH3Cy2FfbisfRQ6w1VZOtS98YSFvZBVemDOxX2wRjlh
+	 qp9KtrdBV4GqnI4PQE3m42UGIqt2xiOrQI7AadLeMSEKX8h+SDl6ae7vSnSWaE+7il
+	 1xPhVhzCMwkZbrffA4beBS9yVbxTWNX8sjxYNRd7NzlmRB4Sk96MkOpblZSZmFMRmY
+	 fdY5cy3BCh0lC516EQNQxKmmq8FHiV6gBJ7pyQop6ShhDd+VaZ0qxlDxxEKvpBzJU/
+	 YJQZu0B0Yfg8lKTvD5B55HrdrBE7sLIQkKM5KqpKdGA5M9ucZ0x+yWOXu9pO6qbkzX
+	 5uUSILmGfGBtQ==
+Message-ID: <dde59dd2ef4da81528e31f65844e0b3f.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409062407.1952728-1-lei.chen@smartx.com> <20240409182535.166cda7c@kernel.org>
-In-Reply-To: <20240409182535.166cda7c@kernel.org>
-From: Lei Chen <lei.chen@smartx.com>
-Date: Wed, 10 Apr 2024 10:24:26 +0800
-Message-ID: <CAKcXpBwVuRS1Orrvi3J4Ru5N1J8hzeRuf6GhOfX8BMWi-82q3w@mail.gmail.com>
-Subject: Re: [PATCH] net:tun: limit printing rate when illegal packet received
- by tun dev
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jason Wang <jasowang@redhat.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240409-shallow-voice-c84ed791bc7d@spud>
+References: <20240328010831.884487-1-jan.dakinevich@salutedevices.com> <20240328010831.884487-2-jan.dakinevich@salutedevices.com> <1j7chfiz8e.fsf@starbuckisacylon.baylibre.com> <e3a85852b911fdf16dd9ae158f42b3ef.sboyd@kernel.org> <f01cdd910ab35316b8012795f73fd2b34c8e6f8e.camel@pengutronix.de> <13617b7a892424d2b024c725505a6f4f.sboyd@kernel.org> <20240408-numerator-escargot-a642507a598e@spud> <20240409-shallow-voice-c84ed791bc7d@spud>
+Subject: Re: [RFC PATCH v2 1/5] clk: meson: axg: move reset controller's code to separate module
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Jerome Brunet <jbrunet@baylibre.com>, Philipp Zabel <p.zabel@pengutronix.de>, Neil Armstrong <neil.armstrong@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>, linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Conor Dooley <conor@kernel.org>
+Date: Tue, 09 Apr 2024 19:27:36 -0700
+User-Agent: alot/0.10
 
-On Wed, Apr 10, 2024 at 9:25=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Tue,  9 Apr 2024 02:24:05 -0400 Lei Chen wrote:
-> > --- <NMI exception stack> ---
->
-> You need to indent this line with a space, otherwise
-> git am will cut off the commit message here.
+Quoting Conor Dooley (2024-04-09 05:05:37)
+> On Mon, Apr 08, 2024 at 06:05:51PM +0100, Conor Dooley wrote:
+>=20
+> > > > Seconded, the clk-mpfs/reset-mpfs and clk-starfive-jh7110-sys/reset-
+> > > > starfive-jh7110 drivers are examples of this.
+> > > >=20
+> > > > > The auxiliary device creation function can also be in the
+> > > > > drivers/reset/ directory so that the clk driver calls some functi=
+on
+> > > > > to create and register the device.
+> > > >=20
+> > > > I'm undecided about this, do you think mpfs_reset_controller_regist=
+er()
+> > > > and jh7110_reset_controller_register() should rather live with the
+> > > > reset aux drivers in drivers/reset/ ?
+> > >=20
+> > > Yes, and also mpfs_reset_read() and friends. We should pass the base
+> > > iomem pointer and parent device to mpfs_reset_adev_alloc() instead and
+> > > then move all that code into drivers/reset with some header file
+> > > exported function to call. That way the clk driver hands over the data
+> > > without having to implement half the implementation.
+> >=20
+> > I'll todo list that :)
+>=20
+> Something like the below?
+>=20
+> -- >8 --
+> From a12f281d2cb869bcd9a6ffc45d0c6a0d3aa2e9e2 Mon Sep 17 00:00:00 2001
+> From: Conor Dooley <conor.dooley@microchip.com>
+> Date: Tue, 9 Apr 2024 11:54:34 +0100
+> Subject: [PATCH] clock, reset: microchip: move all mpfs reset code to the
+>  reset subsystem
+>=20
+> <insert something here>
+>=20
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 
-Thanks for your reply, and I'll remake the patch.
-:)
+Looks pretty good.
+
+>  static const struct of_device_id mpfs_clk_of_match_table[] =3D {
+> diff --git a/drivers/reset/reset-mpfs.c b/drivers/reset/reset-mpfs.c
+> index 7f3fb2d472f4..27cd68b4ee81 100644
+> --- a/drivers/reset/reset-mpfs.c
+> +++ b/drivers/reset/reset-mpfs.c
+> @@ -137,9 +139,67 @@ static int mpfs_reset_probe(struct auxiliary_device =
+*adev,
+>         return devm_reset_controller_register(dev, rcdev);
+>  }
+> =20
+> +static void mpfs_reset_unregister_adev(void *_adev)
+> +{
+> +       struct auxiliary_device *adev =3D _adev;
+> +
+> +       auxiliary_device_delete(adev);
+> +       auxiliary_device_uninit(adev);
+> +}
+> +
+> +static void mpfs_reset_adev_release(struct device *dev)
+> +{
+> +       struct auxiliary_device *adev =3D to_auxiliary_dev(dev);
+> +
+> +       kfree(adev);
+> +}
+> +
+> +static struct auxiliary_device *mpfs_reset_adev_alloc(struct device *clk=
+_dev)
+> +{
+> +       struct auxiliary_device *adev;
+> +       int ret;
+> +
+> +       adev =3D kzalloc(sizeof(*adev), GFP_KERNEL);
+> +       if (!adev)
+> +               return ERR_PTR(-ENOMEM);
+> +
+> +       adev->name =3D "reset-mpfs";
+> +       adev->dev.parent =3D clk_dev;
+> +       adev->dev.release =3D mpfs_reset_adev_release;
+> +       adev->id =3D 666u;
+> +
+> +       ret =3D auxiliary_device_init(adev);
+> +       if (ret) {
+> +               kfree(adev);
+> +               return ERR_PTR(ret);
+> +       }
+> +
+> +       return adev;
+> +}
+> +
+> +int mpfs_reset_controller_register(struct device *clk_dev, void __iomem =
+*base)
+> +{
+> +       struct auxiliary_device *adev;
+> +       int ret;
+> +
+> +       mpfs_reset_addr =3D base;
+
+Instead of a global this can be stashed in adev->dev.platform_data and
+grabbed in the driver probe?
+
+> +
+> +       adev =3D mpfs_reset_adev_alloc(clk_dev);
+> +       if (IS_ERR(adev))
+> +               return PTR_ERR(adev);
+> +
+> +       ret =3D auxiliary_device_add(adev);
+> +       if (ret) {
+> +               auxiliary_device_uninit(adev);
+> +               return ret;
+> +       }
+> +
+> +       return devm_add_action_or_reset(clk_dev, mpfs_reset_unregister_ad=
+ev, adev);
+> +}
+> +
+>  static const struct auxiliary_device_id mpfs_reset_ids[] =3D {
+>         {
+> -               .name =3D "clk_mpfs.reset-mpfs",
+> +               .name =3D "reset_mpfs.reset-mpfs",
+>         },
+>         { }
+>  };
+> diff --git a/include/soc/microchip/mpfs.h b/include/soc/microchip/mpfs.h
+> index 09722f83b0ca..0b756bf5e9bd 100644
+> --- a/include/soc/microchip/mpfs.h
+> +++ b/include/soc/microchip/mpfs.h
+> @@ -43,11 +43,11 @@ struct mtd_info *mpfs_sys_controller_get_flash(struct=
+ mpfs_sys_controller *mpfs_
+>  #endif /* if IS_ENABLED(CONFIG_POLARFIRE_SOC_SYS_CTRL) */
+> =20
+>  #if IS_ENABLED(CONFIG_MCHP_CLK_MPFS)
+> -
+> -u32 mpfs_reset_read(struct device *dev);
+> -
+> -void mpfs_reset_write(struct device *dev, u32 val);
+> -
+> +#if IS_ENABLED(CONFIG_RESET_CONTROLLER)
+> +int mpfs_reset_controller_register(struct device *clk_dev, void __iomem =
+*base);
+> +#else
+> +int mpfs_reset_controller_register(struct device *clk_dev, void* __iomem=
+ base) { return 0;}
+
+static inline
 
