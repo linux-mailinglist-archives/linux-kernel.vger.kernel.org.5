@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-139565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A00798A0481
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 809238A0485
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:12:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C17A2B217F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:11:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C34AB2378D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:12:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A50C224D8;
-	Thu, 11 Apr 2024 00:08:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B169A29CE6;
+	Thu, 11 Apr 2024 00:08:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="l6q4d0pp"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="qb6VCKE0"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07C7E1DFF9
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EAC124A04
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:08:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712794116; cv=none; b=fyKGqpH31678FgrpLaGQLV7WNakoW0xpzm0JTCSuWUXi/Aax1XiTPB0zjVSgjxT5nf18+rkZIJiWDRkG+R04nRlnknTmStkB2pAJEmIh7cB7Q8/Eu9ZvzA54Gu0tDwAAqeYkd2EnYWfJAch8I+uSMeBi7oFOzU9npPANwOWMgfY=
+	t=1712794119; cv=none; b=W/og6jrkmR5kcdqvwCRQVVcBgy1VFC71uqLxAcY4GlX4QJPH1SJvMuHhXs2cl1qsHuX679QHkFWcxUXmgH/mDBfqqzXjG1YuSF6GNX6TPWjrIFV6TQFB3fBRl05WC8rKqimMlOuhFAmny7XdSu56VX1fslbkP07FA7Li4UUWEwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712794116; c=relaxed/simple;
-	bh=i4/+SnhxIOkVH6jnqRPVGKLSvQvEdBjQqHeh5YP3SQk=;
+	s=arc-20240116; t=1712794119; c=relaxed/simple;
+	bh=+BS7mctHpN9iWLFPEwC2/74zIoWzY97OXSTjHAOIU1s=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MNtHG9Ll/kYsfLFD3ZkV3CTcdqwvtoWGBbGanlptmQNVZdDcbhgVxKFtgr4phLDRYrUbJfzhlcmUvk17UO/rZfOizA1Sx93bBoVR9WtsM2+FVPjFrcghtJ+upnBnTIQ7Oa53TMadXFw78NpRtGpF7QTcLDTat5qnlZYqqkPUO14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=l6q4d0pp; arc=none smtp.client-ip=209.85.214.175
+	 MIME-Version; b=bbrtML2XfRhP1Pk3pB2lk91pdZ9Js20or8NtwyTYs9OqV9PA9/J5IEBultrEmGtnX7N5AwOgVP7Q/DGXb/lt5e1aGLE6xFQgKVRYbOJeBvflAr6g63xZ9b1O5zaIM0T9c5lBC1YkIOUHs8qcLmvz4oX6TVQ91fQx5ijTXytkN8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=qb6VCKE0; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e24c889618so59414535ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:08:35 -0700 (PDT)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dff837d674so61408745ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:08:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712794114; x=1713398914; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712794116; x=1713398916; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=N3Hu7DESDZEmcgrq2jc0sr2sorL47aa7h3H8SzaxXXM=;
-        b=l6q4d0ppNxosr61PxpO+nUwCvp8BuauMe8AT/gF+ws53u+i1hRcpLbAxgLL/RR9FNM
-         I2ehD7DsI9uFFtzN6CmfRs0UQs23vpNYKPCV57cGjhERXd1jCXhEJT2XFyXnERDqU9qr
-         hDX27UVa/IAVTggAs3avcEOHN+5kbilri8uxj9GTd4MxtBzOYq5BfIxhtGBbRNNxF0aC
-         wxUA2/IWKnkYOblTYQWHV9V0yVhMugliuiLDTPpoiAiGaf7gwPk1BOQlymixilBoEsco
-         ZIa3OcH8XGoBnSDo99fhtXchf3E5jKN4U/1Tgx5MpbrQaf8hHA/losih3lakGF2Xx5UE
-         TcZw==
+        bh=oLadZMY/1E+aj61iqE390ie32fUnJXqsMN5cFXtebck=;
+        b=qb6VCKE00YMtOknbAUXNkED4zt6DeWc6S20red6fPf+F1MiWv9QhvY3XNigJ/hlgPZ
+         SpOWVpj5nlam32LwHkzUtmtd4ZX/j61MNPZTyUELTfEVWg+UJ8lFbuZnXdng3ChiRbT6
+         bTWBaEvSHTYbXo3Hj85zRgFLrKvrrCUlMwIrG4eN5rZ/GuEbp5aZeCbmXE3SdDWVB5tA
+         Y8WUoH5iD9DZcWp0sn5/ng+V4W3T923PUy5XtWSWYhsrcuXucl8qv4AXY9l5Z+r/PP6k
+         eMFp6zcleGBS6tSX++hMI+o1XFUXYMW/mc/wBOnzw/oFKzpDxYETcaFWbLVVTPToIVEv
+         xcRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712794114; x=1713398914;
+        d=1e100.net; s=20230601; t=1712794116; x=1713398916;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N3Hu7DESDZEmcgrq2jc0sr2sorL47aa7h3H8SzaxXXM=;
-        b=MioMByPyyxiuREJyOX+kkqVoy5fVEqtbwWJWB3HC0TrpivRHZDzoQdQjon92SYImIe
-         5ArLPUggEuJYGWAMCQsUNVvyJBc0Njl96VD2WBov+Iyv06FlZ8Q1CXDNnBgUdc01sk1H
-         t0ZrqUhNFMgs0fBqt2HiC+wF7oNP+swLwEdDdO1t3pQAt3TsDuZl31HJoCPxXXSHjeZC
-         95b6Bde0du/lLXxMfUvQlJcLW7skLLqt5KYEbl21ju6ZN1aaj2AM6i+IRab/W2xZSI+4
-         7a7d1HRxiGuim/bmkw2vMhPZMQxkb5dO9h0w5LgiMiQBR61dO6nyKT5FOjCGBvik4Da5
-         slOA==
-X-Gm-Message-State: AOJu0Yxap/oCShNxQEZ2kpVm6TBMAqRUSGA6eBghq07mDkzpjnYqgdgy
-	/hkdHKUoOCHpzFd2LMteS15FL/NuEW0cQoYL76qROn7L9hiZr4j7zZNa+mETrPlbdUI2ed0ETg0
-	5
-X-Google-Smtp-Source: AGHT+IGlZjUnG/cOH6oxCvOCuQrtoKifdSzPlvvNyoKqm+NzGiaKMBomwqkIVAChpjCW/s39Q+Uflg==
-X-Received: by 2002:a17:902:8490:b0:1e0:119e:f935 with SMTP id c16-20020a170902849000b001e0119ef935mr3564608plo.15.1712794114043;
-        Wed, 10 Apr 2024 17:08:34 -0700 (PDT)
+        bh=oLadZMY/1E+aj61iqE390ie32fUnJXqsMN5cFXtebck=;
+        b=nA38r7j0pvwRObNlJoNu1wlA4KzrofPQD6mTSemBrkHck5VJqD9GWyMagC7ESR94l7
+         UVns47M3UXZxBMc0oor8UKn+1QkGgFvAAV+3q90PzqhFtiUbs9gz14KSHNPRCjf/vuWW
+         Tp2Af4dVsO6FxRVt9ImOMm64PrX34P3kBTXdLYgVvLtvdSdYtQSxTQKP+b8dD4z2zNak
+         XUWcma0HiwuhcwiPu2YbG1BhhoE7z34qc2FR7Hhq8T9/HyNSaI8+v7CkOVUsZUagzKON
+         HZEOn+KU7tt6VhrYzOmclMm1i4Dk3hZF5y4rBI0yA1hMWONg+nvdLMSW2iA5dx+UsviF
+         EHxw==
+X-Gm-Message-State: AOJu0YyPQzUb1dJl4s88q4u7MAFtFx09v5opYUHXe1u29+HGkiWhzAno
+	YfZ7txS8/eSfp7t6/aY+aW9l6zfMS6md1NCZ9gP8yor8j3mmiJ58u5AUFLQvhR8CNn2KllGYsmC
+	j
+X-Google-Smtp-Source: AGHT+IHzUax2ZWhBgUrf+kjl8kX3eFwG3U4ev74//NPfPvOpyLG8kxL1HYpH/nLS8u5KiTb01/SP5A==
+X-Received: by 2002:a17:903:48c:b0:1e4:3f8d:12ca with SMTP id jj12-20020a170903048c00b001e43f8d12camr4120344plb.14.1712794116104;
+        Wed, 10 Apr 2024 17:08:36 -0700 (PDT)
 Received: from atishp.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id f7-20020a170902684700b001e3d8a70780sm130351pln.171.2024.04.10.17.08.31
+        by smtp.gmail.com with ESMTPSA id f7-20020a170902684700b001e3d8a70780sm130351pln.171.2024.04.10.17.08.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 17:08:33 -0700 (PDT)
+        Wed, 10 Apr 2024 17:08:35 -0700 (PDT)
 From: Atish Patra <atishp@rivosinc.com>
 To: linux-kernel@vger.kernel.org
 Cc: Atish Patra <atishp@rivosinc.com>,
+	Anup Patel <anup@brainfault.org>,
 	Andrew Jones <ajones@ventanamicro.com>,
 	Ajay Kaher <ajay.kaher@broadcom.com>,
 	Albert Ou <aou@eecs.berkeley.edu>,
 	Alexandre Ghiti <alexghiti@rivosinc.com>,
 	Alexey Makhalov <alexey.amakhalov@broadcom.com>,
-	Anup Patel <anup@brainfault.org>,
 	Atish Patra <atishp@atishpatra.org>,
 	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
 	Conor Dooley <conor.dooley@microchip.com>,
@@ -91,9 +91,9 @@ Cc: Atish Patra <atishp@rivosinc.com>,
 	virtualization@lists.linux.dev,
 	Will Deacon <will@kernel.org>,
 	x86@kernel.org
-Subject: [PATCH v6 10/24] RISC-V: KVM: Fix the initial sample period value
-Date: Wed, 10 Apr 2024 17:07:38 -0700
-Message-Id: <20240411000752.955910-11-atishp@rivosinc.com>
+Subject: [PATCH v6 11/24] RISC-V: KVM: No need to update the counter value during reset
+Date: Wed, 10 Apr 2024 17:07:39 -0700
+Message-Id: <20240411000752.955910-12-atishp@rivosinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240411000752.955910-1-atishp@rivosinc.com>
 References: <20240411000752.955910-1-atishp@rivosinc.com>
@@ -105,29 +105,45 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The initial sample period value when counter value is not assigned
-should be set to maximum value supported by the counter width.
-Otherwise, it may result in spurious interrupts.
+The virtual counter value is updated during pmu_ctr_read. There is no need
+to update it in reset case. Otherwise, it will be counted twice which is
+incorrect.
 
+Fixes: 0cb74b65d2e5 ("RISC-V: KVM: Implement perf support without sampling")
+Reviewed-by: Anup Patel <anup@brainfault.org>
 Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 Signed-off-by: Atish Patra <atishp@rivosinc.com>
 ---
- arch/riscv/kvm/vcpu_pmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/riscv/kvm/vcpu_pmu.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
-index 86391a5061dd..cee1b9ca4ec4 100644
+index cee1b9ca4ec4..b5159ce4592d 100644
 --- a/arch/riscv/kvm/vcpu_pmu.c
 +++ b/arch/riscv/kvm/vcpu_pmu.c
-@@ -39,7 +39,7 @@ static u64 kvm_pmu_get_sample_period(struct kvm_pmc *pmc)
- 	u64 sample_period;
+@@ -397,7 +397,6 @@ int kvm_riscv_vcpu_pmu_ctr_stop(struct kvm_vcpu *vcpu, unsigned long ctr_base,
+ {
+ 	struct kvm_pmu *kvpmu = vcpu_to_pmu(vcpu);
+ 	int i, pmc_index, sbiret = 0;
+-	u64 enabled, running;
+ 	struct kvm_pmc *pmc;
+ 	int fevent_code;
  
- 	if (!pmc->counter_val)
--		sample_period = counter_val_mask + 1;
-+		sample_period = counter_val_mask;
- 	else
- 		sample_period = (-pmc->counter_val) & counter_val_mask;
+@@ -432,12 +431,9 @@ int kvm_riscv_vcpu_pmu_ctr_stop(struct kvm_vcpu *vcpu, unsigned long ctr_base,
+ 				sbiret = SBI_ERR_ALREADY_STOPPED;
+ 			}
  
+-			if (flags & SBI_PMU_STOP_FLAG_RESET) {
+-				/* Relase the counter if this is a reset request */
+-				pmc->counter_val += perf_event_read_value(pmc->perf_event,
+-									  &enabled, &running);
++			if (flags & SBI_PMU_STOP_FLAG_RESET)
++				/* Release the counter if this is a reset request */
+ 				kvm_pmu_release_perf_event(pmc);
+-			}
+ 		} else {
+ 			sbiret = SBI_ERR_INVALID_PARAM;
+ 		}
 -- 
 2.34.1
 
