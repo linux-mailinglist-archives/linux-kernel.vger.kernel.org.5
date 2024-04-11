@@ -1,93 +1,107 @@
-Return-Path: <linux-kernel+bounces-140264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140266-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D7F98A10EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:39:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEAB18A10F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:39:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EFB71C236F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:39:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FBD41F2CFA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:39:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F1A01474D7;
-	Thu, 11 Apr 2024 10:38:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25B9D1482E6;
+	Thu, 11 Apr 2024 10:38:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aREPE02u"
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jAX3JCdI"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 418A2146D79;
-	Thu, 11 Apr 2024 10:38:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD737147C9D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:38:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712831930; cv=none; b=c4K4SoifsI0TT1/MDKe756llmhYQkxNvocmXHkFwF8bWcFNoEJTlmGZrV9H4d3jw1NtFcLtmg6ypN5G5CQFkKbAYfY4+xlLfcjKi7+heV8FJJeYaHanly5c7OGTMF1T+w+NOCG0zTkP8/mgB1Cs1eKrXbtlsfPiUl/c+bjHFzpw=
+	t=1712831936; cv=none; b=pRueDAl2uiSa5mG0TFsyXU8k50t3w7l3Do9urAPKhQMahOv1E4a2pYOSuwlubOkqvHjfX/ijQ92m5OL1a8NfcIgv+NOHtvC8+nl/LQae0CWG2GjQYAFT97HIeC6DeBSacteVvd1fIqwg6O/0TDQpFiSl2MfM3WGLQpL5RKtemZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712831930; c=relaxed/simple;
-	bh=S3EnvtuyYtFeIGGg+yieue5MCm9+2L7bEad8M+DUDzU=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=o18Sm2L3E3dL51aaTPhbs2UTfbX+Jb3sIigSFWfh5TmKvyRjDZLrQwHNtbQnJ1o+Zw31ZVa253qExRe8Aoq4dWyd3Cw5YJyvdGBirxLcgRkCG5Uw3nur96b9Hx8y4wVww/kJJHW7/PFTgRaERxg0N4BG8fMiIk84l1sSppEMeTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aREPE02u; arc=none smtp.client-ip=209.85.219.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-69b16b614d7so23206126d6.0;
-        Thu, 11 Apr 2024 03:38:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712831928; x=1713436728; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=S3EnvtuyYtFeIGGg+yieue5MCm9+2L7bEad8M+DUDzU=;
-        b=aREPE02uXScs3bpNOcInvqBj/kzBHtrobIAhR/wKZ1O/V9begT/Qyqw3iO07lIDR7i
-         o0KLsuf1l7Avc/TiGJDwKjPbfBfarBZAW8GnZ1m2c6rhn4fz5dD9kZf5PBGGFE30TTqq
-         tvcW2ZW4iYax0N+gSXFNeYfvT/xRAD5UP2rNvK6wersSZ9Bx49bbE+xYz2uvbQj24iF7
-         L6LV11O0cRFWC3UX2b3uBWTOA6Ankt9faRwxbii+vy+Tzhj8tjRWhNQTQal/IL2rPdA8
-         b80lAjSgKmqxH5WmiK5SZzGswAK5woGS82BBeHEdqXqDKCqbiqFrZqiPZDwbMQ5Uc+Qv
-         xsxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712831928; x=1713436728;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S3EnvtuyYtFeIGGg+yieue5MCm9+2L7bEad8M+DUDzU=;
-        b=sKxiQsZlkjJqEUkgt88Nv8oHi9eyxRE67S/SY1aXkZ0Mu715r1FdDBgfBjf3o2lNmT
-         YDY0/sBj5GsLkMTHJdTMLoaVzAzE2xKC9NAM8xqKdxnndn4sX8PQ1JY4ONYjZREuh3qa
-         2mN5abTd3RhHDhx5SWyds6To2UI8YZW17Kmme5EdQpGu8jSYhgntWG/t3C3zC1inPXbS
-         0UflcHYxyUU1xteuS/nvDhzQF2Q0Js1DEg3Ay0RgJHqDAhZ8T4IPMPmFSktHMkmC5TEU
-         fbhZ2VJ86WaqdWASPk7eE0+ilUak5WrcL2b80TjLoO/DhncS7TK+h2lgOF/iqQHf92Bk
-         SUVA==
-X-Gm-Message-State: AOJu0YzRa59mdaWr71MIL9eTuoKze12Wc2R1ALGoPkN9gRO37irzl6gT
-	BlUTI4r72gaVNN6/aMJ/L6RGM92CUPRnOoedPSjrD3uVkOB6qYKhC0yKMc3cmthLUS16+Ml4St+
-	b/lb/+SA/hhVuBrlV/EGHuLWUmBsz7ly4
-X-Google-Smtp-Source: AGHT+IGKyCB41Zdd3jYn8ZbHw+oT56fA4l4siWPS9idn7ExPoMq2Uw2PmVhl4wp4X67csv9pKVVIhL9A1JXBo3tTNOY=
-X-Received: by 2002:ad4:5b8d:0:b0:69b:2446:2f03 with SMTP id
- 13-20020ad45b8d000000b0069b24462f03mr4570250qvp.28.1712831927708; Thu, 11 Apr
- 2024 03:38:47 -0700 (PDT)
+	s=arc-20240116; t=1712831936; c=relaxed/simple;
+	bh=4bkwHo8HvOVpM773QtBhdjug2HdT83ARAY5I3dAxDRk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YIANaMZYHW58CuzJSQ7HjGjRkAWF/BP52aFK6FqzYZg4J1kRlgG+ZHcL6b6bwXsfzsPBGSVbbwVfaBS5+A7R0g7Ckz+URFcP88hMxYKqwo1bXTFIzN149ZBb5OeXCgb4Xd982hSoJlnFNlp7X81C7f36BB6RVUoJTiBuAeIzP0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jAX3JCdI; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712831935; x=1744367935;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=4bkwHo8HvOVpM773QtBhdjug2HdT83ARAY5I3dAxDRk=;
+  b=jAX3JCdIkToZijxGGLffAaGr36ybzmChgKZHsIO6/71jNn9Jqj35KfTf
+   qveq6JAvOl8gfX6kLcuW3QTT8KfGYM9m905/t65Z46bhxWofs1RN63mh+
+   KPpISTGeumfvYCjIlDv85YKnk0A+Huxyb4Iwk55wkK31EgFQvB8cLCcbh
+   57tb9Ze3bNUzml3hYf61ePySt015wFptQ2LU8xpOhvzgjhLUmFilqNJA0
+   VQLxKLymI1V+L619sAol+LlU5fULl0AvcyYaNkP78m6WIhNLKqPTLIT9S
+   VS88eUrBVUi54tCjgtPE6N6NxNj+Ze7FRZKZoCPP4Y3zK5AYCRnZDNDu1
+   w==;
+X-CSE-ConnectionGUID: hdQB8xN8RGmlmfMTbdsXyA==
+X-CSE-MsgGUID: 54zkYjCZSw6BLItfxSYTEw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8454002"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="8454002"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 03:38:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="915459875"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="915459875"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 03:38:50 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rurpP-00000003K7E-0KHQ;
+	Thu, 11 Apr 2024 13:38:47 +0300
+Date: Thu, 11 Apr 2024 13:38:46 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Kyle Meyer <kyle.meyer@hpe.com>
+Cc: linux-kernel@vger.kernel.org, yury.norov@gmail.com,
+	linux@rasmusvillemoes.dk, mingo@redhat.com, peterz@infradead.org,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+	russ.anderson@hpe.com, dimitri.sivanich@hpe.com, steve.wahl@hpe.com
+Subject: Re: [PATCH v2 2/2] sched/topology: Optimize topology_span_sane()
+Message-ID: <Zhe9ttm9Ppv2wT3S@smile.fi.intel.com>
+References: <20240410213311.511470-1-kyle.meyer@hpe.com>
+ <20240410213311.511470-3-kyle.meyer@hpe.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Chris Rankin <rankincj@gmail.com>
-Date: Thu, 11 Apr 2024 11:38:36 +0100
-Message-ID: <CAK2bqV+kpG5cm5py24TusikZYO=_vWg7CVEN3oTywVhnq1mhjQ@mail.gmail.com>
-Subject: RE: [PATCH 6.8 000/143] 6.8.6-rc1 review
-To: Linux Stable <stable@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410213311.511470-3-kyle.meyer@hpe.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-The SCSI sg driver oopsed on my 6.8.4 kernel, and I noticed that a
-patch (presumably) to fix this was pulled from 6.8.5. However, I also
-noticed this email:
+On Wed, Apr 10, 2024 at 04:33:11PM -0500, Kyle Meyer wrote:
+> Optimize topology_span_sane() by removing duplicate comparisons.
+> 
+> Since topology_span_sane() is called inside of for_each_cpu(), each
+> pervious CPU has already been compared against every other CPU. The
 
->> Reverted this patch and I couldn't see the reposted warning.
->> scsi: sg: Avoid sg device teardown race
->> [ Upstream commit 27f58c04a8f438078583041468ec60597841284d ]
->
-> Fix is here:
->
-> https://git.kernel.org/mkp/scsi/c/d4e655c49f47
+previous
 
-Is this unsuitable for 6.8.6 please?
+> current CPU only needs to be compared against higher-numbered CPUs.
+> 
+> The total number of comparisons is reduced from N * (N - 1) to
+> N * (N - 1) / 2 on each non-NUMA scheduling domain level.
 
-Thanks,
-Chris
+Thank you, now it makes sense.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
