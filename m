@@ -1,160 +1,149 @@
-Return-Path: <linux-kernel+bounces-140145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3850D8A0BFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:13:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA0BD8A0C01
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:13:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA52DB25B66
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:12:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 270831C21735
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67143142E94;
-	Thu, 11 Apr 2024 09:12:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F89143C6D;
+	Thu, 11 Apr 2024 09:13:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="AsdzxpZk"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HjrJIBBp"
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0155713FD68
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:12:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFCE913FD68;
+	Thu, 11 Apr 2024 09:13:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712826773; cv=none; b=hVQev/T3eTzuPh2ZKi1vnsUBjeFuaUoKYPv3V5zqzyxIL1ACWGi5L2TFA6yk9Fq6G9F3jYcJ4brk+9u/qEEGxoII1tn9Da8C0TAGT9Kh7SyalnA3v6wnpuqhxtcHBOW34X0+wFtt0RdB9ETFNvlpSnGrTNISZMyIjvBCSXoF4OA=
+	t=1712826787; cv=none; b=S6pC0Jx77Rf7jxBMU9D039HZqXQjnxfDgJG+1eh1rLMJ5hsN+ogflbBHxqahG4+R7j6yi7L0TUttJouw/2XuZb4rWV86Fkls8epEGoYNT/t1y4TMq+mRLaQHSotDGoZKY2hViod/lXNeErEQiw02UVcETQmKH84pEdeUAL0lhNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712826773; c=relaxed/simple;
-	bh=E5KHIQZZU0rzeBrHyjg0655at+txunPpF+rRvnVl86U=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=mmLCbQzJcTv1GNTv2EAKHahC4nXoyh6ptszvWN1/zSYMo9YN1cnczHnK/k6mOjWBVuoN0k87C+u/O/3yooTS9wHBazJqqQ9u6U81C5lQId93bmGoNQpuTUrX+dwpGapuabt2xka7rmk+aFS14WgJePhvqrYRnxN55skSpcfLYfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=AsdzxpZk; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d874b89081so8387421fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 02:12:51 -0700 (PDT)
+	s=arc-20240116; t=1712826787; c=relaxed/simple;
+	bh=aCLIi+AVkjstQsIQpnTKGtc4pAB50POF3WZ8GuxPwO0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jUwV7eN3gpEn/XrHyyTu6qyMiXUly93pb5IV3XY3Bl1Ihbq52BUfFj1lS7E/9KJIbE0cgCf95s0jm8UtZb98r9yGaLves1fIl3TFBc37Xj0VRnAF6W/QL/qZRDZuU8Bg1PVMySrAEwCIC7DRCZRzSKgaPOtMfbfMm2UKT3XdpbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HjrJIBBp; arc=none smtp.client-ip=209.85.160.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-2330f85c2ebso941489fac.1;
+        Thu, 11 Apr 2024 02:13:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712826770; x=1713431570; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=oGLZ4Bj9Hdxr3MjSAXtF+JGNelZvm/tPlncMYTe7qhA=;
-        b=AsdzxpZkSvBu8sX/Rlcdr3UE4tP/dTRPqa419RUwlELv/3a39p+QFfEildjBPh+iOb
-         +cz1KamX9yoTI4z1ZCspLJNxE/HIv0Xgqxqv58Z6AFWAoBNSpt0zgQjMSKiyUc0bX6Eh
-         HQ9SKcoqLtqHSAgKvcnSNS1d9QffKWyumpTdMBS2C+8GtuLUCkghMVffAFldiTRh161K
-         5sBXmfT6ziLizUdXDw9lRKHirGYE0jybGIBseqLW7rXUmv+5H5voqsqCqaaKYQ7Oxwm2
-         /Q6E4kQSFQGNf5FE2XTG18RJo7sMZ09+/MNm6WF5WGB2RdhlZQpweXkqxD+vomIcfprk
-         hVmg==
+        d=gmail.com; s=20230601; t=1712826784; x=1713431584; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VvNwsiJeMA7Qr/EyaBx9I0OkF4w8O8NC6WXdusd8vRk=;
+        b=HjrJIBBp67kV3iOTh05FzUCXT9MOrxIiPDvQTtHe9dXG6xin6qvKbfsU6JaxD3HwMl
+         S3ernLF/7ZsvfgG1Q5wxDmMZ7iyi3el9K2KCh2e+KznDIiLof+sc/rRqbabhvlffXYmo
+         3DpyoDtUmCHo9mRg07qaTN0Lb0tMwK4+yMEBdi5WjIEHzodasLY1rvJBKQPWuvvcKY+M
+         H5IAYv3StoqHmEFGvebp/bQRLsL/moE9K0VdVVGFy63XaLjvPeyIHPSD0rIRl2wPjC02
+         RuacfGpvUx9Rr2zuBqcqLjqZ70sxyE1j06a33KJWiFMC2Ayu1w7k7tbBPxnpaUr1vcPw
+         N9Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712826770; x=1713431570;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oGLZ4Bj9Hdxr3MjSAXtF+JGNelZvm/tPlncMYTe7qhA=;
-        b=kAll/540ZEjbej1piSvwgGDtLvOOTF0vve6EyWXwN1dE76W0tLXIKjGN+hHJ7gozx3
-         Hv4qkEcqcDMMxJxMHQOvsZwWjaywjpdbPOvfDtFGjOCdyjCZlP1DjBLaouvTMtXwgDV4
-         NYnyxoWisqeWuNmIa2v5HU5O2sNxeYd+00K9J6Gf67Lvfm4SmstsoPXVw/39TXT+qvrQ
-         m+k8oPQ7KX/LG53zxungagNMi/cGHWPIPeOgONI4JT8K73LYr6riOR/TpC64u4cCr714
-         AAg1iNl1tzYoJHxuBDx6sVCFFIIG+fo2Olm7fYbDELit0wt14YZR9/u1NWYLeLHvQslH
-         jZRA==
-X-Forwarded-Encrypted: i=1; AJvYcCWyMcfJ/Z64XfeNXNQhJF6h7+XkpVwFPh1Y47whixV0G2im4+lZC9jIC7OzkmsmEpxRtNgFU/Xe7m5Ebq2fZUB6hquZub0eH1tawVaG
-X-Gm-Message-State: AOJu0YwNb3Y0oJf9W23tcYqUuc0Z1j0H1qiIwEieDOChLR9t7BDpXsza
-	hwz0sXu8Y0iUH4BwwwBpjtFPhtO251w+SnhMNzP5SvzIBLncRUE5MG590NnnipA=
-X-Google-Smtp-Source: AGHT+IEejUVVKUSclkIJJf38XaVm57OwSwAqaAT/Myu/iR8Juzns6W5PNf9Zq1VKdarRzOgAiPzh5w==
-X-Received: by 2002:a05:651c:2121:b0:2d8:d41f:931c with SMTP id a33-20020a05651c212100b002d8d41f931cmr2981577ljq.0.1712826770072;
-        Thu, 11 Apr 2024 02:12:50 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:999:a3a0:3624:d9b3:4998:d76b? ([2a01:e0a:999:a3a0:3624:d9b3:4998:d76b])
-        by smtp.gmail.com with ESMTPSA id jg25-20020a05600ca01900b004169836bf9asm4821377wmb.23.2024.04.11.02.12.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 02:12:49 -0700 (PDT)
-Message-ID: <5a285147-4bf8-4634-8f9e-fe78c033b7cb@rivosinc.com>
-Date: Thu, 11 Apr 2024 11:12:48 +0200
+        d=1e100.net; s=20230601; t=1712826784; x=1713431584;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VvNwsiJeMA7Qr/EyaBx9I0OkF4w8O8NC6WXdusd8vRk=;
+        b=urSyDaDVgmU8JlGeLRFgJi4+8FZFfu5ymTcwl3fbcp2fK4uxJ+iYTHkvnSl7vm7kRt
+         xc9N3CzHANksGKO+YTYe2XCyX0x2w7GPlBgqW3V33YsACnFB5sTCKnpMI2BvQ941AiN8
+         jBh4H3C2aRCMXSUnz21B66Kwjdz+jFg8OOxC9s/B05kWXsYqyIBk4SzvL3q8mOSiSofr
+         2SP0Sd1TaX0XU+SOVm3kwPbGa8Qchl6FawfCGVTDMgsXQkzaT6o5otQBgXxmj8fzGkWX
+         lGV1WA3H8GExNMjakIGWqqEJkFW7Z2PM3tcr/q0thhqe41qiw2e+lBl6jCCyoZ5axknP
+         gCkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWXPjIvjLoFH5UXPg4ehIudvEpWYSo0MT8A0sWTeFPD1W012uA9rXX7+BJJ/Hh1AoQH9QgneGYH/sZRZKacvOTs88RnYd+wEB37Pg0+
+X-Gm-Message-State: AOJu0Ywr00h45uYk/Ka/L+YA0E6VHUotgta2snpgt3hbSo/aRHJ1pTGc
+	+EHaviqOkQ0uQS5y1FZbMn4J+w14duRkCnucD5BZkiEMTExIIuUZbInxQTnxefeo7Hf1hWsaPCa
+	2hG0MRTmi83r6Mu2dtSwR8+OOOdRm/Od4
+X-Google-Smtp-Source: AGHT+IG4Tbvl/3bgKG7P9+GQDIw3SVCCbcugECWBfqRopTCh5nwIsFnlNAdD1Sb2wTH5yeVYwgaVQrG6GT1R6gRK76w=
+X-Received: by 2002:a05:6871:b203:b0:22e:ddde:adab with SMTP id
+ bb3-20020a056871b20300b0022edddeadabmr3980205oac.36.1712826784642; Thu, 11
+ Apr 2024 02:13:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] riscv: nommu: remove PAGE_OFFSET hardcoding
-From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-To: Jisheng Zhang <jszhang@kernel.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Samuel Holland <samuel.holland@sifive.com>, Conor Dooley <conor@kernel.org>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240410142347.964-1-jszhang@kernel.org>
- <20240410142347.964-2-jszhang@kernel.org>
- <ce7b7413-31ac-4c93-8970-e7cf0d6902cc@rivosinc.com>
-Content-Language: en-US
-In-Reply-To: <ce7b7413-31ac-4c93-8970-e7cf0d6902cc@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240111082704.2259450-1-sergio.paracuellos@gmail.com> <CAMhs-H-Nab+NAcdZ4+VoiikzXgDH55USREhYA6=6xd6ac_OCww@mail.gmail.com>
+In-Reply-To: <CAMhs-H-Nab+NAcdZ4+VoiikzXgDH55USREhYA6=6xd6ac_OCww@mail.gmail.com>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date: Thu, 11 Apr 2024 11:12:52 +0200
+Message-ID: <CAMhs-H8zKEt9wxLiz1cKVXdasCR=oNtyvcDGp3ZNuF16vvZARg@mail.gmail.com>
+Subject: Re: [PATCH] PCI: mt7621: Fix possible string truncation in snprintf
+To: linux-pci@vger.kernel.org
+Cc: bhelgaas@google.com, lpieralisi@kernel.org, kw@linux.com, robh@kernel.org, 
+	matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com, 
+	linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Bjorn Helgaas <helgaas@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
 
+On Fri, Feb 23, 2024 at 12:24=E2=80=AFPM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> Hi,
+>
+> On Thu, Jan 11, 2024 at 9:27=E2=80=AFAM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> >
+> > The following warning appears when driver is compiled with W=3D1.
+> >
+> > CC      drivers/pci/controller/pcie-mt7621.o
+> > drivers/pci/controller/pcie-mt7621.c: In function =E2=80=98mt7621_pcie_=
+probe=E2=80=99:
+> > drivers/pci/controller/pcie-mt7621.c:228:49: error: =E2=80=98snprintf=
+=E2=80=99 output may
+> > be truncated before the last format character [-Werror=3Dformat-truncat=
+ion=3D]
+> > 228 |         snprintf(name, sizeof(name), "pcie-phy%d", slot);
+> >     |                                                 ^
+> > drivers/pci/controller/pcie-mt7621.c:228:9: note: =E2=80=98snprintf=E2=
+=80=99 output between
+> > 10 and 11 bytes into a destination of size 10
+> > 228 |         snprintf(name, sizeof(name), "pcie-phy%d", slot);
+> >     |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >
+> > Clean this up increasing destination buffer one byte.
+> >
+> > Reported-by: Bjorn Helgaas <helgaas@kernel.org>
+> > Closes: https://lore.kernel.org/linux-pci/20240110212302.GA2123146@bhel=
+gaas/T/#t
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > ---
+> >  drivers/pci/controller/pcie-mt7621.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/pci/controller/pcie-mt7621.c b/drivers/pci/control=
+ler/pcie-mt7621.c
+> > index 79e225edb42a..d97b956e6e57 100644
+> > --- a/drivers/pci/controller/pcie-mt7621.c
+> > +++ b/drivers/pci/controller/pcie-mt7621.c
+> > @@ -202,7 +202,7 @@ static int mt7621_pcie_parse_port(struct mt7621_pci=
+e *pcie,
+> >         struct mt7621_pcie_port *port;
+> >         struct device *dev =3D pcie->dev;
+> >         struct platform_device *pdev =3D to_platform_device(dev);
+> > -       char name[10];
+> > +       char name[11];
+> >         int err;
+> >
+> >         port =3D devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
+> > --
+> > 2.25.1
+> >
+>
+> Gentle ping on this patch :)
 
-On 10/04/2024 17:30, Clément Léger wrote:
-> 
-> 
-> On 10/04/2024 16:23, Jisheng Zhang wrote:
->> Currently, PAGE_OFFSET is hardcoded as 0x8000_0000, it works fine since
->> there's only one nommu platform in the mainline. However, there are
->> many cases where the (S)DRAM base address isn't 0x8000_0000, so remove
->> the hardcoding value, and introduce DRAM_BASE which will be set by
-> 
-> Hi Jisheng,
-> 
-> Typo: s/harcoding/hardcoded
-> 
->> users during configuring. DRAM_BASE is 0x8000_0000 by default.
->>
->> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
->> ---
->>  arch/riscv/Kconfig | 8 +++++++-
->>  1 file changed, 7 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->> index 7895c77545f1..b4af1df86352 100644
->> --- a/arch/riscv/Kconfig
->> +++ b/arch/riscv/Kconfig
->> @@ -247,10 +247,16 @@ config MMU
->>  	  Select if you want MMU-based virtualised addressing space
->>  	  support by paged memory management. If unsure, say 'Y'.
->>  
->> +if !MMU
->> +config DRAM_BASE
->> +	hex '(S)DRAM Base Address'
->> +	default 0x80000000
->> +endif
-> 
-> I'm not sure but it feels odd to have this at top level config menu.
-> Maybe it would make more sense for this to be located under the
-> "Platform Type" section ?
-> 
-> Thanks,
-> 
-> Clément
-> 
->> +
->>  config PAGE_OFFSET
->>  	hex
->>  	default 0xC0000000 if 32BIT && MMU
->> -	default 0x80000000 if !MMU
->> +	default DRAM_BASE if !MMU
->>  	default 0xff60000000000000 if 64BIT
-
-By the way, you should probably rebase that on top of Samuel's work [1]
-in order to support !MMU is S-mode.
+Another gentle ping on this patch :)
 
 Thanks,
-
-Clément
-
-Link:
-https://lore.kernel.org/lkml/20240227003630.3634533-5-samuel.holland@sifive.com/
-[1]
-
->>  
->>  config KASAN_SHADOW_OFFSET
+    Sergio Paracuellos
 
