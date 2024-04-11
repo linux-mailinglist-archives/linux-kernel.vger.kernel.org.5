@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CB038A1B6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:29:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB3908A1ADC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:11:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52AC9B2C7ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:10:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 814722876DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:10:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFC841F82FA;
-	Thu, 11 Apr 2024 15:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE2E31F8C7F;
+	Thu, 11 Apr 2024 15:42:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="oLAwG6yk"
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="SAC0jewo"
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C54521F82C6
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D041B1F82FB
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:42:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850166; cv=none; b=EY9zdETSSRFnFOWN6tC/ESDwQL4EtNbYF3bNfcUbpUZsLZqk8n+tT0BVHDU1n84QGUzli75tf0FivF/4Wv0GRVO4U84t83cTRaiQqlrH3YrtVVH+0gNG2isAVFaNzPggpxOScDyrl1Q0WK22Ay6Vk1Wp0jw0n7Bj6dwGS5JhJrI=
+	t=1712850168; cv=none; b=SMD3DjFfxfzumU40OWhwP7JT0z6jZt2SL2d6jONsTD7R8EAdwNZTHMfjy6iESk+Bb4mzaT2AwjWvXcYma7ag/Fbf0oS4OMkLdiD77CviZHui++HEaXpHBZJ5kdAHK/ok6ctRkAkeUaLr53ntUA9X1HjIvEb+2Lfywo+X8lC+l1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850166; c=relaxed/simple;
-	bh=yy/6GmbRnjGCw0g0ryIHbYYSRWyWwmvA16ZADkWlDLE=;
+	s=arc-20240116; t=1712850168; c=relaxed/simple;
+	bh=VPNd7BEodQPboB1rp43ShwVSi7YJUv8EW2Nk6q7xmw0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OPKkKQkj//P0awQ94+hSvcHWKXm23Kvmp12hPLKa80pQAV8D1Cx26rh0jajFII1pDiYlPjLpaZvN90exdeeTalj7X57WdBbpEWkKb+xrRm/KbwV7gtUZ8kgOM3swWmGJfcU+Ubq6w9w+ENIc9Z9hyoJuKIGOfalsFczqi+G9zTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=oLAwG6yk; arc=none smtp.client-ip=209.85.166.173
+	 MIME-Version; b=VGrVtQNEb2C2rU5iN535tte1B52y6P+TCKHST3KKTwzuXE/VHeUiGUWqOGNV2WOlthR70rtZZIA2T7l9CBN25NMktsvL//cNa7Yy0daRKpwJx07lssMJgbtpBtSWwJtUi0GhxdP7SG6vmkQusam/NodFdf+75xWLTX2UM7x8hss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=SAC0jewo; arc=none smtp.client-ip=209.85.166.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-36a34b68277so123945ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:42:44 -0700 (PDT)
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7c8e4c0412dso69691639f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:42:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850163; x=1713454963; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850165; x=1713454965; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fj6UziE2dihlMcRRDHp7rGOT3rMAa8UR8NL//b4tju8=;
-        b=oLAwG6ykxpffoAZzBMut/ohchbjEPCP6qPUmqs0jhQhXB8P+28kgfuMgMYP20P/S1n
-         4AO/HDKIBs8TOh2BOm2dILvP7y+KSaWsuMNVGgEd22MdXg2O9CLj3Kem4RX2BR6j3iWP
-         olq5jgnSiQxTcmM5BDyQU1r+HjsFvwd1YhcSmN9ILzLup55/ZD42JYf5Ur8cHJT5l047
-         nUiocqGDpkWWy2ffp5DR2Crt3OfiscVOX4PoGXpz3x2tZEJD51stbCbjDO/LvjlrzNlQ
-         /bHGVS+8tg3IyXRwha1rQ2zHBKU3FIrEIz6wgJimVory10yDc1OLh+iK5QUOM3olpGc2
-         UCzw==
+        bh=Td0z5rsJzO3TviM45pZjL/WQ8TqnLCOHJ/AeSZk7a3Q=;
+        b=SAC0jewoNkjf0y2E9l7CD9wTE8+spTew3rviO9amQlZ2jrMRyoJ6yCqKf5LMARhHLt
+         f/qJA6cKQ92Tt2FPmUJ9KWimQ3YA/gCpnVtgMU1uPWan0cIY+77OJkA5VaCZjD2+UAKj
+         nDlaGP4XJ97j54oMXTS2XYEqMD0smXB/IVUDWZyXXWiNXBE2IePTsP3S9xot1C4iFAyW
+         5pFInDT/TaX9Wr5zmxvy3Fdwj73dFfm70Wn8ad2dMYrTqeNkRwFtCbu/+jwPadsvEBGO
+         +32yvsblcelga6aH7esnE+yFLa6Ylq3Pebkd5kIM3b/GYDpMGkknp5VcZiKi+iCiOmv2
+         HzxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850163; x=1713454963;
+        d=1e100.net; s=20230601; t=1712850165; x=1713454965;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fj6UziE2dihlMcRRDHp7rGOT3rMAa8UR8NL//b4tju8=;
-        b=WdgfYKSUl58gIsC7uXUzu+cHVWESe4OMOOyi+K2WQE/geN8Z4Iz3rwH9XNnag4nem1
-         t93gHGRgd8QO8p0KhRyLLNiG+qXxC4eH3gsXvRp+fH8XqUaHqrNWBYqsQqGc5qFDqXMs
-         GNrZHg8p3rtwmkh3wOZgCz6X65jvXT5iHax4/KHhaT6WGkd44MCtg7EJzXQBi18wHQas
-         o1LB3nryaDZYwQZEGm16b/eubvrH39eJxP9ARGDU3Eb0/YzXJjxPfvblCB6dMoSxBBrx
-         apOXUcUzhcbMCm40gC4+4XGxgBkDWQQM9B5B5KdAWDzNmYBL+Rlv1EV7WCdcON7wiOMD
-         /9vQ==
-X-Gm-Message-State: AOJu0YxLKcPxxhtCnU9G8LBCOxu/yO83lwMrH3SVB8RfBKFLRSP0WzGG
-	bLr5Vdxe2MeVxE9wM0FKV75+WwZJVLPpXq2ojTf+uNA9JAjnFiBJeRQwlh8SD4GZRa8DLl9Ujq2
-	5
-X-Google-Smtp-Source: AGHT+IF9XT5rUmB9QDMVaBtp9Y4fdHKeii3oUC+8dPlDAWql5xz9CIt+pA9tC8yHgAtq6LSpYXenRA==
-X-Received: by 2002:a05:6602:4ed7:b0:7d5:ddc8:504d with SMTP id gk23-20020a0566024ed700b007d5ddc8504dmr203729iob.0.1712850163701;
-        Thu, 11 Apr 2024 08:42:43 -0700 (PDT)
+        bh=Td0z5rsJzO3TviM45pZjL/WQ8TqnLCOHJ/AeSZk7a3Q=;
+        b=Eo6Vj2ea8Ibw32KAkp6BPyBM1zVelkUWcKWfbXf+gK8WEqcvc4EC7lJqC9FypNdo9g
+         o4AnAUZ1k3sr48U9wx54IsXACnIrqkqmJwYcndQ2NQDyzw5IIiYF9NV5XOfQwcIu3Dce
+         UxH89jlLKs/T0E3GSpyDZ5gu0NBfnprqE3hEIIL8afyV0wOo1yeYO+xYdsHJKikm7xzJ
+         3cGV6O9vdXYERpK7ShJ0B0C2QiilgAHeTEWK94dF2be7GtJor+5Y1DBPEZPLqNo+Wjk6
+         4miK3vOGHtN+hmmnTlhD3NMtMhFPEMycqrUFRx3K89HOQ3yEDvBK2TK95iRKhbhSXdTc
+         YCOQ==
+X-Gm-Message-State: AOJu0YzGSfwAOxS7YospyDGmnCRENa1Kg/RAcDMay5Qx7shDsEBqA5gE
+	6onghTtRXUYRJtrhd56PYOZQhn2Ue2b3hUzCEYciFzemKGj0SCvaOI5Wq0GU1gcTGWuiFTXlgW9
+	R
+X-Google-Smtp-Source: AGHT+IGfHVNdqgq4P4rPw4FAyb703V2ov+ZaMHAlH0V9lNDXbBLe09yQtYTCvA6KFYRAdWwtBq03Yw==
+X-Received: by 2002:a6b:c34e:0:b0:7d6:7b7c:8257 with SMTP id t75-20020a6bc34e000000b007d67b7c8257mr237636iof.0.1712850165511;
+        Thu, 11 Apr 2024 08:42:45 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.42.42
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.42.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:42:42 -0700 (PDT)
+        Thu, 11 Apr 2024 08:42:43 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 395/437] hsi: clients: cmt_speech: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:18:55 -0600
-Message-ID: <20240411153126.16201-396-axboe@kernel.dk>
+Subject: [PATCH 396/437] macintosh: adb: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:18:56 -0600
+Message-ID: <20240411153126.16201-397-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,79 +85,80 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/hsi/clients/cmt_speech.c | 22 +++++++++++-----------
+ drivers/macintosh/adb.c | 22 +++++++++++-----------
  1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/hsi/clients/cmt_speech.c b/drivers/hsi/clients/cmt_speech.c
-index daa8e1bff5d9..8de1beb45119 100644
---- a/drivers/hsi/clients/cmt_speech.c
-+++ b/drivers/hsi/clients/cmt_speech.c
-@@ -1126,10 +1126,10 @@ static __poll_t cs_char_poll(struct file *file, poll_table *wait)
+diff --git a/drivers/macintosh/adb.c b/drivers/macintosh/adb.c
+index b0407c5fadb2..1b95911ded5d 100644
+--- a/drivers/macintosh/adb.c
++++ b/drivers/macintosh/adb.c
+@@ -713,11 +713,11 @@ static int adb_release(struct inode *inode, struct file *file)
+ 	return 0;
+ }
+ 
+-static ssize_t adb_read(struct file *file, char __user *buf,
+-			size_t count, loff_t *ppos)
++static ssize_t adb_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+ 	int ret = 0;
+-	struct adbdev_state *state = file->private_data;
++	struct adbdev_state *state = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(to);
+ 	struct adb_request *req;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	unsigned long flags;
+@@ -741,7 +741,7 @@ static ssize_t adb_read(struct file *file, char __user *buf,
+ 		if (req != NULL || ret != 0)
+ 			break;
+ 		
+-		if (file->f_flags & O_NONBLOCK) {
++		if (iocb->ki_filp->f_flags & O_NONBLOCK) {
+ 			ret = -EAGAIN;
+ 			break;
+ 		}
+@@ -764,18 +764,18 @@ static ssize_t adb_read(struct file *file, char __user *buf,
+ 	ret = req->reply_len;
+ 	if (ret > count)
+ 		ret = count;
+-	if (ret > 0 && copy_to_user(buf, req->reply, ret))
++	if (ret > 0 && !copy_to_iter_full(req->reply, ret, to))
+ 		ret = -EFAULT;
+ 
+ 	kfree(req);
  	return ret;
  }
  
--static ssize_t cs_char_read(struct file *file, char __user *buf, size_t count,
--								loff_t *unused)
-+static ssize_t cs_char_read(struct kiocb *iocb, struct iov_iter *to)
+-static ssize_t adb_write(struct file *file, const char __user *buf,
+-			 size_t count, loff_t *ppos)
++static ssize_t adb_write(struct kiocb *iocb, struct iov_iter *from)
  {
--	struct cs_char *csdata = file->private_data;
-+	struct cs_char *csdata = iocb->ki_filp->private_data;
-+	size_t count = iov_iter_count(to);
- 	u32 data;
- 	ssize_t retval;
- 
-@@ -1152,7 +1152,7 @@ static ssize_t cs_char_read(struct file *file, char __user *buf, size_t count,
- 
- 		if (data)
- 			break;
--		if (file->f_flags & O_NONBLOCK) {
-+		if (iocb->ki_filp->f_flags & O_NONBLOCK) {
- 			retval = -EAGAIN;
- 			goto out;
- 		} else if (signal_pending(current)) {
-@@ -1165,7 +1165,7 @@ static ssize_t cs_char_read(struct file *file, char __user *buf, size_t count,
- 		finish_wait(&csdata->wait, &wait);
- 	}
- 
--	retval = put_user(data, (u32 __user *)buf);
-+	retval = put_iter(data, to);
- 	if (!retval)
- 		retval = sizeof(data);
- 
-@@ -1173,10 +1173,10 @@ static ssize_t cs_char_read(struct file *file, char __user *buf, size_t count,
- 	return retval;
- }
- 
--static ssize_t cs_char_write(struct file *file, const char __user *buf,
--						size_t count, loff_t *unused)
-+static ssize_t cs_char_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct cs_char *csdata = file->private_data;
-+	struct cs_char *csdata = iocb->ki_filp->private_data;
+ 	int ret/*, i*/;
+-	struct adbdev_state *state = file->private_data;
++	struct adbdev_state *state = iocb->ki_filp->private_data;
 +	size_t count = iov_iter_count(from);
- 	u32 data;
- 	int err;
- 	ssize_t	retval;
-@@ -1184,7 +1184,7 @@ static ssize_t cs_char_write(struct file *file, const char __user *buf,
- 	if (count < sizeof(data))
- 		return -EINVAL;
+ 	struct adb_request *req;
  
--	if (get_user(data, (u32 __user *)buf))
-+	if (get_iter(data, from))
- 		retval = -EFAULT;
- 	else
- 		retval = count;
-@@ -1349,8 +1349,8 @@ static int cs_char_release(struct inode *unused, struct file *file)
+ 	if (count < 2 || count > sizeof(req->data))
+@@ -794,7 +794,7 @@ static ssize_t adb_write(struct file *file, const char __user *buf,
+ 	req->complete = 0;
+ 	
+ 	ret = -EFAULT;
+-	if (copy_from_user(req->data, buf, count))
++	if (!copy_from_iter_full(req->data, count, from))
+ 		goto out;
  
- static const struct file_operations cs_char_fops = {
+ 	atomic_inc(&state->n_pending);
+@@ -843,8 +843,8 @@ static ssize_t adb_write(struct file *file, const char __user *buf,
+ static const struct file_operations adb_fops = {
  	.owner		= THIS_MODULE,
--	.read		= cs_char_read,
--	.write		= cs_char_write,
-+	.read_iter	= cs_char_read,
-+	.write_iter	= cs_char_write,
- 	.poll		= cs_char_poll,
- 	.unlocked_ioctl	= cs_char_ioctl,
- 	.mmap		= cs_char_mmap,
+ 	.llseek		= no_llseek,
+-	.read		= adb_read,
+-	.write		= adb_write,
++	.read_iter	= adb_read,
++	.write_iter	= adb_write,
+ 	.open		= adb_open,
+ 	.release	= adb_release,
+ };
 -- 
 2.43.0
 
