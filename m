@@ -1,135 +1,161 @@
-Return-Path: <linux-kernel+bounces-140399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B18B18A13E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:03:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4400A8A13EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:04:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63C2C1F214BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:03:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 754EC1C2159B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:04:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14C2314B08A;
-	Thu, 11 Apr 2024 12:03:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 238C914C5A1;
+	Thu, 11 Apr 2024 12:03:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D8YWoFer"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="dKYDMK3i"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 052C2143898;
-	Thu, 11 Apr 2024 12:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5338B14AD24;
+	Thu, 11 Apr 2024 12:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712837013; cv=none; b=QnKXKxbPxxs0zISQxgxutLl+KdduUUjttZqTRJDKYccsPmhl7fnOL9BfSzUxDO8Icb9ulpKDQECyj8HGVkFbEDSepifiyS73HpDXCR956Y0kWBKDos0U2qcjfd/mgoFh8bkYu5EZ1u8lSBzSO6Ncl8dDTPI6BP7kA1t8s2gsTXU=
+	t=1712837031; cv=none; b=Obn44fUOG9OF+qvjUGw0/tOBwQwUAWe3VLbajGRdB9uhO48ZKzz2UoTZbVjgPo8IAxFy7BmAsSZQPRmyUsPkjkyePAMU/FKnwQaoKy2ea9K+8Da1zD4PX+s03iC2/FswBvWe+zuqrh+cKn5Smx3E1da7JNxHzX2FIRk9JHS/fSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712837013; c=relaxed/simple;
-	bh=b7k5sCvXgr5cKU8jGKYUf0FBvVisLtLitgRXFAw9OhU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=AFGljxZmtWkE6mNYXXwWOzOz/2Wh7LYtBR0T6mVMmWdkLSB+ECc67tYj/17dx7uUOLijJYrJylzpgcm0lfvrE5X1VWpBAnjfPCoJ0OxAzq6ViVARSvXW7MF+7w1zzJOAFr0gdybR2+h73uSibu1pGBEUxwLbmCMq1PDrdLYzrL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D8YWoFer; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d8b70b39efso5946915a12.0;
-        Thu, 11 Apr 2024 05:03:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712837010; x=1713441810; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dC3dxQYcnHC/jIqeccSVEMvUjj7u07W27lVj2MYVHOE=;
-        b=D8YWoFerP5c7ijo+t4moFPxZGplc0G0egKk80lSSTqPXsBBUjz+TzbxA3ACy0fh7Bp
-         baLbSfYq4gKBeakk5Uv9HINYHqPoZkpRtTaLxw14+rEdpbKyoHfm9inNaqm9PAkg9fAC
-         5T/JbjLJUz/Lmy6ioPOzINiaGCK3ZgHXUp67W2OKEhRxdxpIEwZwlcgCq6TI5fbFsMyv
-         78BYp0iaRiBPH5EaZKuCLOWnBLraCYe/vUPmXjXNfhQ37RJBDiTf8ihtmXVuKC9wrY7a
-         9RJVwYo28DYYNNniKzLhzMicNRo6YRAltNQ0kP2zPuL+2bIdTrRFFPSEVT1uVRwPjIqD
-         tjsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712837010; x=1713441810;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dC3dxQYcnHC/jIqeccSVEMvUjj7u07W27lVj2MYVHOE=;
-        b=XKJWI/PZTAGIuUDIj3L6Jg/VriQVgBE/s4Y1Wg/D/b4lB1NX+VM2uKh77DlWhyVATM
-         nHRYonsTY8QT13+3kC0yhkIfQhnD/PaOf8pLeJNT57B+CTd8Q/JU9zUqltDy175aD7jm
-         M9+Zo6iEzDOR+U/j1SVIF5qPK3C0WmY1IbzH4o+nDAnz9Tja7Ge/MjBPl41BCzs3Kwb8
-         hDxVB/HlQwUiGCwOefUTYFouvnkwnCRxl7EmxJ3/kgsYTJCKdcom9GBZ+LqsrcJsrMru
-         htbePsMI9lK7R9SEY9g/MkS+gQ/12oHKFZG0VAxNBEmqTiofD151+IGsgdoyJcdCIIrx
-         gBuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWgcpF9LsB7KjJGc61/T+grrXLZe83XrNwcheCPiF0WXOt4GJxGp5vpXeQ5MJlWvxX2plO2EZ89v1axN7SsuAdy5UxZD0A7lFftNXuC4bTgPkOP0C75J1qkyhKLNpe8m1x/qJx9S8v4Q+c=
-X-Gm-Message-State: AOJu0YwkV1OSk+7eolUao7umDpGIYcwYUaSu7jCa52vp2kgVx9KsM+hC
-	xvHHC0RFtgQusNOU7WB55Eo2g+pdg6Xkjkye70lnqT0Hqh2p0eRrs0kPDvm2QkBbn9zHFo6tosr
-	XTavHVCA49tMYAOOWraNOpLsHXRc=
-X-Google-Smtp-Source: AGHT+IHaXa6zLXrIwwxw35tFKWAztkCw6auyKXq4dF0laNUaTtwNedm5O0YIEsrrveWo+TKIRfTw/JFSdSEOsSnEoCA=
-X-Received: by 2002:a17:90a:4cc7:b0:2a4:a87c:b907 with SMTP id
- k65-20020a17090a4cc700b002a4a87cb907mr4848297pjh.4.1712837010194; Thu, 11 Apr
- 2024 05:03:30 -0700 (PDT)
+	s=arc-20240116; t=1712837031; c=relaxed/simple;
+	bh=oltkbgJz/lUcQWtwkLke/qM0DU1bwDW6wogBIn+i780=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A4ErHE+8SmxFR+BLCVRkiNvz3Cvn4Fq/C1iWw4oN298WiPIDbjzaTT1PRjceFOQ4lNlr+ORdHqKdLvmTzO2eVW5kTOqZQlMO8UbDLXZZ6GFkko3yZWOXe6+U2hdpsgBZrfIyKNRPuQ7HEVSIAYVK7l+oJj/vc1OutCfpEwjpCkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=dKYDMK3i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B608C433C7;
+	Thu, 11 Apr 2024 12:03:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712837030;
+	bh=oltkbgJz/lUcQWtwkLke/qM0DU1bwDW6wogBIn+i780=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dKYDMK3iUyUAOAqGAdXCtZqI4PHO1hUEa+vVgCaVnZbP7/HZax/WvuruCdVXLpiZ+
+	 fITLONyNAJrOiKejW9o5JiBe6r4Usq9A7jldYoqRvOgU2Gker3Xf+qBKZhsG5F6NFY
+	 ZDQkPjOsDABS8Kmf+z23LoZuYVWxnhMHXfdm2XqM=
+Date: Thu, 11 Apr 2024 14:03:47 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Ayush Singh <ayushdevel1325@gmail.com>
+Cc: linux-kernel@vger.kernel.org, jkridner@beagleboard.org,
+	robertcnelson@beagleboard.org,
+	Vaishnav M A <vaishnav@beagleboard.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Tero Kristo <kristo@kernel.org>,
+	Derek Kiernan <derek.kiernan@amd.com>,
+	Dragan Cvetic <dragan.cvetic@amd.com>,
+	Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
+	Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
+	greybus-dev@lists.linaro.org
+Subject: Re: [PATCH v3 6/8] greybus: Add mikroBUS manifest types
+Message-ID: <2024041103-nimbly-pounce-aa36@gregkh>
+References: <20240315184908.500352-1-ayushdevel1325@gmail.com>
+ <20240315184908.500352-7-ayushdevel1325@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240308121021.1732-1-yongsuyoo0215@gmail.com>
-In-Reply-To: <20240308121021.1732-1-yongsuyoo0215@gmail.com>
-From: YongSu Yoo <yongsuyoo0215@gmail.com>
-Date: Thu, 11 Apr 2024 21:03:18 +0900
-Message-ID: <CANXPkT4_9dkLVe8VUBaOceFRTBMqZOD=u9a1=X54TqvcOjv67A@mail.gmail.com>
-Subject: Re: [PATCH] media: dvb_ca_en50221: Fix a bug for detecting CI MODULE
-To: mchehab@kernel.org, yongsuyoo0215@gmail.com, v4bel@theori.io, 
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240315184908.500352-7-ayushdevel1325@gmail.com>
 
-Dear All
-
-Can you review this patch ?
-Can you share how this modification is going ?
-
-2024=EB=85=84 3=EC=9B=94 8=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 9:10, <y=
-ongsuyoo0215@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> From: Yongsu yoo <yongsuyoo0215@gmail.com>
->
-> Signed-off-by:Yongsu Yoo <yongsuyoo0215@gmail.com>
->
-> In source/drivers/media/dvb-core/dvb_ca_en50221.c, if the CA_RESET
-> ioctl is called, the dvb_ca_en50221_slot_shutdown will also be called.
-> Inside of the dvb_ca_en50221_slot_shutdown,
-> the ca->slot_info[slot].slot_state will become DVB_CA_SLOTSTATE_NONE.
-> In the most of cases, the ca->slot_info[slot].slot_state will quickly
-> becomes restored to other states by the subsequent operations of the
-> thread dvb_ca_en50221_thread_state_machine.
-> But in some rare cases, when the CA_GET_SLOT_INFO ioctl is immediately
-> called after the CA_RESET ioctl is called, the
-> the ca->slot_info[slot].slot_state can still remains at
-> DVB_CA_SLOTSTATE_NONE, and this causes CA_GET_SLOT_INFO ioctl not to
-> return CA_CI_MODULE_PRESENT as info->flags even if CA_CI_MODULE is
-> really connected on TV. This means that the CA_GET_SLOT_INFO ioctl
-> does not return right informtion. This is a Bug. We fix this bug.
+On Sat, Mar 16, 2024 at 12:19:04AM +0530, Ayush Singh wrote:
+> Add data structures for parsing mikroBUS manifests, which are based on
+> greybus manifest.
+> 
+> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
 > ---
->  drivers/media/dvb-core/dvb_ca_en50221.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/drivers/media/dvb-core/dvb_ca_en50221.c b/drivers/media/dvb-=
-core/dvb_ca_en50221.c
-> index baf64540dc00..8d37c3c13227 100644
-> --- a/drivers/media/dvb-core/dvb_ca_en50221.c
-> +++ b/drivers/media/dvb-core/dvb_ca_en50221.c
-> @@ -1403,6 +1403,10 @@ static int dvb_ca_en50221_io_do_ioctl(struct file =
-*file,
->                     (sl->slot_state !=3D DVB_CA_SLOTSTATE_INVALID)) {
->                         info->flags =3D CA_CI_MODULE_PRESENT;
->                 }
-> +               if ((sl->slot_state =3D=3D DVB_CA_SLOTSTATE_NONE) &&
-> +                   (sl->camchange_type =3D=3D DVB_CA_EN50221_CAMCHANGE_I=
-NSERTED)) {
-> +                       info->flags =3D CA_CI_MODULE_PRESENT;
-> +               }
->                 if (sl->slot_state =3D=3D DVB_CA_SLOTSTATE_RUNNING)
->                         info->flags |=3D CA_CI_MODULE_READY;
->                 break;
-> --
-> 2.17.1
->
+>  include/linux/greybus/greybus_manifest.h | 49 ++++++++++++++++++++++++
+>  1 file changed, 49 insertions(+)
+> 
+> diff --git a/include/linux/greybus/greybus_manifest.h b/include/linux/greybus/greybus_manifest.h
+> index bef9eb2093e9..83241e19d9b3 100644
+> --- a/include/linux/greybus/greybus_manifest.h
+> +++ b/include/linux/greybus/greybus_manifest.h
+> @@ -23,6 +23,9 @@ enum greybus_descriptor_type {
+>  	GREYBUS_TYPE_STRING		= 0x02,
+>  	GREYBUS_TYPE_BUNDLE		= 0x03,
+>  	GREYBUS_TYPE_CPORT		= 0x04,
+> +	GREYBUS_TYPE_MIKROBUS		= 0x05,
+> +	GREYBUS_TYPE_PROPERTY		= 0x06,
+> +	GREYBUS_TYPE_DEVICE		= 0x07,
+
+These need approval in the spec before we can add them here.
+
+And you are adding 3 different things here, not just one.  Shouldn't
+this be 3 patches?
+
+
+>  };
+>  
+>  enum greybus_protocol {
+> @@ -151,6 +154,49 @@ struct greybus_descriptor_cport {
+>  	__u8	protocol_id;	/* enum greybus_protocol */
+>  } __packed;
+>  
+> +/*
+> + * A mikrobus descriptor is used to describe the details
+> + * about the bus ocnfiguration for the add-on board
+> + * connected to the mikrobus port.
+> + */
+> +struct greybus_descriptor_mikrobus {
+> +	__u8 pin_state[12];
+> +} __packed;
+> +
+> +/*
+> + * A property descriptor is used to pass named properties
+> + * to device drivers through the unified device properties
+> + * interface under linux/property.h
+> + */
+> +struct greybus_descriptor_property {
+> +	__u8 length;
+> +	__u8 id;
+> +	__u8 propname_stringid;
+> +	__u8 type;
+> +	__u8 value[];
+
+Don't we have a "counted-by" marking that we can use to show how big
+value[] here is?
+
+> +} __packed;
+> +
+> +/*
+> + * A device descriptor is used to describe the
+> + * details required by a add-on board device
+> + * driver.
+> + */
+> +struct greybus_descriptor_device {
+> +	__u8 id;
+> +	__u8 driver_stringid;
+> +	__u8 protocol;
+> +	__u8 reg;
+> +	__le32 max_speed_hz;
+> +	__u8 irq;
+> +	__u8 irq_type;
+> +	__u8 mode;
+> +	__u8 prop_link;
+> +	__u8 gpio_link;
+> +	__u8 reg_link;
+> +	__u8 clock_link;
+> +	__u8 pad[1];
+
+Why the padding?
+
+And this looks like a greybus thing, not a mikrobus thing, right?  Some
+description of exactly what this is and what it does would be good.
+
+thanks,
+
+greg k-h
 
