@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B23A98A1ABF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E0608A1AC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:06:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6863B28D5BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:06:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 140BC283DF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:06:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A7911F20F4;
-	Thu, 11 Apr 2024 15:42:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 764E61F2DEB;
+	Thu, 11 Apr 2024 15:42:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="N7N1ZU+u"
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="bcdqrn73"
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EF751F20C5
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E241F20DF
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:42:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850135; cv=none; b=pdcS5snznZjI1iHp82i6Z05U21eX1rvRe01LxmYc8ZP9UbVmXgo0ELpInrhoUo5PsbFWN3T6YRZGwnI3wINOpEWfRv25AMBi5KUHrfZHo5Ni4Ioj4znWzGLhQDyEecACjedXGTRUf9go1wLqnskfpTv8Gyzk+kLf+KmwuC/agWk=
+	t=1712850136; cv=none; b=DiComsMskmssATXj0O63eIvBKAu2BlqY/AcBdHJwCHzpO5NUcdwY5aGx/z/k9SnTI4xgAxxY59IFlYOKtUzKipcscZH7bzDWdWqmM87sRl5tylgQsbRQY4lIGzCEdU9evlOxvpkxpVGm9UZBKmTir1W8xFWviYCKCwhAFwM/vk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850135; c=relaxed/simple;
-	bh=nQ7inigwCM9TZ1BOLv7VZuWOnWx94/e1sqHLK9wqdpE=;
+	s=arc-20240116; t=1712850136; c=relaxed/simple;
+	bh=Ar6UwW1sI0JVpIKkyb5NfOQbdZzkZA80a7y195tD744=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mdS13/aP2IuhRNVR5I1RkJzPSasorb7k0sl5BC8sgUw846Xo+B2UuzQYivB46M4N1VRHyAwuy6c9RNrjhWgYGsl9SOd5hTdCaxV0mCC7b+Vt805/NlytmOP6k89vYOuLjKDXlpeKgz+twjUglOTzcKxKB8aME6w2N/XUZiTRkxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=N7N1ZU+u; arc=none smtp.client-ip=209.85.166.46
+	 MIME-Version; b=TYBX2f3WWRG4V2YxTSwjQs1AAONg76J5CLsOzhdPJME56YJjGsoPH86sv6HOq+5O6vkNf1gmDPMIEPH2rCj7mGmKTGkGmDXXUYshU1Juh0cmea8BbFIf5f0yCo2Iwc6bR1T95Ft1ubcUicDaWkZ6w1JkLvttv35R0YDY4uzMIOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=bcdqrn73; arc=none smtp.client-ip=209.85.166.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso58255039f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:42:13 -0700 (PDT)
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-36a34b68277so122645ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:42:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850132; x=1713454932; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850134; x=1713454934; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PwtpRuvpd0enzm9gHDySDTRg9gYqaPKn4brSPhQiTgI=;
-        b=N7N1ZU+uibrP3oDC/Vvp3xcyHh94iGPHP2GvhNpN7KMtWNfWmTwTw0KUo43RaLw+I0
-         9CrAPQu7H0yVkjpgGNqwJbZjLlioblNzTcqvfCOy0yC0kOcLP/rih79Jcfon/7/hp83q
-         eeyEHVhKdSPr7qAuzjxHqe16/GsdCo/hA2UJtwBr3+ScCSeGpvu2tS+j3jqfogvLbwOQ
-         c0wYuPmxz6ooGu+cQc4V/NApdjPhnIfBdIyzRUFTG9DxSl23N1yAKarOQEYIoy425nY0
-         4wZne75MO5F4kZOzG8A93tP24jy0U5qHHCoP6QQNSXLY57mlcjn8TuXPn60hGUA0WVDK
-         yNUg==
+        bh=mtW1TbguQ4BBpoGOxUyCCgtBSDCXuHADUDUR5tb5p4Q=;
+        b=bcdqrn73xzDXFG072tfPGI6NDoUCmpFP4eMGvzMZpJhu7OoySOuu6/1x50gOXp0cdC
+         8nFkcQRRMdjMybvA6PeU5LNI5IqdF4LTEzoAm+RxEp3wbw2dgEaJme/FZjM959rU5NwQ
+         f+PgNvcjuHEbN+FPzd7vQbAr/L/S+bJy71TUdCBKLUnolPisbVxfT4W14aZYzJS+HQci
+         NWd/Yf332gbsbl1SC/Tf0fYMteyTW7KdqPHLe4vOYk51lVMDhF3N0UOZtOND6AV+ZH8R
+         s3NgbRNYB29gIdmIBLdWbQ6n3yEkxBYjt+Ykrlg6hpoFYSkaxZBbYLENrB+6BNuH+2Xz
+         uBrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850132; x=1713454932;
+        d=1e100.net; s=20230601; t=1712850134; x=1713454934;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PwtpRuvpd0enzm9gHDySDTRg9gYqaPKn4brSPhQiTgI=;
-        b=ETSP1SV3QwQdaOdOx86DDNEW3Pl6oPKSWAcmJwtlTnFiyYWg/jhCDcTzZdSaMCrFHb
-         MkX1mHWCrvO98cNAft1baRRd5XEN5VkHtHcWKuGA0ax7XnwMOhWVoE1gNmUZHB1jmhzI
-         +tozDx1V1nrHVZfSFAtvGeuSf9ZivZW0ug8zhArhWzYqwOdLj7LqjlnltOkv/GbnpQVl
-         oKP9pnd1SXO14SzINSGHubn0oW/Kmw9/fmL0L5efMuYQdRzb6SE1zbIDll35w1G1k1fA
-         lOcWB7DpZTZdkyYZEgGov82mHCTDLMjv2vju6C/gYH+UawRAMaXRmR1pkL7zxImKJRau
-         ZJ+w==
-X-Gm-Message-State: AOJu0YwdI9uGsqN9Vc2zxD9JH7bhpsPr9hdTsLjMVliHdJuld7L6J2HJ
-	kDRiCrnNen6jjJPF7GFRqtFjliyo29XUh21ECXGtdLjE4iflDdtBEBJi93tKdnEmq9/u/A8msek
-	+
-X-Google-Smtp-Source: AGHT+IFTSOW/N+rzPD6opOm9bo8lu3i0TGoy8muj9Nl2w/4PU6p+8wqLnlnMp1J9/OCtj4nQly+Q3Q==
-X-Received: by 2002:a6b:f312:0:b0:7d5:de23:13a9 with SMTP id m18-20020a6bf312000000b007d5de2313a9mr177917ioh.1.1712850131930;
-        Thu, 11 Apr 2024 08:42:11 -0700 (PDT)
+        bh=mtW1TbguQ4BBpoGOxUyCCgtBSDCXuHADUDUR5tb5p4Q=;
+        b=wZMA2MKu7foCRfqoLCXpbjRixjJ58eE5R98KHQMcUj6MoLiuBTBmOLffYCKQZicIQO
+         7KA6EsdNsG4OOijtvRfQbfwQuUvfu+tKO0h79nKBaVQA1E/gXCnTPJw+2bVXGjcAakj2
+         iZaw6W69Duyi0CSGuUwXtrTZzr3ovbEXbkfBNCO3bt+EhPmTApCipAplJC+ae+thn7QP
+         tChB3GzYqsiHjOIQ1U5EPmHTvtOFH4aXVF/7szy+0UPhDmZFSxdVNUb5898eH609mDL+
+         Fjw0jCiwN3ev12/GPZPqKPDhjbM9lUMLlbFbciCH7RlS8YB7ZARXlKM0RIkfUqScfjDu
+         1EJQ==
+X-Gm-Message-State: AOJu0YzB1yjHgwEmnlxJiTpOWgfjDOHgwHdRXjjcGVJjE9Fz0VbnUpHZ
+	X9TGQgBMydFfswoQzU9Mb3JzksLcNvFbnvndr5eBxG7ETZr91WVq24sOP6EGqRIAFam0Rg+oQAV
+	r
+X-Google-Smtp-Source: AGHT+IHDJUru5g6Yz5MjJ5gVEFZU+4ZCtQCsR7AQka0AOa2Eyg+c6hayQT2/qcoivgz2t+QKIVIJPg==
+X-Received: by 2002:a05:6602:4ed7:b0:7d5:ddc8:504d with SMTP id gk23-20020a0566024ed700b007d5ddc8504dmr202532iob.0.1712850133867;
+        Thu, 11 Apr 2024 08:42:13 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.42.11
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.42.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:42:11 -0700 (PDT)
+        Thu, 11 Apr 2024 08:42:12 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 376/437] drivers/fsi: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:18:36 -0600
-Message-ID: <20240411153126.16201-377-axboe@kernel.dk>
+Subject: [PATCH 377/437] iio: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:18:37 -0600
+Message-ID: <20240411153126.16201-378-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,331 +85,206 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/fsi/fsi-core.c    | 28 ++++++++++++++--------------
- drivers/fsi/fsi-occ.c     | 20 ++++++++++----------
- drivers/fsi/fsi-sbefifo.c |  6 ++++--
- drivers/fsi/fsi-scom.c    | 24 ++++++++++++------------
- drivers/fsi/i2cr-scom.c   | 23 ++++++++++++-----------
- 5 files changed, 52 insertions(+), 49 deletions(-)
+ drivers/iio/iio_core.h            |  7 +++----
+ drivers/iio/industrialio-buffer.c | 20 +++++++++---------
+ drivers/iio/industrialio-core.c   | 34 +++++++++++++++----------------
+ drivers/iio/industrialio-event.c  |  3 ++-
+ 4 files changed, 31 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/fsi/fsi-core.c b/drivers/fsi/fsi-core.c
-index 097d5a780264..ce68c470d30e 100644
---- a/drivers/fsi/fsi-core.c
-+++ b/drivers/fsi/fsi-core.c
-@@ -657,12 +657,12 @@ static struct device_node *fsi_slave_find_of_node(struct fsi_master *master,
- 	return NULL;
- }
+diff --git a/drivers/iio/iio_core.h b/drivers/iio/iio_core.h
+index 1a38b1915e7a..8aac545ec4d0 100644
+--- a/drivers/iio/iio_core.h
++++ b/drivers/iio/iio_core.h
+@@ -11,6 +11,7 @@
+ #define _IIO_CORE_H_
+ #include <linux/kernel.h>
+ #include <linux/device.h>
++#include <linux/fs.h>
  
--static ssize_t cfam_read(struct file *filep, char __user *buf, size_t count,
--			 loff_t *offset)
-+static ssize_t cfam_read(struct kiocb *iocb, struct iov_iter *to)
+ struct iio_buffer;
+ struct iio_chan_spec;
+@@ -63,10 +64,8 @@ struct poll_table_struct;
+ 
+ __poll_t iio_buffer_poll_wrapper(struct file *filp,
+ 				 struct poll_table_struct *wait);
+-ssize_t iio_buffer_read_wrapper(struct file *filp, char __user *buf,
+-				size_t n, loff_t *f_ps);
+-ssize_t iio_buffer_write_wrapper(struct file *filp, const char __user *buf,
+-				 size_t n, loff_t *f_ps);
++ssize_t iio_buffer_read_wrapper( struct kiocb *iocb, struct iov_iter *to);
++ssize_t iio_buffer_write_wrapper( struct kiocb *iocb, struct iov_iter *from);
+ 
+ int iio_buffers_alloc_sysfs_and_mask(struct iio_dev *indio_dev);
+ void iio_buffers_free_sysfs_and_mask(struct iio_dev *indio_dev);
+diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
+index b581a7e80566..38a75f88adf6 100644
+--- a/drivers/iio/industrialio-buffer.c
++++ b/drivers/iio/industrialio-buffer.c
+@@ -163,6 +163,7 @@ static ssize_t iio_buffer_read(struct file *filp, char __user *buf,
+ 
+ 	return ret;
+ }
++FOPS_READ_ITER_HELPER(iio_buffer_read);
+ 
+ static size_t iio_buffer_space_available(struct iio_buffer *buf)
  {
--	struct fsi_slave *slave = filep->private_data;
-+	struct fsi_slave *slave = iocb->ki_filp->private_data;
-+	size_t count = iov_iter_count(to);
- 	size_t total_len, read_len;
--	loff_t off = *offset;
-+	loff_t off = iocb->ki_pos;
- 	ssize_t rc;
+@@ -225,6 +226,7 @@ static ssize_t iio_buffer_write(struct file *filp, const char __user *buf,
  
- 	if (off < 0)
-@@ -680,7 +680,7 @@ static ssize_t cfam_read(struct file *filep, char __user *buf, size_t count,
- 		rc = fsi_slave_read(slave, off, &data, read_len);
- 		if (rc)
- 			goto fail;
--		rc = copy_to_user(buf + total_len, &data, read_len);
-+		rc = !copy_to_iter_full(&data, read_len, to);
- 		if (rc) {
- 			rc = -EFAULT;
- 			goto fail;
-@@ -689,16 +689,16 @@ static ssize_t cfam_read(struct file *filep, char __user *buf, size_t count,
- 	}
- 	rc = count;
-  fail:
--	*offset = off;
-+	iocb->ki_pos = off;
- 	return rc;
+ 	return ret < 0 ? ret : written;
  }
++FOPS_WRITE_ITER_HELPER(iio_buffer_write);
  
--static ssize_t cfam_write(struct file *filep, const char __user *buf,
--			  size_t count, loff_t *offset)
-+static ssize_t cfam_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct fsi_slave *slave = filep->private_data;
-+	struct fsi_slave *slave = iocb->ki_filp->private_data;
-+	size_t count = iov_iter_count(from);
- 	size_t total_len, write_len;
--	loff_t off = *offset;
-+	loff_t off = iocb->ki_pos;
- 	ssize_t rc;
- 
- 
-@@ -714,7 +714,7 @@ static ssize_t cfam_write(struct file *filep, const char __user *buf,
- 		write_len = min_t(size_t, count, 4);
- 		write_len -= off & 0x3;
- 
--		rc = copy_from_user(&data, buf + total_len, write_len);
-+		rc = !copy_from_iter_full(&data, write_len, from);
- 		if (rc) {
- 			rc = -EFAULT;
- 			goto fail;
-@@ -726,7 +726,7 @@ static ssize_t cfam_write(struct file *filep, const char __user *buf,
- 	}
- 	rc = count;
-  fail:
--	*offset = off;
-+	iocb->ki_pos = off;
- 	return rc;
- }
- 
-@@ -758,8 +758,8 @@ static const struct file_operations cfam_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= cfam_open,
- 	.llseek		= cfam_llseek,
--	.read		= cfam_read,
--	.write		= cfam_write,
-+	.read_iter	= cfam_read,
-+	.write_iter	= cfam_write,
- };
- 
- static ssize_t send_term_store(struct device *dev,
-diff --git a/drivers/fsi/fsi-occ.c b/drivers/fsi/fsi-occ.c
-index da35ca9e84a6..1145df7dbec8 100644
---- a/drivers/fsi/fsi-occ.c
-+++ b/drivers/fsi/fsi-occ.c
-@@ -104,10 +104,10 @@ static int occ_open(struct inode *inode, struct file *file)
+ /**
+  * iio_buffer_poll() - poll the buffer to find out if it has data
+@@ -261,30 +263,28 @@ static __poll_t iio_buffer_poll(struct file *filp,
  	return 0;
  }
  
--static ssize_t occ_read(struct file *file, char __user *buf, size_t len,
--			loff_t *offset)
-+static ssize_t occ_read(struct kiocb *iocb, struct iov_iter *to)
+-ssize_t iio_buffer_read_wrapper(struct file *filp, char __user *buf,
+-				size_t n, loff_t *f_ps)
++ssize_t iio_buffer_read_wrapper(struct kiocb *iocb, struct iov_iter *to)
  {
--	struct occ_client *client = file->private_data;
-+	struct occ_client *client = iocb->ki_filp->private_data;
-+	size_t len = iov_iter_count(to);
- 	ssize_t rc = 0;
+-	struct iio_dev_buffer_pair *ib = filp->private_data;
++	struct iio_dev_buffer_pair *ib = iocb->ki_filp->private_data;
+ 	struct iio_buffer *rb = ib->buffer;
  
- 	if (!client)
-@@ -126,7 +126,7 @@ static ssize_t occ_read(struct file *file, char __user *buf, size_t len,
+ 	/* check if buffer was opened through new API */
+ 	if (test_bit(IIO_BUSY_BIT_POS, &rb->flags))
+ 		return -EBUSY;
  
- 	/* Grab how much data we have to read */
- 	rc = min(len, client->data_size - client->read_offset);
--	if (copy_to_user(buf, client->buffer + client->read_offset, rc))
-+	if (!copy_to_iter_full(client->buffer + client->read_offset, rc, to))
- 		rc = -EFAULT;
- 	else
- 		client->read_offset += rc;
-@@ -137,10 +137,10 @@ static ssize_t occ_read(struct file *file, char __user *buf, size_t len,
- 	return rc;
+-	return iio_buffer_read(filp, buf, n, f_ps);
++	return vfs_read_iter(iocb, to, iio_buffer_read);
  }
  
--static ssize_t occ_write(struct file *file, const char __user *buf,
--			 size_t len, loff_t *offset)
-+static ssize_t occ_write(struct kiocb *iocb, struct iov_iter *from)
+-ssize_t iio_buffer_write_wrapper(struct file *filp, const char __user *buf,
+-				 size_t n, loff_t *f_ps)
++ssize_t iio_buffer_write_wrapper(struct kiocb *iocb, struct iov_iter *from)
  {
--	struct occ_client *client = file->private_data;
-+	struct occ_client *client = iocb->ki_filp->private_data;
-+	size_t len = iov_iter_count(from);
- 	size_t rlen, data_length;
- 	ssize_t rc;
- 	u8 *cmd;
-@@ -163,7 +163,7 @@ static ssize_t occ_write(struct file *file, const char __user *buf,
- 	 * bytes 1-2: data length (msb first)
- 	 * bytes 3-n: data
- 	 */
--	if (copy_from_user(&cmd[1], buf, len)) {
-+	if (!copy_from_iter_full(&cmd[1], len, from)) {
- 		rc = -EFAULT;
- 		goto done;
- 	}
-@@ -209,8 +209,8 @@ static int occ_release(struct inode *inode, struct file *file)
- static const struct file_operations occ_fops = {
+-	struct iio_dev_buffer_pair *ib = filp->private_data;
++	struct iio_dev_buffer_pair *ib = iocb->ki_filp->private_data;
+ 	struct iio_buffer *rb = ib->buffer;
+ 
+ 	/* check if buffer was opened through new API */
+ 	if (test_bit(IIO_BUSY_BIT_POS, &rb->flags))
+ 		return -EBUSY;
+ 
+-	return iio_buffer_write(filp, buf, n, f_ps);
++	return vfs_write_iter(iocb, from, iio_buffer_write);
+ }
+ 
+ __poll_t iio_buffer_poll_wrapper(struct file *filp,
+@@ -1537,8 +1537,8 @@ static int iio_buffer_chrdev_release(struct inode *inode, struct file *filep)
+ static const struct file_operations iio_buffer_chrdev_fileops = {
  	.owner = THIS_MODULE,
- 	.open = occ_open,
--	.read = occ_read,
--	.write = occ_write,
-+	.read_iter = occ_read,
-+	.write_iter = occ_write,
- 	.release = occ_release,
+ 	.llseek = noop_llseek,
+-	.read = iio_buffer_read,
+-	.write = iio_buffer_write,
++	.read_iter = iio_buffer_read_iter,
++	.write_iter = iio_buffer_write_iter,
+ 	.poll = iio_buffer_poll,
+ 	.release = iio_buffer_chrdev_release,
  };
- 
-diff --git a/drivers/fsi/fsi-sbefifo.c b/drivers/fsi/fsi-sbefifo.c
-index 0a98517f3959..0fe2e4730b4b 100644
---- a/drivers/fsi/fsi-sbefifo.c
-+++ b/drivers/fsi/fsi-sbefifo.c
-@@ -864,6 +864,7 @@ static ssize_t sbefifo_user_read(struct file *file, char __user *buf,
- 	mutex_unlock(&user->file_lock);
- 	return rc;
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index 4302093b92c7..6bf6818e505c 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -369,18 +369,17 @@ static void __exit iio_exit(void)
  }
-+FOPS_READ_ITER_HELPER(sbefifo_user_read);
  
- static ssize_t sbefifo_user_write(struct file *file, const char __user *buf,
- 				  size_t len, loff_t *offset)
-@@ -927,6 +928,7 @@ static ssize_t sbefifo_user_write(struct file *file, const char __user *buf,
- 	/* And that's it, we'll issue the command on a read */
- 	return rc;
- }
-+FOPS_WRITE_ITER_HELPER(sbefifo_user_write);
- 
- static int sbefifo_user_release(struct inode *inode, struct file *file)
+ #if defined(CONFIG_DEBUG_FS)
+-static ssize_t iio_debugfs_read_reg(struct file *file, char __user *userbuf,
+-			      size_t count, loff_t *ppos)
++static ssize_t iio_debugfs_read_reg(struct kiocb *iocb, struct iov_iter *to)
  {
-@@ -1004,8 +1006,8 @@ static long sbefifo_user_ioctl(struct file *file, unsigned int cmd, unsigned lon
- static const struct file_operations sbefifo_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= sbefifo_user_open,
--	.read		= sbefifo_user_read,
--	.write		= sbefifo_user_write,
-+	.read_iter	= sbefifo_user_read_iter,
-+	.write_iter	= sbefifo_user_write_iter,
- 	.release	= sbefifo_user_release,
- 	.unlocked_ioctl = sbefifo_user_ioctl,
- };
-diff --git a/drivers/fsi/fsi-scom.c b/drivers/fsi/fsi-scom.c
-index 61dbda9dbe2b..1e8e5dcdfb39 100644
---- a/drivers/fsi/fsi-scom.c
-+++ b/drivers/fsi/fsi-scom.c
-@@ -310,11 +310,11 @@ static int get_scom(struct scom_device *scom, uint64_t *value,
- 				 >> SCOM_STATUS_PIB_RESP_SHIFT);
- }
- 
--static ssize_t scom_read(struct file *filep, char __user *buf, size_t len,
--			 loff_t *offset)
-+static ssize_t scom_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct scom_device *scom = filep->private_data;
-+	struct scom_device *scom = iocb->ki_filp->private_data;
- 	struct device *dev = &scom->fsi_dev->dev;
-+	size_t len = iov_iter_count(to);
- 	uint64_t val;
- 	int rc;
- 
-@@ -325,32 +325,32 @@ static ssize_t scom_read(struct file *filep, char __user *buf, size_t len,
- 	if (scom->dead)
- 		rc = -ENODEV;
- 	else
--		rc = get_scom(scom, &val, *offset);
-+		rc = get_scom(scom, &val, iocb->ki_pos);
- 	mutex_unlock(&scom->lock);
- 	if (rc) {
- 		dev_dbg(dev, "get_scom fail:%d\n", rc);
- 		return rc;
- 	}
- 
--	rc = copy_to_user(buf, &val, len);
-+	rc = !copy_to_iter_full(&val, len, to);
- 	if (rc)
- 		dev_dbg(dev, "copy to user failed:%d\n", rc);
- 
- 	return rc ? rc : len;
- }
- 
--static ssize_t scom_write(struct file *filep, const char __user *buf,
--			  size_t len, loff_t *offset)
-+static ssize_t scom_write(struct kiocb *iocb, struct iov_iter *from)
- {
- 	int rc;
--	struct scom_device *scom = filep->private_data;
-+	struct scom_device *scom = iocb->ki_filp->private_data;
- 	struct device *dev = &scom->fsi_dev->dev;
-+	size_t len = iov_iter_count(from);
- 	uint64_t val;
- 
- 	if (len != sizeof(uint64_t))
- 		return -EINVAL;
- 
--	rc = copy_from_user(&val, buf, len);
-+	rc = !copy_from_iter_full(&val, len, from);
- 	if (rc) {
- 		dev_dbg(dev, "copy from user failed:%d\n", rc);
- 		return -EINVAL;
-@@ -360,7 +360,7 @@ static ssize_t scom_write(struct file *filep, const char __user *buf,
- 	if (scom->dead)
- 		rc = -ENODEV;
- 	else
--		rc = put_scom(scom, val, *offset);
-+		rc = put_scom(scom, val, iocb->ki_pos);
- 	mutex_unlock(&scom->lock);
- 	if (rc) {
- 		dev_dbg(dev, "put_scom failed with:%d\n", rc);
-@@ -514,8 +514,8 @@ static const struct file_operations scom_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= scom_open,
- 	.llseek		= scom_llseek,
--	.read		= scom_read,
--	.write		= scom_write,
-+	.read_iter	= scom_read,
-+	.write_iter	= scom_write,
- 	.unlocked_ioctl	= scom_ioctl,
- };
- 
-diff --git a/drivers/fsi/i2cr-scom.c b/drivers/fsi/i2cr-scom.c
-index cb7e02213032..e4b3a8310775 100644
---- a/drivers/fsi/i2cr-scom.c
-+++ b/drivers/fsi/i2cr-scom.c
-@@ -32,41 +32,42 @@ static loff_t i2cr_scom_llseek(struct file *file, loff_t offset, int whence)
- 	return offset;
- }
- 
--static ssize_t i2cr_scom_read(struct file *filep, char __user *buf, size_t len, loff_t *offset)
-+static ssize_t i2cr_scom_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct i2cr_scom *scom = filep->private_data;
-+	struct i2cr_scom *scom = iocb->ki_filp->private_data;
-+	size_t len = iov_iter_count(to);
- 	u64 data;
+-	struct iio_dev *indio_dev = file->private_data;
++	struct iio_dev *indio_dev = iocb->ki_filp->private_data;
+ 	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
+ 	unsigned int val = 0;
  	int ret;
  
- 	if (len != sizeof(data))
- 		return -EINVAL;
+-	if (*ppos > 0)
+-		return simple_read_from_buffer(userbuf, count, ppos,
+-					       iio_dev_opaque->read_buf,
+-					       iio_dev_opaque->read_buf_len);
++	if (iocb->ki_pos > 0)
++		return simple_copy_to_iter(iio_dev_opaque->read_buf,
++					   &iocb->ki_pos,
++					   iio_dev_opaque->read_buf_len, to);
  
--	ret = fsi_master_i2cr_read(scom->i2cr, (u32)*offset, &data);
-+	ret = fsi_master_i2cr_read(scom->i2cr, (u32)iocb->ki_pos, &data);
- 	if (ret)
- 		return ret;
+ 	ret = indio_dev->info->debugfs_reg_access(indio_dev,
+ 						  iio_dev_opaque->cached_reg_addr,
+@@ -394,22 +393,21 @@ static ssize_t iio_debugfs_read_reg(struct file *file, char __user *userbuf,
+ 						sizeof(iio_dev_opaque->read_buf),
+ 						"0x%X\n", val);
  
--	ret = copy_to_user(buf, &data, len);
-+	ret = !copy_to_iter_full(&data, len, to);
- 	if (ret)
- 		return ret;
- 
- 	return len;
+-	return simple_read_from_buffer(userbuf, count, ppos,
+-				       iio_dev_opaque->read_buf,
+-				       iio_dev_opaque->read_buf_len);
++	return simple_copy_to_iter(iio_dev_opaque->read_buf, &iocb->ki_pos,
++				       iio_dev_opaque->read_buf_len, to);
  }
  
--static ssize_t i2cr_scom_write(struct file *filep, const char __user *buf, size_t len,
--			       loff_t *offset)
-+static ssize_t i2cr_scom_write(struct kiocb *iocb, struct iov_iter *from)
+-static ssize_t iio_debugfs_write_reg(struct file *file,
+-		     const char __user *userbuf, size_t count, loff_t *ppos)
++static ssize_t iio_debugfs_write_reg(struct kiocb *iocb, struct iov_iter *from)
  {
--	struct i2cr_scom *scom = filep->private_data;
-+	struct i2cr_scom *scom = iocb->ki_filp->private_data;
-+	size_t len = iov_iter_count(from);
- 	u64 data;
+-	struct iio_dev *indio_dev = file->private_data;
++	struct iio_dev *indio_dev = iocb->ki_filp->private_data;
+ 	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
++	size_t count = iov_iter_count(from);
+ 	unsigned int reg, val;
+ 	char buf[80];
  	int ret;
  
- 	if (len != sizeof(data))
- 		return -EINVAL;
+ 	count = min(count, sizeof(buf) - 1);
+-	if (copy_from_user(buf, userbuf, count))
++	if (!copy_from_iter_full(buf, count, from))
+ 		return -EFAULT;
  
--	ret = copy_from_user(&data, buf, len);
-+	ret = !copy_from_iter(&data, len, from);
- 	if (ret)
- 		return ret;
+ 	buf[count] = 0;
+@@ -439,8 +437,8 @@ static ssize_t iio_debugfs_write_reg(struct file *file,
  
--	ret = fsi_master_i2cr_write(scom->i2cr, (u32)*offset, data);
-+	ret = fsi_master_i2cr_write(scom->i2cr, (u32)iocb->ki_pos, data);
- 	if (ret)
- 		return ret;
- 
-@@ -77,8 +78,8 @@ static const struct file_operations i2cr_scom_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= simple_open,
- 	.llseek		= i2cr_scom_llseek,
--	.read		= i2cr_scom_read,
--	.write		= i2cr_scom_write,
-+	.read_iter	= i2cr_scom_read,
-+	.write_iter	= i2cr_scom_write,
+ static const struct file_operations iio_debugfs_reg_fops = {
+ 	.open = simple_open,
+-	.read = iio_debugfs_read_reg,
+-	.write = iio_debugfs_write_reg,
++	.read_iter = iio_debugfs_read_reg,
++	.write_iter = iio_debugfs_write_reg,
  };
  
- static int i2cr_scom_probe(struct device *dev)
+ static void iio_device_unregister_debugfs(struct iio_dev *indio_dev)
+@@ -1839,8 +1837,8 @@ static long iio_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ static const struct file_operations iio_buffer_fileops = {
+ 	.owner = THIS_MODULE,
+ 	.llseek = noop_llseek,
+-	.read = iio_buffer_read_outer_addr,
+-	.write = iio_buffer_write_outer_addr,
++	.read_iter = iio_buffer_read_outer_addr,
++	.write_iter = iio_buffer_write_outer_addr,
+ 	.poll = iio_buffer_poll_addr,
+ 	.unlocked_ioctl = iio_ioctl,
+ 	.compat_ioctl = compat_ptr_ioctl,
+diff --git a/drivers/iio/industrialio-event.c b/drivers/iio/industrialio-event.c
+index 910c1f14abd5..b6ce1ac1d1ca 100644
+--- a/drivers/iio/industrialio-event.c
++++ b/drivers/iio/industrialio-event.c
+@@ -167,6 +167,7 @@ static ssize_t iio_event_chrdev_read(struct file *filep,
+ 
+ 	return copied;
+ }
++FOPS_READ_ITER_HELPER(iio_event_chrdev_read);
+ 
+ static int iio_event_chrdev_release(struct inode *inode, struct file *filep)
+ {
+@@ -182,7 +183,7 @@ static int iio_event_chrdev_release(struct inode *inode, struct file *filep)
+ }
+ 
+ static const struct file_operations iio_event_chrdev_fileops = {
+-	.read =  iio_event_chrdev_read,
++	.read_iter =  iio_event_chrdev_read_iter,
+ 	.poll =  iio_event_poll,
+ 	.release = iio_event_chrdev_release,
+ 	.owner = THIS_MODULE,
 -- 
 2.43.0
 
