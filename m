@@ -1,17 +1,17 @@
-Return-Path: <linux-kernel+bounces-140502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E1138A157F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:27:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F25388A1738
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:30:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFBD21C2108A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:27:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BAFD1F25166
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:30:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F3714D707;
-	Thu, 11 Apr 2024 13:24:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FECF14F10E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:30:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
 	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="egsevXKs"
 Received: from smtpcmd13147.aruba.it (smtpcmd13147.aruba.it [62.149.156.147])
