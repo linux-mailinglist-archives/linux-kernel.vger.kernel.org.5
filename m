@@ -1,180 +1,149 @@
-Return-Path: <linux-kernel+bounces-141635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3910D8A20FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 130758A2100
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:36:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C43E1C21DE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:35:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E9AA1C238BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:36:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2222239FFD;
-	Thu, 11 Apr 2024 21:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CD7D3B295;
+	Thu, 11 Apr 2024 21:36:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cV6397BP"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ynSWdYrh"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30243717B
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:35:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61BAD2E3EF
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:36:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712871349; cv=none; b=l8lE9+suLjSfIsn/ABG7Ke4aunjrDtLBeqybF8bKCO+B3+ph42rTLxoZFp5ZIx7PWA2j698UlQ0gLektGOmZdaqik94mkiAOCV3J/N3r+YXpBxnO93Dj7iWFsLbW1i7jHku/H+56Cy34gy0Ss6aQYLq6y6X5k8bOQWmwx4tutrQ=
+	t=1712871369; cv=none; b=awSes+WaQnVSiqNDHly0lp3P985dnoazAtDPGUo/JtLMSEShVvGUYys+Bl6hXX/MS64pOngPmtGWsdHP2Gy7chWdYiripX9Bij/7NlS0adKF9fCten4Bw5KK3qwWVuRfCRhDdOi7PhTi7wKPXHPPpLNeRJKXpyPQAN8SHsjI7cs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712871349; c=relaxed/simple;
-	bh=v3LeDlsw4fd8KemXMGl/9RHF7axUWT3DS7QRxveZaQE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pPTHE8T4aS/AOF8Nz9NejyzPggeN20SakP+JmNuhlcl1ACaFbjt8ljflhOTf5kt76+uQatUbRcJyvD2J+6lb3KUcFZstNp4eoSy/5yYlyd2YqwTmEnvSW1C2pXz05D/fwV1x5cNXPTi/Q+jCH6eilefgLdE2XcfpM+NxieWzWoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cV6397BP; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-516d0161e13so361830e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:35:47 -0700 (PDT)
+	s=arc-20240116; t=1712871369; c=relaxed/simple;
+	bh=i20kViclVoU910FhgD4850gArucbSEi6mTUIiZzLMgE=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Kd0z453v/mSgqZnBMXQ3AL7DpEBU/3YquBVv2W5ijpewb4C/kAkHnxTUADip+C+oB01Z14Xqr08KNWxw0SOfe+gOU0TjvNhBSZnqv5NkdM8lt/2pBlJXxB58ya+yxjWNgq4mkgL7+auhsETsh9eVCkVrC32jLo4a2/tItIb0I6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ynSWdYrh; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6187588d2a7so4968597b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:36:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712871346; x=1713476146; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5T4iIVALzwPejh7d3S8enGWCx89OQW+dXm19IHXNjAc=;
-        b=cV6397BPh82Y+brjJR0wOpAYAyFVGPZJKbyxp/UXiggum72apciI+zRZajujY5QRV7
-         OgT7V5dXxibyUhBM06MxxDf4d8n6S3aHxYzHWODlO+hICIWIOTftZvd3abJHFLFbD8+o
-         YbfQgT1sxvoF5wla/GuU1OUbY9KUk9G7WBzYYwvTKBRNw1txRZtzZRpsFiMApAHmDxdo
-         NGmQaB2m3II1FqFCOtLMKic6lZnIVW+a5xhaSzkATdIcrmugn/AkzCN6NJtI4ABPqVmq
-         TlIKYLQC2Zf6RIyVU4yyuNRQjrxHvoYghs8PuowTxs6wFZC13FPF8VXTSf3PuIrsJHSH
-         Qxsw==
+        d=google.com; s=20230601; t=1712871367; x=1713476167; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2t/yhHavryfHLTVYj1u8BqInFBj/5xKyOtI6EEMp6kY=;
+        b=ynSWdYrh7C6tSJa/muuA7UmUKl1SrAO4dl9VTraIazRA0fAU4boYpYKqWvMkcf2qM1
+         20c/NHUmL0YkeyUx2PcwKKQ8QqX/m8MlicYrjAwDQ79ZKxFjoPdM7t0TgJKDEwIdmYcL
+         OjeG+75zPFRpqlxnkh+rhM/3p+Y0jr0wlzn+s1pnrkv7Evzf+JN9sWKFcw0xnOCId6MO
+         U99m4uy6t9K4xFKn/EtgeMpnSIcYYUf8jn8rUO1DzFVRFpmfezK+ri3aTFq7TYrNdP3T
+         agHvYTjZcdj9a4z/io6ELqVhGdlMhZGphWy4vRolOru/uL6HHkkWFdhBJZXWJSDJoHy3
+         z+IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712871346; x=1713476146;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5T4iIVALzwPejh7d3S8enGWCx89OQW+dXm19IHXNjAc=;
-        b=mYRHVn95LhYHIiHbwSr7iBnsH/1ijVtK1uW+YG76E3cl0HuM8PaAV1PvaOyvanw1Fi
-         Ih+y81WyK5B3MbAh1JsYk0PNj2BkER3UTg935kVSvzK6oRqf1M/ml58X49TWtCGmJV5A
-         VfGk6FRH5KzzUOcKqv5Pn1xJ22FFfzCR2JSVwTcDywv5QFaw3LsTft+bYgdJDBbbAldK
-         h9N4FHBCsv3xbRMldzQxujdAGVTGEjsnZ5+WPrNgx8NzgILKpb5OPl29d6lLV/xQqtwV
-         n0IvV8Zd/VxJHrJmdaqS043CdxUrssw0fl3t/rzCykMmZ+SAZVQE7+DLYHRXDPhR1Lyf
-         wLAg==
-X-Forwarded-Encrypted: i=1; AJvYcCWnM8DS/aExaOLXqG6Scqn1kIXzZdKc2SZHf6t1d3pHYYcm+oOOLd8BTlkwzAieVLTmT69dL0K3j55tG4LKVS0oXdPtck0CZ3MufWIO
-X-Gm-Message-State: AOJu0Yz4Ui9x0hzMN4jRxwwrbBw4/pWvoINm3caolizBFzVLDLdE4QrI
-	ZGd/aaxl3ri4vI63skhsUr5H0vvOZYm5Ati+6fUcqPM66q4JxQoQt0RgAZxu4X0=
-X-Google-Smtp-Source: AGHT+IHhPtTM6MDSSMKdH0nmnBGG027XDSi/RtJTrsfiuHSI3CqYwZHdp/t6eiZd5QJ+PqzWtrodtQ==
-X-Received: by 2002:a2e:8084:0:b0:2d8:5af3:bb43 with SMTP id i4-20020a2e8084000000b002d85af3bb43mr511195ljg.41.1712871345700;
-        Thu, 11 Apr 2024 14:35:45 -0700 (PDT)
-Received: from [172.30.204.35] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id z4-20020a2e8e84000000b002d8e42c1b5fsm314682ljk.42.2024.04.11.14.35.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 14:35:45 -0700 (PDT)
-Message-ID: <321aa524-ab64-458a-b4c0-70294cc5467d@linaro.org>
-Date: Thu, 11 Apr 2024 23:35:43 +0200
+        d=1e100.net; s=20230601; t=1712871367; x=1713476167;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2t/yhHavryfHLTVYj1u8BqInFBj/5xKyOtI6EEMp6kY=;
+        b=aw3fzSt5fngYO0UNiasDkGDeT3iTjCpQK7iA25KIzo1sNsXuIq6nhGVY3MCtZirylA
+         jrgGm+3qtjlHBttsPF08mts2NMpsbbssKVAYcew5NZTCQf9FwMEZAw7SWHQF1wmGe9f7
+         L4P/i61NlILtGeElD57sGSpN269laJTtwuT8omi+n3z9Ye4j3DXXGVaAeUUktcjvHtoU
+         4x2XBMFqnGBZw5Z6N4iJMbBjtzv2jV4rpRVVQAzB63iC5v1n1LbqIQW7GXAfUxTqReF5
+         GjtRF116Nyn3+xK5yesfGuf+ApBb1SHXV7P98KByPqIRXkkPWVMEN7mtquyVBIFW0eoH
+         nTEg==
+X-Forwarded-Encrypted: i=1; AJvYcCUWjWWhLxojgV+vyJibCR16f6p4xwiy4u+pCeqmHrrLNpYit9KXjZW5+gm1dta/R4HMUmlmq3zFTbcS9fEsEuHmNz/FG1454HZQZGrL
+X-Gm-Message-State: AOJu0YyVJarqg4iPIO4FkDl5DKz2MEEYPO48clkT9qkz5FW8c5eP4UtI
+	p2l6a803D5EGqw0dnIu1nEBKV7vXlwTM47srEJvrW8aMmSUfklvF5klCb85+H3CtJsjHw0cZW+1
+	Fsg==
+X-Google-Smtp-Source: AGHT+IHOnBnVhBGz76zEM73ew/BnSB+dc6+KJZYmdSqjoxgILellc26j5dgSKSbo3MKBLVz44DL/AVjXFss=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:ca56:0:b0:615:80c8:94f3 with SMTP id
+ m83-20020a0dca56000000b0061580c894f3mr161673ywd.6.1712871367327; Thu, 11 Apr
+ 2024 14:36:07 -0700 (PDT)
+Date: Thu, 11 Apr 2024 14:36:05 -0700
+In-Reply-To: <20240126085444.324918-25-xiong.y.zhang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/6] drm/msm/adreno: Implement SMEM-based speed bin
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>, Rob Clark <robdclark@gmail.com>,
- Abhinav Kumar <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
- Neil Armstrong <neil.armstrong@linaro.org>
-References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
- <20240405-topic-smem_speedbin-v1-4-ce2b864251b1@linaro.org>
- <scvwfj44z3wpp7phvesfwjuv5awtlkwby2vvrpaq4i5fircrt3@i3ebya4iymf3>
- <730d6b9e-d6b4-41fd-bef3-b1fa6e914a35@linaro.org>
- <33qyr6cfruczllvavvwtbkyuqxmtao4bya4j32zhjx6ni27c6d@rxjehsw54l32>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <33qyr6cfruczllvavvwtbkyuqxmtao4bya4j32zhjx6ni27c6d@rxjehsw54l32>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <20240126085444.324918-25-xiong.y.zhang@linux.intel.com>
+Message-ID: <ZhhXxV3Z1UHLp1M1@google.com>
+Subject: Re: [RFC PATCH 24/41] KVM: x86/pmu: Zero out unexposed
+ Counters/Selectors to avoid information leakage
+From: Sean Christopherson <seanjc@google.com>
+To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
+Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
+	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
+	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
+	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
+	chao.gao@intel.com
+Content-Type: text/plain; charset="us-ascii"
 
-
-
-On 4/10/24 21:26, Dmitry Baryshkov wrote:
-> On Wed, Apr 10, 2024 at 01:42:33PM +0200, Konrad Dybcio wrote:
->>
->>
->> On 4/6/24 05:23, Dmitry Baryshkov wrote:
->>> On Fri, Apr 05, 2024 at 10:41:32AM +0200, Konrad Dybcio wrote:
->>>> On recent (SM8550+) Snapdragon platforms, the GPU speed bin data is
->>>> abstracted through SMEM, instead of being directly available in a fuse.
->>>>
->>>> Add support for SMEM-based speed binning, which includes getting
->>>> "feature code" and "product code" from said source and parsing them
->>>> to form something that lets us match OPPs against.
->>>>
->>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->>>> ---
->>
->> [...]
->>
->>>
->>>> +	}
->>>> +
->>>> +	ret = qcom_smem_get_product_code(&pcode);
->>>> +	if (ret) {
->>>> +		dev_err(dev, "Couldn't get product code from SMEM!\n");
->>>> +		return ret;
->>>> +	}
->>>> +
->>>> +	/* Don't consider fcode for external feature codes */
->>>> +	if (fcode <= SOCINFO_FC_EXT_RESERVE)
->>>> +		fcode = SOCINFO_FC_UNKNOWN;
->>>> +
->>>> +	*speedbin = FIELD_PREP(ADRENO_SKU_ID_PCODE, pcode) |
->>>> +		    FIELD_PREP(ADRENO_SKU_ID_FCODE, fcode);
->>>
->>> What about just asking the qcom_smem for the 'gpu_bin' and hiding gory
->>> details there? It almost feels that handling raw PCODE / FCODE here is
->>> too low-level and a subject to change depending on the socinfo format.
->>
->> No, the FCODE & PCODE can be interpreted differently across consumers.
+On Fri, Jan 26, 2024, Xiong Zhang wrote:
+> From: Mingwei Zhang <mizhang@google.com>
 > 
-> That's why I wrote about asking for 'gpu_bin'.
+> Zero out unexposed counters/selectors because even though KVM intercepts
+> all accesses to unexposed PMU MSRs, it does pass through RDPMC instruction
+> which allows guest to read all GP counters and fixed counters. So, zero out
+> unexposed counter values which might contain critical information for the
+> host.
 
-I'd rather keep the magic GPU LUTs inside the adreno driver, especially
-since not all Snapdragons feature Adreno, but all Adrenos are on
-Snapdragons (modulo a2xx but I refuse to make design decisions treating
-these equally to e.g. a6xx)
+This belongs in the previous patch, it's effectively a bug fix.  I appreciate
+the push for finer granularity, but introducing a blatant bug and then immediately
+fixing it goes too far.
 
+> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> ---
+>  arch/x86/kvm/vmx/pmu_intel.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 > 
->>
->>>
->>>> +
->>>> +	return ret;
->>>>    }
->>>>    int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->>>> @@ -1098,9 +1129,9 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
->>>>    			devm_pm_opp_set_clkname(dev, "core");
->>>>    	}
->>>> -	if (adreno_read_speedbin(dev, &speedbin) || !speedbin)
->>>> +	if (adreno_read_speedbin(adreno_gpu, dev, &speedbin) || !speedbin)
->>>>    		speedbin = 0xffff;
->>>> -	adreno_gpu->speedbin = (uint16_t) (0xffff & speedbin);
->>>
->>> the &= 0xffff should probably go to the adreno_read_speedbin / nvmem
->>> case. WDYT?
->>
->> Ok, I can keep it, though realistically if this ever does anything
->> useful, it likely means the dt is wrong
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index f79bebe7093d..4b4da7f17895 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -895,11 +895,27 @@ static void intel_restore_pmu_context(struct kvm_vcpu *vcpu)
+>  		wrmsrl(MSR_ARCH_PERFMON_EVENTSEL0 + i, pmc->eventsel);
+>  	}
+>  
+> +	/*
+> +	 * Zero out unexposed GP counters/selectors to avoid information leakage
+> +	 * since passthrough PMU does not intercept RDPMC.
+
+Zeroing the selectors is unnecessary.  KVM still intercepts MSR_CORE_PERF_GLOBAL_CTRL,
+so just ensure the PMCs that aren't exposed the guest are globally enabled.
+
+> +	 */
+> +	for (i = pmu->nr_arch_gp_counters; i < kvm_pmu_cap.num_counters_gp; i++) {
+> +		wrmsrl(MSR_IA32_PMC0 + i, 0);
+> +		wrmsrl(MSR_ARCH_PERFMON_EVENTSEL0 + i, 0);
+> +	}
+> +
+>  	wrmsrl(MSR_CORE_PERF_FIXED_CTR_CTRL, pmu->fixed_ctr_ctrl);
+>  	for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
+>  		pmc = &pmu->fixed_counters[i];
+>  		wrmsrl(MSR_CORE_PERF_FIXED_CTR0 + i, pmc->counter);
+>  	}
+> +
+> +	/*
+> +	 * Zero out unexposed fixed counters to avoid information leakage
+> +	 * since passthrough PMU does not intercept RDPMC.
+
+I would call out that RDPMC interception is all or nothing, i.e. KVM can't
+selectively intercept _some_ PMCs, and the MSR bitmaps don't apply to RDPMC.
+
+> +	 */
+> +	for (i = pmu->nr_arch_fixed_counters; i < kvm_pmu_cap.num_counters_fixed; i++)
+> +		wrmsrl(MSR_CORE_PERF_FIXED_CTR0 + i, 0);
+>  }
+>  
+>  struct kvm_pmu_ops intel_pmu_ops __initdata = {
+> -- 
+> 2.34.1
 > 
-> Yes, but if DT is wrong, we should probably fail in a sensible way. I
-> just wanted to point out that previously we had this &0xffff, while your
-> patch silently removes it.
-
-Right, but I don't believe it actually matters.. If that AND ever did
-anything, this was a silent failure with garbage data passed in anyway.
-
-If you really insist, I can remove it separately.
-
-Konrad
 
