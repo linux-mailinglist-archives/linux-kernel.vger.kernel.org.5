@@ -1,60 +1,57 @@
-Return-Path: <linux-kernel+bounces-140619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE6EC8A16F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:18:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACC0F8A16EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:17:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CBD0B29B20
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:16:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 694D1289442
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:17:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83AAD14EC4C;
-	Thu, 11 Apr 2024 14:15:47 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE1A14F10B
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:15:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C54ED14EC60;
+	Thu, 11 Apr 2024 14:15:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Z3MFGY6E"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011E814F9F2;
+	Thu, 11 Apr 2024 14:15:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712844947; cv=none; b=lOqrKF4ZBi/GlQ5M7KUSjHFqGUAen6sKkL3LfICbs6swvVHT6E9/IZj40PURkU/ip5/JpInzXP+w4lUOqT0R9orbFLQRj7QCSypT1/VBdYUvdAAjoJv33NKmMNO5+N1p9rae+NnIeDJnKiAs3k3cIAwU3sNLTWB6MRzVsrfoHJ0=
+	t=1712844949; cv=none; b=T/KKaJl9TbMLPU+ErmFxIGqJuIYC02/H8QqOQ2fTgvKmy34zW0pxEJuh93y8qgatblejwyrCFSuItLvLydfKvzur/ywrhPpMGp7KsveMsPQkEFNaZqi239W9a0ShTJhPMMRaKItyRgt3pYWPerSBfWzC1V67w9aq49dErC6m/Ps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712844947; c=relaxed/simple;
-	bh=ddUj8LERv2D+oA+42bVqj+XXkwRPZ6pGmvFDhHrgfc0=;
+	s=arc-20240116; t=1712844949; c=relaxed/simple;
+	bh=f3WgQJepv3I935Ux7AoYeAMSMCATyrlhQv6obAngiD4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m7Vcr67ZgPz8genc3JHX89avjFO4IkZeYBrWsDGcoAtatkg0ut1CQKmKmF3urJcihyc3KDnaofVL1jjT9B4qhXjDuQJmheQ75+MZPY1sPetq2L5qDOzrQwQ5EbSVUeDAZFYMIJR1WhEZH9aBgFwQRt2NGXYQ5IPeV19ZTy9adq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BDBDA339;
-	Thu, 11 Apr 2024 07:16:14 -0700 (PDT)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 70B133F64C;
-	Thu, 11 Apr 2024 07:15:42 -0700 (PDT)
-Date: Thu, 11 Apr 2024 15:15:40 +0100
-From: Dave Martin <Dave.Martin@arm.com>
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
-	shameerali.kolothum.thodi@huawei.com,
-	D Scott Phillips OS <scott@os.amperecomputing.com>,
-	carl@os.amperecomputing.com, lcherian@marvell.com,
-	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
-	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-	dfustini@baylibre.com, amitsinght@marvell.com,
-	David Hildenbrand <david@redhat.com>,
-	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: Re: [PATCH v1 12/31] x86/resctrl: Move max_{name,data}_width into
- resctrl code
-Message-ID: <ZhfwjBJPeTvO04BL@e133380.arm.com>
-References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-13-james.morse@arm.com>
- <fc4ee516-54b7-47cb-b881-00ce10d311a9@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=G7RILUnDRSQqLAkf5B4EPXAzE27CQXV6+7jFLtRfMzIHBy2Srp7UpaQg2cF03bDcpX4pOwBKTbjWgc+Y9xUrSfV80rp199HhkSEUe9mztZqR3EmBchQHBS3XEkxKkIxa1IRZAdep58bEMmr1kdDGI9yePEs4kRielkKalIyRxUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Z3MFGY6E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E421AC113CE;
+	Thu, 11 Apr 2024 14:15:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712844948;
+	bh=f3WgQJepv3I935Ux7AoYeAMSMCATyrlhQv6obAngiD4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Z3MFGY6E+LA/q+FY4yR6DIj3BbXWlUkNJxoiDLE5cmzOjMHbOHOqCMhD2ho8gG0XR
+	 A2sBNmNjaY1t9FhE7E6oJKDYcX/wvL7AOVOV2acVU0XteJsICmQquYEgPDTGgpsmXS
+	 3la3jKLhTTCbywbgj4Vh5Cr8vn5Jybcp3nZUrt2Y=
+Date: Thu, 11 Apr 2024 16:15:45 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Pavel Machek <pavel@denx.de>
+Cc: elfring@users.sourceforge.net, stable@vger.kernel.org,
+	patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+	allen.lkml@gmail.com, broonie@kernel.org
+Subject: Re: [PATCH 6.1 00/83] 6.1.86-rc1 review
+Message-ID: <2024041136-demystify-destitute-cfd5@gregkh>
+References: <20240411095412.671665933@linuxfoundation.org>
+ <ZhfQjMUvOI1QXtDN@duo.ucw.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,35 +60,24 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fc4ee516-54b7-47cb-b881-00ce10d311a9@intel.com>
+In-Reply-To: <ZhfQjMUvOI1QXtDN@duo.ucw.cz>
 
-On Mon, Apr 08, 2024 at 08:19:15PM -0700, Reinette Chatre wrote:
-> Hi James,
+On Thu, Apr 11, 2024 at 01:59:08PM +0200, Pavel Machek wrote:
+> Hi!
 > 
-> On 3/21/2024 9:50 AM, James Morse wrote:
-> > @@ -2595,6 +2601,12 @@ static int schemata_list_add(struct rdt_resource *r, enum resctrl_conf_type type
-> >  	if (cl > max_name_width)
-> >  		max_name_width = cl;
-> >  
-> > +	/*
-> > +	 * Choose a width for the resource data based on the resource that has
-> > +	 * widest name and cbm.
+> > This is the start of the stable review cycle for the 6.1.86 release.
+> > There are 83 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
 > 
-> Please check series to ensure upper case is used for acronyms.
+> > Markus Elfring <elfring@users.sourceforge.net>
+> >     batman-adv: Improve exception handling in batadv_throw_uevent()
+> > 
+> > Markus Elfring <elfring@users.sourceforge.net>
+> >     batman-adv: Return directly after a failed batadv_dat_select_candidates() in batadv_dat_forward_data()
+> >
+> 
+> Questionable cleanups, untested, do not fix any bug, please drop.
 
-[...]
-
-> Reinette
-
-This patch is just moving existing code around AFAICT.  See:
-commit de016df88f23 ("x86/intel_rdt: Update schemata read to show data in tabular format")
-
-Since no new usage of any term is being introduced here, can it be
-left as-is?
-
-There seem to be other uses of "cbm" with this sense in the resctrl
-code already.
-
-Cheers
----Dave
+good point, now dropped.
 
