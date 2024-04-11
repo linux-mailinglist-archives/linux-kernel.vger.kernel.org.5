@@ -1,140 +1,216 @@
-Return-Path: <linux-kernel+bounces-141437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC07B8A1E3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:30:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AA128A1E44
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:31:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E44C28C9E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:30:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D23151F253EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:31:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC72B46BA0;
-	Thu, 11 Apr 2024 18:00:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA4F824A6;
+	Thu, 11 Apr 2024 18:02:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SD+uR9et"
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IlHKgg+D"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCCCE3F9CB;
-	Thu, 11 Apr 2024 18:00:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A51C1E892;
+	Thu, 11 Apr 2024 18:02:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712858446; cv=none; b=rUC9d0TW2Kw7M6JrVNynXZdQ/U40aDh2I6B+3bjTV9RHK/AUa8ob60ke7gTThkyAgILdCivmthKFuO1I3OR5uvGCOePJb3qjqo31sLNckhzbf8V87awcHUG4GNFbB9/uw3doa+Bt0PbqFK6C50MBt7qMiYSDWOPeOwCJ8BieU48=
+	t=1712858575; cv=none; b=X25fekGtZilgD2zflJ86HnlxRCP/QdGWa6yKPRIjskFZ7nzW7BsUEGazbmO9LaBFLl4XsATlg0OpSjACmRxuid/mEHrYyS3q/52sfn9XayIxu9aXKtL1WO4ot1cAtfBdLl8YmSjs0sKQroTi7WZVezbQmSDOiNTYW7PE9lGolLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712858446; c=relaxed/simple;
-	bh=hzu/tgfoKXjQQl4hxSegoZdRQDXbBvEYoIa+xvPtr6w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qiMbhqvIU6M+6BuoLsbtPuRUCO4YIEW4G/58Jwqs8w1xyOIOHUIMyK6Z2Zy1QYkDuP8Je7W1UZCy/gEJ44d4z6txfTl0Zgp8dVKwodbvx2K8c8AHyE0qpZoX+vUmK34hRpyi1q4OyG888pP0gAjhwZxlBDZ4uh0U5GavZxRDDnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SD+uR9et; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5a522ae3747so42057eaf.1;
-        Thu, 11 Apr 2024 11:00:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712858444; x=1713463244; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tKygXtwLt+wS+6rSBXso592J8xpcFDOvcPaDL6jZh3Q=;
-        b=SD+uR9et6Kb/+yml+Yf9wTYW/FG6WhOaW17WaB4eZ7dHDxSJRHfPsSGav+M8beEQRj
-         KRBw/fIKt+16leHTc+6iQKfnti1bb5+3DtcOlJk9JdRKvzV7N99fscgr08TGtU47AMDN
-         YGNBbzOrY41JGpkbqzwYWDtgYygU+kWe6eCqNXG3m3TT3svGhaGhAbo6Ext8pBB+R51n
-         Jm0Z/XcSwKus3iZQnw4zCXsnVoTBqxNAEDUU2BSIWjWduOx/v4xo3Q77oyQVq9/Eg8xS
-         7A8zd1BtmqYlxoxldOsmPUw6Tuco6A9bt5omaM53IcCpcNrvG+FSwn3F1qnsWRGc16ut
-         xFNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712858444; x=1713463244;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tKygXtwLt+wS+6rSBXso592J8xpcFDOvcPaDL6jZh3Q=;
-        b=TEgs8OMUd1xJJkH7s/FIpk4KZOPto1MIQh79fFUoe9aAjDPoLKvGKn5EXgowbkkwNK
-         d9gMfRJnU7AB92p1JfacfrisCcSuPeMCPOQgb+G2mDcIgKcw9InnXEmbFQsNlevqHSSd
-         B5NVmOhjlPPzkFRaR2mhBYwRLPcVchBlGU/YoV/qQZdMDF4x4heFcCr8jFotNo1KVuik
-         6XrnaWzACkemA1Zrn+NRu2pRMOejf/1lwmJywOT8Mnpv0AjxFqE+IsK0hlmpNxbKbODA
-         +uu2YdgQ0+KolbpBLR3uNYb7O7iMw39HMB9YgUa6RW9s5SCyUqFm0f5JxAMquJaU4YbQ
-         nlAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVOr8aOHAEQ/hVyHts5KaDOPl/ILk9yDemiRjM4zPzjws9yVHdtJtmxOijvIotElJToAj0fTXOGq19jrhmzEoATGFAotNP/zQ5lD4cLrbFLviO3rsMkKCzyNYTrCj91RNRtq7Srgs1pa5QyGUCRM6ixxHv2EA4sSdZzLa1eZuNCaEKj3A==
-X-Gm-Message-State: AOJu0YxkhCjwwU0Oa6bsX03KyVh7L5Cg2aLyQ0+y6TlsfpWocEfUnYKM
-	WDICsYudERdqBdDXuojwSsuhE+aZCmPYwaAEQAoSvR9Sv8pvYZHxCoefFd0yvPQ=
-X-Google-Smtp-Source: AGHT+IHIfdBtJkYCx5rE45KA+2haYhADyvJn3GY3HPvd1BH3bdEIc+Uy9kKIPRg1ZCeBSxTh+j2QEQ==
-X-Received: by 2002:a05:6820:270d:b0:5aa:344e:f419 with SMTP id db13-20020a056820270d00b005aa344ef419mr176666oob.2.1712858443708;
-        Thu, 11 Apr 2024 11:00:43 -0700 (PDT)
-Received: from [192.168.7.169] (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
-        by smtp.gmail.com with ESMTPSA id di12-20020a0568201e8c00b005a4bcb155basm407718oob.23.2024.04.11.11.00.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 11:00:43 -0700 (PDT)
-Message-ID: <bcb03c7d-f566-11cc-21e2-47e5c5a0776a@gmail.com>
-Date: Thu, 11 Apr 2024 13:00:41 -0500
+	s=arc-20240116; t=1712858575; c=relaxed/simple;
+	bh=Y053hDNWDdlbJKBy+lcyQdE5G+tWn3OYigsAOCjGI2o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bV+/qVfCy9C7as5//Qxu8IMdO45CCX1EROCi1OIH5Vmo0DQ1giUztxYwAo8cZ4H3ILfTSI9hlYNkdE4I9DfiESpELh6VeFchuy+L5JtAx75LZgGAiCnIzfe0qHizLfCIJrYXPnd4Var+RtBUloikG+0Hv+ZSqVTFsDqI3yCOAhk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IlHKgg+D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 824FEC072AA;
+	Thu, 11 Apr 2024 18:02:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712858574;
+	bh=Y053hDNWDdlbJKBy+lcyQdE5G+tWn3OYigsAOCjGI2o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IlHKgg+DA76Z0el5BLc3rN5PNpOY4yjbfGZWw9CSxcLHd9Lqqr3eoHns/FznGEI9m
+	 lrNBtvtjqn0DF3T6tu/loQbTxP01dY2r1Gt5ivenxQSyfpbRGsxC8dkl228WZLVNm7
+	 k0DCElk+AANvACFK86ZxCCpG7c9+xYDbXw3DTQSedXRlB0L003tl+JM1mlUxppotHa
+	 1FbDtGiu1/q3kzFBBXrKiXXPKXE4xIRoOnAZ3AbiImQ2kNVyCMWzmTUb9uMCgl+0/5
+	 Wej3FgCChUWaVL4cD+Z2EaYO7FTR5sGrxbee1BfiA96J75oSg4PWtMXkjrAR/cihYs
+	 k5keqvmfsxaZA==
+Date: Thu, 11 Apr 2024 15:02:51 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Ravi Bangoria <ravi.bangoria@amd.com>,
+	Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: Re: BISECTED: perf test -v "Test data symbol" failing on Intel
+ Hybrid systems
+Message-ID: <Zhgly2eQ5vk4FdEE@x1>
+References: <ZhWTIuyB9p1ORbQH@x1>
+ <CAP-5=fXR0HmxUBvTbPN4GPdqFftYAGsgYHm81+TgmGY7Yh4gww@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 3/7] dt-bindings: PCI: qcom: Add IPQ9574 PCIe
- controller
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240409190833.3485824-1-mr.nuke.me@gmail.com>
- <20240409190833.3485824-4-mr.nuke.me@gmail.com>
- <dbee301e-2e31-4db0-877a-96c972ea4bca@linaro.org>
-From: mr.nuke.me@gmail.com
-In-Reply-To: <dbee301e-2e31-4db0-877a-96c972ea4bca@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fXR0HmxUBvTbPN4GPdqFftYAGsgYHm81+TgmGY7Yh4gww@mail.gmail.com>
 
+On Tue, Apr 09, 2024 at 02:28:43PM -0700, Ian Rogers wrote:
+> On Tue, Apr 9, 2024 at 12:12 PM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > root@x1:~# grep -m1 "model name" /proc/cpuinfo
+> > model name      : 13th Gen Intel(R) Core(TM) i7-1365U
+> > root@x1:~# uname -a
+> > Linux x1 6.7.11-200.fc39.x86_64 #1 SMP PREEMPT_DYNAMIC Wed Mar 27 16:50:39 UTC 2024 x86_64 GNU/Linux
+> > root@x1:~#
+> >
+> > Bisected down to:
+> >
+> > commit 5752c20f3787c9bc9ff9411a70b3d41add85518c
+> > Author: Ravi Bangoria <ravi.bangoria@amd.com>
+> > Date:   Thu Jun 15 10:47:00 2023 +0530
+> >
+> >     perf mem: Scan all PMUs instead of just core ones
+> >
+> >     Scanning only core PMUs is not sufficient on platforms like AMD since
+> >     perf mem on AMD uses IBS OP PMU, which is independent of core PMU.
+> >     Scan all PMUs instead of just core PMUs. There should be negligible
+> >     performance overhead because of scanning all PMUs, so we should be okay.
+> >
+> >     Reviewed-by: Ian Rogers <irogers@google.com>
+> >     Signed-off-by: Ravi Bangoria <ravi.bangoria@amd.com>
+> >
+> > root@x1:~# perf -v ; perf test -v "Test data symbol"
+> > perf version 6.4.rc3.g5752c20f3787
+> > 111: Test data symbol                                                :
+> > --- start ---
+> > test child forked, pid 522202
+> > Recording workload...
+> > malloc_consolidate(): invalid chunk size
+> > /home/acme/libexec/perf-core/tests/shell/test_data_symbol.sh: line 60: 522208 Aborted                 (core dumped) perf mem record --all-user -o ${PERF_DATA} -- $TEST_PROGRAM
+> > /home/acme/libexec/perf-core/tests/shell/test_data_symbol.sh: line 62: kill: (522208) - No such process
+> > Cleaning up files...
+> > test child finished with -1
+> > ---- end ----
+> > Test data symbol: FAILED!
+> > root@x1:~# perf -v ; perf test -v "Test data symbol"
+> > perf version 6.8.g63c22868714b
+> > 116: Test data symbol:
+> > --- start ---
+> > test child forked, pid 526540
+> >  954300-954339 l buf1
+> > perf does have symbol 'buf1'
+> > Recording workload...
+> > Waiting for "perf record has started" message
+> > OK
+> > Cleaning up files...
+> > ---- end(-1) ----
+> > 116: Test data symbol                                                : FAILED!
+> > root@x1:~#
+> >
+> > Further details:
+> >
+> > (gdb) run mem record --all-user sleep 1
+> > Starting program: /root/bin/perf mem record --all-user sleep 1
+> >
+> >
+> > This GDB supports auto-downloading debuginfo from the following URLs:
+> >   <https://debuginfod.fedoraproject.org/>
+> > Enable debuginfod for this session? (y or [n]) y
+> > Debuginfod has been enabled.
+> > To make this setting permanent, add 'set debuginfod enabled on' to .gdbinit.
+> > [Thread debugging using libthread_db enabled]
+> > Using host libthread_db library "/lib64/libthread_db.so.1".
+> >
+> > Program received signal SIGSEGV, Segmentation fault.
+> > 0x0000000000611860 in perf_mem_events__record_args (rec_argv=0xea8280, argv_nr=0x7fffffffd6bc, rec_tmp=0xebbda0, tmp_nr=0x7fffffffd6c0) at util/mem-events.c:213
+> > 213                                     s = perf_mem_events__name(j, pmu->name);
+> > (gdb) bt
+> > #0  0x0000000000611860 in perf_mem_events__record_args (rec_argv=0xea8280, argv_nr=0x7fffffffd6bc, rec_tmp=0xebbda0, tmp_nr=0x7fffffffd6c0) at util/mem-events.c:213
+> > #1  0x000000000045c47f in __cmd_record (argc=2, argv=0x7fffffffe420, mem=0x7fffffffda20) at builtin-mem.c:152
+> > #2  0x000000000045d69b in cmd_mem (argc=4, argv=0x7fffffffe420) at builtin-mem.c:514
+> > #3  0x00000000004ffe38 in run_builtin (p=0xe08aa0 <commands+672>, argc=5, argv=0x7fffffffe420) at perf.c:323
+> > #4  0x00000000005000ac in handle_internal_command (argc=5, argv=0x7fffffffe420) at perf.c:377
+> > #5  0x00000000005001fb in run_argv (argcp=0x7fffffffe23c, argv=0x7fffffffe230) at perf.c:421
+> > #6  0x00000000005004e8 in main (argc=5, argv=0x7fffffffe420) at perf.c:537
+> > (gdb) list -5
+> > file: "arch/x86/util/mem-events.c", line number: 208, symbol: "???"
+> > Line number 203 out of range; arch/x86/util/mem-events.c has 93 lines.
+> > (gdb)
 
-
-On 4/9/24 15:08, Krzysztof Kozlowski wrote:
-> On 09/04/2024 21:08, Alexandru Gagniuc wrote:
->> IPQ9574 has PCIe controllers which are almost identical to IPQ6018.
->> The only difference is that the "iface" clock is not required.
->> Document this difference along with the compatible string.
->>
->> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
->> ---
->>   .../devicetree/bindings/pci/qcom,pcie.yaml    | 34 +++++++++++++++++++
->>   1 file changed, 34 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
->> index cf9a6910b542..1915bea580d3 100644
->> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
->> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
->> @@ -26,6 +26,7 @@ properties:
->>             - qcom,pcie-ipq8064-v2
->>             - qcom,pcie-ipq8074
->>             - qcom,pcie-ipq8074-gen3
->> +          - qcom,pcie-ipq9574
->>             - qcom,pcie-msm8996
->>             - qcom,pcie-qcs404
->>             - qcom,pcie-sdm845
->> @@ -397,6 +398,37 @@ allOf:
->>               - const: axi_m_sticky # AXI Master Sticky reset
->>               - const: axi_s_sticky # AXI Slave Sticky reset
->>   
+> >
+> >
+> > (gdb) list -5
+> > file: "arch/x86/util/mem-events.c", line number: 208, symbol: "???"
+> > Line number 203 out of range; arch/x86/util/mem-events.c has 93 lines.
+> > (gdb) p j
+> > $1 = 0
+> > (gdb) p pmu->name
+> > Cannot access memory at address 0x64ffffff9c
+> > (gdb)
+> >
+> > 183 int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
+> > 184                                  char **rec_tmp, int *tmp_nr)
+> > 185 {
+> > 186         int i = *argv_nr, k = 0;
+> > 187         struct perf_mem_event *e;
+> > 188         struct perf_pmu *pmu;
+> > 189         char *s;
+> > 190
+> > 191         for (int j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
+> > 192                 e = perf_mem_events__ptr(j);
+> > 193                 if (!e->record)
+> > 194                         continue;
+> > 195
+> > 196                 if (perf_pmus__num_mem_pmus() == 1) {
+> > 197                         if (!e->supported) {
+> > 198                                 pr_err("failed: event '%s' not supported\n",
+> > 199                                        perf_mem_events__name(j, NULL));
+> > 200                                 return -1;
+> > 201                         }
+> > 202
+> > 203                         rec_argv[i++] = "-e";
+> > 204                         rec_argv[i++] = perf_mem_events__name(j, NULL);
+> > 205                 } else {
+> > 206                         if (!e->supported) {
+> > 207                                 perf_mem_events__print_unsupport_hybrid(e, j);
+> > 208                                 return -1;
+> > 209                         }
+> > 210
+> > 211                         while ((pmu = perf_pmus__scan(pmu)) != NULL) {
+> > 212                                 rec_argv[i++] = "-e";
+> > 213                                 s = perf_mem_events__name(j, pmu->name);
+> > 214                                 if (s) {
+> > 215                                         s = strdup(s);
 > 
-> Where do you constrain the reg?
+> This looks like something that address/memory sanitizers could help with.
 
-I didn't realize that was also required -- the make checks should have 
-picked this up too? I might be invoking the tests incorrectly.
+I'm I forgetting something?
 
-I should add the ipq9574 in the same list as ipq8074-gen3 and ipq6018, 
-correct?
+⬢[acme@toolbox perf-tools-next]$ rm -rf ~/libexec/perf-core/ ; make -k CORESIGHT=1 EXTRA_CFLAGS="-fsanitize=address" O=/tmp/build/$(basename $PWD)/ -C tools/perf install-bin
 
-Alex
+root@x1:~# perf test -v 116
+116: Test data symbol:
+--- start ---
+test child forked, pid 614595
+ f87540-f87579 l buf1
+perf does have symbol 'buf1'
+Recording workload...
+Waiting for "perf record has started" message
+OK
+Cleaning up files...
+---- end(-1) ----
+116: Test data symbol                                                : FAILED!
+root@x1:~# ldd ~/bin/perf | grep asan
+	libasan.so.8 => /lib64/libasan.so.8 (0x00007f8eb7a00000)
+root@x1:~#
 
