@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 006F28A1AA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:02:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DF7D8A1B40
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:26:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAE7B1F225F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:02:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E43EB28E7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:03:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B22C1ED745;
-	Thu, 11 Apr 2024 15:41:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C9A951C42;
+	Thu, 11 Apr 2024 15:41:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="E3oiHP3S"
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="gbfW83uV"
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 411DC1ECE9B
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:41:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 228AE1ED743
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:41:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850107; cv=none; b=Rr+17pu8z1WGK77CylzRplODR6yTNQGY3Wd238sSArx26j+Xvge7HesaEPz9DffTf2u1NzExHHUalZsY5KpsN3ervKq1GjEYirQTdWZ7VSf3vpfdUmYQlE6qXXpd8oQnYOhVvGFP9SkZiQuzkIykIzXZ14wQOm6Bfv7ZYuC9tSg=
+	t=1712850109; cv=none; b=D0Hic0ZDUAWdlFSzo6fc7g8i1a7qC5MT1OSH739EovnH/7mCvV3tEQR3C3O3zdPn7YAE6aH6uHhFLZ54BgypBktFuJ+/wMCtucVQ8aufKZnVap1QFOGt3KFzNi9Lk+Qdi8j05HJeSdFLmtwejKsjMsXApbdVgmVeWf7GWl1Wtpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850107; c=relaxed/simple;
-	bh=erK2BM1EXWu8fh0GVCQPxgDC/O8W8kwBJDQytB0f6WQ=;
+	s=arc-20240116; t=1712850109; c=relaxed/simple;
+	bh=F3ghVNHYkYDwqG/ic0r458tZE0jAzsc5iHJB06NOZ8U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MILNC2XDD2tkFSQHnoi+qHPg2M0Vc4HzTAvUhw5oogQX5Ir1EwQxRmFxfc3zv6yDwz8c8W9SEYirr29n5GZ4e0qvSrZKU6O2oN6fM7gUJsExmcf50ED0y+W13nVMntcfaSVW/REgBQvNLr/G9K0j1AGEAE4+0bfZ9HPZZokIt9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=E3oiHP3S; arc=none smtp.client-ip=209.85.166.178
+	 MIME-Version; b=EOfO/3pfp+japTmuOr4FIsYwl9EpxC+ikw6aqik6LE3QMvIaxy3qZpka7DW8VHEFqFccsENfZTbHnbdopi5gqjUugaeg5nV00H6tYvhd70SP7CdcAe98BDg/a2dSogXKr7kN17cgy2vxosxtiQ7AxuCo0+4dM9NevNMwut0P3hI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=gbfW83uV; arc=none smtp.client-ip=209.85.166.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-36a34b68277so121235ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:41:46 -0700 (PDT)
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso58244539f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:41:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850105; x=1713454905; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850107; x=1713454907; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=a0/MNPvZYsE3TLDRaRWepSsrve407yXns6KhuDOnqm0=;
-        b=E3oiHP3SfYDhASgJe+z2ltV5Bn0CqkqpJXgY5e0jsG+jFUMD9mpPG18MrAOkVu7DRT
-         mxIm9Wn3OokYnYH1atGY8iEGnyRyevmn4CVSwT0gfsnth6P/mqv/HyIrq6lY6ILXQpUL
-         hY6JGupCj8F7iTtfDH84Yyo6O9h/nlG/gC/M6HUHcc+aQDBZdHqqiYMsjzIZYT4L7b/Z
-         k5tfuxFgxv1GbcukIL8MC0a3dsp0CNUaDe1ALF1r64JMXR6jLo0KS4hulxT2P8kz9StQ
-         vFgXRqsD/ePW0LJ6UXa0Ngk4nlxUVvS9ZgpdznJ6XT2/lKiAvm5SO0mRTX0KwjvYc2Jw
-         MKrA==
+        bh=uA8b89WlMoOLmxCUVeReNqk0nF3IewFPUR21ZUsnOJU=;
+        b=gbfW83uVOSKAL5Gbv0Ske443ZkAfIoKGM4POwnqgL6gaWkM5tsj+ocrX9ko9nTF3mT
+         OX5cPJdcToBRPApBPJDCZfaTHmpjrg6xmZPFmdD/qImhgLTDLBsbbP2+xqSvpT4TOH2T
+         VIapH3lMOR3a9Pa4dZUWa1fY/rtm9WL/rfp2mIorD1YjzJF8LolzOdsoXs+VNrIxy2ZU
+         g/w3tJocJRi5qWnLE5t1DI2OEcr4w5CHgqwBhW1nU/FbF+uayy9lIlZVbQMxeGCw9V05
+         Q3A/joKAeuU7TzZwuGPpsL87EM1t4I0O4Qr6Vm55Ib+3cPS98g5F88/dd8C+KhOm4izR
+         YvFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850105; x=1713454905;
+        d=1e100.net; s=20230601; t=1712850107; x=1713454907;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a0/MNPvZYsE3TLDRaRWepSsrve407yXns6KhuDOnqm0=;
-        b=LeUxXtzeDZ96ypNXT4mpzjl/N0ZhKjhJsFiUk6NAMT8LuewV1G6gagbVmMQa31hpzA
-         jjLoPX9c5I8YriPKrN3WN1NKMsy7+4rwOUcjqF8Bs67oxa9XniZx1nj1t+/iAH9Sb4Yk
-         DrL0++ra0Ic3hD6D7jXOmm0uJ0bZj5IsnLfMM/nXKg2VVlMXDamJMNW2WN2UF1qlVtJJ
-         NJnz8vJcXPvWvK3qSG643IDDc6ae99vZiR3hSzGFlx0YCNXPyf5nidc5n4nYcH500it2
-         wlIi1vLlIj0yOmdUUIjzqB5xYNdyb8zpWBQjwwYtMHtxjnRtdBaGFBdmEJ/K10wyBI0H
-         rMMw==
-X-Gm-Message-State: AOJu0YwwfhebJQtkRWrg1qw/SXRls28BrTZf7mBYbjjl+RF1hor73JlG
-	Swthh0IphcXBc7AG5KistnFpngZrCvKCe2cb1h71KqZxmk9e2tCJVZK/6Bp9FisNbhztandD+Qf
-	c
-X-Google-Smtp-Source: AGHT+IFaBsxCYQV/5GJPT46EUxKlAoKzT1TtuvBEx8YvJmGvLl1AkbHtdrf2m12HHK0iX10cDYZJ2w==
-X-Received: by 2002:a05:6602:4ed7:b0:7d5:ddc8:504d with SMTP id gk23-20020a0566024ed700b007d5ddc8504dmr201259iob.0.1712850105192;
-        Thu, 11 Apr 2024 08:41:45 -0700 (PDT)
+        bh=uA8b89WlMoOLmxCUVeReNqk0nF3IewFPUR21ZUsnOJU=;
+        b=wW7sWwEDpjc5cGvPJGXut83Dba/MfMBqkYCsrgl+a5co0ibzOT4Y+G/36T1BcPR0dr
+         dDVXhkpxHd+QovLTWgBVcTNtGUWaIxGllFosaYGYTDlz/phnXKAPzN0geaFwbKidIsGx
+         FkqyIATNggV4wMnNTger4+pvh3Rru3eF5MvznTRgRh85uIjhep+pZlMn+gR9aI3R2hl8
+         9WA8fyNeBvNwZRXPnWpzIOwSyiuPr2tpKponk7xD010b3utG4PUrmhGSOO2BLSS88A87
+         rf4QE3wy0nSfUvPzu4CBZ+FqtbWjUXAQgD2Rf2Xlc91wZIYD0P+Khse0qBCak8LCCLwE
+         ETZw==
+X-Gm-Message-State: AOJu0YwmxEe3eT191+WTxdYFrn9ZHvJfs9K2a4mOb+Q6lZwvSaCVjcqC
+	/dQ+rmXO6aZ0WAEul/NSVFwZJrAQKaW30bMl2nJJ0J2UQUrSqPCWz6QnjCni92r41LoHrV86gMs
+	B
+X-Google-Smtp-Source: AGHT+IHPvt/AYoYLfkqFDedbhmcM+3L30/G0CY83mVPWCLvHbZ5xJpXfzUP81JxaGmI/tyevhmKYIw==
+X-Received: by 2002:a6b:cd08:0:b0:7d5:fe3e:90ff with SMTP id d8-20020a6bcd08000000b007d5fe3e90ffmr212554iog.0.1712850106945;
+        Thu, 11 Apr 2024 08:41:46 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.41.43
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.41.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:41:43 -0700 (PDT)
+        Thu, 11 Apr 2024 08:41:45 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 361/437] hwmon: mr75203: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:18:21 -0600
-Message-ID: <20240411153126.16201-362-axboe@kernel.dk>
+Subject: [PATCH 362/437] hwmon: acbel-fsg032: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:18:22 -0600
+Message-ID: <20240411153126.16201-363-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,58 +85,42 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/hwmon/mr75203.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+ drivers/hwmon/pmbus/acbel-fsg032.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/hwmon/mr75203.c b/drivers/hwmon/mr75203.c
-index 50a8b9c3f94d..a2de0954b4e6 100644
---- a/drivers/hwmon/mr75203.c
-+++ b/drivers/hwmon/mr75203.c
-@@ -182,26 +182,24 @@ struct pvt_device {
- 	u32			ip_freq;
+diff --git a/drivers/hwmon/pmbus/acbel-fsg032.c b/drivers/hwmon/pmbus/acbel-fsg032.c
+index e0c55fd8f3a6..cc8fec9d1ea1 100644
+--- a/drivers/hwmon/pmbus/acbel-fsg032.c
++++ b/drivers/hwmon/pmbus/acbel-fsg032.c
+@@ -15,10 +15,9 @@
+ 
+ #define ACBEL_MFR_FW_REVISION	0xd9
+ 
+-static ssize_t acbel_fsg032_debugfs_read(struct file *file, char __user *buf, size_t count,
+-					 loff_t *ppos)
++static ssize_t acbel_fsg032_debugfs_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	struct i2c_client *client = file->private_data;
++	struct i2c_client *client = iocb->ki_filp->private_data;
+ 	u8 data[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
+ 	char out[8];
+ 	int rc;
+@@ -28,13 +27,12 @@ static ssize_t acbel_fsg032_debugfs_read(struct file *file, char __user *buf, si
+ 		return rc;
+ 
+ 	rc = snprintf(out, sizeof(out), "%*phN\n", min(rc, 3), data);
+-	return simple_read_from_buffer(buf, count, ppos, out, rc);
++	return simple_copy_to_iter(out, &iocb->ki_pos, rc, to);
+ }
+ 
+ static const struct file_operations acbel_debugfs_ops = {
+ 	.llseek = noop_llseek,
+-	.read = acbel_fsg032_debugfs_read,
+-	.write = NULL,
++	.read_iter = acbel_fsg032_debugfs_read,
+ 	.open = simple_open,
  };
  
--static ssize_t pvt_ts_coeff_j_read(struct file *file, char __user *user_buf,
--				   size_t count, loff_t *ppos)
-+static ssize_t pvt_ts_coeff_j_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct pvt_device *pvt = file->private_data;
-+	struct pvt_device *pvt = iocb->ki_filp->private_data;
- 	unsigned int len;
- 	char buf[13];
- 
- 	len = scnprintf(buf, sizeof(buf), "%d\n", pvt->ts_coeff.j);
- 
--	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-+	return simple_copy_to_iter(buf, &iocb->ki_pos, len, to);
- }
- 
--static ssize_t pvt_ts_coeff_j_write(struct file *file,
--				    const char __user *user_buf,
--				    size_t count, loff_t *ppos)
-+static ssize_t pvt_ts_coeff_j_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct pvt_device *pvt = file->private_data;
-+	struct pvt_device *pvt = iocb->ki_filp->private_data;
-+	size_t count = iov_iter_count(from);
- 	int ret;
- 
--	ret = kstrtos32_from_user(user_buf, count, 0, &pvt->ts_coeff.j);
-+	ret = kstrtos32_from_iter(from, count, 0, &pvt->ts_coeff.j);
- 	if (ret)
- 		return ret;
- 
-@@ -209,8 +207,8 @@ static ssize_t pvt_ts_coeff_j_write(struct file *file,
- }
- 
- static const struct file_operations pvt_ts_coeff_j_fops = {
--	.read = pvt_ts_coeff_j_read,
--	.write = pvt_ts_coeff_j_write,
-+	.read_iter = pvt_ts_coeff_j_read,
-+	.write_iter = pvt_ts_coeff_j_write,
- 	.open = simple_open,
- 	.owner = THIS_MODULE,
- 	.llseek = default_llseek,
 -- 
 2.43.0
 
