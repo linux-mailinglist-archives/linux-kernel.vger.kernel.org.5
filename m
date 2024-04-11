@@ -1,59 +1,78 @@
-Return-Path: <linux-kernel+bounces-140554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B54D88A1622
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:46:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9C348A1627
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:47:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6CFD1C22159
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:46:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 077A01C2223E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:47:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C647150999;
-	Thu, 11 Apr 2024 13:40:02 +0000 (UTC)
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB5B150989;
+	Thu, 11 Apr 2024 13:41:38 +0000 (UTC)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6AB314F9F2;
-	Thu, 11 Apr 2024 13:39:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.78.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D9614D2A7;
+	Thu, 11 Apr 2024 13:41:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712842801; cv=none; b=hlIng1xdjTAbk7v+6q7dtIkec4OT2WIIbS30ef82lxw6/lktsJx625RxC9Kelv/rcL8plaDWw1W+/koBImqYDa25DepbY73qpEJylTeNZ0vWbtTxoArf252yfmXbUJRxlsAKWFPseNIsVZYPO482EZFAgsa0Pwnxf9HFI9zgGC0=
+	t=1712842897; cv=none; b=MwlaisBRcEU61w8+MCyVZRxU/JELOFael0iA5eEb5tiWr+xVVVSXzl4D9zk3+Dtvplh42GqIs2qDtd9kg0R00W+FkXJMIbynTbA+NGOV5cbclGpW1pXlrzX/J/yKoDCoKRRCgABVzscpPMfplQJTQhXhoAlC6d5+XPpiUPGEc7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712842801; c=relaxed/simple;
-	bh=UuA5dm6koMgua9DkhFOmmz7faxSDfh7lrYIohOK6E+4=;
+	s=arc-20240116; t=1712842897; c=relaxed/simple;
+	bh=NKtJkO9gtfDh7lsMKghwFIyyj7BihvxBcp+VJqVXnr0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LA5wpeGwMe43VQCzrI9HwhMHeuMhF0QTrI89NMScnypuwjGoYITSGMPESOcetmftlReZ5C2G0SB3FSLfZhuufTjuryjIxqX7U4w7nlbSUWD3A7k1wATtEcgUfXeNunNSoet5pIvKafby5Mny+/j7JeOxWXG/dSV5aD1XvDTc2C0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.78.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 5FE7E28013A52;
-	Thu, 11 Apr 2024 15:39:50 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 4AE723FFCDE; Thu, 11 Apr 2024 15:39:50 +0200 (CEST)
-Date: Thu, 11 Apr 2024 15:39:50 +0200
-From: Lukas Wunner <lukas@wunner.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	linuxppc-dev@lists.ozlabs.org, linux-acpi@vger.kernel.org,
-	Jean Delvare <jdelvare@suse.com>, Ard Biesheuvel <ardb@kernel.org>,
-	linux-efi@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>,
-	Zhi Wang <zhi.wang.linux@gmail.com>,
-	intel-gvt-dev@lists.freedesktop.org,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	linux-pm@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-	linux-modules@vger.kernel.org
-Subject: Re: [PATCH 0/2] Deduplicate bin_attribute simple read() callbacks
-Message-ID: <ZhfoJkIxJvRal8aF@wunner.de>
-References: <cover.1712410202.git.lukas@wunner.de>
- <2024041128-huddling-humped-4304@gregkh>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JbIIddgTFQZk9xpxqJtGLyALOkjDp83uk8WxTmvZIyBNr6lWJ6hjufKs/0sqf3ntR6GOi16TJhPaFsO5ga3qNB7izam9TrCC+9gUezygLuA1R4HpRH0aABgeHX8C+q2G8TiS0GwaztaXYgB9ym0AofCvsjX479XUr8oIe5GlnQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56845954ffeso10440001a12.2;
+        Thu, 11 Apr 2024 06:41:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712842894; x=1713447694;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UvneUqZfd27xdH7i7ElGM/qtZ3lKBc7X3RH0Dlr3png=;
+        b=Viv03LapGx7sHzM1tR4VYhuG+WggehdXbi3/orekybiztxFzNHkbiv7c2L4ePr84/f
+         MG9Us5Ei+Pt70mTIHfOCQz6gHJGFaJdYxUMECR5tG1P0H3v5R9uhBrNItHZUz7XBVR54
+         9LV1wZ1x9bQRfHmKh0q8f144HFbzithQ0ljrVZVthIuC4O/TNAlfGXD9J3p2bxQSoC7j
+         hxFRDo4/fQiuzmodX19f5OUK0mADRtx8teV8EZiDmOCC+aLHV0gFAaTPQ2I1bB/dsKUV
+         3D7BKd6Bp3SQ+sgFfu64KlMq+O0ZMMkUX2yuRu+Dh4QQKhLD8k+0y2I4Ymdf3GRVFJSd
+         Ojwg==
+X-Forwarded-Encrypted: i=1; AJvYcCWQjqkts0hff3dcPJcDzGC/Rndur/02VSsP+WLGcv+82NYxFm9uvl6SarXhUf3pM7agaU3sAHwI0p0g5Z3lmtnw9/Z+EXZ+X1VskQMO09vX77o5YuixgX3Ao269I4I/aUzrEGE/323aTi/ebQXWWWtX9t7OHE8v3xtxXVZDUwukgkjf9uvC+/uZ88rGMQiluG8zd5IkybHGmfo=
+X-Gm-Message-State: AOJu0Yz7YLaTba2dTTlTm4w2QxIzaZMTVAhaj9AV+7+McIk3EmMO3s0s
+	mWjnFhT0he2pYAoqjjVCJ7P0AUNxH2cqJbissk7lTAfhf+6PC7rR
+X-Google-Smtp-Source: AGHT+IFVHCivSmrCJQ/y1EgrRPUwWuulRGSKey7Ag7Jr1OrzqAwr6UvPSa7kMM+1w1xBFvGGvQGbng==
+X-Received: by 2002:a50:8e15:0:b0:56f:e4f7:fbd9 with SMTP id 21-20020a508e15000000b0056fe4f7fbd9mr1606203edw.20.1712842894052;
+        Thu, 11 Apr 2024 06:41:34 -0700 (PDT)
+Received: from gmail.com (fwdproxy-lla-004.fbsv.net. [2a03:2880:30ff:4::face:b00c])
+        by smtp.gmail.com with ESMTPSA id j1-20020aa7de81000000b0056e62321eedsm706414edv.17.2024.04.11.06.41.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 06:41:33 -0700 (PDT)
+Date: Thu, 11 Apr 2024 06:41:30 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: aleksander.lobakin@intel.com, davem@davemloft.net, pabeni@redhat.com,
+	edumazet@google.com, elder@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, nbd@nbd.name,
+	sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
+	lorenzo@kernel.org, taras.chornyi@plvision.eu,
+	ath11k@lists.infradead.org, ath10k@lists.infradead.org,
+	linux-wireless@vger.kernel.org, geomatsi@gmail.com,
+	kvalo@kernel.org, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	quic_jjohnson@quicinc.com, leon@kernel.org,
+	dennis.dalessandro@cornelisnetworks.com,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, idosch@idosch.org
+Subject: Re: [PATCH net-next v5 00/10] allocate dummy device dynamically
+Message-ID: <Zhfoim8HbQGlvbAC@gmail.com>
+References: <20240410131407.3897251-1-leitao@debian.org>
+ <20240411060926.308788bf@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,26 +81,20 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2024041128-huddling-humped-4304@gregkh>
+In-Reply-To: <20240411060926.308788bf@kernel.org>
 
-On Thu, Apr 11, 2024 at 03:07:46PM +0200, Greg Kroah-Hartman wrote:
-> On Sat, Apr 06, 2024 at 03:52:00PM +0200, Lukas Wunner wrote:
-> > For my upcoming PCI device authentication v2 patches, I have the need
-> > to expose a simple buffer in virtual memory as a bin_attribute.
-> > 
-> > It turns out we've duplicated the ->read() callback for such simple
-> > buffers a fair number of times across the tree.
-> > 
-> > So instead of reinventing the wheel, I decided to introduce a common
-> > helper and eliminate all duplications I could find.
-> > 
-> > I'm open to a bikeshedding discussion on the sysfs_bin_attr_simple_read()
-> > name. ;)
+On Thu, Apr 11, 2024 at 06:09:26AM -0700, Jakub Kicinski wrote:
+> On Wed, 10 Apr 2024 06:13:41 -0700 Breno Leitao wrote:
+> >   wifi: ath11k: allocate dummy net_device dynamically
 > 
-> Seems like no one objects, should I just take this through my
-> driver-core tree for 6.10?
+> Sorry Breno, I didn't notice earlier, patch 10 didn't make it
+> to the list. The series wasn't ingested by CI and tested because 
+> of this. Could you repost?
 
-That would be awesome, thank you!
+Thanks for the heads-up. I debugged it and it was my mistake, this is
+how I've sent it.
 
-Lukas
+	git send-email patches/v5-000*
+
+I will repost.
 
