@@ -1,131 +1,91 @@
-Return-Path: <linux-kernel+bounces-141495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BC468A1EFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:57:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94B7D8A1F02
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:59:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BFCB1C237D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:57:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34BAD1F2BA6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:59:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3679112E7F;
-	Thu, 11 Apr 2024 18:56:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xVK/mCOi"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68C7013ADC;
+	Thu, 11 Apr 2024 18:59:16 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 383DF610E
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:56:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23FC56FCC;
+	Thu, 11 Apr 2024 18:59:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712861814; cv=none; b=hh7UbVxtTzQM+vQhtQMcCwcsMYNFstSG5MVZMTZe4hu3MrB3FYYZDiPz9o8/YGhxz2Mo6WwRzik9tfOAw+TUbXbJi7/s8z9tmZOklav/dO5Wq1JqrFsBvL0ql8BFaMFxQVZ2nKpZ70uwSGAoT6iyl2mkLiOq3M5vrPCQQzD1q/A=
+	t=1712861956; cv=none; b=pL4mkfk9A5eJu18Hz4wnqaaoe8J+fuSwCtLGv1yvTDcXb6jFqQiXMSJHb396NLpVEmZzkfuimABct09EwT2Dvjgombv5tF9t0+VSofMKWiuSjto6t6E+6btyfhedaTrvtnkzDUde6HqGcL4B83a+FyXy1kqffo5CW1KPAYX+JUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712861814; c=relaxed/simple;
-	bh=BkM9vYHu+qyeMmH+VUq9zveHIqjsweQCNVJmljUh4Js=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=h4XLbPio+MMnEIzmUc+6MstpI+2y8uZBdEtK/SbptBcIsDu50joZrzQLahqfzk8BXw/sTobB9A9yk48NfJ0kuTTdTTUsptFRNSfffPE+C4OeHU70asOn0g8quyOJtoQoO4MZZlAK72nAgJZEKDd2/LVXbFKGzRVAV5J6JnP1lgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xVK/mCOi; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61836c921a4so1422517b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:56:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712861812; x=1713466612; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yGEHFGSvXh0z03nigzVMI+fVkzOE9PQp+ZJSe40gsQI=;
-        b=xVK/mCOiA/Kb7nCukLZdG+tGFuLS+KvT/053/ZLmHykdecUeTkqS8Yd8aqADJHMszf
-         muJHiSwPdeexhWko6Yt0f/QlM7h9FBPjfJg8RwUmDs0sj/80tKkdNEPtC/JbNvYjp5Pe
-         B8wFm9WuhzeB5cUXtEl8Wpze1dxYr+iDq2J/MbF8eC1btz5UKHDU6d7KDySqXcEo04Dk
-         NkO1mVQ2H/BrQSXjIR+3e9RlX1mvaFhGp2evkA9Vch1o/f5IjmmgN4YTwTWg93fAYloW
-         m4kUQ/wQtABwm+R679sHYdplWvw5mMpKDhe4/bZGCG1h/7rD//gRkI+BIIICnhdl9IVa
-         rX+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712861812; x=1713466612;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yGEHFGSvXh0z03nigzVMI+fVkzOE9PQp+ZJSe40gsQI=;
-        b=CF9nd0iRRjhwJfxJmMc+RT432aF0KLE0R2VNdMUoqCW56NpVuk+36yuhaCG1cqLr9C
-         cyQPm9EdPnljrWvt89imqeuIcRi3cgKWyyrFmO13tRKW7iBFSt4Gj5w4RyMDbdESUOb/
-         RAjDtsDL0ndVTIAlw5KCVfVq7MYZJJyuWCGK3ag9QsO0gCn9XrJLnYoT+6ExzlFG168S
-         ebOiv++IkkSruvDk8eqUkxnFDgTPkOwT5R5QkWV/9KQxJlxc4Q/bpqrBnBf6WPsAgEeZ
-         eGDlrccEAmsqq4G8scL+v/1Fj29LvyaWGhfC0hy42yQgvG4d5A2MUcZ3HbUwb69gqOQX
-         TWcw==
-X-Forwarded-Encrypted: i=1; AJvYcCWYL1BXY6+K9LF96x6WoyRBvpwJ6mrbxBXayXfUbjb4/FpL/3ImiKecZuKu5kCLkqNHSfkzq+fpddmvK9eBlITKpX8mfTx3cPjFNdMr
-X-Gm-Message-State: AOJu0YwyaqDKcHdvrybcpDIUm5b23D+up5AdaMhHO9v99eVSbk9wdaHp
-	ZmWg1q2lQ5f6S27XAqKNiKZEO2nqgfZBuiEwNmbq5CQF+s/XDOAYfwHZvtiH9eXcArM9p9z10Je
-	YZg==
-X-Google-Smtp-Source: AGHT+IEar8TRcdXvMuTPUVFnkSx1JlvfraxiBybj4p1JG6Jg8CcJxmn1OlXaUfN1eRDVQrA+4z/SonB6OCg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:91d4:0:b0:615:32e1:d82c with SMTP id
- i203-20020a8191d4000000b0061532e1d82cmr67605ywg.6.1712861812259; Thu, 11 Apr
- 2024 11:56:52 -0700 (PDT)
-Date: Thu, 11 Apr 2024 11:56:50 -0700
-In-Reply-To: <20240126085444.324918-4-xiong.y.zhang@linux.intel.com>
+	s=arc-20240116; t=1712861956; c=relaxed/simple;
+	bh=C9xbwfIr5SaS2JQtolG722xkhBo+5jZYSdeJKMjHRyc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=L0uQXFtT4tgVo/PeDGwf3TLMUUcBj1q8jbOKaPhcvUP0Z+b3O823PFutX5AspMmAUp2uY5KwBAApWlpNAduL51tYvF9qCQO9QPScwGbgrXMc5so60VmVUCejmDmW0v5/bA94kVBwMlUZeZ52LFD8+kq7TOOdNDIxWeMzSXf4q18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from ip-185-104-138-67.ptr.icomera.net ([185.104.138.67] helo=phil.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1ruzdc-0002Dv-NV; Thu, 11 Apr 2024 20:59:08 +0200
+From: Heiko Stuebner <heiko@sntech.de>
+To: linux-i2c@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ Andi Shyti <andi.shyti@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 13/18] i2c: rk3x: remove printout on handled timeouts
+Date: Thu, 11 Apr 2024 20:59:05 +0200
+Message-ID: <46619727.fMDQidcC6G@phil>
+In-Reply-To: <20240410112418.6400-33-wsa+renesas@sang-engineering.com>
+References:
+ <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
+ <20240410112418.6400-33-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <20240126085444.324918-4-xiong.y.zhang@linux.intel.com>
-Message-ID: <Zhgycg0Bu0kL9D_W@google.com>
-Subject: Re: [RFC PATCH 03/41] perf: Set exclude_guest onto nmi_watchdog
-From: Sean Christopherson <seanjc@google.com>
-To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
-Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
-	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
-	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
-	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com, Xiong Zhang <xiong.y.zhang@intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
 
-On Fri, Jan 26, 2024, Xiong Zhang wrote:
-> From: Xiong Zhang <xiong.y.zhang@intel.com>
+Am Mittwoch, 10. April 2024, 13:24:27 CEST schrieb Wolfram Sang:
+> I2C and SMBus timeouts are not something the user needs to be informed
+> about on controller level. The client driver may know if that really is
+> a problem and give more detailed information to the user. The controller
+> should just pass this information upwards. Remove the printout.
 > 
-> The perf event for NMI watchdog is per cpu pinned system wide event,
-> if such event doesn't have exclude_guest flag, it will be put into
-> error state once guest with passthrough PMU starts, this breaks
-> NMI watchdog function totally.
-> 
-> This commit adds exclude_guest flag for this perf event, so this perf
-> event is stopped during VM running, but it will continue working after
-> VM exit. In this way the NMI watchdog can not detect hardlockups during
-> VM running, it still breaks NMI watchdog function a bit. But host perf
-> event must be stopped during VM with passthrough PMU running, current
-> no other reliable method can be used to replace perf event for NMI
-> watchdog.
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-As mentioned in the cover letter, I think this is backwards, and mediated PMU
-support should be disallowed if kernel-priority things like the watchdog are in
-use.
+Acked-by: Heiko Stuebner <heiko@sntech.de>
 
-Doubly so because this patch affects _everything_, not just systems with VMs
-that have a mediated PMU.
 
-> Signed-off-by: Xiong Zhang <xiong.y.zhang@intel.com>
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
 > ---
->  kernel/watchdog_perf.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/i2c/busses/i2c-rk3x.c | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
-> diff --git a/kernel/watchdog_perf.c b/kernel/watchdog_perf.c
-> index 8ea00c4a24b2..c8ba656ff674 100644
-> --- a/kernel/watchdog_perf.c
-> +++ b/kernel/watchdog_perf.c
-> @@ -88,6 +88,7 @@ static struct perf_event_attr wd_hw_attr = {
->  	.size		= sizeof(struct perf_event_attr),
->  	.pinned		= 1,
->  	.disabled	= 1,
-> +	.exclude_guest  = 1,
->  };
+> diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
+> index 086fdf262e7b..8c7367f289d3 100644
+> --- a/drivers/i2c/busses/i2c-rk3x.c
+> +++ b/drivers/i2c/busses/i2c-rk3x.c
+> @@ -1106,9 +1106,6 @@ static int rk3x_i2c_xfer_common(struct i2c_adapter *adap,
+>  		spin_lock_irqsave(&i2c->lock, flags);
 >  
->  /* Callback function for perf event subsystem */
-> -- 
-> 2.34.1
+>  		if (timeout == 0) {
+> -			dev_err(i2c->dev, "timeout, ipd: 0x%02x, state: %d\n",
+> -				i2c_readl(i2c, REG_IPD), i2c->state);
+> -
+>  			/* Force a STOP condition without interrupt */
+>  			i2c_writel(i2c, 0, REG_IEN);
+>  			val = i2c_readl(i2c, REG_CON) & REG_CON_TUNING_MASK;
 > 
+
+
+
+
 
