@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 922718A1A62
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:50:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF9EE8A1A64
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:50:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B33841C22DEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:50:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96400284FD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:50:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 092F61DA018;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C03E81D9FFE;
 	Thu, 11 Apr 2024 15:40:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="vWllT8Zg"
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="f2pQgJzL"
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE97B1D9FE9
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:40:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5006E1D9FF0
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:40:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850012; cv=none; b=s/PWN94aKPR0qmqR+P0xoRBvvp1U3OI05xN+LAvkRkFuJiym+0CapfdR8Lgi6WB0bwxz74AtSdndTPt4DfxfJnR4KxrM3SsWn+TaZ0liMUzrPNlHRYF2l3Waj3qPRatr0IPZI/3/iyujC+/eXbOM+gP1/v4WDPBk6tX64QSq0BI=
+	t=1712850013; cv=none; b=uvHGf7qvPgBU22v2Ovlxrqcb+IG3dnd6V0cQ0KOD3vCyzqrcqs1do6jbRHJ+kfzC0Sq6AHEjjclaUS9mLKyYPF7uo+cEQpm9bM1A90NO0iTs17M/8Zhg5QLvZYv0Xt20NzxRBfOVbhN0HvgqAaLY50Any0joQkFlEBfxiaVD80k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850012; c=relaxed/simple;
-	bh=81o1xwCWI7QUW1NUuq50pKwEnOx+bczsgQ9nD2Ts4AE=;
+	s=arc-20240116; t=1712850013; c=relaxed/simple;
+	bh=xaPo/E+IHrGYl158KTEbt+Rq4YIWcoKYrAt5fO6c1fM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tRkhmglFEfHKMW6LfriX6rkysJUVEsLZVPwJdby2aSWsVBDmR0cL2oZK8o0u5WK54KzB2QImvEZB8zbY7AjkoMGvirYjtngRoXnv5iLyLEIewWv4mYEc16GHAptEbwBIuWuE3auEJ+SSNc5J3iGAkwzCSMy2fIN4O2MCunVeoPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=vWllT8Zg; arc=none smtp.client-ip=209.85.166.46
+	 MIME-Version; b=aE28s5swn/f1i5dIVvQ1XeDv/unqO9DwEox5NVDr6ztN5GAKyxP7QfWcq5+T28x3/6jZb6j3C9D62Lep3b25lGE7+f5E1/OBo4a2LOJCMP3xAIFnkYuWEJBjh8IHkjnduaVhjEsTvX2maFzhpYPxi1ozdSXi48iyI1kXWqaWA1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=f2pQgJzL; arc=none smtp.client-ip=209.85.166.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7d67d1073easo9873139f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:40:10 -0700 (PDT)
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso58190039f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:40:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850009; x=1713454809; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wuDxFagP4f8c7YjTC6jiq88QiKjLYnfBuV0irVWBJJc=;
-        b=vWllT8ZgEssssroL1Bv/gqM0YyNkEO9kn/0LyQaBO9qUEtTXSdMcshdwltnjn6Bc+i
-         dGllg9eoPauT92GhFoo79Vx1cVFt54ZPAONPi9Ki8BWjZy83sUW4Vf86M5YjmDc+D35v
-         PWbAjHShnMEAxQ9ZH3Xq7oGX0Xq34mV3kSiSWVlSiZrDZJWya4mY3ZGm5xkqSVnjim86
-         swzmYFOwLXBGrr1on3crD0elkU/WOcAg7cM36fFHI1PSKJh/R74YGTKrLmIT1Nm2fMrG
-         83gyeW6nlHAKyfSWnk2NDcIzy1FpUzUyvl0RBegVtjQh205dDkVgzYigjw1BuI+W9dLz
-         tSpg==
+        bh=c2bDHnSOqzvj8tuTT6HXHmHeyHcGyehDT+1ibrSmR/0=;
+        b=f2pQgJzLB7Wgluzo8SGfOzzWm1ajfeorjVEAYqmjg+JYI59l260MweCEjV35y8WVV2
+         hUPMPXhg8k7/9L+iTgyoUzZZnRi2E6JQylZtNgAEdV42cv2ARkbIPu0VgTfKimmjfw4k
+         jmnuQAsZWa5lVs+p+fEhK1J1Ou3jl9TsNCJ7o8HJ8ySeTY5l33pi21jkohUXpDVENDTX
+         weNPkAzEHbTEcJ/BH2e62qKsCebpNB7UkuYMb6dCvhV0BjCs3OQwZ5j4tqSOgFNwNDEg
+         o1wSaOeJXNwo3wG6BO6PcC4y35Cknt1sbLsENc96Yqp9DhXVM6vz0T4Vx7MaR3mcEFI2
+         0KIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1712850009; x=1713454809;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wuDxFagP4f8c7YjTC6jiq88QiKjLYnfBuV0irVWBJJc=;
-        b=O0rirjHO2gGmQj6vEiOh2S2/wyhudL+YtYS4mmb5YnMP9vcrgNKOuzHViYrpCYT7M2
-         6n9/kz2/6fkPoBWL73oDthWuLTJmTjcFJW6snXd9frbsVKLsxU+fi+dvIV2IO0i6oypV
-         vzn5cWvZUVaX4eVVoASbGZ3RdhDg2WbvI8RCOUn7q483iZuv3RXH3NKIT21elrflPDbk
-         FVbzgag2EWS6z1Rbz8cztR9yi3Vch2jnNc3fOWxUSWE6ziZxdb9IVT8vyZRmEz5gOfAf
-         2cZ6lQ519PemQzEgChjFtGSuiQyzylVw2HDqW8/7tHlkMoQkxwcH9xrDga6peJdmkKzT
-         Ww0g==
-X-Gm-Message-State: AOJu0YzyWjMYos+//WERXM9OaSB/OD0tTmyLxA0bOJXZaA8dOqLa0KMi
-	Lrocv7j6OLYBh65J6PrPXRQPq1HOaGejDzYCuGKgYkiLsg3hJIR/JjVdeXtf0tOu0lNJLXpUT3v
-	y
-X-Google-Smtp-Source: AGHT+IFPNVfBXRzQzx98zmJ5Pt44LWa+UlZ3eOHDpmIIQmaoBxTcBLh0IHeBoHo9WoLUxUjsaExnIw==
-X-Received: by 2002:a6b:c34e:0:b0:7d6:7b7c:8257 with SMTP id t75-20020a6bc34e000000b007d67b7c8257mr229498iof.0.1712850008720;
-        Thu, 11 Apr 2024 08:40:08 -0700 (PDT)
+        bh=c2bDHnSOqzvj8tuTT6HXHmHeyHcGyehDT+1ibrSmR/0=;
+        b=hdBB9rHOI2EfSE2msOeCdjd690Ly+BesE3zG1ZMHs4J3O7AIvADjQo1yjnAe1xRqJG
+         pF10leYRzl99MoGz/lg/hP9n+stNfJzSlUZpZ8eM81da7fsrOVMWHRKA3FMjTGYBJs8a
+         9gRRVOOD3AKfOjRxyy2Bwa8QG34vHjZDW6O5wK4XNZrHIbYThcBD2FhVIW9GcSYc95Wk
+         Exks7fH8ndt0B/uDVfJvgH2jrP6cz94tdfkBg7PKwIzYe3XEUQkqr02TzGth7Ou/Jsno
+         zzAVxSTRCeXLKjzRGTnA+PLoG7DMT8Jn5UC1Ck9QXcyAjP/UHXHbCT/L9t0p/WGjKpBJ
+         eoXg==
+X-Gm-Message-State: AOJu0Yzevv7gUPZR4l7bf9AJaSmPZzgjQP0y0g4wHd7FMUlH7QP1AVby
+	d/oWPulPyJLVQQFQIeLXPzD+60aMTSzKuDrEhgeDEQgVJ+0vRResl24v0lU3wYE59JL748Xrdjv
+	s
+X-Google-Smtp-Source: AGHT+IF5K/+DOq4hDjIJXrRGHOjlo6cqi5YkglAMElzRIjm+hByFQ7GLfwfllWTPuG4GBfjZiiUxhw==
+X-Received: by 2002:a6b:f312:0:b0:7d5:de23:13a9 with SMTP id m18-20020a6bf312000000b007d5de2313a9mr172179ioh.1.1712850009465;
+        Thu, 11 Apr 2024 08:40:09 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.40.07
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.40.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:40:07 -0700 (PDT)
+        Thu, 11 Apr 2024 08:40:09 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 306/437] drivers/net/wireless/broadcom: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:17:26 -0600
-Message-ID: <20240411153126.16201-307-axboe@kernel.dk>
+Subject: [PATCH 307/437] drivers/net/wireless/ralink: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:17:27 -0600
+Message-ID: <20240411153126.16201-308-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,265 +85,333 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/net/wireless/broadcom/b43/debugfs.c   | 30 +++++++++---------
- .../net/wireless/broadcom/b43legacy/debugfs.c | 31 +++++++++----------
- .../broadcom/brcm80211/brcmfmac/core.c        | 10 +++---
- .../broadcom/brcm80211/brcmsmac/debug.c       |  2 +-
- 4 files changed, 35 insertions(+), 38 deletions(-)
+ .../net/wireless/ralink/rt2x00/rt2x00debug.c  | 122 ++++++++----------
+ 1 file changed, 55 insertions(+), 67 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/b43/debugfs.c b/drivers/net/wireless/broadcom/b43/debugfs.c
-index efa98444e3fb..bd82fc337500 100644
---- a/drivers/net/wireless/broadcom/b43/debugfs.c
-+++ b/drivers/net/wireless/broadcom/b43/debugfs.c
-@@ -487,8 +487,7 @@ static ssize_t loctls_read_file(struct b43_wldev *dev,
- 
- #undef fappend
- 
--static ssize_t b43_debugfs_read(struct file *file, char __user *userbuf,
--				size_t count, loff_t *ppos)
-+static ssize_t b43_debugfs_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	struct b43_wldev *dev;
- 	struct b43_debugfs_fops *dfops;
-@@ -497,11 +496,12 @@ static ssize_t b43_debugfs_read(struct file *file, char __user *userbuf,
- 	char *buf;
- 	const size_t bufsize = 1024 * 16; /* 16 kiB buffer */
- 	const size_t buforder = get_order(bufsize);
-+	size_t count = iov_iter_count(to);
- 	int err = 0;
- 
- 	if (!count)
- 		return 0;
--	dev = file->private_data;
-+	dev = iocb->ki_filp->private_data;
- 	if (!dev)
- 		return -ENODEV;
- 
-@@ -511,7 +511,7 @@ static ssize_t b43_debugfs_read(struct file *file, char __user *userbuf,
- 		goto out_unlock;
- 	}
- 
--	dfops = container_of(debugfs_real_fops(file),
-+	dfops = container_of(debugfs_real_fops(iocb->ki_filp),
- 			     struct b43_debugfs_fops, fops);
- 	if (!dfops->read) {
- 		err = -ENOSYS;
-@@ -536,10 +536,9 @@ static ssize_t b43_debugfs_read(struct file *file, char __user *userbuf,
- 		dfile->buffer = buf;
- 	}
- 
--	ret = simple_read_from_buffer(userbuf, count, ppos,
--				      dfile->buffer,
--				      dfile->data_len);
--	if (*ppos >= dfile->data_len) {
-+	ret = simple_copy_to_iter(dfile->buffer, &iocb->ki_pos, dfile->data_len,
-+				  to);
-+	if (iocb->ki_pos >= dfile->data_len) {
- 		free_pages((unsigned long)dfile->buffer, buforder);
- 		dfile->buffer = NULL;
- 		dfile->data_len = 0;
-@@ -550,12 +549,11 @@ static ssize_t b43_debugfs_read(struct file *file, char __user *userbuf,
- 	return err ? err : ret;
+diff --git a/drivers/net/wireless/ralink/rt2x00/rt2x00debug.c b/drivers/net/wireless/ralink/rt2x00/rt2x00debug.c
+index f2395309ec00..80f84dc700be 100644
+--- a/drivers/net/wireless/ralink/rt2x00/rt2x00debug.c
++++ b/drivers/net/wireless/ralink/rt2x00/rt2x00debug.c
+@@ -238,17 +238,16 @@ static int rt2x00debug_release_queue_dump(struct inode *inode, struct file *file
+ 	return rt2x00debug_file_release(inode, file);
  }
  
--static ssize_t b43_debugfs_write(struct file *file,
--				 const char __user *userbuf,
--				 size_t count, loff_t *ppos)
-+static ssize_t b43_debugfs_write(struct kiocb *iocb, struct iov_iter *from)
+-static ssize_t rt2x00debug_read_queue_dump(struct file *file,
+-					   char __user *buf,
+-					   size_t length,
+-					   loff_t *offset)
++static ssize_t rt2x00debug_read_queue_dump(struct kiocb *iocb,
++					   struct iov_iter *to)
  {
- 	struct b43_wldev *dev;
- 	struct b43_debugfs_fops *dfops;
-+	size_t count = iov_iter_count(from);
- 	char *buf;
- 	int err = 0;
+-	struct rt2x00debug_intf *intf = file->private_data;
++	struct rt2x00debug_intf *intf = iocb->ki_filp->private_data;
++	size_t length = iov_iter_count(to);
+ 	struct sk_buff *skb;
+ 	size_t status;
+ 	int retval;
  
-@@ -563,7 +561,7 @@ static ssize_t b43_debugfs_write(struct file *file,
- 		return 0;
- 	if (count > PAGE_SIZE)
- 		return -E2BIG;
--	dev = file->private_data;
-+	dev = iocb->ki_filp->private_data;
- 	if (!dev)
- 		return -ENODEV;
+-	if (file->f_flags & O_NONBLOCK)
++	if (iocb->ki_filp->f_flags & O_NONBLOCK)
+ 		return -EAGAIN;
  
-@@ -573,7 +571,7 @@ static ssize_t b43_debugfs_write(struct file *file,
- 		goto out_unlock;
+ 	retval =
+@@ -259,12 +258,12 @@ static ssize_t rt2x00debug_read_queue_dump(struct file *file,
+ 		return retval;
+ 
+ 	status = min_t(size_t, skb->len, length);
+-	if (copy_to_user(buf, skb->data, status)) {
++	if (!copy_to_iter_full(skb->data, status, to)) {
+ 		status = -EFAULT;
+ 		goto exit;
  	}
  
--	dfops = container_of(debugfs_real_fops(file),
-+	dfops = container_of(debugfs_real_fops(iocb->ki_filp),
- 			     struct b43_debugfs_fops, fops);
- 	if (!dfops->write) {
- 		err = -ENOSYS;
-@@ -585,7 +583,7 @@ static ssize_t b43_debugfs_write(struct file *file,
- 		err = -ENOMEM;
- 		goto out_unlock;
- 	}
--	if (copy_from_user(buf, userbuf, count)) {
-+	if (!copy_from_iter_full(buf, count, from)) {
- 		err = -EFAULT;
- 		goto out_freepage;
- 	}
-@@ -608,8 +606,8 @@ static ssize_t b43_debugfs_write(struct file *file,
- 		.write	= _write,				\
- 		.fops	= {					\
- 			.open	= simple_open,			\
--			.read	= b43_debugfs_read,		\
--			.write	= b43_debugfs_write,		\
-+			.read_iter	= b43_debugfs_read,	\
-+			.write_iter	= b43_debugfs_write,	\
- 			.llseek = generic_file_llseek,		\
- 		},						\
- 		.file_struct_offset = offsetof(struct b43_dfsentry, \
-diff --git a/drivers/net/wireless/broadcom/b43legacy/debugfs.c b/drivers/net/wireless/broadcom/b43legacy/debugfs.c
-index 6b0e8d117061..3746e2fab874 100644
---- a/drivers/net/wireless/broadcom/b43legacy/debugfs.c
-+++ b/drivers/net/wireless/broadcom/b43legacy/debugfs.c
-@@ -184,8 +184,7 @@ static int restart_write_file(struct b43legacy_wldev *dev, const char *buf, size
+-	*offset += status;
++	iocb->ki_pos += status;
  
- #undef fappend
+ exit:
+ 	kfree_skb(skb);
+@@ -287,27 +286,26 @@ static __poll_t rt2x00debug_poll_queue_dump(struct file *file,
  
--static ssize_t b43legacy_debugfs_read(struct file *file, char __user *userbuf,
--				size_t count, loff_t *ppos)
-+static ssize_t b43legacy_debugfs_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	struct b43legacy_wldev *dev;
- 	struct b43legacy_debugfs_fops *dfops;
-@@ -194,11 +193,12 @@ static ssize_t b43legacy_debugfs_read(struct file *file, char __user *userbuf,
- 	char *buf;
- 	const size_t bufsize = 1024 * 16; /* 16 KiB buffer */
- 	const size_t buforder = get_order(bufsize);
-+	size_t count = iov_iter_count(to);
- 	int err = 0;
- 
- 	if (!count)
- 		return 0;
--	dev = file->private_data;
-+	dev = iocb->ki_filp->private_data;
- 	if (!dev)
- 		return -ENODEV;
- 
-@@ -208,7 +208,7 @@ static ssize_t b43legacy_debugfs_read(struct file *file, char __user *userbuf,
- 		goto out_unlock;
- 	}
- 
--	dfops = container_of(debugfs_real_fops(file),
-+	dfops = container_of(debugfs_real_fops(iocb->ki_filp),
- 			     struct b43legacy_debugfs_fops, fops);
- 	if (!dfops->read) {
- 		err = -ENOSYS;
-@@ -238,10 +238,9 @@ static ssize_t b43legacy_debugfs_read(struct file *file, char __user *userbuf,
- 		dfile->buffer = buf;
- 	}
- 
--	ret = simple_read_from_buffer(userbuf, count, ppos,
--				      dfile->buffer,
--				      dfile->data_len);
--	if (*ppos >= dfile->data_len) {
-+	ret = simple_copy_to_iter(dfile->buffer, &iocb->ki_pos,
-+				  dfile->data_len, to);
-+	if (iocb->ki_pos >= dfile->data_len) {
- 		free_pages((unsigned long)dfile->buffer, buforder);
- 		dfile->buffer = NULL;
- 		dfile->data_len = 0;
-@@ -252,12 +251,12 @@ static ssize_t b43legacy_debugfs_read(struct file *file, char __user *userbuf,
- 	return err ? err : ret;
- }
- 
--static ssize_t b43legacy_debugfs_write(struct file *file,
--				 const char __user *userbuf,
--				 size_t count, loff_t *ppos)
-+static ssize_t b43legacy_debugfs_write(struct kiocb *iocb,
-+				       struct iov_iter *from)
- {
- 	struct b43legacy_wldev *dev;
- 	struct b43legacy_debugfs_fops *dfops;
-+	size_t count = iov_iter_count(from);
- 	char *buf;
- 	int err = 0;
- 
-@@ -265,7 +264,7 @@ static ssize_t b43legacy_debugfs_write(struct file *file,
- 		return 0;
- 	if (count > PAGE_SIZE)
- 		return -E2BIG;
--	dev = file->private_data;
-+	dev = iocb->ki_filp->private_data;
- 	if (!dev)
- 		return -ENODEV;
- 
-@@ -275,7 +274,7 @@ static ssize_t b43legacy_debugfs_write(struct file *file,
- 		goto out_unlock;
- 	}
- 
--	dfops = container_of(debugfs_real_fops(file),
-+	dfops = container_of(debugfs_real_fops(iocb->ki_filp),
- 			     struct b43legacy_debugfs_fops, fops);
- 	if (!dfops->write) {
- 		err = -ENOSYS;
-@@ -287,7 +286,7 @@ static ssize_t b43legacy_debugfs_write(struct file *file,
- 		err = -ENOMEM;
- 		goto out_unlock;
- 	}
--	if (copy_from_user(buf, userbuf, count)) {
-+	if (!copy_from_iter_full(buf, count, from)) {
- 		err = -EFAULT;
- 		goto out_freepage;
- 	}
-@@ -315,8 +314,8 @@ static ssize_t b43legacy_debugfs_write(struct file *file,
- 		.write	= _write,				\
- 		.fops	= {					\
- 			.open	= simple_open,				\
--			.read	= b43legacy_debugfs_read,		\
--			.write	= b43legacy_debugfs_write,		\
-+			.read_iter	= b43legacy_debugfs_read,	\
-+			.write_iter	= b43legacy_debugfs_write,	\
- 			.llseek = generic_file_llseek,			\
- 		},						\
- 		.file_struct_offset = offsetof(struct b43legacy_dfsentry, \
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
-index bf91b1e1368f..d02dd7944bad 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
-@@ -1165,13 +1165,13 @@ static void brcmf_core_bus_reset(struct work_struct *work)
- 	brcmf_bus_reset(drvr->bus_if);
- }
- 
--static ssize_t bus_reset_write(struct file *file, const char __user *user_buf,
--			       size_t count, loff_t *ppos)
-+static ssize_t bus_reset_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct brcmf_pub *drvr = file->private_data;
-+	struct brcmf_pub *drvr = iocb->ki_filp->private_data;
-+	size_t count = iov_iter_count(from);
- 	u8 value;
- 
--	if (kstrtou8_from_user(user_buf, count, 0, &value))
-+	if (kstrtou8_from_iter(from, count, 0, &value))
- 		return -EINVAL;
- 
- 	if (value != 1)
-@@ -1185,7 +1185,7 @@ static ssize_t bus_reset_write(struct file *file, const char __user *user_buf,
- static const struct file_operations bus_reset_fops = {
- 	.open	= simple_open,
- 	.llseek	= no_llseek,
--	.write	= bus_reset_write,
-+	.write_iter	= bus_reset_write,
+ static const struct file_operations rt2x00debug_fop_queue_dump = {
+ 	.owner		= THIS_MODULE,
+-	.read		= rt2x00debug_read_queue_dump,
++	.read_iter	= rt2x00debug_read_queue_dump,
+ 	.poll		= rt2x00debug_poll_queue_dump,
+ 	.open		= rt2x00debug_open_queue_dump,
+ 	.release	= rt2x00debug_release_queue_dump,
+ 	.llseek		= default_llseek,
  };
  
- static int brcmf_bus_started(struct brcmf_pub *drvr, struct cfg80211_ops *ops)
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/debug.c b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/debug.c
-index 6d776ef6ff54..cfc7ff6d3503 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmsmac/debug.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmsmac/debug.c
-@@ -182,7 +182,7 @@ static const struct file_operations brcms_debugfs_def_ops = {
+-static ssize_t rt2x00debug_read_queue_stats(struct file *file,
+-					    char __user *buf,
+-					    size_t length,
+-					    loff_t *offset)
++static ssize_t rt2x00debug_read_queue_stats(struct kiocb *iocb,
++					    struct iov_iter *to)
+ {
+-	struct rt2x00debug_intf *intf = file->private_data;
++	struct rt2x00debug_intf *intf = iocb->ki_filp->private_data;
+ 	struct data_queue *queue;
+ 	unsigned long irqflags;
+ 	unsigned int lines = 1 + intf->rt2x00dev->data_queues;
++	size_t length = iov_iter_count(to);
+ 	size_t size;
+ 	char *data;
+ 	char *temp;
+ 
+-	if (*offset)
++	if (iocb->ki_pos)
+ 		return 0;
+ 
+ 	data = kcalloc(lines, MAX_LINE_LENGTH, GFP_KERNEL);
+@@ -333,39 +331,38 @@ static ssize_t rt2x00debug_read_queue_stats(struct file *file,
+ 	size = strlen(data);
+ 	size = min(size, length);
+ 
+-	if (copy_to_user(buf, data, size)) {
++	if (!copy_to_iter_full(data, size, to)) {
+ 		kfree(data);
+ 		return -EFAULT;
+ 	}
+ 
+ 	kfree(data);
+ 
+-	*offset += size;
++	iocb->ki_pos += size;
+ 	return size;
+ }
+ 
+ static const struct file_operations rt2x00debug_fop_queue_stats = {
+ 	.owner		= THIS_MODULE,
+-	.read		= rt2x00debug_read_queue_stats,
++	.read_iter	= rt2x00debug_read_queue_stats,
+ 	.open		= rt2x00debug_file_open,
+ 	.release	= rt2x00debug_file_release,
+ 	.llseek		= default_llseek,
+ };
+ 
+ #ifdef CONFIG_RT2X00_LIB_CRYPTO
+-static ssize_t rt2x00debug_read_crypto_stats(struct file *file,
+-					     char __user *buf,
+-					     size_t length,
+-					     loff_t *offset)
++static ssize_t rt2x00debug_read_crypto_stats(struct kiocb *iocb,
++					     struct iov_iter *to)
+ {
+-	struct rt2x00debug_intf *intf = file->private_data;
++	struct rt2x00debug_intf *intf = iocb->ki_filp->private_data;
+ 	static const char * const name[] = { "WEP64", "WEP128", "TKIP", "AES" };
++	size_t length = iov_iter_count(to);
+ 	char *data;
+ 	char *temp;
+ 	size_t size;
+ 	unsigned int i;
+ 
+-	if (*offset)
++	if (iocb->ki_pos)
+ 		return 0;
+ 
+ 	data = kcalloc(1 + CIPHER_MAX, MAX_LINE_LENGTH, GFP_KERNEL);
+@@ -386,20 +383,20 @@ static ssize_t rt2x00debug_read_crypto_stats(struct file *file,
+ 	size = strlen(data);
+ 	size = min(size, length);
+ 
+-	if (copy_to_user(buf, data, size)) {
++	if (!copy_to_iter_full(data, size, to)) {
+ 		kfree(data);
+ 		return -EFAULT;
+ 	}
+ 
+ 	kfree(data);
+ 
+-	*offset += size;
++	iocb->ki_pos += size;
+ 	return size;
+ }
+ 
+ static const struct file_operations rt2x00debug_fop_crypto_stats = {
+ 	.owner		= THIS_MODULE,
+-	.read		= rt2x00debug_read_crypto_stats,
++	.read_iter	= rt2x00debug_read_crypto_stats,
+ 	.open		= rt2x00debug_file_open,
+ 	.release	= rt2x00debug_file_release,
+ 	.llseek		= default_llseek,
+@@ -407,19 +404,17 @@ static const struct file_operations rt2x00debug_fop_crypto_stats = {
+ #endif
+ 
+ #define RT2X00DEBUGFS_OPS_READ(__name, __format, __type)	\
+-static ssize_t rt2x00debug_read_##__name(struct file *file,	\
+-					 char __user *buf,	\
+-					 size_t length,		\
+-					 loff_t *offset)	\
++static ssize_t rt2x00debug_read_##__name(struct kiocb *iocb,	\
++					 struct iov_iter *to)	\
+ {								\
+-	struct rt2x00debug_intf *intf = file->private_data;	\
++	struct rt2x00debug_intf *intf = iocb->ki_filp->private_data;	\
+ 	const struct rt2x00debug *debug = intf->debug;		\
+ 	char line[16];						\
+ 	size_t size;						\
+ 	unsigned int index = intf->offset_##__name;		\
+ 	__type value;						\
+ 								\
+-	if (*offset)						\
++	if (iocb->ki_pos)					\
+ 		return 0;					\
+ 								\
+ 	if (index >= debug->__name.word_count)			\
+@@ -435,23 +430,22 @@ static ssize_t rt2x00debug_read_##__name(struct file *file,	\
+ 								\
+ 	size = sprintf(line, __format, value);			\
+ 								\
+-	return simple_read_from_buffer(buf, length, offset, line, size); \
++	return simple_copy_to_iter(line, &iocb->ki_pos, size, to); \
+ }
+ 
+ #define RT2X00DEBUGFS_OPS_WRITE(__name, __type)			\
+-static ssize_t rt2x00debug_write_##__name(struct file *file,	\
+-					  const char __user *buf,\
+-					  size_t length,	\
+-					  loff_t *offset)	\
++static ssize_t rt2x00debug_write_##__name(struct kiocb *iocb,	\
++					  struct iov_iter *from)\
+ {								\
+-	struct rt2x00debug_intf *intf = file->private_data;	\
++	struct rt2x00debug_intf *intf = iocb->ki_filp->private_data;	\
+ 	const struct rt2x00debug *debug = intf->debug;		\
++	size_t length = iov_iter_count(from);			\
+ 	char line[17];						\
+ 	size_t size;						\
+ 	unsigned int index = intf->offset_##__name;		\
+ 	__type value;						\
+ 								\
+-	if (*offset)						\
++	if (iocb->ki_pos)					\
+ 		return 0;					\
+ 								\
+ 	if (index >= debug->__name.word_count)			\
+@@ -460,7 +454,7 @@ static ssize_t rt2x00debug_write_##__name(struct file *file,	\
+ 	if (length > sizeof(line))				\
+ 		return -EINVAL;					\
+ 								\
+-	if (copy_from_user(line, buf, length))			\
++	if (!copy_from_iter_full(line, length, from))		\
+ 		return -EFAULT;					\
+ 	line[16] = 0;						\
+ 						\
+@@ -475,7 +469,7 @@ static ssize_t rt2x00debug_write_##__name(struct file *file,	\
+ 								\
+ 	debug->__name.write(intf->rt2x00dev, index, value);	\
+ 								\
+-	*offset += size;					\
++	iocb->ki_pos += size;					\
+ 	return size;						\
+ }
+ 
+@@ -485,8 +479,8 @@ RT2X00DEBUGFS_OPS_WRITE(__name, __type);			\
+ 								\
+ static const struct file_operations rt2x00debug_fop_##__name = {\
+ 	.owner		= THIS_MODULE,				\
+-	.read		= rt2x00debug_read_##__name,		\
+-	.write		= rt2x00debug_write_##__name,		\
++	.read_iter	= rt2x00debug_read_##__name,		\
++	.write_iter	= rt2x00debug_write_##__name,		\
+ 	.open		= rt2x00debug_file_open,		\
+ 	.release	= rt2x00debug_file_release,		\
+ 	.llseek		= generic_file_llseek,			\
+@@ -498,62 +492,56 @@ RT2X00DEBUGFS_OPS(bbp, "0x%.2x\n", u8);
+ RT2X00DEBUGFS_OPS(rf, "0x%.8x\n", u32);
+ RT2X00DEBUGFS_OPS(rfcsr, "0x%.2x\n", u8);
+ 
+-static ssize_t rt2x00debug_read_dev_flags(struct file *file,
+-					  char __user *buf,
+-					  size_t length,
+-					  loff_t *offset)
++static ssize_t rt2x00debug_read_dev_flags(struct kiocb *iocb,
++					  struct iov_iter *to)
+ {
+-	struct rt2x00debug_intf *intf =	file->private_data;
++	struct rt2x00debug_intf *intf =	iocb->ki_filp->private_data;
+ 	char line[16];
+ 	size_t size;
+ 
+-	if (*offset)
++	if (iocb->ki_pos)
+ 		return 0;
+ 
+ 	size = sprintf(line, "0x%.8x\n", (unsigned int)intf->rt2x00dev->flags);
+ 
+-	return simple_read_from_buffer(buf, length, offset, line, size);
++	return simple_copy_to_iter(line, &iocb->ki_pos, size, to);
+ }
+ 
+ static const struct file_operations rt2x00debug_fop_dev_flags = {
+ 	.owner		= THIS_MODULE,
+-	.read		= rt2x00debug_read_dev_flags,
++	.read_iter	= rt2x00debug_read_dev_flags,
+ 	.open		= rt2x00debug_file_open,
+ 	.release	= rt2x00debug_file_release,
+ 	.llseek		= default_llseek,
+ };
+ 
+-static ssize_t rt2x00debug_read_cap_flags(struct file *file,
+-					  char __user *buf,
+-					  size_t length,
+-					  loff_t *offset)
++static ssize_t rt2x00debug_read_cap_flags(struct kiocb *iocb,
++					  struct iov_iter *to)
+ {
+-	struct rt2x00debug_intf *intf =	file->private_data;
++	struct rt2x00debug_intf *intf =	iocb->ki_filp->private_data;
+ 	char line[16];
+ 	size_t size;
+ 
+-	if (*offset)
++	if (iocb->ki_pos)
+ 		return 0;
+ 
+ 	size = sprintf(line, "0x%.8x\n", (unsigned int)intf->rt2x00dev->cap_flags);
+ 
+-	return simple_read_from_buffer(buf, length, offset, line, size);
++	return simple_copy_to_iter(line, &iocb->ki_pos, size, to);
+ }
+ 
+ static const struct file_operations rt2x00debug_fop_cap_flags = {
+ 	.owner		= THIS_MODULE,
+-	.read		= rt2x00debug_read_cap_flags,
++	.read_iter	= rt2x00debug_read_cap_flags,
+ 	.open		= rt2x00debug_file_open,
+ 	.release	= rt2x00debug_file_release,
+ 	.llseek		= default_llseek,
+ };
+ 
+-static ssize_t rt2x00debug_write_restart_hw(struct file *file,
+-					    const char __user *buf,
+-					    size_t length,
+-					    loff_t *offset)
++static ssize_t rt2x00debug_write_restart_hw(struct kiocb *iocb,
++					    struct iov_iter *from)
+ {
+-	struct rt2x00debug_intf *intf =	file->private_data;
++	struct rt2x00debug_intf *intf =	iocb->ki_filp->private_data;
+ 	struct rt2x00_dev *rt2x00dev = intf->rt2x00dev;
+ 	static unsigned long last_reset = INITIAL_JIFFIES;
+ 
+@@ -566,12 +554,12 @@ static ssize_t rt2x00debug_write_restart_hw(struct file *file,
+ 	last_reset = jiffies;
+ 
+ 	ieee80211_restart_hw(rt2x00dev->hw);
+-	return length;
++	return iov_iter_count(from);
+ }
+ 
+ static const struct file_operations rt2x00debug_restart_hw = {
  	.owner = THIS_MODULE,
- 	.open = brcms_debugfs_entry_open,
- 	.release = single_release,
--	.read = seq_read,
-+	.read_iter = seq_read_iter,
- 	.llseek = seq_lseek
+-	.write = rt2x00debug_write_restart_hw,
++	.write_iter = rt2x00debug_write_restart_hw,
+ 	.open = simple_open,
+ 	.llseek = generic_file_llseek,
  };
- 
 -- 
 2.43.0
 
