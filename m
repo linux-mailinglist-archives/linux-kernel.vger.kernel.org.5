@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D89D8A1931
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:58:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 623D18A196C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:09:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC9F82821B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:58:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28030B2D6FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:58:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6065713664A;
-	Thu, 11 Apr 2024 15:34:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF828136E2C;
+	Thu, 11 Apr 2024 15:34:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="x+4m/oFZ"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="MKQw8p5u"
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F9E31332B0
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:34:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE1FD136668
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:34:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849649; cv=none; b=URXmK7/mSES+KLU5OBqGV2aLoce7kn/cK/iyeyHJHxrcD2M9R0X1f3VKC76YQkpuzK0RlQo9EBQY88gs0j2TGoL2+ECj+o9XWlQcTHyL6LdrJApiCNa/Cf/KETcABr12fw/kh/QihsDunYi1X5UQKT+SAsCr6DrOGI19ErcOBFA=
+	t=1712849652; cv=none; b=a3AXDWGSMH/UUNP2Xropmdx2CT6DHYozDBIMaMpV1BZ5ZqacJfUqpdqRgpggbSYZZA4/9/QaJ0DPMHOyeZ0h15DThQwoMyPMOEqsspKpozSvJKdPfXEpmwEtDXqFa9tzoLAdP7taWGThaWkSme9qtQX9y0/YLuUy80TefYJcIaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849649; c=relaxed/simple;
-	bh=XLySHR0YIO1LxjGPhiC1KU5h/wP3tvj1z/3UEePY214=;
+	s=arc-20240116; t=1712849652; c=relaxed/simple;
+	bh=oTaDXFM2veSIyrNSg5ZwzsREHddfR59ebpLyhWZ1ke0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bGZtXwEdFE62HbJx9+LpLbsB5HFCU0TEDMvDKg1KeRc4vPgj6eEdwek/I0Vj15fnRvMlDhWK0fEaIMTzrKCaeoB/WD1t4nZ4nSfOtvvR0Pc1Q/nWL/JxSC0NPVf5g5isKGkfkpRXeNG4ai4Lkrvzgg8O3cjkfheASsnydjWwt/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=x+4m/oFZ; arc=none smtp.client-ip=209.85.166.41
+	 MIME-Version; b=H2+S+awASfo4F2lY8RXgeQWYExHtagnLxvlieCndVm0x+VSUz+zrQNGacOt1I14XUdee2IkF5lnT1PFEo1j5kcMuzXDk6qWDiNC0fpPaXdjnNFyiQ6j6lDLjzIj4iuVgrvGjxHuAEfRkP/QSnToZ4PnfCpp29GkwNeeiU1ihxbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=MKQw8p5u; arc=none smtp.client-ip=209.85.166.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7d5ed700c2dso16133939f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:34:08 -0700 (PDT)
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7d67d1073easo9749539f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:34:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849647; x=1713454447; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849649; x=1713454449; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=EsMZ1D54PALBtcGxDrQ52r7sdp3B1+XzVHP1czxtxdo=;
-        b=x+4m/oFZc0doGN4BTJLtHixC+osiC4gt0QuY8DOBKHLJGvsdPd+ufvh5i5X6wh6ieE
-         Nh9pChbw3koVgN8KUI+QQSI2kKu/1Rtr4JfDJs41r0hGYVDa9kv9XEA4BqiO9FbLBop/
-         GaJP6Go6l4OSeN6C4Uj7fgpfxiNEsDPXEO8Ox06gjFcz41SHWSQeEOU9AW6zxR0PpoNO
-         QLgb3QCNLTzf5OvpxNAvzBJShZDh/Fdwb9of1lsVFMiykVQLQodyUaMBC32um4zAFv6b
-         ZHFlKUJKhcgXpBVlrY4bVTmPGQwmZK1l2Mi6jQq6dTcLgaTFPcL+8gwKUiXPif1Ef5G7
-         GiOQ==
+        bh=JUMzmo7ip1drKjJbzrWPdbZGVRE9zIxWmxeF2eW3oUU=;
+        b=MKQw8p5uX3wkTgee/Q+RwQCHdZOf75YHLV3Sr0pwyjKFNlqDOGKT6XOVhwqjMJtWMQ
+         CUcKrjH3YAU2GstvLivuO6XWwdaNwWF4Gnay2wftaKDEVQOhlktvEc1vZXTMX2lSF3TE
+         2eVPlFmaRPl7GkGV9MPNGSKv42NZG0JcMO4E8vB9YzTUxXUVBtxHjcQjDwjHlhlIQjlf
+         /3m1R84OLZhVpdsFgiLWJVsYefXozBW2oGCepchjfmOitscNAFs1E31cDUp6DncLOcO/
+         oxrB26ZhLx0DNNFgYIVObOFrbQkxFa1Fb19rWyohFL+J8pNm8zGqV3AZmjAhum+igtsO
+         AUsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849647; x=1713454447;
+        d=1e100.net; s=20230601; t=1712849649; x=1713454449;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EsMZ1D54PALBtcGxDrQ52r7sdp3B1+XzVHP1czxtxdo=;
-        b=pZpXrNiqkgWZ/j6pG9uRjINMVc404YdzbQay8fdznrYTekYTBcWrlxMA2Yki8GPjOv
-         +zc2DLZYnxQJ8W+PkQ431Q6wsRkXQpVimZCI94ixQ1fPm7HHgxwhPBMEzmfmrYROBT3/
-         VgcOUVqgIod0CY1Yv5VNq3W1o+sdUiLB7zbvgfbXoZA38OzNnLRe6MVMsSvU8S3dSTAU
-         WV2nkZb1XRs2bfW0NBRSYu/OE0EI8R1iWXfp8miE0x2nVEPSaBARmcba/DUd1XYVV6/v
-         Rs4LPWs1J9Ysfs9prx/+w3HEUiff3za6vr4L8N34wSNErGUXKpzWwhzMGuuri2mGE9Dc
-         xU6Q==
-X-Gm-Message-State: AOJu0Ywwqkec0+kxXj0G3ZOY7iJcx3VKWO0pO8PBj7JBbFUzUW8zdNzh
-	4rw9910gnVNS7expxeDQc+bdAHzVHH2G//TDXwmFPvgfjrtdn7QhPk3iuXtxVD6agjXS8FPfYHD
-	g
-X-Google-Smtp-Source: AGHT+IGNtxu+nO20y/bUirS7yrDe+if+4KobIglJP0JH5xPtqlsJDwp5/7YDU5oA1qCCkLXeDqGo7w==
-X-Received: by 2002:a05:6602:38d:b0:7d6:513b:254 with SMTP id f13-20020a056602038d00b007d6513b0254mr177343iov.2.1712849647382;
-        Thu, 11 Apr 2024 08:34:07 -0700 (PDT)
+        bh=JUMzmo7ip1drKjJbzrWPdbZGVRE9zIxWmxeF2eW3oUU=;
+        b=wdMrFHU3C/3qJm76WyL+3iofyIKAqyRxPp8omPbUkIIL7/DhsobQIXYjujowLBRG1h
+         f5QqFt3B/kl5rl33qXEpOgzpL81Lr8Y7Fj4tv5De/hiDIJ/ixC5hr5NwaRNrjbGz8XrF
+         jVI4ZbB/LlUZQfsrZuRyJGGR41BZBYo1gw9kP0Z3/jINxVWTPat2985kRylD4jCFy8VZ
+         tGK97gn7aGdufq2uK266f9ckTEX/GOY/4dvGPSDcCsp1DpQr6MB/uAGL80+x9eqG8Fq3
+         tsoStyxFRWr6F6U00VlUFYUDsxfOWhjwooFStmyHl9m85CaGZ4eCyCGjyAH5wLCmpAuf
+         HyEg==
+X-Gm-Message-State: AOJu0YyJFSA4UVKTmusk3vnYo7qDX5NUrb74JDwZgMxKdGMZoN4O1LyM
+	lXpP0+lNDsDlLukeCJJ3ZliQtnEJKdiGuMAwObhD8Id58isvppHqR9i/fUU+ThynFmLq0Cqpaf+
+	8
+X-Google-Smtp-Source: AGHT+IG1x877YI2RFmKVhkdXI57Y7MyYyKNDrYr4StNLgdVVnDKXFcW8kAt0couhz/WCGirFg3JuPw==
+X-Received: by 2002:a05:6602:84:b0:7d6:9d75:6de2 with SMTP id h4-20020a056602008400b007d69d756de2mr36569iob.2.1712849649515;
+        Thu, 11 Apr 2024 08:34:09 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.34.06
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.34.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:34:06 -0700 (PDT)
+        Thu, 11 Apr 2024 08:34:09 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 086/437] fs: add iterator based version of simple_transaction_read()
-Date: Thu, 11 Apr 2024 09:13:46 -0600
-Message-ID: <20240411153126.16201-87-axboe@kernel.dk>
+Subject: [PATCH 087/437] tomoyo: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:13:47 -0600
+Message-ID: <20240411153126.16201-88-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,43 +85,84 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- fs/libfs.c         | 10 ++++++++++
- include/linux/fs.h |  1 +
- 2 files changed, 11 insertions(+)
+ security/tomoyo/securityfs_if.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
-diff --git a/fs/libfs.c b/fs/libfs.c
-index 3280d02fc385..56b404ad4cfb 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -1277,6 +1277,16 @@ ssize_t simple_transaction_read(struct file *file, char __user *buf, size_t size
+diff --git a/security/tomoyo/securityfs_if.c b/security/tomoyo/securityfs_if.c
+index a2705798476f..49421d5377f7 100644
+--- a/security/tomoyo/securityfs_if.c
++++ b/security/tomoyo/securityfs_if.c
+@@ -86,6 +86,7 @@ static ssize_t tomoyo_write_self(struct file *file, const char __user *buf,
+ 	kfree(data);
+ 	return error ? error : count;
  }
- EXPORT_SYMBOL(simple_transaction_read);
++FOPS_WRITE_ITER_HELPER(tomoyo_write_self);
  
-+ssize_t simple_transaction_read_iter(struct kiocb *iocb, struct iov_iter *to)
-+{
-+	struct simple_transaction_argresp *ar = iocb->ki_filp->private_data;
-+
-+	if (!ar)
-+		return 0;
-+	return simple_copy_to_iter(ar->data, &iocb->ki_pos, ar->size, to);
-+}
-+EXPORT_SYMBOL(simple_transaction_read_iter);
-+
- int simple_transaction_release(struct inode *inode, struct file *file)
+ /**
+  * tomoyo_read_self - read() for /sys/kernel/security/tomoyo/self_domain interface.
+@@ -97,28 +98,28 @@ static ssize_t tomoyo_write_self(struct file *file, const char __user *buf,
+  *
+  * Returns read size on success, negative value otherwise.
+  */
+-static ssize_t tomoyo_read_self(struct file *file, char __user *buf,
+-				size_t count, loff_t *ppos)
++static ssize_t tomoyo_read_self(struct kiocb *iocb, struct iov_iter *to)
  {
- 	free_page((unsigned long)file->private_data);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 69e4dfac2853..85db7dde4778 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3500,6 +3500,7 @@ char *simple_transaction_get(struct file *file, const char __user *buf,
- 				size_t size);
- ssize_t simple_transaction_read(struct file *file, char __user *buf,
- 				size_t size, loff_t *pos);
-+ssize_t simple_transaction_read_iter(struct kiocb *iocb, struct iov_iter *to);
- int simple_transaction_release(struct inode *inode, struct file *file);
+ 	const char *domain = tomoyo_domain()->domainname->name;
++	size_t count = iov_iter_count(to);
+ 	loff_t len = strlen(domain);
+-	loff_t pos = *ppos;
++	loff_t pos = iocb->ki_pos;
  
- void simple_transaction_set(struct file *file, size_t n);
+ 	if (pos >= len || !count)
+ 		return 0;
+ 	len -= pos;
+ 	if (count < len)
+ 		len = count;
+-	if (copy_to_user(buf, domain + pos, len))
++	if (copy_to_iter(domain + pos, len, to))
+ 		return -EFAULT;
+-	*ppos += len;
++	iocb->ki_pos += len;
+ 	return len;
+ }
+ 
+ /* Operations for /sys/kernel/security/tomoyo/self_domain interface. */
+ static const struct file_operations tomoyo_self_operations = {
+-	.write = tomoyo_write_self,
+-	.read  = tomoyo_read_self,
++	.write_iter = tomoyo_write_self_iter,
++	.read_iter  = tomoyo_read_self,
+ };
+ 
+ /**
+@@ -178,6 +179,7 @@ static ssize_t tomoyo_read(struct file *file, char __user *buf, size_t count,
+ {
+ 	return tomoyo_read_control(file->private_data, buf, count);
+ }
++FOPS_READ_ITER_HELPER(tomoyo_read);
+ 
+ /**
+  * tomoyo_write - write() for /sys/kernel/security/tomoyo/ interface.
+@@ -194,6 +196,7 @@ static ssize_t tomoyo_write(struct file *file, const char __user *buf,
+ {
+ 	return tomoyo_write_control(file->private_data, buf, count);
+ }
++FOPS_WRITE_ITER_HELPER(tomoyo_write);
+ 
+ /*
+  * tomoyo_operations is a "struct file_operations" which is used for handling
+@@ -206,8 +209,8 @@ static const struct file_operations tomoyo_operations = {
+ 	.open    = tomoyo_open,
+ 	.release = tomoyo_release,
+ 	.poll    = tomoyo_poll,
+-	.read    = tomoyo_read,
+-	.write   = tomoyo_write,
++	.read_iter = tomoyo_read_iter,
++	.write_iter = tomoyo_write_iter,
+ 	.llseek  = noop_llseek,
+ };
+ 
 -- 
 2.43.0
 
