@@ -1,80 +1,66 @@
-Return-Path: <linux-kernel+bounces-140176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6932F8A0C67
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:29:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D36728A0C6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:30:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A70D1C20962
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:29:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88FAC1F261E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:30:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98873144D18;
-	Thu, 11 Apr 2024 09:29:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L5O+mgGC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E290D13DDDD
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:29:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEBB9144D31;
+	Thu, 11 Apr 2024 09:30:15 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 267932EAE5;
+	Thu, 11 Apr 2024 09:30:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712827772; cv=none; b=DV8BzvdUK2YfYiPw6KI6+PLlN7Y8+zKkiTU7k2IYlRR7YHLpW8QiTTTzrirFBDDI6YXHeVkjUOwSj9vvV8S2trHLOlrqEbLg26t89oLSAS3+C7x+SdKE+QbVWrUhNGuQHEnaY1DgpxVe+we/VVA63EedfiD9N/tWrN7V+KaQmxQ=
+	t=1712827815; cv=none; b=TR+qPeKp9mNgettW2yan8MaPSOyL336+T1bPDBVeB6J1mef3ro6FWEn6AIQNQntP2kgtmiVuoNNQKrb49wocUpcHxoM3rRKOSrFTeBYAVOKKzuBiVwFfuvBnECkrspEy5V3m+c3qhfctusA6Njbx6PHbE8nBR5GhkCD8b4EWyX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712827772; c=relaxed/simple;
-	bh=YcYTyPMpLv5JYxXowNl006DvK0aovJXI4oDyIJPAnhM=;
+	s=arc-20240116; t=1712827815; c=relaxed/simple;
+	bh=9tf6/NzSwfQ3Vi7lhIXSHNUGVKr3eLMrppEVO217UlQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yy2lhxsKmav9YOPXsQ4ocRGOu+JeoErO/g1hnYdlaqwkjufh9frskkA24a/qSlkCIT72tgm/5ZmCit2MRvb30pdabfYPQExnhiVHrduubCg36F/r+MwnHUJB14R4nzdKT7s52y+jPR4WjO1VCDSzbF4MRIMSpXDvOn1d+fHGXwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L5O+mgGC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD270C433F1;
-	Thu, 11 Apr 2024 09:29:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712827771;
-	bh=YcYTyPMpLv5JYxXowNl006DvK0aovJXI4oDyIJPAnhM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=L5O+mgGC0zwOXVaIKJBAcN4YdxECHBrQ5bf4+hob+R+TkUtFMWvFpWE1lJZdnzDUY
-	 PZcGmHWpjYMz0Yo6Ir6B7PA+AHpeCaydNe0gsOUFtor5fOuaCuedUuVarlOy3DA1Kf
-	 zrL6i2pM+mLfVxnX84pg1YQ8+cQJzMVj4YgpGMMWNzgSU4RGabZTBmodKzJ6cAP730
-	 udzszb0CmGtC8M8ucxr9WaPgZayiwI4wwFopMKwcKpYsEFnE5yLi8LqJaNo/XrG3CS
-	 DUIPEQRfarANs6Quw8Ji6G5cccIT4Ff/1BCCE/wBJaFGsThtcAXdq8yt5kqppNz27s
-	 Fu74rJc28t2AA==
-Date: Thu, 11 Apr 2024 10:29:28 +0100
-From: Lee Jones <lee@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 0/6] mfd: kempld: A few cleanups
-Message-ID: <20240411092928.GB1980182@google.com>
-References: <20240223195113.880121-1-andriy.shevchenko@linux.intel.com>
- <Zgwk1tr7x4HnnlD9@smile.fi.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=f0u0h/TPcmcLckMPUhn1MuD3JthXQFSkYNrysO7c54ipFWsTrQ8Z5FAlhJe7jey4ExuFgqMHh8NjL6Xgda82GTfWb1rtljAUe09c+sJCAR+Wy72P+WHbOL9wYzHM3P4sfFMRE2P9PLdez6RNagVExagUu+4SJ1rVffqQI4xbhPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3789E113E;
+	Thu, 11 Apr 2024 02:30:43 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7149F3F6C4;
+	Thu, 11 Apr 2024 02:30:12 -0700 (PDT)
+Date: Thu, 11 Apr 2024 10:30:10 +0100
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Yunhui Cui <cuiyunhui@bytedance.com>
+Cc: rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, paul.walmsley@sifive.com,
+	palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 1/2] ACPI: PPTT: Populate cacheinfo entirely with PPTT
+Message-ID: <ZhetojJewygmTf6N@bogus>
+References: <20240407123829.36474-1-cuiyunhui@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zgwk1tr7x4HnnlD9@smile.fi.intel.com>
+In-Reply-To: <20240407123829.36474-1-cuiyunhui@bytedance.com>
 
-On Tue, 02 Apr 2024, Andy Shevchenko wrote:
+On Sun, Apr 07, 2024 at 08:38:28PM +0800, Yunhui Cui wrote:
+> When the type and level information of this_leaf cannot be obtained
+> from arch, cacheinfo is completely filled in with the content of PPTT.
+>
 
-> On Fri, Feb 23, 2024 at 09:49:49PM +0200, Andy Shevchenko wrote:
-> > Just a set of ad-hoc cleanups. No functional change intended.
-> 
-> Any comments?
-> 
-> (I assume the 6+ weeks in the mailing list is enough for all kind of CIs
->  to complain. But they hadn't AFAICS.)
-
-Not sure why these were dropped from my queue.
-
-Likely another Mutt "feature".
-
-Back in the queue.
+Which platform is this ? Is this arm64 based or something else like RISC-V
+based ? That would help to understand some context here.
 
 -- 
-Lee Jones [李琼斯]
+Regards,
+Sudeep
 
