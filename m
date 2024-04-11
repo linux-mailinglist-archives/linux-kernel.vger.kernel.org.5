@@ -1,189 +1,98 @@
-Return-Path: <linux-kernel+bounces-141291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BB068A1C34
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:41:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 048E38A1C35
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:41:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D7E51C22C40
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:41:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3398F1C22F30
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:41:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A24EA15AAA9;
-	Thu, 11 Apr 2024 16:11:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5568915AAC4;
+	Thu, 11 Apr 2024 16:11:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rvm0S2oJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mbjBTsh/"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EC115A4AF;
-	Thu, 11 Apr 2024 16:11:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B40653815
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:11:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712851870; cv=none; b=Nhsh5S1oKzDA7EsR7YOsKzxI9dRbsxTPPfn84iutEdMmKBoxD1eZod1O8VZhf7TYL6gL+upVRhTaq3neFdScsdKPgyCiiGDDP+Rwf1GEBL1s/4qTMgnzCE9iL9VmYVBxOZ3boatGms7aEDmVCVHZ4+SqOQ9NbZDbmkCFLJTHdGo=
+	t=1712851902; cv=none; b=iHjqGiFl5sZ6s5O7rwMZeIvzpAhER8kY/m2uzy4O8TztHrEVl52zG5ozApPx60j/Y8e/N/LRUQ3jwGj1ks0AFU8hZ9XzOEakArOlAFsrQLpJjBGWsWUsIUEWFeWLEpJhJwh4HfnEQcPuFpI3o8vWY3ff6KRm8N+e0Ixk3n/7eQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712851870; c=relaxed/simple;
-	bh=Co3kGhkNsPgacB/pabyCsenR+0gNcn0apDUzg988VHA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=q18mJbNr1XEByVMCT5shHMfoltp5jkb+eTD+yntIt286pUr9i8Q5ob0UPCd9qtDc46reH9KA02c4CLwOharuqaHIWRxf2kIaY/Ks4FqzXH/TMEKgQtJv4LwV6I2MQQH19xLo5TNS9MMzravLv21fa/xmUeiBnziQdxk58tEjGCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rvm0S2oJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 001FEC072AA;
-	Thu, 11 Apr 2024 16:11:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712851870;
-	bh=Co3kGhkNsPgacB/pabyCsenR+0gNcn0apDUzg988VHA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=rvm0S2oJrwiPhJs3eMOF4f2WjbhaHXPCHhoQzlhlvGzTckM5NUJlGvZE//UJTbZuk
-	 7mUvnId3dLSEO383sQdQGizvtxlqOjpE6LHUGEUzOLcvm2FFMA5/b/WtwmbW9OxU3t
-	 vraPDqamiI8esjKLmEPlXpKeb3GokCNr0IyDHPJwJEbgyjnyrMewIrl/lr5uw3SXYu
-	 ufts0B5MaTMqZx4inTcApZhjiikn03+zpnbGKAZYEpPL3yc3b4UbwWwc/biOcTK9tx
-	 O2EDKKXK1jYU6zNUiteXtEM8WNQ9P2BCMa9UpGqUhrAINiWUMdVs8dvmVCMdMSalCs
-	 JbWrghBBIpbBg==
-Date: Thu, 11 Apr 2024 11:11:08 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Jim Quinlan <jim2101024@gmail.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	Will Deacon <will@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	Ryder Lee <ryder.lee@mediatek.com>,
-	Jianjun Wang <jianjun.wang@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Daire McNamara <daire.mcnamara@microchip.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Shawn Lin <shawn.lin@rock-chips.com>,
-	Heiko Stuebner <heiko@sntech.de>, Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Mark Kettenis <kettenis@openbsd.org>,
-	Tom Joseph <tjoseph@cadence.com>,
-	Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, asahi@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v2 2/4] dt-bindings: PCI: mediatek,mt7621: add missing
- child node reg
-Message-ID: <20240411161108.GA2184354@bhelgaas>
+	s=arc-20240116; t=1712851902; c=relaxed/simple;
+	bh=L2jcJnuTYJv0eRkkE+PmZ1tBb2gSNZLLy/FJPeuq3kM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=CCFyv2aOZMIDRAs2J9MbdTkB2MMG3CZtryTjxDDwyxWDWBvu5ViL1Yx4yl7A6YE313FKn3H5KFXQ967al153hEd1H7SGD51mFmi7Z3mfchBUXcZtGOM4qVEA/XZIN9EUEv8S5tlANmZkBoahTc2RHu0H/17dztyKzvAA3SKePpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mbjBTsh/; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-618409ab1acso35188577b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:11:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712851900; x=1713456700; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dA3lLmzuvL7jU0zNfJHm6+v36KvfdVGE0I5vccyMUwM=;
+        b=mbjBTsh/VDOesvG0e/jdH5R+MP4tTXHdtKcWdsj4jYRVaG3Fa2RGrsCf2XXgqnVelg
+         WOR5V2AKalGzMbB2LgUXG+mwgNZonwUjEXXZXlfk+urPGKAxSBKA9ts081sJ4CXhI3Y3
+         drC3IPVlz46yW8rAfZ++7nIB2W7IDZoYd14Ude48q9ea6kJbG/jGfSxtD7AjfQYRWdlF
+         bF4/6qZ4ivMJaTXUUTC4guYS3Jn/9vNMPahzntZZZkOmDOycuTGBfy6T8KVkFm3gwmo1
+         aKW2rGdD6eZi0xThVZveSSGtFXDq/M5wloWjF/Acd4Z52oehMcaX7oBi5bEvm3SSrP5j
+         I+4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712851900; x=1713456700;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dA3lLmzuvL7jU0zNfJHm6+v36KvfdVGE0I5vccyMUwM=;
+        b=pnu+aGOXgNQvAcE0BkI9A0hJdlOn2r71Wc+oWAANzDhcpX+kJnB7OWJemCUoArWfzv
+         O5T0MPfC9u9pLofnFYaA+57sp6DW6zy55vBI5NEzaXlluaRV/Q5Wj6LmUmpcqZJLrdMq
+         mbg0mfQgaUUbr8F1o6j18ogLJNiNst8BqbiP3RTtlPdnI1yGXGM4WjOQuTIrVZRYenjs
+         RTXS1CnZw6wKcuDhUL2E2nHNVvHGorhCBiAq1akvDUzuU6qV0EhL8uBR+7bsAdXdn1NK
+         GG+s5Nlr01EDrDqDTFXAU6jxyXuM0RcxOWf3u6bReswj+2j1ANZ99tLl0KOqrhC5vUVz
+         ROwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU5QR6K4tiAxYmf9A1OcdXYTaPSpYTskQJaUd9c6cHKbuUXLataocl0LFmMcQxqdve8zDIXsshQlWdSEf9j01PIqQK/y3qXa04inwrn
+X-Gm-Message-State: AOJu0Yzu1TsQ1a6rdw24sD//Ot303z3GLzh/WU9nZlRvUwkNnzUeLUdm
+	Ge0DJfE3IkfVa5A7ihHxNrAsC9IwZrrbfkbfj6soVGbGQjdMi3VmazMBeMIJsMbeSLZRzyEy4rK
+	1Sg==
+X-Google-Smtp-Source: AGHT+IEvtAQzM4k0ZSSzVGatPdOU1W/00aEZmkIXzCLyNlxCcWLg3a2WgR9TFXYbA2NhxYAXbVaqzwsAdpw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:4f58:0:b0:615:577e:6af with SMTP id
+ d85-20020a814f58000000b00615577e06afmr1325384ywb.0.1712851900307; Thu, 11 Apr
+ 2024 09:11:40 -0700 (PDT)
+Date: Thu, 11 Apr 2024 09:11:38 -0700
+In-Reply-To: <20240411144322.14585-1-xry111@xry111.site>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240411142107.GA3537062-robh@kernel.org>
+Mime-Version: 1.0
+References: <20240411144322.14585-1-xry111@xry111.site>
+Message-ID: <ZhgLuiKzCcBR8tNC@google.com>
+Subject: Re: [PATCH v7 1/2] x86/mm: Don't disable INVLPG if "incomplete Global
+ INVLPG flushes" is fixed by microcode
+From: Sean Christopherson <seanjc@google.com>
+To: Xi Ruoyao <xry111@xry111.site>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>, Michael Kelley <mhklinux@outlook.com>, 
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, 
+	linux-kernel@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Thu, Apr 11, 2024 at 09:21:07AM -0500, Rob Herring wrote:
-> On Thu, Apr 11, 2024 at 07:39:17AM -0500, Bjorn Helgaas wrote:
-> > On Thu, Apr 11, 2024 at 08:13:18AM +0200, Sergio Paracuellos wrote:
-> > > On Thu, Apr 11, 2024 at 8:01 AM Krzysztof Kozlowski
-> > > <krzysztof.kozlowski@linaro.org> wrote:
-> > > > On 10/04/2024 23:26, Bjorn Helgaas wrote:
-> > > > > On Wed, Apr 10, 2024 at 08:15:19PM +0200, Krzysztof Kozlowski wrote:
-> > > > >> MT7621 PCI host bridge has children which apparently are also PCI host
-> > > > >> bridges, at least that's what the binding suggest.
-> > > > >
-> > > > > What does it even mean for a PCI host bridge to have a child that is
-> > > > > also a PCI host bridge?
+Don't disable *PCID*.
+
+On Thu, Apr 11, 2024, Xi Ruoyao wrote:
+> Per the "Processor Specification Update" documentations referred by the
+> intel-microcode-20240312 release note, this microcode release has fixed
+> the issue for all affected models.
 > 
-> It should say 'root port' instead as the binding description correctly 
-> says.
+> So don't disable INVLPG if the microcode is new enough.  The precise
 
-OK, that makes a lot more sense, and we should fix the commit log.
-
-> > > > I think the question should be towards Mediatek folks. I don't know what
-> > > > this hardware is exactly, just looks like pci-pci-bridge. The driver
-> > > > calls the children host bridges as "ports".
-> > > 
-> > > You can see the topology here in my first driver submit cover letter
-> > > message [0].
-> > > 
-> > >  [0]: https://lore.kernel.org/all/CAMhs-H-BA+KzEwuDPzcmrDPdgJBFA2XdYTBvT4R4MEOUB=WQ1g@mail.gmail.com/t/
-> > 
-> > Nothing unusual here, this looks like the standard PCIe topology.
-> > 
-> > What *might* be unusual is describing the Root Ports in DT.  Since
-> > they are standard PCI devices, they shouldn't need DT description
-> > unless there's some unusual power/clock/reset control or something
-> > that is not discoverable via PCI enumeration.
-> 
-> It's only unusual because typically there's only 1 RP per host bridge 
-> and properties which really apply to the RP get stuck in the host bridge 
-> node because we don't have a RP node. An example is perst-gpios. That's 
-> not a property of the RP either, but the RP is the upstream side of a 
-> slot and we often don't have a node for the device either.
-
-Makes sense.
-
-I'm still confused about one thing, maybe just because I don't really
-know how to read these bindings.  The binding now looks like this:
-
-  properties:
-    compatible:
-      const: mediatek,mt7621-pci
-
-    reg:
-      items:
-        - description: host-pci bridge registers
-        - description: pcie port 0 RC control registers       # A
-        - description: pcie port 1 RC control registers       # A
-        - description: pcie port 2 RC control registers       # A
-
-  patternProperties:
-    '^pcie@[0-2],0$':
-      type: object
-      $ref: /schemas/pci/pci-pci-bridge.yaml#
-
-      properties:
-        reg:                                                  # B
-          maxItems: 1
-
-It looks like the "A" items are separate things from the "B" items?
-
-But I think the relevant code is here:
-
-  mt7621_pcie_probe
-    mt7621_pcie_parse_dt
-      pcie->base = devm_platform_ioremap_resource(pdev, 0)             # 1
-      for_each_available_child_of_node(node, child)
-        mt7621_pcie_parse_port
-          port->base = devm_platform_ioremap_resource(pdev, slot + 1)  # 2
-
-where it looks like both "1" and "2" use the items in the "A" list,
-i.e., resources 0, 1, 2, 3, all from the same platform device.  Is
-there code that uses the "B" item that this patch adds?
-
-Bjorn
+Same thing here.  INVLPG is very much still a thing, it's only PCID that gets
+disabled.
 
