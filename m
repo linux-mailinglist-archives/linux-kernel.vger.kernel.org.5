@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 202048A19EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:27:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 038C48A19EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:27:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAFE8286078
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:27:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3065F1C21759
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02CE53BBC7;
-	Thu, 11 Apr 2024 15:37:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF8C1BE405;
+	Thu, 11 Apr 2024 15:37:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="TZPzQtGf"
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="inMV2Mjz"
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C1AD824A0
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:37:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0479F3B2A8
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849858; cv=none; b=l10iaP2Ve0Sie5fQaXRIxWksxFiuyhZedJdaBkGMhkBixS+bDThCJHB/Lir8LMIQUNFG9fvjwCnNYcKduDTo9LriEZftlqQj++g/9BCDSUTBmKg7PeV8YaJ1ecz3mVeKsczD2uqEp79haI4N3Wl2z/rUTJoxg7kCQ1py9tTUJFU=
+	t=1712849860; cv=none; b=Ho0U+8aohNnNDhnFEU6cc2Ld1HYaoU7+pVilxPklzKmhFaslp6aWOQD1jSlpgczUBeI9M2GPDXJIO4KiNPCc7Qsr1QVnvTJ6fxmeK2tk48VbDU1yd/eXGmHpLjuP6x+t77ML7c562XO8W3ORR+3uySKZClgkjsnjG4fEnef3vrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849858; c=relaxed/simple;
-	bh=BAPWAjZLiDROs8jxMHAOxFaSHauyl2uBclzPLslEJ2s=;
+	s=arc-20240116; t=1712849860; c=relaxed/simple;
+	bh=fuNH7H35Fr1gbYOH3tDTlpJb1H8dO6w2oUmmxKFFPCY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dgHX9Apjyf7wDcNH4nkNrVaRPyl1kVx2nnoYmRCG6jDh65AOwxP6Q6KJGUZyi8ee2LSW+nMhKaBhTpwLOkMGBQmWNKzBXR1T1V+pkJKUXj5YPhf23B0nHKHKAUlN/WElFHl+0hIuCjDoz095NZMMP5G9p3B+IbU54NouBk8aRPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=TZPzQtGf; arc=none smtp.client-ip=209.85.166.42
+	 MIME-Version; b=YmS+NpbVdyng2YJ9hL7iso+TkYHkKDE/xunxv0SVFQdYV9bHd8+10OhW2TRgXkdVdf7LRsnvFuCGRBFKYpcwm1vdCukDp0/EEIpE3T0oODWUVj1fgemEJRZ7BoHBQXSRQ3B8cRmFRZwQztrvqhpKhXygZJW3C03UofpOUiVfhMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=inMV2Mjz; arc=none smtp.client-ip=209.85.166.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso58108139f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:37:36 -0700 (PDT)
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-36a224d7414so185945ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:37:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849856; x=1713454656; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849858; x=1713454658; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=URP2qTC8kfAbg68QrAJNbB4HOOdUB0afPA5uur+wxo0=;
-        b=TZPzQtGfkEqixlwJDx/4aMPxQsA650iHZOkSqaLCqhsTJyH+1OtnNRMfduMqkabeZK
-         seYzVftWaEpNGKYf7env9x8iIpvM6Mh/xSWeaakIpox1JgrxI7+hNOMkOoJY+/t7j6F7
-         5Y76w/u0swX8udv0scANjHrDLeKaCt+AXqZWu4MY4T4KBWHRKOcGHbZA8UGg7b6ockA3
-         romxGAt8rBP82GaAvgK/6RKdK0nukJcT94SEhN6xGC09gozArpeE2hPf/91QIYBMRB0z
-         gm/+ed2bqgxQW/1KEkY6gPPfRPjKCSROzINOTqhuS6UKzoY6Di1hHzjDx0IY47uWLPS7
-         6PNA==
+        bh=DkxbKUE7zw8SWj7NeL7kJSvCh3cG4pC9ZQfME48WxZw=;
+        b=inMV2MjzKoN+cf3DzJHPQuVvJviolz7MUoaVtiouD+ZxB7nunvPS/PxpCwA0M5kvp4
+         CFIuNHIq5yDxV/1lsYtAIDMx0erA6MQv9sWdnXvT9BeMtlbVu98lo8/cL41FovOEY7wq
+         FHm6o4XwArumDCHuov1Q2AZLzh5MwYt/D2r66k69pVKqUDPoDLVK3FCcipyKxv0fuBhu
+         YlRYsJ9IyY1nfa6seuOMTTMhm/mSB+Y8wPCXjZoSDc/+sNmMdnt8WdVImwx5ETQuuhaZ
+         ym/cC2c0zNoNKkvmsKrV2h15wbNIZnCQ3x3CNPjyZ2cx8xYzgvnVSPaWVkIb7T80fEi8
+         9HNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849856; x=1713454656;
+        d=1e100.net; s=20230601; t=1712849858; x=1713454658;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=URP2qTC8kfAbg68QrAJNbB4HOOdUB0afPA5uur+wxo0=;
-        b=rXyqNiCS38Wk6aYyV2YG5bicfMyP+QFN8niT8kL0mG30Ez1REVGWoQSnwUA7TXe4jv
-         oF8J1mFGh9+b1/TmgbmcYtGdl3bY73c6nvsdF1joOt4fWyiVSvL0tjyGi2/JYMg65l+2
-         ul5FPJ/vpVYfK/ZqL5xKzi5NuLuGQSmINrFdRd8g3WYX7VEYn/5FjTtAz8OrRA908ROg
-         gerLC8+6+2i0hFdOZK+dZ4s8dpnomgFxj5JPbcFmAf+awJ/X//DH4/wibxTLSjDzekpg
-         tV47IuQeLaX/eHExzNKUg4l6SaZFgWn+dFVVxQvPyaI82Qo2m/igi6VaVFrbeM5z4OfS
-         9Qeg==
-X-Gm-Message-State: AOJu0YwJs0mPs4b4fIICn0EdnLOK1tRcdk06Vdv1YdQXHhKrHgAY+yiK
-	werG9nf/TBbc2fHvW5DdOoEATmzEUDy+AyR59NsBWctHvVuzpicDugACdPTE/Uv+CpsfTyHigLo
-	p
-X-Google-Smtp-Source: AGHT+IG8jZcgUW4t+29t9+YD5GFKkaOIqqAeOZyjQT4aIh4EWqH71jFBjK14TXyyp/9pIy400ODDzw==
-X-Received: by 2002:a6b:f312:0:b0:7d5:de23:13a9 with SMTP id m18-20020a6bf312000000b007d5de2313a9mr165215ioh.1.1712849855715;
-        Thu, 11 Apr 2024 08:37:35 -0700 (PDT)
+        bh=DkxbKUE7zw8SWj7NeL7kJSvCh3cG4pC9ZQfME48WxZw=;
+        b=fgURrv44nFI64iO++vgoYF1TZn4rWEHNPzGZkGT7m/WHV1ZjpfDTHHoqCxpN1tVBnY
+         JRL/4/MqFnaEP7RXz2eNHBitzHbgNpTf1U18hiyivvTm42xUgCZrZ38l6xi9qrTgw2yZ
+         a1UuC4B9QKImIYdk0uBTXFHwDZ47P+ii1wQ72duCaVwFkBbavC8wTWrzM04k7dPGpoQz
+         PSxLu7GVFvvQUdxmizyiQGhLe7yablnofQYaGQkz8WhfO3eCkuHqXCPfx9XnCfjT1O+e
+         5XWDlm6yee1I0MvtDe+vgpiXEDvhA3NB2nvtm4BUedG/pec+2ooC+OVlRFfooRIC7hcT
+         9F7w==
+X-Gm-Message-State: AOJu0YwAX+evFMCORqdaiMq6MSh0iIx/3Njnv/OY27cDOQyu0kfyfIik
+	xcCnhVjkoCv53C3EQ2DxHks9vB/qRsppUaCtFF/TTJD8IDqF3X+FF7B9QJrdWaA3lld597+vRJQ
+	Y
+X-Google-Smtp-Source: AGHT+IGXxfNPFZVg02CSpk2D+4CXTmtslsx+KNhszjd3sOKYvU0s9Xsise+s1/EAJOXbgUaWYjL6NA==
+X-Received: by 2002:a6b:6605:0:b0:7d4:1dae:da1a with SMTP id a5-20020a6b6605000000b007d41daeda1amr152695ioc.2.1712849857826;
+        Thu, 11 Apr 2024 08:37:37 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
         by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:37:35 -0700 (PDT)
+        Thu, 11 Apr 2024 08:37:36 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 213/437] misc: lis3lv02d: convert to iterators
-Date: Thu, 11 Apr 2024 09:15:53 -0600
-Message-ID: <20240411153126.16201-214-axboe@kernel.dk>
+Subject: [PATCH 214/437] misc: eeprom/idt_89hpesx: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:15:54 -0600
+Message-ID: <20240411153126.16201-215-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,64 +85,72 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/misc/lis3lv02d/lis3lv02d.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/misc/eeprom/idt_89hpesx.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/misc/lis3lv02d/lis3lv02d.c b/drivers/misc/lis3lv02d/lis3lv02d.c
-index 49868a45c0ad..e12677611146 100644
---- a/drivers/misc/lis3lv02d/lis3lv02d.c
-+++ b/drivers/misc/lis3lv02d/lis3lv02d.c
-@@ -27,6 +27,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/atomic.h>
- #include <linux/of.h>
-+#include <linux/uio.h>
- #include "lis3lv02d.h"
+diff --git a/drivers/misc/eeprom/idt_89hpesx.c b/drivers/misc/eeprom/idt_89hpesx.c
+index 327afb866b21..dfb68c0cc999 100644
+--- a/drivers/misc/eeprom/idt_89hpesx.c
++++ b/drivers/misc/eeprom/idt_89hpesx.c
+@@ -900,20 +900,20 @@ static ssize_t eeprom_read(struct file *filp, struct kobject *kobj,
+  * "<reg addr>:<value>". Register address must be aligned within 4 bytes
+  * (one DWORD).
+  */
+-static ssize_t idt_dbgfs_csr_write(struct file *filep, const char __user *ubuf,
+-				   size_t count, loff_t *offp)
++static ssize_t idt_dbgfs_csr_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct idt_89hpesx_dev *pdev = filep->private_data;
++	struct idt_89hpesx_dev *pdev = iocb->ki_filp->private_data;
+ 	char *colon_ch, *csraddr_str, *csrval_str;
++	size_t count = iov_iter_count(from);
+ 	int ret;
+ 	u32 csraddr, csrval;
+ 	char *buf;
  
- #define DRIVER_NAME     "lis3lv02d"
-@@ -596,12 +597,12 @@ static int lis3lv02d_misc_release(struct inode *inode, struct file *file)
- 	return 0;
+-	if (*offp)
++	if (iocb->ki_pos)
+ 		return 0;
+ 
+ 	/* Copy data from User-space */
+-	buf = memdup_user_nul(ubuf, count);
++	buf = iterdup(from, count);
+ 	if (IS_ERR(buf))
+ 		return PTR_ERR(buf);
+ 
+@@ -987,10 +987,9 @@ static ssize_t idt_dbgfs_csr_write(struct file *filep, const char __user *ubuf,
+  * It just prints the pair "0x<reg addr>:0x<value>" to passed buffer.
+  */
+ #define CSRBUF_SIZE	((size_t)32)
+-static ssize_t idt_dbgfs_csr_read(struct file *filep, char __user *ubuf,
+-				  size_t count, loff_t *offp)
++static ssize_t idt_dbgfs_csr_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	struct idt_89hpesx_dev *pdev = filep->private_data;
++	struct idt_89hpesx_dev *pdev = iocb->ki_filp->private_data;
+ 	u32 csraddr, csrval;
+ 	char buf[CSRBUF_SIZE];
+ 	int ret, size;
+@@ -1008,7 +1007,7 @@ static ssize_t idt_dbgfs_csr_read(struct file *filep, char __user *ubuf,
+ 		(unsigned int)csraddr, (unsigned int)csrval);
+ 
+ 	/* Copy data to User-space */
+-	return simple_read_from_buffer(ubuf, count, offp, buf, size);
++	return simple_copy_to_iter(buf, &iocb->ki_pos, size, to);
  }
  
--static ssize_t lis3lv02d_misc_read(struct file *file, char __user *buf,
--				size_t count, loff_t *pos)
-+static ssize_t lis3lv02d_misc_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct lis3lv02d *lis3 = container_of(file->private_data,
-+	struct lis3lv02d *lis3 = container_of(iocb->ki_filp->private_data,
- 					      struct lis3lv02d, miscdev);
+ /*
+@@ -1025,8 +1024,8 @@ static BIN_ATTR_RW(eeprom, EEPROM_DEF_SIZE);
+ static const struct file_operations csr_dbgfs_ops = {
+ 	.owner = THIS_MODULE,
+ 	.open = simple_open,
+-	.write = idt_dbgfs_csr_write,
+-	.read = idt_dbgfs_csr_read
++	.write_iter = idt_dbgfs_csr_write,
++	.read_iter = idt_dbgfs_csr_read
+ };
  
-+	size_t count = iov_iter_count(to);
- 	DECLARE_WAITQUEUE(wait, current);
- 	u32 data;
- 	unsigned char byte_data;
-@@ -617,7 +618,7 @@ static ssize_t lis3lv02d_misc_read(struct file *file, char __user *buf,
- 		if (data)
- 			break;
- 
--		if (file->f_flags & O_NONBLOCK) {
-+		if (iocb->ki_filp->f_flags & O_NONBLOCK) {
- 			retval = -EAGAIN;
- 			goto out;
- 		}
-@@ -638,7 +639,7 @@ static ssize_t lis3lv02d_misc_read(struct file *file, char __user *buf,
- 	/* make sure we are not going into copy_to_user() with
- 	 * TASK_INTERRUPTIBLE state */
- 	set_current_state(TASK_RUNNING);
--	if (copy_to_user(buf, &byte_data, sizeof(byte_data)))
-+	if (!copy_to_iter_full(&byte_data, sizeof(byte_data), to))
- 		retval = -EFAULT;
- 
- out:
-@@ -670,7 +671,7 @@ static int lis3lv02d_misc_fasync(int fd, struct file *file, int on)
- static const struct file_operations lis3lv02d_misc_fops = {
- 	.owner   = THIS_MODULE,
- 	.llseek  = no_llseek,
--	.read    = lis3lv02d_misc_read,
-+	.read_iter    = lis3lv02d_misc_read,
- 	.open    = lis3lv02d_misc_open,
- 	.release = lis3lv02d_misc_release,
- 	.poll    = lis3lv02d_misc_poll,
+ /*===========================================================================
 -- 
 2.43.0
 
