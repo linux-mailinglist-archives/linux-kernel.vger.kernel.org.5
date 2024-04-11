@@ -1,81 +1,86 @@
-Return-Path: <linux-kernel+bounces-141301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 092998A1C4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:44:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D86B68A1DEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:21:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72E391F27DE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:44:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53FF3B27946
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:43:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE7EB15E5D3;
-	Thu, 11 Apr 2024 16:15:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58B0715E20C;
+	Thu, 11 Apr 2024 16:15:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Hj0tFwF0"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Frce3vEG"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7D7715E1F0
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:15:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F64F15E208;
+	Thu, 11 Apr 2024 16:15:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712852108; cv=none; b=A9ElBzOZRWOU29XGGBSRaHenIGs3YFAjV6UDk9ytTyaM2zF3K70L/XD6VjsmAXggDsNXzN5ScPaUNQgvpgrH4v868MGrmiR6K1FSCpTMB942F4bF5X/L9azVcpsheib7p2vTd7G6he/kjR2NwMf8HKMtTMRXIOpptwdlyJHI4KM=
+	t=1712852106; cv=none; b=E/Emrq9efIZGvUEw1w/b9hHnTbYNRyIMG20VKwMhngNHYynyMW727fU6pceijmaqTXnjG3g18XLhoOKJOs3Lpa257TVpRkT1DC1BV2ckRzjYwuZ3GVgp3DYsGMpvGykATqSZIewcjpYnTcZNOUIXwDh6FekiQVq6YfjgEagIIiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712852108; c=relaxed/simple;
-	bh=d9k2HE43EvWXBgzWnvQ6s1RvnidSOaEXdmgTPsik9X8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Pc4TnEpsSxrkcv3mou/D6O+5kKYaBPslofoLuhfKAcq0rS0c8cYJKtrkISV+ESdj9taMEQGLAZwNZj9G5K6N7XIbc5MhgAPZ3guUASjTg0seDKetR7LpF67fUOgYfjsd38FKf3uEBSCXEUj1zP6X4hDmqLRvFnMJxu5p+fgHdEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Hj0tFwF0; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712852104;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZFA0bMj9z9/14SwcV51t/qxixBb0kWdqBqGoNQMkwz8=;
-	b=Hj0tFwF0rAvTxKpfDIVksfDZXFrPUYXHYBt6h3zjiCqZnME6mpwRyZaocsbNncBjgOdVsS
-	Pmk/WFBqDQWQ4fatFUE/7A1eHNpqdrABwJ7bxdaBKNDPpA3P6BB6OHslNzULQFhMq7XrHn
-	eJnp14otsqpGSPgrBQ7faS0wpKEtUJw=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-73-W0rdtmfUNGuk1XEjadqnCQ-1; Thu,
- 11 Apr 2024 12:14:59 -0400
-X-MC-Unique: W0rdtmfUNGuk1XEjadqnCQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F420C3803914;
-	Thu, 11 Apr 2024 16:14:58 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.39.194.173])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id F24BC10E4B;
-	Thu, 11 Apr 2024 16:14:54 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	David Hildenbrand <david@redhat.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Janosch Frank <frankja@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Peter Xu <peterx@redhat.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	kvm@vger.kernel.org,
-	linux-s390@vger.kernel.org
-Subject: [PATCH v3 2/2] s390/mm: re-enable the shared zeropage for !PV and !skeys KVM guests
-Date: Thu, 11 Apr 2024 18:14:41 +0200
-Message-ID: <20240411161441.910170-3-david@redhat.com>
-In-Reply-To: <20240411161441.910170-1-david@redhat.com>
-References: <20240411161441.910170-1-david@redhat.com>
+	s=arc-20240116; t=1712852106; c=relaxed/simple;
+	bh=zFthHjjh9Aso3EVZFd6I/EjfK4r2+rzfemyi6bGp4hI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bv4MsA2amkJbw/0k50zZjWcsvZYloE+b5TUtnGkKsWQTc6zjiWONNwZnABUK+XERDHCD+XWAtrkY7z100hS4p7Btu6sPZrpb1vEI5GK9zggszHouTLFMd4x5fterOOndi8h6I7nMgKFn6Hr0tajBiu1NRL2r+7aAhUiOG6eMiPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Frce3vEG; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ecee5c08e6so38018b3a.3;
+        Thu, 11 Apr 2024 09:15:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712852104; x=1713456904; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bHKLXIL7AGZ7PCEor3/6k+rOZmYsF608r3G1HPhZ/Ds=;
+        b=Frce3vEGai+M6/ExhG5Tpba6zw8jl9RYa+DDE/FMyjkpyo4O40Gnf0mp5c8qGQy6QO
+         ltSwqpxE/5p6WDvEeuWpbPmJmMXM2FSF9rOliY8dv4wDSlht7o9vXi2oEoqhFI9pCKTX
+         CKCUg7YkPq7QLKmwN2VHwgYwuqqWV8swvWPB5W9ySqxe7gtS9mPxicNVISdde58C8h+j
+         WT2IFNMYCYGwtL4wRRE1OeI85kRQN/XHVSmnjdbMo1MK5jaqMjW6C/G6dp5VftxZz/xT
+         u5afE+B6pY/+cX2zRuWpPLmAi9G/SNDvy5jtmDBdwMgxUueXcVr3FvBfGQFoYppVaHor
+         JKzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712852104; x=1713456904;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bHKLXIL7AGZ7PCEor3/6k+rOZmYsF608r3G1HPhZ/Ds=;
+        b=RMLjO3lXNA8mVozIB8hL29SqeCkZW1C/doQ6nlPgGhyYZZ3IRZp3WQOGq3KLT2xH6B
+         CtfFvpvIZyDTnEBH/2ClEM+QLPg+lKTEFpvDaHMDZvqvDg02CZoUvgZQ/b8D+73kmn5n
+         k7UXeU5bUP+n3fUJ+NwMcFo2pwYjQsdUr9vQDKIIltqVZKj6pG1ZWydX1mFtPIZIKfdJ
+         /Vtn4iNpAdj98rknopkdDvoUBPyeGTe6RNjogKOv422nB/tKOvBaT7b1sz/jj7UOMZs8
+         QRn80baDXlWr7LBCYhezSnMM4RT+fcIpDeDD0AlnEsvPzJlIF19Hh9IOYWIf7TM6qtIB
+         zM9w==
+X-Forwarded-Encrypted: i=1; AJvYcCWin5Ke2OB7JarSkJ3VqE9P8qhZRkHL+iGGZ/wD/WfYjw4iwWiae2AOiqUXsYBTLMYy0nesMJJPPeumPWqk5i6OkloCik/mb5H0IInjXAV9JfBNvbpazGuPF/gYrWCOUN+n8LiB7GDQ/A==
+X-Gm-Message-State: AOJu0YxHDOuV/NBzEhdVJIkonln0OHQmwuZgvk+pOVv1UOHwd3c/JxD1
+	/EZWR1NvaUQylrDpKV0rojg232jMWWcEi821M5RrIluAtBQQpLPu
+X-Google-Smtp-Source: AGHT+IGFtEPQKiuEQiynF7E0e+oZQ/02XP6gKtgqvqBPUSFKvM58AzS0FM2xcxRBqwpZ7OTrkf1t5g==
+X-Received: by 2002:a05:6a20:f3b0:b0:1a7:52f7:8a38 with SMTP id qr48-20020a056a20f3b000b001a752f78a38mr307671pzb.15.1712852104412;
+        Thu, 11 Apr 2024 09:15:04 -0700 (PDT)
+Received: from frhdebian.corp.toradex.com ([201.82.41.210])
+        by smtp.gmail.com with ESMTPSA id t184-20020a632dc1000000b005f410b67e60sm1254185pgt.22.2024.04.11.09.15.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 09:15:04 -0700 (PDT)
+From: Hiago De Franco <hiagofranco@gmail.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Hiago De Franco <hiago.franco@toradex.com>
+Subject: [PATCH] arm64: dts: freescale: imx8m[mp]-verdin: Update audio card name
+Date: Thu, 11 Apr 2024 13:14:41 -0300
+Message-Id: <20240411161441.70262-1-hiagofranco@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,359 +88,79 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-commit fa41ba0d08de ("s390/mm: avoid empty zero pages for KVM guests to
-avoid postcopy hangs") introduced an undesired side effect when combined
-with memory ballooning and VM migration: memory part of the inflated
-memory balloon will consume memory.
+From: Hiago De Franco <hiago.franco@toradex.com>
 
-Assuming we have a 100GiB VM and inflated the balloon to 40GiB. Our VM
-will consume ~60GiB of memory. If we now trigger a VM migration,
-hypervisors like QEMU will read all VM memory. As s390x does not support
-the shared zeropage, we'll end up allocating for all previously-inflated
-memory part of the memory balloon: 50 GiB. So we might easily
-(unexpectedly) crash the VM on the migration source.
+On the Dahlia and Development carrier boards for the Verdin family
+(iMX8MM and iMX8MP), WM8904 and NAU8822 codecs are used. Instead of
+module-specific names, switch to more generic names based on the codec
+employed on the carrier board itself.
 
-Even worse, hypervisors like QEMU optimize for zeropage migration to not
-consume memory on the migration destination: when migrating a
-"page full of zeroes", on the migration destination they check whether the
-target memory is already zero (by reading the destination memory) and avoid
-writing to the memory to not allocate memory: however, s390x will also
-allocate memory here, implying that also on the migration destination, we
-will end up allocating all previously-inflated memory part of the memory
-balloon.
+This modification facilitates access to ALSA card names, ensuring
+consistency across iMX8MP and iMX8MM, as they share the same carrier
+board.
 
-This is especially bad if actual memory overcommit was not desired, when
-memory ballooning is used for dynamic VM memory resizing, setting aside
-some memory during boot that can be added later on demand. Alternatives
-like virtio-mem that would avoid this issue are not yet available on
-s390x.
-
-There could be ways to optimize some cases in user space: before reading
-memory in an anonymous private mapping on the migration source, check via
-/proc/self/pagemap if anything is already populated. Similarly check on
-the migration destination before reading. While that would avoid
-populating tables full of shared zeropages on all architectures, it's
-harder to get right and performant, and requires user space changes.
-
-Further, with posctopy live migration we must place a page, so there,
-"avoid touching memory to avoid allocating memory" is not really
-possible. (Note that a previously we would have falsely inserted
-shared zeropages into processes using UFFDIO_ZEROPAGE where
-mm_forbids_zeropage() would have actually forbidden it)
-
-PV is currently incompatible with memory ballooning, and in the common
-case, KVM guests don't make use of storage keys. Instead of zapping
-zeropages when enabling storage keys / PV, that turned out to be
-problematic in the past, let's do exactly the same we do with KSM pages:
-trigger unsharing faults to replace the shared zeropages by proper
-anonymous folios.
-
-What about added latency when enabling storage kes? Having a lot of
-zeropages in applicable environments (PV, legacy guests, unittests) is
-unexpected. Further, KSM could today already unshare the zeropages
-and unmerging KSM pages when enabling storage kets would unshare the
-KSM-placed zeropages in the same way, resulting in the same latency.
-
-Reviewed-by: Christian Borntraeger <borntraeger@linux.ibm.com>
-Tested-by: Christian Borntraeger <borntraeger@linux.ibm.com>
-Fixes: fa41ba0d08de ("s390/mm: avoid empty zero pages for KVM guests to avoid postcopy hangs")
-Signed-off-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Hiago De Franco <hiago.franco@toradex.com>
 ---
- arch/s390/include/asm/gmap.h        |   2 +-
- arch/s390/include/asm/mmu.h         |   5 +
- arch/s390/include/asm/mmu_context.h |   1 +
- arch/s390/include/asm/pgtable.h     |  16 ++-
- arch/s390/kvm/kvm-s390.c            |   4 +-
- arch/s390/mm/gmap.c                 | 163 +++++++++++++++++++++-------
- 6 files changed, 144 insertions(+), 47 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mm-verdin-dahlia.dtsi | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mm-verdin-dev.dtsi    | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mp-verdin-dahlia.dtsi | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mp-verdin-dev.dtsi    | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/s390/include/asm/gmap.h b/arch/s390/include/asm/gmap.h
-index 5cc46e0dde62..9725586f4259 100644
---- a/arch/s390/include/asm/gmap.h
-+++ b/arch/s390/include/asm/gmap.h
-@@ -146,7 +146,7 @@ int gmap_mprotect_notify(struct gmap *, unsigned long start,
- 
- void gmap_sync_dirty_log_pmd(struct gmap *gmap, unsigned long dirty_bitmap[4],
- 			     unsigned long gaddr, unsigned long vmaddr);
--int gmap_mark_unmergeable(void);
-+int s390_disable_cow_sharing(void);
- void s390_unlist_old_asce(struct gmap *gmap);
- int s390_replace_asce(struct gmap *gmap);
- void s390_uv_destroy_pfns(unsigned long count, unsigned long *pfns);
-diff --git a/arch/s390/include/asm/mmu.h b/arch/s390/include/asm/mmu.h
-index bb1b4bef1878..4c2dc7abc285 100644
---- a/arch/s390/include/asm/mmu.h
-+++ b/arch/s390/include/asm/mmu.h
-@@ -32,6 +32,11 @@ typedef struct {
- 	unsigned int uses_skeys:1;
- 	/* The mmu context uses CMM. */
- 	unsigned int uses_cmm:1;
-+	/*
-+	 * The mmu context allows COW-sharing of memory pages (KSM, zeropage).
-+	 * Note that COW-sharing during fork() is currently always allowed.
-+	 */
-+	unsigned int allow_cow_sharing:1;
- 	/* The gmaps associated with this context are allowed to use huge pages. */
- 	unsigned int allow_gmap_hpage_1m:1;
- } mm_context_t;
-diff --git a/arch/s390/include/asm/mmu_context.h b/arch/s390/include/asm/mmu_context.h
-index 929af18b0908..a7789a9f6218 100644
---- a/arch/s390/include/asm/mmu_context.h
-+++ b/arch/s390/include/asm/mmu_context.h
-@@ -35,6 +35,7 @@ static inline int init_new_context(struct task_struct *tsk,
- 	mm->context.has_pgste = 0;
- 	mm->context.uses_skeys = 0;
- 	mm->context.uses_cmm = 0;
-+	mm->context.allow_cow_sharing = 1;
- 	mm->context.allow_gmap_hpage_1m = 0;
- #endif
- 	switch (mm->context.asce_limit) {
-diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-index 60950e7a25f5..259c2439c251 100644
---- a/arch/s390/include/asm/pgtable.h
-+++ b/arch/s390/include/asm/pgtable.h
-@@ -566,10 +566,20 @@ static inline pud_t set_pud_bit(pud_t pud, pgprot_t prot)
- }
- 
- /*
-- * In the case that a guest uses storage keys
-- * faults should no longer be backed by zero pages
-+ * As soon as the guest uses storage keys or enables PV, we deduplicate all
-+ * mapped shared zeropages and prevent new shared zeropages from getting
-+ * mapped.
-  */
--#define mm_forbids_zeropage mm_has_pgste
-+#define mm_forbids_zeropage mm_forbids_zeropage
-+static inline int mm_forbids_zeropage(struct mm_struct *mm)
-+{
-+#ifdef CONFIG_PGSTE
-+	if (!mm->context.allow_cow_sharing)
-+		return 1;
-+#endif
-+	return 0;
-+}
-+
- static inline int mm_uses_skeys(struct mm_struct *mm)
- {
- #ifdef CONFIG_PGSTE
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 5147b943a864..db3392f0be21 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -2631,9 +2631,7 @@ static int kvm_s390_handle_pv(struct kvm *kvm, struct kvm_pv_cmd *cmd)
- 		if (r)
- 			break;
- 
--		mmap_write_lock(current->mm);
--		r = gmap_mark_unmergeable();
--		mmap_write_unlock(current->mm);
-+		r = s390_disable_cow_sharing();
- 		if (r)
- 			break;
- 
-diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
-index 094b43b121cd..9233b0acac89 100644
---- a/arch/s390/mm/gmap.c
-+++ b/arch/s390/mm/gmap.c
-@@ -2549,41 +2549,6 @@ static inline void thp_split_mm(struct mm_struct *mm)
- }
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
- 
--/*
-- * Remove all empty zero pages from the mapping for lazy refaulting
-- * - This must be called after mm->context.has_pgste is set, to avoid
-- *   future creation of zero pages
-- * - This must be called after THP was disabled.
-- *
-- * mm contracts with s390, that even if mm were to remove a page table,
-- * racing with the loop below and so causing pte_offset_map_lock() to fail,
-- * it will never insert a page table containing empty zero pages once
-- * mm_forbids_zeropage(mm) i.e. mm->context.has_pgste is set.
-- */
--static int __zap_zero_pages(pmd_t *pmd, unsigned long start,
--			   unsigned long end, struct mm_walk *walk)
--{
--	unsigned long addr;
--
--	for (addr = start; addr != end; addr += PAGE_SIZE) {
--		pte_t *ptep;
--		spinlock_t *ptl;
--
--		ptep = pte_offset_map_lock(walk->mm, pmd, addr, &ptl);
--		if (!ptep)
--			break;
--		if (is_zero_pfn(pte_pfn(*ptep)))
--			ptep_xchg_direct(walk->mm, addr, ptep, __pte(_PAGE_INVALID));
--		pte_unmap_unlock(ptep, ptl);
--	}
--	return 0;
--}
--
--static const struct mm_walk_ops zap_zero_walk_ops = {
--	.pmd_entry	= __zap_zero_pages,
--	.walk_lock	= PGWALK_WRLOCK,
--};
--
- /*
-  * switch on pgstes for its userspace process (for kvm)
-  */
-@@ -2601,22 +2566,140 @@ int s390_enable_sie(void)
- 	mm->context.has_pgste = 1;
- 	/* split thp mappings and disable thp for future mappings */
- 	thp_split_mm(mm);
--	walk_page_range(mm, 0, TASK_SIZE, &zap_zero_walk_ops, NULL);
- 	mmap_write_unlock(mm);
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(s390_enable_sie);
- 
--int gmap_mark_unmergeable(void)
-+static int find_zeropage_pte_entry(pte_t *pte, unsigned long addr,
-+		unsigned long end, struct mm_walk *walk)
-+{
-+	unsigned long *found_addr = walk->private;
-+
-+	/* Return 1 of the page is a zeropage. */
-+	if (is_zero_pfn(pte_pfn(*pte))) {
-+
-+		/*
-+		 * Shared zeropage in e.g., a FS DAX mapping? We cannot do the
-+		 * right thing and likely don't care: FAULT_FLAG_UNSHARE
-+		 * currently only works in COW mappings, which is also where
-+		 * mm_forbids_zeropage() is checked.
-+		 */
-+		if (!is_cow_mapping(walk->vma->vm_flags))
-+			return -EFAULT;
-+
-+		*found_addr = addr;
-+		return 1;
-+	}
-+	return 0;
-+}
-+
-+static const struct mm_walk_ops find_zeropage_ops = {
-+	.pte_entry	= find_zeropage_pte_entry,
-+	.walk_lock	= PGWALK_WRLOCK,
-+};
-+
-+/*
-+ * Unshare all shared zeropages, replacing them by anonymous pages. Note that
-+ * we cannot simply zap all shared zeropages, because this could later
-+ * trigger unexpected userfaultfd missing events.
-+ *
-+ * This must be called after mm->context.allow_cow_sharing was
-+ * set to 0, to avoid future mappings of shared zeropages.
-+ *
-+ * mm contracts with s390, that even if mm were to remove a page table,
-+ * and racing with walk_page_range_vma() calling pte_offset_map_lock()
-+ * would fail, it will never insert a page table containing empty zero
-+ * pages once mm_forbids_zeropage(mm) i.e.
-+ * mm->context.allow_cow_sharing is set to 0.
-+ */
-+static int __s390_unshare_zeropages(struct mm_struct *mm)
-+{
-+	struct vm_area_struct *vma;
-+	VMA_ITERATOR(vmi, mm, 0);
-+	unsigned long addr;
-+	int rc;
-+
-+	for_each_vma(vmi, vma) {
-+		/*
-+		 * We could only look at COW mappings, but it's more future
-+		 * proof to catch unexpected zeropages in other mappings and
-+		 * fail.
-+		 */
-+		if ((vma->vm_flags & VM_PFNMAP) || is_vm_hugetlb_page(vma))
-+			continue;
-+		addr = vma->vm_start;
-+
-+retry:
-+		rc = walk_page_range_vma(vma, addr, vma->vm_end,
-+					 &find_zeropage_ops, &addr);
-+		if (rc <= 0)
-+			continue;
-+
-+		/* addr was updated by find_zeropage_pte_entry() */
-+		rc = handle_mm_fault(vma, addr,
-+				     FAULT_FLAG_UNSHARE | FAULT_FLAG_REMOTE,
-+				     NULL);
-+		if (rc & VM_FAULT_OOM)
-+			return -ENOMEM;
-+		/*
-+		 * See break_ksm(): even after handle_mm_fault() returned 0, we
-+		 * must start the lookup from the current address, because
-+		 * handle_mm_fault() may back out if there's any difficulty.
-+		 *
-+		 * VM_FAULT_SIGBUS and VM_FAULT_SIGSEGV are unexpected but
-+		 * maybe they could trigger in the future on concurrent
-+		 * truncation. In that case, the shared zeropage would be gone
-+		 * and we can simply retry and make progress.
-+		 */
-+		cond_resched();
-+		goto retry;
-+	}
-+
-+	return rc;
-+}
-+
-+static int __s390_disable_cow_sharing(struct mm_struct *mm)
- {
-+	int rc;
-+
-+	if (!mm->context.allow_cow_sharing)
-+		return 0;
-+
-+	mm->context.allow_cow_sharing = 0;
-+
-+	/* Replace all shared zeropages by anonymous pages. */
-+	rc = __s390_unshare_zeropages(mm);
- 	/*
- 	 * Make sure to disable KSM (if enabled for the whole process or
- 	 * individual VMAs). Note that nothing currently hinders user space
- 	 * from re-enabling it.
- 	 */
--	return ksm_disable(current->mm);
-+	if (!rc)
-+		rc = ksm_disable(mm);
-+	if (rc)
-+		mm->context.allow_cow_sharing = 1;
-+	return rc;
-+}
-+
-+/*
-+ * Disable most COW-sharing of memory pages for the whole process:
-+ * (1) Disable KSM and unmerge/unshare any KSM pages.
-+ * (2) Disallow shared zeropages and unshare any zerpages that are mapped.
-+ *
-+ * Not that we currently don't bother with COW-shared pages that are shared
-+ * with parent/child processes due to fork().
-+ */
-+int s390_disable_cow_sharing(void)
-+{
-+	int rc;
-+
-+	mmap_write_lock(current->mm);
-+	rc = __s390_disable_cow_sharing(current->mm);
-+	mmap_write_unlock(current->mm);
-+	return rc;
- }
--EXPORT_SYMBOL_GPL(gmap_mark_unmergeable);
-+EXPORT_SYMBOL_GPL(s390_disable_cow_sharing);
- 
- /*
-  * Enable storage key handling from now on and initialize the storage
-@@ -2685,7 +2768,7 @@ int s390_enable_skey(void)
- 		goto out_up;
- 
- 	mm->context.uses_skeys = 1;
--	rc = gmap_mark_unmergeable();
-+	rc = __s390_disable_cow_sharing(mm);
- 	if (rc) {
- 		mm->context.uses_skeys = 0;
- 		goto out_up;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-verdin-dahlia.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-verdin-dahlia.dtsi
+index 1cff0b829357..45f7b8d87517 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-verdin-dahlia.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-verdin-dahlia.dtsi
+@@ -10,7 +10,7 @@ sound_card: sound-card {
+ 		simple-audio-card,format = "i2s";
+ 		simple-audio-card,frame-master = <&dailink_master>;
+ 		simple-audio-card,mclk-fs = <256>;
+-		simple-audio-card,name = "imx8mm-wm8904";
++		simple-audio-card,name = "verdin-wm8904";
+ 		simple-audio-card,routing =
+ 			"Headphone Jack", "HPOUTL",
+ 			"Headphone Jack", "HPOUTR",
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-verdin-dev.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-verdin-dev.dtsi
+index 3c4b8ca125e3..1f6a37f232da 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-verdin-dev.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-verdin-dev.dtsi
+@@ -10,7 +10,7 @@ sound_card: sound-card {
+ 		simple-audio-card,format = "i2s";
+ 		simple-audio-card,frame-master = <&dailink_master>;
+ 		simple-audio-card,mclk-fs = <256>;
+-		simple-audio-card,name = "imx8mm-nau8822";
++		simple-audio-card,name = "verdin-nau8822";
+ 		simple-audio-card,routing =
+ 			"Headphones", "LHP",
+ 			"Headphones", "RHP",
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin-dahlia.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-verdin-dahlia.dtsi
+index 7e9e4b13b5c5..e9ef9c553a47 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-verdin-dahlia.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin-dahlia.dtsi
+@@ -10,7 +10,7 @@ sound {
+ 		simple-audio-card,format = "i2s";
+ 		simple-audio-card,frame-master = <&codec_dai>;
+ 		simple-audio-card,mclk-fs = <256>;
+-		simple-audio-card,name = "imx8mp-wm8904";
++		simple-audio-card,name = "verdin-wm8904";
+ 		simple-audio-card,routing =
+ 			"Headphone Jack", "HPOUTL",
+ 			"Headphone Jack", "HPOUTR",
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin-dev.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-verdin-dev.dtsi
+index a509b2b7fa85..65cbf905a1d9 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-verdin-dev.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin-dev.dtsi
+@@ -22,7 +22,7 @@ sound {
+ 		simple-audio-card,format = "i2s";
+ 		simple-audio-card,frame-master = <&codec_dai>;
+ 		simple-audio-card,mclk-fs = <256>;
+-		simple-audio-card,name = "imx8mp-nau8822";
++		simple-audio-card,name = "verdin-nau8822";
+ 		simple-audio-card,routing =
+ 			"Headphones", "LHP",
+ 			"Headphones", "RHP",
 -- 
-2.44.0
+2.39.2
 
 
