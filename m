@@ -1,169 +1,668 @@
-Return-Path: <linux-kernel+bounces-139758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 355C48A075E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:52:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FF978A0761
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:56:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE9492891D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 04:51:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7712EB21590
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 04:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4497013C3F4;
-	Thu, 11 Apr 2024 04:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79D7D13C3F1;
+	Thu, 11 Apr 2024 04:56:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b8VqGLgX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hHPewMpy"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D1713BAE2;
-	Thu, 11 Apr 2024 04:51:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB861C0DE7;
+	Thu, 11 Apr 2024 04:56:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712811087; cv=none; b=L35U2zFXY8z6j3Zo3GJZ+AiBJUzDFk64ShGcrYc7NGDtAwMjyqJxmz5FWzWNcxq0Hk0ySC7oGCx6o7/FhAba9RTi0RpBz2W5o5KuASjuUSEmKsCDbB81fYE84u0Q/LzT7ENXdXlnIDeMC29najzlvboaiFSOIJr6HN8SA2SwTa0=
+	t=1712811395; cv=none; b=VnAo/IycF+6MMfiDF1vYOj4oz75AuHw1WsI9qHMmCMHDa7S/bahblQyqmEJQruH/OPD3IlQuh5Pvm8EHqnnluUDt1O/hXM6n8YTSu63sEcoYCniDqywOSP73+n5SI6Woht3rPRCTtPaaxwqsCxTpVGmibyaRYkKQn5c4UywxQgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712811087; c=relaxed/simple;
-	bh=GUxfCzNobyGC5VcWk513iZKVan8O3e+IeiUp4CdtYLk=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=Ox2vVC3OTevgwG2LDMtP/zW0f8vrE/j9GWYDfPoasqZ3Ljt9wgOObBKVCFXUhc4vBxxlNipPuiSzApcacCfRGPs8Xw3dwaUtrKDC+mFIMb3Rpz5QxQqmNjIgtx0idIuJvL/ifNhLDEgsCCCwk6p8ZqI7KnQejfD2IVm204U73Xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b8VqGLgX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D200CC433F1;
-	Thu, 11 Apr 2024 04:51:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712811087;
-	bh=GUxfCzNobyGC5VcWk513iZKVan8O3e+IeiUp4CdtYLk=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=b8VqGLgXa2uRDbIsxmNSEsx4zA5+/iDwI6SOLu+w8zQTw9+WewG6kT3Q75D7WGJL/
-	 TH/ZWHffaBZf4TtPtv063/KFMtcvgZG+zRgt4S9EHP/z8mF6xOevdRvqaB0Dvzb5Sx
-	 2TeQAGrZmAsDBwBe1ADEe2PfHgCnzfEN4WtUPnuXuq7ofvL8OUsF1KI6v6P07OnxdH
-	 1XeIa0f/M/DewCvnAEw9IRTlhadSmiTamZ/CAYaWmSDeOODc3WnZLJDNqkERYTUG3q
-	 dU2v27sDWR+WL0pbWeNlq35Mtmvn69p+WMi74N16r86r0FP+NsHHLJpM5RJZVg2PwT
-	 /VjcZIxQSymYA==
-Message-ID: <6709fe217cfbd78543e7dfe7c3acec6e.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1712811395; c=relaxed/simple;
+	bh=QrkWE8Xnlw+q5oIxRSNTYtkcjR+a7cB4X4I7TbrA5To=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GqKDh+Gmy+mvD1ZtQwrMzHGFkqMyewrltwo3yO5V4nUTCintGOJ7C++DdUY7vF2o62Wcmrn/uRil+EPumi9O1A4cvwrqxGOBnHdoedgnLjMMzs3hBBXEVrnfU35SUf2IkR1jrdvWeHhxAfS4CA51fZq/xAj5paC+ePON82eqPpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hHPewMpy; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ed5109d924so3042323b3a.0;
+        Wed, 10 Apr 2024 21:56:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712811393; x=1713416193; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wHTNrwtVfB656IwmijcBPMC2ZgOyFKP3zBvEDwvoMC8=;
+        b=hHPewMpyKPtzmZd2UINqRn3+v2wpm6FFKo6Qaxfmufu8TcK1p8rVELtJxZOTvyPkM1
+         Q0w5GJMDW8B7Dfev4g7vx/VaVsUD6HZTMPHoSTFIzC/MXneGORWQBxA3ZupYvub+aItW
+         o21btC+BwCixEpG13eMk5RLzjxpw7Qtw+n5afs2vje7nj1IleflrrMXhByQLSIDF4Z8J
+         tFrJSp9CVyCa2znOTKk72Gj7u3c3ynvQrVrkekLILBrBf6eqW18INU+tqMaSMoZVz1Cj
+         dRr9tHyYU8BZXXZoR70BSvwkuN6gSWQ/wmzwx8bRrfpI5qhGsFMp+We44UqAO5I9jyLO
+         iFAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712811393; x=1713416193;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wHTNrwtVfB656IwmijcBPMC2ZgOyFKP3zBvEDwvoMC8=;
+        b=aGBRkMUpnqB7fKdKgz1Q473iyrAwX/BAU8cJMuNmm+atJRQhMPJr+CfVMIyzaj1KmZ
+         pMCya2m8FCRTU0Z2ExEM2zKTfYQUBkz0DtKkmkSu8IxvUATGw7O51xl/ej8pGjDRh+Y0
+         cd+RRUTT+UVFH8NCbwTQk1I135h16hfHRAlPjLcrgqquROSNJOlDB0mJ4xUOXWpirbot
+         k2XGAW6yN1mrxc+AXMCgc6ysPxS6sK+jzLcidiRNT8rJsK177DVHXq/BIGutTYGtqVK+
+         zHIHn7uxgTXMkNN411zNYVMNPb62OnDhciJVnwvaaL6RnKDBRVZswrrAyDUdWFa6VM7x
+         o7LQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXa+LGQMcVGy7ur5B9sav5w2xXr/QXbpdB4TJ+2EfLVcsSmI/cUSAqq6OfLDYka1/LOM5vTPnDqrC6K/hUJqKsMiZfWs02KrLR1pyHNSCNQtmnzUmDWF0erw2weu/FwoKHd2B1KFahqYQ==
+X-Gm-Message-State: AOJu0YxqlhHwj4+PbfVZcNuJwXqb1atbmpFweo8OuYENKl/cavN5M0S1
+	ffp0fDwH6Uic+nYwNa+V1Zhyv9+edh+yXjljzJ0vO3fDGTYxbgv4
+X-Google-Smtp-Source: AGHT+IHtf+Wl4dhvIBwFO5quw26YDztgDGpa8JMW+Q3uEfK/tNr4QU1WIV2KNcjoDf4O75QBFns8wQ==
+X-Received: by 2002:a05:6a21:8806:b0:1a7:9476:6cb9 with SMTP id ta6-20020a056a21880600b001a794766cb9mr6205729pzc.32.1712811392865;
+        Wed, 10 Apr 2024 21:56:32 -0700 (PDT)
+Received: from localhost.localdomain (c-24-6-195-222.hsd1.ca.comcast.net. [24.6.195.222])
+        by smtp.gmail.com with ESMTPSA id c9-20020a17090abf0900b002a610ef880bsm809998pjs.6.2024.04.10.21.56.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 21:56:32 -0700 (PDT)
+From: rentao.bupt@gmail.com
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	taoren@meta.com
+Cc: Tao Ren <rentao.bupt@gmail.com>
+Subject: [PATCH] ARM: dts: aspeed: Remove Facebook Cloudripper dts
+Date: Wed, 10 Apr 2024 21:56:18 -0700
+Message-ID: <20240411045622.7915-1-rentao.bupt@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAP6Zq1htKQ5v0tH9HGRejnKwJ5ZauUWG_CzYUKegkVL4Ek8UxA@mail.gmail.com>
-References: <20240131182653.2673554-1-tmaimon77@gmail.com> <20240131182653.2673554-4-tmaimon77@gmail.com> <74e003c6d80611ddd826ac21f48b4b3a.sboyd@kernel.org> <CAP6Zq1g5gwXvYzO5fnHxG-6__gSCpNBY7VeEPyr4Qtijya6EfQ@mail.gmail.com> <8acf846e767884978f3bb98646433551.sboyd@kernel.org> <CAP6Zq1htKQ5v0tH9HGRejnKwJ5ZauUWG_CzYUKegkVL4Ek8UxA@mail.gmail.com>
-Subject: Re: [PATCH v23 3/3] clk: npcm8xx: add clock controller
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: benjaminfair@google.com, joel@jms.id.au, krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com, robh+dt@kernel.org, tali.perry1@gmail.com, venture@google.com, yuenn@google.com, openbmc@lists.ozlabs.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-To: Tomer Maimon <tmaimon77@gmail.com>
-Date: Wed, 10 Apr 2024 21:51:24 -0700
-User-Agent: alot/0.10
+Content-Transfer-Encoding: 8bit
 
-Quoting Tomer Maimon (2024-02-29 13:29:46)
-> Hi Stephen,
->=20
-> Thanks for your reply.
->=20
-> On Thu, 29 Feb 2024 at 00:48, Stephen Boyd <sboyd@kernel.org> wrote:
-> >
-> > Quoting Tomer Maimon (2024-02-25 10:00:35)
-> > > Hi Stephen,
-> > >
-> > > On Thu, 22 Feb 2024 at 07:58, Stephen Boyd <sboyd@kernel.org> wrote:
-> > > >
-> > > > Quoting Tomer Maimon (2024-01-31 10:26:53)
-> > > > > +
-> > > > > +static unsigned long npcm8xx_clk_div_get_parent(struct clk_hw *h=
-w,
-> > > > > +                                               unsigned long par=
-ent_rate)
-> > > > > +{
-> > > > > +       struct npcm8xx_clk *div =3D to_npcm8xx_clk(hw);
-> > > > > +       unsigned int val;
-> > > > > +
-> > > > > +       regmap_read(div->clk_regmap, div->offset, &val);
-> > > > > +       val =3D val >> div->shift;
-> > > > > +       val &=3D clk_div_mask(div->width);
-> > > > > +
-> > > > > +       return divider_recalc_rate(hw, parent_rate, val, NULL, di=
-v->flags,
-> > > > > +                                  div->width);
-> > > > > +}
-> > > > > +
-> > > > > +static const struct clk_ops npcm8xx_clk_div_ops =3D {
-> > > > > +       .recalc_rate =3D npcm8xx_clk_div_get_parent,
-> > > > > +};
-> > > > > +
-> > > > > +static int npcm8xx_clk_probe(struct platform_device *pdev)
-> > > > > +{
-> > > > > +       struct device_node *parent_np =3D of_get_parent(pdev->dev=
-of_node);
-> > > >
-> > > > The parent of this device is not a syscon.
-> > > Once I have registered the map that handles both reset and the clock
-> > > in general is syscon, this is why we will modify the DTS so the clock
-> > > and the reset will be under syscon father node
-> > >                 sysctrl: system-controller@f0801000 {
-> > >                         compatible =3D "syscon", "simple-mfd";
-> > >                         reg =3D <0x0 0xf0801000 0x0 0x1000>;
-> > >
-> > >                         rstc: reset-controller {
-> > >                                 compatible =3D "nuvoton,npcm845-reset=
-";
-> > >                                 reg =3D <0x0 0xf0801000 0x0 0xC4>;
-> > >                                 #reset-cells =3D <2>;
-> > >                                 nuvoton,sysgcr =3D <&gcr>;
-> > >                         };
-> > >
-> > >                         clk: clock-controller {
-> > >                                 compatible =3D "nuvoton,npcm845-clk";
-> > >                                 #clock-cells =3D <1>;
-> > >                                 clocks =3D <&refclk>;
-> > >                                 clock-names =3D "refclk";
-> > >                         };
-> > >                 };
-> > > You can see other drivers that using the same method like
-> > > https://elixir.bootlin.com/linux/v6.8-rc5/source/Documentation/device=
-tree/bindings/clock/socionext,uniphier-clock.yaml
-> >
-> > You will need a similar file like
-> > Documentation/devicetree/bindings/soc/socionext/socionext,uniphier-peri=
-ctrl.yaml
-> > then to describe the child nodes.
-> I can do it.
-> >
-> > Socionext may not be the best example to follow. I generally try to
-> > avoid syscon and simply put #reset-cells and #clock-cells in the node
-> If I remove syscon I can't use syscon_node_to_regmap function, What
-> should I use If I remove syscon? auxiliary bus? something else?
+From: Tao Ren <rentao.bupt@gmail.com>
 
-You should use auxiliary bus. You can make a regmap in the parent
-driver and pass that to the child auxiliary devices still.
+Remove Facebook Cloudripper dts because the switch platform is not
+actively maintained (all the units are deprecated).
 
-> > for the device. You can use the auxiliary bus to register drivers for
-> > clk and reset and put them into the resepective driver directories.
-> I little bit confused, what is an auxiliary bus to register drivers,
-> can you provide me an example?
+Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
+---
+ arch/arm/boot/dts/aspeed/Makefile             |   1 -
+ .../aspeed-bmc-facebook-cloudripper.dts       | 544 ------------------
+ 2 files changed, 545 deletions(-)
+ delete mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-cloudripper.dts
 
-$ git grep -l auxiliary_ -- drivers/clk/
-drivers/clk/microchip/clk-mpfs.c
-drivers/clk/starfive/clk-starfive-jh7110-sys.c
+diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
+index d3ac20e316d0..1c0e08c9ed3e 100644
+--- a/arch/arm/boot/dts/aspeed/Makefile
++++ b/arch/arm/boot/dts/aspeed/Makefile
+@@ -13,7 +13,6 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+ 	aspeed-bmc-bytedance-g220a.dtb \
+ 	aspeed-bmc-delta-ahe50dc.dtb \
+ 	aspeed-bmc-facebook-bletchley.dtb \
+-	aspeed-bmc-facebook-cloudripper.dtb \
+ 	aspeed-bmc-facebook-cmm.dtb \
+ 	aspeed-bmc-facebook-elbert.dtb \
+ 	aspeed-bmc-facebook-fuji.dtb \
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-cloudripper.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-cloudripper.dts
+deleted file mode 100644
+index d49328fa487a..000000000000
+--- a/arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-cloudripper.dts
++++ /dev/null
+@@ -1,544 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0+
+-// Copyright (c) 2020 Facebook Inc.
+-
+-/dts-v1/;
+-
+-#include <dt-bindings/leds/common.h>
+-#include "ast2600-facebook-netbmc-common.dtsi"
+-
+-/ {
+-	model = "Facebook Cloudripper BMC";
+-	compatible = "facebook,cloudripper-bmc", "aspeed,ast2600";
+-
+-	aliases {
+-		/*
+-		 * PCA9548 (1-0070) provides 8 channels connecting to
+-		 * SMB (Switch Main Board).
+-		 */
+-		i2c16 = &imux16;
+-		i2c17 = &imux17;
+-		i2c18 = &imux18;
+-		i2c19 = &imux19;
+-		i2c20 = &imux20;
+-		i2c21 = &imux21;
+-		i2c22 = &imux22;
+-		i2c23 = &imux23;
+-
+-		/*
+-		 * PCA9548 (2-0070) provides 8 channels connecting to
+-		 * SCM (System Controller Module).
+-		 */
+-		i2c24 = &imux24;
+-		i2c25 = &imux25;
+-		i2c26 = &imux26;
+-		i2c27 = &imux27;
+-		i2c28 = &imux28;
+-		i2c29 = &imux29;
+-		i2c30 = &imux30;
+-		i2c31 = &imux31;
+-
+-		/*
+-		 * PCA9548 (3-0070) provides 8 channels connecting to
+-		 * SMB (Switch Main Board).
+-		 */
+-		i2c32 = &imux32;
+-		i2c33 = &imux33;
+-		i2c34 = &imux34;
+-		i2c35 = &imux35;
+-		i2c36 = &imux36;
+-		i2c37 = &imux37;
+-		i2c38 = &imux38;
+-		i2c39 = &imux39;
+-
+-		/*
+-		 * PCA9548 (8-0070) provides 8 channels connecting to
+-		 * PDB (Power Delivery Board).
+-		 */
+-		i2c40 = &imux40;
+-		i2c41 = &imux41;
+-		i2c42 = &imux42;
+-		i2c43 = &imux43;
+-		i2c44 = &imux44;
+-		i2c45 = &imux45;
+-		i2c46 = &imux46;
+-		i2c47 = &imux47;
+-
+-		/*
+-		 * PCA9548 (15-0076) provides 8 channels connecting to
+-		 * FCM (Fan Controller Module).
+-		 */
+-		i2c48 = &imux48;
+-		i2c49 = &imux49;
+-		i2c50 = &imux50;
+-		i2c51 = &imux51;
+-		i2c52 = &imux52;
+-		i2c53 = &imux53;
+-		i2c54 = &imux54;
+-		i2c55 = &imux55;
+-	};
+-
+-	spi_gpio: spi {
+-		num-chipselects = <2>;
+-		cs-gpios = <&gpio0 ASPEED_GPIO(X, 0) GPIO_ACTIVE_LOW>,
+-			   <&gpio0 ASPEED_GPIO(X, 1) GPIO_ACTIVE_HIGH>;
+-
+-		eeprom@1 {
+-			compatible = "atmel,at93c46d";
+-			spi-max-frequency = <250000>;
+-			data-size = <16>;
+-			spi-cs-high;
+-			reg = <1>;
+-		};
+-	};
+-};
+-
+-&ehci1 {
+-	status = "okay";
+-};
+-
+-/*
+- * "mdio1" is connected to the MDC/MDIO interface of the on-board
+- * management switch (whose ports are connected to BMC, Host and front
+- * panel ethernet port).
+- */
+-&mdio1 {
+-	status = "okay";
+-};
+-
+-&mdio3 {
+-	status = "okay";
+-
+-	ethphy1: ethernet-phy@13 {
+-		compatible = "ethernet-phy-ieee802.3-c22";
+-		reg = <0x0d>;
+-	};
+-};
+-
+-&mac3 {
+-	status = "okay";
+-	phy-mode = "rgmii";
+-	phy-handle = <&ethphy1>;
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&pinctrl_rgmii4_default>;
+-};
+-
+-&i2c0 {
+-	multi-master;
+-	bus-frequency = <1000000>;
+-};
+-
+-&i2c1 {
+-	/*
+-	 * PCA9548 (1-0070) provides 8 channels connecting to SMB (Switch
+-	 * Main Board).
+-	 */
+-	i2c-mux@70 {
+-		compatible = "nxp,pca9548";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		reg = <0x70>;
+-		i2c-mux-idle-disconnect;
+-
+-		imux16: i2c@0 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0>;
+-		};
+-
+-		imux17: i2c@1 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <1>;
+-		};
+-
+-		imux18: i2c@2 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <2>;
+-		};
+-
+-		imux19: i2c@3 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <3>;
+-		};
+-
+-		imux20: i2c@4 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <4>;
+-		};
+-
+-		imux21: i2c@5 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <5>;
+-		};
+-
+-		imux22: i2c@6 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <6>;
+-		};
+-
+-		imux23: i2c@7 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <7>;
+-		};
+-	};
+-};
+-
+-&i2c2 {
+-	/*
+-	 * PCA9548 (2-0070) provides 8 channels connecting to SCM (System
+-	 * Controller Module).
+-	 */
+-	i2c-mux@70 {
+-		compatible = "nxp,pca9548";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		reg = <0x70>;
+-		i2c-mux-idle-disconnect;
+-
+-		imux24: i2c@0 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0>;
+-		};
+-
+-		imux25: i2c@1 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <1>;
+-		};
+-
+-		imux26: i2c@2 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <2>;
+-		};
+-
+-		imux27: i2c@3 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <3>;
+-		};
+-
+-		imux28: i2c@4 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <4>;
+-		};
+-
+-		imux29: i2c@5 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <5>;
+-		};
+-
+-		imux30: i2c@6 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <6>;
+-		};
+-
+-		imux31: i2c@7 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <7>;
+-		};
+-	};
+-};
+-
+-&i2c3 {
+-	/*
+-	 * PCA9548 (3-0070) provides 8 channels connecting to SMB (Switch
+-	 * Main Board).
+-	 */
+-	i2c-mux@70 {
+-		compatible = "nxp,pca9548";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		reg = <0x70>;
+-		i2c-mux-idle-disconnect;
+-
+-		imux32: i2c@0 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0>;
+-		};
+-
+-		imux33: i2c@1 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <1>;
+-		};
+-
+-		imux34: i2c@2 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <2>;
+-		};
+-
+-		imux35: i2c@3 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <3>;
+-		};
+-
+-		imux36: i2c@4 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <4>;
+-		};
+-
+-		imux37: i2c@5 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <5>;
+-		};
+-
+-		imux38: i2c@6 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <6>;
+-		};
+-
+-		imux39: i2c@7 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <7>;
+-		};
+-	};
+-};
+-
+-&i2c6 {
+-	lp5012@14 {
+-		compatible = "ti,lp5012";
+-		reg = <0x14>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		multi-led@0 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0>;
+-			color = <LED_COLOR_ID_MULTI>;
+-			function = LED_FUNCTION_ACTIVITY;
+-			label = "sys";
+-
+-			led@0 {
+-				reg = <0>;
+-				color = <LED_COLOR_ID_RED>;
+-			};
+-
+-			led@1 {
+-				reg = <1>;
+-				color = <LED_COLOR_ID_BLUE>;
+-			};
+-
+-			led@2 {
+-				reg = <2>;
+-				color = <LED_COLOR_ID_GREEN>;
+-			};
+-		};
+-
+-		multi-led@1 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <1>;
+-			color = <LED_COLOR_ID_MULTI>;
+-			function = LED_FUNCTION_ACTIVITY;
+-			label = "fan";
+-
+-			led@0 {
+-				reg = <0>;
+-				color = <LED_COLOR_ID_RED>;
+-			};
+-
+-			led@1 {
+-				reg = <1>;
+-				color = <LED_COLOR_ID_BLUE>;
+-			};
+-
+-			led@2 {
+-				reg = <2>;
+-				color = <LED_COLOR_ID_GREEN>;
+-			};
+-		};
+-
+-		multi-led@2 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <2>;
+-			color = <LED_COLOR_ID_MULTI>;
+-			function = LED_FUNCTION_ACTIVITY;
+-			label = "psu";
+-
+-			led@0 {
+-				reg = <0>;
+-				color = <LED_COLOR_ID_RED>;
+-			};
+-
+-			led@1 {
+-				reg = <1>;
+-				color = <LED_COLOR_ID_BLUE>;
+-			};
+-
+-			led@2 {
+-				reg = <2>;
+-				color = <LED_COLOR_ID_GREEN>;
+-			};
+-		};
+-
+-		multi-led@3 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <3>;
+-			color = <LED_COLOR_ID_MULTI>;
+-			function = LED_FUNCTION_ACTIVITY;
+-			label = "scm";
+-
+-			led@0 {
+-				reg = <0>;
+-				color = <LED_COLOR_ID_RED>;
+-			};
+-
+-			led@1 {
+-				reg = <1>;
+-				color = <LED_COLOR_ID_BLUE>;
+-			};
+-
+-			led@2 {
+-				reg = <2>;
+-				color = <LED_COLOR_ID_GREEN>;
+-			};
+-		};
+-	};
+-};
+-
+-&i2c8 {
+-	/*
+-	 * PCA9548 (8-0070) provides 8 channels connecting to PDB (Power
+-	 * Delivery Board).
+-	 */
+-	i2c-mux@70 {
+-		compatible = "nxp,pca9548";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		reg = <0x70>;
+-		i2c-mux-idle-disconnect;
+-
+-		imux40: i2c@0 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0>;
+-		};
+-
+-		imux41: i2c@1 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <1>;
+-		};
+-
+-		imux42: i2c@2 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <2>;
+-		};
+-
+-		imux43: i2c@3 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <3>;
+-		};
+-
+-		imux44: i2c@4 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <4>;
+-		};
+-
+-		imux45: i2c@5 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <5>;
+-		};
+-
+-		imux46: i2c@6 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <6>;
+-		};
+-
+-		imux47: i2c@7 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <7>;
+-		};
+-
+-	};
+-};
+-
+-&i2c15 {
+-	/*
+-	 * PCA9548 (15-0076) provides 8 channels connecting to FCM (Fan
+-	 * Controller Module).
+-	 */
+-	i2c-mux@76 {
+-		compatible = "nxp,pca9548";
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		reg = <0x76>;
+-		i2c-mux-idle-disconnect;
+-
+-		imux48: i2c@0 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0>;
+-		};
+-
+-		imux49: i2c@1 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <1>;
+-		};
+-
+-		imux50: i2c@2 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <2>;
+-		};
+-
+-		imux51: i2c@3 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <3>;
+-		};
+-
+-		imux52: i2c@4 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <4>;
+-		};
+-
+-		imux53: i2c@5 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <5>;
+-		};
+-
+-		imux54: i2c@6 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <6>;
+-		};
+-
+-		imux55: i2c@7 {
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <7>;
+-		};
+-	};
+-};
+-- 
+2.44.0
 
-You can decide to make either the clk or the reset driver the "main"
-driver that registers the other auxiliary devices. Either way the DT
-binding has a single node instead of one per logical driver in the
-kernel.
-
-> > Avoid syscon means random drivers can't reach into the device with a
-> > regmap handle and read/write registers that they're not supposed to.
-> Indeed, but the drivers could use the reset and clock memory map only
-> if the module is also a child node.
->=20
-> Please let me know what is your preferred way to handle it:
-> 1. stick with syscon and upstream-defined documentation for the rst clk s=
-yscon.
-> 2. avoid syscon and use an auxiliary bus, appreciate if you could give
-> me an example of how it should be done.
-> 3. Avoid sycon and handle it differently.
-
-I prefer 2
 
