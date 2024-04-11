@@ -1,134 +1,126 @@
-Return-Path: <linux-kernel+bounces-140495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECD5E8A156E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 71F7C8A156C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:22:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 110C51C2142B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:22:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A36911C2129B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:22:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0E6814C5BA;
-	Thu, 11 Apr 2024 13:22:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 787DE14C5B8;
+	Thu, 11 Apr 2024 13:22:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MSby2ypO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dIJkG7pQ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F82A28FD
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:22:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F7328FD
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:22:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712841761; cv=none; b=nhRc5nhNv+xUTjetuqFT8anL+VdQ0Zhc6HtoK6kK6dYhpuRTdMQf+4ZcDqbII54QvmKgezQ2OHHq0j/nKzYYrKKPGQswpIUeuipm/JWsyiZwdywlLHNWK5BKhpXlOrfBBGhnjepKQ+dbcuiWBwViXClUyQFUq+lz+HF9lTeFhZM=
+	t=1712841750; cv=none; b=pZV/0RfUAi2sdfhUyl9drL5LS24k9mM7zUiGDNsnTuHNeUeo9rRROu5uLpQTA6F7tqcknlbIQm/RAHE1UbCA+5ScH1CUYkqxO/rGC6GJzxY5OQx/1qh49UwA291chAjmR5fpKoQY/vAB7ycsC+14eVNp3LIbDVNJtCXn5pMZi+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712841761; c=relaxed/simple;
-	bh=oFQCtMDMv3w6WRwA1HLjJqSklYOlziJ7QD5xsD3KecU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n5ORxkMOcYnYHXjTnazxaR5w4gHwtVrfL5gMvysGNmoNeK/3MTvRor0twWFJv7svmEpRH6iuIusZJQpFe5e/3PxjW1bJ8nK5OweqaEPpjeO5eXXG6oVt8pso1Ae9xwwogXuqfc07YZa/5N2nN6fVdlI2akkf4ouc25tISyBrOvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MSby2ypO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AABB5C04D3C;
-	Thu, 11 Apr 2024 13:22:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712841761;
-	bh=oFQCtMDMv3w6WRwA1HLjJqSklYOlziJ7QD5xsD3KecU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MSby2ypOwMO5LVMLeZ9cpiWm8pCYyRO/lkviEGzjZpwLQcLeWHU3HoW8Zwkcfz03A
-	 jIvCjpX2uOAxPnLw3YkRmynzzBFcoc0W+/vXMto5opv3qkoonpyGZmt1WKXyphsgGG
-	 u3voYUfF7R16ZkJ4ah1nu241bAmwh3byMTRkjUj1nSlz+zhuiFMP8cJlFUrn0jmhCj
-	 w6Z56veQVpFNsKbQhDuF68oXfIz5Lr4t6fGN5nME9mSvm6qW3tlPaD5ET7ylZJuaZP
-	 Intt8OWUs+KPYbQc7WFu253n8+coGwQH6saMAd/4dD8ry7D4/URbAitIQ7pTBcjo6n
-	 lEPZiEo/bq8kA==
-Date: Thu, 11 Apr 2024 16:21:37 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Yuntao Wang <ytcoode@gmail.com>, linux-kernel@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"ndesaulniers@google.com" <ndesaulniers@google.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Tejun Heo <tj@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Krister Johansen <kjlx@templeofstupid.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH] init/main.c: Fix potential static_command_line memory
- overflow
-Message-ID: <Zhfj4T1-u354E_KP@kernel.org>
-References: <20240411032155.208042-1-ytcoode@gmail.com>
- <CAMuHMdULF9KemeFkv09s3b9T8Ka-AkC8A8-pc_FpdXnjrOjwgQ@mail.gmail.com>
+	s=arc-20240116; t=1712841750; c=relaxed/simple;
+	bh=U9U4DrMa8C0Tg6a+6toTBCCdpB+9LfQnli9OY5KSfHk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NdO2OpEUmQsDE9qDQ8Wr5jUiLf9PE97WzQTr2k8BoJm8sEs0SW9XvXv7eJ4RwugODlc9gt9h+5fgYcnAZI6B2Bl0vOrlF4vC6drroKiZehiIJIowZD59gK3eusnxdlHBsan1ceJs3Yrl34Ut19csAmpm0fK016+A/Vqbn26Bw30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dIJkG7pQ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712841748;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U9U4DrMa8C0Tg6a+6toTBCCdpB+9LfQnli9OY5KSfHk=;
+	b=dIJkG7pQGejLEmPwY+1h6hUfOKRk0dGuM0pnd3oqD1WBmI/K/zO0ImY07Z9WeZyfF//gYB
+	n93WY8jG32M9uEgSle+JsN7yO5svdy5SEX7l/x61iyyodoPc1bTmcMdMPy5oCp3kjznAYc
+	DdSwyvtALmCY93zVEABxnSccIqJBGGM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-696-1EqWjZoANW6xeQZsNCO2nw-1; Thu, 11 Apr 2024 09:22:26 -0400
+X-MC-Unique: 1EqWjZoANW6xeQZsNCO2nw-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-417ee376987so38605e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:22:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712841745; x=1713446545;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U9U4DrMa8C0Tg6a+6toTBCCdpB+9LfQnli9OY5KSfHk=;
+        b=Jk76S5kZXGtFHRHCujLxw3Po5ETE2SY7DeqhHVzMOhc3NtEm5zf4YR17sDOQZwJQtt
+         NHlWY7RBrf05yYiGDLtAf2eQjfCkSUh8X2+/398cSEd/Xk6BCeGdeQLFhXBeyHQ1GG3O
+         EoQ6PyuKmeLo5Qb7/Ermnph0JYlE2NDFXkN1JukHzXSKsQSYrd5ztg39Ee0YuyyECK3I
+         jbOasOlhHQMkGgUkedrIBM1R7Y2q1LSiV7YiKUYe+3Ecn46Axve18mttaPPii3eh5jzo
+         mYcgegRdVxz2/9zZjuaMaYIJOLkUeD/eEjvyNhayh0xhL+AxZrn3Bss8JNCWQWbxLgYg
+         2YGg==
+X-Forwarded-Encrypted: i=1; AJvYcCUCAv4dHHlAWn/W4eNiqWVZK/YxnYLLqTt52i8oUccSIjHmNNJauJpMmRVl5AtvBHTugCo1FfvvSBon10tiV86U4MJ5rXTMuAenoalr
+X-Gm-Message-State: AOJu0YxnNTxV0HtAhbxEJA/dsqkyIKCEkiRzQ1TXHfwt3fE2XzVUxQag
+	dS3TicyHZlBRNxOYSytVdTFqdC+MYKOmcSchjxKAqENd3sB6kZURB019sgJJRajSW+BT/z4Q72H
+	YpQYJVykAm9UqhNK2/HxMAOy883ZwCWM3esNZ7EG0sHFWxGAW/UpmbMySV7p2dPAB4kPMRJQ1Hl
+	sHaxnLb5+7XhDFVwx0ph/B8qWEGQbsAiiySd0m
+X-Received: by 2002:a05:600c:3c89:b0:414:9676:4573 with SMTP id bg9-20020a05600c3c8900b0041496764573mr3428924wmb.36.1712841745444;
+        Thu, 11 Apr 2024 06:22:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGOqpae7e7YHtDrPKdTbcCevuUXTBRFS+swIe7b3hMN/ct9nTKRbjdAZ5D1U4nS1cq29M1FDblW8ISPSai+0+w=
+X-Received: by 2002:a05:600c:3c89:b0:414:9676:4573 with SMTP id
+ bg9-20020a05600c3c8900b0041496764573mr3428899wmb.36.1712841745063; Thu, 11
+ Apr 2024 06:22:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdULF9KemeFkv09s3b9T8Ka-AkC8A8-pc_FpdXnjrOjwgQ@mail.gmail.com>
+References: <20240411072445.522731-1-alexandre.chartre@oracle.com>
+ <7f1faa48-6252-4409-aefc-2ed2f38fb1c3@citrix.com> <caa51938-c587-4403-a9cd-16e8b585bc13@oracle.com>
+In-Reply-To: <caa51938-c587-4403-a9cd-16e8b585bc13@oracle.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Thu, 11 Apr 2024 15:22:12 +0200
+Message-ID: <CABgObfai1TCs6pNAP4i0x99qAjXTczJ4uLHiivNV7QGoah1pVg@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: Set BHI_NO in guest when host is not affected
+ by BHI
+To: Alexandre Chartre <alexandre.chartre@oracle.com>
+Cc: Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, daniel.sneddon@linux.intel.com, 
+	pawan.kumar.gupta@linux.intel.com, tglx@linutronix.de, konrad.wilk@oracle.com, 
+	peterz@infradead.org, gregkh@linuxfoundation.org, seanjc@google.com, 
+	dave.hansen@linux.intel.com, nik.borisov@suse.com, kpsingh@kernel.org, 
+	longman@redhat.com, bp@alien8.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 11, 2024 at 09:23:47AM +0200, Geert Uytterhoeven wrote:
-> CC Hiramatsu-san
-> 
-> On Thu, Apr 11, 2024 at 5:25 AM Yuntao Wang <ytcoode@gmail.com> wrote:
-> > We allocate memory of size 'xlen + strlen(boot_command_line) + 1' for
-> > static_command_line, but the strings copied into static_command_line are
-> > extra_command_line and command_line, rather than extra_command_line and
-> > boot_command_line.
-> >
-> > When strlen(command_line) > strlen(boot_command_line), static_command_line
-> > will overflow.
+On Thu, Apr 11, 2024 at 11:34=E2=80=AFAM Alexandre Chartre
+<alexandre.chartre@oracle.com> wrote:
+>
+> So you mean we can't set ARCH_CAP_BHI_NO for the guest because we don't k=
+now
+> if the guest will run the (other) existing mitigations which are believed=
+ to
+> suffice to mitigate BHI?
+>
+> The problem is that we can end up with a guest running extra BHI mitigati=
+ons
+> while this is not needed. Could we inform the guest that eIBRS is not ava=
+ilable
+> on the system so a Linux guest doesn't run with extra BHI mitigations?
 
-Can this ever happen? 
-Did you observe the overflow or is this a theoretical bug?
+The (Linux or otherwise) guest will make its own determinations as to
+whether BHI mitigations are necessary. If the guest uses eIBRS, it
+will run with mitigations. If you hide bit 1 of
+MSR_IA32_ARCH_CAPABILITIES from the guest, it may decide to disable
+it. But if the guest decides to use eIBRS, I think it should use
+mitigations even if the host doesn't.
 
-> > Fixes: f5c7310ac73e ("init/main: add checks for the return value of memblock_alloc*()")
+It's a different story if the host isn't susceptible altogether. The
+ARCH_CAP_BHI_NO bit *can* be set if the processor doesn't have the bug
+at all, which would be true if cpu_matches(cpu_vuln_whitelist,
+NO_BHI). I would apply a patch to do that.
 
-f5c7310ac73e didn't have the logic for calculating allocation size, we
-surely don't want to go back that far wiht Fixes.
+Paolo
 
-> > Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-> > ---
-> >  init/main.c | 8 +++++---
-> >  1 file changed, 5 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/init/main.c b/init/main.c
-> > index 2ca52474d0c3..a7b1f5f3e3b6 100644
-> > --- a/init/main.c
-> > +++ b/init/main.c
-> > @@ -625,11 +625,13 @@ static void __init setup_command_line(char *command_line)
-> >         if (extra_init_args)
-> >                 ilen = strlen(extra_init_args) + 4; /* for " -- " */
-> >
-> > -       len = xlen + strlen(boot_command_line) + 1;
-> > +       len = xlen + strlen(boot_command_line) + ilen + 1;
-> >
-> > -       saved_command_line = memblock_alloc(len + ilen, SMP_CACHE_BYTES);
-> > +       saved_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
-> >         if (!saved_command_line)
-> > -               panic("%s: Failed to allocate %zu bytes\n", __func__, len + ilen);
-> > +               panic("%s: Failed to allocate %zu bytes\n", __func__, len);
-> > +
-> > +       len = xlen + strlen(command_line) + 1;
-> >
-> >         static_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
-> >         if (!static_command_line)
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> -- 
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-
--- 
-Sincerely yours,
-Mike.
 
