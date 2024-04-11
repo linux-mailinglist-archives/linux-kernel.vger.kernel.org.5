@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9AC48A18EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:40:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D29DA8A18ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:40:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32F251F2123C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:40:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86818286851
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B66BC4AEC7;
-	Thu, 11 Apr 2024 15:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0854C601;
+	Thu, 11 Apr 2024 15:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="ez1gL4pw"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="tqi6z58i"
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C019481C6
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:32:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F86F482F6
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:32:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849528; cv=none; b=gYNDiux8ztuXIBWh/vdyZocdcnU5SFcT6sZ9HlDpe7LFyNAfGd44cvRZtp9HX4/2n9CD/XYJZfDHV1fPDbjQ08PEN9EYM8G/ExSo9eOjytMuGpAiiUiba9NkduA4FM67buXTBLuIjn/jeRC1atUhRAi3U4mG5Hrnu01lHkViXFw=
+	t=1712849530; cv=none; b=Z2fRzsXXnm+tfjzsV2zyEzzk3V8zpJISB5s+isRyiG827ZpWLCHCqgc47Iic8s8hazkwUDSpU3mUm5Oului6u5XCcuAxYnSCKiRmyY6fqPYBpFwadJQVRR8KJNpaBveXyu+jrlGljc2IE60hG2Q70hIIM2+UwoNJ2/DdP/p9Sxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849528; c=relaxed/simple;
-	bh=TIg6/xRT1sF2uz3iDSlDLHbUI07ew3w55/s+64nRfV8=;
+	s=arc-20240116; t=1712849530; c=relaxed/simple;
+	bh=xICqHCjzfHBwb/QiGFJqKkISN2X0IlBXhm1832PuaTw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=E8IJiHoRTYKGl7GJCY2MzOW0EMhLPWEFYGNY3u606nypZOVN8W2kt0Q66B+6qWCPFRIYdfubeo1WW1pYYvNmWJWiRJ+rVzEyqzJH0LOcm8StJNu5WC3yDVSaaoQFvLAxJ32IU2EAxnM0Sq4GQ9Wj3OlvqRaFLv3IveMFehqvOII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=ez1gL4pw; arc=none smtp.client-ip=209.85.166.51
+	 MIME-Version; b=MI8oank/JMJcykGaBdC3QH1DZP2hwzwlETbhER7wIw4InMQX1HYA2ta74XOX82O9uQV6vYBl1xUP0ubjFaEMf60sdTR1xnAZxPzhAX5eXzOsa99w22+cXqrtIrr4nAlsYnxwZ1DO7zMbZRtwcRTQSg1O+t0ljJSh9+8f/xoAm18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=tqi6z58i; arc=none smtp.client-ip=209.85.166.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7d6812b37a6so8849039f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:32:07 -0700 (PDT)
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so170419339f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:32:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849526; x=1713454326; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849527; x=1713454327; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AEIqreAhrWHWiNMJ3bjnYGKI5wqJlayBXmXujNYutLg=;
-        b=ez1gL4pwlEyMCyQR2Zirsbqd7MrMj8Xz31E18QCzs8FqdAU74+dvbvMiVzHCktYddE
-         yPi056SSpFwyJgCtiTdOpfSDW5dyvLGVc1EvulEhxEodj5i6mroYB2rIkJby7q8sh0Uf
-         qejLos2HarmFyZgHS/EgfvGPKWlEezeoMCpxHaPMELO0MIYfrWl2meH4GlToLvvHnWtQ
-         a3ZoeeL2XHuaYEUlZWxuuR02j5oWlwe+b6Jc4E/POW+0fdolET5lidxItc+Gqej90rgj
-         1BSybtS/DWH4ABlRZVIuI2fkeXh9R2DN8JsAhU5ykrJX6Tq7RCOOVWcXHOVsTtmdRQLq
-         kxgw==
+        bh=PN6bUVPnEm3H8TD658GyI4+no5MCoynBBxVbj0/z+Lw=;
+        b=tqi6z58iyX3U3g3bztoS3j52sq4XbTOj+HjnHx1DVpGVN61ajLExtfmUkfwbOa942O
+         zVqtH3Cbk4GPvjo7E+PzzALFFm7+bwO4HXuJaRa3nBA9rN+Xpf6a4Rt9Pd2aAY9dmHFj
+         D/nbrgojZD7si39+USBX8CZj41hnhx1/MuQ9n+DcKAQv0OGcSxpKt7qFBCowKMPZiH65
+         j9UGvZCq+hbr75TeGiWeeZEZObSbIADBVRMe7/qGm+ZrdZiRWVgOF7fH8FYdWXStXusc
+         K4P4V9QECpGyN+rWbeYYKCngUx3G2QmKJ2rqRjb+0WCmK29KYR2XXy3gw/aGV3cj4ijN
+         C7ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849526; x=1713454326;
+        d=1e100.net; s=20230601; t=1712849527; x=1713454327;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AEIqreAhrWHWiNMJ3bjnYGKI5wqJlayBXmXujNYutLg=;
-        b=ljK1irn9grFM5lbBRVRLbD9tA4YVt8Q9OMpwYkp136Z75kj56Z/u3WtRSRoshmhr8a
-         URWqRqgpm1XEhJpCNoGOcWwHtlYZ/hwy9iQWjBZ2a28K4w5xT0y+APt/I6Rm9efeKI+2
-         ljMgdLTJi2HRxv+R8tJlqBLwlQYA0dlywUTtPLVQEeCi5jCGIikOfuHCqYhrVvhbQLA8
-         1oLWVal07h3W/1RHyVw8gX/p03M6yTtcXl29t0hizRasDLKmEzqyEfDbmuzxsdI60CHX
-         bh7Vg7l6a31K9wtoS38sssmxaViTrP9HE47cHk7FuhrW/fiihQQ3iZ6kh48IizUn1Xer
-         GKlw==
-X-Gm-Message-State: AOJu0Yw4QqM86RXfYdUi+1QOCpDZUPQQteT8hYFh+7h1dZsxFFrLzP6d
-	I+zxJ/08Lg0AzSKh21+LKnDqaIBMEPElPiEZ5OQ5Fn9Z5T1J/bCiYCt7B1m863BTeG2XhHiMoF5
-	o
-X-Google-Smtp-Source: AGHT+IES27zf7b+QjVz8qu+U8JgrFMdX8B/9/TvD1n6gnb6LfTBJJ2czbrnOTW1DjjgViqiyVk+zAQ==
-X-Received: by 2002:a05:6602:21d7:b0:7d6:9ddf:5095 with SMTP id c23-20020a05660221d700b007d69ddf5095mr2844ioc.1.1712849525775;
-        Thu, 11 Apr 2024 08:32:05 -0700 (PDT)
+        bh=PN6bUVPnEm3H8TD658GyI4+no5MCoynBBxVbj0/z+Lw=;
+        b=OsrAlX5QQNBU6mwDPop8UcQR95D2jYzolcg7AltPLHHXtNHrGRrRvHQhCOl+jDm9t4
+         ytBXGNcltGjsT4/RZif78sB1p/Tur/n6tn033hrHCdhM1bOHZGPZ+NOBdQ4Z/2Mt3dVa
+         5rIZNMiDHlXHQHmQbmBdZFJKO/abUMANRV3kisWcrq77cQzfB6RW/ubbZ2VVmMuqqgqC
+         5XF8uUCI9SjQ8LjOJzlQ/oPdIor77mccNPs5S5ib0Rgf6fUdm/NAZUrRpRo0W9+a7b5Q
+         qllsRUzAlOZxH8XDqHv1NyQkiHStXCzVhTekVjdRP3R1f/RsojYnM3BDqwMb6HUKstHM
+         HTQQ==
+X-Gm-Message-State: AOJu0Yx/tiRYB817gruHJr5wo9ugs08FKrALCzC0QLyCpI4X53TC7QSj
+	CEpsdEM0sXUarZtEXl1rRXCeJUaMKCLtoULflyplVCXQOfgKqRpiiRuJfhvCYAnbRo7Rs3MAq3L
+	A
+X-Google-Smtp-Source: AGHT+IG1/PHUsIscy9t8ZYoBv89xMqRlTYqYbk2ueSZom6t6azDKdu4UDxh2WWJeccAFPBGqsQthSQ==
+X-Received: by 2002:a6b:5b10:0:b0:7d0:bd2b:43ba with SMTP id v16-20020a6b5b10000000b007d0bd2b43bamr210552ioh.0.1712849527347;
+        Thu, 11 Apr 2024 08:32:07 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
         by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.32.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:32:05 -0700 (PDT)
+        Thu, 11 Apr 2024 08:32:06 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 022/437] char/tpm: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:12:42 -0600
-Message-ID: <20240411153126.16201-23-axboe@kernel.dk>
+Subject: [PATCH 023/437] char/lp: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:12:43 -0600
+Message-ID: <20240411153126.16201-24-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,219 +85,92 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/char/tpm/eventlog/common.c |  2 +-
- drivers/char/tpm/tpm-dev-common.c  | 26 +++++++++++++-------------
- drivers/char/tpm/tpm-dev.c         |  4 ++--
- drivers/char/tpm/tpm-dev.h         |  6 ++----
- drivers/char/tpm/tpm_vtpm_proxy.c  | 20 ++++++++++----------
- drivers/char/tpm/tpmrm-dev.c       |  4 ++--
- 6 files changed, 30 insertions(+), 32 deletions(-)
+ drivers/char/lp.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/char/tpm/eventlog/common.c b/drivers/char/tpm/eventlog/common.c
-index 639c3f395a5a..5df887f7b119 100644
---- a/drivers/char/tpm/eventlog/common.c
-+++ b/drivers/char/tpm/eventlog/common.c
-@@ -66,7 +66,7 @@ static int tpm_bios_measurements_release(struct inode *inode,
- static const struct file_operations tpm_bios_measurements_ops = {
- 	.owner = THIS_MODULE,
- 	.open = tpm_bios_measurements_open,
--	.read = seq_read,
-+	.read_iter = seq_read_iter,
- 	.llseek = seq_lseek,
- 	.release = tpm_bios_measurements_release,
- };
-diff --git a/drivers/char/tpm/tpm-dev-common.c b/drivers/char/tpm/tpm-dev-common.c
-index 30b4c288c1bb..6cb20cb43ac0 100644
---- a/drivers/char/tpm/tpm-dev-common.c
-+++ b/drivers/char/tpm/tpm-dev-common.c
-@@ -122,10 +122,10 @@ void tpm_common_open(struct file *file, struct tpm_chip *chip,
- 	file->private_data = priv;
+diff --git a/drivers/char/lp.c b/drivers/char/lp.c
+index 2f171d14b9b5..3967115f6c75 100644
+--- a/drivers/char/lp.c
++++ b/drivers/char/lp.c
+@@ -298,10 +298,11 @@ static int lp_wait_ready(int minor, int nonblock)
+ 	return error;
  }
  
--ssize_t tpm_common_read(struct file *file, char __user *buf,
--			size_t size, loff_t *off)
-+ssize_t tpm_common_read_iter(struct kiocb *iocb, struct iov_iter *to)
+-static ssize_t lp_write(struct file *file, const char __user *buf,
+-			size_t count, loff_t *ppos)
++static ssize_t lp_write(struct kiocb *iocb, struct iov_iter *from)
  {
--	struct file_priv *priv = file->private_data;
-+	struct file_priv *priv = iocb->ki_filp->private_data;
-+	size_t size = iov_iter_count(to);
- 	ssize_t ret_size = 0;
- 	int rc;
- 
-@@ -140,21 +140,21 @@ ssize_t tpm_common_read(struct file *file, char __user *buf,
- 			goto out;
- 		}
- 
--		rc = copy_to_user(buf, priv->data_buffer + *off, ret_size);
-+		rc = !copy_to_iter_full(priv->data_buffer + iocb->ki_pos, ret_size, to);
- 		if (rc) {
- 			memset(priv->data_buffer, 0, TPM_BUFSIZE);
- 			priv->response_length = 0;
- 			ret_size = -EFAULT;
- 		} else {
--			memset(priv->data_buffer + *off, 0, ret_size);
-+			memset(priv->data_buffer + iocb->ki_pos, 0, ret_size);
- 			priv->response_length -= ret_size;
--			*off += ret_size;
-+			iocb->ki_pos += ret_size;
- 		}
- 	}
- 
- out:
- 	if (!priv->response_length) {
--		*off = 0;
-+		iocb->ki_pos = 0;
- 		del_timer_sync(&priv->user_read_timer);
- 		flush_work(&priv->timeout_work);
- 	}
-@@ -162,10 +162,10 @@ ssize_t tpm_common_read(struct file *file, char __user *buf,
- 	return ret_size;
- }
- 
--ssize_t tpm_common_write(struct file *file, const char __user *buf,
--			 size_t size, loff_t *off)
-+ssize_t tpm_common_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct file_priv *priv = file->private_data;
-+	struct file_priv *priv = iocb->ki_filp->private_data;
-+	size_t size = iov_iter_count(from);
- 	int ret = 0;
- 
- 	if (size > TPM_BUFSIZE)
-@@ -183,7 +183,7 @@ ssize_t tpm_common_write(struct file *file, const char __user *buf,
- 		goto out;
- 	}
- 
--	if (copy_from_user(priv->data_buffer, buf, size)) {
-+	if (!copy_from_iter_full(priv->data_buffer, size, from)) {
- 		ret = -EFAULT;
- 		goto out;
- 	}
-@@ -196,7 +196,7 @@ ssize_t tpm_common_write(struct file *file, const char __user *buf,
- 
- 	priv->response_length = 0;
- 	priv->response_read = false;
--	*off = 0;
-+	iocb->ki_pos = 0;
- 
- 	/*
- 	 * If in nonblocking mode schedule an async job to send
-@@ -204,7 +204,7 @@ ssize_t tpm_common_write(struct file *file, const char __user *buf,
- 	 * In case of error the err code will be returned in
- 	 * the subsequent read call.
- 	 */
--	if (file->f_flags & O_NONBLOCK) {
-+	if (iocb->ki_filp->f_flags & O_NONBLOCK) {
- 		priv->command_enqueued = true;
- 		queue_work(tpm_dev_wq, &priv->async_work);
- 		mutex_unlock(&priv->buffer_mutex);
-diff --git a/drivers/char/tpm/tpm-dev.c b/drivers/char/tpm/tpm-dev.c
-index e2c0baa69fef..2f499c38fef5 100644
---- a/drivers/char/tpm/tpm-dev.c
-+++ b/drivers/char/tpm/tpm-dev.c
-@@ -61,8 +61,8 @@ const struct file_operations tpm_fops = {
- 	.owner = THIS_MODULE,
- 	.llseek = no_llseek,
- 	.open = tpm_open,
--	.read = tpm_common_read,
--	.write = tpm_common_write,
-+	.read_iter = tpm_common_read_iter,
-+	.write_iter = tpm_common_write_iter,
- 	.poll = tpm_common_poll,
- 	.release = tpm_release,
- };
-diff --git a/drivers/char/tpm/tpm-dev.h b/drivers/char/tpm/tpm-dev.h
-index f3742bcc73e3..bc02b9509724 100644
---- a/drivers/char/tpm/tpm-dev.h
-+++ b/drivers/char/tpm/tpm-dev.h
-@@ -23,10 +23,8 @@ struct file_priv {
- 
- void tpm_common_open(struct file *file, struct tpm_chip *chip,
- 		     struct file_priv *priv, struct tpm_space *space);
--ssize_t tpm_common_read(struct file *file, char __user *buf,
--			size_t size, loff_t *off);
--ssize_t tpm_common_write(struct file *file, const char __user *buf,
--			 size_t size, loff_t *off);
-+ssize_t tpm_common_read_iter(struct kiocb *iocb, struct iov_iter *to);
-+ssize_t tpm_common_write_iter(struct kiocb *iocb, struct iov_iter *from);
- __poll_t tpm_common_poll(struct file *file, poll_table *wait);
- 
- void tpm_common_release(struct file *file, struct file_priv *priv);
-diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
-index 11c502039faf..70d51ccb9a98 100644
---- a/drivers/char/tpm/tpm_vtpm_proxy.c
-+++ b/drivers/char/tpm/tpm_vtpm_proxy.c
-@@ -69,10 +69,10 @@ static void vtpm_proxy_delete_device(struct proxy_dev *proxy_dev);
-  * Return:
-  *	Number of bytes read or negative error code
-  */
--static ssize_t vtpm_proxy_fops_read(struct file *filp, char __user *buf,
--				    size_t count, loff_t *off)
-+static ssize_t vtpm_proxy_fops_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct proxy_dev *proxy_dev = filp->private_data;
-+	struct proxy_dev *proxy_dev = iocb->ki_filp->private_data;
-+	size_t count = iov_iter_count(to);
- 	size_t len;
- 	int sig, rc;
- 
-@@ -98,7 +98,7 @@ static ssize_t vtpm_proxy_fops_read(struct file *filp, char __user *buf,
- 		return -EIO;
- 	}
- 
--	rc = copy_to_user(buf, proxy_dev->buffer, len);
-+	rc = !copy_to_iter_full(proxy_dev->buffer, len, to);
- 	memset(proxy_dev->buffer, 0, len);
- 	proxy_dev->req_len = 0;
- 
-@@ -124,10 +124,10 @@ static ssize_t vtpm_proxy_fops_read(struct file *filp, char __user *buf,
-  * Return:
-  *	Number of bytes read or negative error value
-  */
--static ssize_t vtpm_proxy_fops_write(struct file *filp, const char __user *buf,
--				     size_t count, loff_t *off)
-+static ssize_t vtpm_proxy_fops_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct proxy_dev *proxy_dev = filp->private_data;
-+	struct proxy_dev *proxy_dev = iocb->ki_filp->private_data;
++	struct file *file = iocb->ki_filp;
+ 	unsigned int minor = iminor(file_inode(file));
 +	size_t count = iov_iter_count(from);
+ 	struct parport *port = lp_table[minor].dev->port;
+ 	char *kbuf = lp_table[minor].lp_buffer;
+ 	ssize_t retv = 0;
+@@ -324,7 +325,7 @@ static ssize_t lp_write(struct file *file, const char __user *buf,
+ 	if (mutex_lock_interruptible(&lp_table[minor].port_mutex))
+ 		return -EINTR;
  
- 	mutex_lock(&proxy_dev->buf_lock);
- 
-@@ -146,7 +146,7 @@ static ssize_t vtpm_proxy_fops_write(struct file *filp, const char __user *buf,
- 
- 	proxy_dev->req_len = 0;
- 
--	if (copy_from_user(proxy_dev->buffer, buf, count)) {
-+	if (!copy_from_iter_full(proxy_dev->buffer, count, from)) {
- 		mutex_unlock(&proxy_dev->buf_lock);
- 		return -EFAULT;
+-	if (copy_from_user(kbuf, buf, copy_size)) {
++	if (!copy_from_iter_full(kbuf, copy_size, from)) {
+ 		retv = -EFAULT;
+ 		goto out_unlock;
  	}
-@@ -244,8 +244,8 @@ static int vtpm_proxy_fops_release(struct inode *inode, struct file *filp)
- static const struct file_operations vtpm_proxy_fops = {
- 	.owner = THIS_MODULE,
- 	.llseek = no_llseek,
--	.read = vtpm_proxy_fops_read,
--	.write = vtpm_proxy_fops_write,
-+	.read_iter = vtpm_proxy_fops_read,
-+	.write_iter = vtpm_proxy_fops_write,
- 	.poll = vtpm_proxy_fops_poll,
- 	.release = vtpm_proxy_fops_release,
- };
-diff --git a/drivers/char/tpm/tpmrm-dev.c b/drivers/char/tpm/tpmrm-dev.c
-index eef0fb06ea83..f1f5cc0ba627 100644
---- a/drivers/char/tpm/tpmrm-dev.c
-+++ b/drivers/char/tpm/tpmrm-dev.c
-@@ -48,8 +48,8 @@ const struct file_operations tpmrm_fops = {
- 	.owner = THIS_MODULE,
- 	.llseek = no_llseek,
- 	.open = tpmrm_open,
--	.read = tpm_common_read,
--	.write = tpm_common_write,
-+	.read_iter = tpm_common_read_iter,
-+	.write_iter = tpm_common_write_iter,
- 	.poll = tpm_common_poll,
- 	.release = tpmrm_release,
+@@ -347,7 +348,6 @@ static ssize_t lp_write(struct file *file, const char __user *buf,
+ 		if (written > 0) {
+ 			copy_size -= written;
+ 			count -= written;
+-			buf  += written;
+ 			retv += written;
+ 		}
+ 
+@@ -391,7 +391,7 @@ static ssize_t lp_write(struct file *file, const char __user *buf,
+ 			if (copy_size > LP_BUFFER_SIZE)
+ 				copy_size = LP_BUFFER_SIZE;
+ 
+-			if (copy_from_user(kbuf, buf, copy_size)) {
++			if (!copy_from_iter_full(kbuf, copy_size, from)) {
+ 				if (retv == 0)
+ 					retv = -EFAULT;
+ 				break;
+@@ -416,9 +416,10 @@ static ssize_t lp_write(struct file *file, const char __user *buf,
+ #ifdef CONFIG_PARPORT_1284
+ 
+ /* Status readback conforming to ieee1284 */
+-static ssize_t lp_read(struct file *file, char __user *buf,
+-		       size_t count, loff_t *ppos)
++static ssize_t lp_read(struct kiocb *iocb, struct iov_iter *to)
+ {
++	struct file *file = iocb->ki_filp;
++	size_t count = iov_iter_count(to);
+ 	DEFINE_WAIT(wait);
+ 	unsigned int minor=iminor(file_inode(file));
+ 	struct parport *port = lp_table[minor].dev->port;
+@@ -485,7 +486,7 @@ static ssize_t lp_read(struct file *file, char __user *buf,
+  out:
+ 	lp_release_parport(&lp_table[minor]);
+ 
+-	if (retval > 0 && copy_to_user(buf, kbuf, retval))
++	if (retval > 0 && !copy_to_iter_full(kbuf, retval, to))
+ 		retval = -EFAULT;
+ 
+ 	mutex_unlock(&lp_table[minor].port_mutex);
+@@ -785,7 +786,7 @@ static long lp_compat_ioctl(struct file *file, unsigned int cmd,
+ 
+ static const struct file_operations lp_fops = {
+ 	.owner		= THIS_MODULE,
+-	.write		= lp_write,
++	.write_iter	= lp_write,
+ 	.unlocked_ioctl	= lp_ioctl,
+ #ifdef CONFIG_COMPAT
+ 	.compat_ioctl	= lp_compat_ioctl,
+@@ -793,7 +794,7 @@ static const struct file_operations lp_fops = {
+ 	.open		= lp_open,
+ 	.release	= lp_release,
+ #ifdef CONFIG_PARPORT_1284
+-	.read		= lp_read,
++	.read_iter	= lp_read,
+ #endif
+ 	.llseek		= noop_llseek,
  };
 -- 
 2.43.0
