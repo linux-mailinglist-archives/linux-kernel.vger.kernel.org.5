@@ -1,116 +1,203 @@
-Return-Path: <linux-kernel+bounces-141518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D44C8A1F50
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:16:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C6048A1F4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:16:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A51F9B24F73
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:14:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C122E28988C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:16:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DC49134A6;
-	Thu, 11 Apr 2024 19:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44CB13FF6;
+	Thu, 11 Apr 2024 19:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="PKjQqiMy"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Pzhs1o84"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 118E418028
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:14:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DF4FF9DF;
+	Thu, 11 Apr 2024 19:16:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712862891; cv=none; b=jroHZHMULfrx+VK0pQJopkfkmVPVGBE9QWJOuuN/jO6fUGwspSFWanWVtUqP1RATdvRW33XIAyWh2rvUMvXu9bbhMOR4cBV7N+mGLMTWz1ucuc5RnEeszy2AXL6p0EyhAuHDHuJCsSr1v5hyqhU/fz9NC6ZvsbD1XRMfFfQMUBE=
+	t=1712862969; cv=none; b=j8sD/We9w3RC7h/+utfz2uBtQLeC7LnTwTSSX3fkbaf2PDqVoCUnSWDCM87EqA08LbzKwcb/mgmAplhhN6AxGh+BWXjOvXffBUpy+HQaaKK15CkJs1AAmEaNh04pFa+3f5GXu3wG31AnlRKJF0BB8aJXjUMLHa53rgJsegLl/Fg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712862891; c=relaxed/simple;
-	bh=H8ys9L1hv7S7Nx/j9cn+rySGJ/YQIhVVIhaZ1i15xeY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jmzz1OSedsAUuURBJSSiGm+gGfciboCPEiXuUnX5f9Ep+E7AywA9WUBfnatjWfOW3qWhM334R+6oornnDI+e8SorQVkvsGwYx1uH4YS/MMZb5SkfzD+ZT6jJ92Bhn5P9VjQ/pwG+SUNdg39hgL8oVNE8+Hke5kfvPv7+v7x4oKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=PKjQqiMy; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d700beb6beso1148491fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:14:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1712862888; x=1713467688; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=24c5MYVKM5W9suD5aHIvWrEfS4imCoj9FJNn9YD5CY4=;
-        b=PKjQqiMyZwpR2Uz7GycDFY43Zud9snhUbFkDnWSZwohnAdGFw6RbjSSseTjpiWKMPT
-         4mJg3mWIHFLr8aR6f4M2+N20jzRrS76XhfVXHbkA/sSpjCnvjbS2bEAHavLoxKD+5BEE
-         F+BkLf9dsVLkBlG+qj9185+XtP1vww40iX2fI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712862888; x=1713467688;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=24c5MYVKM5W9suD5aHIvWrEfS4imCoj9FJNn9YD5CY4=;
-        b=BkicpOp47HFbM5ePSLmoIVi8e2xhmHNcg4lPlKK9lnHxysd8sS0139ItI6mN5IYgzg
-         2WwoT1A6AO/+RvF3WyUYTgK3uC+0nzib5etKbukgO/rXmUM/NfADocs7sKWcUF8QR3VW
-         wS+X9t4quZfQnPnPrN05rWmUFXhEJhZFx/6p4TmRao2QqvaLtf4RnfvqN9G5Mpb4DB4E
-         HkX2N1/2TvDcj+DJhwBhpxCLDotfvgSp9XS9EndiANkl5atCYn/f8In/ULF8iVjaPs+D
-         pPUws56J04qoz93DKBkKBTJouY5lSNIC7PexdqPf56t9j9POM6sZcqKxVN8F5uuuBVZf
-         JViA==
-X-Forwarded-Encrypted: i=1; AJvYcCXK+O6k7T51rgBwlkgUx0ZPD3gQ9RHHM/+FtDBf0Zn6ll2vW+8aDgWd2TeWLjCsNTLvhRSSxDIbzQvMlnuOQU9XlZDOv44Bv1Opg9jn
-X-Gm-Message-State: AOJu0YyfKQ9UVVI8Tup3Ut5XO302JnQvCnyAgrLrm17GBXgyIAZc7jFH
-	2+ryOgYn2ktiB6Cf+kPdg8M9FQBGrJS2BQ+Sxf4RClGwijLJQ7Qa0dtfLRgjfqywmz8iUj4wffg
-	MMhEloA==
-X-Google-Smtp-Source: AGHT+IH//t7HP1vm3xxI7sXzOnFHn2wQFbaXMoq9IwSLJKdkxZN2rLRiUz8GrzhfcBJAWF6CJzAGsw==
-X-Received: by 2002:a2e:8758:0:b0:2d6:f698:7ecf with SMTP id q24-20020a2e8758000000b002d6f6987ecfmr330829ljj.9.1712862887938;
-        Thu, 11 Apr 2024 12:14:47 -0700 (PDT)
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com. [209.85.221.52])
-        by smtp.gmail.com with ESMTPSA id ig4-20020a056402458400b0056fe7e308c3sm864578edb.0.2024.04.11.12.14.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 12:14:47 -0700 (PDT)
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-346b480e1acso67264f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:14:47 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXKOx3cTso00QuVF6DOvITsgszu0OIDYi6QC/5CXlHDHbmMEKetHe6ZCJVgotbBxmaR7sMB/EWMLBv/hSxOqeDVsMXOn08JiGr2qihZ
-X-Received: by 2002:a5d:570b:0:b0:346:44:3910 with SMTP id a11-20020a5d570b000000b0034600443910mr307796wrv.49.1712862887128;
- Thu, 11 Apr 2024 12:14:47 -0700 (PDT)
+	s=arc-20240116; t=1712862969; c=relaxed/simple;
+	bh=xwu1Lyvb4geu/kIf3urHXorMd7iumeFJO7hXvoKCOII=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rP/UIa17ogKQemx4qN9ZcI64vnQrgV3BIVyP2MNaD/X23vrSL3sly8dBKT+trx3kYXP/KSAIXDNiTZXBlSbzB/1N2dMHK/pTIT/dWRxNapX+3cL0Hg7Au9rw/c8reRGo/Y+x7rfUeBJu2ZyCgN7y5yF8B1nfb4GJwbEA5Y6/arQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Pzhs1o84; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712862969; x=1744398969;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=xwu1Lyvb4geu/kIf3urHXorMd7iumeFJO7hXvoKCOII=;
+  b=Pzhs1o84hREufZytn015hu311k0L/BCZS+btoexWJUVymj6appD4cdVu
+   FfrWjtWOV6DuTjnf0H92nBPm89pwWyM7YW8u9N93R3waTdeB0KI7QR71v
+   /cHX35VGRdyz1yfBlFW4v3Ve21U6pPuFEIZ0gthLzEtYB6GPWumaKUxmr
+   YRvLIM4c8buhwFCTUXxeRS/KqP7xWVT2y06YcOhGDT7AxPyGVoy3A+aNt
+   EpFVdJvsBHVa38ADvaCvoNHoU+mZc3RIM1eNq7hnMDdF4MSMrdH9pe85/
+   0NWCYp5qKimUQV8h/mZ8wIMopBkBXZDV0pyvy7rijiggcJCuXK3Ddq9Bz
+   A==;
+X-CSE-ConnectionGUID: CgNx3H3vR26hjkXNFzfj+A==
+X-CSE-MsgGUID: xBrT2lBjQCaxH7Ep3IveNg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="12084220"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="12084220"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 12:16:08 -0700
+X-CSE-ConnectionGUID: jmaJMGkISoqLiJ2p2IZYhw==
+X-CSE-MsgGUID: Kd5Vby8OQKCXTdujpsXnLw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="21036760"
+Received: from kaspence-mobl.amr.corp.intel.com (HELO [10.209.90.14]) ([10.209.90.14])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 12:16:07 -0700
+Message-ID: <d1f40ee3-ffac-4277-a5b5-6f3d678dff6b@linux.intel.com>
+Date: Thu, 11 Apr 2024 12:16:06 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJvTdKmK_U7nChpm=MzaDyw3T9V6hSua-6C89WCjo828vxm+yw@mail.gmail.com>
- <CAHk-=wgaTzpJssX2z7OiQOLL0BZzHGAfJn0MYPhuN9oU0R2f-Q@mail.gmail.com> <CAJvTdK=BO2YtUCrNzjMR8EydaDzaPasfi9m3_4UreC2J1MYjTg@mail.gmail.com>
-In-Reply-To: <CAJvTdK=BO2YtUCrNzjMR8EydaDzaPasfi9m3_4UreC2J1MYjTg@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 11 Apr 2024 12:14:30 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgNZV3pwPMjOr1_NGUt3L1rK+38xtSp78w02X6qYwqhJA@mail.gmail.com>
-Message-ID: <CAHk-=wgNZV3pwPMjOr1_NGUt3L1rK+38xtSp78w02X6qYwqhJA@mail.gmail.com>
-Subject: Re: [GIT PULL] turbostat 2024.04.10
-To: Len Brown <lenb@kernel.org>
-Cc: Linux PM list <linux-pm@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v18 10/11] PCI/DPC: Add Error Disconnect Recover (EDR)
+ support
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: bhelgaas@google.com, linux-pci@vger.kernel.org,
+ linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+ Len Brown <lenb@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+References: <20240411180757.GA2190937@bhelgaas>
+Content-Language: en-US
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240411180757.GA2190937@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, 11 Apr 2024 at 11:20, Len Brown <lenb@kernel.org> wrote:
+
+On 4/11/24 11:07 AM, Bjorn Helgaas wrote:
+> On Mon, Mar 23, 2020 at 05:26:07PM -0700, sathyanarayanan.kuppuswamy@linux.intel.com wrote:
+>> From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>>
+>> Error Disconnect Recover (EDR) is a feature that allows ACPI firmware to
+>> notify OSPM that a device has been disconnected due to an error condition
+>> (ACPI v6.3, sec 5.6.6).  OSPM advertises its support for EDR on PCI devices
+>> via _OSC (see [1], sec 4.5.1, table 4-4).  The OSPM EDR notify handler
+>> should invalidate software state associated with disconnected devices and
+>> may attempt to recover them.  OSPM communicates the status of recovery to
+>> the firmware via _OST (sec 6.3.5.2).
+>>
+>> For PCIe, firmware may use Downstream Port Containment (DPC) to support
+>> EDR.  Per [1], sec 4.5.1, table 4-6, even if firmware has retained control
+>> of DPC, OSPM may read/write DPC control and status registers during the EDR
+>> notification processing window, i.e., from the time it receives an EDR
+>> notification until it clears the DPC Trigger Status.
+>>
+>> Note that per [1], sec 4.5.1 and 4.5.2.4,
+>>
+>>   1. If the OS supports EDR, it should advertise that to firmware by
+>>      setting OSC_PCI_EDR_SUPPORT in _OSC Support.
+>>
+>>   2. If the OS sets OSC_PCI_EXPRESS_DPC_CONTROL in _OSC Control to request
+>>      control of the DPC capability, it must also set OSC_PCI_EDR_SUPPORT in
+>>      _OSC Support.
+>>
+>> Add an EDR notify handler to attempt recovery.
+>>
+>> [1] Downstream Port Containment Related Enhancements ECN, Jan 28, 2019,
+>>     affecting PCI Firmware Specification, Rev. 3.2
+>>     https://members.pcisig.com/wg/PCI-SIG/document/12888
+>> +static int acpi_enable_dpc(struct pci_dev *pdev)
+>> +{
+>> +	struct acpi_device *adev = ACPI_COMPANION(&pdev->dev);
+>> +	union acpi_object *obj, argv4, req;
+>> +	int status;
+>> +
+>> +	/*
+>> +	 * Some firmware implementations will return default values for
+>> +	 * unsupported _DSM calls. So checking acpi_evaluate_dsm() return
+>> +	 * value for NULL condition is not a complete method for finding
+>> +	 * whether given _DSM function is supported or not. So use
+>> +	 * explicit func 0 call to find whether given _DSM function is
+>> +	 * supported or not.
+>> +	 */
+>> +        status = acpi_check_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
+>> +				1ULL << EDR_PORT_DPC_ENABLE_DSM);
+>> +        if (!status)
+>> +                return 0;
+>> +
+>> +	status = 0;
+>> +	req.type = ACPI_TYPE_INTEGER;
+>> +	req.integer.value = 1;
+>> +
+>> +	argv4.type = ACPI_TYPE_PACKAGE;
+>> +	argv4.package.count = 1;
+>> +	argv4.package.elements = &req;
+>> +
+>> +	/*
+>> +	 * Per Downstream Port Containment Related Enhancements ECN to PCI
+>> +	 * Firmware Specification r3.2, sec 4.6.12, EDR_PORT_DPC_ENABLE_DSM is
+>> +	 * optional.  Return success if it's not implemented.
+>> +	 */
+>> +	obj = acpi_evaluate_dsm(adev->handle, &pci_acpi_dsm_guid, 5,
+>> +				EDR_PORT_DPC_ENABLE_DSM, &argv4);
+> This has been upstream for a while, just a follow-up question: this
+> _DSM function was defined by the ECN with Rev 5.  The ECN was
+> incorporated into the PCI Firmware spec r3.3 with slightly different
+> behavior as Rev 6.
 >
-> ISTR that once upon a time at the kernel summit you expressed a
-> preference that things like utilities (which sometimes depend on merge
-> window changes) come in after rc1 is declared to basically stay out of
-> the way.
+> The main differences are:
+>
+>   ECN
+>     - Rev 5
+>     - Arg3 is an Integer
+>     - Return is 0 (DPC disabled) or 1 (DPC enabled)
+>
+>   r3.3 spec
+>     - Rev 6
+>     - Arg3 is a Package of one Integer
+>     - Return is 0 (DPC disabled, Hot-Plug Surprise may be set), 1 (DPC
+>       enabled, Hot-Plug Surprise may be cleared), or 2 (failure)
+>
+> So the question is whether this actually implements Rev 5 or Rev 6?
+> It looks like this builds a *package* for Arg3 (which would correspond
+> to Rev 6), but we're evaluating Rev 5, which specified an Integer.
+>
+> The meaning of the Arg3 values is basically the same, so I don't see
+> an issue there, but it looks like if a platform implemented Rev 5
+> according to the ECN to take a bare Integer, this might not work
+> correctly.
 
-That may have been true at some point, but probably long ago - the
-merge windows have been so reliable that it's just not an issue any
-more.
+I think it implements rev 6. The version number needs to be updated.
 
-So I'd rather see people hold to the normal release cycle, and aim to
-have the rc releases for fixes or major problems.
+If you would like, I can submit a patch to fix it.
 
-We also used to allow entirely new drivers etc outside the release
-cycle as a "this cannot regress" exception to the normal rules, but
-that has also been largely abandoned as the release cycle is just
-short enough that it makes no sense.
+>
+>> +	if (!obj)
+>> +		return 0;
+>> +
+>> +	if (obj->type != ACPI_TYPE_INTEGER) {
+>> +		pci_err(pdev, FW_BUG "Enable DPC _DSM returned non integer\n");
+>> +		status = -EIO;
+>> +	}
+>> +
+>> +	if (obj->integer.value != 1) {
+>> +		pci_err(pdev, "Enable DPC _DSM failed to enable DPC\n");
+>> +		status = -EIO;
+>> +	}
+>> +
+>> +	ACPI_FREE(obj);
+>> +
+>> +	return status;
+>> +}
 
-So the "new hardware support" rule has basically been watered down
-over the years, and has become a "new hardware IDs are fine" kind of
-rule, where just adding basically just a PCI ID or OF matching entry
-or similar is still fine, but no more "whole new drivers".
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
-                  Linus
 
