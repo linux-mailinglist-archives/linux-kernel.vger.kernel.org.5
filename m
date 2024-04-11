@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141087-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B9ED8A1A6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:51:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EECA8A1A6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:52:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 369882835AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:51:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A33D1C22A0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:52:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 107B41DCA3A;
-	Thu, 11 Apr 2024 15:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEB001DDD27;
+	Thu, 11 Apr 2024 15:40:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="0kAX04MT"
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="QA3OhOYz"
+Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6118C1DB555
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:40:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24ED21DCA20
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:40:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850019; cv=none; b=d42fTcdbVCo9eTXUqkA3b7+0ni5PJIxnUzGLBXK2Y5WS8yIVNdfRFZp+oxxC8DY3eEr4Q8KURgG3UdyBWUWKSlQRBleafmQBdFcSwn0WioppTC1Fqe0WmVhYWW+DsqNPCXUWsm7nuQG2dkht6tdrAkERihnMifp+3e9X2Y5Zi+0=
+	t=1712850020; cv=none; b=JRBF7O7dQM+9zYMLzEshJzg4zj5e3NemgfOztlCjpNtknpC5+t/NMUbPIST+egRDUsBxdsZsu1Dv5Ecp7DwRX5K3PSx3hcPMAVFb39nkwwm7Q53O5UT+t4sYA9ye8EqIMpCGx7+oXzua0ZU8qApBESXVhCqUm5YSIgUithlZRzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850019; c=relaxed/simple;
-	bh=vXyC4AANKAr6PlBsv/DI+7LfBdf8UqFXFRsfcGceumo=;
+	s=arc-20240116; t=1712850020; c=relaxed/simple;
+	bh=js9GE4LMX9Z2We0bcU81rJzAr5QwVHpMDDZ2Y0rzVX4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ecWBJq0WErVN3bIf+ceh/8lQna9Odtxk1GNC/ReJeZP3q6N2mvUvKg44dMl9xUw/ls5KU4RBECskWSrbyrM1Y1iy2oi81xobCoDj/JiTXz569AGd0bm8zyDUZY5Sv/rrwOsZdfuozhZ7JXavQuZeOjZnlkLklH1diOt+V9zJtFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=0kAX04MT; arc=none smtp.client-ip=209.85.166.182
+	 MIME-Version; b=UVnasrETtRDLwVRtxRhZg6iZ+h2ArXxSNUXRIMQ9fBRcmg2avS48LygJVJEbxJMFFQAxq9N+fv05BqLWI//os2mecUxp3EpDtDsjA0lYSfvGUQnd9mG3GIK5383/oKN4UfWiOCGbvVOpZ+yk7FcjYCXSb1mF/iaNvBA0Q0vyqX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=QA3OhOYz; arc=none smtp.client-ip=209.85.166.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-36a34b68277so117835ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:40:17 -0700 (PDT)
+Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so170599239f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:40:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850016; x=1713454816; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850018; x=1713454818; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rZR+y8WqPnE3aAKTVmYOX0W0a6fUUTCd7lWFhDGiZig=;
-        b=0kAX04MTZ/+ob9qSdz0Gy6C7OiwOp3hG3EDa1Xs0JujzX7Gklpbc/4CFwIOsRp7gTa
-         K4LmAa7MUAkHrMVXZNynqyslQqa8crcaHC7n4jzCB4TI2A0zwZhxBXD8S/chwi15YEnQ
-         6otfeUdUswe/NkhPYAlztFvwjgLG46PKHZk9gUS/QLdbFmXCYAMZJ+S4G1jrwLvv4cGN
-         tdBzj+4wfUnMkoDHGhZLAdOQfjFRIPyP992YUIHdoQ/iZbLpFJomhNaaf2u7M7TW3VE/
-         SKsilNm8U7hs0ZbC/ycop43PXQETqgAL3Ho8HZvr4S51x5L9shS0jTNqW15AhOQ+Zm5l
-         U6dw==
+        bh=A/QYmI5ugy0XGE/tgifhxkcM3dLUJZaiJX3VosdM4eY=;
+        b=QA3OhOYzc9gWYWYf/WdOaUKkm8HYHw0yZ4JiFar2uSHG/nkIkMT7D9HU2BtXRmL4oL
+         sZEhtHS5o6V/rD9gVYfupDV78KWX4zhBbRMBLGuR7vwtt3xJCOFJSk6M9ZWaDdVUfBsI
+         v9ezZzohGCMVVhkeLDxtSfUDJgP22QwZs53q/09WXVMPiy3xurVn8XxN9zSQjecCI2Ax
+         McWwkdU11C23CuEDayxrSO27wkWxQ6WxFjitVwzRPJ6vhzl/oN0w50cX+n6HfdN9C3gR
+         5kxkn9SzcNCEv8m9dsEx49evaqRlLSbbmwiH4mPG99smmXg51z+CmJunHqP7AAB55vPj
+         CnGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850016; x=1713454816;
+        d=1e100.net; s=20230601; t=1712850018; x=1713454818;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rZR+y8WqPnE3aAKTVmYOX0W0a6fUUTCd7lWFhDGiZig=;
-        b=U08z4a/CVL1r5R4Vd5rQthhppbvf30YPRPx0DThhKC+OP80VAg95R6XfxZMNyQmr+0
-         RM+wKFtGKR7x8rkUFjBx6yUnOWp0fmAitYuU3co7iGSrUAenASJosrbXkajSh9ms4eaN
-         o6lmEU53Q73uJvfbHkgk9AB+injoW+XNrggQli1xtTVaQqIVCMZO8iufhYAxRus3S+Cg
-         xbdYaRVs51CTVz+HXMdG0FXfcFGK6RCZojQHO4PcsxlqjhEUV+HJMTkywKU/P128zbtC
-         NQPt3KhW3zybWH/kwnuiWyTS9dC4Si9mzWPeYwgNiwkm2c1PPc13ilwYOEXw3L+diJ07
-         yt+Q==
-X-Gm-Message-State: AOJu0YyCjc/3nlVbDJsyQrPN8K8q+UhhhY/unDyhkdK3tebYqjXTO9aL
-	i81eS39EPIcVH83g1bTd9ZsFF4GLy+780Ghk+uWR4fdxQyXw+KHjB368dtdNkhxxmknKolbqh8c
-	v
-X-Google-Smtp-Source: AGHT+IFhGRBLjxgkcYVyOxDEMZLFhGzdqqzrpPiJxYI6eW6Zp7Uk+QDvoZOd9kbY/sIdH34K54K4QQ==
-X-Received: by 2002:a05:6602:4ed7:b0:7d5:ddc8:504d with SMTP id gk23-20020a0566024ed700b007d5ddc8504dmr197943iob.0.1712850016064;
-        Thu, 11 Apr 2024 08:40:16 -0700 (PDT)
+        bh=A/QYmI5ugy0XGE/tgifhxkcM3dLUJZaiJX3VosdM4eY=;
+        b=a7nmYUgp6AWrTLS6WOdXj9xQNYp/OPeOdIujSei/9s1jPM76ioLRnqZmtYiRLck60F
+         Hbstx/8D2zX2fXThXXCW6X1IPNzq6c+4MJfyBBiJk3yA0bRSYhYS+ph+PmG/sB8sqrGo
+         li7woqr0EkO1RWlBJEX+U3MtyP1ZD54Sv/Daj2NUFYMGCO1FnTqfFp5SUCKA9zqhAz0D
+         73XS0p5gEyNj5YVcD6P7tw7dPMTj8l0uIIMivzkOpB6GJQCUepp1Q4dvdugpJ22g6bW2
+         HESBL1gUaC4wxoT2iSfhYCgC4j6mcRgZEUs8yc2yd/VB0eNLndyPOXv4zVQDNdL/lXMm
+         Wyow==
+X-Gm-Message-State: AOJu0Yy63A0EcsNnLNSLtBw5WMNbq1EtIc/xlAxDUamRikBb15lJiyol
+	0jp76fa8nhDQk4VHQTXcOEEjhfH3P1h2SeruusPq4mxc3WgJz3/8qZ/hh47WHJylELmlJs4TzWV
+	p
+X-Google-Smtp-Source: AGHT+IHlwhRWNDOoSAht86PQWeTOgXnXcNF3LMoHxueV6PMXS5IUh0mQ1ODNOW88upskCt2xPxc1BQ==
+X-Received: by 2002:a6b:5b10:0:b0:7d0:bd2b:43ba with SMTP id v16-20020a6b5b10000000b007d0bd2b43bamr232654ioh.0.1712850018012;
+        Thu, 11 Apr 2024 08:40:18 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.40.15
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.40.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:40:15 -0700 (PDT)
+        Thu, 11 Apr 2024 08:40:16 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 311/437] wifi: rsi: rsi_91x_debugfs: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:17:31 -0600
-Message-ID: <20240411153126.16201-312-axboe@kernel.dk>
+Subject: [PATCH 312/437] drivers/net/wireless/silabs: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:17:32 -0600
+Message-ID: <20240411153126.16201-313-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,64 +85,107 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/net/wireless/rsi/rsi_91x_debugfs.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+ drivers/net/wireless/silabs/wfx/debug.c | 34 ++++++++++++-------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/net/wireless/rsi/rsi_91x_debugfs.c b/drivers/net/wireless/rsi/rsi_91x_debugfs.c
-index c528e6ca2c8d..4a8e71ff7ba6 100644
---- a/drivers/net/wireless/rsi/rsi_91x_debugfs.c
-+++ b/drivers/net/wireless/rsi/rsi_91x_debugfs.c
-@@ -222,25 +222,21 @@ static int rsi_debug_read(struct inode *inode,
- /**
-  * rsi_debug_zone_write() - This function writes into hal queues as per user
-  *			    requirement.
-- * @filp: Pointer to the file structure.
-- * @buff: Pointer to the character buffer.
-- * @len: Length of the data to be written into buffer.
-- * @data: Pointer to the data.
-+ * @iocb: Metadata for IO.
-+ * @from: iov_iter to copy data from.
-  *
-  * Return: len: Number of bytes read.
-  */
--static ssize_t rsi_debug_zone_write(struct file *filp,
--				    const char __user *buff,
--				    size_t len,
--				    loff_t *data)
-+static ssize_t rsi_debug_zone_write(struct kiocb *iocb, struct iov_iter *from)
+diff --git a/drivers/net/wireless/silabs/wfx/debug.c b/drivers/net/wireless/silabs/wfx/debug.c
+index e8265208f9a5..bd39be6a7f58 100644
+--- a/drivers/net/wireless/silabs/wfx/debug.c
++++ b/drivers/net/wireless/silabs/wfx/debug.c
+@@ -202,21 +202,21 @@ static int wfx_tx_power_loop_show(struct seq_file *seq, void *v)
+ }
+ DEFINE_SHOW_ATTRIBUTE(wfx_tx_power_loop);
+ 
+-static ssize_t wfx_send_pds_write(struct file *file, const char __user *user_buf,
+-				  size_t count, loff_t *ppos)
++static ssize_t wfx_send_pds_write(struct kiocb *iocb, struct iov_iter *from)
  {
-+	size_t len = iov_iter_count(from);
- 	unsigned long dbg_zone;
+-	struct wfx_dev *wdev = file->private_data;
++	struct wfx_dev *wdev = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(from);
+ 	char *buf;
  	int ret;
  
- 	if (!len)
- 		return 0;
+-	if (*ppos != 0) {
++	if (iocb->ki_pos != 0) {
+ 		dev_dbg(wdev->dev, "PDS data must be written in one transaction");
+ 		return -EBUSY;
+ 	}
+-	buf = memdup_user(user_buf, count);
++	buf = iterdup(from, count);
+ 	if (IS_ERR(buf))
+ 		return PTR_ERR(buf);
+-	*ppos = *ppos + count;
++	iocb->ki_pos += count;
+ 	ret = wfx_send_pds(wdev, buf, count);
+ 	kfree(buf);
+ 	if (ret < 0)
+@@ -226,7 +226,7 @@ static ssize_t wfx_send_pds_write(struct file *file, const char __user *user_buf
  
--	ret = kstrtoul_from_user(buff, len, 16, &dbg_zone);
-+	ret = kstrtoul_from_iter(from, len, 16, &dbg_zone);
+ static const struct file_operations wfx_send_pds_fops = {
+ 	.open = simple_open,
+-	.write = wfx_send_pds_write,
++	.write_iter = wfx_send_pds_write,
+ };
  
- 	if (ret)
- 		return ret;
-@@ -252,16 +248,16 @@ static ssize_t rsi_debug_zone_write(struct file *filp,
- #define FOPS(fopen) { \
- 	.owner = THIS_MODULE, \
- 	.open = (fopen), \
--	.read = seq_read, \
-+	.read_iter = seq_read_iter, \
- 	.llseek = seq_lseek, \
+ struct dbgfs_hif_msg {
+@@ -236,10 +236,10 @@ struct dbgfs_hif_msg {
+ 	int ret;
+ };
+ 
+-static ssize_t wfx_send_hif_msg_write(struct file *file, const char __user *user_buf,
+-				      size_t count, loff_t *ppos)
++static ssize_t wfx_send_hif_msg_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct dbgfs_hif_msg *context = file->private_data;
++	struct dbgfs_hif_msg *context = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(from);
+ 	struct wfx_dev *wdev = context->wdev;
+ 	struct wfx_hif_msg *request;
+ 
+@@ -255,7 +255,7 @@ static ssize_t wfx_send_hif_msg_write(struct file *file, const char __user *user
+ 	 * memory pattern may help user.
+ 	 */
+ 	memset(context->reply, 0xFF, sizeof(context->reply));
+-	request = memdup_user(user_buf, count);
++	request = iterdup(from, count);
+ 	if (IS_ERR(request))
+ 		return PTR_ERR(request);
+ 	if (le16_to_cpu(request->len) != count) {
+@@ -269,10 +269,10 @@ static ssize_t wfx_send_hif_msg_write(struct file *file, const char __user *user
+ 	return count;
  }
  
- #define FOPS_RW(fopen, fwrite) { \
- 	.owner = THIS_MODULE, \
- 	.open = (fopen), \
--	.read = seq_read, \
-+	.read_iter = seq_read_iter, \
- 	.llseek = seq_lseek, \
--	.write = (fwrite), \
-+	.write_iter = (fwrite), \
- }
+-static ssize_t wfx_send_hif_msg_read(struct file *file, char __user *user_buf,
+-				     size_t count, loff_t *ppos)
++static ssize_t wfx_send_hif_msg_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	struct dbgfs_hif_msg *context = file->private_data;
++	struct dbgfs_hif_msg *context = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(to);
+ 	int ret;
  
- static const struct rsi_dbg_files dev_debugfs_files[] = {
+ 	if (count > sizeof(context->reply))
+@@ -283,7 +283,7 @@ static ssize_t wfx_send_hif_msg_read(struct file *file, char __user *user_buf,
+ 	if (context->ret < 0)
+ 		return context->ret;
+ 	/* Be careful, write() is waiting for a full message while read() only returns a payload */
+-	if (copy_to_user(user_buf, context->reply, count))
++	if (!copy_to_iter_full(context->reply, count, to))
+ 		return -EFAULT;
+ 
+ 	return count;
+@@ -312,8 +312,8 @@ static int wfx_send_hif_msg_release(struct inode *inode, struct file *file)
+ static const struct file_operations wfx_send_hif_msg_fops = {
+ 	.open = wfx_send_hif_msg_open,
+ 	.release = wfx_send_hif_msg_release,
+-	.write = wfx_send_hif_msg_write,
+-	.read = wfx_send_hif_msg_read,
++	.write_iter = wfx_send_hif_msg_write,
++	.read_iter = wfx_send_hif_msg_read,
+ };
+ 
+ int wfx_debug_init(struct wfx_dev *wdev)
 -- 
 2.43.0
 
