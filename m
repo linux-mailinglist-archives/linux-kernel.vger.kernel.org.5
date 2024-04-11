@@ -1,78 +1,84 @@
-Return-Path: <linux-kernel+bounces-140555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9C348A1627
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:47:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18CC38A162D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:48:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 077A01C2223E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:47:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE6071F2350C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:48:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DB5B150989;
-	Thu, 11 Apr 2024 13:41:38 +0000 (UTC)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6303152539;
+	Thu, 11 Apr 2024 13:43:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BP2nN3A6"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D9614D2A7;
-	Thu, 11 Apr 2024 13:41:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3B8914D707
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:43:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712842897; cv=none; b=MwlaisBRcEU61w8+MCyVZRxU/JELOFael0iA5eEb5tiWr+xVVVSXzl4D9zk3+Dtvplh42GqIs2qDtd9kg0R00W+FkXJMIbynTbA+NGOV5cbclGpW1pXlrzX/J/yKoDCoKRRCgABVzscpPMfplQJTQhXhoAlC6d5+XPpiUPGEc7s=
+	t=1712842993; cv=none; b=D2eQAX9U645MrVivF6GeWvBAF/x2FAsjy+qrw30/kdMRMw0gV5hEW8suY57enUgZSnMhUFrOeo0I6o2cPK3fWugCGhTi3XuX/boWBPzUwkbhsLVkXqc12BSuaOLSYw82+lzgjS5Wc+idf7M9EDTp8U7n6Cp0bjYHyLMNORLV7Ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712842897; c=relaxed/simple;
-	bh=NKtJkO9gtfDh7lsMKghwFIyyj7BihvxBcp+VJqVXnr0=;
+	s=arc-20240116; t=1712842993; c=relaxed/simple;
+	bh=SJ34ciTQhJ3fV8rma6LmvGWcZJp39aNGbHDDG8dbKWk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JbIIddgTFQZk9xpxqJtGLyALOkjDp83uk8WxTmvZIyBNr6lWJ6hjufKs/0sqf3ntR6GOi16TJhPaFsO5ga3qNB7izam9TrCC+9gUezygLuA1R4HpRH0aABgeHX8C+q2G8TiS0GwaztaXYgB9ym0AofCvsjX479XUr8oIe5GlnQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56845954ffeso10440001a12.2;
-        Thu, 11 Apr 2024 06:41:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712842894; x=1713447694;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UvneUqZfd27xdH7i7ElGM/qtZ3lKBc7X3RH0Dlr3png=;
-        b=Viv03LapGx7sHzM1tR4VYhuG+WggehdXbi3/orekybiztxFzNHkbiv7c2L4ePr84/f
-         MG9Us5Ei+Pt70mTIHfOCQz6gHJGFaJdYxUMECR5tG1P0H3v5R9uhBrNItHZUz7XBVR54
-         9LV1wZ1x9bQRfHmKh0q8f144HFbzithQ0ljrVZVthIuC4O/TNAlfGXD9J3p2bxQSoC7j
-         hxFRDo4/fQiuzmodX19f5OUK0mADRtx8teV8EZiDmOCC+aLHV0gFAaTPQ2I1bB/dsKUV
-         3D7BKd6Bp3SQ+sgFfu64KlMq+O0ZMMkUX2yuRu+Dh4QQKhLD8k+0y2I4Ymdf3GRVFJSd
-         Ojwg==
-X-Forwarded-Encrypted: i=1; AJvYcCWQjqkts0hff3dcPJcDzGC/Rndur/02VSsP+WLGcv+82NYxFm9uvl6SarXhUf3pM7agaU3sAHwI0p0g5Z3lmtnw9/Z+EXZ+X1VskQMO09vX77o5YuixgX3Ao269I4I/aUzrEGE/323aTi/ebQXWWWtX9t7OHE8v3xtxXVZDUwukgkjf9uvC+/uZ88rGMQiluG8zd5IkybHGmfo=
-X-Gm-Message-State: AOJu0Yz7YLaTba2dTTlTm4w2QxIzaZMTVAhaj9AV+7+McIk3EmMO3s0s
-	mWjnFhT0he2pYAoqjjVCJ7P0AUNxH2cqJbissk7lTAfhf+6PC7rR
-X-Google-Smtp-Source: AGHT+IFVHCivSmrCJQ/y1EgrRPUwWuulRGSKey7Ag7Jr1OrzqAwr6UvPSa7kMM+1w1xBFvGGvQGbng==
-X-Received: by 2002:a50:8e15:0:b0:56f:e4f7:fbd9 with SMTP id 21-20020a508e15000000b0056fe4f7fbd9mr1606203edw.20.1712842894052;
-        Thu, 11 Apr 2024 06:41:34 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-004.fbsv.net. [2a03:2880:30ff:4::face:b00c])
-        by smtp.gmail.com with ESMTPSA id j1-20020aa7de81000000b0056e62321eedsm706414edv.17.2024.04.11.06.41.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 06:41:33 -0700 (PDT)
-Date: Thu, 11 Apr 2024 06:41:30 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: aleksander.lobakin@intel.com, davem@davemloft.net, pabeni@redhat.com,
-	edumazet@google.com, elder@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, nbd@nbd.name,
-	sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
-	lorenzo@kernel.org, taras.chornyi@plvision.eu,
-	ath11k@lists.infradead.org, ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org, geomatsi@gmail.com,
-	kvalo@kernel.org, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	quic_jjohnson@quicinc.com, leon@kernel.org,
-	dennis.dalessandro@cornelisnetworks.com,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, idosch@idosch.org
-Subject: Re: [PATCH net-next v5 00/10] allocate dummy device dynamically
-Message-ID: <Zhfoim8HbQGlvbAC@gmail.com>
-References: <20240410131407.3897251-1-leitao@debian.org>
- <20240411060926.308788bf@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=IpM259qp45sqtDLXvSQS+BNnLI/U0YvdsPAWjN0STxnUaNQtpcPa0A3F2q5ySk/fW4ZJ/IuKJk/PJ0uuxIEy9ek/KDiV07Yhx9HGgNn/GLd26r3zTrWByrOwZPY30bZ/RcljMqqUL5XFUROfkA2odYANT+qWIglGHzWaM2AMYaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BP2nN3A6; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712842990;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=94SyIWf/l9sBuxilNW3hNkOFqAXyJGS5kVqeXmxJOr8=;
+	b=BP2nN3A6PuTw3ISLaPee1wATVJrrQOWpnUN0mxLg9ro0p961vaKXe0dJO8gCvmGqibrclX
+	RzxOHrvaDpgjYu+kpNJWNRW6fn/ZGsCOI+qXsvpwW6elQjsJ3jVUk1ygNWkiRn9HKBYPwW
+	m1rOFBQruwV5XxKvM6lqOy+jGyqZv0o=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-369-CzxCm4qdNOq75Ny8zAF92w-1; Thu, 11 Apr 2024 09:43:07 -0400
+X-MC-Unique: CzxCm4qdNOq75Ny8zAF92w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 251DF188E9C3;
+	Thu, 11 Apr 2024 13:43:07 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.235])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 2D3692026D06;
+	Thu, 11 Apr 2024 13:43:04 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu, 11 Apr 2024 15:41:41 +0200 (CEST)
+Date: Thu, 11 Apr 2024 15:41:33 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Nicholas Piggin <npiggin@gmail.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	linux-kernel@vger.kernel.org, Junyao Zhao <junzhao@redhat.com>,
+	Chris von Recklinghausen <crecklin@redhat.com>
+Subject: Re: Nohz_full on boot CPU is broken (was: Re: [PATCH v2 1/1] wq:
+ Avoid using isolated cpus' timers on queue_delayed_work)
+Message-ID: <20240411134133.GC5494@redhat.com>
+References: <20240402105847.GA24832@redhat.com>
+ <Zg2qFinSkAOmRHcM@slm.duckdns.org>
+ <20240403203814.GD31764@redhat.com>
+ <20240405140449.GB22839@redhat.com>
+ <ZhByg-xQv6_PC3Pd@localhost.localdomain>
+ <20240407130914.GA10796@redhat.com>
+ <ZhUu0uQxPgcXmQes@localhost.localdomain>
+ <20240409130727.GC29396@redhat.com>
+ <D0G5OX8W9NH9.1HE33RVAROAJK@gmail.com>
+ <20240410135518.GA25421@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,20 +87,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240411060926.308788bf@kernel.org>
+In-Reply-To: <20240410135518.GA25421@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Thu, Apr 11, 2024 at 06:09:26AM -0700, Jakub Kicinski wrote:
-> On Wed, 10 Apr 2024 06:13:41 -0700 Breno Leitao wrote:
-> >   wifi: ath11k: allocate dummy net_device dynamically
-> 
-> Sorry Breno, I didn't notice earlier, patch 10 didn't make it
-> to the list. The series wasn't ingested by CI and tested because 
-> of this. Could you repost?
+On 04/10, Oleg Nesterov wrote:
+>
+> Will you agree with the change above or what do you suggest instead as
+> a simple workaround?
 
-Thanks for the heads-up. I debugged it and it was my mistake, this is
-how I've sent it.
+OK, let me send the patch.
 
-	git send-email patches/v5-000*
+Nicholas, Frederic, please review.
 
-I will repost.
+> Again, I am not sure I understand, but I too thought that something like
+>
+> 	housekeeping_check(void)
+> 	{
+> 		for_each_set_bit(type, &housekeeping.flags, HK_TYPE_MAX) {
+> 			if (!cpumask_intersects(cpu_online, housekeeping.cpumasks[type]))
+> 				panic();
+> 		}
+>
+> after bringup_nonboot_cpus(setup_max_cpus).
+
+It seems we can make a simpler patch for this. It will (should) fix another
+problem when maxcpus < first-housekeeping.
+
+I'll recheck and try to do this later, lets solve the reported problem first.
+
+Oleg.
+
 
