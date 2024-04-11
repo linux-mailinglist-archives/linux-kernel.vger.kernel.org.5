@@ -1,53 +1,60 @@
-Return-Path: <linux-kernel+bounces-140629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D13C8A16FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:19:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C9268A1702
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:21:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19C041F20419
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:19:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01F552835F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 754A614E2CD;
-	Thu, 11 Apr 2024 14:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9573514E2CD;
+	Thu, 11 Apr 2024 14:20:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marcan.st header.i=@marcan.st header.b="ykhUHKJb"
-Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="SILsPVAt"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21AF914E2D9
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.63.210.85
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08EDF14D708;
+	Thu, 11 Apr 2024 14:20:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712845166; cv=none; b=GFHgxqQFo8RYWDj0RlG4P8oyPq1ljrMQ3qEO9iuN+ZiVbQ3p11Ab2645H5OWD4a2J44myAKmyFv14+1L7OyWm9AMWQrNyoGc4O+UXArKKuqKM336nkf0RPXJcaZzgsLNp0Y21bZrOkX3JyVnNYfWD0Gp1LIT50NMkfCaGdilsvc=
+	t=1712845252; cv=none; b=V5n8GinPSu1tDvYYr9CRa3Ge0hpIfIwqXKjyytttXgX+luxT8i+XgI3v4w/Ev6TsCgovd47WhC7K3BD6XIjS6gWmBMQ8PK5HfXY2BG7yEhNHjmh767rGAkQM5iM3oFmAuGP8/nEOBgK/hqDHp5WSgYQsViuetMIqW2CMabPssd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712845166; c=relaxed/simple;
-	bh=3brrNQwZailVS9okgETwHXltzD+Ym9JA7txTXw14+rk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G0ChZPiZWRvaQRzvD2fxPV2IcfeEmJRi9HuteRGAe3P0cfmYNYnfPDx93GHZQ6xDXgDzLk5vVT7gGJPuABUyh66PV7rcH/Ijv2jfRolQC7Gh6ngmN3RO0d3QAlXD5Pco/syBLbFGTr9VJrP4uzWbmQ1J5nYAt4S6H2vGHWi0Wzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=marcan.st; spf=pass smtp.mailfrom=marcan.st; dkim=pass (2048-bit key) header.d=marcan.st header.i=@marcan.st header.b=ykhUHKJb; arc=none smtp.client-ip=212.63.210.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=marcan.st
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marcan.st
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	s=arc-20240116; t=1712845252; c=relaxed/simple;
+	bh=gArZRcKJqCCIYXotisDvi1lLpRBGz36Ctb1FuCH/V0Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=KNwSY1CyNcIsKh+rr46s8krAowf6ovXUDtwUt6Xh1IAU/fxlXXpWK4dcjoC/bRxEC6Y4VrNtcgJnly3jZUGhYic/QnaU+c14E7Oe7AbrPXQXuvnMCXSn+3THiU6aO0SWri735CoJfPYABreXlIsLtYArKRrryYL4xEJaPjui7Xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=SILsPVAt; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 6F00E120030;
+	Thu, 11 Apr 2024 17:20:47 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6F00E120030
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1712845247;
+	bh=JzEpKQOQSCAa/sVPzjULYwdH6hnGpIyZLwikvel8MFU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=SILsPVAtRh4oDqWZ4PBAOsJ4XUelJx8uvYUE3MF3S727ZbdfQ7pcPdWk32QDHAq3B
+	 jUcmJtuapXxvqhh7/U7SEyoXgOYsfcvGsrgSxbYINJCtU8IJxb3rmndUBraT9Bhb+i
+	 PNMN/mnRNZQiEIe7NX92bxnjwP9LEHomh/ENj7JWSyjzvlwnBlLfP3vrFlhmVuI/UD
+	 uHVVjUcXA430gXDzplKDr7vDCkO7qiEa5Kh7IHaETCm3RnGLSkQEMk5jx+xDBVDqPG
+	 3dlZotPKesgQ1/35dHV1qR1tqtu9comYUxCy4Z5GVHwJTtjE/mwODIgW82RcIzLMTr
+	 yMKQfdiOnU+1Q==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	(Authenticated sender: marcan@marcan.st)
-	by mail.marcansoft.com (Postfix) with ESMTPSA id 340FA4264F;
-	Thu, 11 Apr 2024 14:19:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
-	t=1712845160; bh=3brrNQwZailVS9okgETwHXltzD+Ym9JA7txTXw14+rk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=ykhUHKJbI38YQHT6kBcV0JRXY1bg4TNCVCImzo2W1TLIQveExFLitZvv5bDVxfBR3
-	 fyEl9wY0h/Flc8T1voUDFymB5mrxuEApYzpstMvmV9ovencAcdMStckiz3sux9amy/
-	 NyqJ9bjHQ9YqKtz6PB0NlL5eoPMMCjR1jot7ZHGmJvy3pc8GqizWaSfKKvJ+yXu/KU
-	 tNkEMfIyyWgECw6IL72Z5kB/AxJTyT3shLoH06ONOTHmMySpJQEK9ZQ9zR4vvyf3gv
-	 cgYmQr6MHAsKOi6inrIJpWuw74lPwK5VJN2V2Z68h6LRDGw4XdjrEyDrEGLUeXE+2p
-	 Bp9XbJlmawm/w==
-Message-ID: <28ab55b3-e699-4487-b332-f1f20a6b22a1@marcan.st>
-Date: Thu, 11 Apr 2024 23:19:13 +0900
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Thu, 11 Apr 2024 17:20:47 +0300 (MSK)
+Received: from [192.168.1.143] (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 11 Apr 2024 17:20:46 +0300
+Message-ID: <25eabe2f-93ce-46d3-b0e0-f633e1cefbe4@salutedevices.com>
+Date: Thu, 11 Apr 2024 17:20:31 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,153 +62,132 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] arm64: Support the TSO memory model
-To: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Zayd Qumsieh <zayd_qumsieh@apple.com>,
- Justin Lu <ih_justin@apple.com>, Ryan Houdek <Houdek.Ryan@fex-emu.org>,
- Mark Brown <broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
- Mateusz Guzik <mjguzik@gmail.com>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Oliver Upton <oliver.upton@linux.dev>, Miguel Luis <miguel.luis@oracle.com>,
- Joey Gouly <joey.gouly@arm.com>, Christoph Paasch <cpaasch@apple.com>,
- Kees Cook <keescook@chromium.org>, Sami Tolvanen <samitolvanen@google.com>,
- Baoquan He <bhe@redhat.com>, Joel Granados <j.granados@samsung.com>,
- Dawei Li <dawei.li@shingroup.cn>, Andrew Morton <akpm@linux-foundation.org>,
- Florent Revest <revest@chromium.org>, David Hildenbrand <david@redhat.com>,
- Stefan Roesch <shr@devkernel.io>, Andy Chiu <andy.chiu@sifive.com>,
- Josh Triplett <josh@joshtriplett.org>, Oleg Nesterov <oleg@redhat.com>,
- Helge Deller <deller@gmx.de>, Zev Weiss <zev@bewilderbeest.net>,
- Ondrej Mosnacek <omosnace@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Asahi Linux <asahi@lists.linux.dev>
-References: <20240411-tso-v1-0-754f11abfbff@marcan.st>
- <20240411132853.GA26481@willie-the-truck>
-From: Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH v7 0/8] devm_led_classdev_register() usage problem
+To: Lee Jones <lee@kernel.org>
+CC: <andy.shevchenko@gmail.com>, <pavel@ucw.cz>, <vadimp@nvidia.com>,
+	<christophe.leroy@csgroup.eu>, <hdegoede@redhat.com>,
+	<mazziesaccount@gmail.com>, <peterz@infradead.org>, <mingo@redhat.com>,
+	<will@kernel.org>, <longman@redhat.com>, <boqun.feng@gmail.com>,
+	<nikitos.tr@gmail.com>, <marek.behun@nic.cz>, <kabel@kernel.org>,
+	<linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240314201856.1991899-1-gnstark@salutedevices.com>
+ <20240321181133.GG13211@google.com>
+ <9bfd0ccc-a5d8-446c-a08c-bbc36a4d66eb@salutedevices.com>
+ <20240322104303.GN13211@google.com>
+ <e3dd3ed1-02dc-447c-9fdd-9d8193a25e5f@salutedevices.com>
+ <20240411134514.GK1980182@google.com>
 Content-Language: en-US
-In-Reply-To: <20240411132853.GA26481@willie-the-truck>
-Content-Type: text/plain; charset=UTF-8
+From: George Stark <gnstark@salutedevices.com>
+In-Reply-To: <20240411134514.GK1980182@google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184674 [Apr 11 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 16 0.3.16 6e64c33514fcbd07e515710c86ba61de7f56194e, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/11 09:22:00 #24744908
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On 2024/04/11 22:28, Will Deacon wrote:
-> Hi Hector,
+Hello Lee
+
+On 4/11/24 16:45, Lee Jones wrote:
+> On Fri, 29 Mar 2024, George Stark wrote:
 > 
-> On Thu, Apr 11, 2024 at 09:51:19AM +0900, Hector Martin wrote:
->> x86 CPUs implement a stricter memory modern than ARM64 (TSO). For this
->> reason, x86 emulation on baseline ARM64 systems requires very expensive
->> memory model emulation. Having hardware that supports this natively is
->> therefore very attractive. Such hardware, in fact, exists. This series
->> adds support for userspace to identify when TSO is available and
->> toggle it on, if supported.
+>> Hello Lee
+>>
+>> On 3/22/24 13:43, Lee Jones wrote:
+>>> On Fri, 22 Mar 2024, George Stark wrote:
+>>>
+>>>> Hello Lee
+>>>>
+>>>> On 3/21/24 21:11, Lee Jones wrote:
+>>>>> On Thu, 14 Mar 2024, George Stark wrote:
+>>>>>
+>>>>>> This patch series fixes the problem of devm_led_classdev_register misusing.
+>>>>>>
+>>>>>> The basic problem is described in [1]. Shortly when devm_led_classdev_register()
+>>>>>> is used then led_classdev_unregister() called after driver's remove() callback.
+>>>>>> led_classdev_unregister() calls driver's brightness_set callback and that callback
+>>>>>> may use resources which were destroyed already in driver's remove().
+>>>>>>
+>>>>>> After discussion with maintainers [2] [3] we decided:
+>>>>>> 1) don't touch led subsystem core code and don't remove led_set_brightness() from it
+>>>>>> but fix drivers
+>>>>>> 2) don't use devm_led_classdev_unregister
+>>>>>>
+>>>>>> So the solution is to use devm wrappers for all resources
+>>>>>> driver's brightness_set() depends on. And introduce dedicated devm wrapper
+>>>>>> for mutex as it's often used resource.
+>>>>
+>>>> ...
+>>>>
+>>>>>>      locking/mutex: introduce devm_mutex_init()
+>>>>>>      leds: aw2013: use devm API to cleanup module's resources
+>>>>>>      leds: aw200xx: use devm API to cleanup module's resources
+>>>>>>      leds: lp3952: use devm API to cleanup module's resources
+>>>>>>      leds: lm3532: use devm API to cleanup module's resources
+>>>>>>      leds: nic78bx: use devm API to cleanup module's resources
+>>>>>>      leds: mlxreg: use devm_mutex_init() for mutex initialization
+>>>>>>      leds: an30259a: use devm_mutex_init() for mutex initialization
+>>>>>>
+>>>>>>     drivers/leds/leds-an30259a.c | 14 ++++----------
+>>>>>>     drivers/leds/leds-aw200xx.c  | 32 +++++++++++++++++++++-----------
+>>>>>>     drivers/leds/leds-aw2013.c   | 25 +++++++++++++------------
+>>>>>>     drivers/leds/leds-lm3532.c   | 29 +++++++++++++++++------------
+>>>>>>     drivers/leds/leds-lp3952.c   | 21 +++++++++++----------
+>>>>>>     drivers/leds/leds-mlxreg.c   | 14 +++++---------
+>>>>>>     drivers/leds/leds-nic78bx.c  | 23 +++++++++++++----------
+>>>>>>     include/linux/mutex.h        | 27 +++++++++++++++++++++++++++
+>>>>>>     kernel/locking/mutex-debug.c | 11 +++++++++++
+>>>>>>     9 files changed, 122 insertions(+), 74 deletions(-)
+>>>>>
+>>>>> Doesn't apply to v6.8.
+>>>>>
+>>>>> What base was used for this?
+>>>>
+>>>> I've just pulled git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>>> and v7 was applied cleanly. linux-next is ok too.
+>>>>
+>>>> v6.8 is lack of recent patch 6969d0a2ba1adc9ba6a49b9805f24080896c255c
+>>>> v7's patch #2 depends on it
+>>>
+>>> No problem.  I'll wait for v6.9-rc1.
+>>>
+>>
+>> Just checked the v7 patch series on released 6.9-rc1 and it's applied
+>> cleanly. If anything i can help please let me know.
 > 
-> I'm probably going to make myself hugely unpopular here, but I have a
-> strong objection to this patch series as it stands. I firmly believe
-> that providing a prctl() to query and toggle the memory model to/from
-> TSO is going to lead to subtle fragmentation of arm64 Linux userspace.
-
-I honestly doubt this should be a significant concern right now, given
-that only a subset of implementations actually support this. Yes,
-developers can do stupid stuff, but we already have gone through this
-kind of story with other situations (e.g. 16K and 64K page support on
-ARM64 breaking 4K assumptions) and things have been fixed over time.
-
-In particular, I highly suspect Asahi Linux and Apple Silicon have done
-a lot more good for the ARM64 ecosystem by getting developers to fix
-their page size mess than they will do bad by somehow encouraging TSO
-abuse. We've even found new memory model issues thanks to the
-architecture's deep out-of-order character (remember that mess with
-Linux atomics? :-)). So far, in the year+ we've had this patchset
-downstream, not a single developer has proposed abusing it for something
-that isn't an x86 emulator.
-
-There's a pragmatic argument here: since we need this, and it absolutely
-will continue to ship downstream if rejected, it doesn't make much
-difference for fragmentation risk does it? The vast majority of
-Linux-on-Mac users are likely to continue running downstream kernels for
-the foreseeable future anyway to get newer features and hardware support
-faster than they can be upstreamed. So not allowing this upstream
-doesn't really change the landscape vis-a-vis being able to abuse this
-or not, it just makes our life harder by forcing us to carry more
-patches forever.
-
-> It's not difficult to envisage this TSO switch being abused for native
-> arm64 applications:
+> It applies, but doesn't seem to build:
 > 
->   * A program no longer crashes when TSO is enabled, so the developer
->     just toggles TSO to meet a deadline.
+> make --silent --keep-going --jobs=8 O=../build ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_COMPAT=arm-linux-gnueabihf- 'CC=sccache aarch64-linux-gnu-gcc' 'HOSTCC=sccache gcc' allmodconfig
+> make --silent --keep-going --jobs=8 O=../build ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_COMPAT=arm-linux-gnueabihf- 'CC=sccache aarch64-linux-gnu-gcc' 'HOSTCC=sccache gcc'
+> ERROR: modpost: "__devm_mutex_init" [drivers/leds/leds-an30259a.ko] undefined!
+> ERROR: modpost: "__devm_mutex_init" [drivers/leds/leds-aw200xx.ko] undefined!
+> ERROR: modpost: "__devm_mutex_init" [drivers/leds/leds-aw2013.ko] undefined!
+> ERROR: modpost: "__devm_mutex_init" [drivers/leds/leds-lm3532.ko] undefined!
+> ERROR: modpost: "__devm_mutex_init" [drivers/leds/leds-mlxreg.ko] undefined!
+> make[3]: *** [/builds/linux/scripts/Makefile.modpost:145: Module.symvers] Error 1
 > 
->   * Some legacy x86 sources are being ported to arm64 but concurrency
->     is hard so the developer just enables TSO to (mostly) avoid thinking
->     about it.
-
-Both of these rely on the developer *knowing* what TSO is and why it
-fixes this. I posit that a developer who knows what that is also likely
-to know why this is a stupid hack and they shouldn't be doing this and
-that it won't work on all machines.
-
-> 
->   * Some binaries in a distribution exhibit instability which goes away
->     in TSO mode, so a taskset-like program is used to run them with TSO
->     enabled.
-
-Since the flag is cleared on execve, this third one isn't generally
-possible as far as I know.
-
-> In all these cases, we end up with native arm64 applications that will
-> either fail to load or will crash in subtle ways on CPUs without the TSO
-> feature. Assuming that the application cannot be fixed, a better
-> approach would be to recompile using stronger instructions (e.g.
-> LDAR/STLR) so that at least the resulting binary is portable. Now, it's
-> true that some existing CPUs are TSO by design (this is a perfectly
-> valid implementation of the arm64 memory model), but I think there's a
-> big difference between quietly providing more ordering guarantees than
-> software may be relying on and providing a mechanism to discover,
-> request and ultimately rely upon the stronger behaviour.
-
-The problem is "just" using stronger instructions is much more
-expensive, as emulators have demonstrated. If TSO didn't serve a
-practical purpose I wouldn't be submitting this, but it does. This is
-basically non-negotiable for x86 emulation; if this is rejected
-upstream, it will forever live as a downstream patch used by the entire
-gaming-on-Mac-Linux ecosystem (and this is an ecosystem we are very
-explicitly targeting, given our efforts with microVMs for 4K page size
-support and the upcoming Vulkan drivers).
-
-That said, I have a pragmatic proposal here. The "fixed TSO" part of the
-implementation should be harmless, since those CPUs would correctly run
-poorly-written applications anyway so the API is moot. That leaves Apple
-Silicon. Our native kernels are and likely always will be 16K page size,
-due to a bunch of pain around 16K-only IOMMUs (4K kernels do boot
-natively but with very broken functionality including no GPU
-acceleration) plus performance differences that favor 16K. How about we
-gate the TSO functionality to only be supported on 4K kernel builds?
-This would make them only work in 4K VMs on Asahi Linux. We are very
-explicitly discouraging people from trying to use the microVMs to work
-around page size problems (which they can already do, another
-fragmentation problem, anyway); any application which requires the 4K VM
-to run that isn't an emulator is already clearly broken and advertising
-that fact openly. So, adding TSO to this should be only a marginal risk
-of further fragmentation, and it wouldn't allow apps to "sneakily" "just
-work" on Apple machines by abusing TSO.
-
-> 
-> An alternative option is to go down the SPARC RMO route and just enable
-> TSO statically (although presumably in the firmware) for Apple silicon.
-> I'm assuming that has a performance impact for native code?
-
-Correct. We already have this as a bootloader option, but it is not
-desirable. Plus, userspace code still needs a way to *discover* that TSO
-is enabled for correctness, so it can automatically decide whether to
-use stronger or weaker instructions.
-
-> 
-> Will
-> 
-> P.S. I briefly pondered the idea of the kernel toggling the bit in the
-> ELF loader when e.g. it sees an x86 machine type but I suspect that
-> doesn't really help with existing emulators and you'd still need a way
-> to tell the emulator whether or not it was enabled.
+> Did you forget to export it?
 > 
 
-- Hector
+Yes, my bad. I tested *DEBUG* configs but without modules enabled.
+Adding EXPORT_SYMBOL_GPL(__devm_mutex_init); fixes the problem,
+v8 is on the way.
+
+-- 
+Best regards
+George
 
