@@ -1,352 +1,128 @@
-Return-Path: <linux-kernel+bounces-140044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC4538A0AB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:58:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48AD68A0AB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:58:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61710285B50
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:58:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F18E01F217A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:58:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C2813E8B3;
-	Thu, 11 Apr 2024 07:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50A1213FD6D;
+	Thu, 11 Apr 2024 07:58:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HlwNPDQI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MvQcY68I"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A212D524A
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:58:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BB22EAE5
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:58:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712822283; cv=none; b=brKZugVytOiTqK5ULRAkpJCl0BA8WBIISnkKYVqdhtTLgoRkkjxAn6Q41gk2X9/i9HwwiCPgOZeFGzCK3DI77zT+/Az0vPzBGDEWk4O+8Ol+5DT9egu5cBbadavK9VGXA4VgzH3KPyvh0gC1dspMjCY0HP+3fe2fShpKTKLI9lg=
+	t=1712822294; cv=none; b=WowwNIfxvQi2edenrgqWnXX3NAn5H+JG8V5kOvlJf9DooCPXIy+4A2ok6h1iuPVVY30oxKmiiPOtzudrLWTbTfmEHDKfhwlApwXyr2dgeSVjDnbGYyyXH7IWlCQ8uOWG9kCimSDINS+Up5zbF2tES28naDuQ4d3XfF3i0fSdnPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712822283; c=relaxed/simple;
-	bh=iP7Zt3axCkR/7sbaTLQSLwCfzTGKYdlpmdKbBBetESQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h8dp9GDqeMUGo2c/1Qzhort+chsxoii8T+VZ7JxgnA4Wbs4Ab4oaRHTtlnoSgDPn6JxMb/T6qeRm46iD1TuiMhhs4uq49QcNvd94uhAI8pqh/86aYIcTg5Wl/kCR/ZO6KcYAsLECcEnQFspzrsYXbkbKDUev7aPBEfeWbFVIAQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HlwNPDQI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26AD0C433C7;
-	Thu, 11 Apr 2024 07:57:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712822283;
-	bh=iP7Zt3axCkR/7sbaTLQSLwCfzTGKYdlpmdKbBBetESQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=HlwNPDQI3u2j4YMKfnZWexMlTxw3DO6eeX8ny1tSKCKmJmCXOFrPNrQGywYT95E01
-	 fIf0a5i8iJyJh8ix8fB0Pfe6X8QGxL6Y+uq2Ft8LeTbSiiv6un+dyxjabABaIYwClu
-	 DPCxQD+SwGqKadxQcfci7OLq1hrrBtdBZEXztut6r8aCSNWUhqPmOoGRB8zF8EH1bb
-	 koA0AloFqkgga5W9orqYhjVHMyTJ3QTzHBmRB9UUgrx7ydvUKNuLbi5evGVe3h4Mb8
-	 tyjTBAG1tOgL71/uNWPHHu/Z7K6mB2oe8/Z592E30OyUrSvaAffHvwakYmZUEiRzlk
-	 rbh1wXq9Hc1Tg==
-Message-ID: <8826ae4a-1ab8-4e61-9b9e-2a1c71bb0a78@kernel.org>
-Date: Thu, 11 Apr 2024 09:57:57 +0200
+	s=arc-20240116; t=1712822294; c=relaxed/simple;
+	bh=joMzTyz23qmG+b+PQc5HQqQmeMqXg/U9MthFl8kkmFU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kilpPtidaXWnj40scNfNSlHpw6FHW3n74h6jIlxX+tnuHL2yotg8O6+st+7PbTdxY3ul7FdwLXxYimBSL5O/zRhpp/88yMHIGXPLEbcvHlbQt+bRws8SHpoCPAU87o6+cNTCisGbwZNQDMbeMaunElKBF8E3N1fTdw/92U1v4Kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MvQcY68I; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712822291;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=SqVTw0UTFVtH3IwS7qkCBECw2fl92QBlfhYoyR8m1lo=;
+	b=MvQcY68IYBDznjnctv9HNaoyuCH4P2v812lVkNdgiziid6342X+qOcHt4fPnhtlE/5OyqD
+	FiEAUVvAqltTXOs113GUh4Llk/0Pfg3WbsU84MWQh6vsAS2mvJJ9tu6MgGgc/5WUD6/3n/
+	syK2TbEtLREk+KNBbdL0Y3VPS3oK/tI=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-633-EeGGg_l6MSWhNfXM4OyXcg-1; Thu, 11 Apr 2024 03:58:10 -0400
+X-MC-Unique: EeGGg_l6MSWhNfXM4OyXcg-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-78e13eddaf3so124028085a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:58:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712822289; x=1713427089;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SqVTw0UTFVtH3IwS7qkCBECw2fl92QBlfhYoyR8m1lo=;
+        b=YxmzdsiNcLiSHq+EhrbjcxV1r8j2TS/LCAGpVxNxt8V1W2o8tjIrdqjEaStLERHz0/
+         Q8C/PrXU9TrZvVEfGNyMRh4yjV3vso3y3KSIM2WWLggS7sV+uo1GwnGsbVTA5O+3LsGH
+         pG88p+6rJ6rvghxw4zTk02X6uWUd7l0nVGFdZIDPANUhZJwS9cyIaKTtFF/W6lqlJd4K
+         G+bfCIXBsb6LEviBPndMKn42nC3EEpQi+EJZ7wFkS3fWPgx3XV9K00xusNDU7bkWnP3h
+         Y+QKiTMQaYbe0XsI/7HMrnEmTC9+SIV3abie7QZHgN+bY+Rc7B9dcOW3nyDIt4MqgbT4
+         ruMw==
+X-Forwarded-Encrypted: i=1; AJvYcCWoCT7vkkM52eo0DV1bVvJt1Wa9OF6OXYbJWoYXWVqbMPFW+tE0zPpfH/CYWafH2XWFF7Inxu+ZmEstuYE4dvwqbBIKxKEVuSRpxCKj
+X-Gm-Message-State: AOJu0YyLLIi4inW+DkLIn3Nj3AKX2F6NhuENuXJst31vj+jLsabIgP3f
+	OiMQpb1s8KnVG636WqusP/0Ml0IIkmmY1IgtnhG7sbeW9jGM7f1a2LpwAsKiU7YPSL0cLh6Xqtm
+	fNgsgs2yiz6EcUyJl8PM2wykCuavao57HdE7IRDKdrit50xl/8J9O7Kbs/+RHwQ==
+X-Received: by 2002:a05:620a:3d0:b0:78e:ba91:a4a9 with SMTP id r16-20020a05620a03d000b0078eba91a4a9mr2901286qkm.33.1712822289633;
+        Thu, 11 Apr 2024 00:58:09 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEvSh9y4I/IGdCNvTciq7eFbqCOuLJohMuODkTcOR2jUHxmkOOxyBUfrylL1fqN6UUVEDDAUg==
+X-Received: by 2002:a05:620a:3d0:b0:78e:ba91:a4a9 with SMTP id r16-20020a05620a03d000b0078eba91a4a9mr2901266qkm.33.1712822289235;
+        Thu, 11 Apr 2024 00:58:09 -0700 (PDT)
+Received: from lbulwahn-thinkpadx1carbongen9.rmtde.csb ([2a02:810d:7e40:14b0:4ce1:e394:7ac0:6905])
+        by smtp.gmail.com with ESMTPSA id bj38-20020a05620a192600b0078d679f6efesm691961qkb.16.2024.04.11.00.58.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 00:58:08 -0700 (PDT)
+From: Lukas Bulwahn <lbulwahn@redhat.com>
+X-Google-Original-From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+To: Shenghao Ding <shenghao-ding@ti.com>,
+	Kevin Lu <kevin-lu@ti.com>,
+	Baojun Xu <baojun.xu@ti.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@redhat.com>
+Subject: [PATCH] MAINTAINERS: adjust file entry in TEXAS INSTRUMENTS AUDIO (ASoC/HDA) DRIVERS
+Date: Thu, 11 Apr 2024 09:58:03 +0200
+Message-ID: <20240411075803.53657-1-lukas.bulwahn@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V6 2/6] sched/deadline: Deferrable dl server
-Content-Language: en-US, pt-BR, it-IT
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
- <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org, Luca Abeni <luca.abeni@santannapisa.it>,
- Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
- Thomas Gleixner <tglx@linutronix.de>, Joel Fernandes
- <joel@joelfernandes.org>, Vineeth Pillai <vineeth@bitbyteword.org>,
- Shuah Khan <skhan@linuxfoundation.org>, Phil Auld <pauld@redhat.com>,
- Suleiman Souhlal <suleiman@google.com>,
- Youssef Esmat <youssefesmat@google.com>
-References: <cover.1712337227.git.bristot@kernel.org>
- <7b9c206e914ef257a2534199f25938ffafa3e59e.1712337227.git.bristot@kernel.org>
- <20240410174749.GC30852@noisy.programming.kicks-ass.net>
-From: Daniel Bristot de Oliveira <bristot@kernel.org>
-In-Reply-To: <20240410174749.GC30852@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 4/10/24 19:47, Peter Zijlstra wrote:
-> On Fri, Apr 05, 2024 at 07:28:01PM +0200, Daniel Bristot de Oliveira wrote:
->> @@ -874,6 +895,37 @@ static void replenish_dl_entity(struct sched_dl_entity *dl_se)
->>  		dl_se->dl_yielded = 0;
->>  	if (dl_se->dl_throttled)
->>  		dl_se->dl_throttled = 0;
->> +
->> +	/*
->> +	 * If this is the replenishment of a deferred reservation,
->> +	 * clear the flag and return.
->> +	 */
->> +	if (dl_se->dl_defer_armed) {
->> +		dl_se->dl_defer_armed = 0;
->> +		return;
->> +	}
->> +
->> +	/*
->> +	 * A this point, if the deferred server is not armed, and the deadline
->> +	 * is in the future, if it is not running already, throttle the server
->> +	 * and arm the defer timer.
->> +	 */
->> +	if (dl_se->dl_defer && !dl_se->dl_defer_running &&
->> +	    dl_time_before(rq_clock(dl_se->rq), dl_se->deadline - dl_se->runtime)) {
->> +		if (!is_dl_boosted(dl_se) && dl_se->server_has_tasks(dl_se)) {
->> +			dl_se->dl_defer_armed = 1;
->> +			dl_se->dl_throttled = 1;
->> +			if (!start_dl_timer(dl_se)) {
->> +				/*
->> +				 * If for whatever reason (delays), if a previous timer was
->> +				 *  queued but not serviced, cancel it.
-> 
-> (whitespace damage)
+Commit 8167bd1c8a45 ("ASoC: dt-bindings: ti,pcm1681: Convert to dtschema")
+converts ti,pcm1681.txt to ti,pcm1681.yaml, but misses to adjust the file
+entry in TEXAS INSTRUMENTS AUDIO (ASoC/HDA) DRIVERS.
 
-OOops...
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
+broken reference.
 
+Adjust the file entry in TEXAS INSTRUMENTS AUDIO (ASoC/HDA) DRIVERS after
+this conversion.
 
->> +				 */
->> +				hrtimer_try_to_cancel(&dl_se->dl_timer);
->> +				dl_se->dl_defer_armed = 0;
->> +				dl_se->dl_throttled = 0;
->> +			}
-> 
-> This looks funny in that it 'obviously' should only set the variables to
-> 1 on success, but I'm thinking it is this way because the timer (when
-> programming is successful) needs to observe the 1s.
-> 
-> That is, there is an implicit memory ordering here, perhaps put in a
-> comment to avoid someone 'fixing' this later?
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yes, I will add a comment.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e5431f06ab55..d39e0f2556f7 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -21976,7 +21976,7 @@ F:	Documentation/devicetree/bindings/sound/tas2552.txt
+ F:	Documentation/devicetree/bindings/sound/tas2562.yaml
+ F:	Documentation/devicetree/bindings/sound/tas2770.yaml
+ F:	Documentation/devicetree/bindings/sound/tas27xx.yaml
+-F:	Documentation/devicetree/bindings/sound/ti,pcm1681.txt
++F:	Documentation/devicetree/bindings/sound/ti,pcm1681.yaml
+ F:	Documentation/devicetree/bindings/sound/ti,pcm3168a.yaml
+ F:	Documentation/devicetree/bindings/sound/ti,tlv320*.yaml
+ F:	Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
+-- 
+2.44.0
 
->> +		}
->> +	}
->>  }
->>  
->>  /*
-> 
->> @@ -1056,8 +1117,20 @@ static int start_dl_timer(struct sched_dl_entity *dl_se)
->>  	 * We want the timer to fire at the deadline, but considering
->>  	 * that it is actually coming from rq->clock and not from
->>  	 * hrtimer's time base reading.
->> +	 *
->> +	 * The deferred reservation will have its timer set to
->> +	 * (deadline - runtime). At that point, the CBS rule will decide
->> +	 * if the current deadline can be used, or if a replenishment is
->> +	 * required to avoid add too much pressure on the system
->> +	 * (current u > U).
-> 
-> (I wanted to type a comment about how this comment might not do the
-> subtlety justice, OTOH, fixing that might require much more text and
-> become unwieldy, so meh..)
-
-Yeah, I will write documentation about it, it has a "composed set of reasons" long
-enough to fill more than a page. I will do it once we get the final version...
-
->>  	 */
->> -	act = ns_to_ktime(dl_next_period(dl_se));
->> +	if (dl_se->dl_defer_armed) {
->> +		WARN_ON_ONCE(!dl_se->dl_throttled);
->> +		act = ns_to_ktime(dl_se->deadline - dl_se->runtime);
->> +	} else {
-> 
-> 		/* act = deadline - rel-deadline + period */
-
-ack
-
->> +		act = ns_to_ktime(dl_next_period(dl_se));
-> 
-> I had to look up what that function does, it either needs a better name
-> or I just need more exposure to this code I suppose :-)
-> 
->> +	}
->> +
->>  	now = hrtimer_cb_get_time(timer);
->>  	delta = ktime_to_ns(now) - rq_clock(rq);
->>  	act = ktime_add_ns(act, delta);
->> @@ -1107,6 +1180,64 @@ static void __push_dl_task(struct rq *rq, struct rq_flags *rf)
->>  #endif
->>  }
->>  
->> +/* a defer timer will not be reset if the runtime consumed was < dl_server_min_res */
->> +static const u64 dl_server_min_res = 1 * NSEC_PER_MSEC;
->> +
->> +static enum hrtimer_restart dl_server_timer(struct hrtimer *timer, struct sched_dl_entity *dl_se)
->> +{
->> +	struct rq *rq = rq_of_dl_se(dl_se);
->> +	enum hrtimer_restart restart = 0;
->> +	struct rq_flags rf;
->> +	u64 fw;
->> +
->> +	rq_lock(rq, &rf);
-> 
-> 	guard(rq_lock)(rq, &rf);
-
-Arrhg... I knew it, just did not use it... boooh Daniel.
-
->> +	if (dl_se->dl_throttled) {
->> +		sched_clock_tick();
->> +		update_rq_clock(rq);
->> +
->> +		if (!dl_se->dl_runtime)
->> +			goto unlock;
->> +
->> +		if (!dl_se->server_has_tasks(dl_se)) {
->> +			replenish_dl_entity(dl_se);
->> +			goto unlock;
->> +		}
->> +
->> +		if (dl_se->dl_defer_armed) {
->> +			/*
->> +			 * First check if the server could consume runtime in background.
->> +			 * If so, it is possible to push the defer timer for this amount
->> +			 * of time. The dl_server_min_res serves as a limit to avoid
->> +			 * forwarding the timer for a too small amount of time.
->> +			 */
->> +			if (dl_time_before(rq_clock(dl_se->rq),
->> +				(dl_se->deadline - dl_se->runtime - dl_server_min_res))) {
-> 
-> :se cino=(0:0
-> 
-> that is, this wants to be something like:
-> 
-> 			if (dl_time_before(rq_clock(dl_se->rq),
-> 					   (dl_se->deadline - dl_se->runtime - dl_server_min_res))) {
-
-ack
-
->> +
->> +				/* reset the defer timer */
->> +				fw = dl_se->deadline - rq_clock(dl_se->rq) - dl_se->runtime;
->> +
->> +				hrtimer_forward_now(timer, ns_to_ktime(fw));
-> 
->> +				restart = 1;
->> +				goto unlock;
-> 
-> 				return HRTIMER_RESTART;
-> 
->> +			}
->> +
->> +			dl_se->dl_defer_running = 1;
->> +		}
->> +
->> +		enqueue_dl_entity(dl_se, ENQUEUE_REPLENISH);
->> +
->> +		if (!dl_task(dl_se->rq->curr) ||
->> +			dl_entity_preempt(dl_se, &dl_se->rq->curr->dl))
->> +			resched_curr(rq);
->> +
->> +		__push_dl_task(rq, &rf);
->> +	}
->> +unlock:
->> +	rq_unlock(rq, &rf);
->> +
->> +	return restart ? HRTIMER_RESTART : HRTIMER_NORESTART;
-> 
-> 	return HRTIMER_NORESTART;
-> 
->> +}
->> +
->>  /*
->>   * This is the bandwidth enforcement timer callback. If here, we know
->>   * a task is not on its dl_rq, since the fact that the timer was running
-> 
->> @@ -1320,22 +1431,10 @@ static u64 grub_reclaim(u64 delta, struct rq *rq, struct sched_dl_entity *dl_se)
->>  	return (delta * u_act) >> BW_SHIFT;
->>  }
->>  
->> -static inline void
->> -update_stats_dequeue_dl(struct dl_rq *dl_rq, struct sched_dl_entity *dl_se,
->> -                        int flags);
->> -static void update_curr_dl_se(struct rq *rq, struct sched_dl_entity *dl_se, s64 delta_exec)
->> +s64 dl_scalled_delta_exec(struct rq *rq, struct sched_dl_entity *dl_se, s64 delta_exec)
-> 
-> %s/_scalled_/_scaled_/g ?
-
-Yeah, it is a typo, my head is constantly fighting with: "should I put a
-single or a double consonant?" because of italian... I often put it when
-I should not :-).
-
-[...]
-
->> +	 *
->> +	 * If the server consumes its entire runtime in this state. The server
->> +	 * is not required for the current period. Thus, reset the server by
->> +	 * starting a new period, pushing the activation.
->> +	 */
->> +	if (dl_se->dl_defer && dl_se->dl_throttled && dl_runtime_exceeded(dl_se)) {
->> +		/*
->> +		 * If the server was previously activated - the starving condition
->> +		 * took place, it this point it went away because the fair scheduler
-> 
->                                ^ at ?
-
-at
-
->> +		 * was able to get runtime in background. So return to the initial
->> +		 * state.
->> +		 */
->> +		dl_se->dl_defer_running = 0;
->> +
->> +		hrtimer_try_to_cancel(&dl_se->dl_timer);
->> +
->> +		replenish_dl_new_period(dl_se, dl_se->rq);
->> +
->> +		/*
->> +		 * Not being able to start the timer seems problematic. If it could not
->> +		 * be started for whatever reason, we need to "unthrottle" the DL server
->> +		 * and queue right away. Otherwise nothing might queue it. That's similar
->> +		 * to what enqueue_dl_entity() does on start_dl_timer==0. For now, just warn.
->> +		 */
->> +		WARN_ON_ONCE(!start_dl_timer(dl_se));
->> +
->> +		return;
->> +	}
->> +
->>  throttle:
->>  	if (dl_runtime_exceeded(dl_se) || dl_se->dl_yielded) {
->>  		dl_se->dl_throttled = 1;
->> @@ -1415,9 +1570,47 @@ static void update_curr_dl_se(struct rq *rq, struct sched_dl_entity *dl_se, s64
->>  	}
->>  }
->>  
->> +/*
->> + * In the non-defer mode, the idle time is not accounted, as the
->> + * server provides a guarantee.
->> + *
->> + * If the dl_server is in defer mode, the idle time is also considered
->> + * as time available for the fair server. This avoids creating a
->> + * regression with the rt throttling behavior where the idle time did
->> + * not create a penalty to the rt schedulers.
-> 
-> I don't think it makes sense to refer to rt throttle behaviour here. The
-> goal is to delete that code, at which this comment becomes a hysterical
-> artifact.
-
-Agreed!
-
-> I think we can easily give a rational reason for this behaviour without
-> referring current behaviour. That is, the point of all this is to grant
-> fair a chance to run, but if there is no fair task (idle), there is no
-> point in trying to run.
-> 
-> Hmm?
-
-right right, it was worth to explain why in the submission, but it is not worth
-to keep in the code creating confusion.
-
-> Also, this is done to avoid having to reprogram the timer muck when
-> cfs_rq::nr_running changes to/from 0 ?
-
-When the runtime is totally consumed in idle, the timer will be pushed away on
-the change 0 to 1. IOW, to avoid boosting cfs when RT is behaving - giving space
-for !rt.
-
--- Daniel
 
