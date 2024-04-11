@@ -1,102 +1,120 @@
-Return-Path: <linux-kernel+bounces-141442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90DDB8A1E52
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:32:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 083018A1E60
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:33:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE98A1C25153
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:32:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D3361F23CFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:33:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F410247F51;
-	Thu, 11 Apr 2024 18:05:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F19A4C630;
+	Thu, 11 Apr 2024 18:07:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dIA+dJTK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NKghfGn/"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F62F3F9CB;
-	Thu, 11 Apr 2024 18:05:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07427502B5;
+	Thu, 11 Apr 2024 18:07:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712858738; cv=none; b=U1Q31EpeoGpDcuwy9OFs0r2HHbkjeMo5kYPy9zUmLyY6HQSyAfxk1DnOsDdczHfKTCa7K253Q9kcel+NlDiCliaF8blDc0JoN3wU25K2Q/VOZCxXKbzDGqxbBw1WVWSYTXfWTK3iojJWjTV9RWxcVeqL3Tyz0un9ES5H0Bdnnb0=
+	t=1712858831; cv=none; b=b7b7Wad+kvxYDHNiGtdiziJsGq+o6/OkPBpSWoGqSWWbGujHyT1SESKjK8vBt2lY3P2DdT6+z95ylELCdaJ4huln56E0xEQYogSkmRol50+dbGixI0dkl+cEEWdCvx9MKi81THytFuOwQGkWunFR33aZ3pN8D9Kdn6RisrZKQNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712858738; c=relaxed/simple;
-	bh=Po6fGcLwrJPZP+lyaV/Dz9zY4SdnZLRnO8QH7Qa0QN8=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=KWbJItcBQ/8ydutIGl47smc4t9r2rOaJbpcKSlzr3534TygXB963QfD6v5vhqDFM6DcksPWzuKFixBJ997ixHejHkKzX4E2I6OMFStg/U4eJQ+G4Su0S4d8eMNtC3i7CJr0gWbH2p/+mP7+lBu6Fa4IZFLxxHyUrDmL98Oxi1gM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dIA+dJTK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB7FBC113CD;
-	Thu, 11 Apr 2024 18:05:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712858737;
-	bh=Po6fGcLwrJPZP+lyaV/Dz9zY4SdnZLRnO8QH7Qa0QN8=;
-	h=From:Date:Subject:To:Cc:From;
-	b=dIA+dJTKwPKgM0A4xLFrrF0z1bbzAMaN3e9RK0sRmiKS0k8fqsCEnoZpDcnjzsD70
-	 7Z1x9e7cHY9GIDUoLkEv9je/3IRU6vvGhhOHud6I8UPEXiLzSWRHBZoctF27u/BTEM
-	 TdwMgdR/Me7PphDc6NnFa/IhgpVw9Mme/vJTtNkek2BRy+zBZ2a0YTEDYJfjAUeqtN
-	 HKThy6qi1pSWDUrvZB6IBQAOzKX2COO/JguyGRmPcbRc5qK06ufZcVBE6sFuMrcZpp
-	 53U/7Jq8BbN3O/ImVYSvLIEvDZLFaBLPAZSElyWB499GiTjs6UFRVZTEhisiqCzICJ
-	 lrTKH/LThnvqA==
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-22ede5f7e0fso19094fac.0;
-        Thu, 11 Apr 2024 11:05:37 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU113RLLkYORShARXCG1UZjo94faMixyr0uH94ZFJfq3waLNA1tz88p99ax8B4l0ye+2w5CKOA+peIS8w1BABOnXeQa1ADEAlUM7zy8
-X-Gm-Message-State: AOJu0Yx9Fly0dgvr3WvDf0x++aVS6PqsPuie5qiuQtQNVj8zvOSt+Nba
-	oAdcnCeBoZ3qlcars0g9sMqw0gRc6U5mqJqW9RT5RWx0oZg/MT8FdA2hr/MO89b48fCtwJXLogp
-	pvHPNSPgSqG0GwSDH8q6dFEAilBk=
-X-Google-Smtp-Source: AGHT+IHnGp1VDFRsIZBhnbclgmZybGtmOyXZ59XPZFm4wZRkd9aL9Lio8U1EpYqrOjjxKWAG4OhtOttBqyTMj2LMSXs=
-X-Received: by 2002:a05:6870:e9a9:b0:229:e46d:763a with SMTP id
- r41-20020a056870e9a900b00229e46d763amr306351oao.0.1712858737159; Thu, 11 Apr
- 2024 11:05:37 -0700 (PDT)
+	s=arc-20240116; t=1712858831; c=relaxed/simple;
+	bh=h05CbtcAxI8aFNKx4QsEB4SWlbdKRKn/4mkPD2O/G50=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k8cU41YIfDUofAKp6VnS6lcKAF58GQyG5Jmp1wvtjFTyn1w50IjGsXuL+EdLnIuGvlJBk96dcVhf4BSm0b8GuSi0tYRIX0huq2hNuWMyAcCwUeqr91ohY9qoW8/m2zVWpiWLRenxcul5vYxPIFd8PfOA+xdqdelMPM7NAiXM37s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NKghfGn/; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-343d7ff2350so22872f8f.0;
+        Thu, 11 Apr 2024 11:07:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712858828; x=1713463628; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yWLNY8BuzmLk8t2ZD8eDNEWlsMPvC04pg9vc4aQu/60=;
+        b=NKghfGn/DICxY5vkB71tbaro01KTIpAUUc+9NnI0L2xYEXOt8YyxgK7IFysFW+NyyE
+         A4tgstu93Gpj1PNN+V+W6YiAW4+OWlcaico8lVlQxzWHKImxrntVx9xkYyqgtkamGFjA
+         G1GgZ99+iKhZ0OBCLwx1iDEB/Ij7jcjLFPJOflC+Atc/MfNpSRwNl+LqODurC0gCkcg+
+         9HBI9AAWaG63btPGsIHb1bsl/bbAs64Vm/XDpnYPF9klfLz6iMxumsbLjh/e4Oau0bT+
+         Yze7VySvokxFlL9QZupGkb/EmgZ1Kh1VTzGAg2MziCZtcfTcZ8kc/AIuLBy0dPotFDhh
+         YI9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712858828; x=1713463628;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yWLNY8BuzmLk8t2ZD8eDNEWlsMPvC04pg9vc4aQu/60=;
+        b=nGuuHj9wXhd4yt3937lT1Xue9LQOlP36o8Bp9G+V4+n9DuSi0TAeIQ2PYKVPBwrz3b
+         ORzbWbwXVLkTMH+Z2CHb2pfyZL8nrSSD9sg6W5kOtr8fBGV4JL9yjahxq5o20IgnSgEJ
+         vdn5/O5aM1eA23rcH8CPRZTeym+c5qaqKvol0vnD1MI1A860NqkWDVtDLUOA2R1c1/WK
+         9LisOYcvrBvXHampNn0w9O1vqELobopJZL7aMfOrvcjycNMomehLiJDuubhiEMckmDOE
+         mdOFx+Q5GA1fY1z4RVEA7umJ8ugGz/5reUWdOoKtyhwVPJNb7qJLrohcWmFvlPH0/XUe
+         KcCg==
+X-Gm-Message-State: AOJu0YxkUUE3JLWlOe3KiCrLzEz7LzJNbJo3tVgSh86hfvpuOODYXPMM
+	dd4Ajabs2bESTffhAGf+fE4LfxDb6gBm6al9GW5YpvVMeeJzDXj/DEIn9Q==
+X-Google-Smtp-Source: AGHT+IGwl4TS8EnUa5huGs5MMxc9kEB4SXxgszl+vnh77zhUlqYTRFW5luIwoiE/NoEpy4YydiENIA==
+X-Received: by 2002:a5d:47c2:0:b0:343:6b0c:7553 with SMTP id o2-20020a5d47c2000000b003436b0c7553mr223025wrc.55.1712858827273;
+        Thu, 11 Apr 2024 11:07:07 -0700 (PDT)
+Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
+        by smtp.gmail.com with ESMTPSA id k9-20020adfe3c9000000b00344a8f9cf18sm2324640wrm.7.2024.04.11.11.07.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 11:07:06 -0700 (PDT)
+From: Stafford Horne <shorne@gmail.com>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Linux OpenRISC <linux-openrisc@vger.kernel.org>,
+	Stafford Horne <shorne@gmail.com>
+Subject: [PATCH 0/5] OpenRISC FPU and Signal handling fixups
+Date: Thu, 11 Apr 2024 19:06:27 +0100
+Message-ID: <20240411180644.2023991-1-shorne@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 11 Apr 2024 20:05:25 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hCwmi=c_HC26APBEayNjzP4zepy9dMTypYz_Nh6fYk0w@mail.gmail.com>
-Message-ID: <CAJZ5v0hCwmi=c_HC26APBEayNjzP4zepy9dMTypYz_Nh6fYk0w@mail.gmail.com>
-Subject: [GIT PULL] Power management fix for v6.9-rc4
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Linux PM <linux-pm@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Linus,
+This series has some fixups found when I was doing a deep dive
+documentation of the OpenRISC FPU support which was added in 2023.
 
-Please pull from the tag
+  http://stffrdhrn.github.io/hardware/embedded/openrisc/2023/08/24/or1k-fpu-linux-and-compilers.html
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-6.9-rc4
+The FPU handling has issues of being inefficient and also not providing the
+proper state if signals are received when handling syscalls.
 
-with top-most commit 3c89a068bfd0698a5478f4cf39493595ef757d5e
+The series is small, so should be easy to see from the commit list but in
+summary does:
 
- PM: s2idle: Make sure CPUs will wakeup directly on resume
+ - Fixup some issues with exception handling.
+ - Adds CONFIG_FPU to allow disabling FPU support
+ - Fixups to e FPU handling logic moving the FPCSR state out of the kernel
+   stack pt_regs and into the task_struct.
 
-on top of commit fec50db7033ea478773b159e0e2efb135270e3b7
+Stafford Horne (5):
+  openrisc: traps: Convert printks to pr_<level> macros
+  openrisc: traps: Remove calls to show_registers before die
+  openrisc: traps: Don't send signals to kernel mode threads
+  openrisc: Add FPU config
+  openrisc: Move FPU state out of pt_regs
 
- Linux 6.9-rc3
+ arch/openrisc/Kconfig                 |   9 ++
+ arch/openrisc/include/asm/fpu.h       |  22 ++++
+ arch/openrisc/include/asm/processor.h |   1 +
+ arch/openrisc/include/asm/ptrace.h    |   3 +-
+ arch/openrisc/kernel/entry.S          |  15 +--
+ arch/openrisc/kernel/process.c        |   5 +
+ arch/openrisc/kernel/ptrace.c         |  18 ++--
+ arch/openrisc/kernel/signal.c         |  36 ++++++-
+ arch/openrisc/kernel/traps.c          | 144 ++++++++++++++------------
+ 9 files changed, 160 insertions(+), 93 deletions(-)
+ create mode 100644 arch/openrisc/include/asm/fpu.h
 
-to receive a power management fix for 6.9-rc4.
+-- 
+2.44.0
 
-This fixes the suspend-to-idle core code to guarantee that timers
-queued on CPUs other than the one that has first left the idle state,
-which should expire directly after resume, will be handled (Anna-Maria
-Behnsen).
-
-Thanks!
-
-
----------------
-
-Anna-Maria Behnsen (1):
-      PM: s2idle: Make sure CPUs will wakeup directly on resume
-
----------------
-
- kernel/power/suspend.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
