@@ -1,260 +1,158 @@
-Return-Path: <linux-kernel+bounces-140789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D9F08A18FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:46:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E80A8A1904
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:48:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A0011F21258
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:46:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C537D286113
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CECDE54777;
-	Thu, 11 Apr 2024 15:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80DDA57311;
+	Thu, 11 Apr 2024 15:32:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="blYtF2tb"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b="QHJ0LVRu";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="rrDlv/VD"
+Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3985380F
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:32:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 254074D59E
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:32:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849543; cv=none; b=dN0bjFA/oQwgAtRB2xq1rR7rVQZMMbHQxwAqiC/g+UgqhqKiIpN/thrySJAIDs7xq62gIBWHetQzBnJWGBBaxPZyGY6naxyWKUWjwlkckCS/NG2IXnrYJk+s1jxO6DKnQBShd+Db6jSTss/wD/2U4PLpgiB/nDE2eWUrAQGWKBk=
+	t=1712849559; cv=none; b=lP7gEBCuryBh3PHDTc1Mlda4yW92FP5YgzxeVRL3Ceb7ZYtqYWPyT3cKOmNZu7xmeyZHTFz7ipcNRwMabbZrKV61fWnQEtThnIThOi+qHHHjaLVh3JmFtPvjetnY0SN45ATHtk6x7+2w9m3HdRtUZdDXYHCmch4P2giAjz3StcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849543; c=relaxed/simple;
-	bh=IyHWKfJx4/v5RJrdJq6W315oo5Lkm0Pzl3tHMfrpxRs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f0vxzbSm2RnGAEyUjM4+lSfTDFt+JQTPM27H1YtBtP8wZ5IggHBGPE8L3w3o436dTw2QJo659aay21tW3cEt6IVyIWGMXhuENhsdSnWpTeOfL8P4uwW3v+iI2aabvUKlSnmVguQLQvCaL9k6XIBZAdQlXHtWxezZxGcrTQpEWmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=blYtF2tb; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-346359c8785so1916044f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:32:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1712849539; x=1713454339; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aRsw012qwcWMh1DiphZUTwhSQZ4Q0IKZOt/xWvTpM6A=;
-        b=blYtF2tbXlNKwRYp1ghzHVhBeNzXRVEfDn+W09/FDe/GqQF47/UgkEhmVSQkSf6yrq
-         jWE1IiUvnUeKYXeAP2yrwsToqsd2F9IvraIM3YHzTKP28mymvtGt/O/mpuUm6b37M0d/
-         PkWX7aeqpdHcarCOmZ5pNylCOPUg0y8YX8U9b3xdbEVTz6BE34F/0dKP1wVDT4zqUKZW
-         lp+VXIYeFFrF/yB8l2uetMm9eQUXlGJxB/lfIT2JPZ5/6+xTQ/uEMdGs/5XoxAiJc06M
-         RRogqDPs8z87IxCIqufJwWkOE6G6ainaTWlbA51PMBE/GMZL0LaCh1TH8LDZ1EEOWgDP
-         VS3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849539; x=1713454339;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aRsw012qwcWMh1DiphZUTwhSQZ4Q0IKZOt/xWvTpM6A=;
-        b=f0qcjZx3wsDur25n2FmcaAs8RaXhdN0RDoPKZWUEzpjS/HjdpcA8JeabAtSYOQQXF+
-         7kxsyj+RcftbvU2CgJYMmJZkycldqLZF9X5qxjC/x8g/FulSNOlgdbW7zHlaRMu2d5iD
-         leo/Ttlrze8qR9sA09zCtGDwUS2IdGV9XJzpJ1VG69SRe3ahbdqI6PJiEMmZ/q/6JqxN
-         QzITZDqZDKa8O1pggsQmNsQEzbkP5jkenNXCw0HFFL8tyAZxscUiXfJrj+BvSZmnygn3
-         t0eKCufMc2EhxliDfSw0QIS7acCBcMI6KdryBYsNJON0YqA90yyJaFptGA6ua8omOIOk
-         aBZA==
-X-Forwarded-Encrypted: i=1; AJvYcCUX4RVYxBzYxp+eG1peddIt3hXzsKeagSb1GI3FnGiZEvR6PzFEPbJkrZfB5sBjbHzuqVeO27qeejl3Mo5gGgLcLWg7yzbczhXY2ZKF
-X-Gm-Message-State: AOJu0YzX2yp2SHGKuHQIzDY41M/E6LZryNCQynWJWFcSMQbLTDCbjzvP
-	EQRgv7Fg49s14b2A3QYDeWNwZ3GT6KLREsC2GnJyxAIh3rhGf6a2cXNBI5FGY2g=
-X-Google-Smtp-Source: AGHT+IHvwhR61c0dkdEi04kStj4mnKhA3iXEO8UTTHbakFqSCQi18R+xRFxaAAY6Tnm3W8mXzRydJw==
-X-Received: by 2002:a5d:65cf:0:b0:343:eb7d:760e with SMTP id e15-20020a5d65cf000000b00343eb7d760emr4316228wrw.17.1712849538668;
-        Thu, 11 Apr 2024 08:32:18 -0700 (PDT)
-Received: from localhost.localdomain ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id c4-20020adfa304000000b00346ea868f47sm214604wrb.21.2024.04.11.08.32.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:32:18 -0700 (PDT)
-Date: Thu, 11 Apr 2024 17:32:16 +0200
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk v4 17/27] printk: nbcon: Use nbcon consoles in
- console_flush_all()
-Message-ID: <ZhgCgBK7JdRruvkj@localhost.localdomain>
-References: <20240402221129.2613843-1-john.ogness@linutronix.de>
- <20240402221129.2613843-18-john.ogness@linutronix.de>
- <ZhfwXsEE2Y8IPPxX@localhost.localdomain>
+	s=arc-20240116; t=1712849559; c=relaxed/simple;
+	bh=rKMR5jyIs+kfYGVqAunwC0t4zLUUl9aMrjq9JmvsMnc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TER9xryabW9p2k7RaSXeHbIBtZMbIK2UdynZtHDSCd51UGL12H7gfoPeqxBOiso1ZhzqjAXZ0xkjiv1HyEQEpJMsl66DZmUBwJ3yGFcdgtlfovmV5FPYghNCSHOQaP6BdTW/jdKcmrNK8N60Mtajc8j6D98ah3Jjc2nXx81Jll0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com; spf=pass smtp.mailfrom=sent.com; dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b=QHJ0LVRu; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=rrDlv/VD; arc=none smtp.client-ip=64.147.123.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sent.com
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfout.west.internal (Postfix) with ESMTP id 752081C000CD;
+	Thu, 11 Apr 2024 11:32:35 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 11 Apr 2024 11:32:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:message-id:mime-version:reply-to
+	:reply-to:subject:subject:to:to; s=fm2; t=1712849554; x=
+	1712935954; bh=KdSkiWAB+vDwE4VKWUPrvuNlR/TihrAEV6L79eFI5ZQ=; b=Q
+	HJ0LVRusDCl9WofJUn1onmqrSqUqAMyw6HqF03WQEacpYIj67+33AMlN0HrdCkuC
+	4i+X20NidtzFpZJQ8xCoKsMxrM/zthuBpjU1EGANz5jqLZCOBLORpeFK0K+N+o+g
+	WPAUvMwN+KYFrTuO51rkHQ3ys4OwYFVXBvydgWrgJDJgdOTeDNFXRN3cs/Y8vfMT
+	AW9ou+8jGS5jl5uaqGrtNZ04Len01wUtFTaHoKkD0wItPviV92d5hjc3cCbubm0H
+	K5I0gD7I2NCH94E5iOLaPCCMR8CT0HD+pmbuoD8S49D794j2JdLW+sH9NZ7sL1GX
+	UwmAnnS8ZQowvZM8WsYfw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:message-id:mime-version:reply-to:reply-to
+	:subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm2; t=1712849554; x=1712935954; bh=K
+	dSkiWAB+vDwE4VKWUPrvuNlR/TihrAEV6L79eFI5ZQ=; b=rrDlv/VDEMK6irLfP
+	0s8x+W7HbkF4lRMYw6Ry7bWTRbodWBHDMzfDBjLe9rvJv4KBp8C0Ae5LK3XxNVEy
+	TyoPFiJUiRML9vwpT2Bs4bJrCFueytwcEr7wIgFEAQiUJdwzvHGpZUPXQoDhRwSr
+	CAtcONha58r3B3chAXA5SZ2pbGYm683KrHZkgxxWjgWi+2Dr6VMA2ZRJ8Z77agnx
+	lXuQI2c50PfK5D402SHgKosZEkBoaE4KWP8QKIMtD8gZxyDbjwbdaOKeqYYhe9uD
+	TQ0LunFJOXJLcABuWcgZJAzzC6PBp7n5RXSA6h6gHH6t6pPKDazgkNTqOj8F6RKs
+	w8HlA==
+X-ME-Sender: <xms:kgIYZmUW3fjVepV6hfJ2AOlzDROaTKrBs_eW4_gEDvk7A0GaBHQhOQ>
+    <xme:kgIYZiljUxvYm9_uCDH8at7_2UmLPwRUezsB-5ekIZjmoaFDXmuDUPo4DfQKq6IbI
+    KC8nshj85Z9j3X__g>
+X-ME-Received: <xmr:kgIYZqZmxHz_SDZb50y-P-IcBrTDQT5YsXf8rHnwumfl2D2JbI7xB9ACqTMCKHJi8EI2tXGMwtEjyobJ5OAuoKP_NpyyD5ejCwP1PiFUyCLWoK8rafqMKMlj>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehkedgkeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvvefufffkofhrgggtgfesthekredtredtjeenucfhrhhomhepkghiucgj
+    rghnuceoiihirdihrghnsehsvghnthdrtghomheqnecuggftrfgrthhtvghrnhepueevte
+    ehveduudffveetfeehueekheeutdeuheeiheeileevgeevueffieelfffhnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepiihirdihrghnsehsvg
+    hnthdrtghomh
+X-ME-Proxy: <xmx:kgIYZtVExG1CQyEsHeMZCJe4boI4TLoTW2iwpU2XdDgacOWMGDKBSw>
+    <xmx:kgIYZglxCHmdmIIV8oiVRfe0nxKDK3rAC5YHi9JJyws6avr1g_Jd9w>
+    <xmx:kgIYZifTWKEBsQ2NgasWr9X-VSAE1ebDjhwJTfUWJFFBtlSeyBM-Tg>
+    <xmx:kgIYZiGDGG0CcjB7kMrIZc0OG00f8szQKekVDbxXXebTLuqzF65OqQ>
+    <xmx:kgIYZthE-JSEMgnFV9pr8cjW9YQ76fmczVnM0NmEqRFWFMdevrHY9Lz_>
+Feedback-ID: iccd040f4:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 11 Apr 2024 11:32:34 -0400 (EDT)
+From: Zi Yan <zi.yan@sent.com>
+To: linux-mm@kvack.org
+Cc: Zi Yan <ziy@nvidia.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Yang Shi <shy828301@gmail.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Barry Song <21cnbao@gmail.com>,
+	David Hildenbrand <david@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/rmap: do not add fully unmapped large folio to deferred split list
+Date: Thu, 11 Apr 2024 11:32:32 -0400
+Message-ID: <20240411153232.169560-1-zi.yan@sent.com>
+X-Mailer: git-send-email 2.43.0
+Reply-To: Zi Yan <ziy@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhfwXsEE2Y8IPPxX@localhost.localdomain>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu 2024-04-11 16:14:58, Petr Mladek wrote:
-> On Wed 2024-04-03 00:17:19, John Ogness wrote:
-> > Allow nbcon consoles to print messages in the legacy printk()
-> > caller context (printing via unlock) by integrating them into
-> > console_flush_all(). The write_atomic() callback is used for
-> > printing.
-> 
-> Hmm, this patch tries to flush nbcon console even in context
-> with NBCON_PRIO_NORMAL. Do we really want this, please?
-> 
-> I would expect that it would do so only when the kthread
-> is not working.
-> 
-> > Provide nbcon_legacy_emit_next_record(), which acts as the
-> > nbcon variant of console_emit_next_record(). Call this variant
-> > within console_flush_all() for nbcon consoles. Since nbcon
-> > consoles use their own @nbcon_seq variable to track the next
-> > record to print, this also must be appropriately handled.
-> 
-> I have been a bit confused by all the boolean return values
-> and what _exactly_ they mean. IMHO, we should make it more
-> clear how it works when it can't acquire the context.
-> 
-> IMHO, it is is importnat because console_flush_all() interprets
-> nbcon_legacy_emit_next_record() return value as @progress even when
-> there is no guaranteed progress. We just expect that
-> the other context is doing something.
->
-> It feels like it might get stuck forewer in some situatuon.
-> It would be good to understand if it is OK or not.
-> 
-> 
-> Later update:
-> 
-> Hmm, console_flush_all() is called from console_unlock().
-> It might be called in atomic context. But the current
-> owner might be theoretically scheduled out.
-> 
-> This is from documentation of nbcon_context_try_acquire()
-> 
-> /**
->  * nbcon_context_try_acquire - Try to acquire nbcon console
->  * @ctxt:	The context of the caller
->  *
->  * Context:	Any context which could not be migrated to another CPU.
-> 
-> 
-> I can't find any situation where nbcon_context_try_acquire() is
-> currently called in normal (schedulable) context. This is probably
-> why you did not see any problems with testing.
-> 
-> I see 3 possible solutions:
-> 
->   1. Enforce that nbcon context can be acquired only with preemtion
->      disabled.
-> 
->   2. Enforce that nbcon context can be acquired only with
->      interrupts. It would prevent deadlock when some future
->      code interrupt flush in NBCON_PRIO_EMERGENCY context.
->      And then a potential nested console_flush_all() won't be
->      able to takeover the interrupted NBCON_PRIO_CONTEXT
->      and there will be no progress.
-> 
->   3. console_flush_all() should ignore nbcon console when
->      it is not able to get the context, aka no progress.
-> 
-> 
-> I personally prefer the 3rd solution because I have spent
-> last 12 years on attempts to move printk into preemtible
-> context. And it looks wrong to move into atomic context.
-> 
-> Warning: console_flush_all() suddenly won't guarantee flushing
-> 	 all messages.
-> 
-> 	 I am not completely sure about all the consequences until
-> 	 I see the rest of the patchset and the kthread intergration.
-> 	 We will somehow need to guarantee that all messages
-> 	 are flushed.
+From: Zi Yan <ziy@nvidia.com>
 
-I am trying to make a full picture when and how the nbcon consoles
-will get flushed. My current understanding and view is the following,
-starting from the easiest priority:
+In __folio_remove_rmap(), a large folio is added to deferred split list
+if any page in a folio loses its final mapping. It is possible that
+the folio is unmapped fully, but it is unnecessary to add the folio
+to deferred split list at all. Fix it by checking folio mapcount before
+adding a folio to deferred split list.
 
+Signed-off-by: Zi Yan <ziy@nvidia.com>
+---
+ mm/rmap.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-  1. NBCON_PRIO_PANIC messages will be flushed by calling
-     nbcon_atomic_flush_pending() directly in vprintk_emit()
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 2608c40dffad..d599a772e282 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1494,7 +1494,7 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
+ 		enum rmap_level level)
+ {
+ 	atomic_t *mapped = &folio->_nr_pages_mapped;
+-	int last, nr = 0, nr_pmdmapped = 0;
++	int last, nr = 0, nr_pmdmapped = 0, mapcount = 0;
+ 	enum node_stat_item idx;
+ 
+ 	__folio_rmap_sanity_checks(folio, page, nr_pages, level);
+@@ -1506,7 +1506,8 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
+ 			break;
+ 		}
+ 
+-		atomic_sub(nr_pages, &folio->_large_mapcount);
++		mapcount = atomic_sub_return(nr_pages,
++					     &folio->_large_mapcount) + 1;
+ 		do {
+ 			last = atomic_add_negative(-1, &page->_mapcount);
+ 			if (last) {
+@@ -1554,7 +1555,9 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
+ 		 * is still mapped.
+ 		 */
+ 		if (folio_test_large(folio) && folio_test_anon(folio))
+-			if (level == RMAP_LEVEL_PTE || nr < nr_pmdmapped)
++			if ((level == RMAP_LEVEL_PTE &&
++			     mapcount != 0) ||
++			    (level == RMAP_LEVEL_PMD && nr < nr_pmdmapped))
+ 				deferred_split_folio(folio);
+ 	}
+ 
 
-     This will take care of any previously added messages.
+base-commit: ed7c95c95397baff9b40ba9b0919933eee2d7960
+-- 
+2.43.0
 
-     Non-panic CPUs are not allowed to add messages anymore
-     when there is a panic in progress.
-
-     [ALL OK]
-
-
-  2. NBCON_PRIO_EMERGENCY messages will be flushed by calling
-     nbcon_atomic_flush_pending() directly in nbcon_cpu_emergency_exit().
-
-     This would cover all previously added messages, including
-     the ones printed by the code between
-     nbcon_cpu_emergency_enter()/exit().
-
-     This won't cover later added messages which might be
-     a problem. Let's look at this closer. Later added
-     messages with:
-
-	+ NBCON_PRIO_PANIC will be handled in vprintk_emit()
-	  as explained above [OK]
-
-	+ NBCON_PRIO_EMERGENCY() will be handled in the
-	  related nbcon_cpu_emergency_exit() as described here.
-	  [OK]
-
-	+ NBCON_PRIO_NORMAL will be handled, see below. [?]
-
-     [ PROBLEM: later added NBCON_PRIO_NORMAL messages, see below. ]
-
-
-  3. NBCON_PRIO_NORMAL messages will be flushed by:
-
-       + the printk kthread when it is available
-
-       + the legacy loop via
-
-	 + console_unlock()
-	    + console_flush_all()
-	      + console nbcon_legacy_emit_next_record() [PROBLEM]
-
-
-PROBLEM: console_flush_all() does not guarantee progress with
-	 nbcon consoles as explained above (previous mail).
-
-
-My proposal:
-
-	1. console_flush_all() will flush nbcon consoles only
-	   in NBCON_PRIO_NORMAL and when the kthreads are not
-	   available.
-
-	   It will make it clear that this is the flusher in
-	   this situation.
-
-
-	2. Allow to skip nbcon consoles in console_flush_all() when
-	   it can't take the context (as suggested in my previous
-	   reply).
-
-	   This won't guarantee flushing NORMAL messages added
-	   while nbcon_cpu_emergency_exit() calls
-	   nbcon_atomic_flush_pending().
-
-	   Solve this problem by introducing[*] nbcon_atomic_flush_all()
-	   which would flush even newly added messages and
-	   call this in nbcon_cpu_emergency_exit() when the printk
-	   kthread does not work. It should bail out when there
-	   is a panic in progress.
-
-	   Motivation: It does not matter which "atomic" context
-		flushes NORMAL/EMERGENCY messages when
-		the printk kthread is not available.
-
-	  [*] Alternatively we could modify nbcon_atomic_flush_pending()
-	      to flush even newly added messages when the kthread is
-	      not working. But it might create another mess.
-
-How does it sound, please?
-Or do I miss anything?
-
-Best Regards,
-Petr
 
