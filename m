@@ -1,152 +1,116 @@
-Return-Path: <linux-kernel+bounces-140134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 512B38A0BD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:05:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3F408A0BD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:06:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C14F286ED6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:05:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4D641C21D23
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9493140E3D;
-	Thu, 11 Apr 2024 09:05:32 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F5814389A
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:05:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60C89144314;
+	Thu, 11 Apr 2024 09:05:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FT16ysT/"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16D4714388B;
+	Thu, 11 Apr 2024 09:05:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712826332; cv=none; b=IHb2KURLBL6RrADJOQXFok6qTD0deld5fxQtw8n5jxIblT2IqSEKiKRxTA/mEgE/UEJfr/HL/VfhcDCI4A+D6k4AOgg/gE0aIn325aOtm+zZoaNMy+7LiV3A11l/TvGnMckSaB7PnpEmLKDgdKfceOKvoCK6J3qFHE86RM5N33o=
+	t=1712826339; cv=none; b=oJjeN/DFs0SKyb9Q4OBJeUnqMjM3cz2sY+zPZ+QNdAd5kFwBdjM6vnIumMe0IUh3ouVXDE6JaYe0XmvG2qimYRIUits9sc+u6f5kG834YWWq7+KpR05ytk6dzW1jXySAYeiWLfM4zdOQ2SgrhG7B/K1cKxGqF5yKpQBDW138umA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712826332; c=relaxed/simple;
-	bh=3J8VwlqSTyKVYZlEvnQs+5Q4mGuokIAZh0swPNLVISI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JgnhWZErnPq0wEBHrdykrOj6HPbHp2FBN5HlZ4vbuNd9NVG/MIm0/qSYz4MAflHKmYry8++4jHwYZPybRWJJAM2A88qVnALwaSX0Tfant5LZ3F0Cv88FHLqhCbXPMVuE1Q+iqadacdBxKV+Ap3cdrRVGlZt9hLxdzgOF6kjPaso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D8DC7113E;
-	Thu, 11 Apr 2024 02:05:51 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 01D263F6C4;
-	Thu, 11 Apr 2024 02:05:19 -0700 (PDT)
-Date: Thu, 11 Apr 2024 10:05:17 +0100
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc: Sebastian Ene <sebastianene@google.com>, catalin.marinas@arm.com,
-	james.morse@arm.com, jean-philippe@linaro.org, maz@kernel.org,
-	Sudeep Holla <sudeep.holla@arm.com>, oliver.upton@linux.dev,
-	qperret@google.com, qwandor@google.com, suzuki.poulose@arm.com,
-	tabba@google.com, will@kernel.org, yuzenghui@huawei.com,
-	vdonnefort@google.com, kvmarm@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kernel-team@android.com
-Subject: Re: [PATCH] KVM: arm64: Add support for FFA_PARTITION_INFO_GET
-Message-ID: <ZhenzfndkNwIehhj@bogus>
-References: <20240409151908.541589-1-sebastianene@google.com>
- <Zhaoz9E/sw6jVnci@lpieralisi>
+	s=arc-20240116; t=1712826339; c=relaxed/simple;
+	bh=h1ECHJrI6yDGWiq8/tzickwJ+lsJ6Lz0fibT2Qel/bw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=UMv9SpGoUGahc0S7f+0fvPWN2YbAFselh3sO6rvJUpqy9rUB0hjRUCtBc0ll2suXCUYPWJKPVtNA9u/5FOw4rlcZTntGyHN34r6/4zRP49b+qgShvQDRhR64pH8WHCeS+iixeDjJBvWiRG31lZRVd6iM/dBlh6cj5dP/MAtrv3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FT16ysT/; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-346b480e1acso329901f8f.0;
+        Thu, 11 Apr 2024 02:05:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712826336; x=1713431136; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ThLGpbeHjKHISy6v+wWhWzlM1AmHv+Kiehy1oJijdu4=;
+        b=FT16ysT/obu8gWYpZghQQR3McHt/frdzoZ3lpHLjGOzAnbwFckH+nMTazlJz3hIILo
+         saerQ39IxNRjQKUlv7aKqr+dSyBEiGcWotdwFe1bwW60QOYWNDHdh6xVTB6RUy2YC4Ec
+         Dz5r+Z/rBzxkHe6xBKZxaY6CGjereBOxaTbLFtRtTf92GJqyoWWOResVy1OFYgM5vNWs
+         qg7Nriqs6+Ec+CkOMckTvtCzoCh3iZ0SVD5cntTydgG1fli7NgvPlYG/25GbzsLUINFw
+         yQ3ZM75+/nEoP3LGSccwozsA7bblqDemkySkvJyqG/tkWCMwiaFQvhtmEhWvQzOzStkv
+         bcnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712826336; x=1713431136;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ThLGpbeHjKHISy6v+wWhWzlM1AmHv+Kiehy1oJijdu4=;
+        b=I0BAQkmoP9W7xd0l90yxiCDn+ZkKKHdSVr7c/6gBz+b0c2jMqHt0V8b6yx8+vdLoyJ
+         lTY0+KZu4j1V95YrvCjxhH8tdLFAtWn7h+3JZ/i4rkZymMel16v/GbuEG5gtuc1VcYv5
+         QnfIQTGA93BnykO52BMuqWtSnP8fTlcG3dwOueIA4MXXZU/I5acpeoEfl3izG5JSNd0F
+         4dTBCUPKV904ydG5T88MseWRPBcaqxY3ngZKadU4oXr24bg/ENg9RFQLThZXDGp0d2Ii
+         rxLuCW935rtP1Nnpa8mUbpgz80KwNUCYnHWCetBkctDnlEFZ94vqDCktvm1CC8t2e4vi
+         VNkw==
+X-Forwarded-Encrypted: i=1; AJvYcCXZ700d5S3Gmk7k3eY662w8Pkf9TSZQJg7cqYrzus05BH+VOjaKx82bUrfju+mTB0C2NhMkPF8IDH9Y3jMpbJdr1G719KuCU2auWwxi
+X-Gm-Message-State: AOJu0YxaH+DKUOCAixeA+ZT2HOFlMvxHH3pvSTj78A/PLkuCOhHnHIn6
+	4Ug4FitGcuO/FmyLkzTzT5SoLrYOJnjdmNpxV6mBpwa0kip3iG/Y
+X-Google-Smtp-Source: AGHT+IFTY79T++ZLVntjb/YvHujT/vlh2HyBVoWR1sjZgibIrmibZdxv2OPUYMdSc/Jlz/ExOtnfFw==
+X-Received: by 2002:a5d:47c1:0:b0:346:bca2:6184 with SMTP id o1-20020a5d47c1000000b00346bca26184mr949714wrc.0.1712826336250;
+        Thu, 11 Apr 2024 02:05:36 -0700 (PDT)
+Received: from localhost (craw-09-b2-v4wan-169726-cust2117.vm24.cable.virginm.net. [92.238.24.70])
+        by smtp.gmail.com with ESMTPSA id m4-20020adff384000000b0033e7de97214sm1279914wro.40.2024.04.11.02.05.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 02:05:35 -0700 (PDT)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	iommu@lists.linux.dev
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] iommu/vt-d: remove redundant assignment to variable err
+Date: Thu, 11 Apr 2024 10:05:35 +0100
+Message-Id: <20240411090535.306326-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zhaoz9E/sw6jVnci@lpieralisi>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 10, 2024 at 04:57:19PM +0200, Lorenzo Pieralisi wrote:
-> On Tue, Apr 09, 2024 at 03:19:08PM +0000, Sebastian Ene wrote:
-> > Handle the FFA_PARTITION_INFO_GET host call inside the pKVM hypervisor
-> > and copy the response message back to the host buffers. Save the
-> > returned FF-A version as we will need it later to interpret the response
-> > from the TEE.
-> >
-> > Signed-off-by: Sebastian Ene <sebastianene@google.com>
-> > ---
-> >  arch/arm64/kvm/hyp/nvhe/ffa.c | 49 +++++++++++++++++++++++++++++++++++
-> >  1 file changed, 49 insertions(+)
-> >
-> > diff --git a/arch/arm64/kvm/hyp/nvhe/ffa.c b/arch/arm64/kvm/hyp/nvhe/ffa.c
-> > index 320f2eaa14a9..72fc365bc7a8 100644
-> > --- a/arch/arm64/kvm/hyp/nvhe/ffa.c
-> > +++ b/arch/arm64/kvm/hyp/nvhe/ffa.c
-> > @@ -67,6 +67,7 @@ struct kvm_ffa_buffers {
-> >   */
-> >  static struct kvm_ffa_buffers hyp_buffers;
-> >  static struct kvm_ffa_buffers host_buffers;
-> > +static u32 ffa_version;
-> >
-> >  static void ffa_to_smccc_error(struct arm_smccc_res *res, u64 ffa_errno)
-> >  {
-> > @@ -640,6 +641,49 @@ static bool do_ffa_features(struct arm_smccc_res *res,
-> >  	return true;
-> >  }
-> >
-> > +static void do_ffa_part_get(struct arm_smccc_res *res,
-> > +			    struct kvm_cpu_context *ctxt)
-> > +{
-> > +	DECLARE_REG(u32, uuid0, ctxt, 1);
-> > +	DECLARE_REG(u32, uuid1, ctxt, 2);
-> > +	DECLARE_REG(u32, uuid2, ctxt, 3);
-> > +	DECLARE_REG(u32, uuid3, ctxt, 4);
-> > +	DECLARE_REG(u32, flags, ctxt, 5);
-> > +	u32 off, count, sz, buf_sz;
-> > +
-> > +	hyp_spin_lock(&host_buffers.lock);
-> > +	if (!host_buffers.rx) {
-> > +		ffa_to_smccc_res(res, FFA_RET_INVALID_PARAMETERS);
-> > +		goto out_unlock;
-> > +	}
-> > +
-> > +	arm_smccc_1_1_smc(FFA_PARTITION_INFO_GET, uuid0, uuid1,
-> > +			  uuid2, uuid3, flags, 0, 0,
-> > +			  res);
-> > +
-> > +	if (res->a0 != FFA_SUCCESS)
-> > +		goto out_unlock;
-> > +
-> > +	count = res->a2;
-> > +	if (!count)
-> > +		goto out_unlock;
-> > +
-> > +	if (ffa_version > FFA_VERSION_1_0) {
-> > +		buf_sz = sz = res->a3;
-> > +		if (sz > sizeof(struct ffa_partition_info))
-> > +			buf_sz = sizeof(struct ffa_partition_info);
->
-> We are copying buf_sz but (correctly ?) returning res->a3 to the caller,
-> which is allowed to expect res->a3 bytes to be filled since that's what
-> firmware reported.
->
-> Technically this is not a problem at present, because the caller
-> (ie the FF-A driver) and the hypervisor rely on the same descriptor
-> structures (and buf_sz can't be != sizeof(struct ffa_partition_info),
-> anything else is a bug as we stand); they must be kept in sync though as
-> the firmware version changes (*if* there are changes in the partition
-> descriptor - eg fields are added).
->
+Variable err is being assigned a value that is never read. It is
+either being re-assigned later on error exit paths, or never referenced
+on the non-error path.
 
-Indeed, this will break if the size of the descriptor changes in the future
-and the kernel has not yet added the support for that though it is unlikely
-as we negotiate the version and the response for all the messages should
-be as per the negotiated version.
+Cleans up clang scan build warning:
+drivers/iommu/intel/dmar.c:1070:2: warning: Value stored to 'err' is
+never read [deadcode.DeadStores]`
 
-> An option would consist in just copying res->a3 bytes as firmware reports
-> (obviously keeping the RX buffer boundary checks for the memcpy).
->
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/iommu/intel/dmar.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Yes I prefer that.
+diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+index 36d7427b1202..351be9455214 100644
+--- a/drivers/iommu/intel/dmar.c
++++ b/drivers/iommu/intel/dmar.c
+@@ -1067,7 +1067,6 @@ static int alloc_iommu(struct dmar_drhd_unit *drhd)
+ 		goto error_free_seq_id;
+ 	}
+ 
+-	err = -EINVAL;
+ 	if (!cap_sagaw(iommu->cap) &&
+ 	    (!ecap_smts(iommu->ecap) || ecap_slts(iommu->ecap))) {
+ 		pr_info("%s: No supported address widths. Not attempting DMA translation.\n",
+-- 
+2.39.2
 
-> It is just a heads-up because I noticed it, no more, I will let Sudeep
-> comment on this since he knows better.
->
-
-I think you had it all covered, nothing much to add.
-
---
-Regards,
-Sudeep
 
