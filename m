@@ -1,102 +1,185 @@
-Return-Path: <linux-kernel+bounces-141600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5AE68A2088
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 35A148A208B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:58:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA0491C217D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:57:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CDBE1C21A3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:58:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 255FA2BD0D;
-	Thu, 11 Apr 2024 20:57:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 184C52942C;
+	Thu, 11 Apr 2024 20:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bgAo3Z5Z"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HgC9U2w0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B5AF15E8C
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:57:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9DD3B295;
+	Thu, 11 Apr 2024 20:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712869046; cv=none; b=MSxo9EI76L3UW7hBZhUTIGyGoupAolz+3iSLSiICXeHrKmev10t47aGkIP1Pm5xzX8C1b023Z2elAUVi39xo3twiz5mKkC+MHXab/E5hSFXK6QtK9/otfwzZgDXAVfLAlvSa96ubiSfJuHlEhrO4hXNikQ+oN1hDPqanqKYtpp8=
+	t=1712869075; cv=none; b=PBp6dOUospfxWYd3vMmkOeMsP2gaxlZFLbv0P3uh1uhV2TU4w7eexD6CkUyudcA0NRLwKDydV+xirj46gEFsJIlUeXesT/NT1nBctm+9t34IvvzjzG5gZZF7uKPE6mppAHec3zkBj5ChXfHbRLGk4V0igB/TJuoytfTq/NQWYr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712869046; c=relaxed/simple;
-	bh=3USpWrUNdliUnscE24vOtr4QdAGj6lskCeojhOFYzPo=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Grym6zZhJMAR/nDpfKLIrp930XBzah0bNFsWR1gz6EeViFKPfCpfp0FC0AAsh/hfGD9RibUDeYlXSqb6Xdveay9sCXyp6tnAwFBOmKmvAkL7Ssq/1FG5nSLQv2WRyFQV+RPk7yAz2g8wgt73ATXZx+DMMUvjj692+LGRz29eWJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bgAo3Z5Z; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-610b96c8ca2so3126707b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:57:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712869044; x=1713473844; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HYEU2A1US/h58udhZtj8GUv/NlwFdWP5dUC/V5yhCYE=;
-        b=bgAo3Z5Z8YlxchApJSWwvLNxUIct4f5jUXsEVbv5eeRhP0AewFemHgKqtBB6/dOYP0
-         vjTPUIUlVcut7bUddcYVRUIbwpI/dW5clQ7eYbHZSZSjxlxkObzDnglp3LjwkyGT4hNZ
-         PXo9HUdOD02hvu/8lnJ6dYoliJzWi0edm67Ho6ItR/LSSUcuCtf06dwmNWsuBt/cIJM8
-         jwjxsHdIPCzF/j8NTKEeZJgbH+x1ku848sob740eY2iiy938RBIB0pkhT8YK8P7K9ygZ
-         5UCElEc560pFkIjkzDKdN/GCSMbly2t9Av+KVUz/qdSUTOK7mNuQoU5dW/cN0KxvVx0L
-         2IVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712869044; x=1713473844;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HYEU2A1US/h58udhZtj8GUv/NlwFdWP5dUC/V5yhCYE=;
-        b=chXhPpKI/P0SI9rLIn50mztQGyrVSqej5ZrtBADQ7oHJucvfI3EtbwrTbUJzz0e6P7
-         3fozapaKjjXTrMxUJqLfMBQwmL99OZXIZn9rz23+SULE1UvH/UZb5cOYL2f6JWPLA2Vl
-         bY2qA1HJFqouEGqk/26EY2id3snXifd7YiPM6sOjM8WLAe7q7PnVqH30q0w+t2sGnJqq
-         UnxUM2RQE8StSn7ssLzK2WTnQZA5e18qI6xzl/N/nGa2NN8PF0c6FeCagFjh/RX89CtH
-         QvJF/DTBVjoG6MYlFXwY7Oe5ly/if+rZ/IeV9SVcCGFzOH1gOjEQYb5+zxhKEy8ZEBLE
-         w0Qg==
-X-Forwarded-Encrypted: i=1; AJvYcCXdWqTSiaC76g97H46WMbuu3Vt0To4apq6EInvjpYTdZ19HbT+u7r8ZvJs/ODN3MT2GYZXjcfDP2bEZeIKyGzsI5GvNpIZ41DIc7a/s
-X-Gm-Message-State: AOJu0YwXekZbL5ykKdNKrrTUzi2A3nR57uoo2N4z9u9LVw4VSoV2jGGp
-	HSqDxH8ylE0IDPmadSpmmq+bCpEoD9D2MyZkl8pJ/4rmwiPc22ravSHYEIyE9k0Cpld84lmmLaj
-	Y+Q==
-X-Google-Smtp-Source: AGHT+IH0B7KlVbl2bxNL8+iczB8+rRyeR8gTDQmgFF/XhbcdNrmoi+RlgGKOLAAFLeDcsQfs3Ca5mIGAi50=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:100b:b0:dcc:f01f:65e1 with SMTP id
- w11-20020a056902100b00b00dccf01f65e1mr183523ybt.8.1712869044460; Thu, 11 Apr
- 2024 13:57:24 -0700 (PDT)
-Date: Thu, 11 Apr 2024 13:57:22 -0700
-In-Reply-To: <20240126085444.324918-13-xiong.y.zhang@linux.intel.com>
+	s=arc-20240116; t=1712869075; c=relaxed/simple;
+	bh=+JAoN2Qmwk2NB53yW+S7JV82ikw/tfWwk2KOxm2jbH8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=YESRCmhgFqZZpW1cUwGNpPPUH6S3OXjSZKrWHfeKeiOqdL9njkIut26oR2weVTD2fXO5vImwozHEOxmYwUEG0iDW4Sni21+sjsvL/bvIqSWq1S+o+urO39HPg8jwrRdVdlkzRwKnO9PTduPTiKAkOfIsiywAR0oyWBsc0Nr1F80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HgC9U2w0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FB61C072AA;
+	Thu, 11 Apr 2024 20:57:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712869074;
+	bh=+JAoN2Qmwk2NB53yW+S7JV82ikw/tfWwk2KOxm2jbH8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=HgC9U2w0VnsyeUs0d5E4xvzPxUJRfD0oSwtJn7iO0KbRV6P6KyXsPBI5579rdqazI
+	 TinSJTYEcgF4vRG+BKHpfUOdxBIlZnXC/6CM1j7mSIMEA6wjD81oHGF0bvVTJwUtYQ
+	 PusMLAt2z1OkK8r7yV7fvyoevH7Q+Ql0G4eWhCVUUNbEBJhAROb0AkzCO5AIpYOlgI
+	 KwWpeNmbwOW48mrIYwTczVpZrNvekIRmE5yMcAxCEpGV0eVkBF+vMhmdMSlhf3w9P1
+	 TJCFSa7yYvPTuRneXjpLB38EHq/fz7XmRLQUZ2t0p5CBPKH5WlAGe2dOQem9DXiVLr
+	 vzYgbG98Vh7cg==
+Date: Thu, 11 Apr 2024 15:57:52 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Rob Herring <robh@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, Lizhi Hou <lizhi.hou@amd.com>,
+	Max Zhen <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>,
+	Stefano Stabellini <stefano.stabellini@xilinx.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	PCI <linux-pci@vger.kernel.org>,
+	Allan Nielsen <allan.nielsen@microchip.com>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>,
+	Steen Hegelund <steen.hegelund@microchip.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>
+Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
+Message-ID: <20240411205752.GA2199968@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <20240126085444.324918-13-xiong.y.zhang@linux.intel.com>
-Message-ID: <ZhhOsvPxhEQl9YmX@google.com>
-Subject: Re: [RFC PATCH 12/41] KVM: x86/pmu: Plumb through passthrough PMU to
- vcpu for Intel CPUs
-From: Sean Christopherson <seanjc@google.com>
-To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
-Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
-	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
-	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
-	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com, Xiong Zhang <xiong.y.zhang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240411160548.06fa9b11@bootlin.com>
 
-On Fri, Jan 26, 2024, Xiong Zhang wrote:
-> From: Mingwei Zhang <mizhang@google.com>
+On Thu, Apr 11, 2024 at 04:05:48PM +0200, Herve Codina wrote:
+> On Wed, 10 Apr 2024 16:41:43 -0500
+> Rob Herring <robh@kernel.org> wrote:
+> > On Tue, Mar 19, 2024 at 11:34 AM Herve Codina <herve.codina@bootlin.com> wrote:
+> > > On Tue, 19 Mar 2024 10:25:13 -0500
+> > > Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > > On Fri, Dec 15, 2023 at 02:52:07PM +0100, Herve Codina wrote:  
+> > > > > On Mon, 4 Dec 2023 07:59:09 -0600
+> > > > > Rob Herring <robh@kernel.org> wrote:  
+> > > > > > On Mon, Dec 4, 2023 at 6:43 AM Herve Codina <herve.codina@bootlin.com> wrote:  
+> > > > > > > On Fri, 1 Dec 2023 16:26:45 -0600
+> > > > > > > Rob Herring <robh@kernel.org> wrote:  
+> > > > > > > > On Thu, Nov 30, 2023 at 10:57 AM Herve Codina <herve.codina@bootlin.com> wrote:
+> > > > > > > > ...  
+> > > >  
+> > > > > > > > --- a/drivers/pci/of.c
+> > > > > > > > +++ b/drivers/pci/of.c
+> > > > > > > > @@ -31,6 +31,8 @@ int pci_set_of_node(struct pci_dev *dev)
+> > > > > > > >                 return 0;
+> > > > > > > >
+> > > > > > > >         node = of_pci_find_child_device(dev->bus->dev.of_node, dev->devfn);
+> > > > > > > > +       if (!node && pci_is_bridge(dev))
+> > > > > > > > +               of_pci_make_dev_node(dev);
+> > > > > > > >         if (!node)
+> > > > > > > >                 return 0;  
+> > > > > > >
+> > > > > > > Maybe it is too early.
+> > > > > > > of_pci_make_dev_node() creates a node and fills some properties based on
+> > > > > > > some already set values available in the PCI device such as its struct resource
+> > > > > > > values.
+> > > > > > > We need to have some values set by the PCI infra in order to create our DT node
+> > > > > > > with correct values.  
+> > > > > >
+> > > > > > Indeed, that's probably the issue I'm having. In that case,
+> > > > > > DECLARE_PCI_FIXUP_HEADER should work. That's later, but still before
+> > > > > > device_add().
+> > > > > >
+> > > > > > I think modifying sysfs after device_add() is going to race with
+> > > > > > userspace. Userspace is notified of a new device, and then the of_node
+> > > > > > link may or may not be there when it reads sysfs. Also, not sure if
+> > > > > > we'll need DT modaliases with PCI devices, but they won't work if the
+> > > > > > DT node is not set before device_add().  
+> > > > >
+> > > > > DECLARE_PCI_FIXUP_HEADER is too early as well as doing the DT node creation
+> > > > > just before the device_add() call.
+> > > > > Indeed, in order to fill the DT properties, resources need to be assigned
+> > > > > (needed for the 'ranges' property used for addresses translation).
+> > > > > The resources assignment is done after the call to device_add().  
+> > > >
+> > > > Do we need to know the actual address *value* before creating the
+> > > > sysfs file, or is it enough to know that the file should *exist*, even
+> > > > if the value may be changed later?  
+> > >
+> > > I think, the problematic file is 'of_node'.
+> > > This file is a symlink present in the device directory pointing to the
+> > > node in a device-tree subdir.
+> > >
+> > > How can we create this of_node symlink without having the device-tree
+> > > subdir available ?
+> > >  
+> > > > > Some PCI sysfs files are already created after adding the device by the
+> > > > > pci_create_sysfs_dev_files() call:
+> > > > >   https://elixir.bootlin.com/linux/v6.6/source/drivers/pci/bus.c#L347
+> > > > >
+> > > > > Is it really an issue to add the of_node link to sysfs on an already
+> > > > > present device ?  
+> > > >
+> > > > Yes, I think this would be an issue.  We've been trying to get rid of
+> > > > pci_create_sysfs_dev_files() altogether because there's a long history
+> > > > of race issues related to it:
+> > > >
+> > > >   https://lore.kernel.org/r/1271099285.9831.13.camel@localhost/ WARNING: at fs/sysfs/dir.c:451 sysfs_add_one: sysfs: cannot create duplicate filename '/devices/pci0000:00/0000:00:01.0/slot'
+> > > >   https://lore.kernel.org/r/19461.26166.427857.612983@pilspetsen.it.uu.se/ [2.6.35-rc1 regression] sysfs: cannot create duplicate filename ... XVR-600 related?
+> > > >   https://lore.kernel.org/r/20200716110423.xtfyb3n6tn5ixedh@pali/ PCI: Race condition in pci_create_sysfs_dev_files
+> > > >   https://lore.kernel.org/r/m3eebg9puj.fsf@t19.piap.pl/ PCI: Race condition in pci_create_sysfs_dev_files (can't boot)
+> > > >   https://bugzilla.kernel.org/show_bug.cgi?id=215515 sysfs: cannot create duplicate filename '.../0000:e0'
+> > > >
+> > > > And several previous attempts to fix them:
+> > > >
+> > > >   https://lore.kernel.org/r/4469eba2-188b-aab7-07d1-5c77313fc42f@gmail.com/ Guard pci_create_sysfs_dev_files with atomic value
+> > > >   https://lore.kernel.org/r/20230316103036.1837869-1-alexander.stein@ew.tq-group.com PCI/sysfs: get rid of pci_sysfs_init late_initcall
+> > > >   https://lore.kernel.org/r/1702093576-30405-1-git-send-email-ssengar@linux.microsoft.com/ PCI/sysfs: Fix race in pci sysfs creation
+> > > >  
+> > >
+> > > I am not sure we are facing in the same kind of issues.
+> > > The ones you mentioned are related to some sysfs duplication.
+> > > In the of_node case, the issue (if any) is that the symlink will be created
+> > > after the other device's file. Not sure that it can lead to some file
+> > > duplication.  
+> > 
+> > Again, if you notify userspace and it wants to make some decisions
+> > based on of_node, then it has to be there when the notification
+> > happens. As Greg says frequently, you've raced with userspace and
+> > lost.
+> > 
+> > I imagine Bjorn won't like it, but may we need another fixup point?
 > 
-> Plumb through passthrough PMU setting from kvm->arch into kvm_pmu on each
-> vcpu created. Note that enabling PMU is decided by VMM when it sets the
-> CPUID bits exposed to guest VM. So plumb through the enabling for each pmu
-> in intel_pmu_refresh().
+> I'am not sure that a fixup point can fix the issue.
+> 
+> In order to have the of_node available before the notification, we need
+> to a have the of_node set and filled before the device_add() call.
+> 
+> In order to create the 'ranges' property in the DT node, we need PCI
+> resources computed. These resources are computed after the device_add()
+> call.
 
-As stated in the previous patch, even the most naive implementation can be:
+I guess this is the problem that pci_assign_unassigned_resources() and
+similar are called after device_add(), right?  That seems kind of
+problematic in general since device_add() exposes /sys/.../resource
+before they may be valid.  But I don't know how to fix that.
 
-static inline bool is_passthrough_pmu_enabled(struct kvm_vcpu *vcpu)
-{
-	return enable_passthrough_pmu && vcpu_to_pmu(vcpu)->version;
-}
+Bjorn
 
