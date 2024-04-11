@@ -1,186 +1,288 @@
-Return-Path: <linux-kernel+bounces-139554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A10BB8A0453
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:02:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFC6B8A0458
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:08:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0AFA1C22B96
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:02:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 663522873BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:08:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC372CA7;
-	Thu, 11 Apr 2024 00:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C76B2CA9;
+	Thu, 11 Apr 2024 00:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g2dUieEy"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="JdPT6Dlw"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5248E63D;
-	Thu, 11 Apr 2024 00:02:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3B57E6
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:08:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712793733; cv=none; b=H31xp9vhebqFn37emuIWmwWA3Dw0nlwUBSbZqEoHoJRkxtmU8jnsyk056lO0wH/AZlKu8VVXP9AAlroet4uNRdTZiNWNEbbIJpqfMhfbKh/YQTNhyC4v2r9qCEqVY6hysKmN77PcSZbbd7w1WQk0TJa9Jle5aIgU9u4KP+yh9xI=
+	t=1712794091; cv=none; b=WF1JTEhtwzjBOwfL9J9ri9tETV5w1/t4k1TU4WTLgHdMfvTBqZL+wxMiYHsnatcd7vsCy85DBRcKEYxDcnMeKpHnQEuL38UpwRdFoxovxpmixxpOpFD8toMJezjcZF2LVrmbzr71vXHwG1J+Rl74zLrrmIUMnM5I46yKLxZpZIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712793733; c=relaxed/simple;
-	bh=OSTd7Qy7f+1f9UZ9ao6IxRPViSiIVpqybSuKe7pfrC8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e1E9nOaqLaPBpOEaXGQSmyUjLJcv5IBGr4J5Jf1sb0ZKZK+DjH6DZfcZylzQapan4t0E1QBsUWtOt9qTnnvYANqgT2jou5B3XxTeBVTg9Wnn+r3duCjhMCaR2bPCYDkHDxYAZrFVVxVeNp+AbgmvUZdMVFtwUX8EqVQbX3pmTlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g2dUieEy; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2a519ac18b3so2723268a91.2;
-        Wed, 10 Apr 2024 17:02:12 -0700 (PDT)
+	s=arc-20240116; t=1712794091; c=relaxed/simple;
+	bh=1m6GeUg/eW7gq8Dvxg83CrcroRJeTEEbAgnByTy3TU4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ZQ/ZQ9b/Y6s9PAvQ/7esPflxbDfTZXwh5gWZ0mqWum9cVHpid5hZ110Vh8BC752Fn42Q5c4TnhkizjjTDGg47mDKBmh374u5UY9Gwrg31eZpBz7U7OYnRqjnK5laU+vUa+IVzsvRCbzG+FntWtvWyJ8BYKowG1RuUDalvbrkCx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=JdPT6Dlw; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e2c725e234so2635135ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:08:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712793731; x=1713398531; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wfrCZroFultv+MXju5r6SP+mW/5Hc70daHzU+zkVS5Y=;
-        b=g2dUieEyKmmRwjQeLqhovjUrnvb+etJ0UyZ3pJAw94R/+pIFPENRx/mfXe59E3+Kjb
-         rzSKcaSLXBI9noM6FBHNd/JUMus9z2W6xDFw5R2ZC8QpMbn3TEf0OK8ieiQaidVI859L
-         ZUkXAEn9UPm5n6cwqO872VdcSGXakSkuB5Pf+f4iGPk084hj1eT2nomr4uPNwjn1WGYP
-         yoqDEnmiK/eH597QFP2/6W5Ov8hXkvko+by6Jqd9Pq7r/ECjmvWSD9lCAVzzuLSv6/Vx
-         nyOpLfJHs8ZtmvZHC+rbFzrExKIuY5Xn54FYamlwH5+be+f4CTDCZdSUhfgguyyNQ83H
-         HfQg==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712794088; x=1713398888; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0phIFwoBJCi+Fzzf56PNpg1jde4jtrCnjX2PmS8+4bo=;
+        b=JdPT6Dlw56ON0/OXl4G2QRAei6RxdlOaHTFjJ2U2rDGMToW/Iv3yS5YjIqgL34DOLS
+         rw4x9RHXrmnxeI4wiXeqwzPpOKQxR62IHeV8PUx8qbWMhueBn0TgcL3qUtskrvfVcsgU
+         yZ3AgqsPlTTYayukMyK2EY8JIuA3/Hkw5uKbQNFMN+zEU6OXHGpguDXW/U9a1xUMHMaE
+         v/gp7NshTEWnBgAecxNYPIVFM+ORa1Sz5B+ma6sOrbignbvygZr31L8qyIucX9XNic+J
+         lVNDbaJsV75Rv6vpH3AnLl6IfyPgIrOu//0cfW688pg47czJl+YaXhWtkB/v7rfEC88K
+         vPOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712793731; x=1713398531;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wfrCZroFultv+MXju5r6SP+mW/5Hc70daHzU+zkVS5Y=;
-        b=odvjd/U5v75KVmXhlHf8OU1VmnBV/jIZV/ItWRsQ88P1ei05YVGoWZOgJwQWwIzCLj
-         ONqWGhBuSVRMMdKnzViuie/316coDLfqhL820mOw1cPI7Yp1SCSWtbLI10hEcstHtTTP
-         pGaz5BLYlircK0GYB6k9ApnDl6q+gpPiQIZCeQS+wyVPiSmdBZZTuIaDvQcOnLsXo1Al
-         TU4QfaOa1of52ZFoevg4X9FYmsZ+t+dupv2iaUQeLXHuQRYTwyCM9ZNePP2qZCYWewFl
-         IK94SiYFggDIzqjH0KtUF3n4YqF2+Iod5a1oVSpsWuNasfwn9otoFO9KrcdBjCiHLmfu
-         ciIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUJqB6x0FmN1MT3vgjMvmDK9O8PaXtmc5XlKrdxNwWvzNUwZXU8Z1GHUaf22XeMKFq8oAld/wzMhE+aHVsGxJI5JeWuNh/+gsChGHpepMhjQFGYR66sYpHkYRIlXoNfhmjf/qz1gNJ3rN1Va2QfIdd6Rcjzclcpz9ro73vgPLBAUDcYpL2OMNkJWOfqww/X
-X-Gm-Message-State: AOJu0Yz6DXAeVC2EhJBvUS5TKWlIlan8mmJq6w0i1LkZPnZAL2Rh6Tff
-	QxjhBt0sunQK/wqo7ORrvFKAc0l4iIGhZSaBrN1Jl7ne5X3cL5Nr
-X-Google-Smtp-Source: AGHT+IGigq1nRlAG3wzK4rdyckpZKJucY604QtyMnvFuJC/poZuw8R8R2TYwxexL8XTYjwY++6JkRA==
-X-Received: by 2002:a17:90a:d484:b0:2a5:d0cf:3ef with SMTP id s4-20020a17090ad48400b002a5d0cf03efmr3096746pju.37.1712793731204;
-        Wed, 10 Apr 2024 17:02:11 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:60da:41be:a28d:f612])
-        by smtp.gmail.com with ESMTPSA id h16-20020a17090a051000b002a2e4b593cdsm2079501pjh.51.2024.04.10.17.02.10
+        d=1e100.net; s=20230601; t=1712794088; x=1713398888;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0phIFwoBJCi+Fzzf56PNpg1jde4jtrCnjX2PmS8+4bo=;
+        b=T4i1Ol9ajeHDJKy6VkcUqdJ+cJ8g5Z+FDLG9pdj2lA6yz3JirusTKMZtGQDx7ebgrL
+         cNE5N1svF85Nox82b+WEo3R4dhtQjkFCEWLnGB1EJp58U2Qq9FP+iHtk5+W5YpfNbRJQ
+         sAIHRKEEmay32s1SjoSVMSqo8T34jkXNR05ILCEPR/qTq1Ec2xWmOq/pYzEWfrIjo2nf
+         3ggHEoch/aq8v2TY/a5YhJXh4qw/tKO4w5HQI1QL6M/iGvhgrXD4VRNIfRPwBaOf87GQ
+         FwFfkv75lI9lOb4bEdqF0tErZq/p35Je1N1vM9amoOOuAoX99u11iMIrUjRxjzPIAW2O
+         DNtg==
+X-Gm-Message-State: AOJu0YzEpxL5zIlwzPqGbh3uzqbLI9/fNzXHca/T6jcjUY3q5o/XTtLp
+	aQIMeoWaj70jKjWBlSLfGTsXxNHRctVrHhVpN7t0mvYShH0e+TMNmyrfjvInGJsPVzFBDpNYE0d
+	O
+X-Google-Smtp-Source: AGHT+IF++9d4mpNVy4ymyqu2bjRlr80QcfEg5FB9y5MT6+XG1ZHr0TMgTO95oVGxO8PLzBuM/HD4Yw==
+X-Received: by 2002:a17:902:da87:b0:1e2:7734:63dd with SMTP id j7-20020a170902da8700b001e2773463ddmr1535796plx.30.1712794087610;
+        Wed, 10 Apr 2024 17:08:07 -0700 (PDT)
+Received: from atishp.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id f7-20020a170902684700b001e3d8a70780sm130351pln.171.2024.04.10.17.08.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 17:02:10 -0700 (PDT)
-Date: Wed, 10 Apr 2024 17:02:08 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Mark Pearson <mpearson-lenovo@squebb.ca>
-Cc: Peter Hutterer <peter.hutterer@redhat.com>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-	ibm-acpi-devel@lists.sourceforge.net,
-	"platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Nitin Joshi1 <njoshi1@lenovo.com>,
-	Vishnu Sankar <vsankar@lenovo.com>
-Subject: Re: [PATCH 1/4] Input: Add trackpoint doubletap and system debug
- info keycodes
-Message-ID: <ZhcogDESvZmUPEEf@google.com>
-References: <mpearson-lenovo@squebb.ca>
- <20240324210817.192033-1-mpearson-lenovo@squebb.ca>
- <20240324210817.192033-2-mpearson-lenovo@squebb.ca>
- <ZhR-WPx7dgKxziMb@google.com>
- <f3342c0b-fb31-4323-aede-7fb02192cf44@redhat.com>
- <ZhW3Wbn4YSGFBgfS@google.com>
- <ZhXpZe1Gm5e4xP6r@google.com>
- <92ee5cb2-565e-413c-b968-81393a9211c4@app.fastmail.com>
+        Wed, 10 Apr 2024 17:08:06 -0700 (PDT)
+From: Atish Patra <atishp@rivosinc.com>
+To: linux-kernel@vger.kernel.org
+Cc: Atish Patra <atishp@rivosinc.com>,
+	Ajay Kaher <ajay.kaher@broadcom.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Alexey Makhalov <alexey.amakhalov@broadcom.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Juergen Gross <jgross@suse.com>,
+	kvm-riscv@lists.infradead.org,
+	kvm@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	Mark Rutland <mark.rutland@arm.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Shuah Khan <shuah@kernel.org>,
+	virtualization@lists.linux.dev,
+	Will Deacon <will@kernel.org>,
+	x86@kernel.org
+Subject: [PATCH v6 00/24] RISC-V SBI v2.0 PMU improvements and Perf sampling in KVM guest
+Date: Wed, 10 Apr 2024 17:07:28 -0700
+Message-Id: <20240411000752.955910-1-atishp@rivosinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <92ee5cb2-565e-413c-b968-81393a9211c4@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 09, 2024 at 10:17:05PM -0400, Mark Pearson wrote:
-> Hi Dmitry
-> 
-> On Tue, Apr 9, 2024, at 9:20 PM, Dmitry Torokhov wrote:
-> > On Tue, Apr 09, 2024 at 02:47:05PM -0700, Dmitry Torokhov wrote:
-> >> On Tue, Apr 09, 2024 at 03:23:52PM +1000, Peter Hutterer wrote:
-> >> > On 09/04/2024 09:31, Dmitry Torokhov wrote:
-> >> > > Hi Mark,
-> >> > > 
-> >> > > On Sun, Mar 24, 2024 at 05:07:58PM -0400, Mark Pearson wrote:
-> >> > > > Add support for new input events on Lenovo laptops that need exporting to
-> >> > > > user space.
-> >> > > > 
-> >> > > > Lenovo trackpoints are adding the ability to generate a doubletap event.
-> >> > > > Add a new keycode to allow this to be used by userspace.
-> >> > > 
-> >> > > What is the intended meaning of this keycode? How does it differ from
-> >> > > the driver sending BTN_LEFT press/release twice?
-> >> > > > 
-> >> > > > Lenovo support is using FN+N with Windows to collect needed details for
-> >> > > > support cases. Add a keycode so that we'll be able to provide similar
-> >> > > > support on Linux.
-> >> > > 
-> >> > > Is there a userspace consumer for this?
-> >> > 
-> >> > Funnily enough XKB has had a keysym for this for decades but it's not
-> >> > hooked up anywhere due to the way it's pointer keys accessibility
-> >> > feature was implemented. Theory is that most of userspace just needs
-> >> > to patch the various pieces together for the new evdev code + keysym,
-> >> > it's not really any different to handling a volume key (except this
-> >> > one needs to be assignable).
-> >> 
-> >> What is the keysym? If we can make them relatable to each other that
-> >> would be good. Or maybe we could find a matching usage from HID usage
-> >> tables...
-> >
-> > I was looking through the existing codes and I see:
-> >
-> > #define KEY_INFO		0x166	/* AL OEM Features/Tips/Tutorial */
-> >
-> > We also have KEY_VENDOR used in a few drivers/plafrom/x86, including
-> > thinkkpad_acpi.c and I wonder if it would be suitable for this vendor
-> > specific debug info collection application (which I honestly doubt will
-> > materialize).
-> >
-> 
-> That's a somewhat disappointing note on your doubts, is that based on
-> anything? Just wondering what we've done to deserve that criticism.
+This series implements SBI PMU improvements done in SBI v2.0[1] i.e. PMU snapshot
+and fw_read_hi() functions. 
 
-Sorry, this was not meant as a criticism really, but you mentioned
-yourself that there isn't anything in the works yet, you just have some
-plans.
+SBI v2.0 introduced PMU snapshot feature which allows the SBI implementation
+to provide counter information (i.e. values/overflow status) via a shared
+memory between the SBI implementation and supervisor OS. This allows to minimize
+the number of traps in when perf being used inside a kvm guest as it relies on
+SBI PMU + trap/emulation of the counters. 
 
-For such a project to succeed Lenovo needs to invest into selling
-devices with Linux as a primary operating system, and it has to be
-consumer segment (or small business, because for corporate they
-typically roll their own support channels). The case of retrofitting
-Linux onto a that device originally came with Windows OS rarely gets
-much if any response from the normal support channels.
+The current set of ratified RISC-V specification also doesn't allow scountovf
+to be trap/emulated by the hypervisor. The SBI PMU snapshot bridges the gap
+in ISA as well and enables perf sampling in the guest. However, LCOFI in the
+guest only works via IRQ filtering in AIA specification. That's why, AIA
+has to be enabled in the hardware (at least the Ssaia extension) in order to
+use the sampling support in the perf. 
 
-Is this something that is actually happening?
+Here are the patch wise implementation details.
 
-> 
-> That aside, I guess KEY_INFO or KEY_VENDOR could be a good fit (I
-> personally don't think KEY_CONFIG matches well), but I would be
-> worried about clashing with existing functionality.
-> 
-> Peter - do you have any opinion from the user space side of things, or
-> are these likely unused? KEY_VENDOR seems the safer bet to me (but I
-> don't love it).
-> 
-> Dmitry - What are the downsides or concerns of introducing a new code?
-> I'd like to evaluate that against the potential to cause conflicts by
-> re-using existing codes. If you feel strongly about it then I'll defer
-> to your judgement, but I'd like to understand better the context.
+PATCH 1,4,7,8,9,10,11,15 : Generic cleanups/improvements.
+PATCH 2,3,14 : FW_READ_HI function implementation
+PATCH 5-6: Add PMU snapshot feature in sbi pmu driver
+PATCH 12-13: KVM implementation for snapshot and sampling in kvm guests
+PATCH 16-17: Generic improvements for kvm selftests 
+PATCH 18-22: KVM selftests for SBI PMU extension
 
-The keycode space is finite and extending bitmaps leads to more memory
-consumption and weird breakages (like uevent generation exceeding 4K
-memory page resulting in failures). I am trying to balance need for new
-keycodes with how likely they are to be used.
+The series is based on v6.9-rc1 and is available at:
 
-Thanks.
+https://github.com/atishp04/linux/tree/kvm_pmu_snapshot_v6
 
--- 
-Dmitry
+The kvmtool patch is also available at:
+https://github.com/atishp04/kvmtool/tree/sscofpmf
+
+It also requires Ssaia ISA extension to be present in the hardware in order to
+get perf sampling support in the guest. In Qemu virt machine, it can be done
+by the following config.
+
+```
+-cpu rv64,sscofpmf=true,x-ssaia=true
+```
+
+There is no other dependencies on AIA apart from that. Thus, Ssaia must be disabled
+for the guest if AIA patches are not available. Here is the example command.
+
+```
+/lkvm-static run -m 256 -c2 --console serial -p "console=ttyS0 earlycon" --disable-ssaia -k ./Image --debug 
+```
+
+The series has been tested only in Qemu.
+Here is the snippet of the perf running inside a kvm guest.
+
+===================================================
+$ perf record -e cycles -e instructions perf bench sched messaging -g 5
+..
+$ Running 'sched/messaging' benchmark:
+..
+[   45.928723] perf_duration_warn: 2 callbacks suppressed
+[   45.929000] perf: interrupt took too long (484426 > 483186), lowering kernel.perf_event_max_sample_rate to 250
+$ 20 sender and receiver processes per group
+$ 5 groups == 200 processes run
+
+     Total time: 14.220 [sec]
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.117 MB perf.data (1942 samples) ]
+$ perf report --stdio
+$ To display the perf.data header info, please use --header/--header-only optio>
+$
+$
+$ Total Lost Samples: 0
+$
+$ Samples: 943  of event 'cycles'
+$ Event count (approx.): 5128976844
+$
+$ Overhead  Command          Shared Object                Symbol               >
+$ ........  ...............  ...........................  .....................>
+$
+     7.59%  sched-messaging  [kernel.kallsyms]            [k] memcpy
+     5.48%  sched-messaging  [kernel.kallsyms]            [k] percpu_counter_ad>
+     5.24%  sched-messaging  [kernel.kallsyms]            [k] __sbi_rfence_v02_>
+     4.00%  sched-messaging  [kernel.kallsyms]            [k] _raw_spin_unlock_>
+     3.79%  sched-messaging  [kernel.kallsyms]            [k] set_pte_range
+     3.72%  sched-messaging  [kernel.kallsyms]            [k] next_uptodate_fol>
+     3.46%  sched-messaging  [kernel.kallsyms]            [k] filemap_map_pages
+     3.31%  sched-messaging  [kernel.kallsyms]            [k] handle_mm_fault
+     3.20%  sched-messaging  [kernel.kallsyms]            [k] finish_task_switc>
+     3.16%  sched-messaging  [kernel.kallsyms]            [k] clear_page
+     3.03%  sched-messaging  [kernel.kallsyms]            [k] mtree_range_walk
+     2.42%  sched-messaging  [kernel.kallsyms]            [k] flush_icache_pte
+
+===================================================
+
+[1] https://github.com/riscv-non-isa/riscv-sbi-doc
+
+Changes from v5->v6:
+1. Added a patch for command line option for the sbi pmu tests.
+2. Removed redundant prints and restructure the code little bit.
+3. Added a patch for computing the sbi minor version correctly.
+4. Addressed all other comments on v5.  
+
+Changes from v4->v5:
+1. Moved sbi related definitions to its own header file from processor.h
+2. Added few helper functions for selftests.
+3. Improved firmware counter read and RV32 start/stop functions.
+4. Converted all the shifting operations to use BIT macro
+5. Addressed all other comments on v4.  
+
+Changes from v3->v4:
+1. Added selftests.
+2. Fixed an issue to clear the interrupt pending bits.
+3. Fixed the counter index in snapshot memory start function.
+
+Changes from v2->v3:
+1. Fixed a patchwork warning on patch6.
+2. Fixed a comment formatting & nit fix in PATCH 3 & 5.
+3. Moved the hvien update and sscofpmf enabling to PATCH 9 from PATCH 8.
+
+Changes from v1->v2:
+1. Fixed warning/errors from patchwork CI.
+2. Rebased on top of kvm-next.
+3. Added Acked-by tags.
+
+Changes from RFC->v1:
+1. Addressed all the comments on RFC series.
+2. Removed PATCH2 and merged into later patches.
+3. Added 2 more patches for minor fixes.
+4. Fixed KVM boot issue without Ssaia and made sscofpmf in guest dependent on
+   Ssaia in the host.
+
+Atish Patra (24):
+RISC-V: Fix the typo in Scountovf CSR name
+RISC-V: Add FIRMWARE_READ_HI definition
+drivers/perf: riscv: Read upper bits of a firmware counter
+drivers/perf: riscv: Use BIT macro for shifting operations
+RISC-V: Add SBI PMU snapshot definitions
+RISC-V: KVM: Rename the SBI_STA_SHMEM_DISABLE to a generic name
+RISC-V: Use the minor version mask while computing sbi version
+drivers/perf: riscv: Implement SBI PMU snapshot function
+drivers/perf: riscv: Fix counter mask iteration for RV32
+RISC-V: KVM: Fix the initial sample period value
+RISC-V: KVM: No need to update the counter value during reset
+RISC-V: KVM: No need to exit to the user space if perf event failed
+RISC-V: KVM: Implement SBI PMU Snapshot feature
+RISC-V: KVM: Add perf sampling support for guests
+RISC-V: KVM: Support 64 bit firmware counters on RV32
+RISC-V: KVM: Improve firmware counter read function
+KVM: riscv: selftests: Move sbi definitions to its own header file
+KVM: riscv: selftests: Add helper functions for extension checks
+KVM: riscv: selftests: Add Sscofpmf to get-reg-list test
+KVM: riscv: selftests: Add SBI PMU extension definitions
+KVM: riscv: selftests: Add SBI PMU selftest
+KVM: riscv: selftests: Add a test for PMU snapshot functionality
+KVM: riscv: selftests: Add a test for counter overflow
+KVM: riscv: selftests: Add commandline option for SBI PMU test
+
+arch/riscv/include/asm/csr.h                  |   5 +-
+arch/riscv/include/asm/kvm_vcpu_pmu.h         |  16 +-
+arch/riscv/include/asm/sbi.h                  |  38 +-
+arch/riscv/include/uapi/asm/kvm.h             |   1 +
+arch/riscv/kernel/paravirt.c                  |   6 +-
+arch/riscv/kvm/aia.c                          |   5 +
+arch/riscv/kvm/vcpu.c                         |  15 +-
+arch/riscv/kvm/vcpu_onereg.c                  |   6 +
+arch/riscv/kvm/vcpu_pmu.c                     | 260 ++++++-
+arch/riscv/kvm/vcpu_sbi_pmu.c                 |  17 +-
+arch/riscv/kvm/vcpu_sbi_sta.c                 |   4 +-
+drivers/perf/riscv_pmu.c                      |   1 +
+drivers/perf/riscv_pmu_sbi.c                  | 272 ++++++-
+include/linux/perf/riscv_pmu.h                |   6 +
+tools/testing/selftests/kvm/Makefile          |   1 +
+../selftests/kvm/include/riscv/processor.h   |  49 +-
+../testing/selftests/kvm/include/riscv/sbi.h | 141 ++++
+../selftests/kvm/include/riscv/ucall.h       |   1 +
+../selftests/kvm/lib/riscv/processor.c       |  12 +
+../testing/selftests/kvm/riscv/arch_timer.c  |   2 +-
+../selftests/kvm/riscv/get-reg-list.c        |   4 +
+../selftests/kvm/riscv/sbi_pmu_test.c        | 685 ++++++++++++++++++
+tools/testing/selftests/kvm/steal_time.c      |   4 +-
+23 files changed, 1437 insertions(+), 114 deletions(-)
+create mode 100644 tools/testing/selftests/kvm/include/riscv/sbi.h
+create mode 100644 tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
+
+--
+2.34.1
+
 
