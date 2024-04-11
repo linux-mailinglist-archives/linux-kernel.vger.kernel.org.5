@@ -1,105 +1,80 @@
-Return-Path: <linux-kernel+bounces-140521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDD038A15BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:37:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 526948A15BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:37:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0C661C22203
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:37:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB9851F237D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C653014D431;
-	Thu, 11 Apr 2024 13:37:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3F014D70B;
+	Thu, 11 Apr 2024 13:37:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="v+FpaYUi";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EG8vViw2";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kI6MuY7m";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="U1v7pCeI"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y3uZr7pJ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BED140C09;
-	Thu, 11 Apr 2024 13:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2772014D45D;
+	Thu, 11 Apr 2024 13:37:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712842645; cv=none; b=Xyy4WJgklWtVj2xzrmc+icW8+kq0myVhKLK0OeECw/osHvuGPbOkG3R7C800Z9GlvOMo6gq8kKTomuoJYdcs3bOJ5gMc91wAACxl7t4t/ByMlDzv0tdKn/FvMjIXaQ2RZGIlzhO38f5jBkUvPhJcCj7zqEVswlxjfNMRJxRX4jw=
+	t=1712842649; cv=none; b=L7BkR8yjcCfHuR08bX3CSjWOjkzeN3cxMzh9ZwUYUsdulzUM7hNpIsq80omXja5FmvbVw244DM5AaHDo0rZtL/+vrbkaYhssL9dsgAIol1fkx3l552G57UoyP8VU9ELljTrv2h378NbKER3F5+fg+tF4+Ud4RoyxU7eQp57KpwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712842645; c=relaxed/simple;
-	bh=Gov5da9+2mwv1ZNdu7x32Xa3aWMrPpVACIDy2ibKlhQ=;
+	s=arc-20240116; t=1712842649; c=relaxed/simple;
+	bh=ZfH/I4d1hrRMe9hj7w2rGrT0Kd9Zdc2d48cUGU8d2hE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tds2kV2irGKwAL5skmVvXNKb8iAUL//4s/S2H5wKzE8vi5a/L4D0gJZS0wg4nz7Gr3JI3+o8eYfkJgw7MT4roheJIKbO0zeDbdzUDsGcJSRrQzysr52QdA2YTUtGjr5g4hRGjup4sB7ZZbn7pEnAo7CEeN1KfDHSVZFt0uj04Eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=v+FpaYUi; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EG8vViw2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kI6MuY7m; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=U1v7pCeI; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 12B63211F2;
-	Thu, 11 Apr 2024 13:37:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712842640; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=230ULb+KJLSRLQGrt8PgfUIPhmHoza//HzB4A0PIuXs=;
-	b=v+FpaYUiYC8Jzk7w9vRRKw028kDOYnV7yIEpU1p4Pbh7k2hf+xQL8SIbh21F5SGpy9i3NV
-	6IwzAhRCtaD3UGgtTsMplcRJaqOFTTcbi1J/SLKUiExOh4mwJ4oalaT4TjhrSLMShLbWLp
-	FRRp6KOb5v4CT92EjoNSYXpQ4gSKhjc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712842640;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=230ULb+KJLSRLQGrt8PgfUIPhmHoza//HzB4A0PIuXs=;
-	b=EG8vViw2buJfKTBaFkZ2e7wc3AYmfMNYxqyzIawxGN0IU8GoKjb5XY6BRRAQg2NqzQkSwA
-	MAXhkCD2L9ffoDDA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=kI6MuY7m;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=U1v7pCeI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712842639; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=230ULb+KJLSRLQGrt8PgfUIPhmHoza//HzB4A0PIuXs=;
-	b=kI6MuY7mUjHl5pIXmdKV0O+BsqHGlmEtdyUuTf1wg7t9geu7ieH+/MiUuvDsX9YIYsCBJi
-	CF+ex6w1DY/ZmOqDHcYiDQohDRMMZFkqdDKP/dPha2vzW4RErbgR6TK492+MA89krNCO9w
-	536TrPHUL+46hqTUJwWh6g0RkXxawJA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712842639;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=230ULb+KJLSRLQGrt8PgfUIPhmHoza//HzB4A0PIuXs=;
-	b=U1v7pCeIJMlqspYvhhDp256151uYSP1kO7EAqMSr26Fkn0fBOx1PquPBmNaHevw+LuEQgD
-	B2Xwcwmv5FgCw1Cg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F0314139DE;
-	Thu, 11 Apr 2024 13:37:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id K/2bOo7nF2aRMwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 11 Apr 2024 13:37:18 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 95C68A082F; Thu, 11 Apr 2024 15:37:18 +0200 (CEST)
-Date: Thu, 11 Apr 2024 15:37:18 +0200
-From: Jan Kara <jack@suse.cz>
-To: "yebin (H)" <yebin10@huawei.com>
-Cc: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] jbd2: avoid mount failed when commit block is partial
- submitted
-Message-ID: <20240411133718.tq74yorf6odpla4r@quack3>
-References: <20240402090951.527619-1-yebin10@huawei.com>
- <20240402134240.5he4mxei3nvzolb3@quack3>
- <20240403033742.GE1189142@mit.edu>
- <20240403101122.rmffivvvf4a33qis@quack3>
- <6611F8D5.3030403@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NnXWvZng0/Akq33UV5/NZuH6ZdEfv9L1gRoEsyd7QJaz+PQ+oPuxTzRMjT3a33+sifp0EKN8bpHO+EHpAfSTsxLOS4mjdvZEj/sOrIQeRJwNUuUQtoXh3bKmKy+DrirWHzgeLmQz45mJKwjoEsRGsExT6osymQFLKEjwSeY7YEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y3uZr7pJ; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712842648; x=1744378648;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZfH/I4d1hrRMe9hj7w2rGrT0Kd9Zdc2d48cUGU8d2hE=;
+  b=Y3uZr7pJGG2BrHZ/STELSfftynmmvfpW1FFWpwbc4i3Qwk37IWW/fSFy
+   GbYcHsrf/1mRzE6tndFgsihzXmKugzMzSTofB10vmDvPNNLxv4n8nXVWe
+   W0JI1+wqqHtnOYA5e3FTfSJJY95CI6cJyfTMsOt+DW2tDqsU/LqnIcv0D
+   iaP1ZhSKHkhRQnbrVn9hFSzot8h9kKZRVzQgRXB8+RyLkX8EwmsOwfxQj
+   nexPzEWgJBzogu1B7qvINKqwxqZfYGXe5mQkpljjbbIJMPr/ngJS93DvZ
+   lXdEo+/lZs7iUIGuVJjj5/fsyObq2UuI4jv0kYnmwKTD7z03zky7csdxJ
+   A==;
+X-CSE-ConnectionGUID: tljXGeGBSJys7WZAOTAA4g==
+X-CSE-MsgGUID: HB4JgGZxSvSTJ+/CZ/456A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="25705540"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="25705540"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 06:37:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="915463714"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="915463714"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 06:37:24 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1ruucE-00000003MYt-1MVd;
+	Thu, 11 Apr 2024 16:37:22 +0300
+Date: Thu, 11 Apr 2024 16:37:21 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: linux-gpio@vger.kernel.org, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>
+Subject: Re: [PATCH v1 0/2] gpiolib: acpi: A couple of error checks amendmends
+Message-ID: <ZhfnkQmhBjA1tvrk@smile.fi.intel.com>
+References: <20240410202243.1658129-1-andriy.shevchenko@linux.intel.com>
+ <20240411132806.GB112498@black.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -108,101 +83,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6611F8D5.3030403@huawei.com>
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 12B63211F2
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+In-Reply-To: <20240411132806.GB112498@black.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Sun 07-04-24 09:37:25, yebin (H) wrote:
-> On 2024/4/3 18:11, Jan Kara wrote:
-> > On Tue 02-04-24 23:37:42, Theodore Ts'o wrote:
-> > > On Tue, Apr 02, 2024 at 03:42:40PM +0200, Jan Kara wrote:
-> > > > On Tue 02-04-24 17:09:51, Ye Bin wrote:
-> > > > > We encountered a problem that the file system could not be mounted in
-> > > > > the power-off scenario. The analysis of the file system mirror shows that
-> > > > > only part of the data is written to the last commit block.
-> > > > > To solve above issue, if commit block checksum is incorrect, check the next
-> > > > > block if has valid magic and transaction ID. If next block hasn't valid
-> > > > > magic or transaction ID then just drop the last transaction ignore checksum
-> > > > > error. Theoretically, the transaction ID maybe occur loopback, which may cause
-> > > > > the mounting failure.
-> > > > > 
-> > > > > Signed-off-by: Ye Bin <yebin10@huawei.com>
-> > > > So this is curious. The commit block data is fully within one sector and
-> > > > the expectation of the journaling is that either full sector or nothing is
-> > > > written. So what kind of storage were you using that it breaks these
-> > > > expectations?
-> > > I suppose if the physical sector size is 512 bytes, and the file
-> > > system block is 4k, I suppose it's possible that on a crash, that part
-> > > of the 4k commit block could be written.
-> > I was thinking about that as well but the commit block looks like:
+On Thu, Apr 11, 2024 at 04:28:06PM +0300, Mika Westerberg wrote:
+> On Wed, Apr 10, 2024 at 11:21:45PM +0300, Andy Shevchenko wrote:
+> > One error check is moved and one is dropped.
+> > No functional changes intended.
 > > 
-> > truct commit_header {
-> >          __be32          h_magic;
-> >          __be32          h_blocktype;
-> >          __be32          h_sequence;
-> >          unsigned char   h_chksum_type;
-> >          unsigned char   h_chksum_size;
-> >          unsigned char   h_padding[2];
-> >          __be32          h_chksum[JBD2_CHECKSUM_BYTES];
-> >          __be64          h_commit_sec;
-> >          __be32          h_commit_nsec;
-> > };
-> > 
-> > where JBD2_CHECKSUM_BYTES is 8. So all the data in the commit block
-> > including the checksum is in the first 60 bytes. Hence I would be really
-> > surprised if some storage can tear that...
-> This issue has been encountered a few times in the context of eMMC devices.
-> The vendor
-> has confirmed that only 512-byte atomicity can be ensured in the firmware.
-> Although the valid data is only 60 bytes, the entire commit block is used
-> for calculating
-> the checksum.
-> jbd2_commit_block_csum_verify:
-> ...
-> calculated = jbd2_chksum(j, j->j_csum_seed, buf, j->j_blocksize);
-> ...
+> > Andy Shevchenko (2):
+> >   gpiolib: acpi: Remove never true check in acpi_get_gpiod_by_index()
+> >   gpiolib: acpi: Check for errors first in acpi_find_gpio()
+> 
+> Both,
+> 
+> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-Ah, indeed. This is the bit I've missed. Thanks for explanation! Still I
-think trying to somehow automatically deal with wrong commit block checksum
-is too dangerous because it can result in fs corruption in some (unlikely)
-cases. OTOH I understand journal replay failure after a power fail isn't
-great either so we need to think how to fix this...
-
-								Honza
+Pushed to my review and testing queue, thanks!
 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Andy Shevchenko
+
+
 
