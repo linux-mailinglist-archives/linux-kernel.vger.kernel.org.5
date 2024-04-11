@@ -1,54 +1,73 @@
-Return-Path: <linux-kernel+bounces-141644-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22ED58A2121
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:51:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FCC78A1FDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:05:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C255F1F24372
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:51:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8912287362
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 904153B2A8;
-	Thu, 11 Apr 2024 21:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C3F617BD8;
+	Thu, 11 Apr 2024 20:05:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="BtgfNEll"
-Received: from msa.smtpout.orange.fr (smtp-66.smtpout.orange.fr [80.12.242.66])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OoXgGN05"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC513D544;
-	Thu, 11 Apr 2024 21:51:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E695917BB6
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712872294; cv=none; b=Fmu5q10xKND6bjFqjXLBxqoDUG8dNiP1oP7I0M2YpT6miOqgPwEhCrAZxhXUVxKLEyJKhwqWWSuUdp93DM3oy2bbRu0e9VdlUKurqb0Cr3Ox/bzs3pC63o3d+wv2nqk7qlASTOpEVG2w+S5Hex7Dq6QqM1BWe7afw/xjxj3a0do=
+	t=1712865937; cv=none; b=Ldd8CBNSxVoMQNew75DHQaFRrIvhSdAMweAy/wzJur5XDsKqdlPFH6ICmtwc7QCj7QUlruTD2kvaRwdGYB/SgcgVR4njcEpKaefmRYNnHro5NNYJK+dLozG17ilUuZ3+lqsbkBqnsha4KOnkjsnsAwX6FfOA7iIiyiyWNukqeAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712872294; c=relaxed/simple;
-	bh=AVclvdL6//c5Rcr+h+dJy4tgWHKepODdJXELWxA94E4=;
+	s=arc-20240116; t=1712865937; c=relaxed/simple;
+	bh=AwzRCjPDc91MDoHSUS4611CZaA7Epw9DmMTbScEHcOQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dnHi2ig4rUWjvjFJiwV1pwkSMF3zHA2Y8Qf4Gqq0EbIDK+/C4+O3VK/HKSUuTk4LepgG53cxlMacienVcp1hiyXww/7DkK7+BsHLdI5toQxkdcYFUUtn7xLJ4rKOqHK07VaIuQ1y9n4bitWfGsV5mrDi4eFIhYz3APfapsZo7RI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=BtgfNEll; arc=none smtp.client-ip=80.12.242.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id v0c7r4ySyA2vSv0c7rijm1; Thu, 11 Apr 2024 22:01:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1712865700;
-	bh=DVVJHd+qbC3ifuZnV4XwadjAT7VtaXweCZnA1mXn8hk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=BtgfNEllbSY5CLAf5rhYxFyA92jERCdt70gtxu6N4Gg5Ho7HLtj7f3BhdQJ9rD/lu
-	 G34584g1aTgi2d9IcJWg/F8FUNGqpKQr3HYAMmHsq/xhxFSGS45Tq3T5+mmOzlZ3ff
-	 kq20VkdmWOM47997evgwsvIJEsdefod9jQ8hkLvgL9pHwhB0OBI00SJ3TUceHEsXwY
-	 BdwVf0M8TbozlPji+ihr/CA3Y6/nxp1/zIL3MMmFtNVmRSAhSh91si/zk1TpSlCPUR
-	 rOSjzsJgQ9VrsJJtAH2P94MV/tPOByG9W+ZS4NJ9e0eXj8w0M8tSJObFNl+ht03B1s
-	 gjj65t2ISmjzA==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 11 Apr 2024 22:01:40 +0200
-X-ME-IP: 86.243.17.157
-Message-ID: <48d593c1-c706-4af3-aacf-d1329a8b0d4b@wanadoo.fr>
-Date: Thu, 11 Apr 2024 22:01:39 +0200
+	 In-Reply-To:Content-Type; b=s54sxWBP/cL/+0kpxMmYj8fzC11DrcI87ZoX30tz64S47l9p3MOHgDotxtG/+Yi9TI3DaWj36Z6m9cAOjCsPDJfY10qamAe7LRIw8bSuUEeELcPLX29pOwYF5nMbXg/e8clpiO4Wr9dmPEjhaupi4dUE/WfW8VZ6/p8FscHs/s8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OoXgGN05; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-516d3a470d5so224201e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:05:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712865934; x=1713470734; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=23X31wBk3BfhcWEk6ltxZSp3rP6W6hNoB7vDkcBeLnU=;
+        b=OoXgGN05bK0YJK35duMTJd4NInfkPfMmhfw2dNbrpE7BdmDCpsCiwRIOLQi9TMeCu0
+         Jvt5c4VfS0jwSRezJxYw5q3cQhCvZqS4j0xth35dvQqn4Wvf2fcBJU8iSMW8f3I9wSg7
+         FXCGfoJBEvFfkC8boOdugRzacofH8FQnHZLz71FuTELI5nEkHjKrDsKg9svI9ERy7qGI
+         XnQkCQXF8GMoZsqm1cyFrRGt6EfS6Csgc1fTLoww5qk3vyf122obYCfufES68FXiRZ+g
+         sumHln7bVn0CRythrd/BXxxxDXrlag8H0S8AaeybSsoskAv4skSrhs1SyMVt7BONuucP
+         5ULg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712865934; x=1713470734;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=23X31wBk3BfhcWEk6ltxZSp3rP6W6hNoB7vDkcBeLnU=;
+        b=jwnksE0FoiRkrIVhs4kHsdgh4Zz8FeiGDZ0WkIqx25O7KynEoynBCHFjLle3v2pWja
+         AMPI6obhDkjWJUBnFsc6TaRJf4NeUCNeqVuSkQA5lu0yqdLX2CK8fOlguFxyT+1gHL+W
+         Fg9UmD5VWNfM4Eo1VlLUyXqyEVLsbNbTwzNIqWtUUD/zDQmHB+/5xcwzdFrl6z0wJ9ZR
+         nNiUrsAYBvg6alKXiLbnh+DKjmMlotZYpOm7R4QhsphvCd6gmJL2PptUyJHGvXw5QvwN
+         2y48LYAEWA0V6Ug/NMj701quP4+hL+STfWuLUtQyhydM1OtTOdxfDCOr5J9uxS8FqT9d
+         2MQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW8Zg2eh3a2NnGrZIIhKG5NQRpAtyePJ6mvBjyy/zebJVWxw86tz8QXH/HXohhA7I3CnTE8SAY4omAOl1UQO0CwWLy9MJUaUiLlXJnr
+X-Gm-Message-State: AOJu0Yxju/N0AmizKnNCs9Z8y+t+XsVniSHtif9wEQ9eJ2Dxc4o/fbK6
+	R3wVLv/L+TeTAafREqB6pdgPBm+yjy1F+jXGUEzkxC8LYzhRdhQCWFANs4Ijr00=
+X-Google-Smtp-Source: AGHT+IF6zl6iOEo7DKIvfS9423W4hfUtCzBCOkPNljsNjdrxqjXqK8MLYOibvZw1RSh2w+0l6aXFNQ==
+X-Received: by 2002:ac2:47ee:0:b0:513:ca65:8c58 with SMTP id b14-20020ac247ee000000b00513ca658c58mr456382lfp.43.1712865933904;
+        Thu, 11 Apr 2024 13:05:33 -0700 (PDT)
+Received: from [172.30.204.35] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id r16-20020ac25f90000000b00516bfd7e856sm292837lfe.57.2024.04.11.13.05.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 13:05:33 -0700 (PDT)
+Message-ID: <2c2bca6c-b429-4cef-b63a-ee3bd6c9eecb@linaro.org>
+Date: Thu, 11 Apr 2024 22:05:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,100 +75,81 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] checkpatch: add check for snprintf to scnprintf
-To: Justin Stitt <justinstitt@google.com>, Andy Whitcroft
- <apw@canonical.com>, Joe Perches <joe@perches.com>,
- Dwaipayan Ray <dwaipayanray1@gmail.com>,
- Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>,
- linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
- Finn Thain <fthain@linux-m68k.org>
-References: <20240408-snprintf-checkpatch-v4-1-8697c96ac94b@google.com>
-Content-Language: en-MW
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20240408-snprintf-checkpatch-v4-1-8697c96ac94b@google.com>
+Subject: Re: [PATCH 1/6] soc: qcom: Move some socinfo defines to the header,
+ expand them
+To: Elliot Berman <quic_eberman@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Rob Clark <robdclark@gmail.com>,
+ Abhinav Kumar <quic_abhinavk@quicinc.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+ Neil Armstrong <neil.armstrong@linaro.org>
+References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
+ <20240405-topic-smem_speedbin-v1-1-ce2b864251b1@linaro.org>
+ <20240410132510649-0700.eberman@hu-eberman-lv.qualcomm.com>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240410132510649-0700.eberman@hu-eberman-lv.qualcomm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Le 08/04/2024 à 22:53, Justin Stitt a écrit :
-> I am going to quote Lee Jones who has been doing some snprintf ->
-> scnprintf refactorings:
-> 
-> "There is a general misunderstanding amongst engineers that
-> {v}snprintf() returns the length of the data *actually* encoded into the
-> destination array.  However, as per the C99 standard {v}snprintf()
-> really returns the length of the data that *would have been* written if
-> there were enough space for it.  This misunderstanding has led to
-> buffer-overruns in the past.  It's generally considered safer to use the
-> {v}scnprintf() variants in their place (or even sprintf() in simple
-> cases).  So let's do that."
-> 
-> To help prevent new instances of snprintf() from popping up, let's add a
-> check to checkpatch.pl.
-> 
-> Suggested-by: Finn Thain <fthain@linux-m68k.org>
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Changes in v4:
-> - also check for vsnprintf variant (thanks Bill)
-> - Link to v3: https://lore.kernel.org/r/20240315-snprintf-checkpatch-v3-1-a451e7664306@google.com
-> 
-> Changes in v3:
-> - fix indentation
-> - add reference link (https://github.com/KSPP/linux/issues/105) (thanks Joe)
-> - Link to v2: https://lore.kernel.org/r/20240221-snprintf-checkpatch-v2-1-9baeb59dae30@google.com
-> 
-> Changes in v2:
-> - Had a vim moment and deleted a character before sending the patch.
-> - Replaced the character :)
-> - Link to v1: https://lore.kernel.org/r/20240221-snprintf-checkpatch-v1-1-3ac5025b5961@google.com
-> ---
->  From a discussion here [1].
-> 
-> [1]: https://lore.kernel.org/all/0f9c95f9-2c14-eee6-7faf-635880edcea4@linux-m68k.org/
-> ---
->   scripts/checkpatch.pl | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 9c4c4a61bc83..a0fd681ea837 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -7012,6 +7012,12 @@ sub process {
->   			     "Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see: https://github.com/KSPP/linux/issues/90\n" . $herecurr);
->   		}
->   
-> +# {v}snprintf uses that should likely be {v}scnprintf
-> +		if ($line =~ /\b(v|)snprintf\s*\(\s*/) {
 
-Hi,
 
-for my understanding, what is the purpose of the 2nd "\s*"?
-IMHO, it could be just removed.
+On 4/11/24 20:55, Elliot Berman wrote:
+> On Fri, Apr 05, 2024 at 10:41:29AM +0200, Konrad Dybcio wrote:
+>> In preparation for parsing the chip "feature code" (FC) and "product
+>> code" (PC) (essentially the parameters that let us conclusively
+>> characterize the sillicon we're running on, including various speed
+>> bins), move the socinfo version defines to the public header and
+>> include some more FC/PC defines.
+>>
+>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>> ---
 
-> +			WARN("SNPRINTF",
-> +			     "Prefer {v}scnprintf over {v}snprintf - see: https://github.com/KSPP/linux/issues/105\n" . $herecurr);
+[...]
 
-Maybe $1 instead of {v} in both places, so that is displays the real 
-function name that is and should be used?
-
-CJ
-
-> +		}
-> +
->   # ethtool_sprintf uses that should likely be ethtool_puts
->   		if ($line =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*$FuncArg\s*\)/) {
->   			if (WARN("PREFER_ETHTOOL_PUTS",
+>> +	SOCINFO_FC_EXT_RESERVE,
+>> +};
 > 
-> ---
-> base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
-> change-id: 20240221-snprintf-checkpatch-a864ed67ebd0
+> SOCINFO_FC_EXT_RESERVE was a convenient limit since we mapped
+> SOCINFO_FC_AA -> string "AA" via an array, and we've only needed the 8
+> feature codes so far.
 > 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
-> 
-> 
+> We should remove the EXT_RESERVE and test for the Y0-YF (internal
+> feature code) values instead.
 
+OK
+
+> 
+>> +
+>> +/* Internal feature codes */
+>> +/* Valid values: 0 <= n <= 0xf */
+>> +#define SOCINFO_FC_Yn(n)		(0xf1 + n)
+>> +#define SOCINFO_FC_INT_RESERVE		SOCINFO_FC_Yn(0x10)
+> 
+> We probably should've named this SOCINFO_FC_INT_MAX. Reserve implies
+> it's reserved for some future use, but it's really the max value it
+> could be.
+
+So, should SOCINFO_FC_Yn(0x10) also be considered valid, or is (0xf)
+the last one?
+
+> 
+>> +
+>> +/* Product codes */
+>> +#define SOCINFO_PC_UNKNOWN		0
+>> +/* Valid values: 0 <= n <= 8, the rest is reserved */
+>> +#define SOCINFO_PCn(n)			(n + 1)
+>> +#define SOCINFO_PC_RESERVE		(BIT(31) - 1)
+> 
+> Similar comments here as the SOCINFO_FC_EXT_*. It's more like known
+> values are [0,8], but more values could come in future chipsets.
+
+Ok, sounds good, I'll remove the comment then
+
+Konrad
 
