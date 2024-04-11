@@ -1,57 +1,59 @@
-Return-Path: <linux-kernel+bounces-141299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2712C8A1C48
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:43:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC2E68A1DAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:16:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FFC41F27529
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:43:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C92F0B25E7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:44:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FAEC15DBC6;
-	Thu, 11 Apr 2024 16:15:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7626C15E5C7;
+	Thu, 11 Apr 2024 16:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Is1qWto3"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hBl09Lms"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DD1215D5C2
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:14:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 033F515E215
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:15:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712852099; cv=none; b=ljgyPlT1ZjbUF3oydowlUkEqAzbi7obyzrIMotsAdIdWBl50C7T4whIqoKfyqCkTk47hSNSIezh/PVIrp/F2fmCyZtxPEl8edP/P3ml831NbDsk0yrW3c6pA0j8bOuB6WahvO3SHtVeyaD5FAXiGGCXn5W6xh14Ko1RAIzZB4vc=
+	t=1712852108; cv=none; b=ddmuy+iK+aW0YPAQ72N18sO0CGFBKLma3qeuh2Z2WvDm3M7mVn7p4HseY1W5GrqTZPehS0CpxlID0SotZBx/HpkVLWX5wAKkeoTq1cXztWM1Jx1XwN2p1m75igP8bvcmJ+RGLXPMbogEA3G3fhp3xIlhGjo9z5HHl36g9p8T1GU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712852099; c=relaxed/simple;
-	bh=bIGD7TEXYxMqNuHPxtOApDGnJHOvQ/kaNLS9oW0lEDg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=J331miwqvd2QbY5U+Xrgvo13YsRP83SWvXMfJHmzdJLHXAOdNz72GhK+/SRY/tMKhNHnA9cKzn6ainNWL47eKww3Z5t95WLQcjSMwARXBIvLhEgr2gOUkXVAuVoNCB+f7iktB+FPUdIs53FNF+mZr+44UV/QIGjbE8CNRjGY91Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Is1qWto3; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1712852108; c=relaxed/simple;
+	bh=EffdTTq97YcuRZ8vDwF+UAMXSPioZwk+HMzUFS3/S+I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=gF37Awl4/OY4Kc+Ucf8kuiRi56VjqYVVsO8xnrzG1ahTdxlbkB4O10S2ZPkb5MJrljgg0hUOrDTjrBorDNmOq1fjbG2XI0quVAY5kw6IDI8mwpXr+yugmTbhTX0ts1FnbHiWCt8l+D1WxtbGm7yMr0icBU66Qql1dymZqOvEh+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hBl09Lms; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712852096;
+	s=mimecast20190719; t=1712852104;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ZhbzH0ImR3r/1f0GcYB335mQQPuC0QvnUY34Zu4C8Ic=;
-	b=Is1qWto3K3gtYPGh0EJ4HBsn6+/+WUpF1AIQZCzfF5eyAvmwqv9khhIUmdASm8+SDOJQMe
-	PwxbXEp9vCjOYOO3lesXkqWMwYotYH+XVnJ/tjoRU6pAYc4ySwVJuY/RVSGHPdSPb+TZI8
-	OfbLNhMLKI4W6ORrnkYPeSgdbca3poM=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5Gc5EzQD4KCJRDKgqgJn1MWb8b3Qcq3MV0Fega+6Dww=;
+	b=hBl09LmsIRR3V4/Mq8krhx0zvvKV5YWnGs7D9u8e3FWxBKrNwbidX1Vr8QNP7+IB4CBpIl
+	TyOwkiETZJX224w+fTZiXDykGs2jUEOMebfqty1sizJGAAi4j8MDSnFc/F059ixoOY4A7G
+	uC+UaXL3PdkXafgEHRGST/0ONz3iBzk=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-550-0jne7cuaOEKLOPpDSddeiQ-1; Thu, 11 Apr 2024 12:14:51 -0400
-X-MC-Unique: 0jne7cuaOEKLOPpDSddeiQ-1
+ us-mta-237-AyIYVHnbPImCEUVwQUyQAA-1; Thu, 11 Apr 2024 12:14:55 -0400
+X-MC-Unique: AyIYVHnbPImCEUVwQUyQAA-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 30A7088E861;
-	Thu, 11 Apr 2024 16:14:50 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 926B71887313;
+	Thu, 11 Apr 2024 16:14:54 +0000 (UTC)
 Received: from t14s.redhat.com (unknown [10.39.194.173])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 2D60E10E4B;
-	Thu, 11 Apr 2024 16:14:45 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 8FC1D1074E;
+	Thu, 11 Apr 2024 16:14:50 +0000 (UTC)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-mm@kvack.org,
@@ -69,9 +71,11 @@ Cc: linux-mm@kvack.org,
 	Andrea Arcangeli <aarcange@redhat.com>,
 	kvm@vger.kernel.org,
 	linux-s390@vger.kernel.org
-Subject: [PATCH v3 0/2] s390/mm: shared zeropage + KVM fixes
-Date: Thu, 11 Apr 2024 18:14:39 +0200
-Message-ID: <20240411161441.910170-1-david@redhat.com>
+Subject: [PATCH v3 1/2] mm/userfaultfd: don't place zeropages when zeropages are disallowed
+Date: Thu, 11 Apr 2024 18:14:40 +0200
+Message-ID: <20240411161441.910170-2-david@redhat.com>
+In-Reply-To: <20240411161441.910170-1-david@redhat.com>
+References: <20240411161441.910170-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,130 +85,83 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-This series fixes one issue with uffd + shared zeropages on s390x and
-fixes that "ordinary" KVM guests can make use of shared zeropages again.
+s390x must disable shared zeropages for processes running VMs, because
+the VMs could end up making use of "storage keys" or protected
+virtualization, which are incompatible with shared zeropages.
 
-userfaultfd could currently end up mapping shared zeropages into processes
-that forbid shared zeropages. This only apples to s390x, relevant for
-handling PV guests and guests that use storage kets correctly. Fix it
-by placing a zeroed folio instead of the shared zeropage during
-UFFDIO_ZEROPAGE instead.
+Yet, with userfaultfd it is possible to insert shared zeropages into
+such processes. Let's fallback to simply allocating a fresh zeroed
+anonymous folio and insert that instead.
 
-I stumbled over this issue while looking into a customer scenario that
-is using:
+mm_forbids_zeropage() was introduced in commit 593befa6ab74 ("mm: introduce
+mm_forbids_zeropage function"), briefly before userfaultfd went
+upstream.
 
-(1) Memory ballooning for dynamic resizing. Start a VM with, say, 100 GiB
-    and inflate the balloon during boot to 60 GiB. The VM has ~40 GiB
-    available and additional memory can be "fake hotplugged" to the VM
-    later on demand by deflating the balloon. Actual memory overcommit is
-    not desired, so physical memory would only be moved between VMs.
+Note that we don't want to fail the UFFDIO_ZEROPAGE request like we do
+for hugetlb, it would be rather unexpected. Further, we also
+cannot really indicated "not supported" to user space ahead of time: it
+could be that the MM disallows zeropages after userfaultfd was already
+registered.
 
-(2) Live migration of VMs between sites to evacuate servers in case of
-    emergency.
+Fixes: c1a4de99fada ("userfaultfd: mcopy_atomic|mfill_zeropage: UFFDIO_COPY|UFFDIO_ZEROPAGE preparation")
+Reviewed-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ mm/userfaultfd.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-Without the shared zeropage, during (2), the VM would suddenly consume
-100 GiB on the migration source and destination. On the migration source,
-where we don't excpect memory overcommit, we could easilt end up crashing
-the VM during migration.
-
-Independent of that, memory handed back to the hypervisor using "free page
-reporting" would end up consuming actual memory after the migration on the
-destination, not getting freed up until reused+freed again.
-
-While there might be ways to optimize parts of this in QEMU, we really
-should just support the shared zeropage again for ordinary VMs.
-
-We only expect legcy guests to make use of storage keys, so let's handle
-zeropages again when enabling storage keys or when enabling PV. To not
-break userfaultfd like we did in the past, don't zap the shared zeropages,
-but instead trigger unsharing faults, just like we do for unsharing
-KSM pages in break_ksm().
-
-Unsharing faults will simply replace the shared zeropage by a zeroed
-anonymous folio. We can already trigger the same fault path using GUP,
-when trying to long-term pin a shared zeropage, but also when unmerging
-a KSM-placed zeropages, so this is nothing new.
-
-Patch #1 tested on 86-64 by forcing mm_forbids_zeropage() to be 1, and
-running the uffd selftests.
-
-Patch #2 tested on s390x: the live migration scenario now works as
-expected, and kvm-unit-tests that trigger usage of skeys work well, whereby
-I can see detection and unsharing of shared zeropages.
-
-Further (as broken in v2), I tested that the shared zeropage is no
-longer populated after skeys are used -- that mm_forbids_zeropage() works
-as expected:
-  ./s390x-run s390x/skey.elf \
-   -no-shutdown \
-   -chardev socket,id=monitor,path=/var/tmp/mon,server,nowait \
-   -mon chardev=monitor,mode=readline
-
-  Then, in another shell:
-
-  # cat /proc/`pgrep qemu`/smaps_rollup | grep Rss
-  Rss:               31484 kB
-  #  echo "dump-guest-memory tmp" | sudo nc -U /var/tmp/mon
-  ...
-  # cat /proc/`pgrep qemu`/smaps_rollup | grep Rss
-  Rss:              160452 kB
-
-  -> Reading guest memory does not populate the shared zeropage
-
-  Doing the same with selftest.elf (no skeys)
-
-  # cat /proc/`pgrep qemu`/smaps_rollup | grep Rss
-  Rss:               30900 kB
-  #  echo "dump-guest-memory tmp" | sudo nc -U /var/tmp/mon
-  ...
-  # cat /proc/`pgrep qemu`/smaps_rollup | grep Rsstmp/mon
-  Rss:               30924 kB
-
-  -> Reading guest memory does populate the shared zeropage
-
-Based on s390/features. Andrew agreed that both patches can go via the
-s390x tree.
-
-v2 -> v3:
-* "mm/userfaultfd: don't place zeropages when zeropages are disallowed"
- -> Fix wrong mm_forbids_zeropage check
-* "s390/mm: re-enable the shared zeropage for !PV and !skeys KVM guests"
- -> Fix wrong mm_forbids_zeropage define
-
-v1 -> v2:
-* "mm/userfaultfd: don't place zeropages when zeropages are disallowed"
- -> Minor "ret" ahndling tweaks
-* "s390/mm: re-enable the shared zeropage for !PV and !skeys KVM guests"
- -> Added Fixes: tag
-
-Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc: Janosch Frank <frankja@linux.ibm.com>
-Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-Cc: Sven Schnelle <svens@linux.ibm.com>
-Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: kvm@vger.kernel.org
-Cc: linux-s390@vger.kernel.org
-
-
-David Hildenbrand (2):
-  mm/userfaultfd: don't place zeropages when zeropages are disallowed
-  s390/mm: re-enable the shared zeropage for !PV and !skeys KVM guests
-
- arch/s390/include/asm/gmap.h        |   2 +-
- arch/s390/include/asm/mmu.h         |   5 +
- arch/s390/include/asm/mmu_context.h |   1 +
- arch/s390/include/asm/pgtable.h     |  16 ++-
- arch/s390/kvm/kvm-s390.c            |   4 +-
- arch/s390/mm/gmap.c                 | 163 +++++++++++++++++++++-------
- mm/userfaultfd.c                    |  34 ++++++
- 7 files changed, 178 insertions(+), 47 deletions(-)
-
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index 3c3539c573e7..7eb3dd0f8a49 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -316,6 +316,37 @@ static int mfill_atomic_pte_copy(pmd_t *dst_pmd,
+ 	goto out;
+ }
+ 
++static int mfill_atomic_pte_zeroed_folio(pmd_t *dst_pmd,
++		 struct vm_area_struct *dst_vma, unsigned long dst_addr)
++{
++	struct folio *folio;
++	int ret = -ENOMEM;
++
++	folio = vma_alloc_zeroed_movable_folio(dst_vma, dst_addr);
++	if (!folio)
++		return ret;
++
++	if (mem_cgroup_charge(folio, dst_vma->vm_mm, GFP_KERNEL))
++		goto out_put;
++
++	/*
++	 * The memory barrier inside __folio_mark_uptodate makes sure that
++	 * zeroing out the folio become visible before mapping the page
++	 * using set_pte_at(). See do_anonymous_page().
++	 */
++	__folio_mark_uptodate(folio);
++
++	ret = mfill_atomic_install_pte(dst_pmd, dst_vma, dst_addr,
++				       &folio->page, true, 0);
++	if (ret)
++		goto out_put;
++
++	return 0;
++out_put:
++	folio_put(folio);
++	return ret;
++}
++
+ static int mfill_atomic_pte_zeropage(pmd_t *dst_pmd,
+ 				     struct vm_area_struct *dst_vma,
+ 				     unsigned long dst_addr)
+@@ -324,6 +355,9 @@ static int mfill_atomic_pte_zeropage(pmd_t *dst_pmd,
+ 	spinlock_t *ptl;
+ 	int ret;
+ 
++	if (mm_forbids_zeropage(dst_vma->vm_mm))
++		return mfill_atomic_pte_zeroed_folio(dst_pmd, dst_vma, dst_addr);
++
+ 	_dst_pte = pte_mkspecial(pfn_pte(my_zero_pfn(dst_addr),
+ 					 dst_vma->vm_page_prot));
+ 	ret = -EAGAIN;
 -- 
 2.44.0
 
