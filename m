@@ -1,152 +1,159 @@
-Return-Path: <linux-kernel+bounces-141501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABF418A1F15
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:06:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1ECA8A1F16
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:07:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 682DB288023
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:06:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F05751C22F15
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:07:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3105012E5D;
-	Thu, 11 Apr 2024 19:06:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44DD21401B;
+	Thu, 11 Apr 2024 19:07:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oqDRFa9C"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="f0kynmDk"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6821E205E17;
-	Thu, 11 Apr 2024 19:06:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED376205E2D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:07:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712862376; cv=none; b=WxwsSMXGFF0QMIwa8G+MEUq06ROU/JCAYwHHzHonuir0T/QcaAs41U44T507zMbPWqyN6hx7oIJ7suGF+v/c1WLplCcOvlzeULBWZB+vgnaYZuKsnJmPRM9P2VgH0fcJEUJY0DrDqKp7SqaoKh/Bi2iRX2KSzYpF30M2kMD1w/o=
+	t=1712862465; cv=none; b=BoHo92ZT+ckrhyIBUV34U7OhOFHOhOZVPLhSMdbtPVFIM/MZwpM5BVdDZUE1n7Txd0+OFC0PibH8eFfj4rYDz785fSjMNUgZYlaQQYeNjtuLeorEmpScerVilQfrolvUuKwGMY/hkYoQt29cOZ90f59EcK1GNR0KcRSaxZRE07g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712862376; c=relaxed/simple;
-	bh=JHKn9+qnD7Z8hXdeu2pelE2W7i/eXFYGD7sS3sFKRBI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kszXL17BoCQk8WumfPD6HRg5YOXo4nwaFHPKdaU+anGFkgAWBDhRn0IoAx1T7OeS+TciXbwB3uqML/VmQDcboLbPHG9izFJDczwNwBjZTwgv/4QzBUJOVSJAraD1OHnaS2pkb+ANeJG4wmDCU0djdTsujOilPNn6rM9CNeZCSzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oqDRFa9C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D84C6C072AA;
-	Thu, 11 Apr 2024 19:06:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712862375;
-	bh=JHKn9+qnD7Z8hXdeu2pelE2W7i/eXFYGD7sS3sFKRBI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=oqDRFa9CjMqzyJ4xXNnbvZdQa5TrHiLzix2alF/6x91JYlz4wCpJaHSwh0prPAzD5
-	 xNohRF7V5MXK23ipW48hz0LMc7neCcBCuYuM5HveMxOOWTHhDlbMVpEYaEMI/7WNGx
-	 ACMNG1wBsDvFCOu3xyuGpgPU2481x0CzRXX2wUp+xtHsRiK0tQIR6POW4cL+mnNzg1
-	 ZX055aJUoo5sfyL5itSA5dZZIEqYtUdIxh6BCBKe3r3bpQpa23WRIXJLWkhR+Uhxlc
-	 YOzNwC2fHxYrx8IrmceHWR6n86/jdyHm5TUt51GhGflV8ryT4xCM2iKGRmlXo4GlVz
-	 cJR64RS43WgNA==
-Message-ID: <bb0c1550-2276-48e9-85f0-3b65a784ac5c@kernel.org>
-Date: Thu, 11 Apr 2024 21:06:09 +0200
+	s=arc-20240116; t=1712862465; c=relaxed/simple;
+	bh=K+2mLJIg465ypUQJI5giyc0VIu85pZleLQxiFXuwW4Q=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=CZjsVP46GLdF7khUu1kmsHhYYkHVOWga0KWfmxJgOLA9Dd4k7Pd9LPxyIhNdUlzde+wCWitThz9a6YzyfcEyzunkpTIauqm5sJUoXDb0jYGRDWazCREX3yRAHznEsU7WGl2BkdgyGCDy7Z5E/l6djaMSyXyEoIjRazDCJHy+SQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=f0kynmDk; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b26ce0bbso256910276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712862462; x=1713467262; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NcJF+KC6MHAw0xXKqx6sflzbfRynihMrB3htgV72+eA=;
+        b=f0kynmDkNZPv77oCffRn+KoJ3tdkglIylhkS65IiPp7z2BFEx/rE7+OWoeL6f/SwLy
+         r6F5Bel9eLCxP/0EX5S4KJExzuH6LEsfCuGcckKZpC0YnaidqzO3kV4zdzz9Pny5CvqL
+         BLTbC+nQaNAWBOLsqAzZD7q7agMKrv0peXCtC10BrdJstg8+me2ObLsvBJsyQChUSxjI
+         +9OvKdG4NNoLTmYH3D74Y/GiCCcdhlaCXKOQqI80azuclLd/G6rhbRvwa4UFkpItjjBQ
+         /lOfujifD5xEic3PMQO/Nu3O9oJXVzOMBNR4pooqy6ao+/auEQ6yqLfNDAAClrrXAXTX
+         d56g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712862462; x=1713467262;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NcJF+KC6MHAw0xXKqx6sflzbfRynihMrB3htgV72+eA=;
+        b=Xe0ve7enpXxqgPTDzDJYJ4E+nsFQxxdPMf2DKZva64HV3F3tQ5kQjRDLwrf0q0z+yv
+         Qu09crNiQIlkd34HTf9orE3p3sgk/P6XXseGH1//tdrWeVnym+ytVJNXnrtK69yM4XL1
+         5RsfRPOI/rocn8gIRbHjnHsbHyor/9QG38jA5vooOvu79cMel5VfLVmIoX+IpWEd47RG
+         FruKy7ETpoDHYvXyuuNSVtjzz1N61yztAjSWh1Dlbc8Wlvdp6w50oOIcUXmo82DBSvT+
+         VViN7j8lai2QKlCkeUmtse8amLtV41UFNRzp5umveV+uFJXt+BE1F8cE4idl2SD++2es
+         0fnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU2ttF6bDYpsPPU4lNusYWm4F+v8+bSFavEJdlV7uWhsQ15kILJ6lMlWA1DIxhBG47HKwMUdgB53aPhKOEGNIuN18gOC/D7wmlsNs32
+X-Gm-Message-State: AOJu0Yxms/JXIDSX0OU/v1sQpWp6uKAIKKbHoOJfcJqUJ74/SMUOJaBz
+	cjtZXRa1jfBHLcQcd96pDCIIlf0nrwW/8lFhCvEk6xIyTVpXk7I7SVY9mhZaTtw/0avAt92NUTG
+	XZA==
+X-Google-Smtp-Source: AGHT+IHtU0YJeUQQHL8WAHyzgFdSIwlw2ajKFvDhlBylMFmOQHLdub7ugcHbYGeGD3LFpO+LpN625tYE5/w=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:188f:b0:ddd:7581:1825 with SMTP id
+ cj15-20020a056902188f00b00ddd75811825mr121974ybb.8.1712862462048; Thu, 11 Apr
+ 2024 12:07:42 -0700 (PDT)
+Date: Thu, 11 Apr 2024 12:07:40 -0700
+In-Reply-To: <20240126085444.324918-6-xiong.y.zhang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 05/10] arm64: dts: microchip: sparx5_pcb134: align I2C
- mux node name with bindings
-To: Rob Herring <robh@kernel.org>
-Cc: Conor Dooley <conor@kernel.org>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Lars Povlsen <lars.povlsen@microchip.com>,
- Steen Hegelund <Steen.Hegelund@microchip.com>,
- Daniel Machon <daniel.machon@microchip.com>, UNGLinuxDriver@microchip.com,
- Bjarni Jonasson <bjarni.jonasson@microchip.com>,
- "David S. Miller" <davem@davemloft.net>,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, horatiu.vultur@microchip.com
-References: <20240405190419.74162-1-krzk@kernel.org>
- <20240405190419.74162-5-krzk@kernel.org>
- <CAL_Jsq+PtL3HTKkA_gwTjb_i1mFZ+wW+qwin34HMYmwW7oNDFw@mail.gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <CAL_Jsq+PtL3HTKkA_gwTjb_i1mFZ+wW+qwin34HMYmwW7oNDFw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <20240126085444.324918-6-xiong.y.zhang@linux.intel.com>
+Message-ID: <Zhg0_B4ktNzQbWZZ@google.com>
+Subject: Re: [RFC PATCH 05/41] KVM: x86/pmu: Register PMI handler for
+ passthrough PMU
+From: Sean Christopherson <seanjc@google.com>
+To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
+Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
+	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
+	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
+	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
+	chao.gao@intel.com, Xiong Zhang <xiong.y.zhang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On 11/04/2024 20:27, Rob Herring wrote:
->>  };
->>
->>  &axi {
->> -       i2c0_imux: i2c0-imux@0 {
->> +       i2c0_imux: i2c-mux-0 {
+On Fri, Jan 26, 2024, Xiong Zhang wrote:
+> From: Xiong Zhang <xiong.y.zhang@intel.com>
 > 
-> Doesn't this introduce a new warning with simple-bus.yaml? These
-> devices shouldn't be under an AXI bus which should require a
-> unit-address.
+> Add function to register/unregister PMI handler at KVM module
+> initialization and destroy time. This allows the host PMU with passthough
+> capability enabled switch PMI handler at PMU context switch time.
 > 
-> All the sft-eth* nodes have the same problem:
-> axi@600000000: sfp-eth63: {'compatible': ['sff,sfp'], 'i2c-bus':
-> [[91]], 'tx-disable-gpios': [[87, 31, 0, 1]], 'rate-select0-gpios':
-> [[87, 31, 1, 0]], 'los-gpios': [[88, 31, 0, 0]], 'mod-def0-gpios':
-> [[88, 31, 1, 1]], 'tx-fault-gpios': [[88, 31, 2, 0]], 'phandle':
-> [[78]]} should not be valid under {'type': 'object'}
+> Signed-off-by: Xiong Zhang <xiong.y.zhang@intel.com>
+> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> ---
+>  arch/x86/kvm/x86.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 > 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 2c924075f6f1..4432e736129f 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10611,6 +10611,18 @@ void __kvm_request_immediate_exit(struct kvm_vcpu *vcpu)
+>  }
+>  EXPORT_SYMBOL_GPL(__kvm_request_immediate_exit);
+>  
+> +void kvm_passthrough_pmu_handler(void)
 
-True, this replaces one dtc warning with another, so the new one is:
-Warning (simple_bus_reg): /axi@600000000/i2c-mux: missing or empty
-reg/ranges property
+s/pmu/pmi, and this needs a verb.  Maybe kvm_handle_guest_pmi()?  Definitely
+open to other names.
 
-which I kind of missed, because there are several other sfp nodes
-causing the warning, like you mentioned above.
+> +{
+> +	struct kvm_vcpu *vcpu = kvm_get_running_vcpu();
+> +
+> +	if (!vcpu) {
+> +		pr_warn_once("%s: no running vcpu found!\n", __func__);
 
-The true solution is to probably bring them out of axi bus, but for that
-I would need to try to understand why they were put there in the first
-place...
+Unless I misunderstand the code, this can/should be a full WARN_ON_ONCE.  If a
+PMI skids all the way past vcpu_put(), we've got big problems.
+ 
+> +		return;
+> +	}
+> +
+> +	kvm_make_request(KVM_REQ_PMI, vcpu);
+> +}
+> +
+>  /*
+>   * Called within kvm->srcu read side.
+>   * Returns 1 to let vcpu_run() continue the guest execution loop without
+> @@ -13815,6 +13827,7 @@ static int __init kvm_x86_init(void)
+>  {
+>  	kvm_mmu_x86_module_init();
+>  	mitigate_smt_rsb &= boot_cpu_has_bug(X86_BUG_SMT_RSB) && cpu_smt_possible();
+> +	kvm_set_vpmu_handler(kvm_passthrough_pmu_handler);
 
+Hmm, a few patches late, but the "kvm" scope is weird.  This calls a core x86
+function, not a KVM function.
 
-Best regards,
-Krzysztof
+And to reduce exports and copy+paste, what about something like this?
 
+void x86_set_kvm_irq_handler(u8 vector, void (*handler)(void))
+{
+	if (!handler)
+		handler = dummy_handler;
+
+	if (vector == POSTED_INTR_WAKEUP_VECTOR)
+		kvm_posted_intr_wakeup_handler = handler;
+	else if (vector == KVM_GUEST_PMI_VECTOR)
+		kvm_guest_pmi_handler = handler;
+	else
+		WARN_ON_ONCE(1);
+
+	if (handler == dummy_handler)
+		synchronize_rcu();
+}
+EXPORT_SYMBOL_GPL(x86_set_kvm_irq_handler);
 
