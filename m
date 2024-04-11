@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-139922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A79E68A092B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:08:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F5378A092D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:08:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA8791C217F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:07:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 474BB283885
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:08:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A439613F44B;
-	Thu, 11 Apr 2024 07:06:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAECC13F003;
+	Thu, 11 Apr 2024 07:06:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CYCkbJdg"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hZS5Om35"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF5E013F003;
-	Thu, 11 Apr 2024 07:06:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CEFD13F007;
+	Thu, 11 Apr 2024 07:06:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712819200; cv=none; b=Q/gKLsKClVBaIsW1eBrq/GKrcdijZLrTLalxhjZQhbj5f+0Bi8nWDgiIJacuCzkW9tPa1zob3oWcl15iCCHi5JzHBogLOo+VU23w3F0MsYCvXT6TZ9BYxAroJn3v8mxqLAM8ZBlNUJG/s+AZPTKCw4pI81635utHhXE14HskwSk=
+	t=1712819204; cv=none; b=BUXPEIG0SvQK6QD4xSVE6Ah0xR5cfBo763cwdheGSXb0DhDkUWpIniJXdgICTtWxIb81wSNhrXXJkEXGaAMyQoSqrQsFReb1LGRq+AfX3HerMKmHCjVei64UaSLAlZIvrGE1FWLgA41xzmOAOtLeZ5C7O7rnzSJeNRu0zAAVkFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712819200; c=relaxed/simple;
-	bh=HfJ1S5KdKHSPKA4RYbJNyHIQ3bzwY7tI4B4y7x9pmgY=;
+	s=arc-20240116; t=1712819204; c=relaxed/simple;
+	bh=CoPdM7gWgxzc4l9ttrmWpcv9QLyj1sEO29fhIflzIZg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cHfc1LAVysccMro+J+BXYHV3MP2WRsnxHzciljiU0QTmfy/a4JfrAY6OxEZyT8N/nkiuScgIwCnvxSqusjnNJwauiqPdsPS4T79FI3v+6oGFMTrEmuGrVnGZIq4/ilFuB5SJsVnTfwFaE3TbgubnI+d8KzdWb5igI4DLO9jui6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CYCkbJdg; arc=none smtp.client-ip=209.85.210.172
+	 MIME-Version; b=nD9oQSg8hpt6XqdWpXF5P472cA3PRARj9sI0zFiT7K8kpW3EnaHJeeiIkQdlwctwhgTOz4LhkkBMlr+sFBck30aBAHbXnKFm6txdJRjEySqEjgSUOF7Ezhl6mNLtJn7JWEn+Mxv9KBoUCtSJ8ijZcuf+dG5AZ4Qu+4jDkNhbGF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hZS5Om35; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ed2dc03df6so3565888b3a.1;
-        Thu, 11 Apr 2024 00:06:38 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6ecf406551aso5365611b3a.2;
+        Thu, 11 Apr 2024 00:06:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712819198; x=1713423998; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712819202; x=1713424002; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rtSXYkkVUyqDmHmEVpBee9BzMAYrcrXa3fsn+yc0wAY=;
-        b=CYCkbJdghCn6Yue4MOgh7JbQihxVlpGC8mJWWftrxLxFHmaOmhfN792l+J4gmFPMxR
-         zXKJqEcOObjnpQB9Jegd2bvAvuS7i2LA4QyN6iprtRrcBfXr7I5rNNViC4NSds5UWaaV
-         nSfGCgZDK7p7RcMgsQFT0YAeTHOHWhivsec2g981RYn25776PBg+Uh81YfaGrHVgeOL8
-         eHYFW+mgvOvF55dyMqj7a3aArU75obj83mPmUHZk22ixBJUXWWfmk+D1so22mLUi4yIa
-         RZoVErtUTtCV7xr/WUHc6MSwsnGIyFxHB5NNetzQYIx8GglDIqugDFmMjIIuJWj3YCyi
-         bMMA==
+        bh=LVxLPB3ir51RqOrUeQ4RuKuT1LuXZfsGpQp9xlrvQqA=;
+        b=hZS5Om35x8gGgz3/xdzgM2sbjvMfftZDjTNoOa19sgXcXS0Al1nkvwkCasqQNv6Lav
+         IKSW98OfFGjjXC7KQiUCaAmAFTBo0ylGzrSoZsU3xAOOjc/qa7eK2Z/gZv+SxnU9AteS
+         Hr/PzkXNZ0jTtDk6dUhrfQmspRPCsU6ufIqJMYP4jU9VpCVk2O5qSZ1Y5pJA/AhitwwH
+         XDIQ5FszCGXHUQeW0ItKJDxoidK8UnbF6Ujxm/QJqkYA4jNPVVYBPGqYqzGv4mZfNLJr
+         ANamj+NNudoZEKT4gvqbGQrv3SIODFeWQ00B0Gc5rN32LMZdpn1pWZW+gx9VZwrVzhRT
+         7Iew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712819198; x=1713423998;
+        d=1e100.net; s=20230601; t=1712819202; x=1713424002;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rtSXYkkVUyqDmHmEVpBee9BzMAYrcrXa3fsn+yc0wAY=;
-        b=jx798jxcAssVmW2y2KqTB0GaFc2JWYHH30in4+LxDbrqhic9vBTkAp/wwos0fpsMdO
-         pwR8rlFf4q8pPG18wx5w7cg3Q4qz3MNIfRSVP3FAk2c/UT6pO1win65Y0RNmXk0OUBrU
-         xTT7whHIHf5AeA6x6p5GSXiY7L0jVu7cG72xrGdY5GqmVri3rl34Hh/kDbjHItuAVv4i
-         hztCZDWw2W4bFzjJOTnyT/SJtyMpTOaQjjCMiByW0+LC2G4cjwVsZ3wh/k16CcBE+osZ
-         7YrW0Ib1COjvwArVsg7UNDZAK0Br7ZJmei+a6uHCSX8rGXb+i2/MDeCq9TGZNxDXB75z
-         PqGA==
-X-Forwarded-Encrypted: i=1; AJvYcCXaxjdIJgKkmz7Q4Ic2l8OdYTAMqa5Me7oGLFrHYnM5YJxCdo6Opd4CmWdwVywitBvmZa1es23KfLvhsV/RKCrT1VSuGXQ+i2oq3BM8
-X-Gm-Message-State: AOJu0Yzz5F77yZwMvxQT0fP93TUBdql3StUVgZL/oP/7vzO30ToBTFkx
-	Yf9O+1w9pQEQ52q9ALsGv4VsxoEhBEW9SSIE44QN+HEjmSQeNdD7DizmwwyS
-X-Google-Smtp-Source: AGHT+IEJsPN2WLvuUE3HBhMwONpa+bYyKE0ExIxMoaNtYzuwxxFvuFm8NKQ/WNtYNlXrPVAGPz2pog==
-X-Received: by 2002:a05:6a00:1acb:b0:6ed:9158:774e with SMTP id f11-20020a056a001acb00b006ed9158774emr6009467pfv.20.1712819198038;
-        Thu, 11 Apr 2024 00:06:38 -0700 (PDT)
+        bh=LVxLPB3ir51RqOrUeQ4RuKuT1LuXZfsGpQp9xlrvQqA=;
+        b=Ze5K1P6kRX3VX+pTlsZi3MsUkwlvNa65SsBCMnknpYNPnpeLAhmvuJrPjiUQfUAWN5
+         itkqHxRroCMtZgCbQdB59x8v27FyiICPmDSV0XMczWn4Rau6WteYy68DY34vnPHfnAoS
+         IGCQVZLq1Cw2UdLZbG8CS0mudjbH0rKVvl6BE4TDyoCqxvY3O47o+MbkM3NfnpYZMxwW
+         s7ycKwGP9c/4L7Gn8OflYmOOZwqO9gM+udnj0emQRkoWvkgrVqK4XcqUa7lgA58TBGwq
+         z7mniwfD4UvdoFHxJzArSSYHNXYjlzUxmvYWeV5A2sV8/vgyeua5EM1eDvBkRB0SaPwT
+         0jOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUoOeu/mPBqRrJ2xGtRA5EOUrN1J0tv6rf5xt/97rUXDl4NqHNrR5Vsue/5CUotF4dHbRRYH+ihNQkGyuNV0suDtOSY9U1iBkMrxMXb
+X-Gm-Message-State: AOJu0YxiRePpzK1t8qDtT40AKEI3LPzkzTvBAg9CmnRJWbWELy/hXR7x
+	SeEeGrwTglXkVwdMVitBfGdDvTj1Qzxb6r5mkjAq35tt1NLp/kHIwUT74OFO
+X-Google-Smtp-Source: AGHT+IEsoySlg/IoPcuv/Q17w5RW1t3NP492Gd5CeJgXJm79j2TQMX8KwWgDe2hNgERwxHUb9E2Nlw==
+X-Received: by 2002:a05:6a21:3d85:b0:1a7:a8ea:794c with SMTP id bj5-20020a056a213d8500b001a7a8ea794cmr4915020pzc.18.1712819202149;
+        Thu, 11 Apr 2024 00:06:42 -0700 (PDT)
 Received: from d.wok.cipunited.com ([104.28.213.200])
-        by smtp.gmail.com with ESMTPSA id g5-20020a056a0023c500b006e6be006637sm647402pfc.135.2024.04.11.00.06.34
+        by smtp.gmail.com with ESMTPSA id g5-20020a056a0023c500b006e6be006637sm647402pfc.135.2024.04.11.00.06.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 00:06:37 -0700 (PDT)
+        Thu, 11 Apr 2024 00:06:41 -0700 (PDT)
 From: David Yang <mmyangfl@gmail.com>
 To: linux-clk@vger.kernel.org
 Cc: Michael Turquette <mturquette@baylibre.com>,
 	Stephen Boyd <sboyd@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	David Yang <mmyangfl@gmail.com>
-Subject: [PATCH v8 06/13] clk: hisilicon: hi3559a: Use helper functions
-Date: Thu, 11 Apr 2024 15:04:51 +0800
-Message-ID: <20240411070503.38093-8-mmyangfl@gmail.com>
+Subject: [PATCH v8 07/13] clk: hisilicon: hi3660: Convert into module
+Date: Thu, 11 Apr 2024 15:04:52 +0800
+Message-ID: <20240411070503.38093-9-mmyangfl@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411070503.38093-2-mmyangfl@gmail.com>
 References: <20240411070503.38093-2-mmyangfl@gmail.com>
@@ -91,315 +91,247 @@ data.
 
 Signed-off-by: David Yang <mmyangfl@gmail.com>
 ---
- drivers/clk/hisilicon/clk-hi3559a.c | 230 +++++-----------------------
- 1 file changed, 37 insertions(+), 193 deletions(-)
+ drivers/clk/hisilicon/clk-hi3660.c | 194 ++++++++---------------------
+ 1 file changed, 54 insertions(+), 140 deletions(-)
 
-diff --git a/drivers/clk/hisilicon/clk-hi3559a.c b/drivers/clk/hisilicon/clk-hi3559a.c
-index c79a94f6d9d2..1902d943fe34 100644
---- a/drivers/clk/hisilicon/clk-hi3559a.c
-+++ b/drivers/clk/hisilicon/clk-hi3559a.c
-@@ -11,7 +11,6 @@
- #include <linux/module.h>
- #include <linux/of.h>
+diff --git a/drivers/clk/hisilicon/clk-hi3660.c b/drivers/clk/hisilicon/clk-hi3660.c
+index 50f13dbb0e48..7fc5c16e5264 100644
+--- a/drivers/clk/hisilicon/clk-hi3660.c
++++ b/drivers/clk/hisilicon/clk-hi3660.c
+@@ -5,9 +5,13 @@
+  */
+ 
+ #include <dt-bindings/clock/hi3660-clock.h>
++
+ #include <linux/clk-provider.h>
+-#include <linux/of.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
  #include <linux/platform_device.h>
--#include <linux/slab.h>
++
+ #include "clk.h"
  
- #include <dt-bindings/clock/hi3559av100-clock.h>
- 
-@@ -452,9 +451,11 @@ static const struct clk_ops hisi_clk_pll_ops = {
- 	.recalc_rate = clk_pll_recalc_rate,
+ static const struct hisi_fixed_rate_clock hi3660_fixed_rate_clks[] = {
+@@ -469,169 +473,79 @@ static const struct hisi_gate_clock hi3660_iomcu_gate_sep_clks[] = {
+ 	  CLK_SET_RATE_PARENT, 0x90, 0, 0, },
  };
  
--static void hisi_clk_register_pll(struct hi3559av100_pll_clock *clks,
--			   int nums, struct hisi_clock_data *data, struct device *dev)
-+static int
-+hisi_clk_register_pll(struct device *dev, const void *clocks,
-+		      size_t num, struct hisi_clock_data *data)
- {
-+	const struct hi3559av100_pll_clock *clks = clocks;
- 	void __iomem *base = data->base;
- 	struct hi3559av100_clk_pll *p_clk = NULL;
- 	struct clk *clk = NULL;
-@@ -462,10 +463,11 @@ static void hisi_clk_register_pll(struct hi3559av100_pll_clock *clks,
- 	int i;
- 
- 	p_clk = devm_kcalloc(dev, nums, sizeof(*p_clk), GFP_KERNEL);
-+
- 	if (!p_clk)
--		return;
-+		return -ENOMEM;
- 
--	for (i = 0; i < nums; i++) {
-+	for (i = 0; i < num; i++) {
- 		init.name = clks[i].name;
- 		init.flags = 0;
- 		init.parent_names =
-@@ -492,78 +494,27 @@ static void hisi_clk_register_pll(struct hi3559av100_pll_clock *clks,
- 		if (IS_ERR(clk)) {
- 			dev_err(dev, "%s: failed to register clock %s\n",
- 			       __func__, clks[i].name);
--			continue;
-+			return PTR_ERR(clk);
- 		}
- 
- 		data->clk_data.clks[clks[i].id] = clk;
- 		p_clk++;
- 	}
--}
+-static struct hisi_clock_data *clk_crgctrl_data;
 -
--static struct hisi_clock_data *hi3559av100_clk_register(
--	struct platform_device *pdev)
+-static void hi3660_clk_iomcu_init(struct device_node *np)
 -{
 -	struct hisi_clock_data *clk_data;
--	int ret;
+-	int nr = ARRAY_SIZE(hi3660_iomcu_gate_sep_clks);
 -
--	clk_data = hisi_clk_alloc(pdev, HI3559AV100_CRG_NR_CLKS);
+-	clk_data = hisi_clk_init(np, nr);
 -	if (!clk_data)
--		return ERR_PTR(-ENOMEM);
+-		return;
 -
--	ret = hisi_clk_register_fixed_rate(hi3559av100_fixed_rate_clks_crg,
--					   ARRAY_SIZE(hi3559av100_fixed_rate_clks_crg), clk_data);
--	if (ret)
--		return ERR_PTR(ret);
--
--	hisi_clk_register_pll(hi3559av100_pll_clks,
--			      ARRAY_SIZE(hi3559av100_pll_clks), clk_data, &pdev->dev);
--
--	ret = hisi_clk_register_mux(hi3559av100_mux_clks_crg,
--				    ARRAY_SIZE(hi3559av100_mux_clks_crg), clk_data);
--	if (ret)
--		goto unregister_fixed_rate;
--
--	ret = hisi_clk_register_gate(hi3559av100_gate_clks,
--				     ARRAY_SIZE(hi3559av100_gate_clks), clk_data);
--	if (ret)
--		goto unregister_mux;
--
--	ret = of_clk_add_provider(pdev->dev.of_node,
--				  of_clk_src_onecell_get, &clk_data->clk_data);
--	if (ret)
--		goto unregister_gate;
--
--	return clk_data;
--
--unregister_gate:
--	hisi_clk_unregister_gate(hi3559av100_gate_clks,
--				 ARRAY_SIZE(hi3559av100_gate_clks), clk_data);
--unregister_mux:
--	hisi_clk_unregister_mux(hi3559av100_mux_clks_crg,
--				ARRAY_SIZE(hi3559av100_mux_clks_crg), clk_data);
--unregister_fixed_rate:
--	hisi_clk_unregister_fixed_rate(hi3559av100_fixed_rate_clks_crg,
--				       ARRAY_SIZE(hi3559av100_fixed_rate_clks_crg), clk_data);
--	return ERR_PTR(ret);
+-	hisi_clk_register_gate_sep(hi3660_iomcu_gate_sep_clks,
+-				   ARRAY_SIZE(hi3660_iomcu_gate_sep_clks),
+-				   clk_data);
 -}
 -
--static void hi3559av100_clk_unregister(struct platform_device *pdev)
+-static void hi3660_clk_pmuctrl_init(struct device_node *np)
 -{
--	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
- 
--	of_clk_del_provider(pdev->dev.of_node);
+-	struct hisi_clock_data *clk_data;
+-	int nr = ARRAY_SIZE(hi3660_pmu_gate_clks);
 -
--	hisi_clk_unregister_gate(hi3559av100_gate_clks,
--				 ARRAY_SIZE(hi3559av100_gate_clks), crg->clk_data);
--	hisi_clk_unregister_mux(hi3559av100_mux_clks_crg,
--				ARRAY_SIZE(hi3559av100_mux_clks_crg), crg->clk_data);
--	hisi_clk_unregister_fixed_rate(hi3559av100_fixed_rate_clks_crg,
--				       ARRAY_SIZE(hi3559av100_fixed_rate_clks_crg), crg->clk_data);
-+	return 0;
- }
+-	clk_data = hisi_clk_init(np, nr);
+-	if (!clk_data)
+-		return;
+-
+-	hisi_clk_register_gate(hi3660_pmu_gate_clks,
+-			       ARRAY_SIZE(hi3660_pmu_gate_clks), clk_data);
+-}
++static const struct hisi_clocks hi3660_clk_iomcu_clks = {
++	.gate_sep_clks = hi3660_iomcu_gate_sep_clks,
++	.gate_sep_clks_num = ARRAY_SIZE(hi3660_iomcu_gate_sep_clks),
++};
  
--static const struct hisi_crg_funcs hi3559av100_crg_funcs = {
--	.register_clks = hi3559av100_clk_register,
--	.unregister_clks = hi3559av100_clk_unregister,
-+static const struct hisi_clocks hi3559av100_clks = {
-+	.nr = HI3559AV100_CRG_NR_CLKS,
-+	.fixed_rate_clks = hi3559av100_fixed_rate_clks_crg,
-+	.fixed_rate_clks_num = ARRAY_SIZE(hi3559av100_fixed_rate_clks_crg),
-+	.mux_clks = hi3559av100_mux_clks_crg,
-+	.mux_clks_num = ARRAY_SIZE(hi3559av100_mux_clks_crg),
-+	.gate_clks = hi3559av100_gate_clks,
-+	.gate_clks_num = ARRAY_SIZE(hi3559av100_gate_clks),
-+	.customized_clks = hi3559av100_pll_clks,
-+	.customized_clks_num = ARRAY_SIZE(hi3559av100_pll_clks),
-+	.clk_register_customized = hisi_clk_register_pll,
- };
+-static void hi3660_clk_pctrl_init(struct device_node *np)
+-{
+-	struct hisi_clock_data *clk_data;
+-	int nr = ARRAY_SIZE(hi3660_pctrl_gate_clks);
++static const struct hisi_clocks hi3660_clk_pmuctrl_clks = {
++	.gate_clks = hi3660_pmu_gate_clks,
++	.gate_clks_num = ARRAY_SIZE(hi3660_pmu_gate_clks),
++};
  
- static struct hisi_fixed_rate_clock hi3559av100_shub_fixed_rate_clks[] = {
-@@ -671,7 +622,7 @@ static struct hisi_gate_clock hi3559av100_shub_gate_clks[] = {
- 	},
- };
+-	clk_data = hisi_clk_init(np, nr);
+-	if (!clk_data)
+-		return;
+-	hisi_clk_register_gate(hi3660_pctrl_gate_clks,
+-			       ARRAY_SIZE(hi3660_pctrl_gate_clks), clk_data);
+-}
++static const struct hisi_clocks hi3660_clk_pctrl_clks = {
++	.gate_clks = hi3660_pctrl_gate_clks,
++	.gate_clks_num = ARRAY_SIZE(hi3660_pctrl_gate_clks),
++};
  
--static int hi3559av100_shub_default_clk_set(void)
-+static int hi3559av100_shub_default_clk_set(struct device *dev, struct hisi_clock_data *data)
+-static void hi3660_clk_sctrl_init(struct device_node *np)
+-{
+-	struct hisi_clock_data *clk_data;
+-	int nr = ARRAY_SIZE(hi3660_sctrl_gate_clks) +
+-		 ARRAY_SIZE(hi3660_sctrl_gate_sep_clks) +
+-		 ARRAY_SIZE(hi3660_sctrl_mux_clks) +
+-		 ARRAY_SIZE(hi3660_sctrl_divider_clks);
++static const struct hisi_clocks hi3660_clk_sctrl_clks = {
++	.mux_clks = hi3660_sctrl_mux_clks,
++	.mux_clks_num = ARRAY_SIZE(hi3660_sctrl_mux_clks),
++	.divider_clks = hi3660_sctrl_divider_clks,
++	.divider_clks_num = ARRAY_SIZE(hi3660_sctrl_divider_clks),
++	.gate_clks = hi3660_sctrl_gate_clks,
++	.gate_clks_num = ARRAY_SIZE(hi3660_sctrl_gate_clks),
++	.gate_sep_clks = hi3660_sctrl_gate_sep_clks,
++	.gate_sep_clks_num = ARRAY_SIZE(hi3660_sctrl_gate_sep_clks),
++};
+ 
+-	clk_data = hisi_clk_init(np, nr);
+-	if (!clk_data)
+-		return;
+-	hisi_clk_register_gate(hi3660_sctrl_gate_clks,
+-			       ARRAY_SIZE(hi3660_sctrl_gate_clks), clk_data);
+-	hisi_clk_register_gate_sep(hi3660_sctrl_gate_sep_clks,
+-				   ARRAY_SIZE(hi3660_sctrl_gate_sep_clks),
+-				   clk_data);
+-	hisi_clk_register_mux(hi3660_sctrl_mux_clks,
+-			      ARRAY_SIZE(hi3660_sctrl_mux_clks), clk_data);
+-	hisi_clk_register_divider(hi3660_sctrl_divider_clks,
+-				  ARRAY_SIZE(hi3660_sctrl_divider_clks),
+-				  clk_data);
+-}
++static const struct hisi_clocks hi3660_clk_crgctrl_clks = {
++	.fixed_rate_clks = hi3660_fixed_rate_clks,
++	.fixed_rate_clks_num = ARRAY_SIZE(hi3660_fixed_rate_clks),
++	.fixed_factor_clks = hi3660_crg_fixed_factor_clks,
++	.fixed_factor_clks_num = ARRAY_SIZE(hi3660_crg_fixed_factor_clks),
++	.mux_clks = hi3660_crgctrl_mux_clks,
++	.mux_clks_num = ARRAY_SIZE(hi3660_crgctrl_mux_clks),
++	.divider_clks = hi3660_crgctrl_divider_clks,
++	.divider_clks_num = ARRAY_SIZE(hi3660_crgctrl_divider_clks),
++	.gate_clks = hi3660_crgctrl_gate_clks,
++	.gate_clks_num = ARRAY_SIZE(hi3660_crgctrl_gate_clks),
++	.gate_sep_clks = hi3660_crgctrl_gate_sep_clks,
++	.gate_sep_clks_num = ARRAY_SIZE(hi3660_crgctrl_gate_sep_clks),
++};
+ 
+ static void hi3660_clk_crgctrl_early_init(struct device_node *np)
  {
- 	void __iomem *crg_base;
- 	unsigned int val;
-@@ -694,148 +645,41 @@ static int hi3559av100_shub_default_clk_set(void)
- 	return 0;
+-	int nr = ARRAY_SIZE(hi3660_fixed_rate_clks) +
+-		 ARRAY_SIZE(hi3660_crgctrl_gate_sep_clks) +
+-		 ARRAY_SIZE(hi3660_crgctrl_gate_clks) +
+-		 ARRAY_SIZE(hi3660_crgctrl_mux_clks) +
+-		 ARRAY_SIZE(hi3660_crg_fixed_factor_clks) +
+-		 ARRAY_SIZE(hi3660_crgctrl_divider_clks);
+-	int i;
+-
+-	clk_crgctrl_data = hisi_clk_init(np, nr);
+-	if (!clk_crgctrl_data)
+-		return;
+-
+-	for (i = 0; i < nr; i++)
+-		clk_crgctrl_data->clk_data.clks[i] = ERR_PTR(-EPROBE_DEFER);
+-
+-	hisi_clk_register_fixed_rate(hi3660_fixed_rate_clks,
+-				     ARRAY_SIZE(hi3660_fixed_rate_clks),
+-				     clk_crgctrl_data);
++	hisi_clk_early_init(np, &hi3660_clk_crgctrl_clks);
  }
+ CLK_OF_DECLARE_DRIVER(hi3660_clk_crgctrl, "hisilicon,hi3660-crgctrl",
+ 		      hi3660_clk_crgctrl_early_init);
  
--static struct hisi_clock_data *hi3559av100_shub_clk_register(
--	struct platform_device *pdev)
+-static void hi3660_clk_crgctrl_init(struct device_node *np)
 -{
--	struct hisi_clock_data *clk_data = NULL;
--	int ret;
+-	struct clk **clks;
+-	int i;
 -
--	hi3559av100_shub_default_clk_set();
+-	if (!clk_crgctrl_data)
+-		hi3660_clk_crgctrl_early_init(np);
 -
--	clk_data = hisi_clk_alloc(pdev, HI3559AV100_SHUB_NR_CLKS);
--	if (!clk_data)
--		return ERR_PTR(-ENOMEM);
+-	/* clk_crgctrl_data initialization failed */
+-	if (!clk_crgctrl_data)
+-		return;
 -
--	ret = hisi_clk_register_fixed_rate(hi3559av100_shub_fixed_rate_clks,
--					   ARRAY_SIZE(hi3559av100_shub_fixed_rate_clks), clk_data);
--	if (ret)
--		return ERR_PTR(ret);
+-	hisi_clk_register_gate_sep(hi3660_crgctrl_gate_sep_clks,
+-				   ARRAY_SIZE(hi3660_crgctrl_gate_sep_clks),
+-				   clk_crgctrl_data);
+-	hisi_clk_register_gate(hi3660_crgctrl_gate_clks,
+-			       ARRAY_SIZE(hi3660_crgctrl_gate_clks),
+-			       clk_crgctrl_data);
+-	hisi_clk_register_mux(hi3660_crgctrl_mux_clks,
+-			      ARRAY_SIZE(hi3660_crgctrl_mux_clks),
+-			      clk_crgctrl_data);
+-	hisi_clk_register_fixed_factor(hi3660_crg_fixed_factor_clks,
+-				       ARRAY_SIZE(hi3660_crg_fixed_factor_clks),
+-				       clk_crgctrl_data);
+-	hisi_clk_register_divider(hi3660_crgctrl_divider_clks,
+-				  ARRAY_SIZE(hi3660_crgctrl_divider_clks),
+-				  clk_crgctrl_data);
 -
--	ret = hisi_clk_register_mux(hi3559av100_shub_mux_clks,
--				    ARRAY_SIZE(hi3559av100_shub_mux_clks), clk_data);
--	if (ret)
--		goto unregister_fixed_rate;
--
--	ret = hisi_clk_register_divider(hi3559av100_shub_div_clks,
--					ARRAY_SIZE(hi3559av100_shub_div_clks), clk_data);
--	if (ret)
--		goto unregister_mux;
--
--	ret = hisi_clk_register_gate(hi3559av100_shub_gate_clks,
--				     ARRAY_SIZE(hi3559av100_shub_gate_clks), clk_data);
--	if (ret)
--		goto unregister_factor;
--
--	ret = of_clk_add_provider(pdev->dev.of_node,
--				  of_clk_src_onecell_get, &clk_data->clk_data);
--	if (ret)
--		goto unregister_gate;
--
--	return clk_data;
--
--unregister_gate:
--	hisi_clk_unregister_gate(hi3559av100_shub_gate_clks,
--				 ARRAY_SIZE(hi3559av100_shub_gate_clks), clk_data);
--unregister_factor:
--	hisi_clk_unregister_divider(hi3559av100_shub_div_clks,
--				    ARRAY_SIZE(hi3559av100_shub_div_clks), clk_data);
--unregister_mux:
--	hisi_clk_unregister_mux(hi3559av100_shub_mux_clks,
--				ARRAY_SIZE(hi3559av100_shub_mux_clks), clk_data);
--unregister_fixed_rate:
--	hisi_clk_unregister_fixed_rate(hi3559av100_shub_fixed_rate_clks,
--				       ARRAY_SIZE(hi3559av100_shub_fixed_rate_clks), clk_data);
--	return ERR_PTR(ret);
+-	clks = clk_crgctrl_data->clk_data.clks;
+-	for (i = 0; i < clk_crgctrl_data->clk_data.clk_num; i++) {
+-		if (IS_ERR(clks[i]) && PTR_ERR(clks[i]) != -EPROBE_DEFER)
+-			pr_err("Failed to register crgctrl clock[%d] err=%ld\n",
+-			       i, PTR_ERR(clks[i]));
+-	}
 -}
 -
--static void hi3559av100_shub_clk_unregister(struct platform_device *pdev)
--{
--	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
--
--	of_clk_del_provider(pdev->dev.of_node);
--
--	hisi_clk_unregister_gate(hi3559av100_shub_gate_clks,
--				 ARRAY_SIZE(hi3559av100_shub_gate_clks), crg->clk_data);
--	hisi_clk_unregister_divider(hi3559av100_shub_div_clks,
--				    ARRAY_SIZE(hi3559av100_shub_div_clks), crg->clk_data);
--	hisi_clk_unregister_mux(hi3559av100_shub_mux_clks,
--				ARRAY_SIZE(hi3559av100_shub_mux_clks), crg->clk_data);
--	hisi_clk_unregister_fixed_rate(hi3559av100_shub_fixed_rate_clks,
--				       ARRAY_SIZE(hi3559av100_shub_fixed_rate_clks), crg->clk_data);
--}
--
--static const struct hisi_crg_funcs hi3559av100_shub_crg_funcs = {
--	.register_clks = hi3559av100_shub_clk_register,
--	.unregister_clks = hi3559av100_shub_clk_unregister,
-+static const struct hisi_clocks hi3559av100_shub_clks = {
-+	.nr = HI3559AV100_SHUB_NR_CLKS,
-+	.prologue = hi3559av100_shub_default_clk_set,
-+	.fixed_rate_clks = hi3559av100_shub_fixed_rate_clks,
-+	.fixed_rate_clks_num = ARRAY_SIZE(hi3559av100_shub_fixed_rate_clks),
-+	.mux_clks = hi3559av100_shub_mux_clks,
-+	.mux_clks_num = ARRAY_SIZE(hi3559av100_shub_mux_clks),
-+	.divider_clks = hi3559av100_shub_div_clks,
-+	.divider_clks_num = ARRAY_SIZE(hi3559av100_shub_div_clks),
-+	.gate_clks = hi3559av100_shub_gate_clks,
-+	.gate_clks_num = ARRAY_SIZE(hi3559av100_shub_gate_clks),
- };
- 
- static const struct of_device_id hi3559av100_crg_match_table[] = {
- 	{
- 		.compatible = "hisilicon,hi3559av100-clock",
--		.data = &hi3559av100_crg_funcs
-+		.data = &hi3559av100_clks
- 	},
- 	{
- 		.compatible = "hisilicon,hi3559av100-shub-clock",
--		.data = &hi3559av100_shub_crg_funcs
-+		.data = &hi3559av100_shub_clks
- 	},
+ static const struct of_device_id hi3660_clk_match_table[] = {
+ 	{ .compatible = "hisilicon,hi3660-crgctrl",
+-	  .data = hi3660_clk_crgctrl_init },
++	  .data = &hi3660_clk_crgctrl_clks },
+ 	{ .compatible = "hisilicon,hi3660-pctrl",
+-	  .data = hi3660_clk_pctrl_init },
++	  .data = &hi3660_clk_pctrl_clks },
+ 	{ .compatible = "hisilicon,hi3660-pmuctrl",
+-	  .data = hi3660_clk_pmuctrl_init },
++	  .data = &hi3660_clk_pmuctrl_clks },
+ 	{ .compatible = "hisilicon,hi3660-sctrl",
+-	  .data = hi3660_clk_sctrl_init },
++	  .data = &hi3660_clk_sctrl_clks },
+ 	{ .compatible = "hisilicon,hi3660-iomcu",
+-	  .data = hi3660_clk_iomcu_init },
++	  .data = &hi3660_clk_iomcu_clks },
  	{ }
  };
- MODULE_DEVICE_TABLE(of, hi3559av100_crg_match_table);
- 
--static int hi3559av100_crg_probe(struct platform_device *pdev)
+-
+-static int hi3660_clk_probe(struct platform_device *pdev)
 -{
--	struct hisi_crg_dev *crg;
+-	struct device *dev = &pdev->dev;
+-	struct device_node *np = pdev->dev.of_node;
+-	void (*init_func)(struct device_node *np);
 -
--	crg = devm_kmalloc(&pdev->dev, sizeof(*crg), GFP_KERNEL);
--	if (!crg)
--		return -ENOMEM;
+-	init_func = of_device_get_match_data(dev);
+-	if (!init_func)
+-		return -ENODEV;
 -
--	crg->funcs = of_device_get_match_data(&pdev->dev);
--	if (!crg->funcs)
--		return -ENOENT;
+-	init_func(np);
 -
--	crg->rstc = hisi_reset_init(pdev);
--	if (!crg->rstc)
--		return -ENOMEM;
--
--	crg->clk_data = crg->funcs->register_clks(pdev);
--	if (IS_ERR(crg->clk_data)) {
--		hisi_reset_exit(crg->rstc);
--		return PTR_ERR(crg->clk_data);
--	}
--
--	platform_set_drvdata(pdev, crg);
 -	return 0;
 -}
--
--static void hi3559av100_crg_remove(struct platform_device *pdev)
--{
--	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
--
--	hisi_reset_exit(crg->rstc);
--	crg->funcs->unregister_clks(pdev);
--}
--
- static struct platform_driver hi3559av100_crg_driver = {
--	.probe		= hi3559av100_crg_probe,
--	.remove_new	= hi3559av100_crg_remove,
-+	.probe = hisi_crg_probe,
-+	.remove_new = hisi_crg_remove,
- 	.driver		= {
- 		.name	= "hi3559av100-clock",
- 		.of_match_table = hi3559av100_crg_match_table,
++MODULE_DEVICE_TABLE(of, hi3660_clk_match_table);
+ 
+ static struct platform_driver hi3660_clk_driver = {
+-	.probe          = hi3660_clk_probe,
++	.probe = hisi_clk_probe,
++	.remove_new = hisi_clk_remove,
+ 	.driver         = {
+ 		.name   = "hi3660-clk",
+ 		.of_match_table = hi3660_clk_match_table,
  	},
  };
  
--static int __init hi3559av100_crg_init(void)
+-static int __init hi3660_clk_init(void)
 -{
--	return platform_driver_register(&hi3559av100_crg_driver);
+-	return platform_driver_register(&hi3660_clk_driver);
 -}
--core_initcall(hi3559av100_crg_init);
--
--static void __exit hi3559av100_crg_exit(void)
--{
--	platform_driver_unregister(&hi3559av100_crg_driver);
--}
--module_exit(hi3559av100_crg_exit);
--
-+module_platform_driver(hi3559av100_crg_driver);
- 
- MODULE_DESCRIPTION("HiSilicon Hi3559AV100 CRG Driver");
+-core_initcall(hi3660_clk_init);
++module_platform_driver(hi3660_clk_driver);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("HiSilicon Hi3660 Clock Driver");
 -- 
 2.43.0
 
