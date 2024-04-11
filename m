@@ -1,263 +1,129 @@
-Return-Path: <linux-kernel+bounces-139655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 222248A05DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 04:34:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7EAD8A0609
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 04:39:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDECC2831F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:34:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D9A61F24964
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C290C13B28B;
-	Thu, 11 Apr 2024 02:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="OpaP7yaP"
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6377353E22;
-	Thu, 11 Apr 2024 02:33:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E55213AD3C;
+	Thu, 11 Apr 2024 02:39:51 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB045F870
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 02:39:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712802842; cv=none; b=kKZEEvXVZH0fPc+rS1tk8mQ4OzS0mMzgaUbblb3babq8A03ejJ1wK2wT+Of3xs6+UCKtHEM2mfCqOPZiDVAoOC902pwDbLqy61BlZTc3kY4Ej/IffY6RcXGNvceIeBj7xoL1qDxmEpTTFuI8+GsnVef25LEA2AxV4uNf+vQxO7k=
+	t=1712803191; cv=none; b=P3HgqXD9lathMDvJbxeekLxqpZQBYNUtrCkwNeeuZv5KhcseL7QVRvPXhxSi8HNzh4Asso7ytZOiarNtnpkBn/c6/tvoyVSQyH0SMGIP9LpNT+YiCDUmYywn2i5CIdxsMsBtK0bvf8JUVnrGnrJgV0Ylml0Z0VvMo3+GbV7FaOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712802842; c=relaxed/simple;
-	bh=lNif+lKEoqBkvswjoiZ8yhsUzffxXtJV4yw8YqoSU7c=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SlLNDCxIgLtK7wcvjh1JBKz8F0m3nbq41k5NHjPmKFF76i8dLhAa+HE3zZonw2Qs/q8Xl/tA07IupKxdhNRoksv7rDe0Y+e9djMlrygeuXU/GlkPlCRAKFoYSRx1WVINYnsJaxU0Dm6poHytH9+ZjZOB8rrAEB24eo3cv+nsl1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=OpaP7yaP; arc=none smtp.client-ip=220.197.31.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=166/9
-	c+ZR3QEyTBHtTV+6dvgcOnbYCqdPwSXzWFrUQI=; b=OpaP7yaPtYlKaj1rmHB+G
-	MfR1LCHY/JT13BB3Jg6V8d5/rYUlQWoCl1My9tXQLDAZwX3lyw2ON95+bEu725pQ
-	jsPtevyiS1HIiuwncSuPXEvKoTRWcJn1wm+TreFIgalLGzG6tT8x15RMBsrwhdxF
-	rZEI65drrvUvuXnt6/Swj8=
-Received: from localhost.localdomain (unknown [193.203.214.57])
-	by gzga-smtp-mta-g3-3 (Coremail) with SMTP id _____wD3P67sSxdmgI5MAA--.7719S2;
-	Thu, 11 Apr 2024 10:33:18 +0800 (CST)
-From: Peilin He <peilinhe2020@163.com>
-To: kerneljasonxing@gmail.com
-Cc: davem@davemloft.net,
-	dsahern@kernel.org,
-	edumazet@google.com,
-	fan.yu9@zte.com.cn,
-	he.peilin@zte.com.cn,
-	jiang.xuexin@zte.com.cn,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	liu.chun2@zte.com.cn,
-	mhiramat@kernel.org,
-	netdev@vger.kernel.org,
-	peilinhe2020@163.com,
-	qiu.yutan@zte.com.cn,
-	rostedt@goodmis.org,
-	xu.xin16@zte.com.cn,
-	yang.yang29@zte.com.cn,
-	zhang.yunkai@zte.com.cn
-Subject: Re: Re: Re: Subject: [PATCH net-next v4] net/ipv4: add tracepoint for icmp_send
-Date: Thu, 11 Apr 2024 02:33:16 +0000
-Message-Id: <20240411023316.137800-1-peilinhe2020@163.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAL+tcoC0wRbXfFziaXzvP9wuw4Qe6tZj5QRxbUhAcW5Np6kEgw@mail.gmail.com>
-References: <CAL+tcoC0wRbXfFziaXzvP9wuw4Qe6tZj5QRxbUhAcW5Np6kEgw@mail.gmail.com>
+	s=arc-20240116; t=1712803191; c=relaxed/simple;
+	bh=8sTXZZlPkCzR7YkcykYXAkUX7dCa064cGwilyQhpUuU=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=QByUgzH3IGXkOsLofeY5062BvtL4c3dyEb/EYoOY7W2I3T36H107dQ29AOHzEPcVGUAIq8rBCTvY+anSkfJTVk2qCy3Q4+9pyL1amP06+kTq/X/InVI86qP6Nm/NChsnyGSeEeGyRItyZoDgN7LoTRoIY0stRklIZdwn3FENw+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VFP3T39Y7z29dPS;
+	Thu, 11 Apr 2024 10:36:53 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id E3D241A0172;
+	Thu, 11 Apr 2024 10:39:45 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 11 Apr 2024 10:39:45 +0800
+Subject: Re: [PATCH 2/2] ubi: ubi_init: Fix missed ubiblock cleanup in error
+ handling path
+To: Daniel Golle <daniel@makrotopia.org>
+CC: <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240410074033.2523399-1-chengzhihao1@huawei.com>
+ <20240410074033.2523399-3-chengzhihao1@huawei.com>
+ <Zhccfw4HbC_MKj65@makrotopia.org>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <5d858fbc-11cb-8d02-a4b6-a640625c7e1d@huawei.com>
+Date: Thu, 11 Apr 2024 10:39:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <Zhccfw4HbC_MKj65@makrotopia.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3P67sSxdmgI5MAA--.7719S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3ArWUXFWruFy5Kw48WFyxGrg_yoWxXrykpF
-	yjyFnYkr4DJr47CryI93ySqFnav3y8Wryjgr17Ww1akw1qqr17JFZ2qr1YkrykArs8Krya
-	vF1jy343Ca45ZrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRFtCwUUUUU=
-X-CM-SenderInfo: xshlzxhqkhjiisq6il2tof0z/1tbiZRS9sWXAlFS6fgAAsc
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 
->[...]
->> >I think my understanding based on what Eric depicted differs from you:
->> >we're supposed to filter out those many invalid cases and only trace
->> >the valid action of sending a icmp, so where to add a new tracepoint
->> >is important instead of adding more checks in the tracepoint itself.
->> >Please refer to what trace_tcp_retransmit_skb() does :)
->> >
->> >Thanks,
->> >Jason
->> Okay, thank you for your suggestion. In order to avoid filtering out
->> those many invalid cases and only tracing the valid action of sending
->> a icmp, the next patch will add udd_fail_no_port trancepoint to the
->> include/trace/events/udp.h. This will solve the problem you mentioned
->> very well. At this point, only UDP protocol exceptions will be tracked,
->> without the need to track them in icmp_send.
->
->I'm not against what you did (tracing all the icmp_send() for UDP) in
->your original patch. I was suggesting that you could put
->trace_icmp_send() in the right place, then you don't have to check the
->possible error condition (like if the skb->head is valid or not, ...)
->in your trace function.
->
->One example that can avoid various checks existing in the
->__icmp_send() function:
->diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
->index e63a3bf99617..2c9f7364de45 100644
->--- a/net/ipv4/icmp.c
->+++ b/net/ipv4/icmp.c
->@@ -767,6 +767,7 @@ void __icmp_send(struct sk_buff *skb_in, int type,
->int code, __be32 info,
->        if (!fl4.saddr)
->                fl4.saddr = htonl(INADDR_DUMMY);
->
->+       trace_icmp_send(skb_in, type, code);
->        icmp_push_reply(sk, &icmp_param, &fl4, &ipc, &rt);
-> ende:
->        ip_rt_put(rt);
->
->If we go here, it means we are ready to send the ICMP skb because
->we're done extracting the right information in the 'struct sk_buff
->skb_in'. Simpler and easier, right?
->
->Thanks,
->Jason
-
-I may not fully agree with this viewpoint. When trace_icmp_send is placed
-in this position, it cannot guarantee that all skbs in icmp are UDP protocols
-(UDP needs to be distinguished based on the proto_4!=IPPROTO_UDP condition),
-nor can it guarantee the legitimacy of udphdr (*uh legitimacy check is required).
-
-With best wishes
-Peilin He
-
+ÔÚ 2024/4/11 7:10, Daniel Golle Ð´µÀ:
+> Hi!
+> 
+> On Wed, Apr 10, 2024 at 03:40:33PM +0800, Zhihao Cheng wrote:
+>> The ubiblock_init called by ubi_init will register device number, but
+>> device number is not released in error handling path of ubi_init when
+>> ubi is loaded by inserting module (eg. attaching failure), which leads
+>> to subsequent ubi_init calls failed by running out of device number
+>> (dmesg shows that "__register_blkdev: failed to get major for ubiblock").
+>> Fix it by invoking ubiblock_exit() in corresponding error handling path.
+> 
+> Thank you for taking care of this issue.
+> 
+> See my comment inline below:
+> 
 >>
->> >> 2.Target this patch for net-next.
->> >>
->> >> v2->v3:
->> >> Some fixes according to
->> >> https://lore.kernel.org/all/20240319102549.7f7f6f53@gandalf.local.home/
->> >> 1. Change the tracking directory to/sys/kernel/tracking.
->> >> 2. Adjust the layout of the TP-STRUCT_entry parameter structure.
->> >>
->> >> v1->v2:
->> >> Some fixes according to
->> >> https://lore.kernel.org/all/CANn89iL-y9e_VFpdw=3DsZtRnKRu_tnUwqHuFQTJvJsv=
->> >-nz1xPDw@mail.gmail.com/
->> >> 1. adjust the trace_icmp_send() to more protocols than UDP.
->> >> 2. move the calling of trace_icmp_send after sanity checks
->> >> in __icmp_send().
->> >>
->> >> Signed-off-by: Peilin He<he.peilin@zte.com.cn>
->> >> Reviewed-by: xu xin <xu.xin16@zte.com.cn>
->> >> Reviewed-by: Yunkai Zhang <zhang.yunkai@zte.com.cn>
->> >> Cc: Yang Yang <yang.yang29@zte.com.cn>
->> >> Cc: Liu Chun <liu.chun2@zte.com.cn>
->> >> Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
->> >> ---
->> >>  include/trace/events/icmp.h | 65 +++++++++++++++++++++++++++++++++++++
->> >>  net/ipv4/icmp.c             |  4 +++
->> >>  2 files changed, 69 insertions(+)
->> >>  create mode 100644 include/trace/events/icmp.h
->> >>
->> >> diff --git a/include/trace/events/icmp.h b/include/trace/events/icmp.h
->> >> new file mode 100644
->> >> index 000000000000..7d5190f48a28
->> >> --- /dev/null
->> >> +++ b/include/trace/events/icmp.h
->> >> @@ -0,0 +1,65 @@
->> >> +/* SPDX-License-Identifier: GPL-2.0 */
->> >> +#undef TRACE_SYSTEM
->> >> +#define TRACE_SYSTEM icmp
->> >> +
->> >> +#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
->> >> +#define _TRACE_ICMP_H
->> >> +
->> >> +#include <linux/icmp.h>
->> >> +#include <linux/tracepoint.h>
->> >> +
->> >> +TRACE_EVENT(icmp_send,
->> >> +
->> >> +               TP_PROTO(const struct sk_buff *skb, int type, int code),
->> >> +
->> >> +               TP_ARGS(skb, type, code),
->> >> +
->> >> +               TP_STRUCT__entry(
->> >> +                       __field(const void *, skbaddr)
->> >> +                       __field(int, type)
->> >> +                       __field(int, code)
->> >> +                       __array(__u8, saddr, 4)
->> >> +                       __array(__u8, daddr, 4)
->> >> +                       __field(__u16, sport)
->> >> +                       __field(__u16, dport)
->> >> +                       __field(unsigned short, ulen)
->> >> +               ),
->> >> +
->> >> +               TP_fast_assign(
->> >> +                       struct iphdr *iph =3D ip_hdr(skb);
->> >> +                       int proto_4 =3D iph->protocol;
->> >> +                       __be32 *p32;
->> >> +
->> >> +                       __entry->skbaddr =3D skb;
->> >> +                       __entry->type =3D type;
->> >> +                       __entry->code =3D code;
->> >> +
->> >> +                       struct udphdr *uh =3D udp_hdr(skb);
->> >> +                       if (proto_4 !=3D IPPROTO_UDP || (u8 *)uh < skb->h=
->> >ead ||
->> >> +                               (u8 *)uh + sizeof(struct udphdr) > skb_ta=
->> >il_pointer(skb)) {
->> >> +                               __entry->sport =3D 0;
->> >> +                               __entry->dport =3D 0;
->> >> +                               __entry->ulen =3D 0;
->> >> +                       } else {
->> >> +                               __entry->sport =3D ntohs(uh->source);
->> >> +                               __entry->dport =3D ntohs(uh->dest);
->> >> +                               __entry->ulen =3D ntohs(uh->len);
->> >> +                       }
->> >> +
->> >> +                       p32 =3D (__be32 *) __entry->saddr;
->> >> +                       *p32 =3D iph->saddr;
->> >> +
->> >> +                       p32 =3D (__be32 *) __entry->daddr;
->> >> +                       *p32 =3D iph->daddr;
->> >> +               ),
->> >> +
->> >> +               TP_printk("icmp_send: type=3D%d, code=3D%d. From %pI4:%u =
->> >to %pI4:%u ulen=3D%d skbaddr=3D%p",
->> >> +                       __entry->type, __entry->code,
->> >> +                       __entry->saddr, __entry->sport, __entry->daddr,
->> >> +                       __entry->dport, __entry->ulen, __entry->skbaddr)
->> >> +);
->> >> +
->> >> +#endif /* _TRACE_ICMP_H */
->> >> +
->> >> +/* This part must be outside protection */
->> >> +#include <trace/define_trace.h>
->> >> \ No newline at end of file
->> >> diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
->> >> index 8cebb476b3ab..224551d75c02 100644
->> >> --- a/net/ipv4/icmp.c
->> >> +++ b/net/ipv4/icmp.c
->> >> @@ -92,6 +92,8 @@
->> >>  #include <net/inet_common.h>
->> >>  #include <net/ip_fib.h>
->> >>  #include <net/l3mdev.h>
->> >> +#define CREATE_TRACE_POINTS
->> >> +#include <trace/events/icmp.h>
->> >>
->> >>  /*
->> >>   *     Build xmit assembly blocks
->> >> @@ -672,6 +674,8 @@ void __icmp_send(struct sk_buff *skb_in, int type, in=
->> >t code, __be32 info,
->> >>                 }
->> >>         }
->> >>
->> >> +       trace_icmp_send(skb_in, type, code);
->> >> +
->> >>         /* Needed by both icmp_global_allow and icmp_xmit_lock */
->> >>         local_bh_disable();
->> >>
->> >> --
->> >> 2.25.1
+>> Fixes: 927c145208b0 ("mtd: ubi: attach from device tree")
+>> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+>> ---
+>>   drivers/mtd/ubi/build.c | 5 +++--
+>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+>> index 7f95fd7968a8..354517194099 100644
+>> --- a/drivers/mtd/ubi/build.c
+>> +++ b/drivers/mtd/ubi/build.c
+>> @@ -1380,12 +1380,13 @@ static int __init ubi_init(void)
+>>   	if (ubi_is_module()) {
+>>   		err = ubi_init_attach();
+>>   		if (err)
+>> -			goto out_mtd_notifier;
+>> +			goto out_block_exit;
+>>   	}
+>>   
+>>   	return 0;
+>>   
+>> -out_mtd_notifier:
+>> +out_block_exit:
+>> +	ubiblock_exit();
+> 
+> I believe that this call is the reason for the section mismatch we
+> are seeing on Intel's kernel test builds:
+> 
+> https://lore.kernel.org/oe-kbuild-all/202404110656.wLLc5mHR-lkp@intel.com/
+> 
+> Also note that Ben Hutchings has supplied a more complete and imho
+> better solution for this problem, which yet still suffers from the
+> same problem (calling __exit function from __init function which
+> results in section mismatch).
+> 
+
+My mistake, I always forget to check make W=1, I will send a new version 
+to combine Ben's modifications. Thanks to point that.
+> 
+>>   	unregister_mtd_user(&ubi_mtd_notifier);
+>>   out_debugfs:
+>>   	ubi_debugfs_exit();
+>> -- 
+>> 2.39.2
+>>
+> .
+> 
 
 
