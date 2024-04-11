@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 698D28A1A0D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:32:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 453AE8A19EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:27:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2B69B2CBC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:26:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 476D21C21048
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:27:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62ED682496;
-	Thu, 11 Apr 2024 15:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E25271BE3EE;
+	Thu, 11 Apr 2024 15:37:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="j3hkh06g"
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="3Ozb8xI+"
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B7543BBC7
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:37:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63A4824B1
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:37:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849855; cv=none; b=Lx4MJ8v4/h9A+AbznfRKFPjfblVbDoLu23PoN/Mf5hdvIJuE6KgfxiGO99wXa2x7x7foZZ2Mvy1vYKAwi8FDd5t2AC8n7vcVdW7hseFv2LI4i/YsMIS0OvQzFFZxe/OwI0avS70SZyjCUsbc7MzGUV2lxpwNadoDrX02BLdCYE8=
+	t=1712849859; cv=none; b=bqV2UJwBWZJY30UC7mfnT3wS/AsRWfJ2q5KC/w2XRE2+RgIkp0pRxhKtwtATlRRpqX5HvEaxfmrRmfZ6cs3hH4y7gsaueScfg5CC7xYG6R7xixJI3scjKSUmyJv9GRdJeV3DoaXojLVon5h7oCha/pSFizHV8IMwdFe6IVe9rqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849855; c=relaxed/simple;
-	bh=Jj/NcxDqsb3ke7CqA5w00fJhJUeMhJsECJ2fjtlkHS0=;
+	s=arc-20240116; t=1712849859; c=relaxed/simple;
+	bh=sF5CnpUgy1jnJz8h8X7hCF8xIhL0U1ovl4Q04fzjlSE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n9UC9AUO8JowJiSOELuknWLpwatsNGL0qI4mfoWk63Nfw9NLOHqshFUHz1+hpEusRu91ujBUN/ZUCv8qUOWKQVTKLBiXCF+DwCAdbzo3/1tycA5oM1soGOoNhlpKB8G3/f2mUx5Bm9KYSQlCKJt8uvDPgIxx2VXmWDdLNFTDbEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=j3hkh06g; arc=none smtp.client-ip=209.85.166.45
+	 MIME-Version; b=W1LzzwswE+bDKiyOKYDbFfUJIoe/1yHDCA78t9zCXW+BMNAirUBBdQKJmx9zXNtjF0ee2gtFWjkHq0BVbGG41tYxj/XBPE44dOiQOOS2Y9IDVtlcVYqgUhAoEOUjN2GQmw2Peu3U8JGu81BqZnLFbIrPieKZFnST+iCAwLQaMK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=3Ozb8xI+; arc=none smtp.client-ip=209.85.166.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7d6812b37a6so8975039f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:37:34 -0700 (PDT)
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so170543839f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:37:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849853; x=1713454653; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849856; x=1713454656; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nnCvDuWCdqbx45susY4lKXAhNpbfLhWCqwRwbKGo0sM=;
-        b=j3hkh06gB1K16vvNeTGw35z4a4FteMe8rQBdc1aCAr2HaSM2JolvR3Zn3QySJdRIM3
-         FroRnDJPlzr8s63o6Ye8ujfdxPGz3sE1gExYQlepRgrOLu29S6Bg9i+jQTPXnuVo+pcG
-         FCNSYky3VJvRljPjdpdBJUpum0GDGcyg/FIPHmqPJlfeqagEiOiT3Dp+3uQydlyGsBaM
-         F/haa/BdY3hkpu4veaCtBg6piyt8nBu2a3dO3JTdc9GlTq4tWbsz9yg/bcPruELfm5qc
-         sfqa4sjJ59C9PrHJ7ab5bffSA7pe9NeEL8EcxidOblSUGap1AS4QrMGOAwYLXu+yFewp
-         k7zQ==
+        bh=rsFGX0TYl3O1OSJSeVzEizUpvXJtnGL1+uYUf77M1nU=;
+        b=3Ozb8xI+hxmahmERtsyWFoxiWw89WVLFPy9JW8qq0qhTf9KrcRI8oUE8a4KH2rildy
+         UNXLqr++qxNol2DjbmblUj1hajJuBkpGFLKqt8OtICTX0bzEu5V9s7a/AjGDLfW5vyth
+         a+hR/wrvPPqhIlBBcEi2EXsyQuDFyh9sEBv76QLWpBclX8UTO8GObLa++9zs13jVU7wP
+         q8SO9LrY83Z62uy7PbZY/oiWAMtL6Hz2QLIPZPc7gUMTrUQmamwV8mzM4okQ12Bt6fe6
+         YooNjzkpK9mDececZLnYmmKmHg95+HfzqGhSMIBwYHyHINLsSrBnNo5bopDOvvTxic8m
+         HQHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849853; x=1713454653;
+        d=1e100.net; s=20230601; t=1712849856; x=1713454656;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nnCvDuWCdqbx45susY4lKXAhNpbfLhWCqwRwbKGo0sM=;
-        b=lUDB8C8LmIwOMbLqp67gweZYdkiJyJI3QYiwWazpDHutcPv68IRKZM06cdiKHpg8gB
-         HLDSH+YX5jMXDtg1oOfVZVo3myE8V24T8O7+NHVK+L54AU110YwUjHPzziVSQz1K9qsj
-         LocBOy3WmP2bjSFXLE5TdcstN2CySMwjbM2o9VxFv3Fnizn5ekG7yKfWSeHIgi11XLxI
-         9VtsKyD7OOcy8VB29KuRpQ2AFTKag7BPKU4mdJWmErR+bZBCN57+S6M5DZq1UNpoF1Zq
-         QFALgS4v23XHmwysspkA9X9TSm5XIPgFHSEGlsRLF56MchoYQFw9pcE/gn4PRd04oxTE
-         TTxg==
-X-Gm-Message-State: AOJu0Yy02OLeXH+am4a+VrTTAkcfYayCoTW2bqqYuLOVbblyO+gNgopm
-	8++BcaqQzxlr4bz8HVk3CP0cwhMI+dNBHdOfNecwIkzVpiUSY78hKvQiERXIewEBa7rAnuHRxTy
-	X
-X-Google-Smtp-Source: AGHT+IFP88+t14a0gCZ4AAPs0EFTnm4sLMkslOZbEiO0AB3P/WW3J3e5pySiphlIuoPzja9E1UjhrQ==
-X-Received: by 2002:a05:6602:21d7:b0:7d6:9ddf:5095 with SMTP id c23-20020a05660221d700b007d69ddf5095mr19999ioc.1.1712849853069;
-        Thu, 11 Apr 2024 08:37:33 -0700 (PDT)
+        bh=rsFGX0TYl3O1OSJSeVzEizUpvXJtnGL1+uYUf77M1nU=;
+        b=upYT7DIYFANibfgerVQkLHQXbIpAA4JnxPGIUP+GmPcgtDcJXyQ0W6VzUZ3yLeH2Wf
+         tXT7l0sicuQsItJNhS67bQg4zD/DPelvKt/oLvtdteXNsI7wc7lwCWPIhGVXJcaMzdUP
+         mMDxbqp8YjIzAiCdwtzJRwwf/OgZ03Eg2JHBQEiKrYyN7RaBCCPWgv/v4d5ImdOOESJa
+         Yq74JihIy5PqhFS6iHTiJ5AcUhOZYejOQnqN0h/PTcnCILCftMyCX5sEBU+ZAVnMnAtt
+         3qJsqYwMQJuPzbyeFKnTxzVjltNmwusqyDikli6VNuQikhJGfR4MqM2ZJ6F4tT22X9ZV
+         u71Q==
+X-Gm-Message-State: AOJu0YwBMVLGXXHQzITDj7PYWPkkkI+BvUJcPB8yiYdhlOl/tFfpyzXb
+	SuWwHba1Px6GkolCR2eOBzxV/Gcrccadqsdf9HfoYnYKNtG2lW6wmjfr4CWR9OZyhqnyzdWztp8
+	U
+X-Google-Smtp-Source: AGHT+IEQ0qgle4KJlGoYgug2VFdto2t72uKs/ssKrgEqzUoFAI3nRkJ5TyBiUnhjFRmIr0tRrmh2rg==
+X-Received: by 2002:a5e:9907:0:b0:7d6:751f:192 with SMTP id t7-20020a5e9907000000b007d6751f0192mr184463ioj.2.1712849855019;
+        Thu, 11 Apr 2024 08:37:35 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.32
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:37:32 -0700 (PDT)
+        Thu, 11 Apr 2024 08:37:33 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 211/437] drivers/iommu: convert omap to read/write iterators
-Date: Thu, 11 Apr 2024 09:15:51 -0600
-Message-ID: <20240411153126.16201-212-axboe@kernel.dk>
+Subject: [PATCH 212/437] misc: bcm_vk: convert to iterators
+Date: Thu, 11 Apr 2024 09:15:52 -0600
+Message-ID: <20240411153126.16201-213-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,53 +85,125 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/iommu/omap-iommu-debug.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/misc/bcm-vk/bcm_vk.h     |  6 ++----
+ drivers/misc/bcm-vk/bcm_vk_dev.c |  4 ++--
+ drivers/misc/bcm-vk/bcm_vk_msg.c | 23 ++++++++++-------------
+ 3 files changed, 14 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/iommu/omap-iommu-debug.c b/drivers/iommu/omap-iommu-debug.c
-index 259f65291d90..46798b7584b5 100644
---- a/drivers/iommu/omap-iommu-debug.c
-+++ b/drivers/iommu/omap-iommu-debug.c
-@@ -11,6 +11,7 @@
- #include <linux/io.h>
- #include <linux/slab.h>
- #include <linux/uaccess.h>
-+#include <linux/uio.h>
- #include <linux/pm_runtime.h>
- #include <linux/debugfs.h>
- #include <linux/platform_data/iommu-omap.h>
-@@ -80,10 +81,10 @@ static ssize_t omap_iommu_dump_ctx(struct omap_iommu *obj, char *buf,
- 	return bytes;
+diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
+index 386884c2a263..efc91635fa42 100644
+--- a/drivers/misc/bcm-vk/bcm_vk.h
++++ b/drivers/misc/bcm-vk/bcm_vk.h
+@@ -487,10 +487,8 @@ static inline bool bcm_vk_msgq_marker_valid(struct bcm_vk *vk)
  }
  
--static ssize_t debug_read_regs(struct file *file, char __user *userbuf,
--			       size_t count, loff_t *ppos)
-+static ssize_t debug_read_regs(struct kiocb *iocb, struct iov_iter *to)
+ int bcm_vk_open(struct inode *inode, struct file *p_file);
+-ssize_t bcm_vk_read(struct file *p_file, char __user *buf, size_t count,
+-		    loff_t *f_pos);
+-ssize_t bcm_vk_write(struct file *p_file, const char __user *buf,
+-		     size_t count, loff_t *f_pos);
++ssize_t bcm_vk_read(struct kiocb *iocb, struct iov_iter *to);
++ssize_t bcm_vk_write(struct kiocb *iocb, struct iov_iter *from);
+ __poll_t bcm_vk_poll(struct file *p_file, struct poll_table_struct *wait);
+ int bcm_vk_release(struct inode *inode, struct file *p_file);
+ void bcm_vk_release_data(struct kref *kref);
+diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
+index d4a96137728d..1fadb7b2dec1 100644
+--- a/drivers/misc/bcm-vk/bcm_vk_dev.c
++++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
+@@ -1258,8 +1258,8 @@ static long bcm_vk_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ static const struct file_operations bcm_vk_fops = {
+ 	.owner = THIS_MODULE,
+ 	.open = bcm_vk_open,
+-	.read = bcm_vk_read,
+-	.write = bcm_vk_write,
++	.read_iter = bcm_vk_read,
++	.write_iter = bcm_vk_write,
+ 	.poll = bcm_vk_poll,
+ 	.release = bcm_vk_release,
+ 	.mmap = bcm_vk_mmap,
+diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c b/drivers/misc/bcm-vk/bcm_vk_msg.c
+index 1f42d1d5a630..31418a677ecd 100644
+--- a/drivers/misc/bcm-vk/bcm_vk_msg.c
++++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
+@@ -13,6 +13,7 @@
+ #include <linux/sizes.h>
+ #include <linux/spinlock.h>
+ #include <linux/timer.h>
++#include <linux/uio.h>
+ 
+ #include "bcm_vk.h"
+ #include "bcm_vk_msg.h"
+@@ -998,18 +999,16 @@ int bcm_vk_open(struct inode *inode, struct file *p_file)
+ 	return rc;
+ }
+ 
+-ssize_t bcm_vk_read(struct file *p_file,
+-		    char __user *buf,
+-		    size_t count,
+-		    loff_t *f_pos)
++ssize_t bcm_vk_read(struct kiocb *iocb, struct iov_iter *to)
  {
--	struct omap_iommu *obj = file->private_data;
-+	struct omap_iommu *obj = iocb->ki_filp->private_data;
+ 	ssize_t rc = -ENOMSG;
+-	struct bcm_vk_ctx *ctx = p_file->private_data;
++	struct bcm_vk_ctx *ctx = iocb->ki_filp->private_data;
+ 	struct bcm_vk *vk = container_of(ctx->miscdev, struct bcm_vk,
+ 					 miscdev);
+ 	struct device *dev = &vk->pdev->dev;
+ 	struct bcm_vk_msg_chan *chan = &vk->to_h_msg_chan;
+ 	struct bcm_vk_wkent *entry = NULL, *iter;
 +	size_t count = iov_iter_count(to);
- 	char *p, *buf;
- 	ssize_t bytes;
+ 	u32 q_num;
+ 	u32 rsp_length;
  
-@@ -100,7 +101,7 @@ static ssize_t debug_read_regs(struct file *file, char __user *userbuf,
- 	bytes = omap_iommu_dump_ctx(obj, p, count);
- 	if (bytes < 0)
- 		goto err;
--	bytes = simple_read_from_buffer(userbuf, count, ppos, buf, bytes);
-+	bytes = simple_copy_to_iter(buf, &iocb->ki_pos, bytes, to);
+@@ -1047,7 +1046,7 @@ ssize_t bcm_vk_read(struct file *p_file,
+ 		/* retrieve the passed down msg_id */
+ 		set_msg_id(&entry->to_h_msg[0], entry->usr_msg_id);
+ 		rsp_length = entry->to_h_blks * VK_MSGQ_BLK_SIZE;
+-		if (copy_to_user(buf, entry->to_h_msg, rsp_length) == 0)
++		if (!copy_to_iter_full(entry->to_h_msg, rsp_length, to))
+ 			rc = rsp_length;
  
- err:
- 	mutex_unlock(&iommu_debug_lock);
-@@ -231,7 +232,7 @@ static int pagetable_show(struct seq_file *s, void *data)
- #define DEBUG_FOPS_RO(name)						\
- 	static const struct file_operations name##_fops = {	        \
- 		.open = simple_open,					\
--		.read = debug_read_##name,				\
-+		.read_iter = debug_read_##name,				\
- 		.llseek = generic_file_llseek,				\
+ 		bcm_vk_free_wkent(dev, entry);
+@@ -1060,7 +1059,7 @@ ssize_t bcm_vk_read(struct file *p_file,
+ 		 */
+ 		set_msg_id(&tmp_msg, entry->usr_msg_id);
+ 		tmp_msg.size = entry->to_h_blks - 1;
+-		if (copy_to_user(buf, &tmp_msg, VK_MSGQ_BLK_SIZE) != 0) {
++		if (!copy_to_iter_full(&tmp_msg, VK_MSGQ_BLK_SIZE, to)) {
+ 			dev_err(dev, "Error return 1st block in -EMSGSIZE\n");
+ 			rc = -EFAULT;
+ 		}
+@@ -1068,17 +1067,15 @@ ssize_t bcm_vk_read(struct file *p_file,
+ 	return rc;
+ }
+ 
+-ssize_t bcm_vk_write(struct file *p_file,
+-		     const char __user *buf,
+-		     size_t count,
+-		     loff_t *f_pos)
++ssize_t bcm_vk_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+ 	ssize_t rc;
+-	struct bcm_vk_ctx *ctx = p_file->private_data;
++	struct bcm_vk_ctx *ctx = iocb->ki_filp->private_data;
+ 	struct bcm_vk *vk = container_of(ctx->miscdev, struct bcm_vk,
+ 					 miscdev);
+ 	struct bcm_vk_msgq __iomem *msgq;
+ 	struct device *dev = &vk->pdev->dev;
++	size_t count = iov_iter_count(from);
+ 	struct bcm_vk_wkent *entry;
+ 	u32 sgl_extra_blks;
+ 	u32 q_num;
+@@ -1107,7 +1104,7 @@ ssize_t bcm_vk_write(struct file *p_file,
  	}
  
+ 	/* now copy msg from user space, and then formulate the work entry */
+-	if (copy_from_user(&entry->to_v_msg[0], buf, count)) {
++	if (!copy_from_iter_full(&entry->to_v_msg[0], count, from)) {
+ 		rc = -EFAULT;
+ 		goto write_free_ent;
+ 	}
 -- 
 2.43.0
 
