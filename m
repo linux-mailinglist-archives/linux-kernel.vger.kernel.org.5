@@ -1,103 +1,212 @@
-Return-Path: <linux-kernel+bounces-139648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D283B8A05C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 04:19:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75A3B8A05CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 04:21:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D251282747
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:19:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2B9A1F2496B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:21:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30A7D64CD0;
-	Thu, 11 Apr 2024 02:19:06 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB86657A3;
+	Thu, 11 Apr 2024 02:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Upp2YEQF"
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAFE3634E5
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 02:19:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73CC96217D;
+	Thu, 11 Apr 2024 02:21:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712801945; cv=none; b=hxL5cr/EP6WdSBmnXj5XgYf1I8MgB3/q7HGwYWGto++bDuzWQtgG1lk+UceYw24+2Bn8i89J/E8qSWYI/eB9qQz0VM41euxq3aUdFdfDp5VQmc54E89ZH00MChH6lYb2qXIo8wevn/nxPB7NBzHoTc+c73BYZpFrDcdsUo2a7ao=
+	t=1712802100; cv=none; b=I6LxsnhsmWOkGdBrG73rYJq2ByBoHrIdZik4HAkEbnebzdtzd8ahxJI0exCVw29o4uD4F6uHOg+Xp60Bdw5WBeVmBkvdd8E4FQSi6QaubCuM7yx5B9xgRu6b7Kg+iD4Aw4IjkNuf5j6aqu89ShdSWX2ccga2cquvTR5+ccy2vSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712801945; c=relaxed/simple;
-	bh=lKcqCBKrjxlHSJoaV287CW1HfG7T/scL2q276VSe/4Q=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=e51Fy2y6qqkf+rD9go3hyQ18cQDIpxoPJ/NdTYqYLXjCKFIYzl9JQry5D86EfiihLEiAtHNcl8y/H0YyOGIPo415bu3AXcRsoV7lZF1+1O1ft2hBDHe+plgXJsUuThVzTuDUNtSahPBxvA4mNwLXoNF4TTn9VM4p3GR0U4FJo6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VFNdx2Np7z1GGNn;
-	Thu, 11 Apr 2024 10:18:13 +0800 (CST)
-Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2073618002F;
-	Thu, 11 Apr 2024 10:19:00 +0800 (CST)
-Received: from [10.173.135.154] (10.173.135.154) by
- canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 11 Apr 2024 10:18:59 +0800
-Subject: Re: [PATCH] fork: defer linking file vma until vma is fully
- initialized
-To: Andrew Morton <akpm@linux-foundation.org>
-CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-	<brauner@kernel.org>, <oleg@redhat.com>, <tandersen@netflix.com>,
-	<mjguzik@gmail.com>, <willy@infradead.org>, <kent.overstreet@linux.dev>,
-	<zhangpeng.00@bytedance.com>, <hca@linux.ibm.com>, <mike.kravetz@oracle.com>,
-	<muchun.song@linux.dev>, <thorvald@google.com>, <Liam.Howlett@Oracle.com>,
-	<jane.chu@oracle.com>
-References: <20240410091441.3539905-1-linmiaohe@huawei.com>
- <20240410132157.b0e54f59b066f2c1d322d425@linux-foundation.org>
-From: Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <bc472a86-5a5d-9551-5680-8519b8682169@huawei.com>
-Date: Thu, 11 Apr 2024 10:18:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1712802100; c=relaxed/simple;
+	bh=KD3rDXWHvk1CxdwHisdkYO4Vhfo45BdzIC+WxYtdhM8=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=chtxbYS8rh23eT9nDXoWbtBIczO2Zd3hhoM7NS3quINqbxYPbZvol0uDD29xEaZajjO4F7gF14wdfPSgTR6EMPUdFYG0M9tysR0cbYDhneUGEy7rRhzhUPXHUcxyg8PbCr3Msqwm+is5c/s/Fb83nLo2JsTZCBK+276Pdewv6n0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Upp2YEQF; arc=none smtp.client-ip=209.85.222.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-78a2a97c296so425856085a.2;
+        Wed, 10 Apr 2024 19:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712802097; x=1713406897; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dmdPnOyH2qPhBHVtcKTf50Z6ubxOLyjpPuA4rsppEgc=;
+        b=Upp2YEQFCi1dmWC7c6UqoCeRk7ZmaSfdzETjhAq2iXJM9TpGD2eqwikhtFdh5xV8gF
+         u56wbaGAWaIZxdq+255pCAfmtLK3gA8vRqAhQ/iJkseLgEgu4jri2pwFNTCYFhvB6M40
+         LBFbkctrWVu51eS9oDMd8dKa+GBhNnVnVbMevylct1AOQK7qxidhm6NrIM2yu7ofLKmk
+         T2qIW8InUf6OX66jqj9G+3EWnM0runWB72amEQrxSkbaaeI3wgtn7FZuBrcf1B9lURv9
+         xuTEg+b8WuU372K3bsCTIAQzQ7KJwrruv18wsprntRxsHTMVYKm+r+fYr7X6+ZTSJsiA
+         zO/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712802097; x=1713406897;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=dmdPnOyH2qPhBHVtcKTf50Z6ubxOLyjpPuA4rsppEgc=;
+        b=Or9Yfdy1y2RxCDcnafmEnhXp3+sLu9irO+N/0BujXRpzulzvLSmT6fKgl0Pte6pAsm
+         S1vuyK3c/wLGdwoD+Drdg8bUIUvEx7xdxWJq2QUsriyXj0XOt7jBt/dqNdsWu/+tDF9V
+         CgYdRfQUhkygHbJHvsEz5YMQ4T5iAu3WqXrrAz/Fn2JCfZr5IzKRqOEs1U+0rpT23KE0
+         NQkE7NqSrmrYdMlB9Qh8yVkEls0fhxkVG+dMgJVlbIVADiiwzWQUuRglfmZtpOXUx5bg
+         DkmIBGqBlNpi/9nSmzdUYevCWjLxErJOXC5pZe2aijjVpLuOJpW/gRo9nAetnZZ5bQLe
+         vV6A==
+X-Forwarded-Encrypted: i=1; AJvYcCVSnNgv/qvuLkjbBU74WAV+WTmQQ+WL0TBHgu8DKDTtLRPNzAnAfimuyoizof43+606QzPzNiPe1pTLuVbP6L4jNx3hjLONlazFQrtZqZfXQTSey00Ro+Ml9SCQ4ifIr1s9OMQgxklI6Ocv+ujnFKbXh7vcGDjdubkpcpYAfromAvA9bu1a
+X-Gm-Message-State: AOJu0YzlELDN4MgYcmdI+tuIVpgzO4aiObJGVEZSEd7PFYat393Y/iRa
+	Z62eXGbcdb+4T/5n9eF1UBwbItI1wCGSajeqVr7GW28dHUPDsNvB
+X-Google-Smtp-Source: AGHT+IGnPcYWlct4vY84EYxCwoBIu0Tj8/40/oeibhD1iwqZ0YOVZkuapO+eRRjhSno2rkz+Nv6l9g==
+X-Received: by 2002:a05:620a:3951:b0:78a:40f0:3cad with SMTP id qs17-20020a05620a395100b0078a40f03cadmr6075758qkn.31.1712802097262;
+        Wed, 10 Apr 2024 19:21:37 -0700 (PDT)
+Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
+        by smtp.gmail.com with ESMTPSA id bk37-20020a05620a1a2500b0078d6b2b6fdbsm369629qkb.133.2024.04.10.19.21.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 19:21:36 -0700 (PDT)
+Date: Wed, 10 Apr 2024 22:21:36 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Richard Gobert <richardbgobert@gmail.com>, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ willemdebruijn.kernel@gmail.com, 
+ shuah@kernel.org, 
+ dsahern@kernel.org, 
+ aduyck@mirantis.com, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org
+Cc: Richard Gobert <richardbgobert@gmail.com>
+Message-ID: <6617493095ee1_2d6bc6294fc@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240410153423.107381-3-richardbgobert@gmail.com>
+References: <20240410153423.107381-1-richardbgobert@gmail.com>
+ <20240410153423.107381-3-richardbgobert@gmail.com>
+Subject: Re: [PATCH net-next v6 2/6] net: gro: add p_off param in
+ *_gro_complete
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20240410132157.b0e54f59b066f2c1d322d425@linux-foundation.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500002.china.huawei.com (7.192.104.244)
 
-On 2024/4/11 4:21, Andrew Morton wrote:
-> On Wed, 10 Apr 2024 17:14:41 +0800 Miaohe Lin <linmiaohe@huawei.com> wrote:
+Richard Gobert wrote:
+> Commits a602456 ("udp: Add GRO functions to UDP socket") and 57c67ff ("udp:
+> additional GRO support") introduce incorrect usage of {ip,ipv6}_hdr in the
+> complete phase of gro. The functions always return skb->network_header,
+> which in the case of encapsulated packets at the gro complete phase, is
+> always set to the innermost L3 of the packet. That means that calling
+> {ip,ipv6}_hdr for skbs which completed the GRO receive phase (both in
+> gro_list and *_gro_complete) when parsing an encapsulated packet's _outer_
+> L3/L4 may return an unexpected value.
 > 
->> Thorvald reported a WARNING [1]. And the root cause is below race:
->>
->>  CPU 1					CPU 2
->>  fork					hugetlbfs_fallocate
->>   dup_mmap				 hugetlbfs_punch_hole
->>    i_mmap_lock_write(mapping);
->>    vma_interval_tree_insert_after -- Child vma is visible through i_mmap tree.
->>    i_mmap_unlock_write(mapping);
->>    hugetlb_dup_vma_private -- Clear vma_lock outside i_mmap_rwsem!
->> 					 i_mmap_lock_write(mapping);
->>    					 hugetlb_vmdelete_list
->> 					  vma_interval_tree_foreach
->> 					   hugetlb_vma_trylock_write -- Vma_lock is cleared.
->>    tmp->vm_ops->open -- Alloc new vma_lock outside i_mmap_rwsem!
->> 					   hugetlb_vma_unlock_write -- Vma_lock is assigned!!!
->> 					 i_mmap_unlock_write(mapping);
->>
->> hugetlb_dup_vma_private() and hugetlb_vm_op_open() are called outside
->> i_mmap_rwsem lock while vma lock can be used in the same time. Fix this
->> by deferring linking file vma until vma is fully initialized. Those vmas
->> should be initialized first before they can be used.
+> This incorrect usage leads to a bug in GRO's UDP socket lookup.
+> udp{4,6}_lib_lookup_skb functions use ip_hdr/ipv6_hdr respectively. These
+> *_hdr functions return network_header which will point to the innermost L3,
+> resulting in the wrong offset being used in __udp{4,6}_lib_lookup with
+> encapsulated packets.
 > 
-> Cool.  I queued this in mm-hotfixes (for 6.8-rcX) and I added a cc:stable.
+> To fix this issue p_off param is used in *_gro_complete to pass off the
+> offset of the previous layer.
 
-Thanks for doing this. And any comment or thought would be really welcome and appreciated.
-.
+What exactly does this mean?
 
-> .
+This patch changes the definition of gro_complete to add a thoff
+alongside the existing "nhoff"..
+
+    > -     int                     (*gro_complete)(struct sk_buff *skb, int nhoff);
+    > +     int                     (*gro_complete)(struct sk_buff *skb, int nhoff,
+    > +                                             int thoff);
+
+. but also fixes up implementations to interpret the existing
+argument as a thoff
+
+    > -INDIRECT_CALLABLE_SCOPE int tcp4_gro_complete(struct sk_buff *skb, int thoff)
+    > +INDIRECT_CALLABLE_SCOPE int tcp4_gro_complete(struct sk_buff *skb, int nhoff,
+    > +                                           int thoff)
+    >  {
+    > -     const struct iphdr *iph = ip_hdr(skb);
+    > -     struct tcphdr *th = tcp_hdr(skb);
+    > +     const struct iphdr *iph = (const struct iphdr *)(skb->data + nhoff);
+    > +     struct tcphdr *th = (struct tcphdr *)(skb->data + thoff);
+
+But in some cases the new argument is not nhoff but p_off, e.g.,
+
+    >  static int geneve_gro_complete(struct sock *sk, struct sk_buff *skb,
+    > -                            int nhoff)
+    > +                            int p_off, int nhoff)
+
+Really, the argument is the start of the next header, each callback
+just casts to its expected header (ethhdr, tcphdr, etc.)
+
+The only place where we need to pass an extra argument is in udp,
+because that needs a pointer to the network header right before the
+transport header pointed to by nhoff.
+
+And only due to possible IPv4 options or IPv6 extension headers, we
+cannot just do
+
++        struct udphdr *iph = (struct iphdr *)(skb->data + nhoff - sizeof(*iph));
+         struct udphdr *uh = (struct udphdr *)(skb->data + nhoff);
+
+I also do not immediately see an a way to avoid all the boilerplate
+of a new argument in every callback. Aside from a per_cpu var -- but
+that is excessive.
+
+But it can just be left zero in all callsites, except for
+inet_gro_complete/ipv6_gro_complete, which pass in nhoff.
+
 > 
+> Reproduction example:
+> 
+> Endpoint configuration example (fou + local address bind)
+> 
+>     # ip fou add port 6666 ipproto 4
+>     # ip link add name tun1 type ipip remote 2.2.2.1 local 2.2.2.2 encap fou encap-dport 5555 encap-sport 6666 mode ipip
+>     # ip link set tun1 up
+>     # ip a add 1.1.1.2/24 dev tun1
+> 
+> Netperf TCP_STREAM result on net-next before patch is applied:
+> 
+> net-next main, GRO enabled:
+>     $ netperf -H 1.1.1.2 -t TCP_STREAM -l 5
+>     Recv   Send    Send
+>     Socket Socket  Message  Elapsed
+>     Size   Size    Size     Time     Throughput
+>     bytes  bytes   bytes    secs.    10^6bits/sec
+> 
+>     131072  16384  16384    5.28        2.37
+> 
+> net-next main, GRO disabled:
+>     $ netperf -H 1.1.1.2 -t TCP_STREAM -l 5
+>     Recv   Send    Send
+>     Socket Socket  Message  Elapsed
+>     Size   Size    Size     Time     Throughput
+>     bytes  bytes   bytes    secs.    10^6bits/sec
+> 
+>     131072  16384  16384    5.01     2745.06
+> 
+> patch applied, GRO enabled:
+>     $ netperf -H 1.1.1.2 -t TCP_STREAM -l 5
+>     Recv   Send    Send
+>     Socket Socket  Message  Elapsed
+>     Size   Size    Size     Time     Throughput
+>     bytes  bytes   bytes    secs.    10^6bits/sec
+> 
+>     131072  16384  16384    5.01     2877.38
+> 
+> Fixes: 57c67ff4bd92 ("udp: additional GRO support")
+
+This and the previous change should really target net, as they are
+bug fixes.
+
+
 
 
