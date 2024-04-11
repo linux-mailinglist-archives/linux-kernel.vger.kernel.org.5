@@ -1,63 +1,63 @@
-Return-Path: <linux-kernel+bounces-141398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C59F8A1DBD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:17:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4202C8A1E22
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:28:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAF18288AC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:17:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF43BB274E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:17:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F27B5381A;
-	Thu, 11 Apr 2024 17:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97E0D537F7;
+	Thu, 11 Apr 2024 17:26:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lXUpBEwj"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cnnxGZNU"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D968D2BB1C;
-	Thu, 11 Apr 2024 17:26:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 696B650A77;
+	Thu, 11 Apr 2024 17:26:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712856403; cv=none; b=fsKFYvI/BHuXPKbBLRMSj9GSkuHYl6RKBM9Sln7YJsmw3DZkc8kqUzNPcEuId2GyDf/rZFtUNVy36p0BMOciptXXIR7PR+UyD2oEIPueMd+L29ZnK1AONWV94Mpsl6Niq9er8SyNj40tW6+80v6rn6ga51C6ePGV9itN1pGpIoc=
+	t=1712856404; cv=none; b=WtpiUiRD1ghXqCafy1Uq2rsuNytlDRiRhKftRzhYzXCoyNGnzzOwdomzSHamFaNq5LDjaH1LCSY61ZyIs/7TqM2YeTliz1RjMZP9iAR94iOd+s8CRX9OoqnC/kV/XqIZcjH5+8KzvLrmLsTFtCXNZ9TONhNnEGlsa6uejFDSMWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712856403; c=relaxed/simple;
-	bh=GCmd6EWyeSI61/ahtWxVMlmLMfAP5vYzOKp2NSFA8/I=;
+	s=arc-20240116; t=1712856404; c=relaxed/simple;
+	bh=mkcaxfIAu8Shkk3u4f6ITrX0al+FrzCJ1eyBmzPJWoo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mJRwNbflxCE4pfb2GRrrk8MsaCD8fQJCMRYFTVoO+BVdCSk0U3gmgqcupmYu4vfdcGWxkSdtRmKp1F6momeKD4X7X6lCUPkttTQs70qsrrAxZJhfFiW9URW21FCUFrLAjy0pZaLH2ZEJgI0QNvjTZI8T6OnSWQzJqGYz4XIH1Ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lXUpBEwj; arc=none smtp.client-ip=198.175.65.11
+	 MIME-Version; b=Dm+9auKEbcevnUrDUckQsvP1OdYzdeKrIgx1Xst5qAaLW8pAjMStVxrFW+/Ec7jvGGWGjHq/hIqk+QT2X7otHUNpImCk+RR2WPtpWYGl11XraAQXxorxHkwLXw8VGeu5ElAXogixXrRPJhKN/Y5Y/F4OvIfgf1IgHcAy+/KZBZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cnnxGZNU; arc=none smtp.client-ip=198.175.65.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712856402; x=1744392402;
+  t=1712856404; x=1744392404;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=GCmd6EWyeSI61/ahtWxVMlmLMfAP5vYzOKp2NSFA8/I=;
-  b=lXUpBEwju9hHwDYAjqGVNgAjmo0NkZOY1QhOmqvKWy6+UB4UqtjAIW67
-   AQdBo5iuUslUnKqawseAgZuhR+fQSLosCw0tLyVRfcMx6haf3KF0K4xBi
-   x7D+wDCIQkTrvfYYYO1p8C8a76/MEhNg7tJi4sD3hBq81rkOZ9waJysEn
-   w9ZSfkXMcGxN5AocoWMOVM1mYJHABf2vpdhXf0a16FjdyLg5l7nElXrzV
-   r7D6q7lgYeckKGaKoOiU4r8MI//+82NKbK+HVeUj9J1nJSBqdW31nF+i/
-   HazS+1inMFLuE2YUiyaN9CFBi865HOAMvU3gfg3Jjfk8J0tTNj6ilfKta
-   w==;
-X-CSE-ConnectionGUID: FNuNgM5kReSxgswtEStJpQ==
-X-CSE-MsgGUID: APbE3zVKSHmKWiPsliT4tQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="18844992"
+  bh=mkcaxfIAu8Shkk3u4f6ITrX0al+FrzCJ1eyBmzPJWoo=;
+  b=cnnxGZNU3xxMElhZGYp6aDVOvkVvxJQuFJr5mCZyhFdxwnZpi4stAGfG
+   8lQWbQFctO1NIyw8zioiChXAI+ZGKQ3Q+OGcfMaMpti+2WSaSt+Ju4vNo
+   jotbmDysUT6u1GRrMBUhIgiacMuM+qiqBWOIM2vn8vhp0JSEbkvMU1PwM
+   AmcwgTY7KzgncXO0jcoVcOqzkIs2ne4LBCCq7Dc8Po3Cetusa3LPJuWB6
+   lf3/oOB8dD174lmAk5jnwHRvMzdTIIAZIa2kqyvd3BAuUmzgnXjl97iu+
+   SmSkxlxunFKYs6ifrk/4wpZWu4R/ocJPOPI+NQNf8x0gHBfEiJMZ/YPye
+   g==;
+X-CSE-ConnectionGUID: NRO8WPnCS+Sl99JdXQnPGA==
+X-CSE-MsgGUID: U/tu2Y4SSZmgBguKyKPF4w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="18845023"
 X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="18844992"
+   d="scan'208";a="18845023"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 10:26:39 -0700
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 10:26:40 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="937097271"
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="937097276"
 X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="937097271"
+   d="scan'208";a="937097276"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga001.fm.intel.com with ESMTP; 11 Apr 2024 10:26:35 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 0AE03161; Thu, 11 Apr 2024 20:26:33 +0300 (EEST)
+	id 1C123374; Thu, 11 Apr 2024 20:26:34 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -77,9 +77,9 @@ Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
 	Paolo Abeni <pabeni@redhat.com>,
 	"Rafael J. Wysocki" <rafael@kernel.org>,
 	Len Brown <lenb@kernel.org>
-Subject: [PATCH v1 1/4] gpiolib: acpi: Extract __acpi_find_gpio() helper
-Date: Thu, 11 Apr 2024 20:22:29 +0300
-Message-ID: <20240411172540.4122581-3-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 2/4] gpiolib: acpi: Simplify error handling in __acpi_find_gpio()
+Date: Thu, 11 Apr 2024 20:22:30 +0300
+Message-ID: <20240411172540.4122581-4-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 In-Reply-To: <20240411172540.4122581-2-andriy.shevchenko@linux.intel.com>
 References: <20240411172540.4122581-2-andriy.shevchenko@linux.intel.com>
@@ -91,79 +91,45 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We want to reuse it later on in the code. In particular, it helps
-to clean up the users of acpi_dev_gpio_irq_wake_get_by().
+Now that we don't perform anything on the GPIO descriptor,
+we may simplify the error path in newly introduced helper.
+Do it so.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/gpio/gpiolib-acpi.c | 32 +++++++++++++++++++++++---------
- 1 file changed, 23 insertions(+), 9 deletions(-)
+ drivers/gpio/gpiolib-acpi.c | 16 +++++-----------
+ 1 file changed, 5 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
-index c2a33beeec50..d47b22ac3ecb 100644
+index d47b22ac3ecb..fb2e14670b7a 100644
 --- a/drivers/gpio/gpiolib-acpi.c
 +++ b/drivers/gpio/gpiolib-acpi.c
-@@ -945,14 +945,11 @@ static bool acpi_can_fallback_to_crs(struct acpi_device *adev,
- 	return con_id == NULL;
- }
- 
--struct gpio_desc *acpi_find_gpio(struct fwnode_handle *fwnode,
--				 const char *con_id,
--				 unsigned int idx,
--				 enum gpiod_flags *dflags,
--				 unsigned long *lookupflags)
-+static struct gpio_desc *
-+__acpi_find_gpio(struct fwnode_handle *fwnode, const char *con_id, unsigned int idx,
-+		 struct acpi_gpio_info *info)
- {
- 	struct acpi_device *adev = to_acpi_device_node(fwnode);
--	struct acpi_gpio_info info;
- 	struct gpio_desc *desc;
- 	char propname[32];
- 	int i;
-@@ -969,10 +966,10 @@ struct gpio_desc *acpi_find_gpio(struct fwnode_handle *fwnode,
- 
- 		if (adev)
- 			desc = acpi_get_gpiod_by_index(adev,
--						       propname, idx, &info);
-+						       propname, idx, info);
- 		else
- 			desc = acpi_get_gpiod_from_data(fwnode,
--						        propname, idx, &info);
-+							propname, idx, info);
- 		if (PTR_ERR(desc) == -EPROBE_DEFER)
+@@ -974,20 +974,14 @@ __acpi_find_gpio(struct fwnode_handle *fwnode, const char *con_id, unsigned int
  			return ERR_CAST(desc);
  
-@@ -985,11 +982,28 @@ struct gpio_desc *acpi_find_gpio(struct fwnode_handle *fwnode,
- 		if (!adev || !acpi_can_fallback_to_crs(adev, con_id))
- 			return ERR_PTR(-ENOENT);
- 
--		desc = acpi_get_gpiod_by_index(adev, NULL, idx, &info);
-+		desc = acpi_get_gpiod_by_index(adev, NULL, idx, info);
- 		if (IS_ERR(desc))
+ 		if (!IS_ERR(desc))
+-			break;
+-	}
+-
+-	/* Then from plain _CRS GPIOs */
+-	if (IS_ERR(desc)) {
+-		if (!adev || !acpi_can_fallback_to_crs(adev, con_id))
+-			return ERR_PTR(-ENOENT);
+-
+-		desc = acpi_get_gpiod_by_index(adev, NULL, idx, info);
+-		if (IS_ERR(desc))
  			return desc;
  	}
  
-+	return desc;
-+}
+-	return desc;
++	/* Then from plain _CRS GPIOs */
++	if (!adev || !acpi_can_fallback_to_crs(adev, con_id))
++		return ERR_PTR(-ENOENT);
 +
-+struct gpio_desc *acpi_find_gpio(struct fwnode_handle *fwnode,
-+				 const char *con_id,
-+				 unsigned int idx,
-+				 enum gpiod_flags *dflags,
-+				 unsigned long *lookupflags)
-+{
-+	struct acpi_device *adev = to_acpi_device_node(fwnode);
-+	struct acpi_gpio_info info;
-+	struct gpio_desc *desc;
-+
-+	desc = __acpi_find_gpio(fwnode, con_id, idx, &info);
-+	if (IS_ERR(desc))
-+		return desc;
-+
- 	if (info.gpioint &&
- 	    (*dflags == GPIOD_OUT_LOW || *dflags == GPIOD_OUT_HIGH)) {
- 		dev_dbg(&adev->dev, "refusing GpioInt() entry when doing GPIOD_OUT_* lookup\n");
++	return acpi_get_gpiod_by_index(adev, NULL, idx, info);
+ }
+ 
+ struct gpio_desc *acpi_find_gpio(struct fwnode_handle *fwnode,
 -- 
 2.43.0.rc1.1336.g36b5255a03ac
 
