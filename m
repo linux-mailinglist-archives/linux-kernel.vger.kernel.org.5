@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 790EE8A19A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:15:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 497738A19A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:15:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0C96287483
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:15:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04A8C287BA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219B31A38E3;
-	Thu, 11 Apr 2024 15:36:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41431A38FE;
+	Thu, 11 Apr 2024 15:36:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Xq/shxH2"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="ieseGsgG"
+Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7961A38C7
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC09D1A38DF
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849770; cv=none; b=jRlUSF3hbZzRYMGUSG1IUoswSfNQ2j3hMFjpf4JjSqqK34bRJn5FZggqgZWKg/BLfTF0SIoMj46XD5s8K1r3pDDjm7uJ2FtCV5v7tDI1ddjVzfVoSDdiXAKEX6rz/UkD7VYqndrIP4iBl4/RIXK8lY+2zQoLhI0fHXfXIEZ9H8Y=
+	t=1712849772; cv=none; b=sse7f+GgwuWz6DsasZ+/OVEVpCa70zxHRtmiqMS06aWPUaD4cEUUGQfmD3XwpjCAzJESYnnZyXlz5+KgrTu0Edv5jHfrtKiwlR6ijwxtYrlTBqnRhNN0l2fG4GStGID9QF0lpTD9yRZ0uq+aSXKnZY0Wr/Xa3ZjzxTb0KRjk2I4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849770; c=relaxed/simple;
-	bh=YdYk418vTwmA+ey7yZx9ARVq0HB6UyKi8g6lBoKZ550=;
+	s=arc-20240116; t=1712849772; c=relaxed/simple;
+	bh=twycO02VICSyua+S42Z41bDXI3vMA3cbCRt8cdsenRA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Fae5GvIL8E05wo9U9H+x3GS1u98ZLnfCvAq2ZPxPZkNzL00LIYydXVa3t2Q7mBgQ96khyA2fv7F8cPRJ2nj6EQByzVJJOdndvispwjGTuhMUpVd92Hylp9iNK3+Nxuyxg7nuqeeJhnow5dp2x6JMopXg3c0zsoJaS0CogvVgzyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Xq/shxH2; arc=none smtp.client-ip=209.85.166.51
+	 MIME-Version; b=tyX/+MiwsaeO918eIMe+7Ak8rOLkxWRfqCN3LFvKVYjt8XpgsIoxJEMa/K4qEBgB1uImoQnMFPaE6IXcnY3u//UDyG4wqG5DjFvO7zQYc0O5mXWdsEkUU1nxJJCTCQLQKzIBmCo3Ci4uD+S0T9MsYeEQ1RMt8poFa2nugHOzlpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=ieseGsgG; arc=none smtp.client-ip=209.85.166.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7d67d1073easo9789339f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:36:09 -0700 (PDT)
+Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7d67d1073easo9790139f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:36:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849768; x=1713454568; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849770; x=1713454570; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vylp/B+kLpVLQhCobojuB7Q0u9hUZIzqgrY8mV9AQJ8=;
-        b=Xq/shxH2KOYODNIX59pHkjGH5eO5SRuwu+eD/VTCRjtl2BNiIqLGkX+G8lGU9WJDAd
-         2lems40Otg6F5AjPjIt8VTC80i4DBELpEAXMQ3Elq4ICpgxBMIPcbY2qxVM5otUfT2Xs
-         vI1h+sk6I9mXl481/xr6UW3qPSQoA6+BdyLTBg3oSgbI2xECHP+xf3Yq5cADt0H7ze3r
-         6u1yEqmFXGOsbgS/bvi9rEocCYONWlEG5e6ZEbx6QiTW51iEbxbqAgmPSd0uLv07Xzys
-         Pb/EXioEeEwtjjf8mVbXC/LTf894+qWHKOfPNDOIcc5SQuT1kvCaSaaeLZdbIV1gwurd
-         vyyg==
+        bh=xwO8HCq/CBDdgPKYG66qd5vuQddMB2sooLT/MNROoRw=;
+        b=ieseGsgGED3NgObmRtE/E6jYzbL3W+9rjnxzGf2un92vfB05H+IQOIXOrhxVV/oFKu
+         BtOTvccou93/ck5idl75nZp/AKR/jhBIjkAFwHfN48fOubqmEXCRt5LIy14GThJuirGR
+         d2uMyUs6amaHsdYgRS5wqc92swIOw5qlmFo/jXqnt2q/O/lfGFqi71U7bXPp3XmOvgEr
+         ugcncsblOKtvR2K2zVaYEUcSSUluY08sYU2rAuKT0uTYEQaN6ClH1gRQHi2NRXE6JYTr
+         LPbgsDC/Dq5+4OugHfztS5RsN8S6iHtQUEzlPFDFO61b/L2RMBARoZSCn11pFyHg8q23
+         gFtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849768; x=1713454568;
+        d=1e100.net; s=20230601; t=1712849770; x=1713454570;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vylp/B+kLpVLQhCobojuB7Q0u9hUZIzqgrY8mV9AQJ8=;
-        b=KPxWxulvnEn6JnNj70ZL7dmUPhAOR5RVyPLCausLggRQZ7+hnLQ2yJuXYT3FYCrgUV
-         FP2ibX5RmpSyUaQZvyVnhY3YAvvhhHGLBG8EZ5qz8lMffRFgKTuX9U60XS+cQc6anceL
-         4bAr2KiK8s+w+0QQwUdL/PZh3lgMzrXZ8AfLabbFqdvkeoYV22j+PRlrnwG9LfSAYhIm
-         +GoQUW4HNdbz5HHhsjXx7L3zo3SSrMXLTQ4h6vSdobvEJT6UN6kDshad2CLDkBix+RzK
-         82B2F3W5oBIGjYXSD3m2DvcFB/oYKyBkhK7Pa0JJIOTapvrFh5NF1Avouxie/wSueERC
-         4aHg==
-X-Gm-Message-State: AOJu0YzBCEAcqLtJG9xZGmIbIk7QTJoQsAVfzGQboaPVDZy8TJIf+Wby
-	FAkhMazf8vCmiuHHf4vOHXUHE/RPf0RyxMVKwXBhYJKwmjZTBYFybyZqXllFsQdS+3aHC0DNx97
-	o
-X-Google-Smtp-Source: AGHT+IHLqpS/2k+aT2Eu6G5HQj3Sk8AorUUybGSbflWbuRljB3aVX4MvGRRkpZKRkTYtpmcC65Bf4A==
-X-Received: by 2002:a05:6602:84:b0:7d6:9d75:6de2 with SMTP id h4-20020a056602008400b007d69d756de2mr41323iob.2.1712849768132;
-        Thu, 11 Apr 2024 08:36:08 -0700 (PDT)
+        bh=xwO8HCq/CBDdgPKYG66qd5vuQddMB2sooLT/MNROoRw=;
+        b=bq0oEs9FGuQbRJWteVh28BN99Yb0Y+t+QYmNPkrvtIEKjcsZSfduKlNNhr/MegTdga
+         jyvpu6LI/u2Z9RWTFKbOO8qrfY08pvf/Ru13xu8rglyJfKullgb1deLgJ6PL2YDKFwVo
+         XpL2jfI3cCbC2FWSfufNtLXF053St8kpjGHHnS7ghqcqbWb6BwoNURvu/5DEKFZbIdLR
+         +7GFXvSwwtOw0Zy4kRnopsdKbF9/fl+AmytUYqZ/dXdy5/km7HHUfYOBdTgzx39V4Ln4
+         /b42JS+nfnfwxPseSKZ6JS14HTn5BPoXA/+C1dWVMgXCin6sK6h5dS/08+PNcErKsI2C
+         us7Q==
+X-Gm-Message-State: AOJu0YxihbZszep8vNO30/Q6HVLwbjYHHJJMDNXUVbPW7OKIh7G3T6sb
+	cb1aB6dKGqWxT1AGV88F1wM1wIwdNDi8HAmx7H1UYCyoZUkAZSBlRxaPRq/xk9tLTfusSGYf1zi
+	N
+X-Google-Smtp-Source: AGHT+IG+yk7P37bWFCH0e2jBRcVfijTNwizP8k7zlcG4RLnwTpYaIXYr+gpb1BvWAaDHyf68EAlEOw==
+X-Received: by 2002:a6b:c34e:0:b0:7d6:7b7c:8257 with SMTP id t75-20020a6bc34e000000b007d67b7c8257mr217049iof.0.1712849769874;
+        Thu, 11 Apr 2024 08:36:09 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.36.06
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.36.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:36:06 -0700 (PDT)
+        Thu, 11 Apr 2024 08:36:08 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 158/437] usb: core: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:14:58 -0600
-Message-ID: <20240411153126.16201-159-axboe@kernel.dk>
+Subject: [PATCH 159/437] usb: dwc2: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:14:59 -0600
+Message-ID: <20240411153126.16201-160-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,46 +85,45 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/usb/core/devices.c | 3 ++-
- drivers/usb/core/devio.c   | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/usb/dwc2/debugfs.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/usb/core/devices.c b/drivers/usb/core/devices.c
-index a247da73f34d..f367132a6770 100644
---- a/drivers/usb/core/devices.c
-+++ b/drivers/usb/core/devices.c
-@@ -538,8 +538,9 @@ static ssize_t usb_device_read(struct file *file, char __user *buf,
- 	mutex_unlock(&usb_bus_idr_lock);
- 	return total_written;
- }
-+FOPS_READ_ITER_HELPER(usb_device_read);
+diff --git a/drivers/usb/dwc2/debugfs.c b/drivers/usb/dwc2/debugfs.c
+index 1d72ece9cfe4..b106744e13b5 100644
+--- a/drivers/usb/dwc2/debugfs.c
++++ b/drivers/usb/dwc2/debugfs.c
+@@ -24,16 +24,16 @@
+  * @count: The ubuf size.
+  * @ppos: Unused parameter.
+  */
+-static ssize_t testmode_write(struct file *file, const char __user *ubuf, size_t
+-		count, loff_t *ppos)
++static ssize_t testmode_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct seq_file		*s = file->private_data;
++	struct seq_file		*s = iocb->ki_filp->private_data;
++	size_t			count = iov_iter_count(from);
+ 	struct dwc2_hsotg	*hsotg = s->private;
+ 	unsigned long		flags;
+ 	u32			testmode = 0;
+ 	char			buf[32];
  
- const struct file_operations usbfs_devices_fops = {
- 	.llseek =	no_seek_end_llseek,
--	.read =		usb_device_read,
-+	.read_iter =	usb_device_read_iter,
+-	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
++	if (!copy_from_iter_full(&buf, min_t(size_t, sizeof(buf) - 1, count), from))
+ 		return -EFAULT;
+ 
+ 	if (!strncmp(buf, "test_j", 6))
+@@ -108,8 +108,8 @@ static int testmode_open(struct inode *inode, struct file *file)
+ static const struct file_operations testmode_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.open		= testmode_open,
+-	.write		= testmode_write,
+-	.read		= seq_read,
++	.write_iter	= testmode_write,
++	.read_iter	= seq_read_iter,
+ 	.llseek		= seq_lseek,
+ 	.release	= single_release,
  };
-diff --git a/drivers/usb/core/devio.c b/drivers/usb/core/devio.c
-index 3beb6a862e80..bebfbebc1f69 100644
---- a/drivers/usb/core/devio.c
-+++ b/drivers/usb/core/devio.c
-@@ -390,6 +390,7 @@ static ssize_t usbdev_read(struct file *file, char __user *buf, size_t nbytes,
- 	usb_unlock_device(dev);
- 	return ret;
- }
-+FOPS_READ_ITER_HELPER(usbdev_read);
- 
- /*
-  * async list handling
-@@ -2846,7 +2847,7 @@ static __poll_t usbdev_poll(struct file *file,
- const struct file_operations usbdev_file_operations = {
- 	.owner =	  THIS_MODULE,
- 	.llseek =	  no_seek_end_llseek,
--	.read =		  usbdev_read,
-+	.read_iter =	  usbdev_read_iter,
- 	.poll =		  usbdev_poll,
- 	.unlocked_ioctl = usbdev_ioctl,
- 	.compat_ioctl =   compat_ptr_ioctl,
 -- 
 2.43.0
 
