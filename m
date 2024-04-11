@@ -1,112 +1,123 @@
-Return-Path: <linux-kernel+bounces-141677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141682-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 583058A21E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:47:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FB188A21F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:54:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 654471C2340F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:47:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0B9B287D49
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:54:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6DD74654F;
-	Thu, 11 Apr 2024 22:47:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84B946B80;
+	Thu, 11 Apr 2024 22:53:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="mu2C0ZFK"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Ra/PrU+U"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB091862E;
-	Thu, 11 Apr 2024 22:47:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E4B74D108;
+	Thu, 11 Apr 2024 22:53:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712875626; cv=none; b=MO5HEoqnjTFihCSX4NJpc/JU1G7OZiFxHZSxhEC+e/kp9+U/G+EzHPbzGDrl+woAr37Jwd05ykOkeWu9wCeiWDhfpdXQ7Blwt3GQPxMC9HRwOFXkbq+s/DNqYykFyefJo79X7q5alUW21dDKzEfAEcvpmnjKN88elTBcvh4Kxhg=
+	t=1712875999; cv=none; b=HQseqnDokeX8+7lSV07g1f/IQ3KmB7tTIKCaB7qPKMg9a9XbFu8tR8hgHJMdhBnZmLcru+ihKzLxWoAdw52UX+3urWmM23MzH84WdFW2rp/DMHrTBdaMKBh9kXrxpGMNwHDuP/NYxPln/dfHXhd5ZD7wqmVuKQONC4kcg32jDPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712875626; c=relaxed/simple;
-	bh=B7DFaexNp7uzlDwROoWiFKLN2RLvcdHIT/H/rvV1EmE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=haV6kISorct6ODq5wCTwVJ2CUlFcpyGpaBg1CfhK0yvkrUJEmpq5sDuOXoAW0Lvm9R5/MxuipV5L5TrTURdB637aoLlvUAwthxIyvgWEJ3/64O6OBC+yZIF1TcyS6ReSY53Bz8DSK/HDgs3wm3B9NOFBZh6FGeqaB0ObDuFH6LE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=mu2C0ZFK; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1712875621;
-	bh=lGwbAIqRRJJ+SVhlSB3z0aE44aqSlaaLALzt8XtjRSU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=mu2C0ZFKq1P+XtQ1/IUAuwHIqORcSwYCTB+sZ5ZDT9M9ZKaw23q7q30VN1mcCUBkq
-	 JJU/Etke7XlsdTaiqRH5BPt4foFt5Y/7Qqm+Cmxs4/Md2IMbu3jAYB1z72n9ZGZ0Sv
-	 BzFtZSfP0upeyWE3ioZO48UoxVAMKBxL7EbjdmvFVUP7zA/FOd60gvcftIBmqeDo8f
-	 gQSpMFxYXzExTXkZbtV/v5EcXOiINjXCbbz4b0fg441i8Hvx+zZ7qSs5XwvZLRAYdA
-	 HhF2zLhR8niSElBTEPZhxuahUxwEAJOiQVWonWR8rI+Jx2giqq4b1wTIIGYeFkHChJ
-	 CLK0Fls0olwqQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VFvvn2tv9z4wnv;
-	Fri, 12 Apr 2024 08:47:00 +1000 (AEST)
-Date: Fri, 12 Apr 2024 08:47:00 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Huacai Chen <chenhuacai@loongson.cn>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patch in the loongarch tree
-Message-ID: <20240412084700.21dae182@canb.auug.org.au>
-In-Reply-To: <20240408101333.67a8bf17@canb.auug.org.au>
-References: <20240408101333.67a8bf17@canb.auug.org.au>
+	s=arc-20240116; t=1712875999; c=relaxed/simple;
+	bh=UNHv6+Y7DsoY0XQE53JoSzkJ3ZOGe3lZ3+BPvFel6go=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gycNYJPZ5JZC1UIV5coJdioPjY17uKX1n7+NJiHn5PHuQI9cfT4dy6RT4M0hhMDZEKW2DgkUAQWTLUv0XZVRM2XSg4Rk/r9ad9YZJKsCSZVCVaDteBn/DVuzCPNgm7/roXpewyLSqQ/DcSzchZd+6bbN6jC5SQN7H2GyK6jz+QA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Ra/PrU+U; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43BMqvtR115878;
+	Thu, 11 Apr 2024 17:52:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712875977;
+	bh=k/6Ejm6t8n3tA2KqC9S8sogmmyxBPS/9Pwp4x5SZSZE=;
+	h=From:To:CC:Subject:Date;
+	b=Ra/PrU+UlM68uSfsGekt5dOg6ilRkOnFUslCQE81BUf5VmXYtXkmyWpDjwigmA9Rw
+	 XHAgAdbkla5o3hF5vXyXb38k6lXio/h7ywegX2I7wZn7Zva6b355qoHqmU1y/8JzkL
+	 NsCr9VdbZIh8u/1SUMpyF8aHwZEAcq3qLxmnUka8=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43BMqv0f015552
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 11 Apr 2024 17:52:57 -0500
+Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 11
+ Apr 2024 17:52:57 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 11 Apr 2024 17:52:57 -0500
+Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43BMqv7W002381;
+	Thu, 11 Apr 2024 17:52:57 -0500
+From: Judith Mendez <jm@ti.com>
+To: Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>
+CC: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero
+ Kristo <kristo@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Bhavya Kapoor <b-kapoor@ti.com>,
+        Dasnavis
+ Sabiya <sabiya.d@ti.com>, Udit Kumar <u-kumar1@ti.com>
+Subject: [PATCH 0/7] MMC updates for TI K3 platforms
+Date: Thu, 11 Apr 2024 17:52:50 -0500
+Message-ID: <20240411225257.383889-1-jm@ti.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/p.bHwdmttzCEix88c8+OBoX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
---Sig_/p.bHwdmttzCEix88c8+OBoX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This patch series includes MMC updates for various TI K3 platforms.
 
-Hi all,
+It includes support for enabling UHS/SDR104 bus modes or removing
+HS400 support due to CQE errors seen during boot.
 
-On Mon, 8 Apr 2024 10:13:33 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> The following commit is also in the mm tree as a different commit (but
-> the same patch):
->=20
->   27e361b5e171 ("LoongArch: Include linux/sizes.h in addrspace.h to preve=
-nt build errors")
+For AM62ax, add missing UHS support.
 
-The above commit is now in Linus' tree.
+For AM65x, fix ITAP delay and OTAP delay and clkbuf-sel properties
+in SDHCI nodes.
 
-> this is commit
->=20
->   5d90c9735da8 ("fix-missing-vmalloch-includes-fix-3")
->=20
-> in the mm-unstable branch of the mm tree.
+Bhavya Kapoor (1):
+  arm64: dts: ti: k3-j721s2-main: Enable support for SDR104 speed mode
 
---=20
-Cheers,
-Stephen Rothwell
+Dasnavis Sabiya (2):
+  arm64: dts: ti: k3-j784s4-main: Enable support for UHS mode
+  arm64: dts: ti: k3-am69-sk: Remove HS400 mode support for eMMC
 
---Sig_/p.bHwdmttzCEix88c8+OBoX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Judith Mendez (2):
+  arm64: dts: ti: k3-am65-main: Update sdhci properties
+  arm64: dts: ti: k3-am65-main: Remove unused properties in sdhci nodes
 
------BEGIN PGP SIGNATURE-----
+Udit Kumar (1):
+  arm64: dts: ti: k3-j784s4-evm: Remove HS400 mode support for eMMC
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYYaGQACgkQAVBC80lX
-0GxzHQf9HPmgoaG++65lAhpiMMQrOjmQ+K3zUAKy1n5xk8K/8wP1u0Jpm2fBHNu4
-HWNOmGOCukvkrVR3u6s0XgzrnVYOdRvBlgdlj4YPJEdS8m9JSNUFBZJXcA8BgIoB
-mHkjrtqo9Oaa5AH1cK/Tf2WEjwAZcjR/89LKMr8vbbdeE/r8qZBHrboA6KjNhzxV
-DmLo/X4jPP3MPXSXvzcKftgmypBFf14QtZzQyVA1YcV989DdIACqx80JcdHj6t6D
-arhp4WYWvwsSQrqplyuP96sky0SvmO2zR/jnFycKhKj/wq8GfSSPKt+pFDnKvHB9
-jE9K3mrhartHbV+ygOh2AH8OdO9tBg==
-=zSdO
------END PGP SIGNATURE-----
+Vignesh Raghavendra (1):
+  arm64: dts: ti: k3-am62a: Enable UHS mode support for SD cards
 
---Sig_/p.bHwdmttzCEix88c8+OBoX--
+ arch/arm64/boot/dts/ti/k3-am62a-main.dtsi  |  2 --
+ arch/arm64/boot/dts/ti/k3-am62a7-sk.dts    | 21 +++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi   | 26 +++++++++-------------
+ arch/arm64/boot/dts/ti/k3-am69-sk.dts      |  1 +
+ arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi |  2 --
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts   |  1 +
+ arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi |  2 --
+ 7 files changed, 34 insertions(+), 21 deletions(-)
+
+
+base-commit: 534ad093bb80f19c20b251a89f09ce1a0e3d4f2d
+-- 
+2.43.2
+
 
