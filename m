@@ -1,105 +1,89 @@
-Return-Path: <linux-kernel+bounces-139807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139808-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F39508A07EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:52:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F8168A07F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:59:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F9A51F26935
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:52:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 063791F22FEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:59:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680B313CA86;
-	Thu, 11 Apr 2024 05:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AECC113CA89;
+	Thu, 11 Apr 2024 05:59:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="p+5blW5v"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="tRS0lQdX"
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F037EADD;
-	Thu, 11 Apr 2024 05:52:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A88B13C806;
+	Thu, 11 Apr 2024 05:59:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712814760; cv=none; b=clt1FU46MaKmyYd63fRnTtCB6ApgOBC2zLA98eVLrJykGgMBYcsgw+Kf+1qZq+SXXp7xPrjHRTM1/cgkfZRngT51vEU6ERpxI1pHG8OTPmGl6oP8AHBJONnNl6bwFz+drX2Wb5nDDjzUbcFAHpG8ZHMWEhWHMlsA36L2baFXh6Y=
+	t=1712815188; cv=none; b=SlM8KwVWWULp9OvlI45vE5O6Xt8hmc6AD+VsUse6b9mhpAiWQDUiq0KOaIZIOsSgiGQKNg7oBz8Bhm38XDRP0JM5q47TRCMBMkStpo6xqxNhRFTB+m0Bo8iRoSHH5v9DXDW+VS7nh0pOj9+3fJUNaHg0g5dWdNWU1eYZhriaaNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712814760; c=relaxed/simple;
-	bh=NvNgdGYOonm0Los8vSq4LfOVet9q0aeIcVzq3kp0lvk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=XM8FQlenF6E6+sQLuh6N+Q7ZFqsYlmWauPyIyLXiKuSrW3urVMAzZ8DDdOX2eOvbVmXjMQFRkNY9GIm3rAqXoVIHf+ZSMPONM/Rt1qHvpNTPLYZWyiCcjMGpGlIdQmzhETc9o2sxbzO6sMCCKWNcqalcnmtZQz4dc0/ScfB5ia4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=p+5blW5v; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1712814756;
-	bh=S0YP/RBaw3rgR/ZzuYNWu9UOkC99MxLinS0v3gPX+Ng=;
-	h=Date:From:To:Cc:Subject:From;
-	b=p+5blW5vm6R57g5p9wQNav7x/QKpxLcUSW/sCXNJbwQk83B4M3qItghguJ1BIsNjF
-	 cQGedPvZbZBPsxIkSyQ6rpDn0UFN8m07MxmpREVGsGs7RbcG4DAzSHKKSeWtuFu2j2
-	 rQLwS7+auoWAHmWDl6wWQxxyc7p9z+48rLMouHZ80SziRF3RAdqPFP5COksmbYFzgQ
-	 33a7ObdT7FtVSKRsITKoXe0YBma24NtUpQU21s77VXB3RRKbdz2YoNk3uoSIgUOR8E
-	 jyqJd2pQLe+eOZ3mAYexsonHKqsOM4/7X+jDmnlqSiNP50cHIIeAe9AmdJ2k4uLDI0
-	 WNrX/7JXBXYgg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VFTPJ4mBRz4wqM;
-	Thu, 11 Apr 2024 15:52:35 +1000 (AEST)
-Date: Thu, 11 Apr 2024 15:52:35 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, Christian
- Brauner <brauner@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the landlock tree
-Message-ID: <20240411155235.16775ad6@canb.auug.org.au>
+	s=arc-20240116; t=1712815188; c=relaxed/simple;
+	bh=swbeK4DJ7LPs/mIk5Mf0PwIYPP6cgE8DuNRWYr0mNIE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XD/Brhfa5iNtoefklza5bKAbDk6EwWyOa87ji4iWgXOgOFUabgt3uQVQd6iLQy6pMF3aNBtgxIuW//p7jS2H7ytwkz9DhtUe5Q4OTRFxrp5tc7V+0IHp7XKrltXU99JlIrABlBnEY+juAVpihkVrbB4KRtJa2/fo4F0nV8ac4I8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=tRS0lQdX; arc=none smtp.client-ip=74.50.62.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id 12134603E6;
+	Thu, 11 Apr 2024 05:59:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1712815185;
+	bh=swbeK4DJ7LPs/mIk5Mf0PwIYPP6cgE8DuNRWYr0mNIE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tRS0lQdXk51Ymbj/ChyZPXFbjmyrzT7nS71JsdRPKSqF7w4ZR1ExXrV9DwA8e6Cck
+	 g0+/AK2b6MiKztsZaD0NLKq72uNB5SJKDYlIGD5A15641XYBWQdRO30KuK6/oAPtKV
+	 DGrDBziI5A/nJM0Tf6UmfeQe0uAtGFePp3/yy9mgnIpnjGmtlU2A1CWIwMC5IrPGdR
+	 zxeJ3nd6D64hPJchajC/eaL/O2pfzBNf9/OXCgtqBD0tekc8TYwK1CTv5puUQox+bs
+	 yquhwyQH79cbIjdFUC/cxdiNHJ4YyW/SSo1OHheK/DT1JgeV5N8xtopbllj+d7X7AS
+	 5hp+T7swM1FCg==
+Date: Thu, 11 Apr 2024 08:59:33 +0300
+From: Tony Lindgren <tony@atomide.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Greg KH <greg@kroah.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the tty tree
+Message-ID: <20240411055933.GD5156@atomide.com>
+References: <20240411154844.5bbcde63@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/UO0FGarS0x0+go=kLGNkDEi";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/UO0FGarS0x0+go=kLGNkDEi
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240411154844.5bbcde63@canb.auug.org.au>
 
-Hi all,
+* Stephen Rothwell <sfr@canb.auug.org.au> [240411 05:48]:
+> Hi all,
+>=20
+> After merging the tty tree, today's linux-next build (x86_64 allmodconfig)
+> failed like this:
+>=20
+> ERROR: modpost: "serial_base_add_isa_preferred_console" [drivers/tty/seri=
+al/8250/8250.ko] undefined!
+>=20
+> Caused by commit
+>=20
+>   a8b04cfe7dad ("serial: 8250: Add preferred console in serial8250_isa_in=
+it_ports()")
+>=20
+> I have used the tty tree from next-20240410 for today.
 
-The following commit is also in the vfs-brauner tree as a different commit
-(but the same patch):
+OK thanks, I'll take a look and send a fix.
 
-  5b5c05340e67 ("fs: Return ENOTTY if FS_IOC_GETUUID or FS_IOC_GETFSSYSFSPA=
-TH fail")
+Regards,
 
-This is commit
+Tony
 
-  abe6acfa7d7b ("fs: Return ENOTTY directly if FS_IOC_GETUUID or FS_IOC_GET=
-FSSYSFSPATH fail")
-
-in the vfs-brauner tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/UO0FGarS0x0+go=kLGNkDEi
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYXeqMACgkQAVBC80lX
-0GwZxAf/XLtq+FS9Pzo/AGs+dPdpE7D1wC9nwwl3dwT4UWHEbcxJh2p/f1k4bEBh
-TJkwrCOPMoQSl7LzJWaWcsc7feZ91CdpqiDBETKIXDth7uGHuS8dtBcb20uQRzb2
-RSc5FgNdQNAfo/tqyuk1wsZDs48L2q2FV67grTM+Pjge6AJ3XvK9Rg2+ZuSaQnFy
-Psqf7xyRgfmDC44I8tmse4PF6dNRbnPVv1KParWsqRhvoIxKJhM5iVZLapWmDGPI
-CO/KrcpR+Qfnl8xlP2+k2ERZ+uYeA5awS9Yk7awhAg9/n6NB9GMLqOTqCtpWvgKm
-fMYUNEvzOb375BMa7vPCuBl5g84TJQ==
-=wMmC
------END PGP SIGNATURE-----
-
---Sig_/UO0FGarS0x0+go=kLGNkDEi--
 
