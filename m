@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-140625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A01178A16F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:18:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C4228A16F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:18:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C6ED289DDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:18:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF2391F210BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FF9214EC6E;
-	Thu, 11 Apr 2024 14:17:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1CF714EC49;
+	Thu, 11 Apr 2024 14:17:41 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64B6914E2DE
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:17:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D43514D45D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:17:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712845028; cv=none; b=VkZQZyemuehClQXX4k4uTa6ry7Cq6eKV0ZZlzEoQKZ+/T5sQpfoATB9tVMhErYjbC+/EMcTHTtLiHxHxDPrqC59FbyqNxTcwjeb9vH95B7EbPRnL7HxzIr3jhNhvxnkwRkDpkSm/VM6RtFErd4q/gp3c81WVWRfEu1B0dsZY1jo=
+	t=1712845061; cv=none; b=o/9FC4+qCOldUQXxfymYq4wp8OMQJwv8FVnEPvrPvnJ3ikwcyhehDy8OFfsUlZqwgt2YoGBVVPEFnUGAixDFBlWmnqAngwt0rG4ZmBrlDhu9ZBQv31bdAdhga0tnn0PVUkRyB4OAc0v3Aq7kjorYZR8+cyemb7zopar2onmH7mQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712845028; c=relaxed/simple;
-	bh=hFpPbCUdGEDxZtHZpIbjnwRnJOUcczaR3P0MhRNYSRY=;
+	s=arc-20240116; t=1712845061; c=relaxed/simple;
+	bh=xuNCmJ693hUGjHHj4/JkD+xhls4nmb8lLaS8Z6bnGN4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rg9nNH42zzAumwvOxtUc13GtngiT4aKemCGnFd7FpKcb0T4vMasJMTLn8KsKkL9BhCEO7AmjHQ2jXE3OVDeoEHqq9NARxI1bTnTetJG+GOr1qAGtTb9S8G4etYwaHC9ePySEW3goJp3qAuxMJ5/Y/SQdS0nlqHCyka8SGdaUiLg=
+	 Content-Type:Content-Disposition:In-Reply-To; b=kUm9NeCYhGzrEcMWazq1o2iu9d8sVdrUL91P01XKVy1wRfGr+JV/N+ZP42pb40ObBVSvRGigBheaHywEpT0vygW06oUDFVigL+X+jcUIcSSAHWXZAtyQIwRGLXrl0j+4KgLaImPf6QaRkd2wmeMTG/cCTYGO6klhFusEEilAgLw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 443A4339;
-	Thu, 11 Apr 2024 07:17:36 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 29055339;
+	Thu, 11 Apr 2024 07:18:09 -0700 (PDT)
 Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F1C953F64C;
-	Thu, 11 Apr 2024 07:17:03 -0700 (PDT)
-Date: Thu, 11 Apr 2024 15:17:01 +0100
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C9D403F64C;
+	Thu, 11 Apr 2024 07:17:36 -0700 (PDT)
+Date: Thu, 11 Apr 2024 15:17:34 +0100
 From: Dave Martin <Dave.Martin@arm.com>
 To: Reinette Chatre <reinette.chatre@intel.com>
 Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
@@ -49,12 +49,12 @@ Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
 	dfustini@baylibre.com, amitsinght@marvell.com,
 	David Hildenbrand <david@redhat.com>,
 	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: Re: [PATCH v1 18/31] x86/resctrl: Allow
- resctrl_arch_mon_event_config_write() to return an error
-Message-ID: <Zhfw3d3YCKu7PD3G@e133380.arm.com>
+Subject: Re: [PATCH v1 20/31] x86/resctrl: Allow an architecture to disable
+ pseudo lock
+Message-ID: <Zhfw/uEZaYk9492j@e133380.arm.com>
 References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-19-james.morse@arm.com>
- <d598767d-1c44-4417-9dc6-7078c97df39f@intel.com>
+ <20240321165106.31602-21-james.morse@arm.com>
+ <6d563361-87c0-474d-812c-b33e79eacf3a@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,80 +63,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d598767d-1c44-4417-9dc6-7078c97df39f@intel.com>
+In-Reply-To: <6d563361-87c0-474d-812c-b33e79eacf3a@intel.com>
 
-On Mon, Apr 08, 2024 at 08:23:36PM -0700, Reinette Chatre wrote:
+On Mon, Apr 08, 2024 at 08:24:12PM -0700, Reinette Chatre wrote:
 > Hi James,
 > 
 > On 3/21/2024 9:50 AM, James Morse wrote:
-> > resctrl_arch_mon_event_config_write() writes a bitmap of events provided
-> > by user-space into the configuration register for the monitors.
+> > Pseudo-lock relies on knowledge of the micro-architecture to disable
+> > prefetchers etc.
 > > 
-> > This assumes that all architectures support all the features each bit
-> > corresponds to.
+> > On arm64 these controls are typically secure only, meaning linux can't
+> > access them. Arm's cache-lockdown feature works in a very different
+> > way. Resctrl's pseudo-lock isn't going to be used on arm64 platforms.
 > > 
-> > MPAM can filter monitors based on read, write, or both, but there are
-> > many more options in the existing bitmap. To allow this interface to
-> > work for machines with MPAM, allow the architecture helper to return
-> > an error if an incompatible bitmap is set.
-> > 
-> > When valid values are provided, there is no change in behaviour. If
-> > an invalid value is provided, currently it is silently ignored, but
-> > last_cmd_status is updated. After this change, the parser will stop
-> > at the first invalid value and return an error to user-space. This
-> > matches the way changes to the schemata file are made.
+> > Add a Kconfig symbol that can be selected by the architecture. This
+> > enables or disables building of the psuedo_lock.c file, and replaces
+> 
+> pseudo_lock.c
+
+Noted.
+
+> > the functions with stubs. An additional IS_ENABLED() check is needed
+> > in rdtgroup_mode_write() so that attempting to enable pseudo-lock
+> > reports an "Unknown or unsupported mode" to user-space.
 > > 
 > 
-> Is this needed? With move of mbm_cfg_mask to rdt_resource I expect
-> MPAM would use it to set what the valid values are. With that done,
-> when user space provides a value, mon_config_write() compares user
-> provided value against mbm_cfg_mask and will already return early
-> (before attempting to write to hardware) with error
-> if value is not supported. This seems to accomplish the goal of this
-> patch?
-
-This sounds plausible.
-
-In a recent snapshot of James' MPAM code, it looks like we could be
-initialising rdt_resource::mbm_cfg_mask when setting up the rdt_resource
-struct for resctrl, though in fact this information is captured
-differently right now.  I'm sure why (though James may have a
-reason). [1]
-
-I don't see an obvious reason though why we couldn't set mbm_cfg_mask
-and detect bad config values globally in mon_config_write(), the same as
-for the existing AMD BMEC case.
-
-Nothing in the MPAM architecture stops hardware vendors from randomly
-implementing different capabilities in different components of the
-system, but provided that we only expose the globally supported subset
-of event filtering capabilities to resctrl this approach looks workable.
-This consistent with the James' MPAM code deals with other feature
-mismatches across the system today.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git/tree/drivers/platform/mpam/mpam_resctrl.c?h=mpam/snapshot/v6.7-rc2#n730
-
-> 
-> > Signed-off-by: James Morse <james.morse@arm.com>
-> > ---
-> 
-> ..
-> > diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> > index 8a7367d1ce45..6705d7960dfd 100644
-> > --- a/include/linux/resctrl.h
-> > +++ b/include/linux/resctrl.h
-> > @@ -200,6 +200,7 @@ struct resctrl_mon_config_info {
-> >  	struct rdt_domain   *d;
-> >  	u32                  evtid;
-> >  	u32                  mon_config;
-> > +	int                  err;
-> >  };
-> 
-> Please take care to use consistent spacing.
+> I am missing something here. It is not obvious to me why the IS_ENABLED()
+> check is needed. Wouldn't rdtgroup_locksetup_enter()
+> return -EOPNOTSUPP if CONFIG_RESCTRL_FS_PSEUDO_LOCK is not enabled?
 > 
 > Reinette
+> 
 
-Noted FWIW (though I guess this code might change or go away).
+Hmm, if I've understood all this correctly, then it looks like the
+existing code in rdtgroup_mode_write() relies on the dispatched
+function (rdtgroup_locksetup_enter() etc.) to do an appropriate
+rdt_last_cmd_puts() on failure.  If no function is called at all and
+the requested mode change is not a no-op or otherwise trivially
+successful, then it looks like we're supposed to fall into the else
+clause.
+
+I'd guess James' intent here was to use the fallback else {} to write
+a suitable status string, while keeping the stub functions as trivial
+as possible.
+
+Just taking the IS_ENABLED() away would result in error return from the
+write(), but no suitable last_cmd_status string.
+
+For consistency with the existing x86 implementation, I wonder whether
+we should put a suitable rdt_last_cmd_puts() in the stub for
+rdtgroup_locksetup_enter().
+
+There might be other ways to refactor or simplify this, though.
+
+Thoughts?
 
 Cheers
 ---Dave
