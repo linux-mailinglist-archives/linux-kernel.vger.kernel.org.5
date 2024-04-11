@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-139717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 305D38A06C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:33:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E7018A06C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:34:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A92E92834D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:33:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C17A51C21EA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79CBD13C3CF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C310213C8E1;
 	Thu, 11 Apr 2024 03:33:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f8vgQq5P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZGNWH53l"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E07813BC33;
-	Thu, 11 Apr 2024 03:32:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4F9613C68C;
+	Thu, 11 Apr 2024 03:33:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712806380; cv=none; b=DxsstNmB28IrbbAan3+hviqff6e2mu8g2WWVVr+XXk+M2Qbw6z/Aup0bVBpD+QcQLzJRVnmbi3PROtFgxjDpiPB++C7Sfvk2sraMZRNPJdbtu3FBzC3J29xc6M8NAjNwTYeWsqAo4a4fSII0VYat/rpo09gK4B/qYson420bFq4=
+	t=1712806380; cv=none; b=TvxG1ouqzYFrIpoTSEkyjIxj8IjsuuNoOOu5+n+gwi40cLmCQ8JAsIqdiLj6bulO+BXgHdZ4pxpp7TsyRHs8An9alU41CAsDaVTbr0fbP2sPV3Kd66NPPmmxikUaENEkjIm/pbSyrf4Y/8faMAvXVHtKA+/gUzKafgfYTkuCYto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712806380; c=relaxed/simple;
-	bh=pVSYmnJQSf5CJbwDyiFLWmg1TbKOV3feN7stKZJIyLY=;
+	bh=RsRsNfw4aoHVLYuPLAJZgwVsTZcCjELiYSQfWvHMjgw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hf1SPywt11eCl6qBmnOiKFN+7Oo31tXBxy+0LSWAyGr+qyLCwP2PBQI3FdMQDUnklTXemKu+oG4XGuXxEnQfIugBQrw58lv/nrPWgtPcrnibcHJl+OiO5FDvkRJbpPirqKAnXNYuGFj39EBkOUgrnuGGjfTKIgbzJchAUogZt3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f8vgQq5P; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B7D4C43330;
+	 MIME-Version; b=m717kWvR665zHIfGxxZNYAqTGA1TGa99K/aO9nB6wzqJSwAohdVaW5PMhTXsxrhHn+jf2kgMHWhG2vZGT2R/smMK3hvYZ174byRVBzfIySfUjjTOLOzn4E9TiG7zVmdmbLtPXcLhlb3cbDTiXculkFx07Ld5tiYtHngu1I2gaGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZGNWH53l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB749C43390;
 	Thu, 11 Apr 2024 03:32:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712806379;
-	bh=pVSYmnJQSf5CJbwDyiFLWmg1TbKOV3feN7stKZJIyLY=;
+	s=k20201202; t=1712806380;
+	bh=RsRsNfw4aoHVLYuPLAJZgwVsTZcCjELiYSQfWvHMjgw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=f8vgQq5Pw8SNDgIUAKPOg1vIgrha5gTsIPvehrkFVz7yoB1xg2oe1izG8hbzUVgDc
-	 despZ4BWZwtzuFAVi8JeUbLg5OVnu/HiQNV3OYxICszHdF1hWCXHNrZNFXYmUmzcHr
-	 ddsDCeU5TJ0RtjDzXZhnVy8/K1U/SODNORCQqFNZbgmsr7NbflCo/auLD5uzNWDDNl
-	 DT8ym7VI38sHa5gyLqSyva7hNn9BwigzexGpyT4OF6s/vFLhsNDzeZ/3g3mCOu2xev
-	 G5QnJ92m8CHD5BT5UryxAewAW5UjMojHOrXRHBwx2sgxaBGTWHpZX2oH+4KNuJoNZv
-	 ILBfK3qp9ALJg==
+	b=ZGNWH53lCJcrYRMGy/j84N9YR9qiiEWWQkGqxLhUDuTk8EEao/rYf7kfaPR+F+jX1
+	 Ood/sSk/GJNLXqJWV+A3LyG7ivJT3scOLkQ6kCanjJ+WR/Qqoy4XuLAt1s1aYrzMqU
+	 7fRyTh7hV43hQJ+hADlC2Tkbl/PkCbBcyyb8QRzkIipXrx5BAKFbJ/5pEFYKb6VhQY
+	 C8jq8PQ9MTI42mB3jnaUbYxy+Fy8TF88oEPwKUhDOqs4EcvLo3gQ4lXiig695wnWZk
+	 OQvHabroe/G2Mg3hIobcabeA7w1ydBXbwrSxyhiQwYAqSt249KIei3Vpzp5vWST2zL
+	 uLDTFd6Mw7Rdg==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -51,9 +51,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-perf-users@vger.kernel.org,
 	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 4/7] perf annotate-data: Add hist_entry__annotate_data_tui()
-Date: Wed, 10 Apr 2024 20:32:53 -0700
-Message-ID: <20240411033256.2099646-5-namhyung@kernel.org>
+Subject: [PATCH 5/7] perf annotate-data: Support event group display in TUI
+Date: Wed, 10 Apr 2024 20:32:54 -0700
+Message-ID: <20240411033256.2099646-6-namhyung@kernel.org>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
 In-Reply-To: <20240411033256.2099646-1-namhyung@kernel.org>
 References: <20240411033256.2099646-1-namhyung@kernel.org>
@@ -65,454 +65,256 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Support data type profiling output on TUI.
+Like in stdio, it should print all events in a group together.
 
-Testing from Arnaldo:
+Committer notes:
 
-First make sure that the debug information for your workload binaries
-in embedded in them by building it with '-g' or install the debuginfo
-packages, since our workload is 'find':
+Collect it:
 
-  root@number:~# type find
-  find is hashed (/usr/bin/find)
-  root@number:~# rpm -qf /usr/bin/find
-  findutils-4.9.0-5.fc39.x86_64
-  root@number:~# dnf debuginfo-install findutils
-  <SNIP>
+  root@number:~# perf record -a -e '{cpu_core/mem-loads,ldlat=30/P,cpu_core/mem-stores/P}'
+  ^C[ perf record: Woken up 8 times to write data ]
+  [ perf record: Captured and wrote 4.980 MB perf.data (55825 samples) ]
   root@number:~#
 
-Then collect some data:
+Then do it in stdio:
 
-  root@number:~# echo 1 > /proc/sys/vm/drop_caches
-  root@number:~# perf mem record find / > /dev/null
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.331 MB perf.data (3982 samples) ]
-  root@number:~#
+  root@number:~# perf annotate --stdio --data-type
 
-Finally do data-type annotation with the following command, that will
-default, as 'perf report' to the --tui mode, with lines colored to
-highlight the hotspots, etc.
+  Annotate type: 'union ' in /usr/lib64/libc.so.6 (1131 samples):
+   event[0] = cpu_core/mem-loads,ldlat=30/P
+   event[1] = cpu_core/mem-stores/P
+  ============================================================================
+           Percent     offset       size  field
+    100.00  100.00          0         40  union    {
+    100.00  100.00          0         40      struct __pthread_mutex_s    __data {
+     48.61   23.46          0          4          int     __lock;
+      0.00    0.48          4          4          unsigned int    __count;
+      6.38   41.32          8          4          int     __owner;
+      8.74   34.02         12          4          unsigned int    __nusers;
+     35.66    0.26         16          4          int     __kind;
+      0.61    0.45         20          2          short int       __spins;
+      0.00    0.00         22          2          short int       __elision;
+      0.00    0.00         24         16          __pthread_list_t        __list {
+      0.00    0.00         24          8              struct __pthread_internal_list*     __prev;
+      0.00    0.00         32          8              struct __pthread_internal_list*     __next;
+                                                  };
+                                              };
+      0.00    0.00          0          0      char*       __size;
+     48.61   23.94          0          8      long int    __align;
+                                          };
 
-  root@number:~# perf annotate --data-type
-  Annotate type: 'struct predicate' (58 samples)
+Now with TUI before this patch:
+
+  root@number:~# perf annotate --tui --data-type
+  Annotate type: 'union ' (790 samples)
       Percent     Offset       Size  Field
-       100.00          0        312  struct predicate {
-         0.00          0          8      PRED_FUNC        pred_func;
-         0.00          8          8      char*    p_name;
-         0.00         16          4      enum predicate_type      p_type;
-         0.00         20          4      enum predicate_precedence        p_prec;
-         0.00         24          1      _Bool    side_effects;
-         0.00         25          1      _Bool    no_default_print;
-         0.00         26          1      _Bool    need_stat;
-         0.00         27          1      _Bool    need_type;
-         0.00         28          1      _Bool    need_inum;
-         0.00         32          4      enum EvaluationCost      p_cost;
-         0.00         36          4      float    est_success_rate;
-         0.00         40          1      _Bool    literal_control_chars;
-         0.00         41          1      _Bool    artificial;
-         0.00         48          8      char*    arg_text;
-  <SNIP>
+       100.00          0         40  union  {
+       100.00          0         40      struct __pthread_mutex_s __data {
+        48.61          0          4          int  __lock;
+         0.00          4          4          unsigned int __count;
+         6.38          8          4          int  __owner;
+         8.74         12          4          unsigned int __nusers;
+        35.66         16          4          int  __kind;
+         0.61         20          2          short int    __spins;
+         0.00         22          2          short int    __elision;
+         0.00         24         16          __pthread_list_t     __list {
+         0.00         24          8              struct __pthread_internal_list*  __prev;
+         0.00         32          8              struct __pthread_internal_list*  __next;
+
+         0.00          0          0      char*    __size;
+        48.61          0          8      long int __align;
+                                     };
+
+And now after this patch:
+
+Annotate type: 'union ' (790 samples)
+               Percent     Offset       Size  Field
+     100.00     100.00          0         40  union  {
+     100.00     100.00          0         40      struct __pthread_mutex_s      __data {
+      48.61      23.46          0          4          int       __lock;
+       0.00       0.48          4          4          unsigned int      __count;
+       6.38      41.32          8          4          int       __owner;
+       8.74      34.02         12          4          unsigned int      __nusers;
+      35.66       0.26         16          4          int       __kind;
+       0.61       0.45         20          2          short int __spins;
+       0.00       0.00         22          2          short int __elision;
+       0.00       0.00         24         16          __pthread_list_t  __list {
+       0.00       0.00         24          8              struct __pthread_internal_list*       __prev;
+       0.00       0.00         32          8              struct __pthread_internal_list*       __next;
+                                                      };
+                                                  };
+       0.00       0.00          0          0      char* __size;
+      48.61      23.94          0          8      long int      __align;
+                                              };
+
+On a followup patch the --tui output should have this that is present in
+--stdio:
+
+  And the --stdio has all the missing info in TUI:
+
+    Annotate type: 'union ' in /usr/lib64/libc.so.6 (1131 samples):
+     event[0] = cpu_core/mem-loads,ldlat=30/P
+     event[1] = cpu_core/mem-stores/P
 
 Reviewed-by: Ian Rogers <irogers@google.com>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/builtin-annotate.c          |  30 ++-
- tools/perf/ui/browsers/Build           |   1 +
- tools/perf/ui/browsers/annotate-data.c | 282 +++++++++++++++++++++++++
- tools/perf/util/annotate-data.c        |   3 +-
- tools/perf/util/annotate-data.h        |  13 ++
- 5 files changed, 324 insertions(+), 5 deletions(-)
- create mode 100644 tools/perf/ui/browsers/annotate-data.c
+ tools/perf/ui/browsers/annotate-data.c | 50 ++++++++++++++++++++------
+ 1 file changed, 40 insertions(+), 10 deletions(-)
 
-diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-index 0812664faa54..6f7104f06c42 100644
---- a/tools/perf/builtin-annotate.c
-+++ b/tools/perf/builtin-annotate.c
-@@ -469,8 +469,32 @@ static void hists__find_annotations(struct hists *hists,
- 					goto find_next;
- 			}
- 
--			hist_entry__annotate_data_tty(he, evsel);
--			goto find_next;
-+			if (use_browser == 1)
-+				key = hist_entry__annotate_data_tui(he, evsel, NULL);
-+			else
-+				key = hist_entry__annotate_data_tty(he, evsel);
-+
-+			switch (key) {
-+			case -1:
-+				if (!ann->skip_missing)
-+					return;
-+				/* fall through */
-+			case K_RIGHT:
-+			case '>':
-+				next = rb_next(nd);
-+				break;
-+			case K_LEFT:
-+			case '<':
-+				next = rb_prev(nd);
-+				break;
-+			default:
-+				return;
-+			}
-+
-+			if (next != NULL)
-+				nd = next;
-+
-+			continue;
- 		}
- 
- 		if (use_browser == 2) {
-@@ -873,9 +897,7 @@ int cmd_annotate(int argc, const char **argv)
- 		use_browser = 2;
- #endif
- 
--	/* FIXME: only support stdio for now */
- 	if (annotate.data_type) {
--		use_browser = 0;
- 		annotate_opts.annotate_src = false;
- 		symbol_conf.annotate_data_member = true;
- 		symbol_conf.annotate_data_sample = true;
-diff --git a/tools/perf/ui/browsers/Build b/tools/perf/ui/browsers/Build
-index 7a1d5ddaf688..2608b5da3167 100644
---- a/tools/perf/ui/browsers/Build
-+++ b/tools/perf/ui/browsers/Build
-@@ -1,4 +1,5 @@
- perf-y += annotate.o
-+perf-y += annotate-data.o
- perf-y += hists.o
- perf-y += map.o
- perf-y += scripts.o
 diff --git a/tools/perf/ui/browsers/annotate-data.c b/tools/perf/ui/browsers/annotate-data.c
-new file mode 100644
-index 000000000000..fefacaaf16db
---- /dev/null
+index fefacaaf16db..a4a0f042f201 100644
+--- a/tools/perf/ui/browsers/annotate-data.c
 +++ b/tools/perf/ui/browsers/annotate-data.c
-@@ -0,0 +1,282 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <inttypes.h>
-+#include <string.h>
-+#include <sys/ttydefaults.h>
-+
-+#include "ui/browser.h"
-+#include "ui/helpline.h"
-+#include "ui/keysyms.h"
-+#include "ui/ui.h"
-+#include "util/annotate.h"
-+#include "util/annotate-data.h"
-+#include "util/evsel.h"
-+#include "util/sort.h"
-+
-+struct annotated_data_browser {
-+	struct ui_browser b;
-+	struct list_head entries;
-+};
-+
-+struct browser_entry {
-+	struct list_head node;
-+	struct annotated_member *data;
-+	struct type_hist_entry hists;
-+	int indent;
-+};
-+
-+static void update_hist_entry(struct type_hist_entry *dst,
-+			      struct type_hist_entry *src)
+@@ -10,20 +10,27 @@
+ #include "util/annotate.h"
+ #include "util/annotate-data.h"
+ #include "util/evsel.h"
++#include "util/evlist.h"
+ #include "util/sort.h"
+ 
+ struct annotated_data_browser {
+ 	struct ui_browser b;
+ 	struct list_head entries;
++	int nr_events;
+ };
+ 
+ struct browser_entry {
+ 	struct list_head node;
+ 	struct annotated_member *data;
+-	struct type_hist_entry hists;
++	struct type_hist_entry *hists;
+ 	int indent;
+ };
+ 
++static struct annotated_data_browser *get_browser(struct ui_browser *uib)
 +{
-+	dst->nr_samples += src->nr_samples;
-+	dst->period += src->period;
++	return container_of(uib, struct annotated_data_browser, b);
 +}
 +
-+static int get_member_overhead(struct annotated_data_type *adt,
-+			       struct browser_entry *entry,
-+			       struct evsel *evsel)
-+{
-+	struct annotated_member *member = entry->data;
-+	int i;
-+
-+	for (i = 0; i < member->size; i++) {
-+		struct type_hist *h;
-+		int offset = member->offset + i;
-+
-+		h = adt->histograms[evsel->core.idx];
-+		update_hist_entry(&entry->hists, &h->addr[offset]);
-+	}
-+	return 0;
-+}
-+
-+static int add_child_entries(struct annotated_data_browser *browser,
-+			     struct annotated_data_type *adt,
-+			     struct annotated_member *member,
-+			     struct evsel *evsel, int indent)
-+{
-+	struct annotated_member *pos;
-+	struct browser_entry *entry;
-+	int nr_entries = 0;
-+
-+	entry = zalloc(sizeof(*entry));
-+	if (entry == NULL)
-+		return -1;
-+
-+	entry->data = member;
-+	entry->indent = indent;
-+	if (get_member_overhead(adt, entry, evsel) < 0) {
+ static void update_hist_entry(struct type_hist_entry *dst,
+ 			      struct type_hist_entry *src)
+ {
+@@ -33,17 +40,21 @@ static void update_hist_entry(struct type_hist_entry *dst,
+ 
+ static int get_member_overhead(struct annotated_data_type *adt,
+ 			       struct browser_entry *entry,
+-			       struct evsel *evsel)
++			       struct evsel *leader)
+ {
+ 	struct annotated_member *member = entry->data;
+-	int i;
++	int i, k;
+ 
+ 	for (i = 0; i < member->size; i++) {
+ 		struct type_hist *h;
++		struct evsel *evsel;
+ 		int offset = member->offset + i;
+ 
+-		h = adt->histograms[evsel->core.idx];
+-		update_hist_entry(&entry->hists, &h->addr[offset]);
++		for_each_group_evsel(evsel, leader) {
++			h = adt->histograms[evsel->core.idx];
++			k = evsel__group_idx(evsel);
++			update_hist_entry(&entry->hists[k], &h->addr[offset]);
++		}
+ 	}
+ 	return 0;
+ }
+@@ -61,6 +72,12 @@ static int add_child_entries(struct annotated_data_browser *browser,
+ 	if (entry == NULL)
+ 		return -1;
+ 
++	entry->hists = calloc(browser->nr_events, sizeof(*entry->hists));
++	if (entry->hists == NULL) {
 +		free(entry);
 +		return -1;
 +	}
 +
-+	list_add_tail(&entry->node, &browser->entries);
-+	nr_entries++;
-+
-+	list_for_each_entry(pos, &member->children, node) {
-+		int nr = add_child_entries(browser, adt, pos, evsel, indent + 1);
-+
-+		if (nr < 0)
-+			return nr;
-+
-+		nr_entries += nr;
-+	}
-+
-+	/* add an entry for the closing bracket ("}") */
-+	if (!list_empty(&member->children)) {
-+		entry = zalloc(sizeof(*entry));
-+		if (entry == NULL)
-+			return -1;
-+
-+		entry->indent = indent;
-+		list_add_tail(&entry->node, &browser->entries);
-+		nr_entries++;
-+	}
-+
-+	return nr_entries;
-+}
-+
-+static int annotated_data_browser__collect_entries(struct annotated_data_browser *browser)
-+{
-+	struct hist_entry *he = browser->b.priv;
-+	struct annotated_data_type *adt = he->mem_type;
-+	struct evsel *evsel = hists_to_evsel(he->hists);
-+
-+	INIT_LIST_HEAD(&browser->entries);
-+	browser->b.entries = &browser->entries;
-+	browser->b.nr_entries = add_child_entries(browser, adt, &adt->self,
-+						  evsel, /*indent=*/0);
-+	return 0;
-+}
-+
-+static void annotated_data_browser__delete_entries(struct annotated_data_browser *browser)
-+{
-+	struct browser_entry *pos, *tmp;
-+
-+	list_for_each_entry_safe(pos, tmp, &browser->entries, node) {
-+		list_del_init(&pos->node);
-+		free(pos);
-+	}
-+}
-+
-+static unsigned int browser__refresh(struct ui_browser *uib)
-+{
-+	return ui_browser__list_head_refresh(uib);
-+}
-+
-+static int browser__show(struct ui_browser *uib)
-+{
-+	struct hist_entry *he = uib->priv;
-+	struct annotated_data_type *adt = he->mem_type;
-+	const char *help = "Press 'h' for help on key bindings";
-+	char title[256];
-+
-+	snprintf(title, sizeof(title), "Annotate type: '%s' (%d samples)",
-+		 adt->self.type_name, he->stat.nr_events);
-+
-+	if (ui_browser__show(uib, title, help) < 0)
-+		return -1;
-+
-+	/* second line header */
-+	ui_browser__gotorc_title(uib, 0, 0);
-+	ui_browser__set_color(uib, HE_COLORSET_ROOT);
-+
-+	if (symbol_conf.show_total_period)
-+		strcpy(title, "Period");
-+	else if (symbol_conf.show_nr_samples)
-+		strcpy(title, "Samples");
-+	else
-+		strcpy(title, "Percent");
-+
-+	ui_browser__printf(uib, " %10s %10s %10s  %s",
-+			   title, "Offset", "Size", "Field");
-+	ui_browser__write_nstring(uib, "", uib->width);
-+	return 0;
-+}
-+
-+static void browser__write_overhead(struct ui_browser *uib,
-+				    struct type_hist *total,
-+				    struct type_hist_entry *hist, int row)
-+{
-+	u64 period = hist->period;
-+	double percent = total->period ? (100.0 * period / total->period) : 0;
-+	bool current = ui_browser__is_current_entry(uib, row);
-+	int nr_samples = 0;
-+
-+	ui_browser__set_percent_color(uib, percent, current);
-+
-+	if (symbol_conf.show_total_period)
-+		ui_browser__printf(uib, " %10" PRIu64, period);
-+	else if (symbol_conf.show_nr_samples)
-+		ui_browser__printf(uib, " %10d", nr_samples);
-+	else
-+		ui_browser__printf(uib, " %10.2f", percent);
-+
-+	ui_browser__set_percent_color(uib, 0, current);
-+}
-+
-+static void browser__write(struct ui_browser *uib, void *entry, int row)
-+{
-+	struct browser_entry *be = entry;
-+	struct annotated_member *member = be->data;
-+	struct hist_entry *he = uib->priv;
-+	struct annotated_data_type *adt = he->mem_type;
-+	struct evsel *evsel = hists_to_evsel(he->hists);
-+
-+	if (member == NULL) {
-+		bool current = ui_browser__is_current_entry(uib, row);
-+
-+		/* print the closing bracket */
-+		ui_browser__set_percent_color(uib, 0, current);
-+		ui_browser__write_nstring(uib, "", 11);
-+		ui_browser__printf(uib, " %10s %10s  %*s};",
-+				   "", "", be->indent * 4, "");
-+		ui_browser__write_nstring(uib, "", uib->width);
-+		return;
-+	}
-+
-+	/* print the number */
-+	browser__write_overhead(uib, adt->histograms[evsel->core.idx],
-+				&be->hists, row);
-+
-+	/* print type info */
-+	if (be->indent == 0 && !member->var_name) {
-+		ui_browser__printf(uib, " %10d %10d  %s%s",
-+				   member->offset, member->size,
-+				   member->type_name,
-+				   list_empty(&member->children) ? ";" : " {");
-+	} else {
-+		ui_browser__printf(uib, " %10d %10d  %*s%s\t%s%s",
-+				   member->offset, member->size,
-+				   be->indent * 4, "", member->type_name,
-+				   member->var_name ?: "",
-+				   list_empty(&member->children) ? ";" : " {");
-+	}
-+	/* fill the rest */
-+	ui_browser__write_nstring(uib, "", uib->width);
-+}
-+
-+static int annotated_data_browser__run(struct annotated_data_browser *browser,
-+				       struct evsel *evsel __maybe_unused,
-+				       struct hist_browser_timer *hbt)
-+{
-+	int delay_secs = hbt ? hbt->refresh : 0;
-+	int key;
-+
-+	if (browser__show(&browser->b) < 0)
-+		return -1;
-+
-+	while (1) {
-+		key = ui_browser__run(&browser->b, delay_secs);
-+
-+		switch (key) {
-+		case K_TIMER:
-+			if (hbt)
-+				hbt->timer(hbt->arg);
-+			continue;
-+		case K_F1:
-+		case 'h':
-+			ui_browser__help_window(&browser->b,
-+		"UP/DOWN/PGUP\n"
-+		"PGDN/SPACE    Navigate\n"
-+		"</>           Move to prev/next symbol\n"
-+		"q/ESC/CTRL+C  Exit\n\n");
-+			continue;
-+		case K_LEFT:
-+		case '<':
-+		case '>':
-+		case K_ESC:
-+		case 'q':
-+		case CTRL('c'):
-+			goto out;
-+		default:
-+			continue;
-+		}
-+	}
-+out:
-+	ui_browser__hide(&browser->b);
-+	return key;
-+}
-+
-+int hist_entry__annotate_data_tui(struct hist_entry *he, struct evsel *evsel,
-+				  struct hist_browser_timer *hbt)
-+{
-+	struct annotated_data_browser browser = {
-+		.b = {
-+			.refresh = browser__refresh,
-+			.seek	 = ui_browser__list_head_seek,
-+			.write	 = browser__write,
-+			.priv	 = he,
-+			.extra_title_lines = 1,
-+		},
-+	};
-+	int ret;
-+
-+	ui_helpline__push("Press ESC to exit");
-+
-+	ret = annotated_data_browser__collect_entries(&browser);
-+	if (ret == 0)
-+		ret = annotated_data_browser__run(&browser, evsel, hbt);
-+
-+	annotated_data_browser__delete_entries(&browser);
-+
-+	return ret;
-+}
-diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-index b150137a92dc..1cd857400038 100644
---- a/tools/perf/util/annotate-data.c
-+++ b/tools/perf/util/annotate-data.c
-@@ -1820,5 +1820,6 @@ int hist_entry__annotate_data_tty(struct hist_entry *he, struct evsel *evsel)
- 	print_annotated_data_type(he->mem_type, &he->mem_type->self, evsel, 0);
- 	printf("\n");
+ 	entry->data = member;
+ 	entry->indent = indent;
+ 	if (get_member_overhead(adt, entry, evsel) < 0) {
+@@ -113,6 +130,7 @@ static void annotated_data_browser__delete_entries(struct annotated_data_browser
  
--	return 0;
-+	/* move to the next entry */
-+	return '>';
+ 	list_for_each_entry_safe(pos, tmp, &browser->entries, node) {
+ 		list_del_init(&pos->node);
++		free(pos->hists);
+ 		free(pos);
+ 	}
  }
-diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
-index 01489db267d4..0a57d9f5ee78 100644
---- a/tools/perf/util/annotate-data.h
-+++ b/tools/perf/util/annotate-data.h
-@@ -10,6 +10,7 @@
- struct annotated_op_loc;
- struct debuginfo;
- struct evsel;
-+struct hist_browser_timer;
- struct hist_entry;
- struct map_symbol;
- struct thread;
-@@ -193,4 +194,16 @@ static inline int hist_entry__annotate_data_tty(struct hist_entry *he __maybe_un
+@@ -126,6 +144,7 @@ static int browser__show(struct ui_browser *uib)
+ {
+ 	struct hist_entry *he = uib->priv;
+ 	struct annotated_data_type *adt = he->mem_type;
++	struct annotated_data_browser *browser = get_browser(uib);
+ 	const char *help = "Press 'h' for help on key bindings";
+ 	char title[256];
  
- #endif /* HAVE_DWARF_SUPPORT */
+@@ -146,7 +165,8 @@ static int browser__show(struct ui_browser *uib)
+ 	else
+ 		strcpy(title, "Percent");
  
-+#ifdef HAVE_SLANG_SUPPORT
-+int hist_entry__annotate_data_tui(struct hist_entry *he, struct evsel *evsel,
-+				  struct hist_browser_timer *hbt);
-+#else
-+static inline int hist_entry__annotate_data_tui(struct hist_entry *he __maybe_unused,
-+						struct evsel *evsel __maybe_unused,
-+						struct hist_browser_timer *hbt __maybe_unused)
-+{
-+	return -1;
-+}
-+#endif /* HAVE_SLANG_SUPPORT */
+-	ui_browser__printf(uib, " %10s %10s %10s  %s",
++	ui_browser__printf(uib, "%*s %10s %10s %10s  %s",
++			   11 * (browser->nr_events - 1), "",
+ 			   title, "Offset", "Size", "Field");
+ 	ui_browser__write_nstring(uib, "", uib->width);
+ 	return 0;
+@@ -175,18 +195,20 @@ static void browser__write_overhead(struct ui_browser *uib,
+ 
+ static void browser__write(struct ui_browser *uib, void *entry, int row)
+ {
++	struct annotated_data_browser *browser = get_browser(uib);
+ 	struct browser_entry *be = entry;
+ 	struct annotated_member *member = be->data;
+ 	struct hist_entry *he = uib->priv;
+ 	struct annotated_data_type *adt = he->mem_type;
+-	struct evsel *evsel = hists_to_evsel(he->hists);
++	struct evsel *leader = hists_to_evsel(he->hists);
++	struct evsel *evsel;
+ 
+ 	if (member == NULL) {
+ 		bool current = ui_browser__is_current_entry(uib, row);
+ 
+ 		/* print the closing bracket */
+ 		ui_browser__set_percent_color(uib, 0, current);
+-		ui_browser__write_nstring(uib, "", 11);
++		ui_browser__write_nstring(uib, "", 11 * browser->nr_events);
+ 		ui_browser__printf(uib, " %10s %10s  %*s};",
+ 				   "", "", be->indent * 4, "");
+ 		ui_browser__write_nstring(uib, "", uib->width);
+@@ -194,8 +216,12 @@ static void browser__write(struct ui_browser *uib, void *entry, int row)
+ 	}
+ 
+ 	/* print the number */
+-	browser__write_overhead(uib, adt->histograms[evsel->core.idx],
+-				&be->hists, row);
++	for_each_group_evsel(evsel, leader) {
++		struct type_hist *h = adt->histograms[evsel->core.idx];
++		int idx = evsel__group_idx(evsel);
 +
- #endif /* _PERF_ANNOTATE_DATA_H */
++		browser__write_overhead(uib, h, &be->hists[idx], row);
++	}
+ 
+ 	/* print type info */
+ 	if (be->indent == 0 && !member->var_name) {
+@@ -267,11 +293,15 @@ int hist_entry__annotate_data_tui(struct hist_entry *he, struct evsel *evsel,
+ 			.priv	 = he,
+ 			.extra_title_lines = 1,
+ 		},
++		.nr_events = 1,
+ 	};
+ 	int ret;
+ 
+ 	ui_helpline__push("Press ESC to exit");
+ 
++	if (evsel__is_group_event(evsel))
++		browser.nr_events = evsel->core.nr_members;
++
+ 	ret = annotated_data_browser__collect_entries(&browser);
+ 	if (ret == 0)
+ 		ret = annotated_data_browser__run(&browser, evsel, hbt);
 -- 
 2.44.0.478.gd926399ef9-goog
 
