@@ -1,163 +1,107 @@
-Return-Path: <linux-kernel+bounces-140075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71AE58A0B23
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 247018A0B25
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:27:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 112791F22B9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:26:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8A511F23130
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 305B714036B;
-	Thu, 11 Apr 2024 08:26:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E24D213FD8C;
+	Thu, 11 Apr 2024 08:27:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mvpUJWKX";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mvpUJWKX"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dIwmkpeK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE5913E023;
-	Thu, 11 Apr 2024 08:26:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 320BC1DDE9;
+	Thu, 11 Apr 2024 08:27:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712823964; cv=none; b=cqWzM4Rkv08eEqw5Dy4L10D8m9CyGlOeeXCa1JmL0fZ92+3unT1rIwanH9kagByTyVWzAi5yWqgQKdZ9GIBURrC7kR6Z06G+3WYom5XEYobhpZpDV+0v4uKDRmLCebopjXAihscL8RS6b6L/twLZyle6zPDAd2+w3KQDP2UHViI=
+	t=1712824036; cv=none; b=fwQ7wbR1QS3Q9SJiagwWYf4B+wz8PGs3Pi9sOo8mdHMrrz/v5vxjtSvHMoOkmpzOQvCsejDIQY8gFypSQ5rEvMTad9DjHwSv831hH5SVdy/HBAMdpM4ts9DBe25F9plmY3NP0tNUX6tF6QaThOBYlx3PUbh+NwAzQSlGr74KMmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712823964; c=relaxed/simple;
-	bh=kBsrwI1nrQ+DqBTdvGD+kXeHsKAdfRqKLaUqW7+FO2Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=udIDhic2/HIv0WV4FwTvHU42xx8S1dxnM5wKhCWjPVFYKws+Vgrkvhu5fqSIOCtBgobnEfJbk6NKVcw6rLBljzML6hs105glBJtI+v12cv+JZTpjcrP+1xhzxH8mZtXc/3kxrrcJjHB7qHx8NR7xhhBJqrlLBamqBbO0PJs6o0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mvpUJWKX; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mvpUJWKX; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2923620B61;
-	Thu, 11 Apr 2024 08:26:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712823960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kBsrwI1nrQ+DqBTdvGD+kXeHsKAdfRqKLaUqW7+FO2Y=;
-	b=mvpUJWKX5SM0fRVFK6fwiJKVgTAfKbkGws5cOhVE4iW0qy99hKEhZ5mggNEjbt+vV1U2j4
-	FxSCaEz4rQw9k6Qupjkv445G1yXs+cKVFg8v8B0Z1S7fdII2CZ9W9XDzHxupS4n+zI4gKd
-	aBguafXJPmMQWCA31rknna4jX564ehU=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=mvpUJWKX
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712823960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kBsrwI1nrQ+DqBTdvGD+kXeHsKAdfRqKLaUqW7+FO2Y=;
-	b=mvpUJWKX5SM0fRVFK6fwiJKVgTAfKbkGws5cOhVE4iW0qy99hKEhZ5mggNEjbt+vV1U2j4
-	FxSCaEz4rQw9k6Qupjkv445G1yXs+cKVFg8v8B0Z1S7fdII2CZ9W9XDzHxupS4n+zI4gKd
-	aBguafXJPmMQWCA31rknna4jX564ehU=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0E73A13685;
-	Thu, 11 Apr 2024 08:26:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GCRiA5ieF2Y/RwAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Thu, 11 Apr 2024 08:26:00 +0000
-Date: Thu, 11 Apr 2024 10:25:54 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Djalal Harouni <tixxdz@gmail.com>, Tejun Heo <tj@kernel.org>, 
-	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-Message-ID: <mizwxyeznmb3ezlkwcjjc6fwwjseby6f5o2fb7ppunxtjdnitk@k5bxjxhfy6kv>
-References: <20240327-ccb56fc7a6e80136db80876c@djalal>
- <20240327225334.58474-1-tixxdz@gmail.com>
- <ex2uipr54lb2odxwzwp22ycvlwplsy4mm3shx26hczo3mjtkvz@uuzyk6535prw>
- <705d7180-aced-46ba-80a6-84ac4e2b96b9@gmail.com>
- <eosbqsdycwdaezg6huqwpjvttxdxgbu6ptjmpxesy6i2rl276i@72w2orzveyes>
- <31904afe-1d8a-4169-a3bd-d6d1c86cac5f@linux.dev>
+	s=arc-20240116; t=1712824036; c=relaxed/simple;
+	bh=VMUO6AMXMVsqgIqjVZgZBXBiEDcMtP9Oe9mg/oobPXQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RT3Aas+MjFdQOXjCtuYgxf0V4NIHrU1hmMhjBVyK1Idy0rUyUUl/gmaM5ifA7yjKIr2XXg4KS6W+tDcXEd6hMcpHnB+PvO0jGMjlhewFfO8Z+ttAkEUWolxcKNude5DyYPTRR5fVl5QY6czU9/2S3sK8IYYQ3MZhoXu3pYsYNQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dIwmkpeK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B86B5C433F1;
+	Thu, 11 Apr 2024 08:27:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712824035;
+	bh=VMUO6AMXMVsqgIqjVZgZBXBiEDcMtP9Oe9mg/oobPXQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=dIwmkpeKIe0q3pu/9q9xha9+2F3jhvYAe6frodg+nYsYZR9w3dcCsivNFDwRdfcfP
+	 rFXtnXXjGORHgV0IkkbqQhujoGdfST2cskNIzur4QJRNUvb3N0znbHS5WwH9mu1eUo
+	 nTlBjsBnb1CXWn0TzVG/PsHmnNWpx4bZ6p8xe2xtlRC1mRmy6B1lx5Ad6DuKJI8rP4
+	 uz0/QE//dOGFAM44jYtcC5pp9z9CXcgvfgKoviD35qme4MYpH3mPU1PDtOLMPtTwcm
+	 A+t2jxWi9C4U1DSChlNPpAc7R+qqsRatBlPS0+oMMq2mtCGJXVcYCwyIiTa3yDgKdK
+	 bSpNHi3Zkq4yQ==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d48d75ab70so103088301fa.0;
+        Thu, 11 Apr 2024 01:27:15 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVU0+of1qNpG+a37hgQhtcb+sSDa+4o1btpmPDOKiDWj1UY58Yjc4xZxBZP07RlZGFFLawRdptNhvOX/vvVC9d2VoCWMRvcD+E7tXyQ53r5iIrMXpluS44RwqyvnSKLl2jqoDjh
+X-Gm-Message-State: AOJu0YyVnrg1WosAg4M1MBhEYa9dxE0Wy5C61l6CV/yGOpk3tp4zNAPb
+	ouFjWJhzLd6C/QZAQJ7dLC7q73cX6iijQVfdNqMFV7VlFf5UBDOm/lMWcvYYhGH9gVs6RQizkFa
+	irmGI1xZkKrFsskmZDTeG2IGlnNs=
+X-Google-Smtp-Source: AGHT+IE6Jig5oeL04Ih0wDkMGruvLCBbhVbwekOG/N1Wn4x19B/cJ/cmRCJzfm1GiXipeKhO2KtEAU/LKwGLMVfOZ4g=
+X-Received: by 2002:a2e:9516:0:b0:2d8:59cb:89ef with SMTP id
+ f22-20020a2e9516000000b002d859cb89efmr3147956ljh.24.1712824033916; Thu, 11
+ Apr 2024 01:27:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qnegwa3hbjphuauz"
-Content-Disposition: inline
-In-Reply-To: <31904afe-1d8a-4169-a3bd-d6d1c86cac5f@linux.dev>
-X-Spam-Flag: NO
-X-Spam-Score: -5.45
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 2923620B61
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-5.45 / 50.00];
-	BAYES_HAM(-2.84)[99.31%];
-	SIGNED_PGP(-2.00)[];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	DWL_DNSWL_LOW(-1.00)[suse.com:dkim];
-	MID_RHS_NOT_FQDN(0.50)[];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,kernel.org,bytedance.com,cmpxchg.org,iogearbox.net,linux.dev,google.com,fb.com,vger.kernel.org];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+References: <3c6e6172-cf64-4230-bcc5-7682b4d64a8a@gmx.de> <4e2ff80c-9e3f-433e-8783-cb9729c30bb2@leemhuis.info>
+In-Reply-To: <4e2ff80c-9e3f-433e-8783-cb9729c30bb2@leemhuis.info>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Thu, 11 Apr 2024 10:27:02 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHgvv0FYZXsFm8KisXuR6t47-nXtgOs0Gyva4MJEJ_4Ow@mail.gmail.com>
+Message-ID: <CAMj1kXHgvv0FYZXsFm8KisXuR6t47-nXtgOs0Gyva4MJEJ_4Ow@mail.gmail.com>
+Subject: Re: 6.8.5 does not boot (regression)
+To: Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>, 
+	Linux Kernel <linux-kernel@vger.kernel.org>, 
+	"stable@vger.kernel.org" <stable@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, 11 Apr 2024 at 10:19, Linux regression tracking (Thorsten
+Leemhuis) <regressions@leemhuis.info> wrote:
+>
+> On 11.04.24 09:20, Toralf F=C3=B6rster wrote:
+> > It is a remote system, nothing in the logs, system is a hardened Gentoo
+> > Linux, 6.8.4 was fine.
+> >
+> > Linux mr-fox 6.8.4 #4 SMP Thu Apr  4 22:10:47 UTC 2024 x86_64 AMD Ryzen
+> > 9 5950X 16-Core Processor AuthenticAMD GNU/Linux
+> >
+> > Another Gentoo dev reported problems too.
+> >
+> > config is below.
+>
+> Thx for the report, but the harsh reality is: nearly no developer will
+> see your initial report, as you just sent it to LKML, which nearly
+> nobody ready. I CCed a few lists, which might help. But that is
+> unlikely, as this could be cause by all sorts of changes. Which is why
+> we likely need a bisection (
+> https://docs.kernel.org/admin-guide/verify-bugs-and-bisect-regressions.ht=
+ml
+> ) from somebody affected to make some progress here.
+>
+> That being said: there are a few EFI changes in there that in a case
+> like this are a suspect. I CCed the developer, maybe something rings a be=
+ll.
+>
 
---qnegwa3hbjphuauz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is a known issue, and will be fixed in the next 6.8.y release.
 
-On Wed, Apr 10, 2024 at 05:26:18PM -0700, Yonghong Song <yonghong.song@linux.dev> wrote:
-> This is not true.
+In the mean time, you can apply
 
-Oh, I misunderstood a manpage, I can see now it's not for any syscall.
-
-> More syscalls can be added (through kfunc) if there is a use case for that.
-
-Thus, I don't want to open this up.
-
-Michal
-
---qnegwa3hbjphuauz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZheekAAKCRAGvrMr/1gc
-jnl+AP9K1DB6KLICURjslQg8RPwAxt5ZS4vkUe5biaeljWRA7wEA9UKJ0+1wiJV4
-4Mf98MQLtuvEFv5v6L6qtBRpvrcGCQw=
-=0oQ4
------END PGP SIGNATURE-----
-
---qnegwa3hbjphuauz--
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?=
+id=3De7d24c0aa8e678f41457d1304e2091cac6fd1a2e
 
