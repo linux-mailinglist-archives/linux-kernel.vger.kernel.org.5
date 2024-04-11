@@ -1,131 +1,180 @@
-Return-Path: <linux-kernel+bounces-140442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE97D8A14BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:35:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB21F8A14A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:30:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFEDD1C22821
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:35:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 217691F2218E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:30:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 650F66ABA;
-	Thu, 11 Apr 2024 12:35:30 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A96C7490;
+	Thu, 11 Apr 2024 12:30:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NC1XB3dt"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A028633
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:35:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04B19633
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:30:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712838930; cv=none; b=gs5VciINSdkgsCwyun/R/kZeabwLZD278JdtABkuDZ2QCGm1ZWehpm8urSOL15AIRhxujZNLK/X/NurCa7a718/r1vW8wIqMXO/fbZ7EhNT5pRHnlSayhbSrLqtMSMXQ8cPWyYLl6R4yJzhBMDLhelSX9k1GoyZmzHdx5PGslVM=
+	t=1712838641; cv=none; b=gfC/q7MAQ37nP06jnFfFm+KVatThk9f4TnMqGwcNLskAVU+5LdrCisrsh7k0rhw9FfUcnh0kFXSIefzKu83yUvGvAQtAN3XbcImNFfE+vWGRBprLc1hnFkBmaz9yot8Vu7tCrMwqeBLC0frBd10focWo6kQPFCAgD/mV2hSwh4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712838930; c=relaxed/simple;
-	bh=VlTsClRPNfbw4IUtVTteG6qNe/mvq7LDVS2fF6IA07c=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=C/QfYnaZmrzh8bDj8AMnLoCr+Lc0j5EirIpipastRW21C/5SwyLF5tsquQvqakP5qlmkMbFVuKKeYea7qwrFN5VJxcdaeWrZT4Phr9zRustIghpspEgOEL+UAQgiBcId5kSYHI77CtmkAeaYedHA0Hsd3x+dGb+GXPMTXKCzciA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VFfGj5YYcz2CcCM;
-	Thu, 11 Apr 2024 20:32:29 +0800 (CST)
-Received: from kwepemd200014.china.huawei.com (unknown [7.221.188.8])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9BABB1400C9;
-	Thu, 11 Apr 2024 20:35:22 +0800 (CST)
-Received: from localhost.localdomain (10.50.165.33) by
- kwepemd200014.china.huawei.com (7.221.188.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 11 Apr 2024 20:35:22 +0800
-From: Yicong Yang <yangyicong@huawei.com>
-To: <will@kernel.org>, <mark.rutland@arm.com>, <catalin.marinas@arm.com>,
-	<broonie@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-CC: <jonathan.cameron@huawei.com>, <prime.zeng@hisilicon.com>,
-	<linuxarm@huawei.com>, <yangyicong@hisilicon.com>
-Subject: [PATCH v2] arm64: arm_pmuv3: Correctly extract and check the PMUVer
-Date: Thu, 11 Apr 2024 20:30:30 +0800
-Message-ID: <20240411123030.7201-1-yangyicong@huawei.com>
-X-Mailer: git-send-email 2.31.0
+	s=arc-20240116; t=1712838641; c=relaxed/simple;
+	bh=19SThbH+HroCA8DKalKKz3GnvI8MQEhAC7iHyh5IYxE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uDa1hyPXeecdslz0GpaQVbrgVsPOinmR38fjbVyZZWY5KmWAXqcep/LiRSZ9bdLXdp5unVrTGLNBX53PPHKBVyqlnVjF8VvLbZ8kVA52S6WA3QbKS91RRwyxeynWFOHdzanzP/AFz1eAgtyTm1t8mwbjdgzp+c+O74mLSEH/OVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NC1XB3dt; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712838638;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=y7TwXs97cGKCSPlZat8D9T+J4ssIvDgilxKFcQCp65o=;
+	b=NC1XB3dt40KDfzAC4finCdEkTmKlDqh5E7h0Y9xjrlENwHzoBtB/IU2TAdlYTvRi0tSK1+
+	ZolJ9ScZBayri5Dg3hLbc+8t/ETT8NXbvSr2gFZiQxxPCXbeTV8PTo5+7HqJVziNTAKxFH
+	hd8ZtNXFwC8DPKxhe9Z8TU8Xt83H4Vo=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-308-MxlYUF96M9yhNJ93DPK89Q-1; Thu, 11 Apr 2024 08:30:37 -0400
+X-MC-Unique: MxlYUF96M9yhNJ93DPK89Q-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d6c94d98afso73819701fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 05:30:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712838636; x=1713443436;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=y7TwXs97cGKCSPlZat8D9T+J4ssIvDgilxKFcQCp65o=;
+        b=iBZacvsrwxx31wGjQougCgRdRDnOQjN7Jc3OQqzcAn7i1GMdJxqjZEvloCNFN+l8bu
+         XsJ3YTjdgs0PlakjEnpw+1NO+NMl/awKVs0jM1d7+1+z3LXTn3Un/uXAVMRFjBfqcPxy
+         cZrxFVN4HTMfm5PbjSN4gDWa9ljwiK97Q8ZHtJg5MDwekICcyUijfu5/+XFAtGJ+EBhn
+         0ObhyVV0yj1IfGHLvigVf93pxP2YjRvyyUvsKHpP96sThZ0j7ZYeVULUgXsH+m88bqmV
+         j6QA8utvtMVirkHPpGr6SW4m7PjDw4vXyKvo7etFsCAOON/mNEEvVPhW8Is8zLlWfIPV
+         6RjQ==
+X-Gm-Message-State: AOJu0YyvUv5TiKam9U/L1BzSx8dIfJ5UwHTUH03ynt/05gUh+sXmTLVv
+	A9AxcQ5sf9lhdmuw+TUNrjLuv67aX26j+/tFZKHv34SHfT/vAJmh7ycBY5xC6f0whdVb7uN4U0x
+	nCSWS8cwUZ/vfjuOVSU4MFw9vNRp5PhWWVvFLzK/MaVNfd3dd8v/FxjtnVwOSTRN05FYa2A==
+X-Received: by 2002:a2e:98c7:0:b0:2d8:dd28:8748 with SMTP id s7-20020a2e98c7000000b002d8dd288748mr2945372ljj.1.1712838636016;
+        Thu, 11 Apr 2024 05:30:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHNhbKnm91UzHHYzeclwSv0GXVTE0gXbsFHBBDgl8GE19+0m4lF65G2tfbEM69kj3DPzwh/3g==
+X-Received: by 2002:a2e:98c7:0:b0:2d8:dd28:8748 with SMTP id s7-20020a2e98c7000000b002d8dd288748mr2945334ljj.1.1712838635554;
+        Thu, 11 Apr 2024 05:30:35 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c724:4300:430f:1c83:1abc:1d66? (p200300cbc7244300430f1c831abc1d66.dip0.t-ipconnect.de. [2003:cb:c724:4300:430f:1c83:1abc:1d66])
+        by smtp.gmail.com with ESMTPSA id p15-20020a05600c1d8f00b00417e134dd2dsm1142306wms.37.2024.04.11.05.30.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 05:30:35 -0700 (PDT)
+Message-ID: <b9d9af94-5935-4034-bf3f-9ba283df3ede@redhat.com>
+Date: Thu, 11 Apr 2024 14:30:34 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemd200014.china.huawei.com (7.221.188.8)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] mm/userfaultfd: don't place zeropages when
+ zeropages are disallowed
+To: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Janosch Frank <frankja@linux.ibm.com>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>, Heiko Carstens
+ <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Peter Xu <peterx@redhat.com>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
+ linux-s390@vger.kernel.org
+References: <20240327171737.919590-1-david@redhat.com>
+ <20240327171737.919590-2-david@redhat.com>
+ <ZhfW7qzAGPQo3mJN@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <ZhfW7qzAGPQo3mJN@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Yicong Yang <yangyicong@hisilicon.com>
+On 11.04.24 14:26, Alexander Gordeev wrote:
+> On Wed, Mar 27, 2024 at 06:17:36PM +0100, David Hildenbrand wrote:
+> 
+> Hi David,
+> ...
+>>   static int mfill_atomic_pte_zeropage(pmd_t *dst_pmd,
+>>   				     struct vm_area_struct *dst_vma,
+>>   				     unsigned long dst_addr)
+>> @@ -324,6 +355,9 @@ static int mfill_atomic_pte_zeropage(pmd_t *dst_pmd,
+>>   	spinlock_t *ptl;
+>>   	int ret;
+>>   
+>> +	if (mm_forbids_zeropage(dst_vma->mm))
+> 
+> I assume, you were going to pass dst_vma->vm_mm here?
+> This patch does not compile otherwise.
 
-Currently we're using "sbfx" to extract the PMUVer from ID_AA64DFR0_EL1
-and skip the init/reset if no PMU present when the extracted PMUVer is
-negative or is zero. However for PMUv3p8 the PMUVer will be 0b1000 and
-PMUVer extracted by "sbfx" will always be negative and we'll skip the
-init/reset in __init_el2_debug/reset_pmuserenr_el0 unexpectedly.
+Ah, I compiled it only on x86, where the parameter is ignored ... and 
+for testing the code path I forced mm_forbids_zeropage to be 1 on x86.
 
-So this patch use "ubfx" instead of "sbfx" to extract the PMUVer. If
-the PMUVer is implementation defined (0b1111) or not implemented(0b0000)
-then skip the reset/init. Previously we'll also skip the init/reset
-if the PMUVer is higher than the version we known (currently PMUv3p9),
-with this patch we'll only skip if the PMU is not implemented or
-implementation defined. This keeps consistence with how we probe
-the PMU in the driver with pmuv3_implemented().
+Yes, this must be dst_vma->vm_mm.
 
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
----
-Change since v1:
-- Use "ccmp" rather than "csel" to make it tidier, per Will
-Link: https://lore.kernel.org/all/20240408081158.15291-1-yangyicong@huawei.com/
+Thanks!
 
- arch/arm64/include/asm/assembler.h | 7 ++++---
- arch/arm64/include/asm/el2_setup.h | 9 +++++----
- 2 files changed, 9 insertions(+), 7 deletions(-)
-
-diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-index ab8b396428da..9ecd076ba08f 100644
---- a/arch/arm64/include/asm/assembler.h
-+++ b/arch/arm64/include/asm/assembler.h
-@@ -480,9 +480,10 @@ alternative_endif
-  */
- 	.macro	reset_pmuserenr_el0, tmpreg
- 	mrs	\tmpreg, id_aa64dfr0_el1
--	sbfx	\tmpreg, \tmpreg, #ID_AA64DFR0_EL1_PMUVer_SHIFT, #4
--	cmp	\tmpreg, #1			// Skip if no PMU present
--	b.lt	9000f
-+	ubfx	\tmpreg, \tmpreg, #ID_AA64DFR0_EL1_PMUVer_SHIFT, #4
-+	cmp	\tmpreg, #ID_AA64DFR0_EL1_PMUVer_NI
-+	ccmp	\tmpreg, #ID_AA64DFR0_EL1_PMUVer_IMP_DEF, #4, ne
-+	b.eq	9000f				// Skip if no PMU present or IMP_DEF
- 	msr	pmuserenr_el0, xzr		// Disable PMU access from EL0
- 9000:
- 	.endm
-diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
-index b7afaa026842..e4546b29dd0c 100644
---- a/arch/arm64/include/asm/el2_setup.h
-+++ b/arch/arm64/include/asm/el2_setup.h
-@@ -59,13 +59,14 @@
- 
- .macro __init_el2_debug
- 	mrs	x1, id_aa64dfr0_el1
--	sbfx	x0, x1, #ID_AA64DFR0_EL1_PMUVer_SHIFT, #4
--	cmp	x0, #1
--	b.lt	.Lskip_pmu_\@			// Skip if no PMU present
-+	ubfx	x0, x1, #ID_AA64DFR0_EL1_PMUVer_SHIFT, #4
-+	cmp	x0, #ID_AA64DFR0_EL1_PMUVer_NI
-+	ccmp	x0, #ID_AA64DFR0_EL1_PMUVer_IMP_DEF, #4, ne
-+	b.eq	.Lskip_pmu_\@			// Skip if no PMU present or IMP_DEF
- 	mrs	x0, pmcr_el0			// Disable debug access traps
- 	ubfx	x0, x0, #11, #5			// to EL2 and allow access to
- .Lskip_pmu_\@:
--	csel	x2, xzr, x0, lt			// all PMU counters from EL1
-+	csel	x2, xzr, x0, eq			// all PMU counters from EL1
- 
- 	/* Statistical profiling */
- 	ubfx	x0, x1, #ID_AA64DFR0_EL1_PMSVer_SHIFT, #4
 -- 
-2.24.0
+Cheers,
+
+David / dhildenb
 
 
