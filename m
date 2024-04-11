@@ -1,194 +1,142 @@
-Return-Path: <linux-kernel+bounces-141381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 334768A1D7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:12:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98C7F8A1D7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:12:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7AB4284D87
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:12:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 502FB1F22F5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBCA21E2455;
-	Thu, 11 Apr 2024 17:08:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0204F1E3132;
+	Thu, 11 Apr 2024 17:09:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4T9TKkAC"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SmV+om7A"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F0061E2453
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 17:08:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 959FF1E3121;
+	Thu, 11 Apr 2024 17:09:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712855332; cv=none; b=UFU8FsGuwq6Rxq7XlSCsoF6ZeMolK++ZrzI33rHruaS0k11iPe5b4iXRC0CIdXoI2hjZCMbZOjFSXpz24y2bzO3pVAit1+xW+bgsVVm7G0faivuyTtOR542I0oIwhH081pX0B1M5qghiodc5PTQkpP/50vmnAOtEbhfMaFGb+Ok=
+	t=1712855342; cv=none; b=YUpQCheA/hlFKWQWf/G4LKUVRfDUjCBN0HPA49RmEdGNYTOeUyWV2V20nahg0eWlT753Wt4GVMBY15eZTcmn5gEyG9Z4ArC6yaLVMFju1aTsNEUPxQCFNCAp9Iy9ttltEQs21MJCz04r3a4TiRE506sIaiJRn2+ABoFMFkv5JDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712855332; c=relaxed/simple;
-	bh=osOLzVNRJUx7/kwh0j8ShhoMeBYb2lNqWbY8A8z5eUU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uaKY+8B8T4aI2vVruTyZa17sTFTbXzC8K2U+/Q4om2WGNn66byym3Nah3BRhdCAk9zc5Ibiw7rAaWuMh5oV3/ICj9i7j5wv4WQLnYY7uPRmuDyzSiAWHEKi0I4ovA3RLFakj7C1TAdIwMoGFS51dXk3d2qDSWKB7tW2GEbkUo34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4T9TKkAC; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e0bfc42783so725385ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:08:50 -0700 (PDT)
+	s=arc-20240116; t=1712855342; c=relaxed/simple;
+	bh=/YHP+vy+GUBWNACNY3WPAHUPtqxAyh04TU6owuCU+1M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=s5pOjb3vEhSfiXA/kb0RPy0JLp7c5IOHarYhPD8KwSHVril5ecXUAkSQIZ/qeH5r5nfK9J6ahELBex5wtcdTC1BhApBE3KV3p7xZMiX8zd5Pc4KNvVamxSCWnvLhLrrzhT+QL9mVIEL/LY4ezRrybcaAyY5wReHfK8Ery+eQHHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SmV+om7A; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d48d75ab70so104911fa.0;
+        Thu, 11 Apr 2024 10:09:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712855330; x=1713460130; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vEGKpy4oX/yIMuuLIeB2ya0zq8zO1o7RbrrJFAy2vfY=;
-        b=4T9TKkACi8SqvCu3GueLC7cdH9GUN3Dab7eFh6Zi0N98y2OzCixry40P3WcP41y1CL
-         DIJlsqu3t+oNU8KKZRflHTjeQkarwI45gz9qskHEMxVAooCfJXOwWm/LlD1L57tB6Y0x
-         JXZvTDJyzm/XwBheHBxUkhKVRjwUyHWjKxQ0R9gARCx9YndsiAFBJXk3zIrsr7M7zkA1
-         xxE4+L3Hkl2fqqsj/qG1epi6xdGmObl7tsRqc6anq1b7T5e/rMNRWGmAJUOlgbf8o8Sl
-         YzKZ41FgxUtx6wGph/K50SEDTMyhrM86m/BGRrcmfI0RV9bnXzf8nh9eiXkd3oJ3wud1
-         u1CQ==
+        d=gmail.com; s=20230601; t=1712855339; x=1713460139; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pyphqGVCbq+kAaIZuipItp9+DUC7bP/EUNJp2qT2X6M=;
+        b=SmV+om7AbwMoUvktXZlYQcxy7ls7HkLM9c6LhhibRdb3EhxSkAVX/Y5H/uxqcHXgvY
+         FeDkdCvQcdPWn1hip60Rn+hRFwTx7DxfdbPfCsGOXKanE9x5B73/IGjUth6dOl08EluM
+         kZWjlPbwqoBtz0TvHIms6+DwKhcq6v2Cr308AK+0IwwuZf/ONzz+Otsnpx8DM3Awpvij
+         xwQjKjlIYf9hDX9t5IzGyphp+ORKl6BhkoCoFMCuJn+DF1uj6HwmyEwsmoo6RiWV5X1x
+         D6aKbj4TgofwsrQ8utU1zqUlNqx4PMACwF4KCMjZkaSl3ZGFDRvr9zO/B1UqfrWj2Vey
+         djWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712855330; x=1713460130;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vEGKpy4oX/yIMuuLIeB2ya0zq8zO1o7RbrrJFAy2vfY=;
-        b=nwst+/X8dNo2w+xgoUGkxPe5atQpWk5YWKUQwgR9yjuMMN5auy8X/VbVujDJ78fDGy
-         ivlp6I7eIwnStMFGCL8Qgs8NTQDvDkedlDs1BJzTKEEofiZZv1sb0Dvy/AU87UFN5BDf
-         ugnk/gQ8MgIIpESnZYXWJpKYsZCDFt67FqTdslKFQMUTsl86Q2I3rD22Q2TZCpxfS7AB
-         X9VZ8fCrhNuKBBK8FD/68D48xY1xXpzJNfwK+KKkX3qLP4zLB+Y39GRcCGDP2r/cvSND
-         r99h+H6Q+TWnJJAYmqStXiFKgkKcMh6aq439UnEdrDD0F24stIHwCYXYT3GmtdAC18NB
-         HBdg==
-X-Forwarded-Encrypted: i=1; AJvYcCXa9hWCCshjD/KQ38vQ+h5q3aRmpfHMRuoCoU89anOtEBgbEPPd78v3j9r0yjNq/O6LCyKQoVS3R51QniWyBop2VcHAfFyxbNGMA+fq
-X-Gm-Message-State: AOJu0YwrPJQzK3bn37SS5arLXBalGQNu7PK601jyLApgvfmRGUNPTOZB
-	JqhG4xEKjRK1VKHM4Rhxo6XsLbh1UEz7EJKL4RKIyghKQuzWm7YqWWwEni6R8w==
-X-Google-Smtp-Source: AGHT+IGIo+XHhfBaNNvx2FZS3Opjx6zyO4INlV5oeLFS8dMFPff/iA2HmfQk0TnetdunGtVsGaac0w==
-X-Received: by 2002:a17:902:d303:b0:1e0:bae4:48f9 with SMTP id b3-20020a170902d30300b001e0bae448f9mr88599plc.32.1712855329667;
-        Thu, 11 Apr 2024 10:08:49 -0700 (PDT)
-Received: from google.com (210.73.125.34.bc.googleusercontent.com. [34.125.73.210])
-        by smtp.gmail.com with ESMTPSA id a5-20020a1709027d8500b001e197cee600sm1413805plm.3.2024.04.11.10.08.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 10:08:49 -0700 (PDT)
-Date: Thu, 11 Apr 2024 10:08:44 -0700
-From: David Matlack <dmatlack@google.com>
-To: James Houghton <jthoughton@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Paolo Bonzini <pbonzini@redhat.com>, Yu Zhao <yuzhao@google.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Sean Christopherson <seanjc@google.com>,
-	Jonathan Corbet <corbet@lwn.net>, James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Shaoqin Huang <shahuang@redhat.com>, Gavin Shan <gshan@redhat.com>,
-	Ricardo Koller <ricarkol@google.com>,
-	Raghavendra Rao Ananta <rananta@google.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	David Rientjes <rientjes@google.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/7] KVM: x86: Participate in bitmap-based PTE aging
-Message-ID: <ZhgZHJH3c5Lb5SBs@google.com>
-References: <20240401232946.1837665-1-jthoughton@google.com>
- <20240401232946.1837665-6-jthoughton@google.com>
+        d=1e100.net; s=20230601; t=1712855339; x=1713460139;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pyphqGVCbq+kAaIZuipItp9+DUC7bP/EUNJp2qT2X6M=;
+        b=LzA5ajqz7hDoovyAE8nyLac74o8npgfP1TSCKt+rsofzoNrGEoKsv0OHqbhVvCcFjL
+         pbuCpK1GT9k72NxKPyEvlvpxTuJlrp2bvJ0W274bc76RyZbO6GFwSmK/xPmjI+oTEUBf
+         d5/jcyq0dP22G55Ko5m+SN0xwobaQctwihky1+XiPv/uLzA96XNrz/0eheL3367j+gxk
+         UAXLlhwDJ557ALXRCS2Ua7uTIk4oCpjKcH0gjq5RsCyp/8cpAukfY0MOqHi+MUM0h9Q6
+         IaNUmEjhy30+P+Ko301mt2CoQcrnNjGm77D7g6xCVxCSXRGwzQomvppStqvNMJlpOoAE
+         a55g==
+X-Forwarded-Encrypted: i=1; AJvYcCU4dxZ1okUeIPcgl8L7R2+na3cXCZt3cc0muO+pIRTdfLLsz+Kje8bz3FOKNiLo+zO/ZJWCPHqw0VYaWW71rvDnLfCVEhMQ2CGgcOnkV4ZrBFUEleY8Ulu3jPgBSz+q7Q3k7Fp2vZceH9HciDgA7Xpg6bO21dEibqr2Q1pRuJq6jhhkxQ==
+X-Gm-Message-State: AOJu0YwNjfvJu1t5C1azrIW5/Dvp+ot2Jv5MLKBMnDtH8kxDuQKkZZT5
+	LNqBJi7p1xQC9tDd4tM9xsUj4dhTb53N1lkDHqadnlgIpYz0ZJUW
+X-Google-Smtp-Source: AGHT+IGVX1ZUl9zs97xoOOhiCDudM7xFGxbuyDZia/hyPst/uQxTzBSNl/eDIaGOzEIan/dNf1sSsw==
+X-Received: by 2002:a05:651c:4c6:b0:2d8:1267:3202 with SMTP id e6-20020a05651c04c600b002d812673202mr195567lji.10.1712855338499;
+        Thu, 11 Apr 2024 10:08:58 -0700 (PDT)
+Received: from [192.168.3.32] (d-zg2-064.globalnet.hr. [213.149.37.64])
+        by smtp.gmail.com with ESMTPSA id cg14-20020a5d5cce000000b00346d91ddbe3sm1090289wrb.9.2024.04.11.10.08.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 10:08:58 -0700 (PDT)
+Message-ID: <416340b6-33a9-4b9e-bdc5-c5a9cffb3055@gmail.com>
+Date: Thu, 11 Apr 2024 19:08:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240401232946.1837665-6-jthoughton@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/2] i2c: Set i2c pinctrl recovery info from it's
+ device pinctrl
+To: Hanna Hawa <hhhawa@amazon.com>, andriy.shevchenko@linux.intel.com,
+ wsa@kernel.org, linus.walleij@linaro.org, linux-i2c@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Cc: dwmw@amazon.co.uk, benh@amazon.com, ronenk@amazon.com, talel@amazon.com,
+ jonnyc@amazon.com, hanochu@amazon.com, farbere@amazon.com, itamark@amazon.com
+References: <20221228164813.67964-1-hhhawa@amazon.com>
+ <20221228164813.67964-3-hhhawa@amazon.com>
+Content-Language: en-US
+From: Robert Marko <robimarko@gmail.com>
+In-Reply-To: <20221228164813.67964-3-hhhawa@amazon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 2024-04-01 11:29 PM, James Houghton wrote:
-> Only handle the TDP MMU case for now. In other cases, if a bitmap was
-> not provided, fallback to the slowpath that takes mmu_lock, or, if a
-> bitmap was provided, inform the caller that the bitmap is unreliable.
-> 
-> Suggested-by: Yu Zhao <yuzhao@google.com>
-> Signed-off-by: James Houghton <jthoughton@google.com>
+
+On 28. 12. 2022. 17:48, Hanna Hawa wrote:
+> Currently the i2c subsystem rely on the controller device tree to
+> initialize the pinctrl recovery information, part of the drivers does
+> not set this field (rinfo->pinctrl), for example i2c DesignWare driver.
+>
+> The pins information is saved part of the device structure before probe
+> and it's done on pinctrl_bind_pins().
+>
+> Make the i2c init recovery to get the device pins if it's not
+> initialized by the driver from the device pins.
+>
+> Signed-off-by: Hanna Hawa <hhhawa@amazon.com>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  arch/x86/include/asm/kvm_host.h | 14 ++++++++++++++
->  arch/x86/kvm/mmu/mmu.c          | 16 ++++++++++++++--
->  arch/x86/kvm/mmu/tdp_mmu.c      | 10 +++++++++-
->  3 files changed, 37 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 3b58e2306621..c30918d0887e 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -2324,4 +2324,18 @@ int memslot_rmap_alloc(struct kvm_memory_slot *slot, unsigned long npages);
->   */
->  #define KVM_EXIT_HYPERCALL_MBZ		GENMASK_ULL(31, 1)
->  
-> +#define kvm_arch_prepare_bitmap_age kvm_arch_prepare_bitmap_age
-> +static inline bool kvm_arch_prepare_bitmap_age(struct mmu_notifier *mn)
-> +{
-> +	/*
-> +	 * Indicate that we support bitmap-based aging when using the TDP MMU
-> +	 * and the accessed bit is available in the TDP page tables.
-> +	 *
-> +	 * We have no other preparatory work to do here, so we do not need to
-> +	 * redefine kvm_arch_finish_bitmap_age().
-> +	 */
-> +	return IS_ENABLED(CONFIG_X86_64) && tdp_mmu_enabled
-> +					 && shadow_accessed_mask;
-> +}
+>   drivers/i2c/i2c-core-base.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+> index 7539b0740351..fb5644457452 100644
+> --- a/drivers/i2c/i2c-core-base.c
+> +++ b/drivers/i2c/i2c-core-base.c
+> @@ -34,6 +34,7 @@
+>   #include <linux/of.h>
+>   #include <linux/of_irq.h>
+>   #include <linux/pinctrl/consumer.h>
+> +#include <linux/pinctrl/devinfo.h>
+>   #include <linux/pm_domain.h>
+>   #include <linux/pm_runtime.h>
+>   #include <linux/pm_wakeirq.h>
+> @@ -282,7 +283,9 @@ static void i2c_gpio_init_pinctrl_recovery(struct i2c_adapter *adap)
+>   {
+>   	struct i2c_bus_recovery_info *bri = adap->bus_recovery_info;
+>   	struct device *dev = &adap->dev;
+> -	struct pinctrl *p = bri->pinctrl;
+> +	struct pinctrl *p = bri->pinctrl ?: dev_pinctrl(dev->parent);
 > +
->  #endif /* _ASM_X86_KVM_HOST_H */
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 992e651540e8..fae1a75750bb 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -1674,8 +1674,14 @@ bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
->  {
->  	bool young = false;
->  
-> -	if (kvm_memslots_have_rmaps(kvm))
-> +	if (kvm_memslots_have_rmaps(kvm)) {
-> +		if (range->lockless) {
-> +			kvm_age_set_unreliable(range);
-> +			return false;
-> +		}
+> +	bri->pinctrl = p;
 
-If a VM has TDP MMU enabled, supports A/D bits, and is using nested
-virtualization, MGLRU will effectively be blind to all accesses made by
-the VM.
+Hi Hanna,
+I know this has already been merged, but setting bri->pinctrl breaks PXA 
+recovery.
 
-kvm_arch_prepare_bitmap_age() will return true indicating that the
-bitmap is supported. But then kvm_age_gfn() and kvm_test_age_gfn() will
-return false immediately and indicate the bitmap is unreliable because a
-shadow root is allocate. The notfier will then return
-MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE.
+Regards,
+Robert
 
-Looking at the callers, MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE is never
-consumed or used. So I think MGLRU will assume all memory is
-unaccessed?
-
-One way to improve the situation would be to re-order the TDP MMU
-function first and return young instead of false, so that way MGLRU at
-least has visibility into accesses made by L1 (and L2 if EPT is disable
-in L2). But that still means MGLRU is blind to accesses made by L2.
-
-What about grabbing the mmu_lock if there's a shadow root allocated and
-get rid of MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE altogether?
-
-	if (kvm_memslots_have_rmaps(kvm)) {
-		write_lock(&kvm->mmu_lock);
-		young |= kvm_handle_gfn_range(kvm, range, kvm_age_rmap);
-		write_unlock(&kvm->mmu_lock);
-	}
-
-The TDP MMU walk would still be lockless. KVM only has to take the
-mmu_lock to collect accesses made by L2.
-
-kvm_age_rmap() and kvm_test_age_rmap() will need to become bitmap-aware
-as well, but that seems relatively simple with the helper functions.
+>   
+>   	/*
+>   	 * we can't change states without pinctrl, so remove the states if
 
