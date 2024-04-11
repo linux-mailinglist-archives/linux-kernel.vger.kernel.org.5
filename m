@@ -1,84 +1,141 @@
-Return-Path: <linux-kernel+bounces-140451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14CBB8A14D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:42:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB1158A14DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:44:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB6321F23BA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:42:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24BE01F23C28
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:44:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2849D383A5;
-	Thu, 11 Apr 2024 12:42:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C47BB39FFB;
+	Thu, 11 Apr 2024 12:44:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="GQceUHJq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ezO8dL3L"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B0EE1E516;
-	Thu, 11 Apr 2024 12:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12EE91EF1E;
+	Thu, 11 Apr 2024 12:44:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712839354; cv=none; b=Iwf54MilFVDD/A9S2KpR0rS+VfZgumTqCNtIJdrJPrUmdL5kMTT4Hv6ZxL6f8qeyMXGrGYUpfY/c30VsnGc6CraQo+KYyldRNwbwkaC+4jbRNICt4OxUfIRpv8foUC7cJRzZeYadxkEGszOsvOIiUn0gr4RlarXL6a5OiG8LRmU=
+	t=1712839489; cv=none; b=PmUTCE85VmDspho+Xx3GoSc4StO/nxJoWfDdo6tZnCmuPdtb2DXDmOzVVdYQDwt76xttaVPD0/hBlrdUVTuGni3y8qR5mEG5MFJJy+QozcM+yHwQ+RiEpRSMCvrdyopSZ1TgztKcONUKQ3Nic6at4tbw1YUAOaFzIyQEBo48qpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712839354; c=relaxed/simple;
-	bh=WSM6gnND1FVp3qPuNl33Edn2hp3BLAP7Hq+mlVeX2LM=;
+	s=arc-20240116; t=1712839489; c=relaxed/simple;
+	bh=OQQRNWdkr4WaI4b7oKpsegOo4RWqi1dZNaSeFtlWVbs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JysK6LwFW4ChY2IUA40+6o9xYXrrRxnjD68XpxA40mbz2s576UKDUp+WSfyY4QRhCfvPFlYsiketqUiutdegnSaolzMAfqVmKoxOFneteVkd0dRYC3FD9baHOEDsVmSYqdCqthpkqCS6ZNShs0foCjeKbbtf89jvF/yIy8fYbmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=GQceUHJq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BE52C43390;
-	Thu, 11 Apr 2024 12:42:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712839353;
-	bh=WSM6gnND1FVp3qPuNl33Edn2hp3BLAP7Hq+mlVeX2LM=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=KZkkm6yIIkhxAOjl3gw171MFQEvyVAT2w8eWp+2dWybdB4d4L4pOO0g2FcEarUSEv1oIRjQnxSjwODhOwWVM4Ru/jdNdiNCwh/HmYXUb2sLjX2ud9wMkSdZFHSO0IvkGnp2Do3Yk6yT+RJjBxHIMONhLMMQppTV+HgqT7CI83nM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ezO8dL3L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A944DC433C7;
+	Thu, 11 Apr 2024 12:44:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712839488;
+	bh=OQQRNWdkr4WaI4b7oKpsegOo4RWqi1dZNaSeFtlWVbs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GQceUHJqIZnw2nnOrTYt2hTP25pAEjigLaTKWTMmkNTEqckWgj0lkXYEokZYXg9X2
-	 mLE20L/sgv79uQ5BgsiVzcUC8uHtlHW3Zg0UT+sg7V230+yB5BQFZoTBSYefxKWuq4
-	 Vj6Tgg55ExqMwyS7SojwElrWgNIN2rSOsidBWTk8=
-Date: Thu, 11 Apr 2024 14:42:31 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	linux-modules@vger.kernel.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v4] module: don't ignore sysfs_create_link() failures
-Message-ID: <2024041121-dab-battalion-e3e1@gregkh>
-References: <20240408080616.3911573-1-arnd@kernel.org>
- <ZhQUhvSCpz48f6tw@bombadil.infradead.org>
+	b=ezO8dL3L5bOW/ml2vbaGtawX/gEsCvPnqy/P65Zu/3kKzzDDV2uAojI3ROPJydran
+	 9GLtNAEV56iMg6hYEGo+Kz8nWSm56YLsqfFg5PjuO1naq1POmwCOQPwLAmWS8izuD9
+	 hxwgwVUGiHxPGLmdTKfnCt2YFgx7YB9KQhRgNUe8r68amk3jozUBOOMY8mk9mAbxRu
+	 kDqpvZdcc2qANX/cONjTE9myBeD3pYF6g6wdXYwyTXQxnCWqo0Ur6ioR97JnMAmxvN
+	 IuAqwTSsPqp1tKlQz1Kvem3pGLR/WlcmuoIYPpiH8G12OVYl0tKtFI9/I5z6VFtsaM
+	 GyMeZQrQVLiWQ==
+Date: Thu, 11 Apr 2024 13:44:42 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>,
+	Marco Elver <elver@google.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+	Edward Liaw <edliaw@google.com>,
+	Carlos Llamas <cmllamas@google.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] selftests/timers/posix_timers: reimplement
+ check_timer_distribution()
+Message-ID: <f0523b3a-ea08-4615-b0fb-5b504a2d39df@sirena.org.uk>
+References: <87sf02bgez.ffs@tglx>
+ <87r0fmbe65.ffs@tglx>
+ <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
+ <87o7aqb6uw.ffs@tglx>
+ <CANDhNCreA6nJp4ZUhgcxNB5Zye1aySDoU99+_GDS57HAF4jZ_Q@mail.gmail.com>
+ <87frw2axv0.ffs@tglx>
+ <20240404145408.GD7153@redhat.com>
+ <87le5t9f14.ffs@tglx>
+ <20240406150950.GA3060@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="eLEudqFzuEINegTy"
+Content-Disposition: inline
+In-Reply-To: <20240406150950.GA3060@redhat.com>
+X-Cookie: Elliptic paraboloids for sale.
+
+
+--eLEudqFzuEINegTy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZhQUhvSCpz48f6tw@bombadil.infradead.org>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 08, 2024 at 09:00:06AM -0700, Luis Chamberlain wrote:
-> On Mon, Apr 08, 2024 at 10:05:58AM +0200, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > The sysfs_create_link() return code is marked as __must_check, but the
-> > module_add_driver() function tries hard to not care, by assigning the
-> > return code to a variable. When building with 'make W=1', gcc still
-> > warns because this variable is only assigned but not used:
-> > 
-> > drivers/base/module.c: In function 'module_add_driver':
-> > drivers/base/module.c:36:6: warning: variable 'no_warn' set but not used [-Wunused-but-set-variable]
-> > 
-> > Rework the code to properly unwind and return the error code to the
-> > caller. My reading of the original code was that it tries to
-> > not fail when the links already exist, so keep ignoring -EEXIST
-> > errors.
-> > 
-> > Fixes: e17e0f51aeea ("Driver core: show drivers in /sys/module/")
-> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
+On Sat, Apr 06, 2024 at 05:09:51PM +0200, Oleg Nesterov wrote:
+> Thomas says:
+>=20
+> 	The signal distribution test has a tendency to hang for a long
+> 	time as the signal delivery is not really evenly distributed. In
+> 	fact it might never be distributed across all threads ever in
+> 	the way it is written.
+>=20
+> To me even the
+>=20
+> 	This primarily tests that the kernel does not favour any one.
 
-Oh right, I should apply this, sorry about that, will go do that now...
+Further to my previous mail it's also broken the arm64 selftest builds,
+they use kselftest.h with nolibc in order to test low level
+functionality mainly used by libc implementations and nolibc doesn't
+implement uname():
+
+In file included from za-fork.c:12:
+=2E./../kselftest.h:433:17: error: variable has incomplete type 'struct uts=
+name'
+        struct utsname info;
+                       ^
+=2E./../kselftest.h:433:9: note: forward declaration of 'struct utsname'
+        struct utsname info;
+               ^
+=2E./../kselftest.h:435:6: error: call to undeclared function 'uname'; ISO =
+C99 and later do not support implicit function declarations [-Wimplicit-fun=
+ction-declaration]
+        if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor) =
+!=3D 2)
+            ^
+=2E./../kselftest.h:435:22: error: call to undeclared function 'sscanf'; IS=
+O C99 and later do not support implicit function declarations [-Wimplicit-f=
+unction-declaration]
+        if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor) =
+!=3D 2)
+                            ^
+1 warning and 3 errors generated.
+
+--eLEudqFzuEINegTy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYX2zoACgkQJNaLcl1U
+h9BNsAf/SALLRc/9ZAS59tFpxQdRfvXtWqUNgZWj+IKbEwArKB6V0kOSkYeeFF5x
+cIP8785Nor1UFY6gBKpNdXwyI1zCLIpX+RwrV2aFJ/DQlcnLfCXvYlPIJ4hVV3DM
+LTDs6/MtMx7xXkbyfXRyw+Dy0JuoW7m5l982y1KGI8otoA+Ld/hgbnamNRfrIWd4
+GTCAup3fO84OA892aV4hmGgPFHjRuXvCwHg2LLrkFiaGpn9Qz2iJkalIYimZQtuW
+sXpV4urnzUybTmMXPRWhj7znL+5BYVPXO83ZtfSq6/jJ60Md5Tg36aazNXpo0H68
+OCJR4L+iK4CHAj87DoDQkhVw2BRaUA==
+=tp/A
+-----END PGP SIGNATURE-----
+
+--eLEudqFzuEINegTy--
 
