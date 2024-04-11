@@ -1,284 +1,149 @@
-Return-Path: <linux-kernel+bounces-141354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA8F78A1D28
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:04:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16FB18A1D32
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:05:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 081911C23F07
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:04:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA7EE1F23F64
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:05:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45532152DEB;
-	Thu, 11 Apr 2024 16:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3F1B1CD790;
+	Thu, 11 Apr 2024 16:51:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="H3Li+qQj";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MVdoSrAm"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="htF9RWAO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1269481AA;
-	Thu, 11 Apr 2024 16:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C8A71CD766;
+	Thu, 11 Apr 2024 16:51:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712854278; cv=none; b=ikE8S/IVx7qMnWkTZT3ss+WTbVcgOMEG+gARqmDXAALZcw06k1XTEstvkdyqkZvfjU4a+ENFYsCjgCoqrp0R6QGiSH/u4gznJQttct1szN3SP9U6uvbZVbeiWbAjpuJAOpPQue3Kun5VZJ0lC5g5SDRRjfAVsNLyW3VQ5Nqikms=
+	t=1712854293; cv=none; b=I8O/vm+C7dsDT++h8MpJ3Uvp/qPPPSS3GoExXLIazqkOHojFZ7bn2+8Jv1xHYKE7AZ0ogZRhNhKUmmnSts/5o5sRhN3RR5jvN+Lle7NlQ5w+gidQ0/sH790VDIKVnyf32oNAUeGx9+xaSOxGGC2ctJL4BK6ajgBv+WXiefjteb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712854278; c=relaxed/simple;
-	bh=d1/jptrgMSQUzJQQQ1uzHJiUIs9jlC0C1nX9hEjOPGw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Q1EE77Fipq/G3QkLPuoFxXaXb5Tx24rSCD7X+lWPgVaYSNdFG4R/GjSvqg7Z0/SkyW4Lhr+Noh/Irz8e79EKnSCvhfQvYfFexczbWNIGkHAN8hH2wsemU9ob/DFItEke3BQOWwq3vXQuKTmIjgBmdVWST9YcetzwjhqZNPsTx+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=H3Li+qQj; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MVdoSrAm; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712854274;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ukR6eilnG/pWmnW4ihYd+kVMND3BQSTM5uSyxQDF9cM=;
-	b=H3Li+qQjhMKedJ3HsEeGikAzfFe1bXY/GeUuFQG21667CdpQXhWwlRm2qbA5ZzE7lf898e
-	66wTsqPiQ/5JF8Cein7BMswM/oofPnLOs3ki07lBKDGSP8x1d/Kt9V7gbF/nI3BwPyWYpY
-	oaBvxfBitH8cobGlefOnELtX9C6btHC6NVVoj5BKVx7+r6e34mOgqJTy5FpbILrDMxP7Hv
-	Vr3rNW3ajcP+43V9LpqL+QmG11VNQD77YEifALOYbHmycz2oNSsL8mmvI7EECRZ17k6jjf
-	95wBy9RxJqIJoluO8jm9IlJMguKB/vT96GeIEOxB4JYGGkRklHFqr+fH86pUhA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712854274;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ukR6eilnG/pWmnW4ihYd+kVMND3BQSTM5uSyxQDF9cM=;
-	b=MVdoSrAmMvg+YHWpF7/tmr49WE81XVIeM6P/Kz79N7Ptj6Dy88c80NB3myObBYbd/F1c8f
-	5ie9qY5SNllqEjDQ==
-To: Jacob Pan <jacob.jun.pan@linux.intel.com>, LKML
- <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev, Lu Baolu
- <baolu.lu@linux.intel.com>, kvm@vger.kernel.org, Dave Hansen
- <dave.hansen@intel.com>, Joerg Roedel <joro@8bytes.org>, "H. Peter Anvin"
- <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>, Ingo Molnar
- <mingo@redhat.com>
-Cc: Paul Luse <paul.e.luse@intel.com>, Dan Williams
- <dan.j.williams@intel.com>, Jens Axboe <axboe@kernel.dk>, Raj Ashok
- <ashok.raj@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
- maz@kernel.org, seanjc@google.com, Robin Murphy <robin.murphy@arm.com>,
- jim.harris@samsung.com, a.manzanares@samsung.com, Bjorn Helgaas
- <helgaas@kernel.org>, guang.zeng@intel.com, robert.hoo.linux@gmail.com,
- Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: Re: [PATCH v2 05/13] x86/irq: Reserve a per CPU IDT vector for
- posted MSIs
-In-Reply-To: <20240405223110.1609888-6-jacob.jun.pan@linux.intel.com>
-References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
- <20240405223110.1609888-6-jacob.jun.pan@linux.intel.com>
-Date: Thu, 11 Apr 2024 18:51:14 +0200
-Message-ID: <87edbb267x.ffs@tglx>
+	s=arc-20240116; t=1712854293; c=relaxed/simple;
+	bh=HdJWqY+cT9Wg0DNZCMwiGF32/wMzBDVcbxPbdkcsEBY=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Hur4e/yuLoJmtpvFXgsHNskCB2BXmd+u9QNJq7qG/fqhndMsVvs7/tBF31Kf+2YSHJh2L3CkxVCOK8N93U1tRph4TEgZCQOv7C8bWnZik3Ag3EkVpf7P4vgKc7gDw2U/raD1JBMgupquiDsFJldr11WZPMReunbF0pHW7WZDsWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=htF9RWAO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C07CAC072AA;
+	Thu, 11 Apr 2024 16:51:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712854292;
+	bh=HdJWqY+cT9Wg0DNZCMwiGF32/wMzBDVcbxPbdkcsEBY=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=htF9RWAOGNeJRA4iazBHtr27jK6sB39DdiJS50fG/FooQA/3Ys4amm6Q1grcKzgn4
+	 Z7KGx97pq8sz7tz+X9X0+YZt5JUQw//8Ju2A6zmxLwbq6fw/a+vNinAq3gbjglSkGe
+	 ihSXpbkTO2DxcWR8oxNPFxiy7NMXUVgbV3qF4He9WvUyfX/+H/g13N6SZmVERaCVGq
+	 wYL+jrj/P0p/S+IftuXCuG+eGUIgOND4HzOiuQnjWa3qdi6npVSUwgVqYVeNgJwCOO
+	 mtOHM5+64hZxFFlVVzwFMO/q1edy+BF1ITT0m2vvdwNII1//Dhtv6EmHnenuEo/JvU
+	 4gehB687WER9Q==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1C55C4345F;
+	Thu, 11 Apr 2024 16:51:32 +0000 (UTC)
+From: Alexandru Marc Serdeliuc via B4 Relay <devnull+serdeliuk.yahoo.com@kernel.org>
+Subject: [PATCH v6 0/2] Samsung Galaxy Z Fold5 initial support
+Date: Thu, 11 Apr 2024 18:51:29 +0200
+Message-Id: <20240411-samsung-galaxy-zfold5-q5q-v6-0-8142297515aa@yahoo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABEVGGYC/x3MQQqDMBBA0avIrDsQRS16ldLFYCbpQIw1g8Uqu
+ bvB5Vv8f4JyElYYqxMS/0RliQX9o4LpQ9Ezii2GxjStaesalWbdokdPgfY/Hm4JtsO1W9EYR9N
+ gB0f0hNJ/EzvZ7/frnfMFs0ZDE2sAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712854291; l=2612;
+ i=serdeliuk@yahoo.com; s=20240326; h=from:subject:message-id;
+ bh=HdJWqY+cT9Wg0DNZCMwiGF32/wMzBDVcbxPbdkcsEBY=;
+ b=tWsbPLyQmpQyjFvwnABEfa9uAjhfxfiObu93xMSFuRFwZax/St/PczWlm+K7uavDBtpjkiJHv
+ 8V2sj+u2NoeBWPy9wuEQZiIHkbYlBIt0hsxZt+Do8olW8atm3ddjgU8
+X-Developer-Key: i=serdeliuk@yahoo.com; a=ed25519;
+ pk=aWyveUE11qfDOOlRIFayXukrNn39BvZ9k9uq94dAsgY=
+X-Endpoint-Received: by B4 Relay for serdeliuk@yahoo.com/20240326 with
+ auth_id=147
+X-Original-From: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
+Reply-To: serdeliuk@yahoo.com
 
-On Fri, Apr 05 2024 at 15:31, Jacob Pan wrote:
-> diff --git a/arch/x86/include/asm/irq_vectors.h b/arch/x86/include/asm/irq_vectors.h
-> index d18bfb238f66..1ee00be8218d 100644
-> --- a/arch/x86/include/asm/irq_vectors.h
-> +++ b/arch/x86/include/asm/irq_vectors.h
-> @@ -97,9 +97,16 @@
->  
->  #define LOCAL_TIMER_VECTOR		0xec
->  
-> +/*
-> + * Posted interrupt notification vector for all device MSIs delivered to
-> + * the host kernel.
-> + */
-> +#define POSTED_MSI_NOTIFICATION_VECTOR	0xeb
->  #define NR_VECTORS			 256
->  
-> -#ifdef CONFIG_X86_LOCAL_APIC
-> +#ifdef CONFIG_X86_POSTED_MSI
-> +#define FIRST_SYSTEM_VECTOR		POSTED_MSI_NOTIFICATION_VECTOR
-> +#elif defined(CONFIG_X86_LOCAL_APIC)
->  #define FIRST_SYSTEM_VECTOR		LOCAL_TIMER_VECTOR
->  #else
->  #define FIRST_SYSTEM_VECTOR		NR_VECTORS
+This documents and add intial dts support for Samsung Galaxy Z Fold5 (samsung,q5q)
+which is a foldable phone by Samsung based on the sm8550 SoC.
 
-This is horrible and we had attempts before to make the system vector
-space dense. They all did not work and making an exception for this is
-not what we want.
+ChangeLog
 
-If we really care then we do it proper for _all_ of them. Something like
-the uncompiled below. There is certainly a smarter way to do the build
-thing, but my kbuild foo is rusty.
+- v6
+  . Moved Acked-by to the right  place
 
-Thanks,
+- v5
+  . Added ChangeLog
+  . Added missing Acked-by tags in their respective section in ChangeLog
 
-        tglx
+- v4
+  . removed a spurious new line
+  . removed pcie_1_phy_aux_clk as requested
+  . removed secondary pcie1 which does not exists on the device
+  . changed firmware extension from .mbn to .mdt
+  . added missing reserved memory regions required by firmware to properly load
+
+- v3
+  . added b4 version 3
+  . removed address and size cells in device description
+
+- v2
+  . added both but added an extra v2 in the subject line instead to b4 subject header, was requested to send the patch again, along with following mods:
+  . removed whole bootargs line
+  . fixed underscores in reserved memory by removing all reserved memory regions
+  . added missing idetation to  spash_screen remark
+  . validated the dts with "dtbs_check"
+  . removed all comments at the end of nodes
+  . moved status of the node at the end of the node
+  . reversed pin control name with control numbers
+  . ordered the  nodes alphabetically
+
+- v1
+  . The initial request was split in two patches sent due to the following checkpatch warning, was requested to re send them together:
+    WARNING: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
+
+To: Bjorn Andersson <andersson@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+To: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
 ---
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -245,6 +245,7 @@ archscripts: scripts_basic
- 
- archheaders:
- 	$(Q)$(MAKE) $(build)=arch/x86/entry/syscalls all
-+	$(Q)$(MAKE) $(build)=arch/x86/kernel/irqvectors all
- 
- ###
- # Kernel objects
---- a/arch/x86/include/asm/irq_vectors.h
-+++ b/arch/x86/include/asm/irq_vectors.h
-@@ -43,59 +43,46 @@
-  */
- #define ISA_IRQ_VECTOR(irq)		(((FIRST_EXTERNAL_VECTOR + 16) & ~15) + irq)
- 
-+#ifndef __ASSEMBLY__
- /*
-- * Special IRQ vectors used by the SMP architecture, 0xf0-0xff
-- *
-- *  some of the following vectors are 'rare', they are merged
-- *  into a single vector (CALL_FUNCTION_VECTOR) to save vector space.
-- *  TLB, reschedule and local APIC vectors are performance-critical.
-+ * Special IRQ vectors used by the SMP architecture, 0xff and downwards
-  */
-+enum {
-+	__SPURIOUS_APIC_VECTOR,
-+	__ERROR_APIC_VECTOR,
-+	__RESCHEDULE_VECTOR,
-+	__CALL_FUNCTION_VECTOR,
-+	__CALL_FUNCTION_SINGLE_VECTOR,
-+	__THERMAL_APIC_VECTOR,
-+	__THRESHOLD_APIC_VECTOR,
-+	__REBOOT_VECTOR,
-+	__X86_PLATFORM_IPI_VECTOR,
-+	__IRQ_WORK_VECTOR,
-+	__DEFERRED_ERROR_VECTOR,
- 
--#define SPURIOUS_APIC_VECTOR		0xff
--/*
-- * Sanity check
-- */
--#if ((SPURIOUS_APIC_VECTOR & 0x0F) != 0x0F)
--# error SPURIOUS_APIC_VECTOR definition error
-+#if IS_ENABLED(CONFIG_HYPERVISOR_GUEST)
-+	__HYPERVISOR_CALLBACK_VECTOR,
- #endif
- 
--#define ERROR_APIC_VECTOR		0xfe
--#define RESCHEDULE_VECTOR		0xfd
--#define CALL_FUNCTION_VECTOR		0xfc
--#define CALL_FUNCTION_SINGLE_VECTOR	0xfb
--#define THERMAL_APIC_VECTOR		0xfa
--#define THRESHOLD_APIC_VECTOR		0xf9
--#define REBOOT_VECTOR			0xf8
--
--/*
-- * Generic system vector for platform specific use
-- */
--#define X86_PLATFORM_IPI_VECTOR		0xf7
--
--/*
-- * IRQ work vector:
-- */
--#define IRQ_WORK_VECTOR			0xf6
--
--/* 0xf5 - unused, was UV_BAU_MESSAGE */
--#define DEFERRED_ERROR_VECTOR		0xf4
--
--/* Vector on which hypervisor callbacks will be delivered */
--#define HYPERVISOR_CALLBACK_VECTOR	0xf3
--
--/* Vector for KVM to deliver posted interrupt IPI */
--#define POSTED_INTR_VECTOR		0xf2
--#define POSTED_INTR_WAKEUP_VECTOR	0xf1
--#define POSTED_INTR_NESTED_VECTOR	0xf0
--
--#define MANAGED_IRQ_SHUTDOWN_VECTOR	0xef
-+#if IS_ENABLED(CONFIG_KVM)
-+	/* Vector for KVM to deliver posted interrupt IPI */
-+	__POSTED_INTR_VECTOR,
-+	__POSTED_INTR_WAKEUP_VECTOR,
-+	__POSTED_INTR_NESTED_VECTOR,
-+#endif
-+	__MANAGED_IRQ_SHUTDOWN_VECTOR,
- 
- #if IS_ENABLED(CONFIG_HYPERV)
--#define HYPERV_REENLIGHTENMENT_VECTOR	0xee
--#define HYPERV_STIMER0_VECTOR		0xed
-+	__HYPERV_REENLIGHTENMENT_VECTOR,
-+	__HYPERV_STIMER0_VECTOR,
- #endif
-+	__LOCAL_TIMER_VECTOR,
-+};
-+#endif /* !__ASSEMBLY__ */
- 
--#define LOCAL_TIMER_VECTOR		0xec
-+#ifndef COMPILE_OFFSETS
-+#include <asm/irqvectors.h>
-+#endif
- 
- #define NR_VECTORS			 256
- 
---- /dev/null
-+++ b/arch/x86/kernel/irqvectors/Makefile
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+irqvectors-file	:= arch/$(SRCARCH)/include/generated/asm/irqvectors.h
-+targets 	+= arch/$(SRCARCH)/kernel/irqvectors/irqvectors.s
-+
-+$(irqvectors-file): arch/$(SRCARCH)/kernel/irqvectors/irqvectors.s FORCE
-+	$(call filechk,offsets,__ASM_IRQVECTORS_H__)
-+
-+PHONY += all
-+all: $(irqvectors-file)
-+	@:
---- /dev/null
-+++ b/arch/x86/kernel/irqvectors/irqvectors.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define COMPILE_OFFSETS
-+
-+#include <linux/kbuild.h>
-+#include <asm/irq_vectors.h>
-+
-+#define VECNR(v)	(0xFF - __##v)
-+#define VECTOR(v)	DEFINE(v, VECNR(v))
-+
-+static void __used common(void)
-+{
-+	VECTOR(SPURIOUS_APIC_VECTOR);
-+	VECTOR(ERROR_APIC_VECTOR);
-+	VECTOR(RESCHEDULE_VECTOR);
-+	VECTOR(CALL_FUNCTION_VECTOR);
-+	VECTOR(CALL_FUNCTION_SINGLE_VECTOR);
-+	VECTOR(THERMAL_APIC_VECTOR);
-+	VECTOR(THRESHOLD_APIC_VECTOR);
-+	VECTOR(REBOOT_VECTOR);
-+	VECTOR(X86_PLATFORM_IPI_VECTOR);
-+	VECTOR(IRQ_WORK_VECTOR);
-+	VECTOR(DEFERRED_ERROR_VECTOR);
-+
-+#if IS_ENABLED(CONFIG_HYPERVISOR_GUEST)
-+	VECTOR(HYPERVISOR_CALLBACK_VECTOR);
-+#endif
-+
-+#if IS_ENABLED(CONFIG_KVM)
-+	/* Vector for KVM to deliver posted interrupt IPI */
-+	VECTOR(POSTED_INTR_VECTOR);
-+	VECTOR(POSTED_INTR_WAKEUP_VECTOR);
-+	VECTOR(POSTED_INTR_NESTED_VECTOR);
-+#endif
-+	VECTOR(MANAGED_IRQ_SHUTDOWN_VECTOR);
-+
-+#if IS_ENABLED(CONFIG_HYPERV)
-+	VECTOR(HYPERV_REENLIGHTENMENT_VECTOR);
-+	VECTOR(HYPERV_STIMER0_VECTOR);
-+#endif
-+	VECTOR(LOCAL_TIMER_VECTOR);
-+}
-+
+Alexandru Marc Serdeliuc (2):
+      dt-bindings: arm: qcom: Add Samsung Galaxy Z Fold5
+      arm64: dts: qcom: sm8550: Add support for Samsung Galaxy Z Fold5
 
+ Documentation/devicetree/bindings/arm/qcom.yaml |   1 +
+ arch/arm64/boot/dts/qcom/Makefile               |   1 +
+ arch/arm64/boot/dts/qcom/sm8550-samsung-q5q.dts | 593 ++++++++++++++++++++++++
+ 3 files changed, 595 insertions(+)
+---
+base-commit: 39cd87c4eb2b893354f3b850f916353f2658ae6f
+change-id: 20240411-samsung-galaxy-zfold5-q5q-00fac9d9faa7
+
+Best regards,
+-- 
+Alexandru Marc Serdeliuc <serdeliuk@yahoo.com>
 
 
 
