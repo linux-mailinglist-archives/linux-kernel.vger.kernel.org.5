@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07D028A19D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:22:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C18E78A19D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:22:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3232E1C20F6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:22:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB0D61C20C0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:22:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 871CB1B833E;
-	Thu, 11 Apr 2024 15:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EF7D1B835F;
+	Thu, 11 Apr 2024 15:37:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="k+nqbdj9"
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="k3j01mFG"
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 932301B680D
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:37:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF8A1B8339
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849824; cv=none; b=lRzu1pM9hqcA/Soe9gvXDlh1rdo204uRylTp6FNcU8aY5NbpaWu51vTjwys+t9lYNo/inU9gSU+znM12I8MVgOEYWhWbQpDW+62WE15e8ksOyMR1oTc4R+gvDlmcZWih7juShKJdoFTQ9Xp3zy3gdP2tGRHQ37M60PIBvAS+LSc=
+	t=1712849826; cv=none; b=nQG17EnwLyvHjjMRyItHZMDjTpRfSEdhyC7Qr+Wr7Z9RmGGL5F5wTB+ji+FxjlLVwMcWDeDNN5vO0m6/Ah5qPsyE6F6wOV570ez5Vx8jur/D5/b8IJnai92IAjLp4vcvTGZKEMm6MpBDH5voJ5Hcv28JLVLVwSlad6PHB8ll47s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849824; c=relaxed/simple;
-	bh=jWAAAIesOv7fWYH4bNsosL567ts5DOP4/ybaTZSCz4g=;
+	s=arc-20240116; t=1712849826; c=relaxed/simple;
+	bh=wAyhkeiT98OgDYnfb1/0TlRUPJy9U3NtVZbm/6cnRGk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hfAYTmpbSwb6g/J4GVqVHtF37ZL5p7OaiYD1uO3EZAYxYirmwhyauYQGl7551TDEtlztq4YrwFC3iKLBfjomgdmKrIKSdYI7Z+GS+2Us2KFHa5OlCyHgxRg1NelVSYmHhqYCw1jllNg1iuXwB9E6bQch/nkyT9Q+OnlmwQFzcns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=k+nqbdj9; arc=none smtp.client-ip=209.85.166.180
+	 MIME-Version; b=rQWAXU0gCb27/OEU43qiUeNQe/vYMadU8qBuZMVbL9Q2/akr6lazHUggNuskJoMWwZsgmboja+/dwkMqRk2ZM4mOtoHpN7mY+xAOps4ZDoSAH/8VfYwJSSSsUSnX2uQYFojNwJfmfSbIVWl3iS3OkwVGObpLQNBCnOVLf5fO2VE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=k3j01mFG; arc=none smtp.client-ip=209.85.166.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-36a29832cbdso497025ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:37:03 -0700 (PDT)
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7d67d1073easo9809239f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:37:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849822; x=1713454622; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849824; x=1713454624; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dN4C6p8p9L0bxTfswHkbtVwJ+3SBoqwHZjH9HEg+x1c=;
-        b=k+nqbdj95PkT5Lk+gxrsJWMexqIEErGB5vkc/u6R3wzLxDQ5LIWI54QW4cVXZSIiAq
-         9gHx0b1F/SQgPW9ZuSbitozvZBg4BMp6KwqYTCoyRjlE5rMMYOVx1z86ZLheUdS3NDCa
-         i93sdH4cFHMKVhBglgvdd/OV5jK5iRJnQhyAk3zSdOS7U17n1jxkruIz+5YRrmcz+BR/
-         nXH/bFuPOwpElghYacgJipS4AmAkn8aRa4+l1mhKq42rqggA3eVy78/jwTQgAeti50V2
-         mumODD9n7bPM325rL/JSUB87FVgeEo4L/evRFog9DBJh5D1RrIgPHE9NJGEgozgBw6sU
-         i72A==
+        bh=HWDh0fHrNKhYTff7Upo8ZcOWFWy4jGjf0GUm5p1uDg8=;
+        b=k3j01mFGH+Umvif35nE/BlrnWm2l6kMOMzkmwpTT11bGx+o0laCkSucFSfLlZr0LHG
+         gxjS74WzCfigIcpyM91hpOMXMcfJ/nMVzLddCRU+6xQhRnvIngRJ7qIFT6T4AdcOdDZj
+         CnZCXvgZqpzx6RS4q31e5M5MQuS8044bzfpow6Eiqzq+pzyjTzHzrPjKL6W8Ap8UE8xl
+         vXb1Hu9M/rXZUCs4mkx+cchoRCQkdvGXmAgd+0sJojNxwviH7xugWctU+wpBb9F9izgg
+         YMlx2hWDHFH9B4hg0KENMopLETHfNzJELWvQEP6j8PpZvBaG4PujTgWZqEgpEaVZCa6n
+         Uwiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849822; x=1713454622;
+        d=1e100.net; s=20230601; t=1712849824; x=1713454624;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dN4C6p8p9L0bxTfswHkbtVwJ+3SBoqwHZjH9HEg+x1c=;
-        b=Hh6fbg8OtSOnPADD0c+rbR4tha6E2lw7xvQjfdqH43igdvOAu1Exg2UGgNKRD7rtoB
-         GUnQacC91Dc3UX6j6CbJVpq6UwnzElnxgP4NzBCpCPqbJn9MiEr/yAD/50iqN+zrlQYA
-         +uFEjWo7XWN5aQqEyHbSrNK4/c+OODpN/q2DGkNbCQl6b6pEuL0K2idXzH3baVicukKr
-         uWYvd0IeCQKKZVvHxqev3Gpg5c9sQik/72Aa71d+cz/XaokzWJbUyi8zWs2OVa88wZcL
-         c+VX/TOl80Lg8HxB4qW040OsFy4Huv3W91AEAHq320mcU9g7OeIcm0XIG0yYRCi6/acv
-         wAeQ==
-X-Gm-Message-State: AOJu0YwvuQVvDZd6qUWbt01mE9qSLe+9w3bECeDVmpUw9uvex4lG8NlR
-	OrBGafK3e2gA7SUx2p0QVAOoH3qtD13m/OXVvKKMIIWtykjBLUYb+8gsozxbuWEehhsnwKycrKt
-	0
-X-Google-Smtp-Source: AGHT+IHBhSjSh7EQAU7KxjO9blQvY+IMYebvXJ7cMRBRdOnB7TuxW71SAejtMqETsz9lR9f5jX41og==
-X-Received: by 2002:a92:d352:0:b0:36a:1275:4aeb with SMTP id a18-20020a92d352000000b0036a12754aebmr5884543ilh.1.1712849822391;
-        Thu, 11 Apr 2024 08:37:02 -0700 (PDT)
+        bh=HWDh0fHrNKhYTff7Upo8ZcOWFWy4jGjf0GUm5p1uDg8=;
+        b=CuKF/VZQibJ1ssuY/pvMyVqeChqqWUhX/LhTSaNkWS3n/8HpOQCgEImMlucQ9i6FGB
+         Vp7LX6MKQBwv3/zFzWXKAirqUHmb41mhzbtzpBp75SaZiw8PaVtuUGxe1fESiVpAqTt5
+         q3zAN14cnIaTtTnccJmQBWU2slHgZYjRr5lHwZmZj2RMv7eJmMyPdi0FxBMuFFYIY0Dr
+         rjiIjK17JWYE9Er+TMqRTFRQtSfN8TTL63S0RTqYQfZtHeS2S5+jwxeKemQ1I4P3x4Qa
+         czaf504MVdPn6eyOcwEi/5mH/ZwiAH2o1NKLC1bohkfeEAwxxSqLBDedVjFxWni5V0dS
+         EgwQ==
+X-Gm-Message-State: AOJu0YwzpPN+CYY8m7RDjOATw2Yf2Y9VuFtda+CBdkAv8oAmTqokVw13
+	StFf8kLXh9f94I45BOpZEYB9BOHRwOLskyD9YyhGLpe2SP1MhIXVxU8sEeXgTCnGfqQo6qJ7Glh
+	Y
+X-Google-Smtp-Source: AGHT+IFMmGT6wfG7g0UVy3gvANf4vcwvYUQl+xWwkiJqTn4Drnl4Hg570k2iW5liDFh82653CNK+Eg==
+X-Received: by 2002:a92:de01:0:b0:36a:cf8:3fe6 with SMTP id x1-20020a92de01000000b0036a0cf83fe6mr5774650ilm.1.1712849824297;
+        Thu, 11 Apr 2024 08:37:04 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.01
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:37:01 -0700 (PDT)
+        Thu, 11 Apr 2024 08:37:02 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 193/437] scsi: qedi: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:15:33 -0600
-Message-ID: <20240411153126.16201-194-axboe@kernel.dk>
+Subject: [PATCH 194/437] scsi: qla2xxx: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:15:34 -0600
+Message-ID: <20240411153126.16201-195-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,79 +85,49 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/scsi/qedi/qedi_dbg.h     |  6 +++---
- drivers/scsi/qedi/qedi_debugfs.c | 20 ++++++++++++++++----
- 2 files changed, 19 insertions(+), 7 deletions(-)
+ drivers/scsi/qla2xxx/qla_dfs.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/scsi/qedi/qedi_dbg.h b/drivers/scsi/qedi/qedi_dbg.h
-index fdda12ef13b0..2b05de656aa8 100644
---- a/drivers/scsi/qedi/qedi_dbg.h
-+++ b/drivers/scsi/qedi/qedi_dbg.h
-@@ -114,8 +114,8 @@ struct qedi_debugfs_ops {
- { \
- 	.owner  = THIS_MODULE, \
- 	.open   = simple_open, \
--	.read   = drv##_dbg_##ops##_cmd_read, \
--	.write  = drv##_dbg_##ops##_cmd_write \
-+	.read_iter   = drv##_dbg_##ops##_cmd_read, \
-+	.write_iter  = drv##_dbg_##ops##_cmd_write \
- }
+diff --git a/drivers/scsi/qla2xxx/qla_dfs.c b/drivers/scsi/qla2xxx/qla_dfs.c
+index 55ff3d7482b3..6aacdb5c65aa 100644
+--- a/drivers/scsi/qla2xxx/qla_dfs.c
++++ b/drivers/scsi/qla2xxx/qla_dfs.c
+@@ -490,7 +490,7 @@ qla2x00_dfs_fce_release(struct inode *inode, struct file *file)
  
- /* Used for debugfs sequential files */
-@@ -123,7 +123,7 @@ struct qedi_debugfs_ops {
- { \
- 	.owner = THIS_MODULE, \
- 	.open = drv##_dbg_##ops##_open, \
--	.read = seq_read, \
-+	.read_iter = seq_read_iter, \
- 	.llseek = seq_lseek, \
- 	.release = single_release, \
- }
-diff --git a/drivers/scsi/qedi/qedi_debugfs.c b/drivers/scsi/qedi/qedi_debugfs.c
-index 8deb2001dc2f..28fbbea694d5 100644
---- a/drivers/scsi/qedi/qedi_debugfs.c
-+++ b/drivers/scsi/qedi/qedi_debugfs.c
-@@ -91,8 +91,8 @@ const struct qedi_debugfs_ops qedi_debugfs_ops[] = {
+ static const struct file_operations dfs_fce_ops = {
+ 	.open		= qla2x00_dfs_fce_open,
+-	.read		= seq_read,
++	.read_iter	= seq_read_iter,
+ 	.llseek		= seq_lseek,
+ 	.release	= qla2x00_dfs_fce_release,
  };
+@@ -569,13 +569,13 @@ qla_dfs_naqp_show(struct seq_file *s, void *unused)
+ 		}							\
+ 	} while (0)
  
- static ssize_t
--qedi_dbg_do_not_recover_cmd_write(struct file *filp, const char __user *buffer,
--				  size_t count, loff_t *ppos)
-+__qedi_dbg_do_not_recover_cmd_write(struct file *filp, const char __user *buffer,
-+				    size_t count, loff_t *ppos)
+-static ssize_t
+-qla_dfs_naqp_write(struct file *file, const char __user *buffer,
+-    size_t count, loff_t *pos)
++static ssize_t qla_dfs_naqp_write_iter(struct kiocb *iocb,
++				       struct iov_iter *from)
  {
- 	size_t cnt = 0;
- 	struct qedi_dbg_ctx *qedi_dbg =
-@@ -117,8 +117,14 @@ qedi_dbg_do_not_recover_cmd_write(struct file *filp, const char __user *buffer,
- }
- 
- static ssize_t
--qedi_dbg_do_not_recover_cmd_read(struct file *filp, char __user *buffer,
--				 size_t count, loff_t *ppos)
-+qedi_dbg_do_not_recover_cmd_write(struct kiocb *iocb, struct iov_iter *from)
-+{
-+	return vfs_write_iter(iocb, from, __qedi_dbg_do_not_recover_cmd_write);
-+}
-+
-+static ssize_t
-+__qedi_dbg_do_not_recover_cmd_read(struct file *filp, char __user *buffer,
-+				   size_t count, loff_t *ppos)
- {
- 	size_t cnt = 0;
- 
-@@ -131,6 +137,12 @@ qedi_dbg_do_not_recover_cmd_read(struct file *filp, char __user *buffer,
- 	return cnt;
- }
- 
-+static ssize_t
-+qedi_dbg_do_not_recover_cmd_read(struct kiocb *iocb, struct iov_iter *to)
-+{
-+	return vfs_read_iter(iocb, to, __qedi_dbg_do_not_recover_cmd_read);
-+}
-+
- static int
- qedi_gbl_ctx_show(struct seq_file *s, void *unused)
- {
+-	struct seq_file *s = file->private_data;
++	struct seq_file *s = iocb->ki_filp->private_data;
+ 	struct scsi_qla_host *vha = s->private;
+ 	struct qla_hw_data *ha = vha->hw;
++	size_t count = iov_iter_count(from);
+ 	char *buf;
+ 	int rc = 0;
+ 	unsigned long num_act_qp;
+@@ -591,7 +591,7 @@ qla_dfs_naqp_write(struct file *file, const char __user *buffer,
+ 		    vha->host_no);
+ 		return -EINVAL;
+ 	}
+-	buf = memdup_user_nul(buffer, count);
++	buf = iterdup_nul(from, count);
+ 	if (IS_ERR(buf)) {
+ 		pr_err("host%ld: fail to copy user buffer.",
+ 		    vha->host_no);
 -- 
 2.43.0
 
