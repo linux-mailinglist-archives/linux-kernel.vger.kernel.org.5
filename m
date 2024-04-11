@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-140189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC79B8A0C8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:39:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CC1D8A0C84
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:37:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43A5E1F24783
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:39:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59D501C20B52
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:37:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14356145335;
-	Thu, 11 Apr 2024 09:39:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A17A914534A;
+	Thu, 11 Apr 2024 09:36:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="XBAG+9iT"
-Received: from smtpcmd13146.aruba.it (smtpcmd13146.aruba.it [62.149.156.146])
+	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="VHcT8km1"
+Received: from smtpcmd04131.aruba.it (smtpcmd04131.aruba.it [62.149.158.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16745144D2B
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:39:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.156.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B135144D2B
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.158.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712828351; cv=none; b=e/vYnV8UX6+nVUXRKeR1eFA2wNuoT9vZty/MA2jL5CgOGCUoPmz09GQlD1m4lBZdaAepilDJGMAWwHWYdE+kJ0AF7ip2YIhJEIQ2EYH9iHBOAQux04d3K2Fwqwb1rSAVuZWcrPQGhUXZLReeGXX15mkN9bWA/rq4VmUkjhE5cpw=
+	t=1712828210; cv=none; b=Ks3UTnIsAwkb+OsoDv7eTjwoPNcPWQwP1LCPI8vt3aIwNjA8OR9SGHkgMiBCicoSQ/xdUhYsF4HCUfv+VpsFJUfICan1sdV93CbZ8aJaWyVrfB3kquUj3ilQMDKpXeW5VI7/PK7CXuNdlUEurXquaIkdyr69StLmYMwG5Er12n0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712828351; c=relaxed/simple;
+	s=arc-20240116; t=1712828210; c=relaxed/simple;
 	bh=bd3RHSHXqw7tx+hIYChwRjq7T4Nyu2hNejvq5QDXPyk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Q6o3uOPkn6cVNh6jLqDrAGbFzclZs8SVkuF2a+ssS3MhhO2Z13Asfv6AP2G5thtJOdvYhzDtjPPO8WDV2r4e80/G6uWtNgLL64o1+awupVZ7bAED3qXdq2dWNSoXPWohwtb9rs6yD3FgqLMiWiBNyLkxDfVcUmkWI+XwTRTnWb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=XBAG+9iT; arc=none smtp.client-ip=62.149.156.146
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=l2ZF56nXbHBPeqCNZ37UySHng9gqWVhWsSvXlyIEb3FvE5UXSKdRM/9963AvJUUCR/aZj0NSqFmY6xeCrkcfsHUMZ9VQYIiAuaOcZgW7E2PL52qT3tJOuoSWzproDlT0zAK+QEHmUlMBQtMesm+Ns/S1RaoHsGSzHkSnOioko1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=VHcT8km1; arc=none smtp.client-ip=62.149.158.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
 Received: from engicam.com ([77.32.15.153])
 	by Aruba Outgoing Smtp  with ESMTPSA
-	id uqqartivkiznzuqqbrkOpz; Thu, 11 Apr 2024 11:35:57 +0200
+	id uqrJrAlrVoq80uqrKrCQnx; Thu, 11 Apr 2024 11:36:42 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1712828157; bh=bd3RHSHXqw7tx+hIYChwRjq7T4Nyu2hNejvq5QDXPyk=;
+	t=1712828202; bh=bd3RHSHXqw7tx+hIYChwRjq7T4Nyu2hNejvq5QDXPyk=;
 	h=From:To:Subject:Date:MIME-Version;
-	b=XBAG+9iT3sHAV9623iwwEsuhp9mu5wJPQ+yviiwcr0P2lUxXy6yhGiFwQ2T9p01j5
-	 aHEihb+FkSADy3c7YxcXQoinUaw2ftpbPn4yzW/uiLkSFMKVU884cAAelMbGPvPt7r
-	 mA1OHqiEUATp2ia4h888NMm6eWuHlFMR4N+nGj/FfzVP6Bdkgml96cFcu+uyf8AhSM
-	 New+sqrRvDUriSiHsNsqzQDYhzOUUEA0GfPueRWIh8DLVxZHrWSDwY6fj0dBAc98C3
-	 ukGPeVbGths8p3b35D4crV7+P2a9LXTosp72f9KWv/90jNpX/J//Ap218ePOPyfda1
-	 fCTms3//WZ3Lg==
+	b=VHcT8km1b1diUleodSL4bdkFHyS61zSJ5RfO/2XAtTEDWToPmazufxTCc9wSx69Ys
+	 BAZyGqeYwP5+UVEWq6khJaAdquvUCkUqT7gPlsLBy5ve6OydbMIPjHpUbiWdixgydA
+	 vd1KygdsINrjtb7PM7KRgVIsJT/k+cKj4HtO9vpnAsuHB9ymY/2i5cdrdASRjEpwoZ
+	 6NfXjHtucaQVDuELGssLPXaAFj7cJVsdv9IfvRBVyiCHLpFmZE2Cfaw+gR5F4fga1N
+	 Cbf/5N6oRo951uqg3z9dzZWgR77nZ+5rxUtFbdyW177dYZxrADUrAb3NXp9SrIzH3P
+	 Xyf3c26xFiXlg==
 From: Fabio Aiuto <fabio.aiuto@engicam.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -48,8 +48,8 @@ To: Liam Girdwood <lgirdwood@gmail.com>,
 Cc: Matteo Lisi <matteo.lisi@engicam.com>,
 	Mirko Ardinghi <mirko.ardinghi@engicam.com>
 Subject: [PATCH] regulator: pca9450: make warm reset on PMIC_RST_B assertion
-Date: Thu, 11 Apr 2024 11:35:56 +0200
-Message-Id: <20240411093556.365814-1-fabio.aiuto@engicam.com>
+Date: Thu, 11 Apr 2024 11:36:41 +0200
+Message-Id: <20240411093641.365827-1-fabio.aiuto@engicam.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -58,9 +58,9 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfPK223tCjlqFVuOp2qrYA8Ldaj71HEYTkShhHbmsVF7UqjhDJZM2Cn+N99/Gw2G2WTUp6U0xvMw6PJ0wCHfkUfGSrsFcOgKKjJfgmFpMYNVN/ytvRpTE
- rvagk/eVaCAaaP0b3YpT/SFC/YUwanrJwe+5AC/JwYkIi2ljq5YxWQPWm+8OPG3SGcM1cGlbpu2ScphjjwYnwfUik/4uwUc3sauxI9r/8DGNzor5hDhWUaC3
- d6R58lURRCPpAv9WIIdMPqhlcJXRNEbH3+M/cK7KUr9BlitJAmkP6Y7XO8BLDAqTLO+0CYzLyXFPOnK9+DFZ8f4x2Pt45nDEcZXUgzg4pWw=
+X-CMAE-Envelope: MS4xfLp8+anvDNffhddjleYkNcPKNXymGreKGdIhHLoA+CxZhfn00zwlkvFiv5sdfeoy/Fl7WkLW+W4Tw1v+igB0xgLJsBkbvBsh5HwoPoZw0bSXRay8ohf4
+ ONYrroqHB31BDlkNlGPFBkUoyD47UYsBRsdpcDQJU7Jq+Rdeh/SzBaNKlFjAd+l2MHWzQx0t/3ZaXKweVpxe836qhTJH7VMw5568R6S5pM4vOTn3PqS40wF7
+ t+twSH6mCInXOOtqe65D1UtntcojNK8ALJinxvSdmmr3/ZSs5AreH5K3+tkQEpv/ljnSLpffHKv1ehSX5KjoqbXHAzvzufH/M0/cxYta7+E=
 
 The default configuration of the PMIC behavior makes the PMIC
 power cycle most regulators on PMIC_RST_B assertion. This power
