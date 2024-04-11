@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 626838A1AF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:15:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91FCD8A1AF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:15:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 929CE1C22194
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:15:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 497971F269F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:15:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6116C1FE071;
-	Thu, 11 Apr 2024 15:43:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 395FF1FE08E;
+	Thu, 11 Apr 2024 15:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="KmB0IYW4"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="RNj+MACZ"
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D891FD5D0
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:43:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D9D71FE06E
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:43:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850197; cv=none; b=RHd5kKv26RO5SynAnapddbQwGtd2W9JB++Lsy2yX5xn7x6pBNeC5VIDoQ1Gef8oGxKtuZpEOueSTeKlPp+kMJjXAdFuK8oazKLxi9wBSX08JY+gHZjeoga2PKhobvIrThvcNtzcNyw6eqJ7gOVB3hnuWYWs9WP6O/CA17ASd/0w=
+	t=1712850199; cv=none; b=Szja1lTTzzM0foPo2DQ58Zb5MaE4/K+Ip45rBtrAV7p3n6osGNquEEsem6MRdGc0eMglJsCtdJFwY6Y9W8a6bp9gPMd8h9RS3hBoKCavD2siFHtKEO5Mb11UbF9Fef/KBzMwtLcPdmh/6mzQ3sOkIrxgJAwycys+eQIW+j3iU6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850197; c=relaxed/simple;
-	bh=Phd2Hxdlp1RIcZGVooWufe0DG1joD78U/Ivu9KJOrSk=;
+	s=arc-20240116; t=1712850199; c=relaxed/simple;
+	bh=NHBw/9/ROJ6V5PiUZXpvKYZp1j6w+cgCgjaOlmrOcDU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n5RpSvcXJ9VEd7vTR183Wi+/hyBbFy7wu22EQrZ/6iqNG4ac6p8enUR8flGraPqj0wEzKDR+EpKApQOjUMembavWZXuErBAXDFYgzFefmkGoQ8LGf8HOm72vbZ+/HE2ZdAwNmi6GQb2G3La5UokKS/r0URfqQ+LM0VJc0mqPs28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=KmB0IYW4; arc=none smtp.client-ip=209.85.166.41
+	 MIME-Version; b=nAtYhms2p9IZoAOe//s8Xb5+S4MiqDhk4+UxYrEjI2QiXeRffT5cpv8s4v2TAy416xUeVbkloTZnEOj89GsrKFMdFZZ7Z/I+e6aRV1BZ87dfSlMO29775WLhyI12lua1eCTdL2uWgkNCGeutGrd4+k29Q/PrMKyftHyeO2D07DI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=RNj+MACZ; arc=none smtp.client-ip=209.85.166.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so170662239f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:43:16 -0700 (PDT)
+Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-36a34b68277so124885ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:43:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850195; x=1713454995; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850197; x=1713454997; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AdrLRF7qah3kBrQNcINDfDbpBp50A8eMde+QLgtlIh0=;
-        b=KmB0IYW4O4e58dxIRBFfnmx26EVnOZj8eq4V1EeqY8+uQCJJSTfBG0KsKSCo0P7iaT
-         Ke+FkeG/7nvkHLZv0BAZ1cfvMAJwJ1pa1Pcp/hPQtIvaECbz5uMWfimWuR6sZ6I6ok9f
-         bsV/SUSKBDcB1o+V1SlzhH6HdX9/eSeYrE2BI/cGGBB5M/uSsWqMAK7qSAElaR8vo/b4
-         6HY0fWZQcT7lhluD+BXEJXXcbWc4HcCjR/3k47S13yT/YIp76bb58pq58TXP0m1tqYJn
-         zJ7EQRmAjuCJehFWdGPMs/SUgvfpHxQZD9T+cU/QTdKwu2ZoBSxjRVW+z0kMLq0M3z8J
-         xbPw==
+        bh=hmx6EoPvOpnZ1mWnkOtiZZUNK9XDRnpmps8Fo4ojJlQ=;
+        b=RNj+MACZi2aKO9V5mMnaHD2hi3dVEPOxnNY72MSs8UyY4R3KUjySD7uVOQhmhAXke8
+         eCliAmcPE3UaiVnMOwPRbcYRY4ni5xAs/U96phsjZldBEW/jHG2OZSjskcvvhQ+R4+v+
+         71PXLTzlR+8qjhaLJSmKmrXmZENVt+hixRJGWQ1rXAlkqMEPvmkDEtSefreBjF4OrcVS
+         BS+8K+4F6r7GOn3k2wkVCoqf9fnly8ac6zvXALlNukHi4LWTMENjgX1PpPMDo7XwXulJ
+         jmgtIpJ+Wxcv113H531pmMSv0zH5SQI6JYRHPG9+FP5VQzr/2CuG/iywW/MnyRbR1YV1
+         XKdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850195; x=1713454995;
+        d=1e100.net; s=20230601; t=1712850197; x=1713454997;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AdrLRF7qah3kBrQNcINDfDbpBp50A8eMde+QLgtlIh0=;
-        b=vDrTL1xgVQXNPdm4IF7wHVvv1L1VjXPv9tIb7VF1Zl6LRGBTWFLFaacqZdp2yBtWFT
-         0T5nYIxSHpSJ6zV700MOkwKPxHVgjMAHJHl0MdZcZBEUTMP1nUbHc/Euu9ZDj66zw4xA
-         ats9IY5HiIXawHswbX3VcvdRE/pQDGSvPu54VLktxzxY1uTRLlaeIApI8BBFir+48+tW
-         Hn0qcVR84FRoFFOQg23xx+Yood1MRm6sglrkjGMKeyLIWY7gCyP6LcFizhiw8blBF5Vy
-         WmxTWkRrsjOwY2OD56H6I+aYfZEaEdR+cy6r4XnvDQUd/8X3UMXtWfAnusMdjOwj4qA+
-         p8Sw==
-X-Gm-Message-State: AOJu0YzOWZYMbZhWcgk0oeEXSq6fXi/yRR4MjgiNcRAaOpvcADPzkRfi
-	5gYQtImPY1bcAEQtk/N/1YJtxITU+YMpm0vyCHH4np1kk0JBB72bkGEzRqkGIwEWCOYMmqWpi9h
-	z
-X-Google-Smtp-Source: AGHT+IE/iKXnDTRwSmXXe4ceUXecG00+7PGdZtdQ2G6r4eDUzPKQ2OwbGTg6eY48Balru3MFrWqSHA==
-X-Received: by 2002:a05:6602:21d7:b0:7d6:9ddf:5095 with SMTP id c23-20020a05660221d700b007d69ddf5095mr35306ioc.1.1712850195301;
-        Thu, 11 Apr 2024 08:43:15 -0700 (PDT)
+        bh=hmx6EoPvOpnZ1mWnkOtiZZUNK9XDRnpmps8Fo4ojJlQ=;
+        b=aAA8/OSLHPEH6j1wgXO01C8LGhPpBNUVZ0phIcCbYOjUCRDEcbLOkn8CFDaz2tXe7R
+         7vEeE/XKLrJEP/MGJK3To4i72dgg27RhHqcMLt/vNP4TculuCqO8PwBd3ufGrIMCgF0j
+         FPb2y7bmjSAXRx+CePlec0NNND4teW2AN1JPaUVZ8NVw0Hhf/w7fpuoTQJsFmZTZwnB0
+         SEIG884VyNi/RWPjiZV4XeltqQbY12d8S1zV0gRRZT4X0ib1x9QChN87VbF0xhO+IwkN
+         urWc0zFKVsZH9Z5wtOdwIkSIeMO/HvgcWQF0NB4zXforRoy0a4oZ2y2BFFZoB1uvTbpW
+         m/EQ==
+X-Gm-Message-State: AOJu0Yx7+5k1oaK1MtUJ5lTEitGyasnJvK5pEMFzPOvtFJzPlIIrEKWZ
+	F2ko12wl8W3E+gO7THa2tqSaBRbOAgBOMpeHPjHJnkInbd4Htz/r72jDF7cx2apzVTzWMNwztjd
+	N
+X-Google-Smtp-Source: AGHT+IE+UrvE7Zc/7CplAR6O5IJckWlMxTDspzBoq8kviwQyDMeJdPaKmtSIFMpzvN0FSb5rEIPMoA==
+X-Received: by 2002:a05:6602:4ed7:b0:7d5:ddc8:504d with SMTP id gk23-20020a0566024ed700b007d5ddc8504dmr204979iob.0.1712850197000;
+        Thu, 11 Apr 2024 08:43:17 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.43.12
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.43.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:43:12 -0700 (PDT)
+        Thu, 11 Apr 2024 08:43:15 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 415/437] media/common: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:19:15 -0600
-Message-ID: <20240411153126.16201-416-axboe@kernel.dk>
+Subject: [PATCH 416/437] media/platform: amphion: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:19:16 -0600
+Message-ID: <20240411153126.16201-417-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,60 +85,78 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/media/common/siano/smsdvb-debugfs.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/media/platform/amphion/vpu_dbg.c | 24 +++++++++++-------------
+ 1 file changed, 11 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/media/common/siano/smsdvb-debugfs.c b/drivers/media/common/siano/smsdvb-debugfs.c
-index 73990e469df9..e81b17b599ec 100644
---- a/drivers/media/common/siano/smsdvb-debugfs.c
-+++ b/drivers/media/common/siano/smsdvb-debugfs.c
-@@ -280,15 +280,14 @@ static __poll_t smsdvb_stats_poll(struct file *file, poll_table *wait)
- 	return rc > 0 ? EPOLLIN | EPOLLRDNORM : 0;
+diff --git a/drivers/media/platform/amphion/vpu_dbg.c b/drivers/media/platform/amphion/vpu_dbg.c
+index 940e5bda5fa3..71c752081ab3 100644
+--- a/drivers/media/platform/amphion/vpu_dbg.c
++++ b/drivers/media/platform/amphion/vpu_dbg.c
+@@ -353,21 +353,19 @@ static int vpu_dbg_inst_open(struct inode *inode, struct file *filp)
+ 	return single_open(filp, vpu_dbg_instance, inode->i_private);
  }
  
--static ssize_t smsdvb_stats_read(struct file *file, char __user *user_buf,
--				      size_t nbytes, loff_t *ppos)
-+static ssize_t smsdvb_stats_read(struct kiocb *iocb, struct iov_iter *to)
+-static ssize_t vpu_dbg_inst_write(struct file *file,
+-				  const char __user *user_buf, size_t size, loff_t *ppos)
++static ssize_t vpu_dbg_inst_write(struct kiocb *iocb, struct iov_iter *from)
  {
- 	int rc = 0, len;
--	struct smsdvb_debugfs *debug_data = file->private_data;
-+	struct smsdvb_debugfs *debug_data = iocb->ki_filp->private_data;
+-	struct seq_file *s = file->private_data;
++	struct seq_file *s = iocb->ki_filp->private_data;
+ 	struct vpu_inst *inst = s->private;
  
- 	kref_get(&debug_data->refcount);
+ 	vpu_session_debug(inst);
  
--	if (file->f_flags & O_NONBLOCK) {
-+	if (iocb->ki_filp->f_flags & O_NONBLOCK) {
- 		rc = smsdvb_stats_wait_read(debug_data);
- 		if (!rc) {
- 			rc = -EWOULDBLOCK;
-@@ -306,14 +305,14 @@ static ssize_t smsdvb_stats_read(struct file *file, char __user *user_buf,
- 		goto ret;
- 	}
+-	return size;
++	return iov_iter_count(from);
+ }
  
--	len = debug_data->stats_count - *ppos;
-+	len = debug_data->stats_count - iocb->ki_pos;
- 	if (len >= 0)
--		rc = simple_read_from_buffer(user_buf, nbytes, ppos,
--					     debug_data->stats_data, len);
-+		rc = simple_copy_to_iter(debug_data->stats_data, &iocb->ki_pos,
-+					 len, to);
- 	else
- 		rc = 0;
+-static ssize_t vpu_dbg_core_write(struct file *file,
+-				  const char __user *user_buf, size_t size, loff_t *ppos)
++static ssize_t vpu_dbg_core_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct seq_file *s = file->private_data;
++	struct seq_file *s = iocb->ki_filp->private_data;
+ 	struct vpu_core *core = s->private;
  
--	if (*ppos >= debug_data->stats_count) {
-+	if (iocb->ki_pos >= debug_data->stats_count) {
- 		spin_lock(&debug_data->lock);
- 		debug_data->stats_was_read = true;
- 		spin_unlock(&debug_data->lock);
-@@ -341,7 +340,7 @@ static int smsdvb_stats_release(struct inode *inode, struct file *file)
- static const struct file_operations debugfs_stats_ops = {
- 	.open = smsdvb_stats_open,
- 	.poll = smsdvb_stats_poll,
--	.read = smsdvb_stats_read,
-+	.read_iter = smsdvb_stats_read,
- 	.release = smsdvb_stats_release,
- 	.llseek = generic_file_llseek,
+ 	pm_runtime_resume_and_get(core->dev);
+@@ -382,7 +380,7 @@ static ssize_t vpu_dbg_core_write(struct file *file,
+ 	mutex_unlock(&core->lock);
+ 	pm_runtime_put_sync(core->dev);
+ 
+-	return size;
++	return iov_iter_count(from);
+ }
+ 
+ static int vpu_dbg_core_open(struct inode *inode, struct file *filp)
+@@ -399,23 +397,23 @@ static const struct file_operations vpu_dbg_inst_fops = {
+ 	.owner = THIS_MODULE,
+ 	.open = vpu_dbg_inst_open,
+ 	.release = single_release,
+-	.read = seq_read,
+-	.write = vpu_dbg_inst_write,
++	.read_iter = seq_read_iter,
++	.write_iter = vpu_dbg_inst_write,
  };
+ 
+ static const struct file_operations vpu_dbg_core_fops = {
+ 	.owner = THIS_MODULE,
+ 	.open = vpu_dbg_core_open,
+ 	.release = single_release,
+-	.read = seq_read,
+-	.write = vpu_dbg_core_write,
++	.read_iter = seq_read_iter,
++	.write_iter = vpu_dbg_core_write,
+ };
+ 
+ static const struct file_operations vpu_dbg_fwlog_fops = {
+ 	.owner = THIS_MODULE,
+ 	.open = vpu_dbg_fwlog_open,
+ 	.release = single_release,
+-	.read = seq_read,
++	.read_iter = seq_read_iter,
+ };
+ 
+ int vpu_inst_create_dbgfs_file(struct vpu_inst *inst)
 -- 
 2.43.0
 
