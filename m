@@ -1,150 +1,296 @@
-Return-Path: <linux-kernel+bounces-139584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C1948A04C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:26:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48D7C8A04CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:28:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CA641C2153A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:26:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3D7F289402
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:28:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14B62320A;
-	Thu, 11 Apr 2024 00:26:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9FA51C01;
+	Thu, 11 Apr 2024 00:28:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZPkn0pwI"
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="TNdumgyL"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A8E4A41
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:26:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3DB9A41
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:28:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712795190; cv=none; b=gJwHfDenkOTde1/YNoblAQ4/ZIYIWuxyEpkpAv6ycYOPu6MsSwIHl3S6piJ5ML35dPD2yY4MqwaSuAJaztpffB74HHBIdUxP/TsVW7qnsgOJWJtI0Kw5DI9i4SzsLBuTQAehLeykHWjEpQ0oLuxecf6y5bPY2mNninI/0MxnzVA=
+	t=1712795323; cv=none; b=ImVmYY6070qKGUWGF+y2UNa2vrIpMAqyGo0qTxfTph9LIWgLqJafYNGyU7y3lA9rtJf8XyDstP/8ln98uFud3Y5pHaFh7kbHF+JWm8CzwiSJazfIQZLS5ZS2OFD0mhwYmlfi7UOJ/azqO2T1arQlPsO0Q61Q5cOt8QDofI9dVaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712795190; c=relaxed/simple;
-	bh=iOxJT8OfTlI2kJRkaXpBe16OPqSDgaEyZ9Me/w385Wc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dhYsP0eyJzWlqwOWladitnF2XS/YINdTnhzp4pbo6DXo4DPNHKmgz0Ub/xxK9nGcGG/4XnRDwx+L/m4/8qwxSmKLkA00q/o8W56ViFbmn/+g1aW1vU/5rLmNa2iVekj/b5xqjtX4DbyZOLTONF2N4U8txN/Ez256SX/B1+AUMko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZPkn0pwI; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <31904afe-1d8a-4169-a3bd-d6d1c86cac5f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712795186;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gB2Wp3EMMPBhX4wRoJ9ubR900ORB8tJWdO8CVq4jwWQ=;
-	b=ZPkn0pwIJRwaHIbkfEkVSdU9ecajbn7zceHnEAJi/o70wwJfHYmj3NZOCeYFMxYXFAXR0C
-	Mb9wM84w4gd8qYC/C4KAzd+Vo8BhaVCZm5Bzs0ueih2vvXuPUsPI8hKxnOnEzZJmb0Y8dt
-	YrFK1drcLrl96FZP67JFf7ejx+FK/0s=
-Date: Wed, 10 Apr 2024 17:26:18 -0700
+	s=arc-20240116; t=1712795323; c=relaxed/simple;
+	bh=4hqN+wS2thh+oGDjzTUJI/gyJVxBKcWtbr9FZ40RT0I=;
+	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
+	 Content-Type:Date:Message-ID; b=le/nJndivF2dI5/XMeva5gN4tinIvg/twwsgNF+2DR1Hy8Y9VTvVR4AOITNOcLje7V+Q24uuxFsSQzmN2BPa7vdJqogVVk9tBPNrl481FQiNUGMXy4hMyNpOWGMwbInea9wvyHdSIx8aEc3lJmP68OZkXT3IOSJm7f/2HmxtrG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=TNdumgyL; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id CB2753F4D7
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:28:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1712795312;
+	bh=F4VCBnCYotDktB/zEPCYvW6FsCRcPbgq+XcEQsCePQo=;
+	h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
+	 Content-Type:Date:Message-ID;
+	b=TNdumgyLp/MwevBAQBd1f09PC31XRoafc53TChHj/dD6VdXdP/J3cRsY0CfY/dRix
+	 ZOk80jxiDNkK/8QF23tA2xStc/Y2KQ21GO46L9G30E5106Yjik9CjIbD/ExsTHrBu8
+	 FjebtT21eUbf0RUWvpfRbyyH/ymk1L9ds/jXqlAngJ0HfWJXjCQdBF6t7izKXBACqx
+	 F05MKXZTN1y55bC8rT6JgoYqEXZpSc07zeZRwg182brsb+8uvlfubhlAzyvGUu1f+G
+	 4FGjZfW78cRbEfwII8CqULjeS0pNpt528t7OmNEcsARIBu6dpMNbhBHgL0KLUVw4bE
+	 RX8BLBDxddP6Q==
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6e6a1625e4bso7075668b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:28:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712795311; x=1713400111;
+        h=message-id:date:content-transfer-encoding:content-id:mime-version
+         :comments:references:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F4VCBnCYotDktB/zEPCYvW6FsCRcPbgq+XcEQsCePQo=;
+        b=JXSLfGgNAhvRBG8MCAp4XQoW7mmfrOOMDaf6g8LOtUbIN7JW+GIZg3ON9DRX1H/R1d
+         14QiKhmaU4KzeY9arVtFUHSov6XSA1Y/RNrumaN/DjD6xSj2MwzV+2nuuKtVoYEndRMS
+         nE6W47JNjtioL0QJaaekLjaPMwHOhwN6BL7ahVWFQl9e82ci2XvYhHS/riJ084/q0cNC
+         p6MLNG0Ds5KYRBW4Psgn/cnft7VGZkyqpxlIT0A5J4P/l024lnFfSVHLSayjxGnhieMP
+         bh7Je3GikcoKtj76PJJuRe3xJkQcQ/cHELc/EdOUGBUTlt8GTIHbGrd6ZtkWwuttcRjO
+         5pSA==
+X-Forwarded-Encrypted: i=1; AJvYcCXdIYlJ0J7reslWi458KXNRx5wpxz5ygaBdHrPQBLZGrMx/mtJbHpEDYYRCg1sZFRTCQneRgrDPShZKQOLp0yU38N0aad2pGZXdH98S
+X-Gm-Message-State: AOJu0YxD8f4aDXV248VJWosqrCWbFS0dNdzREE0/PNax6HEAa/hxyPTy
+	7Lf98Y53/Oz1EAzJBtBKhsmbkHpaXGxH4rLjcDwlKteARDbvr+80qBAoJqoIb60K7oqDc8c2UBi
+	xMaVXoyqqLmerGsUe1fvgx5d4j98t0iOG/sASIE88EyeI6eKIMlf6I4QAUfW5rg2KFOID8pnoa5
+	J+YA==
+X-Received: by 2002:a05:6a00:4f90:b0:6ed:21b2:cb17 with SMTP id ld16-20020a056a004f9000b006ed21b2cb17mr4674260pfb.4.1712795311290;
+        Wed, 10 Apr 2024 17:28:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH5/L/uzH+//yIu6fr0UBU0ImWdwTakYCbJxf+PxSkmDm78mD23xQ7PVneRCe4oDKvciIAC+Q==
+X-Received: by 2002:a05:6a00:4f90:b0:6ed:21b2:cb17 with SMTP id ld16-20020a056a004f9000b006ed21b2cb17mr4674238pfb.4.1712795310662;
+        Wed, 10 Apr 2024 17:28:30 -0700 (PDT)
+Received: from famine.localdomain ([50.125.80.253])
+        by smtp.gmail.com with ESMTPSA id p13-20020aa79e8d000000b006ecfd0bf326sm238533pfq.99.2024.04.10.17.28.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Apr 2024 17:28:30 -0700 (PDT)
+Received: by famine.localdomain (Postfix, from userid 1000)
+	id DB5BE604B6; Wed, 10 Apr 2024 17:28:29 -0700 (PDT)
+Received: from famine (localhost [127.0.0.1])
+	by famine.localdomain (Postfix) with ESMTP id D518C9FA74;
+	Wed, 10 Apr 2024 17:28:29 -0700 (PDT)
+From: Jay Vosburgh <jay.vosburgh@canonical.com>
+To: Thomas Bogendoerfer <tbogendoerfer@suse.de>
+cc: Andy Gospodarek <andy@greyhouse.net>,
+    "David S. Miller" <davem@davemloft.net>,
+    Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+    Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] bonding: 802.3ad: Avoid packet loss when switching aggregator
+In-reply-to: <20240410175052.25ac7638@samweis>
+References: <20240404114908.134034-1-tbogendoerfer@suse.de> <21529.1712592371@famine> <20240410175052.25ac7638@samweis>
+Comments: In-reply-to Thomas Bogendoerfer <tbogendoerfer@suse.de>
+   message dated "Wed, 10 Apr 2024 17:50:52 +0200."
+X-Mailer: MH-E 8.6+git; nmh 1.6; Emacs 29.0.50
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-Content-Language: en-GB
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Djalal Harouni <tixxdz@gmail.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240327-ccb56fc7a6e80136db80876c@djalal>
- <20240327225334.58474-1-tixxdz@gmail.com>
- <ex2uipr54lb2odxwzwp22ycvlwplsy4mm3shx26hczo3mjtkvz@uuzyk6535prw>
- <705d7180-aced-46ba-80a6-84ac4e2b96b9@gmail.com>
- <eosbqsdycwdaezg6huqwpjvttxdxgbu6ptjmpxesy6i2rl276i@72w2orzveyes>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <eosbqsdycwdaezg6huqwpjvttxdxgbu6ptjmpxesy6i2rl276i@72w2orzveyes>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <20446.1712795309.1@famine>
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 10 Apr 2024 17:28:29 -0700
+Message-ID: <20447.1712795309@famine>
 
+Thomas Bogendoerfer <tbogendoerfer@suse.de> wrote:
 
-On 4/9/24 8:32 AM, Michal Koutný wrote:
-> Hi.
+>On Mon, 08 Apr 2024 09:06:11 -0700
+>Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
 >
-> On Tue, Apr 02, 2024 at 07:20:45PM +0100, Djalal Harouni <tixxdz@gmail.com> wrote:
->> Thanks yes, I would expect freeze to behave like signal, and if one
->> wants to block immediately there is the LSM override return. The
->> selftest attached tries to do exactly that.
-> Are you refering to this part:
->
-> 	int BPF_PROG(lsm_freeze_cgroup, int cmd, union bpf_attr *attr, unsigned int size)
-> 		...
-> 		ret = bpf_task_freeze_cgroup(task, 1);
-> 		if (!ret) {
-> 			ret = -EPERM;
-> 			/* reset for next call */
-> ?
->
->
->> Could be security signals, reading sensitive files or related to any
->> operation management, for X reasons this user session should be freezed
->> or killed.
-> What can be done with a frozen cgroup after anything of that happens?
-> Anything besides killing anyway?
->
-> Killing of an offending process could be caught by its supervisor (like
-> container runtime or systemd) and propagated accordingly to the whole
-> cgroup.
->
->> The kill is an effective defense against fork-bombs as an example.
-> There are several ways how to prevent fork-bombs in kernel already, it
-> looks like a contrived example.
->
->> Today some container/pod operations are performed at bpf level, having
->> the freeze and kill available is straightforward to perform this.
-> It seems to me like an extra step when the same operation can be done from
-> (the managing) userspace already.
->
->> For generalizing this, haven't thought about it that much. First use
->> case is to try to get freeze and possibly kill support, and use a common
->> interface as requested.
-> BTW, I notice that there is bpf_sys_bpf() helper that allows calling an
-> arbitrary syscall. Wouldn't that be sufficient for everything?
+>> Thomas Bogendoerfer <tbogendoerfer@suse.de> wrote:
+>> =
 
-This is not true. Currently, only 'bpf' and 'close' syscalls are supported.
+>> >If selection logic decides to switch to a new aggregator it disables
+>> >all ports of the old aggregator, but doesn't enable ports on
+>> >the new aggregator. These ports will eventually be enabled when
+>> >the next LACPDU is received, which might take some time and without an
+>> >active port transmitted frames are dropped. Avoid this by enabling
+>> >already collected ports of the new aggregator immediately.
+>> >
+>> >Signed-off-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
+>> >---
+>> > drivers/net/bonding/bond_3ad.c | 7 +++++++
+>> > 1 file changed, 7 insertions(+)
+>> >
+>> >diff --git a/drivers/net/bonding/bond_3ad.c b/drivers/net/bonding/bond=
+_3ad.c
+>> >index c6807e473ab7..529e2a7c51e2 100644
+>> >--- a/drivers/net/bonding/bond_3ad.c
+>> >+++ b/drivers/net/bonding/bond_3ad.c
+>> >@@ -1876,6 +1876,13 @@ static void ad_agg_selection_logic(struct aggre=
+gator *agg,
+>> > 				__disable_port(port);
+>> > 			}
+>> > 		}
+>> >+
+>> >+		/* enable ports on new active aggregator */
+>> >+		for (port =3D best->lag_ports; port;
+>> >+			port =3D port->next_port_in_aggregator) {
+>> >+			__enable_port(port);
+>> >+		}
+>> >+  =
 
-static const struct bpf_func_proto *
-syscall_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>> =
+
+>> 	I think this will do the wrong thing if the port in question is
+>> not in a valid state to send or receive (i.e., it is not one of
+>> COLLECTING_DISTRIBUTING, COLLECTING, or DISTRIBUTING).
+>> =
+
+>> =
+
+>> 	As it happens, this situation, except for the case of individual
+>> ports, is handled just below this code:
+>> =
+
+>> 	/* if the selected aggregator is of join individuals
+>> 	 * (partner_system is NULL), enable their ports
+>> 	 */
+>> 	active =3D __get_active_agg(origin);
+>> =
+
+>> 	if (active) {
+>> 		if (!__agg_has_partner(active)) {
+>> 			for (port =3D active->lag_ports; port;
+>> 			     port =3D port->next_port_in_aggregator) {
+>> 				__enable_port(port);
+>> 			}
+>> 			*update_slave_arr =3D true;
+>> 		}
+>> 	}
+>> =
+
+>> 	rcu_read_unlock();
+>> =
+
+>> 	FWIW, looking at it, I'm not sure that "__agg_has_partner" is
+>> the proper test for invididual-ness, but I'd have to do a bit of poking
+>> to confirm that.  In any event, that's not what you want to change righ=
+t
+>> now.
+>> =
+
+>> 	Instead of adding another block that does more or less the same
+>> thing, I'd suggest updating this logic to include tests for C_D, C, or =
+D
+>> states, and enabling the ports if that is the case.  Probably something
+>> like (I have not tested or compiled this at all):
+>> =
+
+>> 	if (active) {
+>> 		if (!__agg_has_partner(active)) {
+>> 			[ ... the current !__agg_has_partner() stuff ]
+>> 		} else {
+>
+>moving it here will run this part on every call of ad_agg_selection_logic=
+(),
+>but it would be only relevant, if there is a switch to a different aggreg=
+ator.
+
+	True; that could be tested for, though, as the original
+aggregator is stored in the variable "origin".  This is probably moot in
+light of my comments below.
+
+>> 			for (port =3D active->lag_ports; port;
+>> 			     port =3D port->next_port_in_aggregator) {
+>> 				switch (port->sm_mux_state) {
+>> 				case AD_MUX_DISTRIBUTING:
+>> 				case AD_MUX_COLLECTING_DISTRIBUTING:
+>> 					ad_enable_collecting_distributing(port,
+>> 							update_slave_arr);
+>> 					port->ntt =3D true;
+>> 					break;
+>> 				case AD_MUX_COLLECTING:
+>> 					ad_enable_collecting(port);
+>> 					ad_disable_distributing(port, update_slave_arr);
+>> 					port->ntt =3D true;
+>> 					break;
+>> 				default:
+>> 					break;
+>> 		}
+>
+>I've tried this in my test environment and it doesn't fixed the issue
+>I'm seeing, because the port of the new aggregator is still in AD_MUX_WAI=
+TING...
+>
+>The issue is that after bringing the bond up it happens that the bond lin=
+k
+>is up, but no slave can transmit. This happens exactly when the aggregato=
+r
+>is changed due to timing of the received lacpdu. So if enabling the port
+>in AD_MUX_WAITING is wrong, what are other ways to fix this problem ?
+
+	Ok, I've looked through the code a bit more and I understand at
+least some of what's going on.  I recall testing this some years ago to
+insure that failover between aggregators functions correctly, although I
+don't recall looking into loss rates during the failover.
+
+	First, I'm not sure why your port is in WAITING state, unless
+it's simply that your test is happening very quickly after the port is
+added to the bond.  The standard (IEEE 802.1AX-2014 6.4.15) requires
+ports to remain in WAITING state for 2 seconds when transitioning from
+DETACHED to ATTACHED state (to limit thrashing when multiple ports are
+added in a short span of time).
+
+	You mention the issue happens when the aggregator changes; do
+you have a detailed sequence of events that describe how the issue is
+induced?
+
+	I also see a potential issue in the handling of READY_N and
+READY, although I'd need your test case to determine if it's an actual
+problem or just something that looks odd but behaves correctly.
+
+	As for the rest, if your issue revolves around failover between
+aggregators in an established bond, then I'd expect the ports to remain
+in ATTACHED state when their aggregator is not the active aggregator, as
+the state machine logic in ad_mux_machine() won't advance beyond
+ATTACHED state in this case, e.g.,
+
+static void ad_mux_machine(struct port *port, bool *update_slave_arr)
 {
-         switch (func_id) {
-         case BPF_FUNC_sys_bpf:
-                 return !bpf_token_capable(prog->aux->token, CAP_PERFMON)
-                        ? NULL : &bpf_sys_bpf_proto;
-         case BPF_FUNC_btf_find_by_name_kind:
-                 return &bpf_btf_find_by_name_kind_proto;
-         case BPF_FUNC_sys_close:
-                 return &bpf_sys_close_proto;
-         case BPF_FUNC_kallsyms_lookup_name:
-                 return &bpf_kallsyms_lookup_name_proto;
-         default:
-                 return tracing_prog_func_proto(func_id, prog);
-         }
-}
+[...]
+		case AD_MUX_ATTACHED:
+[...]
+				if (port->aggregator->is_active) {
+					int state =3D AD_MUX_COLLECTING_DISTRIBUTING;
 
-More syscalls can be added (through kfunc) if there is a use case for that.
+	When an aggregator's ports move to COLLECTING, DISTRIBUTING or
+COLLECTING_DISTRIBUTING state, the link partner will logically expect
+that it may send and receive traffic across the ports in the aggregator.
+The standard permits an arbitrary number of aggregators to be active
+simultaneously, but bonding isn't able to operate more than one
+aggregator at a time within the context of a single bonding interface.
 
->
-> (Based on how I still understand the problem: either you must respond
-> immediately and then the direct return from LSM is appropriate or timing
-> is not sensitive but you want act on whole cgroup.)
->
-> Thanks,
-> Michal
+	If this is the crux of the problem, we could potentially change
+the state machine logic to run the complete state machine on all ports.
+This would need to insure that the "inactive" flag logic works correctly
+if ports of an inactive aggregator are in C, D or C_D state.  This
+should operate similarly to how the inactive bond interfaces are treated
+in active-backup mode.  The LACPDU packets should already be passed
+through by bond_handle_frame(), so the question would really be whether
+ordinary traffic is handled correctly on the inactive aggregators.
+
+	I think the main code change would largely be removing most or
+all of the tests (like the sample above) against aggregator->is_active
+in ad_mux_machine(), ad_enable_collecting(), and
+ad_enable_collecting_distributing().  I haven't tested this at all, this
+is just my speculation from looking at the code.
+
+	-J
+
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
 
