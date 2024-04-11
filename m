@@ -1,152 +1,257 @@
-Return-Path: <linux-kernel+bounces-140440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F9AE8A14B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:34:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF1DD8A14B9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:34:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B14DF1C22739
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:34:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 994FB289A05
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:34:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B380BEECC;
-	Thu, 11 Apr 2024 12:34:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF28CBA49;
+	Thu, 11 Apr 2024 12:34:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="jh2Xyfiw"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="oPWMdhyL"
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FB2428FD;
-	Thu, 11 Apr 2024 12:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752A7633
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:34:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712838846; cv=none; b=BVhzKSsfcEAMVReMBZdDnm3amf8dtFx4XAy22bJMeBbpMNDSGaQ3wuIuiQQ7md7OpvSkkIwJVxLDvN+TTBT8D9olzQjm0nLu4TgfgkctQxoXUsxFfi+qxb07sJI4XAQQcz5Knx8khNlpgyDyl94bE0wFOqxpIS/bnhlJ4UqlI+g=
+	t=1712838873; cv=none; b=Q4mUnyyKJ0gECse2+r6GJ7yBJMODxhchr+So9Eby8VAGS+17qbp9db2X+wgpwx6QBaW8rI+sy10W69RI/nIC00ZKpMiUVw4QFcAC+MlxGrNi1Bd6i4K2M1+NqFpSNiIhYxJGSSGZwg1g+8cnvTLWUynCH5kNCoHvrt4E5VFDF6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712838846; c=relaxed/simple;
-	bh=ln1Vg7MHH6aZ0MYozzx3TrJLr2NDzcPwHXMqWLMD2cQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VhxAiZbfXuBYjR9yq39Smay5H4396Ri7fDWyzZZUCXdO6sMp4zwwNsvehxgizwcSwhGLZynzRJ09B0GKVvGODq/YPnNQSf7e1kwhGLG8zQSfa7fPWmwJsE+s2yIulT9pbuGr/J0rSdLK1YeEcMeBpJWiVKKYpAHC+EPI+HG4n8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=jh2Xyfiw; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43BCEVaN017214;
-	Thu, 11 Apr 2024 12:33:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=1dvEKifc/6rjfPv87TCeivcl34rgLSFFL0Es/GR19sM=;
- b=jh2XyfiwfNZMK/vuSpTH9vY1vdtVAvBslEk5SmyBbgTAfi7+Z9AbNOLhykLE4izGpsEP
- EOzFtutOa03UHU79e1q0X0sTCXGO081Sf5Eh0or/wOPW8x9q1SFJc3FzIdByglt5IDm7
- b1rvqKkjFvTC4o2hTu99tlnlAF3S6aPzkmCamgQfO21TVSKPN2TlyJI3O57CNM8NcOEi
- ra/ZUYK9Zz57LCTYSCbeeuPIjzrKarL5FEWishbpFUJJ/K0OGGDCgRoATw4ZGa7oxSTV
- /dyms425e0seVmUY8fnUvjI3WcHQJQUu93844jl+q2SDpA0s5ZlN3RYexPhr0J2HdBcm bA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xefpa01kb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 12:33:57 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43BCXvxQ015676;
-	Thu, 11 Apr 2024 12:33:57 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xefpa01k9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 12:33:57 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43BC7dDZ013594;
-	Thu, 11 Apr 2024 12:33:56 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xbgqtuc6m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 12:33:56 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43BCXpeh47776178
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 11 Apr 2024 12:33:53 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EBC8A2004F;
-	Thu, 11 Apr 2024 12:33:50 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 52C6D2004B;
-	Thu, 11 Apr 2024 12:33:50 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu, 11 Apr 2024 12:33:50 +0000 (GMT)
-Date: Thu, 11 Apr 2024 14:33:49 +0200
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] s390/mm: re-enable the shared zeropage for !PV
- and !skeys KVM guests
-Message-ID: <ZhfYrVERxUijQbAL@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20240327171737.919590-1-david@redhat.com>
- <20240327171737.919590-3-david@redhat.com>
+	s=arc-20240116; t=1712838873; c=relaxed/simple;
+	bh=CWuT0JYg/EjAXvaq2+5+8lvflEeg5Eg7XoxdIkmg4UY=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
+	 Content-Type:References; b=pnOh39cL9QyJxx1Y83e63eQCGJcLEaNFo4KrNQ70KS7mkDojMFoGndabvlmjINLKL1SXLXYMkAYCbgEfw4ZGzeONH4cjjuxf4OhugZw2PQzv+Nb/Yj4KFCA0NUSrppKDmInUVXUQaSogXCxwL9r0CXuZuYZyN5vWqpPs8nD+b9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=oPWMdhyL; arc=none smtp.client-ip=203.254.224.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240411123427epoutp01e8f15ad790eb6f5a2fa0314738a5a248~FOd-hCW7T1074410744epoutp01U
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:34:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240411123427epoutp01e8f15ad790eb6f5a2fa0314738a5a248~FOd-hCW7T1074410744epoutp01U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1712838867;
+	bh=Ju63U5TlqqPDL5bwQRxtQV35ovfmmBUlGC4L8w6oZ0E=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+	b=oPWMdhyLm+o6+7apYsTUHiLV8D3zEE1pCQqJR08JPTy/TFz72wk/EBSjKkH5GkKCc
+	 uLF6FErdnXwIz/QIVkOLy7aQB35tS8zURCKFCPh8hqKaVaCNqnBpTrGcWzf0VGNnEu
+	 OU+Ko3K7Fru9JV3Z69gSxlfVT1Pg9XFLj3+byqg4=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+	epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+	20240411123425epcas1p4cd3f9fd5bd57a679ed50c9a4f1e57936~FOd_MR51v0589805898epcas1p45;
+	Thu, 11 Apr 2024 12:34:25 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.36.225]) by
+	epsnrtp2.localdomain (Postfix) with ESMTP id 4VFfJx1bPHz4x9Pv; Thu, 11 Apr
+	2024 12:34:25 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+	epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+	8C.3A.10158.1D8D7166; Thu, 11 Apr 2024 21:34:25 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+	20240411123424epcas1p332af61d4009555e32e277b70b31a411f~FOd9i_XzG1026910269epcas1p31;
+	Thu, 11 Apr 2024 12:34:24 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240411123424epsmtrp11c5c2666a03035a68eb521a38ed7fd91~FOd9hyXBe0037700377epsmtrp1N;
+	Thu, 11 Apr 2024 12:34:24 +0000 (GMT)
+X-AuditID: b6c32a38-8e1ff700000027ae-1d-6617d8d1b627
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	EC.95.19234.0D8D7166; Thu, 11 Apr 2024 21:34:24 +0900 (KST)
+Received: from sgsupark03 (unknown [10.252.69.53]) by epsmtip1.samsung.com
+	(KnoxPortal) with ESMTPA id
+	20240411123424epsmtip1542d9c86fd41c04bbc7e5e8f7c69dddf~FOd9To7Zd2195321953epsmtip1l;
+	Thu, 11 Apr 2024 12:34:24 +0000 (GMT)
+From: "Seongsu Park" <sgsu.park@samsung.com>
+To: "'Will Deacon'" <will@kernel.org>
+Cc: <catalin.marinas@arm.com>, <mark.rutland@arm.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	"'Leem	ChaeHoon'" <infinite.run@gmail.com>, "'Gyeonggeon Choi'"
+	<gychoi@student.42seoul.kr>, "'Soomin Cho'" <to.soomin@gmail.com>, "'DaeRo
+ Lee'" <skseofh@gmail.com>, "'kmasta'" <kmasta.study@gmail.com>
+In-Reply-To: <20240410161217.GB25225@willie-the-truck>
+Subject: RE: [PATCH v3] arm64: Cleanup __cpu_set_tcr_t0sz()
+Date: Thu, 11 Apr 2024 21:34:24 +0900
+Message-ID: <09b201da8c0c$95e8d050$c1ba70f0$@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327171737.919590-3-david@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: VvoeM2zbgaE9iYEfuc8Pes94oyOAiZCy
-X-Proofpoint-GUID: ZK1sTw26AJ2j9lBujMNsARBlnd4_Mdln
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-11_06,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 suspectscore=0
- impostorscore=0 adultscore=0 spamscore=0 phishscore=0 malwarescore=0
- mlxscore=0 mlxlogscore=414 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404110091
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHvwI0HeBmtypRhXs739VRw5VSDqAF0l7xGAY3KgECxIIKTQA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJJsWRmVeSWpSXmKPExsWy7bCmru7FG+JpBndaWS3eL+thtNjUdp/R
+	4s/G3UwWX/4uZbbY9Pgaq8XlXXPYLJZev8hkMenHFkaL9s8vWC1a7pg6cHmsmbeG0WPnrLvs
+	HptWdbJ5bF5S73Ho7AJWj8+b5ALYorJtMlITU1KLFFLzkvNTMvPSbZW8g+Od403NDAx1DS0t
+	zJUU8hJzU22VXHwCdN0yc4AOU1IoS8wpBQoFJBYXK+nb2RTll5akKmTkF5fYKqUWpOQUmBXo
+	FSfmFpfmpevlpZZYGRoYGJkCFSZkZyzuWsZWMEO54sOCeywNjIdluhg5OSQETCS+L2pm6mLk
+	4hAS2MEo8X9LAwuE84lR4su/WcxwzsWzv1lhWnou/IRq2cko8XTWfaiq54wSd/+vYAapYhPQ
+	kfj2bQoLiC0ioCqx7+cGRpAiZoELTBKd548wgiQ4Bcwk5rw6B2YLC1hLXPu6FqyZBaih99cX
+	JhCbV8BS4tm9fkYIW1Di5MwnYEOZBeQltr+dwwxxkoLEz6fLWCGWOUncWrCTFaJGRGJ2ZxvY
+	dRICSzkk3m5+AtXgIvF8RjMbhC0s8er4FnYIW0riZX8blF0sse/LGqj6GokH8/ZA2fYSHc/a
+	gI7gAFqgKbF+lz7ELj6Jd197WEHCEgK8Eh1tQhCmssS5rY4QpqTEnwV6EDM8JD5uX8o6gVFx
+	FpK/ZiH5axaS+2chrFrAyLKKUSy1oDg3PbXYsMAEHtnJ+bmbGMFpVstiB+Pctx/0DjEycTAe
+	YpTgYFYS4ZXWEk0T4k1JrKxKLcqPLyrNSS0+xGgKDOmJzFKiyfnARJ9XEm9oYmlgYmZkYmFs
+	aWymJM575kpZqpBAemJJanZqakFqEUwfEwenVAOTnDv/Ie3Dj/n39Pywy2c4aD/pV8CLh0ev
+	z9647+zzf/xMJjdKNr1Zu6uv1yNxfV5FuoYU/yw+jYux2Rwuk41Fnu8pqA68FdDTuPraYtX3
+	5y4mvHbcwnlBZK2Ii3Bl4rY3W+Q1D54p830U+VDL+q3NJQmJ9O1nk1M5V19oZbVsqShdW+ij
+	NHU6b3f8ycXFT5Z9nCIeMWvFze/tmjMTTkf3VTbr6atuNJI2Sn33x+/R7Y2mPcldQfe/OGoc
+	ti0PMlj5Ja72fmX6zquc+2erGN4vb9OwvNn0R+T7dvffXtXX4/8xTfjtKvLqpcmtli89n3cv
+	Fdw68Xpt7rp3uWva+HoVpgQtii08287j03kq9FO0EktxRqKhFnNRcSIANvnRXzwEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnkeLIzCtJLcpLzFFi42LZdlhJTvfCDfE0gwsPdSzeL+thtNjUdp/R
+	4s/G3UwWX/4uZbbY9Pgaq8XlXXPYLJZev8hkMenHFkaL9s8vWC1a7pg6cHmsmbeG0WPnrLvs
+	HptWdbJ5bF5S73Ho7AJWj8+b5ALYorhsUlJzMstSi/TtErgyFnctYyuYoVzxYcE9lgbGwzJd
+	jJwcEgImEj0XfjJ1MXJxCAlsZ5ToWHuNCSIhKdH+7jJLFyMHkC0scfhwMUTNU0aJZWdOsYHU
+	sAnoSHz7NoUFxBYRUJXY93MDI4jNLHCDSeL7c1W4oU8+vQJLcAqYScx5dQ7MFhawlrj2dS0z
+	iM0C1Nz76wvYYl4BS4ln9/oZIWxBiZMzn4AdwSygJ9G2EWq+vMT2t3OYIe5UkPj5dBkrxA1O
+	ErcW7GSFqBGRmN3ZxjyBUXgWkkmzECbNQjJpFpKOBYwsqxhFUwuKc9NzkwsM9YoTc4tL89L1
+	kvNzNzGC40wraAfjsvV/9Q4xMnEwHmKU4GBWEuGV1hJNE+JNSaysSi3Kjy8qzUktPsQozcGi
+	JM6rnNOZIiSQnliSmp2aWpBaBJNl4uCUamBaXstkckji10/5b1cun3LPsLgTnOJ37avO/jaV
+	iUd2fbdpzU+9rt2aYWCr7veVr+TsnneVz1MSQrxeLzEpY+jPnTIz/2LbS2f1i/MLUrce4+M5
+	NimDy6pvSmfw8sad1ZHPLoQvmxFwynRW1x1GwTfbVLI89rGc6pDgcugXZnZZumDVBdW9Cp1v
+	+kqa0rcwdu306ll597a7oWVDpNrn8yv29orej+SY8n7dhs0MLq83iC7e/C7hzbfsE4brHQLM
+	zAXi3C40brs8c8O25cxfDW+x7etiylmcHCreeTao5pjJronqWvvNRDUenLn8rarTxTlcYa00
+	F0Pa9S9ic/I6Or9WnGx99WPj2wXnufPEmPqUWIozEg21mIuKEwH7ysE3IgMAAA==
+X-CMS-MailID: 20240411123424epcas1p332af61d4009555e32e277b70b31a411f
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240408024022epcas1p176f9509f6f85fd8dbfa2dd17067a8aee
+References: <CGME20240408024022epcas1p176f9509f6f85fd8dbfa2dd17067a8aee@epcas1p1.samsung.com>
+	<20240408024016.490516-1-sgsu.park@samsung.com>
+	<20240410161217.GB25225@willie-the-truck>
 
-On Wed, Mar 27, 2024 at 06:17:37PM +0100, David Hildenbrand wrote:
-> index 60950e7a25f5..1a71cb19c089 100644
-> --- a/arch/s390/include/asm/pgtable.h
-> +++ b/arch/s390/include/asm/pgtable.h
-> @@ -566,10 +566,19 @@ static inline pud_t set_pud_bit(pud_t pud, pgprot_t prot)
->  }
->  
->  /*
-> - * In the case that a guest uses storage keys
-> - * faults should no longer be backed by zero pages
-> + * As soon as the guest uses storage keys or enables PV, we deduplicate all
-> + * mapped shared zeropages and prevent new shared zeropages from getting
-> + * mapped.
->   */
-> -#define mm_forbids_zeropage mm_has_pgste
 
-Should it be the below insted?
 
-#define mm_forbids_zeropage mm_forbids_zeropage
+> 
+> On Mon, Apr 08, 2024 at 11:40:16AM +0900, Seongsu Park wrote:
+> > In cpu_set_default_tcr_t0sz(), it is an error to shift TCR_T0SZ_OFFSET
+> > twice form TCR_T0SZ() and __cpu_set_tcr_t0sz().
+> > Since TCR_T0SZ_OFFSET is 0, no error occurred.
+> > We need to clarify whether the parameter of __cpu_set_tcr_t0sz is a
+> > shifted value or an unshifted value.
+> >
+> > We have already shifted the value of t0sz in TCR_T0SZ by
+TCR_T0SZ_OFFSET.
+> > This is necessary for consistency with TCR_T1SZ.
+> > Therefore, the parameter of __cpu_set_tcr_t0sz is clarified as a
+> > shifted value.
+> 
+> This commit message needs reworking. I would suggest something like:
+> 
+>   The T0SZ field of TCR_EL1 occupies bits 0-5 of the register and
+>   encodes the virtual address space translated by TTBR0_EL1. When
+>   updating the field (for example, because we are switching to/from
+>   the idmap page-table), __cpu_set_tcr_t0sz() erroneously treats its
+>   't0sz' argument as unshifted, resulting in harmless but confusing
+>   double shifts by 0 in the code.
+> 
+>   Remove the unnecessary shifts.
+> 
 
-Once I add it, it fails to compile, due to the issue in patch #1.
+Thank you for great feedback.
+Please check title and description. 
+If these are appropriate, I will write the same in v4.
 
-But then I guess this series was tested with the generic
-mm_forbids_zeropage() which always returns 0:
+[Title]
+arm64: Cleanup __cpu_set_tcr_t0sz()
 
-#define mm_forbids_zeropage(X)	(0)
+[Description]
+The T0SZ field of TCR_EL1 occupies bits 0-5 of the register and
+encodes the virtual address space translated by TTBR0_EL1. When
+updating the field, for example because we are switching to/from
+the idmap page-table, __cpu_set_tcr_t0sz() erroneously treats its
+'t0sz' argument as unshifted, resulting in harmless but confusing
+double shifts by 0 in the code. Therefore, Remove the unnecessary
+shifts.
 
-> +static inline int mm_forbids_zeropage(struct mm_struct *mm)
-> +{
-> +#ifdef CONFIG_PGSTE
-> +	if (!mm->context.allow_cow_sharing)
-> +		return 1;
-> +#endif
-> +	return 0;
-> +}
-> +
+> > Co-developed-by: Leem ChaeHoon <infinite.run@gmail.com>
+> > Signed-off-by: Leem ChaeHoon <infinite.run@gmail.com>
+> > Co-developed-by: Gyeonggeon Choi <gychoi@student.42seoul.kr>
+> > Signed-off-by: Gyeonggeon Choi <gychoi@student.42seoul.kr>
+> > Co-developed-by: Soomin Cho <to.soomin@gmail.com>
+> > Signed-off-by: Soomin Cho <to.soomin@gmail.com>
+> > Co-developed-by: DaeRo Lee <skseofh@gmail.com>
+> > Signed-off-by: DaeRo Lee <skseofh@gmail.com>
+> > Co-developed-by: kmasta <kmasta.study@gmail.com>
+> > Signed-off-by: kmasta <kmasta.study@gmail.com>
+> > Signed-off-by: Seongsu Park <sgsu.park@samsung.com>
+> 
+> Honestly, although it's great that you all meet up to look at the kernel,
+> this long list of credits is a little absurd for a trivial patch like
+this.
+> Please can you decide who did the most work and give them the credit?
+> Hopefully there will be future opportunities for you all to contribute!
+> 
 
-Thanks!
+Okay. I got it.
+In v4, I'll leave only Leem ChaeHoon and me.
+
+> > ---
+> >
+> > v2:
+> >  - Condition is updated
+> > v3:
+> >  - Commit message is updated
+> >  - cpu_set_tcr_t0sz macro is added
+> >
+> > ---
+> >  arch/arm64/include/asm/mmu_context.h | 7 ++++---
+> >  1 file changed, 4 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/arm64/include/asm/mmu_context.h
+> > b/arch/arm64/include/asm/mmu_context.h
+> > index c768d16b81a4..fb603ec7f61f 100644
+> > --- a/arch/arm64/include/asm/mmu_context.h
+> > +++ b/arch/arm64/include/asm/mmu_context.h
+> > @@ -72,15 +72,16 @@ static inline void __cpu_set_tcr_t0sz(unsigned
+> > long t0sz)  {
+> >  	unsigned long tcr = read_sysreg(tcr_el1);
+> >
+> > -	if ((tcr & TCR_T0SZ_MASK) >> TCR_T0SZ_OFFSET == t0sz)
+> > +	if ((tcr & TCR_T0SZ_MASK) == t0sz)
+> >  		return;
+> >
+> >  	tcr &= ~TCR_T0SZ_MASK;
+> > -	tcr |= t0sz << TCR_T0SZ_OFFSET;
+> > +	tcr |= t0sz;
+> >  	write_sysreg(tcr, tcr_el1);
+> >  	isb();
+> >  }
+> >
+> > +#define cpu_set_tcr_t0sz(t0sz)
+> 	__cpu_set_tcr_t0sz(TCR_T0SZ(t0sz))
+> >  #define cpu_set_default_tcr_t0sz()
+> 	__cpu_set_tcr_t0sz(TCR_T0SZ(vabits_actual))
+> >  #define cpu_set_idmap_tcr_t0sz()	__cpu_set_tcr_t0sz(idmap_t0sz)
+> >
+> > @@ -134,7 +135,7 @@ static inline void cpu_install_ttbr0(phys_addr_t
+> > ttbr0, unsigned long t0sz)  {
+> >  	cpu_set_reserved_ttbr0();
+> >  	local_flush_tlb_all();
+> > -	__cpu_set_tcr_t0sz(t0sz);
+> > +	cpu_set_tcr_t0sz(t0sz);
+> 
+> Sorry, but this is wrong. Please have a look at how cpu_install_ttbr0() is
+> called; specifically how trans_pgd_idmap_page() sets up 't0sz'.
+> 
+> So I don't think you should change cpu_install_ttbr0() at all and adding a
+> cpu_set_tcr_t0sz() macro which calls TCR_T0SZ on the 't0sz' argument is a
+> mistake.
+> 
+> Will
+
+Oops. You're right. My mistake.
+In v4, I'll remove this.
+
 
