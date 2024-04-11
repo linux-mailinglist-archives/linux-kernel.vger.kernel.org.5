@@ -1,167 +1,139 @@
-Return-Path: <linux-kernel+bounces-141066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 211808A1A4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:46:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94FF58A1A6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:51:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5088F1C22597
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:46:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C42611C20853
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:51:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9AFE17597;
-	Thu, 11 Apr 2024 15:39:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 333761DDD10;
+	Thu, 11 Apr 2024 15:40:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WB9pt5su"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="irYc3LU9"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 295741D4280;
-	Thu, 11 Apr 2024 15:39:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6777C1DCA0D;
+	Thu, 11 Apr 2024 15:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849988; cv=none; b=qijKxSS+Q2m2rq+XJqY+Q3SXGGpFiWTN0Vehmef0E+QOozm/tqS1bumYABTK2SYuT9V+9w64PW+nu59JlCxD7NNtE5QYaTy1yUvIxgCaLXq4X8PxTqMJMfx+7tivvsLY+J3NHoI6lm04Fy1p1oRdSFcCykiJT50ccEyRzKq0f2s=
+	t=1712850020; cv=none; b=iI1lvx2ZXRT8/0zCNPpNPoCWohsBA8wVNdCqvlYsXB1fSz1O2B5Qhp8wLYDGBv3ZvnjNsoNs/FTPKNNJErFFXPnZW43Y3o/UmYjCBULr5A+qvggUHUG5HGynjLeUAO53Qp15QGdVs78tZZWcxdN27UJk7GO8n5oLCLalYHr1yVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849988; c=relaxed/simple;
-	bh=BAaUVpCnVLVHiTGwbzDBqzGX029scJjx0KK1ilZVLbM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=idq/7VxW/6IBBCVk+dzOWW9OIjFxqDC+AdOCT1phN/7AcJiSwXYj8wHKNmgLT98sY3nCXe8DqteVoN7PpgBE/qfgQ9yGLZhsmDWeOd6rQD+JBcmnNzY4u/GLDQNxWMS1awKWF4c0pHwKXVy+cI8jKaJKa/Hs9dd4tX48nYquxB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WB9pt5su; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACD1CC072AA;
-	Thu, 11 Apr 2024 15:39:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712849987;
-	bh=BAaUVpCnVLVHiTGwbzDBqzGX029scJjx0KK1ilZVLbM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WB9pt5suMDCAZ+xxIXJxK9uDd7v0cMO1K2Y4ucIbBGO8Zaf8PQTbLSvsHZ3YQoisE
-	 PHwvD+U/QBFUeEhGXeQlOxlHO0AyeLynSlilsv6NtidFwvk1m6m+xnkX5LRXuX7ENf
-	 THdjOeZ0iOIV/Vv0eiuvTz3MNz4dyNRqtZ+GLUi30sFczshA3hKVfoyjSGFC80Ad+F
-	 Ni21755PZqbAYz12ggyuS+YnYlXdDOkAf9XcxdjL7HCmboTIQXlvBLTFlFQ4k8bvi8
-	 KPVwqYC4jQno1yKDQMxNs0X/grVOYt1ffexNVoexNSLCGQEGAz56gVyVVFp8dAS8zF
-	 BhmGTvR7EObrQ==
-Date: Thu, 11 Apr 2024 08:39:45 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: John Stultz <jstultz@google.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Edward Liaw <edliaw@google.com>,
-	Carlos Llamas <cmllamas@google.com>, kernel-team@android.com,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/3] selftests: timers: Fix uninitialized variable
- warning in ksft_min_kernel_version
-Message-ID: <20240411153945.GA2507795@dev-arch.thelio-3990X>
-References: <20240410232637.4135564-1-jstultz@google.com>
- <20240410232637.4135564-2-jstultz@google.com>
+	s=arc-20240116; t=1712850020; c=relaxed/simple;
+	bh=lTfWgvoTvKVd9f2A24EXgrmmHmIkvyTrOaY05JbbVMA=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q4edAbllL11DBlG+e1sSZg6ladn5OcmEjG1tA7FDOXvu6rUmDEWCyK9cfigzFkxXSCU7bKxdCnX77W+Vm5MYUv19Pxvn+GdU+JNRoVgH/IRKT82ze+HfOfqaMWHadmY1F/QU/+ezAlbaFQmLYdtAirpQ3NyurndHaHm62gWJQp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=irYc3LU9; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43BBKYEc022854;
+	Thu, 11 Apr 2024 15:39:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=RFHrFkfwcQrgxQdoj1RVH
+	qtwLottyVNWq/7Jdndbpsc=; b=irYc3LU9Uc+DlT4ymOnGhcMVzq43CGTucGJSd
+	i21KmCSCnITu6Vo++gLvklaPtB3gO8opZuGA3o+n/Wz2qQ6f+Xpj6wjTRGrbjvEO
+	naCfid4zJ7ISb2TIioD9PX0BRnwW4VdD/65usS30OjHQayIFadedgnk5K8OraJ/1
+	Twqg7waPV2+ii/L1RKkC0JMWlYkbFo58qDRw8uS97TPcUdnd3fUUx0tUwtpvdbrL
+	J0FTt975FbFhadZ33BzJ25XMBP3g16rck0S1zNIq+/bTDIvrxodP/SQqwOp6+q/J
+	NEzx3/QDsMkUoOsDWJPzYpsT4c6P4hHHfOmhX+6g6uvOujjgQ==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xec6vsgks-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 15:39:57 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43BFdr3E029269
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 15:39:53 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Thu, 11 Apr 2024 08:39:53 -0700
+Date: Thu, 11 Apr 2024 08:39:52 -0700
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+CC: Dong Aisheng <aisheng.dong@nxp.com>, Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix
+ Kernel Team <kernel@pengutronix.de>,
+        Linus Walleij
+	<linus.walleij@linaro.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sean Wang
+	<sean.wang@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+        zhanghongchen <zhanghongchen@loongson.cn>,
+        Yinbo Zhu <zhuyinbo@loongson.cn>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        <linux-gpio@vger.kernel.org>, <imx@lists.linux.dev>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>
+Subject: Re: [PATCH 4/5] pinctrl: qcom: sm7150: fix module autoloading
+Message-ID: <ZhgESEq+9jRuta2B@hu-bjorande-lv.qualcomm.com>
+References: <20240410170150.248428-1-krzk@kernel.org>
+ <20240410170150.248428-4-krzk@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240410232637.4135564-2-jstultz@google.com>
+In-Reply-To: <20240410170150.248428-4-krzk@kernel.org>
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Q4hixGIkEX4CJwtmeiJ4oFt_FKE4yeeM
+X-Proofpoint-GUID: Q4hixGIkEX4CJwtmeiJ4oFt_FKE4yeeM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-11_08,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ priorityscore=1501 mlxscore=0 clxscore=1011 adultscore=0
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2404010003 definitions=main-2404110115
 
-On Wed, Apr 10, 2024 at 04:26:29PM -0700, John Stultz wrote:
-> Building with clang, I see the following warning:
+On Wed, Apr 10, 2024 at 07:01:49PM +0200, Krzysztof Kozlowski wrote:
+> Add MODULE_DEVICE_TABLE(), so the module could be properly autoloaded
+> based on the alias from of_device_id table.  Pin controllers are
+> considered core components, so usually they are built-in, however these
+> can be built and used as modules on some generic kernel.
 > 
-> In file included from posix_timers.c:17:
-> ./../kselftest.h:398:6: warning: variable 'major' is used uninitialized whenever '||' condition is true [-Wsometimes-uninitialized]
->         if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor) != 2)
->             ^~~~~~~~~~~~
-> ./../kselftest.h:401:9: note: uninitialized use occurs here
->         return major > min_major || (major == min_major && minor >= min_minor);
->                ^~~~~
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+
+Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+
+Regards,
+Bjorn
+
+> ---
+>  drivers/pinctrl/qcom/pinctrl-sm7150.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> This is a bit of a red-herring as if the uname() call did fail,
-> we would hit ksft_exit_fail_msg() which should exit.
-
-Correct, although we have not really conveyed that to the compiler,
-right? exit() is noreturn, which means all functions that call exit()
-unconditionally are also noreturn, such as ksft_exit_fail_msg(). LLVM
-will figure this out once it performs inlining and such but that happens
-after clang's static analysis phase that this warning occurs in. I think
-a better solution would be to add __noreturn to the functions in
-tools/testing/selftests/kselftest.h that call exit(), so that the
-compiler is aware of this through all pipeline phases, maybe something
-like this? It resolves the wawrning for me.
-
-diff --git a/tools/testing/selftests/kselftest.h b/tools/testing/selftests/kselftest.h
-index 050c5fd01840..29364c9f3332 100644
---- a/tools/testing/selftests/kselftest.h
-+++ b/tools/testing/selftests/kselftest.h
-@@ -83,6 +83,7 @@
- #define KSFT_XPASS 3
- #define KSFT_SKIP  4
- 
-+#define __noreturn       __attribute__((__noreturn__))
- #define __printf(a, b)   __attribute__((format(printf, a, b)))
- 
- /* counters */
-@@ -324,13 +325,13 @@ void ksft_test_result_code(int exit_code, const char *test_name,
- 		break;						\
- 	} } while (0)
- 
--static inline int ksft_exit_pass(void)
-+static inline __noreturn int ksft_exit_pass(void)
- {
- 	ksft_print_cnts();
- 	exit(KSFT_PASS);
- }
- 
--static inline int ksft_exit_fail(void)
-+static inline __noreturn int ksft_exit_fail(void)
- {
- 	ksft_print_cnts();
- 	exit(KSFT_FAIL);
-@@ -357,7 +358,7 @@ static inline int ksft_exit_fail(void)
- 		  ksft_cnt.ksft_xfail +	\
- 		  ksft_cnt.ksft_xskip)
- 
--static inline __printf(1, 2) int ksft_exit_fail_msg(const char *msg, ...)
-+static inline __noreturn __printf(1, 2) int ksft_exit_fail_msg(const char *msg, ...)
- {
- 	int saved_errno = errno;
- 	va_list args;
-@@ -372,7 +373,7 @@ static inline __printf(1, 2) int ksft_exit_fail_msg(const char *msg, ...)
- 	exit(KSFT_FAIL);
- }
- 
--static inline void ksft_exit_fail_perror(const char *msg)
-+static inline __noreturn void ksft_exit_fail_perror(const char *msg)
- {
- #ifndef NOLIBC
- 	ksft_exit_fail_msg("%s: %s (%d)\n", msg, strerror(errno), errno);
-@@ -385,19 +386,19 @@ static inline void ksft_exit_fail_perror(const char *msg)
- #endif
- }
- 
--static inline int ksft_exit_xfail(void)
-+static inline __noreturn int ksft_exit_xfail(void)
- {
- 	ksft_print_cnts();
- 	exit(KSFT_XFAIL);
- }
- 
--static inline int ksft_exit_xpass(void)
-+static inline __noreturn int ksft_exit_xpass(void)
- {
- 	ksft_print_cnts();
- 	exit(KSFT_XPASS);
- }
- 
--static inline __printf(1, 2) int ksft_exit_skip(const char *msg, ...)
-+static inline __noreturn __printf(1, 2) int ksft_exit_skip(const char *msg, ...)
- {
- 	int saved_errno = errno;
- 	va_list args;
+> diff --git a/drivers/pinctrl/qcom/pinctrl-sm7150.c b/drivers/pinctrl/qcom/pinctrl-sm7150.c
+> index c25357ca1963..c542f9bc6bcd 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-sm7150.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-sm7150.c
+> @@ -1246,6 +1246,7 @@ static const struct of_device_id sm7150_tlmm_of_match[] = {
+>  	{ .compatible = "qcom,sm7150-tlmm", },
+>  	{ },
+>  };
+> +MODULE_DEVICE_TABLE(of, sm7150_tlmm_of_match);
+>  
+>  static struct platform_driver sm7150_tlmm_driver = {
+>  	.driver = {
+> -- 
+> 2.34.1
+> 
 
