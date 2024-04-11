@@ -1,179 +1,151 @@
-Return-Path: <linux-kernel+bounces-140343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D1468A1312
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:34:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEBE08A1315
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:34:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFD551C217B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:34:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 808C6285849
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:34:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF5914884C;
-	Thu, 11 Apr 2024 11:34:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0749B1494C4;
+	Thu, 11 Apr 2024 11:34:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="tskvtUXE"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="k3BCELdK"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2065.outbound.protection.outlook.com [40.107.21.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80926145B08
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:34:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712835244; cv=none; b=ngHIUlyNSz7Z19rZ01+WqMYvTeNrMz8WPxqHz8iEKwVaUIn3GBdoQdK91vDdVCZT9upMstv0HbMpnkjHOkFPn3oFxcsKyO2zm9STGyIk49z8NL1WEqG52CSbl/Yp7LdY/7vu3H/KvDgzuxCUTDVOdAscLXTM72TH4sjh3AfM/yE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712835244; c=relaxed/simple;
-	bh=Y+88OsSv3XgE3Uuu3RxfOIXpJMYy7dEQrqh1SIaJyY8=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=j9Hmn/OgnSWe04vTlE/ukn+VBB/rw2swgHTbh4u5N11R/UWMmnI4KYwcNvTVLeHbRSrCswD8TY/EO3n2ZaOiXfhxvRq6VfK/rAgGExr/S9Z1UGFCr+hxf2zRIjTj0zhmi1wABuCEahlCfIuomRf7c0HzT5tl1rv24UGW53zYao0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=tskvtUXE; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a520410b7c0so261145766b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 04:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1712835240; x=1713440040; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=epOc+KLscHkys2dcVLrGJ4JNiyjInB/35e6bFJPpR2k=;
-        b=tskvtUXEsrzHPBOV5bGhTj+Z83ArUqU8BBv0RqiMrZfy9mLGAXLkV01iORwnilLMm7
-         9cmWkty5CuIlu2WYP6h/vT6mPFl07HSjSd1vAm8cSPT7Lq2ODak7OsEhgJji9b+9BXVJ
-         87LsTasjr3tmnbb6Hfzk2BAZwOIeSId0nc47P+W8piADY0CG/uhGajb0O3lc6OsWcmED
-         /kiW7OHX9JQ67z5DGC14MrkrI0Ca+NRJztbdfspwtpAKJdtcnaPBmoDamwim82652x7t
-         bfcJXgqbKneEBMRbgYgmF1ivlSw93AotY2Q7kK3afeywFDBW6O6rmPfGzs9Bm7Jplxia
-         WlcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712835240; x=1713440040;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=epOc+KLscHkys2dcVLrGJ4JNiyjInB/35e6bFJPpR2k=;
-        b=bE9KjokARBPazPL4/u4N7Ps9+RzrGllQCPZ58Fn17H8bASXSm17GjCF6509fFFhWd3
-         8Yf69Wgx8DvYe4TcHL8IVOHt26a/oAUfT04ddsccUEh2343NdYQwEAb+ruAKPivUtTwp
-         4rXEPq7p2deIzF4hpiiht0D0Fe/dXjmwPTgeZt++vNU/TD8QYFAQd/XpNGiP5MjlsA4d
-         bqJLSGRbvrwJmw7seIN6kcY2D5lMf6HUE/robZIejLwlmJCXcnQJXJuNRxzt4Wx2+GJp
-         ACAmw3zmjCjX1YqHQPdL5AUaVqcJbPJgy9DEfV+aGkswN/GJUuW6/KpQ46y0tLS35YAR
-         NgYw==
-X-Forwarded-Encrypted: i=1; AJvYcCX1orlODX7fLgaBXiRpnxskg17WQR4X8VH7foFhbYP+m6vN7z7iFrmK5sQXzB0Gj+YwAGT9AgibfaA9c+8pJiczB0/I3O6e8pAvkKpV
-X-Gm-Message-State: AOJu0YwoqMNGI3+vrTUzX8vGIj+0btDoQjiO5pccVl2Eai2cXXcoYRWo
-	csIZiZldauypajZZI+MWj+wt5W7PxxUD3+zbC9LlIiXTdCWRh+Q7PbUSO3aWNs8=
-X-Google-Smtp-Source: AGHT+IFi4++h6RwrGMN8PN/wk/sEG/2YXD4tmv81B83xFu3Y14Jup9QUbnqiGg3W7nCppXCv+oh7Yg==
-X-Received: by 2002:a17:906:c103:b0:a52:2441:99c with SMTP id do3-20020a170906c10300b00a522441099cmr1040746ejc.69.1712835239851;
-        Thu, 11 Apr 2024 04:33:59 -0700 (PDT)
-Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id w17-20020a1709067c9100b00a4a396ba54asm665875ejo.93.2024.04.11.04.33.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 04:33:59 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 091F36BB29;
+	Thu, 11 Apr 2024 11:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.65
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712835281; cv=fail; b=OpNWyyOSnJ+4iu4BTta0VRfV22aj05bgnY+Cv38Z7f5/ZqXB3izAfjG4hrCY7rfKo14bza1ME7NH8BI5rgJwjzHTVi4CyhJ7MGw8n1mh71B4Y4KqKf2bLU91KnUfLncEPDjvtEFHg4AMssCTk6HjbAby0NCioQHCd+8uNm5MPP8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712835281; c=relaxed/simple;
+	bh=HauHJk5gtZM9JPJhhi8HjMBTtcNE1bpYr8/bmHEt6Tc=;
+	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=E0M4sb2j2iqbD/NOEmA9ym7TYhO5kvA7CqYFaB1jMfTC1IJoGFV2kvtrPYW+Cs6sBKwkmabP57k8bgEaoccWb0qaKRxY93irLwSNGDcmSdKxwzZXIn4/KkbzsHl5NxjKEWcYfTj5zaYVjelfQCk+EljpCZBSR3vvhr3JTEeBFBA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=k3BCELdK; arc=fail smtp.client-ip=40.107.21.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WUeAnsd6LVtw53b25qSKPVjQ5Gm/oyJwfbost7zd1XuC0RYlGd2+K0z/8s20I5NFEmP0UIqun72bVnUS3hx0WyKPc4TVpyLD6cEWLxOA9NTdcwd5FKiuTvthz9X/0T9crxhrSQnx9CExcdw6w6xvwyBC4t7zV17yKs+KRXONTg+chBEhzaq+5Fxu06saRbRr0PQnOMABtrgdyPWbRwMJBLd4v7bXX6LQoSqiwYTUOaiQPYgfsMFGlvBvhNxo3DFwTXNLAeRhqSnkW1y6XvTZ1AbtuziGrBMoGlnpPZ23M+j21QeHnhkczgmEyyL0Tk4ppe9y2wrfj0+PI/Ej1JACYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=a2SiR8bA2CbPROE9xekVxKhP0OSFwySnsZIujpK4jSA=;
+ b=RnWJBqXr4wnJnQdanphnL8iHWOeZwPcXSCmso0HW+S72EQtAWfRu1bk4ZmeE4ncwk4BtDcK6JBzsfYzCtLmUwoCmZErKe3dkLwkKV+s1P3VOn1qGiOBF2/fpQGICWhCyNiSGDnY65jhOl7I29nZmaF+b0UO9cT3E6+qi+8CLTQXPyxoALTY4XYpbyAWl95cTuT5UkVxvq+/bTBm99gBW0ldy1MZAa8S3UYLsaw2QMTqDe+ZGYckELya8gXMPGJCEKkPf5UHg3/yJq6vAoMxHtoImwNDi/R78XKe3IUN9YGB7rW7sFfJz1OQxL53L9WzPipB+Ep23Yeca4/kUED1eUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a2SiR8bA2CbPROE9xekVxKhP0OSFwySnsZIujpK4jSA=;
+ b=k3BCELdK+MphHTR0EhJCIaR2PpCWYp100pgrFCrnthTge61nSToI0q3qLApssc8oGjxpe4mLKo6vZRp4WsCmHEl1s6jQNILZ9D+HqUY3Jews2Xt9Nygmax15CmKmR0Klv3m6DHUdO7la082BWjXb8G9vmfvmRQXmf5FKRQ2X25M=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from VE1PR04MB7374.eurprd04.prod.outlook.com (2603:10a6:800:1ac::11)
+ by AS1PR04MB9559.eurprd04.prod.outlook.com (2603:10a6:20b:483::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 11 Apr
+ 2024 11:34:36 +0000
+Received: from VE1PR04MB7374.eurprd04.prod.outlook.com
+ ([fe80::2975:705f:b952:c7f6]) by VE1PR04MB7374.eurprd04.prod.outlook.com
+ ([fe80::2975:705f:b952:c7f6%7]) with mapi id 15.20.7409.042; Thu, 11 Apr 2024
+ 11:34:35 +0000
+Date: Thu, 11 Apr 2024 14:34:33 +0300
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Camelia Groza <camelia.groza@nxp.com>,
+	David Gouarin <dgouarin@gmail.com>, david.gouarin@thalesgroup.com,
+	Madalin Bucur <madalin.bucur@nxp.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH net v4] dpaa_eth: fix XDP queue index
+Message-ID: <20240411113433.ulnnink3trehi44b@skbuf>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410194055.2bc89eeb@kernel.org>
+X-ClientProxiedBy: VE1PR08CA0003.eurprd08.prod.outlook.com
+ (2603:10a6:803:104::16) To VE1PR04MB7374.eurprd04.prod.outlook.com
+ (2603:10a6:800:1ac::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 11 Apr 2024 13:33:59 +0200
-Message-Id: <D0H9F200BT16.2HWU1I45AS1S7@fairphone.com>
-Cc: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/4] clk: qcom: dispcc-sm6350: fix DisplayPort clocks
-From: "Luca Weiss" <luca.weiss@fairphone.com>
-To: "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>, "Bjorn Andersson"
- <andersson@kernel.org>, "Michael Turquette" <mturquette@baylibre.com>,
- "Stephen Boyd" <sboyd@kernel.org>, "Konrad Dybcio"
- <konrad.dybcio@somainline.org>, "Konrad Dybcio" <konrad.dybcio@linaro.org>,
- "Neil Armstrong" <neil.armstrong@linaro.org>
-X-Mailer: aerc 0.17.0
-References: <20240408-dispcc-dp-clocks-v1-0-f9e44902c28d@linaro.org>
- <20240408-dispcc-dp-clocks-v1-2-f9e44902c28d@linaro.org>
-In-Reply-To: <20240408-dispcc-dp-clocks-v1-2-f9e44902c28d@linaro.org>
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR04MB7374:EE_|AS1PR04MB9559:EE_
+X-MS-Office365-Filtering-Correlation-Id: c04d8b9a-f303-4e41-1d7d-08dc5a1b5d56
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	GBsNrHlfWf2mBWjn2PBcSesF3Ho0mhb9D5kzl26RJc9owyMe3H0Cp48NFeVS0/QggOtL16OgA3bxmpXfhGOx3EzhANqIrh1/2/qoqkg/2ee4Szd9Zaj0LT9h1UBqlZZg8mJh1CFDmN0WxIVbPBHGzIPP788BpR0p9pX7S9tHE40DJzdFOEH4TbRUhPrIBgi4Tv1YL6Mw+xC7P/TxGJixbIZxd4drB6E5KmlCLGd3TVRGBZmknzWnqEYwqMQzfStdt+2LgEZonSiJM2/xYxoebaUZB79OdEfh6Y7Gdl5Ymy0PnevibLIdRjTBS3PvXBqcuRSlXWFGnCKy5ue0noAzryZ46HOAkkyW6e8ATaA73rZAFsaNEt9R0d3Iy1xlz2UMFRRXsJV8p876+y++hjCR8T2eR5tAiL2/Xa6/bfI904vXue6vwk5mX3SIJZaaNR8MU/0rCDsurBfgH02PSKzsIpAjjjkcXNADvIub80qi+tiN1ShpmDB4JuIMYSyPNb16Exr3sGSbD5453zi+l4tDzog8xMOqELjM+WgFAhSyTFyqTGa7GRErlyOXhv4qrKokL4EVCXU9qaSfCEcDtzai/AnLpLc1FX1cGgLNglL+g+QNZ6rj9oRsmIUvvHlcirFDs/h/3QZyr2PT3vckEAk9Blh7dPvNxtkLzYsNVumGxcs=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB7374.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?dGTE4nfq2vahUXCZFxNwTrwOiw4ZDljInS3YX4D1AO3I0feMKnzvtwXa1Qw2?=
+ =?us-ascii?Q?wTaWWavswsNQPO7iWSuKAbUZR4yyKlgIqpmACL0zOFZzCYbwp4lMNNuu98Qu?=
+ =?us-ascii?Q?ObBgKbKEBapjGicnYwlK6NK5BEvmnwrcPEb0cM/GVjHA5+Igr5f7OQajOMbs?=
+ =?us-ascii?Q?kGq1VPCD0SuXmpD9YC4Z+HCTefRSDQTQx/4ncACclqBrZrw5GFC4rzRQfRgU?=
+ =?us-ascii?Q?eHfWhf6XrZqiM2SBPO29oMyEM30BwjvHSNwqsZDfO1cr9iKV5oAmcO9Z8uyW?=
+ =?us-ascii?Q?e++rs8lCAw9cpgf76gY34brIQhwQW25rt1yWAbBWGvDOaYQqm5ubYIRkUFZd?=
+ =?us-ascii?Q?C2uhOqD6vb17j6hcxE/+1yPwB3oq0Ip4NPprVrEXF5aHjQqPCW3mAAMXbDOl?=
+ =?us-ascii?Q?b6YDo9mfEu/sCm+tB8ASKg4nWaUtsYuwzppzI7OL+AiQ0hfMmyjyvdp6lo6I?=
+ =?us-ascii?Q?MB2+H79+2hJPz88AZnif3VGVHSp5zGbzTHoCR77tJ5zmvXlJfEOpYHiJGc+o?=
+ =?us-ascii?Q?lCz5ouSvIQE5eQkkHZnhlQttElr6RIs5E53mp4V3LhPTkyCqbjmU65q2mQlU?=
+ =?us-ascii?Q?xzkWmRHBCDUo0iT+kRXuUl3msMwv48WSvfh0DBsIxVSszdLxGzMz2EBPNOv6?=
+ =?us-ascii?Q?bEreE4xlIIt3cw514/Q9IOwKyt9+/R1OxIcaF2Hn+6c9WWVXOQltQG94CPoZ?=
+ =?us-ascii?Q?QrPIwmQo6h6ft+qOsBIUtx7iS+e1bpot5gsh1AqUxbEXSSYAUQzkJuduRjtS?=
+ =?us-ascii?Q?knJvq4kKyi3x3avFXzknRVSYa+/xJh2zwbpPnpFbmE1zJ4XWKKmBCR+uLBqc?=
+ =?us-ascii?Q?+J/S6HA412XNDLq8xSW/AByb0a5cB4P8wECkd7e5Vme+UuCmEzoMsD/qthci?=
+ =?us-ascii?Q?En+epTVVVJTCVj30U2BzAU+pYCqHddO5zWBLl6uRJ6cb7aS3TeUKFcr5VLc3?=
+ =?us-ascii?Q?cnwLuMqS3sL1/8T3nHRORTBmAuHxgTXMQKuDW2AKtTVlXYq+gAKvulR50F0m?=
+ =?us-ascii?Q?c001eBNO8gW1zcxNJRfb1YVKGWcLR5fwZoNB9kAFlkoqhYlhoecyMediPdN4?=
+ =?us-ascii?Q?SzY/pmjwH6PU4vi8/qbvp+4aicfk6c6brL1DX8im0SjFa9qYZLQzgEdWuf3q?=
+ =?us-ascii?Q?dX5DEc8U32JnSA1veYilC1YiTDgSHdyKc2grnMFRgR8rMdzlGw/mOkx++UEH?=
+ =?us-ascii?Q?yTo5Hpge82bLH0U0n6KNBh8M00IFE62nWuoi8Vj9W1TCzIF2Znpc+9IdhNAD?=
+ =?us-ascii?Q?E/tWxkd7mG6yX4iOCppYAEMHWTeoAOHgdjdhJ7FxG7dqMUIFg5s8ZISOxdj/?=
+ =?us-ascii?Q?eoE/BppgyzFt6ezKI3Hmy2kHgwEJ9kC7zQkShqtKqIhFLKL2WDN3pftQxf3U?=
+ =?us-ascii?Q?gHp2IK45KJ1i7U6cwiWAgWXLGMFZ/5JW5DT6qRGnA9MFKtA86CSiK8dVjtPV?=
+ =?us-ascii?Q?hbJfNVucKPoNznpqs0iwzCHn90LGKExbAxntn0e7g41IVftTc5Sv7CdVW2Mn?=
+ =?us-ascii?Q?V0WDOiAkRrSvzO3SNPgeZ1WGNjZRn19uEUQJ7Jc7fsJhweUcFPh5yxqTdmzO?=
+ =?us-ascii?Q?9nhnuaNdg8Uq2Jv2xWdK8ut5pny5OF0U4rhdiHVTQr+QpglcxXw9YFcmcYws?=
+ =?us-ascii?Q?vKDF7cRnjks0zcxKlpucSXk=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c04d8b9a-f303-4e41-1d7d-08dc5a1b5d56
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB7374.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 11:34:35.8716
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KtjCgpd9UJ3/I98WPrUNGmY5YXpibpO/9GFh1UyC2vJ1ZZ6AwSG1B9hB2+kIsQWd6WMGnuJGX1INej3H0gD0PQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9559
 
-On Mon Apr 8, 2024 at 1:47 PM CEST, Dmitry Baryshkov wrote:
-> On SM6350 DisplayPort link clocks use frequency tables inherited from
-> the vendor kernel, it is not applicable in the upstream kernel. Drop
-> frequency tables and use clk_byte2_ops for those clocks.
->
-> Fixes: 837519775f1d ("clk: qcom: Add display clock controller driver for =
-SM6350")
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+On Wed, Apr 10, 2024 at 07:40:55PM -0700, Jakub Kicinski wrote:
+> On Tue,  9 Apr 2024 11:30:46 +0200 David Gouarin wrote:
+> > Make it possible to bind a XDP socket to a queue id.
+> > The DPAA FQ Id was passed to the XDP program in the
+> > xdp_rxq_info->queue_index instead of the Ethernet device queue number,
+> > which made it unusable with bpf_map_redirect.
+> > Instead of the DPAA FQ Id, initialise the XDP rx queue with the queue number.
+> 
+> Camelia, looks good?
 
-Appears to fix this non-critical error when enabling DisplayPort.
-
-  msm-dp-display ae90000.displayport-controller: _opp_config_clk_single: fa=
-iled to set clock rate: -22
-
-And DisplayPort (over USB-C) continues to work as expected, thanks!
-
-Tested-by: Luca Weiss <luca.weiss@fairphone.com>
-
-For completeness, I wrote something about this also on #linux-msm IRC on
-March 22nd.
-
-> Hi, I'm trying to get displayport to work on sm6350 but hitting a
-> weird issue regarding link clk frequency. For the requested link
-> rate=3D540000 in dp_ctrl_enable_mainlink_clocks we call
-> dev_pm_opp_set_rate with target_freq=3D540000000 (clk name:
-> disp_cc_mdss_dp_link_clk) but the clk_round_rate there makes this into
-> freq=3D810000 and subsequently qmp_dp_link_clk_determine_rate fails
-> because that's not a valid frequency, only for example 810000000.
-> Without any debug statements the visible error in kernel log is:
-> "msm-dp-display ae90000.displayport-controller:
-> _opp_config_clk_single: failed to set clock rate: -22"
->
-> So somewhere there seems to be confusion between how many zeroes
-> should be where.. But not sure how this is working on other SoCs, I
-> don't see anything much different for my SoC
->
-> Kernel base is 6.8.1 fwiw
->
-> clk_round_rate behavior feels correct as
-> ftbl_disp_cc_mdss_dp_link_clk_src lists the frequencies as
-> 162000/270000/540000/810000 so it rounds it to the highest available
-> frequency of the clock
-
-Regards
-Luca
-
-
-> ---
->  drivers/clk/qcom/dispcc-sm6350.c | 11 +----------
->  1 file changed, 1 insertion(+), 10 deletions(-)
->
-> diff --git a/drivers/clk/qcom/dispcc-sm6350.c b/drivers/clk/qcom/dispcc-s=
-m6350.c
-> index 839435362010..e4b7464c4d0e 100644
-> --- a/drivers/clk/qcom/dispcc-sm6350.c
-> +++ b/drivers/clk/qcom/dispcc-sm6350.c
-> @@ -221,26 +221,17 @@ static struct clk_rcg2 disp_cc_mdss_dp_crypto_clk_s=
-rc =3D {
->  	},
->  };
-> =20
-> -static const struct freq_tbl ftbl_disp_cc_mdss_dp_link_clk_src[] =3D {
-> -	F(162000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
-> -	F(270000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
-> -	F(540000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
-> -	F(810000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
-> -	{ }
-> -};
-> -
->  static struct clk_rcg2 disp_cc_mdss_dp_link_clk_src =3D {
->  	.cmd_rcgr =3D 0x10f8,
->  	.mnd_width =3D 0,
->  	.hid_width =3D 5,
->  	.parent_map =3D disp_cc_parent_map_0,
-> -	.freq_tbl =3D ftbl_disp_cc_mdss_dp_link_clk_src,
->  	.clkr.hw.init =3D &(struct clk_init_data){
->  		.name =3D "disp_cc_mdss_dp_link_clk_src",
->  		.parent_data =3D disp_cc_parent_data_0,
->  		.num_parents =3D ARRAY_SIZE(disp_cc_parent_data_0),
->  		.flags =3D CLK_SET_RATE_PARENT | CLK_GET_RATE_NOCACHE,
-> -		.ops =3D &clk_rcg2_ops,
-> +		.ops =3D &clk_byte2_ops,
->  	},
->  };
-> =20
-
+Please allow me some time to prepare a response, even if this means the
+patch misses this week's 'net' pull request.
 
