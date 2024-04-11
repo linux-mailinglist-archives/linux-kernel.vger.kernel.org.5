@@ -1,150 +1,119 @@
-Return-Path: <linux-kernel+bounces-141589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA8118A2060
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:46:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C86A78A2061
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:46:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2CE1FB218FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:46:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DD561F23898
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:46:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 221F81C294;
-	Thu, 11 Apr 2024 20:45:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CE4825575;
+	Thu, 11 Apr 2024 20:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="f/w+zXY8"
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O9Avea6b"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C018C205E15
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:45:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0A5205E15;
+	Thu, 11 Apr 2024 20:46:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712868355; cv=none; b=RpnbkOMFw0swfv8+PUFbTPFd72zhcyL5ijOoqqASgVuQALXpthak4JeKqIWH4DzrZP1dNiSVmY3svdbVA0Yim16p18CrY4ORM+GoWEr0mt1khTMyctzD1TBXp9gpuq2EJt3NXz6SRXbTfMNUVptNN0ELqePyKRhoZLnJdKGGPf0=
+	t=1712868393; cv=none; b=OpD9u/CFwOfqKl9hCY6tTc8sRjafSKV8d4IHHCbqes+GK66+so/PGn/F17PuVXx/I3mYyJVqLBfQEKg6GbIPkFl0fWqD6jUfgPUq1ZwlFQWpDwWTfdQ8nEJzH66e6agVUux4R3yM5F30RHvClMwGRsgstxoU9/BbOrRqgBSBPr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712868355; c=relaxed/simple;
-	bh=//ZjAiaXc2P8treOFUP0BwgmcWVeopDlRI0E5DLLuMc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Lhsqxj6n0KQwXRfPNCaY0l5NqhsuiAnrnHzpm1z7LAGaeo/tzmxppWLnRk1Wo5Ze3oRr3lKE+xUOnFWTIghw2M9bk2dzWbS5zuu9vHl2x/Ns3tMd8O09B871L7uZIgMwQa/yglaBYUGT11ENwqMR/mPs0yU5wBrxY/bhLmHSI4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=f/w+zXY8; arc=none smtp.client-ip=209.85.166.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso4802939f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:45:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1712868353; x=1713473153; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Fo4GEr311EYbdOzDjeChQAAjd+hDg5qPX6VqqIVrpLA=;
-        b=f/w+zXY8TL/Mf0YsoDFELJdPOkX5l322B1XedX1zWJqdssy/LUUDGjnB2yq+gQ3I/M
-         3V0FvRCj3Wr6Nd/cRZ/f7Y9cWRw4laHblLSMYi2OiVvDQ9GBSF9kCbbI1b+5/H3vMH9i
-         IXC7NgxrSRHQWDmKy8rybQ3p6TqQD+IrjPvvA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712868353; x=1713473153;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fo4GEr311EYbdOzDjeChQAAjd+hDg5qPX6VqqIVrpLA=;
-        b=xArzqwbHoJbG2ypaETaATSniK1EqlDMtuXwgyjDhnippTuynBhMo3H5hdwdPPDH2br
-         vX1Dds0sfo5ZZpaxGIwaQIFGuh5SdsuZeLj12A1fFqx6Jz/o1lT5MPdDVlBdkjwOuR7V
-         mb8Zyp4RuhlY3bTIUqHSa2n7vvR8F7evEmy5WpaDl1C13tkGd5DsE0KRG/cgUEZBTwb6
-         dsFPdiP2oZ8MEGp/TXi/ZuiF0j0gKLOzluXYJN/fvPvI33O/YlIo9f1+1oytQ36AFYHJ
-         XTdPZs6XOuDyiO6xhuMfLIJujfcYUMkXSzo6qqobf54OZOvgYaLyQMaGdbTwxh7cKGBR
-         +hkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXC6udN4xAU3vFEIonHtxg+OVPmjIG/mkdmNRxXl2yqsoTNCCkWEgGRU5oPnoghtOwrw6dtb6tf81/aJhb4izgEEJJwzdw7kZPFMPT1
-X-Gm-Message-State: AOJu0YwSn8u30Ct071srDoBolYVrqIyLN2egKEBROWIfB88ycprWJMOS
-	xwOeZPJSnceMommjVPqxqQzNRBZE4Xm6ShIxyKvfBgVnw+xGHomAvtB9j0h/ZrA=
-X-Google-Smtp-Source: AGHT+IH9OX1Moo1mlEB4y0c5wMRaDjl4BfEDLf4mplpYTFEyOf+192EOakCyOtoz5nCIBbH3JHDNnQ==
-X-Received: by 2002:a6b:cd08:0:b0:7d5:fe3e:90ff with SMTP id d8-20020a6bcd08000000b007d5fe3e90ffmr957446iog.0.1712868351549;
-        Thu, 11 Apr 2024 13:45:51 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id t5-20020a6b5f05000000b007d5ddfda6a8sm647641iob.7.2024.04.11.13.45.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 13:45:51 -0700 (PDT)
-Message-ID: <001f99f4-9463-451d-ac16-0cda91e37e67@linuxfoundation.org>
-Date: Thu, 11 Apr 2024 14:45:49 -0600
+	s=arc-20240116; t=1712868393; c=relaxed/simple;
+	bh=xGjifG/Meb0EpxZ/+JCL9Kf4LMpK0B5P9WfvNR35+u8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sf1iOd7kjTQIXXaL+Py9YDoOO1afPjgkt9L6mx4mW8S96jkguhpckPy4Okq1RybVuTIwBJRj7gbUraJJSBIFWFjNs7ClSCg1vypLiquljt9qShu14AQdWXOY9tFg98Rl1hsjo+TRDrcNjtIIxehldghQErxOX89ND6ViCV0XYUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O9Avea6b; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712868391; x=1744404391;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=xGjifG/Meb0EpxZ/+JCL9Kf4LMpK0B5P9WfvNR35+u8=;
+  b=O9Avea6boRo3L+tlxSe8hIQk07Ynl9eVyo6IBH1ENeatHqYekqPGIyLx
+   Ozh0YMVTzLy0TAUx2hxPKf4Kglr/JsIcIkgVuLCWQotXxAHVmucjv9zsY
+   cMgsJzanj/dm9asK3HzuBb1P2//IAiPv7AMV53q1fS9iJN0tZGJ4CrKsa
+   CmSUmTyg0nQRaGswP5tLnmdKX/b7mbihWqqJD3IzLYWC5/2c11u6hZiU1
+   redtS6d7I8YASZ/jqtJDHJeP+NQkFcrzOk5uQBMDXbn5JiUP0jILBrqth
+   i2CxmwGT4/YoKaqJSanIgAt2bxlvvKAAR4cWauunNj8SVi/LIy/rr+7dO
+   w==;
+X-CSE-ConnectionGUID: JnfJG2JNQCyLsUsAWCHwZg==
+X-CSE-MsgGUID: uu84z/UWTM6XXhWjvNMkIQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="30787199"
+X-IronPort-AV: E=Sophos;i="6.07,194,1708416000"; 
+   d="scan'208";a="30787199"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 13:46:30 -0700
+X-CSE-ConnectionGUID: RjUis6vlRqybWBBjNCgJLg==
+X-CSE-MsgGUID: +A9NZ8A3TNCJ0HcqBEr0mA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,194,1708416000"; 
+   d="scan'208";a="25488117"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 13:46:29 -0700
+Date: Thu, 11 Apr 2024 13:46:29 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"Li, Xiaoyao" <xiaoyao.li@intel.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>
+Subject: Re: [PATCH v19 039/130] KVM: TDX: initialize VM with TDX specific
+ parameters
+Message-ID: <20240411204629.GF3039520@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <5eca97e6a3978cf4dcf1cff21be6ec8b639a66b9.1708933498.git.isaku.yamahata@intel.com>
+ <c11cd64487f8971f9cfa880bface2076eb5b8b6d.camel@intel.com>
+ <20240411192645.GE3039520@ls.amr.corp.intel.com>
+ <54f933223d904871d6e10ef8a6c7c5e9c3ab0122.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] selftests: timers: Fix posix_timers ksft_print_msg
- warning
-To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
-Cc: Shuah Khan <shuah@kernel.org>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>,
- Frederic Weisbecker <frederic@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- Oleg Nesterov <oleg@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
- Edward Liaw <edliaw@google.com>, Carlos Llamas <cmllamas@google.com>,
- kernel-team@android.com, linux-kselftest@vger.kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240410232637.4135564-1-jstultz@google.com>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240410232637.4135564-1-jstultz@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <54f933223d904871d6e10ef8a6c7c5e9c3ab0122.camel@intel.com>
 
-On 4/10/24 17:26, John Stultz wrote:
-> After commit 6d029c25b71f ("selftests/timers/posix_timers:
+On Thu, Apr 11, 2024 at 07:51:55PM +0000,
+"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
 
-Tried to apply this for linux-kselftest next with Nathan's patch.
-I can't find this commit in Linux 6.9-rc3? Is this is timers
-tree?
-
-> Reimplement check_timer_distribution()") I started seeing the
-> following warning building with an older gcc:
+> On Thu, 2024-04-11 at 12:26 -0700, Isaku Yamahata wrote:
+> > > 
+> > > So this enables features based on xss support in the passed CPUID, but these
+> > > features are not
+> > > dependent xsave. You could have CET without xsave support. And in fact
+> > > Kernel IBT doesn't use it. To
+> > > utilize CPUID leafs to configure features, but diverge from the HW meaning
+> > > seems like asking for
+> > > trouble.
+> > 
+> > TDX module checks the consistency.  KVM can rely on it not to re-implement it.
+> > The TDX Base Architecture specification describes what check is done.
+> > Table 11.4: Extended Features Enumeration and Execution Control
 > 
-> posix_timers.c:250:2: warning: format not a string literal and no format arguments [-Wformat-security]
->    250 |  ksft_print_msg(errmsg);
->        |  ^~~~~~~~~~~~~~
-> 
-> Fix this up by changing it to ksft_print_msg("%s", errmsg)
-> 
-> Cc: Shuah Khan <shuah@kernel.org>
-> Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: Bill Wendling <morbo@google.com>
-> Cc: Justin Stitt <justinstitt@google.com>
-> Cc: Oleg Nesterov <oleg@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Edward Liaw <edliaw@google.com>
-> Cc: Carlos Llamas <cmllamas@google.com>
-> Cc: kernel-team@android.com
-> Cc: linux-kselftest@vger.kernel.org
-> Fixes: 6d029c25b71f ("selftests/timers/posix_timers: Reimplement check_timer_distribution()")
-> Signed-off-by: John Stultz <jstultz@google.com>
-> ---
->   tools/testing/selftests/timers/posix_timers.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/timers/posix_timers.c b/tools/testing/selftests/timers/posix_timers.c
-> index d86a0e00711e..348f47176e0a 100644
-> --- a/tools/testing/selftests/timers/posix_timers.c
-> +++ b/tools/testing/selftests/timers/posix_timers.c
-> @@ -247,7 +247,7 @@ static int check_timer_distribution(void)
->   		ksft_test_result_skip("check signal distribution (old kernel)\n");
->   	return 0;
->   err:
-> -	ksft_print_msg(errmsg);
-> +	ksft_print_msg("%s", errmsg);
->   	return -1;
->   }
->  
+> The point is that it is an strange interface. Why not take XFAM as a specific
+> field in struct kvm_tdx_init_vm?
 
-thanks,
--- Shuah
-
+Now I see your point. Yes, we can add xfam to struct kvm_tdx_init_vm and
+move the burden to create xfam from the kernel to the user space.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
