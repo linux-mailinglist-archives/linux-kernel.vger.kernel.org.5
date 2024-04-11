@@ -1,117 +1,188 @@
-Return-Path: <linux-kernel+bounces-141435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37DC08A1E2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:29:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFEE18A1E35
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:30:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7BE628BF6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:29:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1F8A1C21963
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F8E4087B;
-	Thu, 11 Apr 2024 17:56:18 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDFE44597F;
+	Thu, 11 Apr 2024 18:00:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F6A8Ql6Y"
+Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64DB03F9CB;
-	Thu, 11 Apr 2024 17:56:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D213244391
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712858178; cv=none; b=X6LOUcOhz92wtEtM5KTIfO8/WjqJrJTl3uoF61Ctd8PUj5W7nSBJQBoakEvw51CTxhC3B17XpfNtUiitLrRxe2FbfyyL+Pv4bkYwi2Ai5O7AkmGZhPWp94JXiid7SgUt2hDAbNyO6oJjUML/uOroRWL+Pg8yYMh+HZ9PcW/jI9c=
+	t=1712858435; cv=none; b=KnfJ9U7OKZ4HuGQw1EkhN7CudSFVsd6wAfkdrb2n3sGJUGdEFgZOrb++yehsg+9nwBp8Z0OJ0LeTtpL7b/vNVVYB906LVbuPELZitHfDmqLt/a5WBainXmVcs57CShnGFRWeauvsZANLA2XaLqFl/iuozcbLz5WVKKNnCX+vT9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712858178; c=relaxed/simple;
-	bh=lM0JrKFMnVWxg7ZhHZ22iVaZdtHVDJwtbdyMIQClsJE=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=qQgVoFqopLieJDhrleqRKAdMtMlPUsndOB3zAUqrzGK+z277k2OeJriA0Bhe/p2qzezDuqIBpK5IXUY9P90mxoupgDgjPujsOz33aXRg/sB/SfDsnM972cjQI3Cutb0DKTgAUJ+7YTuQ+2w3Lyb6wVDlKG42A043eBxve7/tZwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from [192.168.1.105] (178.176.74.224) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 11 Apr
- 2024 20:56:08 +0300
-Subject: Re: [PATCH net 4/4] net: ravb: Fix RX byte accounting for jumbo
- packets
-To: Paul Barker <paul.barker.ct@bp.renesas.com>, "David S. Miller"
-	<davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	=?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-CC: <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240411114434.26186-1-paul.barker.ct@bp.renesas.com>
- <20240411114434.26186-5-paul.barker.ct@bp.renesas.com>
-From: Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <bdaf93f3-099a-8f4a-4db1-53293f6fb9d6@omp.ru>
-Date: Thu, 11 Apr 2024 20:56:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+	s=arc-20240116; t=1712858435; c=relaxed/simple;
+	bh=yh/ixDQ5eg6OWrim9+bm1G6d/37CpJ1/QL+beESG4jw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e1qv4dEQQciknKQEmsEKmtgfI/VtHoyUgj+Pc2ICdIW7uBMgNQCKHGfOCD6xgaKxJLheYRrltqwbbTHc7Q6UxBx//SOMxbrWavs9Nyonjov0uaJOgHtI+E+axiemAIsI8gY1octo21OcRtctBq4E+LVe2DoyTfXXd35olQkwZkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F6A8Ql6Y; arc=none smtp.client-ip=95.215.58.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 11 Apr 2024 14:00:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712858430;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hugd8ugKeGXlWiLmTwUcSwxtoNqEbzFWRyiumV4I0QI=;
+	b=F6A8Ql6YjuHeVhFhvCjRCHtt6+j5Zmavb6rBRVS2UPMjaUzBr8Uy9YMXKrMLS6Bdu93QAe
+	+1JDwGCXhSmYXVX/GYkUtjra2ilUH2ndkI9p7bCt0GDxnXoAiXvPRveKB1Tl7czCP5mSyl
+	LwnxqSrFPBMBfyHHV7aQPCs6G/4zVIs=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
+	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
+	Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, 
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, 
+	Huacai Chen <chenhuacai@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nadav Amit <nadav.amit@gmail.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Puranjay Mohan <puranjay12@gmail.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
+	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, 
+	Will Deacon <will@kernel.org>, bpf@vger.kernel.org, linux-arch@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, netdev@vger.kernel.org, 
+	sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 00/15] mm: jit/text allocator
+Message-ID: <v52bizaflxzrxqk2wtuek2m2juwbzr6jxnpzlvtswkarcaejow@kd7tygzbmijs>
+References: <20240411160051.2093261-1-rppt@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240411114434.26186-5-paul.barker.ct@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 04/11/2024 17:36:52
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 184678 [Apr 11 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.4
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 16 0.3.16
- 6e64c33514fcbd07e515710c86ba61de7f56194e
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info:
-	omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.74.224
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 04/11/2024 17:40:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 4/11/2024 10:51:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240411160051.2093261-1-rppt@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-On 4/11/24 2:44 PM, Paul Barker wrote:
-
-> The RX byte accounting for jumbo packets was changed to fix a potential
-> use-after-free bug. However, that fix used the wrong variable and so
-> only accounted for the number of bytes in the final descriptor, not the
-> number of bytes in the whole packet.
+On Thu, Apr 11, 2024 at 07:00:36PM +0300, Mike Rapoport wrote:
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 > 
-> To fix this, we can simply update our stats with the correct number of
-> bytes before calling napi_gro_receive().
+> Hi,
 > 
-> Also rename pkt_len to desc_len in ravb_rx_gbeth() to avoid any future
-> confusion. The variable name pkt_len is correct in ravb_rx_rcar() as
-> that function does not handle packets spanning multiple descriptors.
+> Since v3 I looked into making execmem more of an utility toolbox, as we
+> discussed at LPC with Mark Rutland, but it was getting more hairier than
+> having a struct describing architecture constraints and a type identifying
+> the consumer of execmem.
 > 
-> Fixes: 5a5a3e564de6 ("ravb: Fix potential use-after-free in ravb_rx_gbeth()")
-> Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
+> And I do think that having the description of architecture constraints for
+> allocations of executable memory in a single place is better that having it
+> spread all over the place.
+> 
+> The patches available via git:
+> https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=execmem/v4
+> 
+> v4 changes:
+> * rebase on v6.9-rc2
+> * rename execmem_params to execmem_info and execmem_arch_params() to
+>   execmem_arch_setup()
+> * use single execmem_alloc() API instead of execmem_{text,data}_alloc() (Song)
+> * avoid extra copy of execmem parameters (Rick)
+> * run execmem_init() as core_initcall() except for the architectures that
+>   may allocated text really early (currently only x86) (Will)
+> * add acks for some of arm64 and riscv changes, thanks Will and Alexandre
+> * new commits:
+>   - drop call to kasan_alloc_module_shadow() on arm64 because it's not
+>     needed anymore
+>   - rename MODULE_START to MODULES_VADDR on MIPS
+>   - use CONFIG_EXECMEM instead of CONFIG_MODULES on powerpc as per Christophe:
+>     https://lore.kernel.org/all/79062fa3-3402-47b3-8920-9231ad05e964@csgroup.eu/
+> 
+> v3: https://lore.kernel.org/all/20230918072955.2507221-1-rppt@kernel.org
+> * add type parameter to execmem allocation APIs
+> * remove BPF dependency on modules
+> 
+> v2: https://lore.kernel.org/all/20230616085038.4121892-1-rppt@kernel.org
+> * Separate "module" and "others" allocations with execmem_text_alloc()
+> and jit_text_alloc()
+> * Drop ROX entailment on x86
+> * Add ack for nios2 changes, thanks Dinh Nguyen
+> 
+> v1: https://lore.kernel.org/all/20230601101257.530867-1-rppt@kernel.org
+> 
+> = Cover letter from v1 (sligtly updated) =
+> 
+> module_alloc() is used everywhere as a mean to allocate memory for code.
+> 
+> Beside being semantically wrong, this unnecessarily ties all subsystmes
+> that need to allocate code, such as ftrace, kprobes and BPF to modules and
+> puts the burden of code allocation to the modules code.
+> 
+> Several architectures override module_alloc() because of various
+> constraints where the executable memory can be located and this causes
+> additional obstacles for improvements of code allocation.
+> 
+> A centralized infrastructure for code allocation allows allocations of
+> executable memory as ROX, and future optimizations such as caching large
+> pages for better iTLB performance and providing sub-page allocations for
+> users that only need small jit code snippets.
+> 
+> Rick Edgecombe proposed perm_alloc extension to vmalloc [1] and Song Liu
+> proposed execmem_alloc [2], but both these approaches were targeting BPF
+> allocations and lacked the ground work to abstract executable allocations
+> and split them from the modules core.
+> 
+> Thomas Gleixner suggested to express module allocation restrictions and
+> requirements as struct mod_alloc_type_params [3] that would define ranges,
+> protections and other parameters for different types of allocations used by
+> modules and following that suggestion Song separated allocations of
+> different types in modules (commit ac3b43283923 ("module: replace
+> module_layout with module_memory")) and posted "Type aware module
+> allocator" set [4].
+> 
+> I liked the idea of parametrising code allocation requirements as a
+> structure, but I believe the original proposal and Song's module allocator
+> was too module centric, so I came up with these patches.
+> 
+> This set splits code allocation from modules by introducing execmem_alloc()
+> and and execmem_free(), APIs, replaces call sites of module_alloc() and
+> module_memfree() with the new APIs and implements core text and related
+> allocations in a central place.
+> 
+> Instead of architecture specific overrides for module_alloc(), the
+> architectures that require non-default behaviour for text allocation must
+> fill execmem_info structure and implement execmem_arch_setup() that returns
+> a pointer to that structure. If an architecture does not implement
+> execmem_arch_setup(), the defaults compatible with the current
+> modules::module_alloc() are used.
+> 
+> Since architectures define different restrictions on placement,
+> permissions, alignment and other parameters for memory that can be used by
+> different subsystems that allocate executable memory, execmem APIs
+> take a type argument, that will be used to identify the calling subsystem
+> and to allow architectures to define parameters for ranges suitable for that
+> subsystem.
+> 
+> The new infrastructure allows decoupling of BPF, kprobes and ftrace from
+> modules, and most importantly it paves the way for ROX allocations for
+> executable memory.
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+It looks like you're just doing API cleanup first, then improving the
+implementation later?
 
-[...]
+Patch set looks nice and clean; previous versions did seem to leak too
+much arch/module details (or perhaps we were just bikeshedding too much
+;) - but the API first approach is nice.
 
-MBR, Sergey
+Looking forward to seeing this merged.
 
