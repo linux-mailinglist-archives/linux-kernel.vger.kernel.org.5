@@ -1,187 +1,105 @@
-Return-Path: <linux-kernel+bounces-140235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96A738A0F3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63F728A0F2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:21:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4272A2871E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:22:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AEC9286CB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:21:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ACB5146A8C;
-	Thu, 11 Apr 2024 10:22:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FECF146A77;
+	Thu, 11 Apr 2024 10:21:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UJtvKh72"
-Received: from mail-ej1-f74.google.com (mail-ej1-f74.google.com [209.85.218.74])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hfjqtKyB"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A605145FF0
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:22:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8B8140E3D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712830926; cv=none; b=kzj0TKROSIbaoGraXNuYXmdzC8iAfdmXuMXf+I7CNLL3CfpfH6KE5402e22PvIcZwVpzqyR6nP3oNCSNohfB7qFtVYS8P2Nd+NaA8QzOarxNH4/HJ6vbKQ/H6UDzGvrpKOqYlUGsjUtassO6ZSlz+WamaR1WIinsIKvQcTEpA14=
+	t=1712830890; cv=none; b=uoYA6YPd1ZlZdkdPdwEHgiQ6fKXi+Hj2/Gfd0kj6piIGntLcJvBgaQiyRwEvTAYGHtZa1iaZjEd1CgEzFQZX7Wsq9pXSQkD95ffZ4svpwBNK7dxMf0aNnS1MN/TFP7phg8qLMHqSroMJXo0T+YFK4FFRCkSFP7i/QG7NnRlKLuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712830926; c=relaxed/simple;
-	bh=kwjGtNvLpK325ZnrzYNhpHBo59AhLmuaGY0i7QoIDKs=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=HFj8ezUafP3jPxzlyw3ITRA2xdvhQvrPL+aPLWRlhDJULJevqpa0kzdDESfq+8HovRjHJ8/FLl5ldO/yIgbLnAI5Gamc19TNygCUyBxaYLbNb8TF5Jz3ukAFWBHRuNWzr9v5TGE9xqbeQ1hqIGp2Umm6Usa5EnqJ36iuMChGPro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UJtvKh72; arc=none smtp.client-ip=209.85.218.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
-Received: by mail-ej1-f74.google.com with SMTP id a640c23a62f3a-a51c03c9b8bso210959866b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 03:22:04 -0700 (PDT)
+	s=arc-20240116; t=1712830890; c=relaxed/simple;
+	bh=zvOqY81UI1gje8b+KKXpBiaE2ZEmEDpgfgaX97t3ET8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tvAxYaB62FPXEa/vXLDQn5CCQfudxOso3sBMlLCKV+SNqj3x58UYMDH53LMTGSwTVWcTJsn2uzwpo6/g3AqMCxcLDmG4+lpBr/oWX1GEIed4PfzYnVNclmO9fcZTv4gCqfgqDgi3y1O9cyuRMwvoYN7yqezyW9hlspgz7DvvtHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hfjqtKyB; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a44f2d894b7so868361166b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 03:21:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712830923; x=1713435723; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+rR9HIwFgg/0oSpb0w3lX+KECeC+/l7rF3yPb/nkNJ0=;
-        b=UJtvKh72FY0JKCgLC7XKqPpkHTMXqKfhlej8TUr/dhEtFPjcok9sFMi9wKlnSjq22R
-         ln/b+k57z8Bu3tY0f+fPiD1lL0dZy7xC9X4ZGR1/wzB0NJ85KsOFkF7cSMnzscYKYk4F
-         G5ODG9kH3ZWjiMQUaQ0ZE1UO5Lqds5ayLc/ZRw+pIJGJREiO5/4pfVkZM0Ycg2M2oD+w
-         IvAhTVZj5B5TxBUEZz56oarrEvmF0+VQo4uIi331EFsJA2E0D/2VWVjv85Cy2SMQi7R7
-         qLY1xMDZpb0sN3VS+jICF/jcw8tDXMRdFjKRnoHf9ETOyMAEP/m6XCKaVFJ6aYg9v0xk
-         i2yQ==
+        d=linaro.org; s=google; t=1712830887; x=1713435687; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Xvdfu9ArjMbK1qf/YQdnlhdZxBJiNRZlOj4rVjSQLs=;
+        b=hfjqtKyBF3Em+5dKq/Pe6ryRii+9+6IEBbhJQp+HOHlaqeG/sJ+Pvku2CflFtBcdE5
+         qlgkaJa9HYlduLNmqjltr9q5vK+JB98bxnAjIDiWwEIJ4ApEk0Atf/9U/xZuBu83Scb8
+         kqiLj7tKdIkL9CyO4t1vS8YS7Ns7PmpnVOMV4nt7MSCIW3+SxMSQsATGKwafdyK7ohPR
+         izpqgnBTI2W7m0kL85XJBXJaLdPWGnqxUpdwSfzLJ0CFAYs57xOVW33rIUByQB7gNE2S
+         XNb4hI7Iut2bhB3HWUmiBKbIADKFv7lnvt+u0T64qY8B2IZUAoQ6/a03JwFJk4b3L1/v
+         0YgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712830923; x=1713435723;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+rR9HIwFgg/0oSpb0w3lX+KECeC+/l7rF3yPb/nkNJ0=;
-        b=iJvkN9HXmMEc2VFbulWAtScaLhO6CCtDkxKBUZs39iOhz3TtudNMO+DMMPrrgsFr2v
-         Xc6l1M/Vwp1znp9VlIcQ/BYkQC/2IUO29InN+pgBATKM8KFJLlahNCwRvtpTiCRiu3Xo
-         hGhonn6dHLHAZjs4n9VtqKvpeyF40gd1whPUhRmS/IXBa1Wn74+VxHYX1thv2QcFRs8I
-         x6HMAqm0jWwBpgpY8RwOlb5Ze2HHSKgudmUvvG+HgV1XvsczHuSvmoIsMKp7nDIeqw4A
-         U5Wxy6vTPnXGi0Ry2sHkRfwgimN+hMGihXv39nfmz6NbpdxwSWRhCapZ/sn4fKAQYqiC
-         ifDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV0P5qgHEY18wPKNK9kmN2oP4ww27bseb0dsfsVeiWnfL9UiCy2bpeMuoH/yUByFUTBbbexv+6LN6xDwT3qplKf5SK8MT/qAqKDZgr/
-X-Gm-Message-State: AOJu0YxGt6VLAgkWGLv8lG5atMKRtn3mKo2Fug4OpPEe+GScckgxeHkN
-	mFMUCsqegpW1eWiqi1JByEp88nWF0kttHI4rHzM/4Li3KZl3k3RfGj/1Y6YmQ2F+8geV12uX0g=
-	=
-X-Google-Smtp-Source: AGHT+IFXG6iOFjgVBIzBx0eWBP5cDueeQuL6me8jmVrtbOPiz1Cb0gwJMrq43P1HgLFWtX3oaOdfw2/1NQ==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:9c:201:5b29:b86f:ece8:1df5])
- (user=elver job=sendgmr) by 2002:a17:906:857:b0:a51:abd7:85a5 with SMTP id
- f23-20020a170906085700b00a51abd785a5mr4613ejd.15.1712830922433; Thu, 11 Apr
- 2024 03:22:02 -0700 (PDT)
-Date: Thu, 11 Apr 2024 12:20:57 +0200
+        d=1e100.net; s=20230601; t=1712830887; x=1713435687;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/Xvdfu9ArjMbK1qf/YQdnlhdZxBJiNRZlOj4rVjSQLs=;
+        b=FSh0cH2KJQmyOhbtLaoVoW6VGMndNKGCdBEcQ7lNXVM75DLatiem5/UyVBfhMC+AL9
+         1QRe9qJNN+f249l16G8OAzv1RMj+FD9HsWN759e/VfvyfW5V0o8IPkTF4+l+5iYV/Ol7
+         Esc20rQTbkJe4c/GzZGbCdWiAMnFtK58MuTxMHRvC+l0sMucBEDE9I8zAC91+V8fU/B7
+         TYNVHSgg26RmMgYoCAJaw3JjO7KF7kLMrfhEsuQVLA8CtZFU7ylhKQijV4HoN7LZnK/z
+         yROLKVZABq2dcMeziTWc9+agdaaieifqWmvtjh1hllSmy0L6ZlnMxBMuMDlOSm8Fb2BQ
+         17sw==
+X-Forwarded-Encrypted: i=1; AJvYcCWgcY+M7zHeS2uyrgVtFXFkU0jsJQ2btrgYfqzJ59L91t+SAsZAfSM21H8SD0/PGIdR5HLoJA30hI1adwart/DTdL/mklXZ+SGQKQcn
+X-Gm-Message-State: AOJu0YyWb2ihqPEsEowl7wsVr9UUX5PIloCh90SfEbR1iHBjUKC5et6I
+	xihWTeYk2npf0pL6cFVPbY7FxE/PRi1bVxRU2R1TCJGQYpiSQ31EbczJdT7ZxyI=
+X-Google-Smtp-Source: AGHT+IG136xJRDYzgDgQExKc2yfZPoo7wrVxMm/rzGH1QMYV8XsYZj/631Jbg8RJ77bGIRh4geUH4g==
+X-Received: by 2002:a17:907:d15:b0:a51:fa5b:8b9e with SMTP id gn21-20020a1709070d1500b00a51fa5b8b9emr4430989ejc.60.1712830886922;
+        Thu, 11 Apr 2024 03:21:26 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id w22-20020a170907271600b00a4e48e52ecbsm605751ejk.198.2024.04.11.03.21.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 03:21:26 -0700 (PDT)
+Date: Thu, 11 Apr 2024 13:21:22 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Hongbo Li <lihongbo22@huawei.com>
+Cc: Lukas Bulwahn <lbulwahn@redhat.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@redhat.com>
+Subject: Re: [PATCH] bcachefs: fix typo in reference to BCACHEFS_DEBUG
+Message-ID: <b6d90387-7892-4c28-9855-ae35faacfe9c@moroto.mountain>
+References: <20240411082931.56362-1-lukas.bulwahn@redhat.com>
+ <a2683fad-07db-4857-9ebf-7adf31a09e50@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240411102158.1272267-1-elver@google.com>
-Subject: [PATCH v2] tracing: Add sched_prepare_exec tracepoint
-From: Marco Elver <elver@google.com>
-To: elver@google.com, Steven Rostedt <rostedt@goodmis.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Azeem Shaikh <azeemshaikh38@gmail.com>, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a2683fad-07db-4857-9ebf-7adf31a09e50@huawei.com>
 
-Add "sched_prepare_exec" tracepoint, which is run right after the point
-of no return but before the current task assumes its new exec identity.
+On Thu, Apr 11, 2024 at 05:21:05PM +0800, Hongbo Li wrote:
+> Also, I am curious why such spelling errors cannot be detected at the
+> compilation stage.
+> 
 
-Unlike the tracepoint "sched_process_exec", the "sched_prepare_exec"
-tracepoint runs before flushing the old exec, i.e. while the task still
-has the original state (such as original MM), but when the new exec
-either succeeds or crashes (but never returns to the original exec).
+The IS_ENABLED() macro is testing whether the define exists or not.
+In this case both "CONFIG_BCACHEFS_DEBUG" and "CONFIG_BCACHEFS_DEBU" do
+not exist for this config.
 
-Being able to trace this event can be helpful in a number of use cases:
+Lukas's scripts make a list of macros we expect to exist and then checks
+against the list.
 
-  * allowing tracing eBPF programs access to the original MM on exec,
-    before current->mm is replaced;
-  * counting exec in the original task (via perf event);
-  * profiling flush time ("sched_prepare_exec" to "sched_process_exec").
-
-Example of tracing output:
-
- $ cat /sys/kernel/debug/tracing/trace_pipe
-    <...>-379  [003] .....  179.626921: sched_prepare_exec: interp=/usr/bin/sshd filename=/usr/bin/sshd pid=379 comm=sshd
-    <...>-381  [002] .....  180.048580: sched_prepare_exec: interp=/bin/bash filename=/bin/bash pid=381 comm=sshd
-    <...>-385  [001] .....  180.068277: sched_prepare_exec: interp=/usr/bin/tty filename=/usr/bin/tty pid=385 comm=bash
-    <...>-389  [006] .....  192.020147: sched_prepare_exec: interp=/usr/bin/dmesg filename=/usr/bin/dmesg pid=389 comm=bash
-
-Signed-off-by: Marco Elver <elver@google.com>
----
-v2:
-* Add more documentation.
-* Also show bprm->interp in trace.
-* Rename to sched_prepare_exec.
----
- fs/exec.c                    |  8 ++++++++
- include/trace/events/sched.h | 35 +++++++++++++++++++++++++++++++++++
- 2 files changed, 43 insertions(+)
-
-diff --git a/fs/exec.c b/fs/exec.c
-index 38bf71cbdf5e..57fee729dd92 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1268,6 +1268,14 @@ int begin_new_exec(struct linux_binprm * bprm)
- 	if (retval)
- 		return retval;
- 
-+	/*
-+	 * This tracepoint marks the point before flushing the old exec where
-+	 * the current task is still unchanged, but errors are fatal (point of
-+	 * no return). The later "sched_process_exec" tracepoint is called after
-+	 * the current task has successfully switched to the new exec.
-+	 */
-+	trace_sched_prepare_exec(current, bprm);
-+
- 	/*
- 	 * Ensure all future errors are fatal.
- 	 */
-diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
-index dbb01b4b7451..226f47c6939c 100644
---- a/include/trace/events/sched.h
-+++ b/include/trace/events/sched.h
-@@ -420,6 +420,41 @@ TRACE_EVENT(sched_process_exec,
- 		  __entry->pid, __entry->old_pid)
- );
- 
-+/**
-+ * sched_prepare_exec - called before setting up new exec
-+ * @task:	pointer to the current task
-+ * @bprm:	pointer to linux_binprm used for new exec
-+ *
-+ * Called before flushing the old exec, where @task is still unchanged, but at
-+ * the point of no return during switching to the new exec. At the point it is
-+ * called the exec will either succeed, or on failure terminate the task. Also
-+ * see the "sched_process_exec" tracepoint, which is called right after @task
-+ * has successfully switched to the new exec.
-+ */
-+TRACE_EVENT(sched_prepare_exec,
-+
-+	TP_PROTO(struct task_struct *task, struct linux_binprm *bprm),
-+
-+	TP_ARGS(task, bprm),
-+
-+	TP_STRUCT__entry(
-+		__string(	interp,		bprm->interp	)
-+		__string(	filename,	bprm->filename	)
-+		__field(	pid_t,		pid		)
-+		__string(	comm,		task->comm	)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(interp, bprm->interp);
-+		__assign_str(filename, bprm->filename);
-+		__entry->pid = task->pid;
-+		__assign_str(comm, task->comm);
-+	),
-+
-+	TP_printk("interp=%s filename=%s pid=%d comm=%s",
-+		  __get_str(interp), __get_str(filename),
-+		  __entry->pid, __get_str(comm))
-+);
- 
- #ifdef CONFIG_SCHEDSTATS
- #define DEFINE_EVENT_SCHEDSTAT DEFINE_EVENT
--- 
-2.44.0.478.gd926399ef9-goog
+regards,
+dan carpenter
 
 
