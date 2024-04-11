@@ -1,90 +1,125 @@
-Return-Path: <linux-kernel+bounces-141479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11CB58A1EC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 14B428A1EC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:43:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A73A51F2A60A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:43:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A27DA1F2A7F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:43:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E670C3FBAA;
-	Thu, 11 Apr 2024 18:32:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F03243171;
+	Thu, 11 Apr 2024 18:34:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="29zMudxn"
-Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3DZwwiso"
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD6A92E648;
-	Thu, 11 Apr 2024 18:32:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98FFD41C60
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:34:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712860379; cv=none; b=Ys3htqDW5hn7/Ps2VLe1dHqWq/XgB/yb56o1ixn6sfnOtutTuCnFsTk8lPmcPNisNsmG9WW7EWp4pm/AII7fLgHSndfiEKFCrhrTxFD4uEgukslTa7rxAckCh993GNRro+RZfBISIrLCpMBUlJM9chqMsQYeHGGpqLbWmPeRzyQ=
+	t=1712860451; cv=none; b=C6jI0MUQ0m2RNknOkEkieLUbcgp0vMxVQwxg6F7owkJdpOnnfOx0ujcgi3JaJB1g3N2BiYsJ3Z2wgQo9tNKgpgPW9Vre/KfZ4GyCczFvkFmKVxENnmpf8W4nbtA5zi1eiGL1YoEVpAaMyBfN0Lhzv+Xasey2ZErnpyzQWXVzEQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712860379; c=relaxed/simple;
-	bh=PD4Rq4W481XE02wN1L8egVrSphLnZDE/5wUQV1tuxoA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gphOh7uOLlE7QmNh8W3qLTmLn4Q1kdHFMl541pObQq6neYBe3U4Tf9zR3BDUTJfDSZDqJ+Da5AiwXZNTAuG9H7P7kz+/+ZDfTKqaSCFfuBIc27SaPuMMmugnCDxDyiT8QgkrM/1V9ylmdIEpZy183kHQNGkHtgqje8QINq+EJtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=29zMudxn; arc=none smtp.client-ip=199.89.1.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 008.lax.mailroute.net (Postfix) with ESMTP id 4VFpGd0Y7Rz6Cnk8t;
-	Thu, 11 Apr 2024 18:32:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1712860374; x=1715452375; bh=joEZF4PZ/4PCQq6e7Lo+KVIu
-	C23IHujteHggRqCxv0s=; b=29zMudxn/gxyq7ijpfFZeUBn8zAKy4MAF6VTdxoI
-	YVEJdtR4DsiWGaCtphgyjWIHGEfs4b7nCT4+kZsoJf0m5Q4GIlm2mOFxwu1RDW/5
-	aaGvOCLJ7GolNI3H90J13zkjPvVcNeVGZVOLqR79g9/qV4KncGwykWM0wsVyqRU3
-	8ZnZKeSC/FBti+3BtsFhD9LxdYsqq2TedtFdXTUTH+BiPlOcO0970+6+1VGFI5zF
-	G8Jz0nZ7eMwVKRTTgMjBQfZlL4Nad6sVRVqtcoFa1KXqLxD4A3kQR/UgLPFwoOx5
-	zp0z39M97qUwQSDZGcoySiRiLTuDyRbuOrcS9r45/LVNUw==
-X-Virus-Scanned: by MailRoute
-Received: from 008.lax.mailroute.net ([127.0.0.1])
- by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id q49H48TrprJT; Thu, 11 Apr 2024 18:32:54 +0000 (UTC)
-Received: from [100.96.154.26] (unknown [104.132.0.90])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4VFpGZ08t6z6Cnk8m;
-	Thu, 11 Apr 2024 18:32:53 +0000 (UTC)
-Message-ID: <df5244be-f4de-451a-8bef-e2816ab6660e@acm.org>
-Date: Thu, 11 Apr 2024 11:32:51 -0700
+	s=arc-20240116; t=1712860451; c=relaxed/simple;
+	bh=stMEsNBdhDZHN0AAsq6vgx6+Ts1oyq4oANVAhdK9098=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fBQjwlA0RF68rvHuyQncbq/LsWunle8Fmy/4Q/6WM6sAhSmlUJkN9PyOEiIW7ulfKLMLW35sdbB0rtCIqQzPMkDC0+GuSteCWrnggxqss2aWkNLhbh2Qc1JIpOA4X0joJ0WhMKaELo8xVN0zcmOtGTzClDxlXLw9pG0TNNHYSZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3DZwwiso; arc=none smtp.client-ip=209.85.217.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-47a21267aa8so50913137.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:34:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712860449; x=1713465249; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=stMEsNBdhDZHN0AAsq6vgx6+Ts1oyq4oANVAhdK9098=;
+        b=3DZwwisoypGW2BVzYpUw21eDqbM/TXMUrPPPs68zem63cVgbeqALGNB//KCdmNNbpO
+         DwvJyNh2TWOS+zExTuwjsNuKP/2UwH9PYPy4QBLZJmM7jrowlMLEpmfLRXWx4qxrMrnH
+         Hb3RJTnt119t6JDLM++LHs41MQg0LpOCVoril9qoqsT78fICJRANx2VlDSiNuYdPVWXk
+         fQg4HqB8DWn0wHr2EXZh/Vbsfcg2lBesdqLmlw6EiGOcNMLUzQ5uN18q+JwVc0+MFfsJ
+         AZGVnL0fs1aw0MMTC3pQw2dQnN67eQcgrtfsrWpsHTfdfDe44zP3tRVfJS8qv44iNwWK
+         zotA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712860449; x=1713465249;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=stMEsNBdhDZHN0AAsq6vgx6+Ts1oyq4oANVAhdK9098=;
+        b=fzh4qx8692ToCOxKlOdjPskXStthqCREJbWLIOdDSoCRkW+/IRE0lMY2ptezNF9+bj
+         Bcc3zz3UAqsfZ3QY6Y7CMOqc6Ac1w4eqeoHqCDL6yLuLF4tngKsUZ/+StMcQ1onfT42I
+         gp/8BzuAEnn6donSRPJ42M5cfKoKJcTx6Ge541I88lD9XImMxHOLxbtviQh0Lb3Oz0TA
+         3LUywEx0F7o61xIWdNnqhVWI+zgFoCf94OstoxFyNeIzuaZ2EpgJkfijL1jbE86lzf35
+         Vvm5uwYhO1yEv8RFppll9lvRMjPml7BvEPNDAMBwmQAsxgBWv9JOxOdD58MVOiMLDIdT
+         JdiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWs09/Hp4dzzTTsC8m4CS8XgQm99ZywYcMq1bDtvZupenmdnzyQWFwll2XqFkQcHvWxVxjYZK99hsB+Tul+MBVCLgWVByHNi+O0SwqK
+X-Gm-Message-State: AOJu0YwWOqE34QbgPRmJ6q0Ym/A8tUciG0nhr5KAD0Nl5/7/SPbcRPX3
+	bK4VMPY7IYhQ6ahF/sFv84d6r9541nIxOSmXcmFMbe/G7/LIfg3H2wdIuSzKcT3I6IUx+wASERe
+	n+j1wLRDqA2jLUcxQV1zDIkWCuSymErmRyK9E
+X-Google-Smtp-Source: AGHT+IFfuK5+fQsC0QczQeo6WuoykTwpS5Kk4PpmnlC1hN0dL/Pi0+fTSQq1O1Njt6aog/wFbvvhl3lV/7VPrJZJ6bQ=
+X-Received: by 2002:a05:6102:b08:b0:47a:36b9:160b with SMTP id
+ b8-20020a0561020b0800b0047a36b9160bmr819522vst.16.1712860449222; Thu, 11 Apr
+ 2024 11:34:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/1] scsi: ufs: Remove support for old UFSHCI versions
-To: Avri Altman <avri.altman@wdc.com>,
- "James E . J . Bottomley" <jejb@linux.ibm.com>,
- "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc: Christoph Hellwig <hch@infradead.org>, Bean Huo <beanhuo@micron.com>,
- linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240410183720.908-1-avri.altman@wdc.com>
- <20240410183720.908-2-avri.altman@wdc.com>
-Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240410183720.908-2-avri.altman@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240409061043.3269676-1-debug@rivosinc.com> <20240409061043.3269676-3-debug@rivosinc.com>
+ <CABCJKuee-6GGDDjvByCkikR02gka2BNhwRVBw6UAwEcmSQposQ@mail.gmail.com> <ZhgjoyObf+nMihA4@debug.ba.rivosinc.com>
+In-Reply-To: <ZhgjoyObf+nMihA4@debug.ba.rivosinc.com>
+From: Sami Tolvanen <samitolvanen@google.com>
+Date: Thu, 11 Apr 2024 18:33:33 +0000
+Message-ID: <CABCJKuf5Jg5g3FVpU22vNUo4UituPEM7QwvcVP8YWrvSPK+onA@mail.gmail.com>
+Subject: Re: [RFC PATCH 02/12] riscv: add landing pad for asm routines.
+To: Deepak Gupta <debug@rivosinc.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	llvm@lists.linux.dev, paul.walmsley@sifive.com, palmer@dabbelt.com, 
+	aou@eecs.berkeley.edu, nathan@kernel.org, ndesaulniers@google.com, 
+	morbo@google.com, justinstitt@google.com, andy.chiu@sifive.com, 
+	hankuan.chen@sifive.com, guoren@kernel.org, greentime.hu@sifive.com, 
+	cleger@rivosinc.com, apatel@ventanamicro.com, ajones@ventanamicro.com, 
+	conor.dooley@microchip.com, mchitale@ventanamicro.com, 
+	dbarboza@ventanamicro.com, waylingii@gmail.com, sameo@rivosinc.com, 
+	alexghiti@rivosinc.com, akpm@linux-foundation.org, shikemeng@huaweicloud.com, 
+	rppt@kernel.org, charlie@rivosinc.com, xiao.w.wang@intel.com, 
+	willy@infradead.org, jszhang@kernel.org, leobras@redhat.com, 
+	songshuaishuai@tinylab.org, haxel@fzi.de, samuel.holland@sifive.com, 
+	namcaov@gmail.com, bjorn@rivosinc.com, cuiyunhui@bytedance.com, 
+	wangkefeng.wang@huawei.com, falcon@tinylab.org, viro@zeniv.linux.org.uk, 
+	bhe@redhat.com, chenjiahao16@huawei.com, hca@linux.ibm.com, arnd@arndb.de, 
+	kent.overstreet@linux.dev, boqun.feng@gmail.com, oleg@redhat.com, 
+	paulmck@kernel.org, broonie@kernel.org, rick.p.edgecombe@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/10/24 11:37, Avri Altman wrote:
-> UFS spec version 2.1 was published more than 10 years ago. It is
-> vanishingly unlikely that even there are out there platforms that uses
-> earlier host controllers, let alone that those ancient platforms will
-> ever run a V6.10 kernel.  To be extra cautious, leave out removal of
-> UFSHCI 2.0 support from this patch, and just remove support of host
-> controllers prior to UFS2.0.
+On Thu, Apr 11, 2024 at 5:53=E2=80=AFPM Deepak Gupta <debug@rivosinc.com> w=
+rote:
+>
+> In principle, I agree it should converge with software based kcfi scheme
+> as much as possible. However blocker that I see is `hash` is placed just
+> before function. This breaks for code mapped as execute only scenarios.
+> And ideally would like to have immediates at callsites instead of loads
+> (purely perf reason and not security).
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+I'm not saying the schemes have to be compatible, just that it would
+be great to avoid reinventing type annotations etc. For example, when
+you implement the fine-grained variant, you could simply override
+SYM_TYPED_ENTRY (defined in include/linux/cfi_types.h) to move
+__CFI_TYPE inside the function, and then redefine __CFI_TYPE to emit a
+landing pad with the correct label. This allows SYM_TYPED_* in
+assembly code to work with both KCFI and fine-grained Zicfilp. For the
+coarse-grained variant, your current macros are perfectly fine.
+
+> But yes in next version, I'll take a look and try to converge as much as
+> possible.
+
+Great, sounds good!
+
+Sami
 
