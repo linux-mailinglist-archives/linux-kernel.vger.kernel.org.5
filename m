@@ -1,129 +1,94 @@
-Return-Path: <linux-kernel+bounces-140668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64F158A178B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:40:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCA158A178E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:41:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C0DD1F21DD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:40:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CC3D1F21883
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDE4DD52E;
-	Thu, 11 Apr 2024 14:39:33 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33973D27E
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:39:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4344E10788;
+	Thu, 11 Apr 2024 14:39:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i6/S8A8b"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7732DD518;
+	Thu, 11 Apr 2024 14:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712846373; cv=none; b=Y1DpRH5XHG65qvnJl9kfGNEOxLjajnvAsE2WRhruDEizIynILRRARMI74uBgwib5uMSe0SqH5Uqx/L96lQ+kNDwTEd5KVUmSRegF1G344nn9wfjAo3G8KTzsxei/1WFcX04B0VwjoIHUdd7DdYfARc+8cAr36yKElKxKd/ePts4=
+	t=1712846383; cv=none; b=I8F4ENRWgOsI3RpNWRpNyZXyx4MhpV6kSVqzag8t3vbQBzjBK/UA8NwP5QU4pOansUbQq8+ijHf1EglbUroRG+s5dlU64M40BLq5yzCwzB1dqGSVzka+U0+FlZK3jMfrekpp3A0AfN1JfkUJ4ishBqAP/Ka/KUXet7u1b7e/7b0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712846373; c=relaxed/simple;
-	bh=wpVJ4kcnxTyWr37eN9VGmFz67NZpAAUXg36BJUBOQ+c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gcZA318sx05972Dsc3jZdvraySE4znjhZJfVCeXlHKLqsXBBvsNB2FQWrSy9ERLaBUuJ1rxAdYE7xD/Fyx6V/qbTvI8GdGLArbS5SWPyOFYgr2SG6jbcB8OZCSJuQZtYXkwWXfJpw0Wm20GamkxB1k+O2DQtEDFMZbZXS0ICe+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C159339;
-	Thu, 11 Apr 2024 07:40:01 -0700 (PDT)
-Received: from [10.1.38.151] (XHFQ2J9959.cambridge.arm.com [10.1.38.151])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C2E6C3F64C;
-	Thu, 11 Apr 2024 07:39:29 -0700 (PDT)
-Message-ID: <8d674b15-ef74-4d96-bc27-8794f744517c@arm.com>
-Date: Thu, 11 Apr 2024 15:39:28 +0100
+	s=arc-20240116; t=1712846383; c=relaxed/simple;
+	bh=HYiF5RVgmWfeB2q5YS1rVM15Tb6+J3pcTtrzx/qL7YA=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=aak4ioRJXBrmqa+EUxbscrJz9HeGLy9tqgc738Tky+zJwlW4QrsRHYseMS+Z39rbPoQe2+ptX4AzLpd8fT+B48cYTlX73BihuYg1rXsQ4stAAGu9oR9yAwwEDVVqtXAgoyW8sNRfkae+RlhNDvWjXVh8kj78Lqo2/0QNucGEFXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i6/S8A8b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5052FC2BD10;
+	Thu, 11 Apr 2024 14:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712846383;
+	bh=HYiF5RVgmWfeB2q5YS1rVM15Tb6+J3pcTtrzx/qL7YA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=i6/S8A8bTGR+/yvGoSEMsFzMc3SDFPyIcz7MVXzsI0mE+HlMOkMHlf+/HetMJnANR
+	 oXT1H1DE2utRxYKEbHL66S1AyyUraB/Qa8DLoz0qDXRI0WoYD2ItdUATJeXC476g3l
+	 yh/mxKvAiWl4kq6pstH9+oH0YIH8Ii8xYh6sUvLrhasoTFT/3zzxSSihWSftzzvVy/
+	 WHvOizJES3haTKNglUJ/wGxyFVbteZj/6GFHVquN8nct6RAGCh08wfi5nBQDCTGrFs
+	 xaTTEiIWBWUYTjo3tjY8VVokU0Hb8oB7BWpNI2AyU15UbxP8XZRAXxItBBKyJplpP8
+	 fF3IH+BqY7IBw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3EF45C433F2;
+	Thu, 11 Apr 2024 14:39:43 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/2] mm/madvise: optimize lazyfreeing with mTHP in
- madvise_free
-Content-Language: en-GB
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, david@redhat.com, 21cnbao@gmail.com,
- mhocko@suse.com, fengwei.yin@intel.com, zokeefe@google.com,
- shy828301@gmail.com, xiehuan09@gmail.com, wangkefeng.wang@huawei.com,
- songmuchun@bytedance.com, peterx@redhat.com, minchan@kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240408042437.10951-1-ioworker0@gmail.com>
- <20240408042437.10951-2-ioworker0@gmail.com>
- <38c4add8-53a2-49ca-9f1b-f62c2ee3e764@arm.com>
- <CAK1f24kh-vN3_6ZLUZWXu_g1UOPBuoVXq2jsnx_GBbGFXyXRFQ@mail.gmail.com>
- <3cda8e87-7095-4aad-beb1-6a420912df34@arm.com>
- <CAK1f24k6mhQZwws7fjvL0ynme4FtjqBM3T6ZYuFPytH0fG=v6w@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAK1f24k6mhQZwws7fjvL0ynme4FtjqBM3T6ZYuFPytH0fG=v6w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Subject: Re: [RESEND. PATCH v2] Bluetooth: btusb: Add Realtek RTL8852BE support ID
+ 0x0bda:0x4853
+From: patchwork-bot+bluetooth@kernel.org
+Message-Id: 
+ <171284638325.18150.6436513987613825530.git-patchwork-notify@kernel.org>
+Date: Thu, 11 Apr 2024 14:39:43 +0000
+References: <883A1BECA61AB8B7+20240329023440.191799-1-wangyuli@uniontech.com>
+In-Reply-To: <883A1BECA61AB8B7+20240329023440.191799-1-wangyuli@uniontech.com>
+To: WangYuli <wangyuli@uniontech.com>
+Cc: Larry.Finger@lwfinger.net, marcel@holtmann.org, luiz.dentz@gmail.com,
+ gustavo@padovan.org, johan.hedberg@gmail.com, guanwentao@uniontech.com,
+ linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
 
-On 11/04/2024 15:07, Lance Yang wrote:
-> On Thu, Apr 11, 2024 at 9:48 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> [...]
->>
->>>>> +
->>>>> +             if (!folio_trylock(folio))
->>>>> +                     continue;
->>>>
->>>> This is still wrong. This should all be protected by the "if
->>>> (folio_test_swapcache(folio) || folio_test_dirty(folio))" as it was previously
->>>> so that you only call folio_trylock() if that condition is true. You are
->>>> unconditionally locking here, then unlocking, then relocking below if the
->>>> condition is met. Just put everything inside the condition and lock once.
->>>
->>> I'm not sure if it's safe to call folio_mapcount() without holding the
->>> folio lock.
->>>
->>> As mentioned earlier by David in the v2[1]
->>>> What could work for large folios is making sure that #ptes that map the
->>>> folio here correspond to the folio_mapcount(). And folio_mapcount()
->>>> should be called under folio lock, to avoid racing with swapout/migration.
->>>
->>> [1] https://lore.kernel.org/all/5cc05529-eb80-410e-bc26-233b0ba0b21f@redhat.com/
->>
->> But I'm not suggesting that you should call folio_mapcount() without the lock.
->> I'm proposing this:
->>
->>                 if (folio_test_swapcache(folio) || folio_test_dirty(folio)) {
->>                         if (!folio_trylock(folio))
->>                                 continue;
->>                         /*
->> -                        * If folio is shared with others, we mustn't clear
->> -                        * the folio's dirty flag.
->> +                        * If we have a large folio at this point, we know it is
->> +                        * fully mapped so if its mapcount is the same as its
->> +                        * number of pages, it must be exclusive.
->>                          */
->> -                       if (folio_mapcount(folio) != 1) {
->> +                       if (folio_mapcount(folio) != folio_nr_pages(folio)) {
->>                                 folio_unlock(folio);
->>                                 continue;
->>                         }
+Hello:
+
+This patch was applied to bluetooth/bluetooth-next.git (master)
+by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+
+On Fri, 29 Mar 2024 10:34:39 +0800 you wrote:
+> Add the support ID(0x0bda, 0x4853) to usb_device_id table for
+> Realtek RTL8852BE.
 > 
-> IIUC, if the folio is clean and not in the swapcache, we still need to
-> compare the number of batched PTEs against folio_mapcount().
-
-Why? That's not how the old code worked. In fact the comment says that the
-reason for the exclusive check is to avoid marking a dirty *folio* as clean if
-shared; that would be bad because we could throw away data that others relied
-upon. It's perfectly safe to clear the dirty flag from the *pte* even if it is
-shared; the ptes are private to the process so that won't affect sharers.
-
-You should just follow the pattern already estabilished by the original code.
-The only difference is that because the folio is now (potentially) large, you
-have to change the way to detect exclusivity.
-
+> Without this change the device utilizes an obsolete version of
+> the firmware that is encoded in it rather than the updated Realtek
+> firmware and config files from the firmware directory. The latter
+> files implement many new features.
 > 
-> Thanks,
-> Lance
-> 
->>
->> What am I missing?
->>
+> [...]
+
+Here is the summary with links:
+  - [RESEND.,v2] Bluetooth: btusb: Add Realtek RTL8852BE support ID 0x0bda:0x4853
+    https://git.kernel.org/bluetooth/bluetooth-next/c/cf396a443d37
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
