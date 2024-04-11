@@ -1,141 +1,94 @@
-Return-Path: <linux-kernel+bounces-141239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874878A1BC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:34:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D72BE8A1B31
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:25:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39B29B33B83
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:24:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77C631F215A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212F456B6B;
-	Thu, 11 Apr 2024 15:55:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE3C158231;
+	Thu, 11 Apr 2024 15:55:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J9QD44qB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="riPvfi0l"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A3FEAF0;
-	Thu, 11 Apr 2024 15:55:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210FB5813B;
+	Thu, 11 Apr 2024 15:55:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850923; cv=none; b=cRqP5H8qgtziNswlWfbvBKgIT1PZSTcp+GlxvxAZVuz3jCs0xvSJhxKw7m+UjJuWCnLVEx0x37r73e4KaBox4kr3c+EbqRud96g8FlV3V0F2aojlaUm4JIqWVmTDCVKEDlyfoH/8LqwWFM6jdbEELd+hUVkvea4dOlvdcLfCKjE=
+	t=1712850954; cv=none; b=hHTEuCUdGFMvVOIKwslyU/i+A/F8vM2eIg/PFgvRYQwLZXWcN7fGi/veR266LQ0l3UOJ5mJay+zZO1xnppv+mmIk55xhPiGWthf2FdQdypGr5tsHbTfDvMd8W3mQtzwNJPxSRGqk1YIMtlZu2LFB4iv0KO5wmKZPcQJ/uUhm2ZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850923; c=relaxed/simple;
-	bh=L2C12Yb7j79+1CkcxokhELggPidIxkIpVX1xQ0kbD1Y=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=eAScw+NA1WtwTJItDVP7k2bzTxqVdIDzMYKI+7iU7z7rUnbyYmTYf/4Iy0hGs6Vttxam41IhZp7zGa4Yyquhe78YNNxqk0x1Ph72yUhgNSmwYubzDniFReE1wVhhH6YVf7NtJg8MCpcqU+/0ntOpTM+2csSFC2qcStQq5WM1KpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J9QD44qB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03836C072AA;
-	Thu, 11 Apr 2024 15:55:21 +0000 (UTC)
+	s=arc-20240116; t=1712850954; c=relaxed/simple;
+	bh=0d1y9rY32N57eph8lfneQ9BlV1cLMrSb0BJ8cZM8V2w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rJc2uFpz7W+hSJOu/C79L/D4wprjdU6VOPjWkiq8OFPuT6/rCpIKplvH1nb36sfZR0BSHd1KgsZayoZNT+x0ZBwNv9/C+rksl5B0imfRN2SkueH2Utxfak/zq8AmIUck1HvCML5WAouUQVARFuShuwsOyrRrljE2mAszWj/YdbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=riPvfi0l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94D39C072AA;
+	Thu, 11 Apr 2024 15:55:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712850923;
-	bh=L2C12Yb7j79+1CkcxokhELggPidIxkIpVX1xQ0kbD1Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=J9QD44qBcgT9w01Hs7cVMBmPBhtujTAVF/DC+E/Vv1XvIw37sKKLAZgrlB3WTFnyH
-	 tH44qaxr6RBbnigkG4aD4Kp/basbn1MHedzLA80bOOxflb92MdD434cWR9T1+rHMOh
-	 dWckZvKRt4wjh+n1P5e6ZREJyXUsFC7s5TaVRYiK230VwoEOhR+qqj3BvRXLszEreb
-	 aVX8UHzhHE2ATVf52K+qFALDjyiNDCaC3NqcoU2onAONin0P82PEjj74Akqe/X/r/t
-	 NkR2oJJEuvF/T4UgA7XUvpHmgT6RhMg/zSrYtuU9oblRajSXFm3uaZ76TOtx5nFk8T
-	 oKjlHRyylL2Jw==
-Date: Fri, 12 Apr 2024 00:55:19 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Beau Belgrave <beaub@linux.microsoft.com>
-Cc: Namhyung Kim <namhyung@kernel.org>, linux-trace-kernel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: Copying TLS/user register data per perf-sample?
-Message-Id: <20240412005519.e7b664950ac776993da348bd@kernel.org>
-In-Reply-To: <20240410153542.GA460-beaub@linux.microsoft.com>
-References: <20240404192641.GA2628-beaub@linux.microsoft.com>
-	<20240410220628.609188857f8c93e33e48d12a@kernel.org>
-	<20240410153542.GA460-beaub@linux.microsoft.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=k20201202; t=1712850953;
+	bh=0d1y9rY32N57eph8lfneQ9BlV1cLMrSb0BJ8cZM8V2w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=riPvfi0l+sGQSD2yaCU3Dh2aTEUg27SIxctHQg9IWQ5r1/OWt2KxG4KfJ2wDoM5WF
+	 UWAn1O+DkIttQKY2r48vYT/q/TyO4ifV2UvrOFxVrHiBuGacBbdtLtoW1dZjs1oAYK
+	 qiANAWnF1NBAzbLW4vZQ248ys3oRJo//LSOynWbtzMdMPesyfmOfJW/3EmdbiPRsng
+	 kWO9fOo0YgCIqnf4uRkast+aVzWEE79npnS0pBXvIVUoBn9kwT0a8Xv7mFuVP6E50e
+	 NxQIFqLB0pkfRAvO3o1I8bYMrOCHZFznxLVaLaV9Ox3meybsc1/qRo5Q71EXoDI4gn
+	 D1rroa5C7drKg==
+Date: Thu, 11 Apr 2024 16:55:48 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	shengjiu.wang@gmail.com, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+	festevam@gmail.com, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 2/2] ARM: dts: imx6: exchange fallback and specific
+ compatible string
+Message-ID: <20240411-shelter-overact-ad518e6e7003@spud>
+References: <1712652644-28887-1-git-send-email-shengjiu.wang@nxp.com>
+ <1712652644-28887-3-git-send-email-shengjiu.wang@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-
-On Wed, 10 Apr 2024 08:35:42 -0700
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
-
-> On Wed, Apr 10, 2024 at 10:06:28PM +0900, Masami Hiramatsu wrote:
-> > On Thu, 4 Apr 2024 12:26:41 -0700
-> > Beau Belgrave <beaub@linux.microsoft.com> wrote:
-> > 
-> > > Hello,
-> > > 
-> > > I'm looking into the possibility of capturing user data that is pointed
-> > > to by a user register (IE: fs/gs for TLS on x86/64) for each sample via
-> > > perf_events.
-> > > 
-> > > I was hoping to find a way to do this similar to PERF_SAMPLE_STACK_USER.
-> > > I think it could even use roughly the same ABI in the perf ring buffer.
-> > > Or it may be possible by some kprobe linked to the perf sample function.
-> > > 
-> > > This would allow a profiler to collect TLS (or other values) on x64. In
-> > > the Open Telemetry profiling SIG [1], we are trying to find a fast way
-> > > to grab a tracing association quickly on a per-thread basis. The team
-> > > at Elastic has a bespoke way to do this [2], however, I'd like to see a
-> > > more general way to achieve this. The folks I've been talking with seem
-> > > open to the idea of just having a TLS value for this we could capture
-> > > upon each sample. We could then just state, Open Telemetry SDKs should
-> > > have a TLS value for span correlation. However, we need a way to sample
-> > > the TLS value(s) when a sampling event is generated.
-> > > 
-> > > Is this already possible via some other means? It'd be great to be able
-> > > to do this directly at the perf_event sample via the ABI or a probe.
-> > > 
-> > 
-> > Have you tried to use uprobes? It should be able to access user-space
-> > registers including fs/gs.
-> > 
-> 
-> We need to get fs/gs during a sample interrupt from perf. If the sample
-> interrupt lands during kernel code (IE: syscall) we would also like to
-> get these TLS values when in process context.
-
-OK, those are not directly accessible from pt_regs.
-
-> 
-> I have some patches into the kernel to make this possible via
-> perf_events that works well, however, I don't want to reinvent the wheel
-> if there is some way to get these via perf samples already.
-
-I would like to see it. I think it is possible to introduce a helper
-to get a base address of user TLS for probe events, and start supporting
-from x86.
-
-> 
-> In OTel, we are trying to attribute samples to transactions that are
-> occurring. So the TLS fetch has to be aligned exactly with the sample.
-> You can do this via eBPF when it's available, however, we have
-> environments where eBPF is not available.
-> 
-> It's sounding like to do this properly without eBPF a new feature would
-> be required. If so, I do have some patches I can share in a bit as an
-> RFC.
-
-It is better to be shared in RFC stage, so that we can discuss it from
-the direction level.
-
-Thank you,
-
-> 
-> Thanks,
-> -Beau
-> 
-> > Thank you,
-> > 
-> > -- 
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="G5/1QEQbSLLvAARd"
+Content-Disposition: inline
+In-Reply-To: <1712652644-28887-3-git-send-email-shengjiu.wang@nxp.com>
 
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+--G5/1QEQbSLLvAARd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Apr 09, 2024 at 04:50:44PM +0800, Shengjiu Wang wrote:
+> exchange fallback and specific compatible string for spdif sound card.
+>=20
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+--G5/1QEQbSLLvAARd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhgIBAAKCRB4tDGHoIJi
+0mDpAP9K2EBBVizbp4vQtZXUyf2uWZ8OGON9EkZngwASFNWFGgEA3ImnyynBo61d
+ruuwXuqOjg13Kz+LlJ7nVIoY1Iy6EQg=
+=dmOF
+-----END PGP SIGNATURE-----
+
+--G5/1QEQbSLLvAARd--
 
