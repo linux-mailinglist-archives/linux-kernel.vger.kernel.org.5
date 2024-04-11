@@ -1,164 +1,96 @@
-Return-Path: <linux-kernel+bounces-140150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1F5C8A0C0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:16:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 167BA8A0C1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:17:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BB26281FB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:16:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF4AD1F22868
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:17:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D83144305;
-	Thu, 11 Apr 2024 09:16:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JxQgfbfo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD51B14430C;
+	Thu, 11 Apr 2024 09:17:05 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82993144308;
-	Thu, 11 Apr 2024 09:16:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1436143C51;
+	Thu, 11 Apr 2024 09:17:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712826982; cv=none; b=CWpCEXAHNPfMMOS3ReC3BL9ki+Mpnl4ncIv8jxbdwyX0k933aM8S0gjIXhEslrluglotkaWBVuFzhB/Qtsof+b4ygDHA9E6jZGDBEmq9M/vBWs+xfB7rzaZJ5NiqMG8AP4t0OXcEwZBCy8SchqnL2SWdBGJKdQPfmd8RrBeoKsg=
+	t=1712827025; cv=none; b=PzS36SrMjDSiquqxBwRbpIXthvo7uuKQSIZOw2rMeg8Nsn4aZzp7dkbb0TE0nlTUC1f4CCFWjqXy6oicxxPZK5v0fVVH0AuhxmArJwORqKTdPafKLJeDE0DhqOmMTmB9lAPDMnOYAJC5knzYmyyV6rAd+NcRZEvW7Ly79R+k1oU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712826982; c=relaxed/simple;
-	bh=FD7ZMwASDJLrGL9Q6rjiGOks+Hr3Q/CkNdWe0CnAC5Y=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LAuWMQiIFfcmmlsZf+0GKkrbBN/rAAhGz2qfGOhl+UvNTH/9z83uPffpeD53Nm11g8i//hnyDUjGJhaoyuBEpXWet3D5mWct1ELijnljThbJcJtzFr0UHQQrgNmCzMJXVcy55jtr1FR8cq5uvEiet0YOZNRzs5xdyJDtQrri9b0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JxQgfbfo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 725DCC43390;
-	Thu, 11 Apr 2024 09:16:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712826982;
-	bh=FD7ZMwASDJLrGL9Q6rjiGOks+Hr3Q/CkNdWe0CnAC5Y=;
-	h=Date:From:To:Subject:References:In-Reply-To:From;
-	b=JxQgfbfoQPXO75Bvknepu7S5cybTc3MuoQxVXQLt2ysmPPAaTjqT02Nd97CxO0pOO
-	 +1URVbwdMMYoIA/kMSt4tEl73wG3Uv9yTcFg4l8DweKTfYYmOz70yk2tdTZzySXy+G
-	 aElkNiC7Rr7vn8UQyfLKL7SIHuJ/J7V997QuSv5ZYnHJi8tG61SdtdM4Ysu0DKVCXE
-	 3t4z4kuo2V17Ox/+p9TyCgojMPsl5mg4IvclbQUADWH+9gEz4DTlj7nJ5B9s97gEIA
-	 gT9T0/RCTwIT1dQ1IfKsvQW26nQo21nE06KUa+3vp2Om56N22GlnrTP6gfdDtEm3h4
-	 3TwLQQPGas0lg==
-Date: Thu, 11 Apr 2024 11:16:18 +0200
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	linux-i2c@vger.kernel.org, Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/18] i2c: i801: remove printout on handled timeouts
-Message-ID: <uvnhbxkhj4skur5uhmbdtmbc4ebodrdujfzqmrv6tjejwvjrxk@xvad5h5ciiay>
-References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
- <20240410112418.6400-26-wsa+renesas@sang-engineering.com>
- <242ogjpole3ltk5nu53knbfsxmmwcqfrbcivjh7fnkngvrroq5@cwspwdrtepwh>
- <zmkluzi3ncze67wei6eccd67cpuab2k7qw7cdgju4tg7rermv2@hw6ukejz4cvy>
+	s=arc-20240116; t=1712827025; c=relaxed/simple;
+	bh=l0t4D9s2/1QlWcjfS0uDVRP8x3YMT80ZWdmTgsPw7g8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=sUmBoTs2YiEMzPeuaKxKnrwZ7Y3MibGBJu1o/RxPEqlEp3xy7NUoT8bfDvdWUghScgRm+SnRN91jylkgfTkZuAjCymQoFhjTOxD67iaja/yPL7+JzbQx9Tq3moEHJK6WeWXjAv7H2eiSxJAYa9eFI2tNFLkoZmJZStRC7pI+VEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4VFYsq0pNNz1RC7f;
+	Thu, 11 Apr 2024 17:14:07 +0800 (CST)
+Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2F2AD1400C9;
+	Thu, 11 Apr 2024 17:17:00 +0800 (CST)
+Received: from [10.67.111.104] (10.67.111.104) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 11 Apr 2024 17:16:59 +0800
+Message-ID: <11712bdc-9119-4ad2-b4ac-f6e2d0730134@huawei.com>
+Date: Thu, 11 Apr 2024 17:16:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <zmkluzi3ncze67wei6eccd67cpuab2k7qw7cdgju4tg7rermv2@hw6ukejz4cvy>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bcachefs: fix typo in reference to BCACHEFS_DEBUG
+Content-Language: en-US
+To: Lukas Bulwahn <lbulwahn@redhat.com>, Kent Overstreet
+	<kent.overstreet@linux.dev>, Brian Foster <bfoster@redhat.com>,
+	<linux-bcachefs@vger.kernel.org>
+CC: <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Lukas
+ Bulwahn <lukas.bulwahn@redhat.com>
+References: <20240411082931.56362-1-lukas.bulwahn@redhat.com>
+From: Hongbo Li <lihongbo22@huawei.com>
+In-Reply-To: <20240411082931.56362-1-lukas.bulwahn@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500022.china.huawei.com (7.185.36.66)
 
-Hi Wolfram,
 
-On Thu, Apr 11, 2024 at 09:02:52AM +0200, Wolfram Sang wrote:
-> On Wed, Apr 10, 2024 at 02:21:58PM +0200, Andi Shyti wrote:
-> > On Wed, Apr 10, 2024 at 01:24:20PM +0200, Wolfram Sang wrote:
-> > > I2C and SMBus timeouts are not something the user needs to be informed
-> > > about on controller level. The client driver may know if that really is
-> > > a problem and give more detailed information to the user. The controller
-> > > should just pass this information upwards. Turn all timeout related
-> > > printouts to debug level.
-> > > 
-> > > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> > > ---
-> > > 
-> > > Here, I did not delete the printout to support checking the termination
-> > > process. The other drivers in this series do not have this SMBus
-> > > specific termination step.
-> > > 
-> > >  drivers/i2c/busses/i2c-i801.c | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
-> > > index 4294c0c63cef..a42b5152f9bd 100644
-> > > --- a/drivers/i2c/busses/i2c-i801.c
-> > > +++ b/drivers/i2c/busses/i2c-i801.c
-> > > @@ -400,7 +400,7 @@ static int i801_check_post(struct i801_priv *priv, int status)
-> > >  	 * If the SMBus is still busy, we give up
-> > >  	 */
-> > >  	if (unlikely(status < 0)) {
-> > > -		dev_err(&priv->pci_dev->dev, "Transaction timeout\n");
-> > > +		dev_dbg(&priv->pci_dev->dev, "Transaction timeout\n");
-> > 
-> > why after 5 patches of removing dev_err's, here you are changing
-> > them to dev_dbg?
+
+On 2024/4/11 16:29, Lukas Bulwahn wrote:
+> Commit ec9cc18fc2e6 ("bcachefs: Add checks for invalid snapshot IDs")
+> intends to check the sanity of a snapshot and panic when
+> BCACHEFS_DEBUG is set, but that conditional has a typo.
 > 
-> The reasoning was explained above:
+> Fix the typo to refer to the actual existing Kconfig symbol.
 > 
-> > > Here, I did not delete the printout to support checking the termination
-> > > process. The other drivers in this series do not have this SMBus
-> > > specific termination step.
+> This was found with ./scripts/checkkconfigsymbols.py.
 > 
-> This is also why I converted two calls here to dev_dbg. But read on
-> first.
-
-It would make sense if the debug would give some more
-information...
-
-> > It's still good, but if we want to be strict, errors should
-> > print errors: as we are returning -ETIMEDOUT, then we are
-> > treating the case as an error and we should print error.
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+> ---
+>   fs/bcachefs/snapshot.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I strongly disagree. While we use an errno, we don't know if this is a
-> real error yet. It is more a return value saying that the transfer timed
-> out. The client driver knows. For some I2C clients this may be an error,
-> but for an EEPROM this might be an "oh, it might still be erasing a
-> page, let's try again after some defined delay".
-> 
-> Think of 'i2cdetect': If we printout something in the -ENXIO case (no
-> device responded to the address), the log file would have more than 100
-> entries on a typical I2C bus. Although we know that -ENXIO will be the
-> majority of cases and are fine with it.
-> 
-> > As you did before, I would just remove the printout here.
-> 
-> Maybe we could because there is still the "Terminating the current
-> operation" string as debug message making the code flow still clear.
+> diff --git a/fs/bcachefs/snapshot.h b/fs/bcachefs/snapshot.h
+> index b7d2fed37c4f..3fdb41b33d2d 100644
+> --- a/fs/bcachefs/snapshot.h
+> +++ b/fs/bcachefs/snapshot.h
+> @@ -77,7 +77,7 @@ static inline u32 __bch2_snapshot_parent(struct bch_fs *c, u32 id)
+>   		return 0;
+>   
+>   	u32 parent = s->parent;
+> -	if (IS_ENABLED(CONFIG_BCACHEFS_DEBU) &&
+> +	if (IS_ENABLED(CONFIG_BCACHEFS_DEBUG) &&
+>   	    parent &&
+>   	    s->depth != snapshot_t(c, parent)->depth + 1)
+>   		panic("id %u depth=%u parent %u depth=%u\n",
 
-.. e.g. for me it's not totally right if we do:
-
-	dev_dbg("timed out")
-	return -ETIMEDOUT;
-
-Considering that this might not be a real error I would let the
-calling function decide and print. Indeed i801_access() is not
-even checking the error but letting the caller of smbus_xfer()
-decide.
-
-It would make more sense if we provide more information like:
-
-	dev_dbg("Terminating current operation because the bus is busy and we timed out");
-
-Just merged the two consecutive messages (we could still trim it
-a bit and reduce dmesg spam).
-
-The second /dev_err/dev_dbg/ in this file to me is fine (even
-though it's not really self explaining).
-
-> > I will wait a bit for more comments and take patches 1 to 5 so
-> > that I can unburden you a little from them.
-> 
-> The patches have no dependencies. To keep mail traffic low, I suggest
-> you continue reviewing and I only resend the i801 patch?
-
-Yeah... I'll wait a few more days and give more time for reviews
-and comments. I checked the rest of the series and it's fine.
-
-If you are willing to send a V2 you could send it as reply to
-this mail instead of resending everything.
-
-Thanks,
-Andi
+Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
 
