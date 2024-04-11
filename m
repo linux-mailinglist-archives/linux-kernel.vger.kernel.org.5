@@ -1,147 +1,87 @@
-Return-Path: <linux-kernel+bounces-141234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BD958A1B26
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:23:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2A0F8A1B21
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:22:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17A002877B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:23:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D287B1C20BCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:22:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93C742BB14;
-	Thu, 11 Apr 2024 15:52:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF9221105;
+	Thu, 11 Apr 2024 15:51:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LTJLN0Xl"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G1hBSZP8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58EE32941E
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:52:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75D0B4F88B;
+	Thu, 11 Apr 2024 15:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850754; cv=none; b=eTd/kxfepYrBwt7XFhN2tYE29JTuLzKbpfLJkljbc/cfZe+AH7D1i7AVCnXD7xgzqOp/agXD0+/Bhj7y/5TY0kUQ/lqFTsU81/xwGKSp19VdJYTLuOfq5dXcUt8Gp5dBhYgOZExjhs4qwm8jCMbpmXnuhbMC+IC1TG06B83xxZA=
+	t=1712850662; cv=none; b=FEdh04yPlbPHXQ652M9fdBZADjCfgh+kGHLAFBkuKEqZIAasTLpf/3aJYeUqjWEzqFyxNaQ/4+/ZYzoUdjU7g1hbuNMolwJswBeTk7y7JcBrmRXoOcLhXgB2zD8YVXagFAww48ayqc8CFiaAsUwk8VdqVukFkg4VGikRakCwg4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850754; c=relaxed/simple;
-	bh=nDZMCq6OOx0OiVELF/ddgdMVhELl/RKgZdcDQsB7ojI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aQbowgS2RqNs2lHAgFqehdHTHP3NrdmlH2FmwS0vMCQdhQJ9mv8uaeU+giZMDUB6rQX77SwGJDYFtHJYw1aL64uV3LbHHinxr9i4t+6eW/+3alqdH0H1Wsf/3aCbsdvetf49bS1Ikh49ELVV/wNsR1VDPN9DkpDMRgQ1EdgfdD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LTJLN0Xl; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712850752;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QCBZYuEx8E6Ilt7WeXhmEcjbf72dLVjaYQUFG/SF9i0=;
-	b=LTJLN0XlukiWIaAfHljvKtWjVm7hCra2jhYTW+o0ZnuWem5oQihuOYE/5zMurLB0F2T9Rt
-	choD9j70swihQNBAOV1hU8P+vzSBWkGp0JFKyqmKA7Dy4exF8uBwn2aHW3V3AcaQx5k77z
-	HIoTAki37aoBjdv5R4W55Ia589Y+5sg=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-264-0IQtr4SfPViOJ6MMcKm6dw-1; Thu,
- 11 Apr 2024 11:52:28 -0400
-X-MC-Unique: 0IQtr4SfPViOJ6MMcKm6dw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D84DD1E441CD;
-	Thu, 11 Apr 2024 15:52:27 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.235])
-	by smtp.corp.redhat.com (Postfix) with SMTP id BCF632166B34;
-	Thu, 11 Apr 2024 15:52:24 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Thu, 11 Apr 2024 17:51:01 +0200 (CEST)
-Date: Thu, 11 Apr 2024 17:50:53 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Mark Brown <broonie@kernel.org>, John Stultz <jstultz@google.com>,
-	Marco Elver <elver@google.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-	Edward Liaw <edliaw@google.com>,
-	Carlos Llamas <cmllamas@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] selftests/timers/posix_timers: reimplement
- check_timer_distribution()
-Message-ID: <20240411155053.GD5494@redhat.com>
-References: <87r0fmbe65.ffs@tglx>
- <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
- <87o7aqb6uw.ffs@tglx>
- <CANDhNCreA6nJp4ZUhgcxNB5Zye1aySDoU99+_GDS57HAF4jZ_Q@mail.gmail.com>
- <87frw2axv0.ffs@tglx>
- <20240404145408.GD7153@redhat.com>
- <87le5t9f14.ffs@tglx>
- <20240406150950.GA3060@redhat.com>
- <f0523b3a-ea08-4615-b0fb-5b504a2d39df@sirena.org.uk>
- <87il0o0yrc.ffs@tglx>
+	s=arc-20240116; t=1712850662; c=relaxed/simple;
+	bh=5a8Ggj/Vj9rXkUXznIAW7aZ3v6ArcbbuVb8Q07FRUYY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=su7b/hNK8qht0mM/9DpviR7HFc1PtP/1hXAIt1KECmr5EWvooehjJtWErlTs66ZS1PVAenIW9uCyYVvdLgxNeq49tt2O9TlumsoiyEtVJjfuSPlhQGOUCoQdJoyTNETJGd75Clake2QEOFhzdC665NDxOEbSuKD8YlgpLx98Sq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G1hBSZP8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C893C072AA;
+	Thu, 11 Apr 2024 15:51:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712850662;
+	bh=5a8Ggj/Vj9rXkUXznIAW7aZ3v6ArcbbuVb8Q07FRUYY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=G1hBSZP8EM+NU9CyuGee2kekCmUlWdJupViFdAChfuBSInRE9tcvlE4zzI/EkhxN4
+	 CkW0HFRsHFcXMbJHEhlq9GFrNtyfoAstDbFSlE5j6rTiizcDiyFTIjtL036n5Crf48
+	 enuI5kfPQp6anq87UYZmk4Dk8TwU2ER+jxoRsYuTLk0dbfP8dvI1zCSy5bzD/C+MWi
+	 0XKN3vY/mQSFGFzXMyDwFKF8SGzX7iGtcFwj9Bq0doJmv3CqD4VC+SDkOK7J1C7y1J
+	 5KHn444sz0hZaRZXvUkgpwu4qJBbn/LUxV3h+vU7cxRjWxbaCrfazRSkkhzZFOA4i1
+	 MJEbe918jqxhQ==
+From: Lee Jones <lee@kernel.org>
+To: pavel@ucw.cz, lee@kernel.org, robh@kernel.org, 
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+ INAGAKI Hiroshi <musashino.open@gmail.com>
+Cc: linux-leds@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240323074326.1428-1-musashino.open@gmail.com>
+References: <20240323074326.1428-1-musashino.open@gmail.com>
+Subject: Re: [PATCH v2 0/2] dt-bindings: leds: add LED_FUNCTION_* mainly
+ for router devices
+Message-Id: <171285065997.2464516.13537165356997238017.b4-ty@kernel.org>
+Date: Thu, 11 Apr 2024 16:50:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87il0o0yrc.ffs@tglx>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.4
 
-On 04/11, Thomas Gleixner wrote:
->
-> On Thu, Apr 11 2024 at 13:44, Mark Brown wrote:
-> >
-> > Further to my previous mail it's also broken the arm64 selftest builds,
-> > they use kselftest.h with nolibc in order to test low level
-> > functionality mainly used by libc implementations and nolibc doesn't
-> > implement uname():
-> >
-> > In file included from za-fork.c:12:
-> > ../../kselftest.h:433:17: error: variable has incomplete type 'struct utsname'
-> >         struct utsname info;
-> >                        ^
-> > ../../kselftest.h:433:9: note: forward declaration of 'struct utsname'
-> >         struct utsname info;
-> >                ^
-> > ../../kselftest.h:435:6: error: call to undeclared function 'uname'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-> >         if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor) != 2)
-> >             ^
-> > ../../kselftest.h:435:22: error: call to undeclared function 'sscanf'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-> >         if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor) != 2)
->
-> Grrr. Let me stare at this.
+On Sat, 23 Mar 2024 16:36:08 +0900, INAGAKI Hiroshi wrote:
+> This patch series adds some LED_FUNCTION_* definitions mainly for router
+> devices.
+> Those definitions are useful for OpenWrt or something.
+> 
+> v1 -> v2
+> 
+> - fix sort order of LED_FUNCTION_MOBILE
+> - improve the commit description of the first commit
+> 
+> [...]
 
-Damn ;)
+Applied, thanks!
 
-Can't we just turn ksft_min_kernel_version() into
+[1/2] dt-bindings: leds: add LED_FUNCTION_MOBILE for mobile network
+      commit: b65a10938791d90c88ef4f3ecddee22b9fc23b2e
+[2/2] dt-bindings: leds: add LED_FUNCTION_SPEED_* for link speed on LAN/WAN
+      commit: 03075af4c95133dfa14f434dab3b7b97e6cb9b56
 
-	static inline int ksft_min_kernel_version(unsigned int min_major,
-						  unsigned int min_minor)
-	{
-	#ifdef NOLIBC
-		return -1;
-	#else
-		unsigned int major, minor;
-		struct utsname info;
-
-		if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor) != 2)
-		       ksft_exit_fail_msg("Can't parse kernel version\n");
-
-		return major > min_major || (major == min_major && minor >= min_minor);
-	#endif
-	}
-
-?
-
-Not sure what should check_timer_distribution() do in this case, to me
-ksft_test_result_fail() is fine.
-
-Oleg.
+--
+Lee Jones [李琼斯]
 
 
