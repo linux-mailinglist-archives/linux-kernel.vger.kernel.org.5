@@ -1,97 +1,99 @@
-Return-Path: <linux-kernel+bounces-140305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 306AA8A127C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:05:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5BD08A12A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:10:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A77CDB23295
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:05:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6151228336E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:10:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B40151474CA;
-	Thu, 11 Apr 2024 11:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7381147C87;
+	Thu, 11 Apr 2024 11:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EZxhiMJ+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="yKe3Oh6g"
+Received: from out203-205-251-84.mail.qq.com (unknown [203.205.251.84])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F41AD1448EF;
-	Thu, 11 Apr 2024 11:04:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C1F1465AA;
+	Thu, 11 Apr 2024 11:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712833500; cv=none; b=CJJyJ+78MBbMwLM5MkPOgwNtzfhVSUIoeZe8H+7sVRLTC5m+C7cB/AK1H/12oPBULXGzhu2H3cms0/fyhtSuAk3N5rKIgn4lHKeW7QqviWHrxiYzfSRh6v1bQYsBwkA+xRPvXTydfyWnK3hJmlpUZZ8miMmoGLcjemHvWiJvmmI=
+	t=1712833850; cv=none; b=VSXav+vSJOsfae2Kl/sHZBviOO4MKKEPy6D0HCAJTiKoJ79WiSa/g4p7CII3O2qwS0XfS0raECEmc4dPD8uvNrxGR+gaeFJTvBLP1uJoZ76CNOxIUas9KZt8H4l0oFb1v2O9HQAZeqanotGhgIWo0HB456aCdkcx32JSdjZ7HWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712833500; c=relaxed/simple;
-	bh=++UYlsK6YPiWRvXsuUgKSwshDBZosFmb7aPsHR3zRDU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QSjIp/hMGiCvlHJFCewcFZVWLi8Zu52TML9osKipMXHkTHayD0fPf8KqbGDuUVXfV4e85Z4YeQIZnBovpC/hIu1/IzQMTmt/LFG96K69ZQhH7lUf3QwiLeZbSrFxHbOGVB0DiSku3juA9i15eiqpdi1Q/y/7SC90bY34iI1noq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EZxhiMJ+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14247C433F1;
-	Thu, 11 Apr 2024 11:04:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712833499;
-	bh=++UYlsK6YPiWRvXsuUgKSwshDBZosFmb7aPsHR3zRDU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EZxhiMJ+eLMVTcFDC68n4ifgZZ4PnuVocSFbYFl0BqyFErcqStEkXyY1rMvmuKv3o
-	 bFfaVilritrINt9Cx6hbI0PlZHYKarZGAHoNZPyjWBr2petu4SQ7na4jcuoTWyAawn
-	 FH1SW7NtQOkfH1J/cMIQJnqHajcuRLMpVFVf9BoHmuKhTZuton9enz15ydSps2eka0
-	 yTeUM8LZF+CRa13cULssbZGj2xH1H6knWQDFzyiLNiVrwgWQAcsq3RRowR8jDMqy9t
-	 fHUZGfV6BUmUBcbPCYFuGuScyOX79TiDgdFEd8lGFmnJqJeZW+x24g9t8GfY8G1L9b
-	 dwlc4bsJf/Uqw==
-Date: Thu, 11 Apr 2024 08:04:56 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Namhyung Kim <namhyung@kernel.org>,
-	Konstantin Kharlamov <Hi-Angel@yandex.ru>,
-	Kan Liang <kan.liang@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] perf annotate: Skip DSOs not found
-Message-ID: <ZhfD2PZvjTpVstT3@x1>
-References: <20240410185117.1987239-1-namhyung@kernel.org>
- <CAP-5=fXeM32=wnkMnp49wLYDS1PWwhKtK9UiKyAa=XvJz9kANg@mail.gmail.com>
+	s=arc-20240116; t=1712833850; c=relaxed/simple;
+	bh=irR7rrMoFz+kSmrXAtZFx7Z4FrGRW8a7lrZdbidVk7c=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=kd67mOivyDAGDu92310U+XMk7ioZ38nw6bj45T6CeUaGoZ01OtFzE+ukSAIvdb6ft4lSvcUl6APatTUh8rMvxuuM3URdoLbrPIq1hn4vPLIq3UtV5AVCcyh4Oo7FHioKNe2neg88CKnGs1Ejs1M26E8kVTbqeWNu1P3UomBfRws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=yKe3Oh6g; arc=none smtp.client-ip=203.205.251.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1712833539; bh=iW8aWXvN4mbA0WEGSj8YcKPKHDgDK7E/gRDBL2Bh1eg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=yKe3Oh6gdg531OfBw43CRNUKsQgWvXsUsbqL4REjhWRWV/EyQEdrVIPBBxhbQ6Wrl
+	 uuEd8GqnykwLaOZjANMsTohCJzwCacYB3UAVC5dchhbfYum2drYrs96DeGaFsN7WKW
+	 G7/mjy+gPsau7YI7w5oIeKkn7hbiOy2ShrvOTQZw=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id 162A8876; Thu, 11 Apr 2024 19:05:34 +0800
+X-QQ-mid: xmsmtpt1712833534tlne241la
+Message-ID: <tencent_5437464AAA7407772566583C29372E964409@qq.com>
+X-QQ-XMAILINFO: OKKHiI6c9SH3AsUbxSTqAm1aPqHoG6wb2nOwfjMYc+bqlS1kwVIRXEAwYBBERt
+	 QbCiin0C5bVqMplz4dl9vTcDDMYP7hAZO+hM1n0jGudJ3wFMqw75nDi6Ar9VwEzqKOmhKLYLVoOr
+	 QaJNV+Fagrx4dx2jXdMq4Wl8Un5e6k1fYhhp+q7vg7mOqvraeER+n8UeEp8L/Z17RWCdJxdOqVIP
+	 swEgTIYpf6sXbmr7PUmc6leLos2wya5ZsXPnxUFjVYEB3hHbx9CQJmOGS53Zliwg+Kbf5EFtLHDI
+	 +zoFnq1w/z7BIe2DJ1KLADjm8xZ/KBxD/tlJvrGFnB2NIJDQJfXMjdTJ24SClRGqZo5a8fvwCuXA
+	 7pTNbtT3F4/7V4wiazYeEpHPPIpp1oWd5OWJMRxtpnDq4MJdxrTV4UeJbYkyRKsd2NQcTLHqYrn7
+	 XVgHOQDOnAw0YWdKi9QzUr3Tqm+l7ZplpSyNC7Qf5Mvj16FXNcSiM5qDG0mipJvQ+/KFS2pbc30x
+	 rLKHflaOisJm6dTtaMBbj3p5HEbI9bF588B47HxUazY71dRY9gjoki27OTtGNHEvKo5y2eTz6PV+
+	 Z8XdHHOviEsCXaBhbhj9ODWa71pYo/yh3Ib1vqsTAD7Ybom8XeBpYRxQVV3xZIAbKfs92kFHvrD5
+	 EuU3sOpgqvqRarVH90fcuTHyDm/uG9BAv2v10W+JVoIL3rSAiWl0VJ9YHHTExiHXB/OgBEQQpsX6
+	 z6EUUBpL/jv7ioEgoIPe+xmp8PbdmpgeB50BU9Ivc5z9j+0nQ1sBL+NNF/4Y97qMLQAv9xtzxStf
+	 4CmoNXVs7z8owUvuhzP0FDaOQfyE2Ayx7ZH+RlgGlBJiaPYewgvDCyPd2BVy+qC0e8buVqDX2BZl
+	 50bjoHO6+5zsfWRTAAJMefByiS1A3kyxuRqPFtN9/POUtmFfEgzGdX6NPZN0xi+T30UqTJ1ltQ
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: yonghong.song@linux.dev
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	eadavis@qq.com,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	linux-kernel@vger.kernel.org,
+	martin.lau@linux.dev,
+	sdf@google.com,
+	song@kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] bpf: strnchr not suitable for getting NUL-terminator
+Date: Thu, 11 Apr 2024 19:05:19 +0800
+X-OQ-MSGID: <20240411110518.1245753-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <4bfc3494-a3e9-4b4c-9d93-fa1049a10235@linux.dev>
+References: <4bfc3494-a3e9-4b4c-9d93-fa1049a10235@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fXeM32=wnkMnp49wLYDS1PWwhKtK9UiKyAa=XvJz9kANg@mail.gmail.com>
 
-On Wed, Apr 10, 2024 at 12:14:37PM -0700, Ian Rogers wrote:
-> On Wed, Apr 10, 2024 at 11:51 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > In some data file, I see the following messages repeated.  It seems it
-> > doesn't have DSOs in the system and the dso->binary_type is set to
-> > DSO_BINARY_TYPE__NOT_FOUND.  Let's skip them to avoid the followings.
-> >
-> >   No output from objdump  --start-address=0x0000000000000000 --stop-address=0x00000000000000d4  -d --no-show-raw-insn       -C "$1"
-> >   Error running objdump  --start-address=0x0000000000000000 --stop-address=0x0000000000000631  -d --no-show-raw-insn       -C "$1"
-> >   ...
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > The strnchr() is not suitable for obtaining the end of a string with a length
+> > exceeding 1 and ending with a NUL character.
 > 
-> Perhaps: Closes:
-> https://lore.kernel.org/linux-perf-users/15e1a2847b8cebab4de57fc68e033086aa6980ce.camel@yandex.ru/
+> Could you give more detailed explanation with specific examples? I think
+> strnchr() does the right thing here. Note that if fmt is not NULL,
+> strnchrnul() never returns NULL pointer so in the change below,
+> 'if (!fmt_end)' will be always false.
+My mistake, strnchr() work well.
+> 
+> >
 
-I added:
-
-Closes: https://lore.kernel.org/linux-perf-users/15e1a2847b8cebab4de57fc68e033086aa6980ce.camel@yandex.ru/
-Reported-by: Konstantin Kharlamov <Hi-Angel@yandex.ru>
-Reviewed-by: Ian Rogers <irogers@google.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Tested-by: Konstantin Kharlamov <Hi-Angel@yandex.ru>
-
-> Reviewed-by: Ian Rogers <irogers@google.com>
-
-Thanks,
-
-- Arnaldo
 
