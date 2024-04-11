@@ -1,311 +1,276 @@
-Return-Path: <linux-kernel+bounces-140731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3D5E8A1866
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:17:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDD618A19CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:21:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BA981F24FBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:17:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F06F5B21807
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:13:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40ADF2BCF9;
-	Thu, 11 Apr 2024 15:14:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E32319069A;
+	Thu, 11 Apr 2024 15:35:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Khl1QVpp"
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="j3avj2Wo"
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F9229437
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:14:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 371B5184127
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712848490; cv=none; b=Pkai1N5Ez2EhiiHQTMKwag8dD/Na/Bj9p5fFRNh2ssjbhAXPUpqg1dIZ9lNLJsiCZVPxA7e8Av9ro1/Itk2IPrQIe7dcSjI+8hMc7hIwxrRxdfXmwFIgdgJfKWapvnDhpImHwcpnPbRJ5I58D+3beDq1yFUN1f1s9b5QLv7+4No=
+	t=1712849754; cv=none; b=nP3pRx4HGtEg7PK43LRVMmIduBuIquUIa+HeSPEJv2NHZDwbk84AdI/xzDYc3Fm/SCKlTRsYo+A0BOdKvutAH652eX14IZvExHEb7hweNVrdYtwRcI/Tkt9axLAv6ZPPm5ujgPNOGlKOVv0PRaUCJ/DtkxhxTXJ+SWM9uLD6Q+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712848490; c=relaxed/simple;
-	bh=kGi5UAb+cjPdyAxrgDl1/Lhz8BR/C4EXu+I+XYY+D0E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WttYm7w6AlAlfsBHm3gOpLWIWSTYnoc0x5BZFUJFBvGzVM5wVlh0FbXmQgUSgqOyr1TJoZx2NiOhy90JMsCBMhpagzN7Krg4cFKUEH4h1nHcACZJGGGrlu3NVted/R7iaP9rrwYEZjkcatqkb+4iD1DjhC7hiUsz/5YZKNxePsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Khl1QVpp; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-43477091797so297671cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:14:48 -0700 (PDT)
+	s=arc-20240116; t=1712849754; c=relaxed/simple;
+	bh=xAlgkDD4gE89AmYLOb110oYhrpKLrKaxG4MtCG/wHZc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=luCKJ960DfrJfcBPBht4XRxRblLZIqJNYGluYBzQqTH6fKjDMGt8Q6V8pDcpFV7CzLNmRG69gQLSOONfdm8s/aEJcL9s8ka5T3yci73dR0Qb9xUYsy1tP9uy6XQ+5dshB3MP86xpkoQDqRrfxpmccJhnEmKp/0DXhXhW20Q0U/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=j3avj2Wo; arc=none smtp.client-ip=209.85.161.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5aa16bf49f6so294506eaf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:35:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712848487; x=1713453287; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849751; x=1713454551; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=M1asPQiHDC1fW6UbjKKwKMM7KUEzPE4wkrLiFHTi3xc=;
-        b=Khl1QVppDUp6qs8C5IHRniQscdaudX2fyQQViRM7BbR74dp8R2NDd8rvYp2Q0eRdA1
-         U3jGZWu29nSt69749ztVYnMjERsEAwyvMCltB/PlSUj4j76fVxbYy+VZ5DlqjrpyROd3
-         wcXcln69T8h6p+Y76TWd6ONVhiUI3nKvJvW/wCDMMQMcGMErlL3vmJ08SLq+T2viTk0S
-         brfXUGzntT2dQ1luWT3SHsy8uCerQKSZvOqF5wccDmThBxuJ9DCijk5aOQAC15uy6ZW9
-         DJK6hXCf8vXJN3U7G1nj+YaO4d+GG4FzuJs6UcVtiTV8/K+/tWs2Fct+XuHhr712yajC
-         arIg==
+        bh=xGTWiE8J7R1+2J2uKc3Kdb5J9vY+Cg6Yi1ItbsK2z1I=;
+        b=j3avj2WoTHd7pNPEbQg6V0IZuP9hwNlqs77+1iUj3CYGh/4mwl7NmEG2CCEIaxKvKC
+         oCA58hxsSYYwKV5J8Du3TJJnBn70Z7P0iONtUNlnygR3prLi2OzD4O4TsWSh1fbv1OVp
+         Zeq3DIzzDtjsd7+CZ4Q7Cic9Zh82OjA8UfZUK8/s/h9MYdng99iQ1VxLMBcKpRLZyxYk
+         kWtbDWqHtxEx4AhvfLDy7NWaY+8ASeGFSBSX+403OG00cd+nbo8wTZmvETRzOzxgyDho
+         3qoVSex2xhJZyQCg438bf4YoVBfNwWKHBDambrlmGX9bMElvZjfi1mrofJ+G0nssHsRv
+         7dMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712848487; x=1713453287;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1712849751; x=1713454551;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=M1asPQiHDC1fW6UbjKKwKMM7KUEzPE4wkrLiFHTi3xc=;
-        b=OBsnIoZnVTP0yrWinfAdClb73WGA1ag7BYDUK6y7oMeadjq6YsqLIKIi2ZYa4nfNec
-         hVzghXaVhnQXZyfwbtAzlcwfQASoF8e26kcxxuM2w/m5IlpD/LKHrvEoiLPwyg9cktlh
-         SIUjW7IpI/9P4yPlm7orCKLpgorJ0eANYS3tU0GNrEVoNtM5zhhn4SY9kmgvMnvpXpAr
-         H6MJ7DyTNv+/ZRFAAw4J6ifySRTxvtvy48H5LpghEUO9ZZ2RSZ27J7bnr6uS7kyKZket
-         MyyRSMghJgH9MMOSv/vatP95WE6VtPsGRpZ1cpYAc6+WuQxBqhKkUtfPI40LBoYB2YYG
-         npuw==
-X-Forwarded-Encrypted: i=1; AJvYcCUVus+nsuAoFlsNd8EBKwzVRXdMzo9zs/yMARAZ+QslylZRBJLSvXM6o9aIii0tOLXdmZnla+VNLizxSaUvSrgF4lFwHuMbih6R4kzw
-X-Gm-Message-State: AOJu0Yzb/2xIaCQPQ1xAOZ3HvJYUgqtdG9E3pv7MYgV0CZ8jVu8Wew8Z
-	dime5DcsgzzsgmTDl3cc55t72ISxP3b9WoheqP0Jfn5LeNqiWggP4nQf7mE/HAyfyHFNtun3Xby
-	CK9GhNCdA+B1miWw4FdRSQUqupMgmYuDQuZ2y
-X-Google-Smtp-Source: AGHT+IFzTkgfAXjfhjgY2jgBlJwsDxRcT8DaGJ2dMBmGczc3BbWkjpn6SY2K7EuYuoL2lsiW+gzd5LksXYESS9lnl1w=
-X-Received: by 2002:ac8:7342:0:b0:436:5fd1:74b5 with SMTP id
- q2-20020ac87342000000b004365fd174b5mr166915qtp.6.1712848487350; Thu, 11 Apr
- 2024 08:14:47 -0700 (PDT)
+        bh=xGTWiE8J7R1+2J2uKc3Kdb5J9vY+Cg6Yi1ItbsK2z1I=;
+        b=Lk/GHdAKJ9MJDEl0DhndIV743Ol+IxgajcHgRSm6RDXkK6x3xRMPdpe6di4IpYYcPD
+         jpPrJ6yKKNDFSdi592ch2o9Zzrk1xWNsU5C2QKpvPz7AnecxUW4Eav1FnfRc/67C+HeE
+         XMxhZHW3F5qTeGpr1hbayQQqvQoW0dN/wl8g5xn+OEgYIdIlDQtvxSKQYvHOwSia4CUw
+         fjWaW3bMV2yDb3696EtObJwYhLXf8sJOyaim0rWnYUivSECBUdAwSuzo4Mori7TsptEe
+         zyI0cJEZXp362/GaskDeU37gSaAmTLyhWAw+ITN9orr66tAOTfxasp5gxVR+qp7FQj0K
+         QOQQ==
+X-Gm-Message-State: AOJu0Yw3aNdT7Os3hUk/1ci2PkdauIGcE28ctyxNwmqCzpAK75OkQEQ5
+	KDhTbAdXLpp8j7veE/fPIy8Ef47xVn4tLS37aMp1EAFZK3qC3mCmuSGfmLOvQe4XnZ7UGSBpYDr
+	/
+X-Google-Smtp-Source: AGHT+IHKkS7fK6wyTyfU+Oktm9Gmn1cPNW5FwEAtv2gnpPHaGwq87cLkY6kD5VY6YnBgDGkwHnwglA==
+X-Received: by 2002:a6b:f312:0:b0:7d5:de23:13a9 with SMTP id m18-20020a6bf312000000b007d5de2313a9mr159667ioh.1.1712849730170;
+        Thu, 11 Apr 2024 08:35:30 -0700 (PDT)
+Received: from localhost.localdomain ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.35.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 08:35:29 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: linux-kernel@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 137/437] drm: convert debugfs helpers to be read/write iterator based
+Date: Thu, 11 Apr 2024 09:14:37 -0600
+Message-ID: <20240411153126.16201-138-axboe@kernel.dk>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
+References: <20240411153126.16201-1-axboe@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411144852.2507143-1-yanfei.xu@intel.com>
-In-Reply-To: <20240411144852.2507143-1-yanfei.xu@intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 11 Apr 2024 08:14:36 -0700
-Message-ID: <CAP-5=fWaB9c0m3Y5zAAS_4qs-L7n0=mqp7=zwatQOQmTc32YNQ@mail.gmail.com>
-Subject: Re: [PATCH] perf parse-events: Avoid two scenarios involving the
- reordering of topdown events
-To: Yanfei Xu <yanfei.xu@intel.com>
-Cc: peterz@infradead.org, mingo@redhat.com, acme@kernel.org, 
-	mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org, 
-	namhyung@kernel.org, adrian.hunter@intel.com, kan.liang@linux.intel.com, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 11, 2024 at 7:53=E2=80=AFAM Yanfei Xu <yanfei.xu@intel.com> wro=
-te:
->
-> We found that even an events group with slots but without topdown events
-> will still reroder to place the slots first. It's unnecessary, and may
-> break tools expecting the command line order to match the printed order.
-> The issue was previously fixed [1], but was later discarded since [2].
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+---
+ drivers/gpu/drm/drm_debugfs.c     | 28 ++++++++++++++--------------
+ drivers/gpu/drm/drm_debugfs_crc.c | 26 +++++++++++++-------------
+ 2 files changed, 27 insertions(+), 27 deletions(-)
 
-The requirements for topdown events is a gift that keeps on giving :-( Plea=
-se:
-1) provide the tool that is broken,
-2) provide a reason why the tool is depending on text output that may
-vary over time (intended audience for it is humans) instead of say the
-json output that is intended for consumption by tools,
-3) provide a test.
+diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
+index 08fcefd804bc..e7d7cbd930ca 100644
+--- a/drivers/gpu/drm/drm_debugfs.c
++++ b/drivers/gpu/drm/drm_debugfs.c
+@@ -171,7 +171,7 @@ static int drm_debugfs_entry_open(struct inode *inode, struct file *file)
+ static const struct file_operations drm_debugfs_entry_fops = {
+ 	.owner = THIS_MODULE,
+ 	.open = drm_debugfs_entry_open,
+-	.read = seq_read,
++	.read_iter = seq_read_iter,
+ 	.llseek = seq_lseek,
+ 	.release = single_release,
+ };
+@@ -179,7 +179,7 @@ static const struct file_operations drm_debugfs_entry_fops = {
+ static const struct file_operations drm_debugfs_fops = {
+ 	.owner = THIS_MODULE,
+ 	.open = drm_debugfs_open,
+-	.read = seq_read,
++	.read_iter = seq_read_iter,
+ 	.llseek = seq_lseek,
+ 	.release = single_release,
+ };
+@@ -403,17 +403,17 @@ static int connector_open(struct inode *inode, struct file *file)
+ 	return single_open(file, connector_show, dev);
+ }
+ 
+-static ssize_t connector_write(struct file *file, const char __user *ubuf,
+-			       size_t len, loff_t *offp)
++static ssize_t connector_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct seq_file *m = file->private_data;
++	struct seq_file *m = iocb->ki_filp->private_data;
+ 	struct drm_connector *connector = m->private;
++	size_t len = iov_iter_count(from);
+ 	char buf[12];
+ 
+ 	if (len > sizeof(buf) - 1)
+ 		return -EINVAL;
+ 
+-	if (copy_from_user(buf, ubuf, len))
++	if (!copy_from_iter_full(buf, len, from))
+ 		return -EFAULT;
+ 
+ 	buf[len] = '\0';
+@@ -444,15 +444,15 @@ static int edid_open(struct inode *inode, struct file *file)
+ 	return single_open(file, edid_show, dev);
+ }
+ 
+-static ssize_t edid_write(struct file *file, const char __user *ubuf,
+-			  size_t len, loff_t *offp)
++static ssize_t edid_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct seq_file *m = file->private_data;
++	struct seq_file *m = iocb->ki_filp->private_data;
+ 	struct drm_connector *connector = m->private;
++	size_t len = iov_iter_count(from);
+ 	char *buf;
+ 	int ret;
+ 
+-	buf = memdup_user(ubuf, len);
++	buf = iterdup(from, len);
+ 	if (IS_ERR(buf))
+ 		return PTR_ERR(buf);
+ 
+@@ -504,20 +504,20 @@ DEFINE_SHOW_ATTRIBUTE(output_bpc);
+ static const struct file_operations drm_edid_fops = {
+ 	.owner = THIS_MODULE,
+ 	.open = edid_open,
+-	.read = seq_read,
++	.read_iter = seq_read_iter,
+ 	.llseek = seq_lseek,
+ 	.release = single_release,
+-	.write = edid_write
++	.write_iter = edid_write
+ };
+ 
+ 
+ static const struct file_operations drm_connector_fops = {
+ 	.owner = THIS_MODULE,
+ 	.open = connector_open,
+-	.read = seq_read,
++	.read_iter = seq_read_iter,
+ 	.llseek = seq_lseek,
+ 	.release = single_release,
+-	.write = connector_write
++	.write_iter = connector_write
+ };
+ 
+ void drm_debugfs_connector_add(struct drm_connector *connector)
+diff --git a/drivers/gpu/drm/drm_debugfs_crc.c b/drivers/gpu/drm/drm_debugfs_crc.c
+index bbc3bc4ba844..85741f3eafee 100644
+--- a/drivers/gpu/drm/drm_debugfs_crc.c
++++ b/drivers/gpu/drm/drm_debugfs_crc.c
+@@ -117,12 +117,12 @@ static int crc_control_open(struct inode *inode, struct file *file)
+ 	return single_open(file, crc_control_show, crtc);
+ }
+ 
+-static ssize_t crc_control_write(struct file *file, const char __user *ubuf,
+-				 size_t len, loff_t *offp)
++static ssize_t crc_control_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct seq_file *m = file->private_data;
++	struct seq_file *m = iocb->ki_filp->private_data;
+ 	struct drm_crtc *crtc = m->private;
+ 	struct drm_crtc_crc *crc = &crtc->crc;
++	size_t len = iov_iter_count(from);
+ 	char *source;
+ 	size_t values_cnt;
+ 	int ret;
+@@ -136,7 +136,7 @@ static ssize_t crc_control_write(struct file *file, const char __user *ubuf,
+ 		return -E2BIG;
+ 	}
+ 
+-	source = memdup_user_nul(ubuf, len);
++	source = iterdup_nul(from, len);
+ 	if (IS_ERR(source))
+ 		return PTR_ERR(source);
+ 
+@@ -162,17 +162,17 @@ static ssize_t crc_control_write(struct file *file, const char __user *ubuf,
+ 
+ 	spin_unlock_irq(&crc->lock);
+ 
+-	*offp += len;
++	iocb->ki_pos += len;
+ 	return len;
+ }
+ 
+ static const struct file_operations drm_crtc_crc_control_fops = {
+ 	.owner = THIS_MODULE,
+ 	.open = crc_control_open,
+-	.read = seq_read,
++	.read_iter = seq_read_iter,
+ 	.llseek = seq_lseek,
+ 	.release = single_release,
+-	.write = crc_control_write
++	.write_iter = crc_control_write,
+ };
+ 
+ static int crtc_crc_data_count(struct drm_crtc_crc *crc)
+@@ -281,11 +281,11 @@ static int crtc_crc_release(struct inode *inode, struct file *filep)
+ #define LINE_LEN(values_cnt)	(10 + 11 * values_cnt + 1 + 1)
+ #define MAX_LINE_LEN		(LINE_LEN(DRM_MAX_CRC_NR))
+ 
+-static ssize_t crtc_crc_read(struct file *filep, char __user *user_buf,
+-			     size_t count, loff_t *pos)
++static ssize_t crtc_crc_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	struct drm_crtc *crtc = filep->f_inode->i_private;
++	struct drm_crtc *crtc = iocb->ki_filp->f_inode->i_private;
+ 	struct drm_crtc_crc *crc = &crtc->crc;
++	size_t count = iov_iter_count(to);
+ 	struct drm_crtc_crc_entry *entry;
+ 	char buf[MAX_LINE_LEN];
+ 	int ret, i;
+@@ -299,7 +299,7 @@ static ssize_t crtc_crc_read(struct file *filep, char __user *user_buf,
+ 
+ 	/* Nothing to read? */
+ 	while (crtc_crc_data_count(crc) == 0) {
+-		if (filep->f_flags & O_NONBLOCK) {
++		if (iocb->ki_filp->f_flags & O_NONBLOCK) {
+ 			spin_unlock_irq(&crc->lock);
+ 			return -EAGAIN;
+ 		}
+@@ -335,7 +335,7 @@ static ssize_t crtc_crc_read(struct file *filep, char __user *user_buf,
+ 		sprintf(buf + 10 + i * 11, " 0x%08x", entry->crcs[i]);
+ 	sprintf(buf + 10 + crc->values_cnt * 11, "\n");
+ 
+-	if (copy_to_user(user_buf, buf, LINE_LEN(crc->values_cnt)))
++	if (!copy_to_iter_full(buf, LINE_LEN(crc->values_cnt), to))
+ 		return -EFAULT;
+ 
+ 	return LINE_LEN(crc->values_cnt);
+@@ -360,7 +360,7 @@ static __poll_t crtc_crc_poll(struct file *file, poll_table *wait)
+ static const struct file_operations drm_crtc_crc_data_fops = {
+ 	.owner = THIS_MODULE,
+ 	.open = crtc_crc_open,
+-	.read = crtc_crc_read,
++	.read_iter = crtc_crc_read,
+ 	.poll = crtc_crc_poll,
+ 	.release = crtc_crc_release,
+ };
+-- 
+2.43.0
 
-> Add an extra check of evsel leader, variable must_be_in_group, to ensure
-> the slots event is only moved if the group has non-slots topdown events.
->
-> Without the patch:
->
->   $ perf stat  -e '{cpu/cpu-cycles/,slots}'  sleep 1
->   WARNING: events were regrouped to match PMUs
->
->    Performance counter stats for 'sleep 1':
->
->            2,663,256      slots:u
->              443,876      cpu/cpu-cycles/u
->
->          1.001079566 seconds time elapsed
->
->          0.001054000 seconds user
->          0.000000000 seconds sys
->
-> With the patch:
->
->   $ perf stat  -e '{cpu/cpu-cycles/,slots}'  sleep 1
->
->    Performance counter stats for 'sleep 1':
->
->             469,039      cpu/cpu-cycles/u
->           2,814,234      slots:u
->
->         1.001148306 seconds time elapsed
->
->         0.001123000 seconds user
->         0.000000000 seconds sys
->
-> In cases where both slots and topdown events are present, moving the
-> slots event to be the first event is necessary. However there is no
-> requirement to move the topdown events to be adjacent to slots event.
-> So keep the original order of the topdown events is expected. Further
-> more, if a group doesn't have slots event, the topdown events will be
-> unexpectedly moved to the head of the group.
->
-> Remove the movements regarding topdown events in arch_evlist__cmp()
->
-> Without the patch:
->
->   $ perf stat -e '{slots,cpu/cpu-cycles/,cpu/topdown-bad-spec/}' sleep 1
->   WARNING: events were regrouped to match PMUs
->
->    Performance counter stats for 'sleep 1':
->
->           2,681,460      slots:u
->             336,496      cpu/topdown-bad-spec/u
->             446,910      cpu/cpu-cycles/u
->
->         1.001210088 seconds time elapsed
->
->         0.001160000 seconds user
->         0.000000000 seconds sys
->
-> With the patch:
->
->   $ perf stat -e '{slots,cpu/cpu-cycles/,cpu/topdown-bad-spec/}' sleep 1
->
->    Performance counter stats for 'sleep 1':
->
->           2,715,486      slots:u
->             452,581      cpu/cpu-cycles/u
->             340,766      cpu/topdown-bad-spec/u
->
->         1.001116709 seconds time elapsed
->
->         0.001111000 seconds user
->         0.000000000 seconds sys
->
-> [1] https://lore.kernel.org/lkml/20220321223344.1034479-1-irogers@google.=
-com/#/
-> [2] https://lore.kernel.org/lkml/20230302041211.852330-10-irogers@google.=
-com/#/
->
-> Fixes: 347c2f0a0988 ("perf parse-events: Sort and group parsed events")
-> Signed-off-by: Yanfei Xu <yanfei.xu@intel.com>
-> ---
->  tools/perf/arch/x86/util/evlist.c | 13 +++++--------
->  tools/perf/arch/x86/util/evsel.c  |  6 ++++++
->  tools/perf/util/evsel.h           |  2 ++
->  tools/perf/util/parse-events.c    |  9 ++++++---
->  4 files changed, 19 insertions(+), 11 deletions(-)
->
-> diff --git a/tools/perf/arch/x86/util/evlist.c b/tools/perf/arch/x86/util=
-/evlist.c
-> index b1ce0c52d88d..eed0a74c561a 100644
-> --- a/tools/perf/arch/x86/util/evlist.c
-> +++ b/tools/perf/arch/x86/util/evlist.c
-> @@ -75,17 +75,14 @@ int arch_evlist__add_default_attrs(struct evlist *evl=
-ist,
->
->  int arch_evlist__cmp(const struct evsel *lhs, const struct evsel *rhs)
->  {
-> +       struct evsel *leader;
-> +
->         if (topdown_sys_has_perf_metrics() &&
->             (arch_evsel__must_be_in_group(lhs) || arch_evsel__must_be_in_=
-group(rhs))) {
-> +               leader =3D evsel__leader(rhs);
-
-Usually the leader doesn't make sense at this point. For example, a
-metric following event parsing may group
-{cycles,slots,topdown-fe-bound} and cycles will be the leader. The
-leader's properties say nothing about the ordering of slots and
-topdown-fe-bound.
-
->                 /* Ensure the topdown slots comes first. */
-> -               if (strcasestr(lhs->name, "slots") && !strcasestr(lhs->na=
-me, "uops_retired.slots"))
-> -                       return -1;
-> -               if (strcasestr(rhs->name, "slots") && !strcasestr(rhs->na=
-me, "uops_retired.slots"))
-> -                       return 1;
-> -               /* Followed by topdown events. */
-> -               if (strcasestr(lhs->name, "topdown") && !strcasestr(rhs->=
-name, "topdown"))
-> -                       return -1;
-> -               if (!strcasestr(lhs->name, "topdown") && strcasestr(rhs->=
-name, "topdown"))
-> +               if (strcasestr(rhs->name, "slots") && !strcasestr(rhs->na=
-me, "uops_retired.slots")
-> +                       && leader->must_be_in_group)
-
-Why isn't this symmetric? As in the lhs has a test that will return -1.
-
->                         return 1;
->         }
->
-> diff --git a/tools/perf/arch/x86/util/evsel.c b/tools/perf/arch/x86/util/=
-evsel.c
-> index 090d0f371891..16f42fcfbe0b 100644
-> --- a/tools/perf/arch/x86/util/evsel.c
-> +++ b/tools/perf/arch/x86/util/evsel.c
-> @@ -44,6 +44,12 @@ bool arch_evsel__must_be_in_group(const struct evsel *=
-evsel)
->             strcasestr(evsel->name, "uops_retired.slots"))
->                 return false;
->
-> +       if (strcasestr(evsel->name, "topdown")) {
-> +               struct evsel *leader =3D evsel__leader(evsel);
-> +
-> +               leader->must_be_in_group =3D true;
-> +       }
-> +
->         return strcasestr(evsel->name, "topdown") || strcasestr(evsel->na=
-me, "slots");
->  }
->
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index 517cff431de2..a7ab266bc915 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -98,6 +98,8 @@ struct evsel {
->                 bool                    bpf_counter;
->                 bool                    use_config_name;
->                 bool                    skippable;
-> +               /* any evsels with the flag set must be in a group */
-> +               bool            must_be_in_group;
-
-This duplicates arch_evsel__must_be_in_group but one may be true when
-the other isn't. This doesn't make sense to me.
-
-I think this patch needs a rethink and the behavior with it looks
-broken and more complex than what already exists. I also think the
-problem is one that is more to do with the tool using the output than
-the reordering.
-
-Thanks,
-Ian
-
->                 int                     bpf_fd;
->                 struct bpf_object       *bpf_obj;
->                 struct list_head        config_terms;
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-event=
-s.c
-> index 6f8b0fa17689..37950056a661 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -2052,9 +2052,12 @@ static int parse_events__sort_events_and_fix_group=
-s(struct list_head *list)
->                  */
->                 pos->core.idx =3D idx++;
->
-> -               /* Remember an index to sort all forced grouped events to=
-gether to. */
-> -               if (force_grouped_idx =3D=3D -1 && pos =3D=3D pos_leader =
-&& pos->core.nr_members < 2 &&
-> -                   arch_evsel__must_be_in_group(pos))
-> +               /*
-> +                * Remember an index to sort all forced grouped events to=
-gether to,
-> +                * and check each evsel for setting must_be_in_group of i=
-ts leader.
-> +                */
-> +               if (arch_evsel__must_be_in_group(pos) && force_grouped_id=
-x =3D=3D -1 &&
-> +                       pos =3D=3D pos_leader && pos->core.nr_members < 2=
-)
->                         force_grouped_idx =3D pos->core.idx;
->         }
->
-> --
-> 2.40.1
->
 
