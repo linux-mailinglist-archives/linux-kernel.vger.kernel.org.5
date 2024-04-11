@@ -1,167 +1,133 @@
-Return-Path: <linux-kernel+bounces-140646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19EDB8A1726
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:28:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4A998A1733
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:30:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1E89281F82
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:28:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BEA9B2CF0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:28:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4FB814EC6C;
-	Thu, 11 Apr 2024 14:27:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OkG9A9mb"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D7A14E2DF
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:27:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF08F14EC71;
+	Thu, 11 Apr 2024 14:27:37 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF56414EC5A
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:27:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712845672; cv=none; b=FTlBwvkDbe/JZ7Z2tnDX805aWU55cuGI0rTuDhUDv9UGxzmWnj9/F5Y242L5NQEEOZtKv8/9Hd1CzyyZR4Y42+InophuGoFDIR/t4B3ZlovoweyHgVyZTLeEGvA578deR41463aE+NNPfliqR2SITVi8dAtIm1vQU13uyTXXBK8=
+	t=1712845657; cv=none; b=M0+dEo3zR9ApKlp1HHli/CJZka6nXyRLSkAjyZeyUY5n8qMNFfu4/DSQ2F5iRD9/gMkcJqsI7g12P1FF9ZnHLV8TE5RTsjTcOSRFNk5iJGB1ZOs0+GHKlBxv8Oaam8iKF97Bt+Syjtr2nCgScSstfl0PdnkE5lW4PhHxCnrA83Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712845672; c=relaxed/simple;
-	bh=w9o1XgcltQhWTXVm1JiWAGcO8AEFOVm8o98Qvyf7ZV0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pOvx0fyb7s7oVgOrPBrVU0CSfHGZkFkGXIi/i7aJr19SMFEmK74CxG5vIdkCwDBnoihhqq1YotiGNAm4Hf9Y6BPUQoGlLC9MsNPRI2GuwLPuuqCZcrRbB5Nxlaf4NNYFyLTpJzSC5HoejyYeYiS9EG77fp3GfHuMCRbJDuLRWB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OkG9A9mb; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dff837d674so65916305ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:27:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712845671; x=1713450471; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WV8tJIjUzXHbl0VfRKq6lXNz71phUi80Xt/ITrcltAs=;
-        b=OkG9A9mbqj6Aw64QR3yy3nMohdjSMKmpu8g6hERyTUmXASs2KfIKEz79kCx7SWBMJH
-         JBSxWSclPFco5JOcQa01ntgd47IA5GUOdtAWVRhE1TxesfcXHMDOXhZR8O7Ip0gToTTV
-         TkswFpDSOludaNgoBm3WqQlmFunFVB67TiHyg9quZO4E0y0vBtZS/ld7uEyoNKzPgqG7
-         +UZYV/chbdZY7vPYycuzgKWUNTw9m3wKoylg/O8PGg9bega89de4QHueqeyY3U9JzoAK
-         SbbUJUE5DfSb571fe23O2poDptzWawlVLqbAK5T9xgjoe2/sQ+udpyEfmWzP3rONhu3Z
-         A70Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712845671; x=1713450471;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WV8tJIjUzXHbl0VfRKq6lXNz71phUi80Xt/ITrcltAs=;
-        b=IKU3f+7X7Njrco5r165sonHkyn3UjvbN/5P6+3ezOGjDQ9IRrVR+aXGrujA5Lf2hQG
-         v4ijaigC3y7LrMIcoHwqEg6fLqX3f1+RuWX55pbG6WJQS9FevUqk5Qf9iME5X8r6CKyv
-         TzT1oT5hcBKeHObLm2MYhDsScx5JJpdk3LbuLhgx6Fb8SJoLbKonR1zpRSVNnjM9sPgA
-         Fq5dz4V+LikK+EuBlcN4zJ64aDZESoyQvuiTTlobwNun/KCQeCRSuJUqX+BlSNeDUXub
-         BfUQMa4ff+gwjbJ3+PvqjHwB8+epfI0SABVMd8UgkYSxuP5Qrl2Cyb1Pg3HdJFBXSzkq
-         o/UA==
-X-Forwarded-Encrypted: i=1; AJvYcCUgC4642kaWT7ZGblsE1e9TpCFwcKlo6ktDipy9Mn36N1V3YIzIMgMpUSQf0riEZQWkPHLCWaytHiOw03hP9maXXNvG5hIV6QwNFJjy
-X-Gm-Message-State: AOJu0YwoGJ8qU8rsS2J6q9ACOTjH8YLG54FiOiojgjiqSzrs4wq1ZI6L
-	MQBsHf/pPCvXCTzpfyB1CAla2S9j3uz+QHEDa6/0SargI8RPbwJiMlCFbH+X
-X-Google-Smtp-Source: AGHT+IGKSqHXfRvr61t0+2EENyO351XU3EoE5xwRYiwQtdgPz/e3Za/SaUZo1UjNefMy9B/3oFYCZw==
-X-Received: by 2002:a17:903:13d0:b0:1e3:dfdb:ac6b with SMTP id kd16-20020a17090313d000b001e3dfdbac6bmr6861325plb.4.1712845670814;
-        Thu, 11 Apr 2024 07:27:50 -0700 (PDT)
-Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id s3-20020a170902ea0300b001e294f2f30dsm1228876plg.93.2024.04.11.07.27.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 07:27:50 -0700 (PDT)
-From: Yuntao Wang <ytcoode@gmail.com>
-To: rppt@kernel.org
-Cc: akpm@linux-foundation.org,
-	arnd@arndb.de,
-	christophe.leroy@csgroup.eu,
-	geert@linux-m68k.org,
-	jpoimboe@kernel.org,
-	kjlx@templeofstupid.com,
-	linux-kernel@vger.kernel.org,
-	mhiramat@kernel.org,
-	ndesaulniers@google.com,
-	peterz@infradead.org,
-	tglx@linutronix.de,
-	tj@kernel.org,
-	ytcoode@gmail.com
-Subject: Re: [PATCH] init/main.c: Fix potential static_command_line memory overflow
-Date: Thu, 11 Apr 2024 22:27:23 +0800
-Message-ID: <20240411142735.245515-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <Zhfj4T1-u354E_KP@kernel.org>
-References: <Zhfj4T1-u354E_KP@kernel.org>
+	s=arc-20240116; t=1712845657; c=relaxed/simple;
+	bh=EU/UjKXDgctiWfZFTVYonN3edS86CMZY0PEjyqsc4UI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=otCYVEYrGwVqg251MDlL8esetxvBnZG8Wfnr56wcCs4+GvLGa0eooIqbmOtPb/Yco/0c8sC83amGV3Zqsfk04+XcQ7R3gGKg8CPoz4fkuRtspeTqGW3HyAt9G1uTxKi5tqV9ifgXjNzlfi7WJp0dUQ1YikPURrWZgZYZnB01PHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D07041596;
+	Thu, 11 Apr 2024 07:28:04 -0700 (PDT)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A7C13F64C;
+	Thu, 11 Apr 2024 07:27:32 -0700 (PDT)
+Date: Thu, 11 Apr 2024 15:27:30 +0100
+From: Dave Martin <Dave.Martin@arm.com>
+To: "Shaopeng Tan (Fujitsu)" <tan.shaopeng@fujitsu.com>
+Cc: 'James Morse' <james.morse@arm.com>, "x86@kernel.org" <x86@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Fenghua Yu <fenghua.yu@intel.com>,
+	Reinette Chatre <reinette.chatre@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
+	"shameerali.kolothum.thodi@huawei.com" <shameerali.kolothum.thodi@huawei.com>,
+	D Scott Phillips OS <scott@os.amperecomputing.com>,
+	"carl@os.amperecomputing.com" <carl@os.amperecomputing.com>,
+	"lcherian@marvell.com" <lcherian@marvell.com>,
+	"bobo.shaobowang@huawei.com" <bobo.shaobowang@huawei.com>,
+	"baolin.wang@linux.alibaba.com" <baolin.wang@linux.alibaba.com>,
+	Jamie Iles <quic_jiles@quicinc.com>,
+	Xin Hao <xhao@linux.alibaba.com>,
+	"peternewman@google.com" <peternewman@google.com>,
+	"dfustini@baylibre.com" <dfustini@baylibre.com>,
+	"amitsinght@marvell.com" <amitsinght@marvell.com>,
+	David Hildenbrand <david@redhat.com>,
+	Rex Nie <rex.nie@jaguarmicro.com>
+Subject: Re: [PATCH v1 30/31] x86/resctrl: Move the filesystem bits to
+ headers visible to fs/resctrl
+Message-ID: <ZhfzUgbpE30ufj+d@e133380.arm.com>
+References: <20240321165106.31602-1-james.morse@arm.com>
+ <20240321165106.31602-31-james.morse@arm.com>
+ <TYAPR01MB63304D1AC781C7E293CFEF958B3C2@TYAPR01MB6330.jpnprd01.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <TYAPR01MB63304D1AC781C7E293CFEF958B3C2@TYAPR01MB6330.jpnprd01.prod.outlook.com>
 
-On Thu, 11 Apr 2024 16:21:37 +0300, Mike Rapoport <rppt@kernel.org> wrote:
-> On Thu, Apr 11, 2024 at 09:23:47AM +0200, Geert Uytterhoeven wrote:
-> > CC Hiramatsu-san
-> > 
-> > On Thu, Apr 11, 2024 at 5:25 AM Yuntao Wang <ytcoode@gmail.com> wrote:
-> > > We allocate memory of size 'xlen + strlen(boot_command_line) + 1' for
-> > > static_command_line, but the strings copied into static_command_line are
-> > > extra_command_line and command_line, rather than extra_command_line and
-> > > boot_command_line.
-> > >
-> > > When strlen(command_line) > strlen(boot_command_line), static_command_line
-> > > will overflow.
+On Thu, Apr 04, 2024 at 07:43:03AM +0000, Shaopeng Tan (Fujitsu) wrote:
+> Hello James
 > 
-> Can this ever happen? 
-> Did you observe the overflow or is this a theoretical bug?
+> > Once the filesystem parts of resctrl move to fs/resctrl, it cannot rely on
+> > definitions in x86's internal.h.
+> > 
+> > Move definitions in internal.h that need to be shared between the filesystem
+> > and architecture code to header files that fs/resctrl can include.
+> > 
+> > Doing this separately means the filesystem code only moves between files of
+> > the same name, instead of having these changes mixed in too.
+> > 
+> > Signed-off-by: James Morse <james.morse@arm.com>
+> > ---
+> >  arch/x86/include/asm/resctrl.h         |  3 +++
+> >  arch/x86/kernel/cpu/resctrl/core.c     |  5 ++++
+> >  arch/x86/kernel/cpu/resctrl/internal.h | 36 --------------------------
+> >  include/linux/resctrl.h                |  3 +++
+> >  include/linux/resctrl_types.h          | 30
+> > +++++++++++++++++++++
+> >  5 files changed, 41 insertions(+), 36 deletions(-)
 
-I didn't observe the overflow, it's just a theoretical bug.
+[...]
 
-> > > Fixes: f5c7310ac73e ("init/main: add checks for the return value of memblock_alloc*()")
+> > diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h index
+> > f786ffceeda3..00cc0457af50 100644
+> > --- a/include/linux/resctrl.h
+> > +++ b/include/linux/resctrl.h
+> > @@ -41,6 +41,9 @@ int proc_resctrl_show(struct seq_file *m,
+> >   */
+> >  #define RESCTRL_MAX_CBM			32
+> > 
+> > +extern unsigned int resctrl_rmid_realloc_limit; extern unsigned int
+> > +resctrl_rmid_realloc_threshold;
+> > +
+
+[FYI, your mailer or editor seems to have messed this patch up a bit in
+your reply...]
+
+> These two variables has been defined.
+>  44 extern unsigned int resctrl_rmid_realloc_limit;
+>  45 extern unsigned int resctrl_rmid_realloc_threshold;
+> 400 extern unsigned int resctrl_rmid_realloc_threshold;
+> 401 extern unsigned int resctrl_rmid_realloc_limit;
 > 
-> f5c7310ac73e didn't have the logic for calculating allocation size, we
-> surely don't want to go back that far wiht Fixes.
+> Best regards,
+> Shaopeng TAN
 
-Before commit f5c7310ac73e, the memory size allocated for static_command_line
-was 'strlen(command_line) + 1', but commit f5c7310ac73e changed this size
-to 'strlen(boot_command_line) + 1'. I think this should be wrong.
+[...]
 
-> > > Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-> > > ---
-> > >  init/main.c | 8 +++++---
-> > >  1 file changed, 5 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/init/main.c b/init/main.c
-> > > index 2ca52474d0c3..a7b1f5f3e3b6 100644
-> > > --- a/init/main.c
-> > > +++ b/init/main.c
-> > > @@ -625,11 +625,13 @@ static void __init setup_command_line(char *command_line)
-> > >         if (extra_init_args)
-> > >                 ilen = strlen(extra_init_args) + 4; /* for " -- " */
-> > >
-> > > -       len = xlen + strlen(boot_command_line) + 1;
-> > > +       len = xlen + strlen(boot_command_line) + ilen + 1;
-> > >
-> > > -       saved_command_line = memblock_alloc(len + ilen, SMP_CACHE_BYTES);
-> > > +       saved_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
-> > >         if (!saved_command_line)
-> > > -               panic("%s: Failed to allocate %zu bytes\n", __func__, len + ilen);
-> > > +               panic("%s: Failed to allocate %zu bytes\n", __func__, len);
-> > > +
-> > > +       len = xlen + strlen(command_line) + 1;
-> > >
-> > >         static_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
-> > >         if (!static_command_line)
-> > 
-> > Gr{oetje,eeting}s,
-> > 
-> >                         Geert
-> > 
-> > -- 
-> > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> > 
-> > In personal conversations with technical people, I call myself a hacker. But
-> > when I'm talking to journalists I just say "programmer" or something like that.
-> >                                 -- Linus Torvalds
-> 
-> -- 
-> Sincerely yours,
-> Mike.
+Strange.  This looks unintentional and there don't seem to be any
+relevant #ifdefs or references to these variables in the header that
+might justify reordering these declarations.
+
+I'll propose to James that the addition of these duplicates be reverted
+out, so long as it doesn't break anything.
+
+Cheers
+---Dave
 
