@@ -1,78 +1,78 @@
-Return-Path: <linux-kernel+bounces-141102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 989A38A1A7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:55:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB3358A1A7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:55:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F166D283D44
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:55:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17EEF1C23340
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B04631635B1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 354731635AA;
 	Thu, 11 Apr 2024 15:40:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="i943tt7p"
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="b0/M1RmD"
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85FBD4AEFD
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91C6D4C601
 	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850039; cv=none; b=DeIX7g1UExy7AXhtxxVbCgEglvF4gd6W4LcOsIikiKdj1ZpYaMvNms0vjaKZw7pHVV7vuxgV8JubPLEgEYdL3+L6cg7tjKpWxOzHnQDEymuyyaPB+/XO8LAkzEdNdK5A3+dEof/5rVBJtvyyD/gldzZlOWPWousr6Tf/nwndFcE=
+	t=1712850039; cv=none; b=VO8Mn6f36tyNYu4vTE03YuBHYolwlR0hEbpQlZ6dpjB+ihtM5hqyUCg+EjjGVM731nH2T7yxtd/FEhOtiBV4pGM15OfIPmOUMzuAFl+eJcQFYdEtOk3x41MYuROQKswfeV2nw2BTMbtUq82Q/yIIrqUMLM4bw/6Mu6xjv3Z8o/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712850039; c=relaxed/simple;
-	bh=405uQ2rR/lcTUIgbmVA0LVxEMeerWkCm2zv42gtUQg8=;
+	bh=I+sj5vVgdY0extT9pyDmhTNvVk/D351FuFUjnQiEyjw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=b9kWXYxhqAIAo+XJXnx4pOQj9RGc03cEjBK9aLsppOk/0V2DgTHn1nBIqeCtClCG7PWwzEfcj0LS34M/V2MAEz9aAEJIUjM/ZI88ggBsIK+lAOjsRuli/tg3TWNMC8sFeePGLe5KY+4Mzo4AIwTodFYInCK1WUvlZ3w/XioXl4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=i943tt7p; arc=none smtp.client-ip=209.85.166.48
+	 MIME-Version; b=a28+Ev/xDGJQC40Ib7l7L9qyE/QllhR3LmIYob5J+C5sY0Kqsgi3Oz+UzGIY7mbVuG9qEO1llUtaJxYPfgdbaXOdd8bf5E2esFKywCsI69TVykN8DCYV1GKX/4cMh2fzq3TdWMJbZu3wSzZo/OfbTlPfnFLhtwU9qg/+dfPALRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=b0/M1RmD; arc=none smtp.client-ip=209.85.166.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7d5ed700c2dso16237739f.0
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-36a34b68277so119095ab.0
         for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:40:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850035; x=1713454835; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850036; x=1713454836; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vdt71NQPxQDStZfuHnytDGqHTCr7sKvVymAo1oxe0Gk=;
-        b=i943tt7pWTPp1Xce4VbsRblnykxVgAzOXHzDcXtk8iwbL5WzA+FIscq7DKWO21k8Au
-         zNsUIs6ItTPON0Wnjw+CoGh/+CP2VbxTuMJr06x7xOtN33clCH2reeJhWWxrWix3cvWb
-         lLvRLfzTObyFAZe2lizVUI2wh4HXEq40ECSi95/ihQSGf7+OujJxVzdIJeyIE7xnvm1D
-         hpOZjS98HRVLUT1zSdaijw5gNfNHhmvFyMPLS8V7Xoux+P+ExYPGeg6O3iT4wDJGva/T
-         S9+svDaSfrm8Y4e0j0irl6EABjjK9UpptODFIPEdaky7QPh5GeyJj9m1DoBGdSil9IBH
-         5oNg==
+        bh=hrQjAUuOjy9NNVtrz6WAy9mNFgnOw/l75kQoVjJmnEk=;
+        b=b0/M1RmDVB1xTpdIDgZMHXdFp4GrAUFC31I/e1P0eIbo0B9AXuOz+2ZTQRTX/6hQbr
+         Q7zPNyfwjx6xjrQq1JvYzXgl5gHUjg+oWqTOwJhNVV4ZyQCH+Q27+PUsiQgRg+hHDEGO
+         xmWE2kcacBH0m8/MsOj7HYpPUWgv0exFB1KJs8MzC0mn0IAFUMAVBL1RSi7szGmEe81x
+         UXGvpOxbiu2GzeSpkArkjKKUD7KysRFQd9zFSbHpXhR9PEeNYb9ip1ByYL1rRooxdJw1
+         a0iACd/AUcNRP4YrD0lOz4PQqRFA0QVlXVMc6+qhhD+pDIInvTR1vhbVG/uS7HeCt/Lp
+         wPDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850035; x=1713454835;
+        d=1e100.net; s=20230601; t=1712850036; x=1713454836;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vdt71NQPxQDStZfuHnytDGqHTCr7sKvVymAo1oxe0Gk=;
-        b=hWK0qLnRYGDSDyyQ1bjmg8aLLK1TLvsWgAcZSD3Ve9Bh03Y7OaigkK9yA04Qtrlk9v
-         0EUlJEhxb9gz8EmG8OKStFr1AL1Y8CURm2vNgF4QZPqNpAtUhp+wi1E7IZyj7YpkL2E8
-         /dhjvb8auVePK2CRIVkqn0kdvVZqfWGXbA8jd0Wbhatpid2m+myG0BG/x4+BOUW9pqmX
-         km79hJ3G7NUWpL8TNPlmbz9Qv8m+MlRd6d2OY/rUeKbtq1BL/usmCQlgj/s56mCZR4Ko
-         dwWaE7u6RHGL4NbK6FLBcPxv82bwDuF1QPp0oR2OoWNssdZxsOBl6iYWLm4bmvmMHGXm
-         3rRQ==
-X-Gm-Message-State: AOJu0Yx3SDpJGyYFQUt6SSGQKA3VfnZh3DIb6e/kt8OfgGHUOXXFWoWy
-	+/nOqHxOS8b8IumdggHfhl0Kok6FJ8+P53K/1h/JmmrHYCrcvBFuw8vXBvIKAuTcqJx8HgpyGXd
-	e
-X-Google-Smtp-Source: AGHT+IEbbEbiJE1PBIxF91ZwwL8HArlbBVGZ1yPnPGl2C4SwGJEeJp4D+lFe8n+Rhh6MemxAGJ2gNg==
-X-Received: by 2002:a6b:f312:0:b0:7d5:de23:13a9 with SMTP id m18-20020a6bf312000000b007d5de2313a9mr173491ioh.1.1712850035415;
-        Thu, 11 Apr 2024 08:40:35 -0700 (PDT)
+        bh=hrQjAUuOjy9NNVtrz6WAy9mNFgnOw/l75kQoVjJmnEk=;
+        b=bWC2pRvqDmt3idgIwiFbd2Nj9hhYLXWM9tiolB3pJZ+DtkN7nb4DLSRea59hqGJBSu
+         sssXrHBpiZkMphXymtOB3myiSDRTVRQLAvzl8KS18tCd5TnPuz+qtzUwpZGRjTzA9dtq
+         tFZwDAzh9+cW2uySp1QxktWAAQRCX4qumudISeTiR2M7OHKBmt7EqmM0Ro0rh4/IT87s
+         LFnivQ8pl1IdHTBO9nBtPp+ugxqkjqqn6KL/U8PgzetPL8PCor+UfGD5LdsuGYaXvC3Y
+         NMutnjCHJZjNvcYf7Az6imX1av2M1SZoKMYFG9M0U46FSpvPxONuFp2OgEFlD+Xkxzbs
+         ePKQ==
+X-Gm-Message-State: AOJu0YyGTI3KvRe6kkdzMxKImYqPCzuTL11nrx2azjyWc7sEx8AESPBA
+	O5hbeI6MoORiwmDDiCsbV6P7FwL1W8TMgJe4cs3+W4f/+3ThcZDk2dc6yhS8li9sGJIbhpz/RQA
+	R
+X-Google-Smtp-Source: AGHT+IEP/XZEUN6s+PTr/rM66dAw4hYPHq4Xrjqo0p0/0C74uUnda2VM7YZPLGg/iwpgA4FdHqavsA==
+X-Received: by 2002:a6b:4e14:0:b0:7d6:631d:7b0 with SMTP id c20-20020a6b4e14000000b007d6631d07b0mr199269iob.1.1712850036241;
+        Thu, 11 Apr 2024 08:40:36 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.40.33
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.40.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:40:34 -0700 (PDT)
+        Thu, 11 Apr 2024 08:40:35 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Bui Quang Minh <minhquangbui99@gmail.com>,
 	Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 323/437] drivers/net/ethernet/intel: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:17:43 -0600
-Message-ID: <20240411153126.16201-324-axboe@kernel.dk>
+Subject: [PATCH 324/437] drivers/net/ethernet/chelsio: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:17:44 -0600
+Message-ID: <20240411153126.16201-325-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -89,774 +89,640 @@ From: Bui Quang Minh <minhquangbui99@gmail.com>
 Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- .../net/ethernet/intel/fm10k/fm10k_debugfs.c  |  10 +-
- .../net/ethernet/intel/i40e/i40e_debugfs.c    | 103 +++++-----
- drivers/net/ethernet/intel/ice/ice_debugfs.c  | 181 ++++++++----------
- .../net/ethernet/intel/ixgbe/ixgbe_debugfs.c  |  99 ++++------
- 4 files changed, 173 insertions(+), 220 deletions(-)
+ .../ethernet/chelsio/cxgb4/cxgb4_debugfs.c    | 321 +++++++++---------
+ drivers/net/ethernet/chelsio/cxgb4/l2t.c      |   2 +-
+ 2 files changed, 164 insertions(+), 159 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/fm10k/fm10k_debugfs.c b/drivers/net/ethernet/intel/fm10k/fm10k_debugfs.c
-index 5c77054d67c6..7995883a2c27 100644
---- a/drivers/net/ethernet/intel/fm10k/fm10k_debugfs.c
-+++ b/drivers/net/ethernet/intel/fm10k/fm10k_debugfs.c
-@@ -132,11 +132,11 @@ static int fm10k_dbg_desc_open(struct inode *inode, struct file *filep)
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+index 14e0d989c3ba..a3b94ceea07d 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
+@@ -227,11 +227,11 @@ static int cim_la_open(struct inode *inode, struct file *file)
  }
  
- static const struct file_operations fm10k_dbg_desc_fops = {
+ static const struct file_operations cim_la_fops = {
 -	.owner   = THIS_MODULE,
--	.open    = fm10k_dbg_desc_open,
+-	.open    = cim_la_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release_private
++	.owner     = THIS_MODULE,
++	.open      = cim_la_open,
++	.read_iter = seq_read_iter,
++	.llseek    = seq_lseek,
++	.release   = seq_release_private
+ };
+ 
+ static int cim_pif_la_show(struct seq_file *seq, void *v, int idx)
+@@ -270,11 +270,11 @@ static int cim_pif_la_open(struct inode *inode, struct file *file)
+ }
+ 
+ static const struct file_operations cim_pif_la_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = cim_pif_la_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release_private
++	.owner     = THIS_MODULE,
++	.open      = cim_pif_la_open,
++	.read_iter = seq_read_iter,
++	.llseek    = seq_lseek,
++	.release   = seq_release_private
+ };
+ 
+ static int cim_ma_la_show(struct seq_file *seq, void *v, int idx)
+@@ -316,11 +316,11 @@ static int cim_ma_la_open(struct inode *inode, struct file *file)
+ }
+ 
+ static const struct file_operations cim_ma_la_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = cim_ma_la_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release_private
++	.owner     = THIS_MODULE,
++	.open      = cim_ma_la_open,
++	.read_iter = seq_read_iter,
++	.llseek    = seq_lseek,
++	.release   = seq_release_private
+ };
+ 
+ static int cim_qcfg_show(struct seq_file *seq, void *v)
+@@ -409,11 +409,11 @@ static int cim_ibq_open(struct inode *inode, struct file *file)
+ }
+ 
+ static const struct file_operations cim_ibq_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = cim_ibq_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release_private
++	.owner     = THIS_MODULE,
++	.open      = cim_ibq_open,
++	.read_iter = seq_read_iter,
++	.llseek    = seq_lseek,
++	.release   = seq_release_private
+ };
+ 
+ static int cim_obq_open(struct inode *inode, struct file *file)
+@@ -438,11 +438,11 @@ static int cim_obq_open(struct inode *inode, struct file *file)
+ }
+ 
+ static const struct file_operations cim_obq_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = cim_obq_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release_private
++	.owner     = THIS_MODULE,
++	.open      = cim_obq_open,
++	.read_iter = seq_read_iter,
++	.llseek    = seq_lseek,
++	.release   = seq_release_private
+ };
+ 
+ struct field_desc {
+@@ -660,16 +660,16 @@ static int tp_la_open(struct inode *inode, struct file *file)
+ 	return 0;
+ }
+ 
+-static ssize_t tp_la_write(struct file *file, const char __user *buf,
+-			   size_t count, loff_t *pos)
++static ssize_t tp_la_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ {
+ 	int err;
+ 	char s[32];
+ 	unsigned long val;
++	size_t count = iov_iter_count(from);
+ 	size_t size = min(sizeof(s) - 1, count);
+-	struct adapter *adap = file_inode(file)->i_private;
++	struct adapter *adap = file_inode(iocb->ki_filp)->i_private;
+ 
+-	if (copy_from_user(s, buf, size))
++	if (!copy_from_iter_full(s, size, from))
+ 		return -EFAULT;
+ 	s[size] = '\0';
+ 	err = kstrtoul(s, 0, &val);
+@@ -684,12 +684,12 @@ static ssize_t tp_la_write(struct file *file, const char __user *buf,
+ }
+ 
+ static const struct file_operations tp_la_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = tp_la_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release_private,
+-	.write   = tp_la_write
++	.owner      = THIS_MODULE,
++	.open       = tp_la_open,
++	.read_iter  = seq_read_iter,
++	.llseek     = seq_lseek,
++	.release    = seq_release_private,
++	.write_iter = tp_la_write_iter
+ };
+ 
+ static int ulprx_la_show(struct seq_file *seq, void *v, int idx)
+@@ -720,11 +720,11 @@ static int ulprx_la_open(struct inode *inode, struct file *file)
+ }
+ 
+ static const struct file_operations ulprx_la_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = ulprx_la_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release_private
++	.owner     = THIS_MODULE,
++	.open      = ulprx_la_open,
++	.read_iter = seq_read_iter,
++	.llseek    = seq_lseek,
++	.release   = seq_release_private
+ };
+ 
+ /* Show the PM memory stats.  These stats include:
+@@ -799,23 +799,22 @@ static int pm_stats_open(struct inode *inode, struct file *file)
+ 	return single_open(file, pm_stats_show, inode->i_private);
+ }
+ 
+-static ssize_t pm_stats_clear(struct file *file, const char __user *buf,
+-			      size_t count, loff_t *pos)
++static ssize_t pm_stats_clear(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct adapter *adap = file_inode(file)->i_private;
++	struct adapter *adap = file_inode(iocb->ki_filp)->i_private;
+ 
+ 	t4_write_reg(adap, PM_RX_STAT_CONFIG_A, 0);
+ 	t4_write_reg(adap, PM_TX_STAT_CONFIG_A, 0);
+-	return count;
++	return iov_iter_count(from);
+ }
+ 
+ static const struct file_operations pm_stats_debugfs_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = pm_stats_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = single_release,
+-	.write   = pm_stats_clear
++	.owner      = THIS_MODULE,
++	.open       = pm_stats_open,
++	.read_iter  = seq_read_iter,
++	.llseek     = seq_lseek,
++	.release    = single_release,
++	.write_iter = pm_stats_clear
+ };
+ 
+ static int tx_rate_show(struct seq_file *seq, void *v)
+@@ -1134,11 +1133,11 @@ static int devlog_open(struct inode *inode, struct file *file)
+ }
+ 
+ static const struct file_operations devlog_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = devlog_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release_private
++	.owner     = THIS_MODULE,
++	.open      = devlog_open,
++	.read_iter = seq_read_iter,
++	.llseek    = seq_lseek,
++	.release   = seq_release_private
+ };
+ 
+ /* Show Firmware Mailbox Command/Reply Log
+@@ -1232,11 +1231,11 @@ static int mboxlog_open(struct inode *inode, struct file *file)
+ }
+ 
+ static const struct file_operations mboxlog_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = mboxlog_open,
 -	.read    = seq_read,
 -	.llseek  = seq_lseek,
 -	.release = seq_release,
 +	.owner     = THIS_MODULE,
-+	.open      = fm10k_dbg_desc_open,
++	.open      = mboxlog_open,
 +	.read_iter = seq_read_iter,
 +	.llseek    = seq_lseek,
 +	.release   = seq_release,
  };
  
- /**
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
-index f9ba45f596c9..0afab111d1d4 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
-@@ -43,23 +43,22 @@ static struct i40e_vsi *i40e_dbg_find_vsi(struct i40e_pf *pf, int seid)
- static char i40e_dbg_command_buf[256] = "";
- 
- /**
-- * i40e_dbg_command_read - read for command datum
-- * @filp: the opened file
-- * @buffer: where to write the data for the user to read
-- * @count: the size of the user's buffer
-- * @ppos: file position offset
-+ * i40e_dbg_command_read_iter - read for command datum
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @to: iovec iterator
-  **/
--static ssize_t i40e_dbg_command_read(struct file *filp, char __user *buffer,
--				     size_t count, loff_t *ppos)
-+static ssize_t i40e_dbg_command_read_iter(struct kiocb *iocb,
-+					  struct iov_iter *to)
- {
--	struct i40e_pf *pf = filp->private_data;
--	int bytes_not_copied;
-+	struct i40e_pf *pf = iocb->ki_filp->private_data;
- 	int buf_size = 256;
- 	char *buf;
- 	int len;
-+	size_t count = iov_iter_count(to);
-+	bool ret;
- 
- 	/* don't allow partial reads */
--	if (*ppos != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 	if (count < buf_size)
- 		return -ENOSPC;
-@@ -72,13 +71,13 @@ static ssize_t i40e_dbg_command_read(struct file *filp, char __user *buffer,
- 		       pf->vsi[pf->lan_vsi]->netdev->name,
- 		       i40e_dbg_command_buf);
- 
--	bytes_not_copied = copy_to_user(buffer, buf, len);
-+	ret = !copy_to_iter_full(buf, len, to);
- 	kfree(buf);
- 
--	if (bytes_not_copied)
-+	if (ret)
- 		return -EFAULT;
- 
--	*ppos = len;
-+	iocb->ki_pos = len;
- 	return len;
+ static int mbox_show(struct seq_file *seq, void *v)
+@@ -1275,8 +1274,7 @@ static int mbox_open(struct inode *inode, struct file *file)
+ 	return single_open(file, mbox_show, inode->i_private);
  }
  
-@@ -742,34 +741,30 @@ static void i40e_dbg_dump_vf_all(struct i40e_pf *pf)
- }
- 
- /**
-- * i40e_dbg_command_write - write into command datum
-- * @filp: the opened file
-- * @buffer: where to find the user's data
-- * @count: the length of the user's data
-- * @ppos: file position offset
-+ * i40e_dbg_command_write_iter - write into command datum
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @from: iovec iterator
-  **/
--static ssize_t i40e_dbg_command_write(struct file *filp,
--				      const char __user *buffer,
--				      size_t count, loff_t *ppos)
-+static ssize_t i40e_dbg_command_write_iter(struct kiocb *iocb,
-+					   struct iov_iter *from)
+-static ssize_t mbox_write(struct file *file, const char __user *buf,
+-			  size_t count, loff_t *pos)
++static ssize_t mbox_write_iter(struct kiocb *iocb, struct iov_iter *from)
  {
--	struct i40e_pf *pf = filp->private_data;
-+	struct i40e_pf *pf = iocb->ki_filp->private_data;
- 	char *cmd_buf, *cmd_buf_tmp;
--	int bytes_not_copied;
- 	struct i40e_vsi *vsi;
- 	int vsi_seid;
- 	int veb_seid;
- 	int vf_id;
- 	int cnt;
+ 	int i;
+ 	char c = '\n', s[256];
+@@ -1286,10 +1284,11 @@ static ssize_t mbox_write(struct file *file, const char __user *buf,
+ 	struct adapter *adap;
+ 	void __iomem *addr;
+ 	void __iomem *ctrl;
 +	size_t count = iov_iter_count(from);
  
- 	/* don't allow partial writes */
--	if (*ppos != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 
- 	cmd_buf = kzalloc(count + 1, GFP_KERNEL);
- 	if (!cmd_buf)
- 		return count;
--	bytes_not_copied = copy_from_user(cmd_buf, buffer, count);
--	if (bytes_not_copied) {
-+	if (!copy_from_iter_full(cmd_buf, count, from)) {
- 		kfree(cmd_buf);
+ 	if (count > sizeof(s) - 1 || !count)
+ 		return -EINVAL;
+-	if (copy_from_user(s, buf, count))
++	if (!copy_from_iter_full(s, count, from))
  		return -EFAULT;
- 	}
-@@ -1617,8 +1612,8 @@ static ssize_t i40e_dbg_command_write(struct file *filp,
- static const struct file_operations i40e_dbg_command_fops = {
- 	.owner = THIS_MODULE,
- 	.open =  simple_open,
--	.read =  i40e_dbg_command_read,
--	.write = i40e_dbg_command_write,
-+	.read_iter =  i40e_dbg_command_read_iter,
-+	.write_iter = i40e_dbg_command_write_iter,
- };
+ 	s[count] = '\0';
  
- /**************************************************************
-@@ -1629,23 +1624,22 @@ static const struct file_operations i40e_dbg_command_fops = {
- static char i40e_dbg_netdev_ops_buf[256] = "";
- 
- /**
-- * i40e_dbg_netdev_ops_read - read for netdev_ops datum
-- * @filp: the opened file
-- * @buffer: where to write the data for the user to read
-- * @count: the size of the user's buffer
-- * @ppos: file position offset
-+ * i40e_dbg_netdev_ops_read_iter - read for netdev_ops datum
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @to: iovec iterator
-  **/
--static ssize_t i40e_dbg_netdev_ops_read(struct file *filp, char __user *buffer,
--					size_t count, loff_t *ppos)
-+static ssize_t i40e_dbg_netdev_ops_read_iter(struct kiocb *iocb,
-+					     struct iov_iter *to)
- {
--	struct i40e_pf *pf = filp->private_data;
--	int bytes_not_copied;
-+	struct i40e_pf *pf = iocb->ki_filp->private_data;
- 	int buf_size = 256;
- 	char *buf;
- 	int len;
-+	bool ret;
-+	size_t count = iov_iter_count(to);
- 
- 	/* don't allow partal reads */
--	if (*ppos != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 	if (count < buf_size)
- 		return -ENOSPC;
-@@ -1658,44 +1652,39 @@ static ssize_t i40e_dbg_netdev_ops_read(struct file *filp, char __user *buffer,
- 		       pf->vsi[pf->lan_vsi]->netdev->name,
- 		       i40e_dbg_netdev_ops_buf);
- 
--	bytes_not_copied = copy_to_user(buffer, buf, len);
-+	ret = !copy_to_iter_full(buf, len, to);
- 	kfree(buf);
- 
--	if (bytes_not_copied)
-+	if (ret)
- 		return -EFAULT;
- 
--	*ppos = len;
-+	iocb->ki_pos = len;
- 	return len;
- }
- 
- /**
-- * i40e_dbg_netdev_ops_write - write into netdev_ops datum
-- * @filp: the opened file
-- * @buffer: where to find the user's data
-- * @count: the length of the user's data
-- * @ppos: file position offset
-+ * i40e_dbg_netdev_ops_write_iter - write into netdev_ops datum
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @from: iovec iterator
-  **/
--static ssize_t i40e_dbg_netdev_ops_write(struct file *filp,
--					 const char __user *buffer,
--					 size_t count, loff_t *ppos)
-+static ssize_t i40e_dbg_netdev_ops_write_iter(struct kiocb *iocb,
-+					      struct iov_iter *from)
- {
--	struct i40e_pf *pf = filp->private_data;
--	int bytes_not_copied;
-+	struct i40e_pf *pf = iocb->ki_filp->private_data;
- 	struct i40e_vsi *vsi;
- 	char *buf_tmp;
- 	int vsi_seid;
- 	int i, cnt;
-+	size_t count = iov_iter_count(from);
- 
- 	/* don't allow partial writes */
--	if (*ppos != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 	if (count >= sizeof(i40e_dbg_netdev_ops_buf))
- 		return -ENOSPC;
- 
- 	memset(i40e_dbg_netdev_ops_buf, 0, sizeof(i40e_dbg_netdev_ops_buf));
--	bytes_not_copied = copy_from_user(i40e_dbg_netdev_ops_buf,
--					  buffer, count);
--	if (bytes_not_copied)
-+	if (!copy_from_iter_full(i40e_dbg_netdev_ops_buf, count, from))
- 		return -EFAULT;
- 	i40e_dbg_netdev_ops_buf[count] = '\0';
- 
-@@ -1784,8 +1773,8 @@ static ssize_t i40e_dbg_netdev_ops_write(struct file *filp,
- static const struct file_operations i40e_dbg_netdev_ops_fops = {
- 	.owner = THIS_MODULE,
- 	.open = simple_open,
--	.read = i40e_dbg_netdev_ops_read,
--	.write = i40e_dbg_netdev_ops_write,
-+	.read_iter = i40e_dbg_netdev_ops_read_iter,
-+	.write_iter = i40e_dbg_netdev_ops_write_iter,
- };
- 
- /**
-diff --git a/drivers/net/ethernet/intel/ice/ice_debugfs.c b/drivers/net/ethernet/intel/ice/ice_debugfs.c
-index 9fc0fd95a13d..6ec1e04972c9 100644
---- a/drivers/net/ethernet/intel/ice/ice_debugfs.c
-+++ b/drivers/net/ethernet/intel/ice/ice_debugfs.c
-@@ -151,27 +151,25 @@ static int ice_debugfs_module_open(struct inode *inode, struct file *filp)
- }
- 
- /**
-- * ice_debugfs_module_write - write into 'module' file
-- * @filp: the opened file
-- * @buf: where to find the user's data
-- * @count: the length of the user's data
-- * @ppos: file position offset
-+ * ice_debugfs_module_write_iter - write into 'module' file
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @from: iovec iterator
-  */
- static ssize_t
--ice_debugfs_module_write(struct file *filp, const char __user *buf,
--			 size_t count, loff_t *ppos)
-+ice_debugfs_module_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct ice_pf *pf = file_inode(filp)->i_private;
--	struct dentry *dentry = file_dentry(filp);
-+	struct ice_pf *pf = file_inode(iocb->ki_filp)->i_private;
-+	struct dentry *dentry = file_dentry(iocb->ki_filp);
- 	struct device *dev = ice_pf_to_dev(pf);
- 	char user_val[16], *cmd_buf;
- 	int module, log_level, cnt;
-+	size_t count = iov_iter_count(from);
- 
- 	/* don't allow partial writes or invalid input */
--	if (*ppos != 0 || count > 8)
-+	if (iocb->ki_pos != 0 || count > 8)
+@@ -1298,7 +1297,7 @@ static ssize_t mbox_write(struct file *file, const char __user *buf,
+ 		   &data[7], &c) < 8 || c != '\n')
  		return -EINVAL;
  
--	cmd_buf = memdup_user_nul(buf, count);
-+	cmd_buf = iterdup_nul(from, count);
- 	if (IS_ERR(cmd_buf))
- 		return PTR_ERR(cmd_buf);
+-	ino = file_inode(file);
++	ino = file_inode(iocb->ki_filp);
+ 	mbox = (uintptr_t)ino->i_private & 7;
+ 	adap = ino->i_private - mbox;
+ 	addr = adap->regs + PF_REG(mbox, CIM_PF_MAILBOX_DATA_A);
+@@ -1315,12 +1314,12 @@ static ssize_t mbox_write(struct file *file, const char __user *buf,
+ }
  
-@@ -209,55 +207,50 @@ ice_debugfs_module_write(struct file *filp, const char __user *buf,
- static const struct file_operations ice_debugfs_module_fops = {
+ static const struct file_operations mbox_debugfs_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = mbox_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = single_release,
+-	.write   = mbox_write
++	.owner      = THIS_MODULE,
++	.open       = mbox_open,
++	.read_iter  = seq_read_iter,
++	.llseek     = seq_lseek,
++	.release    = single_release,
++	.write_iter = mbox_write_iter
+ };
+ 
+ static int mps_trc_show(struct seq_file *seq, void *v)
+@@ -1408,8 +1407,7 @@ static unsigned int xdigit2int(unsigned char c)
+  * must be anchored at 0.  An omitted mask is taken as a mask of 1s, an omitted
+  * anchor is taken as 0.
+  */
+-static ssize_t mps_trc_write(struct file *file, const char __user *buf,
+-			     size_t count, loff_t *pos)
++static ssize_t mps_trc_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ {
+ 	int i, enable, ret;
+ 	u32 *data, *mask;
+@@ -1419,8 +1417,9 @@ static ssize_t mps_trc_write(struct file *file, const char __user *buf,
+ 	char *s, *p, *word, *end;
+ 	struct adapter *adap;
+ 	u32 j;
++	size_t count = iov_iter_count(from);
+ 
+-	ino = file_inode(file);
++	ino = file_inode(iocb->ki_filp);
+ 	trcidx = (uintptr_t)ino->i_private & 3;
+ 	adap = ino->i_private - trcidx;
+ 
+@@ -1432,7 +1431,7 @@ static ssize_t mps_trc_write(struct file *file, const char __user *buf,
+ 	p = s = kzalloc(count + 1, GFP_USER);
+ 	if (!s)
+ 		return -ENOMEM;
+-	if (copy_from_user(s, buf, count)) {
++	if (!copy_from_iter_full(s, count, from)) {
+ 		count = -EFAULT;
+ 		goto out;
+ 	}
+@@ -1608,20 +1607,20 @@ inval:				count = -EINVAL;
+ }
+ 
+ static const struct file_operations mps_trc_debugfs_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = mps_trc_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = single_release,
+-	.write   = mps_trc_write
++	.owner      = THIS_MODULE,
++	.open       = mps_trc_open,
++	.read_iter  = seq_read_iter,
++	.llseek     = seq_lseek,
++	.release    = single_release,
++	.write_iter = mps_trc_write_iter
+ };
+ 
+-static ssize_t flash_read(struct file *file, char __user *buf, size_t count,
+-			  loff_t *ppos)
++static ssize_t flash_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	loff_t pos = *ppos;
+-	loff_t avail = file_inode(file)->i_size;
+-	struct adapter *adap = file->private_data;
++	loff_t pos = iocb->ki_pos;
++	loff_t avail = file_inode(iocb->ki_filp)->i_size;
++	struct adapter *adap = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(to);
+ 
+ 	if (pos < 0)
+ 		return -EINVAL;
+@@ -1643,23 +1642,22 @@ static ssize_t flash_read(struct file *file, char __user *buf, size_t count,
+ 			return ret;
+ 
+ 		len -= ofst;
+-		if (copy_to_user(buf, data + ofst, len))
++		if (!copy_to_iter_full(data + ofst, len, to))
+ 			return -EFAULT;
+ 
+-		buf += len;
+ 		pos += len;
+ 		count -= len;
+ 	}
+-	count = pos - *ppos;
+-	*ppos = pos;
++	count = pos - iocb->ki_pos;
++	iocb->ki_pos = pos;
+ 	return count;
+ }
+ 
+ static const struct file_operations flash_debugfs_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = mem_open,
+-	.read    = flash_read,
+-	.llseek  = default_llseek,
++	.owner     = THIS_MODULE,
++	.open      = mem_open,
++	.read_iter = flash_read_iter,
++	.llseek    = default_llseek,
+ };
+ 
+ static inline void tcamxy2valmask(u64 x, u64 y, u8 *addr, u64 *mask)
+@@ -1928,11 +1926,11 @@ static int mps_tcam_open(struct inode *inode, struct file *file)
+ }
+ 
+ static const struct file_operations mps_tcam_debugfs_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = mps_tcam_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release,
++	.owner     = THIS_MODULE,
++	.open      = mps_tcam_open,
++	.read_iter = seq_read_iter,
++	.llseek    = seq_lseek,
++	.release   = seq_release,
+ };
+ 
+ /* Display various sensor information.
+@@ -2005,11 +2003,11 @@ static int rss_open(struct inode *inode, struct file *file)
+ }
+ 
+ static const struct file_operations rss_debugfs_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = rss_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release_private
++	.owner     = THIS_MODULE,
++	.open      = rss_open,
++	.read_iter = seq_read_iter,
++	.llseek    = seq_lseek,
++	.release   = seq_release_private
+ };
+ 
+ /* RSS Configuration.
+@@ -2194,17 +2192,17 @@ static int rss_key_open(struct inode *inode, struct file *file)
+ 	return single_open(file, rss_key_show, inode->i_private);
+ }
+ 
+-static ssize_t rss_key_write(struct file *file, const char __user *buf,
+-			     size_t count, loff_t *pos)
++static ssize_t rss_key_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ {
+ 	int i, j;
+ 	u32 key[10];
+ 	char s[100], *p;
+-	struct adapter *adap = file_inode(file)->i_private;
++	struct adapter *adap = file_inode(iocb->ki_filp)->i_private;
++	size_t count = iov_iter_count(from);
+ 
+ 	if (count > sizeof(s) - 1)
+ 		return -EINVAL;
+-	if (copy_from_user(s, buf, count))
++	if (!copy_from_iter_full(s, count, from))
+ 		return -EFAULT;
+ 	for (i = count; i > 0 && isspace(s[i - 1]); i--)
+ 		;
+@@ -2224,12 +2222,12 @@ static ssize_t rss_key_write(struct file *file, const char __user *buf,
+ }
+ 
+ static const struct file_operations rss_key_debugfs_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = rss_key_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = single_release,
+-	.write   = rss_key_write
++	.owner      = THIS_MODULE,
++	.open       = rss_key_open,
++	.read_iter  = seq_read_iter,
++	.llseek     = seq_lseek,
++	.release    = single_release,
++	.write_iter = rss_key_write_iter
+ };
+ 
+ /* PF RSS Configuration.
+@@ -2308,11 +2306,11 @@ static int rss_pf_config_open(struct inode *inode, struct file *file)
+ }
+ 
+ static const struct file_operations rss_pf_config_debugfs_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = rss_pf_config_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release_private
++	.owner     = THIS_MODULE,
++	.open      = rss_pf_config_open,
++	.read_iter = seq_read_iter,
++	.llseek    = seq_lseek,
++	.release   = seq_release_private
+ };
+ 
+ /* VF RSS Configuration.
+@@ -2371,11 +2369,11 @@ static int rss_vf_config_open(struct inode *inode, struct file *file)
+ }
+ 
+ static const struct file_operations rss_vf_config_debugfs_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = rss_vf_config_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release_private
++	.owner     = THIS_MODULE,
++	.open      = rss_vf_config_open,
++	.read_iter = seq_read_iter,
++	.llseek    = seq_lseek,
++	.release   = seq_release_private
+ };
+ 
+ #ifdef CONFIG_CHELSIO_T4_DCB
+@@ -2559,11 +2557,11 @@ static int dcb_info_open(struct inode *inode, struct file *file)
+ }
+ 
+ static const struct file_operations dcb_info_debugfs_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = dcb_info_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release,
++	.owner     = THIS_MODULE,
++	.open      = dcb_info_open,
++	.read_iter = seq_read_iter,
++	.llseek    = seq_lseek,
++	.release   = seq_release,
+ };
+ #endif /* CONFIG_CHELSIO_T4_DCB */
+ 
+@@ -3243,11 +3241,11 @@ static int sge_qinfo_open(struct inode *inode, struct file *file)
+ }
+ 
+ static const struct file_operations sge_qinfo_debugfs_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = sge_qinfo_open,
+-	.read    = seq_read,
+-	.llseek  = seq_lseek,
+-	.release = seq_release,
++	.owner     = THIS_MODULE,
++	.open      = sge_qinfo_open,
++	.read_iter = seq_read_iter,
++	.llseek    = seq_lseek,
++	.release   = seq_release,
+ };
+ 
+ int mem_open(struct inode *inode, struct file *file)
+@@ -3265,15 +3263,15 @@ int mem_open(struct inode *inode, struct file *file)
+ 	return 0;
+ }
+ 
+-static ssize_t mem_read(struct file *file, char __user *buf, size_t count,
+-			loff_t *ppos)
++static ssize_t mem_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	loff_t pos = *ppos;
+-	loff_t avail = file_inode(file)->i_size;
+-	unsigned int mem = (uintptr_t)file->private_data & 0x7;
+-	struct adapter *adap = file->private_data - mem;
++	loff_t pos = iocb->ki_pos;
++	loff_t avail = file_inode(iocb->ki_filp)->i_size;
++	unsigned int mem = (uintptr_t)iocb->ki_filp->private_data & 0x7;
++	struct adapter *adap = iocb->ki_filp->private_data - mem;
+ 	__be32 *data;
+ 	int ret;
++	size_t count = iov_iter_count(to);
+ 
+ 	if (pos < 0)
+ 		return -EINVAL;
+@@ -3293,20 +3291,20 @@ static ssize_t mem_read(struct file *file, char __user *buf, size_t count,
+ 		kvfree(data);
+ 		return ret;
+ 	}
+-	ret = copy_to_user(buf, data, count);
++	ret = !copy_to_iter_full(data, count, to);
+ 
+ 	kvfree(data);
+ 	if (ret)
+ 		return -EFAULT;
+ 
+-	*ppos = pos + count;
++	iocb->ki_pos = pos + count;
+ 	return count;
+ }
+ static const struct file_operations mem_debugfs_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = simple_open,
+-	.read    = mem_read,
+-	.llseek  = default_llseek,
++	.owner     = THIS_MODULE,
++	.open      = simple_open,
++	.read_iter = mem_read_iter,
++	.llseek    = default_llseek,
+ };
+ 
+ static int tid_info_show(struct seq_file *seq, void *v)
+@@ -3401,11 +3399,10 @@ static void add_debugfs_mem(struct adapter *adap, const char *name,
+ 				 size_mb << 20);
+ }
+ 
+-static ssize_t blocked_fl_read(struct file *filp, char __user *ubuf,
+-			       size_t count, loff_t *ppos)
++static ssize_t blocked_fl_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ {
+ 	int len;
+-	const struct adapter *adap = filp->private_data;
++	const struct adapter *adap = iocb->ki_filp->private_data;
+ 	char *buf;
+ 	ssize_t size = (adap->sge.egr_sz + 3) / 4 +
+ 			adap->sge.egr_sz / 32 + 2; /* includes ,/\n/\0 */
+@@ -3417,23 +3414,31 @@ static ssize_t blocked_fl_read(struct file *filp, char __user *ubuf,
+ 	len = snprintf(buf, size - 1, "%*pb\n",
+ 		       adap->sge.egr_sz, adap->sge.blocked_fl);
+ 	len += sprintf(buf + len, "\n");
+-	size = simple_read_from_buffer(ubuf, count, ppos, buf, len);
++	size = simple_copy_to_iter(buf, &iocb->ki_pos, len, to);
+ 	kfree(buf);
+ 	return size;
+ }
+ 
+-static ssize_t blocked_fl_write(struct file *filp, const char __user *ubuf,
+-				size_t count, loff_t *ppos)
++static ssize_t blocked_fl_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ {
+ 	int err;
+ 	unsigned long *t;
+-	struct adapter *adap = filp->private_data;
++	struct adapter *adap = iocb->ki_filp->private_data;
++	void *kern_buf;
++	size_t count = iov_iter_count(from);
+ 
+ 	t = bitmap_zalloc(adap->sge.egr_sz, GFP_KERNEL);
+ 	if (!t)
+ 		return -ENOMEM;
+ 
+-	err = bitmap_parse_user(ubuf, count, t, adap->sge.egr_sz);
++	kern_buf = kzalloc(count + 1, GFP_KERNEL);
++	if (!kern_buf)
++		return -ENOMEM;
++
++	if (!copy_from_iter_full(kern_buf, count, from))
++		return -EFAULT;
++
++	err = bitmap_parse(kern_buf, UINT_MAX, t, adap->sge.egr_sz);
+ 	if (err) {
+ 		bitmap_free(t);
+ 		return err;
+@@ -3445,11 +3450,11 @@ static ssize_t blocked_fl_write(struct file *filp, const char __user *ubuf,
+ }
+ 
+ static const struct file_operations blocked_fl_fops = {
+-	.owner   = THIS_MODULE,
+-	.open    = simple_open,
+-	.read    = blocked_fl_read,
+-	.write   = blocked_fl_write,
+-	.llseek  = generic_file_llseek,
++	.owner      = THIS_MODULE,
++	.open       = simple_open,
++	.read_iter  = blocked_fl_read_iter,
++	.write_iter = blocked_fl_write_iter,
++	.llseek     = generic_file_llseek,
+ };
+ 
+ static void mem_region_show(struct seq_file *seq, const char *name,
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/l2t.c b/drivers/net/ethernet/chelsio/cxgb4/l2t.c
+index 1e5f5b1a22a6..c4564a14b6ee 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/l2t.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/l2t.c
+@@ -756,7 +756,7 @@ static int l2t_seq_open(struct inode *inode, struct file *file)
+ const struct file_operations t4_l2t_fops = {
  	.owner = THIS_MODULE,
- 	.open  = ice_debugfs_module_open,
+ 	.open = l2t_seq_open,
 -	.read = seq_read,
 +	.read_iter = seq_read_iter,
- 	.release = single_release,
--	.write = ice_debugfs_module_write,
-+	.write_iter = ice_debugfs_module_write_iter,
+ 	.llseek = seq_lseek,
+ 	.release = seq_release,
  };
- 
- /**
-- * ice_debugfs_nr_messages_read - read from 'nr_messages' file
-- * @filp: the opened file
-- * @buffer: where to write the data for the user to read
-- * @count: the size of the user's buffer
-- * @ppos: file position offset
-+ * ice_debugfs_nr_messages_read_iter - read from 'nr_messages' file
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @to: iovec iterator
-  */
--static ssize_t ice_debugfs_nr_messages_read(struct file *filp,
--					    char __user *buffer, size_t count,
--					    loff_t *ppos)
-+static ssize_t ice_debugfs_nr_messages_read_iter(struct kiocb *iocb,
-+						 struct iov_iter *to)
- {
--	struct ice_pf *pf = filp->private_data;
-+	struct ice_pf *pf = iocb->ki_filp->private_data;
- 	struct ice_hw *hw = &pf->hw;
- 	char buff[32] = {};
- 
- 	snprintf(buff, sizeof(buff), "%d\n",
- 		 hw->fwlog_cfg.log_resolution);
- 
--	return simple_read_from_buffer(buffer, count, ppos, buff, strlen(buff));
-+	return simple_copy_to_iter(buff, &iocb->ki_pos, strlen(buff), to);
- }
- 
- /**
-- * ice_debugfs_nr_messages_write - write into 'nr_messages' file
-- * @filp: the opened file
-- * @buf: where to find the user's data
-- * @count: the length of the user's data
-- * @ppos: file position offset
-+ * ice_debugfs_nr_messages_write_iter - write into 'nr_messages' file
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @from: iovec iterator
-  */
- static ssize_t
--ice_debugfs_nr_messages_write(struct file *filp, const char __user *buf,
--			      size_t count, loff_t *ppos)
-+ice_debugfs_nr_messages_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct ice_pf *pf = filp->private_data;
-+	struct ice_pf *pf = iocb->ki_filp->private_data;
- 	struct device *dev = ice_pf_to_dev(pf);
- 	struct ice_hw *hw = &pf->hw;
- 	char user_val[8], *cmd_buf;
- 	s16 nr_messages;
- 	ssize_t ret;
-+	size_t count = iov_iter_count(from);
- 
- 	/* don't allow partial writes or invalid input */
--	if (*ppos != 0 || count > 4)
-+	if (iocb->ki_pos != 0 || count > 4)
- 		return -EINVAL;
- 
--	cmd_buf = memdup_user_nul(buf, count);
-+	cmd_buf = iterdup_nul(from, count);
- 	if (IS_ERR(cmd_buf))
- 		return PTR_ERR(cmd_buf);
- 
-@@ -285,22 +278,19 @@ ice_debugfs_nr_messages_write(struct file *filp, const char __user *buf,
- static const struct file_operations ice_debugfs_nr_messages_fops = {
- 	.owner = THIS_MODULE,
- 	.open  = simple_open,
--	.read = ice_debugfs_nr_messages_read,
--	.write = ice_debugfs_nr_messages_write,
-+	.read_iter = ice_debugfs_nr_messages_read_iter,
-+	.write_iter = ice_debugfs_nr_messages_write_iter,
- };
- 
- /**
-- * ice_debugfs_enable_read - read from 'enable' file
-- * @filp: the opened file
-- * @buffer: where to write the data for the user to read
-- * @count: the size of the user's buffer
-- * @ppos: file position offset
-+ * ice_debugfs_enable_read_iter - read from 'enable' file
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @to: iovec iterator
-  */
--static ssize_t ice_debugfs_enable_read(struct file *filp,
--				       char __user *buffer, size_t count,
--				       loff_t *ppos)
-+static ssize_t ice_debugfs_enable_read_iter(struct kiocb *iocb,
-+					    struct iov_iter *to)
- {
--	struct ice_pf *pf = filp->private_data;
-+	struct ice_pf *pf = iocb->ki_filp->private_data;
- 	struct ice_hw *hw = &pf->hw;
- 	char buff[32] = {};
- 
-@@ -308,31 +298,29 @@ static ssize_t ice_debugfs_enable_read(struct file *filp,
- 		 (u16)(hw->fwlog_cfg.options &
- 		 ICE_FWLOG_OPTION_IS_REGISTERED) >> 3);
- 
--	return simple_read_from_buffer(buffer, count, ppos, buff, strlen(buff));
-+	return simple_copy_to_iter(buff, &iocb->ki_pos, strlen(buff), to);
- }
- 
- /**
-- * ice_debugfs_enable_write - write into 'enable' file
-- * @filp: the opened file
-- * @buf: where to find the user's data
-- * @count: the length of the user's data
-- * @ppos: file position offset
-+ * ice_debugfs_enable_write_iter - write into 'enable' file
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @from: iovec iterator
-  */
- static ssize_t
--ice_debugfs_enable_write(struct file *filp, const char __user *buf,
--			 size_t count, loff_t *ppos)
-+ice_debugfs_enable_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct ice_pf *pf = filp->private_data;
-+	struct ice_pf *pf = iocb->ki_filp->private_data;
- 	struct ice_hw *hw = &pf->hw;
- 	char user_val[8], *cmd_buf;
- 	bool enable;
- 	ssize_t ret;
-+	size_t count = iov_iter_count(from);
- 
- 	/* don't allow partial writes or invalid input */
--	if (*ppos != 0 || count > 2)
-+	if (iocb->ki_pos != 0 || count > 2)
- 		return -EINVAL;
- 
--	cmd_buf = memdup_user_nul(buf, count);
-+	cmd_buf = iterdup_nul(from, count);
- 	if (IS_ERR(cmd_buf))
- 		return PTR_ERR(cmd_buf);
- 
-@@ -380,22 +368,19 @@ ice_debugfs_enable_write(struct file *filp, const char __user *buf,
- static const struct file_operations ice_debugfs_enable_fops = {
- 	.owner = THIS_MODULE,
- 	.open  = simple_open,
--	.read = ice_debugfs_enable_read,
--	.write = ice_debugfs_enable_write,
-+	.read_iter = ice_debugfs_enable_read_iter,
-+	.write_iter = ice_debugfs_enable_write_iter,
- };
- 
- /**
-- * ice_debugfs_log_size_read - read from 'log_size' file
-- * @filp: the opened file
-- * @buffer: where to write the data for the user to read
-- * @count: the size of the user's buffer
-- * @ppos: file position offset
-+ * ice_debugfs_log_size_read_iter - read from 'log_size' file
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @to: iovec iterator
-  */
--static ssize_t ice_debugfs_log_size_read(struct file *filp,
--					 char __user *buffer, size_t count,
--					 loff_t *ppos)
-+static ssize_t ice_debugfs_log_size_read_iter(struct kiocb *iocb,
-+					      struct iov_iter *to)
- {
--	struct ice_pf *pf = filp->private_data;
-+	struct ice_pf *pf = iocb->ki_filp->private_data;
- 	struct ice_hw *hw = &pf->hw;
- 	char buff[32] = {};
- 	int index;
-@@ -403,32 +388,30 @@ static ssize_t ice_debugfs_log_size_read(struct file *filp,
- 	index = hw->fwlog_ring.index;
- 	snprintf(buff, sizeof(buff), "%s\n", ice_fwlog_log_size[index]);
- 
--	return simple_read_from_buffer(buffer, count, ppos, buff, strlen(buff));
-+	return simple_copy_to_iter(buff, &iocb->ki_pos, strlen(buff), to);
- }
- 
- /**
-- * ice_debugfs_log_size_write - write into 'log_size' file
-- * @filp: the opened file
-- * @buf: where to find the user's data
-- * @count: the length of the user's data
-- * @ppos: file position offset
-+ * ice_debugfs_log_size_write_iter - write into 'log_size' file
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @from: iovec iterator
-  */
- static ssize_t
--ice_debugfs_log_size_write(struct file *filp, const char __user *buf,
--			   size_t count, loff_t *ppos)
-+ice_debugfs_log_size_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct ice_pf *pf = filp->private_data;
-+	struct ice_pf *pf = iocb->ki_filp->private_data;
- 	struct device *dev = ice_pf_to_dev(pf);
- 	struct ice_hw *hw = &pf->hw;
- 	char user_val[8], *cmd_buf;
- 	ssize_t ret;
- 	int index;
-+	size_t count = iov_iter_count(from);
- 
- 	/* don't allow partial writes or invalid input */
--	if (*ppos != 0 || count > 5)
-+	if (iocb->ki_pos != 0 || count > 5)
- 		return -EINVAL;
- 
--	cmd_buf = memdup_user_nul(buf, count);
-+	cmd_buf = iterdup_nul(from, count);
- 	if (IS_ERR(cmd_buf))
- 		return PTR_ERR(cmd_buf);
- 
-@@ -470,24 +453,23 @@ ice_debugfs_log_size_write(struct file *filp, const char __user *buf,
- static const struct file_operations ice_debugfs_log_size_fops = {
- 	.owner = THIS_MODULE,
- 	.open  = simple_open,
--	.read = ice_debugfs_log_size_read,
--	.write = ice_debugfs_log_size_write,
-+	.read_iter = ice_debugfs_log_size_read_iter,
-+	.write_iter = ice_debugfs_log_size_write_iter,
- };
- 
- /**
-- * ice_debugfs_data_read - read from 'data' file
-- * @filp: the opened file
-- * @buffer: where to write the data for the user to read
-- * @count: the size of the user's buffer
-- * @ppos: file position offset
-+ * ice_debugfs_data_read_iter - read from 'data' file
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @to: iovec iterator
-  */
--static ssize_t ice_debugfs_data_read(struct file *filp, char __user *buffer,
--				     size_t count, loff_t *ppos)
-+static ssize_t ice_debugfs_data_read_iter(struct kiocb *iocb,
-+					  struct iov_iter *to)
- {
--	struct ice_pf *pf = filp->private_data;
-+	struct ice_pf *pf = iocb->ki_filp->private_data;
- 	struct ice_hw *hw = &pf->hw;
- 	int data_copied = 0;
- 	bool done = false;
-+	size_t count = iov_iter_count(to);
- 
- 	if (ice_fwlog_ring_empty(&hw->fwlog_ring))
- 		return 0;
-@@ -503,7 +485,7 @@ static ssize_t ice_debugfs_data_read(struct file *filp, char __user *buffer,
- 			continue;
- 		}
- 
--		if (copy_to_user(buffer, log->data, cur_buf_len)) {
-+		if (!copy_to_iter_full(log->data, cur_buf_len, to)) {
- 			/* if there is an error then bail and return whatever
- 			 * the driver has copied so far
- 			 */
-@@ -512,9 +494,8 @@ static ssize_t ice_debugfs_data_read(struct file *filp, char __user *buffer,
- 		}
- 
- 		data_copied += cur_buf_len;
--		buffer += cur_buf_len;
- 		count -= cur_buf_len;
--		*ppos += cur_buf_len;
-+		iocb->ki_pos += cur_buf_len;
- 		ice_fwlog_ring_increment(&hw->fwlog_ring.head,
- 					 hw->fwlog_ring.size);
- 	}
-@@ -523,23 +504,21 @@ static ssize_t ice_debugfs_data_read(struct file *filp, char __user *buffer,
- }
- 
- /**
-- * ice_debugfs_data_write - write into 'data' file
-- * @filp: the opened file
-- * @buf: where to find the user's data
-- * @count: the length of the user's data
-- * @ppos: file position offset
-+ * ice_debugfs_data_write_iter - write into 'data' file
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @from: iovec iterator
-  */
- static ssize_t
--ice_debugfs_data_write(struct file *filp, const char __user *buf, size_t count,
--		       loff_t *ppos)
-+ice_debugfs_data_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct ice_pf *pf = filp->private_data;
-+	struct ice_pf *pf = iocb->ki_filp->private_data;
- 	struct device *dev = ice_pf_to_dev(pf);
- 	struct ice_hw *hw = &pf->hw;
- 	ssize_t ret;
-+	size_t count = iov_iter_count(from);
- 
- 	/* don't allow partial writes */
--	if (*ppos != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 
- 	/* any value is allowed to clear the buffer so no need to even look at
-@@ -573,8 +552,8 @@ ice_debugfs_data_write(struct file *filp, const char __user *buf, size_t count,
- static const struct file_operations ice_debugfs_data_fops = {
- 	.owner = THIS_MODULE,
- 	.open  = simple_open,
--	.read = ice_debugfs_data_read,
--	.write = ice_debugfs_data_write,
-+	.read_iter = ice_debugfs_data_read_iter,
-+	.write_iter = ice_debugfs_data_write_iter,
- };
- 
- /**
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_debugfs.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_debugfs.c
-index 5b1cf49df3d3..077dd26e7079 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_debugfs.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_debugfs.c
-@@ -10,16 +10,17 @@ static struct dentry *ixgbe_dbg_root;
- 
- static char ixgbe_dbg_reg_ops_buf[256] = "";
- 
--static ssize_t ixgbe_dbg_common_ops_read(struct file *filp, char __user *buffer,
--					 size_t count, loff_t *ppos,
-+static ssize_t ixgbe_dbg_common_ops_read(struct kiocb *iocb,
-+					 struct iov_iter *to,
- 					 char *dbg_buf)
- {
--	struct ixgbe_adapter *adapter = filp->private_data;
-+	struct ixgbe_adapter *adapter = iocb->ki_filp->private_data;
- 	char *buf;
- 	int len;
-+	size_t count = iov_iter_count(to);
- 
- 	/* don't allow partial reads */
--	if (*ppos != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 
- 	buf = kasprintf(GFP_KERNEL, "%s: %s\n",
-@@ -32,51 +33,43 @@ static ssize_t ixgbe_dbg_common_ops_read(struct file *filp, char __user *buffer,
- 		return -ENOSPC;
- 	}
- 
--	len = simple_read_from_buffer(buffer, count, ppos, buf, strlen(buf));
-+	len = simple_copy_to_iter(buf, &iocb->ki_pos, strlen(buf), to);
- 
- 	kfree(buf);
- 	return len;
- }
- 
- /**
-- * ixgbe_dbg_reg_ops_read - read for reg_ops datum
-- * @filp: the opened file
-- * @buffer: where to write the data for the user to read
-- * @count: the size of the user's buffer
-- * @ppos: file position offset
-+ * ixgbe_dbg_reg_ops_read_iter - read for reg_ops datum
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @to: iovec iterator
-  **/
--static ssize_t ixgbe_dbg_reg_ops_read(struct file *filp, char __user *buffer,
--				      size_t count, loff_t *ppos)
-+static ssize_t ixgbe_dbg_reg_ops_read_iter(struct kiocb *iocb,
-+					   struct iov_iter *to)
- {
--	return ixgbe_dbg_common_ops_read(filp, buffer, count, ppos,
--					 ixgbe_dbg_reg_ops_buf);
-+	return ixgbe_dbg_common_ops_read(iocb, to, ixgbe_dbg_reg_ops_buf);
- }
- 
- /**
-- * ixgbe_dbg_reg_ops_write - write into reg_ops datum
-- * @filp: the opened file
-- * @buffer: where to find the user's data
-- * @count: the length of the user's data
-- * @ppos: file position offset
-+ * ixgbe_dbg_reg_ops_write_iter - write into reg_ops datum
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @from: iovec iterator
-  **/
--static ssize_t ixgbe_dbg_reg_ops_write(struct file *filp,
--				     const char __user *buffer,
--				     size_t count, loff_t *ppos)
-+static ssize_t ixgbe_dbg_reg_ops_write_iter(struct kiocb *iocb,
-+					    struct iov_iter *from)
- {
--	struct ixgbe_adapter *adapter = filp->private_data;
-+	struct ixgbe_adapter *adapter = iocb->ki_filp->private_data;
- 	int len;
-+	size_t count = iov_iter_count(from);
- 
- 	/* don't allow partial writes */
--	if (*ppos != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 	if (count >= sizeof(ixgbe_dbg_reg_ops_buf))
- 		return -ENOSPC;
- 
--	len = simple_write_to_buffer(ixgbe_dbg_reg_ops_buf,
--				     sizeof(ixgbe_dbg_reg_ops_buf)-1,
--				     ppos,
--				     buffer,
--				     count);
-+	len = simple_copy_from_iter(ixgbe_dbg_reg_ops_buf, &iocb->ki_pos,
-+				    sizeof(ixgbe_dbg_reg_ops_buf) - 1, from);
- 	if (len < 0)
- 		return len;
- 
-@@ -115,51 +108,43 @@ static ssize_t ixgbe_dbg_reg_ops_write(struct file *filp,
- static const struct file_operations ixgbe_dbg_reg_ops_fops = {
- 	.owner = THIS_MODULE,
- 	.open = simple_open,
--	.read =  ixgbe_dbg_reg_ops_read,
--	.write = ixgbe_dbg_reg_ops_write,
-+	.read_iter = ixgbe_dbg_reg_ops_read_iter,
-+	.write_iter = ixgbe_dbg_reg_ops_write_iter,
- };
- 
- static char ixgbe_dbg_netdev_ops_buf[256] = "";
- 
- /**
-- * ixgbe_dbg_netdev_ops_read - read for netdev_ops datum
-- * @filp: the opened file
-- * @buffer: where to write the data for the user to read
-- * @count: the size of the user's buffer
-- * @ppos: file position offset
-+ * ixgbe_dbg_netdev_ops_read_iter - read for netdev_ops datum
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @to: iovec iterator
-  **/
--static ssize_t ixgbe_dbg_netdev_ops_read(struct file *filp, char __user *buffer,
--					 size_t count, loff_t *ppos)
-+static ssize_t ixgbe_dbg_netdev_ops_read_iter(struct kiocb *iocb,
-+					      struct iov_iter *to)
- {
--	return ixgbe_dbg_common_ops_read(filp, buffer, count, ppos,
--					 ixgbe_dbg_netdev_ops_buf);
-+	return ixgbe_dbg_common_ops_read(iocb, to, ixgbe_dbg_netdev_ops_buf);
- }
- 
- /**
-- * ixgbe_dbg_netdev_ops_write - write into netdev_ops datum
-- * @filp: the opened file
-- * @buffer: where to find the user's data
-- * @count: the length of the user's data
-- * @ppos: file position offset
-+ * ixgbe_dbg_netdev_ops_write_iter - write into netdev_ops datum
-+ * @iocb: the kernel io callback (kiocb) struct
-+ * @from: iovec iterator
-  **/
--static ssize_t ixgbe_dbg_netdev_ops_write(struct file *filp,
--					  const char __user *buffer,
--					  size_t count, loff_t *ppos)
-+static ssize_t ixgbe_dbg_netdev_ops_write_iter(struct kiocb *iocb,
-+					       struct iov_iter *from)
- {
--	struct ixgbe_adapter *adapter = filp->private_data;
-+	struct ixgbe_adapter *adapter = iocb->ki_filp->private_data;
- 	int len;
-+	size_t count = iov_iter_count(from);
- 
- 	/* don't allow partial writes */
--	if (*ppos != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 	if (count >= sizeof(ixgbe_dbg_netdev_ops_buf))
- 		return -ENOSPC;
- 
--	len = simple_write_to_buffer(ixgbe_dbg_netdev_ops_buf,
--				     sizeof(ixgbe_dbg_netdev_ops_buf)-1,
--				     ppos,
--				     buffer,
--				     count);
-+	len = simple_copy_from_iter(ixgbe_dbg_netdev_ops_buf, &iocb->ki_pos,
-+				    sizeof(ixgbe_dbg_netdev_ops_buf) - 1, from);
- 	if (len < 0)
- 		return len;
- 
-@@ -181,8 +166,8 @@ static ssize_t ixgbe_dbg_netdev_ops_write(struct file *filp,
- static const struct file_operations ixgbe_dbg_netdev_ops_fops = {
- 	.owner = THIS_MODULE,
- 	.open = simple_open,
--	.read = ixgbe_dbg_netdev_ops_read,
--	.write = ixgbe_dbg_netdev_ops_write,
-+	.read_iter = ixgbe_dbg_netdev_ops_read_iter,
-+	.write_iter = ixgbe_dbg_netdev_ops_write_iter,
- };
- 
- /**
 -- 
 2.43.0
 
