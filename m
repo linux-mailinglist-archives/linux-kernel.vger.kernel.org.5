@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23DA18A1A80
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:55:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 322C98A1A4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:46:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47F9AB311EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:46:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14D671F2269C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:46:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9251B1D3704;
-	Thu, 11 Apr 2024 15:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B6C1D36FC;
+	Thu, 11 Apr 2024 15:39:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="k32LLqze"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="n0WHij6j"
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10B5817588
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DD31D2A1E
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:39:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849983; cv=none; b=YmGssRJ/XEbcG2NbSC/5N0mStwLF5y4isFceGZUhi7s/XziD3xF024t6mrdkI0ZLSf+NJZrfPBNu5fiv48+dLI1n6UkntHIGf/kaXvOSaLeS2nEQU/2yuUdgqWxS7BDEwLROZhct3dONOtQr0nMVTj7lt97zk5whcxHC6Gw71K8=
+	t=1712849983; cv=none; b=CbEbHhK5uRLIqqsnqVTdxLuKVHLNJrsTlexdULIkeVvgkI3PDKtmxANezQySIrV7nSa4Jd0KA3J8awHzmkYRcJcxM903Zz/xjV9GzNGx8gll/QBm1C2swSmXcqQdA+6JXv0yE4jclDKsWal/65K5w/BK9TN8nxtn9IuU+doZ4FY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712849983; c=relaxed/simple;
-	bh=DHMCYYdUCRmhOpDhCXsUNeZsXB4zDSnDq1t7y0GuQrY=;
+	bh=ES225KtuVoJ5i6v6nvtizWVMfFAa5TGb/0Yk5uukEPE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=f/PQLLAyyQX//FJjBY7rwK6FIB/ve7G8uzIUw4iSBhHzODwHhfAHkL313EQhb8LhgEZodA7Iz5RKNyQC2wlDdWm5y5NtZgpjsVGwHXpI9s/VUdN4/sPln7YCOHLutzLvjq04ipNP2yPwOl9pDQJDsHXdgZk48t/wsvVcX7XjYI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=k32LLqze; arc=none smtp.client-ip=209.85.166.41
+	 MIME-Version; b=r9n1ucvtgxKtEyPR6nh9TOBoc8yLc61XTygGwJ5LBI/YsYqUrcRCxuvXQOMO6XlDif/VsPXAU2fs1h/HjtDfbS2aOqxzpFTJrigrEzt8YQUfby1dXapmnS7PdnzTGIVj53rZxbLKI3AjnoTvobjWySiAt2y96xE0eBq5Hw/D2Wc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=n0WHij6j; arc=none smtp.client-ip=209.85.166.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso58171039f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:39:40 -0700 (PDT)
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so170583139f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:39:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849979; x=1713454779; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849980; x=1713454780; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8GcTesiZb4x6GGSKP7V2H2rQRehxL1gBgTA2zgMpf1Y=;
-        b=k32LLqzeFV3/CijDCPxMAZBsSCk+u2VEBZIhCC550zasoG8zWI94WR0KO06fDoBJM8
-         VkmCJH3cNFnHGv7S9QgguNPg+KaWdF0a6yh++p5Oo48AqwQKegJJ9iLlh/s3BaVfIsbK
-         lgi6jJHrXuTFP1XMQE1K5r3PxBjlkbQ0XrE8DJ0pXtwxkbUT4FEIays2Ukd5sERMJzBu
-         tBJR2yvMb/qt8wtFyz/wJ53N4/tIvUnqmoXPKQisjhKGlkDQF96Whu12tCwbHmcXpJLj
-         PemWmAprEwOo+9AK8MPjQXvKUHLKVJ4+Rn7ACaV2qfiRETcZU5YnDoGO2MmDDus5957E
-         TQZA==
+        bh=+nLu7wpnWOLvM+s2AzprnSTFqRjsfhkfx2fTjpg7ngA=;
+        b=n0WHij6je4wpMpzHb7A5vMzVc1l0h1v5QeJJZNviDy7eK9Xj/SLRKsy5Jyp9jXaVtM
+         LkCSS7Nhbh9dydZQfsXcuBAmUXBOP5uVdsWUyYG0t7cVP5S2x2VlOoSPJphh56hevEJY
+         uAgt0xWaC2QwKYYQw28AktFTaWKgs/ADFoCKRuJLa9fJL2wqdlY2PrlPYmeekvqNhvDs
+         NbTVnZWekg2c7U/kCc5gWQtmzwzphJD8D/9EsubiYP4K+YltzhfrQmlOomMb3SV3KsJM
+         g6HSL3/33Nz9iKsZzmPlbHd1frcGAaxhK9TnqJoB0HNlje4N4Q7HtOFbFV2tPGkD4pO/
+         MILw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849979; x=1713454779;
+        d=1e100.net; s=20230601; t=1712849980; x=1713454780;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8GcTesiZb4x6GGSKP7V2H2rQRehxL1gBgTA2zgMpf1Y=;
-        b=q668YDKXW/tCpiDrGPhKaTDTmWtALKXfeFF86y2md4A8dBtgGGTUnk4s35iIICiBRJ
-         oq4VbjiUiCSBalxqAnmuyyu1ghWKN7ioGbXETvb3L3Xha/0eKl+jZrGurFCpMSuuRR53
-         5vrMSOU4dUKEi7ODDa9/E2FootTsfV0G39II+wwIu65jKeJemXmarRvwUrcsgalOzMDA
-         lNv/HIhcEaACDsnIXo8cyOW/91WEKcyYKdw96Yw1GNrlGYtObBY0tcXqFN5a9J2DE+tL
-         6+bDkKWFI2ba8gELcwTvx7P55XAIwE5h6PhfcE9ezn771iYtzWzcbuuf7hiSY3P5hYbV
-         U5rw==
-X-Gm-Message-State: AOJu0YzgFAx3rV7BGRaBgkq8+dLV5DGGLuPNkPiOoS3qy1cXKbmnFUuj
-	q0nPkAW2utX4R+j7z0nCG2Iu7DFuPkzznmSRfQqVrRYYKRSGZPqlb9BE8z+FoDKKy/S1hnAvkUZ
-	7
-X-Google-Smtp-Source: AGHT+IHZM910AfQ/3vgC/pPYbjR4S5LmFsbnLM9ttLjIN3mqH+NvXYT6FtZgBRM+t45xJgTSSe12fQ==
-X-Received: by 2002:a05:6602:38d:b0:7d6:513b:254 with SMTP id f13-20020a056602038d00b007d6513b0254mr196106iov.2.1712849979487;
-        Thu, 11 Apr 2024 08:39:39 -0700 (PDT)
+        bh=+nLu7wpnWOLvM+s2AzprnSTFqRjsfhkfx2fTjpg7ngA=;
+        b=dtq8dCnBcT70KeXT3cVJTGLB93zSDiQnBfW0jqnDMC05go0NcMRmK1OlUOOtqulk5c
+         9hnEiOSn6V0vpwsMIUcHLsAkPSJVGuu0VeY5MCzzQybyJpWd5kQ7gvNlcC11ppx2BTEm
+         mDtdFIu4n8gA93P5Bd5//jnqQfpXRMVbDCb39hHa5+oJ/WVACcKpP6o74X6JTV31Y1go
+         RjhFIz1f0P1WqvtBzKVns+54xLGEq6jx63DohNeLECja8r45y47gc92q9tUPlFz9VbQK
+         QhGq2/bOJg0obZRSKJjtfbByE4fvKMb5wBXtJHXV+ZIOyTRcWYZ0Zidi4Ogr+Rcjpi6k
+         EwvQ==
+X-Gm-Message-State: AOJu0Yw8TDqSXaBGG1XnksgOqNLQjp2NDK2lK30bUHpGHBDcAQ2GyAMd
+	eU+tgfNh4+mheIPYNp6/j4HSfAkEe6ct7k0fIz8wpXZ50GcP1eVPD15Y+PlWFLWU4+3+PmJC7K9
+	X
+X-Google-Smtp-Source: AGHT+IFKxP68b1/qavwsvg18NGRRbHieEwN3uZfjp4zvWzZzKwO/J4I5ASD4jVp8a+UNEuY2tJWbLQ==
+X-Received: by 2002:a92:d352:0:b0:36a:1275:4aeb with SMTP id a18-20020a92d352000000b0036a12754aebmr5890513ilh.1.1712849980225;
+        Thu, 11 Apr 2024 08:39:40 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.39.38
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.39.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:39:38 -0700 (PDT)
+        Thu, 11 Apr 2024 08:39:39 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 289/437] fs/bcachefs: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:17:09 -0600
-Message-ID: <20240411153126.16201-290-axboe@kernel.dk>
+Subject: [PATCH 290/437] fs/ocfs2: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:17:10 -0600
+Message-ID: <20240411153126.16201-291-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,227 +85,123 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- fs/bcachefs/chardev.c          | 10 +++++-----
- fs/bcachefs/debug.c            | 24 ++++++++++++++++--------
- fs/bcachefs/thread_with_file.c | 14 ++++++++------
- 3 files changed, 29 insertions(+), 19 deletions(-)
+ fs/ocfs2/cluster/netdebug.c | 11 ++++++-----
+ fs/ocfs2/dlmfs/dlmfs.c      | 38 +++++++++++++++++--------------------
+ 2 files changed, 23 insertions(+), 26 deletions(-)
 
-diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
-index cbfa6459bdbc..9f27c3f4b960 100644
---- a/fs/bcachefs/chardev.c
-+++ b/fs/bcachefs/chardev.c
-@@ -438,10 +438,9 @@ static int bch2_data_job_release(struct inode *inode, struct file *file)
+diff --git a/fs/ocfs2/cluster/netdebug.c b/fs/ocfs2/cluster/netdebug.c
+index fde10358c8ee..877955f35aef 100644
+--- a/fs/ocfs2/cluster/netdebug.c
++++ b/fs/ocfs2/cluster/netdebug.c
+@@ -468,17 +468,18 @@ static int o2net_debug_release(struct inode *inode, struct file *file)
  	return 0;
  }
  
--static ssize_t bch2_data_job_read(struct file *file, char __user *buf,
--				  size_t len, loff_t *ppos)
-+static ssize_t bch2_data_job_read(struct kiocb *iocb, struct iov_iter *to)
+-static ssize_t o2net_debug_read(struct file *file, char __user *buf,
+-				size_t nbytes, loff_t *ppos)
++static ssize_t o2net_debug_read(struct kiocb *iocb, struct iov_iter *to)
  {
--	struct bch_data_ctx *ctx = container_of(file->private_data, struct bch_data_ctx, thr);
-+	struct bch_data_ctx *ctx = container_of(iocb->ki_filp->private_data, struct bch_data_ctx, thr);
- 	struct bch_fs *c = ctx->c;
- 	struct bch_ioctl_data_event e = {
- 		.type			= BCH_DATA_EVENT_PROGRESS,
-@@ -451,16 +450,17 @@ static ssize_t bch2_data_job_read(struct file *file, char __user *buf,
- 		.p.sectors_done		= atomic64_read(&ctx->stats.sectors_seen),
- 		.p.sectors_total	= bch2_fs_usage_read_short(c).used,
- 	};
-+	size_t len = iov_iter_count(to);
- 
- 	if (len < sizeof(e))
- 		return -EINVAL;
- 
--	return copy_to_user_errcode(buf, &e, sizeof(e)) ?: sizeof(e);
-+	return copy_to_iter(&e, sizeof(e), to);
+-	return simple_read_from_buffer(buf, nbytes, ppos, file->private_data,
+-				       i_size_read(file->f_mapping->host));
++	struct file *file = iocb->ki_filp;
++
++	return simple_copy_to_iter(file->private_data, &iocb->ki_pos,
++				       i_size_read(file->f_mapping->host), to);
  }
  
- static const struct file_operations bcachefs_data_ops = {
- 	.release	= bch2_data_job_release,
--	.read		= bch2_data_job_read,
-+	.read_iter	= bch2_data_job_read,
- 	.llseek		= no_llseek,
+ static const struct file_operations nodes_fops = {
+ 	.open		= nodes_fop_open,
+ 	.release	= o2net_debug_release,
+-	.read		= o2net_debug_read,
++	.read_iter	= o2net_debug_read,
+ 	.llseek		= generic_file_llseek,
  };
  
-diff --git a/fs/bcachefs/debug.c b/fs/bcachefs/debug.c
-index 208ce6f0fc43..9b5c7aa57fda 100644
---- a/fs/bcachefs/debug.c
-+++ b/fs/bcachefs/debug.c
-@@ -384,12 +384,13 @@ static ssize_t bch2_read_btree(struct file *file, char __user *buf,
- 			}))) ?:
- 		i->ret;
+diff --git a/fs/ocfs2/dlmfs/dlmfs.c b/fs/ocfs2/dlmfs/dlmfs.c
+index 7fc0e920eda7..a13b80cb11f1 100644
+--- a/fs/ocfs2/dlmfs/dlmfs.c
++++ b/fs/ocfs2/dlmfs/dlmfs.c
+@@ -28,6 +28,7 @@
+ #include <linux/string.h>
+ #include <linux/backing-dev.h>
+ #include <linux/poll.h>
++#include <linux/uio.h>
+ 
+ #include <linux/uaccess.h>
+ 
+@@ -219,47 +220,42 @@ static __poll_t dlmfs_file_poll(struct file *file, poll_table *wait)
+ 	return event;
  }
-+FOPS_READ_ITER_HELPER(bch2_read_btree);
  
- static const struct file_operations btree_debug_ops = {
- 	.owner		= THIS_MODULE,
- 	.open		= bch2_dump_open,
- 	.release	= bch2_dump_release,
--	.read		= bch2_read_btree,
-+	.read_iter	= bch2_read_btree_iter,
- };
- 
- static ssize_t bch2_read_btree_formats(struct file *file, char __user *buf,
-@@ -438,12 +439,13 @@ static ssize_t bch2_read_btree_formats(struct file *file, char __user *buf,
- 
- 	return ret ?: i->ret;
- }
-+FOPS_READ_ITER_HELPER(bch2_read_btree_formats);
- 
- static const struct file_operations btree_format_debug_ops = {
- 	.owner		= THIS_MODULE,
- 	.open		= bch2_dump_open,
- 	.release	= bch2_dump_release,
--	.read		= bch2_read_btree_formats,
-+	.read_iter	= bch2_read_btree_formats_iter,
- };
- 
- static ssize_t bch2_read_bfloat_failed(struct file *file, char __user *buf,
-@@ -477,12 +479,13 @@ static ssize_t bch2_read_bfloat_failed(struct file *file, char __user *buf,
- 			}))) ?:
- 		i->ret;
- }
-+FOPS_READ_ITER_HELPER(bch2_read_bfloat_failed);
- 
- static const struct file_operations bfloat_failed_debug_ops = {
- 	.owner		= THIS_MODULE,
- 	.open		= bch2_dump_open,
- 	.release	= bch2_dump_release,
--	.read		= bch2_read_bfloat_failed,
-+	.read_iter	= bch2_read_bfloat_failed_iter,
- };
- 
- static void bch2_cached_btree_node_to_text(struct printbuf *out, struct bch_fs *c,
-@@ -584,12 +587,13 @@ static ssize_t bch2_cached_btree_nodes_read(struct file *file, char __user *buf,
- 
- 	return ret ?: i->ret;
- }
-+FOPS_READ_ITER_HELPER(bch2_cached_btree_nodes_read);
- 
- static const struct file_operations cached_btree_nodes_ops = {
- 	.owner		= THIS_MODULE,
- 	.open		= bch2_dump_open,
- 	.release	= bch2_dump_release,
--	.read		= bch2_cached_btree_nodes_read,
-+	.read_iter	= bch2_cached_btree_nodes_read_iter,
- };
- 
- static ssize_t bch2_btree_transactions_read(struct file *file, char __user *buf,
-@@ -648,12 +652,13 @@ static ssize_t bch2_btree_transactions_read(struct file *file, char __user *buf,
- 
- 	return ret ?: i->ret;
- }
-+FOPS_READ_ITER_HELPER(bch2_btree_transactions_read);
- 
- static const struct file_operations btree_transactions_ops = {
- 	.owner		= THIS_MODULE,
- 	.open		= bch2_dump_open,
- 	.release	= bch2_dump_release,
--	.read		= bch2_btree_transactions_read,
-+	.read_iter	= bch2_btree_transactions_read_iter,
- };
- 
- static ssize_t bch2_journal_pins_read(struct file *file, char __user *buf,
-@@ -685,12 +690,13 @@ static ssize_t bch2_journal_pins_read(struct file *file, char __user *buf,
- 
- 	return i->ret;
- }
-+FOPS_READ_ITER_HELPER(bch2_journal_pins_read);
- 
- static const struct file_operations journal_pins_ops = {
- 	.owner		= THIS_MODULE,
- 	.open		= bch2_dump_open,
- 	.release	= bch2_dump_release,
--	.read		= bch2_journal_pins_read,
-+	.read_iter	= bch2_journal_pins_read_iter,
- };
- 
- static int btree_transaction_stats_open(struct inode *inode, struct file *file)
-@@ -792,12 +798,13 @@ static ssize_t btree_transaction_stats_read(struct file *file, char __user *buf,
- 
- 	return i->ret;
- }
-+FOPS_READ_ITER_HELPER(btree_transaction_stats_read);
- 
- static const struct file_operations btree_transaction_stats_op = {
- 	.owner		= THIS_MODULE,
- 	.open		= btree_transaction_stats_open,
- 	.release	= btree_transaction_stats_release,
--	.read		= btree_transaction_stats_read,
-+	.read_iter	= btree_transaction_stats_read_iter,
- };
- 
- static ssize_t bch2_btree_deadlock_read(struct file *file, char __user *buf,
-@@ -852,12 +859,13 @@ static ssize_t bch2_btree_deadlock_read(struct file *file, char __user *buf,
- 
- 	return ret ?: i->ret;
- }
-+FOPS_READ_ITER_HELPER(bch2_btree_deadlock_read);
- 
- static const struct file_operations btree_deadlock_ops = {
- 	.owner		= THIS_MODULE,
- 	.open		= bch2_dump_open,
- 	.release	= bch2_dump_release,
--	.read		= bch2_btree_deadlock_read,
-+	.read_iter	= bch2_btree_deadlock_read_iter,
- };
- 
- void bch2_fs_debug_exit(struct bch_fs *c)
-diff --git a/fs/bcachefs/thread_with_file.c b/fs/bcachefs/thread_with_file.c
-index 940db15d6a93..fa6f333605da 100644
---- a/fs/bcachefs/thread_with_file.c
-+++ b/fs/bcachefs/thread_with_file.c
-@@ -27,11 +27,11 @@ int bch2_run_thread_with_file(struct thread_with_file *thr,
- 	int ret, fd = -1;
- 	unsigned fd_flags = O_CLOEXEC;
- 
--	if (fops->read && fops->write)
-+	if (fops->read_iter && fops->write_iter)
- 		fd_flags |= O_RDWR;
--	else if (fops->read)
-+	else if (fops->read_iter)
- 		fd_flags |= O_RDONLY;
--	else if (fops->write)
-+	else if (fops->write_iter)
- 		fd_flags |= O_WRONLY;
- 
- 	char name[TASK_COMM_LEN];
-@@ -145,6 +145,7 @@ static ssize_t thread_with_stdio_read(struct file *file, char __user *ubuf,
- 
- 	return copied ?: ret;
- }
-+FOPS_READ_ITER_HELPER(thread_with_stdio_read);
- 
- static int thread_with_stdio_release(struct inode *inode, struct file *file)
+-static ssize_t dlmfs_file_read(struct file *file,
+-			       char __user *buf,
+-			       size_t count,
+-			       loff_t *ppos)
++static ssize_t dlmfs_file_read(struct kiocb *iocb, struct iov_iter *to)
  {
-@@ -211,6 +212,7 @@ static ssize_t thread_with_stdio_write(struct file *file, const char __user *ubu
+ 	char lvb[DLM_LVB_LEN];
  
- 	return copied ?: ret;
+-	if (!user_dlm_read_lvb(file_inode(file), lvb))
++	if (!user_dlm_read_lvb(file_inode(iocb->ki_filp), lvb))
+ 		return 0;
+ 
+-	return simple_read_from_buffer(buf, count, ppos, lvb, sizeof(lvb));
++	return simple_copy_to_iter(lvb, &iocb->ki_pos, sizeof(lvb), to);
  }
-+FOPS_WRITE_ITER_HELPER(thread_with_stdio_write);
  
- static __poll_t thread_with_stdio_poll(struct file *file, struct poll_table_struct *wait)
+-static ssize_t dlmfs_file_write(struct file *filp,
+-				const char __user *buf,
+-				size_t count,
+-				loff_t *ppos)
++static ssize_t dlmfs_file_write(struct kiocb *iocb, struct iov_iter *from)
  {
-@@ -267,8 +269,8 @@ static long thread_with_stdio_ioctl(struct file *file, unsigned int cmd, unsigne
+ 	char lvb_buf[DLM_LVB_LEN];
+-	int bytes_left;
+-	struct inode *inode = file_inode(filp);
++	int copied;
++	struct inode *inode = file_inode(iocb->ki_filp);
++	size_t count = iov_iter_count(from);
  
- static const struct file_operations thread_with_stdio_fops = {
- 	.llseek		= no_llseek,
--	.read		= thread_with_stdio_read,
--	.write		= thread_with_stdio_write,
-+	.read_iter	= thread_with_stdio_read_iter,
-+	.write_iter	= thread_with_stdio_write_iter,
- 	.poll		= thread_with_stdio_poll,
- 	.flush		= thread_with_stdio_flush,
- 	.release	= thread_with_stdio_release,
-@@ -277,7 +279,7 @@ static const struct file_operations thread_with_stdio_fops = {
+ 	mlog(0, "inode %lu, count = %zu, *ppos = %llu\n",
+-		inode->i_ino, count, *ppos);
++		inode->i_ino, count, iocb->ki_pos);
  
- static const struct file_operations thread_with_stdout_fops = {
- 	.llseek		= no_llseek,
--	.read		= thread_with_stdio_read,
-+	.read_iter	= thread_with_stdio_read_iter,
- 	.poll		= thread_with_stdout_poll,
- 	.flush		= thread_with_stdio_flush,
- 	.release	= thread_with_stdio_release,
+-	if (*ppos >= DLM_LVB_LEN)
++	if (iocb->ki_pos >= DLM_LVB_LEN)
+ 		return -ENOSPC;
+ 
+ 	/* don't write past the lvb */
+-	if (count > DLM_LVB_LEN - *ppos)
+-		count = DLM_LVB_LEN - *ppos;
++	if (count > DLM_LVB_LEN - iocb->ki_pos)
++		count = DLM_LVB_LEN - iocb->ki_pos;
+ 
+ 	if (!count)
+ 		return 0;
+ 
+-	bytes_left = copy_from_user(lvb_buf, buf, count);
+-	count -= bytes_left;
++	copied = copy_from_iter(lvb_buf, count, from);
++	count -= copied;
+ 	if (count)
+ 		user_dlm_write_lvb(inode, lvb_buf, count);
+ 
+-	*ppos = *ppos + count;
++	iocb->ki_pos += count;
+ 	mlog(0, "wrote %zu bytes\n", count);
+ 	return count;
+ }
+@@ -525,8 +521,8 @@ static const struct file_operations dlmfs_file_operations = {
+ 	.open		= dlmfs_file_open,
+ 	.release	= dlmfs_file_release,
+ 	.poll		= dlmfs_file_poll,
+-	.read		= dlmfs_file_read,
+-	.write		= dlmfs_file_write,
++	.read_iter	= dlmfs_file_read,
++	.write_iter	= dlmfs_file_write,
+ 	.llseek		= default_llseek,
+ };
+ 
 -- 
 2.43.0
 
