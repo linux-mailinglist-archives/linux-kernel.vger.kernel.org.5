@@ -1,164 +1,151 @@
-Return-Path: <linux-kernel+bounces-139876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1F028A08C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:48:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B74248A08E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:55:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96A81287A7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:48:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1FE9CB27A2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:55:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F15713DBAC;
-	Thu, 11 Apr 2024 06:48:18 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 738B713DDB8;
+	Thu, 11 Apr 2024 06:55:20 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF78A13D258
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:48:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA4213D622
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:55:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712818097; cv=none; b=SY0O4MHxigmMAOQytUckA6N6U+7KJEv9+6nh16F/nah4gIjQqbcqkkjQdYdKB4YDsO9988lU1wkq4peZOLlN0ZpEqa41YZWfY0gFBmXQoYm4Ozc78lyXkQ8QG8ooC4LXtKXOyGYKBDpxSOe77xm2+jhWZSHv+s9SJD2WpBjjn2o=
+	t=1712818520; cv=none; b=jMUMTH0R+watiJyC6nGERw+jxsX863qmDeEJD0WtbdJLKFKLFR6OsQkGR2nt/PhZCY7kSSHjoowRO5S0+t10h30GusQaNyy1hGVk/B7LJDbRN7WvDxC7sHFSEjyz73Pg49Dokhys8JKuy9S74NEWz/8rkuL2R7uDS1XPFLBC5ZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712818097; c=relaxed/simple;
-	bh=SjfQmFCe8KGFg78GshUQPaGgkawI/DnASuuduYQmQ8M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IKvgn/aq08P72DF77A2Vo3nAdsueAAslIjNEfNHPMQ6RZrC2GSmr9HU2CTeoMRhlB+/S/C33Fkqv34VrlWHYi9UVS0x9764W5B2qSqRJylmtifnFUvGCeAyvjlWw3YrxHkpiNvPdyYpk+aIub/PdRfD6epAwF+5o7rsOJr7bnYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1ruoEA-00074u-0x; Thu, 11 Apr 2024 08:48:06 +0200
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1ruoE8-00BdUI-5L; Thu, 11 Apr 2024 08:48:04 +0200
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1ruoE8-007cj5-0B;
-	Thu, 11 Apr 2024 08:48:04 +0200
-Date: Thu, 11 Apr 2024 08:48:04 +0200
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Vladimir Oltean <olteanv@gmail.com>
-Cc: Woojung Huh <woojung.huh@microchip.com>, Andrew Lunn <andrew@lunn.ch>,
-	Arun Ramadoss <arun.ramadoss@microchip.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-	David Ahern <dsahern@kernel.org>, linux-kernel@vger.kernel.org,
-	UNGLinuxDriver@microchip.com, Eric Dumazet <edumazet@google.com>,
-	Willem de Bruijn <willemb@google.com>, kernel@pengutronix.de,
-	=?utf-8?B?U8O4cmVu?= Andersen <san@skov.dk>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH net-next v6 5/9] net: dsa: microchip: add support for
- different DCB app configurations
-Message-ID: <ZheHpK7egVvszSQF@pengutronix.de>
-References: <20240410080556.1241048-1-o.rempel@pengutronix.de>
- <20240410080556.1241048-1-o.rempel@pengutronix.de>
- <20240410080556.1241048-6-o.rempel@pengutronix.de>
- <20240410080556.1241048-6-o.rempel@pengutronix.de>
- <20240410231251.macw4i46jfi57wtc@skbuf>
+	s=arc-20240116; t=1712818520; c=relaxed/simple;
+	bh=QKav+5y61ZdnV0RW5NGa87eeulpAiivRJ79CGIruxTs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jaKNUcrVp0hii/E+baDOsOxpI1gWCyCUeVpzE70GlXvdHZVeLnSlvVKlh0LxOWkaGPs8KY2tO08pNYEcWnML410mc3i0dwofqrEMcgX5a+WRHXl3EHqcVbu6aONS2vCw4Y68iCN3BZ3DyU4yY1n/x/bDlIboLCdSRhSPV2/80OU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VFVkF5RFcz2NW75;
+	Thu, 11 Apr 2024 14:52:21 +0800 (CST)
+Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
+	by mail.maildlp.com (Postfix) with ESMTPS id 30338180063;
+	Thu, 11 Apr 2024 14:55:14 +0800 (CST)
+Received: from huawei.com (10.67.174.28) by kwepemd200013.china.huawei.com
+ (7.221.188.133) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Thu, 11 Apr
+ 2024 14:55:12 +0800
+From: Liao Chang <liaochang1@huawei.com>
+To: <catalin.marinas@arm.com>, <will@kernel.org>, <maz@kernel.org>,
+	<oliver.upton@linux.dev>, <james.morse@arm.com>, <suzuki.poulose@arm.com>,
+	<yuzenghui@huawei.com>, <tglx@linutronix.de>, <mark.rutland@arm.com>,
+	<ardb@kernel.org>, <broonie@kernel.org>, <liaochang1@huawei.com>,
+	<anshuman.khandual@arm.com>, <miguel.luis@oracle.com>, <joey.gouly@arm.com>,
+	<ryan.roberts@arm.com>, <jeremy.linton@arm.com>,
+	<daniel.thompson@linaro.org>, <sumit.garg@linaro.org>, <liwei391@huawei.com>,
+	<peterz@infradead.org>, <jpoimboe@kernel.org>, <ericchancf@google.com>,
+	<kristina.martsenko@arm.com>, <robh@kernel.org>,
+	<scott@os.amperecomputing.com>, <songshuaishuai@tinylab.org>,
+	<shijie@os.amperecomputing.com>, <bhe@redhat.com>,
+	<akpm@linux-foundation.org>, <horms@kernel.org>,
+	<rmk+kernel@armlinux.org.uk>, <Jonathan.Cameron@huawei.com>,
+	<takakura@valinux.co.jp>, <dianders@chromium.org>, <swboyd@chromium.org>,
+	<frederic@kernel.org>, <reijiw@google.com>, <ruanjinjie@huawei.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<kvmarm@lists.linux.dev>
+Subject: [PATCH v2 0/9] Rework the DAIF mask, unmask and track API
+Date: Thu, 11 Apr 2024 06:48:49 +0000
+Message-ID: <20240411064858.3232574-1-liaochang1@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240410231251.macw4i46jfi57wtc@skbuf>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemd200013.china.huawei.com (7.221.188.133)
 
-Hi Vladimir,
+This patch series reworks the DAIF mask, unmask, and track API for the
+upcoming FEAT_NMI extension added in Armv8.8.
 
-On Thu, Apr 11, 2024 at 02:12:51AM +0300, Vladimir Oltean wrote:
-> > +/**
-> > + * ksz_dcb_init - Initializes the DCB configuration for a KSZ switch
-> > + * @dev: Pointer to the KSZ switch device structure
-> > + *
-> > + * This function initializes the DCB configuration for a KSZ switch. The global
-> > + * DSCP-to-priority mapping table is initialized.
-> > + *
-> > + * Return: 0 on success, or a negative error code on failure
-> > + */
-> > +int ksz_dcb_init(struct ksz_device *dev)
-> > +{
-> > +	int ret;
-> > +
-> > +	ret = ksz_init_global_dscp_map(dev);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	return 0;
-> > +}
-> 
-> Sorry for not responding to your previous question about this:
-> https://lore.kernel.org/netdev/ZfmJ-O8XMT8oO-TS@pengutronix.de/
-> Simply put, I had a period with not a lot of free time, even for reading
-> emails.
+As platform and virtualization[1] supports for FEAT_NMI is emerging, and
+Mark Brown's FEAT_NMI patch series[2] highlighted the need for clean up
+the existing hacking style approach about DAIF management code before
+adding NMI functionality, furthermore, we discover some subtle bugs
+during 'perf' and 'ipi_backtrace' transition from PSEUDO_NMI to
+FEAT_NMI, in summary, all of these emphasize the importance of rework.
 
-No problem. I'm in continues similar state permanently DoSed by my
-children, parents, etc... :) 
+This series of reworking patches follows the suggestion from Mark
+Rutland mentioned in Mark Brown's patchset. In summary, he think the
+better way for DAIF manangement look likes as following:
 
-> I'm on the fence on whether your solution to the "global DSCP-to-prio
-> mapping rather than per-port" problem is the right one.
-> 
-> We try to avoid baking policies into the kernel, no matter how well
-> intended the 802.1Q and IETF RFC8325 recommendations are. They are still
-> just recommendations and examples, and a particular use case may want to
-> configure things completely differently (or as hinted in the Wi-Fi specific
-> RFC8325: maybe the administrator doesn't want to assign the higher
-> traffic classes, for network control protocols, by using IP DSCP, and
-> doesn't want user flows to request DSCP values that would get access to
-> these traffic classes. It can indeed be seen as a security concern).
->
-> I empathize with the incovenience of having to map the per-netdev dcbnl
-> application priority table API with a piece of hardware where that table
-> is shared across all ports. But yet, I don't think it is a strong enough
-> justification for us to make an exception and say: "yeah, ok, let's not
-> even implement .port_set_dscp_prio() to make the thing configurable, but
-> let's bake into the kernel a fixed policy that's good for everyone".
->
-> No, I think we _need_ the thing to be configurable, and not try so hard
-> with the ieee8021q helpers to hardcode things just right in the kernel.
+(a) Adding entry-specific helpers to manipulate abstract exception masks
+    covering DAIF + PMR + ALLINT. Those need unmask-at-entry and
+    mask-at-exit behaviour, and today only need to manage DAIF + PMR.
 
-Yes, I agree with you.
+    It should be possible to do this ahead of ALLINT / NMI support.
 
-ieee8021q helpers are not the attempt to avoid the work needed to
-implement global DSCP configuration. The interface is still needed and
-we need to agree on how it should be implemented.
+(b) Adding new "logical exception mask" helpers that treat DAIF + PMR +
+    ALLINT as separate elements. 
 
-The problem which I try to address with ieee8021q helpers are initial
-defaults. KSZ8 and KSZ9 families of switches have different initial
-defaults. So, if i need to align defaults for this driver, why not to
-provide default which are reusable for every one?
+This patches cherry-pick a part of Mark Brown' FEAT_NMI series, in order
+to pass compilation and basic testing, includes perf and ipi_backtrace.
 
-> Have you tried the obvious: "every time there is a change to the global
-> DSCP mapping table, push the change into the dcbnl app table of all user
-> netdevs, so that the user becomes aware of what happens"? Kernel drivers
-> can do that, through direct calls to dcb_ieee_setapp(). DSA does it too,
-> to probe the initial QoS configuration of the ports and push it to the
-> application priority tables.
+[1] https://lore.kernel.org/all/20240407081733.3231820-1-ruanjinjie@huawei.com/
+[2] https://lore.kernel.org/linux-arm-kernel/Y4sH5qX5bK9xfEBp@lpieralisi/
 
-Hm... what interface should be used for the global DSCP mapping table?
+v2->v1:
+Add SoB tags following the origin author's SoBs.
 
-Regards,
-Oleksij
+Jinjie Ruan (1):
+  arm64/cpufeature: Simplify detect PE support for FEAT_NMI
+
+Liao Chang (5):
+  arm64/cpufeature: Use alternatives to check enabled ARM64_HAS_NMI
+    feature
+  arm64: daifflags: Add logical exception masks covering DAIF + PMR +
+    ALLINT
+  arm64: Unify exception masking at entry and exit of exception
+  arm64: Deprecate old local_daif_{mask,save,restore}
+  irqchip/gic-v3: Improve the maintainability of NMI masking in GIC
+    driver
+
+Mark Brown (3):
+  arm64/sysreg: Add definitions for immediate versions of MSR ALLINT
+  arm64/cpufeature: Detect PE support for FEAT_NMI
+  arm64/nmi: Add Kconfig for NMI
+
+ arch/arm64/Kconfig                   |  17 ++
+ arch/arm64/include/asm/cpufeature.h  |   6 +
+ arch/arm64/include/asm/daifflags.h   | 296 ++++++++++++++++++++++-----
+ arch/arm64/include/asm/nmi.h         |  27 +++
+ arch/arm64/include/asm/sysreg.h      |   2 +
+ arch/arm64/include/uapi/asm/ptrace.h |   1 +
+ arch/arm64/kernel/acpi.c             |  10 +-
+ arch/arm64/kernel/cpufeature.c       |  58 +++++-
+ arch/arm64/kernel/debug-monitors.c   |   7 +-
+ arch/arm64/kernel/entry-common.c     |  96 +++++----
+ arch/arm64/kernel/entry.S            |   2 -
+ arch/arm64/kernel/hibernate.c        |   6 +-
+ arch/arm64/kernel/irq.c              |   2 +-
+ arch/arm64/kernel/machine_kexec.c    |   2 +-
+ arch/arm64/kernel/setup.c            |   2 +-
+ arch/arm64/kernel/smp.c              |   6 +-
+ arch/arm64/kernel/suspend.c          |   6 +-
+ arch/arm64/kvm/hyp/vgic-v3-sr.c      |   6 +-
+ arch/arm64/kvm/hyp/vhe/switch.c      |   4 +-
+ arch/arm64/mm/mmu.c                  |   6 +-
+ arch/arm64/tools/cpucaps             |   2 +
+ drivers/irqchip/irq-gic-v3.c         |   6 +-
+ 22 files changed, 438 insertions(+), 132 deletions(-)
+ create mode 100644 arch/arm64/include/asm/nmi.h
+
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.34.1
+
 
