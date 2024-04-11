@@ -1,48 +1,73 @@
-Return-Path: <linux-kernel+bounces-139914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1D238A0918
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:06:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29F698A091D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:06:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C79B282936
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:06:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D93A6282D85
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:06:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B50B413DDB0;
-	Thu, 11 Apr 2024 07:06:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 566E513DDC3;
+	Thu, 11 Apr 2024 07:06:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qiu8HGyu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="vfw7bfqh"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01D9713CAB3;
-	Thu, 11 Apr 2024 07:06:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44F013DDDB
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712819166; cv=none; b=odZv3LkCeRmM1sbe/X+yvGXU+0rM4zVHv1oA0NJI8Rt0SSzU/ucsDelpBy8CFGOKXTtxK/DcIS+CXsQOCiNdYEwm7hRpp7b4Ld65g+/2Rd3h4UKDFzKb+oRAANH0RitHdexsgANo6/UHYnY6ddIrUJUE+cWAyKYCPFLp9UaIqvg=
+	t=1712819177; cv=none; b=aCtyfc5B7jrcmUIgmPcMeTzuZMxfXhxPPtWy0430LLGr9lp5kS3zjitA07ojH/hIWbHUU1UQOs+DK5u9tyelM6MnD7xalgtVpH3MC0knp2WrXQJB3ewXHWLidPtraIkXvElE/fGTnccwOJanWTTHNEBGcHblMKCVLfNgBnloRHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712819166; c=relaxed/simple;
-	bh=Ms7MWhYSgoVLEWFhl7RcDsGUnMu4a3jpqyQRCc+1JyY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=pvsQirx0KDYcGRSUUOKu1gYjTs3oXCMOwXmiLB22H06ojOyAy/bow2vSkIFeWiG50YqHcGm7m6jarj57pMULBj6ZGwvB75dscwes41mJHhVRZNPBZLNkyZBNAfbBaMh6x+Y7kuiR1gsWfMv88YbfLqSUDU0HIQORYfCxhErVXz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qiu8HGyu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA075C433F1;
-	Thu, 11 Apr 2024 07:06:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712819165;
-	bh=Ms7MWhYSgoVLEWFhl7RcDsGUnMu4a3jpqyQRCc+1JyY=;
-	h=From:Date:Subject:To:Cc:From;
-	b=Qiu8HGyuTMrzRYWC4zn1orwGBCW2MIpxyIuhmWW0E2KHCxu88kduNIZn9AHWMhbLM
-	 1rtMlBldX8rH2qJ2DwGchWjArr1tNrrH+9fJaV92hIM1vHUn1LMNjBJ3itBdWCoEgZ
-	 YL2i/Jfq1UABuZx4SxntZUBKAceTozQfGOY9pzC4lQPOZ3PWnFn8vSwV+kCVBsaLQK
-	 ZTFSYdo3SjiBita1Iz58OUJYtZu1YkRXqzt3byR1Hx3+0U4Y2nl6/4M5QxbWr6LBPM
-	 7ly0xVltPjVQGezwtWTP/aQ6Px4ULZTCwEiDPgYJZnh43u43nxW/zyBxrDccj8c6sT
-	 +stP4P7ToFjTw==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Thu, 11 Apr 2024 09:05:56 +0200
-Subject: [PATCH] HID: bpf: fix hid_bpf_input_report() when hid-core is not
- ready
+	s=arc-20240116; t=1712819177; c=relaxed/simple;
+	bh=+o7I+daoENcP8Ct9wXBNksspsxmRSv7JiVNJMZWs3cQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=J4P++qdJBH5mcCUlmuId1BNWbx7nockZD2h9cVt1UefucrfmCEfDpLG+o4Kz3LXlTEixOVKZsUCMbWZBvFHccLcDlldhPAyydb3oNXHDZgvvrdFhv3m00AieS1GrfgkP3v/bMe0U0PK21Umon9fdrszAxfUH+WCflkwcNIj299c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=vfw7bfqh; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a52140ea1b5so157545266b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:06:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1712819174; x=1713423974; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IPHgQp5i5ObZBE7aupcoMPs0PyMl+eJyHyekbE5zlXs=;
+        b=vfw7bfqhq2me01f9pYWrujssM0ZpdqY2OyNMTHWnZ0602bCm7OXPJKfa+i9quNpHx+
+         ndSMFzW9qXDgd9oBU7FO+WWBsRfv8uVr8Pdrq9/R61rPf7sa61iH3hon1qeKA93U6i8W
+         UstI8UQvbLAQUu34OrBWYDi8Djs2CU06MHVTfODGEPa6YsjZ9W6c5ydDX3n2SxHqH29E
+         Pz1SO2Uurev7cyiNbtqGeGXWGCBS83l53y0WDfLZfU+9CkcETX1W8nBll8pz+WqbRh4i
+         NAeidYSVWmgXy3kx6EHugal5bU7TXZO47mbZDsjv/RNVAA0G383+vabVEdrGFfpPZmFM
+         VAMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712819174; x=1713423974;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IPHgQp5i5ObZBE7aupcoMPs0PyMl+eJyHyekbE5zlXs=;
+        b=bmamqZYxYunfddMtD6182htS22yulvni6KnPpvUKkPpjVQ37INsktOSLrLDrGoMeI9
+         SiiLfF/3iGnVEO2cxqoJX+S8XuBSUHMJFFby3591ezOJzCM/WfKydX+Xv7hDGiXendIt
+         B2b8wBlF6NubLT1BispTG9GdYa0fc3ymcUOQfr0Cs+kKn1T9jDii1m/Y3gPbDR4f1Kmi
+         Zl1ZGUF0GU9HE5l1jJnl8kTlB01BXji6/Cw4s2iRDnvlWbBxECL4erZyEfED42/uDuLE
+         +CGJXmZmuGVEZ8elwG4exQBqz/CcZT/JbR0opZ91emQ+AbsNVlgvkaJ2Oe9UB/0vnHzZ
+         CqmA==
+X-Forwarded-Encrypted: i=1; AJvYcCVqQEnkPdr/NwwGPhh/83AdMGimR7dbOGEwqeDrmS1mHVBk9DFViyJDe3bMW5l33yv7wRkHrNEX3I4Mr2QLVfke1OgyZbC5YSyYXM27
+X-Gm-Message-State: AOJu0YzE28lWdNwmyIidPpHTDfULe0CcmGexRkRGoD2Oqp1+lxlzSTBn
+	oen5Byyv0Kcij3K/jjVUDXxV7R9ZZGizlgHV8+5y0dPu3KI81l/B4wzRuA/UtKE=
+X-Google-Smtp-Source: AGHT+IFwO1V0PB5oOIQfGSzjLElMTnZJSoZTIjXmfOa0FvKysbniFvJxcp6z+3c0bN4piGw2hz2Bbw==
+X-Received: by 2002:a17:906:ee87:b0:a51:962d:cf0d with SMTP id wt7-20020a170906ee8700b00a51962dcf0dmr3622218ejb.12.1712819174137;
+        Thu, 11 Apr 2024 00:06:14 -0700 (PDT)
+Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id dk5-20020a170907940500b00a518b14d6cesm461397ejc.172.2024.04.11.00.06.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 00:06:13 -0700 (PDT)
+From: Luca Weiss <luca.weiss@fairphone.com>
+Date: Thu, 11 Apr 2024 09:06:11 +0200
+Subject: [PATCH] arm64: dts: qcom: qcm6490-fairphone-fp5: Add USB-C
+ orientation GPIO
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,61 +76,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240411-fix-hid-bpf-v1-1-4ae913031a8c@kernel.org>
-X-B4-Tracking: v=1; b=H4sIANOLF2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDE0ND3bTMCt2MzBTdpII03bQkM3OgWGKymamBElBHQVEqUBpsWnRsbS0
- ANYJovl0AAAA=
-To: Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>
-Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712819164; l=1376;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=Ms7MWhYSgoVLEWFhl7RcDsGUnMu4a3jpqyQRCc+1JyY=;
- b=tLc066LRWOxZye4PVz2dESDMT6CmvYLPRXg7AV5V7wdt1ZyReiZsy3iLPsDz+F2G0j3jgiNP3
- XyO3H/qDj6oA1L6putW3JnjQdIq6EextwtUn48ibUFZ5B0T8aYira7q
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+Message-Id: <20240411-fp5-usb-c-gpio-v1-1-78f11deb940a@fairphone.com>
+X-B4-Tracking: v=1; b=H4sIAOKLF2YC/x3MQQqAIBBA0avErBtQMYKuEi1MR5uNilIE4t2Tl
+ m/xf4NKhanCNjUo9HDlFAfkPIG9TAyE7IZBCaWFlhJ9XvCuJ1oMmRMa75RatTTOOhhRLuT5/Yf
+ 70fsHiFICB2AAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.13.0
 
-Reported by linux-next:
-After merging the hid tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
+Define the USB-C orientation GPIOs so that the USB-C ports orientation
+is known without having to resort to the altmode notifications.
 
-x86_64-linux-gnu-ld: vmlinux.o: in function `hid_bpf_input_report':
-(.text+0x1c75181): undefined reference to `hid_input_report'
+On PCB level this is the signal from PM7250B (pin CC_OUT) which is
+called USB_PHY_PS.
 
-Caused by commit 9be50ac30a83 ("HID: bpf: allow to inject HID event
-from BPF")
-
-I just forgot to put the indirection in place.
-
-Link: https://lore.kernel.org/linux-kernel/20240411105131.7830f966@canb.auug.org.au/
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 ---
-Seems like an overlook in my patch.
+Depends on (for bindings): https://lore.kernel.org/linux-arm-msm/20240409-hdk-orientation-gpios-v2-0-658efd993987@linaro.org/
 ---
- drivers/hid/bpf/hid_bpf_dispatch.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_bpf_dispatch.c
-index 79ece3d1b9e2..10289f44d0cc 100644
---- a/drivers/hid/bpf/hid_bpf_dispatch.c
-+++ b/drivers/hid/bpf/hid_bpf_dispatch.c
-@@ -534,7 +534,7 @@ hid_bpf_input_report(struct hid_bpf_ctx *ctx, enum hid_report_type type, u8 *buf
+diff --git a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+index 4ff9fc24e50e..f3432701945f 100644
+--- a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
++++ b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+@@ -77,6 +77,8 @@ pmic-glink {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
  
- 	hdev = (struct hid_device *)ctx->hid; /* discard const */
- 
--	return hid_input_report(hdev, type, buf, size, 0);
-+	return hid_bpf_ops->hid_input_report(hdev, type, buf, size, 0);
- }
- __bpf_kfunc_end_defs();
- 
++		orientation-gpios = <&tlmm 140 GPIO_ACTIVE_HIGH>;
++
+ 		connector@0 {
+ 			compatible = "usb-c-connector";
+ 			reg = <0>;
 
 ---
-base-commit: 685dadafbde29dc3d6b7a13be284d684b06d4d4f
-change-id: 20240411-fix-hid-bpf-fb67411ac650
+base-commit: 65b0418f6e86eef0f62fc053fb3622fbaa3e506e
+change-id: 20240411-fp5-usb-c-gpio-afd22741adcd
 
 Best regards,
 -- 
-Benjamin Tissoires <bentiss@kernel.org>
+Luca Weiss <luca.weiss@fairphone.com>
 
 
