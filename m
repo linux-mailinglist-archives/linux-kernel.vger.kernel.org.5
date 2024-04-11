@@ -1,144 +1,137 @@
-Return-Path: <linux-kernel+bounces-140723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4D7C8A183F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:10:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A47128A183E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:09:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A053D28747C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:10:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6CC91C21710
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:09:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46EB613AEE;
-	Thu, 11 Apr 2024 15:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B9C313FF6;
+	Thu, 11 Apr 2024 15:09:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DTiKJazT"
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b="aZbdSLyI"
+Received: from smtp1.ms.mff.cuni.cz (smtp-in1.ms.mff.cuni.cz [195.113.20.234])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09CC5156CF
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75EA8D534;
+	Thu, 11 Apr 2024 15:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.234
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712848198; cv=none; b=o236Gv3UKFlPWpP/dYGuugOx7ezFbBJ1zJXO9owdOHiMqLiAJUdUDk/b0Pqi2FKXpD8lT4rtrrfGLHaPoFF2VdU+kUYUmykjl6gjBIF/BelhIpMVr4Taq4CCtYXsVTx8KrgTdOnSWDeIwpo4flEuuI3QlmOy9YgDXYxnnqhdpsk=
+	t=1712848186; cv=none; b=GsPnhbzsbh8HiwH02qo+4HfOs+0VwGin7oEwumyELaYWq2Izt5toVkxKXHw25z1zW3QmWTRIq24VNo+JYaXVas2MdAHQnhHPBjWvZoUMzbGnJZopSWwYcIP426HUMzO7eu493A/hepGOBQFICLStSBm8HxF8EGGPf+sruKfuzyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712848198; c=relaxed/simple;
-	bh=4625D/B3C/UFea8y+oXUw6ruHkwZk1o0sRh6oX8bUZE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ngYDIKKlUBG/Mm6616QrEZkQhyi6LVChfZRlbY0aKlxgZPl8Fdy9MMPEucDLDZLx+1YtXluVbyg0OnDfLMc+cb+cfIJICREpskGUV7lKZFEVKZOq3C1POvvNtydzDce4v9Jc/bavCPmWGhBUEPSancKx2xkopEIIL3ydDFXSLvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DTiKJazT; arc=none smtp.client-ip=209.85.210.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6eb52d3aa1eso212307a34.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:09:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712848196; x=1713452996; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OZyuj75Ez/rddFFT5oB20s7V0CQchh27dVHWZ4w414Q=;
-        b=DTiKJazTA8s7i01hgDKIAMG8kB0xOOM2EBfJB/sBjqlV7gjocpXKVysiQ7z5x9tUcZ
-         CXoEYFj/Nh7v8sHo/UufGy9zVD4Ial1ao92KmZK3ilcLCdsuOnkLlfGYr/1O4gHsq4OU
-         orkh4e4d4XgomIFgw3ojutn+v5mbMuD90zXBE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712848196; x=1713452996;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OZyuj75Ez/rddFFT5oB20s7V0CQchh27dVHWZ4w414Q=;
-        b=E5RNMxpME+Kl+vDJTEN0jjXwiV9AWvs8VziuMLBuROPyGYi0Xsh4FBhVkASAWvVuP/
-         mrpJY3QwPc6j6eZt8I3EFQTezZdLuY1vygHCRTFE13BdrpM9YUo9ZRbwib48NuL/2R10
-         1FA91wLkT/HvEK/Bdezpfy+Ocs9jdukJkLS4bUZ7zB5kxV/VCS/KYYeTqfqfiglspBOC
-         OL+IoJje0vMoH816xnwwYsYojplZiSO1WROyiO2SOVQjcfWpMrowtoOp0ovFQrWRLgsB
-         mI8A5fU8MtwO8JWebVIS8htNXyN6/0crxrib9uN2Rk0C60bEs7HhSkLeMmtq5iYQiiNi
-         Ek+A==
-X-Forwarded-Encrypted: i=1; AJvYcCUTsmfXdVMNBN1ebIETFVyvtPK4o/XuLTfLij+wyQ5GwAAjEyDBjUI25sH/gsaihtCMB+H+b5GM9CdXk+aP8QPT3VKGv/eI4viZIiNW
-X-Gm-Message-State: AOJu0Yxie/FgnqjEmF7Aq/d2fT09rqymfCwodPtg3/iw2tyaDZY0MwGO
-	gEaSWJXPypitZsHwTta2AfVM7L5irqH+t+kBBwCPAiAGC7H2bqEK27JyegTaATWxXJuiaKiG+bY
-	=
-X-Google-Smtp-Source: AGHT+IFVSS5c2Wxlba4wbhQIYe8YmbIxRDm9IhFzPbDdC/k+m7mmpBhAriLUr2SR2JVp3wJXtIUa2A==
-X-Received: by 2002:a05:6830:c9:b0:6e9:f2f0:fadd with SMTP id x9-20020a05683000c900b006e9f2f0faddmr5706653oto.1.1712848196015;
-        Thu, 11 Apr 2024 08:09:56 -0700 (PDT)
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com. [209.85.167.174])
-        by smtp.gmail.com with ESMTPSA id x13-20020a9d628d000000b006ea2013b948sm320412otk.58.2024.04.11.08.09.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 08:09:54 -0700 (PDT)
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3bbbc6e51d0so3331711b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:09:54 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWpsTH6W+9YV/nHU9Jqh7736qUj1f6DvOcBCAQg7iP/eW702z28i0L35Z3e/mwescSM5e+7YHGuVSjKZjKyWBlaniZL4g/+50DH6reJ
-X-Received: by 2002:aca:2b16:0:b0:3c6:58f:8792 with SMTP id
- i22-20020aca2b16000000b003c6058f8792mr5313561oik.20.1712848194156; Thu, 11
- Apr 2024 08:09:54 -0700 (PDT)
+	s=arc-20240116; t=1712848186; c=relaxed/simple;
+	bh=Weouvo161mz85+Ws3kWCHEAN8xCME/9Sry1jGNBqSMk=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:To:From:
+	 References:In-Reply-To; b=jSDbCY6qQws53GZUgVbNSNtz062+J71d1hcs7nycPv1yY6ocP7ZeoPV3dULSz7AYLbf/IomDudIpfvbEvMUNRleLaV0DIeGytQ/udepXPnH7eGlpeS6FcQbyTUcgGowP7A4YmjLA2dr+g8NXdTeXjw5lwUh39luxnSDb9qBF020=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz; spf=pass smtp.mailfrom=matfyz.cz; dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b=aZbdSLyI; arc=none smtp.client-ip=195.113.20.234
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=matfyz.cz
+X-SubmittedBy: id balejk@matfyz.cz subject /postalCode=110+2000/O=Univerzita+20Karlova/street=Ovocn+5CxC3+5CxBD+20trh+20560/5/ST=Praha,+20Hlavn+5CxC3+5CxAD+20m+5CxC4+5Cx9Bsto/C=CZ/CN=Karel+20Balej/emailAddress=balejk@matfyz.cz
+	serial F5FD910E8FE2121B897F7E55B84E351D
+	issued by /C=NL/O=GEANT+20Vereniging/CN=GEANT+20Personal+20CA+204
+	auth type TLS.CUNI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mff.cuni.cz;
+	s=submission; t=1712848147; x=1714148147;
+	bh=cCeEsEVNtOvyeZAP8P6CFO9h6vuYp0g9sWCTeF8QBqc=; h=From;
+	b=aZbdSLyIVl3tvrFOIk+Zr5D1SzvZAbhOXUdHCwd0UGiy1HV/xtG2xvif53SQKGZVD
+	 GlSQSwoDJnZAU18Tn8N3UoMiINOwj2Eoh9Ohs4RAg/Qas/XfZmkqHLHTDowJHhz9Dn
+	 zGAK1q4EoU6T42iW01R3rM7xDiNXGiajh8N5VqD6uf4tPE55vigQj1M7/TdSu7MPVx
+	 PG9bfGFkXeRhofxZXZ56749LgtBba2obs6DrXTd+2FGglYVN5OVvLJXRVSjunagMRg
+	 iEE93/oB2n+Mdp12ees3RkmlxOcetPxmkq0hrmM17dPmR59egM5i/0fDQ48QZXOICh
+	 dhBomyUksKlPQ==
+Received: from localhost (koleje-wifi-0017.koleje.cuni.cz [78.128.191.17])
+	(authenticated)
+	by smtp1.ms.mff.cuni.cz (8.16.1/8.16.1) with ESMTPS id 43BF95MH032359
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
+	Thu, 11 Apr 2024 17:09:07 +0200 (CEST)
+	(envelope-from balejk@matfyz.cz)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240409035355.27659-1-jason-ch.chen@mediatek.com>
-In-Reply-To: <20240409035355.27659-1-jason-ch.chen@mediatek.com>
-From: Fei Shao <fshao@chromium.org>
-Date: Thu, 11 Apr 2024 23:09:16 +0800
-X-Gmail-Original-Message-ID: <CAC=S1nhc-5QRmd21Mi28pKCbzK8zt0ntsdo8J9xxp+BHJ7ONnw@mail.gmail.com>
-Message-ID: <CAC=S1nhc-5QRmd21Mi28pKCbzK8zt0ntsdo8J9xxp+BHJ7ONnw@mail.gmail.com>
-Subject: Re: [PATCH] soc: mediatek: mtk-socinfo: Correct the marketing name
- for MT8188GV
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Jason-ch Chen <jason-ch.chen@mediatek.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>, 
-	Project_Global_Chrome_Upstream_Group@mediatek.com, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 11 Apr 2024 17:09:40 +0200
+Message-Id: <D0HE07BHD1T8.HQLIBUHTRVGT@matfyz.cz>
+Cc: "Rob Herring" <robh@kernel.org>,
+        "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+        "Liam Girdwood"
+ <lgirdwood@gmail.com>,
+        "Mark Brown" <broonie@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        =?utf-8?q?Duje_Mihanovi=C4=87?=
+ <duje.mihanovic@skole.hr>,
+        <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>
+Subject: Re: [PATCH 2/5] mfd: add driver for Marvell 88PM886 PMIC
+To: "Lee Jones" <lee@kernel.org>
+From: "Karel Balej" <balejk@matfyz.cz>
+References: <20240331105608.7338-2-balejk@matfyz.cz>
+ <20240331105608.7338-4-balejk@matfyz.cz>
+ <20240411113726.GH1980182@google.com>
+In-Reply-To: <20240411113726.GH1980182@google.com>
 
-On Tue, Apr 9, 2024 at 11:54=E2=80=AFAM Jason-ch Chen
-<jason-ch.chen@mediatek.com> wrote:
+Lee Jones, 2024-04-11T12:37:26+01:00:
+[...]
+> > diff --git a/drivers/mfd/88pm886.c b/drivers/mfd/88pm886.c
+> > new file mode 100644
+> > index 000000000000..e06d418a5da9
+> > --- /dev/null
+> > +++ b/drivers/mfd/88pm886.c
+> > @@ -0,0 +1,157 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +#include <linux/i2c.h>
+> > +#include <linux/mfd/core.h>
+> > +#include <linux/module.h>
+> > +#include <linux/notifier.h>
+> > +#include <linux/of.h>
+> > +#include <linux/reboot.h>
+> > +#include <linux/regmap.h>
+> > +
+> > +#include <linux/mfd/88pm886.h>
+> > +
+> > +#define PM886_REG_INT_STATUS1			0x05
+> > +
+> > +#define PM886_REG_INT_ENA_1			0x0a
+> > +#define PM886_INT_ENA1_ONKEY			BIT(0)
+> > +
+> > +#define PM886_IRQ_ONKEY				0
+> > +
+> > +#define PM886_REGMAP_CONF_MAX_REG		0xef
 >
-> From: Jason-ch Chen <Jason-ch.Chen@mediatek.com>
->
-> Change 'Kompanio 830' to 'Kompanio 838'.
->
-> Signed-off-by: Jason-ch Chen <Jason-ch.Chen@mediatek.com>
-> ---
->  drivers/soc/mediatek/mtk-socinfo.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/soc/mediatek/mtk-socinfo.c b/drivers/soc/mediatek/mt=
-k-socinfo.c
-> index 6943ab29f095..74672a9d6d13 100644
-> --- a/drivers/soc/mediatek/mtk-socinfo.c
-> +++ b/drivers/soc/mediatek/mtk-socinfo.c
-> @@ -48,8 +48,8 @@ static struct socinfo_data socinfo_data_table[] =3D {
->         MTK_SOCINFO_ENTRY("MT8183", "MT8183V/AZA", "Kompanio 500", 0x0001=
-0043, 0x00000940),
->         MTK_SOCINFO_ENTRY("MT8186", "MT8186GV/AZA", "Kompanio 520", 0x818=
-61001, CELL_NOT_USED),
->         MTK_SOCINFO_ENTRY("MT8186T", "MT8186TV/AZA", "Kompanio 528", 0x81=
-862001, CELL_NOT_USED),
-> -       MTK_SOCINFO_ENTRY("MT8188", "MT8188GV/AZA", "Kompanio 830", 0x818=
-80000, 0x00000010),
-> -       MTK_SOCINFO_ENTRY("MT8188", "MT8188GV/HZA", "Kompanio 830", 0x818=
-80000, 0x00000011),
-> +       MTK_SOCINFO_ENTRY("MT8188", "MT8188GV/AZA", "Kompanio 838", 0x818=
-80000, 0x00000010),
-> +       MTK_SOCINFO_ENTRY("MT8188", "MT8188GV/HZA", "Kompanio 838", 0x818=
-80000, 0x00000011),
->         MTK_SOCINFO_ENTRY("MT8192", "MT8192V/AZA", "Kompanio 820", 0x0000=
-1100, 0x00040080),
->         MTK_SOCINFO_ENTRY("MT8192T", "MT8192V/ATZA", "Kompanio 828", 0x00=
-000100, 0x000400C0),
->         MTK_SOCINFO_ENTRY("MT8195", "MT8195GV/EZA", "Kompanio 1200", 0x81=
-950300, CELL_NOT_USED),
-> --
+> Why have you split the defines up between here and the header?
 
-I've spoken to the MediaTek folks who are familiar with the MT8188 SoC.
-This is an intended marketing name change, so
+I tried to keep defines tied to the code which uses them and only put
+defines needed in multiple places in the header. With the exception of
+closely related things, such as register bits which I am keeping
+together with the respective register definitions for clarity. Does that
+not make sense?
 
-Reviewed-by: Fei Shao <fshao@chromium.org>
+> Please place them all in the header.
 
-Regards,
-Fei
+Would you then also have me move all the definitions from the regulators
+driver there?
+
+[...]
+
+> > +	err =3D devm_mfd_add_devices(dev, 0, pm886_devs, ARRAY_SIZE(pm886_dev=
+s),
+>
+> Why 0?
+
+PLATFORM_DEVID_AUTO then? Or will PLATFORM_DEVID_NONE suffice since the
+cells all have different names now (it would probably cause problems
+though if the driver was used multiple times for some reason, wouldn't
+it?)?
+
+Thank you,
+K. B.
 
