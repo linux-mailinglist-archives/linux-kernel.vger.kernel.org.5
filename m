@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E05748A1ACC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:08:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8C358A1ACE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:08:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F6EF288138
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:08:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 891211F22480
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:08:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A461F4FD2;
-	Thu, 11 Apr 2024 15:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1248F1F466F;
+	Thu, 11 Apr 2024 15:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="zPHKt0pg"
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="kbmlCuHw"
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313001F4FAF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 106191F4FBC
 	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:42:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850150; cv=none; b=CaXBDmjFhUzasP5715rOvslYhHYhc8Eyh6pTU4M7c0h/GdRjVANelu+JQWDq0qNXjDVoq4X48c4tLjDqLKZHuS85z1VOuFmZ9R/ZXvc1k30b6kHHPqWyjRs3vgpVfCuqKcAu2n2h++uublOv7tQgjP/vjWH3JThOVujhsOTDrYE=
+	t=1712850151; cv=none; b=lwzquC5WgpXtAVq8IW3Ti07pNaUb/WW3k6yM/Jb0Ed6DNGjK2jibBJtpuJnCoQ7vkl6p5PJlWEx68pzKgNJL6fmoICkKkRVocibSe3+or2GVcQfiYi4p8pNM63gYLdvZEU2iX1JyiY0KMJDzsHmwU33ufmq4gPEqdNUgfAQhM7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850150; c=relaxed/simple;
-	bh=mJAw9t0NrgR3ha0gcKYHqXmy3EWAXDE7YP/6L6BdfCs=;
+	s=arc-20240116; t=1712850151; c=relaxed/simple;
+	bh=p7WctMMlRWAdNTE5fVv6wre2OmE47Vk1NhNg4CBgEmg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Tm+hruw1uJHMQ8A2mCO0FbFEXvuLEWPoC6wkRqW0/hGP2jY4s9eohveGJz8f8kNozhx/T2tbMxPd6juQFdE2PqOnbRI2kPbXlgNYkBokwcBuQt1ZVMgvCFvflVGwapBc5AadR+MbPRcrrnRc28v3Va4DTV0wGaBE2d40vBgNQHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=zPHKt0pg; arc=none smtp.client-ip=209.85.166.180
+	 MIME-Version; b=klofzsIXSY0SfljlKy7fCFKHNVQPSUcQhFo9BmT05d6bz/zh8BM0EEGeiS0152fj+X0gWom5VbA2Romkkm5Wg0rO3y80TZwzZImQ78KiFnCwN4kr67a8sIkigZ3y18QkhryQB8Gr2McrmbAjOO5VmvQJtq2NrgPcus4LUvwWTTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=kbmlCuHw; arc=none smtp.client-ip=209.85.166.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-36a224d7414so196955ab.1
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7d67d1073easo9933039f.0
         for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:42:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850147; x=1713454947; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850148; x=1713454948; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VsB8zH87dmI7er9oXHLg2/9heWL8uz59DS+bw6PT870=;
-        b=zPHKt0pgfkSfg57x9JRNav5d+DwIenMCuihuuedYYQ7bRmrJjP5qALFQm8NOIoavPd
-         9ig9ixkm4odt1DSaVvC7hiBgmzj1ZHJ+LhHWjf6a5p4HGN8FYp7+aWL8bs2vm83l4LXp
-         44ibQRjbz1q7wpXAUXGH06XxqABHzKFenpyp6Upj76PEKdDTp5BJDtY3HoUVDKELy0zo
-         BkeFUBKy4q+s6ZZYJIvHbvPSyd/QJaAwEIQZs0f8inxMoF6TTwbyGEVklHTkf4o2NzTB
-         T8c6lqYNjsLUYne5s8yicQL1uu0E3Nhb6gzCIXnIdg95S8aNhbEMp8MJFGjFbeRySEH3
-         AEnQ==
+        bh=gE2I3/W/bjcYxnc4E8ZkJcIASksO6YWQlrWRDVCmGeU=;
+        b=kbmlCuHwaadVLTlGki8nRKiSq/LUS17l1Ri9aUtCzupcczQS25mL4yUyT9MSQpGR6C
+         Z5bPgaVoQoI2iYpV+Q/m4CvntLUJ4P/UEVmJ+q7xtNmYr+EEvvJktkxnOL6Sb+CBN8Ry
+         30VlDkkQBQ2rQWNEvwtNqctcxwXskeu3bShu3T4gfw38eDkOXDeIlSUaEwKi3Aw4FVpZ
+         j6CXyRWR/Yyp0F0lefNYR9mYyajLaTpsyzFlX1oLO6yk3lY472VD/etNGXEv9fs142bn
+         QGxtY2sAYRPg9eYAts+VHq0fRs7eSksY8l2kNKa3/ZQN2GYDb03AgfUvQaojrQ38ZkEP
+         owaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850147; x=1713454947;
+        d=1e100.net; s=20230601; t=1712850148; x=1713454948;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VsB8zH87dmI7er9oXHLg2/9heWL8uz59DS+bw6PT870=;
-        b=pXM9jszBauAUC6et52As68Xol6W8Kx2O/aQlNhLEdcc5CX/La9ub5FrrlBjjl09RMI
-         tYYdYP2Ia3ZptCkTuYYg63JGpbg2BDU6ht2t2gyXSmcvvCSaPAcaAK5gvdWNks0dTff3
-         tSGee9vZbC4zhakrgNSo95GWwkUJvVS7C2XfD55VkrGdGJ0Qsds0Mhss8FtgbHgL7aVv
-         xfRScaE+Qet31T/f86eeJIRHUUinWldhGBXDhU8ydKj7Dp4XvC+71Iw34cGxT4WkyW6B
-         ZyCd++XnpFuWTO6SRO8G3d1PJO37foohkGdPXD3K0QJ4Phv+YBZ9VUx/RI9Oh0T8oUHk
-         CgaA==
-X-Gm-Message-State: AOJu0Yw1ytQ93YWGkZh3aBv93w/VrN/58GBVQ83LO2YQzxZAJwNDlBwh
-	Esh9UyJMLhDjxe9xt+0r+D+jGjhx8cvIS0rhaFGf86EmQi96mH63A3bLKXAb475HWF90J4+82Qn
-	O
-X-Google-Smtp-Source: AGHT+IFZ3PMZ517pG9kXwDFMQxA4gKUOWYSRQC23SdQZrsX8jZJMPWx7toeljT1gIoz6ReuJbQyRCA==
-X-Received: by 2002:a6b:6605:0:b0:7d4:1dae:da1a with SMTP id a5-20020a6b6605000000b007d41daeda1amr163740ioc.2.1712850147609;
-        Thu, 11 Apr 2024 08:42:27 -0700 (PDT)
+        bh=gE2I3/W/bjcYxnc4E8ZkJcIASksO6YWQlrWRDVCmGeU=;
+        b=JQPBfeesmdB/F42ONn3J4AviQB+6lBzyI7NVhmHQseoiqzNqBqLIDreWlKf/CEKLGF
+         oTJMBAtgtbCPc0BLFm8y1P5n9sqoC8/SAoH29q9Bja7DQsJPiHc/kCiMA5kvGt4f6z1+
+         c9ZyAfPzrKDlckGNdZIEKjrazIBpsBiPShQRS4MovYRe9hXfNX+DjagKe79likru9fsu
+         RgoaE7/wPCbrsBYKrBdHeWFxZDfWMc5oaGITQEwu4hnmxjrk1NdzweRlHv8t2a4H2005
+         CAlQgCwzjQPytOd8J6IXhVZxtfx/dexY4XXLxWG2LcygzCCDpqoGwMZkOwxHuFwGF3l2
+         eA0w==
+X-Gm-Message-State: AOJu0YypKRbiK1wF/4wKyNieJmaSvneD3EOpI+fWhmzh28DE9k1Emf16
+	PFE4SW2sdkcqMcCkN5aWKTxlBNOpoW8avlS+7OS/tGWPEaJI+uePsAqtTcTSeWUVVL5cy93+BwL
+	6
+X-Google-Smtp-Source: AGHT+IHAJsov8U6CuMQNiOy2a4pMXy8XEU9tTAyFifxKw0xmawEYZk7u7YMT5fEeNl3bREyVG6redw==
+X-Received: by 2002:a6b:7b05:0:b0:7d6:60dc:bc8e with SMTP id l5-20020a6b7b05000000b007d660dcbc8emr209308iop.1.1712850148360;
+        Thu, 11 Apr 2024 08:42:28 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.42.26
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.42.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 11 Apr 2024 08:42:27 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 385/437] speakup: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:18:45 -0600
-Message-ID: <20240411153126.16201-386-axboe@kernel.dk>
+Subject: [PATCH 386/437] EDAC/versal: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:18:46 -0600
+Message-ID: <20240411153126.16201-387-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,247 +85,76 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/accessibility/speakup/devsynth.c     | 27 +++++-------
- drivers/accessibility/speakup/speakup_soft.c | 46 +++++++++-----------
- 2 files changed, 31 insertions(+), 42 deletions(-)
+ drivers/edac/versal_edac.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/accessibility/speakup/devsynth.c b/drivers/accessibility/speakup/devsynth.c
-index cb7e1114e8eb..dd65b3882344 100644
---- a/drivers/accessibility/speakup/devsynth.c
-+++ b/drivers/accessibility/speakup/devsynth.c
-@@ -11,11 +11,10 @@ static int synth_registered, synthu_registered;
- static int dev_opened;
- 
- /* Latin1 version */
--static ssize_t speakup_file_write(struct file *fp, const char __user *buffer,
--				  size_t nbytes, loff_t *ppos)
-+static ssize_t speakup_file_write(struct kiocb *iocb, struct iov_iter *from)
+diff --git a/drivers/edac/versal_edac.c b/drivers/edac/versal_edac.c
+index 1688a5050f63..bd3abd3598ba 100644
+--- a/drivers/edac/versal_edac.c
++++ b/drivers/edac/versal_edac.c
+@@ -781,16 +781,16 @@ static void xddr_inject_data_ce_store(struct mem_ctl_info *mci, u8 ce_bitpos)
+  *
+  * Upon doing a read to the address the errors are injected.
+  */
+-static ssize_t inject_data_ce_store(struct file *file, const char __user *data,
+-				    size_t count, loff_t *ppos)
++static ssize_t inject_data_ce_store(struct kiocb *iocb, struct iov_iter *from)
  {
-+	size_t nbytes = iov_iter_count(from);
- 	size_t count = nbytes;
--	const char __user *ptr = buffer;
- 	size_t bytes;
- 	unsigned long flags;
- 	u_char buf[256];
-@@ -24,10 +23,9 @@ static ssize_t speakup_file_write(struct file *fp, const char __user *buffer,
- 		return -ENODEV;
- 	while (count > 0) {
- 		bytes = min(count, sizeof(buf));
--		if (copy_from_user(buf, ptr, bytes))
-+		if (!copy_from_iter_full(buf, bytes, from))
- 			return -EFAULT;
- 		count -= bytes;
--		ptr += bytes;
- 		spin_lock_irqsave(&speakup_info.spinlock, flags);
- 		synth_write(buf, bytes);
- 		spin_unlock_irqrestore(&speakup_info.spinlock, flags);
-@@ -36,11 +34,10 @@ static ssize_t speakup_file_write(struct file *fp, const char __user *buffer,
- }
- 
- /* UTF-8 version */
--static ssize_t speakup_file_writeu(struct file *fp, const char __user *buffer,
--				   size_t nbytes, loff_t *ppos)
-+static ssize_t speakup_file_writeu(struct kiocb *iocb, struct iov_iter *from)
- {
-+	size_t nbytes = iov_iter_count(from);
- 	size_t count = nbytes, want;
--	const char __user *ptr = buffer;
- 	size_t bytes;
- 	unsigned long flags;
- 	unsigned char buf[256];
-@@ -54,7 +51,7 @@ static ssize_t speakup_file_writeu(struct file *fp, const char __user *buffer,
- 	while (count >= want) {
- 		/* Copy some UTF-8 piece from userland */
- 		bytes = min(count, sizeof(buf));
--		if (copy_from_user(buf, ptr, bytes))
-+		if (!copy_from_iter_full(buf, bytes, from))
- 			return -EFAULT;
- 
- 		/* Convert to u16 */
-@@ -112,7 +109,6 @@ static ssize_t speakup_file_writeu(struct file *fp, const char __user *buffer,
- 		}
- 
- 		count -= bytes;
--		ptr += bytes;
- 
- 		/* And speak this up */
- 		if (out) {
-@@ -127,8 +123,7 @@ static ssize_t speakup_file_writeu(struct file *fp, const char __user *buffer,
- 	return (ssize_t)(nbytes - count);
- }
- 
--static ssize_t speakup_file_read(struct file *fp, char __user *buf,
--				 size_t nbytes, loff_t *ppos)
-+static ssize_t speakup_file_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	return 0;
- }
-@@ -149,15 +144,15 @@ static int speakup_file_release(struct inode *ip, struct file *fp)
- }
- 
- static const struct file_operations synth_fops = {
--	.read = speakup_file_read,
--	.write = speakup_file_write,
-+	.read_iter = speakup_file_read,
-+	.write_iter = speakup_file_write,
- 	.open = speakup_file_open,
- 	.release = speakup_file_release,
- };
- 
- static const struct file_operations synthu_fops = {
--	.read = speakup_file_read,
--	.write = speakup_file_writeu,
-+	.read_iter = speakup_file_read,
-+	.write_iter = speakup_file_writeu,
- 	.open = speakup_file_open,
- 	.release = speakup_file_release,
- };
-diff --git a/drivers/accessibility/speakup/speakup_soft.c b/drivers/accessibility/speakup/speakup_soft.c
-index 6d446824677b..bc88e7e25910 100644
---- a/drivers/accessibility/speakup/speakup_soft.c
-+++ b/drivers/accessibility/speakup/speakup_soft.c
-@@ -215,17 +215,17 @@ static int softsynth_close(struct inode *inode, struct file *fp)
- 	return 0;
- }
- 
--static ssize_t softsynthx_read(struct file *fp, char __user *buf, size_t count,
--			       loff_t *pos, int unicode)
-+static ssize_t softsynthx_read(struct kiocb *iocb, struct iov_iter *to,
-+			       int unicode)
- {
- 	int chars_sent = 0;
--	char __user *cp;
- 	char *init;
- 	size_t bytes_per_ch = unicode ? 3 : 1;
- 	u16 ch;
- 	int empty;
- 	unsigned long flags;
- 	DEFINE_WAIT(wait);
-+	size_t count = iov_iter_count(to);
- 
- 	if (count < bytes_per_ch)
- 		return -EINVAL;
-@@ -241,7 +241,7 @@ static ssize_t softsynthx_read(struct file *fp, char __user *buf, size_t count,
- 				break;
- 		}
- 		spin_unlock_irqrestore(&speakup_info.spinlock, flags);
--		if (fp->f_flags & O_NONBLOCK) {
-+		if (iocb->ki_filp->f_flags & O_NONBLOCK) {
- 			finish_wait(&speakup_event, &wait);
- 			return -EAGAIN;
- 		}
-@@ -254,7 +254,6 @@ static ssize_t softsynthx_read(struct file *fp, char __user *buf, size_t count,
- 	}
- 	finish_wait(&speakup_event, &wait);
- 
--	cp = buf;
- 	init = get_initstring();
- 
- 	/* Keep 3 bytes available for a 16bit UTF-8-encoded character */
-@@ -278,22 +277,20 @@ static ssize_t softsynthx_read(struct file *fp, char __user *buf, size_t count,
- 		if ((!unicode && ch < 0x100) || (unicode && ch < 0x80)) {
- 			u_char c = ch;
- 
--			if (copy_to_user(cp, &c, 1))
-+			if (!copy_to_iter_full(&c, 1, to))
- 				return -EFAULT;
- 
- 			chars_sent++;
--			cp++;
- 		} else if (unicode && ch < 0x800) {
- 			u_char s[2] = {
- 				0xc0 | (ch >> 6),
- 				0x80 | (ch & 0x3f)
- 			};
- 
--			if (copy_to_user(cp, s, sizeof(s)))
-+			if (!copy_to_iter_full(s, sizeof(s), to))
- 				return -EFAULT;
- 
- 			chars_sent += sizeof(s);
--			cp += sizeof(s);
- 		} else if (unicode) {
- 			u_char s[3] = {
- 				0xe0 | (ch >> 12),
-@@ -301,46 +298,43 @@ static ssize_t softsynthx_read(struct file *fp, char __user *buf, size_t count,
- 				0x80 | (ch & 0x3f)
- 			};
- 
--			if (copy_to_user(cp, s, sizeof(s)))
-+			if (!copy_to_iter_full(s, sizeof(s), to))
- 				return -EFAULT;
- 
- 			chars_sent += sizeof(s);
--			cp += sizeof(s);
- 		}
- 
- 		spin_lock_irqsave(&speakup_info.spinlock, flags);
- 	}
--	*pos += chars_sent;
-+	iocb->ki_pos += chars_sent;
- 	empty = synth_buffer_empty();
- 	spin_unlock_irqrestore(&speakup_info.spinlock, flags);
- 	if (empty) {
- 		speakup_start_ttys();
--		*pos = 0;
-+		iocb->ki_pos = 0;
- 	}
- 	return chars_sent;
- }
- 
--static ssize_t softsynth_read(struct file *fp, char __user *buf, size_t count,
--			      loff_t *pos)
-+static ssize_t softsynth_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	return softsynthx_read(fp, buf, count, pos, 0);
-+	return softsynthx_read(iocb, to, 0);
- }
- 
--static ssize_t softsynthu_read(struct file *fp, char __user *buf, size_t count,
--			       loff_t *pos)
-+static ssize_t softsynthu_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	return softsynthx_read(fp, buf, count, pos, 1);
-+	return softsynthx_read(iocb, to, 1);
- }
- 
- static int last_index;
- 
--static ssize_t softsynth_write(struct file *fp, const char __user *buf,
--			       size_t count, loff_t *pos)
-+static ssize_t softsynth_write(struct kiocb *iocb, struct iov_iter *from)
- {
- 	unsigned long supplied_index = 0;
+-	struct device *dev = file->private_data;
++	struct device *dev = iocb->ki_filp->private_data;
+ 	struct mem_ctl_info *mci = to_mci(dev);
+ 	struct edac_priv *priv = mci->pvt_info;
 +	size_t count = iov_iter_count(from);
- 	int converted;
+ 	u8 ce_bitpos;
+ 	int ret;
  
--	converted = kstrtoul_from_user(buf, count, 0, &supplied_index);
-+	converted = kstrtoul_from_iter(from, count, 0, &supplied_index);
+-	ret = kstrtou8_from_user(data, count, 0, &ce_bitpos);
++	ret = kstrtou8_from_iter(from, count, 0, &ce_bitpos);
+ 	if (ret)
+ 		return ret;
  
- 	if (converted < 0)
- 		return converted;
-@@ -376,8 +370,8 @@ static unsigned char get_index(struct spk_synth *synth)
- static const struct file_operations softsynth_fops = {
- 	.owner = THIS_MODULE,
- 	.poll = softsynth_poll,
--	.read = softsynth_read,
--	.write = softsynth_write,
-+	.read_iter = softsynth_read,
-+	.write_iter = softsynth_write,
- 	.open = softsynth_open,
- 	.release = softsynth_close,
+@@ -812,7 +812,7 @@ static ssize_t inject_data_ce_store(struct file *file, const char __user *data,
+ 
+ static const struct file_operations xddr_inject_ce_fops = {
+ 	.open = simple_open,
+-	.write = inject_data_ce_store,
++	.write_iter = inject_data_ce_store,
+ 	.llseek = generic_file_llseek,
  };
-@@ -385,8 +379,8 @@ static const struct file_operations softsynth_fops = {
- static const struct file_operations softsynthu_fops = {
- 	.owner = THIS_MODULE,
- 	.poll = softsynth_poll,
--	.read = softsynthu_read,
--	.write = softsynth_write,
-+	.read_iter = softsynthu_read,
-+	.write_iter = softsynth_write,
- 	.open = softsynth_open,
- 	.release = softsynth_close,
+ 
+@@ -845,19 +845,19 @@ static void xddr_inject_data_ue_store(struct mem_ctl_info *mci, u32 val0, u32 va
+  *
+  * Upon doing a read to the address the errors are injected.
+  */
+-static ssize_t inject_data_ue_store(struct file *file, const char __user *data,
+-				    size_t count, loff_t *ppos)
++static ssize_t inject_data_ue_store(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct device *dev = file->private_data;
++	struct device *dev = iocb->ki_filp->private_data;
+ 	struct mem_ctl_info *mci = to_mci(dev);
+ 	struct edac_priv *priv = mci->pvt_info;
++	size_t count = iov_iter_count(from);
+ 	char buf[6], *pbuf, *token[2];
+ 	u32 val0 = 0, val1 = 0;
+ 	u8 len, ue0, ue1;
+ 	int i, ret;
+ 
+ 	len = min_t(size_t, count, sizeof(buf));
+-	if (copy_from_user(buf, data, len))
++	if (!copy_from_iter_full(from, len, from))
+ 		return -EFAULT;
+ 
+ 	buf[len] = '\0';
+@@ -903,7 +903,7 @@ static ssize_t inject_data_ue_store(struct file *file, const char __user *data,
+ 
+ static const struct file_operations xddr_inject_ue_fops = {
+ 	.open = simple_open,
+-	.write = inject_data_ue_store,
++	.write_iter = inject_data_ue_store,
+ 	.llseek = generic_file_llseek,
  };
+ 
 -- 
 2.43.0
 
