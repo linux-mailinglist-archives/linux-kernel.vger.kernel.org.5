@@ -1,210 +1,179 @@
-Return-Path: <linux-kernel+bounces-140342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5934D8A130F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:33:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D1468A1312
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:34:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C30421F22919
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:33:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFD551C217B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:34:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55E7214884C;
-	Thu, 11 Apr 2024 11:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF5914884C;
+	Thu, 11 Apr 2024 11:34:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h0uZcOgS"
-Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="tskvtUXE"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19DA13DBB6;
-	Thu, 11 Apr 2024 11:33:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80926145B08
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:34:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712835208; cv=none; b=pZbCOv+NkSMWuxpmIFgef1cq6nyoOz1pbmJjAsJU+NphVNsN9fKX7wL4t8vEc8FuWvtMFCOVUBNgBVQgDB83L0sB5joQlowZlsRr1AzcNeu1kxv4DvKJywK8BaUesRNjOOpYGiADfMYY1YigcAN6Cb/+1VO1QkWTTeC2UFX5c7E=
+	t=1712835244; cv=none; b=ngHIUlyNSz7Z19rZ01+WqMYvTeNrMz8WPxqHz8iEKwVaUIn3GBdoQdK91vDdVCZT9upMstv0HbMpnkjHOkFPn3oFxcsKyO2zm9STGyIk49z8NL1WEqG52CSbl/Yp7LdY/7vu3H/KvDgzuxCUTDVOdAscLXTM72TH4sjh3AfM/yE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712835208; c=relaxed/simple;
-	bh=muR1/ADu9TAIXZBQ/wfDhbYx2+qoiKVCb+YgJridmKs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UM/6Kik13pmr9SnTVj26pTDoGN5jcbuFfZexbqPEeogAn96WXg+MHfUcPkcHrHhss/V1/Fni1Co9ijLLnDvmrQhB27N5Con6GHhx1+Q6ODysm035LFst7inMGDz32kYZOQpdrIcAMHIb3iVCT4qaa1K08CRKBREjDUY+XD+zbak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h0uZcOgS; arc=none smtp.client-ip=209.85.219.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6963c0c507eso7710426d6.1;
-        Thu, 11 Apr 2024 04:33:26 -0700 (PDT)
+	s=arc-20240116; t=1712835244; c=relaxed/simple;
+	bh=Y+88OsSv3XgE3Uuu3RxfOIXpJMYy7dEQrqh1SIaJyY8=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=j9Hmn/OgnSWe04vTlE/ukn+VBB/rw2swgHTbh4u5N11R/UWMmnI4KYwcNvTVLeHbRSrCswD8TY/EO3n2ZaOiXfhxvRq6VfK/rAgGExr/S9Z1UGFCr+hxf2zRIjTj0zhmi1wABuCEahlCfIuomRf7c0HzT5tl1rv24UGW53zYao0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=tskvtUXE; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a520410b7c0so261145766b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 04:34:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712835205; x=1713440005; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5D3mVtPdaXrN/I59ysp1em7AlqLnMHVoxgVRiqzFUMs=;
-        b=h0uZcOgSOWD6cUCJczmU7DP2Uj5TNayyLRQ6IOS7NZG1HDYu4Fw1YL07ITLUDVL+Ts
-         XYX4NBAPFojBn0wOatf1PJIUyzON28vSrEeofg5s1+otRcap3811d7qvsHgV7sJR5DS/
-         zOQnO14+mzlOAQ5O2epMPys+XAAOfNLjLj8RSzCT4L5rzkA4uEfoJ8JPFjRChTVdxNW3
-         9J3pXykqKkQP8bo5avhRJu2Cm7MgJJeXhBriB6wn8ScyggjVeRb43qXgGRYs3GW2ssQe
-         pXy7BGER4+GZNyLVJwCRe8jaGsDuZeeVDGS4THWYgk7w46aglG8J1JwgOammuMuerKmN
-         fYVg==
+        d=fairphone.com; s=fair; t=1712835240; x=1713440040; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=epOc+KLscHkys2dcVLrGJ4JNiyjInB/35e6bFJPpR2k=;
+        b=tskvtUXEsrzHPBOV5bGhTj+Z83ArUqU8BBv0RqiMrZfy9mLGAXLkV01iORwnilLMm7
+         9cmWkty5CuIlu2WYP6h/vT6mPFl07HSjSd1vAm8cSPT7Lq2ODak7OsEhgJji9b+9BXVJ
+         87LsTasjr3tmnbb6Hfzk2BAZwOIeSId0nc47P+W8piADY0CG/uhGajb0O3lc6OsWcmED
+         /kiW7OHX9JQ67z5DGC14MrkrI0Ca+NRJztbdfspwtpAKJdtcnaPBmoDamwim82652x7t
+         bfcJXgqbKneEBMRbgYgmF1ivlSw93AotY2Q7kK3afeywFDBW6O6rmPfGzs9Bm7Jplxia
+         WlcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712835205; x=1713440005;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5D3mVtPdaXrN/I59ysp1em7AlqLnMHVoxgVRiqzFUMs=;
-        b=DS71xrPdYzBTVEsSMOtCflyAxMuo4MhKC7Wmh7kGew0vPvK0IAeYxVb43WimPV8TCs
-         phFJVC0cLNPk5zyOZhZM3pFYb+C1qV8OYee5UrxM/WTp8Sq9ozLCZHPjDfhsT13rjkxB
-         gTvGyRIntS8X77Yn86R5X697wQmg/FJM4bEdHIf8uq04UZnWN8TJw0p8eb+2/jO7/hnk
-         +zh6XO+JxWTjVxSOyJh7Woyl0Jr3QdDRZ9ZvgvwJPvMbmOjQE6riZbgR8aNNkQ0i4RRi
-         SpZkiWWi9yVhogbLLIr/3BnmKC2VO9iCsuyiIijDPmxNJ/vkq8MdOmdvNcxBZkrDTfdR
-         FkvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW+geXopySZvdpcGeuBTHfalBw016LM4xKSWzLdSciPkH77jg7lgaq/9J5XdjjfF8s6DfFdcIAW84UrxxGLLbfHvcDeownxz70e/NKH
-X-Gm-Message-State: AOJu0YzMAp9DhNmb5keHY8lfZpHQjeTstXECX+jPo4bvMVojlYNA3yoA
-	RdhCqV2qLTpu3GX9W/lIFg6sYBDMSJHv3HczSxDd35qFnrFJ0GPW50IiFe3SL5yD3D6AhZoogS4
-	CuKtBnprWofg5h8qaMdM9MAsBUG5CAa8W
-X-Google-Smtp-Source: AGHT+IH/endtO91FjJo3Xy5F+rXlR4XFKO79ufeph4ASYe6xuXY4eTUgl5yX2ukNZV+BNBOpHVygFbbcXkb4UZ3GWBg=
-X-Received: by 2002:a05:6214:908:b0:699:28cd:b48d with SMTP id
- dj8-20020a056214090800b0069928cdb48dmr3911321qvb.8.1712835205378; Thu, 11 Apr
- 2024 04:33:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712835240; x=1713440040;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=epOc+KLscHkys2dcVLrGJ4JNiyjInB/35e6bFJPpR2k=;
+        b=bE9KjokARBPazPL4/u4N7Ps9+RzrGllQCPZ58Fn17H8bASXSm17GjCF6509fFFhWd3
+         8Yf69Wgx8DvYe4TcHL8IVOHt26a/oAUfT04ddsccUEh2343NdYQwEAb+ruAKPivUtTwp
+         4rXEPq7p2deIzF4hpiiht0D0Fe/dXjmwPTgeZt++vNU/TD8QYFAQd/XpNGiP5MjlsA4d
+         bqJLSGRbvrwJmw7seIN6kcY2D5lMf6HUE/robZIejLwlmJCXcnQJXJuNRxzt4Wx2+GJp
+         ACAmw3zmjCjX1YqHQPdL5AUaVqcJbPJgy9DEfV+aGkswN/GJUuW6/KpQ46y0tLS35YAR
+         NgYw==
+X-Forwarded-Encrypted: i=1; AJvYcCX1orlODX7fLgaBXiRpnxskg17WQR4X8VH7foFhbYP+m6vN7z7iFrmK5sQXzB0Gj+YwAGT9AgibfaA9c+8pJiczB0/I3O6e8pAvkKpV
+X-Gm-Message-State: AOJu0YwoqMNGI3+vrTUzX8vGIj+0btDoQjiO5pccVl2Eai2cXXcoYRWo
+	csIZiZldauypajZZI+MWj+wt5W7PxxUD3+zbC9LlIiXTdCWRh+Q7PbUSO3aWNs8=
+X-Google-Smtp-Source: AGHT+IFi4++h6RwrGMN8PN/wk/sEG/2YXD4tmv81B83xFu3Y14Jup9QUbnqiGg3W7nCppXCv+oh7Yg==
+X-Received: by 2002:a17:906:c103:b0:a52:2441:99c with SMTP id do3-20020a170906c10300b00a522441099cmr1040746ejc.69.1712835239851;
+        Thu, 11 Apr 2024 04:33:59 -0700 (PDT)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id w17-20020a1709067c9100b00a4a396ba54asm665875ejo.93.2024.04.11.04.33.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 04:33:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <CAK2bqV+kpG5cm5py24TusikZYO=_vWg7CVEN3oTywVhnq1mhjQ@mail.gmail.com>
- <2024041125-surgery-pending-cd06@gregkh>
-In-Reply-To: <2024041125-surgery-pending-cd06@gregkh>
-From: Chris Rankin <rankincj@gmail.com>
-Date: Thu, 11 Apr 2024 12:33:13 +0100
-Message-ID: <CAK2bqVJcsjZE8k87_xNU-mQ3xXm58eCFMdouSVEMkkT57wCQFg@mail.gmail.com>
-Subject: Re: [PATCH 6.8 000/143] 6.8.6-rc1 review
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Linux Stable <stable@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 11 Apr 2024 13:33:59 +0200
+Message-Id: <D0H9F200BT16.2HWU1I45AS1S7@fairphone.com>
+Cc: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/4] clk: qcom: dispcc-sm6350: fix DisplayPort clocks
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+To: "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>, "Bjorn Andersson"
+ <andersson@kernel.org>, "Michael Turquette" <mturquette@baylibre.com>,
+ "Stephen Boyd" <sboyd@kernel.org>, "Konrad Dybcio"
+ <konrad.dybcio@somainline.org>, "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+ "Neil Armstrong" <neil.armstrong@linaro.org>
+X-Mailer: aerc 0.17.0
+References: <20240408-dispcc-dp-clocks-v1-0-f9e44902c28d@linaro.org>
+ <20240408-dispcc-dp-clocks-v1-2-f9e44902c28d@linaro.org>
+In-Reply-To: <20240408-dispcc-dp-clocks-v1-2-f9e44902c28d@linaro.org>
 
-My original oops is here:
+On Mon Apr 8, 2024 at 1:47 PM CEST, Dmitry Baryshkov wrote:
+> On SM6350 DisplayPort link clocks use frequency tables inherited from
+> the vendor kernel, it is not applicable in the upstream kernel. Drop
+> frequency tables and use clk_byte2_ops for those clocks.
+>
+> Fixes: 837519775f1d ("clk: qcom: Add display clock controller driver for =
+SM6350")
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[ 7737.972588] usb 2-4: USB disconnect, device number 3
-[ 7743.332135] BUG: kernel NULL pointer dereference, address: 0000000000000370
-[ 7743.337805] #PF: supervisor write access in kernel mode
-[ 7743.341730] #PF: error_code(0x0002) - not-present page
-[ 7743.345569] PGD 0 P4D 0
-[ 7743.346830] Oops: 0002 [#1] PREEMPT SMP PTI
-[ 7743.349711] CPU: 4 PID: 27870 Comm: kworker/4:0 Tainted: G
-I        6.8.4 #1
-[ 7743.356237] Hardware name: Gigabyte Technology Co., Ltd.
-EX58-UD3R/EX58-UD3R, BIOS FB  05/04/2009
-[ 7743.363830] Workqueue: events sg_remove_sfp_usercontext [sg]
-[ 7743.368196] RIP: 0010:mutex_lock+0x1e/0x2e
-[ 7743.370997] Code: 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00
-00 51 48 89 3c 24 2e 2e 2e 31 c0 31 c0 48 8b 3c 24 65 48 8b 14 25 40
-c2 02 00 <f0> 48 0f b1 17 74 03 5a eb b9 58 c3 cc cc cc cc 90 90 90 90
-90 90
-[ 7743.388443] RSP: 0018:ffffc90004667e00 EFLAGS: 00010246
-[ 7743.392368] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000810000d2
-[ 7743.398201] RDX: ffff88805bf30e40 RSI: ffffffffa1bbd20d RDI: 0000000000000370
-[ 7743.404034] RBP: 0000000000000370 R08: ffff8881144e2d70 R09: 00000000810000d2
-[ 7743.409867] R10: 000000000000023e R11: 000000000000023e R12: ffff8881424039c0
-[ 7743.415698] R13: dead000000000100 R14: ffff88826223a000 R15: ffff88826223a030
-[ 7743.421522] FS:  0000000000000000(0000) GS:ffff888343d00000(0000)
-knlGS:0000000000000000
-[ 7743.428308] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 7743.432745] CR2: 0000000000000370 CR3: 000000000221a000 CR4: 00000000000006f0
-[ 7743.438570] Call Trace:
-[ 7743.439715]  <TASK>
-[ 7743.440513]  ? __die_body+0x1a/0x5c
-[ 7743.442707]  ? page_fault_oops+0x32a/0x377
-[ 7743.445504]  ? fixup_exception+0x22/0x250
-[ 7743.448217]  ? exc_page_fault+0x105/0x117
-[ 7743.450928]  ? asm_exc_page_fault+0x22/0x30
-[ 7743.453850]  ? __pfx_sg_device_destroy+0x10/0x10 [sg]
-[ 7743.457602]  ? mutex_lock+0x1e/0x2e
-[ 7743.459839]  blk_trace_remove+0x15/0x35
-[ 7743.462378]  sg_device_destroy+0x1d/0x60 [sg]
-[ 7743.465438]  sg_remove_sfp_usercontext+0xd2/0xe9 [sg]
-[ 7743.469190]  process_scheduled_works+0x198/0x296
-[ 7743.472510]  worker_thread+0x1c6/0x220
-[ 7743.474962]  ? __pfx_worker_thread+0x10/0x10
-[ 7743.477934]  kthread+0xf7/0xff
-[ 7743.479694]  ? __pfx_kthread+0x10/0x10
-[ 7743.482146]  ret_from_fork+0x24/0x36
-[ 7743.484425]  ? __pfx_kthread+0x10/0x10
-[ 7743.486877]  ret_from_fork_asm+0x1b/0x30
-[ 7743.489506]  </TASK>
-[ 7743.490397] Modules linked in: udf usb_storage sg algif_hash af_alg
-snd_seq_dummy rpcrdma rdma_cm iw_cm ib_cm ib_core nf_nat_ftp
-nf_conntrack_ftp cfg80211 af_packet nf_conntrack_netbios_ns
-nf_conntrack_broadcast nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib
-nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct
-nft_chain_nat nf_tables ebtable_nat ebtable_broute ip6table_nat
-ip6table_mangle ip6table_raw ip6table_security iptable_nat nf_nat
-nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c iptable_mangle
-iptable_raw iptable_security nfnetlink ebtable_filter ebtables
-ip6table_filter ip6_tables iptable_filter ip_tables x_tables bnep it87
-hwmon_vid binfmt_misc snd_hda_codec_realtek snd_hda_codec_generic
-snd_hda_codec_hdmi snd_hda_intel uvcvideo intel_powerclamp btusb
-btintel snd_usb_audio snd_intel_dspcfg coretemp btbcm uvc
-snd_hda_codec videobuf2_vmalloc kvm_intel snd_virtuoso bluetooth
-videobuf2_memops snd_oxygen_lib videobuf2_v4l2 snd_hda_core
-snd_usbmidi_lib videodev snd_mpu401_uart kvm videobuf2_common
-[ 7743.490474]  snd_hwdep snd_rawmidi mc snd_seq ecdh_generic
-input_leds led_class joydev snd_seq_device snd_pcm rfkill ecc r8169
-pktcdvd irqbypass gpio_ich realtek iTCO_wdt intel_cstate snd_hrtimer
-mdio_devres snd_timer libphy intel_uncore i2c_i801 snd pcspkr psmouse
-i2c_smbus acpi_cpufreq mxm_wmi soundcore lpc_ich i7core_edac
-tiny_power_button button nfsd auth_rpcgss nfs_acl lockd grace dm_mod
-sunrpc fuse configfs loop dax zram zsmalloc ext4 crc32c_generic crc16
-mbcache jbd2 amdgpu video amdxcp i2c_algo_bit mfd_core drm_ttm_helper
-ttm drm_exec gpu_sched sr_mod drm_suballoc_helper drm_buddy
-drm_display_helper cdrom sd_mod hid_microsoft usbhid drm_kms_helper
-ahci libahci pata_jmicron drm libata uhci_hcd xhci_pci ehci_pci
-ehci_hcd scsi_mod xhci_hcd usbcore drm_panel_orientation_quirks cec
-firewire_ohci crc32c_intel sha512_ssse3 rc_core sha256_ssse3 serio_raw
-firewire_core sha1_ssse3 usb_common bsg crc_itu_t scsi_common wmi msr
-[ 7743.659267] CR2: 0000000000000370
-[ 7743.661287] ---[ end trace 0000000000000000 ]---
-[ 7743.664605] RIP: 0010:mutex_lock+0x1e/0x2e
-[ 7743.667406] Code: 90 90 90 90 90 90 90 90 90 90 90 90 0f 1f 44 00
-00 51 48 89 3c 24 2e 2e 2e 31 c0 31 c0 48 8b 3c 24 65 48 8b 14 25 40
-c2 02 00 <f0> 48 0f b1 17 74 03 5a eb b9 58 c3 cc cc cc cc 90 90 90 90
-90 90
-[ 7743.684850] RSP: 0018:ffffc90004667e00 EFLAGS: 00010246
-[ 7743.688767] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000810000d2
-[ 7743.694592] RDX: ffff88805bf30e40 RSI: ffffffffa1bbd20d RDI: 0000000000000370
-[ 7743.700415] RBP: 0000000000000370 R08: ffff8881144e2d70 R09: 00000000810000d2
-[ 7743.706239] R10: 000000000000023e R11: 000000000000023e R12: ffff8881424039c0
-[ 7743.712064] R13: dead000000000100 R14: ffff88826223a000 R15: ffff88826223a030
-[ 7743.717897] FS:  0000000000000000(0000) GS:ffff888343d00000(0000)
-knlGS:0000000000000000
-[ 7743.724684] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 7743.729129] CR2: 0000000000000370 CR3: 000000000221a000 CR4: 00000000000006f0
-[ 7743.734961] note: kworker/4:0[27870] exited with irqs disabled
+Appears to fix this non-critical error when enabling DisplayPort.
 
-I have no idea what the current status of the fix(?) is.
+  msm-dp-display ae90000.displayport-controller: _opp_config_clk_single: fa=
+iled to set clock rate: -22
 
-Cheers,
-Chris
+And DisplayPort (over USB-C) continues to work as expected, thanks!
 
-On Thu, 11 Apr 2024 at 12:19, Greg KH <gregkh@linuxfoundation.org> wrote:
+Tested-by: Luca Weiss <luca.weiss@fairphone.com>
+
+For completeness, I wrote something about this also on #linux-msm IRC on
+March 22nd.
+
+> Hi, I'm trying to get displayport to work on sm6350 but hitting a
+> weird issue regarding link clk frequency. For the requested link
+> rate=3D540000 in dp_ctrl_enable_mainlink_clocks we call
+> dev_pm_opp_set_rate with target_freq=3D540000000 (clk name:
+> disp_cc_mdss_dp_link_clk) but the clk_round_rate there makes this into
+> freq=3D810000 and subsequently qmp_dp_link_clk_determine_rate fails
+> because that's not a valid frequency, only for example 810000000.
+> Without any debug statements the visible error in kernel log is:
+> "msm-dp-display ae90000.displayport-controller:
+> _opp_config_clk_single: failed to set clock rate: -22"
 >
-> On Thu, Apr 11, 2024 at 11:38:36AM +0100, Chris Rankin wrote:
-> > The SCSI sg driver oopsed on my 6.8.4 kernel, and I noticed that a
-> > patch (presumably) to fix this was pulled from 6.8.5. However, I also
-> > noticed this email:
+> So somewhere there seems to be confusion between how many zeroes
+> should be where.. But not sure how this is working on other SoCs, I
+> don't see anything much different for my SoC
 >
-> Was that a warning or a real crash?
+> Kernel base is 6.8.1 fwiw
 >
-> > >> Reverted this patch and I couldn't see the reposted warning.
-> > >> scsi: sg: Avoid sg device teardown race
-> > >> [ Upstream commit 27f58c04a8f438078583041468ec60597841284d ]
-> > >
-> > > Fix is here:
-> > >
-> > > https://git.kernel.org/mkp/scsi/c/d4e655c49f47
-> >
-> > Is this unsuitable for 6.8.6 please?
+> clk_round_rate behavior feels correct as
+> ftbl_disp_cc_mdss_dp_link_clk_src lists the frequencies as
+> 162000/270000/540000/810000 so it rounds it to the highest available
+> frequency of the clock
+
+Regards
+Luca
+
+
+> ---
+>  drivers/clk/qcom/dispcc-sm6350.c | 11 +----------
+>  1 file changed, 1 insertion(+), 10 deletions(-)
 >
-> Is it in Linus's tree yet?
->
-> thanks,
->
-> greg k-h
+> diff --git a/drivers/clk/qcom/dispcc-sm6350.c b/drivers/clk/qcom/dispcc-s=
+m6350.c
+> index 839435362010..e4b7464c4d0e 100644
+> --- a/drivers/clk/qcom/dispcc-sm6350.c
+> +++ b/drivers/clk/qcom/dispcc-sm6350.c
+> @@ -221,26 +221,17 @@ static struct clk_rcg2 disp_cc_mdss_dp_crypto_clk_s=
+rc =3D {
+>  	},
+>  };
+> =20
+> -static const struct freq_tbl ftbl_disp_cc_mdss_dp_link_clk_src[] =3D {
+> -	F(162000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
+> -	F(270000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
+> -	F(540000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
+> -	F(810000, P_DP_PHY_PLL_LINK_CLK, 1, 0, 0),
+> -	{ }
+> -};
+> -
+>  static struct clk_rcg2 disp_cc_mdss_dp_link_clk_src =3D {
+>  	.cmd_rcgr =3D 0x10f8,
+>  	.mnd_width =3D 0,
+>  	.hid_width =3D 5,
+>  	.parent_map =3D disp_cc_parent_map_0,
+> -	.freq_tbl =3D ftbl_disp_cc_mdss_dp_link_clk_src,
+>  	.clkr.hw.init =3D &(struct clk_init_data){
+>  		.name =3D "disp_cc_mdss_dp_link_clk_src",
+>  		.parent_data =3D disp_cc_parent_data_0,
+>  		.num_parents =3D ARRAY_SIZE(disp_cc_parent_data_0),
+>  		.flags =3D CLK_SET_RATE_PARENT | CLK_GET_RATE_NOCACHE,
+> -		.ops =3D &clk_rcg2_ops,
+> +		.ops =3D &clk_byte2_ops,
+>  	},
+>  };
+> =20
+
 
