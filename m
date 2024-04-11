@@ -1,124 +1,134 @@
-Return-Path: <linux-kernel+bounces-140728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA9B08A185E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:16:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C603D8A1910
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:50:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35FBCB26A7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:16:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80FF01F219C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E99182B3;
-	Thu, 11 Apr 2024 15:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA87A224D8;
+	Thu, 11 Apr 2024 15:33:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="R7pDm3GO"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="CoyOtEg3"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20D0F13ADC;
-	Thu, 11 Apr 2024 15:13:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2BB0762C9
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:33:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712848399; cv=none; b=pEK4+7MVatbTy6goEo2CweqIiVtaOlXXMNiQ+i2/CzexVEIR3yUf8qvIMferVpHMirGpoIvZ0pKDYfnyK5BL+HJ+S39k5Fk6WSihKotk0UxuvYSw6D063b2ZA30d6UL8BIGLU2dEP58V2oIDsCxHR1e1knT5MQjEeQK0Wb6FJVA=
+	t=1712849594; cv=none; b=SmXGxDmeHbvL7DzneL26GvbugfKU3Dmfk38AP8xjho2ZHYOhWl5sa6HfWxNyRLXOYmkZqDYYJRhy2gH1HyUyoS06KYEv38hkSoDSuMWSmnD+okz7NcnYvHUw6gdGcUPJS3wRo9fQZTo04bKMP5h3SNPFRTGIBxLdebFu218JM7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712848399; c=relaxed/simple;
-	bh=pN56ayWZsVC8Qsmxepu8PbsNstNvWyI8do9fFIC3f0E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tc1ykkZQuNnkHO+r52jlJf4vFhj9p1MgE5wIMi/53CLCY1mHdVsjXqo89TYGDZYauSrBfitO6YgRF5MCVXlLb5H1VV+AH+7dA0NUF6fQ5zfIbj+rQ6QYI3FdGLI4X6G80SppGWjujEjVmi7lybIgB8ii5ASPbMgBpS4b5pYvCwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=R7pDm3GO; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=h/MHPqAJUaQnVuOJ9LRPRm8bT9y8j34KRGcWL/KK0UA=; b=R7pDm3GO8Ii5Ili8nlCHbqY/ci
-	HwQiGoHrPt0/QFJGLkfOYWapAgqNSD0m7dN47qkovXWmIJGWNxm24EBH2uEXCEf1pwbP/T0uTO8gR
-	/rf/ABFbrwhzwh1YaFsnJvOjD4FFPRlfjqXYQ4RRF8PPw0rOa25/OIn9ZdvO0hQc8wJpxKcRL7i/l
-	0y/jb12ZbyYiTzdtSNeuMI4b98guH1CwWtzoAnQiVaDAeoxaKUcUwh1eqyGFcqjXXvAmxC4RhZeLx
-	5jIDVlbbv4+L8DyPrR2/AwByKwg+ryYd7CukrFp9FKQQRznSA/iPSrw4ecKOwVRqeyHtPJVHvE+yq
-	YiNbS37w==;
-Received: from [50.53.2.121] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1ruw71-0000000CgHE-2Zjz;
-	Thu, 11 Apr 2024 15:13:15 +0000
-Message-ID: <5ca63761-93e4-47e2-8fd0-e300a08f044a@infradead.org>
-Date: Thu, 11 Apr 2024 08:13:13 -0700
+	s=arc-20240116; t=1712849594; c=relaxed/simple;
+	bh=Y7yxPNMsHeeEN7x7zk15KFsI8XPx8XUqJo6bdqm38Sc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=F7rbOm2kYiRKSWBHZ3cdYmonINZpP9wJ1TgZ0k+duALi6oa4gKsT93lchOFYWkUQKHjxAnA10aGmqPXtEkHny0KnfLonqvPochvh60ZYCa3igG1Uwuz0aQzsXk5mih+MLNSCRoVMGJjF6UlMbZIlzTm3k3UcSeejlHVkl0KBbCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=CoyOtEg3; arc=none smtp.client-ip=209.85.166.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7c8e4c0412dso69510239f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:33:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849591; x=1713454391; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZZc4928Cn1er2j7QruCFdaei2Tt3S7FPwfD/sFuj1EE=;
+        b=CoyOtEg3GfOJElkWHOAz1PUKG4HapgcLfAAjmiGr9zF+8/Q4zMzS5fWzoSOxCVmihu
+         ddiqBbyQUYrrDWBuCrO7liSDQ4D5+X2hbBhDnfKIjGwIgDu8dkVgbr+tc7tiknkhHjqV
+         T47QmM0deVQ/ypCiLgFV+wnI5zUbytNaZBwzFJgj+E+U444ESClTjaAaaNhnDFpLI9rv
+         dL6uILeH77nQncd/HteTy93sCDG0PCQd4VlyJE5svXg1PZn1s7/w9QoqHfMlOWJ3r+xZ
+         f0blZtHL7+qxRjp3UmBh99kayG5lzBnoKX9cm7tyvfZdACLwSgJZPuP8+iam2NeCahK5
+         tEOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712849591; x=1713454391;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZZc4928Cn1er2j7QruCFdaei2Tt3S7FPwfD/sFuj1EE=;
+        b=omPQVaJZktIsduxwahh9gRfJHZrmwXV3tsTg7JBQjOsvBZB3F8sk5mvQCTlu4WqdeT
+         Ifcf+uWse9ScAflBvmsxhZFdYHUbaucJPpMp6OJngBnwyph2xltd9r+Oid/3bdjfcZST
+         3obhwPOHsfacFDvQ9ab1aHl4g8zPi/N6yKucy31i1Iyy5UXwOj8SD6+akWOcoPfqeSJt
+         JJOwSJUhTuO2NKXUptDks2ZKy7tZl8usNGkw1B6GaJJXEDxp5j5BEJ1z0dCNZGXttYdQ
+         E0RHt9AJSVms6/XN1lWaiW/aSDYFiA8Mnq7t/1anCO1vdKCsdSnp0qPu3WMN9mwDNTGX
+         AUDg==
+X-Gm-Message-State: AOJu0Yxh+LUChExh/L3zSYo+kAv5luca/bo3FdHmvTe5EfKtdBE6OyAd
+	XXeZoMaAsI/u2TuV28lvIZeTp0H0QO7lP2z5zQCAWTEA4SBx0LEoASQpl+Lyd14pkTQ2RS9r8N3
+	Q
+X-Google-Smtp-Source: AGHT+IFWz2/WPLla8ZQB3YzCzEKLaUjG1wN4SJIOEp3HKhZn/MkCWpXOMF4ZSx7JVeVPN4dtUjR6dQ==
+X-Received: by 2002:a6b:7b05:0:b0:7d6:60dc:bc8e with SMTP id l5-20020a6b7b05000000b007d660dcbc8emr186333iop.1.1712849591426;
+        Thu, 11 Apr 2024 08:33:11 -0700 (PDT)
+Received: from localhost.localdomain ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.33.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 08:33:10 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: linux-kernel@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 053/437] net: 6lowpan: convert debugfs to read/write iterators
+Date: Thu, 11 Apr 2024 09:13:13 -0600
+Message-ID: <20240411153126.16201-54-axboe@kernel.dk>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
+References: <20240411153126.16201-1-axboe@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] treewide: Fix common grammar mistake "the the"
-To: Thorsten Blum <thorsten.blum@toblux.com>, kernel-janitors@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-s390@vger.kernel.org, speakup@linux-speakup.org,
- intel-gfx@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-wireless@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-afs@lists.infradead.org,
- ecryptfs@vger.kernel.org, netfs@lists.linux.dev,
- linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
- linux-arch@vger.kernel.org, io-uring@vger.kernel.org, cocci@inria.fr,
- linux-perf-users@vger.kernel.org
-References: <20240411150437.496153-4-thorsten.blum@toblux.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240411150437.496153-4-thorsten.blum@toblux.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+---
+ net/6lowpan/debugfs.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-
-On 4/11/24 8:04 AM, Thorsten Blum wrote:
-> Use `find . -type f -exec sed -i 's/\<the the\>/the/g' {} +` to find all
-> occurrences of "the the" and replace them with a single "the".
-> 
-> Changes only comments and documentation - no code changes.
-> 
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-> ---
->  Documentation/trace/histogram.rst                 | 2 +-
->  arch/arm/Kconfig                                  | 4 ++--
->  arch/arm/include/asm/unwind.h                     | 2 +-
->  arch/arm64/Kconfig                                | 2 +-
->  arch/arm64/kernel/entry-ftrace.S                  | 2 +-
->  arch/s390/kernel/perf_cpum_sf.c                   | 2 +-
->  arch/s390/kernel/sthyi.c                          | 2 +-
->  drivers/accessibility/speakup/speakup_soft.c      | 2 +-
->  drivers/gpu/drm/i915/display/intel_crt.c          | 2 +-
->  drivers/gpu/drm/i915/i915_request.c               | 2 +-
->  drivers/mailbox/Kconfig                           | 2 +-
->  drivers/net/wireless/intel/iwlwifi/fw/api/tx.h    | 4 ++--
->  drivers/net/wireless/intel/iwlwifi/mvm/phy-ctxt.c | 2 +-
->  drivers/scsi/bfa/bfa_fcs_rport.c                  | 2 +-
->  drivers/scsi/fcoe/fcoe_ctlr.c                     | 2 +-
->  drivers/scsi/isci/host.h                          | 2 +-
->  drivers/scsi/isci/remote_device.h                 | 2 +-
->  drivers/scsi/isci/remote_node_context.h           | 2 +-
->  drivers/scsi/isci/task.c                          | 2 +-
->  fs/afs/flock.c                                    | 2 +-
->  fs/ecryptfs/keystore.c                            | 2 +-
->  fs/netfs/direct_read.c                            | 2 +-
->  fs/netfs/direct_write.c                           | 2 +-
->  fs/overlayfs/super.c                              | 2 +-
->  include/uapi/asm-generic/fcntl.h                  | 2 +-
->  io_uring/kbuf.c                                   | 2 +-
->  lib/zstd/common/fse_decompress.c                  | 2 +-
->  lib/zstd/decompress/zstd_decompress_block.c       | 2 +-
->  scripts/coccinelle/misc/badty.cocci               | 2 +-
->  tools/perf/Documentation/perf-diff.txt            | 2 +-
->  30 files changed, 32 insertions(+), 32 deletions(-)
-> 
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
+diff --git a/net/6lowpan/debugfs.c b/net/6lowpan/debugfs.c
+index 600b9563bfc5..0ec0da78c39c 100644
+--- a/net/6lowpan/debugfs.c
++++ b/net/6lowpan/debugfs.c
+@@ -120,20 +120,18 @@ static int lowpan_ctx_pfx_open(struct inode *inode, struct file *file)
+ 	return single_open(file, lowpan_ctx_pfx_show, inode->i_private);
+ }
+ 
+-static ssize_t lowpan_ctx_pfx_write(struct file *fp,
+-				    const char __user *user_buf, size_t count,
+-				    loff_t *ppos)
++static ssize_t lowpan_ctx_pfx_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+ 	char buf[128] = {};
+-	struct seq_file *file = fp->private_data;
++	struct seq_file *file = iocb->ki_filp->private_data;
+ 	struct lowpan_iphc_ctx *ctx = file->private;
+ 	struct lowpan_iphc_ctx_table *t =
+ 		container_of(ctx, struct lowpan_iphc_ctx_table, table[ctx->id]);
++	size_t count = iov_iter_count(from);
+ 	int status = count, n, i;
+ 	unsigned int addr[8];
+ 
+-	if (copy_from_user(&buf, user_buf, min_t(size_t, sizeof(buf) - 1,
+-						 count))) {
++	if (!copy_from_iter_full(&buf, count, from)) {
+ 		status = -EFAULT;
+ 		goto out;
+ 	}
+@@ -157,8 +155,8 @@ static ssize_t lowpan_ctx_pfx_write(struct file *fp,
+ 
+ static const struct file_operations lowpan_ctx_pfx_fops = {
+ 	.open		= lowpan_ctx_pfx_open,
+-	.read		= seq_read,
+-	.write		= lowpan_ctx_pfx_write,
++	.read_iter	= seq_read_iter,
++	.write_iter	= lowpan_ctx_pfx_write,
+ 	.llseek		= seq_lseek,
+ 	.release	= single_release,
+ };
 -- 
-#Randy
+2.43.0
+
 
