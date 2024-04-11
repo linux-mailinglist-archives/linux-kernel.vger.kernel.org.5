@@ -1,52 +1,70 @@
-Return-Path: <linux-kernel+bounces-141718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ECB18A2261
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:38:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BC4A8A225D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:38:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD5E01F22F95
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:38:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE552B22D17
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C48F9481C4;
-	Thu, 11 Apr 2024 23:38:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D4B481DB;
+	Thu, 11 Apr 2024 23:38:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="WKocJ8ec"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="cguJLhq5"
+Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE13481CD;
-	Thu, 11 Apr 2024 23:38:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F241D45C14
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 23:38:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712878726; cv=none; b=lsd8oC9DBOfksqIAQo8TjLL8c8Z1PRGTx9V/z6gtaHqoP7UrumlBZYF63/uju8mlvMY/u2wF1lQPwAysFA7OUVAHANRbKLy/zT4j0KrYB9Z4hVHq9iaoCzWVdxWdpV3fDSSwg5qoGZU/IIf3G9C4Xa96UsUKCGLjzGHL1YKVs6E=
+	t=1712878702; cv=none; b=CX8/STtl7NzC85LsFdHkYIKipXRrD2StUAimnipzfcznHMpRlNz0ucMbsmo+95WrOIr8TT6FaRHRQAAhfyqcY0p2qIwarIT2ATrAW49pu/+LmaHpFKH7gWOUBXpDjOyZ13CNMeulOtefTWRRmQU8Rw60aWrdVnvxO2RpXc9wAx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712878726; c=relaxed/simple;
-	bh=rOKRzDVI+nfL6DR5Djk7+RjCo0yuvrotw3Ij05MfSBg=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=rWBpf/stVBZXGsdG0tde8AO3W5QV3mVJoGNVNPuLfEoPZT1zxsl6Fv5CyN0/LRYgyLjQDOZAfCcNVqq9K7/B89sfz3L41wwyAlaIi0sz9TtFJBr/U+zaXGBo9zxsYMXZSeV+5nQSQ5luVE454Ru37mk/qSZ4XS4ioqx18BVyQfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=WKocJ8ec; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1712878693; x=1713483493; i=w_armin@gmx.de;
-	bh=rOKRzDVI+nfL6DR5Djk7+RjCo0yuvrotw3Ij05MfSBg=;
-	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
-	 In-Reply-To;
-	b=WKocJ8echLHwzQ/MSZdNsjIMBNwycjASmzpwPtYfPHkBYLHOKz3WeHcf4eOvdX1d
-	 1kgF/plg/nLBViGPvDhbsozs2QiJRopd/AunkKKdtgmrRnSZ69GbhGYGiMLeDixvS
-	 wImIETBdhVTrSfhEHmkwl75hXlZteDOU5LpVVaxH5U+JExN42WXaXX+OHO+QLZpSu
-	 A1tLioC+KQ6MEaTycs69t9zgq5ztI4X3HgwqI/Bvz80VIPiNwlKWWQITLwk6YOjz4
-	 e99Fbrm28nt3++polCN5jwCfmr8XoidYpHPlVbd/669V+6DhUmzC9S/w3QUe5Agn9
-	 x4PmX+iKb4Z2eJ4XTA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MUXpQ-1sLMGr27UG-00QSnv; Fri, 12
- Apr 2024 01:38:13 +0200
-Message-ID: <b0899d74-79d7-459c-8f2d-17a17a0f58d7@gmx.de>
-Date: Fri, 12 Apr 2024 01:38:11 +0200
+	s=arc-20240116; t=1712878702; c=relaxed/simple;
+	bh=A5/2+I2e6Nc70pGxM00MEjaSowLN0ZxEDmyNCPx0VN8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ajBScrhKavpKzUkV5QhbGeSdFFQSkWo2poK+X9q/nam0Dn3jUg/M0TsLybbgOH9a2pEB8Qxv9bicdul0cLZDp2ABd9/CcT8UrePCvtOf9lC80B4Yqg+7Aj66A2iUtm9hg8lRlHmo9NhzUSriPWjTsL+HYUh8nyRZQuhNBZr+u/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=cguJLhq5; arc=none smtp.client-ip=209.85.166.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-36a29832cbdso511805ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:38:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1712878699; x=1713483499; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HAzHKVIahMAAQYuXrEXLm3Ghx8zr2AF9oIEq5k/AJGk=;
+        b=cguJLhq5RaG+VN10HZP1sxXs2UuAp2RTIx8A8q92nIfMIk25Y46WtkQnmk7yUBCKtx
+         t8TUHzbN/iTniRrZmd6MTL1Qi+YSEm+/J6Z5fbEpsrAFDeJZLUkqRBz4binGqP6feQtV
+         RiPjXx8vp4bR+lEG7kC4CaCx2xgvuGdGejQa0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712878699; x=1713483499;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HAzHKVIahMAAQYuXrEXLm3Ghx8zr2AF9oIEq5k/AJGk=;
+        b=INj1fRSxphYklDgWItvsHFBykfX9Ex1A8u0BXKFxOyTxs2x9uCxtiqTRj5td5P7YYu
+         A/4lAS1kBWKk1WpS5F9EJgxs5fVPh8uzEwFH4eOvocqNp5queztG5XgViyPLahLSjuNE
+         V8VHec2hOiXygnUY83YVOAcpiiXQSbqkiqjJ/ITxOGiZny4rmRmM+WF2qXCjzUrFcFqS
+         RYup0sZoO+x4fuwwGwUe3r0zmwgComUDrtEvLn7ObPSpYPx6GsfVAlkxEqmGCQdmqCUr
+         dv2kmnyJwoazofDzsTmVX5SJD6lFjxZ1urjkdgxO6Je447gDfXdIEnl2aN900PyVWBns
+         MnpA==
+X-Forwarded-Encrypted: i=1; AJvYcCWKOxFpyjCVAbdFgTB3h8LxMC8lcYvcrJ8zkedEilODBYHDaVpRKSNa9DzdIUxj8DMgug35sa6oaahDIiglnGIQRLt2sSKn5sf+6nTa
+X-Gm-Message-State: AOJu0Yzdk1gaey3u3YhMrC2P3KVnhzmV4sDSUtaslsjjpiYJ6Gyfp0nt
+	84wrnVJpFaqtRm+wzH9umjOASz1M6JYQJSrAzTNmcJ+10zqve7EfByk02cnY2lY=
+X-Google-Smtp-Source: AGHT+IGkHINz7dPYIPvNPoQg3hxjSUHSNt32HD/vaCd07WzPU0j6nBda9WqeCIZm5NUrqv1S6m3kRQ==
+X-Received: by 2002:a05:6e02:c8f:b0:36a:f9aa:5757 with SMTP id b15-20020a056e020c8f00b0036af9aa5757mr1122549ile.2.1712878699144;
+        Thu, 11 Apr 2024 16:38:19 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id m17-20020a92d711000000b00369fb9df9fesm650283iln.8.2024.04.11.16.38.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 16:38:18 -0700 (PDT)
+Message-ID: <f4255e0e-5b1a-4501-bc66-a47471f80c87@linuxfoundation.org>
+Date: Thu, 11 Apr 2024 17:38:17 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,333 +72,47 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] ACPI: fan: Add hwmon support
-From: Armin Wolf <W_Armin@gmx.de>
-To: Mikael Lund Jepsen <mlj@danelec.com>,
- "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
- "lenb@kernel.org" <lenb@kernel.org>
-Cc: "jdelvare@suse.com" <jdelvare@suse.com>,
- "linux@roeck-us.net" <linux@roeck-us.net>,
- "linux@weissschuh.net" <linux@weissschuh.net>,
- "ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
- "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
- "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>
-References: <20240409213323.8031-1-W_Armin@gmx.de>
- <AS4P189MB21333C826C173582E12FFE3EBA062@AS4P189MB2133.EURP189.PROD.OUTLOOK.COM>
- <e6798f0a-5e50-41df-ae3e-0069c16abec3@gmx.de>
+Subject: Re: [PATCH 6.8 000/143] 6.8.6-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240411095420.903937140@linuxfoundation.org>
 Content-Language: en-US
-In-Reply-To: <e6798f0a-5e50-41df-ae3e-0069c16abec3@gmx.de>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240411095420.903937140@linuxfoundation.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Z9kOfMQyQB/Fv2GrugYPqDvo//YKxU6r3vmbv4RWepHwub49NEi
- hnzRjVzHxFU26+r4lagfvdrhQIvL3vvLS/ZnyhYT1VKKy7zWNsswKGa2p15oqDR1HnXKKm1
- rvSrOuO7ppx/HMCzkC55hXkSUOCeS5d4oB51H8/tvBrUk9qJvBDlsUu5o+cTsllt+SYEn5y
- 2GTGJC9oZNxufH92aGIew==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Xop/uKZBb5Q=;zvKmDC3QaAgQWIXBzon3chvuyZR
- u+dP6urITjayP4RMiaX72Q1nfL5iYJ46XPgBtdjbNu2jROqxZFXaWCsrZ7/ASsBIdss7IxNwz
- WUeu5ki0mbedBozskWDfjtaap69fNUAokwgBZ34ao7fxtfyS3dLrnK72LGC5zxt5S04ctYxSc
- iRho0nBhc9+GeANKTt9NXmHwpuHG8HYsVl6AJ8q2O+W3cqRRIEzHe1rOB0k7L13wqJdv+JW0z
- WlKVCLLQMWDyq88FaKgAW3REGLCpJNLzr+79OvlZxk5Sv8J4rxeWccp6Zp1purFpFjkljzUry
- ezjkYnasSsdtrF4ZiKL6MOvYmCLVY1YyEwp86A4o2V1r3xQiB7Dxe/xeg3kKvQujaz3i3pw21
- cYS7EEQDnxUDbmIlgogBtKvbrtoy+u1r4mFFPGHX109wqhnI7co3fjSyyUD92oECdTuys4PwD
- w+ofhkA5pek+ObnCUvmjvTKQxmQSADEJmyKh4zo/gxUmim1kZegbinfGzQJEhYSSfXuqY4g6t
- njgRmLRgMkTRa8rNdDjtAdjY5VIwDANhamN/v7LjgY1+E+JEszROSmQkUkIpTUPXYhYLEjqLj
- RZ7xsL7t2hFb3ZZEbuvapQEVFCpr7ZLAoKFyOQDL2gX7hrQLfIo4Sd5TWPoNn6kkGcznqDWNE
- sxWrnvNTEc/I7OJdgSjSEutcNVTZV3K40b/RISCUIztwiD2/wnNSPZNQnHS7GPulRrZ9pLIy5
- +yA5QnXZG+HRl5eUQc65ZUQP6HqgX0LfTqWRexjFVGEPdAUPa32YzbPOkhwhpkfwC0lIo9EO2
- c1lXBou1nI+7qt5HE7VXoooIL07xV6vSVQPud6L+oNTPQ=
+Content-Transfer-Encoding: 7bit
 
-Am 11.04.24 um 22:30 schrieb Armin Wolf:
+On 4/11/24 03:54, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.8.6 release.
+> There are 143 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.8.6-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-> Am 10.04.24 um 16:29 schrieb Mikael Lund Jepsen:
->
->> On 9. april 2024 Armin Wolf wrote:
->>> To: Mikael Lund Jepsen <mlj@danelec.com>;
->>> rafael.j.wysocki@intel.com; lenb@kernel.org
->>> Cc: jdelvare@suse.com; linux@roeck-us.net; linux@weissschuh.net;
->>> ilpo.jarvinen@linux.intel.com; linux-acpi@vger.kernel.org;
->>> linux-hwmon@vger.kernel.org; linux-kernel@vger.kernel.org;
->>> platform-driver-x86@vger.kernel.org
->>> Subject: [PATCH v2] ACPI: fan: Add hwmon support
->>>
->>> Caution: External email. Do not click links or open attachments
->>> unless you recognize the sender and know the content is safe.
->>>
->>>
->>> Currently, the driver does only support a custom sysfs to allow
->>> userspace to read the fan speed.
->>> Add support for the standard hwmon interface so users can read the
->>> fan speed with standard tools like "sensors".
->>>
->>> Compile-tested only.
->>>
->>> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
->>> ---
->>> Changes since v1:
->>> - fix undefined reference error
->>> - fix fan speed validation
->>> - coding style fixes
->>> - clarify that the changes are compile-tested only
->>> - add hwmon maintainers to cc list
->>>
->>> The changes will be tested by Mikael Lund Jepsen from Danelec and
->>> should be merged only after those tests.
->>> ---
->>> drivers/acpi/Makefile=C2=A0=C2=A0=C2=A0 |=C2=A0 1 +
->>> drivers/acpi/fan.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 9 +++++
->>> drivers/acpi/fan_core.c=C2=A0 |=C2=A0 4 ++
->>> drivers/acpi/fan_hwmon.c | 83 ++++++++++++++++++++++++++++++++++++++++
->>> 4 files changed, 97 insertions(+)
->>> create mode 100644 drivers/acpi/fan_hwmon.c
->>>
->>> diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile index
->>> d69d5444acdb..c272ab2c93b9 100644
->>> --- a/drivers/acpi/Makefile
->>> +++ b/drivers/acpi/Makefile
->>> @@ -83,6 +83,7 @@ obj-$(CONFIG_ACPI_TINY_POWER_BUTTON)=C2=A0 +=3D
->>> tiny-power-button.o
->>> obj-$(CONFIG_ACPI_FAN)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- +=3D fan.o
->>> fan-objs=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 :=
-=3D fan_core.o
->>> fan-objs=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +=
-=3D fan_attr.o
->>> +fan-$(CONFIG_HWMON)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 +=3D fan_hwmon.o
->>>
->>> obj-$(CONFIG_ACPI_VIDEO)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +=3D vide=
-o.o
->>> obj-$(CONFIG_ACPI_TAD)=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- +=3D acpi_tad.o
->>> diff --git a/drivers/acpi/fan.h b/drivers/acpi/fan.h index
->>> e7b4b4e4a55e..97863bdb6303 100644
->>> --- a/drivers/acpi/fan.h
->>> +++ b/drivers/acpi/fan.h
->>> @@ -10,6 +10,8 @@
->>> #ifndef _ACPI_FAN_H_
->>> #define _ACPI_FAN_H_
->>>
->>> +#include <linux/kconfig.h>
->>> +
->>> #define ACPI_FAN_DEVICE_IDS=C2=A0=C2=A0=C2=A0 \
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 {"INT3404", }, /* Fan */ \
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 {"INTC1044", }, /* Fan for =
-Tiger Lake generation */ \ @@
->>> -56,4 +58,11 @@ struct acpi_fan {=C2=A0 int acpi_fan_get_fst(struct
->>> acpi_device *device, struct acpi_fan_fst *fst);=C2=A0 int
->>> acpi_fan_create_attributes(struct acpi_device *device);=C2=A0 void
->>> acpi_fan_delete_attributes(struct acpi_device *device);
->>> +
->>> +#if IS_REACHABLE(CONFIG_HWMON)
->>> +int devm_acpi_fan_create_hwmon(struct acpi_device *device); #else
->>> +static inline int devm_acpi_fan_create_hwmon(struct acpi_device
->>> +*device) { return 0; }; #endif
->>> +
->>> #endif
->>> diff --git a/drivers/acpi/fan_core.c b/drivers/acpi/fan_core.c index
->>> ff72e4ef8738..7cea4495f19b 100644
->>> --- a/drivers/acpi/fan_core.c
->>> +++ b/drivers/acpi/fan_core.c
->>> @@ -336,6 +336,10 @@ static int acpi_fan_probe(struct
->>> platform_device *pdev)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 if (result)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retu=
-rn result;
->>>
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 result =3D devm_acpi_fan_create_hwmon(device);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 if (result)
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return res=
-ult;
->>> +
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 result =3D acpi_fan_create_attributes(device);
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 if (result)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retu=
-rn result;
->>> diff --git a/drivers/acpi/fan_hwmon.c b/drivers/acpi/fan_hwmon.c new
->>> file mode 100644 index 000000000000..b01055432ded
->>> --- /dev/null
->>> +++ b/drivers/acpi/fan_hwmon.c
->>> @@ -0,0 +1,83 @@
->>> +// SPDX-License-Identifier: GPL-2.0-or-later
->>> +/*
->>> + * fan_hwmon.c - hwmon interface for the ACPI Fan driver
->>> + *
->>> + * Copyright (C) 2024 Armin Wolf <W_Armin@gmx.de>=C2=A0 */
->>> +
->>> +#include <linux/acpi.h>
->>> +#include <linux/hwmon.h>
->>> +#include <linux/limits.h>
->>> +
->>> +#include "fan.h"
->>> +
->>> +/* Returned when the ACPI fan does not support speed reporting */
->>> +#define FAN_SPEED_UNAVAILABLE=C2=A0 0xffffffff
->>> +
->>> +static umode_t acpi_fan_is_visible(const void *drvdata, enum
->>> hwmon_sensor_types type, u32 attr,
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int channel) {
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0444;
->>> +}
->>> +
->>> +static int acpi_fan_read(struct device *dev, enum
->>> hwmon_sensor_types type, u32 attr, int channel,
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 long=
- *val)
->>> +{
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct acpi_device *adev =3D dev=
-_get_drvdata(dev);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct acpi_fan_fst fst;
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->>> +
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 switch (type) {
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case hwmon_fan:
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 ret =3D acpi_fan_get_fst(adev, &fst);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 if (ret < 0)
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret=
-;
->>> +
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 switch (attr) {
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 case hwmon_fan_input:
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (fst.sp=
-eed =3D=3D FAN_SPEED_UNAVAILABLE)
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENODATA;
->>> +
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (fst.sp=
-eed > LONG_MAX)
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EOVERFLOW;
->>> +
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *val =3D f=
-st.speed;
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 case hwmon_fan_fault:
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *val =3D (=
-fst.speed =3D=3D FAN_SPEED_UNAVAILABLE);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 default:
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 break;
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 }
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 break;
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 default:
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 break;
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>> +
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EOPNOTSUPP;
->>> +}
->>> +
->>> +static const struct hwmon_ops acpi_fan_ops =3D {
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .is_visible =3D acpi_fan_is_visi=
-ble,
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .read =3D acpi_fan_read,
->>> +};
->>> +
->>> +static const struct hwmon_channel_info * const acpi_fan_info[] =3D {
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 HWMON_CHANNEL_INFO(fan, HWMON_F_=
-INPUT | HWMON_F_FAULT),
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 NULL
->>> +};
->>> +
->>> +static const struct hwmon_chip_info acpi_fan_chip_info =3D {
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .ops =3D &acpi_fan_ops,
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .info =3D acpi_fan_info,
->>> +};
->>> +
->>> +int devm_acpi_fan_create_hwmon(struct acpi_device *device) {
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct device *hdev;
->>> +
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 hdev =3D devm_hwmon_device_regis=
-ter_with_info(&device->dev,
->>> "acpi_fan", device,
->>> + &acpi_fan_chip_info,
->>> + NULL);
->>> +
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return PTR_ERR_OR_ZERO(hdev);
->>> +}
->>> --
->>> 2.39.2
->>>
->> Sorry about the delay, new to ACPI and needed to create the missing
->> tables to define the fan as an ACPIv4 fan and make it talk to the
->> pse/eclite firmware.
->>
->> I've tested patch v2 on kernel 6.6.15 on my Intel ElkhartLake CRB
->> board, and it works fine for me:
->> Fan tacho value is shown correctly and FAULT is reported if
->> ishtp_eclite driver is not loaded.
->>
->> For reference, my test setup:
->> - Intel ElkhartLake CRB board w/ Intel Atom x6425RE
->> - Slimbootloader: Intel MR7 release, with custom ACPI definitions for
->> the fan, and If I remember correctly, I also needed to correct some
->> TGPIO softstraps compared to release defaults
->> - PseFW: Intel MR7 release, with fixes to enable TGPIO/Tacho reading
->> (which was not enabled in release defaults) and to make sure tacho
->> value is read even when fan is turning off (default PSE FW skipped
->> reading tacho if control value was 0, so last tacho value read while
->> fan was turned on would persist).
->>
->> One thing that occurred to me: The fan control value is reported in
->> _FST, but not used in acpi-fan, so how can we flag an error in hwmon
->> if the fan is broken, but shall not always be running?
->> If the control value was exported, then we can alert if tacho is zero
->> when control > 0. I think I'm missing something here?
->>
->> Thanks,
->> Mikael
->
-> You are right, i can expose the target RPM as fan1_target when the fan
-> is not in fine-grained control mode (otherwise there is no guarantee
-> that each
-> control value has an associated fan state entry).
->
-> This way, userspace can detect when the fan is stuck. I will send a v3
-> soon.
->
-> Armin Wolf
->
-I just noticed that the drvdata argument of the is_visible callback is mar=
-ked as const, so i cannot use dev_get_drvdata() on the resulting ACPI devi=
-ce.
-Guenter, would it be ok to make drvdata non-const in a separate patch seri=
-es?
+Compiled and booted on my test system. No dmesg regressions.
 
-Thanks,
-Armin Wolf
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
 
 
