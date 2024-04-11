@@ -1,79 +1,79 @@
-Return-Path: <linux-kernel+bounces-141447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 982A58A1E63
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:34:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3DF08A1E65
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:34:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C79571C22FB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:34:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8E1528A1E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55F8112C467;
-	Thu, 11 Apr 2024 18:07:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A55412C487;
+	Thu, 11 Apr 2024 18:07:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CiHjMA5+"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gSMjw9OM"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2982127E1A;
-	Thu, 11 Apr 2024 18:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7154502B5;
+	Thu, 11 Apr 2024 18:07:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712858836; cv=none; b=TSi/bTq0V4OcPmGZi5cy8WOacUx7qIPQgAf09JvfTs72gEU3LEDXSsrhO12+juWTN9tcqQbFwG+es4cTUBf3i73ilEKrr/CoaetHmk4gtOKojQ4TWvGQb+9aH0N2vRVXsiulu8CYpXxL8tOzk0rD+Rr5L2RnXc7C5CVZZLsTQTk=
+	t=1712858838; cv=none; b=b0XKxFScUR/UBWerJsxqXMrLCXFlSJdAWmmfyJYi0CoZ4XDTWeKLU7vicivGs8cTH+ArOgBhMre4bzYCuCEzl6v1x59lu8W2ucfWtvXL56ywriI237P9ad+RWLJ2Ll6HkmiM0Vs0FAHxAoigQI0w0fZMJsvuektOKC/pWSMa1Ok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712858836; c=relaxed/simple;
-	bh=TPD2BnAYpAPjxNEzF7xOyRGc2UuoaAxKFAzlSvtHwnE=;
+	s=arc-20240116; t=1712858838; c=relaxed/simple;
+	bh=VTwDf1eIoFfkhnb1xTaX228Fa2ijGUtozSt1/ABt9iE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VZlkFJBHIcHDy6HBaENUXntHnIdWCFHxwzvYrrju+usacQZgag2G/higdiGypkwQ4Xlyh/XziDBsWKGNdT0pIORMYg4vaJTMBK4sirFstLN0ZvnAk8VJWbbm01JwXA9pNronC/xwBUZQHiTO0QHUDVEJDvrayVXzpKJIGC6c/y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CiHjMA5+; arc=none smtp.client-ip=209.85.221.45
+	 MIME-Version; b=MO5LJU/OpXAxGY4Hr3U61KHsNpd6/KOpG3FCr+IyGz2CnOAtZ+HudareFPujZ/wVWaBWlwe+Uz89HlDOW71jgzjTODTlUkCwQ+3dNWFLU60r12M9hUMvIkyCv/HwsJRDCvMC4CZtcxJmJ3Hy6EkWeTtlo0KvdZxSCjxfn+HCSgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gSMjw9OM; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-34665dd7610so12234f8f.3;
-        Thu, 11 Apr 2024 11:07:14 -0700 (PDT)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-41650ee55ffso999755e9.0;
+        Thu, 11 Apr 2024 11:07:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712858832; x=1713463632; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712858835; x=1713463635; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RlOMMt1K4XGZU2OF7U6kzSJw3nCLKyrJjAjRkM9xYL0=;
-        b=CiHjMA5+7ZyBpP1HvD4PwVwBf9yCOeymTIVxLCaos+Ie8yOJFO911W3Pk4a+diKqnr
-         Ml4yXAToRx/E/1MTj0UasB7mmRyNWC8MgQ7FZb2K4+NnHhoZtAPw5cwVfoIcK5IJsj8p
-         PbsmLIhNdZ0FzoYUC0IOgoAHkgjzBZO0yaH8kGtFTAQNHIKQ5GilEnOUz9qaaKzzsu2t
-         +HEhd3o6Sh0x7hNcpsNW+g+N26NGqxZAHukOM/sSPqg4YGEydi7G8KlMtzzuN9/XplMP
-         P66ogMCV3SVSu8UZgsjedAtTL3WEYmnduE7gMLMgHJAalDgLzX1OK31OtP2Bhj6cPdQH
-         ydXw==
+        bh=lVvsMWg3g1l53yb/VOtobt7muDfFc+ZRjL66sH9ZIAM=;
+        b=gSMjw9OMSwPj+MazlFiWovPbbj2ZbPBGMgafT4/TAH/xTgs/FIND9uYmsNgZ0aMSVu
+         1OxxjmfP1F0dbjpdIUUCzBPISuXOYlU34+SBvTjLfJkCko9+9U6NlBCXCrbuEAcCp4RT
+         AOZE6Fz/VE2rNwTisjCjw1F4Kz043wNkeQRtVRxdqd9SMk0S4GBpzXqRGP8LKCyLaFXo
+         cv00d0zxhpvR4ckVs0FZdzYvNL3uKD1XaHK3lyt7VXJSdoNL8JWd7rnWnIqGukdpcRmf
+         cUs5qd1aBDpPAsXmay8q74jsLCNlRbSeXQYiJboWIAfZ9Eny8TRRyJYQFirIOpjcyCYW
+         tgqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712858832; x=1713463632;
+        d=1e100.net; s=20230601; t=1712858835; x=1713463635;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RlOMMt1K4XGZU2OF7U6kzSJw3nCLKyrJjAjRkM9xYL0=;
-        b=HQkMBmb9uDJBXIWeJ1oGCTWG38lz0jwfm/PQp3Y0wETGYv8GLDrzVqqq2lEgrjlI7u
-         rMmARfbv8uCqx066efWss3FVFuaPg2lWU1tJH9pEeHB2gd/3eB3D/jaBW/XMvw/vzsBB
-         V326o0QMYxf+u7aaSzqxsp4Ct3rMbuZsp4ge3CPY1gkpZf6Xx9asiWe2VO+6dgoHvldd
-         4NlGxfBjs/SGhKfWDB+c/3nwtfcmBXG5JSt9Cxw9vP2yzsiTu0GySQCpRv1GI/4XXzA5
-         sfqGEHYl3OXjCfQ3Vhk4KDC9brIEc6H0ltK7S4bx9Ddw408AEVLVCPUQcoD2eMLkaia0
-         FH9g==
-X-Gm-Message-State: AOJu0Ywx5lkmEglUjoodYtdwzJA3t9IvYDf1K91rvfzIqP4uKRatdbK/
-	wR2WiN+7pgTKeRActu+6SuHu1MJVpNwwdXW3XcvZ8C2Cc7hdfiVgt1MqLQ==
-X-Google-Smtp-Source: AGHT+IFptFUxExRxrXSeKH39hp0g5wfvj3vT2UdjtY1CqliZcsznFeq8tgrLRAYNpCnHI77qBEjheQ==
-X-Received: by 2002:a5d:4ac4:0:b0:343:4b39:9dbc with SMTP id y4-20020a5d4ac4000000b003434b399dbcmr192754wrs.42.1712858832048;
-        Thu, 11 Apr 2024 11:07:12 -0700 (PDT)
+        bh=lVvsMWg3g1l53yb/VOtobt7muDfFc+ZRjL66sH9ZIAM=;
+        b=Q8yzji8BbcG/FlA36POQRZGsFwjjbzN2PUnbg+DQ4P6YVzAZH0D5yXJdotCv3K7s+u
+         MQ/3ziwBywOAecCR/fYXTJTQKs44FgI7aLZ8TZpzK8AqyqW/4ntHU/9pQxcHP9LJRnZV
+         F9WbEERSv5IVldXYTRaA2snhx2IHbLioki7jHbxj8O0oZxrVAYRSCnrsPi2ekXDwS7Jj
+         xTN89KgnQ+4a1fpn7r/6zcABYt3l6CHE8e4yMub3h40RYxBgLbpEl4vAup241TfcG9Ay
+         IZBgtWWc3PuoITQXynwqQr84NqtfdHb5sAKI1Me5fvDpPj30a/ce51Gs7SkUCaVORwq5
+         E/FA==
+X-Gm-Message-State: AOJu0Yx/1MB0dmszN6PeVKaexFd37vhQRV2TygzwR5INWvejeVxah0aM
+	H6rL6uoQhxUIWeC6c3NFtIe5G/siHmyVbHrfC64T38rvv+9OLkhO8ox19Q==
+X-Google-Smtp-Source: AGHT+IG6CYcwC8MOg0ahDpnU5pBsLYZFcbAyp4xXvk24Xg2qWT9RZQeJUfD/q1YQYhivwdtB9dHryA==
+X-Received: by 2002:a05:600c:3547:b0:416:447c:967 with SMTP id i7-20020a05600c354700b00416447c0967mr355208wmq.22.1712858834402;
+        Thu, 11 Apr 2024 11:07:14 -0700 (PDT)
 Received: from localhost (cpc1-brnt4-2-0-cust862.4-2.cable.virginm.net. [86.9.131.95])
-        by smtp.gmail.com with ESMTPSA id q3-20020adff943000000b00346cc85c821sm1596160wrr.89.2024.04.11.11.07.11
+        by smtp.gmail.com with ESMTPSA id g13-20020a05600c4ecd00b004148d7b889asm6236802wmq.8.2024.04.11.11.07.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 11:07:11 -0700 (PDT)
+        Thu, 11 Apr 2024 11:07:13 -0700 (PDT)
 From: Stafford Horne <shorne@gmail.com>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Linux OpenRISC <linux-openrisc@vger.kernel.org>,
 	Stafford Horne <shorne@gmail.com>,
 	Jonas Bonn <jonas@southpole.se>,
 	Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-Subject: [PATCH 2/5] openrisc: traps: Remove calls to show_registers before die
-Date: Thu, 11 Apr 2024 19:06:29 +0100
-Message-ID: <20240411180644.2023991-3-shorne@gmail.com>
+Subject: [PATCH 3/5] openrisc: traps: Don't send signals to kernel mode threads
+Date: Thu, 11 Apr 2024 19:06:30 +0100
+Message-ID: <20240411180644.2023991-4-shorne@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240411180644.2023991-1-shorne@gmail.com>
 References: <20240411180644.2023991-1-shorne@gmail.com>
@@ -85,46 +85,84 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The die function calls show_registers unconditionally.  Remove calls to
-show_registers before calling die to avoid printing all registers and
-stack status two times during a crash.
+OpenRISC exception handling sends signals to user processes on floating
+point exceptions and trap instructions (for debugging) among others.
+There is a bug where the trap handling logic may send signals to kernel
+threads, we should not send these signals to kernel threads, if that
+happens we treat it as an error.
 
-This was found when testing kernel trap and floating point exception
-handling.
+This patch adds conditions to die if the kernel receives these
+exceptions in kernel mode code.
 
+Fixes: 27267655c531 ("openrisc: Support floating point user api")
 Signed-off-by: Stafford Horne <shorne@gmail.com>
 ---
- arch/openrisc/kernel/traps.c | 3 ---
- 1 file changed, 3 deletions(-)
+ arch/openrisc/kernel/traps.c | 48 ++++++++++++++++++++++--------------
+ 1 file changed, 29 insertions(+), 19 deletions(-)
 
 diff --git a/arch/openrisc/kernel/traps.c b/arch/openrisc/kernel/traps.c
-index 6d0fee912747..88fe27e4c10c 100644
+index 88fe27e4c10c..211ddaa0c5fa 100644
 --- a/arch/openrisc/kernel/traps.c
 +++ b/arch/openrisc/kernel/traps.c
-@@ -212,7 +212,6 @@ asmlinkage void do_unaligned_access(struct pt_regs *regs, unsigned long address)
- 		force_sig_fault(SIGBUS, BUS_ADRALN, (void __user *)address);
- 	} else {
- 		pr_emerg("KERNEL: Unaligned Access 0x%.8lx\n", address);
--		show_registers(regs);
- 		die("Die:", regs, address);
- 	}
+@@ -180,29 +180,39 @@ asmlinkage void unhandled_exception(struct pt_regs *regs, int ea, int vector)
  
-@@ -225,7 +224,6 @@ asmlinkage void do_bus_fault(struct pt_regs *regs, unsigned long address)
- 		force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *)address);
- 	} else {		/* Kernel mode */
- 		pr_emerg("KERNEL: Bus error (SIGBUS) 0x%.8lx\n", address);
--		show_registers(regs);
- 		die("Die:", regs, address);
- 	}
+ asmlinkage void do_fpe_trap(struct pt_regs *regs, unsigned long address)
+ {
+-	int code = FPE_FLTUNK;
+-	unsigned long fpcsr = regs->fpcsr;
+-
+-	if (fpcsr & SPR_FPCSR_IVF)
+-		code = FPE_FLTINV;
+-	else if (fpcsr & SPR_FPCSR_OVF)
+-		code = FPE_FLTOVF;
+-	else if (fpcsr & SPR_FPCSR_UNF)
+-		code = FPE_FLTUND;
+-	else if (fpcsr & SPR_FPCSR_DZF)
+-		code = FPE_FLTDIV;
+-	else if (fpcsr & SPR_FPCSR_IXF)
+-		code = FPE_FLTRES;
+-
+-	/* Clear all flags */
+-	regs->fpcsr &= ~SPR_FPCSR_ALLF;
+-
+-	force_sig_fault(SIGFPE, code, (void __user *)regs->pc);
++	if (user_mode(regs)) {
++		int code = FPE_FLTUNK;
++		unsigned long fpcsr = regs->fpcsr;
++
++		if (fpcsr & SPR_FPCSR_IVF)
++			code = FPE_FLTINV;
++		else if (fpcsr & SPR_FPCSR_OVF)
++			code = FPE_FLTOVF;
++		else if (fpcsr & SPR_FPCSR_UNF)
++			code = FPE_FLTUND;
++		else if (fpcsr & SPR_FPCSR_DZF)
++			code = FPE_FLTDIV;
++		else if (fpcsr & SPR_FPCSR_IXF)
++			code = FPE_FLTRES;
++
++		/* Clear all flags */
++		regs->fpcsr &= ~SPR_FPCSR_ALLF;
++
++		force_sig_fault(SIGFPE, code, (void __user *)regs->pc);
++	} else {
++		pr_emerg("KERNEL: Illegal fpe exception 0x%.8lx\n", regs->pc);
++		die("Die:", regs, SIGFPE);
++	}
  }
-@@ -421,7 +419,6 @@ asmlinkage void do_illegal_instruction(struct pt_regs *regs,
- 	} else {		/* Kernel mode */
- 		pr_emerg("KERNEL: Illegal instruction (SIGILL) 0x%.8lx\n",
- 			 address);
--		show_registers(regs);
- 		die("Die:", regs, address);
- 	}
+ 
+ asmlinkage void do_trap(struct pt_regs *regs, unsigned long address)
+ {
+-	force_sig_fault(SIGTRAP, TRAP_BRKPT, (void __user *)regs->pc);
++	if (user_mode(regs)) {
++		force_sig_fault(SIGTRAP, TRAP_BRKPT, (void __user *)regs->pc);
++	} else {
++		pr_emerg("KERNEL: Illegal trap exception 0x%.8lx\n", regs->pc);
++		die("Die:", regs, SIGILL);
++	}
  }
+ 
+ asmlinkage void do_unaligned_access(struct pt_regs *regs, unsigned long address)
 -- 
 2.44.0
 
