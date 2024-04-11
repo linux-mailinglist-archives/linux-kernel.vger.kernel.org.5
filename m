@@ -1,113 +1,97 @@
-Return-Path: <linux-kernel+bounces-141012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B1C48A1A17
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:34:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 097F68A1A4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:46:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A21771F2198A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:34:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C53E4B25EF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:38:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B6423FE52;
-	Thu, 11 Apr 2024 15:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84FE41CA6CD;
+	Thu, 11 Apr 2024 15:38:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b="LH8sSnq3"
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aGaTBU7d"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B4581C4C5A
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:38:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C91E51CA6BA
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:38:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849901; cv=none; b=We5pDLN9Sh8CJotP1GqZ7+HOdM9jM86NbIv1gJPCl8weg0lW7f8wCVkPr3UW13AvTJoJ/o8Zes0U98jtmUbE5cym8ITawLRDt2z7ZCKM6lnlSEpQKvP89ftCz1hn7i9nBEjYIQWyTmcZVOmAstMb76wgpcgvwG4qilhGYe5OFx8=
+	t=1712849923; cv=none; b=qX/BhX3EMbodPNgDL39DdZHFCCfnRhE+L3+um4DTA8rQjo/rvRBP9o8lFnrPs2OAPG1zpAjG6216lzN3c7Nm/O///ec7kFsPu24mjwSVSt/X7UD7Y5SI65nbD/F7X2tnGNgZt91iLXF7G9yuzvN3HnF1MlIkQ85UW4dSq+XMnHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849901; c=relaxed/simple;
-	bh=c7ZbKM02ozoInY9TLL5WaNcYw6jZxIxWCpv/8aHKlWw=;
+	s=arc-20240116; t=1712849923; c=relaxed/simple;
+	bh=0XIFigNg8okTi2XcwCJDslMjIxGNFSCDsSh68/q0Ud4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qD4LvA3Vlpqt9ORx1zhK3S36L+Axdw+7wh8J1OQca/8LmfGJJtI3TzQj1/PFWke8AgiTAHCV4AVyOSAOUc/pJ41x9nUDcB5PQAx1YUUyoWLoIYpgBTOVYW+XZVqqqf6IEx+15efo2MKqh68xArDYEhTDTtQ2wId38u/etiNCXbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org; spf=pass smtp.mailfrom=linuxtx.org; dkim=pass (1024-bit key) header.d=linuxtx.org header.i=@linuxtx.org header.b=LH8sSnq3; arc=none smtp.client-ip=209.85.210.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=fedoraproject.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxtx.org
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6ea260f51b8so1947165a34.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:38:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1712849898; x=1713454698; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SQF8pW0Q5UZae20gtyOFCGbbxCzCiJFtoc6YhdkZSao=;
-        b=LH8sSnq32JmoM8M0NdsnRbS6+jV8xpne0zaOegeuaxOPfUQAGVRXMPPapf/r8wTkJz
-         5Rx0ZIODxRVh74zRTkQ++x8S/Nvpxz7wxRepLtOyl8I0gLB8nz43HsXB+YzCNOGO1rZr
-         emS0O0IV/2v6OsVIw97rQkSyrk6HZ8pp4SaK8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849898; x=1713454698;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SQF8pW0Q5UZae20gtyOFCGbbxCzCiJFtoc6YhdkZSao=;
-        b=GCcnO86MKXFdr5KAIIrj8wr3frkVL0RUlcZjzpa5FDqztKjtMt0wqGUyqhAavE62YH
-         UGXBPFeSZl4mXjPg8UK29D307C5GQJ8tjDKAXrO0uTNqY4hsegjpf7tE0Am1tvqsYtu0
-         AoROa8J6cpgASBxByEbK5R/2wmopUSK6jMSSPjJpoeZwcM6wLbOSEcfqQ3rqcdgALIUl
-         Az45oYlPpzJPSOSTrOv9+3TFapHtIgasClryPwiqJoNVtv1Sv7EZ2fTHxYgOMj9cNF0u
-         q0rz8/LaneF9crtK8kql09zitejgy2nJ93dKaum3bBem+ZyajoQPwNOTJW5HpgNyEazT
-         vtTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVKmOoyBcunFGdc7+Mhiog4SHVfPvmB8Ybo+ItcIZSSZb6Y0YrYBSMzRlDfEps7bip1UmgV+nnNYUtRK3MO6ndWiiWgKfookqMT2uvf
-X-Gm-Message-State: AOJu0YwhFhbr1wS2hnCdEnKO2INFq3uf/BiPZUin42+vDi63ggGImtqw
-	UD3RB6uVMjbSYDViZ6U8moXqWRxnCUtsFjXOsl2Yytmnm+I/Ph/EkZ6R+1ZGQA==
-X-Google-Smtp-Source: AGHT+IHuutycOm+XsRHDl0LWcOxTy9NbRP7BpNLELnhVE5UZheCq3gAcUJShOSLCoSLKJdlEGR/O1A==
-X-Received: by 2002:a05:6830:4d:b0:6ea:1189:de3c with SMTP id d13-20020a056830004d00b006ea1189de3cmr5851360otp.34.1712849898444;
-        Thu, 11 Apr 2024 08:38:18 -0700 (PDT)
-Received: from fedora64.linuxtx.org ([99.47.93.78])
-        by smtp.gmail.com with ESMTPSA id q14-20020a05683033ce00b006eb507d4257sm238520ott.33.2024.04.11.08.38.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:38:18 -0700 (PDT)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-Date: Thu, 11 Apr 2024 10:38:16 -0500
-From: Justin Forbes <jforbes@fedoraproject.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
-Subject: Re: [PATCH 6.8 000/143] 6.8.6-rc1 review
-Message-ID: <ZhgD6FVwprj26KBU@fedora64.linuxtx.org>
-References: <20240411095420.903937140@linuxfoundation.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hl06GZOQTmgqiin3OLd7xhP+qQEOwqQC5EvtdnxAopEepzgDsI7MIXioLMVGGFWHiSGwRDgQzkxK21XTG4CyQAv34oBgOdrXowY8F587J4SScviNGPPFbN6dZzES/GGWkH64YXYOYZA0LnvHTdORDdxYIez4XnlrPSVU07SvAB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aGaTBU7d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE207C113CE;
+	Thu, 11 Apr 2024 15:38:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712849923;
+	bh=0XIFigNg8okTi2XcwCJDslMjIxGNFSCDsSh68/q0Ud4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aGaTBU7dJ/KuPVA22cvjffRpSftlAU4O+LZZLSuPk3heq+ij90Fsc7u3tN9JEsmIU
+	 lt6D6iwTiFikA3C0RWCvWY1lIdpzdaDrnUJeyMPYpI/oOSiSj+oDQrdRZKnt0IqKOE
+	 7D9KZ2d51dyUy3fqlmFxFECXFdXtiwlklgm2RhJhwIIo3IJ8ivMcfzzeabnW57Irqd
+	 lPWciXlA5yanNZE8QiY2lE66HZoawFU9OTMsRQFmMO8zH0YRcrOq00SaJsJmR4YWbX
+	 SEu0Q1TzjcQCjKyUR9JdkI/4Mqu0+3JSGch87GkcLkhh+BRFknnUkA7kO29MmPTcx6
+	 LrwpuKlS+G+Eg==
+Date: Thu, 11 Apr 2024 08:38:41 -0700
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Andrew Cooper <andrew.cooper3@citrix.com>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Alexandre Chartre <alexandre.chartre@oracle.com>,
+	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Nikolay Borisov <nik.borisov@suse.com>,
+	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>,
+	Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH 5/7] x86/bugs: Only harden syscalls when needed
+Message-ID: <20240411153841.zexbsqrdli54kiez@treble>
+References: <cover.1712813475.git.jpoimboe@kernel.org>
+ <97befd7c1e008797734dee05181c49056ff6de57.1712813475.git.jpoimboe@kernel.org>
+ <90405c43-daca-48e4-b424-d66d6bf4dd87@citrix.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240411095420.903937140@linuxfoundation.org>
+In-Reply-To: <90405c43-daca-48e4-b424-d66d6bf4dd87@citrix.com>
 
-On Thu, Apr 11, 2024 at 11:54:28AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.8.6 release.
-> There are 143 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, Apr 11, 2024 at 11:06:37AM +0100, Andrew Cooper wrote:
+> > +#define __do_syscall(table, func_direct, nr, regs)			\
+> > +({									\
+> > +	unsigned long __rax, __rdi, __rsi;				\
+> > +									\
+> > +	asm_inline volatile(						\
+> > +		ALTERNATIVE("call " __stringify(func_direct) "\n\t",	\
+> > +			    ANNOTATE_RETPOLINE_SAFE			\
+> > +			    "call *%[func_ptr]\n\t",			\
 > 
-> Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
-> Anything received after that time might be too late.
+> This wants to be a plain maybe-thunk'd indirect call, and without the
+> ANNOTATE_RETPOLINE_SAFE.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.8.6-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Or you're going to get into cases where some combinations of command
+> line options do unexpected things e.g. retpolining everything except the
+> syscall dispatch.
 
-Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
-x86_64), and boot tested x86_64. No regressions noted.
+In that case won't X86_FEATURE_INDIRECT_SAFE get cleared, resulting in
+the above using a direct call?  Or did I miss something?
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+-- 
+Josh
 
