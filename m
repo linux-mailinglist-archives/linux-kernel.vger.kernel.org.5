@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874928A1C91
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:50:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8411E8A1B0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:20:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74068B27054
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:20:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A002288552
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102C220404B;
-	Thu, 11 Apr 2024 15:43:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7824320537A;
+	Thu, 11 Apr 2024 15:43:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="jlUaS+ys"
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="eC1tdv7U"
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFDB2049F8
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5712C204A10
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:43:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850231; cv=none; b=SLEBHY5Ycpu0p2Fy6G5mbNR21VYN0kWXwvOoR3aIxyn/tiAbylwCFgXb+79Mw+GqWAgCwu0hyzYZ/KDFtW7Y+cDxEvikWVlVXjL0lAp4EpmN24kTZi3uE552hPSSMstfxHRq+hq9ofQuv0d+hl0g9wqiiZULGJ4mw4AMolWh+9o=
+	t=1712850232; cv=none; b=pZQq7F2bCATcGzOqGZkW4NCrA74UMpWwIMhRmJMLXJGD3RHYq7B+NWcXMyYV0wy2YzMfqTcN/fh3apirbVkuK1kbC3vzXdP0R6DBf2ROR9Mc/OWj/MPt5cA6fdHbb4qlMxbH21ioRP7qAflPbw+YMJ2m7HCkfoprakJTtIwiaAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850231; c=relaxed/simple;
-	bh=javgIbxkE1+7A6rhREq95g8HCMcpsCkLIkqCYQtKuUs=;
+	s=arc-20240116; t=1712850232; c=relaxed/simple;
+	bh=UMggqosULg5752cqa95i9iJARi5Q6wzh/nFYd55Lugg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tP4gOAI9Geupn26mWPq72/2VtdCYln56cZYgYgyoJCZ8c/QJbWCTY8f6lHbAeATTnNu8hCBp4jqXGAG4G06dMNeiGrQOUNDwB3HLz3mm7o0aSdckZ0+7wcBTTm0J3PWaywyW+MMKeKq6yw5233n/vnmUnoXEoOE88GD4c4mM2UA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=jlUaS+ys; arc=none smtp.client-ip=209.85.166.180
+	 MIME-Version; b=gXgdizVSEprlRmVOej7ZDz84XJnVgRwcwqmpBmvMrKuPSt7gQ2NSYCMGsqqZWY2X5TA4JhjbWiUyOiWQ6qoHsLhW0J3SWQzRK+gsD8fN3ZlwoKo1uHduKOUJl1nwAduEdEclfglPt2nsXp+x81LTZFgPrnXKKpdZIIkAiphU5sE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=eC1tdv7U; arc=none smtp.client-ip=209.85.166.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-36a34b68277so125625ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:43:49 -0700 (PDT)
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7c8e4c0412dso69708039f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:43:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850229; x=1713455029; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850230; x=1713455030; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o0Ldb0OWw+BFeSwp6J+TFEGOy1nUuoCa5jXwSLo8ftE=;
-        b=jlUaS+ysKpGyGbjPnX1KzAVsrQoq7ruz0hsgvJu6eSgczJRg3kwhDTIpOQAmjz/4uV
-         Q9beO9h3Y9n5apuWyGxBi/+XTjG4viX2KnrkmjHUFpMRzoAgDgK7Q64dE/jf4knvV2oi
-         lA8dXwcX/78D1sV3skIrZgC1E5U13lDQmx/OKZMO/fO2YcmHgrBQGDaiyOiVUWoH3sK9
-         AuXW7aokg8l0h+c2lWSAnoDmZ2IyxAejzGp8qvTkIKMVJN8k7xXcyFip73dLRGxkjtru
-         R7IFfgLa6Ce0c1SM1A22PnCdQRp8sV0sWPnrJXpds8u2BfqqvOVPMf3xfkiKsdq8NSKF
-         peHw==
+        bh=y+zMONw+XuavXi4H+iqiLRXmWKO3JrdzsvcOsYY+R2U=;
+        b=eC1tdv7UkL5/5SVazBe5jYQD2kRMzwVhKYunXeWVWHgQZSRteUxug4q2tS0ggkhEbH
+         k9BiSX53FUE7J28+5So9NfY9gVVxrZAySruiI6cVL5YVMwoS7kKXBj/3SiYm0Ryg5ylp
+         ZOwDRcDOvgv5XXGgrxwlXnfz/xZcP5MOLO2DRgswmG+SF/RK0ifcUWju3adhMEusW14Q
+         8vR5nr/BcOLLmCk7vp1LuRRXYpb2zBh7BpR+071LxcoU801FsSR3tDsTGT+nOou6DlFE
+         BfeFp9CmitwB3d+MTl8zcBXu2vlRGwcKMIhKPQjk5a9Uf1q+nsw/feVtMEejwyih7mGz
+         /JDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850229; x=1713455029;
+        d=1e100.net; s=20230601; t=1712850230; x=1713455030;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=o0Ldb0OWw+BFeSwp6J+TFEGOy1nUuoCa5jXwSLo8ftE=;
-        b=f/ioS8ZHU+YVCiTbvopJYfI4il/fqagyZLYrr1zJtubNoyBHELuWgzyzKENVKtT1ub
-         +P+LeweQew3YnI7X+7bd8n2WEu7TPER139bgH4ddQnaNsDlTnDrITTK0M52qVNCNX/uT
-         q8q/2p/qlTa/JUVRx1kvoZaufsaL7/UgklovULUS4EMW2AokPgviLZ/Yq5+LOIMYQWRd
-         ofwKiwH6LkVB7C5jD5Jp4wGcbIlLnxOfCRp8xqNBFLCbWuy0O0WfB399sLyAJg4z+qa7
-         TLJZM7Y1+/wJ5YIxas1zRAWoPmx/U9stl1CBDiqJhnND4GaG2VJwl5UkOQ8vyXdKme5s
-         jOVQ==
-X-Gm-Message-State: AOJu0YxwXIklL/GkCZp68r9tTNjtAzSa/fQPClvZWhRRfpT7we18W4+a
-	N424XpWuICEVabhoaYDbyATkMi9B6aqLm4+WlKkejUoXM9Buy9tzCNtxHeXyLYxLvfDSGYBt6xn
-	c
-X-Google-Smtp-Source: AGHT+IFpFHSz7Hea4rg3qKqsQ1AOKmrfuLzFkj77vfljNyXFRiMumTJa70jT/Ytbn9tM/hLjQxdNqA==
-X-Received: by 2002:a6b:6605:0:b0:7d4:1dae:da1a with SMTP id a5-20020a6b6605000000b007d41daeda1amr166987ioc.2.1712850228798;
-        Thu, 11 Apr 2024 08:43:48 -0700 (PDT)
+        bh=y+zMONw+XuavXi4H+iqiLRXmWKO3JrdzsvcOsYY+R2U=;
+        b=QuPXcKLjAWXIFsK3x8GC8MSlidL1JEYoZyy3/q7z5A3hJhkq7b2t1K321ciZ4AY2ud
+         9YXcnnEyC22LQIb22YKg9XbyNTAuk1ZAGvLXU6hI5b/V1td+Ms+V6a5Pic8SxrSeggwr
+         wLXK1+bhMIDaqwW3g1bxqYsHHjUtVRbKRo3ytVVxmRv+V49gXh3ZURNSz3/QiWDZl5cT
+         i7OMd67mdcOKM1yCHMRUm+R7CjkESM7nqJU0dyGhInqwSkYNdWYQckZBnLdxXJSrmF6j
+         Svtv8//a4fiH7pIeXl2BLK2ksj2OH2xP1iTx1xGuGgAApxxuC1TUkthXFHXWbQl8TpcM
+         lYsA==
+X-Gm-Message-State: AOJu0YyvKdmV9RlvMJY83CNvdp9uVE4DvZLnghydZ66bm6RnNIAjotH1
+	pqZlUfSChVfPMRoJbXRrwyPG1nlXAsV7rSi2wofZnxXRjqdRCUMqXG3k7qYH6HqlllgcuXH37ax
+	N
+X-Google-Smtp-Source: AGHT+IFX/j1GBEWVL2id0KYwira3udzeGr7D/E9GmGrm8vmPN9R5UdjIjkOlECFdtNJ2YoIDMDqY0g==
+X-Received: by 2002:a6b:7b05:0:b0:7d6:60dc:bc8e with SMTP id l5-20020a6b7b05000000b007d660dcbc8emr212988iop.1.1712850229998;
+        Thu, 11 Apr 2024 08:43:49 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.43.47
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.43.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:43:47 -0700 (PDT)
+        Thu, 11 Apr 2024 08:43:49 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 435/437] fs: kill off non-iter variants of simple_attr_{read,write}*
-Date: Thu, 11 Apr 2024 09:19:35 -0600
-Message-ID: <20240411153126.16201-436-axboe@kernel.dk>
+Subject: [PATCH 436/437] kstrtox: remove (now) dead helpers
+Date: Thu, 11 Apr 2024 09:19:36 -0600
+Message-ID: <20240411153126.16201-437-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -83,138 +83,104 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-They are no longer used, kill them with fire.
+This drops:
+
+kstrtoll_from_user()
+kstrtol_from_user()
+kstrtouint_from_user()
+kstrtou16_from_user()
+kstrtos16_from_user()
+kstrtos8_from_user()
+kstrtou64_from_user()
+kstrtos64_from_user()
+kstrtou32_from_user()
+kstrtos32_from_user()
+
+as they are no longer used in the code base.
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- fs/libfs.c         | 89 ----------------------------------------------
- include/linux/fs.h |  6 ----
- 2 files changed, 95 deletions(-)
+ include/linux/kstrtox.h | 26 --------------------------
+ lib/kstrtox.c           |  6 ------
+ 2 files changed, 32 deletions(-)
 
-diff --git a/fs/libfs.c b/fs/libfs.c
-index 56b404ad4cfb..74159f63334e 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -1337,44 +1337,6 @@ int simple_attr_release(struct inode *inode, struct file *file)
- }
- EXPORT_SYMBOL_GPL(simple_attr_release);	/* GPL-only?  This?  Really? */
+diff --git a/include/linux/kstrtox.h b/include/linux/kstrtox.h
+index 229e0162849a..2fa469860c42 100644
+--- a/include/linux/kstrtox.h
++++ b/include/linux/kstrtox.h
+@@ -98,15 +98,9 @@ int __must_check kstrtos8(const char *s, unsigned int base, s8 *res);
+ int __must_check kstrtobool(const char *s, bool *res);
  
--/* read from the buffer that is filled with the get function */
--ssize_t simple_attr_read(struct file *file, char __user *buf,
--			 size_t len, loff_t *ppos)
+ int __must_check kstrtoull_from_user(const char __user *s, size_t count, unsigned int base, unsigned long long *res);
+-int __must_check kstrtoll_from_user(const char __user *s, size_t count, unsigned int base, long long *res);
+ int __must_check kstrtoul_from_user(const char __user *s, size_t count, unsigned int base, unsigned long *res);
+-int __must_check kstrtol_from_user(const char __user *s, size_t count, unsigned int base, long *res);
+-int __must_check kstrtouint_from_user(const char __user *s, size_t count, unsigned int base, unsigned int *res);
+ int __must_check kstrtoint_from_user(const char __user *s, size_t count, unsigned int base, int *res);
+-int __must_check kstrtou16_from_user(const char __user *s, size_t count, unsigned int base, u16 *res);
+-int __must_check kstrtos16_from_user(const char __user *s, size_t count, unsigned int base, s16 *res);
+ int __must_check kstrtou8_from_user(const char __user *s, size_t count, unsigned int base, u8 *res);
+-int __must_check kstrtos8_from_user(const char __user *s, size_t count, unsigned int base, s8 *res);
+ int __must_check kstrtobool_from_user(const char __user *s, size_t count, bool *res);
+ 
+ struct iov_iter;
+@@ -119,36 +113,16 @@ int __must_check kstrtou16_from_iter(struct iov_iter *s, size_t count, unsigned
+ int __must_check kstrtou8_from_iter(struct iov_iter *s, size_t count, unsigned int base, u8 *res);
+ int __must_check kstrtobool_from_iter(struct iov_iter *src, size_t count, bool *res);
+ 
+-static inline int __must_check kstrtou64_from_user(const char __user *s, size_t count, unsigned int base, u64 *res)
 -{
--	struct simple_attr *attr;
--	size_t size;
--	ssize_t ret;
--
--	attr = file->private_data;
--
--	if (!attr->get)
--		return -EACCES;
--
--	ret = mutex_lock_interruptible(&attr->mutex);
--	if (ret)
--		return ret;
--
--	if (*ppos && attr->get_buf[0]) {
--		/* continued read */
--		size = strlen(attr->get_buf);
--	} else {
--		/* first read */
--		u64 val;
--		ret = attr->get(attr->data, &val);
--		if (ret)
--			goto out;
--
--		size = scnprintf(attr->get_buf, sizeof(attr->get_buf),
--				 attr->fmt, (unsigned long long)val);
--	}
--
--	ret = simple_read_from_buffer(buf, len, ppos, attr->get_buf, size);
--out:
--	mutex_unlock(&attr->mutex);
--	return ret;
+-	return kstrtoull_from_user(s, count, base, res);
 -}
--EXPORT_SYMBOL_GPL(simple_attr_read);
 -
- /* read from the buffer that is filled with the get function */
- ssize_t simple_attr_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ static inline int __must_check kstrtou64_from_iter(struct iov_iter *src, size_t count, unsigned int base, u64 *res)
  {
-@@ -1462,57 +1424,6 @@ ssize_t simple_attr_write_iter_signed(struct kiocb *iocb, struct iov_iter *from)
+ 	return kstrtoull_from_iter(src, count, base, res);
  }
- EXPORT_SYMBOL_GPL(simple_attr_write_iter_signed);
  
--/* interpret the buffer as a number to call the set function with */
--static ssize_t simple_attr_write_xsigned(struct file *file, const char __user *buf,
--			  size_t len, loff_t *ppos, bool is_signed)
+-static inline int __must_check kstrtos64_from_user(const char __user *s, size_t count, unsigned int base, s64 *res)
 -{
--	struct simple_attr *attr;
--	unsigned long long val;
--	size_t size;
--	ssize_t ret;
--
--	attr = file->private_data;
--	if (!attr->set)
--		return -EACCES;
--
--	ret = mutex_lock_interruptible(&attr->mutex);
--	if (ret)
--		return ret;
--
--	ret = -EFAULT;
--	size = min(sizeof(attr->set_buf) - 1, len);
--	if (copy_from_user(attr->set_buf, buf, size))
--		goto out;
--
--	attr->set_buf[size] = '\0';
--	if (is_signed)
--		ret = kstrtoll(attr->set_buf, 0, &val);
--	else
--		ret = kstrtoull(attr->set_buf, 0, &val);
--	if (ret)
--		goto out;
--	ret = attr->set(attr->data, val);
--	if (ret == 0)
--		ret = len; /* on success, claim we got the whole input */
--out:
--	mutex_unlock(&attr->mutex);
--	return ret;
+-	return kstrtoll_from_user(s, count, base, res);
 -}
 -
--ssize_t simple_attr_write(struct file *file, const char __user *buf,
--			  size_t len, loff_t *ppos)
+-static inline int __must_check kstrtou32_from_user(const char __user *s, size_t count, unsigned int base, u32 *res)
 -{
--	return simple_attr_write_xsigned(file, buf, len, ppos, false);
+-	return kstrtouint_from_user(s, count, base, res);
 -}
--EXPORT_SYMBOL_GPL(simple_attr_write);
 -
--ssize_t simple_attr_write_signed(struct file *file, const char __user *buf,
--			  size_t len, loff_t *ppos)
+ static inline int __must_check kstrtou32_from_iter(struct iov_iter *src, size_t count, unsigned int base, u32 *res)
+ {
+ 	return kstrtouint_from_iter(src, count, base, res);
+ }
+ 
+-static inline int __must_check kstrtos32_from_user(const char __user *s, size_t count, unsigned int base, s32 *res)
 -{
--	return simple_attr_write_xsigned(file, buf, len, ppos, true);
+-	return kstrtoint_from_user(s, count, base, res);
 -}
--EXPORT_SYMBOL_GPL(simple_attr_write_signed);
 -
- /**
-  * generic_encode_ino32_fh - generic export_operations->encode_fh function
-  * @inode:   the object to encode
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 85db7dde4778..55fc02b99cf6 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3552,12 +3552,6 @@ int simple_attr_open(struct inode *inode, struct file *file,
- 		     int (*get)(void *, u64 *), int (*set)(void *, u64),
- 		     const char *fmt);
- int simple_attr_release(struct inode *inode, struct file *file);
--ssize_t simple_attr_read(struct file *file, char __user *buf,
--			 size_t len, loff_t *ppos);
--ssize_t simple_attr_write(struct file *file, const char __user *buf,
--			  size_t len, loff_t *ppos);
--ssize_t simple_attr_write_signed(struct file *file, const char __user *buf,
--				 size_t len, loff_t *ppos);
- ssize_t simple_attr_read_iter(struct kiocb *iocb, struct iov_iter *to);
- ssize_t simple_attr_write_iter(struct kiocb *iocb, struct iov_iter *from);
- ssize_t simple_attr_write_iter_signed(struct kiocb *iocb, struct iov_iter *from);
+ static inline int __must_check kstrtos32_from_iter(struct iov_iter *src, size_t count, unsigned int base, s32 *res)
+ {
+ 	return kstrtoint_from_iter(src, count, base, res);
+diff --git a/lib/kstrtox.c b/lib/kstrtox.c
+index 111231cb4148..e8a603954396 100644
+--- a/lib/kstrtox.c
++++ b/lib/kstrtox.c
+@@ -438,15 +438,9 @@ int f(const char __user *s, size_t count, unsigned int base, type *res)	\
+ EXPORT_SYMBOL(f)
+ 
+ kstrto_from_user(kstrtoull_from_user,	kstrtoull,	unsigned long long);
+-kstrto_from_user(kstrtoll_from_user,	kstrtoll,	long long);
+ kstrto_from_user(kstrtoul_from_user,	kstrtoul,	unsigned long);
+-kstrto_from_user(kstrtol_from_user,	kstrtol,	long);
+-kstrto_from_user(kstrtouint_from_user,	kstrtouint,	unsigned int);
+ kstrto_from_user(kstrtoint_from_user,	kstrtoint,	int);
+-kstrto_from_user(kstrtou16_from_user,	kstrtou16,	u16);
+-kstrto_from_user(kstrtos16_from_user,	kstrtos16,	s16);
+ kstrto_from_user(kstrtou8_from_user,	kstrtou8,	u8);
+-kstrto_from_user(kstrtos8_from_user,	kstrtos8,	s8);
+ 
+ #define kstrto_from_iter(f, g, type)					\
+ int f(struct iov_iter *s, size_t count, unsigned int base, type *res)	\
 -- 
 2.43.0
 
