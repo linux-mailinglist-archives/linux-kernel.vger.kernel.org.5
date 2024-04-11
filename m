@@ -1,157 +1,176 @@
-Return-Path: <linux-kernel+bounces-139587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D47CA8A04D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:31:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D74B8A04D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:36:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 121951C23348
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:31:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F20CEB2483B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:35:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 981ED8BE7;
-	Thu, 11 Apr 2024 00:31:00 +0000 (UTC)
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 307358BEE;
+	Thu, 11 Apr 2024 00:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="bMG0Zv8V"
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEADDA48;
-	Thu, 11 Apr 2024 00:30:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4AF97F9
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712795460; cv=none; b=l7L5sMF8sJ9j9x+7HipdbItsduq7WXa7XToGts8taFdgve0gGDptRnMWh/A2dxN0vtkUVQKNLhOQ6DecSZIhHNxgPiG7Vs4E97EV321FNjS6iz5HXoymTXpVvTrbswOtcqo0YpqjyDgkI8DmTegFnU35kxx649dq7aU06ebNNBs=
+	t=1712795751; cv=none; b=IhlE0EjwVJVNUeynt3icbp5OqKfD2DzTykT/EBgP3WMjsCbFMuDYFWlrBlPjEsglS0ZZ7UVsKi6AhrZA2dgMSlLCtCMdzYfY/NFkE3a8m5shTPGqZ+wzoDibOh6qlTpJTuxpe8OIDJ4Hza1bpYCv+gP4VDDuk0E0e3EvW9JUxaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712795460; c=relaxed/simple;
-	bh=8OkLeX6L0u/KEaGRQJ+X3tCW5fywwq58y3T54hErp0g=;
+	s=arc-20240116; t=1712795751; c=relaxed/simple;
+	bh=vDzBN7h5H7qRuMhHLOSWOdTcB6GR+YXycDXe8bfzdG4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZkVDuL6ZzgpNBz8hrEpr0KwM3KzLZotICI1itaaCU1n2KOMI6DDWWWVZNRzOZ1FFAt9kOpITyZexUCpm9t2Qcp7PpUIFb/zFyvM21rmj/0EDGUiC7Fdbu2vHL99XWgDyjClBsSw6vuqsLgkr83foa87gFbyPnBQfJy+CwLIPBqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2a52c544077so2669676a91.1;
-        Wed, 10 Apr 2024 17:30:58 -0700 (PDT)
+	 To:Cc:Content-Type; b=ZN2yv5LyaTlzLHsjT1q0zRljyd5lsAzZd9aYI1iPGKQ64vcR4lPso981IupaJkNA9o7a4L8uCGrj63MV/fBnpVF8eKapl+xEtAr2IZ7FpaqTzsBUQtjzaXtpw0ngY+io8fLtEacFwH8s7wf8myriJMVxE4edbiviNJIaXZw7iHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bMG0Zv8V; arc=none smtp.client-ip=209.85.160.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4348110e888so93331cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:35:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712795749; x=1713400549; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hll648Cvihh5+gbtq6L/4af+GOyNrj81dtl5gh6CLtU=;
+        b=bMG0Zv8VsRkfxZk/J2ZnZmWxa8w5X/5aGfz64MVW1o13nc/4UPmlI/4NGvTxlES+08
+         iDeOkOGP019AYXQaGKmnsvLIJdtuvOm3zfzIvDlrc++km4OG3kL9hXvsrMrWnGrPfPw3
+         tCEeG/E0G4+1GNIt4YwC2fvFThIGCmHAXIS13InqMkTT8lI1/ABbXyDTreJ6SpVVZZHe
+         O2wkbn2umGfFeUWvcrC89X1F9gUXjtdvi2xrTPsl4F0SE+/XFioXMvxmkO6+T1lcuwYq
+         p33QK/JicU/NSnJRlnBjxfMkbcjqvB09H9wkgZexF92lITXJdEI+6oRed2QKG2bsjb7Y
+         di6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712795458; x=1713400258;
+        d=1e100.net; s=20230601; t=1712795749; x=1713400549;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=suv3ipWFwE695qY+oEWHhKuh1Qf07FjcpBu2cm2rvPQ=;
-        b=Or1QEsBrX7drn/pW6BCsYZNWFrJtT8NzKRhVVCdRNvGWJZ7PBjFAATsQq2kLSl/uHh
-         lUH+xKGylGthmO6lWBBz4/Fg/3ufxKyiMoI35t6jbEg3L4gmqVq2SEeledu1NvvCzPhs
-         HuSsqp5p5OlC37cH6OYWQ/pQQLkmqvVQuqItAr0w40ery6h5UBOcEjXkdaIvTGoHEQgv
-         AqrXTQNzXgwZsjz48k1PHHOYGU1EJcvwlEJOTc+Z1ZeaZyEZRsvowPPLV7JM3HP4L/Bc
-         PVFL3UNDnAk0EEt5UfeYRifI5yHmR4CDMNFfyxvVB48OntxaJBWTXmgkwcDB6aqLnZdn
-         brIg==
-X-Forwarded-Encrypted: i=1; AJvYcCVyP1/RmE7eXmBiWakXsvOcIWbYPC5mx/g6vnbvN3Uum5oFqTRkIqiW7VaMo7JtNBtHDYVi+CK4t7r03bmHSD2eMRrk1ffAXb6K0XEHuUXfKd02yQoZLlPBqXTJoh2blzYsn9F91/FTTKtnBIs+2Q==
-X-Gm-Message-State: AOJu0YwtoWDbjMKqKPKQMEs/TfrFxTM6BMkKn2HbfkcJpfY/C6uMddnH
-	tYBJ0DuFjHCznRO9J0xd6xw3dggEyCBRVpd9uM1634+CWaBtN5GUygoosGXxdXnu6xE6z8fYO6b
-	GO5zkjkpPJ03Ha4TUCq1MLdydggl8eA==
-X-Google-Smtp-Source: AGHT+IGAepPRcEAw0tCTCBOk+Lxlg4YemB/CwiIl/9ioHDLg44dm6R72zXqrr8iK53EX+DI3iWRt7fSpALvbG+C7mrQ=
-X-Received: by 2002:a17:90a:7781:b0:2a5:379a:e2c with SMTP id
- v1-20020a17090a778100b002a5379a0e2cmr3813848pjk.7.1712795457898; Wed, 10 Apr
- 2024 17:30:57 -0700 (PDT)
+        bh=Hll648Cvihh5+gbtq6L/4af+GOyNrj81dtl5gh6CLtU=;
+        b=IiA5rPHGxEsFWXbzzQDopuLDhzHDTIok1seJlhaXD5sFTSPed1JvTN36g/Du57fDvR
+         pTRkmy2uvxl5SXVlnQLJINPrWJ8QUfubcCa1U96Ue13efC1gDktsnmlzN/DadSRlOXvT
+         C+4VBys6BourHUxPp14jHITDwLa1Ipv+voNUpA5TdVfX3TelUruJTYaJoBMLFUZApAUg
+         uTxpt3Lb6sRfY9BwFAGe1PfvdUpxjA58zJwjuCZ38aIE3ZGwPtj3v2fmeZBJVe8ifd67
+         LHh4hYPlIR8Os7rEffMQoJX5aNL3OtUU95saUMCH1L9I+pbSeyGVxEWXT+O2MAgQpqdk
+         aMEA==
+X-Forwarded-Encrypted: i=1; AJvYcCXa6uHBDGhgHroKhy81XXmOTpcXx58cmzTP/rdsb9fU9j87rGpXe2ni08wYcyfSqT6qs4QKHMpTJtSWx9V40Mstjx2r9PGhh+BTK2br
+X-Gm-Message-State: AOJu0YyS2XpihaCFJFhoY1vACCPiS+35nyJWmTAu6LRg1U59nBB5jRsn
+	Yp9Lvpe/6cMNgSS55syfTzvRlRWuaBZ0Gh5fzcoXTjU/ufBhMGrRnCCRKQ8QeLCug+0sQfGGf+G
+	OlO8pRoUNpnt7Pb8924V648MAY5OjfyalZP9U
+X-Google-Smtp-Source: AGHT+IFGLj1tAhjk5RpppfKTaL73oV3xSrwK17M0Lat/eXuLIVwkuvO1YH97f0uDQLYoqbM8Or5GftZ8IdKEWzGYOsE=
+X-Received: by 2002:a05:622a:4d4a:b0:434:dcc1:cddb with SMTP id
+ fe10-20020a05622a4d4a00b00434dcc1cddbmr88725qtb.26.1712795748610; Wed, 10 Apr
+ 2024 17:35:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409235000.1893969-1-namhyung@kernel.org> <20240409235000.1893969-6-namhyung@kernel.org>
- <Zhb6jJneP36Z-or0@x1> <Zhb7pPySSGnIU3bO@x1>
-In-Reply-To: <Zhb7pPySSGnIU3bO@x1>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 10 Apr 2024 17:30:46 -0700
-Message-ID: <CAM9d7choZ7WQXa_+RWm-eODjah+k_A5T3eSFXWFYRqTO5euyxg@mail.gmail.com>
-Subject: Re: [PATCH 5/6] perf report: Add a menu item to annotate data type in TUI
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org
+References: <20240401232946.1837665-1-jthoughton@google.com>
+ <20240401232946.1837665-2-jthoughton@google.com> <cce476f7-2f52-428a-8ae4-fc5dec714666@redhat.com>
+ <CADrL8HVPEjdAs3PoTa3sPCvQpimZJG6pP9wbiLjnF5cROxfapA@mail.gmail.com> <226a222d-4273-4304-ab73-39b2f8f060b5@redhat.com>
+In-Reply-To: <226a222d-4273-4304-ab73-39b2f8f060b5@redhat.com>
+From: James Houghton <jthoughton@google.com>
+Date: Wed, 10 Apr 2024 17:35:11 -0700
+Message-ID: <CADrL8HWbF=7mEn=1s=uwUuZ_-vnCxHwK3hOdctiuCGLtephskg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/7] mm: Add a bitmap into mmu_notifier_{clear,test}_young
+To: David Hildenbrand <david@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Yu Zhao <yuzhao@google.com>, David Matlack <dmatlack@google.com>, Marc Zyngier <maz@kernel.org>, 
+	Oliver Upton <oliver.upton@linux.dev>, Sean Christopherson <seanjc@google.com>, 
+	Jonathan Corbet <corbet@lwn.net>, James Morse <james.morse@arm.com>, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Shaoqin Huang <shahuang@redhat.com>, 
+	Gavin Shan <gshan@redhat.com>, Ricardo Koller <ricarkol@google.com>, 
+	Raghavendra Rao Ananta <rananta@google.com>, Ryan Roberts <ryan.roberts@arm.com>, 
+	David Rientjes <rientjes@google.com>, Axel Rasmussen <axelrasmussen@google.com>, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-mm@kvack.org, 
+	linux-trace-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 10, 2024 at 1:50=E2=80=AFPM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
-> (gdb) bt
-> #0  0x00007ffff6ebd385 in __GI___libc_free (mem=3D0x69647225202c3866) at =
-malloc.c:3368                                                              =
-                                            =E2=96=92
-> #1  0x000000000066c2c0 in delete_data_type_histograms (adt=3D0x8dedf0c0) =
-at util/annotate-data.c:1655                                               =
-                                            =E2=96=92
-> #2  0x000000000066c363 in annotated_data_type__tree_delete (root=3D0xe6bc=
-68) at util/annotate-data.c:1669                                           =
-                                            =E2=96=92
-> #3  0x0000000000553bc5 in dso__delete (dso=3D0xe6bbd0) at util/dso.c:1376=
-                                                                           =
-                                            =E2=96=92
-> #4  0x0000000000553d63 in dso__put (dso=3D0xe6bbd0) at util/dso.c:1409   =
-                                                                           =
-                                            =E2=96=92
-> #5  0x000000000057ed76 in __dso__zput (dso=3D0xf5b540) at util/dso.h:262 =
-                                                                           =
-                                            =E2=96=92
-> #6  0x000000000058027e in map__exit (map=3D0xf5b520) at util/map.c:300   =
-                                                                           =
-                                            =E2=96=92
-> #7  0x00000000005802bc in map__delete (map=3D0xf5b520) at util/map.c:305c=
-ord -b ... ; perf report --total-cycles                                    =
-                                            =E2=96=92
-> #8  0x0000000000580325 in map__put (map=3D0xf5b520) at util/map.c:312
-> #9  0x00000000005818aa in __map__zput (map=3D0xf3e300) at util/map.h:196
-> #10 0x0000000000582241 in maps__exit (maps=3D0xf5aee0) at util/maps.c:246
-> #11 0x000000000058233c in maps__delete (maps=3D0xf5aee0) at util/maps.c:2=
-68
-> #12 0x00000000005823fd in maps__put (maps=3D0xf5aee0) at util/maps.c:285
-> #13 0x000000000055c4ca in __maps__zput (map=3D0x47856d8) at util/maps.h:3=
-2
-> #14 0x000000000055c55f in map_symbol__exit (ms=3D0x47856d8) at util/map_s=
-ymbol.c:8
-> #15 0x00000000005c36bf in hist_entry__delete (he=3D0x4785660) at util/his=
-t.c:1319
-> #16 0x00000000005c1049 in hists__delete_entry (hists=3D0xe68fe0, he=3D0x4=
-785660) at util/hist.c:382
-> #17 0x00000000005c1197 in hists__delete_entries (hists=3D0xe68fe0) at uti=
-l/hist.c:410
-> #18 0x00000000005c7a4d in hists__delete_all_entries (hists=3D0xe68fe0) at=
- util/hist.c:2872
-> #19 0x00000000005c7ac7 in hists_evsel__exit (evsel=3D0xe68d70) at util/hi=
-st.c:2884
-> #20 0x0000000000531928 in evsel__exit (evsel=3D0xe68d70) at util/evsel.c:=
-1489
-> #21 0x000000000053196d in evsel__delete (evsel=3D0xe68d70) at util/evsel.=
-c:1497
-> #22 0x0000000000526a70 in evlist__purge (evlist=3D0xe67a00) at util/evlis=
-t.c:163
-> #23 0x0000000000526b7d in evlist__delete (evlist=3D0xe67a00) at util/evli=
-st.c:185
-> #24 0x0000000000585fd8 in perf_session__delete (session=3D0xe670a0) at ut=
-il/session.c:313
-> #25 0x0000000000434503 in cmd_report (argc=3D0, argv=3D0x7fffffffe430) at=
- builtin-report.c:1828
-> #26 0x00000000005062c3 in run_builtin (p=3D0xe3f160 <commands+288>, argc=
-=3D3, argv=3D0x7fffffffe430) at perf.c:350
-> #27 0x0000000000506532 in handle_internal_command (argc=3D3, argv=3D0x7ff=
-fffffe430) at perf.c:403
-> #28 0x0000000000506681 in run_argv (argcp=3D0x7fffffffe21c, argv=3D0x7fff=
-ffffe210) at perf.c:447
-> #29 0x0000000000506978 in main (argc=3D3, argv=3D0x7fffffffe430) at perf.=
-c:561
-> (gdb)
+On Tue, Apr 9, 2024 at 12:35=E2=80=AFPM David Hildenbrand <david@redhat.com=
+> wrote:
 >
+> On 09.04.24 20:31, James Houghton wrote:
+> > Ah, I didn't see this in my inbox, sorry David!
+>
+> No worries :)
+>
+> >
+> > On Thu, Apr 4, 2024 at 11:52=E2=80=AFAM David Hildenbrand <david@redhat=
+com> wrote:
+> >>
+> >> On 02.04.24 01:29, James Houghton wrote:
+> >>> diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifie=
+r.h
+> >>> index f349e08a9dfe..daaa9db625d3 100644
+> >>> --- a/include/linux/mmu_notifier.h
+> >>> +++ b/include/linux/mmu_notifier.h
+> >>> @@ -61,6 +61,10 @@ enum mmu_notifier_event {
+> >>>
+> >>>    #define MMU_NOTIFIER_RANGE_BLOCKABLE (1 << 0)
+> >>>
+> >>> +#define MMU_NOTIFIER_YOUNG                   (1 << 0)
+> >>> +#define MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE (1 << 1)
+> >>
+> >> Especially this one really deserves some documentation :)
+> >
+> > Yes, will do. Something like
+> >
+> >      MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE indicates that the passed-in
+> > bitmap either (1) does not accurately represent the age of the pages
+> > (in the case of test_young), or (2) was not able to be used to
+> > completely clear the age/access bit (in the case of clear_young).
+>
+> Make sense. I do wonder what the expected reaction from the caller is :)
 
-Thanks for the report.  I think I missed stack canary not handling
-histogram updates.  The data file I tested with TUI didn't have an
-entry for stack canary so I didn't catch this.  For some reason, I
-still cannot reproduce it on my box.  Anyway I will fix in v2.
+In this series the caller doesn't actually care (matching what Yu had
+in his v2[1]). test_spte_young() probably ought to return false if it
+finds MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE (and I'll do this in v4 if
+no one objects), but it doesn't have to. The bitmap will never say
+that a page is young when it was actually not, only the other way
+around.
 
-For the verification, it'd be nice if you can print the type name
-in the delete_data_type__histogram().
+>
+> >
+> >>
+> >>> +#define MMU_NOTIFIER_YOUNG_FAST                      (1 << 2)
+> >>
+> >> And that one as well.
+> >
+> > Something like
+> >
+> >     Indicates that (1) passing a bitmap ({test,clear}_young_bitmap)
+> > would have been supported for this address range.
+> >
+> > The name MMU_NOTIFIER_YOUNG_FAST really comes from the fact that KVM
+> > is able to harvest the access bit "fast" (so for x86, locklessly, and
+> > for arm64, with the KVM MMU read lock), "fast" enough that using a
+> > bitmap to do look-around is probably a good idea.
+>
+> Is that really the right way to communicate that ("would have been
+> supported") -- wouldn't we want to sense support differently?
 
-  (gdb) p adt->self.type_name
+What I have now seems fine to me. It would be a little nicer to have a
+way to query for bitmap support and make sure that the answer will not
+be stale by the time we call the bitmap notifiers, but the complexity
+to make that work seems unnecessary for dealing with such an uncommon
+scenario.
 
+Maybe the right thing to do is just to have KVM always return the same
+answer. So instead of checking if the shadow root is allocated, we
+could check something else (I'm not sure what exactly yet though...).
 
-Thanks,
-Namhyung
+[1]: https://lore.kernel.org/kvmarm/20230526234435.662652-11-yuzhao@google.=
+com/
 
