@@ -1,119 +1,111 @@
-Return-Path: <linux-kernel+bounces-141632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94F248A20F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:34:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 310468A20F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:34:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD30E2866F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:34:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C426A1F243D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C922F383AE;
-	Thu, 11 Apr 2024 21:34:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F21433D3A2;
+	Thu, 11 Apr 2024 21:34:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="WVC6/N37"
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="b3cMzLWA"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9396B2941F;
-	Thu, 11 Apr 2024 21:34:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C1323BBE3;
+	Thu, 11 Apr 2024 21:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712871250; cv=none; b=l4OdcVW+7AH0LWAWWSggpyDvIkpgJZYYJQ4bCchRfDXeDPMC8fpe1HK3cEczUvhutzqgcrKa4svf0XRLLDe7vTFg8d9Z+9v0+izGi+Yvid8fl4IRKVMQqjDM05ymgWnhjwy1XDAqUt4gQKZbl7UlRMl3rfiDD4fg5g65H6Zs7zk=
+	t=1712871269; cv=none; b=cKt5wJq5BVCLbQbEyB8VcCWwDFpxndjv9jh2sahzXwh51btBYpxPEpzIizuE5BIjBX9fuNIdtompf+45rXIUs7M+L8dDRvfHanjntgIoGi2SYn59/Ok+/+9Fra6PdkIX4T9//zmkSDL7vCKRd7gR6dpaOy2Ss26ZwzetddLjDXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712871250; c=relaxed/simple;
-	bh=z2/Orf6yxKDaqub6BTAfFJIArBnI+mzGrz0nYL/Evhw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=eyeMg5poq006pt0dvPSGy6sbeOJzFYHvBXo8cB9chheAzEYMo+fWKUtd1H835mGENqd3OmW7CWbQYFJzXo5Bo48MVaddenYVWtTpME8VItGaefrlGkGSHUpzGHMzHOsw8hTo2hImHDzxUz5zzD1ZtdJMBz0BQMO33iA2pssLr/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=WVC6/N37; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1712871236;
-	bh=z2/Orf6yxKDaqub6BTAfFJIArBnI+mzGrz0nYL/Evhw=;
-	h=From:Date:Subject:To:Cc:From;
-	b=WVC6/N370UZmJtUN/b6OgQnoVXrQ58ZDT6hxbmTb2vITO3XnoZxbdtmfGvcIzeQkY
-	 9TZNXBKI2rnl/vj9mZDdi/YxK/bufqqhocH6QrCdiHCzrMnMzCQv7X3sHNa21izw/P
-	 i51h2YPw4UUzqwaKDh8PEYkGRAnr5R5fxt3Npm8s=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Thu, 11 Apr 2024 23:33:51 +0200
-Subject: [PATCH] misc/pvpanic-pci: register attributes via pci_driver
+	s=arc-20240116; t=1712871269; c=relaxed/simple;
+	bh=W3MvQH8SSPbBSlxe8iZX890gWDzm/xPRkbtRmrpC09A=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=pW+1nUsyKuVIE82aJaWHNQGXjZaOoDnizwLQfc6Elr36R6/vcIQC8O4M3tPqrPgN6j56oa/oquPtLjVJIcPGY/L9ymEtrfgTGvhNJej/YEmVDyqO33jeQIpqQXmBzw4W+p9BHLDU2fA7l5U1G5w0bcgZKbAutK5qIVIpUrbmZX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=b3cMzLWA; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1712871262;
+	bh=bID0WC4uQ435fYxe8ZAH6Gg6WRcTNxszYe3iGagWjjc=;
+	h=Date:From:To:Cc:Subject:From;
+	b=b3cMzLWAagmgp8xd5wIGOLW0iyXDAUu7H9XQXOS2Iq8yWqNShvGBU9Hm0sxLlTZCl
+	 CzxaHOhhBnYzFscXyP74egFsMXV7T20DiFBBnFSaaOCNx577WpxdK+Qss1dhh6a8SA
+	 nvkjXXIwjqIogUhftus7gSgITyiCt9N0ydCnpt9sgDs9DeEcAne6t35yA+ldaScy/n
+	 4UBBDzlXLERO154H99dbIeKc44FBciSGdj6Qgii82USfHqvfzXGd+ZDfUMHJZsy0I0
+	 MW6JIqLrD1F4CRqGYl8FWQiP2MD3wsd2JdXjBojpKhkxqE66/3wmU2UQgVL7+1gIn9
+	 fzjylRAtj7YEQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VFtHy0XGQz4wyS;
+	Fri, 12 Apr 2024 07:34:21 +1000 (AEST)
+Date: Fri, 12 Apr 2024 07:34:20 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
+ <johan.hedberg@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the bluetooth tree
+Message-ID: <20240412073420.718fa77a@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240411-pvpanic-pci-dev-groups-v1-1-db8cb69f1b09@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAD5XGGYC/x3MMQqAMAxG4atIZgNWO3kVcbDxV7PU0GIRxLtbH
- L/hvYcykiLT2DyUUDTrGStc25AcS9zBulZT3/W+886xFVuiCpsoryi8p/OyzBgCECSIh6caW8K
- m9z+e5vf9AN5pcyFoAAAA
-To: Arnd Bergmann <arnd@arndb.de>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Mihai Carabas <mihai.carabas@oracle.com>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712871236; l=1763;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=z2/Orf6yxKDaqub6BTAfFJIArBnI+mzGrz0nYL/Evhw=;
- b=1V/RDtPVi+D1+yvtc1ilBYxY6/hEn6cz9tAUSdlW4pHg1paRQgjpUphNVFEQgr08yvZ0o3Pfw
- WV9r+6YzUXPAFZFYw/3A92lEjCJdmk3eGdG88pARtfZ3Q4oZV2brF5Z
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+Content-Type: multipart/signed; boundary="Sig_/fgP+r/BndnO+Gj+gzxx6AX8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-In __pci_register_driver(), the pci core overwrites the dev_groups field of
-the embedded struct device_driver with the dev_groups from the outer
-struct pci_driver unconditionally.
+--Sig_/fgP+r/BndnO+Gj+gzxx6AX8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Set dev_groups in the pci_driver to make sure it is used.
+Hi all,
 
-This was broken since the introduction of pvpanic-pci.
+The following commits are also in Linus Torvalds' tree as different
+commits (but the same patches):
 
-Fixes: db3a4f0abefd ("misc/pvpanic: add PCI driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
-Greg,
+  01841038e1d2 ("Bluetooth: Fix memory leak in hci_req_sync_complete()")
+  2151391668d9 ("Bluetooth: ISO: Don't reject BT_ISO_QOS if parameters are =
+unset")
+  289bfd91fcf2 ("Bluetooth: SCO: Fix not validating setsockopt user input")
+  35d2c39b23ff ("Bluetooth: hci_sock: Fix not validating setsockopt user in=
+put")
+  5a5010485400 ("Bluetooth: ISO: Fix not validating setsockopt user input")
+  a95f9d212d1b ("Bluetooth: L2CAP: Fix not validating setsockopt user input=
+")
+  b191fb7a3075 ("Bluetooth: hci_sync: Fix using the same interval and windo=
+w for Coded PHY")
+  e6bb15dbae90 ("Bluetooth: l2cap: Don't double set the HCI_CONN_MGMT_CONNE=
+CTED bit")
+  ee77912bc0bb ("Bluetooth: RFCOMM: Fix not validating setsockopt user inpu=
+t")
 
-does it make sense to duplicate fields between struct pci_driver and
-struct device_driver?
-The fields "name", "groups" and "dev_groups" are duplicated.
+--=20
+Cheers,
+Stephen Rothwell
 
-pci_driver::dev_groups was introduced in
-commit ded13b9cfd59 ("PCI: Add support for dev_groups to struct pci_driver")
-because "this helps converting PCI drivers sysfs attributes to static"
+--Sig_/fgP+r/BndnO+Gj+gzxx6AX8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-I don't understand the reasoning. The embedded device_driver shares the
-same storage lifetime and the fields have the exact same type.
----
- drivers/misc/pvpanic/pvpanic-pci.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pvpanic-pci.c
-index 9ad20e82785b..b21598a18f6d 100644
---- a/drivers/misc/pvpanic/pvpanic-pci.c
-+++ b/drivers/misc/pvpanic/pvpanic-pci.c
-@@ -44,8 +44,6 @@ static struct pci_driver pvpanic_pci_driver = {
- 	.name =         "pvpanic-pci",
- 	.id_table =     pvpanic_pci_id_tbl,
- 	.probe =        pvpanic_pci_probe,
--	.driver = {
--		.dev_groups = pvpanic_dev_groups,
--	},
-+	.dev_groups =   pvpanic_dev_groups,
- };
- module_pci_driver(pvpanic_pci_driver);
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYYV1wACgkQAVBC80lX
+0Gw5AAf+JXMBLZycMpyAysHSYsj+XTRHq+Q9A/DDk2x6MW2R1HokcmSRcTekdYQ/
+O6oP9Em9pR3mj1mdntmmwJEm+Oi01zbJz1DQL0iTYC7052IZ/P+f9n88uZ+Z3kA2
+Scw/JEqx7ITsyS2XVnFm5D+9katBMscBRdfqKTIqdvn2YLJN4e4SkLEq0C/m/Lap
+bY5qZq66aou9fiL22yh3KSrh++zuq2nOfPORazigNgnvJXN2bc1rTEIXHsWbzbLe
+jgKXiBhGSWm5XmhjbiD/xmLbtaPqlaE0yoO6Xrt4bMGnoxOIZFDtBppn0Ng5F/CL
+p8+DnSyCkLEGKZys+IdWHneLHcoM8Q==
+=x0Vm
+-----END PGP SIGNATURE-----
 
----
-base-commit: 00dcf5d862e86e57f5ce46344039f11bb1ad61f6
-change-id: 20240411-pvpanic-pci-dev-groups-e3beebcbc4e4
-
-Best regards,
--- 
-Thomas Weißschuh <linux@weissschuh.net>
-
+--Sig_/fgP+r/BndnO+Gj+gzxx6AX8--
 
