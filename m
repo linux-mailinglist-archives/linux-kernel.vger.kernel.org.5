@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-140203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140204-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D9838A0CD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:51:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 979228A0CD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:51:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00442B21EB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:51:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 370441F22DB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 276A2145B05;
-	Thu, 11 Apr 2024 09:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD01145FE6;
+	Thu, 11 Apr 2024 09:51:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eC0Cxp8n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Iwii1Wfw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67F4C13DDDD;
-	Thu, 11 Apr 2024 09:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F709145B0D;
+	Thu, 11 Apr 2024 09:51:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712829081; cv=none; b=gJG6kNHoKCWqMeHvuSduJgNs5Cfv18GNld9e7oa2n6AKZeN1Y984LUez6fl66xGhT/kV6obY4Rd7aNqd7oC3hT3Ydi0n4bhAhhdyAAM0lAuqgUGQMq7Snu0PCzg4k9ItSLadNFamV9L3MrX1YBOcFTUOJyymN7DOATKpOU9RnAI=
+	t=1712829082; cv=none; b=ViZZXOw0L38yZVPt8kPLWeUBOpTeHCHLP8k2Kuycf5jYvla+K6W9HbUP0GE1BieWssdLpTt1VkJZVEeMBgoL/tvUea4rqWongBrJzzy1UtB49he+qNfXkiJoIc5UpZPWIfbr02yAb9WhcDm4sDJ+g0xESonvEGxIfqUCQV2DSws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712829081; c=relaxed/simple;
-	bh=GwJOmyKS+qRIGAIfgbHrecjPAi5CzjfR2PXoi3m9S9Q=;
+	s=arc-20240116; t=1712829082; c=relaxed/simple;
+	bh=dDDFGxbzvsZ8WL2gkkU/z0FoC5P7riL8bCTBYIbhje8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=Ydvfp5IIj2Tu8+Fqgfq/6NRYhNsvPJCgicxkoWxWTOEiPK/Yrv9RhT9T3R4ltUHy0LeGJKmqyKAxoRLw+WYsA1XnuP7NYA2gkmLC9g2AJN9sxBJv885k73jRn5mppEhQ622UGGFXYf4fN1yCZJWXaRtqdwDG5TMOS33DoNRv+fs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eC0Cxp8n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23D34C433C7;
-	Thu, 11 Apr 2024 09:51:17 +0000 (UTC)
+	 MIME-Version:Content-Type; b=ASZnhTZI8ZE1FzFsRoarZ81BQ+Ayeyv6WsPKDhGvMNiu2uMoPLKKHnE2ouFraYFRTxBqYwSvqDpiVXD/aLtvqjG5RrvhIdUugwY5lmC4lSuzYGW8mI8J9F6P67GhUDOlP6qzgrlJO6isfxJV3ml0fCzXsuVkmxntRI8FDLH7rLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Iwii1Wfw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B81DC433F1;
+	Thu, 11 Apr 2024 09:51:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712829079;
-	bh=GwJOmyKS+qRIGAIfgbHrecjPAi5CzjfR2PXoi3m9S9Q=;
+	s=k20201202; t=1712829082;
+	bh=dDDFGxbzvsZ8WL2gkkU/z0FoC5P7riL8bCTBYIbhje8=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=eC0Cxp8ntoz7FzmYOkORXBMuFF6O/lOoNuhsrD6G4mLEtQf1M4N2RQnMVlj2nbwKS
-	 7jDHIqg4+hmGRtpWRo7xTzOuj1y20LtHPMND3wDCIbpT9P28fAXmmTQXq5SPUGhQmY
-	 fW29aDEFqeE5JJtLK6WVhsZld5UaBTjCQdAvHAeYB+iVKbmLoKqZfAaxE/lGtPX4tM
-	 FUvo2JFeGEhsWDzKhqU9wFWHaKl9Z0UJFmGuotpV8tb68hpanvY0nUovOCPskkFdIj
-	 fXUQaMX3vLtZeWoVEQxlUg3dYV9MUNNI7kMA9wWIJOMVjTDbC+nkT6Q8JKzX5XkIHv
-	 +W7djfGAhVJrQ==
+	b=Iwii1WfwXAPhAr1zpMSkaTs9d6mvUukauGpIjCu2D2Z3sYtQvxREbfvxWY1n6HAis
+	 qW6hgxStloTXb3tv4fbZJjknFyR0/vVcvS3xCYLCOoT47cz2ZVjMw+WltcBeKSpy3u
+	 rlNVND71iPbdom3abq33lDRNIILDyBkkvnh0XnqKPtaYq5UikaMEHTWbO+qGE2ldM2
+	 VgFSKBz6FuD2f5lg7J4YTNWCzf0RyllNDR4pMDc98mq1Q7KvPyiPRV6CHARtOQeR40
+	 ALv3fQF/XtueCOb2/WEbGUEHMYUtuc+CCTJ+9IfOr14Nuw10EyUUPCxboZJPDN5iXx
+	 nM5lWrt2m0l6w==
 From: Vinod Koul <vkoul@kernel.org>
 To: linux-sound@vger.kernel.org, 
  Bard Liao <yung-chuan.liao@linux.intel.com>
 Cc: vinod.koul@linaro.org, linux-kernel@vger.kernel.org, 
  pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
-In-Reply-To: <20240408063822.421963-1-yung-chuan.liao@linux.intel.com>
-References: <20240408063822.421963-1-yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH v2] soundwire: reconcile dp0_prop and dpn_prop
-Message-Id: <171282907778.521900.3984632651431202720.b4-ty@kernel.org>
-Date: Thu, 11 Apr 2024 15:21:17 +0530
+In-Reply-To: <20240408062206.421326-1-yung-chuan.liao@linux.intel.com>
+References: <20240408062206.421326-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH] soundwire: intel_ace2x: use legacy formula for
+ intel_alh_id
+Message-Id: <171282908007.521900.190599081183352528.b4-ty@kernel.org>
+Date: Thu, 11 Apr 2024 15:21:20 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,16 +62,20 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.3
 
 
-On Mon, 08 Apr 2024 06:38:22 +0000, Bard Liao wrote:
-> The definitions for DP0 are missing a set of fields that are required
-> to reuse the same configuration code as DPn.
+On Mon, 08 Apr 2024 06:22:06 +0000, Bard Liao wrote:
+> Starting with Lunar Lake, the notion of ALH is mostly irrelevant,
+> since the HDaudio DMAs are used. However the firmware still relies on
+> an 'ALH gateway' with a 'node_id' based on the same formula.
 > 
+> This patch in isolation has no functional impact, it's only when the
+> ASoC parts use it that we will see a changed behavior.
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] soundwire: reconcile dp0_prop and dpn_prop
-      commit: 8dfd00f7069c54db78463f2a8a8cb677844fdf1f
+[1/1] soundwire: intel_ace2x: use legacy formula for intel_alh_id
+      commit: b18c25afabf80972b32a3918f6d7f16fbd54b18f
 
 Best regards,
 -- 
