@@ -1,76 +1,76 @@
-Return-Path: <linux-kernel+bounces-139557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 266D08A0460
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:09:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ACFF8A0464
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:09:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFAFA287518
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:09:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE9331C218AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 00:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 869A2DDA8;
-	Thu, 11 Apr 2024 00:08:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D9F9FBE8;
+	Thu, 11 Apr 2024 00:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="CcRbNcO5"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="Zo6tCDoP"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A9D9454
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:08:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C168FDDB2
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:08:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712794095; cv=none; b=W+EcAc0fFdgPxyHd/DtK6F0Lk8gqS2/XNG7VX6Bxnmh9eojmJri9cJgRbIRIBs0XgLId7oQSfVyFhDvKG0zwzW/Zf4KLzwfooVO+6bvFlUOTbT/wGOxSOEd0wUahsNTVvyRdwpuKvOle/0T+b6ZSmM4t/e5aMXcGbRpa+tDabZY=
+	t=1712794098; cv=none; b=aBr4ZIZKaa7C6pCd5I4alz4WpYlgsersHDBcQPktmGXlMwqAtE8jKSVO7wDO4wTmergtsqnevTjQdEpoaNRcCknxqGjrwSkyNcrrPnawRqZ+VMWoDXr/5YmTcfDznTyudJMQE7UNyRCKwZmDCu1dVaHtq9CQR2hUWFK6ezVDJTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712794095; c=relaxed/simple;
-	bh=tjU5YEqQieqMxVoH/UAjG6llZvkwIlIrjBWxORyGdm4=;
+	s=arc-20240116; t=1712794098; c=relaxed/simple;
+	bh=PCH+9nz39V3BSztS1z+ZZiAV+qP9h7YwF5oYKnRz76Q=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=m0BhNWJcrlvcA8YRQ058QWhGmx6mERIqpeHedFwkP9o4/kX3YG9Hvopm63TdnwdEtxuFuI3kkJhYoJWZfbkmsT/X+U3dEDgtAA/EjgENB2G3EKXkXkWGxdh/3VjcKw+reWjUopEX1TeuBXsLH4nB8Dm+WgW3HeqEq7ziQbh//7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=CcRbNcO5; arc=none smtp.client-ip=209.85.214.169
+	 MIME-Version; b=EJVjhZV8cYVELHLkTH5ZWQnROtR4SnbrGALEyjOZg6g5XaIScQMhrVdY7gBDXQ7IoSHWSbrNsdt7OoNEmLg5/8U+soS3MqVw68b1+x5EkXHvyHrLuJAzquyIrgi+iWhfHz0ao1//shpcyrCEHSMpR2IwO3C+4emdXAzifNlHRbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=Zo6tCDoP; arc=none smtp.client-ip=209.85.214.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e24c889618so59413305ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:08:14 -0700 (PDT)
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e51398cc4eso7940065ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 17:08:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712794093; x=1713398893; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712794095; x=1713398895; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2nwzSC0mjOXawHhzlfTnID2LKW7HdSbdpZLlPlBet3o=;
-        b=CcRbNcO5bCACh8lgHlWrppEKVAfyW+AwH2Z+0+i+AZ0yLkKeCmwytpqfp+30pIoTBP
-         HIajYvWftMSwby1j7RzYwyiRLd2AN7dsUr5XiMdkIUkCNUoonmlEH9cZNDDDK6wibCb9
-         dkeyASE39QuqsfJNg2IkS0QBSvmR20WMOGkrlDpeZVx3AzV9etHmjUpoujzNYP3qMP29
-         d61Z2FW7ohPwSeMtRAuD4gecn6nXZxsgylFAu642YZ8I8onN/blguiOSnWswjT/zYFmV
-         SlMqA5mh3PiFL+xfctDJbp0dajpxS5F/MGhTomMZETbOVvWXkBgZQ4jbWxi590VdIMHL
-         hl0Q==
+        bh=fUdjqPblbE6Q25Ekp/l365V3YEPrpPkLHh57fhpvEHQ=;
+        b=Zo6tCDoPQ8FgQ4krFL9MjaWkDjlOGFnTnb5e8hN6PAOUMclPRRjTWuC/lF/Cwh/SgF
+         /FkLFivzHVermsT6l6UWK2n6k9TJg4be6M7t2k4EVVuOzVRnhr7M+5FYLGmWA1Qk8FtK
+         YbMADxHdfcCcLDaYyylqlKyZvj3L9lElrcc5+xs2ctFpYelXCZn0B1FSSBBB9UDsyJg7
+         wxOB2a+9g0McJVz/f9zsQS2YtdLNI/VIb/71OOnKiNQx+rvszaWWMNuHJ9VjDZUjt5c2
+         sl/zwnFrR2VVMDZrQ6si5XeU0yDE7ruH5sSyI80lSZmySM5OvjXzV/wIb42T3NLET4Jd
+         Hfxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712794093; x=1713398893;
+        d=1e100.net; s=20230601; t=1712794095; x=1713398895;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2nwzSC0mjOXawHhzlfTnID2LKW7HdSbdpZLlPlBet3o=;
-        b=Qt4zoJtEuMkXHT1gMvAWDpfI7aRs+nLg/t2rgiQGYFYUU/jsGjzqVsbnEUIIyoZIci
-         dmcV8+rl0/tZHkNB3PkTE8FJsPkd9ZOVVoHpj8hyKziZE9X34f6vG5E7gMHIrQj9HYqW
-         EIZ/xfJsrNV+/pgW+zuhVw2TT9riEkkuMKteYBcUDSlMtCNgtHcNtiGLArRjF1M5mDGy
-         PJt1nw5bIP6v07w8FoZLB3bEflaPjRhRDTz1QP4Qip0a+wpTeKQoRLyf0XIU+dSPVj43
-         hj7Ax4cXswPoNI8dqEUkzfnvgbP41ChfYZ6dKYq0dGFsPbryrTMMt4YRGtz1LXULMr9f
-         TG+w==
-X-Gm-Message-State: AOJu0Yx82JiIRRgB7BYzGvAaRSvhzURyiKI3iAFz6ZrD0Y0U+maXT3ha
-	L59qH1/E6wl9YgufuW0bl8I1DOhuYx6yV17l3zKQ+KHJ2Y0fJgjcPRMhJxU26ngRgvotjxM7C6+
-	G
-X-Google-Smtp-Source: AGHT+IG6OqYaJjg7MK1R6d7hiCeHot83RH1wCuW5h1sC+EdY34oQu3GEIDBFrBS/g+puRrw/WL9vMQ==
-X-Received: by 2002:a17:902:d511:b0:1e0:b62a:c0a2 with SMTP id b17-20020a170902d51100b001e0b62ac0a2mr5130331plg.51.1712794092857;
-        Wed, 10 Apr 2024 17:08:12 -0700 (PDT)
+        bh=fUdjqPblbE6Q25Ekp/l365V3YEPrpPkLHh57fhpvEHQ=;
+        b=rCZShlF+3DMSPYHacmEsy6Qw11LpSpl4sHTF+Nv4/QLYbNSfVrN6w8TvBNN3elYCoj
+         RcM9bQpiLVIhafvfdBjn2vYm6LMS//MYTXMOjogMx2Zs2tYSvjqxDBme16QDp+B8OdTY
+         tQFUa1sdY87gt3RrVr11fO9qnCL0GP2UNSXXVL+DKyEfBA4jqCkuWBRPhcee2Rre2j17
+         S+fdaJz0DdFDzu2bF/pvYaONEWo+1X+G4xAa9bPhllEKeqXVoUHX5HndO3z6NvMFdC/z
+         y3VlADzHzw824GJ32nOsFCwIQ9ON2P3iA1eLU1G8TL+wn9NBNDfKtLuUrJvGUR+iIRbM
+         EfaA==
+X-Gm-Message-State: AOJu0YxnIlElgbMsWHFUMfO4gI3FQp1L9GyEGmac4/s5pBcvLaxC1wP3
+	Ah/iVrmujpM6kpaRz+frD0JR7M+v/q7FveyCbgpTgmT8AV0S65IBC+coTVrbNE6X4VOIludlNfe
+	W
+X-Google-Smtp-Source: AGHT+IFIBD1SOaWsgt2948dyeKGyG07Tn/ktfC4uoEXfuxeDgccQR9pNsvZjwG3GwFp5aB5INBJAQw==
+X-Received: by 2002:a17:902:7618:b0:1e4:fd4:48db with SMTP id k24-20020a170902761800b001e40fd448dbmr4188157pll.43.1712794095332;
+        Wed, 10 Apr 2024 17:08:15 -0700 (PDT)
 Received: from atishp.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id f7-20020a170902684700b001e3d8a70780sm130351pln.171.2024.04.10.17.08.10
+        by smtp.gmail.com with ESMTPSA id f7-20020a170902684700b001e3d8a70780sm130351pln.171.2024.04.10.17.08.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 17:08:11 -0700 (PDT)
+        Wed, 10 Apr 2024 17:08:14 -0700 (PDT)
 From: Atish Patra <atishp@rivosinc.com>
 To: linux-kernel@vger.kernel.org
 Cc: Atish Patra <atishp@rivosinc.com>,
 	Andrew Jones <ajones@ventanamicro.com>,
-	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+	Palmer Dabbelt <palmer@rivosinc.com>,
 	Conor Dooley <conor.dooley@microchip.com>,
 	Anup Patel <anup@brainfault.org>,
 	Ajay Kaher <ajay.kaher@broadcom.com>,
@@ -92,9 +92,9 @@ Cc: Atish Patra <atishp@rivosinc.com>,
 	virtualization@lists.linux.dev,
 	Will Deacon <will@kernel.org>,
 	x86@kernel.org
-Subject: [PATCH v6 02/24] RISC-V: Add FIRMWARE_READ_HI definition
-Date: Wed, 10 Apr 2024 17:07:30 -0700
-Message-Id: <20240411000752.955910-3-atishp@rivosinc.com>
+Subject: [PATCH v6 03/24] drivers/perf: riscv: Read upper bits of a firmware counter
+Date: Wed, 10 Apr 2024 17:07:31 -0700
+Message-Id: <20240411000752.955910-4-atishp@rivosinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240411000752.955910-1-atishp@rivosinc.com>
 References: <20240411000752.955910-1-atishp@rivosinc.com>
@@ -104,35 +104,80 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-SBI v2.0 added another function to SBI PMU extension to read
-the upper bits of a counter with width larger than XLEN.
-
-Add the definition for that function.
+SBI v2.0 introduced a explicit function to read the upper 32 bits
+for any firmware counter width that is longer than 32bits.
+This is only applicable for RV32 where firmware counter can be
+64 bit.
 
 Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-Reviewed-by: Clément Léger <cleger@rivosinc.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 Reviewed-by: Anup Patel <anup@brainfault.org>
 Signed-off-by: Atish Patra <atishp@rivosinc.com>
 ---
- arch/riscv/include/asm/sbi.h | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/perf/riscv_pmu_sbi.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
 
-diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-index 6e68f8dff76b..ef8311dafb91 100644
---- a/arch/riscv/include/asm/sbi.h
-+++ b/arch/riscv/include/asm/sbi.h
-@@ -131,6 +131,7 @@ enum sbi_ext_pmu_fid {
- 	SBI_EXT_PMU_COUNTER_START,
- 	SBI_EXT_PMU_COUNTER_STOP,
- 	SBI_EXT_PMU_COUNTER_FW_READ,
-+	SBI_EXT_PMU_COUNTER_FW_READ_HI,
- };
+diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
+index 3e44d2fb8bf8..1823ffb25d35 100644
+--- a/drivers/perf/riscv_pmu_sbi.c
++++ b/drivers/perf/riscv_pmu_sbi.c
+@@ -57,6 +57,8 @@ asm volatile(ALTERNATIVE(						\
+ PMU_FORMAT_ATTR(event, "config:0-47");
+ PMU_FORMAT_ATTR(firmware, "config:63");
  
- union sbi_pmu_ctr_info {
++static bool sbi_v2_available;
++
+ static struct attribute *riscv_arch_formats_attr[] = {
+ 	&format_attr_event.attr,
+ 	&format_attr_firmware.attr,
+@@ -511,19 +513,29 @@ static u64 pmu_sbi_ctr_read(struct perf_event *event)
+ 	struct hw_perf_event *hwc = &event->hw;
+ 	int idx = hwc->idx;
+ 	struct sbiret ret;
+-	union sbi_pmu_ctr_info info;
+ 	u64 val = 0;
++	union sbi_pmu_ctr_info info = pmu_ctr_list[idx];
+ 
+ 	if (pmu_sbi_is_fw_event(event)) {
+ 		ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_FW_READ,
+ 				hwc->idx, 0, 0, 0, 0, 0);
+-		if (!ret.error)
+-			val = ret.value;
++		if (ret.error)
++			return 0;
++
++		val = ret.value;
++		if (IS_ENABLED(CONFIG_32BIT) && sbi_v2_available && info.width >= 32) {
++			ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_FW_READ_HI,
++					hwc->idx, 0, 0, 0, 0, 0);
++			if (!ret.error)
++				val |= ((u64)ret.value << 32);
++			else
++				WARN_ONCE(1, "Unable to read upper 32 bits of firmware counter error: %ld\n",
++					  ret.error);
++		}
+ 	} else {
+-		info = pmu_ctr_list[idx];
+ 		val = riscv_pmu_ctr_read_csr(info.csr);
+ 		if (IS_ENABLED(CONFIG_32BIT))
+-			val = ((u64)riscv_pmu_ctr_read_csr(info.csr + 0x80)) << 31 | val;
++			val |= ((u64)riscv_pmu_ctr_read_csr(info.csr + 0x80)) << 32;
+ 	}
+ 
+ 	return val;
+@@ -1135,6 +1147,9 @@ static int __init pmu_sbi_devinit(void)
+ 		return 0;
+ 	}
+ 
++	if (sbi_spec_version >= sbi_mk_version(2, 0))
++		sbi_v2_available = true;
++
+ 	ret = cpuhp_setup_state_multi(CPUHP_AP_PERF_RISCV_STARTING,
+ 				      "perf/riscv/pmu:starting",
+ 				      pmu_sbi_starting_cpu, pmu_sbi_dying_cpu);
 -- 
 2.34.1
 
