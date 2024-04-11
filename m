@@ -1,159 +1,159 @@
-Return-Path: <linux-kernel+bounces-141686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D57148A21FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:55:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6047D8A21FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:55:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63808B23EA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:55:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B2BE287E2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A372A47F51;
-	Thu, 11 Apr 2024 22:53:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B42FA487A7;
+	Thu, 11 Apr 2024 22:54:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="qzatVyx4"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF424778E;
-	Thu, 11 Apr 2024 22:53:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Q1/m0iWf"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F65946542
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 22:54:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712876031; cv=none; b=je80hVh7fsHX9ApK2aS+8IvY6oW0bNf/wWtwHlbMNVpch3QpnvtibtgacRDGkATRCaKI9XXOw7lBjGvCBy3Ufa4SFSEyfq6ejibSSJ7NUsoZjwznKC8fTp565CwLHjUUeVD6G04UWdjNwluNHucVrveBywhxcb4CGvtyonAXxY8=
+	t=1712876083; cv=none; b=Ye5plK1U88wJaOAIETGuKdhGnxuVrzF7Ee6UuU++qghEDpLbc1k883ai6v4GnVZ8HAAhu3rSe7nuaOlZuc5R/t11aHc5NxJvP0ajcOJP12ckDjr2dvT3fIxvsqGCR2UIMJr8WCbkW5Np0k8ToEntjV3X+YPCHmdYPqRclxlsmTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712876031; c=relaxed/simple;
-	bh=qWSQajGvAFp8rYeLSWNIrAWsrlGO3m7nZf+qzgyXh60=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u+6puQQOh6W6dfE39v1lEEzMlOz5KyIv1R8JCZPPyaHYLO1aDhe1QacGOMWJVjKST9NKYlo53yWWny/E5akuKgnKCEcsKyPjGh52L+Pf1oSOaDQrwq/AdBXeL4KYbvxotsCyANLfRsc18ONkITFSoIHklHGJk3TtU3igW/J8Ebk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=qzatVyx4; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from nell-linux-vm-03-21.gri2q54hbuce1hot0vo1lnhzqd.bx.internal.cloudapp.net (unknown [172.191.244.78])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 9E2F920EC318;
-	Thu, 11 Apr 2024 15:53:48 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9E2F920EC318
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1712876030;
-	bh=llre/MDl7IywXh8WJ6+smgivWD460w0JI7M1HXl7uHU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=qzatVyx42RykiqdKow7smAP17n/BvU/34tiZ1k7zzuvss7nhYzH9zPuec7yln8qJy
-	 eIbAZAmxYVPQmviKjIl4uQLgDhSqTvNiIbFXuHMJA8YYzN8v6Y8+DPtyKSEc3QweDt
-	 L9ns8Gs3OBDvt2POGQKwmKFv7Kq4QXz7/KkUU/9I=
-From: Nell Shamrell-Harrington <nells@linux.microsoft.com>
-To: ojeda@kernel.org,
-	alex.gaynor@gmail.com,
-	wedsonaf@gmail.com
-Cc: boqun.feng@gmail.com,
-	gary@garyguo.net,
-	bjorn3_gh@protonmail.com,
-	benno.lossin@proton.me,
-	a.hindborg@samsung.com,
-	aliceryhl@google.com,
-	fujita.tomonori@gmail.com,
-	tmgross@umich.edu,
-	yakoyoku@gmail.com,
-	kent.overstreet@gmail.com,
-	matthew.brost@intel.com,
-	kernel@valentinobst.de,
-	netdev@vger.kernel.org,
-	rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] rust: remove unneeded `kernel::prelude` imports from doctests
-Date: Thu, 11 Apr 2024 22:53:31 +0000
-Message-Id: <20240411225331.274662-1-nells@linux.microsoft.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1712876083; c=relaxed/simple;
+	bh=FFF4qSI6uoBBrGIK3b9FdhqLuckQUcIQtIymnNKbd68=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=MxglS3o7zrJpNrmVw87NSTX5JVY3wINBBP8BqEpJES/d4XUj2aoxIPJ0zsAY+xmDGdDfzUZfqbx6yItI1S8ErKZgX5K4xYnxfx1qCER3bz8hyjAPi4rCd6OuqsY8WzFkFsAZ6q6uJeAyCg7YINne6KvRDSXVt6K+PpQMgv7idv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Q1/m0iWf; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6ceade361so624941276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:54:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712876080; x=1713480880; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x13dHL4gzEYkC5yKNBRYRVXjtZD/neiLlxBKsx/gpJ8=;
+        b=Q1/m0iWf6n48oMA85o7SsuG2KOZVNmp1zhDFJG8KkaBUxRf7ZsKWmjON4/Vlsmqth3
+         Y1y1Sgt6LCxttV9P3/hQA+R/n+UbAT3RuuOwYkNKgm1Oc7IxDmy6sHm4RHf0uisV2jeB
+         zjCFo+ZL/uWAZnrKdtWOuRbrZxljF/Vaslm5KurmYlAvbowgu4OnTAe4rtoIM1/L2t+p
+         ++UYVUtYq4BJWYVcTMrEf5ilrpapvTBEPE0pFstiGA9Tzlj+KPNTbaFLZdIVY50/3CnT
+         vhrTyjp9WVxsxK3M7jOlTRGs1mSg8V9Vy8/WjqaLLbi7ydxyZOHoOdOQM4K6mpJ1QytK
+         xQaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712876080; x=1713480880;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=x13dHL4gzEYkC5yKNBRYRVXjtZD/neiLlxBKsx/gpJ8=;
+        b=myaeYJGmfTH/EWmmFv2/VZtkqZ320XLIcIfCPadk10nXu6sVBMN8LC7tNT9Gfwcfaq
+         osAg/SMeDqKXNRrywbuzPtjRWFv2hKBKZwswonUdpB4Rigtyt90LKD0Cw12s+D/FJ/pI
+         faN8uAovBMryrAnZMPPt03avgOjZXef23MWcVcGiR5M4/1mpocLZjlGzCrsp/4GYWqi1
+         WH7JXPSBViwAIQv4aGo2w3S1MRZmZNwBfQ6NM0X2nLn1vE4MZPNqfc9B2ISmTus/WV4R
+         mqut9ElU3VVNqTpK3tfj6VOIRoIxcUIuxQRZ1isST+sBATnPuQIqha4E2Y5CgqntVAEn
+         wbHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU3rXs7D0CZgxWYMJwu8l2li37wPySvq8sG2weuVmAg3ymOcSMc3J8jjtD/AhGMrFxnMVhKFJPTBUTybf6iIMtPnyTHpTFMmu4Q5LJA
+X-Gm-Message-State: AOJu0YzUCXtokvFo0bGAQFxIdjkQwlauo45QlEvHJO0Wp+69f4tMqCOy
+	XBpnVfTivyBEVSc/ORY/AUASM+8KfoYVutIepR0RfsjtaUhEgvFiHGcgS3t4KVqsw+CpD6Myl8t
+	YGg==
+X-Google-Smtp-Source: AGHT+IFixyNI36LFe7Hw4/TMC13l5axHf3yR8MsrIgRSI6ngxDbATajr0w1q+zCA6CWz8k4CawvbbxVBV0k=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:1386:0:b0:dcb:abcc:62be with SMTP id
+ 128-20020a251386000000b00dcbabcc62bemr238926ybt.6.1712876080655; Thu, 11 Apr
+ 2024 15:54:40 -0700 (PDT)
+Date: Thu, 11 Apr 2024 15:54:39 -0700
+In-Reply-To: <CALMp9eTQr8ndf48uHHDem2ZkycdhAuVqz18+V1reEEfv0sx8qg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
+ <20240126085444.324918-29-xiong.y.zhang@linux.intel.com> <ZhhcAT7XiLHK3ZNQ@google.com>
+ <CALMp9eTQr8ndf48uHHDem2ZkycdhAuVqz18+V1reEEfv0sx8qg@mail.gmail.com>
+Message-ID: <ZhhqL2HKmcW9DAIY@google.com>
+Subject: Re: [RFC PATCH 28/41] KVM: x86/pmu: Switch IA32_PERF_GLOBAL_CTRL at
+ VM boundary
+From: Sean Christopherson <seanjc@google.com>
+To: Jim Mattson <jmattson@google.com>
+Cc: Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com, 
+	peterz@infradead.org, mizhang@google.com, kan.liang@intel.com, 
+	zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, kvm@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	zhiyuan.lv@intel.com, eranian@google.com, irogers@google.com, 
+	samantha.alt@intel.com, like.xu.linux@gmail.com, chao.gao@intel.com, 
+	Xiong Zhang <xiong.y.zhang@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Rust doctests implicitly include `kernel::prelude::*`.
+On Thu, Apr 11, 2024, Jim Mattson wrote:
+> On Thu, Apr 11, 2024 at 2:54=E2=80=AFPM Sean Christopherson <seanjc@googl=
+e.com> wrote:
+> >
+> > On Fri, Jan 26, 2024, Xiong Zhang wrote:
+> > > +static void save_perf_global_ctrl_in_passthrough_pmu(struct vcpu_vmx=
+ *vmx)
+> > > +{
+> > > +     struct kvm_pmu *pmu =3D vcpu_to_pmu(&vmx->vcpu);
+> > > +     int i;
+> > > +
+> > > +     if (vm_exit_controls_get(vmx) & VM_EXIT_SAVE_IA32_PERF_GLOBAL_C=
+TRL) {
+> > > +             pmu->global_ctrl =3D vmcs_read64(GUEST_IA32_PERF_GLOBAL=
+_CTRL);
+> > > +     } else {
+> > > +             i =3D vmx_find_loadstore_msr_slot(&vmx->msr_autostore.g=
+uest,
+> > > +                                             MSR_CORE_PERF_GLOBAL_CT=
+RL);
+> > > +             if (i < 0)
+> > > +                     return;
+> > > +             pmu->global_ctrl =3D vmx->msr_autostore.guest.val[i].va=
+lue;
+> >
+> > As before, NAK to using the MSR load/store lists unless there's a *real=
+ly* good
+> > reason I'm missing.
+>=20
+> The VM-exit control, "save IA32_PERF_GLOBAL_CTL," first appears in
+> Sapphire Rapids. I think that's a compelling reason.
 
-Removes explicit `kernel::prelude` imports from doctests.
+Well that's annoying.  When was PMU v4 introduced?  E.g. if it came in ICX,=
+ I'd
+be sorely tempted to make VM_EXIT_SAVE_IA32_PERF_GLOBAL_CTRL a hard require=
+ment.
 
-Suggested-by: Miguel Ojeda <ojeda@kernel.org>
-Link: https://github.com/Rust-for-Linux/linux/issues/1064
-Signed-off-by: Nell Shamrell-Harrington <nells@linux.microsoft.com>
----
- rust/kernel/init.rs      | 6 +++---
- rust/kernel/net/phy.rs   | 1 -
- rust/kernel/workqueue.rs | 3 ---
- 3 files changed, 3 insertions(+), 7 deletions(-)
+And has someone confirmed that the CPU saves into the MSR store list before
+processing VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL?
 
-diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
-index 424257284d16..8f0380697c09 100644
---- a/rust/kernel/init.rs
-+++ b/rust/kernel/init.rs
-@@ -87,7 +87,7 @@
- //!
- //! ```rust
- //! # #![allow(clippy::disallowed_names)]
--//! # use kernel::{sync::Mutex, prelude::*, new_mutex, init::PinInit, try_pin_init};
-+//! # use kernel::{sync::Mutex, new_mutex, init::PinInit, try_pin_init};
- //! #[pin_data]
- //! struct DriverData {
- //!     #[pin]
-@@ -121,7 +121,7 @@
- //!
- //! ```rust
- //! # #![allow(unreachable_pub, clippy::disallowed_names)]
--//! use kernel::{prelude::*, init, types::Opaque};
-+//! use kernel::{init, types::Opaque};
- //! use core::{ptr::addr_of_mut, marker::PhantomPinned, pin::Pin};
- //! # mod bindings {
- //! #     #![allow(non_camel_case_types)]
-@@ -412,7 +412,7 @@ macro_rules! stack_try_pin_init {
- ///
- /// ```rust
- /// # #![allow(clippy::disallowed_names)]
--/// # use kernel::{init, pin_init, prelude::*, init::*};
-+/// # use kernel::{init, pin_init, init::*};
- /// # use core::pin::Pin;
- /// # #[pin_data]
- /// # struct Foo {
-diff --git a/rust/kernel/net/phy.rs b/rust/kernel/net/phy.rs
-index 96e09c6e8530..d10a415c376f 100644
---- a/rust/kernel/net/phy.rs
-+++ b/rust/kernel/net/phy.rs
-@@ -766,7 +766,6 @@ const fn as_int(&self) -> u32 {
- /// # mod module_phy_driver_sample {
- /// use kernel::c_str;
- /// use kernel::net::phy::{self, DeviceId};
--/// use kernel::prelude::*;
- ///
- /// kernel::module_phy_driver! {
- ///     drivers: [PhySample],
-diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
-index c22504d5c8ad..7884f0007b38 100644
---- a/rust/kernel/workqueue.rs
-+++ b/rust/kernel/workqueue.rs
-@@ -33,7 +33,6 @@
- //! we do not need to specify ids for the fields.
- //!
- //! ```
--//! use kernel::prelude::*;
- //! use kernel::sync::Arc;
- //! use kernel::workqueue::{self, impl_has_work, new_work, Work, WorkItem};
- //!
-@@ -75,7 +74,6 @@
- //! The following example shows how multiple `work_struct` fields can be used:
- //!
- //! ```
--//! use kernel::prelude::*;
- //! use kernel::sync::Arc;
- //! use kernel::workqueue::{self, impl_has_work, new_work, Work, WorkItem};
- //!
-@@ -411,7 +409,6 @@ pub unsafe fn raw_get(ptr: *const Self) -> *mut bindings::work_struct {
- /// like this:
- ///
- /// ```no_run
--/// use kernel::prelude::*;
- /// use kernel::workqueue::{impl_has_work, Work};
- ///
- /// struct MyWorkItem {
--- 
-2.34.1
+Assuming we don't make VM_EXIT_SAVE_IA32_PERF_GLOBAL_CTRL a hard requiremen=
+t,
+this code should be cleaned up and simplified.  It should be impossible to =
+get
+to this point with a passthrough PMU and no slot for saving guest GLOBAL_CT=
+RL.
 
+E.g. this could simply be:
+
+	if (cpu_has_save_perf_global_ctrl())
+		pmu->global_ctrl =3D vmcs_read64(GUEST_IA32_PERF_GLOBAL_CTRL);
+	else
+		pmu->global_ctrl =3D *pmu->__global_ctrl;
+
+where vmx_set_perf_global_ctrl() sets __global_ctrl to:
+
+	pmu->__global_ctrl =3D &vmx->msr_autostore.guest.val[i].value;
+
+KVM could store 'i', i.e. the slot, but in the end it's 4 bytes per vCPU (a=
+ssuming
+64-bit kernel, and an int to store the slot).
+
+Oh, by the by, vmx_set_perf_global_ctrl() is buggy, as it neglects to *remo=
+ve*
+PERF_GLOBAL_CTRL from the lists if userspace sets CPUID multiple times.
 
