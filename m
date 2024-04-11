@@ -1,244 +1,135 @@
-Return-Path: <linux-kernel+bounces-141214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27B0D8A1C2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D24B8A18D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:36:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34A4BB26724
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:18:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 399ACB2B0D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D96B2202A6E;
-	Thu, 11 Apr 2024 15:43:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A5EB1400B;
+	Thu, 11 Apr 2024 15:29:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="epIK0n5y"
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
+	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="jRzWdfru"
+Received: from smtpcmd13147.aruba.it (smtpcmd13147.aruba.it [62.149.156.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20FC320221E;
-	Thu, 11 Apr 2024 15:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97B44749F
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:29:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.156.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850218; cv=none; b=ZaiQw3ik3n4sdWUYUI65+quuPN3J6mAGUgPIzCgAwzO3IuC7BZBGEGv+7J+xRdbi0D6s5K/BqwRNzCkK+EGmDqadLuNE0VtvP/r8QCFZM7qTI2zOlqOU0YuVgnogds7V0DlMLxfQStC5DaM34W2/eP9LV+NFs1ErWyfFTVRDLzs=
+	t=1712849377; cv=none; b=gLO8tf4OBgNLlF7g8exOjIwOXbgn3jpZE8BCpfiRLrAyKBnoTNdlQjI+6VxkKOor5idrO9fH7TQOa36w9qBlqaKNW3+szdQkG79BWq/UKQgEMbCspyAcKqobO90aThvmm73/pWRqTLlzqJt6bJSzJM38BG1sqWil8qO8fRpoqGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850218; c=relaxed/simple;
-	bh=Mo8q+6TVzNpOkq7R1IuTVIjTaKbcaUOLO5q+UD3bQkg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LD0CmhkSmlduaaR8iLHg2zUWOKbBb/D+5A5N5sSC55f3w1fUFI/8ElxGlCPbVqNAhyz5GpGBbZbyvGzaWtI6wWNLxafU9B3VOmGURV0bE3u0xqviDoXSYdg7XEKLqajgDQfjCMJTwGOdt6/mp8vzZzbPdNgOIK7iPF9RySAQLBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=epIK0n5y; arc=none smtp.client-ip=74.208.4.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
-	s=s1-ionos; t=1712850213; x=1713455013; i=parker@finest.io;
-	bh=FVDjHOAyY1jlw5Y+A9WL4QWb/bltRVutt7yXYkqT2Kc=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=epIK0n5yHQdzJruVmMFCXHw8FVV6uQbZ30AuyZP6ADuMYStMRn9wz1KJrrr5l+3b
-	 EVp0OCe7JPYrrzrsSfeWeM1P2ZBrTfrdDdyoC+Lh5YkBvCyrXxGIemJvJvyxzjR1w
-	 7rkgKHQwbbHCS+ET2hOC6T10WAhwIER2t+/IoPsmpFVS98bI2s4ifpUS4gJ/vBGc9
-	 X47DuEDHDvf1kSYOE9TVUTGamr+3PTsF888mSHmlMOec4oWHRjgpvVDeh48oQ2p6o
-	 dWHYOAVORt2bnWlCovgxGHxDd48AcRrKd/nrf7M0tRQplEX7jW4veepz8GwoDUmaS
-	 QDbMtWD4dWcjCuqGtg==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from finest.io ([98.159.241.229]) by mrelay.perfora.net (mreueus002
- [74.208.5.2]) with ESMTPSA (Nemesis) id 0MTjFe-1sLRRE2l2u-00J6kz; Thu, 11 Apr
- 2024 17:30:04 +0200
-From: parker@finest.io
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org
-Cc: Parker Newman <pnewman@connecttech.com>
-Subject: [PATCH 1/2] serial: exar: add missing CTI/Exar PCI IDs to include/linux/pci_ids.h
-Date: Thu, 11 Apr 2024 11:29:26 -0400
-Message-ID: <936439b200c810f83076a710eab81acd1e79ec83.1712846025.git.pnewman@connecttech.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <cover.1712846025.git.pnewman@connecttech.com>
-References: <cover.1712846025.git.pnewman@connecttech.com>
+	s=arc-20240116; t=1712849377; c=relaxed/simple;
+	bh=abzdobl6kFhj/cxNTOy15fncC/KDGWetUBzv0ypOZo8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D5aZvy14hBubVrcXnf2mInl/eOdwfZVWsl/UbD5ZeLeCRwa/7B5QoS9W32GBT+GFEnsapDX/7497vwdzYMj2SHHU1AlLZt2HKUOnc6GrxBD/EtImEaSe34grBkGRG2AjGM8Asbx+r1TFORSF+ui7Wjc7rcU64CGFRsAK2bGn0Bk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=jRzWdfru; arc=none smtp.client-ip=62.149.156.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
+Received: from engicam ([77.32.15.153])
+	by Aruba Outgoing Smtp  with ESMTPSA
+	id uwMhr0X3qiznzuwMirpLmf; Thu, 11 Apr 2024 17:29:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+	t=1712849368; bh=abzdobl6kFhj/cxNTOy15fncC/KDGWetUBzv0ypOZo8=;
+	h=Date:From:To:Subject:MIME-Version:Content-Type;
+	b=jRzWdfrup0jJXs2SDRrY070NJDoze6PlPrPAxb7Bx8vG6HoTgRKWbRhpFz3dKW6+x
+	 oRL3T+QgL1yzMet7dDqqwyBsqmd/nrVD4jzGMMPqcwDSw0/UWWy0Kk7qNdTYXAMnhr
+	 vzoNeYyz0XkqVxUmykYmZ4EJffoqldpZnvy6cqcC4sBBzWGyFlOHzxVdE0zQkL1Xiv
+	 +4dhm4jx6/a2uoByEdSmGMgdHzoUoOkJ4mef2vNB33B/iQcc3TouR6jmHbUj7bdzHL
+	 jTB/QksWmABvaqOujvk2hQfNxCEjvIMOqy50NIw5XJuEh27NzQKm5WBnu9WaT9Oivz
+	 0FU7Gyz+J064g==
+Date: Thu, 11 Apr 2024 17:29:26 +0200
+From: Fabio Aiuto <fabio.aiuto@engicam.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	linux-kernel@vger.kernel.org, Matteo Lisi <matteo.lisi@engicam.com>,
+	Mirko Ardinghi <mirko.ardinghi@engicam.com>
+Subject: Re: [PATCH v2 1/1] regulator: pca9450: make warm reset on PMIC_RST_B
+ assertion
+Message-ID: <ZhgB1ifgrg0zeZtv@engicam>
+References: <20240411100138.366292-1-fabio.aiuto@engicam.com>
+ <20240411100138.366292-2-fabio.aiuto@engicam.com>
+ <b805ed86-ce3c-4ecb-8a46-59bfa4678c4b@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pl9kdTije93xR5aiQyhexgoauf6lISgmx4hUN/HHF9OX6y+t839
- l2RueScXeRBrn5inDDt5SRpEBWY/vFWoLM4oFuxPNpw58AZ9hSq8dqNg/vr09t44FnDD5dR
- aXSOXiYnkM14I8c8iyLeJEybHMdPWHtXr0WqJtOPs8aAv3ppoKzNyLkATtMpcgH43yDqlN3
- 8SLCdgjsniC8W0dvfvPPw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:LMeSVELGH1s=;o6i50hBp8znzirjmnsNUIS22hla
- C1DVmIGSrEdbd0wom/hIYjnCOM7GBN2YLgTUPbTYn2UiUZjBa0/f1M/HZOmuml34qvd9Mz+7S
- iZ4YA/NMuQiPvSXTlUX+TK/YE+kWAXDjFga5cVsVFjfbQIxT9mPtoFNCKur5FR1xWDSIzByh8
- SMjd2STgZsTE+OXGX8qhpMFFyC8hP9577uKCfZ3b3RuJ1InQmmeb70FXlTheRK25WBmNKcJa6
- nOdARFUv2M3YQ3f3pQ0NzuLL1MFl16uJDT2DokACkqTLtFIAjvben95iqwGvzj6Rq4ofgkkN2
- mY3zBh6NM8/MIThnv9A/5I2lyz1j3yCOE1dcVRelbzZPfd9bsUHgR7ARN+pq6dWXThL54hw0p
- 7fu0jyekcXpfbps25MLNeSw7PP7nmR7d+qR80RphHxDTQhMnr72uAgt7x3/O9lwfac2nAaWvZ
- uP3FeriemiINH5xWhawWoatjWffta0juJ5VN770Kzh8uaLNjPNY2zc2zqi4t7YbK/i1Ppy/XT
- bcYhvYQ6FsWdOtymTDTR1sz4gM+hx/Bq3i++rK57c7W2FIm9hZqtWH4k84ht97/S4jQ6vz8y+
- Vk08mNT/5hGZYu2mTYrpQ1sa41A1KfeLR9K166swzCEbTTedXc6ZpSjX2taANWanqh8BTM7Qe
- xrIMUZDdI2c1IowrWeRL8lWAFhrV++GurU8IpJD/HxRVwkro22v79UruDhAy0zQKireF0EJiO
- rnALxjMZusac6+sK1CVdjjZJPCXSCYwS8KAt74fI3Qi0SWOq1yflAU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b805ed86-ce3c-4ecb-8a46-59bfa4678c4b@kernel.org>
+X-CMAE-Envelope: MS4xfGIjvZ3taEFr1w1uLq7uYueOLsi7SIVx2p/w6mM8uoMQrXGSlTb9JMvarRY52+akmUi2mcQ/CYAttTYRc3+3jhRfomEzinAspw2dkOiNfHjZDRGpitSC
+ 2fFJDvPNkVbbarFxJVrVloIEwhLcxtYjvrZ6K4atWWnweAzdJnCCXhQxvikt0oz58mxZ48/58q1Y9rqRZE0MePHHRrobfWPoM30Bw67LMJ1pGtolkzfoGYzR
+ +YuhpeL3DMlo8SB+b8uhPxoLqTxZRUCS4GW/eyxtY/i+tcDsc8MSXGsi3vG6EB+WfyhrjrSxPcXTOf5RxeUCfuwmAOYa3RJWaIC/9217fq3OnHytISvTMGlB
+ MhbpNBTL
 
-From: Parker Newman <pnewman@connecttech.com>
+Dear Krzysztof,
 
-- Added missing CTI serial car PCI IDs
-- Added missing Exar XR17V25X PCI IDs
-- Moved XR17V4358 and XR17V8358 PCI ID defines to pci_ids.h
+Il Thu, Apr 11, 2024 at 04:46:06PM +0200, Krzysztof Kozlowski ha scritto:
+> On 11/04/2024 12:01, Fabio Aiuto wrote:
+> > The default configuration of the PMIC behavior makes the PMIC
+> > power cycle most regulators on PMIC_RST_B assertion. This power
+> > cycling causes the memory contents of OCRAM to be lost.
+> > Some systems needs some memory that survives reset and
+> > reboot, therefore this patch is created.
+> > 
+> > This patch extends commit 2364a64d0673 ("regulator: pca9450:
+> > Make warm reset on WDOG_B assertion") to the other reset
+> > input source PMIC_RST_B as per pmic specs.
+> > 
+> > CC: Matteo Lisi <matteo.lisi@engicam.com>
+> > CC: Mirko Ardinghi <mirko.ardinghi@engicam.com>
+> > Signed-off-by: Fabio Aiuto <fabio.aiuto@engicam.com>
+> > ---
+> >  .../bindings/regulator/nxp,pca9450-regulator.yaml     |  6 ++++++
+> 
+> Please run scripts/checkpatch.pl and fix reported warnings. Then please
+> run `scripts/checkpatch.pl --strict` and (probably) fix more warnings.
+> Some warnings can be ignored, especially from --strict run, but the code
+> here looks like it needs a fix. Feel free to get in touch if the warning
+> is not clear.
+> 
+> >  drivers/regulator/pca9450-regulator.c                 | 11 ++++++++---
+> >  include/linux/regulator/pca9450.h                     |  6 ++++++
+> >  3 files changed, 20 insertions(+), 3 deletions(-)
+> > 
+> 
+> Please use scripts/get_maintainers.pl to get a list of necessary people
+> and lists to CC. It might happen, that command when run on an older
+> kernel, gives you outdated entries. Therefore please be sure you base
+> your patches on recent Linux kernel.
+> 
+> Tools like b4 or scripts/get_maintainer.pl provide you proper list of
+> people, so fix your workflow. Tools might also fail if you work on some
+> ancient tree (don't, instead use mainline), work on fork of kernel
+> (don't, instead use mainline) or you ignore some maintainers (really
+> don't). Just use b4 and everything should be fine, although remember
+> about `b4 prep --auto-to-cc` if you added new patches to the patchset.
+> 
+> You missed at least devicetree list (maybe more), so this won't be
+> tested by automated tooling. Performing review on untested code might be
+> a waste of time, thus I will skip this patch entirely till you follow
+> the process allowing the patch to be tested.
+> 
+> Please kindly resend and include all necessary To/Cc entries.
+> 
+> 
+> 
+> Also: underscores are not allowed in property names.
 
-Signed-off-by: Parker Newman <pnewman@connecttech.com>
-=2D--
- drivers/tty/serial/8250/8250_exar.c |   3 -
- include/linux/pci_ids.h             | 104 ++++++++++++++++++++--------
- 2 files changed, 75 insertions(+), 32 deletions(-)
+thanks a lot for all suggestions, will send a patchset soon.
 
-diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8250=
-/8250_exar.c
-index 0440df7de1ed..eb00fcd79a8e 100644
-=2D-- a/drivers/tty/serial/8250/8250_exar.c
-+++ b/drivers/tty/serial/8250/8250_exar.c
-@@ -46,9 +46,6 @@
- #define PCI_DEVICE_ID_COMMTECH_4228PCIE		0x0021
- #define PCI_DEVICE_ID_COMMTECH_4222PCIE		0x0022
+kind regards,
 
--#define PCI_DEVICE_ID_EXAR_XR17V4358		0x4358
--#define PCI_DEVICE_ID_EXAR_XR17V8358		0x8358
--
- #define PCI_SUBDEVICE_ID_USR_2980		0x0128
- #define PCI_SUBDEVICE_ID_USR_2981		0x0129
+fabio
 
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index a0c75e467df3..971c1a1c98e7 100644
-=2D-- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -1809,35 +1809,76 @@
-
- #define PCI_VENDOR_ID_ALTEON		0x12ae
-
--#define PCI_SUBVENDOR_ID_CONNECT_TECH			0x12c4
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH8_232		0x0001
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH4_232		0x0002
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH2_232		0x0003
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH8_485		0x0004
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH8_485_4_4	0x0005
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH4_485		0x0006
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH4_485_2_2	0x0007
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH2_485		0x0008
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH8_485_2_6	0x0009
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH081101V1	0x000A
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH041101V1	0x000B
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH2_20MHZ		0x000C
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH2_PTM		0x000D
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_NT960PCI		0x0100
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_TITAN_2		0x0201
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_TITAN_4		0x0202
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2_232	0x0300
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_232	0x0301
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_232	0x0302
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_1_1	0x0310
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2_2	0x0311
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_4	0x0312
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2	0x0320
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4	0x0321
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8	0x0322
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2_485	0x0330
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_485	0x0331
--#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_485	0x0332
-+#define PCI_VENDOR_ID_CONNECT_TECH				0x12c4
-+#define PCI_DEVICE_ID_CONNECT_TECH_PCI_XR79X_12_XIG00X          0x110c
-+#define PCI_DEVICE_ID_CONNECT_TECH_PCI_XR79X_12_XIG01X          0x110d
-+#define PCI_DEVICE_ID_CONNECT_TECH_PCI_XR79X_16                 0x1110
-+
-+#define PCI_SUBVENDOR_ID_CONNECT_TECH				0x12c4
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH8_232			0x0001
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH4_232			0x0002
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH2_232			0x0003
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH8_485			0x0004
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH8_485_4_4		0x0005
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH4_485			0x0006
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH4_485_2_2		0x0007
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH2_485			0x0008
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH8_485_2_6		0x0009
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH081101V1		0x000A
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH041101V1		0x000B
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH2_20MHZ			0x000C
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_BH2_PTM			0x000D
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_NT960PCI			0x0100
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_TITAN_2			0x0201
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_TITAN_4			0x0202
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_TITAN_8			0x0203
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2_232		0x0300
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_232		0x0301
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_232		0x0302
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_1_1		0x0310
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2_2		0x0311
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_4		0x0312
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2		0x0320
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4		0x0321
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8		0x0322
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2_485		0x0330
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_485		0x0331
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_485		0x0332
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2_SP_OPTO        0x0340
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_SP_OPTO_A      0x0341
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_SP_OPTO_B      0x0342
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2_XPRS           0x0350
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_XPRS_A         0x0351
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_XPRS_B         0x0352
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_XPRS           0x0353
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_16_XPRS_A        0x0354
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_16_XPRS_B        0x0355
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2_XPRS_OPTO      0x0360
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_XPRS_OPTO_A    0x0361
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_XPRS_OPTO_B    0x0362
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_SP             0x0370
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_SP_232         0x0371
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_SP_485         0x0372
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_4_SP           0x0373
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_6_2_SP           0x0374
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2_6_SP           0x0375
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_SP_232_NS      0x0376
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2_XP_OPTO_LEFT   0x0380
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_2_XP_OPTO_RIGHT  0x0381
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_XP_OPTO        0x0382
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_4_4_XPRS_OPTO    0x0392
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_XPRS_LP        0x03A0
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_XPRS_LP_232    0x03A1
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_XPRS_LP_485    0x03A2
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCI_UART_8_XPRS_LP_232_NS 0x03A3
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCIE_XEG001               0x0602
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCIE_XR35X_BASE           0x1000
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCIE_XR35X_2              0x1002
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCIE_XR35X_4              0x1004
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCIE_XR35X_8              0x1008
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCIE_XR35X_12             0x100C
-+#define PCI_SUBDEVICE_ID_CONNECT_TECH_PCIE_XR35X_16             0x1010
-+
-
- #define PCI_VENDOR_ID_NVIDIA_SGS	0x12d2
- #define PCI_DEVICE_ID_NVIDIA_SGS_RIVA128 0x0018
-@@ -2048,9 +2089,14 @@
- #define PCI_DEVICE_ID_EXAR_XR17C152	0x0152
- #define PCI_DEVICE_ID_EXAR_XR17C154	0x0154
- #define PCI_DEVICE_ID_EXAR_XR17C158	0x0158
-+#define PCI_DEVICE_ID_EXAR_XR17V252	0x0252
-+#define PCI_DEVICE_ID_EXAR_XR17V254	0x0254
-+#define PCI_DEVICE_ID_EXAR_XR17V258	0x0258
- #define PCI_DEVICE_ID_EXAR_XR17V352	0x0352
- #define PCI_DEVICE_ID_EXAR_XR17V354	0x0354
- #define PCI_DEVICE_ID_EXAR_XR17V358	0x0358
-+#define PCI_DEVICE_ID_EXAR_XR17V4358    0x4358
-+#define PCI_DEVICE_ID_EXAR_XR17V8358    0x8358
-
- #define PCI_VENDOR_ID_MICROGATE		0x13c0
-
-=2D-
-2.43.2
-
+> 
+> Best regards,
+> Krzysztof
+> 
 
