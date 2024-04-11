@@ -1,159 +1,140 @@
-Return-Path: <linux-kernel+bounces-141502-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1ECA8A1F16
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D170F8A1F1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:08:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F05751C22F15
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:07:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BFB61C22B7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:08:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44DD21401B;
-	Thu, 11 Apr 2024 19:07:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A66C517BCB;
+	Thu, 11 Apr 2024 19:07:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="f0kynmDk"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ADyqhdI3"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED376205E2D
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:07:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A943616419;
+	Thu, 11 Apr 2024 19:07:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712862465; cv=none; b=BoHo92ZT+ckrhyIBUV34U7OhOFHOhOZVPLhSMdbtPVFIM/MZwpM5BVdDZUE1n7Txd0+OFC0PibH8eFfj4rYDz785fSjMNUgZYlaQQYeNjtuLeorEmpScerVilQfrolvUuKwGMY/hkYoQt29cOZ90f59EcK1GNR0KcRSaxZRE07g=
+	t=1712862468; cv=none; b=PxOukDSlGv2paI+DZpOT4F5mqdX2fn4fLq8kn3eMycFGrnYe42zD8bt3aKVj/UxyYBspm6U7JzyG9jGxbnrcIL88awZUBbU/vktrvcBPN9bH5p3eoRJRG0dEz1T4j1eGAhSgofOPad0pqDfK56B6i/7SO+Oy2jhJZguWcM+DpHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712862465; c=relaxed/simple;
-	bh=K+2mLJIg465ypUQJI5giyc0VIu85pZleLQxiFXuwW4Q=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=CZjsVP46GLdF7khUu1kmsHhYYkHVOWga0KWfmxJgOLA9Dd4k7Pd9LPxyIhNdUlzde+wCWitThz9a6YzyfcEyzunkpTIauqm5sJUoXDb0jYGRDWazCREX3yRAHznEsU7WGl2BkdgyGCDy7Z5E/l6djaMSyXyEoIjRazDCJHy+SQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=f0kynmDk; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b26ce0bbso256910276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:07:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712862462; x=1713467262; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NcJF+KC6MHAw0xXKqx6sflzbfRynihMrB3htgV72+eA=;
-        b=f0kynmDkNZPv77oCffRn+KoJ3tdkglIylhkS65IiPp7z2BFEx/rE7+OWoeL6f/SwLy
-         r6F5Bel9eLCxP/0EX5S4KJExzuH6LEsfCuGcckKZpC0YnaidqzO3kV4zdzz9Pny5CvqL
-         BLTbC+nQaNAWBOLsqAzZD7q7agMKrv0peXCtC10BrdJstg8+me2ObLsvBJsyQChUSxjI
-         +9OvKdG4NNoLTmYH3D74Y/GiCCcdhlaCXKOQqI80azuclLd/G6rhbRvwa4UFkpItjjBQ
-         /lOfujifD5xEic3PMQO/Nu3O9oJXVzOMBNR4pooqy6ao+/auEQ6yqLfNDAAClrrXAXTX
-         d56g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712862462; x=1713467262;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NcJF+KC6MHAw0xXKqx6sflzbfRynihMrB3htgV72+eA=;
-        b=Xe0ve7enpXxqgPTDzDJYJ4E+nsFQxxdPMf2DKZva64HV3F3tQ5kQjRDLwrf0q0z+yv
-         Qu09crNiQIlkd34HTf9orE3p3sgk/P6XXseGH1//tdrWeVnym+ytVJNXnrtK69yM4XL1
-         5RsfRPOI/rocn8gIRbHjnHsbHyor/9QG38jA5vooOvu79cMel5VfLVmIoX+IpWEd47RG
-         FruKy7ETpoDHYvXyuuNSVtjzz1N61yztAjSWh1Dlbc8Wlvdp6w50oOIcUXmo82DBSvT+
-         VViN7j8lai2QKlCkeUmtse8amLtV41UFNRzp5umveV+uFJXt+BE1F8cE4idl2SD++2es
-         0fnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU2ttF6bDYpsPPU4lNusYWm4F+v8+bSFavEJdlV7uWhsQ15kILJ6lMlWA1DIxhBG47HKwMUdgB53aPhKOEGNIuN18gOC/D7wmlsNs32
-X-Gm-Message-State: AOJu0Yxms/JXIDSX0OU/v1sQpWp6uKAIKKbHoOJfcJqUJ74/SMUOJaBz
-	cjtZXRa1jfBHLcQcd96pDCIIlf0nrwW/8lFhCvEk6xIyTVpXk7I7SVY9mhZaTtw/0avAt92NUTG
-	XZA==
-X-Google-Smtp-Source: AGHT+IHtU0YJeUQQHL8WAHyzgFdSIwlw2ajKFvDhlBylMFmOQHLdub7ugcHbYGeGD3LFpO+LpN625tYE5/w=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:188f:b0:ddd:7581:1825 with SMTP id
- cj15-20020a056902188f00b00ddd75811825mr121974ybb.8.1712862462048; Thu, 11 Apr
- 2024 12:07:42 -0700 (PDT)
+	s=arc-20240116; t=1712862468; c=relaxed/simple;
+	bh=p3xSOxPuATlO71p9cnskaQJETJN0PeGN1xAKog1Qdp4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iPnogClrvwI4Po/Gbpg0s0nvtKKBqzrE8scEHcoOj1z8BCQFOJggtvbq9sPblZoak1ugy40S/ensGwBFqiRrEzaZM6XesXqYpQOAztGIr13u4+clwZpj8xwQs/fLDfNP/x/ygJixMVmYPMF1ex/BldR/7npXXUUIXE7NucgCCzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ADyqhdI3; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=PcZdbAxSEwXG3C61TyMUijUHCCvRVt8slQPN1FDjo1k=; b=ADyqhdI3aTXSxUH/1EFE7yxMaw
+	Q/QzwIQp/Krx4PAZO26/s23+4WUezyP+nlstWI47eqnw9vZDe7z/lyJIztc/96TDC49tOC1plCsR2
+	zHy/WFYe0Kw56iwPRg64drflom1IXRv9eRYpFdHBk9eGmtNolVadhrxb6suoJ0hIVGWEZhPmZTPYg
+	rosmBvK/anQCPG0g9QahmGRPMjF6Z3lCQfxGj2kLxRhSIrl9CfEqcWT6LUTPP8E9eoliydSsex3HU
+	4j7XG1TVO6TdnYQ//KK/md0lE/EhlDTciT0dgNlRVUCfFA+ZzNSkrDvXI1mmHqQlIfglCNXCKzMvH
+	IzGtMSjA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ruzls-0000000Dp2X-0ZEf;
+	Thu, 11 Apr 2024 19:07:40 +0000
 Date: Thu, 11 Apr 2024 12:07:40 -0700
-In-Reply-To: <20240126085444.324918-6-xiong.y.zhang@linux.intel.com>
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: Matthew Wilcox <willy@infradead.org>,
+	Pankaj Raghav <p.raghav@samsung.com>,
+	Daniel Gomez <da.gomez@samsung.com>,
+	Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
+	axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+	jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
+	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, nilay@linux.ibm.com,
+	ritesh.list@gmail.com
+Subject: Re: [PATCH v6 00/10] block atomic writes
+Message-ID: <Zhg0_Pvlh9zy4zzG@bombadil.infradead.org>
+References: <20240326133813.3224593-1-john.g.garry@oracle.com>
+ <ZgOXb_oZjsUU12YL@casper.infradead.org>
+ <c4c0dad5-41a4-44b4-8f40-2a250571180b@oracle.com>
+ <Zg7Z4aJtn3SxY5w1@casper.infradead.org>
+ <f3c1d321-0dfc-466f-9f6a-fe2f0513d944@oracle.com>
+ <ZhQud1NbO4aMt0MH@bombadil.infradead.org>
+ <b0789a97-7dcf-48aa-9980-8525942dabfa@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <20240126085444.324918-6-xiong.y.zhang@linux.intel.com>
-Message-ID: <Zhg0_B4ktNzQbWZZ@google.com>
-Subject: Re: [RFC PATCH 05/41] KVM: x86/pmu: Register PMI handler for
- passthrough PMU
-From: Sean Christopherson <seanjc@google.com>
-To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
-Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
-	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
-	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
-	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com, Xiong Zhang <xiong.y.zhang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b0789a97-7dcf-48aa-9980-8525942dabfa@oracle.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Fri, Jan 26, 2024, Xiong Zhang wrote:
-> From: Xiong Zhang <xiong.y.zhang@intel.com>
+On Wed, Apr 10, 2024 at 09:34:36AM +0100, John Garry wrote:
+> On 08/04/2024 18:50, Luis Chamberlain wrote:
+> > I agree that when you don't set the sector size to 16k you are not forcing the
+> > filesystem to use 16k IOs, the metadata can still be 4k. But when you
+> > use a 16k sector size, the 16k IOs should be respected by the
+> > filesystem.
+> > 
+> > Do we break BIOs to below a min order if the sector size is also set to
+> > 16k?  I haven't seen that and its unclear when or how that could happen.
 > 
-> Add function to register/unregister PMI handler at KVM module
-> initialization and destroy time. This allows the host PMU with passthough
-> capability enabled switch PMI handler at PMU context switch time.
+> AFAICS, the only guarantee is to not split below LBS.
+
+It would be odd to split a BIO given a inode requirement size spelled
+out, but indeed I don't recall verifying this gaurantee.
+
+> > At least for NVMe we don't need to yell to a device to inform it we want
+> > a 16k IO issued to it to be atomic, if we read that it has the
+> > capability for it, it just does it. The IO verificaiton can be done with
+> > blkalgn [0].
+> > 
+> > Does SCSI*require*  an 16k atomic prep work, or can it be done implicitly?
+> > Does it need WRITE_ATOMIC_16?
 > 
-> Signed-off-by: Xiong Zhang <xiong.y.zhang@intel.com>
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> ---
->  arch/x86/kvm/x86.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+> physical block size is what we can implicitly write atomically.
+
+Yes, and also on flash to avoid read modify writes.
+
+> So if you
+> have a 4K PBS and 512B LBS, then WRITE_ATOMIC_16 would be required to write
+> 16KB atomically.
+
+Ugh. Why does SCSI requires a special command for this?
+
+Now we know what would be needed to bump the physical block size, it is
+certainly a different feature, however I think it would be good to
+evaluate that world too. For NVMe we don't have such special write
+requirements.
+
+I put together this kludge with the last patches series of LBS + the
+bdev cache aops stuff (which as I said before needs an alternative
+solution) and just the scsi atomics topology + physical block size
+change to easily experiment to see what would break:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=20240408-lbs-scsi-kludge
+
+Using a larger sector size works but it does not use the special scsi
+atomic write.
+
+> > > To me, O_ATOMIC would be required for buffered atomic writes IO, as we want
+> > > a fixed-sized IO, so that would mean no mixing of atomic and non-atomic IO.
+> > Would using the same min and max order for the inode work instead?
 > 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 2c924075f6f1..4432e736129f 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10611,6 +10611,18 @@ void __kvm_request_immediate_exit(struct kvm_vcpu *vcpu)
->  }
->  EXPORT_SYMBOL_GPL(__kvm_request_immediate_exit);
->  
-> +void kvm_passthrough_pmu_handler(void)
+> Maybe, I would need to check further.
 
-s/pmu/pmi, and this needs a verb.  Maybe kvm_handle_guest_pmi()?  Definitely
-open to other names.
+I'd be happy to help review too.
 
-> +{
-> +	struct kvm_vcpu *vcpu = kvm_get_running_vcpu();
-> +
-> +	if (!vcpu) {
-> +		pr_warn_once("%s: no running vcpu found!\n", __func__);
-
-Unless I misunderstand the code, this can/should be a full WARN_ON_ONCE.  If a
-PMI skids all the way past vcpu_put(), we've got big problems.
- 
-> +		return;
-> +	}
-> +
-> +	kvm_make_request(KVM_REQ_PMI, vcpu);
-> +}
-> +
->  /*
->   * Called within kvm->srcu read side.
->   * Returns 1 to let vcpu_run() continue the guest execution loop without
-> @@ -13815,6 +13827,7 @@ static int __init kvm_x86_init(void)
->  {
->  	kvm_mmu_x86_module_init();
->  	mitigate_smt_rsb &= boot_cpu_has_bug(X86_BUG_SMT_RSB) && cpu_smt_possible();
-> +	kvm_set_vpmu_handler(kvm_passthrough_pmu_handler);
-
-Hmm, a few patches late, but the "kvm" scope is weird.  This calls a core x86
-function, not a KVM function.
-
-And to reduce exports and copy+paste, what about something like this?
-
-void x86_set_kvm_irq_handler(u8 vector, void (*handler)(void))
-{
-	if (!handler)
-		handler = dummy_handler;
-
-	if (vector == POSTED_INTR_WAKEUP_VECTOR)
-		kvm_posted_intr_wakeup_handler = handler;
-	else if (vector == KVM_GUEST_PMI_VECTOR)
-		kvm_guest_pmi_handler = handler;
-	else
-		WARN_ON_ONCE(1);
-
-	if (handler == dummy_handler)
-		synchronize_rcu();
-}
-EXPORT_SYMBOL_GPL(x86_set_kvm_irq_handler);
+  Luis
 
