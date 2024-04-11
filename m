@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 692AC8A19B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:17:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E480E8A19B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:17:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81EA81C2155C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:17:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 978FC287C23
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:17:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 569671C9EB8;
-	Thu, 11 Apr 2024 15:36:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3A861C9ED6;
+	Thu, 11 Apr 2024 15:36:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="nGl6VDpr"
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="099V+exf"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CF281C8FBB
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:36:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA8901C9EBE
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:36:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849783; cv=none; b=Ukt0aiH1+zuU0WyUl5eYvVIibqh1EvbyZa4dDzBhvndaO0bziHgJ0roMhvVdKtxVxTG3LBtpXPMIWUXt+eznww1ZuNZxykMu4wag7ZwK0dxBt+E7oh4dhkVvR8oT/T6pmDPeUnm1KCdLL72w/72afvkoCrlAAYmCo0gU6oC3Ie0=
+	t=1712849786; cv=none; b=bL3IXedFeIWPTZc9G7JSEviMEAD+xcdqKEboRRfXAtVG1jA37drEGklhRs6BnIDRZODJcbrOER/5i58IrGaE1nI0p6280ZqbO02O3R610oVpGYgH/eshoSJVG3bD2EDZ2lN3KenOkyHGcm8OYW0pFWrw5IuLL5AqCn7amE62CCA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849783; c=relaxed/simple;
-	bh=tCNwQgQK9CmNxv1FGh773KunBY7kDDe5bl+LtM1G99I=;
+	s=arc-20240116; t=1712849786; c=relaxed/simple;
+	bh=BpbLbOP2afdvtIC9iamDC2khJ9q6WVB0dG51UsiIlNY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u0vnjO0zQ8bXd2w657oPHskA8c7SPI0XDJQ88x2jg6RD58ywQutMHbbMiVTY8/hUlMcI0BIdHNtEgt75xECOtc6Nhd/guba0OBmDFuQhaTPkUZEUy8u2MASdQ8dITryNqAI84iLcMfmTN99Fv/yHB3NlYFNr28LP0qPVWGSlbc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=nGl6VDpr; arc=none smtp.client-ip=209.85.166.49
+	 MIME-Version; b=PJD3n/ETJKpJ/FEQlbRRuzDuQEDJ7Uldcxp/cXf0OfKEq4xUg7XdytGYLley5Gc4ssnm/YwvMrfP5b+Ug9hlZxTkngwO3L35tH0rp6Tr45hMsr2t1mgJqJP7EySG8IuJM1WSIT8cLW0je52kXKtHgzf4ehPg48JOgopdO7mh5T8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=099V+exf; arc=none smtp.client-ip=209.85.166.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7d6812b37a6so8950939f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:36:22 -0700 (PDT)
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso58077739f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:36:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849781; x=1713454581; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849782; x=1713454582; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fE+QeweiNvcjh/13fo8jPtzqizzL+chR6NcoX8V8fRg=;
-        b=nGl6VDprIPz1fozFi/EumzldVejd99JHkZ6vug1lSLq1jkxrszHau7Zrv0jNcrdXZS
-         DPi5sGUiv0C8I7j6WdKNPK1jjw1FX/FRj4C41Y9O0lLL0/Th24+zeVW5y+DDEJ7Zuxny
-         oj7GYbyP9rU6ZzsQAD6fv77d8uBqYDndojX7OXDFHLtpr8YRd2CKhh9vJiTR0VrekJ9a
-         v3VNuiq2w8tuldQuf0fxDnP6hWVnVl35EtTSoA/apZ575n1Pv0qL6a2vgdmYKT1Phh8J
-         f1ww0IRfIGUrTTJ3MrV++NpwlG8CH3qPg/p6UbBd9t/TQ471Lpa1l1ya/4O+2h2okbvk
-         eUFg==
+        bh=tzFflLsYEL6dEX0b2SgCkx7pDBMhEWrTGXs6PsOZyO8=;
+        b=099V+exfwsx5swO8TfrfwPvTCeoM+11acZIE5ugkNYu20ON7DNszD81NPzleRG4c0o
+         wFC0zR0wmw58Y7fNa0yVD+i5ziHAGiOwrQfXxgQDx6cQev+nd2EMM0m1T2AaxoxA1jhF
+         ZaHFRjgZemb784FfoJFShuFwbf0moLISddoGRmeSeZEdumryw667ZXXJk1Z12VqsOQa4
+         PmeLqVbF/KwgUlaI2+a8eIWglAylT8QVPs/5hBOInp/UfAao6TWgwoLno+VYqBYm4a7P
+         DThXSCRuSgvRJomQHSb7L3yVVUxhx1w9n7RFTN97Etahd9+S7v1g6kQFlbt2OPjUPDhH
+         v2vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849781; x=1713454581;
+        d=1e100.net; s=20230601; t=1712849782; x=1713454582;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fE+QeweiNvcjh/13fo8jPtzqizzL+chR6NcoX8V8fRg=;
-        b=CStbCKdEOPtoHRocHaO1AL5jH7+x4SWvGxphhjN+lgbF2qUIUVw8DMv5Q0yUGJPPIi
-         OEsZyAWjr0qSZ23uVNmO3YQYdbXEfBk9tlKl66d7XzQem9g3mVJY2+UmyWBKbk+os1Kz
-         Z8u3RNbhaFxNBgm/mDz80t4UCZMGw/LTFHZQTv0uKypKcoZO7s9HBr93NLclPK+6rWHJ
-         Oes1QRRmkQIAe0CLa8ZpNZE6XpG2RigRytwW2LoaZcOCRLDXNbriGZXrlYXIKnoc62Xf
-         wbdfsKS0jJYlXaYeBfcP/WimDGrRCjCspfAtx8Rl1qsbpn5ZAllUHNwA+RwpfJOsHaxI
-         hi9w==
-X-Gm-Message-State: AOJu0YxEH0uC+IxyXjT2PioY1cyRsESDB1Z5PWrUCdzWorOq7FG9Fe36
-	fjSBdL3Qwfth4X4s740Yb44PmcdEcomsj061ChyD8FtHnqWvfx19LFOtFhD/tFbjiveyhm1WG10
-	0
-X-Google-Smtp-Source: AGHT+IESPApm7hbRL+nqvZ8faHnWCw1VXUlvr/wHJmK6d7miJ2+VnGvf8FNByVM8CX9rTg+W0SSJnw==
-X-Received: by 2002:a6b:5b10:0:b0:7d0:bd2b:43ba with SMTP id v16-20020a6b5b10000000b007d0bd2b43bamr222160ioh.0.1712849781055;
-        Thu, 11 Apr 2024 08:36:21 -0700 (PDT)
+        bh=tzFflLsYEL6dEX0b2SgCkx7pDBMhEWrTGXs6PsOZyO8=;
+        b=YPg0kWaNXEyDkbtSApNJNTdUHAzTnOm/No7j7JZ2kYXcPu1IC2IN1FKXRSTX/xErOv
+         D3hM95Re7vIlTZDlCW7qMAZaBpw6os27oMC8JgxN9Wnmm19ySx/6MC2r6hhr211nnBnD
+         jM03lNgJFT/RRPWJHwj7MDismomXA2gwmSc8B28SdJQhlPsem2LMuwqkmLlHgco2reIW
+         LTzEvli9EyhJu6Se/b5cYy9gUkHGdaEoX+Ih9/6NY2/G7l+t06N1zwTFBvSP7vsTav2B
+         3xMxQaW5WcZpbKR7XOudU00Uhbrve44UXq2B7uTbpK5R6obsc9s/qbQYHe+kLlhgv/0m
+         7ixA==
+X-Gm-Message-State: AOJu0Yx4LZIX+VpGt5UyohCIrlasb/YXzwuCHLP7Cxe8V19XAybXIJ60
+	GzjzmgL1krRAuMveq7ATBcT7GRw6Ku/3A3JooBJO78Q09SfwkYUP4/I/E1ZDfo5TXtH6ezRwN6s
+	q
+X-Google-Smtp-Source: AGHT+IFszcf26vQCCbg8hYAeod09OX+GBgldCuTxvYlZ8bIe0UKrtuXkPk9+ZF/HKhcIDoEpxGcT2w==
+X-Received: by 2002:a05:6602:38d:b0:7d6:513b:254 with SMTP id f13-20020a056602038d00b007d6513b0254mr185368iov.2.1712849782653;
+        Thu, 11 Apr 2024 08:36:22 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.36.19
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.36.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:36:19 -0700 (PDT)
+        Thu, 11 Apr 2024 08:36:21 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 166/437] usb: host: xhci: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:15:06 -0600
-Message-ID: <20240411153126.16201-167-axboe@kernel.dk>
+Subject: [PATCH 167/437] usb: image: mdc800: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:15:07 -0600
+Message-ID: <20240411153126.16201-168-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,98 +85,61 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/usb/host/xhci-debugfs.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ drivers/usb/image/mdc800.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-debugfs.c b/drivers/usb/host/xhci-debugfs.c
-index f8ba15e7c225..751e48d0b555 100644
---- a/drivers/usb/host/xhci-debugfs.c
-+++ b/drivers/usb/host/xhci-debugfs.c
-@@ -251,7 +251,7 @@ static int xhci_ring_open(struct inode *inode, struct file *file)
- 
- static const struct file_operations xhci_ring_fops = {
- 	.open			= xhci_ring_open,
--	.read			= seq_read,
-+	.read_iter		= seq_read_iter,
- 	.llseek			= seq_lseek,
- 	.release		= single_release,
- };
-@@ -336,7 +336,7 @@ static int xhci_context_open(struct inode *inode, struct file *file)
- 
- static const struct file_operations xhci_context_fops = {
- 	.open			= xhci_context_open,
--	.read			= seq_read,
-+	.read_iter		= seq_read_iter,
- 	.llseek			= seq_lseek,
- 	.release		= single_release,
- };
-@@ -360,17 +360,17 @@ static int xhci_port_open(struct inode *inode, struct file *file)
- 	return single_open(file, xhci_portsc_show, inode->i_private);
- }
- 
--static ssize_t xhci_port_write(struct file *file,  const char __user *ubuf,
--			       size_t count, loff_t *ppos)
-+static ssize_t xhci_port_write(struct kiocb *iocb, struct iov_iter *from)
+diff --git a/drivers/usb/image/mdc800.c b/drivers/usb/image/mdc800.c
+index 7b7e1554ea20..ec52a144f8d7 100644
+--- a/drivers/usb/image/mdc800.c
++++ b/drivers/usb/image/mdc800.c
+@@ -677,10 +677,10 @@ static int mdc800_device_release (struct inode* inode, struct file *file)
+ /*
+  * The Device read callback Function
+  */
+-static ssize_t mdc800_device_read (struct file *file, char __user *buf, size_t len, loff_t *pos)
++static ssize_t mdc800_device_read(struct kiocb *iocb, struct iov_iter *to)
  {
--	struct seq_file         *s = file->private_data;
-+	struct seq_file         *s = iocb->ki_filp->private_data;
-+	size_t			count = iov_iter_count(from);
- 	struct xhci_port	*port = s->private;
- 	struct xhci_hcd		*xhci = hcd_to_xhci(port->rhub->hcd);
- 	char                    buf[32];
- 	u32			portsc;
- 	unsigned long		flags;
++	size_t len = iov_iter_count(to);
+ 	size_t left=len, sts=len; /* single transfer size */
+-	char __user *ptr = buf;
+ 	int retval;
  
--	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
-+	if (!copy_from_iter_full(&buf, min_t(size_t, sizeof(buf) - 1, count), from))
- 		return -EFAULT;
- 
- 	if (!strncmp(buf, "compliance", 10)) {
-@@ -397,8 +397,8 @@ static ssize_t xhci_port_write(struct file *file,  const char __user *ubuf,
- 
- static const struct file_operations port_fops = {
- 	.open			= xhci_port_open,
--	.write                  = xhci_port_write,
--	.read			= seq_read,
-+	.write_iter             = xhci_port_write,
-+	.read_iter		= seq_read_iter,
- 	.llseek			= seq_lseek,
- 	.release		= single_release,
- };
-@@ -502,10 +502,10 @@ static int xhci_stream_id_open(struct inode *inode, struct file *file)
- 	return single_open(file, xhci_stream_id_show, inode->i_private);
+ 	mutex_lock(&mdc800->io_lock);
+@@ -754,12 +754,11 @@ static ssize_t mdc800_device_read (struct file *file, char __user *buf, size_t l
+ 		else
+ 		{
+ 			/* Copy Bytes */
+-			if (copy_to_user(ptr, &mdc800->out [mdc800->out_ptr],
+-						sts)) {
++			if (!copy_to_iter_full(&mdc800->out [mdc800->out_ptr],
++						sts, to)) {
+ 				mutex_unlock(&mdc800->io_lock);
+ 				return -EFAULT;
+ 			}
+-			ptr+=sts;
+ 			left-=sts;
+ 			mdc800->out_ptr+=sts;
+ 		}
+@@ -936,7 +935,7 @@ static ssize_t mdc800_device_write (struct file *file, const char __user *buf, s
+ 	mutex_unlock(&mdc800->io_lock);
+ 	return i;
  }
+-
++FOPS_WRITE_ITER_HELPER(mdc800_device_write);
  
--static ssize_t xhci_stream_id_write(struct file *file,  const char __user *ubuf,
--			       size_t count, loff_t *ppos)
-+static ssize_t xhci_stream_id_write(struct kiocb *iocb, struct iov_iter *from)
+ /***************************************************************************
+ 	Init and Cleanup this driver (Structs and types)
+@@ -946,8 +945,8 @@ static ssize_t mdc800_device_write (struct file *file, const char __user *buf, s
+ static const struct file_operations mdc800_device_ops =
  {
--	struct seq_file         *s = file->private_data;
-+	struct seq_file         *s = iocb->ki_filp->private_data;
-+	size_t			count = iov_iter_count(from);
- 	struct xhci_ep_priv	*epriv = s->private;
- 	int			ret;
- 	u16			stream_id; /* MaxPStreams + 1 <= 16 */
-@@ -514,7 +514,7 @@ static ssize_t xhci_stream_id_write(struct file *file,  const char __user *ubuf,
- 		return -EPERM;
- 
- 	/* Decimal number */
--	ret = kstrtou16_from_user(ubuf, count, 10, &stream_id);
-+	ret = kstrtou16_from_iter(from, count, 10, &stream_id);
- 	if (ret)
- 		return ret;
- 
-@@ -529,8 +529,8 @@ static ssize_t xhci_stream_id_write(struct file *file,  const char __user *ubuf,
- 
- static const struct file_operations stream_id_fops = {
- 	.open			= xhci_stream_id_open,
--	.write                  = xhci_stream_id_write,
--	.read			= seq_read,
-+	.write_iter             = xhci_stream_id_write,
-+	.read_iter		= seq_read_iter,
- 	.llseek			= seq_lseek,
- 	.release		= single_release,
- };
+ 	.owner =	THIS_MODULE,
+-	.read =		mdc800_device_read,
+-	.write =	mdc800_device_write,
++	.read_iter =	mdc800_device_read,
++	.write_iter =	mdc800_device_write_iter,
+ 	.open =		mdc800_device_open,
+ 	.release =	mdc800_device_release,
+ 	.llseek =	noop_llseek,
 -- 
 2.43.0
 
