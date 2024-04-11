@@ -1,283 +1,167 @@
-Return-Path: <linux-kernel+bounces-140111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C2798A0B88
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:42:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EB8C8A0B8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:43:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97AE41F23D25
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:42:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C27031C20831
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:43:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E0261442FA;
-	Thu, 11 Apr 2024 08:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6231411F3;
+	Thu, 11 Apr 2024 08:43:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nSpXMg93"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="jvKLLlyy"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 718FF140365;
-	Thu, 11 Apr 2024 08:41:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 535F713CF91
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:43:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712824920; cv=none; b=qtWzUsSX+HpwKB0IC1x5A1DkO6m2u8UWADK4to95FDyeJAwmic14nYG4eyGl7SpgnhVmwSe4DVDC54NJtst0rfvVIF/wpA62z5xKtadWg3joQ31EsLBgzj69h2/cfrGvyV2u9JrA0swLkN/bssGP/rBa8oifzQ4+7SL3R8xThPg=
+	t=1712824990; cv=none; b=NH8MvRVEGG6g2hPZtK6AUt0sqKg6DHgGhGLST9OrXhrhZJFzqh1XL4phom5DS5H2oQq0Q3bthePPkInq640BsgA/iWJcCt8H6B/nYoeg/v1YU0ON4EYP1jlyw0tOupcZQtvMbhMfvFYKTIalpurGc9AJFvVKVjnZPwmAydU0QNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712824920; c=relaxed/simple;
-	bh=6DLQjsDEoSjNb9shH07V2fDjm+hPN7/FwwywkB/Dbs4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AsOzC6UD7nCrNP0Yw4XwLPdqo7owpfJssYSnsZMQ9HFe0oW4Ob59sy4HUoavfpu4StGWPska0camzyz0Ygf71fiwn4l10+Zi+TQNejkZhLwYZDK9yk2PNdP2B98ZzAqsJ+jEN48OyUK07H4EbM2NexkwtueiSN9Koa5mrf7p88Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nSpXMg93; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a44ad785a44so877089466b.3;
-        Thu, 11 Apr 2024 01:41:58 -0700 (PDT)
+	s=arc-20240116; t=1712824990; c=relaxed/simple;
+	bh=rFnbY6the2DTWFxqzWAWtQZuwY6LG4HwFJznztvQg34=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aCKrfgCjUyA6kvlvheWVMLIAWC6eoCzo7LGNxVg+rhoRXIY/2J7sbekkcyvr4/b52ZIrJkocvaCgkBPlxbpehkFvD39wJR2BsvRbuVb8iiQ9Y0rjF/qrBpYH3q8Q9Gf0SIwc5cI7P83hXmKYZwB5+aaODbGiFdyCx8+PpIbE+ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=jvKLLlyy; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-346b96f1483so199249f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 01:43:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712824917; x=1713429717; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=r//gg2KSb9Ti8gfST7aix5NRc6L6yFLnnGwq82C2L10=;
-        b=nSpXMg93imPAXb07HTeBndHBTn+xLMUmxEP9WutFbfIoDtI+nZhUxPXEMkE0b4AkCo
-         rsxszotnlAImLoye80yoeiJ8Lx3qsp+stgyrzV+hTYQKdtiL4yj399tCBOxhxe+1EQqG
-         Tw9ZYw+gkbViU4a0SUl7W/8IMuLnOtOOAOTLPKB+kLrLjINya3R2jHh9tPgMy5EnSdeL
-         7VtAuGfQg+R8bACOiEIWZB37+L4y/0OKViBNqt7LtcRMSzGplRl+9IJU/PEGgNEA62hq
-         p5GjAtSWjnSCCZddzRAvU4HLTzzVt543q4AyOWDszfgGH1KoyJ2Q2WGFH7AcJY8U3F8F
-         bCjw==
+        d=citrix.com; s=google; t=1712824986; x=1713429786; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=0Lvrzy6gsavLoDn3zewsR3l1JDkSncM7fI8dzkelxIo=;
+        b=jvKLLlyyHphQ25WDhJSDv5Oc/4VUi5WPWl8712/+0hCu8iShkFGQGpmzy/8wmbBCOF
+         UKIF1bM3mMZFqiZrfiIgZxdOBZDODhxPqjq+GGLUIwpyqzRN1R4EjX84Q7Y/nDaoPLa4
+         OjawMbdi91/JYJunfHuCQiV0Bg2NFdHVuXsVM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712824917; x=1713429717;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1712824986; x=1713429786;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=r//gg2KSb9Ti8gfST7aix5NRc6L6yFLnnGwq82C2L10=;
-        b=vCtrcRCdXKOXnTGQeplHbwS/jSzix43QBOf18E6QI/ieXXNY/r38gyTUjZx3PfVCgU
-         tcDt91kEe7NTlJ1I2nbfdcKLkjYOKz4cR2dcgGSdNy1fHPYpx8NLYekYLVkzHvG0yEVF
-         99v855UeRfFcMaS6J/HUYx4kbj0zLES5ByfpYlL012EJS2UMPMTgEwJ32iBTyE9s7M30
-         P6gIYSBrYAt2Em5lR4zOczxsfhp1kHBghYKwZFB5CHwWnTetlkNQfW7QZZXSevtKRqd5
-         sPkUEdb+wSEmoINfgxQi3iG7t2Dd7jdAHaCgikVs9I2bINxkALAXldJtm9mtS/k95803
-         8kSA==
-X-Forwarded-Encrypted: i=1; AJvYcCVhZeWkY3AYxk+d0DBs5E12q1qb+cB6OUWpcP0QQ8IiqO7bofV6xCmAirO/dr1QuDkrWqxHG3JpxKJcX82ydDUvnBEZoNwp7Shg9X+TyRAL7eVtNWg/oseWBYoMQ8I7dAjiIFgCmwJCOGvqPPr+dx3ONWPN1l80pCfjHl1p75U2ucCD9gMS2azANnVhHSXOYqW1BU6Sjb89FKuZMTz51GDXstWn6sUJ1w==
-X-Gm-Message-State: AOJu0YyovyEBl7kAO3pTP+va/bo7oRId66VqEGvW4gWBbq66wJmnj/vp
-	ly7kzqSmfQAg2trJ/sybj0/YYGyCnO+HOPF5K+T7Kx4FHgm0kKAK
-X-Google-Smtp-Source: AGHT+IGqGgVnhw9T3C2cjrpjiSkw1plCEeVAAkZFNqECee+J0+pkm8IWce7nSX0D0vzHz9Ua82AKyw==
-X-Received: by 2002:a17:906:af1b:b0:a51:9304:19fa with SMTP id lx27-20020a170906af1b00b00a51930419famr2655626ejb.70.1712824916519;
-        Thu, 11 Apr 2024 01:41:56 -0700 (PDT)
-Received: from jonhaslam-mbp.dhcp.thefacebook.com ([2620:10d:c092:400::5:8908])
-        by smtp.gmail.com with ESMTPSA id x26-20020a170906711a00b00a521591ffacsm538312ejj.34.2024.04.11.01.41.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 01:41:55 -0700 (PDT)
-Date: Thu, 11 Apr 2024 09:41:54 +0100
-From: Jonthan Haslam <jonathan.haslam@gmail.com>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	linux-trace-kernel@vger.kernel.org, andrii@kernel.org, bpf@vger.kernel.org, rostedt@goodmis.org, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] uprobes: reduce contention on uprobes_tree access
-Message-ID: <cxm3f7buumd3vfybbd436zkroskecvyn46rm6pqtdad6rayeog@zzn2u6irogi7>
-References: <20240325120323.ec3248d330b2755e73a6571e@kernel.org>
- <CAEf4BzZS_QCsSY0oGY_3pGveGfXKK_TkVURyNq=UQXVXSqi2Fw@mail.gmail.com>
- <20240327084245.a890ae12e579f0be1902ae4a@kernel.org>
- <54jakntmdyedadce7yrf6kljcjapbwyoqqt26dnllrqvs3pg7x@itra4a2ikgqw>
- <20240328091841.ce9cc613db375536de843cfb@kernel.org>
- <CAEf4BzYCJWXAzdV3q5ex+8hj5ZFCnu5CT=w8eDbZCGqm+CGYOQ@mail.gmail.com>
- <CAEf4BzbSvMa2+hdTifMKTsNiOL6X=P7eor4LpPKfHM=Y9-71fw@mail.gmail.com>
- <20240330093631.72273967ba818cb16aeb58b6@kernel.org>
- <lcc6lnkbfnyr6yjvybckevhzaafvh7jmpse6tnviq5bjar3y6z@yvz6cuzjzrky>
- <20240411082156.6613cf4dc03129ea1183ab88@kernel.org>
+        bh=0Lvrzy6gsavLoDn3zewsR3l1JDkSncM7fI8dzkelxIo=;
+        b=jrpOrlg9wEvFb5Y0cVaZ3EUKBISr9QfFf7hXs/tloySvKhss5f5X8YB2sucnp83m8g
+         UOvV1w4I0vQUjGQdwJcfigwIoa8cFt+sQb1w9qaqKYN4bfZ4p6j9qoQ9qPNocTvObSS4
+         5I6OrmahLMNGFIClml8Dp6bn899bnXvVDYZ+SPE2znRh86TjOsMMnpWnoQPgWN/BaZRg
+         Ju8MxmN9WqLkmKLNZ+SEhftZpA2iKgOcOn3vi0TA7nNCRzQez58ZuOxOFE16D8l9H8W7
+         QeHMU93QoinvfFPyX6Jei3R27W7yzujwLImz1ISdJLIMMZo1fVm7i77JeoSc4cpZowcm
+         CeYA==
+X-Gm-Message-State: AOJu0YzLmJ89bpqDrNDsRl9LVYEzvdvJCLLzEgVcg3LavLZxW2oHO16I
+	koOAZX6Xzsn5xFspePDUz8j2pEZg4bZbjCCtKJBcgXaAAuXFhsb0FSMqgqDNDKY=
+X-Google-Smtp-Source: AGHT+IHg6r4Nu48iUIY9mqggSJ51l+wAjek6iP5pLQCoBO8qkh2HNS3T+3YcH8NVO0akPaYU8J2LdA==
+X-Received: by 2002:a5d:588b:0:b0:33e:c91b:9083 with SMTP id n11-20020a5d588b000000b0033ec91b9083mr1765564wrf.16.1712824986611;
+        Thu, 11 Apr 2024 01:43:06 -0700 (PDT)
+Received: from [192.168.1.10] (host-92-3-248-192.as13285.net. [92.3.248.192])
+        by smtp.gmail.com with ESMTPSA id n14-20020a5d660e000000b003433a379a51sm1223176wru.101.2024.04.11.01.43.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 01:43:06 -0700 (PDT)
+Message-ID: <7f1faa48-6252-4409-aefc-2ed2f38fb1c3@citrix.com>
+Date: Thu, 11 Apr 2024 09:43:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411082156.6613cf4dc03129ea1183ab88@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] KVM: x86: Set BHI_NO in guest when host is not affected
+ by BHI
+To: Alexandre Chartre <alexandre.chartre@oracle.com>, x86@kernel.org,
+ kvm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, daniel.sneddon@linux.intel.com,
+ pawan.kumar.gupta@linux.intel.com, tglx@linutronix.de,
+ konrad.wilk@oracle.com, peterz@infradead.org, gregkh@linuxfoundation.org,
+ seanjc@google.com, dave.hansen@linux.intel.com, nik.borisov@suse.com,
+ kpsingh@kernel.org, longman@redhat.com, bp@alien8.de, pbonzini@redhat.com
+References: <20240411072445.522731-1-alexandre.chartre@oracle.com>
+Content-Language: en-GB
+From: Andrew Cooper <andrew.cooper3@citrix.com>
+Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
+ 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
+ 6+ahAA==
+In-Reply-To: <20240411072445.522731-1-alexandre.chartre@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> > > OK, then I'll push this to for-next at this moment.
-> > > Please share if you have a good idea for the batch interface which can be
-> > > backported. I guess it should involve updating userspace changes too.
-> > 
-> > Did you (or anyone else) need anything more from me on this one so that it
-> > can be pushed? I provided some benchmark numbers but happy to provide
-> > anything else that may be required.
-> 
-> Yeah, if you can update with the result, it looks better to me.
-> Or, can I update the description?
+On 11/04/2024 8:24 am, Alexandre Chartre wrote:
+> When a system is not affected by the BHI bug then KVM should
+> configure guests with BHI_NO to ensure they won't enable any
+> BHI mitigation.
+>
+> Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+> ---
+>  arch/x86/kvm/x86.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 984ea2089efc..f43d3c15a6b7 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1678,6 +1678,9 @@ static u64 kvm_get_arch_capabilities(void)
+>  	if (!boot_cpu_has_bug(X86_BUG_GDS) || gds_ucode_mitigated())
+>  		data |= ARCH_CAP_GDS_NO;
+>  
+> +	if (!boot_cpu_has_bug(X86_BUG_BHI))
+> +		data |= ARCH_CAP_BHI_NO;
 
-Sure, please feel free to update the description yourself.
+This isn't true or safe.
 
-Jon.
+Linux only sets X86_BUG_BHI on a subset of affected parts.
 
-> 
-> Thank you,
-> 
-> > 
-> > Thanks!
-> > 
-> > Jon.
-> > 
-> > > 
-> > > Thank you!
-> > > 
-> > > > >
-> > > > > So I hope you can reconsider and accept improvements in this patch,
-> > > > > while Jonathan will keep working on even better final solution.
-> > > > > Thanks!
-> > > > >
-> > > > > > I look forward to your formalized results :)
-> > > > > >
-> > > > 
-> > > > BTW, as part of BPF selftests, we have a multi-attach test for uprobes
-> > > > and USDTs, reporting attach/detach timings:
-> > > > $ sudo ./test_progs -v -t uprobe_multi_test/bench
-> > > > bpf_testmod.ko is already unloaded.
-> > > > Loading bpf_testmod.ko...
-> > > > Successfully loaded bpf_testmod.ko.
-> > > > test_bench_attach_uprobe:PASS:uprobe_multi_bench__open_and_load 0 nsec
-> > > > test_bench_attach_uprobe:PASS:uprobe_multi_bench__attach 0 nsec
-> > > > test_bench_attach_uprobe:PASS:uprobes_count 0 nsec
-> > > > test_bench_attach_uprobe: attached in   0.120s
-> > > > test_bench_attach_uprobe: detached in   0.092s
-> > > > #400/5   uprobe_multi_test/bench_uprobe:OK
-> > > > test_bench_attach_usdt:PASS:uprobe_multi__open 0 nsec
-> > > > test_bench_attach_usdt:PASS:bpf_program__attach_usdt 0 nsec
-> > > > test_bench_attach_usdt:PASS:usdt_count 0 nsec
-> > > > test_bench_attach_usdt: attached in   0.124s
-> > > > test_bench_attach_usdt: detached in   0.064s
-> > > > #400/6   uprobe_multi_test/bench_usdt:OK
-> > > > #400     uprobe_multi_test:OK
-> > > > Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
-> > > > Successfully unloaded bpf_testmod.ko.
-> > > > 
-> > > > So it should be easy for Jonathan to validate his changes with this.
-> > > > 
-> > > > > > Thank you,
-> > > > > >
-> > > > > > >
-> > > > > > > Jon.
-> > > > > > >
-> > > > > > > >
-> > > > > > > > Thank you,
-> > > > > > > >
-> > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > BTW, how did you measure the overhead? I think spinlock overhead
-> > > > > > > > > > will depend on how much lock contention happens.
-> > > > > > > > > >
-> > > > > > > > > > Thank you,
-> > > > > > > > > >
-> > > > > > > > > > >
-> > > > > > > > > > > [0] https://docs.kernel.org/locking/spinlocks.html
-> > > > > > > > > > >
-> > > > > > > > > > > Signed-off-by: Jonathan Haslam <jonathan.haslam@gmail.com>
-> > > > > > > > > > > ---
-> > > > > > > > > > >  kernel/events/uprobes.c | 22 +++++++++++-----------
-> > > > > > > > > > >  1 file changed, 11 insertions(+), 11 deletions(-)
-> > > > > > > > > > >
-> > > > > > > > > > > diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> > > > > > > > > > > index 929e98c62965..42bf9b6e8bc0 100644
-> > > > > > > > > > > --- a/kernel/events/uprobes.c
-> > > > > > > > > > > +++ b/kernel/events/uprobes.c
-> > > > > > > > > > > @@ -39,7 +39,7 @@ static struct rb_root uprobes_tree = RB_ROOT;
-> > > > > > > > > > >   */
-> > > > > > > > > > >  #define no_uprobe_events()   RB_EMPTY_ROOT(&uprobes_tree)
-> > > > > > > > > > >
-> > > > > > > > > > > -static DEFINE_SPINLOCK(uprobes_treelock);    /* serialize rbtree access */
-> > > > > > > > > > > +static DEFINE_RWLOCK(uprobes_treelock);      /* serialize rbtree access */
-> > > > > > > > > > >
-> > > > > > > > > > >  #define UPROBES_HASH_SZ      13
-> > > > > > > > > > >  /* serialize uprobe->pending_list */
-> > > > > > > > > > > @@ -669,9 +669,9 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
-> > > > > > > > > > >  {
-> > > > > > > > > > >       struct uprobe *uprobe;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > > >       uprobe = __find_uprobe(inode, offset);
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > > >
-> > > > > > > > > > >       return uprobe;
-> > > > > > > > > > >  }
-> > > > > > > > > > > @@ -701,9 +701,9 @@ static struct uprobe *insert_uprobe(struct uprobe *uprobe)
-> > > > > > > > > > >  {
-> > > > > > > > > > >       struct uprobe *u;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     write_lock(&uprobes_treelock);
-> > > > > > > > > > >       u = __insert_uprobe(uprobe);
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     write_unlock(&uprobes_treelock);
-> > > > > > > > > > >
-> > > > > > > > > > >       return u;
-> > > > > > > > > > >  }
-> > > > > > > > > > > @@ -935,9 +935,9 @@ static void delete_uprobe(struct uprobe *uprobe)
-> > > > > > > > > > >       if (WARN_ON(!uprobe_is_active(uprobe)))
-> > > > > > > > > > >               return;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     write_lock(&uprobes_treelock);
-> > > > > > > > > > >       rb_erase(&uprobe->rb_node, &uprobes_tree);
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     write_unlock(&uprobes_treelock);
-> > > > > > > > > > >       RB_CLEAR_NODE(&uprobe->rb_node); /* for uprobe_is_active() */
-> > > > > > > > > > >       put_uprobe(uprobe);
-> > > > > > > > > > >  }
-> > > > > > > > > > > @@ -1298,7 +1298,7 @@ static void build_probe_list(struct inode *inode,
-> > > > > > > > > > >       min = vaddr_to_offset(vma, start);
-> > > > > > > > > > >       max = min + (end - start) - 1;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > > >       n = find_node_in_range(inode, min, max);
-> > > > > > > > > > >       if (n) {
-> > > > > > > > > > >               for (t = n; t; t = rb_prev(t)) {
-> > > > > > > > > > > @@ -1316,7 +1316,7 @@ static void build_probe_list(struct inode *inode,
-> > > > > > > > > > >                       get_uprobe(u);
-> > > > > > > > > > >               }
-> > > > > > > > > > >       }
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > > >  }
-> > > > > > > > > > >
-> > > > > > > > > > >  /* @vma contains reference counter, not the probed instruction. */
-> > > > > > > > > > > @@ -1407,9 +1407,9 @@ vma_has_uprobes(struct vm_area_struct *vma, unsigned long start, unsigned long e
-> > > > > > > > > > >       min = vaddr_to_offset(vma, start);
-> > > > > > > > > > >       max = min + (end - start) - 1;
-> > > > > > > > > > >
-> > > > > > > > > > > -     spin_lock(&uprobes_treelock);
-> > > > > > > > > > > +     read_lock(&uprobes_treelock);
-> > > > > > > > > > >       n = find_node_in_range(inode, min, max);
-> > > > > > > > > > > -     spin_unlock(&uprobes_treelock);
-> > > > > > > > > > > +     read_unlock(&uprobes_treelock);
-> > > > > > > > > > >
-> > > > > > > > > > >       return !!n;
-> > > > > > > > > > >  }
-> > > > > > > > > > > --
-> > > > > > > > > > > 2.43.0
-> > > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > --
-> > > > > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > --
-> > > > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > > >
-> > > > > >
-> > > > > > --
-> > > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > 
-> > > 
-> > > -- 
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Skylake for example *is* affected by BHI.  It's just that existing
+mitigations are believed to suffice to mitigate BHI too.
+
+"you happen to be safe if you're doing something else too" doesn't
+remotely have the same meaning as "hardware doesn't have a history based
+predictor".
+
+~Andrew
 
