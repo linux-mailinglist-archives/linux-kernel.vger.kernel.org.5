@@ -1,211 +1,197 @@
-Return-Path: <linux-kernel+bounces-140596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54E668A16AC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:06:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FCFA8A16B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:07:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04D2228A813
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:06:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 432E91C22560
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:07:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0971314F109;
-	Thu, 11 Apr 2024 14:05:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E773914F9FB;
+	Thu, 11 Apr 2024 14:05:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ReeX4tDP"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="LsjVOHx8"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D6F14E2F6
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:05:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C87014D44D;
+	Thu, 11 Apr 2024 14:05:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712844319; cv=none; b=pfdNm9tXwr8dWKB06zLwAy+pMB4QRG5ObcJfZ/Sgo4NDbJo7WSiCDoftUyhaLtnD1ZGXm7Wpv9wgZbudWNrHUpd+TrB4FIvixH9ZfQb03YfqCjQ+uDeFqsjJb/D0qaZTt7cZkHw4hg6YziZ0mWaovjgmkLxxEtuZqJh1EhThtWk=
+	t=1712844356; cv=none; b=MtLbTTm9qKWj7TVIYT7Ng6VmafOLyyDRYmXvzebFUkFTMIIYikzsNqD6Mj2H3slFrS1Xr7Ca6BNvHM/v5Kls0aW18Qv25hRu1IpAA8xdtE6ad6cW0KmPjG/tyNFRlT8XEXopGLZRJx4/I5HuKFTMu+T6dVlGOL8NaAxxRdY5U1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712844319; c=relaxed/simple;
-	bh=Lx9cFcGpfk6s0y7+78RGZ89/Xxwo/ujlfeLUyEjs1Us=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i0ZAkdbR0x0+ryu9asCmvCv7cXsRRxXjWmA07wIS7LUwhUOOyF3QDcrll6ZpySShtGLyiWMvZZu1cOsRGhh50mhqfvwKHrNh7ez33CzSsNwxkCFkXu9IdKU4xYpR7E0sSH6WiucV+AEizfA+loleUmw6T/unw6dFcL25Hf30yb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ReeX4tDP; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dcc73148611so8425560276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:05:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712844315; x=1713449115; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LdvAFQAqIyq8uAjQoCwRGvy8hAscGhG76lHWAd3Yfhc=;
-        b=ReeX4tDPzLABnC5mcZ6qtfjWCWyG3xMukwMRg+cRwfPmhedtV5QKkpL/upDPMRjvZF
-         KbspDAp9H4jnfz38f8JFm8c40evccJzO+z8sApEcDFadyuIQ+Yi365wpCtR8ppJtgTix
-         Lc0CcgDbyGIjCteYIpH5jWWZftxgykDLQggsqLHGq/hdkGB4XryYDJ9d4BNbVTWvz6wm
-         C+bcf9Ge1gM6UOgW0sAA9tQOTnpKUBx8V2gEV4PoVLHXldO0+FolCAnzajfG+WIkI82q
-         LuANQBX1aZ6BydNkbg2aABFVY6kO66o8GE3rOlmaQMOmAWdkX1k2R3bH6NcchJeThv1I
-         bA4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712844315; x=1713449115;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LdvAFQAqIyq8uAjQoCwRGvy8hAscGhG76lHWAd3Yfhc=;
-        b=GkTm71VAwqe46B5E//ubaoWGV+uDfd9f6RapKNrXLbx1mBR/vYbs0S5doQE+uc8Ib+
-         2W5NDeOt7t9NPND5cy6GDAANb6Na2ugRXVWT27okV80zTIrzSr8Xg/dyGwZWZw6emAGy
-         KFjUSNpdC+CodgTt21bzV4J7GUNY7Nd/cqDsNOXf119C2ZArgD2za1oBj9StrWMwSX3V
-         UnA2xPkd2g2ll0dMcLXbCYCk9YK6B2aylG7XRLLG6yTS/uv74SsqDQxIbeTufsLWikY+
-         5w4CIw8OckWugo5gmUyG0Buh0TSvQmszLYviAKS1yn6eU8PRXzv6ULgOxroxWkpIakN+
-         mL8A==
-X-Forwarded-Encrypted: i=1; AJvYcCXkKKv0zipcho2AL+Q62qi6QYIgus/I1AgW/EbhC8BOiLdsjj3KETh2fC7DUL1c4GViSqw6iALRkmEozrqrVDKOspeV4mGkiyVNqpf5
-X-Gm-Message-State: AOJu0YxN4YoV++lZTeUoZngVuXKZY01X9XovltJut11mxJCwHDdhOd4k
-	ea+gKBSX8+DGpOSwhixtxelMU1ugEyGxLAemEXfrToToPPH385AmKte9QnB4JwmGChSqkoHAAEf
-	KgscfbfM2MWM7AF5JHdvoGUC9libT6QMqe7x10w==
-X-Google-Smtp-Source: AGHT+IEOP+y/Kkxt5waPfyW4BPcwQRgGo/wmVHJAZNTDym7NMYEkurssf0E0z3mRp6tY+g+sbEKMhK0YiGqkPhL1aB4=
-X-Received: by 2002:a25:8403:0:b0:dcc:fea7:7f7b with SMTP id
- u3-20020a258403000000b00dccfea77f7bmr5635176ybk.11.1712844313731; Thu, 11 Apr
- 2024 07:05:13 -0700 (PDT)
+	s=arc-20240116; t=1712844356; c=relaxed/simple;
+	bh=w02JCMP3BbzdBAjdyFpEXBM6uQChrEYUSHmWMjV3wlo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=HC8UrSiI3i67xIBNIGe0FT6DLyAcBiRdJhvFHMLQE+H/WCWKdT0ZvxQmi5zoGfjWPLLRa4U/ylhv/YExxnf5+LqcqBIGteCT3MzZXhXGWG3XaCJgSlg7C8H/kSsMT3Kv+JoEuakRzjJYamSpEnebD3RDSmkfm8/MfLAGWoUIkLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=LsjVOHx8; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0E6D94000B;
+	Thu, 11 Apr 2024 14:05:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712844351;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=99XoepWmaxoXSZpnM0X9ck++OvRAJQLOkxrhY2CyXm8=;
+	b=LsjVOHx8DIQnU5iKlRvy7tXAeU70ECSr9FiiBw0siyrjylQ9vLfFpZsyVLhfz3DVKZ1gRT
+	Wx6ANDMv/8DKJNynXoW4e0tuZXR8UlS9nVZPHlypJr2PtsgXjyDvfvJBPoK4sk0jG/ypHr
+	oBsW0UYfEvwYvuw4LVvSkXhPL49LN2YTLXO8LS9rrGzWzBtzRoH1pNsfRQXGShiCGlkoQp
+	NYvZjanqFs+t5jkFihuA/I/C+Z7LR/iV3mIoYntWnvSkjwenZyx+0fk+8IkxLkmn4Nj1UG
+	b596yJmKoyAd6DZb89CaYyMVtX/mHVjPENd86ieCi9bIaszBsP/Ud2XcjXWSrQ==
+Date: Thu, 11 Apr 2024 16:05:48 +0200
+From: Herve Codina <herve.codina@bootlin.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Bjorn Helgaas <helgaas@kernel.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>, Lizhi Hou <lizhi.hou@amd.com>, Max
+ Zhen <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>, Stefano
+ Stabellini <stefano.stabellini@xilinx.com>, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, PCI <linux-pci@vger.kernel.org>, Allan
+ Nielsen <allan.nielsen@microchip.com>, Horatiu Vultur
+ <horatiu.vultur@microchip.com>, Steen Hegelund
+ <steen.hegelund@microchip.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?=
+ <kwilczynski@kernel.org>
+Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
+Message-ID: <20240411160548.06fa9b11@bootlin.com>
+In-Reply-To: <CAL_JsqJOgkJtOipzskWc_NzUYUE1g0VsTT3eyPbbKw=NZO_4aQ@mail.gmail.com>
+References: <20231215145207.0cf098e5@bootlin.com>
+	<20240319152513.GA1227721@bhelgaas>
+	<20240319173404.019b424a@bootlin.com>
+	<CAL_JsqJOgkJtOipzskWc_NzUYUE1g0VsTT3eyPbbKw=NZO_4aQ@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411-pm8xxx-vibrator-new-design-v9-0-7bf56cb92b28@quicinc.com>
- <20240411-pm8xxx-vibrator-new-design-v9-2-7bf56cb92b28@quicinc.com>
- <CAA8EJpoL9vCAUgWmHcoxppo_gJqaw_xqdYqcJkS6Xza-5aSh3A@mail.gmail.com> <fa6c8b30-11f3-bd80-67cb-713e4348eccf@quicinc.com>
-In-Reply-To: <fa6c8b30-11f3-bd80-67cb-713e4348eccf@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 11 Apr 2024 17:05:01 +0300
-Message-ID: <CAA8EJpqa=5yaTRHuEiYynTDFy53YPFk4R3q_EV8rmsBN1iR5fA@mail.gmail.com>
-Subject: Re: [PATCH v9 2/4] input: pm8xxx-vibrator: refactor to support new
- SPMI vibrator
-To: Fenglin Wu <quic_fenglinw@quicinc.com>
-Cc: kernel@quicinc.com, Andy Gross <agross@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, linux-arm-msm@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
-On Thu, 11 Apr 2024 at 16:45, Fenglin Wu <quic_fenglinw@quicinc.com> wrote:
->
->
->
-> On 2024/4/11 18:58, Dmitry Baryshkov wrote:
-> > On Thu, 11 Apr 2024 at 11:32, Fenglin Wu via B4 Relay
-> > <devnull+quic_fenglinw.quicinc.com@kernel.org> wrote:
-> >>
-> >> From: Fenglin Wu <quic_fenglinw@quicinc.com>
-> >>
-> >> Currently, vibrator control register addresses are hard coded,
-> >> including the base address and offsets, it's not flexible to
-> >> support new SPMI vibrator module which is usually included in
-> >> different PMICs with different base address. Refactor it by using
-> >> the base address defined in devicetree.
-> >>
-> >> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
-> >> ---
-> >>   drivers/input/misc/pm8xxx-vibrator.c | 42 ++++++++++++++++++++++++------------
-> >>   1 file changed, 28 insertions(+), 14 deletions(-)
-> >>
-> >> diff --git a/drivers/input/misc/pm8xxx-vibrator.c b/drivers/input/misc/pm8xxx-vibrator.c
-> >> index 89f0f1c810d8..2959edca8eb9 100644
-> >> --- a/drivers/input/misc/pm8xxx-vibrator.c
-> >> +++ b/drivers/input/misc/pm8xxx-vibrator.c
-> >> @@ -20,26 +20,26 @@
-> >>   #define MAX_FF_SPEED           0xff
-> >>
-> >>   struct pm8xxx_regs {
-> >> -       unsigned int enable_addr;
-> >> +       unsigned int enable_offset;
-> >>          unsigned int enable_mask;
-> >>
-> >> -       unsigned int drv_addr;
-> >> +       unsigned int drv_offset;
-> >>          unsigned int drv_mask;
-> >>          unsigned int drv_shift;
-> >>          unsigned int drv_en_manual_mask;
-> >>   };
-> >>
-> >>   static const struct pm8xxx_regs pm8058_regs = {
-> >> -       .drv_addr = 0x4A,
-> >> +       .drv_offset = 0x4A,
+On Wed, 10 Apr 2024 16:41:43 -0500
+Rob Herring <robh@kernel.org> wrote:
+
+> On Tue, Mar 19, 2024 at 11:34 AM Herve Codina <herve.codina@bootlin.com> wrote:
 > >
-> > If the DT already has reg = <0x4a> and you add drv_offset = 0x4a,
-> > which register will be used by the driver?
+> > Hi Bjorn,
 > >
-> > Also, while we are at it, please downcase all the hex numbers that you
-> > are touching.
+> > On Tue, 19 Mar 2024 10:25:13 -0500
+> > Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >  
+> > > [+cc Krzysztof]
+> > >
+> > > On Fri, Dec 15, 2023 at 02:52:07PM +0100, Herve Codina wrote:  
+> > > > On Mon, 4 Dec 2023 07:59:09 -0600
+> > > > Rob Herring <robh@kernel.org> wrote:  
+> > > > > On Mon, Dec 4, 2023 at 6:43 AM Herve Codina <herve.codina@bootlin.com> wrote:  
+> > > > > > On Fri, 1 Dec 2023 16:26:45 -0600
+> > > > > > Rob Herring <robh@kernel.org> wrote:  
+> > > > > > > On Thu, Nov 30, 2023 at 10:57 AM Herve Codina <herve.codina@bootlin.com> wrote:
+> > > > > > > ...  
+> > >  
+> > > > > > > --- a/drivers/pci/of.c
+> > > > > > > +++ b/drivers/pci/of.c
+> > > > > > > @@ -31,6 +31,8 @@ int pci_set_of_node(struct pci_dev *dev)
+> > > > > > >                 return 0;
+> > > > > > >
+> > > > > > >         node = of_pci_find_child_device(dev->bus->dev.of_node, dev->devfn);
+> > > > > > > +       if (!node && pci_is_bridge(dev))
+> > > > > > > +               of_pci_make_dev_node(dev);
+> > > > > > >         if (!node)
+> > > > > > >                 return 0;  
+> > > > > >
+> > > > > > Maybe it is too early.
+> > > > > > of_pci_make_dev_node() creates a node and fills some properties based on
+> > > > > > some already set values available in the PCI device such as its struct resource
+> > > > > > values.
+> > > > > > We need to have some values set by the PCI infra in order to create our DT node
+> > > > > > with correct values.  
+> > > > >
+> > > > > Indeed, that's probably the issue I'm having. In that case,
+> > > > > DECLARE_PCI_FIXUP_HEADER should work. That's later, but still before
+> > > > > device_add().
+> > > > >
+> > > > > I think modifying sysfs after device_add() is going to race with
+> > > > > userspace. Userspace is notified of a new device, and then the of_node
+> > > > > link may or may not be there when it reads sysfs. Also, not sure if
+> > > > > we'll need DT modaliases with PCI devices, but they won't work if the
+> > > > > DT node is not set before device_add().  
+> > > >
+> > > > DECLARE_PCI_FIXUP_HEADER is too early as well as doing the DT node creation
+> > > > just before the device_add() call.
+> > > > Indeed, in order to fill the DT properties, resources need to be assigned
+> > > > (needed for the 'ranges' property used for addresses translation).
+> > > > The resources assignment is done after the call to device_add().  
+> > >
+> > > Do we need to know the actual address *value* before creating the
+> > > sysfs file, or is it enough to know that the file should *exist*, even
+> > > if the value may be changed later?  
 > >
-> For SSBI vibrator, the "reg" value defined in DT is not used, see below.
->
->
-> >>          .drv_mask = 0xf8,
-> >>          .drv_shift = 3,
-> >>          .drv_en_manual_mask = 0xfc,
-> >>   };
-> >>
-> >>   static struct pm8xxx_regs pm8916_regs = {
-> >> -       .enable_addr = 0xc046,
-> >> +       .enable_offset = 0x46,
->
-> [...]
->
-> >> @@ -170,7 +173,7 @@ static int pm8xxx_vib_probe(struct platform_device *pdev)
-> >>          struct pm8xxx_vib *vib;
-> >>          struct input_dev *input_dev;
-> >>          int error;
-> >> -       unsigned int val;
-> >> +       unsigned int val, reg_base = 0;
-> >>          const struct pm8xxx_regs *regs;
-> >>
-> >>          vib = devm_kzalloc(&pdev->dev, sizeof(*vib), GFP_KERNEL);
-> >> @@ -190,13 +193,24 @@ static int pm8xxx_vib_probe(struct platform_device *pdev)
-> >>
-> >>          regs = of_device_get_match_data(&pdev->dev);
-> >>
-> >> +       if (regs->enable_offset != 0) {
-> >> +               error = fwnode_property_read_u32(pdev->dev.fwnode, "reg", &reg_base);
-> >> +               if (error < 0) {
-> >> +                       dev_err(&pdev->dev, "Failed to read reg address, rc=%d\n", error);
-> >> +                       return error;
-> >> +               }
-> >> +       }
-> >> +
-> >> +       vib->enable_addr = reg_base + regs->enable_offset;
-> >> +       vib->drv_addr = reg_base + regs->drv_offset;
->
-> The reg_base is initialized as 0 and it is assigned as the "reg" value
-> defined in DT only for SPMI vibrators.
-
-Please don't. This is counterintuitive. We have reg in DT. We should
-be using it.
-
->
-> >> +
-> >>          /* operate in manual mode */
-> >> -       error = regmap_read(vib->regmap, regs->drv_addr, &val);
-> >> +       error = regmap_read(vib->regmap, vib->drv_addr, &val);
-> >>          if (error < 0)
-> >>                  return error;
-> >>
-> >>          val &= regs->drv_en_manual_mask;
-> >> -       error = regmap_write(vib->regmap, regs->drv_addr, val);
-> >> +       error = regmap_write(vib->regmap, vib->drv_addr, val);
-> >>          if (error < 0)
-> >>                  return error;
-> >>
-> >>
-> >> --
-> >> 2.25.1
-> >>
-> >>
+> > I think, the problematic file is 'of_node'.
+> > This file is a symlink present in the device directory pointing to the
+> > node in a device-tree subdir.
 > >
+> > How can we create this of_node symlink without having the device-tree
+> > subdir available ?
+> >  
+> > >  
+> > > > Some PCI sysfs files are already created after adding the device by the
+> > > > pci_create_sysfs_dev_files() call:
+> > > >   https://elixir.bootlin.com/linux/v6.6/source/drivers/pci/bus.c#L347
+> > > >
+> > > > Is it really an issue to add the of_node link to sysfs on an already
+> > > > present device ?  
+> > >
+> > > Yes, I think this would be an issue.  We've been trying to get rid of
+> > > pci_create_sysfs_dev_files() altogether because there's a long history
+> > > of race issues related to it:
+> > >
+> > >   https://lore.kernel.org/r/1271099285.9831.13.camel@localhost/ WARNING: at fs/sysfs/dir.c:451 sysfs_add_one: sysfs: cannot create duplicate filename '/devices/pci0000:00/0000:00:01.0/slot'
+> > >   https://lore.kernel.org/r/19461.26166.427857.612983@pilspetsen.it.uu.se/ [2.6.35-rc1 regression] sysfs: cannot create duplicate filename ... XVR-600 related?
+> > >   https://lore.kernel.org/r/20200716110423.xtfyb3n6tn5ixedh@pali/ PCI: Race condition in pci_create_sysfs_dev_files
+> > >   https://lore.kernel.org/r/m3eebg9puj.fsf@t19.piap.pl/ PCI: Race condition in pci_create_sysfs_dev_files (can't boot)
+> > >   https://bugzilla.kernel.org/show_bug.cgi?id=215515 sysfs: cannot create duplicate filename '.../0000:e0'
+> > >
+> > > And several previous attempts to fix them:
+> > >
+> > >   https://lore.kernel.org/r/4469eba2-188b-aab7-07d1-5c77313fc42f@gmail.com/ Guard pci_create_sysfs_dev_files with atomic value
+> > >   https://lore.kernel.org/r/20230316103036.1837869-1-alexander.stein@ew.tq-group.com PCI/sysfs: get rid of pci_sysfs_init late_initcall
+> > >   https://lore.kernel.org/r/1702093576-30405-1-git-send-email-ssengar@linux.microsoft.com/ PCI/sysfs: Fix race in pci sysfs creation
+> > >  
 > >
+> > I am not sure we are facing in the same kind of issues.
+> > The ones you mentioned are related to some sysfs duplication.
+> > In the of_node case, the issue (if any) is that the symlink will be created
+> > after the other device's file. Not sure that it can lead to some file
+> > duplication.  
+> 
+> Again, if you notify userspace and it wants to make some decisions
+> based on of_node, then it has to be there when the notification
+> happens. As Greg says frequently, you've raced with userspace and
+> lost.
+> 
+> I imagine Bjorn won't like it, but may we need another fixup point?
+> 
+> Rob
 
+I'am not sure that a fixup point can fix the issue.
 
+In order to have the of_node available before the notification, we need
+to a have the of_node set and filled before the device_add() call.
 
--- 
-With best wishes
-Dmitry
+In order to create the 'ranges' property in the DT node, we need PCI
+resources computed. These resources are computed after the device_add()
+call.
+
+Hervé
 
