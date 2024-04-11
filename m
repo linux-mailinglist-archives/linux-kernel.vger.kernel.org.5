@@ -1,121 +1,105 @@
-Return-Path: <linux-kernel+bounces-141603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B3EF8A2098
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:03:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F9A88A209A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:03:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D54281F23C0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:03:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DF501C211AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C9122BD18;
-	Thu, 11 Apr 2024 21:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E3052BCE8;
+	Thu, 11 Apr 2024 21:03:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="F13iYDMX"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Nyyylwaz"
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B5128DCA
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84CB63A8D8
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:03:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712869384; cv=none; b=IXnl5XJRoQEmSTvwEcEirp79UXIBYzdc3DOydj4HN8EngBwKmMmpGp1viIJ6+SpsuRY1V9ASViF0oBnm/FKs+hTItpwerz2Y1DnvjkVr4m3KRep5MUnmb+FWn+Dh2Zub5+Mrx7uub8LFaC5fpSr1qLvDw4wkaMygZxBMRVGVOmU=
+	t=1712869405; cv=none; b=Db7ohINGfI4+dIDDhOZE+TO72NB/WzZdXYMNJUKeYK7hj9KJLkBPHlpXm8bcwzxIoNnOv+PbTdRGX9/LAIKRIosJa7K25HD4Fdft0wqSAuRkwhXh3wOKElUWshoM3ATzTrkqaRe6qKwakWp6x5MR5Ey84zZUJNEXNYNXrtZgvZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712869384; c=relaxed/simple;
-	bh=6ohnLm7z3PDG7MWeKCsPtN2uBOTfngdUGkrSE6HEqWQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=GK4W4y9ESJY2DgXo0U4mHPCw3DKN5OeDv1ihjeK6OKL3+HGFU4Sl1zmUMWysV7ew3KvDTvubtB27xrqZCsWnGiMfv68ufQ+MC4tT2hN/0188x3ohA89bh3In4KNFiAiPWhqgtXU4mCoq/0qs/GO3T6SDppigb0IMzNAeaFCTzPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=F13iYDMX; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dccc49ef73eso398295276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:03:02 -0700 (PDT)
+	s=arc-20240116; t=1712869405; c=relaxed/simple;
+	bh=cStBAu9ZM4K010J4PEkSQ5RzVRGtWYK6r22iftBsmp4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sVNf925UFC+IzRSknQfJCie30RoMvW8X9Fmxg6DapQp2Lx/zBotvkDlq1LWiiZ8YHvfySljeBSGgUkKoo3jPbRbVFhpDSBsZHzgdnkkfJWu73EZi9XQCettAebC5/EHnRV/rqsa0ZijznIzveq22BkEXf/l8Qlyuqm5QOQAq9nc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Nyyylwaz; arc=none smtp.client-ip=209.85.166.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7d0772bb5ffso5351439f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:03:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712869381; x=1713474181; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LqNHTRbTBamf9CG0cXrMM0YOfuqafLOBk3xuoM8380s=;
-        b=F13iYDMX7yW18JTzN5qfC/hm/ZPvBRTo5yh/aO1ndLxy0G0tLlFAbH5L5rTjJ56BBx
-         ZO++GqvBmmI6zqXsVInX8cRsKLg1w5i4ZN+HzePNsubtpi6GnaprrsAA4vmHWhv7MUYz
-         n/uiJin7NXSG2TlZ9ud4FUM1pE0eT29LWDaYFYR+mNq/W3QL38gcX0P5jOUaZO73xX34
-         v4h6Wdgc/5HCNz4hdCblQcov/OfRN9Hik51ZyYhc/dJy8fYTIlYWilVrXy+1WpYO+O03
-         peEj9axx1TS3N4J5BakoxcMmQFpcgONFrXYWgZJq7u7bv98gquaIuBgRALSy6vgCvQ69
-         heyQ==
+        d=linuxfoundation.org; s=google; t=1712869404; x=1713474204; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XkXziOZcmJPH9DNxVUuT0LSvem2MocbN93rqFY23cGU=;
+        b=Nyyylwaz4riSJ2tQ21lwjBWh0PcTdoBUTZ6Nha9UcWBoABFCkbKIRjVIg/cEXo+6rf
+         UItFmW7sl44YWM360UmNYh3DXh4QgP7zQLjzDO79pAXqk0TYNuoyt6byT4YqIgbnitYi
+         V6Hcntl3094b06yvF8sQuB8LnMpZ9TMqT/XXE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712869381; x=1713474181;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LqNHTRbTBamf9CG0cXrMM0YOfuqafLOBk3xuoM8380s=;
-        b=CFdn1NhFHTnxwwU84/oTIHNlsgOQevTogl0AQHcbOWlyrZwtKciBfqlEo1f+Q5FN4j
-         mfKZ+pxFnS9cNQSVc2YoekGxWctlcEOMKbMsn8PUE/47gS96ZL0j8GVo+5V2HOqPF36t
-         XRV4IcUb5/3SYt26P5DYGl+rNa+zLGq/c2i4/YSFwAoddGRK5Dwr3kzOOTg5gAhsKBYj
-         R4Js1KLVZpo96U3tFtkZ7v4l+nYBuMHYP2XcmQ+Q+MQotyNymbphoSD+toSYft8td4c3
-         JXMDS2dWQS9DAlfnphIpU6FmcU7C+jRwfXPwyXJuAIWRf/njgMat3/U4dKFwgwUezJp5
-         ulrg==
-X-Forwarded-Encrypted: i=1; AJvYcCW2lwu8mmJCYFEWjoEHZBNC13fVsTBkEk2BOlY1ZgGEa+5PjpYPtTibRS+AEHd0nba0aHfEa0ll0/IgaUJe9oBBR71wQLmD2cSxNvDm
-X-Gm-Message-State: AOJu0Yyy1FhT8B+wv3IWO/pvkh5vSgC9KFcHLofeWHVdtzRJIL15FTVt
-	dBBmm8EsbccZqj0xk40Q9HCrOYuQoSl0V+4dld4WCK80dPd9Pl7ZCQGqm2QMChVVlrKx6XmQgy+
-	8zw==
-X-Google-Smtp-Source: AGHT+IHLAavkjmCuRth9ZO5j6qCkcn9lXltBiSUO5FeZiNUU85dnwhoGihd7JtI7vD7CCsfcYc6LQX6nRa0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:70c:b0:dc6:e823:9edb with SMTP id
- k12-20020a056902070c00b00dc6e8239edbmr104731ybt.12.1712869381654; Thu, 11 Apr
- 2024 14:03:01 -0700 (PDT)
-Date: Thu, 11 Apr 2024 14:03:00 -0700
-In-Reply-To: <20240126085444.324918-12-xiong.y.zhang@linux.intel.com>
+        d=1e100.net; s=20230601; t=1712869404; x=1713474204;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XkXziOZcmJPH9DNxVUuT0LSvem2MocbN93rqFY23cGU=;
+        b=TCSVfhfWRe3UEMV5pSdHNn39qLTRBdh+gwQQbr3M5zMdSMufL3vajPQ4YCIADuSmT5
+         Te97B7C/oBRGw3s6ybLkFW9ea9DqC/ngCa0gRE7yP+pP1vNERq8n55vnkDWE3oUTh4pw
+         pe0CWXpS56bjSf++lzdKRE9uUIhKFRRVMLEXOWO8os9zgZtzd21/08lywraFKEUxzcwP
+         061l3dbvKL3n+Jfuv6XIAuZZZUTiouLkSZL6D0g5kUGAo5synGZBl9bgm0NfIlOslcOf
+         gN7iXBX2AUGnV9Z/MN+HMp2GP8iIeMxi54n6kyIQOHNhi+5yNM9WDNn4/vf4lWN1RgJW
+         JrdA==
+X-Gm-Message-State: AOJu0YwIMh08se+XpOy9EKGdUYy0/vvn9KvVQFlVroxsqzprS+xk7wuo
+	a86DQZ+/TcCsB/2h44O/HQaoLL9z24n8uUZtjd+LoNUs62JCmh3vfEV/iai75euPFV8960PcvvJ
+	0XoM=
+X-Google-Smtp-Source: AGHT+IH+SIjacB44Z2pTqGb+ewSPjLIOUQiuNIQihVZqvUDNwsuJRnB4hUTSv14qa8VHpfYHaF3LwA==
+X-Received: by 2002:a05:6602:4ed7:b0:7d5:ddc8:504d with SMTP id gk23-20020a0566024ed700b007d5ddc8504dmr985974iob.0.1712869403597;
+        Thu, 11 Apr 2024 14:03:23 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id i17-20020a0566022c9100b007d02d49bc80sm607756iow.50.2024.04.11.14.03.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 14:03:23 -0700 (PDT)
+Message-ID: <c70a1402-4664-4200-94a5-239c7bc37392@linuxfoundation.org>
+Date: Thu, 11 Apr 2024 15:03:22 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <20240126085444.324918-12-xiong.y.zhang@linux.intel.com>
-Message-ID: <ZhhQBHQ6V7Zcb8Ve@google.com>
-Subject: Re: [RFC PATCH 11/41] KVM: x86/pmu: Introduce enable_passthrough_pmu
- module parameter and propage to KVM instance
-From: Sean Christopherson <seanjc@google.com>
-To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
-Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
-	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
-	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
-	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com, Xiong Zhang <xiong.y.zhang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests/clone3: Check that the child exited cleanly
+To: Mark Brown <broonie@kernel.org>, Christian Brauner <brauner@kernel.org>,
+ Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240409-kselftest-clone3-signal-v1-1-bbe49156171d@kernel.org>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240409-kselftest-clone3-signal-v1-1-bbe49156171d@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 26, 2024, Xiong Zhang wrote:
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 4432e736129f..074452aa700d 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -193,6 +193,11 @@ bool __read_mostly enable_pmu = true;
->  EXPORT_SYMBOL_GPL(enable_pmu);
->  module_param(enable_pmu, bool, 0444);
->  
-> +/* Enable/disable PMU virtualization */
+On 4/9/24 14:39, Mark Brown wrote:
+> When the child exits during the clone3() selftest we use WEXITSTATUS() to
+> get the exit status from the process without first checking WIFEXITED() to
+> see if the result will be valid. This can lead to incorrect results, for
+> example if the child exits due to signal. Add a WIFEXTED() check and report
+> any non-standard exit as a failure, using EXIT_FAILURE as the exit status
+> for call_clone3() since we otherwise report 0 or negative errnos.
+> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>   tools/testing/selftests/clone3/clone3.c | 5 +++++
+>   1 file changed, 5 insertions(+)
 
-Heh, copy+paste fail.  Just omit a comment, it's pretty self-explanatory.
+Applied to linux-kselftest next for Linux 6.10-rc1.
 
-> +bool __read_mostly enable_passthrough_pmu = true;
-> +EXPORT_SYMBOL_GPL(enable_passthrough_pmu);
-> +module_param(enable_passthrough_pmu, bool, 0444);
+thanks,
+-- Shuah
 
-Almost forgot.  Two things:
-
- 1. KVM should not enable the passthrough/mediate PMU by default until it has
-    reached feature parity with the existing PMU, because otherwise we are
-    essentially breaking userspace.  And if for some reason the passthrough PMU
-    *can't* reach feature parity, then (a) that's super interesting, and (b) we
-    need a more explicit/deliberate transition plan.
-
- 2. The module param absolutely must not be exposed to userspace until all patches
-    are in place.  The easiest way to do that without creating dependency hell is
-    to simply not create the module param.
-
-I.e. this patch should do _only_
-
-bool __read_mostly enable_passthrough_pmu;
-EXPORT_SYMBOL_GPL(enable_passthrough_pmu);
 
