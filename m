@@ -1,133 +1,164 @@
-Return-Path: <linux-kernel+bounces-140053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 283928A0ADC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B8C08A0ADE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:10:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90CEF1F2672B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:08:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A008B1F269B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:10:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC22C13FD71;
-	Thu, 11 Apr 2024 08:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17EC13FD6C;
+	Thu, 11 Apr 2024 08:10:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="UD2IrW3O";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dNDFwyDL"
-Received: from wfhigh5-smtp.messagingengine.com (wfhigh5-smtp.messagingengine.com [64.147.123.156])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MJb95FKo"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76CAC664DD;
-	Thu, 11 Apr 2024 08:07:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1EAE664DD
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:10:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712822881; cv=none; b=eSZ4mMwp8ykmeAq3cVGxG6SUHrGhkgYR6CCIn6x5HUK3zI5XCVzTZooXGB7iMS3YGczR5kbpua6fwAKeh3L3kA2E8F/N437wRrZWhH9Zp+Ntu9rRDPoCSTyhd4Ro4Hu0TFDvuXiHqyS7qXEuVvu7KZP/A00l+V5W3qExTXOVo38=
+	t=1712823023; cv=none; b=q4+CW+u9IkSGbb/2nYrmKRjajSvBgAj8YyTT3uV26f2Ty3lxOn4QmAN6JRHgO9QPYYKzvEjR3ifljWSBIwgCXICb6wFCF/o9irxUZPoe7Y4EIMgWcZYViLI1/JH1IxDcGFQK0lUiBD+yiCqztPc//078X1sstC0I/8MgauokCVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712822881; c=relaxed/simple;
-	bh=Y9qmUzmwCH60stgnS2mlNEdLDQMwLF9+umsngwH+J9g=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=dbOci2LltYBzLWpfsKU7UMZlvY0VcKNediexCYKfKIS8w9yFJikCvA4znQUN3RKozX+QE2xLCTGAfNb7wuRNvId/2P4rVtO/eUlxnCv0mG0UkaPI6SePYJhblodxjoxTMirLZDjyTbxyFCFN9EtIfEpvVOWMh+U6wc85iKc9sJo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=UD2IrW3O; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dNDFwyDL; arc=none smtp.client-ip=64.147.123.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 93CF91800121;
-	Thu, 11 Apr 2024 04:07:57 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 11 Apr 2024 04:07:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1712822877; x=1712909277; bh=a9JwUZrGbl
-	p20dvEFGPjA+XJw4OSt/yDPHXDqtQgFVo=; b=UD2IrW3OrJwa+Ojyp+ZJlgG8+h
-	g6lKkftIzZb9dn9EKkGp80kJhtC9UyXYoc+H7QoJFj8hKwDaId14BtnQLqblVTw2
-	wG1PdCoOhXkPy813083zpqWz3+ADhJS3ZTFOWW6vQLSiZb+fQuJ1yPYZT7CJQE1t
-	PtnByjlYhALKqFIXnuJYs0ZGgw+uclF6aNBx/StrkB2moDMvA1p5yf4DOHKUY1aL
-	TZGA5vNVPAmLZeRBJbdW6DS79ODfloSVWWhAd7umbzvc1EPBz3SvKCVZ+QLMy1hU
-	Q2ydlwODPT/Kxm99/ezz3N6zsrcjib0eLRRXRoeMTBEXD1JR4VJmwGmbCjnQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712822877; x=1712909277; bh=a9JwUZrGblp20dvEFGPjA+XJw4OS
-	t/yDPHXDqtQgFVo=; b=dNDFwyDLzke3ysux49qnsencJejakrLKtOO1UinrZPFP
-	azOhqUMSqbE394PzDvEXOfmfc7PwaJs18tjP7oBNzrtWV3q61fEumDRWuWMnjU13
-	x2hQ8Wb5LNhdXQAfAN6c83baOajnJNr+hXUS+/xj0rIZZ0pev9DTe3st6nhY4+2g
-	wGXHdT7nhf/3JTrotJCgkkCjMNZtj5gdXI/cn8/+RBt4pBXM57n7+GXtX4gFh6TO
-	PRVWAv5TggrFfYoEzBSrL/ehJeQm6zRrzCCDHLmboBRR7QKF+nm54K7paddYvV+J
-	7bCvQ6Sqf0rPcXSnGps7+dLNQfJvPvtttQxjqGGmMg==
-X-ME-Sender: <xms:XJoXZvw-lz7ccxMJ5LJlkSACdZCE3wA_0kQ2RjbLQJ-GrwFnNIs4_A>
-    <xme:XJoXZnRVQmkoLHT69Pxr0dmKd3ctvHXsfRFEvZ-0hzQXRCTB5JBV1F1FP9XuDPqfH
-    io3N1hNymuj32fJD9w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehjedguddvgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:XJoXZpXyVMDelkJRMj9wRn5BSI-WIF0IIjjcj6Bvcs8K8akCHh3FiQ>
-    <xmx:XJoXZpiTXFKIXdB7xdo3rLR4WZgq0TZGvJ04h0y6jZ_bBnx_VOHJIQ>
-    <xmx:XJoXZhAsaVqsiPt5eeGC595SIS05oI2wdlQfuUOXF5eWWg0odeDJCw>
-    <xmx:XJoXZiK_BPz1wSO-ZoNEOi2hW18-kBXK50nFxmL3oIzClcxuslyAcQ>
-    <xmx:XZoXZl4_PTp_iQRz4FjpaRoo_hERGNztKX-rrNcaPTbbgQexjL8Lz3fv>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 276F2B60092; Thu, 11 Apr 2024 04:07:56 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
+	s=arc-20240116; t=1712823023; c=relaxed/simple;
+	bh=7cA/1qEogMEFNb22PO4vzxBgKD/wKOqdtHkJI14HFC4=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=TlyTIBaOnJtxViIOdWYNc5yGctf8TWGOYmCImmu380SS9BCckJY4gUSHnAfhSg2sjmCiMwWxvQ1eUTvss9aaj07dqPpR7rYQ/CsR3iesegkvxoGcEF9xIFdm5cK/ZC7lK/UqHbLqRn29htbKNTez3yuEC+yLHpeQLhMEg97QyOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MJb95FKo; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712823022; x=1744359022;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=7cA/1qEogMEFNb22PO4vzxBgKD/wKOqdtHkJI14HFC4=;
+  b=MJb95FKoACfi55slv1AA9tNAMNhQtJKieXKif9IdGJji3ijky9zEP8KP
+   6bhWY/dKknWXFUll+CkZli/X+ARXzLHcjJ6BFsl8m/xSSxcwRcxIa6elF
+   dsrQfbs+Nza8v9f1gOuELHS46QjdbWnWzUK9cquOFBSyOesKWnr1zdWra
+   P26sHSs6FmuqyY7WfnQZg9UAuEBfRX0c507Ofvl8H/oAiUKqxVICFwr01
+   LM68++P7C5Las/vAMvhdj9VN9ibOd5I93FxQD8bjV5AmV7ZDg7oFNiRFj
+   +p1eBt3zojkDcsZPVAsFlZwI4TRZYxelZvBCCa74qgY+SHPUEBW6fseuU
+   g==;
+X-CSE-ConnectionGUID: SSuQpba3QE+fUthOXpJxWA==
+X-CSE-MsgGUID: WFd6rzKtSyC68Dhw6yWaYw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="25732095"
+X-IronPort-AV: E=Sophos;i="6.07,192,1708416000"; 
+   d="scan'208";a="25732095"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 01:10:21 -0700
+X-CSE-ConnectionGUID: 53dMudwFSbmejBobPYGINQ==
+X-CSE-MsgGUID: neryvS5nR9mHxDpxaEKXMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,192,1708416000"; 
+   d="scan'208";a="20731757"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.124.237.86]) ([10.124.237.86])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 01:10:19 -0700
+Message-ID: <a3070cd9-84d4-4a1b-a5c8-a37d9c3dae3e@linux.intel.com>
+Date: Thu, 11 Apr 2024 16:10:15 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <5f99920d-0c9c-4921-ab85-e5bca11c2da6@app.fastmail.com>
-In-Reply-To: 
- <cwbht6xtv2nfqm7xz2ra52dtfwx3whjyyigbxxtdrwzcsq3llp@vhryqiyrjxqx>
-References: <20240408092923.2816928-1-arnd@kernel.org>
- <cwbht6xtv2nfqm7xz2ra52dtfwx3whjyyigbxxtdrwzcsq3llp@vhryqiyrjxqx>
-Date: Thu, 11 Apr 2024 10:07:30 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Andi Shyti" <andi.shyti@kernel.org>, "Arnd Bergmann" <arnd@kernel.org>
-Cc: "Peter Korsgaard" <peter@korsgaard.com>, "Andrew Lunn" <andrew@lunn.ch>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Wolfram Sang" <wsa+renesas@sang-engineering.com>,
- "Jarkko Nikula" <jarkko.nikula@linux.intel.com>,
- "Geert Uytterhoeven" <geert+renesas@glider.be>,
- "Niklas Schnelle" <schnelle@linux.ibm.com>,
- "Samuel Holland" <samuel.holland@sifive.com>,
- "Gregor Herburger" <gregor.herburger@tq-group.com>,
- linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: ocores: convert to ioport_map() for IORESOURCE_IO
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Kevin Tian <kevin.tian@intel.com>, Tina Zhang <tina.zhang@intel.com>,
+ Yi Liu <yi.l.liu@intel.com>, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 09/12] iommu/vt-d: Use cache helpers in
+ arch_invalidate_secondary_tlbs
+To: Jason Gunthorpe <jgg@ziepe.ca>
+References: <20240410020844.253535-1-baolu.lu@linux.intel.com>
+ <20240410020844.253535-10-baolu.lu@linux.intel.com>
+ <20240410155535.GI223006@ziepe.ca>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240410155535.GI223006@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 10, 2024, at 15:31, Andi Shyti wrote:
-> Hi Arnd,
->
-> On Mon, Apr 08, 2024 at 11:28:36AM +0200, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> There is at least one machine that uses this driver but does not
->> have support for inb()/outb() instructions.
->> 
->> Convert this to using ioport_map() so it can build on architectures
->> that don't provide these but work correctly on machines that require
->> using port I/O.
->> 
->> Fixes: 53f44c1005ba ("i2c: add HAS_IOPORT dependencies")
->
-> I had to update this Fixes tag as I have done a rebase.
->
+On 2024/4/10 23:55, Jason Gunthorpe wrote:
+> On Wed, Apr 10, 2024 at 10:08:41AM +0800, Lu Baolu wrote:
+>>   /* Pages have been freed at this point */
+>>   static void intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
+>>   					struct mm_struct *mm,
+>>   					unsigned long start, unsigned long end)
+>>   {
+>>   	struct intel_svm *svm = container_of(mn, struct intel_svm, notifier);
+>> +	struct dmar_domain *domain = svm->domain;
+>>   
+>>   	if (start == 0 && end == -1UL) {
+> 
+> ULONG_MAX ideally.
 
-Ok, thanks for merging.
+Done.
 
-In case you do another rebase, you could also move this patch
-ahead of the other one to avoid adding and then removing the
-dependency again.
+> 
+>> -		intel_flush_svm_all(svm);
+>> +		cache_tag_flush_all(domain);
+>>   		return;
+>>   	}
+>>   
+>> -	intel_flush_svm_range(svm, start,
+>> -			      (end - start + PAGE_SIZE - 1) >> VTD_PAGE_SHIFT, 0);
+>> +	cache_tag_flush_range(domain, start, end, 0);
+> 
+> Be mindful of the note from the ARM driver:
+> 
+>          /*
+>           * The mm_types defines vm_end as the first byte after the end address,
+>           * different from IOMMU subsystem using the last address of an address
+>           * range. So do a simple translation here by calculating size correctly.
+>           */
+>          size = end - start;
 
-    Arnd
+I didn't find any documentation about the @end in this callback, but in
+mm subsystem, it does like this,
+
+flush_tlb_mm_range(mm, va, va + nr_pages * PAGE_SIZE, PAGE_SHIFT, false);
+
+So, yes, the @end in arch_invalidate_secondary_tlbs callback is
+different from the iommu gather.
+
+I was not aware of this. Thanks for pointing this out.
+
+> 
+> Given that the cache_tag_flush_range's are all tied directly to the
+> iommu gather API, this is probably missing a -1 though perhaps it does
+> not cause a functional problem here.
+
+I will change it like below,
+
+diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+index 858a64fbdaab..15dcd1b30df1 100644
+--- a/drivers/iommu/intel/svm.c
++++ b/drivers/iommu/intel/svm.c
+@@ -146,7 +146,12 @@ static void 
+intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
+                 return;
+         }
+
+-       cache_tag_flush_range(domain, start, end, 0);
++       /*
++        * The mm_types defines vm_end as the first byte after the end 
+address,
++        * different from IOMMU subsystem using the last address of an 
+address
++        * range.
++        */
++       cache_tag_flush_range(domain, start, end - 1, 0);
+  }
+
+  static void intel_mm_release(struct mmu_notifier *mn, struct mm_struct 
+*mm)
+
+Best regards,
+baolu
+
 
