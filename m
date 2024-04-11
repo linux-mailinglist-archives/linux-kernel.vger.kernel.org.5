@@ -1,92 +1,115 @@
-Return-Path: <linux-kernel+bounces-140563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24B9F8A1637
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:49:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E6558A1641
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:49:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 566531C22E3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:49:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CA5EB26B69
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1843914E2F5;
-	Thu, 11 Apr 2024 13:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89A414D6FF;
+	Thu, 11 Apr 2024 13:48:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UGB5cvde"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lAIkcmdA"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE8414E2C8;
-	Thu, 11 Apr 2024 13:45:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78E0B14BF8D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712843143; cv=none; b=quKGkPwwVU+jsLlp+QpHTMopBxtVtr6T/achREMxTPeLB3Yu3sWqRkck2TvpmlIbOermlIGXlBKq7rgzKBEaErTNGAYjiLtQCBKW7eZmSddRWNl4tXroNyhFNId3bc7RZ9xMBEmWaGNC96ZKr4sEOIjQKZ06hBi8Z2VOVTURaqs=
+	t=1712843328; cv=none; b=SioNEkvsoadt4iVCFDHaZMHJkf9ZTr2LH+kkYTYBtAVBSCi3J5BAnx5sfX53rjAMETrNkzZ+1O6hrMmkrLLdcNlMlFeH7li9x27ARvPKawiRD4gaKoXolDYPUpEoRUfC3OYpnDuzo/N2vX5h1D46WwXTNiRw4ycfrqSMb4sXwn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712843143; c=relaxed/simple;
-	bh=Tr3v9IwXT/xEwkY/R/VsTmiz604534gdFf1SN3vftzI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gkOzy1/ZZYPbWNptf/xXUefIWJuOH47Kh4aZLnqypnyjLtkQgmsVNz5yfNo3mUBhDB+iiaZu+eNFfQy1FwE2dYaR+y9iQ5rdn7Srhv9sYfit8FJAwDTl5EFZrdIq4cefKNGqDGmkMGnfsBTisn25xRahJfpEp+q07A2WrLscYqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UGB5cvde; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1681FC072AA;
-	Thu, 11 Apr 2024 13:45:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712843142;
-	bh=Tr3v9IwXT/xEwkY/R/VsTmiz604534gdFf1SN3vftzI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=UGB5cvdeQh4Eq+B66uxOXvftKKE2Wd+1+rKoLwD9h1fANbqcYmep56Sdyq2lj3fyp
-	 dA/0xTzxMmrVDh5jKLiCgt4oD3lA74PnWe7y0j1DqpFna9TjkJXfwGvdfvEdQoeFqu
-	 V6doZHyhAEio4aNe4j7RJTur2+qOHVUTRt6VqOd6gzpkorXrQ+mQuWz1izKno1aXzt
-	 bQtXCIZBdyh2gLwxGZ2ITCbCw3ET3L6Qe6NDPwGWQOR23tXzYKh6rmVrKZjhyzb6w7
-	 P0NM3+PJms0BLiVZ7lrIP1rga67kVkVaCOaMK5eSt75Qb3fUZytYVe4KuWKbm9jgaC
-	 0DwnnZ1jV/43Q==
-Date: Thu, 11 Apr 2024 06:45:41 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: Kees Cook <keescook@chromium.org>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Alexander Duyck <alexanderduyck@fb.com>, Yunsheng Lin
- <linyunsheng@huawei.com>, Jesper Dangaard Brouer <hawk@kernel.org>, "Ilias
- Apalodimas" <ilias.apalodimas@linaro.org>, Christoph Lameter
- <cl@linux.com>, Vlastimil Babka <vbabka@suse.cz>, Andrew Morton
- <akpm@linux-foundation.org>, <nex.sw.ncis.osdt.itp.upstreaming@intel.com>,
- <netdev@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
- <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v9 7/9] libeth: add Rx buffer management
-Message-ID: <20240411064541.7106be9a@kernel.org>
-In-Reply-To: <d28896e5-32cd-4376-bb1e-44c9dbfea172@intel.com>
-References: <20240404154402.3581254-1-aleksander.lobakin@intel.com>
-	<20240404154402.3581254-8-aleksander.lobakin@intel.com>
-	<20240405212513.0d189968@kernel.org>
-	<1dda8fd5-233b-4b26-95cc-f4eb339a7f88@intel.com>
-	<755c17b2-0ec2-49dd-9352-63e5d2f1ba4c@intel.com>
-	<202404090909.51BAC81A6@keescook>
-	<91486cf6-c496-4459-8379-257383d031a1@intel.com>
-	<20240410175424.7567d32d@kernel.org>
-	<d28896e5-32cd-4376-bb1e-44c9dbfea172@intel.com>
+	s=arc-20240116; t=1712843328; c=relaxed/simple;
+	bh=xGNplq0dGEVxNyyn6OExBbLtHPrjPVL/jcM69HeNAH0=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=hckoWSOB+SUmQkJqFAzm9nlZVENEpUuk6XaHu27mGF3wYPAyzldehH8iaYF1wKSQrF9WJxHCL58Uwadi9QF9tdQthtltRJ4vyOTLNKlOvBMx7/s5cqrTuweyaGxs2anX4rLWS92QhgREREUdtVAELQkUXMFcYFgX/iB2TKV7RhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lAIkcmdA; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712843327; x=1744379327;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=xGNplq0dGEVxNyyn6OExBbLtHPrjPVL/jcM69HeNAH0=;
+  b=lAIkcmdA0ZKPczc9O2BZ0Nefd0Om1moAwX0ZTyD0ImWlLqaBpTawj5xO
+   38nhKNyQ8uFxHCKmWpoXt+3cmhmFtYWq2aQr+D4d6wc4CYN+CNZL+zjyu
+   pbhinKSM6GO58MAlbEvfAuM8ME3TKEeWfqJLOCI+ze0iMrb/XbkZ0timI
+   aQwBBwZMrz6xIHhdRd+U3VeJb7H9Q8QkbWg31APSeB4rFxiJGuGdpCLJu
+   al/z9cyURNE19SqH56C9xKXvu72A+UeRuQkabUeQ2rSoKELsPVjUtOKus
+   plq+1aWqXRXOYBgmIkZaY1mSt0P3/l47+a2M2V2yzV/pjxDLy2p3js5qn
+   g==;
+X-CSE-ConnectionGUID: pgF9KKSASrq2Fq7BdMvfsA==
+X-CSE-MsgGUID: zDkFV8/kRieWr+fiaXeC9A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8127512"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="8127512"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 06:48:46 -0700
+X-CSE-ConnectionGUID: 45GIl950TEyf3UET/I8gYQ==
+X-CSE-MsgGUID: xZddPnEiSU2/81SAj/BNMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="25373830"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.124.237.86]) ([10.124.237.86])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 06:48:43 -0700
+Message-ID: <57d2fe8c-b438-42ae-a1ff-0ba0ee226c37@linux.intel.com>
+Date: Thu, 11 Apr 2024 21:48:41 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
+ Yi Liu <yi.l.liu@intel.com>, Jacob Pan <jacob.jun.pan@linux.intel.com>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] iommu/vt-d: Remove caching mode check before
+ device TLB flush
+To: Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev
+References: <20240410055823.264501-1-baolu.lu@linux.intel.com>
+ <51055d13-4a72-4000-9a22-b403d8c5b2ff@arm.com>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <51055d13-4a72-4000-9a22-b403d8c5b2ff@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, 11 Apr 2024 11:07:24 +0200 Alexander Lobakin wrote:
-> > I think doc tree is a strong candidate, or at least we should not
-> > merge without consulting Jon. Please post and we'll figure it out.  
+On 2024/4/11 21:13, Robin Murphy wrote:
+> On 10/04/2024 6:58 am, Lu Baolu wrote:
+>> The Caching Mode (CM) of the Intel IOMMU indicates if the hardware
+>> implementation caches not-present or erroneous translation-structure
+>> entries except the first-stage translation. The caching mode is
+>> irrelevant to the device TLB , therefore there is no need to check
+>> it before a device TLB invalidation operation.
+>>
+>> iommu_flush_iotlb_psi() is called in map and unmap paths. The caching
+>> mode check before device TLB invalidation will cause device TLB
+>> invalidation always issued if IOMMU is not running in caching mode.
+>> This is wrong and causes unnecessary performance overhead.
+>>
+>> The removal of caching mode check in intel_flush_iotlb_all() doesn't
+>> impact anything no matter the IOMMU is working in caching mode or not.
+>> Commit <29b32839725f> ("iommu/vt-d: Do not use flush-queue when
+>> caching-mode is on") has already disabled flush-queue for caching mode,
+>> hence caching mode will never call intel_flush_iotlb_all().
 > 
-> Can this series go simultaneously or it needs to wait for the fix first?
+> Well, technically it might still, at domain creation via 
+> iommu_create_device_direct_mappings(), but domain->has_iotlb_device 
+> should definitely be false at that point 🙂
 
-You can send both maybe just mention under the --- that "this one will
-generate a known kdoc warning, I'll be fixing kdoc script separately".
+Oh! I overlooked that path. :-)
 
-> > The question someone may ask, however, is whether it causes new
-> > warnings to appear?  
-> 
-> I tested `make W=12 KDOCFLAGS=-Wall all` yesterday and haven't noticed
-> any new issues, although expected them.
+Yes. iommu_create_device_direct_mappings() is called before setting the
+domain to device for intel iommu driver, hence in practice the
+domain->has_iotlb_device is always false.
 
-Surprising but nice.
+Best regards,
+baolu
 
