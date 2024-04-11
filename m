@@ -1,188 +1,182 @@
-Return-Path: <linux-kernel+bounces-141436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFEE18A1E35
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E028A8A1E3F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:31:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1F8A1C21963
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:30:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E8261C238D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:31:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDFE44597F;
-	Thu, 11 Apr 2024 18:00:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AFFD78C92;
+	Thu, 11 Apr 2024 18:01:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F6A8Ql6Y"
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ldxlZC9Q"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D213244391
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF92A6A031
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:01:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712858435; cv=none; b=KnfJ9U7OKZ4HuGQw1EkhN7CudSFVsd6wAfkdrb2n3sGJUGdEFgZOrb++yehsg+9nwBp8Z0OJ0LeTtpL7b/vNVVYB906LVbuPELZitHfDmqLt/a5WBainXmVcs57CShnGFRWeauvsZANLA2XaLqFl/iuozcbLz5WVKKNnCX+vT9U=
+	t=1712858469; cv=none; b=nPTqQZ3RcCoA40IBKXpPLhNsAsDjFiL4ZaPAHAuFA0ktpKpyKj6Ed4m4u8CzV/zmnIWdBx6+PJanWG3UEDawkmfV7ZJViDriDHeCJdzrWPIKFkoYgSaXSG7fAw7NrWANuF+MwNkWsyLEdoQgCvQkDxHJJdLsgZ5VftxsvAYNQ68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712858435; c=relaxed/simple;
-	bh=yh/ixDQ5eg6OWrim9+bm1G6d/37CpJ1/QL+beESG4jw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e1qv4dEQQciknKQEmsEKmtgfI/VtHoyUgj+Pc2ICdIW7uBMgNQCKHGfOCD6xgaKxJLheYRrltqwbbTHc7Q6UxBx//SOMxbrWavs9Nyonjov0uaJOgHtI+E+axiemAIsI8gY1octo21OcRtctBq4E+LVe2DoyTfXXd35olQkwZkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F6A8Ql6Y; arc=none smtp.client-ip=95.215.58.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 11 Apr 2024 14:00:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712858430;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hugd8ugKeGXlWiLmTwUcSwxtoNqEbzFWRyiumV4I0QI=;
-	b=F6A8Ql6YjuHeVhFhvCjRCHtt6+j5Zmavb6rBRVS2UPMjaUzBr8Uy9YMXKrMLS6Bdu93QAe
-	+1JDwGCXhSmYXVX/GYkUtjra2ilUH2ndkI9p7bCt0GDxnXoAiXvPRveKB1Tl7czCP5mSyl
-	LwnxqSrFPBMBfyHHV7aQPCs6G/4zVIs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
-	Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, 
-	Huacai Chen <chenhuacai@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nadav Amit <nadav.amit@gmail.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Puranjay Mohan <puranjay12@gmail.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, 
-	Will Deacon <will@kernel.org>, bpf@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, netdev@vger.kernel.org, 
-	sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 00/15] mm: jit/text allocator
-Message-ID: <v52bizaflxzrxqk2wtuek2m2juwbzr6jxnpzlvtswkarcaejow@kd7tygzbmijs>
-References: <20240411160051.2093261-1-rppt@kernel.org>
+	s=arc-20240116; t=1712858469; c=relaxed/simple;
+	bh=ELksu+sLzaHjlNPUR9IEFLD8rhRIAjWKwOmmScUPvR4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kRK8cQaonX0H536r6Y7xt5A2sRcp3BJfGZz1WoPeY/BhczrE2l+mP18yYcu7aTtIUgCUWD2xSb6DnujZX0Qhpxrc5YjYhKFHzs50MD8xcJ86ZYgLr3YbP7pOtCTSBkjrJZh08G8YYNpoEEE3GOibTOJ0jrWYfYECWorMpnvO1ls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ldxlZC9Q; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3462178fbf9so14660f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:01:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712858466; x=1713463266; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TFQZlmoBEIaWgT85a+mHB96sryXc4pNLPf5zok3FIIo=;
+        b=ldxlZC9QDQBVGNl5h9QLMeHkpkm6mAjtNEmsXiaiRkoawakaBTEmIh9XPsNwZHeIUr
+         QuHNRf/VCTrFaMNvbGPTBhWKFg4He/nRuG2HEsh2eHDhN2MMX1W2AvxgtELjtSOmw19L
+         4JQOfqROSAJj1zvdbPN/vRnA52kjYTcm8warHW0v13url7Srpr/Tb7FNuMzGB6VKQWSU
+         dNPngNArB1djPXVTkVGZHB4yfx8N6OKQN+vVB2T5D/v8OIHNQ4zxDx5+e8MdvaXkBEgF
+         jCDQViUA9VuqMo7H4p21qOi7jrTetxWhR9RiRIA4gXMeZdb7uuPn5owmGfNm9yB9dS13
+         XC1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712858466; x=1713463266;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TFQZlmoBEIaWgT85a+mHB96sryXc4pNLPf5zok3FIIo=;
+        b=Z/gsuH9LEw95FEaDg3AJVfX77eEFh1z78RcIbim4uHP3H+yvttjhDg4gRKPfFGnbp+
+         5swc7nwogfc5Jd91zIlm5RCFXJ9QLe/49QRBwXfL3e03ITnve4AO1ZFkAcqh5Djlj/vH
+         z3dzjRdoOYvjxHUeWyV6DP1uuM5zW+HdGCsvpr+nqjsnkbmokP8IPHiXbX26JkU8oerc
+         /Ae+rtyS6ppCoyewv3lsBOr6FQicsVMi/kC/94un/fewD7FdNOlbnLQ3f/T6axCg036i
+         LgKmhL2JrWvrys8SW6XteMkLERkhGCkghMA1Hg+XZftax+Ak/shN1qLFXFRbM5OdUDEL
+         tIdg==
+X-Forwarded-Encrypted: i=1; AJvYcCVUecZk3JVUOQSyLItc9ulM2SD1fFQZpkCNcyGF+PDDFawi4yHT16xIcn0UnbyRv5TTHUfk3Siz7BZHnNJtdlI3mkvJ5JwTc5/c0Hsh
+X-Gm-Message-State: AOJu0Yxs3JwjDHYefRfAA/zsm2HO9wF4H0eb2Oq88r2Zp1hRbGkiph0O
+	wI2MG8FTCyCnOibkR5+UhhTy+p+rfcm7IdaL55tHO4ReNsDQTd2Ag+Z35vsi3oiXXuDp8wIvYY5
+	SDK7rtZ13MdzYn7rs3ayZWUKMHwvw7taQKowD
+X-Google-Smtp-Source: AGHT+IEl4Iu+H70L5iEuaxVGs2wVMTfN36uwSB9T1kbBSUqJDIrWPvmyrfPoncl+j8yWfnTJVbG6KZ40Dk/wHobSp7A=
+X-Received: by 2002:a5d:564e:0:b0:343:6551:935 with SMTP id
+ j14-20020a5d564e000000b0034365510935mr235209wrw.66.1712858466173; Thu, 11 Apr
+ 2024 11:01:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411160051.2093261-1-rppt@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+References: <20240401232946.1837665-1-jthoughton@google.com>
+ <20240401232946.1837665-6-jthoughton@google.com> <ZhgZHJH3c5Lb5SBs@google.com>
+ <Zhgdw8mVNYZvzgWH@google.com>
+In-Reply-To: <Zhgdw8mVNYZvzgWH@google.com>
+From: David Matlack <dmatlack@google.com>
+Date: Thu, 11 Apr 2024 11:00:37 -0700
+Message-ID: <CALzav=f=_+UQBJv_eZ=t5wE0AytVo1mwfDoum+ZyNfNHvyOccQ@mail.gmail.com>
+Subject: Re: [PATCH v3 5/7] KVM: x86: Participate in bitmap-based PTE aging
+To: James Houghton <jthoughton@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Yu Zhao <yuzhao@google.com>, Marc Zyngier <maz@kernel.org>, 
+	Oliver Upton <oliver.upton@linux.dev>, Sean Christopherson <seanjc@google.com>, 
+	Jonathan Corbet <corbet@lwn.net>, James Morse <james.morse@arm.com>, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Shaoqin Huang <shahuang@redhat.com>, 
+	Gavin Shan <gshan@redhat.com>, Ricardo Koller <ricarkol@google.com>, 
+	Raghavendra Rao Ananta <rananta@google.com>, Ryan Roberts <ryan.roberts@arm.com>, 
+	David Rientjes <rientjes@google.com>, Axel Rasmussen <axelrasmussen@google.com>, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-mm@kvack.org, 
+	linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 11, 2024 at 07:00:36PM +0300, Mike Rapoport wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> 
-> Hi,
-> 
-> Since v3 I looked into making execmem more of an utility toolbox, as we
-> discussed at LPC with Mark Rutland, but it was getting more hairier than
-> having a struct describing architecture constraints and a type identifying
-> the consumer of execmem.
-> 
-> And I do think that having the description of architecture constraints for
-> allocations of executable memory in a single place is better that having it
-> spread all over the place.
-> 
-> The patches available via git:
-> https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=execmem/v4
-> 
-> v4 changes:
-> * rebase on v6.9-rc2
-> * rename execmem_params to execmem_info and execmem_arch_params() to
->   execmem_arch_setup()
-> * use single execmem_alloc() API instead of execmem_{text,data}_alloc() (Song)
-> * avoid extra copy of execmem parameters (Rick)
-> * run execmem_init() as core_initcall() except for the architectures that
->   may allocated text really early (currently only x86) (Will)
-> * add acks for some of arm64 and riscv changes, thanks Will and Alexandre
-> * new commits:
->   - drop call to kasan_alloc_module_shadow() on arm64 because it's not
->     needed anymore
->   - rename MODULE_START to MODULES_VADDR on MIPS
->   - use CONFIG_EXECMEM instead of CONFIG_MODULES on powerpc as per Christophe:
->     https://lore.kernel.org/all/79062fa3-3402-47b3-8920-9231ad05e964@csgroup.eu/
-> 
-> v3: https://lore.kernel.org/all/20230918072955.2507221-1-rppt@kernel.org
-> * add type parameter to execmem allocation APIs
-> * remove BPF dependency on modules
-> 
-> v2: https://lore.kernel.org/all/20230616085038.4121892-1-rppt@kernel.org
-> * Separate "module" and "others" allocations with execmem_text_alloc()
-> and jit_text_alloc()
-> * Drop ROX entailment on x86
-> * Add ack for nios2 changes, thanks Dinh Nguyen
-> 
-> v1: https://lore.kernel.org/all/20230601101257.530867-1-rppt@kernel.org
-> 
-> = Cover letter from v1 (sligtly updated) =
-> 
-> module_alloc() is used everywhere as a mean to allocate memory for code.
-> 
-> Beside being semantically wrong, this unnecessarily ties all subsystmes
-> that need to allocate code, such as ftrace, kprobes and BPF to modules and
-> puts the burden of code allocation to the modules code.
-> 
-> Several architectures override module_alloc() because of various
-> constraints where the executable memory can be located and this causes
-> additional obstacles for improvements of code allocation.
-> 
-> A centralized infrastructure for code allocation allows allocations of
-> executable memory as ROX, and future optimizations such as caching large
-> pages for better iTLB performance and providing sub-page allocations for
-> users that only need small jit code snippets.
-> 
-> Rick Edgecombe proposed perm_alloc extension to vmalloc [1] and Song Liu
-> proposed execmem_alloc [2], but both these approaches were targeting BPF
-> allocations and lacked the ground work to abstract executable allocations
-> and split them from the modules core.
-> 
-> Thomas Gleixner suggested to express module allocation restrictions and
-> requirements as struct mod_alloc_type_params [3] that would define ranges,
-> protections and other parameters for different types of allocations used by
-> modules and following that suggestion Song separated allocations of
-> different types in modules (commit ac3b43283923 ("module: replace
-> module_layout with module_memory")) and posted "Type aware module
-> allocator" set [4].
-> 
-> I liked the idea of parametrising code allocation requirements as a
-> structure, but I believe the original proposal and Song's module allocator
-> was too module centric, so I came up with these patches.
-> 
-> This set splits code allocation from modules by introducing execmem_alloc()
-> and and execmem_free(), APIs, replaces call sites of module_alloc() and
-> module_memfree() with the new APIs and implements core text and related
-> allocations in a central place.
-> 
-> Instead of architecture specific overrides for module_alloc(), the
-> architectures that require non-default behaviour for text allocation must
-> fill execmem_info structure and implement execmem_arch_setup() that returns
-> a pointer to that structure. If an architecture does not implement
-> execmem_arch_setup(), the defaults compatible with the current
-> modules::module_alloc() are used.
-> 
-> Since architectures define different restrictions on placement,
-> permissions, alignment and other parameters for memory that can be used by
-> different subsystems that allocate executable memory, execmem APIs
-> take a type argument, that will be used to identify the calling subsystem
-> and to allow architectures to define parameters for ranges suitable for that
-> subsystem.
-> 
-> The new infrastructure allows decoupling of BPF, kprobes and ftrace from
-> modules, and most importantly it paves the way for ROX allocations for
-> executable memory.
+On Thu, Apr 11, 2024 at 10:28=E2=80=AFAM David Matlack <dmatlack@google.com=
+> wrote:
+>
+> On 2024-04-11 10:08 AM, David Matlack wrote:
+> > On 2024-04-01 11:29 PM, James Houghton wrote:
+> > > Only handle the TDP MMU case for now. In other cases, if a bitmap was
+> > > not provided, fallback to the slowpath that takes mmu_lock, or, if a
+> > > bitmap was provided, inform the caller that the bitmap is unreliable.
+> > >
+> > > Suggested-by: Yu Zhao <yuzhao@google.com>
+> > > Signed-off-by: James Houghton <jthoughton@google.com>
+> > > ---
+> > >  arch/x86/include/asm/kvm_host.h | 14 ++++++++++++++
+> > >  arch/x86/kvm/mmu/mmu.c          | 16 ++++++++++++++--
+> > >  arch/x86/kvm/mmu/tdp_mmu.c      | 10 +++++++++-
+> > >  3 files changed, 37 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/k=
+vm_host.h
+> > > index 3b58e2306621..c30918d0887e 100644
+> > > --- a/arch/x86/include/asm/kvm_host.h
+> > > +++ b/arch/x86/include/asm/kvm_host.h
+> > > @@ -2324,4 +2324,18 @@ int memslot_rmap_alloc(struct kvm_memory_slot =
+*slot, unsigned long npages);
+> > >   */
+> > >  #define KVM_EXIT_HYPERCALL_MBZ             GENMASK_ULL(31, 1)
+> > >
+> > > +#define kvm_arch_prepare_bitmap_age kvm_arch_prepare_bitmap_age
+> > > +static inline bool kvm_arch_prepare_bitmap_age(struct mmu_notifier *=
+mn)
+> > > +{
+> > > +   /*
+> > > +    * Indicate that we support bitmap-based aging when using the TDP=
+ MMU
+> > > +    * and the accessed bit is available in the TDP page tables.
+> > > +    *
+> > > +    * We have no other preparatory work to do here, so we do not nee=
+d to
+> > > +    * redefine kvm_arch_finish_bitmap_age().
+> > > +    */
+> > > +   return IS_ENABLED(CONFIG_X86_64) && tdp_mmu_enabled
+> > > +                                    && shadow_accessed_mask;
+> > > +}
+> > > +
+> > >  #endif /* _ASM_X86_KVM_HOST_H */
+> > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> > > index 992e651540e8..fae1a75750bb 100644
+> > > --- a/arch/x86/kvm/mmu/mmu.c
+> > > +++ b/arch/x86/kvm/mmu/mmu.c
+> > > @@ -1674,8 +1674,14 @@ bool kvm_age_gfn(struct kvm *kvm, struct kvm_g=
+fn_range *range)
+> > >  {
+> > >     bool young =3D false;
+> > >
+> > > -   if (kvm_memslots_have_rmaps(kvm))
+> > > +   if (kvm_memslots_have_rmaps(kvm)) {
+> > > +           if (range->lockless) {
+> > > +                   kvm_age_set_unreliable(range);
+> > > +                   return false;
+> > > +           }
+> >
+> > If a VM has TDP MMU enabled, supports A/D bits, and is using nested
+> > virtualization, MGLRU will effectively be blind to all accesses made by
+> > the VM.
+> >
+> > kvm_arch_prepare_bitmap_age() will return true indicating that the
+> > bitmap is supported. But then kvm_age_gfn() and kvm_test_age_gfn() will
+> > return false immediately and indicate the bitmap is unreliable because =
+a
+> > shadow root is allocate. The notfier will then return
+> > MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE.
 
-It looks like you're just doing API cleanup first, then improving the
-implementation later?
+Ah no, I'm wrong here. Setting args.unreliable causes the notifier to
+return 0 instead of MMU_NOTIFIER_YOUNG_FAST.
+MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE is used for something else.
 
-Patch set looks nice and clean; previous versions did seem to leak too
-much arch/module details (or perhaps we were just bikeshedding too much
-;) - but the API first approach is nice.
-
-Looking forward to seeing this merged.
+The control flow of all this and naming of functions and macros is
+overall confusing. args.unreliable and
+MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE for one. Also I now realize
+kvm_arch_prepare/finish_bitmap_age() are used even when the bitmap is
+_not_ provided, so those names are also misleading.
 
