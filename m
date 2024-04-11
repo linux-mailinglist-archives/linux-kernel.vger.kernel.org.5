@@ -1,77 +1,95 @@
-Return-Path: <linux-kernel+bounces-139746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD9278A072D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:36:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9DE08A072F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:38:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 376DA289D7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 04:36:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36BAD1F255E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 04:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FFF9433D5;
-	Thu, 11 Apr 2024 04:36:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D462B13B5B0;
+	Thu, 11 Apr 2024 04:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="G7yUSt9f"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="LckDQ6qy";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="auCiEw45"
+Received: from fout2-smtp.messagingengine.com (fout2-smtp.messagingengine.com [103.168.172.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165B92A1DC
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 04:36:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84B271FBB;
+	Thu, 11 Apr 2024 04:38:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712810170; cv=none; b=FzK7U4N48XQSCgwLg2bQGalC0HUCxdjsHWabfKBCYmKMoE7m4GURswGZQmdcG9oMXwza0iUtOmq+P2cyYEbu7yVo6WXdywo3vkiOoa6ZAwqIL+H/aIP4Eufp3WFLSRa8inrvAMsB1zEnHCQua1zldUNtMESzk6uHFw0xOqBQNM8=
+	t=1712810321; cv=none; b=Hid/eUbnfIZNL29wF54BhKOcLtjSjkSk/6o+w9l/nQpien9SeLAmrqLn75UazZ+u5wkS8fGeb4ZV3AOARvDZEqL5Ri0uNtcaICgxHlMKfubR52/7xsT3z1tYmgYHA0uhRr9kFUEhkGYaBpJhYyUKxFerk1MN2k/MRACS0RLXTPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712810170; c=relaxed/simple;
-	bh=o/+uwXlHAOmhl3WAKzDaiuVdwVeGNqrRyUVMQyyK9YU=;
+	s=arc-20240116; t=1712810321; c=relaxed/simple;
+	bh=2QJOCBKT8uqHKXrNRwNb+d1lBDm1dAOBkKyWx0fCqS8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MJN0osCiIpoaSY8jwW3OCE93ggDdLrBIJKYckm6zNnHLzrCqyrpgeofcdva0P2jgWxy9rLHUrvrU8rHiahdIHA45TJc/an0MTBkkbTyFLO7X0YHEBgiMEYetZI+gwY/LILmg6tmVnMGNcxC4WhRJZp8hKoLhUkBVjVFwvZkY3PU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=G7yUSt9f; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712810169; x=1744346169;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=o/+uwXlHAOmhl3WAKzDaiuVdwVeGNqrRyUVMQyyK9YU=;
-  b=G7yUSt9fH7BXAzyi28P5WVtN0WwDLqSFSf0d2E81aOM38Cy+MvUBcmUe
-   CaQB03CwaYQhLCgL15BXeQNbq4pONMCJKG/vDrhIHfx5Ylm0EK8dnUrwH
-   KuYCLZtjoMckDcGQAjbVc079IlZHr1xOpE13e8Ad07r85m296QR5rKq2I
-   Ul1bmWccUfDburgYyTqQvw9v3Z7YhHM0zqG4dIILpUIaYrwn9Q/CwuZbm
-   F9iOJQ7u+VZFq/BpSLUmbYCOLlzyc0rXpnbCSdmdkZstb7ZLgbC2CcTQ5
-   RcuKTcLTxAqhxf3GrDMMe3Xy6QbjL1ZFAb55NdqmwzGA83CM6Xq9K2c3D
-   A==;
-X-CSE-ConnectionGUID: cBh4rBAoRzub6DdftVlF+g==
-X-CSE-MsgGUID: B0LhOO89Q5qG6hRvKsJnhQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="18913202"
-X-IronPort-AV: E=Sophos;i="6.07,192,1708416000"; 
-   d="scan'208";a="18913202"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 21:36:09 -0700
-X-CSE-ConnectionGUID: sDkHX2rWTVew/QfTWLUgGQ==
-X-CSE-MsgGUID: Pce/SbP3T3C4/uW44S2Mtg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,192,1708416000"; 
-   d="scan'208";a="20783082"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 10 Apr 2024 21:36:06 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rumAN-0008Do-2N;
-	Thu, 11 Apr 2024 04:36:03 +0000
-Date: Thu, 11 Apr 2024 12:36:03 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jinglin Wen <jinglin.wen@shingroup.cn>, palmer@dabbelt.com
-Cc: oe-kbuild-all@lists.linux.dev, paul.walmsley@sifive.com,
-	aou@eecs.berkeley.edu, gregkh@linuxfoundation.org,
-	atishp@rivosinc.com, linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Jinglin Wen <jinglin.wen@shingroup.cn>
-Subject: Re: [PATCH 1/3] riscv: Support for early console.
-Message-ID: <202404111237.OOIpC9KS-lkp@intel.com>
-References: <20240410063432.23058-2-jinglin.wen@shingroup.cn>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NN/EQgmsGNMDWNxUjVTHIzJCQilr2r8Ti3nXMvjfsiig4ZYArQ4aZ+/obJjHX9nT/mF/tWSFMEj08IFudO9qEa0qriaYOkkRR5yeToBFA+Hv6qWzoiEZVPDBZZU3TbNyDxuAbRueE/Rj3VZ6CBUBs6G2/vGR5z7PwcPbkFf0vaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=LckDQ6qy; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=auCiEw45; arc=none smtp.client-ip=103.168.172.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 81C371380228;
+	Thu, 11 Apr 2024 00:38:38 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Thu, 11 Apr 2024 00:38:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1712810318; x=1712896718; bh=NCWvNXzLHm
+	JWqElu8lx/O63cakNTW+/sBJ2+LV2F62g=; b=LckDQ6qyi8k3r17YxgtthBV2OG
+	uLt4GlPjsSkUw/pvPVBAL7mBUxe2t8KFfdG+RLqEA6caOKLT5OdZuxpt9hBjTM4W
+	6lh4ZiRcmOUe9sKWWpp267iXgFrVlcAQ+40mw+mNWmq3DJp8u1kfk/0ypwQcoQpt
+	+JbbfEo/t6plqBxmoIy6g2ksPM5DC6P74BoGN+KHvBIFB2peQO3WpF6JOpgZ+yss
+	xYECwuGaDHxIqsk14CAR1jrSAbMYkcDNYYr19quX3BgEhO7beJcrTAGrHGA732ZJ
+	MROYGElzOhiYhDAQIJovP1Jcc2Rz7bc6nfioEHoIC5M3mQpXLpEQDNicvpBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1712810318; x=1712896718; bh=NCWvNXzLHmJWqElu8lx/O63cakNT
+	W+/sBJ2+LV2F62g=; b=auCiEw45hGmBwqglKrV/A5NhHYXPQ64N1+sWQMnW1H8m
+	9B5A0z+lYw1RxPR/X1ZzTGYVms1gSRj3e9M/veChMMQvr+I2JFEzW7dgTTKo+Xa+
+	dVb9qZ25GeFlhtfLzP9LO+/WMw56Q8xUPp60/civ+hYOUDKDnmhCFzuysyAw/GzK
+	4Nc+tr76d7WV6b7m2v1hGOHW8nR7NfBgH+9XcKiDIdIES4GbQPhpVDz4l9tRq9h+
+	knQDdlwIW8sbI/hKdGcaD8wkZRskflsm0w6m6bBpCCyeIADoUGsrPnRuiEPonzbS
+	t/X26uCNyLv8cF3aW2FZwiZWWWA4bkWzdTnhH9plhg==
+X-ME-Sender: <xms:TWkXZup1WPQF8NESUunqMhVl6WTKDaGcvFdeK_xgJCvwxL-Ww_MfRg>
+    <xme:TWkXZsqMSGslhaE88ZDnLEgKIIZHQZtEXYbGx-7ZDBYWYsrVYI9wzwTDBU-SucIgO
+    viotL8BHOCLfA>
+X-ME-Received: <xmr:TWkXZjPG-cnjF0bJNFyMCU7W3YWJM9ArHtT6B1Ho19DLdWq7-UjuNAKo8uY-6KyZE5unEkNEsC3PVom7kcAF8QAib5BSenOHVi37mw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehjedgkeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
+    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:TWkXZt6hUp1_fOVYtYDpJuVE4ct5R5Luwiuxow5yz_wEaKdHIekOCQ>
+    <xmx:TWkXZt4jiDICQM824uLBeKXZW5VjUWpNq2pDUU63wco0dfHTh2snCA>
+    <xmx:TWkXZthVv-mprY9qZBIXjFw4zV9koCkY3VJeNnIe1hVzKP1lknf37w>
+    <xmx:TWkXZn4uVVMh6wfdZNSl_SyYioBfwJ0VhHtL5wyziUPv8czEkIIWbg>
+    <xmx:TmkXZqxp1_XJpk7qO4rAwpJo8UudWGXZ0XXZVxZ8h6lpCAPcDFFyZhVG>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 11 Apr 2024 00:38:37 -0400 (EDT)
+Date: Thu, 11 Apr 2024 06:38:36 +0200
+From: Greg KH <greg@kroah.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the tty tree with the tty.current
+ tree
+Message-ID: <2024041114-abide-ageless-d7d3@gregkh>
+References: <20240411135735.58de7090@canb.auug.org.au>
+ <20240411141711.63dbd8e9@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,42 +98,84 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240410063432.23058-2-jinglin.wen@shingroup.cn>
+In-Reply-To: <20240411141711.63dbd8e9@canb.auug.org.au>
 
-Hi Jinglin,
+On Thu, Apr 11, 2024 at 02:17:11PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> On Thu, 11 Apr 2024 13:57:35 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > Today's linux-next merge of the tty tree got a conflict in:
+> > 
+> >   drivers/tty/serial/serial_core.c
+> > 
+> > between commit:
+> > 
+> >   9cf7ea2eeb74 ("serial: core: Clearing the circular buffer before NULLifying it")
+> > 
+> > from the tty.current tree and commit:
+> > 
+> >   1788cf6a91d9 ("tty: serial: switch from circ_buf to kfifo")
+> > 
+> > from the tty tree.
+> > 
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> > 
+> > -- 
+> > Cheers,
+> > Stephen Rothwell
+> > 
+> > diff --cc drivers/tty/serial/serial_core.c
+> > index 2247efe97250,a78ded8c60b5..000000000000
+> > --- a/drivers/tty/serial/serial_core.c
+> > +++ b/drivers/tty/serial/serial_core.c
+> > @@@ -1788,9 -1773,9 +1773,10 @@@ static void uart_tty_port_shutdown(stru
+> >   	 * Free the transmit buffer.
+> >   	 */
+> >   	uart_port_lock_irq(uport);
+> >  +	uart_circ_clear(&state->xmit);
+> > - 	buf = state->xmit.buf;
+> > - 	state->xmit.buf = NULL;
+> > + 	buf = port->xmit_buf;
+> > + 	port->xmit_buf = NULL;
+> > + 	INIT_KFIFO(port->xmit_fifo);
+> >   	uart_port_unlock_irq(uport);
+> >   
+> >   	free_page((unsigned long)buf);
+> 
+> That didn't work :-(
+> 
+> So I have used the below resolution instead.
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc drivers/tty/serial/serial_core.c
+> index 2247efe97250,a78ded8c60b5..000000000000
+> --- a/drivers/tty/serial/serial_core.c
+> +++ b/drivers/tty/serial/serial_core.c
+> @@@ -1788,9 -1773,9 +1773,10 @@@ static void uart_tty_port_shutdown(stru
+>   	 * Free the transmit buffer.
+>   	 */
+>   	uart_port_lock_irq(uport);
+> - 	uart_circ_clear(&state->xmit);
+> - 	buf = state->xmit.buf;
+> - 	state->xmit.buf = NULL;
+> ++	kfifo_reset(&state->port.xmit_fifo);
+> + 	buf = port->xmit_buf;
+> + 	port->xmit_buf = NULL;
+> + 	INIT_KFIFO(port->xmit_fifo);
+>   	uart_port_unlock_irq(uport);
+>   
+>   	free_page((unsigned long)buf);
 
-kernel test robot noticed the following build warnings:
+Thank you for this, I will use it when the tty-linus changes are merged
+with Linus's tree.
 
-[auto build test WARNING on tty/tty-testing]
-[also build test WARNING on tty/tty-next tty/tty-linus linus/master v6.9-rc3 next-20240410]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Jinglin-Wen/riscv-Support-for-early-console/20240410-143840
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
-patch link:    https://lore.kernel.org/r/20240410063432.23058-2-jinglin.wen%40shingroup.cn
-patch subject: [PATCH 1/3] riscv: Support for early console.
-config: riscv-randconfig-r112-20240411 (https://download.01.org/0day-ci/archive/20240411/202404111237.OOIpC9KS-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 8b3b4a92adee40483c27f26c478a384cd69c6f05)
-reproduce: (https://download.01.org/0day-ci/archive/20240411/202404111237.OOIpC9KS-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404111237.OOIpC9KS-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> arch/riscv/kernel/early_console.c:13:6: sparse: sparse: symbol 'riscv_early_console_putc' was not declared. Should it be static?
-
-vim +/riscv_early_console_putc +13 arch/riscv/kernel/early_console.c
-
-    11	
-    12	/* interface for early console output characters */
-  > 13	void (*riscv_early_console_putc)(char c);
-    14	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+greg k-h
 
