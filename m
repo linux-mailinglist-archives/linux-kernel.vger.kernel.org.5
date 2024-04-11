@@ -1,124 +1,133 @@
-Return-Path: <linux-kernel+bounces-141461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 293928A1E8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:38:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B81748A1E92
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:39:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA8DD1F29DC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:38:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8CAE1C223E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA8F013AD0A;
-	Thu, 11 Apr 2024 18:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17C771798E;
+	Thu, 11 Apr 2024 18:16:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="X6SPhAzK"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NujZLe3A"
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3DA13A88D
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:14:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D27F168DD
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:16:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712859272; cv=none; b=fzF8hjXDa4K9OYn2zuMwfwSX//lq0X7nR0nbPsr9BrmHzuHMun79YMvoLOn4OS8qO4gEYpfDq71Lt42UXePAxnxK/9473317uWCRskEjB22wTMoOo2jfHd0CYIp4f4ctUyvwuSkIg4/b+rBHoI6WpeyDmSqRkNzKmZIOl7DFS+4=
+	t=1712859373; cv=none; b=Z3ADbgurrLgjGjt+PzjBAE+jVW114TyTKbmKl2lMXhFr2tnlnimQrraj9FfZW4PvbpGCNI7oIP6kRhQu5vGbUk7UWHVyIeHa4s4ZEBHKxAZV6GqCvIL7xh4KkHRWLikrHSYUHdr78TiIQ676esx4UxMH3IDyaxn10Vp6/zKrtyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712859272; c=relaxed/simple;
-	bh=DybY5geq/NnjXSSLgHJhlnzwn1nIcKVs1t5wzdMrvQQ=;
+	s=arc-20240116; t=1712859373; c=relaxed/simple;
+	bh=Ho5HKMrHsYHBj97jJ6q/xDBtZbPcTs+t1YmVTN+iWoU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=etKg9dT+8wkIC6ae8QqbwD6crQIBifTofxLYFEcZdxxwIWMFQaGrXvqn6GnI3BdBzIbA6QDK+4I27mrMZOlKdjMiMZTS5qxScPYrrRgjYWU0+3qFdLf5m2J74hp0Iwm2at/VrQf4C5TGgjlHcMixc1f/pLjUKbLFR1Dr0Fb3pbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=X6SPhAzK; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a5224dfa9adso21986366b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:14:30 -0700 (PDT)
+	 To:Cc:Content-Type; b=m8vMXwCxTjtCkJJcGfuAAXM2cn57TPfg+FgVsN1VyQ/1gsCQ7PZMC4lFOsmNCLTi1dzzquHn2S+4SlXyGWtJwRNZltKNyFdGYUt5K9v8sr38eRSk8sE8b75oM2C45VsNxR4dVPQQCE8rKtoL2spAWkrqkxnvtTc8jxSPQzYl6RA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NujZLe3A; arc=none smtp.client-ip=209.85.160.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-22a96054726so121694fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:16:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1712859269; x=1713464069; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZHBaBIUoFklBaMtTfic4+fLd2+2/fo4UaDmh0hhFoUI=;
-        b=X6SPhAzKn5otULOlWhcCPrOp1t7ioc+elZJIRY+DlTa6eieWZAD6qM22+u0uv4rBQ8
-         M3YCkYEuQ+oPWjlrQH7VvMPbPfuP0FvDT/4/8v6Y0DGOSJ/HRfJtkriA0D8LRIyY1ISp
-         5u5ANv6MeZvdQTQbzVbsws6hPsVLkFbVXUlns=
+        d=gmail.com; s=20230601; t=1712859371; x=1713464171; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TDS6c2ghnYUkSwWbtZftPqPTODtRchsS8qiLJfzkVWw=;
+        b=NujZLe3AkI0Jut6UPlGMvxMlB0yOalI9cFij1lYoQ2fsJWCOC6V2GA33m0l2IsOJnY
+         gwrwHh1B/7qPP24wpeZItgKIGP7plj/nO9kB4w4XSxdVoCFy4/voQWLm3tcdd2DUK6Qs
+         O7Eie3PE1pKilAdH/+8NU4C67yO4subQ2FUWYlq9cmdj97phaFmYZCosA374aL01oG0V
+         XFb07kcylFvMeC3jOrqG6yQbEK93F/AFFUSY5fR5V+nUGXNug/FkEd1zsKwnb6Mc9yEb
+         sT2df3QFTGIpJ2AHKIxL2kwJzsUX41SctfsYij6d1EBsnIIkO6znU/odbBEp1PGJ3CBS
+         2mzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712859269; x=1713464069;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZHBaBIUoFklBaMtTfic4+fLd2+2/fo4UaDmh0hhFoUI=;
-        b=gTbDyU+QCWNmRRZPvAvxp/BRltoyXq7T0ESz6goB2AbDgzSzX1Nnpnf8+nyYXWhygm
-         xkuK9EL5QsHLkCVknM6cyVcczG5Mn70G8I3rQltfge7pjZ/DoJKx028JVkgQAs2AmMMy
-         O3bVrO39LeHrpaAXB8pXgUfoRxCG/wphcAVyhLicwQ8HIJoOZWhs1ZLCVUobZKXpp4s0
-         4tv7OheklYS0DGlOAP+9Kp+p3s5dVyBVA7s8h0FlL+xBqrE0iaqNTDIMXq3XwF5VCf2K
-         SP2Lj77F7fKEMCikw5CkxBz3t73CDqh8js8wVwAYLHU3ENn9DwbqJqKNOkuTqyxIYaO0
-         ya5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWlt2vPRaiyVQcSMagCRM7TIgHUxEXY2h4qAZ0g3AsHIXb+HQ+XWlJaegrh7Abng2XaOkC0RZ2BEcQj4dWCNlBp/mt8L6JESU9/HbX2
-X-Gm-Message-State: AOJu0YyqN8uwSu70XFfpEa8lvHGabrohkfXS4O1yywHtcx13zd+XTGoE
-	V/8J6a+byocpt1huOZH7+nsiNjSMfZFQgSePrQjR9yt/Io2cgNKX/EWV43ecnyrk/lB8AR6K5n7
-	S/IndEg==
-X-Google-Smtp-Source: AGHT+IGLk7zSxboT92DAg9wuGbVtmG2/phTjh2hGXmckKUqMGHYmB5pa6UUIxbXEhQRvehcBKEcguQ==
-X-Received: by 2002:a17:906:c79a:b0:a51:e188:bced with SMTP id cw26-20020a170906c79a00b00a51e188bcedmr2206786ejb.37.1712859264083;
-        Thu, 11 Apr 2024 11:14:24 -0700 (PDT)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
-        by smtp.gmail.com with ESMTPSA id a10-20020a170906468a00b00a522d350674sm291951ejr.184.2024.04.11.11.14.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 11:14:23 -0700 (PDT)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a5224dfa9adso21972566b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:14:23 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWU61ELjxQk3mczlbo/iXQBBOuRRcRILMWvy3Yfnrr+dIvK1cWjcCAXFIWiErYuVGRln6vXPxnKVRGKkQWIyCLyrU8ltEcZ0AAWAn3O
-X-Received: by 2002:a17:907:9450:b0:a52:1fe5:d1bb with SMTP id
- dl16-20020a170907945000b00a521fe5d1bbmr2535657ejc.11.1712859249933; Thu, 11
- Apr 2024 11:14:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712859371; x=1713464171;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TDS6c2ghnYUkSwWbtZftPqPTODtRchsS8qiLJfzkVWw=;
+        b=BaeehsvwimUKzR9gW9NTBJywbrfHPgrqDnWywol5RJOYrrISzXSeYri26PqfPcHXq3
+         a61425dPPBV5XriVEs9LnNaqcrqhc7974QeEfBKWrR1y+z+rNbaMKu39oRhUsxBcKR3P
+         233LoEacIg0rDNRORv+d8SBVRY7XZrBhNTCNrnjccCGCF8yG6yWHJSNwK+tIdUGORZuc
+         3IGcYcuX3lzkDWsdj531EU8Ylb7Oc8AwNhuARhCWj0ZHu/ur69vsir5gn31YyXk3LDQF
+         EH03A45a0UDmXnPq0sjgKUMzK/NFfSJy4w8QtKZebp5LODRqgEPlKn4LmtX6AscNhDqI
+         xD0g==
+X-Forwarded-Encrypted: i=1; AJvYcCWvdYjVmokRecUERvJVk9uGoTVHXanVvXkqKJZgqvyX9n0t1BMJsOAtwfwI1BqaAMGNzSP59BpvebqoD1IlQ/p4ht48Pp0LtOq81wMi
+X-Gm-Message-State: AOJu0Yw+Fh0xdEEmpwdK6FfIQ9tYQoIF8xQohDbjuP9eBgzb23C6oBpS
+	VN2piXaFKJc4VC0tBkMEXj9vRl7ynC23GpK8+qLA78cLQ8Y04pbyCbAoDdUBl4GSpXr+sAk0+aC
+	G5bwYWOkDRSvHRkoseST+Yd5bfA==
+X-Google-Smtp-Source: AGHT+IF2hVKasS43gNxPvK3Yxqe3GnEmv7WnsgCokhD0KHgBvCacyvI7d2RHHBMtMHdJooKADEYd0Vu236vMpiguadg=
+X-Received: by 2002:a05:6871:8795:b0:22a:dc7:7d64 with SMTP id
+ td21-20020a056871879500b0022a0dc77d64mr267337oab.10.1712859371153; Thu, 11
+ Apr 2024 11:16:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411001012.12513-1-torvalds@linux-foundation.org>
- <CAHk-=wiaoij30cnx=jfvg=Br3YTxhQjp4VWRc6=xYE2=+EVRPg@mail.gmail.com>
- <20240411-alben-kocht-219170e9dc99@brauner> <CAHk-=wjrPDx=f5OSnQVbbJ4id6SZk-exB1VW9Uz3R7rKFvTQeQ@mail.gmail.com>
- <CABe3_aGbsPHY9Z5B9WyVWakeWFtief4DpBrDxUiD00qk1irMrg@mail.gmail.com>
- <CABe3_aGGf7kb97gE4FdGmT79Kh5OhbB_2Hqt898WZ+4XGg6j4Q@mail.gmail.com> <CABe3_aE_quPE0zKe-p11DF1rBx-+ecJKORY=96WyJ_b+dbxL9A@mail.gmail.com>
-In-Reply-To: <CABe3_aE_quPE0zKe-p11DF1rBx-+ecJKORY=96WyJ_b+dbxL9A@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 11 Apr 2024 11:13:53 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjuzUTH0ZiPe0dAZ4rcVeNoJxhK8Hh_WRBY-ZqM-pGBqg@mail.gmail.com>
-Message-ID: <CAHk-=wjuzUTH0ZiPe0dAZ4rcVeNoJxhK8Hh_WRBY-ZqM-pGBqg@mail.gmail.com>
-Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() - requirements
-To: Charles Mirabile <cmirabil@redhat.com>
-Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>
+References: <20240410194850.39994-1-jason.andryuk@amd.com> <20240410194850.39994-3-jason.andryuk@amd.com>
+ <CAMzpN2h6S69bOLXCUhmkVJErvoKxq-wPmfoaqR7eGHYLgirn+Q@mail.gmail.com> <74465ac2-0060-4047-97d7-acadcdff4cd4@amd.com>
+In-Reply-To: <74465ac2-0060-4047-97d7-acadcdff4cd4@amd.com>
+From: Brian Gerst <brgerst@gmail.com>
+Date: Thu, 11 Apr 2024 14:15:58 -0400
+Message-ID: <CAMzpN2iCYXuQXXHmg9qevJXDuzvxDF9L=Vw+w2ZAaPk6vZZFDQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] x86/pvh: Make PVH entrypoint PIC for x86-64
+To: Jason Andryuk <jason.andryuk@amd.com>
+Cc: Juergen Gross <jgross@suse.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Stefano Stabellini <sstabellini@kernel.org>, 
+	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 11 Apr 2024 at 10:35, Charles Mirabile <cmirabil@redhat.com> wrote:
+On Thu, Apr 11, 2024 at 11:26=E2=80=AFAM Jason Andryuk <jason.andryuk@amd.c=
+om> wrote:
 >
-> And a slightly dubious addition to bypass these checks for tmpfiles
-> across the board.
+> On 2024-04-10 17:00, Brian Gerst wrote:
+> > On Wed, Apr 10, 2024 at 3:50=E2=80=AFPM Jason Andryuk <jason.andryuk@am=
+d.com> wrote:
+>
+> >>          /* 64-bit entry point. */
+> >>          .code64
+> >>   1:
+> >> +       UNWIND_HINT_END_OF_STACK
+> >> +
+> >>          /* Set base address in stack canary descriptor. */
+> >>          mov $MSR_GS_BASE,%ecx
+> >> -       mov $_pa(canary), %eax
+> >> +       leal rva(canary)(%ebp), %eax
+> >
+> > Since this is in 64-bit mode, RIP-relative addressing can be used.
+> >
+> >>          xor %edx, %edx
+> >>          wrmsr
+> >>
+> >>          call xen_prepare_pvh
+> >>
+> >>          /* startup_64 expects boot_params in %rsi. */
+> >> -       mov $_pa(pvh_bootparams), %rsi
+> >> -       mov $_pa(startup_64), %rax
+> >> +       lea rva(pvh_bootparams)(%ebp), %rsi
+> >> +       lea rva(startup_64)(%ebp), %rax
+> >
+> > RIP-relative here too.
+>
+> Yes, thanks for catching that.  With the RIP-relative conversion, there
+> is now:
+> vmlinux.o: warning: objtool: pvh_start_xen+0x10d: relocation to !ENDBR:
+> startup_64+0x0
+>
+> I guess RIP-relative made it visible.  That can be quieted by adding
+> ANNOTATE_NOENDBR to startup_64.
 
-Does this make sense?
+Change it to a direct jump, since branches are always RIP-relative.
 
-I 100% agree that one of the primary reasons why people want flink()
-is that "open tmpfile, finalize contents and permissions, then link
-the final result into the filesystem".
-
-But I would expect that the "same credentials as open" check is the
-one that really matters.
-
-And __O_TMPFILE is just a special case that might not even be used -
-it's entirely possible to just do the same with a real file (ie
-non-O_TMPFILE) and link it in place and remove the original.
-
-Not to mention that ->tmpfile() isn't necessarily even available, so
-the whole concept of "use O_TMPFILE and then linkat" is actually
-broken. It *has* to be able to fall back to a regular file to work at
-all on NFS.
-
-So while I understand your motivation, I actually think it's actively
-wrong to special-case __O_TMPFILE, because it encourages a pattern
-that is bad.
-
-                    Linus
+Brian Gerst
 
