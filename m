@@ -1,147 +1,139 @@
-Return-Path: <linux-kernel+bounces-141360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7461C8A1DFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:23:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12D618A1D42
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:07:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D1ECB2B2E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:06:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A79E21F22D39
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:07:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84DF502BA;
-	Thu, 11 Apr 2024 16:55:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C4A31635C6;
+	Thu, 11 Apr 2024 16:56:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="k7UpgUEn";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aPpPeN85"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CEmduPtL"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C53B4C629
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:55:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18B4C4C629
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:55:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712854542; cv=none; b=uBx8jIF5HW1FFAAVRY/i7hL/7X0KdUZmORyLeW/G8EPxEk9jkGF/CQZku9aTFAhQbMFq0vbJsgnSZtEs1xqRd1VS83rWE7ApmnMh3E2/id7k5bSxcvg/XORFykwGLMD87Ps0/6PL1h3+AB4Hx0LzyLTaK2RcpFHJ/kAivB0/5xU=
+	t=1712854562; cv=none; b=ZhC7bLXs24K6XKpkmAVCMryUz+q3OJTNl3Yuc61JOd+2L21sgBpxICNc0qHpIaFrZNj4TLDLO9Gc/hGq7cXgXC4M/Es6GjICPf0BAJqaFJYWSlQc8C6rCzDDDqjbTXwmOOaPKj6Iyl0nPToqxuqETjJpj4Kre6R18oaUtyCTiAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712854542; c=relaxed/simple;
-	bh=aryO/c1uQgmEOTObfNrdfHzECktcnoGdCFewhnZiGzM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QsUak2C/QLvHR2A+iLs37LjEwt4ypS3xHkEijIbv5wMyOEumIk/6x0C++4MvdVgx0QkPvXafb0LWXt2AKUAEkqOEzwCUlbhLVFcXtMgklCvQyvclkOMdYJtNh30gDPMMfOPQH6O2+4E6df9TmxEraAU//NXAzmMksCsdp0E5Z00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=k7UpgUEn; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=aPpPeN85; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712854539;
+	s=arc-20240116; t=1712854562; c=relaxed/simple;
+	bh=mdyviDc2SZiHERUxq8FwGAUG2lksvejg1L3R6/TQq04=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RtDtQCcW8mL9j7E12zPORBPTtFDS8G+kizLtnm9ta1vfDouucSoXyUYI/p4+LoNxwgxpF2z/PVAEM1iEUTJTF578e+nR5OpQ6JUu3f/1tBQc1g1AjQ/Gd4lbHgWiL9IPi4nKBNuTscEDtUskLSFOmXMeE8jmNCIKT8o94tvNebk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CEmduPtL; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712854559;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=TsFOOJcOHJ7plsoN3ZMIm7IsVte2hrryLXZRjUEr1RQ=;
-	b=k7UpgUEn0wKgyPCHTVl9AdGUS1mZ8RZtbsXU+Oo9fjYrectt91xIn2uJTXMrUnGCLqiQzS
-	G3rr2kGJQT1g0UHhhTwfrP5NMo6YYIj6htcACHGP+/gVx0hqudsBG7DpxSaBKnXefxjSc9
-	+ElnAW3k4ku9u29lTzC6PnvHnRktxJIvyuia+zA7knFKP1/BWyuCIoCEvNODVr+y3ziS9f
-	Nvctid1B8O6rWMFcTr++i1RenI25EY/4Jy5XKeuiKbOE7zCotX4CFz+QQ3cFUE0ybSJVUc
-	OoL35pTqFb5TG5aXXOW0yGMi12WCapT8HmBvKY4aigIA3kMfLFD02hyyoEQryQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712854539;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=TsFOOJcOHJ7plsoN3ZMIm7IsVte2hrryLXZRjUEr1RQ=;
-	b=aPpPeN85qog8fqmo/cs6Sk8O76+uFImdLyx0TCkKcZCavesdNjxOd9Fhc7+4N/5Rj+RE09
-	afEAKxCax8iZHSCA==
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: x86@kernel.org
-Subject: [PATCH] x86/cpu/amd: Move TOPOEXT enablement into the topology parser
-Date: Thu, 11 Apr 2024 18:55:38 +0200
-Message-ID: <878r1j260l.ffs@tglx>
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zMWXkXzR0H7lOgn05ANda8bjR25lnib+pFQqcdAFtGw=;
+	b=CEmduPtL3NP5XNR+oFsDnVOJaZoVwlx7dy2SpDMkrYd+ByLjBPDNySLL9ouFDlwrBxagu3
+	BJkyt5CIUk3SQVwtjYimIGEWuF/N7Omn/wmbfHopdQCiAeWPKGQeIWT7U9sxB+ZjvYoz0W
+	M/50ajYZgsI8RUEvSFEfgE31ub9wAJI=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-467-8HV4cHS-PLCF5pmO56dURQ-1; Thu, 11 Apr 2024 12:55:57 -0400
+X-MC-Unique: 8HV4cHS-PLCF5pmO56dURQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-343e46df264so3569283f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:55:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712854557; x=1713459357;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zMWXkXzR0H7lOgn05ANda8bjR25lnib+pFQqcdAFtGw=;
+        b=OfwUZaBaG+0xpdcbEPD40G9KUiXWm83MkNArOXIs9Ae8GRsgGmfAPzG3i3H0+fXZaK
+         MpB3h37qYUKfarnDEcsb2usBC7SGQ4nGu34xQkLmr8PhRiZosxkoW4w6fwqy/1VMuZQH
+         VWAPGgF3qVo2pMSEqb7Se2/cikEe44P6CizUsb5vXlNUm/cFG87ONqIpmHAKdmda6fP1
+         Kb4HrvVctEsXO/N4MS3iaOoXc5DDt/4C/GX1GE2BeWi6Q/Z9LZZ6MAxHGuCY2Rh8dNLe
+         m2edns/12tKo3UmjmBsXNAVfFjvy3zJji1zTg3GoPNkYGCXG7bRYYlwd23d92HqSMmOi
+         jBRA==
+X-Gm-Message-State: AOJu0YyqzpoG59YF5GtMdeBPIMMtTtI+CCIecCUiJ152FVLCDHPx7oFj
+	vaZ3Bf71qXO9vb4M2FuRwfZoy06bvrOnH09rtGYm4yzyqglELDhCKkpSN8pfLrDicGPuD+MVtc1
+	weYWg7l+G+//uVobLLrgNQ/ECNq2EjnZf0NDgkv9GOgo3eybc1MV80KCykWYF7GV69nxZciZUaA
+	/4C6ZRtg+zqlOp6uhfbHPCH6WxYynL/gwnKupx
+X-Received: by 2002:a5d:5143:0:b0:346:67fd:beeb with SMTP id u3-20020a5d5143000000b0034667fdbeebmr125061wrt.13.1712854556785;
+        Thu, 11 Apr 2024 09:55:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGD8Twrk+pSap7dr/hOyNv9dE7sPb5xWfugil3Ej7FN6UJvArBpNQmyBrQbHxp3h5Btn4P+dbeRSa2EBSrKO98=
+X-Received: by 2002:a5d:5143:0:b0:346:67fd:beeb with SMTP id
+ u3-20020a5d5143000000b0034667fdbeebmr125049wrt.13.1712854556481; Thu, 11 Apr
+ 2024 09:55:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240405115815.3226315-1-pbonzini@redhat.com> <20240405115815.3226315-2-pbonzini@redhat.com>
+ <ZhP3hDhe2Qwo9oCL@x1n>
+In-Reply-To: <ZhP3hDhe2Qwo9oCL@x1n>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Thu, 11 Apr 2024 18:55:44 +0200
+Message-ID: <CABgObfYwwXy9gQap-PJyOrVCcUr-VfK90AKNaRe0VO-G00G8SQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] KVM: delete .change_pte MMU notifier callback
+To: Peter Xu <peterx@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
+	Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Nicholas Piggin <npiggin@gmail.com>, 
+	Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, 
+	Sean Christopherson <seanjc@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	David Hildenbrand <david@redhat.com>, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org, 
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, Andrea Arcangeli <aarcange@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The topology rework missed that early_init_amd() tries to re-enable the
-Topology Extensions when the BIOS disabled them.
+On Mon, Apr 8, 2024 at 3:56=E2=80=AFPM Peter Xu <peterx@redhat.com> wrote:
+> Paolo,
+>
+> I may miss a bunch of details here (as I still remember some change_pte
+> patches previously on the list..), however not sure whether we considered
+> enable it?  Asked because I remember Andrea used to have a custom tree
+> maintaining that part:
+>
+> https://github.com/aagit/aa/commit/c761078df7a77d13ddfaeebe56a0f4bc128b19=
+68
 
-The new parser is invoked before early_init_amd() so the re-enable attempt
-happens too late.
+The patch enables it only for KSM, so it would still require a bunch
+of cleanups, for example I also would still use set_pte_at() in all
+the places that are not KSM. This would at least fix the issue with
+the poor documentation of where to use set_pte_at_notify() vs
+set_pte_at().
 
-Move it into the AMD specific topology parser code where it belongs.
+With regard to the implementation, I like the idea of disabling the
+invalidation on the MMU notifier side, but I would rather have
+MMU_NOTIFIER_CHANGE_PTE as a separate field in the range instead of
+overloading the event field.
 
-Fixes: f7fb3b2dd92c ("x86/cpu: Provide an AMD/HYGON specific topology parser")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/kernel/cpu/amd.c          |   15 ---------------
- arch/x86/kernel/cpu/topology_amd.c |   21 +++++++++++++++++++++
- 2 files changed, 21 insertions(+), 15 deletions(-)
+> Maybe it can't be enabled for some reason that I overlooked in the curren=
+t
+> tree, or we just decided to not to?
 
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -535,7 +535,6 @@ static void early_detect_mem_encrypt(str
- 
- static void early_init_amd(struct cpuinfo_x86 *c)
- {
--	u64 value;
- 	u32 dummy;
- 
- 	if (c->x86 >= 0xf)
-@@ -603,20 +602,6 @@ static void early_init_amd(struct cpuinf
- 
- 	early_detect_mem_encrypt(c);
- 
--	/* Re-enable TopologyExtensions if switched off by BIOS */
--	if (c->x86 == 0x15 &&
--	    (c->x86_model >= 0x10 && c->x86_model <= 0x6f) &&
--	    !cpu_has(c, X86_FEATURE_TOPOEXT)) {
--
--		if (msr_set_bit(0xc0011005, 54) > 0) {
--			rdmsrl(0xc0011005, value);
--			if (value & BIT_64(54)) {
--				set_cpu_cap(c, X86_FEATURE_TOPOEXT);
--				pr_info_once(FW_INFO "CPU: Re-enabling disabled Topology Extensions Support.\n");
--			}
--		}
--	}
--
- 	if (!cpu_has(c, X86_FEATURE_HYPERVISOR) && !cpu_has(c, X86_FEATURE_IBPB_BRTYPE)) {
- 		if (c->x86 == 0x17 && boot_cpu_has(X86_FEATURE_AMD_IBPB))
- 			setup_force_cpu_cap(X86_FEATURE_IBPB_BRTYPE);
---- a/arch/x86/kernel/cpu/topology_amd.c
-+++ b/arch/x86/kernel/cpu/topology_amd.c
-@@ -147,6 +147,26 @@ static void legacy_set_llc(struct topo_s
- 	tscan->c->topo.llc_id = apicid >> tscan->dom_shifts[TOPO_CORE_DOMAIN];
- }
- 
-+static void topoext_fixup(struct topo_scan *tscan)
-+{
-+	struct cpuinfo_x86 *c = tscan->c;
-+	u64 msrval;
-+
-+	/* Try to re-enable TopologyExtensions if switched off by BIOS */
-+	if (cpu_has(c, X86_FEATURE_TOPOEXT) || c->x86_vendor != X86_VENDOR_AMD ||
-+	    c->x86 != 0x15 || c->x86_model < 0x10 || c->x86_model > 0x6f)
-+		return;
-+
-+	if (msr_set_bit(0xc0011005, 54) <= 0)
-+		return;
-+
-+	rdmsrl(0xc0011005, msrval);
-+	if (msrval & BIT_64(54)) {
-+		set_cpu_cap(c, X86_FEATURE_TOPOEXT);
-+		pr_info_once(FW_INFO "CPU: Re-enabling disabled Topology Extensions Support.\n");
-+	}
-+}
-+
- static void parse_topology_amd(struct topo_scan *tscan)
- {
- 	bool has_0xb = false;
-@@ -176,6 +196,7 @@ static void parse_topology_amd(struct to
- void cpu_parse_topology_amd(struct topo_scan *tscan)
- {
- 	tscan->amd_nodes_per_pkg = 1;
-+	topoext_fixup(tscan);
- 	parse_topology_amd(tscan);
- 
- 	if (tscan->amd_nodes_per_pkg > 1)
+I have just learnt about the patch, nobody had ever mentioned it even
+though it's almost 2 years old... It's a lot of code though and no one
+has ever reported an issue for over 10 years, so I think it's easiest
+to just rip the code out.
+
+Paolo
+
+> Thanks,
+>
+> --
+> Peter Xu
+>
+
 
