@@ -1,118 +1,202 @@
-Return-Path: <linux-kernel+bounces-140447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05A118A14C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:39:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16D588A14CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:39:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64651B258BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:39:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BB9A1F23D0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:39:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EF021E4A0;
-	Thu, 11 Apr 2024 12:39:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8060D38F84;
+	Thu, 11 Apr 2024 12:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VJLP11s6"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WfwX59yM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78AFD5382
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:39:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 889081E4A0;
+	Thu, 11 Apr 2024 12:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712839143; cv=none; b=RJ7/dNTPeS46bZvlL7cC7qBTzQFia0MHYZCTOEZl7hDH/77juZ55BXA1V18knQtB4hj8rUjGa6DTzci9ckFp/ep8uIIsbIkV52VZdyWPIte9XRGUofzF1WDHFUT3x1sgeKQfgkAFhwVehWMmGUAXBEmBU9jNYZgkGalYw1rFoNc=
+	t=1712839159; cv=none; b=P7jMyAFtI/pYFLVn+9/eKZOPA9Pp9GywsD/jHkSQ2PUiS8oZdWVdkv1G5chO1F19yYoAYuOktdtPgXuEUs+zVXbeuul/W2gYIPVR6TmQYZtVKnHXQdKxU4DK50J99w+UrPAgFNPRPkVzFjltsU5sfY0M3GS716VTxR8uq/ql4Pc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712839143; c=relaxed/simple;
-	bh=+uVP9jm5OMN6jCpq6EPFPAQTk7vKRlcxoJx2hqFB2pg=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=HXej3r+2lBqQQntlRuX5K4iFwUUQnivuJQh3tZ7HZyt9grEw1SmB0A24prv7jSjO/kKpLC978vNmgXHQj4lSVtLi6wyI5TFfogpz9n3aO+KD8XLOS0W1aLVBslEdxfVW1mTbeh4LbBSJSA6PElmsdRWh2VQhm64tT9XO9dCv7UI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VJLP11s6; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712839143; x=1744375143;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+uVP9jm5OMN6jCpq6EPFPAQTk7vKRlcxoJx2hqFB2pg=;
-  b=VJLP11s6n6VuVcgpeeFXwikcYOv39b5m6592dGoW5suDfbFCh2A4lmFy
-   PHXXN/8gR0qGL19oatwOjr1s/cN7F6kZrKFdQBPo002QCRgTAG2SHNLyw
-   xH57BJCizAMosHN+HkkYGC/6EkeAveLpphh8YSAnUWP9cPhFMmnTVWNAj
-   PnfBNpEUZv0bsSLvtghFZJsm2gNyayleSZIeOamXeE9Nnvob1x8Sm+UJk
-   bA8VsHqgxgpZ1xuyW7YwpjrTKpAt8y6+aKhKZdm7+FgruA7PhRdLDtY9M
-   GyK0Y97MkLHGY5OTRvDLIWtwyYyJ4rXkTQ3uOqsR1vOBFsYEZgI+sxOOj
-   Q==;
-X-CSE-ConnectionGUID: Sm6VI1ZTQ/WdlxaTyCznvQ==
-X-CSE-MsgGUID: Px+ehQ4MTMOoEiOYgV2k8A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="19636332"
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="19636332"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 05:39:02 -0700
-X-CSE-ConnectionGUID: zhKQjPKeQuqTfbEqQTv+Fw==
-X-CSE-MsgGUID: FRgzNuerR1GU8QertMhZLg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="25363380"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.124.237.86]) ([10.124.237.86])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 05:39:00 -0700
-Message-ID: <40b32537-b2c3-450a-866a-82cf4686057a@linux.intel.com>
-Date: Thu, 11 Apr 2024 20:38:57 +0800
+	s=arc-20240116; t=1712839159; c=relaxed/simple;
+	bh=kzcjv8gmNpZtAiYk2xJYEcr+JLyXL9rAALV5gNvHuVM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=L6p5pMnvLBkXTrN8ElhiOMDeZpnotlPHuXsUueUme2AZ1VSLH3mLXZ7tK1IeRdX2mtOfIZ51+9TurHeICaXQGHHYwzC6cMjw0ZWl111Jk6niIWT7d4o9WRw7UUei1kQRjuTZc7uUx3zjZdkmFckC+Ijtag5cCVcJneVvYGNbgMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WfwX59yM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 100DCC433C7;
+	Thu, 11 Apr 2024 12:39:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712839159;
+	bh=kzcjv8gmNpZtAiYk2xJYEcr+JLyXL9rAALV5gNvHuVM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=WfwX59yMLWiCJvrRPA5bcIh6V0ewqtK6+e8oYkw9Dpoq3tHpVf4o0lLaA6was3uLL
+	 poLPAXCuUuzNI1uiV3b2Q62RyMZ3WzJ5+GToGIQMOLDEguO9loiBfEgEtpX4BFgMzf
+	 FU6ZSQHaxXNHYs3JTveKjTqmhKYlljX8L9atvgPqGTmmyQDxgNq4gpiYnOONkrp7kQ
+	 L4+eQ5V5ns8mjSLTCH5YE4SSeyTIQccryVcGAIDQSDXPXIZeZaCtAKVEzoZ1udf+pg
+	 rdkeoBVwA/A+uPcr7jKvO+gXrpMBRtCml7FwSgLPe+562zKqgDJ0NQITP2HpMoNETh
+	 jVcjb8HkraS+g==
+Date: Thu, 11 Apr 2024 07:39:17 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Jim Quinlan <jim2101024@gmail.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Srikanth Thokala <srikanth.thokala@intel.com>,
+	Ryder Lee <ryder.lee@mediatek.com>,
+	Jianjun Wang <jianjun.wang@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Shawn Lin <shawn.lin@rock-chips.com>,
+	Heiko Stuebner <heiko@sntech.de>, Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
+	Michal Simek <michal.simek@amd.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Mark Kettenis <kettenis@openbsd.org>,
+	Tom Joseph <tjoseph@cadence.com>,
+	Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, asahi@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v2 2/4] dt-bindings: PCI: mediatek,mt7621: add missing
+ child node reg
+Message-ID: <20240411123917.GA2180141@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Kevin Tian <kevin.tian@intel.com>, Tina Zhang <tina.zhang@intel.com>,
- Yi Liu <yi.l.liu@intel.com>, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/12] iommu/vt-d: Add cache tag assignment interface
-To: Jason Gunthorpe <jgg@ziepe.ca>
-References: <20240325021705.249769-1-baolu.lu@linux.intel.com>
- <20240325021705.249769-2-baolu.lu@linux.intel.com>
- <20240410154134.GG223006@ziepe.ca>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240410154134.GG223006@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMhs-H82Ymc=isxu6AX4_s1QnNpSSNt74--ED1j7JxpzE=eCRg@mail.gmail.com>
 
-On 2024/4/10 23:41, Jason Gunthorpe wrote:
->> +struct cache_tag {
->> +	struct list_head node;
->> +	enum cache_tag_type type;
->> +	struct intel_iommu *iommu;
->> +	struct device *dev;
-> iommu and dev probably don't both need to be stored together. We have
-> iommu_get_iommu_dev() now.. I suppose this is probably a union of the
-> two pointers depending on tag. DEVTLB needs the dev and IOTLB needs
-> the iommu.
+On Thu, Apr 11, 2024 at 08:13:18AM +0200, Sergio Paracuellos wrote:
+> On Thu, Apr 11, 2024 at 8:01 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+> > On 10/04/2024 23:26, Bjorn Helgaas wrote:
+> > > On Wed, Apr 10, 2024 at 08:15:19PM +0200, Krzysztof Kozlowski wrote:
+> > >> MT7621 PCI host bridge has children which apparently are also PCI host
+> > >> bridges, at least that's what the binding suggest.
+> > >
+> > > What does it even mean for a PCI host bridge to have a child that is
+> > > also a PCI host bridge?
+> > >
+> > > Does this mean a driver binds to the "parent" host bridge, enumerates
+> > > the PCI devices below it, and finds a "child" host bridge?
+> 
+> Yes, that is exactly what you can see on enumeration.
+> 
+> The following is a typical boot trace where all bridges has a device also below:
+> 
+> mt7621-pci 1e140000.pcie: host bridge /pcie@1e140000 ranges:
+> mt7621-pci 1e140000.pcie:   No bus range found for /pcie@1e140000, using [bus 00-ff]
+> mt7621-pci 1e140000.pcie:      MEM 0x0060000000..0x006fffffff -> 0x0060000000
+> mt7621-pci 1e140000.pcie:       IO 0x001e160000..0x001e16ffff -> 0x0000000000
+> mt7621-pci 1e140000.pcie: PCIE0 enabled
+> mt7621-pci 1e140000.pcie: PCIE1 enabled
+> mt7621-pci 1e140000.pcie: PCIE2 enabled
+> mt7621-pci 1e140000.pcie: PCI host bridge to bus 0000:00
 
-I forgot to reply this comment in previous reply. Sorry about it.
+1e140000.pcie is a host bridge.  It has some CPU-specific bus on the
+upstream side, standard PCI (domain 0000, buses 00-ff) on the
+downstream side.
 
-struct cache_tag {
-         [ ... ]
-         struct intel_iommu *iommu;
-         struct device *dev;
-         [ ... ]
-};
+> pci 0000:00:00.0: [0e8d:0801] type 01 class 0x060400
+> pci 0000:00:01.0: [0e8d:0801] type 01 class 0x060400
+> pci 0000:00:02.0: [0e8d:0801] type 01 class 0x060400
 
-I treat @iommu as the queued invalidation interface. All cache
-invalidation raises to hardware through the invalidation queue.
+> pci 0000:01:00.0: [1b21:0611] type 00 class 0x010185
 
-The @dev field represents the location of the cache. For IOTLB cache, it
-resides on the IOMMU hardware. In this case, the field stores the device
-pointer to the IOMMU hardware. For DevTLB cache, it locates in the PCIe
-endpoint. Here, the field stores the device pointer to that endpoint.
+> pci 0000:00:00.0: PCI bridge to [bus 01-ff]
+> pci 0000:00:00.0:   bridge window [io  0x0000-0x0fff]
+> pci 0000:00:00.0:   bridge window [mem 0x00000000-0x000fffff]
+> pci 0000:00:00.0:   bridge window [mem 0x00000000-0x000fffff pref]
 
-A correctly set @dev pointer allows users to see more accurate trace
-message.
+00:00.0 looks like a PCIe Root Port to bus 01.  This is not a host
+bridge; it's just a standard PCI-to-PCI bridge with PCI on both the
+upstream and downstream sides.
 
-Best regards,
-baolu
+> pci 0000:02:00.0: [1b21:0611] type 00 class 0x010185
+
+> pci 0000:00:01.0: PCI bridge to [bus 02-ff]
+> pci 0000:00:01.0:   bridge window [io  0x0000-0x0fff]
+> pci 0000:00:01.0:   bridge window [mem 0x00000000-0x000fffff]
+> pci 0000:00:01.0:   bridge window [mem 0x00000000-0x000fffff pref]
+
+00:01.0 is another Root Port to bus 02.
+
+> pci 0000:03:00.0: [1b21:0611] type 00 class 0x010185
+
+> pci 0000:00:02.0: PCI bridge to [bus 03-ff]
+> pci 0000:00:02.0:   bridge window [io  0x0000-0x0fff]
+> pci 0000:00:02.0:   bridge window [mem 0x00000000-0x000fffff]
+> pci 0000:00:02.0:   bridge window [mem 0x00000000-0x000fffff pref]
+> pci_bus 0000:03: busn_res: [bus 03-ff] end is updated to 03
+
+And 00:02.0 is a third Root Port to bus 03.
+
+> pci 0000:00:00.0: PCI bridge to [bus 01]
+> pci 0000:00:00.0:   bridge window [io  0x0000-0x0fff]
+> pci 0000:00:00.0:   bridge window [mem 0x60000000-0x600fffff]
+> pci 0000:00:00.0:   bridge window [mem 0x60100000-0x601fffff pref]
+> pci 0000:00:01.0: PCI bridge to [bus 02]
+> pci 0000:00:01.0:   bridge window [io  0x1000-0x1fff]
+> pci 0000:00:01.0:   bridge window [mem 0x60200000-0x602fffff]
+> pci 0000:00:01.0:   bridge window [mem 0x60300000-0x603fffff pref]
+> pci 0000:00:02.0: PCI bridge to [bus 03]
+> pci 0000:00:02.0:   bridge window [io  0x2000-0x2fff]
+> pci 0000:00:02.0:   bridge window [mem 0x60400000-0x604fffff]
+> 
+> > I think the question should be towards Mediatek folks. I don't know what
+> > this hardware is exactly, just looks like pci-pci-bridge. The driver
+> > calls the children host bridges as "ports".
+> 
+> You can see the topology here in my first driver submit cover letter
+> message [0].
+> 
+>  [0]: https://lore.kernel.org/all/CAMhs-H-BA+KzEwuDPzcmrDPdgJBFA2XdYTBvT4R4MEOUB=WQ1g@mail.gmail.com/t/
+
+Nothing unusual here, this looks like the standard PCIe topology.
+
+What *might* be unusual is describing the Root Ports in DT.  Since
+they are standard PCI devices, they shouldn't need DT description
+unless there's some unusual power/clock/reset control or something
+that is not discoverable via PCI enumeration.
+
+Bjorn
 
