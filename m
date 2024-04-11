@@ -1,223 +1,241 @@
-Return-Path: <linux-kernel+bounces-140319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ED638A12AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6439D8A12C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:14:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 524371C21F94
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:12:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 877221C21487
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E761482FC;
-	Thu, 11 Apr 2024 11:12:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 039251482EF;
+	Thu, 11 Apr 2024 11:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="QWJFcBlU"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="Cr0bOjjL"
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CECB1474BA;
-	Thu, 11 Apr 2024 11:12:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 201EF1474BE;
+	Thu, 11 Apr 2024 11:14:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712833959; cv=none; b=BQbBrcGB8NkcQ3IIkaptcUrxDXV/TjfspaNGTQZcVbmSi01us56+CqIEXsJ4iNhnJ8/7i0Zr1CJcimJH4NyyLDpWliepBE2wCqdWsspJdp/m2yUsrkRVyduT0Unv+nmp6t1T9UghmhdxwDXRwaDKSaXWQdwDXRkIGXJoBKioejY=
+	t=1712834052; cv=none; b=RVgrDce/QKZZPTnr4Igs88hyNYSJYhGpKh0cFBJa2wjum97w2LCDGg/JgJrzokhlQtkr8UJNS0eGO9yz2rKF7TDZ8l0+Ixc24VkAG3AqRN+jhAQhtSrNNNhWqmfFZkkKNzqYf13BU3c/w7ZDsJZLs1mK36WReMy2JUgelWTrSgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712833959; c=relaxed/simple;
-	bh=XWXUyl1Nz91NBxdPg+48EdN2ElgiJkR3ew64Yn5yz/Q=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=d5MAWuXLPLtdseCGh2x0VPQ6dTQ8NKUaD1ta/1H/BcYAjTgu6C38injBLZDtSfSscxxXV4oJfugCkCE7cy1wesIL1a+xqjh0fsnWJ+6+IznBqoLQnjjTxbPh+GPKiRhIL1m3F7hMBi6ZcUCWcV5/ma8lfNJ4B5leSNNLIum+Er4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=QWJFcBlU; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43BAW5lC027333;
-	Thu, 11 Apr 2024 11:12:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=uhcvB6tpxrkxE/KaZ+ck3RH3SA1Z9JkugprvYlNNlwk=;
- b=QWJFcBlUByKAlYtOaYGkA8IRTEAbJODcZ945EbsZLdKxBHI6hiwSjqRFPPLUxTVp9CD4
- oaKs+pMb16VK8nL0CDf56CyosGxXQvpaGbcASX6138cUXuDR/rThAZd+W0UMZ1wUJ19d
- P+U24VUJZOzf4DI/a/GSnIlrgB8wUVk/OdE1ZAB9yzooD2hIO6NW6cDr30UjkJLMMI3f
- AZVxi/mRtfLWszRCVMwOwFJiQctqXCm7V+nP25ljgyVFgHnc6NuaYzVQ6DwP9LPDJi87
- D72LROOzInxQ1M6JAf0aEe13fZ2YlKIyF4JUfTsKPFHGgcS1drvAwg4O+XaVMB4el8JI eA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xebfy8eda-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 11:12:30 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43BBCT3h021006;
-	Thu, 11 Apr 2024 11:12:29 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xebfy8ed6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 11:12:29 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43B8ZDpV013544;
-	Thu, 11 Apr 2024 11:12:29 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xbgqtu1qt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 11:12:28 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43BBCNUX16974168
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 11 Apr 2024 11:12:25 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id AC8CE2004B;
-	Thu, 11 Apr 2024 11:12:23 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5D04A20043;
-	Thu, 11 Apr 2024 11:12:23 +0000 (GMT)
-Received: from [9.152.224.141] (unknown [9.152.224.141])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 11 Apr 2024 11:12:23 +0000 (GMT)
-Message-ID: <12ae995f-4af4-4c6b-9130-04672d157293@linux.ibm.com>
-Date: Thu, 11 Apr 2024 13:12:23 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v5 04/11] net/smc: implement some unsupported
- operations of loopback-ism
-To: Wen Gu <guwen@linux.alibaba.com>,
-        Niklas Schnelle
- <schnelle@linux.ibm.com>,
-        Gerd Bayer <gbayer@linux.ibm.com>, twinkler@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, wenjia@linux.ibm.com, jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
-        tonylu@linux.alibaba.com, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org
-References: <20240324135522.108564-1-guwen@linux.alibaba.com>
- <20240324135522.108564-5-guwen@linux.alibaba.com>
- <3122eece5b484abcf8d23f85d6c18c36f0b939ff.camel@linux.ibm.com>
- <1db6ccab-b49f-45d2-a93c-05b0f79371a3@linux.alibaba.com>
- <3b3ff37643e9030ec1246e67720683a2cf5660e5.camel@linux.ibm.com>
- <7a0fc481-658e-4c99-add7-ccbd5f9dce1e@linux.alibaba.com>
- <7291dd1b2d16fd9bbd90988ac5bcc3a46d17e3f4.camel@linux.ibm.com>
- <46e8e227-8058-4062-a9db-6b9c774f63cc@linux.alibaba.com>
-Content-Language: en-US
-From: Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <46e8e227-8058-4062-a9db-6b9c774f63cc@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: lH8IiSDzd6CHB4tJ3S8jUQABn86FFQBx
-X-Proofpoint-ORIG-GUID: Dn9t7sHizOmtClU9DfBA8utLe4LTNm47
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1712834052; c=relaxed/simple;
+	bh=qvx2mawf3ghJ8pkjK1npUg1bbbAJVNMh44XNGAu8YZI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rOxWsa70K/LoqNeeM6QXx1BdGyzO8/udTRp5e19vhs3q7Bg8nXFzcXuZRojLHFAaGCmzUj8HrzjQpBugUyxII/cZ5LHCK8PTHbW31JJWxVum9kxPj1RD0WPESLcAftzql9XbMl4sDziJxT2xZbtznN6Ov78H1X7+TDSaVYvfQuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=Cr0bOjjL; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id C07B2600A2;
+	Thu, 11 Apr 2024 11:14:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1712834046;
+	bh=qvx2mawf3ghJ8pkjK1npUg1bbbAJVNMh44XNGAu8YZI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Cr0bOjjLP+KfhIaEIypx14rlYVzFCgJtk9YqryPHuda93iiRSfr3v6AZfeJK3gDR3
+	 mBX37xSWAqP/unG7GpPpzRybd2E/TAC/V0pyE+3aHegl1X0qwxWIAoB6pPcBogg7fu
+	 q3kCnBlh1q8BlEaSb4NQVHx8Kt2WyUbhkaGOyyn+G8lhy6kPp2+j7it7GAtXa6yKCL
+	 xMpK+K2LyAmaqKDM0imMAdtiw+K08B8aJ41e7YIz6fWIFqOhZ3igGFyM5ERi6xCdiC
+	 B2r1TvWlxwLojpcJbQIiLVI6ksI3x7N4DcN4J8mMeAdqqbosDvtwrw8TExucpjNMB8
+	 +CLpj7aVemw1Q==
+Received: by x201s (Postfix, from userid 1000)
+	id 447E120106A; Thu, 11 Apr 2024 11:14:02 +0000 (UTC)
+From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
+To: netdev@vger.kernel.org
+Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
+	Steen Hegelund <Steen.Hegelund@microchip.com>,
+	Lars Povlsen <lars.povlsen@microchip.com>,
+	Daniel Machon <daniel.machon@microchip.com>,
+	UNGLinuxDriver@microchip.com,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	Jacob Keller <jacob.e.keller@intel.com>
+Subject: [PATCH net v3] net: sparx5: flower: fix fragment flags handling
+Date: Thu, 11 Apr 2024 11:13:18 +0000
+Message-ID: <20240411111321.114095-1-ast@fiberby.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-11_04,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- spamscore=0 lowpriorityscore=0 impostorscore=0 mlxlogscore=999 mlxscore=0
- bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404110081
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+I noticed that only 3 out of the 4 input bits were used,
+mt.key->flags & FLOW_DIS_IS_FRAGMENT was never checked.
 
+In order to avoid a complicated maze, I converted it to
+use a 16 byte mapping table.
 
-On 09.04.24 03:44, Wen Gu wrote:
-> 
-> 
-> On 2024/4/4 23:15, Niklas Schnelle wrote:
->> On Thu, 2024-04-04 at 21:12 +0800, Wen Gu wrote:
->>>
->>> On 2024/4/4 19:42, Niklas Schnelle wrote:
->>>> On Thu, 2024-04-04 at 17:32 +0800, Wen Gu wrote:
->>>>>
->>>>> On 2024/4/4 00:25, Gerd Bayer wrote:
->>>>>> On Sun, 2024-03-24 at 21:55 +0800, Wen Gu wrote:
->>>>>>> This implements some operations that loopback-ism does not support
->>>>>>> currently:
->>>>>>>     - vlan operations, since there is no strong use-case for it.
->>>>>>>     - signal_event operations, since there is no event to be processed
->>>>>>> by the loopback-ism device.
->>>>>>
->>>>>> Hi Wen,
->>>>>>
->>>>>> I wonder if the these operations that are not supported by loopback-ism
->>>>>> should rather be marked "optional" in the struct smcd_ops, and the
->>>>>> calling code should call these only when they are implemented.
->>>>>>
->>>>>> Of course this would mean more changes to net/smc/smc_core.c - but
->>>>>> loopback-ism could omit these "boiler-plate" functions.
->>>>>>
->>>>>
->>>>> Hi Gerd.
->>>>>
->>>>> Thank you for the thoughts! I agree that checks like 'if(smcd->ops->xxx)'
->>>>> can avoid the device driver from implementing unsupported operations. But I
->>>>> am afraid that which operations need to be defined as 'optional' may differ
->>>>> from different device perspectives (e.g. for loopback-ism they are vlan-related
->>>>> opts and signal_event). So I perfer to simply let the smc protocol assume
->>>>> that all operations have been implemented, and let drivers to decide which
->>>>> ones are unsupported in implementation. What do you think?
->>>>>
->>>>> Thanks!
->>>>>
->>>>
->>>> I agree with Gerd, in my opinion it is better to document ops as
->>>> optional and then allow their function pointers to be NULL and check
->>>> for that. Acting like they are supported and then they turn out to be
->>>> nops to me seems to contradict the principle of least surprises. I also
->>>> think we can find a subset of mandatory ops without which SMC-D is
->>>> impossible and then everything else should be optional.
->>>
->>> I see. If we all agree to classify smcd_ops into mandatory and optional ones,
->>> I'll add a patch to mark the optional ops and check if they are implemented.
->>
->> Keep in mind I don't speak for the SMC maintainers but that does sound
->> reasonable to me.
->>
-> 
-> Hi Wenjia and Jan, do you have any comments on this and [1]? Thanks!
-> 
-> [1] https://lore.kernel.org/netdev/60b4aec0b4bf4474d651b653c86c280dafc4518a.camel@linux.ibm.com/
-> 
->>>
->>>>
->>>> As a first guess I think the following options may be mandatory:
->>>>
->>>> * query_remote_gid()
->>>> * register_dmb()/unregister_dmb()
->>>> * move_data()
->>>>     For this one could argue that either move_data() or
->>>>     attach_dmb()/detach_dmb() is required though personally I would
->>>>     prefer to always have move_data() as a fallback and simple API
->>>> * supports_v2()
->>>> * get_local_gid()
->>>> * get_chid()
->>>> * get_dev()
->>> I agree with this classification. Just one point, maybe we can take
->>> supports_v2() as an optional ops, like support_dmb_nocopy()? e.g. if
->>> it is not implemented, we treat it as an ISMv1.
->>>
->>> Thanks!
->>
->> Interpreting a NULL supports_v2() as not supporting v2 sounds
->> reasonable to me.
-> 
+As shown in the table below the old heuristics doesn't
+always do the right thing, ie. when FLOW_DIS_IS_FRAGMENT=1/1
+then it used to only match follow-up fragment packets.
 
-Let me add my thoughts to the discussion:
-For the vlan operations and signal_event operations that loopback-ism does
-not support:
-I like the idea to set the ops to NULL and make sure the caller checks that
-and can live with it. That is readable and efficient.
+Here are all the combinations, and their resulting new/old
+VCAP key/mask filter:
 
-I don't think there is a need to discuss a strategy now, which ops could be
-optional in the future. This is all inside the kernel. loopback-ism is even 
-inside the smc module. Such comments in the code get outdated very easily.
+  /- FLOW_DIS_IS_FRAGMENT (key/mask)
+  |    /- FLOW_DIS_FIRST_FRAG (key/mask)
+  |    |    /-- new VCAP fragment (key/mask)
+  v    v    v    v- old VCAP fragment (key/mask)
 
-I would propose to mark those as optional struct smcd_ops, where all callers can 
-handle a NULL pointer and still be productive.
-Future support of other devices for SMC-D can update that.
+ 0/0  0/0  -/-  -/-     impossible (due to entry cond. on mask)
+ 0/0  0/1  -/-  0/3 !!  invalid (can't match non-fragment + follow-up frag)
+ 0/0  1/0  -/-  -/-     impossible (key > mask)
+ 0/0  1/1  1/3  1/3     first fragment
 
+ 0/1  0/0  0/3  3/3 !!  not fragmented
+ 0/1  0/1  0/3  3/3 !!  not fragmented (+ not first fragment)
+ 0/1  1/0  -/-  -/-     impossible (key > mask)
+ 0/1  1/1  -/-  1/3 !!  invalid (non-fragment and first frag)
 
+ 1/0  0/0  -/-  -/-     impossible (key > mask)
+ 1/0  0/1  -/-  -/-     impossible (key > mask)
+ 1/0  1/0  -/-  -/-     impossible (key > mask)
+ 1/0  1/1  -/-  -/-     impossible (key > mask)
+
+ 1/1  0/0  1/1  3/3 !!  some fragment
+ 1/1  0/1  3/3  3/3     follow-up fragment
+ 1/1  1/0  -/-  -/-     impossible (key > mask)
+ 1/1  1/1  1/3  1/3     first fragment
+
+In the datasheet the VCAP fragment values are documented as:
+ 0 = no fragment
+ 1 = initial fragment
+ 2 = suspicious fragment
+ 3 = valid follow-up fragment
+
+Result: 3 combinations match the old behavior,
+        3 combinations have been corrected,
+        2 combinations are now invalid, and fail,
+        8 combinations are impossible.
+
+It should now be aligned with how FLOW_DIS_IS_FRAGMENT
+and FLOW_DIS_FIRST_FRAG is set in __skb_flow_dissect() in
+net/core/flow_dissector.c
+
+Since the VCAP fragment values are not a bitfield, we have
+to ignore the suspicious fragment value, eg. when matching
+on any kind of fragment with FLOW_DIS_IS_FRAGMENT=1/1.
+
+Only compile tested, and logic tested in userspace, as I
+unfortunately don't have access to this switch chip (yet).
+
+Fixes: d6c2964db3fe ("net: microchip: sparx5: Adding more tc flower keys for the IS2 VCAP")
+Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+Reviewed-by: Steen Hegelund <Steen.Hegelund@microchip.com>
+Tested-by: Daniel Machon <daniel.machon@microchip.com>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+---
+
+Changelog:
+
+v3:
+- Added Reviewed-by from Jacob Keller.
+- Start NL msg and comments with uppercase (requested by Daniel)
+
+v2: https://lore.kernel.org/netdev/20240410095224.6372-1-ast@fiberby.net/
+- Improved in-line documentation of mapping table (requested by Steen)
+- Relocated enum and mapping table (requested by Steen)
+- Added Reviewed-by from Steen Hegelund
+- Added Tested-by from Daniel Machon
+
+v1: https://lore.kernel.org/netdev/20240408172738.96447-1-ast@fiberby.net/
+
+ .../microchip/sparx5/sparx5_tc_flower.c       | 61 ++++++++++++-------
+ 1 file changed, 40 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
+index 523e0c470894f..55f255a3c9db6 100644
+--- a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
++++ b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
+@@ -36,6 +36,27 @@ struct sparx5_tc_flower_template {
+ 	u16 l3_proto; /* protocol specified in the template */
+ };
+ 
++/* SparX-5 VCAP fragment types:
++ * 0 = no fragment, 1 = initial fragment,
++ * 2 = suspicious fragment, 3 = valid follow-up fragment
++ */
++enum {                   /* key / mask */
++	FRAG_NOT   = 0x03, /* 0 / 3 */
++	FRAG_SOME  = 0x11, /* 1 / 1 */
++	FRAG_FIRST = 0x13, /* 1 / 3 */
++	FRAG_LATER = 0x33, /* 3 / 3 */
++	FRAG_INVAL = 0xff, /* invalid */
++};
++
++/* Flower fragment flag to VCAP fragment type mapping */
++static const u8 sparx5_vcap_frag_map[4][4] = {		  /* is_frag */
++	{ FRAG_INVAL, FRAG_INVAL, FRAG_INVAL, FRAG_FIRST }, /* 0/0 */
++	{ FRAG_NOT,   FRAG_NOT,   FRAG_INVAL, FRAG_INVAL }, /* 0/1 */
++	{ FRAG_INVAL, FRAG_INVAL, FRAG_INVAL, FRAG_INVAL }, /* 1/0 */
++	{ FRAG_SOME,  FRAG_LATER, FRAG_INVAL, FRAG_FIRST }  /* 1/1 */
++	/* 0/0	      0/1	  1/0	      1/1 <-- first_frag */
++};
++
+ static int
+ sparx5_tc_flower_es0_tpid(struct vcap_tc_flower_parse_usage *st)
+ {
+@@ -145,29 +166,27 @@ sparx5_tc_flower_handler_control_usage(struct vcap_tc_flower_parse_usage *st)
+ 	flow_rule_match_control(st->frule, &mt);
+ 
+ 	if (mt.mask->flags) {
+-		if (mt.mask->flags & FLOW_DIS_FIRST_FRAG) {
+-			if (mt.key->flags & FLOW_DIS_FIRST_FRAG) {
+-				value = 1; /* initial fragment */
+-				mask = 0x3;
+-			} else {
+-				if (mt.mask->flags & FLOW_DIS_IS_FRAGMENT) {
+-					value = 3; /* follow up fragment */
+-					mask = 0x3;
+-				} else {
+-					value = 0; /* no fragment */
+-					mask = 0x3;
+-				}
+-			}
+-		} else {
+-			if (mt.mask->flags & FLOW_DIS_IS_FRAGMENT) {
+-				value = 3; /* follow up fragment */
+-				mask = 0x3;
+-			} else {
+-				value = 0; /* no fragment */
+-				mask = 0x3;
+-			}
++		u8 is_frag_key = !!(mt.key->flags & FLOW_DIS_IS_FRAGMENT);
++		u8 is_frag_mask = !!(mt.mask->flags & FLOW_DIS_IS_FRAGMENT);
++		u8 is_frag_idx = (is_frag_key << 1) | is_frag_mask;
++
++		u8 first_frag_key = !!(mt.key->flags & FLOW_DIS_FIRST_FRAG);
++		u8 first_frag_mask = !!(mt.mask->flags & FLOW_DIS_FIRST_FRAG);
++		u8 first_frag_idx = (first_frag_key << 1) | first_frag_mask;
++
++		/* Lookup verdict based on the 2 + 2 input bits */
++		u8 vdt = sparx5_vcap_frag_map[is_frag_idx][first_frag_idx];
++
++		if (vdt == FRAG_INVAL) {
++			NL_SET_ERR_MSG_MOD(st->fco->common.extack,
++					   "Match on invalid fragment flag combination");
++			return -EINVAL;
+ 		}
+ 
++		/* Extract VCAP fragment key and mask from verdict */
++		value = (vdt >> 4) & 0x3;
++		mask = vdt & 0x3;
++
+ 		err = vcap_rule_add_key_u32(st->vrule,
+ 					    VCAP_KF_L3_FRAGMENT_TYPE,
+ 					    value, mask);
+-- 
+2.43.0
 
 
