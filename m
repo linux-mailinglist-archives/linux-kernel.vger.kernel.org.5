@@ -1,135 +1,151 @@
-Return-Path: <linux-kernel+bounces-139816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2A968A080F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D74628A0812
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:09:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57E7F1F23586
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:08:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CEE41F2323D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:09:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 351B913CA8A;
-	Thu, 11 Apr 2024 06:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7748613CA97;
+	Thu, 11 Apr 2024 06:08:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qv3f7mk1"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="OJUGkMZ9"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2322C13C3ED
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:08:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2017613C3ED;
+	Thu, 11 Apr 2024 06:08:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712815690; cv=none; b=gVO4JfOsua8Hh2i3zKhpKrXZL05W1PDOGvl1vzs6yDI/IupkkyPcgWi7MevriMOX3FVKaAITTEzT0bl1OlzgEoemLiCZxlBl5dtsHasPuSmuaGdab0dJwAUp9EVig4DOrgE7JNOfEoj+7T8TdpWWJigCJDBLeh6cJFTP6og3HnQ=
+	t=1712815738; cv=none; b=by3NcM8kolbixA+6h1BRin761RyAOrMIQSTIYwyGzvd99Ct/SA4E80NtFWERDEkbOmvN300mFe0Jy+kHr+rDHf3eeI1RemWaGuIPcw+FgOFe4s2UXnm2KZAdMivYqEUS/V9e8x0yLTsPsSWhSn8XSRaBYgOMW42fW+NHq/th1ng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712815690; c=relaxed/simple;
-	bh=58UvdS8ZfA6eWD25sHs7xxDVreHwP8mfoOfe+ZM66Mg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ihdioSyM4k4nH12kHNeNaE82PG9Da8OY+BzgOQKrRBF4qtjP0Y3ejVuJq0alRoH+h1q0xCSBoenuPSe97JdkzBb6/Uk7cMXj7tRyxxTKLUCrZLZ66mKtoM/0eRg6WXN/dZk5mRaPj1nHYy0O+BPmJE3qCUawaQqtM+XQ31Y3IJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qv3f7mk1; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e411e339b8so31740335ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:08:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712815688; x=1713420488; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/iT9IlAymUCb2pC4/RBQKOmj3d7dpo0oLb02XVtYzR4=;
-        b=Qv3f7mk1hUIoX1zPUs4xwOoZQADW+Tek1qArgx0KpZMwr6iObjYa2Z2J0oGGNgQ+mR
-         RmArN6L6BiR9TGLWvdw1KZyy4GN6ZhPCOsXeXddu+oxqwt0uoSTeEi/4uOIHQ6pCISz6
-         T1rpaWJxmEhk61TtkOsdB+R/60xxMxmb0pIfma+HSpOcwTPbf/xR+wtlY/bteMZdlL/k
-         4hBatvuSp21ZsairAAiJ3hVBOaZrpymRyvixOxbA9tt8dcWhoLP7IL2hVX8zbjksbGkq
-         nOe1uZcS0cqDVm40iHiauOCq7rky/M8WIvUEYN2Tfj4ymbq1ynxv18sJAjubB29042By
-         m/jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712815688; x=1713420488;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/iT9IlAymUCb2pC4/RBQKOmj3d7dpo0oLb02XVtYzR4=;
-        b=IHdLcZcCCR0olYGOYagsnQSrKedzkjZLWbTxDW/mKZp6xgL+P35ACO/I01Uf6Wsrrh
-         KP9Cho3PXSrnFrvzSTy9EQfVx0bDhAbSmCfl4g4UlrEms9/okv3ERaFa+n5uwObQIok7
-         USzH9/BKrqW6TG//SzgfsggbMP9tPRdTBmb8IOaWfYQ6jHMATJ4pKLa47pueD1DfwCgS
-         YByz6Htjq7SkGtjfGvIMjp+FLCNjoU8IDKAzUy4QsiiidoYRth4iC26sKL0kclaZeMV9
-         z16ZCJprkcbwHusUuaXj7Jz4kMxCkrsPYTzzZecGnJdmcwD2j22wCX5VibXa8OepAU3V
-         IXyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX0mXJTCRWvvmneQuVSeiroM7lAy9Lex+KJoBdo+bvfblJMBw4gMdEsag99UfKv0blpfqQtDFqE/j/ibC82Cq9xXS83Gdz+lfKHz5/C
-X-Gm-Message-State: AOJu0YwAG4uA/J/pG4L+8ACkqliPA7KOV0N3TonpwknweS365MPZl74b
-	k50IHwZomLsHz+VEyeB3zyMRzIChOhna6I8nyxBOPA8RHRR7a7bK
-X-Google-Smtp-Source: AGHT+IHhyXMkprGe5UZ5k53JV62tzPnOnN38w9YWio7VO/KdjYqBp3xBsOxs0SgEFfosVBZYJBcxlA==
-X-Received: by 2002:a17:903:98b:b0:1e2:817b:460a with SMTP id mb11-20020a170903098b00b001e2817b460amr5668725plb.34.1712815688354;
-        Wed, 10 Apr 2024 23:08:08 -0700 (PDT)
-Received: from [192.168.255.10] ([43.132.141.20])
-        by smtp.gmail.com with ESMTPSA id w14-20020a170902e88e00b001e0af9928casm510549plg.55.2024.04.10.23.08.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 23:08:07 -0700 (PDT)
-Message-ID: <235b35c2-159c-48b1-a522-654f5ccc2faf@gmail.com>
-Date: Thu, 11 Apr 2024 14:08:03 +0800
+	s=arc-20240116; t=1712815738; c=relaxed/simple;
+	bh=QbmXNVIqyQ2ZlJCV8a7l5AZ7J44So64DR4EpC/NGYYY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=H4yVaeKsNfixnjdOiZqLpMOCvOTEavsugPHZ03uMwrW90Fv9qucC1WlaZgeZQPJfv03LKyNn5L65P09s/FtyhjF4f/rMFOuMg7FQYkWXCwwqwQzSQj4jvgnK0uL/qb10TCfl1HLUOGCi9UwkVccLgMfmadDxa9X0+h2eAbVWyMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=OJUGkMZ9; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: f62912eef7c911eeb8927bc1f75efef4-20240411
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Ga3TmaCR+QbwuVUxYA9HS45MFs41MLMoazo01ttyQrk=;
+	b=OJUGkMZ9stUM2lAuyGXZ46Ol3jfZOfor2mxxUNmHu/09GNEl+8nN6de34hU7JGYBTLOUAqGeQ+lQwR/oj5cPehY8NcUjMaSAeUb1/4QAj6ZuIqOCEDZxY8UAJsjEJ005widtNvetY25EhrXTwxgZsZUgUxbi33eAzqJnQU+2oZo=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:4703c14e-b684-41a6-a48d-a5424fd32f4d,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:5b2ac8fa-ed05-4274-9204-014369d201e8,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
+	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: f62912eef7c911eeb8927bc1f75efef4-20240411
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
+	(envelope-from <jiande.lu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 263997264; Thu, 11 Apr 2024 14:08:48 +0800
+Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 11 Apr 2024 14:08:43 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Thu, 11 Apr 2024 14:08:42 +0800
+From: Jiande Lu <jiande.lu@mediatek.com>
+To: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
+	<johan.hedberg@gmail.com>, Luiz Von Dentz <luiz.dentz@gmail.com>
+CC: Sean Wang <sean.wang@mediatek.com>, Chris Lu <chris.lu@mediatek.com>,
+	Deren Wu <deren.Wu@mediatek.com>, Aaron Hou <aaron.hou@mediatek.com>, "Steve
+ Lee" <steve.lee@mediatek.com>, linux-bluetooth
+	<linux-bluetooth@vger.kernel.org>, linux-kernel
+	<linux-kernel@vger.kernel.org>, linux-mediatek
+	<linux-mediatek@lists.infradead.org>, jiande.lu <jiande.lu@mediatek.com>
+Subject: [PATCH] Add USB HWID to usb_device_id table for MT7921/MT7922/MT7925. These HWID are used for Windows NB. Enduser may install Ubuntu OS, so need to update.
+Date: Thu, 11 Apr 2024 14:08:12 +0800
+Message-ID: <20240411060812.16394-1-jiande.lu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/9] mm/ksm: add ksm_get_folio
-To: David Hildenbrand <david@redhat.com>, alexs@kernel.org,
- Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-Cc: Izik Eidus <izik.eidus@ravellosystems.com>,
- Matthew Wilcox <willy@infradead.org>, Andrea Arcangeli
- <aarcange@redhat.com>, Hugh Dickins <hughd@google.com>,
- Chris Wright <chrisw@sous-sol.org>
-References: <20240409092826.1733637-1-alexs@kernel.org>
- <20240409092826.1733637-2-alexs@kernel.org>
- <81c1de48-1e31-449d-8f5a-9342634cea27@redhat.com>
-Content-Language: en-US
-From: Alex Shi <seakeel@gmail.com>
-In-Reply-To: <81c1de48-1e31-449d-8f5a-9342634cea27@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--1.231300-8.000000
+X-TMASE-MatchedRID: Mbsg4tszmKiZK6GTJ6A3n2QNT9IU7RXuDCe/LOiZlC3fUZT83lbkEJJo
+	t8xOxyL5xxL5hQ2RIPj97HpZMOKDkZ4JHdxqacCtngIgpj8eDcAZ1CdBJOsoY8RB0bsfrpPI0PU
+	0TdJoUteFR65PLLYX1dX8O8/xqUzoeQDkAZnDScBgOhdMvNG5PyvHtP1LJe3/K6M1Li+1xrqPvM
+	XWFqtVhObT4dA8PYzCwuGYXBn5rdiOh+wyNBrFXDJiNuKohDcKzKSG3JdyKAPqtV2AGMNPavWdc
+	lq8lU1q
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--1.231300-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP:
+	D2BC39D7B8956AF6816C698B88283BEA417DAFAD7D83F7935C41DCEFBB59F6542000:8
+X-MTK: N
 
+From: "jiande.lu" <jiande.lu@mediatek.com>
 
+Https://acer.com/tw-zh/support/product-support/SFE16-42/NX.KH5TA.0.01/downloads
+---
+ drivers/bluetooth/btusb.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-On 4/10/24 4:34 PM, David Hildenbrand wrote:
-> On 09.04.24 11:28, alexs@kernel.org wrote:
->> From: "Alex Shi (tencent)" <alexs@kernel.org>
->>
->> The ksm only contains single pages, so we could add a new func
->> ksm_get_folio for get_ksm_page to use folio instead of pages to save a
->> couple of compound_head calls.
->>
->> After all caller replaced, get_ksm_page will be removed.
->>
->> Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
->> To: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Izik Eidus <izik.eidus@ravellosystems.com>
->> Cc: Matthew Wilcox <willy@infradead.org>
->> Cc: Andrea Arcangeli <aarcange@redhat.com>
->> Cc: Hugh Dickins <hughd@google.com>
->> Cc: Chris Wright <chrisw@sous-sol.org>
->> Reviewed-by: David Hildenbrand <david@redhat.com>
->> ---
->>   mm/ksm.c | 40 ++++++++++++++++++++++++----------------
->>   1 file changed, 24 insertions(+), 16 deletions(-)
->>
->> diff --git a/mm/ksm.c b/mm/ksm.c
->> index 8c001819cf10..ac080235b002 100644
->> --- a/mm/ksm.c
->> +++ b/mm/ksm.c
->> @@ -915,10 +915,10 @@ enum get_ksm_page_flags {
->>    * a page to put something that might look like our key in page->mapping.
->>    * is on its way to being freed; but it is an anomaly to bear in mind.
->>    */
->> -static struct page *get_ksm_page(struct ksm_stable_node *stable_node,
->> +static struct folio *ksm_get_folio(struct ksm_stable_node *stable_node,
-> 
-> Just realized that you should adjust the function name in the comment above this function in this patch.
-> 
-
-Right, will resend with your suggestion.
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index edfb49bbaa28..67392b6c8f1b 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -616,6 +616,9 @@ static const struct usb_device_id quirks_table[] = {
+ 	{ USB_DEVICE(0x0e8d, 0x0608), .driver_info = BTUSB_MEDIATEK |
+ 						     BTUSB_WIDEBAND_SPEECH |
+ 						     BTUSB_VALID_LE_STATES },
++	{ USB_DEVICE(0x13d3, 0x3606), .driver_info = BTUSB_MEDIATEK |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
+ 
+ 	/* MediaTek MT7922A Bluetooth devices */
+ 	{ USB_DEVICE(0x0489, 0xe0d8), .driver_info = BTUSB_MEDIATEK |
+@@ -657,11 +660,32 @@ static const struct usb_device_id quirks_table[] = {
+ 	{ USB_DEVICE(0x35f5, 0x7922), .driver_info = BTUSB_MEDIATEK |
+ 						     BTUSB_WIDEBAND_SPEECH |
+ 						     BTUSB_VALID_LE_STATES },
++	{ USB_DEVICE(0x13d3, 0x3614), .driver_info = BTUSB_MEDIATEK |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
++	{ USB_DEVICE(0x13d3, 0x3615), .driver_info = BTUSB_MEDIATEK |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
++	{ USB_DEVICE(0x04ca, 0x38e4), .driver_info = BTUSB_MEDIATEK |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
++	{ USB_DEVICE(0x13d3, 0x3605), .driver_info = BTUSB_MEDIATEK |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
++	{ USB_DEVICE(0x13d3, 0x3607), .driver_info = BTUSB_MEDIATEK |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
+ 
+ 	/* Additional MediaTek MT7925 Bluetooth devices */
++	{ USB_DEVICE(0x0489, 0xE113), .driver_info = BTUSB_MEDIATEK |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
+ 	{ USB_DEVICE(0x13d3, 0x3602), .driver_info = BTUSB_MEDIATEK |
+ 						     BTUSB_WIDEBAND_SPEECH |
+ 						     BTUSB_VALID_LE_STATES },
++	{ USB_DEVICE(0x13d3, 0x3603), .driver_info = BTUSB_MEDIATEK |
++						     BTUSB_WIDEBAND_SPEECH |
++						     BTUSB_VALID_LE_STATES },
+ 
+ 	/* Additional Realtek 8723AE Bluetooth devices */
+ 	{ USB_DEVICE(0x0930, 0x021d), .driver_info = BTUSB_REALTEK },
+-- 
+2.18.0
 
 
