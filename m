@@ -1,173 +1,154 @@
-Return-Path: <linux-kernel+bounces-139910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B16CF8A090C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:03:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 401278A0910
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:05:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 159A9B2188F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:03:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA3A71F21E81
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:05:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 739F713DDA6;
-	Thu, 11 Apr 2024 07:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F2313DDBD;
+	Thu, 11 Apr 2024 07:04:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="caXPwV7T"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="w97xjmBZ"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C9B13DBA7
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:02:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17320523A;
+	Thu, 11 Apr 2024 07:04:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712818979; cv=none; b=QzzvIuLYOvPPlvmQB1G6RpS4B4CESAoOn43bQOMoVZJy/fifmosfdS9a6h1KdeqX6PhazE3vDGlAXztfJGKsVBjrIEQVOVHwiMLF4ZWp4sCuIQSnaH1k31WykWGdWspjoqlR0Ryw3ZFUv5lK8+4RIsSYN6naUC5oOJk4jcDzk4g=
+	t=1712819088; cv=none; b=F8Uk7a/Rg5PObN7ekXuqMeJU5roPUST2dFYfNCdPtlNyYi0un28FUK9n8Sm46bRMg5VcCaA0HacRjor/ETmt5HiqLhThYgvXX0hAp0MOROkyMw6O3vyQq18Z2EykMeeqB6ubKXSfdk5C2awuehGOLxNiv1QlJqSNY8RM+9pwH48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712818979; c=relaxed/simple;
-	bh=/m7yJfiBA5JwLI2+JvRcIOEdntSz6SoOaQZ4uFjJJPk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k4ADxhm151NoJfDw8/st/vepkc6J2Dx0tgJL07TeY8QJYhP75H4tNBj+sqTM2tseNLvGU/ed/6yc3oQhqd9Hnwtu+Lt3AK7BWohmY/oU7puG6W6UxJNlJ+TOTkYEQBhJ0fARR1HroZBDmZAV28eztr2id1RuYEqcZNRb2BF6woM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=caXPwV7T; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=C8b/
-	Bg+woqCMDPMNpL8Kfw9g9Lnm4nCjCgCv9C3GI80=; b=caXPwV7TS9nlWfrBmAvx
-	aJAj8YoCJcohDUE+sOOEtBsXPyzCLxsKgtyp7HVfZ7aA1yUW4rmfUZmDJebK/ugB
-	rsakReOqmNryvUi28kVcSoscFCZHhGtZ1Rbp0K3Gf/U0BMiz51X6sVpX2sqsSSu4
-	zgBiUZXvH6qPN+PKuy1gW9iK4q43IT3sYQ7rufPkpU9ZeZIRr3qpV9becMsiNKFY
-	DhplKzCoDiyEnqmMa/yHJfKovfI/n1NtYIVgPwYVVeajRU+NjRRX3FWKDD48F/fw
-	3/F8bpXpFXQEo9lP6T+iHUsRAqsf7mgMyzi495bqP9bB4ezbD5fP88bZzQG0SBtL
-	Dg==
-Received: (qmail 789951 invoked from network); 11 Apr 2024 09:02:53 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 11 Apr 2024 09:02:53 +0200
-X-UD-Smtp-Session: l3s3148p1@Vy11vswV5XhtKPOV
-Date: Thu, 11 Apr 2024 09:02:52 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: linux-i2c@vger.kernel.org, Jean Delvare <jdelvare@suse.com>, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/18] i2c: i801: remove printout on handled timeouts
-Message-ID: <zmkluzi3ncze67wei6eccd67cpuab2k7qw7cdgju4tg7rermv2@hw6ukejz4cvy>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org, Jean Delvare <jdelvare@suse.com>, 
-	linux-kernel@vger.kernel.org
-References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
- <20240410112418.6400-26-wsa+renesas@sang-engineering.com>
- <242ogjpole3ltk5nu53knbfsxmmwcqfrbcivjh7fnkngvrroq5@cwspwdrtepwh>
+	s=arc-20240116; t=1712819088; c=relaxed/simple;
+	bh=0OAlRLFkgYzXEC0BlyzffbfPcf/pRXaaT8I3u/trQ00=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t0PeYC2PKVHFwK4RElE3y9/eNAr71nyt/b7wesit6+iCblJZ3cPxcUEs57LPTa7x5rFWk05CJWguzqzP96kuAx1z+MPqEG1b93sNhLNmuH31LC5uEfNVv7wVqifiSSLrBNN7ntqKPhlaErqTIKLxh7bswn9uDbz7ZBtyZ+c53KQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=w97xjmBZ; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1712819086; x=1744355086;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=0OAlRLFkgYzXEC0BlyzffbfPcf/pRXaaT8I3u/trQ00=;
+  b=w97xjmBZPPIvpc0D3NNbuISVYnpLElJqBNfHvx+q6d6hLPyZ0Jd4nfXm
+   HZfMmGDAAfi4D/6fzxwI42lhNbHu2VBFBLUa7MFq+JDGXVFaDZ5TnZdxp
+   iMezS+DgnKZIVHQI1ngWzPkxAwExlkE7lliGwiPq+1iRHM/d0i80nTM0u
+   SIO8g09S3aA6Tr4pvlxCs1rbdmtRPIWS5LnkgaUb4rvJbgM38tbM2VZCE
+   g4lCjCExuLfyA2sUqQkoHWEb1FqWZ4AOZKJTk1TojCHl69rH3gWzhOwaq
+   LRO/tJaOl1xCzNmHc2Dnc1lj/jjEieK92YfFx77AqEkMDrgAgI7JSEBMC
+   g==;
+X-CSE-ConnectionGUID: umr+2rzeTmeMDSDDw69iGA==
+X-CSE-MsgGUID: tkV1ScQ/R72oUu+yKOdD7A==
+X-IronPort-AV: E=Sophos;i="6.07,192,1708412400"; 
+   d="scan'208";a="20531085"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Apr 2024 00:04:39 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 11 Apr 2024 00:04:11 -0700
+Received: from DEN-DL-M70577 (10.10.85.11) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Thu, 11 Apr 2024 00:04:08 -0700
+Date: Thu, 11 Apr 2024 07:04:08 +0000
+From: Daniel Machon <daniel.machon@microchip.com>
+To: =?utf-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
+CC: <netdev@vger.kernel.org>, Steen Hegelund <Steen.Hegelund@microchip.com>,
+	Lars Povlsen <lars.povlsen@microchip.com>, <UNGLinuxDriver@microchip.com>,
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net v2] net: sparx5: flower: fix fragment flags handling
+Message-ID: <20240411070408.jtic3ndd2zxngga6@DEN-DL-M70577>
+References: <20240410095224.6372-1-ast@fiberby.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="j6qt37qfsj4aexfx"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-In-Reply-To: <242ogjpole3ltk5nu53knbfsxmmwcqfrbcivjh7fnkngvrroq5@cwspwdrtepwh>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240410095224.6372-1-ast@fiberby.net>
 
+Hi Asbjørn,
 
---j6qt37qfsj4aexfx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I know I am nitpicking here, but could you please sneak in below
+changes.
 
-On Wed, Apr 10, 2024 at 02:21:58PM +0200, Andi Shyti wrote:
-> Hi Wolfram,
->=20
-> On Wed, Apr 10, 2024 at 01:24:20PM +0200, Wolfram Sang wrote:
-> > I2C and SMBus timeouts are not something the user needs to be informed
-> > about on controller level. The client driver may know if that really is
-> > a problem and give more detailed information to the user. The controller
-> > should just pass this information upwards. Turn all timeout related
-> > printouts to debug level.
-> >=20
-> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> > ---
-> >=20
-> > Here, I did not delete the printout to support checking the termination
-> > process. The other drivers in this series do not have this SMBus
-> > specific termination step.
-> >=20
-> >  drivers/i2c/busses/i2c-i801.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i80=
-1.c
-> > index 4294c0c63cef..a42b5152f9bd 100644
-> > --- a/drivers/i2c/busses/i2c-i801.c
-> > +++ b/drivers/i2c/busses/i2c-i801.c
-> > @@ -400,7 +400,7 @@ static int i801_check_post(struct i801_priv *priv, =
-int status)
-> >  	 * If the SMBus is still busy, we give up
-> >  	 */
-> >  	if (unlikely(status < 0)) {
-> > -		dev_err(&priv->pci_dev->dev, "Transaction timeout\n");
-> > +		dev_dbg(&priv->pci_dev->dev, "Transaction timeout\n");
->=20
-> why after 5 patches of removing dev_err's, here you are changing
-> them to dev_dbg?
+>  static int
+>  sparx5_tc_flower_es0_tpid(struct vcap_tc_flower_parse_usage *st)
+>  {
+> @@ -145,29 +166,27 @@ sparx5_tc_flower_handler_control_usage(struct vcap_tc_flower_parse_usage *st)
+>         flow_rule_match_control(st->frule, &mt);
+> 
+>         if (mt.mask->flags) {
+> -               if (mt.mask->flags & FLOW_DIS_FIRST_FRAG) {
+> -                       if (mt.key->flags & FLOW_DIS_FIRST_FRAG) {
+> -                               value = 1; /* initial fragment */
+> -                               mask = 0x3;
+> -                       } else {
+> -                               if (mt.mask->flags & FLOW_DIS_IS_FRAGMENT) {
+> -                                       value = 3; /* follow up fragment */
+> -                                       mask = 0x3;
+> -                               } else {
+> -                                       value = 0; /* no fragment */
+> -                                       mask = 0x3;
+> -                               }
+> -                       }
+> -               } else {
+> -                       if (mt.mask->flags & FLOW_DIS_IS_FRAGMENT) {
+> -                               value = 3; /* follow up fragment */
+> -                               mask = 0x3;
+> -                       } else {
+> -                               value = 0; /* no fragment */
+> -                               mask = 0x3;
+> -                       }
+> +               u8 is_frag_key = !!(mt.key->flags & FLOW_DIS_IS_FRAGMENT);
+> +               u8 is_frag_mask = !!(mt.mask->flags & FLOW_DIS_IS_FRAGMENT);
+> +               u8 is_frag_idx = (is_frag_key << 1) | is_frag_mask;
+> +
+> +               u8 first_frag_key = !!(mt.key->flags & FLOW_DIS_FIRST_FRAG);
+> +               u8 first_frag_mask = !!(mt.mask->flags & FLOW_DIS_FIRST_FRAG);
+> +               u8 first_frag_idx = (first_frag_key << 1) | first_frag_mask;
+> +
+> +               /* lookup verdict based on the 2 + 2 input bits */
+> +               u8 vdt = sparx5_vcap_frag_map[is_frag_idx][first_frag_idx];
+> +
+> +               if (vdt == FRAG_INVAL) {
+> +                       NL_SET_ERR_MSG_MOD(st->fco->common.extack,
+> +                                          "match on invalid fragment flag combination");
 
-The reasoning was explained above:
+Please start this NL msg with a capital letter. All (AFAICS) other
+places in this file do this - nice to stay consistent. As a matter of
+fact, also do this to the new comments introduced.
 
-> > Here, I did not delete the printout to support checking the termination
-> > process. The other drivers in this series do not have this SMBus
-> > specific termination step.
+> +                       return -EINVAL;
+>                 }
+> 
+> +               /* extract VCAP fragment key and mask from verdict */
+> +               value = (vdt >> 4) & 0x3;
+> +               mask = vdt & 0x3;
+> +
+>                 err = vcap_rule_add_key_u32(st->vrule,
+>                                             VCAP_KF_L3_FRAGMENT_TYPE,
+>                                             value, mask);
+> --
+> 2.43.0
+> 
 
-This is also why I converted two calls here to dev_dbg. But read on
-first.
+Checkpatch is producing a warning about the placement of the version
+information of the patch. Might as well fix this while at it.
 
-> It's still good, but if we want to be strict, errors should
-> print errors: as we are returning -ETIMEDOUT, then we are
-> treating the case as an error and we should print error.
+Thanks,
 
-I strongly disagree. While we use an errno, we don't know if this is a
-real error yet. It is more a return value saying that the transfer timed
-out. The client driver knows. For some I2C clients this may be an error,
-but for an EEPROM this might be an "oh, it might still be erasing a
-page, let's try again after some defined delay".
-
-Think of 'i2cdetect': If we printout something in the -ENXIO case (no
-device responded to the address), the log file would have more than 100
-entries on a typical I2C bus. Although we know that -ENXIO will be the
-majority of cases and are fine with it.
-
-> As you did before, I would just remove the printout here.
-
-Maybe we could because there is still the "Terminating the current
-operation" string as debug message making the code flow still clear.
-
-> I will wait a bit for more comments and take patches 1 to 5 so
-> that I can unburden you a little from them.
-
-The patches have no dependencies. To keep mail traffic low, I suggest
-you continue reviewing and I only resend the i801 patch?
-
-Happy hacking,
-
-   Wolfram
-
-
---j6qt37qfsj4aexfx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYXixwACgkQFA3kzBSg
-KbZNVhAAlFgAEIg426rC7dki0Z759Q8EEARoqJcP/hRA+zOl/JQJ7z9uN7iZ5kNB
-aJBMkyZ89ULzpwgtNnQaumua6M/VtQFJuJmnk1157Ff1MRq/nEA29q6botELWFoi
-Gu2q2/iZbGf4rNn7CKhCEaPXedKo9g3546S2Dj+xyfGZSTGTjCJ0nlTl+1HraBYy
-+OobuaFyQu8TYspodNKiPEiIzfHEtaKOwuWHeUAg5pTJvosYKJhIJqipmG2i6yV4
-lTqMdIuCFoTPTygtV/Pykl5raLeyIhsH+zOPitafqHkpgP6pD9RKXoVwni6MMbMH
-jKTBWInAhHohyn9IjO9RiwjPs2pmnzfcWwXrjNnJjJtuohFeYZ0YZeYDYW7dlGnl
-WZyG+p66Fl51jDwIGIk97UEiG5GagsYXlIzD/iU89AeVdCcLVed14MgcLcDKIElU
-NUslAX2K2EtyydwVaJETGrIRN8OSFrCjQBm/VG4mEJkBB89AOM9T0ZkfANAfJpLO
-MeA1Hp4+bNLrvfBNPtWTgpXa7bipUDVuUNyoIGO/BqdRl5wLT+wfsz+u6XWHkPLw
-pqJWWcxwBxT/STxxuYkRBD65OPCV/zphq7HoEgf186ry1BFwVnFpohBSL09bu9Lc
-gKZ+UF9IQl7MQI3Jl1FwtYs+JC1c4b7WaKfG8GwZsRdqY0K/dX0=
-=1D6q
------END PGP SIGNATURE-----
-
---j6qt37qfsj4aexfx--
+/Daniel
 
