@@ -1,80 +1,86 @@
-Return-Path: <linux-kernel+bounces-139849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5B218A0866
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A82D8A0868
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:24:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A98B282557
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:23:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5642D281CAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14FC213CABF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB0D113CFAD;
 	Thu, 11 Apr 2024 06:23:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="hdisWQP0"
-Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com [209.85.215.193])
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="T6mAtzEW"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ACA913CAAC;
-	Thu, 11 Apr 2024 06:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C213F13BAD2
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:23:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712816621; cv=none; b=k3DvflMovpfb3hTiMgYvK/Gxzn/EZ0RkrqM4bT2n69W2QgIJ9HlVrHmraKg9feN2uqjSMOQma9I1B/oYEXqD0PSHsPataYIQ/cgy0VSC5jFd4CMxWDfiuJWfa7g/C6fLfGvfmBaWJXRnlyxsQMwmRd1uOt4mSuA5jvviHvG9mXM=
+	t=1712816622; cv=none; b=qzxaeN/8NdZg99s1rtARciGZqM90BZVl+/NNjtEUe2q3zuTS21cteCtddENrl7QNWLJshUGeLhMAGTEOtOJihJ/sE7VS3gcLgm6cNPA5WaLCeIYLYEpkRYyrwJaE5C7rxzRaguNzrez6NBi0XjVYeohzYeLM7W79jxnHTnYVx0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712816621; c=relaxed/simple;
-	bh=PI/yoly0ja/wD+mrJaF2beuTcjYkBhuye/nuL5dosq0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=hpbX3mwbh9DQdT2AtHf8WgVuDVZib15lclEsT7B5Bt3ru4B+nmqwy5kVcCXk4x+xOaunTiMTTwwyhpxfcV6/EVhrTHBcG/0yLRAs9Q4Vtd4h30NV8PmDjKtXb1V3yn+zPpyRvJuqgspSf3s7+efOlTP/IGa2xYdCVMhpQ/H6iH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=fail (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=hdisWQP0 reason="signature verification failed"; arc=none smtp.client-ip=209.85.215.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f193.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso4319853a12.2;
-        Wed, 10 Apr 2024 23:23:39 -0700 (PDT)
+	s=arc-20240116; t=1712816622; c=relaxed/simple;
+	bh=pTWLQpW9RVU2IjRukXzUGYvxyE+olS3ZH5i76ahO8P4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mg2pVJWc7D16iF6sCLbs1z/dsbNrsQjZms+44FCg1DehUIFJpMBicu7h0/rnenU3NBhhfcorhNj45RETNkTC0a5mOhEHtmDB0brtJ3pJSkksYBMCInggYK4Rj8HOYQrRiFaK6JkjVVm+Z96vvtalX+zrYJNWP1eI6jT+jG6Gtk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=T6mAtzEW; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d094bc2244so80529071fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:23:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1712816617; x=1713421417; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5lZTFJACV3+JbwVwRwvE8FlPJbh+9wi0aUKAYU88cAc=;
+        b=T6mAtzEWsvSFJVelBAO7GMLtShyCwYgw93Sd4XzMlA7pTPehBzOzvgGmGoujqOsfaY
+         DcXLdd5Xp/rVL0SfK2aJjjtyxFFXDkV/77t6VqrpFXzgQ9lgkE0Czj18Mh1Ky+lsMHaC
+         Ps03teF3bWvkeoWB6c5dzJVHbif5V5xg9i3b+v+EJUcKIo8f1bKQMAoeqFT8Gs16hT43
+         6aqQIsmm3I5/fV1PnSMWFV3d0SUVeU9fKcCsr4/DEGl4EyebTqInsDJC8xIpVuvkb4PX
+         QTkx7ppU71r8Z/zTyl+TP6tcEsyvIZgzm9lfcJ/ANh0jAVg5ZbzOT2cSe1JCGJ/udZKJ
+         1Yvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712816619; x=1713421419;
-        h=content-transfer-encoding:list-id:precedence:user-agent
-         :content-disposition:mime-version:dkim-signature:dkim-filter
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3FitmIA2UZfLX12w+GgNlpA8LypqXtGt2xvta/9soZ4=;
-        b=f1atEv6UClB/rz9d4HGixRsbaO+djrTgeOHXuKIw91qigtl4xDkKJtvQtIDcgnrgaO
-         yxPae+qxtqfN+GHEuqw9r0NIuXczRhIJV0CSMHBpYhsdDcyxCAe58fSMIE2l3hLHMbAc
-         +ioDtLCE2TKCL2CUjD70YsKz8gn57aXPj97NE/lxO5T5laad6hU+t6dXfUCx9yBNwNSc
-         eOfR6pUMkYZAh5wZUK5xV9UJZ7PPjdMbVT99LMRJFoYMw4PZerdRkudiP8SBfNecf9K7
-         ym6W8d677VAd1/n10oS0vp2konSoVQuXxTRYuRLFIbq5D0A2vJXJkkbbtkuRy9FvX8P2
-         lRqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV/YKfWfxw+Y6grFqAJ6oNjghiXcnFoG7ECiJStPcez/AmJG3C2xAWtnmsxIaukzS0JCJm4CKTmSdrmYLbdcBB3xS31TxnxUZ2E2XjPiquncdnL1FGAb2LMasNc5UKwawxViRQ0
-X-Gm-Message-State: AOJu0YwNWlwtS4/pUKSKjFWhrvvDgmV1gIPb4kq3NrC4P2q12wFsuOy7
-	cLXrpo0RDlFtkdy9yYGP0LTf96LRWtVsF/zAMqEgtj2n953X9ukr
-X-Google-Smtp-Source: AGHT+IE2eVIH19guaxz2Hz8Fmdd9CEks2//rtuIXdj1sjEU2s+j0olymAQfdw69z/Mjvv5vn3Z9xsg==
-X-Received: by 2002:a05:6a21:8805:b0:1a3:648e:dacf with SMTP id ta5-20020a056a21880500b001a3648edacfmr5878496pzc.35.1712816618691;
-        Wed, 10 Apr 2024 23:23:38 -0700 (PDT)
-Received: from localhost.localdomain ([240e:604:203:6020:615f:9a36:c815:b2d5])
-        by smtp.gmail.com with ESMTPSA id z13-20020a170903018d00b001e22860c32asm525758plg.143.2024.04.10.23.23.33
+        d=1e100.net; s=20230601; t=1712816617; x=1713421417;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5lZTFJACV3+JbwVwRwvE8FlPJbh+9wi0aUKAYU88cAc=;
+        b=b2+ow9+d1hRQZhwrSYY81nuuAB/nmuWMwHf4+IhIndF0cnCxOwo1N8gVjrl8zQBdgd
+         7j+20DAX4skLBMgVGQHzLoeoroWFsJxdXvoVdQnJD4PTlTZ/ps20BwbwQWLO0fgAHkdH
+         xiW6kZcNXvPZQ2XIxF1VZ7niLDf1EnZUMHa0eZfskmIoEf9gklPL6ahFt1HXq1/EazgG
+         g6HmXMtUeBYY9+A8hPcpEZU2nRuylgSPV5bBuEuQKgZglxNWda03iBGrQYCuRUtQSKl0
+         MhnP8qYofsVKhMqaIwXtUNTZWP8OTzsFGb07k425eTBQlwk3AFBlSDsCJNp2myqcQ4lm
+         qC3w==
+X-Forwarded-Encrypted: i=1; AJvYcCUL89JgDNjRv5ruZQjOz5ZOy1Crbgng2BPQrmNi062KqHHCzwWCqcg46tBQMU+wth2iRubw9Kkycox8vDeqUxPB9m8P7/PT9Q/vbSIe
+X-Gm-Message-State: AOJu0YwZwdeSl99rhCOzbbYGeqlAm0+XiZO8hP51X9gUuNlZNEcAtYsb
+	6xpqwn2PldpZ2EXISOuUrBjUO62Zz/+hlxN8Tgmng4FMQSPcruQm1UTqN+A3mUA=
+X-Google-Smtp-Source: AGHT+IFkIcdj47hwnqrwRBDPoFbtpCm6hEqmTe7HSx9TotuKs4UPXIr2bhVJ1LAxUHsvGfGv5Jcuqg==
+X-Received: by 2002:a2e:a413:0:b0:2d6:a5f6:c8d3 with SMTP id p19-20020a2ea413000000b002d6a5f6c8d3mr2822772ljn.27.1712816617380;
+        Wed, 10 Apr 2024 23:23:37 -0700 (PDT)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id n39-20020a05600c502700b00417e3695371sm70793wmr.33.2024.04.10.23.23.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 23:23:38 -0700 (PDT)
-From: dracoding <dracodingfly@gmail.com>
-To: eric.dumazet@gmail.com
-Cc: edumazet@google.com,
-	herbert@gondor.apana.org.au,
-	jpiotrowski@linux.microsoft.com,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	seh@panix.com
-Subject: Re: kernel BUG at net/core/skbuff.c:4219
-Date: Thu, 11 Apr 2024 14:23:21 +0800
-Message-Id: <20221021100022.GA31916@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-X-Mailer: git-send-email 2.32.1 (Apple Git-133)
-In-Reply-To: <194f6b02-8ee7-b5d7-58f3-6a83b5ff275d@gmail.com>
-References: <20221011165611.GA8735@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net> <194f6b02-8ee7-b5d7-58f3-6a83b5ff275d@gmail.com>
-Received: from vger.kernel.org (vger.kernel.org [23.128.96.18]) by smtp.lore.kernel.org (Postfix) with ESMTP id 01ADEC433FE for <netdev@archiver.kernel.org>; Fri, 21 Oct 2022 10:00:26 +0000 (UTC)
-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand id S230090AbiJUKAZ (ORCPT <rfc822;netdev@archiver.kernel.org>); Fri, 21 Oct 2022 06:00:25 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182]) by lindbergh.monkeyblade.net (Postfix) with ESMTP id C0D35108243; Fri, 21 Oct 2022 03:00:22 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1112) id 8718020FEB47; Fri, 21 Oct 2022 03:00:22 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8718020FEB47
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com; s=default; t=1666346422; bh=cYIKrJC5k/BBGSDjkeleD8TAE2cOUtwAK2AhJ6I3N70=; h=Date:From:To:Cc:Subject:References:In-Reply-To:From; b=hdisWQP0XbRm7V//OZw98Klj2Eptp2S5qfDXKyYQnxfJI5B8/vRPoF9cO8Hfj+f87 b3mxQXv2+IFnljFKLraeHSY7JBrEaJoF5pzCGPtFa0Urct+UD6tp3RbcwqnJmeQZK+ szLD6Gn/ErNJVla2zTQVr2cJfGQFx5VsM4DhYrZw=
+        Wed, 10 Apr 2024 23:23:36 -0700 (PDT)
+Date: Thu, 11 Apr 2024 08:23:35 +0200
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jijie Shao <shaojijie@huawei.com>
+Cc: yisen.zhuang@huawei.com, salil.mehta@huawei.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	horms@kernel.org, rkannoth@marvell.com, shenjian15@huawei.com,
+	wangjie125@huawei.com, liuyonglong@huawei.com,
+	chenhao418@huawei.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V7 net-next 4/4] net: hns3: add support to query scc
+ version by devlink info
+Message-ID: <ZheB58bjmkFzIEbG@nanopsycho>
+References: <20240410125354.2177067-1-shaojijie@huawei.com>
+ <20240410125354.2177067-5-shaojijie@huawei.com>
+ <ZhapUja4xXiJe4Q2@nanopsycho>
+ <16347737-f0ac-4710-85ee-189abed59d6b@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,106 +89,57 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
-Precedence: bulk
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <16347737-f0ac-4710-85ee-189abed59d6b@huawei.com>
 
-From: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-
-> On Tue, Oct 11, 2022 at 10:57:05AM -0700, Eric Dumazet wrote:
-> > 
-> > On 10/11/22 09:56, Jeremi Piotrowski wrote:
-> > >Hi,
-> > >
-> > >One of our Flatcar users has been hitting the kernel BUG in the subject line
-> > >for the past year (https://github.com/flatcar/Flatcar/issues/378). This was
-> > >first reported when on 5.10.25, but has been happening across kernel updates,
-> > >most recently with 5.15.63. The nodes where this happens are AWS EC2 instances,
-> > >using ENA and calico networking in eBPF mode with VXLAN encapsulation. When
-> > >GRO/GSO is enabled, the host hits this bug and prints the following stacktrace:
-> > 
-> > 
-> > I suspect eBPF code lowers gso_size ?
-> > 
-> > gso stack is not able to arbitrarily segment a GRO packet after
-> > gso_size being changed.
-> > 
-> > 
-> 
-> This was a good hint, see Tomas' response for some more observations.
-> 
-> This appears to still be happening with Calico v3.23 which started passing
-> BPF_F_ADJ_ROOM_FIXED_GSO to bpf_skb_adjust_room() on the decap (rx) path.
-> BPF_F_ADJ_ROOM_FIXED_GSO is not passed on the encap (tx) path. It is enough to
-> disable GRO to stop the BUG from being hit though, so there must be more going
-> on here ? (since the rx path does not change gso_size any longer).
+Thu, Apr 11, 2024 at 03:05:53AM CEST, shaojijie@huawei.com wrote:
 >
+>on 2024/4/10 22:59, Jiri Pirko wrote:
+>> Wed, Apr 10, 2024 at 02:53:54PM CEST, shaojijie@huawei.com wrote:
+>> > From: Hao Chen <chenhao418@huawei.com>
+>> > 
+>> > Add support to query scc version by devlink info for device V3.
+>> > 
+>> > Signed-off-by: Hao Chen <chenhao418@huawei.com>
+>> > Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+>> > ---
+>> > Documentation/networking/devlink/hns3.rst     |  3 ++
+>> > drivers/net/ethernet/hisilicon/hns3/hnae3.h   |  9 ++++
+>> > .../hns3/hns3_common/hclge_comm_cmd.h         |  8 ++++
+>> > .../hisilicon/hns3/hns3pf/hclge_devlink.c     | 44 +++++++++++++++++--
+>> > .../hisilicon/hns3/hns3pf/hclge_devlink.h     |  2 +
+>> > .../hisilicon/hns3/hns3pf/hclge_main.c        | 18 ++++++++
+>> > .../hisilicon/hns3/hns3pf/hclge_main.h        |  1 +
+>> > 7 files changed, 82 insertions(+), 3 deletions(-)
+>> > 
+>> > diff --git a/Documentation/networking/devlink/hns3.rst b/Documentation/networking/devlink/hns3.rst
+>> > index 4562a6e4782f..e19dea8ef924 100644
+>> > --- a/Documentation/networking/devlink/hns3.rst
+>> > +++ b/Documentation/networking/devlink/hns3.rst
+>> > @@ -23,3 +23,6 @@ The ``hns3`` driver reports the following versions
+>> >     * - ``fw``
+>> >       - running
+>> >       - Used to represent the firmware version.
+>> > +   * - ``fw.scc``
+>> What's scc? I don't see it described anywhere.
+>
+>diff --git a/Documentation/networking/devlink/hns3.rst b/Documentation/networking/devlink/hns3.rst
+>index 4562a6e4782f..e19dea8ef924 100644
+>--- a/Documentation/networking/devlink/hns3.rst
+>+++ b/Documentation/networking/devlink/hns3.rst
+>@@ -23,3 +23,6 @@ The ``hns3`` driver reports the following versions
+>    * - ``fw``
+>      - running
+>      - Used to represent the firmware version.
+>+   * - ``fw.scc``
+>+     - running
+>+     - Used to represent the soft congestion control firmware version.
+>
+>scc means "soft congestion control"
 
-Hi,
+I guess this is something specific to your device, isn't it? Can't you
+please extend the description a bit more?
 
-I encountered a similar error. The calico version is v3.24.5.
-It was crash at BUG_ON(skb_headlen(list_skb) > len) with the following stacktrace.
-But i don't konw how to reproduce it.
+Thanks!
 
-    [exception RIP: skb_segment+3016]
-    RIP: ffffffffb97df2a8  RSP: ffffa3f2cce08728  RFLAGS: 00010293
-    RAX: 000000000000007d  RBX: 00000000fffff7b3  RCX: 0000000000000011
-    RDX: 0000000000000000  RSI: ffff895ea32c76c0  RDI: 00000000000008c1
-    RBP: ffffa3f2cce087f8   R8: 000000000000088f   R9: 0000000000000011
-    R10: 000000000000090c  R11: ffff895e47e68000  R12: ffff895eb2022f00
-    R13: 000000000000004b  R14: ffff895ecdaf2000  R15: ffff895eb2023f00
-    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
- #9 [ffffa3f2cce08720] skb_segment at ffffffffb97ded63
-#10 [ffffa3f2cce08800] tcp_gso_segment at ffffffffb98d0320
-#11 [ffffa3f2cce08860] tcp4_gso_segment at ffffffffb98d07a3
-#12 [ffffa3f2cce08880] inet_gso_segment at ffffffffb98e6de0
-#13 [ffffa3f2cce088e0] skb_mac_gso_segment at ffffffffb97f3741
-#14 [ffffa3f2cce08918] skb_udp_tunnel_segment at ffffffffb98daa59
-#15 [ffffa3f2cce08980] udp4_ufo_fragment at ffffffffb98db471
-#16 [ffffa3f2cce089b0] inet_gso_segment at ffffffffb98e6de0
-#17 [ffffa3f2cce08a10] skb_mac_gso_segment at ffffffffb97f3741
-#18 [ffffa3f2cce08a48] __skb_gso_segment at ffffffffb97f388e
-#19 [ffffa3f2cce08a78] validate_xmit_skb at ffffffffb97f3d6e
-#20 [ffffa3f2cce08ab8] __dev_queue_xmit at ffffffffb97f4614
-#21 [ffffa3f2cce08b50] dev_queue_xmit at ffffffffb97f5030
-#22 [ffffa3f2cce08b60] __bpf_redirect at ffffffffb98199a8
-#23 [ffffa3f2cce08b88] skb_do_redirect at ffffffffb98205cd
-#24 [ffffa3f2cce08bb8] __netif_receive_skb_core at ffffffffb97f6585
-#25 [ffffa3f2cce08c68] __netif_receive_skb_list_core at ffffffffb97f6c0a
-#26 [ffffa3f2cce08ce8] netif_receive_skb_list_internal at ffffffffb97f6f6a
-#27 [ffffa3f2cce08d60] gro_normal_list at ffffffffb97f717e
-#28 [ffffa3f2cce08d80] gro_normal_one at ffffffffb97f721c
-#29 [ffffa3f2cce08db8] napi_gro_complete at ffffffffb97f72ac
-#30 [ffffa3f2cce08de0] napi_gro_flush at ffffffffb97f73c1
-#31 [ffffa3f2cce08e30] napi_complete_done at ffffffffb97f7d1e
-#32 [ffffa3f2cce08e60] ice_napi_poll at ffffffffc0477dd6 [ice]
-#33 [ffffa3f2cce08ec0] __napi_poll at ffffffffb97f823e
-#34 [ffffa3f2cce08ef0] net_rx_action at ffffffffb97f86f1
-#35 [ffffa3f2cce08f70] __softirqentry_text_start at ffffffffb9e000dd
-#36 [ffffa3f2cce08fd8] irq_exit_rcu at ffffffffb9096074
-#37 [ffffa3f2cce08ff0] common_interrupt at ffffffffb9a3272a
-
-the gso_size is 75 which may subtract 50(the vxlan head length) by bpf_skb_adjust_room?。
-the frag_list has one element which head_frag is 1. the skb_shared_info struct is as following.
-
-struct skb_shared_info {
-    nr_frags = 17 '\021', 
-    gso_size = 75, 
-    gso_segs = 0, 
-    frag_list = 0xffff895eb2022f00, 
-    gso_type = 1035, 
-    destructor_arg = 0x2d656c6261747372, 
-    frags = {{
-        bv_page = 0xfffff80e86d4d180, 
-        bv_len = 125, 
-        bv_offset = 2306
-      },
-    ....
-    }
-}
-
-If anyone has any suggestions excepth disabling GRO/GSO. The BPF_F_ADJ_ROOM_FIXED_GSO flag 
-can be enabled on the encap path? I‘d love to provide more information if you need.
-
-fred
+>
 
