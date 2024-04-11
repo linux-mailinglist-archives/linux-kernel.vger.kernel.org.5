@@ -1,39 +1,40 @@
-Return-Path: <linux-kernel+bounces-139619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8D9D8A056F
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 518E18A056E
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:26:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E71DD1C22994
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:26:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CCB55B2494B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:26:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06B12627E2;
-	Thu, 11 Apr 2024 01:26:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAF9A62171;
+	Thu, 11 Apr 2024 01:26:26 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8120360DD3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A0329463;
 	Thu, 11 Apr 2024 01:26:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712798786; cv=none; b=n3SPRQPdOzsDA/r4BS/ofxTuzXghLEcQFsmbVAvmzAt29sAqNapWT+N+G8TIyeWiTAGPFOpBYffO7POA4DTQK1H2r7e1Zw6cTIYFmuUF8fZwjJIXgjR7jD1meUGQonnTQU3+K0tjCkkQdg/qmslNsLPlo89Jx9hZNpgqOesGvlc=
+	t=1712798786; cv=none; b=TJbQ2EH6RnQg49VrmDrBbINZDVjiKYNOLPkJYrzEIe+yDd50lmOe7zM5T5+4QVdIjs9e+mdfx/oJx8NmpvfwCk5x1Q0eMDNZHmW74sU1TQPX98XMwoQGfCvBvtWGqzb6SnidXYb/D3PpIfO7qDXEjq25nFmUpMvN2YPahpcFphg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712798786; c=relaxed/simple;
-	bh=KPoDWQ9hvCZiBeldTjLP52gzqCk/sQ42RdM0IR1xDk0=;
-	h=Message-ID:Date:From:To:Cc:Subject; b=J8Hk5INFDvTzMT6RuGOcgRvWAEfnzsCEy0lh+P78QaK++AuJyeT0+U89WLxWmzYxwR2WYnUewXiDOCdtfwqu0Cux9IA4yQvnRJ5Htd+sQm/Hu73aHKyBzadsUB1zCdLss4CHwz/yF6eFfufNSWBVBspQpN2uW3qh35V2ZNLfCjc=
+	bh=IlPKCSnTXcWRdfMJfl+v4+6ZAFaukIF1oqLA7Iz3tPQ=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type; b=dgFNw6jujPlUW0MTFLiGqZTkvg4jE2Dohzj/AbDKs8SlJovOeJd8o7KNRyM8PGMwxIHYt+9Cl2yiG/uHzc3Y30qqoPYsHjKXqYH7oyUhqFavhoCb3xn9imMLrHi0Fsv3W5qDpKizIX1ec7efzgIO3RZY+JzzejPTdO46Zj1Fx0Y=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01537C433F1;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F270DC433C7;
 	Thu, 11 Apr 2024 01:26:25 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rujFQ-00000000nTy-0sQj;
+	id 1rujFQ-00000000nUT-1Z1D;
 	Wed, 10 Apr 2024 21:29:04 -0400
-Message-ID: <20240411012541.285904543@goodmis.org>
+Message-ID: <20240411012904.237435058@goodmis.org>
 User-Agent: quilt/0.67
-Date: Wed, 10 Apr 2024 21:25:41 -0400
+Date: Wed, 10 Apr 2024 21:25:42 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org
@@ -56,117 +57,81 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Borislav Petkov <bp@alien8.de>,
  "Paul E. McKenney" <paulmck@kernel.org>,
  David Howells <dhowells@redhat.com>
-Subject: [PATCH v2 00/11] tracing: Persistent traces across a reboot or crash
+Subject: [PATCH v2 01/11] ring-buffer: Allow mapped field to be set without mapping
+References: <20240411012541.285904543@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+
+In preparation for having the ring buffer mapped to a dedicated location,
+which will have the same restrictions as user space memory mapped buffers,
+allow it to use the "mapped" field of the ring_buffer_per_cpu structure
+without having the user space meta page mapping.
+
+When this starts using the mapped field, it will need to handle adding a
+user space mapping (and removing it) from a ring buffer that is using a
+dedicated memory range.
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/ring_buffer.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index 793ecc454039..44b1d5f1a99a 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -5223,6 +5223,9 @@ static void rb_update_meta_page(struct ring_buffer_per_cpu *cpu_buffer)
+ {
+ 	struct trace_buffer_meta *meta = cpu_buffer->meta_page;
+ 
++	if (!meta)
++		return;
++
+ 	meta->reader.read = cpu_buffer->reader_page->read;
+ 	meta->reader.id = cpu_buffer->reader_page->id;
+ 	meta->reader.lost_events = cpu_buffer->lost_events;
+@@ -6167,7 +6170,7 @@ rb_get_mapped_buffer(struct trace_buffer *buffer, int cpu)
+ 
+ 	mutex_lock(&cpu_buffer->mapping_lock);
+ 
+-	if (!cpu_buffer->mapped) {
++	if (!cpu_buffer->mapped || !cpu_buffer->meta_page) {
+ 		mutex_unlock(&cpu_buffer->mapping_lock);
+ 		return ERR_PTR(-ENODEV);
+ 	}
+@@ -6345,12 +6348,13 @@ int ring_buffer_map(struct trace_buffer *buffer, int cpu,
+ 	 */
+ 	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
+ 	rb_setup_ids_meta_page(cpu_buffer, subbuf_ids);
++
+ 	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
+ 
+ 	err = __rb_map_vma(cpu_buffer, vma);
+ 	if (!err) {
+ 		raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
+-		cpu_buffer->mapped = 1;
++		cpu_buffer->mapped++;
+ 		raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
+ 	} else {
+ 		kfree(cpu_buffer->subbuf_ids);
+@@ -6388,7 +6392,7 @@ int ring_buffer_unmap(struct trace_buffer *buffer, int cpu)
+ 	mutex_lock(&buffer->mutex);
+ 	raw_spin_lock_irqsave(&cpu_buffer->reader_lock, flags);
+ 
+-	cpu_buffer->mapped = 0;
++	cpu_buffer->mapped--;
+ 
+ 	raw_spin_unlock_irqrestore(&cpu_buffer->reader_lock, flags);
+ 
+-- 
+2.43.0
 
 
-This is a way to map a ring buffer instance across reboots.
-The requirement is that you have a memory region that is not erased.
-I tested this on a Debian VM running on qemu on a Debian server,
-and even tested it on a baremetal box running Fedora. I was
-surprised that it worked on the baremetal box, but it does so
-surprisingly consistently.
-
-I changed things up since the POC version (which this is no longer
-a proof of concept, but now a serious patch set).
-
-  https://lore.kernel.org/linux-trace-kernel/20240306015910.766510873@goodmis.org/
-
-I got rid of the variables that needed to be set:
-
-  trace_buffer_start and trace_buffer_size
-
-The allocation of the mapping require a new interface (not in this
-patch set yet, as it will be added for pstore or the wildcard
-memmap that is under RFC). That is, either a new patch will be
-added to connect pstore, or if the new wildcard memmap option is
-accepted, it can be created with:
-
-  memmap=12M*4096:trace  trace_instance=boot_mapped@trace
-
-But that is to come later. If you want to test this code, I have
-the command line version available at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-  branch: trace/ring-buffer-prealloc
-
-The name of the instance no longer defined by the kernel but by
-the calling code.
-
-The memory reserved is used by the ring buffer of this instance.
-It acts like a memory mapped instance so it has some limitations. It does not
-allow snapshots nor does it allow tracers which use a snapshot buffer (like
-irqsoff and wakeup tracers).
-
-On boot up, when setting up the ring buffer, it looks at the current
-content and does a vigorous test to see if the content is valid.
-It even walks the events in all the sub-buffers to make sure the
-ring buffer meta data is correct. If it determines that the content
-is valid, it will reconstruct the ring buffer to use the content
-it has found.
-
-If the buffer is valid, on the next boot, the boot_mapped instance
-will contain the data from the previous boot. You can cat the
-trace or trace_pipe file, or even run trace-cmd extract on it to
-make a trace.dat file that holds the date. This is much better than
-dealing with a ftrace_dump_on_opps (I wish I had this a decade ago!)
-
-There are still some limitations of this buffer. One is that it assumes
-that the kernel you are booting back into is the same one that crashed.
-At least the trace_events (like sched_switch and friends) all have the
-same ids. This would be true with the same kernel as the ids are determined
-at link time.
-
-Module events could possible be a problem as the ids may not match.
-
-This version of the patch series saves a text function and a data
-string address in the persistent memory, and this is used to calculate
-the delta between text and data addresses of the new boot up. Now
-function tracing and "%pS" still work across boots. Even the RCU
-trace events that point to static strings work as well!
-
-The delta is exported by a new file in the instance called "last_boot_info"
-that has something like this:
-
-     # cat last_boot_info
-     text delta:    -268435456
-     data delta:    -268435456
-
-This can be used by trace-cmd that reads the trace_pipe_raw data and
-now can figure out how to map the print_formats and kallsyms to the raw
-data in the buffers.
-
-This is no longer a POC as it seems to be working as expected.
-
-This is based on top of Vincent Donnefort's ring buffer user space mapping code:
-
-  https://lore.kernel.org/linux-trace-kernel/20240406173649.3210836-1-vdonnefort@google.com/
-
-Enjoy...
-
-
-Steven Rostedt (Google) (11):
-      ring-buffer: Allow mapped field to be set without mapping
-      ring-buffer: Add ring_buffer_alloc_range()
-      ring-buffer: Add ring_buffer_meta data
-      tracing: Implement creating an instance based on a given memory region
-      ring-buffer: Add output of ring buffer meta page
-      ring-buffer: Add test if range of boot buffer is valid
-      ring-buffer: Validate boot range memory events
-      ring-buffer: Save text and data locations in mapped meta data
-      tracing/ring-buffer: Add last_boot_info file to boot instance
-      tracing: Handle old buffer mappings for event strings and functions
-      tracing: Update function tracing output for previous boot buffer
-
-----
- include/linux/ring_buffer.h |  20 ++
- kernel/trace/ring_buffer.c  | 837 ++++++++++++++++++++++++++++++++++++++++----
- kernel/trace/trace.c        | 167 ++++++++-
- kernel/trace/trace.h        |   7 +
- kernel/trace/trace_output.c |   9 +-
- 5 files changed, 953 insertions(+), 87 deletions(-)
 
