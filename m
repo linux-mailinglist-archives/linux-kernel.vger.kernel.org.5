@@ -1,121 +1,198 @@
-Return-Path: <linux-kernel+bounces-141486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 023FD8A1ED5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:45:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0302F8A1EDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:46:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE2161F2B472
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:45:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABEBB28B203
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:46:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54CB8205E2F;
-	Thu, 11 Apr 2024 18:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 489EF14AB4;
+	Thu, 11 Apr 2024 18:45:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marcan.st header.i=@marcan.st header.b="SxfDLmbn"
-Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p3B6pkBa"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB5E315E88
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:43:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.63.210.85
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 685D314A9F;
+	Thu, 11 Apr 2024 18:45:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712861027; cv=none; b=TVZNE49AqQmQm3BtYjJenEjWl4Gb0bKzZfgH5jh8jXpwlSKKy7TODV2ZHua+6AEXxqS21LEQ9tSErQOf2uY8uD6h1VedF+B7ghvBwkAWnvtJA8plppWzuaWjzRPmB3O4UjbDTEESyeLlH05/5wMrCaTa+dD95pO2VH1FMAOZ8jM=
+	t=1712861150; cv=none; b=HcyuPN3rNShttYycCZrJsdmmeYPz628JFwxGhlTYlRMQmouOpjKE5lFZOcQ+HIS195fHkxIg0KJdUrJurAMtwkebE5UQTW8+E+zxBUKXpQ7SONqtRPc8zzLiMBCvfBNRZgACSs33by7LzroRWus/2ZmbRn7lW5DO4/5toRAhljs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712861027; c=relaxed/simple;
-	bh=a3JvUEhgYK+th3NCl2xP4vXg/lpXBSLqgc8nLV72rpU=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=nmBr969aRNWhXgNzpLhMIlw2aEw9BDl78QFRs+VW5qP6+yHKgd/zCSYICYrfPdweqXgACcZ6Hekz0CAarpQ4OwWAaaeYY67Ezm41PTX0pi+aThsWsDwSZgftiWrtQWaMzIcD6xE7498Q2OI7pPBtcmOYqbqZpxr0JC2Vo+M/SW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=marcan.st; spf=pass smtp.mailfrom=marcan.st; dkim=pass (2048-bit key) header.d=marcan.st header.i=@marcan.st header.b=SxfDLmbn; arc=none smtp.client-ip=212.63.210.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=marcan.st
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marcan.st
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: marcan@marcan.st)
-	by mail.marcansoft.com (Postfix) with ESMTPSA id 162A24269B;
-	Thu, 11 Apr 2024 18:43:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
-	t=1712861022; bh=a3JvUEhgYK+th3NCl2xP4vXg/lpXBSLqgc8nLV72rpU=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To;
-	b=SxfDLmbn4C0FHradf1Xvj6eoisfqZiNOMVhNdxdgHo1NXlIB/dbWS/wzj7bn6DGW/
-	 NTt6SGUM8bZrQe1tL93LuYhRW67a4Imuzypj7Kyz8L5KRHP0KQqoTXOLfWYVI7bvAe
-	 M+fdkh7Z1E0OnNt1boNhIk7u9FsTO0sAekynhELR0de5yFs2lr1xtmxYdeDa6pehzF
-	 LKJiq4QJpwlqoQ+p63rnkcUDDB/Lo/UPQrqmsa+qVuYvSLpezbl3c9OIl/YtYiEgD+
-	 sOsykq2DUWdG71dSOs48cNQHSHF+9gaFcPhQ8Kyp0Uu/YkyzblwkZj7kL+KuaSH0MS
-	 TcEp9qwJBnqDw==
-Message-ID: <f6484dcd-ebf6-4b6f-be17-69b05539e33b@marcan.st>
-Date: Fri, 12 Apr 2024 03:43:36 +0900
+	s=arc-20240116; t=1712861150; c=relaxed/simple;
+	bh=3J9KwOZ8VsQ0/GJ7lg9iQ4h/nYIgnKWTHARE6B+5FCo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=jSsnRCjb4+L3e46L4S2MxMZE6dxqToMbfwi2t2Fz9FFw/rrEfyB8qodnQAiadCqWeiqMf/5UxA/92CGqXGJyECfyxLqaF5SR/GGyCMGBZka4H4okkmJW+0k7SQre2cXVT0PzfdEwqTn7NtwbqqnlnKlBlyVl8UHCennTC2RbL+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p3B6pkBa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F0F5C072AA;
+	Thu, 11 Apr 2024 18:45:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712861150;
+	bh=3J9KwOZ8VsQ0/GJ7lg9iQ4h/nYIgnKWTHARE6B+5FCo=;
+	h=From:Date:Subject:To:Cc:From;
+	b=p3B6pkBaCq00VhNmJ52+mGzQlu8zn1zqfs+z97qHqFk0h3vwoeMThLDKndm10X8kU
+	 wMzURSiapu5/IiVqMuEaGb5RBdkp/bS1wRCfOAzmAugCs+KUaQhuN6jgEnc2Tg4YHE
+	 sV5YVGRQSNSLu3oq98xbAFLP35RVKqZ1S84mHoPcuzzuH3Yh98NhNfLKqf10DoVOb4
+	 KJQJHF+vLun7Wl1+27WUkY+PWNmCwHR9bEM5YKpSBTsIMQGpjnwVIcorqammL/1YFv
+	 sVS9BMX38YQkOrvWLvaHnH0Rzelf4BAAjA/rwxaEwTqjN6dO7xrPVTLmVIgE7AmoX3
+	 D0LQlJLz1Q2fA==
+From: Nathan Chancellor <nathan@kernel.org>
+Date: Thu, 11 Apr 2024 11:45:40 -0700
+Subject: [PATCH] kselftest: Mark functions that unconditionally call exit()
+ as __noreturn
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] arm64: Support the TSO memory model
-From: Hector Martin <marcan@marcan.st>
-To: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Zayd Qumsieh <zayd_qumsieh@apple.com>,
- Justin Lu <ih_justin@apple.com>, Ryan Houdek <Houdek.Ryan@fex-emu.org>,
- Mark Brown <broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
- Mateusz Guzik <mjguzik@gmail.com>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Oliver Upton <oliver.upton@linux.dev>, Miguel Luis <miguel.luis@oracle.com>,
- Joey Gouly <joey.gouly@arm.com>, Christoph Paasch <cpaasch@apple.com>,
- Kees Cook <keescook@chromium.org>, Sami Tolvanen <samitolvanen@google.com>,
- Baoquan He <bhe@redhat.com>, Joel Granados <j.granados@samsung.com>,
- Dawei Li <dawei.li@shingroup.cn>, Andrew Morton <akpm@linux-foundation.org>,
- Florent Revest <revest@chromium.org>, David Hildenbrand <david@redhat.com>,
- Stefan Roesch <shr@devkernel.io>, Andy Chiu <andy.chiu@sifive.com>,
- Josh Triplett <josh@joshtriplett.org>, Oleg Nesterov <oleg@redhat.com>,
- Helge Deller <deller@gmx.de>, Zev Weiss <zev@bewilderbeest.net>,
- Ondrej Mosnacek <omosnace@redhat.com>, Miguel Ojeda <ojeda@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Asahi Linux <asahi@lists.linux.dev>
-References: <20240411-tso-v1-0-754f11abfbff@marcan.st>
- <20240411132853.GA26481@willie-the-truck>
- <28ab55b3-e699-4487-b332-f1f20a6b22a1@marcan.st>
-Content-Language: en-US
-In-Reply-To: <28ab55b3-e699-4487-b332-f1f20a6b22a1@marcan.st>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240411-mark-kselftest-exit-funcs-noreturn-v1-1-b027c948f586@kernel.org>
+X-B4-Tracking: v=1; b=H4sIANMvGGYC/x3NQQqDQAxA0atI1gacQZjaqxQXgyZt0MaSjEUQ7
+ 96hy7f5/wQnE3K4NycYfcVl04rQNjC9sj4JZa6G2MW+60PAd7YFF6eVC3lBOqQg7zo56mZUdlM
+ Mab4xpzjklKGGPkYsx3/yGK/rB/dzO1p0AAAA
+To: tglx@linutronix.de, shuah@kernel.org
+Cc: oleg@redhat.com, anna-maria@linutronix.de, frederic@kernel.org, 
+ ndesaulniers@google.com, morbo@google.com, justinstitt@google.com, 
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ llvm@lists.linux.dev, patches@lists.linux.dev, 
+ John Stultz <jstultz@google.com>, Nathan Chancellor <nathan@kernel.org>
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5035; i=nathan@kernel.org;
+ h=from:subject:message-id; bh=3J9KwOZ8VsQ0/GJ7lg9iQ4h/nYIgnKWTHARE6B+5FCo=;
+ b=owGbwMvMwCUmm602sfCA1DTG02pJDGkS+nfLRXd8jN7zsOrXlfr8pKf94ef91P9yMPIvC+l/N
+ 7N9DUNvRykLgxgXg6yYIkv1Y9XjhoZzzjLeODUJZg4rE8gQBi5OAZhIbwUjw+WSvR4MHkZbA5s4
+ xZ9Upk1Xe1uvK624+ZxSvxb/hdtahowMq3Uas7P+O012m+8sZL3p9dw3u6ec8rpt+tJJOuaC4PU
+ qJgA=
+X-Developer-Key: i=nathan@kernel.org; a=openpgp;
+ fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
 
+After commit 6d029c25b71f ("selftests/timers/posix_timers: Reimplement
+check_timer_distribution()"), clang warns:
 
+  tools/testing/selftests/timers/../kselftest.h:398:6: warning: variable 'major' is used uninitialized whenever '||' condition is true [-Wsometimes-uninitialized]
+    398 |         if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor) != 2)
+        |             ^~~~~~~~~~~~
+  tools/testing/selftests/timers/../kselftest.h:401:9: note: uninitialized use occurs here
+    401 |         return major > min_major || (major == min_major && minor >= min_minor);
+        |                ^~~~~
+  tools/testing/selftests/timers/../kselftest.h:398:6: note: remove the '||' if its condition is always false
+    398 |         if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor) != 2)
+        |             ^~~~~~~~~~~~~~~
+  tools/testing/selftests/timers/../kselftest.h:395:20: note: initialize the variable 'major' to silence this warning
+    395 |         unsigned int major, minor;
+        |                           ^
+        |                            = 0
 
-On 2024/04/11 23:19, Hector Martin wrote:
->>
->> An alternative option is to go down the SPARC RMO route and just enable
->> TSO statically (although presumably in the firmware) for Apple silicon.
->> I'm assuming that has a performance impact for native code?
-> 
-> Correct. We already have this as a bootloader option, but it is not
-> desirable. Plus, userspace code still needs a way to *discover* that TSO
-> is enabled for correctness, so it can automatically decide whether to
-> use stronger or weaker instructions.
+This is a false positive because if uname() fails, ksft_exit_fail_msg()
+will be called, which unconditionally calls exit(), a noreturn function.
+However, clang does not know that ksft_exit_fail_msg() will call exit()
+at the point in the pipeline that the warning is emitted because
+inlining has not occurred, so it assumes control flow will resume
+normally after ksft_exit_fail_msg() is called.
 
-To add some numbers to this (I was just made aware of this paper):
+Make it clear to clang that all of the functions that call exit()
+unconditionally in kselftest.h are noreturn transitively by marking them
+explicitly with '__attribute__((__noreturn__))', which clears up the
+warning above and any future warnings that may appear for the same
+reason.
 
-https://www.sra.uni-hannover.de/Publications/2023/tosting-arcs23/wrenger_23_arcs.pdf
+Fixes: 6d029c25b71f ("selftests/timers/posix_timers: Reimplement check_timer_distribution()")
+Reported-by: John Stultz <jstultz@google.com>
+Closes: https://lore.kernel.org/all/20240410232637.4135564-2-jstultz@google.com/
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+I have based this change on timers/urgent, as the commit that introduces
+this particular warning is there and it is marked for stable, even
+though this appears to be a generic kselftest issue. I think it makes
+the most sense for this change to go via timers/urgent with Shuah's ack.
+While __noreturn with a return type other than 'void' does not make much
+sense semantically, there are many places that these functions are used
+as the return value for other functions such as main(), so I did not
+change the return type of these functions from 'int' to 'void' to
+minimize the necessary changes for a backport (it is an existing issue
+anyways).
 
-Using TSO globally has, on average, a 9% performance hit, so that is
-clearly off the table as a general solution.
+I see there is another instance of this problem that will need to be
+addressed in -next, introduced by commit f07041728422 ("selftests: add
+ksft_exit_fail_perror()").
+---
+ tools/testing/selftests/kselftest.h | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-Meanwhile, more detailed microbenchmarks often show TSO as having better
-performance than outright using acquire/release instructions without
-TSO. Therefore, just giving up on TSO and using acq/rel semantics for
-emulators is also not an acceptable solution.
+diff --git a/tools/testing/selftests/kselftest.h b/tools/testing/selftests/kselftest.h
+index 973b18e156b2..0591974b57e0 100644
+--- a/tools/testing/selftests/kselftest.h
++++ b/tools/testing/selftests/kselftest.h
+@@ -80,6 +80,9 @@
+ #define KSFT_XPASS 3
+ #define KSFT_SKIP  4
+ 
++#ifndef __noreturn
++#define __noreturn       __attribute__((__noreturn__))
++#endif
+ #define __printf(a, b)   __attribute__((format(printf, a, b)))
+ 
+ /* counters */
+@@ -300,13 +303,13 @@ void ksft_test_result_code(int exit_code, const char *test_name,
+ 	va_end(args);
+ }
+ 
+-static inline int ksft_exit_pass(void)
++static inline __noreturn int ksft_exit_pass(void)
+ {
+ 	ksft_print_cnts();
+ 	exit(KSFT_PASS);
+ }
+ 
+-static inline int ksft_exit_fail(void)
++static inline __noreturn int ksft_exit_fail(void)
+ {
+ 	ksft_print_cnts();
+ 	exit(KSFT_FAIL);
+@@ -333,7 +336,7 @@ static inline int ksft_exit_fail(void)
+ 		  ksft_cnt.ksft_xfail +	\
+ 		  ksft_cnt.ksft_xskip)
+ 
+-static inline __printf(1, 2) int ksft_exit_fail_msg(const char *msg, ...)
++static inline __noreturn __printf(1, 2) int ksft_exit_fail_msg(const char *msg, ...)
+ {
+ 	int saved_errno = errno;
+ 	va_list args;
+@@ -348,19 +351,19 @@ static inline __printf(1, 2) int ksft_exit_fail_msg(const char *msg, ...)
+ 	exit(KSFT_FAIL);
+ }
+ 
+-static inline int ksft_exit_xfail(void)
++static inline __noreturn int ksft_exit_xfail(void)
+ {
+ 	ksft_print_cnts();
+ 	exit(KSFT_XFAIL);
+ }
+ 
+-static inline int ksft_exit_xpass(void)
++static inline __noreturn int ksft_exit_xpass(void)
+ {
+ 	ksft_print_cnts();
+ 	exit(KSFT_XPASS);
+ }
+ 
+-static inline __printf(1, 2) int ksft_exit_skip(const char *msg, ...)
++static inline __noreturn __printf(1, 2) int ksft_exit_skip(const char *msg, ...)
+ {
+ 	int saved_errno = errno;
+ 	va_list args;
 
-Additionally, the general load/store instructions on ARM have more
-flexible addressing modes than the synchronizing ones, and since general
-x86 emulation requires *all* loads and stores to be like this in a
-non-TSO model (without much more complex/expensive program analysis to
-determine where this can be elided), the perf impact is definitely worse
-for emulation (e.g. stack accesses are affected) than for a
-microbenchmark where only the "target" test instructions are being modified.
+---
+base-commit: 076361362122a6d8a4c45f172ced5576b2d4a50d
+change-id: 20240411-mark-kselftest-exit-funcs-noreturn-17d8ff729a7a
 
-- Hector
+Best regards,
+-- 
+Nathan Chancellor <nathan@kernel.org>
+
 
