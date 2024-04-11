@@ -1,154 +1,189 @@
-Return-Path: <linux-kernel+bounces-141285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C9B88A1C23
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BB068A1C34
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:41:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A61BF1C22AF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:39:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D7E51C22C40
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:41:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CBED15382C;
-	Thu, 11 Apr 2024 16:10:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A24EA15AAA9;
+	Thu, 11 Apr 2024 16:11:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="cATENxcS"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rvm0S2oJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64FE82DF84;
-	Thu, 11 Apr 2024 16:10:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EC115A4AF;
+	Thu, 11 Apr 2024 16:11:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712851845; cv=none; b=iz+WTDoG9FDNuQ7AMyNupOhSFLh6n5+DeC5FWTNxgGvuS6Pi2n0blLp/D8XZ+GxE5Cu7J9fRp67CZKkc34WM8f1qQXN/ZnwksJMPmh71jFdppQTwVazLM9k6KVPk4IWrgKw+l+2ruZ/dqYZny2PgQlRi4bZpPKIWG0A1Ri75VGc=
+	t=1712851870; cv=none; b=Nhsh5S1oKzDA7EsR7YOsKzxI9dRbsxTPPfn84iutEdMmKBoxD1eZod1O8VZhf7TYL6gL+upVRhTaq3neFdScsdKPgyCiiGDDP+Rwf1GEBL1s/4qTMgnzCE9iL9VmYVBxOZ3boatGms7aEDmVCVHZ4+SqOQ9NbZDbmkCFLJTHdGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712851845; c=relaxed/simple;
-	bh=YrFUXpKFZjIrDFt23to5aJksa5NkAaPagqMfCoJao4o=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FzNiTS17Du/BzoKKiz4ljlbunc4R+9n1t4+k9gGko9GPMLOgRji3zNqsca9cxCyxrbnFLCT7JGQTcpPRv7aFR5tccPDL7YYmmOS6qfEV8GaTNoarZj0Z53uTzcOcnV3cGv/W4brSyN1awVVDEPOZvSjDh/JCZHxDBnRxwmbppv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=cATENxcS; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 84F9D120074;
-	Thu, 11 Apr 2024 19:10:41 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 84F9D120074
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1712851841;
-	bh=Gg4VD7krOgd1nsrFz5L0eWRpEbtXVfyqyU7Jkdx9Zzk=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=cATENxcS+szALY2mLzl8KnO8O23E0TN8/9+vEyHyNl+LRtnWg466Ce845SlJbRs8B
-	 piMxT8qymhLNMpJpy08zmEBWkWQ65N7O74WmrmafOkn6LROoh/RI5ne9ZurguFGmXh
-	 OH6XR6nL/pB1Uy7q61rOZiBR5FB4HoJy1Vp1GVkFUqi3yNsLOc0tKTEMZsuAV+cqFB
-	 c4yNwX8qTSV/pMcNXf8yNAXvrDIJJdt1uWd6wnhi0W9xNVNdqwJJrKqj4XbW8eFdK5
-	 1E1fdTJiOJ4lZkprkwvNiu2iMk40fGOYvD0Eo1567olFWnsYK2GHyTRyb5SZEmtBm7
-	 1Sgu+ZIdqwtqQ==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu, 11 Apr 2024 19:10:41 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 11 Apr 2024 19:10:41 +0300
-From: George Stark <gnstark@salutedevices.com>
-To: <andy.shevchenko@gmail.com>, <pavel@ucw.cz>, <lee@kernel.org>,
-	<vadimp@nvidia.com>, <christophe.leroy@csgroup.eu>, <hdegoede@redhat.com>,
-	<mazziesaccount@gmail.com>, <peterz@infradead.org>, <mingo@redhat.com>,
-	<will@kernel.org>, <longman@redhat.com>, <boqun.feng@gmail.com>,
-	<nikitos.tr@gmail.com>, <marek.behun@nic.cz>, <kabel@kernel.org>
-CC: <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<kernel@salutedevices.com>, George Stark <gnstark@salutedevices.com>
-Subject: [PATCH v8 8/8] leds: an30259a: use devm_mutex_init() for mutex initialization
-Date: Thu, 11 Apr 2024 19:10:32 +0300
-Message-ID: <20240411161032.609544-9-gnstark@salutedevices.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240411161032.609544-1-gnstark@salutedevices.com>
-References: <20240411161032.609544-1-gnstark@salutedevices.com>
+	s=arc-20240116; t=1712851870; c=relaxed/simple;
+	bh=Co3kGhkNsPgacB/pabyCsenR+0gNcn0apDUzg988VHA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=q18mJbNr1XEByVMCT5shHMfoltp5jkb+eTD+yntIt286pUr9i8Q5ob0UPCd9qtDc46reH9KA02c4CLwOharuqaHIWRxf2kIaY/Ks4FqzXH/TMEKgQtJv4LwV6I2MQQH19xLo5TNS9MMzravLv21fa/xmUeiBnziQdxk58tEjGCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rvm0S2oJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 001FEC072AA;
+	Thu, 11 Apr 2024 16:11:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712851870;
+	bh=Co3kGhkNsPgacB/pabyCsenR+0gNcn0apDUzg988VHA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=rvm0S2oJrwiPhJs3eMOF4f2WjbhaHXPCHhoQzlhlvGzTckM5NUJlGvZE//UJTbZuk
+	 7mUvnId3dLSEO383sQdQGizvtxlqOjpE6LHUGEUzOLcvm2FFMA5/b/WtwmbW9OxU3t
+	 vraPDqamiI8esjKLmEPlXpKeb3GokCNr0IyDHPJwJEbgyjnyrMewIrl/lr5uw3SXYu
+	 ufts0B5MaTMqZx4inTcApZhjiikn03+zpnbGKAZYEpPL3yc3b4UbwWwc/biOcTK9tx
+	 O2EDKKXK1jYU6zNUiteXtEM8WNQ9P2BCMa9UpGqUhrAINiWUMdVs8dvmVCMdMSalCs
+	 JbWrghBBIpbBg==
+Date: Thu, 11 Apr 2024 11:11:08 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Jim Quinlan <jim2101024@gmail.com>,
+	Nicolas Saenz Julienne <nsaenz@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Srikanth Thokala <srikanth.thokala@intel.com>,
+	Ryder Lee <ryder.lee@mediatek.com>,
+	Jianjun Wang <jianjun.wang@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Shawn Lin <shawn.lin@rock-chips.com>,
+	Heiko Stuebner <heiko@sntech.de>, Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
+	Michal Simek <michal.simek@amd.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Mark Kettenis <kettenis@openbsd.org>,
+	Tom Joseph <tjoseph@cadence.com>,
+	Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, asahi@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	linux-rockchip@lists.infradead.org
+Subject: Re: [PATCH v2 2/4] dt-bindings: PCI: mediatek,mt7621: add missing
+ child node reg
+Message-ID: <20240411161108.GA2184354@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184677 [Apr 11 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 16 0.3.16 6e64c33514fcbd07e515710c86ba61de7f56194e, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;salutedevices.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/11 15:00:00 #24747318
-X-KSMG-AntiVirus-Status: Clean, skipped
+In-Reply-To: <20240411142107.GA3537062-robh@kernel.org>
 
-In this driver LEDs are registered using devm_led_classdev_register()
-so they are automatically unregistered after module's remove() is done.
-led_classdev_unregister() calls module's led_set_brightness() to turn off
-the LEDs and that callback uses mutex which was destroyed already
-in module's remove() so use devm API instead.
+On Thu, Apr 11, 2024 at 09:21:07AM -0500, Rob Herring wrote:
+> On Thu, Apr 11, 2024 at 07:39:17AM -0500, Bjorn Helgaas wrote:
+> > On Thu, Apr 11, 2024 at 08:13:18AM +0200, Sergio Paracuellos wrote:
+> > > On Thu, Apr 11, 2024 at 8:01 AM Krzysztof Kozlowski
+> > > <krzysztof.kozlowski@linaro.org> wrote:
+> > > > On 10/04/2024 23:26, Bjorn Helgaas wrote:
+> > > > > On Wed, Apr 10, 2024 at 08:15:19PM +0200, Krzysztof Kozlowski wrote:
+> > > > >> MT7621 PCI host bridge has children which apparently are also PCI host
+> > > > >> bridges, at least that's what the binding suggest.
+> > > > >
+> > > > > What does it even mean for a PCI host bridge to have a child that is
+> > > > > also a PCI host bridge?
+> 
+> It should say 'root port' instead as the binding description correctly 
+> says.
 
-Signed-off-by: George Stark <gnstark@salutedevices.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/leds/leds-an30259a.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+OK, that makes a lot more sense, and we should fix the commit log.
 
-diff --git a/drivers/leds/leds-an30259a.c b/drivers/leds/leds-an30259a.c
-index 0216afed3b6e..decfca447d8a 100644
---- a/drivers/leds/leds-an30259a.c
-+++ b/drivers/leds/leds-an30259a.c
-@@ -283,7 +283,10 @@ static int an30259a_probe(struct i2c_client *client)
- 	if (err < 0)
- 		return err;
- 
--	mutex_init(&chip->mutex);
-+	err = devm_mutex_init(&client->dev, &chip->mutex);
-+	if (err)
-+		return err;
-+
- 	chip->client = client;
- 	i2c_set_clientdata(client, chip);
- 
-@@ -317,17 +320,9 @@ static int an30259a_probe(struct i2c_client *client)
- 	return 0;
- 
- exit:
--	mutex_destroy(&chip->mutex);
- 	return err;
- }
- 
--static void an30259a_remove(struct i2c_client *client)
--{
--	struct an30259a *chip = i2c_get_clientdata(client);
--
--	mutex_destroy(&chip->mutex);
--}
--
- static const struct of_device_id an30259a_match_table[] = {
- 	{ .compatible = "panasonic,an30259a", },
- 	{ /* sentinel */ },
-@@ -347,7 +342,6 @@ static struct i2c_driver an30259a_driver = {
- 		.of_match_table = an30259a_match_table,
- 	},
- 	.probe = an30259a_probe,
--	.remove = an30259a_remove,
- 	.id_table = an30259a_id,
- };
- 
--- 
-2.25.1
+> > > > I think the question should be towards Mediatek folks. I don't know what
+> > > > this hardware is exactly, just looks like pci-pci-bridge. The driver
+> > > > calls the children host bridges as "ports".
+> > > 
+> > > You can see the topology here in my first driver submit cover letter
+> > > message [0].
+> > > 
+> > >  [0]: https://lore.kernel.org/all/CAMhs-H-BA+KzEwuDPzcmrDPdgJBFA2XdYTBvT4R4MEOUB=WQ1g@mail.gmail.com/t/
+> > 
+> > Nothing unusual here, this looks like the standard PCIe topology.
+> > 
+> > What *might* be unusual is describing the Root Ports in DT.  Since
+> > they are standard PCI devices, they shouldn't need DT description
+> > unless there's some unusual power/clock/reset control or something
+> > that is not discoverable via PCI enumeration.
+> 
+> It's only unusual because typically there's only 1 RP per host bridge 
+> and properties which really apply to the RP get stuck in the host bridge 
+> node because we don't have a RP node. An example is perst-gpios. That's 
+> not a property of the RP either, but the RP is the upstream side of a 
+> slot and we often don't have a node for the device either.
 
+Makes sense.
+
+I'm still confused about one thing, maybe just because I don't really
+know how to read these bindings.  The binding now looks like this:
+
+  properties:
+    compatible:
+      const: mediatek,mt7621-pci
+
+    reg:
+      items:
+        - description: host-pci bridge registers
+        - description: pcie port 0 RC control registers       # A
+        - description: pcie port 1 RC control registers       # A
+        - description: pcie port 2 RC control registers       # A
+
+  patternProperties:
+    '^pcie@[0-2],0$':
+      type: object
+      $ref: /schemas/pci/pci-pci-bridge.yaml#
+
+      properties:
+        reg:                                                  # B
+          maxItems: 1
+
+It looks like the "A" items are separate things from the "B" items?
+
+But I think the relevant code is here:
+
+  mt7621_pcie_probe
+    mt7621_pcie_parse_dt
+      pcie->base = devm_platform_ioremap_resource(pdev, 0)             # 1
+      for_each_available_child_of_node(node, child)
+        mt7621_pcie_parse_port
+          port->base = devm_platform_ioremap_resource(pdev, slot + 1)  # 2
+
+where it looks like both "1" and "2" use the items in the "A" list,
+i.e., resources 0, 1, 2, 3, all from the same platform device.  Is
+there code that uses the "B" item that this patch adds?
+
+Bjorn
 
