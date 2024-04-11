@@ -1,230 +1,164 @@
-Return-Path: <linux-kernel+bounces-140149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B00E8A0C0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:15:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1F5C8A0C0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:16:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 114EF287146
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:15:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BB26281FB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:16:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C91241442FD;
-	Thu, 11 Apr 2024 09:14:59 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D83144305;
+	Thu, 11 Apr 2024 09:16:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JxQgfbfo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC4D142E61;
-	Thu, 11 Apr 2024 09:14:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82993144308;
+	Thu, 11 Apr 2024 09:16:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712826899; cv=none; b=a1xOoaSR9iQnviAoiRrF0/b7RrC09AjF6buNhUtnd6/jXf+lQhRqPBycdmxjVNuexnVOnlHnitrA5Ll+3RR+OAofXIlU21HVij9OiX5ai8/99gL8eLbn1cKwTSXxemJG6W6Daf+3fj0e6wYutR2hxdwuyTEgTNV0a5cYgWClxW4=
+	t=1712826982; cv=none; b=CWpCEXAHNPfMMOS3ReC3BL9ki+Mpnl4ncIv8jxbdwyX0k933aM8S0gjIXhEslrluglotkaWBVuFzhB/Qtsof+b4ygDHA9E6jZGDBEmq9M/vBWs+xfB7rzaZJ5NiqMG8AP4t0OXcEwZBCy8SchqnL2SWdBGJKdQPfmd8RrBeoKsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712826899; c=relaxed/simple;
-	bh=KqGU897vzhzDZW5OmesbDqaBreTgT2QjXAuJtDUvnmM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JknlcrOl5F/Bo7rlxrGzOWe8iWFciYfV1O1nVmirkfK1QtEX/w/sEc+PiWwPIZAh1JgVKtJj547ES6vIqwKbUfNJbeka+MC7+Jy+USkaHE65lhcAD4+Bq+qxE6kW3dev2zJyc00O5teDPK7a0nhQjScXrah4+faVSPEJgCMqzD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VFYsf5251z1wr5r;
-	Thu, 11 Apr 2024 17:13:58 +0800 (CST)
-Received: from dggpemd100001.china.huawei.com (unknown [7.185.36.94])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8A67418002F;
-	Thu, 11 Apr 2024 17:14:54 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpemd100001.china.huawei.com
- (7.185.36.94) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Thu, 11 Apr
- 2024 17:14:53 +0800
-From: Li Lingfeng <lilingfeng3@huawei.com>
-To: <stable@vger.kernel.org>, <gregkh@linuxfoundation.org>,
-	<mpatocka@redhat.com>, <torvalds@linux-foundation.org>, <tglx@linutronix.de>
-CC: <linux-kernel@vger.kernel.org>, <dm-devel@lists.linux.dev>,
-	<msnitzer@redhat.com>, <ignat@cloudflare.com>, <damien.lemoal@wdc.com>,
-	<bob.liu@oracle.com>, <houtao1@huawei.com>, <nhuck@google.com>,
-	<peterz@infradead.org>, <mingo@elte.hu>, <yukuai3@huawei.com>,
-	<yangerkun@huawei.com>, <yi.zhang@huawei.com>, <lilingfeng3@huawei.com>,
-	<lilingfeng@huaweicloud.com>
-Subject: [PATCH 6.6] Revert "dm-crypt, dm-verity: disable tasklets"
-Date: Thu, 11 Apr 2024 17:15:39 +0800
-Message-ID: <20240411091539.361470-1-lilingfeng3@huawei.com>
-X-Mailer: git-send-email 2.31.1
+	s=arc-20240116; t=1712826982; c=relaxed/simple;
+	bh=FD7ZMwASDJLrGL9Q6rjiGOks+Hr3Q/CkNdWe0CnAC5Y=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LAuWMQiIFfcmmlsZf+0GKkrbBN/rAAhGz2qfGOhl+UvNTH/9z83uPffpeD53Nm11g8i//hnyDUjGJhaoyuBEpXWet3D5mWct1ELijnljThbJcJtzFr0UHQQrgNmCzMJXVcy55jtr1FR8cq5uvEiet0YOZNRzs5xdyJDtQrri9b0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JxQgfbfo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 725DCC43390;
+	Thu, 11 Apr 2024 09:16:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712826982;
+	bh=FD7ZMwASDJLrGL9Q6rjiGOks+Hr3Q/CkNdWe0CnAC5Y=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=JxQgfbfoQPXO75Bvknepu7S5cybTc3MuoQxVXQLt2ysmPPAaTjqT02Nd97CxO0pOO
+	 +1URVbwdMMYoIA/kMSt4tEl73wG3Uv9yTcFg4l8DweKTfYYmOz70yk2tdTZzySXy+G
+	 aElkNiC7Rr7vn8UQyfLKL7SIHuJ/J7V997QuSv5ZYnHJi8tG61SdtdM4Ysu0DKVCXE
+	 3t4z4kuo2V17Ox/+p9TyCgojMPsl5mg4IvclbQUADWH+9gEz4DTlj7nJ5B9s97gEIA
+	 gT9T0/RCTwIT1dQ1IfKsvQW26nQo21nE06KUa+3vp2Om56N22GlnrTP6gfdDtEm3h4
+	 3TwLQQPGas0lg==
+Date: Thu, 11 Apr 2024 11:16:18 +0200
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	linux-i2c@vger.kernel.org, Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/18] i2c: i801: remove printout on handled timeouts
+Message-ID: <uvnhbxkhj4skur5uhmbdtmbc4ebodrdujfzqmrv6tjejwvjrxk@xvad5h5ciiay>
+References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
+ <20240410112418.6400-26-wsa+renesas@sang-engineering.com>
+ <242ogjpole3ltk5nu53knbfsxmmwcqfrbcivjh7fnkngvrroq5@cwspwdrtepwh>
+ <zmkluzi3ncze67wei6eccd67cpuab2k7qw7cdgju4tg7rermv2@hw6ukejz4cvy>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemd100001.china.huawei.com (7.185.36.94)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <zmkluzi3ncze67wei6eccd67cpuab2k7qw7cdgju4tg7rermv2@hw6ukejz4cvy>
 
-This reverts commit 5735a2671ffb70ea29ca83969fe01316ee2ed6fc which is
-commit 0a9bab391e336489169b95cb0d4553d921302189 upstream.
+Hi Wolfram,
 
-Tasklet is thought to cause memory corruption [1], so it was disabled in
-dm-crypt and dm-verity. However, memory corruption may not happen since
-cc->io_queue is created without WQ_UNBOUND [2].
-Revert commit 5735a2671ffb ("dm-crypt, dm-verity: disable tasklets") to
-bring tasklet back.
+On Thu, Apr 11, 2024 at 09:02:52AM +0200, Wolfram Sang wrote:
+> On Wed, Apr 10, 2024 at 02:21:58PM +0200, Andi Shyti wrote:
+> > On Wed, Apr 10, 2024 at 01:24:20PM +0200, Wolfram Sang wrote:
+> > > I2C and SMBus timeouts are not something the user needs to be informed
+> > > about on controller level. The client driver may know if that really is
+> > > a problem and give more detailed information to the user. The controller
+> > > should just pass this information upwards. Turn all timeout related
+> > > printouts to debug level.
+> > > 
+> > > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> > > ---
+> > > 
+> > > Here, I did not delete the printout to support checking the termination
+> > > process. The other drivers in this series do not have this SMBus
+> > > specific termination step.
+> > > 
+> > >  drivers/i2c/busses/i2c-i801.c | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
+> > > index 4294c0c63cef..a42b5152f9bd 100644
+> > > --- a/drivers/i2c/busses/i2c-i801.c
+> > > +++ b/drivers/i2c/busses/i2c-i801.c
+> > > @@ -400,7 +400,7 @@ static int i801_check_post(struct i801_priv *priv, int status)
+> > >  	 * If the SMBus is still busy, we give up
+> > >  	 */
+> > >  	if (unlikely(status < 0)) {
+> > > -		dev_err(&priv->pci_dev->dev, "Transaction timeout\n");
+> > > +		dev_dbg(&priv->pci_dev->dev, "Transaction timeout\n");
+> > 
+> > why after 5 patches of removing dev_err's, here you are changing
+> > them to dev_dbg?
+> 
+> The reasoning was explained above:
+> 
+> > > Here, I did not delete the printout to support checking the termination
+> > > process. The other drivers in this series do not have this SMBus
+> > > specific termination step.
+> 
+> This is also why I converted two calls here to dev_dbg. But read on
+> first.
 
-[1] https://lore.kernel.org/all/d390d7ee-f142-44d3-822a-87949e14608b@suse.de/T/
-[2] https://lore.kernel.org/all/4d331659-badd-749d-fba1-271543631a8a@huawei.com/
+It would make sense if the debug would give some more
+information...
 
-Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
----
- drivers/md/dm-crypt.c         | 38 +++++++++++++++++++++++++++++++++--
- drivers/md/dm-verity-target.c | 26 ++++++++++++++++++++++--
- drivers/md/dm-verity.h        |  1 +
- 3 files changed, 61 insertions(+), 4 deletions(-)
+> > It's still good, but if we want to be strict, errors should
+> > print errors: as we are returning -ETIMEDOUT, then we are
+> > treating the case as an error and we should print error.
+> 
+> I strongly disagree. While we use an errno, we don't know if this is a
+> real error yet. It is more a return value saying that the transfer timed
+> out. The client driver knows. For some I2C clients this may be an error,
+> but for an EEPROM this might be an "oh, it might still be erasing a
+> page, let's try again after some defined delay".
+> 
+> Think of 'i2cdetect': If we printout something in the -ENXIO case (no
+> device responded to the address), the log file would have more than 100
+> entries on a typical I2C bus. Although we know that -ENXIO will be the
+> majority of cases and are fine with it.
+> 
+> > As you did before, I would just remove the printout here.
+> 
+> Maybe we could because there is still the "Terminating the current
+> operation" string as debug message making the code flow still clear.
 
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index aa6bb5b4704b..a60d91d02e28 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -75,8 +75,10 @@ struct dm_crypt_io {
- 	struct bio *base_bio;
- 	u8 *integrity_metadata;
- 	bool integrity_metadata_from_pool:1;
-+	bool in_tasklet:1;
- 
- 	struct work_struct work;
-+	struct tasklet_struct tasklet;
- 
- 	struct convert_context ctx;
- 
-@@ -1775,6 +1777,7 @@ static void crypt_io_init(struct dm_crypt_io *io, struct crypt_config *cc,
- 	io->ctx.r.req = NULL;
- 	io->integrity_metadata = NULL;
- 	io->integrity_metadata_from_pool = false;
-+	io->in_tasklet = false;
- 	atomic_set(&io->io_pending, 0);
- }
- 
-@@ -1785,6 +1788,13 @@ static void crypt_inc_pending(struct dm_crypt_io *io)
- 
- static void kcryptd_queue_read(struct dm_crypt_io *io);
- 
-+static void kcryptd_io_bio_endio(struct work_struct *work)
-+{
-+	struct dm_crypt_io *io = container_of(work, struct dm_crypt_io, work);
-+
-+	bio_endio(io->base_bio);
-+}
-+
- /*
-  * One of the bios was finished. Check for completion of
-  * the whole request and correctly clean up the buffer.
-@@ -1817,6 +1827,20 @@ static void crypt_dec_pending(struct dm_crypt_io *io)
- 
- 	base_bio->bi_status = error;
- 
-+	/*
-+	 * If we are running this function from our tasklet,
-+	 * we can't call bio_endio() here, because it will call
-+	 * clone_endio() from dm.c, which in turn will
-+	 * free the current struct dm_crypt_io structure with
-+	 * our tasklet. In this case we need to delay bio_endio()
-+	 * execution to after the tasklet is done and dequeued.
-+	 */
-+	if (io->in_tasklet) {
-+		INIT_WORK(&io->work, kcryptd_io_bio_endio);
-+		queue_work(cc->io_queue, &io->work);
-+		return;
-+	}
-+
- 	bio_endio(base_bio);
- }
- 
-@@ -2291,6 +2315,11 @@ static void kcryptd_crypt(struct work_struct *work)
- 		kcryptd_crypt_write_convert(io);
- }
- 
-+static void kcryptd_crypt_tasklet(unsigned long work)
-+{
-+	kcryptd_crypt((struct work_struct *)work);
-+}
-+
- static void kcryptd_queue_crypt(struct dm_crypt_io *io)
- {
- 	struct crypt_config *cc = io->cc;
-@@ -2302,10 +2331,15 @@ static void kcryptd_queue_crypt(struct dm_crypt_io *io)
- 		 * irqs_disabled(): the kernel may run some IO completion from the idle thread, but
- 		 * it is being executed with irqs disabled.
- 		 */
--		if (!(in_hardirq() || irqs_disabled())) {
--			kcryptd_crypt(&io->work);
-+		if (in_hardirq() || irqs_disabled()) {
-+			io->in_tasklet = true;
-+			tasklet_init(&io->tasklet, kcryptd_crypt_tasklet, (unsigned long)&io->work);
-+			tasklet_schedule(&io->tasklet);
- 			return;
- 		}
-+
-+		kcryptd_crypt(&io->work);
-+		return;
- 	}
- 
- 	INIT_WORK(&io->work, kcryptd_crypt);
-diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
-index 49e4a35d7019..0bb126eadc0d 100644
---- a/drivers/md/dm-verity-target.c
-+++ b/drivers/md/dm-verity-target.c
-@@ -701,6 +701,23 @@ static void verity_work(struct work_struct *w)
- 	verity_finish_io(io, errno_to_blk_status(verity_verify_io(io)));
- }
- 
-+static void verity_tasklet(unsigned long data)
-+{
-+	struct dm_verity_io *io = (struct dm_verity_io *)data;
-+	int err;
-+
-+	io->in_tasklet = true;
-+	err = verity_verify_io(io);
-+	if (err == -EAGAIN || err == -ENOMEM) {
-+		/* fallback to retrying with work-queue */
-+		INIT_WORK(&io->work, verity_work);
-+		queue_work(io->v->verify_wq, &io->work);
-+		return;
-+	}
-+
-+	verity_finish_io(io, errno_to_blk_status(err));
-+}
-+
- static void verity_end_io(struct bio *bio)
- {
- 	struct dm_verity_io *io = bio->bi_private;
-@@ -713,8 +730,13 @@ static void verity_end_io(struct bio *bio)
- 		return;
- 	}
- 
--	INIT_WORK(&io->work, verity_work);
--	queue_work(io->v->verify_wq, &io->work);
-+	if (static_branch_unlikely(&use_tasklet_enabled) && io->v->use_tasklet) {
-+		tasklet_init(&io->tasklet, verity_tasklet, (unsigned long)io);
-+		tasklet_schedule(&io->tasklet);
-+	} else {
-+		INIT_WORK(&io->work, verity_work);
-+		queue_work(io->v->verify_wq, &io->work);
-+	}
- }
- 
- /*
-diff --git a/drivers/md/dm-verity.h b/drivers/md/dm-verity.h
-index db93a91169d5..7e495cc375b0 100644
---- a/drivers/md/dm-verity.h
-+++ b/drivers/md/dm-verity.h
-@@ -87,6 +87,7 @@ struct dm_verity_io {
- 	bool in_tasklet;
- 
- 	struct work_struct work;
-+	struct tasklet_struct tasklet;
- 
- 	char *recheck_buffer;
- 
--- 
-2.31.1
+.. e.g. for me it's not totally right if we do:
 
+	dev_dbg("timed out")
+	return -ETIMEDOUT;
+
+Considering that this might not be a real error I would let the
+calling function decide and print. Indeed i801_access() is not
+even checking the error but letting the caller of smbus_xfer()
+decide.
+
+It would make more sense if we provide more information like:
+
+	dev_dbg("Terminating current operation because the bus is busy and we timed out");
+
+Just merged the two consecutive messages (we could still trim it
+a bit and reduce dmesg spam).
+
+The second /dev_err/dev_dbg/ in this file to me is fine (even
+though it's not really self explaining).
+
+> > I will wait a bit for more comments and take patches 1 to 5 so
+> > that I can unburden you a little from them.
+> 
+> The patches have no dependencies. To keep mail traffic low, I suggest
+> you continue reviewing and I only resend the i801 patch?
+
+Yeah... I'll wait a few more days and give more time for reviews
+and comments. I checked the rest of the series and it's fine.
+
+If you are willing to send a V2 you could send it as reply to
+this mail instead of resending everything.
+
+Thanks,
+Andi
 
