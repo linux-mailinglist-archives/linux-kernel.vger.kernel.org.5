@@ -1,123 +1,164 @@
-Return-Path: <linux-kernel+bounces-140739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E9128A1882
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E33C28A1893
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:26:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A597AB28AC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:21:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26371B28F6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFDEA14A8C;
-	Thu, 11 Apr 2024 15:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZS8lFb0v"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F255B14A9F;
+	Thu, 11 Apr 2024 15:21:15 +0000 (UTC)
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFBE13ADC
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:20:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADBAE55F;
+	Thu, 11 Apr 2024 15:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712848849; cv=none; b=mxaMkabwLkw7l5vlzhxixideEP51Ggmz7cfoQO2EzqQM16eBhpkXstWYhOYzyfHdy/Mn2jO5UTVUnFtS49pTzN0x6+IQtkg98ScFh+TCoQnoetOpEjy7RdSLnezmVsp03LhhXgoeQER+rfD8B3RE2mxtGiXec5/miWWyuPcoRs0=
+	t=1712848875; cv=none; b=W3bqZFUBOh4CrsGjVj7gVmzAxgx/XwdBWXsGLfaW0PumIDnzUeoz9DBdFLRHApxewbt03K7FsWsMfK3GNTPVTOHWR1denoRjW6XmRs/iZkrFUewEj8FQioKJhNFFnW2hcqFZdY3qYe4tiYKN9/Sy3tlqVdm03Sm9nDUZyZ0Gqxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712848849; c=relaxed/simple;
-	bh=cDz8pnbcG444PRXZoL4njjtQAAWj0msxdEt/Rbw6BsY=;
+	s=arc-20240116; t=1712848875; c=relaxed/simple;
+	bh=RJssVZ7udHxHo3Et4hZ7dfRETRPZhl3bmJL+mnWNB7g=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I8RQC+Khpy4WN5DTZABA/Mrx8KvYZLP87+Cr7jPcKpKFHpd7x7Do76suppIe+lDmRcOxVJaNJmYtRMKF5MwnmUOuyf91cRpkk6wGKxYgIc0cYY8oey3ZwRHF7HgC7IpvMjTvNNpyIjsEE0ksDn+0wtMANlCzI9/MRJo42quobCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZS8lFb0v; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712848846;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cDz8pnbcG444PRXZoL4njjtQAAWj0msxdEt/Rbw6BsY=;
-	b=ZS8lFb0vbVXfmBJhBueci88XRGM01oPBwKa3H1uThjwc1ix2J3e2WLzL6IBrauqguOmyBW
-	fza0E/97lM2dMs1qajtW+Q+PPGIgvpx6u4ejrAimqzTNANR/9zRHDiswz2GH/Rft88gy/g
-	bVuDsg7dpZG6Qp6ZM0dwWNh9HeBGemY=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-74-cALjPpKPNp-C6mQW1zfjCQ-1; Thu, 11 Apr 2024 11:20:44 -0400
-X-MC-Unique: cALjPpKPNp-C6mQW1zfjCQ-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2d8ce90e337so17305661fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:20:44 -0700 (PDT)
+	 To:Cc:Content-Type; b=DUBAO6eaFug28GF+ZZZePEgu09jUipjlhXBgtjDWzhgA8kMpP62tx7W3Sjhb0C0g2vr0QdgZVU22oOJrbzouyxeuBSksfbjgb8uIsFXJ3cR6UPrB0TwKFUmhrXznE6WCRLVVp38aRD0GRRStEYGc1G3jhNvkrvszGUp8GJRs4IU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6ea1d2c1d58so2131774a34.3;
+        Thu, 11 Apr 2024 08:21:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712848843; x=1713453643;
+        d=1e100.net; s=20230601; t=1712848872; x=1713453672;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cDz8pnbcG444PRXZoL4njjtQAAWj0msxdEt/Rbw6BsY=;
-        b=eOl7ks4zLd9QHavnspoGBcZtlFmbd9zCqq+9f13PQWdEQ5s56zXLJruM+bUgs9XSiY
-         HtHmJ9gx5TDNkiZil7y3MfYFc9dC+IYdB3lRQJi0Bm7QAjk/Z9ONu9/KdYpJRT0DC8lH
-         XkKOWgPkuNMUCT+TZINpqRupbsyKZqPaUH6hlrs6MZWcoV2/F27ollYUwCuExFHLlxqi
-         /l9TVlqG5WcCjOHLRZEp6cYZyf75Mv2mrjZIrLemGfLTBWcWrNAhhQFfYa68BfixuB6u
-         RidcZ24qTphYS9xRso3UolwJ7m6hAllPoYv468iik+lgGwkjMsruIHi579Nkiw317RTt
-         ueDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUcXQhG5GVn7W8ExYtptK6W1c5+ZPRDZQjC4hGTdeWJNxVczEGyQkzt0dqKQ4G3ywhtVAgA+kH02XbU91QNgTBnbRGIE7aLPiz1cxvQ
-X-Gm-Message-State: AOJu0YwTd7PJoX/DJCaAevzubPKdTwajYVlvecjSiCdj7DuXVu72gmwD
-	mo8hZH2K/b4OKXxq2O1SKrqgJOyAdTBYucmODAvTPLFfoWk5YUdyj+QjNgcs/p3gZJs2NnhMbBX
-	g25xLPQlWW8ANkTRI3zikqyrXqx8nFycr5D2XMD/fzZ6un1IRhsL3DGMgu6KyqKt1dUAACD8iz8
-	W3KJQO0mQpLteXCfZY/Vf6nEFrTDb86ec1dl0x
-X-Received: by 2002:a05:651c:1543:b0:2d8:d972:67e0 with SMTP id y3-20020a05651c154300b002d8d97267e0mr3849919ljp.10.1712848843349;
-        Thu, 11 Apr 2024 08:20:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEp5gn7fMbM+AUICCU9wu3izHUOUcfRTZ1FRcmIlrycF4sFSaJgzJf9ZaIPI28JrUasNUyPBF9hQy5wbdku1NY=
-X-Received: by 2002:a05:651c:1543:b0:2d8:d972:67e0 with SMTP id
- y3-20020a05651c154300b002d8d97267e0mr3849889ljp.10.1712848842851; Thu, 11 Apr
- 2024 08:20:42 -0700 (PDT)
+        bh=XvwCFVAdeanbRP1IDnrbTtt4W//JJjkKoqgQmst2hsg=;
+        b=IqJ/5n1o2wjLT2F2jDfAarQimsxBD6sLd5/s7BGK42yGILp9lyN4hPctjzln9ov4Oj
+         t3J9wyZZEWMrwg4Jc/0DK1fOS6tpu30zrZMrzg6j224iVkwqHJaReBf0UrXnqksa4go8
+         LZZTGa1Vue5o0sUoyp7NuvIcvOIQP3ksNdZvpvxqHXU1GYhY5CRMF0fIbt0DMKZdUUuN
+         KU+TTIbJmCB32FqOjTEj8xB2Qg8ai/4JG0V520SahLEiAoBUUS+SaYrdybMCzwUohBcA
+         fbNAG+UH26CFeCiy6Gpcs0LjoO/xYqrrfs1xnzOWe9qbTWdU66mcgHIsMwVmDv/27PCR
+         qPSg==
+X-Forwarded-Encrypted: i=1; AJvYcCWoV9aDXZNRN2YxqIeN/HxK86V9JuJEpp18BkV/YVuwC2LKrKkUH/rvnyCAyIncN3aaIScf8MBgfjLU/lgqRjdYyMDcWePwfj6XBmmKyfrbQboa742ddkqwh76GdbJieboqk9pmFOVr9V9CLNIuhfAiIEurXkMhqizeCzItDvSMCnvPoiWl/5/M2tNOAm7ULNqa7FmB8k/hLCTbBF4VMr3Bc0O+ohpaFwBqHAyIfCUJeGIhBadxpHJbfeCz6R0MXUGj9AuwCw==
+X-Gm-Message-State: AOJu0Yy992Hzg7PNa99UOSYIrQ6HgkF/F8Va/dP17FVTxlCwmIr5IEXT
+	XrGPLNSpHZmhmvZBA3APhOJmXgHeANkIo42SThTnNFNOMEmB5XzLVH2f8Wr/
+X-Google-Smtp-Source: AGHT+IFKatdvmiB7Q+dm5pkiFASZLvgcLBXvJO2C6iEi0l0sMqlgKEeeFsuI9Ng5fXBBFq/U1y2uzg==
+X-Received: by 2002:a05:6808:8d8:b0:3c5:eeb5:c6e2 with SMTP id k24-20020a05680808d800b003c5eeb5c6e2mr6356039oij.36.1712848871698;
+        Thu, 11 Apr 2024 08:21:11 -0700 (PDT)
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com. [209.85.167.178])
+        by smtp.gmail.com with ESMTPSA id j8-20020a544808000000b003c5d2c04a52sm251045oij.34.2024.04.11.08.21.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 08:21:11 -0700 (PDT)
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3c6efac587eso53490b6e.0;
+        Thu, 11 Apr 2024 08:21:10 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV7C0vdcdCbkj31EXVhBXtFKjQluSIPlaOVqa0fbEniozH39Mic6yPRTSa8mA7DVKOZK2VJcQrLUX1TBEzTTn4FLP8GuQmo/MUO3SbmxiLqyCw0Uc4Y7h4012WpLOm9E3+P/RmnfC9h4pabCwPyA/LTJk/yrLRfqVnU4VTkuT6MaMVpw5pn8frWSGm+nevFuM2z9bw4m3phDk7IrGetuSFqrR57FLfeqlZag9cjY0hp803XgLTnf3XAlEpvk36/e1NsQfugQw==
+X-Received: by 2002:a05:6808:2228:b0:3c5:e2dc:8a6a with SMTP id
+ bd40-20020a056808222800b003c5e2dc8a6amr7491416oib.24.1712848870629; Thu, 11
+ Apr 2024 08:21:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411072445.522731-1-alexandre.chartre@oracle.com>
- <7f1faa48-6252-4409-aefc-2ed2f38fb1c3@citrix.com> <caa51938-c587-4403-a9cd-16e8b585bc13@oracle.com>
- <CABgObfai1TCs6pNAP4i0x99qAjXTczJ4uLHiivNV7QGoah1pVg@mail.gmail.com>
- <abbaeb7c-a0d3-4b2d-8632-d32025b165d7@oracle.com> <2afb20af-d42e-4535-a660-0194de1d0099@citrix.com>
- <ff3cf105-ef2a-426c-ba9b-00fb5c2559c7@oracle.com> <CABgObfZU_uLAPzDV--n67H3Hq6OKxUO=FQa2MH3CjdgTQR8pJg@mail.gmail.com>
- <99ad2011-58b7-42c8-9ee5-af598c76a732@oracle.com>
-In-Reply-To: <99ad2011-58b7-42c8-9ee5-af598c76a732@oracle.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Thu, 11 Apr 2024 17:20:30 +0200
-Message-ID: <CABgObfa_mkk-c3NZ623WzYDxw59NcYB_tEQ8tFX4CECHW3JxQQ@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Set BHI_NO in guest when host is not affected
- by BHI
-To: Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc: Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, daniel.sneddon@linux.intel.com, 
-	pawan.kumar.gupta@linux.intel.com, tglx@linutronix.de, konrad.wilk@oracle.com, 
-	peterz@infradead.org, gregkh@linuxfoundation.org, seanjc@google.com, 
-	dave.hansen@linux.intel.com, nik.borisov@suse.com, kpsingh@kernel.org, 
-	longman@redhat.com, bp@alien8.de
+References: <20240410134044.2138310-1-claudiu.beznea.uj@bp.renesas.com> <20240410134044.2138310-10-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240410134044.2138310-10-claudiu.beznea.uj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 11 Apr 2024 17:20:58 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW-SOzs87+ErfGCcw1eYaaDqsLc4++fNUbTsVrkFqyHPg@mail.gmail.com>
+Message-ID: <CAMuHMdW-SOzs87+ErfGCcw1eYaaDqsLc4++fNUbTsVrkFqyHPg@mail.gmail.com>
+Subject: Re: [PATCH RESEND v8 09/10] watchdog: rzg2l_wdt: Power on the PM
+ domain in rzg2l_wdt_restart()
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: wim@linux-watchdog.org, linux@roeck-us.net, robh@kernel.org, 
+	krzk+dt@kernel.org, conor+dt@kernel.org, p.zabel@pengutronix.de, 
+	geert+renesas@glider.be, magnus.damm@gmail.com, biju.das.jz@bp.renesas.com, 
+	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
+	Linux PM list <linux-pm@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 11, 2024 at 5:13=E2=80=AFPM Alexandre Chartre
-<alexandre.chartre@oracle.com> wrote:
-> I think that Andrew's concern is that if there is no eIBRS on the host th=
-en
-> we do not set X86_BUG_BHI on the host because we know the kernel which is
-> running and this kernel has some mitigations (other than the explicit BHI
-> mitigations) and these mitigations are enough to prevent BHI. But still
-> the cpu is affected by BHI.
+Hi Claudiu,
 
-Hmm, then I'm confused. It's what I wrote before: "The (Linux or
-otherwise) guest will make its own determinations as to whether BHI
-mitigations are necessary. If the guest uses eIBRS, it will run with
-mitigations" but you said machines without eIBRS are fine.
+CC pmdomain
 
-If instead they are only fine _with Linux_, then yeah we cannot set
-BHI_NO in general. What we can do is define a new bit that is in the
-KVM leaves. The new bit is effectively !eIBRS, except that it is
-defined in such a way that, in a mixed migration pool, both eIBRS and
-the new bit will be 0.
+On Thu, Apr 11, 2024 at 1:11=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> =
+wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> The rzg2l_wdt_restart() is called from atomic context. Calling
+> pm_runtime_{get_sync, resume_and_get}() or any other runtime PM resume
+> APIs is not an option as it may lead to issues as described in commit
+> e4cf89596c1f ("watchdog: rzg2l_wdt: Fix 'BUG: Invalid wait context'")
+> that removed the pm_runtime_get_sync() and used directly the
+> clk_prepare_enable() APIs.
+>
+> Starting with RZ/G3S the watchdog could be part of its own software
+> controlled power domain (see the initial implementation in Link section).
+> In case the watchdog is not used the power domain is off and accessing
+> watchdog registers leads to aborts.
+>
+> To solve this the patch powers on the power domain using
+> dev_pm_genpd_resume() API before enabling its clock. This is not
+> sleeping or taking any other locks as the power domain will not be
+> registered with GENPD_FLAG_IRQ_SAFE flags.
+>
+> Link: https://lore.kernel.org/all/20240208124300.2740313-1-claudiu.beznea=
+uj@bp.renesas.com
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Paolo
+Thanks for your patch!
 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+> --- a/drivers/watchdog/rzg2l_wdt.c
+> +++ b/drivers/watchdog/rzg2l_wdt.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_domain.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/reset.h>
+>  #include <linux/units.h>
+> @@ -164,6 +165,17 @@ static int rzg2l_wdt_restart(struct watchdog_device =
+*wdev,
+>         struct rzg2l_wdt_priv *priv =3D watchdog_get_drvdata(wdev);
+>         int ret;
+>
+> +       /*
+> +        * The device may be part of a power domain that is currently
+> +        * powered off. We need to power it up before accessing registers=
+.
+> +        * We don't undo the dev_pm_genpd_resume() as the device need to
+> +        * be up for the reboot to happen. Also, as we are in atomic cont=
+ext
+> +        * here there is no need to increment PM runtime usage counter
+> +        * (to make sure pm_runtime_active() doesn't return wrong code).
+> +        */
+> +       if (!pm_runtime_active(wdev->parent))
+> +               dev_pm_genpd_resume(wdev->parent);
+> +
+>         clk_prepare_enable(priv->pclk);
+>         clk_prepare_enable(priv->osc_clk);
+>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
