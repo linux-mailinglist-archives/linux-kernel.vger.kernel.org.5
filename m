@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 548418A1987
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:11:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A05428A1989
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:11:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1203B1F22B85
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:11:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BE4C285DB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:11:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1BEE15FA68;
-	Thu, 11 Apr 2024 15:35:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75A1716130D;
+	Thu, 11 Apr 2024 15:35:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="B8CtB1tx"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="RCrX26Fc"
+Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5AA615EFCD
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:35:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A17B15FA8A
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:35:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849742; cv=none; b=I+zvuvEeNsTBheihnFCDZ1u9PHaiwsqjoR7qgp6n6JxM3AheOTRk6jLKVc0H3AkVh6Vq2yi/M0c9k6SQNVkvntCTK7MFC1OSoxShcrrpYv/TxnMqV1RWqGClmoMA/X9jCHklECNujNokvgy0apuaHMsL2WyMiYU9NgDP6wjG11I=
+	t=1712849744; cv=none; b=gx6GqPLYmGV3UNkutqStAt4uwnITYTrvnR+XfU6stQqq5zeAzdeyzqXBOiORoBQp0Z6wcuShMShWlAIpqE3cG5u3xDBzXrOd2DnAWHFu89hM44NwGYQyXB6SkkbvqVA44XifW6jjbuleR3UmtqPvKjUmcA8DkEEyHJKWRapagek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849742; c=relaxed/simple;
-	bh=AP+nBrbRMwcyEgUSs3UjI9M0KSF/Nm6cAbt94qY8s0w=;
+	s=arc-20240116; t=1712849744; c=relaxed/simple;
+	bh=gL5rAXowAGRcXaVBOvm9G+t3o9spcMoINLf7As2dKXk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kThR2p1EqY5OpdCl0hdti9duXGkXR1IPh+8NMQF0Q5PltrGIOgKy0c7OOB+6JOoBSiSa9zoF0kz2w87pE+C0+c/MkkVO1TjmjSA3HakwlKaunqMj1rMMqDJJt/A+NpYP9LSRsCbKfn5vi1Vx7q8bBmgCJwmnFgrF7kzvMJ1p1pM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=B8CtB1tx; arc=none smtp.client-ip=209.85.166.51
+	 MIME-Version; b=HuaTC2V4N3h/FtGUdszkLoJpJVGeX1FwnZCgrCew3kOTBwOwnhbeB4hrUOGfYDmfhDUtuP2TpznwRU80iAeCkBAT+v5ZmiiDcjDDzHrVUt4Q1p/iQT+9G7WQwlh2o2p2Tnpy3Xdzn4H2EZYaLRH1F8Q/rbqW85P98b0RjmUa7Os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=RCrX26Fc; arc=none smtp.client-ip=209.85.166.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so170505039f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:35:40 -0700 (PDT)
+Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so170506539f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:35:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849739; x=1713454539; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849742; x=1713454542; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kQCujrZigLy3u3kxVy6Esjv8r5Vg/g2Yr8TaOCRRNCU=;
-        b=B8CtB1txgBEwHIJojvEqbEwCT5xsQX9A/xHRMatBA2Oh4UMfzKSjqHgoX01X2sZOFo
-         SaJhGahLktphHxuzwKnnh4E7HEuJVThxgnEVRQzkXRYWsNplLKm2tl+lMqhKM81iPnom
-         UD3bvFD2yieeCtxZ5sEh1L/136cP5RWSJuMbiNjyk9OFJ9nEaUSgk4hb9UQlYChf4ANQ
-         5wYqmtjb7a3pfwfTpLvm1iAyDxmNkHZwJYAo3oUxD/kkfI969xnVaFUM1HphX1cSQ7F8
-         pZjHy5+e/yG6nRDnfmkRpzAA2P4OunH9fYjdaOBSnB4ObJanFDKfQYvVCHuKt/bgEVFB
-         W8vw==
+        bh=W3VjsqHvsbMOxlKPUgYkeLDi3mwVEdCEjMoi0qF7dVw=;
+        b=RCrX26Fcm4dDMrZ3Nl+s6iV1UfNZ1mZYbC0k7Re7+gMJz7Mj8Rx+ZdDMXMIjlYux/u
+         +nHjwHn+DZ0MBuQriQ5oQEBtNhwBbe1Qcl51puwI0vRkasmT13dDHw4Nuhd16tfcFcy2
+         QawY0FTak29sHPqOeuPEAiNoIpeBlneJtihhFcFsDTMHam2skNIqLlAMBdYGnMtJp+wq
+         IuxmDzSdADAmvDq7lsNjkXONWIhEaF844H5rtdJJcg8vK7eyyhBgAQx5dENdjDtEQG6I
+         uoNJGGghIWS2ARPKocuGjg8n9xaYfEPAck+L6PHtHCQPvsxgzJePrK2rMdo742DHPH7s
+         sgWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849739; x=1713454539;
+        d=1e100.net; s=20230601; t=1712849742; x=1713454542;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kQCujrZigLy3u3kxVy6Esjv8r5Vg/g2Yr8TaOCRRNCU=;
-        b=NfaVeNSr/v0ch1XC7dFWqDsxDGSgJn0nFVyJlNijQTP8IWVA1XaYeQvgNiiNOgKJTz
-         6OxIer9VQRrIvRVe/05tYLa/zcpybpa5igzQSNrJEwSQ65ExHK/4GLAowbY+UEKzcGS4
-         SUjw94NmQCJoB1qlaY1ejGUPLXyKNA7HdwUcq39LkpEEw6WZ8lS7vpE3lk/LAv3G4mwa
-         JmaDjz4D9CzYy5VN61JA5awQe0JgGn/72jxzEg5Les07p74lFWDt5T5gUVTYKgEaJ6ee
-         MzhVemQ1HaZFFBzv52Dri0FyIz+8lC8xZlApOMC6GbVVVWfk1EbTqdy3MRCSimKRDRib
-         VYig==
-X-Gm-Message-State: AOJu0YyDV7Hi3ZiD7Kc93TSJbY24BbWj69QEUpQDyMjXAh53XaaUph6W
-	phniozWpfyuU+EC7o1Kbk5C3nSkQzsv17sHpsrL90KJHvBvbnLE8vmV/zFaEf+i0z36Hf3IWqNm
-	N
-X-Google-Smtp-Source: AGHT+IGuUEEAgdVg4ZgPf1OSrIZOeErBwaV5OeH/P7UvLSNpC+lMq5RxgInP8EhFFmWogQbDiFpfeQ==
-X-Received: by 2002:a05:6602:21d7:b0:7d6:9ddf:5095 with SMTP id c23-20020a05660221d700b007d69ddf5095mr14001ioc.1.1712849739297;
-        Thu, 11 Apr 2024 08:35:39 -0700 (PDT)
+        bh=W3VjsqHvsbMOxlKPUgYkeLDi3mwVEdCEjMoi0qF7dVw=;
+        b=ivD0orqdGGUA+jwPiC9YJ+Wu6H+788FOnGJMkOEycHUyIAD68DlKvczQXFxuac5cTl
+         R7vs5xs+zExNyYU2bqWB8XxQKd81uf+hd+Cj07jaJOeGA+7qglwk8I77RnB1zYQ/op1+
+         pjQZOAMAbWbLBO2KpgnZxVIPHy1Yc3LSDxrcctj43MsyQz3ycYBidqwrxh3VUxdq5Bdj
+         qY8eyk05+81eqJpmKIztJOGpIt/27BB0Hy75etCrmHXqJ1ba0Rk+NwHngEMqu8waBwTF
+         P+pFfbzWcVLr4sNeHgC/wVlGVmuVx7/hnmR95i6lGSG6z3fmyeRKYhhBh6id1c/qSGFk
+         ThJw==
+X-Gm-Message-State: AOJu0YzEWV2kZjFGfA8zpb37ZgVnr0roLkon6qmsIm/W7lYWRIxhsC7N
+	nnEPjprXhyqQMlj7Fn+EWcpYTYwN4uxWYsPlwwOUf/kS4B9lAHyPHNrAptdtsDXEYGZ8F7o9Eol
+	U
+X-Google-Smtp-Source: AGHT+IExv45aBJtRiiUt52E8nPqCRI2CwS9qZlU4Uaf/CSootiAOJ7f/Q3WvQJwhWEeB2UqgoGKl9w==
+X-Received: by 2002:a05:6602:21d7:b0:7d6:9ddf:5095 with SMTP id c23-20020a05660221d700b007d69ddf5095mr14189ioc.1.1712849742432;
+        Thu, 11 Apr 2024 08:35:42 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.35.37
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.35.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:35:37 -0700 (PDT)
+        Thu, 11 Apr 2024 08:35:39 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 143/437] drm: mali: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:14:43 -0600
-Message-ID: <20240411153126.16201-144-axboe@kernel.dk>
+Subject: [PATCH 144/437] drm/bridge: it6505: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:14:44 -0600
+Message-ID: <20240411153126.16201-145-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,44 +85,52 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/gpu/drm/arm/malidp_drv.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/bridge/ite-it6505.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/arm/malidp_drv.c b/drivers/gpu/drm/arm/malidp_drv.c
-index 6682131d2910..cc0490e3ae4c 100644
---- a/drivers/gpu/drm/arm/malidp_drv.c
-+++ b/drivers/gpu/drm/arm/malidp_drv.c
-@@ -522,10 +522,9 @@ static int malidp_debugfs_open(struct inode *inode, struct file *file)
- 	return single_open(file, malidp_show_stats, inode->i_private);
+diff --git a/drivers/gpu/drm/bridge/ite-it6505.c b/drivers/gpu/drm/bridge/ite-it6505.c
+index 27334173e911..3f280f85d49d 100644
+--- a/drivers/gpu/drm/bridge/ite-it6505.c
++++ b/drivers/gpu/drm/bridge/ite-it6505.c
+@@ -3208,14 +3208,14 @@ static void it6505_parse_dt(struct it6505 *it6505)
+ 			     it6505->max_dpi_pixel_clock);
  }
  
--static ssize_t malidp_debugfs_write(struct file *file, const char __user *ubuf,
--				    size_t len, loff_t *offp)
-+static ssize_t malidp_debugfs_write(struct kiocb *iocb, struct iov_iter *from)
+-static ssize_t receive_timing_debugfs_show(struct file *file, char __user *buf,
+-					   size_t len, loff_t *ppos)
++static ssize_t receive_timing_debugfs_show(struct kiocb *iocb,
++					   struct iov_iter *to)
  {
--	struct seq_file *m = file->private_data;
-+	struct seq_file *m = iocb->ki_filp->private_data;
- 	struct drm_device *drm = m->private;
- 	struct malidp_drm *malidp = drm_to_malidp(drm);
- 	unsigned long irqflags;
-@@ -534,14 +533,14 @@ static ssize_t malidp_debugfs_write(struct file *file, const char __user *ubuf,
- 	malidp_error_stats_init(&malidp->de_errors);
- 	malidp_error_stats_init(&malidp->se_errors);
- 	spin_unlock_irqrestore(&malidp->errors_lock, irqflags);
--	return len;
-+	return iov_iter_count(from);
+-	struct it6505 *it6505 = file->private_data;
++	struct it6505 *it6505 = iocb->ki_filp->private_data;
+ 	struct drm_display_mode *vid;
+ 	u8 read_buf[READ_BUFFER_SIZE];
+ 	u8 *str = read_buf, *end = read_buf + READ_BUFFER_SIZE;
+-	ssize_t ret, count;
++	ssize_t count;
+ 
+ 	if (!it6505)
+ 		return -ENODEV;
+@@ -3243,9 +3243,7 @@ static ssize_t receive_timing_debugfs_show(struct file *file, char __user *buf,
+ 			 vid->vtotal - vid->vsync_end);
+ 
+ 	count = str - read_buf;
+-	ret = simple_read_from_buffer(buf, len, ppos, read_buf, count);
+-
+-	return ret;
++	return simple_copy_to_iter(read_buf, &iocb->ki_pos, count, to);
  }
  
- static const struct file_operations malidp_debugfs_fops = {
+ static int force_power_on_off_debugfs_write(void *data, u64 value)
+@@ -3307,7 +3305,7 @@ static int enable_drv_hold_debugfs_write(void *data, u64 drv_hold)
+ static const struct file_operations receive_timing_fops = {
  	.owner = THIS_MODULE,
- 	.open = malidp_debugfs_open,
--	.read = seq_read,
--	.write = malidp_debugfs_write,
-+	.read_iter = seq_read_iter,
-+	.write_iter = malidp_debugfs_write,
- 	.llseek = seq_lseek,
- 	.release = single_release,
+ 	.open = simple_open,
+-	.read = receive_timing_debugfs_show,
++	.read_iter = receive_timing_debugfs_show,
+ 	.llseek = default_llseek,
  };
+ 
 -- 
 2.43.0
 
