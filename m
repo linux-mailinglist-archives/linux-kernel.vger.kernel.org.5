@@ -1,97 +1,102 @@
-Return-Path: <linux-kernel+bounces-141027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 097F68A1A4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:46:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5988C8A1A5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:48:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C53E4B25EF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:38:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 891EB1C22CA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:48:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84FE41CA6CD;
-	Thu, 11 Apr 2024 15:38:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B25E11D780A;
+	Thu, 11 Apr 2024 15:40:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aGaTBU7d"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EEVv67mH"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C91E51CA6BA
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:38:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D4D81D6381;
+	Thu, 11 Apr 2024 15:39:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849923; cv=none; b=qX/BhX3EMbodPNgDL39DdZHFCCfnRhE+L3+um4DTA8rQjo/rvRBP9o8lFnrPs2OAPG1zpAjG6216lzN3c7Nm/O///ec7kFsPu24mjwSVSt/X7UD7Y5SI65nbD/F7X2tnGNgZt91iLXF7G9yuzvN3HnF1MlIkQ85UW4dSq+XMnHI=
+	t=1712850000; cv=none; b=Ys/fatOUG5SiwTJm2SNAIbHohIKtyt/5WNlkXkCcdnIilbvlPjMUuE8kPcEVyDctVoYXeS/CdVGGpiSg/G9ONuF1jX7VvMW7C0LPc7HUzmoBW419Nbzur4XmCkE0dMIpiGZzlVYtsG1YA0IOleqGle13a+Px0TmALNxg3FHc8Pk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849923; c=relaxed/simple;
-	bh=0XIFigNg8okTi2XcwCJDslMjIxGNFSCDsSh68/q0Ud4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hl06GZOQTmgqiin3OLd7xhP+qQEOwqQC5EvtdnxAopEepzgDsI7MIXioLMVGGFWHiSGwRDgQzkxK21XTG4CyQAv34oBgOdrXowY8F587J4SScviNGPPFbN6dZzES/GGWkH64YXYOYZA0LnvHTdORDdxYIez4XnlrPSVU07SvAB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aGaTBU7d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE207C113CE;
-	Thu, 11 Apr 2024 15:38:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712849923;
-	bh=0XIFigNg8okTi2XcwCJDslMjIxGNFSCDsSh68/q0Ud4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aGaTBU7dJ/KuPVA22cvjffRpSftlAU4O+LZZLSuPk3heq+ij90Fsc7u3tN9JEsmIU
-	 lt6D6iwTiFikA3C0RWCvWY1lIdpzdaDrnUJeyMPYpI/oOSiSj+oDQrdRZKnt0IqKOE
-	 7D9KZ2d51dyUy3fqlmFxFECXFdXtiwlklgm2RhJhwIIo3IJ8ivMcfzzeabnW57Irqd
-	 lPWciXlA5yanNZE8QiY2lE66HZoawFU9OTMsRQFmMO8zH0YRcrOq00SaJsJmR4YWbX
-	 SEu0Q1TzjcQCjKyUR9JdkI/4Mqu0+3JSGch87GkcLkhh+BRFknnUkA7kO29MmPTcx6
-	 LrwpuKlS+G+Eg==
-Date: Thu, 11 Apr 2024 08:38:41 -0700
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: Andrew Cooper <andrew.cooper3@citrix.com>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alexandre Chartre <alexandre.chartre@oracle.com>,
-	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>,
-	Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH 5/7] x86/bugs: Only harden syscalls when needed
-Message-ID: <20240411153841.zexbsqrdli54kiez@treble>
-References: <cover.1712813475.git.jpoimboe@kernel.org>
- <97befd7c1e008797734dee05181c49056ff6de57.1712813475.git.jpoimboe@kernel.org>
- <90405c43-daca-48e4-b424-d66d6bf4dd87@citrix.com>
+	s=arc-20240116; t=1712850000; c=relaxed/simple;
+	bh=mOTXpPdaiY/n+o5yUlSF9VJPmoTrThEaztMjh6xCFc8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RmzmD49Nxnyx8pYcs3Rkz6PKUTzAb0ximiDVin5AeQAn96O/BcA71+2BgvCiq/qud1JP+8FsyHrvVjkLHrFX9PM0MPp/6i/AS9cKBGGZ6Y0YdcIzgNyTfAdnGc/3KzMFjsqHes0pnr0dOuffRuVjvqSZspSPuc2Z9cgLGiLaM98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EEVv67mH; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5cdbc4334edso4898619a12.3;
+        Thu, 11 Apr 2024 08:39:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712849998; x=1713454798; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mOTXpPdaiY/n+o5yUlSF9VJPmoTrThEaztMjh6xCFc8=;
+        b=EEVv67mH0srdDt9sS0VMvtb1qDrZeTMxhOI4IpT54v5wbZf4y3VKK0koxLgeZfuguY
+         cbIKu76Q4tTlZwYz4Kzt0ywRO6y3dlrta/gG1Tw9VlhdtU5bb8lxWPyCPv7ODv0+Wt82
+         fDzIHlPm3qL20NMtz22CjeuPESlI67eBx/k9vtSxiuGKqr3qoNHLpvEqNk3pvEhGnyfG
+         Os0m2EGGkcKTkxq65DYpZgzm2E8ts2OrcIug8+MYnrWJk2ePAAuMv4jVSV8yu7dPsG01
+         4YP0Jz0N+2TrAHOq36z0hMf3cAcCvGrhJ1+zO3Oldd7oZYdcjgF2UO5a8NPx67Dc+iWe
+         jvqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712849998; x=1713454798;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mOTXpPdaiY/n+o5yUlSF9VJPmoTrThEaztMjh6xCFc8=;
+        b=ic0Ls/AcNXTRls1aFOvEMxylj/2czMZA7wBgIbC6ZLoBTHLgGXs0YynGWb3fSXP7bh
+         xl+F4zGTtsh0nI70JbDZ8GxBVHHaysX9zt29qS5YIMVwZd8aW1+AqB67zaVgxscTUmY1
+         bZsMz77gdz/auOSikgfWHCpMuiEZWb/uyyqIGecxO6Os1izNmAabjwliwkG6JWe1Hqcr
+         2XRriUkUAtVaKbUKeKGp4dr7sGBdKAtLC5FPM2fwVOr62PQ4TyPF8nyNir/gNKTosJQM
+         evW2pdYEf1zo/4Qvp42lJUSRDfl1qOQUxG+6p/si59lhO2s0Lid3FXIltMKnAlHUIWO6
+         J3Bw==
+X-Forwarded-Encrypted: i=1; AJvYcCVhbGsaPIxEJMvGJsGlBAgnw3nBLK5tuYj6Hu1Mm0bfn2SfVxtroxX+h75eLCPHYZuHEujncNvtj15eeDbYcIfuvSyK1gEV4LWEy9bR+Yk8Kq54vKnUWwJNoUxq7R5oVBnvzOpL/KbQSB4w25s=
+X-Gm-Message-State: AOJu0Yw8SKj3SUbIqpHSoDGDxTG1SME+CU90+lAc/t7WXj4e1E/EcJHa
+	Hz/ddKkLtg8/WlTtcd7ChL/+lIwXo5IHT/Cy9FfNIJ4sK2vcO4kVyvLQ9T0PXk83TSLZfVK9GLq
+	iig8GXFh5uKREsAWLWs/S1EYvzr8=
+X-Google-Smtp-Source: AGHT+IG4q0v3GRTjlxffhMx0OJyMhxg2Z8Fefx5FWiiVhR+otNHOIDhD9CRH/kdE+O9XbKMNEKe4c5HUktwBTuZPx1U=
+X-Received: by 2002:a17:90a:b384:b0:2a4:9441:13d3 with SMTP id
+ e4-20020a17090ab38400b002a4944113d3mr5562497pjr.12.1712849998503; Thu, 11 Apr
+ 2024 08:39:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <90405c43-daca-48e4-b424-d66d6bf4dd87@citrix.com>
+References: <20240322-rust-ktime_ms_delta-v2-1-d98de1f7c282@google.com> <87v84p2m0c.ffs@tglx>
+In-Reply-To: <87v84p2m0c.ffs@tglx>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Thu, 11 Apr 2024 17:39:07 +0200
+Message-ID: <CANiq72=FSPqAq+jEnC=sjtdkJK45-0CgXKrSFXXOF0KSTcLLCQ@mail.gmail.com>
+Subject: Re: [PATCH v2] rust: time: add Ktime
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, 
+	John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 11, 2024 at 11:06:37AM +0100, Andrew Cooper wrote:
-> > +#define __do_syscall(table, func_direct, nr, regs)			\
-> > +({									\
-> > +	unsigned long __rax, __rdi, __rsi;				\
-> > +									\
-> > +	asm_inline volatile(						\
-> > +		ALTERNATIVE("call " __stringify(func_direct) "\n\t",	\
-> > +			    ANNOTATE_RETPOLINE_SAFE			\
-> > +			    "call *%[func_ptr]\n\t",			\
-> 
-> This wants to be a plain maybe-thunk'd indirect call, and without the
-> ANNOTATE_RETPOLINE_SAFE.
-> 
-> Or you're going to get into cases where some combinations of command
-> line options do unexpected things e.g. retpolining everything except the
-> syscall dispatch.
+On Wed, Apr 10, 2024 at 6:57=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de=
+> wrote:
+>
+> Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 
-In that case won't X86_FEATURE_INDIRECT_SAFE get cleared, resulting in
-the above using a direct call?  Or did I miss something?
+Thanks Thomas -- if you pick it up through timers/core, please feel free to=
+ add:
 
--- 
-Josh
+Acked-by: Miguel Ojeda <ojeda@kernel.org>
+
+Cheers,
+Miguel
 
