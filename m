@@ -1,482 +1,216 @@
-Return-Path: <linux-kernel+bounces-140086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61F0F8A0B41
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:33:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79D0F8A0B61
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:36:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1769C282AB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:33:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0ECDB27F6B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A717145B14;
-	Thu, 11 Apr 2024 08:32:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E77F1411C7;
+	Thu, 11 Apr 2024 08:32:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IrYYYF3Q"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UjNwQ9RS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 386F014532F
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:32:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712824324; cv=none; b=QtF3+8IVgo0vtIRReyC/wCdri+Q8KpWrM56J80Lfbp+o9Tq5JF9uSrh8wTLnhHlLlgi79sLIygD0GnH3g782k4J2416Pgh50hS1Jgcax8TYIPkH+Adky4wC0FbcnsmJkbXO8UdNSNq8aEtpKptT3ipSlBR+p2MwzkA+y4I5IrX4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712824324; c=relaxed/simple;
-	bh=8CnZu/P7ezG953qbXc/j+1UaFAQnOhMj1kw+TDe9YQE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bAH09np9zsTQjklUCLL4PjQ6Hu1P2LC4AdRsMgoxBEx/KYuQu0WIz6253vyPhm3Q1HO+9LmDj7/fdZ/2aOpE39Q4Ug+Ko2kMb3mvdybXxhsB4I9VQyGQXtpDYzVJ0mxrSqh28H5aV0eLH9Hlbaa0rfvcYw7nn6hpeqDyB/c6Zz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IrYYYF3Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FE24C43143;
-	Thu, 11 Apr 2024 08:31:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712824323;
-	bh=8CnZu/P7ezG953qbXc/j+1UaFAQnOhMj1kw+TDe9YQE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=IrYYYF3QejJx79zYSiSnEGt1mXhc1uUa41zBcG5fRsy2OP+jOlvvHOHUmIBJy9vUH
-	 +Y6IRFaO3JL6Np5G2DqW1aa7E1GWMtW5s9v61WlZEbLs/0fRa/jP2Jpsco+7AcSj46
-	 FHLQK+yDrPs22ahjQhIBHrsp76rsu55BpjuvzaPs6fidm5gRlMQ/7mIJXuv3OCdpxI
-	 xglADuGeDy0x8Uj9guZqB8qXSzg8kOYGnN4SavD0UPJHb8e5l6kTB8UqUWb9RvK5Ui
-	 PdliYUac1y2eTqsCAChuQWrfl4P9ag9/7aFzHYv8btIpVkAH9rl4ZvT4xisRXm4F/J
-	 wWGET/4xEjtVw==
-From: Chao Yu <chao@kernel.org>
-To: jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>,
-	Daeho Jeong <daeho43@gmail.com>
-Subject: [PATCH v4] f2fs: zone: don't block IO if there is remained open zone
-Date: Thu, 11 Apr 2024 16:31:53 +0800
-Message-Id: <20240411083153.1697156-1-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95CE713FD94
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:32:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712824337; cv=fail; b=o1fPvXQ1Ig4GEsQuA4Tfl4KJsQZrJvW8XgADPUBbe4HvjEtL1j+CHv/uuEuU/Pgufe6JTKGLjoMLhOyGdoPzLWS2TUWyh7JZV6tIl9MnkHKQpxLPt+nNLVjuR38k+hfmvDSdBIWgq49s2HQMmhdTnGuuTZzYC5aX0Q/L8U0B9ok=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712824337; c=relaxed/simple;
+	bh=ZGsQQ+RruE08jpHMRJAC8U51gCeerX6uf23HQXM3BAQ=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=YzHj8WczGcglg83O+2T6tCRB8r8Oq691cP21ljK8/jZlN6OjLWIwCrL0kEk0gtkNPgXc/Qf/3QYjhpB0WsZ/Om9+Y6GiJUSdAlvglpn2vP2OsF9n8qZNd+/2FgrBmJ5EIAq0cPWdsiUuM8GQgUCGXm9a4gX5CBHaQyq5y0XBlPU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UjNwQ9RS; arc=fail smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712824334; x=1744360334;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=ZGsQQ+RruE08jpHMRJAC8U51gCeerX6uf23HQXM3BAQ=;
+  b=UjNwQ9RS5l9Xz/lrSoLSnOmqHnQIAahWcin1rS5msF+bEAEd+7D8SAX4
+   NUMXRLSTQbXfAYofZ/kt2+fHoZuyY9CSdwKmzJOOB5SOhtEF+JC3pQFlR
+   qni7H/PQaiHopUMLUby6ALIpKzgXzMnqiZcIJpHj+u833XWeM9vbK0K2D
+   j2QuO33bO+DGW3+psRXzpoWFmDeC68hvcPpyPFoS7Z7xE+RzMNEnu9e2q
+   kCdP0OcW8xFf4PNL2OvAFjftIYYBde+5Up/7e6JXKpycGwPwvRHchXQ2U
+   OfzTeK/Cq/IjlqnQEdkw8sdz8EDvn42ecrY/xkgy6ifu4EcIKM+PvYnt0
+   A==;
+X-CSE-ConnectionGUID: EzrdJMX1TLub25XYbirA9g==
+X-CSE-MsgGUID: jZoiSouKSrSxpqxWu7rByg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8384613"
+X-IronPort-AV: E=Sophos;i="6.07,192,1708416000"; 
+   d="scan'208";a="8384613"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 01:32:14 -0700
+X-CSE-ConnectionGUID: SQAaHwO1TUC6zLsxQgZhoQ==
+X-CSE-MsgGUID: PbRvUIIDQUKNoCFhUFSbLA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,192,1708416000"; 
+   d="scan'208";a="25602060"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Apr 2024 01:32:14 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 11 Apr 2024 01:32:13 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 11 Apr 2024 01:32:13 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 11 Apr 2024 01:32:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N4DUWG2wjMZ2PU90LqHpnMTzyewkw+ylu9AGOA4CBAeQEJGYt/ZptozQ9bEfM7vSoF43iaYISGDvew6Zwb2LJUvYnXqPuw3vtkrUjMk8I5PYt0GbJm/yp8n8Gr4XkZnpxG/MiMHt5j3N2zt56AWLpBJ6UkdgFfMjjzsSRJbQwmhpea+jkhnLLa1VWdRMw4wTuHH3CLqOqRjJa3qSljkL3bmWBIM6SVpjmcjO/TgQHAIKLDY7mPZrScRBfuR4dbZ+s877kR03vkRQB4fn4kZkoiRiLR8PIsjOwb66W1FD3Yl4a14b8C+RrJLsPzK1u3Uea4WurcwyG1mvQur6fcs7nw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZGsQQ+RruE08jpHMRJAC8U51gCeerX6uf23HQXM3BAQ=;
+ b=gLGGD8PmgV3B8Ies/35jfm91sim+tV65X0VOznADyplGkohW68T/72zm98/NkrAqjPQs9yavcQrz4s2DCnpEYG/CBQ+z4YG9iTRS4+rF8qZBHBSlKW52cpmihPJtSn2w5UKLJwIghqfam3Wiks4XsgEXy8wiuTqXy3aCAT8yXJL7cQejGdCshD6wncgTGkndWfolWHOv+MKMunDkWl8uS8o8S9fSXKtbvTdEDeqg4PI92Fx0jbDuHXcpQN7gIMebflTJDK/tCvMmGESZtAHZEw67SCu0Di72pR57ssopbLg/NnmBvR8rWyZcfm8+ZyUXyEdk4EfDtBT+imM8LVLN+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by IA1PR11MB6513.namprd11.prod.outlook.com (2603:10b6:208:3a3::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.26; Thu, 11 Apr
+ 2024 08:32:11 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::6c9f:86e:4b8e:8234]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::6c9f:86e:4b8e:8234%6]) with mapi id 15.20.7452.019; Thu, 11 Apr 2024
+ 08:32:11 +0000
+From: "Tian, Kevin" <kevin.tian@intel.com>
+To: Baolu Lu <baolu.lu@linux.intel.com>, Jason Gunthorpe <jgg@ziepe.ca>
+CC: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, "Robin
+ Murphy" <robin.murphy@arm.com>, "Zhang, Tina" <tina.zhang@intel.com>, "Liu,
+ Yi L" <yi.l.liu@intel.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 12/12] iommu/vt-d: Retire struct intel_svm
+Thread-Topic: [PATCH v2 12/12] iommu/vt-d: Retire struct intel_svm
+Thread-Index: AQHaiuxL0QoUUwGBOUWRwwQMu4eQMLFhp5mAgAEN5QCAAAgEIA==
+Date: Thu, 11 Apr 2024 08:32:11 +0000
+Message-ID: <BN9PR11MB52767D3287A7E000AD17BC9B8C052@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20240410020844.253535-1-baolu.lu@linux.intel.com>
+ <20240410020844.253535-13-baolu.lu@linux.intel.com>
+ <20240410154951.GH223006@ziepe.ca>
+ <b24f3380-1ac3-41c4-9163-56c1dcff6297@linux.intel.com>
+In-Reply-To: <b24f3380-1ac3-41c4-9163-56c1dcff6297@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|IA1PR11MB6513:EE_
+x-ms-office365-filtering-correlation-id: bef04176-7f0c-48f0-e219-08dc5a01e1f4
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wdTS78TDL3OPJFn/CRM9a5Cy1QF2+zDAMvl4thGy1sUPM33DIDqdUZlkYD2UopN9dkmCmzdXLTxhsRmxT3/nKePtXZ2k/mxaALGOkUYh9gczDk3ozbJVwbzs/crsIUdULW4f9rho4hf/Pw7E3g0PTnbgAuqulAxtJUm3oFQ/9UhUdR2odW8/Idr/J4Gz/3wbrft083+PkkF6MjV5avtZnaUxsYfXxWmJr0JpiaTovM2Y/2k2fpQ+J1ZtOOAD3A4wC3Bps4R4e4Q/oP9x4cMpJlmZX51Bmz9WHfTE8HIFXTfFfa+rK5LxU+bzrETQmBN1V0DlNM1sRNpmScw9dwRCoOtBeCXBkvl7uJSD050RPcPRvLezwg68QOvD/CZFlcYz6qjTTmm/cwYJWFbKoQ9Yi9RP6ClML11a5LKTo8LNQCM3FIp1dCn5xd8sCKN4Fq47v9KSMsHmnQv/Q19KGJR7xbmLulAITTdlFC7T6VY3dVu96ORMlDW9rMko6LgF6lyopBtv4y87khbM+yGBpk3AGz9LgJWSUs/BgapTAQ9C1kUEpxYHnS+aFyyQVMHF/0BBXnXnHRSA9PmTnjYNprVigBIeyrKSx0kLCHfN5w6vZZ/tR6yTrMVynsXXS5/1aBkssUThhtuZIuyQUXlz5UDdj8Kt0+bFpJ07XNlHYXuzaFpqofGYaTiAlsUu3Q4UTs7tlKd7s15r4N/oUBU1RPkID7mm8QLirb6ua5OTEZwJTj4=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SkUwQzQzWVBoOVRDNWdwM3kyV0hKajc2aFUzYzNnSGl6c0VTM3BzKzJRbEdR?=
+ =?utf-8?B?VjJwZ3F3VEE5UTJ0VDBrZXJDem1oNVdwOTNyM1kwa05GMFZOZFJWZW40SXhl?=
+ =?utf-8?B?UVRrK0huUXZMTHZEZnRNclZFS1hxZTZWbHgzYldiRnZGb1ZkckxFakdJcVZK?=
+ =?utf-8?B?RHdERVFRYjl3Y2Q1ZjFnZ2pidmtTT25lbFpXb3RqbnNYWnhCVWNIL3owdjEv?=
+ =?utf-8?B?REZWTXVsSmJOUE5id2tVZ2xoRkhPS1ljRWRNeDYrMlpqaU92S1hISDg0bU1Z?=
+ =?utf-8?B?bWp3V0JBTkxWeFcvU2FUMm05NUJhREZCYi9hV3ZBK1V4clNGSzN5T0FYOWxz?=
+ =?utf-8?B?eHNGdW5oTmNJbDNEV0IyM29pTndEZkZlQmlvdTVCY1I0ekZLZHp5WHdXejRp?=
+ =?utf-8?B?VGNPbkZzaFZ0RHlRQ0V2a2txWjJ3TG5uTHorR29MczBVRHlqRUh6b0hoTGM0?=
+ =?utf-8?B?WGdzTEpkWEMxUUZyd0s0SUw1N0UrcGdsQm5FMWdPTEo5aTNpSlZVN2I5R2c4?=
+ =?utf-8?B?RTAweEpIaHlmTmxTSG5KbkxzRGUzRXFwQ05xYks4TG9wK3N3c3RjTTY1Vmla?=
+ =?utf-8?B?SUk3SlIyQ2wyVk4vMVMzakV5WHJvYVk2ai9QSyt6ZnJuYk84SmxDdnJ0cXlF?=
+ =?utf-8?B?TmhRRmdlSytZUUhNRllqTlB3dEJoeHY2N3FqQm5yL2JoNStKazZBNkt6MmRs?=
+ =?utf-8?B?eTR3WWhhTVNsbERTUVRVWUFZR1VKd3VPVktzU3BENW83NlFsb0ZaN0xuSUFk?=
+ =?utf-8?B?M1J2WkhPL1VQeEpTR0dBYUk4Vjh2YVJPUkgwL0dJbmtKRVBHaHJuS0c4Y2V2?=
+ =?utf-8?B?VGkxdW1HUUM4enVOL1RkNzE4WW5JZTMrYVd6NG1VT0VjY3JHT3lsRlF1QzV2?=
+ =?utf-8?B?dndMbkFja3dubTIrY2pOdWNXY2NJeVpwUU9JTkhLZTUrb0pmZ1Q4dDBMSzFE?=
+ =?utf-8?B?SWVZVm9zY2tabXBlUE9WT2I4V2FIMVVSL2dXN3UzZzBCNkJibGw1TlRnN01X?=
+ =?utf-8?B?KzNkOU4xNVB0emJpYjd4WDFOSTBoZzIyMVlPbW51RFNQN2FJZFp6akdPSDM5?=
+ =?utf-8?B?SjNYRVMvSE1jdmNJZDdlaFFrSGk2RmUzdVhza3hYSU1zcUIyOW1NUmN2Z2V1?=
+ =?utf-8?B?YUpUdFZrWXlyRllnYmhlRGNud2R2OWxoZFZheGg5M21RZnZreEpPZHNDL29i?=
+ =?utf-8?B?RkJveTVFcGZmamNQQUh0THFDWHA2RUJoOTJIZFVoVTJZTWVZWml4b3lmTy9V?=
+ =?utf-8?B?YnlMckxTcFdxcitteUY0a3ROODJUWFpjMFlyeEdhUEQvb0VyT0lCQXRXUVFV?=
+ =?utf-8?B?TFU2cjZqRVdKc3ZkV1NNcGQ4WmJDaCsyaUZ2MElhTnRBVnFXVkJ0TDlBenBI?=
+ =?utf-8?B?OWhOdGErN0RKalhCSi9ibzUzTFp4YUFEaGtEaXkwOS9sSDRvZTRWc1lwei96?=
+ =?utf-8?B?SjFHSSt2UjBXMFEvVHNHZjVyb3h1dlprSzhQNEJiWGFiM1FpQXFxZ1AyZ29o?=
+ =?utf-8?B?WkVHRWlKQVJIaXhHSXhlNUV1eWhFdXNra0h0UlhnajIzUjQ2WENZTHZJQUdO?=
+ =?utf-8?B?MTVMdFNDSlFTS25BMXhqQWVkUE9YMk0wR0k0Z1l5cm0zSmtJYTN3YlJNek1z?=
+ =?utf-8?B?M0RobTBkZzJrdjIwNk5Ec1I5aE5FTGkxV1AyeVRwOTMwam9YOVRmQThjTzhu?=
+ =?utf-8?B?aFpWemRoRjQvclNvOHFaZU1nNzUvQy9ueGkrbkRDRFd0c2RtUFo0bTZSNUZE?=
+ =?utf-8?B?QktHVkc0bGF1ZVdrZEJ5bVhweTdkWGR5S2V6VWFwcjdnZ2JSUHc5MENrSDJZ?=
+ =?utf-8?B?V3VqMWRlRVZKR003by8wQjcxV25LWWQ5NjNkUVgyRGtoWEhjSDFXSEJ2YkMr?=
+ =?utf-8?B?SWxKL1lXNGVKQzlNN2V0dHc3UzhacUMreG5MNTR6VUUwQmYvUFM2UFYxL2Rw?=
+ =?utf-8?B?QiswUU9zaDNEYUYyQWMrM3VhWDlSQWJ1VU56akRXU0x5SVJJZE0zZnZEY3o1?=
+ =?utf-8?B?TE9Pa3Q5MHhqTkRrSmlyQ0pvbWVFNUxzUGJDMVB2ckFyQXdmS3NMRW9iclJu?=
+ =?utf-8?B?UWlaNXhrVzRIclpVZUIvdW9YcFh2cWhucURYK1pQQnlGU3Fkdm5FV0dpOFVV?=
+ =?utf-8?Q?+g7xrkC2l1eAZeydGs8gWnBt+?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bef04176-7f0c-48f0-e219-08dc5a01e1f4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Apr 2024 08:32:11.1780
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: I6mazz962pJ1uKDyicyZJmD2KajYFfsSTu5DAB/RQvqXtM/IaDt5l8/7v0V6bGV2rcUNOCfDLOwruTDiJHp2ow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6513
+X-OriginatorOrg: intel.com
 
-max open zone may be larger than log header number of f2fs, for
-such case, it doesn't need to wait last IO in previous zone, let's
-introduce available_open_zone semaphore, and reduce it once we
-submit first write IO in a zone, and increase it after completion
-of last IO in the zone.
-
-Cc: Daeho Jeong <daeho43@gmail.com>
-Signed-off-by: Chao Yu <chao@kernel.org>
----
-v4:
-- avoid unneeded condition in f2fs_blkzoned_submit_merged_write().
- fs/f2fs/data.c    | 105 ++++++++++++++++++++++++++++++----------------
- fs/f2fs/f2fs.h    |  34 ++++++++++++---
- fs/f2fs/iostat.c  |   7 ++++
- fs/f2fs/iostat.h  |   2 +
- fs/f2fs/segment.c |  43 ++++++++++++++++---
- fs/f2fs/segment.h |  12 +++++-
- fs/f2fs/super.c   |   2 +
- 7 files changed, 156 insertions(+), 49 deletions(-)
-
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 60056b9a51be..71472ab6b7e7 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -373,11 +373,10 @@ static void f2fs_write_end_io(struct bio *bio)
- #ifdef CONFIG_BLK_DEV_ZONED
- static void f2fs_zone_write_end_io(struct bio *bio)
- {
--	struct f2fs_bio_info *io = (struct f2fs_bio_info *)bio->bi_private;
-+	struct f2fs_sb_info *sbi = iostat_get_bio_private(bio);
- 
--	bio->bi_private = io->bi_private;
--	complete(&io->zone_wait);
- 	f2fs_write_end_io(bio);
-+	up(&sbi->available_open_zones);
- }
- #endif
- 
-@@ -531,6 +530,24 @@ static void __submit_merged_bio(struct f2fs_bio_info *io)
- 	if (!io->bio)
- 		return;
- 
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	if (io->open_zone) {
-+		/*
-+		 * if there is no open zone, it will wait for last IO in
-+		 * previous zone before submitting new IO.
-+		 */
-+		down(&fio->sbi->available_open_zones);
-+		io->open_zone = false;
-+		io->zone_openned = true;
-+	}
-+
-+	if (io->close_zone) {
-+		io->bio->bi_end_io = f2fs_zone_write_end_io;
-+		io->zone_openned = false;
-+		io->close_zone = false;
-+	}
-+#endif
-+
- 	if (is_read_io(fio->op)) {
- 		trace_f2fs_prepare_read_bio(io->sbi->sb, fio->type, io->bio);
- 		f2fs_submit_read_bio(io->sbi, io->bio, fio->type);
-@@ -601,9 +618,9 @@ int f2fs_init_write_merge_io(struct f2fs_sb_info *sbi)
- 			INIT_LIST_HEAD(&sbi->write_io[i][j].bio_list);
- 			init_f2fs_rwsem(&sbi->write_io[i][j].bio_list_lock);
- #ifdef CONFIG_BLK_DEV_ZONED
--			init_completion(&sbi->write_io[i][j].zone_wait);
--			sbi->write_io[i][j].zone_pending_bio = NULL;
--			sbi->write_io[i][j].bi_private = NULL;
-+			sbi->write_io[i][j].open_zone = false;
-+			sbi->write_io[i][j].zone_openned = false;
-+			sbi->write_io[i][j].close_zone = false;
- #endif
- 		}
- 	}
-@@ -634,6 +651,31 @@ static void __f2fs_submit_merged_write(struct f2fs_sb_info *sbi,
- 	f2fs_up_write(&io->io_rwsem);
- }
- 
-+void f2fs_blkzoned_submit_merged_write(struct f2fs_sb_info *sbi, int type)
-+{
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	struct f2fs_bio_info *io;
-+
-+	if (!f2fs_sb_has_blkzoned(sbi))
-+		return;
-+
-+	io = sbi->write_io[PAGE_TYPE(type)] + type_to_temp(type);
-+
-+	f2fs_down_write(&io->io_rwsem);
-+	if (io->zone_openned) {
-+		if (io->bio) {
-+			io->close_zone = true;
-+			__submit_merged_bio(io);
-+		} else {
-+			up(&sbi->available_open_zones);
-+			io->zone_openned = false;
-+		}
-+	}
-+	f2fs_up_write(&io->io_rwsem);
-+#endif
-+
-+}
-+
- static void __submit_merged_write_cond(struct f2fs_sb_info *sbi,
- 				struct inode *inode, struct page *page,
- 				nid_t ino, enum page_type type, bool force)
-@@ -918,22 +960,16 @@ int f2fs_merge_page_bio(struct f2fs_io_info *fio)
- }
- 
- #ifdef CONFIG_BLK_DEV_ZONED
--static bool is_end_zone_blkaddr(struct f2fs_sb_info *sbi, block_t blkaddr)
-+static bool is_blkaddr_zone_boundary(struct f2fs_sb_info *sbi,
-+					block_t blkaddr, bool start)
- {
--	int devi = 0;
-+	if (!f2fs_blkaddr_in_seqzone(sbi, blkaddr))
-+		return false;
-+
-+	if (start)
-+		return (blkaddr % sbi->blocks_per_blkz) == 0;
-+	return (blkaddr % sbi->blocks_per_blkz == sbi->blocks_per_blkz - 1);
- 
--	if (f2fs_is_multi_device(sbi)) {
--		devi = f2fs_target_device_index(sbi, blkaddr);
--		if (blkaddr < FDEV(devi).start_blk ||
--		    blkaddr > FDEV(devi).end_blk) {
--			f2fs_err(sbi, "Invalid block %x", blkaddr);
--			return false;
--		}
--		blkaddr -= FDEV(devi).start_blk;
--	}
--	return bdev_is_zoned(FDEV(devi).bdev) &&
--		f2fs_blkz_is_seq(sbi, devi, blkaddr) &&
--		(blkaddr % sbi->blocks_per_blkz == sbi->blocks_per_blkz - 1);
- }
- #endif
- 
-@@ -944,20 +980,14 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
- 	struct f2fs_bio_info *io = sbi->write_io[btype] + fio->temp;
- 	struct page *bio_page;
- 	enum count_type type;
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	bool blkzoned = f2fs_sb_has_blkzoned(sbi) && btype < META;
-+#endif
- 
- 	f2fs_bug_on(sbi, is_read_io(fio->op));
- 
- 	f2fs_down_write(&io->io_rwsem);
- next:
--#ifdef CONFIG_BLK_DEV_ZONED
--	if (f2fs_sb_has_blkzoned(sbi) && btype < META && io->zone_pending_bio) {
--		wait_for_completion_io(&io->zone_wait);
--		bio_put(io->zone_pending_bio);
--		io->zone_pending_bio = NULL;
--		io->bi_private = NULL;
--	}
--#endif
--
- 	if (fio->in_list) {
- 		spin_lock(&io->io_lock);
- 		if (list_empty(&io->io_list)) {
-@@ -985,6 +1015,11 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
- 	type = WB_DATA_TYPE(bio_page, fio->compressed_page);
- 	inc_page_count(sbi, type);
- 
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	if (blkzoned && is_blkaddr_zone_boundary(sbi, fio->new_blkaddr, true))
-+		io->open_zone = true;
-+#endif
-+
- 	if (io->bio &&
- 	    (!io_is_mergeable(sbi, io->bio, io, fio, io->last_block_in_bio,
- 			      fio->new_blkaddr) ||
-@@ -1010,15 +1045,11 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
- 	io->last_block_in_bio = fio->new_blkaddr;
- 
- 	trace_f2fs_submit_page_write(fio->page, fio);
-+
- #ifdef CONFIG_BLK_DEV_ZONED
--	if (f2fs_sb_has_blkzoned(sbi) && btype < META &&
--			is_end_zone_blkaddr(sbi, fio->new_blkaddr)) {
--		bio_get(io->bio);
--		reinit_completion(&io->zone_wait);
--		io->bi_private = io->bio->bi_private;
--		io->bio->bi_private = io;
--		io->bio->bi_end_io = f2fs_zone_write_end_io;
--		io->zone_pending_bio = io->bio;
-+	if (blkzoned &&
-+		is_blkaddr_zone_boundary(sbi, fio->new_blkaddr, false)) {
-+		io->close_zone = true;
- 		__submit_merged_bio(io);
- 	}
- #endif
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index e9ef971f4dba..4cc20e49c18c 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1232,16 +1232,16 @@ struct f2fs_bio_info {
- 	struct bio *bio;		/* bios to merge */
- 	sector_t last_block_in_bio;	/* last block number */
- 	struct f2fs_io_info fio;	/* store buffered io info. */
--#ifdef CONFIG_BLK_DEV_ZONED
--	struct completion zone_wait;	/* condition value for the previous open zone to close */
--	struct bio *zone_pending_bio;	/* pending bio for the previous zone */
--	void *bi_private;		/* previous bi_private for pending bio */
--#endif
- 	struct f2fs_rwsem io_rwsem;	/* blocking op for bio */
- 	spinlock_t io_lock;		/* serialize DATA/NODE IOs */
- 	struct list_head io_list;	/* track fios */
- 	struct list_head bio_list;	/* bio entry list head */
- 	struct f2fs_rwsem bio_list_lock;	/* lock to protect bio entry list */
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	bool open_zone;			/* open a zone */
-+	bool zone_openned;		/* zone has been openned */
-+	bool close_zone;		/* close a zone */
-+#endif
- };
- 
- #define FDEV(i)				(sbi->devs[i])
-@@ -1558,6 +1558,7 @@ struct f2fs_sb_info {
- #ifdef CONFIG_BLK_DEV_ZONED
- 	unsigned int blocks_per_blkz;		/* F2FS blocks per zone */
- 	unsigned int max_open_zones;		/* max open zone resources of the zoned device */
-+	struct semaphore available_open_zones;	/* available open zones */
- #endif
- 
- 	/* for node-related operations */
-@@ -3820,6 +3821,7 @@ void f2fs_destroy_bio_entry_cache(void);
- void f2fs_submit_read_bio(struct f2fs_sb_info *sbi, struct bio *bio,
- 			  enum page_type type);
- int f2fs_init_write_merge_io(struct f2fs_sb_info *sbi);
-+void f2fs_blkzoned_submit_merged_write(struct f2fs_sb_info *sbi, int type);
- void f2fs_submit_merged_write(struct f2fs_sb_info *sbi, enum page_type type);
- void f2fs_submit_merged_write_cond(struct f2fs_sb_info *sbi,
- 				struct inode *inode, struct page *page,
-@@ -4467,6 +4469,28 @@ static inline bool f2fs_blkz_is_seq(struct f2fs_sb_info *sbi, int devi,
- 
- 	return test_bit(zno, FDEV(devi).blkz_seq);
- }
-+
-+static inline bool f2fs_blkaddr_in_seqzone(struct f2fs_sb_info *sbi,
-+							block_t blkaddr)
-+{
-+	int devi = 0;
-+
-+	if (f2fs_is_multi_device(sbi)) {
-+		devi = f2fs_target_device_index(sbi, blkaddr);
-+		if (blkaddr < FDEV(devi).start_blk ||
-+		    blkaddr > FDEV(devi).end_blk) {
-+			f2fs_err(sbi, "Invalid block %x", blkaddr);
-+			return false;
-+		}
-+		blkaddr -= FDEV(devi).start_blk;
-+	}
-+
-+	if (!bdev_is_zoned(FDEV(devi).bdev) ||
-+		!f2fs_blkz_is_seq(sbi, devi, blkaddr))
-+		return false;
-+
-+	return true;
-+}
- #endif
- 
- static inline int f2fs_bdev_index(struct f2fs_sb_info *sbi,
-diff --git a/fs/f2fs/iostat.c b/fs/f2fs/iostat.c
-index f8703038e1d8..a8626e297876 100644
---- a/fs/f2fs/iostat.c
-+++ b/fs/f2fs/iostat.c
-@@ -237,6 +237,13 @@ static inline void __update_iostat_latency(struct bio_iostat_ctx *iostat_ctx,
- 	spin_unlock_irqrestore(&sbi->iostat_lat_lock, flags);
- }
- 
-+void *iostat_get_bio_private(struct bio *bio)
-+{
-+	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
-+
-+	return iostat_ctx->sbi;
-+}
-+
- void iostat_update_and_unbind_ctx(struct bio *bio)
- {
- 	struct bio_iostat_ctx *iostat_ctx = bio->bi_private;
-diff --git a/fs/f2fs/iostat.h b/fs/f2fs/iostat.h
-index eb99d05cf272..9006c3d41590 100644
---- a/fs/f2fs/iostat.h
-+++ b/fs/f2fs/iostat.h
-@@ -58,6 +58,7 @@ static inline struct bio_post_read_ctx *get_post_read_ctx(struct bio *bio)
- 	return iostat_ctx->post_read_ctx;
- }
- 
-+extern void *iostat_get_bio_private(struct bio *bio);
- extern void iostat_update_and_unbind_ctx(struct bio *bio);
- extern void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
- 		struct bio *bio, struct bio_post_read_ctx *ctx);
-@@ -68,6 +69,7 @@ extern void f2fs_destroy_iostat(struct f2fs_sb_info *sbi);
- #else
- static inline void f2fs_update_iostat(struct f2fs_sb_info *sbi, struct inode *inode,
- 		enum iostat_type type, unsigned long long io_bytes) {}
-+static inline void *iostat_get_bio_private(struct bio *bio) { return bio->bi_private; }
- static inline void iostat_update_and_unbind_ctx(struct bio *bio) {}
- static inline void iostat_alloc_and_bind_ctx(struct f2fs_sb_info *sbi,
- 		struct bio *bio, struct bio_post_read_ctx *ctx) {}
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 6474b7338e81..58cce79156bf 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -3140,6 +3140,9 @@ static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
- 		return err;
- 	stat_inc_seg_type(sbi, curseg);
- 	locate_dirty_segment(sbi, old_segno);
-+
-+	f2fs_blkzoned_submit_merged_write(sbi, type);
-+
- 	return 0;
- }
- 
-@@ -3461,12 +3464,7 @@ static int __get_segment_type(struct f2fs_io_info *fio)
- 		f2fs_bug_on(fio->sbi, true);
- 	}
- 
--	if (IS_HOT(type))
--		fio->temp = HOT;
--	else if (IS_WARM(type))
--		fio->temp = WARM;
--	else
--		fio->temp = COLD;
-+	fio->temp = type_to_temp(type);
- 	return type;
- }
- 
-@@ -4134,6 +4132,27 @@ static int restore_curseg_summaries(struct f2fs_sb_info *sbi)
- 		return -EINVAL;
- 	}
- 
-+#ifdef CONFIG_BLK_DEV_ZONED
-+	if (f2fs_sb_has_blkzoned(sbi)) {
-+		for (type = 0; type < NR_PERSISTENT_LOG; type++) {
-+			struct curseg_info *curseg = CURSEG_I(sbi, type);
-+			enum page_type ptype;
-+			enum temp_type temp;
-+
-+			if (!(curseg->next_blkoff % sbi->blocks_per_blkz))
-+				continue;
-+
-+			if (!f2fs_blkaddr_in_seqzone(sbi,
-+					START_BLOCK(sbi, curseg->segno)))
-+				continue;
-+
-+			ptype = PAGE_TYPE(type);
-+			temp = type_to_temp(type);
-+			down(&sbi->available_open_zones);
-+			sbi->write_io[ptype][temp].zone_openned = true;
-+		}
-+	}
-+#endif
- 	return 0;
- }
- 
-@@ -5453,6 +5472,18 @@ static void destroy_curseg(struct f2fs_sb_info *sbi)
- 	for (i = 0; i < NR_CURSEG_TYPE; i++) {
- 		kfree(array[i].sum_blk);
- 		kfree(array[i].journal);
-+
-+#ifdef CONFIG_BLK_DEV_ZONED
-+		if (f2fs_sb_has_blkzoned(sbi)) {
-+			enum page_type ptype = PAGE_TYPE(i);
-+			enum temp_type temp = type_to_temp(i);
-+
-+			if (sbi->write_io[ptype][temp].zone_openned) {
-+				up(&sbi->available_open_zones);
-+				sbi->write_io[ptype][temp].zone_openned = false;
-+			}
-+		}
-+#endif
- 	}
- 	kfree(array);
- }
-diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-index e1c0f418aa11..855978ca869f 100644
---- a/fs/f2fs/segment.h
-+++ b/fs/f2fs/segment.h
-@@ -24,7 +24,8 @@
- 
- #define IS_DATASEG(t)	((t) <= CURSEG_COLD_DATA)
- #define IS_NODESEG(t)	((t) >= CURSEG_HOT_NODE && (t) <= CURSEG_COLD_NODE)
--#define SE_PAGETYPE(se)	((IS_NODESEG((se)->type) ? NODE : DATA))
-+#define PAGE_TYPE(t)	(IS_NODESEG(t) ? NODE : DATA)
-+#define SE_PAGETYPE(se)	(PAGE_TYPE((se)->type))
- 
- static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
- 						unsigned short seg_type)
-@@ -965,3 +966,12 @@ static inline unsigned int first_zoned_segno(struct f2fs_sb_info *sbi)
- 			return GET_SEGNO(sbi, FDEV(devi).start_blk);
- 	return 0;
- }
-+
-+static inline enum temp_type type_to_temp(int type)
-+{
-+	if (IS_HOT(type))
-+		return HOT;
-+	else if (IS_WARM(type))
-+		return WARM;
-+	return COLD;
-+}
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index df32573d1f62..0a34c8746782 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3893,6 +3893,8 @@ static int init_blkz_info(struct f2fs_sb_info *sbi, int devi)
- 				sbi->max_open_zones, F2FS_OPTION(sbi).active_logs);
- 			return -EINVAL;
- 		}
-+
-+		sema_init(&sbi->available_open_zones, sbi->max_open_zones);
- 	}
- 
- 	zone_sectors = bdev_zone_sectors(bdev);
--- 
-2.40.1
-
+PiBGcm9tOiBCYW9sdSBMdSA8YmFvbHUubHVAbGludXguaW50ZWwuY29tPg0KPiBTZW50OiBUaHVy
+c2RheSwgQXByaWwgMTEsIDIwMjQgMzo1NiBQTQ0KPiANCj4gT24gMjAyNC80LzEwIDIzOjQ5LCBK
+YXNvbiBHdW50aG9ycGUgd3JvdGU6DQo+ID4gT24gV2VkLCBBcHIgMTAsIDIwMjQgYXQgMTA6MDg6
+NDRBTSArMDgwMCwgTHUgQmFvbHUgd3JvdGU6DQo+ID4+IEBAIC00Mzg4LDE0ICs0Mzg2LDggQEAg
+c3RhdGljIHZvaWQNCj4gaW50ZWxfaW9tbXVfcmVtb3ZlX2Rldl9wYXNpZChzdHJ1Y3QgZGV2aWNl
+ICpkZXYsIGlvYXNpZF90IHBhc2lkKQ0KPiA+PiAgIAlXQVJOX09OX09OQ0UoIWRldl9wYXNpZCk7
+DQo+ID4+ICAgCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmRtYXJfZG9tYWluLT5sb2NrLCBmbGFn
+cyk7DQo+ID4+DQo+ID4+IC0JLyoNCj4gPj4gLQkgKiBUaGUgU1ZBIGltcGxlbWVudGF0aW9uIG5l
+ZWRzIHRvIGhhbmRsZSBpdHMgb3duIHN0dWZmcyBsaWtlIHRoZQ0KPiBtbQ0KPiA+PiAtCSAqIG5v
+dGlmaWNhdGlvbi4gQmVmb3JlIGNvbnNvbGlkYXRpbmcgdGhhdCBjb2RlIGludG8gaW9tbXUgY29y
+ZSwgbGV0DQo+ID4+IC0JICogdGhlIGludGVsIHN2YSBjb2RlIGhhbmRsZSBpdC4NCj4gPj4gLQkg
+Ki8NCj4gPj4gICAJaWYgKGRvbWFpbi0+dHlwZSA9PSBJT01NVV9ET01BSU5fU1ZBKSB7DQo+ID4+
+ICAgCQljYWNoZV90YWdfdW5hc3NpZ25fZG9tYWluKGRtYXJfZG9tYWluLA0KPiBGTFBUX0RFRkFV
+TFRfRElELCBkZXYsIHBhc2lkKTsNCj4gPj4gLQkJaW50ZWxfc3ZtX3JlbW92ZV9kZXZfcGFzaWQo
+ZG9tYWluKTsNCj4gPj4gICAJfSBlbHNlIHsNCj4gPj4gICAJCWRpZCA9IGRvbWFpbl9pZF9pb21t
+dShkbWFyX2RvbWFpbiwgaW9tbXUpOw0KPiA+PiAgIAkJY2FjaGVfdGFnX3VuYXNzaWduX2RvbWFp
+bihkbWFyX2RvbWFpbiwgZGlkLCBkZXYsIHBhc2lkKTsNCj4gPg0KPiA+IEl0IHNlZW1zIHZlcnkg
+c3RyYW5nZSB0aGF0IFNWQSBoYXMgYSBkaWZmZXJlbnQgRElEIHNjaGVtZSwgd2h5IGlzDQo+ID4g
+dGhpcz8gUEFTSUQgYW5kIFNWQSBzaG91bGQgbm90IGJlIGRpZmZlcmVudCBhdCB0aGlzIGxheWVy
+Lg0KPiANCj4gVGhlIFZULWQgc3BlYyByZWNvbW1lbmRzIHRoYXQgYWxsIFNWQSBkb21haW5zIHNo
+YXJlIGEgc2luZ2xlIGRvbWFpbiBJRC4NCj4gVGhlIFBBU0lEIGlzIHVuaXF1ZSB0byBlYWNoIFNW
+QSBkb21haW4sIGhlbmNlIHRoZSBjYWNoZSB0YWdzIGFyZSB1bmlxdWUuDQo+IEN1cnJlbnRseSwg
+dGhlIEludGVsIElPTU1VIGRyaXZlciBhc3NpZ25zIGRpZmZlcmVudCBkb21haW4gSURzIGZvciBh
+bGwNCj4gZG9tYWlucyBleGNlcHQgdGhlIFNWQSB0eXBlLg0KPiANCj4gU2hhcmluZyBhIGRvbWFp
+biBJRCBpcyBub3Qgc3BlY2lmaWMgdG8gU1ZBLiBJbiBnZW5lcmFsLCBmb3IgZGV2aWNlcw0KPiB1
+bmRlciBhIHNpbmdsZSBJT01NVSwgZG9tYWlucyB3aXRoIHVuaXF1ZSBQQVNJRHMgY2FuIHNoYXJl
+IHRoZSBzYW1lDQo+IGRvbWFpbiBJRC4NCj4gDQo+IEluIHRoZSBsb25nIHRlcm0gKGFsc28gb24g
+bXkgdGFzayBsaXN0KSwgd2Ugd2lsbCBleHRlbmQgdGhlIGNhY2hlIHRhZw0KPiBjb2RlIHRvIHN1
+cHBvcnQgc2hhcmluZyBkb21haW4gSURzIGFuZCByZW1vdmUgdGhlIGRvbWFpbiB0eXBlIGNoZWNr
+IGZyb20NCj4gdGhlIG1haW4gY29kZS4gVGhpcyB3aWxsIGFsc28gYmVuZWZpdCB0aGUgbmVzdGlu
+ZyBjYXNlLCB3aGVyZSB1c2VyDQo+IGRvbWFpbnMgbmVzdGVkIG9uIHRoZSBzYW1lIHBhcmVudCBj
+b3VsZCBzaGFyZSBhIGRvbWFpbiBJRC4NCj4gDQoNCmF0IGxlYXN0IGFib3ZlIG1pZ2h0IGJlIGNo
+YW5nZWQgdG8gYSB1bmlmaWVkIGNhbGwgd2l0aCB0aGUgaGVscGVyDQphY2NlcHRpbmcgYW4gaW9t
+bXUgcGFyYW1ldGVyIGFuZCB0aGVuIGZpbmRpbmcgcHJvcGVyIGRpZA0KaW50ZXJuYWxseSBiYXNl
+ZCBvbiBkb21haW4gdHlwZSwgZS5nLg0KDQpjYWNoZV90YWdfdW5hc3NpZ25fZG9tYWluKGRvbWFp
+biwgaW9tbXUsIGRldiwgcGFzaWQpDQp7DQoJaWYgKGRvbWFpbi0+dHlwZSA9PSBJT01NVV9ET01B
+SU5fU1ZBKQ0KCQlkaWQgPSBGTFBUX0RFRkFVTFRfRElEOw0KCWVsc2UNCgkJZGlkID0gZG9tYWlu
+X2lkX2lvbW11KGRvbWFpbiwgaW9tbXUpOw0KDQoJLi4uDQp9DQoJDQo=
 
