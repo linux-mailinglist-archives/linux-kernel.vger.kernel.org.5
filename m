@@ -1,125 +1,95 @@
-Return-Path: <linux-kernel+bounces-141472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4A668A1EAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:41:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 779568A1EBC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:43:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F53D294125
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:41:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E79E1F2A19D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:43:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 581CF54BF6;
-	Thu, 11 Apr 2024 18:25:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HXwVDBYw"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30417328B6;
+	Thu, 11 Apr 2024 18:30:28 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 385092BCF9;
-	Thu, 11 Apr 2024 18:25:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 658DB205E24;
+	Thu, 11 Apr 2024 18:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712859903; cv=none; b=c4oOjAi1f/b1vRszMvaOXcppWNcxOsXJFZAeLKSC5Ba47Yh7uYRDTqCnJwVO5iHvZ8v6rmMLDzXzA+VWUDS76kEJBptfgVUxyoOi+GwYlQ44i3sYHDg5qnwxGBWDwqXJS+o9iSL6tvYAROARzCBZ2QfnaweJqBQYDRK65Kuh/hs=
+	t=1712860227; cv=none; b=Cv1fvbah+x3sZ5PnggjRPCUEBmq4aInubY/w45dXzJeq7p/OvGMYyySAbW8LklQQrlJgJpHYAh/W4GrqQAcp8Ei4/znnh2bJ+2o9nZ46a0PNjMNjxmWnPaTKuq4JmiOewsxVwOQgicuCU22SLbAM8WCY4EsT1149FJwhK3LUE5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712859903; c=relaxed/simple;
-	bh=c2g0tbUCqfPKXbZUyvRm01VrhJY6EMVcc1wcJ3a0Ym0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Rgeagb8HhXGEUQgj7qk+M6gOnUS7KMoPQldUlwAn+k+6nO0CwUbSxJ1jhl6V8O9/Dpwb7m0oq2/lArCWY+hVex+RFCikg/jI6Q1HSxevFUk7Cao5CxEXirsVDswqLMR0skC3rBngWGpb1P7HjkhM5mzCK4TnC8+M6Ax0GHYKwW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HXwVDBYw; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712859902; x=1744395902;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=c2g0tbUCqfPKXbZUyvRm01VrhJY6EMVcc1wcJ3a0Ym0=;
-  b=HXwVDBYwjzoa7OLJXyu0+WjdeCyW1HwL3j8ClOAYiBlQpbzutB2DEMiH
-   9ppQunxR22MivraSiVHpQ3Aq1tgOh4OUcGAAV+rqnmr6iv9VPVXnSs1xo
-   UA8+GfHF1pNqFuYChJrxAv0/H+XSLi8RIqaoX4/9P7qoeSTgDL79++S12
-   j9KJRCkdXZ6cWX865I+dZXH/pBNaBR+iJ8xQJVFtIxZ6A54z50Y7FMFTO
-   LU6tZTaa4b34YzQQEYZsRV3e+njJb+TZThJR0eAeP14pHz0n8/CjGI4j1
-   TV1XwtCyocjed3cpTfpdie1CgDgwqzH6EAIUbI4jQ7SYkwy5u6lazCpE5
-   w==;
-X-CSE-ConnectionGUID: +oITaEHjQ1u24PElUBtbTQ==
-X-CSE-MsgGUID: QIbuvSixQIWCu4Qejlnxlw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8514939"
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="8514939"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 11:25:01 -0700
-X-CSE-ConnectionGUID: 3QOiQzoGR0OiHwTo7hCQqQ==
-X-CSE-MsgGUID: GUYxnY+LQ9+gm23AkhcO6A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="51936865"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 11:25:01 -0700
-Date: Thu, 11 Apr 2024 11:29:32 -0700
-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev, Lu Baolu
- <baolu.lu@linux.intel.com>, kvm@vger.kernel.org, Dave Hansen
- <dave.hansen@intel.com>, Joerg Roedel <joro@8bytes.org>, "H. Peter Anvin"
- <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>, Ingo Molnar
- <mingo@redhat.com>, Paul Luse <paul.e.luse@intel.com>, Dan Williams
- <dan.j.williams@intel.com>, Jens Axboe <axboe@kernel.dk>, Raj Ashok
- <ashok.raj@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
- maz@kernel.org, seanjc@google.com, Robin Murphy <robin.murphy@arm.com>,
- jim.harris@samsung.com, a.manzanares@samsung.com, Bjorn Helgaas
- <helgaas@kernel.org>, guang.zeng@intel.com, robert.hoo.linux@gmail.com,
- jacob.jun.pan@linux.intel.com, xin3.li@intel.com
-Subject: Re: [PATCH v2 08/13] x86/irq: Install posted MSI notification
- handler
-Message-ID: <20240411112932.6b1a4dbb@jacob-builder>
-In-Reply-To: <87bk6f262i.ffs@tglx>
-References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
-	<20240405223110.1609888-9-jacob.jun.pan@linux.intel.com>
-	<87bk6f262i.ffs@tglx>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712860227; c=relaxed/simple;
+	bh=ZfVS0RMB3WAqrsq3cAe0QGn6vm75CRNlmh+v40r0sbg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sOJgWPB/Q57YcMgQBpzmLtauzPY2lxnZ+DBBLd3Zlfh3KSja/H0UsuDKqKiGO6D+ZAynRlWAFKHkgIjUjapppg7EDtBUoQYY2pso/NaFIpboQScd0VvUHsn5SPcWSOFlBF+A9kwOuH3VY+4zy8z6nNTPSkbLYZ5YzYE4nVRDIX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from ip-185-104-138-67.ptr.icomera.net ([185.104.138.67] helo=phil..)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1ruzBa-0001so-N6; Thu, 11 Apr 2024 20:30:13 +0200
+From: Heiko Stuebner <heiko@sntech.de>
+To: linux-rockchip@lists.infradead.org,
+	efectn@6tel.net
+Cc: Heiko Stuebner <heiko@sntech.de>,
+	linux-kernel@vger.kernel.org,
+	Muhammed Efe Cetin <efectn@protonmail.com>,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	sebastian.reichel@collabora.com,
+	linux-arm-kernel@lists.infradead.org,
+	robh+dt@kernel.org
+Subject: Re: [PATCH 1/9] arm64: dts: rockchip: Add cpu regulators and vcc5v0_sys to Khadas Edge 2
+Date: Thu, 11 Apr 2024 20:29:50 +0200
+Message-Id: <171286007463.1886699.8424532199460774699.b4-ty@sntech.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <5a7bd2cd8703e51382abfc11242de59d45286477.1708381247.git.efectn@protonmail.com>
+References: <5a7bd2cd8703e51382abfc11242de59d45286477.1708381247.git.efectn@protonmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Thomas,
-
-On Thu, 11 Apr 2024 18:54:29 +0200, Thomas Gleixner <tglx@linutronix.de>
-wrote:
-
-> On Fri, Apr 05 2024 at 15:31, Jacob Pan wrote:
-> >  
-> >  #ifdef CONFIG_SMP
-> > diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
-> > index fc37c8d83daf..f445bec516a0 100644
-> > --- a/arch/x86/kernel/idt.c
-> > +++ b/arch/x86/kernel/idt.c
-> > @@ -163,6 +163,9 @@ static const __initconst struct idt_data
-> > apic_idts[] = { # endif
-> >  	INTG(SPURIOUS_APIC_VECTOR,
-> > asm_sysvec_spurious_apic_interrupt), INTG(ERROR_APIC_VECTOR,
-> > 		asm_sysvec_error_interrupt), +# ifdef
-> > CONFIG_X86_POSTED_MSI
-> > +	INTG(POSTED_MSI_NOTIFICATION_VECTOR,
-> > asm_sysvec_posted_msi_notification), +# endif
-> >  #endif
-> >  };  
+On Tue, 20 Feb 2024 01:34:17 +0300, efectn@6tel.net wrote:
+> From: Muhammed Efe Cetin <efectn@protonmail.com>
 > 
-> Obviously lacks FRED support...
-Good point, forgot FRED is merged :)
+> This commit adds 5V fixed power regulator and CPU regulators to Khadas
+> Edge 2.
+> 
+> 
 
-Will add an entry to entry_fred.c. I would not be able to test performance
-though.
+Applied, thanks!
 
-Thanks,
+[1/9] arm64: dts: rockchip: Add cpu regulators and vcc5v0_sys to Khadas Edge 2
+      commit: 925273ba9e71184a6dcde0f902b4245ed64885d1
+[2/9] arm64: dts: rockchip: Add PMIC to Khadas Edge 2
+      commit: 3b5d2327cb749017322ce09f7107cdc82f1a92fa
+[3/9] arm64: dts: rockchip: Add TF card to Khadas Edge 2
+      commit: 4a3afe9cf3711f222a9dadf50bd2e9770bb6a095
+[4/9] arm64: dts: rockchip: USB2, USB3 Host, PCIe2 to Khadas Edge 2
+      commit: f786eda805aa91340e151322ccc6c0ba4a591f9f
+[5/9] arm64: dts: rockchip: Add ir receiver and leds to Khadas Edge 2
+      commit: af6943f502b6db1ba3bc5199069c662218e23261
+[6/9] arm64: dts: rockchip: Add saradc and adc buttons to Khadas Edge 2 and enable tsadc
+      commit: 25e31aaebed4b0e242d9a71170f8dfdf9cc8a304
+[7/9] arm64: dts: rockchip: Add SFC to Khadas Edge 2
+      commit: 8711dca3b5f7a3834ae1129512f98a2367940a07
+[8/9] arm64: dts: rockchip: Add UART9 (bluetooth) to Khadas Edge 2
+      commit: e438acfda8a0088a3c7f450a7ffefeb56074e41e
+[9/9] arm64: dts: rockchip: Add RTC to Khadas Edge 2
+      commit: c0b3c764b64a5c8eee056e62580de0f44e7dcd0f
 
-Jacob
+Best regards,
+-- 
+Heiko Stuebner <heiko@sntech.de>
 
