@@ -1,50 +1,80 @@
-Return-Path: <linux-kernel+bounces-140738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CDA48A187C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:20:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A845E8A1B08
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:19:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE80A1C20F06
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:20:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A1781F280D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:19:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09DEC14A9F;
-	Thu, 11 Apr 2024 15:19:41 +0000 (UTC)
-Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85FB42035B2;
+	Thu, 11 Apr 2024 15:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="MThp6PIw"
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D383914005;
-	Thu, 11 Apr 2024 15:19:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B740203580
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:43:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712848780; cv=none; b=gh1BPYN6MhSCGCvbDIv/kDzwoWxmq6jVLvXqbnt5nxSS/GnT0VlOkhKHL89263D8D3/2R9YMfzwNrFV8NSGtJE+r38oetctc0z+rUSUP7yt9dSoVzsgmTGeUXcKLSa04HzZk0RTE99qp7PWWjFcQbCnDQOaB+VzCUterJKExW9A=
+	t=1712850222; cv=none; b=FDkDAGgJfE4EENsM2+hJJm9RwZw7N/KeX3G/iIkpc6UH7z2oa7ES79+XUxEzqVxsagkgyJIUN1Y6NEf6y17ELUe3/uh/5P4f4zHsL6f6TWcETsKXRFAFWJJk3sE8NXTezy8ywFi9N6v0XZ38vS/7xbcIQllSoJnUJlxw4J8HfQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712848780; c=relaxed/simple;
-	bh=7KQj8Ij5Bz+/jmiRyKCdBwrOjqQu8Ro0c+7Db6XxeZk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=s+1L0rviCQggdpGB4TRz8ZlA1HTWxBEHliO0BfGbBo/2gexL8WloIKFsQLtw2fRaHu3z+l0yll+xU1+ZhaxxADt2tsFqc0Nuqxd/1qAUuNbhowBZ0w2SWM9hRpnUjD1kStv0fiM9xgNS/dd57qyb8VmopzDo0uTBXwR5P4tO8JU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
-Received: by air.basealt.ru (Postfix, from userid 490)
-	id 3DFF42F2023F; Thu, 11 Apr 2024 15:19:36 +0000 (UTC)
-X-Spam-Level: 
-Received: from altlinux.malta.altlinux.ru (obninsk.basealt.ru [217.15.195.17])
-	by air.basealt.ru (Postfix) with ESMTPSA id C29D82F20238;
-	Thu, 11 Apr 2024 15:19:34 +0000 (UTC)
-From: kovalev@altlinux.org
-To: marcel@holtmann.org,
-	johan.hedberg@gmail.com,
-	luiz.dentz@gmail.com,
-	linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: kovalev@altlinux.org,
-	stable@vger.kernel.org
-Subject: [PATCH net] Bluetooth: hci_event: fix possible multiple drops by marked conn->state after hci_disconnect()
-Date: Thu, 11 Apr 2024 18:19:29 +0300
-Message-Id: <20240411151929.403263-1-kovalev@altlinux.org>
-X-Mailer: git-send-email 2.33.8
+	s=arc-20240116; t=1712850222; c=relaxed/simple;
+	bh=i81SoTpfZoCttmw03BT4HXoOjPTFbjdS87pTUWjCFL4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=J1wtI9WeiO4dqR16MRz0E6l2KZVajE+M9xMBu+PcFOZVAm4EvSfzjEmnMMU9cnnmCc3CjgtJAsz32FzEMrHCeA7UIWjRQbuGWInyDdk/JhtZxzSYKc7VIioctmuA70fsIzapWuDa6YxeCLFVBKaSu7iwA7HEbTg5x/K4qLDP7Mg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=MThp6PIw; arc=none smtp.client-ip=209.85.166.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7d67d1073easo9953439f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:43:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850220; x=1713455020; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y693zVyKx5Xj5+ZmbaRfysNOquN2tS7NYbAkTC+dKIw=;
+        b=MThp6PIwqqd1AKVdrh3Sl4r/w2jk35nlbunr0LQ2WpRg+zab4mTkybCeamSJDEKUHm
+         oKgBNsbs2klJP97RwCPqsx4rRIHfuUVtMut2XWDU/elA2OcY8nh+QrBsbJ+4ceFRXNbA
+         Ip3qDCY+tkY29z6A+q1hp72coRRmrzwjU5wQn0r/l+gHbpp2Fgu/WTRzxTlapvGTtQqm
+         M6aT4ItrTPZ3UnkDl9Pe4tNfACfLXcOWg7M4k+YeP1eOYdaUGcVNlPirBRXJ61HarRVv
+         A0WU7x6MQaanOBanXEbmcyF0ZmG25bX0ytnrn8la8xBbQF5RkZYFUWkvhN8QrIajBXnz
+         5W6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712850220; x=1713455020;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y693zVyKx5Xj5+ZmbaRfysNOquN2tS7NYbAkTC+dKIw=;
+        b=HqRpP4fuZNiTOficH1YAXqCc11PEXm0X8kIGK4njUWlrspW3S1zzqwdAINSmHCvXGm
+         yMooHN3pcRJEJ2YLSKYK4EZrCK3Z3E1fqdu8+EiE6RKTQIIo5EJ1xCRc2ps5DxLNsT1Z
+         4SEtKkLEvcKywYuaBCJ3lDsZP/nyHYsBiBHYIcjknVmbDCBV2wdJdiWYuBMoBEVVRRj6
+         HHJe9jNCNl1jXiugfcHoHQ0vC9En62T8S5UI1uhNTbHk+YCMD+MSAYJ/HmlRTLbdRrte
+         jvTX2bDaYsy0aaxUt71s7FB94icKsGQlWnwft0lTLqYo0HMWLkBO7nmoRku8Xk6nx1cD
+         esVg==
+X-Gm-Message-State: AOJu0YzHNW/90rFz67wSwlDgLDPXAZ9SSPkTcARbggiJrcuui2HyOd87
+	ij0NvlOLrqxc/S+H8+e+RNXAl73onkI4QDgTPLbXjVThmSqoaM0krQPcyIF0Y45hS9XZZFzboa4
+	2
+X-Google-Smtp-Source: AGHT+IEWrfbd88bnUiW00XiRmvhgc0AOpozz4nHHdElKVS126DsFNkT+7m7nooW2oaaqlTHqgd2YMg==
+X-Received: by 2002:a05:6602:84:b0:7d6:9d75:6de2 with SMTP id h4-20020a056602008400b007d69d756de2mr58046iob.2.1712850220403;
+        Thu, 11 Apr 2024 08:43:40 -0700 (PDT)
+Received: from localhost.localdomain ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.43.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 08:43:38 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: linux-kernel@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 430/437] sbus: flash: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:19:30 -0600
+Message-ID: <20240411153126.16201-431-axboe@kernel.dk>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
+References: <20240411153126.16201-1-axboe@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,64 +83,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Vasiliy Kovalev <kovalev@altlinux.org>
-
-When returning from the hci_disconnect() function, the conn->state
-continues to be set to BT_CONNECTED and hci_conn_drop() is executed,
-which decrements the conn->refcnt.
-
-Syzkaller has generated a reproducer that results in multiple calls to
-hci_encrypt_change_evt() of the same conn object.
---
-hci_encrypt_change_evt(){
-	// conn->state == BT_CONNECTED
-	hci_disconnect(){
-		hci_abort_conn();
-	}
-	hci_conn_drop();
-	// conn->state == BT_CONNECTED
-}
---
-This behavior can cause the conn->refcnt to go far into negative values
-and cause problems. To get around this, you need to change the conn->state,
-namely to BT_DISCONN, as it was before.
-
-Fixes: a13f316e90fd ("Bluetooth: hci_conn: Consolidate code for aborting connections")
-Cc: stable@vger.kernel.org
-Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- net/bluetooth/hci_event.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/sbus/char/flash.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 64477e1bde7cec..e0477021183f9b 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -2989,6 +2989,7 @@ static void hci_cs_le_start_enc(struct hci_dev *hdev, u8 status)
+diff --git a/drivers/sbus/char/flash.c b/drivers/sbus/char/flash.c
+index 05d37d31c3b8..4b21dc0cb3c4 100644
+--- a/drivers/sbus/char/flash.c
++++ b/drivers/sbus/char/flash.c
+@@ -98,11 +98,10 @@ flash_llseek(struct file *file, long long offset, int origin)
+ 	return file->f_pos;
+ }
  
- 	hci_disconnect(conn, HCI_ERROR_AUTH_FAILURE);
- 	hci_conn_drop(conn);
-+	conn->state = BT_DISCONN;
+-static ssize_t
+-flash_read(struct file * file, char __user * buf,
+-	   size_t count, loff_t *ppos)
++static ssize_t flash_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	loff_t p = *ppos;
++	size_t count = iov_iter_count(to);
++	loff_t p = iocb->ki_pos;
+ 	int i;
  
- unlock:
- 	hci_dev_unlock(hdev);
-@@ -3654,6 +3655,7 @@ static void hci_encrypt_change_evt(struct hci_dev *hdev, void *data,
- 		hci_encrypt_cfm(conn, ev->status);
- 		hci_disconnect(conn, HCI_ERROR_AUTH_FAILURE);
- 		hci_conn_drop(conn);
-+		conn->state = BT_DISCONN;
- 		goto unlock;
+ 	if (count > flash.read_size - p)
+@@ -110,12 +109,11 @@ flash_read(struct file * file, char __user * buf,
+ 
+ 	for (i = 0; i < count; i++) {
+ 		u8 data = upa_readb(flash.read_base + p + i);
+-		if (put_user(data, buf))
++		if (put_iter(data, to))
+ 			return -EFAULT;
+-		buf++;
  	}
  
-@@ -5248,6 +5250,7 @@ static void hci_key_refresh_complete_evt(struct hci_dev *hdev, void *data,
- 	if (ev->status && conn->state == BT_CONNECTED) {
- 		hci_disconnect(conn, HCI_ERROR_AUTH_FAILURE);
- 		hci_conn_drop(conn);
-+		conn->state = BT_DISCONN;
- 		goto unlock;
- 	}
+-	*ppos += count;
++	iocb->ki_pos += count;
+ 	return count;
+ }
  
+@@ -148,7 +146,7 @@ static const struct file_operations flash_fops = {
+ 	 */
+ 	.owner =	THIS_MODULE,
+ 	.llseek =	flash_llseek,
+-	.read =		flash_read,
++	.read_iter =	flash_read,
+ 	.mmap =		flash_mmap,
+ 	.open =		flash_open,
+ 	.release =	flash_release,
 -- 
-2.33.8
+2.43.0
 
 
