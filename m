@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBCE98A1AB0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1D148A1AB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:04:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6364E1F23E8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:04:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6027C1F23DE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:04:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 471B81EF509;
-	Thu, 11 Apr 2024 15:41:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6065E1EF537;
+	Thu, 11 Apr 2024 15:42:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="2HZvsMGk"
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="MamlB5PS"
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21BF31EECAB
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:41:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 723341EF521
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850117; cv=none; b=ViqbNK97ZkNSaVfJHU5RNNBg34pu3VIvUmJU0ZqscICb3pjHwvYbuPS3TsDvgJn5C3EjFs+mPqKvjm8BvyBijB+CaCT6FNZJziNRnFTR2ptOgU3AG0fkHzUoKC3nx9/tZNKY7xQmnOp5WcK8Lb47EPhIYhpcnJrbnHkPlf8E1yk=
+	t=1712850120; cv=none; b=SfxtP065McQqrDHg+JlyciMPHJqwovhO1TMRwh+2ojIAurGKOLqRVJ/MQVpFdRpNXUUv8mOq8kJvuRdHNL9sxInQ9K7eXFLII9rfYVXqMEnSRmJC7XGtgScWVb6d6q7jTC5/fSGw5hi0v9fnq9lMHMdk0rO/mvtgqk2Gv7Ql9LY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850117; c=relaxed/simple;
-	bh=y59MzRpX118ustdZIEz22Rwf88iXR2a6PZXY50jryVY=;
+	s=arc-20240116; t=1712850120; c=relaxed/simple;
+	bh=fsSAZ/j6rz8b6lfbCgyEDkxERPYjjlGbcs+nSAGXcw8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qs/8/PQldc9L7AhuzRkdIIFHARUfC+wv1/dkmbqi0X+x79SxWvmFFALIBHrCzTuEo5tDaa5lbHbOl9lsya5Tx28unTNLBzRxyoYRPEU0RLKSSmUSDrYvTUw3iq+KGJ1a6f38OCwKYS3GG/sh/q8tI6YS8qnp1u5sUcH8m8AK2B0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=2HZvsMGk; arc=none smtp.client-ip=209.85.166.43
+	 MIME-Version; b=BdFNPYnZNFTvZFtB5uXhngGjpA0PgdGiQvDme/4wR2LS0NvTyNhuV/Ukx80snPEasAhUoAivaVzAPP84Jw07YFUeCMeKeXTIoGZkdnp3p+svhkptLmXje/KFMsHOyzk5vp0pHrjcD0EfvIyyAxcUC8UOhDsdWMnPbP65C8wqv+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=MamlB5PS; arc=none smtp.client-ip=209.85.166.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7c8e4c0412dso69680239f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:41:55 -0700 (PDT)
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso58247939f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:41:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850115; x=1713454915; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850118; x=1713454918; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oA14u6pH0QLWbvdHYR0iPO+22zrCROZFLdY7s2QKWXU=;
-        b=2HZvsMGk4KJyXcRBAEYk/wL8nkRZDDW+bRCWl2ADqG4p634f7bJmumn/6lh7iGbpjT
-         OzA50X4CnqBXLbPILKhcIHK/aOVLIYunXXgm2qccsOMVA6mUTvLwwY13GGHQ5JXQXiZd
-         qiYNLYGCqOct/lhxNYQsL6EUq/fWlBNCo5WCSdo56Tqd8ImDtR2eigKpscPaPefFBzIi
-         LfmNMmr4Lwbe5uvbxy9lhezXPk3K70XzdWu3pk+QPa+GRBjnzLiGSjGShCyd2fiiwXgw
-         8Odmkf8ouwsN32H1lkgPFCxbnUS1TedkdRDHl+YU2iucKAPTyC/JXyU7bTIyz36RZEqr
-         F3xg==
+        bh=cqR/7bLNPLxZni1GbBnllMUkQPN87O6jSpBweZ9+NFo=;
+        b=MamlB5PSzbiM7rftx380vHU3akA39bx047b5gmi/rGubYMNLMy87WmQ9c4+BCjteO2
+         HHpefZ9tC9Ume7tWR5TPMYxHUixxJHJxO5MSbcDr+Vx8cXhioKpLrq6vVXWfMjIbiTNf
+         nvN0d0gjRY1emauZ9F+DHamiGPXOjroOXz/nspYYmtOPCKSO6u4a2fMtqN/TjGTJIaEr
+         jYWTxngFLfYt7YZ2hYGJnxCo1vpdKmPyxcuY/iVD9IeZiAoC3v0rjPU5U5tvoJks5QVT
+         cBZISBNSAuVy9BTkjnoNQE2mot4exnQxhtUoz9zG853hqNgZFEQN5t9igCLZBcntBfta
+         MZQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850115; x=1713454915;
+        d=1e100.net; s=20230601; t=1712850118; x=1713454918;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oA14u6pH0QLWbvdHYR0iPO+22zrCROZFLdY7s2QKWXU=;
-        b=WJlagOGRWJ+4vuCudN/xKkFYFxJOF8wWammG2qb5yJPzX63x+7ZDYaEywEs7DerLAJ
-         S8x7PkVt5NE3b20+m6TOjV5HfqjXmaAw1478Wl791MQaL5XBc8l7TBQ0Cm/62YvKI3k5
-         vx2jZpIHEd/VwHCs+8c8kMZRGCLLYGHFVY6QqqKh/nIYoN+leto5fyn1JLqZCQ2/dAer
-         s7gABzlxqf2lHNpjjoGXXRksWIkBmD49c4zYEZdPSsBGzXAV/Ke6ReLFrchWdp4Lbc8o
-         Mk3DxWNuro+WOapvQeMNT9w48cvwnezuQQXN2xmhFIYMQDvILzj2L349m92D5D3aal0/
-         4QGA==
-X-Gm-Message-State: AOJu0Yzdp0CpxwQw/peSEJg2t6ThVoMz0chm/rCyX10SsuX92x7zf1U+
-	tdj2DkoX6a9SUbYmrFLmbGAjuKh+Kf43dWobvCy8NweChqYxxWwbdE/suO4Z2pycJLRCGyoOjH2
-	4
-X-Google-Smtp-Source: AGHT+IFwSfB0/78vsfTpCy/J098dnlsSEN1qTqWzABRe70udhwPXHqvMHltr0pyB4IJoQUf3sy+oLA==
-X-Received: by 2002:a6b:7b05:0:b0:7d6:60dc:bc8e with SMTP id l5-20020a6b7b05000000b007d660dcbc8emr207975iop.1.1712850114864;
-        Thu, 11 Apr 2024 08:41:54 -0700 (PDT)
+        bh=cqR/7bLNPLxZni1GbBnllMUkQPN87O6jSpBweZ9+NFo=;
+        b=nkE0hxgmyFDNemLZttBMgE9VmdV4LF+3imru8ttAP2ueJz+oMpGR9DB2GGkxw8nVoy
+         itIB5Uh+mWFzMhky4dmSF03Y73RSARB64nZB3zEcss6D7qW5wjYDHeQf6ZUiti7jj28s
+         Kyi+u4pdQCHMN5d5rrPlWkcMI4+OiN/ZE+Jf0vyJWU5Z8ncEQh/pwl5H65lnMhI3Xvcu
+         PS0l2DPMNG6Xl2KRZF0+RgH8cOfN0o2yVYRK80a/rSiWTZC/poF7K5IusmlKHO8gApbq
+         Li3615e+lXz4uUUf5qn7G9UZ1s6pZ2n6t5P+7jl04sxSz81RajaFADfhMhP11B4jAu6H
+         +/5Q==
+X-Gm-Message-State: AOJu0Yx5QJW1wVGqR/lbpL7nL5lLCuyW/VqEQW/+Ez+zkjpJzn1YE5M1
+	fcOw66h7Agz5zA1x3Jnx8g64wNiFvL2qA9IPq4J1oCPozauBS3CGLMooN9oX1qR7aQhHyU0i+4A
+	e
+X-Google-Smtp-Source: AGHT+IGoLN+We/KSbYbic5qzT2J+MOQpxgT5CAWPHDxmTuyIn+E6lWZBnvy88sADP9HDsrotrgZaDw==
+X-Received: by 2002:a6b:f312:0:b0:7d5:de23:13a9 with SMTP id m18-20020a6bf312000000b007d5de2313a9mr177309ioh.1.1712850118405;
+        Thu, 11 Apr 2024 08:41:58 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.41.52
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.41.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:41:52 -0700 (PDT)
+        Thu, 11 Apr 2024 08:41:55 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 366/437] hwmon: q54sj108a2: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:18:26 -0600
-Message-ID: <20240411153126.16201-367-axboe@kernel.dk>
+Subject: [PATCH 367/437] hwmon: ucd9000: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:18:27 -0600
+Message-ID: <20240411153126.16201-368-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,94 +85,40 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/hwmon/pmbus/q54sj108a2.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+ drivers/hwmon/pmbus/ucd9000.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/hwmon/pmbus/q54sj108a2.c b/drivers/hwmon/pmbus/q54sj108a2.c
-index a235c1cdf4fe..12634ede2c50 100644
---- a/drivers/hwmon/pmbus/q54sj108a2.c
-+++ b/drivers/hwmon/pmbus/q54sj108a2.c
-@@ -70,11 +70,10 @@ static struct pmbus_driver_info q54sj108a2_info[] = {
- 	},
- };
+diff --git a/drivers/hwmon/pmbus/ucd9000.c b/drivers/hwmon/pmbus/ucd9000.c
+index 8d9d422450e5..204c836fa322 100644
+--- a/drivers/hwmon/pmbus/ucd9000.c
++++ b/drivers/hwmon/pmbus/ucd9000.c
+@@ -471,11 +471,10 @@ static int ucd9000_debugfs_show_mfr_status_bit(void *data, u64 *val)
+ DEFINE_DEBUGFS_ATTRIBUTE(ucd9000_debugfs_mfr_status_bit,
+ 			 ucd9000_debugfs_show_mfr_status_bit, NULL, "%1lld\n");
  
--static ssize_t q54sj108a2_debugfs_read(struct file *file, char __user *buf,
--				       size_t count, loff_t *ppos)
-+static ssize_t q54sj108a2_debugfs_read(struct kiocb *iocb, struct iov_iter *to)
+-static ssize_t ucd9000_debugfs_read_mfr_status(struct file *file,
+-					       char __user *buf, size_t count,
+-					       loff_t *ppos)
++static ssize_t ucd9000_debugfs_read_mfr_status(struct kiocb *iocb,
++					       struct iov_iter *to)
  {
- 	int rc;
--	int *idxp = file->private_data;
-+	int *idxp = iocb->ki_filp->private_data;
- 	int idx = *idxp;
- 	struct q54sj108a2_data *psu = to_psu(idxp, idx);
- 	char data[I2C_SMBUS_BLOCK_MAX + 2] = { 0 };
-@@ -169,18 +168,18 @@ static ssize_t q54sj108a2_debugfs_read(struct file *file, char __user *buf,
- 	data[rc] = '\n';
- 	rc += 2;
+-	struct i2c_client *client = file->private_data;
++	struct i2c_client *client = iocb->ki_filp->private_data;
+ 	u8 buffer[I2C_SMBUS_BLOCK_MAX];
+ 	char str[(I2C_SMBUS_BLOCK_MAX * 2) + 2];
+ 	char *res;
+@@ -489,12 +488,12 @@ static ssize_t ucd9000_debugfs_read_mfr_status(struct file *file,
+ 	*res++ = '\n';
+ 	*res = 0;
  
--	return simple_read_from_buffer(buf, count, ppos, data, rc);
-+	return simple_copy_to_iter(data, &iocb->ki_pos, rc, to);
+-	return simple_read_from_buffer(buf, count, ppos, str, res - str);
++	return simple_copy_to_iter(str, &iocb->ki_pos, res - str, to);
  }
  
--static ssize_t q54sj108a2_debugfs_write(struct file *file, const char __user *buf,
--					size_t count, loff_t *ppos)
-+static ssize_t q54sj108a2_debugfs_write(struct kiocb *iocb, struct iov_iter *from)
- {
- 	u8 flash_key[4];
- 	u8 dst_data;
- 	ssize_t rc;
--	int *idxp = file->private_data;
-+	int *idxp = iocb->ki_filp->private_data;
- 	int idx = *idxp;
- 	struct q54sj108a2_data *psu = to_psu(idxp, idx);
-+	size_t count = iov_iter_count(from);
- 
- 	rc = i2c_smbus_write_byte_data(psu->client, PMBUS_WRITE_PROTECT, 0);
- 	if (rc)
-@@ -188,7 +187,7 @@ static ssize_t q54sj108a2_debugfs_write(struct file *file, const char __user *bu
- 
- 	switch (idx) {
- 	case Q54SJ108A2_DEBUGFS_OPERATION:
--		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-+		rc = kstrtou8_from_iter(from, count, 0, &dst_data);
- 		if (rc < 0)
- 			return rc;
- 
-@@ -218,7 +217,7 @@ static ssize_t q54sj108a2_debugfs_write(struct file *file, const char __user *bu
- 
- 		break;
- 	case Q54SJ108A2_DEBUGFS_VOOV_RESPONSE:
--		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-+		rc = kstrtou8_from_iter(from, count, 0, &dst_data);
- 		if (rc < 0)
- 			return rc;
- 
-@@ -228,7 +227,7 @@ static ssize_t q54sj108a2_debugfs_write(struct file *file, const char __user *bu
- 
- 		break;
- 	case Q54SJ108A2_DEBUGFS_IOOC_RESPONSE:
--		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-+		rc = kstrtou8_from_iter(from, count, 0, &dst_data);
- 		if (rc < 0)
- 			return rc;
- 
-@@ -244,7 +243,7 @@ static ssize_t q54sj108a2_debugfs_write(struct file *file, const char __user *bu
- 
- 		break;
- 	case Q54SJ108A2_DEBUGFS_BLACKBOX_SET_OFFSET:
--		rc = kstrtou8_from_user(buf, count, 0, &dst_data);
-+		rc = kstrtou8_from_iter(from, count, 0, &dst_data);
- 		if (rc < 0)
- 			return rc;
- 
-@@ -262,8 +261,8 @@ static ssize_t q54sj108a2_debugfs_write(struct file *file, const char __user *bu
- 
- static const struct file_operations q54sj108a2_fops = {
+ static const struct file_operations ucd9000_debugfs_show_mfr_status_fops = {
  	.llseek = noop_llseek,
--	.read = q54sj108a2_debugfs_read,
--	.write = q54sj108a2_debugfs_write,
-+	.read_iter = q54sj108a2_debugfs_read,
-+	.write_iter = q54sj108a2_debugfs_write,
+-	.read = ucd9000_debugfs_read_mfr_status,
++	.read_iter = ucd9000_debugfs_read_mfr_status,
  	.open = simple_open,
  };
  
