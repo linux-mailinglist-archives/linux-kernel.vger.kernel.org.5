@@ -1,47 +1,73 @@
-Return-Path: <linux-kernel+bounces-139815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 279878A080E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:07:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2A968A080F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:08:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 599891C23234
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:07:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57E7F1F23586
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:08:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE02113CA96;
-	Thu, 11 Apr 2024 06:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 351B913CA8A;
+	Thu, 11 Apr 2024 06:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j/EhupHj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qv3f7mk1"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D340C13C666;
-	Thu, 11 Apr 2024 06:07:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2322C13C3ED
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:08:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712815658; cv=none; b=O/UkKIqspIc2NCo2/spuexpBbipufDpepeeYG2zlDIsKb8t96OHZAtNhTVJJEN6TLn65CS2mlY0MbVGR+zUK9mqXxuqHij9qaGhk31E3QpcEMCXMrJVvanMj8T4RIXOrJZUeKY8OlfoX0M6tFQ3TOk0tMKWRGU4aSWwPhJDPtI4=
+	t=1712815690; cv=none; b=gVO4JfOsua8Hh2i3zKhpKrXZL05W1PDOGvl1vzs6yDI/IupkkyPcgWi7MevriMOX3FVKaAITTEzT0bl1OlzgEoemLiCZxlBl5dtsHasPuSmuaGdab0dJwAUp9EVig4DOrgE7JNOfEoj+7T8TdpWWJigCJDBLeh6cJFTP6og3HnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712815658; c=relaxed/simple;
-	bh=B9P0S8ei0pO62UjBvQK1T5qU7yS4WX0wwsA/9EtFzbA=;
+	s=arc-20240116; t=1712815690; c=relaxed/simple;
+	bh=58UvdS8ZfA6eWD25sHs7xxDVreHwP8mfoOfe+ZM66Mg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VxDJR4ATxzISjivnR/0ulE2UXnOOx//6itFiLTh/QPRvuN9kxBtEhPRobqdXxnkEkFMKfYS605rX0zoWZMibd9Z2l7+Ea1gOcJh7F6JjzXotFTXJpHckXVbtHwBz39XdTZ91ZPIBnu4pD//xBJVQmm1ORnibxTVpD3Kn4K/lv8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j/EhupHj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14A4AC433F1;
-	Thu, 11 Apr 2024 06:07:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712815658;
-	bh=B9P0S8ei0pO62UjBvQK1T5qU7yS4WX0wwsA/9EtFzbA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=j/EhupHjNjYHdbEBF5TfaxUDYt4sQXHMKkAc3TAEMWow826QHJtliH3TeBmhVsUZG
-	 PmLXX/0koXFooBD4+R/jYQBFmGu9WgJxzzy46ozvqoJmV8lsGdSb2S/rx/3ES4pIRM
-	 tezonYkS+DaCqYvIFglj0pYgUFRVRom91hG66BcJ4lexA6Tu2hehsqMnrDO2AahLhg
-	 oLGdKQIQnnSVBlaSgbM0NePMvVBJDYarUrU3apRkXgd0qVbaeufg721okGqgJfVW9c
-	 rqrxChm1NbdSLfXkRBGCbT5CsINI9wlcyK5acMw8CBBnPKrBj7Kv/Prqkkyh8Dk+SQ
-	 pk8drcQI6XInw==
-Message-ID: <f1bdf524-17b4-4cce-a7ed-abc97786c975@kernel.org>
-Date: Thu, 11 Apr 2024 08:07:29 +0200
+	 In-Reply-To:Content-Type; b=ihdioSyM4k4nH12kHNeNaE82PG9Da8OY+BzgOQKrRBF4qtjP0Y3ejVuJq0alRoH+h1q0xCSBoenuPSe97JdkzBb6/Uk7cMXj7tRyxxTKLUCrZLZ66mKtoM/0eRg6WXN/dZk5mRaPj1nHYy0O+BPmJE3qCUawaQqtM+XQ31Y3IJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qv3f7mk1; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e411e339b8so31740335ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:08:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712815688; x=1713420488; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/iT9IlAymUCb2pC4/RBQKOmj3d7dpo0oLb02XVtYzR4=;
+        b=Qv3f7mk1hUIoX1zPUs4xwOoZQADW+Tek1qArgx0KpZMwr6iObjYa2Z2J0oGGNgQ+mR
+         RmArN6L6BiR9TGLWvdw1KZyy4GN6ZhPCOsXeXddu+oxqwt0uoSTeEi/4uOIHQ6pCISz6
+         T1rpaWJxmEhk61TtkOsdB+R/60xxMxmb0pIfma+HSpOcwTPbf/xR+wtlY/bteMZdlL/k
+         4hBatvuSp21ZsairAAiJ3hVBOaZrpymRyvixOxbA9tt8dcWhoLP7IL2hVX8zbjksbGkq
+         nOe1uZcS0cqDVm40iHiauOCq7rky/M8WIvUEYN2Tfj4ymbq1ynxv18sJAjubB29042By
+         m/jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712815688; x=1713420488;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/iT9IlAymUCb2pC4/RBQKOmj3d7dpo0oLb02XVtYzR4=;
+        b=IHdLcZcCCR0olYGOYagsnQSrKedzkjZLWbTxDW/mKZp6xgL+P35ACO/I01Uf6Wsrrh
+         KP9Cho3PXSrnFrvzSTy9EQfVx0bDhAbSmCfl4g4UlrEms9/okv3ERaFa+n5uwObQIok7
+         USzH9/BKrqW6TG//SzgfsggbMP9tPRdTBmb8IOaWfYQ6jHMATJ4pKLa47pueD1DfwCgS
+         YByz6Htjq7SkGtjfGvIMjp+FLCNjoU8IDKAzUy4QsiiidoYRth4iC26sKL0kclaZeMV9
+         z16ZCJprkcbwHusUuaXj7Jz4kMxCkrsPYTzzZecGnJdmcwD2j22wCX5VibXa8OepAU3V
+         IXyQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX0mXJTCRWvvmneQuVSeiroM7lAy9Lex+KJoBdo+bvfblJMBw4gMdEsag99UfKv0blpfqQtDFqE/j/ibC82Cq9xXS83Gdz+lfKHz5/C
+X-Gm-Message-State: AOJu0YwAG4uA/J/pG4L+8ACkqliPA7KOV0N3TonpwknweS365MPZl74b
+	k50IHwZomLsHz+VEyeB3zyMRzIChOhna6I8nyxBOPA8RHRR7a7bK
+X-Google-Smtp-Source: AGHT+IHhyXMkprGe5UZ5k53JV62tzPnOnN38w9YWio7VO/KdjYqBp3xBsOxs0SgEFfosVBZYJBcxlA==
+X-Received: by 2002:a17:903:98b:b0:1e2:817b:460a with SMTP id mb11-20020a170903098b00b001e2817b460amr5668725plb.34.1712815688354;
+        Wed, 10 Apr 2024 23:08:08 -0700 (PDT)
+Received: from [192.168.255.10] ([43.132.141.20])
+        by smtp.gmail.com with ESMTPSA id w14-20020a170902e88e00b001e0af9928casm510549plg.55.2024.04.10.23.08.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Apr 2024 23:08:07 -0700 (PDT)
+Message-ID: <235b35c2-159c-48b1-a522-654f5ccc2faf@gmail.com>
+Date: Thu, 11 Apr 2024 14:08:03 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,85 +75,61 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] remoteproc: mediatek: Support MT8188 SCP core 1
-To: "olivia.wen" <olivia.wen@mediatek.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Mathieu Poirier <mathieu.poirier@linaro.org>, Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Tinghan Shen <tinghan.shen@mediatek.com>, linux-remoteproc@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com,
- jason-ch.chen@mediatek.com, yaya.chang@mediatek.com, teddy.chen@mediatek.com
-References: <20240411033750.6476-1-olivia.wen@mediatek.com>
- <20240411033750.6476-3-olivia.wen@mediatek.com>
+Subject: Re: [PATCH v4 1/9] mm/ksm: add ksm_get_folio
+To: David Hildenbrand <david@redhat.com>, alexs@kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+Cc: Izik Eidus <izik.eidus@ravellosystems.com>,
+ Matthew Wilcox <willy@infradead.org>, Andrea Arcangeli
+ <aarcange@redhat.com>, Hugh Dickins <hughd@google.com>,
+ Chris Wright <chrisw@sous-sol.org>
+References: <20240409092826.1733637-1-alexs@kernel.org>
+ <20240409092826.1733637-2-alexs@kernel.org>
+ <81c1de48-1e31-449d-8f5a-9342634cea27@redhat.com>
 Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240411033750.6476-3-olivia.wen@mediatek.com>
+From: Alex Shi <seakeel@gmail.com>
+In-Reply-To: <81c1de48-1e31-449d-8f5a-9342634cea27@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 11/04/2024 05:37, olivia.wen wrote:
-> +};
-> +
->  static const struct of_device_id mtk_scp_of_match[] = {
->  	{ .compatible = "mediatek,mt8183-scp", .data = &mt8183_of_data },
->  	{ .compatible = "mediatek,mt8186-scp", .data = &mt8186_of_data },
-> @@ -1323,6 +1362,7 @@ static const struct of_device_id mtk_scp_of_match[] = {
->  	{ .compatible = "mediatek,mt8192-scp", .data = &mt8192_of_data },
->  	{ .compatible = "mediatek,mt8195-scp", .data = &mt8195_of_data },
->  	{ .compatible = "mediatek,mt8195-scp-dual", .data = &mt8195_of_data_cores },
-> +	{ .compatible = "mediatek,mt8188-scp-dual", .data = &mt8188_of_data_cores },
 
-Why do you add new entries to the end? Look at the list first.
 
-Best regards,
-Krzysztof
+On 4/10/24 4:34 PM, David Hildenbrand wrote:
+> On 09.04.24 11:28, alexs@kernel.org wrote:
+>> From: "Alex Shi (tencent)" <alexs@kernel.org>
+>>
+>> The ksm only contains single pages, so we could add a new func
+>> ksm_get_folio for get_ksm_page to use folio instead of pages to save a
+>> couple of compound_head calls.
+>>
+>> After all caller replaced, get_ksm_page will be removed.
+>>
+>> Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
+>> To: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Izik Eidus <izik.eidus@ravellosystems.com>
+>> Cc: Matthew Wilcox <willy@infradead.org>
+>> Cc: Andrea Arcangeli <aarcange@redhat.com>
+>> Cc: Hugh Dickins <hughd@google.com>
+>> Cc: Chris Wright <chrisw@sous-sol.org>
+>> Reviewed-by: David Hildenbrand <david@redhat.com>
+>> ---
+>>   mm/ksm.c | 40 ++++++++++++++++++++++++----------------
+>>   1 file changed, 24 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/mm/ksm.c b/mm/ksm.c
+>> index 8c001819cf10..ac080235b002 100644
+>> --- a/mm/ksm.c
+>> +++ b/mm/ksm.c
+>> @@ -915,10 +915,10 @@ enum get_ksm_page_flags {
+>>    * a page to put something that might look like our key in page->mapping.
+>>    * is on its way to being freed; but it is an anomaly to bear in mind.
+>>    */
+>> -static struct page *get_ksm_page(struct ksm_stable_node *stable_node,
+>> +static struct folio *ksm_get_folio(struct ksm_stable_node *stable_node,
+> 
+> Just realized that you should adjust the function name in the comment above this function in this patch.
+> 
+
+Right, will resend with your suggestion.
 
 
