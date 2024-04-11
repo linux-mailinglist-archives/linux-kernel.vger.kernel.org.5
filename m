@@ -1,151 +1,129 @@
-Return-Path: <linux-kernel+bounces-140344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEBE08A1315
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:34:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F00F8A1322
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:36:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 808C6285849
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:34:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84D971C217AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:36:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0749B1494C4;
-	Thu, 11 Apr 2024 11:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E98E1149C59;
+	Thu, 11 Apr 2024 11:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="k3BCELdK"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2065.outbound.protection.outlook.com [40.107.21.65])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="bnMNR991";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QG58MyLn"
+Received: from wfout7-smtp.messagingengine.com (wfout7-smtp.messagingengine.com [64.147.123.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 091F36BB29;
-	Thu, 11 Apr 2024 11:34:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.65
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712835281; cv=fail; b=OpNWyyOSnJ+4iu4BTta0VRfV22aj05bgnY+Cv38Z7f5/ZqXB3izAfjG4hrCY7rfKo14bza1ME7NH8BI5rgJwjzHTVi4CyhJ7MGw8n1mh71B4Y4KqKf2bLU91KnUfLncEPDjvtEFHg4AMssCTk6HjbAby0NCioQHCd+8uNm5MPP8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712835281; c=relaxed/simple;
-	bh=HauHJk5gtZM9JPJhhi8HjMBTtcNE1bpYr8/bmHEt6Tc=;
-	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=E0M4sb2j2iqbD/NOEmA9ym7TYhO5kvA7CqYFaB1jMfTC1IJoGFV2kvtrPYW+Cs6sBKwkmabP57k8bgEaoccWb0qaKRxY93irLwSNGDcmSdKxwzZXIn4/KkbzsHl5NxjKEWcYfTj5zaYVjelfQCk+EljpCZBSR3vvhr3JTEeBFBA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=k3BCELdK; arc=fail smtp.client-ip=40.107.21.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WUeAnsd6LVtw53b25qSKPVjQ5Gm/oyJwfbost7zd1XuC0RYlGd2+K0z/8s20I5NFEmP0UIqun72bVnUS3hx0WyKPc4TVpyLD6cEWLxOA9NTdcwd5FKiuTvthz9X/0T9crxhrSQnx9CExcdw6w6xvwyBC4t7zV17yKs+KRXONTg+chBEhzaq+5Fxu06saRbRr0PQnOMABtrgdyPWbRwMJBLd4v7bXX6LQoSqiwYTUOaiQPYgfsMFGlvBvhNxo3DFwTXNLAeRhqSnkW1y6XvTZ1AbtuziGrBMoGlnpPZ23M+j21QeHnhkczgmEyyL0Tk4ppe9y2wrfj0+PI/Ej1JACYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a2SiR8bA2CbPROE9xekVxKhP0OSFwySnsZIujpK4jSA=;
- b=RnWJBqXr4wnJnQdanphnL8iHWOeZwPcXSCmso0HW+S72EQtAWfRu1bk4ZmeE4ncwk4BtDcK6JBzsfYzCtLmUwoCmZErKe3dkLwkKV+s1P3VOn1qGiOBF2/fpQGICWhCyNiSGDnY65jhOl7I29nZmaF+b0UO9cT3E6+qi+8CLTQXPyxoALTY4XYpbyAWl95cTuT5UkVxvq+/bTBm99gBW0ldy1MZAa8S3UYLsaw2QMTqDe+ZGYckELya8gXMPGJCEKkPf5UHg3/yJq6vAoMxHtoImwNDi/R78XKe3IUN9YGB7rW7sFfJz1OQxL53L9WzPipB+Ep23Yeca4/kUED1eUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a2SiR8bA2CbPROE9xekVxKhP0OSFwySnsZIujpK4jSA=;
- b=k3BCELdK+MphHTR0EhJCIaR2PpCWYp100pgrFCrnthTge61nSToI0q3qLApssc8oGjxpe4mLKo6vZRp4WsCmHEl1s6jQNILZ9D+HqUY3Jews2Xt9Nygmax15CmKmR0Klv3m6DHUdO7la082BWjXb8G9vmfvmRQXmf5FKRQ2X25M=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from VE1PR04MB7374.eurprd04.prod.outlook.com (2603:10a6:800:1ac::11)
- by AS1PR04MB9559.eurprd04.prod.outlook.com (2603:10a6:20b:483::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 11 Apr
- 2024 11:34:36 +0000
-Received: from VE1PR04MB7374.eurprd04.prod.outlook.com
- ([fe80::2975:705f:b952:c7f6]) by VE1PR04MB7374.eurprd04.prod.outlook.com
- ([fe80::2975:705f:b952:c7f6%7]) with mapi id 15.20.7409.042; Thu, 11 Apr 2024
- 11:34:35 +0000
-Date: Thu, 11 Apr 2024 14:34:33 +0300
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Camelia Groza <camelia.groza@nxp.com>,
-	David Gouarin <dgouarin@gmail.com>, david.gouarin@thalesgroup.com,
-	Madalin Bucur <madalin.bucur@nxp.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH net v4] dpaa_eth: fix XDP queue index
-Message-ID: <20240411113433.ulnnink3trehi44b@skbuf>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240410194055.2bc89eeb@kernel.org>
-X-ClientProxiedBy: VE1PR08CA0003.eurprd08.prod.outlook.com
- (2603:10a6:803:104::16) To VE1PR04MB7374.eurprd04.prod.outlook.com
- (2603:10a6:800:1ac::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF2246441;
+	Thu, 11 Apr 2024 11:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.150
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712835348; cv=none; b=lP7T3gnCnMgDLUQAq2NKoqbICcGdS8NTU9a8BR+jbNUgAKBCmIfW7ZJ0a86X7HjPwohffO2Be9ozWwtjYcBLXUw7ARq6l0c/bHaNPQ8G7JpsxMsV6CR46y4PI1cAVACHGd9OzLAS548BBTPrBt4vSI2rgAdGA/FXzZV5Bo503Gk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712835348; c=relaxed/simple;
+	bh=ajeu2BiA/YKzCiQqdIEBCBbdqVTBmASd7P1eQEFpois=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=K7GM90/Sc1X9PfeVvNl9eeGuVZ9a2AAxx1zaWYcp5zVhLXp3XOfjkGdMVvdYfabRPnP7LweFPGM1Rjw6Z70zTjGgrtWzyhbigaFtbBEgL+jHtEhWvIZzCdXSfvSpAjjK4440FVuuYWvUUjKHHZc0jk/O8/TwGyj41PDAMq9Ut04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=bnMNR991; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QG58MyLn; arc=none smtp.client-ip=64.147.123.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id CE96D1C000EC;
+	Thu, 11 Apr 2024 07:35:43 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 11 Apr 2024 07:35:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1712835343; x=1712921743; bh=P8MYPGxCIj
+	Ne3mVE8A2eowCiRlrk81aBVzAF/rIv8g0=; b=bnMNR991EO/fzRUIlUsUo7ahiu
+	qb62PceZ1wtjdl6FRbzcBmg7gFKzadUuGlBJRE0bV15wwLKm31vrzNuFWULKPCwl
+	wcjQkawx67wTb/vAIZBFLbLNN0aOe2hBT7QVwO/lL3E/LV/Kuvrfmdt5A+SNBPAc
+	DM1PVXuSmOW/0GD2h44GXCT8IghgC93UuE/9icOuJ5Y4kiJSdgqRqs39Z+W7mM0d
+	SG/0Rt1Yc0jjGXTZxVZtt3PnVAfICd4d9LgxhVNVVkmweh9dLQzllb7ZUE4SY8P3
+	fe+obljMws0wxnjnM1XOTyc8mBbPd8HwG9s2pEbR7bL0G8yD6FGhzuQIf8Qw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1712835343; x=1712921743; bh=P8MYPGxCIjNe3mVE8A2eowCiRlrk
+	81aBVzAF/rIv8g0=; b=QG58MyLniWrPS1pdKGAzLbuZ/TMSc3cMAvJv6fC9qIg7
+	n0vdzSKsiFVeknrN8QzmosqFxkasJ9yfsPdf5Q5DzWoLxl6XnbfVAeje1BRbLyEP
+	fzwKAJMzIkA0hCtoXPOnbksd20x/1APdjag3kZ3/CeGRglyVhIlClPiAUAGIBmdk
+	c8o1bACgadLuXbZhaBlv2Me1FomnUpIsYwcU5V0M6eFB+5Q1QGSezFN6O950F7LE
+	1/RTJHMWizr3dtkOitvzACSaWG7m9Mhb/vVpN0mSMoQlRIrut9oUQPmU6Kgj6RuW
+	i4o6tT2Eixnf01w+L6NMzF1HvUKKDQUUUTU8JgLSoQ==
+X-ME-Sender: <xms:DcsXZt7SkqQZSNWmueqinwpbscul48mRYAMyLY3VfUjPy9efgIJBlQ>
+    <xme:DcsXZq5YlSx_V8WPlJ1vH7Qekn40x1A1rIahz3v-uBDKDdtWRPpUbbkI9ffbCZKLE
+    ATjmHxLUaOh5RfGSug>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehkedggeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:DcsXZkduC8UpNHqOK7fnOZGUq8yg-pUvpzwLsPmoK57GIKC94wMTow>
+    <xmx:DcsXZmIqSavaJkn4HcDrg3W0wAAHEC_PQgARIaDE8Bwsy9K32XLtrg>
+    <xmx:DcsXZhLc1vQcYkF-vFu4UeFeRUocPM2P8q9hCe30iyPNnGummM9_Xw>
+    <xmx:DcsXZvx7ska2iapcMuhquoLJjrVHZ7KHN3uLSWJ04-WcC57EeatfzQ>
+    <xmx:D8sXZqguWQrev3ZMooMwLrx0i47WEB3gReRZL-o4riD8eSXOTLqE79i3>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id E7849B60092; Thu, 11 Apr 2024 07:35:40 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VE1PR04MB7374:EE_|AS1PR04MB9559:EE_
-X-MS-Office365-Filtering-Correlation-Id: c04d8b9a-f303-4e41-1d7d-08dc5a1b5d56
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	GBsNrHlfWf2mBWjn2PBcSesF3Ho0mhb9D5kzl26RJc9owyMe3H0Cp48NFeVS0/QggOtL16OgA3bxmpXfhGOx3EzhANqIrh1/2/qoqkg/2ee4Szd9Zaj0LT9h1UBqlZZg8mJh1CFDmN0WxIVbPBHGzIPP788BpR0p9pX7S9tHE40DJzdFOEH4TbRUhPrIBgi4Tv1YL6Mw+xC7P/TxGJixbIZxd4drB6E5KmlCLGd3TVRGBZmknzWnqEYwqMQzfStdt+2LgEZonSiJM2/xYxoebaUZB79OdEfh6Y7Gdl5Ymy0PnevibLIdRjTBS3PvXBqcuRSlXWFGnCKy5ue0noAzryZ46HOAkkyW6e8ATaA73rZAFsaNEt9R0d3Iy1xlz2UMFRRXsJV8p876+y++hjCR8T2eR5tAiL2/Xa6/bfI904vXue6vwk5mX3SIJZaaNR8MU/0rCDsurBfgH02PSKzsIpAjjjkcXNADvIub80qi+tiN1ShpmDB4JuIMYSyPNb16Exr3sGSbD5453zi+l4tDzog8xMOqELjM+WgFAhSyTFyqTGa7GRErlyOXhv4qrKokL4EVCXU9qaSfCEcDtzai/AnLpLc1FX1cGgLNglL+g+QNZ6rj9oRsmIUvvHlcirFDs/h/3QZyr2PT3vckEAk9Blh7dPvNxtkLzYsNVumGxcs=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB7374.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?dGTE4nfq2vahUXCZFxNwTrwOiw4ZDljInS3YX4D1AO3I0feMKnzvtwXa1Qw2?=
- =?us-ascii?Q?wTaWWavswsNQPO7iWSuKAbUZR4yyKlgIqpmACL0zOFZzCYbwp4lMNNuu98Qu?=
- =?us-ascii?Q?ObBgKbKEBapjGicnYwlK6NK5BEvmnwrcPEb0cM/GVjHA5+Igr5f7OQajOMbs?=
- =?us-ascii?Q?kGq1VPCD0SuXmpD9YC4Z+HCTefRSDQTQx/4ncACclqBrZrw5GFC4rzRQfRgU?=
- =?us-ascii?Q?eHfWhf6XrZqiM2SBPO29oMyEM30BwjvHSNwqsZDfO1cr9iKV5oAmcO9Z8uyW?=
- =?us-ascii?Q?e++rs8lCAw9cpgf76gY34brIQhwQW25rt1yWAbBWGvDOaYQqm5ubYIRkUFZd?=
- =?us-ascii?Q?C2uhOqD6vb17j6hcxE/+1yPwB3oq0Ip4NPprVrEXF5aHjQqPCW3mAAMXbDOl?=
- =?us-ascii?Q?b6YDo9mfEu/sCm+tB8ASKg4nWaUtsYuwzppzI7OL+AiQ0hfMmyjyvdp6lo6I?=
- =?us-ascii?Q?MB2+H79+2hJPz88AZnif3VGVHSp5zGbzTHoCR77tJ5zmvXlJfEOpYHiJGc+o?=
- =?us-ascii?Q?lCz5ouSvIQE5eQkkHZnhlQttElr6RIs5E53mp4V3LhPTkyCqbjmU65q2mQlU?=
- =?us-ascii?Q?xzkWmRHBCDUo0iT+kRXuUl3msMwv48WSvfh0DBsIxVSszdLxGzMz2EBPNOv6?=
- =?us-ascii?Q?bEreE4xlIIt3cw514/Q9IOwKyt9+/R1OxIcaF2Hn+6c9WWVXOQltQG94CPoZ?=
- =?us-ascii?Q?QrPIwmQo6h6ft+qOsBIUtx7iS+e1bpot5gsh1AqUxbEXSSYAUQzkJuduRjtS?=
- =?us-ascii?Q?knJvq4kKyi3x3avFXzknRVSYa+/xJh2zwbpPnpFbmE1zJ4XWKKmBCR+uLBqc?=
- =?us-ascii?Q?+J/S6HA412XNDLq8xSW/AByb0a5cB4P8wECkd7e5Vme+UuCmEzoMsD/qthci?=
- =?us-ascii?Q?En+epTVVVJTCVj30U2BzAU+pYCqHddO5zWBLl6uRJ6cb7aS3TeUKFcr5VLc3?=
- =?us-ascii?Q?cnwLuMqS3sL1/8T3nHRORTBmAuHxgTXMQKuDW2AKtTVlXYq+gAKvulR50F0m?=
- =?us-ascii?Q?c001eBNO8gW1zcxNJRfb1YVKGWcLR5fwZoNB9kAFlkoqhYlhoecyMediPdN4?=
- =?us-ascii?Q?SzY/pmjwH6PU4vi8/qbvp+4aicfk6c6brL1DX8im0SjFa9qYZLQzgEdWuf3q?=
- =?us-ascii?Q?dX5DEc8U32JnSA1veYilC1YiTDgSHdyKc2grnMFRgR8rMdzlGw/mOkx++UEH?=
- =?us-ascii?Q?yTo5Hpge82bLH0U0n6KNBh8M00IFE62nWuoi8Vj9W1TCzIF2Znpc+9IdhNAD?=
- =?us-ascii?Q?E/tWxkd7mG6yX4iOCppYAEMHWTeoAOHgdjdhJ7FxG7dqMUIFg5s8ZISOxdj/?=
- =?us-ascii?Q?eoE/BppgyzFt6ezKI3Hmy2kHgwEJ9kC7zQkShqtKqIhFLKL2WDN3pftQxf3U?=
- =?us-ascii?Q?gHp2IK45KJ1i7U6cwiWAgWXLGMFZ/5JW5DT6qRGnA9MFKtA86CSiK8dVjtPV?=
- =?us-ascii?Q?hbJfNVucKPoNznpqs0iwzCHn90LGKExbAxntn0e7g41IVftTc5Sv7CdVW2Mn?=
- =?us-ascii?Q?V0WDOiAkRrSvzO3SNPgeZ1WGNjZRn19uEUQJ7Jc7fsJhweUcFPh5yxqTdmzO?=
- =?us-ascii?Q?9nhnuaNdg8Uq2Jv2xWdK8ut5pny5OF0U4rhdiHVTQr+QpglcxXw9YFcmcYws?=
- =?us-ascii?Q?vKDF7cRnjks0zcxKlpucSXk=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c04d8b9a-f303-4e41-1d7d-08dc5a1b5d56
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB7374.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 11:34:35.8716
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KtjCgpd9UJ3/I98WPrUNGmY5YXpibpO/9GFh1UyC2vJ1ZZ6AwSG1B9hB2+kIsQWd6WMGnuJGX1INej3H0gD0PQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9559
+Message-Id: <773febee-ace3-4ad6-8ff6-04563dbbb759@app.fastmail.com>
+In-Reply-To: <20240410174540.GB3649628@dev-arch.thelio-3990X>
+References: <20240216202657.2493685-1-arnd@kernel.org>
+ <202402161301.BBFA14EE@keescook>
+ <763214eb-20eb-4627-8d4b-2e7f29db829a@app.fastmail.com>
+ <20240409161517.GA3219862@dev-arch.thelio-3990X>
+ <f94c6943-eb93-4533-8e4d-3645ef38b990@app.fastmail.com>
+ <20240410174540.GB3649628@dev-arch.thelio-3990X>
+Date: Thu, 11 Apr 2024 13:35:05 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Nathan Chancellor" <nathan@kernel.org>
+Cc: "Kees Cook" <keescook@chromium.org>, "Arnd Bergmann" <arnd@kernel.org>,
+ "Steffen Klassert" <steffen.klassert@secunet.com>,
+ "Herbert Xu" <herbert@gondor.apana.org.au>,
+ "David S . Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
+ "Paolo Abeni" <pabeni@redhat.com>,
+ "Nick Desaulniers" <ndesaulniers@google.com>,
+ "Bill Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ "Leon Romanovsky" <leon@kernel.org>, "Lin Ma" <linma@zju.edu.cn>,
+ "Simon Horman" <horms@kernel.org>, "Breno Leitao" <leitao@debian.org>,
+ "Tobias Brunner" <tobias@strongswan.org>, "Raed Salem" <raeds@nvidia.com>,
+ Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+ llvm@lists.linux.dev
+Subject: Re: [PATCH] [RFC] xfrm: work around a clang-19 fortifiy-string false-positive
+Content-Type: text/plain
 
-On Wed, Apr 10, 2024 at 07:40:55PM -0700, Jakub Kicinski wrote:
-> On Tue,  9 Apr 2024 11:30:46 +0200 David Gouarin wrote:
-> > Make it possible to bind a XDP socket to a queue id.
-> > The DPAA FQ Id was passed to the XDP program in the
-> > xdp_rxq_info->queue_index instead of the Ethernet device queue number,
-> > which made it unusable with bpf_map_redirect.
-> > Instead of the DPAA FQ Id, initialise the XDP rx queue with the queue number.
-> 
-> Camelia, looks good?
+On Wed, Apr 10, 2024, at 19:45, Nathan Chancellor wrote:
 
-Please allow me some time to prepare a response, even if this means the
-patch misses this week's 'net' pull request.
+> Unfortunately, I have no idea why it is complaining nor why your patch
+> resolves it but the combination of FORTIFY_SOURCE and KASAN certainly
+> seems like a reasonable place to start looking. I will see if I can come
+> up with a smaller reproducer to see if it becomes more obvious why this
+> code triggers this warning.
+
+I know at least why my patch avoids the warning -- it removes the
+call to memset() that contains the check. Unfortunately that still
+doesn't explain what caused it.
+
+      Arnd
 
