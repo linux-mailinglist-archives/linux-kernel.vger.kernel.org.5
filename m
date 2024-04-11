@@ -1,145 +1,124 @@
-Return-Path: <linux-kernel+bounces-139850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A82D8A0868
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:24:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 623548A086A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:25:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5642D281CAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:24:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 187351F25D08
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:25:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB0D113CFAD;
-	Thu, 11 Apr 2024 06:23:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E942413CAB7;
+	Thu, 11 Apr 2024 06:24:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="T6mAtzEW"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TeO9GwMU"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C213F13BAD2
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4BD413CA9F
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:24:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712816622; cv=none; b=qzxaeN/8NdZg99s1rtARciGZqM90BZVl+/NNjtEUe2q3zuTS21cteCtddENrl7QNWLJshUGeLhMAGTEOtOJihJ/sE7VS3gcLgm6cNPA5WaLCeIYLYEpkRYyrwJaE5C7rxzRaguNzrez6NBi0XjVYeohzYeLM7W79jxnHTnYVx0g=
+	t=1712816694; cv=none; b=UlscThnxxygtzgnfuGEu/d6f3C22ODlpf21HhZWOCAA4Idsd2Jnl2oDPUq8U5FeZJPAk8WDYUQL3EeqBVygK25zwrh4hRSUcjmgRe5PhSEN/6GABFlBE6DVq92TJkh68y5SM5c4aZSw1WYuEf5r3L6m99QVxANw+R4qJUAcDj2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712816622; c=relaxed/simple;
-	bh=pTWLQpW9RVU2IjRukXzUGYvxyE+olS3ZH5i76ahO8P4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mg2pVJWc7D16iF6sCLbs1z/dsbNrsQjZms+44FCg1DehUIFJpMBicu7h0/rnenU3NBhhfcorhNj45RETNkTC0a5mOhEHtmDB0brtJ3pJSkksYBMCInggYK4Rj8HOYQrRiFaK6JkjVVm+Z96vvtalX+zrYJNWP1eI6jT+jG6Gtk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=T6mAtzEW; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d094bc2244so80529071fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1712816617; x=1713421417; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5lZTFJACV3+JbwVwRwvE8FlPJbh+9wi0aUKAYU88cAc=;
-        b=T6mAtzEWsvSFJVelBAO7GMLtShyCwYgw93Sd4XzMlA7pTPehBzOzvgGmGoujqOsfaY
-         DcXLdd5Xp/rVL0SfK2aJjjtyxFFXDkV/77t6VqrpFXzgQ9lgkE0Czj18Mh1Ky+lsMHaC
-         Ps03teF3bWvkeoWB6c5dzJVHbif5V5xg9i3b+v+EJUcKIo8f1bKQMAoeqFT8Gs16hT43
-         6aqQIsmm3I5/fV1PnSMWFV3d0SUVeU9fKcCsr4/DEGl4EyebTqInsDJC8xIpVuvkb4PX
-         QTkx7ppU71r8Z/zTyl+TP6tcEsyvIZgzm9lfcJ/ANh0jAVg5ZbzOT2cSe1JCGJ/udZKJ
-         1Yvw==
+	s=arc-20240116; t=1712816694; c=relaxed/simple;
+	bh=444uiMQcMJzHmI0zrEsPgMSi/MBOOaGCll154shiDkw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XKJlNE92MEhRrPmBuS57IwAvQZqUAwo1OW0ZTU7ji6sOEb7+7zMevBpppaEdfnK2giKVDCvvjlJ0Ikp+nl1V1sXXd6Ztbb/V0wYxYiRpA6uXzTi4jhD7X1q5m7S7j0SQAmGpZxI/rWKBibh90lBtpKSZjcKgisGHefEwxyla4a4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TeO9GwMU; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712816691;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=RCX6MGp3mzAjan9U+6PijABpgY0GU571g8JyE/O/vz8=;
+	b=TeO9GwMU9W6vbVKXQH2SVDb+gweANoZshYdAl56eigKDLJiJsI8trkynSAxPWpFm9x/93w
+	TfqP/2h6R3bUKJX0MAZz/I0jP+9q5hksLZPKg21L/+KQcfslbV6ej1LY7lxjyrYuOW2jt4
+	CTik0L8KZ7CUxSSigJQBcr6cqGhaUEY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-540-qA73nHrQOy6zpUdTLyq3gQ-1; Thu, 11 Apr 2024 02:24:50 -0400
+X-MC-Unique: qA73nHrQOy6zpUdTLyq3gQ-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a51a1c8d979so60780166b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:24:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712816617; x=1713421417;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5lZTFJACV3+JbwVwRwvE8FlPJbh+9wi0aUKAYU88cAc=;
-        b=b2+ow9+d1hRQZhwrSYY81nuuAB/nmuWMwHf4+IhIndF0cnCxOwo1N8gVjrl8zQBdgd
-         7j+20DAX4skLBMgVGQHzLoeoroWFsJxdXvoVdQnJD4PTlTZ/ps20BwbwQWLO0fgAHkdH
-         xiW6kZcNXvPZQ2XIxF1VZ7niLDf1EnZUMHa0eZfskmIoEf9gklPL6ahFt1HXq1/EazgG
-         g6HmXMtUeBYY9+A8hPcpEZU2nRuylgSPV5bBuEuQKgZglxNWda03iBGrQYCuRUtQSKl0
-         MhnP8qYofsVKhMqaIwXtUNTZWP8OTzsFGb07k425eTBQlwk3AFBlSDsCJNp2myqcQ4lm
-         qC3w==
-X-Forwarded-Encrypted: i=1; AJvYcCUL89JgDNjRv5ruZQjOz5ZOy1Crbgng2BPQrmNi062KqHHCzwWCqcg46tBQMU+wth2iRubw9Kkycox8vDeqUxPB9m8P7/PT9Q/vbSIe
-X-Gm-Message-State: AOJu0YwZwdeSl99rhCOzbbYGeqlAm0+XiZO8hP51X9gUuNlZNEcAtYsb
-	6xpqwn2PldpZ2EXISOuUrBjUO62Zz/+hlxN8Tgmng4FMQSPcruQm1UTqN+A3mUA=
-X-Google-Smtp-Source: AGHT+IFkIcdj47hwnqrwRBDPoFbtpCm6hEqmTe7HSx9TotuKs4UPXIr2bhVJ1LAxUHsvGfGv5Jcuqg==
-X-Received: by 2002:a2e:a413:0:b0:2d6:a5f6:c8d3 with SMTP id p19-20020a2ea413000000b002d6a5f6c8d3mr2822772ljn.27.1712816617380;
-        Wed, 10 Apr 2024 23:23:37 -0700 (PDT)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id n39-20020a05600c502700b00417e3695371sm70793wmr.33.2024.04.10.23.23.36
+        d=1e100.net; s=20230601; t=1712816688; x=1713421488;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RCX6MGp3mzAjan9U+6PijABpgY0GU571g8JyE/O/vz8=;
+        b=UlXdwwXY/+pWTvOKjTQ8uji3aas6Ru5wPRt896ivrTN7TQoMqyfUzm5kZoMmKHd2LM
+         jB/LVQxQBSC3c78Oq5zyuV51VAKRsqIbWVPJ8XMw3PjC+eulpPr1xxodPrIjqf7BJuVY
+         /zNDP4YyptOXa9XPWm3awT4u+olULOqHvWyfpJX7dhpwGtVYbJpcIOMM1//gEFsmcmgE
+         gv13g5IEoBnVxfgoFOq380/Lz0UEB7lvzqCrqs/rsp3pHOt/wKT2PsItDj57i6Ei/eG6
+         Z4Iqgzl6JT/2emDychIaQJ1abs9WmWpjcjkL+MnlUF8LdOeMFk3xKaxQtgsO6Z4ZNEAU
+         sTrw==
+X-Forwarded-Encrypted: i=1; AJvYcCVXzmTHtFZtc3EuGw6jlsQBHaM81NAcnS6loyOc3PIGeTvSdCLCWSMSsVFBQVpcAcnBQ8w2RKmIPAZpwpzGv3xNpaSu0JqpDosHe+Sw
+X-Gm-Message-State: AOJu0YxGxi4nhwfr3W14RQiY0lcGhIjhApQW7bGWR1Nf2QQHGt0/5OML
+	azAVfG3TP7JS9pDFFDxotN8J7O42kLUy5BwvLEME1nqLfO4IQn8NROFUfeoAhZPYTDv76Cu9wvZ
+	t95bBisM1Dyoer0x6+O6uKX/yU1yolCIoVL3vTA2uK0YOIhk3ebRiHOl4czq0oIqn5W7+RA==
+X-Received: by 2002:a50:a69b:0:b0:56d:eef4:28f0 with SMTP id e27-20020a50a69b000000b0056deef428f0mr3980161edc.20.1712816688787;
+        Wed, 10 Apr 2024 23:24:48 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFnVcBcnrTAav1zdTHrQ+F/XWt8yZqNhgddppdiT7mQ7vHwUi/Ryaz0cR396KTlvaukyg8GrQ==
+X-Received: by 2002:a50:a69b:0:b0:56d:eef4:28f0 with SMTP id e27-20020a50a69b000000b0056deef428f0mr3980147edc.20.1712816688397;
+        Wed, 10 Apr 2024 23:24:48 -0700 (PDT)
+Received: from lbulwahn-thinkpadx1carbongen9.rmtde.csb ([2a02:810d:7e40:14b0:4ce1:e394:7ac0:6905])
+        by smtp.gmail.com with ESMTPSA id z21-20020a05640235d500b0056e718795f8sm379123edc.36.2024.04.10.23.24.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 23:23:36 -0700 (PDT)
-Date: Thu, 11 Apr 2024 08:23:35 +0200
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jijie Shao <shaojijie@huawei.com>
-Cc: yisen.zhuang@huawei.com, salil.mehta@huawei.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	horms@kernel.org, rkannoth@marvell.com, shenjian15@huawei.com,
-	wangjie125@huawei.com, liuyonglong@huawei.com,
-	chenhao418@huawei.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V7 net-next 4/4] net: hns3: add support to query scc
- version by devlink info
-Message-ID: <ZheB58bjmkFzIEbG@nanopsycho>
-References: <20240410125354.2177067-1-shaojijie@huawei.com>
- <20240410125354.2177067-5-shaojijie@huawei.com>
- <ZhapUja4xXiJe4Q2@nanopsycho>
- <16347737-f0ac-4710-85ee-189abed59d6b@huawei.com>
+        Wed, 10 Apr 2024 23:24:47 -0700 (PDT)
+From: Lukas Bulwahn <lbulwahn@redhat.com>
+X-Google-Original-From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+To: Ben Cheatham <Benjamin.Cheatham@amd.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	linux-cxl@vger.kernel.org,
+	linux-acpi@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@redhat.com>
+Subject: [PATCH] MAINTAINERS: repair file entry in COMPUTE EXPRESS LINK
+Date: Thu, 11 Apr 2024 08:24:43 +0200
+Message-ID: <20240411062443.47372-1-lukas.bulwahn@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <16347737-f0ac-4710-85ee-189abed59d6b@huawei.com>
+Content-Transfer-Encoding: 8bit
 
-Thu, Apr 11, 2024 at 03:05:53AM CEST, shaojijie@huawei.com wrote:
->
->on 2024/4/10 22:59, Jiri Pirko wrote:
->> Wed, Apr 10, 2024 at 02:53:54PM CEST, shaojijie@huawei.com wrote:
->> > From: Hao Chen <chenhao418@huawei.com>
->> > 
->> > Add support to query scc version by devlink info for device V3.
->> > 
->> > Signed-off-by: Hao Chen <chenhao418@huawei.com>
->> > Signed-off-by: Jijie Shao <shaojijie@huawei.com>
->> > ---
->> > Documentation/networking/devlink/hns3.rst     |  3 ++
->> > drivers/net/ethernet/hisilicon/hns3/hnae3.h   |  9 ++++
->> > .../hns3/hns3_common/hclge_comm_cmd.h         |  8 ++++
->> > .../hisilicon/hns3/hns3pf/hclge_devlink.c     | 44 +++++++++++++++++--
->> > .../hisilicon/hns3/hns3pf/hclge_devlink.h     |  2 +
->> > .../hisilicon/hns3/hns3pf/hclge_main.c        | 18 ++++++++
->> > .../hisilicon/hns3/hns3pf/hclge_main.h        |  1 +
->> > 7 files changed, 82 insertions(+), 3 deletions(-)
->> > 
->> > diff --git a/Documentation/networking/devlink/hns3.rst b/Documentation/networking/devlink/hns3.rst
->> > index 4562a6e4782f..e19dea8ef924 100644
->> > --- a/Documentation/networking/devlink/hns3.rst
->> > +++ b/Documentation/networking/devlink/hns3.rst
->> > @@ -23,3 +23,6 @@ The ``hns3`` driver reports the following versions
->> >     * - ``fw``
->> >       - running
->> >       - Used to represent the firmware version.
->> > +   * - ``fw.scc``
->> What's scc? I don't see it described anywhere.
->
->diff --git a/Documentation/networking/devlink/hns3.rst b/Documentation/networking/devlink/hns3.rst
->index 4562a6e4782f..e19dea8ef924 100644
->--- a/Documentation/networking/devlink/hns3.rst
->+++ b/Documentation/networking/devlink/hns3.rst
->@@ -23,3 +23,6 @@ The ``hns3`` driver reports the following versions
->    * - ``fw``
->      - running
->      - Used to represent the firmware version.
->+   * - ``fw.scc``
->+     - running
->+     - Used to represent the soft congestion control firmware version.
->
->scc means "soft congestion control"
+Commit 12fb28ea6b1c ("EINJ: Add CXL error type support") adds the header
+file include/linux/einj-cxl.h, but then adds a file entry with cxl-einj.h
+(note the swapping of words) to the COMPUTE EXPRESS LINK (CXL) section.
 
-I guess this is something specific to your device, isn't it? Can't you
-please extend the description a bit more?
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
+broken reference.
 
-Thanks!
+Repair the file entry in COMPUTE EXPRESS LINK (CXL).
 
->
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index edf6176a5530..03204db05027 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5415,7 +5415,7 @@ M:	Dan Williams <dan.j.williams@intel.com>
+ L:	linux-cxl@vger.kernel.org
+ S:	Maintained
+ F:	drivers/cxl/
+-F:	include/linux/cxl-einj.h
++F:	include/linux/einj-cxl.h
+ F:	include/linux/cxl-event.h
+ F:	include/uapi/linux/cxl_mem.h
+ F:	tools/testing/cxl/
+-- 
+2.44.0
+
 
