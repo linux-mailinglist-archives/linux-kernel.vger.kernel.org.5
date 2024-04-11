@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D005C8A1A92
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:58:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEBF68A1A93
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:58:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86B0128736F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:58:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82F852873D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 225E61E8305;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 643571E8307;
 	Thu, 11 Apr 2024 15:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="UJWx73Zv"
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="u/QTzRtU"
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9A1A1E7955
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:41:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6A11E6F5F
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:41:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850066; cv=none; b=RtB3T+UY0K4xiaF9fIyZcB1/kSjl345W/6DvmwbA7YSrsuXug1RILVNT9pIi60eGF4gcV5MlgoNIQcEH1vSaRg2rP93anntAeNvyW4yRnWDmvfSz2gJWkKU9L9h2+gzE++hynJjn3Vdy+fNq/MqQe1h6GEHMjSEpJhCu6I6yjkQ=
+	t=1712850067; cv=none; b=igBMCrWQDBclzes6WtYUDpq+JucGnyak+qHRi9efkDp2Piip1ll4rXNTtGxy5Exg16p87ie0MIvGy/RBwtl28Ph0hgoEkItvDetBFNAnwVA+37n3Vw8KH5IF+tsmi4vOIsqJLfJMeGFoecwYPe6C0GicwMwDYS4Wq9lQpgz5Ht0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850066; c=relaxed/simple;
-	bh=1U8ijbqUrqPaQOZ3jdBlGBUkZMII7qIbCc9eeO1/rYU=;
+	s=arc-20240116; t=1712850067; c=relaxed/simple;
+	bh=NcCey28QxJieT+UjRuZ77X2FGjw1+do6lFFpsmJ0A9M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RvKn2MxoDYgW9L24jpKPkVJBhUP6/6gTz6BnoCF0jfYfVdtpeDab6ihEnQHewA51osD/P4wd/rPEfZFdnC9u68c6jNf0++1dhMQW8gcYHznR4HhY59VZUxNKijRt76cOITHyA7TLPh8eQZQfIAOlI+0Ns0Ob0F+5CdpMTEUMwuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=UJWx73Zv; arc=none smtp.client-ip=209.85.166.46
+	 MIME-Version; b=pI0aWzYCC51rJiwSD3Cyhomn49lz86c+Shl+qzGl/cC6fSFs1rU1267s7Ao/evlLKIbvUANlbjiFmAMHHjCr/2LJA1VHHWs30wBtHxCF3dWHuE1VEV7UiRn54zBr1vnDusRS1iDVLEMJVYcijtrHFOixy/UK6+2y85bnq91+5uE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=u/QTzRtU; arc=none smtp.client-ip=209.85.166.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7d6812b37a6so9063639f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:41:03 -0700 (PDT)
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so170620539f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:41:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850062; x=1713454862; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850064; x=1713454864; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+1VCjRWQQSxBJsxF7soIbkCnGMMt3DjZ26qqRbqQowo=;
-        b=UJWx73Zv8BUmLaw+9501lxiKVKOPQat3U/4Oe69VgPQoSljyOGC9HLsbj1yqDE3wez
-         DGsbfyzB2Rg4L/ffhCd2e4ImFDlwSLgOvqP0k+qaTmY1W04lmNVACkvu0e6gh6UalwR9
-         DsCOwBc2zO6tCQ7NkpVtPi5m413XJ3fMteqgPOZZyR5sNOzAggkyAXsEwVrkJoD6kftF
-         dZRmr6YRy4TnBrIQ2NrQYGQXrpTf8/lEiZJXOlUxr2cgxqblUsmUbFQsvbXb5PhtM/J+
-         3buqeMGOUsJZB4TdQrzQFwztZ+zIW8EwZviPBtT9DU9Si3q9fLHnSWG+vbEFVNdIHI4Y
-         0L0A==
+        bh=+H2jBq3RtSTJ6hQiTl82f8Q+bNLXTmf8hg8XWogEvuU=;
+        b=u/QTzRtUPqqBcNN0jzn3/j5lYTsPyXr3oezPXC8Dxyt+6SX3mK3C5NfCYBnNqNYZD0
+         ypinCKIvzQdX9hWZmXkcEJB0cg89D4TWdulJtuLlR6845KUVKKIeZgFi3aPuco3G+/fp
+         yh4Vnn9Ehx0LGniyOkbkCnFlcWTN0D6GnvtqMMrvt18gvgemiNq+yE/9EotGoePaAfym
+         glzQZtSvCNAbayz9YrLV/Fch0yeuSaYCivpLF6mK/h9AsgczN7bPlNEvP2J+eNZTr3/d
+         2tLRu+het22kXAeih0D+RK9jJ7KvTRuYRzTdrjV/bpfgJKw2krG9A76HSG9O2uKnqYM3
+         fjug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850062; x=1713454862;
+        d=1e100.net; s=20230601; t=1712850064; x=1713454864;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+1VCjRWQQSxBJsxF7soIbkCnGMMt3DjZ26qqRbqQowo=;
-        b=YWzOITjf/KuuSNfmVLNjT3/6fQM9BDV1riPxl7pWxbIiXXFFN1hteDUvmgDFV341pJ
-         gU4wHlSHNfhSI4VvJ1jx2dZBPSsEPqJpljDuk6BxOstHCBaILEoXKSAlleygrJR9+SeP
-         5G14Q/kjzFYbB+4m77a6UVJVZNKlumBPJEh4qKMJKhxlxJWzOkct7mVzfCWg+GUI8szr
-         eUMntwckFKZXTXIQuvSCcN2fBz8+ptCBpfCkF+MpNYwmU9BlXdipztVEzORlzHbkSXyc
-         kRKb8PUYX4ka76A4YB8MF0fJ88vw6m32Jhi4mUGcRPw7JH8pJzECivuKjvQGG+ZDsqPN
-         L8ew==
-X-Gm-Message-State: AOJu0Yyiushu5hJsTm8CXETCi4Hiv6E8NZ6P7S9VJwtX3kGWkOuZK5pW
-	DZlg4STZzHi8JwqJTBpbD5N5q1E1acLWwJi6iuJgt0jmvlhx+I4Is2m5SIQOjsQAXOnpo0Bti2w
-	c
-X-Google-Smtp-Source: AGHT+IGiyusTiXUiExBB3VSTmCsP0Pvm/tqOFyIWVaLxqcGgEmxYCpl/xXkoDRXqU2ns342ZrKhkuQ==
-X-Received: by 2002:a6b:5b10:0:b0:7d0:bd2b:43ba with SMTP id v16-20020a6b5b10000000b007d0bd2b43bamr234734ioh.0.1712850062477;
-        Thu, 11 Apr 2024 08:41:02 -0700 (PDT)
+        bh=+H2jBq3RtSTJ6hQiTl82f8Q+bNLXTmf8hg8XWogEvuU=;
+        b=cW6niOx9E3kK9Lh90VaWydD3EqqP04WI3z3IDG8if59FA3I42LV0oZRMhg0rZO6vrW
+         zz8PLkknhYVYFAVeZxwXCg7UUD0WxzUtX2udL+SWoGAZPf9Q55GUasnHcdWXa5D3DykC
+         S/ycPxiMKBV6+Ia+UEZlmlh7E2k5Bl6cLOY8K3bF+fCgeam95JxFf8FMx4xoXN3vsynG
+         7f4xPXaWZVu14E9Mb8SBHYNt7yY5qNW9aiYtzE9GTZgruJuzdEJ3EnfIO1MUD59+diSZ
+         RlzhJGasmoU+lSy1WwrutgYvOH0P7YegHOQYl4Cl0yNUSEsndGRfOHmV1YYiHL9WXjC9
+         7i9A==
+X-Gm-Message-State: AOJu0YzLB8yyKG+gyAdClWLbbqz4Z0Y8HF6ldWvnjbO8wuYA2Tx1hx5l
+	MDCvNyU7yX0sVXANxx8znMfJmlZayb9Hcxxa/XEkCLlbwLV9+3pQpYXPG0qc9lGOQEFDYZ6OGiz
+	j
+X-Google-Smtp-Source: AGHT+IFElkIuhoDFYWg9yDYuBEX+eR1w5zIysNG+tkoHI4PQkkkvz5fZEdaKdO6cHBXmU/8jhTUTCQ==
+X-Received: by 2002:a5e:9907:0:b0:7d6:751f:192 with SMTP id t7-20020a5e9907000000b007d6751f0192mr193503ioj.2.1712850063990;
+        Thu, 11 Apr 2024 08:41:03 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.41.01
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.41.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 11 Apr 2024 08:41:02 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 339/437] powerpc/spufs: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:17:59 -0600
-Message-ID: <20240411153126.16201-340-axboe@kernel.dk>
+Subject: [PATCH 340/437] powerpc/platforms: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:18:00 -0600
+Message-ID: <20240411153126.16201-341-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,924 +85,418 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- arch/powerpc/platforms/cell/spufs/file.c | 312 +++++++++++------------
- 1 file changed, 147 insertions(+), 165 deletions(-)
+ arch/powerpc/platforms/52xx/mpc52xx_gpt.c    |  7 ++---
+ arch/powerpc/platforms/powernv/eeh-powernv.c | 11 ++++---
+ arch/powerpc/platforms/powernv/memtrace.c    |  9 +++---
+ arch/powerpc/platforms/powernv/opal-lpc.c    |  6 ++--
+ arch/powerpc/platforms/powernv/opal-prd.c    | 22 +++++++-------
+ arch/powerpc/platforms/powernv/opal-xscom.c  | 30 +++++++++-----------
+ arch/powerpc/platforms/pseries/dtl.c         | 16 +++++------
+ arch/powerpc/platforms/pseries/lpar.c        | 11 ++++---
+ arch/powerpc/platforms/pseries/papr-vpd.c    |  8 +++---
+ 9 files changed, 57 insertions(+), 63 deletions(-)
 
-diff --git a/arch/powerpc/platforms/cell/spufs/file.c b/arch/powerpc/platforms/cell/spufs/file.c
-index 02a8158c469d..025c9b0a0470 100644
---- a/arch/powerpc/platforms/cell/spufs/file.c
-+++ b/arch/powerpc/platforms/cell/spufs/file.c
-@@ -67,14 +67,13 @@ static int spufs_attr_release(struct inode *inode, struct file *file)
+diff --git a/arch/powerpc/platforms/52xx/mpc52xx_gpt.c b/arch/powerpc/platforms/52xx/mpc52xx_gpt.c
+index 581059527c36..d166f153ad12 100644
+--- a/arch/powerpc/platforms/52xx/mpc52xx_gpt.c
++++ b/arch/powerpc/platforms/52xx/mpc52xx_gpt.c
+@@ -530,10 +530,9 @@ static inline void mpc52xx_gpt_wdt_ping(struct mpc52xx_gpt_priv *gpt_wdt)
+ }
+ 
+ /* wdt misc device api */
+-static ssize_t mpc52xx_wdt_write(struct file *file, const char __user *data,
+-				 size_t len, loff_t *ppos)
++static ssize_t mpc52xx_wdt_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct mpc52xx_gpt_priv *gpt_wdt = file->private_data;
++	struct mpc52xx_gpt_priv *gpt_wdt = iocb->ki_filp->private_data;
+ 	mpc52xx_gpt_wdt_ping(gpt_wdt);
  	return 0;
  }
- 
--static ssize_t spufs_attr_read(struct file *file, char __user *buf,
--		size_t len, loff_t *ppos)
-+static ssize_t spufs_attr_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	struct spufs_attr *attr;
- 	size_t size;
- 	ssize_t ret;
- 
--	attr = file->private_data;
-+	attr = iocb->ki_filp->private_data;
- 	if (!attr->get)
- 		return -EACCES;
- 
-@@ -82,7 +81,7 @@ static ssize_t spufs_attr_read(struct file *file, char __user *buf,
- 	if (ret)
- 		return ret;
- 
--	if (*ppos) {		/* continued read */
-+	if (iocb->ki_pos) {	/* continued read */
- 		size = strlen(attr->get_buf);
- 	} else {		/* first read */
- 		u64 val;
-@@ -94,21 +93,21 @@ static ssize_t spufs_attr_read(struct file *file, char __user *buf,
- 				 attr->fmt, (unsigned long long)val);
- 	}
- 
--	ret = simple_read_from_buffer(buf, len, ppos, attr->get_buf, size);
-+	ret = simple_copy_to_iter(attr->get_buf, &iocb->ki_pos, size, to);
- out:
- 	mutex_unlock(&attr->mutex);
- 	return ret;
- }
- 
--static ssize_t spufs_attr_write(struct file *file, const char __user *buf,
--		size_t len, loff_t *ppos)
-+static ssize_t spufs_attr_write(struct kiocb *iocb, struct iov_iter *from)
- {
-+	size_t len = iov_iter_count(from);
- 	struct spufs_attr *attr;
- 	u64 val;
- 	size_t size;
- 	ssize_t ret;
- 
--	attr = file->private_data;
-+	attr = iocb->ki_filp->private_data;
- 	if (!attr->set)
- 		return -EACCES;
- 
-@@ -118,7 +117,7 @@ static ssize_t spufs_attr_write(struct file *file, const char __user *buf,
- 
- 	ret = -EFAULT;
- 	size = min(sizeof(attr->set_buf) - 1, len);
--	if (copy_from_user(attr->set_buf, buf, size))
-+	if (!copy_from_iter_full(attr->set_buf, size, from))
- 		goto out;
- 
- 	ret = len; /* claim we got the whole input */
-@@ -147,8 +146,8 @@ static int __fops ## _open(struct inode *inode, struct file *file)	\
- static const struct file_operations __fops = {				\
- 	.open	 = __fops ## _open,					\
- 	.release = spufs_attr_release,					\
--	.read	 = spufs_attr_read,					\
--	.write	 = spufs_attr_write,					\
-+	.read_iter = spufs_attr_read,					\
-+	.write_iter = spufs_attr_write,					\
- 	.llseek  = generic_file_llseek,					\
- };
- 
-@@ -186,30 +185,27 @@ spufs_mem_dump(struct spu_context *ctx, struct coredump_params *cprm)
- 	return spufs_dump_emit(cprm, ctx->ops->get_ls(ctx), LS_SIZE);
- }
- 
--static ssize_t
--spufs_mem_read(struct file *file, char __user *buffer,
--				size_t size, loff_t *pos)
-+static ssize_t spufs_mem_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
- 	ssize_t ret;
- 
- 	ret = spu_acquire(ctx);
- 	if (ret)
- 		return ret;
--	ret = simple_read_from_buffer(buffer, size, pos, ctx->ops->get_ls(ctx),
--				      LS_SIZE);
-+	ret = simple_copy_to_iter(ctx->ops->get_ls(ctx), &iocb->ki_pos, LS_SIZE,
-+				  to);
- 	spu_release(ctx);
- 
- 	return ret;
- }
- 
--static ssize_t
--spufs_mem_write(struct file *file, const char __user *buffer,
--					size_t size, loff_t *ppos)
-+static ssize_t spufs_mem_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
- 	char *local_store;
--	loff_t pos = *ppos;
-+	loff_t pos = iocb->ki_pos;
-+	ssize_t size;
- 	int ret;
- 
- 	if (pos > LS_SIZE)
-@@ -220,7 +216,7 @@ spufs_mem_write(struct file *file, const char __user *buffer,
- 		return ret;
- 
- 	local_store = ctx->ops->get_ls(ctx);
--	size = simple_write_to_buffer(local_store, LS_SIZE, ppos, buffer, size);
-+	size = simple_copy_to_iter(local_store, &iocb->ki_pos, LS_SIZE, from);
- 	spu_release(ctx);
- 
- 	return size;
-@@ -301,8 +297,8 @@ static int spufs_mem_mmap(struct file *file, struct vm_area_struct *vma)
- static const struct file_operations spufs_mem_fops = {
- 	.open			= spufs_mem_open,
- 	.release		= spufs_mem_release,
--	.read			= spufs_mem_read,
--	.write			= spufs_mem_write,
-+	.read_iter		= spufs_mem_read,
-+	.write_iter		= spufs_mem_write,
- 	.llseek			= generic_file_llseek,
- 	.mmap			= spufs_mem_mmap,
- };
-@@ -451,8 +447,8 @@ spufs_cntl_release(struct inode *inode, struct file *file)
- static const struct file_operations spufs_cntl_fops = {
- 	.open = spufs_cntl_open,
- 	.release = spufs_cntl_release,
--	.read = simple_attr_read,
--	.write = simple_attr_write,
-+	.read_iter = simple_attr_read_iter,
-+	.write_iter = simple_attr_write_iter,
- 	.llseek	= no_llseek,
- 	.mmap = spufs_cntl_mmap,
- };
-@@ -472,44 +468,41 @@ spufs_regs_dump(struct spu_context *ctx, struct coredump_params *cprm)
- 			       sizeof(ctx->csa.lscsa->gprs));
- }
- 
--static ssize_t
--spufs_regs_read(struct file *file, char __user *buffer,
--		size_t size, loff_t *pos)
-+static ssize_t spufs_regs_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	int ret;
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
- 
- 	/* pre-check for file position: if we'd return EOF, there's no point
- 	 * causing a deschedule */
--	if (*pos >= sizeof(ctx->csa.lscsa->gprs))
-+	if (iocb->ki_pos >= sizeof(ctx->csa.lscsa->gprs))
- 		return 0;
- 
- 	ret = spu_acquire_saved(ctx);
- 	if (ret)
- 		return ret;
--	ret = simple_read_from_buffer(buffer, size, pos, ctx->csa.lscsa->gprs,
--				      sizeof(ctx->csa.lscsa->gprs));
-+	ret = simple_copy_to_iter(ctx->csa.lscsa->gprs, &iocb->ki_pos,
-+				      sizeof(ctx->csa.lscsa->gprs), to);
- 	spu_release_saved(ctx);
- 	return ret;
- }
- 
--static ssize_t
--spufs_regs_write(struct file *file, const char __user *buffer,
--		 size_t size, loff_t *pos)
-+static ssize_t spufs_regs_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
- 	struct spu_lscsa *lscsa = ctx->csa.lscsa;
-+	ssize_t size;
- 	int ret;
- 
--	if (*pos >= sizeof(lscsa->gprs))
-+	if (iocb->ki_pos >= sizeof(lscsa->gprs))
- 		return -EFBIG;
- 
- 	ret = spu_acquire_saved(ctx);
- 	if (ret)
- 		return ret;
- 
--	size = simple_write_to_buffer(lscsa->gprs, sizeof(lscsa->gprs), pos,
--					buffer, size);
-+	size = simple_copy_from_iter(lscsa->gprs, &iocb->ki_pos,
-+					sizeof(lscsa->gprs), from);
- 
- 	spu_release_saved(ctx);
- 	return size;
-@@ -517,8 +510,8 @@ spufs_regs_write(struct file *file, const char __user *buffer,
- 
- static const struct file_operations spufs_regs_fops = {
- 	.open	 = spufs_regs_open,
--	.read    = spufs_regs_read,
--	.write   = spufs_regs_write,
-+	.read_iter = spufs_regs_read,
-+	.write_iter = spufs_regs_write,
- 	.llseek  = generic_file_llseek,
- };
- 
-@@ -529,39 +522,36 @@ spufs_fpcr_dump(struct spu_context *ctx, struct coredump_params *cprm)
- 			       sizeof(ctx->csa.lscsa->fpcr));
- }
- 
--static ssize_t
--spufs_fpcr_read(struct file *file, char __user * buffer,
--		size_t size, loff_t * pos)
-+static ssize_t spufs_fpcr_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	int ret;
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
- 
- 	ret = spu_acquire_saved(ctx);
- 	if (ret)
- 		return ret;
--	ret = simple_read_from_buffer(buffer, size, pos, &ctx->csa.lscsa->fpcr,
--				      sizeof(ctx->csa.lscsa->fpcr));
-+	ret = simple_copy_to_iter(&ctx->csa.lscsa->fpcr, &iocb->ki_pos,
-+				      sizeof(ctx->csa.lscsa->fpcr), to);
- 	spu_release_saved(ctx);
- 	return ret;
- }
- 
--static ssize_t
--spufs_fpcr_write(struct file *file, const char __user * buffer,
--		 size_t size, loff_t * pos)
-+static ssize_t spufs_fpcr_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
- 	struct spu_lscsa *lscsa = ctx->csa.lscsa;
-+	ssize_t size;
- 	int ret;
- 
--	if (*pos >= sizeof(lscsa->fpcr))
-+	if (iocb->ki_pos >= sizeof(lscsa->fpcr))
- 		return -EFBIG;
- 
- 	ret = spu_acquire_saved(ctx);
- 	if (ret)
- 		return ret;
- 
--	size = simple_write_to_buffer(&lscsa->fpcr, sizeof(lscsa->fpcr), pos,
--					buffer, size);
-+	size = simple_copy_from_iter(&lscsa->fpcr, &iocb->ki_pos,
-+					sizeof(lscsa->fpcr), from);
- 
- 	spu_release_saved(ctx);
- 	return size;
-@@ -569,8 +559,8 @@ spufs_fpcr_write(struct file *file, const char __user * buffer,
- 
- static const struct file_operations spufs_fpcr_fops = {
- 	.open = spufs_regs_open,
--	.read = spufs_fpcr_read,
--	.write = spufs_fpcr_write,
-+	.read_iter = spufs_fpcr_read,
-+	.write_iter = spufs_fpcr_write,
- 	.llseek = generic_file_llseek,
- };
- 
-@@ -591,11 +581,11 @@ static int spufs_pipe_open(struct inode *inode, struct file *file)
-  * - end of the user provided buffer
-  * - end of the mapped area
-  */
--static ssize_t spufs_mbox_read(struct file *file, char __user *buf,
--			size_t len, loff_t *pos)
-+static ssize_t spufs_mbox_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct spu_context *ctx = file->private_data;
--	u32 mbox_data, __user *udata = (void __user *)buf;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
-+	size_t len = iov_iter_count(to);
-+	u32 mbox_data;
- 	ssize_t count;
- 
- 	if (len < 4)
-@@ -605,7 +595,7 @@ static ssize_t spufs_mbox_read(struct file *file, char __user *buf,
- 	if (count)
- 		return count;
- 
--	for (count = 0; (count + 4) <= len; count += 4, udata++) {
-+	for (count = 0; (count + 4) <= len; count += 4) {
- 		int ret;
- 		ret = ctx->ops->mbox_read(ctx, &mbox_data);
- 		if (ret == 0)
-@@ -616,7 +606,7 @@ static ssize_t spufs_mbox_read(struct file *file, char __user *buf,
- 		 * but still need to return the data we have
- 		 * read successfully so far.
- 		 */
--		ret = put_user(mbox_data, udata);
-+		ret = put_iter(mbox_data, to);
- 		if (ret) {
- 			if (!count)
- 				count = -EFAULT;
-@@ -633,14 +623,14 @@ static ssize_t spufs_mbox_read(struct file *file, char __user *buf,
- 
- static const struct file_operations spufs_mbox_fops = {
- 	.open	= spufs_pipe_open,
--	.read	= spufs_mbox_read,
-+	.read_iter = spufs_mbox_read,
- 	.llseek	= no_llseek,
- };
- 
--static ssize_t spufs_mbox_stat_read(struct file *file, char __user *buf,
--			size_t len, loff_t *pos)
-+static ssize_t spufs_mbox_stat_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
-+	size_t len = iov_iter_count(to);
- 	ssize_t ret;
- 	u32 mbox_stat;
- 
-@@ -655,7 +645,7 @@ static ssize_t spufs_mbox_stat_read(struct file *file, char __user *buf,
- 
- 	spu_release(ctx);
- 
--	if (copy_to_user(buf, &mbox_stat, sizeof mbox_stat))
-+	if (!copy_to_iter_full(&mbox_stat, sizeof (mbox_stat), to))
- 		return -EFAULT;
- 
- 	return 4;
-@@ -663,7 +653,7 @@ static ssize_t spufs_mbox_stat_read(struct file *file, char __user *buf,
- 
- static const struct file_operations spufs_mbox_stat_fops = {
- 	.open	= spufs_pipe_open,
--	.read	= spufs_mbox_stat_read,
-+	.read_iter = spufs_mbox_stat_read,
- 	.llseek = no_llseek,
- };
- 
-@@ -694,11 +684,11 @@ void spufs_ibox_callback(struct spu *spu)
-  * any data is available, but return when we have been able to
-  * read something.
-  */
--static ssize_t spufs_ibox_read(struct file *file, char __user *buf,
--			size_t len, loff_t *pos)
-+static ssize_t spufs_ibox_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct spu_context *ctx = file->private_data;
--	u32 ibox_data, __user *udata = (void __user *)buf;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
-+	size_t len = iov_iter_count(to);
-+	u32 ibox_data;
- 	ssize_t count;
- 
- 	if (len < 4)
-@@ -710,7 +700,7 @@ static ssize_t spufs_ibox_read(struct file *file, char __user *buf,
- 
- 	/* wait only for the first element */
- 	count = 0;
--	if (file->f_flags & O_NONBLOCK) {
-+	if (iocb->ki_filp->f_flags & O_NONBLOCK) {
- 		if (!spu_ibox_read(ctx, &ibox_data)) {
- 			count = -EAGAIN;
- 			goto out_unlock;
-@@ -722,11 +712,11 @@ static ssize_t spufs_ibox_read(struct file *file, char __user *buf,
- 	}
- 
- 	/* if we can't write at all, return -EFAULT */
--	count = put_user(ibox_data, udata);
-+	count = put_iter(ibox_data, to);
- 	if (count)
- 		goto out_unlock;
- 
--	for (count = 4, udata++; (count + 4) <= len; count += 4, udata++) {
-+	for (count = 4; (count + 4) <= len; count += 4) {
- 		int ret;
- 		ret = ctx->ops->ibox_read(ctx, &ibox_data);
- 		if (ret == 0)
-@@ -736,7 +726,7 @@ static ssize_t spufs_ibox_read(struct file *file, char __user *buf,
- 		 * but still need to return the data we have
- 		 * read successfully so far.
- 		 */
--		ret = put_user(ibox_data, udata);
-+		ret = put_iter(ibox_data, to);
- 		if (ret)
- 			break;
- 	}
-@@ -767,15 +757,15 @@ static __poll_t spufs_ibox_poll(struct file *file, poll_table *wait)
- 
- static const struct file_operations spufs_ibox_fops = {
- 	.open	= spufs_pipe_open,
--	.read	= spufs_ibox_read,
-+	.read_iter = spufs_ibox_read,
- 	.poll	= spufs_ibox_poll,
- 	.llseek = no_llseek,
- };
- 
--static ssize_t spufs_ibox_stat_read(struct file *file, char __user *buf,
--			size_t len, loff_t *pos)
-+static ssize_t spufs_ibox_stat_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
-+	size_t len = iov_iter_count(to);
- 	ssize_t ret;
- 	u32 ibox_stat;
- 
-@@ -788,7 +778,7 @@ static ssize_t spufs_ibox_stat_read(struct file *file, char __user *buf,
- 	ibox_stat = (ctx->ops->mbox_stat_read(ctx) >> 16) & 0xff;
- 	spu_release(ctx);
- 
--	if (copy_to_user(buf, &ibox_stat, sizeof ibox_stat))
-+	if (!copy_to_iter_full(&ibox_stat, sizeof ibox_stat, to))
- 		return -EFAULT;
- 
- 	return 4;
-@@ -796,7 +786,7 @@ static ssize_t spufs_ibox_stat_read(struct file *file, char __user *buf,
- 
- static const struct file_operations spufs_ibox_stat_fops = {
- 	.open	= spufs_pipe_open,
--	.read	= spufs_ibox_stat_read,
-+	.read_iter = spufs_ibox_stat_read,
- 	.llseek = no_llseek,
- };
- 
-@@ -827,17 +817,17 @@ void spufs_wbox_callback(struct spu *spu)
-  * space is available, but return when we have been able to
-  * write something.
-  */
--static ssize_t spufs_wbox_write(struct file *file, const char __user *buf,
--			size_t len, loff_t *pos)
-+static ssize_t spufs_wbox_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct spu_context *ctx = file->private_data;
--	u32 wbox_data, __user *udata = (void __user *)buf;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
-+	size_t len = iov_iter_count(from);
-+	u32 wbox_data;
- 	ssize_t count;
- 
- 	if (len < 4)
- 		return -EINVAL;
- 
--	if (get_user(wbox_data, udata))
-+	if (get_iter(wbox_data, from))
- 		return -EFAULT;
- 
- 	count = spu_acquire(ctx);
-@@ -849,7 +839,7 @@ static ssize_t spufs_wbox_write(struct file *file, const char __user *buf,
- 	 * in case of !O_NONBLOCK
- 	 */
- 	count = 0;
--	if (file->f_flags & O_NONBLOCK) {
-+	if (iocb->ki_filp->f_flags & O_NONBLOCK) {
- 		if (!spu_wbox_write(ctx, wbox_data)) {
- 			count = -EAGAIN;
- 			goto out_unlock;
-@@ -862,9 +852,9 @@ static ssize_t spufs_wbox_write(struct file *file, const char __user *buf,
- 
- 
- 	/* write as much as possible */
--	for (count = 4, udata++; (count + 4) <= len; count += 4, udata++) {
-+	for (count = 4; (count + 4) <= len; count += 4) {
- 		int ret;
--		ret = get_user(wbox_data, udata);
-+		ret = get_iter(wbox_data, from);
- 		if (ret)
- 			break;
- 
-@@ -899,15 +889,15 @@ static __poll_t spufs_wbox_poll(struct file *file, poll_table *wait)
- 
- static const struct file_operations spufs_wbox_fops = {
- 	.open	= spufs_pipe_open,
--	.write	= spufs_wbox_write,
-+	.write_iter = spufs_wbox_write,
- 	.poll	= spufs_wbox_poll,
- 	.llseek = no_llseek,
- };
- 
--static ssize_t spufs_wbox_stat_read(struct file *file, char __user *buf,
--			size_t len, loff_t *pos)
-+static ssize_t spufs_wbox_stat_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
-+	size_t len = iov_iter_count(to);
- 	ssize_t ret;
- 	u32 wbox_stat;
- 
-@@ -920,7 +910,7 @@ static ssize_t spufs_wbox_stat_read(struct file *file, char __user *buf,
- 	wbox_stat = (ctx->ops->mbox_stat_read(ctx) >> 8) & 0xff;
- 	spu_release(ctx);
- 
--	if (copy_to_user(buf, &wbox_stat, sizeof wbox_stat))
-+	if (!copy_to_iter_full(&wbox_stat, sizeof wbox_stat, to))
- 		return -EFAULT;
- 
- 	return 4;
-@@ -928,7 +918,7 @@ static ssize_t spufs_wbox_stat_read(struct file *file, char __user *buf,
- 
- static const struct file_operations spufs_wbox_stat_fops = {
- 	.open	= spufs_pipe_open,
--	.read	= spufs_wbox_stat_read,
-+	.read_iter = spufs_wbox_stat_read,
- 	.llseek = no_llseek,
- };
- 
-@@ -994,6 +984,7 @@ static ssize_t spufs_signal1_read(struct file *file, char __user *buf,
- 
- 	return ret;
- }
-+FOPS_READ_ITER_HELPER(spufs_signal1_read);
- 
- static ssize_t spufs_signal1_write(struct file *file, const char __user *buf,
- 			size_t len, loff_t *pos)
-@@ -1018,6 +1009,7 @@ static ssize_t spufs_signal1_write(struct file *file, const char __user *buf,
- 
- 	return 4;
- }
-+FOPS_WRITE_ITER_HELPER(spufs_signal1_write);
- 
- static vm_fault_t
- spufs_signal1_mmap_fault(struct vm_fault *vmf)
-@@ -1053,8 +1045,8 @@ static int spufs_signal1_mmap(struct file *file, struct vm_area_struct *vma)
- static const struct file_operations spufs_signal1_fops = {
- 	.open = spufs_signal1_open,
- 	.release = spufs_signal1_release,
--	.read = spufs_signal1_read,
--	.write = spufs_signal1_write,
-+	.read_iter = spufs_signal1_read_iter,
-+	.write_iter = spufs_signal1_write_iter,
- 	.mmap = spufs_signal1_mmap,
- 	.llseek = no_llseek,
- };
-@@ -1062,7 +1054,7 @@ static const struct file_operations spufs_signal1_fops = {
- static const struct file_operations spufs_signal1_nosched_fops = {
- 	.open = spufs_signal1_open,
- 	.release = spufs_signal1_release,
--	.write = spufs_signal1_write,
-+	.write_iter = spufs_signal1_write_iter,
- 	.mmap = spufs_signal1_mmap,
- 	.llseek = no_llseek,
- };
-@@ -1102,29 +1094,28 @@ static ssize_t spufs_signal2_dump(struct spu_context *ctx,
- 			       sizeof(ctx->csa.spu_chnldata_RW[4]));
- }
- 
--static ssize_t __spufs_signal2_read(struct spu_context *ctx, char __user *buf,
--			size_t len)
-+static ssize_t __spufs_signal2_read(struct spu_context *ctx, struct iov_iter *to)
- {
-+	size_t len = iov_iter_count(to);
- 	if (len < sizeof(ctx->csa.spu_chnldata_RW[4]))
- 		return -EINVAL;
- 	if (!ctx->csa.spu_chnlcnt_RW[4])
- 		return 0;
--	if (copy_to_user(buf, &ctx->csa.spu_chnldata_RW[4],
--			 sizeof(ctx->csa.spu_chnldata_RW[4])))
-+	if (!copy_to_iter_full(&ctx->csa.spu_chnldata_RW[4],
-+			 sizeof(ctx->csa.spu_chnldata_RW[4]), to))
- 		return -EFAULT;
- 	return sizeof(ctx->csa.spu_chnldata_RW[4]);
- }
- 
--static ssize_t spufs_signal2_read(struct file *file, char __user *buf,
--			size_t len, loff_t *pos)
-+static ssize_t spufs_signal2_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
- 	int ret;
- 
- 	ret = spu_acquire_saved(ctx);
- 	if (ret)
- 		return ret;
--	ret = __spufs_signal2_read(ctx, buf, len);
-+	ret = __spufs_signal2_read(ctx, to);
- 	spu_release_saved(ctx);
- 
- 	return ret;
-@@ -1153,6 +1144,7 @@ static ssize_t spufs_signal2_write(struct file *file, const char __user *buf,
- 
- 	return 4;
- }
-+FOPS_WRITE_ITER_HELPER(spufs_signal2_write);
- 
- #if SPUFS_MMAP_4K
- static vm_fault_t
-@@ -1192,8 +1184,8 @@ static int spufs_signal2_mmap(struct file *file, struct vm_area_struct *vma)
- static const struct file_operations spufs_signal2_fops = {
- 	.open = spufs_signal2_open,
- 	.release = spufs_signal2_release,
--	.read = spufs_signal2_read,
--	.write = spufs_signal2_write,
-+	.read_iter = spufs_signal2_read,
-+	.write_iter = spufs_signal2_write_iter,
- 	.mmap = spufs_signal2_mmap,
- 	.llseek = no_llseek,
- };
-@@ -1201,7 +1193,7 @@ static const struct file_operations spufs_signal2_fops = {
- static const struct file_operations spufs_signal2_nosched_fops = {
- 	.open = spufs_signal2_open,
- 	.release = spufs_signal2_release,
--	.write = spufs_signal2_write,
-+	.write_iter = spufs_signal2_write_iter,
- 	.mmap = spufs_signal2_mmap,
- 	.llseek = no_llseek,
- };
-@@ -1491,10 +1483,10 @@ static int spufs_read_mfc_tagstatus(struct spu_context *ctx, u32 *status)
- 	return 0;
- }
- 
--static ssize_t spufs_mfc_read(struct file *file, char __user *buffer,
--			size_t size, loff_t *pos)
-+static ssize_t spufs_mfc_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
-+	size_t size = iov_iter_count(to);
- 	int ret = -EINVAL;
- 	u32 status;
- 
-@@ -1506,7 +1498,7 @@ static ssize_t spufs_mfc_read(struct file *file, char __user *buffer,
- 		return ret;
- 
- 	ret = -EINVAL;
--	if (file->f_flags & O_NONBLOCK) {
-+	if (iocb->ki_filp->f_flags & O_NONBLOCK) {
- 		status = ctx->ops->read_mfc_tagstatus(ctx);
- 		if (!(status & ctx->tagwait))
- 			ret = -EAGAIN;
-@@ -1522,7 +1514,7 @@ static ssize_t spufs_mfc_read(struct file *file, char __user *buffer,
- 	spu_release(ctx);
- 
- 	ret = 4;
--	if (copy_to_user(buffer, &status, 4))
-+	if (!copy_to_iter_full(&status, 4, to))
- 		ret = -EFAULT;
- 
- out:
-@@ -1617,10 +1609,10 @@ static int spu_send_mfc_command(struct spu_context *ctx,
- 	return 1;
- }
- 
--static ssize_t spufs_mfc_write(struct file *file, const char __user *buffer,
--			size_t size, loff_t *pos)
-+static ssize_t spufs_mfc_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
-+	size_t size = iov_iter_count(from);
- 	struct mfc_dma_command cmd;
- 	int ret = -EINVAL;
- 
-@@ -1628,7 +1620,7 @@ static ssize_t spufs_mfc_write(struct file *file, const char __user *buffer,
- 		goto out;
- 
- 	ret = -EFAULT;
--	if (copy_from_user(&cmd, buffer, sizeof cmd))
-+	if (!copy_from_iter_full(&cmd, sizeof cmd, from))
- 		goto out;
- 
- 	ret = spufs_check_valid_dma(&cmd);
-@@ -1643,7 +1635,7 @@ static ssize_t spufs_mfc_write(struct file *file, const char __user *buffer,
- 	if (ret)
- 		goto out;
- 
--	if (file->f_flags & O_NONBLOCK) {
-+	if (iocb->ki_filp->f_flags & O_NONBLOCK) {
- 		ret = ctx->ops->send_mfc_command(ctx, &cmd);
- 	} else {
- 		int status;
-@@ -1738,8 +1730,8 @@ static int spufs_mfc_fsync(struct file *file, loff_t start, loff_t end, int data
- static const struct file_operations spufs_mfc_fops = {
- 	.open	 = spufs_mfc_open,
- 	.release = spufs_mfc_release,
--	.read	 = spufs_mfc_read,
--	.write	 = spufs_mfc_write,
-+	.read_iter = spufs_mfc_read,
-+	.write_iter = spufs_mfc_write,
- 	.poll	 = spufs_mfc_poll,
- 	.flush	 = spufs_mfc_flush,
- 	.fsync	 = spufs_mfc_fsync,
-@@ -1943,7 +1935,7 @@ static int spufs_caps_open(struct inode *inode, struct file *file)
- 
- static const struct file_operations spufs_caps_fops = {
- 	.open		= spufs_caps_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
- 	.llseek		= seq_lseek,
- 	.release	= single_release,
- };
-@@ -1957,10 +1949,9 @@ static ssize_t spufs_mbox_info_dump(struct spu_context *ctx,
- 			       sizeof(ctx->csa.prob.pu_mb_R));
- }
- 
--static ssize_t spufs_mbox_info_read(struct file *file, char __user *buf,
--				   size_t len, loff_t *pos)
-+static ssize_t spufs_mbox_info_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
- 	u32 stat, data;
- 	int ret;
- 
-@@ -1977,12 +1968,12 @@ static ssize_t spufs_mbox_info_read(struct file *file, char __user *buf,
- 	if (!(stat & 0x0000ff))
- 		return 0;
- 
--	return simple_read_from_buffer(buf, len, pos, &data, sizeof(data));
-+	return simple_copy_to_iter(&data, &iocb->ki_pos, sizeof(data), to);
- }
- 
- static const struct file_operations spufs_mbox_info_fops = {
- 	.open = spufs_info_open,
--	.read = spufs_mbox_info_read,
-+	.read_iter = spufs_mbox_info_read,
- 	.llseek  = generic_file_llseek,
- };
- 
-@@ -1995,10 +1986,9 @@ static ssize_t spufs_ibox_info_dump(struct spu_context *ctx,
- 			       sizeof(ctx->csa.priv2.puint_mb_R));
- }
- 
--static ssize_t spufs_ibox_info_read(struct file *file, char __user *buf,
--				   size_t len, loff_t *pos)
-+static ssize_t spufs_ibox_info_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
- 	u32 stat, data;
- 	int ret;
- 
-@@ -2015,12 +2005,12 @@ static ssize_t spufs_ibox_info_read(struct file *file, char __user *buf,
- 	if (!(stat & 0xff0000))
- 		return 0;
- 
--	return simple_read_from_buffer(buf, len, pos, &data, sizeof(data));
-+	return simple_copy_to_iter(&data, &iocb->ki_pos, sizeof(data), to);
- }
- 
- static const struct file_operations spufs_ibox_info_fops = {
- 	.open = spufs_info_open,
--	.read = spufs_ibox_info_read,
-+	.read_iter = spufs_ibox_info_read,
- 	.llseek  = generic_file_llseek,
- };
- 
-@@ -2036,10 +2026,9 @@ static ssize_t spufs_wbox_info_dump(struct spu_context *ctx,
- 			spufs_wbox_info_cnt(ctx));
- }
- 
--static ssize_t spufs_wbox_info_read(struct file *file, char __user *buf,
--				   size_t len, loff_t *pos)
-+static ssize_t spufs_wbox_info_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
- 	u32 data[ARRAY_SIZE(ctx->csa.spu_mailbox_data)];
- 	int ret, count;
- 
-@@ -2052,13 +2041,12 @@ static ssize_t spufs_wbox_info_read(struct file *file, char __user *buf,
- 	spin_unlock(&ctx->csa.register_lock);
- 	spu_release_saved(ctx);
- 
--	return simple_read_from_buffer(buf, len, pos, &data,
--				count * sizeof(u32));
-+	return simple_copy_to_iter(&data, &iocb->ki_pos, count * sizeof(u32), to);
- }
- 
- static const struct file_operations spufs_wbox_info_fops = {
- 	.open = spufs_info_open,
--	.read = spufs_wbox_info_read,
-+	.read_iter = spufs_wbox_info_read,
- 	.llseek  = generic_file_llseek,
- };
- 
-@@ -2092,10 +2080,9 @@ static ssize_t spufs_dma_info_dump(struct spu_context *ctx,
- 	return spufs_dump_emit(cprm, &info, sizeof(info));
- }
- 
--static ssize_t spufs_dma_info_read(struct file *file, char __user *buf,
--			      size_t len, loff_t *pos)
-+static ssize_t spufs_dma_info_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
- 	struct spu_dma_info info;
- 	int ret;
- 
-@@ -2107,13 +2094,12 @@ static ssize_t spufs_dma_info_read(struct file *file, char __user *buf,
- 	spin_unlock(&ctx->csa.register_lock);
- 	spu_release_saved(ctx);
- 
--	return simple_read_from_buffer(buf, len, pos, &info,
--				sizeof(info));
-+	return simple_copy_to_iter(&info, &iocb->ki_pos, sizeof(info), to);
- }
- 
- static const struct file_operations spufs_dma_info_fops = {
- 	.open = spufs_info_open,
--	.read = spufs_dma_info_read,
-+	.read_iter = spufs_dma_info_read,
- 	.llseek = no_llseek,
- };
- 
-@@ -2146,10 +2132,10 @@ static ssize_t spufs_proxydma_info_dump(struct spu_context *ctx,
- 	return spufs_dump_emit(cprm, &info, sizeof(info));
- }
- 
--static ssize_t spufs_proxydma_info_read(struct file *file, char __user *buf,
--				   size_t len, loff_t *pos)
-+static ssize_t spufs_proxydma_info_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct spu_context *ctx = file->private_data;
-+	struct spu_context *ctx = iocb->ki_filp->private_data;
-+	size_t len = iov_iter_count(to);
- 	struct spu_proxydma_info info;
- 	int ret;
- 
-@@ -2164,13 +2150,12 @@ static ssize_t spufs_proxydma_info_read(struct file *file, char __user *buf,
- 	spin_unlock(&ctx->csa.register_lock);
- 	spu_release_saved(ctx);
- 
--	return simple_read_from_buffer(buf, len, pos, &info,
--				sizeof(info));
-+	return simple_copy_to_iter(&info, &iocb->ki_pos, sizeof(info), to);
- }
- 
- static const struct file_operations spufs_proxydma_info_fops = {
- 	.open = spufs_info_open,
--	.read = spufs_proxydma_info_read,
-+	.read_iter = spufs_proxydma_info_read,
- 	.llseek = no_llseek,
- };
- 
-@@ -2189,7 +2174,7 @@ static int spufs_tid_open(struct inode *inode, struct file *file)
- 
- static const struct file_operations spufs_tid_fops = {
- 	.open		= spufs_tid_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
- 	.llseek		= seq_lseek,
- 	.release	= single_release,
- };
-@@ -2279,7 +2264,7 @@ static int spufs_stat_open(struct inode *inode, struct file *file)
- 
- static const struct file_operations spufs_stat_fops = {
- 	.open		= spufs_stat_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
- 	.llseek		= seq_lseek,
- 	.release	= single_release,
- };
-@@ -2357,16 +2342,13 @@ static int switch_log_sprint(struct spu_context *ctx, char *tbuf, int n)
- 			(unsigned long long) p->timebase);
- }
- 
--static ssize_t spufs_switch_log_read(struct file *file, char __user *buf,
--			     size_t len, loff_t *ppos)
-+static ssize_t spufs_switch_log_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct inode *inode = file_inode(file);
-+	struct inode *inode = file_inode(iocb->ki_filp);
- 	struct spu_context *ctx = SPUFS_I(inode)->i_ctx;
-+	size_t len = iov_iter_count(to);
- 	int error = 0, cnt = 0;
- 
--	if (!buf)
--		return -EINVAL;
--
- 	error = spu_acquire(ctx);
- 	if (error)
- 		return error;
-@@ -2381,7 +2363,7 @@ static ssize_t spufs_switch_log_read(struct file *file, char __user *buf,
- 				 * just return straight away */
- 				break;
- 
--			} else if (file->f_flags & O_NONBLOCK) {
-+			} else if (iocb->ki_filp->f_flags & O_NONBLOCK) {
- 				error = -EAGAIN;
- 				break;
- 
-@@ -2417,7 +2399,7 @@ static ssize_t spufs_switch_log_read(struct file *file, char __user *buf,
- 			 * partial buffer (so far) */
- 			break;
- 
--		error = copy_to_user(buf + cnt, tbuf, width);
-+		error = !copy_to_iter_full(tbuf, width, to);
- 		if (error)
- 			break;
- 		cnt += width;
-@@ -2451,7 +2433,7 @@ static __poll_t spufs_switch_log_poll(struct file *file, poll_table *wait)
- 
- static const struct file_operations spufs_switch_log_fops = {
- 	.open		= spufs_switch_log_open,
--	.read		= spufs_switch_log_read,
-+	.read_iter	= spufs_switch_log_read,
- 	.poll		= spufs_switch_log_poll,
- 	.release	= spufs_switch_log_release,
+@@ -645,7 +644,7 @@ static int mpc52xx_wdt_release(struct inode *inode, struct file *file)
+ static const struct file_operations mpc52xx_wdt_fops = {
+ 	.owner		= THIS_MODULE,
  	.llseek		= no_llseek,
-@@ -2532,7 +2514,7 @@ static int spufs_ctx_open(struct inode *inode, struct file *file)
+-	.write		= mpc52xx_wdt_write,
++	.write_iter	= mpc52xx_wdt_write,
+ 	.unlocked_ioctl = mpc52xx_wdt_ioctl,
+ 	.compat_ioctl	= compat_ptr_ioctl,
+ 	.open		= mpc52xx_wdt_open,
+diff --git a/arch/powerpc/platforms/powernv/eeh-powernv.c b/arch/powerpc/platforms/powernv/eeh-powernv.c
+index af3a5d37a149..c2a6081fed1d 100644
+--- a/arch/powerpc/platforms/powernv/eeh-powernv.c
++++ b/arch/powerpc/platforms/powernv/eeh-powernv.c
+@@ -62,11 +62,10 @@ static irqreturn_t pnv_eeh_event(int irq, void *data)
+ }
  
- static const struct file_operations spufs_ctx_fops = {
- 	.open           = spufs_ctx_open,
--	.read           = seq_read,
-+	.read_iter      = seq_read_iter,
- 	.llseek         = seq_lseek,
- 	.release        = single_release,
+ #ifdef CONFIG_DEBUG_FS
+-static ssize_t pnv_eeh_ei_write(struct file *filp,
+-				const char __user *user_buf,
+-				size_t count, loff_t *ppos)
++static ssize_t pnv_eeh_ei_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct pci_controller *hose = filp->private_data;
++	struct pci_controller *hose = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(from);
+ 	struct eeh_pe *pe;
+ 	int pe_no, type, func;
+ 	unsigned long addr, mask;
+@@ -77,7 +76,7 @@ static ssize_t pnv_eeh_ei_write(struct file *filp,
+ 		return -ENXIO;
+ 
+ 	/* Copy over argument buffer */
+-	ret = simple_write_to_buffer(buf, sizeof(buf), ppos, user_buf, count);
++	ret = simple_copy_to_iter(buf, &iocb->ki_pos, sizeof(buf), from);
+ 	if (!ret)
+ 		return -EFAULT;
+ 
+@@ -100,7 +99,7 @@ static ssize_t pnv_eeh_ei_write(struct file *filp,
+ static const struct file_operations pnv_eeh_ei_fops = {
+ 	.open	= simple_open,
+ 	.llseek	= no_llseek,
+-	.write	= pnv_eeh_ei_write,
++	.write_iter	= pnv_eeh_ei_write,
+ };
+ 
+ static int pnv_eeh_dbgfs_set(void *data, int offset, u64 val)
+diff --git a/arch/powerpc/platforms/powernv/memtrace.c b/arch/powerpc/platforms/powernv/memtrace.c
+index 877720c64515..366da300e605 100644
+--- a/arch/powerpc/platforms/powernv/memtrace.c
++++ b/arch/powerpc/platforms/powernv/memtrace.c
+@@ -37,12 +37,11 @@ static struct memtrace_entry *memtrace_array;
+ static unsigned int memtrace_array_nr;
+ 
+ 
+-static ssize_t memtrace_read(struct file *filp, char __user *ubuf,
+-			     size_t count, loff_t *ppos)
++static ssize_t memtrace_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	struct memtrace_entry *ent = filp->private_data;
++	struct memtrace_entry *ent = iocb->ki_filp->private_data;
+ 
+-	return simple_read_from_buffer(ubuf, count, ppos, ent->mem, ent->size);
++	return simple_copy_to_iter(ent->mem, &iocb->ki_pos, ent->size, to);
+ }
+ 
+ static int memtrace_mmap(struct file *filp, struct vm_area_struct *vma)
+@@ -62,7 +61,7 @@ static int memtrace_mmap(struct file *filp, struct vm_area_struct *vma)
+ 
+ static const struct file_operations memtrace_fops = {
+ 	.llseek = default_llseek,
+-	.read	= memtrace_read,
++	.read_iter = memtrace_read,
+ 	.open	= simple_open,
+ 	.mmap   = memtrace_mmap,
+ };
+diff --git a/arch/powerpc/platforms/powernv/opal-lpc.c b/arch/powerpc/platforms/powernv/opal-lpc.c
+index a16f07cdab26..e2f18ed6af17 100644
+--- a/arch/powerpc/platforms/powernv/opal-lpc.c
++++ b/arch/powerpc/platforms/powernv/opal-lpc.c
+@@ -271,6 +271,7 @@ static ssize_t lpc_debug_read(struct file *filp, char __user *ubuf,
+ 
+ 	return count;
+ }
++FOPS_READ_ITER_HELPER(lpc_debug_read);
+ 
+ static ssize_t lpc_debug_write(struct file *filp, const char __user *ubuf,
+ 			       size_t count, loff_t *ppos)
+@@ -342,10 +343,11 @@ static ssize_t lpc_debug_write(struct file *filp, const char __user *ubuf,
+ 
+ 	return count;
+ }
++FOPS_WRITE_ITER_HELPER(lpc_debug_write);
+ 
+ static const struct file_operations lpc_fops = {
+-	.read =		lpc_debug_read,
+-	.write =	lpc_debug_write,
++	.read_iter =	lpc_debug_read_iter,
++	.write_iter =	lpc_debug_write_iter,
+ 	.open =		simple_open,
+ 	.llseek =	default_llseek,
+ };
+diff --git a/arch/powerpc/platforms/powernv/opal-prd.c b/arch/powerpc/platforms/powernv/opal-prd.c
+index 24f04f20d3e8..ac760ad1e46d 100644
+--- a/arch/powerpc/platforms/powernv/opal-prd.c
++++ b/arch/powerpc/platforms/powernv/opal-prd.c
+@@ -156,10 +156,10 @@ static __poll_t opal_prd_poll(struct file *file,
+ 	return 0;
+ }
+ 
+-static ssize_t opal_prd_read(struct file *file, char __user *buf,
+-		size_t count, loff_t *ppos)
++static ssize_t opal_prd_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+ 	struct opal_prd_msg_queue_item *item;
++	size_t count = iov_iter_count(to);
+ 	unsigned long flags;
+ 	ssize_t size, err;
+ 	int rc;
+@@ -168,7 +168,7 @@ static ssize_t opal_prd_read(struct file *file, char __user *buf,
+ 	if (count < sizeof(item->msg.header))
+ 		return -EINVAL;
+ 
+-	if (*ppos)
++	if (iocb->ki_pos)
+ 		return -ESPIPE;
+ 
+ 	item = NULL;
+@@ -186,7 +186,7 @@ static ssize_t opal_prd_read(struct file *file, char __user *buf,
+ 		if (item)
+ 			break;
+ 
+-		if (file->f_flags & O_NONBLOCK)
++		if (iocb->ki_filp->f_flags & O_NONBLOCK)
+ 			return -EAGAIN;
+ 
+ 		rc = wait_event_interruptible(opal_prd_msg_wait,
+@@ -201,7 +201,7 @@ static ssize_t opal_prd_read(struct file *file, char __user *buf,
+ 		goto err_requeue;
+ 	}
+ 
+-	rc = copy_to_user(buf, &item->msg, size);
++	rc = !copy_to_iter_full(&item->msg, size, to);
+ 	if (rc) {
+ 		err = -EFAULT;
+ 		goto err_requeue;
+@@ -219,9 +219,9 @@ static ssize_t opal_prd_read(struct file *file, char __user *buf,
+ 	return err;
+ }
+ 
+-static ssize_t opal_prd_write(struct file *file, const char __user *buf,
+-		size_t count, loff_t *ppos)
++static ssize_t opal_prd_write(struct kiocb *iocb, struct iov_iter *from)
+ {
++	size_t count = iov_iter_count(from);
+ 	struct opal_prd_msg_header hdr;
+ 	struct opal_prd_msg *msg;
+ 	ssize_t size;
+@@ -233,13 +233,13 @@ static ssize_t opal_prd_write(struct file *file, const char __user *buf,
+ 		return -EINVAL;
+ 
+ 	/* grab the header */
+-	rc = copy_from_user(&hdr, buf, sizeof(hdr));
++	rc = !copy_from_iter_full(&hdr, sizeof(hdr), from);
+ 	if (rc)
+ 		return -EFAULT;
+ 
+ 	size = be16_to_cpu(hdr.size);
+ 
+-	msg = memdup_user(buf, size);
++	msg = iterdup(from, size);
+ 	if (IS_ERR(msg))
+ 		return PTR_ERR(msg);
+ 
+@@ -325,8 +325,8 @@ static const struct file_operations opal_prd_fops = {
+ 	.open		= opal_prd_open,
+ 	.mmap		= opal_prd_mmap,
+ 	.poll		= opal_prd_poll,
+-	.read		= opal_prd_read,
+-	.write		= opal_prd_write,
++	.read_iter	= opal_prd_read,
++	.write_iter	= opal_prd_write,
+ 	.unlocked_ioctl	= opal_prd_ioctl,
+ 	.release	= opal_prd_release,
+ 	.owner		= THIS_MODULE,
+diff --git a/arch/powerpc/platforms/powernv/opal-xscom.c b/arch/powerpc/platforms/powernv/opal-xscom.c
+index 748c2b97fa53..344bc747f576 100644
+--- a/arch/powerpc/platforms/powernv/opal-xscom.c
++++ b/arch/powerpc/platforms/powernv/opal-xscom.c
+@@ -84,12 +84,11 @@ struct scom_debug_entry {
+ 	char name[16];
+ };
+ 
+-static ssize_t scom_debug_read(struct file *filp, char __user *ubuf,
+-			       size_t count, loff_t *ppos)
++static ssize_t scom_debug_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	struct scom_debug_entry *ent = filp->private_data;
+-	u64 __user *ubuf64 = (u64 __user *)ubuf;
+-	loff_t off = *ppos;
++	struct scom_debug_entry *ent = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(to);
++	loff_t off = iocb->ki_pos;
+ 	ssize_t done = 0;
+ 	u64 reg, reg_base, reg_cnt, val;
+ 	int rc;
+@@ -102,25 +101,23 @@ static ssize_t scom_debug_read(struct file *filp, char __user *ubuf,
+ 	for (reg = 0; reg < reg_cnt; reg++) {
+ 		rc = opal_scom_read(ent->chip, reg_base, reg, &val);
+ 		if (!rc)
+-			rc = put_user(val, ubuf64);
++			rc = put_iter(val, to);
+ 		if (rc) {
+ 			if (!done)
+ 				done = rc;
+ 			break;
+ 		}
+-		ubuf64++;
+-		*ppos += 8;
++		iocb->ki_pos += 8;
+ 		done += 8;
+ 	}
+ 	return done;
+ }
+ 
+-static ssize_t scom_debug_write(struct file *filp, const char __user *ubuf,
+-				size_t count, loff_t *ppos)
++static ssize_t scom_debug_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct scom_debug_entry *ent = filp->private_data;
+-	u64 __user *ubuf64 = (u64 __user *)ubuf;
+-	loff_t off = *ppos;
++	struct scom_debug_entry *ent = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(from);
++	loff_t off = iocb->ki_pos;
+ 	ssize_t done = 0;
+ 	u64 reg, reg_base, reg_cnt, val;
+ 	int rc;
+@@ -131,7 +128,7 @@ static ssize_t scom_debug_write(struct file *filp, const char __user *ubuf,
+ 	reg_cnt = count >> 3;
+ 
+ 	for (reg = 0; reg < reg_cnt; reg++) {
+-		rc = get_user(val, ubuf64);
++		rc = get_iter(val, from);
+ 		if (!rc)
+ 			rc = opal_scom_write(ent->chip, reg_base, reg,  val);
+ 		if (rc) {
+@@ -139,15 +136,14 @@ static ssize_t scom_debug_write(struct file *filp, const char __user *ubuf,
+ 				done = rc;
+ 			break;
+ 		}
+-		ubuf64++;
+ 		done += 8;
+ 	}
+ 	return done;
+ }
+ 
+ static const struct file_operations scom_debug_fops = {
+-	.read =		scom_debug_read,
+-	.write =	scom_debug_write,
++	.read_iter =	scom_debug_read,
++	.write_iter =	scom_debug_write,
+ 	.open =		simple_open,
+ 	.llseek =	default_llseek,
+ };
+diff --git a/arch/powerpc/platforms/pseries/dtl.c b/arch/powerpc/platforms/pseries/dtl.c
+index 3f1cdccebc9c..3efb00703b43 100644
+--- a/arch/powerpc/platforms/pseries/dtl.c
++++ b/arch/powerpc/platforms/pseries/dtl.c
+@@ -257,17 +257,17 @@ static int dtl_file_release(struct inode *inode, struct file *filp)
+ 	return 0;
+ }
+ 
+-static ssize_t dtl_file_read(struct file *filp, char __user *buf, size_t len,
+-		loff_t *pos)
++static ssize_t dtl_file_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+ 	long int rc, n_read, n_req, read_size;
++	size_t len = iov_iter_count(to);
+ 	struct dtl *dtl;
+ 	u64 cur_idx, last_idx, i;
+ 
+ 	if ((len % sizeof(struct dtl_entry)) != 0)
+ 		return -EINVAL;
+ 
+-	dtl = filp->private_data;
++	dtl = iocb->ki_filp->private_data;
+ 
+ 	/* requested number of entries to read */
+ 	n_req = len / sizeof(struct dtl_entry);
+@@ -300,19 +300,19 @@ static ssize_t dtl_file_read(struct file *filp, char __user *buf, size_t len,
+ 	if (i + n_req > dtl->buf_entries) {
+ 		read_size = dtl->buf_entries - i;
+ 
+-		rc = copy_to_user(buf, &dtl->buf[i],
+-				read_size * sizeof(struct dtl_entry));
++		rc = !copy_to_iter_full(&dtl->buf[i],
++				read_size * sizeof(struct dtl_entry), to);
+ 		if (rc)
+ 			return -EFAULT;
+ 
+ 		i = 0;
+ 		n_req -= read_size;
+ 		n_read += read_size;
+-		buf += read_size * sizeof(struct dtl_entry);
+ 	}
+ 
+ 	/* .. and now the head */
+-	rc = copy_to_user(buf, &dtl->buf[i], n_req * sizeof(struct dtl_entry));
++	rc = !copy_to_iter_full(&dtl->buf[i], n_req * sizeof(struct dtl_entry),
++				to);
+ 	if (rc)
+ 		return -EFAULT;
+ 
+@@ -324,7 +324,7 @@ static ssize_t dtl_file_read(struct file *filp, char __user *buf, size_t len,
+ static const struct file_operations dtl_fops = {
+ 	.open		= dtl_file_open,
+ 	.release	= dtl_file_release,
+-	.read		= dtl_file_read,
++	.read_iter	= dtl_file_read,
+ 	.llseek		= no_llseek,
+ };
+ 
+diff --git a/arch/powerpc/platforms/pseries/lpar.c b/arch/powerpc/platforms/pseries/lpar.c
+index 4e9916bb03d7..2ccbcf9f295a 100644
+--- a/arch/powerpc/platforms/pseries/lpar.c
++++ b/arch/powerpc/platforms/pseries/lpar.c
+@@ -1991,19 +1991,18 @@ machine_device_initcall(pseries, reserve_vrma_context_id);
+ 
+ #ifdef CONFIG_DEBUG_FS
+ /* debugfs file interface for vpa data */
+-static ssize_t vpa_file_read(struct file *filp, char __user *buf, size_t len,
+-			      loff_t *pos)
++static ssize_t vpa_file_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	int cpu = (long)filp->private_data;
++	int cpu = (long)iocb->ki_filp->private_data;
+ 	struct lppaca *lppaca = &lppaca_of(cpu);
+ 
+-	return simple_read_from_buffer(buf, len, pos, lppaca,
+-				sizeof(struct lppaca));
++	return simple_copy_to_iter(lppaca, &iocb->ki_pos, sizeof(struct lppaca),
++					to);
+ }
+ 
+ static const struct file_operations vpa_fops = {
+ 	.open		= simple_open,
+-	.read		= vpa_file_read,
++	.read_iter	= vpa_file_read,
+ 	.llseek		= default_llseek,
+ };
+ 
+diff --git a/arch/powerpc/platforms/pseries/papr-vpd.c b/arch/powerpc/platforms/pseries/papr-vpd.c
+index c29e85db5f35..bab048029ed5 100644
+--- a/arch/powerpc/platforms/pseries/papr-vpd.c
++++ b/arch/powerpc/platforms/pseries/papr-vpd.c
+@@ -408,9 +408,9 @@ static const struct vpd_blob *papr_vpd_retrieve(const struct papr_location_code
+ 	return blob;
+ }
+ 
+-static ssize_t papr_vpd_handle_read(struct file *file, char __user *buf, size_t size, loff_t *off)
++static ssize_t papr_vpd_handle_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	const struct vpd_blob *blob = file->private_data;
++	const struct vpd_blob *blob = iocb->ki_filp->private_data;
+ 
+ 	/* bug: we should not instantiate a handle without any data attached. */
+ 	if (!vpd_blob_has_data(blob)) {
+@@ -418,7 +418,7 @@ static ssize_t papr_vpd_handle_read(struct file *file, char __user *buf, size_t
+ 		return -EIO;
+ 	}
+ 
+-	return simple_read_from_buffer(buf, size, off, blob->data, blob->len);
++	return simple_copy_to_iter(blob->data, &iocb->ki_pos, blob->len, to);
+ }
+ 
+ static int papr_vpd_handle_release(struct inode *inode, struct file *file)
+@@ -439,7 +439,7 @@ static loff_t papr_vpd_handle_seek(struct file *file, loff_t off, int whence)
+ 
+ 
+ static const struct file_operations papr_vpd_handle_ops = {
+-	.read = papr_vpd_handle_read,
++	.read_iter = papr_vpd_handle_read,
+ 	.llseek = papr_vpd_handle_seek,
+ 	.release = papr_vpd_handle_release,
  };
 -- 
 2.43.0
