@@ -1,138 +1,99 @@
-Return-Path: <linux-kernel+bounces-139711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 741D78A06BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:32:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92B7D8A06B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:29:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A55281C2218A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:32:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32A2E1F225E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:29:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE0B513BAF1;
-	Thu, 11 Apr 2024 03:32:22 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A55613BADA;
+	Thu, 11 Apr 2024 03:29:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ABFzBPDw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EFF513B5BC;
-	Thu, 11 Apr 2024 03:32:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AF821F176;
+	Thu, 11 Apr 2024 03:29:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712806342; cv=none; b=AZnf4UzZi1ajl8zEZLk211rg175Lgsajuv+x7HkrMMaeoQeh/3Ag7+rE8JMRuwiud/qiafaHdlgjJ5jkwEOx37bmZOKYwwPJjSx/zutps/kpCsohjq9Va6ShWce2+OlTg/NHnfdtUo0nSo1K+Lt/MZxluuLaBP6Arw/NHhIuI1c=
+	t=1712806161; cv=none; b=EfDx9B8/WNCUXY5kccUXtdnaRqGRu93M/ECKXXVEkhRNHIksAx16mbQHXOvl5AgXGf2fUCaT4webjnaFzEBBM+E9ZmMdfdJJmqNg7KJLs4R0drXWHmeZlI5NckZiiDicNRwrPFGijx8//ISilm6AU+JEb3AdH16OkNoURoLJpUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712806342; c=relaxed/simple;
-	bh=GheM9vxOJCWCBH+6+ieKL67ZOXjrV6PZ0d6G1co9brM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jMSjat/7QjjHiMwH7GideV273EZFbArR7Lvu3SQZNbyHWehClpnsGjejG+R8Va8/NWKpiZ0LWjaLq9z+fUk7QRXJZUrUiiSu/yQgzvl5HZNiCZNBFrnIB1zVp4BIuVdRUwHltCixVhKOUaFoFJNLhAMv1km/S6tVNaH0Dk2esXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VFQHJ2DSgz4f3k6V;
-	Thu, 11 Apr 2024 11:32:12 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id B6CF21A0572;
-	Thu, 11 Apr 2024 11:32:16 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgAX5g6+WRdmbRutJg--.8020S6;
-	Thu, 11 Apr 2024 11:32:16 +0800 (CST)
-From: Yu Kuai <yukuai1@huaweicloud.com>
-To: axboe@kernel.dk,
-	johannes.thumshirn@wdc.com
-Cc: linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	yukuai3@huawei.com,
-	yukuai1@huaweicloud.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH -next 2/2] block: add plug while submitting IO
-Date: Thu, 11 Apr 2024 11:23:49 +0800
-Message-Id: <20240411032349.3051233-3-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240411032349.3051233-1-yukuai1@huaweicloud.com>
-References: <20240411032349.3051233-1-yukuai1@huaweicloud.com>
+	s=arc-20240116; t=1712806161; c=relaxed/simple;
+	bh=cba4HFVhpgHUdpdn6qrYkmNbC0aJQbwZ0EBzpbCf9+4=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=bTM9VrZd9ML70wS2Wv2gv+xds9lDHXeZDLlgt66kKbh1we4NRAkzfwJXpk5atl6NEIpYUZg6Y9Q2L2qmIWqjE0O/KpqCwZdhUIKezSt9fCpsVYYh/dsoEFkeKahuOMa0iAxoyc+FMqry6nHc5nMPUUbrj5+NinYIyM6UTij1mBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ABFzBPDw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E330AC433F1;
+	Thu, 11 Apr 2024 03:29:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712806161;
+	bh=cba4HFVhpgHUdpdn6qrYkmNbC0aJQbwZ0EBzpbCf9+4=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=ABFzBPDw5QsEtop5NwJ2ScfXbNayKJgf5ME9pe52VcvL8lDRWMNJe8RjQHnNOaDoR
+	 YZWR4emJ2l44p4pxApZQEUq58lnolKwz9GWuWFm2BJJKI48H3iOLD9NoVljKjqt5IO
+	 07aq8iu5KbknRdD56sCjCW0OeGuAix2e2I0qluO7EaHdrmU+P4SPGkQqedzgc2CFpf
+	 MJzg4QOqQgFggoJ5FrPNcuSxZ0XirPr4eHlZylCbqec0rcFf53pMZ1+/0FchkO16IH
+	 Y4eihSz2dpevLjhyN2E0Mv3ujGx8Bz4rv+mtvvzNK/BAnjFs97SyHL1ha4xLNyHEVL
+	 NkMmn49a7o1mw==
+Message-ID: <574577121eb0b397a7a5b9aef59cd6b3.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAX5g6+WRdmbRutJg--.8020S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFW3Cw48Xr1DGr17AFW8JFb_yoW8XFy5pr
-	WY93ZxKFWUWrs2vw48XFy7GF1ftF1DWry7A3y5Canxtr1j9r4qqwn2v340va4Fkr48WrW3
-	Ar93Kr98Gw48CrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9m14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-	x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-	IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-	Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2
-	IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
-	6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
-	AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
-	s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-	0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUc6pPUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240410-mbly-olb-v1-1-335e496d7be3@bootlin.com>
+References: <20240410-mbly-olb-v1-0-335e496d7be3@bootlin.com> <20240410-mbly-olb-v1-1-335e496d7be3@bootlin.com>
+Subject: Re: [PATCH 01/11] dt-bindings: soc: mobileye: add EyeQ5 OLB system controller
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org, Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, Gregory CLEMENT <gregory.clement@bootlin.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>, =?utf-8?q?Th=C3=A9o?= Lebrun <theo.lebrun@bootlin.com>
+To: Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>, =?utf-8?q?Th=C3=A9o?= Lebrun <theo.lebrun@bootlin.com>
+Date: Wed, 10 Apr 2024 20:29:18 -0700
+User-Agent: alot/0.10
 
-From: Yu Kuai <yukuai3@huawei.com>
+Quoting Th=C3=A9o Lebrun (2024-04-10 10:12:30)
+> diff --git a/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq=
+5-olb.yaml b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-=
+olb.yaml
+> new file mode 100644
+> index 000000000000..c4e33a167fab
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.y=
+aml
+> @@ -0,0 +1,125 @@
+[..]
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 1
+> +
+> +  ranges: true
+> +
+> +patternProperties:
+> +  '^clock-controller@[0-9a-f]+$':
+> +    $ref: /schemas/clock/mobileye,eyeq5-clk.yaml#
+> +
+> +  '^reset-controller@[0-9a-f]+$':
+> +    $ref: /schemas/reset/mobileye,eyeq5-reset.yaml#
+> +
+> +  '^pinctrl@[0-9a-f]+$':
+> +    $ref: /schemas/pinctrl/mobileye,eyeq5-pinctrl.yaml#
 
-So that if caller didn't use plug, for example, __blkdev_direct_IO_simple()
-and __blkdev_direct_IO_async(), block layer can still benefit from caching
-nsec time in the plug. And if caller already use plug, then there should be
-no affect.
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-core.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/block/blk-core.c b/block/blk-core.c
-index e317d7bc0696..c833bc875a61 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -647,11 +647,13 @@ static void __submit_bio(struct bio *bio)
- static void __submit_bio_noacct(struct bio *bio)
- {
- 	struct bio_list bio_list_on_stack[2];
-+	struct blk_plug plug;
- 
- 	BUG_ON(bio->bi_next);
- 
- 	bio_list_init(&bio_list_on_stack[0]);
- 	current->bio_list = bio_list_on_stack;
-+	blk_start_plug(&plug);
- 
- 	do {
- 		struct request_queue *q = bdev_get_queue(bio->bi_bdev);
-@@ -685,19 +687,23 @@ static void __submit_bio_noacct(struct bio *bio)
- 		bio_list_merge(&bio_list_on_stack[0], &bio_list_on_stack[1]);
- 	} while ((bio = bio_list_pop(&bio_list_on_stack[0])));
- 
-+	blk_finish_plug(&plug);
- 	current->bio_list = NULL;
- }
- 
- static void __submit_bio_noacct_mq(struct bio *bio)
- {
- 	struct bio_list bio_list[2] = { };
-+	struct blk_plug plug;
- 
- 	current->bio_list = bio_list;
-+	blk_start_plug(&plug);
- 
- 	do {
- 		__submit_bio(bio);
- 	} while ((bio = bio_list_pop(&bio_list[0])));
- 
-+	blk_finish_plug(&plug);
- 	current->bio_list = NULL;
- }
- 
--- 
-2.39.2
-
+Yep, there shouldn't be subnodes for these. Instead, olb should have
+#clock-cells, #reset-cells, etc. and the driver registers auxiliary
+devices for each driver like the clk driver, reset driver, pinctrl
+driver. Then we don't need syscon or simple-mfd and random other drivers
+can't use the regmap.
 
