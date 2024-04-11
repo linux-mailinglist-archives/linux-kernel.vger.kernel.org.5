@@ -1,140 +1,119 @@
-Return-Path: <linux-kernel+bounces-141627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141628-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F1538A20D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:26:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B4C58A20DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:26:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86A591C21971
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:26:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4628B230AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:26:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3164D3A1CB;
-	Thu, 11 Apr 2024 21:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B01C438388;
+	Thu, 11 Apr 2024 21:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uoU5d5i4"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ep75+e1B"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456233716F
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A1339AF8;
+	Thu, 11 Apr 2024 21:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712870784; cv=none; b=LSItINM55COw/3Cm2maOPJhCiS1SYmtStCfJaY9G7s/prF7o0nRQC5iPjQ+UVgLhOun0wBpO7zcFOsYZuRMnZqZ/ug80oXGwiJisGRBtAv2vuIv9VdFr2IcYfT/ZvWrtrE1xZOGobdHMTkny4zRz+jKVLp6mYN/fojXcJ80nlrM=
+	t=1712870808; cv=none; b=WxPZtJMObIjdcRKd7H+LusCpwPzgiZKqX5L0KbTISeDUpnssJDyFX4aV1QeDjhsS+KDoG37ea4IAMEfwQ84BEdXOUfh+qrIWHSLACBcoBGwPAkeuCDLRqlYUSb/QMkpGCwpx1cISGYEumNPr/cRUACoVplG6fOaSql1H1AW/kFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712870784; c=relaxed/simple;
-	bh=wd5HLscLEDiELJ0ZS76nEkXx2Pqd+QH6QZ5/zGGUrh4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=jRJFoHJX6GAcatorx1g1a4CiGz6C/8X0ZZHFQ6bJafO6Zd/sA/6/xkbRNFsPu5HVUD9OT2tAYsuN4pFqfaLbQAGHx/xBh0rkkq0g7m5ktXsKtgTtpiGOR0/+lZ1Lod+Ti1eZc06kn+QvIx/mUJznqdhvM3klnx0wPDzmo8sO+Jk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uoU5d5i4; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-615372710c4so3746027b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:26:23 -0700 (PDT)
+	s=arc-20240116; t=1712870808; c=relaxed/simple;
+	bh=dTe7FkItBUZI1l41myPu0rwtwFhiq0cNM2woC0XI+Mc=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=sZN8JG8eYdbY0d3L16LF2jJur4SMML1QOCmB8uw/oFq/+kg0eTZJr8ef+9dB9nQbhBb15X868tNrrbm5+a4WRp4hJW0DRCzx2BoCXxMto/uKgXipZXLkQPTnMGMqt9mhQe6kuOBCFQCRYf5KNdsLc5/H4rVmOX+mv9jUNj2dfJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ep75+e1B; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6ed9fc77bbfso288114b3a.1;
+        Thu, 11 Apr 2024 14:26:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712870782; x=1713475582; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WdgVI9xUvckPONDhFdSvuL71fgWc1Ta050v5yu5aktg=;
-        b=uoU5d5i4dY6iLPoOw4Oao6TjLJvaGIWfMSy9DDt+HsNDtevOF1LQ4FpcavbaFTeuAq
-         MrkVWNW/ljMXPlpsJsjydtSmwabSBoRGhAqfNFG4BV0bInSiGtKOzcxEU1z0Pn2613sU
-         j3ebtJ8YWfxtZpZVfSwJF2HJnBbrXT8yx49k/MRTyCVKiE/BpI3KseTYclLXjl0liSd3
-         QwiEBuQx6qF6BZIvzNTT2Bus+8LZk53uABsJv10BX6W8es/z/eFfwWh1q20ctRjZxyTg
-         l8XHOSCQ48ltNROIIcn6eI38W95j4tv/UbPidLWDjRi2sL702aUuiCxgkfucXu3Xxayr
-         pECA==
+        d=gmail.com; s=20230601; t=1712870805; x=1713475605; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Gbf/39brftwXwA8DEazWrbnV3/FuPWeJ2MAkVbGs5+I=;
+        b=ep75+e1BoRH9qqzkgid7jyNQdsq9fmWeNPQ/PUQYupQHlFuxqzrAHGbdHuTJoqTfHy
+         hX8/XX24Py5LGkB/kMOZlxzOBbmiP8hnG0Jm1Tvmpddw4c4n4n5VhExwVUBGfO6HQTZr
+         JhWt+GNbsyYFz2vNMM29y9ifXjh+rbguZ48/9T/Ms5HVPAMusaZbIKukc6DRSz4irlDy
+         sXuYtf75ErCsyo8Wbz6beOX07Cy6QSnMb9uRnfXHSS7lxP5MfTkPJ2hBll2zz0mMBAEN
+         rm5LDwClWIyjgmUyk7CleSUQgN82cmWyye19DJo1Vsh1xAya9f/rMphZHVaA1tEgGpdX
+         zM8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712870782; x=1713475582;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WdgVI9xUvckPONDhFdSvuL71fgWc1Ta050v5yu5aktg=;
-        b=lrn8ocG/u8/qWdH5HjEEvBxoCUKin+ETDFHUoXMzC9V+Nzuee0KyUrIxUwCaJ5+HyN
-         ks5XWSJhWyBCtJy5XVstfrkScbDrrsoQaRakZffy6eFk9DnTucly2pDm+Wt2UvpYhTQ7
-         Yv35ztmV43cDyVVIjwtcqzlE3EC86mk03wqaTMAhcSSKdZEfOhYwuFJz7lgd3dadUGNl
-         ugUydqX3n6JeEoxXCw8r5zwrxOgfhNMyKtNhZp4IaGmrbUG8hVAA/y6Z6nbTFvweZPsu
-         A1ST5SHoIu2mbUJKGv+Jd1AGeP/HblQ8st7/P+tBNS8D2x09qjRdgrDLXuhZv19jbFO/
-         RUXA==
-X-Forwarded-Encrypted: i=1; AJvYcCUYcB9JuPMFyhxJAnetJcGAUZt1hPHWs6KHP4O7PQ0t725622al6RGUqxUnbVDoJyvcmFy5l2170YJJHZdRhD+GNokwGfhSs95Fpurf
-X-Gm-Message-State: AOJu0YyyY69aAkXKiz87MrQAYd+HFJDXrcbFAG1+Dxmi12GnZBUbw1Hh
-	FO8PTvlRNrlYimVV0hPHaBkEPcvNSF/rQK+FvC/OXqSzOpCdB6XwQv0VHVXYaMDdec0W09HUAHN
-	ggw==
-X-Google-Smtp-Source: AGHT+IERLT1fHmu0phRd1Cb5WaKzvHqAUsRSAXNTckY9QqvWHGzZwtnbcyq7lvIqiZ7x8IZjmTkQPM52S+A=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:ca07:0:b0:615:27b6:7624 with SMTP id
- m7-20020a0dca07000000b0061527b67624mr155166ywd.6.1712870782385; Thu, 11 Apr
- 2024 14:26:22 -0700 (PDT)
-Date: Thu, 11 Apr 2024 14:26:20 -0700
-In-Reply-To: <20240126085444.324918-24-xiong.y.zhang@linux.intel.com>
+        d=1e100.net; s=20230601; t=1712870805; x=1713475605;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gbf/39brftwXwA8DEazWrbnV3/FuPWeJ2MAkVbGs5+I=;
+        b=v1APdmi1oSw8PhJLUD19QqgeDeJ+AfirLjpdQ7Q9nQHz4kKYckA7Hn+kOJXkMwhirQ
+         8guX1XKvOfhsH5GKM95ETvdttMiYY89GFEIhkTB7AHl90vdW3lyHjIrGgvvtFiTKVe8/
+         3nSGdyGBZJNUPNq1OaEqJjrh8UExeMP+eC8JNwP5yrzY4Ok3BZe1gLCnFEshVaR+VFEL
+         iSXpR/w/NvIUiwrf3jZ2PVdDUEh39FiHbaGLEBTB1XXrdHBvQ6Aa9v7QFLU79RbFxxLS
+         KAuGQOwIJgS9KxvB4G5Pnpn6gtRAkB4bEHpNsduIKNjaKYFkNM4AqDxpMXCbL5rLADPL
+         A4nQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXlEvz8dBliCoeHgz10GqVsVWk9cGmGXsSWU7nmRQOz4vgDgPD0ESWCybi6+E88WglmPLjfFGD2YHN41wasyqvQ2nzjY7IuwCxJNvRP0dpce5O9XnepNJZTWnhviCRx0fH6wNR7
+X-Gm-Message-State: AOJu0Yya5p9NMLyua5vPWYJ6aHXJwc7u3cHOlbNrtuj1mrOmlhLTEZj3
+	8oM/4japPRRJ6mGw4N2ZcUW/zaSmSsaEVRg47I4ef7/eDoih8bcH
+X-Google-Smtp-Source: AGHT+IFEjsGMBmJN6OEXD5BFBpztYTefinZEo8eD5PTbhOvhMO1g6CNKipz396gcfmsNN60L1LKe1A==
+X-Received: by 2002:a05:6a20:de91:b0:1a3:ae12:e610 with SMTP id la17-20020a056a20de9100b001a3ae12e610mr1003741pzb.35.1712870805378;
+        Thu, 11 Apr 2024 14:26:45 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id u32-20020a056a0009a000b006eaf43bbcb5sm1614913pfg.114.2024.04.11.14.26.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 14:26:44 -0700 (PDT)
+Message-ID: <4f1d0cc5-6673-48bf-be4b-7b7978cabddb@gmail.com>
+Date: Thu, 11 Apr 2024 14:26:42 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <20240126085444.324918-24-xiong.y.zhang@linux.intel.com>
-Message-ID: <ZhhVfOhFBfOWtK8E@google.com>
-Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
- state for Intel CPU
-From: Sean Christopherson <seanjc@google.com>
-To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
-Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
-	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
-	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
-	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: Florian Fainelli <f.fainelli@gmail.com>
+Subject: Re: [PATCH 5.10 000/294] 5.10.215-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+References: <20240411095435.633465671@linuxfoundation.org>
+Content-Language: en-US
+In-Reply-To: <20240411095435.633465671@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 26, 2024, Xiong Zhang wrote:
->  static void intel_save_pmu_context(struct kvm_vcpu *vcpu)
->  {
-> +	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
-> +	struct kvm_pmc *pmc;
-> +	u32 i;
-> +
-> +	if (pmu->version != 2) {
-> +		pr_warn("only PerfMon v2 is supported for passthrough PMU");
-> +		return;
-> +	}
-> +
-> +	/* Global ctrl register is already saved at VM-exit. */
-> +	rdmsrl(MSR_CORE_PERF_GLOBAL_STATUS, pmu->global_status);
-> +	/* Clear hardware MSR_CORE_PERF_GLOBAL_STATUS MSR, if non-zero. */
-> +	if (pmu->global_status)
-> +		wrmsrl(MSR_CORE_PERF_GLOBAL_OVF_CTRL, pmu->global_status);
-> +
-> +	for (i = 0; i < pmu->nr_arch_gp_counters; i++) {
-> +		pmc = &pmu->gp_counters[i];
-> +		rdpmcl(i, pmc->counter);
-> +		rdmsrl(i + MSR_ARCH_PERFMON_EVENTSEL0, pmc->eventsel);
-> +		/*
-> +		 * Clear hardware PERFMON_EVENTSELx and its counter to avoid
-> +		 * leakage and also avoid this guest GP counter get accidentally
-> +		 * enabled during host running when host enable global ctrl.
-> +		 */
-> +		if (pmc->eventsel)
-> +			wrmsrl(MSR_ARCH_PERFMON_EVENTSEL0 + i, 0);
-> +		if (pmc->counter)
-> +			wrmsrl(MSR_IA32_PMC0 + i, 0);
-> +	}
-> +
-> +	rdmsrl(MSR_CORE_PERF_FIXED_CTR_CTRL, pmu->fixed_ctr_ctrl);
-> +	/*
-> +	 * Clear hardware FIXED_CTR_CTRL MSR to avoid information leakage and
-> +	 * also avoid these guest fixed counters get accidentially enabled
-> +	 * during host running when host enable global ctrl.
-> +	 */
-> +	if (pmu->fixed_ctr_ctrl)
-> +		wrmsrl(MSR_CORE_PERF_FIXED_CTR_CTRL, 0);
-> +	for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
-> +		pmc = &pmu->fixed_counters[i];
-> +		rdpmcl(INTEL_PMC_FIXED_RDPMC_BASE | i, pmc->counter);
-> +		if (pmc->counter)
-> +			wrmsrl(MSR_CORE_PERF_FIXED_CTR0 + i, 0);
-> +	}
+On 4/11/24 02:52, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.215 release.
+> There are 294 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.215-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-For the next RFC, please make that it includes AMD support.  Mostly because I'm
-pretty all of this code can be in common x86.  The fixed counters are ugly,
-but pmu->nr_arch_fixed_counters is guaranteed to '0' on AMD, so it's _just_ ugly,
-i.e. not functionally problematic. 
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
+
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
+
 
