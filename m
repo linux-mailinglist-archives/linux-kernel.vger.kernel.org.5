@@ -1,124 +1,385 @@
-Return-Path: <linux-kernel+bounces-140275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 288BD8A1187
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:45:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8047F8A11AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:46:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B0461C23C3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:45:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3626D286A85
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:46:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 613C7146A8D;
-	Thu, 11 Apr 2024 10:45:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63B83146D4D;
+	Thu, 11 Apr 2024 10:46:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OOEcasxU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="mxh/V2il"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7CD86BB29
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:45:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D01226BB29;
+	Thu, 11 Apr 2024 10:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712832305; cv=none; b=o2gNhf3KpMWs6bJphTewsZt2noGzuFnBq+WDo6sqRCbdBmxRoGLKo/m2F1xTovc31/98xWkKqkltD/9G/R/ThhVrVf5pzD5TW934VTcR4HBK/5dkOb/ndkWHE31eqi5eDSBF2QHsWQQoVKXx8NAZPJmWGDmXmcv0YIo7kQXC72E=
+	t=1712832376; cv=none; b=D7OjN3HeIlqG4A2rXuQqQr49E+4caGJrDGZbdmIMjPlqoWXwZIgQwd1ul2y6Yki3Q4QVq16GFCBBr0GmdG8YSDK65+fDnifNs5eJg2IQCZNAcXCHJLvNa2Qdz7MNWCZImVjVSU71EmdOnFmlGOJrysVbMPnhKOJAXhjn1hSfpps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712832305; c=relaxed/simple;
-	bh=zOZhCyofInF5tJbvL/B8olmi0NZALP0fLW9K93F807s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I+X5zPc+I4+CIFN/dE9M9w50U85Y4ad+9Q5sw5+xFCVH3CYAY4hDS2iXq3eD9zf8bt9bzS1LLAr7GVVS4frqRSFI8JvSC/gdfpyMFZjOllQnqGXJD3Ruykc71/rcsQexKhv2PwFHVYpuV/97v8KWS7uOZ2PP29xMIdgQgofgGx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OOEcasxU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86122C433C7;
-	Thu, 11 Apr 2024 10:45:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712832305;
-	bh=zOZhCyofInF5tJbvL/B8olmi0NZALP0fLW9K93F807s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OOEcasxUTg6Pr2luRZ2/mV3+jf37n8Rpxs4riV2P4Iy5kIE25//PUqixha9xn+1vj
-	 usPjbZ3z3J69PWNXoY2BOVEaGUR3mO82gtprhkca/cUMZAO7TVyXZ50C1wxWy9jBa4
-	 gy3LelbrSGfCWu+pGsY3KmGX2cashZxalVApJHIwLGl3EY1rAhCQNRwsi6W0+nF2s9
-	 P0zwq+0MKxP4EeHRdqvEfXVhZTOEAmrpsjAV3RPzsRpq7nfbauI13M8JQxGWnVAKuJ
-	 /eG4EBxk2Gw6tU0Tde8hG7lymliNPFVhZPzPoEL4Wa0r3pzsLX1iuBBcux5uUJm3T2
-	 9pQk3HWSM7nHA==
-Date: Thu, 11 Apr 2024 11:44:58 +0100
-From: Will Deacon <will@kernel.org>
-To: Marc Zyngier <maz@kernel.org>
-Cc: Ryan Roberts <ryan.roberts@arm.com>, Gavin Shan <gshan@redhat.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	catalin.marinas@arm.com, akpm@linux-foundation.org,
-	oliver.upton@linux.dev, apopple@nvidia.com, rananta@google.com,
-	mark.rutland@arm.com, v-songbaohua@oppo.com,
-	yangyicong@hisilicon.com, shahuang@redhat.com, yihyu@redhat.com,
-	shan.gavin@gmail.com
-Subject: Re: [PATCH v3 3/3] arm64: tlb: Allow range operation for
- MAX_TLBI_RANGE_PAGES
-Message-ID: <20240411104458.GA26265@willie-the-truck>
-References: <20240405035852.1532010-1-gshan@redhat.com>
- <20240405035852.1532010-4-gshan@redhat.com>
- <27718d41-32cb-4976-b50e-e9237da7aedf@arm.com>
- <86v84psisz.wl-maz@kernel.org>
+	s=arc-20240116; t=1712832376; c=relaxed/simple;
+	bh=OoYa2H46hlE4BhwqnM+waNzdjJPOC9QQSf8jKUDCvJQ=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
+	 References:In-Reply-To; b=PIV46fBL037AGkSsWPZbAHUDiqjbONsZhNGXOrPdzn3QlJ9zIWhj+dGLt62ZaTGElMQUaX5ql5J04MZryrvvhD2kyuo+w/flZehXRO8wGk0Lo46wI7dIl1wNlMwpOdaNpb9dNHpjd9W3fk8gjhc8zZJ+Awj34u1GA4oVY1poUmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=mxh/V2il; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8CB3A240002;
+	Thu, 11 Apr 2024 10:46:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712832365;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ew2ILr0DuW/o5wiH4MAXNJgc0vVAo26yBQ6uKtMhuoc=;
+	b=mxh/V2ilGwbzd+R6GSvr5YumfCUNL69/2OP5A4DsAxyGgChkB19SuANkcNvRRnaST951SK
+	U1Xpm5b4kzHKCkr+CDYzvVDmUMQ+Ihcuucw6bCBRvZBhjd+23bSMzWM30O8dxc7LyZ/F0y
+	MCX42dyKyFrcKCAFhN9cZGt76o6ky/lsDvoR3kp8DTQKK/xIPeKnvobrzUX5zCWgO7eDDe
+	ZnmPEAhL+mAx5oGNyi1MYCvhLpnthnWUdrHHru79AL+l7MgHhCyWKOr26VfDMOyaRzUeF8
+	PoFN0yQ6RkGBNL4GdTLFTlkV8WnpdSJ5Htx67STCiugM62DZAjoGROtZnFQahA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <86v84psisz.wl-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 11 Apr 2024 12:46:04 +0200
+Message-Id: <D0H8EDEDKGV9.2FT5JGT59AU8A@bootlin.com>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH 05/11] clk: eyeq: add driver
+Cc: <linux-mips@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+ <linux-gpio@vger.kernel.org>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Gregory CLEMENT"
+ <gregory.clement@bootlin.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Stephen Boyd" <sboyd@kernel.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Linus Walleij"
+ <linus.walleij@linaro.org>, "Michael Turquette" <mturquette@baylibre.com>,
+ "Philipp Zabel" <p.zabel@pengutronix.de>, "Rob Herring" <robh@kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20240410-mbly-olb-v1-0-335e496d7be3@bootlin.com>
+ <20240410-mbly-olb-v1-5-335e496d7be3@bootlin.com>
+ <daa732cb31d947c308513b535930c729.sboyd@kernel.org>
+In-Reply-To: <daa732cb31d947c308513b535930c729.sboyd@kernel.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Wed, Apr 10, 2024 at 09:50:20AM +0100, Marc Zyngier wrote:
-> On Mon, 08 Apr 2024 09:43:44 +0100,
-> Ryan Roberts <ryan.roberts@arm.com> wrote:
-> > 
-> > On 05/04/2024 04:58, Gavin Shan wrote:
-> > > MAX_TLBI_RANGE_PAGES pages is covered by SCALE#3 and NUM#31 and it's
-> > > supported now. Allow TLBI RANGE operation when the number of pages is
-> > > equal to MAX_TLBI_RANGE_PAGES in __flush_tlb_range_nosync().
-> > > 
-> > > Suggested-by: Marc Zyngier <maz@kernel.org>
-> > > Signed-off-by: Gavin Shan <gshan@redhat.com>
-> > 
-> > Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
-> > 
-> > > ---
-> > >  arch/arm64/include/asm/tlbflush.h | 4 ++--
-> > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-> > > index 243d71f7bc1f..95fbc8c05607 100644
-> > > --- a/arch/arm64/include/asm/tlbflush.h
-> > > +++ b/arch/arm64/include/asm/tlbflush.h
-> > > @@ -446,11 +446,11 @@ static inline void __flush_tlb_range_nosync(struct vm_area_struct *vma,
-> > >  	 * When not uses TLB range ops, we can handle up to
-> > >  	 * (MAX_DVM_OPS - 1) pages;
-> > >  	 * When uses TLB range ops, we can handle up to
-> > > -	 * (MAX_TLBI_RANGE_PAGES - 1) pages.
-> > > +	 * MAX_TLBI_RANGE_PAGES pages.
-> > >  	 */
-> > >  	if ((!system_supports_tlb_range() &&
-> > >  	     (end - start) >= (MAX_DVM_OPS * stride)) ||
-> > > -	    pages >= MAX_TLBI_RANGE_PAGES) {
-> > > +	    pages > MAX_TLBI_RANGE_PAGES) {
-> > 
-> > As a further enhancement, I wonder if it might be better to test:
-> > 
-> > 	pages * 4 / MAX_TLBI_RANGE_PAGES > MAX_DVM_OPS
-> > 
-> > Then add an extra loop over __flush_tlb_range_op(), like KVM does.
-> > 
-> > The math is trying to express that there are a maximum of 4 tlbi range
-> > instructions for MAX_TLBI_RANGE_PAGES pages (1 per scale) and we only need to
-> > fall back to flushing the whole mm if it could generate more than MAX_DVM_OPS ops.
-> 
-> That'd be a good enhancement indeed, although I wonder if that occurs
-> as often as we see it on the KVM side. But in any case, adding
-> consistency amongst the users of __flush_tlb_range_op() can only be
-> beneficial.
+Hello,
 
-I'll pick patches 2 & 3 up for 6.10, but feel free to send stuff on top
-if you want to tweak this.
+On Thu Apr 11, 2024 at 5:22 AM CEST, Stephen Boyd wrote:
+> Quoting Th=C3=A9o Lebrun (2024-04-10 10:12:34)
+> > diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+> > index 50af5fc7f570..1eb6e70977a3 100644
+> > --- a/drivers/clk/Kconfig
+> > +++ b/drivers/clk/Kconfig
+> > @@ -218,6 +218,17 @@ config COMMON_CLK_EN7523
+> >           This driver provides the fixed clocks and gates present on Ai=
+roha
+> >           ARM silicon.
+> > =20
+> > +config COMMON_CLK_EYEQ
+> > +       bool "Clock driver for the Mobileye EyeQ platform"
+> > +       depends on OF || COMPILE_TEST
+>
+> The OF build dependency looks useless as we have the MACH_ dependency
+> below.
 
-Will
+Indeed. I thought explicit dependency could be useful. Will remove.
+
+> > +       depends on MACH_EYEQ5 || MACH_EYEQ6H || COMPILE_TEST
+> > +       default MACH_EYEQ5 || MACH_EYEQ6H
+> > +       help
+> > +         This driver provides clocks found on Mobileye EyeQ5, EyeQ6L a=
+nd Eye6H
+> > +         SoCs. Controllers live in shared register regions called OLB.=
+ Driver
+> > +         provides read-only PLLs, derived from the main crystal clock =
+(which
+> > +         must be constant). It also exposes some divider clocks.
+> > +
+> >  config COMMON_CLK_FSL_FLEXSPI
+> >         tristate "Clock driver for FlexSPI on Layerscape SoCs"
+> >         depends on ARCH_LAYERSCAPE || COMPILE_TEST
+> > diff --git a/drivers/clk/clk-eyeq.c b/drivers/clk/clk-eyeq.c
+> > new file mode 100644
+> > index 000000000000..bb2535010ae6
+> > --- /dev/null
+> > +++ b/drivers/clk/clk-eyeq.c
+> > @@ -0,0 +1,644 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * PLL clock driver for the Mobileye EyeQ5, EyeQ6L and EyeQ6H platform=
+s.
+> > + *
+> > + * This controller handles read-only PLLs, all derived from the same m=
+ain
+> > + * crystal clock. It also exposes divider clocks, those are children t=
+o PLLs.
+> > + * Parent clock is expected to be constant. This driver's registers li=
+ve in
+> > + * a shared region called OLB. Some PLLs are initialised early by of_c=
+lk_init().
+>
+> Is OLB a different DT node? It sounds like maybe this is trying to jam a
+> driver into DT when the OLB node should be a #clock-cells node.
+
+Yes OLB is a different DT node. It looks like on EyeQ5:
+
+	olb: system-controller@e00000 {
+		compatible =3D "mobileye,eyeq5-olb", "syscon", "simple-mfd";
+		reg =3D <0 0xe00000 0x0 0x400>;
+		ranges =3D <0x0 0x0 0xe00000 0x400>;
+		#address-cells =3D <1>;
+		#size-cells =3D <1>;
+
+		reset: reset-controller@e00000 {
+			compatible =3D "mobileye,eyeq5-reset";
+			reg =3D <0x000 0x0c>, <0x200 0x34>, <0x120 0x04>;
+			reg-names =3D "d0", "d1", "d2";
+			#reset-cells =3D <2>;
+		};
+
+		clocks: clock-controller@e0002c {
+			compatible =3D "mobileye,eyeq5-clk";
+			reg =3D <0x02c 0x50>, <0x11c 0x04>;
+			reg-names =3D "plls", "ospi";
+			#clock-cells =3D <1>;
+			clocks =3D <&xtal>;
+			clock-names =3D "ref";
+		};
+
+		pinctrl: pinctrl@e000b0 {
+			compatible =3D "mobileye,eyeq5-pinctrl";
+			reg =3D <0x0b0 0x30>;
+		};
+	};
+
+Keep in mind OLB is a complex beast. On EyeQ5, it hosts something like
+150 registers, describing 20ish various hardware features. We have to
+expose registers to drivers for one-off reads/writes. One example found
+upstream: I2C speed mode register. Others will be Ethernet, eMMC DMA
+config, etc. A syscon makes sense.
+
+I2C looks like like this for example, look at mobileye,olb.
+
+	i2c@300000 {
+		compatible =3D "mobileye,eyeq5-i2c", "arm,primecell";
+		reg =3D <0x300000 0x1000>;
+		interrupt-parent =3D <&gic>;
+		interrupts =3D <GIC_SHARED 1 IRQ_TYPE_LEVEL_HIGH>;
+		clock-frequency =3D <400000>;
+		#address-cells =3D <1>;
+		#size-cells =3D <0>;
+		clocks =3D <&i2c_ser_clk>, <&i2c_clk>;
+		clock-names =3D "i2cclk", "apb_pclk";
+		mobileye,olb =3D <&olb 0>;
+	};
+
+See commits 7d4c57abb928 and 1b9a8e8af0d9:
+  i2c: nomadik: support Mobileye EyeQ5 I2C controller
+  dt-bindings: i2c: nomadik: add mobileye,eyeq5-i2c bindings and example
+
+> > +
+> > +static int eqc_probe(struct platform_device *pdev)
+> > +{
+> > +       struct device *dev =3D &pdev->dev;
+> > +       void __iomem *div_resources[EQC_MAX_DIV_COUNT];
+> > +       struct device_node *np =3D dev->of_node;
+> > +       const struct eqc_match_data *data;
+> > +       struct eqc_priv *priv =3D NULL;
+> > +       struct clk_hw *hw;
+> > +       unsigned int i;
+> > +
+> > +       data =3D device_get_match_data(dev);
+> > +       if (!data)
+> > +               return -ENODEV;
+> > +
+> > +       if (data->early_pll_count) {
+> > +               /* Device got inited early. Retrieve clock provider fro=
+m list. */
+> > +               struct eqc_priv *entry;
+> > +
+> > +               spin_lock(&eqc_list_slock);
+> > +               list_for_each_entry(entry, &eqc_list, list) {
+> > +                       if (entry->np =3D=3D np) {
+> > +                               priv =3D entry;
+> > +                               break;
+> > +                       }
+> > +               }
+> > +               spin_unlock(&eqc_list_slock);
+> > +
+> > +               if (!priv)
+> > +                       return -ENODEV;
+>
+> This can be a sub-function.
+
+Will do.
+
+[...]
+
+> > +       for (i =3D 0; i < data->pll_count; i++) {
+> > +               const struct eqc_pll *pll =3D &data->plls[i];
+> > +               unsigned long mult, div, acc;
+> > +               u32 r0, r1;
+> > +               u64 val;
+> > +               int ret;
+>
+> All variables should be declared at the start of the function. Once it
+> becomes "too heavy" you can split it up into smaller functions, that
+> again have all variables declared at the start of the function.
+
+Will avoid variables declarations at start of loops.
+
+> > +
+> > +               val =3D readq(priv->base_plls + pll->reg64);
+> > +               r0 =3D val;
+> > +               r1 =3D val >> 32;
+> > +
+> > +               ret =3D eqc_pll_parse_registers(r0, r1, &mult, &div, &a=
+cc);
+> > +               if (ret) {
+> > +                       dev_warn(dev, "failed parsing state of %s\n", p=
+ll->name);
+> > +                       priv->cells->hws[pll->index] =3D ERR_PTR(ret);
+> > +                       continue;
+> > +               }
+> > +
+> > +               hw =3D clk_hw_register_fixed_factor_with_accuracy_fwnam=
+e(dev,
+> > +                               dev->of_node, pll->name, "ref", 0, mult=
+, div, acc);
+> > +               priv->cells->hws[pll->index] =3D hw;
+> > +               if (IS_ERR(hw))
+> > +                       dev_warn(dev, "failed registering %s: %pe\n", p=
+ll->name, hw);
+> > +       }
+> > +
+> > +       BUG_ON(ARRAY_SIZE(div_resources) < data->div_count);
+>
+> Can this be a static assert instead on the arrays these are based on?
+> Put some static_assert() near the match data macros.
+
+I hesitated before sending. Will update.
+
+> > +
+> > +       for (i =3D 0; i < data->div_count; i++) {
+> > +               const struct eqc_div *div =3D &data->divs[i];
+> > +               void __iomem *base =3D NULL;
+> > +               struct clk_hw *parent;
+> > +               unsigned int j;
+> > +
+> > +               /*
+> > +                * Multiple divider clocks can request the same resourc=
+e. Store
+> > +                * resource pointers during probe(). For each divider c=
+lock,
+> > +                * check if previous clocks referenced the same resourc=
+e name.
+> > +                *
+> > +                * See EQ6HC_SOUTH_DIV_OSPI_REF and EQ6HC_SOUTH_DIV_OSP=
+I_SYS.
+> > +                */
+> > +               for (j =3D 0; j < i; j++) {
+> > +                       if (strcmp(data->divs[j].resource_name, div->re=
+source_name) =3D=3D 0) {
+> > +                               base =3D div_resources[j];
+> > +                               break;
+> > +                       }
+> > +               }
+> > +
+> > +               /* Resource is first encountered. */
+> > +               if (!base) {
+> > +                       base =3D devm_platform_ioremap_resource_byname(=
+pdev, div->resource_name);
+> > +                       if (IS_ERR(base)) {
+> > +                               dev_warn(dev, "failed to iomap resource=
+ for %s\n", div->name);
+> > +                               priv->cells->hws[div->index] =3D base;
+> > +                               continue;
+> > +                       }
+> > +               }
+>
+> I don't get this code at all. The driver should simply map the
+> resources because it knows that there's an io resource. I'll look at the
+> binding which is probably wrong and causing the driver to be written
+> this way.
+
+This is here for a single reason: EyeQ6H south OLB has two clocks that
+live in the same register:
+
+ - div-ospi-ref, reg offset 0x90, mask GENMASK(9,  8) =3D=3D 0x300.
+ - div-ospi-sys, reg offset 0x90, mask GENMASK(12, 4) =3D=3D 0x1FF0.
+
+Calling twice devm_platform_ioremap_resource_byname() with the same
+resource name gives an error. So we need to buffer resources already
+requested.
+
+If there is a simpler & better solution I'd be happy to take it.
+
+[...]
+
+> > +static void __init eqc_init(struct device_node *np)
+> > +{
+> > +       const struct eqc_match_data *data;
+> > +       unsigned int nb_clks =3D 0;
+> > +       struct eqc_priv *priv;
+> > +       unsigned int i;
+> > +       int ret;
+> > +
+> > +       data =3D of_match_node(eqc_match_table, np)->data;
+> > +
+> > +       /* No reason to early init this clock provider. Do it at probe.=
+ */
+> > +       if (data->early_pll_count =3D=3D 0)
+>
+> You can have a different match table for this function then.
+
+Ah, clever. Will do.
+
+[...]
+
+> > +       /*
+> > +        * We expect named resources if divider clocks are present.
+> > +        * Else, we only expect one resource.
+> > +        */
+>
+> Please avoid named resources. They give the false sense of hope that the
+> binding can re-order the reg property when that can't be done. Instead,
+> just index and know which index to use in the driver.
+
+It is unclear what you mean by not being able to re-order reg property?
+Are you talking about reg-names being most often defined as items const
+list and therefore cannot be reordered? Here binding declare things
+using minItems/maxItems/enum so it can be reordered, looking like:
+
+  properties:
+    reg:
+      minItems: 2
+      maxItems: 2
+    reg-names:
+      minItems: 2
+      maxItems: 2
+      items:
+        enum: [ plls, ospi ]
+
+If this is not what you are talking about then I rambled about garbage
+and I'll use indexed resources.
+
+Thanks,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
