@@ -1,235 +1,96 @@
-Return-Path: <linux-kernel+bounces-140066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140068-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B70808A0B0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:21:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDB578A0B0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:22:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D1891F23095
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:21:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 073DA1C22EEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:22:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F3D13FD85;
-	Thu, 11 Apr 2024 08:21:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54AD01422C3;
+	Thu, 11 Apr 2024 08:22:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="YLVJghjW"
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2077.outbound.protection.outlook.com [40.107.215.77])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nmohWyFi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49BA26ACC;
-	Thu, 11 Apr 2024 08:21:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.77
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712823707; cv=fail; b=UXgbvSJheg/t8DDz51CImj582/GMRZWWldG2CE8ZsNQHP29HLXuop18LEcmTPXek52mV3uanF1njgQkRZVK76Wh/JrVzBmeW2yENjaoNWDxQ2JQOWx0HqJ/KsF/VQaflQwZTP5HPrJwuCTeJZtNapZyxMgszQRKhDbqMQrFLfnQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712823707; c=relaxed/simple;
-	bh=ePahArRnZsZ32GFknuw5ZdB8AqBBeB0OWnM42QK7c50=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Oj3lmcFHpq0lUfYKq3nrSa0QIpF2ricuNDGUHlBCSAILeNm6qm5N9D1OFxinzTUTRhzqyzjpJBSON6XTImHgB/uw6rNYklR9QRX7h5ol0DSpMT0R1QK39rKbVf4dBa4mFLfz0h7ftRzNYUEiBHUfZvioH8GS9D0amz2GMjtNZfI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=YLVJghjW; arc=fail smtp.client-ip=40.107.215.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FFLY4IMkRyIU1B7Xsb1Bh4T6ReeLXtf7HEY0u+K823k/l+ALlKsFii3ytVskQwFh9oYU2R6fGMITkp4SmbEtAxo6gpTxQwxLV/kx79jfrRSW+twR5G5QyzWzrbcr8y5qbM2EpkKuaYeEx2fI/Rasw+i3vnLgIs4ltYSRo/6etSgQH9EgwewaXRI7WrULkN4tbaMl95cRyl5X7bn/MBI1SEVK2hJIZkmhguauAdQUMNkvWWGQMYOas3qCUFkuhcCOHd0OFv7IIlesJJAVCjJ2txTIKuIM8Gz3LiJJUS1PVogyYzzEcC+AJYydb8VYz8GeypahvMy8Y8o5a4tccfA6Jw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/hPcPS95zttMrz0qxfz2tjAHVxiJ4U3XtIdvYHu9DLI=;
- b=CiznLYhQOv9NUV/3TszJGSk/5UcZE/3W5gw6Z3L7w9HMmk/Y8/RRpYU8o0+H6phob+fauS0fffAoYQn6luBTFLVt4ZmOBHHBzmeaXd6psrYNspNlAHZ8/i9DT38qmBFjpMwRW1EijU9TAndJ9wO9ldZLB+gQN2JOvEDsW6IgLpD3qAof3YPU/IGJa4YsAb+J1FDFcLJCjZ8zFxQGuTWNLRIMXll7/IHCjodr1oHWGNuio73TTDywVgQtUysY6BBN5Mkw9PDwi3lb9wpE6mvzfSuL3aa9IGghRno0bU03F4y6ROknfGvYpTssi5ITNrwZzRk0r9TqSzpZf8qZMxm51Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/hPcPS95zttMrz0qxfz2tjAHVxiJ4U3XtIdvYHu9DLI=;
- b=YLVJghjWvj8T9izYxqqwWpe37h781/1xGrIykOtxaiJgVWUevcdPCbPMgAfWaqYbi4Hvldy9ZBvEQawYCogTGEdvm67hg5tkrDCTpDZhgJD4msyO2zsWLeV4rOQ/Q8PdnJ7S6d3CkNWSGxqaAW3ZX+SrVrmM+lwTW82C3wN9u688s/TwcrWSZSiX//WUy83okfnijLfYR/tbql1u/UKRACEzuko/Zki39vFhh2ZKzIGG+ncA5WyAp75kFNf3Y3zn3BDuedO/FM4Wf/8gBQcQQ4T5Z1yeP77//DbNX+vTzy/MZAGnBhjdKoz4CuvvNg/XvEdUsnSBdfFY0szPYQrG9w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SI2PR06MB5140.apcprd06.prod.outlook.com (2603:1096:4:1af::9) by
- SEYPR06MB5790.apcprd06.prod.outlook.com (2603:1096:101:b9::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.54; Thu, 11 Apr 2024 08:21:40 +0000
-Received: from SI2PR06MB5140.apcprd06.prod.outlook.com
- ([fe80::a60c:298:c201:e4a1]) by SI2PR06MB5140.apcprd06.prod.outlook.com
- ([fe80::a60c:298:c201:e4a1%3]) with mapi id 15.20.7409.053; Thu, 11 Apr 2024
- 08:21:39 +0000
-Message-ID: <da21fe55-2ffb-4c8e-9863-2f27aa18cf5c@vivo.com>
-Date: Thu, 11 Apr 2024 16:21:37 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dma-buf: add DMA_BUF_IOCTL_SYNC_PARTIAL support
-Content-Language: en-US
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Rong Qianfeng <rongqianfeng@vivo.com>, Jianqun Xu <jay.xu@rock-chips.com>,
- sumit.semwal@linaro.org, pekka.paalanen@collabora.com,
- daniel.vetter@ffwll.ch, jason@jlekstrand.net, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
- linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
-References: <20211113062222.3743909-1-jay.xu@rock-chips.com>
- <1da5cdf0-ccb8-3740-cf96-794c4d5b2eb4@amd.com>
- <3175d41a-fc44-4741-91ac-005c8f21abb8@vivo.com>
- <9e6f1f52-db49-43bb-a0c2-b0ad12c28aa1@amd.com>
- <5c7ac24c-79fa-45fc-a4fd-5b8fc77a741b@vivo.com>
- <CABdmKX1OZ9yT3YQA9e7JzKND9wfiL-hnf87Q6v9pwtnAeLHrdA@mail.gmail.com>
-From: Rong Qianfeng <11065417@vivo.com>
-In-Reply-To: <CABdmKX1OZ9yT3YQA9e7JzKND9wfiL-hnf87Q6v9pwtnAeLHrdA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2PR04CA0191.apcprd04.prod.outlook.com
- (2603:1096:4:14::29) To SI2PR06MB5140.apcprd06.prod.outlook.com
- (2603:1096:4:1af::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4C213FD9B;
+	Thu, 11 Apr 2024 08:22:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712823724; cv=none; b=fGXJbs2DL7eNmHQTio6ScLsgvosCrZetSQOcQJykJfvvcAbMecavATC6PFvw4RpfFXkLew6W92CpJjNWpfIQZVTJ4kHaHsfKp5uzQ0lpcI47O7T+gB+Z7anIHVvnrInlX3f+vJUF6E7HWYOc5mMk5/gPR/3lT+Ppptr1eBB71yI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712823724; c=relaxed/simple;
+	bh=oNEmCk3yEkGjg2fPr9n0Fw4bPVs/3syG5A/ow4aPcao=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sbfS1EhY9FBve4ELuS48kFE2IgM/fTf5aNEwavnAVE3mIZWpN4E3FS6rowLPG7Kz+1F8Bh8LCGXB1zSHu/uC/WWgC9B9tAZ4Z1dtsgBKlqhTI8sq3RbNXaUWq631nLveR9qEoDcjVv0IPvDsT2ZU3Abpoyb6sEhBmMRgSWsX2IY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nmohWyFi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE361C433F1;
+	Thu, 11 Apr 2024 08:22:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712823724;
+	bh=oNEmCk3yEkGjg2fPr9n0Fw4bPVs/3syG5A/ow4aPcao=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=nmohWyFiMYt6tYR/aq+4GN4WPU/Yo4g0Wlcyu46TRJJjpTVHxh6aR/P+GzSEx0vI/
+	 XEqj1RaYwbHZRO60gdN4N7tuDaq74woTDPBJeuVdjHD5lrU+mp1REds/H4L+fdmRmU
+	 IHh8avv0war3Au/ql8e7DzTAsxdNcTLLDRwtj3puTeKpK67K6HzcvCsYO/IMM1tPZ1
+	 EbzMVXHNV9bbBRHXWyZUw2T6G8UyducqlgsIKmgwQLHyU6wuyJrM4Yhg/gt7fy8L+l
+	 OlHpQ1A+CPgBTldyL4R2QeAWqDFLMv8rNPo5DdFLElPGXfiRseSJd1oarI4kDLQnRb
+	 +fL8itWxnMSZw==
+From: Christian Brauner <brauner@kernel.org>
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH][next] fs/direct-io: remove redundant assignment to variable retval
+Date: Thu, 11 Apr 2024 10:21:40 +0200
+Message-ID: <20240411-anheuern-statik-18a9cb9ba524@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240410162221.292485-1-colin.i.king@gmail.com>
+References: <20240410162221.292485-1-colin.i.king@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SI2PR06MB5140:EE_|SEYPR06MB5790:EE_
-X-MS-Office365-Filtering-Correlation-Id: 72f537aa-b87f-4435-924d-08dc5a006980
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ybecs4ZzUde41V0oN5ffbAyMWIO80R55gIjIYH9v8xWkJjjFnlalT+is9pyQRK685WrVDM5iteI4HKjOZuluIozu1ejDhSx5I6emLClGvGo09y38JawQMZZGWCGb3whfGA5FjGI2fgrebGRDqspD1YivSFzAKsro5cEYAJlG4flkjrMcs6A+muHuTsZDriETac58d5dnYSddO7JT0q8CY93dS3H5yfF3eoXVqPMUxzJvCNwIhj8BdUWkzFXB3mmRZQ1zpmlMD7JqSPnb15hATtlITGwV9NlL6AndpGlhecu64dwY6cB/OBfVoOsi17cSu77xsmo7Dsdh4Il6ediGQ17Xgv5hKGNvGtXri1QK6+NoFLQUlBocXe/G0OPvSBzTYRl+4Rc3yEqnnxdMSo+Qhwv3NtqGl9NHoSdSzWyBFGGLU7wKh9s4hBH+uRCqYU0hTSnCbjjjspicMCcv1L696P2fAX0ytDgAQW+Y5OKhV5OicNfq1/FSnfofifPiVqOgyMHPjptV+eLHXBoCZHzt6L1u/TXTgMYQ4KCYumwQ/5sHp04BbVq9JultB95P9xUF4kS9x3px5FsOsSdYOLskRLiATq7NVudfZxpSv0EjYBy7EMIiyI2kkZdjofsglMd3iAVcRCts/HItn9cuA8YJTak0nLVOOMNTQyKuYg1nCOisDtzxfbmuIKfUdXzYXgq4
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR06MB5140.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(376005)(52116005)(1800799015)(38350700005)(81742002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Z2dRdWpCbktTSXdDb1pFUFlsa1dybnZZeThCQk1ZeEdaNlgvYVBGb3B0WDRp?=
- =?utf-8?B?anR1QmtHQTBYNVhWUndMRTFnaUVrNWlCZWNKVWpHNmNMa0hDODhHeVEwUUdQ?=
- =?utf-8?B?L05nNFNaVDVOMTRLNUExZ21ndlR0OGdxajlRY3BWcE1SeERPTmtUSjR2aFpx?=
- =?utf-8?B?S1VoVFZlRUx2aVhvNTBYU3lhVWkvRUN2RW45WG1oNVhvdDlTOGozejQxajRJ?=
- =?utf-8?B?RzFoeXFLSEpJeGdlekFoVjNnaWhoQVJrVHUvSWY5dkJzd3JaZ0JtTmVvWS9P?=
- =?utf-8?B?RjMzUmxJa2toVjFGTVAvNk5vMDQrU2NQaUIveUMrV0FqSzhrbE5YT1hQY1JM?=
- =?utf-8?B?aUduRGtTNUdDSTVCNldEdFd1bUEwb1hleXozR3VLQ3FtakpDdVFSemxHbktv?=
- =?utf-8?B?QmRjUDY4d05FcHlrdGliWVl1a1F3R0g3Zk9EOFZBTnprb0UxSTRLWGpydG9O?=
- =?utf-8?B?SHhldERXTEZ2K1lxVE1VRDM5TGl6Rml6cjVxKzllTG4veGd0enV2eExLMUdM?=
- =?utf-8?B?TUxTa1JNMitBSEZ1L0h1NTNHQzMxZTRKVjZpb0xMU1hFOTQ4WExxT1I3NDZK?=
- =?utf-8?B?TkRZSFgvU2t4Tml3ajFUd0tGWFdtdytiU2NEcjh3c0E5Kytqc2xEakEyaGpr?=
- =?utf-8?B?NnlSYzd6dFViY3RoWHJ1QURMRWNCcUZTSksvckUycGNCVnhyaGZ2N1ZEZ3BT?=
- =?utf-8?B?eDNickJvMDkycFdTNmZOLzRYR05rc0FvMjhMMDdsaHRwdFk1d1RTU2o3dzgy?=
- =?utf-8?B?NW9RZWltYkNldFFlQlQzTEhjSXZDYWhPZE5VODFLMWo0TTI0M2dGaWt4L3pw?=
- =?utf-8?B?a1F5eFlWQU1obWl2NDJTMUFvQzQxRHNZK2NCUUtUcEFySkVucy9zamRHT0ZY?=
- =?utf-8?B?SXRUd24ycmhpRmVPSHAyVk1XSXgwWGcvbWQwV3RXMElCVmdOR2k4SEFWR0ly?=
- =?utf-8?B?Q3dWQ3NzdDIrR1crQ1hkQXQ1VCtZb3ZlVWZ3N3ZPTkMwVUVBeEdpQUJieGxs?=
- =?utf-8?B?MDhtcGhBdFlITVdqU1FaY25uYVJMeUVBM2J0ajBiNWJKV3A1bS9OSlU3aFh1?=
- =?utf-8?B?WURnMTFCR21ObUJIVXZwWFR3Wis3QTNUMjE2SlAzeTZzODJDczVpWjYrV2pW?=
- =?utf-8?B?Ni9iMFl0Ymk5akVMM1ArZTcraDlkNS9zbUhpcUMwUWM2L2ZiQXFkRHFuMzdQ?=
- =?utf-8?B?TExrZk5yTFFaVitEdjZucE5BczJFVDBHQmtFTDA5L25ibWF1RXQzdFFITEU0?=
- =?utf-8?B?OUpLcnBBN2tieW1LdGpsN0I5NHdWZStyS1p6bzFyU2Y1Sm4vZ2oxdWFwUmNU?=
- =?utf-8?B?RnAzUHlHdEhSaWkrUmhDQWdETlJjcUUrVE1RMXJWOWhoSkI4ekExVWljMkds?=
- =?utf-8?B?KzExb2tjQnBteURKYjdycGZRSEp3c0ExczcwYUwrVzJydUFkS0laeis3c1hw?=
- =?utf-8?B?d0RKV0RjUDl1RXgyMTZUNFZTMmpmNVZHNWpmbEl4SEdJb3p0Q0Q3QmM5ZlFG?=
- =?utf-8?B?dmlRTzcvWFlJL1BWa05BOEVCVGdTNXhsMUZkamQ2YkhVV05EWFBkNXVqQXl2?=
- =?utf-8?B?NWpUQ3JOei9DVTF6SGpYSFc4TS9pWmFaVTIxQzh1UjBYOTBFWHd0OHVHWFc0?=
- =?utf-8?B?ZXRQYmkya1ViTWp3VDdubVdOYWpRY1ZuUUdmcm9EMFZXVDQ3WW9keTB0R005?=
- =?utf-8?B?SmJpK1FFL3hpRy9SQ2RXTDF3RTE2Ulo3aTB6OVR0cjJRUHgyNHJGV080WUw5?=
- =?utf-8?B?c0ttN01oTTFyK1Y5T0xpR3VwVUkzZFNjWXptWnJ5YjJtTG90YU9KNkhUcWlM?=
- =?utf-8?B?OUx1Mi9WQ1hNYU1hT1JHenhZTDNUbDl0bUlMVnlhRGdZVVBiZFBDd1ZaR0hs?=
- =?utf-8?B?RHdOOUFQQkRxTllJUCtwZjhzRkJiY3dUZXZMYXpXZ0dHNmliOTZaRXVENkhL?=
- =?utf-8?B?WUtqOHN0R0I0b3pZV3ZWeU9JZUxJMjdKWFplekg4cGZHSzRiUlhuSEhMUEEr?=
- =?utf-8?B?MTNwN0RlYUE2bWcrMUxrb2NlT1lhR21LTVBOZFgyVlljT3E4WUJzSncwVlBE?=
- =?utf-8?B?aW83aUtVUkVIWm1abEJ1VkM5Z1lqaktHQUtsRXppbGJwYWF3dzFNTmc0a1h6?=
- =?utf-8?Q?HrcqIDZmktTlGj17cR2wZECy0?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 72f537aa-b87f-4435-924d-08dc5a006980
-X-MS-Exchange-CrossTenant-AuthSource: SI2PR06MB5140.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 08:21:39.7731
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k8uH721oj1dwx/gr2g/2HvfkiIP/Y2M7M9H2hZd31+r991GUgRO6sqM0uJeuce+zvZ5OjkHctwCoh98iiCofIQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB5790
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1163; i=brauner@kernel.org; h=from:subject:message-id; bh=oNEmCk3yEkGjg2fPr9n0Fw4bPVs/3syG5A/ow4aPcao=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaSJz52jXtr0f8raipPvD4hqTs7jjxS8wbDPdcfv5d/2N TW/EfcI6ChlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAbjJnxkZmnQe/D990+X1ivCN rdXa5zkNnu09FPvwu+GEMxuuNE2cncTIMLM5JX59ydqqLSfS1Ts/pJrIHvK9494YlL7IrbeW6Xs BJwA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
+On Wed, 10 Apr 2024 17:22:21 +0100, Colin Ian King wrote:
+> The variable retval is being assigned a value that is not being read,
+> it is being re-assigned later on in the function. The assignment
+> is redundant and can be removed.
+> 
+> Cleans up clang scan build warning:
+> fs/direct-io.c:1220:2: warning: Value stored to 'retval' is never
+> read [deadcode.DeadStores]
+> 
+> [...]
 
-在 2024/4/10 0:37, T.J. Mercier 写道:
-> [You don't often get email from tjmercier@google.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
->
-> On Tue, Apr 9, 2024 at 12:34 AM Rong Qianfeng <11065417@vivo.com> wrote:
->>
->> 在 2024/4/8 15:58, Christian König 写道:
->>> Am 07.04.24 um 09:50 schrieb Rong Qianfeng:
->>>> [SNIP]
->>>>> Am 13.11.21 um 07:22 schrieb Jianqun Xu:
->>>>>> Add DMA_BUF_IOCTL_SYNC_PARTIAL support for user to sync dma-buf with
->>>>>> offset and len.
->>>>> You have not given an use case for this so it is a bit hard to
->>>>> review. And from the existing use cases I don't see why this should
->>>>> be necessary.
->>>>>
->>>>> Even worse from the existing backend implementation I don't even see
->>>>> how drivers should be able to fulfill this semantics.
->>>>>
->>>>> Please explain further,
->>>>> Christian.
->>>> Here is a practical case:
->>>> The user space can allocate a large chunk of dma-buf for
->>>> self-management, used as a shared memory pool.
->>>> Small dma-buf can be allocated from this shared memory pool and
->>>> released back to it after use, thus improving the speed of dma-buf
->>>> allocation and release.
->>>> Additionally, custom functionalities such as memory statistics and
->>>> boundary checking can be implemented in the user space.
->>>> Of course, the above-mentioned functionalities require the
->>>> implementation of a partial cache sync interface.
->>> Well that is obvious, but where is the code doing that?
->>>
->>> You can't send out code without an actual user of it. That will
->>> obviously be rejected.
->>>
->>> Regards,
->>> Christian.
->> In fact, we have already used the user-level dma-buf memory pool in the
->> camera shooting scenario on the phone.
->>
->>   From the test results, The execution time of the photo shooting
->> algorithm has been reduced from 3.8s to 3s.
->>
-> For phones, the (out of tree) Android version of the system heap has a
-> page pool connected to a shrinker. That allows you to skip page
-> allocation without fully pinning the memory like you get when
-> allocating a dma-buf that's way larger than necessary. If it's for a
-> camera maybe you need physically contiguous memory, but it's also
-> possible to set that up.
->
-> https://android.googlesource.com/kernel/common/+/refs/heads/android14-6.1/drivers/dma-buf/heaps/system_heap.c#377
->
-Thank you for the reminder.
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
-The page pool of the system heap can meet the needs of most scenarios, 
-but the camera shooting scenario is quite special.
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-Why the camera shooting scenario needs to have a dma-buf memory pool in 
-the user-level？
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
-(1) The memory demand is extremely high and time requirements are 
-stringent.
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
-(2) The memory in the page pool(system heap) is easily reclaimed or used 
-by other apps.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
 
-(3) High concurrent allocation and release (with deferred-free) lead to 
-high memory usage peaks.
-
-
-Additionally, after the camera exits, the shared memory pool can be 
-released, with minimal impact.
-
-Thanks
-
-Rong Qianfeng
->> To be honest, I didn't understand your concern "...how drivers should be
->> able to fulfill this semantics." Can you please help explain it in more
->> detail?
->>
->> Thanks,
->>
->> Rong Qianfeng.
->>
->>>> Thanks
->>>> Rong Qianfeng.
+[1/1] fs/direct-io: remove redundant assignment to variable retval
+      https://git.kernel.org/vfs/vfs/c/fd0a133ef6ed
 
