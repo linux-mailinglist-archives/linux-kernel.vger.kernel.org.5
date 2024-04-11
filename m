@@ -1,71 +1,98 @@
-Return-Path: <linux-kernel+bounces-140390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09A4F8A13C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:58:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BCC98A13C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:59:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 977C31F2165D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:58:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E4DD1C2087C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:59:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3FA14A627;
-	Thu, 11 Apr 2024 11:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="M28gMKaR"
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219E314AD0E;
+	Thu, 11 Apr 2024 11:59:14 +0000 (UTC)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DDC13FD9F
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E861487C5;
+	Thu, 11 Apr 2024 11:59:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712836692; cv=none; b=ix68sF+kV80hH/SNcvTNHgVgeM5ABAmugRFXlf2l9TDp7lEqbFxb0cORfpvoCbqnj7TyOgXQAFV3TlQu5adWGUfFlLRM22HO+ueIrN++jqHLPJe5vV66WUCYluvJw1nhvCNQm2ebojRiSOgzSlddtn1jS5DpQnqAcmss+5UxO+c=
+	t=1712836753; cv=none; b=o9lL6GLkOE8WGMJLQ7xAXmdTtF4Ds/bhEn2ZsQWXT60TJcVyuZLk4rE2b1nGFtJ9yqpQS8ee4yUvtpQJoWS43owsvq2ug263eMBac4Q9QWXybEGXlIC2fhUgEHxdICVusZF4FycV5Osq24RNqBiSqWS5OdVqmyAsiD8tomoreQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712836692; c=relaxed/simple;
-	bh=IUDw7H4hboh4qzKlyLqHQAVJxJPRvKYfydLuR3Ts37I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fRb88Wo6ePy+rdfwqIGkR4PqY06XCDe6AiBQ+TTjgJDN/mfO3044uwYhYsMpOWNULFCjRJn58YE1zpe/xhV2PJCk3zHvc/NE3c6rDf3qIPvMwF6qwm4PqoS1xpfngQW/Y10xiiH/13FrxWst8iGUTO6S+IfvhnPH6UUZ8jebpRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=M28gMKaR; arc=none smtp.client-ip=115.124.30.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1712836687; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=IUDw7H4hboh4qzKlyLqHQAVJxJPRvKYfydLuR3Ts37I=;
-	b=M28gMKaRQjRB+j+hcKQ52uH7QIUGHBFAEH+wesyLnSSVE2QLw+FgZSQUwL9NubWDcYxuBj/XHsksKHDN5OB9cvPh/KRDUoKWX0JDfeBArqh17PZbcqXupkAjALlpoMN1ql1wUgTE5KT1BrnP3UCiw7a0mG+YmEb9hsowrpQ8hjI=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=guanrui.huang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W4L5Jp0_1712836685;
-Received: from localhost(mailfrom:guanrui.huang@linux.alibaba.com fp:SMTPD_---0W4L5Jp0_1712836685)
-          by smtp.aliyun-inc.com;
-          Thu, 11 Apr 2024 19:58:06 +0800
-From: Guanrui Huang <guanrui.huang@linux.alibaba.com>
-To: maz@kernel.org
-Cc: guanrui.huang@linux.alibaba.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	shannon.zhao@linux.alibaba.com,
-	tglx@linutronix.de,
-	yuzenghui@huawei.com
-Subject: Re: [PATCH v2] irqchip/gic-v3-its: Fix double free on error
-Date: Thu, 11 Apr 2024 19:58:05 +0800
-Message-Id: <20240411115805.115673-1-guanrui.huang@linux.alibaba.com>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <86r0fcrvsz.wl-maz@kernel.org>
-References: <86r0fcrvsz.wl-maz@kernel.org>
+	s=arc-20240116; t=1712836753; c=relaxed/simple;
+	bh=mxcbtMwacHbQ9ZcvU5l/I/BhZ3S5hx7ho6/3QWuNhOE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HF+h/kT70R4ZRYwObmTutrQQj/Fk0LdTX6++4014HnDCbwUUMMMKyjhctsE+QQWvaa3c9JHtYZtCSVVwfxyH1qI5/D/7NQnwufLwDfmB7PXIqRoVYxcf2FweXezfdnZpcuV3MBm7BwSnibVUJA6omigehq9WucFUV3+c84n3kso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 541031C007B; Thu, 11 Apr 2024 13:59:09 +0200 (CEST)
+Date: Thu, 11 Apr 2024 13:59:08 +0200
+From: Pavel Machek <pavel@denx.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	elfring@users.sourceforge.net
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+Subject: Re: [PATCH 6.1 00/83] 6.1.86-rc1 review
+Message-ID: <ZhfQjMUvOI1QXtDN@duo.ucw.cz>
+References: <20240411095412.671665933@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="/eMPvDfjhuKM0woD"
+Content-Disposition: inline
+In-Reply-To: <20240411095412.671665933@linuxfoundation.org>
 
-if (vm != domain->host_data)
 
-This is just a safety check. It looks unlikely happened.
-After all, vm is obtained from the args. If the caller has a bug, can we check here to avoid possible problems that may arise in later code?
+--/eMPvDfjhuKM0woD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Guanrui
+Hi!
+
+> This is the start of the stable review cycle for the 6.1.86 release.
+> There are 83 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+> Markus Elfring <elfring@users.sourceforge.net>
+>     batman-adv: Improve exception handling in batadv_throw_uevent()
+>=20
+> Markus Elfring <elfring@users.sourceforge.net>
+>     batman-adv: Return directly after a failed batadv_dat_select_candidat=
+es() in batadv_dat_forward_data()
+>
+
+Questionable cleanups, untested, do not fix any bug, please drop.
+
+Best regards,
+							Pavel
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--/eMPvDfjhuKM0woD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZhfQjAAKCRAw5/Bqldv6
+8g5fAJ9K/t4c3h9ta2prh/pIU7fEaV2NnwCgoDJAaHYiq9d6d697WY6NVZY21eU=
+=jIfc
+-----END PGP SIGNATURE-----
+
+--/eMPvDfjhuKM0woD--
 
