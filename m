@@ -1,215 +1,269 @@
-Return-Path: <linux-kernel+bounces-140632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 803228A1708
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C766D8A170F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:22:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 026A928763B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:21:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BA362883F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF4714F135;
-	Thu, 11 Apr 2024 14:21:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C72514EC4C;
+	Thu, 11 Apr 2024 14:21:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FmnqtmXm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uYT3ewHB"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2B914F100;
-	Thu, 11 Apr 2024 14:21:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5131714E2E0
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:21:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712845271; cv=none; b=K3mWneNr9+Hk5KLSLxdx22WsqBmDhzSqkvXa3NYvqqjz3bdiYzwrRDXParnKG/t6wJdkXy74SzBjg0oAEjll1IjhKvXhrerFU0YvdMFEB7W6aAZ3GQ78i1yM2G29QhxbXYWUMpzATxczrrIc/S6D5NrHgOzWcfLXM8XN/xMfi1Y=
+	t=1712845292; cv=none; b=fX/46hJbPMKLW6OkrjT8Ui+InmYDWvOelhTPZ64txuuKm8UlFC1SC7luUnZDxBoyqZIUmy8iWVkdhT8slxNCfnUzAu+RVIfiLiRANkDEtWCGTJnBTy1Yed+nDC/ZLL+JeE/uONIlXwh1J61HAOD7TBFvkjzFx5twJT+LGGGNPF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712845271; c=relaxed/simple;
-	bh=RDt5jlNMS3ucSwKcH7tgpvFGKzTFvccMBgH0b+eayeM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aVFa7a4W1PWrl+Pr4HGtwNMVimFU44ugZ6YMYZgLWhjD70EMPCOWCILrqPKlGqYcCoRTUUyDgHoeX2oiMTbXPPAEtIeZq0kWGYMGaSotvULdMLxzjiF3F/KuCWfbwJb8TJ6Ul1OqRxFhf6ucAS8IDYdN3CXekfuss9ThSpm+RVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FmnqtmXm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07DE0C2BD10;
-	Thu, 11 Apr 2024 14:21:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712845270;
-	bh=RDt5jlNMS3ucSwKcH7tgpvFGKzTFvccMBgH0b+eayeM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FmnqtmXmyodJdgHKHjF/o9qh0gQ3yPVudJEayUfxMetCRKixf7MadURZeFX5r6J9F
-	 KZO4x26OQWLGTjpaYAKntJwCodgLP+aDt47OO2TKPR3PsJ4isKj268a8KfvYJVeiUA
-	 xIhTuT3AZ/SJc2XgyX2Qg7zwimd9QfG4T/XfpBUGwOjo3qoholwNk1YikECUI0aeJ3
-	 JKccakGSkbBD0N+gV6mcpbFZG4UhhKtCGsuBFNPpBXQ3yDfgtOIize3x3mLBOom0s0
-	 clIRJHM0xExk3YKLWu8DH34d19gGTvnMgL6DQhTuO1wpS9k189rIpVZjfDsQEG42r9
-	 nLPeassxXKhKg==
-Date: Thu, 11 Apr 2024 09:21:07 -0500
-From: Rob Herring <robh@kernel.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Jim Quinlan <jim2101024@gmail.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	Will Deacon <will@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Srikanth Thokala <srikanth.thokala@intel.com>,
-	Ryder Lee <ryder.lee@mediatek.com>,
-	Jianjun Wang <jianjun.wang@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Daire McNamara <daire.mcnamara@microchip.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Shawn Lin <shawn.lin@rock-chips.com>,
-	Heiko Stuebner <heiko@sntech.de>, Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
-	Michal Simek <michal.simek@amd.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Mark Kettenis <kettenis@openbsd.org>,
-	Tom Joseph <tjoseph@cadence.com>,
-	Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, asahi@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-rockchip@lists.infradead.org
-Subject: Re: [PATCH v2 2/4] dt-bindings: PCI: mediatek,mt7621: add missing
- child node reg
-Message-ID: <20240411142107.GA3537062-robh@kernel.org>
-References: <CAMhs-H82Ymc=isxu6AX4_s1QnNpSSNt74--ED1j7JxpzE=eCRg@mail.gmail.com>
- <20240411123917.GA2180141@bhelgaas>
+	s=arc-20240116; t=1712845292; c=relaxed/simple;
+	bh=9o1G5a7nyFu2OMTsRl3yOSFq/2xlSM0DxhLs99hfRMg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RVChrIMVE+swJc4XeQTIKsLByb2ZPrOEjJu/H4EPLa/7NikC8cZkAhQAU3K3Xfkv1cl3LovZz2tMaJydBStddn7m/58k5uL3GQsskfAaP5EmJvo6GcC/yTn8sjQJ2LRq11+qpZFEtnlEKAIAgANgJrTMKcc1FlTpTWXmozQr4UE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uYT3ewHB; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso7080424276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:21:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712845289; x=1713450089; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ObHqfuz4DtEn1u/c2lql13Xvs5Y8b35kufCLUHR0kL0=;
+        b=uYT3ewHBakKS8o/I35aAGVPbvzYHC6PRdu87oV7Pex7yBvLkL47hYXD1xOHSdE0tmf
+         n12VmLL5RYcQ24V/Oy7/TwQewaiSXXoTxJlbwULu8W+a1+QZMhb3QghlKadBcvaN4dpT
+         hq43+/7ZNCxrMW6e/0m8xqMjxIZW5C62e3p0OElHhcuQPX3mYS4z5w2utnNLz1ebeMrU
+         pY/g9YgDSsHMt2MyBRvDiSAVKG6Bvo/0Vk0vMQc2jEXepLLl63SSzTuJtVoCbpNt1VWc
+         XXN/kQ8KVaRzoEFLWf/BP72VcfAiwnYIVlMA/icgr39E6Idtg4wrJlTac9N+Hhbcjyt/
+         A8EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712845289; x=1713450089;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ObHqfuz4DtEn1u/c2lql13Xvs5Y8b35kufCLUHR0kL0=;
+        b=h/1/968umdDJG0TTskrm79HxRHEalGOLSBQjqvVoy1LOq1bpApPJSg6XW+6SdMIrNA
+         7rUIuBDtAeZDvPPLOTFEKPdqhP2FnE3phaVtmL/ckdUXytHoXM4Km9L7kH5OBY5VHndS
+         6BzIvhGcgeHn7eiMrBjlHZPT73PWy8DXciqMn9f+x987bQrz6ReXfah1TIOSCfsI8eQK
+         wKeKyXFZh8uuMvr7L8frY4+hjQUVWVUJyzZKDpk1Nyt0leAKWE4ScKB6F5DxL5kPQfNs
+         YcbUYT1K4F5eL/PLCTqOJOXQVr258JO1W0yPwM72YM/oHvcdplbihWw/2kzG74wnXpAR
+         C/2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW9RhEwyutdju9X0wBYRLV/CuN8uQwuDFkHz64cj84WCO+17P40sGkUsH754HiNoS8D8OYszqllxYyL/ol3qIr9MWjVbyVHhXhVMAoe
+X-Gm-Message-State: AOJu0YzhxJITnsAaPf9k9+IFfOIqsr2rCEhDvmAr4ofLPDiCvqB29480
+	C1OgRvQjnDmjwNzMh/dQoaDONdJy+LvLcAQVtDFcChv22PGkdS7NVTZxVORzByR8zgyTNGcrP1S
+	NFQ8A5QExZgopPnwm+OUK6CF5QMJyleEQ/33e3g==
+X-Google-Smtp-Source: AGHT+IEpx91hMYt7batVtxW7oWX3NWCvy5mG9oTmnCAZfBrlmetelWfLHOoxl/QFPFN8cddEB65DYTCx6EwlNum75s0=
+X-Received: by 2002:a25:c791:0:b0:dc6:b779:7887 with SMTP id
+ w139-20020a25c791000000b00dc6b7797887mr6366554ybe.20.1712845287745; Thu, 11
+ Apr 2024 07:21:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240411123917.GA2180141@bhelgaas>
+References: <20240411-pm8xxx-vibrator-new-design-v9-0-7bf56cb92b28@quicinc.com>
+ <20240411-pm8xxx-vibrator-new-design-v9-4-7bf56cb92b28@quicinc.com>
+ <CAA8EJprJ4s-o1uPiPjRpq4nwG4cdV7K8XMhVLOQn2D=kJLiVzQ@mail.gmail.com> <c2ee9ab0-ecb2-aba2-2cc9-653f74d27396@quicinc.com>
+In-Reply-To: <c2ee9ab0-ecb2-aba2-2cc9-653f74d27396@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 11 Apr 2024 17:21:16 +0300
+Message-ID: <CAA8EJppJOQ+-XtgJZa01uqYdqXJdfNznR1OUbWua_myzUqNBUA@mail.gmail.com>
+Subject: Re: [PATCH v9 4/4] input: pm8xxx-vibrator: add new SPMI vibrator support
+To: Fenglin Wu <quic_fenglinw@quicinc.com>
+Cc: kernel@quicinc.com, Andy Gross <agross@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Apr 11, 2024 at 07:39:17AM -0500, Bjorn Helgaas wrote:
-> On Thu, Apr 11, 2024 at 08:13:18AM +0200, Sergio Paracuellos wrote:
-> > On Thu, Apr 11, 2024 at 8:01 AM Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> > > On 10/04/2024 23:26, Bjorn Helgaas wrote:
-> > > > On Wed, Apr 10, 2024 at 08:15:19PM +0200, Krzysztof Kozlowski wrote:
-> > > >> MT7621 PCI host bridge has children which apparently are also PCI host
-> > > >> bridges, at least that's what the binding suggest.
-> > > >
-> > > > What does it even mean for a PCI host bridge to have a child that is
-> > > > also a PCI host bridge?
+On Thu, 11 Apr 2024 at 16:51, Fenglin Wu <quic_fenglinw@quicinc.com> wrote:
+>
+>
+>
+> On 2024/4/11 19:02, Dmitry Baryshkov wrote:
+> > On Thu, 11 Apr 2024 at 11:32, Fenglin Wu via B4 Relay
+> > <devnull+quic_fenglinw.quicinc.com@kernel.org> wrote:
+> >>
+> >> From: Fenglin Wu <quic_fenglinw@quicinc.com>
+> >>
+> >> Add support for a new SPMI vibrator module which is very similar
+> >> to the vibrator module inside PM8916 but has a finer drive voltage
+> >> step and different output voltage range, its drive level control
+> >> is expanded across 2 registers. The vibrator module can be found
+> >> in following Qualcomm PMICs: PMI632, PM7250B, PM7325B, PM7550BA.
+> >>
+> >> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+> >> ---
+> >>   drivers/input/misc/pm8xxx-vibrator.c | 51 +++++++++++++++++++++++++++++-------
+> >>   1 file changed, 42 insertions(+), 9 deletions(-)
+> >>
+> >> diff --git a/drivers/input/misc/pm8xxx-vibrator.c b/drivers/input/misc/pm8xxx-vibrator.c
+> >> index 2959edca8eb9..35bb6f450fd2 100644
+> >> --- a/drivers/input/misc/pm8xxx-vibrator.c
+> >> +++ b/drivers/input/misc/pm8xxx-vibrator.c
+> >> @@ -12,10 +12,10 @@
+> >>   #include <linux/regmap.h>
+> >>   #include <linux/slab.h>
+> >>
+> >> -#define VIB_MAX_LEVEL_mV       (3100)
+> >> -#define VIB_MIN_LEVEL_mV       (1200)
+> >> -#define VIB_PER_STEP_mV        (100)
+> >> -#define VIB_MAX_LEVELS         (VIB_MAX_LEVEL_mV - VIB_MIN_LEVEL_mV + VIB_PER_STEP_mV)
+> >> +#define VIB_MAX_LEVEL_mV(vib)  (vib->drv2_addr ? 3544 : 3100)
+> >> +#define VIB_MIN_LEVEL_mV(vib)  (vib->drv2_addr ? 1504 : 1200)
+> >> +#define VIB_PER_STEP_mV(vib)   (vib->drv2_addr ? 8 : 100)
+> >> +#define VIB_MAX_LEVELS(vib)    (VIB_MAX_LEVEL_mV(vib) - VIB_MIN_LEVEL_mV(vib) + VIB_PER_STEP_mV(vib))
+> >>
+> >>   #define MAX_FF_SPEED           0xff
+> >>
+> >> @@ -26,6 +26,9 @@ struct pm8xxx_regs {
+> >>          unsigned int drv_offset;
+> >>          unsigned int drv_mask;
+> >>          unsigned int drv_shift;
+> >> +       unsigned int drv2_offset;
+> >> +       unsigned int drv2_mask;
+> >> +       unsigned int drv2_shift;
+> >>          unsigned int drv_en_manual_mask;
+> >>   };
+> >>
+> >> @@ -45,6 +48,18 @@ static struct pm8xxx_regs pm8916_regs = {
+> >>          .drv_en_manual_mask = 0,
+> >>   };
+> >>
+> >> +static struct pm8xxx_regs pmi632_regs = {
+> >> +       .enable_offset = 0x46,
+> >> +       .enable_mask = BIT(7),
+> >> +       .drv_offset = 0x40,
+> >> +       .drv_mask = GENMASK(7, 0),
+> >> +       .drv_shift = 0,
+> >> +       .drv2_offset = 0x41,
+> >> +       .drv2_mask = GENMASK(3, 0),
+> >> +       .drv2_shift = 8,
+> >> +       .drv_en_manual_mask = 0,
+> >> +};
+> >> +
+> >>   /**
+> >>    * struct pm8xxx_vib - structure to hold vibrator data
+> >>    * @vib_input_dev: input device supporting force feedback
+> >> @@ -53,6 +68,7 @@ static struct pm8xxx_regs pm8916_regs = {
+> >>    * @regs: registers' info
+> >>    * @enable_addr: vibrator enable register
+> >>    * @drv_addr: vibrator drive strength register
+> >> + * @drv2_addr: vibrator drive strength upper byte register
+> >>    * @speed: speed of vibration set from userland
+> >>    * @active: state of vibrator
+> >>    * @level: level of vibration to set in the chip
+> >> @@ -65,6 +81,7 @@ struct pm8xxx_vib {
+> >>          const struct pm8xxx_regs *regs;
+> >>          unsigned int enable_addr;
+> >>          unsigned int drv_addr;
+> >> +       unsigned int drv2_addr;
+> >>          int speed;
+> >>          int level;
+> >>          bool active;
+> >> @@ -82,6 +99,10 @@ static int pm8xxx_vib_set(struct pm8xxx_vib *vib, bool on)
+> >>          unsigned int val = vib->reg_vib_drv;
+> >>          const struct pm8xxx_regs *regs = vib->regs;
+> >>
+> >> +       /* vibrator without drv2_addr needs be programmed in step increments */
+> >
+> > How are these two items related? Are you using vib->drv2_addr as a
+> > marker for 'particular generation'? In such a case please use a flag
+> > instead.
+> >
+> > The rest looks good to me.
+> >
+> Are you suggesting to add a flag in pm8xxx_vib as a discriminator for
+> the new generation? I actually tried to avoid that because of this comment:
+> https://lore.kernel.org/linux-arm-msm/ZgXSBiQcBEbwF060@google.com/#t
 
-It should say 'root port' instead as the binding description correctly 
-says.
+Add a flag for level being programmed in steps or in mV. Using
+drv2_addr instead of such flag is a hack.
 
-> > > >
-> > > > Does this mean a driver binds to the "parent" host bridge, enumerates
-> > > > the PCI devices below it, and finds a "child" host bridge?
-> > 
-> > Yes, that is exactly what you can see on enumeration.
-> > 
-> > The following is a typical boot trace where all bridges has a device also below:
-> > 
-> > mt7621-pci 1e140000.pcie: host bridge /pcie@1e140000 ranges:
-> > mt7621-pci 1e140000.pcie:   No bus range found for /pcie@1e140000, using [bus 00-ff]
-> > mt7621-pci 1e140000.pcie:      MEM 0x0060000000..0x006fffffff -> 0x0060000000
-> > mt7621-pci 1e140000.pcie:       IO 0x001e160000..0x001e16ffff -> 0x0000000000
-> > mt7621-pci 1e140000.pcie: PCIE0 enabled
-> > mt7621-pci 1e140000.pcie: PCIE1 enabled
-> > mt7621-pci 1e140000.pcie: PCIE2 enabled
-> > mt7621-pci 1e140000.pcie: PCI host bridge to bus 0000:00
-> 
-> 1e140000.pcie is a host bridge.  It has some CPU-specific bus on the
-> upstream side, standard PCI (domain 0000, buses 00-ff) on the
-> downstream side.
-> 
-> > pci 0000:00:00.0: [0e8d:0801] type 01 class 0x060400
-> > pci 0000:00:01.0: [0e8d:0801] type 01 class 0x060400
-> > pci 0000:00:02.0: [0e8d:0801] type 01 class 0x060400
-> 
-> > pci 0000:01:00.0: [1b21:0611] type 00 class 0x010185
-> 
-> > pci 0000:00:00.0: PCI bridge to [bus 01-ff]
-> > pci 0000:00:00.0:   bridge window [io  0x0000-0x0fff]
-> > pci 0000:00:00.0:   bridge window [mem 0x00000000-0x000fffff]
-> > pci 0000:00:00.0:   bridge window [mem 0x00000000-0x000fffff pref]
-> 
-> 00:00.0 looks like a PCIe Root Port to bus 01.  This is not a host
-> bridge; it's just a standard PCI-to-PCI bridge with PCI on both the
-> upstream and downstream sides.
-> 
-> > pci 0000:02:00.0: [1b21:0611] type 00 class 0x010185
-> 
-> > pci 0000:00:01.0: PCI bridge to [bus 02-ff]
-> > pci 0000:00:01.0:   bridge window [io  0x0000-0x0fff]
-> > pci 0000:00:01.0:   bridge window [mem 0x00000000-0x000fffff]
-> > pci 0000:00:01.0:   bridge window [mem 0x00000000-0x000fffff pref]
-> 
-> 00:01.0 is another Root Port to bus 02.
-> 
-> > pci 0000:03:00.0: [1b21:0611] type 00 class 0x010185
-> 
-> > pci 0000:00:02.0: PCI bridge to [bus 03-ff]
-> > pci 0000:00:02.0:   bridge window [io  0x0000-0x0fff]
-> > pci 0000:00:02.0:   bridge window [mem 0x00000000-0x000fffff]
-> > pci 0000:00:02.0:   bridge window [mem 0x00000000-0x000fffff pref]
-> > pci_bus 0000:03: busn_res: [bus 03-ff] end is updated to 03
-> 
-> And 00:02.0 is a third Root Port to bus 03.
-> 
-> > pci 0000:00:00.0: PCI bridge to [bus 01]
-> > pci 0000:00:00.0:   bridge window [io  0x0000-0x0fff]
-> > pci 0000:00:00.0:   bridge window [mem 0x60000000-0x600fffff]
-> > pci 0000:00:00.0:   bridge window [mem 0x60100000-0x601fffff pref]
-> > pci 0000:00:01.0: PCI bridge to [bus 02]
-> > pci 0000:00:01.0:   bridge window [io  0x1000-0x1fff]
-> > pci 0000:00:01.0:   bridge window [mem 0x60200000-0x602fffff]
-> > pci 0000:00:01.0:   bridge window [mem 0x60300000-0x603fffff pref]
-> > pci 0000:00:02.0: PCI bridge to [bus 03]
-> > pci 0000:00:02.0:   bridge window [io  0x2000-0x2fff]
-> > pci 0000:00:02.0:   bridge window [mem 0x60400000-0x604fffff]
-> > 
-> > > I think the question should be towards Mediatek folks. I don't know what
-> > > this hardware is exactly, just looks like pci-pci-bridge. The driver
-> > > calls the children host bridges as "ports".
-> > 
-> > You can see the topology here in my first driver submit cover letter
-> > message [0].
-> > 
-> >  [0]: https://lore.kernel.org/all/CAMhs-H-BA+KzEwuDPzcmrDPdgJBFA2XdYTBvT4R4MEOUB=WQ1g@mail.gmail.com/t/
-> 
-> Nothing unusual here, this looks like the standard PCIe topology.
-> 
-> What *might* be unusual is describing the Root Ports in DT.  Since
-> they are standard PCI devices, they shouldn't need DT description
-> unless there's some unusual power/clock/reset control or something
-> that is not discoverable via PCI enumeration.
+>
+> >> +       if (!vib->drv2_addr)
+> >> +               vib->level /= VIB_PER_STEP_mV(vib);
+> >> +
+> >>          if (on)
+> >>                  val |= (vib->level << regs->drv_shift) & regs->drv_mask;
+> >>          else
+> >> @@ -93,6 +114,17 @@ static int pm8xxx_vib_set(struct pm8xxx_vib *vib, bool on)
+> >>
+> >>          vib->reg_vib_drv = val;
+> >>
+> >> +       if (regs->drv2_mask) {
+> >> +               if (on)
+> >> +                       val = (vib->level << regs->drv2_shift) & regs->drv2_mask;
+> >> +               else
+> >> +                       val = 0;
+> >> +
+> >> +               rc = regmap_write_bits(vib->regmap, vib->drv2_addr, regs->drv2_mask, val);
+> >> +               if (rc < 0)
+> >> +                       return rc;
+> >> +       }
+> >> +
+> >>          if (regs->enable_mask)
+> >>                  rc = regmap_update_bits(vib->regmap, vib->enable_addr,
+> >>                                          regs->enable_mask, on ? regs->enable_mask : 0);
+> >> @@ -115,17 +147,16 @@ static void pm8xxx_work_handler(struct work_struct *work)
+> >>                  return;
+> >>
+> >>          /*
+> >> -        * pmic vibrator supports voltage ranges from 1.2 to 3.1V, so
+> >> +        * pmic vibrator supports voltage ranges from MIN_LEVEL to MAX_LEVEL, so
+> >>           * scale the level to fit into these ranges.
+> >>           */
+> >>          if (vib->speed) {
+> >>                  vib->active = true;
+> >> -               vib->level = ((VIB_MAX_LEVELS * vib->speed) / MAX_FF_SPEED) +
+> >> -                                               VIB_MIN_LEVEL_mV;
+> >> -               vib->level /= VIB_PER_STEP_mV;
+> >> +               vib->level = VIB_MIN_LEVEL_mV(vib);
+> >> +               vib->level += mult_frac(VIB_MAX_LEVELS(vib), vib->speed, MAX_FF_SPEED);
+> >>          } else {
+> >>                  vib->active = false;
+> >> -               vib->level = VIB_MIN_LEVEL_mV / VIB_PER_STEP_mV;
+> >> +               vib->level = VIB_MIN_LEVEL_mV(vib);
+> >>          }
+> >>
+> >>          pm8xxx_vib_set(vib, vib->active);
+> >> @@ -203,6 +234,7 @@ static int pm8xxx_vib_probe(struct platform_device *pdev)
+> >>
+> >>          vib->enable_addr = reg_base + regs->enable_offset;
+> >>          vib->drv_addr = reg_base + regs->drv_offset;
+> >> +       vib->drv2_addr = reg_base + regs->drv2_offset;
+> >>
+> >>          /* operate in manual mode */
+> >>          error = regmap_read(vib->regmap, vib->drv_addr, &val);
+> >> @@ -257,6 +289,7 @@ static const struct of_device_id pm8xxx_vib_id_table[] = {
+> >>          { .compatible = "qcom,pm8058-vib", .data = &pm8058_regs },
+> >>          { .compatible = "qcom,pm8921-vib", .data = &pm8058_regs },
+> >>          { .compatible = "qcom,pm8916-vib", .data = &pm8916_regs },
+> >> +       { .compatible = "qcom,pmi632-vib", .data = &pmi632_regs },
+> >>          { }
+> >>   };
+> >>   MODULE_DEVICE_TABLE(of, pm8xxx_vib_id_table);
+> >>
+> >> --
+> >> 2.25.1
+> >>
+> >>
+> >
+> >
 
-It's only unusual because typically there's only 1 RP per host bridge 
-and properties which really apply to the RP get stuck in the host bridge 
-node because we don't have a RP node. An example is perst-gpios. That's 
-not a property of the RP either, but the RP is the upstream side of a 
-slot and we often don't have a node for the device either.
 
-Rob
+
+-- 
+With best wishes
+Dmitry
 
