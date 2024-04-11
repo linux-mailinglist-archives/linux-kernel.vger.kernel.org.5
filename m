@@ -1,119 +1,154 @@
-Return-Path: <linux-kernel+bounces-139920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A951B8A0927
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:07:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93BF48A0914
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:05:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 495F21F21E09
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:07:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22EC61F2207C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3784C13E8A3;
-	Thu, 11 Apr 2024 07:06:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA5713DDB0;
+	Thu, 11 Apr 2024 07:05:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DviqHZI4"
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="nCoMyMQq";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lWfIK3An"
+Received: from wfhigh4-smtp.messagingengine.com (wfhigh4-smtp.messagingengine.com [64.147.123.155])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BEF013E88B;
-	Thu, 11 Apr 2024 07:06:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F87D13D63E;
+	Thu, 11 Apr 2024 07:05:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712819191; cv=none; b=dPFa7jpN+o9Z1iiJYv7Pp4TdyyHxtrY4y3kXrGVng173lhEDqQulVejGubXYK7RRgjniwk+ofoYCFKsj9lYZRTGozulJWFtZn8PYqMvt7yE+Ljw+7ORkd5wv9lDqop8HcFtteAgtmvdZ4xwgRBc3lAcBBZwaDUH30Y11peQQywk=
+	t=1712819119; cv=none; b=Kl2WThw8PP2B1X7XJ7sD9/UmUSv3qT444bpa2v7AeVFdHma51Qe+5NFPOhmqMqisra0iCoXIF5ucFG3UdTzbSd1eJiX5kgRjEe2mrkrqO6y/ouKbSfHuoZ4SnTxt8eMi633vrmNfETV/3kTtxCWI1dKEbLkuF6XUCAclJoRuswY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712819191; c=relaxed/simple;
-	bh=m8UmET64JFRSVNpBc2wrAPbmY40xINLq85Nvqqp+9Sw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Gqu9ifViuMd3TqmcEzTmz/I6bZIuEp/rckugzEXq7/LL7Q5EniQB+c53rqUT3gwnamfpSzNotTj5rkN6f2DinhAXuOTuB7H030KBiaxopQQFl2k/etQRXVdZiKEwA0mIB9kH149lqfU3GQYCClJiEL4/ACSqdbGmb4shckkfjKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DviqHZI4; arc=none smtp.client-ip=209.85.160.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-221e1910c3bso4234262fac.1;
-        Thu, 11 Apr 2024 00:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712819189; x=1713423989; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n7qId9+jfJUCqQ/SkIwlhCGmFKyY/JbOZZwyRJiXokA=;
-        b=DviqHZI4YOOUQydkZihP6KbVgZqrkq+0QWS/gFexn7WKaE70rH8rp5r5dkKsuhZV30
-         HTyR7qqSFP8h7yfZkTGHzqpHNDBx8HrL1F6ZNp40f7WJ/APvllmC4gi2oxaSittMDm2F
-         c7bEyC15Rx8jqvvwr3J9w1wxW4PNDEgjT09ysQVU34oPgrzzUdaCwAwKMfgzItzBMgCt
-         eIO+lW4Cx08YOSJPeL8CBkjY2qngbSJKJDI5sgE2+jVwHK8Zwu3+/THAnjT07XWLo1gF
-         HHvUS1sYrTL33IOsaq89kKVXrVeLzXqqfSKY6qNhDPFw3NWPnqFLKmU1XyJV9aXu+8F0
-         golQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712819189; x=1713423989;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n7qId9+jfJUCqQ/SkIwlhCGmFKyY/JbOZZwyRJiXokA=;
-        b=W1ofQdhp0bK1sB2LSR2uIxMiP9xAoAlQxd4dPLzVfGq5khiXYJEq9WrpelNUxxlDYz
-         hzNqtGHy7eCAXKtu/QMUNqv68hoBR9l/l4P4eXmZoxnZDB/G16w0qeLj6IOIwOE7Yb+s
-         9oY8X4u3po5P6onLTbrDBTH4ezUx6SIcQcBYT62BQdG6kZJKN7E3DyZEDELf1pCrZ1aS
-         dTznqvJK4hif9323zJ/jfuVY/8eIVlRZddavWgqb1oC9Za60yKFc7Qs2C4BVNRTzVHrz
-         Xt/3vSe7viGUq+ocXJQjh8V5JVK/XF4TiLURId3iBVvZ/hjWvhVcSFWsqOnhIRu2uQYN
-         u6Dg==
-X-Forwarded-Encrypted: i=1; AJvYcCUckgMwxGQxwWWacPlToDBwrA6i/IPmRMZl7KEhJ71Exob3XYEV9W9JcpsRjlpsXRbXBtGKK/9zlwykLcS9r8p53x4QWWra+gSx6AuQ
-X-Gm-Message-State: AOJu0YyoqYjpXW6lXUo9lMP7YpNnCLvbFW57Q9rbripgcDubddY7UvsS
-	ExjdpPfusbawdr4tB1GYXUblW0sy/zfaDvrRXMYwxSN/KXpJFMD3RSrPB6Cl
-X-Google-Smtp-Source: AGHT+IH0ufYnSSqXI+3+cHDYLrOjh+LfQGRK7nqfBqX7ShaT9xZUS894U3/ZPhM80gBQJQyo0T2rAg==
-X-Received: by 2002:a05:6870:d184:b0:22e:c8ee:9307 with SMTP id a4-20020a056870d18400b0022ec8ee9307mr5437450oac.29.1712819189115;
-        Thu, 11 Apr 2024 00:06:29 -0700 (PDT)
-Received: from d.wok.cipunited.com ([104.28.213.200])
-        by smtp.gmail.com with ESMTPSA id g5-20020a056a0023c500b006e6be006637sm647402pfc.135.2024.04.11.00.06.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 00:06:28 -0700 (PDT)
-From: David Yang <mmyangfl@gmail.com>
-To: linux-clk@vger.kernel.org
-Cc: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	David Yang <mmyangfl@gmail.com>
-Subject: [PATCH v8 04/13] clk: hisilicon: Remove hisi_crg_funcs
-Date: Thu, 11 Apr 2024 15:04:49 +0800
-Message-ID: <20240411070503.38093-6-mmyangfl@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240411070503.38093-2-mmyangfl@gmail.com>
-References: <20240411070503.38093-2-mmyangfl@gmail.com>
+	s=arc-20240116; t=1712819119; c=relaxed/simple;
+	bh=0nQ1s5nwgfAOp/8qHUz15n9xgeRuXdGY6luDYyMefqk=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=SgtqWAFjVotZsisBBBfoqmekfkGBsqtz+qnLJy0iDzgvZGU1Zb4YwdHHuLW5eO4mxaDGRHWhfZLd7yVHN+5Q2udrlbM3OAxWnoBht3zGla1U4W0tjQi6U3+bnaXlLu/nhKyGfp/1SjAhNggq1aRXAuekmNJhmVnGtqcdtpxagqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=nCoMyMQq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lWfIK3An; arc=none smtp.client-ip=64.147.123.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id B7F8C18000E8;
+	Thu, 11 Apr 2024 03:05:13 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 11 Apr 2024 03:05:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1712819113;
+	 x=1712905513; bh=0R8ETRF6202lFso/GqWWlr/9xraGDGSFm0XJFifGRw0=; b=
+	nCoMyMQq0XWmXVKUNWJxBDvPSDAVJhd0HJr+9THx5qllv2piGTza6F6vc0lb7+Hh
+	NOcfPv8+FkB5U1c1Xp2Zef/C1oRsybJz7Fue4j2TCCCtxTJxLW/Fr0XLziS+ofnM
+	DzGqvPlcm5J4JgeC6ezccDjj1BYHUrudxEZbeTmBhoeUoLWrSfUTHsfylwbHu4cY
+	CzlEXOCrFHrlqdYXYWBxTkjtoxjPTakGnaQHpq/lVoTof2OHQqzL0vbBxIVO1JXH
+	0W2QsGe4bXf+u5q89ynFY4hljhg+ovqv8qKunly5D8CeW9RCLQjcTTPEb6+vQVWP
+	ssARpsDZVMLTWg+Y3x3kxA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712819113; x=
+	1712905513; bh=0R8ETRF6202lFso/GqWWlr/9xraGDGSFm0XJFifGRw0=; b=l
+	WfIK3Ani950kaPDZ76durVahYSqY9YXccfZ2GtEHt2QMNiQl0QzqpBZtsNg8La4O
+	hrVE/UO8tDSkCcXHqHdZUvW+ku4yLwCUIskbeGS8qOCh7u3KWiEfFRffaruRiDVR
+	CnEZKM17Zut8zhk61exiVcY66tEXYfDRT9Qt36uaFI/AWC2oHx3ag0IavcbfpMGU
+	53jKQqtJk4FYs/7uwI9IEYT0F5wFXaCcWFxYbQ4ovjMgikfEa/MJwpYOsTR10vTU
+	Yqb+nPD8aYCoRdNben2Ketdmx2W1FdeI253ZWdiUt1FswIpP9j930vxPUnSz7Cj+
+	YsI3n40oan7Oc+ZN9dBRQ==
+X-ME-Sender: <xms:qIsXZvxMzFs5hCeZ7qXfi1DutU_SrF5gY3brmqWyVO2mNissf6b9gg>
+    <xme:qIsXZnRLbWscdvivXT060IG7Q4KEyYhtxSloItLQd_onIH0KibgRXHHryDdVo5RQT
+    uyNXmTi2InWcOsT-x8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehjedguddufecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrf
+    grthhtvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudek
+    tdfgjeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:qIsXZpWwow1-0VAoJat2Ec6LvVrv9B7RUkDR4Gd8unFGacMVlWY_ZA>
+    <xmx:qIsXZph5lyMdDC90tD9tXDJG_Iyfj7O8dQn0uldYyW2VopR-BHw8Rw>
+    <xmx:qIsXZhAaIWNvLUbsVUuEaU00lJNJPyrac_BMgayK57ZmQYmP2wvAYQ>
+    <xmx:qIsXZiIVKVqs2W0zkVASfInAWs5AJ_RzZvAcj3v1WngXbbtDqe8DDw>
+    <xmx:qYsXZisG0CYvxNoLsrKIzPiqrX8pCxuMrb75Al7-PoYIXvOdoy5-69JC>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 18C03B60092; Thu, 11 Apr 2024 03:05:12 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <87be83da-6102-483d-b1dc-a77eecc9f780@app.fastmail.com>
+In-Reply-To: <20240410153212.127477-1-adrian.hunter@intel.com>
+References: <20240410153212.127477-1-adrian.hunter@intel.com>
+Date: Thu, 11 Apr 2024 09:04:50 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Adrian Hunter" <adrian.hunter@intel.com>,
+ "Thomas Gleixner" <tglx@linutronix.de>
+Cc: "Naresh Kamboju" <naresh.kamboju@linaro.org>,
+ "Michael Ellerman" <mpe@ellerman.id.au>,
+ "Nicholas Piggin" <npiggin@gmail.com>,
+ "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ "Heiko Carstens" <hca@linux.ibm.com>,
+ "Vasily Gorbik" <gor@linux.ibm.com>,
+ "Alexander Gordeev" <agordeev@linux.ibm.com>,
+ "Christian Borntraeger" <borntraeger@linux.ibm.com>,
+ "Sven Schnelle" <svens@linux.ibm.com>, "Ingo Molnar" <mingo@redhat.com>,
+ "Borislav Petkov" <bp@alien8.de>,
+ "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, "Andy Lutomirski" <luto@kernel.org>,
+ "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
+ "John Stultz" <jstultz@google.com>, "Stephen Boyd" <sboyd@kernel.org>,
+ "Peter Zijlstra" <peterz@infradead.org>,
+ "Randy Dunlap" <rdunlap@infradead.org>,
+ "Bjorn Helgaas" <bhelgaas@google.com>,
+ "Anna-Maria Gleixner" <anna-maria@linutronix.de>,
+ linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ linux-s390@vger.kernel.org
+Subject: Re: [PATCH] bug: Fix no-return-statement warning with !CONFIG_BUG
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-After refactor, no one use hisi_crg_funcs.
+On Wed, Apr 10, 2024, at 17:32, Adrian Hunter wrote:
+> BUG() does not return, and arch implementations of BUG() use unreachab=
+le()
+> or other non-returning code. However with !CONFIG_BUG, the default
+> implementation is often used instead, and that does not do that. x86 a=
+lways
+> uses its own implementation, but powerpc with !CONFIG_BUG gives a build
+> error:
+>
+>   kernel/time/timekeeping.c: In function =E2=80=98timekeeping_debug_ge=
+t_ns=E2=80=99:
+>   kernel/time/timekeeping.c:286:1: error: no return statement in funct=
+ion
+>   returning non-void [-Werror=3Dreturn-type]
+>
+> Add unreachable() to default !CONFIG_BUG BUG() implementation.
 
-Signed-off-by: David Yang <mmyangfl@gmail.com>
----
- drivers/clk/hisilicon/crg.h | 6 ------
- 1 file changed, 6 deletions(-)
+I'm a bit worried about this patch, since we have had problems
+with unreachable() inside of BUG() in the past, and as far as I
+can remember, the current version was the only one that
+actually did the right thing on all compilers.
 
-diff --git a/drivers/clk/hisilicon/crg.h b/drivers/clk/hisilicon/crg.h
-index bd8e76b1f6d7..db2324309d41 100644
---- a/drivers/clk/hisilicon/crg.h
-+++ b/drivers/clk/hisilicon/crg.h
-@@ -11,15 +11,9 @@
- struct hisi_clock_data;
- struct hisi_reset_controller;
- 
--struct hisi_crg_funcs {
--	struct hisi_clock_data*	(*register_clks)(struct platform_device *pdev);
--	void (*unregister_clks)(struct platform_device *pdev);
--};
--
- struct hisi_crg_dev {
- 	struct hisi_clock_data *clk_data;
- 	struct hisi_reset_controller *rstc;
--	const struct hisi_crg_funcs *funcs;
- };
- 
- /* helper functions for platform driver */
--- 
-2.43.0
+One problem with an unreachable() annotation here is that if
+a compiler misanalyses the endless loop, it can decide to
+throw out the entire code path leading up to it and just
+run into undefined behavior instead of printing a BUG()
+message.
 
+Do you know which compiler version show the warning above?
+
+     Arnd
 
