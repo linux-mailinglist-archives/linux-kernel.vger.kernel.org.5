@@ -1,128 +1,124 @@
-Return-Path: <linux-kernel+bounces-141672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 886BF8A21CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:37:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94AC78A21D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:40:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4648D2853A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:37:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B5151F2404E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:40:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7458846449;
-	Thu, 11 Apr 2024 22:37:46 +0000 (UTC)
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9467147A73;
+	Thu, 11 Apr 2024 22:40:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="HrE7Vx3V"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9FC205E00;
-	Thu, 11 Apr 2024 22:37:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B3AD46439
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 22:40:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712875066; cv=none; b=GTWl7ZQ9GXhtY1lBTe9bZ6sM5jLdOtsBbqYvrl7xcWmmUErFjrceCmH7gXdkWg/iv7bUqIwwUHATlIESJ8hZd14CgpNSE9qIccIVvRKYE9J9mdMfhTf6CtpKitNSV9j2Q5zExuhdgoaMr/MLr10MlhV24MhOny9DJt2sBlu6a4Q=
+	t=1712875206; cv=none; b=glWRbqdHZ8utqffc4p87/OeK82eKmvWIDHK4CFWB1CVJJ5PqVmLdhcHOFmlPHgB9DK/YnCNaUtAlNjavvDkc1fXasM6KtDKFARPaCGJIl+Pe6K6sghWzYmjQ1hGfMfGk7zzMrs1090ujkdG8I/aVCoGAn8avF6QTP2EAc+gxEs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712875066; c=relaxed/simple;
-	bh=0nns8Ff4F6D/hiksCnhah+ogGWHAC7v/9Z1x3syG47o=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=iQ15o0gJalCwcaDOsWf9lhSLS2ViY9DbgzzAVvgAV0MPRNt5PWFwu3Us97wA53eehgNlIidMolDwCx50bYoR9AU168MGfXbiSJbLFmOHVRSRG4PpGgs9dSkl+pOBPsXncJlTVHiasm6n0a/kzkSWqTcyDAyUnbVk68tBrW49sZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e50a04c317so2222855ad.1;
-        Thu, 11 Apr 2024 15:37:44 -0700 (PDT)
+	s=arc-20240116; t=1712875206; c=relaxed/simple;
+	bh=S4TnsFcjuXgA9nuQRAvIeS3/zSNBm8/9BgUmS0MLmqs=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=UDs6NQGfQBiHPsXW+xk/7ZEeLejbARx57vJ8naN6C2NSShLm5ueR3yoQihpo1vLEaPnn1XI8LoNKJ0yPiLpyQjlYAonuRx6b8dzF8A5q70AepxVcFVgGrY1jqQpoMifydUx4p1s/meNdSfWdfD3tttheAuQ7ozvJO7+arMk2I9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=HrE7Vx3V; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-516ab4b3251so388483e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:40:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1712875203; x=1713480003; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S4TnsFcjuXgA9nuQRAvIeS3/zSNBm8/9BgUmS0MLmqs=;
+        b=HrE7Vx3VsjO9zx09zpOJKe5SAZpjbJiQlry9KLYoRT4w8RbuXZeMwwSh/XEXQESIck
+         gKMtNsMOwu9skWe5ekfDSLBm9kAKGi6YBVIC3zq9r8w2dIOlyjPm54EOXt6ohzfsymWF
+         cDzSb8jCYm4lcNa8gKha+9ObHZf9RrEPBm+D1TdrFVFbU1vkRKRrbxomgI18JDI02dXL
+         cnJEIiUlTz6UgXyGQUrkOXv+UjTQZKKbD9r7+S62qMAbE7sw33tjxBw+CrspLAqlSGlZ
+         MxDn6xfZu/vVjV2ou24iQm57Z6ry3iRc/F8pO+WVLF7OOEwOoFiggiVktAhIxaqG3Nwf
+         ilHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712875064; x=1713479864;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b2bA0Klb+Banv4xhLIqQoUZ2zEzeFimrSjJDvif4SFE=;
-        b=UhxNZ09x3vF3B1GVYcHiEsWADZACtdSzM2ng/gS0a+Cdhoz4OUjbFr94BCK1VriFNs
-         OakO+DnKFZVLF60Mlu+PQYdUhuN81e+JsbDvRZDsD7VmuTvRV0AnmZOqm5VX4dSvBJWH
-         OxpSLVQWLVMAXng+LlG6M06/zOMFCod+akuNRMmiqcCEU0ll4Cds0XEJDXgiVKCb6DcN
-         27LWa4yPqFUbzMps5jMJd/k9hz2GVZ4gb9oJvTqpcHMKyDJT+syufxT6CNH/ixGmb0pe
-         JvCUTbuaSA7lyj6wTptnDqMsgQAWVyHcwh8iZXf6vX8B+hUZdqpRCpWsocUgViI8/9gc
-         nx6g==
-X-Forwarded-Encrypted: i=1; AJvYcCV1ZA8mmKPcbDr0PMXhLL4oaYru2XtWJz4CuuV+hMOPNQz4VSTGdj/uG9N+QlGmxvzU71FZ+xYgORv6+1EeIgoiT2WDCnLmiJrbrjVVe0nsAWJDyzIihgYMcoIVi+mzsUPNDtxcFo8Ojjip
-X-Gm-Message-State: AOJu0Yxl8QNR0Ejn5fwd66mzgxh1vKUAu4z+7VdjK3TpgxparGZE/B8T
-	DoXHClhiXx6WfYSBsyyAPUdLA6OULNw1i0g0yvDXrT+V5amprBnTF+b1+w==
-X-Google-Smtp-Source: AGHT+IGk46rx9QRNj2LvIO8tDcGGIBL3hf6CZAFhV/H+mOG1a4Az7AnbKinIcd+Rh9KZ52dEDnbxZw==
-X-Received: by 2002:a17:902:eacd:b0:1e2:23b9:eb24 with SMTP id p13-20020a170902eacd00b001e223b9eb24mr781671pld.33.1712875063994;
-        Thu, 11 Apr 2024 15:37:43 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id m17-20020a170902db1100b001ddb4df7f70sm1687503plx.304.2024.04.11.15.37.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 15:37:43 -0700 (PDT)
-Date: Thu, 11 Apr 2024 22:37:35 +0000
-From: Wei Liu <wei.liu@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Wei Liu <wei.liu@kernel.org>,
-	Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-	Linux Kernel List <linux-kernel@vger.kernel.org>, kys@microsoft.com,
-	haiyangz@microsoft.com, decui@microsoft.com
-Subject: [GIT PULL] Hyper-V fixes for 6.9-rc4
-Message-ID: <ZhhmLy_V-B97jAaQ@liuwe-devbox-debian-v2>
+        d=1e100.net; s=20230601; t=1712875203; x=1713480003;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S4TnsFcjuXgA9nuQRAvIeS3/zSNBm8/9BgUmS0MLmqs=;
+        b=nazT9/BvK6tVXfeuiy0sxJY82r6ZVhSd/wNB6itHCNhoZHCbUhzZ9CUOvAwL/mtWgM
+         +GE7ME16MlyOPOi0ueOrNSavOH/qt2NJH7aQi47Lbqcu31NviKT+W2HGaF57qMCxzGUs
+         nzVzbbYvhUQk6uyRrHcv9DJrzNK4QjgN9TypIW3jCZKEdKyIWM4QBDIwzgidlJso+Adi
+         Yo9zIxe2oghM/k3JNTKTtlGDEOEasDWm9PBCZCnHwgOmFiHEoEmQBkwtGHBmFm6XGMGe
+         Kp2HxGB1Be/wvErHiK1/reid2SOnbREhz730BQGsOe8liaDUTKs81sXqoTrLTEDvKCkZ
+         CWzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX1tsw6/1tgtp0Lh+gC61PqwdqbxopWx4VZxdLqS28IIbcwaUHMhygL0QHXAt01F9B6WxiX+7xaJLTIMIb0d6ZlmunfXkug/q6mXC9g
+X-Gm-Message-State: AOJu0YxNtI3hJUQdGX7DQ7tCsBeguLPfAYGya3Kpw9/ersxoN7+hbsLN
+	FJrz8n78QNRYQ8y/Jim97qAwITYcBY5CuOfOKz69/cMKrtossXdhzQZx2bnGW0I=
+X-Google-Smtp-Source: AGHT+IGY8qJhojjfCfabFUjR9vvGK5A/WLCfM1Bk52OhJKElMImmd0eUpMrnmf84M99SmcErfv1epA==
+X-Received: by 2002:ac2:57db:0:b0:513:eeaa:8f1f with SMTP id k27-20020ac257db000000b00513eeaa8f1fmr649500lfo.47.1712875203340;
+        Thu, 11 Apr 2024 15:40:03 -0700 (PDT)
+Received: from smtpclient.apple ([2001:a61:10c6:ce01:a470:5d20:8e1a:464a])
+        by smtp.gmail.com with ESMTPSA id jx24-20020a170907761800b00a46aba003eesm1144762ejc.215.2024.04.11.15.40.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 11 Apr 2024 15:40:02 -0700 (PDT)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH] treewide: Fix common grammar mistake "the the"
+From: Thorsten Blum <thorsten.blum@toblux.com>
+In-Reply-To: <0bd7ccc2-4d8c-455b-a6c2-972ebe1fcb08@moroto.mountain>
+Date: Fri, 12 Apr 2024 00:39:51 +0200
+Cc: kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-s390@vger.kernel.org,
+ speakup@linux-speakup.org,
+ intel-gfx@lists.freedesktop.org,
+ intel-xe@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org,
+ linux-wireless@vger.kernel.org,
+ linux-scsi@vger.kernel.org,
+ linux-afs@lists.infradead.org,
+ ecryptfs@vger.kernel.org,
+ netfs@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org,
+ linux-unionfs@vger.kernel.org,
+ linux-arch@vger.kernel.org,
+ io-uring@vger.kernel.org,
+ cocci@inria.fr,
+ linux-perf-users@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <193B959E-60A3-499A-BFF3-EA7B2D0B6C12@toblux.com>
+References: <20240411150437.496153-4-thorsten.blum@toblux.com>
+ <0bd7ccc2-4d8c-455b-a6c2-972ebe1fcb08@moroto.mountain>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
-Hi Linus,
+On 11. Apr 2024, at 17:25, Dan Carpenter <dan.carpenter@linaro.org> =
+wrote:
+>=20
+> It's tricky to know which tree a patch like this would go through.
 
-The following changes since commit e8f897f4afef0031fe618a8e94127a0934896aba:
+The patch is based on the mainline tree. Should I have sent it directly =
+to
+Linus then?
 
-  Linux 6.8 (2024-03-10 13:38:09 -0700)
+I'm relatively new here and therefore only sent it to the corresponding =
+mailing
+lists.
 
-are available in the Git repository at:
-
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20240411
-
-for you to fetch changes up to 30d18df6567be09c1433e81993e35e3da573ac48:
-
-  Drivers: hv: vmbus: Don't free ring buffers that couldn't be re-encrypted (2024-04-10 21:33:33 +0000)
-
-----------------------------------------------------------------
-hyperv-fixes for v6.9-rc4
- - Some cosmetic changes (Erni Sri Satya Vennela, Li Zhijian)
- - Introduce hv_numa_node_to_pxm_info() (Nuno Das Neves)
- - Fix KVP daemon to handle IPv4 and IPv6 combination for keyfile
-   format (Shradha Gupta)
- - Avoid freeing decrypted memory in a confidential VM (Rick Edgecombe 
-   and Michael Kelley)
-----------------------------------------------------------------
-Erni Sri Satya Vennela (1):
-      x86/hyperv: Cosmetic changes for hv_apic.c
-
-Li Zhijian (1):
-      hv: vmbus: Convert sprintf() family to sysfs_emit() family
-
-Michael Kelley (1):
-      Drivers: hv: vmbus: Don't free ring buffers that couldn't be re-encrypted
-
-Nuno Das Neves (1):
-      mshyperv: Introduce hv_numa_node_to_pxm_info()
-
-Rick Edgecombe (4):
-      Drivers: hv: vmbus: Leak pages if set_memory_encrypted() fails
-      Drivers: hv: vmbus: Track decrypted status in vmbus_gpadl
-      hv_netvsc: Don't free decrypted memory
-      uio_hv_generic: Don't free decrypted memory
-
-Shradha Gupta (1):
-      hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for keyfile format
-
- arch/x86/hyperv/hv_apic.c         |  16 +--
- arch/x86/hyperv/hv_proc.c         |  22 +---
- drivers/hv/channel.c              |  29 +++++-
- drivers/hv/connection.c           |  29 ++++--
- drivers/hv/vmbus_drv.c            |  94 ++++++++---------
- drivers/net/hyperv/netvsc.c       |   7 +-
- drivers/uio/uio_hv_generic.c      |  12 ++-
- include/asm-generic/hyperv-tlfs.h |  19 ++--
- include/asm-generic/mshyperv.h    |  14 +++
- include/linux/hyperv.h            |   1 +
- tools/hv/hv_kvp_daemon.c          | 213 ++++++++++++++++++++++++++++++--------
- 11 files changed, 307 insertions(+), 149 deletions(-)
+Thanks,
+Thorsten=
 
