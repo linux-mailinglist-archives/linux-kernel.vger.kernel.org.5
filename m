@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B69B8A1AD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:09:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A4A18A1AD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:09:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3681E2819FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:09:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0046F285FF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 721AA1F63CF;
-	Thu, 11 Apr 2024 15:42:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FF0552F70;
+	Thu, 11 Apr 2024 15:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="YMNtAlYt"
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="tLbzhEqR"
+Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA911F63A1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E72241F63B0
 	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:42:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850155; cv=none; b=kZ1gZdBr3RIuu++DG7G2HWMHzT1TDldNkpznEPeSL9SSFQ4JQV1oikWZKIaHXj77tJmR1TI0bkY71iXxBzRrRt8QRKNqyYhRCsnPK3GxPOQ20FxRsleNAui/hhIfqxnpYblF6rEVCmMb3Ah5hsZFr2DM+exZjcCCNQV+ccEbenY=
+	t=1712850156; cv=none; b=ugKmk7Xam4xeoc0uDqByY1WE1awIiLmvQhxATNNEBVYGssPYC2FaVaihLij4sfbi2CQ0PSoplbLRBfr+3+35Qw1ALgTr9PWy3HAiERTBAAGkaBcepnHW1H3zgC0uOf8KQ2wYOMWVzcpLEzkoJGLoVasNTHZHcl9NsmnlP2Zr3lM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850155; c=relaxed/simple;
-	bh=gA8rFMhsudIRasINC+2az15qgXyL/gqKmnjo/t8ieBo=;
+	s=arc-20240116; t=1712850156; c=relaxed/simple;
+	bh=QzT97jcs7LvwDa9GfHQyS6Z4ENz0HdIaPZHjnl1Ltk8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gvSMykpOFdvkFY069v2eRXIvFGgAQ5aGJaxAfsFlV9OTE7CgMSJf90c5ov69P7YIScQw7Jf7KBiuwtioOyDPb7yPSGo0scl7B2QONjDR4B9Hoq8ApyKm+WKkE0F+UJomqyi7IeGglxoO2vVKcqYIdGbGJUFaUpSJ/7wwrBkeyBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=YMNtAlYt; arc=none smtp.client-ip=209.85.166.46
+	 MIME-Version; b=g0MOVtNxtduQEoy66K5uWltXht3TP/IJamihC7vi7gBvmfA4V1H5CavR4kIwDlNmdKgfvz7OtR+45eIAIGL92zVYDydWpENb7bVIHochDLNNCakezoPs1DDCTgqKnwtMapCMXFPCKqOcUsfGVOmFbhbqDxP1XJFEjouir3qPWXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=tLbzhEqR; arc=none smtp.client-ip=209.85.166.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7d6812b37a6so9094539f.0
+Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7d6812b37a6so9094839f.0
         for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:42:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850152; x=1713454952; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850153; x=1713454953; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+gLv0Ik+40YEsN6bRxyBw09qExxmyScg525+OgMqQYQ=;
-        b=YMNtAlYteGbFkZ75oHST8JuY+sV+YP9mFsEJJG92G52PdLisdAWA4zbeGDKnwc5MNP
-         hqJkGPvFHT2WmkKX3sv5MQsPON10fVJp0cxsZOIj/ANZyIYGz5b7QcD1hCczl1ez2IWM
-         yGOepXi85oBU4dkpW7TYIBa5KTGMKAkWrpUCtCX3icv3B0uveyqFDiybMVQOW4x/Uy5H
-         4tZfgWUPKexYOAcLaGVaaRFScKC/3yPa2IywAIk7n3PxfUiTjfkW08O+ZrgG0PcvEV3D
-         qpro882/pCHqdFNXb+wZwYJzT3sNZ64R/WgijMdB4zkrTefBFgSqz9ZE2XfsdAiCMPRC
-         O7Ew==
+        bh=p+Xvz/UDRr7/EpD2nY4uoaZN8CL3TczLBOcQ0vJ5qaA=;
+        b=tLbzhEqRDgQc01IAvzlwlUlaK0cIouF59Cq+ZDddIh7nwNWRHQ8y3CZt0uDNFhy3zI
+         bPS2+F3f0C4jCrlIBlOtUKyuuXMoP4NsRmosV1EZI3XJKi4zAOOmIgLqNxFUdPtJhlB+
+         oFv+mFIBm4sJ3pqfvBeXgNTMFsKSeyP/UikBuwq4OsrttAKObm0rF0KDJnCxI/ts0+BX
+         gSot5Qfxo03R/XvjR4i411qNCYh/9ppUgi2nUK6TG3EloT8EGAyC9PEkgeoxywj6WrPG
+         xlo3CvBU4K2VkSsFsRgB84ybERhR4v1GgEpgS/YRZofK6lx0K//EYqaANCh6rG9g/wwf
+         pNdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850152; x=1713454952;
+        d=1e100.net; s=20230601; t=1712850153; x=1713454953;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+gLv0Ik+40YEsN6bRxyBw09qExxmyScg525+OgMqQYQ=;
-        b=e+SPzokCY04afqhoQ4KWjFXnq6yP3Jm1nZwH5/g8PpKfN8RWfA8wg8EbJwZNuKGGLJ
-         6CPbxMBhL0JDvt6xrsomqcZtKaXOXWGGKqwcOU+uixnBpxtvDm0wSN54CwD/+Nvtp105
-         6W8Xj3fSQI4j0AOi4U+9/6HTtKGDwheNZf5DBU1shzWUiw6o8LlrW63/mToFJ3jLSsOj
-         fHIAbOvLStKCIEsnjdrRRcKXdxUuCJk7imemKSIEyG9sIvRj9QrV8Lc4IRZ3ZlhmZrSx
-         wM9Z0msBy4Arlir5k0HcON8P0jLObHpVLC6AuBmswJ3KkiFzGrehaa7tSMT0UhlHiNWb
-         qRlQ==
-X-Gm-Message-State: AOJu0YxUIO7muLZ3Dm6LFIqFHwXUtggVIVI33FSd9IprDjRg1MmvIK+n
-	yOEMVudP8NCO9uTPojvH3XrgiWQVhopKL16Hgz5x2NvxBfwnhNE4yT1v56CAUUjlUtM3UrDl865
-	V
-X-Google-Smtp-Source: AGHT+IFl1U7Gq7SRFJqISZ2qZ9AaZnNqVRV/Z2Gc6jkS8X0UtLV/9CSxw5RRR9mCr/twh144gM9VTg==
-X-Received: by 2002:a5e:9907:0:b0:7d6:751f:192 with SMTP id t7-20020a5e9907000000b007d6751f0192mr198224ioj.2.1712850152720;
-        Thu, 11 Apr 2024 08:42:32 -0700 (PDT)
+        bh=p+Xvz/UDRr7/EpD2nY4uoaZN8CL3TczLBOcQ0vJ5qaA=;
+        b=sRWkZZWvKumHdwBewO7YH6lidip+VnAyiJtP+BKud1EqPqd3/Ko6KXdNXnP3BqdKzU
+         hGZigUoGjGJy7+3p+HzVx1gnYQ6Bf/jYlEXQ3j3gYkZQ032zWMzrBi2yb5/KNMZg+EO8
+         WkDFwIdsFIWXDGIm1JQPBqH/a9ePjA4VY/rwP3PNb/vSgjFBETV/vwZeR7g2k6JC9V12
+         j1UA6bpAOGV3xkN5lR+qW9mBjafm2YYe1U+SwKbzmh6dCh/I2+SMj/6soUXbqlXLIhWA
+         adHUMNp3XJf08Pal/rxYvH/VsWa6zLHw3+owBYD+SLezPk3/symtxutjBpzsCA0x46+a
+         L63g==
+X-Gm-Message-State: AOJu0YzqpAPXWSeMi7EdaaBkhgneSPch/ocaXLpWlrA0E/FtPP71fiZN
+	iYLugfGgKY9bYfKEf2UtmdRY5aMtsf19zWEPCZRYv6hld0jojqvp12OBiY/elaBBccDGPpniTEO
+	f
+X-Google-Smtp-Source: AGHT+IHl0bur4OnSw6GCYS5F/K0c+WHDD2fn3Dclmfj165S2QjKbNs5JwA3cpFtCRAvgMKGIyC3VBQ==
+X-Received: by 2002:a6b:5b10:0:b0:7d0:bd2b:43ba with SMTP id v16-20020a6b5b10000000b007d0bd2b43bamr238970ioh.0.1712850153486;
+        Thu, 11 Apr 2024 08:42:33 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.42.30
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.42.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:42:31 -0700 (PDT)
+        Thu, 11 Apr 2024 08:42:33 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 388/437] EDAC/zynqmp: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:18:48 -0600
-Message-ID: <20240411153126.16201-389-axboe@kernel.dk>
+Subject: [PATCH 389/437] EDAC/thunderx: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:18:49 -0600
+Message-ID: <20240411153126.16201-390-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,79 +85,154 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/edac/zynqmp_edac.c | 26 ++++++++++----------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
+ drivers/edac/thunderx_edac.c | 71 +++++++++++++++++-------------------
+ 1 file changed, 33 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/edac/zynqmp_edac.c b/drivers/edac/zynqmp_edac.c
-index 2d9a5cfd8931..53d697b4137a 100644
---- a/drivers/edac/zynqmp_edac.c
-+++ b/drivers/edac/zynqmp_edac.c
-@@ -247,17 +247,14 @@ static void write_fault_count(struct edac_priv *priv)
-  * - Write the Correctable Error bit position value:
-  *	echo <bit_pos val> > /sys/kernel/debug/edac/ocm/inject_ce_bitpos
+diff --git a/drivers/edac/thunderx_edac.c b/drivers/edac/thunderx_edac.c
+index 90d46e5c4ff0..54edd310c6f0 100644
+--- a/drivers/edac/thunderx_edac.c
++++ b/drivers/edac/thunderx_edac.c
+@@ -219,33 +219,32 @@ static struct debugfs_entry debugfs_##_name = {				    \
+ 	.mode = VERIFY_OCTAL_PERMISSIONS(_mode),			    \
+ 	.fops = {							    \
+ 		.open = simple_open,					    \
+-		.write = _write,					    \
+-		.read  = _read,						    \
++		.write_iter = _write,					    \
++		.read_iter  = _read,					    \
+ 		.llseek = generic_file_llseek,				    \
+ 	},								    \
+ }
+ 
+ #define DEBUGFS_FIELD_ATTR(_type, _field)				    \
+-static ssize_t thunderx_##_type##_##_field##_read(struct file *file,	    \
+-					    char __user *data,		    \
+-					    size_t count, loff_t *ppos)	    \
++static ssize_t thunderx_##_type##_##_field##_read(struct kiocb *iocb,	    \
++					    struct iov_iter *to)	    \
+ {									    \
+-	struct thunderx_##_type *pdata = file->private_data;		    \
++	struct thunderx_##_type *pdata = iocb->ki_filp->private_data;	    \
++	size_t count = iov_iter_count(to);				    \
+ 	char buf[20];							    \
+ 									    \
+ 	snprintf(buf, count, "0x%016llx", pdata->_field);		    \
+-	return simple_read_from_buffer(data, count, ppos,		    \
+-				       buf, sizeof(buf));		    \
++	return simple_copy_to_iter(buf, &iocb->ki_pos, sizeof(buf), to);    \
+ }									    \
+ 									    \
+-static ssize_t thunderx_##_type##_##_field##_write(struct file *file,	    \
+-					     const char __user *data,	    \
+-					     size_t count, loff_t *ppos)    \
++static ssize_t thunderx_##_type##_##_field##_write(struct kiocb *iocb,	    \
++					     struct iov_iter *from)	    \
+ {									    \
+-	struct thunderx_##_type *pdata = file->private_data;		    \
++	struct thunderx_##_type *pdata = iocb->ki_filp->private_data;	    \
++	size_t count = iov_iter_count(from);				    \
+ 	int res;							    \
+ 									    \
+-	res = kstrtoull_from_user(data, count, 0, &pdata->_field);	    \
++	res = kstrtoull_from_iter(from, count, 0, &pdata->_field);	    \
+ 									    \
+ 	return res ? res : count;					    \
+ }									    \
+@@ -255,27 +254,25 @@ DEBUGFS_STRUCT(_field, 0600,						    \
+ 		   thunderx_##_type##_##_field##_read)			    \
+ 
+ #define DEBUGFS_REG_ATTR(_type, _name, _reg)				    \
+-static ssize_t thunderx_##_type##_##_name##_read(struct file *file,	    \
+-					   char __user *data,		    \
+-					   size_t count, loff_t *ppos)      \
++static ssize_t thunderx_##_type##_##_name##_read(struct kiocb *iocb,	    \
++					   struct iov_iter *to)		    \
+ {									    \
+-	struct thunderx_##_type *pdata = file->private_data;		    \
++	struct thunderx_##_type *pdata = iocb->ki_filp->private_data;	    \
+ 	char buf[20];							    \
+ 									    \
+ 	sprintf(buf, "0x%016llx", readq(pdata->regs + _reg));		    \
+-	return simple_read_from_buffer(data, count, ppos,		    \
+-				       buf, sizeof(buf));		    \
++	return simple_copy_from_iter(buf, &iocb->ki_pos, sizeof(buf), to);  \
+ }									    \
+ 									    \
+-static ssize_t thunderx_##_type##_##_name##_write(struct file *file,	    \
+-					    const char __user *data,	    \
+-					    size_t count, loff_t *ppos)     \
++static ssize_t thunderx_##_type##_##_name##_write(struct kiocb *iocb,	    \
++					    struct iov_iter *from)	    \
+ {									    \
+-	struct thunderx_##_type *pdata = file->private_data;		    \
++	struct thunderx_##_type *pdata = iocb->ki_filp->private_data;	    \
++	size_t count = iov_iter_count(from);				    \
+ 	u64 val;							    \
+ 	int res;							    \
+ 									    \
+-	res = kstrtoull_from_user(data, count, 0, &val);		    \
++	res = kstrtoull_from_iter(from, count, 0, &val);		    \
+ 									    \
+ 	if (!res) {							    \
+ 		writeq(val, pdata->regs + _reg);			    \
+@@ -300,15 +297,15 @@ DEBUGFS_STRUCT(_name, 0600,						    \
+  * - Do the actual injection:
+  *	echo 1 > /sys/kernel/debug/<device number>/inject_ecc
   */
--static ssize_t inject_ce_write(struct file *file, const char __user *data,
--			       size_t count, loff_t *ppos)
-+static ssize_t inject_ce_write(struct kiocb *iocb, struct iov_iter *from)
+-static ssize_t thunderx_lmc_inject_int_write(struct file *file,
+-					     const char __user *data,
+-					     size_t count, loff_t *ppos)
++static ssize_t thunderx_lmc_inject_int_write(struct kiocb *iocb,
++					     struct iov_iter *from)
  {
--	struct edac_device_ctl_info *edac_dev = file->private_data;
-+	struct edac_device_ctl_info *edac_dev = iocb->ki_filp->private_data;
- 	struct edac_priv *priv = edac_dev->pvt_info;
+-	struct thunderx_lmc *lmc = file->private_data;
++	struct thunderx_lmc *lmc = iocb->ki_filp->private_data;
 +	size_t count = iov_iter_count(from);
- 	int ret;
+ 	u64 val;
+ 	int res;
  
--	if (!data)
--		return -EFAULT;
--
--	ret = kstrtou8_from_user(data, count, 0, &priv->ce_bitpos);
-+	ret = kstrtou8_from_iter(from, count, 0, &priv->ce_bitpos);
- 	if (ret)
- 		return ret;
+-	res = kstrtoull_from_user(data, count, 0, &val);
++	res = kstrtoull_from_iter(from, count, 0, &val);
  
-@@ -280,7 +277,7 @@ static ssize_t inject_ce_write(struct file *file, const char __user *data,
+ 	if (!res) {
+ 		/* Trigger the interrupt */
+@@ -319,16 +316,14 @@ static ssize_t thunderx_lmc_inject_int_write(struct file *file,
+ 	return res;
+ }
  
- static const struct file_operations inject_ce_fops = {
- 	.open = simple_open,
--	.write = inject_ce_write,
-+	.write_iter = inject_ce_write,
- 	.llseek = generic_file_llseek,
- };
- 
-@@ -291,21 +288,18 @@ static const struct file_operations inject_ce_fops = {
-  * - Write the Uncorrectable Error bit position values:
-  *      echo <bit_pos0 val>,<bit_pos1 val> > /sys/kernel/debug/edac/ocm/inject_ue_bitpos
-  */
--static ssize_t inject_ue_write(struct file *file, const char __user *data,
--			       size_t count, loff_t *ppos)
-+static ssize_t inject_ue_write(struct kiocb *iocb, struct iov_iter *from)
+-static ssize_t thunderx_lmc_int_read(struct file *file,
+-				     char __user *data,
+-				     size_t count, loff_t *ppos)
++static ssize_t thunderx_lmc_int_read(struct kiocb *iocb, struct iov_iter *to)
  {
--	struct edac_device_ctl_info *edac_dev = file->private_data;
-+	struct edac_device_ctl_info *edac_dev = iocb->ki_filp->private_data;
- 	struct edac_priv *priv = edac_dev->pvt_info;
- 	char buf[6], *pbuf, *token[2];
+-	struct thunderx_lmc *lmc = file->private_data;
++	struct thunderx_lmc *lmc = iocb->ki_filp->private_data;
+ 	char buf[20];
+ 	u64 lmc_int = readq(lmc->regs + LMC_INT);
+ 
+ 	snprintf(buf, sizeof(buf), "0x%016llx", lmc_int);
+-	return simple_read_from_buffer(data, count, ppos, buf, sizeof(buf));
++	return simple_copy_to_iter(buf, &iocb->ki_pos, sizeof(buf), to);
+ }
+ 
+ #define TEST_PATTERN 0xa5
+@@ -403,12 +398,12 @@ static int inject_ecc_fn(void *arg)
+ 	return 0;
+ }
+ 
+-static ssize_t thunderx_lmc_inject_ecc_write(struct file *file,
+-					     const char __user *data,
+-					     size_t count, loff_t *ppos)
++static ssize_t thunderx_lmc_inject_ecc_write(struct kiocb *iocb,
++					     struct iov_iter *from)
+ {
+-	struct thunderx_lmc *lmc = file->private_data;
++	struct thunderx_lmc *lmc = iocb->ki_filp->private_data;
+ 	unsigned int cline_size = cache_line_size();
 +	size_t count = iov_iter_count(from);
- 	u64 ue_bitpos;
- 	int i, ret;
- 	u8 len;
- 
--	if (!data)
--		return -EFAULT;
--
- 	len = min_t(size_t, count, sizeof(buf));
--	if (copy_from_user(buf, data, len))
-+	if (!copy_from_iter_full(from, len, from))
- 		return -EFAULT;
- 
- 	buf[len] = '\0';
-@@ -342,7 +336,7 @@ static ssize_t inject_ue_write(struct file *file, const char __user *data,
- 
- static const struct file_operations inject_ue_fops = {
- 	.open = simple_open,
--	.write = inject_ue_write,
-+	.write_iter = inject_ue_write,
- 	.llseek = generic_file_llseek,
- };
- 
+ 	u8 *tmp;
+ 	void __iomem *addr;
+ 	unsigned int offs, timeout = 100000;
 -- 
 2.43.0
 
