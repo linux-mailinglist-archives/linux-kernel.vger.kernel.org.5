@@ -1,215 +1,149 @@
-Return-Path: <linux-kernel+bounces-140051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FB868A0AD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:05:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A5528A0ACB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:03:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72ECB1C21B3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:05:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0075328764E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:03:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E43D213FD67;
-	Thu, 11 Apr 2024 08:05:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F353213F004;
+	Thu, 11 Apr 2024 08:03:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="K32ceWbo";
-	dkim=permerror (0-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="hbAjU+1d"
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
+	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="eoxRiwBa"
+Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA2613DDC7;
-	Thu, 11 Apr 2024 08:05:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712822719; cv=pass; b=bdOcYP3nisW1GdUt8adaEE9DN30mrWs74zGEatVWsUgTH2eL1zorbApAFTJxuI6uANL4KjxXk+8xow5FrQsbCDqiuCX0Pj2INL/iYGRfh38XrcVG3ZUd9TKbWI9US6kMbYMS71dE0lftsD4oI1FF2tbZq1PLi4oQE8NkewOBsSA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712822719; c=relaxed/simple;
-	bh=k0x/r8Jn3g2BWe8zJBk6R2s9O4m7icoE49i7gn3SsAM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hnltR4lQq6Eb3n2PwBBkGjZIhqLs+Rq/JY9xBEyf/yVtLlCgtY4thm41VW/aMDa/jM49a7AdKNK7QQ7J/Z+TyLk01stpFVK8wXJb8PCP31Or6anrQ2WTdfkk+e1Ifb/9NCxVC1Vn+1ktm+7xHrd2ndfwwI1I1ypUB7/7aP71Phk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net; spf=none smtp.mailfrom=gerhold.net; dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b=K32ceWbo; dkim=permerror (0-bit key) header.d=gerhold.net header.i=@gerhold.net header.b=hbAjU+1d; arc=pass smtp.client-ip=85.215.255.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=gerhold.net
-ARC-Seal: i=1; a=rsa-sha256; t=1712822529; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=P/kcwuIeoUbeZUYYUbIfF7pkrc/zL9KXLbblkcQMlKTuEg054A5KjJcKXMqyevkWiu
-    /q16ASNZAxnxEXn4hAD2/mVfSmsz/VNFbhPjJDFO9oBIiZNo8NivMEsIoSEIgDB5wdgm
-    7chzm/VM65Vpl5UUhSgJSvZMCUCfjCvjqrQzZ9LJu61Zmuk8TyXaMjpFyFUv66AL4MqA
-    z3SketrLhdmtXzTz/mD2G/b+qHbPj5VJIMgaytqBniNi4YUAn69yh52Fs0LtCoeU5jOC
-    S8Tefwceun5HVFo44Ysel2fnODs4ENmvFq5D2mKpATB+eJA5TcNX4qzpocuysr7zOcNi
-    NOiQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1712822529;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=ppwbDmup2wMDKDBXkN+XHpscPYZpnGSiu/96bn4RuWI=;
-    b=n+Hv92WnPunROayR9CAVpMFCGyNIh+8Ouqt6Q/13ZJ6pCPEOHwS8gjlTOVNjpiRCqY
-    pPpzCv6l70F4xqJv7n+ngpcLBBGMDOAdXJhQDswKqriDzpFseeUVXjVLNF2J6xlUYpUn
-    7i1anutXfGedvk2Q0Ig84J7hbq6pbv02vmwHifQSkhmmVQ4Jkq2CYYswlmbpJYgLdAmP
-    QCmUHsmmMo1n7yzmgj6CQyaUMgjuPVnm9jT7P+upVQxxacbjDOpHSlbhT856wOcawHCi
-    Nk+BmH9lBq8rwNoBDFhJrr2+fR6kuaRNyqVJ/AtAperWqMSxvo5/e8Cr0hbuLrk0VU5y
-    DPbQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1712822529;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=ppwbDmup2wMDKDBXkN+XHpscPYZpnGSiu/96bn4RuWI=;
-    b=K32ceWbo3Nrd2/oo7IB36ugdBJCa0xqS7kbgWFQRei+WOzcEjR5dVDM2B9KDUyoKzt
-    mm6BMvQMfeGkJACmcf4W0QimxLBnCPzD+MKLpY8TKO9vDvkLrJgXpO+i8Ps1bHMooYLi
-    RTa/+56U9/M147rYnjQSMA+W8uvGsX4ymV2HOJ0D1QDIr3h+FTm0X+IUx5gYy/AdodKm
-    3RxSb3dOHtygWfjIMdX716LZrw9WWDBjA+VSpJD/CCDoRQUwqwAkW2ym1/ZUAbjUvXKP
-    cLsrtex/+8WHfPqeWPyZLAIUIg1wj8EtaYszd+4Y/MPWPRevrmdN3tmEBwWqDUs64vnK
-    IvnA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1712822529;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=ppwbDmup2wMDKDBXkN+XHpscPYZpnGSiu/96bn4RuWI=;
-    b=hbAjU+1dVcVP51hOdENK5yo8tg2sqP+aopngPKHQVPiR9CFmZR129TP8ngMhC2aXBh
-    vVoFC7Rb21FpEf2kZJDw==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA+p3h"
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 50.3.2 DYNA|AUTH)
-    with ESMTPSA id Raf12503B828aP2
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Thu, 11 Apr 2024 10:02:08 +0200 (CEST)
-Date: Thu, 11 Apr 2024 10:02:01 +0200
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Volodymyr Babchuk <Volodymyr_Babchuk@epam.com>
-Cc: Caleb Connolly <caleb.connolly@linaro.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	Rob Clark <robdclark@gmail.com>, Stephen Boyd <swboyd@chromium.org>,
-	Nikita Travkin <nikita@trvn.ru>
-Subject: Re: [PATCH] soc: qcom: cmd-db: map shared memory as WT, not WB
-Message-ID: <ZheY-S5VY2AZD7V-@gerhold.net>
-References: <20240327200917.2576034-1-volodymyr_babchuk@epam.com>
- <e0586d43-284c-4bef-a8be-4ffbc12bf787@linaro.org>
- <87a5mjz8s3.fsf@epam.com>
- <f4ebe819-9718-42c3-9874-037151587d0c@linaro.org>
- <cd549ee8-22dc-4bc4-af09-9c5c925ee03a@linaro.org>
- <ZgU_YDUhBeyS5wuh@gerhold.net>
- <875xwo6f57.fsf@epam.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6C692EAE5;
+	Thu, 11 Apr 2024 08:03:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712822590; cv=none; b=ZKiYbTdRaZR5Sib7jqeERgegMfbsclPSTGHzn6hIX4L5cXauS6q6pk930ekh+AZKTxoBYf+WKK8Ju8Sjl4RcqFhioH3dJvoHadG8oJtlZG+mtc+KSVBWrnf044OxhrCyD6ka1BNrv/z1cFYh4fHdh5nUuoZBZItBj0v6T/IvVow=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712822590; c=relaxed/simple;
+	bh=7d+YFrPF5NU+Ft84ySgP2b1As8CzocHhN5TNwq4vytc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=qTU4qahHlMI3hjxJB5l1tS7CSN4UTleVUd93gcKY+8TRUwt5LxHvHLYjNxTi/MA/NvNQ/ZLVSXeQpCyQCDk1CIEsAJqMO7d/0Hnrdm/v/JlmmOCguZnF1k1S05odwwfvJOqaHm155BVss6gT3kJtXFgQM6Ae9ETVaN4FYPPT8Gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=eoxRiwBa; arc=none smtp.client-ip=168.119.38.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+	Resent-Cc:Resent-Message-ID; bh=7d+YFrPF5NU+Ft84ySgP2b1As8CzocHhN5TNwq4vytc=;
+	t=1712822587; x=1714032187; b=eoxRiwBavMMYjYSr8xHV7MajWCSxSHTN52b1k990sMSR9q2
+	k9+M6nNueYKUgmjXHjjqh5CI6pEMXk2WADsa14BVKZgx4eXsgdd5lg1rmh21rmG54D6CZwS/75hzj
+	Rj62EuG7Oaqa+74hSsEtO1iQOqrN6eLs4w2uzqjlvE0ICqT+z1dzfmqnkc5aK2LDiZL13zuLVFtwd
+	TGEt1Yai6pQ+QfCA5L0K4x/we/r7R8jcSsHb13Swz6abYhgt00x+hU6q11QHgFzgFqq6BnL3wsV44
+	NYu983Ki18/nT15PNtmVkdh4r0Y/JGJGL2awG+8KBZv6g64edBCSNYO77gSREV4w==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.97)
+	(envelope-from <johannes@sipsolutions.net>)
+	id 1rupOc-00000002ZGO-4B5A;
+	Thu, 11 Apr 2024 10:02:59 +0200
+Message-ID: <7a08dbcaded25ec0d32865647d571afbd66062fe.camel@sipsolutions.net>
+Subject: Re: [EXT] Re: [PATCH v9 0/2] wifi: mwifiex: add code to support
+ host mlme
+From: Johannes Berg <johannes@sipsolutions.net>
+To: David Lin <yu-hao.lin@nxp.com>, Brian Norris <briannorris@chromium.org>
+Cc: Francesco Dolcini <francesco@dolcini.it>, "kvalo@kernel.org"
+ <kvalo@kernel.org>, "linux-wireless@vger.kernel.org"
+ <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Pete Hsieh <tsung-hsien.hsieh@nxp.com>, 
+ "rafael.beims" <rafael.beims@toradex.com>, Francesco Dolcini
+ <francesco.dolcini@toradex.com>
+Date: Thu, 11 Apr 2024 10:02:58 +0200
+In-Reply-To: <DU0PR04MB9636AF728C818073435A0E90D1052@DU0PR04MB9636.eurprd04.prod.outlook.com>
+References: <ZfTspRKFgrO9xCTH@google.com>
+	 <969e95ccc4a1d35b45212b7fcb536ee90995e3b5.camel@sipsolutions.net>
+	 <PA4PR04MB9638D253189D6DD330B198B2D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
+	 <PA4PR04MB9638BE73DDBCE1CE8AA32BA8D1332@PA4PR04MB9638.eurprd04.prod.outlook.com>
+	 <b2d9a7ef53c5ab4212617e8edf202bbafe52e2f8.camel@sipsolutions.net>
+	 <ZftaJEIeNfV7YrVo@google.com>
+	 <PA4PR04MB9638F5037D1AB9BCF51CC9D9D1322@PA4PR04MB9638.eurprd04.prod.outlook.com>
+	 <Zf4rDifM6bLuqpX2@google.com>
+	 <4e5f3741819e457c5c79d825c6520cb9ee531b95.camel@sipsolutions.net>
+	 <PA4PR04MB96386917877832602F221282D13A2@PA4PR04MB9638.eurprd04.prod.outlook.com>
+	 <ZgxCngq_Rguc4qs8@google.com>
+	 <DU0PR04MB96365F2B6AFD856655D6A66CD1062@DU0PR04MB9636.eurprd04.prod.outlook.com>
+	 <5cf6b243c3967cd5a630f8f8e5bf17f7c9010f01.camel@sipsolutions.net>
+	 <DU0PR04MB96366A0E1FEBD7440F7536D0D1062@DU0PR04MB9636.eurprd04.prod.outlook.com>
+	 <7af985e13d3254de73f9d68e1ad4ad1f81b5fd59.camel@sipsolutions.net>
+	 <DU0PR04MB9636AF728C818073435A0E90D1052@DU0PR04MB9636.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <875xwo6f57.fsf@epam.com>
-Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 
-On Wed, Apr 10, 2024 at 10:12:37PM +0000, Volodymyr Babchuk wrote:
-> Stephan Gerhold <stephan@gerhold.net> writes:
-> > On Wed, Mar 27, 2024 at 11:29:09PM +0000, Caleb Connolly wrote:
-> >> On 27/03/2024 21:06, Konrad Dybcio wrote:
-> >> > On 27.03.2024 10:04 PM, Volodymyr Babchuk wrote:
-> >> >> Konrad Dybcio <konrad.dybcio@linaro.org> writes:
-> >> >>> On 27.03.2024 9:09 PM, Volodymyr Babchuk wrote:
-> >> >>>> It appears that hardware does not like cacheable accesses to this
-> >> >>>> region. Trying to access this shared memory region as Normal Memory
-> >> >>>> leads to secure interrupt which causes an endless loop somewhere in
-> >> >>>> Trust Zone.
-> >> >>>>
-> >> >>>> The only reason it is working right now is because Qualcomm Hypervisor
-> >> >>>> maps the same region as Non-Cacheable memory in Stage 2 translation
-> >> >>>> tables. The issue manifests if we want to use another hypervisor (like
-> >> >>>> Xen or KVM), which does not know anything about those specific
-> >> >>>> mappings. This patch fixes the issue by mapping the shared memory as
-> >> >>>> Write-Through. This removes dependency on correct mappings in Stage 2
-> >> >>>> tables.
-> >> >>>>
-> >> >>>> I tested this on SA8155P with Xen.
-> >> >>>>
-> >> >>>> Signed-off-by: Volodymyr Babchuk <volodymyr_babchuk@epam.com>
-> >> >>>> ---
-> >> >>>
-> >> >>> Interesting..
-> >> >>>
-> >> >>> +Doug, Rob have you ever seen this on Chrome? (FYI, Volodymyr, chromebooks
-> >> >>> ship with no qcom hypervisor)
-> >> >>
-> >> >> Well, maybe I was wrong when called this thing "hypervisor". All I know
-> >> >> that it sits in hyp.mbn partition and all what it does is setup EL2
-> >> >> before switching to EL1 and running UEFI.
-> >> >>
-> >> >> In my experiments I replaced contents of hyp.mbn with U-Boot, which gave
-> >> >> me access to EL2 and I was able to boot Xen and then Linux as Dom0.
-> >> > 
-> >> > Yeah we're talking about the same thing. I was just curious whether
-> >> > the Chrome folks have heard of it, or whether they have any changes/
-> >> > workarounds for it.
-> >> 
-> >> Does Linux ever write to this region? Given that the Chromebooks don't
-> >> seem to have issues with this (we have a bunch of them in pmOS and I'd
-> >> be very very surprised if this was an issue there which nobody had tried
-> >> upstreaming before) I'd guess the significant difference here is between
-> >> booting Linux in EL2 (as Chromebooks do?) vs with Xen.
-> >> 
-> >
-> > FWIW: This old patch series from Stephen Boyd is closely related:
-> > https://urldefense.com/v3/__https://lore.kernel.org/linux-arm-msm/20190910160903.65694-1-swboyd@chromium.org/__;!!GF_29dbcQIUBPA!yGecMHGezwkDU9t7XATVTI80PNGjZdQV2xsYFTl6EhpMMsRf_7xryKx8mEVpmTwTcKMGaaWomtyvr05zFcmsf2Kk$
-> > [lore[.]kernel[.]org]
-> >
-> >> The main use case I have is to map the command-db memory region on
-> >> Qualcomm devices with a read-only mapping. It's already a const marked
-> >> pointer and the API returns const pointers as well, so this series
-> >> makes sure that even stray writes can't modify the memory.
-> >
-> > Stephen, what was the end result of that patch series? Mapping the
-> > cmd-db read-only sounds cleaner than trying to be lucky with the right
-> > set of cache flags.
-> >
-> 
-> I checked the series, but I am afraid that I have no capacity to finish
-> this. Will it be okay to move forward with my patch? I understand that
-> this is not the best solution, but it is simple and it works. If this is
-> fine, I'll send v2 with all comments addressed.
-> 
+On Thu, 2024-04-11 at 07:57 +0000, David Lin wrote:
+>=20
+>=20
+> Following jobs are done by FW:
+>=20
+> 1. MAC 802.11 Rx processes except for BA buffering/reordering and AMSDU.
+> 2. Convert 802.11 frame to 802.3 frame.
+> 3. Embedded MAC 802.11 header information to Rx descriptor for driver to =
+do BA buffering/reordering.
+>=20
+> If this FW wants to leverage mac80211:
+>=20
+> 1. Use 802.11 frame:
+> =C2=A0=C2=A0Driver should restructure 802.11 frame and mac80211 will redo=
+ jobs done by FW. I think this does not make sense.
+> 2. Use 802.3 frame:
+> =C2=A0=C2=A0Driver still needs to do BA buffering/reordering (mac80211 ca=
+n help with AMSDU with flag IEEE80211_RX_AMSDU,
+> =C2=A0=C2=A0but cfg80211 also supports function ieee80211_amsdu_to_8023s(=
+) to help this job).
+> =C2=A0=C2=A0If this is the case, it becomes redundant to pass 802.3 frame=
+ to kernel stack via mac80211.
+>=20
+> So I think cfg80211 will be more suitable for existing FW.
 
-My current understanding is that the important property here is to have
-a non-cacheable mapping, which is the case for both MEMREMAP_WT and
-MEMREMAP_WC, but not MEMREMAP_WB. Unfortunately, the MEMREMAP_RO option
-Stephen introduced is also a cacheable mapping, which still seems to
-trigger the issue in some cases. I'm not sure why a cache writeback
-still happens when the mapping is read-only and nobody writes anything.
+I agree with most of the above, but I don't really think this is an
+argument either way. It just means the datapath won't be hugely
+different between such two drivers, and we have to look for details to
+make a decision elsewhere.
 
-You can also test it if you want. For a quick test,
+> > I think the question is about the design, but I also think the differen=
+ces in the
+> > association process are much more fundamental, and you _don't_ (seem to=
+)
+> > handle that in the way mac80211 does/expects, though you also don't see=
+m to
+> > handle it in the way most other full-MAC devices do (which [can] offloa=
+d even
+> > BSS selection.)
+> >=20
+>=20
+> FW only supports add station command for AP mode. Association command is =
+used to request and add client station to FW.
+> FW will help to connect to AP and reply result to driver.
+> This is another reason that we need to use cfg80211 instead of mac80211. =
+For mac80211, management frames are passed
+> through ieee80211_ops.tx and station is added via ieee80211_ops.sta_add.=
+=20
+> This way can't work with FW for client mode, FW can't not be bypassed for=
+ association process for client mode.
 
--	cmd_db_header = memremap(rmem->base, rmem->size, MEMREMAP_WB);
-+	cmd_db_header = ioremap_prot(rmem->base, rmem->size, _PAGE_KERNEL_RO);
+Right, this is the important distinction here, and indeed that leave
+pretty much no choice other than doing a cfg80211 driver, and I don't
+think it'd make sense in mac80211 to support offloading that either.
 
-should be (largely) equivalent to MEMREMAP_RO with Stephen's patch
-series. I asked Nikita to test this on SC7180 and it still seems to
-cause the crash.
+> Thanks for your comments and suggestions. I wonder can I prepare patch v1=
+0 to let this patch be accepted?
 
-It seems to work only with a read-only non-cacheable mapping, e.g. with
+Yes please.
 
-+	cmd_db_header = ioremap_prot(rmem->base, rmem->size,
-				     ((PROT_NORMAL_NC & ~PTE_WRITE) | PTE_RDONLY));
-
-The lines I just suggested for testing are highly architecture-specific
-though so not usable for a proper patch. If MEMREMAP_RO does not solve
-the real problem here then the work to make an usable read-only mapping
-would go beyond just finishing Stephen's patch series, since one would
-need to introduce some kind of MEMREMAP_RO_NC flag that creates a
-read-only non-cacheable mapping.
-
-It is definitely easier to just change the driver to use the existing
-MEMREMAP_WC. Given the crash you found, the hardware/firmware seems to
-have a built-in write protection on most platforms anyway. :D
-
-Thanks,
-Stephan
+johannes
 
