@@ -1,115 +1,95 @@
-Return-Path: <linux-kernel+bounces-141372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A63D8A1D61
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:09:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D92838A1D62
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:10:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 050022887F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:09:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DE5E1F2160B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 900271D6379;
-	Thu, 11 Apr 2024 17:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 222991D8EA6;
+	Thu, 11 Apr 2024 17:04:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P5iM75U/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XjuyDxQs"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0771D42B0;
-	Thu, 11 Apr 2024 17:03:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A521D6395
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 17:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712855031; cv=none; b=a3MGateQUzF5OqDeIFJTo1WfbuXd12UWadkk4dbcHpfy92wrRaiW/2kz6n9PQghg1Pj0MH1uUzoPIffu2LlQoyDR/mdZBk11fh2qPVYcXkUpZ7SBXmZvcBjuaa8NYElSZ2fa79QU3uWTEwRpm62I8sizLzjwZK+7hfsu3XBuxBM=
+	t=1712855059; cv=none; b=fN+HTDWW2wptD3HMRmltJvEQb+dEgg7B6HQmR2ow1q4q+3fQqjmnTo1t0SaIhABn5xJfjd0J5EehKMPXoLLx9sAFdFu4893eXpl8XWlMG1Uf5mT2U+zB0kIXoO/w231BgBjVUvzdEzhOfHuhaMwBcEDVgXNgJbntX7N512Y2xng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712855031; c=relaxed/simple;
-	bh=lPpn/1lYAEX/RQWD3CCHP7J3qXj3FuqzX1qZWbKaxOg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iGT3btVJNOqc70s2iyC3yLD3pakyUxUgZAnuDFspaqTk3lPuPgYgQzlaUvzjaWVyOGB0p1EXgfCHwJM5oY++wVLrd3r/8H5uu0hl5Mz116goASDeVQv9rIw8zhTMyGPWdUvOu9MeoBdGaPCJdMNYevVUqm9Vlxe7YVGgtJSd71E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P5iM75U/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0F8DC072AA;
-	Thu, 11 Apr 2024 17:03:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712855031;
-	bh=lPpn/1lYAEX/RQWD3CCHP7J3qXj3FuqzX1qZWbKaxOg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=P5iM75U/t7PYTCi8TtGpwLMD5ieVL5+YT9KZ46/LNzwwR/aSgh9Ar/RljmXmBIbRx
-	 QJF+cxKGcEZ8+6XvtS9lVsF0mWec4sC/zIzwY+Jp/UqoM7wDe1UTckiN/i0xCnd53F
-	 nwEpmQwFloWIRagKAy82womP1csk32tyu3WZ+EhQ3csrBQxD1JkN8ACQUuYCRMWx8T
-	 LOdUXHGCT9RH68HLn74m5fmPCuciByXi0Iu+3CczesHPrFrHNn9j2OB5NZ7L/586hO
-	 kfZsNw1fVw99FffvbS9aVrCE8fQtHnDo+c8/yHBApzPtpCB4ltNXG0xf9WhYs5w9eS
-	 d7oOYz+1dsWsQ==
-Date: Thu, 11 Apr 2024 18:03:44 +0100
-From: Lee Jones <lee@kernel.org>
-To: Bhargav Raviprakash <bhargav.r@ltts.com>
-Cc: linux-kernel@vger.kernel.org, m.nirmaladevi@ltts.com,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, jpanis@baylibre.com,
-	devicetree@vger.kernel.org, arnd@arndb.de,
-	gregkh@linuxfoundation.org, lgirdwood@gmail.com, broonie@kernel.org,
-	linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, nm@ti.com, vigneshr@ti.com,
-	kristo@kernel.org, eblanc@baylibre.com
-Subject: Re: [PATCH v6 03/11] mfd: tps6594: add regmap config in match data
-Message-ID: <20240411170344.GK2399047@google.com>
-References: <20240408124047.191895-1-bhargav.r@ltts.com>
- <20240408124047.191895-4-bhargav.r@ltts.com>
+	s=arc-20240116; t=1712855059; c=relaxed/simple;
+	bh=QElmSC3bxNhYYUYZcpYqZWOnauAT+nnkD1ECMHNRsa0=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=c+0BKcxqR/q7UvAvVcNtz0AAFtIEBSF0J09zf0WXOZq1nuI+xz5TItL3qWWa5aeiSjXZhJvx4QAky4nOcFS2fRRj3r4FRQbJBDtWOza8Haz75BDila1JhDotl1SAm/dTy1umZa3L1aNvaFuRjUqxetUJfWFyUW7PsColZGFiKFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XjuyDxQs; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26ce0bbso49450276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:04:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712855057; x=1713459857; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wcI+w0jxD+jVMQpaBlv4eiJI48tJxddyR3AVpCAV8/0=;
+        b=XjuyDxQsySmT1aw1XMjeSVmD0QOsLb5/m620JgishPaNvmKOy0iYE6RMeEhK1kUuww
+         joHO6iZFRrWYwMUBTjwwFRfoVZN0RZ7X+pu8UFuW/p4O2++lr/zyAKgFVkPdN12iGogn
+         RDw5tlt+wLQU4Xp5e/02kckNPaPXs/WYYWyfW15ATB6if2FfZn59cKlzBAMffYsN/tw+
+         4gvXDj0/5/B0jMNvSHBcODIllPwWMYa+jHKPPVQgfcshI3XT9izok3B+LigxOkGTVmqc
+         Al89od5Rkb2bR8L3Qd0iN60VzAIR2WXNdlgMmiNketcYXZ4nX57eA9eJoRKKAGZ0Vrbb
+         wYlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712855057; x=1713459857;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wcI+w0jxD+jVMQpaBlv4eiJI48tJxddyR3AVpCAV8/0=;
+        b=qbAQwp11QZcm+zAEI1OtPvEm2lZuOb2AMSQwp1V1ltkVK4/8WxUXqhc0ATlYDz+pYL
+         nqBsmLTRxUbFIbSvICLDt/wYfKyQ6lidXSTQEQMP6ap1D/ZzGR7Ev8pbIi6Zxa4ay3Hs
+         1bwdYVoTAP0B8SV+4/BzhsLgU5NohhevlYyGVrgWmqq4S7ClSC1P1IHhXDQmn87m+Ag0
+         le5+9OnU4FGjR21y03RrOYDf2u6FlQiVTRAOcMo6euhKsl52UbIWX4rdeuKZSJaBnR0D
+         cceLm6UwRiLnl7wexXScSqMr6KfPsPKUZ9p+pdjJ4WJKFRpTH1fWpiAbCeBhIPyeFih+
+         5L1A==
+X-Forwarded-Encrypted: i=1; AJvYcCUWORtQiR4Lo0IXBn2qs2KuQyNWVHFs95FoOcAJ9macl6SG9FMJzl99nhyrkkCcBdcdmm/JfxkkmOfKBVaFq1XNZZ/3XgElAvbR4u1v
+X-Gm-Message-State: AOJu0YzWlEui8GOArRYaotz8aKPxfKhIFpFl9ufU+z0hFCzrrF0mXQex
+	S1X3AneqbQvf7BUDoW8/jiKlj4i0SBOxUGMr58RBQzxFOWS/F6DmfRJ70UwqaKoE7MXqZ0ni8Uf
+	C6g==
+X-Google-Smtp-Source: AGHT+IF+kQ/A1q51nGdz/1jgB0BZ4jm+Y8FVRBtTG7jOydoNQbvoOHP3rKC1bCcsOLvoRnXL34a7l/KFutg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:100b:b0:dcd:875:4c40 with SMTP id
+ w11-20020a056902100b00b00dcd08754c40mr23995ybt.10.1712855057304; Thu, 11 Apr
+ 2024 10:04:17 -0700 (PDT)
+Date: Thu, 11 Apr 2024 10:04:15 -0700
+In-Reply-To: <20240126085444.324918-2-xiong.y.zhang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240408124047.191895-4-bhargav.r@ltts.com>
+Mime-Version: 1.0
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <20240126085444.324918-2-xiong.y.zhang@linux.intel.com>
+Message-ID: <ZhgYD4B1szpbvlHq@google.com>
+Subject: Re: [RFC PATCH 01/41] perf: x86/intel: Support PERF_PMU_CAP_VPMU_PASSTHROUGH
+From: Sean Christopherson <seanjc@google.com>
+To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
+Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
+	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
+	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
+	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
+	chao.gao@intel.com, Kan Liang <kan.liang@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Mon, 08 Apr 2024, Bhargav Raviprakash wrote:
-
-> Introduces a new struct tps6594_match_data. This struct holds fields for
-> chip id and regmap config. Using this struct in of_device_id data field.
-> This helps in adding support for TPS65224 PMIC.
+On Fri, Jan 26, 2024, Xiong Zhang wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
 > 
-> Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
-> Acked-by: Julien Panis <jpanis@baylibre.com>
-> ---
->  drivers/mfd/tps6594-i2c.c   | 24 ++++++++++++++++--------
->  drivers/mfd/tps6594-spi.c   | 24 ++++++++++++++++--------
->  include/linux/mfd/tps6594.h | 11 +++++++++++
->  3 files changed, 43 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/mfd/tps6594-i2c.c b/drivers/mfd/tps6594-i2c.c
-> index c125b474b..9e2ed48b7 100644
-> --- a/drivers/mfd/tps6594-i2c.c
-> +++ b/drivers/mfd/tps6594-i2c.c
-> @@ -192,10 +192,16 @@ static const struct regmap_config tps6594_i2c_regmap_config = {
->  	.write = tps6594_i2c_write,
->  };
->  
-> +static const struct tps6594_match_data match_data[] = {
-> +	[TPS6594] = {TPS6594, &tps6594_i2c_regmap_config},
-> +	[TPS6593] = {TPS6593, &tps6594_i2c_regmap_config},
-> +	[LP8764] = {LP8764, &tps6594_i2c_regmap_config},
+> Define and apply the PERF_PMU_CAP_VPMU_PASSTHROUGH flag for the version 4
+> and later PMUs
 
-Nit: There should be spaces after the '{' and before the '}'.
-
-> +};
-> +
->  static const struct of_device_id tps6594_i2c_of_match_table[] = {
-> -	{ .compatible = "ti,tps6594-q1", .data = (void *)TPS6594, },
-> -	{ .compatible = "ti,tps6593-q1", .data = (void *)TPS6593, },
-> -	{ .compatible = "ti,lp8764-q1",  .data = (void *)LP8764,  },
-> +	{ .compatible = "ti,tps6594-q1", .data = &match_data[TPS6594], },
-> +	{ .compatible = "ti,tps6593-q1", .data = &match_data[TPS6593], },
-> +	{ .compatible = "ti,lp8764-q1",  .data = &match_data[LP8764], },
-
-Not keen on this.  Why do you pass the regmap data through here and
-leave everything else to be matched on device ID?  It would be better to
-keep passing the device ID through and match everything off of that.
-
-
--- 
-Lee Jones [李琼斯]
+Why?  I get that is an RFC, but it's not at all obvious to me why this needs to
+take a dependency on v4+.
 
