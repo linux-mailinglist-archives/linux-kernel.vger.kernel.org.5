@@ -1,94 +1,108 @@
-Return-Path: <linux-kernel+bounces-141429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 022438A1E1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:28:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4116C8A1EE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:47:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98B8F1F2624D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:28:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D2AAB32763
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEDE9135414;
-	Thu, 11 Apr 2024 17:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FF7A136E3B;
+	Thu, 11 Apr 2024 17:49:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YeJI5LrT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aI/Km0ji"
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3946F135A56;
-	Thu, 11 Apr 2024 17:48:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08419383AE
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 17:49:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712857732; cv=none; b=OtE3Lxv53+Z1pONweQaBiROWsMa4wCs+A/MDUsr0vNibcKLoS60fATBMqTnKZse9Knx35wakq1yCGVQX7ElT5JTFym8OMd/bCTXN0N1YFIRATjLtdrP/+LjNLIrAK2EZdlTIlFt5DBIJiI+kEeCNOuMulT3MGJaRoc4SuFc9u1A=
+	t=1712857773; cv=none; b=KF+0ZEoSPBdaLLNYWhFW213bVRB2uQyiQKHF8/g3hVIzfiLwsam7mLukT06fxcApgFOqdcuTG/ZMB8kNt9cOORR6iSKEPvY9OAdm80QycW0wsVN0QAdKyIGql5pveHuAsZnP/YUL9t1DLo6n7S1mxEp9rH4kkXJYc8tZyAZw5vA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712857732; c=relaxed/simple;
-	bh=6eSLUtNm9M4Z/mZ/K0KaGlIzRfKpMg5W9j78ncpXrYs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=B4HPEmaME7lB7dFo54Z239kUibFUJHmf00GAmI01288N9fF9KakfpcfpFP7lASH/L3ghGMVXY5WlnFBQPYo5uHkvSiUBbnQuWqJfJqi3/Nnlpng/JvoFx92VviVYVZiK4Othi21659CD5I7au6h8jxZN/Y+U7ukCtPib/5bJrb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YeJI5LrT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D9BFC113CD;
-	Thu, 11 Apr 2024 17:48:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712857731;
-	bh=6eSLUtNm9M4Z/mZ/K0KaGlIzRfKpMg5W9j78ncpXrYs=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=YeJI5LrTm3Ii3eSL1BLtY9Uuao/h8dhAjL/+RgAHM9b+3Rrc3tw1VDIca2rzt0N5e
-	 BBfZAZWv2AijyGwhW45PT9fk592G7AmjokKsqebJqnjWwHubneIVoPA54qOKtaKQxT
-	 L1clb5mrfJoTY9KuYqUvXImY06LUCxUxtSQ39Hig/ZGGc6270N8etHnsa01DF+r2S5
-	 Ax6B3fD+z/ItuohEtUC3MaO6ecG36A8vd/ZYdCLiZQvifhNhPzwu70Kmceyz2kj4a0
-	 wLkuzGmbYfleiLLRcPGeUEdpCFwkXB397+QCEtlyAFzlMflMBtMCr3+lPnL8JjaDj6
-	 iio/6sIRCWjWA==
-From: Vinod Koul <vkoul@kernel.org>
-To: linux-sound@vger.kernel.org, broonie@kernel.org, tiwai@suse.de, 
- Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc: vinod.koul@linaro.org, linux-kernel@vger.kernel.org, 
- pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
-In-Reply-To: <20240410023438.487017-1-yung-chuan.liao@linux.intel.com>
-References: <20240410023438.487017-1-yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH 0/4] ASoC/soundwire: fix race conditions on remove
-Message-Id: <171285772921.544231.8836162611255754833.b4-ty@kernel.org>
-Date: Thu, 11 Apr 2024 23:18:49 +0530
+	s=arc-20240116; t=1712857773; c=relaxed/simple;
+	bh=JMTdAGD8MD/pbkdj+J+tnzBU2KPanJ0Go33kBW0D9C0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SeUMhxjCjYayrfBdKWfVmSM12YKMXwA1nS7e4hx0Mobq6/oyTS3Y8d/aEg+AJMR6RlfeSb0ekZis+TwvqmR7QlGCvHIFgb0BPmqFsD3aeMnloXbmDAftuTHzYLP+VTNl2Vo4bCVHdTIOsH14RzMKCcC5VJ2y2iKM88wKlWsDDQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aI/Km0ji; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 11 Apr 2024 13:49:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712857769;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V/TZdE1FK3O4qkESTbUB1nUL6z8CdzrLZmjris90VHw=;
+	b=aI/Km0jiSMVL4A1tCs8hlsrV66vbuWxJKZ+EgkonCW2LmuJAGBaIivtgu4+3HhSKhbSBh3
+	uS3+3l/YqK0GsHToDiJSOy8jQgouByPKNokiyLYxRwngjkex1lryU/nDL4TDH7+GmcHLtc
+	35AcbG0Y+MpEd8VLadpzkGxeP5lZ1Bo=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de, 
+	kent.overstreet@gmail.com, joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at, 
+	vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com, 
+	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com, 
+	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, 
+	viro@zeniv.linux.org.uk, brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org, 
+	chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com, 
+	konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org, hare@suse.de, 
+	p.raghav@samsung.com, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org, 
+	linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org, yukuai3@huawei.com, 
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v3 for-6.8/block 07/17] bcachefs: remove dead
+ function bdev_sectors()
+Message-ID: <2pat6ombemqnq5wjl6eb4lbip2pfgg5tkubmbwqphvcvpdc6cu@poiexziaa2q4>
+References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
+ <20231221085712.1766333-8-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221085712.1766333-8-yukuai1@huaweicloud.com>
+X-Migadu-Flow: FLOW_OUT
 
-
-On Wed, 10 Apr 2024 02:34:34 +0000, Bard Liao wrote:
-> There is a possible rate condition when removing the soundwire driver.
-> When the manager becomes pm_runtime active in the remove procedure,
-> peripherals will become attached, and do the initialization process.
-> We have to wait until all the devices are fully resumed before the
-> cleanup, otherwise there is a possible race condition where asynchronous
-> workqueues initiate transfers on the bus that cannot complete. This
-> patchset fixes the issue by ensuring all devices are fully resumed and
-> SoundWire interrupt is disabled after all jobs are done.
-> The change is mainly on SoundWire. It would be better to go through
-> SoundWire tree.
+On Thu, Dec 21, 2023 at 04:57:02PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
 > 
-> [...]
+> bdev_sectors() is not used hence remove it.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-Applied, thanks!
+Acked-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-[1/4] ASoC: SOF: Intel: hda: disable SoundWire interrupt later
-      commit: 62707b56b2b47dfdc94d4b079c9f9bfe5a923e33
-[2/4] soundwire: intel_auxdevice: use pm_runtime_resume() instead of pm_request_resume()
-      commit: 6f4867fa57604fc898a63ee73fe890786b9f4a72
-[3/4] soundwire: intel: export intel_resume_child_device
-      commit: f2fa6865566483582aed4511ef603b44239b227b
-[4/4] soundwire: intel_init: resume all devices on exit.
-      commit: 4cd5ea6de156850d555e1af8244a530812ae6ff6
-
-Best regards,
--- 
-~Vinod
-
-
+> ---
+>  fs/bcachefs/util.h | 5 -----
+>  1 file changed, 5 deletions(-)
+> 
+> diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
+> index 2984b57b2958..22a0acc1704f 100644
+> --- a/fs/bcachefs/util.h
+> +++ b/fs/bcachefs/util.h
+> @@ -516,11 +516,6 @@ static inline unsigned fract_exp_two(unsigned x, unsigned fract_bits)
+>  void bch2_bio_map(struct bio *bio, void *base, size_t);
+>  int bch2_bio_alloc_pages(struct bio *, size_t, gfp_t);
+>  
+> -static inline sector_t bdev_sectors(struct block_device *bdev)
+> -{
+> -	return bdev->bd_inode->i_size >> 9;
+> -}
+> -
+>  #define closure_bio_submit(bio, cl)					\
+>  do {									\
+>  	closure_get(cl);						\
+> -- 
+> 2.39.2
+> 
 
