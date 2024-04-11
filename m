@@ -1,125 +1,274 @@
-Return-Path: <linux-kernel+bounces-139941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39BCC8A0960
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:12:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D417B8A0964
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:13:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CED401F21DF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:12:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A7B62820C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:13:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57DE513DDDD;
-	Thu, 11 Apr 2024 07:11:15 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 022BE13E055;
+	Thu, 11 Apr 2024 07:11:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ALAdr+l0"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D924713DBA0;
-	Thu, 11 Apr 2024 07:11:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AA4613DBA8;
+	Thu, 11 Apr 2024 07:11:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712819474; cv=none; b=QRivoBlXPAHnKEPR+vK9MUtrYh7ok8Vvg4Psko77HKB7hIjf0iWUQc+G13Q+U0tMj7+DPBHPVJmCl12PgBLgFCSdIBXikrCgeuIV07oagdZHKqGrEhzWIIDWBv2YCjarl9n/jODj3fFIzOoHJXelZwMLIADqXDHw+tT0KFMrxmA=
+	t=1712819516; cv=none; b=EjAboDk9LTxJ6HZ4+TVOy77MdzOyci8JUwqzP//81k7YqxrOn2mQ7AcU/dQRVt+ythjfforv3l5uzyyhzhp0yGVTNXlv3TZS8lsjKqn4QBKrPXcYcA91KkoYnINvlaNAzcWlSfAp37kucRg+oJC6Ksa64yqe8YMfefzQciMVW84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712819474; c=relaxed/simple;
-	bh=mHFt/G53hAFEMBRtvSArbsest/5VtPkry0VDRfUuA1M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bNOsnGaQdhZI+l8QFgs+0MD42auRWKpphyqbp5gvkgCa5S4JKSIr32OZ6rnDSorWMOOP9LqY2lIq75eJTbSJg+KKConFSaUvmGYARvioaPxq1v/EDDCdn7Rv53rm26VQCe/b2htBgwtJmg1Aor0lKYEXGa1mrGwpzwq1hsaWOSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A9FAC433F1;
-	Thu, 11 Apr 2024 07:11:10 +0000 (UTC)
-Message-ID: <d230b840-471b-4f77-b9f4-34a4063f1db9@xs4all.nl>
-Date: Thu, 11 Apr 2024 09:11:08 +0200
+	s=arc-20240116; t=1712819516; c=relaxed/simple;
+	bh=foAx51dmM/Nc1MbYnYMHtZiVXid4Ya2CqTPwNkd5KJc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KJPqXFzB95226khYICDx2FXaJcMKqaDBmU4oZtFXmnL7cHFu0YZu5/gG+/itJxP8fIYmsebEbrfgi/eYAdWrVToSjSljp/wm/q9E1JUGhW3NOoL0W1oZ1XINqL2Aa/Gz9VZjEvGIDc9YKeWvZt9KtSzE7KecZoOl/r25SbCurQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ALAdr+l0; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dde0b30ebe2so6418370276.0;
+        Thu, 11 Apr 2024 00:11:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712819513; x=1713424313; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qTHSIMuZ7gmHtraT80hduj6De1QkHuQBkMKb5QVg53s=;
+        b=ALAdr+l0yZPbysZv0x1C4ckegg8FMJq6WmadwKlmhHW3RSipYga3zCdIOG2OStcdfR
+         4kniwQKrCsmzd849bdbIA/27C7wbmT6YHPTFqydegA8ae3KmVIfJEVsj/NNbDB5drNtD
+         UTTjuT4FS+l2OY5nEz9mJrlxTB7MDQZhRSc4huFLHBkS6xsibXUhnaATjhMQNXGbbseP
+         9tBxh66XN8rh2FKoVOfLi6kFiJqTkJb3XsgoI7lEQB15uZGAnjCW6JlTX0ytuFRQhGgm
+         imMHTc/CrbcU7QtGosx004CZQLKZDgOtJpg0+J3tzyajKCcMIsTSm8jQ6hGE9st06CRX
+         SeUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712819513; x=1713424313;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qTHSIMuZ7gmHtraT80hduj6De1QkHuQBkMKb5QVg53s=;
+        b=LC17VC7zCXpiKevNMMOMO9XmLak/2NnX4FjCA9ZFvH0Qif+Jqxqz+lYbtQ2ehpt8+F
+         jNmnRPnPGmr/WqR2JEz6zB70zZaLlKLTRzGVm3g6fwZrVlSR94l352sCB0eVszty1v18
+         7OBD3oF1SwD+6+VhVj8TNrGDOu7YodvOxc/Oy73Bm6f4LzcOyHbS8NcL0kl9TSmqqE5a
+         6LUZmKjjDRed7NwC7RaxgGLyusMWQr0q3MnHmC0M0ao+I2v4wAGjYNfFhImRpI+3TgpB
+         UHEN7n1QZob73WYnQpb9d2ynxyeVzhPR6dW/V7/Fxt6NXRLDq0lu33NBDE9W17JMCbWg
+         rr6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXG8beQpUR9PMLX81QZ4mJnJoaOzJnLMcBTVFomjo59V+uas2fUIrDncP6nXSjjAe0qmz7CjSHt7arrZMQrZOVJ9iHGc7E2EaNPOK22W+QFOI72HUMjTBunObrMcjbQvnWNl05IR6GJqmSTSQW6JT5PHKT1Y7JjBzYr5mC8Y0SLasM/VtP0o9ZZefvqqF7KwSmmQArOYa3fAYl0hw==
+X-Gm-Message-State: AOJu0YzGZh5zhJcMcHY96pszbIzTN4YA7by/k4zOLyrHk65Tm5kNntLR
+	gEKJUXphiNMiytBbx83/hTrhcUeDBI20idL60Nz5u5cgKBlz8UUuPtOCwiw3n1CEfah1i5DLYy+
+	1BQSTEH0U8AECcC5Z+Bu/iSIx1y4=
+X-Google-Smtp-Source: AGHT+IFrTcyKKJbRPGiPRaGZMd0mdJY3O5OdCMRcLAvdIxKOb5KeqUye7ddtBV9WNYbK4UH+ovB44WPSoycCvCmtq0Q=
+X-Received: by 2002:a25:814d:0:b0:dcd:1d44:f6c1 with SMTP id
+ j13-20020a25814d000000b00dcd1d44f6c1mr4641650ybm.16.1712819513073; Thu, 11
+ Apr 2024 00:11:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] media: mediatek: vcodec: support 36 bits physical
- address
-Content-Language: en-US, nl
-To: Yunfei Dong <yunfei.dong@mediatek.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= <nfraprado@collabora.com>,
- Nicolas Dufresne <nicolas.dufresne@collabora.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Benjamin Gaignard <benjamin.gaignard@collabora.com>,
- Nathan Hebert <nhebert@chromium.org>,
- Sebastian Fricke <sebastian.fricke@collabora.com>
-Cc: Hsin-Yi Wang <hsinyi@chromium.org>, Fritz Koenig <frkoenig@chromium.org>,
- Daniel Vetter <daniel@ffwll.ch>, Steve Cho <stevecho@chromium.org>,
- linux-media@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org,
- Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20240411070127.12384-1-yunfei.dong@mediatek.com>
-From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20240411070127.12384-1-yunfei.dong@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <CAMuE1bHBky9NGP22PVHKdi2+WniwxiLSmMnwRM6wm36sU8W4jA@mail.gmail.com>
+ <878r29hjds.ffs@tglx> <CAMuE1bF9ioo39_08Eh26X4WOtnvJ1geJ=WRVt5DhU8gEbYJNdA@mail.gmail.com>
+ <87o7asdd65.ffs@tglx> <CAF2d9jjA8iM1AoPUhQPK62tdd7gPnCnt51f_NMhOAs546rU3dA@mail.gmail.com>
+ <87il10ce1g.ffs@tglx> <CAF2d9jj6km7aVSqgcOE-b-A-WDH2TJNGzGy-5MRyw5HrzbqhaA@mail.gmail.com>
+ <877chfcrx3.ffs@tglx> <CAF2d9jjg0PEgPorXdrBHVkvz-fmUV7UXUPqnpQGVEvgXTpHY0A@mail.gmail.com>
+ <871q7md0ak.ffs@tglx> <CAF2d9jikELOQa_9Kk+oF_=_7NZTn9DuAw=s9KQR6-EfWTiW5RQ@mail.gmail.com>
+In-Reply-To: <CAF2d9jikELOQa_9Kk+oF_=_7NZTn9DuAw=s9KQR6-EfWTiW5RQ@mail.gmail.com>
+From: Sagi Maimon <maimon.sagi@gmail.com>
+Date: Thu, 11 Apr 2024 10:11:41 +0300
+Message-ID: <CAMuE1bFkmj70DO66PfvBPjM1d_JDEwTkOyz6o6wO_C0uyJ_0zw@mail.gmail.com>
+Subject: Re: [PATCH v7] posix-timers: add clock_compare system call
+To: =?UTF-8?B?TWFoZXNoIEJhbmRld2FyICjgpK7gpLngpYfgpLYg4KSs4KSC4KSh4KWH4KS14KS+4KSwKQ==?= <maheshb@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, richardcochran@gmail.com, luto@kernel.org, 
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, 
+	hpa@zytor.com, arnd@arndb.de, geert@linux-m68k.org, peterz@infradead.org, 
+	hannes@cmpxchg.org, sohil.mehta@intel.com, rick.p.edgecombe@intel.com, 
+	nphamcs@gmail.com, palmer@sifive.com, keescook@chromium.org, 
+	legion@kernel.org, mark.rutland@arm.com, mszeredi@redhat.com, 
+	casey@schaufler-ca.com, reibax@gmail.com, davem@davemloft.net, 
+	brauner@kernel.org, linux-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
+	linux-arch@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Yunfei,
+Hi Mahesh
+What is the status of your patch?
+if your patch is upstreamed , then it will have all I need.
+But, If not , I will upstream my patch.
+BR,
 
-Since the v2 patch is now merged in mainline as-is, you need to make a patch
-on top of that.
-
-So just post a new patch that applies to the mainline.
-
-Regards,
-
-	Hans
-
-On 11/04/2024 09:01, Yunfei Dong wrote:
-> The physical address on the MT8188 platform is larger than 32 bits,
-> change the type from unsigned int to dma_addr_t to be able to access
-> the high bits of the address.
-> 
-> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
-> compared with v2:
-> - remove unless cast
-> ---
->  .../media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_if.c | 2 +-
->  .../mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c        | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_if.c
-> index 9649f4ec1f2a..5f848691cea4 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_if.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp8_if.c
-> @@ -449,7 +449,7 @@ static int vdec_vp8_decode(void *h_vdec, struct mtk_vcodec_mem *bs,
->  		       inst->frm_cnt, y_fb_dma, c_fb_dma, fb);
->  
->  	inst->cur_fb = fb;
-> -	dec->bs_dma = (unsigned long)bs->dma_addr;
-> +	dec->bs_dma = bs->dma_addr;
->  	dec->bs_sz = bs->size;
->  	dec->cur_y_fb_dma = y_fb_dma;
->  	dec->cur_c_fb_dma = c_fb_dma;
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
-> index cf48d09b78d7..eea709d93820 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
-> @@ -1074,7 +1074,7 @@ static int vdec_vp9_slice_setup_tile_buffer(struct vdec_vp9_slice_instance *inst
->  	unsigned int mi_row;
->  	unsigned int mi_col;
->  	unsigned int offset;
-> -	unsigned int pa;
-> +	dma_addr_t pa;
->  	unsigned int size;
->  	struct vdec_vp9_slice_tiles *tiles;
->  	unsigned char *pos;
-> @@ -1109,7 +1109,7 @@ static int vdec_vp9_slice_setup_tile_buffer(struct vdec_vp9_slice_instance *inst
->  	pos = va + offset;
->  	end = va + bs->size;
->  	/* truncated */
-> -	pa = (unsigned int)bs->dma_addr + offset;
-> +	pa = bs->dma_addr + offset;
->  	tb = instance->tile.va;
->  	for (i = 0; i < rows; i++) {
->  		for (j = 0; j < cols; j++) {
-
+On Thu, Apr 11, 2024 at 5:56=E2=80=AFAM Mahesh Bandewar (=E0=A4=AE=E0=A4=B9=
+=E0=A5=87=E0=A4=B6 =E0=A4=AC=E0=A4=82=E0=A4=A1=E0=A5=87=E0=A4=B5=E0=A4=BE=
+=E0=A4=B0)
+<maheshb@google.com> wrote:
+>
+> On Wed, Apr 3, 2024 at 6:48=E2=80=AFAM Thomas Gleixner <tglx@linutronix.d=
+e> wrote:
+> >
+> > On Tue, Apr 02 2024 at 16:37, Mahesh Bandewar (=E0=A4=AE=E0=A4=B9=E0=A5=
+=87=E0=A4=B6 =E0=A4=AC=E0=A4=82=E0=A4=A1=E0=A5=87=E0=A4=B5=E0=A4=BE=E0=A4=
+=B0) wrote:
+> > > On Tue, Apr 2, 2024 at 3:37=E2=80=AFPM Thomas Gleixner <tglx@linutron=
+ix.de> wrote:
+> > > The modification that you have proposed (in a couple of posts back)
+> > > would work but it's still not ideal since the pre/post ts are not
+> > > close enough as they are currently  (properly implemented!)
+> > > gettimex64() would have. The only way to do that would be to have
+> > > another ioctl as I have proposed which is a superset of current
+> > > gettimex64 and pre-post collection is the closest possible.
+> >
+> > Errm. What I posted as sketch _is_ using gettimex64() with the extra
+> > twist of the flag vs. a clockid (which is an implementation detail) and
+> > the difference that I carry the information in ptp_system_timestamp
+> > instead of needing a new argument clockid to all existing callbacks
+> > because the modification to ptp_read_prets() and postts() will just be
+> > sufficient, no?
+> >
+> OK, that makes sense.
+>
+> > For the case where the driver does not provide gettimex64() then the
+> > extension of the original offset ioctl is still providing a better
+> > mechanism than the proposed syscall.
+> >
+> > I also clearly said that all drivers should be converted over to
+> > gettimex64().
+> >
+> I agree. Honestly that should have been mandatory and
+> ptp_register_clock() should fail otherwise! Probably should have been
+> part of gettimex64 implementation :(
+>
+> I don't think we can do anything other than just hoping all driver
+> implementations include gettimex64 implementation.
+>
+> > > Having said that, the 'flag' modification proposal is a good backup
+> > > for the drivers that don't have good implementation (close enough but
+> > > not ideal). Also, you don't need a new ioctl-op. So if we really want
+> > > precision, I believe, we need a new ioctl op (with supporting
+> > > implementation similar to the mlx4 code above). but we want to save
+> > > the new ioctl-op and have less precision then proposed modification
+> > > would work fine.
+> >
+> > I disagree. The existing gettimex64() is good enough if the driver
+> > implements it correctly today. If not then those drivers need to be
+> > fixed independent of this.
+> >
+> > So assumed that a driver does:
+> >
+> > gettimex64()
+> >    ptp_prets(sts);
+> >    read_clock();
+> >    ptp_postts(sts);
+> >
+> > today then having:
+> >
+> > static inline void ptp_read_system_prets(struct ptp_system_timestamp *s=
+ts)
+> > {
+> >         if (sts) {
+> >                 if (sts->flags & PTP_SYS_OFFSET_MONO_RAW)
+> >                         ktime_get_raw_ts64(&sts->pre_ts);
+> >                 else
+> >                         ktime_get_real_ts64(&sts->pre_ts);
+> >         }
+> > }
+> >
+> > static inline void ptp_read_system_postts(struct ptp_system_timestamp *=
+sts)
+> > {
+> >         if (sts) {
+> >                 if (sts->flags & PTP_SYS_OFFSET_MONO_RAW)
+> >                         ktime_get_raw_ts64(&sts->post_ts);
+> >                 else
+> >                         ktime_get_real_ts64(&sts->post_ts);
+> >         }
+> > }
+> >
+> > or
+> >
+> > static inline void ptp_read_system_prets(struct ptp_system_timestamp *s=
+ts)
+> > {
+> >         if (sts) {
+> >                 switch (sts->clockid) {
+> >                 case CLOCK_MONOTONIC_RAW:
+> >                         time_get_raw_ts64(&sts->pre_ts);
+> >                         break;
+> >                 case CLOCK_REALTIME:
+> >                         ktime_get_real_ts64(&sts->pre_ts);
+> >                         break;
+> >                 }
+> >         }
+> > }
+> >
+> > static inline void ptp_read_system_postts(struct ptp_system_timestamp *=
+sts)
+> > {
+> >         if (sts) {
+> >                 switch (sts->clockid) {
+> >                 case CLOCK_MONOTONIC_RAW:
+> >                         time_get_raw_ts64(&sts->post_ts);
+> >                         break;
+> >                 case CLOCK_REALTIME:
+> >                         ktime_get_real_ts64(&sts->post_ts);
+> >                         break;
+> >                 }
+> >         }
+> > }
+> >
+> > is doing the exact same thing as your proposal but without touching any
+> > driver which implements gettimex64() correctly at all.
+> >
+> I see. Yes, this makes sense.
+>
+> > While your proposal requires to touch every single driver for no reason=
+,
+> > no?
+> >
+> > It is just an implementation detail whether you use a flag or a
+> > clockid. You can carry the clockid for the clocks which actually can be
+> > read in that context in a reserved field of PTP_SYS_OFFSET_EXTENDED:
+> >
+> > struct ptp_sys_offset_extended {
+> >         unsigned int    n_samples; /* Desired number of measurements. *=
+/
+> >         clockid_t       clockid;
+> >         unsigned int    rsv[2];    /* Reserved for future use. */
+> > };
+> >
+> > and in the IOCTL:
+> >
+> >         if (extoff->clockid !=3D CLOCK_MONOTONIC_RAW)
+> >                 return -EINVAL;
+> >
+> >         sts.clockid =3D extoff->clockid;
+> >
+> > and it all just works, no?
+> >
+> Yes, this should work. However, I didn't check if struct
+> ptp_system_timestamp is used in some other context.
+>
+> > I have no problem to decide that PTP_SYS_OFFSET will not get this
+> > treatment and the drivers have to be converted over to
+> > PTP_SYS_OFFSET_EXTENDED.
+> >
+> > But adding yet another callback just to carry a clockid as argument is =
+a
+> > more than pointless exercise as I demonstrated.
+> >
+> Agreed. As I said, I thought we cannot change the gettimex64() without
+> breaking the compatibility but the fact that CLOCK_REALTIME is "0"
+> works well for the backward compatibility case.
+>
+> I can spin up an updated patch/series that updates gettimex64
+> implementation instead of adding a new ioctl-op If you all agree.
+>
+> thanks,
+> --mahesh..
+>
+> > Thanks,
+> >
+> >         tglx
 
