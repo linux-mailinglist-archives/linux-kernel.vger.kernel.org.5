@@ -1,200 +1,197 @@
-Return-Path: <linux-kernel+bounces-140120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 763218A0BA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3844E8A0BA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:53:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7618D1C22D04
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:52:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B76A1C21CC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4ACE143C51;
-	Thu, 11 Apr 2024 08:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16A30142E61;
+	Thu, 11 Apr 2024 08:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VFzRimod"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fWj0pMDT"
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62D671422CC;
-	Thu, 11 Apr 2024 08:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D98D31419A6;
+	Thu, 11 Apr 2024 08:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712825535; cv=none; b=i5gzzWDOAqfTP5tbKFgs0lxVhZilvJyMdQPQU3t/Bz7qtaXNwoB0EUeHjgFUzXmgWjs7ZGCw1dg111yaOSYQ2qVRkm42jbL8iUvKE42X1lAm5EJxDQzA3GSrj007ikeWG1RubvAKvJRdVsSLXKyCtcCKyYTZ2qjeac6GkJr00yU=
+	t=1712825587; cv=none; b=Ids8cFcSlwsYb4BvGXNOBTJpfPFLTU1ueEVcCf7LkPr/q4OOL0kf58j2m3Zek1kXcCt3o11Mj15rToH4ekcatJAcU5QpSGRIihi9dkGZRSihTkraDvbr5Y1m9+bEZjuvueGCwn9ZkHMIrYwCYdZjBxB6tvbeKo3PB+Czt0CVNLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712825535; c=relaxed/simple;
-	bh=Lmp+/nQbro7M10fnzbwdyIkY7l8hkTvrz2rPgWvaS2s=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=IlR/wPO00ecOX2QzTqcBrW+9AIIf5ZCdam3VPUE/8a66Z+vpUOayQ0oXtW/jwAhlHqjw/utyxN9inew2Z/n2OERkmzVACqFuhyFvMjs5366FmNqwnpIgMIpkc+Cfmd5ZT4NEYQHLyXtqPtxbH4KMMPjIynhy/NlXaC89uhGXiiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VFzRimod; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712825533; x=1744361533;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Lmp+/nQbro7M10fnzbwdyIkY7l8hkTvrz2rPgWvaS2s=;
-  b=VFzRimod6BP9kudbAmlTzcNXYX1w/aYa4TcpMdpghPlBASurbrLvWYqm
-   03F0fohRADpW5G9PLvQIta40VKsZMadlFRrqGBaErCM/KREQXMLzDvvcL
-   9pIqdSCC6SUmpa6SMwINF9A2geDg8LS5S4HFdJyrVsyF7bgsNrJxBaZ4w
-   0E2PF0cxJnw88GyELC2W/8q61RpxZmASeo3H0kZo9u02mOJG2SYUCtDDO
-   YTSWDKVkbxXBoOHD9waE4HKdtd9FTZ0QVh5OtB0EPArNWfSiwgviV2SIW
-   zjveo6mLqkRR2XF4ijufYV/COB9vTZUL2I1IYaLOxlPyYH7iUAXB8Knf7
-   A==;
-X-CSE-ConnectionGUID: WYVkxo0MTJ6UZJZ3539stA==
-X-CSE-MsgGUID: uNFeFnuNQdesrUfD/ja1nA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8386897"
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="8386897"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 01:52:13 -0700
-X-CSE-ConnectionGUID: 5is+jPGDQE2tVNTNpf8inQ==
-X-CSE-MsgGUID: gnVtjtZRQA60saBAH+BdEg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="25318573"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.30])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 01:52:10 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Thu, 11 Apr 2024 11:52:06 +0300 (EEST)
-To: "David E. Box" <david.e.box@linux.intel.com>
-cc: Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>, 
-    sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: Re: [PATCH V4 8/9] platform/x86/intel/sdsi: Simplify ascii
- printing
-In-Reply-To: <20240411025856.2782476-9-david.e.box@linux.intel.com>
-Message-ID: <77993eef-b896-7e75-93ba-a76f126b5fad@linux.intel.com>
-References: <20240411025856.2782476-1-david.e.box@linux.intel.com> <20240411025856.2782476-9-david.e.box@linux.intel.com>
+	s=arc-20240116; t=1712825587; c=relaxed/simple;
+	bh=io9LKvvXimYbev4Iml4NKxNJy86/qa8clb83Jlhvc2M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PPScXYq9FBHQ37ZJCue6DrB8vIyKEY8Db0rTRQtfmyimRLyZXNMJOaDPkP+RvONgi6NzfgKZJ3mJsbslpZpYbRj9NzPqaowQlZvKRUqEeI448EwoQDnzp/MkfC0uLgpJaaSJFcO9hfMnYHF4YbcbN4gU+Oe4yYW74dE9q4rPsYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fWj0pMDT; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-2a58209b159so1725595a91.3;
+        Thu, 11 Apr 2024 01:53:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712825584; x=1713430384; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ya5I5hvjUcaAqlpM5swpRYtJfi5w+dWzk4Fz+t660Ec=;
+        b=fWj0pMDTjAdkUv5+DmM2PHtR6UEWwt8i8e7QDTipFO6q1Dtcp5h9ESC9VA45otWWSS
+         squiWcue9Ok8HBVCbb7vEvDUlqzlARPBj0ZTfxuYerq93t+BQnE3ExCD6JhOJ9SgSw52
+         nDWjFaDjZnd5wSeVFM3SXIqJJHYSjNFaLRdbgL/leStTsr5RdBhQULO89yVcKfYZkT1i
+         TZFBV/G1Oh7Hdw4mSKu59NDte0J42wtieItOBmjYuOGF7w6CXp6KbY5/UAxK5HVUV9BZ
+         ddRyybjEQgqDAoHG0iepsD4a0r9o9/Jx4HFaitRfJOKEJblsoZiAh5ha4aWwKac7HzPX
+         Bj/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712825584; x=1713430384;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ya5I5hvjUcaAqlpM5swpRYtJfi5w+dWzk4Fz+t660Ec=;
+        b=CXQM4lI0PaTAiM8JlryLLLZEPm4VnqnH51kMGcWGA8SuI2xmJuxClS/sqDHN+6zJoU
+         PIlCzS5QdxvTWRj+Rm1lBKF/X8b2nghsXnHZH6SHm2IfbJX1igRcDFRgzS1M/gXxcUop
+         vZQsyZ+Tr1i7lmPtOpcyqiq+ZhSb0fohGTd94eQnbNGFlmqY1Rq1yA04HG2HJHkgxtHN
+         q0ZBVynRuP/TpBeJORTbM0zPLkEZLWDXcOqbxXjOzexK/Oi6IIClXS0RbpyBBItNcUA1
+         ZC81wr0MYIMnT2d8BCmfufqZEF39Qaxx38Qo9YeBQPmWDcj0DQl9EDc5MSHdHuikl9pU
+         kKGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUre2sFRjTIWkytZsCzKg9MmIpz2XiKM/0qWNqnlGBva/mMmVIfW8Tqpfma92aVJQ1uUNv/88/Isg2dKZl/ez+PebI1TrQSgDpi6FdG5cJ3G13hggOwmWb5pBliaV4EgPs1
+X-Gm-Message-State: AOJu0YxBnHOOlGcjz4wOIvOFWOlaybJw1XCatJDx7/DwyOpTEVKWqTCa
+	1V2A/lFoLhUIWCJRUvnIqIm3/dBKPiThZOBp+PBnX52ZdIzzxzLj
+X-Google-Smtp-Source: AGHT+IG0RZWIYvC1TAdiHu4GiCufqpdvQrAKxYmpsyvNmU5fmkX4L1O0eJJwfz5elYuwUFstobv+qw==
+X-Received: by 2002:a17:90a:f40b:b0:2a5:d5b1:b99b with SMTP id ch11-20020a17090af40b00b002a5d5b1b99bmr3708871pjb.38.1712825584034;
+        Thu, 11 Apr 2024 01:53:04 -0700 (PDT)
+Received: from dell.. ([111.196.36.81])
+        by smtp.googlemail.com with ESMTPSA id y12-20020a17090a154c00b002a52c2d82f0sm4534844pja.1.2024.04.11.01.52.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 01:53:02 -0700 (PDT)
+From: Liang Chen <liangchen.linux@gmail.com>
+To: mst@redhat.com,
+	jasowang@redhat.com,
+	xuanzhuo@linux.alibaba.com,
+	hengqi@linux.alibaba.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: netdev@vger.kernel.org,
+	virtualization@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	john.fastabend@gmail.com,
+	hawk@kernel.org,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	liangchen.linux@gmail.com
+Subject: [PATCH net-next v6] virtio_net: Support RX hash XDP hint
+Date: Thu, 11 Apr 2024 16:52:16 +0800
+Message-Id: <20240411085216.361662-1-liangchen.linux@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1072423584-1712825526=:1017"
+Content-Transfer-Encoding: 8bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+The RSS hash report is a feature that's part of the virtio specification.
+Currently, virtio backends like qemu, vdpa (mlx5), and potentially vhost
+(still a work in progress as per [1]) support this feature. While the
+capability to obtain the RSS hash has been enabled in the normal path,
+it's currently missing in the XDP path. Therefore, we are introducing
+XDP hints through kfuncs to allow XDP programs to access the RSS hash.
 
---8323328-1072423584-1712825526=:1017
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+1.
+https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@daynix.com/#r
 
-On Wed, 10 Apr 2024, David E. Box wrote:
+Signed-off-by: Liang Chen <liangchen.linux@gmail.com>
+---
+  Changes from v5:
+- Preservation of the hash value has been dropped, following the conclusion
+  from discussions in V3 reviews. The virtio_net driver doesn't
+  accessing/using the virtio_net_hdr after the XDP program execution, so
+  nothing tragic should happen. As to the xdp program, if it smashes the
+  entry in virtio header, it is likely buggy anyways. Additionally, looking
+  up the Intel IGC driver,  it also does not bother with this particular
+  aspect.
+---
+ drivers/net/virtio_net.c | 55 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
 
-> Add #define for feature length and move NUL assignment from callers to
-> get_feature().
->=20
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux=
-=2Eintel.com>
-> ---
-> V4 - Move NUL assignment to get_feature() and increment FEAT_LEN.
->=20
-> V3 - Add FEAT_LEN #def
->=20
-> V2 - Split of V1 patch 7
->=20
->  tools/arch/x86/intel_sdsi/intel_sdsi.c | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
->=20
-> diff --git a/tools/arch/x86/intel_sdsi/intel_sdsi.c b/tools/arch/x86/inte=
-l_sdsi/intel_sdsi.c
-> index ba2a6b6645ae..301213370740 100644
-> --- a/tools/arch/x86/intel_sdsi/intel_sdsi.c
-> +++ b/tools/arch/x86/intel_sdsi/intel_sdsi.c
-> @@ -43,6 +43,7 @@
->  #define METER_CERT_MAX_SIZE=094096
->  #define STATE_MAX_NUM_LICENSES=0916
->  #define STATE_MAX_NUM_IN_BUNDLE=09(uint32_t)8
-> +#define FEAT_LEN=09=095=09/* 4 plus NUL terminator */
-> =20
->  #define __round_mask(x, y) ((__typeof__(x))((y) - 1))
->  #define round_up(x, y) ((((x) - 1) | __round_mask(x, y)) + 1)
-> @@ -321,10 +322,11 @@ static char *content_type(uint32_t type)
->  =09}
->  }
-> =20
-> -static void get_feature(uint32_t encoding, char *feature)
-> +static void get_feature(uint32_t encoding, char feature[5])
->  {
->  =09char *name =3D (char *)&encoding;
-> =20
-> +=09feature[4] =3D '\0';
->  =09feature[3] =3D name[0];
->  =09feature[2] =3D name[1];
->  =09feature[1] =3D name[2];
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index c22d1118a133..abd07d479508 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -4621,6 +4621,60 @@ static void virtnet_set_big_packets(struct virtnet_info *vi, const int mtu)
+ 	}
+ }
+ 
++static int virtnet_xdp_rx_hash(const struct xdp_md *_ctx, u32 *hash,
++			   enum xdp_rss_hash_type *rss_type)
++{
++	const struct xdp_buff *xdp = (void *)_ctx;
++	struct virtio_net_hdr_v1_hash *hdr_hash;
++	struct virtnet_info *vi;
++
++	if (!(xdp->rxq->dev->features & NETIF_F_RXHASH))
++		return -ENODATA;
++
++	vi = netdev_priv(xdp->rxq->dev);
++	hdr_hash = (struct virtio_net_hdr_v1_hash *)(xdp->data - vi->hdr_len);
++
++	switch (__le16_to_cpu(hdr_hash->hash_report)) {
++		case VIRTIO_NET_HASH_REPORT_TCPv4:
++			*rss_type = XDP_RSS_TYPE_L4_IPV4_TCP;
++			break;
++		case VIRTIO_NET_HASH_REPORT_UDPv4:
++			*rss_type = XDP_RSS_TYPE_L4_IPV4_UDP;
++			break;
++		case VIRTIO_NET_HASH_REPORT_TCPv6:
++			*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP;
++			break;
++		case VIRTIO_NET_HASH_REPORT_UDPv6:
++			*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP;
++			break;
++		case VIRTIO_NET_HASH_REPORT_TCPv6_EX:
++			*rss_type = XDP_RSS_TYPE_L4_IPV6_TCP_EX;
++			break;
++		case VIRTIO_NET_HASH_REPORT_UDPv6_EX:
++			*rss_type = XDP_RSS_TYPE_L4_IPV6_UDP_EX;
++			break;
++		case VIRTIO_NET_HASH_REPORT_IPv4:
++			*rss_type = XDP_RSS_TYPE_L3_IPV4;
++			break;
++		case VIRTIO_NET_HASH_REPORT_IPv6:
++			*rss_type = XDP_RSS_TYPE_L3_IPV6;
++			break;
++		case VIRTIO_NET_HASH_REPORT_IPv6_EX:
++			*rss_type = XDP_RSS_TYPE_L3_IPV6_EX;
++			break;
++		case VIRTIO_NET_HASH_REPORT_NONE:
++		default:
++			*rss_type = XDP_RSS_TYPE_NONE;
++	}
++
++	*hash = __le32_to_cpu(hdr_hash->hash_value);
++	return 0;
++}
++
++static const struct xdp_metadata_ops virtnet_xdp_metadata_ops = {
++	.xmo_rx_hash			= virtnet_xdp_rx_hash,
++};
++
+ static int virtnet_probe(struct virtio_device *vdev)
+ {
+ 	int i, err = -ENOMEM;
+@@ -4747,6 +4801,7 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 				  VIRTIO_NET_RSS_HASH_TYPE_UDP_EX);
+ 
+ 		dev->hw_features |= NETIF_F_RXHASH;
++		dev->xdp_metadata_ops = &virtnet_xdp_metadata_ops;
+ 	}
+ 
+ 	if (vi->has_rss_hash_report)
+-- 
+2.40.1
 
-Works, assuming none of the name bytes are 0.
-
-Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
-
---=20
- i.
-
-> @@ -339,7 +341,7 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
->  =09uint32_t count =3D 0;
->  =09FILE *cert_ptr;
->  =09int ret, size;
-> -=09char name[4];
-> +=09char name[FEAT_LEN];
-> =20
->  =09ret =3D sdsi_update_registers(s);
->  =09if (ret)
-> @@ -383,7 +385,7 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
->  =09printf("\n");
-> =20
->  =09get_feature(mc->signature, name);
-> -=09printf("Signature:                    %.4s\n", name);
-> +=09printf("Signature:                    %s\n", name);
-> =20
->  =09printf("Version:                      %d\n", mc->version);
->  =09printf("Count Unit:                   %dms\n", mc->counter_unit);
-> @@ -391,7 +393,7 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
->  =09printf("Feature Bundle Length:        %d\n", mc->bundle_length);
-> =20
->  =09get_feature(mc->mmrc_encoding, name);
-> -=09printf("MMRC encoding:                %.4s\n", name);
-> +=09printf("MMRC encoding:                %s\n", name);
-> =20
->  =09printf("MMRC counter:                 %d\n", mc->mmrc_counter);
->  =09if (mc->bundle_length % METER_BUNDLE_SIZE) {
-> @@ -409,9 +411,8 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
-> =20
->  =09printf("Number of Feature Counters:   %ld\n", BUNDLE_COUNT(mc->bundle=
-_length));
->  =09while (count < BUNDLE_COUNT(mc->bundle_length)) {
-> -=09=09char feature[5];
-> +=09=09char feature[FEAT_LEN];
-> =20
-> -=09=09feature[4] =3D '\0';
->  =09=09get_feature(bec[count].encoding, feature);
->  =09=09printf("    %s:          %d\n", feature, bec[count].counter);
->  =09=09++count;
-> @@ -494,7 +495,7 @@ static int sdsi_state_cert_show(struct sdsi_dev *s)
->  =09=09=09sizeof(*lki) +=09=09=09// size of the license key info
->  =09=09=09offset;=09=09=09=09// offset to this blob content
->  =09=09struct bundle_encoding *bundle =3D (void *)(lbc) + sizeof(*lbc);
-> -=09=09char feature[5];
-> +=09=09char feature[FEAT_LEN];
->  =09=09uint32_t i;
-> =20
->  =09=09printf("     Blob %d:\n", count - 1);
-> @@ -507,8 +508,6 @@ static int sdsi_state_cert_show(struct sdsi_dev *s)
->  =09=09printf("        Blob revision ID:           %u\n", lbc->rev_id);
->  =09=09printf("        Number of Features:         %u\n", lbc->num_bundle=
-s);
-> =20
-> -=09=09feature[4] =3D '\0';
-> -
->  =09=09for (i =3D 0; i < min(lbc->num_bundles, STATE_MAX_NUM_IN_BUNDLE); =
-i++) {
->  =09=09=09get_feature(bundle[i].encoding, feature);
->  =09=09=09printf("                 Feature %d:         %s\n", i, feature)=
-;
-
---8323328-1072423584-1712825526=:1017--
 
