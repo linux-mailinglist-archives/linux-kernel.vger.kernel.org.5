@@ -1,287 +1,167 @@
-Return-Path: <linux-kernel+bounces-140643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBC678A171F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:27:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19EDB8A1726
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:28:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A05E0281154
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:27:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1E89281F82
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:28:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEE9E14EC4A;
-	Thu, 11 Apr 2024 14:27:13 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99ECA14E2F4
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4FB814EC6C;
+	Thu, 11 Apr 2024 14:27:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OkG9A9mb"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D7A14E2DF
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712845633; cv=none; b=KV1v198HJtXalpurMd8CxBM7qZrBLYI6JAk7x/vC3W3q0yF1S0TdTORQE0mB223fDedk/93wASw07uqlySOE66gl2eDjxtmVJZje7wFhApbDVJE8Iq9gfCfNoe7FLRVZ2J/URWIetzaXX5fNQGYUAcnf0ppU2LHbdEROwT2DtDw=
+	t=1712845672; cv=none; b=FTlBwvkDbe/JZ7Z2tnDX805aWU55cuGI0rTuDhUDv9UGxzmWnj9/F5Y242L5NQEEOZtKv8/9Hd1CzyyZR4Y42+InophuGoFDIR/t4B3ZlovoweyHgVyZTLeEGvA578deR41463aE+NNPfliqR2SITVi8dAtIm1vQU13uyTXXBK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712845633; c=relaxed/simple;
-	bh=IDhvXdY96MsYpZX2SANCCDVSaXfvjQDM3K/TIAwdMx0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FrO5zBC91WKVzXFwIy0vXI+6ueMWkN20hVLPlPXxQvpKvpqNszrWyskNSDNdxAG5GB4EGaqGVPpF17M09F/lxXZbEy4CLlLnUeCEbMV3F6HkAPWhunbPvhyPai+JMIQY40g+58TfCbCuTOnN/PDrC/qum+9RAQXUok60rvW8vjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79E4B339;
-	Thu, 11 Apr 2024 07:27:40 -0700 (PDT)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 277BF3F64C;
-	Thu, 11 Apr 2024 07:27:08 -0700 (PDT)
-Date: Thu, 11 Apr 2024 15:27:05 +0100
-From: Dave Martin <Dave.Martin@arm.com>
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
-	shameerali.kolothum.thodi@huawei.com,
-	D Scott Phillips OS <scott@os.amperecomputing.com>,
-	carl@os.amperecomputing.com, lcherian@marvell.com,
-	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
-	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-	dfustini@baylibre.com, amitsinght@marvell.com,
-	David Hildenbrand <david@redhat.com>,
-	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: Re: [PATCH v1 29/31] fs/resctrl: Add boiler plate for external
- resctrl code
-Message-ID: <ZhfzObobGI/p9ISP@e133380.arm.com>
-References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-30-james.morse@arm.com>
- <fb4abe11-5859-4a53-a4db-bb4e59a571c6@intel.com>
+	s=arc-20240116; t=1712845672; c=relaxed/simple;
+	bh=w9o1XgcltQhWTXVm1JiWAGcO8AEFOVm8o98Qvyf7ZV0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pOvx0fyb7s7oVgOrPBrVU0CSfHGZkFkGXIi/i7aJr19SMFEmK74CxG5vIdkCwDBnoihhqq1YotiGNAm4Hf9Y6BPUQoGlLC9MsNPRI2GuwLPuuqCZcrRbB5Nxlaf4NNYFyLTpJzSC5HoejyYeYiS9EG77fp3GfHuMCRbJDuLRWB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OkG9A9mb; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dff837d674so65916305ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:27:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712845671; x=1713450471; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WV8tJIjUzXHbl0VfRKq6lXNz71phUi80Xt/ITrcltAs=;
+        b=OkG9A9mbqj6Aw64QR3yy3nMohdjSMKmpu8g6hERyTUmXASs2KfIKEz79kCx7SWBMJH
+         JBSxWSclPFco5JOcQa01ntgd47IA5GUOdtAWVRhE1TxesfcXHMDOXhZR8O7Ip0gToTTV
+         TkswFpDSOludaNgoBm3WqQlmFunFVB67TiHyg9quZO4E0y0vBtZS/ld7uEyoNKzPgqG7
+         +UZYV/chbdZY7vPYycuzgKWUNTw9m3wKoylg/O8PGg9bega89de4QHueqeyY3U9JzoAK
+         SbbUJUE5DfSb571fe23O2poDptzWawlVLqbAK5T9xgjoe2/sQ+udpyEfmWzP3rONhu3Z
+         A70Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712845671; x=1713450471;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WV8tJIjUzXHbl0VfRKq6lXNz71phUi80Xt/ITrcltAs=;
+        b=IKU3f+7X7Njrco5r165sonHkyn3UjvbN/5P6+3ezOGjDQ9IRrVR+aXGrujA5Lf2hQG
+         v4ijaigC3y7LrMIcoHwqEg6fLqX3f1+RuWX55pbG6WJQS9FevUqk5Qf9iME5X8r6CKyv
+         TzT1oT5hcBKeHObLm2MYhDsScx5JJpdk3LbuLhgx6Fb8SJoLbKonR1zpRSVNnjM9sPgA
+         Fq5dz4V+LikK+EuBlcN4zJ64aDZESoyQvuiTTlobwNun/KCQeCRSuJUqX+BlSNeDUXub
+         BfUQMa4ff+gwjbJ3+PvqjHwB8+epfI0SABVMd8UgkYSxuP5Qrl2Cyb1Pg3HdJFBXSzkq
+         o/UA==
+X-Forwarded-Encrypted: i=1; AJvYcCUgC4642kaWT7ZGblsE1e9TpCFwcKlo6ktDipy9Mn36N1V3YIzIMgMpUSQf0riEZQWkPHLCWaytHiOw03hP9maXXNvG5hIV6QwNFJjy
+X-Gm-Message-State: AOJu0YwoGJ8qU8rsS2J6q9ACOTjH8YLG54FiOiojgjiqSzrs4wq1ZI6L
+	MQBsHf/pPCvXCTzpfyB1CAla2S9j3uz+QHEDa6/0SargI8RPbwJiMlCFbH+X
+X-Google-Smtp-Source: AGHT+IGKSqHXfRvr61t0+2EENyO351XU3EoE5xwRYiwQtdgPz/e3Za/SaUZo1UjNefMy9B/3oFYCZw==
+X-Received: by 2002:a17:903:13d0:b0:1e3:dfdb:ac6b with SMTP id kd16-20020a17090313d000b001e3dfdbac6bmr6861325plb.4.1712845670814;
+        Thu, 11 Apr 2024 07:27:50 -0700 (PDT)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id s3-20020a170902ea0300b001e294f2f30dsm1228876plg.93.2024.04.11.07.27.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 07:27:50 -0700 (PDT)
+From: Yuntao Wang <ytcoode@gmail.com>
+To: rppt@kernel.org
+Cc: akpm@linux-foundation.org,
+	arnd@arndb.de,
+	christophe.leroy@csgroup.eu,
+	geert@linux-m68k.org,
+	jpoimboe@kernel.org,
+	kjlx@templeofstupid.com,
+	linux-kernel@vger.kernel.org,
+	mhiramat@kernel.org,
+	ndesaulniers@google.com,
+	peterz@infradead.org,
+	tglx@linutronix.de,
+	tj@kernel.org,
+	ytcoode@gmail.com
+Subject: Re: [PATCH] init/main.c: Fix potential static_command_line memory overflow
+Date: Thu, 11 Apr 2024 22:27:23 +0800
+Message-ID: <20240411142735.245515-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <Zhfj4T1-u354E_KP@kernel.org>
+References: <Zhfj4T1-u354E_KP@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fb4abe11-5859-4a53-a4db-bb4e59a571c6@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Apr 08, 2024 at 08:41:04PM -0700, Reinette Chatre wrote:
-> Hi James,
-> 
-> On 3/21/2024 9:51 AM, James Morse wrote:
-> > Add Makefile and Kconfig for fs/resctrl. Add ARCH_HAS_CPU_RESCTRL
-> > for the common parts of the resctrl interface and make X86_CPU_RESCTRL
-> > depend on this.
+On Thu, 11 Apr 2024 16:21:37 +0300, Mike Rapoport <rppt@kernel.org> wrote:
+> On Thu, Apr 11, 2024 at 09:23:47AM +0200, Geert Uytterhoeven wrote:
+> > CC Hiramatsu-san
 > > 
-> > Signed-off-by: James Morse <james.morse@arm.com>
-> > ---
-> >  MAINTAINERS              |  1 +
-> >  arch/Kconfig             |  8 ++++++++
-> >  arch/x86/Kconfig         | 10 +++-------
-> >  fs/Kconfig               |  1 +
-> >  fs/Makefile              |  1 +
-> >  fs/resctrl/Kconfig       | 23 +++++++++++++++++++++++
-> >  fs/resctrl/Makefile      |  3 +++
-> >  fs/resctrl/ctrlmondata.c |  0
-> >  fs/resctrl/internal.h    |  0
-> >  fs/resctrl/monitor.c     |  0
-> >  fs/resctrl/psuedo_lock.c |  0
-> >  fs/resctrl/rdtgroup.c    |  0
-> >  include/linux/resctrl.h  |  4 ++++
-> >  13 files changed, 44 insertions(+), 7 deletions(-)
-> >  create mode 100644 fs/resctrl/Kconfig
-> >  create mode 100644 fs/resctrl/Makefile
-> >  create mode 100644 fs/resctrl/ctrlmondata.c
-> >  create mode 100644 fs/resctrl/internal.h
-> >  create mode 100644 fs/resctrl/monitor.c
-> >  create mode 100644 fs/resctrl/psuedo_lock.c
-> >  create mode 100644 fs/resctrl/rdtgroup.c
+> > On Thu, Apr 11, 2024 at 5:25 AM Yuntao Wang <ytcoode@gmail.com> wrote:
+> > > We allocate memory of size 'xlen + strlen(boot_command_line) + 1' for
+> > > static_command_line, but the strings copied into static_command_line are
+> > > extra_command_line and command_line, rather than extra_command_line and
+> > > boot_command_line.
+> > >
+> > > When strlen(command_line) > strlen(boot_command_line), static_command_line
+> > > will overflow.
+> 
+> Can this ever happen? 
+> Did you observe the overflow or is this a theoretical bug?
+
+I didn't observe the overflow, it's just a theoretical bug.
+
+> > > Fixes: f5c7310ac73e ("init/main: add checks for the return value of memblock_alloc*()")
+> 
+> f5c7310ac73e didn't have the logic for calculating allocation size, we
+> surely don't want to go back that far wiht Fixes.
+
+Before commit f5c7310ac73e, the memory size allocated for static_command_line
+was 'strlen(command_line) + 1', but commit f5c7310ac73e changed this size
+to 'strlen(boot_command_line) + 1'. I think this should be wrong.
+
+> > > Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> > > ---
+> > >  init/main.c | 8 +++++---
+> > >  1 file changed, 5 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/init/main.c b/init/main.c
+> > > index 2ca52474d0c3..a7b1f5f3e3b6 100644
+> > > --- a/init/main.c
+> > > +++ b/init/main.c
+> > > @@ -625,11 +625,13 @@ static void __init setup_command_line(char *command_line)
+> > >         if (extra_init_args)
+> > >                 ilen = strlen(extra_init_args) + 4; /* for " -- " */
+> > >
+> > > -       len = xlen + strlen(boot_command_line) + 1;
+> > > +       len = xlen + strlen(boot_command_line) + ilen + 1;
+> > >
+> > > -       saved_command_line = memblock_alloc(len + ilen, SMP_CACHE_BYTES);
+> > > +       saved_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
+> > >         if (!saved_command_line)
+> > > -               panic("%s: Failed to allocate %zu bytes\n", __func__, len + ilen);
+> > > +               panic("%s: Failed to allocate %zu bytes\n", __func__, len);
+> > > +
+> > > +       len = xlen + strlen(command_line) + 1;
+> > >
+> > >         static_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
+> > >         if (!static_command_line)
 > > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 5621dd823e79..c49090e9c777 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -18543,6 +18543,7 @@ S:	Supported
-> >  F:	Documentation/arch/x86/resctrl*
-> >  F:	arch/x86/include/asm/resctrl.h
-> >  F:	arch/x86/kernel/cpu/resctrl/
-> > +F:	fs/resctrl/
-> >  F:	include/linux/resctrl*.h
-> >  F:	tools/testing/selftests/resctrl/
-> >  
-> > diff --git a/arch/Kconfig b/arch/Kconfig
-> > index fd18b7db2c77..131d874d6738 100644
-> > --- a/arch/Kconfig
-> > +++ b/arch/Kconfig
-> > @@ -1406,6 +1406,14 @@ config STRICT_MODULE_RWX
-> >  config ARCH_HAS_PHYS_TO_DMA
-> >  	bool
-> >  
-> > +config ARCH_HAS_CPU_RESCTRL
-> > +	bool
-> > +	help
-> > +	  The 'resctrl' filesystem allows CPU controls of shared resources
-> > +	  such as caches and memory bandwidth to be configured. An architecture
-> > +	  selects this if it provides the arch-specific hooks for the filesystem
-> > +	  and needs the per-task CLOSID/RMID properties.
+> > Gr{oetje,eeting}s,
+> > 
+> >                         Geert
+> > 
+> > -- 
+> > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> > 
+> > In personal conversations with technical people, I call myself a hacker. But
+> > when I'm talking to journalists I just say "programmer" or something like that.
+> >                                 -- Linus Torvalds
 > 
-> Should it mention monitoring capabilities?
-
-Probably, although I wonder whether it is better to describe this just
-once, under RESCTRL_FS.  Does it makes sense to have something
-like this here?
-
-	  An architecture selects this option to indicate that the necessary
-	  hooks are provided to support the common memory system usage
-	  monitoring and control interfaces provided by the 'resctrl'
-	  filesystem (see RESCTRL_FS).
-
-If so, I can propose this.
-
-(Details on what gets added to task_struct is maybe unnecessarily low-
-level to bother with here...)
-
-> > +
-> >  config HAVE_ARCH_COMPILER_H
-> >  	bool
-> >  	help
-> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> > index e071e564452e..cb043543f088 100644
-> > --- a/arch/x86/Kconfig
-> > +++ b/arch/x86/Kconfig
-> > @@ -479,8 +479,10 @@ config GOLDFISH
-> >  config X86_CPU_RESCTRL
-> >  	bool "x86 CPU resource control support"
-> >  	depends on X86 && (CPU_SUP_INTEL || CPU_SUP_AMD)
-> > +	depends on MISC_FILESYSTEMS
-> >  	select KERNFS
-> 
-> Do both X86_CPU_RESCTRL and RESCTRL_FS need to select KERNFS?
-
-Hmmm, hopefully the arch backend doesn't need to re-depend on KERNFS.
-I'll note that for review.
-
-(If not, we can probably drop filesystem-related #includes from the
-remaining x86 arch code too...)
-
-[...]
-
-> > diff --git a/fs/Kconfig b/fs/Kconfig
-> > index a46b0cbc4d8f..d8a36383b6dc 100644
-> > --- a/fs/Kconfig
-> > +++ b/fs/Kconfig
-> > @@ -331,6 +331,7 @@ source "fs/omfs/Kconfig"
-> >  source "fs/hpfs/Kconfig"
-> >  source "fs/qnx4/Kconfig"
-> >  source "fs/qnx6/Kconfig"
-> > +source "fs/resctrl/Kconfig"
-> >  source "fs/romfs/Kconfig"
-> >  source "fs/pstore/Kconfig"
-> >  source "fs/sysv/Kconfig"
-> > diff --git a/fs/Makefile b/fs/Makefile
-> > index 6ecc9b0a53f2..da6e2d028722 100644
-> > --- a/fs/Makefile
-> > +++ b/fs/Makefile
-> > @@ -129,3 +129,4 @@ obj-$(CONFIG_EFIVAR_FS)		+= efivarfs/
-> >  obj-$(CONFIG_EROFS_FS)		+= erofs/
-> >  obj-$(CONFIG_VBOXSF_FS)		+= vboxsf/
-> >  obj-$(CONFIG_ZONEFS_FS)		+= zonefs/
-> > +obj-$(CONFIG_RESCTRL_FS)	+= resctrl/
-> > diff --git a/fs/resctrl/Kconfig b/fs/resctrl/Kconfig
-> > new file mode 100644
-> > index 000000000000..36a1ddbe6c21
-> > --- /dev/null
-> > +++ b/fs/resctrl/Kconfig
-> 
-> Could you please review the contents of this file for
-> appropriate line length and consistent tab usage?
-
-Noted.
-
-> > @@ -0,0 +1,23 @@
-> > +config RESCTRL_FS
-> > +	bool "CPU Resource Control Filesystem (resctrl)"
-> > +	depends on ARCH_HAS_CPU_RESCTRL
-> > +	select KERNFS
-> > +	select PROC_CPU_RESCTRL               if PROC_FS
-> > +	help
-> > +	  Resctrl is a filesystem interface
-> > +	  to control allocation and
-> > +	  monitoring of system resources
-> > +	  used by the CPUs.
-
-(Not quite a haiku, but I don't know how many syllables "resctrl"
-counts as...)
-
-Since this is the Kconfig user's primary knob for enabling resctrl,
-maybe flesh this out and make it a bit more generic and newbie-friendly?
-Something like:
-
-	  Some architectures provide hardware facilities to group tasks and
-	  monitor and control their usage of memory system resources such as
-	  caches and memory bandwidth.  Examples of such facilities include
-	  Intel's Resource Director Technology (Intel(R) RDT) and AMD's
-	  Platform Quality of Service (AMD QoS).
-
-	  If your system has the necessary support and you want to be able to
-	  assign tasks to groups and manipulate the associated resource
-	  monitors and controls from userspace, say Y here to get a mountable
-	  'resctrl' filesystem that lets you do just that.
-
-	  If nothing mounts or prods the 'resctrl' filesystem, resource
-	  controls and monitors are left in a quiescent, permissive state.
-
-	  If unsure, it is safe to say Y.
-
-	  See <file:Documentation/arch/x86/resctrl.rst> for more information.
-
-I'm assuming that just enabling this option doesn't introduce
-significant overheads.  For MPAM I'm pretty sure it doesn't,
-but if this is a concern that we could go for "If unsure, say N."
-
-If this looks OK, I can propose it to James.
-
-> > +
-> > +config RESCTRL_FS_PSEUDO_LOCK
-> > +	bool
-> > +	help
-> > +          Software mechanism to pin data in a cache portion using
-> > +          micro-architecture specific knowledge.
-> > +
-> > +config RESCTRL_RMID_DEPENDS_ON_CLOSID
-> > +	bool
-> > +	help
-> > +	  Enable by the architecture when the RMID values depend on the CLOSID.
-> > +	  This causes the closid allocator to search for CLOSID with clean
-> > +	  RMID.
-> > diff --git a/fs/resctrl/Makefile b/fs/resctrl/Makefile
-> > new file mode 100644
-> > index 000000000000..10fcfb0fdb10
-> > --- /dev/null
-> > +++ b/fs/resctrl/Makefile
-> > @@ -0,0 +1,3 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +obj-$(CONFIG_RESCTRL_FS)		+= rdtgroup.o ctrlmondata.o monitor.o
-> > +obj-$(CONFIG_RESCTRL_FS_PSEUDO_LOCK)	+= psuedo_lock.o
-> > diff --git a/fs/resctrl/ctrlmondata.c b/fs/resctrl/ctrlmondata.c
-> > new file mode 100644
-> > index 000000000000..e69de29bb2d1
-> > diff --git a/fs/resctrl/internal.h b/fs/resctrl/internal.h
-> > new file mode 100644
-> > index 000000000000..e69de29bb2d1
-> > diff --git a/fs/resctrl/monitor.c b/fs/resctrl/monitor.c
-> > new file mode 100644
-> > index 000000000000..e69de29bb2d1
-> > diff --git a/fs/resctrl/psuedo_lock.c b/fs/resctrl/psuedo_lock.c
-> 
-> pseudo_lock.c
-
-[...]
-
-> Reinette
-
-Noted here, and in the Makefile snippet above.
-
-Cheers
----Dave
+> -- 
+> Sincerely yours,
+> Mike.
 
