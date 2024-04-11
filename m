@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 087238A1A5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA43A8A1AB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:04:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2BCAB29368
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:37:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C89D2B24482
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:37:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C846C17D14D;
-	Thu, 11 Apr 2024 15:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B30981C822D;
+	Thu, 11 Apr 2024 15:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="CYtWoUu5"
-Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="ZbPyJ9er"
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69C7D1C8235
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:38:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF56817D14C
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849920; cv=none; b=boiDDyo5CDtItsd8fCjzCZSsiDY0CMI8XXfgCUSbDlburrvSTX+LABs3rtWjKzqlMqnYfbUEystBsQR6XKmMwHTZD4vVOHhBqL8Ctm9XaCGEtrmA8qPy8Ks/ed19MWaHNsMiB90E0TqYPoMGmAvhGIOED3OU/S873/KmkMsV8xA=
+	t=1712849922; cv=none; b=uGE6/fX+AsyucGSV5LuqUIkDPW29scFctZN0xLWI4fU+GfqQ+yayG9Laq/HvxBkSUG4WVcM8GIhhXL4TWVy64jbyLov4PVyaLCj7p462HzEVaIUd8R8Cp9y82VmaMu0TlBMi4GraLEMO03xUWQrezvKKWR/yFzpWmLp9WhRFGaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849920; c=relaxed/simple;
-	bh=F83XvFrx76isF/dT0LWcQ3VyyodAlP/DQbr4dsQvEmA=;
+	s=arc-20240116; t=1712849922; c=relaxed/simple;
+	bh=bCtXbQ0OFBriS+yV5uGvubGKabA1yy1bdobVM9qbR+4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=s8v2soJNDCqhiCtibLI63ioO8K64/5I6lF2i34/30DOp/qWUbnB3UkTw/uFxmpjAjcXkwVMmYkA6t4WhAeDyPbJq3T7gNBsoJ21osWiMxu9E6nIp9uDA+m0COS6K2iO7letpP8MwwgqiQHx1Lw/Jf83E/3t7ZJXStrnVz5lTV50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=CYtWoUu5; arc=none smtp.client-ip=209.85.166.182
+	 MIME-Version; b=XiLsvRY2+CsR5M5QvjUe/EA6MnjeIoNCrgdBSK4rPhnDVG39P35uuQKoX/MhONiwEjcIDlmTCAcUPPkk/1mnZUayREt0AGV0HjLLOQXJIb3S+46yEw190eiFM1C5whkZ10B+3AXVzWp1GFf9HR5VGKbWafecyQiaF9hYMZUgYSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=ZbPyJ9er; arc=none smtp.client-ip=209.85.166.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-36a224d7414so187805ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:38:38 -0700 (PDT)
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7d67d1073easo9841839f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:38:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849917; x=1713454717; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849920; x=1713454720; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=53JvdJjKxSCyz+n3tel8rdHfSTpWXYjnOnA3jputiX4=;
-        b=CYtWoUu5Vdu82iify3aGoCaO6DNSJH77WXN9CH0MfeoBFjnvQUp6kz6TDsO7YcdTQ9
-         blKZxBfVrhLIylD7I5juUiMZ4tB/Z3jaicOqvDQSx4jMYoasOKwQPwowbhh/nc+l0T4s
-         5/AfbnkFTuIBuPxFnULaYmKwm6muf0lN4ZoiHS2rS62tKhlSVL5aR6uKnK/1NWr4ZYIz
-         oAno4guJTb4J/IinM/2jdPxIZ+JBbApKHz8yhWVREvetSMDVVHiwGtEjkBH5vj57mLKg
-         ulWAz1WWqT0VSUcRdeEfF8HUlgUnFDvzVL3NiB036idNkPCmZCmOsV/CI7WwkuWNh/5U
-         dwBw==
+        bh=lmAhqQs5gVR2K93MNDL7yppZPnqIKQFXDAq/G1NusRk=;
+        b=ZbPyJ9er5612zJh0owAbDX4zz18CLf6HzujoTrCrKwzE3bMseK+ufRrwEcw5m0zCDZ
+         P/B08Ai9MrC+1x01Pba7YDtYZHXbHMaKHrjw1/wVRQMDXbvTdqi4YQgqydhMzL/fKnUm
+         XFu2tXi37j30W0RVvG99VKbbj9u16vxe4fFH+/unICh83cs2AtXg5VGvAlJDg0uJu6RY
+         RGPZldLkz8chOS78UdsPczZV0wdhO3A8hITQbHfMp/a0X2yDtqNk1BTfMBNu+i0uj1rs
+         dyve7vwgzC1Fynh2SS/gmYTOTwGQI/dKhh1ovrvaGGOgF2xrJTYQWaYVS4b5BQ82Uxo1
+         m4aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849917; x=1713454717;
+        d=1e100.net; s=20230601; t=1712849920; x=1713454720;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=53JvdJjKxSCyz+n3tel8rdHfSTpWXYjnOnA3jputiX4=;
-        b=c/MFo1V7BexI6aMZHc1/gK8eT+Hp1WwWZxfCmESjfKZ8HqxWqXgmPy4zOYJdHidhhw
-         ozzg2rVPn46GkCNrk6QbzwC74q8m+8VzhcCFWJ0GpVmt4/g6v3/gSbPeQxhblfZSGAWO
-         kAGWQTF4qL8qYa0eG+7CU6UzoN1uDWd6xuejjmQHATgdcLReZbh7MKhUBvivyZhxnPjB
-         DgG9Ff1y5v8evpufIXn/LJmYxvZKZy6JWGlj9Ylw0D83rWmXeiofMkMWhRFJSKlhYveo
-         1BoOnCz0fzMC90ecVDHHwGn1f0UfGjsVgdYjhdbcT83AE3s861lekG79mZt7uZwLOMpK
-         SMfQ==
-X-Gm-Message-State: AOJu0YzSPAoykUaSCpc711/EB+vp4XGsV7zkQC538Anbfckf2B/9ILvm
-	OKnh8fav3bHtZEOybLLyKKllQ1XZivI5lASSt2+mQhanYj9frlTskTUCcr1EijlH6k0FyRdhOgv
-	v
-X-Google-Smtp-Source: AGHT+IHgT/GA7IZXC2b2jbDlZSMezJ45cpXcmO1zDsViOYy2Fdj156QagtF5/3o8QUYsToF92KBMhQ==
-X-Received: by 2002:a6b:4e14:0:b0:7d6:631d:7b0 with SMTP id c20-20020a6b4e14000000b007d6631d07b0mr194501iob.1.1712849917254;
-        Thu, 11 Apr 2024 08:38:37 -0700 (PDT)
+        bh=lmAhqQs5gVR2K93MNDL7yppZPnqIKQFXDAq/G1NusRk=;
+        b=j9lE7HimIuNrW3cNXfHk5UyxG/HZXVutVPOv0h18Mf4oJykwBhhBzzOx92x+c1v1DA
+         oZ2O85OAiQU2EjOSuxIljb/5YRV1XS/yXGpjvIWR3nlr2Ul0wMe9CUCwsXjN7PV6IOS7
+         kXJbnJ+hUAXX6P7HYrqdhIS+mJ64l5nuQHIIJvXeDzIJvJ0DJFRPs6Y0mjfTvGg+Dn00
+         D1fh2mMlsc694fwSkWzYhHZXGB6RAAxTdbnCLd/jhVnBFUv61mnV7AH9DvYYMB0g4r7U
+         GFcK0WeThyTNgwwzMgNx/5bTLW3/WMHv/q8yffyUBrM8HpFrbPvVoXCuGQPUZFhTRIU4
+         OAcw==
+X-Gm-Message-State: AOJu0YzsfEfbvmCLWJV5FAMy1VKwlLtxYCflEZlmV/2MFLpomOmFHS+U
+	oh7iOWM3yc/vjr7WM+dbte9qGffMmVb6qATgKlQTjo0+GVDBJ+hNmvBa/yRGFGEwEe5z68bsTSt
+	T
+X-Google-Smtp-Source: AGHT+IHfwTWtg5oSdR+PY0YSMZZaUnlWS33fdEB+hp9xkuxA2fyywFgsVUGizmtShZyVraqS+w0IfA==
+X-Received: by 2002:a6b:7b05:0:b0:7d6:60dc:bc8e with SMTP id l5-20020a6b7b05000000b007d660dcbc8emr199412iop.1.1712849919228;
+        Thu, 11 Apr 2024 08:38:39 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.38.35
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.38.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:38:35 -0700 (PDT)
+        Thu, 11 Apr 2024 08:38:37 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 251/437] watchdog: sa1100_wdt: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:16:31 -0600
-Message-ID: <20240411153126.16201-252-axboe@kernel.dk>
+Subject: [PATCH 252/437] watchdog: sbc60xxwdt: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:16:32 -0600
+Message-ID: <20240411153126.16201-253-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,34 +85,43 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/watchdog/sa1100_wdt.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/watchdog/sbc60xxwdt.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/watchdog/sa1100_wdt.c b/drivers/watchdog/sa1100_wdt.c
-index 5d2df008b92a..f994b52565ec 100644
---- a/drivers/watchdog/sa1100_wdt.c
-+++ b/drivers/watchdog/sa1100_wdt.c
-@@ -98,9 +98,9 @@ static int sa1100dog_release(struct inode *inode, struct file *file)
- 	return 0;
- }
+diff --git a/drivers/watchdog/sbc60xxwdt.c b/drivers/watchdog/sbc60xxwdt.c
+index 7b974802dfc7..ce727f42b88e 100644
+--- a/drivers/watchdog/sbc60xxwdt.c
++++ b/drivers/watchdog/sbc60xxwdt.c
+@@ -161,9 +161,9 @@ static void wdt_keepalive(void)
+  * /dev/watchdog handling
+  */
  
--static ssize_t sa1100dog_write(struct file *file, const char __user *data,
--						size_t len, loff_t *ppos)
-+static ssize_t sa1100dog_write(struct kiocb *iocb, struct iov_iter *from)
+-static ssize_t fop_write(struct file *file, const char __user *buf,
+-						size_t count, loff_t *ppos)
++static ssize_t fop_write(struct kiocb *iocb, struct iov_iter *from)
  {
-+	size_t len = iov_iter_count(from);
- 	if (len)
- 		/* Refresh OSMR3 timer. */
- 		sa1100_wr(sa1100_rd(REG_OSCR) + pre_margin, REG_OSMR3);
-@@ -165,7 +165,7 @@ static long sa1100dog_ioctl(struct file *file, unsigned int cmd,
- static const struct file_operations sa1100dog_fops = {
++	size_t count = iov_iter_count(from);
+ 	/* See if we got the magic character 'V' and reload the timer */
+ 	if (count) {
+ 		if (!nowayout) {
+@@ -177,7 +177,7 @@ static ssize_t fop_write(struct file *file, const char __user *buf,
+ 			   magic character */
+ 			for (ofs = 0; ofs != count; ofs++) {
+ 				char c;
+-				if (get_user(c, buf + ofs))
++				if (get_iter(c, from))
+ 					return -EFAULT;
+ 				if (c == 'V')
+ 					wdt_expect_close = 42;
+@@ -276,7 +276,7 @@ static long fop_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ static const struct file_operations wdt_fops = {
  	.owner		= THIS_MODULE,
  	.llseek		= no_llseek,
--	.write		= sa1100dog_write,
-+	.write_iter	= sa1100dog_write,
- 	.unlocked_ioctl	= sa1100dog_ioctl,
- 	.compat_ioctl	= compat_ptr_ioctl,
- 	.open		= sa1100dog_open,
+-	.write		= fop_write,
++	.write_iter	= fop_write,
+ 	.open		= fop_open,
+ 	.release	= fop_close,
+ 	.unlocked_ioctl	= fop_ioctl,
 -- 
 2.43.0
 
