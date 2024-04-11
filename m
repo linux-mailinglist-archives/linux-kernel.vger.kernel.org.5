@@ -1,75 +1,64 @@
-Return-Path: <linux-kernel+bounces-140313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 604788A128E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:09:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20D808A1295
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:10:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE491284A88
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:09:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51DFD1C212F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E9E214AD37;
-	Thu, 11 Apr 2024 11:08:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448A6147C7E;
+	Thu, 11 Apr 2024 11:09:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="BlJJlBEP"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="YeQFpoGj"
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0A391482E6;
-	Thu, 11 Apr 2024 11:08:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 845B11474AB
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712833713; cv=none; b=TN48ueEQcD4kL6nh4yh4WNt7JCpN0zA7Rla3p/tBuqvx6tbVP6ChUR9RzGBxQwX6n0OIvbyzuV/t/Wq0dlCcm1BZ7BR72Iwr/3uolbT7UQ+kAo5HfvtrrNyqHz+Lb3xZWaOgobTzHzb6LOSPDpXlUBMjC0Cqqozo+sNewKrUX94=
+	t=1712833739; cv=none; b=byhj9lnwPeZ29pd5oDcBPLQ0Sxh5maqNStYf0aAx9b8WnDKGevkeDKnV8qg15iUcwON/nwhS78Un4oN8ndKC+m5gIqekMA2CYadOGHbIjqbq/sIlnHWPz1uAOZT9nCsE7Az4Vyy40aMkakUzjsn+C8Z4Krfa/goz+oMbZlwAWTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712833713; c=relaxed/simple;
-	bh=TVVL0K6vOEFqZsCE7v7GdkiXNDbZLCx8wexLXrIAEMg=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=R7BQT9bqkmUtwY8D8QiBAdYU5O6Krb+tKQCfOIzz8yNPWnyHgl9lcsy0T4jZHyhwuwIw0/+La+dDC0GvTHQW2IyaWdZ8FuZdSPdQOamV2+jqoFmTIhTOGF7MG+cy6luvbGfDasge/FTqAjNMsC6suSuRlTX2TRA8q/dvATdnViU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=BlJJlBEP; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 43B40AxW009489;
-	Thu, 11 Apr 2024 06:08:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PODMain02222019; bh=Hr+V6gKcASsd2ylYLtiWHYDaf8qbB5KXVCuuLr+vFyo=; b=
-	BlJJlBEPyJYUsNLQmGqm0VZKM5msopraPPUrTUAhUuYJDYotSX8+RAjghGSmIH+a
-	I2jHb9UGY3G3qhO2KArfxVGfuX0DYJlwgWBAKy8WsDYxR8b/dD2kbwufvkaSIv02
-	wowKx+5DZMxSiMsEB2pkFNI1pjLJHWMVuDZUEWXDw+I0zIomZWrH8OzIXzI0SSBX
-	1YDTZ/pIfE7NA/tP2IBf+KnkRLjS00X9evm3f3OZPNoJr+sDRwAqBQRtidYxDZez
-	g30sscnKtbBk1SjCquOE4x4IioHyEjIXzfNMrtSGBKZBumKjGBgKZ7xyLeR3jB7g
-	xCgEl+MplenNF2rY17scvA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3xb3sxpva8-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 06:08:19 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 11 Apr
- 2024 12:08:16 +0100
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- ediex01.ad.cirrus.com (198.61.84.80) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9
- via Frontend Transport; Thu, 11 Apr 2024 12:08:16 +0100
-Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.61.64.140])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id B4EC482024A;
-	Thu, 11 Apr 2024 11:08:16 +0000 (UTC)
-From: Stefan Binding <sbinding@opensource.cirrus.com>
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC: <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Stefan
- Binding" <sbinding@opensource.cirrus.com>
-Subject: [PATCH v2 7/7] ALSA: hda: cs35l41: Remove Speaker ID for Lenovo Legion slim 7 16ARHA7
-Date: Thu, 11 Apr 2024 12:08:13 +0100
-Message-ID: <20240411110813.330483-8-sbinding@opensource.cirrus.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240411110813.330483-1-sbinding@opensource.cirrus.com>
-References: <20240411110813.330483-1-sbinding@opensource.cirrus.com>
+	s=arc-20240116; t=1712833739; c=relaxed/simple;
+	bh=4yerjFFTsRI1XLGWxI1mWV+vwXM2RIzb82EVWzwsnw0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cgPxS/urSHMa0GZ55Yhav/9/0ug+zAsOk0BC+iS9QLyQim3+bgLcJ1olec9/quShrZ76VDmwu2a8FvD2lfGJsM5JpTMigMiLPrKimfItuiYfVVrDJJmCbK/vVkSuxAVffknEf2xjZVNxVC6RNevm9qx7azdlExDYckUV3Sl8qzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=YeQFpoGj; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from tundra.lovozera (unknown [178.176.79.151])
+	by mail.ispras.ru (Postfix) with ESMTPSA id CA9684073CFC;
+	Thu, 11 Apr 2024 11:08:50 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru CA9684073CFC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1712833732;
+	bh=6nS8pm5CRwKEHxdOcbSSAvsWDn+jjKR17A7PSN1Ed+k=;
+	h=From:To:Cc:Subject:Date:From;
+	b=YeQFpoGjy7hnaJAj9pGdBRzJT+B+l0eZezXjucGk1ztAq8+FgooxPjA7HSbzlsKEX
+	 /BOyJNhYY/7HVZ+hUXY8/6P5n9HjoULhT7geCYVvwNf/3O1hb6nh9ARWCDpLk15MVj
+	 X+4m0PHtp+ZS9iFkVFQr1mcL99sHbriovxwIa/xc=
+From: Mikhail Kobuk <m.kobuk@ispras.ru>
+To: Karol Herbst <kherbst@redhat.com>
+Cc: Mikhail Kobuk <m.kobuk@ispras.ru>,
+	Lyude Paul <lyude@redhat.com>,
+	Danilo Krummrich <dakr@redhat.com>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Ben Skeggs <bskeggs@redhat.com>,
+	Francisco Jerez <currojerez@riseup.net>,
+	dri-devel@lists.freedesktop.org,
+	nouveau@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	Fedor Pchelkin <pchelkin@ispras.ru>,
+	Alexey Khoroshilov <khoroshilov@ispras.ru>
+Subject: [PATCH v2] drm: nv04: Fix out of bounds access
+Date: Thu, 11 Apr 2024 14:08:52 +0300
+Message-ID: <20240411110854.16701-1-m.kobuk@ispras.ru>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,40 +66,84 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: IMGmyUQA9zpzkkE64L5KuIOFgMOF8uco
-X-Proofpoint-GUID: IMGmyUQA9zpzkkE64L5KuIOFgMOF8uco
-X-Proofpoint-Spam-Reason: safe
 
-These laptops do not have _DSD and must be added by configuration
-table, however, the initial entries for them are incorrect:
-Neither laptop contains a Speaker ID GPIO.
-This issue would not affect audio playback, but may affect which files
-are loaded when loading firmware.
+When Output Resource (dcb->or) value is assigned in
+fabricate_dcb_output(), there may be out of bounds access to
+dac_users array in case dcb->or is zero because ffs(dcb->or) is
+used as index there.
+The 'or' argument of fabricate_dcb_output() must be interpreted as a
+number of bit to set, not value.
 
-Fixes: b67a7dc418aa ("ALSA: hda/realtek: Add sound quirks for Lenovo Legion slim 7 16ARHA7 models")
+Utilize macros from 'enum nouveau_or' in calls instead of hardcoding.
 
-Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Fixes: 2e5702aff395 ("drm/nouveau: fabricate DCB encoder table for iMac G4")
+Fixes: 670820c0e6a9 ("drm/nouveau: Workaround incorrect DCB entry on a GeForce3 Ti 200.")
+Signed-off-by: Mikhail Kobuk <m.kobuk@ispras.ru>
 ---
- sound/pci/hda/cs35l41_hda_property.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changes in v2:
+- Instead of checking ffs(dcb->or), adjust function calls to match
+  argument semantics
+- Link to v1: https://lore.kernel.org/all/20240331064552.6112-1-m.kobuk@ispras.ru/
 
-diff --git a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
-index efa62e99d330..6f82b28e26dd 100644
---- a/sound/pci/hda/cs35l41_hda_property.c
-+++ b/sound/pci/hda/cs35l41_hda_property.c
-@@ -112,8 +112,8 @@ static const struct cs35l41_config cs35l41_config_table[] = {
- 	{ "10431F62", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 0, 0, 0 },
- 	{ "10433A60", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
- 	{ "17AA386F", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
--	{ "17AA3877", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
--	{ "17AA3878", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
-+	{ "17AA3877", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
-+	{ "17AA3878", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, -1, -1, 0, 0, 0 },
- 	{ "17AA38A9", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
- 	{ "17AA38AB", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 2, -1, 0, 0, 0 },
- 	{ "17AA38B4", 2, EXTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 0, 0, 0 },
+ drivers/gpu/drm/nouveau/nouveau_bios.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/nouveau/nouveau_bios.c b/drivers/gpu/drm/nouveau/nouveau_bios.c
+index 479effcf607e..79cfab53f80e 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_bios.c
++++ b/drivers/gpu/drm/nouveau/nouveau_bios.c
+@@ -23,6 +23,7 @@
+  */
+ 
+ #include "nouveau_drv.h"
++#include "nouveau_bios.h"
+ #include "nouveau_reg.h"
+ #include "dispnv04/hw.h"
+ #include "nouveau_encoder.h"
+@@ -1677,7 +1678,7 @@ apply_dcb_encoder_quirks(struct drm_device *dev, int idx, u32 *conn, u32 *conf)
+ 	 */
+ 	if (nv_match_device(dev, 0x0201, 0x1462, 0x8851)) {
+ 		if (*conn == 0xf2005014 && *conf == 0xffffffff) {
+-			fabricate_dcb_output(dcb, DCB_OUTPUT_TMDS, 1, 1, 1);
++			fabricate_dcb_output(dcb, DCB_OUTPUT_TMDS, 1, 1, DCB_OUTPUT_B);
+ 			return false;
+ 		}
+ 	}
+@@ -1763,26 +1764,26 @@ fabricate_dcb_encoder_table(struct drm_device *dev, struct nvbios *bios)
+ #ifdef __powerpc__
+ 	/* Apple iMac G4 NV17 */
+ 	if (of_machine_is_compatible("PowerMac4,5")) {
+-		fabricate_dcb_output(dcb, DCB_OUTPUT_TMDS, 0, all_heads, 1);
+-		fabricate_dcb_output(dcb, DCB_OUTPUT_ANALOG, 1, all_heads, 2);
++		fabricate_dcb_output(dcb, DCB_OUTPUT_TMDS, 0, all_heads, DCB_OUTPUT_B);
++		fabricate_dcb_output(dcb, DCB_OUTPUT_ANALOG, 1, all_heads, DCB_OUTPUT_C);
+ 		return;
+ 	}
+ #endif
+ 
+ 	/* Make up some sane defaults */
+ 	fabricate_dcb_output(dcb, DCB_OUTPUT_ANALOG,
+-			     bios->legacy.i2c_indices.crt, 1, 1);
++			     bios->legacy.i2c_indices.crt, 1, DCB_OUTPUT_B);
+ 
+ 	if (nv04_tv_identify(dev, bios->legacy.i2c_indices.tv) >= 0)
+ 		fabricate_dcb_output(dcb, DCB_OUTPUT_TV,
+ 				     bios->legacy.i2c_indices.tv,
+-				     all_heads, 0);
++				     all_heads, DCB_OUTPUT_A);
+ 
+ 	else if (bios->tmds.output0_script_ptr ||
+ 		 bios->tmds.output1_script_ptr)
+ 		fabricate_dcb_output(dcb, DCB_OUTPUT_TMDS,
+ 				     bios->legacy.i2c_indices.panel,
+-				     all_heads, 1);
++				     all_heads, DCB_OUTPUT_B);
+ }
+ 
+ static int
 -- 
-2.34.1
+2.44.0
 
 
