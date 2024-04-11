@@ -1,90 +1,114 @@
-Return-Path: <linux-kernel+bounces-140691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140692-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7184F8A17C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:47:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAF058A17CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:48:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C1F9284273
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:47:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E16CB2375F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:48:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0680EDF42;
-	Thu, 11 Apr 2024 14:47:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57C73DF43;
+	Thu, 11 Apr 2024 14:48:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VwecqAAY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="QWS4LBIf"
+Received: from xry111.site (xry111.site [89.208.246.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A40F9DA;
-	Thu, 11 Apr 2024 14:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AC91D530
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:48:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712846831; cv=none; b=nXFcNrIxfXQql1eINyjTbux5H75/mfscpHfmMK2++udwoU69VouiF25IsSs3Y8TQh1Wueo92jOxtSo1dmxdeop3GlPLe1FengiMD79x0xFPbNoSqw/Pmy9Dd+JD77IwxIqQ2TXsN+IPBYf3XJrnSBE7NglEUjgLogeYooKoGvb4=
+	t=1712846898; cv=none; b=nHTx1ooG9d3grytDl9s++ZHD7sBLt9XrQczab9ccunFITxMomocfl3cnWcaagYuIXF/SVbNxXvQeR7eseToGU1QB6egT/ZG5f9vWT4zDQr6JdOfBL2Ids7IzLvj8999xoLsmJHnd4Uin4O1PNZFuV7CqgYVY/m1nTg4CiVbfBRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712846831; c=relaxed/simple;
-	bh=Zb0JBOe6YIm233S2t28Imn/lwnjsEqRahBqWBCo/pFM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=M5KVV4OkOiokw7w0LPoSExmu8w//ykUYzGPrAiD7WEW9OQoYSfJk00Q4AUpOyoJ9rK55kRBPd3c1ryU9ZMEMwohG7hiXpv4QqSq87i/LOEOxWy62oYYPSu9F0mkfy3PCxuVB9bsGYu4x7XF2hIrH1EYARlw6xQhHhQw6o2cLXDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VwecqAAY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53991C2BBFC;
-	Thu, 11 Apr 2024 14:47:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712846830;
-	bh=Zb0JBOe6YIm233S2t28Imn/lwnjsEqRahBqWBCo/pFM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=VwecqAAYJQb2m3omWvRV1wxYx9OmhDT/0SZSWCtForipxHiXD8ZBAkwXyJLZLZGg6
-	 LpW3kiObBAWoyx0jWpB4WoPFn6KyuORQEAGBxVGMD0E4gbU+4/SpJiqMjuXIwWlTln
-	 6WKY/FmlEJPuEwWATY/pazEv76+TtGuod9N0YauU5w2Jy1sZkxR5XMKRaaZVckDV+z
-	 4z849AXjgfersS2/RsoYoQGS8X0mcUR0cncW2Iva2AhZlxQWxN/5zs2mL9gq/J7pWJ
-	 xW1sT+ZXlX4VARq8mdopAzgAXi5pxbgSrwo0gJ0gtur2ihrM+pP2E2ZX/p+vywpqt3
-	 a2ASJzpF9/YSA==
-Date: Thu, 11 Apr 2024 07:47:09 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, David Ahern
- <dsahern@kernel.org>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Andrew Lunn
- <andrew@lunn.ch>, <nex.sw.ncis.osdt.itp.upstreaming@intel.com>,
- <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH RFC net-next 7/7] netdev_features: convert
- NETIF_F_FCOE_MTU to IFF_FCOE_MTU
-Message-ID: <20240411074709.249b3482@kernel.org>
-In-Reply-To: <1f14cb75-ee6b-4a7d-9041-23a8cfcd8476@intel.com>
-References: <20240405133731.1010128-1-aleksander.lobakin@intel.com>
-	<20240405133731.1010128-8-aleksander.lobakin@intel.com>
-	<20240408193806.18e227c8@kernel.org>
-	<1f14cb75-ee6b-4a7d-9041-23a8cfcd8476@intel.com>
+	s=arc-20240116; t=1712846898; c=relaxed/simple;
+	bh=wjBgk7029GiJIT3ORMbsWBEnFRbSTbg6nXwPGUXtmG0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=r7A+Dia36kfnuNIswsVahdVqODBhZv5l0w0NCrO9/6G3y17mgw+qAsGvPmGrdbeh9gqA4JXV2jSl8j2R0EA2byy93N2yHLgvjD06bND9tVNSG/R5Db21n7muzx6h5iC2WWcQc7QhQtrWyODOG2c+4cSLA4HpsBmUvNnfXGjTQ+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=QWS4LBIf; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1712846894;
+	bh=wjBgk7029GiJIT3ORMbsWBEnFRbSTbg6nXwPGUXtmG0=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=QWS4LBIfeGBLa4KXZ/CG7I2X2Lp5C5rrVF3/E861PnlYV+IY8vE4OhXSl44VztRiz
+	 9KP/WqY3yHGTnKUxjntHFH38wJhQ8h7NTaV9kjWicwVu+3lvS30ejWgPy764e3Z3Qo
+	 SWcE3noACDMma+WjU6RX+YCgO/ymTajdvPXdcrBU=
+Received: from [192.168.124.10] (unknown [113.200.174.104])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id A475466EB0;
+	Thu, 11 Apr 2024 10:48:11 -0400 (EDT)
+Message-ID: <1f5d53596e2ac8948332570e3bda17c3877fd499.camel@xry111.site>
+Subject: Re: [PATCH v6] x86/mm: Don't disable INVLPG if "incomplete Global
+ INVLPG flushes" is fixed by microcode or the kernel is running in a
+ hypervisor
+From: Xi Ruoyao <xry111@xry111.site>
+To: Dave Hansen <dave.hansen@intel.com>, Dave Hansen
+ <dave.hansen@linux.intel.com>, Michael Kelley <mhklinux@outlook.com>, Pawan
+ Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>, Peter Zijlstra
+ <peterz@infradead.org>,  Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+ <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, "H. Peter Anvin"
+ <hpa@zytor.com>, x86@kernel.org, linux-kernel@vger.kernel.org, Sean
+ Christopherson <seanjc@google.com>, Andrew Cooper
+ <andrew.cooper3@citrix.com>
+Date: Thu, 11 Apr 2024 22:48:07 +0800
+In-Reply-To: <3ee70b6c-3399-43f9-8934-cb5a0e51f006@intel.com>
+References: <20240411104822.6429-1-xry111@xry111.site>
+	 <3ee70b6c-3399-43f9-8934-cb5a0e51f006@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Thu, 11 Apr 2024 12:28:08 +0200 Alexander Lobakin wrote:
-> > Any reason not to make it a bitfield? I haven't looked at the longer
-> > patches but this one seems to be used like a basic bool.  
-> 
-> This whole enum could be made as bitfields, should we convert it? Would
-> be a big patch tho ._.
+On Thu, 2024-04-11 at 07:44 -0700, Dave Hansen wrote:
+> On 4/11/24 03:48, Xi Ruoyao wrote:
+> > +	/*
+> > +	 * The Intel errata claims: "this erratum does not apply in VMX
+> > +	 * non-root operation.=C2=A0 It applies only when PCIDs are enabled
+> > +	 * and either in VMX root operation or outside VMX operation."
+> > +	 * So we are safe if we are surely running in a hypervisor.
+> > +	 */
+>=20
+> When you revise this, could you please work to make this more succinct?
+> The Intel language on these things tends to be a bit flowery and is not
+> always well-suited for the kernel.
 
-As always, I haven't investigated closely :) But my thinking was -
-we are at 34 bits in priv. We just need to convert 2 of them to
-a bitfield, pick two with fewest uses. Then we can downgrade 
-the field to u32 from ulonglong, and we can carry on adding bitfields?
+Oops, bad timing.  I just sent v7 before getting this reply.
 
-> > But this definitely _is_ a uAPI change, right?  
-> 
-> Why?
+I'm not a native English speaker, so could you give some hint about how
+to write this comment clearly?
 
-It will be user visible, ethtool -k is losing a field.
-Whether that's actually going to break anything depends on how silly
-user space is.
+> Also, saying that the erratum "claims" this casts doubt on it.=C2=A0 That=
+'s
+> counterproductive.=C2=A0 I believe the current documentation is correct.=
+=C2=A0 My
+> original ce0b15d11ad8 ("x86/mm: Avoid incomplete Global INVLPG flushes")
+> should have considered virtualized systems immune to this issue.
 
-As Andrew pointed out, definitely something that should be called out
-in the commit message.
+Then do we need a "Fixes: ce0b15d11ad8" for the patch keeping PCID
+enabled for guests?
+
+> I agree that it sounds weird.=C2=A0 It _is_ weird that systems running un=
+der
+> hypervisors aren't affected.=C2=A0 But that's all it is: a weird bug.=C2=
+=A0 The
+> documentation is correct.
+
+Yes, these hardware issues are just weird to me...
+
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
 
