@@ -1,200 +1,283 @@
-Return-Path: <linux-kernel+bounces-141577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72BE78A2036
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:28:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E04078A203D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:31:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC751B2688C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:28:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ED1A1C21C2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:31:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BC9118628;
-	Thu, 11 Apr 2024 20:27:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 056971863F;
+	Thu, 11 Apr 2024 20:31:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="A0OLAO0v"
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="r7x0UkKB"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B49041CA8F
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9032410F4;
+	Thu, 11 Apr 2024 20:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712867249; cv=none; b=kzKzQufdE/ydWJVS0sEKje7HakSfmltH2Up7emzqaZZuE18JY9efabKk7dzAQcmQ898i+Da1JLbyslsFIlpciscSafSLxW2hv/hJTqBdX3Sf0V9usd6qX37iNUvpO73pw0/VONZ2+Iu8CUzjvvA72NN7xCsQBNrhypM5ffC7BiU=
+	t=1712867469; cv=none; b=Rg3si3mKGtBop82knAkiu6e2tfKRJBDIRoVgcS4EZt5QDRmi8UODtBz2SbS/4/wf9FvsSqJ3rpIXcEN2HJ8rm8U3joGLiOOxF8cLV7hqXV1hU6HZFHe+o+WqJIA4yYfWf+XGi0FJ1PRRmwT6/M3L2g02Q0s0ZdJVsNpAwL9PDh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712867249; c=relaxed/simple;
-	bh=l6Zg8E5l9E7YNNsH7iIZ4LMXwRy2isDpxVf8d7paD+s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qAbKdzBt26Zmdt/7EzWcAVEp/0qnMyLAdTUf/7b76RiPL48yO3MrZmeqj0V5wmuQ2pnLSY1piRk/Wj5SFTIWxYqqMxPt8zhK/UDi5811mf7X+r7hKARPmWFkGurwxwkyA0a7GYpP+xqtexj5th4h4IsPHC/rNHPQZo+wacTjon8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=A0OLAO0v; arc=none smtp.client-ip=209.85.167.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3c6088df378so65680b6e.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:27:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712867246; x=1713472046; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PnP8JVadrwUCkWdsPrjw1n1Qkf19BHzW9gV2hIgU+kk=;
-        b=A0OLAO0vUbboK5mhCquWaRInaJmJqcCCEQhl13HPTOeNWyDWDVUuPWrkWpuFlv/alB
-         H9POk+4jcQBO/p+WZIN+3qifxrLSClSoQ9jAPMmqqAzyHRsqMeHknP3CYrz9Falh9jRk
-         HY+TeJ6tUHbwEoe5RBnK6pqIpR6A3hb1+EMEI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712867246; x=1713472046;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PnP8JVadrwUCkWdsPrjw1n1Qkf19BHzW9gV2hIgU+kk=;
-        b=npuZ7xtjEQf1N9ZtOPzRZ0a8Ne36SmPpDJrvu+FYaKiLxrY0dxHIcl3rZE0bP6Jwlb
-         0n4TmcFdmD0gOb/4+gRN7U7O3Bz5Hew43mcM3Ly/7NMVaBzGrHhqWbZiEJtM5shQSKFy
-         h7v7O4lB7vyrmzwfxPI5hFEIdaeYAhDXNbr6RA1Sb/1pqKk3gkkR3gVQOCs7tfNcYRM9
-         mTHXcEMXvr7NZabtRpp+PB0yBqsWyBSbmmo54pUfAZDimGAKWSTRxAbHuvUOdb0WNq8s
-         WFgJfndX/SUSSONIKYGhs3K+ZzMBq77OcCN+Ze9qUTVu1Tl9L+45Cryng224v3JWVUd7
-         xHSg==
-X-Forwarded-Encrypted: i=1; AJvYcCXegts7V7x11CzyvrL6euIdmFRtSoQJ+38Zrj/6hd6LCBIozOzg+cDejd3ctFCllLy4YgncaiZpcYoDEKhsk6Pz3brost1w+C7THBVu
-X-Gm-Message-State: AOJu0Yy76av+BYBA1NViEuw6XX+fikSTm5mC5U7oeApgrcRql9xGzvoo
-	j8n3gOs4HqQDWKR7hRWAwv9jN8hfMzhn12U8v8Bhskn4EW7FNe4HnDWWaP9spoFWyDkdfwRO+PA
-	=
-X-Google-Smtp-Source: AGHT+IEeCPbzcZABTTIt5P/TDFcw+4kHa2CMRzbOe4zg53V9ycSYv4atZxlHxScVdrGeiolMjez0/A==
-X-Received: by 2002:a05:6808:359:b0:3c6:f12f:5fea with SMTP id j25-20020a056808035900b003c6f12f5feamr513830oie.1.1712867246413;
-        Thu, 11 Apr 2024 13:27:26 -0700 (PDT)
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com. [209.85.160.173])
-        by smtp.gmail.com with ESMTPSA id w17-20020ac87191000000b004366dc541e3sm915001qto.75.2024.04.11.13.27.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 13:27:25 -0700 (PDT)
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-434b5abbb0dso17951cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:27:25 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWOJrml/k2ho63/hPZ4/pDTFWGnaRk8mGSbWWuN9o+n101LpNPuD7IwpDrRagjioQZReVkpLn2VBMvBUEAPDZxvxnLUohyzdMsQjZuY
-X-Received: by 2002:a05:622a:5a13:b0:436:5ce5:cfc5 with SMTP id
- fy19-20020a05622a5a1300b004365ce5cfc5mr71333qtb.2.1712867245457; Thu, 11 Apr
- 2024 13:27:25 -0700 (PDT)
+	s=arc-20240116; t=1712867469; c=relaxed/simple;
+	bh=XLRJW2ZB09sUuOk5sq/VDVa44LgLk0RFkOhWlRAKK5c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c71uQWY/7RDfFpRFtLcwgnvGupIJ2h3j52//x4e9q5BSIMVCeJ1rl1S/RhoCsbOzTFqPmDPwGyJ+iLBOgWtRydb1QFKAV0rAGhzGVE2XfYHuhduVQVWt2RLs+kk7pA5xb9Pzobryf4P9o5pQSGkIcJbTtS3wboOYg83zzX0hbi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=r7x0UkKB; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1712867437; x=1713472237; i=w_armin@gmx.de;
+	bh=Cij3AeZGYu6aG/SAd+mnAwUkSz1egYOxzve/K/jk1Z4=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=r7x0UkKBIqUOwviGy+2yTXjeKJAV472IC0Y58HpMeeaKo9lrVS4x8U4X7BSBak6x
+	 FmNM5NKUuo8R+6bs5F58IpwJJBWYe6FPDz2n1Bd9aZiy+MAc0XGekqquTfFYX4GOe
+	 3U/ghQ8+fFYuBkuursMbUJuZ7MZSmRNeAJfeCtewEUtsUMuNF2TsyfgLGegbd8Iy5
+	 ZZRGKZfXKxWcogLzpibUu8tkFvETAxWDYKndEVtuxT5QK26I7U0lRy0/jgnNNuL3Y
+	 28R8I5qGML2lxsznJ0GB87bCSBUSBWm5I61VQp8UMmYyLAg6DxfYwkogv+6EYn6Td
+	 fppcaRE4sw3yBiAVnw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MKsnP-1sBiZF3jRd-00LBYD; Thu, 11
+ Apr 2024 22:30:36 +0200
+Message-ID: <e6798f0a-5e50-41df-ae3e-0069c16abec3@gmx.de>
+Date: Thu, 11 Apr 2024 22:30:34 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000042c9190615cdb315@google.com> <20240411121319.adhz4ylacbv6ocuu@quack3>
- <CAOQ4uxi9L_Rs7q=fcLGqJMx15jLAArOWGwGfdCL8LOUCPR3L+w@mail.gmail.com> <875xwn8zxa.fsf@mailhost.krisman.be>
-In-Reply-To: <875xwn8zxa.fsf@mailhost.krisman.be>
-From: Khazhy Kumykov <khazhy@chromium.org>
-Date: Thu, 11 Apr 2024 13:27:12 -0700
-X-Gmail-Original-Message-ID: <CACGdZYLJESbS6VCAza_V6PAeNb8k9nU2wYhBi-KmeYqYJ337mA@mail.gmail.com>
-Message-ID: <CACGdZYLJESbS6VCAza_V6PAeNb8k9nU2wYhBi-KmeYqYJ337mA@mail.gmail.com>
-Subject: Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in fsnotify
-To: Gabriel Krisman Bertazi <krisman@suse.de>
-Cc: Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>, 
-	syzbot <syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com>, 
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, repnop@google.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] ACPI: fan: Add hwmon support
+To: Mikael Lund Jepsen <mlj@danelec.com>,
+ "rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
+ "lenb@kernel.org" <lenb@kernel.org>
+Cc: "jdelvare@suse.com" <jdelvare@suse.com>,
+ "linux@roeck-us.net" <linux@roeck-us.net>,
+ "linux@weissschuh.net" <linux@weissschuh.net>,
+ "ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
+ "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+ "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>
+References: <20240409213323.8031-1-W_Armin@gmx.de>
+ <AS4P189MB21333C826C173582E12FFE3EBA062@AS4P189MB2133.EURP189.PROD.OUTLOOK.COM>
+Content-Language: en-US
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <AS4P189MB21333C826C173582E12FFE3EBA062@AS4P189MB2133.EURP189.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:1ktiJxlRATIUneiyuUOzEf6NVEWI8XpAsyEN5g6CIa6TFDn5bHM
+ 3VvfTpcs5/My0i5sY+TO61nQ+8Yk6wWmsnXgVIRyrWq8r+3iKH+S1suXY2xr6KIFBZDVobz
+ up77017ZGH5eUrCOHy+p4B967EWOc/ZHhv1Yh07HGCKkhTpN03+WGUblkxTzxpnyxt4zHw3
+ RZQgFBeB2c5m8DD7umH2Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:fnyKa2+Bszw=;GZBkD6zupS4we5/1YF2LXmlSgoP
+ kxTgmVPYTRWEHeDs4Lvdti2N4vJyo8wVeF01Tr6oiyFEq7kqzqHWSRT4kXtB69eFyISu2/6Q+
+ OtM24k3f917NmrfCHEHvgqEcdFEr6xw/gCHgX+PO+/ijJ0L+E+pcC/LuSqGoVGZ9jczqiF7aD
+ 1TcjF69gYRvSz4q88M49qVausaD479KHaullZdFFpXiIgIKwmfHnvM10su438rsJ1chVGqo9Z
+ 8+DsN7YS1RNn2zC8QQb/kh06I+WeDsMSR55WuJyMtZ4h6J+e5if58aKSQpjktG/tL3UngbWKl
+ IssAHV6PR5msZ14PjVDLlMhVm7oYgpOn6lmWQHWr1FUG8sCVRwYhSXrPls/D9ga0CS6jK/1f2
+ wknatvGPt6gFdQ0YApyCXmJ/eaoHriqY2ZNT20VSIi19h9zUuiqqhJSqikChsvwnFntYSEWuW
+ RKa5Cjvh5It0OI3y8bAAHBIfEx76RrgQ5iNCme6uGWvgQ2YEhiChak4p1RQjwijhdBvI4JFmE
+ Y6E/FuUEvqbqaXhP03jdRxTZOhuW0qzuQy3FWdyGC9OkIrXz3ccs8Hhap+hlCSVy1GG0BEYUd
+ PImtzdQSVmhJSRQAWpIMiv8SR4z6SLrKZWDrwokJUp0QxF5qT0/5ImEkK9iHbnBjEAHqZLFuI
+ CA3e4uWH5nLRkbZUKC3WXy7COfpbbmr5ecNxLM4DSdcLCUERNi8v1JYf3MwvNDBVMuCxkmC+0
+ /F0GqDqnddcqNdJuKYkLClXWBA30CGgdBrWLUThoHkpJgTO2ApkbuRfpVD+0s6ZCQ/QZGxzMQ
+ OmxCe+S6uhr0eHk1zyqMzvULId2aTeDw52z/ElC+NakwY=
 
-On Thu, Apr 11, 2024 at 12:25=E2=80=AFPM Gabriel Krisman Bertazi
-<krisman@suse.de> wrote:
+Am 10.04.24 um 16:29 schrieb Mikael Lund Jepsen:
+
+> On 9. april 2024 Armin Wolf wrote:
+>> To: Mikael Lund Jepsen <mlj@danelec.com>; rafael.j.wysocki@intel.com; lenb@kernel.org
+>> Cc: jdelvare@suse.com; linux@roeck-us.net; linux@weissschuh.net; ilpo.jarvinen@linux.intel.com; linux-acpi@vger.kernel.org; linux-hwmon@vger.kernel.org; linux-kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org
+>> Subject: [PATCH v2] ACPI: fan: Add hwmon support
+>>
+>> Caution: External email. Do not click links or open attachments unless you recognize the sender and know the content is safe.
+>>
+>>
+>> Currently, the driver does only support a custom sysfs to allow userspace to read the fan speed.
+>> Add support for the standard hwmon interface so users can read the fan speed with standard tools like "sensors".
+>>
+>> Compile-tested only.
+>>
+>> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+>> ---
+>> Changes since v1:
+>> - fix undefined reference error
+>> - fix fan speed validation
+>> - coding style fixes
+>> - clarify that the changes are compile-tested only
+>> - add hwmon maintainers to cc list
+>>
+>> The changes will be tested by Mikael Lund Jepsen from Danelec and should be merged only after those tests.
+>> ---
+>> drivers/acpi/Makefile    |  1 +
+>> drivers/acpi/fan.h       |  9 +++++
+>> drivers/acpi/fan_core.c  |  4 ++
+>> drivers/acpi/fan_hwmon.c | 83 ++++++++++++++++++++++++++++++++++++++++
+>> 4 files changed, 97 insertions(+)
+>> create mode 100644 drivers/acpi/fan_hwmon.c
+>>
+>> diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile index d69d5444acdb..c272ab2c93b9 100644
+>> --- a/drivers/acpi/Makefile
+>> +++ b/drivers/acpi/Makefile
+>> @@ -83,6 +83,7 @@ obj-$(CONFIG_ACPI_TINY_POWER_BUTTON)  += tiny-power-button.o
+>> obj-$(CONFIG_ACPI_FAN)         += fan.o
+>> fan-objs                       := fan_core.o
+>> fan-objs                       += fan_attr.o
+>> +fan-$(CONFIG_HWMON)            += fan_hwmon.o
+>>
+>> obj-$(CONFIG_ACPI_VIDEO)       += video.o
+>> obj-$(CONFIG_ACPI_TAD)         += acpi_tad.o
+>> diff --git a/drivers/acpi/fan.h b/drivers/acpi/fan.h index e7b4b4e4a55e..97863bdb6303 100644
+>> --- a/drivers/acpi/fan.h
+>> +++ b/drivers/acpi/fan.h
+>> @@ -10,6 +10,8 @@
+>> #ifndef _ACPI_FAN_H_
+>> #define _ACPI_FAN_H_
+>>
+>> +#include <linux/kconfig.h>
+>> +
+>> #define ACPI_FAN_DEVICE_IDS    \
+>>         {"INT3404", }, /* Fan */ \
+>>         {"INTC1044", }, /* Fan for Tiger Lake generation */ \ @@ -56,4 +58,11 @@ struct acpi_fan {  int acpi_fan_get_fst(struct acpi_device *device, struct acpi_fan_fst *fst);  int acpi_fan_create_attributes(struct acpi_device *device);  void acpi_fan_delete_attributes(struct acpi_device *device);
+>> +
+>> +#if IS_REACHABLE(CONFIG_HWMON)
+>> +int devm_acpi_fan_create_hwmon(struct acpi_device *device); #else
+>> +static inline int devm_acpi_fan_create_hwmon(struct acpi_device
+>> +*device) { return 0; }; #endif
+>> +
+>> #endif
+>> diff --git a/drivers/acpi/fan_core.c b/drivers/acpi/fan_core.c index ff72e4ef8738..7cea4495f19b 100644
+>> --- a/drivers/acpi/fan_core.c
+>> +++ b/drivers/acpi/fan_core.c
+>> @@ -336,6 +336,10 @@ static int acpi_fan_probe(struct platform_device *pdev)
+>>                 if (result)
+>>                         return result;
+>>
+>> +               result = devm_acpi_fan_create_hwmon(device);
+>> +               if (result)
+>> +                       return result;
+>> +
+>>                 result = acpi_fan_create_attributes(device);
+>>                 if (result)
+>>                         return result;
+>> diff --git a/drivers/acpi/fan_hwmon.c b/drivers/acpi/fan_hwmon.c new file mode 100644 index 000000000000..b01055432ded
+>> --- /dev/null
+>> +++ b/drivers/acpi/fan_hwmon.c
+>> @@ -0,0 +1,83 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + * fan_hwmon.c - hwmon interface for the ACPI Fan driver
+>> + *
+>> + * Copyright (C) 2024 Armin Wolf <W_Armin@gmx.de>  */
+>> +
+>> +#include <linux/acpi.h>
+>> +#include <linux/hwmon.h>
+>> +#include <linux/limits.h>
+>> +
+>> +#include "fan.h"
+>> +
+>> +/* Returned when the ACPI fan does not support speed reporting */
+>> +#define FAN_SPEED_UNAVAILABLE  0xffffffff
+>> +
+>> +static umode_t acpi_fan_is_visible(const void *drvdata, enum hwmon_sensor_types type, u32 attr,
+>> +                                  int channel) {
+>> +       return 0444;
+>> +}
+>> +
+>> +static int acpi_fan_read(struct device *dev, enum hwmon_sensor_types type, u32 attr, int channel,
+>> +                        long *val)
+>> +{
+>> +       struct acpi_device *adev = dev_get_drvdata(dev);
+>> +       struct acpi_fan_fst fst;
+>> +       int ret;
+>> +
+>> +       switch (type) {
+>> +       case hwmon_fan:
+>> +               ret = acpi_fan_get_fst(adev, &fst);
+>> +               if (ret < 0)
+>> +                       return ret;
+>> +
+>> +               switch (attr) {
+>> +               case hwmon_fan_input:
+>> +                       if (fst.speed == FAN_SPEED_UNAVAILABLE)
+>> +                               return -ENODATA;
+>> +
+>> +                       if (fst.speed > LONG_MAX)
+>> +                               return -EOVERFLOW;
+>> +
+>> +                       *val = fst.speed;
+>> +                       return 0;
+>> +               case hwmon_fan_fault:
+>> +                       *val = (fst.speed == FAN_SPEED_UNAVAILABLE);
+>> +                       return 0;
+>> +               default:
+>> +                       break;
+>> +               }
+>> +               break;
+>> +       default:
+>> +               break;
+>> +       }
+>> +
+>> +       return -EOPNOTSUPP;
+>> +}
+>> +
+>> +static const struct hwmon_ops acpi_fan_ops = {
+>> +       .is_visible = acpi_fan_is_visible,
+>> +       .read = acpi_fan_read,
+>> +};
+>> +
+>> +static const struct hwmon_channel_info * const acpi_fan_info[] = {
+>> +       HWMON_CHANNEL_INFO(fan, HWMON_F_INPUT | HWMON_F_FAULT),
+>> +       NULL
+>> +};
+>> +
+>> +static const struct hwmon_chip_info acpi_fan_chip_info = {
+>> +       .ops = &acpi_fan_ops,
+>> +       .info = acpi_fan_info,
+>> +};
+>> +
+>> +int devm_acpi_fan_create_hwmon(struct acpi_device *device) {
+>> +       struct device *hdev;
+>> +
+>> +       hdev = devm_hwmon_device_register_with_info(&device->dev, "acpi_fan", device,
+>> +                                                   &acpi_fan_chip_info,
+>> + NULL);
+>> +
+>> +       return PTR_ERR_OR_ZERO(hdev);
+>> +}
+>> --
+>> 2.39.2
+>>
+> Sorry about the delay, new to ACPI and needed to create the missing tables to define the fan as an ACPIv4 fan and make it talk to the pse/eclite firmware.
 >
-> Amir Goldstein <amir73il@gmail.com> writes:
+> I've tested patch v2 on kernel 6.6.15 on my Intel ElkhartLake CRB board, and it works fine for me:
+> Fan tacho value is shown correctly and FAULT is reported if ishtp_eclite driver is not loaded.
 >
-> > On Thu, Apr 11, 2024 at 3:13=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
-> >>
-> >> On Thu 11-04-24 01:11:20, syzbot wrote:
-> >> > Hello,
-> >> >
-> >> > syzbot found the following issue on:
-> >> >
-> >> > HEAD commit:    6ebf211bb11d Add linux-next specific files for 20240=
-410
-> >> > git tree:       linux-next
-> >> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D12be955d=
-180000
-> >> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D16ca158e=
-f7e08662
-> >> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D5e3f9b2a67=
-b45f16d4e6
-> >> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils fo=
-r Debian) 2.40
-> >> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D13c911=
-75180000
-> >> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1621af9d=
-180000
-> >> >
-> >> > Downloadable assets:
-> >> > disk image: https://storage.googleapis.com/syzbot-assets/b050f81f73e=
-d/disk-6ebf211b.raw.xz
-> >> > vmlinux: https://storage.googleapis.com/syzbot-assets/412c9b9a536e/v=
-mlinux-6ebf211b.xz
-> >> > kernel image: https://storage.googleapis.com/syzbot-assets/016527216=
-c47/bzImage-6ebf211b.xz
-> >> > mounted in repro: https://storage.googleapis.com/syzbot-assets/75ad0=
-50c9945/mount_0.gz
-> >> >
-> >> > IMPORTANT: if you fix the issue, please add the following tag to the=
- commit:
-> >> > Reported-by: syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com
-> >> >
-> >> > Quota error (device loop0): do_check_range: Getting block 0 out of r=
-ange 1-5
-> >> > EXT4-fs error (device loop0): ext4_release_dquot:6905: comm kworker/=
-u8:4: Failed to release dquot type 1
-> >> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >> > BUG: KASAN: slab-use-after-free in fsnotify+0x2a4/0x1f70 fs/notify/f=
-snotify.c:539
-> >> > Read of size 8 at addr ffff88802f1dce80 by task kworker/u8:4/62
-> >> >
-> >> > CPU: 0 PID: 62 Comm: kworker/u8:4 Not tainted 6.9.0-rc3-next-2024041=
-0-syzkaller #0
-> >> > Hardware name: Google Google Compute Engine/Google Compute Engine, B=
-IOS Google 03/27/2024
-> >> > Workqueue: events_unbound quota_release_workfn
-> >> > Call Trace:
-> >> >  <TASK>
-> >> >  __dump_stack lib/dump_stack.c:88 [inline]
-> >> >  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
-> >> >  print_address_description mm/kasan/report.c:377 [inline]
-> >> >  print_report+0x169/0x550 mm/kasan/report.c:488
-> >> >  kasan_report+0x143/0x180 mm/kasan/report.c:601
-> >> >  fsnotify+0x2a4/0x1f70 fs/notify/fsnotify.c:539
-> >> >  fsnotify_sb_error include/linux/fsnotify.h:456 [inline]
-> >> >  __ext4_error+0x255/0x3b0 fs/ext4/super.c:843
-> >> >  ext4_release_dquot+0x326/0x450 fs/ext4/super.c:6903
-> >> >  quota_release_workfn+0x39f/0x650 fs/quota/dquot.c:840
-> >> >  process_one_work kernel/workqueue.c:3218 [inline]
-> >> >  process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3299
-> >> >  worker_thread+0x86d/0xd70 kernel/workqueue.c:3380
-> >> >  kthread+0x2f0/0x390 kernel/kthread.c:389
-> >> >  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-> >> >  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-> >> >  </TASK>
-> >>
-> >> Amir, I believe this happens on umount when the filesystem calls
-> >> fsnotify_sb_error() after calling fsnotify_sb_delete().
-Hmm, so we're releasing dquots after already shutting down the
-filesystem? Is that expected? This "Failed to release dquot type"
-error message only appears if we have an open handle from
-ext4_journal_start (although this filesystem was mounted without a
-journal, so we hit ext4_get_nojournal()...)
-> In theory these two
-> >> calls can even run in parallel and fsnotify() can be holding
-> >> fsnotify_sb_info pointer while fsnotify_sb_delete() is freeing it so w=
-e
-> >> need to figure out some proper synchronization for that...
-> >
-> > Is it really needed to handle any for non SB_ACTIVE sb?
+> For reference, my test setup:
+> - Intel ElkhartLake CRB board w/ Intel Atom x6425RE
+> - Slimbootloader: Intel MR7 release, with custom ACPI definitions for the fan, and If I remember correctly, I also needed to correct some TGPIO softstraps compared to release defaults
+> - PseFW: Intel MR7 release, with fixes to enable TGPIO/Tacho reading (which was not enabled in release defaults) and to make sure tacho value is read even when fan is turning off (default PSE FW skipped reading tacho if control value was 0, so last tacho value read while fan was turned on would persist).
 >
-> I think it should be fine to exclude volumes being teared down.  Cc'ing
-> Khazhy, who sponsored this work at the time and owned the use-case.
-In terms of real-world use case... not sure there is one - you'll
-notice the errors when you fsck/mount again later on, and any users
-who care about notifs should be gone by the time we're unmounting. But
-it seems weird to me that we can get write errors shutting everything
-down.
+> One thing that occurred to me: The fan control value is reported in _FST, but not used in acpi-fan, so how can we flag an error in hwmon if the fan is broken, but shall not always be running?
+> If the control value was exported, then we can alert if tacho is zero when control > 0. I think I'm missing something here?
 >
-> --
-> Gabriel Krisman Bertazi
+> Thanks,
+> Mikael
+
+You are right, i can expose the target RPM as fan1_target when the fan is not in fine-grained control mode (otherwise there is no guarantee that each
+control value has an associated fan state entry).
+
+This way, userspace can detect when the fan is stuck. I will send a v3 soon.
+
+Armin Wolf
+
 
