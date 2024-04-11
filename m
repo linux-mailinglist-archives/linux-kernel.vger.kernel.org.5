@@ -1,198 +1,180 @@
-Return-Path: <linux-kernel+bounces-141634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 923808A20F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3910D8A20FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:35:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82D091C231BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:35:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C43E1C21DE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:35:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FF953A8FF;
-	Thu, 11 Apr 2024 21:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2222239FFD;
+	Thu, 11 Apr 2024 21:35:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hY0KhRdA"
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cV6397BP"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AB5C12E6C;
-	Thu, 11 Apr 2024 21:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30243717B
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712871314; cv=none; b=UeoqVOtb6Fy6N4pN9lfHp4KLklGH9+ZrNvFbqbeT5BInnlxO4tpEd0xjx/0RrF9IjT3oAmPQcKsbwvTEM668wz4Mn/mUlGilt0mEMXk4E2XG456yL0jwYwRcutVt/Nbx9mxXbTttgYjS+LHVDpuW9TZuULNbI1lsbQCZwqnbEaM=
+	t=1712871349; cv=none; b=l8lE9+suLjSfIsn/ABG7Ke4aunjrDtLBeqybF8bKCO+B3+ph42rTLxoZFp5ZIx7PWA2j698UlQ0gLektGOmZdaqik94mkiAOCV3J/N3r+YXpBxnO93Dj7iWFsLbW1i7jHku/H+56Cy34gy0Ss6aQYLq6y6X5k8bOQWmwx4tutrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712871314; c=relaxed/simple;
-	bh=PI/v7zf9imTyUebgJBxjgjFvglA8DKk7b3zyb8bg0zA=;
-	h=Date:From:To:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=ZTu+Vo1af/oo8ZL/Jey2qCm2rKNDxAtBwllvGIqC+l8AfRHJo7BXtDx4HitIpyIqAMLpRJ4EgymQUbnT9l6gVzIc5WAtDR/8HiDCKVEM7uKskqm0FF0wRa5JgA04NuL4tKvg5QYneU2MBL879acOf5stzsOcce7l4i1+a+HaF24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hY0KhRdA; arc=none smtp.client-ip=209.85.210.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6ea09b6c826so116841a34.0;
-        Thu, 11 Apr 2024 14:35:12 -0700 (PDT)
+	s=arc-20240116; t=1712871349; c=relaxed/simple;
+	bh=v3LeDlsw4fd8KemXMGl/9RHF7axUWT3DS7QRxveZaQE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pPTHE8T4aS/AOF8Nz9NejyzPggeN20SakP+JmNuhlcl1ACaFbjt8ljflhOTf5kt76+uQatUbRcJyvD2J+6lb3KUcFZstNp4eoSy/5yYlyd2YqwTmEnvSW1C2pXz05D/fwV1x5cNXPTi/Q+jCH6eilefgLdE2XcfpM+NxieWzWoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cV6397BP; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-516d0161e13so361830e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:35:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712871312; x=1713476112; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5GZWFnKLGg7a3pKfMnIks+tuuAhpazBSCLZ0rJ/5h14=;
-        b=hY0KhRdA2sufJT+SvloV2MLviTO/Yw0AOvLsFdhOXZBoVNnJU9LuNwLIDLI85hu9ow
-         S7jzr+uxIAwfcJd3hXvPUhfJNaJkfchoGDCVfxD/WyhBr7aEu+eosvAKha3NFbonTbmR
-         +pooynTW4rRGG0oz2BsbqHBh6w4GNj1B/ubK91ab9S2ZYWoZYbO4FaAy83L4eixZBXic
-         oq8FIcRumAZiDC6V+Wd5if/8ZHptC2NoUNqR8JBHFAac7E8pQQhZAxXzuGAHLcfGV9wX
-         ncQs8iKRCj0zs/Ykxu0X0R4wk1DCKqo8Z0nvOQv6mHUfSuXFIQv8rrhfMWkaKhzqrCoT
-         6saA==
+        d=linaro.org; s=google; t=1712871346; x=1713476146; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5T4iIVALzwPejh7d3S8enGWCx89OQW+dXm19IHXNjAc=;
+        b=cV6397BPh82Y+brjJR0wOpAYAyFVGPZJKbyxp/UXiggum72apciI+zRZajujY5QRV7
+         OgT7V5dXxibyUhBM06MxxDf4d8n6S3aHxYzHWODlO+hICIWIOTftZvd3abJHFLFbD8+o
+         YbfQgT1sxvoF5wla/GuU1OUbY9KUk9G7WBzYYwvTKBRNw1txRZtzZRpsFiMApAHmDxdo
+         NGmQaB2m3II1FqFCOtLMKic6lZnIVW+a5xhaSzkATdIcrmugn/AkzCN6NJtI4ABPqVmq
+         TlIKYLQC2Zf6RIyVU4yyuNRQjrxHvoYghs8PuowTxs6wFZC13FPF8VXTSf3PuIrsJHSH
+         Qxsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712871312; x=1713476112;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5GZWFnKLGg7a3pKfMnIks+tuuAhpazBSCLZ0rJ/5h14=;
-        b=Zp8xjwjMggGxsjfu8H5MXjB0PgOBVMSxxUgpOfTiJG0cZ4/dNcRCC5y2OTFWYkvgbJ
-         yRWRTWRuyPjLCWPDgjtOLLSSwrL5ej98sszEpK0sGmiR5UMEiTAuKkxbYj+VnzxRAb4V
-         qHXEAZLzOuLx3cdsENt+0gncghiCzskXM8/PnlszrbHLGQayz1EgTuY5h6o9Gdhe3qQK
-         cD7jsxEqBnrX9g/lRACYBShJ+mq5OEMdYDz+T0NQKTfcCLyKyMzHmiUGVazrG15k7k13
-         XfibF8GEx2DMWEqolmFyHZ0QV5AoCVlkzeSV8BvKU4pzfjyHa19klRpZ3wyJb3Cxf7es
-         RBMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW2x9htW0XJopaka4YgUDct+aRyhNIUaZaHkxyJR4NEYibshh1NZQpawvnUhE0QYO2ZZqY0uAgFR0sf/shQzUc497qva1m21vwhVODSqjH75wvpOPH7bQE8XNfaFprF2pSmCdCyiBSZW0bCGXIr6j+9eVi99MLNPEBthaMRONgSI03adQyb
-X-Gm-Message-State: AOJu0Yzlvs70+k4FrNLCySUNIm57dpkaX8pedeNjuZMZ7LJn9XB7bLYa
-	PMD1xojwEjkmaXDvWSnz5Wrl8Cg+UzIY9QTF4sfbg/2KinRc9Nq4
-X-Google-Smtp-Source: AGHT+IGBrsgvGLTizvk744f8oyIMHrJWHSIqgTxKQfaqnLIiNH0J/w7yGGl2xFsjVWo8ezLtQIgZbg==
-X-Received: by 2002:a9d:7c89:0:b0:6ea:1fbc:459f with SMTP id q9-20020a9d7c89000000b006ea1fbc459fmr1057772otn.0.1712871312264;
-        Thu, 11 Apr 2024 14:35:12 -0700 (PDT)
-Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
-        by smtp.gmail.com with ESMTPSA id bp37-20020a05620a45a500b0078ec8690764sm537078qkb.87.2024.04.11.14.35.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 14:35:11 -0700 (PDT)
-Date: Thu, 11 Apr 2024 17:35:11 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Richard Gobert <richardbgobert@gmail.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- shuah@kernel.org, 
- dsahern@kernel.org, 
- aduyck@mirantis.com, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-Message-ID: <6618578fc34fa_36e52529429@willemb.c.googlers.com.notmuch>
-In-Reply-To: <24daf0f8-1e81-4bdb-81f3-0f95bf4392f4@gmail.com>
-References: <20240410153423.107381-1-richardbgobert@gmail.com>
- <20240410153423.107381-6-richardbgobert@gmail.com>
- <66174ec5bbd29_2d6bc629481@willemb.c.googlers.com.notmuch>
- <24daf0f8-1e81-4bdb-81f3-0f95bf4392f4@gmail.com>
-Subject: Re: [PATCH net-next v6 5/6] net: gro: move L3 flush checks to
- tcp_gro_receive and udp_gro_receive_segment
+        d=1e100.net; s=20230601; t=1712871346; x=1713476146;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5T4iIVALzwPejh7d3S8enGWCx89OQW+dXm19IHXNjAc=;
+        b=mYRHVn95LhYHIiHbwSr7iBnsH/1ijVtK1uW+YG76E3cl0HuM8PaAV1PvaOyvanw1Fi
+         Ih+y81WyK5B3MbAh1JsYk0PNj2BkER3UTg935kVSvzK6oRqf1M/ml58X49TWtCGmJV5A
+         VfGk6FRH5KzzUOcKqv5Pn1xJ22FFfzCR2JSVwTcDywv5QFaw3LsTft+bYgdJDBbbAldK
+         h9N4FHBCsv3xbRMldzQxujdAGVTGEjsnZ5+WPrNgx8NzgILKpb5OPl29d6lLV/xQqtwV
+         n0IvV8Zd/VxJHrJmdaqS043CdxUrssw0fl3t/rzCykMmZ+SAZVQE7+DLYHRXDPhR1Lyf
+         wLAg==
+X-Forwarded-Encrypted: i=1; AJvYcCWnM8DS/aExaOLXqG6Scqn1kIXzZdKc2SZHf6t1d3pHYYcm+oOOLd8BTlkwzAieVLTmT69dL0K3j55tG4LKVS0oXdPtck0CZ3MufWIO
+X-Gm-Message-State: AOJu0Yz4Ui9x0hzMN4jRxwwrbBw4/pWvoINm3caolizBFzVLDLdE4QrI
+	ZGd/aaxl3ri4vI63skhsUr5H0vvOZYm5Ati+6fUcqPM66q4JxQoQt0RgAZxu4X0=
+X-Google-Smtp-Source: AGHT+IHhPtTM6MDSSMKdH0nmnBGG027XDSi/RtJTrsfiuHSI3CqYwZHdp/t6eiZd5QJ+PqzWtrodtQ==
+X-Received: by 2002:a2e:8084:0:b0:2d8:5af3:bb43 with SMTP id i4-20020a2e8084000000b002d85af3bb43mr511195ljg.41.1712871345700;
+        Thu, 11 Apr 2024 14:35:45 -0700 (PDT)
+Received: from [172.30.204.35] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id z4-20020a2e8e84000000b002d8e42c1b5fsm314682ljk.42.2024.04.11.14.35.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 14:35:45 -0700 (PDT)
+Message-ID: <321aa524-ab64-458a-b4c0-70294cc5467d@linaro.org>
+Date: Thu, 11 Apr 2024 23:35:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/6] drm/msm/adreno: Implement SMEM-based speed bin
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Rob Clark <robdclark@gmail.com>,
+ Abhinav Kumar <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+ Neil Armstrong <neil.armstrong@linaro.org>
+References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
+ <20240405-topic-smem_speedbin-v1-4-ce2b864251b1@linaro.org>
+ <scvwfj44z3wpp7phvesfwjuv5awtlkwby2vvrpaq4i5fircrt3@i3ebya4iymf3>
+ <730d6b9e-d6b4-41fd-bef3-b1fa6e914a35@linaro.org>
+ <33qyr6cfruczllvavvwtbkyuqxmtao4bya4j32zhjx6ni27c6d@rxjehsw54l32>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <33qyr6cfruczllvavvwtbkyuqxmtao4bya4j32zhjx6ni27c6d@rxjehsw54l32>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Richard Gobert wrote:
-> Willem de Bruijn wrote:
-> > Richard Gobert wrote:
-> >> {inet,ipv6}_gro_receive functions perform flush checks (ttl, flags,
-> >> iph->id, ...) against all packets in a loop. These flush checks are used
-> >> currently only in tcp flows in GRO.
-> >>
-> >> These checks need to be done only once in tcp_gro_receive and only against
-> >> the found p skb, since they only affect flush and not same_flow.
-> > 
-> > I don't quite understand where the performance improvements arise.
-> > As inet_gro_receive will skip any p that does not match:
-> > 
-> >       if (!NAPI_GRO_CB(p)->same_flow)
-> >               continue;
-> > 
-> >       iph2 = (struct iphdr *)(p->data + off);
-> >       /* The above works because, with the exception of the top
-> >        * (inner most) layer, we only aggregate pkts with the same
-> >        * hdr length so all the hdrs we'll need to verify will start
-> >        * at the same offset.
-> >        */
-> >       if ((iph->protocol ^ iph2->protocol) |
-> >           ((__force u32)iph->saddr ^ (__force u32)iph2->saddr) |
-> >           ((__force u32)iph->daddr ^ (__force u32)iph2->daddr)) {
-> >               NAPI_GRO_CB(p)->same_flow = 0;
-> >               continue;
-> >       }
-> > 
-> > So these checks are already only performed against a p that matches.
-> >  
-> 
-> 
-> Thanks for the review!
-> 
-> flush/flush_id is calculated for all other p with same_flow = 1 (which is
-> not always determined to be 0 before inet_gro_receive) and same src/dst
-> addr in the bucket. Moving it to udp_gro_receive_segment/tcp_gro_receive
-> will make it run only once when a matching p is found.
 
-So this optimization is for flows that are the same up to having the
-same saddr/daddr. Aside from stress tests, it seems rare to have many
-concurrent flows between the same pair of machines?
+
+On 4/10/24 21:26, Dmitry Baryshkov wrote:
+> On Wed, Apr 10, 2024 at 01:42:33PM +0200, Konrad Dybcio wrote:
+>>
+>>
+>> On 4/6/24 05:23, Dmitry Baryshkov wrote:
+>>> On Fri, Apr 05, 2024 at 10:41:32AM +0200, Konrad Dybcio wrote:
+>>>> On recent (SM8550+) Snapdragon platforms, the GPU speed bin data is
+>>>> abstracted through SMEM, instead of being directly available in a fuse.
+>>>>
+>>>> Add support for SMEM-based speed binning, which includes getting
+>>>> "feature code" and "product code" from said source and parsing them
+>>>> to form something that lets us match OPPs against.
+>>>>
+>>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>>>> ---
+>>
+>> [...]
+>>
+>>>
+>>>> +	}
+>>>> +
+>>>> +	ret = qcom_smem_get_product_code(&pcode);
+>>>> +	if (ret) {
+>>>> +		dev_err(dev, "Couldn't get product code from SMEM!\n");
+>>>> +		return ret;
+>>>> +	}
+>>>> +
+>>>> +	/* Don't consider fcode for external feature codes */
+>>>> +	if (fcode <= SOCINFO_FC_EXT_RESERVE)
+>>>> +		fcode = SOCINFO_FC_UNKNOWN;
+>>>> +
+>>>> +	*speedbin = FIELD_PREP(ADRENO_SKU_ID_PCODE, pcode) |
+>>>> +		    FIELD_PREP(ADRENO_SKU_ID_FCODE, fcode);
+>>>
+>>> What about just asking the qcom_smem for the 'gpu_bin' and hiding gory
+>>> details there? It almost feels that handling raw PCODE / FCODE here is
+>>> too low-level and a subject to change depending on the socinfo format.
+>>
+>> No, the FCODE & PCODE can be interpreted differently across consumers.
+> 
+> That's why I wrote about asking for 'gpu_bin'.
+
+I'd rather keep the magic GPU LUTs inside the adreno driver, especially
+since not all Snapdragons feature Adreno, but all Adrenos are on
+Snapdragons (modulo a2xx but I refuse to make design decisions treating
+these equally to e.g. a6xx)
 
 > 
-> In addition, UDP flows where skb_gro_receive_list is called -
-> flush/flush_id is not relevant and does not need to be calculated. 
-
-That makes sense
-
-> In these
-> cases total CPU time in GRO should drop. I could post perf numbers for
-> this flow as well.
+>>
+>>>
+>>>> +
+>>>> +	return ret;
+>>>>    }
+>>>>    int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>>>> @@ -1098,9 +1129,9 @@ int adreno_gpu_init(struct drm_device *drm, struct platform_device *pdev,
+>>>>    			devm_pm_opp_set_clkname(dev, "core");
+>>>>    	}
+>>>> -	if (adreno_read_speedbin(dev, &speedbin) || !speedbin)
+>>>> +	if (adreno_read_speedbin(adreno_gpu, dev, &speedbin) || !speedbin)
+>>>>    		speedbin = 0xffff;
+>>>> -	adreno_gpu->speedbin = (uint16_t) (0xffff & speedbin);
+>>>
+>>> the &= 0xffff should probably go to the adreno_read_speedbin / nvmem
+>>> case. WDYT?
+>>
+>> Ok, I can keep it, though realistically if this ever does anything
+>> useful, it likely means the dt is wrong
 > 
-> 
-> >> Leveraging the previous commit in the series, in which correct network
-> >> header offsets are saved for both outer and inner network headers -
-> >> allowing these checks to be done only once, in tcp_gro_receive. As a
-> > 
-> > Comments should be updated to reflect both TCP and L4 UDP. Can
-> > generalize to transport callbacks.
-> > 
-> >> result, NAPI_GRO_CB(p)->flush is not used at all. In addition, flush_id
-> >> checks are more declarative and contained in inet_gro_flush, thus removing
-> >> the need for flush_id in napi_gro_cb.
-> >>
-> >> This results in less parsing code for UDP flows and non-loop flush tests
-> >> for TCP flows.
-> > 
-> > This moves network layer tests out of the network layer callbacks into
-> > helpers called from the transport layer callback. And then the helper
-> > has to look up the network layer header and demultiplex the protocol
-> > again:
-> > 
-> >     +		if (((struct iphdr *)nh)->version == 6)
-> >     +			flush |= ipv6_gro_flush(nh, nh2);
-> >     +		else
-> >     +			flush |= inet_gro_flush(nh, nh2, p, i != encap_mark);
-> > 
-> > That just seems a bit roundabout.
-> 
-> IMO this commit could be a part of a larger change, where all
-> loops in gro_list_prepare, inet_gro_receive and ipv6_gro_receive can be
-> removed, and the logic for finding a matching p will be moved to L4.  This
-> means that when p is found, the rest of the gro_list would not need to be
-> traversed and thus would not even dirty cache lines at all. I can provide a
-> code snippet which would explain it better.
+> Yes, but if DT is wrong, we should probably fail in a sensible way. I
+> just wanted to point out that previously we had this &0xffff, while your
+> patch silently removes it.
 
-These loops are exactly the mechanism to find a matching p. Though
-with all the callbacks perhaps not the most efficient model. The
-hashtable should have solved much of that.
+Right, but I don't believe it actually matters.. If that AND ever did
+anything, this was a silent failure with garbage data passed in anyway.
 
-Yes, please share a snippet to understand how you would replace this.
+If you really insist, I can remove it separately.
 
-In the meantime, I do suggest sending the first two patches to net,
-as they have Fixes tags. And then follow up with this for net-next
-separately.
+Konrad
 
