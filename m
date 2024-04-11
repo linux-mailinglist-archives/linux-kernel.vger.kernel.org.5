@@ -1,185 +1,135 @@
-Return-Path: <linux-kernel+bounces-141601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35A148A208B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:58:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 005198A2091
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:01:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CDBE1C21A3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:58:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D18B1F25690
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:01:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 184C52942C;
-	Thu, 11 Apr 2024 20:57:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1060E29437;
+	Thu, 11 Apr 2024 21:01:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HgC9U2w0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="TGreNy0Y"
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9DD3B295;
-	Thu, 11 Apr 2024 20:57:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88F013AE2
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:01:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712869075; cv=none; b=PBp6dOUospfxWYd3vMmkOeMsP2gaxlZFLbv0P3uh1uhV2TU4w7eexD6CkUyudcA0NRLwKDydV+xirj46gEFsJIlUeXesT/NT1nBctm+9t34IvvzjzG5gZZF7uKPE6mppAHec3zkBj5ChXfHbRLGk4V0igB/TJuoytfTq/NQWYr0=
+	t=1712869308; cv=none; b=WUsljnMf3vjlhN3Zjw8Fv20PCFlV/XVfsueJQ3/BKCeIsLg9VRlOLvxZ1dcww9Xq3bFqfJ2mimNE24TSQqLKc8UbHpMa/+kN/pHhwoxofd7Nbz2CXXNh1vSXiMKEs8YPi6J6lAjWFTQX2YBJc5hNTgVi49vnjn2jyvTqHTaoYG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712869075; c=relaxed/simple;
-	bh=+JAoN2Qmwk2NB53yW+S7JV82ikw/tfWwk2KOxm2jbH8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=YESRCmhgFqZZpW1cUwGNpPPUH6S3OXjSZKrWHfeKeiOqdL9njkIut26oR2weVTD2fXO5vImwozHEOxmYwUEG0iDW4Sni21+sjsvL/bvIqSWq1S+o+urO39HPg8jwrRdVdlkzRwKnO9PTduPTiKAkOfIsiywAR0oyWBsc0Nr1F80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HgC9U2w0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FB61C072AA;
-	Thu, 11 Apr 2024 20:57:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712869074;
-	bh=+JAoN2Qmwk2NB53yW+S7JV82ikw/tfWwk2KOxm2jbH8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=HgC9U2w0VnsyeUs0d5E4xvzPxUJRfD0oSwtJn7iO0KbRV6P6KyXsPBI5579rdqazI
-	 TinSJTYEcgF4vRG+BKHpfUOdxBIlZnXC/6CM1j7mSIMEA6wjD81oHGF0bvVTJwUtYQ
-	 PusMLAt2z1OkK8r7yV7fvyoevH7Q+Ql0G4eWhCVUUNbEBJhAROb0AkzCO5AIpYOlgI
-	 KwWpeNmbwOW48mrIYwTczVpZrNvekIRmE5yMcAxCEpGV0eVkBF+vMhmdMSlhf3w9P1
-	 TJCFSa7yYvPTuRneXjpLB38EHq/fz7XmRLQUZ2t0p5CBPKH5WlAGe2dOQem9DXiVLr
-	 vzYgbG98Vh7cg==
-Date: Thu, 11 Apr 2024 15:57:52 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Rob Herring <robh@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>, Lizhi Hou <lizhi.hou@amd.com>,
-	Max Zhen <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>,
-	Stefano Stabellini <stefano.stabellini@xilinx.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	PCI <linux-pci@vger.kernel.org>,
-	Allan Nielsen <allan.nielsen@microchip.com>,
-	Horatiu Vultur <horatiu.vultur@microchip.com>,
-	Steen Hegelund <steen.hegelund@microchip.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>
-Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
-Message-ID: <20240411205752.GA2199968@bhelgaas>
+	s=arc-20240116; t=1712869308; c=relaxed/simple;
+	bh=g9Z9OwBbBlUj3EmCyyduc+Z0LyVTi1wB3j1o6dvX7K8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jXyqZXY4imNKL0qZBs5N3wIjwWl2vUR3cBccLE9VTX4tX6vgtJjlYe1LBogABRtsccbUN0z1RAKLP8sNosK2Fn/5MK6eaJGHd6+WAEvJVZMbdXdMyu1fiasPAvjLET7Ac1pB1xVrvh0cBclD0Jak8DKEJVPGxz4oTS/g4OCmUP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=TGreNy0Y; arc=none smtp.client-ip=209.85.166.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7d0772bb5ffso5314839f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:01:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1712869306; x=1713474106; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Mz0LAgWqLQ4vIJA31FUrD4xAYvlItStjsWSzrqzF/DI=;
+        b=TGreNy0YEyauNqSeD7GlkAQxUm5gG2YbbhaBo/UkE/dAl7IfY3cnQVL2vggBcJMgLC
+         EUVM2YwOhvW1PtPNd90BIOF0Q5x5JyhoKERjumgqE3xBinuhNhw6HuKBYWu/S6iMn8f/
+         U9t4d3BkJGF247iWhkprUjqBBigCeBJr+EleA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712869306; x=1713474106;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mz0LAgWqLQ4vIJA31FUrD4xAYvlItStjsWSzrqzF/DI=;
+        b=fQXa424T/tW7CEBbFBdGUz3m0EVa4CaMJjfAM7PG1VwQGsqyTPP0beV6fgVTfz49aU
+         dVVeOuMxJ69lgdIaXYqU9l6wbZp+COGv9ChxnCPkrAOILfV83MPa3aWlecG1RDQmk14l
+         WZUNaxvlaC04ICmL9V0vZ+JD9qjemmA9AIqrKebC9D1PRE3QYxMUcXpD0reMlxVVDuhK
+         c6MMXqWi3xP4gTkh9CLQEvyi3eeO1/nObYqDnM8zRUKrdtqkfu7luxZgbuI7keuNImLC
+         4QrHKJBoLkUbzqH1xO2qnH2uwFv855Rtw/Pvg33WYaAN3RhtTUOkE79gw4F6gxR3/YwE
+         +IPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUwZ4drR9Q9XJ3ZgQ4HvcISkz6ksKFOiZWMp6kpu73aBuxCYyuFWoJIuHuLi2AWMCy4IYbu4maX6ksYdA9x7k+4pAokipjcyKfw3CEd
+X-Gm-Message-State: AOJu0Yy2TOgBePppX9Di17CZNXYt3B0klnwSU1YyvgIo+Tsh37BnMy+N
+	QNeA/9WPKJx5qCD8tKhhMHyvlaVtQdkD6wodE1/w28ezAJgxaH0g2tsdSfBXO04=
+X-Google-Smtp-Source: AGHT+IGsEGdSzFgXCL4lsDcVpmS1rvpe/RPrF3+da8lVZtwQ1MRvl8rCasczN/FrAV63L5n9RkrXvg==
+X-Received: by 2002:a05:6602:4ed7:b0:7d5:ddc8:504d with SMTP id gk23-20020a0566024ed700b007d5ddc8504dmr982307iob.0.1712869306060;
+        Thu, 11 Apr 2024 14:01:46 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id u22-20020a05663825d600b00482b91da84bsm605270jat.58.2024.04.11.14.01.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 14:01:45 -0700 (PDT)
+Message-ID: <dcb1a59b-55a0-4a33-99a5-3800660b04b1@linuxfoundation.org>
+Date: Thu, 11 Apr 2024 15:01:45 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240411160548.06fa9b11@bootlin.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] selftests: timers: Fix valid-adjtimex signed left-shift
+ undefined behavior
+To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Lee Jones <joneslee@google.com>,
+ Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ linux-kselftest@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20240409202222.2830476-1-jstultz@google.com>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240409202222.2830476-1-jstultz@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 11, 2024 at 04:05:48PM +0200, Herve Codina wrote:
-> On Wed, 10 Apr 2024 16:41:43 -0500
-> Rob Herring <robh@kernel.org> wrote:
-> > On Tue, Mar 19, 2024 at 11:34 AM Herve Codina <herve.codina@bootlin.com> wrote:
-> > > On Tue, 19 Mar 2024 10:25:13 -0500
-> > > Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > On Fri, Dec 15, 2023 at 02:52:07PM +0100, Herve Codina wrote:  
-> > > > > On Mon, 4 Dec 2023 07:59:09 -0600
-> > > > > Rob Herring <robh@kernel.org> wrote:  
-> > > > > > On Mon, Dec 4, 2023 at 6:43 AM Herve Codina <herve.codina@bootlin.com> wrote:  
-> > > > > > > On Fri, 1 Dec 2023 16:26:45 -0600
-> > > > > > > Rob Herring <robh@kernel.org> wrote:  
-> > > > > > > > On Thu, Nov 30, 2023 at 10:57 AM Herve Codina <herve.codina@bootlin.com> wrote:
-> > > > > > > > ...  
-> > > >  
-> > > > > > > > --- a/drivers/pci/of.c
-> > > > > > > > +++ b/drivers/pci/of.c
-> > > > > > > > @@ -31,6 +31,8 @@ int pci_set_of_node(struct pci_dev *dev)
-> > > > > > > >                 return 0;
-> > > > > > > >
-> > > > > > > >         node = of_pci_find_child_device(dev->bus->dev.of_node, dev->devfn);
-> > > > > > > > +       if (!node && pci_is_bridge(dev))
-> > > > > > > > +               of_pci_make_dev_node(dev);
-> > > > > > > >         if (!node)
-> > > > > > > >                 return 0;  
-> > > > > > >
-> > > > > > > Maybe it is too early.
-> > > > > > > of_pci_make_dev_node() creates a node and fills some properties based on
-> > > > > > > some already set values available in the PCI device such as its struct resource
-> > > > > > > values.
-> > > > > > > We need to have some values set by the PCI infra in order to create our DT node
-> > > > > > > with correct values.  
-> > > > > >
-> > > > > > Indeed, that's probably the issue I'm having. In that case,
-> > > > > > DECLARE_PCI_FIXUP_HEADER should work. That's later, but still before
-> > > > > > device_add().
-> > > > > >
-> > > > > > I think modifying sysfs after device_add() is going to race with
-> > > > > > userspace. Userspace is notified of a new device, and then the of_node
-> > > > > > link may or may not be there when it reads sysfs. Also, not sure if
-> > > > > > we'll need DT modaliases with PCI devices, but they won't work if the
-> > > > > > DT node is not set before device_add().  
-> > > > >
-> > > > > DECLARE_PCI_FIXUP_HEADER is too early as well as doing the DT node creation
-> > > > > just before the device_add() call.
-> > > > > Indeed, in order to fill the DT properties, resources need to be assigned
-> > > > > (needed for the 'ranges' property used for addresses translation).
-> > > > > The resources assignment is done after the call to device_add().  
-> > > >
-> > > > Do we need to know the actual address *value* before creating the
-> > > > sysfs file, or is it enough to know that the file should *exist*, even
-> > > > if the value may be changed later?  
-> > >
-> > > I think, the problematic file is 'of_node'.
-> > > This file is a symlink present in the device directory pointing to the
-> > > node in a device-tree subdir.
-> > >
-> > > How can we create this of_node symlink without having the device-tree
-> > > subdir available ?
-> > >  
-> > > > > Some PCI sysfs files are already created after adding the device by the
-> > > > > pci_create_sysfs_dev_files() call:
-> > > > >   https://elixir.bootlin.com/linux/v6.6/source/drivers/pci/bus.c#L347
-> > > > >
-> > > > > Is it really an issue to add the of_node link to sysfs on an already
-> > > > > present device ?  
-> > > >
-> > > > Yes, I think this would be an issue.  We've been trying to get rid of
-> > > > pci_create_sysfs_dev_files() altogether because there's a long history
-> > > > of race issues related to it:
-> > > >
-> > > >   https://lore.kernel.org/r/1271099285.9831.13.camel@localhost/ WARNING: at fs/sysfs/dir.c:451 sysfs_add_one: sysfs: cannot create duplicate filename '/devices/pci0000:00/0000:00:01.0/slot'
-> > > >   https://lore.kernel.org/r/19461.26166.427857.612983@pilspetsen.it.uu.se/ [2.6.35-rc1 regression] sysfs: cannot create duplicate filename ... XVR-600 related?
-> > > >   https://lore.kernel.org/r/20200716110423.xtfyb3n6tn5ixedh@pali/ PCI: Race condition in pci_create_sysfs_dev_files
-> > > >   https://lore.kernel.org/r/m3eebg9puj.fsf@t19.piap.pl/ PCI: Race condition in pci_create_sysfs_dev_files (can't boot)
-> > > >   https://bugzilla.kernel.org/show_bug.cgi?id=215515 sysfs: cannot create duplicate filename '.../0000:e0'
-> > > >
-> > > > And several previous attempts to fix them:
-> > > >
-> > > >   https://lore.kernel.org/r/4469eba2-188b-aab7-07d1-5c77313fc42f@gmail.com/ Guard pci_create_sysfs_dev_files with atomic value
-> > > >   https://lore.kernel.org/r/20230316103036.1837869-1-alexander.stein@ew.tq-group.com PCI/sysfs: get rid of pci_sysfs_init late_initcall
-> > > >   https://lore.kernel.org/r/1702093576-30405-1-git-send-email-ssengar@linux.microsoft.com/ PCI/sysfs: Fix race in pci sysfs creation
-> > > >  
-> > >
-> > > I am not sure we are facing in the same kind of issues.
-> > > The ones you mentioned are related to some sysfs duplication.
-> > > In the of_node case, the issue (if any) is that the symlink will be created
-> > > after the other device's file. Not sure that it can lead to some file
-> > > duplication.  
-> > 
-> > Again, if you notify userspace and it wants to make some decisions
-> > based on of_node, then it has to be there when the notification
-> > happens. As Greg says frequently, you've raced with userspace and
-> > lost.
-> > 
-> > I imagine Bjorn won't like it, but may we need another fixup point?
+On 4/9/24 14:22, John Stultz wrote:
+> So, the struct adjtimex freq field takes a signed value who's
+> units are in shifted (<<16) parts-per-million.
 > 
-> I'am not sure that a fixup point can fix the issue.
+> Unfortunately for negative adjustments, the straightforward use
+> of:
+> 	freq = ppm<<16
+> will trip undefined behavior warnings with clang:
 > 
-> In order to have the of_node available before the notification, we need
-> to a have the of_node set and filled before the device_add() call.
+> valid-adjtimex.c:66:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
+>          -499<<16,
+>          ~~~~^
+> valid-adjtimex.c:67:6: warning: shifting a negative signed value is undefined [-Wshift-negative-value]
+>          -450<<16,
+>          ~~~~^
+> ...
 > 
-> In order to create the 'ranges' property in the DT node, we need PCI
-> resources computed. These resources are computed after the device_add()
-> call.
+> So fix our use of shifting negative values in the valid-adjtimex
+> test case to use multiply by (1<<16) to avoid this.
+> 
+> The patch also aligns the values a bit to make it look nicer.
+> 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Lee Jones <joneslee@google.com>
+> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> Cc: linux-kselftest@vger.kernel.org
+> Reported-by: Lee Jones <joneslee@google.com>
+> Reported-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> Link: https://lore.kernel.org/lkml/0c6d4f0d-2064-4444-986b-1d1ed782135f@collabora.com/
+> Signed-off-by: John Stultz <jstultz@google.com>
+> ---
 
-I guess this is the problem that pci_assign_unassigned_resources() and
-similar are called after device_add(), right?  That seems kind of
-problematic in general since device_add() exposes /sys/.../resource
-before they may be valid.  But I don't know how to fix that.
+Applied to linux-kselftest next for Linux6.10-rc1.
 
-Bjorn
+thanks,
+-- Shuah
+
 
