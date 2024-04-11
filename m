@@ -1,175 +1,189 @@
-Return-Path: <linux-kernel+bounces-140281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CDC98A11F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:49:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDF318A1211
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:50:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A05B21F271C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:49:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9458828701F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07C86145B13;
-	Thu, 11 Apr 2024 10:49:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A3CD146D75;
+	Thu, 11 Apr 2024 10:50:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="niilrmQB"
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c/gF3M1M"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E631465BF
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:49:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670841E48E;
+	Thu, 11 Apr 2024 10:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712832545; cv=none; b=Nt/9CnlQYj3luhY3H5NCWEItOsF9bmk/oGWFCh0Se3KZiJDc/yBBF9oVdw2JtAO2rsAkaXvh8o1k/uVg8wacHrrIh40LmBpZnnjGzc4upuk+SIwavHwU2/KFdX5dOKvS8aSsSeMR9R0S3clcjli2zNHo68vVUvdvuRxVbcA3CmQ=
+	t=1712832615; cv=none; b=rrfz0jqpIP0BhJKWvaFYu12kcAfnAiT4ZfcHkEGH4rv2lDa+AlIppd1pU9Gu9CGM2PqLdxuLVxSRS0QFsS6q5MkLmGFvjz84shXKwm/aRBbSIxf3FccwHHcvIH3/q0s8IrClPA9l2YPdw5HPL5KQRCtuTQj2xTDREsv9SjroCfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712832545; c=relaxed/simple;
-	bh=MrOaFdfd0no6fA3iEfcZVc5Tyeyaoc1HzzmZ0Zdsw8k=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BErVQxiy3WOQVmmI/b8tRl+QsPm4lB6Q3Sl4bNHoabfF12g+vU9qHVhSwB/WuPs1jyqJCpaAo3Yn/fQ2YkGPbHXWNVHETlsDr50I/sEHvWDeiH8KiA8gKcPMvrI0ESYQNcRIgIMRZnSzAaGb60hKraPwf/zvlkOfddbDTp/IOOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=niilrmQB; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1712832540;
-	bh=MrOaFdfd0no6fA3iEfcZVc5Tyeyaoc1HzzmZ0Zdsw8k=;
-	h=From:To:Cc:Subject:Date:From;
-	b=niilrmQBGqSrt0x0L7z9XzjM2aoiskbAQvHTeeg+Kf6+uyGkTyjAQ5W2TRvnqBalk
-	 KLXjj3Zp/1jn4xzQuMGtge2Q0IifBU9CDRDhE8jBr3BJc8uoa5A48Ies/Fd7vTXbLt
-	 UoyofD+86N09AClV9oaFKJ+KsaPZAu8vu2pgLtBw=
-Received: from stargazer.. (unknown [IPv6:240e:358:113e:f100:dc73:854d:832e:8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id E080E67232;
-	Thu, 11 Apr 2024 06:48:54 -0400 (EDT)
-From: Xi Ruoyao <xry111@xry111.site>
-To: Dave Hansen <dave.hansen@linux.intel.com>,
-	Michael Kelley <mhklinux@outlook.com>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc: Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	x86@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Xi Ruoyao <xry111@xry111.site>,
-	Sean Christopherson <seanjc@google.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>
-Subject: [PATCH v6] x86/mm: Don't disable INVLPG if "incomplete Global INVLPG flushes" is fixed by microcode or the kernel is running in a hypervisor
-Date: Thu, 11 Apr 2024 18:48:22 +0800
-Message-ID: <20240411104822.6429-1-xry111@xry111.site>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712832615; c=relaxed/simple;
+	bh=40G/2iJhs7b/9hSb3u6zcH2MWcwO6qO4lwKmJTuf4Ko=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Msn660BqckxQO9m0grJ049l6oZVktQ6Yj7mGzrp9gyek7xCS8ms5dX3S5g3sv0Jz0a/oe3KqDYOx0ia4sjpjNifcmqd4YihZyjcgUH/V5gAe/W1nLOf/oR/roBTR8uBUE3rJ8z+lcKSaMELpbAV95LonU91h0oJSANYRgjgRIF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c/gF3M1M; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e3c9300c65so48958875ad.0;
+        Thu, 11 Apr 2024 03:50:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712832614; x=1713437414; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0V8AVI188fF5AbLDUaefOD559npRcC/Ay2FvGZtxQ64=;
+        b=c/gF3M1Mx8qsK02izeo+dBs3ax9p/1XTB/386WOg7gEipYGvlAqoV8oEk9RLPbILuY
+         HPwz++6ftm+qM2UPAxJoB3wnV3Ex7pfxM3HDmIYP+9m6NKaHCyXxMu2XDyhMGn/R6mM+
+         hgjhu1cGczlNdveKsQvMdvVEmgPfx4yXxPFaNi1u4tUzEZLWJTuwEk/31a3bDox+zpqf
+         V90fHoQTKI260UZZDbEmtXFmYqmT+N/4K0qUhB2WNXlSDeWNGuWSfh/M8yjt7ydzmNlP
+         GSup/s0qRSo9U/gNNES5KPqIRpyovvUqLNJVO+Bjf8uisYKo09XQm0kuPx9yuOpOk7q0
+         9hzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712832614; x=1713437414;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0V8AVI188fF5AbLDUaefOD559npRcC/Ay2FvGZtxQ64=;
+        b=jdCKBvIbKfnn+mfFtRCgKCjMWtmPlQ5djPVtYHct7QoiOnmV5TRGgX5LUlcKsNlsXo
+         W7SE48LTaXEcXuiOUwcPHJTPBieeDcIDne+jnhSc1VetQ0nEO7oniw6DVRjT7iWHCdIb
+         xqwPulO9wyXr06kRSgdaXH45wh3yBCgmHuCl/JTqbiHKnA8N5pTIfAIMhfVzaLgwGu86
+         iwuMt0oDUSe9GNmkZwiqDv4cxlNQ8uWNkg3U8b2K0u0pUcmbRO0WBBABba5UH6/h3C1Z
+         rNaaIqNXEMM0uhnXZ8Da1D6UZiY1zV37Zo0wlyS+9H2pVr7uhveGbEo/ITVFyjgzuHD1
+         g9rg==
+X-Forwarded-Encrypted: i=1; AJvYcCXpe7R9OYJamZrl6RrSVa3iP066RvJTRtZzFJGOR9rId4wKlcDJiecU2GEflKGOkgYVyPf/LEHrobhGEi1zSN6foR+zV0rTbJMSJBJK55n2iYWIF79oMAsAVvRw4xf59H2OuStSjsdjbrLx8x5+bq+9neaShT9DaEdIQVgXKlsOYT2tU/ZV1AjS
+X-Gm-Message-State: AOJu0YwsQ6Lv5/zL8ZU+mcANX5zrsXfHdokNKeFkpnQiqPu5GrscHZ3I
+	OzkWDYhq15YtdH3/cUvS7/dpp5w4srvRA1MDZlQAjG40GvvdpASGyadVmg==
+X-Google-Smtp-Source: AGHT+IEtQzHYcZhHF+ujcl2W4gfyTb2Kq41fyleepPcTD77/19WDgStiPTVulVfZQkv3bnNhXD/5EQ==
+X-Received: by 2002:a17:903:18d:b0:1e5:62:7ac0 with SMTP id z13-20020a170903018d00b001e500627ac0mr4509674plg.14.1712832613536;
+        Thu, 11 Apr 2024 03:50:13 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id l6-20020a170902d34600b001def175bbbfsm912997plk.251.2024.04.11.03.50.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 03:50:12 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 106E3184799FF; Thu, 11 Apr 2024 17:50:09 +0700 (WIB)
+Date: Thu, 11 Apr 2024 17:50:09 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Jarkko Sakkinen <jarkko@kernel.org>, linux-integrity@vger.kernel.org
+Cc: Alexander Steffen <Alexander.Steffen@infineon.com>,
+	"Daniel P . Smith" <dpsmith@apertussolutions.com>,
+	James Bottomley <James.Bottomley@hansenpartnership.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Jonathan Corbet <corbet@lwn.net>,
+	Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+	Mimi Zohar <zohar@linux.ibm.com>, Peter Huewe <peterhuewe@gmx.de>,
+	Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] Documentation: tpm_tis
+Message-ID: <ZhfAYVLwoYAPnYbI@archie.me>
+References: <20240409190847.10869-1-jarkko@kernel.org>
+ <20240409190847.10869-3-jarkko@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="QQMkQKtETCXLqH/I"
+Content-Disposition: inline
+In-Reply-To: <20240409190847.10869-3-jarkko@kernel.org>
 
-Per the "Processor Specification Update" documentations referred by the
-intel-microcode-20240312 release note, this microcode release has fixed
-the issue for all affected models.
 
-So don't disable INVLPG if the microcode is new enough.  The precise
-minimum microcode revision fixing the issue is provided by engineer from
-Intel.
+--QQMkQKtETCXLqH/I
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-And the erratum says:
+On Tue, Apr 09, 2024 at 10:08:47PM +0300, Jarkko Sakkinen wrote:
+> diff --git a/Documentation/security/tpm/tpm_tis.rst b/Documentation/secur=
+ity/tpm/tpm_tis.rst
+> new file mode 100644
+> index 000000000000..b448ea3db71d
+> --- /dev/null
+> +++ b/Documentation/security/tpm/tpm_tis.rst
+> @@ -0,0 +1,46 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> +TPM FIFO interface driver
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> +
+> +TCG PTP Specification defines two interface types: FIFO and CRB. The for=
+mer is
+> +based on sequenced read and write operations,  and the latter is based o=
+n a
+> +buffer containing the full command or response.
+> +
+> +FIFO (First-In-First-Out) interface is used by the tpm_tis_core dependent
+> +drivers. Originally Linux had only a driver called tpm_tis, which covered
+> +memory mapped (aka MMIO) interface but it was later on extended to cover=
+ other
+> +physical interfaces supported by the TCG standard.
+> +
+> +For legacy compliance the original MMIO driver is called tpm_tis and the
+Did you mean "For historical reasons above ..."?
+> +framework for FIFO drivers is named as tpm_tis_core. The postfix "tis" in
+> +tpm_tis comes from the TPM Interface Specification, which is the hardware
+> +interface specification for TPM 1.x chips.
+> +
+> +Communication is based on a 20 KiB buffer shared by the TPM chip through=
+ a
+> +hardware bus or memory map, depending on the physical wiring. The buffer=
+ is
+> +further split into five equal-size 4 KiB buffers, which provide equivale=
+nt
+> +sets of registers for communication between the CPU and TPM. These
+> +communication endpoints are called localities in the TCG terminology.
+> +
+> +When the kernel wants to send commands to the TPM chip, it first reserves
+> +locality 0 by setting the requestUse bit in the TPM_ACCESS register. The=
+ bit is
+> +cleared by the chip when the access is granted. Once it completes its
+> +communication, the kernel writes the TPM_ACCESS.activeLocality bit. This
+> +informs the chip that the locality has been relinquished.
+> +
+> +Pending localities are served in order by the chip in descending order, =
+one at
+> +a time:
+> +
+> +- Locality 0 has the lowest priority.
+> +- Locality 5 has the highest priority.
+> +
+> +Further information on the purpose and meaning of the localities can be =
+found
+> +in section 3.2 of the TCG PC Client Platform TPM Profile Specification.
+> +
+> +References
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +TCG PC Client Platform TPM Profile (PTP) Specification
+> +https://trustedcomputinggroup.org/resource/pc-client-platform-tpm-profil=
+e-ptp-specification/
 
-    This erratum does not apply in VMX non-root operation. It applies
-    only when PCIDs are enabled and either in VMX root operation or
-    outside VMX operation.
+Other than that,
 
-So if the kernel is running in a hypervisor, we are in VMX non-root
-operation and we should be safe.
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Michael Kelley <mhklinux@outlook.com>
-Cc: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Andrew Cooper <andrew.cooper3@citrix.com>
-Link: https://lore.kernel.org/all/168436059559.404.13934972543631851306.tip-bot2@tip-bot2/
-Link: https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files/releases/tag/microcode-20240312
-Link: https://cdrdv2.intel.com/v1/dl/getContent/740518 # RPL042, rev. 13
-Link: https://cdrdv2.intel.com/v1/dl/getContent/682436 # ADL063, rev. 24
-Link: https://lore.kernel.org/all/20240325231300.qrltbzf6twm43ftb@desk/
-Signed-off-by: Xi Ruoyao <xry111@xry111.site>
----
- arch/x86/mm/init.c | 41 +++++++++++++++++++++++++++++------------
- 1 file changed, 29 insertions(+), 12 deletions(-)
+--=20
+An old man doll... just what I always wanted! - Clara
 
-diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-index 679893ea5e68..e69d227ea123 100644
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -261,33 +261,50 @@ static void __init probe_page_size_mask(void)
- 	}
- }
- 
--#define INTEL_MATCH(_model) { .vendor  = X86_VENDOR_INTEL,	\
--			      .family  = 6,			\
--			      .model = _model,			\
--			    }
-+#define INTEL_MATCH(_model, _fixed_microcode)	\
-+	{					\
-+	  .vendor	= X86_VENDOR_INTEL,	\
-+	  .family	= 6,			\
-+	  .model	= _model,		\
-+	  .driver_data	= _fixed_microcode,	\
-+	}
-+
- /*
-  * INVLPG may not properly flush Global entries
-- * on these CPUs when PCIDs are enabled.
-+ * on these CPUs when PCIDs are enabled and the
-+ * microcode is not updated to fix the issue.
-  */
- static const struct x86_cpu_id invlpg_miss_ids[] = {
--	INTEL_MATCH(INTEL_FAM6_ALDERLAKE   ),
--	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L ),
--	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT ),
--	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE  ),
--	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_P),
--	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_S),
-+	INTEL_MATCH(INTEL_FAM6_ALDERLAKE,	0x2e),
-+	INTEL_MATCH(INTEL_FAM6_ALDERLAKE_L,	0x42c),
-+	INTEL_MATCH(INTEL_FAM6_ATOM_GRACEMONT,	0x11),
-+	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE,	0x118),
-+	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_P,	0x4117),
-+	INTEL_MATCH(INTEL_FAM6_RAPTORLAKE_S,	0x2e),
- 	{}
- };
- 
- static void setup_pcid(void)
- {
-+	const struct x86_cpu_id *invlpg_miss_match;
-+
- 	if (!IS_ENABLED(CONFIG_X86_64))
- 		return;
- 
- 	if (!boot_cpu_has(X86_FEATURE_PCID))
- 		return;
- 
--	if (x86_match_cpu(invlpg_miss_ids)) {
-+	invlpg_miss_match = x86_match_cpu(invlpg_miss_ids);
-+
-+	/*
-+	 * The Intel errata claims: "this erratum does not apply in VMX
-+	 * non-root operation.  It applies only when PCIDs are enabled
-+	 * and either in VMX root operation or outside VMX operation."
-+	 * So we are safe if we are surely running in a hypervisor.
-+	 */
-+	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR) &&
-+	    invlpg_miss_match &&
-+	    boot_cpu_data.microcode < invlpg_miss_match->driver_data) {
- 		pr_info("Incomplete global flushes, disabling PCID");
- 		setup_clear_cpu_cap(X86_FEATURE_PCID);
- 		return;
--- 
-2.44.0
+--QQMkQKtETCXLqH/I
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZhfAXQAKCRD2uYlJVVFO
+oyTWAQDDh/ybYEQfUhhhVix+XJRKnyJS+qX3oVhOtCnaV4rdbwD/T7FQM2fd19g6
+yntkKwA+0kOawAxi5rYvOITeNGaiTwo=
+=eLHn
+-----END PGP SIGNATURE-----
+
+--QQMkQKtETCXLqH/I--
 
