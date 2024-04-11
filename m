@@ -1,121 +1,151 @@
-Return-Path: <linux-kernel+bounces-140429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CA008A144E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:20:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EC188A1422
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:14:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DA931F21DF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:20:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24AFF1F234EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:14:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5876F14D293;
-	Thu, 11 Apr 2024 12:20:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CCF014BF8B;
+	Thu, 11 Apr 2024 12:14:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="paP0M6PO"
-Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZDCP2AVr"
+Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7BC14A603;
-	Thu, 11 Apr 2024 12:19:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EAC14A08D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:14:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712838001; cv=none; b=MpM+Kvur2cBqT1K6+TKZIBw+iPud1fKQvqwI9/35ucbIr08y8sLK/WoTwCWHvFoAoQ8N5gD2kK13k8OYgTJTxxqFdcbLnKqxVZi51imlukjcb5PXdT1uWWRVsr0fYzofETYpyMLTpTmiykHb9K4kVFcISIq5pJCvav7GQiWPtg0=
+	t=1712837649; cv=none; b=IDm2wa8qw+2wA4RfulLKbGYfS7qOtFFPHsiYwBECPrtk5OxKq+c/IDTuZqno0ZqvlKP3UBre3E6ab9kY5BJXWrq51gN/rLIp8A++OtP/Iq3Z6xOXOC2mH9eXHxDlQoEubmfTX7iSuWjj81TctJBFkJnyV8V95s+WT2rD1CssRo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712838001; c=relaxed/simple;
-	bh=Fv8F+LqJff2mEWVv8dPMK9uakqRJ0lDNqkorVAyOs7U=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=SmA5pGbeihYtJrxAZwMcoHa7rZyfeid4HWIBmXrslBAdqDFQPHRUH6yd9tGCdiGWUMDFZH5vd3+t2wjhFPfISWKBRmQIruD/60NuEfr8Sjl2xRoTUVu5jrDs+os35QtNHBG2Ntkdap0+FGHwBe82nj+wKj3ovPlEziAZ1xg7YpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=paP0M6PO; arc=none smtp.client-ip=203.205.221.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712837990; bh=REf7CUdqiJuDhAU9bhL9/nMO0Vzqyv6Hp1KPo+J2oHI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=paP0M6POb5tMsm/RYRZgah8h97gUtkaLDIbqOfr+jJVZ2W5QdCgV3bWcNol1YdW7d
-	 qVd6+lOXO8nL/3Ogb6KuVfPX/tpX3Qv1ukUHDQxId1ZcHGb/QDS0+IYznVctxJLu4o
-	 8msCAfObXp+OFhyTAHDmpCZvmPlPGbxs7C/wVan0=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrszc6-0.qq.com (NewEsmtp) with SMTP
-	id 364BDA7C; Thu, 11 Apr 2024 20:13:36 +0800
-X-QQ-mid: xmsmtpt1712837616t7fd8r3g2
-Message-ID: <tencent_7078297303BC2446F7663763C6D773640305@qq.com>
-X-QQ-XMAILINFO: OQhZ3T0tjf0aA9gxQHflprTWP5hmPAz0fROehYfqfNzE27OdQsGTgE+9RlXr3F
-	 nOQu/JldIf1DS8ZwZfAOVX8tBQJUziU0Oz7t0vzq1Yr6gUSrWlLEi7hKL9LwcUQ07N2AYEnmHAde
-	 5xL4MGeIiL0AERRXjINQ9d0/mw9x4Asxmdzb7ZRuxV0D5xbYXfm2v5JXeoASu/cO28p+lK6qEnRM
-	 prgRXnPcDM3u2oDJNiHaJDMWIe0ErZ7YMV0ZQrBkNQLGCssAOu4QeeAcR20fjisCUkU7W45g9hub
-	 qcUWGD3bC6Vv7iUrOF3TWWM5ACVEAPju7cvUdKyBd+llXDQfPknK/JPQVUfDdqXaggLfVhFGHo6X
-	 jUSymgkGN7PZ1KZb30l/N+cNXXhkjtYIRFSBF2CVEQZ4MGrLayPQaCFlBGLJPoj47aYnrosXqrP1
-	 TNd1/knQMXnwo6CnBCDgtPSeGRlwrcOPOMAe4jpeScfsk5JHg6I9yjPbb8OmyiaVqWJ4j9IkYvJL
-	 FaBo4VgPELfxTy7JNmhrRy0lGfbZfYm39NNyR2PYcx/9/1cmpGbTUmDLw4rySydmRICpWDMfPnDK
-	 yZL9swNc19jbTumrePxpRxLkWvy/J+JuT24YU4welZ0gztoJjFKSrjrJCt/5YQfIM0jGr55WdJK/
-	 8DZtsDjE978NaW4I+kIt138+5ZSom9BXTt8K3tCydXd2pKmtMd/JeNZdwr01InQyZdZ/cTjhxNIa
-	 OmdaQPrLUxJIQvOrFPuQr3Z9y82EW6+nB/vxDkLCj+y+hgwe/zu4bgGJzeVd23nKwbpNWPJnRtkX
-	 4/2qle7h0ttSZ6JJMhsRhRhvwOrVGE9/8ylkIWYw/CNAC7FQPmHDrzWix4O84YTxT9BBKRZPF4mP
-	 L7HA5mo+pGPOY95mK32EZXFr/5ruvEhIP4h1acmU3hlLyyX09pfZnF2WRIueDljTWV0qkiRdCv5+
-	 qv2z8+aNn+hr+n8zNhWQn+CKsw2pan
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-From: Edward Adam Davis <eadavis@qq.com>
-To: eadavis@qq.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	sdf@google.com,
-	song@kernel.org,
-	syzbot+9b8be5e35747291236c8@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: Re: [PATCH] bpf: fix uninit-value in strnchr
-Date: Thu, 11 Apr 2024 20:13:37 +0800
-X-OQ-MSGID: <20240411121336.1323182-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <tencent_FB85678A3DC136BE969236344B0A74177709@qq.com>
-References: <tencent_FB85678A3DC136BE969236344B0A74177709@qq.com>
+	s=arc-20240116; t=1712837649; c=relaxed/simple;
+	bh=BakRmhmicJbDKcrReng5xepS9oRzju+Zi4eHkXz5Gjo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=LgX0MVIjWjhDsXhN/EzW1UCLwiera53aH+i+rFe5ij8i+0drf0WmrDepW22WufyNClqVT/AaE5pB5i9ogbjv2BfIj5E+a4tREiNx3pHBW39fOKRLMy8OOL6bxXnMccK0hpOa1BOD2bUEa7HuNQMsczOVCBpH1Xms1wD6ghnZv4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ZDCP2AVr; arc=none smtp.client-ip=209.85.221.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4db24342894so160372e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 05:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712837646; x=1713442446; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1vhafsI5LvdFGZSOAF0fGhLimdJSORh40J/r9x8oZUU=;
+        b=ZDCP2AVr58e+6I9Laiyd9ffuj/n6oixpjNdGqpamYQDXQmJwzn3CiyVohbQZdHagsI
+         wZftIm6B/bnfuZWsoX04Gf0nBGgqagm0EP/CPYQ6NTiHqgWMGfTbcat/HpfpyR/oGnBe
+         oO1O1VYEDoSaKwTazzcPdhNKnvl/FKEga6kDw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712837646; x=1713442446;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1vhafsI5LvdFGZSOAF0fGhLimdJSORh40J/r9x8oZUU=;
+        b=YOPEfYkbkSn8IOIG0iX7kr7Q7R861ElQUjquLFUcwkY6RTkSog4YoVJ0EqE/UrsCUQ
+         2sRlgWFVi3O28UFP9006DNmzf56eq7+V+g5PEMnSOQgcTxe5q+xlYbqwsmyJ3RYBgG21
+         i0F4hg5TP42AnAWyMryNvUvZ2Qq2gHQHihQ46yccntaOK2tsGngAdD+KkaZnng4wa6+A
+         6FrmqTQttNCOvjU60GDCL3Ilj435H3hh7PTBPTW2AVsBg7cuHCHoyqbgJjDc1Q53W1k6
+         1XvGN4Tu4kSdNCZbwh1LU9TUrMHkTDHhgL8W1jANi+4pzJMIb0R6/7Ifd1s7TfEB/P7+
+         KJ3w==
+X-Forwarded-Encrypted: i=1; AJvYcCU3UuLa7qSLpKNJO1M7VfFgxzI+aCQ070RlPv+QV9bFoDjrdTbpGjayn1BnG5VfFFwtkmUDd570Aqed874CcG2RB+9FP4qUI6bLvdeh
+X-Gm-Message-State: AOJu0YxKeAXrHt8DjtZm7v1K331MGRf2TzqlkbwhdYCT4M+T2+erlgHF
+	QDgMSBA5ZyK3edeO5BOQVnbXpHRGdMOyWfTCYvWkn3sYevmkEan/Dyv0X+9mOXcBDMi6AtvFFmr
+	jj8Uz
+X-Google-Smtp-Source: AGHT+IGrz19TKSvIV3DMbiUB+Anzc4f3GG8bD5xEZa2OJ57IT5TTkk/P+nBFmtMj28v6ucHX2QJjqQ==
+X-Received: by 2002:a05:6102:290e:b0:47a:2545:12e with SMTP id cz14-20020a056102290e00b0047a2545012emr4256388vsb.5.1712837645325;
+        Thu, 11 Apr 2024 05:14:05 -0700 (PDT)
+Received: from denia.c.googlers.com (200.234.86.34.bc.googleusercontent.com. [34.86.234.200])
+        by smtp.gmail.com with ESMTPSA id l18-20020a0ce092000000b0069b12b5ab57sm855799qvk.89.2024.04.11.05.14.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 05:14:04 -0700 (PDT)
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Thu, 11 Apr 2024 12:14:03 +0000
+Subject: [PATCH] media: c8sectpfe: Do not depend on DEBUG_FS
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240411-debugfs-v1-1-220c164afaf5@chromium.org>
+X-B4-Tracking: v=1; b=H4sIAArUF2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDE0ND3ZTUpNL0tGLdtBSzZEPjRANzk7QUJaDqgqLUtMwKsEnRsbW1ANs
+ Oln5ZAAAA
+To: Patrice Chotard <patrice.chotard@foss.st.com>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>, 
+ linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>
+X-Mailer: b4 0.12.4
 
-on Wed, 10 Apr 2024 08:28:01 +0800, Edward Adam Davis
-> >   * Note that the %NUL-terminator is considered part of the string, and can
-> >   * be searched for.
-> >   */
-> > char *strnchr(const char *s, size_t count, int c)
-> lib/string.c
->   9 /**
->   8  * strnchr - Find a character in a length limited string
->   7  * @s: The string to be searched
->   6  * @count: The number of characters to be searched
->   5  * @c: The character to search for
->   4  *
->   3  * Note that the %NUL-terminator is considered part of the string, and can
->   2  * be searched for.
->   1  */
-> 384 char *strnchr(const char *s, size_t count, int c)
->   1 {
->   2         while (count--) {
->   3                 if (*s == (char)c)           // Only when the length of s is 1, can NUL char be obtained
->   4                         return (char *)s;
->   5                 if (*s++ == '\0')            // When the length of s is greater than 1, the loop will terminate and return NULL, without obtaining a pointer to a NUL char
->   6                         break;
->   7         }
->   8         return NULL;
->   9 }
-My comments is wrong, strnchr() work well.
-> >
-> >
-> > >   		return -EINVAL;
-> > >   	fmt_size = fmt_end - fmt;
+Make dependency on DEBUG_FS conditional, that way we are not forced to
+enable DEBUG_FS if we can to use this driver.
+
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+ drivers/media/platform/st/sti/c8sectpfe/Kconfig             | 1 -
+ drivers/media/platform/st/sti/c8sectpfe/Makefile            | 7 +++++--
+ drivers/media/platform/st/sti/c8sectpfe/c8sectpfe-debugfs.h | 5 +++++
+ 3 files changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/media/platform/st/sti/c8sectpfe/Kconfig b/drivers/media/platform/st/sti/c8sectpfe/Kconfig
+index 702b910509c9c..01c33d9c9ec37 100644
+--- a/drivers/media/platform/st/sti/c8sectpfe/Kconfig
++++ b/drivers/media/platform/st/sti/c8sectpfe/Kconfig
+@@ -5,7 +5,6 @@ config DVB_C8SECTPFE
+ 	depends on PINCTRL && DVB_CORE && I2C
+ 	depends on ARCH_STI || ARCH_MULTIPLATFORM || COMPILE_TEST
+ 	select FW_LOADER
+-	select DEBUG_FS
+ 	select DVB_LNBP21 if MEDIA_SUBDRV_AUTOSELECT
+ 	select DVB_STV090x if MEDIA_SUBDRV_AUTOSELECT
+ 	select DVB_STB6100 if MEDIA_SUBDRV_AUTOSELECT
+diff --git a/drivers/media/platform/st/sti/c8sectpfe/Makefile b/drivers/media/platform/st/sti/c8sectpfe/Makefile
+index aedfc725cc19d..99425137ee0a9 100644
+--- a/drivers/media/platform/st/sti/c8sectpfe/Makefile
++++ b/drivers/media/platform/st/sti/c8sectpfe/Makefile
+@@ -1,6 +1,9 @@
+ # SPDX-License-Identifier: GPL-2.0
+-c8sectpfe-y += c8sectpfe-core.o c8sectpfe-common.o c8sectpfe-dvb.o \
+-		c8sectpfe-debugfs.o
++c8sectpfe-y += c8sectpfe-core.o c8sectpfe-common.o c8sectpfe-dvb.o
++
++ifneq ($(CONFIG_DEBUG_FS),)
++c8sectpfe-y += c8sectpfe-debugfs.o
++endif
+ 
+ obj-$(CONFIG_DVB_C8SECTPFE) += c8sectpfe.o
+ 
+diff --git a/drivers/media/platform/st/sti/c8sectpfe/c8sectpfe-debugfs.h b/drivers/media/platform/st/sti/c8sectpfe/c8sectpfe-debugfs.h
+index d2c35fb32d7ef..8e1bfd8605247 100644
+--- a/drivers/media/platform/st/sti/c8sectpfe/c8sectpfe-debugfs.h
++++ b/drivers/media/platform/st/sti/c8sectpfe/c8sectpfe-debugfs.h
+@@ -12,7 +12,12 @@
+ 
+ #include "c8sectpfe-core.h"
+ 
++#if defined(CONFIG_DEBUG_FS)
+ void c8sectpfe_debugfs_init(struct c8sectpfei *);
+ void c8sectpfe_debugfs_exit(struct c8sectpfei *);
++#else
++static inline void c8sectpfe_debugfs_init(struct c8sectpfei *) {};
++static inline void c8sectpfe_debugfs_exit(struct c8sectpfei *) {};
++#endif
+ 
+ #endif /* __C8SECTPFE_DEBUG_H */
+
+---
+base-commit: 34d7bf1c8e59f5fbf438ee32c96389ebe41ca2e8
+change-id: 20240411-debugfs-fd6c13a074fd
+
+Best regards,
+-- 
+Ricardo Ribalda <ribalda@chromium.org>
 
 
