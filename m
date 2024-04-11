@@ -1,114 +1,210 @@
-Return-Path: <linux-kernel+bounces-140479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 631848A1539
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:05:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B28278A153D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:06:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0C58B25111
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:05:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07116B22CAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:06:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6832E149C7F;
-	Thu, 11 Apr 2024 13:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C79E814B065;
+	Thu, 11 Apr 2024 13:06:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="mKUFNUk9";
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="gvZESPUs"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="beT4DTQy";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iHB5ETUr"
+Received: from fout8-smtp.messagingengine.com (fout8-smtp.messagingengine.com [103.168.172.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 611FD38DD2;
-	Thu, 11 Apr 2024 13:05:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36FE438DD2;
+	Thu, 11 Apr 2024 13:06:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712840707; cv=none; b=RI5f6s94dFhASVmNLWA8Oes7AwaMvgAI1+3PnRPf5et164iI3ewZLXKEl+zh/WUzMyPVnCPPc0ZyagkStGNrH/9boelvxJOeUT58pqtc5h1shdYy66+VlqdDI4rqTdEJHh8IFaZqvQSxy/m8jewkddBdEYrCLcsrzv4xd6DKgHE=
+	t=1712840767; cv=none; b=MWc34QbYBQ+88rxCac3ML72XFT6zqGSPXMITLjzf8s9JPNQjaj9YgO4ePbMRpvJr1vPdlWCDCsE4LTpm8vc8oSBWN7q/gOrMFj7WlUE31mRjbqAgpFQy2aau4prT2R68e5dn2OXOfoDLH6Uld3/2vFtgHOPB95b/OlOcrqmvTK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712840707; c=relaxed/simple;
-	bh=ZrO8njZB9AZNmPKmPyEZoaoX8nSebxgDBxikZ6b+YEI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=o/m9ZyWiU0qn2UPtCswr6vH18Wg2WK63ABi68nD9WsIM7mnXYJ4Q1b9lpZU03iq4+SwqpmFXVkxNBT45r/H76BBL8mw6IotcqTMCS9o788fq1E2NVJvhVfAQZWeBbdrsbFZC03LmOMxMj50Vs/Fuxfokv24NAq9MuJymO3T1FwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=mKUFNUk9; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=gvZESPUs reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1712840703; x=1744376703;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=GwardD7WuS5Bsy9JLAG1ZGah+5S9uvjwccp3uchevzs=;
-  b=mKUFNUk98Vssm+X+B4ZJppFVcWp7A15UcJDYgajIflR+uQ9WGs0G91uX
-   i+4/RflDdEY1p33+pX1/AOYn5o5PPhPHtQwtrM0vhRm79oMXrGgCKymvK
-   BT0xm6Sep5c8deUHlwiWDW76wyC9gETJR0uYTrqMCZrj1v9/Oqk9u9Hjo
-   6iBGVOc/3V0V0XrECcZNV//3QTWV1sfpGT5eLmzg4pABQbi2bQHyLCYzO
-   PB2eAIHyCcg8haQs3MiaROJYZMVN7hAeiWlVjHiyL41PehdTNOxrdBRSu
-   TkfylpuvKdnBxIhOFs7wfDUHc4dqg4PlaK7zeqS59H7q+XvXhuNk2tz9n
-   w==;
-X-IronPort-AV: E=Sophos;i="6.07,193,1708383600"; 
-   d="scan'208";a="36370095"
-Received: from vmailcow01.tq-net.de ([10.150.86.48])
-  by mx1.tq-group.com with ESMTP; 11 Apr 2024 15:05:00 +0200
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 8A18F17145F;
-	Thu, 11 Apr 2024 15:04:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
-	s=dkim; t=1712840696; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=GwardD7WuS5Bsy9JLAG1ZGah+5S9uvjwccp3uchevzs=;
-	b=gvZESPUsNKGOKDS/H6LMn3yjy9VCKVgOt1H3UvJhsdJqn3pNBPnFnwkSCImsih63N2AIp3
-	bZHpBBazcq/CNmofIenPiKwLydl11Eotf/a7pj+W7DvM+L6pE18dWsUkLk0IRR4ABwqPEl
-	YQd5aJiPT1GyoQ3jobVyFPajcU0mT1Thl7FoozvfjeNKdDoWJovhGu922Dldyr3CoQhBTa
-	UktybazpioB05tjb9vjyjOBBEVWY7pJhD6ML+oWDJsUmPTm2OMeB0Il8db4GDpZo4NncoK
-	ZkjYHNHMx09gK3BCD/pTzm+MgXT8+eaRwrNrk36jwrAX5VlILlEDnSTEST352g==
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>
-Cc: Alexander Stein <alexander.stein@ew.tq-group.com>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: [PATCH 1/1] tty: serial: fsl_lpuart: use dev_err_probe for clocks
-Date: Thu, 11 Apr 2024 15:04:48 +0200
-Message-Id: <20240411130449.1096090-1-alexander.stein@ew.tq-group.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1712840767; c=relaxed/simple;
+	bh=ykvqByV4lzjo0vKPgy3+JXNnx6WoNf2+XWOiGQ7HCJY=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=q2Tvh+3DePddCzaEFBFRE33CW69tR4uI8p3frJkYHPOJxh8eIxu7QxcCWvw11xmllDMQVjFAXth+ncAPes8YdJ2GREuQsnwpZEVuW3SdMMVOYCtjkYJzhf6HXMvmjueGpznxaWwSnITrHI0BUEfpxzaxz5LdTyM5UzFyS63rte0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=beT4DTQy; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iHB5ETUr; arc=none smtp.client-ip=103.168.172.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 276C0138025B;
+	Thu, 11 Apr 2024 09:06:04 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 11 Apr 2024 09:06:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1712840764;
+	 x=1712927164; bh=yj3L41BBACRzg4qgbnEqB1wd5tAnTER3vhd4irRjfD0=; b=
+	beT4DTQyVXapX9VjkjPwhPXdHURnM/ZCCDls9VSQvZ8jnWlZeo/nciiuyV20/Kt5
+	QSIvDXPNpWMfdNCSMEZlAg2qvGK4qSrETVZkcVNW/Rzqn9sPNV2RmNKthjLnBElO
+	PSdTY8BOa2uIzcj3cNr97247hhrF5OgHkvr6e3ID3MrM82S+YN+F+ki9pH7RlaD7
+	srA3Xh0N0ptDWxMRt+vxYwjHkoqjsbei9U6aDHj44C1fxYygKrdo50pNnz1vpHo3
+	Gg6bTlsUiFzO70iavY0+M7qfca3ERWSO1riSHIQFgdjRIMNjUsJeC+kyips3x6zc
+	gvG38wCdhwIAIuSNrQE+0w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712840764; x=
+	1712927164; bh=yj3L41BBACRzg4qgbnEqB1wd5tAnTER3vhd4irRjfD0=; b=i
+	HB5ETUr01AhS0wBRoP6D0jH8qNl/9c1nhUBdv0B3Dfnjh8qTr4/n0JGzsSz6Fod0
+	j9JXff6yOtVRy3nmLrZt3I7ma7Dc6chD41WCFXvBGhmNow+Ctl/l/KRAf9tFUgRD
+	Tep0m4+npFqHts87z7IKjSYAoR03rB2Hid0ThQ7Bs4ydXomNaxn2+48F06h+Ai2S
+	8J/zdRPmKRLFOmmzvud7mcZLWBRJCdXEh/32+CnBm3vE+MQ8uH7eXLkEpBGh3CcL
+	K17eDgvryQL8tDfImuaGcdv1yGumwv6nduafJtsjsuKMu+ocN9M/80ih/l3G9GRy
+	PuGYHXYva62LWR1AMv3Pw==
+X-ME-Sender: <xms:OuAXZpDP_dsT5ECfjNFjYbmlgwtgrsce17kShjG5fbvlQvgcU3ROoA>
+    <xme:OuAXZnjcQjSF1HhAnOcj1qasYyVXOTegxXbe8Lz9NB8Jhh7zI2iHahWL8pS3dF7zN
+    XaQp5szmEk_rOTvkxk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehkedgieduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpefgkeeuleegieeghfduudeltdekfeffjeeuleehleefudettddtgfevueef
+    feeigeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:OuAXZkkHjJhpq-znzUOIFXxPGrOSG_RbON5nK9ERCI0vIUyXSOqJ9A>
+    <xmx:OuAXZjwcWgyyKd_sj3c4YoF3pahZKhxPOvFXD3pJsmp1fD988lFPnQ>
+    <xmx:OuAXZuSxT4Mnc3kr-8fJgSJZipdpvdg4-mCmtR-iyMbzGtIhnSahog>
+    <xmx:OuAXZmYy2Lk0FzuBtsseotdcsoHsPYFt-UOdp44tiHza0Yj3qVEt2A>
+    <xmx:POAXZsnqYF5uSSbA0rka_l_foY-XGEg88Thvb2s23eW3mc1zKwaoEKRW>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 5E9FFB6008F; Thu, 11 Apr 2024 09:06:02 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
+Message-Id: <cc62b891-d636-4d70-8792-eebcb5c7c5d5@app.fastmail.com>
+In-Reply-To: <e0e1518c-9319-4af9-9b7d-3eb985f2e6da@csgroup.eu>
+References: <20240215162327.3663092-1-sean.anderson@seco.com>
+ <20240219153016.ntltc76bphwrv6hn@skbuf>
+ <e0e1518c-9319-4af9-9b7d-3eb985f2e6da@csgroup.eu>
+Date: Thu, 11 Apr 2024 15:05:41 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+ "Vladimir Oltean" <vladimir.oltean@nxp.com>,
+ "Qiang Zhao" <qiang.zhao@nxp.com>, "Shawn Guo" <shawnguo@kernel.org>,
+ "Herve Codina" <herve.codina@bootlin.com>
+Cc: "David S . Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
+ "Paolo Abeni" <pabeni@redhat.com>, Netdev <netdev@vger.kernel.org>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "Steffen Trumtrar" <s.trumtrar@pengutronix.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "Roy Pledge" <roy.pledge@nxp.com>, "Camelia Groza" <camelia.groza@nxp.com>,
+ "Claudiu Manoil" <claudiu.manoil@nxp.com>, "Scott Wood" <oss@buserror.net>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ "Sean Anderson" <sean.anderson@seco.com>
+Subject: Re: [RESEND PATCH net v4 1/2] soc: fsl: qbman: Always disable interrupts when
+ taking cgr_lock
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Clocks might not be available yet when probing lpuart. Silence -517 errors
-by using dev_err_probe.
+On Wed, Apr 10, 2024, at 06:54, Christophe Leroy wrote:
+> Le 19/02/2024 =C3=A0 16:30, Vladimir Oltean a =C3=A9crit=C2=A0:
+>> On Thu, Feb 15, 2024 at 11:23:26AM -0500, Sean Anderson wrote:
+>>> smp_call_function_single disables IRQs when executing the callback. =
+To
+>>> prevent deadlocks, we must disable IRQs when taking cgr_lock elsewhe=
+re.
+>>> This is already done by qman_update_cgr and qman_delete_cgr; fix the
+>>> other lockers.
+>>>
+>>> Fixes: 96f413f47677 ("soc/fsl/qbman: fix issue in qman_delete_cgr_sa=
+fe()")
+>>> CC: stable@vger.kernel.org
+>>> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+>>> Reviewed-by: Camelia Groza <camelia.groza@nxp.com>
+>>> Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+>>> ---
+>>> I got no response the first time I sent this, so I am resending to n=
+et.
+>>> This issue was introduced in a series which went through net, so I h=
+ope
+>>> it makes sense to take it via net.
+>>>
+>>> [1] https://lore.kernel.org/linux-arm-kernel/20240108161904.2865093-=
+1-sean.anderson@seco.com/
+>>>
+>>> (no changes since v3)
+>>>
+>>> Changes in v3:
+>>> - Change blamed commit to something more appropriate
+>>>
+>>> Changes in v2:
+>>> - Fix one additional call to spin_unlock
+>>=20
+>> Leo Li (Li Yang) is no longer with NXP. Until we figure out within NXP
+>> how to continue with the maintainership of drivers/soc/fsl/, yes, ple=
+ase
+>> continue to submit this series to 'net'. I would also like to point
+>> out to Arnd that this is the case.
+>>=20
+>> Arnd, a large portion of drivers/soc/fsl/ is networking-related
+>> (dpio, qbman). Would it make sense to transfer the maintainership
+>> of these under the respective networking drivers, to simplify the
+>> procedures?
 
-Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
----
- drivers/tty/serial/fsl_lpuart.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+If there are parts that are only used by networking, I'm definitely
+fine with moving those out of drivers/soc into the respective users,
+but as far as I can tell, all the code there is shared by multiple
+subsystems (crypto, dma, usb, ...), so that would likely require
+at least a reorganization.
 
-diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
-index bbcbc91482af0..d0977124632e5 100644
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -2884,8 +2884,7 @@ static int lpuart_probe(struct platform_device *pdev)
- 	sport->ipg_clk = devm_clk_get(&pdev->dev, "ipg");
- 	if (IS_ERR(sport->ipg_clk)) {
- 		ret = PTR_ERR(sport->ipg_clk);
--		dev_err(&pdev->dev, "failed to get uart ipg clk: %d\n", ret);
--		return ret;
-+		return dev_err_probe(&pdev->dev, ret, "failed to get uart ipg clk\n");
- 	}
- 
- 	sport->baud_clk = NULL;
-@@ -2893,8 +2892,7 @@ static int lpuart_probe(struct platform_device *pdev)
- 		sport->baud_clk = devm_clk_get(&pdev->dev, "baud");
- 		if (IS_ERR(sport->baud_clk)) {
- 			ret = PTR_ERR(sport->baud_clk);
--			dev_err(&pdev->dev, "failed to get uart baud clk: %d\n", ret);
--			return ret;
-+			return dev_err_probe(&pdev->dev, ret, "failed to get uart baud clk\n");
- 		}
- 	}
- 
--- 
-2.34.1
+> I see FREESCALE QUICC ENGINE LIBRARY (drivers/soc/fsl/qe/) is maintain=
+ed=20
+> by Qiang Zhao <qiang.zhao@nxp.com> but I can't find any mail from him =
+in=20
+> the past 4 years in linuxppc-dev list, and everytime I wanted to submi=
+t=20
+> something I only got responses from Leo Ly.
+>
+> The last commit he reviewed is 661ea25e5319 ("soc: fsl: qe: Replace=20
+> one-element array and use struct_size() helper"), it was in May 2020.
+>
+> Is he still working at NXP and actively maintaining that library ?=20
+> Keeping this part maintained is vital for me as this SOC is embedded i=
+n=20
+> the two powerpc platform I maintain (8xx and 83xx).
+>
+> If Qiang Zhao is not able to activaly maintain that SOC anymore, I=20
+> volonteer to maintain it.
 
+Thanks, much appreciated. The QE driver is also used on
+arm64/ls1043a, but I have not seen any email or pull requests
+from Qiang Zhao for that driver either.
+
+The previous setup was that Li Yang picked up patches for
+anything under drivers/soc/fsl/ and forwarded them to
+soc@kernel.org for me to pick up.
+
+I would very much like to get back to the state of having
+one or two maintainers for all of drivers/soc/fsl/ and
+not have to worry about individual drivers under it when
+they are all maintained by different people.
+
+Shawn Guo is already maintaining the arm64 side of
+Layerscape in addition to the i.MX code. Herve Codina in
+turn has taken responsibility for qe/qmc.c and qe/tsa.c.
+
+Maybe you can pick one more more maintainers for
+drivers/soc/fsl/ between the three of you to collect
+patches into a git branch and send pull requests to
+soc@kernel.org?
+
+      Arnd
 
