@@ -1,167 +1,115 @@
-Return-Path: <linux-kernel+bounces-140112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EB8C8A0B8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:43:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C723D8A0B8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:43:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C27031C20831
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:43:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2AF47B24DBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6231411F3;
-	Thu, 11 Apr 2024 08:43:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D5E140367;
+	Thu, 11 Apr 2024 08:43:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="jvKLLlyy"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NiUu9lwh"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 535F713CF91
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:43:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C465413CF91
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:43:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712824990; cv=none; b=NH8MvRVEGG6g2hPZtK6AUt0sqKg6DHgGhGLST9OrXhrhZJFzqh1XL4phom5DS5H2oQq0Q3bthePPkInq640BsgA/iWJcCt8H6B/nYoeg/v1YU0ON4EYP1jlyw0tOupcZQtvMbhMfvFYKTIalpurGc9AJFvVKVjnZPwmAydU0QNI=
+	t=1712824998; cv=none; b=ZDl2gkaWADmBdJEEybRSvdBJQBIjzp2gnsSTfzTyhcmHGiCareWAomuqmnUiWVIgc+6XkGNwjfvIJBwXUNXEcDFIpy2nJxtjFOfMJBqhF7ipjpAmT6iN2J1rBZyUkQ3B5V64iPOyGYc1+7rTMwGQkbKQLb6IV8UCpAa4HIRhD/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712824990; c=relaxed/simple;
-	bh=rFnbY6the2DTWFxqzWAWtQZuwY6LG4HwFJznztvQg34=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aCKrfgCjUyA6kvlvheWVMLIAWC6eoCzo7LGNxVg+rhoRXIY/2J7sbekkcyvr4/b52ZIrJkocvaCgkBPlxbpehkFvD39wJR2BsvRbuVb8iiQ9Y0rjF/qrBpYH3q8Q9Gf0SIwc5cI7P83hXmKYZwB5+aaODbGiFdyCx8+PpIbE+ko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=jvKLLlyy; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-346b96f1483so199249f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 01:43:08 -0700 (PDT)
+	s=arc-20240116; t=1712824998; c=relaxed/simple;
+	bh=509tLOzcoQMNLfib7BdfX6IBKnV24Z4MFZee3M0g70U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VvG3bEBuQxk47Del+jqMJ7lJ1Pvd5fZcV5PodFw76iK6EtHTf+vyHN6zMtFtxF9IbKp8A6fr81d6+Crvt2K1OFd2YdoS2Jmn/00t1OAfnYZmCM2gNe9jzYtErgU9vnhrEc6DQxou3mv85HtwlO7Sf/P28kZkLarkLClQsNqNJ5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NiUu9lwh; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56fe8093c9eso327805a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 01:43:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1712824986; x=1713429786; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Lvrzy6gsavLoDn3zewsR3l1JDkSncM7fI8dzkelxIo=;
-        b=jvKLLlyyHphQ25WDhJSDv5Oc/4VUi5WPWl8712/+0hCu8iShkFGQGpmzy/8wmbBCOF
-         UKIF1bM3mMZFqiZrfiIgZxdOBZDODhxPqjq+GGLUIwpyqzRN1R4EjX84Q7Y/nDaoPLa4
-         OjawMbdi91/JYJunfHuCQiV0Bg2NFdHVuXsVM=
+        d=gmail.com; s=20230601; t=1712824995; x=1713429795; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Pkj3gKmI4mkg3upyNhlsCNRZCTuzGBdlaUscEUL/TVE=;
+        b=NiUu9lwhXaxf90Dm/rJZt8U/lQOI4f0S2ctHlH+Jx1+T4OI0NT6FafBUOrRLThRAGf
+         USqbDw44hZFBFz4/9lpkpbo6twyN2I+8LGVsfhRvZYGp3j/AXxGmF5qnW36aBSB33gMl
+         cXw5Jtla+t0NC73DCQtnDQyydGnsIhtjgUyuhVTS/nxJw4NuqXXQ+UZoT/Ly4/rECenc
+         +KQFFuuyIGwJDUVbfCS6lj9FsmRfNE2YOolCgJ80ABi859Cn04Io+279O11RiQnozeS4
+         8I6CvVVOZmwave88d4UD0/TqCjRdYVL7eK0IEJC9u5iExfGIoXa+XVqT/mukAPEQPbYM
+         OFxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712824986; x=1713429786;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0Lvrzy6gsavLoDn3zewsR3l1JDkSncM7fI8dzkelxIo=;
-        b=jrpOrlg9wEvFb5Y0cVaZ3EUKBISr9QfFf7hXs/tloySvKhss5f5X8YB2sucnp83m8g
-         UOvV1w4I0vQUjGQdwJcfigwIoa8cFt+sQb1w9qaqKYN4bfZ4p6j9qoQ9qPNocTvObSS4
-         5I6OrmahLMNGFIClml8Dp6bn899bnXvVDYZ+SPE2znRh86TjOsMMnpWnoQPgWN/BaZRg
-         Ju8MxmN9WqLkmKLNZ+SEhftZpA2iKgOcOn3vi0TA7nNCRzQez58ZuOxOFE16D8l9H8W7
-         QeHMU93QoinvfFPyX6Jei3R27W7yzujwLImz1ISdJLIMMZo1fVm7i77JeoSc4cpZowcm
-         CeYA==
-X-Gm-Message-State: AOJu0YzLmJ89bpqDrNDsRl9LVYEzvdvJCLLzEgVcg3LavLZxW2oHO16I
-	koOAZX6Xzsn5xFspePDUz8j2pEZg4bZbjCCtKJBcgXaAAuXFhsb0FSMqgqDNDKY=
-X-Google-Smtp-Source: AGHT+IHg6r4Nu48iUIY9mqggSJ51l+wAjek6iP5pLQCoBO8qkh2HNS3T+3YcH8NVO0akPaYU8J2LdA==
-X-Received: by 2002:a5d:588b:0:b0:33e:c91b:9083 with SMTP id n11-20020a5d588b000000b0033ec91b9083mr1765564wrf.16.1712824986611;
-        Thu, 11 Apr 2024 01:43:06 -0700 (PDT)
-Received: from [192.168.1.10] (host-92-3-248-192.as13285.net. [92.3.248.192])
-        by smtp.gmail.com with ESMTPSA id n14-20020a5d660e000000b003433a379a51sm1223176wru.101.2024.04.11.01.43.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 01:43:06 -0700 (PDT)
-Message-ID: <7f1faa48-6252-4409-aefc-2ed2f38fb1c3@citrix.com>
-Date: Thu, 11 Apr 2024 09:43:05 +0100
+        d=1e100.net; s=20230601; t=1712824995; x=1713429795;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Pkj3gKmI4mkg3upyNhlsCNRZCTuzGBdlaUscEUL/TVE=;
+        b=dpPpg5+3jHUPQ5mi9R2cnjD6CroLMcBvbDOIpcAr1piaqiNptX5L2DD+VBQ++rX8Ol
+         YhkSADMvXrDVs2jAVnWstTAvSnyG+OS0j35HtSyynqYlbEmazrBoMiIpftnoJ3krxaHG
+         uT1sYf0f3tV7h38WOcGsvGi5P/F5GuY46WfLV5aLOAdPSjvjMJ+tbBOLrcQ1JGXefwqI
+         hL0slFB/zc8oR//ZDKfa1guIAZDbVY6RDp5IHxqHw/nRtRWEt+FhMs5VQq9ssY/nuhNz
+         gAeENvIAi0I9/YBupQ3fbZ9dC34gXgBBHuJYUcl3tPmmAQqPahQf3dFQ78xwPhYqQ/VP
+         9udw==
+X-Forwarded-Encrypted: i=1; AJvYcCW80lJxofL/T7wtk+t6S2mkfEDh6IL10izjwIVgtf4NdQjIRqJUsgU2zdGvKpDismdl+rH2ZUvxl4rze+xf2VNX/opZ4RhcNp7yLVY5
+X-Gm-Message-State: AOJu0Yxu4cvOiyVk8VzLyAHNVQh420Axjyuz9FWoXMccnjW4aRCxzcIR
+	cYTXdgHd1o5TvEb39bd2PZyKHESWizfzulwbYGlQaXTvEJAf97qJ
+X-Google-Smtp-Source: AGHT+IFYsIDqOSNSnUIk23LsFp9ibh3YtKTFtVM2FUq9okoHRIzJW3fAbzYi9y6NKd3lt68gn+B8Fw==
+X-Received: by 2002:a17:907:33d3:b0:a4e:5540:7c0c with SMTP id zk19-20020a17090733d300b00a4e55407c0cmr2418806ejb.70.1712824994644;
+        Thu, 11 Apr 2024 01:43:14 -0700 (PDT)
+Received: from gmail.com (1F2EF1A5.nat.pool.telekom.hu. [31.46.241.165])
+        by smtp.gmail.com with ESMTPSA id ku21-20020a170907789500b00a517e505e3bsm527610ejc.204.2024.04.11.01.43.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 01:43:14 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Thu, 11 Apr 2024 10:43:12 +0200
+From: Ingo Molnar <mingo@kernel.org>
+To: Nikita Kiryushin <kiryushin@ancud.ru>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ashok Raj <ashok.raj@intel.com>,
+	David Woodhouse <dwmw@amazon.co.uk>, linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: Re: [PATCH] x86/smpboot: Add map vars allocation check in
+ smp_prepare_cpus_common
+Message-ID: <ZheioNCrbeT+0UHR@gmail.com>
+References: <20240409182940.664482-1-kiryushin@ancud.ru>
+ <ZhaUZFY5MUyy6hWK@gmail.com>
+ <75c2b85a-da67-4037-b2b5-6a1dec838fa9@ancud.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: x86: Set BHI_NO in guest when host is not affected
- by BHI
-To: Alexandre Chartre <alexandre.chartre@oracle.com>, x86@kernel.org,
- kvm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, daniel.sneddon@linux.intel.com,
- pawan.kumar.gupta@linux.intel.com, tglx@linutronix.de,
- konrad.wilk@oracle.com, peterz@infradead.org, gregkh@linuxfoundation.org,
- seanjc@google.com, dave.hansen@linux.intel.com, nik.borisov@suse.com,
- kpsingh@kernel.org, longman@redhat.com, bp@alien8.de, pbonzini@redhat.com
-References: <20240411072445.522731-1-alexandre.chartre@oracle.com>
-Content-Language: en-GB
-From: Andrew Cooper <andrew.cooper3@citrix.com>
-Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
- 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
- 6+ahAA==
-In-Reply-To: <20240411072445.522731-1-alexandre.chartre@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <75c2b85a-da67-4037-b2b5-6a1dec838fa9@ancud.ru>
 
-On 11/04/2024 8:24 am, Alexandre Chartre wrote:
-> When a system is not affected by the BHI bug then KVM should
-> configure guests with BHI_NO to ensure they won't enable any
-> BHI mitigation.
->
-> Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-> ---
->  arch/x86/kvm/x86.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 984ea2089efc..f43d3c15a6b7 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -1678,6 +1678,9 @@ static u64 kvm_get_arch_capabilities(void)
->  	if (!boot_cpu_has_bug(X86_BUG_GDS) || gds_ucode_mitigated())
->  		data |= ARCH_CAP_GDS_NO;
->  
-> +	if (!boot_cpu_has_bug(X86_BUG_BHI))
-> +		data |= ARCH_CAP_BHI_NO;
 
-This isn't true or safe.
+* Nikita Kiryushin <kiryushin@ancud.ru> wrote:
 
-Linux only sets X86_BUG_BHI on a subset of affected parts.
+> But I have some questions considering __GFP_NOFAIL. It clearly shows, 
+> that allocation will not fail/is not expected to fail, does it not try 
+> making allocation until it succeeds? Would not it make the system hang in 
+> a problematic case?
 
-Skylake for example *is* affected by BHI.  It's just that existing
-mitigations are believed to suffice to mitigate BHI too.
+Yes, which is better than undefined behavior. This case should only happen 
+on hopelessly buggy kernels or hopelessly buggy hardware - which will very 
+likely crash way sooner before they get into this part of the init 
+sequence.
 
-"you happen to be safe if you're doing something else too" doesn't
-remotely have the same meaning as "hardware doesn't have a history based
-predictor".
+This whole problem is a non-issue.
 
-~Andrew
+Thanks,
+
+	Ingo
 
