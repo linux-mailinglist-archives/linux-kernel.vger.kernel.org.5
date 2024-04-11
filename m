@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 922CD8A19F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43DFE8A19F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:28:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2406B1F27EAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:28:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAAF51F280EB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C61031BF6CB;
-	Thu, 11 Apr 2024 15:37:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A885D1BF6E3;
+	Thu, 11 Apr 2024 15:37:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="x1SO5Z60"
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="BYrp01L1"
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B16211BED97
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:37:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77B2C1BF6C3
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:37:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849868; cv=none; b=Mtuq1vO0qpode7IJsc6/K2A+PFXR3+jhNW1zcsVnlIzcJJse18Ej7SUSjZmS1vXIvO9eb8jjXUP1PGrX4PzTI0RCGbpJYMAwIhv0YGljWU/kdeXYCa52kYaJYSV3dvDV64gckxOaUk7iq7w3dTuWke49FlnkQa+Aku6fw4F2rLo=
+	t=1712849869; cv=none; b=KZVIp9xSQUxKNCSesvhelE8g+B2tZfSiSyGnFgGioGAOlyqagFz3Wp0BrGAseNm6GWyfwh77hPKZL+WhyqlfTo2XdkZQHZKkNZISg4JbOMfuhfnlEb+F5OEn3ipKS7GsDttv3GPo2qloZAbE3My0p86AwJ5q6h7E7rI6JtIIY98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849868; c=relaxed/simple;
-	bh=1UdNv5U1emH9JAurW/QvLJxO9pAOFAvRC5+gJWMaXCI=;
+	s=arc-20240116; t=1712849869; c=relaxed/simple;
+	bh=v6xQDF2DsXo/J4VZREBtbRAjZJR/I2UhXb1KxbqlFZc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qaxdmb3YcARlaX3OVYkQSsTZRj6t+u40L4lluTP/v7AlNPMVmP5woKO44P5DT/FnoMv9rXdfhKb62SATaBcuSG1nbGzbpNFdZFlUNIdGCg0bawhAyEGqUWM4a2cFn3LTAc5aKYlrhACRUk88pHOa6clEweK1eUb2k1HxUoHOhZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=x1SO5Z60; arc=none smtp.client-ip=209.85.166.42
+	 MIME-Version; b=NatEKjHsHblIYteVj6zXdLTcciwDRg4v92Mhsi819+kokM1ekBW95svkLcNEcVIsUIww82hA8KVtpnyn+9dMC/vYsFaytrj+2CNNZUHl08ec70vik8zf8XB4mbTpHj285Pd5R/8u/KJPmn29Z8wr2Vm1Z6DJCuvdGOOz4R+kuJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=BYrp01L1; arc=none smtp.client-ip=209.85.166.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7d6812b37a6so8978439f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:37:46 -0700 (PDT)
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso58111939f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:37:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849865; x=1713454665; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849867; x=1713454667; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0KCAzXLIsOopEV86W9ZOhnzNKs/kN2+Z3mGkecdfZBk=;
-        b=x1SO5Z60yZY5HEB/19D3PfCntgbs88e1a2wpBvnxfme1Rji5TMldqK6OvywpQBawvK
-         Fhi4vS3aU5bB4S+2YphDdSDSw5VHFXCdiQdp+4BpOe/xx+QLlozEbPX45cIcg8RXyiw2
-         schRiDV49ZCh8wXEs+glwGAumfmDqLxS7jENhvr/Rr9pl+MZJMHODCVoD0mpvejrq027
-         2QD0CEuTMA6GOnPV0oc+Gt1jUqDPfITEvBS/OebyToE2BlHf6YQiyeC7AfwlNxva1bl9
-         2lWQwxEBQ7ywupiilMYD8sbXylbhBw5zP52v3LStlh00fe37ngj6LuoC2I4r6fsDH61b
-         Mc/g==
+        bh=BnR78Ozn/BF2UUUk9wDuww3MAd2hdQuOFs4UAEs8Yu8=;
+        b=BYrp01L1EDwJE6vVRaoIa1D13BZTxgcQ7SwEq38qZyw0J6fYn7tDKTy8a91vSgJkhG
+         ydPIXVPXEDlMVXRfayC7Rs6nJ+S5V6hbcPAlCAQNPVYzk3kvfihN5qFlg89k+qVrfM75
+         8UZuLcMtPnRJUOZvrhtFfLIaq9cg+CdzDAzw8s6gl/Rb0ZI5aDTklSAGVZn+0s2ZTUU1
+         UUqR9lEMD62dyxNZ+o/AyEYm+GW72e/eNfrPhdlXyCOHJO59YrVmDGafprOxEcjpeVj+
+         VIiB7OmwdRxDepQKam50erPGDLeyY0G2M44MF9IXZMzxfLkjTcJZ8c4LBxQ4iLyp+UCz
+         TdSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849865; x=1713454665;
+        d=1e100.net; s=20230601; t=1712849867; x=1713454667;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0KCAzXLIsOopEV86W9ZOhnzNKs/kN2+Z3mGkecdfZBk=;
-        b=GFrM+IJIY9rmNZbx7rrP673Lcpppxh+c+5pVDj+x5ZrgoN1dAFF3A4rW6Chi05Usbq
-         yy8zIpyHg6Enno+gukYYzEyRLmHqYrYChJwN2bVsc8v4sueS1QjgPb1L5Bjcs1n4yZiN
-         XYi9SWOYsCCQqxy7yU9NvH5a8ZAcAmC2o5sjSE33lp5oAqDJXT6xaK9Wi52wbUKYU5iX
-         b1XxOP4S+YeW2VHIxqiPFsBOYJyuk/umBsg6hHoyVqOuXCPoaIDbFZ5pebGwTMHJWQTz
-         26XJwn2VZDZ59lEUCnLxx3zim3nFUq7zL6OH6GixR/ieOIex2ZEURtXm/YXiZCC1rWtI
-         8BeA==
-X-Gm-Message-State: AOJu0Yybog6bztyrA32YENG+0Yy8IL/cZytbOiqrGN9cxFfYqgOBBnCJ
-	5SL1lBCb+04djoqyxGEzzEh5pczQlm6n3Wtl7ApvTWb7Z/S6AQ/ne5EkN4eGcixMPK9+6LoUykS
-	7
-X-Google-Smtp-Source: AGHT+IHWzdFOOh+smnVtBm72whFts10EnA8bKrHgB5LuGlqbh4f95rpJyUvVpQHLa1j/5+p9QH/08w==
-X-Received: by 2002:a92:2912:0:b0:36a:f9aa:5757 with SMTP id l18-20020a922912000000b0036af9aa5757mr3586963ilg.2.1712849865528;
-        Thu, 11 Apr 2024 08:37:45 -0700 (PDT)
+        bh=BnR78Ozn/BF2UUUk9wDuww3MAd2hdQuOFs4UAEs8Yu8=;
+        b=H04yhy1UsFsY0lIXyb5cz10SwoNmbtw4S/Jt4O5rxtDQm+bAfX7QdOZwqwxvMFbpM8
+         m/LcVDSzK/uu9zzppzHy67QuMpc0h5OLH2U2gAMSDiJ8rtRAeBKKlDOx1QbzJ2XiYCgV
+         EjJAUX9hbRMsfgcxJqh9Nh7xMRYg7Y4g2EzDhQFDIlLTByFaTQxwvIjUtLaYhNaXy2Ak
+         C5ykRp61d9rdBSBn29FKlGR42sgpooZgEeg2vL/PiMr/gDNUYnDl7wUXM7mhjDXUJ6x4
+         NoQImvRm6Dihw4HxcuMgPLNYVIgScf2F8cz07sIJpa1Jbec0e2i8MI2I795F64fSBdxm
+         bM4A==
+X-Gm-Message-State: AOJu0YyyKAm2rFDywlXPw53gfCfkf8DTB1LLO4Yz5EYbQ0X/Dn/M7SOE
+	EUcxfMOrpdSB3nxkK7uaijL/JV/wv1juyJvss2OA9BlzE663DNAdqB1E0mwk+Q6dwKcRkGbC4TF
+	K
+X-Google-Smtp-Source: AGHT+IGxGQHUg8krv6TpOiSEesmyHCH2hqEIftKoGAMVG2w33GqrNfgRNVnf9Z+omnIWbR4892NS6w==
+X-Received: by 2002:a05:6602:38d:b0:7d6:513b:254 with SMTP id f13-20020a056602038d00b007d6513b0254mr189835iov.2.1712849867353;
+        Thu, 11 Apr 2024 08:37:47 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.43
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:37:43 -0700 (PDT)
+        Thu, 11 Apr 2024 08:37:45 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 218/437] misc: tps6594-pfsm: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:15:58 -0600
-Message-ID: <20240411153126.16201-219-axboe@kernel.dk>
+Subject: [PATCH 219/437] misc: ibmvmc: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:15:59 -0600
+Message-ID: <20240411153126.16201-220-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,86 +85,141 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/misc/tps6594-pfsm.c | 30 ++++++++++++++----------------
- 1 file changed, 14 insertions(+), 16 deletions(-)
+ drivers/misc/ibmvmc.c | 40 +++++++++++++++++-----------------------
+ 1 file changed, 17 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/misc/tps6594-pfsm.c b/drivers/misc/tps6594-pfsm.c
-index 88dcac814892..3e3da7b4bb7e 100644
---- a/drivers/misc/tps6594-pfsm.c
-+++ b/drivers/misc/tps6594-pfsm.c
-@@ -45,11 +45,11 @@ struct tps6594_pfsm {
- 	struct regmap *regmap;
- };
- 
--static ssize_t tps6594_pfsm_read(struct file *f, char __user *buf,
--				 size_t count, loff_t *ppos)
-+static ssize_t tps6594_pfsm_read(struct kiocb *iocb, struct iov_iter *to)
+diff --git a/drivers/misc/ibmvmc.c b/drivers/misc/ibmvmc.c
+index e5f935b5249d..545739f1f342 100644
+--- a/drivers/misc/ibmvmc.c
++++ b/drivers/misc/ibmvmc.c
+@@ -900,21 +900,20 @@ static int ibmvmc_close(struct inode *inode, struct file *file)
+  *	0 - Success
+  *	Non-zero - Failure
+  */
+-static ssize_t ibmvmc_read(struct file *file, char *buf, size_t nbytes,
+-			   loff_t *ppos)
++static ssize_t ibmvmc_read(struct kiocb *iocb, struct iov_iter *to)
  {
--	struct tps6594_pfsm *pfsm = TPS6594_FILE_TO_PFSM(f);
--	loff_t pos = *ppos;
-+	struct tps6594_pfsm *pfsm = TPS6594_FILE_TO_PFSM(iocb->ki_filp);
-+	size_t count = iov_iter_count(to);
-+	loff_t pos = iocb->ki_pos;
- 	unsigned int val;
- 	int ret;
- 	int i;
-@@ -66,20 +66,19 @@ static ssize_t tps6594_pfsm_read(struct file *f, char __user *buf,
- 		if (ret)
- 			return ret;
+ 	struct ibmvmc_file_session *session;
+ 	struct ibmvmc_hmc *hmc;
+ 	struct crq_server_adapter *adapter;
+ 	struct ibmvmc_buffer *buffer;
++	size_t nbytes = iov_iter_count(to);
+ 	ssize_t n;
+ 	ssize_t retval = 0;
+ 	unsigned long flags;
+ 	DEFINE_WAIT(wait);
  
--		if (put_user(val, buf + i))
-+		if (put_iter(val, to))
- 			return -EFAULT;
+-	pr_debug("ibmvmc: read: file = 0x%lx, buf = 0x%lx, nbytes = 0x%lx\n",
+-		 (unsigned long)file, (unsigned long)buf,
+-		 (unsigned long)nbytes);
++	pr_debug("ibmvmc: read: file = 0x%lx, nbytes = 0x%lx\n",
++		 (unsigned long)iocb->ki_filp, (unsigned long)nbytes);
+ 
+ 	if (nbytes == 0)
+ 		return 0;
+@@ -925,7 +924,7 @@ static ssize_t ibmvmc_read(struct file *file, char *buf, size_t nbytes,
+ 		return -EINVAL;
  	}
  
--	*ppos = pos + count;
--
-+	iocb->ki_pos = pos + count;
- 	return count;
- }
+-	session = file->private_data;
++	session = iocb->ki_filp->private_data;
+ 	if (!session) {
+ 		pr_warn("ibmvmc: read: no session\n");
+ 		return -EIO;
+@@ -957,7 +956,7 @@ static ssize_t ibmvmc_read(struct file *file, char *buf, size_t nbytes,
+ 			retval = -EBADFD;
+ 			goto out;
+ 		}
+-		if (file->f_flags & O_NONBLOCK) {
++		if (iocb->ki_filp->f_flags & O_NONBLOCK) {
+ 			retval = -EAGAIN;
+ 			goto out;
+ 		}
+@@ -977,7 +976,7 @@ static ssize_t ibmvmc_read(struct file *file, char *buf, size_t nbytes,
+ 	spin_unlock_irqrestore(&hmc->lock, flags);
  
--static ssize_t tps6594_pfsm_write(struct file *f, const char __user *buf,
--				  size_t count, loff_t *ppos)
-+static ssize_t tps6594_pfsm_write(struct kiocb *iocb, struct iov_iter *from)
+ 	nbytes = min_t(size_t, nbytes, buffer->msg_len);
+-	n = copy_to_user((void *)buf, buffer->real_addr_local, nbytes);
++	n = !copy_to_iter_full(buffer->real_addr_local, nbytes, to);
+ 	dev_dbg(adapter->dev, "read: copy to user nbytes = 0x%lx.\n", nbytes);
+ 	ibmvmc_free_hmc_buffer(hmc, buffer);
+ 	retval = nbytes;
+@@ -1027,27 +1026,25 @@ static unsigned int ibmvmc_poll(struct file *file, poll_table *wait)
+ /**
+  * ibmvmc_write - Write
+  *
+- * @file:	file struct
+- * @buffer:	Character buffer
+- * @count:	Count field
+- * @ppos:	Offset
++ * @iocb:	metadata for IO
++ * @from:	Character buffer
+  *
+  * Return:
+  *	0 - Success
+  *	Non-zero - Failure
+  */
+-static ssize_t ibmvmc_write(struct file *file, const char *buffer,
+-			    size_t count, loff_t *ppos)
++static ssize_t ibmvmc_write(struct kiocb *iocb, struct iov_iter *from)
  {
--	struct tps6594_pfsm *pfsm = TPS6594_FILE_TO_PFSM(f);
--	loff_t pos = *ppos;
-+	struct tps6594_pfsm *pfsm = TPS6594_FILE_TO_PFSM(iocb->ki_filp);
++	struct file *file = iocb->ki_filp;
+ 	struct inode *inode;
+ 	struct ibmvmc_buffer *vmc_buffer;
+ 	struct ibmvmc_file_session *session;
+ 	struct crq_server_adapter *adapter;
 +	size_t count = iov_iter_count(from);
-+	loff_t pos = iocb->ki_pos;
- 	char val;
- 	int ret;
- 	int i;
-@@ -92,7 +91,7 @@ static ssize_t tps6594_pfsm_write(struct file *f, const char __user *buf,
- 		count = TPS6594_PMIC_MAX_POS - pos;
+ 	struct ibmvmc_hmc *hmc;
+ 	unsigned char *buf;
+ 	unsigned long flags;
+ 	size_t bytes;
+-	const char *p = buffer;
+ 	size_t c = count;
+ 	int ret = 0;
  
- 	for (i = 0 ; i < count ; i++) {
--		if (get_user(val, buf + i))
-+		if (get_iter(val, from))
- 			return -EFAULT;
- 
- 		ret = regmap_write(pfsm->regmap, pos + i, val);
-@@ -100,8 +99,7 @@ static ssize_t tps6594_pfsm_write(struct file *f, const char __user *buf,
- 			return ret;
+@@ -1109,19 +1106,17 @@ static ssize_t ibmvmc_write(struct file *file, const char *buffer,
  	}
+ 	buf = vmc_buffer->real_addr_local;
  
--	*ppos = pos + count;
--
-+	iocb->ki_pos = pos + count;
- 	return count;
- }
++	ret = 0;
+ 	while (c > 0) {
+ 		bytes = min_t(size_t, c, vmc_buffer->size);
  
-@@ -221,8 +219,8 @@ static long tps6594_pfsm_ioctl(struct file *f, unsigned int cmd, unsigned long a
- static const struct file_operations tps6594_pfsm_fops = {
+-		bytes -= copy_from_user(buf, p, bytes);
+-		if (!bytes) {
++		if (!copy_from_iter_full(buf, bytes, from)) {
+ 			ret = -EFAULT;
+ 			goto out;
+ 		}
+ 		c -= bytes;
+-		p += bytes;
++		ret += bytes;
+ 	}
+-	if (p == buffer)
+-		goto out;
+ 
+ 	inode = file_inode(file);
+ 	inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
+@@ -1131,7 +1126,6 @@ static ssize_t ibmvmc_write(struct file *file, const char *buffer,
+ 		(unsigned long)file, (unsigned long)count);
+ 
+ 	ibmvmc_send_msg(adapter, vmc_buffer, hmc, count);
+-	ret = p - buffer;
+  out:
+ 	spin_unlock_irqrestore(&hmc->lock, flags);
+ 	return (ssize_t)(ret);
+@@ -1387,8 +1381,8 @@ static long ibmvmc_ioctl(struct file *file,
+ 
+ static const struct file_operations ibmvmc_fops = {
  	.owner		= THIS_MODULE,
- 	.llseek		= generic_file_llseek,
--	.read		= tps6594_pfsm_read,
--	.write		= tps6594_pfsm_write,
-+	.read_iter	= tps6594_pfsm_read,
-+	.write_iter	= tps6594_pfsm_write,
- 	.unlocked_ioctl	= tps6594_pfsm_ioctl,
- 	.compat_ioctl   = compat_ptr_ioctl,
- };
+-	.read		= ibmvmc_read,
+-	.write		= ibmvmc_write,
++	.read_iter	= ibmvmc_read,
++	.write_iter	= ibmvmc_write,
+ 	.poll		= ibmvmc_poll,
+ 	.unlocked_ioctl	= ibmvmc_ioctl,
+ 	.open           = ibmvmc_open,
 -- 
 2.43.0
 
