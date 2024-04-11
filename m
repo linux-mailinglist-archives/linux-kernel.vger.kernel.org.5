@@ -1,126 +1,90 @@
-Return-Path: <linux-kernel+bounces-140494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71F7C8A156C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E1138A157F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:27:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A36911C2129B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:22:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFBD21C2108A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 787DE14C5B8;
-	Thu, 11 Apr 2024 13:22:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F3714D707;
+	Thu, 11 Apr 2024 13:24:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dIJkG7pQ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="egsevXKs"
+Received: from smtpcmd13147.aruba.it (smtpcmd13147.aruba.it [62.149.156.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F7328FD
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:22:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9933145FFA
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:25:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.156.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712841750; cv=none; b=pZV/0RfUAi2sdfhUyl9drL5LS24k9mM7zUiGDNsnTuHNeUeo9rRROu5uLpQTA6F7tqcknlbIQm/RAHE1UbCA+5ScH1CUYkqxO/rGC6GJzxY5OQx/1qh49UwA291chAjmR5fpKoQY/vAB7ycsC+14eVNp3LIbDVNJtCXn5pMZi+Y=
+	t=1712841940; cv=none; b=poutxoVkTA9IJcRv0dmdnEQxvfjd2iALqwnZlrT+0scLHumIjVw412JhuUIvBU8DvFvnT0DEyHge2aktvt/TW2swcFC9cqx29KRVDebW1tjpZPSWdXYOPuZ9Y0+fmrvPCKl7A6ng0lUJeUNGpIY3KigJ/AW57M05UBbL/dGrq+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712841750; c=relaxed/simple;
-	bh=U9U4DrMa8C0Tg6a+6toTBCCdpB+9LfQnli9OY5KSfHk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NdO2OpEUmQsDE9qDQ8Wr5jUiLf9PE97WzQTr2k8BoJm8sEs0SW9XvXv7eJ4RwugODlc9gt9h+5fgYcnAZI6B2Bl0vOrlF4vC6drroKiZehiIJIowZD59gK3eusnxdlHBsan1ceJs3Yrl34Ut19csAmpm0fK016+A/Vqbn26Bw30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dIJkG7pQ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712841748;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U9U4DrMa8C0Tg6a+6toTBCCdpB+9LfQnli9OY5KSfHk=;
-	b=dIJkG7pQGejLEmPwY+1h6hUfOKRk0dGuM0pnd3oqD1WBmI/K/zO0ImY07Z9WeZyfF//gYB
-	n93WY8jG32M9uEgSle+JsN7yO5svdy5SEX7l/x61iyyodoPc1bTmcMdMPy5oCp3kjznAYc
-	DdSwyvtALmCY93zVEABxnSccIqJBGGM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-696-1EqWjZoANW6xeQZsNCO2nw-1; Thu, 11 Apr 2024 09:22:26 -0400
-X-MC-Unique: 1EqWjZoANW6xeQZsNCO2nw-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-417ee376987so38605e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:22:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712841745; x=1713446545;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U9U4DrMa8C0Tg6a+6toTBCCdpB+9LfQnli9OY5KSfHk=;
-        b=Jk76S5kZXGtFHRHCujLxw3Po5ETE2SY7DeqhHVzMOhc3NtEm5zf4YR17sDOQZwJQtt
-         NHlWY7RBrf05yYiGDLtAf2eQjfCkSUh8X2+/398cSEd/Xk6BCeGdeQLFhXBeyHQ1GG3O
-         EoQ6PyuKmeLo5Qb7/Ermnph0JYlE2NDFXkN1JukHzXSKsQSYrd5ztg39Ee0YuyyECK3I
-         jbOasOlhHQMkGgUkedrIBM1R7Y2q1LSiV7YiKUYe+3Ecn46Axve18mttaPPii3eh5jzo
-         mYcgegRdVxz2/9zZjuaMaYIJOLkUeD/eEjvyNhayh0xhL+AxZrn3Bss8JNCWQWbxLgYg
-         2YGg==
-X-Forwarded-Encrypted: i=1; AJvYcCUCAv4dHHlAWn/W4eNiqWVZK/YxnYLLqTt52i8oUccSIjHmNNJauJpMmRVl5AtvBHTugCo1FfvvSBon10tiV86U4MJ5rXTMuAenoalr
-X-Gm-Message-State: AOJu0YxnNTxV0HtAhbxEJA/dsqkyIKCEkiRzQ1TXHfwt3fE2XzVUxQag
-	dS3TicyHZlBRNxOYSytVdTFqdC+MYKOmcSchjxKAqENd3sB6kZURB019sgJJRajSW+BT/z4Q72H
-	YpQYJVykAm9UqhNK2/HxMAOy883ZwCWM3esNZ7EG0sHFWxGAW/UpmbMySV7p2dPAB4kPMRJQ1Hl
-	sHaxnLb5+7XhDFVwx0ph/B8qWEGQbsAiiySd0m
-X-Received: by 2002:a05:600c:3c89:b0:414:9676:4573 with SMTP id bg9-20020a05600c3c8900b0041496764573mr3428924wmb.36.1712841745444;
-        Thu, 11 Apr 2024 06:22:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGOqpae7e7YHtDrPKdTbcCevuUXTBRFS+swIe7b3hMN/ct9nTKRbjdAZ5D1U4nS1cq29M1FDblW8ISPSai+0+w=
-X-Received: by 2002:a05:600c:3c89:b0:414:9676:4573 with SMTP id
- bg9-20020a05600c3c8900b0041496764573mr3428899wmb.36.1712841745063; Thu, 11
- Apr 2024 06:22:25 -0700 (PDT)
+	s=arc-20240116; t=1712841940; c=relaxed/simple;
+	bh=F/4VlDVKnyWrcnoOPdyocDWU5sYwgOSBDCSbs6FvBs4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cwgj85CijBP+dGRXQQdvOPE9u5FwRoonKQma4GXaalR0Xo6bOfHvDgfJHi5VKwaPd3OlTgcr0zbCjvatj4JwJ2NodVjVmEn5XWN5fD4QLI6zC7BfGf8lcL7SUrzseTqHvZ4/DV0FHjlRexVb/dJ608hV8YlZXGcBRRVyofr4Tak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com; spf=pass smtp.mailfrom=engicam.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=egsevXKs; arc=none smtp.client-ip=62.149.156.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=engicam.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=engicam.com
+Received: from engicam ([77.32.15.153])
+	by Aruba Outgoing Smtp  with ESMTPSA
+	id uuNiryEQZiznzuuNjrna0P; Thu, 11 Apr 2024 15:22:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+	t=1712841744; bh=F/4VlDVKnyWrcnoOPdyocDWU5sYwgOSBDCSbs6FvBs4=;
+	h=Date:From:To:Subject:MIME-Version:Content-Type;
+	b=egsevXKsfLiGmcfxqngWvyYRqUwwUGsUelDN4sDjSGoCnVsbd620za5+cJCMk+W/Y
+	 mFlrOdl/d8B67Sb7x7aTwNdw1bYew+TiM2xO0OUWrijdLb5SCqgX50+ZrSfeXZR0Vl
+	 E1SuY//3GVGyhpJFykUmLy6S9+fRUX4pgTSFcmH6cG2suWbBIpUKLGK68LQuAq/VsY
+	 58MmICNZIcmljeAcJqgPucSnuIFo44IvSgdYzUXxQFKUyu85zoGOO7MFoKgqFyBt6T
+	 9v3HjjcqOWgC/VqWCYH3b1xjyFq6c1nPAyKrzGDRcKV/867Z8/8poVE8VhDd/n1/sT
+	 xfMEd1+4nMzWA==
+Date: Thu, 11 Apr 2024 15:22:22 +0200
+From: Fabio Aiuto <fabio.aiuto@engicam.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/1] regulator: pca9450: make warm reset on PMIC_RST_B
+ assertion
+Message-ID: <ZhfkDrDYlTFd1gOJ@engicam>
+References: <20240411100138.366292-1-fabio.aiuto@engicam.com>
+ <243d9eb2-aaab-4ede-bd07-aa609b5d149e@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411072445.522731-1-alexandre.chartre@oracle.com>
- <7f1faa48-6252-4409-aefc-2ed2f38fb1c3@citrix.com> <caa51938-c587-4403-a9cd-16e8b585bc13@oracle.com>
-In-Reply-To: <caa51938-c587-4403-a9cd-16e8b585bc13@oracle.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Thu, 11 Apr 2024 15:22:12 +0200
-Message-ID: <CABgObfai1TCs6pNAP4i0x99qAjXTczJ4uLHiivNV7QGoah1pVg@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Set BHI_NO in guest when host is not affected
- by BHI
-To: Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc: Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, daniel.sneddon@linux.intel.com, 
-	pawan.kumar.gupta@linux.intel.com, tglx@linutronix.de, konrad.wilk@oracle.com, 
-	peterz@infradead.org, gregkh@linuxfoundation.org, seanjc@google.com, 
-	dave.hansen@linux.intel.com, nik.borisov@suse.com, kpsingh@kernel.org, 
-	longman@redhat.com, bp@alien8.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <243d9eb2-aaab-4ede-bd07-aa609b5d149e@sirena.org.uk>
+X-CMAE-Envelope: MS4xfH2JJT/EWTYhzkwzkuiL+ZHgD5zKPRY6eNZmjOR09r9LkMECwzwiJ2HfOKFxE4IZ9BBl4qHWc6ZCkY1/OXP+y3ljkZMeOVgxiXo/6JKrjbuEtEmi9VJ7
+ e9rmwPBchV43ggxblYUb/azpNALAT9FpT2Ul6JaVl8blsv68pQQEcLG7NI4QoQyMMJrQmX6DETQFqBd2G/rSfgFrtm9HwhqSyh8+SIIUBM8oWdJ9jU1Hf/uC
+ FZh/cFhaXv2Ry447LuMgkw==
 
-On Thu, Apr 11, 2024 at 11:34=E2=80=AFAM Alexandre Chartre
-<alexandre.chartre@oracle.com> wrote:
->
-> So you mean we can't set ARCH_CAP_BHI_NO for the guest because we don't k=
-now
-> if the guest will run the (other) existing mitigations which are believed=
- to
-> suffice to mitigate BHI?
->
-> The problem is that we can end up with a guest running extra BHI mitigati=
-ons
-> while this is not needed. Could we inform the guest that eIBRS is not ava=
-ilable
-> on the system so a Linux guest doesn't run with extra BHI mitigations?
+Dear Mark,
 
-The (Linux or otherwise) guest will make its own determinations as to
-whether BHI mitigations are necessary. If the guest uses eIBRS, it
-will run with mitigations. If you hide bit 1 of
-MSR_IA32_ARCH_CAPABILITIES from the guest, it may decide to disable
-it. But if the guest decides to use eIBRS, I think it should use
-mitigations even if the host doesn't.
+Il Thu, Apr 11, 2024 at 01:37:48PM +0100, Mark Brown ha scritto:
+> On Thu, Apr 11, 2024 at 12:01:37PM +0200, Fabio Aiuto wrote:
+> > Hello all,
+> > 
+> > sorry for spamming, this one have the correct email addresses.
+> > This patch adds a property for to control reset behavior on
+> > PMIC_RST_B assertion.
+> 
+> Please don't send cover letters for single patches, if there is anything
+> that needs saying put it in the changelog of the patch or after the ---
+> if it's administrative stuff.  This reduces mail volume and ensures that 
+> any important information is recorded in the changelog rather than being
+> lost. 
 
-It's a different story if the host isn't susceptible altogether. The
-ARCH_CAP_BHI_NO bit *can* be set if the processor doesn't have the bug
-at all, which would be true if cpu_matches(cpu_vuln_whitelist,
-NO_BHI). I would apply a patch to do that.
+I've got it, thanks. Do you want me to send a v3 or are you taking in
+consideration this one?
 
-Paolo
+kr
+
+fabio
 
 
