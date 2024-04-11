@@ -1,156 +1,210 @@
-Return-Path: <linux-kernel+bounces-139633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D93178A0595
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:32:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F52D8A0599
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:36:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 169471C218AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:32:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED3F61C21109
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02EA3612D3;
-	Thu, 11 Apr 2024 01:32:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 927CC62144;
+	Thu, 11 Apr 2024 01:36:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="akFyMqra"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m1TH+013"
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E4623BF
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 01:32:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E360605CD;
+	Thu, 11 Apr 2024 01:36:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712799148; cv=none; b=WZ8kthi3vN1/OBJ+qMXaK7Nr0Yh4czvTUL8PAjx4yDWkGpUHEh8RRlMkP0f9dUnah6kJ2hj4wGzgJdtjQeLuv86gVJjAESG01dHnPlAe+grh8jVwtEcsJppE+6+vjWi9CepRVA4PCo4t+OZAnBtBURKvME2oScF6mTIg6mLy6XA=
+	t=1712799388; cv=none; b=SW2Pgy2peTTT/6Opt4im2hBXM6W6hR/Q1kxwLF6+e32MO2p+9kBi3+oq3/YCl5A5CiMPq8aopigcC2tceweYvJkNILXzXKbqtl4ZnkwRurdMwdcxsAIP8HYyEqhfso6mf3H4qF3XH6J5zwYDiusSiWPT/VbHHXqVdPRQRVHCJ/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712799148; c=relaxed/simple;
-	bh=5DPBE7RYbKtilL/ZI+6FVsgCfOtY6Muwg0RGSybQTik=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H09Pl4m7i5jY/4Za9WhQhA93WcsKvT/LZJrLQCVYd88ADN9r8ZXh6J10KzlMbF75/V2orLXmpgbVoR1mghVTV8ofEcKnxUKo4/s78v07s+6llnMLnGQdsceuUJ2c+/oan2WvhnA5WoEkSFYdYcVFf39eettwmCjGb8L0L2eoJ50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=akFyMqra; arc=none smtp.client-ip=209.85.214.177
+	s=arc-20240116; t=1712799388; c=relaxed/simple;
+	bh=Bv17sivQjVSRil5/m7NyguLXoC8iZa+4bbs4tHa3P+4=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=k2GM7mdvS4qPykwl8H1bQ5ceJaZk8Fzbg8iP7F20jkO6SJq0boRuZoSf9pn3jo74lV7x868ueFJOMVgxc8WOd8YH3X/jkIsnXQSc/lWJ5Z7aEzLx5Qfub4TjtH77Ol8ngoHI6M6tI1nfg3AKdDQqQCwbgSrLsIYjZU3PT3p488s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m1TH+013; arc=none smtp.client-ip=209.85.222.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e45b9a5c53so26610795ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 18:32:26 -0700 (PDT)
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-78d57bd577dso364691285a.2;
+        Wed, 10 Apr 2024 18:36:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712799146; x=1713403946; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XALMnSYERqk5Qp+Vxu9i+C04EFsVndeTtc8pDuDdexc=;
-        b=akFyMqraYO3Ct5INFRKmfiaGxG0GCvN7EjvK2n49LPajM8a7wFGKqBLhApXfpdyaKE
-         tKbsxjWTOcXaP/VR3HKI/Uzcpj/kZxr70AQ3sayp7InpxU+2P9Y63eiNzUautNgoVEfR
-         J7Px4gx3z5XnUcKnmzmrirg98ILacHcsMT1CVcJ/cDN9dl/eeX3eWSW0ulNjXAPCHPT2
-         D3G3lz7oUow1q6Ou91jHxqZPevOllnph/HIs4a9Tv5+KWK3AUKVhFYCYiAutOwzptIh3
-         8FhWek68vfK4lXv/DETQPBstdLoPA/JWz8QXleWXR17+vbSZolZ+gUbBAgmcKJyzh9Sv
-         eYKw==
+        d=gmail.com; s=20230601; t=1712799386; x=1713404186; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tbSovFXxhV1ZzfQY3zmzSZkZK0djY0/pPM92ABTCFDY=;
+        b=m1TH+013lFtunm8g8489gm7HbX3DfRTVXgAFquxUWnxtX43spZ9WA7g5AXo/QgQ8yz
+         53IyGIwQhJVecCfm2OcfsLDfqvbfhlLTsq8ruMddPqLQtWlv3fEcemCXZz6lIbdOYrt8
+         sMW0kh7+BhM+Y1kHHhjaeRlqIVGtDgj7P/mcQfwBYGFqtLCi1g3UwMg6XcfNtEcXODJP
+         l2gDuYgEzydcAQnEpzcHE92NgNnP1bmXO1wQ009Gk1HFQ0mFK7w5lLDXw68ww2vVLxUt
+         rGQ3zIs+OQIPle7BVAdxHXtwQM4wo9daoFwznplRId1F2S7t61zSuMeRZrZMGUl1friY
+         9Zrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712799146; x=1713403946;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XALMnSYERqk5Qp+Vxu9i+C04EFsVndeTtc8pDuDdexc=;
-        b=m4WWTzupVfl7XcveQC/zUirDKT9dGQ4aRVpc34KzdOE6G1MUCd5gJF1awN6HpHFdE0
-         s1KZIcXDaSMakGD3jeZ6USMbxEx9Jq3jlu0f/uI5SIbSVIkxBPCshwctTvd0bCxsa6ZP
-         D/WDdSyeKqStsAmLQRm61d5b+0xbVZPSvqpJj84+H20SEHBlaomRV81o/b46YNsUkc+D
-         pAjpc2gX8mH3aqshSxNMqMWdT+8f25ktMHuhR3WXvObCjOl0icr7EoUqHCpHXkaZbzIT
-         rncR/fKJHD6f1EN+xZMS7hTEqrAGuu1Wo3IcaXGUsRhnU8fCb8nBWYWrjmdub3oxr2EC
-         EhGw==
-X-Forwarded-Encrypted: i=1; AJvYcCVh+nfS/fblbwtuoxLN9U9cBtUW/i/t7pbsG6iyI/EAVAVl7dezaA/xnaen0S4mhUFS0am4RynzLBjnHaClN1fP7NZwEVfpoU/xqn1b
-X-Gm-Message-State: AOJu0YwN1c2xwOPNDlB1Ju3DGSGRY16cXhNMNfhEGk1MahlK8pNsvCqG
-	ChdQYAXF5cChYD1j6QSz1dZ4fbFwy24CjhBURu4QCfb5sV9pdEHr
-X-Google-Smtp-Source: AGHT+IEriYoxMyqdczM5NvWr5yOCOLNQ6F3Xkle39Na41Trp48ZnSPW7SPW+SwXGQvGnTmlYaldYgw==
-X-Received: by 2002:a17:902:db0e:b0:1e4:a667:5528 with SMTP id m14-20020a170902db0e00b001e4a6675528mr6145703plx.3.1712799146000;
-        Wed, 10 Apr 2024 18:32:26 -0700 (PDT)
-Received: from ?IPV6:2001:b011:3809:b723:8171:9ef4:f43d:8f31? (2001-b011-3809-b723-8171-9ef4-f43d-8f31.dynamic-ip6.hinet.net. [2001:b011:3809:b723:8171:9ef4:f43d:8f31])
-        by smtp.gmail.com with ESMTPSA id f5-20020a17090274c500b001e0e8e4f7e3sm188935plt.206.2024.04.10.18.32.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 18:32:25 -0700 (PDT)
-Message-ID: <c3611c0a-007f-4e09-b92d-3752438e653e@gmail.com>
-Date: Thu, 11 Apr 2024 09:32:23 +0800
+        d=1e100.net; s=20230601; t=1712799386; x=1713404186;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tbSovFXxhV1ZzfQY3zmzSZkZK0djY0/pPM92ABTCFDY=;
+        b=KiGJnhRYrm5cu7sO2nfSbV/X6UgB2lUoNVytnlHxT5TfmK5dwXI9zFFp8skxA+CtkN
+         wiNZJ2zAD/6McrffeWhn+58QY0/gUB+N9LcgITTEt7XIH3xbQ4OLUSS9ByPoW9tfjscb
+         hGPsTgU4cnZvrwz0jL434HsJO7AzzFZNqk+Cq95daZ/3C+MXI8UBO83CVMR6X/f/rxOb
+         DjGfMPNwxc6sToNoXm+iIhfiwUhRhQmijmvPneKEoLmcHA6308Krqe/mwRDwlDY1gYbP
+         cca7AfQuIOKQzbcpdq4/c0kzSrQQjs/Cp5to8i915JfCmAA4BH1M7YUjVi9MMT5sFh5S
+         e/Aw==
+X-Forwarded-Encrypted: i=1; AJvYcCW4Rv8bsnzEFVYDt0oK4Q3faycANoK49rFdMfH36pPj9RVYuGNxYSrPaH1bon8wkiPFTWTbxkEgrVHS89qyC6ZHVcUGf12vKCrmUAnjzRTLnu7AqxNRzENZ9o0XxyOoJ9H6zto9
+X-Gm-Message-State: AOJu0YwUXRGNaD716OfwNy0VizFa6VjMSnJb7hIevhNyYX2ghr3F2V+2
+	KlLkUbQou36fO2epmz2odgt1jV7gABgfvc1xV4knlIgUDwY8FzmM
+X-Google-Smtp-Source: AGHT+IE/blMsmh23x6zYnhsQngea6jAiJ2NdK39aQR7Qy6pMA6O44kVEKfUmCGuK9qqW0iH1NUUj1A==
+X-Received: by 2002:a05:620a:ec8:b0:78d:68de:e3ac with SMTP id x8-20020a05620a0ec800b0078d68dee3acmr3397684qkm.76.1712799385975;
+        Wed, 10 Apr 2024 18:36:25 -0700 (PDT)
+Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
+        by smtp.gmail.com with ESMTPSA id l25-20020a05620a211900b0078d67d40c49sm334328qkl.70.2024.04.10.18.36.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Apr 2024 18:36:25 -0700 (PDT)
+Date: Wed, 10 Apr 2024 21:36:25 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Rahul Rameshbabu <rrameshbabu@nvidia.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, 
+ John Fraker <jfraker@google.com>, 
+ netdev@vger.kernel.org, 
+ Praveen  Kaligineedi <pkaligineedi@google.com>, 
+ Harshitha Ramamurthy <hramamurthy@google.com>, 
+ Shailend Chand <shailend@google.com>, 
+ Willem de  Bruijn <willemb@google.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Junfeng Guo <junfeng.guo@intel.com>, 
+ Ziwei Xiao <ziweixiao@google.com>, 
+ Jeroen de Borst <jeroendb@google.com>, 
+ linux-kernel@vger.kernel.org, 
+ kory.maincent@bootlin.com, 
+ andrew@lunn.ch, 
+ richardcochran@gmail.com
+Message-ID: <66173e9972287_2d6bc6294d1@willemb.c.googlers.com.notmuch>
+In-Reply-To: <874jc8ww68.fsf@nvidia.com>
+References: <20240408180918.2773238-1-jfraker@google.com>
+ <661550e348224_23a2b2294f7@willemb.c.googlers.com.notmuch>
+ <20240409172838.247738f3@kernel.org>
+ <87jzl5akh5.fsf@nvidia.com>
+ <20240410061928.712ff9a3@kernel.org>
+ <6616e92cbcca_2bfabf294c5@willemb.c.googlers.com.notmuch>
+ <874jc8ww68.fsf@nvidia.com>
+Subject: Re: [PATCH net-next] gve: Correctly report software timestamping
+ capabilities
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC][PATCH 08/10] sched/fair: Implement delayed dequeue
-To: Peter Zijlstra <peterz@infradead.org>, Chen Yu <yu.c.chen@intel.com>
-Cc: mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
- linux-kernel@vger.kernel.org, kprateek.nayak@amd.com,
- wuyun.abel@bytedance.com, tglx@linutronix.de, efault@gmx.de,
- yu.chen.surf@gmail.com
-References: <20240405102754.435410987@infradead.org>
- <20240405110010.631664251@infradead.org> <ZhEUjX1Nw0y2eJ1o@chenyu5-mobl2>
- <20240408090639.GD21904@noisy.programming.kicks-ass.net>
-Content-Language: en-US
-From: Yan-Jie Wang <yanjiewtw@gmail.com>
-In-Reply-To: <20240408090639.GD21904@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 
+Rahul Rameshbabu wrote:
 > 
->> The 99th wakeup latency increases a little bit, and should be in the acceptible
->> range(25 -> 31 us).
+> On Wed, 10 Apr, 2024 15:31:56 -0400 Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
+> > Jakub Kicinski wrote:
+> >> On Tue, 09 Apr 2024 21:40:46 -0700 Rahul Rameshbabu wrote:
+> >> > > My gut tells me we force drivers to set the ethtool op because
+> >> > > while at it they will probably also implement tx stamping.  
+> >> > 
+> >> > I think the logic should be the other way (in terms of the
+> >> > relationship). A call to skb_tx_timestamp should throw a warning if the
+> >> > driver does not advertise its timestamping capabilities. This way, a
+> >> > naive netdev driver for some lightweight device does not need to worry
+> >> > about this. I agree that anyone implementing tx timestamping should have
+> >> > this operation defined. An skb does not contain any mechanism to
+> >> > reference the driver's ethtool callback. Maybe the right choice is to
+> >> > have a ts capability function registered for each netdev that can be
+> >> > used by the core stack and that powers the ethtool operation as well
+> >> > instead of the existing callback for ethtool?
+> >> 
+> >> Adding a check which only need to runs once in the lifetime of
+> >> the driver to the fastpath may be a little awkward. Another option
+> >> would be a sufficiently intelligent grep, which would understand
+> >> which files constitute a driver. At which point grepping for 
+> >> the ethtool op and skb_tx_timestamp would be trivial?
+> >
+> > Many may not define the flags themselves, but defer this to
+> > ethtool_op_get_ts_info.
+> >
+> > A not so much intelligent, but sufficiently ugly, grep indicates
+> > not a a massive amount of many missing entries among ethernet
+> > drivers. But this first attempt is definitely lossy.
+> >
+> > $ for symbol in skb_tx_timestamp get_ts_info SOF_TIMESTAMPING_TX_SOFTWARE ethtool_op_get_ts_info "(SOF_TIMESTAMPING_TX_SOFTWARE|ethtool_op_get_ts_info)"; do
+> >     echo -n "$symbol: ";
+> >     for i in `grep -nrIE "$symbol" drivers/net/ethernet/ | awk '{print $1}' | xargs dirname | uniq`; do echo $i; done | wc -l;
+> >   done
+> >
+> > skb_tx_timestamp: 69
+> > get_ts_info: 66
+> > SOF_TIMESTAMPING_TX_SOFTWARE: 33
+> > ethtool_op_get_ts_info: 40
+> > (SOF_TIMESTAMPING_TX_SOFTWARE|ethtool_op_get_ts_info): 59
+> >
+> > This does not add up, but that's because some drivers share prefixes,
+> > and some drivers have different paths where one open codes and the
+> > other calls ethtool_op_get_ts_info. Marvell is a good example of both:
+> >
+> > $ grep -nrIE '(SOF_TIMESTAMPING_TX_SOFTWARE|ethtool_op_get_ts_info)' drivers/net/ethernet
+> > /marvell
+> > drivers/net/ethernet/marvell/pxa168_eth.c:1367: .get_ts_info    = ethtool_op_get_ts_info,
+> > drivers/net/ethernet/marvell/mv643xx_eth.c:1756:        .get_ts_info            = ethtool_op_get_ts_info,
+> > drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c:5266:   info->so_timestamping = SOF_TIMESTAMPING_TX_SOFTWARE |
+> > drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c:962:          return ethtool_op_get_ts_info(netdev, info);
+> > drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c:964:  info->so_timestamping = SOF_TIMESTAMPING_TX_SOFTWARE |
 > 
-> Ah, my test runs haven't been stable enough to observe that.
+> If there is a desire to enforce all drivers need to implement
+> .get_is_info, would the following make sense?
+
+The only reason to enforce this is if we want to enforce them to also
+implement tx software timestamping. Generally, these features are opt
+in.
+
+> My biggest objection to
+> this idea was mainly my concern that the drivers would miss setting
+> info->so_timestamping with SOF_TIMESTAMPING_RX_SOFTWARE |
+> SOF_TIMESTAMPING_SOFTWARE, which I do not think should be a
+> responsibility of the driver author since this is happening in the core
+> stack.
 > 
->> Meanwhile the throughput increases accordingly. Here are
->> the possible reason I can think of:
->>
->> 1. wakeup latency: The time to find an eligible entity in the tree
->>     during wakeup might take longer - if there are more delayed-dequeue
->>     tasks in the tree.
+> So maybe something like this (taking Willem's proposal for
+> __ethtool_get_ts_info and modifying it a bit)?
 > 
-> Another possible cause might be that previously a schedule() would be
-> 1 dequeue, 1 pick.
+>         int err = 0;
 > 
-> But now it can be much more variable, a pick can basically do N dequeues
-> and N+1 picks.
+>         ...
 > 
-> So not only do we do more picks, but if you're focussed on worst case
-> latency, it goes up, because we can do multiple dequeues for a single
-> pick.
+>         info->phc_index = -1;
 > 
-> If we find this to really be a problem, I had some half baked ideas to
-> fix it, but it added significant complexity, so keep it simple until
-> need proves we need more etc.
+>         if (phy_has_tsinfo(phydev))
+>                 err = phy_ts_info(phydev, info);
+>         else
+>                 err = ops->get_ts_info(dev, info);
+> 
+>         info->so_timestamping |= SOF_TIMESTAMPING_RX_SOFTWARE |
+>                                  SOF_TIMESTAMPING_SOFTWARE;
+> 
+>         return err;
 
-I have an alternative approach to delayed-dequeue inspired by the 
-original CFS implementation.
+Yes, this is what I meant as well. (the code I showed was just copied
+verbatim from net-next as context, not a suggested change.)
 
-The idea is to keep the task's vruntime when it goes to sleep.
-When the task is woken up, see if the lag is positive at the woken time, 
-if it is the case, clamp it to 0 by setting vruntime to avg_vruntime().
-
-
-<Sleep>
-
-In dequeue_entity(): Remove the task from runqueue, but keep the task's 
-vruntime, and do not calculate vlag at this time.
-
-
-<Wake Up on the same CPU>
-
-In enqueue_entity():
-  1. Do not call place_entity().
-  2. If the task's vruntume is less than the cfs_rq's avg_vruntime(), 
-set the task's vruntime to avg_vruntime(), and update the task's 
-deadline according to its timeslice.
-  3. Insert the task into the runqueue.
-
-
-<Wake Up on different CPU>
-
-In migrate_task_rq_fair():
-  1. Calculate the task's vlag as if it is on the original cfs_rq.
-  2. Set the task's vlag to 0 if it is positive.
-
-In enqueue_entity(): Use place_entity() to calculate the task's new 
-vruntime and deadline according to the vlag and the new runqueue before 
-inserting it into the runqueue.
+> >
+> > One more aside, no driver should have to advertise
+> > SOF_TIMESTAMPING_SOFTWARE or SOF_TIMESTAMPING_RAW_HARDWARE. Per
+> > Documentation/networking/timestamping.rst these are reporting flags,
+> > not recording flags. Devices only optionall record a timestamp.
+> 
+> I think this view aligns with my opinion above (though good point about
+> timestamping reporting bits in general should be deduced based on the
+> timestamp generation bits set rather than needing to be set as well).
 
 
