@@ -1,136 +1,164 @@
-Return-Path: <linux-kernel+bounces-139875-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139876-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3C258A08C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:48:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1F028A08C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:48:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31C34B26603
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:48:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96A81287A7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F45813DDC5;
-	Thu, 11 Apr 2024 06:47:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ggKgHlAm"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F15713DBAC;
+	Thu, 11 Apr 2024 06:48:18 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529FE13D8B8
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:47:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF78A13D258
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:48:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712818046; cv=none; b=IKRhPo8mERPjA2eyC2FDfSVMa/WxTNKJymcujHMC08iZ2+2CoYzHZAbDVwQPzyepGc1aEmSEaWWYjLPxDth8GGpN9P2eCjgGBzq5TIMIEFzHwiE5Xb51tFzJpB6cR+DUjlJjQfddMEsNaVABk1HQZKEiuHke8UkYPsnegxRjRXY=
+	t=1712818097; cv=none; b=SY0O4MHxigmMAOQytUckA6N6U+7KJEv9+6nh16F/nah4gIjQqbcqkkjQdYdKB4YDsO9988lU1wkq4peZOLlN0ZpEqa41YZWfY0gFBmXQoYm4Ozc78lyXkQ8QG8ooC4LXtKXOyGYKBDpxSOe77xm2+jhWZSHv+s9SJD2WpBjjn2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712818046; c=relaxed/simple;
-	bh=iPcZnylWBDvRsCE2L2tauJ8vojH2Mnl9xe6UlPGUsUg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KUqLFKi/gfZGYKg8qvmTQ8f8LtyJKr9oPNILPiE7paTfQjwyI46EK6xuP6OWYo/OuYQcshTZZKuPSks630BazE5WzMq7t3uVoZCfh2EEcSULPmSJib5AZou2pOg1NW8fliZNzPqlCaE1YjCD/NKQtjahlTns91Y9ZJZkYaYXouo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ggKgHlAm; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712818044;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=vn3kbYVAUInyEJqyRV4/bjgt4/apuVePLjXauHm/Jbw=;
-	b=ggKgHlAm1QVdYuwEaD4cJnT5jxsJ6Xtn+NlKT6K8xT6JVvJfXeKDbWvnMRA4CMOOrkpJj+
-	nNND3MvJiyTAd/4V9jgqHU8I01hGiGwPgx/KoRnuo4HYlZpIme7tpqJvRvMywiF7hqMYmx
-	AWgjM4WbRQwjORaoVM9VIi0iD80IeVo=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-319-AUO27_dYOISiQpl5caKTZw-1; Thu, 11 Apr 2024 02:47:22 -0400
-X-MC-Unique: AUO27_dYOISiQpl5caKTZw-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-56e5309b4d6so3166552a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:47:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712818041; x=1713422841;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vn3kbYVAUInyEJqyRV4/bjgt4/apuVePLjXauHm/Jbw=;
-        b=YclwaJcPLmT/m8BnjL2bCWNfIezCLv2Uod+KwjnJcuPU26Oe+cPDVDkL+YHKS90jtE
-         MZk9J7Xs7MBBqxheqSPNIXQz0TsnlmWLrWCfJ2vyXMkeMqow6dLxF10kA1OvffAfgh6q
-         KwBOiR8jA/QR3y2Q56OY+G9KewLD+Pvuk5nk3tdRPNvIpauRI5CUr9rmwy6xAZiLLIY3
-         UyuEZDp+G/jWGAqBF/OoynUcyVxZ1/UZRrA7x7hDPBRkpBRt/qjwwX5M6y+QPTulYnUD
-         M4ezfrVyemd3gXsPNUNV5SwKTG1rvfP7sMfd87XoT9GDwVqfQRFAC9H6oV/+e7h3aMbT
-         CCYA==
-X-Forwarded-Encrypted: i=1; AJvYcCUrBEEWb6jO7G0dqzd0vr4O8k8p41AD93JzGsZUYwdFPlj6Eppa1yKAXGjGsAjX0fMD2MvUoa8mGJOV/1OVwS3D8LOoizgHs7gi64Wr
-X-Gm-Message-State: AOJu0YwInnB9tEYV7XWBKorEZHtzcmzWeYDd+MqHjdkPVeFQ7KoyzRCc
-	TUcE5YdFEtaCXZ/vOUGLrSRPSnfomjAOlyUO7JIKY6NJucP6UEf+UZfoVJsbe9ABLW0M1IpsMgu
-	zVwouCDfySlIenYsNbUBUWeae4GYKWVKhE3zz2Hp8551G3//kJW4HUGV2kGU85g==
-X-Received: by 2002:a50:a6c3:0:b0:56e:249c:397b with SMTP id f3-20020a50a6c3000000b0056e249c397bmr3161073edc.28.1712818041130;
-        Wed, 10 Apr 2024 23:47:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGKs4J/uM57MehjBI+61lKXrwLiEZhGYSLsU1b+KUKxKXHJKqWun01zhOxsd8/TdjYqEwnc2A==
-X-Received: by 2002:a50:a6c3:0:b0:56e:249c:397b with SMTP id f3-20020a50a6c3000000b0056e249c397bmr3161056edc.28.1712818040746;
-        Wed, 10 Apr 2024 23:47:20 -0700 (PDT)
-Received: from lbulwahn-thinkpadx1carbongen9.rmtde.csb ([2a02:810d:7e40:14b0:4ce1:e394:7ac0:6905])
-        by smtp.gmail.com with ESMTPSA id s24-20020a056402037800b0056e44b681a6sm397057edw.57.2024.04.10.23.47.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 23:47:20 -0700 (PDT)
-From: Lukas Bulwahn <lbulwahn@redhat.com>
-X-Google-Original-From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Kees Cook <keescook@chromium.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org,
-	kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@redhat.com>
-Subject: [PATCH] MAINTAINERS: improve entries in CODE TAGGING and MEMORY ALLOCATION PROFILING
-Date: Thu, 11 Apr 2024 08:47:17 +0200
-Message-ID: <20240411064717.51140-1-lukas.bulwahn@redhat.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712818097; c=relaxed/simple;
+	bh=SjfQmFCe8KGFg78GshUQPaGgkawI/DnASuuduYQmQ8M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IKvgn/aq08P72DF77A2Vo3nAdsueAAslIjNEfNHPMQ6RZrC2GSmr9HU2CTeoMRhlB+/S/C33Fkqv34VrlWHYi9UVS0x9764W5B2qSqRJylmtifnFUvGCeAyvjlWw3YrxHkpiNvPdyYpk+aIub/PdRfD6epAwF+5o7rsOJr7bnYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1ruoEA-00074u-0x; Thu, 11 Apr 2024 08:48:06 +0200
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1ruoE8-00BdUI-5L; Thu, 11 Apr 2024 08:48:04 +0200
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1ruoE8-007cj5-0B;
+	Thu, 11 Apr 2024 08:48:04 +0200
+Date: Thu, 11 Apr 2024 08:48:04 +0200
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Vladimir Oltean <olteanv@gmail.com>
+Cc: Woojung Huh <woojung.huh@microchip.com>, Andrew Lunn <andrew@lunn.ch>,
+	Arun Ramadoss <arun.ramadoss@microchip.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+	David Ahern <dsahern@kernel.org>, linux-kernel@vger.kernel.org,
+	UNGLinuxDriver@microchip.com, Eric Dumazet <edumazet@google.com>,
+	Willem de Bruijn <willemb@google.com>, kernel@pengutronix.de,
+	=?utf-8?B?U8O4cmVu?= Andersen <san@skov.dk>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH net-next v6 5/9] net: dsa: microchip: add support for
+ different DCB app configurations
+Message-ID: <ZheHpK7egVvszSQF@pengutronix.de>
+References: <20240410080556.1241048-1-o.rempel@pengutronix.de>
+ <20240410080556.1241048-1-o.rempel@pengutronix.de>
+ <20240410080556.1241048-6-o.rempel@pengutronix.de>
+ <20240410080556.1241048-6-o.rempel@pengutronix.de>
+ <20240410231251.macw4i46jfi57wtc@skbuf>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240410231251.macw4i46jfi57wtc@skbuf>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Commit 5acf2502db99 ("MAINTAINERS: add entries for code tagging and memory
-allocation profiling") adds the two new sections CODE TAGGING and MEMORY
-ALLOCATION PROFILING. The files in these sections however do not match
-with the files added in the corresponding patch series.
+Hi Vladimir,
 
-Improve the two entries to refer to all files added with that series and
-drop the entries to non-existing files.
+On Thu, Apr 11, 2024 at 02:12:51AM +0300, Vladimir Oltean wrote:
+> > +/**
+> > + * ksz_dcb_init - Initializes the DCB configuration for a KSZ switch
+> > + * @dev: Pointer to the KSZ switch device structure
+> > + *
+> > + * This function initializes the DCB configuration for a KSZ switch. The global
+> > + * DSCP-to-priority mapping table is initialized.
+> > + *
+> > + * Return: 0 on success, or a negative error code on failure
+> > + */
+> > +int ksz_dcb_init(struct ksz_device *dev)
+> > +{
+> > +	int ret;
+> > +
+> > +	ret = ksz_init_global_dscp_map(dev);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	return 0;
+> > +}
+> 
+> Sorry for not responding to your previous question about this:
+> https://lore.kernel.org/netdev/ZfmJ-O8XMT8oO-TS@pengutronix.de/
+> Simply put, I had a period with not a lot of free time, even for reading
+> emails.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
----
- MAINTAINERS | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+No problem. I'm in continues similar state permanently DoSed by my
+children, parents, etc... :) 
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c2d913c64704..e5431f06ab55 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5332,6 +5332,7 @@ CODE TAGGING
- M:	Suren Baghdasaryan <surenb@google.com>
- M:	Kent Overstreet <kent.overstreet@linux.dev>
- S:	Maintained
-+F:	include/asm-generic/codetag.lds.h
- F:	include/linux/codetag.h
- F:	lib/codetag.c
- 
-@@ -14241,10 +14242,10 @@ M:	Suren Baghdasaryan <surenb@google.com>
- M:	Kent Overstreet <kent.overstreet@linux.dev>
- L:	linux-mm@kvack.org
- S:	Maintained
-+F:	Documentation/mm/allocation-profiling.rst
- F:	include/linux/alloc_tag.h
--F:	include/linux/codetag_ctx.h
-+F:	include/linux/pgalloc_tag.h
- F:	lib/alloc_tag.c
--F:	lib/pgalloc_tag.c
- 
- MEMORY CONTROLLER DRIVERS
- M:	Krzysztof Kozlowski <krzk@kernel.org>
+> I'm on the fence on whether your solution to the "global DSCP-to-prio
+> mapping rather than per-port" problem is the right one.
+> 
+> We try to avoid baking policies into the kernel, no matter how well
+> intended the 802.1Q and IETF RFC8325 recommendations are. They are still
+> just recommendations and examples, and a particular use case may want to
+> configure things completely differently (or as hinted in the Wi-Fi specific
+> RFC8325: maybe the administrator doesn't want to assign the higher
+> traffic classes, for network control protocols, by using IP DSCP, and
+> doesn't want user flows to request DSCP values that would get access to
+> these traffic classes. It can indeed be seen as a security concern).
+>
+> I empathize with the incovenience of having to map the per-netdev dcbnl
+> application priority table API with a piece of hardware where that table
+> is shared across all ports. But yet, I don't think it is a strong enough
+> justification for us to make an exception and say: "yeah, ok, let's not
+> even implement .port_set_dscp_prio() to make the thing configurable, but
+> let's bake into the kernel a fixed policy that's good for everyone".
+>
+> No, I think we _need_ the thing to be configurable, and not try so hard
+> with the ieee8021q helpers to hardcode things just right in the kernel.
+
+Yes, I agree with you.
+
+ieee8021q helpers are not the attempt to avoid the work needed to
+implement global DSCP configuration. The interface is still needed and
+we need to agree on how it should be implemented.
+
+The problem which I try to address with ieee8021q helpers are initial
+defaults. KSZ8 and KSZ9 families of switches have different initial
+defaults. So, if i need to align defaults for this driver, why not to
+provide default which are reusable for every one?
+
+> Have you tried the obvious: "every time there is a change to the global
+> DSCP mapping table, push the change into the dcbnl app table of all user
+> netdevs, so that the user becomes aware of what happens"? Kernel drivers
+> can do that, through direct calls to dcb_ieee_setapp(). DSA does it too,
+> to probe the initial QoS configuration of the ports and push it to the
+> application priority tables.
+
+Hm... what interface should be used for the global DSCP mapping table?
+
+Regards,
+Oleksij
 -- 
-2.44.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
