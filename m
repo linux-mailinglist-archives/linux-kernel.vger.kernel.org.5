@@ -1,146 +1,116 @@
-Return-Path: <linux-kernel+bounces-141522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 606418A1F60
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:21:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3B578A1F66
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:23:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F01341F26744
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:21:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 211411C22C53
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:23:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A26BD15E8C;
-	Thu, 11 Apr 2024 19:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HV0dDten"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A74E214F65;
+	Thu, 11 Apr 2024 19:23:17 +0000 (UTC)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAFF4168B9
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:21:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8571798E;
+	Thu, 11 Apr 2024 19:23:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712863294; cv=none; b=qyMmu5zMtDOp97b6nWHswlCTp+835PWSyAsQTHNb5jFicGHgOeVRI8Z7ubqtjL9UstTXPFKPDEQyszdwt9Xdr+kvxbALuFZ4zeQDRWKzhS/TD4BFgJYPXErgrF5wKUaLBmv43i2we2JJGcFp90dJ4bL22HNxWpq7hDRZmMup2Hg=
+	t=1712863397; cv=none; b=N31QlApxwAjqdLKZWej1aGf2QWhFIBP2BL0rxio/IFzW90kZPUr8dZTsWtESnXk/9aJXUQGXcXvYNSgBdV2gMOE0XCQFhUUnyHxR7QsEJK2hoG6QS2Rfp0/RZ8H9AUl0Gwf/79+F7j3RCmmwWm14+n8yjaj0C++fTcXtBjtHaL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712863294; c=relaxed/simple;
-	bh=0iDrj2AwfZPdpvbdX9zswaCeouu1E0y3S0A8fzExlVM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=NEXB2p7x4sDWu3g7NbDw4Fm9s5K/GssrtSjjB+s71gHpOLHO9Un7O2Kv/xbgj12XnhGIySskG/UTCSyAtWgp8LmJQERNfgB7eh4K1XPTOTi8CqooIo96m6eKbiqOF5/q4hGQHBHqu7yv9z+SjA5Ab6QjY6pgaB+fbnykGDxGsQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HV0dDten; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2a2d197ac0aso109942a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:21:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712863292; x=1713468092; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IuZWM+vvGhXI111nZezq7YkDGfyo2NaCVPFqmlVhiZg=;
-        b=HV0dDtenLo7xoWt3tuGE+MsFQMFI68O+g88NMlCmQKr+x8ZRiUGCECNYs/6jKKwChQ
-         JJXYDL7g+4v7xePFR0ZkxgAVUyYMR4F88GyBMSltXoz757Z0li4V93dpKTLmc0NeGWpP
-         TLSYY3cTGxAIKRQUwBI2pWU8VaLGCygpmrAQK7tZx/de+8DRt4dZUnUcB6HRxtH++iXI
-         5fR+HxsBgfm+CZ+En9OCBJYk7z0Bn+ingwGHgrwRUCFvbX4GDJFC2nFNrMATfF6oya0c
-         b1ir/jaxDMz3zFtMwB9kP9LZjoj47DyjRkvhOMcnx+Ui2Kw8CRY+ZbfypYQUQiirvjWy
-         A8jA==
+	s=arc-20240116; t=1712863397; c=relaxed/simple;
+	bh=TI1GSDhfKjhAQ+1D3J9jkicNBNjV6XsaqUxxT18ZyJ8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tFM2gMk4zTye4k7qhSdXBN+lv4V/HsUnxtYo2RyAmk1NHJ15A7+6rwY0vT3NjmAdg566ajFUTJvTOdHO2X2ebE6EwLNBS2vQKHbb4uGAyTc8PJgE4vrJBCZAG+7e2+EE4kAd36s00ib1BkS+FEnJkRJ29ghi93gPgpZAyqnA31s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d82713f473so1924211fa.3;
+        Thu, 11 Apr 2024 12:23:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712863292; x=1713468092;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IuZWM+vvGhXI111nZezq7YkDGfyo2NaCVPFqmlVhiZg=;
-        b=MYSa4I4CcqgT6WxRey08nGrUPrzog8/hd1tv2Et8TYVPhIIFkBz7UcMfwZjmu9++KW
-         AaDwR1+xK/+K1EYLUe1BVOdV16MthwsX9+T7NslxriOoI/8DQgef2rjzYq03zEWIw94U
-         V3v/WAGeFSP7rLyz9zrOc5FOfcUqx0oxxGfNQLiegZkqoWpD4boCiDsl+Uz7PA5keldj
-         NFusw0F7LJmVh1pJ7YpP74bkyTtQZvaGPdMKeGF+h1wrHdXS7jLiXMdQFcLzDSdskZ5n
-         Hnw0dZ1r/rB5FJz0ydqoHGR5361HzeCxUb9lI2cUj38B1hfP/tJe2FzSgn915rebHjqD
-         CCXA==
-X-Forwarded-Encrypted: i=1; AJvYcCVFl9Z2Vw7QBIg6g+FC7kCrl3wlaRAgbfyPFyDJzzN6JEWJUMWPEnOlwHE7RLrGFkwZK+s9X/Y+IJvxHUD6KgybSAxSzh5D/2OEFgzH
-X-Gm-Message-State: AOJu0Yzt82IEgaPY8M5pLdCUiVNXauap1SDoE/kemry0N0L6racygce8
-	XAAqK8NHEtEC5SY8RthVKec9Z+jzwbABPU9/EXDWgSmndNYfg2YWTaXKSMdN0xEI/7epp95eKAs
-	djQ==
-X-Google-Smtp-Source: AGHT+IHPgtVqy0nFz025gGkTnMo7Alsvac05GAyUWXxa4k7Ytx/BHJCnyE1o2+n0hRWW+1ji8QfCIZN6pMU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:fb94:b0:2a5:2428:2253 with SMTP id
- cp20-20020a17090afb9400b002a524282253mr1232pjb.8.1712863291990; Thu, 11 Apr
- 2024 12:21:31 -0700 (PDT)
-Date: Thu, 11 Apr 2024 12:21:30 -0700
-In-Reply-To: <20240126085444.324918-8-xiong.y.zhang@linux.intel.com>
+        d=1e100.net; s=20230601; t=1712863394; x=1713468194;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qIBXaQpWGDZLuod73VoHOj9O9W3K2JcAK0KSYOPcVaQ=;
+        b=Iwmq8EtglV3xjWL8QawG2znIS5Putzew9DI1upEvDpeF1bjrp+v9MXieIbbi9G5v7h
+         asrrM+GGMb3rqdV1E4U7rmjwnOddIfmMrgyE93ekiBCsVjH8iJsxBxuTBwSkMmWJem/j
+         lIAhYkr+HGeNv4WfRbc2UQVxhe0f/XBxbHYy68EWyuSHMWIenTRCGlynfjI3JtaRcm1t
+         qloJgswBqRLn9wOCqTvRwh4bHDJt/vVPkoGZ+0uh2IfpaZCW6hupCmLK/wYYExjPz5M0
+         YykH8uZtWRVmPA4N9DuKSk8aG7kD4lHYfSI4SQdbpgKoAKfZ10mKslq3EiH5ueeidJ67
+         8GbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWUAGssXj8CuTkBv/mslP2jfWwOCCe9IVb678Nawh3Negok+E9AcY2oJ/0sa1Q3XDbnZe3QFiNtTOpgcmJr/UBsjNPs78nc
+X-Gm-Message-State: AOJu0YxbEtEmNhExHUJnIgWHQfFa281ISOzdM7l+FtFCMwz5c3kEG7Q2
+	R3WhL18RMY6cnIvwrxMdBOvwHPgStSh2D6uhi9CuLyHZYI/0M5yp
+X-Google-Smtp-Source: AGHT+IEt7RbiKpbYhIe9xJ71P9L1Z5U6C0nSsv1vHmYIfX0j8xDQZwFKW9WvmOYy3SPWHCY4MCN07Q==
+X-Received: by 2002:a2e:b00e:0:b0:2d8:36f9:67af with SMTP id y14-20020a2eb00e000000b002d836f967afmr353683ljk.44.1712863393363;
+        Thu, 11 Apr 2024 12:23:13 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-117.fbsv.net. [2a03:2880:30ff:75::face:b00c])
+        by smtp.gmail.com with ESMTPSA id q5-20020a170906360500b00a51da296f66sm1016692ejb.41.2024.04.11.12.23.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 12:23:12 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com
+Cc: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH net-next v3 0/4] net: dqs: optimize if stall threshold is not set
+Date: Thu, 11 Apr 2024 12:22:28 -0700
+Message-ID: <20240411192241.2498631-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <20240126085444.324918-8-xiong.y.zhang@linux.intel.com>
-Message-ID: <Zhg4Oph6yCpN0DeX@google.com>
-Subject: Re: [RFC PATCH 07/41] perf/x86: Add interface to reflect virtual
- LVTPC_MASK bit onto HW
-From: Sean Christopherson <seanjc@google.com>
-To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
-Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
-	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
-	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
-	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com, Xiong Zhang <xiong.y.zhang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 26, 2024, Xiong Zhang wrote:
-> From: Xiong Zhang <xiong.y.zhang@intel.com>
-> 
-> When guest clear LVTPC_MASK bit in guest PMI handler at PMU passthrough
-> mode, this bit should be reflected onto HW, otherwise HW couldn't generate
-> PMI again during VM running until it is cleared.
+Here are four patches aimed at enhancing the Dynamic Queue Limit (DQL)
+subsystem within the networking stack.
 
-This fixes a bug in the previous patch, i.e. this should not be a standalone
-patch.
+The first two commits involve code refactoring, while the third patch
+introduces the actual change. The fourth patch just improves the cache
+locality.
 
-> 
-> This commit set HW LVTPC_MASK bit at PMU vecctor switching to KVM PMI
-> vector.
-> 
-> Signed-off-by: Xiong Zhang <xiong.y.zhang@intel.com>
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> ---
->  arch/x86/events/core.c            | 9 +++++++--
->  arch/x86/include/asm/perf_event.h | 2 +-
->  arch/x86/kvm/lapic.h              | 1 -
->  3 files changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> index 3f87894d8c8e..ece042cfb470 100644
-> --- a/arch/x86/events/core.c
-> +++ b/arch/x86/events/core.c
-> @@ -709,13 +709,18 @@ void perf_guest_switch_to_host_pmi_vector(void)
->  }
->  EXPORT_SYMBOL_GPL(perf_guest_switch_to_host_pmi_vector);
->  
-> -void perf_guest_switch_to_kvm_pmi_vector(void)
-> +void perf_guest_switch_to_kvm_pmi_vector(bool mask)
->  {
->  	lockdep_assert_irqs_disabled();
->  
-> -	apic_write(APIC_LVTPC, APIC_DM_FIXED | KVM_VPMU_VECTOR);
-> +	if (mask)
-> +		apic_write(APIC_LVTPC, APIC_DM_FIXED | KVM_VPMU_VECTOR |
-> +			   APIC_LVT_MASKED);
-> +	else
-> +		apic_write(APIC_LVTPC, APIC_DM_FIXED | KVM_VPMU_VECTOR);
->  }
+Typically, when DQL is enabled, stall information is always populated
+through dql_queue_stall(). However, this information is only necessary
+if a stall threshold is set, which is stored in struct dql->stall_thrs.
 
-Or more simply:
+Although dql_queue_stall() is relatively inexpensive, it is not entirely
+free due to memory barriers and similar overheads.
 
-void perf_guest_enter(u32 guest_lvtpc)
-{
-	...
+To optimize performance, refrain from calling dql_queue_stall() when no
+stall threshold is set, thus avoiding the processing of unnecessary
+information.
 
-	apic_write(APIC_LVTPC, APIC_DM_FIXED | KVM_VPMU_VECTOR |
-			       (guest_lvtpc & APIC_LVT_MASKED));
-}
+Changelog:
 
-and then on the KVM side:
+v3:
+	* Read stall_thrs earlier, at dql_completed(), to avoid any
+	  performance penalty, as suggested by Jakub.
+v2:
+	* Moved the stall_thrs to the very first cache line, as a new
+	  patch. Suggested by Eric Dumazet.
+v1:
+	* https://lore.kernel.org/all/20240404145939.3601097-1-leitao@debian.org/
 
-	perf_guest_enter(kvm_lapic_get_reg(vcpu->arch.apic, APIC_LVTPC));
 
-because an in-kernel APIC should be a hard requirement for the mediated PMU.
+Breno Leitao (4):
+  net: dql: Avoid calling BUG() when WARN() is enough
+  net: dql: Separate queue function responsibilities
+  net: dql: Optimize stall information population
+  net: dqs: make struct dql more cache efficient
+
+ include/linux/dynamic_queue_limits.h | 50 +++++++++++++++++-----------
+ lib/dynamic_queue_limits.c           | 13 +++++---
+ 2 files changed, 39 insertions(+), 24 deletions(-)
+
+-- 
+2.43.0
+
 
