@@ -1,304 +1,123 @@
-Return-Path: <linux-kernel+bounces-141224-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C78D8A1B10
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:20:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E9128A1882
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:23:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D9391C2154C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:20:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A597AB28AC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5271E205395;
-	Thu, 11 Apr 2024 15:43:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFDEA14A8C;
+	Thu, 11 Apr 2024 15:20:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="yQvxLmy1"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZS8lFb0v"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E91E6205371
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:43:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFBE13ADC
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:20:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850234; cv=none; b=TMnpzhODnLVtV1t5Sxl38WCYQ2a8J7RtN6GnRhaWY2W/8gY3piWMdMjDnYBrfC2NNoSF4SaskbIsTJsGerhm4nGuv6rWCp6T8629ezoe2HorOx4oamrapMA2uKbQOPXmpgiw5TQREX6Gt/YSmXK1ed47+w7dvo93nDLssPdK0Cs=
+	t=1712848849; cv=none; b=mxaMkabwLkw7l5vlzhxixideEP51Ggmz7cfoQO2EzqQM16eBhpkXstWYhOYzyfHdy/Mn2jO5UTVUnFtS49pTzN0x6+IQtkg98ScFh+TCoQnoetOpEjy7RdSLnezmVsp03LhhXgoeQER+rfD8B3RE2mxtGiXec5/miWWyuPcoRs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850234; c=relaxed/simple;
-	bh=rHXTRstvyXvEinfQqa+odOLroN/rU5lJPdVIxyZIyKs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZosiWhPCIOqI9G/JQ8MiF0zmLLR2VQWZqYA40i788SOMjvuwcQ0MrcNIcNru79bljr+7GRspM25HOBv+KG/c6uQORHdyMVGFbMpu88vBcWGWJ5Ew/VJOKRYLtXvZmdvzKxbGu/qvyoYN0pXW8XAzWq0t4AmFRUsVz89gYTSU7VQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=yQvxLmy1; arc=none smtp.client-ip=209.85.166.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso58299439f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:43:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850232; x=1713455032; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tbAtfgGgTyyTwkWcoE+4CccCugNods6xg7l8RNoygg4=;
-        b=yQvxLmy1ErGfacFHBCW9Lauf5JyPQcLVVPhTSSxKqSbv3+ID3sKrG8PJ4Rdke3Tjpz
-         P76WV1De9xQwuSyHOFA7S6aSQfuyWKkBmLMch3zzQe/KXf98IjinSde5eHZjWTHvgI9E
-         o9LpgOjEtV4DjnjtUOarWB4yVsKj3kK0NFw2WQN+1HjHB6+1fF0oJ3QjeTYbKui0+R2j
-         07N6VjHH7N1aZu9nlaJIRo6JvH2dhhudxdA9H3XvjK2ZHeyaMriYQpH79uG6qSQDhUQ2
-         ma9QfWuJfNdpMl2NqkTeTKDa15ax0d3GrhDk7a0AjKrxvrB2FWasmE81ncuyZC6sGEcU
-         PUhA==
+	s=arc-20240116; t=1712848849; c=relaxed/simple;
+	bh=cDz8pnbcG444PRXZoL4njjtQAAWj0msxdEt/Rbw6BsY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=I8RQC+Khpy4WN5DTZABA/Mrx8KvYZLP87+Cr7jPcKpKFHpd7x7Do76suppIe+lDmRcOxVJaNJmYtRMKF5MwnmUOuyf91cRpkk6wGKxYgIc0cYY8oey3ZwRHF7HgC7IpvMjTvNNpyIjsEE0ksDn+0wtMANlCzI9/MRJo42quobCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZS8lFb0v; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712848846;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cDz8pnbcG444PRXZoL4njjtQAAWj0msxdEt/Rbw6BsY=;
+	b=ZS8lFb0vbVXfmBJhBueci88XRGM01oPBwKa3H1uThjwc1ix2J3e2WLzL6IBrauqguOmyBW
+	fza0E/97lM2dMs1qajtW+Q+PPGIgvpx6u4ejrAimqzTNANR/9zRHDiswz2GH/Rft88gy/g
+	bVuDsg7dpZG6Qp6ZM0dwWNh9HeBGemY=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-74-cALjPpKPNp-C6mQW1zfjCQ-1; Thu, 11 Apr 2024 11:20:44 -0400
+X-MC-Unique: cALjPpKPNp-C6mQW1zfjCQ-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2d8ce90e337so17305661fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:20:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850232; x=1713455032;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1712848843; x=1713453643;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tbAtfgGgTyyTwkWcoE+4CccCugNods6xg7l8RNoygg4=;
-        b=nKOCt+woni+9aOzB75vRMnGaQxOZ2zjVLdQLI0Op78alrXIT58FLafkSmhs5An9iOu
-         8XnBNtsVm6FU3leuvG8a+BBCB5oxhzqZB/YQpkX0ehsBnjWyz8G3GoIDJaoADWjzhQ7l
-         ch5KyH87Ud57QYawuJapIJkbhRxNEN+NHRMUz4BYbb3DsjiNx/8Ji1uUcXRyNDDqB9z4
-         PRp3HWFKvWFHUXUfKJ3j9YRWwCzy5QqQdEwKPyltnm1dClAnfTY5Yqo1ZxbnbLmVsAHv
-         AZm+4e5gMvtKbUF9Agvpymj9N+P37M8rXnK2hSla9Xxbt8xgR67Tw4ztuuL1mZnL4TxJ
-         vjIw==
-X-Gm-Message-State: AOJu0YxOj+KvLDe0mePmTbHvTFn1UlodiQ7VTfgGwAiP0U4LeL1eOE5+
-	E+zZgGMiJIqmtvR69Z8rCitl5ZL4w9ia8N2Lwb+h6kFAZjMqIfX7H2H4zNBX9/hix7mQcdR531b
-	5
-X-Google-Smtp-Source: AGHT+IE0aGaJWy/7ZBF3nfd+nSqjwxdw1Z/v0YruBvVEJItBCkKs5fN5rzDLIXWQ8naoeKXod1tEzw==
-X-Received: by 2002:a6b:f312:0:b0:7d5:de23:13a9 with SMTP id m18-20020a6bf312000000b007d5de2313a9mr183198ioh.1.1712850231824;
-        Thu, 11 Apr 2024 08:43:51 -0700 (PDT)
-Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.43.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:43:50 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: linux-kernel@vger.kernel.org
-Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 437/437] REMOVE ->read() and ->write()
-Date: Thu, 11 Apr 2024 09:19:37 -0600
-Message-ID: <20240411153126.16201-438-axboe@kernel.dk>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
-References: <20240411153126.16201-1-axboe@kernel.dk>
+        bh=cDz8pnbcG444PRXZoL4njjtQAAWj0msxdEt/Rbw6BsY=;
+        b=eOl7ks4zLd9QHavnspoGBcZtlFmbd9zCqq+9f13PQWdEQ5s56zXLJruM+bUgs9XSiY
+         HtHmJ9gx5TDNkiZil7y3MfYFc9dC+IYdB3lRQJi0Bm7QAjk/Z9ONu9/KdYpJRT0DC8lH
+         XkKOWgPkuNMUCT+TZINpqRupbsyKZqPaUH6hlrs6MZWcoV2/F27ollYUwCuExFHLlxqi
+         /l9TVlqG5WcCjOHLRZEp6cYZyf75Mv2mrjZIrLemGfLTBWcWrNAhhQFfYa68BfixuB6u
+         RidcZ24qTphYS9xRso3UolwJ7m6hAllPoYv468iik+lgGwkjMsruIHi579Nkiw317RTt
+         ueDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUcXQhG5GVn7W8ExYtptK6W1c5+ZPRDZQjC4hGTdeWJNxVczEGyQkzt0dqKQ4G3ywhtVAgA+kH02XbU91QNgTBnbRGIE7aLPiz1cxvQ
+X-Gm-Message-State: AOJu0YwTd7PJoX/DJCaAevzubPKdTwajYVlvecjSiCdj7DuXVu72gmwD
+	mo8hZH2K/b4OKXxq2O1SKrqgJOyAdTBYucmODAvTPLFfoWk5YUdyj+QjNgcs/p3gZJs2NnhMbBX
+	g25xLPQlWW8ANkTRI3zikqyrXqx8nFycr5D2XMD/fzZ6un1IRhsL3DGMgu6KyqKt1dUAACD8iz8
+	W3KJQO0mQpLteXCfZY/Vf6nEFrTDb86ec1dl0x
+X-Received: by 2002:a05:651c:1543:b0:2d8:d972:67e0 with SMTP id y3-20020a05651c154300b002d8d97267e0mr3849919ljp.10.1712848843349;
+        Thu, 11 Apr 2024 08:20:43 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEp5gn7fMbM+AUICCU9wu3izHUOUcfRTZ1FRcmIlrycF4sFSaJgzJf9ZaIPI28JrUasNUyPBF9hQy5wbdku1NY=
+X-Received: by 2002:a05:651c:1543:b0:2d8:d972:67e0 with SMTP id
+ y3-20020a05651c154300b002d8d97267e0mr3849889ljp.10.1712848842851; Thu, 11 Apr
+ 2024 08:20:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240411072445.522731-1-alexandre.chartre@oracle.com>
+ <7f1faa48-6252-4409-aefc-2ed2f38fb1c3@citrix.com> <caa51938-c587-4403-a9cd-16e8b585bc13@oracle.com>
+ <CABgObfai1TCs6pNAP4i0x99qAjXTczJ4uLHiivNV7QGoah1pVg@mail.gmail.com>
+ <abbaeb7c-a0d3-4b2d-8632-d32025b165d7@oracle.com> <2afb20af-d42e-4535-a660-0194de1d0099@citrix.com>
+ <ff3cf105-ef2a-426c-ba9b-00fb5c2559c7@oracle.com> <CABgObfZU_uLAPzDV--n67H3Hq6OKxUO=FQa2MH3CjdgTQR8pJg@mail.gmail.com>
+ <99ad2011-58b7-42c8-9ee5-af598c76a732@oracle.com>
+In-Reply-To: <99ad2011-58b7-42c8-9ee5-af598c76a732@oracle.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Thu, 11 Apr 2024 17:20:30 +0200
+Message-ID: <CABgObfa_mkk-c3NZ623WzYDxw59NcYB_tEQ8tFX4CECHW3JxQQ@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: Set BHI_NO in guest when host is not affected
+ by BHI
+To: Alexandre Chartre <alexandre.chartre@oracle.com>
+Cc: Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, daniel.sneddon@linux.intel.com, 
+	pawan.kumar.gupta@linux.intel.com, tglx@linutronix.de, konrad.wilk@oracle.com, 
+	peterz@infradead.org, gregkh@linuxfoundation.org, seanjc@google.com, 
+	dave.hansen@linux.intel.com, nik.borisov@suse.com, kpsingh@kernel.org, 
+	longman@redhat.com, bp@alien8.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Test patch just to check coverage.
+On Thu, Apr 11, 2024 at 5:13=E2=80=AFPM Alexandre Chartre
+<alexandre.chartre@oracle.com> wrote:
+> I think that Andrew's concern is that if there is no eIBRS on the host th=
+en
+> we do not set X86_BUG_BHI on the host because we know the kernel which is
+> running and this kernel has some mitigations (other than the explicit BHI
+> mitigations) and these mitigations are enough to prevent BHI. But still
+> the cpu is affected by BHI.
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
- fs/file_table.c    |  4 +--
- fs/open.c          |  4 +--
- fs/read_write.c    | 16 +++--------
- include/linux/fs.h |  2 --
- io_uring/rw.c      | 70 ----------------------------------------------
- 5 files changed, 8 insertions(+), 88 deletions(-)
+Hmm, then I'm confused. It's what I wrote before: "The (Linux or
+otherwise) guest will make its own determinations as to whether BHI
+mitigations are necessary. If the guest uses eIBRS, it will run with
+mitigations" but you said machines without eIBRS are fine.
 
-diff --git a/fs/file_table.c b/fs/file_table.c
-index 4f03beed4737..54cf21766633 100644
---- a/fs/file_table.c
-+++ b/fs/file_table.c
-@@ -292,10 +292,10 @@ static void file_init_path(struct file *file, const struct path *path,
- 	if (fop->llseek)
- 		file->f_mode |= FMODE_LSEEK;
- 	if ((file->f_mode & FMODE_READ) &&
--	     likely(fop->read || fop->read_iter))
-+	     likely(fop->read_iter))
- 		file->f_mode |= FMODE_CAN_READ;
- 	if ((file->f_mode & FMODE_WRITE) &&
--	     likely(fop->write || fop->write_iter))
-+	     likely(fop->write_iter))
- 		file->f_mode |= FMODE_CAN_WRITE;
- 	file->f_iocb_flags = iocb_flags(file);
- 	file->f_mode |= FMODE_OPENED;
-diff --git a/fs/open.c b/fs/open.c
-index ee8460c83c77..63caada91fc5 100644
---- a/fs/open.c
-+++ b/fs/open.c
-@@ -958,10 +958,10 @@ static int do_dentry_open(struct file *f,
- 	}
- 	f->f_mode |= FMODE_OPENED;
- 	if ((f->f_mode & FMODE_READ) &&
--	     likely(f->f_op->read || f->f_op->read_iter))
-+	     likely(f->f_op->read_iter))
- 		f->f_mode |= FMODE_CAN_READ;
- 	if ((f->f_mode & FMODE_WRITE) &&
--	     likely(f->f_op->write || f->f_op->write_iter))
-+	     likely(f->f_op->write_iter))
- 		f->f_mode |= FMODE_CAN_WRITE;
- 	if ((f->f_mode & FMODE_LSEEK) && !f->f_op->llseek)
- 		f->f_mode &= ~FMODE_LSEEK;
-diff --git a/fs/read_write.c b/fs/read_write.c
-index efddd395d436..caec0998f28a 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -425,7 +425,7 @@ ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
- 	 * Also fail if ->read_iter and ->read are both wired up as that
- 	 * implies very convoluted semantics.
- 	 */
--	if (unlikely(!file->f_op->read_iter || file->f_op->read))
-+	if (unlikely(!file->f_op->read_iter))
- 		return warn_unsupported(file, "read");
- 
- 	init_sync_kiocb(&kiocb, file);
-@@ -470,9 +470,7 @@ ssize_t vfs_read(struct file *file, char __user *buf, size_t count, loff_t *pos)
- 	if (count > MAX_RW_COUNT)
- 		count =  MAX_RW_COUNT;
- 
--	if (file->f_op->read)
--		ret = file->f_op->read(file, buf, count, pos);
--	else if (file->f_op->read_iter)
-+	if (file->f_op->read_iter)
- 		ret = new_sync_read(file, buf, count, pos);
- 	else
- 		ret = -EINVAL;
-@@ -515,7 +513,7 @@ ssize_t __kernel_write_iter(struct file *file, struct iov_iter *from, loff_t *po
- 	 * Also fail if ->write_iter and ->write are both wired up as that
- 	 * implies very convoluted semantics.
- 	 */
--	if (unlikely(!file->f_op->write_iter || file->f_op->write))
-+	if (unlikely(!file->f_op->write_iter))
- 		return warn_unsupported(file, "write");
- 
- 	init_sync_kiocb(&kiocb, file);
-@@ -584,9 +582,7 @@ ssize_t vfs_write(struct file *file, const char __user *buf, size_t count, loff_
- 	if (count > MAX_RW_COUNT)
- 		count =  MAX_RW_COUNT;
- 	file_start_write(file);
--	if (file->f_op->write)
--		ret = file->f_op->write(file, buf, count, pos);
--	else if (file->f_op->write_iter)
-+	if (file->f_op->write_iter)
- 		ret = new_sync_write(file, buf, count, pos);
- 	else
- 		ret = -EINVAL;
-@@ -972,8 +968,6 @@ static ssize_t vfs_readv(struct file *file, const struct iovec __user *vec,
- 
- 	if (file->f_op->read_iter)
- 		ret = do_iter_readv_writev(file, &iter, pos, READ, flags);
--	else
--		ret = do_loop_readv(file, &iter, pos, flags, file->f_op->read);
- out:
- 	if (ret >= 0)
- 		fsnotify_access(file);
-@@ -1011,8 +1005,6 @@ static ssize_t vfs_writev(struct file *file, const struct iovec __user *vec,
- 	file_start_write(file);
- 	if (file->f_op->write_iter)
- 		ret = do_iter_readv_writev(file, &iter, pos, WRITE, flags);
--	else
--		ret = do_loop_writev(file, &iter, pos, flags, file->f_op->write);
- 	if (ret > 0)
- 		fsnotify_modify(file);
- 	file_end_write(file);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 55fc02b99cf6..7606ed6b9dbc 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2009,8 +2009,6 @@ struct offset_ctx;
- struct file_operations {
- 	struct module *owner;
- 	loff_t (*llseek) (struct file *, loff_t, int);
--	ssize_t (*read) (struct file *, char __user *, size_t, loff_t *);
--	ssize_t (*write) (struct file *, const char __user *, size_t, loff_t *);
- 	ssize_t (*read_iter) (struct kiocb *, struct iov_iter *);
- 	ssize_t (*write_iter) (struct kiocb *, struct iov_iter *);
- 	int (*iopoll)(struct kiocb *kiocb, struct io_comp_batch *,
-diff --git a/io_uring/rw.c b/io_uring/rw.c
-index c8d48287439e..9178b1bccb8b 100644
---- a/io_uring/rw.c
-+++ b/io_uring/rw.c
-@@ -474,72 +474,6 @@ static inline loff_t *io_kiocb_ppos(struct kiocb *kiocb)
- 	return (kiocb->ki_filp->f_mode & FMODE_STREAM) ? NULL : &kiocb->ki_pos;
- }
- 
--/*
-- * For files that don't have ->read_iter() and ->write_iter(), handle them
-- * by looping over ->read() or ->write() manually.
-- */
--static ssize_t loop_rw_iter(int ddir, struct io_rw *rw, struct iov_iter *iter)
--{
--	struct kiocb *kiocb = &rw->kiocb;
--	struct file *file = kiocb->ki_filp;
--	ssize_t ret = 0;
--	loff_t *ppos;
--
--	/*
--	 * Don't support polled IO through this interface, and we can't
--	 * support non-blocking either. For the latter, this just causes
--	 * the kiocb to be handled from an async context.
--	 */
--	if (kiocb->ki_flags & IOCB_HIPRI)
--		return -EOPNOTSUPP;
--	if ((kiocb->ki_flags & IOCB_NOWAIT) &&
--	    !(kiocb->ki_filp->f_flags & O_NONBLOCK))
--		return -EAGAIN;
--
--	ppos = io_kiocb_ppos(kiocb);
--
--	while (iov_iter_count(iter)) {
--		void __user *addr;
--		size_t len;
--		ssize_t nr;
--
--		if (iter_is_ubuf(iter)) {
--			addr = iter->ubuf + iter->iov_offset;
--			len = iov_iter_count(iter);
--		} else if (!iov_iter_is_bvec(iter)) {
--			addr = iter_iov_addr(iter);
--			len = iter_iov_len(iter);
--		} else {
--			addr = u64_to_user_ptr(rw->addr);
--			len = rw->len;
--		}
--
--		if (ddir == READ)
--			nr = file->f_op->read(file, addr, len, ppos);
--		else
--			nr = file->f_op->write(file, addr, len, ppos);
--
--		if (nr < 0) {
--			if (!ret)
--				ret = nr;
--			break;
--		}
--		ret += nr;
--		if (!iov_iter_is_bvec(iter)) {
--			iov_iter_advance(iter, nr);
--		} else {
--			rw->addr += nr;
--			rw->len -= nr;
--			if (!rw->len)
--				break;
--		}
--		if (nr != len)
--			break;
--	}
--
--	return ret;
--}
--
- static void io_req_map_rw(struct io_kiocb *req, const struct iovec *iovec,
- 			  const struct iovec *fast_iov, struct iov_iter *iter)
- {
-@@ -702,8 +636,6 @@ static inline int io_iter_do_read(struct io_rw *rw, struct iov_iter *iter)
- 
- 	if (likely(file->f_op->read_iter))
- 		return call_read_iter(file, &rw->kiocb, iter);
--	else if (file->f_op->read)
--		return loop_rw_iter(READ, rw, iter);
- 	else
- 		return -EINVAL;
- }
-@@ -1055,8 +987,6 @@ int io_write(struct io_kiocb *req, unsigned int issue_flags)
- 
- 	if (likely(req->file->f_op->write_iter))
- 		ret2 = call_write_iter(req->file, kiocb, &s->iter);
--	else if (req->file->f_op->write)
--		ret2 = loop_rw_iter(WRITE, rw, &s->iter);
- 	else
- 		ret2 = -EINVAL;
- 
--- 
-2.43.0
+If instead they are only fine _with Linux_, then yeah we cannot set
+BHI_NO in general. What we can do is define a new bit that is in the
+KVM leaves. The new bit is effectively !eIBRS, except that it is
+defined in such a way that, in a mixed migration pool, both eIBRS and
+the new bit will be 0.
+
+Paolo
 
 
