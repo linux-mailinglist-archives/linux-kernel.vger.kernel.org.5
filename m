@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-139714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5F398A06C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:33:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 684758A06C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:33:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75C2F1F23425
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:33:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21039283767
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:33:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E5C13BC0F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88A6113BC15;
 	Thu, 11 Apr 2024 03:32:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IARPqoAe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ngVvk5vq"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B1B13BADD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6D7313BAE5;
 	Thu, 11 Apr 2024 03:32:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712806378; cv=none; b=kz3FAmbE94M4Bb5rNwGC6Z+yn6IenCe8iVWl89oaLasvi76hbKlbAcJ29isuvpJJiK9ALuQawSqnr/d6nIcdvJggg7g0uNIFEKyq+ic3M/D/6/CmJPuAAgdhoiTjBWjubRlx1vUTn4/+2rHfLCYcAMy/eTgc+mQ0X+s9hks1ui4=
+	t=1712806378; cv=none; b=cTpEoCtCwk43FGuRNT4vYlLWQNYfTKnuvB1aP48EbNXGTRuG78mWUfZWBGEpcFMlCS2gXVIa3gUG5ATzqZuYshkMmfRbH1VOylx0diFHQNejr2FS8ErSgd0b3G+ZoXM2qeuiMs/1nd8lJ11fVpaxJTbQJbcBnoobw3Y/MzwULXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712806378; c=relaxed/simple;
-	bh=iOCpCDUmajHA6Opq8WcJ6PcQv4ZZHQHjuT0DJJ405iw=;
+	bh=E7MUbHglg5iWys9JXYDObrTkAuoigHes409w9J6EGEc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ngQZZ1Ex0tp/+NFYtQCc91Kb5PnsxMPlHva3IbXUdfI4jirExbcVG9PBcZdj0XjjzBiRZFQVwuTnAbvHpLi2WNnMFJczcyx2rhajsTAIPDdGiUPUJ9zoVHpCZGslj29Ei3m+Yy5tcMEaJSUant8gQHhtabR/km8z2s+hSE7veyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IARPqoAe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA353C43390;
-	Thu, 11 Apr 2024 03:32:57 +0000 (UTC)
+	 MIME-Version; b=bjo0uOOpsakFSVn6nTbzuLX+h1xKQ2bbQ5oC2vN2HJvVNdnMG+ktMJCeaeHozdqGE+HX+it/1f9/cKOPypJneyZtxHsyQ1FSRe9dwPyCIZAs6o1RgIl0NR8T1hZpMaJ6I3AuPM49zM8dobl2Hu8vnhIgvG4CQpunZqbRbGGWjCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ngVvk5vq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F85CC43399;
+	Thu, 11 Apr 2024 03:32:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1712806378;
-	bh=iOCpCDUmajHA6Opq8WcJ6PcQv4ZZHQHjuT0DJJ405iw=;
+	bh=E7MUbHglg5iWys9JXYDObrTkAuoigHes409w9J6EGEc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IARPqoAeSRKcC1Y/goOtmb1IXci4uqF1C+BFBtBbFMGbU+WJmJ32+/7bWZL/1l3Wl
-	 s3UYT55fYjsEDDskCZ4uGI4QJS2U0te/kzJVLdKZGJYmBHormQgU7PW2KMtVDj6yoP
-	 ZHeqxprPyDPYZNIUpr1fZfAF+J2J8C1tNKIUAy8E7fmWpqzzaRFLxGwQJ34uzfYtIB
-	 1sSo7X9cmxyjup4cRTaw57t5oI46vEZ/n4iCpBVvJeA6PWayIRF4xsMz2AeH/8ErGc
-	 Dug1bwnKPRjMPk+8S/lk6pCnpq/3WAGsQGpOX2YOx9BhxQqYdZow3cRnjpi2IzIAoh
-	 6JqfpOsOMBCzA==
+	b=ngVvk5vq9Y6CbMgZjWWsYxjtjK4/EdUjH75o2kERRsv0x6/5KAAJDjK8ZLxY2z/rW
+	 EyvE/G1p9gwBqVTqgGfS6Bq9iRVSlVP0ei6SxFEG85UwgnVGhYB3jOcW+ssj2CNjmQ
+	 QiIyTgFB/u0peIdYJXlJO9/gLfLjN3MYlDaEDtiHgVTt6dAWb1sCNszrY+amBYJ7xh
+	 98h2w71Y2oB+cW7ZRiZYeHWuhznhi9CT7ACS5/XxOuyb00O+ddpNNln+kocglkpdpY
+	 /BvMYFQ5OUelsOV7wZk8YcXZPIx0oDh10viB9okTmGoNqt6z9M10AL44wy3MbENgQU
+	 2BppXXCHiILig==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -50,9 +50,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Ingo Molnar <mingo@kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH 1/7] perf annotate-data: Skip sample histogram for stack canary
-Date: Wed, 10 Apr 2024 20:32:50 -0700
-Message-ID: <20240411033256.2099646-2-namhyung@kernel.org>
+Subject: [PATCH 2/7] perf annotate: Show progress of sample processing
+Date: Wed, 10 Apr 2024 20:32:51 -0700
+Message-ID: <20240411033256.2099646-3-namhyung@kernel.org>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
 In-Reply-To: <20240411033256.2099646-1-namhyung@kernel.org>
 References: <20240411033256.2099646-1-namhyung@kernel.org>
@@ -64,30 +64,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It's a pseudo data type and has no field.
+Like 'perf report', it can take a while to process samples.
 
-Fixes: b3c95109c131 ("perf annotate-data: Add stack canary type")
+Show a progress window to inform users how that it is not stuck.
+
+Reviewed-by: Ian Rogers <irogers@google.com>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ tools/perf/builtin-annotate.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 11da27801d88..ec79c120a7d2 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -2399,8 +2399,9 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
- 		mem_type = find_data_type(&dloc);
+diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
+index 16e1581207c9..332e1ddcacbd 100644
+--- a/tools/perf/builtin-annotate.c
++++ b/tools/perf/builtin-annotate.c
+@@ -37,6 +37,7 @@
+ #include "util/map_symbol.h"
+ #include "util/branch.h"
+ #include "util/util.h"
++#include "ui/progress.h"
  
- 		if (mem_type == NULL && is_stack_canary(arch, op_loc)) {
--			mem_type = &canary_type;
--			dloc.type_offset = 0;
-+			istat->good++;
-+			he->mem_type_off = 0;
-+			return &canary_type;
- 		}
+ #include <dlfcn.h>
+ #include <errno.h>
+@@ -665,13 +666,23 @@ static int __cmd_annotate(struct perf_annotate *ann)
+ 	evlist__for_each_entry(session->evlist, pos) {
+ 		struct hists *hists = evsel__hists(pos);
+ 		u32 nr_samples = hists->stats.nr_samples;
++		struct ui_progress prog;
  
- 		if (mem_type)
+ 		if (nr_samples > 0) {
+ 			total_nr_samples += nr_samples;
+-			hists__collapse_resort(hists, NULL);
++
++			ui_progress__init(&prog, nr_samples,
++					  "Merging related events...");
++			hists__collapse_resort(hists, &prog);
++			ui_progress__finish();
++
+ 			/* Don't sort callchain */
+ 			evsel__reset_sample_bit(pos, CALLCHAIN);
+-			evsel__output_resort(pos, NULL);
++
++			ui_progress__init(&prog, nr_samples,
++					  "Sorting events for output...");
++			evsel__output_resort(pos, &prog);
++			ui_progress__finish();
+ 
+ 			/*
+ 			 * An event group needs to display other events too.
 -- 
 2.44.0.478.gd926399ef9-goog
 
