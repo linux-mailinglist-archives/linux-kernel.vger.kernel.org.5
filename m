@@ -1,154 +1,142 @@
-Return-Path: <linux-kernel+bounces-139959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 652F08A099B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:24:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 002388A09A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:24:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A181CB245A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:24:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C47A1C2137E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F315B13DDD2;
-	Thu, 11 Apr 2024 07:23:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shruggie-ro.20230601.gappssmtp.com header.i=@shruggie-ro.20230601.gappssmtp.com header.b="ZIuRE8mM"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C37F113E412;
+	Thu, 11 Apr 2024 07:24:04 +0000 (UTC)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F6E313D258
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:23:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCBBA13E3F8
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:24:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712820231; cv=none; b=P5sjDXOj7pUARwKTcTHrZEu/XOdxpFUhZmk+0nLiGsfQpTLlpgu22cvN9AshuochOtLWIIZNG6ISwmM36ZQ7laxA64Pwvu5Kr6tpgGtqHmTRBpzNvZxR6kwGVlhhCFBKzPgIhjpDNAkYpsRxfFQXsJ3+qVBYbsLYieyyVGxeIyE=
+	t=1712820244; cv=none; b=uChOBu/S7Tltqgq0NtVp1zTHwcT8lwpSXHA1UQA6KvmWBGfcGE9GZZmg9qW8MjqLau2JT4EREMsgpC52T6qif3DuOu4cF2joqfPdSPHTmeAeVBiUDASCotUrLe0BTwHe8SCK9DI4LR9n9YHpGTI87/wux2h0NOU03f6+KGkrtzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712820231; c=relaxed/simple;
-	bh=gGeW9R0z/8e8cHc5xDnZttqxGEuV/KvsYGHiztgMhTI=;
+	s=arc-20240116; t=1712820244; c=relaxed/simple;
+	bh=ENzsqCkEZF7w3w+dj2MlSXHDdkhowWbzZYt+sJi8kUA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nZBeDpZS0nPVua6pXXwCllc3WiRvDJfhZ7rC7U5KB6y1fQHBCjqmRfbJmv2N1p+cfAkxGeXEpBCVJqb2K3Ur6nErVhMtfxaqJYYR+k3uVR685JcYz2zllKehfSQMKzHVmv0MKi1JAwhM1eanHemgwxRF9yhU0saVuz5s86GbD0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shruggie.ro; spf=pass smtp.mailfrom=shruggie.ro; dkim=pass (2048-bit key) header.d=shruggie-ro.20230601.gappssmtp.com header.i=@shruggie-ro.20230601.gappssmtp.com header.b=ZIuRE8mM; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shruggie.ro
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shruggie.ro
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-516d756eb74so7062238e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:23:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shruggie-ro.20230601.gappssmtp.com; s=20230601; t=1712820227; x=1713425027; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dkOVgTaaGrXLtVM87ktxrc8mZTfhRT2o4/E/F6KN6Bk=;
-        b=ZIuRE8mMVj95qNAJ+4JMQjCiskC8DYJcoS7RvE/RZhRzzXicB7E8OJjIupVoq9b6Ob
-         DDGQENAO7Ec9Ma/gqm5Tv4i9yRl8MUrQeTu3kNJATJpQ2Tt0a34rkyCPeLdyb07R2Mam
-         0W2ohISkv1uFb8oSRvZzcKsDXb41kYCoHzP2JsoG7Uz+T4CSJOi4ZFab5NORH8uxod8j
-         3ViwcjafBqOwg8S56tpULmiX+BClJp1SepH9XNQoHwD1KKO0kawVmM5sVu6abdbO/oDi
-         d9LNDQbJELk228BYO7GzxoOx1ggZ00CEwYBhkM90d3PRGgu7jItcwvC5yzENgC/CSPxE
-         4JvQ==
+	 To:Cc:Content-Type; b=mK/Za6p6+258JTeabl12QD4WDv2O7XF7XXuZ2J7gztto7AuiPO2BxWTjvg13KG0V+bGUNCAAoOizZqs5yeTPTyQ/zPLMlf9mnOkpDoGNGOlge1Ur1jxotp64MAaSG/8Bwv+ujhLMaxXX700q/A43RwVHP0dVIoOrYHRJ66mcZcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-61587aa956eso71221937b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:24:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712820227; x=1713425027;
+        d=1e100.net; s=20230601; t=1712820240; x=1713425040;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dkOVgTaaGrXLtVM87ktxrc8mZTfhRT2o4/E/F6KN6Bk=;
-        b=uNIrR1tRuPUzy0bmrg9aQ+ymALKrzqeHB+PDbDoRQ8y5HwzVnC0FyitT6LqzApPYFZ
-         Fs0FzSF/SQFdaKPQi5oqpERh0tlJt+JI3q0NIVi6KvpBBPbmyu4khAhi5TA4gygUltYG
-         xZOmSs6feSKC3j+V6MyLwMMt8rZS4cKiNRHw+FY/Ia+rJGChCbDqAWDZvg4JaeJmSMkL
-         pW72gfeGIab5KO6Olze6zPc9RSstZ6jfopwkGqGnn2EcPV245CiWyJAHVwDjv7GBo2Pm
-         ZmrzxSz7fcLw/0z00qTgHCc3ads3QXOiizgZASBxdWiSm1apqZnbchtnIKS4L/54tVQw
-         BO0w==
-X-Gm-Message-State: AOJu0YxnafOxHKX+yII40IiT1Q7OW/HKRzv7CoY8ZxA/CtKtMCpK375u
-	kJ8F910URKJuou+n/NLR0oT5yQkAb54yXyihFiBDb3XDARIxgfbur+OQsNlNinNfVGudONU2m4E
-	K2C+EVeoOCuYIF0kClzruFnRY7Cf+YkqRHRmxxg==
-X-Google-Smtp-Source: AGHT+IFZZUKJ4M2JhpqzsUa3DBvNjlIu3bgNrsSmIxv09/CKGpbc9Zg/QoI/y4VRWj7pcSaPz1WFPMmYuLejmaOVLVY=
-X-Received: by 2002:a19:f70b:0:b0:513:b90f:f4dd with SMTP id
- z11-20020a19f70b000000b00513b90ff4ddmr2683370lfe.49.1712820226865; Thu, 11
- Apr 2024 00:23:46 -0700 (PDT)
+        bh=DT9wpQertwUtJrUq+JoryAh7T5yA817K6uGSpPBNwoo=;
+        b=vsKLEemDyQ0FIMOurDVLBHp52zZSqfG5QBP1CMJb+V8XYQEndI7G4WsbNUgbs67Bgj
+         NobVefWIr0SD3C/PeNIpyWiO2jusSuZB0JRh0+OuAwhA5lmlnbULjYKtUPJ0STVGLpDd
+         hXlrDMLCg1Cz+gtBWO4t6kAcK8AgG6e+Y4VB8QWnR9pswp4KjCHD1mzGDtKjS/fLHB4g
+         cuh+THc0YQp2N9XSeOdAIWyb1M75dIMtrgjBVoL+eP/voMUtWL2kxD+g6HHt8kQ7sd+D
+         5ICYbHIZ9198RaZv3Oujkk3iswXnoPQWkpsc34xbi1+CTf6P4syl1i8ZE1ND8Y6g5PsW
+         sLzw==
+X-Gm-Message-State: AOJu0YyyEs1gzIZPB+pVV/ssQUdmYhuVX5RYsPddiM/mMcFvqjc91YmB
+	cgy6OFLkVZT+DJ9Q13AwlxwA+QYn107U533HdNHANggupjJPJMWymj4Xdwop
+X-Google-Smtp-Source: AGHT+IFMZuIUyw3nCr55DwhxZVzM5Si66C68GE114CGyi+JnkDEaL9b45KHRwtt9dydPBQFttBgSWg==
+X-Received: by 2002:a5b:3cd:0:b0:dc2:5553:ca12 with SMTP id t13-20020a5b03cd000000b00dc25553ca12mr4644197ybp.14.1712820240359;
+        Thu, 11 Apr 2024 00:24:00 -0700 (PDT)
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
+        by smtp.gmail.com with ESMTPSA id k12-20020a5b0a0c000000b00dcdba3056e9sm176652ybq.25.2024.04.11.00.23.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 00:23:59 -0700 (PDT)
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dde0b30ebe2so6425357276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:23:59 -0700 (PDT)
+X-Received: by 2002:a05:6902:149:b0:dcd:5e5d:4584 with SMTP id
+ p9-20020a056902014900b00dcd5e5d4584mr4662119ybh.34.1712820239378; Thu, 11 Apr
+ 2024 00:23:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402105925.905144-1-alex@shruggie.ro> <20240402105925.905144-2-alex@shruggie.ro>
- <dxm3js6qpcw3n4duid4vmhnkxacmzgq4rnvpbdx62pcn34ybzc@q57pst7lyumf>
-In-Reply-To: <dxm3js6qpcw3n4duid4vmhnkxacmzgq4rnvpbdx62pcn34ybzc@q57pst7lyumf>
-From: Alexandru Ardelean <alex@shruggie.ro>
-Date: Thu, 11 Apr 2024 10:23:35 +0300
-Message-ID: <CAH3L5QosgOBTYgyHUcstNqh+JMBW93j+dk2JuDhdz1=Sfj8i_Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] dt-bindings: display: bridge: lt8912b: document
- 'lontium, pn-swap' property
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	devicetree@vger.kernel.org, adrien.grassein@gmail.com, 
-	andrzej.hajda@intel.com, neil.armstrong@linaro.org, rfoss@kernel.org, 
-	Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se, jernej.skrabec@gmail.com, 
-	airlied@gmail.com, daniel@ffwll.ch, maarten.lankhorst@linux.intel.com, 
-	mripard@kernel.org, tzimmermann@suse.de, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	stefan.eichenberger@toradex.com, francesco.dolcini@toradex.com, 
-	marius.muresan@mxt.ro, irina.muresan@mxt.ro
+References: <20240411032155.208042-1-ytcoode@gmail.com>
+In-Reply-To: <20240411032155.208042-1-ytcoode@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 11 Apr 2024 09:23:47 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdULF9KemeFkv09s3b9T8Ka-AkC8A8-pc_FpdXnjrOjwgQ@mail.gmail.com>
+Message-ID: <CAMuHMdULF9KemeFkv09s3b9T8Ka-AkC8A8-pc_FpdXnjrOjwgQ@mail.gmail.com>
+Subject: Re: [PATCH] init/main.c: Fix potential static_command_line memory overflow
+To: Yuntao Wang <ytcoode@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, 
+	Andrew Morton <akpm@linux-foundation.org>, 
+	"ndesaulniers@google.com" <ndesaulniers@google.com>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>, Tejun Heo <tj@kernel.org>, 
+	Christophe Leroy <christophe.leroy@csgroup.eu>, Krister Johansen <kjlx@templeofstupid.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Mike Rapoport <rppt@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Apr 7, 2024 at 11:31=E2=80=AFPM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
+CC Hiramatsu-san
+
+On Thu, Apr 11, 2024 at 5:25=E2=80=AFAM Yuntao Wang <ytcoode@gmail.com> wro=
+te:
+> We allocate memory of size 'xlen + strlen(boot_command_line) + 1' for
+> static_command_line, but the strings copied into static_command_line are
+> extra_command_line and command_line, rather than extra_command_line and
+> boot_command_line.
 >
-> On Tue, Apr 02, 2024 at 01:59:25PM +0300, Alexandru Ardelean wrote:
-> > On some HW designs, it's easier for the layout if the P/N pins are swap=
-ped.
-> > The driver currently has a DT property to do that.
-> >
-> > This change documents the 'lontium,pn-swap' property.
-> >
-> > Signed-off-by: Alexandru Ardelean <alex@shruggie.ro>
-> > ---
-> >  .../devicetree/bindings/display/bridge/lontium,lt8912b.yaml | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/display/bridge/lontium,l=
-t8912b.yaml b/Documentation/devicetree/bindings/display/bridge/lontium,lt89=
-12b.yaml
-> > index 2cef252157985..3a804926b288a 100644
-> > --- a/Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.=
-yaml
-> > +++ b/Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.=
-yaml
-> > @@ -24,6 +24,12 @@ properties:
-> >      maxItems: 1
-> >      description: GPIO connected to active high RESET pin.
-> >
-> > +  lontium,pn-swap:
-> > +    description: Swap the polarities of the P/N pins in software.
-> > +      On some HW designs, the layout is simplified if the P/N pins
-> > +      are inverted.
-> > +    type: boolean
-> > +
+> When strlen(command_line) > strlen(boot_command_line), static_command_lin=
+e
+> will overflow.
 >
-> I'd like to point out the standard `lane-polarities` property defined at
-> Documentation/devicetree/bindings/media/video-interfaces.yaml. You can
-> define and use it for the corresponding endpoint in the lt8912b schema.
+> Fixes: f5c7310ac73e ("init/main: add checks for the return value of membl=
+ock_alloc*()")
+> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> ---
+>  init/main.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 >
-
-Ohhh.
-Interesting :)
-Many thanks for pointing this out.
-This will make things much easier.
-Will do a V2 with this in a week or two.
-I'm traveling now.
-
-Thanks
-Alex
-
-
-
-> >    ports:
-> >      $ref: /schemas/graph.yaml#/properties/ports
-> >
-> > --
-> > 2.44.0
-> >
+> diff --git a/init/main.c b/init/main.c
+> index 2ca52474d0c3..a7b1f5f3e3b6 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -625,11 +625,13 @@ static void __init setup_command_line(char *command=
+_line)
+>         if (extra_init_args)
+>                 ilen =3D strlen(extra_init_args) + 4; /* for " -- " */
 >
-> --
-> With best wishes
-> Dmitry
+> -       len =3D xlen + strlen(boot_command_line) + 1;
+> +       len =3D xlen + strlen(boot_command_line) + ilen + 1;
+>
+> -       saved_command_line =3D memblock_alloc(len + ilen, SMP_CACHE_BYTES=
+);
+> +       saved_command_line =3D memblock_alloc(len, SMP_CACHE_BYTES);
+>         if (!saved_command_line)
+> -               panic("%s: Failed to allocate %zu bytes\n", __func__, len=
+ + ilen);
+> +               panic("%s: Failed to allocate %zu bytes\n", __func__, len=
+);
+> +
+> +       len =3D xlen + strlen(command_line) + 1;
+>
+>         static_command_line =3D memblock_alloc(len, SMP_CACHE_BYTES);
+>         if (!static_command_line)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
