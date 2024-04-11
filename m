@@ -1,85 +1,89 @@
-Return-Path: <linux-kernel+bounces-140204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 979228A0CD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:51:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 098A78A0CD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:52:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 370441F22DB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:51:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A8811C21BA8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD01145FE6;
-	Thu, 11 Apr 2024 09:51:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF2C3145B10;
+	Thu, 11 Apr 2024 09:51:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Iwii1Wfw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c/vfrxqu"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F709145B0D;
-	Thu, 11 Apr 2024 09:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 196D7145349;
+	Thu, 11 Apr 2024 09:51:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712829082; cv=none; b=ViZZXOw0L38yZVPt8kPLWeUBOpTeHCHLP8k2Kuycf5jYvla+K6W9HbUP0GE1BieWssdLpTt1VkJZVEeMBgoL/tvUea4rqWongBrJzzy1UtB49he+qNfXkiJoIc5UpZPWIfbr02yAb9WhcDm4sDJ+g0xESonvEGxIfqUCQV2DSws=
+	t=1712829117; cv=none; b=KbVEpb3+8lDOkv+fE0QOb8+XgSHq+TJIV2efK33zgr2L0ygDPao/DgonypXy//Ns84kEgywzWfd6tuwn/v5nJBjez+qgBR84gFOZf2lmrS4jkzGRJ0j6Ccntt0LNm1zYaTPHHAC/6/2YTDe7F2uGXH0XKh51vA7APnUn2YvZu08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712829082; c=relaxed/simple;
-	bh=dDDFGxbzvsZ8WL2gkkU/z0FoC5P7riL8bCTBYIbhje8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=ASZnhTZI8ZE1FzFsRoarZ81BQ+Ayeyv6WsPKDhGvMNiu2uMoPLKKHnE2ouFraYFRTxBqYwSvqDpiVXD/aLtvqjG5RrvhIdUugwY5lmC4lSuzYGW8mI8J9F6P67GhUDOlP6qzgrlJO6isfxJV3ml0fCzXsuVkmxntRI8FDLH7rLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Iwii1Wfw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B81DC433F1;
-	Thu, 11 Apr 2024 09:51:20 +0000 (UTC)
+	s=arc-20240116; t=1712829117; c=relaxed/simple;
+	bh=gT/UUq46+ZH0vsbo494KIoMOGzMYJiQPkOd5IBmTgEQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jIncgNXbSpBlw/qBN9OJN2V00TzJnsPdaetar0xorl8Sp79r9ZLQ+qmLbWqNXAAZ4Bfad9gZpoCTEfwl5FQ/aP85Er1lAx9tIQ1hB2yosd90c4lNyjXLIFyYT59mciXVhLvXPa0KD2LEwJn0VO3KBjWIZx4zy1MdMa3TGs/M/Hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c/vfrxqu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B656C433C7;
+	Thu, 11 Apr 2024 09:51:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712829082;
-	bh=dDDFGxbzvsZ8WL2gkkU/z0FoC5P7riL8bCTBYIbhje8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Iwii1WfwXAPhAr1zpMSkaTs9d6mvUukauGpIjCu2D2Z3sYtQvxREbfvxWY1n6HAis
-	 qW6hgxStloTXb3tv4fbZJjknFyR0/vVcvS3xCYLCOoT47cz2ZVjMw+WltcBeKSpy3u
-	 rlNVND71iPbdom3abq33lDRNIILDyBkkvnh0XnqKPtaYq5UikaMEHTWbO+qGE2ldM2
-	 VgFSKBz6FuD2f5lg7J4YTNWCzf0RyllNDR4pMDc98mq1Q7KvPyiPRV6CHARtOQeR40
-	 ALv3fQF/XtueCOb2/WEbGUEHMYUtuc+CCTJ+9IfOr14Nuw10EyUUPCxboZJPDN5iXx
-	 nM5lWrt2m0l6w==
-From: Vinod Koul <vkoul@kernel.org>
-To: linux-sound@vger.kernel.org, 
- Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc: vinod.koul@linaro.org, linux-kernel@vger.kernel.org, 
- pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
-In-Reply-To: <20240408062206.421326-1-yung-chuan.liao@linux.intel.com>
-References: <20240408062206.421326-1-yung-chuan.liao@linux.intel.com>
-Subject: Re: [PATCH] soundwire: intel_ace2x: use legacy formula for
- intel_alh_id
-Message-Id: <171282908007.521900.190599081183352528.b4-ty@kernel.org>
-Date: Thu, 11 Apr 2024 15:21:20 +0530
+	s=k20201202; t=1712829116;
+	bh=gT/UUq46+ZH0vsbo494KIoMOGzMYJiQPkOd5IBmTgEQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=c/vfrxquoSrBfLLtFX1I1HZL7eajm4G91r2NrPKwWhXEduTH9P3b0D3yx2IhiQ7cc
+	 9f0cWcY9JzfPQzoB/LLv1i68u9RNbrzaafk+o3OJ8Mafrpc+XNga3lhxrZTlgiR/em
+	 0ysmyXN2dnt11hyId/ZXqgcWMeGO8xPk4kA5zCY6cpNdnxFdyQ4yFc4oQwkYHilL94
+	 dTRfH7vkgLYNSVHo0sKkBLV8B9UTv9m8hqbZ/0SUVRa7eZteEoZANJRbo6a7uXHdT0
+	 10YoJU1pFflqgsTP6VGcp9EVLVAB5xi85QlG8y4IJIQUQI2g1WjcLZboT/6lxpoZxm
+	 5buecev4qqAug==
+Date: Thu, 11 Apr 2024 11:51:52 +0200
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Jiri Kosina <jikos@kernel.org>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: bpf: fix hid_bpf_input_report() when hid-core is
+ not ready
+Message-ID: <jdwmoghmwice2arahxdksjs224pssdtcfipxxrxhm3ujv6jfzc@n2s5nyiddjnt>
+References: <20240411-fix-hid-bpf-v1-1-4ae913031a8c@kernel.org>
+ <nycvar.YFH.7.76.2404111107370.5680@cbobk.fhfr.pm>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <nycvar.YFH.7.76.2404111107370.5680@cbobk.fhfr.pm>
 
-
-On Mon, 08 Apr 2024 06:22:06 +0000, Bard Liao wrote:
-> Starting with Lunar Lake, the notion of ALH is mostly irrelevant,
-> since the HDaudio DMAs are used. However the firmware still relies on
-> an 'ALH gateway' with a 'node_id' based on the same formula.
+On Apr 11 2024, Jiri Kosina wrote:
+> On Thu, 11 Apr 2024, Benjamin Tissoires wrote:
 > 
-> This patch in isolation has no functional impact, it's only when the
-> ASoC parts use it that we will see a changed behavior.
+> > Reported by linux-next:
+> > After merging the hid tree, today's linux-next build (x86_64 allmodconfig)
+> > failed like this:
+> > 
+> > x86_64-linux-gnu-ld: vmlinux.o: in function `hid_bpf_input_report':
+> > (.text+0x1c75181): undefined reference to `hid_input_report'
+> > 
+> > Caused by commit 9be50ac30a83 ("HID: bpf: allow to inject HID event
+> > from BPF")
+> > 
+> > I just forgot to put the indirection in place.
+> > 
+> > Link: https://lore.kernel.org/linux-kernel/20240411105131.7830f966@canb.auug.org.au/
+> > Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
 > 
-> [...]
+> Please also include Fixes: tag.
 
-Applied, thanks!
+Oops, correct. I'll add the following (in case b4 is smart enough to
+pick it up by itself):
 
-[1/1] soundwire: intel_ace2x: use legacy formula for intel_alh_id
-      commit: b18c25afabf80972b32a3918f6d7f16fbd54b18f
+Fixes: 9be50ac30a83 ("HID: bpf: allow to inject HID event from BPF")
 
-Best regards,
--- 
-~Vinod
-
-
+Cheers,
+Benjamin
 
