@@ -1,147 +1,137 @@
-Return-Path: <linux-kernel+bounces-141303-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141304-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 073A78A1C4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:44:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 346708A1C4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:44:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B9501F283DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:44:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF36A1F28675
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:44:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A2A832C8B;
-	Thu, 11 Apr 2024 16:15:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E484915F402;
+	Thu, 11 Apr 2024 16:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="PvpttXMq"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ISpH3VVU"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6A2E15E7E4
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:15:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E55B815F3EC
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:15:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712852132; cv=none; b=n/Ae6bR8X+lJp2iH455l3hPTulN2n5YwFbGl53zkRmcs8WEqqPDOu3VrCY+7HuVoO3SAcusAJv8nZigfITzwuOC3wLwz7duQzsI00rzb9BPU2DRn2T2OQmShfxQXscrTuXzECSeYQT9ESdbDPz+GbAbUm+fgOa/ZPIlsAfNbSLU=
+	t=1712852144; cv=none; b=jNtYj4LGQDKRAZA08J4wo/acRSPKbSV852XZdCVbcwxzrSFjDrcdmyIq70LAmkQwZOn92DC9CyqZDeslfuZtoTPPGXmx4t1Duu44gqkAzK/ceXAqEC+rPJh2sxDJZMU9bMTvmciGvqsEIR+EzKOpTPPdANbOPGDnQpDrZlKPxEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712852132; c=relaxed/simple;
-	bh=LkGZWrwcM7i1Yw0nWiLzlJnspf96t1s3gPexteQnoII=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dc4P1rfTZEWsW0Dvqnpafw+TSrS9MIvJzOjpUlqUxncMhZ4tVRVTYa2Fx2d5pyEWW+op3cGCb666wByOcQzer5d2TRo4uXj4ozod5HpbXJQv2/SPUKuE6qX7rHl5tvXWTkw9TxDq6X0DNObXyBIszLXMXxx/peb0IdL1718yHUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=PvpttXMq; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d700beb60bso129171281fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:15:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1712852128; x=1713456928; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YBU5cbcti1MoT6SGDsy6z4cIdlnVeSMn7eSvY9b74qk=;
-        b=PvpttXMqhyOCJz+iu0AnVRjMW1DGLYX//13HX/uoNuQS5Db9uMZb1etPQTpC97Qkfd
-         OMFLYm/B6gbFTDPxdehxgqQ6R32+C5EgoP8xFzFpfttpk88wpS62L1ORULHm/FMK6Dzw
-         eLVf96rxuGN7ygULbg8NqgjCoStq0DLnNfMlQ=
+	s=arc-20240116; t=1712852144; c=relaxed/simple;
+	bh=tdZgX5nfBuYfMPaNrv80HJY9z415EFRiBOih/5/8FZY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=onn9SkIb7BloSbSTtkUqa3tNAvX+/qIOR2pRWRctHmEJoCb2XdB7vj9kFVkGg+8XKynUjABVrrc5A2UVGGxUGlHP+dYSLHLjbcKfcLNv/nt8km7F5J2fzsvbiXHA0q+07SjLysW4K7PG/q0LKd24/psKECQhsqmPX9k96jALcJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ISpH3VVU; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712852142;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jZmlfwQwEwqX8N6AuyRgtrgEEEIO7a43RiQoCYN1PMM=;
+	b=ISpH3VVUbcrbPvxbJI0k5w9kiSbUFQibRu6ac3nrfCKLDMHiuCyb9ZFTU5WfnxGSxP3mMc
+	fXG2lI2eIqzyMwAe8bBYbnIQml9Zc0JrX9ei8WnMIwUfh6xHOdVQlRzUK/xQ1IDEmMjFh4
+	pW45RLXPK3m6mzag7XTlhO0W02cyjBE=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-287-nq2w6T9CO8-2H_oyBWd4jA-1; Thu, 11 Apr 2024 12:15:40 -0400
+X-MC-Unique: nq2w6T9CO8-2H_oyBWd4jA-1
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6ea19a84c22so10646a34.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:15:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712852128; x=1713456928;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YBU5cbcti1MoT6SGDsy6z4cIdlnVeSMn7eSvY9b74qk=;
-        b=PYVKXTTb0AG0JpAVxQCB7wELexWeoQAKFg6MVyo3tAs5Mtt5q9iG/48LwyLWO6yhUD
-         t+4LXiHA4dKVBpvJeViGXaIC40MeK8W/eITu09o6MKq9xSggqhu9H+etgghICikBLqUp
-         xFCNB7PLYNHfwz5+lsgnu1vdSCNDXIhz9uyTfQX+/uHLQs+LrsjWRzEKutcraam9uzWp
-         6AennJVe1rh8Yoi35Na3hdNL2MDiTtaa5zxujf5bDM1F07kDCCLgP8HEfV5bcMyFp8g+
-         rX8/vZLBG6xMMHQKb9gH+KN3Oq/Y6Gmil/YVU2Zc6iiUmhHF7VVS/qKA3OUsxY0TbLmQ
-         mjog==
-X-Forwarded-Encrypted: i=1; AJvYcCWGmcR0otOyy3Js4sa1GcW6SY2NkqMgLque7g3d0jJFS82t/h0pKRE/x3WIF0Vb+fsygdDsAZ6rRj64D+GK2XQd8GPVouwDJB7suemd
-X-Gm-Message-State: AOJu0Yx0cW2p2CHo9Q2REcOlvqSSJSB4ufoKuV65pppEkYx+/Fwoj9ci
-	RIP+a/seTMKB68ESanJDhIjCWSRAwk8h0HfElmVlDP+GLWgFUOYEv1CNH373qUmn1j+vaVIkTNJ
-	GFcUGyQ==
-X-Google-Smtp-Source: AGHT+IH1elo3uGEHQxgNB1kpOsGQXpUlTcHoFlDE9L57JbSYcSVx3POREy4tu5uBrMfaABtbwqYusA==
-X-Received: by 2002:a2e:890c:0:b0:2d6:e148:2463 with SMTP id d12-20020a2e890c000000b002d6e1482463mr82555lji.24.1712852128575;
-        Thu, 11 Apr 2024 09:15:28 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id e14-20020a2e930e000000b002d6b801a863sm252500ljh.34.2024.04.11.09.15.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 09:15:27 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d82713f473so137875891fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:15:27 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWzFtTvovjtovOE1e5re/GlvOWHQoNksHuZ+AY7NFssEv/kpEtj/DNG6xLYLX5fUHgNcygTgrfiZKvW9OuW1ov59n5cHqRWfpV13tyw
-X-Received: by 2002:a2e:b90a:0:b0:2d4:6a34:97bf with SMTP id
- b10-20020a2eb90a000000b002d46a3497bfmr57110ljb.49.1712852127138; Thu, 11 Apr
- 2024 09:15:27 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712852140; x=1713456940;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jZmlfwQwEwqX8N6AuyRgtrgEEEIO7a43RiQoCYN1PMM=;
+        b=JnOr0W/uFbnSh3xonLKIZ6vgQVWC8WP26btzO8uqZpUB7IZZKp4NSHYgzoUsK1RORU
+         p1nNPxsni8IvOOq6ZzUfXku9Aak+ywqay5of6bD2t3M7e/F6+MhlASwPgXvgJ+H475Hi
+         ZS6GoYIXT8eQ322Ox98zxGSUyTSu5AK7tPa3SB1spR7/bZBRVQpu/lB+3xFlWtPUOXEn
+         YZWlhlclh9qQHlz982o03trwP1AIXLOuSQEu8r/YhT5czA6PkmM0w7Jy0SgyCZjE8MDX
+         ude7Djr9zuP7jHdU5ccW7nbHop/Ta38/J1Mn9En0wadFjNS0p7lhv8GkXKtTtrzaaeBy
+         egOA==
+X-Forwarded-Encrypted: i=1; AJvYcCWQgALrjtBjqT+KPeKp9MTQlYE4V8TfLG4EiK6vyWlrEkkW9pI8x88BHvgJuxO1xE6jIRlez06BtVWz+X3/4SMpnylfaL9pXaUIMJy8
+X-Gm-Message-State: AOJu0YxGDjmZMvx87I5HSJMjs6O7Gl4sy+wpPYCz4CazmjQYbbm344Dc
+	UoP69WBLYClo1FnbQIho7n2qIaJ9khAfJvPONBO6oDNiTf88YMocrRvFbb9A75Umu0yJzuLA6L3
+	ko3294gTbp3AI3flnmDnrM7KBSrQLU0riZRPTWh3w8Sr4BLuqvYFTX3eMwNpPrSLy26Mz4w==
+X-Received: by 2002:a05:6870:7183:b0:222:81cc:ac9c with SMTP id d3-20020a056870718300b0022281ccac9cmr6146576oah.5.1712852139658;
+        Thu, 11 Apr 2024 09:15:39 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGHX6QtF5SydubwLrtRDzMOYoSKh757kSXH1BgbFRQt1iTYEViuMR5roQkhSWQN8EQKuvV3vQ==
+X-Received: by 2002:a05:6870:7183:b0:222:81cc:ac9c with SMTP id d3-20020a056870718300b0022281ccac9cmr6146547oah.5.1712852139258;
+        Thu, 11 Apr 2024 09:15:39 -0700 (PDT)
+Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id bi36-20020a05620a31a400b0078d677e72f3sm1195367qkb.118.2024.04.11.09.15.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 09:15:38 -0700 (PDT)
+Date: Thu, 11 Apr 2024 12:15:36 -0400
+From: Peter Xu <peterx@redhat.com>
+To: Jason Gunthorpe <jgg@nvidia.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linuxppc-dev@lists.ozlabs.org
+Subject: Re: [RFC PATCH 0/8] Reimplement huge pages without hugepd on powerpc
+ 8xx
+Message-ID: <ZhgMqF7SNaISrYMJ@x1n>
+References: <cover.1711377230.git.christophe.leroy@csgroup.eu>
+ <20240325163840.GF6245@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411001012.12513-1-torvalds@linux-foundation.org>
- <CAHk-=wiaoij30cnx=jfvg=Br3YTxhQjp4VWRc6=xYE2=+EVRPg@mail.gmail.com> <20240411-alben-kocht-219170e9dc99@brauner>
-In-Reply-To: <20240411-alben-kocht-219170e9dc99@brauner>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 11 Apr 2024 09:15:10 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjrPDx=f5OSnQVbbJ4id6SZk-exB1VW9Uz3R7rKFvTQeQ@mail.gmail.com>
-Message-ID: <CAHk-=wjrPDx=f5OSnQVbbJ4id6SZk-exB1VW9Uz3R7rKFvTQeQ@mail.gmail.com>
-Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() - requirements
-To: Christian Brauner <brauner@kernel.org>, Charles Mirabile <cmirabil@redhat.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240325163840.GF6245@nvidia.com>
 
-On Thu, 11 Apr 2024 at 02:05, Christian Brauner <brauner@kernel.org> wrote:
->
-> I had a similar discussion a while back someone requested that we relax
-> permissions so linkat can be used in containers.
+On Mon, Mar 25, 2024 at 01:38:40PM -0300, Jason Gunthorpe wrote:
+> On Mon, Mar 25, 2024 at 03:55:53PM +0100, Christophe Leroy wrote:
+> > This series reimplements hugepages with hugepd on powerpc 8xx.
+> > 
+> > Unlike most architectures, powerpc 8xx HW requires a two-level
+> > pagetable topology for all page sizes. So a leaf PMD-contig approach
+> > is not feasible as such.
+> > 
+> > Possible sizes are 4k, 16k, 512k and 8M.
+> > 
+> > First level (PGD/PMD) covers 4M per entry. For 8M pages, two PMD entries
+> > must point to a single entry level-2 page table. Until now that was
+> > done using hugepd. This series changes it to use standard page tables
+> > where the entry is replicated 1024 times on each of the two pagetables
+> > refered by the two associated PMD entries for that 8M page.
+> > 
+> > At the moment it has to look into each helper to know if the
+> > hugepage ptep is a PTE or a PMD in order to know it is a 8M page or
+> > a lower size. I hope this can me handled by core-mm in the future.
+> > 
+> > There are probably several ways to implement stuff, so feedback is
+> > very welcome.
+> 
+> I thought it looks pretty good!
 
-Hmm.
+I second it.
 
-Ok, that's different - it just wants root to be able to do it, but
-"root" being just in the container itself.
+I saw the discussions in patch 1.  Christophe, I suppose you're exploring
+the big hammer over hugepd, and perhaps went already with the 32bit pmd
+solution for nohash/32bit challenge you mentioned?
 
-I don't think that's all that useful - I think one of the issues with
-linkat(AT_EMPTY_PATH) is exactly that "it's only useful for root",
-which means that it's effectively useless. Inside a container or out.
+I'm trying to position my next step; it seems like at least I should not
+adding any more hugepd code, then should I go with ARCH_HAS_HUGEPD checks,
+or you're going to have an RFC soon then I can base on top?
 
-Because very few loads run as root-only (and fewer still run with any
-capability bits that aren't just "root or nothing").
+Thanks,
 
-Before I did all this, I did a Debian code search for linkat with
-AT_EMPTY_PATH, and it's almost non-existent. And I think it's exactly
-because of this "when it's only useful for root, it's hardly useful at
-all" issue.
+-- 
+Peter Xu
 
-(Of course, my Debian code search may have been broken).
-
-So I suspect your special case is actually largely useless, and what
-the container user actually wanted was what my patch does, but they
-didn't think that was possible, so they asked to just extend the
-"root" notion.
-
-I've added Charles to the Cc.
-
-But yes, with my patch, it would now be trivial to make that
-
-        capable(CAP_DAC_READ_SEARCH)
-
-test also be
-
-        ns_capable(f.file->f_cred->user_ns, CAP_DAC_READ_SEARCH)
-
-instead. I suspect not very many would care any more, but it does seem
-conceptually sensible.
-
-As to your patch - I don't like your nd->root  games in that patch at
-all. That looks odd.
-
-Yes, it makes lookup ignore the dfd (so you avoid the TOCTOU issue),
-but it also makes lookup ignore "/". Which happens to be ok with an
-empty path, but still...
-
-So it feels to me like that patch of yours mis-uses something that is
-just meant for vfs_path_lookup().
-
-It may happen to work, but it smells really odd to me.
-
-             Linus
 
