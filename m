@@ -1,116 +1,124 @@
-Return-Path: <linux-kernel+bounces-141152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F5AD8A1AB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:05:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64A768A1ADA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:10:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A511B28D557
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:05:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F6BD285CD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:10:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12DC51F0B88;
-	Thu, 11 Apr 2024 15:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D94461F82C9;
+	Thu, 11 Apr 2024 15:42:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VjdpAGl7"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dpQFmWsX"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9EF01ECE9D;
-	Thu, 11 Apr 2024 15:42:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D42C01F786F
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:42:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850127; cv=none; b=KMNHImXGuOAnqRgNCqA6We0zeqM8JXqxh84xPMkizf5dFtzPkInzbCDOnO93ZpWm8mG8sObjrdsXykGCCUjuKBy/CgjtdGkkCKy/oTuSQU8bBjqS7egSqIj2ddJQshkcE+MjeT2kDEy2aUodDcY6K2qmbbyqNPgNSUDYmoGSQ4w=
+	t=1712850164; cv=none; b=EWLjvuEiVNSsdDzUy3iIzZz5zvRKC+aVFuoh0f3+AXHQcRxJDmAHxrKQIJ364ScutWyBel/a+EgcBleGFhScDPQj9EZemShDHz7qKZh9RVUgLtvHBTXBSICDKKRoO0jG55OqV1moadaaSsjn++9QOlDO9ziidCIG9bdwksFBfgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850127; c=relaxed/simple;
-	bh=s++XfARygyr9QzWg7t9rh68e9ZZCT9EVQZhozNyWOWc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a2e6FaLTmtsn9HchJeEQxu+0WTFtEZzsqbBrWHvQPFnR1rGRzFu18H46hKYBpLGhRjL08V5K+SRDEGFAcQLuqewoPXQe00KFf7LSaC2IwZ0VS4exWhv1Xt3121kxyVChzzJrLParkKJxt8G4vE5gs7lcumXs1rLMi0jIHh5SfVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VjdpAGl7; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712850126; x=1744386126;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=s++XfARygyr9QzWg7t9rh68e9ZZCT9EVQZhozNyWOWc=;
-  b=VjdpAGl70T3jUzXGmSycH8jv9c877LaXBc04h96due9ukVyR/QcofCPJ
-   ialXweeHEDFWhXDgmI22aYMEP/Ql8TmwDFqf3+iv+SIOHaR3+Wn9wRCuZ
-   2PxPcrrHNW1poR553CJcZjsajOb0rn8WZhrKHpr/GrJglSuvmFZNJqf/O
-   2lpp7CYoDs4rLbMf33tbqGJUL9iHkuU1LaKP9NjcLgYTYeoWGFfTl/tej
-   64yLEpURXgdczjLWMM7ENvMgvC5QhpCqjUTJ35daCUUhIKPCjFKymmf8x
-   ioi3g5skdFmI7656d58nwepB7Q0V0S9XmThpCd9kOu1covpR6YjiNs6X8
-   g==;
-X-CSE-ConnectionGUID: alg6nNwBR3CGad53UkPW2Q==
-X-CSE-MsgGUID: t/TVSiUUTzCerlITNo08UA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="12119268"
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="12119268"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 08:42:06 -0700
-X-CSE-ConnectionGUID: Tj1tx9SVT5Cf9s1DZaN/pw==
-X-CSE-MsgGUID: MzsmU3NKTOSrrK0nECiQ9Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="25587756"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.242.48]) ([10.124.242.48])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 08:42:02 -0700
-Message-ID: <02a23b4f-1b2d-4e85-8826-23842790d237@intel.com>
-Date: Thu, 11 Apr 2024 23:41:59 +0800
+	s=arc-20240116; t=1712850164; c=relaxed/simple;
+	bh=QZbH30wbKxgTA91ANcVOQZJdEUlr13dkhciBnGreMAA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mFjySj3mTZ0IwHcgskpk4/qTi2i3WjmJ4Z85f9y0K0LHHIXu1qoTZeHmAhkubB0vZWLwlAtsLkxrvI8tVy/r1NJ0htMvUhhxNZO0fdo9xMyk2rF6VwaeBgOWtt0jJSKtgerzNKZmzf9lGF71eneyoBluMEi81QOEaY2EMrQR1f4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dpQFmWsX; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-de0f9a501d6so4394799276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:42:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712850162; x=1713454962; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=emVrn6/X7HIVwrwVbAdXhWseE0fgME6QfLwQFErW8lw=;
+        b=dpQFmWsXe2Jsld+ALs4saIwkWT8mS6bbVXg5YKYRSfRDESBJ8jPYQUmTYR2vQNDtdV
+         yDIJNHhO9FplR1T38HyW1jfazeQ4GjheoEhJSxBhp1m+QosBgy8n0VEQA6SRCm+gzmvb
+         vUI5GCalGFkk77cnaXOL/dETbsfVnswYZeXjL12qcQ8GVdzwpj3hbG4Irf2pYY/RZ8mu
+         11mPO2NbGBaJSMFW4M73cP7Sq9r4vEE0q3Y0uOq+i+acjhqghRS9xQfjhBxl2BMbIe8s
+         ZOxilpwlEtoPLt2zRihDXktxUBO1ELUgBDvQ3TXQs/YK3pQCnuUKOvNiEwo5JDmAf+Eq
+         9I2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712850162; x=1713454962;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=emVrn6/X7HIVwrwVbAdXhWseE0fgME6QfLwQFErW8lw=;
+        b=RGXgI+DQtQRwwalTy1d6mipNaJkG/v6h0j07oeBNnz45i771Prp0iFFrmnKfHFoDa+
+         NALkCfHzb92d//sDYhE9A9A/wIjQldnhozf44uuGzKmwSSy4rPBWw4etq8j5WGXngumc
+         i39NlzgSjxrS8nhu23xkzR1c+nai86J2FvuPJtw7bLVOmbJ10cpypZ8PanfhZAA6q0rm
+         5bKmRDb5cuca8OSGX6lBk2IVjRneqaj2svSQqN7LGOmlLSM2vLg7tKLz2429I1YRlvTS
+         JQPxBN3dliNaTXotcV9s5ZMXfqMG+/RqJkfWZv4e+IsFoMTNn4nkW0FIfS3XhUnVNsN2
+         7PoA==
+X-Forwarded-Encrypted: i=1; AJvYcCUqXYJyDRB6W8jqrQSUTWjlq/NaNn7IgFmNZNUOtD7cVCa9FHimM+bsWKfTkKgmrqZ8kPEilnqffDTxfbQsiwYps6Jc64G0CdBQOpWL
+X-Gm-Message-State: AOJu0YwFJfXCu1rnWbdvqt3IJBvmCvUbaEa/mhPuB+X617cJqqqTxcgP
+	C+s6p/QgTdY73cNGDuYgJBPN5PLYSEv0HVXIiMmsPURff3Ks4AKV2zY6AwcIQBBnrx1yRUjj8Af
+	IiJhPCxSjhgVl4IFj1DyLZJRuJpt5JLoa9wXG
+X-Google-Smtp-Source: AGHT+IHdqaGJdNHQZfv8/iARuu43IXA9KciendMfPcOMNTNNrWbe69SecPwxLIupNq50imWvq+MmoXztMkheqgcH3OE=
+X-Received: by 2002:a25:a527:0:b0:dc6:bbeb:d889 with SMTP id
+ h36-20020a25a527000000b00dc6bbebd889mr5412038ybi.52.1712850156683; Thu, 11
+ Apr 2024 08:42:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [ANNOUNCE] PUCK Notes - 2024.04.03 - TDX Upstreaming Strategy
-To: Sean Christopherson <seanjc@google.com>
-Cc: Rick P Edgecombe <rick.p.edgecombe@intel.com>,
- "davidskidmore@google.com" <davidskidmore@google.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "srutherford@google.com" <srutherford@google.com>,
- "pankaj.gupta@amd.com" <pankaj.gupta@amd.com>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- Isaku Yamahata <isaku.yamahata@intel.com>, Wei W Wang <wei.w.wang@intel.com>
-References: <ZhRxWxRLbnrqwQYw@google.com>
- <957b26d18ba7db611ed6582366066667267d10b8.camel@intel.com>
- <ZhSb28hHoyJ55-ga@google.com>
- <8b40f8b1d1fa915116ef1c95a13db0e55d3d91f2.camel@intel.com>
- <ZhVdh4afvTPq5ssx@google.com>
- <4ae4769a6f343a2f4d3648e4348810df069f24b7.camel@intel.com>
- <ZhVsHVqaff7AKagu@google.com>
- <b1d112bf0ff55073c4e33a76377f17d48dc038ac.camel@intel.com>
- <ZhfyNLKsTBUOI7Vp@google.com>
- <2c11bb62-874e-4e9e-89b1-859df5b560bc@intel.com>
- <ZhgBGkPTwpIsE6P6@google.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <ZhgBGkPTwpIsE6P6@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240410170621.2011171-1-peterx@redhat.com> <Zhb2BWntckP3ZhDc@casper.infradead.org>
+In-Reply-To: <Zhb2BWntckP3ZhDc@casper.infradead.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 11 Apr 2024 08:42:23 -0700
+Message-ID: <CAJuCfpHKAP6vP98VCYx+UVeHUkYZMkG+oksQBzUJk4myssUniQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Andrew Morton <akpm@linux-foundation.org>, Lokesh Gidra <lokeshgidra@google.com>, 
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>, Alistair Popple <apopple@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/11/2024 11:26 PM, Sean Christopherson wrote:
-> On Thu, Apr 11, 2024, Xiaoyao Li wrote:
->> flexible (configurable) bits is known to VMM (KVM and userspace) because TDX
->> module has interface to report them. So we can treat a bit as fixed if it is
->> not reported in the flexible group. (of course the dynamic bits are special
->> and excluded.)
-> 
-> Does that interface reported the fixed _values_?
+On Wed, Apr 10, 2024 at 1:26=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Wed, Apr 10, 2024 at 01:06:21PM -0400, Peter Xu wrote:
+> > anon_vma is a tricky object in the context of per-vma lock, because it'=
+s
+> > racy to modify it in that context and mmap lock is needed if it's not
+> > stable yet.
+>
+> I object to this commit message.  First, it's not a "sanity check".  It's
+> a check to see if we already have an anon VMA.  Second, it's not "racy
+> to modify it" at all.  The problem is that we need to look at other
+> VMAs, for which we do not hold the lock.
+>
+> > So the trivial side effect of such patch is:
+> >
+> >   - We may do slightly better on the first WRITE of a private file mapp=
+ing,
+> >   because we can retry earlier (in lock_vma_under_rcu(), rather than
+> >   vmf_anon_prepare() later).
+> >
+> >   - We may always use mmap lock for the initial READs on a private file
+> >   mappings, while before this patch it _can_ (only when no WRITE ever
+> >   happened... but it doesn't make much sense for a MAP_PRIVATE..) do th=
+e
+> >   read fault with per-vma lock.
+>
+> But that's a super common path!  Look at 'cat /proc/self/maps'.  All
+> your program text (including libraries) is mapped PRIVATE, and never
+> written to (except by ptrace, I guess).
 
-No.
+Uh, indeed I didn't realize this would be the side-effect from this
+early check. And that's exactly why I wanted Matthew's input on this
+in [1].
 
-But as I said, we can get what the fixed _values_ are after TD is 
-initialized by TDH.MNG.INIT via another interface.
-
-Yes. It is a bit late. But at least we have interface to get the fixed 
-value runtime instead of hardcoding them.
-
-Meanwhile, we are working internally with TDX architecture team to 
-request new interface to report fixed bits and values as the 
-configurable bits that doesn't require the TD is initialized. But not 
-guarantee on it and not sure when it will be public.
+>
+> NAK this patch.
+>
 
