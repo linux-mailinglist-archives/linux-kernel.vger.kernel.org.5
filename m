@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-139814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BD1C8A080B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:07:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 279878A080E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:07:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB3BB1F2598B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:07:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 599891C23234
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B16A13CA9D;
-	Thu, 11 Apr 2024 06:07:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE02113CA96;
+	Thu, 11 Apr 2024 06:07:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uIV1iJgY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j/EhupHj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B995313CA88;
-	Thu, 11 Apr 2024 06:07:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D340C13C666;
+	Thu, 11 Apr 2024 06:07:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712815628; cv=none; b=D7c4yoQxALe/Pxhw9okeAGxqUzxmRG7+XMqfVjIourRxNbY39a7snVbeEDnL1ZiMvqPa6gZk63Hbu6g/in0ugebr/ZGyYfe1YCOyf3P1rUF8jcRMJo00mLEHTpPTCv24LunW5VPeywmxmJd//5j8yZwsOLZYGssdqKEzINeANsA=
+	t=1712815658; cv=none; b=O/UkKIqspIc2NCo2/spuexpBbipufDpepeeYG2zlDIsKb8t96OHZAtNhTVJJEN6TLn65CS2mlY0MbVGR+zUK9mqXxuqHij9qaGhk31E3QpcEMCXMrJVvanMj8T4RIXOrJZUeKY8OlfoX0M6tFQ3TOk0tMKWRGU4aSWwPhJDPtI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712815628; c=relaxed/simple;
-	bh=moQ7vBvBvMlEyceyYgedBVvbftU2N42FEzYpfITRaTM=;
+	s=arc-20240116; t=1712815658; c=relaxed/simple;
+	bh=B9P0S8ei0pO62UjBvQK1T5qU7yS4WX0wwsA/9EtFzbA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qzOWkZ4m/dzxlPkjZgZfzG8fjpS/tp3w0ZpjMUl6pDpZwon4fz1e3TNtCm3RFcQaEGGUF3gqzDZrn6TZOavc/WTJ3dH2IX4NQ5uYongo/SIQu3H+2QbYOyBw0SwVM0bcaljbeQWrVU8UL0ZDFUqCxDmbtZt5gXQKfnIQUna4V40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uIV1iJgY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 409F3C433C7;
-	Thu, 11 Apr 2024 06:07:01 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=VxDJR4ATxzISjivnR/0ulE2UXnOOx//6itFiLTh/QPRvuN9kxBtEhPRobqdXxnkEkFMKfYS605rX0zoWZMibd9Z2l7+Ea1gOcJh7F6JjzXotFTXJpHckXVbtHwBz39XdTZ91ZPIBnu4pD//xBJVQmm1ORnibxTVpD3Kn4K/lv8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j/EhupHj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14A4AC433F1;
+	Thu, 11 Apr 2024 06:07:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712815628;
-	bh=moQ7vBvBvMlEyceyYgedBVvbftU2N42FEzYpfITRaTM=;
+	s=k20201202; t=1712815658;
+	bh=B9P0S8ei0pO62UjBvQK1T5qU7yS4WX0wwsA/9EtFzbA=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=uIV1iJgYc7RGw1GTjL3n6XDtSSm6WASongTB6x3M328vjRZRsddzjzTIxsP2MsMNP
-	 Ow8XRWGTXgaPBpNI+RaamkeaH8Q+tGHaspnsraXVBb6jOtS4QFzQBIo6MApGETDdxY
-	 PNJRu7ErXXxQXSSMsvLpuj3uAaNja+qR8uFLTCZUjJR5QFDw6rI1VZn+I5h35Urre0
-	 M1AIanhIoQk6oKuzwfPvfMe0088qs2SHTo+6ghrUK1MIHrX6690zn2HQgesQ6CMyrl
-	 gd8g2lhcHEZGocXBf3Um3xQ8yW4QvPv/StaLas0a1hryRpvGSutqu9ACgvS/UxYpR3
-	 eIB32VqnaEIMg==
-Message-ID: <7598d482-456b-458e-a0b6-b5767f9c4863@kernel.org>
-Date: Thu, 11 Apr 2024 08:06:59 +0200
+	b=j/EhupHjNjYHdbEBF5TfaxUDYt4sQXHMKkAc3TAEMWow826QHJtliH3TeBmhVsUZG
+	 PmLXX/0koXFooBD4+R/jYQBFmGu9WgJxzzy46ozvqoJmV8lsGdSb2S/rx/3ES4pIRM
+	 tezonYkS+DaCqYvIFglj0pYgUFRVRom91hG66BcJ4lexA6Tu2hehsqMnrDO2AahLhg
+	 oLGdKQIQnnSVBlaSgbM0NePMvVBJDYarUrU3apRkXgd0qVbaeufg721okGqgJfVW9c
+	 rqrxChm1NbdSLfXkRBGCbT5CsINI9wlcyK5acMw8CBBnPKrBj7Kv/Prqkkyh8Dk+SQ
+	 pk8drcQI6XInw==
+Message-ID: <f1bdf524-17b4-4cce-a7ed-abc97786c975@kernel.org>
+Date: Thu, 11 Apr 2024 08:07:29 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,8 +49,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: remoteproc: mediatek: Support MT8188
- dual-core SCP
+Subject: Re: [PATCH 2/2] remoteproc: mediatek: Support MT8188 SCP core 1
 To: "olivia.wen" <olivia.wen@mediatek.com>,
  Bjorn Andersson <andersson@kernel.org>,
  Mathieu Poirier <mathieu.poirier@linaro.org>, Rob Herring <robh@kernel.org>
@@ -64,7 +63,7 @@ Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>,
  Project_Global_Chrome_Upstream_Group@mediatek.com,
  jason-ch.chen@mediatek.com, yaya.chang@mediatek.com, teddy.chen@mediatek.com
 References: <20240411033750.6476-1-olivia.wen@mediatek.com>
- <20240411033750.6476-2-olivia.wen@mediatek.com>
+ <20240411033750.6476-3-olivia.wen@mediatek.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -110,48 +109,23 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240411033750.6476-2-olivia.wen@mediatek.com>
+In-Reply-To: <20240411033750.6476-3-olivia.wen@mediatek.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 11/04/2024 05:37, olivia.wen wrote:
-> Under different applications, the MT8188 SCP can be used as single-core
-> or dual-core.
-> 
-> Signed-off-by: olivia.wen <olivia.wen@mediatek.com>
+> +};
+> +
+>  static const struct of_device_id mtk_scp_of_match[] = {
+>  	{ .compatible = "mediatek,mt8183-scp", .data = &mt8183_of_data },
+>  	{ .compatible = "mediatek,mt8186-scp", .data = &mt8186_of_data },
+> @@ -1323,6 +1362,7 @@ static const struct of_device_id mtk_scp_of_match[] = {
+>  	{ .compatible = "mediatek,mt8192-scp", .data = &mt8192_of_data },
+>  	{ .compatible = "mediatek,mt8195-scp", .data = &mt8195_of_data },
+>  	{ .compatible = "mediatek,mt8195-scp-dual", .data = &mt8195_of_data_cores },
+> +	{ .compatible = "mediatek,mt8188-scp-dual", .data = &mt8188_of_data_cores },
 
-Are you sure you use full name, not email login as name?
-
-> ---
->  Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml b/Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml
-> index 507f98f..7e7b567 100644
-> --- a/Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml
-> +++ b/Documentation/devicetree/bindings/remoteproc/mtk,scp.yaml
-> @@ -22,7 +22,7 @@ properties:
->        - mediatek,mt8192-scp
->        - mediatek,mt8195-scp
->        - mediatek,mt8195-scp-dual
-> -
-> +      - mediatek,mt8188-scp-dual
-
-Missing blank line, misordered.
-
-
->    reg:
->      description:
->        Should contain the address ranges for memory regions SRAM, CFG, and,
-> @@ -195,6 +195,7 @@ allOf:
->          compatible:
->            enum:
->              - mediatek,mt8195-scp-dual
-> +            - mediatek,mt8188-scp-dual
-
-Again, keep the order.
-
-
+Why do you add new entries to the end? Look at the list first.
 
 Best regards,
 Krzysztof
