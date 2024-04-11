@@ -1,186 +1,163 @@
-Return-Path: <linux-kernel+bounces-139725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F0268A06E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:44:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 377BC8A06E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:47:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E16801F23260
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:44:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A7631F234ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B41A313BC01;
-	Thu, 11 Apr 2024 03:44:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 866C713BAF6;
+	Thu, 11 Apr 2024 03:46:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UtM/QZBe"
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FEnJu8yd"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B252629C;
-	Thu, 11 Apr 2024 03:44:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0EE52629C;
+	Thu, 11 Apr 2024 03:46:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712807080; cv=none; b=r3/hmYInA7FIPjJaYL1dReTZSvaCVIYPZQ5u5C0qKegULH7cVMYaFe4qCEFmFnMUiF60yYblzRf+hfTI4O0+kPAkUrHevREeM7L+PsUwML1hCBPLwJdZS+cRzCQgAWxpRB6gDLeBu5hwST+7GlZs94YrmweqKx/LqQSPykLVZug=
+	t=1712807213; cv=none; b=izDtJL3JgyWfCLfYEEKUByc+xAwH06UIVthORmZ5Rir3R/IZQ8AAcYnmYl8m+DL/XCxo9kwPIPosyNRo26eGbUg0aXcAMSbPgVuKQzn0CcGop+9kZP/FOsu3SnfIz2qO2L3mBahsBOo+vg3OQNNnbYypoxaqAiUKLIxC64Ogfqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712807080; c=relaxed/simple;
-	bh=4EdgFjnPVt0AqnOMX6obmaUYeHbpAimK73X4vdQVn54=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=HsZQ5+mk8eGvPNaYH6u6FkID2BO7SnKI1T9CUmGpGU+Fg6Pvx+sJo6VOAV1dTDLE/kl52F0+9ogkkttOoyjrB/7WrV2X1szdyP6f35IYCcrMhFKvuFbgC4zFCHrP1vHkuHPzWHU1LSSvi9oq5Vw9EzlY/X0jaogawmqWRRXogyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UtM/QZBe; arc=none smtp.client-ip=209.85.217.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-479cbfc62e9so2203491137.0;
-        Wed, 10 Apr 2024 20:44:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712807078; x=1713411878; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s4mBwnW823TZuDVksWLosgM7erJBTdnXQcLXGCSz0Ak=;
-        b=UtM/QZBe85Zg76PdH1bbWd5kkC8K7QFToyPbtR8kkUBPbSldJuZUpc078tZdiVekjQ
-         vPI0/YrfX793QR7ZSdRqMfZxhm32jShSidIYFmfaYqm3jhwbtth6nR9aUF7V6/WE1WYG
-         7YLMM9rxUtQc5mOmBF+lScZi63uI9ECjOnaOKnsj4boDUskNPUIym9ntFf1tERne+7Xy
-         NWmS5juSjiH4flQpWWYqLJa4AnxeCol0xtCF0j9VaIdSbKFpZROW+lOH1TnREqiCetNV
-         KPeQz7YH0XdyRWdWnYC1MvtS1WsQLCprSiUzqXbSEBU1YScZiF3pEewccwHqSh+3Bhvs
-         3UFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712807078; x=1713411878;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=s4mBwnW823TZuDVksWLosgM7erJBTdnXQcLXGCSz0Ak=;
-        b=vSZB7I5XK3AbcECdIKHHKdeXTo/4Ms/SEHsrQnqB3ybl1IOpgdDEVaeb7tDNqJCysm
-         E0RabrcdqQGLVuTZQGRJc1Y8zZ9Im7Ah2yu3mZ/gJ+NjZzSE/yGilzCxxqgqUvRbUT5E
-         fYbrRr/zvvCfKrmCBJjYz2w2ooiNm/LHlrwGVVhPDmqX1nI34Iy0LH1l8eeubRkaWsg1
-         fzAmAA9b/jvKM3j2Sr0s9PoADawj4tPNkdtKm8eG0SxSsJURWsg2KAFZYUm8MtLJjdri
-         MXKkdemRstTj7WD5s85IDcFMuwuU00fyy5Y/wrlDjVnDziBEFvzNoVQIwXDVHioB5Iyr
-         mECw==
-X-Forwarded-Encrypted: i=1; AJvYcCV2Xrbhol6o6Wsq3IbREajWyjkA3HePMhqxQPvCak374YW9gQ1L7MtQPPoahX/QVW8VymbjaEKjTlpaYpiDP4POqalrZ8bASDmKYWetOsrnZC9tu0R+c1KdETM6/ocDvbTSL3Sj19nmOk6166YiMUhhKwXm92gCdFMCMX8gAQg6ocVMUvCh
-X-Gm-Message-State: AOJu0Yx17zMRY1l0hcn/FlN30y7XzvOiQTvdQWSyv2DywlB5VVeD1N3t
-	d9iH/enTPNRwVesgAo0vsv2fraT8tkFFmc5mO/UuFVrdpfDDKNWw
-X-Google-Smtp-Source: AGHT+IFckMWU8asZlpol2UkeUkPVYl0ylGfdLJFoqv0bxQpg0yfK0SJxv39TvrGZFaeIgXQKUTVw+w==
-X-Received: by 2002:a05:6102:4746:b0:479:fd28:6d37 with SMTP id ej6-20020a056102474600b00479fd286d37mr4211250vsb.20.1712807078365;
-        Wed, 10 Apr 2024 20:44:38 -0700 (PDT)
-Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
-        by smtp.gmail.com with ESMTPSA id p1-20020a05620a22e100b0078d752367e9sm450364qki.79.2024.04.10.20.44.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 20:44:38 -0700 (PDT)
-Date: Wed, 10 Apr 2024 23:44:37 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Richard Gobert <richardbgobert@gmail.com>, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- willemdebruijn.kernel@gmail.com, 
- shuah@kernel.org, 
- dsahern@kernel.org, 
- aduyck@mirantis.com, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-Cc: Richard Gobert <richardbgobert@gmail.com>
-Message-ID: <66175ca5e3621_2dde6a2947c@willemb.c.googlers.com.notmuch>
-In-Reply-To: <6617493095ee1_2d6bc6294fc@willemb.c.googlers.com.notmuch>
-References: <20240410153423.107381-1-richardbgobert@gmail.com>
- <20240410153423.107381-3-richardbgobert@gmail.com>
- <6617493095ee1_2d6bc6294fc@willemb.c.googlers.com.notmuch>
-Subject: Re: [PATCH net-next v6 2/6] net: gro: add p_off param in
- *_gro_complete
+	s=arc-20240116; t=1712807213; c=relaxed/simple;
+	bh=aSJMXFqBHj64ZHw3XBaJVQwaBxKdPsTbSdM7BP6QotE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o8d8OeCdSC82w2879yH127mVQvcFqAMfz5A34i7opo0J4CA2rUsVcGqE5678UcF6Y3OkV7xD8zyVKeyjs4o3WLGH14zRqTcuKEI4phoLGEyhc94VtH8tke6qPxDR/KWAJfaNZXWYEC7e3tLuRLr/4FKqxzuiBnwjme51vgWIsRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FEnJu8yd; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712807212; x=1744343212;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=aSJMXFqBHj64ZHw3XBaJVQwaBxKdPsTbSdM7BP6QotE=;
+  b=FEnJu8ydJ+mMJaCvjnMGdvqyvlfHVRWsprkfDzD1L52b3Us+Bbm8chXb
+   FMDy6j8lXJ/yY9iENIFJ7fA+jCtW94OGsJ+T2NuzwZDYYQHzMrVBNj2Qh
+   7WT/axdFJVQ+c/mkuX0qqL3tk52zw2nZFfFnF24WQhu+nPz/2TzUF3A4A
+   TGFP/j2492oiW9d/IHTfkZKSTBx8qnL/HcXSAS5SYNbvpv+xEV0ypxtHg
+   wklc4ElFX+pkkuHDrfHrZ0gO8hOmPR7+6nI7S4gbdX8kOyZ9sY4zK/aK9
+   yF14fz8TFc4flFcb54USu1dZuTqGEfRjZL+iNvgs5HX6zsvCOA/URDS/5
+   Q==;
+X-CSE-ConnectionGUID: qpeUC8mwQvWl8rp6QEb37w==
+X-CSE-MsgGUID: KjIdjtDdScy5xS4dhmJmYA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="11991351"
+X-IronPort-AV: E=Sophos;i="6.07,192,1708416000"; 
+   d="scan'208";a="11991351"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 20:46:52 -0700
+X-CSE-ConnectionGUID: FB4jrCZfRN6PfhRviThd3Q==
+X-CSE-MsgGUID: X9G7ZkCeQYac311zIvtQTg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,192,1708416000"; 
+   d="scan'208";a="20850716"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 20:46:51 -0700
+Date: Wed, 10 Apr 2024 20:46:50 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: "seanjc@google.com" <seanjc@google.com>,
+	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"davidskidmore@google.com" <davidskidmore@google.com>,
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	"Li, Xiaoyao" <xiaoyao.li@intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"srutherford@google.com" <srutherford@google.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"pankaj.gupta@amd.com" <pankaj.gupta@amd.com>,
+	"Wang, Wei W" <wei.w.wang@intel.com>,
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>
+Subject: Re: [ANNOUNCE] PUCK Notes - 2024.04.03 - TDX Upstreaming Strategy
+Message-ID: <20240411034650.GC3039520@ls.amr.corp.intel.com>
+References: <20240405165844.1018872-1-seanjc@google.com>
+ <73b40363-1063-4cb3-b744-9c90bae900b5@intel.com>
+ <ZhQZYzkDPMxXe2RN@google.com>
+ <a17c6f2a3b3fc6953eb64a0c181b947e28bb1de9.camel@intel.com>
+ <ZhQ8UCf40UeGyfE_@google.com>
+ <20240410011240.GA3039520@ls.amr.corp.intel.com>
+ <1628a8053e01d84bcc7a480947ca882028dbe5b9.camel@intel.com>
+ <20240411010352.GB3039520@ls.amr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240411010352.GB3039520@ls.amr.corp.intel.com>
 
-Willem de Bruijn wrote:
-> Richard Gobert wrote:
-> > Commits a602456 ("udp: Add GRO functions to UDP socket") and 57c67ff ("udp:
-> > additional GRO support") introduce incorrect usage of {ip,ipv6}_hdr in the
-> > complete phase of gro. The functions always return skb->network_header,
-> > which in the case of encapsulated packets at the gro complete phase, is
-> > always set to the innermost L3 of the packet. That means that calling
-> > {ip,ipv6}_hdr for skbs which completed the GRO receive phase (both in
-> > gro_list and *_gro_complete) when parsing an encapsulated packet's _outer_
-> > L3/L4 may return an unexpected value.
+On Wed, Apr 10, 2024 at 06:03:52PM -0700,
+Isaku Yamahata <isaku.yamahata@intel.com> wrote:
+
+> On Wed, Apr 10, 2024 at 02:03:26PM +0000,
+> "Huang, Kai" <kai.huang@intel.com> wrote:
+> 
+> > On Tue, 2024-04-09 at 18:12 -0700, Isaku Yamahata wrote:
+> > > On Mon, Apr 08, 2024 at 06:51:40PM +0000,
+> > > Sean Christopherson <seanjc@google.com> wrote:
+> > > 
+> > > > On Mon, Apr 08, 2024, Edgecombe, Rick P wrote:
+> > > > > On Mon, 2024-04-08 at 09:20 -0700, Sean Christopherson wrote:
+> > > > > > > Another option is that, KVM doesn't allow userspace to configure
+> > > > > > > CPUID(0x8000_0008).EAX[7:0]. Instead, it provides a gpaw field in struct
+> > > > > > > kvm_tdx_init_vm for userspace to configure directly.
+> > > > > > > 
+> > > > > > > What do you prefer?
+> > > > > > 
+> > > > > > Hmm, neither.  I think the best approach is to build on Gerd's series to have KVM
+> > > > > > select 4-level vs. 5-level based on the enumerated guest.MAXPHYADDR, not on
+> > > > > > host.MAXPHYADDR.
+> > > > > 
+> > > > > So then GPAW would be coded to basically best fit the supported guest.MAXPHYADDR within KVM. QEMU
+> > > > > could look at the supported guest.MAXPHYADDR and use matching logic to determine GPAW.
+> > > > 
+> > > > Off topic, any chance I can bribe/convince you to wrap your email replies closer
+> > > > to 80 chars, not 100?  Yeah, checkpath no longer complains when code exceeds 80
+> > > > chars, but my brain is so well trained for 80 that it actually slows me down a
+> > > > bit when reading mails that are wrapped at 100 chars.
+> > > > 
+> > > > > Or are you suggesting that KVM should look at the value of CPUID(0X8000_0008).eax[23:16] passed from
+> > > > > userspace?
+> > > > 
+> > > > This.  Note, my pseudo-patch incorrectly looked at bits 15:8, that was just me
+> > > > trying to go off memory.
+> > > > 
+> > > > > I'm not following the code examples involving struct kvm_vcpu. Since TDX
+> > > > > configures these at a VM level, there isn't a vcpu.
+> > > > 
+> > > > Ah, I take it GPAW is a VM-scope knob?  I forget where we ended up with the ordering
+> > > > of TDX commands vs. creating vCPUs.  Does KVM allow creating vCPU structures in
+> > > > advance of the TDX INIT call?  If so, the least awful solution might be to use
+> > > > vCPU0's CPUID.
+> > > 
+> > > The current order is, KVM vm creation (KVM_CREATE_VM),
+> > > KVM vcpu creation(KVM_CREATE_VCPU), TDX VM initialization (KVM_TDX_INIT_VM).
+> > > and TDX VCPU initialization(KVM_TDX_INIT_VCPU).
+> > > We can call KVM_SET_CPUID2 before KVM_TDX_INIT_VM.  We can remove cpuid part
+> > > from struct kvm_tdx_init_vm by vcpu0 cpuid.
 > > 
-> > This incorrect usage leads to a bug in GRO's UDP socket lookup.
-> > udp{4,6}_lib_lookup_skb functions use ip_hdr/ipv6_hdr respectively. These
-> > *_hdr functions return network_header which will point to the innermost L3,
-> > resulting in the wrong offset being used in __udp{4,6}_lib_lookup with
-> > encapsulated packets.
-> > 
-> > To fix this issue p_off param is used in *_gro_complete to pass off the
-> > offset of the previous layer.
+> > What's the reason to call KVM_TDX_INIT_VM after KVM_CREATE_VCPU?
 > 
-> What exactly does this mean?
+> The KVM_TDX_INIT_VM (it requires cpuids) doesn't requires any order between two,
+> KVM_TDX_INIT_VM and KVM_CREATE_VCPU.  We can call KVM_TDX_INIT_VM before or
+> after KVM_CREATE_VCPU because there is no limitation between two.
 > 
-> This patch changes the definition of gro_complete to add a thoff
-> alongside the existing "nhoff"..
-> 
->     > -     int                     (*gro_complete)(struct sk_buff *skb, int nhoff);
->     > +     int                     (*gro_complete)(struct sk_buff *skb, int nhoff,
->     > +                                             int thoff);
-> 
-> .. but also fixes up implementations to interpret the existing
-> argument as a thoff
-> 
->     > -INDIRECT_CALLABLE_SCOPE int tcp4_gro_complete(struct sk_buff *skb, int thoff)
->     > +INDIRECT_CALLABLE_SCOPE int tcp4_gro_complete(struct sk_buff *skb, int nhoff,
->     > +                                           int thoff)
->     >  {
->     > -     const struct iphdr *iph = ip_hdr(skb);
->     > -     struct tcphdr *th = tcp_hdr(skb);
->     > +     const struct iphdr *iph = (const struct iphdr *)(skb->data + nhoff);
->     > +     struct tcphdr *th = (struct tcphdr *)(skb->data + thoff);
-> 
-> But in some cases the new argument is not nhoff but p_off, e.g.,
-> 
->     >  static int geneve_gro_complete(struct sock *sk, struct sk_buff *skb,
->     > -                            int nhoff)
->     > +                            int p_off, int nhoff)
-> 
-> Really, the argument is the start of the next header, each callback
-> just casts to its expected header (ethhdr, tcphdr, etc.)
-> 
-> The only place where we need to pass an extra argument is in udp,
-> because that needs a pointer to the network header right before the
-> transport header pointed to by nhoff.
-> 
-> And only due to possible IPv4 options or IPv6 extension headers, we
-> cannot just do
-> 
-> +        struct udphdr *iph = (struct iphdr *)(skb->data + nhoff - sizeof(*iph));
->          struct udphdr *uh = (struct udphdr *)(skb->data + nhoff);
-> 
-> I also do not immediately see an a way to avoid all the boilerplate
-> of a new argument in every callback. Aside from a per_cpu var -- but
-> that is excessive.
-> 
-> But it can just be left zero in all callsites, except for
-> inet_gro_complete/ipv6_gro_complete, which pass in nhoff.
+> The v5 TDX QEMU happens to call KVM_CREATE_VCPU and then KVM_TDX_INIT_VM
+> because it creates CPUIDs for KVM_TDX_INIT_VM from qemu vCPU structures after
+> KVM_GET_CPUID2.  Which is after KVM_CREATE_VCPU.
 
-Actually, we can avoid the boilerplate changes that add an extra arg.
+Sorry, let me correct it. QEMU creates QEMU's vCPU struct with its CPUIDs.
+KVM_TDX_INIT_VM, KVM_CREATE_VCPU, and KVM_SET_CPUID2.  QEMU passes CPUIDs as is
+to KVM_SET_CPUID2.
 
-By changing the contract between network layer callbacks
-(inet_gro_complete/ipv6_gro_complete) and transport layer callbacks
-(tcp4_gro_complete et al).
-
-If the first pass their own unmodified offset, nhoff:
-
-        err = INDIRECT_CALL_2(ops->callbacks.gro_complete,
-                              tcp4_gro_complete, udp4_gro_complete,
--                             skb, nhoff + sizeof(*iph));
-+                             skb, nhoff);
-
-And the latter parse the network header for total_len/payload_len, to
-find their original offset.
-
-It's also a bit of a hack. But a lot smaller patch, probably.
+The v19 KVM_TDX_INIT_VM checks if the KVM vCPU is not created yet.  But it's can
+be relaxed.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
