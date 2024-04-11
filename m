@@ -1,216 +1,141 @@
-Return-Path: <linux-kernel+bounces-141439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AA128A1E44
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:31:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD7058A1E48
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:31:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D23151F253EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:31:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDC691C2473A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA4F824A6;
-	Thu, 11 Apr 2024 18:02:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B73984DF8;
+	Thu, 11 Apr 2024 18:03:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IlHKgg+D"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="odcBHgiQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A51C1E892;
-	Thu, 11 Apr 2024 18:02:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3FD382494;
+	Thu, 11 Apr 2024 18:02:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712858575; cv=none; b=X25fekGtZilgD2zflJ86HnlxRCP/QdGWa6yKPRIjskFZ7nzW7BsUEGazbmO9LaBFLl4XsATlg0OpSjACmRxuid/mEHrYyS3q/52sfn9XayIxu9aXKtL1WO4ot1cAtfBdLl8YmSjs0sKQroTi7WZVezbQmSDOiNTYW7PE9lGolLU=
+	t=1712858579; cv=none; b=aM/HaKLPqyVMD1hxxuy85zPnK9mlb0/M9CQM6OQNZogdph9WOaT4Em9rDkOOxxvi1GKQesb7OxWdx5/UdFZFcxxg5BdM6yQZBWGLdUCaazf/Nv6svtNCJaMpfCN+bfIZGcGrdVmTMZ7wjXgZ2bze9El9Nubikf1wTSaGOm2JeYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712858575; c=relaxed/simple;
-	bh=Y053hDNWDdlbJKBy+lcyQdE5G+tWn3OYigsAOCjGI2o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bV+/qVfCy9C7as5//Qxu8IMdO45CCX1EROCi1OIH5Vmo0DQ1giUztxYwAo8cZ4H3ILfTSI9hlYNkdE4I9DfiESpELh6VeFchuy+L5JtAx75LZgGAiCnIzfe0qHizLfCIJrYXPnd4Var+RtBUloikG+0Hv+ZSqVTFsDqI3yCOAhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IlHKgg+D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 824FEC072AA;
-	Thu, 11 Apr 2024 18:02:54 +0000 (UTC)
+	s=arc-20240116; t=1712858579; c=relaxed/simple;
+	bh=oNfJHHQuAyI3Y7cKkJtv9m61hEuDs/q3erWlNt6Nz8M=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=GmeZgn/ctpuS8YfO8nnQCFlRxQ2dXgRlxzSVW6J51BQE+yEA0v70s/BctQ0FUUakP5pOKHBzMP6ud/5/PzGYFvha7e4PAmdpAUB+QmbAIdyHgvC2lQ3id0zVvwU6DZToDYU5IAhVPauGdqEcxhyFXaoeoNY/ZXGTJ69zOXBTk4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=odcBHgiQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA512C072AA;
+	Thu, 11 Apr 2024 18:02:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712858574;
-	bh=Y053hDNWDdlbJKBy+lcyQdE5G+tWn3OYigsAOCjGI2o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IlHKgg+DA76Z0el5BLc3rN5PNpOY4yjbfGZWw9CSxcLHd9Lqqr3eoHns/FznGEI9m
-	 lrNBtvtjqn0DF3T6tu/loQbTxP01dY2r1Gt5ivenxQSyfpbRGsxC8dkl228WZLVNm7
-	 k0DCElk+AANvACFK86ZxCCpG7c9+xYDbXw3DTQSedXRlB0L003tl+JM1mlUxppotHa
-	 1FbDtGiu1/q3kzFBBXrKiXXPKXE4xIRoOnAZ3AbiImQ2kNVyCMWzmTUb9uMCgl+0/5
-	 Wej3FgCChUWaVL4cD+Z2EaYO7FTR5sGrxbee1BfiA96J75oSg4PWtMXkjrAR/cihYs
-	 k5keqvmfsxaZA==
-Date: Thu, 11 Apr 2024 15:02:51 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Ravi Bangoria <ravi.bangoria@amd.com>,
-	Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: Re: BISECTED: perf test -v "Test data symbol" failing on Intel
- Hybrid systems
-Message-ID: <Zhgly2eQ5vk4FdEE@x1>
-References: <ZhWTIuyB9p1ORbQH@x1>
- <CAP-5=fXR0HmxUBvTbPN4GPdqFftYAGsgYHm81+TgmGY7Yh4gww@mail.gmail.com>
+	s=k20201202; t=1712858579;
+	bh=oNfJHHQuAyI3Y7cKkJtv9m61hEuDs/q3erWlNt6Nz8M=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=odcBHgiQxwD5wqpO3ON4eK6kbCvwZYwVRLQ3+vq3FwiCLJz1BrUZH44j1kYmCHzlm
+	 Hx2dE7zseHIKzsUyHcuvAfuF6JDNQwAuaNfuf6RlxzAwS7gTuqg0mRWbnY7Z6IKntt
+	 cb/Ruw+vH9vJDSlk8kZqcq0UORwYgOZOYuhQhXzc+wDxY08qudQ++PdNVbfHkqLkb8
+	 +WKsNIQipcplFZzfQRtfvTJb/WlATu2CsnHOJRFUyxKV0C4qJ+xYg9xlNoNkqp+KN6
+	 a5LJgTE37pmwaYEbJEMAA6j8DG7eCa4IhMeSoLQw1wum9VL6uxEa31r2wJbLz1wK6j
+	 AKACz6q4C2UKw==
+From: SeongJae Park <sj@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: SeongJae Park <sj@kernel.org>,
+	stable@vger.kernel.org,
+	patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	pavel@denx.de,
+	jonathanh@nvidia.com,
+	f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net,
+	rwarsow@gmx.de,
+	conor@kernel.org,
+	allen.lkml@gmail.com,
+	broonie@kernel.org,
+	damon@lists.linux.dev
+Subject: Re: [PATCH 6.6 000/114] 6.6.27-rc1 review
+Date: Thu, 11 Apr 2024 11:02:56 -0700
+Message-Id: <20240411180256.93013-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240411095416.853744210@linuxfoundation.org>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fXR0HmxUBvTbPN4GPdqFftYAGsgYHm81+TgmGY7Yh4gww@mail.gmail.com>
 
-On Tue, Apr 09, 2024 at 02:28:43PM -0700, Ian Rogers wrote:
-> On Tue, Apr 9, 2024 at 12:12 PM Arnaldo Carvalho de Melo
-> <acme@kernel.org> wrote:
-> >
-> > root@x1:~# grep -m1 "model name" /proc/cpuinfo
-> > model name      : 13th Gen Intel(R) Core(TM) i7-1365U
-> > root@x1:~# uname -a
-> > Linux x1 6.7.11-200.fc39.x86_64 #1 SMP PREEMPT_DYNAMIC Wed Mar 27 16:50:39 UTC 2024 x86_64 GNU/Linux
-> > root@x1:~#
-> >
-> > Bisected down to:
-> >
-> > commit 5752c20f3787c9bc9ff9411a70b3d41add85518c
-> > Author: Ravi Bangoria <ravi.bangoria@amd.com>
-> > Date:   Thu Jun 15 10:47:00 2023 +0530
-> >
-> >     perf mem: Scan all PMUs instead of just core ones
-> >
-> >     Scanning only core PMUs is not sufficient on platforms like AMD since
-> >     perf mem on AMD uses IBS OP PMU, which is independent of core PMU.
-> >     Scan all PMUs instead of just core PMUs. There should be negligible
-> >     performance overhead because of scanning all PMUs, so we should be okay.
-> >
-> >     Reviewed-by: Ian Rogers <irogers@google.com>
-> >     Signed-off-by: Ravi Bangoria <ravi.bangoria@amd.com>
-> >
-> > root@x1:~# perf -v ; perf test -v "Test data symbol"
-> > perf version 6.4.rc3.g5752c20f3787
-> > 111: Test data symbol                                                :
-> > --- start ---
-> > test child forked, pid 522202
-> > Recording workload...
-> > malloc_consolidate(): invalid chunk size
-> > /home/acme/libexec/perf-core/tests/shell/test_data_symbol.sh: line 60: 522208 Aborted                 (core dumped) perf mem record --all-user -o ${PERF_DATA} -- $TEST_PROGRAM
-> > /home/acme/libexec/perf-core/tests/shell/test_data_symbol.sh: line 62: kill: (522208) - No such process
-> > Cleaning up files...
-> > test child finished with -1
-> > ---- end ----
-> > Test data symbol: FAILED!
-> > root@x1:~# perf -v ; perf test -v "Test data symbol"
-> > perf version 6.8.g63c22868714b
-> > 116: Test data symbol:
-> > --- start ---
-> > test child forked, pid 526540
-> >  954300-954339 l buf1
-> > perf does have symbol 'buf1'
-> > Recording workload...
-> > Waiting for "perf record has started" message
-> > OK
-> > Cleaning up files...
-> > ---- end(-1) ----
-> > 116: Test data symbol                                                : FAILED!
-> > root@x1:~#
-> >
-> > Further details:
-> >
-> > (gdb) run mem record --all-user sleep 1
-> > Starting program: /root/bin/perf mem record --all-user sleep 1
-> >
-> >
-> > This GDB supports auto-downloading debuginfo from the following URLs:
-> >   <https://debuginfod.fedoraproject.org/>
-> > Enable debuginfod for this session? (y or [n]) y
-> > Debuginfod has been enabled.
-> > To make this setting permanent, add 'set debuginfod enabled on' to .gdbinit.
-> > [Thread debugging using libthread_db enabled]
-> > Using host libthread_db library "/lib64/libthread_db.so.1".
-> >
-> > Program received signal SIGSEGV, Segmentation fault.
-> > 0x0000000000611860 in perf_mem_events__record_args (rec_argv=0xea8280, argv_nr=0x7fffffffd6bc, rec_tmp=0xebbda0, tmp_nr=0x7fffffffd6c0) at util/mem-events.c:213
-> > 213                                     s = perf_mem_events__name(j, pmu->name);
-> > (gdb) bt
-> > #0  0x0000000000611860 in perf_mem_events__record_args (rec_argv=0xea8280, argv_nr=0x7fffffffd6bc, rec_tmp=0xebbda0, tmp_nr=0x7fffffffd6c0) at util/mem-events.c:213
-> > #1  0x000000000045c47f in __cmd_record (argc=2, argv=0x7fffffffe420, mem=0x7fffffffda20) at builtin-mem.c:152
-> > #2  0x000000000045d69b in cmd_mem (argc=4, argv=0x7fffffffe420) at builtin-mem.c:514
-> > #3  0x00000000004ffe38 in run_builtin (p=0xe08aa0 <commands+672>, argc=5, argv=0x7fffffffe420) at perf.c:323
-> > #4  0x00000000005000ac in handle_internal_command (argc=5, argv=0x7fffffffe420) at perf.c:377
-> > #5  0x00000000005001fb in run_argv (argcp=0x7fffffffe23c, argv=0x7fffffffe230) at perf.c:421
-> > #6  0x00000000005004e8 in main (argc=5, argv=0x7fffffffe420) at perf.c:537
-> > (gdb) list -5
-> > file: "arch/x86/util/mem-events.c", line number: 208, symbol: "???"
-> > Line number 203 out of range; arch/x86/util/mem-events.c has 93 lines.
-> > (gdb)
+Hello,
 
-> >
-> >
-> > (gdb) list -5
-> > file: "arch/x86/util/mem-events.c", line number: 208, symbol: "???"
-> > Line number 203 out of range; arch/x86/util/mem-events.c has 93 lines.
-> > (gdb) p j
-> > $1 = 0
-> > (gdb) p pmu->name
-> > Cannot access memory at address 0x64ffffff9c
-> > (gdb)
-> >
-> > 183 int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
-> > 184                                  char **rec_tmp, int *tmp_nr)
-> > 185 {
-> > 186         int i = *argv_nr, k = 0;
-> > 187         struct perf_mem_event *e;
-> > 188         struct perf_pmu *pmu;
-> > 189         char *s;
-> > 190
-> > 191         for (int j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
-> > 192                 e = perf_mem_events__ptr(j);
-> > 193                 if (!e->record)
-> > 194                         continue;
-> > 195
-> > 196                 if (perf_pmus__num_mem_pmus() == 1) {
-> > 197                         if (!e->supported) {
-> > 198                                 pr_err("failed: event '%s' not supported\n",
-> > 199                                        perf_mem_events__name(j, NULL));
-> > 200                                 return -1;
-> > 201                         }
-> > 202
-> > 203                         rec_argv[i++] = "-e";
-> > 204                         rec_argv[i++] = perf_mem_events__name(j, NULL);
-> > 205                 } else {
-> > 206                         if (!e->supported) {
-> > 207                                 perf_mem_events__print_unsupport_hybrid(e, j);
-> > 208                                 return -1;
-> > 209                         }
-> > 210
-> > 211                         while ((pmu = perf_pmus__scan(pmu)) != NULL) {
-> > 212                                 rec_argv[i++] = "-e";
-> > 213                                 s = perf_mem_events__name(j, pmu->name);
-> > 214                                 if (s) {
-> > 215                                         s = strdup(s);
+On Thu, 11 Apr 2024 11:55:27 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+
+> This is the start of the stable review cycle for the 6.6.27 release.
+> There are 114 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> This looks like something that address/memory sanitizers could help with.
+> Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.27-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
 
-I'm I forgetting something?
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
 
-⬢[acme@toolbox perf-tools-next]$ rm -rf ~/libexec/perf-core/ ; make -k CORESIGHT=1 EXTRA_CFLAGS="-fsanitize=address" O=/tmp/build/$(basename $PWD)/ -C tools/perf install-bin
+Tested-by: SeongJae Park <sj@kernel.org>
 
-root@x1:~# perf test -v 116
-116: Test data symbol:
---- start ---
-test child forked, pid 614595
- f87540-f87579 l buf1
-perf does have symbol 'buf1'
-Recording workload...
-Waiting for "perf record has started" message
-OK
-Cleaning up files...
----- end(-1) ----
-116: Test data symbol                                                : FAILED!
-root@x1:~# ldd ~/bin/perf | grep asan
-	libasan.so.8 => /lib64/libasan.so.8 (0x00007f8eb7a00000)
-root@x1:~#
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] 3126167a036c ("Linux 6.6.27-rc1")
+
+Thanks,
+SJ
+
+[...]
+
+---
+
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 2 selftests: damon: debugfs_schemes.sh
+ok 3 selftests: damon: debugfs_target_ids.sh
+ok 4 selftests: damon: debugfs_empty_targets.sh
+ok 5 selftests: damon: debugfs_huge_count_read_write.sh
+ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
+ok 7 selftests: damon: debugfs_rm_non_contexts.sh
+ok 8 selftests: damon: sysfs.sh
+ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
+ok 10 selftests: damon: reclaim.sh
+ok 11 selftests: damon: lru_sort.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_arm64.sh
+ok 12 selftests: damon-tests: build_m68k.sh
+ok 13 selftests: damon-tests: build_i386_idle_flag.sh
+ok 14 selftests: damon-tests: build_i386_highpte.sh
+ok 15 selftests: damon-tests: build_nomemcg.sh
+
+PASS
 
