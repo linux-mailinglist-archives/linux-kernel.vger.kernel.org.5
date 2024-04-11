@@ -1,105 +1,92 @@
-Return-Path: <linux-kernel+bounces-140424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B35EF8A1444
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:18:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02A4F8A1446
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:18:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E35011C2221D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:18:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 347011C220CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:18:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35D3414B07F;
-	Thu, 11 Apr 2024 12:18:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC0E914C5B5;
+	Thu, 11 Apr 2024 12:18:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b="Iw7uPJ72"
-Received: from www530.your-server.de (www530.your-server.de [188.40.30.78])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="lRHdTpHg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB1D13FD66;
-	Thu, 11 Apr 2024 12:18:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.30.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A46714C5B8;
+	Thu, 11 Apr 2024 12:18:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712837901; cv=none; b=q/qhL5q7tG8PDfHTl1JWjV5cCIruMmpSmSrSKdOtgZ+mrM6+hBtBoR68bfaXZTzBzpTK1kGLcSzBvMEIOKJvmutfNYHb5dvSQAIRLCbjaLANt0hUvYVP9IC7cGBpUApE2RKjYR0iqeb15/VLi1KvMgGvhkGKe7gRfUq1V0o5wWw=
+	t=1712837915; cv=none; b=nvoFCQ+gKP1MuPMRhNAHfjuuW5aoGtKc77dVIfvxehBuGgYp0bWKrfxFn5E33Dkec8UPk35j3cP1SWSgtPewzH4DqvVZWcnLA684VIhc/eUTEs0362fmizlatbwhI3q7N0K21bWxkrD/47yUHF2zg5D8kLsqO9npT+7LIPAgIZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712837901; c=relaxed/simple;
-	bh=Ue+kPqa5ovpPl3Sfsh1uMsxDRpeY+X+tUrHJcKDmYWw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=rAAMgcz9A8/jTnKhoMVzfFLxeDygqZe9B1aXNf2H7vg2k8bj9rSEMPOL/LTP6PqiquDODmKwda0FX0E+UzlruYxpC2cXr0DxU0VHwfwb/RJmICmFpl81WV9dQs6znL9jO/5AUAg3Kmts6Lr+6J3OqzqmwJUA/iNsgeAmRn9mXwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com; spf=pass smtp.mailfrom=geanix.com; dkim=pass (2048-bit key) header.d=geanix.com header.i=@geanix.com header.b=Iw7uPJ72; arc=none smtp.client-ip=188.40.30.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=geanix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=geanix.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=geanix.com;
-	s=default2211; h=Content-Type:MIME-Version:Message-ID:Date:References:
-	In-Reply-To:Subject:Cc:To:From:Sender:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=aHsQbmA+wnCbMY5ngUe0xXk3sGyXlVb12AhxDVR+FNs=; b=Iw7uPJ72Z/zjJvP+Avqb/nFiC7
-	O0qAVLkHcUbujC1EGyQRHk2ga5/TAsRgQIeIvOUrVGCOPq5CgjX5JagbiHsepkSFeYhtsENtKJrGZ
-	hd2/asM7+6oLI+ZHMJcZdVH594rDd2IAXnLRT4Px63y3C2HmvLi7HSW7cMRB5NlSqV42bAevlgHWz
-	t3U2bacRtL55ityZH9qAlvh8rQGyHAB/9D2zp73cZc12SuHKZoIgMtCW43NySVOjZZC9i90qO17//
-	+rfDDr+LxuGYIoM66b4av1/SE5sQVZCYFXTwMF9EkKIJb/FhUKdPrNqeq3F5a71DbEIDBRHjnCmhB
-	0O3SOhLQ==;
-Received: from sslproxy04.your-server.de ([78.46.152.42])
-	by www530.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <esben@geanix.com>)
-	id 1rutNX-000NqQ-UZ; Thu, 11 Apr 2024 14:18:07 +0200
-Received: from [185.17.218.86] (helo=localhost)
-	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <esben@geanix.com>)
-	id 1rutNX-0002kv-1e;
-	Thu, 11 Apr 2024 14:18:07 +0200
-From: Esben Haabendal <esben@geanix.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org,  linux-serial@vger.kernel.org,
-  imx@lists.linux.dev,  linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] serial: imx: Introduce timeout when waiting on
- transmitter empty
-In-Reply-To: <2024041122-transfer-diffuser-781a@gregkh> (Greg Kroah-Hartman's
-	message of "Thu, 11 Apr 2024 14:06:50 +0200")
-References: <76cf9ce9cbf9dcdf78bc00ce7a919db1776ebce1.1712309058.git.esben@geanix.com>
-	<cf197182beab7acf6ea7ead54fb4324e97e18cbc.1712733269.git.esben@geanix.com>
-	<2024041122-transfer-diffuser-781a@gregkh>
-Date: Thu, 11 Apr 2024 14:18:07 +0200
-Message-ID: <87il0o6qkg.fsf@geanix.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1712837915; c=relaxed/simple;
+	bh=GCdZJWo4jZKP70EEzCC60yNA+9vyk9gi0vxFxPwgwVk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M+wpw6bEKQCERflrBzMU67l3y3FyOwMy8bIuoXK82Q4E4sKx+WxPvVdan68+6y5IgDMS1Hd6YfOhZ8oSgN9+4ybor1MACDXPgCRPImsDyN92QmMOwpsXRl0y1KFkNf2pXJJVyGGp7R5zxf8dBnXgDrECfKBsZE0H9kXo9IiwPds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=lRHdTpHg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EC5CC43390;
+	Thu, 11 Apr 2024 12:18:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712837915;
+	bh=GCdZJWo4jZKP70EEzCC60yNA+9vyk9gi0vxFxPwgwVk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lRHdTpHgY8TbiBHehtskKT4Nb2Q7ruqrYyiTL12NFQEHePZNAC5AEp75nc7Pvlkbp
+	 hbacwfkYsmR5XqTwFPujuKhohSkWsnyKwi6oBknAXWmpW+x8aKOsecbJlw57Y9oHvB
+	 qQyuzU/InEXrrj0upRe4l5CPXhe7YdrW25sGk02w=
+Date: Thu, 11 Apr 2024 14:18:32 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Matthias Kaehlcke <mka@chromium.org>
+Cc: Fabio Estevam <festevam@gmail.com>, frieder.schrempf@kontron.de,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Fabio Estevam <festevam@denx.de>
+Subject: Re: [PATCH] usb: misc: onboard_usb_hub: Disable the USB hub clock on
+ failure
+Message-ID: <2024041114-scavenger-overstock-61c1@gregkh>
+References: <20240408151700.1761009-1-festevam@gmail.com>
+ <2024040940-resume-polygraph-5800@gregkh>
+ <CAKZ8rEMg8SamD_R46LpA9LAh4WUhH=6zsqjkXS0ABVdPAK9Czw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Authenticated-Sender: esben@geanix.com
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27242/Thu Apr 11 10:25:12 2024)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKZ8rEMg8SamD_R46LpA9LAh4WUhH=6zsqjkXS0ABVdPAK9Czw@mail.gmail.com>
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+On Tue, Apr 09, 2024 at 09:42:43AM -0700, Matthias Kaehlcke wrote:
+> On Tue, Apr 9, 2024 at 8:29 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Mon, Apr 08, 2024 at 12:17:00PM -0300, Fabio Estevam wrote:
+> > > From: Fabio Estevam <festevam@denx.de>
+> > >
+> > > In case regulator_bulk_enable() fails, the previously enabled USB hub
+> > > clock should be disabled.
+> > >
+> > > Fix it accordingly.
+> > >
+> > > Fixes: 65e62b8a955a ("usb: misc: onboard_usb_hub: Add support for clock input")
+> > > Signed-off-by: Fabio Estevam <festevam@denx.de>
+> > > ---
+> > >  drivers/usb/misc/onboard_usb_dev.c | 6 +++++-
+> >
+> > This file is not in the tree for 6.9-rc2, can you please fix this up and
+> > resend?
+> 
+> The driver has been renamed in usb-next. Shouldn't this patch be based
+> on usb-next and the backports to stable kernels account for the name
+> change?
 
-> On Wed, Apr 10, 2024 at 09:18:32AM +0200, Esben Haabendal wrote:
->> By waiting at most 1 second for USR2_TXDC to be set, we avoid a potential
->> deadlock.
->> 
->> In case of the timeout, there is not much we can do, so we simply ignore
->> the transmitter state and optimistically try to continue.
->> 
->> v2:
->> - Fixed commit message typo
->> - Remove reference to patch series it originated from. This is a
->>   stand-alone patch
->
-> The "v2:" stuff needs to go below the --- line, so it doesn't show up in
-> the kernel changelog.  The kernel documentation should describe this,
-> right?
+If you want to wait a few weeks for this fix to get in, sure.  Otherwise
+no.
 
-Right. It is described in Documentation/process/submitting-patches.rst.
-Sorry about that.
+thanks,
 
-> Please fix up and send a v3.
-
-On its way.
-
-/Esben
+greg k-h
 
