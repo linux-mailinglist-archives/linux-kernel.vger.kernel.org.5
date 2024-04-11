@@ -1,162 +1,278 @@
-Return-Path: <linux-kernel+bounces-141492-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1F2A8A1EEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:53:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D433A8A1EF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:55:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F36441C233F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:53:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 652EF1F2B0EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A2CD1401B;
-	Thu, 11 Apr 2024 18:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7073414286;
+	Thu, 11 Apr 2024 18:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GuXWU9F/"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AukPD8e6"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090EF134A6
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E66EEB5;
+	Thu, 11 Apr 2024 18:54:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712861593; cv=none; b=XETM665WhMXAVn2YZhuDpprZ1+El1KKU98wIebtl1MXz1XZqiFnxI7n37JCOEVdGA91KUekw3nvfRI9HuH4JI5mAXcaC/Nc7g6HpIqlxIHLwvByHHYzRH7FkZSSDExFyXDs8mSgPzCJiASsU2CWZ2EB8B5HnxNi0tmN752rSlSY=
+	t=1712861701; cv=none; b=dfRkrA7vobELDPpUAbqXqBxqzZXOxhlHYmVv6flvm+hOTnM8OFcpqEUOpEu6BzqcXD8KuPGyFjxWC2NUsKFHvaoTEzV0Hjp6t25o1j0XFPZxOCzLQpSb8tFPWT5pIARUfYTD7s3qczam3XP0s6osQsgPqxdS4JC1lDiQccYqKjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712861593; c=relaxed/simple;
-	bh=G/wFuE75kJPCnyn9PRHwIbpNnaCSkJbgx9CGgXcf9FE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OxDFfTh6VBWdQKUw/zX+fNy27gHvRCT4aa1NeUTRCSmdvwBlb2xI51pKYPi4ZUtF00/OEFMzLsm5CTEaDDnZAzyxdDBQZ75vpTTcyvnGtEj2hPze4rti5grZmcSRU0m2TIPZbfD3P+rni3Kk3umZJoib98iR6zYjSrta5mzGji8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GuXWU9F/; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41699bbfb91so16785e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712861590; x=1713466390; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7LIX5a6E1i7fexWQlCRn4NOBQwVNtOheBQ3QgKVWs1g=;
-        b=GuXWU9F/pA3yB0o+z5WJi1TNzi8rsGp65J3ABBiLZYW6fqQYXX986/GvPges5fGpts
-         fxSilrY4vwymbB5LhKMMoqIwLHCYszOXkkQU/jpGrb/QxaJzLoNE5DnIwPagT6d69XNy
-         1qdTCBSh6Q3ZjAJjXklV81eqDzMpFlpO4HGkT2kHQiSPq3WCpAKoBEPgvMWBbTPqEdmt
-         nUEc8D9QnncKzqiOMd6VC7KKTlV1OXNCI2nWd3qj65pE1WRmpgAHrpLRzh5YB5XZXG2h
-         +SjuVFmh+BUcUMkFokbh/FYO3PB9bgqQ/1RjCsY0+VWNzdJDQI1VywDVZmSjorhEPLtP
-         A8Cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712861590; x=1713466390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7LIX5a6E1i7fexWQlCRn4NOBQwVNtOheBQ3QgKVWs1g=;
-        b=ikghzvNYMgtUzIDynDxtJMO7WGTuoc04nkPaerLBF6bVPjhCR89e+ARIbdk+WokT9s
-         904rLmpuBLW6T81FAj3vHPUJn+zbTPtOoLTYBfURIuRuv7CIJw9WnxlilyIHEs6rj0N6
-         mSGUmv5Ru9068tIidXk5Q7KM9Kk8KfF3E7ZhAmRYmdm1ek0nof5T8JuFGb4BnnuQc1DM
-         9fr7AHy87Y8M2o86u8x41o2ZOWi98fBkVKKS0AG26YiWQofIfEO3XoWIc2pwZepUUiwx
-         yVgA/XmxRgmniYQzzDxZ+ctVtcfF7VrcDQDfl4s75TefcUHXGYqYZRpBBw/se3bfE0OJ
-         WpbA==
-X-Gm-Message-State: AOJu0YyLMSfVA4qL0Rq2fLKtxYCWKUCzzCZUvmye5y48wXJ9tGWhjYGW
-	A48rb9qT4xNM3QiLTEozYlndwHsI2hyu3zdtY7dK0YPtZq9YBqlg6C9hYGjtYZRjut1KTC041rf
-	QBGnMkAfUZ+VrLcSj+bLpvxAck5WHa0QWqDI=
-X-Google-Smtp-Source: AGHT+IEqfkg/WJeJH3rGbE5tKy9mP/1LUOvRu3pXtV0xM7l/e0Z9WS8/Fa+EPHoEgkhwtVMj9O+AwDkF8S6LJDBcLZc=
-X-Received: by 2002:a05:600c:1c11:b0:416:6cca:c147 with SMTP id
- j17-20020a05600c1c1100b004166ccac147mr18842wms.4.1712861590189; Thu, 11 Apr
- 2024 11:53:10 -0700 (PDT)
+	s=arc-20240116; t=1712861701; c=relaxed/simple;
+	bh=5qP8l0+mW39Glyl2G8xkXhZdK8fVn2AWA1IKf9RJTZo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tAPJteF3saaJ+5KFQM24JkGCuIbZbG07vWtIaneaYG9Ny4zh/tNdEIdDHz7g2BZ8bvwnCtfl4wb6KkoYCEb/MIWaBwRNX7Q3g6TmKxayP8ATG4Eq7/a16OgP3IW+xCQEbJKw1AEVDgqhmKobKiribKZcFudzjNs6NY5Gc529LCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AukPD8e6; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712861701; x=1744397701;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=5qP8l0+mW39Glyl2G8xkXhZdK8fVn2AWA1IKf9RJTZo=;
+  b=AukPD8e6OTW4hcDUzXWJV9dmtI6GdMOgQWiWQ5b9YXAunSQYo+dpLbV6
+   vHWq6koQZuVgCJlgsy/+pPWo7wZiL4AcPKpewoAQSBX/fFEZp+pm/yCic
+   P2gCxuMWvfkdS4WVu/8IsxWJExEJCZlHkt/xnI/ao4DKrWFqXMVSGYvPd
+   rGdSJK+hxWhtEpQMBG8ZHssUQF/xzme55zTXw8LOvT+t8SMTWM3lwh1eo
+   zJpLlv59vnzHGy7rdLzWLOQ3EmqDathqac3v8Yf3V1bfIJK05KQn8dt06
+   iZAsEZZVge10EK/JVXelgGpITo6CGmG7v3BLhvILY1F2ihNaG6H7wtnVD
+   w==;
+X-CSE-ConnectionGUID: 1hZWUkabTGiwpRI775TTyg==
+X-CSE-MsgGUID: ZL3Jhn72RnC+j7vJ+g6jpA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8520098"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="8520098"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 11:55:00 -0700
+X-CSE-ConnectionGUID: eK3XVo2vSey1O7rwnqOZTA==
+X-CSE-MsgGUID: P9A6tH+TSGKBy6b6UIs1Lg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="25540715"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 11:54:59 -0700
+Date: Thu, 11 Apr 2024 11:54:58 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, chen.bo@intel.com,
+	hang.yuan@intel.com, tina.zhang@intel.com,
+	Xiaoyao Li <xiaoyao.li@intel.com>, isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 039/130] KVM: TDX: initialize VM with TDX specific
+ parameters
+Message-ID: <20240411185458.GD3039520@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <5eca97e6a3978cf4dcf1cff21be6ec8b639a66b9.1708933498.git.isaku.yamahata@intel.com>
+ <4c64bdac-f1fb-4f29-b753-46ee82a68dc0@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240401234439.834544-1-jstultz@google.com> <20240401234439.834544-2-jstultz@google.com>
- <xhsmhbk6ia52c.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-In-Reply-To: <xhsmhbk6ia52c.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-From: John Stultz <jstultz@google.com>
-Date: Thu, 11 Apr 2024 11:52:57 -0700
-Message-ID: <CANDhNCp0hOp9zmfnthFmFM13vGDMBf4TFYHPeRZ=69FjdQVc5w@mail.gmail.com>
-Subject: Re: [RESEND][PATCH v9 1/7] locking/mutex: Remove wakeups from under mutex::wait_lock
-To: Valentin Schneider <vschneid@redhat.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Joel Fernandes <joelaf@google.com>, Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>, 
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>, 
-	Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Ben Segall <bsegall@google.com>, Zimuzo Ezeozue <zezeozue@google.com>, 
-	Youssef Esmat <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Metin Kaya <Metin.Kaya@arm.com>, Xuewen Yan <xuewen.yan94@gmail.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com, 
-	Davidlohr Bueso <dave@stgolabs.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4c64bdac-f1fb-4f29-b753-46ee82a68dc0@intel.com>
 
-On Tue, Apr 9, 2024 at 9:12=E2=80=AFAM Valentin Schneider <vschneid@redhat.=
-com> wrote:
-> On 01/04/24 16:44, John Stultz wrote:
-> > @@ -934,6 +942,7 @@ static noinline void __sched __mutex_unlock_slowpat=
-h(struct mutex *lock, unsigne
-> >               }
-> >       }
-> >
-> > +     preempt_disable();
-> >       raw_spin_lock(&lock->wait_lock);
-> >       debug_mutex_unlock(lock);
-> >       if (!list_empty(&lock->wait_list)) {
-> > @@ -952,8 +961,8 @@ static noinline void __sched __mutex_unlock_slowpat=
-h(struct mutex *lock, unsigne
-> >               __mutex_handoff(lock, next);
-> >
->
-> (minor nit) Could the preempt_disable() be moved here instead? IMO if it'=
-s
-> closer to the unlock it makes it clearer why it is there
-> (e.g. sched/core.c::affine_move_task(), rt_mutex_setprio(), __sched_setsc=
-heduler().
->
-> >       raw_spin_unlock(&lock->wait_lock);
+On Thu, Apr 04, 2024 at 12:59:45PM +1300,
+"Huang, Kai" <kai.huang@intel.com> wrote:
+
+> 
+> 
+> On 26/02/2024 9:25 pm, isaku.yamahata@intel.com wrote:
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> > 
+> > TDX requires additional parameters for TDX VM for confidential execution to
+> > protect the confidentiality of its memory contents and CPU state from any
+> > other software, including VMM.
+> 
+> Hmm.. not only "confidentiality" but also "integrity".  And the "per-VM" TDX
+> initializaiton here actually has nothing to do with "crypto-protection",
+> because the establishment of the key has already been done before reaching
+> here.
+> 
+> I would just say:
+> 
+> After the crypto-protection key has been configured, TDX requires a VM-scope
+> initialization as a step of creating the TDX guest.  This "per-VM" TDX
+> initialization does the global configurations/features that the TDX guest
+> can support, such as guest's CPUIDs (emulated by the TDX module), the
+> maximum number of vcpus etc.
+> 
+> 
+> 
+> 
+> When creating a guest TD VM before creating
+> > vcpu, the number of vcpu, TSC frequency (the values are the same among
+> > vcpus, and it can't change.)  CPUIDs which the TDX module emulates.
+> 
+> I cannot parse this sentence.  It doesn't look like a sentence to me.
+> 
+> Guest
+> > TDs can trust those CPUIDs and sha384 values for measurement.
+> 
+> Trustness is not about the "guest can trust", but the "people using the
+> guest can trust".
+> 
+> Just remove it.
+> 
+> If you want to emphasize the attestation, you can add something like:
+> 
+> "
+> It also passes the VM's measurement and hash of the signer etc and the
+> hardware only allows to initialize the TDX guest when that match.
+> "
+> 
+> > 
+> > Add a new subcommand, KVM_TDX_INIT_VM, to pass parameters for the TDX
+> > guest.
+> 
+> [...]
+> 
+> It assigns an encryption key to the TDX guest for memory
+> > encryption.  TDX encrypts memory per guest basis.
+> 
+> No it doesn't.  The key has been programmed already in your previous patch.
+> 
+> The device model, say
+> > qemu, passes per-VM parameters for the TDX guest.
+> 
+> This is implied by your first sentence of this paragraph.
+> 
+> The maximum number of
+> > vcpus, TSC frequency (TDX guest has fixed VM-wide TSC frequency, not per
+> > vcpu.  The TDX guest can not change it.), attributes (production or debug),
+> > available extended features (which configure guest XCR0, IA32_XSS MSR),
+> > CPUIDs, sha384 measurements, etc.
+> 
+> This is not a sentence.
+> 
+> > 
+> > Call this subcommand before creating vcpu and KVM_SET_CPUID2, i.e.  CPUID
+> > configurations aren't available yet.
+> 
+> "
+> This "per-VM" TDX initialization must be done before any "vcpu-scope" TDX
+> initialization.  To match this better, require the KVM_TDX_INIT_VM IOCTL()
+> to be done before KVM creates any vcpus.
+> 
+> Note KVM configures the VM's CPUIDs in KVM_SET_CPUID2 via vcpu.  The
+> downside of this approach is KVM will need to do some enforcement later to
+> make sure the consisntency between the CPUIDs passed here and the CPUIDs
+> done in KVM_SET_CPUID2.
+> "
+
+Thanks for the draft.  Let me update it.
+
+> So CPUIDs configuration values need
+> > to be passed in struct kvm_tdx_init_vm.  The device model's responsibility
+> > to make this CPUID config for KVM_TDX_INIT_VM and KVM_SET_CPUID2.
+> 
+> And I would leave how to handle KVM_SET_CPUID2 to the patch that actually
+> enforces the consisntency.
+
+Yes, that's a different discussion.
+
+
+> > +struct kvm_cpuid_entry2 *kvm_find_cpuid_entry2(
+> > +	struct kvm_cpuid_entry2 *entries, int nent, u32 function, u64 index)
+> > +{
+> > +	return cpuid_entry2_find(entries, nent, function, index);
+> > +}
+> > +EXPORT_SYMBOL_GPL(kvm_find_cpuid_entry2);
+> 
+> Not sure whether we can export cpuid_entry2_find() directly?
+> 
+> No strong opinion of course.
+> 
+> But if we want to expose the wrapper, looks ...
+
+
+Almost all KVM exported symbols have kvm_ prefix. I'm afraid that cpuid is too
+common.  We can rename the function directly without wrapper.
+
+
+> > +
+> >   struct kvm_cpuid_entry2 *kvm_find_cpuid_entry_index(struct kvm_vcpu *vcpu,
+> >   						    u32 function, u32 index)
+> >   {
+> > diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
+> > index 856e3037e74f..215d1c68c6d1 100644
+> > --- a/arch/x86/kvm/cpuid.h
+> > +++ b/arch/x86/kvm/cpuid.h
+> > @@ -13,6 +13,8 @@ void kvm_set_cpu_caps(void);
+> >   void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu);
+> >   void kvm_update_pv_runtime(struct kvm_vcpu *vcpu);
+> > +struct kvm_cpuid_entry2 *kvm_find_cpuid_entry2(struct kvm_cpuid_entry2 *entries,
+> > +					       int nent, u32 function, u64 index);
+> >   struct kvm_cpuid_entry2 *kvm_find_cpuid_entry_index(struct kvm_vcpu *vcpu,
+> >   						    u32 function, u32 index); >   struct kvm_cpuid_entry2 *kvm_find_cpuid_entry(struct kvm_vcpu *vcpu,
+> 
+> ... __kvm_find_cpuid_entry() would fit better?
+
+Ok, let's rename it.
+
+
+> > diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> > index 1cf2b15da257..b11f105db3cd 100644
+> > --- a/arch/x86/kvm/vmx/tdx.c
+> > +++ b/arch/x86/kvm/vmx/tdx.c
+> > @@ -8,7 +8,6 @@
+> >   #include "mmu.h"
+> >   #include "tdx_arch.h"
+> >   #include "tdx.h"
+> > -#include "tdx_ops.h"
+> 
+> ??
+> 
+> If it isn't needed, then it shouldn't be included in some previous patch.
+
+Will fix.
+
+
+> >   #include "x86.h"
+> >   #undef pr_fmt
+> > @@ -350,18 +349,21 @@ static int tdx_do_tdh_mng_key_config(void *param)
+> >   	return 0;
+> >   }
+> > -static int __tdx_td_init(struct kvm *kvm);
 > > -
-> >       wake_up_q(&wake_q);
-> > +     preempt_enable();
-> >  }
+> >   int tdx_vm_init(struct kvm *kvm)
+> >   {
+> > +	/*
+> > +	 * This function initializes only KVM software construct.  It doesn't
+> > +	 * initialize TDX stuff, e.g. TDCS, TDR, TDCX, HKID etc.
+> > +	 * It is handled by KVM_TDX_INIT_VM, __tdx_td_init().
+> > +	 */
+> > +
+> >   	/*
+> >   	 * TDX has its own limit of the number of vcpus in addition to
+> >   	 * KVM_MAX_VCPUS.
+> >   	 */
+> >   	kvm->max_vcpus = min(kvm->max_vcpus, TDX_MAX_VCPUS);
+> > -	/* Place holder for TDX specific logic. */
+> > -	return __tdx_td_init(kvm);
+> > +	return 0;
+> 
+> ??
+> 
+> I don't quite understand.  What's wrong of still calling __tdx_td_init() in
+> tdx_vm_init()?
+> 
+> If there's anything preventing doing __tdx_td_init() from tdx_vm_init(),
+> then it's wrong to implement that in your previous patch.
 
-Heh. Comically, that's how it started, but I was earlier advised to switch =
-it:
-  https://lore.kernel.org/lkml/034a302d-773d-5bdb-a32b-bd283d6c7710@redhat.=
-com/
-
-I'm happy to go back if that's really preferred.  But the current
-style also matches __mutex_lock_common's nesting.
-
-
-> > @@ -1775,8 +1782,9 @@ static int __sched rt_mutex_slowlock(struct rt_mu=
-tex_base *lock,
-> >        * irqsave/restore variants.
-> >        */
-> >       raw_spin_lock_irqsave(&lock->wait_lock, flags);
-> > -     ret =3D __rt_mutex_slowlock_locked(lock, ww_ctx, state);
-> > +     ret =3D __rt_mutex_slowlock_locked(lock, ww_ctx, state, &wake_q);
-> >       raw_spin_unlock_irqrestore(&lock->wait_lock, flags);
-> > +     wake_up_q(&wake_q);
->
-> Shouldn't this also be wrapped in a preempt-disabled region?
->
-> >       rt_mutex_post_schedule();
-> >
-> >       return ret;
->
-> > @@ -122,6 +123,7 @@ static int __sched __rwbase_read_lock(struct rwbase=
-_rt *rwb,
-> >       if (!ret)
-> >               atomic_inc(&rwb->readers);
-> >       raw_spin_unlock_irq(&rtm->wait_lock);
-> > +     wake_up_q(&wake_q);
->
-> Same question wrt preemption.
-
-Yeah, thanks for pointing out that inconsistency. I'll rework and test
-with that.
-
-thanks again for the review and feedback!
--john
+Yes. As discussed the previous patch is too big, we need to break the previous
+patch and this patch.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
