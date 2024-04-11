@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01D118A19D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:22:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 278868A19D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:22:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CC9F1C20446
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:22:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A4491F2202A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:22:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FE9A1B75B6;
-	Thu, 11 Apr 2024 15:37:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980E01B833F;
+	Thu, 11 Apr 2024 15:37:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="REDQC9SD"
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="FCfeu0kp"
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED5CC1B7588
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:37:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B881B75BA
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:37:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849822; cv=none; b=g/xF8HHMVcgfJlfxRLBU3ibH23KqDWzmF/G6vs0t6LU7iVF9BFafv4428hlOojm8C4t2LF7PTWTpJlhzqkgAXRo+ycYrgBGlKhFhr7iDY6rEOYvgdNwghE1Cpsr9r6h32C1+w2ovHX7E1G2zudoKbok+FJcbhOguauDQ99hdQ6E=
+	t=1712849824; cv=none; b=TJdvsHbA36sX5akqlXz+yExz2AuJQIi7gj2LNc9tAyezOAptyLW7aEQKVHiqjutmlCl4AVWwJCJMddQ2aMg/vnHeZKc7qGwXKc7XyZTVt44yLQst3kLNacXi6HftnUJd1STf3zQ3ddkZuwH9fBLUZcl4ub4ZjufsJgvySEfSgYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849822; c=relaxed/simple;
-	bh=6H4AO/+hVC4jNHTfKQw22NU+CT8ZW7gHfHKvbTTwlNE=;
+	s=arc-20240116; t=1712849824; c=relaxed/simple;
+	bh=M7HQAvvq2bZD0qtP9ygWTMqptkx9+n9nS7xEy8bJjLU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qrL/jV9swscjJWGti2Ll0is3BqNhmtMG3Vk93sVkC84LKGBxZjnVA4EEdhka2bq0NpxGdo1lrY+ArUwmFWgaGiQqV2ivSKdxQTONPE5cW48DB5ur0UXU8KW9Dpkh6wawAlE94Gj5eGz9oQXWt1xSgfQpCOYfjtX/IxtWaJnuAY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=REDQC9SD; arc=none smtp.client-ip=209.85.166.173
+	 MIME-Version; b=HABmCoJO67gjPaeqUkyLtsGVx34UfopxfZ2ojYl37Pbre+pccn/9i7wENXngKxKt1+Q9qk6h3VVjH60WkmyHU2Y3e4Ju2Z5gEuKRHICW48+n8ABj3h8hsZpnIBF0wTxWjzTIF5S9dG6ktIFR6iid+xiSXh3ADj4Jbt4MOaxU15I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=FCfeu0kp; arc=none smtp.client-ip=209.85.166.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-36a34b68277so112135ab.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:37:00 -0700 (PDT)
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7c8e4c0412dso69587439f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:37:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849820; x=1713454620; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849821; x=1713454621; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AnhOCVhHdtXmxDG6By9cE26ggBLF3GM0L2GicunETu0=;
-        b=REDQC9SDkrsWQ9iGlXrShm2Lw2Hg1tt6FEk3olHdkF0YSQtjpi7657zkRToHGI9OV2
-         Tq6Q7I/GoE8P3aH/pH75gTJt31XWb1QtCd6BygJvVvDxl+QHu9uo4Oanvj3YoAo0Q/2c
-         CeCg2BmgpSPgLqJvX9PjNsheGrOOu8VqLrr7RsuFNzeMqZwJffL1uaYBeJb6Ra0m5vV+
-         yG9jXTkZKXQxoMraOHywYe6aZ96fdo51GzChVsgcfygYFNcD0mjCJgPZ3uY64GRCYOga
-         tmGF8pYZPzBpoD+Z40FiTISfME+G6KBMBTjbEujs0HkVsJmdCLyUQcar969H/VDo2u/R
-         8kTw==
+        bh=foLshYHoNSiA+bNhIaIfSXBA5u0u+3j+zD0hPKG7pGk=;
+        b=FCfeu0kpzR7mIcOSHV15SY1qH0GrZ+PwD7RksUTbHt1Za4Pdse/jDX/FyfoEHMZGPS
+         07rQptLcme8rqXjqQ7lAKpmmOMYFNKmOKgnHTuY1AdZjlevSfXIOhQCwMdLkuvPlNtnI
+         9hxwEfmAGMlInp2n5SkI2ovRMQM8qPXBIkfiVUpZESdVN2Pl/mWqi140rBDksTE9bcLH
+         /yK5RqpFhvzCWIdDTz7q+V5Xf1H2erjXRtrpUFgt66wxusthgGYOcKvy6bBLcurgeKhq
+         CefxGiN8oztFc8lpjZ1Gb1nyNakOa1becxr2juSTkU/I+XTfunEp9grtGeHCF+2GcRMn
+         Lw1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849820; x=1713454620;
+        d=1e100.net; s=20230601; t=1712849821; x=1713454621;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AnhOCVhHdtXmxDG6By9cE26ggBLF3GM0L2GicunETu0=;
-        b=rVveNF+y2b5lKcr/AaE4gwnDhCTOBPRma2NwT/wdBJlzBK/C1UJT3K07S3zU98wWVY
-         8tJmTkq5UG6qUf81Z2CU77Ez04BFx0O0ymZpVRYPkzBg2zZmIIsRC86XU/WUsBjvDn1m
-         hJckuJUIUqr4LKtl9Vp3fFTMFLYCjLAaYzZ/6L4X/aaAWrRSuOKw3jo7dzXb/xKdZzE/
-         NELSFso+O7Re9BDCFrP3fJcpQHQMdjZKnK2/37PySawkHP7dPrYCUY++gEywIGyq5dAC
-         +h4JsXiuVz6ZS+DKOktlS9rl6niK0EdWTTAdQVEaBVH1RSCmdRugH106xQJ1NKpk47dP
-         RXsw==
-X-Gm-Message-State: AOJu0YzqUJ8M0gNuCKfuR8zF7t2N2l13fJtuedFTDIOXEG2B4sN/RzW3
-	Zo61qHqA2IRQyiKX78dlPtULhEKPiWfvlQIHRAng6cbdPFM1TZuBW3aDMPVyfN5MOaH97oRjnmR
-	5
-X-Google-Smtp-Source: AGHT+IEdDQ1i8fkevz6KK31iKoqlzOn6MpAqkriKwmkSlRTHWkqNqOgGVt6EM2GgwKX/jbERUgDdCQ==
-X-Received: by 2002:a6b:4e14:0:b0:7d6:631d:7b0 with SMTP id c20-20020a6b4e14000000b007d6631d07b0mr189296iob.1.1712849819949;
-        Thu, 11 Apr 2024 08:36:59 -0700 (PDT)
+        bh=foLshYHoNSiA+bNhIaIfSXBA5u0u+3j+zD0hPKG7pGk=;
+        b=wO72kdKifD8m5U6UQvebITuLMn3OLiVI2bvfqBpFbPOXBxq8429Aoe9rcNaUDUwNC3
+         kz1kJcFnvzjbY4ckE7pz+TTPs5PJI9N8gvLxjLvJLoaAzxhJqJXOetSVrcYmdpyr4qkK
+         uXw83z1f5N9AvDFu4HJhBSduNQ2ozx4r11PMcZHsD0RdnWi56Z0OZEViCgTfpxF/jKXa
+         wu187sMy4EU+tgQlI8Kl+Eg9CClJTRb9TENxj3Ub40vWIMK69JZ08kaVnBd1i22zxsjP
+         65t9T7ky25BkOH/Gg94uoPAQbQvx6o75epCfzTX5k6Gc0V99ukrOgIVSzz31EvV2e6rM
+         dhxQ==
+X-Gm-Message-State: AOJu0YwU2eYRZuk1tCN3D3b/YXIJSdfV/c3RoDPs0h8fdCAOps84AZhH
+	eOidnc0VEdvOHdX43j7uOZvQXs/JiBRqw4Va7qGyymGkMM3RiAviansxBgfW3wjUg5Y6yHiP01N
+	9
+X-Google-Smtp-Source: AGHT+IFtK2KWlUQeuUuPWw00Dsgk5pIdToc4ZvZvP4t2uT3OyJ4q3ahI03CARsSvcZ71dk/WdibusQ==
+X-Received: by 2002:a05:6602:84:b0:7d6:9d75:6de2 with SMTP id h4-20020a056602008400b007d69d756de2mr43618iob.2.1712849821608;
+        Thu, 11 Apr 2024 08:37:01 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.36.58
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:36:58 -0700 (PDT)
+        Thu, 11 Apr 2024 08:37:00 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 191/437] scsi: mpt3sas: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:15:31 -0600
-Message-ID: <20240411153126.16201-192-axboe@kernel.dk>
+Subject: [PATCH 192/437] scsi: qedf: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:15:32 -0600
+Message-ID: <20240411153126.16201-193-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,43 +85,212 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/scsi/mpt3sas/mpt3sas_debugfs.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ drivers/scsi/qedf/qedf_dbg.h     |  6 +--
+ drivers/scsi/qedf/qedf_debugfs.c | 76 +++++++++++++-------------------
+ 2 files changed, 34 insertions(+), 48 deletions(-)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_debugfs.c b/drivers/scsi/mpt3sas/mpt3sas_debugfs.c
-index a6ab1db81167..2cb768bcf5c2 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_debugfs.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_debugfs.c
-@@ -36,17 +36,15 @@ static struct dentry *mpt3sas_debugfs_root;
-  * @ppos:	Offset in the file
-  */
- 
--static ssize_t
--_debugfs_iocdump_read(struct file *filp, char __user *ubuf, size_t cnt,
--	loff_t *ppos)
-+static ssize_t _debugfs_iocdump_read(struct kiocb *iocb, struct iov_iter *to)
- 
- {
--	struct mpt3sas_debugfs_buffer *debug = filp->private_data;
-+	struct mpt3sas_debugfs_buffer *debug = iocb->ki_filp->private_data;
- 
- 	if (!debug || !debug->buf)
- 		return 0;
- 
--	return simple_read_from_buffer(ubuf, cnt, ppos, debug->buf, debug->len);
-+	return simple_copy_to_iter(debug->buf, &iocb->ki_pos, debug->len, to);
+diff --git a/drivers/scsi/qedf/qedf_dbg.h b/drivers/scsi/qedf/qedf_dbg.h
+index 5ec2b817c694..802cbb5353f7 100644
+--- a/drivers/scsi/qedf/qedf_dbg.h
++++ b/drivers/scsi/qedf/qedf_dbg.h
+@@ -133,8 +133,8 @@ struct qedf_list_of_funcs {
+ { \
+ 	.owner  = THIS_MODULE, \
+ 	.open   = simple_open, \
+-	.read   = drv##_dbg_##ops##_cmd_read, \
+-	.write  = drv##_dbg_##ops##_cmd_write \
++	.read_iter   = drv##_dbg_##ops##_cmd_read, \
++	.write_iter  = drv##_dbg_##ops##_cmd_write \
  }
  
- /*
-@@ -89,7 +87,7 @@ _debugfs_iocdump_release(struct inode *inode, struct file *file)
- static const struct file_operations mpt3sas_debugfs_iocdump_fops = {
- 	.owner		= THIS_MODULE,
- 	.open           = _debugfs_iocdump_open,
--	.read           = _debugfs_iocdump_read,
-+	.read_iter      = _debugfs_iocdump_read,
- 	.release        = _debugfs_iocdump_release,
- };
+ /* Used for debugfs sequential files */
+@@ -142,7 +142,7 @@ struct qedf_list_of_funcs {
+ { \
+ 	.owner = THIS_MODULE, \
+ 	.open = drv##_dbg_##ops##_open, \
+-	.read = seq_read, \
++	.read_iter = seq_read_iter, \
+ 	.llseek = seq_lseek, \
+ 	.release = single_release, \
+ }
+diff --git a/drivers/scsi/qedf/qedf_debugfs.c b/drivers/scsi/qedf/qedf_debugfs.c
+index 451fd236bfd0..53ae21f14a11 100644
+--- a/drivers/scsi/qedf/qedf_debugfs.c
++++ b/drivers/scsi/qedf/qedf_debugfs.c
+@@ -95,17 +95,14 @@ const struct qedf_debugfs_ops qedf_debugfs_ops[] = {
  
+ DECLARE_PER_CPU(struct qedf_percpu_iothread_s, qedf_percpu_iothreads);
+ 
+-static ssize_t
+-qedf_dbg_fp_int_cmd_read(struct file *filp, char __user *buffer, size_t count,
+-			 loff_t *ppos)
++static ssize_t qedf_dbg_fp_int_cmd_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+ 	ssize_t ret;
+ 	size_t cnt = 0;
+ 	char *cbuf;
+ 	int id;
+ 	struct qedf_fastpath *fp = NULL;
+-	struct qedf_dbg_ctx *qedf_dbg =
+-				(struct qedf_dbg_ctx *)filp->private_data;
++	struct qedf_dbg_ctx *qedf_dbg = iocb->ki_filp->private_data;
+ 	struct qedf_ctx *qedf = container_of(qedf_dbg,
+ 	    struct qedf_ctx, dbg_ctx);
+ 
+@@ -125,52 +122,47 @@ qedf_dbg_fp_int_cmd_read(struct file *filp, char __user *buffer, size_t count,
+ 				 "#%d: %lu\n", id, fp->completions);
+ 	}
+ 
+-	ret = simple_read_from_buffer(buffer, count, ppos, cbuf, cnt);
+-
++	ret = simple_copy_to_iter(cbuf, &iocb->ki_pos, cnt, to);
+ 	vfree(cbuf);
+-
+ 	return ret;
+ }
+ 
+ static ssize_t
+-qedf_dbg_fp_int_cmd_write(struct file *filp, const char __user *buffer,
+-			  size_t count, loff_t *ppos)
++qedf_dbg_fp_int_cmd_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	if (!count || *ppos)
++	size_t count = iov_iter_count(from);
++
++	if (!count || iocb->ki_pos)
+ 		return 0;
+ 
+ 	return count;
+ }
+ 
+-static ssize_t
+-qedf_dbg_debug_cmd_read(struct file *filp, char __user *buffer, size_t count,
+-			loff_t *ppos)
++static ssize_t qedf_dbg_debug_cmd_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+ 	int cnt;
+ 	char cbuf[32];
+-	struct qedf_dbg_ctx *qedf_dbg =
+-				(struct qedf_dbg_ctx *)filp->private_data;
++	struct qedf_dbg_ctx *qedf_dbg = iocb->ki_filp->private_data;
+ 
+ 	QEDF_INFO(qedf_dbg, QEDF_LOG_DEBUGFS, "debug mask=0x%x\n", qedf_debug);
+ 	cnt = scnprintf(cbuf, sizeof(cbuf), "debug mask = 0x%x\n", qedf_debug);
+ 
+-	return simple_read_from_buffer(buffer, count, ppos, cbuf, cnt);
++	return simple_copy_to_iter(cbuf, &iocb->ki_pos, cnt, to);
+ }
+ 
+ static ssize_t
+-qedf_dbg_debug_cmd_write(struct file *filp, const char __user *buffer,
+-			 size_t count, loff_t *ppos)
++qedf_dbg_debug_cmd_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+ 	uint32_t val;
+ 	void *kern_buf;
+ 	int rval;
+-	struct qedf_dbg_ctx *qedf_dbg =
+-	    (struct qedf_dbg_ctx *)filp->private_data;
++	struct qedf_dbg_ctx *qedf_dbg = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(from);
+ 
+-	if (!count || *ppos)
++	if (!count || iocb->ki_pos)
+ 		return 0;
+ 
+-	kern_buf = memdup_user(buffer, count);
++	kern_buf = iterdup(from, count);
+ 	if (IS_ERR(kern_buf))
+ 		return PTR_ERR(kern_buf);
+ 
+@@ -189,13 +181,11 @@ qedf_dbg_debug_cmd_write(struct file *filp, const char __user *buffer,
+ }
+ 
+ static ssize_t
+-qedf_dbg_stop_io_on_error_cmd_read(struct file *filp, char __user *buffer,
+-				   size_t count, loff_t *ppos)
++qedf_dbg_stop_io_on_error_cmd_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+ 	int cnt;
+ 	char cbuf[7];
+-	struct qedf_dbg_ctx *qedf_dbg =
+-				(struct qedf_dbg_ctx *)filp->private_data;
++	struct qedf_dbg_ctx *qedf_dbg = iocb->ki_filp->private_data;
+ 	struct qedf_ctx *qedf = container_of(qedf_dbg,
+ 	    struct qedf_ctx, dbg_ctx);
+ 
+@@ -203,26 +193,24 @@ qedf_dbg_stop_io_on_error_cmd_read(struct file *filp, char __user *buffer,
+ 	cnt = scnprintf(cbuf, sizeof(cbuf), "%s\n",
+ 	    qedf->stop_io_on_error ? "true" : "false");
+ 
+-	return simple_read_from_buffer(buffer, count, ppos, cbuf, cnt);
++	return simple_copy_to_iter(cbuf, &iocb->ki_pos, cnt, to);
+ }
+ 
+ static ssize_t
+-qedf_dbg_stop_io_on_error_cmd_write(struct file *filp,
+-				    const char __user *buffer, size_t count,
+-				    loff_t *ppos)
++qedf_dbg_stop_io_on_error_cmd_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+ 	void *kern_buf;
+-	struct qedf_dbg_ctx *qedf_dbg =
+-				(struct qedf_dbg_ctx *)filp->private_data;
++	struct qedf_dbg_ctx *qedf_dbg = iocb->ki_filp->private_data;
+ 	struct qedf_ctx *qedf = container_of(qedf_dbg, struct qedf_ctx,
+ 	    dbg_ctx);
++	size_t count = iov_iter_count(from);
+ 
+ 	QEDF_INFO(qedf_dbg, QEDF_LOG_DEBUGFS, "entered\n");
+ 
+-	if (!count || *ppos)
++	if (!count || iocb->ki_pos)
+ 		return 0;
+ 
+-	kern_buf = memdup_user(buffer, 6);
++	kern_buf = iterdup(from, 6);
+ 	if (IS_ERR(kern_buf))
+ 		return PTR_ERR(kern_buf);
+ 
+@@ -383,30 +371,28 @@ qedf_dbg_driver_stats_open(struct inode *inode, struct file *file)
+ }
+ 
+ static ssize_t
+-qedf_dbg_clear_stats_cmd_read(struct file *filp, char __user *buffer,
+-				   size_t count, loff_t *ppos)
++qedf_dbg_clear_stats_cmd_read(struct kiocb *iocb, struct iov_iter *to)
+ {
++	size_t count = iov_iter_count(to);
+ 	int cnt = 0;
+ 
+ 	/* Essentially a read stub */
+-	cnt = min_t(int, count, cnt - *ppos);
+-	*ppos += cnt;
++	cnt = min_t(int, count, cnt - iocb->ki_pos);
++	iocb->ki_pos += cnt;
+ 	return cnt;
+ }
+ 
+ static ssize_t
+-qedf_dbg_clear_stats_cmd_write(struct file *filp,
+-				    const char __user *buffer, size_t count,
+-				    loff_t *ppos)
++qedf_dbg_clear_stats_cmd_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct qedf_dbg_ctx *qedf_dbg =
+-				(struct qedf_dbg_ctx *)filp->private_data;
++	struct qedf_dbg_ctx *qedf_dbg = iocb->ki_filp->private_data;
+ 	struct qedf_ctx *qedf = container_of(qedf_dbg, struct qedf_ctx,
+ 	    dbg_ctx);
++	size_t count = iov_iter_count(from);
+ 
+ 	QEDF_INFO(qedf_dbg, QEDF_LOG_DEBUGFS, "Clearing stat counters.\n");
+ 
+-	if (!count || *ppos)
++	if (!count || iocb->ki_pos)
+ 		return 0;
+ 
+ 	/* Clear stat counters exposed by 'stats' node */
 -- 
 2.43.0
 
