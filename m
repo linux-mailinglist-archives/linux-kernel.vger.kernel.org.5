@@ -1,112 +1,129 @@
-Return-Path: <linux-kernel+bounces-141308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24BA18A1CE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:59:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BD3D8A1C6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:47:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31256B28F1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:47:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D159C1F21839
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:47:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7354C194C67;
-	Thu, 11 Apr 2024 16:21:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6293199E94;
+	Thu, 11 Apr 2024 16:21:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="RGdAa4ln"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zMnH0ULc"
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C53A2C184
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:21:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EECF7199E8C
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712852507; cv=none; b=H/D3AxagLCjZQX7QLgcddMJ6gnBVrp0au2TWsXZvkrLuDjGU8akwP995w8USZNib0/mhRIc+M9mXN0jlED7cNNskhHeovBRSSelmXZwDJia/0n1N8tdkB8YYnbvoS01WZypOiAxUvymc808ww/mZ7XHrqgTQndMImnADhGfuvfs=
+	t=1712852517; cv=none; b=sadwpQe9226sm+x7m16TJk5Ji5Xi+9EUxlLicUWlfzDJDj/fMvd+X2jX92j1wfrr5WaS8m8ApNCMZjroDKl5Hht4uuMLJSb0XD1wMODaPBotS7SBRKKI9NmL3HJlZQ9UiNxSRkx5R/Rd+HYpLaxrOeDh6W+C9KNp0jwYnm8HPRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712852507; c=relaxed/simple;
-	bh=j8D/Z53nu49+HJajrMHYyo77QiNAWVcuqSGJ2wCUdn0=;
+	s=arc-20240116; t=1712852517; c=relaxed/simple;
+	bh=lf+0Ib0/SILN3w7/PCPazIMQblm1eMQjgq0Ng4XGKNQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mlM9myrmxfWR3DBR6Wunr2ZTQ/zt6CjXe1zkGV0P6YNzpdQmL9858eMJiDax59w8TyIQSvBhkdVbbAaFutXHepIAAPKBvI3rf4M95GbyskYYC7fvPg/ErvD3P1MGOmmSuwrzzHVxD+UGyBBoEXMxLYoxe3EFEhNTcNSmBkKRUVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=RGdAa4ln; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a522c00ce55so53829066b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:21:45 -0700 (PDT)
+	 To:Cc:Content-Type; b=ACYfgbw8tAcgiYL/GHcOTWnfZVE+QXoAz/h//ECtVksaddB2pNznAOsLNX063lksmIB+PDiWnHTRd4DUa7e+eiUK4ie4FOKvN1N3+uVmQGx2fQjKa3G4XjJMOJYcuSSeihzmg6MOsxGdhTUEb+2MgZaBnt3ZFtoNMDtp3/2eRHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zMnH0ULc; arc=none smtp.client-ip=209.85.167.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3bbbc6e51d0so3385334b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:21:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1712852504; x=1713457304; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nb6qBOubwpr++hT5NYcUKi/PePjm+psMH2yQSPywASo=;
-        b=RGdAa4lnvTgkAW7khWtzRtNQ5fF5aDOSejl6QAt7HDZ+OBSKNoyoEdibGaUQXMPbY5
-         FqvAPKiezRml+b/Xdl7FoF8stv//d4sZwFYv13ZkbJ0b04kPCMSRJcxKAqtYap64kQSK
-         FmOBG8NRxmsElismgqtfL/500PAfYtHEpIk+M=
+        d=google.com; s=20230601; t=1712852515; x=1713457315; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VcZ0pKuDsoHogwdYuz9mbRdwS2176lXlA0vTIaXKs1g=;
+        b=zMnH0ULcpk/KnxXzuQGSuJEzDwYXSJyiOjphfmUxivDi57fC0HuCsgLiXgtuqeS/ot
+         boEr7tASYZ9++10beVcD8wK4s+hKPqntMoqOG9WMCQ1/H8VFy0ctro8n02DKqS1t/vcp
+         iGW066n5TuiIGrP4ICG5g9huwn6jTecXvyZcTIYry4g+0iVxxBdXPn44uwzbu/FA3928
+         pPC5g63RzV1RqeMIdF0yTgecvsWtF9/2rV/QRnIFJf/2pe0xF6hP3ELgs/ChD/5HiqOW
+         ghDdDy/5oiz9bX97l9aC+B9QFIKzYfKSdT/Aplg2WZrFB+yLk0wTYWtR1QbDDm05MK94
+         2QsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712852504; x=1713457304;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nb6qBOubwpr++hT5NYcUKi/PePjm+psMH2yQSPywASo=;
-        b=wjWGl6Dkscoj+7ryxbmtUBtGCs0qUKKCknm3HG8F9znVhy4+63n9yJeWXoLCw+O8TN
-         btBBAH5yIqM2iOT+o+OqrUGaC9epdEfmUlDP3ta3CVFu1DH/Cg1ToEOAcBgsn7aElYnU
-         9ySgx484rFZ/LPJObMBzp5GI/Dvzmo4g0bnA9JnyXqskSyaiHDZvi5BrcLNa1sMvkPO1
-         GdCEisk38cIcw/a0Owx8tgTRqBIyhI4YpyMkzYxFeNXvkN1KmY42k+vvrfBNzcu57ocS
-         jGvDvtiTcKKA2UyhojWXXCkMNcTiFHsqcAJgnAKoMes1p0riZBpwtCfV9HL464b7NkoA
-         Aq+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVH3MbEnD5pRfcL90/rAcPdSTxElXDe3YEscDa0MR5SkKfH/Oq4S+cdPMjZyG7qUKnSAjNeI6+k3lyRAGZWjeO2oklPbhj8n8HCjwhi
-X-Gm-Message-State: AOJu0Yyb7zECZnZmcRBkpCOyLVnJGhnoPQWQpPKKiaR32fN1Mh4m7bnd
-	J9N0sUPEqk5Ws8Xxc84+bAzdJ39Cq/FZuoLTT6xc1ZyAac+F+IMOCu0xN9YsSaLluvblhO1hrz7
-	wAvKLgw==
-X-Google-Smtp-Source: AGHT+IFKBbM+db/ETaRPkWr2SAYUPiD0LxUyMqmwOxE4thXN4Ks24dGj4ipbxNB7i2NavoKOFd4faw==
-X-Received: by 2002:a17:906:f74b:b0:a52:1a82:7d3b with SMTP id jp11-20020a170906f74b00b00a521a827d3bmr182003ejb.0.1712852504385;
-        Thu, 11 Apr 2024 09:21:44 -0700 (PDT)
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
-        by smtp.gmail.com with ESMTPSA id du2-20020a17090772c200b00a52299d8eecsm441849ejc.135.2024.04.11.09.21.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 09:21:43 -0700 (PDT)
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a522c00ce55so53826666b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:21:43 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXVMaADW48YPmOqlr4Y4yKxwbkWa70uKc8Ikv1IyfWH0BO9zyHVsijV4cQfwacPWAHWNS9OCHhyvaNWj3IFK51H0yZ+ewAbeuHrgSLC
-X-Received: by 2002:a17:907:7e8c:b0:a51:abb0:a8a2 with SMTP id
- qb12-20020a1709077e8c00b00a51abb0a8a2mr167343ejc.42.1712852503153; Thu, 11
- Apr 2024 09:21:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712852515; x=1713457315;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VcZ0pKuDsoHogwdYuz9mbRdwS2176lXlA0vTIaXKs1g=;
+        b=kZSt1vrYGP0gMKKpleDtlT9qXCEDmSv1kRbn1rc2jKPzd8NvnRR/565p56skKS9CiH
+         RS3ZlCzfaTO588LcTX2AnVwihCePRLGozQ447Cx3yjpem/CKOlMFizxfb79XPwqUe4Wj
+         eHFpCwrs91o6EKL207sAw/g15jd+e6+qScEjRTUdsjNRGXI+ohRwixfGK6OqpgYytgqa
+         EJGE5qPM1SnaoiePicZy/L7Wx8T3AJGZpl8nDGdozt55Fg96fvdEeZh2uSX1rOgaIT8y
+         8j97jQb3aZ8S0au/mpsIh9hUNhaiWHLMWfrqVE+ocxpO86J1uZ0j1m7rnTxlD44p8QZ0
+         D0FA==
+X-Forwarded-Encrypted: i=1; AJvYcCUt/uGnw/TLV562fGI3eezLP5E0zyljOy4P6ytYfwzmM+6Z6oNeZqjAgsCN/HzcBWtMa5WIih2mdnUrdPts2KIqR1h7Th+72WzHWdGw
+X-Gm-Message-State: AOJu0YxTcsuPQ7jYp2RKJjSr4Cs7Qg04MHvyfaLrv6c+NrCsINewN0FE
+	xYu9OmHtzLBp52qVbGKwVL2qrfzSPxqIoBX3/7NPTlRqPfAZWn8nrcUsGlpXgck+esNEiXUcBaP
+	vENxmC1RSnVIbKePxkdgsV+WWVvdXAoRb+KXA
+X-Google-Smtp-Source: AGHT+IFcZi96Ry1HT9pKgtfjtu0w8kWo1mew/Ye/KOYKY3s21BuVIydCjug0RSuMOVFkuaeS3O4HOABhJR3D+LUzbSQ=
+X-Received: by 2002:aca:100f:0:b0:3c5:fc80:56a with SMTP id
+ 15-20020aca100f000000b003c5fc80056amr109433oiq.32.1712852514866; Thu, 11 Apr
+ 2024 09:21:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411001012.12513-1-torvalds@linux-foundation.org>
- <CAHk-=wiaoij30cnx=jfvg=Br3YTxhQjp4VWRc6=xYE2=+EVRPg@mail.gmail.com>
- <20240411-alben-kocht-219170e9dc99@brauner> <20240411-adressieren-preschen-9ed276614069@brauner>
-In-Reply-To: <20240411-adressieren-preschen-9ed276614069@brauner>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 11 Apr 2024 09:21:27 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj+8Cq82exnjf1HMsDODHwtnTOmfnGPMUf12ck9F-pyLA@mail.gmail.com>
-Message-ID: <CAHk-=wj+8Cq82exnjf1HMsDODHwtnTOmfnGPMUf12ck9F-pyLA@mail.gmail.com>
-Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() - requirements
-To: Christian Brauner <brauner@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>
+References: <20240322-rust-ktime_ms_delta-v2-1-d98de1f7c282@google.com> <ZhgISqMcEl21QZmW@boqun-archlinux>
+In-Reply-To: <ZhgISqMcEl21QZmW@boqun-archlinux>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Thu, 11 Apr 2024 18:21:43 +0200
+Message-ID: <CAH5fLgh4-OunYFmKYJ4L-jWthiB2D_moESpsZ7vwz0gUxdC6kQ@mail.gmail.com>
+Subject: Re: [PATCH v2] rust: time: add Ktime
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, John Stultz <jstultz@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 11 Apr 2024 at 05:25, Christian Brauner <brauner@kernel.org> wrote:
+On Thu, Apr 11, 2024 at 5:57=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
+rote:
 >
-> Btw, I think we should try to avoid putting this into path_init() and
-> confine this to linkat() itself imho. The way I tried to do it was by
-> presetting a root for filename_lookup(); means we also don't need a
-> LOOKUP_* flag for this as this is mostly a linkat thing.
+> On Fri, Mar 22, 2024 at 08:59:38AM +0000, Alice Ryhl wrote:
+> > +    /// Returns the number of milliseconds.
+> > +    #[inline]
+> > +    pub fn to_ms(self) -> i64 {
+> > +        self.divns_constant::<NSEC_PER_MSEC>()
+> > +    }
+> > +}
+> > +
+> > +/// Returns the number of milliseconds between two ktimes.
+> > +#[inline]
+> > +pub fn ktime_ms_delta(later: Ktime, earlier: Ktime) -> i64 {
+> > +    (later - earlier).to_ms()
+> > +}
+> > +
+> > +impl core::ops::Sub for Ktime {
+> > +    type Output =3D Ktime;
+> > +
+> > +    #[inline]
+> > +    fn sub(self, other: Ktime) -> Ktime {
+> > +        Self {
+> > +            inner: self.inner - other.inner,
+>
+> Nit: although we use "Release mode" to compile Rust code in kernel, so
+> i64 substraction behaves as 2's complement wrap, I think it's better we
+> use wrapping_sub here:
+>
+>         self.inner.wrapping_sub(other.inner)
+>
+> however it's not a correctness issue for now, so with or without it,
 
-So I had the exact reverse reaction to your patch - I felt that using
-that 'root' thing was the hacky case.
+We enable overflow checks even on release mode right now. But I don't
+understand this nit because we only have an overflow condition if the
+two ktimes differ by more than 2^31, and if that happens then that's a
+*legitimate* overflow that we would want to catch. Or is there
+something I am missing?
 
-The lookup flag may be limited to linkat(), but it makes the code
-smaller and clearer, and avoids having multiple places where we check
-dfd.
-
-And that 'root' argument really is the special hacky case, and is not
-actually used by any normal system call path, and is meant for
-internal kernel use rather than any generic case.
-
-           Linus
+Alice
 
