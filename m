@@ -1,172 +1,165 @@
-Return-Path: <linux-kernel+bounces-141698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 267F88A2219
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:08:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7F598A221A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:09:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CC43B2092B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:08:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 518891F2191A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:09:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E29084AED7;
-	Thu, 11 Apr 2024 23:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1A5747A64;
+	Thu, 11 Apr 2024 23:08:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gc0LHZjH"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cmDNdbLn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B328D47F51;
-	Thu, 11 Apr 2024 23:08:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F4847768;
+	Thu, 11 Apr 2024 23:08:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712876894; cv=none; b=DQUTwoZdPq4Q/pl5tYqKDZ2d2zvbUe5/H+WSJHI8xWpqwCDYR9n74dMVGND9qQx/wnQXnf/hLxjmsfxdkka7LCYj/eCkEROFIDanVSPTAXdtc3gThOi5EaF9JRN9CpvSdHrKKTsUiBOZN38El9aUebTGKTMXw5Ey+eRnClXjYzE=
+	t=1712876925; cv=none; b=hG6hjEzIAf2YedLd8WT+YdXYjgVILWa/7OrwJaGB4W/g8zNeecSIuraYQve69NXZt0ruzm6tf3R1XuZyI4/QAfCRQFhmniLZoXJMfgEkkdu5WHjBL3zz9jdQ3eMKpXLR84XDft320rK1LER9LBpwcgzw05azCnh6XOMIp8QbMw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712876894; c=relaxed/simple;
-	bh=YGi08gU0thy2xo5L/Jd2ML51rJYD3cHypCbeOJyorH8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GtTHJL4IZ/mMEQiR1w9O8wDt3p+JK2B0ysnkonvbNEv2etGUzE1l0GVA0VSfCOqLCqM+V3NmRHQCHLHPC5K9k6CEW2bCAr3JKIGMBdrdmlo2eIXUnrv05HKyhtNGqPFmk8DUzaNHgU4hp1FpZycinH6azm8ovaz4iUvnTx4nIl4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gc0LHZjH; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-434832aa162so1246851cf.1;
-        Thu, 11 Apr 2024 16:08:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712876891; x=1713481691; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=1cp6Y65O98WYlbmp5ogw9D72luMzjnNhAIcpF72RIPQ=;
-        b=gc0LHZjHgdfkz3zXH1No0O7X+blRnls3JAsJtxUo8cHZGuOTjQSbnVp5x5Xz6oHbRV
-         0NVmKrgf8s567991xYwlQXrHR2EO0AAQWlgLc3RIjea2ndIcy8sQ06f2M+srnNIDabtQ
-         KmVkhm0qKIHiAXcY7Gg7DdTF7OItpkuP/ZzOtbInB22LCZC0LRyZEysEIniCcS5CW3x0
-         8tzLkdDWnnfBbiRYdU4pOyaGMMZNepk7AkFlSy2s9kFXxk1JBQbpGp04d8LK9SZtfloz
-         7y2yg0eZIVt8AgZF6mSbjQbst1wyVuFOZ7PHwRmSsbDg/tCBta8pLlQ5O0ReJUE+6kkA
-         Gt6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712876891; x=1713481691;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1cp6Y65O98WYlbmp5ogw9D72luMzjnNhAIcpF72RIPQ=;
-        b=Q0iM5PXTqbEM5vePQW4Lm6pjsXzciKDmydxs9ad/BfXpyq8vbsihB6r5VSuZfXouvT
-         Wyl3svPLQoOVN6h3RUjf1ASNvLX6CtxUur6tdoTO4nwtnsU6rBT/Y9uRIpj07V32HkY0
-         +DlQbifEULsITgEQdi7md5AOLzBUJgmUZD+nphNQEVR5AbVb7riy5od5NaFQBDepIP1e
-         uKaZScZNug+K/uKqHrMMsWvaD3nTCO2y+cceNBMckbt3BdHL0i8XZRSxywhHxxHQ75bC
-         Z/QuGeZrtQgg4jizRQj6aV6eqnTo4Rt1q8F4M+BRATNJDAx7pEVdzVjXaQ0HX7TMAOyy
-         KXGw==
-X-Forwarded-Encrypted: i=1; AJvYcCV//Hda/nqd2bW0n/IBgvwky3f6GQRcrrTmhveIhcI+91m+GIevINds7dUoF1uS/+L19GsUZVm6bQvoqFZ5M4BGw27p1i2LD/smMqUhZylLIFk1Vi/LIrOCj2hE81G1A6S/YrZleW+WTX/J1gs=
-X-Gm-Message-State: AOJu0YyPwH94mARV4qvQOXX6+GgsERF0PXkAHLej0bAbwwHSihhfnM9A
-	/F9iR2PEbiDqEhgMd9bIU25ebmKpbqLlgeGRybSNNfXRMl8XgNZjlf9fmg==
-X-Google-Smtp-Source: AGHT+IGxLwz69pNIBHeq2xD+Wt5oG7jqgryyLf/L1g+Szbe4KnmD14+MAzru6+M0Tgl9TXZF5pTcDw==
-X-Received: by 2002:a05:622a:11d3:b0:434:3c23:d84b with SMTP id n19-20020a05622a11d300b004343c23d84bmr1201401qtk.31.1712876891595;
-        Thu, 11 Apr 2024 16:08:11 -0700 (PDT)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id d19-20020ac86693000000b00434f6c1458bsm1477812qtp.17.2024.04.11.16.08.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 16:08:11 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 8CD801200066;
-	Thu, 11 Apr 2024 19:08:10 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 11 Apr 2024 19:08:10 -0400
-X-ME-Sender: <xms:Wm0YZl29q8sE-ehJWfvleLl_6Xh3ZxDUxQK4yewCCbawV_ttl62GTQ>
-    <xme:Wm0YZsFK84Nu90f-19soVqTZCZaiVGDkFVAiA1jPxRoOjDRVtoBCSIN_pkWY5O4R4
-    TRpml0NtXH7GdPEWw>
-X-ME-Received: <xmr:Wm0YZl6SDAPPgvRoXDeNRKheW9NiqTxL8CPc2LBSoTtETsdcU9fPiZuNrebBsg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehledgudelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpefghfffvefhhfdvgfejgfekvdelgfekgeevueehlefhiedvgeffjefgteeu
-    gfehieenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhh
-    phgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunh
-    drfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:Wm0YZi0yZk8Zc_XNr7hJtypXnnNJ1IR_hbBytERqQBNyHjIx7Osptw>
-    <xmx:Wm0YZoGPVyP3tAKwWIE-fFikyOeBTfat8x1Rn8MSHbxWo3iHK7wTlA>
-    <xmx:Wm0YZj-cCGHqmezwqPk5t52F7Tqa1Hd0p7UjlM-PVHhU9slVlk4k5Q>
-    <xmx:Wm0YZlmyvCvbz5nh-YpAWKYfTNpWavURlF3d6Wy_2i67U62PhDU2jg>
-    <xmx:Wm0YZsGyUMgBMhdu9Hqy8cfGaiPhEUps7z120uXYuOBL-TRhoaLlWNjU>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 11 Apr 2024 19:08:10 -0400 (EDT)
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Thomas Gleixner <tglx@linutronix.de>,
-	Miguel Ojeda <ojeda@kernel.org>
-Cc: John Stultz <jstultz@google.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	bjorn3_gh@protonmail.com,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Alice Ryhl <aliceryhl@google.com>,
-	rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] rust: time: Use wrapping_sub() for Ktime::sub()
-Date: Thu, 11 Apr 2024 16:08:01 -0700
-Message-ID: <20240411230801.1504496-3-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240411230801.1504496-1-boqun.feng@gmail.com>
-References: <20240411230801.1504496-1-boqun.feng@gmail.com>
+	s=arc-20240116; t=1712876925; c=relaxed/simple;
+	bh=9Be3q6JYHjv6MccnxSgMKyVuxFPrHvQDF/b6XL6yv+4=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=gqAOLdvoTmdfkPATTQJhTY7E/g2ElDYgYp32tf/Pdy36N6eh6V11yxzAhPCcfWcnB/obxuggAllklGEycKgYf6eMdBv1guKIgNFpr7q3cPSHiY+zjUawY2cRByBS3drd7v64AEIkoHgVyEvolgEaNPCiQzPY11JSptJgyaXzqWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cmDNdbLn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B53F9C072AA;
+	Thu, 11 Apr 2024 23:08:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712876924;
+	bh=9Be3q6JYHjv6MccnxSgMKyVuxFPrHvQDF/b6XL6yv+4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=cmDNdbLnPV87ajGBPNUro9DeMRZXbKxg7Wz+kQadT70xWwn7eOKrD8ctGTrBs2tEd
+	 BpZHZNTK1BVLwfiOzjvQz88Piqpv3Gr7D3rkcdr8lSVFs6RM5pBzKNLJjiB8ZlDEkq
+	 fv8AF8uDhMqQ/n17o6Ktst2/vjHLZWmThH4cpARc3bGP5xJQeCoaTzHq1BCcA/0nEP
+	 2K8h+QD885Ys0FyDjZxRgldz5hnmdtpl/2LThnQplOaATtf0SeJu/6pTnE3AHXIR86
+	 qjF9hR6VSIORHVizuWpGcQNXCEaAhCRT1SRFhQ743rw3iBU6Fmjt+J1N26GM+Eob8Y
+	 t14TcyC8lnEug==
+Date: Fri, 12 Apr 2024 08:08:39 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Yuntao Wang <ytcoode@gmail.com>
+Cc: akpm@linux-foundation.org, arnd@arndb.de, changbin.du@huawei.com,
+ christophe.leroy@csgroup.eu, geert@linux-m68k.org, jpoimboe@kernel.org,
+ kjlx@templeofstupid.com, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, ndesaulniers@google.com,
+ peterz@infradead.org, tglx@linutronix.de, tj@kernel.org
+Subject: Re: [PATCH] init/main.c: Remove redundant space from
+ saved_command_line
+Message-Id: <20240412080839.c903a0058bd6594d31bc1d3e@kernel.org>
+In-Reply-To: <20240411152941.256666-1-ytcoode@gmail.com>
+References: <20240411230745.dba6cfa97ec068d909550fd5@kernel.org>
+	<20240411152941.256666-1-ytcoode@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Currently since Rust code is compiled with "-Coverflow-checks=y", so a
-normal substraction may be compiled as an overflow checking and panic
-if overflow happens:
+On Thu, 11 Apr 2024 23:29:40 +0800
+Yuntao Wang <ytcoode@gmail.com> wrote:
 
-        subq    %rsi, %rdi
-        jo      .LBB0_2
-        movq    %rdi, %rax
-        retq
-LBB0_2:
-        pushq   %rax
-        leaq    str.0(%rip), %rdi
-        leaq    .L__unnamed_1(%rip), %rdx
-        movl    $33, %esi
-        callq   *core::panicking::panic::h59297120e85ea178@GOTPCREL(%rip)
+> On Thu, 11 Apr 2024 23:07:45 +0900, Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> 
+> > On Thu, 11 Apr 2024 09:19:32 +0200
+> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > 
+> > > CC Hiramatsu-san (now for real :-)
+> > 
+> > Thanks!
+> > 
+> > > 
+> > > On Thu, Apr 11, 2024 at 6:13 AM Yuntao Wang <ytcoode@gmail.com> wrote:
+> > > > extra_init_args ends with a space, so when concatenating extra_init_args
+> > > > to saved_command_line, be sure to remove the extra space.
+> > 
+> > Hi Yuntao,
+> > 
+> > Hmm, if you want to trim the end space, you should trim extra_init_args
+> > itself instead of this adjustment. Also, can you share the example?
+> > 
+> > Thank you,
+> 
+> At first, I also intended to fix this issue as you suggested. However,
+> because both extra_command_line and extra_init_args end with a space,
+> making such a change would require modifications in many places.
 
-although overflow detection is nice to have, however this makes
-`Ktime::sub()` behave differently than `ktime_sub()`, moreover it's not
-clear that the overflow checking is helpful, since for example, the
-current binder usage[1] doesn't have the checking.
+You may just need:
 
-Therefore make `Ktime::sub()` have the same semantics as `ktime_sub()`:
-overflow behaves like 2s-complement wrapping sub.
+if (extra_init_args)
+	strim(extra_init_args);
 
-Link: https://lore.kernel.org/lkml/5ac8c0d09392290be789423f0dd78a520b830fab.1682333709.git.zhangchuang3@xiaomi.com/ [1]
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- rust/kernel/time.rs | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> That's why I chose this approach instead.
+> 
+> Here are some examples before and after modification:
+> 
+> Before: [    0.829179] Kernel command line: 'console=ttyS0 debug -- bootconfig_arg1 '
+> After:  [    0.032648] Kernel command line: 'console=ttyS0 debug -- bootconfig_arg1'
+> 
+> Before: [    0.757217] Kernel command line: 'console=ttyS0 debug -- bootconfig_arg1  arg1'
+> After:  [    0.068184] Kernel command line: 'console=ttyS0 debug -- bootconfig_arg1 arg1'
+> 
+> In order to make it easier to observe spaces, I added quotes when outputting saved_command_line.
 
-diff --git a/rust/kernel/time.rs b/rust/kernel/time.rs
-index e3bb5e89f88d..3cb15d3079f4 100644
---- a/rust/kernel/time.rs
-+++ b/rust/kernel/time.rs
-@@ -77,7 +77,9 @@ impl core::ops::Sub for Ktime {
-     #[inline]
-     fn sub(self, other: Ktime) -> Ktime {
-         Self {
--            inner: self.inner - other.inner,
-+            // Mirrors `ktime_sub()`, kernel defines signed overflow to behave like 2s-complement,
-+            // hence `wrapping_sub()` is used.
-+            inner: self.inner.wrapping_sub(other.inner),
-         }
-     }
- }
+BTW, is this tailing space harm anything? I don't like a cosmetic change.
+
+Thank you,
+
+> 
+> Note that the first 'before' ends with a space, and there are two spaces between
+> 'bootconfig_arg1' and 'arg1' in the second 'before'.
+> 
+> > > >
+> > > > Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> > > > ---
+> > > >  init/main.c | 4 +++-
+> > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/init/main.c b/init/main.c
+> > > > index 2ca52474d0c3..cf2c22aa0e8c 100644
+> > > > --- a/init/main.c
+> > > > +++ b/init/main.c
+> > > > @@ -660,12 +660,14 @@ static void __init setup_command_line(char *command_line)
+> > > >                         strcpy(saved_command_line + len, extra_init_args);
+> > > >                         len += ilen - 4;        /* strlen(extra_init_args) */
+> > > >                         strcpy(saved_command_line + len,
+> > > > -                               boot_command_line + initargs_offs - 1);
+> > > > +                               boot_command_line + initargs_offs);
+> > > >                 } else {
+> > > >                         len = strlen(saved_command_line);
+> > > >                         strcpy(saved_command_line + len, " -- ");
+> > > >                         len += 4;
+> > > >                         strcpy(saved_command_line + len, extra_init_args);
+> > > > +                       len += ilen - 4; /* strlen(extra_init_args) */
+> > > > +                       saved_command_line[len-1] = '\0'; /* remove trailing space */
+> > > >                 }
+> > > >         }
+> > > 
+> > > Gr{oetje,eeting}s,
+> > > 
+> > >                         Geert
+> > > 
+> > > -- 
+> > > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68korg
+> > > 
+> > > In personal conversations with technical people, I call myself a hacker. But
+> > > when I'm talking to journalists I just say "programmer" or something like that.
+> > >                                 -- Linus Torvalds
+> > > 
+> > 
+> > 
+> > -- 
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+
 -- 
-2.44.0
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
