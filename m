@@ -1,87 +1,62 @@
-Return-Path: <linux-kernel+bounces-140706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEA978A1801
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:00:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 095F58A1806
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:02:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6345A285028
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:00:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C11AC284F16
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A9F13FFC;
-	Thu, 11 Apr 2024 15:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NnLLIQ9+"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7FE4101DA
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B466310799;
+	Thu, 11 Apr 2024 15:02:45 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A38EEAC7
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:02:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712847633; cv=none; b=pIeA+QKvXTQPqOjYfg2ujA5pYnMN7nMaTGjxjwPmr8mfE7GlVoRsJw0twTFad/GHYBl+ZayQ7X/OcmpfET9HIOVYPmCDBUIIveaqDDFM3PRIM3RizVmLPgotmPkvhFpyBh6sfC73qG5Fd/AL6bx4VgolrubzMBaBPEwO6z7tFuA=
+	t=1712847765; cv=none; b=pv88BDUr7FZzRc/71O6RwQ2nHzmCLQu/1KLr+10UJmVB/nuaglyPvEeQjgPV/Z+1xj+H9xu5vdopx5ZisM70GEqXvsD3G1iMrF5GnohE3as7i7DN8vuZ8hBG5O8VZtm+27vNSexWoNO3VMK3dYM/grvpWOXcZRW/d9mo1rTQu10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712847633; c=relaxed/simple;
-	bh=dvM6yc+Dk+cKTgmEM4dCnyBu8WZu/Jpf3J4qPjeVWEs=;
+	s=arc-20240116; t=1712847765; c=relaxed/simple;
+	bh=GxW7D8iDkkqi0EJ/T0AcUYMtwyqpLWSID7jQo7v8e2I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DmaFTT8UZotnWbmB78X5n+YDVuXspX8T5QWCr5IQBmYXkv2w0q7oJMQEaF8aZHWgKmrE/5N9dHU7ETmxJDZsdFLbIIVBLFFOSKYWiSFGwJDnp997+8mse3rUjZ4Cut2S+/QKULqDkIq3SzEwfX6NNtAqhVAxXOHkAk7lzgXy4lU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NnLLIQ9+; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56fead80bacso885665a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:00:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712847630; x=1713452430; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4AAP2GSXMI8XPS99qq0u7uGwu5bsp52Ho72AkcY7Vto=;
-        b=NnLLIQ9+zRf/raXKvF6SgJHLYkre9/4mJQ0dA8Rh7AgDZSFQIGmxyt9TxROtoDFiGK
-         OU+lXqmYikk59EnJemOarSJVCzFY1TpyVUenQz3/+eaBIFQvAwFQIRkatb9GtlaQQu3Y
-         7UMIiyL3kXKz7z6MAimwm51hH/IVO14BlptMxEY8J373BXdvhVRaMwSZP29lzCnkw7qb
-         6SgjHYfPmB6Kg1ZoumJphBLgaCfB9rpTc9e1pgzpgIV+iDhDzpX2TLwMm29qlQc5kPqC
-         yzhUnXskoLl5xfz9+SLaX5bjVyQ8hhQ76t3UiJC2qVuRwM+2FC4qcoNMBdC6rAbZ6LfG
-         Yh/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712847630; x=1713452430;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4AAP2GSXMI8XPS99qq0u7uGwu5bsp52Ho72AkcY7Vto=;
-        b=SK2vUdadMujg7j32woP5bBf32FuHn/jrVbzKadi3G3/EUNskO43LkgyeI/5iEYfv9D
-         vOYPyeUKdpd1eixJZKJBsez9aNU8Op2WI8sDBy0cYA2DDplocgCwjkx4LK00OfWhkch5
-         +KjeTash6y07oWT7EwhXPZ/UcI/FIF8KLldwBYCFo5UFjMcUzLImiaGxZu4q1VVU4+3v
-         KMggbIpZRABrlptdTvdGzaJsm+qxF0VMZmmeQjVh2YIORXi3pFwVgZKUKDl1WnalMXYu
-         jpsXWAPua5HIPcSiG2GevD5WhrzerMvZSw2DqtTdGJYVjtGtZ8sXpTHeGA6GXxvAQxsz
-         rVXg==
-X-Forwarded-Encrypted: i=1; AJvYcCXj5kN8OnNvWi5JV/fWpKBusrwvR6cTaGUtmws/5UvNhsbwW+0xJWcClItPAWetPjp4/OehaWZ8giPKxRt+7DKG7SCdxccY25hO+uxL
-X-Gm-Message-State: AOJu0Yzbzgno9U4kjX5hPCu2gz5A0iy2MvBq49JcXBTdSPbVo84bZ0a9
-	FKDoU/5cLdURXvF4DoNSWgOtjy15wSJNg59pzXCo0M8rNUoBZmiNiE2IXKNF0pk=
-X-Google-Smtp-Source: AGHT+IHKuxw3VXAdRk5CGOofjhK2As1WNciZ/SxTO3eBCva4YM3a3X0Ku7wGIQlM2F3nXzy4iTRQag==
-X-Received: by 2002:a17:906:b24a:b0:a52:129d:ca66 with SMTP id ce10-20020a170906b24a00b00a52129dca66mr3090939ejb.21.1712847629683;
-        Thu, 11 Apr 2024 08:00:29 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id h24-20020a17090634d800b00a51b3d4bb39sm829976ejb.59.2024.04.11.08.00.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:00:29 -0700 (PDT)
-Date: Thu, 11 Apr 2024 18:00:25 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: David Gow <davidgow@google.com>, Will Deacon <will@kernel.org>,
-	mic@digikod.net, keescook@chromium.org, rmoar@google.com,
-	lkft-triage@lists.linaro.org, kunit-dev@googlegroups.com,
-	linux-kernel@vger.kernel.org, peterz@infradead.org,
-	mingo@redhat.com, longman@redhat.com, boqun.feng@gmail.com,
-	anders.roxell@linaro.org, arnd@arndb.de, linux@roeck-us.net,
-	Linux Kernel Functional Testing <lkft@linaro.org>
-Subject: Re: BUG: KASAN: null-ptr-deref in _raw_spin_lock_irq next-20240410
-Message-ID: <f2d02e35-185e-44d1-9b58-1034336e2e0d@moroto.mountain>
-References: <20240410102710.35911-1-naresh.kamboju@linaro.org>
- <20240410152307.GA25111@willie-the-truck>
- <CABVgOSmJX=scCGZ7FWafpKB8CdQD17Uh5MuTeoFx2BhGC0DMSw@mail.gmail.com>
- <CA+G9fYuuLXnVuc2fqy_-EY3QBiUxroU9uw74vZ2i08qW=-q1tQ@mail.gmail.com>
- <CA+G9fYt6U4YzYGvYWxDVvUVKNc0pgVYiGafZ5_OSEf=5r1=YYA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nVlxmgty2fI69dErLsbwX5/h4roGzjglohjXLe4tKh6Hp7lTe4II2ghHtNvfmrgQnzUNg2j6SboO5eh+3WjfsVH3FL3CJlEDw2YnhgY2Ts7Ig88tGKwgMlwLQUwZSSXxIqoHqG1BbjOqE5fRRETrA4nK2xZuW5NK1Uyf00zamoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 55C5C113E;
+	Thu, 11 Apr 2024 08:03:12 -0700 (PDT)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 08B223F6C4;
+	Thu, 11 Apr 2024 08:02:39 -0700 (PDT)
+Date: Thu, 11 Apr 2024 16:02:37 +0100
+From: Dave Martin <Dave.Martin@arm.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: Reinette Chatre <reinette.chatre@intel.com>,
+	James Morse <james.morse@arm.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
+	shameerali.kolothum.thodi@huawei.com,
+	D Scott Phillips OS <scott@os.amperecomputing.com>,
+	carl@os.amperecomputing.com, lcherian@marvell.com,
+	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+	dfustini@baylibre.com, amitsinght@marvell.com,
+	Rex Nie <rex.nie@jaguarmicro.com>
+Subject: Re: [PATCH v1 01/31] x86/resctrl: Fix allocation of cleanest CLOSID
+ on platforms with no monitors
+Message-ID: <Zhf7jZFPARAWFDyO@e133380.arm.com>
+References: <20240321165106.31602-1-james.morse@arm.com>
+ <20240321165106.31602-2-james.morse@arm.com>
+ <1e19965c-51f2-4f7a-8d29-e40f4e54a72c@redhat.com>
+ <8d1d39ca-60f0-47e9-a090-f630c6df19ae@intel.com>
+ <735f18df-0f63-44ba-adfc-70ead9ce9495@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,39 +65,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+G9fYt6U4YzYGvYWxDVvUVKNc0pgVYiGafZ5_OSEf=5r1=YYA@mail.gmail.com>
+In-Reply-To: <735f18df-0f63-44ba-adfc-70ead9ce9495@redhat.com>
 
-On Thu, Apr 11, 2024 at 08:20:55PM +0530, Naresh Kamboju wrote:
+On Tue, Apr 09, 2024 at 05:06:03PM +0200, David Hildenbrand wrote:
+> On 09.04.24 17:02, Reinette Chatre wrote:
+> > Hi David,
+> > 
 > 
-> I use to notice kernel panic while running kunit tests
-> now I have noticed this
+> Hi,
 > 
-> Unable to handle kernel paging request at virtual address
-> KASAN: null-ptr-deref in range
-> pc : kunit_test_null_dereference (lib/kunit/kunit-test.c:119)
-> lr : kunit_generic_run_threadfn_adapter (lib/kunit/try-catch.c:31)
+> > (Thank you very much for taking a look at these)
 > 
-> The kunit tests run to completion and the system is stable.
-> Kernel did not panic.
+> I'm planning on reviewing more; as most of resctrl is code I haven't really
+> read before, I'm not able to make progress as fast as I normally would in
+> core-MM ... :)
+
+[...]
+
+> -- 
+> Cheers,
 > 
+> David / dhildenb
 
-[ Snip ]
+Thanks, all review is appreciated (I'm somewhat in the same boat myself,
+but gradually finding my way around...)
 
-> <0>[   76.808597] Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
-> <4>[   76.809876] Modules linked in:
-> <4>[   76.812055] CPU: 1 PID: 567 Comm: kunit_try_catch Tainted: G
-> B            N 6.9.0-rc3-next-20240410 #1
-> <4>[   76.812987] Hardware name: linux,dummy-virt (DT)
-> <4>[   76.814123] pstate: 12400009 (nzcV daif +PAN -UAO +TCO -DIT
-> -SSBS BTYPE=--)
-> <4>[ 76.814947] pc : kunit_test_null_dereference (lib/kunit/kunit-test.c:119)
-                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-This is a new intentional NULL dereferencer that was added yesterday.
-
-Maybe these should have a big printk, "Intentional NULL dereference
-coming up!\n".
-
-regards,
-dan carpenter
-
+Cheers
+---Dave
 
