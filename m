@@ -1,249 +1,172 @@
-Return-Path: <linux-kernel+bounces-140198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD3728A0CBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:47:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5F808A0CBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:48:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35A7AB24BF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:47:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29B8AB25C19
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:48:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B6114534E;
-	Thu, 11 Apr 2024 09:46:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ouVUj3/l"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13FD14534A;
+	Thu, 11 Apr 2024 09:48:30 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B319D13E405;
-	Thu, 11 Apr 2024 09:46:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75833145345
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712828811; cv=none; b=eB2Z7OoJqECONWpZOAzoVsmN8zKCmWczxzPvsOC5qdTILNlU29tIyZfkZ4Rr5cbG32Sa6GPH4xdlcYKGSLfspnA9+kLAV7dtAMmPyTR7elfQ4Bk++k8iSG553cS8lwyGCy9ErOqqYOM0vIRcvUaFVU5Esv9ClmQl9JvXeC8Htl0=
+	t=1712828910; cv=none; b=OH5mEI/7aEUqboQ9io3ZaEr/ImMqWE17YDR69r0/sTi8r8GMn9gD5wCw1wrrD19ItLDPj/H/rBdL0/JiPo1hL7XzeReWJaKA3JgvpYJmQme3Kx7nNLf7aOJaOGCF4khJszsdKCihRxUErPgKUmqdopEq/vEUDVzBAqNscPIFWKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712828811; c=relaxed/simple;
-	bh=g8idMwU+bikSSQ+8Sb+oNKJ9igMRbSIEC0UaqUT1VjA=;
-	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
-	 Content-Disposition:MIME-Version; b=g6RYwqX6m/FvGA6PmvDpog24r0c2cCg4Bw0FcZKsKvwz8j9Ge1PHw6Ef/8oN5qoAg4b1dZPvCYTY7wZ08dyCFPxEfln5IozawOre5E/2Sl7CBg1V2EPYmM2b5hbqT6FzSaHrAfCqPyx90K5WrcGLJ1QBlob7JrQ6/o3LvkQhzvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ouVUj3/l; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43B9a6sE025186;
-	Thu, 11 Apr 2024 09:46:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : content-type : mime-version; s=pp1;
- bh=zDLe+8MCuJwjfJvLO1q2HOAfja3n9iFENYvdQqRhjAw=;
- b=ouVUj3/l1qKy51HDZk1HtvKRgZJGw7XxIBt6uHcQsFXwQ6rfQ9UH7vPHStYBQAHHnxJg
- 4+aB+tXO0/gZt7B1+iw17ti41nxuqyvBheEvIP0XhLH/myAOkG8YybA0SzPYxyTKEcZq
- +eOh8QnNo7Wr6AgTQJj2vgYJ6+Srib6F2gGLW+dUJHPpeACCJgrqGhB2+xNZMNsPwbOR
- 7csmBlaOGDwal4NmJtr5hecdtkFjcipDSeNLkKHsPxZBzz99gmH2yz8y5shav/hJB/Qo
- LwaVT5Yawm/ereqrD66HdMXLv1jMy5wC7lWq+t+yy+qQ4E+W8ZfcpIZRBiP1p4c6si1b Fw== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xeb1vgbha-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 09:46:37 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43B9TWM1022560;
-	Thu, 11 Apr 2024 09:46:03 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbhqpad69-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 09:46:03 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43B9jxMk51184056
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 11 Apr 2024 09:46:01 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4E4A120043;
-	Thu, 11 Apr 2024 09:45:59 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B37B520040;
-	Thu, 11 Apr 2024 09:45:58 +0000 (GMT)
-Received: from localhost (unknown [9.179.0.57])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu, 11 Apr 2024 09:45:58 +0000 (GMT)
-Date: Thu, 11 Apr 2024 11:45:57 +0200
-From: Vasily Gorbik <gor@linux.ibm.com>
-To: Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>
-Cc: Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] NFSD: fix endianness issue in nfsd4_encode_fattr4
-Message-ID: <patch.git-0ff58649313e.your-ad-here.call-01712828617-ext-4049@work.hours>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Patchwork-Bot: notify
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 6QE8mGXdW6XUzHshanK2S3zhZ4ZF8obi
-X-Proofpoint-GUID: 6QE8mGXdW6XUzHshanK2S3zhZ4ZF8obi
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1712828910; c=relaxed/simple;
+	bh=ETAy9kydqxrg8N+usjcKuIuww3eYpAwTXNNz7laF/18=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=OrYufobdmKj2+566/kla5jbrk3S0NDgGjiseexYv/ojIBB7ryk24XAfeXL62reQVYQUDp+AdElEAb600UmsiJln2YYE4WOAAMvo207bHfo7txexuzgTzIscD0B0j6chZy7xhG1LILgGgqcVodg2BwuMWkp9kkB6QvtzNGinS6lU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7d5f987a9f9so405833939f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 02:48:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712828907; x=1713433707;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IxY3ThfzTOVgLza0iD4fys5v3cj7IHGn+rCsgDPuuvI=;
+        b=AffyXnLixgiZlFcAGgkEo8zLfp0Mk09gVOEbQY2ps8OoukalgCQpZxCgb9aBOl6AHH
+         STBSg6w1qjpI6+Y6SMTDW29AtgiuHfN+z59tXXs7VOqI/AqwFepDgYkSc6CzyxBRdHiQ
+         9er1d1M0PCe1vI2wc64zmOqIKBrNSm2coWbIW43DbAbk6il471nASXFIPbBs5FPAtH2w
+         fOn2vU1huQwsrq3flWIb/zJR95uH+0kyZN3iJ5t+f0qHmrdQzxI1w2bsjTxU7PCFy3BZ
+         OUcCZD6ZOTqaFnmz2Gu558shliYYnEYw23OYMkUq6X/NGmDubtz7RSzOlGIBm3xVmxpG
+         +pqA==
+X-Forwarded-Encrypted: i=1; AJvYcCXjlttQllCS5DnFC0rvliOA1S0SjerH425CLwsGF6UIgGPHAN8dIIQ3MbevmBFQKKzCubMAwpMtu0O+LrcwlbdwM0te4Rz/WU0brAYJ
+X-Gm-Message-State: AOJu0Yzf+b1QQRUs35QBVICeQoD2c2xRSz9F6UgRnk7I5oRM/KYQ3U+L
+	SXuxsfxj5kYn8hh6Grbq7aVO+7rAQBzkpJfYSMbHblp/fEEwmu2dLbaO7sRUC6a3cOciXWFJjHX
+	KBI64mRkfEmd8tHWgvK4NU2qUvvFtXxdep0gNzNnUJlQ9EW/u6I9JGNw=
+X-Google-Smtp-Source: AGHT+IG9y+tUNYbixenLBF5gILNrr6MCXPVDw7JA+yzgAcOC0AlCI2oyis12hTaJhCFovjhCo8EArlcfCZJsKjZxOUX2NlaO9Is8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-11_04,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 bulkscore=0 phishscore=0 suspectscore=0 malwarescore=0
- mlxlogscore=999 mlxscore=0 adultscore=0 clxscore=1011 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404110070
+X-Received: by 2002:a05:6638:8329:b0:482:d033:89c5 with SMTP id
+ io41-20020a056638832900b00482d03389c5mr9259jab.6.1712828907702; Thu, 11 Apr
+ 2024 02:48:27 -0700 (PDT)
+Date: Thu, 11 Apr 2024 02:48:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009adc640615cf0ef7@google.com>
+Subject: [syzbot] [ext4?] WARNING: locking bug in ext4_xattr_inode_update_ref (3)
+From: syzbot <syzbot+3ca210b2c10e57015b3c@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-The nfs4 mount fails with EIO on 64-bit big endian architectures since
-v6.7. The issue arises from employing a union in the nfsd4_encode_fattr4()
-function to overlay a 32-bit array with a 64-bit values based bitmap,
-which does not function as intended. Address the endianness issue by
-utilizing bitmap_from_arr32() to copy 32-bit attribute masks into a
-bitmap in an endianness-agnostic manner.
+Hello,
 
-Cc: <stable@vger.kernel.org>
-Fixes: fce7913b13d0 ("NFSD: Use a bitmask loop to encode FATTR4 results")
-Link: https://bugs.launchpad.net/ubuntu/+source/nfs-utils/+bug/2060217
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+syzbot found the following issue on:
+
+HEAD commit:    f2f80ac80987 Merge tag 'nfsd-6.9-2' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1734efc5180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=411644804960f423
+dashboard link: https://syzkaller.appspot.com/bug?extid=3ca210b2c10e57015b3c
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e7f79d180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1614c105180000
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-f2f80ac8.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/226f497bcbfb/vmlinux-f2f80ac8.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6cae4ca2cad5/bzImage-f2f80ac8.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/2780392925e4/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3ca210b2c10e57015b3c@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+Looking for class "&ea_inode->i_rwsem" with key ext4_fs_type, but found a different class "&sb->s_type->i_mutex_key" with the same key
+WARNING: CPU: 0 PID: 5434 at kernel/locking/lockdep.c:932 look_up_lock_class+0x133/0x140 kernel/locking/lockdep.c:932
+Modules linked in:
+CPU: 0 PID: 5434 Comm: syz-executor760 Not tainted 6.9.0-rc2-syzkaller-00413-gf2f80ac80987 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:look_up_lock_class+0x133/0x140 kernel/locking/lockdep.c:932
+Code: c7 c7 20 ca 2c 8b e8 dc 76 70 f6 90 0f 0b 90 90 90 31 db eb be c6 05 02 67 eb 04 01 90 48 c7 c7 40 cd 2c 8b e8 be 76 70 f6 90 <0f> 0b 90 90 e9 62 ff ff ff 0f 1f 40 00 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc90003ef6ea0 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: ffffffff942543e8 RCX: ffffffff814fe349
+RDX: ffff8880259da440 RSI: ffffffff814fe356 RDI: 0000000000000001
+RBP: ffffffff8de72ed8 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 000000006b6f6f4c R12: ffff8880329db600
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffff94af1aa0
+FS:  00007fb2680336c0(0000) GS:ffff88806b000000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000555582e00778 CR3: 0000000019d34000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ register_lock_class+0xb1/0x1230 kernel/locking/lockdep.c:1284
+ __lock_acquire+0x111/0x3b30 kernel/locking/lockdep.c:5014
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
+ down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
+ inode_lock include/linux/fs.h:795 [inline]
+ ext4_xattr_inode_update_ref+0xa6/0x5e0 fs/ext4/xattr.c:1042
+ ext4_xattr_inode_inc_ref fs/ext4/xattr.c:1088 [inline]
+ ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1583 [inline]
+ ext4_xattr_set_entry+0x125f/0x3c70 fs/ext4/xattr.c:1718
+ ext4_xattr_block_set+0xcc3/0x3100 fs/ext4/xattr.c:2037
+ ext4_xattr_set_handle+0xdb6/0x1480 fs/ext4/xattr.c:2443
+ ext4_xattr_set+0x149/0x380 fs/ext4/xattr.c:2545
+ __vfs_setxattr+0x173/0x1e0 fs/xattr.c:200
+ __vfs_setxattr_noperm+0x127/0x5e0 fs/xattr.c:234
+ __vfs_setxattr_locked+0x182/0x260 fs/xattr.c:295
+ vfs_setxattr+0x146/0x350 fs/xattr.c:321
+ do_setxattr+0x146/0x170 fs/xattr.c:629
+ setxattr+0x15d/0x180 fs/xattr.c:652
+ path_setxattr+0x179/0x1e0 fs/xattr.c:671
+ __do_sys_setxattr fs/xattr.c:687 [inline]
+ __se_sys_setxattr fs/xattr.c:683 [inline]
+ __x64_sys_setxattr+0xc4/0x160 fs/xattr.c:683
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x72/0x7a
+RIP: 0033:0x7fb26807cf79
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fb268033218 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007fb26807cf79
+RDX: 00000000200005c0 RSI: 0000000020000180 RDI: 0000000020000080
+RBP: 00007fb2681056a8 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000002000 R11: 0000000000000246 R12: 00007fb2681056a0
+R13: 0072657070752e79 R14: 0030656c69662f2e R15: 2f30656c69662f2e
+ </TASK>
+
+
 ---
- fs/nfsd/nfs4xdr.c | 47 +++++++++++++++++++++++------------------------
- 1 file changed, 23 insertions(+), 24 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
-index 10439d569d9c..85d43b3249f9 100644
---- a/fs/nfsd/nfs4xdr.c
-+++ b/fs/nfsd/nfs4xdr.c
-@@ -3519,11 +3519,13 @@ nfsd4_encode_fattr4(struct svc_rqst *rqstp, struct xdr_stream *xdr,
- 		    struct dentry *dentry, const u32 *bmval,
- 		    int ignore_crossmnt)
- {
-+	DECLARE_BITMAP(attr_bitmap, ARRAY_SIZE(nfsd4_enc_fattr4_encode_ops));
- 	struct nfsd4_fattr_args args;
- 	struct svc_fh *tempfh = NULL;
- 	int starting_len = xdr->buf->len;
- 	__be32 *attrlen_p, status;
- 	int attrlen_offset;
-+	u32 attrmask[3];
- 	int err;
- 	struct nfsd4_compoundres *resp = rqstp->rq_resp;
- 	u32 minorversion = resp->cstate.minorversion;
-@@ -3531,10 +3533,6 @@ nfsd4_encode_fattr4(struct svc_rqst *rqstp, struct xdr_stream *xdr,
- 		.mnt	= exp->ex_path.mnt,
- 		.dentry	= dentry,
- 	};
--	union {
--		u32		attrmask[3];
--		unsigned long	mask[2];
--	} u;
- 	unsigned long bit;
- 	bool file_modified = false;
- 	u64 size = 0;
-@@ -3550,20 +3548,19 @@ nfsd4_encode_fattr4(struct svc_rqst *rqstp, struct xdr_stream *xdr,
- 	/*
- 	 * Make a local copy of the attribute bitmap that can be modified.
- 	 */
--	memset(&u, 0, sizeof(u));
--	u.attrmask[0] = bmval[0];
--	u.attrmask[1] = bmval[1];
--	u.attrmask[2] = bmval[2];
-+	attrmask[0] = bmval[0];
-+	attrmask[1] = bmval[1];
-+	attrmask[2] = bmval[2];
- 
- 	args.rdattr_err = 0;
- 	if (exp->ex_fslocs.migrated) {
--		status = fattr_handle_absent_fs(&u.attrmask[0], &u.attrmask[1],
--						&u.attrmask[2], &args.rdattr_err);
-+		status = fattr_handle_absent_fs(&attrmask[0], &attrmask[1],
-+						&attrmask[2], &args.rdattr_err);
- 		if (status)
- 			goto out;
- 	}
- 	args.size = 0;
--	if (u.attrmask[0] & (FATTR4_WORD0_CHANGE | FATTR4_WORD0_SIZE)) {
-+	if (attrmask[0] & (FATTR4_WORD0_CHANGE | FATTR4_WORD0_SIZE)) {
- 		status = nfsd4_deleg_getattr_conflict(rqstp, d_inode(dentry),
- 					&file_modified, &size);
- 		if (status)
-@@ -3582,16 +3579,16 @@ nfsd4_encode_fattr4(struct svc_rqst *rqstp, struct xdr_stream *xdr,
- 
- 	if (!(args.stat.result_mask & STATX_BTIME))
- 		/* underlying FS does not offer btime so we can't share it */
--		u.attrmask[1] &= ~FATTR4_WORD1_TIME_CREATE;
--	if ((u.attrmask[0] & (FATTR4_WORD0_FILES_AVAIL | FATTR4_WORD0_FILES_FREE |
-+		attrmask[1] &= ~FATTR4_WORD1_TIME_CREATE;
-+	if ((attrmask[0] & (FATTR4_WORD0_FILES_AVAIL | FATTR4_WORD0_FILES_FREE |
- 			FATTR4_WORD0_FILES_TOTAL | FATTR4_WORD0_MAXNAME)) ||
--	    (u.attrmask[1] & (FATTR4_WORD1_SPACE_AVAIL | FATTR4_WORD1_SPACE_FREE |
-+	    (attrmask[1] & (FATTR4_WORD1_SPACE_AVAIL | FATTR4_WORD1_SPACE_FREE |
- 		       FATTR4_WORD1_SPACE_TOTAL))) {
- 		err = vfs_statfs(&path, &args.statfs);
- 		if (err)
- 			goto out_nfserr;
- 	}
--	if ((u.attrmask[0] & (FATTR4_WORD0_FILEHANDLE | FATTR4_WORD0_FSID)) &&
-+	if ((attrmask[0] & (FATTR4_WORD0_FILEHANDLE | FATTR4_WORD0_FSID)) &&
- 	    !fhp) {
- 		tempfh = kmalloc(sizeof(struct svc_fh), GFP_KERNEL);
- 		status = nfserr_jukebox;
-@@ -3606,10 +3603,10 @@ nfsd4_encode_fattr4(struct svc_rqst *rqstp, struct xdr_stream *xdr,
- 		args.fhp = fhp;
- 
- 	args.acl = NULL;
--	if (u.attrmask[0] & FATTR4_WORD0_ACL) {
-+	if (attrmask[0] & FATTR4_WORD0_ACL) {
- 		err = nfsd4_get_nfs4_acl(rqstp, dentry, &args.acl);
- 		if (err == -EOPNOTSUPP)
--			u.attrmask[0] &= ~FATTR4_WORD0_ACL;
-+			attrmask[0] &= ~FATTR4_WORD0_ACL;
- 		else if (err == -EINVAL) {
- 			status = nfserr_attrnotsupp;
- 			goto out;
-@@ -3621,17 +3618,17 @@ nfsd4_encode_fattr4(struct svc_rqst *rqstp, struct xdr_stream *xdr,
- 
- #ifdef CONFIG_NFSD_V4_SECURITY_LABEL
- 	args.context = NULL;
--	if ((u.attrmask[2] & FATTR4_WORD2_SECURITY_LABEL) ||
--	     u.attrmask[0] & FATTR4_WORD0_SUPPORTED_ATTRS) {
-+	if ((attrmask[2] & FATTR4_WORD2_SECURITY_LABEL) ||
-+	     attrmask[0] & FATTR4_WORD0_SUPPORTED_ATTRS) {
- 		if (exp->ex_flags & NFSEXP_SECURITY_LABEL)
- 			err = security_inode_getsecctx(d_inode(dentry),
- 						&args.context, &args.contextlen);
- 		else
- 			err = -EOPNOTSUPP;
- 		args.contextsupport = (err == 0);
--		if (u.attrmask[2] & FATTR4_WORD2_SECURITY_LABEL) {
-+		if (attrmask[2] & FATTR4_WORD2_SECURITY_LABEL) {
- 			if (err == -EOPNOTSUPP)
--				u.attrmask[2] &= ~FATTR4_WORD2_SECURITY_LABEL;
-+				attrmask[2] &= ~FATTR4_WORD2_SECURITY_LABEL;
- 			else if (err)
- 				goto out_nfserr;
- 		}
-@@ -3639,8 +3636,8 @@ nfsd4_encode_fattr4(struct svc_rqst *rqstp, struct xdr_stream *xdr,
- #endif /* CONFIG_NFSD_V4_SECURITY_LABEL */
- 
- 	/* attrmask */
--	status = nfsd4_encode_bitmap4(xdr, u.attrmask[0],
--				      u.attrmask[1], u.attrmask[2]);
-+	status = nfsd4_encode_bitmap4(xdr, attrmask[0], attrmask[1],
-+				      attrmask[2]);
- 	if (status)
- 		goto out;
- 
-@@ -3649,7 +3646,9 @@ nfsd4_encode_fattr4(struct svc_rqst *rqstp, struct xdr_stream *xdr,
- 	attrlen_p = xdr_reserve_space(xdr, XDR_UNIT);
- 	if (!attrlen_p)
- 		goto out_resource;
--	for_each_set_bit(bit, (const unsigned long *)&u.mask,
-+	bitmap_from_arr32(attr_bitmap, attrmask,
-+			  ARRAY_SIZE(nfsd4_enc_fattr4_encode_ops));
-+	for_each_set_bit(bit, attr_bitmap,
- 			 ARRAY_SIZE(nfsd4_enc_fattr4_encode_ops)) {
- 		status = nfsd4_enc_fattr4_encode_ops[bit](xdr, &args);
- 		if (status != nfs_ok)
--- 
-2.41.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
