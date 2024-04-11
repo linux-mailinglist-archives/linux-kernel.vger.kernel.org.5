@@ -1,113 +1,123 @@
-Return-Path: <linux-kernel+bounces-139886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B1548A08E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:54:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5E508A08E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:55:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6AB21F21AF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:54:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9167D282306
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:55:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A23DC13DBAC;
-	Thu, 11 Apr 2024 06:54:26 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 729D013DB8D;
+	Thu, 11 Apr 2024 06:55:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BvNxYyjs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C435613D622
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B62A063D;
+	Thu, 11 Apr 2024 06:55:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712818466; cv=none; b=Gc1ZrCjhUOgCIYVyiDwx55Ty71/BCvdro8xLNFQAip1w3CdQVYu9tClOhJwOVwhhM2nyCtJLoZKn1oW4l4pK4cUPsRY8RetCeMIedFrELwBegN6IsEHoE9ssNC5df6oBLI9D4bAMBshaogxG6M9yz7dpUqjWAZ1T00K8vYp767g=
+	t=1712818516; cv=none; b=aapPD4F7sH2+26H+pmEjPGOwMeWc511JkC5wsk2ZTMz0G/jmcz1eIwYEEzIrLJ9NDonJ3lgIh0OMvjhwr8oQ1Mj5zOOmoD4wr+mTOu2IogYZZOax+gkiNZCMZ1LyxuqwszVxfkv/aE0MSkY5xyd7maCSxm4tDiLT7PZEMP44Ifk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712818466; c=relaxed/simple;
-	bh=WaC2eFNw0C6sOuKAOhr7eAhxsl0oOl1NdI19FQqrt/Y=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=dycDb8fi0TX0SPIu/Ln+9omDsxnwJncMgCR02NQLuUQefRdxNjJmVV50sgVhUO2C0EketxWIRKBChryqYOzCPYtSLSaBxFm2pAbN/Uc73ut2uQsr5w01/UQzZxaRL/4gHQevAMpFYQ5yf3GhSLu92o6kBy4z5pqOiASJJmGLlY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36a306f66e0so27688175ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:54:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712818464; x=1713423264;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Wh2SeL86wROsTzai0/QkOnFwllZIKB3IyTZkoogtFuo=;
-        b=EM3Y/OUmc5jnGDhMav/eQz7+2k/PjZKBscKJ0xgMwOJ1Yze92zLj/Tp6mO1Q/UvFfm
-         eCUTo+QypQf7jIqGwLXZ8B7mOwKSaZEhHRPtZSg8WeycnVBjtGcaMqZRETrdR+c76Vvr
-         vrrBSqNf6hsYfRzbgGALaP/Jee2LyaESTTl9qUtunvoG9IccMMTzUHAH9PCWN+D6yB7m
-         zJMCjMeuce5YCGw3icHmd1QOz9gVbnYjnKVf629pf3iMc1wZ9fOQJMwiqxnEUvOeiIWc
-         1Ao5DehOH5RXGhlZGzQOrYEumiffbz4VvmNOHInQxhPsRwerT4OxQmnEdEFhVTqXyXI8
-         UkGw==
-X-Forwarded-Encrypted: i=1; AJvYcCVe7KBMrz1r/tf/6hn1bvqDRrVj4YBliEG/CsrmcHsNyvlPWnQXDr2pMCxGPCVxGlOa4X3mREbkVc0IJbst1XyQjAVSHl2fU3K7bb8T
-X-Gm-Message-State: AOJu0YwSl/WmqxVYvzkSmxwiFu/Q8bFFCHS/+IfWvdM1XvCqqR8gQjqK
-	1mRkrshhwtxXTAgqBgZB8QwR5qwxEXmIDiu3V9yajE8hGB1xjiVI9lAf5oYaxMDI+9Q4JPMJVZh
-	Xd7io9KXvnkMB3gZdTHYhyyYHhv+GdvhHLNBq+qfkfmrQIi6tTrFVpDU=
-X-Google-Smtp-Source: AGHT+IHPGzP3n9fEuDJwbACOXpIYhBr2w+0My2oYAtBtUE06Qva9lF5h3iE3eCd4y91whEkYc52xCyXYNjX2qmRVXH1cgpUSb30h
+	s=arc-20240116; t=1712818516; c=relaxed/simple;
+	bh=g5uFzpLBD5mMvoeBx8hAdujf+J4m8llZ6LvgrHfw/qs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aq0Qop138Q7x/7X0ILv2SYOypie2nFIJy5hC2j0qHfZwdtM4go/3BB0BZ6U0rh1bTdO/bCPWyt+Hjcch07tOLdUsplQmcgjMaOQBgvm/f9ZHEaioeIoBlGaFYUFGrHbLYCdSuTkuh68IZyNMbiH9/ipXZQH0tpwjw/Ygp2krH1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BvNxYyjs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27F3AC433C7;
+	Thu, 11 Apr 2024 06:55:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712818516;
+	bh=g5uFzpLBD5mMvoeBx8hAdujf+J4m8llZ6LvgrHfw/qs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BvNxYyjsAvCfq31BNCEVkvEyXMKqXg17zoo7EoJSAq2MhkmyRtqBo2DG+2Ssxh0TN
+	 0mtKRf7SNGnt4dwLynbgqlfJ2dgqXrwu52VMW6bXvShCdH7WF89v9WoNW3hj0nIzba
+	 jffDoK1d5Fp3YmDVOciJfQQlJ7HDJTgcCy4GQEHNv6vh9TR9kBTl3ngPRT5G69VI85
+	 MXgiWEZTCbnWSyzbZzKDdGh/+g/HuUsPq6nz2DqeYu2PtRF7nf5GCpJGY6aUJJGuUN
+	 QU9Fww/Ln77Q3okVcn7v0WKeIXxi5fKU2aDYHErN5KaEOfszOylPhdAl1U8b3PPGjD
+	 72xWSWZmp3Wig==
+Date: Thu, 11 Apr 2024 07:55:11 +0100
+From: Lee Jones <lee@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: ChiaEn Wu <chiaen_wu@richtek.com>, pavel@ucw.cz, matthias.bgg@gmail.com,
+	linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, peterwu.pub@gmail.com,
+	cy_huang@richtek.com
+Subject: Re: [PATCH] leds: mt6360: Fix the second LED can not enable torch
+ mode by V4L2
+Message-ID: <20240411065511.GB6194@google.com>
+References: <d1d1419bb322e2b0f40d34edd3a66979015b668c.1712657386.git.chiaen_wu@richtek.com>
+ <c98ea7c9-6c9b-466d-bc49-ec76874ac6da@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1806:b0:369:aa8f:dc95 with SMTP id
- a6-20020a056e02180600b00369aa8fdc95mr348492ilv.3.1712818464046; Wed, 10 Apr
- 2024 23:54:24 -0700 (PDT)
-Date: Wed, 10 Apr 2024 23:54:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001d51190615cca0a7@google.com>
-Subject: [syzbot] Monthly bpf report (Apr 2024)
-From: syzbot <syzbot+list429d82c8ab7976cd21b4@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c98ea7c9-6c9b-466d-bc49-ec76874ac6da@collabora.com>
 
-Hello bpf maintainers/developers,
+On Tue, 09 Apr 2024, AngeloGioacchino Del Regno wrote:
 
-This is a 31-day syzbot report for the bpf subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bpf
+Not sure why, but this mail was sent unthreaded from the original.
 
-During the period, 24 new issues were detected and 8 were fixed.
-In total, 34 issues are still open and 219 have been fixed so far.
+> Il 09/04/24 12:21, ChiaEn Wu ha scritto:
+> > V4L2 will disable strobe mode of the LED device when enable torch mode,
+> > but this logic will conflict with the "priv->fled_torch_used"
+> > in "mt6360_strobe_set()". So after enabling torch mode of the first
+> > LED, the second LED will not be able to enable torch mode correctly.
+> > 
+> > Therefore, at the beginning of "mt6360_strobe_set()", check whether the
+> > state of the upcoming change and the current LED device state are the
+> > same, so as to avoid the above problem.
+> > 
+> > Signed-off-by: ChiaEn Wu <chiaen_wu@richtek.com>
+> > ---
+> >   drivers/leds/flash/leds-mt6360.c | 12 +++++++++++-
+> >   1 file changed, 11 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/leds/flash/leds-mt6360.c b/drivers/leds/flash/leds-mt6360.c
+> > index a90de82f4568..1b75b4d36834 100644
+> > --- a/drivers/leds/flash/leds-mt6360.c
+> > +++ b/drivers/leds/flash/leds-mt6360.c
+> > @@ -241,10 +241,20 @@ static int mt6360_strobe_set(struct led_classdev_flash *fl_cdev, bool state)
+> >   	u32 enable_mask = MT6360_STROBEN_MASK | MT6360_FLCSEN_MASK(led->led_no);
+> >   	u32 val = state ? MT6360_FLCSEN_MASK(led->led_no) : 0;
+> >   	u32 prev = priv->fled_strobe_used, curr;
+> > -	int ret;
+> > +	int ret = 0;
+> 
+> I prefer that you leave ret uninitialized here, and...
 
-Some of the still happening issues:
+What's the reason for this?
 
-Ref  Crashes Repro Title
-<1>  13092   Yes   WARNING in sock_map_delete_elem
-                   https://syzkaller.appspot.com/bug?extid=2f4f478b78801c186d39
-<2>  11661   Yes   WARNING in sock_hash_delete_elem
-                   https://syzkaller.appspot.com/bug?extid=1c04a1e4ae355870dc7a
-<3>  8530    Yes   possible deadlock in task_fork_fair
-                   https://syzkaller.appspot.com/bug?extid=1a93ee5d329e97cfbaff
-<4>  6100    Yes   possible deadlock in trie_delete_elem
-                   https://syzkaller.appspot.com/bug?extid=9d95beb2a3c260622518
-<5>  4928    Yes   KASAN: slab-out-of-bounds Read in btf_datasec_check_meta
-                   https://syzkaller.appspot.com/bug?extid=cc32304f6487ebff9b70
-<6>  1115    No    possible deadlock in __lock_task_sighand (2)
-                   https://syzkaller.appspot.com/bug?extid=34267210261c2cbba2da
-<7>  731     Yes   possible deadlock in scheduler_tick (3)
-                   https://syzkaller.appspot.com/bug?extid=628f63ef3b071e16463e
-<8>  414     Yes   INFO: rcu detected stall in corrupted (4)
-                   https://syzkaller.appspot.com/bug?extid=aa7d098bd6fa788fae8e
-<9>  353     Yes   WARNING in format_decode (3)
-                   https://syzkaller.appspot.com/bug?extid=e2c932aec5c8a6e1d31c
-<10> 271     No    possible deadlock in sock_hash_delete_elem (2)
-                   https://syzkaller.appspot.com/bug?extid=ec941d6e24f633a59172
+> >   	mutex_lock(&priv->lock);
+> > +	/*
+> > +	 * If the state of the upcoming change is the same as the current LED
+> > +	 * device state, then skip the subsequent code to avoid conflict
+> > +	 * with the flow of turning on LED torch mode in V4L2.
+> > +	 */
+> > +	if (state == !!(BIT(led->led_no) & prev)) {
+> > +		dev_info(lcdev->dev, "No change in strobe state [0x%x]\n", prev);
+> 
+> ...that you do here, instead
+> 
+> 		ret = 0;
+> 		goto unlock;
+> 
+> With that addressed,
+> 
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collaobra.com>
+> 
+> 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+-- 
+Lee Jones [李琼斯]
 
