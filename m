@@ -1,78 +1,78 @@
-Return-Path: <linux-kernel+bounces-141106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E3C28A1A83
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E85F8A1A84
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:56:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B29191F209B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:55:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0C321F2199D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:56:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C96AD1E49AF;
-	Thu, 11 Apr 2024 15:40:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F204D584;
+	Thu, 11 Apr 2024 15:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="WxQWaIEe"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="sVgxSy4j"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEDAE1E4995
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:40:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D0AE1E4988
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:40:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850047; cv=none; b=O/hLbJecwW18gOQU6Kr5VvzDWxCc1q/jhww+f/dcUDlQsqutlkEp0Z6L58a0tpl8ej8emYuVrwm7cPSNR0Ve0rQrtqTcCDSGhaFNsGfNQXIa1t/1L+UyvhDbdHB3BePXRV4ihwqPjYwTJ+qhwOCgMhNogU09ylD/lrU/A4TF2NI=
+	t=1712850049; cv=none; b=a0wldWrTQpM5m1PGFz17w2OVIPIKpNxBJIMUY8Cm1t6RqhCcrT1SYWPz/dsdnQQ+hWPZOHBNafGY6onOSH1V4+9iVr48oonJOioQQKDktUHAIjyqYN8ck0y/p7Yb+VZEfa55nMbvOMjAd/FddQ7Tqvm+CO5YBdjGKHc8qRLO9RI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850047; c=relaxed/simple;
-	bh=ZQsCXQIo1u77C+Y636NSLzJQXLfnlx2gRIv95MTZKJk=;
+	s=arc-20240116; t=1712850049; c=relaxed/simple;
+	bh=GH5C7Q8Nylvc+7im/FUXVIy9mBwai9l8JAoYCIyN0XA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NYmuEoaF7QQQn+sHH/woP8/0+DyqI8rsNkE9mUbpjNetq2zyeQkW0YfjwRkuKGeCv9vF1xaxo5X1QGPFH8I9gcv3O92hTUe0tagydr5g92yT/17jlDxUus72hDySvvnZiAuYjCOYrCLXgLyAVL3+yUJXcE/MQRt87FlnwH8Hlz4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=WxQWaIEe; arc=none smtp.client-ip=209.85.166.176
+	 MIME-Version; b=gsOtV6fn7Ehg4VwPZT+vBdcVK/e4w2/po0Kf9IU9q2/1G9+nDDdhu0fvZBo9VgKuUtFQrT9UGL8djL9B+Rf6QKQl4A7pMfrpJLb+PD3BQp+6K/Ni0GUWBu2d0HIPGVSmwWQ02m/Z8dbInA0+e/m9PHEtBOEc5MiBU7GsYe5RzUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=sVgxSy4j; arc=none smtp.client-ip=209.85.166.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-36a224d7414so193605ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:40:45 -0700 (PDT)
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7d5ed700c2dso16240439f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:40:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850044; x=1713454844; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850046; x=1713454846; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8E038ft6BAVgNypkOETbM+2jlodebro2Q9vT1YOFtic=;
-        b=WxQWaIEeKw0hx7fiI3hz2pWQnSvAlT8QJ5Ifyl7iqqOqVEWkN8KCW0M2Bb2cpwD84B
-         s7Z1vVFIlqU/JuAYT/1Xl0qUx9uju4sBGn23aaPZnYBmIx453C60l6k65K814BuUDNdo
-         SKyawTwvCaa8WGnKUPsWarmsls4ew8erKtW+lOey9uXAfHmMUaa41W1is3nRBI+rrkRc
-         QnztRQEgCYi6vRh57AzbvfXL+kP9GoXrnnELUiXXsR70pdpW2fATQPvX7c66WEOow+PS
-         mnMEQv2IXGheWiDcATxF+GUwevmKd5TwNZhmez57dYEsRf+O4W8pRrrAE8eOBeAuJPV2
-         gV8g==
+        bh=hshnkl01c0BziUyf4evDZWs+mKErvhNG3KYBvzjNMIg=;
+        b=sVgxSy4jXQBGyCEfBf2Z+MbMdzv+uvXbhoyRGsr1eT1fFzmQ0wD2J6z+zVF5IaD2y9
+         2R8L4cKMqk9soF9KqDecx31BvKwk3FYIBVMU3LgajXnYnNgRwaCEq2p5XZdSnxVoL1v3
+         utmXj6FBf1mqJouRmGcBLxvdY4qrJP1Ke0OCHrVHWXDvSCKNSSBk9KVFgl6pcFPC7eip
+         YQr6HAV33KGva/jQX7IDs4EB83xTm/UJQqfWnwPYWKsO3T9PPQkvGywpO4HAXIHxJ6H3
+         U7WJDP348Plv8h0V3jqTtgIwisbQvDgFy0LWcYHOUhqvyTDNRMha0kiSobAD1jmwW5wP
+         2H3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850044; x=1713454844;
+        d=1e100.net; s=20230601; t=1712850046; x=1713454846;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8E038ft6BAVgNypkOETbM+2jlodebro2Q9vT1YOFtic=;
-        b=qseU7gDMib7maKdWij4/7mzav6B3EUUU3m+IaWRKgFrNmVWtN9b/XuGLxAKWyY4Dfk
-         FYcR8ZyaffRxoVWvHPZIf2rruRqeDKhoPqYwwzyhx4MrZ4VoF3mdCebSWdJZ1szNXxly
-         dm2Brvbi2oJfb/4ac8ZUCpMl5syBbBXQBcqpLZ6rYMp4iftXNyjGm31M2sP5JwC1WncD
-         Z9Stl0KaKbfKiRFrrspwSFmXDYwWIaSNglEf9VGz7a14ugBekBpdyRrSRsZUUhxPgW2X
-         ox+zjtV23hIAG5ZVko4tfgKJIvD5pwfTZL/01BTOejp07H+0Gab7RIOlRPY6vMfn+qi2
-         ZqAg==
-X-Gm-Message-State: AOJu0YzJi6cKmO42d90X2QKTGt3XL5zUn2j6WTKCuivGyxrbdXD74RpM
-	winyocQrcBed32meeKtf4SMHAq3BRo/ppFnLlBoZ6bSCDDLv8VWVdzAz6IeWDGaq7WvxFz0Wo/G
-	U
-X-Google-Smtp-Source: AGHT+IFXwsra0bGxPW3Je+zPe/7OBMSYiRabPsITdpsQ5dFXUGXvJIR9StmjAnp0RH7JgZHHVsZqaw==
-X-Received: by 2002:a6b:6605:0:b0:7d4:1dae:da1a with SMTP id a5-20020a6b6605000000b007d41daeda1amr159843ioc.2.1712850044318;
-        Thu, 11 Apr 2024 08:40:44 -0700 (PDT)
+        bh=hshnkl01c0BziUyf4evDZWs+mKErvhNG3KYBvzjNMIg=;
+        b=ezk09op34FJcsKOR3nrON8EE7tls0pS8SxQWN3StZokuKJxGlZpxsoJOZK+xLB03MP
+         U++x+lNFUR5c/y956yZhM6tpT/MfSZ46E+fC3mMF9xvLesUd4byQdaEkcHNBRAVJ3zh0
+         XaJYzfJ/V21TffrJ2bggNdoadIAa96nroPQ4B9NIUAZH+dEzCWfsGftijYjgrGKcSEJt
+         1q71knW2nN6KBsMLapLrdK2k5QnOWZr2LVQV/W9eV1r1tkH4T5tVseKmrz493BsV/oAq
+         w1ogDccquMYQL0JZkpBf3qx5JHJqaCsBCplFrzgQKCopTFpcImGqypjXfnlnt3JRwO0r
+         k+NQ==
+X-Gm-Message-State: AOJu0YzggcLjCUssMH6oT3mL1/2QQKFOMCbOkxlOAOPpyA0Bz0EQM5FF
+	0GsmhRuMdeiSskvVrTwNTIfbbDWAbsd1mEVcsc7xsbvydvkpi4NHwm9QznuP0rpOKJbUO9Anh3T
+	M
+X-Google-Smtp-Source: AGHT+IF6PZVmq5jfNH6WAhjxQKNF2FTgX8qJtJCrLbQjShiCOGn6Ps2HxJV7ammRghSjl0Z2e34k1w==
+X-Received: by 2002:a05:6602:38d:b0:7d6:513b:254 with SMTP id f13-20020a056602038d00b007d6513b0254mr199522iov.2.1712850046289;
+        Thu, 11 Apr 2024 08:40:46 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.40.42
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.40.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:40:42 -0700 (PDT)
+        Thu, 11 Apr 2024 08:40:44 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Bui Quang Minh <minhquangbui99@gmail.com>,
 	Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 328/437] drivers/net/ethernet/marvell/octeontx2: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:17:48 -0600
-Message-ID: <20240411153126.16201-329-axboe@kernel.dk>
+Subject: [PATCH 329/437] drivers/net/ethernet/mellanox/mlx5/core: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:17:49 -0600
+Message-ID: <20240411153126.16201-330-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -89,397 +89,347 @@ From: Bui Quang Minh <minhquangbui99@gmail.com>
 Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- .../marvell/octeontx2/af/rvu_debugfs.c        | 159 ++++++++----------
- 1 file changed, 73 insertions(+), 86 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 78 ++++++++++---------
+ .../net/ethernet/mellanox/mlx5/core/debugfs.c | 49 ++++++------
+ .../net/ethernet/mellanox/mlx5/core/lib/sd.c  | 13 ++--
+ 3 files changed, 69 insertions(+), 71 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-index 2500f5ba4f5a..be3b071743f5 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-@@ -209,8 +209,8 @@ static int rvu_dbg_open_##name(struct inode *inode, struct file *file) \
- static const struct file_operations rvu_dbg_##name##_fops = { \
- 	.owner		= THIS_MODULE, \
- 	.open		= rvu_dbg_open_##name, \
--	.read		= seq_read, \
--	.write		= rvu_dbg_##write_op, \
-+	.read_iter	= seq_read_iter, \
-+	.write_iter	= rvu_dbg_##write_op, \
- 	.llseek		= seq_lseek, \
- 	.release	= single_release, \
- }
-@@ -219,8 +219,8 @@ static const struct file_operations rvu_dbg_##name##_fops = { \
- static const struct file_operations rvu_dbg_##name##_fops = { \
- 	.owner = THIS_MODULE, \
- 	.open = simple_open, \
--	.read = rvu_dbg_##read_op, \
--	.write = rvu_dbg_##write_op \
-+	.read_iter = rvu_dbg_##read_op, \
-+	.write_iter = rvu_dbg_##write_op \
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+index 4957412ff1f6..fecd1553fac5 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -1246,13 +1246,13 @@ static int mlx5_cmd_invoke(struct mlx5_core_dev *dev, struct mlx5_cmd_msg *in,
+ 	return err ? : status;
  }
  
- static void print_nix_qsize(struct seq_file *filp, struct rvu_pfvf *pfvf);
-@@ -572,11 +572,10 @@ static void rvu_dbg_mcs_init(struct rvu *rvu)
- 
- #define LMT_MAPTBL_ENTRY_SIZE 16
- /* Dump LMTST map table */
--static ssize_t rvu_dbg_lmtst_map_table_display(struct file *filp,
--					       char __user *buffer,
--					       size_t count, loff_t *ppos)
-+static ssize_t rvu_dbg_lmtst_map_table_display(struct kiocb *iocb,
-+					       struct iov_iter *to)
+-static ssize_t dbg_write(struct file *filp, const char __user *buf,
+-			 size_t count, loff_t *pos)
++static ssize_t dbg_write_iter(struct kiocb *iocb, struct iov_iter *from)
  {
--	struct rvu *rvu = filp->private_data;
-+	struct rvu *rvu = iocb->ki_filp->private_data;
- 	u64 lmt_addr, val, tbl_base;
- 	int pf, vf, num_vfs, hw_vfs;
- 	void __iomem *lmt_map_base;
-@@ -585,9 +584,10 @@ static ssize_t rvu_dbg_lmtst_map_table_display(struct file *filp,
- 	int index = 0;
- 	char *buf;
- 	int ret;
-+	size_t count = iov_iter_count(to);
- 
- 	/* don't allow partial reads */
--	if (*ppos != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 
- 	buf = kzalloc(buf_size, GFP_KERNEL);
-@@ -649,15 +649,15 @@ static ssize_t rvu_dbg_lmtst_map_table_display(struct file *filp,
- 	off +=	scnprintf(&buf[off], buf_size - 1 - off, "\n");
- 
- 	ret = min(off, count);
--	if (copy_to_user(buffer, buf, ret))
--		ret = -EFAULT;
-+	if (!copy_to_iter_full(buf, ret, to))
-+		return -EFAULT;
- 	kfree(buf);
- 
- 	iounmap(lmt_map_base);
- 	if (ret < 0)
- 		return ret;
- 
--	*ppos = ret;
-+	iocb->ki_pos = ret;
- 	return ret;
- }
- 
-@@ -731,22 +731,21 @@ static int get_max_column_width(struct rvu *rvu)
- }
- 
- /* Dumps current provisioning status of all RVU block LFs */
--static ssize_t rvu_dbg_rsrc_attach_status(struct file *filp,
--					  char __user *buffer,
--					  size_t count, loff_t *ppos)
-+static ssize_t rvu_dbg_rsrc_attach_status(struct kiocb *iocb,
-+					  struct iov_iter *to)
- {
- 	int index, off = 0, flag = 0, len = 0, i = 0;
--	struct rvu *rvu = filp->private_data;
--	int bytes_not_copied = 0;
-+	struct rvu *rvu = iocb->ki_filp->private_data;
- 	struct rvu_block block;
- 	int pf, vf, pcifunc;
- 	int buf_size = 2048;
- 	int lf_str_size;
- 	char *lfs;
- 	char *buf;
-+	bool ret;
- 
- 	/* don't allow partial reads */
--	if (*ppos != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 
- 	buf = kzalloc(buf_size, GFP_KERNEL);
-@@ -771,12 +770,13 @@ static ssize_t rvu_dbg_rsrc_attach_status(struct file *filp,
- 		}
- 
- 	off += scnprintf(&buf[off], buf_size - 1 - off, "\n");
--	bytes_not_copied = copy_to_user(buffer + (i * off), buf, off);
--	if (bytes_not_copied)
-+	iov_iter_advance(to, i * off);
-+	ret = !copy_to_iter_full(buf, off, to);
-+	if (ret)
- 		goto out;
- 
- 	i++;
--	*ppos += off;
-+	iocb->ki_pos += off;
- 	for (pf = 0; pf < rvu->hw->total_pfs; pf++) {
- 		for (vf = 0; vf <= rvu->hw->total_vfs; vf++) {
- 			off = 0;
-@@ -813,14 +813,13 @@ static ssize_t rvu_dbg_rsrc_attach_status(struct file *filp,
- 			if (flag) {
- 				off +=	scnprintf(&buf[off],
- 						  buf_size - 1 - off, "\n");
--				bytes_not_copied = copy_to_user(buffer +
--								(i * off),
--								buf, off);
--				if (bytes_not_copied)
-+				iov_iter_advance(to, i * off);
-+				ret = !copy_to_iter_full(buf, off, to);
-+				if (ret)
- 					goto out;
- 
- 				i++;
--				*ppos += off;
-+				iocb->ki_pos += off;
- 			}
- 		}
- 	}
-@@ -828,10 +827,10 @@ static ssize_t rvu_dbg_rsrc_attach_status(struct file *filp,
- out:
- 	kfree(lfs);
- 	kfree(buf);
--	if (bytes_not_copied)
-+	if (!ret)
- 		return -EFAULT;
- 
--	return *ppos;
-+	return iocb->ki_pos;
- }
- 
- RVU_DEBUG_FOPS(rsrc_status, rsrc_attach_status, NULL);
-@@ -986,23 +985,26 @@ static int rvu_dbg_qsize_display(struct seq_file *filp, void *unsused,
- 	return 0;
- }
- 
--static ssize_t rvu_dbg_qsize_write(struct file *filp,
--				   const char __user *buffer, size_t count,
--				   loff_t *ppos, int blktype)
-+static ssize_t rvu_dbg_qsize_write(struct kiocb *iocb, struct iov_iter *from,
-+				   int blktype)
- {
- 	char *blk_string = (blktype == BLKTYPE_NPA) ? "npa" : "nix";
--	struct seq_file *seqfile = filp->private_data;
-+	struct seq_file *seqfile = iocb->ki_filp->private_data;
- 	char *cmd_buf, *cmd_buf_tmp, *subtoken;
- 	struct rvu *rvu = seqfile->private;
- 	struct dentry *current_dir;
- 	int blkaddr;
- 	u16 pcifunc;
- 	int ret, lf;
+-	struct mlx5_core_dev *dev = filp->private_data;
++	struct mlx5_core_dev *dev = iocb->ki_filp->private_data;
+ 	struct mlx5_cmd_debug *dbg = &dev->cmd.dbg;
+ 	char lbuf[3];
+ 	int err;
 +	size_t count = iov_iter_count(from);
  
--	cmd_buf = memdup_user(buffer, count + 1);
--	if (IS_ERR(cmd_buf))
-+	cmd_buf = kmalloc(count + 1, GFP_KERNEL);
-+	if (!cmd_buf)
+ 	if (!dbg->in_msg || !dbg->out_msg)
  		return -ENOMEM;
+@@ -1260,7 +1260,7 @@ static ssize_t dbg_write(struct file *filp, const char __user *buf,
+ 	if (count < sizeof(lbuf) - 1)
+ 		return -EINVAL;
  
-+	if (!copy_from_iter_full(cmd_buf, count, from))
+-	if (copy_from_user(lbuf, buf, sizeof(lbuf) - 1))
++	if (!copy_from_iter_full(lbuf, sizeof(lbuf) - 1, from))
+ 		return -EFAULT;
+ 
+ 	lbuf[sizeof(lbuf) - 1] = 0;
+@@ -1274,9 +1274,9 @@ static ssize_t dbg_write(struct file *filp, const char __user *buf,
+ }
+ 
+ static const struct file_operations fops = {
+-	.owner	= THIS_MODULE,
+-	.open	= simple_open,
+-	.write	= dbg_write,
++	.owner		= THIS_MODULE,
++	.open		= simple_open,
++	.write_iter	= dbg_write_iter,
+ };
+ 
+ static int mlx5_copy_to_msg(struct mlx5_cmd_msg *to, void *from, int size,
+@@ -1435,54 +1435,56 @@ static void mlx5_free_cmd_msg(struct mlx5_core_dev *dev,
+ 	kfree(msg);
+ }
+ 
+-static ssize_t data_write(struct file *filp, const char __user *buf,
+-			  size_t count, loff_t *pos)
++static ssize_t data_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct mlx5_core_dev *dev = filp->private_data;
++	struct mlx5_core_dev *dev = iocb->ki_filp->private_data;
+ 	struct mlx5_cmd_debug *dbg = &dev->cmd.dbg;
+ 	void *ptr;
++	size_t count = iov_iter_count(from);
+ 
+-	if (*pos != 0)
++	if (iocb->ki_pos != 0)
+ 		return -EINVAL;
+ 
+ 	kfree(dbg->in_msg);
+ 	dbg->in_msg = NULL;
+ 	dbg->inlen = 0;
+-	ptr = memdup_user(buf, count);
+-	if (IS_ERR(ptr))
+-		return PTR_ERR(ptr);
++	ptr = kmalloc(count, GFP_KERNEL);
++	if (!ptr)
++		return -ENOMEM;
++
++	if (!copy_from_iter_full(ptr, count, from))
 +		return -EFAULT;
 +
- 	cmd_buf[count] = '\0';
+ 	dbg->in_msg = ptr;
+ 	dbg->inlen = count;
  
- 	cmd_buf_tmp = strchr(cmd_buf, '\n');
-@@ -1025,7 +1027,7 @@ static ssize_t rvu_dbg_qsize_write(struct file *filp,
- 	if (blktype == BLKTYPE_NPA) {
- 		blkaddr = BLKADDR_NPA;
- 	} else {
--		current_dir = filp->f_path.dentry->d_parent;
-+		current_dir = iocb->ki_filp->f_path.dentry->d_parent;
- 		blkaddr = (!strcmp(current_dir->d_name.name, "nix1") ?
- 				   BLKADDR_NIX1 : BLKADDR_NIX0);
- 	}
-@@ -1044,12 +1046,10 @@ static ssize_t rvu_dbg_qsize_write(struct file *filp,
- 	return ret ? ret : count;
+-	*pos = count;
++	iocb->ki_pos = count;
+ 
+ 	return count;
  }
  
--static ssize_t rvu_dbg_npa_qsize_write(struct file *filp,
--				       const char __user *buffer,
--				       size_t count, loff_t *ppos)
-+static ssize_t rvu_dbg_npa_qsize_write(struct kiocb *iocb,
-+				       struct iov_iter *from)
+-static ssize_t data_read(struct file *filp, char __user *buf, size_t count,
+-			 loff_t *pos)
++static ssize_t data_read_iter(struct kiocb *iocb, struct iov_iter *to)
  {
--	return rvu_dbg_qsize_write(filp, buffer, count, ppos,
--					    BLKTYPE_NPA);
-+	return rvu_dbg_qsize_write(iocb, from, BLKTYPE_NPA);
+-	struct mlx5_core_dev *dev = filp->private_data;
++	struct mlx5_core_dev *dev = iocb->ki_filp->private_data;
+ 	struct mlx5_cmd_debug *dbg = &dev->cmd.dbg;
+ 
+ 	if (!dbg->out_msg)
+ 		return -ENOMEM;
+ 
+-	return simple_read_from_buffer(buf, count, pos, dbg->out_msg,
+-				       dbg->outlen);
++	return simple_copy_to_iter(dbg->out_msg, &iocb->ki_pos,
++				   dbg->outlen, to);
  }
  
- static int rvu_dbg_npa_qsize_display(struct seq_file *filp, void *unused)
-@@ -1292,16 +1292,14 @@ static int write_npa_ctx(struct rvu *rvu, bool all,
- }
+ static const struct file_operations dfops = {
+-	.owner	= THIS_MODULE,
+-	.open	= simple_open,
+-	.write	= data_write,
+-	.read	= data_read,
++	.owner		= THIS_MODULE,
++	.open		= simple_open,
++	.write_iter	= data_write_iter,
++	.read_iter	= data_read_iter,
+ };
  
- static int parse_cmd_buffer_ctx(char *cmd_buf, size_t *count,
--				const char __user *buffer, int *npalf,
-+				struct iov_iter *from, int *npalf,
- 				int *id, bool *all)
+-static ssize_t outlen_read(struct file *filp, char __user *buf, size_t count,
+-			   loff_t *pos)
++static ssize_t outlen_read_iter(struct kiocb *iocb, struct iov_iter *to)
  {
--	int bytes_not_copied;
- 	char *cmd_buf_tmp;
- 	char *subtoken;
- 	int ret;
+-	struct mlx5_core_dev *dev = filp->private_data;
++	struct mlx5_core_dev *dev = iocb->ki_filp->private_data;
+ 	struct mlx5_cmd_debug *dbg = &dev->cmd.dbg;
+ 	char outlen[8];
+ 	int err;
+@@ -1491,27 +1493,27 @@ static ssize_t outlen_read(struct file *filp, char __user *buf, size_t count,
+ 	if (err < 0)
+ 		return err;
  
--	bytes_not_copied = copy_from_user(cmd_buf, buffer, *count);
--	if (bytes_not_copied)
-+	if (!copy_from_iter_full(cmd_buf, *count, from))
+-	return simple_read_from_buffer(buf, count, pos, outlen, err);
++	return simple_copy_to_iter(outlen, &iocb->ki_pos, err, to);
+ }
+ 
+-static ssize_t outlen_write(struct file *filp, const char __user *buf,
+-			    size_t count, loff_t *pos)
++static ssize_t outlen_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct mlx5_core_dev *dev = filp->private_data;
++	struct mlx5_core_dev *dev = iocb->ki_filp->private_data;
+ 	struct mlx5_cmd_debug *dbg = &dev->cmd.dbg;
+ 	char outlen_str[8] = {0};
+ 	int outlen;
+ 	void *ptr;
+ 	int err;
++	size_t count = iov_iter_count(from);
+ 
+-	if (*pos != 0 || count > 6)
++	if (iocb->ki_pos != 0 || count > 6)
+ 		return -EINVAL;
+ 
+ 	kfree(dbg->out_msg);
+ 	dbg->out_msg = NULL;
+ 	dbg->outlen = 0;
+ 
+-	if (copy_from_user(outlen_str, buf, count))
++	if (!copy_from_iter_full(outlen_str, count, from))
  		return -EFAULT;
  
- 	cmd_buf[*count] = '\0';
-@@ -1329,24 +1327,25 @@ static int parse_cmd_buffer_ctx(char *cmd_buf, size_t *count,
- 	return ret;
+ 	err = sscanf(outlen_str, "%d", &outlen);
+@@ -1525,16 +1527,16 @@ static ssize_t outlen_write(struct file *filp, const char __user *buf,
+ 	dbg->out_msg = ptr;
+ 	dbg->outlen = outlen;
+ 
+-	*pos = count;
++	iocb->ki_pos = count;
+ 
+ 	return count;
  }
  
--static ssize_t rvu_dbg_npa_ctx_write(struct file *filp,
--				     const char __user *buffer,
--				     size_t count, loff_t *ppos, int ctype)
-+static ssize_t rvu_dbg_npa_ctx_write(struct kiocb *iocb,
-+				     struct iov_iter *from,
-+				     int ctype)
+ static const struct file_operations olfops = {
+-	.owner	= THIS_MODULE,
+-	.open	= simple_open,
+-	.write	= outlen_write,
+-	.read	= outlen_read,
++	.owner		= THIS_MODULE,
++	.open		= simple_open,
++	.write_iter	= outlen_write_iter,
++	.read_iter	= outlen_read_iter,
+ };
+ 
+ static void set_wqname(struct mlx5_core_dev *dev)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/debugfs.c b/drivers/net/ethernet/mellanox/mlx5/core/debugfs.c
+index 09652dc89115..090b5b5d0acd 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/debugfs.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/debugfs.c
+@@ -126,48 +126,46 @@ void mlx5_eq_debugfs_cleanup(struct mlx5_core_dev *dev)
+ 	debugfs_remove_recursive(dev->priv.dbg.eq_debugfs);
+ }
+ 
+-static ssize_t average_read(struct file *filp, char __user *buf, size_t count,
+-			    loff_t *pos)
++static ssize_t average_read_iter(struct kiocb *iocb, struct iov_iter *to)
  {
- 	char *cmd_buf, *ctype_string = (ctype == NPA_AQ_CTYPE_AURA) ?
- 					"aura" : "pool";
--	struct seq_file *seqfp = filp->private_data;
-+	struct seq_file *seqfp = iocb->ki_filp->private_data;
- 	struct rvu *rvu = seqfp->private;
- 	int npalf, id = 0, ret;
- 	bool all = false;
+ 	struct mlx5_cmd_stats *stats;
+ 	u64 field = 0;
+ 	int ret;
+ 	char tbuf[22];
+ 
+-	stats = filp->private_data;
++	stats = iocb->ki_filp->private_data;
+ 	spin_lock_irq(&stats->lock);
+ 	if (stats->n)
+ 		field = div64_u64(stats->sum, stats->n);
+ 	spin_unlock_irq(&stats->lock);
+ 	ret = snprintf(tbuf, sizeof(tbuf), "%llu\n", field);
+-	return simple_read_from_buffer(buf, count, pos, tbuf, ret);
++	return simple_copy_to_iter(tbuf, &iocb->ki_pos, ret, to);
+ }
+ 
+-static ssize_t average_write(struct file *filp, const char __user *buf,
+-			     size_t count, loff_t *pos)
++static ssize_t average_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ {
+ 	struct mlx5_cmd_stats *stats;
 +	size_t count = iov_iter_count(from);
  
--	if ((*ppos != 0) || !count)
-+	if (iocb->ki_pos != 0 || !count)
- 		return -EINVAL;
+-	stats = filp->private_data;
++	stats = iocb->ki_filp->private_data;
+ 	spin_lock_irq(&stats->lock);
+ 	stats->sum = 0;
+ 	stats->n = 0;
+ 	spin_unlock_irq(&stats->lock);
  
- 	cmd_buf = kzalloc(count + 1, GFP_KERNEL);
- 	if (!cmd_buf)
- 		return count;
--	ret = parse_cmd_buffer_ctx(cmd_buf, &count, buffer,
-+	ret = parse_cmd_buffer_ctx(cmd_buf, &count, from,
- 				   &npalf, &id, &all);
- 	if (ret < 0) {
- 		dev_info(rvu->dev,
-@@ -1361,12 +1360,10 @@ static ssize_t rvu_dbg_npa_ctx_write(struct file *filp,
- 	return ret ? ret : count;
+-	*pos += count;
++	iocb->ki_pos += count;
+ 
+ 	return count;
  }
  
--static ssize_t rvu_dbg_npa_aura_ctx_write(struct file *filp,
--					  const char __user *buffer,
--					  size_t count, loff_t *ppos)
-+static ssize_t rvu_dbg_npa_aura_ctx_write(struct kiocb *iocb,
-+					  struct iov_iter *from)
+ static const struct file_operations stats_fops = {
+-	.owner	= THIS_MODULE,
+-	.open	= simple_open,
+-	.read	= average_read,
+-	.write	= average_write,
++	.owner		= THIS_MODULE,
++	.open		= simple_open,
++	.read_iter	= average_read_iter,
++	.write_iter	= average_write_iter,
+ };
+ 
+-static ssize_t slots_read(struct file *filp, char __user *buf, size_t count,
+-			  loff_t *pos)
++static ssize_t slots_read_iter(struct kiocb *iocb, struct iov_iter *to)
  {
--	return rvu_dbg_npa_ctx_write(filp, buffer, count, ppos,
--				     NPA_AQ_CTYPE_AURA);
-+	return rvu_dbg_npa_ctx_write(iocb, from, NPA_AQ_CTYPE_AURA);
+ 	struct mlx5_cmd *cmd;
+ 	char tbuf[6];
+@@ -175,17 +173,17 @@ static ssize_t slots_read(struct file *filp, char __user *buf, size_t count,
+ 	int field;
+ 	int ret;
+ 
+-	cmd = filp->private_data;
++	cmd = iocb->ki_filp->private_data;
+ 	weight = bitmap_weight(&cmd->vars.bitmask, cmd->vars.max_reg_cmds);
+ 	field = cmd->vars.max_reg_cmds - weight;
+ 	ret = snprintf(tbuf, sizeof(tbuf), "%d\n", field);
+-	return simple_read_from_buffer(buf, count, pos, tbuf, ret);
++	return simple_copy_to_iter(tbuf, &iocb->ki_pos, ret, to);
  }
  
- static int rvu_dbg_npa_aura_ctx_display(struct seq_file *filp, void *unused)
-@@ -1376,12 +1373,10 @@ static int rvu_dbg_npa_aura_ctx_display(struct seq_file *filp, void *unused)
+ static const struct file_operations slots_fops = {
+-	.owner	= THIS_MODULE,
+-	.open	= simple_open,
+-	.read	= slots_read,
++	.owner		= THIS_MODULE,
++	.open		= simple_open,
++	.read_iter	= slots_read_iter,
+ };
  
- RVU_DEBUG_SEQ_FOPS(npa_aura_ctx, npa_aura_ctx_display, npa_aura_ctx_write);
+ static struct mlx5_cmd_stats *
+@@ -445,8 +443,7 @@ static u64 cq_read_field(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq,
+ 	return param;
+ }
  
--static ssize_t rvu_dbg_npa_pool_ctx_write(struct file *filp,
--					  const char __user *buffer,
--					  size_t count, loff_t *ppos)
-+static ssize_t rvu_dbg_npa_pool_ctx_write(struct kiocb *iocb,
-+					  struct iov_iter *from)
+-static ssize_t dbg_read(struct file *filp, char __user *buf, size_t count,
+-			loff_t *pos)
++static ssize_t dbg_read_iter(struct kiocb *iocb, struct iov_iter *to)
  {
--	return rvu_dbg_npa_ctx_write(filp, buffer, count, ppos,
--				     NPA_AQ_CTYPE_POOL);
-+	return rvu_dbg_npa_ctx_write(iocb, from, NPA_AQ_CTYPE_POOL);
+ 	struct mlx5_field_desc *desc;
+ 	struct mlx5_rsc_debug *d;
+@@ -455,7 +452,7 @@ static ssize_t dbg_read(struct file *filp, char __user *buf, size_t count,
+ 	u64 field;
+ 	int ret;
+ 
+-	desc = filp->private_data;
++	desc = iocb->ki_filp->private_data;
+ 	d = (void *)(desc - desc->i) - sizeof(*d);
+ 	switch (d->type) {
+ 	case MLX5_DBG_RSC_QP:
+@@ -480,13 +477,13 @@ static ssize_t dbg_read(struct file *filp, char __user *buf, size_t count,
+ 	else
+ 		ret = snprintf(tbuf, sizeof(tbuf), "0x%llx\n", field);
+ 
+-	return simple_read_from_buffer(buf, count, pos, tbuf, ret);
++	return simple_copy_to_iter(tbuf, &iocb->ki_pos, ret, to);
  }
  
- static int rvu_dbg_npa_pool_ctx_display(struct seq_file *filp, void *unused)
-@@ -2021,19 +2016,19 @@ static int write_nix_queue_ctx(struct rvu *rvu, bool all, int nixlf,
- 	return 0;
+ static const struct file_operations fops = {
+-	.owner	= THIS_MODULE,
+-	.open	= simple_open,
+-	.read	= dbg_read,
++	.owner		= THIS_MODULE,
++	.open		= simple_open,
++	.read_iter	= dbg_read_iter,
+ };
+ 
+ static int add_res_tree(struct mlx5_core_dev *dev, enum dbg_rsc_type type,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
+index 5b28084e8a03..09429b069c20 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/sd.c
+@@ -393,24 +393,23 @@ static void sd_print_group(struct mlx5_core_dev *primary)
+ 			MLX5_CAP_GEN(pos, vhca_id));
  }
  
--static ssize_t rvu_dbg_nix_queue_ctx_write(struct file *filp,
--					   const char __user *buffer,
--					   size_t count, loff_t *ppos,
-+static ssize_t rvu_dbg_nix_queue_ctx_write(struct kiocb *iocb,
-+					   struct iov_iter *from,
- 					   int ctype)
+-static ssize_t dev_read(struct file *filp, char __user *buf, size_t count,
+-			loff_t *pos)
++static ssize_t dev_read_iter(struct kiocb *iocb, struct iov_iter *to)
  {
--	struct seq_file *m = filp->private_data;
-+	struct seq_file *m = iocb->ki_filp->private_data;
- 	struct nix_hw *nix_hw = m->private;
- 	struct rvu *rvu = nix_hw->rvu;
- 	char *cmd_buf, *ctype_string;
- 	int nixlf, id = 0, ret;
- 	bool all = false;
-+	size_t count = iov_iter_count(from);
+ 	struct mlx5_core_dev *dev;
+ 	char tbuf[32];
+ 	int ret;
  
--	if ((*ppos != 0) || !count)
-+	if (iocb->ki_pos != 0 || !count)
- 		return -EINVAL;
+-	dev = filp->private_data;
++	dev = iocb->ki_filp->private_data;
+ 	ret = snprintf(tbuf, sizeof(tbuf), "%s vhca %#x\n", pci_name(dev->pdev),
+ 		       MLX5_CAP_GEN(dev, vhca_id));
  
- 	switch (ctype) {
-@@ -2055,7 +2050,7 @@ static ssize_t rvu_dbg_nix_queue_ctx_write(struct file *filp,
- 	if (!cmd_buf)
- 		return count;
- 
--	ret = parse_cmd_buffer_ctx(cmd_buf, &count, buffer,
-+	ret = parse_cmd_buffer_ctx(cmd_buf, &count, from,
- 				   &nixlf, &id, &all);
- 	if (ret < 0) {
- 		dev_info(rvu->dev,
-@@ -2071,12 +2066,10 @@ static ssize_t rvu_dbg_nix_queue_ctx_write(struct file *filp,
- 	return ret ? ret : count;
+-	return simple_read_from_buffer(buf, count, pos, tbuf, ret);
++	return simple_copy_to_iter(tbuf, &iocb->ki_pos, ret, to);
  }
  
--static ssize_t rvu_dbg_nix_sq_ctx_write(struct file *filp,
--					const char __user *buffer,
--					size_t count, loff_t *ppos)
-+static ssize_t rvu_dbg_nix_sq_ctx_write(struct kiocb *iocb,
-+					struct iov_iter *from)
- {
--	return rvu_dbg_nix_queue_ctx_write(filp, buffer, count, ppos,
--					    NIX_AQ_CTYPE_SQ);
-+	return rvu_dbg_nix_queue_ctx_write(iocb, from, NIX_AQ_CTYPE_SQ);
- }
+ static const struct file_operations dev_fops = {
+-	.owner	= THIS_MODULE,
+-	.open	= simple_open,
+-	.read	= dev_read,
++	.owner		= THIS_MODULE,
++	.open		= simple_open,
++	.read_iter	= dev_read_iter,
+ };
  
- static int rvu_dbg_nix_sq_ctx_display(struct seq_file *filp, void *unused)
-@@ -2086,12 +2079,10 @@ static int rvu_dbg_nix_sq_ctx_display(struct seq_file *filp, void *unused)
- 
- RVU_DEBUG_SEQ_FOPS(nix_sq_ctx, nix_sq_ctx_display, nix_sq_ctx_write);
- 
--static ssize_t rvu_dbg_nix_rq_ctx_write(struct file *filp,
--					const char __user *buffer,
--					size_t count, loff_t *ppos)
-+static ssize_t rvu_dbg_nix_rq_ctx_write(struct kiocb *iocb,
-+					struct iov_iter *from)
- {
--	return rvu_dbg_nix_queue_ctx_write(filp, buffer, count, ppos,
--					    NIX_AQ_CTYPE_RQ);
-+	return rvu_dbg_nix_queue_ctx_write(iocb, from, NIX_AQ_CTYPE_RQ);
- }
- 
- static int rvu_dbg_nix_rq_ctx_display(struct seq_file *filp, void  *unused)
-@@ -2101,12 +2092,10 @@ static int rvu_dbg_nix_rq_ctx_display(struct seq_file *filp, void  *unused)
- 
- RVU_DEBUG_SEQ_FOPS(nix_rq_ctx, nix_rq_ctx_display, nix_rq_ctx_write);
- 
--static ssize_t rvu_dbg_nix_cq_ctx_write(struct file *filp,
--					const char __user *buffer,
--					size_t count, loff_t *ppos)
-+static ssize_t rvu_dbg_nix_cq_ctx_write(struct kiocb *iocb,
-+					struct iov_iter *from)
- {
--	return rvu_dbg_nix_queue_ctx_write(filp, buffer, count, ppos,
--					    NIX_AQ_CTYPE_CQ);
-+	return rvu_dbg_nix_queue_ctx_write(iocb, from, NIX_AQ_CTYPE_CQ);
- }
- 
- static int rvu_dbg_nix_cq_ctx_display(struct seq_file *filp, void *unused)
-@@ -2153,12 +2142,10 @@ static void print_nix_qsize(struct seq_file *filp, struct rvu_pfvf *pfvf)
- 				     "sq");
- }
- 
--static ssize_t rvu_dbg_nix_qsize_write(struct file *filp,
--				       const char __user *buffer,
--				       size_t count, loff_t *ppos)
-+static ssize_t rvu_dbg_nix_qsize_write(struct kiocb *iocb,
-+				       struct iov_iter *from)
- {
--	return rvu_dbg_qsize_write(filp, buffer, count, ppos,
--				   BLKTYPE_NIX);
-+	return rvu_dbg_qsize_write(iocb, from, BLKTYPE_NIX);
- }
- 
- static int rvu_dbg_nix_qsize_display(struct seq_file *filp, void *unused)
+ int mlx5_sd_init(struct mlx5_core_dev *dev)
 -- 
 2.43.0
 
