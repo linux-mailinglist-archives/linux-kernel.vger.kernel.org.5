@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6756B8A1A51
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:46:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70B938A1A0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:32:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6667FB2F059
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:31:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DB071C20B85
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:32:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9619F1C2FCD;
-	Thu, 11 Apr 2024 15:38:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E334B1C2FF7;
+	Thu, 11 Apr 2024 15:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="beUsZ5f4"
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="qzoRC7x6"
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9485F1C1B1C
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:38:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE8801C2FD1
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849883; cv=none; b=TLqYQVOeb6EYdYPYGGdHRt22Bz1H6wwmN6hoHrPI6PXG6ZY5z1hoiT/U4GhmMhzut0wqjalGFRVIHIQdsm+aaOA5NE2yQ433hg+whx/OmGx9qCREkwkSICaw6LwlsIhHwVLvN/wxu06NqLGiCNQGX8jeklv8zWZ8Q6j86dVUJhw=
+	t=1712849886; cv=none; b=ig3eyuB4WCvs5q083Yah+M1zS4lJLIslKzLzQrI66QguC3E+2tPfCilzrQD7FQwVw32TG8fStqHh/+fUZcbJgjsOSoo12Tvpcs+DGmLCmUTW8N593c039IwBu7U+5UMBTxI7T0vzFrvO2+Iu14AOYCUMDonTTDdJQzZO+b2uJh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849883; c=relaxed/simple;
-	bh=mYl5XN2Q12i1GShXzHmxni38VagWFUolvBXdQvo6NdQ=;
+	s=arc-20240116; t=1712849886; c=relaxed/simple;
+	bh=v8C/lvedvI6wXG2vqxwSCKy1AMIR477ttE6+t9PHQKo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MpwctQohZYb+RpmvZ0Up2IcwdFC/e+S04Sgwp0n8L7H/3m7ddprjHj/N6YTW3xqRsQ0XOAZdNI0TWSQy+WzQ2EHKoEhTlv3Bly3IAgG/aVbseO038+0gBVqhQuXKp5jq8Q/A/jQ9foMhPFpBHmSeaLgKg2W1KLF2gauCv16GVdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=beUsZ5f4; arc=none smtp.client-ip=209.85.166.54
+	 MIME-Version; b=VtNx023k9F2QN44kGH8JXnhvPwqZ3emB/k/7zixQnZJOTXtoZ2WSE6IRPHM8HJllN9RJPc3YbF8PMRuv+xVfvs9kOsYaLvMEXO89kR3A8qLjVVJ0unt0eulUMrVDOrfFAHJ53MIwcGkfVUBEfPrtXby0EWA6C110vZqBkEzLHTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=qzoRC7x6; arc=none smtp.client-ip=209.85.166.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7c8e4c0412dso69612939f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:38:02 -0700 (PDT)
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso58119239f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:38:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849881; x=1713454681; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849883; x=1713454683; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4jOOzNnHmJV0Fu/jL3HQdbehM157IGkalVPtNhVpP6k=;
-        b=beUsZ5f4HaSYmGZ6byTqSwdqTYN0IUyu8fMQljxaWJZh3vWTXkG/eDgbXuc+qxrvXr
-         ptjtbYzoJedcCTDCJhcb1dvasuucErASKFeKf+o9ljj4OfiZvRbRYKmtoufJpArEFE/D
-         VujwwgEqmpCg2qWqfzGlZRQizR8th3JMprfBsL5G9HeQXbrrA4Qkb5s0U9Gw3nxYEHso
-         kMR/UtSSXtrbcgteB1g7/N90LrXKUEkpCLW5hqL8r28fDzpWeMX8sqB61nQ8YiTGbckj
-         lKjy7Hw18Od+Q+KKqYLtS41YUn6l0bJ+vIOU0If/0HpWyfIxj/Gsq0U73IkDjur6ZT5X
-         aBZw==
+        bh=AaoK8FTbbHnEwz1cy7WsiiIGpGZVFO82Tn20A2e7QqE=;
+        b=qzoRC7x6F5GixRMGzv7OjufYiiBg2ouUeVd75CSYIL6n3MewBm3NIYU27lfOZLY9Fn
+         +R3IB9/8YP+qTkShWQ7T7GdexxjxDHIxKdy/DapZdzB8/udWfslj9vB5v6bRF/EIPBht
+         fFJpaISvtvMP3r9q79XrdQhNAleU2602DZbZoW8GThKRah0Bfg+eHwbJbgClPyRFPJht
+         kcGECPnPhhiFuFmeIBXNqDaPmd+zaws170yN8zPftEASMRFsBIZSx/XpirnCV8/ooRud
+         fxZW+OhsGxVfDvZq6Gqe75ZtHMND8lysiaYGZBx/a8yJx7JoAI8H/G2qlEBDdWocxH7N
+         Y4Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849881; x=1713454681;
+        d=1e100.net; s=20230601; t=1712849883; x=1713454683;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4jOOzNnHmJV0Fu/jL3HQdbehM157IGkalVPtNhVpP6k=;
-        b=Wk0sEJZrwK42vlWZ3zQ7mrjfP+N1UjajQ1zzV+bD6rxoV/1vtv/cwrX8rG9nAGeIEd
-         gu9I/AR8928OV0vPA6zvD5gm+kJn9G02F+HCApcvn8F1P9gjJ1NbGGNIGKNO8qGAJmpq
-         XP84qlNn86v+tMXFqDmaKLfgt9HHG1tLjXygumk8nTcbk62M7c+eAhuuSaV+2up9WVwo
-         kEwiem3OOKWchqjKw+4llyVNAWrE0ltErU8f63uLCc4xdp+l6kkH9zIHQ22LTlDdZmTT
-         XxHemkjGBjmN+9HJo4QO/9bhzLAuCMzCC9Zi4UV9S/0293EBxF3tJRuyBRjz6lcoaij9
-         SLAw==
-X-Gm-Message-State: AOJu0YytpejSodRi0ZBjEvBUy+UoDe7gVnXeP9muZ/Y9kufxdDcrC5wV
-	2CWZUQ77Ac1fU6y1jffnd/MMmeFdEAWdHvnhwO8eSkrOBlnzlIG2kdbWhLf6AajORkXzTOW9qC5
-	F
-X-Google-Smtp-Source: AGHT+IGlR1p56kEdU8dyVq4RHJtB5RWJIu3PnVaVc0rf4t53SGUVPOHPkpHnRNc/JWTmDhdDwwkOYw==
-X-Received: by 2002:a6b:7b05:0:b0:7d6:60dc:bc8e with SMTP id l5-20020a6b7b05000000b007d660dcbc8emr197747iop.1.1712849881443;
-        Thu, 11 Apr 2024 08:38:01 -0700 (PDT)
+        bh=AaoK8FTbbHnEwz1cy7WsiiIGpGZVFO82Tn20A2e7QqE=;
+        b=aiqYOTZERcMzGTwo4ip6PCL9gSt+Benoryud8MMcXco46CeL1dA3D862d+KcRHqY4r
+         xGL7IYuCvI4EW9fCCSDIZ+cZOxtAr9XLXxXkx1QisqAkXxAt07BbQhjs1wtUIokECzdh
+         sdmCM1uYMacUkBV2blhtkOskXCwl8BiIFA5khLGD44yLVCOA9dxzTyEsLFHnnSqq3hMj
+         1S5MX4uhtfZmCiFkTHdI5XJLeAC6KItFuqUisr9gHl9ygJA9IPmwEm3rdeW/KSt1EUOf
+         0eQcUbBGhV2hULJS/on51kbScxLPDm6pcsgfxVecfoZ9bV7Z1+wRwPkLwAufc1w2obQM
+         cvng==
+X-Gm-Message-State: AOJu0YyowwTkOTHvZT1ePBzf3RMX6fOWq/hIPN7/iJBTiceWTTS09n2/
+	nsA31UjgAEOsisCQS5KUdcVqVJdPgVblDfauvh9mzBsbeha/omiJCnPN8pZrQTbxVEPmPHkWDq6
+	K
+X-Google-Smtp-Source: AGHT+IEbPn05+VYqd8pmO3GqN7HdKihwl2X6Tdn6pmFycduls/9U2b0zQiJfOzAHSrunkkGw8wz5cQ==
+X-Received: by 2002:a6b:f312:0:b0:7d5:de23:13a9 with SMTP id m18-20020a6bf312000000b007d5de2313a9mr166641ioh.1.1712849883197;
+        Thu, 11 Apr 2024 08:38:03 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.59
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.38.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:37:59 -0700 (PDT)
+        Thu, 11 Apr 2024 08:38:01 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 228/437] drivers/spi: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:16:08 -0600
-Message-ID: <20240411153126.16201-229-axboe@kernel.dk>
+Subject: [PATCH 229/437] drivers/nfc: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:16:09 -0600
+Message-ID: <20240411153126.16201-230-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,93 +85,70 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/spi/spidev.c | 33 +++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
+ drivers/nfc/virtual_ncidev.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
-index 95fb5f1c91c1..1b5e13492b4d 100644
---- a/drivers/spi/spidev.c
-+++ b/drivers/spi/spidev.c
-@@ -154,27 +154,28 @@ spidev_sync_read(struct spidev_data *spidev, size_t len)
+diff --git a/drivers/nfc/virtual_ncidev.c b/drivers/nfc/virtual_ncidev.c
+index 590b038e449e..59c75de758d7 100644
+--- a/drivers/nfc/virtual_ncidev.c
++++ b/drivers/nfc/virtual_ncidev.c
+@@ -79,10 +79,10 @@ static const struct nci_ops virtual_nci_ops = {
+ 	.send = virtual_nci_send
+ };
  
- /* Read-only message with current device setup */
- static ssize_t
--spidev_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos)
-+spidev_read(struct kiocb *iocb, struct iov_iter *to)
+-static ssize_t virtual_ncidev_read(struct file *file, char __user *buf,
+-				   size_t count, loff_t *ppos)
++static ssize_t virtual_ncidev_read(struct kiocb *iocb, struct iov_iter *to)
  {
- 	struct spidev_data	*spidev;
- 	ssize_t			status;
-+	size_t			count = iov_iter_count(to);
+-	struct virtual_nci_dev *vdev = file->private_data;
++	struct virtual_nci_dev *vdev = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(to);
+ 	size_t actual_len;
  
- 	/* chipselect only toggles at start or end of operation */
- 	if (count > bufsiz)
- 		return -EMSGSIZE;
+ 	mutex_lock(&vdev->mtx);
+@@ -95,7 +95,7 @@ static ssize_t virtual_ncidev_read(struct file *file, char __user *buf,
  
--	spidev = filp->private_data;
-+	spidev = iocb->ki_filp->private_data;
+ 	actual_len = min_t(size_t, count, vdev->send_buff->len);
  
- 	mutex_lock(&spidev->buf_lock);
- 	status = spidev_sync_read(spidev, count);
- 	if (status > 0) {
--		unsigned long	missing;
-+		unsigned long	copied;
- 
--		missing = copy_to_user(buf, spidev->rx_buffer, status);
--		if (missing == status)
-+		copied = copy_to_iter(spidev->rx_buffer, status, to);
-+		if (!copied)
- 			status = -EFAULT;
- 		else
--			status = status - missing;
-+			status = status - copied;
+-	if (copy_to_user(buf, vdev->send_buff->data, actual_len)) {
++	if (!copy_to_iter_full(vdev->send_buff->data, actual_len, to)) {
+ 		mutex_unlock(&vdev->mtx);
+ 		return -EFAULT;
  	}
- 	mutex_unlock(&spidev->buf_lock);
+@@ -110,18 +110,17 @@ static ssize_t virtual_ncidev_read(struct file *file, char __user *buf,
+ 	return actual_len;
+ }
  
-@@ -183,25 +184,25 @@ spidev_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos)
- 
- /* Write-only message with current device setup */
- static ssize_t
--spidev_write(struct file *filp, const char __user *buf,
--		size_t count, loff_t *f_pos)
-+spidev_write(struct kiocb *iocb, struct iov_iter *from)
+-static ssize_t virtual_ncidev_write(struct file *file,
+-				    const char __user *buf,
+-				    size_t count, loff_t *ppos)
++static ssize_t virtual_ncidev_write(struct kiocb *iocb, struct iov_iter *from)
  {
- 	struct spidev_data	*spidev;
- 	ssize_t			status;
--	unsigned long		missing;
-+	unsigned long		copied;
-+	size_t			count = iov_iter_count(from);
+-	struct virtual_nci_dev *vdev = file->private_data;
++	struct virtual_nci_dev *vdev = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(from);
+ 	struct sk_buff *skb;
  
- 	/* chipselect only toggles at start or end of operation */
- 	if (count > bufsiz)
- 		return -EMSGSIZE;
+ 	skb = alloc_skb(count, GFP_KERNEL);
+ 	if (!skb)
+ 		return -ENOMEM;
  
--	spidev = filp->private_data;
-+	spidev = iocb->ki_filp->private_data;
+-	if (copy_from_user(skb_put(skb, count), buf, count)) {
++	if (!copy_from_iter_full(skb_put(skb, count), count, from)) {
+ 		kfree_skb(skb);
+ 		return -EFAULT;
+ 	}
+@@ -191,8 +190,8 @@ static long virtual_ncidev_ioctl(struct file *file, unsigned int cmd,
  
- 	mutex_lock(&spidev->buf_lock);
--	missing = copy_from_user(spidev->tx_buffer, buf, count);
--	if (missing == 0)
--		status = spidev_sync_write(spidev, count);
--	else
-+	copied = copy_from_iter(spidev->tx_buffer, count, from);
-+	if (copied == 0)
- 		status = -EFAULT;
-+	else
-+		status = spidev_sync_write(spidev, count);
- 	mutex_unlock(&spidev->buf_lock);
- 
- 	return status;
-@@ -679,8 +680,8 @@ static const struct file_operations spidev_fops = {
- 	 * gets more complete API coverage.  It'll simplify things
- 	 * too, except for the locking.
- 	 */
--	.write =	spidev_write,
--	.read =		spidev_read,
-+	.write_iter =	spidev_write,
-+	.read_iter =	spidev_read,
- 	.unlocked_ioctl = spidev_ioctl,
- 	.compat_ioctl = spidev_compat_ioctl,
- 	.open =		spidev_open,
+ static const struct file_operations virtual_ncidev_fops = {
+ 	.owner = THIS_MODULE,
+-	.read = virtual_ncidev_read,
+-	.write = virtual_ncidev_write,
++	.read_iter = virtual_ncidev_read,
++	.write_iter = virtual_ncidev_write,
+ 	.open = virtual_ncidev_open,
+ 	.release = virtual_ncidev_close,
+ 	.unlocked_ioctl = virtual_ncidev_ioctl
 -- 
 2.43.0
 
