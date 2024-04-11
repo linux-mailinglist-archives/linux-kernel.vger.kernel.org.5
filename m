@@ -1,96 +1,110 @@
-Return-Path: <linux-kernel+bounces-141481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91A4E8A1EC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:44:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DDDD8A1ECA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:44:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C91B28E029
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:44:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 433FD1F2ABC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:44:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA40B40BE1;
-	Thu, 11 Apr 2024 18:36:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6780F41744;
+	Thu, 11 Apr 2024 18:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="i03MxOyH"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A8C41744;
-	Thu, 11 Apr 2024 18:36:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mB9eXMwy"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89713205E08
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:37:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712860592; cv=none; b=et3GpFK6LYLHbAaxo87ZdbaByI+tjBcNtOqddmRYaIXFkse8pZZFVjoBbn6OSeBYXDUifVNr+jutufWFw5kYeGTL/uNsZGf/ZOss64WCDkd/ukQsmqJL/AmlfWV33nj7oeXC8fi0zxXJ78VHDxF3x1SCXotcpc31Wk8QgjVIILM=
+	t=1712860680; cv=none; b=GKHrNodcsGuD+QAamAAy3CT0161Py20/uVgnXvvTuU5rdMZmkI/jSnDrqalxZkGq6OHc7sIsLgbziKtWUMCe/lrwl7RUmnZdoHEYJiMidWNRw3oOtJaUp05dvmsbHTyGnfpDwRTdg7hu3UMulldlY4hq+NijLO3sAYwY4umNYis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712860592; c=relaxed/simple;
-	bh=Ft8JfQvHCLY2ghv8Ss761BEC9TQ/5kAvBzYcfHLpbv8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mU+RPY1yEo8xAlbP7S1LNsIdgy8VoM80IVmfQo7lktsJgC417yKbcyUUWZg15xR1nP8E+Kg/KoKxz3iUjUfEx0figQKmmlqwIIq3wzNDmdQ620NJwl4NNoR4escZZEbMPJ8J7r43POTYrTuVKxS91+GXTTxGgYSw5uZk0AzMKjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=i03MxOyH; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.64.216.186] (unknown [20.29.225.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id B898E20EC303;
-	Thu, 11 Apr 2024 11:36:29 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B898E20EC303
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1712860590;
-	bh=dN02yDdDosiWONjItu2a2iqcmYH10EILRT9j765+B5g=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=i03MxOyHvZgSveQDWlCKvQEtyl8z5xvR5xn2cIVSL2fxgn+eautwWvzvjLpycNxb+
-	 W4hHzDLGsvFBtVdKuYI0456oklEZoeTa1vYozQzZmJnEfJKLWw616OemoZqv3uMRy3
-	 Yhmgkp+2Z/8gQWPWOs5O9kD3Xzq3qlfFY2uJsA1A=
-Message-ID: <e944c094-b503-4a9a-a5d0-487c8b056e34@linux.microsoft.com>
-Date: Thu, 11 Apr 2024 11:36:28 -0700
+	s=arc-20240116; t=1712860680; c=relaxed/simple;
+	bh=BpACbSrmSMoqNqBdpG0z/OKxklof9d12+VKJaf/W8wY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uaQh48Ibf7K5sH3C1rvRzcB1zHPKJ36wsZjadw45qfMtaOC+q0VDNy46712TOMXD31//cIJqHJpOIEZw2xY6uTxPNpR1jdtMVotj/Nfa0awsWkGDv2MgPiog/1iAzv8CIZ1kliESh5i8IqgdKR8mIEp+DPrn5lzRHhSRHZgY464=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mB9eXMwy; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e2b137d666so1279885ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712860678; x=1713465478; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XKRQnKissdHCzmGNa2PV/255DMDi6uK/FNddjpC3dpw=;
+        b=mB9eXMwyGgD61+5SnKWtkpWFK61RW9NnXyIjhlGs8DGdO/LrivY4TLv5raVytOnrc8
+         Nt8qQBI/S/vuiyKBSWRQXOaGS9bST0TVcFKCcw2k0BWmSPrULFutHaG7SwQIBL4as5xl
+         WQCifxoWgOxWKFHFUHn/8zss8Ckdb4E1ZZ1bpAAwVRm7Ny6mF+5cNUtT6j/aROsbFcN8
+         Z1oaQ5eThUzJb1Gh70zu7+ikieT9rXsLJA0EiWdeZB1OkGpJjZ0r8E0deBva8m4VeMgo
+         J2D0rHgCl0gfkF/WlsIPVRASRtQiBstcV8Htf7RlfvxzCdib/oYWKcmtUdzV/dEMXhJZ
+         mCcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712860678; x=1713465478;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XKRQnKissdHCzmGNa2PV/255DMDi6uK/FNddjpC3dpw=;
+        b=JNrG/92K388HQVmB23bs0/4b0G5cxAO0mZo/wSnQRHpjmmsK4rb/C/ZF52kjURbL95
+         CEkEdzSwIQ+TtqQdW4ldUjRtPZ35jsSA30n3PKAVxs+ZfUbhv2C2Kg006QxsgOHuQ/yk
+         P6G1wSHViUwekLy4dNT/JFhDTmyMi4tOKN5EUhPpYMGKGQ39RVAp/xnHdhZSoGajP7J7
+         hiz3t+I5IDLHEdBdQ5XqvCSPMGKyDyIZ4er8GaCoWV0UlbGYY8jbjeyBag2YkNkvxir9
+         bnJOh4xSs9JuOW4P35VBYh2PpEue+WpDm69ilAGc6nIPV4iVaBdq6HX5L9ce+EW6Vd1N
+         +7ng==
+X-Gm-Message-State: AOJu0YxVnAszz/fc7ja39DrDBThSul1niEzh6gbPeiKpur+hQp9PzBQj
+	DoQcH8SQNsoBtGhnT1s0BKQWpptUNokK9RFdKioL2lcPHP98GzvMo+b81A==
+X-Google-Smtp-Source: AGHT+IHJi3RIP7UZY7UtB+xmE16TsC8pukDMA+4xkNNmB+DzJ+cIUjpElTTwSZwvMrAJDWzMVnCEWw==
+X-Received: by 2002:a17:902:780a:b0:1e2:a42a:af5d with SMTP id p10-20020a170902780a00b001e2a42aaf5dmr317714pll.30.1712860678506;
+        Thu, 11 Apr 2024 11:37:58 -0700 (PDT)
+Received: from daehojeong-desktop.mtv.corp.google.com ([2620:0:1000:8411:e309:9090:b8ac:35b1])
+        by smtp.gmail.com with ESMTPSA id x6-20020a170902a38600b001e425d86ad9sm1519906pla.151.2024.04.11.11.37.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 11:37:58 -0700 (PDT)
+From: Daeho Jeong <daeho43@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	kernel-team@android.com
+Cc: Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH 2/2] f2fs: allow direct io of pinned files for zoned storage
+Date: Thu, 11 Apr 2024 11:37:53 -0700
+Message-ID: <20240411183753.2417792-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.15 00/57] 5.15.155-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
-References: <20240411095407.982258070@linuxfoundation.org>
-Content-Language: en-CA
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-In-Reply-To: <20240411095407.982258070@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 4/11/2024 2:57 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.155 release.
-> There are 57 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.155-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+From: Daeho Jeong <daehojeong@google.com>
 
-<snip>
+Since the allocation happens in conventional LU for zoned storage, we
+can allow direct io for that.
 
-I wanted to repeat my request from another thread[1] here, that we revert commit 4949affd5288 
-("ACPI: CPPC: Use access_width over bit_width for system memory accesses") in 5.15.155 due to
-known problems with the patch, so it's not lost in the mail storm.
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+ fs/f2fs/file.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thanks,
-Easwar
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 3ee61bc82c6f..c8e086077a48 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -833,7 +833,8 @@ static bool f2fs_force_buffered_io(struct inode *inode, int rw)
+ 	 * for blkzoned device, fallback direct IO to buffered IO, so
+ 	 * all IOs can be serialized by log-structured write.
+ 	 */
+-	if (f2fs_sb_has_blkzoned(sbi) && (rw == WRITE))
++	if (f2fs_sb_has_blkzoned(sbi) && (rw == WRITE) &&
++	    !f2fs_is_pinned_file(inode))
+ 		return true;
+ 	if (is_sbi_flag_set(sbi, SBI_CP_DISABLED))
+ 		return true;
+-- 
+2.44.0.683.g7961c838ac-goog
 
-[1] https://lore.kernel.org/all/97d25ef7-dee9-4cc5-842a-273f565869b3@linux.microsoft.com/
 
