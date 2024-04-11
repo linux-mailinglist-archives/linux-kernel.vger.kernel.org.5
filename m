@@ -1,278 +1,170 @@
-Return-Path: <linux-kernel+bounces-141493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D433A8A1EF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:55:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 712E88A1EFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:55:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 652EF1F2B0EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:55:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A91B28314D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:55:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7073414286;
-	Thu, 11 Apr 2024 18:55:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 782D4134B0;
+	Thu, 11 Apr 2024 18:55:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AukPD8e6"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hPzQKzVn"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E66EEB5;
-	Thu, 11 Apr 2024 18:54:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7158A12E5D;
+	Thu, 11 Apr 2024 18:55:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712861701; cv=none; b=dfRkrA7vobELDPpUAbqXqBxqzZXOxhlHYmVv6flvm+hOTnM8OFcpqEUOpEu6BzqcXD8KuPGyFjxWC2NUsKFHvaoTEzV0Hjp6t25o1j0XFPZxOCzLQpSb8tFPWT5pIARUfYTD7s3qczam3XP0s6osQsgPqxdS4JC1lDiQccYqKjk=
+	t=1712861732; cv=none; b=RFp8lfNA4qBiQ+yyLziPY70BuCSx46nl/ovCyD1ZQqEVOWCwkH5ar09Gw60L0wtUY6hxUOA/wrDvFIbblvIOzUrPkOWTtt7lDBVWJkT9swMEUJ6QxaI2+60NLYxQbG2nkLW1q0USwBEHyRhkAhO3lWlTI8D71Sx1I7IDMJbxHWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712861701; c=relaxed/simple;
-	bh=5qP8l0+mW39Glyl2G8xkXhZdK8fVn2AWA1IKf9RJTZo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tAPJteF3saaJ+5KFQM24JkGCuIbZbG07vWtIaneaYG9Ny4zh/tNdEIdDHz7g2BZ8bvwnCtfl4wb6KkoYCEb/MIWaBwRNX7Q3g6TmKxayP8ATG4Eq7/a16OgP3IW+xCQEbJKw1AEVDgqhmKobKiribKZcFudzjNs6NY5Gc529LCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AukPD8e6; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712861701; x=1744397701;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5qP8l0+mW39Glyl2G8xkXhZdK8fVn2AWA1IKf9RJTZo=;
-  b=AukPD8e6OTW4hcDUzXWJV9dmtI6GdMOgQWiWQ5b9YXAunSQYo+dpLbV6
-   vHWq6koQZuVgCJlgsy/+pPWo7wZiL4AcPKpewoAQSBX/fFEZp+pm/yCic
-   P2gCxuMWvfkdS4WVu/8IsxWJExEJCZlHkt/xnI/ao4DKrWFqXMVSGYvPd
-   rGdSJK+hxWhtEpQMBG8ZHssUQF/xzme55zTXw8LOvT+t8SMTWM3lwh1eo
-   zJpLlv59vnzHGy7rdLzWLOQ3EmqDathqac3v8Yf3V1bfIJK05KQn8dt06
-   iZAsEZZVge10EK/JVXelgGpITo6CGmG7v3BLhvILY1F2ihNaG6H7wtnVD
-   w==;
-X-CSE-ConnectionGUID: 1hZWUkabTGiwpRI775TTyg==
-X-CSE-MsgGUID: ZL3Jhn72RnC+j7vJ+g6jpA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8520098"
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="8520098"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 11:55:00 -0700
-X-CSE-ConnectionGUID: eK3XVo2vSey1O7rwnqOZTA==
-X-CSE-MsgGUID: P9A6tH+TSGKBy6b6UIs1Lg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="25540715"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 11:54:59 -0700
-Date: Thu, 11 Apr 2024 11:54:58 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, chen.bo@intel.com,
-	hang.yuan@intel.com, tina.zhang@intel.com,
-	Xiaoyao Li <xiaoyao.li@intel.com>, isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 039/130] KVM: TDX: initialize VM with TDX specific
- parameters
-Message-ID: <20240411185458.GD3039520@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <5eca97e6a3978cf4dcf1cff21be6ec8b639a66b9.1708933498.git.isaku.yamahata@intel.com>
- <4c64bdac-f1fb-4f29-b753-46ee82a68dc0@intel.com>
+	s=arc-20240116; t=1712861732; c=relaxed/simple;
+	bh=82WAuKFIq3XAh9McX3MVSvtMbClD44X+hGmbxb/6VSs=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=luPKq1iIJCsXO6ZHoxkvyYmzerpaj6y4y1pFiafDht/6zABQcyZwOcPkO82shv4X0G4MyLCBagCNL7kmg7u3AE+nuUCeHu8kTlYjfeIkO8Aze5hFSDMCElXcCcAvwinjWnv2kjGgh3Jt+tidWN9+iJGc2jJPyeptNEELhGe1OCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hPzQKzVn; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43BCvQPb022085;
+	Thu, 11 Apr 2024 18:55:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=13hWRm+TBL3RIJcw2GrbA
+	uy0XhTMQdVLg5bf1cuNnwQ=; b=hPzQKzVn5pJ23T/voDQpLrvFroMlqgnJdP3AB
+	4zVxLuMNyTkigBn6MNA37m4H4bsr6VVVZ1fSpuc1dFfO87kSMdagaBZ+JQkfoMnw
+	gD9vecUN3vFrDUut1dm4vVa+8NpbasXQJ5osXv36zWgLhT2u4BD7VeWU4aLGnhZS
+	nbE89JyHt+ZO5RfiscXV4bcY8uSeKQDtjaBp8cN38kOBRxzvCFVhGcHnCpRO12vm
+	FFvNnWMIgnh+Fm72IJ7RL07XpPrxtrmcUMh8UXIplANXgSt77BfiNc17ylW1VaMc
+	gVp05IAcgq4EaFGZ0R7yxjQsI9DrtrHui5LX6u0EsXoQfWAow==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xec6dj0y5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 18:55:21 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43BItK8q012763
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 18:55:20 GMT
+Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Thu, 11 Apr 2024 11:55:19 -0700
+Date: Thu, 11 Apr 2024 11:55:19 -0700
+From: Elliot Berman <quic_eberman@quicinc.com>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>, Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten
+	<marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, "Daniel
+ Vetter" <daniel@ffwll.ch>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Subject: Re: [PATCH 1/6] soc: qcom: Move some socinfo defines to the header,
+ expand them
+Message-ID: <20240410132510649-0700.eberman@hu-eberman-lv.qualcomm.com>
+References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
+ <20240405-topic-smem_speedbin-v1-1-ce2b864251b1@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <4c64bdac-f1fb-4f29-b753-46ee82a68dc0@intel.com>
+In-Reply-To: <20240405-topic-smem_speedbin-v1-1-ce2b864251b1@linaro.org>
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: mrfVQikCksSyfWHu_d7-aNRvrtFnBno1
+X-Proofpoint-ORIG-GUID: mrfVQikCksSyfWHu_d7-aNRvrtFnBno1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-11_10,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
+ phishscore=0 bulkscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
+ mlxlogscore=999 lowpriorityscore=0 mlxscore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404110138
 
-On Thu, Apr 04, 2024 at 12:59:45PM +1300,
-"Huang, Kai" <kai.huang@intel.com> wrote:
+On Fri, Apr 05, 2024 at 10:41:29AM +0200, Konrad Dybcio wrote:
+> In preparation for parsing the chip "feature code" (FC) and "product
+> code" (PC) (essentially the parameters that let us conclusively
+> characterize the sillicon we're running on, including various speed
+> bins), move the socinfo version defines to the public header and
+> include some more FC/PC defines.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  drivers/soc/qcom/socinfo.c       |  8 --------
+>  include/linux/soc/qcom/socinfo.h | 36 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 36 insertions(+), 8 deletions(-)
+> 
+..
+> diff --git a/include/linux/soc/qcom/socinfo.h b/include/linux/soc/qcom/socinfo.h
+..
+> @@ -74,4 +84,30 @@ struct socinfo {
+>  	__le32 boot_core;
+>  };
+>  
+> +/* Internal feature codes */
+> +enum feature_code {
+> +	/* External feature codes */
+> +	SOCINFO_FC_UNKNOWN = 0x0,
+> +	SOCINFO_FC_AA,
+> +	SOCINFO_FC_AB,
+> +	SOCINFO_FC_AC,
+> +	SOCINFO_FC_AD,
+> +	SOCINFO_FC_AE,
+> +	SOCINFO_FC_AF,
+> +	SOCINFO_FC_AG,
+> +	SOCINFO_FC_AH,
+> +	SOCINFO_FC_EXT_RESERVE,
+> +};
 
-> 
-> 
-> On 26/02/2024 9:25 pm, isaku.yamahata@intel.com wrote:
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > 
-> > TDX requires additional parameters for TDX VM for confidential execution to
-> > protect the confidentiality of its memory contents and CPU state from any
-> > other software, including VMM.
-> 
-> Hmm.. not only "confidentiality" but also "integrity".  And the "per-VM" TDX
-> initializaiton here actually has nothing to do with "crypto-protection",
-> because the establishment of the key has already been done before reaching
-> here.
-> 
-> I would just say:
-> 
-> After the crypto-protection key has been configured, TDX requires a VM-scope
-> initialization as a step of creating the TDX guest.  This "per-VM" TDX
-> initialization does the global configurations/features that the TDX guest
-> can support, such as guest's CPUIDs (emulated by the TDX module), the
-> maximum number of vcpus etc.
-> 
-> 
-> 
-> 
-> When creating a guest TD VM before creating
-> > vcpu, the number of vcpu, TSC frequency (the values are the same among
-> > vcpus, and it can't change.)  CPUIDs which the TDX module emulates.
-> 
-> I cannot parse this sentence.  It doesn't look like a sentence to me.
-> 
-> Guest
-> > TDs can trust those CPUIDs and sha384 values for measurement.
-> 
-> Trustness is not about the "guest can trust", but the "people using the
-> guest can trust".
-> 
-> Just remove it.
-> 
-> If you want to emphasize the attestation, you can add something like:
-> 
-> "
-> It also passes the VM's measurement and hash of the signer etc and the
-> hardware only allows to initialize the TDX guest when that match.
-> "
-> 
-> > 
-> > Add a new subcommand, KVM_TDX_INIT_VM, to pass parameters for the TDX
-> > guest.
-> 
-> [...]
-> 
-> It assigns an encryption key to the TDX guest for memory
-> > encryption.  TDX encrypts memory per guest basis.
-> 
-> No it doesn't.  The key has been programmed already in your previous patch.
-> 
-> The device model, say
-> > qemu, passes per-VM parameters for the TDX guest.
-> 
-> This is implied by your first sentence of this paragraph.
-> 
-> The maximum number of
-> > vcpus, TSC frequency (TDX guest has fixed VM-wide TSC frequency, not per
-> > vcpu.  The TDX guest can not change it.), attributes (production or debug),
-> > available extended features (which configure guest XCR0, IA32_XSS MSR),
-> > CPUIDs, sha384 measurements, etc.
-> 
-> This is not a sentence.
-> 
-> > 
-> > Call this subcommand before creating vcpu and KVM_SET_CPUID2, i.e.  CPUID
-> > configurations aren't available yet.
-> 
-> "
-> This "per-VM" TDX initialization must be done before any "vcpu-scope" TDX
-> initialization.  To match this better, require the KVM_TDX_INIT_VM IOCTL()
-> to be done before KVM creates any vcpus.
-> 
-> Note KVM configures the VM's CPUIDs in KVM_SET_CPUID2 via vcpu.  The
-> downside of this approach is KVM will need to do some enforcement later to
-> make sure the consisntency between the CPUIDs passed here and the CPUIDs
-> done in KVM_SET_CPUID2.
-> "
+SOCINFO_FC_EXT_RESERVE was a convenient limit since we mapped
+SOCINFO_FC_AA -> string "AA" via an array, and we've only needed the 8
+feature codes so far.
 
-Thanks for the draft.  Let me update it.
+We should remove the EXT_RESERVE and test for the Y0-YF (internal
+feature code) values instead.
 
-> So CPUIDs configuration values need
-> > to be passed in struct kvm_tdx_init_vm.  The device model's responsibility
-> > to make this CPUID config for KVM_TDX_INIT_VM and KVM_SET_CPUID2.
+> +
+> +/* Internal feature codes */
+> +/* Valid values: 0 <= n <= 0xf */
+> +#define SOCINFO_FC_Yn(n)		(0xf1 + n)
+> +#define SOCINFO_FC_INT_RESERVE		SOCINFO_FC_Yn(0x10)
+
+We probably should've named this SOCINFO_FC_INT_MAX. Reserve implies
+it's reserved for some future use, but it's really the max value it
+could be.
+
+> +
+> +/* Product codes */
+> +#define SOCINFO_PC_UNKNOWN		0
+> +/* Valid values: 0 <= n <= 8, the rest is reserved */
+> +#define SOCINFO_PCn(n)			(n + 1)
+> +#define SOCINFO_PC_RESERVE		(BIT(31) - 1)
+
+Similar comments here as the SOCINFO_FC_EXT_*. It's more like known
+values are [0,8], but more values could come in future chipsets.
+
+> +
+>  #endif
 > 
-> And I would leave how to handle KVM_SET_CPUID2 to the patch that actually
-> enforces the consisntency.
-
-Yes, that's a different discussion.
-
-
-> > +struct kvm_cpuid_entry2 *kvm_find_cpuid_entry2(
-> > +	struct kvm_cpuid_entry2 *entries, int nent, u32 function, u64 index)
-> > +{
-> > +	return cpuid_entry2_find(entries, nent, function, index);
-> > +}
-> > +EXPORT_SYMBOL_GPL(kvm_find_cpuid_entry2);
-> 
-> Not sure whether we can export cpuid_entry2_find() directly?
-> 
-> No strong opinion of course.
-> 
-> But if we want to expose the wrapper, looks ...
-
-
-Almost all KVM exported symbols have kvm_ prefix. I'm afraid that cpuid is too
-common.  We can rename the function directly without wrapper.
-
-
-> > +
-> >   struct kvm_cpuid_entry2 *kvm_find_cpuid_entry_index(struct kvm_vcpu *vcpu,
-> >   						    u32 function, u32 index)
-> >   {
-> > diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-> > index 856e3037e74f..215d1c68c6d1 100644
-> > --- a/arch/x86/kvm/cpuid.h
-> > +++ b/arch/x86/kvm/cpuid.h
-> > @@ -13,6 +13,8 @@ void kvm_set_cpu_caps(void);
-> >   void kvm_update_cpuid_runtime(struct kvm_vcpu *vcpu);
-> >   void kvm_update_pv_runtime(struct kvm_vcpu *vcpu);
-> > +struct kvm_cpuid_entry2 *kvm_find_cpuid_entry2(struct kvm_cpuid_entry2 *entries,
-> > +					       int nent, u32 function, u64 index);
-> >   struct kvm_cpuid_entry2 *kvm_find_cpuid_entry_index(struct kvm_vcpu *vcpu,
-> >   						    u32 function, u32 index); >   struct kvm_cpuid_entry2 *kvm_find_cpuid_entry(struct kvm_vcpu *vcpu,
-> 
-> ... __kvm_find_cpuid_entry() would fit better?
-
-Ok, let's rename it.
-
-
-> > diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> > index 1cf2b15da257..b11f105db3cd 100644
-> > --- a/arch/x86/kvm/vmx/tdx.c
-> > +++ b/arch/x86/kvm/vmx/tdx.c
-> > @@ -8,7 +8,6 @@
-> >   #include "mmu.h"
-> >   #include "tdx_arch.h"
-> >   #include "tdx.h"
-> > -#include "tdx_ops.h"
-> 
-> ??
-> 
-> If it isn't needed, then it shouldn't be included in some previous patch.
-
-Will fix.
-
-
-> >   #include "x86.h"
-> >   #undef pr_fmt
-> > @@ -350,18 +349,21 @@ static int tdx_do_tdh_mng_key_config(void *param)
-> >   	return 0;
-> >   }
-> > -static int __tdx_td_init(struct kvm *kvm);
-> > -
-> >   int tdx_vm_init(struct kvm *kvm)
-> >   {
-> > +	/*
-> > +	 * This function initializes only KVM software construct.  It doesn't
-> > +	 * initialize TDX stuff, e.g. TDCS, TDR, TDCX, HKID etc.
-> > +	 * It is handled by KVM_TDX_INIT_VM, __tdx_td_init().
-> > +	 */
-> > +
-> >   	/*
-> >   	 * TDX has its own limit of the number of vcpus in addition to
-> >   	 * KVM_MAX_VCPUS.
-> >   	 */
-> >   	kvm->max_vcpus = min(kvm->max_vcpus, TDX_MAX_VCPUS);
-> > -	/* Place holder for TDX specific logic. */
-> > -	return __tdx_td_init(kvm);
-> > +	return 0;
-> 
-> ??
-> 
-> I don't quite understand.  What's wrong of still calling __tdx_td_init() in
-> tdx_vm_init()?
-> 
-> If there's anything preventing doing __tdx_td_init() from tdx_vm_init(),
-> then it's wrong to implement that in your previous patch.
-
-Yes. As discussed the previous patch is too big, we need to break the previous
-patch and this patch.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
 
