@@ -1,123 +1,161 @@
-Return-Path: <linux-kernel+bounces-139765-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6016E8A0772
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:03:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 190118A078B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:19:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EC131F23636
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:03:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 831261F24CCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:19:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C94A13C69E;
-	Thu, 11 Apr 2024 05:03:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66FE113C814;
+	Thu, 11 Apr 2024 05:19:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D29mvb7p"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="Ccv5FjoL";
+	dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b="Yc2LXSdw"
+Received: from gw2.atmark-techno.com (gw2.atmark-techno.com [35.74.137.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E86013C67A
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 05:03:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BECB13C693
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 05:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.74.137.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712811792; cv=none; b=Efe2GjWpMWJn4TpZfOkOH+5yDxVxixtT/Xzs73q8WLu+84PjZql6QoOrXPF2WA7MiDas4wSDu9o0dOnuvyNByKNSFICAxWas0HMXj8T/7uTjENz3+jsoIotvoLH7vkRreOy6EpqpPAqXLG8cfKYW8JjEu9sGHpp5tFheVvvp6C8=
+	t=1712812740; cv=none; b=ZH1lYo29SOEzcnmGFUjdnabEaL8QUzksj284whBltN3BciR33wqpZojCVwFjFxj/1a8jJmSs+uJzoAzDoQXiOCVn+d9Ko5tl41GBw5ioXQ9HcSwohQc9kRSfF9FdPnKsdDYhTin0ew/CfLpghkz999nisgxY60LSE/w/XBIImCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712811792; c=relaxed/simple;
-	bh=TvH6TCVgnMATPSKOuH94vxgD6+OFPlbAAQCEQs9hoqc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IZ/bIfTO9mb+xzwf4Ro1nSkPSXKkItNkq6NLXOBnxTZvUT0Dney6mmDXztywH+4YAU0ikMfeRYYKNcHCAsJLKmjPqbNpOKpy57A2q2CZIL5mAIhRPaRt9zFg2OjAHOvA2Xk8vKdm8rqnxeJl+G88d1Wv5w7hyFnWLBvPHyDUYRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=D29mvb7p; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712811789;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=oeHu73ZcJFVvJyZ55x/dnWlLLWe8HGo5I+YvO7V0U40=;
-	b=D29mvb7ptQIPmeYO/y+AaqM/iVslSBZ5pxUhP6t0Cnjoe+aX7TMceGoD3B8mWf7gU3nVoy
-	AHMT/V8iYNKZZn6DSMhT53PclqUoMiMuLf0pewd+jeVmP5IEFZmLLC4gpMgHx+wSCvy5bW
-	59nmQ0hSndgwELzr+6wlVPBuFuA5CtM=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-452-PVG7CLAtMkq0Y7w6nwZd2A-1; Thu, 11 Apr 2024 01:03:06 -0400
-X-MC-Unique: PVG7CLAtMkq0Y7w6nwZd2A-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-56e34264982so2280264a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:03:06 -0700 (PDT)
+	s=arc-20240116; t=1712812740; c=relaxed/simple;
+	bh=+3l8UbUUZkN6lp2JD04jeJySfez+JOB3Ahyd5svuMK4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SGwq8JNf4/x2ERdanSGK+qhFqBGukJZDayq7qFPcqtD7VfSPIimWEhGTEGAyFlXhFxP3MKgWN3chGt3aR4rELYe7jZtFf0efZ/ikM+SQoOVpKCeWX/sE/N4k9nLBb/lCZV8Zqu9Rz9f/SVh7tRMYaIQkoPGhItfTUakgig12I60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com; spf=pass smtp.mailfrom=atmark-techno.com; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=Ccv5FjoL; dkim=pass (2048-bit key) header.d=atmark-techno.com header.i=@atmark-techno.com header.b=Yc2LXSdw; arc=none smtp.client-ip=35.74.137.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=atmark-techno.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atmark-techno.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=atmark-techno.com;
+	s=gw2_bookworm; t=1712812283;
+	bh=+3l8UbUUZkN6lp2JD04jeJySfez+JOB3Ahyd5svuMK4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ccv5FjoL2sQoSiUUVocDFpjEMH7Z21hP7WGi74eC/32vurf1xnXiqoGCkshYZa8eJ
+	 79rwacS+C2uwXMEhuAGwDA6sEMugfZdWAt5OI4/f58+S5KhWKniu7m5CAF4j8GZqyr
+	 pVfV/mCIjfxPwAy4eK7vdqRHWvpUb1VZK6gVW8jHvkEitpSM8kt2Z4lhRNpgZepjal
+	 aFSeeq7PzHrkp68PimSrH+jvJTnqR11qKLp5mj+dIk7s7z1W9YEIVnQcRgEcR1JoAI
+	 ilDNUeDNmgYlN497W4RcvZahp3GOgQbjVBzI44MCNvqHZetV/EdIHINNnddxZHeSzi
+	 LRS/UyKx2SQXw==
+Received: from gw2.atmark-techno.com (localhost [127.0.0.1])
+	by gw2.atmark-techno.com (Postfix) with ESMTP id 6DF25B9B
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:11:23 +0900 (JST)
+Authentication-Results: gw2.atmark-techno.com;
+	dkim=pass (2048-bit key; unprotected) header.d=atmark-techno.com header.i=@atmark-techno.com header.a=rsa-sha256 header.s=google header.b=Yc2LXSdw;
+	dkim-atps=neutral
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+	by gw2.atmark-techno.com (Postfix) with ESMTPS id DF56CB9B
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:11:21 +0900 (JST)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1e51108b454so7546215ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 22:11:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atmark-techno.com; s=google; t=1712812281; x=1713417081; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZYM4XEihFnPGvzUAhdJCr4dtkp/ouRs0QzEOXLER4XA=;
+        b=Yc2LXSdwUvI7Y9P2B6j1mXa+zKDVh1VyMNrlE65RPEfzH31oAufqmmOJH4fGIE6aWA
+         H3iywtIX0i0Eb7xHm7fUngiDpcQfFB5BfjAyCvEP+JW7WVj5OOGiQk5xfQ0esgZgCOwT
+         wJ1OkZJLIhDGwKXBuWlQUPc2FVIXWC7cTQ1/BRYEDSevahciUeWZC74Uc8MUtuQ6DERS
+         02cZxSkZU9vgfkDoubLgXJM3tbxWkPlZ49avm31wdlmhz1feIAD+RzAqqEIixBuy3gT8
+         MtBrpeZjcZg2gEWHt8InU2yoomeNUccXsEAnCk0DcKX3rpDfw1kK+QKBycxYbk0OkdkQ
+         F9HA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712811785; x=1713416585;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oeHu73ZcJFVvJyZ55x/dnWlLLWe8HGo5I+YvO7V0U40=;
-        b=pKu1mNF7OAp2KFvKV6ukqO7R4PDRgBeYYn8IB0VHc1CGb3PPTm5FbaGlyfVv5+QFR2
-         8/6pMOvWxdOt4hKx8C1CAd1ymorOhmh+xpRebU+RXLPm2+F6huheR2FywvVb0Tgly8DW
-         oQLx3KKbsyAFNEs67XOyS4wXaxmI+RuFvkk6UgItH0pVstC+eXyFOphcMtBkAOrobt/Z
-         ZkSSv+DbnMtBxifb77rUCDJCbNYZo+D7GupoJqpmfD/1/8wKQ2hoj0cUMkwN9udy7sox
-         O2wh0w8GTQGiu2aIKBgKeneND16ujbFeQj+4/9MeD/QXUs1nKaH4naqfTx3Da4QwuGMV
-         HdCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXUlPq89UrXGvRgwReTxO+9usU+sHSPp1l5vA3H26C5wjfJxLQC7JPG9kRblw6ANkA+lBcSRVMQ/jiIFWO+QlB2ok5e2Mzv/gWu+QP4
-X-Gm-Message-State: AOJu0YyqmdqSPfvD5ZE9FyznQ16GN4QS1S4ole8hMq4G5KweNFofk/PU
-	GJPaSD+xQ9bfUUD7NjAB1a5V+1j4ARB/HjOwkus998k5cZE6Y5fIMXeWsF6sLUCnvkQpIybyqnm
-	rfOe8lV7brK9hib/GHp3RTXR0JM4SGjnm4iIAaR15/hpFnpDx6cCaAk1GDozj6g==
-X-Received: by 2002:a50:a451:0:b0:568:3362:ccd1 with SMTP id v17-20020a50a451000000b005683362ccd1mr3738111edb.1.1712811785466;
-        Wed, 10 Apr 2024 22:03:05 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFYDiEm5uYLCp9Y2cNrKiKw+GCEoP2XQC/NiQOax90o2ewqRFDQclGGyG9LYC0R8itI1t1O2Q==
-X-Received: by 2002:a50:a451:0:b0:568:3362:ccd1 with SMTP id v17-20020a50a451000000b005683362ccd1mr3738099edb.1.1712811785138;
-        Wed, 10 Apr 2024 22:03:05 -0700 (PDT)
-Received: from lbulwahn-thinkpadx1carbongen9.rmtde.csb ([2a02:810d:7e40:14b0:4ce1:e394:7ac0:6905])
-        by smtp.gmail.com with ESMTPSA id c1-20020aa7c741000000b0056fd8155792sm323337eds.25.2024.04.10.22.03.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 22:03:04 -0700 (PDT)
-From: Lukas Bulwahn <lbulwahn@redhat.com>
-X-Google-Original-From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
-To: Animesh Agarwal <animeshagarwal28@gmail.com>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	linux-i2c@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@redhat.com>
-Subject: [PATCH] MAINTAINERS: adjust file entry in ARM/LPC32XX SOC SUPPORT
-Date: Thu, 11 Apr 2024 07:02:57 +0200
-Message-ID: <20240411050257.42943-1-lukas.bulwahn@redhat.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1712812281; x=1713417081;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZYM4XEihFnPGvzUAhdJCr4dtkp/ouRs0QzEOXLER4XA=;
+        b=mf5bHugdPbZmZRXElBCihcuO2W3B6LbuOhaPfO7+aYMf8QC6m3rMuAIgS76WIF7oXf
+         GOJJ+uRuYPXfzaXPevzzP0BRUGOKFYUOaixZxCKFEltAq3Q6mxgG8gGST1juwpYVBvi2
+         Bjvo8b26YElpLXKXuzuLG0UtbSRMIsi8VkAbVl+MVpLosRi5oTJae3fsJXeRBJLea1pa
+         nc+/czlHn62HsGkiKcdm6nXwWXq9ZQx5Uwyz+cZoRomjlAmD3kFtFAbVVSlz1UEBuI9C
+         mB6etDchYZrYnLBCJdp3r1d956tYyUum6ilHM2li8/6StnGbFsLAcP55Ic5GKaAPQSx6
+         7GpA==
+X-Forwarded-Encrypted: i=1; AJvYcCVFuzNHMmzdRvi8FiL/jnUADRhwaL6J/DYzSs+ydKX02cEHCxMOBk4I+EHOQElbOAS4q2olcmDRzWiMmo2uuRTNKyyomByVL5VhRe+m
+X-Gm-Message-State: AOJu0YwjKthP2lw/OUW8USzKTqYy+2C7Q0gDA0exLD3NB+zXfBQWbFQ1
+	BzyUEiGzy7Q3bgCXHbNb7vY4AOzCl/gpjMKr6HcgQqfzEIZfeki6wd6WyaMg1fPIIv68/OJWdab
+	QmHeH4oIsVGfIetHVgvTepBv5+856Iz3YZnIB/cmLs2TpJgk2hrK2iuQfwORmFQw=
+X-Received: by 2002:a17:902:a506:b0:1e5:2883:6ff6 with SMTP id s6-20020a170902a50600b001e528836ff6mr2439151plq.11.1712812280799;
+        Wed, 10 Apr 2024 22:11:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFPz2rOs7Q88TP2vpTyjyricUo5wqvT4PCM1GrqrEBYpN9J4sruu7OeLfrUYQtbbQepJwvbww==
+X-Received: by 2002:a17:902:a506:b0:1e5:2883:6ff6 with SMTP id s6-20020a170902a50600b001e528836ff6mr2439129plq.11.1712812280404;
+        Wed, 10 Apr 2024 22:11:20 -0700 (PDT)
+Received: from pc-0182.atmarktech (145.82.198.104.bc.googleusercontent.com. [104.198.82.145])
+        by smtp.gmail.com with ESMTPSA id b10-20020a170902d50a00b001e0f5034e95sm417774plg.288.2024.04.10.22.11.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 10 Apr 2024 22:11:19 -0700 (PDT)
+Received: from martinet by pc-0182.atmarktech with local (Exim 4.96)
+	(envelope-from <martinet@pc-zest>)
+	id 1rumiU-009uEk-2P;
+	Thu, 11 Apr 2024 14:11:18 +0900
+Date: Thu, 11 Apr 2024 14:11:08 +0900
+From: Dominique Martinet <dominique.martinet@atmark-techno.com>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Jonathan Cameron <jic23@kernel.org>,
+	David Lechner <dlechner@baylibre.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Syunya Ohshio <syunya.ohshio@atmark-techno.com>,
+	Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: industrialio-core: look for aliases to request
+ device index
+Message-ID: <Zhdw7GPdOe2nOhJy@atmark-techno.com>
+References: <Zd7qz1Qte8HWieF_@atmark-techno.com>
+ <20240228142441.00002a79@Huawei.com>
+ <Zd_zB_ymxkx0HB3q@atmark-techno.com>
+ <ZfPg-nMANUtBlr6S@atmark-techno.com>
+ <CAMknhBG_kJx8JPvTBQo7zpy3mFAkUjZpRY3DLBfXt+39nRJWiA@mail.gmail.com>
+ <ZfejyEvPIncygKJ9@atmark-techno.com>
+ <20240318122953.000013f3@Huawei.com>
+ <20240331152042.394b4289@jic23-huawei>
+ <Zgpt136Q2rGL-cl_@atmark-techno.com>
+ <20240401174756.0000786a@Huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240401174756.0000786a@Huawei.com>
 
-Commit 20c9819ccd9e ("dt-bindings: i2c: nxp,pnx-i2c: Convert to dtschema")
-converts i2c-pnx.txt to nxp,pnx-i2c.yaml, but misses to adjust the file
-entry in ARM/LPC32XX SOC SUPPORT.
+Jonathan Cameron wrote on Mon, Apr 01, 2024 at 05:47:56PM +0100:
+> Good luck.  If you have time it might be good to hear what you end up
+> with!
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
-broken reference.
+Just a quick follow-up since you asked -- given we manage our own kernel
+that already has its share of patches and it's not something
+user-visible we'll stick with the aliases approach for this kernel to
+make identifiers static.
+(and I'm adding labels for meticulous users, but not expecting it to be
+used in practice, it'll mostly be used in automated testing to make sure
+the number doesn't change on our end)
 
-Adjust the file entry in ARM/LPC32XX SOC SUPPORT after this conversion.
+The rationale was as per my previous mails that paths in
+/sys/devices/platform have changed in the past so we'd rather not rely
+on these being set in stone, and while a new symlink would have been
+workable it's a user-noticeable change so we've prefered just pinning
+the device numbers.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'm always reluctant to take in more "in house" patches in our tree but
+in this case it's "simple enough" (death by thousands paper cut?), and
+we'll rediscuss this if/when another upstream solution shows up.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 06d685a97b4b..edf6176a5530 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2360,7 +2360,7 @@ M:	Vladimir Zapolskiy <vz@mleia.com>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
- T:	git git://github.com/vzapolskiy/linux-lpc32xx.git
--F:	Documentation/devicetree/bindings/i2c/i2c-pnx.txt
-+F:	Documentation/devicetree/bindings/i2c/nxp,pnx-i2c.yaml
- F:	arch/arm/boot/dts/nxp/lpc/lpc32*
- F:	arch/arm/mach-lpc32xx/
- F:	drivers/i2c/busses/i2c-pnx.c
+
+Thanks a lot for your time thinking it through and discussing it though,
+that was appreciated!
+(Jonathan and everyone else involved)
 -- 
-2.44.0
+Dominique
+
 
 
