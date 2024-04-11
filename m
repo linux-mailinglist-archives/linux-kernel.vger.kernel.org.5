@@ -1,160 +1,90 @@
-Return-Path: <linux-kernel+bounces-140690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA86F8A17C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:46:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7184F8A17C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:47:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F29B284625
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:46:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C1F9284273
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:47:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FC581171A;
-	Thu, 11 Apr 2024 14:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0680EDF42;
+	Thu, 11 Apr 2024 14:47:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a1RYuzBV"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VwecqAAY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23840F9DF
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:46:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46A40F9DA;
+	Thu, 11 Apr 2024 14:47:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712846810; cv=none; b=mc2acZ0HQTMR4IpLO+6/McgrcRYcqTwS6wboqviZu5Wt10TeNvyDo4gJHHaewsgZ7PD5KUOldK0IvrhCqd9H5yT8aBoadVWxRL7lHssN4rw14B0pJ5IkPAbN0HdJBmHlA2GJBGAAhtDjJfaTnr9mpEuJZqTbuWFzTghGUgj3bj0=
+	t=1712846831; cv=none; b=nXFcNrIxfXQql1eINyjTbux5H75/mfscpHfmMK2++udwoU69VouiF25IsSs3Y8TQh1Wueo92jOxtSo1dmxdeop3GlPLe1FengiMD79x0xFPbNoSqw/Pmy9Dd+JD77IwxIqQ2TXsN+IPBYf3XJrnSBE7NglEUjgLogeYooKoGvb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712846810; c=relaxed/simple;
-	bh=IEu8ao+7xqBgR+dzOKjYnc1P5DiKwj2piPwPTj9Zj+o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KfvwZz7UTcuRb/pvHHpKmHAngh+6YwRtEwFWkRLTt+nkjir456z6mcwydGm1E1U+1OCSYI/UKmAfKkeIg5fALL0Drxq4rlczy1xcuEZIWxc3KCbai1kgMVEH4asnHLPjOATpi0cwNLRNHKPSIqIC7lf8cAcXV9IJ+Xo5pkgTx3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a1RYuzBV; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712846808;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wPChIqhlz2fj/t/mALU/XDAB+oCXF1Eufwk1f12pr9E=;
-	b=a1RYuzBV50g6S5NzOQ/WeEjUAbO9JDqP+18iZ9UiUElrMip1Oav4N4zE74+XJoIQaBdoWZ
-	VXBt0fz4H1tJ9yYG/l49aOB0K2zB2VdyVFLPxu6bNZNBkGAcpK3INqqdJY8B0Ug7hBzXDe
-	nf0n85qwl1VRKHS1bVH+HK/L+1YRA0Y=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-207-mNs5VQD6NIisUrjBVSd-Sg-1; Thu, 11 Apr 2024 10:46:46 -0400
-X-MC-Unique: mNs5VQD6NIisUrjBVSd-Sg-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-416542ed388so22531475e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:46:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712846805; x=1713451605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wPChIqhlz2fj/t/mALU/XDAB+oCXF1Eufwk1f12pr9E=;
-        b=AShjWQFjqK9v5niAqyQEX9Ma981GpOmOd1FQLrpXGTsoEGGgvq9hszDV8OXdyU/7d7
-         ER5l9riBEdz4vp0oQGYHPrp/WbtMYDeYUnsv6qUM3jx6TRLSHF9FtwWI81evmqOsKpjp
-         mTd2MNstFvIOfgqcYa+UKiYgfKMldnC9UcWUn0jTPmTUxqTaugJ30M3Zl9P6S+Tbol8O
-         ypVQUEciJAUT3k69cx1GozJGcjEEP4KAzyEjeX+101B6jag/6Aq12IUh5ML462wCCdjP
-         2DZP04oc7nUbDahoCx7xyADki8Mhdd0Wz4OQ7szSfQnJHe67F4AZPgyGLGJha2icctav
-         iwSg==
-X-Forwarded-Encrypted: i=1; AJvYcCVlOHUURApzLiGw4Fg0JSeyUk512/WpZlWsYRD/zG7wPPIPLXQhvdsfkL0i1TlVvGXENfCej9y/N9lwJF2Cj6WBRllc3WQ49H1v4PiG
-X-Gm-Message-State: AOJu0YyigPGgh5OSDp9Oa2ZiwOhj0ldryaaqfAFNui4F+EIdA12h0Go0
-	ETyUqc2+cAOgbDm+iuFMV2/6FuOMOhZZjkTohJaIZgQ2/0+d5OX0ArNbnFH1jdBhfYn6/fcwVNQ
-	rHnVTToSTAcQvdltgzvhJjZOKjppI0iC38QKvh/LmVHxBrWkll6/BgPH4L6ucGv5eD6n9rHaySg
-	gbMLprh39hbhZsAX8zZ2azVk++tUM+JRwARG/e
-X-Received: by 2002:a05:600c:1e09:b0:416:b5e6:d31e with SMTP id ay9-20020a05600c1e0900b00416b5e6d31emr18524wmb.4.1712846805553;
-        Thu, 11 Apr 2024 07:46:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFJ8IV6Wo/e+q6/I78C/41UvyqwTYiXcoZu/SgrWAXoRy0LwP1GCBmoob9JAuIdFAghUrppwRYtDXjrlI79QRA=
-X-Received: by 2002:a05:600c:1e09:b0:416:b5e6:d31e with SMTP id
- ay9-20020a05600c1e0900b00416b5e6d31emr18508wmb.4.1712846805186; Thu, 11 Apr
- 2024 07:46:45 -0700 (PDT)
+	s=arc-20240116; t=1712846831; c=relaxed/simple;
+	bh=Zb0JBOe6YIm233S2t28Imn/lwnjsEqRahBqWBCo/pFM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=M5KVV4OkOiokw7w0LPoSExmu8w//ykUYzGPrAiD7WEW9OQoYSfJk00Q4AUpOyoJ9rK55kRBPd3c1ryU9ZMEMwohG7hiXpv4QqSq87i/LOEOxWy62oYYPSu9F0mkfy3PCxuVB9bsGYu4x7XF2hIrH1EYARlw6xQhHhQw6o2cLXDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VwecqAAY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53991C2BBFC;
+	Thu, 11 Apr 2024 14:47:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712846830;
+	bh=Zb0JBOe6YIm233S2t28Imn/lwnjsEqRahBqWBCo/pFM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=VwecqAAYJQb2m3omWvRV1wxYx9OmhDT/0SZSWCtForipxHiXD8ZBAkwXyJLZLZGg6
+	 LpW3kiObBAWoyx0jWpB4WoPFn6KyuORQEAGBxVGMD0E4gbU+4/SpJiqMjuXIwWlTln
+	 6WKY/FmlEJPuEwWATY/pazEv76+TtGuod9N0YauU5w2Jy1sZkxR5XMKRaaZVckDV+z
+	 4z849AXjgfersS2/RsoYoQGS8X0mcUR0cncW2Iva2AhZlxQWxN/5zs2mL9gq/J7pWJ
+	 xW1sT+ZXlX4VARq8mdopAzgAXi5pxbgSrwo0gJ0gtur2ihrM+pP2E2ZX/p+vywpqt3
+	 a2ASJzpF9/YSA==
+Date: Thu, 11 Apr 2024 07:47:09 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, David Ahern
+ <dsahern@kernel.org>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Andrew Lunn
+ <andrew@lunn.ch>, <nex.sw.ncis.osdt.itp.upstreaming@intel.com>,
+ <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC net-next 7/7] netdev_features: convert
+ NETIF_F_FCOE_MTU to IFF_FCOE_MTU
+Message-ID: <20240411074709.249b3482@kernel.org>
+In-Reply-To: <1f14cb75-ee6b-4a7d-9041-23a8cfcd8476@intel.com>
+References: <20240405133731.1010128-1-aleksander.lobakin@intel.com>
+	<20240405133731.1010128-8-aleksander.lobakin@intel.com>
+	<20240408193806.18e227c8@kernel.org>
+	<1f14cb75-ee6b-4a7d-9041-23a8cfcd8476@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411072445.522731-1-alexandre.chartre@oracle.com>
- <7f1faa48-6252-4409-aefc-2ed2f38fb1c3@citrix.com> <caa51938-c587-4403-a9cd-16e8b585bc13@oracle.com>
- <CABgObfai1TCs6pNAP4i0x99qAjXTczJ4uLHiivNV7QGoah1pVg@mail.gmail.com>
- <abbaeb7c-a0d3-4b2d-8632-d32025b165d7@oracle.com> <2afb20af-d42e-4535-a660-0194de1d0099@citrix.com>
- <ff3cf105-ef2a-426c-ba9b-00fb5c2559c7@oracle.com>
-In-Reply-To: <ff3cf105-ef2a-426c-ba9b-00fb5c2559c7@oracle.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Thu, 11 Apr 2024 16:46:32 +0200
-Message-ID: <CABgObfZU_uLAPzDV--n67H3Hq6OKxUO=FQa2MH3CjdgTQR8pJg@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Set BHI_NO in guest when host is not affected
- by BHI
-To: Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc: Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, daniel.sneddon@linux.intel.com, 
-	pawan.kumar.gupta@linux.intel.com, tglx@linutronix.de, konrad.wilk@oracle.com, 
-	peterz@infradead.org, gregkh@linuxfoundation.org, seanjc@google.com, 
-	dave.hansen@linux.intel.com, nik.borisov@suse.com, kpsingh@kernel.org, 
-	longman@redhat.com, bp@alien8.de
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 11, 2024 at 4:34=E2=80=AFPM Alexandre Chartre
-<alexandre.chartre@oracle.com> wrote:
-> Still, we could enumerate CPUs which don't have eIBRS independently of NO=
-_BHI
-> (if we have a list of such CPUs) and set X86_BUG_BHI for cpus with eIBRS.
->
-> So in arch/x86/kernel/cpu/common.c, replace:
->
->         /* When virtualized, eIBRS could be hidden, assume vulnerable */
->         if (!(ia32_cap & ARCH_CAP_BHI_NO) &&
->             !cpu_matches(cpu_vuln_whitelist, NO_BHI) &&
->             (boot_cpu_has(X86_FEATURE_IBRS_ENHANCED) ||
->              boot_cpu_has(X86_FEATURE_HYPERVISOR)))
->                 setup_force_cpu_bug(X86_BUG_BHI);
->
-> with something like:
->
->         if (!(ia32_cap & ARCH_CAP_BHI_NO) &&
->             !cpu_matches(cpu_vuln_whitelist, NO_BHI) &&
->             (boot_cpu_has(X86_FEATURE_IBRS_ENHANCED) ||
->             !cpu_matches(cpu_vuln_whitelist, NO_EIBRS)))
->                 setup_force_cpu_bug(X86_BUG_BHI);
+On Thu, 11 Apr 2024 12:28:08 +0200 Alexander Lobakin wrote:
+> > Any reason not to make it a bitfield? I haven't looked at the longer
+> > patches but this one seems to be used like a basic bool.  
+> 
+> This whole enum could be made as bitfields, should we convert it? Would
+> be a big patch tho ._.
 
-No, that you cannot do because the hypervisor can and will fake the
-family/model/stepping.
+As always, I haven't investigated closely :) But my thinking was -
+we are at 34 bits in priv. We just need to convert 2 of them to
+a bitfield, pick two with fewest uses. Then we can downgrade 
+the field to u32 from ulonglong, and we can carry on adding bitfields?
 
-However, looking again at the original patch you submitted, I think
-the review was confusing host and guest sides. If the host is "not
-affected", i.e. the host *genuinely* does not have eIBRS, it can set
-BHI_NO and that will bypass the "always mitigate in a guest" bit.
+> > But this definitely _is_ a uAPI change, right?  
+> 
+> Why?
 
-I think that's robust and boot_cpu_has_bug(X86_BUG_BHI) is the right
-way to do it.
+It will be user visible, ethtool -k is losing a field.
+Whether that's actually going to break anything depends on how silly
+user space is.
 
-If a VM migration pool has both !eIBRS and eIBRS machines, it will
-combine the two; on one hand it will not set the eIBRS bit (bit 1), on
-the other hand it will not set BHI_NO either, and it will set the
-hypervisor bit. The result is that the guest *will* use mitigations.
-
-To double check, from the point of view of a nested hypervisor, you
-could set BHI_NO in a nested guest:
-* if the nested hypervisor has BHI_NO passed from the outer level
-* or if its CPUID passes cpu_matches(cpu_vuln_whitelist, NO_BHI)
-* but it won't matter whether the nested hypervisor lacks eIBRS,
-because that bit is not reliable in a VM
-
-The logic you'd use in KVM therefore is:
-
-   (ia32_cap & ARCH_CAP_BHI_NO) ||
-   cpu_matches(cpu_vuln_whitelist, NO_BHI) ||
-   (!boot_cpu_has(X86_FEATURE_IBRS_ENHANCED) &&
-    !boot_cpu_has(X86_FEATURE_HYPERVISOR)))
-
-but that is exactly !boot_cpu_has_bug(X86_BUG_BHI) and is therefore
-what Alexandre's patch does.
-
-So I'll wait for further comments but I think the patch is correct.
-
-Paolo
-
+As Andrew pointed out, definitely something that should be called out
+in the commit message.
 
