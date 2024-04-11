@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140889-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140890-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17C3E8A1967
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:08:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88B5C8A196A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:08:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C708E282763
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:08:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F9DA1C23C0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:08:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A221315990F;
-	Thu, 11 Apr 2024 15:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ECC015AD99;
+	Thu, 11 Apr 2024 15:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="HK2vJbJw"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="sMsFZIB2"
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A66FB15AAA4
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB4A15AACD
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849715; cv=none; b=Ma23JCgpnY1ufdyvl+rIpkXuVlYvFvDnT16ZCHd1O6aMi7nzmDVapgigoOyOQ47apPKclxQM+L/PWxb143MDYea0mfHVuCG2w5KLJdj31Fm9Xs8F1KvJIEExC7rZbCLuEEuao7eCEzCHWpNcJcyt9WAYmjj7zid1giPJrIYOTe0=
+	t=1712849716; cv=none; b=AP+a7d1BnVxft15jj4pdl6cDnLP6frE44AJdMEHIa0icvs2AudAUUXTWUTeYPYh+mGpAsa1xrMDnO78QXG7PEa6Tu7ZspzXs7HYMBSfBsyWcwe9Cf2x7MYa+Dn+rXnGZffpfelw8NKlR+M7pcwJVj+x0D1sZOinYs+5HxVIzaMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849715; c=relaxed/simple;
-	bh=b9X00iSNJYVtxC3/sqLX/o3knbJU3+NSrP5y9pStPRA=;
+	s=arc-20240116; t=1712849716; c=relaxed/simple;
+	bh=BKU7jof+OLPW14KMY7IUBGAnl4D7CJ5njhnuIagmstA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ovt13n3GNjrx2gbZLIh1L3cgtCo5tK34PAR3DzFVEK9zDMrXoqYFMT3/npI+ZZB2IweOA7P1+syAaFyVXLJDSl/UoaF3McS8YgM/V2CGIsJBx4+XhuLzoCrKQyu4yUZRgh56zxebwk5vGwzMpclRj2Ctw1AHZ/hvR9x4GeMERbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=HK2vJbJw; arc=none smtp.client-ip=209.85.166.51
+	 MIME-Version; b=HBUeF5BWL4kxR4uFZuQhTcNmObENwo+qN1M3oWnRkHrO/u9Xh25E4NSpN/ATlxqiq8vt5TsA+sGMgkZCBZGI/+Ptu06XkHh4Af9mpAQvkL/PpwKYDtQ9NnLZsqZUKgH6As+3fEd6akecByOsIzcpgipBlxUqknGncpzDklCaPgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=sMsFZIB2; arc=none smtp.client-ip=209.85.166.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7d67d1073easo9771839f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:35:13 -0700 (PDT)
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-36a224d7414so180795ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:35:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849712; x=1713454512; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849714; x=1713454514; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JN3mqvndXI1gWHhufhGdf4sQOgVkhWV1ClnaB5pVpcg=;
-        b=HK2vJbJwMHfLKXXEhRpGuWFLOsp5J+2Vy43k1H5svlLmURW5PpJTRj1ADn9XX2iF17
-         lKvKr3rxrmGofK5czRcAWaJl/kjwNkpFx0VOtyjcjAhvu3UcZY7BM27dMmxotyfmytQI
-         PvJNB9nJogLoH1Umyg9BEp4wcaDSjRqdCCwyytEVOAIJWhkvTSrqzwqmDAXIFoCa08Or
-         7daJhnb5ywMokAMZcNTjsIBMJUEn6PKVV1N7OU0THkY1XwVaD7L79jCplypyAAVpFS42
-         SPNu1kIL43eJer2tCQKEGLb1EtOUxK54G/pkExXFofWDr3D276ha0K7WKMnmbXBZwyyB
-         vO2Q==
+        bh=FaP4jRALl7uM/aiEEtjEUM+QWpiHHwuYIJyLofUvW+Q=;
+        b=sMsFZIB2AZHZPIBvJ/Ist+F/Q+awIJWmzY+BuHwyFylVpmRBo8zgMhMYdeJIk66sdH
+         oFpHiFl8sL5YDsYwwqeBoYAvqIOcVA14KuG850zl8wiqbozxb41wm+RN7VAyXBduKe/u
+         237t3NHwi9CALBaR+W4UpW58nU+Qkx9fjQCu1733O4O9ihWJ2UzPnUA9dhtPX4QF9fRE
+         YAScuQKc156CbMP3QXPmGP0gt/RtpCjS02JX765XmdfVt50SgTOIbOshfnlfMQ1lQ6p9
+         f/YckfPObIONBKKLup2lBaRrCUfmA1skSYzB7xluAz54LRBARkITdLeTTGb3hVTTPgm+
+         HzzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849712; x=1713454512;
+        d=1e100.net; s=20230601; t=1712849714; x=1713454514;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JN3mqvndXI1gWHhufhGdf4sQOgVkhWV1ClnaB5pVpcg=;
-        b=ZMP/BbzEkhh9R3GTGXcdjnEaVNNZ3QIWlphtT4FpbsSBY50T0ujhXrXGd8YD6lte0W
-         jdL48H5drrfKnP8IFU62EOM3WkW5cbj0Otea5b+31yiG6OvmehBWDOyDYRq1L+MAvMBf
-         MOTFV4omAlyUXAMViN6HDZmP9sIANQ80iGNwONe2h99pmLBlAeYP5f+/8W8FzoWj0aMP
-         6SmdDqDjfQEYJn9KnlbdRhePOeN5b/AIOqYyd1CeL0fM9CHNF+Fi7FdF6euf2vkxcc+8
-         /G7P+QhgMiAA5hIvQQ1yHJZYKgTLSEekPSWirpGY02fwvxCfHBE10sOMy6Lh/IpajywL
-         7KPw==
-X-Gm-Message-State: AOJu0YyK84oWBd7rZqpfMHsZkvGVzc+9otuOALpuE4GK0CD1o25WB142
-	0QEU9xs+gb9Y+tDgN30GVe6imrSnoLMeQv/bBmlP7IA6b8V5mdlS8rAfzhFNcc3fczm7bUJOlyf
-	5
-X-Google-Smtp-Source: AGHT+IF9RaXCpaHDARHEBZNdLFUjhOhOhZnX9SjwLewk5kagZRFLwlxLCinfn5G1QQxxk7d5hQ56pQ==
-X-Received: by 2002:a6b:7b05:0:b0:7d6:60dc:bc8e with SMTP id l5-20020a6b7b05000000b007d660dcbc8emr191393iop.1.1712849712438;
-        Thu, 11 Apr 2024 08:35:12 -0700 (PDT)
+        bh=FaP4jRALl7uM/aiEEtjEUM+QWpiHHwuYIJyLofUvW+Q=;
+        b=GExldM1E2CF6rNy1gquMjSRsUfHfFNna2UnMhlnB2L4a7Y4rW2qUCTKzqyqP3vo6zI
+         i2YS/p7BlzDt42xpCFAG4z4WOGOMPsgeXhbeuf7oGgkxrXBlc/JQ5X8sjf4o66QJOQGe
+         LqsWw7ppsQPMSn19//qvgVycbzSz48JODfdMvvvaiEcuaEVNN0IXT92s8+w072N8DAXe
+         q0xmVv70IKV4levE6V3QO9H8qKn6/O4BZEQQxeAioRV29SeXoF7XCIBVkgO0R+zvcEU2
+         xlZsEVcH6zl/54lLh2VbB3RG8B8Qk8dw7GfUlfkxevzi3TDvGGz5W0IR5kVc6QmJV4O1
+         Ui9Q==
+X-Gm-Message-State: AOJu0YyuAlpOT7bps37+835kqecCwvYzVTJ6n52OAct6finI4uHyGUGU
+	OY4MLlo6rdBOI7wfMyChuUv943MT/B/iNTDgrHtzQQgS9U+inTv50mmmvSJzaF63WzfgdWzwktM
+	z
+X-Google-Smtp-Source: AGHT+IGI4Hiat6KzThSe7lYDUcFVZjVO8E/QRRg2id5JzH/Naow20qyWfGR6lmCto4fro8Xk/4dfYA==
+X-Received: by 2002:a05:6602:4ed7:b0:7d5:ddc8:504d with SMTP id gk23-20020a0566024ed700b007d5ddc8504dmr186123iob.0.1712849714247;
+        Thu, 11 Apr 2024 08:35:14 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.35.10
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.35.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:35:10 -0700 (PDT)
+        Thu, 11 Apr 2024 08:35:12 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 125/437] firmware: cirrus: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:14:25 -0600
-Message-ID: <20240411153126.16201-126-axboe@kernel.dk>
+Subject: [PATCH 126/437] firmware: efi: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:14:26 -0600
+Message-ID: <20240411153126.16201-127-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,79 +85,58 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/firmware/cirrus/cs_dsp.c | 26 ++++++++++----------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
+ drivers/firmware/efi/capsule-loader.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/firmware/cirrus/cs_dsp.c b/drivers/firmware/cirrus/cs_dsp.c
-index 9f3d665cfdcf..80a2cba021d1 100644
---- a/drivers/firmware/cirrus/cs_dsp.c
-+++ b/drivers/firmware/cirrus/cs_dsp.c
-@@ -398,11 +398,9 @@ static void cs_dsp_debugfs_clear(struct cs_dsp *dsp)
- 	dsp->bin_file_name = NULL;
- }
- 
--static ssize_t cs_dsp_debugfs_wmfw_read(struct file *file,
--					char __user *user_buf,
--					size_t count, loff_t *ppos)
-+static ssize_t cs_dsp_debugfs_wmfw_read(struct kiocb *iocb, struct iov_iter *to)
+diff --git a/drivers/firmware/efi/capsule-loader.c b/drivers/firmware/efi/capsule-loader.c
+index 97bafb5f7038..9b1d143a64f6 100644
+--- a/drivers/firmware/efi/capsule-loader.c
++++ b/drivers/firmware/efi/capsule-loader.c
+@@ -149,10 +149,8 @@ static ssize_t efi_capsule_submit_update(struct capsule_info *cap_info)
+ /**
+  * efi_capsule_write - store the capsule binary and pass it to
+  *		       efi_capsule_update() API
+- * @file: file pointer
+- * @buff: buffer pointer
+- * @count: number of bytes in @buff
+- * @offp: not used
++ * @iocb: metadata for IO
++ * @from: buffer pointer
+  *
+  *	Expectation:
+  *	- A user space tool should start at the beginning of capsule binary and
+@@ -165,11 +163,11 @@ static ssize_t efi_capsule_submit_update(struct capsule_info *cap_info)
+  *	- An EFI capsule header must be located at the beginning of capsule
+  *	  binary file and passed in as first block data of write operation.
+  **/
+-static ssize_t efi_capsule_write(struct file *file, const char __user *buff,
+-				 size_t count, loff_t *offp)
++static ssize_t efi_capsule_write(struct kiocb *iocb, struct iov_iter *from)
  {
--	struct cs_dsp *dsp = file->private_data;
-+	struct cs_dsp *dsp = iocb->ki_filp->private_data;
- 	ssize_t ret;
+ 	int ret;
+-	struct capsule_info *cap_info = file->private_data;
++	struct capsule_info *cap_info = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(from);
+ 	struct page *page;
+ 	void *kbuff = NULL;
+ 	size_t write_byte;
+@@ -202,7 +200,7 @@ static ssize_t efi_capsule_write(struct file *file, const char __user *buff,
  
- 	mutex_lock(&dsp->pwr_lock);
-@@ -410,19 +408,16 @@ static ssize_t cs_dsp_debugfs_wmfw_read(struct file *file,
- 	if (!dsp->wmfw_file_name || !dsp->booted)
- 		ret = 0;
- 	else
--		ret = simple_read_from_buffer(user_buf, count, ppos,
--					      dsp->wmfw_file_name,
--					      strlen(dsp->wmfw_file_name));
-+		ret = simple_copy_to_iter(dsp->wmfw_file_name, &iocb->ki_pos,
-+					      strlen(dsp->wmfw_file_name), to);
- 
- 	mutex_unlock(&dsp->pwr_lock);
- 	return ret;
- }
- 
--static ssize_t cs_dsp_debugfs_bin_read(struct file *file,
--				       char __user *user_buf,
--				       size_t count, loff_t *ppos)
-+static ssize_t cs_dsp_debugfs_bin_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct cs_dsp *dsp = file->private_data;
-+	struct cs_dsp *dsp = iocb->ki_filp->private_data;
- 	ssize_t ret;
- 
- 	mutex_lock(&dsp->pwr_lock);
-@@ -430,9 +425,8 @@ static ssize_t cs_dsp_debugfs_bin_read(struct file *file,
- 	if (!dsp->bin_file_name || !dsp->booted)
- 		ret = 0;
- 	else
--		ret = simple_read_from_buffer(user_buf, count, ppos,
--					      dsp->bin_file_name,
--					      strlen(dsp->bin_file_name));
-+		ret = simple_copy_to_iter(dsp->bin_file_name, &iocb->ki_pos,
-+					      strlen(dsp->bin_file_name), to);
- 
- 	mutex_unlock(&dsp->pwr_lock);
- 	return ret;
-@@ -446,14 +440,14 @@ static const struct {
- 		.name = "wmfw_file_name",
- 		.fops = {
- 			.open = simple_open,
--			.read = cs_dsp_debugfs_wmfw_read,
-+			.read_iter = cs_dsp_debugfs_wmfw_read,
- 		},
- 	},
- 	{
- 		.name = "bin_file_name",
- 		.fops = {
- 			.open = simple_open,
--			.read = cs_dsp_debugfs_bin_read,
-+			.read_iter = cs_dsp_debugfs_bin_read,
- 		},
- 	},
+ 	/* Copy capsule binary data from user space to kernel space buffer */
+ 	write_byte = min_t(size_t, count, cap_info->page_bytes_remain);
+-	if (copy_from_user(kbuff, buff, write_byte)) {
++	if (!copy_from_iter_full(kbuff, write_byte, from)) {
+ 		ret = -EFAULT;
+ 		goto fail_unmap;
+ 	}
+@@ -307,7 +305,7 @@ static int efi_capsule_open(struct inode *inode, struct file *file)
+ static const struct file_operations efi_capsule_fops = {
+ 	.owner = THIS_MODULE,
+ 	.open = efi_capsule_open,
+-	.write = efi_capsule_write,
++	.write_iter = efi_capsule_write,
+ 	.release = efi_capsule_release,
+ 	.llseek = no_llseek,
  };
 -- 
 2.43.0
