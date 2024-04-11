@@ -1,106 +1,121 @@
-Return-Path: <linux-kernel+bounces-140695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EE578A17D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 420458A17D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:51:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE2672837BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:50:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F012D283C21
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:51:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE295EAF0;
-	Thu, 11 Apr 2024 14:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E7A4DF43;
+	Thu, 11 Apr 2024 14:51:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jd5AQd9c"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="htssSxQm"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AA68D534;
-	Thu, 11 Apr 2024 14:50:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE2D0D529
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:50:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712847028; cv=none; b=r5/4x9E0dBNrteonZqQuuDLp+wB2wuyXFYxsx95dqCuAucfEatRSaBv8atQWmeFMl0QTAXMLm1yP8ou8tWhqJXl93pWaaKh3aZDV269H/aJ3zKY/NByf5F7f79H5La5UaiEZlmptzXtPi7HSE4Ww4/BUXcK3yxBS4JmpuOLbT9Y=
+	t=1712847060; cv=none; b=FzFcpXvr+Q9lLWZEUT3vJ2F0y8nG7tWODqixkT5WVfZDQ2HiWbJrVwrZG+Mbkk6gocQh1uIZk5KnGtncRxBuqTEC/pKoSXkK8e+3pnzNBztfSZ8SbXK/JoiklDcrOGn3tjvZkmGchHNmi4BIUaXW16yQLmG5zGGfJYrojBcVqF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712847028; c=relaxed/simple;
-	bh=RK8HPzL73Quew+tMOrVpkfmMzV4s5rg6BXSQRmSLg8w=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Y7rQJEkNKqSqQSAvRxrF3OAGKcJ6Y0lvnWjpyca7CS8VpIbYMZHGcPq03PYzGMgIIS0+w/LS+opr8IbIp5R7srIobXGX3Nd15efnvswQLdlbGG8HwMVtczSxgK3U5fwFKVtqulleMSaPPGaCyT1NC8g3Yw1IcphwAg7EnXHrcjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jd5AQd9c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B9A01C113CE;
-	Thu, 11 Apr 2024 14:50:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712847027;
-	bh=RK8HPzL73Quew+tMOrVpkfmMzV4s5rg6BXSQRmSLg8w=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Jd5AQd9c+Y+DVjeZhRA51xRwPAFPk6ny9Nly0y/GGIhczEKr22hWMYCjS18dsAbcm
-	 SBvNIG6yngZiZjIFrzq3yM41dxSy5YvzBJXVyvpgBMrdFVf4EVKS2K5cLuPVkNWung
-	 3eC9SvbTIAM9/ksLbXoQE93t6AUsWvQTZWbiF1VYooRD0dy7gqU101QW9cCW9oEOnT
-	 +MK0xXDmbSEY0Co6guBWZukqGhMkwOSoBhUulamUCMO/9z7fm0RfxIlgXKSB2znv97
-	 TSy7J79SVgJFcl5MaxOCfihWDsIeZky6uT++YnsTeenQO7oUvKaNdBFXYujUjq7RDJ
-	 Kz6gFOWlrbORg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A465FC4339F;
-	Thu, 11 Apr 2024 14:50:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1712847060; c=relaxed/simple;
+	bh=qXdCCV1v8e6fpliMFxRQyRTWp6UPLWYt8+kWc5XMEow=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C/OI9A0mzZhOcH3+vB8XbXs6phpjxtIkSSPx9u4C2lk8FDP6IrHwt9CSg77+dFypdL98Jf04Bjq6HPpICV1nXRv2GV8rgfg6N6Kk25KJ12ikyx7+Fmzf2Q1Pa6KMeEm/5rBPLB9D6zPzNPLwcT+VgrjWkeQXqdr0cFfvJuTqzrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=htssSxQm; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=ySKvrwPo8uea30YwZAfejWfUzP0Mp1IBm6Q6ft0K7Zk=; b=htssSxQmNkaN/RBmRfuL8kT7KL
+	zs5tNDETd96x1RY31+TkcVRnN6WV94kOkQkEK4fcKec1UMYpM2QD3LGlrhz6yHPMrZHI3eKyjZ7n0
+	nm1kYHZR5oOyXbkQ22iBzIcaUg7mpCKhDKOzrCqQhM3x1uw/qHxMYuq6bkiARJ8S3B42KzWgspH1E
+	2qFdTTYsuLf6aiDQCTPNlBhwA8LuvWARsfrz3lvGDzySjZozO6TpwpjVyUzomU14+EcJxVcgsQJo2
+	W5hsYOjHgpl6clMZIPdtJNryOvYPBq8Ee4bA4oRpK9sG+Rxgt6KVBvzsFamoa/xK/eVmbY5ji/0hg
+	C29DVCRQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ruvlO-000000079zO-3dqQ;
+	Thu, 11 Apr 2024 14:50:54 +0000
+Date: Thu, 11 Apr 2024 15:50:54 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Peter Xu <peterx@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Lokesh Gidra <lokeshgidra@google.com>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Alistair Popple <apopple@nvidia.com>
+Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
+Message-ID: <Zhf4zqsfkz1XCwBN@casper.infradead.org>
+References: <20240410170621.2011171-1-peterx@redhat.com>
+ <Zhb2BWntckP3ZhDc@casper.infradead.org>
+ <Zhb6B8UsidEEbFu3@x1n>
+ <ZhcAVYVFSdX5Binc@casper.infradead.org>
+ <ZhcDRmyYkMGPgs4F@x1n>
+ <ZhcnzS1S6zOMJwSL@casper.infradead.org>
+ <ZhcstFcjOuOmr0wx@x1n>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 0/3] RDMA/mana_ib: Add flex array to struct
- mana_cfg_rx_steer_req_v2
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171284702766.5792.6538200625585720132.git-patchwork-notify@kernel.org>
-Date: Thu, 11 Apr 2024 14:50:27 +0000
-References: <AS8PR02MB72374BD1B23728F2E3C3B1A18B022@AS8PR02MB7237.eurprd02.prod.outlook.com>
-In-Reply-To: <AS8PR02MB72374BD1B23728F2E3C3B1A18B022@AS8PR02MB7237.eurprd02.prod.outlook.com>
-To: Erick Archer <erick.archer@outlook.com>
-Cc: longli@microsoft.com, sharmaajay@microsoft.com, kys@microsoft.com,
- haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- keescook@chromium.org, gustavoars@kernel.org, nathan@kernel.org,
- ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
- jgg@ziepe.ca, leon@kernel.org, shradhagupta@linux.microsoft.com,
- kotaranov@microsoft.com, linux-rdma@vger.kernel.org,
- linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
- llvm@lists.linux.dev
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhcstFcjOuOmr0wx@x1n>
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by Leon Romanovsky <leon@kernel.org>:
-
-On Sat,  6 Apr 2024 16:23:34 +0200 you wrote:
-> The "struct mana_cfg_rx_steer_req_v2" uses a dynamically sized set of
-> trailing elements. Specifically, it uses a "mana_handle_t" array. So,
-> use the preferred way in the kernel declaring a flexible array [1].
+On Wed, Apr 10, 2024 at 08:20:04PM -0400, Peter Xu wrote:
+> On Thu, Apr 11, 2024 at 12:59:09AM +0100, Matthew Wilcox wrote:
+> > On Wed, Apr 10, 2024 at 05:23:18PM -0400, Peter Xu wrote:
+> > > On Wed, Apr 10, 2024 at 10:10:45PM +0100, Matthew Wilcox wrote:
+> > > > > I can do some tests later today or tomorrow. Any suggestion you have on
+> > > > > amplifying such effect that you have concern with?
+> > > > 
+> > > > 8 socket NUMA system, 800MB text segment, 10,000 threads.  No, I'm not
+> > > > joking, that's a real customer workload.
+> > > 
+> > > Well, I believe you, but even with this, that's a total of 800MB memory on
+> > > a giant moster system... probably just to fault in once.
+> > > 
+> > > And even before we talk about that into details.. we're talking about such
+> > > giant program running acorss hundreds of cores with hundreds of MB text,
+> > > then... hasn't the program developer already considered mlockall() at the
+> > > entry of the program?  Wouldn't that greatly beneficial already with
+> > > whatever granule of locks that a future fault would take?
+> > 
+> > I don't care what your theory is, or even what your benchmarking shows.
+> > I had basically the inverse of this patch, and my customer's workload
+> > showed significant improvement as a result.  Data talks, bullshit walks.
+> > Your patch is NAKed and will remain NAKed.
 > 
-> At the same time, prepare for the coming implementation by GCC and Clang
-> of the __counted_by attribute. Flexible array members annotated with
-> __counted_by can have their accesses bounds-checked at run-time via
-> CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE (for
-> strcpy/memcpy-family functions).
+> Either would you tell me your workload, I may try it.
 > 
-> [...]
+> Or, please explain why it helps?  If such huge library is in a single VMA,
+> I don't see why per-vma lock is better than mmap lock.  If the text is
+> combined with multiple vmas, it should only help when each core faults at
+> least on different vmas, not the same.
 
-Here is the summary with links:
-  - [v3,1/3] net: mana: Add flex array to struct mana_cfg_rx_steer_req_v2
-    https://git.kernel.org/netdev/net-next/c/bfec4e18f943
-  - [v3,2/3] RDMA/mana_ib: Prefer struct_size over open coded arithmetic
-    https://git.kernel.org/netdev/net-next/c/29b8e13a8b4c
-  - [v3,3/3] net: mana: Avoid open coded arithmetic
-    https://git.kernel.org/netdev/net-next/c/a68292eb4316
+Oh, you really don't understand.  The mmap_lock is catastrophically
+overloaded.  Before the per-VMA lock, every page fault took it for read,
+and every call to mmap() took it for write.  Because our rwsems are
+fair, once one thread has called mmap() it waits for all existing page
+faults to complete _and_ blocks all page faults from starting until
+it has completed.  That's a huge source of unexpected latency for any
+multithreaded application.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Anything we can do to avoid taking the mmap_sem, even for read, helps any
+multithreaded workload.  Your suggestion that "this is rare, it doesn't
+matter" shows that you don't get it.  That you haven't found a workload
+where you can measure it shows that your testing is inadequate.
 
-
+Yes, there's added complexity with the per-VMA locks.  But we need it for
+good performance.  Throwing away performance on a very small reduction
+in complexity is a terrible trade-off.
 
