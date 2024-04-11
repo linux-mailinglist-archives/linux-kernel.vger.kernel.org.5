@@ -1,105 +1,133 @@
-Return-Path: <linux-kernel+bounces-140719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 008018A1836
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:08:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D5408A183A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:09:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 327ED1C2193E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:08:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 870EEB2608E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03F6D1798E;
-	Thu, 11 Apr 2024 15:08:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="to815qwe"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D59114005;
+	Thu, 11 Apr 2024 15:08:52 +0000 (UTC)
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 473D017735
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:08:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00FA134D1;
+	Thu, 11 Apr 2024 15:08:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712848091; cv=none; b=KBAFLIApJY6K1vWwZ8ZmmW0sIiTaH4VSkHlzjpOx5Glxq1nVZOwRopnOaExNjo2E/hthD7zxonfZWWhjlsGbE0YGHqO3k4se2i1EOYtXgJNYri+6Tbq1MfzPhxiLXHaOeOMdpyNUkiBwOdo6as6zTUIYxx4VRIioSoWFGj/dUFU=
+	t=1712848131; cv=none; b=cmDpcTGJKfhMUK4XtqT6SjenzrHwKHwjNhgcKjj+BbuhHMWhejQdIQWuTqGiPeyVXtII2XCLo7qWTzmjojwo0BMoOOeE4/ChkUHdcykxs+/2gf0LCiAMsgKoBYPvovUmBgzeq1czjlGaVSRHU1QNSaMOaQMddxLSPiGMtvC4uEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712848091; c=relaxed/simple;
-	bh=SzzKMkdyb3myA6zNSYzjTuGGXEZ4LdIPFjD8WtxpVLI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T9R9k5sFcuBlrEU46Cj3cNoH4irGBjMybd5sMFifps7GugwK7zxbzsX79/LyeD381vxsApJ6krpenZRXlMNKz9J9HYtfFSQ2fF69K4YlNSEqdFzuDgMb0jmVn1fPFm7ts1Fz67uN1QS26DYBPmncrYls+6VkEobQs3Qg5FRVC0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=to815qwe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61C4AC113CD;
-	Thu, 11 Apr 2024 15:08:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712848091;
-	bh=SzzKMkdyb3myA6zNSYzjTuGGXEZ4LdIPFjD8WtxpVLI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=to815qweE4QcMoFbhOkPm6cYTmSy3fJitDiXQDm0RwmnF9K7cx/SBFvVghz28PHBy
-	 k90jggAcoMC7/15nFI6Mj2mIevX08p9MyKpg2gAtkuRBaDzZz4ZAs+0asrLC36JnFt
-	 PvEc+N9npnc3hYH3e6tvZSXPe7pERr3GheA3LQlwNeW7lmaZ/wB7nGsKi3cjsmkM5Y
-	 XHjAPV10JKRck30b7J74omPaQoWrFoWLWb8MDBQlnnHjQafybi4N+2pDT9mn3c1c0a
-	 b2WvjSMvpLx8L2uksLABaCl3/UmD9R8mxeqfb+fMAxww6vleJfHb6NAKFbcd2jOw44
-	 ct9OqQRESptxw==
-Date: Thu, 11 Apr 2024 08:08:08 -0700
-From: Josh Poimboeuf <jpoimboe@kernel.org>
-To: Nikolay Borisov <nik.borisov@suse.com>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alexandre Chartre <alexandre.chartre@oracle.com>,
-	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>,
-	Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH 5/7] x86/bugs: Only harden syscalls when needed
-Message-ID: <20240411150808.ukeoq54nrjtdd65g@treble>
-References: <cover.1712813475.git.jpoimboe@kernel.org>
- <97befd7c1e008797734dee05181c49056ff6de57.1712813475.git.jpoimboe@kernel.org>
- <124f4871-1275-47af-b513-297b870708b2@suse.com>
+	s=arc-20240116; t=1712848131; c=relaxed/simple;
+	bh=oU5pCmDkLmmc1H+EyQIYHeeb2Fb2Jfhgrf2CdpJQj8Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Yh2aEpuJpZc+7/lVzOILT1zqrqvbHjqgIFADzPUj7I69Wa8i0La1GyYGuNKLiBXX/1oEb2cPOmRY2wkvuQEhfujpiEYqkNp1bxMpr9WFf2JCMFoUo+NBwhPDU2U/qshAnSl2kzPoP9meAC0a/wy6DsOQo46TidrGHBO4JogdE7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5aa369179e1so3489509eaf.3;
+        Thu, 11 Apr 2024 08:08:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712848128; x=1713452928;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E9hehHCvMAi0CNOjOnNQIxMp+8eSHK8c3QluG1cpQEI=;
+        b=hz4QGYuzWr2n2amu7D31TFJmxANeRJsYllIdIe35MWbW3CVLAqaqEm3UtlwO/nF73s
+         sXV67kGbld3w8LKw3XZt3AHT7DRxUnW00w+0XbXpa8VFB7cfsNQGWHe9vDcy26v/jcQD
+         Ap75NxllBOFQL0DXzKjVBKHgjDstk4sNGF55mwnSj4uaSVeU+p/6/zu964UntFd3KmgD
+         RqkJwWFwlYLWvhA8Ul8DA/MgYpPKKRfkemk/lEoocJh4RxZzM9/A+NsCQrOd8olNabfC
+         T2Mbv4+qEr6MDjXQED6T8fA90TIE83B2Gxysno2ffIhxZ5fHKs4/xe+tfrAt1f646RSu
+         JUBg==
+X-Forwarded-Encrypted: i=1; AJvYcCVU3iFdoXjT9koiwvAA6Sp/kGjdVymi6noVM0koO/OXA3RIvH7XIVX/HdxRqlggDr2+r4aQWykBZwMQPySYc2k97N2atT6zB4sc9pZqphrdw2s6N3ptk+o8ebXaXEA9m0wiS4QkvGkhzqB0oZl2eHXy8fZt2iPT7FIy2L65GRzOIkkOYvj/r2oN4En2NVxF5RREqJiRcTRM7R5riU6tXYExnm3DOGjc
+X-Gm-Message-State: AOJu0YwqWU0rydjKUm9F4x/opKpce6fMKMmSKrENuLZE6Mjg8Uo7PMsV
+	EpsKj8B3CXqzsWSk9OAaNZ8L+BFsTDYuBKPC6vcqyaUBhObf//YPUlLez8s9
+X-Google-Smtp-Source: AGHT+IEJmf89EuiAaKtpLNEr9G1LONI/+H9TLXaQI+A+h7gS1EcDEb3mORpif3yGMOl9JUO9quNKYg==
+X-Received: by 2002:a05:6820:1391:b0:5aa:3b8a:b491 with SMTP id i17-20020a056820139100b005aa3b8ab491mr6955693oow.4.1712848128089;
+        Thu, 11 Apr 2024 08:08:48 -0700 (PDT)
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com. [209.85.167.182])
+        by smtp.gmail.com with ESMTPSA id di12-20020a0568201e8c00b005a4bcb155basm352018oob.23.2024.04.11.08.08.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 08:08:47 -0700 (PDT)
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3c5ee4ce695so795992b6e.0;
+        Thu, 11 Apr 2024 08:08:47 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWga1MW07g+6xV7sR//DAQStXMyY8aX6RtrMyR8BRcIFROJBCdbMkZPaz4ixHRrn3sCUkbUiWFlxZ1R7dALvzcZ0LXZ27Rcjys37oV+XfSXQZa06FOUOWt5J2+FDoDIBPDmMlv3kbipyXrOxldeTBywZ0XLiW0JrX+vLNy/4mLCQWVDpUf4CUwTeD+z2Sxdmx1v4daR2p3f0PRRE2kpZc7twG9zntKZ
+X-Received: by 2002:a05:6808:644:b0:3c5:eaaf:babe with SMTP id
+ z4-20020a056808064400b003c5eaafbabemr5366936oih.7.1712848127440; Thu, 11 Apr
+ 2024 08:08:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <124f4871-1275-47af-b513-297b870708b2@suse.com>
+References: <20240410122657.2051132-1-claudiu.beznea.uj@bp.renesas.com> <20240410122657.2051132-9-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240410122657.2051132-9-claudiu.beznea.uj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 11 Apr 2024 17:08:35 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW4CEbR0K2OfADS1S834GyRwE45Squ2OY82nDqkPLPUVQ@mail.gmail.com>
+Message-ID: <CAMuHMdW4CEbR0K2OfADS1S834GyRwE45Squ2OY82nDqkPLPUVQ@mail.gmail.com>
+Subject: Re: [PATCH v3 8/9] clk: renesas: rzg2l-cpg: Add suspend/resume
+ support for power domains
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
+	krzk+dt@kernel.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 11, 2024 at 09:20:17AM +0300, Nikolay Borisov wrote:
-> On 11.04.24 г. 8:40 ч., Josh Poimboeuf wrote:
-> > Syscall hardening (i.e., converting the syscall indirect branch to a
-> > series of direct branches) may cause performance regressions in certain
-> > scenarios.  Only use the syscall hardening when indirect branches are
-> > considered unsafe.
-> > 
-> > Fixes: 1e3ad78334a6 ("x86/syscall: Don't force use of indirect calls for system calls")
-> > Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-> 
-> Why fiddle with syscall mechanism if the bhb scrubbing sequence mitigates
-> bhb? AFAIU (correct me if I'm wrong) the original idea was to have use
-> syscall hardening instead of the BHB sequence but since it became clear
-> that's not sufficient bhb scrubbing completely subsumes the direct branch
-> approach in the syscall handler?
+On Wed, Apr 10, 2024 at 2:27=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> =
+wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> RZ/G3S supports deep sleep states that it can reach with the help of the
+> TF-A.
+>
+> RZ/G3S has a few power domains (e.g. GIC) that need to be always-on while
+> Linux is running. These domains are initialized (and powered on) when
+> clock driver is probed.
+>
+> As the TF-A takes control at the very last(suspend)/first(resume)
+> phase of configuring the deep sleep state, it can do it's own settings on
+> power domains.
+>
+> Thus, to restore the proper Linux state, add rzg2l_cpg_resume() which
+> powers on the always-on domains and rzg2l_cpg_complete() which activates
+> the power down mode for the IPs selected through CPG_PWRDN_IP{1, 2}.
+>
+> Along with it, added the suspend_check member to the RZ/G2L power domain
+> data structure whose purpose is to checks if a domain can be powered off
+> while the system is going to suspend. This is necessary for the serial
+> console domain which needs to be powered on if no_console_suspend is
+> available in bootargs.
+>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+>
+> Changes in v3:
+> - populate pd->suspend_check on rzg2l_cpg_attach_dev() for serial
+>   console; due to this the rzg2l_pd_suspend_check_console() was moved
+>   before rzg2l_cpg_attach_dev()
+> - removed RZG2L_PD_F_CONSOLE define
 
-I agree, but I think Linus wanted it for some reason.  I might not have
-gotten the X86_FEATURE_INDIRECT_SAFE conditions right, maybe Linus can
-clarify.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-I'm going to experiment with having objtool find all indirect branches
-reachable 66 branches from syscall entry.  If we converted all those to
-direct branches then the SW loop wouldn't be needed.
+Gr{oetje,eeting}s,
 
-But until then I don't see much point in the syscall direct branches.
-We could just disable it completely until if/when it's really needed.
+                        Geert
 
--- 
-Josh
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
