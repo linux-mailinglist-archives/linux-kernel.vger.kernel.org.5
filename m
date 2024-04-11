@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97DF78A19A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:16:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8CD68A19AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:16:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6F341C21145
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:15:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94451282DA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228DF1C231E;
-	Thu, 11 Apr 2024 15:36:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A91B61C2332;
+	Thu, 11 Apr 2024 15:36:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="fU7URUQH"
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="a5zrAbpa"
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF39F1C2301
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:36:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8C201C2318
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:36:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849774; cv=none; b=pEGrorJl+VIWN1pquPC6mOT6aGhiP0w7Z+zW6mfoMeI9umF3/HibLy/p2dRHGBnGtCn2EL6t2FqXAH4p60C8bXAfVKvu9BsvlGs+rMQsaMzq7kxPk0QV8WeeKPhMQi5svf1Xi8pNkO2uCyDsakL/TyB9U3U1dSTwkSXSSkQ4arE=
+	t=1712849776; cv=none; b=m7JFOfmp5OZYUbqjIlLHQWUD3BCP4YkraIxsotr5xDYbGPr6wCgg2VAklfiizbzgUX+ljalHmX2MSeC5ieLbEMJOIfSuRukWRp5jAQ+0NtvJyAhuIVFkZDixDQi4kkXvQJtKETJPEHRyN0PXCr/lgfLsxX+Aae+/+gJUoK3ne0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849774; c=relaxed/simple;
-	bh=eyNw/fMz9VWuTAy6eheOBWrnyPqJvTPEmKdpUxMiO0A=;
+	s=arc-20240116; t=1712849776; c=relaxed/simple;
+	bh=BC4YfS4UJrprHPjQHWKbdcG+YbYW3uvVEK7Blfupi04=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Xw97CtUpyS04Hc49hR2CrLiohhLXhhmPJ5yG43uuXMJ0hDqziusGi1ILxQILAmHRpy4jdKknm8YHNy0fFRJv0Yf/uiMseWi5Gaza25yFJfJpYs6Smu39AKJIG3grRhTosgS9VHTCM7V2F/VDqNh0bosTSv9qovboJOwkpzQHlyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=fU7URUQH; arc=none smtp.client-ip=209.85.166.172
+	 MIME-Version; b=XAiA/jr9Y9EJd1Px0rSkmagSo3FEMY6KN2xoc6eHAwNavqdFL9Abs6KQM6ThAJaXu6r9+kCJ88UXVLdwboyyufMkAIWXjJHqtmtkxrx5DIn5QWAcAeLJpxZSBx/QO12blal4t963EXtgQMqq5ro9SPzIeNE8R/cCX3hlIP1Czps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=a5zrAbpa; arc=none smtp.client-ip=209.85.166.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-36a224d7414so183015ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:36:12 -0700 (PDT)
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so170515439f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:36:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849772; x=1713454572; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849773; x=1713454573; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1ClBrrRz8U9U/IoNi5Xa3s47Go5lIgp985Yz+fhOQbY=;
-        b=fU7URUQHVgXUl2JL5NW6aSrjhQMUoZ/0HvyuPAI20clKq03VYAmC5xNwnW9HrGus12
-         OCVKr2PorldLGJ3lhMlCMBrfmkEr7RHyILRNkLtthSwlJhP5/p6lEEN1bL9p1p+CJ0gY
-         WnFzldSC6WcJGFgZcQeJcEO5jHfMCj6bC0VSsKJttQLYU5ZOOWJ/Hw9/ysje7s9gYHab
-         b3Pn0T9GJfIFXa2auOIBLf8fpNW/z+dG7df63slrAZOXNUA3XmZ/dPbrVWE8GomwCtPd
-         1CPT2qRcYiWlFmaC4eVpE4RPlkECBH0fJImUGAZ1OY7tyKSCCrwTKxmknttCEnLy69WQ
-         wBqQ==
+        bh=H5wAewb/wpyAp3Mbq5eWFLi8QS3luSEPM1me2UTw1/4=;
+        b=a5zrAbpa6pproFD25RLCPLfBe3PbytRtPNEfNvEwnd2qAV3IZP5KsW/WF6htVjlCxF
+         PGLgf6LnOdU7EDOIqlqGRaHX466QnIBK6dfEpZ4lPoC8ef7MhzlaoUIvfZYNxdCVrYVE
+         brneLEFGwuZQK298mqnose55OK9eEct83NFLOawbYWpJZ1v/jtGgIu9AOMvNIAIfSHp1
+         kwJ3aMZFuGJkcRyKbSoJuLq86NggQMF/Q9fhKrz9rGS6hr2Og7l9jerDFZ1KwHYUQlDk
+         BJ2G1hwMucOTjiw1N4dmQcjpN29wyLBsPnMYZP6uX/YmYwi5xhx6HWOXAvzhUnQygxDs
+         G4JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849772; x=1713454572;
+        d=1e100.net; s=20230601; t=1712849773; x=1713454573;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1ClBrrRz8U9U/IoNi5Xa3s47Go5lIgp985Yz+fhOQbY=;
-        b=uinrqV//iydhhGlFWfTfI+ZNfVEu1S31Rwrv5DrsyvgQJfj2zPbjM2YWYVaNYUBNfd
-         Jewm7jncbWES/s8v5laR4Zjdoz2m21fIsI31jP3oa+gOOHmgvz/HENzEWXnKElJyWtmm
-         XNy8NPL2zh1io+oumD/SHrz2RF+7kUQUYJwkFEWNSZmqUPgY0q9zlGAC5nNCxO+V4xwT
-         gvbs8CSzrwKbpyzrILn9Qeqw/kSPkMyt5G/4px+jP4fC2weQziMaA1P0GgxdMgFHR4Xu
-         h1oefFPX4KyCEMjgyjvz5HYuESFb+V56VFwToVfwWKullSEed2Hk5pd3YfgyIuf/i5bH
-         uZFw==
-X-Gm-Message-State: AOJu0YxmG3u5pHIK3xzrwRjmis2rb7Sryh+n9h1n06H5WTEAckpnUIU0
-	pdJbgKuR6cRdcvss0jcwAtys0O8vv3aadR6AHjMUDFWGCt8Oorw2murNfFPlcKG2eVo3i3OFY8z
-	x
-X-Google-Smtp-Source: AGHT+IF7ZbI9A7JIn7tJgiBlVGCu8zc52LXDbfHc31jaQ19ZMyKjJHiJ3TOSifGWii/VinAFMZpbsw==
-X-Received: by 2002:a6b:4e14:0:b0:7d6:631d:7b0 with SMTP id c20-20020a6b4e14000000b007d6631d07b0mr186853iob.1.1712849771751;
-        Thu, 11 Apr 2024 08:36:11 -0700 (PDT)
+        bh=H5wAewb/wpyAp3Mbq5eWFLi8QS3luSEPM1me2UTw1/4=;
+        b=Ge6hhkSAKo95yUi5AD/zOHrU2Xa8GOomwyFPpcMyUGQ5mSEEAzeyeqNxrds+rBuitq
+         jCYaXb3DE/u/2GSsWKY0v6VnQ6Uqm/5mmwc0/td+wVZbr10uCLSf3aI6UE4CY66CMw+v
+         BNUNTZezhbTKwuZ0dAzF2P28LybH46JZTdCHW4tAJeB59la/c9mEFOa2tv16bf5G+swU
+         fkws1kQkBl+D4zpILXGLwO9/ScEtvFuxaiBSnoiQCEeGukmy7vak0kE4wVsi+rlMqWnI
+         VXdOJDlazwINTP/1fapZP1GWZLUghPQkYdUbD0/byL9xTC7RSBNB53qzirw3OTJNyySY
+         HliQ==
+X-Gm-Message-State: AOJu0Yx6ew4c3b0o46yhLe4g6i97OoCVR0AHPYDM/Zh9lL4XnYl6c9nM
+	SxtsmzQ2RE8Y+gWkJmHxBrLhDExR4dcnQF6w43jjFlqUJYjS1yTfTFQqjBiwzTJDEnexov0RF8j
+	c
+X-Google-Smtp-Source: AGHT+IEwuj0l1bxi7wMi61akCWwp48mGax/V0582PCSWzfaTaOKdP6hFm8qscE9vaCwt61Ydi9qKEg==
+X-Received: by 2002:a05:6602:21d7:b0:7d6:9ddf:5095 with SMTP id c23-20020a05660221d700b007d69ddf5095mr15731ioc.1.1712849773401;
+        Thu, 11 Apr 2024 08:36:13 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.36.09
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.36.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:36:10 -0700 (PDT)
+        Thu, 11 Apr 2024 08:36:12 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 160/437] usb: dwc3: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:15:00 -0600
-Message-ID: <20240411153126.16201-161-axboe@kernel.dk>
+Subject: [PATCH 161/437] usb: fotg210-hcd: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:15:01 -0600
+Message-ID: <20240411153126.16201-162-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,144 +85,69 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/usb/dwc3/debugfs.c | 48 +++++++++++++++++++-------------------
- 1 file changed, 24 insertions(+), 24 deletions(-)
+ drivers/usb/fotg210/fotg210-hcd.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/usb/dwc3/debugfs.c b/drivers/usb/dwc3/debugfs.c
-index ebf03468fac4..5af745ef00a0 100644
---- a/drivers/usb/dwc3/debugfs.c
-+++ b/drivers/usb/dwc3/debugfs.c
-@@ -365,17 +365,17 @@ static int dwc3_lsp_open(struct inode *inode, struct file *file)
- 	return single_open(file, dwc3_lsp_show, inode->i_private);
+diff --git a/drivers/usb/fotg210/fotg210-hcd.c b/drivers/usb/fotg210/fotg210-hcd.c
+index 8c5aaf860635..6a7334164ca7 100644
+--- a/drivers/usb/fotg210/fotg210-hcd.c
++++ b/drivers/usb/fotg210/fotg210-hcd.c
+@@ -283,27 +283,27 @@ static int debug_periodic_open(struct inode *, struct file *);
+ static int debug_registers_open(struct inode *, struct file *);
+ static int debug_async_open(struct inode *, struct file *);
+ 
+-static ssize_t debug_output(struct file*, char __user*, size_t, loff_t*);
++static ssize_t debug_output(struct kiocb *, struct iov_iter *);
+ static int debug_close(struct inode *, struct file *);
+ 
+ static const struct file_operations debug_async_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.open		= debug_async_open,
+-	.read		= debug_output,
++	.read_iter	= debug_output,
+ 	.release	= debug_close,
+ 	.llseek		= default_llseek,
+ };
+ static const struct file_operations debug_periodic_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.open		= debug_periodic_open,
+-	.read		= debug_output,
++	.read_iter	= debug_output,
+ 	.release	= debug_close,
+ 	.llseek		= default_llseek,
+ };
+ static const struct file_operations debug_registers_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.open		= debug_registers_open,
+-	.read		= debug_output,
++	.read_iter	= debug_output,
+ 	.release	= debug_close,
+ 	.llseek		= default_llseek,
+ };
+@@ -773,10 +773,9 @@ static int fill_buffer(struct debug_buffer *buf)
+ 	return ret;
  }
  
--static ssize_t dwc3_lsp_write(struct file *file, const char __user *ubuf,
--			      size_t count, loff_t *ppos)
-+static ssize_t dwc3_lsp_write(struct kiocb *iocb, struct iov_iter *from)
+-static ssize_t debug_output(struct file *file, char __user *user_buf,
+-		size_t len, loff_t *offset)
++static ssize_t debug_output(struct kiocb *iocb, struct iov_iter *to)
  {
--	struct seq_file		*s = file->private_data;
-+	struct seq_file		*s = iocb->ki_filp->private_data;
-+	size_t			count = iov_iter_count(from);
- 	struct dwc3		*dwc = s->private;
- 	unsigned long		flags;
- 	char			buf[32] = { 0 };
- 	u32			sel;
- 	int			ret;
+-	struct debug_buffer *buf = file->private_data;
++	struct debug_buffer *buf = iocb->ki_filp->private_data;
+ 	int ret = 0;
  
--	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
-+	if (!copy_from_iter_full(&buf, min_t(size_t, sizeof(buf) - 1, count), from))
- 		return -EFAULT;
+ 	mutex_lock(&buf->mutex);
+@@ -789,9 +788,7 @@ static ssize_t debug_output(struct file *file, char __user *user_buf,
+ 	}
+ 	mutex_unlock(&buf->mutex);
  
- 	ret = kstrtouint(buf, 0, &sel);
-@@ -391,8 +391,8 @@ static ssize_t dwc3_lsp_write(struct file *file, const char __user *ubuf,
+-	ret = simple_read_from_buffer(user_buf, len, offset,
+-			buf->output_buf, buf->count);
+-
++	ret = simple_copy_to_iter(buf->output_buf, &iocb->ki_pos, buf->count, to);
+ out:
+ 	return ret;
  
- static const struct file_operations dwc3_lsp_fops = {
- 	.open			= dwc3_lsp_open,
--	.write			= dwc3_lsp_write,
--	.read			= seq_read,
-+	.write_iter		= dwc3_lsp_write,
-+	.read_iter		= seq_read_iter,
- 	.llseek			= seq_lseek,
- 	.release		= single_release,
- };
-@@ -436,15 +436,15 @@ static int dwc3_mode_open(struct inode *inode, struct file *file)
- 	return single_open(file, dwc3_mode_show, inode->i_private);
- }
- 
--static ssize_t dwc3_mode_write(struct file *file,
--		const char __user *ubuf, size_t count, loff_t *ppos)
-+static ssize_t dwc3_mode_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct seq_file		*s = file->private_data;
-+	struct seq_file		*s = iocb->ki_filp->private_data;
-+	size_t			count = iov_iter_count(from);
- 	struct dwc3		*dwc = s->private;
- 	u32			mode = 0;
- 	char			buf[32];
- 
--	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
-+	if (!copy_from_iter_full(&buf, min_t(size_t, sizeof(buf) - 1, count), from))
- 		return -EFAULT;
- 
- 	if (dwc->dr_mode != USB_DR_MODE_OTG)
-@@ -466,8 +466,8 @@ static ssize_t dwc3_mode_write(struct file *file,
- 
- static const struct file_operations dwc3_mode_fops = {
- 	.open			= dwc3_mode_open,
--	.write			= dwc3_mode_write,
--	.read			= seq_read,
-+	.write_iter		= dwc3_mode_write,
-+	.read_iter		= seq_read_iter,
- 	.llseek			= seq_lseek,
- 	.release		= single_release,
- };
-@@ -522,17 +522,17 @@ static int dwc3_testmode_open(struct inode *inode, struct file *file)
- 	return single_open(file, dwc3_testmode_show, inode->i_private);
- }
- 
--static ssize_t dwc3_testmode_write(struct file *file,
--		const char __user *ubuf, size_t count, loff_t *ppos)
-+static ssize_t dwc3_testmode_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct seq_file		*s = file->private_data;
-+	struct seq_file		*s = iocb->ki_filp->private_data;
-+	size_t			count = iov_iter_count(from);
- 	struct dwc3		*dwc = s->private;
- 	unsigned long		flags;
- 	u32			testmode = 0;
- 	char			buf[32];
- 	int			ret;
- 
--	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
-+	if (!copy_from_iter_full(&buf, min_t(size_t, sizeof(buf) - 1, count), from))
- 		return -EFAULT;
- 
- 	if (!strncmp(buf, "test_j", 6))
-@@ -563,8 +563,8 @@ static ssize_t dwc3_testmode_write(struct file *file,
- 
- static const struct file_operations dwc3_testmode_fops = {
- 	.open			= dwc3_testmode_open,
--	.write			= dwc3_testmode_write,
--	.read			= seq_read,
-+	.write_iter		= dwc3_testmode_write,
-+	.read_iter		= seq_read_iter,
- 	.llseek			= seq_lseek,
- 	.release		= single_release,
- };
-@@ -610,10 +610,10 @@ static int dwc3_link_state_open(struct inode *inode, struct file *file)
- 	return single_open(file, dwc3_link_state_show, inode->i_private);
- }
- 
--static ssize_t dwc3_link_state_write(struct file *file,
--		const char __user *ubuf, size_t count, loff_t *ppos)
-+static ssize_t dwc3_link_state_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct seq_file		*s = file->private_data;
-+	struct seq_file		*s = iocb->ki_filp->private_data;
-+	size_t			count = iov_iter_count(from);
- 	struct dwc3		*dwc = s->private;
- 	unsigned long		flags;
- 	enum dwc3_link_state	state = 0;
-@@ -622,7 +622,7 @@ static ssize_t dwc3_link_state_write(struct file *file,
- 	u8			speed;
- 	int			ret;
- 
--	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
-+	if (!copy_from_iter_full(&buf, min_t(size_t, sizeof(buf) - 1, count), from))
- 		return -EFAULT;
- 
- 	if (!strncmp(buf, "SS.Disabled", 11))
-@@ -672,8 +672,8 @@ static ssize_t dwc3_link_state_write(struct file *file,
- 
- static const struct file_operations dwc3_link_state_fops = {
- 	.open			= dwc3_link_state_open,
--	.write			= dwc3_link_state_write,
--	.read			= seq_read,
-+	.write_iter		= dwc3_link_state_write,
-+	.read_iter		= seq_read_iter,
- 	.llseek			= seq_lseek,
- 	.release		= single_release,
- };
 -- 
 2.43.0
 
