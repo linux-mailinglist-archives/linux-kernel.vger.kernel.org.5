@@ -1,107 +1,162 @@
-Return-Path: <linux-kernel+bounces-140217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30F028A0D5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:03:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 219288A0D7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:04:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7431B240F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:03:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C460B282CF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:04:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4CA145FF6;
-	Thu, 11 Apr 2024 10:03:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A5AE14600E;
+	Thu, 11 Apr 2024 10:04:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JLC0KrfP"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=dektech.com.au header.i=@dektech.com.au header.b="DzKGzB2U"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2100.outbound.protection.outlook.com [40.107.8.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815F314532F
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:03:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712829793; cv=none; b=YvrFNNm3aArWACrgNT1lyuk0+13TgWKHi9fDQRqwoYU6djJZDF2sjN+I60EMkdOX/y+NYMAPtGmM7WAGQKSevMCAQHnoRCK2yNpMNn/lb8IwTRg3nnaWm9g2mldsoCgKxU0NXcFuHvQ9eFsM2bMwAowqchnhZU9bIL4zffY+/TU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712829793; c=relaxed/simple;
-	bh=GImcGOPWfyASSJZXMUl4SNfH+w1jdBYYISa7KR3nsBo=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=oj6WnZqbSdmNiTs1ItsBQyhqcv88QKLRCe/EeekKHTH0S9xZ2B0EdwGS9WhRlgGqyZu31hSUKnoFnSisgg1bQZ8qsQsVNz4jSzBMNokiysqKMEBzSGroDE6+cS5wjXyC9w6wWm8bcQRM/eWhejbqF4+9KFykktC4+tLMiVEsdyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JLC0KrfP; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-417e51e7aedso1355265e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 03:03:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712829790; x=1713434590; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bJzO/8AIoZITVdtj3PXAYJ5AJqY6Jdcq/UBPNLdK9q4=;
-        b=JLC0KrfPzv/IV9FLmYpMv5xQbLVfe+3Zfw9Fit4adbKvEV12xr/X4VrLkF+YKsmuvm
-         Qlk8mBHXDjJ/+yiR6vM7b6aQrQdXDTk4PfeaYptjfwGB9MxAOUkM2Bc4RD4lVNakE5Fq
-         1Ri9VRc9kkxrpQqwgcRqKQrA2nIYf/q7WeFQTDy2rCbgBOjtwKfJXjOvzGtjgRkLm1NU
-         ui0yfjyzYtd7XxCbg8t+QJ+R54PLhTJWO3I17VmGN86nuRrl97D0Gts0N9qUlL7mP+86
-         QSOk6e/4qnA6o/8LiBtcxA9m2aHHZYdvj5R+J4StTHkfzQShbqYaWl+Hh09rvsWREsPv
-         YpWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712829790; x=1713434590;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bJzO/8AIoZITVdtj3PXAYJ5AJqY6Jdcq/UBPNLdK9q4=;
-        b=KPJ3fHDtjz93ZgmPGHAn7f4D6H60ZuOtvLAszNbHN47b7Y9DYCidjGZ12ZcbYar5NH
-         J3JsGZi0qE2BHJJSh6wVUrBgq96umnCbjtlMZDRfey5Dm8G4oadQJDuGfWnyXcbUU26K
-         rXrSYxqFcVG8GvxB3Yq3Ap8YbksP8tOSuBzyO7iAjKezLMUyWV9qon29wbFcS5rM5pzu
-         vTktyO+Bs+OmoWoGlgne5+GUDT/ai5Tl1TagfKeMVb7hokK80qMRiyAMyjuK812cuR/x
-         h9eCycYqMPn8J/JfYnGRlnDyHi4g4TJGPRRsHIXyrD0kqsHP+1MEj04OJAyDbe+f0bzh
-         l8rA==
-X-Gm-Message-State: AOJu0Yw3ZqJcnSEcZDgljAQ08eZdc0h6cwgqGwE3mC8hKEA2f/XwnxFz
-	TGISwPzbKZb+VMBdm9QUSJOIYwxSIGYWIMp7xnytT8zBAlmjhzgCYAp8bIJMeV7FcGRcW30soCZ
-	y
-X-Google-Smtp-Source: AGHT+IE9CA0TfvhO3/+w4hi2SNVVAiB3SlcNM+TLS4kcXmYTwoMrPHs5hu/RQIXXZkfDTT/qS5zEkQ==
-X-Received: by 2002:a05:600c:1e18:b0:417:e563:4aa4 with SMTP id ay24-20020a05600c1e1800b00417e5634aa4mr378800wmb.5.1712829789900;
-        Thu, 11 Apr 2024 03:03:09 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id t1-20020a05600c41c100b00416b5e6d75dsm3894685wmh.1.2024.04.11.03.03.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 03:03:07 -0700 (PDT)
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org
-In-Reply-To: <2024032745-recycling-state-4c32@gregkh>
-References: <2024032745-recycling-state-4c32@gregkh>
-Subject: Re: [PATCH] nvmem: core: switch to use device_add_groups()
-Message-Id: <171282978668.159354.9727436857997739781.b4-ty@linaro.org>
-Date: Thu, 11 Apr 2024 11:03:06 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12EC11422C4;
+	Thu, 11 Apr 2024 10:04:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.100
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712829859; cv=fail; b=cUP7dde9xtaXsayvuGoq8kHP/ysmZ6SxGgpNwur3hKx0/7V/t34m3krtB4Uc/SagYd2xknBtbtA1LP2yCr5YIN8RXSt5ou5D3fbUi6Apbkf2QvLaVSkK9nA/ntZwsMOD1TlHUnvH57DFgxHOM7vo/nVYgnbBvr1VZliFcG7bhPw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712829859; c=relaxed/simple;
+	bh=knX8pqPEL66z2V9OI788MRgnRoKnRBUxBqN33cyY6/s=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=cTPYNc4ssjO5RHX21XaHo4QnF1SubK18Mprbe5tWIsYs0dJc8T8T9+PWstAn8WNKk059X1QZNX74BB159mEe7f/nDnEzlP8kkW72q401xeVCB4j5RpwthWtFYbT+ngE2sTxuBrAmSzpZPCX+/xZLIK9BRu6gJCN0UQrfN6BPrw4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dektech.com.au; spf=pass smtp.mailfrom=dektech.com.au; dkim=pass (2048-bit key) header.d=dektech.com.au header.i=@dektech.com.au header.b=DzKGzB2U; arc=fail smtp.client-ip=40.107.8.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=dektech.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dektech.com.au
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W04wEKTNSv3npXeLA7re+J4g4gFX5x+J/Be90l/qWNcEEgC0ERXVTM6ZzWCi0wxUH2EMUPssYBQzrM1HR+vvR37O8/uLdY4pHNC7st8c7c4G0x7QD+Vktjzj8VJKy/wIy7WZnLgRfu2O812TdTThehZOfqU5WbMYZvFEpVfNHewUYyswWSle5NMeRmgy514aVcXzLcUn5XSqWQiinXdmOSn5jzdXoAYD8AZLjNPLLllqfSYQ9Nvh+ii9vrIGCkEHhvwwD9GsicAfvH+TkmKd8Pc9ZTcwQM6JsUUZNgCxHSd4KUEEA+0hnmifTZt5/ZPCWB/dgzh4d0PK/exJ5HefPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=knX8pqPEL66z2V9OI788MRgnRoKnRBUxBqN33cyY6/s=;
+ b=Sx1l3AJB8NLqVisJuMR/9SriHj+fBvlzhUGZiV9mE1On4HdGhy90XIkOJa2pFFmpk1czkl9iVqTgb18s2AxOv4I2db2fe2kTBv8xXnn2qnvozz19Wo97Z6qpjjVD5Y7DST8zqQ/Mwp8TqEf1pYvm307coW2jGeaDwmFaWjoqm1MIY8rENeInDDnntswKvWUD0wVsk9nop0Vmbq7WGRoSjMJ615Dj5eve02MaW97E4F6auR1dXlc+0OFJL/Im/l4yOR/4MtPR92Psdn7OfplZv2pzauMoyDDmHk0M36S2tarZ1LLZUUvRLxeEJp7mCH/RqKZ3bl6OpTI6f39jlb0qxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dektech.com.au; dmarc=pass action=none
+ header.from=dektech.com.au; dkim=pass header.d=dektech.com.au; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dektech.com.au;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=knX8pqPEL66z2V9OI788MRgnRoKnRBUxBqN33cyY6/s=;
+ b=DzKGzB2Ur9JcLgpzJxV458OQv29+9meryUTsbWO26ez1xmpxqDun6CFXnegNZ9dQONELSqGHo1h1dhgywUmH6EJEkm0GxfeuI40O0OxvnYKfLpYJSCwh04BXs1vcoBxYeF2dVH7DjcsNvQIyvNda4LOtxGM5lfevLv+lmVUlXiwi48Sa+lGUnrznSq22fZ6d3+zbB9Vxlpk4i9TaFMDb1XiSzqwevbmmvdWXQPQEZ9JbXUTc1rAwjYH5W0wsqTXI9WzqFNPirSWG9cUdDRKfsK9T3g68qaLpaiJcRvbjwmbRFqL3hKQMDHqu9P4oJn1tYqReGV7HScmjAPbvJWxLKg==
+Received: from AS4PR05MB9647.eurprd05.prod.outlook.com (2603:10a6:20b:4ce::15)
+ by AM8PR05MB7170.eurprd05.prod.outlook.com (2603:10a6:20b:1d3::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Thu, 11 Apr
+ 2024 10:04:11 +0000
+Received: from AS4PR05MB9647.eurprd05.prod.outlook.com
+ ([fe80::8e06:8f6c:4364:7266]) by AS4PR05MB9647.eurprd05.prod.outlook.com
+ ([fe80::8e06:8f6c:4364:7266%6]) with mapi id 15.20.7409.042; Thu, 11 Apr 2024
+ 10:04:10 +0000
+From: Tung Quang Nguyen <tung.q.nguyen@dektech.com.au>
+To: Colin Ian King <colin.i.king@gmail.com>, Jon Maloy <jmaloy@redhat.com>,
+	Ying Xue <ying.xue@windriver.com>, "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"tipc-discussion@lists.sourceforge.net"
+	<tipc-discussion@lists.sourceforge.net>
+CC: "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH][next] tipc: remove redundant assignment to ret, simplify
+ code
+Thread-Topic: [PATCH][next] tipc: remove redundant assignment to ret, simplify
+ code
+Thread-Index: AQHai/ET8yH2w4BKm0CIExMIZvn7kbFi08+A
+Date: Thu, 11 Apr 2024 10:04:10 +0000
+Message-ID:
+ <AS4PR05MB96479D9B6F9EC765371AA8A588052@AS4PR05MB9647.eurprd05.prod.outlook.com>
+References: <20240411091704.306752-1-colin.i.king@gmail.com>
+In-Reply-To: <20240411091704.306752-1-colin.i.king@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=dektech.com.au;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AS4PR05MB9647:EE_|AM8PR05MB7170:EE_
+x-ms-office365-filtering-correlation-id: 96220262-442d-4521-cb53-08dc5a0ebbf3
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ RnbSjvNr95aTS1cl57JPWNDkdAXh4qdqNmyWtKZEMNcjJc/ZueTJwA02j7KbR83+UnMAmSAfgWcc7AcTfgsgPJZOWClL//gAjGOFmVeiDr4E7KkX+pGYZ+02i0V4Nh4mdecXMq+HcnvRos5kiBaRZGLndZx301iTwPaPPYeGYz6dZZ/+C4vQ4h0Mbl563Z9V7dhxHZeHrTGuwmHcbH1xdd51Op8/tNrya+ME1O2gxUHV+lUwwxRnfdd1Iw9jeMxrehAcaXJgcde4uH9TuFPg7PnbxONBLcVr62tYGTyD2VWqfXxSS0gaIwmzWynBCdj+eGW2BSJCHu4j/tcXpQdq9A3tLSgFtetaIWYjhfDfeOlIVT79B0L+sjzI2BaidFT48I7FDh5aBjs7H1bCjQ2BUhfA8f43VP9uPxVChp+jecdh63KludNZpP/q+Y/VrZBOFD8kANTNyXXwqt4QgRfSn08qH5hcheh1oVAn5XpXxUtZWQKjTPN70YIlut9LWxHTUGX/jGqhG9kTDEVehDxpW/cB+uqn6bfFTq9DVHj0XlgBATig+QAhzztvK2JIS/ihkv+L1qAElOd76dDVf060Jx3X2v9T6tqGs+C2+9gC8+ch8Y5XI4K9LJKDjBhcps+UVTk9YSg0iufBkEm1p+Rfmd9Djtp9EgWvtUYX0rxaJcZOV2yrRNHRjQ2Zx8cy4fn+astw7iQ/IKqQ8p76JJTqYg==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR05MB9647.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?aWN1MDArK0Qrbms5ZkE3NGJxL0dqelU2OFhIMDVTZXZCbVg1ZlRmaGxTVllK?=
+ =?utf-8?B?UExvUjJMVTNUcHNPMzZTZnJORHNhd3VXR2dmK3pJSHY1Nkl1ZU5LVGcycitq?=
+ =?utf-8?B?Zno5NjNZQTFGSXFhOVZvdFUxQ0NyNnA4cko4WGEyRm5tRlF6aEpSSTU3T01L?=
+ =?utf-8?B?dWlGUzhKVFQvcGxIQ1NONXJrTEtMLy83MjE1SEVuT0xVQm1nU0pQL2dISHJ1?=
+ =?utf-8?B?akJ3ZXEzdnVyY2Z6Y2E5Z0RxaUNmWUZaS1ptVkNFTkNIK0hiN1k1aGFaZkVv?=
+ =?utf-8?B?TDhzWFk0NUpJOU81R2FkV2FrVndEQlgvbmtETjZxSEhvdDd5SzdxWlBkWlBX?=
+ =?utf-8?B?SmIwV0pKZFh4TW44Z1BaUmRGNHQxTHVUTDRqUWhuNnBZY0IyYzJsUXIwWHBD?=
+ =?utf-8?B?cW9YelVHZzNGUzFLYTc4azNIZU8zYUU5cEZoLytJQ0s0aE4wZjR2anBURDJ3?=
+ =?utf-8?B?N3BLaGNtQk5MelQvS2NpUEsxN0xML3VTc3liV1psYWxPSWc0dkVyS1BRS0t4?=
+ =?utf-8?B?NExPT1Avc1BKT2VTZDVUdWUyTXpNbVczK2FZTVhUM3dMSDNUUXZSd0ZGSmFq?=
+ =?utf-8?B?ZDhSSkFEdGRONVVyNFY1ek1aU0VZVWduT0M5WTJPZmhkaURGN3JYWU9ITUhY?=
+ =?utf-8?B?ajd4bGl0ODRiaWhNeVEvSWJUYlFVZFZDc0VKYmZodUQyNXpHMUg4SURKTmQ4?=
+ =?utf-8?B?WFo3TU9NWU9DWFIvdlVmeVVzeWhpSmtrdHdHL0M5N2VMbjZNZERNT3A1Y29T?=
+ =?utf-8?B?L09RdDhDZExGWTdxdjg1Q0krVFBHbDJ4dFdkRlNTZ0ZNQlZCMzBoaHdHOTZZ?=
+ =?utf-8?B?SUpTZjNDaStLUUdmN3o0TFhXRDhINm00US9OVXZyNHR5M2lIaVJvQWNxc3R0?=
+ =?utf-8?B?eXVkSmJaRnc0TnFlSnR0YkpZOGt3cTA3RUNieDhyWlMwcW1JUnNNVzJVV0cy?=
+ =?utf-8?B?MTY0eC9kRVFMa1lGeHZnaFZ3S3U1Z2VJMG9vakN6Y1A4UXRSLy9TWUFBeGtI?=
+ =?utf-8?B?ZURYc0o0YWtEek9NaEhqa2hDSDRGVFNHRFFxSHQrNS9WdlhNcUVjRUhVN0dx?=
+ =?utf-8?B?QjJPSUhkK2R3U0NzVjR6QnJaS3lzOWJKaFVkZnZ1eGtZcWdReEhxbmFmVUox?=
+ =?utf-8?B?S21vZW03ZUNBSTBsT1Q0Ykt6SEdnVnJMVU1HYzNzSU9oK2NweG1ZbXoxZ21M?=
+ =?utf-8?B?REsvaU1HVzZ4d3RsaGJLZDVNT2RwZG53MCtMSTBoZUFxQ3Vsb01vMFRpVk1N?=
+ =?utf-8?B?QWxSV1VFWlB0bjNqZkNybmlxamNLQUR0SW8xSjNtMFVkcVJTcDZ3SU9iaFU3?=
+ =?utf-8?B?R0tUeWFpTzk3WWhBTjZMdzdBNHpYRG5kbU50QlNLajQ2KzI3ZVJxMFpxQWxw?=
+ =?utf-8?B?ZG8zYm5xbW85c2w0VS9lNE5aTW9xc0E2OTVjNWtnSnBUS1N3a1ZZMUFIR0dQ?=
+ =?utf-8?B?UjVkNE9JcXU3RjNGYVFtbk96cnJTb2I3dUZ4eE5QazJJc0FieExjNXFVRnBR?=
+ =?utf-8?B?M1NNSHVZbWduS2xoRzhOM3htWWZlVWhKSGwxSDJuUWNRcGswVFRYMkt3ZGJB?=
+ =?utf-8?B?SytpUVdON1JWL2V6eG1HTXlVY0xyeU8xb2p2TkEwdFRQQVVHdkJjRjFZSm5a?=
+ =?utf-8?B?QUZIa2Jzd2RmQ0EwUHNPSUhBSEoxRWdmbG9mWmdQa2dkNXl3aWwxY0VMUkpN?=
+ =?utf-8?B?VTVVRjV4OWtOODhkRzRNTS9pWEF4UkkxVi9tb3FBVStiUWI5V3VVTmRUcGUy?=
+ =?utf-8?B?bGlhbzE3YmhTNFNVTDF1aE1ybG5WVEJJZlR4U0k3Zlhya01qckwwMjVGY09j?=
+ =?utf-8?B?ZGs2QmtGVU1uOFhZNDczMmJWeWxmWkNYWnZMYjFEcXR0Z1QwS1BtYVJIM29N?=
+ =?utf-8?B?b1FRRTZac0R5dmNLZWhTSmM1YWw5d1RTM0lzMkN1Z3crSUZ6bjNZZ01vb3Vk?=
+ =?utf-8?B?VlFITEtlN0NDYnB3S1BpTlJwY2hzL3BzRWlyRjc4SXFuV3lPRFJaY0dOOURX?=
+ =?utf-8?B?SHhlMTJTQ3QzQUNKaUtqZlhIdTFCSVMrOWdieHNVUjBUdWVNYm9RUjFZRXRW?=
+ =?utf-8?B?TE9HL0RSbWFFWWdEOTVzY1Vkb2ZHMVdSRXhVY1I1cmNiWUh2RDE1Wjlld1R2?=
+ =?utf-8?B?R3NNa0wvYTZrTHYrT012Nm1kajlWODUrem05clVycW1HcGpqcHNMdjUyNk5y?=
+ =?utf-8?B?TEE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.2
+X-OriginatorOrg: dektech.com.au
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AS4PR05MB9647.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96220262-442d-4521-cb53-08dc5a0ebbf3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Apr 2024 10:04:10.8554
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 1957ea50-0dd8-4360-8db0-c9530df996b2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wibmUDasBMDPD25IAaUMAdX6OegZnca6VZ4dlvZs25BXHv5Sd28QJrYQ+fpowjxr12atAzrvvEoVCbgVtNbJQk1dSlHnTQ40epSt9Qcwngg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR05MB7170
 
-
-On Wed, 27 Mar 2024 09:11:46 +0100, Greg Kroah-Hartman wrote:
-> devm_device_add_groups() is being removed from the kernel, so move the
-> nvmem driver to use device_add_groups() instead.  The logic is
-> identical, when the device is removed the driver core will properly
-> clean up and remove the groups, and the memory used by the attribute
-> groups will be freed because it was created with dev_* calls, so this is
-> functionally identical overall.
-> 
-> [...]
-
-Applied, thanks!
-
-[1/1] nvmem: core: switch to use device_add_groups()
-      commit: ea8f9ec2bbb75adac49dbaaf267f8727ee26b91b
-
-Best regards,
--- 
-Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
+Pi0tLSBhL25ldC90aXBjL3NvY2tldC5jDQo+KysrIGIvbmV0L3RpcGMvc29ja2V0LmMNCj5AQCAt
+MzU2NSwxMSArMzU2NSw4IEBAIGludCB0aXBjX25sX3NrX3dhbGsoc3RydWN0IHNrX2J1ZmYgKnNr
+Yiwgc3RydWN0IG5ldGxpbmtfY2FsbGJhY2sgKmNiLA0KPiAJcmhhc2h0YWJsZV93YWxrX3N0YXJ0
+KGl0ZXIpOw0KPiAJd2hpbGUgKCh0c2sgPSByaGFzaHRhYmxlX3dhbGtfbmV4dChpdGVyKSkgIT0g
+TlVMTCkgew0KPiAJCWlmIChJU19FUlIodHNrKSkgew0KPi0JCQllcnIgPSBQVFJfRVJSKHRzayk7
+DQo+LQkJCWlmIChlcnIgPT0gLUVBR0FJTikgew0KPi0JCQkJZXJyID0gMDsNCj4rCQkJaWYgKFBU
+Ul9FUlIodHNrKSA9PSAtRUFHQUlOKQ0KPiAJCQkJY29udGludWU7DQo+LQkJCX0NCj4gCQkJYnJl
+YWs7DQo+IAkJfQ0KPg0KPi0tDQo+Mi4zOS4yDQo+DQpJIHN1Z2dlc3QgdGhhdCBlcnIgdmFyaWFi
+bGUgc2hvdWxkIGJlIGNvbXBsZXRlbHkgcmVtb3ZlZC4gQ291bGQgeW91IHBsZWFzZSBhbHNvIGRv
+IHRoZSBzYW1lIHRoaW5nIGZvciB0aGlzIGNvZGUgPw0KIg0KLi4uDQplcnIgPSBza2JfaGFuZGxl
+cihza2IsIGNiLCB0c2spOw0KaWYgKGVycikgew0KLi4uDQp9DQouLi4NCiINCg==
 
