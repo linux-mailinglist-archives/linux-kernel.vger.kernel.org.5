@@ -1,184 +1,99 @@
-Return-Path: <linux-kernel+bounces-139691-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67A8B8A0686
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:09:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EEBB8A067F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:08:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96E931C237B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:09:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D872B28C11A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:08:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6983413BC1A;
-	Thu, 11 Apr 2024 03:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCB4713B78E;
+	Thu, 11 Apr 2024 03:08:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NXaPhY0K"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rBDMuOfk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EAB513BACD
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 03:09:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBABB13B5B2;
+	Thu, 11 Apr 2024 03:08:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712804943; cv=none; b=n4gUf9CBoKOHAOm+3pDLznFq8IvefYLjcd//sxtxn6UE4GqK9AL88qJyCH5lIRqACvyejsMT7eOnGWVnEWLhCcB+Wh5TY9qd7Y4bwhKNC/mP9oxDmj7Aax+uo3Pg+L8Y+rC53pWYGpt4iQQKEY6L1FZa4cwE8xyuH+P3CQsky7Y=
+	t=1712804882; cv=none; b=Zfm6z95OYd3jrLdgeOn2Iv2VDjxv67oGuvr+QLgJqkAEEqFlnI2nwBg/W8l3gKwjrt2WfRHJYbs9LFnexmb/8qDX9+u5m2cqz17EiPSeEBtVyvqzUANf/2UZ2vUdC+O1yiyDmB92OCHyOKcBXvCnN5wfCyVC5S6BGaigofhXswI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712804943; c=relaxed/simple;
-	bh=UtbS/BnDM6+ab6c1umntrMRFPd2zV9Gtz174uvCGgpM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cMKtKzAp2p2JJtQOQd9Mn0Nni+KeWS5uBX45yXhnzhPyV0LLMDFk3SS/8X67tSsmwvzqt+EyI+RwAFzZIoxQ8t68btBOq5dnvbJtf68okFyA2AkdfUcIHJUVpm7yYQoJ9rPyAFkyowQVhBgjNdFPTLVHMbRlktwG8mkq/jYaKtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NXaPhY0K; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712804942; x=1744340942;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=UtbS/BnDM6+ab6c1umntrMRFPd2zV9Gtz174uvCGgpM=;
-  b=NXaPhY0KQyKr/vtJNaCVlfXYa/x9+88xFP8NyyQWo1p2BmBoN22mc82P
-   QaRditLRoc7i0jyUkotA4H12A19oyxV5tBmV22x8nJXo4hGaLzIm60Lx/
-   yZRzETibDadCvkC06tZesF5FAmaeFnE8Da6WaQPtTFV0mjcPWKdjXbAU+
-   wrXGe2hEGvC4e4Dt/GMidKN5eZG3RKxRr/qj/p+bwDsu0VGEBNKNcLtA2
-   ezmNHoNulNoQulQjNERqz7v7u2XU41ekE+lSaGq1IKHcF/Ub7gvrsr1pX
-   yvVj+bPqzvfF/Cx0Du39p075qpLOmDZvZXKPxgEuI5yXpKOX/dn2iQFBi
-   w==;
-X-CSE-ConnectionGUID: 83LeiyXiTF2zvBl8TO9brQ==
-X-CSE-MsgGUID: Vxiz7qGqQmy4P6/5dr6eOA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="30681448"
-X-IronPort-AV: E=Sophos;i="6.07,192,1708416000"; 
-   d="scan'208";a="30681448"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 20:09:02 -0700
-X-CSE-ConnectionGUID: 9FC1E0BbQCSatbM0W1KKnQ==
-X-CSE-MsgGUID: hRrOEHiFSrCGBP9U0TSrug==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,192,1708416000"; 
-   d="scan'208";a="20822978"
-Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
-  by fmviesa007.fm.intel.com with ESMTP; 10 Apr 2024 20:09:00 -0700
-From: Lu Baolu <baolu.lu@linux.intel.com>
-To: Joerg Roedel <joro@8bytes.org>
-Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>,
-	Xuchun Shang <xuchun.shang@linux.alibaba.com>,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] iommu/vt-d: Fix WARN_ON in iommu probe path
-Date: Thu, 11 Apr 2024 11:07:44 +0800
-Message-Id: <20240411030744.273460-4-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240411030744.273460-1-baolu.lu@linux.intel.com>
-References: <20240411030744.273460-1-baolu.lu@linux.intel.com>
+	s=arc-20240116; t=1712804882; c=relaxed/simple;
+	bh=nIkVgvNu6ktxnbrIY/V2KS8zZFhOpatS2A7hVJTR3Ps=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=By3yYg1j5L/us0POzOjf4BnWyFjaGpdCf7mcl+sk/OpAnHKNxa/16vyZabRFTOr/TYze0o9yy/U3AOgWCha28CnQqPu0wWHdb36FFmJzPPW5KAHL7uQdB6GAt6Gc6AlGrI246d/0DHYwnQL9qDxONWWDZF4UmCSZIJ3CQIe1ZuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rBDMuOfk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 026A3C433C7;
+	Thu, 11 Apr 2024 03:08:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712804881;
+	bh=nIkVgvNu6ktxnbrIY/V2KS8zZFhOpatS2A7hVJTR3Ps=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rBDMuOfk9Ar/4I5dmjD3gbILprvgKZD9nO8wIxS+Zwx7njEC83h2AJQK2Vz1kBr+Q
+	 8/RQjU/0lQj7fhPgr5lfuepc5Be4i6cAd3ZobNKa4otsQgO5GkAXKCJuz2q1CRqNEg
+	 LNBzX70DAMz4SYUQZd6hdDjTyuNehDoXbnYI4q9tn9PPsURfjoOJ7H8XoaaMxIzimV
+	 XYWjD5gAZ92JuYS31JmpcbRDBtmu1ShxP1rPsxG6BwWRIag6Ihhydky/kEeWAh7r9r
+	 qo90OfOCkCVF4JBynfSotg+uvKOCtZHwxilRZK1vjqs9F/5adRGzsOaF0n/sadaza/
+	 BKGrUJKywL53A==
+Date: Wed, 10 Apr 2024 22:07:59 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-i2c@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Andi Shyti <andi.shyti@kernel.org>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/18] i2c: qcom-geni: remove printout on handled timeouts
+Message-ID: <ayyypwhenfofamynnlbqolbdxw3rnncsa52n5ga5paofd546qx@uxuf4n2r7uim>
+References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com>
+ <20240410112418.6400-31-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410112418.6400-31-wsa+renesas@sang-engineering.com>
 
-Commit 1a75cc710b95 ("iommu/vt-d: Use rbtree to track iommu probed
-devices") adds all devices probed by the iommu driver in a rbtree
-indexed by the source ID of each device. It assumes that each device
-has a unique source ID. This assumption is incorrect and the VT-d
-spec doesn't state this requirement either.
+On Wed, Apr 10, 2024 at 01:24:25PM +0200, Wolfram Sang wrote:
+> I2C and SMBus timeouts are not something the user needs to be informed
+> about on controller level. The client driver may know if that really is
+> a problem and give more detailed information to the user. The controller
+> should just pass this information upwards. Remove the printout.
+> 
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-The reason for using a rbtree to track devices is to look up the device
-with PCI bus and devfunc in the paths of handling ATS invalidation time
-out error and the PRI I/O page faults. Both are PCI ATS feature related.
+Reviewed-by: Bjorn Andersson <andersson@kernel.org>
 
-Only track the devices that have PCI ATS capabilities in the rbtree to
-avoid unnecessary WARN_ON in the iommu probe path. Otherwise, on some
-platforms below kernel splat will be displayed and the iommu probe results
-in failure.
+Regards,
+Bjorn
 
- WARNING: CPU: 3 PID: 166 at drivers/iommu/intel/iommu.c:158 intel_iommu_probe_device+0x319/0xd90
- Call Trace:
-  <TASK>
-  ? __warn+0x7e/0x180
-  ? intel_iommu_probe_device+0x319/0xd90
-  ? report_bug+0x1f8/0x200
-  ? handle_bug+0x3c/0x70
-  ? exc_invalid_op+0x18/0x70
-  ? asm_exc_invalid_op+0x1a/0x20
-  ? intel_iommu_probe_device+0x319/0xd90
-  ? debug_mutex_init+0x37/0x50
-  __iommu_probe_device+0xf2/0x4f0
-  iommu_probe_device+0x22/0x70
-  iommu_bus_notifier+0x1e/0x40
-  notifier_call_chain+0x46/0x150
-  blocking_notifier_call_chain+0x42/0x60
-  bus_notify+0x2f/0x50
-  device_add+0x5ed/0x7e0
-  platform_device_add+0xf5/0x240
-  mfd_add_devices+0x3f9/0x500
-  ? preempt_count_add+0x4c/0xa0
-  ? up_write+0xa2/0x1b0
-  ? __debugfs_create_file+0xe3/0x150
-  intel_lpss_probe+0x49f/0x5b0
-  ? pci_conf1_write+0xa3/0xf0
-  intel_lpss_pci_probe+0xcf/0x110 [intel_lpss_pci]
-  pci_device_probe+0x95/0x120
-  really_probe+0xd9/0x370
-  ? __pfx___driver_attach+0x10/0x10
-  __driver_probe_device+0x73/0x150
-  driver_probe_device+0x19/0xa0
-  __driver_attach+0xb6/0x180
-  ? __pfx___driver_attach+0x10/0x10
-  bus_for_each_dev+0x77/0xd0
-  bus_add_driver+0x114/0x210
-  driver_register+0x5b/0x110
-  ? __pfx_intel_lpss_pci_driver_init+0x10/0x10 [intel_lpss_pci]
-  do_one_initcall+0x57/0x2b0
-  ? kmalloc_trace+0x21e/0x280
-  ? do_init_module+0x1e/0x210
-  do_init_module+0x5f/0x210
-  load_module+0x1d37/0x1fc0
-  ? init_module_from_file+0x86/0xd0
-  init_module_from_file+0x86/0xd0
-  idempotent_init_module+0x17c/0x230
-  __x64_sys_finit_module+0x56/0xb0
-  do_syscall_64+0x6e/0x140
-  entry_SYSCALL_64_after_hwframe+0x71/0x79
-
-Fixes: 1a75cc710b95 ("iommu/vt-d: Use rbtree to track iommu probed devices")
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/10689
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/r/20240407011429.136282-1-baolu.lu@linux.intel.com
----
- drivers/iommu/intel/iommu.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 50eb9aed47cc..a7ecd90303dc 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -4299,9 +4299,11 @@ static struct iommu_device *intel_iommu_probe_device(struct device *dev)
- 	}
- 
- 	dev_iommu_priv_set(dev, info);
--	ret = device_rbtree_insert(iommu, info);
--	if (ret)
--		goto free;
-+	if (pdev && pci_ats_supported(pdev)) {
-+		ret = device_rbtree_insert(iommu, info);
-+		if (ret)
-+			goto free;
-+	}
- 
- 	if (sm_supported(iommu) && !dev_is_real_dma_subdevice(dev)) {
- 		ret = intel_pasid_alloc_table(dev);
-@@ -4336,7 +4338,8 @@ static void intel_iommu_release_device(struct device *dev)
- 	struct intel_iommu *iommu = info->iommu;
- 
- 	mutex_lock(&iommu->iopf_lock);
--	device_rbtree_remove(info);
-+	if (dev_is_pci(dev) && pci_ats_supported(to_pci_dev(dev)))
-+		device_rbtree_remove(info);
- 	mutex_unlock(&iommu->iopf_lock);
- 
- 	if (sm_supported(iommu) && !dev_is_real_dma_subdevice(dev) &&
--- 
-2.34.1
-
+> ---
+>  drivers/i2c/busses/i2c-qcom-geni.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+> index 11dcfcf13d8b..6054c62cd2ff 100644
+> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+> @@ -642,11 +642,8 @@ static int geni_i2c_gpi_xfer(struct geni_i2c_dev *gi2c, struct i2c_msg msgs[], i
+>  		dma_async_issue_pending(gi2c->tx_c);
+>  
+>  		timeout = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+> -		if (!timeout) {
+> -			dev_err(gi2c->se.dev, "I2C timeout gpi flags:%d addr:0x%x\n",
+> -				gi2c->cur->flags, gi2c->cur->addr);
+> +		if (!timeout)
+>  			gi2c->err = -ETIMEDOUT;
+> -		}
+>  
+>  		if (gi2c->err) {
+>  			ret = gi2c->err;
+> -- 
+> 2.43.0
+> 
 
