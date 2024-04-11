@@ -1,75 +1,99 @@
-Return-Path: <linux-kernel+bounces-139931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7867D8A093D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:10:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 080A88A0940
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:10:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 180901F21D1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:10:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7E82284034
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:10:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 212E414430F;
-	Thu, 11 Apr 2024 07:07:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F66A1448CC;
+	Thu, 11 Apr 2024 07:07:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jzJYR4hU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hC4+KI11"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54C5C13DDDB;
-	Thu, 11 Apr 2024 07:07:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C10631448E7;
+	Thu, 11 Apr 2024 07:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712819240; cv=none; b=Cdg+WDYAsoaofwCgxEfiNGXaNF0DT3NvgYTDXOnYlf1KHuNUVvmsZBMkevrtgmp+KDff5KHvVec6eoVnfYKQoki0dYlSh3su/nhyD1gJNU4Nb0B4N4uR5gWimEQvQHnf9l9hRNx5SxVUPsWjQkwLY0zUEBpTysNkx6gTUakXmVk=
+	t=1712819242; cv=none; b=OC6hlXx2V+Z6kZ8bG8I2jb4ZanRIZnSgCI0oZ+v/E1WjsZCU8H1xqaePWmL8DEZA5R8O3FQw8Ce3gjs/STl4KWttgpJTMy95D+c9750pI2PXCEp6uMQvCKm8Xdq8sru/LgnY7uyaNn3u2N+4aMX2uDmIAzkM1RxjcevQ4y1YyJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712819240; c=relaxed/simple;
-	bh=ZWKo/BX8/wnIgRSCduC2T39SHdhV8zk/gZ6Kmh/NggA=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=eNlEiw3wu8KN8Da/LjQyEBtm/NDKuDLHkdcwF6hihjbCzbDWGxkNyJ52h7M0md2e+3H2DKGj2wfJXO0IwXXsLiLMm34qI1Yn+Dh/s6VpXWWkQy2N1vR8olAoyvzy8gUlE0715atyinUW5u2pT5HNsep0/sqwkJLLyAj5vuq4yj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jzJYR4hU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE093C433C7;
-	Thu, 11 Apr 2024 07:07:19 +0000 (UTC)
+	s=arc-20240116; t=1712819242; c=relaxed/simple;
+	bh=gtxWxgfoNim3AH2pc/GfSs//7Xc2MyiStzhd8defvEQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h/h5qs0vuXCyy6VqSpIlaveH3y6tbcgPiEbmHNExiNg9brnjyEyoJ4ZMkfJDgYMM70e5P6P6q4OPJaimIcb107KjPdmDKDIqwIu3vWPjqRxJiqfch7kX8QfzKQiZNWav1c4p2nUny3xlBoryoL81sfeAxPr8SsYN34Q+NQxLp7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hC4+KI11; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CE4AC43390;
+	Thu, 11 Apr 2024 07:07:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712819239;
-	bh=ZWKo/BX8/wnIgRSCduC2T39SHdhV8zk/gZ6Kmh/NggA=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=jzJYR4hUhmT6Kl4If/IktSrI4kI39dvhnqJVPZi8XL3OJQ6B7z/bCr6fzqW179Qus
-	 0CvwEsjxORzC7U2Fm3KZ0BSdg9XS1o76AbbHGT2/QQNm/aOGqj0szRN6QghWpMxShD
-	 ImqMahK7eRn3PA5zSXDiZ/KtFFb1c5odGVD7iK8ArEk0RGqXsL2q1Wcy8s3DKFUY23
-	 AZQmuyi4JpBNKQEDR5v5uhrCUFCkQMk4M5ACA1KTL4IqVgYzedtwcMbHPVrHM50z5D
-	 Z6XMB3hbvu45PyYviTKnoGg07mxjgnFCmHCpUnk7G5G3zDYzz2LdTWJlWstfhSUYRg
-	 AXjPsu72VkqCw==
-Message-ID: <2fe3cd148e400a93754e4d97fb3275ae.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1712819242;
+	bh=gtxWxgfoNim3AH2pc/GfSs//7Xc2MyiStzhd8defvEQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hC4+KI11LWiwoN7PZTy0sMWyVSOca1J3JKoDWDwXF2cEtyKTQi40uRspBuy4KOH0H
+	 UyH1mg+uDv2CCnT7TQ1gDO5J79/slkGiF3pbq/EEdTArXb7LfDxRSNnYS69fNUQbWn
+	 C/pCLacdFizTFB1GAXTa194BR46Q7YGft+9D2tQd7pHqEh4lIOOAaPvNvShVafgx2F
+	 XuotdbILz25O2lLZ8dQqKUwNdblhKbA/p+N6HbC+sWczhpmy14jqWcom3hQAdhujZN
+	 6ere1jBZADM03M7zvgM37XheNdgeHvTM3dSH1nr3zM47Su9i76KbHQj9fBPJk9UTl/
+	 TzIOcHDfWMJfA==
+Date: Thu, 11 Apr 2024 08:07:18 +0100
+From: Lee Jones <lee@kernel.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-leds@vger.kernel.org,
+	Johannes Berg <johannes@sipsolutions.net>
+Subject: Re: 6.9.0-rc2+ kernel hangs on boot (bisected, maybe LED related)
+Message-ID: <20240411070718.GD6194@google.com>
+References: <30f757e3-73c5-5473-c1f8-328bab98fd7d@candelatech.com>
+ <30819e01-43ce-638f-0cc6-067d6a8d03c7@candelatech.com>
+ <89a9eec3-337f-3c9f-6bbe-00a26a15287c@candelatech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <IA1PR20MB495368F185E018767CC6714ABB262@IA1PR20MB4953.namprd20.prod.outlook.com>
-References: <IA1PR20MB4953512A4DCAF293D7B1CBC2BB262@IA1PR20MB4953.namprd20.prod.outlook.com> <IA1PR20MB495368F185E018767CC6714ABB262@IA1PR20MB4953.namprd20.prod.outlook.com>
-Subject: Re: [PATCH v9 1/6] dt-bindings: clock: sophgo: Add clock controller of SG2000 series SoC
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: Jisheng Zhang <jszhang@kernel.org>, Liu Gui <kenneth.liu@sophgo.com>, Jingbao Qiu <qiujingbao.dlmu@gmail.com>, dlan@gentoo.org, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Albert Ou <aou@eecs.berkeley.edu>, Chao Wei <chao.wei@sophgo.com>, Chen Wang <unicorn_wang@outlook.com>, Conor Dooley <conor+dt@kernel.org>, Inochi Amaoto <inochiama@outlook.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Rob Herring <robh+dt@kernel.org>
-Date: Thu, 11 Apr 2024 00:07:17 -0700
-User-Agent: alot/0.10
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <89a9eec3-337f-3c9f-6bbe-00a26a15287c@candelatech.com>
 
-Quoting Inochi Amaoto (2024-03-09 01:02:51)
-> SG2000 series SoC has the same clock as CV1810 series, but the clock
-> related to A53 is functional in SG2000 series. So a new compatible
-> string is needed for the new SoC.
->=20
-> Add definition for the clock controller of the SG2000 series SoC.
->=20
-> Link: https://github.com/sophgo/sophgo-doc/releases/tag/sg2000-datasheet-=
-v1.0-alpha
-> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
-> ---
+On Wed, 03 Apr 2024, Ben Greear wrote:
 
-Applied to clk-next
+> On 4/2/24 10:38, Ben Greear wrote:
+> > On 4/2/24 09:37, Ben Greear wrote:
+> > > Hello,
+> > > 
+> > > Sometime between rc1 and today's rc2, my system quit booting.
+> > > I'm not seeing any splats, it just stops.  Evidently before
+> > > sysrq is enabled.
+> > > 
+> > > [  OK  ] Started Flush Journal to Persistent Storage.
+> > > [  OK  ] Started udev Coldplug all Devices.
+> > >           Starting udev Wait for Complete Device Initialization...
+> > > [  OK  ] Listening on Load/Save RF …itch Status /dev/rfkill Watch.
+> > > [  OK  ] Created slice system-lvm2\x2dpvscan.slice.
+> > >           Starting LVM2 PV scan on device 8:19...
+> > >           Starting LVM2 PV scan on device 8:3...
+> > > [  OK  ] Started Device-mapper event daemon.
+> > > iwlwifi 0000:04:00.0: WRT: Invalid buffer destination: 0
+> > > sysrq: This sysrq operation is disabled.
+> > > 
+> > > I can start a bisect, but in case anyone knows the answer already, please let me know.
+> > > 
+> > > Thanks,
+> > > Ben
+> > > 
+> > 
+> > So, deadlock I guess....
+
+Does this help you in any way?
+
+https://lore.kernel.org/all/bbcdbc1b-44bc-4cf8-86ef-6e6af2b009c3@gmail.com/
+
+-- 
+Lee Jones [李琼斯]
 
