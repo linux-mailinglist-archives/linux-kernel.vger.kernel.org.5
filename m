@@ -1,291 +1,153 @@
-Return-Path: <linux-kernel+bounces-140567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C37E8A1648
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:50:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B63E98A1649
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:50:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3253328706D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:50:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 406B4B2A537
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:50:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62307335BC;
-	Thu, 11 Apr 2024 13:49:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="EizjFafu"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A17514D458;
+	Thu, 11 Apr 2024 13:50:49 +0000 (UTC)
+Received: from mxct.zte.com.cn (mxct.zte.com.cn [58.251.27.85])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4D5E147C9D;
-	Thu, 11 Apr 2024 13:49:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93FBC14BF8D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:50:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=58.251.27.85
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712843386; cv=none; b=fv4S1gMD3bBNXv7EorAQTfc6A+kDAjds40V7XeRJuqCwVQKtbXZHxipFkzXIfyfVeElF8FiSacpDgtCt8uQoXuwTjLB6r7F1Lw5POcvaAoJTzTgx9/o00Xk6C8QINkYChBS7OVfYHawoF4ESiR7jZatwKSyuUfMs2kSP9cunP6k=
+	t=1712843449; cv=none; b=admJ/3D+BAkReqmZNsfF4EFbTFA7B/jYKgnUD9CJNnxUaY6pw8eHlWbR4+4TZH3B6DREzyI4Q5wpceevk9WitqjmExffX5oKME1BDBN/FtLSC9B/BQ5xiVaMO0flPrUTXG7ar49brtxQ9wv7u2FpiGmIsP+6U847frFT1wGos5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712843386; c=relaxed/simple;
-	bh=gmld257+GG6WGIrfxRjRkWvqnB1xsmhIW/xZjCHCGSs=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
-	 References:In-Reply-To; b=PNFuh1jo5O7VWWt2z0KE051Dr4gjF0QUh64Si7ehM0xsU3aqCr7IDXwMBveY146SET12YCVEv2JxYN6ocxvFszPNgsBCtyrUv8sF92niZzTDDugnbRgiR7gRAGmXhSZSia0VhtBmgOjGuV7Jf8wbvP7zd8ccyNo2H6EZLIzfSH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=EizjFafu; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5317FE0002;
-	Thu, 11 Apr 2024 13:49:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712843375;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LiWlRAVSR0J/gKNCGbaKB/gU7+67qgp/9tQ2GW51RFg=;
-	b=EizjFafu2wVellm9z3fq9e6dRFMrKjVuDPuEA1bw5u5vNk6VBC0vRcw+BeMrH6oCoLXcIi
-	Qxt76lhOLB4npENtewa0dPrw1lvXzL6WSZRZWfqQ135hC8PBFSvtc+ag2mXuZTRYXTbDq6
-	EkWX6/K53V4hpwwN9FTWp5gT9g3HlKj5EYLoG5UFzSJ2a5zzezO9RnlKuqm230fN/xeyDC
-	4xsZzVJCXzvPfr1fPHL9/tJprb9trw9zAVVRz+c63mutYJl4+jhQRECYBiyk8rP1z11agX
-	mnL7ztnQ03MD84uBDEak2FDgNNupMAHtz12zls0OA16jGk7gaIzv2zcvqKVP9A==
+	s=arc-20240116; t=1712843449; c=relaxed/simple;
+	bh=5tZzAQ3pT/J97nL1xvjN2jr8PRlgTWfwPZhAnSs4iTU=;
+	h=Date:Message-ID:Mime-Version:From:To:Cc:Subject:Content-Type; b=AqsmeciHKSQ8YfbPfkO6w/SJab0Fzp4X1V8IcSy08203swdBwF+OCltMMC1pi2QYlWa2jdkXKuYx6vSGmnt+ZPbG9fHMXGe+m+luvOhCNFcBeQQuw5wVu0ObFrhRGcN31PhDUtt57y8c29tEHkfZQAIhoczBCkUnsHxMmIRkelM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=58.251.27.85
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
+Received: from mxde.zte.com.cn (unknown [10.35.20.121])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mxct.zte.com.cn (FangMail) with ESMTPS id 4VFh0r6xSZzW8G
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:50:36 +0800 (CST)
+Received: from mxhk.zte.com.cn (unknown [192.168.250.137])
+	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mxde.zte.com.cn (FangMail) with ESMTPS id 4VFh0l6RqfzBRZ5q
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:50:31 +0800 (CST)
+Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4VFh0V5pn9z8XrRB;
+	Thu, 11 Apr 2024 21:50:18 +0800 (CST)
+Received: from xaxapp03.zte.com.cn ([10.88.97.17])
+	by mse-fl1.zte.com.cn with SMTP id 43BDoDmT006048;
+	Thu, 11 Apr 2024 21:50:13 +0800 (+08)
+	(envelope-from li.hao40@zte.com.cn)
+Received: from mapi (xaxapp02[null])
+	by mapi (Zmail) with MAPI id mid31;
+	Thu, 11 Apr 2024 21:50:17 +0800 (CST)
+Date: Thu, 11 Apr 2024 21:50:17 +0800 (CST)
+X-Zmail-TransId: 2afa6617ea99ffffffffb9d-ff120
+X-Mailer: Zmail v1.0
+Message-ID: <20240411215017604oDcKsSipiLnfwd2SzAnsj@zte.com.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 11 Apr 2024 15:49:34 +0200
-Message-Id: <D0HCAV6APTSD.WKGPESJ29D8A@bootlin.com>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH 02/11] dt-bindings: clock: mobileye,eyeq5-clk: add
- EyeQ6L and EyeQ6H
-Cc: <linux-mips@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
- <linux-gpio@vger.kernel.org>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Gregory CLEMENT"
- <gregory.clement@bootlin.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Rob Herring"
- <robh@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Michael Turquette" <mturquette@baylibre.com>, "Stephen Boyd"
- <sboyd@kernel.org>, "Philipp Zabel" <p.zabel@pengutronix.de>, "Linus
- Walleij" <linus.walleij@linaro.org>
-X-Mailer: aerc 0.15.2
-References: <20240410-mbly-olb-v1-0-335e496d7be3@bootlin.com>
- <20240410-mbly-olb-v1-2-335e496d7be3@bootlin.com>
- <29ece6c8-ddf4-4dcd-b5b4-1cad8bc858d3@linaro.org>
-In-Reply-To: <29ece6c8-ddf4-4dcd-b5b4-1cad8bc858d3@linaro.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
+From: <li.hao40@zte.com.cn>
+To: <jirislaby@kernel.org>
+Cc: <gregkh@linuxfoundation.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: =?UTF-8?B?W1BBVENIXSB0dHk6IGh2Yzogd2FrZXVwIGh2YyBjb25zb2xlIGltbWVkaWF0ZWx5IHdoZW4gbmVlZGVk?=
+Content-Type: text/plain;
+	charset="UTF-8"
+X-MAIL:mse-fl1.zte.com.cn 43BDoDmT006048
+X-Fangmail-Anti-Spam-Filtered: true
+X-Fangmail-MID-QID: 6617EAAB.000/4VFh0r6xSZzW8G
 
-Hello Krzysztof,
+From: Li Hao <li.hao40@zte.com.cn>
 
-On Thu Apr 11, 2024 at 8:14 AM CEST, Krzysztof Kozlowski wrote:
-> On 10/04/2024 19:12, Th=C3=A9o Lebrun wrote:
-> > Add bindings describing EyeQ6L and EyeQ6H clock controllers.
-> > Add constants to index clocks.
-> >=20
-> > Bindings are conditional for two reasons:
-> >  - Some compatibles expose a single clock; they do not take clock cells=
-.
-> >  - All compatibles take a PLLs resource, not all take others (aimed at
-> >    divider clocks). Those that only take a resource for PLLs do not
-> >    require named resources.
-> >=20
-> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> > ---
-> >  .../bindings/clock/mobileye,eyeq5-clk.yaml         | 103 +++++++++++++=
-+++++---
-> >  MAINTAINERS                                        |   2 +
-> >  include/dt-bindings/clock/mobileye,eyeq5-clk.h     |  21 +++++
-> >  3 files changed, 113 insertions(+), 13 deletions(-)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk=
-yaml b/Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml
+Cancel the do_wakeup flag in hvc_struct, and change it to immediately
+wake up tty when hp->n_outbuf is 0 in hvc_push().
 
-[...]
+When we receive a key input character, the interrupt handling function
+hvc_handle_interrupt() will be executed, and the echo thread
+flush_to_ldisc() will be added to the queue.
 
-> >  properties:
-> >    compatible:
-> > -    const: mobileye,eyeq5-clk
-> > +    enum:
-> > +      - mobileye,eyeq5-clk
-> > +      - mobileye,eyeq6l-clk
-> > +      - mobileye,eyeq6h-central-clk
-> > +      - mobileye,eyeq6h-west-clk
-> > +      - mobileye,eyeq6h-east-clk
-> > +      - mobileye,eyeq6h-south-clk
-> > +      - mobileye,eyeq6h-ddr0-clk
-> > +      - mobileye,eyeq6h-ddr1-clk
-> > +      - mobileye,eyeq6h-acc-clk
-> > =20
-> > -  reg:
-> > -    maxItems: 2
-> > +  reg: true
->
-> No, you must leave widest constraints here.
+If the user is currently using tcsetattr(), a hang may occur. tcsetattr()
+enters kernel and waits for hp->n_outbuf to become 0 via
+tty_wait_until_sent(). If the echo thread finishes executing before
+reaching tty_wait_until_sent (for example, put_chars() takes too long),
+it will cause while meeting the wakeup condition (hp->do_wakeup = 1),
+tty_wait_until_sent() cannot be woken up (missed the tty_wakeup() of
+this round&apos;s tty_poll). Unless the next key input character comes,
+hvc_poll will be executed, and tty_wakeup() will be performed through
+the do_wakeup flag.
 
-Noted, will do.
+Signed-off-by: Li Hao
+---
+drivers/tty/hvc/hvc_console.c | 12 +++++-------
+drivers/tty/hvc/hvc_console.h |  1 -
+2 files changed, 5 insertions(+), 8 deletions(-)
 
-> > -  reg-names:
-> > -    items:
-> > -      - const: plls
-> > -      - const: ospi
-> > +  reg-names: true
->
-> No, you must leave widest constraints here.
+diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
+index cdcc64ea2554..4f06aead690a 100644
+--- a/drivers/tty/hvc/hvc_console.c
++++ b/drivers/tty/hvc/hvc_console.c
+@@ -476,11 +476,13 @@ static void hvc_hangup(struct tty_struct *tty)
+static int hvc_push(struct hvc_struct *hp)
+{
+ 	int n;
++	struct tty_struct *tty;
 
-Noted, will do.
+ 	n = hp->ops->put_chars(hp->vtermno, hp->outbuf, hp->n_outbuf);
++	tty = tty_port_tty_get(&hp->port);
+ 	if (n <= 0) {
+ 		if (n == 0 || n == -EAGAIN) {
+-			hp->do_wakeup = 1;
++			tty_wakeup(tty);
+ 			return 0;
+ 		}
+ 		/* throw away output on error; this happens when
+@@ -491,7 +493,7 @@ static int hvc_push(struct hvc_struct *hp)
+ 	if (hp->n_outbuf > 0)
+ 		memmove(hp->outbuf, hp->outbuf + n, hp->n_outbuf);
+ 	else
+-		hp->do_wakeup = 1;
++		tty_wakeup(tty);
 
-> >    "#clock-cells":
-> > -    const: 1
-> > +    enum: [0, 1]
->
-> Looks like you squash here quite different devices...
+ 	return n;
+}
+@@ -739,11 +741,7 @@ static int __hvc_poll(struct hvc_struct *hp, bool may_sleep)
+ 	poll_mask |= HVC_POLL_READ;
 
-They are the same controllers but some only expose a single clock. It is
-EyeQ6H that has 7 OLB instances, so some don't deal with many clocks.
+out:
+-	/* Wakeup write queue if necessary */
+-	if (hp->do_wakeup) {
+-		hp->do_wakeup = 0;
+-		tty_wakeup(tty);
+-	}
++	/* Wakeup in hvc_push */
+bail:
+ 	spin_unlock_irqrestore(&hp->lock, flags);
 
-I started with a more generic approach of #clock-cells =3D <1> and only
-have index zero available for those that have a single clock.
-I am not a fan of this however.
-
-> >    clocks:
-> >      maxItems: 1
-> > @@ -43,9 +49,80 @@ properties:
-> >  required:
-> >    - compatible
-> >    - reg
-> > -  - reg-names
-> >    - "#clock-cells"
-> >    - clocks
-> >    - clock-names
-> > =20
-> > +allOf:
-> > +  # "mobileye,eyeq5-clk" provides:
-> > +  #  - PLLs and,
-> > +  #  - One divider clock related to ospi.
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          const: mobileye,eyeq5-clk
-> > +    then:
-> > +      properties:
-> > +        reg:
-> > +          minItems: 2
-> > +          maxItems: 2
-> > +        reg-names:
-> > +          minItems: 2
-> > +          maxItems: 2
->
-> So any name is now valid? Like "yellow-pony"?
-
-I do not understand what implies this. Below "items: enum: [...]"
-ensures only two allowed values. dtbs_check agrees:
-
-=E2=9F=A9 git diff
-diff --git a/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-           b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-index 8d4f65ec912d..5031eb8b4270 100644
---- a/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-+++ b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-@@ -126,7 +126,7 @@ reset: reset-controller@e00000 {
-                        clocks: clock-controller@e0002c {
-                                compatible =3D "mobileye,eyeq5-clk";
-                                reg =3D <0x02c 0x50>, <0x11c 0x04>;
--                               reg-names =3D "plls", "ospi";
-+                               reg-names =3D "plls", "yellow-pony";
-                                #clock-cells =3D <1>;
-                                clocks =3D <&xtal>;
-                                clock-names =3D "ref";
-
-=E2=9F=A9 make dtbs_check DT_SCHEMA_FILES=3Dmobileye DT_CHECKER_FLAGS=3D-m
-  UPD     include/config/kernel.release
-  DTC_CHK arch/mips/boot/dts/mobileye/eyeq5-epm5.dtb
-arch/mips/boot/dts/mobileye/eyeq5-epm5.dtb: system-controller@e00000:
-  clock-controller@e0002c:reg-names:1:
-  'yellow-pony' is not one of ['plls', 'ospi']
-  from schema $id:
-    http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
-
-> > +          items:
-> > +            enum: [ plls, ospi ]
-> > +      required:
-> > +        - reg-names
-> > +
-> > +  # "mobileye,eyeq6h-south-clk" provides:
-> > +  #  - PLLs and,
-> > +  #  - Four divider clocks related to emmc, ospi and tsu.
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          const: mobileye,eyeq6h-south-clk
-> > +    then:
-> > +      properties:
-> > +        reg:
-> > +          minItems: 4
-> > +          maxItems: 4
-> > +        reg-names:
-> > +          minItems: 4
-> > +          maxItems: 4
-> > +          items:
-> > +            enum: [ plls, emmc, ospi, tsu ]
-> > +      required:
-> > +        - reg-names
-> > +
-> > +  # Other compatibles only provide PLLs. Do not ask for named resource=
-s.
-> > +  - if:
-> > +      not:
-> > +        required:
-> > +          - reg-names
-> > +    then:
-> > +      properties:
-> > +        reg:
-> > +          minItems: 1
-> > +          maxItems: 1
->
-> No, just restrict properly reg per variant.
-
-Noted, will do.
-
-> > +        reg-names: false
->
-> That's redundant. Drop entire if.
-
-Ah, yes. Will fix that.
-
-> > +
-> > +  # Some compatibles provide a single clock; they do not take a clock =
-cell.
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          enum:
-> > +            - mobileye,eyeq6h-central-clk
-> > +            - mobileye,eyeq6h-west-clk
-> > +            - mobileye,eyeq6h-east-clk
-> > +            - mobileye,eyeq6h-ddr0-clk
-> > +            - mobileye,eyeq6h-ddr1-clk
-> > +    then:
-> > +      properties:
-> > +        "#clock-cells":
-> > +          const: 0
->
-> Wait, so you define device-per-clock? That's a terrible idea. We also
-> discussed it many times and it was rejected many times.
->
-> You have one device, not 5.
-
-Each region must be a syscon to make its various registers accessible to
-drivers that'll need it. Following that, I have a hard time seeing what
-would be the DT structure of 7 OLB system-controllers but a single
-clock node?
-
-Regards,
-
+diff --git a/drivers/tty/hvc/hvc_console.h b/drivers/tty/hvc/hvc_console.h
+index 18d005814e4b..164ae2c82b98 100644
+--- a/drivers/tty/hvc/hvc_console.h
++++ b/drivers/tty/hvc/hvc_console.h
+@@ -36,7 +36,6 @@ struct hvc_struct {
+ 	struct tty_port port;
+ 	spinlock_t lock;
+ 	int index;
+-	int do_wakeup;
+ 	char *outbuf;
+ 	int outbuf_size;
+ 	int n_outbuf;
 --
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+2.25.1
 
