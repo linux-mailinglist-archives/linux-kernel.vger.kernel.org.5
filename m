@@ -1,121 +1,100 @@
-Return-Path: <linux-kernel+bounces-141542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38C0B8A1F91
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:37:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 630D28A1F93
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:38:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8F20286192
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:37:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15F1DB247DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:37:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156E7175A6;
-	Thu, 11 Apr 2024 19:37:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GkXdMT0y"
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2521C17C7F;
+	Thu, 11 Apr 2024 19:37:32 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F07171C9
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:37:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A597B15E8C;
+	Thu, 11 Apr 2024 19:37:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712864245; cv=none; b=P1YpBY6P+qVDKZOftb/2m/mhLZjeqV7YG4GRt3lOrYpBblsMiXeH6i964hInzX+ADTlR86JBeHVYW67Gy+JCpU4a1Tg2SLJiF276iDEVhFy/IAaf4AgtVyl8Hqv6b2fXynV81Ngi1rFjVtmQTep3vgoE5C27FdE3pnQRIMmdenc=
+	t=1712864251; cv=none; b=cz6UTOYMnOSIqPRYCDrayoghOZ/8zQXvjVpIpzVGblXTUvR2uxMgNPFvq0xtPyjvrtMwnvJE7av+ceFm+wAh4/t0ZoXVUc612aK6PrS0MSjCDq8lt59qvUvyB0QKRfFzj+uaFA8MjwH4oTqvWRPolZLqAXMZGBqj1+KTyLrLx7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712864245; c=relaxed/simple;
-	bh=Gl8eUkD08CMPCn17a5LUCFQwsdrr+BTJp82u/LJ464E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fogO81BAjIAlTmvh38v48c2KBaLu7ipx9achO2G/FHpR+N8RwCpx+MlFioh37DEvoDJVHRnCQ31ihH0gUnN6H2feKqf1XmJSxMiDofKsRolwtpZmqveOYa6QEnIjSoKgNgkJrMOrMnihHGZNL0Z6KhKQFquL7RpQysCKKW6YliU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GkXdMT0y; arc=none smtp.client-ip=209.85.219.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-69b40061bbeso1256176d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:37:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712864243; x=1713469043; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7gaZ8PNPW8x1uU3bx7SgotAf3Gi9LIM4a4uzTn6Vt2w=;
-        b=GkXdMT0yPgfIZdOMrvvyM2Yk42tja2P6tBgQigKhubso6S/gOlDFUZq8IdJz8GYdWZ
-         KnvveHtPrhdKdwqB+DVDlAAXKaj5UvAS3dxzToB4L6HSoRcDscY2XxpPsc5+HSJutfxK
-         LS3dbhoZogsApJAWOKfWKpsVWcyC2z0K8wxw1rk9ZVSLs9zsoRTkVlmGPZo8OjL+UNUh
-         oFUTO7Lup1W05prPGRSDNI9bFE4m10M5t1w6/p2qXOnp8VyuBaBLAObSaIuRfUQxyN8T
-         ksQqMWQBp897v5dy427z/YdubVW2yKg2gTf8It0perft6oQkOVNUyjuZX9AQ6GqIhCat
-         0IpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712864243; x=1713469043;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7gaZ8PNPW8x1uU3bx7SgotAf3Gi9LIM4a4uzTn6Vt2w=;
-        b=C3Y/zLVrDeuIjWINbz7GnOlfWblAFCwxl1XgdrnFPE4BtY9hZieWINgBkjPYCW8v+b
-         E+AWiX50TpyKftH/tucuICfCQVZOEAeo5KgPiHb8WqElyO4dG1z6hMradsWI7I6NG6mS
-         SqfLWqRhysHX8jwqDCH9FJa2+n9+RSSokaKkyKc/Xol0SY/JSvhZibV9VvHzr9WN6s97
-         GFvCLEWeNd9E8Z8pEtIcwKWiPDQ6IRPfDm8Y7rIvXpow/LTXz6l0U43ezEIp93sG0V8U
-         /BJ9ji5gskAyN4zyletK0aMgg8HsEu3O3zQiqRv5Mbaw+nHeybE0D4t4XIO1raXXA6Sl
-         gcvA==
-X-Forwarded-Encrypted: i=1; AJvYcCXBIsgbMWvMgm7AJbbYR/mGNZHXF/9lrMap9Cpl3IfbsMnm9eG9YW5M0gSy67LipLW2BeHIvaf4halOZTYrt65BpCZTW2SqL59T1NN/
-X-Gm-Message-State: AOJu0Yzl0TjbtgC/hW0ufztmpVBLdB9R5uS7HBtoQaS/5puneiIWvHur
-	RLT87ZZU5fYi1pO6fDaXzEU04b+lyJBHP+2O7IosVtdSCzjz1v1JPZ2i8DOtJiAVaqvXEyQsY1K
-	AUWKeKbkqZBrs+5AwIO+Q0xeWKZzB08BlZMhI
-X-Google-Smtp-Source: AGHT+IHrTNsTajLfM6vlDskL/RW7t8LKDaCP9DtOscLyK8RqjJnIqxBEqvIo/4H4Zc/+wNBbw0jAa1TTD0veOmsdSPM=
-X-Received: by 2002:a05:6214:1933:b0:69b:1e64:413d with SMTP id
- es19-20020a056214193300b0069b1e64413dmr734971qvb.52.1712864242836; Thu, 11
- Apr 2024 12:37:22 -0700 (PDT)
+	s=arc-20240116; t=1712864251; c=relaxed/simple;
+	bh=MXL82c3Ra7Fc5A+1JlTwaXt8dbnThnQlOzHp9LZiTAA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=itwcf6jAMXR6HlWCv3/oIsxD5QnzbYZwEMbJbWVlyPizIhvGpNqnRBVGfxyvtauo0zdw0XUx6VTK5JZjGPXopk9Ji7bAxMvlr1pSQRCr/nbagGHrafRGibPhuVNbWA6tDphUaaFdPqOgAn5D36J+KOg+117Cfbmo1gk87NLipqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30E0DC113CE;
+	Thu, 11 Apr 2024 19:37:28 +0000 (UTC)
+Date: Thu, 11 Apr 2024 15:40:07 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc: "Luck, Tony" <tony.luck@intel.com>, Kees Cook <keescook@chromium.org>,
+ Joel Fernandes <joel@joelfernandes.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-trace-kernel@vger.kernel.org"
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Vlastimil Babka <vbabka@suse.cz>, Lorenzo Stoakes <lstoakes@gmail.com>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+ <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "x86@kernel.org"
+ <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra
+ <peterz@infradead.org>, "linux-hardening@vger.kernel.org"
+ <linux-hardening@vger.kernel.org>, Guenter Roeck <linux@roeck-us.net>, Ross
+ Zwisler <zwisler@google.com>, "wklin@google.com" <wklin@google.com>,
+ Vineeth Remanan Pillai <vineeth@bitbyteword.org>, Suleiman Souhlal
+ <suleiman@google.com>, Linus Torvalds <torvalds@linuxfoundation.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Subject: Re: [POC][RFC][PATCH 0/2] pstore/mm/x86: Add wildcard memmap to map
+ pstore consistently
+Message-ID: <20240411154007.5bdf8d95@gandalf.local.home>
+In-Reply-To: <3391c693-cf54-526b-79a8-d565e7140947@igalia.com>
+References: <20240409210254.660888920@goodmis.org>
+	<20240409172358.34ea19f0@gandalf.local.home>
+	<202404091519.B7B2221@keescook>
+	<SJ1PR11MB608317E066B6B3390F55FCB1FC072@SJ1PR11MB6083.namprd11.prod.outlook.com>
+	<3391c693-cf54-526b-79a8-d565e7140947@igalia.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240408180918.2773238-1-jfraker@google.com> <20240409172602.3284f1c6@kernel.org>
- <66175758bab7c_2dcc3c294a@willemb.c.googlers.com.notmuch>
-In-Reply-To: <66175758bab7c_2dcc3c294a@willemb.c.googlers.com.notmuch>
-From: John Fraker <jfraker@google.com>
-Date: Thu, 11 Apr 2024 12:37:11 -0700
-Message-ID: <CAGH0z2Hn-D1_wEZEN-Y9+hO1c+Ddn3dsO5_XCG6qQ8KioeGeGg@mail.gmail.com>
-Subject: Re: [PATCH net-next] gve: Correctly report software timestamping capabilities
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shailend Chand <shailend@google.com>, Willem de Bruijn <willemb@google.com>, 
-	"David S. Miller" <davem@davemloft.net>, Junfeng Guo <junfeng.guo@intel.com>, 
-	Ziwei Xiao <ziweixiao@google.com>, Jeroen de Borst <jeroendb@google.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 10, 2024 at 8:22=E2=80=AFPM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> Jakub Kicinski wrote:
-> > On Mon,  8 Apr 2024 11:09:01 -0700 John Fraker wrote:
-> > > gve has supported software timestamp generation since its inception,
-> > > but has not advertised that support via ethtool. This patch correctly
-> > > advertises that support.
-> > >
-> > > Reviewed-by: Praveen Kaligineedi <pkaligineedi@google.com>
-> > > Reviewed-by: Harshitha Ramamurthy <hramamurthy@google.com>
-> > > Signed-off-by: John Fraker <jfraker@google.com>
-> >
-> > I think it should be a single line diff:
-> >
-> > +     .get_ts_info =3D ethtool_op_get_ts_info,
-> >
-> > right?
->
-> If inserted above .get_link_ksettings that works. The current
-> ordering is not based on actual struct layout anyway.
->
-> Probably all statements should just end in a comma, including a
-> trailing comma. To avoid these two line changes on each subsequent
-> change.
+On Thu, 11 Apr 2024 16:11:55 -0300
+"Guilherme G. Piccoli" <gpiccoli@igalia.com> wrote:
 
-Thanks all!
+> Thanks Steve! Like Kees, I've been wanting a consistent way of mapping
+> some RAM for pstore for a while, without resorting to platform drivers
+> like Chromebooks do...
 
-I'll send the one-line v2.
+Great!
 
-> The rest of the discussion in this thread is actually quite
-> unrelated to this patch. Didn't meant to sidetrack that.
+> 
+> The idea seems very interesting and helpful, I'll test it here. My only
+> concern / "complain" is that it's currently only implemented for builtin
+> ramoops, which is not the default in many distros (like Arch, Ubuntu,
+> Debian). I read patch 2 (and discussion), so I think would be good to
+> have that builtin helper implemented upfront to allow modular usage of
+> ramoops.
+
+What I think I could do is to have a check after memory is allocated to
+copy the table mapping (in the heap) if it is filled. The reason I did it
+this way was because it was the easiest way to save the label to address
+memory before memory is initialized. I use a __initdata array (why waste
+memory if it's hardly ever used).
+
+But, after memory is initialized, we can check if the table has content,
+and if so allocate a copy and store it there and use that table instead.
+That would give modules a way to find the address as well.
+
+-- Steve
+
 
