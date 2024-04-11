@@ -1,39 +1,47 @@
-Return-Path: <linux-kernel+bounces-140306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA4978A127F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:05:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 653438A1283
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:07:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 096B01C214CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:05:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0F4CB20E31
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:07:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C6201474CD;
-	Thu, 11 Apr 2024 11:05:41 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED1901448EF;
-	Thu, 11 Apr 2024 11:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E46C147C6E;
+	Thu, 11 Apr 2024 11:07:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="tOZmC2K6"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1FE913BACD;
+	Thu, 11 Apr 2024 11:07:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712833540; cv=none; b=cDggxUVestaiaGTJuMDE6RDQy45txyXVDefBY5TYgIZqg7O/45GKJi+t40CApsaPtfN0HZAYp42pKoTmNvH8uFpZEWtZ8SvxrzwSnmwDyiH1UuHN4zTlN/Sx7VJO72XSzwZMiHlIfVrStuU97OFjLsLCYGHspemgF+MUQr4wB2o=
+	t=1712833663; cv=none; b=OBbffduSHMg41y6FSlAyXG0oOfySsSZvwwkYYqedNTRnQ8r4ljEB0PYHu5b6L+saZaa3DBsNV6YgXCULEwETH3oBahdI4HWRtgzga0LHW+cD1BNzO59Sg9IhyowPuG9TXX1giNUt91kMUA21B/WsBWGRPv7HFdbNdb6QNVFMbU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712833540; c=relaxed/simple;
-	bh=YEJL3ghCsfMB8ZAFRjYsc97OCY/S6Wd4Nn8Odn32JnA=;
+	s=arc-20240116; t=1712833663; c=relaxed/simple;
+	bh=h5OuDJgtEbFe3q4KYIRW7uepFv0Ks/6P0z4RdrDMBlQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SZV2FH17FkbuYntPmhXzPKKaWmx90k6+WljZbS92ueH7WRaOWO8ejrEifotFMWcqQt+v/3fAW9Cacujvj/wnbBrWTafp3B82S6hE7WS/3NOKTVUYsOYSWdxM8bHTbMFOpO+ks3zvEZQLjaAZe0vfI1AnZajutJhxhIrTeo6JaJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA3E2113E;
-	Thu, 11 Apr 2024 04:06:05 -0700 (PDT)
-Received: from [10.57.53.156] (unknown [10.57.53.156])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BBFEC3F64C;
-	Thu, 11 Apr 2024 04:05:33 -0700 (PDT)
-Message-ID: <dc9ab047-79cb-42a8-ad75-bc0f306517d5@arm.com>
-Date: Thu, 11 Apr 2024 12:05:31 +0100
+	 In-Reply-To:Content-Type; b=riieUWdpgWyznH9PgTvvkCWmxgvYS5lBuN57Y7YaEVzDd+IUUM1pB8w09qO4ZXLpuv1K2snFyle1KfPjkHs23FoGWZBtUuhDSxTgDQGNaRQoEyCUU2fqnyo5oFhrZO+JE5CGbwkPs+GVz05jjUfsxsYZHPOVzEEaJdU4NHhZERI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=tOZmC2K6; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id C1EF223F;
+	Thu, 11 Apr 2024 13:06:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1712833616;
+	bh=h5OuDJgtEbFe3q4KYIRW7uepFv0Ks/6P0z4RdrDMBlQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=tOZmC2K67N+xbU4PgLIrLYYH/7GlB5P2y+9RFj90nXXGsXE+Q973ZgseFp//PHWIT
+	 N+gtxsFgcKRPuRJ4nilKg3/WgPzXqSahLUc8EJwLToCizHgPOlm1G+CjPvwXB4q7S6
+	 IcPzX42CrDSKUqrHPm6MHvyzx3xh+jAn+dAep69A=
+Message-ID: <72940e89-0384-4fd3-8a10-42d6db44fdf0@ideasonboard.com>
+Date: Thu, 11 Apr 2024 14:07:34 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,799 +49,412 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/6] drivers/perf: Add SiFive Composable Cache PMU
- driver
-Content-Language: en-GB
-To: Samuel Holland <samuel.holland@sifive.com>, Will Deacon
- <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Eric Lin <eric.lin@sifive.com>, Conor Dooley <conor@kernel.org>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
- linux-riscv@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-arm-kernel@lists.infradead.org
-References: <20240216000837.1868917-1-samuel.holland@sifive.com>
- <20240216000837.1868917-3-samuel.holland@sifive.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240216000837.1868917-3-samuel.holland@sifive.com>
+Subject: Re: [PATCH v3 9/9] media: subdev: Support single-stream case in
+ v4l2_subdev_enable/disable_streams()
+To: Umang Jain <umang.jain@ideasonboard.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Hans Verkuil
+ <hverkuil@xs4all.nl>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>
+References: <20240410-enable-streams-impro-v3-0-e5e7a5da7420@ideasonboard.com>
+ <20240410-enable-streams-impro-v3-9-e5e7a5da7420@ideasonboard.com>
+ <f8e293b7-6a06-4477-9c7e-d1b83163f8e1@ideasonboard.com>
+Content-Language: en-US
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <f8e293b7-6a06-4477-9c7e-d1b83163f8e1@ideasonboard.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2024-02-16 12:08 am, Samuel Holland wrote:
-> From: Eric Lin <eric.lin@sifive.com>
+On 11/04/2024 14:02, Umang Jain wrote:
+> Hi Tomi,
 > 
-> Add a driver for the PMU found in the SiFive Composable Cache
-> controller. This PMU provides a configurable number of counters and a
-> variety of events. Events are grouped into sets. Each counter can count
-> events from only one set at a time; however, it can count any number of
-> events within that set simultaneously. The PMU hardware does not provide
-> an overflow interrupt or a way to atomically control groups of counters.
+> On 10/04/24 6:05 pm, Tomi Valkeinen wrote:
+>> At the moment the v4l2_subdev_enable/disable_streams() functions call
+>> fallback helpers to handle the case where the subdev only implements
+>> .s_stream(), and the main function handles the case where the subdev
+>> implements streams (V4L2_SUBDEV_FL_STREAMS, which implies
+>> .enable/disable_streams()).
+>>
+>> What is missing is support for subdevs which do not implement streams
+>> support, but do implement .enable/disable_streams(). Example cases of
+>> these subdevices are single-stream cameras, where using
+>> .enable/disable_streams() is not required but helps us remove the users
+>> of the legacy .s_stream(), and subdevices with multiple source pads (but
+>> single stream per pad), where .enable/disable_streams() allows the
+>> subdevice to control the enable/disable state per pad.
+>>
+>> The two single-streams cases (.s_stream() and .enable/disable_streams())
+>> are very similar, and with small changes we can change the
+>> v4l2_subdev_enable/disable_streams() functions to support all three
+>> cases, without needing separate fallback functions.
+>>
+>> A few potentially problematic details, though:
 > 
-> Some events can be filtered further by client ID (e.g. CPU or external
-> DMA master). That functionality is not supported by this driver.
+> Does this mean the patch needs to be worked upon more ?
+
+I don't see the two issues below as blockers.
+
+> I quickly tested the series by applying it locally with my use case of 
+> IMX283 .enable/disable streams and s_stream as the helper function and 
+> it seems I am still seeing the same behaviour as before (i.e. not being 
+> streamed) and have to carry the workaround as mentioned in [1] **NOTE**
+
+Ok... Then something bugs here, as it is supposed to fix the problem. 
+Can you trace the code a bit to see where it goes wrong?
+
+The execution should go to the "if (!(sd->flags & 
+V4L2_SUBDEV_FL_STREAMS))" blocks in v4l2_subdev_collect_streams() and 
+v4l2_subdev_set_streams_enabled(),
+
+  Tomi
+
 > 
-> This driver further assumes that a single Composable Cache instance is
-> shared by all CPUs in the system.
+> [1] 
+> https://lore.kernel.org/linux-media/20240313070705.91140-1-umang.jain@ideasonboard.com/
 > 
-> Example usage:
+>>
+>> - For the single-streams cases we use sd->enabled_pads field, which
+>>    limits the number of pads for the subdevice to 64. For simplicity I
+>>    added the check for this limitation to the beginning of the function,
+>>    and it also applies to the streams case.
+>>
+>> - The fallback functions only allowed the target pad to be a source pad.
+>>    It is not very clear to me why this check was needed, but it was not
+>>    needed in the streams case. However, I doubt the
+>>    v4l2_subdev_enable/disable_streams() code has ever been tested with
+>>    sink pads, so to be on the safe side, I added the same check
+>>    to the v4l2_subdev_enable/disable_streams() functions.
+>>
+>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>> ---
+>>   drivers/media/v4l2-core/v4l2-subdev.c | 187 
+>> ++++++++++++++--------------------
+>>   1 file changed, 79 insertions(+), 108 deletions(-)
+>>
+>> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c 
+>> b/drivers/media/v4l2-core/v4l2-subdev.c
+>> index 0d376d72ecc7..4a73886741f9 100644
+>> --- a/drivers/media/v4l2-core/v4l2-subdev.c
+>> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
+>> @@ -2106,6 +2106,13 @@ static void v4l2_subdev_collect_streams(struct 
+>> v4l2_subdev *sd,
+>>                       u64 *found_streams,
+>>                       u64 *enabled_streams)
+>>   {
+>> +    if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS)) {
+>> +        *found_streams = BIT_ULL(0);
+>> +        if (sd->enabled_pads & BIT_ULL(pad))
+>> +            *enabled_streams = BIT_ULL(0);
+>> +        return;
+>> +    }
+>> +
+>>       *found_streams = 0;
+>>       *enabled_streams = 0;
+>> @@ -2127,6 +2134,14 @@ static void 
+>> v4l2_subdev_set_streams_enabled(struct v4l2_subdev *sd,
+>>                           u32 pad, u64 streams_mask,
+>>                           bool enabled)
+>>   {
+>> +    if (!(sd->flags & V4L2_SUBDEV_FL_STREAMS)) {
+>> +        if (enabled)
+>> +            sd->enabled_pads |= BIT_ULL(pad);
+>> +        else
+>> +            sd->enabled_pads &= ~BIT_ULL(pad);
+>> +        return;
+>> +    }
+>> +
+>>       for (unsigned int i = 0; i < state->stream_configs.num_configs; 
+>> ++i) {
+>>           struct v4l2_subdev_stream_config *cfg =
+>>               &state->stream_configs.configs[i];
+>> @@ -2136,51 +2151,6 @@ static void 
+>> v4l2_subdev_set_streams_enabled(struct v4l2_subdev *sd,
+>>       }
+>>   }
+>> -static int v4l2_subdev_enable_streams_fallback(struct v4l2_subdev 
+>> *sd, u32 pad,
+>> -                           u64 streams_mask)
+>> -{
+>> -    struct device *dev = sd->entity.graph_obj.mdev->dev;
+>> -    int ret;
+>> -
+>> -    /*
+>> -     * The subdev doesn't implement pad-based stream enable, fall back
+>> -     * to the .s_stream() operation.
+>> -     */
+>> -    if (!(sd->entity.pads[pad].flags & MEDIA_PAD_FL_SOURCE))
+>> -        return -EOPNOTSUPP;
+>> -
+>> -    /*
+>> -     * .s_stream() means there is no streams support, so only allowed 
+>> stream
+>> -     * is the implicit stream 0.
+>> -     */
+>> -    if (streams_mask != BIT_ULL(0))
+>> -        return -EOPNOTSUPP;
+>> -
+>> -    /*
+>> -     * We use a 64-bit bitmask for tracking enabled pads, so only 
+>> subdevices
+>> -     * with 64 pads or less can be supported.
+>> -     */
+>> -    if (pad >= sizeof(sd->enabled_pads) * BITS_PER_BYTE)
+>> -        return -EOPNOTSUPP;
+>> -
+>> -    if (sd->enabled_pads & BIT_ULL(pad)) {
+>> -        dev_dbg(dev, "pad %u already enabled on %s\n",
+>> -            pad, sd->entity.name);
+>> -        return -EALREADY;
+>> -    }
+>> -
+>> -    /* Start streaming when the first pad is enabled. */
+>> -    if (!sd->enabled_pads) {
+>> -        ret = v4l2_subdev_call(sd, video, s_stream, 1);
+>> -        if (ret)
+>> -            return ret;
+>> -    }
+>> -
+>> -    sd->enabled_pads |= BIT_ULL(pad);
+>> -
+>> -    return 0;
+>> -}
+>> -
+>>   int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
+>>                      u64 streams_mask)
+>>   {
+>> @@ -2189,21 +2159,33 @@ int v4l2_subdev_enable_streams(struct 
+>> v4l2_subdev *sd, u32 pad,
+>>       bool already_streaming;
+>>       u64 enabled_streams;
+>>       u64 found_streams;
+>> +    bool use_s_stream;
+>>       int ret;
+>>       /* A few basic sanity checks first. */
+>>       if (pad >= sd->entity.num_pads)
+>>           return -EINVAL;
+>> +    if (!(sd->entity.pads[pad].flags & MEDIA_PAD_FL_SOURCE))
+>> +        return -EOPNOTSUPP;
+>> +
+>> +    /*
+>> +     * We use a 64-bit bitmask for tracking enabled pads, so only 
+>> subdevices
+>> +     * with 64 pads or less can be supported.
+>> +     */
+>> +    if (pad >= sizeof(sd->enabled_pads) * BITS_PER_BYTE)
+>> +        return -EOPNOTSUPP;
+>> +
+>>       if (!streams_mask)
+>>           return 0;
+>>       /* Fallback on .s_stream() if .enable_streams() isn't available. */
+>> -    if (!v4l2_subdev_has_op(sd, pad, enable_streams))
+>> -        return v4l2_subdev_enable_streams_fallback(sd, pad,
+>> -                               streams_mask);
+>> +    use_s_stream = !v4l2_subdev_has_op(sd, pad, enable_streams);
+>> -    state = v4l2_subdev_lock_and_get_active_state(sd);
+>> +    if (!use_s_stream)
+>> +        state = v4l2_subdev_lock_and_get_active_state(sd);
+>> +    else
+>> +        state = NULL;
+>>       /*
+>>        * Verify that the requested streams exist and that they are not
+>> @@ -2231,9 +2213,18 @@ int v4l2_subdev_enable_streams(struct 
+>> v4l2_subdev *sd, u32 pad,
+>>       already_streaming = v4l2_subdev_is_streaming(sd);
+>> -    /* Call the .enable_streams() operation. */
+>> -    ret = v4l2_subdev_call(sd, pad, enable_streams, state, pad,
+>> -                   streams_mask);
+>> +    if (!use_s_stream) {
+>> +        /* Call the .enable_streams() operation. */
+>> +        ret = v4l2_subdev_call(sd, pad, enable_streams, state, pad,
+>> +                       streams_mask);
+>> +    } else {
+>> +        /* Start streaming when the first pad is enabled. */
+>> +        if (!already_streaming)
+>> +            ret = v4l2_subdev_call(sd, video, s_stream, 1);
+>> +        else
+>> +            ret = 0;
+>> +    }
+>> +
+>>       if (ret) {
+>>           dev_dbg(dev, "enable streams %u:%#llx failed: %d\n", pad,
+>>               streams_mask, ret);
+>> @@ -2243,34 +2234,32 @@ int v4l2_subdev_enable_streams(struct 
+>> v4l2_subdev *sd, u32 pad,
+>>       /* Mark the streams as enabled. */
+>>       v4l2_subdev_set_streams_enabled(sd, state, pad, streams_mask, 
+>> true);
+>> -    if (!already_streaming)
+>> +    if (!use_s_stream && !already_streaming)
+>>           v4l2_subdev_enable_privacy_led(sd);
+>>   done:
+>> -    v4l2_subdev_unlock_state(state);
+>> +    if (!use_s_stream)
+>> +        v4l2_subdev_unlock_state(state);
+>>       return ret;
+>>   }
+>>   EXPORT_SYMBOL_GPL(v4l2_subdev_enable_streams);
+>> -static int v4l2_subdev_disable_streams_fallback(struct v4l2_subdev 
+>> *sd, u32 pad,
+>> -                        u64 streams_mask)
+>> +int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
+>> +                u64 streams_mask)
+>>   {
+>>       struct device *dev = sd->entity.graph_obj.mdev->dev;
+>> +    struct v4l2_subdev_state *state;
+>> +    u64 enabled_streams;
+>> +    u64 found_streams;
+>> +    bool use_s_stream;
+>>       int ret;
+>> -    /*
+>> -     * If the subdev doesn't implement pad-based stream enable, fall 
+>> back
+>> -     * to the .s_stream() operation.
+>> -     */
+>> -    if (!(sd->entity.pads[pad].flags & MEDIA_PAD_FL_SOURCE))
+>> -        return -EOPNOTSUPP;
+>> +    /* A few basic sanity checks first. */
+>> +    if (pad >= sd->entity.num_pads)
+>> +        return -EINVAL;
+>> -    /*
+>> -     * .s_stream() means there is no streams support, so only allowed 
+>> stream
+>> -     * is the implicit stream 0.
+>> -     */
+>> -    if (streams_mask != BIT_ULL(0))
+>> +    if (!(sd->entity.pads[pad].flags & MEDIA_PAD_FL_SOURCE))
+>>           return -EOPNOTSUPP;
+>>       /*
+>> @@ -2280,46 +2269,16 @@ static int 
+>> v4l2_subdev_disable_streams_fallback(struct v4l2_subdev *sd, u32 pad,
+>>       if (pad >= sizeof(sd->enabled_pads) * BITS_PER_BYTE)
+>>           return -EOPNOTSUPP;
+>> -    if (!(sd->enabled_pads & BIT_ULL(pad))) {
+>> -        dev_dbg(dev, "pad %u already disabled on %s\n",
+>> -            pad, sd->entity.name);
+>> -        return -EALREADY;
+>> -    }
+>> -
+>> -    /* Stop streaming when the last streams are disabled. */
+>> -    if (!(sd->enabled_pads & ~BIT_ULL(pad))) {
+>> -        ret = v4l2_subdev_call(sd, video, s_stream, 0);
+>> -        if (ret)
+>> -            return ret;
+>> -    }
+>> -
+>> -    sd->enabled_pads &= ~BIT_ULL(pad);
+>> -
+>> -    return 0;
+>> -}
+>> -
+>> -int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
+>> -                u64 streams_mask)
+>> -{
+>> -    struct device *dev = sd->entity.graph_obj.mdev->dev;
+>> -    struct v4l2_subdev_state *state;
+>> -    u64 enabled_streams;
+>> -    u64 found_streams;
+>> -    int ret;
+>> -
+>> -    /* A few basic sanity checks first. */
+>> -    if (pad >= sd->entity.num_pads)
+>> -        return -EINVAL;
+>> -
+>>       if (!streams_mask)
+>>           return 0;
+>>       /* Fallback on .s_stream() if .disable_streams() isn't 
+>> available. */
+>> -    if (!v4l2_subdev_has_op(sd, pad, disable_streams))
+>> -        return v4l2_subdev_disable_streams_fallback(sd, pad,
+>> -                                streams_mask);
+>> +    use_s_stream = !v4l2_subdev_has_op(sd, pad, disable_streams);
+>> -    state = v4l2_subdev_lock_and_get_active_state(sd);
+>> +    if (!use_s_stream)
+>> +        state = v4l2_subdev_lock_and_get_active_state(sd);
+>> +    else
+>> +        state = NULL;
+>>       /*
+>>        * Verify that the requested streams exist and that they are not
+>> @@ -2345,9 +2304,19 @@ int v4l2_subdev_disable_streams(struct 
+>> v4l2_subdev *sd, u32 pad,
+>>       dev_dbg(dev, "disable streams %u:%#llx\n", pad, streams_mask);
+>> -    /* Call the .disable_streams() operation. */
+>> -    ret = v4l2_subdev_call(sd, pad, disable_streams, state, pad,
+>> -                   streams_mask);
+>> +    if (!use_s_stream) {
+>> +        /* Call the .disable_streams() operation. */
+>> +        ret = v4l2_subdev_call(sd, pad, disable_streams, state, pad,
+>> +                       streams_mask);
+>> +    } else {
+>> +        /* Stop streaming when the last streams are disabled. */
+>> +
+>> +        if (!(sd->enabled_pads & ~BIT_ULL(pad)))
+>> +            ret = v4l2_subdev_call(sd, video, s_stream, 0);
+>> +        else
+>> +            ret = 0;
+>> +    }
+>> +
+>>       if (ret) {
+>>           dev_dbg(dev, "disable streams %u:%#llx failed: %d\n", pad,
+>>               streams_mask, ret);
+>> @@ -2357,10 +2326,12 @@ int v4l2_subdev_disable_streams(struct 
+>> v4l2_subdev *sd, u32 pad,
+>>       v4l2_subdev_set_streams_enabled(sd, state, pad, streams_mask, 
+>> false);
+>>   done:
+>> -    if (!v4l2_subdev_is_streaming(sd))
+>> -        v4l2_subdev_disable_privacy_led(sd);
+>> +    if (!use_s_stream) {
+>> +        if (!v4l2_subdev_is_streaming(sd))
+>> +            v4l2_subdev_disable_privacy_led(sd);
+>> -    v4l2_subdev_unlock_state(state);
+>> +        v4l2_subdev_unlock_state(state);
+>> +    }
+>>       return ret;
+>>   }
+>>
 > 
-> $ perf stat -a -e sifive_ccache_pmu/inner_acquire_block_btot/,
-> 		  sifive_ccache_pmu/inner_acquire_block_hit/,
-> 		  sifive_ccache_pmu/inner_acquire_block_ntob/ ls
-> 
->   Performance counter stats for 'system wide':
-> 
->                 542      sifive_ccache_pmu/inner_acquire_block_btot/
->               22081      sifive_ccache_pmu/inner_acquire_block_hit/
->               22006      sifive_ccache_pmu/inner_acquire_block_ntob/
-> 
->         0.064672432 seconds time elapsed
-> 
-> Example using numeric event selectors:
-> 
-> $ perf stat -a -e sifive_ccache_pmu/event=0x10001/,
-> 		  sifive_ccache_pmu/event=0x2002/,
-> 		  sifive_ccache_pmu/event=0x4001/ ls
-> 
->   Performance counter stats for 'system wide':
-> 
->                 478      sifive_ccache_pmu/event=0x10001/
->                4717      sifive_ccache_pmu/event=0x2002/
->               44966      sifive_ccache_pmu/event=0x4001/
-> 
->         0.111027326 seconds time elapsed
-> 
-> Signed-off-by: Eric Lin <eric.lin@sifive.com>
-> Co-developed-by: Samuel Holland <samuel.holland@sifive.com>
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> ---
-> 
->   drivers/perf/Kconfig             |   9 +
->   drivers/perf/Makefile            |   1 +
->   drivers/perf/sifive_ccache_pmu.c | 577 +++++++++++++++++++++++++++++++
->   include/linux/cpuhotplug.h       |   1 +
->   4 files changed, 588 insertions(+)
->   create mode 100644 drivers/perf/sifive_ccache_pmu.c
-> 
-> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
-> index ec6e0d9194a1..b4e4db7424b4 100644
-> --- a/drivers/perf/Kconfig
-> +++ b/drivers/perf/Kconfig
-> @@ -155,6 +155,15 @@ config QCOM_L3_PMU
->   	   Adds the L3 cache PMU into the perf events subsystem for
->   	   monitoring L3 cache events.
->   
-> +config SIFIVE_CCACHE_PMU
-> +	tristate "SiFive Composable Cache PMU"
-> +	depends on RISCV || COMPILE_TEST
-> +	help
-> +	  Support for the Composable Cache performance monitoring unit (PMU) on
-> +	  SiFive platforms. The Composable Cache PMU provides up to 64 counters
-> +	  for measuring whole-system L2/L3 cache performance using the perf
-> +	  events subsystem.
-> +
->   config THUNDERX2_PMU
->   	tristate "Cavium ThunderX2 SoC PMU UNCORE"
->   	depends on ARCH_THUNDER2 || COMPILE_TEST
-> diff --git a/drivers/perf/Makefile b/drivers/perf/Makefile
-> index a06338e3401c..51ef5f50ace4 100644
-> --- a/drivers/perf/Makefile
-> +++ b/drivers/perf/Makefile
-> @@ -15,6 +15,7 @@ obj-$(CONFIG_QCOM_L3_PMU) += qcom_l3_pmu.o
->   obj-$(CONFIG_RISCV_PMU) += riscv_pmu.o
->   obj-$(CONFIG_RISCV_PMU_LEGACY) += riscv_pmu_legacy.o
->   obj-$(CONFIG_RISCV_PMU_SBI) += riscv_pmu_sbi.o
-> +obj-$(CONFIG_SIFIVE_CCACHE_PMU) += sifive_ccache_pmu.o
->   obj-$(CONFIG_THUNDERX2_PMU) += thunderx2_pmu.o
->   obj-$(CONFIG_XGENE_PMU) += xgene_pmu.o
->   obj-$(CONFIG_ARM_SPE_PMU) += arm_spe_pmu.o
-> diff --git a/drivers/perf/sifive_ccache_pmu.c b/drivers/perf/sifive_ccache_pmu.c
-> new file mode 100644
-> index 000000000000..8c9ef0d09f48
-> --- /dev/null
-> +++ b/drivers/perf/sifive_ccache_pmu.c
-> @@ -0,0 +1,577 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * SiFive Composable Cache PMU driver
-> + *
-> + * Copyright (C) 2022-2024 SiFive, Inc.
-> + * Copyright (C) Eric Lin <eric.lin@sifive.com>
-> + *
-> + */
-> +
-> +#include <linux/cpuhotplug.h>
-> +#include <linux/cpumask.h>
-> +#include <linux/device.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/perf_event.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/property.h>
-> +
-> +#define CCACHE_SELECT_OFFSET		0x2000
-> +#define CCACHE_CLIENT_FILTER_OFFSET	0x2800
-> +#define CCACHE_COUNTER_OFFSET		0x3000
-> +
-> +#define CCACHE_PMU_MAX_COUNTERS		64
-> +
-> +struct sifive_ccache_pmu {
-> +	struct pmu			pmu;
-> +	struct hlist_node		node;
-> +	struct notifier_block		cpu_pm_nb;
 
-This seems unused.
-
-> +	void __iomem			*base;
-> +	DECLARE_BITMAP(used_mask, CCACHE_PMU_MAX_COUNTERS);
-> +	unsigned int			cpu;
-> +	int				n_counters;
-> +	struct perf_event		*events[] __counted_by(n_counters);
-> +};
-> +
-> +#define to_ccache_pmu(p) (container_of(p, struct sifive_ccache_pmu, pmu))
-> +
-> +#ifndef readq
-> +static inline u64 readq(void __iomem *addr)
-> +{
-> +	return readl(addr) | (((u64)readl(addr + 4)) << 32);
-> +}
-> +#endif
-> +
-> +#ifndef writeq
-> +static inline void writeq(u64 v, void __iomem *addr)
-> +{
-> +	writel(lower_32_bits(v), addr);
-> +	writel(upper_32_bits(v), addr + 4);
-> +}
-> +#endif
-
-As Jonathan says, please include the io-64-nonatomic header of 
-preference and don't reinvent these as-is. However, see later...
-
-> +
-> +/*
-> + * sysfs attributes
-> + *
-> + * We export:
-> + * - cpumask, used by perf user space and other tools to know on which CPUs to create events
-> + * - events, used by perf user space and other tools to create events symbolically, e.g.:
-> + *     perf stat -a -e sifive_ccache_pmu/event=inner_put_partial_data_hit/ ls
-> + *     perf stat -a -e sifive_ccache_pmu/event=0x101/ ls
-> + * - formats, used by perf user space and other tools to configure events
-> + */
-> +
-> +/* cpumask */
-> +static ssize_t cpumask_show(struct device *dev, struct device_attribute *attr, char *buf)
-> +{
-> +	struct sifive_ccache_pmu *ccache_pmu = dev_get_drvdata(dev);
-> +
-> +	if (ccache_pmu->cpu >= nr_cpu_ids)
-> +		return 0;
-
-I'm not sure it's really correct to return no data, but then this is 
-impossible in the first place (if there are no online CPUs, who's 
-reading the file?)
-
-> +
-> +	return sysfs_emit(buf, "%d\n", ccache_pmu->cpu);
-> +};
-> +
-> +static DEVICE_ATTR_RO(cpumask);
-> +
-> +static struct attribute *sifive_ccache_pmu_cpumask_attrs[] = {
-> +	&dev_attr_cpumask.attr,
-> +	NULL,
-> +};
-> +
-> +static const struct attribute_group sifive_ccache_pmu_cpumask_group = {
-> +	.attrs = sifive_ccache_pmu_cpumask_attrs,
-> +};
-> +
-> +/* events */
-> +static ssize_t sifive_ccache_pmu_event_show(struct device *dev, struct device_attribute *attr,
-> +					    char *page)
-> +{
-> +	struct perf_pmu_events_attr *pmu_attr;
-> +
-> +	pmu_attr = container_of(attr, struct perf_pmu_events_attr, attr);
-> +	return sysfs_emit(page, "event=0x%02llx\n", pmu_attr->id);
-> +}
-> +
-> +#define SET_EVENT_SELECT(_event, _set)	(BIT_ULL((_event) + 8) | (_set))
-
-This seems like you really want to have distinct "set" and "event" 
-fields in the config.
-
-> +#define CCACHE_PMU_EVENT_ATTR(_name, _event, _set) \
-> +	PMU_EVENT_ATTR_ID(_name, sifive_ccache_pmu_event_show, SET_EVENT_SELECT(_event, _set))
-> +
-> +enum ccache_pmu_event_set1 {
-> +	INNER_PUT_FULL_DATA = 0,
-> +	INNER_PUT_PARTIAL_DATA,
-> +	INNER_ATOMIC_DATA,
-> +	INNER_GET,
-> +	INNER_PREFETCH_READ,
-> +	INNER_PREFETCH_WRITE,
-> +	INNER_ACQUIRE_BLOCK_NTOB,
-> +	INNER_ACQUIRE_BLOCK_NTOT,
-> +	INNER_ACQUIRE_BLOCK_BTOT,
-> +	INNER_ACQUIRE_PERM_NTOT,
-> +	INNER_ACQUIRE_PERM_BTOT,
-> +	INNER_RELEASE_TTOB,
-> +	INNER_RELEASE_TTON,
-> +	INNER_RELEASE_BTON,
-> +	INNER_RELEASE_DATA_TTOB,
-> +	INNER_RELEASE_DATA_TTON,
-> +	INNER_RELEASE_DATA_BTON,
-> +	OUTER_PROBE_BLOCK_TOT,
-> +	OUTER_PROBE_BLOCK_TOB,
-> +	OUTER_PROBE_BLOCK_TON,
-> +	CCACHE_PMU_MAX_EVENT1_IDX
-> +};
-> +
-> +enum ccache_pmu_event_set2 {
-> +	INNER_PUT_FULL_DATA_HIT = 0,
-> +	INNER_PUT_PARTIAL_DATA_HIT,
-> +	INNER_ATOMIC_DATA_HIT,
-> +	INNER_GET_HIT,
-> +	INNER_PREFETCH_HIT,
-> +	INNER_ACQUIRE_BLOCK_HIT,
-> +	INNER_ACQUIRE_PERM_HIT,
-> +	INNER_RELEASE_HIT,
-> +	INNER_RELEASE_DATA_HIT,
-> +	OUTER_PROBE_HIT,
-> +	INNER_PUT_FULL_DATA_HIT_SHARED,
-> +	INNER_PUT_PARTIAL_DATA_HIT_SHARED,
-> +	INNER_ATOMIC_DATA_HIT_SHARED,
-> +	INNER_GET_HIT_SHARED,
-> +	INNER_PREFETCH_HIT_SHARED,
-> +	INNER_ACQUIRE_BLOCK_HIT_SHARED,
-> +	INNER_ACQUIRE_PERM_HIT_SHARED,
-> +	OUTER_PROBE_HIT_SHARED,
-> +	OUTER_PROBE_HIT_DIRTY,
-> +	CCACHE_PMU_MAX_EVENT2_IDX
-> +};
-> +
-> +enum ccache_pmu_event_set3 {
-> +	OUTER_ACQUIRE_BLOCK_NTOB_MISS = 0,
-> +	OUTER_ACQUIRE_BLOCK_NTOT_MISS,
-> +	OUTER_ACQUIRE_BLOCK_BTOT_MISS,
-> +	OUTER_ACQUIRE_PERM_NTOT_MISS,
-> +	OUTER_ACQUIRE_PERM_BTOT_MISS,
-> +	OUTER_RELEASE_TTOB_EVICTION,
-> +	OUTER_RELEASE_TTON_EVICTION,
-> +	OUTER_RELEASE_BTON_EVICTION,
-> +	OUTER_RELEASE_DATA_TTOB_NOT_APPLICABLE,
-> +	OUTER_RELEASE_DATA_TTON_DIRTY_EVICTION,
-> +	OUTER_RELEASE_DATA_BTON_NOT_APPLICABLE,
-> +	INNER_PROBE_BLOCK_TOT_CODE_MISS_HITS_OTHER_HARTS,
-> +	INNER_PROBE_BLOCK_TOB_LOAD_MISS_HITS_OTHER_HARTS,
-> +	INNER_PROBE_BLOCK_TON_STORE_MISS_HITS_OTHER_HARTS,
-> +	CCACHE_PMU_MAX_EVENT3_IDX
-> +};
-> +
-> +enum ccache_pmu_event_set4 {
-> +	INNER_HINT_HITS_INFLIGHT_MISS = 0,
-> +	CCACHE_PMU_MAX_EVENT4_IDX
-> +};
-> +
-> +static struct attribute *sifive_ccache_pmu_events[] = {
-> +	/*  pmEventSelect1 */
-> +	CCACHE_PMU_EVENT_ATTR(inner_put_full_data, INNER_PUT_FULL_DATA, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_put_partial_data, INNER_PUT_PARTIAL_DATA, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_atomic_data, INNER_ATOMIC_DATA, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_get, INNER_GET, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_prefetch_read, INNER_PREFETCH_READ, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_prefetch_write, INNER_PREFETCH_WRITE, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_acquire_block_ntob, INNER_ACQUIRE_BLOCK_NTOB, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_acquire_block_ntot, INNER_ACQUIRE_BLOCK_NTOT, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_acquire_block_btot, INNER_ACQUIRE_BLOCK_BTOT, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_acquire_perm_ntot, INNER_ACQUIRE_PERM_NTOT, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_acquire_perm_btot, INNER_ACQUIRE_PERM_BTOT, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_release_ttob, INNER_RELEASE_TTOB, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_release_tton, INNER_RELEASE_TTON, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_release_bton, INNER_RELEASE_BTON, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_release_data_ttob, INNER_RELEASE_DATA_TTOB, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_release_data_tton, INNER_RELEASE_DATA_TTON, 1),
-> +	CCACHE_PMU_EVENT_ATTR(inner_release_data_bton, INNER_RELEASE_DATA_BTON, 1),
-> +	CCACHE_PMU_EVENT_ATTR(outer_probe_block_tot, OUTER_PROBE_BLOCK_TOT, 1),
-> +	CCACHE_PMU_EVENT_ATTR(outer_probe_block_tob, OUTER_PROBE_BLOCK_TOB, 1),
-> +	CCACHE_PMU_EVENT_ATTR(outer_probe_block_ton, OUTER_PROBE_BLOCK_TON, 1),
-
-Yuck, those enums not only make the code overly verbose and repetitive, 
-but they completely obfuscate the significant information here. I don't 
-personally care enough to go digging for documentation to review whether 
-the event numbers are correct for the event names they claim to be, but 
-anyone who did wish to do that is clearly in for an unnecessarily hard 
-time :(
-
-> +
-> +	/*  pmEventSelect2 */
-> +	CCACHE_PMU_EVENT_ATTR(inner_put_full_data_hit, INNER_PUT_FULL_DATA_HIT, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_put_partial_data_hit, INNER_PUT_PARTIAL_DATA_HIT, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_atomic_data_hit, INNER_ATOMIC_DATA_HIT, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_get_hit, INNER_GET_HIT, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_prefetch_hit, INNER_PREFETCH_HIT, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_acquire_block_hit, INNER_ACQUIRE_BLOCK_HIT, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_acquire_perm_hit, INNER_ACQUIRE_PERM_HIT, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_release_hit, INNER_RELEASE_HIT, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_release_data_hit, INNER_RELEASE_DATA_HIT, 2),
-> +	CCACHE_PMU_EVENT_ATTR(outer_probe_hit, OUTER_PROBE_HIT, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_put_full_data_hit_shared, INNER_PUT_FULL_DATA_HIT_SHARED, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_put_partial_data_hit_shared,
-> +			      INNER_PUT_PARTIAL_DATA_HIT_SHARED, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_atomic_data_hit_shared, INNER_ATOMIC_DATA_HIT_SHARED, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_get_hit_shared, INNER_GET_HIT_SHARED, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_prefetch_hit_shared, INNER_PREFETCH_HIT_SHARED, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_acquire_block_hit_shared, INNER_ACQUIRE_BLOCK_HIT_SHARED, 2),
-> +	CCACHE_PMU_EVENT_ATTR(inner_acquire_perm_hit_shared, INNER_ACQUIRE_PERM_HIT_SHARED, 2),
-> +	CCACHE_PMU_EVENT_ATTR(outer_probe_hit_shared, OUTER_PROBE_HIT_SHARED, 2),
-> +	CCACHE_PMU_EVENT_ATTR(outer_probe_hit_dirty, OUTER_PROBE_HIT_DIRTY, 2),
-> +
-> +	/*  pmEventSelect3 */
-> +	CCACHE_PMU_EVENT_ATTR(outer_acquire_block_ntob_miss, OUTER_ACQUIRE_BLOCK_NTOB_MISS, 3),
-> +	CCACHE_PMU_EVENT_ATTR(outer_acquire_block_ntot_miss, OUTER_ACQUIRE_BLOCK_NTOT_MISS, 3),
-> +	CCACHE_PMU_EVENT_ATTR(outer_acquire_block_btot_miss, OUTER_ACQUIRE_BLOCK_BTOT_MISS, 3),
-> +	CCACHE_PMU_EVENT_ATTR(outer_acquire_perm_ntot_miss, OUTER_ACQUIRE_PERM_NTOT_MISS, 3),
-> +	CCACHE_PMU_EVENT_ATTR(outer_acquire_perm_btot_miss, OUTER_ACQUIRE_PERM_BTOT_MISS, 3),
-> +	CCACHE_PMU_EVENT_ATTR(outer_release_ttob_eviction, OUTER_RELEASE_TTOB_EVICTION, 3),
-> +	CCACHE_PMU_EVENT_ATTR(outer_release_tton_eviction, OUTER_RELEASE_TTON_EVICTION, 3),
-> +	CCACHE_PMU_EVENT_ATTR(outer_release_bton_eviction, OUTER_RELEASE_BTON_EVICTION, 3),
-> +	CCACHE_PMU_EVENT_ATTR(outer_release_data_ttob_not_applicable,
-> +			      OUTER_RELEASE_DATA_TTOB_NOT_APPLICABLE, 3),
-> +	CCACHE_PMU_EVENT_ATTR(outer_release_data_tton_dirty_eviction,
-> +			      OUTER_RELEASE_DATA_TTON_DIRTY_EVICTION, 3),
-> +	CCACHE_PMU_EVENT_ATTR(outer_release_data_bton_not_applicable,
-> +			      OUTER_RELEASE_DATA_BTON_NOT_APPLICABLE, 3),
-> +	CCACHE_PMU_EVENT_ATTR(inner_probe_block_tot_code_miss_hits_other_harts,
-> +			      INNER_PROBE_BLOCK_TOT_CODE_MISS_HITS_OTHER_HARTS, 3),
-> +	CCACHE_PMU_EVENT_ATTR(inner_probe_block_tob_load_miss_hits_other_harts,
-> +			      INNER_PROBE_BLOCK_TOB_LOAD_MISS_HITS_OTHER_HARTS, 3),
-> +	CCACHE_PMU_EVENT_ATTR(inner_probe_block_ton_store_miss_hits_other_harts,
-> +			      INNER_PROBE_BLOCK_TON_STORE_MISS_HITS_OTHER_HARTS, 3),
-> +
-> +	/*  pm_event_select4 */
-> +	CCACHE_PMU_EVENT_ATTR(inner_hint_hits_inflight_miss, INNER_HINT_HITS_INFLIGHT_MISS, 4),
-> +	NULL
-> +};
-> +
-> +static struct attribute_group sifive_ccache_pmu_events_group = {
-> +	.name = "events",
-> +	.attrs = sifive_ccache_pmu_events,
-> +};
-> +
-> +/* formats */
-> +PMU_FORMAT_ATTR(event, "config:0-63");
-> +
-> +static struct attribute *sifive_ccache_pmu_formats[] = {
-> +	&format_attr_event.attr,
-> +	NULL,
-> +};
-> +
-> +static struct attribute_group sifive_ccache_pmu_format_group = {
-> +	.name = "format",
-> +	.attrs = sifive_ccache_pmu_formats,
-> +};
-> +
-> +/*
-> + * Per PMU device attribute groups
-> + */
-> +
-> +static const struct attribute_group *sifive_ccache_pmu_attr_grps[] = {
-> +	&sifive_ccache_pmu_cpumask_group,
-> +	&sifive_ccache_pmu_events_group,
-> +	&sifive_ccache_pmu_format_group,
-> +	NULL,
-> +};
-> +
-> +/*
-> + * Event Initialization
-> + */
-> +
-> +static int sifive_ccache_pmu_event_init(struct perf_event *event)
-> +{
-> +	struct sifive_ccache_pmu *ccache_pmu = to_ccache_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	u64 config = event->attr.config;
-> +	u64 ev_type = config >> 8;
-> +	u64 set = config & 0xff;
-> +
-
-I have some patches in progress trying to improve the situation, but for 
-now you still must check that the event is actually for your PMU before 
-doing anything else, and return -ENOENT if not, otherwise you may be 
-offered raw or hardware events, misinterpret them, and confuse the user 
-with nonsense counts from the wrong PMU.
-
-> +	/* Check if this is a valid set and event */
-> +	switch (set) {
-> +	case 1:
-> +		if (ev_type >= BIT_ULL(CCACHE_PMU_MAX_EVENT1_IDX))
-> +			return -ENOENT;
-
-Conversely if the event *is* yours, then you must not return -ENOENT for 
-any other error - these look like they would all probably be -EINVAL 
-conditions (see the comments in the definition of struct pmu).
-
-> +		break;
-> +	case 2:
-> +		if (ev_type >= BIT_ULL(CCACHE_PMU_MAX_EVENT2_IDX))
-> +			return -ENOENT;
-> +		break;
-> +	case 3:
-> +		if (ev_type >= BIT_ULL(CCACHE_PMU_MAX_EVENT3_IDX))
-> +			return -ENOENT;
-> +		break;
-> +	case 4:
-> +		if (ev_type >= BIT_ULL(CCACHE_PMU_MAX_EVENT4_IDX))
-> +			return -ENOENT;
-> +		break;
-> +	default:
-> +		return -ENOENT;
-> +	}
-
-There's also the matter of validating event groups - if you can't 
-support them at all that should mean simply rejecting any event grouped 
-with any other non-software event.
-
-> +	/* Do not allocate the hardware counter yet */
-> +	hwc->idx = -1;
-> +	hwc->config = config;
-> +
-> +	event->cpu = ccache_pmu->cpu;
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * pmu->read: read and update the counter
-> + */
-> +static void sifive_ccache_pmu_read(struct perf_event *event)
-> +{
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	u64 prev_raw_count, new_raw_count;
-> +	u64 oldval;
-> +
-> +	do {
-> +		prev_raw_count = local64_read(&hwc->prev_count);
-> +		new_raw_count = readq((void *)hwc->event_base);
-
-The 32-bit non-atomic version could read a torn value here, thus give an 
-apparent large jump backwards in the count. If the 32-bit support is 
-entirely nominal for build-testing then that's probably OK (possibly 
-worth a comment here), but if it's expected to actually be used then I 
-think you want an explicit hi-lo-hi sequence in teh 32-bit case to 
-ensure the value is read correctly.
-
-> +
-> +		oldval = local64_cmpxchg(&hwc->prev_count, prev_raw_count, new_raw_count);
-> +	} while (oldval != prev_raw_count);
-
-If you don't have an overflow interrupt and don't expect to ever have 
-one (not entirely unreasonable if counters are always a full 64 bits), 
-then strictly you shouldn't need the cmpxchg loop, however there is 
-certainly still a consistency argument for sticking to the familiar 
-pattern anyway if it's not getting in the way.
-
-> +
-> +	local64_add(new_raw_count - prev_raw_count, &event->count);
-> +}
-> +
-> +/*
-> + * State transition functions:
-> + *
-> + * start()/stop() & add()/del()
-> + */
-> +
-> +/*
-> + * pmu->start: start the event
-> + */
-> +static void sifive_ccache_pmu_start(struct perf_event *event, int flags)
-> +{
-> +	struct hw_perf_event *hwc = &event->hw;
-> +
-> +	if (WARN_ON_ONCE(!(hwc->state & PERF_HES_STOPPED))) > +		return;
-> +
-> +	hwc->state = 0;
-> +
-> +	/* Set initial value to 0 */
-> +	local64_set(&hwc->prev_count, 0);
-> +	writeq(0, (void *)hwc->event_base);
-> +
-> +	/* Enable this counter to count events */
-> +	writeq(hwc->config, (void *)hwc->config_base);
-> +}
-> +
-> +/*
-> + * pmu->stop: stop the counter
-> + */
-> +static void sifive_ccache_pmu_stop(struct perf_event *event, int flags)
-> +{
-> +	struct hw_perf_event *hwc = &event->hw;
-> +
-> +	if (hwc->state & PERF_HES_STOPPED)
-> +		return;
-> +
-> +	/* Disable this counter to count events */
-> +	writeq(0, (void *)hwc->config_base);
-> +	sifive_ccache_pmu_read(event);
-> +
-> +	hwc->state = PERF_HES_STOPPED | PERF_HES_UPTODATE;
-> +}
-> +
-> +/*
-> + * pmu->add: add the event to the PMU
-> + */
-> +static int sifive_ccache_pmu_add(struct perf_event *event, int flags)
-> +{
-> +	struct sifive_ccache_pmu *ccache_pmu = to_ccache_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	int idx;
-> +
-> +	/* Find an available counter idx to use for this event */
-> +	do {
-> +		idx = find_first_zero_bit(ccache_pmu->used_mask, ccache_pmu->n_counters);
-> +		if (idx >= ccache_pmu->n_counters)
-> +			return -EAGAIN;
-> +	} while (test_and_set_bit(idx, ccache_pmu->used_mask));
-
-FWIW I continue to maintain the opinion that faffing around with bitmaps 
-is more costly than simply scanning for an empty slot in the events 
-array that you still have to touch anyway.
-
-> +
-> +	hwc->config_base = (unsigned long)ccache_pmu->base + CCACHE_SELECT_OFFSET + 8 * idx;
-> +	hwc->event_base = (unsigned long)ccache_pmu->base + CCACHE_COUNTER_OFFSET + 8 * idx;
-> +	hwc->idx = idx;
-> +	hwc->state = PERF_HES_STOPPED | PERF_HES_UPTODATE;
-> +
-> +	ccache_pmu->events[idx] = event;
-> +
-> +	if (flags & PERF_EF_START)
-> +		sifive_ccache_pmu_start(event, PERF_EF_RELOAD);
-> +
-> +	perf_event_update_userpage(event);
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * pmu->del: delete the event from the PMU
-> + */
-> +static void sifive_ccache_pmu_del(struct perf_event *event, int flags)
-> +{
-> +	struct sifive_ccache_pmu *ccache_pmu = to_ccache_pmu(event->pmu);
-> +	struct hw_perf_event *hwc = &event->hw;
-> +	int idx = hwc->idx;
-> +
-> +	/* Stop and release this counter */
-> +	sifive_ccache_pmu_stop(event, PERF_EF_UPDATE);
-> +
-> +	ccache_pmu->events[idx] = NULL;
-> +	clear_bit(idx, ccache_pmu->used_mask);
-> +
-> +	perf_event_update_userpage(event);
-> +}
-> +
-> +/*
-> + * Driver initialization
-> + */
-> +
-> +static void sifive_ccache_pmu_hw_init(const struct sifive_ccache_pmu *ccache_pmu)
-> +{
-> +	/* Disable the client filter (not supported by this driver) */
-
-Note that if filtering is something you may want to add support for in 
-future, it's well worth planning ahead in terms of config fields to 
-avoid churning the user API too much later.
-
-> +	writeq(0, ccache_pmu->base + CCACHE_CLIENT_FILTER_OFFSET);
-> +}
-> +
-> +static int sifive_ccache_pmu_online_cpu(unsigned int cpu, struct hlist_node *node)
-> +{
-> +	struct sifive_ccache_pmu *ccache_pmu =
-> +		hlist_entry_safe(node, struct sifive_ccache_pmu, node);
-> +
-> +	if (ccache_pmu->cpu >= nr_cpu_ids)
-> +		ccache_pmu->cpu = cpu;
-
-If you don't have any NUMA of other affinity-related shenangians to 
-worry about, then it's really not worth bothering with an online 
-callback, just assign a CPU directly at the same point as all the other 
-initialisation. Plus it's then also that much clearer to reason about it 
-always being valid and not needing spurious nr_cpu_ids checks.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int sifive_ccache_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
-> +{
-> +	struct sifive_ccache_pmu *ccache_pmu =
-> +		hlist_entry_safe(node, struct sifive_ccache_pmu, node);
-> +
-> +	/* Do nothing if this CPU does not own the events */
-> +	if (cpu != ccache_pmu->cpu)
-> +		return 0;
-> +
-> +	/* Pick a random online CPU */
-> +	ccache_pmu->cpu = cpumask_any_but(cpu_online_mask, cpu);
-> +	if (ccache_pmu->cpu >= nr_cpu_ids)
-> +		return 0;
-> +
-> +	/* Migrate PMU events from this CPU to the target CPU */
-> +	perf_pmu_migrate_context(&ccache_pmu->pmu, cpu, ccache_pmu->cpu);
-> +
-> +	return 0;
-> +}
-> +
-> +static int sifive_ccache_pmu_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct sifive_ccache_pmu *ccache_pmu;
-> +	u32 n_counters;
-> +	int ret;
-> +
-> +	/* Instances without a sifive,perfmon-counters property do not contain a PMU */
-> +	ret = device_property_read_u32(dev, "sifive,perfmon-counters", &n_counters);
-> +	if (ret || !n_counters)
-
-Even simpler is to just initialise n_counters to 0 in the first place, 
-if the return value doesn't matter beyond "did it work or not?"
-
-> +		return -ENODEV;
-> +
-> +	ccache_pmu = devm_kzalloc(dev, struct_size(ccache_pmu, events, n_counters), GFP_KERNEL);
-
-Maybe worth a sanity check that n_counters isn't unrealistically large 
-either?
-
-> +	if (!ccache_pmu)
-> +		return -ENOMEM;
-> +
-> +	platform_set_drvdata(pdev, ccache_pmu);
-> +
-> +	ccache_pmu->pmu = (struct pmu) {
-> +		.parent		= dev,
-> +		.attr_groups	= sifive_ccache_pmu_attr_grps,
-> +		.capabilities	= PERF_PMU_CAP_NO_EXCLUDE | PERF_PMU_CAP_NO_INTERRUPT,
-> +		.task_ctx_nr	= perf_invalid_context,
-> +		.event_init	= sifive_ccache_pmu_event_init,
-> +		.add		= sifive_ccache_pmu_add,
-> +		.del		= sifive_ccache_pmu_del,
-> +		.start		= sifive_ccache_pmu_start,
-> +		.stop		= sifive_ccache_pmu_stop,
-> +		.read		= sifive_ccache_pmu_read,
-> +	};
-> +	ccache_pmu->cpu = nr_cpu_ids;
-> +	ccache_pmu->n_counters = n_counters;
-> +
-> +	ccache_pmu->base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(ccache_pmu->base))
-> +		return PTR_ERR(ccache_pmu->base);
-> +
-> +	sifive_ccache_pmu_hw_init(ccache_pmu);
-> +
-> +	ret = cpuhp_state_add_instance(CPUHP_AP_PERF_RISCV_SIFIVE_CCACHE_ONLINE, &ccache_pmu->node);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "Failed to add CPU hotplug instance\n");
-> +
-> +	ret = perf_pmu_register(&ccache_pmu->pmu, "sifive_ccache_pmu", -1);
-> +	if (ret) {
-> +		dev_err_probe(dev, ret, "Failed to register PMU\n");
-> +		goto err_remove_instance;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_remove_instance:
-> +	cpuhp_state_remove_instance(CPUHP_AP_PERF_RISCV_SIFIVE_CCACHE_ONLINE, &ccache_pmu->node);
-
-You need the _nocalls variant here, since attempting to migrate the 
-context of an unregistered and uninitialised PMU tends to end badly.
-
-> +
-> +	return ret;
-> +}
-> +
-> +static void sifive_ccache_pmu_remove(struct platform_device *pdev)
-> +{
-> +	struct sifive_ccache_pmu *ccache_pmu = platform_get_drvdata(pdev);
-> +
-> +	perf_pmu_unregister(&ccache_pmu->pmu);
-> +	cpuhp_state_remove_instance(CPUHP_AP_PERF_RISCV_SIFIVE_CCACHE_ONLINE, &ccache_pmu->node);
-
-Similarly here.
-
-
- From a quick skim I think a lot of these comments will also apply to 
-the other drivers in this series, so I'll stop here for now, and please 
-consider them in general.
-
-Thanks,
-Robin.
-
-> +}
-> +
-> +static const struct of_device_id sifive_ccache_pmu_of_match[] = {
-> +	{ .compatible = "sifive,ccache0" },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, sifive_ccache_pmu_of_match);
-> +
-> +static struct platform_driver sifive_ccache_pmu_driver = {
-> +	.probe	= sifive_ccache_pmu_probe,
-> +	.remove_new	= sifive_ccache_pmu_remove,
-> +	.driver	= {
-> +		.name		= "sifive_ccache_pmu",
-> +		.of_match_table	= sifive_ccache_pmu_of_match,
-> +	},
-> +};
-> +
-> +static void __exit sifive_ccache_pmu_exit(void)
-> +{
-> +	platform_driver_unregister(&sifive_ccache_pmu_driver);
-> +	cpuhp_remove_multi_state(CPUHP_AP_PERF_RISCV_SIFIVE_CCACHE_ONLINE);
-> +}
-> +module_exit(sifive_ccache_pmu_exit);
-> +
-> +static int __init sifive_ccache_pmu_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = cpuhp_setup_state_multi(CPUHP_AP_PERF_RISCV_SIFIVE_CCACHE_ONLINE,
-> +				      "perf/sifive/ccache:online",
-> +				      sifive_ccache_pmu_online_cpu,
-> +				      sifive_ccache_pmu_offline_cpu);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = platform_driver_register(&sifive_ccache_pmu_driver);
-> +	if (ret)
-> +		goto err_remove_state;
-> +
-> +	return 0;
-> +
-> +err_remove_state:
-> +	cpuhp_remove_multi_state(CPUHP_AP_PERF_RISCV_SIFIVE_CCACHE_ONLINE);
-> +
-> +	return ret;
-> +}
-> +module_init(sifive_ccache_pmu_init);
-> +
-> +MODULE_LICENSE("GPL");
-> diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-> index 172d0a743e5d..be6361fdc8ba 100644
-> --- a/include/linux/cpuhotplug.h
-> +++ b/include/linux/cpuhotplug.h
-> @@ -230,6 +230,7 @@ enum cpuhp_state {
->   	CPUHP_AP_PERF_POWERPC_TRACE_IMC_ONLINE,
->   	CPUHP_AP_PERF_POWERPC_HV_24x7_ONLINE,
->   	CPUHP_AP_PERF_POWERPC_HV_GPCI_ONLINE,
-> +	CPUHP_AP_PERF_RISCV_SIFIVE_CCACHE_ONLINE,
->   	CPUHP_AP_PERF_CSKY_ONLINE,
->   	CPUHP_AP_WATCHDOG_ONLINE,
->   	CPUHP_AP_WORKQUEUE_ONLINE,
 
