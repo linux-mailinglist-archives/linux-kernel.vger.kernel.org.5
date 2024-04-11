@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B636C8A1A99
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:59:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 327958A1AB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:05:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BEDF1F222EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:59:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46B68B28EF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 252A91E9C34;
-	Thu, 11 Apr 2024 15:41:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2E91EA744;
+	Thu, 11 Apr 2024 15:41:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="GQtGMwFN"
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="kBCTdowk"
+Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CFCA1E9C06
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:41:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA7F41E9C2E
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:41:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850075; cv=none; b=KmWR2oeVaw+AnSLUSyk3MH5xKr52lz0ICjLQgEzIifRBWy7Cq4hvrz+Tfbdkf5GtbGJcTVgfQ6ZJUhvR3M+nv1fsZ+5Zh/xksKa8dcfTglg/Whm1MAe/6JpChi0sh+JJp3CE9ckA02EsGNe1LLWN/3Kh5GZN2HInkLwiRo9nx3I=
+	t=1712850077; cv=none; b=GxzbziRgu/PnE49IHWwR9GbeEyYbqCslp/DWwXnITtwyF/8BYbUlTWCTZMhyHtQ+0yZa7b40GZ+4ceUhPsfmKn1+Xls1/GU5X8dXuaUc5+Pje8zTouyZ6LPz/ew/MucgcAA6fPCpyMbxZxT+ZqE7TqEmiFWW+jH7qc8+HqCMhXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850075; c=relaxed/simple;
-	bh=1Xm1LvJZKXM9ByANh2Jrf1IcSwqEwwhCyyblOz47k50=;
+	s=arc-20240116; t=1712850077; c=relaxed/simple;
+	bh=j4AyBh09Y/PFBXy7IvktHeljaYLAC36fLppXt93g+jo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WU+ouoJNPfWRbz2TmhyxS2naCvP7i/QfPjA3PuJko1GNxGOojm/gTtUFeJiWdmB1VguUN+Xu+IuABpFrgL60MqtkE3b986r6+J4I++h8OZvRb61inUHiAvlMLOm5uwU5BkM8pBewjAzzITppR1jPXJYN0SmGk7SWdsAXE8oBRwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=GQtGMwFN; arc=none smtp.client-ip=209.85.166.43
+	 MIME-Version; b=fwY+mmxKhPbT6KnUhwzoqEPcJLL15MATuf6axzUcpc9gcfAWexExrTldaGC17U77bcB9OrVigrk9EIdrwGh5KSMcQ3HC4XK06iohhAmX1MMWUXCs9ySJdAeBFBTZB0uUkBpAAEz+aVhhITQpD+M924uKZWYh9ZplqQ4IaMBDGBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=kBCTdowk; arc=none smtp.client-ip=209.85.166.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7d67d1073easo9904139f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:41:13 -0700 (PDT)
+Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7d67d1073easo9904739f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:41:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850073; x=1713454873; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850074; x=1713454874; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qptWCWsiaBboNfaOYpRLtNVackXnhTKqn/zsehAZOC4=;
-        b=GQtGMwFN8kg/e+b0h9vtoLMvnP+IzH6YHjbzPmEz5CcxmcIPtJtzL16rXlTaWvl+I+
-         toPyT1DxPqYNBD7nTnRlwvbZDRkdUBm0u43gpZtAfuiu8VXBFdq9vaRUkPuzPXiFZycm
-         XRJhyegCjrvtFTQhMY5w99gNbwd4np/30I5m+j6G/MXu/UqNEBMdtrWqkBooGvCJhyuC
-         uqBOXP95GtHr9eTp+/GCIP8fRIhbkXK1whHB3T8qPuOb3p6iO+fgauc7zBkf4R0mx+KQ
-         2y+TADNVImQoifsW6u8nbAH2zdspoy2YiJfBmolZcEW4j9LLGUJQcSGbwsr9Mh0bNA9e
-         +0Cg==
+        bh=k3uht9aBlkrsCLM3su+LGMAtykGs5fn7572ZGAj+gSg=;
+        b=kBCTdowkXZz1HJwdTdj09FZV6eyPYxQlIYfgGCmeUv4dpEa8w9JE1ySq7h/nsWVlEa
+         ShuS2Dob6SGZ15RF7mWbRAWIVeA9vsKiemPTe1q7zM2V1+U0kP8+vfkjHkjPglMvn634
+         tb3ET5/6QhdH5+rS3ngWcv8kFrfADdjK9c/7yzQnBEu5lFDUn76KE6O/Pddd4xV7AxLh
+         8wqiBHQ1JuK8h/1OmoYYPhYZMbEvZRYUpL5ZD6+uqPFGdRERPdClJpmzXJIHeCx51Qns
+         1+aKnB25+khQi6iIA/wji+Fs1qN+lit+bQwkCdXROan9juWb4M0tqTfK+h0ITqHCH9QW
+         L0wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850073; x=1713454873;
+        d=1e100.net; s=20230601; t=1712850074; x=1713454874;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qptWCWsiaBboNfaOYpRLtNVackXnhTKqn/zsehAZOC4=;
-        b=ki+ykPcikZue6mL2onVGbPAav4aGTw4/0pRkjzv7Dz0dXZfHYRzJ9INb38O7jueXXW
-         YJa/rmSEJCcTejp3pSXSeZHQ3GlPNXly7a6/wAraz+f2u0A4fXVjrFSvyyoDw68L9Kvy
-         a0dwMeKUHmEXSQFbMDM6qKjNLi2fA768QobKKMC8vcj8crN6o3+ATwtXZLk+d00dy8U0
-         LVYBlf44cgeg+BKA8e1ltOyBGqGyNXpFMO7T334taRgyMZOaxlw9W6I0gLNzgbNLDVsN
-         IkdYGIoATeFIFHo0AzyONcbSXkuCQvU/N0fpJqYTsfNsmTLXuvHPc1iYg9xhwqx4pa2f
-         OJ1g==
-X-Gm-Message-State: AOJu0YzU+lTNCW+KoRfNn5L0OrWPmhDaRzefAaO0+SEMAThDYUcQp+UR
-	vuVjZxNmCNwgr14sCQrMDDW+rt7ioIJI4t73XWiQNZt23fTlOOJxAK4buZ1Ow1+NgukCKGFjfQ8
-	I
-X-Google-Smtp-Source: AGHT+IF0tA+SadCsHrXiOM8Cn9xB9/0/ei86nQiSMwGL22g0n4hUr2fR8PAPWnp8pyZqvUu/TxtkgA==
-X-Received: by 2002:a6b:7b05:0:b0:7d6:60dc:bc8e with SMTP id l5-20020a6b7b05000000b007d660dcbc8emr206160iop.1.1712850072879;
-        Thu, 11 Apr 2024 08:41:12 -0700 (PDT)
+        bh=k3uht9aBlkrsCLM3su+LGMAtykGs5fn7572ZGAj+gSg=;
+        b=HR7n5bo1O+mv0izg4O3vqg6gssnFDkxCT3JnHk/6nbT/RYwSYncBdoP/FyFfX+mM0W
+         wnYYhA3b09nPh0R65F4t9CQ+GUeDLZ8Gin+2TUEBq8yhAyypks9sImdmSBEVz/tkG9hm
+         K1sXNMDeEfsFJghe1Rl8O7vtspBr/TfD4awpefcwIHP72gYeTyV0MsVv4sT44LYpwS1L
+         bzvNf86ULwpvnA/H3WaHWT7sB3/gFC+AXksB7THR8UReKShcbHD8IUQ7mLchH4vATAuw
+         yxARwapQegIxhjEZyQnhSXTuVhqwnVofAS65b2/iFb/ozbqWO6+1fkWisWc1nS0jrDGx
+         CSfQ==
+X-Gm-Message-State: AOJu0YxnrjBn39jlQavhACkE/Y1USqImB5Iu7B60H723HWGtPqiwoBcZ
+	mmOFDPOwfpCJuMMaDnRyXdioyVPvSfFETT9CiKSqWPDQQvZg7e0jogUNSQFaDZ7jOOoxxkKdSka
+	6
+X-Google-Smtp-Source: AGHT+IEhaWt52FIfvtgDuAVnmA/KVBLwW8DJjigC9NxxyOrZXGXMHAeSIuBS0VrsEe2Zf1rNEzvk8Q==
+X-Received: by 2002:a6b:7b05:0:b0:7d6:60dc:bc8e with SMTP id l5-20020a6b7b05000000b007d660dcbc8emr206232iop.1.1712850074591;
+        Thu, 11 Apr 2024 08:41:14 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.41.11
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.41.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:41:11 -0700 (PDT)
+        Thu, 11 Apr 2024 08:41:13 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 345/437] s390: vmcp: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:18:05 -0600
-Message-ID: <20240411153126.16201-346-axboe@kernel.dk>
+Subject: [PATCH 346/437] s390: vmur: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:18:06 -0600
+Message-ID: <20240411153126.16201-347-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,83 +85,40 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/s390/char/vmcp.c | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
+ drivers/s390/char/vmur.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/s390/char/vmcp.c b/drivers/s390/char/vmcp.c
-index eb0520a9d4af..348e528a386d 100644
---- a/drivers/s390/char/vmcp.c
-+++ b/drivers/s390/char/vmcp.c
-@@ -128,14 +128,13 @@ static int vmcp_release(struct inode *inode, struct file *file)
- 	return 0;
+diff --git a/drivers/s390/char/vmur.c b/drivers/s390/char/vmur.c
+index fe94dec427b6..187b0dde22e1 100644
+--- a/drivers/s390/char/vmur.c
++++ b/drivers/s390/char/vmur.c
+@@ -461,6 +461,7 @@ static ssize_t ur_write(struct file *file, const char __user *udata,
+ 
+ 	return do_write(urf->urd, udata, count, urf->dev_reclen, ppos);
  }
++FOPS_WRITE_ITER_HELPER(ur_write);
  
--static ssize_t
--vmcp_read(struct file *file, char __user *buff, size_t count, loff_t *ppos)
-+static ssize_t vmcp_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	ssize_t ret;
- 	size_t size;
- 	struct vmcp_session *session;
- 
--	session = file->private_data;
-+	session = iocb->ki_filp->private_data;
- 	if (mutex_lock_interruptible(&session->mutex))
- 		return -ERESTARTSYS;
- 	if (!session->response) {
-@@ -143,27 +142,25 @@ vmcp_read(struct file *file, char __user *buff, size_t count, loff_t *ppos)
- 		return 0;
- 	}
- 	size = min_t(size_t, session->resp_size, session->bufsize);
--	ret = simple_read_from_buffer(buff, count, ppos,
--					session->response, size);
-+	ret = simple_copy_to_iter(session->response, &iocb->ki_pos, size, to);
- 
- 	mutex_unlock(&session->mutex);
- 
- 	return ret;
+ /*
+  * diagnose code 0x14 subcode 0x0028 - position spool file to designated
+@@ -580,6 +581,7 @@ static ssize_t ur_read(struct file *file, char __user *ubuf, size_t count,
+ 	mutex_unlock(&urd->io_mutex);
+ 	return rc;
  }
++FOPS_READ_ITER_HELPER(ur_read);
  
--static ssize_t
--vmcp_write(struct file *file, const char __user *buff, size_t count,
--	   loff_t *ppos)
-+static ssize_t vmcp_write(struct kiocb *iocb, struct iov_iter *from)
- {
- 	char *cmd;
- 	struct vmcp_session *session;
-+	size_t count = iov_iter_count(from);
+ /*
+  * diagnose code 0x14 subcode 0x0fff - retrieve next file descriptor
+@@ -799,8 +801,8 @@ static const struct file_operations ur_fops = {
+ 	.owner	 = THIS_MODULE,
+ 	.open	 = ur_open,
+ 	.release = ur_release,
+-	.read	 = ur_read,
+-	.write	 = ur_write,
++	.read_iter	 = ur_read_iter,
++	.write_iter	 = ur_write_iter,
+ 	.llseek  = ur_llseek,
+ };
  
- 	if (count > 240)
- 		return -EINVAL;
--	cmd = memdup_user_nul(buff, count);
-+	cmd = iterdup_nul(from, count);
- 	if (IS_ERR(cmd))
- 		return PTR_ERR(cmd);
--	session = file->private_data;
-+	session = iocb->ki_filp->private_data;
- 	if (mutex_lock_interruptible(&session->mutex)) {
- 		kfree(cmd);
- 		return -ERESTARTSYS;
-@@ -180,7 +177,7 @@ vmcp_write(struct file *file, const char __user *buff, size_t count,
- 				   &session->resp_code);
- 	mutex_unlock(&session->mutex);
- 	kfree(cmd);
--	*ppos = 0;		/* reset the file pointer after a command */
-+	iocb->ki_pos = 0;	/* reset the file pointer after a command */
- 	return count;
- }
- 
-@@ -238,8 +235,8 @@ static const struct file_operations vmcp_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= vmcp_open,
- 	.release	= vmcp_release,
--	.read		= vmcp_read,
--	.write		= vmcp_write,
-+	.read_iter	= vmcp_read,
-+	.write_iter	= vmcp_write,
- 	.unlocked_ioctl	= vmcp_ioctl,
- 	.compat_ioctl	= vmcp_ioctl,
- 	.llseek		= no_llseek,
 -- 
 2.43.0
 
