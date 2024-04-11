@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50CA78A19A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:15:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 790EE8A19A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:15:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D10361F22C67
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:15:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0C96287483
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:15:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BBD81A38CD;
-	Thu, 11 Apr 2024 15:36:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219B31A38E3;
+	Thu, 11 Apr 2024 15:36:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="nBztdBaN"
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Xq/shxH2"
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 623CE1A0B0B
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:36:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7961A38C7
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:36:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849768; cv=none; b=tds1gXlRq9iBRJkGh0U629Vtt9QOrwWc1s2a71S71J9JSLQKf6D5akn/HSYy3aPuOsw9vcPgr4nwJormv80W8D4dYpSv8a2Q/43N5AK2pwK6UNf+qMEOWWqB6dudNwIFEC3J2OSmMgwvcHXjjIvdtN7dL6RARzmxufEm8h+e86U=
+	t=1712849770; cv=none; b=jRlUSF3hbZzRYMGUSG1IUoswSfNQ2j3hMFjpf4JjSqqK34bRJn5FZggqgZWKg/BLfTF0SIoMj46XD5s8K1r3pDDjm7uJ2FtCV5v7tDI1ddjVzfVoSDdiXAKEX6rz/UkD7VYqndrIP4iBl4/RIXK8lY+2zQoLhI0fHXfXIEZ9H8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849768; c=relaxed/simple;
-	bh=+5eGTQuXClbzDJtZcXIqmdGdgZwAoQdeNnA2FFXvzLE=;
+	s=arc-20240116; t=1712849770; c=relaxed/simple;
+	bh=YdYk418vTwmA+ey7yZx9ARVq0HB6UyKi8g6lBoKZ550=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RRI4gMDBgdOpfknxVVcbh1tkNcsY9uTA3pFFCBhA2azhnofCzDUmCjQ6Ttz8lH58dvYLHjxtR9CUrKneDQ9U+vej5fE62C92E4oUt4n5hNMEOiGuthpJAcjHaCuzrlfBZZF2wOVs9OqdhzVRPEMGjx+LmQ+/PIcigyuUjSQh38o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=nBztdBaN; arc=none smtp.client-ip=209.85.166.50
+	 MIME-Version; b=Fae5GvIL8E05wo9U9H+x3GS1u98ZLnfCvAq2ZPxPZkNzL00LIYydXVa3t2Q7mBgQ96khyA2fv7F8cPRJ2nj6EQByzVJJOdndvispwjGTuhMUpVd92Hylp9iNK3+Nxuyxg7nuqeeJhnow5dp2x6JMopXg3c0zsoJaS0CogvVgzyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Xq/shxH2; arc=none smtp.client-ip=209.85.166.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7cb9dd46babso81845339f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:36:07 -0700 (PDT)
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7d67d1073easo9789339f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:36:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849766; x=1713454566; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849768; x=1713454568; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9c0TLT+6r44FWOywZJ0UCMvqPCeYqv+2VLmgi7KaxQw=;
-        b=nBztdBaNcdWSfzWcYPJNhpDRTZJoO2KbvXZkSFEh6y1UYowsQ+d+SbWMAwaBlOcEkZ
-         50+kghiWJmUoBeqoicC+iRtG7zmB9EfSDZ5w6IhEbCYQ5tW6hjATLZi2YesGW1VTGTVg
-         KLLhzier/biBh/B/zk+iW6r+wLxXF+VWH2Nb9t4x51f2oij9mzt4JAXcB4O8G73TRpMk
-         2nudDB1TU/OMFihNbKpmRI+uWpQutRChlhR7dIh/K1NYPA/7HBOhNOLi3KeLjZiTwc/O
-         jgdHqu3bHX4X1ObDAT1Gog1iUHsAzjhStAdleUw7Wt9X1cNiQKugx2N1pyBaW1ek43sG
-         nEdg==
+        bh=vylp/B+kLpVLQhCobojuB7Q0u9hUZIzqgrY8mV9AQJ8=;
+        b=Xq/shxH2KOYODNIX59pHkjGH5eO5SRuwu+eD/VTCRjtl2BNiIqLGkX+G8lGU9WJDAd
+         2lems40Otg6F5AjPjIt8VTC80i4DBELpEAXMQ3Elq4ICpgxBMIPcbY2qxVM5otUfT2Xs
+         vI1h+sk6I9mXl481/xr6UW3qPSQoA6+BdyLTBg3oSgbI2xECHP+xf3Yq5cADt0H7ze3r
+         6u1yEqmFXGOsbgS/bvi9rEocCYONWlEG5e6ZEbx6QiTW51iEbxbqAgmPSd0uLv07Xzys
+         Pb/EXioEeEwtjjf8mVbXC/LTf894+qWHKOfPNDOIcc5SQuT1kvCaSaaeLZdbIV1gwurd
+         vyyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849766; x=1713454566;
+        d=1e100.net; s=20230601; t=1712849768; x=1713454568;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9c0TLT+6r44FWOywZJ0UCMvqPCeYqv+2VLmgi7KaxQw=;
-        b=D5gQDX9Qu9DkHmuZY0pMuqCBTDZUwCvkPG2GyMKDOjOqY40h5GWL/MU+24TXy19I1y
-         wPRzlL8TzAs6LAt9DpG/AFqxi1vPWacyg6NTtpN0akPdH1ow9O3c/Or+Js/Kx1dgjEOc
-         qAD+lGaZV21RjkM5uOt8aNzF40SidJIh4ZJGIHCEvcpfLOBo/GJrYX6f8+o/OFcW4GN1
-         YbfikRXxHsyHenUg51JsR2+8NKYJ3xb/7m+I1zqzt6VjH0+34vFxKPAuyELYq/qE1Gnx
-         iB6KUsP648ARwoVhtG+zrgb9PMglIA96Ok4Zscf8hwaDtyI+NLLGFX95VUKrbiwk7ZuM
-         pDkg==
-X-Gm-Message-State: AOJu0YwZTHae6uONYe8xTSlDHnxxpPsiXy+GjSWIfXSFA9C2VbeHcKnX
-	gErMQ70uIQ76G4DnI3MAdBSyQ1TA+Lu2UGtCMr6vC3m6D1tRGq2tLhm1pVCFZOjD0IRaWfPcUfz
-	I
-X-Google-Smtp-Source: AGHT+IEv29KcUmrJQfkNQMRGZqbLCtW3maagC+h2/wtUbBZDnUURoeWCEdLFCTfK9PnQKglrSGZMUQ==
-X-Received: by 2002:a6b:6605:0:b0:7d4:1dae:da1a with SMTP id a5-20020a6b6605000000b007d41daeda1amr149020ioc.2.1712849766052;
-        Thu, 11 Apr 2024 08:36:06 -0700 (PDT)
+        bh=vylp/B+kLpVLQhCobojuB7Q0u9hUZIzqgrY8mV9AQJ8=;
+        b=KPxWxulvnEn6JnNj70ZL7dmUPhAOR5RVyPLCausLggRQZ7+hnLQ2yJuXYT3FYCrgUV
+         FP2ibX5RmpSyUaQZvyVnhY3YAvvhhHGLBG8EZ5qz8lMffRFgKTuX9U60XS+cQc6anceL
+         4bAr2KiK8s+w+0QQwUdL/PZh3lgMzrXZ8AfLabbFqdvkeoYV22j+PRlrnwG9LfSAYhIm
+         +GoQUW4HNdbz5HHhsjXx7L3zo3SSrMXLTQ4h6vSdobvEJT6UN6kDshad2CLDkBix+RzK
+         82B2F3W5oBIGjYXSD3m2DvcFB/oYKyBkhK7Pa0JJIOTapvrFh5NF1Avouxie/wSueERC
+         4aHg==
+X-Gm-Message-State: AOJu0YzBCEAcqLtJG9xZGmIbIk7QTJoQsAVfzGQboaPVDZy8TJIf+Wby
+	FAkhMazf8vCmiuHHf4vOHXUHE/RPf0RyxMVKwXBhYJKwmjZTBYFybyZqXllFsQdS+3aHC0DNx97
+	o
+X-Google-Smtp-Source: AGHT+IHLqpS/2k+aT2Eu6G5HQj3Sk8AorUUybGSbflWbuRljB3aVX4MvGRRkpZKRkTYtpmcC65Bf4A==
+X-Received: by 2002:a05:6602:84:b0:7d6:9d75:6de2 with SMTP id h4-20020a056602008400b007d69d756de2mr41323iob.2.1712849768132;
+        Thu, 11 Apr 2024 08:36:08 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.36.04
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.36.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:36:04 -0700 (PDT)
+        Thu, 11 Apr 2024 08:36:06 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 157/437] usb: class: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:14:57 -0600
-Message-ID: <20240411153126.16201-158-axboe@kernel.dk>
+Subject: [PATCH 158/437] usb: core: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:14:58 -0600
+Message-ID: <20240411153126.16201-159-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,133 +85,46 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/usb/class/cdc-wdm.c | 18 +++++++++---------
- drivers/usb/class/usblp.c   |  6 ++++--
- drivers/usb/class/usbtmc.c  |  6 ++++--
- 3 files changed, 17 insertions(+), 13 deletions(-)
+ drivers/usb/core/devices.c | 3 ++-
+ drivers/usb/core/devio.c   | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/class/cdc-wdm.c b/drivers/usb/class/cdc-wdm.c
-index c8262e2f2917..a811000b5eb2 100644
---- a/drivers/usb/class/cdc-wdm.c
-+++ b/drivers/usb/class/cdc-wdm.c
-@@ -476,6 +476,7 @@ static ssize_t wdm_write
- 	kfree(buf);
- 	return rv;
+diff --git a/drivers/usb/core/devices.c b/drivers/usb/core/devices.c
+index a247da73f34d..f367132a6770 100644
+--- a/drivers/usb/core/devices.c
++++ b/drivers/usb/core/devices.c
+@@ -538,8 +538,9 @@ static ssize_t usb_device_read(struct file *file, char __user *buf,
+ 	mutex_unlock(&usb_bus_idr_lock);
+ 	return total_written;
  }
-+FOPS_WRITE_ITER_HELPER(wdm_write);
++FOPS_READ_ITER_HELPER(usb_device_read);
+ 
+ const struct file_operations usbfs_devices_fops = {
+ 	.llseek =	no_seek_end_llseek,
+-	.read =		usb_device_read,
++	.read_iter =	usb_device_read_iter,
+ };
+diff --git a/drivers/usb/core/devio.c b/drivers/usb/core/devio.c
+index 3beb6a862e80..bebfbebc1f69 100644
+--- a/drivers/usb/core/devio.c
++++ b/drivers/usb/core/devio.c
+@@ -390,6 +390,7 @@ static ssize_t usbdev_read(struct file *file, char __user *buf, size_t nbytes,
+ 	usb_unlock_device(dev);
+ 	return ret;
+ }
++FOPS_READ_ITER_HELPER(usbdev_read);
  
  /*
-  * Submit the read urb if resp_count is non-zero.
-@@ -520,13 +521,12 @@ static int service_outstanding_interrupt(struct wdm_device *desc)
- 	return rv;
- }
- 
--static ssize_t wdm_read
--(struct file *file, char __user *buffer, size_t count, loff_t *ppos)
-+static ssize_t wdm_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	int rv, cntr;
- 	int i = 0;
--	struct wdm_device *desc = file->private_data;
--
-+	struct wdm_device *desc = iocb->ki_filp->private_data;
-+	size_t count = iov_iter_count(to);
- 
- 	rv = mutex_lock_interruptible(&desc->rlock); /*concurrent reads */
- 	if (rv < 0)
-@@ -546,7 +546,7 @@ static ssize_t wdm_read
- 			goto err;
- 		}
- 		i++;
--		if (file->f_flags & O_NONBLOCK) {
-+		if (iocb->ki_filp->f_flags & O_NONBLOCK) {
- 			if (!test_bit(WDM_READ, &desc->flags)) {
- 				rv = -EAGAIN;
- 				goto err;
-@@ -604,8 +604,8 @@ static ssize_t wdm_read
- 
- 	if (cntr > count)
- 		cntr = count;
--	rv = copy_to_user(buffer, desc->ubuf, cntr);
--	if (rv > 0) {
-+	rv = !copy_to_iter_full(desc->ubuf, cntr, to);
-+	if (rv) {
- 		rv = -EFAULT;
- 		goto err;
- 	}
-@@ -810,8 +810,8 @@ static long wdm_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 
- static const struct file_operations wdm_fops = {
- 	.owner =	THIS_MODULE,
--	.read =		wdm_read,
--	.write =	wdm_write,
-+	.read_iter =	wdm_read,
-+	.write_iter =	wdm_write_iter,
- 	.fsync =	wdm_fsync,
- 	.open =		wdm_open,
- 	.flush =	wdm_flush,
-diff --git a/drivers/usb/class/usblp.c b/drivers/usb/class/usblp.c
-index 5a2e43331064..2f16b7916963 100644
---- a/drivers/usb/class/usblp.c
-+++ b/drivers/usb/class/usblp.c
-@@ -832,6 +832,7 @@ static ssize_t usblp_write(struct file *file, const char __user *buffer, size_t
- raise_biglock:
- 	return writecount ? writecount : rv;
- }
-+FOPS_WRITE_ITER_HELPER(usblp_write);
- 
- /*
-  * Notice that we fail to restart in a few cases: on EFAULT, on restart
-@@ -885,6 +886,7 @@ static ssize_t usblp_read(struct file *file, char __user *buffer, size_t len, lo
- 	mutex_unlock(&usblp->mut);
- 	return count;
- }
-+FOPS_READ_ITER_HELPER(usblp_read);
- 
- /*
-  * Wait for the write path to come idle.
-@@ -1080,8 +1082,8 @@ static unsigned int usblp_quirks(__u16 vendor, __u16 product)
- 
- static const struct file_operations usblp_fops = {
- 	.owner =	THIS_MODULE,
--	.read =		usblp_read,
--	.write =	usblp_write,
-+	.read_iter =	usblp_read_iter,
-+	.write_iter =	usblp_write_iter,
- 	.poll =		usblp_poll,
- 	.unlocked_ioctl =	usblp_ioctl,
- 	.compat_ioctl =		usblp_ioctl,
-diff --git a/drivers/usb/class/usbtmc.c b/drivers/usb/class/usbtmc.c
-index 311007b1d904..281eeb29cf7f 100644
---- a/drivers/usb/class/usbtmc.c
-+++ b/drivers/usb/class/usbtmc.c
-@@ -1506,6 +1506,7 @@ static ssize_t usbtmc_read(struct file *filp, char __user *buf,
- 	kfree(buffer);
- 	return retval;
- }
-+FOPS_READ_ITER_HELPER(usbtmc_read);
- 
- static ssize_t usbtmc_write(struct file *filp, const char __user *buf,
- 			    size_t count, loff_t *f_pos)
-@@ -1644,6 +1645,7 @@ static ssize_t usbtmc_write(struct file *filp, const char __user *buf,
- 	mutex_unlock(&data->io_mutex);
- 	return retval;
- }
-+FOPS_WRITE_ITER_HELPER(usbtmc_write);
- 
- static int usbtmc_ioctl_clear(struct usbtmc_device_data *data)
- {
-@@ -2261,8 +2263,8 @@ static __poll_t usbtmc_poll(struct file *file, poll_table *wait)
- 
- static const struct file_operations fops = {
- 	.owner		= THIS_MODULE,
--	.read		= usbtmc_read,
--	.write		= usbtmc_write,
-+	.read_iter	= usbtmc_read_iter,
-+	.write_iter	= usbtmc_write_iter,
- 	.open		= usbtmc_open,
- 	.release	= usbtmc_release,
- 	.flush		= usbtmc_flush,
+  * async list handling
+@@ -2846,7 +2847,7 @@ static __poll_t usbdev_poll(struct file *file,
+ const struct file_operations usbdev_file_operations = {
+ 	.owner =	  THIS_MODULE,
+ 	.llseek =	  no_seek_end_llseek,
+-	.read =		  usbdev_read,
++	.read_iter =	  usbdev_read_iter,
+ 	.poll =		  usbdev_poll,
+ 	.unlocked_ioctl = usbdev_ioctl,
+ 	.compat_ioctl =   compat_ptr_ioctl,
 -- 
 2.43.0
 
