@@ -1,182 +1,140 @@
-Return-Path: <linux-kernel+bounces-141438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E028A8A1E3F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:31:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC07B8A1E3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:30:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E8261C238D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:31:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E44C28C9E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AFFD78C92;
-	Thu, 11 Apr 2024 18:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC72B46BA0;
+	Thu, 11 Apr 2024 18:00:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ldxlZC9Q"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SD+uR9et"
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF92A6A031
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCCCE3F9CB;
+	Thu, 11 Apr 2024 18:00:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712858469; cv=none; b=nPTqQZ3RcCoA40IBKXpPLhNsAsDjFiL4ZaPAHAuFA0ktpKpyKj6Ed4m4u8CzV/zmnIWdBx6+PJanWG3UEDawkmfV7ZJViDriDHeCJdzrWPIKFkoYgSaXSG7fAw7NrWANuF+MwNkWsyLEdoQgCvQkDxHJJdLsgZ5VftxsvAYNQ68=
+	t=1712858446; cv=none; b=rUC9d0TW2Kw7M6JrVNynXZdQ/U40aDh2I6B+3bjTV9RHK/AUa8ob60ke7gTThkyAgILdCivmthKFuO1I3OR5uvGCOePJb3qjqo31sLNckhzbf8V87awcHUG4GNFbB9/uw3doa+Bt0PbqFK6C50MBt7qMiYSDWOPeOwCJ8BieU48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712858469; c=relaxed/simple;
-	bh=ELksu+sLzaHjlNPUR9IEFLD8rhRIAjWKwOmmScUPvR4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kRK8cQaonX0H536r6Y7xt5A2sRcp3BJfGZz1WoPeY/BhczrE2l+mP18yYcu7aTtIUgCUWD2xSb6DnujZX0Qhpxrc5YjYhKFHzs50MD8xcJ86ZYgLr3YbP7pOtCTSBkjrJZh08G8YYNpoEEE3GOibTOJ0jrWYfYECWorMpnvO1ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ldxlZC9Q; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3462178fbf9so14660f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:01:07 -0700 (PDT)
+	s=arc-20240116; t=1712858446; c=relaxed/simple;
+	bh=hzu/tgfoKXjQQl4hxSegoZdRQDXbBvEYoIa+xvPtr6w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qiMbhqvIU6M+6BuoLsbtPuRUCO4YIEW4G/58Jwqs8w1xyOIOHUIMyK6Z2Zy1QYkDuP8Je7W1UZCy/gEJ44d4z6txfTl0Zgp8dVKwodbvx2K8c8AHyE0qpZoX+vUmK34hRpyi1q4OyG888pP0gAjhwZxlBDZ4uh0U5GavZxRDDnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SD+uR9et; arc=none smtp.client-ip=209.85.161.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5a522ae3747so42057eaf.1;
+        Thu, 11 Apr 2024 11:00:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712858466; x=1713463266; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TFQZlmoBEIaWgT85a+mHB96sryXc4pNLPf5zok3FIIo=;
-        b=ldxlZC9QDQBVGNl5h9QLMeHkpkm6mAjtNEmsXiaiRkoawakaBTEmIh9XPsNwZHeIUr
-         QuHNRf/VCTrFaMNvbGPTBhWKFg4He/nRuG2HEsh2eHDhN2MMX1W2AvxgtELjtSOmw19L
-         4JQOfqROSAJj1zvdbPN/vRnA52kjYTcm8warHW0v13url7Srpr/Tb7FNuMzGB6VKQWSU
-         dNPngNArB1djPXVTkVGZHB4yfx8N6OKQN+vVB2T5D/v8OIHNQ4zxDx5+e8MdvaXkBEgF
-         jCDQViUA9VuqMo7H4p21qOi7jrTetxWhR9RiRIA4gXMeZdb7uuPn5owmGfNm9yB9dS13
-         XC1g==
+        d=gmail.com; s=20230601; t=1712858444; x=1713463244; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tKygXtwLt+wS+6rSBXso592J8xpcFDOvcPaDL6jZh3Q=;
+        b=SD+uR9et6Kb/+yml+Yf9wTYW/FG6WhOaW17WaB4eZ7dHDxSJRHfPsSGav+M8beEQRj
+         KRBw/fIKt+16leHTc+6iQKfnti1bb5+3DtcOlJk9JdRKvzV7N99fscgr08TGtU47AMDN
+         YGNBbzOrY41JGpkbqzwYWDtgYygU+kWe6eCqNXG3m3TT3svGhaGhAbo6Ext8pBB+R51n
+         Jm0Z/XcSwKus3iZQnw4zCXsnVoTBqxNAEDUU2BSIWjWduOx/v4xo3Q77oyQVq9/Eg8xS
+         7A8zd1BtmqYlxoxldOsmPUw6Tuco6A9bt5omaM53IcCpcNrvG+FSwn3F1qnsWRGc16ut
+         xFNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712858466; x=1713463266;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TFQZlmoBEIaWgT85a+mHB96sryXc4pNLPf5zok3FIIo=;
-        b=Z/gsuH9LEw95FEaDg3AJVfX77eEFh1z78RcIbim4uHP3H+yvttjhDg4gRKPfFGnbp+
-         5swc7nwogfc5Jd91zIlm5RCFXJ9QLe/49QRBwXfL3e03ITnve4AO1ZFkAcqh5Djlj/vH
-         z3dzjRdoOYvjxHUeWyV6DP1uuM5zW+HdGCsvpr+nqjsnkbmokP8IPHiXbX26JkU8oerc
-         /Ae+rtyS6ppCoyewv3lsBOr6FQicsVMi/kC/94un/fewD7FdNOlbnLQ3f/T6axCg036i
-         LgKmhL2JrWvrys8SW6XteMkLERkhGCkghMA1Hg+XZftax+Ak/shN1qLFXFRbM5OdUDEL
-         tIdg==
-X-Forwarded-Encrypted: i=1; AJvYcCVUecZk3JVUOQSyLItc9ulM2SD1fFQZpkCNcyGF+PDDFawi4yHT16xIcn0UnbyRv5TTHUfk3Siz7BZHnNJtdlI3mkvJ5JwTc5/c0Hsh
-X-Gm-Message-State: AOJu0Yxs3JwjDHYefRfAA/zsm2HO9wF4H0eb2Oq88r2Zp1hRbGkiph0O
-	wI2MG8FTCyCnOibkR5+UhhTy+p+rfcm7IdaL55tHO4ReNsDQTd2Ag+Z35vsi3oiXXuDp8wIvYY5
-	SDK7rtZ13MdzYn7rs3ayZWUKMHwvw7taQKowD
-X-Google-Smtp-Source: AGHT+IEl4Iu+H70L5iEuaxVGs2wVMTfN36uwSB9T1kbBSUqJDIrWPvmyrfPoncl+j8yWfnTJVbG6KZ40Dk/wHobSp7A=
-X-Received: by 2002:a5d:564e:0:b0:343:6551:935 with SMTP id
- j14-20020a5d564e000000b0034365510935mr235209wrw.66.1712858466173; Thu, 11 Apr
- 2024 11:01:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712858444; x=1713463244;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tKygXtwLt+wS+6rSBXso592J8xpcFDOvcPaDL6jZh3Q=;
+        b=TEgs8OMUd1xJJkH7s/FIpk4KZOPto1MIQh79fFUoe9aAjDPoLKvGKn5EXgowbkkwNK
+         d9gMfRJnU7AB92p1JfacfrisCcSuPeMCPOQgb+G2mDcIgKcw9InnXEmbFQsNlevqHSSd
+         B5NVmOhjlPPzkFRaR2mhBYwRLPcVchBlGU/YoV/qQZdMDF4x4heFcCr8jFotNo1KVuik
+         6XrnaWzACkemA1Zrn+NRu2pRMOejf/1lwmJywOT8Mnpv0AjxFqE+IsK0hlmpNxbKbODA
+         +uu2YdgQ0+KolbpBLR3uNYb7O7iMw39HMB9YgUa6RW9s5SCyUqFm0f5JxAMquJaU4YbQ
+         nlAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVOr8aOHAEQ/hVyHts5KaDOPl/ILk9yDemiRjM4zPzjws9yVHdtJtmxOijvIotElJToAj0fTXOGq19jrhmzEoATGFAotNP/zQ5lD4cLrbFLviO3rsMkKCzyNYTrCj91RNRtq7Srgs1pa5QyGUCRM6ixxHv2EA4sSdZzLa1eZuNCaEKj3A==
+X-Gm-Message-State: AOJu0YxkhCjwwU0Oa6bsX03KyVh7L5Cg2aLyQ0+y6TlsfpWocEfUnYKM
+	WDICsYudERdqBdDXuojwSsuhE+aZCmPYwaAEQAoSvR9Sv8pvYZHxCoefFd0yvPQ=
+X-Google-Smtp-Source: AGHT+IHIfdBtJkYCx5rE45KA+2haYhADyvJn3GY3HPvd1BH3bdEIc+Uy9kKIPRg1ZCeBSxTh+j2QEQ==
+X-Received: by 2002:a05:6820:270d:b0:5aa:344e:f419 with SMTP id db13-20020a056820270d00b005aa344ef419mr176666oob.2.1712858443708;
+        Thu, 11 Apr 2024 11:00:43 -0700 (PDT)
+Received: from [192.168.7.169] (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
+        by smtp.gmail.com with ESMTPSA id di12-20020a0568201e8c00b005a4bcb155basm407718oob.23.2024.04.11.11.00.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 11:00:43 -0700 (PDT)
+Message-ID: <bcb03c7d-f566-11cc-21e2-47e5c5a0776a@gmail.com>
+Date: Thu, 11 Apr 2024 13:00:41 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240401232946.1837665-1-jthoughton@google.com>
- <20240401232946.1837665-6-jthoughton@google.com> <ZhgZHJH3c5Lb5SBs@google.com>
- <Zhgdw8mVNYZvzgWH@google.com>
-In-Reply-To: <Zhgdw8mVNYZvzgWH@google.com>
-From: David Matlack <dmatlack@google.com>
-Date: Thu, 11 Apr 2024 11:00:37 -0700
-Message-ID: <CALzav=f=_+UQBJv_eZ=t5wE0AytVo1mwfDoum+ZyNfNHvyOccQ@mail.gmail.com>
-Subject: Re: [PATCH v3 5/7] KVM: x86: Participate in bitmap-based PTE aging
-To: James Houghton <jthoughton@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Yu Zhao <yuzhao@google.com>, Marc Zyngier <maz@kernel.org>, 
-	Oliver Upton <oliver.upton@linux.dev>, Sean Christopherson <seanjc@google.com>, 
-	Jonathan Corbet <corbet@lwn.net>, James Morse <james.morse@arm.com>, 
-	Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Shaoqin Huang <shahuang@redhat.com>, 
-	Gavin Shan <gshan@redhat.com>, Ricardo Koller <ricarkol@google.com>, 
-	Raghavendra Rao Ananta <rananta@google.com>, Ryan Roberts <ryan.roberts@arm.com>, 
-	David Rientjes <rientjes@google.com>, Axel Rasmussen <axelrasmussen@google.com>, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-mm@kvack.org, 
-	linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 3/7] dt-bindings: PCI: qcom: Add IPQ9574 PCIe
+ controller
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240409190833.3485824-1-mr.nuke.me@gmail.com>
+ <20240409190833.3485824-4-mr.nuke.me@gmail.com>
+ <dbee301e-2e31-4db0-877a-96c972ea4bca@linaro.org>
+From: mr.nuke.me@gmail.com
+In-Reply-To: <dbee301e-2e31-4db0-877a-96c972ea4bca@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 11, 2024 at 10:28=E2=80=AFAM David Matlack <dmatlack@google.com=
-> wrote:
->
-> On 2024-04-11 10:08 AM, David Matlack wrote:
-> > On 2024-04-01 11:29 PM, James Houghton wrote:
-> > > Only handle the TDP MMU case for now. In other cases, if a bitmap was
-> > > not provided, fallback to the slowpath that takes mmu_lock, or, if a
-> > > bitmap was provided, inform the caller that the bitmap is unreliable.
-> > >
-> > > Suggested-by: Yu Zhao <yuzhao@google.com>
-> > > Signed-off-by: James Houghton <jthoughton@google.com>
-> > > ---
-> > >  arch/x86/include/asm/kvm_host.h | 14 ++++++++++++++
-> > >  arch/x86/kvm/mmu/mmu.c          | 16 ++++++++++++++--
-> > >  arch/x86/kvm/mmu/tdp_mmu.c      | 10 +++++++++-
-> > >  3 files changed, 37 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/k=
-vm_host.h
-> > > index 3b58e2306621..c30918d0887e 100644
-> > > --- a/arch/x86/include/asm/kvm_host.h
-> > > +++ b/arch/x86/include/asm/kvm_host.h
-> > > @@ -2324,4 +2324,18 @@ int memslot_rmap_alloc(struct kvm_memory_slot =
-*slot, unsigned long npages);
-> > >   */
-> > >  #define KVM_EXIT_HYPERCALL_MBZ             GENMASK_ULL(31, 1)
-> > >
-> > > +#define kvm_arch_prepare_bitmap_age kvm_arch_prepare_bitmap_age
-> > > +static inline bool kvm_arch_prepare_bitmap_age(struct mmu_notifier *=
-mn)
-> > > +{
-> > > +   /*
-> > > +    * Indicate that we support bitmap-based aging when using the TDP=
- MMU
-> > > +    * and the accessed bit is available in the TDP page tables.
-> > > +    *
-> > > +    * We have no other preparatory work to do here, so we do not nee=
-d to
-> > > +    * redefine kvm_arch_finish_bitmap_age().
-> > > +    */
-> > > +   return IS_ENABLED(CONFIG_X86_64) && tdp_mmu_enabled
-> > > +                                    && shadow_accessed_mask;
-> > > +}
-> > > +
-> > >  #endif /* _ASM_X86_KVM_HOST_H */
-> > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > > index 992e651540e8..fae1a75750bb 100644
-> > > --- a/arch/x86/kvm/mmu/mmu.c
-> > > +++ b/arch/x86/kvm/mmu/mmu.c
-> > > @@ -1674,8 +1674,14 @@ bool kvm_age_gfn(struct kvm *kvm, struct kvm_g=
-fn_range *range)
-> > >  {
-> > >     bool young =3D false;
-> > >
-> > > -   if (kvm_memslots_have_rmaps(kvm))
-> > > +   if (kvm_memslots_have_rmaps(kvm)) {
-> > > +           if (range->lockless) {
-> > > +                   kvm_age_set_unreliable(range);
-> > > +                   return false;
-> > > +           }
-> >
-> > If a VM has TDP MMU enabled, supports A/D bits, and is using nested
-> > virtualization, MGLRU will effectively be blind to all accesses made by
-> > the VM.
-> >
-> > kvm_arch_prepare_bitmap_age() will return true indicating that the
-> > bitmap is supported. But then kvm_age_gfn() and kvm_test_age_gfn() will
-> > return false immediately and indicate the bitmap is unreliable because =
-a
-> > shadow root is allocate. The notfier will then return
-> > MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE.
 
-Ah no, I'm wrong here. Setting args.unreliable causes the notifier to
-return 0 instead of MMU_NOTIFIER_YOUNG_FAST.
-MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE is used for something else.
 
-The control flow of all this and naming of functions and macros is
-overall confusing. args.unreliable and
-MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE for one. Also I now realize
-kvm_arch_prepare/finish_bitmap_age() are used even when the bitmap is
-_not_ provided, so those names are also misleading.
+On 4/9/24 15:08, Krzysztof Kozlowski wrote:
+> On 09/04/2024 21:08, Alexandru Gagniuc wrote:
+>> IPQ9574 has PCIe controllers which are almost identical to IPQ6018.
+>> The only difference is that the "iface" clock is not required.
+>> Document this difference along with the compatible string.
+>>
+>> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+>> ---
+>>   .../devicetree/bindings/pci/qcom,pcie.yaml    | 34 +++++++++++++++++++
+>>   1 file changed, 34 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+>> index cf9a6910b542..1915bea580d3 100644
+>> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+>> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+>> @@ -26,6 +26,7 @@ properties:
+>>             - qcom,pcie-ipq8064-v2
+>>             - qcom,pcie-ipq8074
+>>             - qcom,pcie-ipq8074-gen3
+>> +          - qcom,pcie-ipq9574
+>>             - qcom,pcie-msm8996
+>>             - qcom,pcie-qcs404
+>>             - qcom,pcie-sdm845
+>> @@ -397,6 +398,37 @@ allOf:
+>>               - const: axi_m_sticky # AXI Master Sticky reset
+>>               - const: axi_s_sticky # AXI Slave Sticky reset
+>>   
+> 
+> Where do you constrain the reg?
+
+I didn't realize that was also required -- the make checks should have 
+picked this up too? I might be invoking the tests incorrectly.
+
+I should add the ipq9574 in the same list as ipq8074-gen3 and ipq6018, 
+correct?
+
+Alex
 
