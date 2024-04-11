@@ -1,276 +1,202 @@
-Return-Path: <linux-kernel+bounces-140010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AA098A0A4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:43:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB2E18A0AAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:57:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4964282F6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:43:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A7ABB2B3F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:55:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A05321422DC;
-	Thu, 11 Apr 2024 07:41:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E1913EFE9;
+	Thu, 11 Apr 2024 07:55:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="oSNkF+21"
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+	dkim=pass (1024-bit key) header.d=nexgo.de header.i=@nexgo.de header.b="ByEFufFF"
+Received: from mr4.vodafonemail.de (mr4.vodafonemail.de [145.253.228.164])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F1611422BA;
-	Thu, 11 Apr 2024 07:41:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.112
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF0E213E8A1;
+	Thu, 11 Apr 2024 07:55:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=145.253.228.164
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712821318; cv=none; b=kfYopUupPiDNwZaamBxwqIDFpGXJ+XJNBCDPcgVUwWVC8fD5YJWqyt6SaPwu2u15JYs6J8SQRZNY6BKxTnpgjQ8WjrNDL+P8tik0OXS54blYr3YIGtioGbWhXdDjN80clGEWDj8TOX30flH2Bf/B8Lq7gopIzXQcgplvQtU3rbc=
+	t=1712822116; cv=none; b=suzdeQ1cKqkg7pCtrxPieW+wfgSp3koHs5fZ5ArJKnoVAe4kNpZ4Yy0+by6pQ6WHh0A+6bNBFLtXQDG8CbeZU6ij5OiY3kXa6OtMljVb+L8eq5FeUlHghl2FreDXfOYyx7aZrvRCSbF+w/B/+XF/J3ZoHKGxXni33sZMoKFldwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712821318; c=relaxed/simple;
-	bh=CeGUh5LtZ033F714wqexXvGK4L2PSTI/EXNqPvNW1fk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XwFreX20wffLJWibKJ1adc2d0NAy4AgC008mjeY3SvfF+lFTioUkSccXRlzDJo4IQd/W1FMM8E+C6hY898PtwK488nQyQoBeK0VR0sqFSV5oTqKX9kYisHEuOwM1t6hnpOJa+BmDMVVDIU+hCztaqaEy/EmN5bNSQZp3eHT//Js=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=oSNkF+21; arc=none smtp.client-ip=115.124.30.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1712821314; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=mk+s9eBdZfZCpexz66U97EPfuTe77mlB+c6S3kAOnRs=;
-	b=oSNkF+21M2gaLMscH1soHAC0n8sVhWmJhWbOE5TclDpHoMRsUpzgQAYCtlSoBQsGJI28eZLSHDfJZuC9do69E0pQuCnjNthb7RVOzTtXiRS1sQHsnjOl1SNuWPLEJo/IS2Az+N0jE4thOemlySMMzvQ59GCYUMQaiIr+CtRymlA=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W4KbQC1_1712821310;
-Received: from localhost.localdomain(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W4KbQC1_1712821310)
-          by smtp.aliyun-inc.com;
-          Thu, 11 Apr 2024 15:41:52 +0800
-From: Bitao Hu <yaoma@linux.alibaba.com>
-To: dianders@chromium.org,
-	tglx@linutronix.de,
-	liusong@linux.alibaba.com,
-	akpm@linux-foundation.org,
-	pmladek@suse.com,
-	kernelfans@gmail.com,
-	deller@gmx.de,
-	npiggin@gmail.com,
-	tsbogend@alpha.franken.de,
-	James.Bottomley@HansenPartnership.com,
-	jan.kiszka@siemens.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	yaoma@linux.alibaba.com
-Subject: [PATCHv13 5/5] watchdog/softlockup: report the most frequent interrupts
-Date: Thu, 11 Apr 2024 15:41:34 +0800
-Message-Id: <20240411074134.30922-6-yaoma@linux.alibaba.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20240411074134.30922-1-yaoma@linux.alibaba.com>
-References: <20240411074134.30922-1-yaoma@linux.alibaba.com>
+	s=arc-20240116; t=1712822116; c=relaxed/simple;
+	bh=Vf9bYYGypv9FbN+9XbupcrTchpbiruWl7TSDs4c4LfQ=;
+	h=Message-ID:From:To:Cc:References:In-Reply-To:Subject:Date:
+	 MIME-Version:Content-Type; b=JVXHMgt/vdqUo8x76dVzo5C7iWjg1dGnKCd3YeaqW+tiZv8UiSq9XcfpRn9IFpG9x9pWjulwb3UZ7Ei+2bl2JhW0L8UFk2eEaxG2+ux/LGbVzubyFP8oGJoq9ozEDs47liJqpPpdo49nSK1+popBlyz88rxTNlDFE00yJR79Wxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nexgo.de; spf=pass smtp.mailfrom=nexgo.de; dkim=pass (1024-bit key) header.d=nexgo.de header.i=@nexgo.de header.b=ByEFufFF; arc=none smtp.client-ip=145.253.228.164
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nexgo.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nexgo.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nexgo.de;
+	s=vfde-mb-mr2-23sep; t=1712821648;
+	bh=OHW+Te4LEk/4CfJcGxAerYIwwgEc8XtDQqYGwFWpVHY=;
+	h=Message-ID:From:To:References:In-Reply-To:Subject:Date:
+	 Content-Type:X-Mailer:From;
+	b=ByEFufFFulZirbqQeBZHlqXY/Jt5tnRFDkQIpQ21oMYmMcSqWeJi8oBsBpYvxQKg3
+	 xPt2XQk6DQkxqeBzpr1a0u/Y/Ci0ColXtbI7oL1UsjQSDeaDAZLXcM10UN1QQXdTc1
+	 yNF2w359+AjUfuTCnJVElyJrpBzdJSwk2qRAGLdY=
+Received: from smtp.vodafone.de (unknown [10.0.0.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	(No client certificate requested)
+	by mr4.vodafonemail.de (Postfix) with ESMTPS id 4VFWxr0RwVz1y9W;
+	Thu, 11 Apr 2024 07:47:28 +0000 (UTC)
+Received: from H270 (p54805648.dip0.t-ipconnect.de [84.128.86.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.vodafone.de (Postfix) with ESMTPSA id 4VFWxZ4RxJz9scP;
+	Thu, 11 Apr 2024 07:47:11 +0000 (UTC)
+Message-ID: <450F5ED9B5834B2EA883786C32E1A30E@H270>
+From: "Stefan Kanthak" <stefan.kanthak@nexgo.de>
+To: "Eric Biggers" <ebiggers@kernel.org>
+Cc: <linux-crypto@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>,
+	<ardb@kernel.org>
+References: <20240409124216.9261-1-ebiggers@kernel.org> <20240409124216.9261-2-ebiggers@kernel.org> <C0FA88ECA90F43B1BF9E7849C53440D7@H270> <20240409233650.GA1609@quark.localdomain>
+In-Reply-To: <20240409233650.GA1609@quark.localdomain>
+Subject: Re: [PATCH 1/2] crypto: x86/sha256-ni - convert to use rounds macros
+Date: Thu, 11 Apr 2024 09:42:00 +0200
+Organization: Me, myself & IT
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Windows Mail 6.0.6002.18197
+X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7601.24158
+X-purgate-type: clean
+X-purgate: clean
+X-purgate-size: 4380
+X-purgate-ID: 155817::1712821643-BCFF7A47-8CAAE437/0/0
 
-When the watchdog determines that the current soft lockup is due
-to an interrupt storm based on CPU utilization, reporting the
-most frequent interrupts could be good enough for further
-troubleshooting.
+"Eric Biggers" <ebiggers@kernel.org> wrote:
 
-Below is an example of interrupt storm. The call tree does not
-provide useful information, but we can analyze which interrupt
-caused the soft lockup by comparing the counts of interrupts.
+> On Tue, Apr 09, 2024 at 06:52:02PM +0200, Stefan Kanthak wrote:
+>> "Eric Biggers" <ebiggers@kernel.org> wrote:
+>> 
+>> > +.macro do_4rounds i, m0, m1, m2, m3
+>> > +.if \i < 16
+>> > +        movdqu  \i*4(DATA_PTR), MSG
+>> > +        pshufb  SHUF_MASK, MSG
+>> > +        movdqa  MSG, \m0
+>> > +.else
+>> > +        movdqa  \m0, MSG
+>> > +.endif
+>> > +        paddd   \i*4(SHA256CONSTANTS), MSG
+>> 
+>> To load the round constant independent from and parallel to the previous
+>> instructions which use \m0 I recommend to change the first lines of the
+>> do_4rounds macro as follows (this might save 1+ cycle per macro invocation,
+>> and most obviously 2 lines):
+>> 
+>> .macro do_4rounds i, m0, m1, m2, m3
+>> .if \i < 16
+>>         movdqu  \i*4(DATA_PTR), \m0
+>>         pshufb  SHUF_MASK, \m0
+>> .endif
+>>         movdqa  \i*4(SHA256CONSTANTS), MSG
+>>         paddd   \m0, MSG
+>> ...
+> 
+> Yes, your suggestion looks good.  I don't see any performance difference on
+> Ice Lake, but it does shorten the source code.  It belongs in a separate patch
+> though, since this patch isn't meant to change the output.
 
-[  638.870231] watchdog: BUG: soft lockup - CPU#9 stuck for 26s! [swapper/9:0]
-[  638.870825] CPU#9 Utilization every 4s during lockup:
-[  638.871194]  #1:   0% system,          0% softirq,   100% hardirq,     0% idle
-[  638.871652]  #2:   0% system,          0% softirq,   100% hardirq,     0% idle
-[  638.872107]  #3:   0% system,          0% softirq,   100% hardirq,     0% idle
-[  638.872563]  #4:   0% system,          0% softirq,   100% hardirq,     0% idle
-[  638.873018]  #5:   0% system,          0% softirq,   100% hardirq,     0% idle
-[  638.873494] CPU#9 Detect HardIRQ Time exceeds 50%. Most frequent HardIRQs:
-[  638.873994]  #1: 330945      irq#7
-[  638.874236]  #2: 31          irq#82
-[  638.874493]  #3: 10          irq#10
-[  638.874744]  #4: 2           irq#89
-[  638.874992]  #5: 1           irq#102
-..
-[  638.875313] Call trace:
-[  638.875315]  __do_softirq+0xa8/0x364
+Hmmm... the output was already changed: 2 palignr/pblendw and 16 pshufd
+have been replaced with punpck?qdq, and 17 displacements changed.
 
-Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
-Reviewed-by: Liu Song <liusong@linux.alibaba.com>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
----
- kernel/watchdog.c | 116 ++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 112 insertions(+), 4 deletions(-)
+Next simplification, and 5 more lines gone: replace the macro do_16rounds
+with a repetition
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index ef8ebd31fdab..d12ff74889ed 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -12,22 +12,25 @@
- 
- #define pr_fmt(fmt) "watchdog: " fmt
- 
--#include <linux/mm.h>
- #include <linux/cpu.h>
--#include <linux/nmi.h>
- #include <linux/init.h>
-+#include <linux/irq.h>
-+#include <linux/irqdesc.h>
- #include <linux/kernel_stat.h>
-+#include <linux/kvm_para.h>
- #include <linux/math64.h>
-+#include <linux/mm.h>
- #include <linux/module.h>
-+#include <linux/nmi.h>
-+#include <linux/stop_machine.h>
- #include <linux/sysctl.h>
- #include <linux/tick.h>
-+
- #include <linux/sched/clock.h>
- #include <linux/sched/debug.h>
- #include <linux/sched/isolation.h>
--#include <linux/stop_machine.h>
- 
- #include <asm/irq_regs.h>
--#include <linux/kvm_para.h>
- 
- static DEFINE_MUTEX(watchdog_mutex);
- 
-@@ -418,13 +421,105 @@ static void print_cpustat(void)
- 	}
- }
- 
-+#define HARDIRQ_PERCENT_THRESH          50
-+#define NUM_HARDIRQ_REPORT              5
-+struct irq_counts {
-+	int irq;
-+	u32 counts;
-+};
-+
-+static DEFINE_PER_CPU(bool, snapshot_taken);
-+
-+/* Tabulate the most frequent interrupts. */
-+static void tabulate_irq_count(struct irq_counts *irq_counts, int irq, u32 counts, int rank)
-+{
-+	int i;
-+	struct irq_counts new_count = {irq, counts};
-+
-+	for (i = 0; i < rank; i++) {
-+		if (counts > irq_counts[i].counts)
-+			swap(new_count, irq_counts[i]);
-+	}
-+}
-+
-+/*
-+ * If the hardirq time exceeds HARDIRQ_PERCENT_THRESH% of the sample_period,
-+ * then the cause of softlockup might be interrupt storm. In this case, it
-+ * would be useful to start interrupt counting.
-+ */
-+static bool need_counting_irqs(void)
-+{
-+	u8 util;
-+	int tail = __this_cpu_read(cpustat_tail);
-+
-+	tail = (tail + NUM_HARDIRQ_REPORT - 1) % NUM_HARDIRQ_REPORT;
-+	util = __this_cpu_read(cpustat_util[tail][STATS_HARDIRQ]);
-+	return util > HARDIRQ_PERCENT_THRESH;
-+}
-+
-+static void start_counting_irqs(void)
-+{
-+	if (!__this_cpu_read(snapshot_taken)) {
-+		kstat_snapshot_irqs();
-+		__this_cpu_write(snapshot_taken, true);
-+	}
-+}
-+
-+static void stop_counting_irqs(void)
-+{
-+	__this_cpu_write(snapshot_taken, false);
-+}
-+
-+static void print_irq_counts(void)
-+{
-+	unsigned int i, count;
-+	struct irq_counts irq_counts_sorted[NUM_HARDIRQ_REPORT] = {
-+		{-1, 0}, {-1, 0}, {-1, 0}, {-1, 0}, {-1, 0}
-+	};
-+
-+	if (__this_cpu_read(snapshot_taken)) {
-+		for_each_active_irq(i) {
-+			count = kstat_get_irq_since_snapshot(i);
-+			tabulate_irq_count(irq_counts_sorted, i, count, NUM_HARDIRQ_REPORT);
-+		}
-+
-+		/*
-+		 * Outputting the "watchdog" prefix on every line is redundant and not
-+		 * concise, and the original alarm information is sufficient for
-+		 * positioning in logs, hence here printk() is used instead of pr_crit().
-+		 */
-+		printk(KERN_CRIT "CPU#%d Detect HardIRQ Time exceeds %d%%. Most frequent HardIRQs:\n",
-+		       smp_processor_id(), HARDIRQ_PERCENT_THRESH);
-+
-+		for (i = 0; i < NUM_HARDIRQ_REPORT; i++) {
-+			if (irq_counts_sorted[i].irq == -1)
-+				break;
-+
-+			printk(KERN_CRIT "\t#%u: %-10u\tirq#%d\n",
-+			       i + 1, irq_counts_sorted[i].counts,
-+			       irq_counts_sorted[i].irq);
-+		}
-+
-+		/*
-+		 * If the hardirq time is less than HARDIRQ_PERCENT_THRESH% in the last
-+		 * sample_period, then we suspect the interrupt storm might be subsiding.
-+		 */
-+		if (!need_counting_irqs())
-+			stop_counting_irqs();
-+	}
-+}
-+
- static void report_cpu_status(void)
- {
- 	print_cpustat();
-+	print_irq_counts();
- }
- #else
- static inline void update_cpustat(void) { }
- static inline void report_cpu_status(void) { }
-+static inline bool need_counting_irqs(void) { return false; }
-+static inline void start_counting_irqs(void) { }
-+static inline void stop_counting_irqs(void) { }
- #endif
- 
- /*
-@@ -528,6 +623,18 @@ static int is_softlockup(unsigned long touch_ts,
- 			 unsigned long now)
- {
- 	if ((watchdog_enabled & WATCHDOG_SOFTOCKUP_ENABLED) && watchdog_thresh) {
-+		/*
-+		 * If period_ts has not been updated during a sample_period, then
-+		 * in the subsequent few sample_periods, period_ts might also not
-+		 * be updated, which could indicate a potential softlockup. In
-+		 * this case, if we suspect the cause of the potential softlockup
-+		 * might be interrupt storm, then we need to count the interrupts
-+		 * to find which interrupt is storming.
-+		 */
-+		if (time_after_eq(now, period_ts + get_softlockup_thresh() / NUM_SAMPLE_PERIODS) &&
-+		    need_counting_irqs())
-+			start_counting_irqs();
-+
- 		/* Warn about unreasonable delays. */
- 		if (time_after(now, period_ts + get_softlockup_thresh()))
- 			return now - touch_ts;
-@@ -550,6 +657,7 @@ static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
- static int softlockup_fn(void *data)
- {
- 	update_touch_ts();
-+	stop_counting_irqs();
- 	complete(this_cpu_ptr(&softlockup_completion));
- 
- 	return 0;
--- 
-2.37.1 (Apple Git-137.1)
+@@ ...
+-.macro do_16rounds i
+-        do_4rounds (\i + 0),  MSGTMP0, MSGTMP1, MSGTMP2, MSGTMP3
+-        do_4rounds (\i + 4),  MSGTMP1, MSGTMP2, MSGTMP3, MSGTMP0
+-        do_4rounds (\i + 8),  MSGTMP2, MSGTMP3, MSGTMP0, MSGTMP1
+-        do_4rounds (\i + 12), MSGTMP3, MSGTMP0, MSGTMP1, MSGTMP2
+-.endm
+-
+@@ ...
+-        do_16rounds 0
+-        do_16rounds 16
+-        do_16rounds 32
+-        do_16rounds 48
++.irp i, 0, 16, 32, 48
++        do_4rounds (\i + 0),  MSGTMP0, MSGTMP1, MSGTMP2, MSGTMP3
++        do_4rounds (\i + 4),  MSGTMP1, MSGTMP2, MSGTMP3, MSGTMP0
++        do_4rounds (\i + 8),  MSGTMP2, MSGTMP3, MSGTMP0, MSGTMP1
++        do_4rounds (\i + 12), MSGTMP3, MSGTMP0, MSGTMP1, MSGTMP2
++.endr
 
+This doesn't change the instructions generated, so it belongs to this patch.
+
+
+The following suggestion changes instructions: AFAIK all processors which
+support the SHA extensions support AVX too
+
+@@ ...
++.ifnotdef AVX
+         movdqa          STATE0, MSGTMP4
+         punpcklqdq      STATE1, STATE0                  /* FEBA */
+         punpckhqdq      MSGTMP4, STATE1                 /* DCHG */
+         pshufd          $0x1B, STATE0,  STATE0          /* ABEF */
+         pshufd          $0xB1, STATE1,  STATE1          /* CDGH */
++.else
++        vpunpckhqdq     STATE0, STATE1, MSGTMP0         /* DCHG */
++        vpunpcklqdq     STATE0, STATE1, MSGTMP1         /* BAFE */
++        pshufd          $0xB1, MSGTMP0, STATE0          /* CDGH */
++        pshufd          $0xB1, MSGTMP1, STATE1          /* ABEF */
++.endif
+@@ ...
++.ifnotdef AVX
+         movdqa  \i*4(SHA256CONSTANTS), MSG
+         paddd   \m0, MSG
++.else
++        vpaddd  \i*4(SHA256CONSTANTS), \m0, MSG
++.endif
+@@ ...
++.ifnotdef AVX
+         movdqa  \m0, MSGTMP4
+         palignr $4, \m3, MSGTMP4
++.else
++        vpalignr $4, \m3, \m0, MSGTMP4
++.endif
+@@ ...
++.ifnotdef AVX
+         movdqa          STATE1, MSGTMP4
+         punpcklqdq      STATE0, STATE1                  /* EFGH */
+         punpckhqdq      MSGTMP4, STATE0                 /* CDAB */
+         pshufd          $0x1B, STATE0,  STATE0          /* DCBA */
+         pshufd          $0xB1, STATE1,  STATE1          /* HGFE */
++.else
++        vpunpckhqdq     STATE0, STATE1, MSGTMP0         /* ABCD */
++        vpunpcklqdq     STATE0, STATE1, MSGTMP1         /* EFGH */
++        pshufd          $0x1B, MSGTMP0, STATE0          /* DCBA */
++        pshufd          $0x1B, MSGTMP1, STATE1          /* HGFE */
++.endif
+
+
+And last: are the "#define ... %xmm?" really necessary?
+
+- MSG can't be anything but %xmm0;
+- MSGTMP4 is despite its prefix MSG also used to shuffle STATE0 and STATE1,
+  so it should be named TMP instead (if kept);
+- MSGTMP0 to MSGTMP3 are the circular message schedule, they should be named
+  MSG0 to MSG3 instead (if kept).
+
+I suggest to remove at least those which are now encapsulated in the macro
+and the repetition.
+
+
+regards
+Stefan
 
