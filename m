@@ -1,84 +1,76 @@
-Return-Path: <linux-kernel+bounces-141078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FB108A1A60
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:49:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D63688A1AB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:04:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B371284E8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:49:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65D191F2157D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:04:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A950E47F41;
-	Thu, 11 Apr 2024 15:40:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 833321EF510;
+	Thu, 11 Apr 2024 15:41:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mvILCXvr";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mvILCXvr"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U106ysxS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F89C1D6385;
-	Thu, 11 Apr 2024 15:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9976451C46
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:41:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850008; cv=none; b=A2g0PTKmSFjS1jryXsLO8gyjTc04o2arCgood6WBpqIxp/ntSy9oTSgglReNFtzZANyKmgrcuS47fNFoNRp72MSK5ZuIOKBRW1xL7ZE9zUDqSem06fXD4VZYEGPNajTyNb91GJ1BCsrln8JJChVTIAI9NUNW8kPWgO75cHP7h5E=
+	t=1712850117; cv=none; b=kt5whiNuHkPqs0OcoxaGIG8QvaX0B8bVQ2Q+goBJfY+DyG0Ijsf1TIi2lCigH86A3v0XOW+4RaydWIF+L3oBwvg4ufyifu1SMklZ1lDd+r08LYG0kWugDRrmUQFfobw/U1fdWZz+DF5IbbCNQLxKUPYcRXlyWIxEfBLT08iYDzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850008; c=relaxed/simple;
-	bh=oluwa4uBbq2SQ9awi8ofoYyeGu4WJDGRc+3ri+ChAIE=;
+	s=arc-20240116; t=1712850117; c=relaxed/simple;
+	bh=+VdZKFRspQe3KDv3J/ZsiPt1j1rsYqHFED5iEqREzMU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ue0nyFvq5JLDCnQTVxDc9NwTkubiRvXXGJY6aGqPD0aWSJA/J7nosv6yvrGvXcioBYzmYLuJGKZ3UnGat6OiPsH6ljkLyB4V5e2U/8gImRL6YJIxKYcvOq47KdHSE0oom5QkZSKAZ14CM+RLKvg47UIOx/DIPPsLkn3em3FKM5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mvILCXvr; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mvILCXvr; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3088A3765C;
-	Thu, 11 Apr 2024 15:40:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712850004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G2XByNyMRfD+PxUu51kh1WRBKG3twlIy8uQsFNS0GR0=;
-	b=mvILCXvrw4TQ6/5rw3DDP2K9H8aytX5IdghSHeyb+oTDAAa5Bl/2XnGevAfzT20pzQIdS5
-	AnlOXGlE7elw4PLnYymf1WzAQcpVQP3avnsOROultPJoq05D4E3Xj1SA6Y23/Vbshi71Zl
-	thh+kgHvOlaLf0ydHuDPk0QiYpnBjHg=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=mvILCXvr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712850004; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=G2XByNyMRfD+PxUu51kh1WRBKG3twlIy8uQsFNS0GR0=;
-	b=mvILCXvrw4TQ6/5rw3DDP2K9H8aytX5IdghSHeyb+oTDAAa5Bl/2XnGevAfzT20pzQIdS5
-	AnlOXGlE7elw4PLnYymf1WzAQcpVQP3avnsOROultPJoq05D4E3Xj1SA6Y23/Vbshi71Zl
-	thh+kgHvOlaLf0ydHuDPk0QiYpnBjHg=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1E2691368B;
-	Thu, 11 Apr 2024 15:40:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id l6UjB1QEGGajXwAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Thu, 11 Apr 2024 15:40:04 +0000
-Date: Thu, 11 Apr 2024 17:40:02 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Christian Brauner <brauner@kernel.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Kent Overstreet <kent.overstreet@linux.dev>, 
-	Kees Cook <keescook@chromium.org>, Tycho Andersen <tandersen@netflix.com>, 
-	Jens Axboe <axboe@kernel.dk>, Aleksa Sarai <cyphar@cyphar.com>
-Subject: Re: Re: [PATCH 2/3] kernel/pid: Remove default pid_max value
-Message-ID: <uu7pzw6cib324p6orccxonr5dqhgy5zdrjgpdqtt7yuf6b76o5@5nbw3mm64p7w>
-References: <20240408145819.8787-1-mkoutny@suse.com>
- <20240408145819.8787-3-mkoutny@suse.com>
- <20240408132955.70d10145d2ea1b0b12b7a5d0@linux-foundation.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Nf8Cu97qpLPCDE7gPx60q/VxwJV71UgndrjWylSsZqKgIaveogX7W6b0QGPZoq9Rq1hxfmHK1cwpDHrQFPp2OWJyKDOxK1nlu+IjdGzbscCRG7wpAkSeNnY8RcHqYLDmK7iP1xrchsxBqNBR7n6QmZw/JWUpwuvKxOh5TZEnqFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U106ysxS; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712850115; x=1744386115;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+VdZKFRspQe3KDv3J/ZsiPt1j1rsYqHFED5iEqREzMU=;
+  b=U106ysxS6MbPJG0M94czVywEEriaoHhaVnqQEOniE5cbuVA8GfpQ59KT
+   lDIqfCBRCKuOoQSVfOSQmn/evHn+Gba9ROahcUvtIuttq75JIUKINeNMm
+   X/+oMGebR40UevJjF2Bxj1BOJo7lxnLFvLgeVYhED9iIbihC1yxlPJNhK
+   yav8XwTwEz3yflIHetrUZIpX0k8gnUQLE4XjZZ4XL1KWzAk9ToJXRuPC9
+   NEniXnrvLI9o5kFQurp+1RelYgYm6xs2P2bP5radOdHMncID8RTQ8IlvU
+   cYrx9CqSX+E2F61xYawOT1sgr0gKMJFiOx78of3Wprve/N/1ntGA+6PjQ
+   A==;
+X-CSE-ConnectionGUID: kM7VQny0Rq2rlON/PPZn6Q==
+X-CSE-MsgGUID: AlZbor7BTq+3t5zfTmrn8g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="25721208"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="25721208"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 08:41:54 -0700
+X-CSE-ConnectionGUID: 2B2e42FsRjWsSxnIKC5SmQ==
+X-CSE-MsgGUID: zNe4wGfHSwe/KPzSUNOhMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="58358752"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 11 Apr 2024 08:41:52 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1ruwYf-0008kL-2i;
+	Thu, 11 Apr 2024 15:41:49 +0000
+Date: Thu, 11 Apr 2024 23:40:33 +0800
+From: kernel test robot <lkp@intel.com>
+To: Zhihao Cheng <chengzhihao1@huawei.com>, richard@nod.at,
+	daniel@makrotopia.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] ubi: ubi_init: Fix missed ubiblock cleanup in error
+ handling path
+Message-ID: <202404112327.158HJfAw-lkp@intel.com>
+References: <20240410074033.2523399-3-chengzhihao1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,70 +79,162 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240408132955.70d10145d2ea1b0b12b7a5d0@linux-foundation.org>
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 3088A3765C
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim]
+In-Reply-To: <20240410074033.2523399-3-chengzhihao1@huawei.com>
 
-Hello.
+Hi Zhihao,
 
-On Mon, Apr 08, 2024 at 01:29:55PM -0700, Andrew Morton <akpm@linux-foundation.org> wrote:
-> That seems like a large change.
+kernel test robot noticed the following build warnings:
 
-In what sense is it large?
+[auto build test WARNING on rw-ubifs/next]
+[also build test WARNING on linus/master v6.9-rc3 next-20240411]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I tried to lookup the code parts that depend on this default and either
-add the other patches or mention the impact (that part could be more
-thorough) in the commit message.
+url:    https://github.com/intel-lab-lkp/linux/commits/Zhihao-Cheng/ubi-ubi_init-Fix-missed-debugfs-cleanup-in-error-handling-path/20240410-155105
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git next
+patch link:    https://lore.kernel.org/r/20240410074033.2523399-3-chengzhihao1%40huawei.com
+patch subject: [PATCH 2/2] ubi: ubi_init: Fix missed ubiblock cleanup in error handling path
+config: x86_64-randconfig-104-20240411 (https://download.01.org/0day-ci/archive/20240411/202404112327.158HJfAw-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240411/202404112327.158HJfAw-lkp@intel.com/reproduce)
 
-> It isn't clear why we'd want to merge this patchset.  Does it improve
-> anyone's life and if so, how?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404112327.158HJfAw-lkp@intel.com/
 
-- kernel devs who don't care about policy
-  - policy should be decided by distros/users, not in kernel
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
 
-- users who need many threads
-  - current default is too low
-  - this is one more place to look at when configuring
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_iso8859-6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_iso8859-13.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/nls_iso8859-14.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-celtic.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-centeuro.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-croatian.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-greek.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-inuit.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/nls/mac-turkish.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/binfmt_misc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/isofs/isofs.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/smb/common/cifs_arc4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/smb/common/cifs_md4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in fs/autofs/autofs4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in security/keys/trusted-keys/trusted.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in security/keys/encrypted-keys/encrypted-keys.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in block/t10-pi.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/pci/pci-stub.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/backlight/platform_lcd.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/matrox/matroxfb_accel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/matrox/matroxfb_DAC1064.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/matrox/matroxfb_Ti3026.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/macmodes.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/via/viafb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/video/fbdev/kyro/kyrofb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/dma/dmatest.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/tty/goldfish.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/agp/sis-agp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/lp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/ppdev.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/char/tlclk.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/bridge/sil-sii8620.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/tiny/bochs.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/gpu/drm/udl/udl.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/base/regmap/regmap-slimbus.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/base/regmap/regmap-w1.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mfd/arizona.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/dax/dax.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/scsi/scsi_common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/auxdisplay/hd44780_common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/serial/navman.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/serial/usb-serial-simple.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/libcomposite.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_acm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_ss_lb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/u_serial.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_serial.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_obex.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_mass_storage.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_fs.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_uac1.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_hid.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_printer.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/function/usb_f_tcm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/usb/gadget/legacy/g_zero.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/i2c/busses/i2c-ali1563.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/rc-core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/platform/marvell/mcam-core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/watchdog/menz69_wdt.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/leds/flash/leds-rt4505.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/coreboot_table.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/memconsole.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/memconsole-coreboot.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/firmware/google/vpd-sysfs.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-apple.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-betopff.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-bigbenff.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-cherry.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-elecom.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-gyration.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-kensington.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-keytouch.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-letsketch.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-logitech.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-lg-g15.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-logitech-dj.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-logitech-hidpp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-magicmouse.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-mf.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-megaworld.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-prodikeys.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-redragon.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-sony.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-twinhan.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-zpff.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-viewsonic.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-waltop.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-light.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-loopback.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-power-supply.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-raw.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-gbphy.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-gpio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-i2c.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/staging/greybus/gb-uart.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/devfreq/governor_performance.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/nvmem/nvmem_u-boot-env.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_util.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/chips/cfi_cmdset_0020.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mtd/maps/map_funcs.o
+>> WARNING: modpost: drivers/mtd/ubi/ubi: section mismatch in reference: init_module+0x17d (section: .init.text) -> ubiblock_exit (section: .exit.text)
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio_aec.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio_netx.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/uio/uio_pruss.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/greybus/greybus.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-aspeed.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-master-gpio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/fsi/fsi-scom.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/core/snd-pcm-dmaengine.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/codecs/snd-soc-sigmadsp.o
+WARNING: modpost: sound/soc/codecs/snd-soc-tlv320adc3xxx: section mismatch in reference: adc3xxx_i2c_driver+0x10 (section: .data) -> adc3xxx_i2c_remove (section: .exit.text)
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/amd/yc/snd-soc-acp6x-mach.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/amd/acp/snd-acp-i2s.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/amd/acp/snd-acp-pdm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/amd/acp/snd-acp-legacy-common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/intel/avs/boards/snd-soc-avs-da7219.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/intel/avs/boards/snd-soc-avs-dmic.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/intel/avs/boards/snd-soc-avs-max98373.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/intel/avs/boards/snd-soc-avs-nau8825.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/intel/avs/boards/snd-soc-avs-rt286.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/intel/avs/boards/snd-soc-avs-rt5682.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/intel/avs/boards/snd-soc-avs-ssm4567.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/xilinx/snd-soc-xlnx-i2s.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/soc/xilinx/snd-soc-xlnx-formatter-pcm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in sound/ac97_bus.o
 
-- users who want to prevent fork-bombs
-  - current default is ineffective (too high), false feeling of safety
-  - i.e. they should configure appropriate mechanism appropriately
-
-
-I thought that the first point alone would be convincing and that only
-scaling impact might need clarification.
-
-Regards,
-Michal
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
