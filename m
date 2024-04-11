@@ -1,136 +1,80 @@
-Return-Path: <linux-kernel+bounces-140326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E57888A12D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:19:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A86208A12D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:19:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CF752830E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:19:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E7D81F223D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 447741482E4;
-	Thu, 11 Apr 2024 11:19:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F9F1487C3;
+	Thu, 11 Apr 2024 11:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bl6QlGo0"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="gIA/LJI+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D4212EAE5
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F95D2EAE5;
+	Thu, 11 Apr 2024 11:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712834367; cv=none; b=npf4NA/SG0me9EBvEwDzE9Y5kIRtOaOQy80RAInxhriB2jjZZq/U/jvJ5Dbi9FYr+R6n+OREoBa0RpEdvTczajK+UACMyjLq5A49RZzAq903MC/GzWAi8QT7kovOVT4XX5Rc3yvCscVmx67ZCnMGbC0cBH0AFy6LyB0A71DymE4=
+	t=1712834390; cv=none; b=OBcA4tOlNyqhWdGeXv670lFt9hq9jTSmH8K5pLPqHWEq0CmLbWAAfcu2hiTIki3MQipXR7HxTr1QMWM2cisXMiJs3dumkyazF4CyXxKJFmjhfCsYZzZYy1NvcnDgeppAr3niTNEXhaocJcMAi6YNqL+r+dO+HYDipUQjw9/jj/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712834367; c=relaxed/simple;
-	bh=OP7OtQdypE7+8o9W5T5QkVM9BiDZWDXKjJcngRL9ncE=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rVKm+EP/Mbwy4wdd0UR3vpLaauVYwUo6edyGXExy9pVJnS/ZOo9gWymU32HcJMCoOrAwykc/c6Wmsx3KJRxzzjb7y4ScD+vVamUlucmoGKWh3onoHB3H2DBuhnhUeRAKCV+V8InMQVxTOrwWX+2r6e2Qmd3qltRb0/fkVmrtyUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bl6QlGo0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B894C433C7;
-	Thu, 11 Apr 2024 11:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712834367;
-	bh=OP7OtQdypE7+8o9W5T5QkVM9BiDZWDXKjJcngRL9ncE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=bl6QlGo0uk7zNJNrFKvY6P/wrNyiyQcmGiIBn/2LU0aEb7ATXi9Oa13oCtEk9Nk3w
-	 sq7KIU9thLEXeXJD6Rd+I+t43GEB5UuTNB0VuUWN5CQm4jZ2zlJlcZoM4AOMZmMWFK
-	 wIj/OI1k+dWriHQOhaBgAlAEdWekUGMtLpu6AeXCF2jtool2bbo3Km6zAdABOTT3Pv
-	 nHgB3Iq2SYUCKaw4XrcFAIFKCtesYamgUPOhH+O+zTIFh+GaLoFgazySEOPSVWyTOw
-	 KtzbD7HIAXXMXXt1WyS/UYtnamZq2IYM5p3lAmaWEimdMVIJHrCcbcpVqxaDRGDNVD
-	 ccheWOzsRWw7Q==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rusSi-003S4O-U4;
-	Thu, 11 Apr 2024 12:19:25 +0100
-Date: Thu, 11 Apr 2024 12:19:24 +0100
-Message-ID: <86r0fcrvsz.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Guanrui Huang <guanrui.huang@linux.alibaba.com>
-Cc: yuzenghui@huawei.com,
-	shannon.zhao@linux.alibaba.com,
-	tglx@linutronix.de,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] irqchip/gic-v3-its: Fix double free on error
-In-Reply-To: <20240411105630.53865-1-guanrui.huang@linux.alibaba.com>
-References: <20240411105630.53865-1-guanrui.huang@linux.alibaba.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1712834390; c=relaxed/simple;
+	bh=4+EX1O3OUBUt+DgU/WACpEoYvw2h6K4uULYp0k19JXg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rbbQRbWoRxZORrWayAIRmdl7lH4Vd9WEH56yKGdJigJQxnWfI8etg/MIdlAL0Jjs+di/b7/VEcK7jyv/T5mS2XxFcg7FKWeWyV2uqiHAF+segJxt+7tE7SxfR9rzwnkMq69DPJn0G2CUEmRjR3JFbSPeq3U0c8wk273asm4TwcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=gIA/LJI+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 349BDC433F1;
+	Thu, 11 Apr 2024 11:19:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712834389;
+	bh=4+EX1O3OUBUt+DgU/WACpEoYvw2h6K4uULYp0k19JXg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gIA/LJI+zJdGrQ27WbXTxnj3Drl45G+ckOWj7QXHJ28hohyQsquVOW4Eh5+nSGZ7S
+	 /tIDg8nTcBfX5rJn6Xrk94BMTYC2te0jIWhkhPPC1p8rAq+psDMICVUV3lqd8McVxH
+	 YYmZtr7yZa/qdnGKj/2u5/lT5s2aQkpyQhm8z294=
+Date: Thu, 11 Apr 2024 13:19:46 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Chris Rankin <rankincj@gmail.com>
+Cc: Linux Stable <stable@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 6.8 000/143] 6.8.6-rc1 review
+Message-ID: <2024041125-surgery-pending-cd06@gregkh>
+References: <CAK2bqV+kpG5cm5py24TusikZYO=_vWg7CVEN3oTywVhnq1mhjQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: guanrui.huang@linux.alibaba.com, yuzenghui@huawei.com, shannon.zhao@linux.alibaba.com, tglx@linutronix.de, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK2bqV+kpG5cm5py24TusikZYO=_vWg7CVEN3oTywVhnq1mhjQ@mail.gmail.com>
 
-On Thu, 11 Apr 2024 11:56:30 +0100,
-Guanrui Huang <guanrui.huang@linux.alibaba.com> wrote:
+On Thu, Apr 11, 2024 at 11:38:36AM +0100, Chris Rankin wrote:
+> The SCSI sg driver oopsed on my 6.8.4 kernel, and I noticed that a
+> patch (presumably) to fix this was pulled from 6.8.5. However, I also
+> noticed this email:
+
+Was that a warning or a real crash?
+
+> >> Reverted this patch and I couldn't see the reposted warning.
+> >> scsi: sg: Avoid sg device teardown race
+> >> [ Upstream commit 27f58c04a8f438078583041468ec60597841284d ]
+> >
+> > Fix is here:
+> >
+> > https://git.kernel.org/mkp/scsi/c/d4e655c49f47
 > 
-> In its_vpe_irq_domain_alloc, when its_vpe_init() returns an error
-> with i > 0, its_vpe_irq_domain_free may free bitmap and vprop_page,
-> and then there is a double free in its_vpe_irq_domain_alloc.
-> 
-> Fix it by calling its_vpe_irq_domain_free directly, bitmap and
-> vprop_page will be freed in this function.
-> 
-> And check whether its_vm is equal to domain->host_data to make sure
-> its_vpe_irq_domain_free handle right its_vm.
-> 
-> Signed-off-by: Guanrui Huang <guanrui.huang@linux.alibaba.com>
-> ---
->  drivers/irqchip/irq-gic-v3-its.c | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index fca888b36680..72c44e555c88 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -4523,6 +4523,9 @@ static int its_vpe_irq_domain_alloc(struct irq_domain *domain, unsigned int virq
->  
->  	BUG_ON(!vm);
->  
-> +	if (vm != domain->host_data)
-> +		return -EINVAL;
-> +
+> Is this unsuitable for 6.8.6 please?
 
-How can this happen?
+Is it in Linus's tree yet?
 
->  	bitmap = its_lpi_alloc(roundup_pow_of_two(nr_irqs), &base, &nr_ids);
->  	if (!bitmap)
->  		return -ENOMEM;
-> @@ -4561,13 +4564,8 @@ static int its_vpe_irq_domain_alloc(struct irq_domain *domain, unsigned int virq
->  		irqd_set_resend_when_in_progress(irq_get_irq_data(virq + i));
->  	}
->  
-> -	if (err) {
-> -		if (i > 0)
-> -			its_vpe_irq_domain_free(domain, virq, i);
-> -
-> -		its_lpi_free(bitmap, base, nr_ids);
-> -		its_free_prop_table(vprop_page);
-> -	}
-> +	if (err)
-> +		its_vpe_irq_domain_free(domain, virq, i);
->  
->  	return err;
->  }
+thanks,
 
-This otherwise looks reasonable.
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+greg k-h
 
