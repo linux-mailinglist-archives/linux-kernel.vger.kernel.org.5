@@ -1,132 +1,204 @@
-Return-Path: <linux-kernel+bounces-140435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77F9E8A1499
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:27:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A71B78A149F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:29:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8EDA1C2227C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:27:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3CD31C21A75
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:29:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF9B14D458;
-	Thu, 11 Apr 2024 12:26:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3980214C58E;
+	Thu, 11 Apr 2024 12:29:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aI70pwew"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MpRBso6X"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F4F14C587;
-	Thu, 11 Apr 2024 12:26:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64C413FD66
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:29:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712838410; cv=none; b=FovsbY+Hyl55YW3pvYi3xIhRCrHfuQOaZzato64wEeacHGijG7ep34lSlLZvjD8xVnBaXSCzz+FylcNMZCYW2OScjjBVP8kIxCR3GQ0tkkgS9u0ZW+53aJ2xjG/IL0GccxCeRjNZThuvrf6HtBrirpNZz8kX5Pa+954w4Ee7W84=
+	t=1712838558; cv=none; b=MJPsUTcOKpuMWkEeKeAY0oQJysGsbuNc/rhnP3JQY8ARBDyiI8XuT965i38P7GNYa9nMxGyCgd6w5sLxEk19tHCa43J7ZweQgAufsWTbpHp7CBr4FAd/y7irY43XLgaHv9cB4A+tVmXaedVOKQXoGR8Foyogo/EHxva4UX7blQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712838410; c=relaxed/simple;
-	bh=j9QEZErwSiPeHI7etNSggt8jQ1vfzV580Nrz8drvUL4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CGE9DGtOr54k1FlbXjn7WK/b9TIL3KzT82Xmpkw1iFSgiOmp43oHtOgMXSn6jU/n8hvqvrXb6TYjPaIayzRxxwJCeW2YVIJ1mYeTT1Q7oU+NzrEcD+d/QuptGDzRji4g/eP5zHFo5t8w1wjozzavea2nXAiVHocAmf817KET3Xg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aI70pwew; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43BCBE53020993;
-	Thu, 11 Apr 2024 12:26:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=S5QeKmmUoyX5xyyZhHh7vdWOWq+vB95HSexOwbAxSU4=;
- b=aI70pwew3Ptt4D9mUA/jBzfD6xITb3lu4gnGWLvmE2taiQVMsU2hMOOEHAnoqNJhNpkW
- p6wjw+uy1/NR9pGFXNu6F+RnxwyRzgOV5W4+hfHqXAmFTttcFLmtMmxvZzq0VRhEVVrs
- 0rtAxk4IQCtGoFDQf0qdYc2I6Y1iMaG0XYNA//NB7PXUrsEEOqO6yPUVjhU5sth/+jGP
- 4iZIVTS0zd9+PwXjXApCoOZTe9IXO8d+3Hb0cUByIifqtdo0vTfWekNWdj2lKU0UKRxj
- A9m/lKrlnRevjhmiy87BysbIpnDct3SLQThxcJfPeOppBdmK5UB7WhlRUcj7kD7IaG0R Ag== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xefh8019q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 12:26:30 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43BCQTt8009899;
-	Thu, 11 Apr 2024 12:26:29 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xefh8019m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 12:26:29 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43BAluX6021511;
-	Thu, 11 Apr 2024 12:26:29 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xbjxm2t8q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 12:26:28 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43BCQN4W50069998
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 11 Apr 2024 12:26:25 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9435C2004B;
-	Thu, 11 Apr 2024 12:26:23 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 413FC20040;
-	Thu, 11 Apr 2024 12:26:23 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu, 11 Apr 2024 12:26:23 +0000 (GMT)
-Date: Thu, 11 Apr 2024 14:26:22 +0200
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] mm/userfaultfd: don't place zeropages when
- zeropages are disallowed
-Message-ID: <ZhfW7qzAGPQo3mJN@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20240327171737.919590-1-david@redhat.com>
- <20240327171737.919590-2-david@redhat.com>
+	s=arc-20240116; t=1712838558; c=relaxed/simple;
+	bh=T0ns5dvXycLoFSs/ZW0S27KfnrJk+DvUNdebJc1uDsw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PYufBz8bm9pYe2OGVxG7zicObGpQ03ImtGvujfXfYIVle6EwMnTbrU9tZg2VAZYLVRUr9/zjomGAYneCFXPztnG73Xp766HE9C63NMMAVf1cw4dqmGg0gbRNAn/jK/h1AMptjvdCXKtlif1U1cMPrXGUMfGCAcpzeUKgbAQFE08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MpRBso6X; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712838557; x=1744374557;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=T0ns5dvXycLoFSs/ZW0S27KfnrJk+DvUNdebJc1uDsw=;
+  b=MpRBso6XnJgZS+Rf3IakfCgG/PyI9pw4ZNL2mowHSWMXjpSEDVQnvjiy
+   0m81R/sq3RSPUmc+RPPuwlrQfSKCwe8MhvIfHISDmho90pgIIV/6jgJpv
+   UNJDgSh2sexEQlZmpHWQ3iuUOMEkK8o51Fxy0fwOqOqLKpL7aBCEwfebA
+   uf6WjfMQNAx42LClGH9EvEkUWTYthAYYfCMN9qzlEpmJ7hk1rp99GY+aR
+   0XCne4BFQXoJgVgPhQfaWN18NGDeFgR9ifHfb0qnp/vYUqS1PUIU3VKXx
+   tAMAUQer7EORf7SMbxKxTXMmJeOPF9VlCqOxyzV1atoUgsqvt0i0/DYo7
+   A==;
+X-CSE-ConnectionGUID: 0LSPnLblQrKWBMRpMfBY0w==
+X-CSE-MsgGUID: MnPwbCL8R66bAvfFSUyPtA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="19665149"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="19665149"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 05:29:17 -0700
+X-CSE-ConnectionGUID: 63HJSZdjRS2Ac3+rV8u/TA==
+X-CSE-MsgGUID: V8CFhsgbRxOeNFNtCoyL1Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="20932733"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.124.237.254]) ([10.124.237.254])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 05:29:13 -0700
+Message-ID: <1fa9f7f8-5bf7-4f4f-80f0-9f23e4653242@linux.intel.com>
+Date: Thu, 11 Apr 2024 20:29:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240327171737.919590-2-david@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 19erZIHPx_Nmi6mLSyQwNP8VzM7VBOk0
-X-Proofpoint-ORIG-GUID: zulkTfLbj6WQeASqUSZ-sbV7sEDYxcvu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-11_05,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 suspectscore=0 clxscore=1011 impostorscore=0 spamscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 mlxscore=0 mlxlogscore=569
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404110088
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] iommu/vt-d: Fix WARN_ON in iommu probe path
+To: "Tian, Kevin" <kevin.tian@intel.com>, Lu Baolu
+ <baolu.lu@linux.intel.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240407011429.136282-1-baolu.lu@linux.intel.com>
+ <BN9PR11MB52760913F36DACBC612088668C002@BN9PR11MB5276.namprd11.prod.outlook.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <BN9PR11MB52760913F36DACBC612088668C002@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 27, 2024 at 06:17:36PM +0100, David Hildenbrand wrote:
+On 4/8/2024 11:52 AM, Tian, Kevin wrote:
+>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>> Sent: Sunday, April 7, 2024 9:14 AM
+>>
+>> Commit 1a75cc710b95 ("iommu/vt-d: Use rbtree to track iommu probed
+>> devices") adds all devices probed by the iommu driver in a rbtree
+>> indexed by the source ID of each device. It assumes that each device
+>> has a unique source ID. This assumption is incorrect and the VT-d
+>> spec doesn't state this requirement either.
+>>
+>> The reason for using a rbtree to track devices is to look up the device
+>> with PCI bus and devfunc in the paths of handling ATS invalidation time
+>> out error and the PRI I/O page faults. Both are PCI ATS feature related.
+>>
+>> Only track the devices that have PCI ATS capabilities in the rbtree to
+>> avoid unnecessary WARN_ON in the iommu probe path. Otherwise, on some
+>> platforms below kernel splat will be displayed and the iommu probe results
+>> in failure.
+> Just be curious. What about two ATS capable devices putting behind
+> a PCI-to-PCIe bridge?
 
-Hi David,
-..
->  static int mfill_atomic_pte_zeropage(pmd_t *dst_pmd,
->  				     struct vm_area_struct *dst_vma,
->  				     unsigned long dst_addr)
-> @@ -324,6 +355,9 @@ static int mfill_atomic_pte_zeropage(pmd_t *dst_pmd,
->  	spinlock_t *ptl;
->  	int ret;
->  
-> +	if (mm_forbids_zeropage(dst_vma->mm))
+No PCI-to-PCIe bridges such device AFAIK, ATS TLP couldn't be
+routed via PCIe-to-PCI bridge unmodified. ATS is based on PCIe.
 
-I assume, you were going to pass dst_vma->vm_mm here?
-This patch does not compile otherwise.
-..
+But the device-rbtree is possible holding mutiple device nodes behind
+PCIe-to-PCI bridge indexed by the same requester-ID.
 
-Thanks!
+Thanks,
+Ethan
+
+>>   WARNING: CPU: 3 PID: 166 at drivers/iommu/intel/iommu.c:158
+>> intel_iommu_probe_device+0x319/0xd90
+>>   Call Trace:
+>>    <TASK>
+>>    ? __warn+0x7e/0x180
+>>    ? intel_iommu_probe_device+0x319/0xd90
+>>    ? report_bug+0x1f8/0x200
+>>    ? handle_bug+0x3c/0x70
+>>    ? exc_invalid_op+0x18/0x70
+>>    ? asm_exc_invalid_op+0x1a/0x20
+>>    ? intel_iommu_probe_device+0x319/0xd90
+>>    ? debug_mutex_init+0x37/0x50
+>>    __iommu_probe_device+0xf2/0x4f0
+>>    iommu_probe_device+0x22/0x70
+>>    iommu_bus_notifier+0x1e/0x40
+>>    notifier_call_chain+0x46/0x150
+>>    blocking_notifier_call_chain+0x42/0x60
+>>    bus_notify+0x2f/0x50
+>>    device_add+0x5ed/0x7e0
+>>    platform_device_add+0xf5/0x240
+>>    mfd_add_devices+0x3f9/0x500
+>>    ? preempt_count_add+0x4c/0xa0
+>>    ? up_write+0xa2/0x1b0
+>>    ? __debugfs_create_file+0xe3/0x150
+>>    intel_lpss_probe+0x49f/0x5b0
+>>    ? pci_conf1_write+0xa3/0xf0
+>>    intel_lpss_pci_probe+0xcf/0x110 [intel_lpss_pci]
+>>    pci_device_probe+0x95/0x120
+>>    really_probe+0xd9/0x370
+>>    ? __pfx___driver_attach+0x10/0x10
+>>    __driver_probe_device+0x73/0x150
+>>    driver_probe_device+0x19/0xa0
+>>    __driver_attach+0xb6/0x180
+>>    ? __pfx___driver_attach+0x10/0x10
+>>    bus_for_each_dev+0x77/0xd0
+>>    bus_add_driver+0x114/0x210
+>>    driver_register+0x5b/0x110
+>>    ? __pfx_intel_lpss_pci_driver_init+0x10/0x10 [intel_lpss_pci]
+>>    do_one_initcall+0x57/0x2b0
+>>    ? kmalloc_trace+0x21e/0x280
+>>    ? do_init_module+0x1e/0x210
+>>    do_init_module+0x5f/0x210
+>>    load_module+0x1d37/0x1fc0
+>>    ? init_module_from_file+0x86/0xd0
+>>    init_module_from_file+0x86/0xd0
+>>    idempotent_init_module+0x17c/0x230
+>>    __x64_sys_finit_module+0x56/0xb0
+>>    do_syscall_64+0x6e/0x140
+>>    entry_SYSCALL_64_after_hwframe+0x71/0x79
+>>
+>> Fixes: 1a75cc710b95 ("iommu/vt-d: Use rbtree to track iommu probed
+>> devices")
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/iommu/intel/iommu.c | 11 +++++++----
+>>   1 file changed, 7 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+>> index 50eb9aed47cc..a7ecd90303dc 100644
+>> --- a/drivers/iommu/intel/iommu.c
+>> +++ b/drivers/iommu/intel/iommu.c
+>> @@ -4299,9 +4299,11 @@ static struct iommu_device
+>> *intel_iommu_probe_device(struct device *dev)
+>>   	}
+>>
+>>   	dev_iommu_priv_set(dev, info);
+>> -	ret = device_rbtree_insert(iommu, info);
+>> -	if (ret)
+>> -		goto free;
+>> +	if (pdev && pci_ats_supported(pdev)) {
+>> +		ret = device_rbtree_insert(iommu, info);
+>> +		if (ret)
+>> +			goto free;
+>> +	}
+> probably replace device_rbtree with ats_rbtree?
+>
+>>   	if (sm_supported(iommu) && !dev_is_real_dma_subdevice(dev)) {
+>>   		ret = intel_pasid_alloc_table(dev);
+>> @@ -4336,7 +4338,8 @@ static void intel_iommu_release_device(struct
+>> device *dev)
+>>   	struct intel_iommu *iommu = info->iommu;
+>>
+>>   	mutex_lock(&iommu->iopf_lock);
+>> -	device_rbtree_remove(info);
+>> +	if (dev_is_pci(dev) && pci_ats_supported(to_pci_dev(dev)))
+>> +		device_rbtree_remove(info);
+>>   	mutex_unlock(&iommu->iopf_lock);
+>>
+>>   	if (sm_supported(iommu) && !dev_is_real_dma_subdevice(dev) &&
+>> --
+>> 2.34.1
+>
 
