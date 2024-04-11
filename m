@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-139809-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66B1F8A07FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:01:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 269DB8A0800
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:03:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DF4D28A95E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:01:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 582E31C22F78
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:03:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F054113CA86;
-	Thu, 11 Apr 2024 06:01:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9677113C666;
+	Thu, 11 Apr 2024 06:03:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oqRl1ts8"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IDmBNTLN"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4671813C806
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:01:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2036D13CA82
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:03:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712815305; cv=none; b=n48ASxj4nUh9Jf4hRbnmcpkvoSYkFq8uD4U6kEHAJJK/EgiQPq4Adz6Yz4g+xW01dYX7OGZKUUXDKaZZRIU00r73ZIeB37xbUzBN9QhxBIsiFkbO2I8yh6xVE9+VUlXOput+N0jesCuhP4NtAkXhI5AGAWnCCg74lLERGQxzvG0=
+	t=1712815397; cv=none; b=sY92ZdBQVccEfS7yQyRJ6qIU71jP8Lk5zRwuTCMJ+87moRIQWCUXl63pl9LDIkbltN/6OFSizps0NTBSRcyGSHbWINHf3gvjakCLcyXwrTy4v8Y82iL74Du04HXneNO9nA6kgeCYtX5BQcNALi0IyhaFSdkfmau1VP1vCuoxgZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712815305; c=relaxed/simple;
-	bh=0j1wO6gT1rsgYI/sKzrSCM/PFQz4FqHTMhfoYhp7GDo=;
+	s=arc-20240116; t=1712815397; c=relaxed/simple;
+	bh=YAS0YA6lCCs3zKlmSNF5kFwncCbc94eS7MXGa/atPvY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HhBfuDwdiyW4x77IPeefZBEG8jBekew/FYhuPiWOdkkebycp5Rl7j7AXtMbVWYwWUXE/JVIiK9J6h/RRw3AyigJW+L6w7bihwcnmNsLBOKBLFew7XDygw5h8ZCGC/ekOu0bMMueOxWFw5Xo+YNGh1jxw+TGQqEDQ0T45rVUPleA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oqRl1ts8; arc=none smtp.client-ip=209.85.128.44
+	 In-Reply-To:Content-Type; b=NXnuXemuvE0jfapmmuHBfd4qTTmaN1bZ0/atD8sDyBqYN+JmdBSMBiuHbodIqkwGoUe0s0++7biHuWcRT2MSGQqA8A6KXBoOx6j+RI2TozJXkSqcWVxq1hTkw8T+M8QXp0Y76+acJnpomZzq7oEpkOssrdbWyxgbI3vo2pzgt5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IDmBNTLN; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41550858cabso51654735e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:01:43 -0700 (PDT)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-417dad01a94so1250165e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:03:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712815302; x=1713420102; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1712815394; x=1713420194; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=v8fmohO7T1++synaauLEpAb8emlhUfZcFIxEX439dfQ=;
-        b=oqRl1ts82jxik8y1UskvLupt47RGP1xEH4DhMNKy607Gvm3+2LfAJsIPGlihKKf5UK
-         suD7VB1e/7lj+/iOv/LBnVqAofdjpdQQnnA1rdO3wz2q0I3fxO9nd22GF3oIZH9SDIj2
-         wUWY+c3KYbToI1Zc7sOSnXPdU7k20VfYxtd5fnK9/RAfg+0xEOBe4MPRHPQp+JwnguI7
-         8PAJPCCDlZ/FXaBhL9rS7l0iIfrIhxodbknMs0aFp8bzZMKwpoB+akkprpaLX4cMM90Z
-         5cDvqSGynzQmFn8k/MkqLkJh2XrmaP1a8hFG3b2pLOWM+M6lLcQxd4WL9HUkpb+bnvE+
-         +iMQ==
+        bh=/sDKz2iwCVOLGQWMvvlKuydbDntlO3wSLmZLpPpi2os=;
+        b=IDmBNTLNhPib0xou4EfBxoy2exwI+yDYkpAfC1Enqs99OFTmDKSwEnDH/5bOKiMD9s
+         Un1lrgozf5aY0lEMOt41vK8S7hi0sJfGvInnQkv7ZMT+L5pZmuwlw5V8AnCL6p+3hS8g
+         CIqnntTSCbYIBLtKlUVJLifvO+dSs8/bBsgvFGAGrH/I7qCc/iYHlY7pDFEPoCt7y6zm
+         v8M6eVN6I1huVmcx/T0cByKR/4Ng3cyewbM3VVO8Nj3Fn+Kl0GKMyTFdq7nssF8pnqpg
+         SFsDtBIRWvukjeSOS83UR8bu715vI8a+TQtjFbLeHZx/adSzT9jlpu4WvFxq/4/4/ApA
+         2jlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712815302; x=1713420102;
+        d=1e100.net; s=20230601; t=1712815394; x=1713420194;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=v8fmohO7T1++synaauLEpAb8emlhUfZcFIxEX439dfQ=;
-        b=sKykjNAvpTL1l9xhvDqK76SDyvS+dNJ++EzPDUFbXG6dOC2X1Jcl4U/wv/GmBNfXLW
-         PJjTNXfaxjVorDyAdNQsOeI8peKbwdZ/yO9eC64odrOBYe7nBCSrv7htoy80JUlcoR0A
-         JzrbCsmrFTx1dceD32kbIqkjQ3iIVESeoM6P6NCVQmpnsAAEmumu+4RLD6TJeSem6BM3
-         gN2FVdL1kWxBPebN08ik8OiJSBDp9nGcRFRCUWwhZW2oZX/xuGow+z9UVcfDezhvKVPw
-         AVH5Y+xOhvpTOXgBfnLlTFqgPDJaqroIEhbo4g6ghrh9JWg9WBYWz5n0LJ469dDzA9uy
-         aueg==
-X-Forwarded-Encrypted: i=1; AJvYcCVPztjk5AQ1+/O6iSUz6l3Njo2u+Lcto9hSEEE1EyRyDKxtB5qycL9BlMNTradukLD43JGbAd2wOODO5/lTzB9MP0gTNR+3T8ur+sPi
-X-Gm-Message-State: AOJu0YwMLnQtNOh0DMn65evdjT6Hgl93laQAZCjNPA5mxr/FDp/KEgJD
-	+z0Jr5e6Et+2TZD5t+0UlZSH33DMbOHYPIr4Hkp2uz59UidnlZP0oGXVU2eVaa8=
-X-Google-Smtp-Source: AGHT+IExh/RwpZU2Xew7FQyFiljXtBGSrR2vUKJVXz5J8zfz2RaNPajH4w4YfMSAkgHDGGpC1LSCXg==
-X-Received: by 2002:a05:600c:46cd:b0:416:bed3:e537 with SMTP id q13-20020a05600c46cd00b00416bed3e537mr3400865wmo.38.1712815301511;
-        Wed, 10 Apr 2024 23:01:41 -0700 (PDT)
+        bh=/sDKz2iwCVOLGQWMvvlKuydbDntlO3wSLmZLpPpi2os=;
+        b=ZC+/mpnwqSFLskfZXhZNGS4NFJxd8lUiRmpAh30/8pEcW+3wkTt2KaUIwOx+1yXQ6z
+         1KaaJcySQiC6sWvS0x6hV/+7b/BG5WF1wDbfWZ73BUUnBHkvQyszvBMh7J0sEvmIX+Ym
+         eLKvujg0dFQTlISUluxP1M1ssqvL371lj4brhUNh8uX3bZbjkr3pYLnHOoXKDth8EcxR
+         dLdqqG4+RRqOl7m/hlJygXg8Ingk5iwcfKN7SsfxhUhPuDUWyNd4Ji0enSPjxCGAPPQj
+         b1wyYZRQb1aKDiyXVVC757jcIPkQUVbYap6m6auirggigMsNCVDNLBDDXVzZZdCQ44xR
+         CMMg==
+X-Forwarded-Encrypted: i=1; AJvYcCVl0+Rz6xA7mUfqfVIkVFpiQ//YWmRnqpxLL6uKDdoXIb5GfI55MuxOFh5S5rp88g4QeNTloiMoHTg61wblJ3tPkh59lTg/ra3SEQVq
+X-Gm-Message-State: AOJu0YyYNb/yyFCK8e0m58u949zux7muZZo1RZjAHAQjR8GkHLbULmdZ
+	LeCTxCWUoTpN7RRaVccqsr4Ym7HegYykO69o1ICA1lXxnWz9WSPI3FJNGBTUx+A=
+X-Google-Smtp-Source: AGHT+IGZdMDJzjXjC5ENPNy/GpiFsHbda8uRIOpjsWrqdujF3VscKYT/crsT6gOVmbgL2VEX4uL37g==
+X-Received: by 2002:a05:600c:4f94:b0:416:b671:30cd with SMTP id n20-20020a05600c4f9400b00416b67130cdmr2914177wmq.36.1712815394323;
+        Wed, 10 Apr 2024 23:03:14 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id ay7-20020a05600c1e0700b00417d4f60692sm1151772wmb.44.2024.04.10.23.01.38
+        by smtp.gmail.com with ESMTPSA id n39-20020a05600c502700b00417e3695371sm26420wmr.33.2024.04.10.23.03.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 23:01:40 -0700 (PDT)
-Message-ID: <458ce909-0616-487d-b4bd-42b58d059198@linaro.org>
-Date: Thu, 11 Apr 2024 08:01:37 +0200
+        Wed, 10 Apr 2024 23:03:13 -0700 (PDT)
+Message-ID: <8f2c7963-c660-41b6-a93c-0ac19818ecda@linaro.org>
+Date: Thu, 11 Apr 2024 08:03:12 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,53 +76,14 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] dt-bindings: PCI: mediatek,mt7621: add missing
- child node reg
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, Hector Martin <marcan@marcan.st>,
- Sven Peter <sven@svenpeter.dev>, Alyssa Rosenzweig <alyssa@rosenzweig.io>,
- Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- Jim Quinlan <jim2101024@gmail.com>,
- Nicolas Saenz Julienne <nsaenz@kernel.org>, Will Deacon <will@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- Srikanth Thokala <srikanth.thokala@intel.com>,
- Ryder Lee <ryder.lee@mediatek.com>, Jianjun Wang
- <jianjun.wang@mediatek.com>,
- Sergio Paracuellos <sergio.paracuellos@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Daire McNamara <daire.mcnamara@microchip.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Marek Vasut <marek.vasut+renesas@gmail.com>,
- Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
- Shawn Lin <shawn.lin@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>,
- Jingoo Han <jingoohan1@gmail.com>,
- Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>,
- Michal Simek <michal.simek@amd.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Magnus Damm <magnus.damm@gmail.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Mark Kettenis <kettenis@openbsd.org>, Tom Joseph <tjoseph@cadence.com>,
- Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>,
- Jiaxun Yang <jiaxun.yang@flygoat.com>,
- Kishon Vijay Abraham I <kishon@kernel.org>,
- Thippeswamy Havalige <thippeswamy.havalige@amd.com>,
- linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, asahi@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-rpi-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-rockchip@lists.infradead.org
-References: <20240410212638.GA2159326@bhelgaas>
+Subject: Re: [PATCH v5 0/2] Samsung Galaxy Z Fold5 initial support
+To: serdeliuk@yahoo.com, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240410-samsung-galaxy-zfold5-q5q-v5-0-9311ee9a55f7@yahoo.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -169,24 +130,21 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240410212638.GA2159326@bhelgaas>
+In-Reply-To: <20240410-samsung-galaxy-zfold5-q5q-v5-0-9311ee9a55f7@yahoo.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 10/04/2024 23:26, Bjorn Helgaas wrote:
-> On Wed, Apr 10, 2024 at 08:15:19PM +0200, Krzysztof Kozlowski wrote:
->> MT7621 PCI host bridge has children which apparently are also PCI host
->> bridges, at least that's what the binding suggest.
+On 10/04/2024 23:28, Alexandru Marc Serdeliuc via B4 Relay wrote:
+> This documents and add intial dts support for Samsung Galaxy Z Fold5 (samsung,q5q)
+> which is a foldable phone by Samsung based on the sm8550 SoC.
 > 
-> What does it even mean for a PCI host bridge to have a child that is
-> also a PCI host bridge?
-> 
-> Does this mean a driver binds to the "parent" host bridge, enumerates
-> the PCI devices below it, and finds a "child" host bridge?
+> ChangeLog
+> 	
+> - v5
+>   . Added ChangeLog
+>   . Added missing Acked-by tags in their respective section in ChangeLog
 
-I think the question should be towards Mediatek folks. I don't know what
-this hardware is exactly, just looks like pci-pci-bridge. The driver
-calls the children host bridges as "ports".
+Where? I cannot find anything.
 
 Best regards,
 Krzysztof
