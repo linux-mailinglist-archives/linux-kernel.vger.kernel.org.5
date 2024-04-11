@@ -1,62 +1,49 @@
-Return-Path: <linux-kernel+bounces-139643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E7668A05AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:53:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23D068A05B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 04:00:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 412FD1C21EA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:53:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5544A1C223C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 02:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2A056217D;
-	Thu, 11 Apr 2024 01:53:38 +0000 (UTC)
-Received: from smtpbgbr2.qq.com (smtpbgbr2.qq.com [54.207.22.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02AB657A7;
+	Thu, 11 Apr 2024 02:00:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DGqllrxs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42EBE7F9
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 01:53:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.22.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C94E61674;
+	Thu, 11 Apr 2024 02:00:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712800418; cv=none; b=hYbXfNJhJNKn6flUXLQLuO5Oz3tzoNkEKlQzviJ4dYb2ZgkUzn15eabrV+YUgoAqFJ81gZ0NF6d3zwkJVxOxZagXQSzV5+YXZxFbnwihQlbtkUEz/riNImEVneNZvWAUyNXhWRT+zTrn4xjVy8oP9jOB1QdZQWZlxjSbCgJjTn4=
+	t=1712800836; cv=none; b=fHMfKvnSUF1ebCUdXXsbDRvK6TX1PBqAmETpMKV6uhym/npmyOLyFOHqiAMshndagSfVibrpHnc1i4If3/GfWBtouCP7lSuE+u83SxmW7u1QMgw4D375AU3PtWaV/Emg8aEikIKVCmUgHRJ1ErNrTdyo3EcGVyQ9Gz7dsNTt9J4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712800418; c=relaxed/simple;
-	bh=ChsB5VUcTkqb5revTC0jishd5DrVH73z4tHPnIFZZsU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TJKVm0d+GO9QvZ+5wfRlMW7FUkRPPYNx34JFgNb7xKxfiyhl3/lMD02cOsDUSsZ8gWTn5/i4B8XguJU0ZnU4MEOZpL5+4TjYt4WDuZBTuifgGVmEVSmMxA1EEgls5cWXyM/c1QYpYLd24bx/BlFN6DonsVL3D+0bZMACBPkWkV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.207.22.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp90t1712800304t1ksuc7r
-X-QQ-Originating-IP: MIR7lNCdXm2gxJlu1KOUSY0BdyMnYLIqBuKiWzcg/GQ=
-Received: from HX01040082.powercore.com.cn ( [14.19.178.199])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Thu, 11 Apr 2024 09:51:43 +0800 (CST)
-X-QQ-SSF: 01400000000000B09000000A0000000
-X-QQ-FEAT: zT6n3Y95oi0rtWnXgdbUTchQrChx9AHGrXslGgx/sf7vMqCwU+36IS0UQL8+/
-	tgIX0Ns6fv6B/lTRlMBRJrGgdeeM1y+STtw1ZKRpoO7GbOJu6wgdtlYz00ISDXa5CMTYAfR
-	VrScp0TqdkyqhAq+fn7ZgsxQO6HNKh/iiEmmiP6selOt+4skjcWmWbuteJICvtVG/vB8AmF
-	1wDyAlvinUahCav1JnIq0HZvyNNPZNi4U8bXOMJNobsdqqFyBKyLQTmWJQ0CBh7GudJz/bj
-	Xwe109SKfzZp3W2EcuXwb1n65yCtpYSfD5fmOsA/T030prwm3M5FmthrcRB7Frw5HaSA6P6
-	+t0PceOQKnCEZQ4Xd/Z8Sr4PPNbkVhMyl0h6lNVV+EtU/HlKFYcEg5de8VuV8s3ipwbeMAK
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 16034395823288831725
-From: Jinglin Wen <jinglin.wen@shingroup.cn>
-To: palmer@dabbelt.com
-Cc: bjorn@kernel.org,
-	paul.walmsley@sifive.com,
-	aou@eecs.berkeley.edu,
-	gregkh@linuxfoundation.org,
-	atishp@rivosinc.com,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: Re: [PATCH 0/3] Add early console functionality
-Date: Thu, 11 Apr 2024 09:51:44 +0800
-Message-Id: <20240411015144.24901-1-jinglin.wen@shingroup.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <87y19lpub5.fsf@all.your.base.are.belong.to.us>
-References: <87y19lpub5.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1712800836; c=relaxed/simple;
+	bh=6Cij9gk2+tshYEQ8bidf1LIXaouxOi54fCmkbe6echc=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=H8jMGslu5rp0k6nsmwtER+HWOmv0PtSgnUGksHdlszKIPKW6p9X6FBwfmwqcH8/SUcPCfmUKEkuJuA5xxEkY0MQoMF5l7kuy3BLquM8HYj2hFr4wSE+wGyXKHVs9qb3jc+2lO5sZGm7Ryiqs7IuIU8Z6+q99bjBUUktPIckCDlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DGqllrxs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 83B07C43394;
+	Thu, 11 Apr 2024 02:00:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712800835;
+	bh=6Cij9gk2+tshYEQ8bidf1LIXaouxOi54fCmkbe6echc=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=DGqllrxs7/KWcrtpvjksskac53m2Lh2RJ/0d8Vl+Pb7sx5QA1m4zFtZTz/ToiUZgd
+	 gTmKE7Ts7UcsStFbw9hdgyjFQnLq0JlBen6IPkzKWTpmm2IOkMjIsvTEyBDv7TEdPx
+	 HedYd0AhaAPPUg3Bb/bKz4C9Htct4kDspcxvccxhU7bxAqisUvjQdcmUGabKg5ETws
+	 u/d52OwiG+jYNZCBY+rQQj0OQ8I8G/SHn8+MYjjhaDd8NlgD/1fJwHr67+vNNgQiv9
+	 pt0AH6j5HOq8KNGhrviFYhto5PRpzi0BG6mesPeQYhDipEKQFy1KnaOquDJ7V3aEA6
+	 zEfYhJwf5ecew==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 61167CF21C5;
+	Thu, 11 Apr 2024 02:00:35 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,23 +51,53 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-2
+Subject: Re: [PATCH net v3] net: dsa: mt7530: fix enabling EEE on MT7531 switch
+ on all boards
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171280083539.2701.12891198240380123867.git-patchwork-notify@kernel.org>
+Date: Thu, 11 Apr 2024 02:00:35 +0000
+References: <20240408-for-net-mt7530-fix-eee-for-mt7531-mt7988-v3-1-84fdef1f008b@arinc9.com>
+In-Reply-To: <20240408-for-net-mt7530-fix-eee-for-mt7531-mt7988-v3-1-84fdef1f008b@arinc9.com>
+To: =?utf-8?b?QXLEsW7DpyDDnE5BTCB2aWEgQjQgUmVsYXkgPGRldm51bGwrYXJpbmMudW5hbC5h?=@codeaurora.org,
+	=?utf-8?b?cmluYzkuY29tQGtlcm5lbC5vcmc+?=@codeaurora.org
+Cc: daniel@makrotopia.org, dqfext@gmail.com, sean.wang@mediatek.com,
+ andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+ opensource@vdorst.com, linux@armlinux.org.uk, SkyLake.Huang@mediatek.com,
+ hkallweit1@gmail.com, bartel.eerdekens@constell8.be, mithat.guner@xeront.com,
+ erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, florian.fainelli@broadcom.com,
+ arinc.unal@arinc9.com
 
-Thank you for taking the time to review this patch.
+Hello:
 
-Bjorn <bjorn@kernel.org> writes:
-> Jinglin Wen <jinglin.wen@shingroup.cn> writes:
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Mon, 08 Apr 2024 10:08:53 +0300 you wrote:
+> From: Arınç ÜNAL <arinc.unal@arinc9.com>
 > 
-> > The following patch series implements support for the early
-> > console on the RISC-V platform.
+> The commit 40b5d2f15c09 ("net: dsa: mt7530: Add support for EEE features")
+> brought EEE support but did not enable EEE on MT7531 switch MACs. EEE is
+> enabled on MT7531 switch MACs by pulling the LAN2LED0 pin low on the board
+> (bootstrapping), unsetting the EEE_DIS bit on the trap register, or setting
+> the internal EEE switch bit on the CORE_PLL_GROUP4 register. Thanks to
+> SkyLake Huang (黃啟澤) from MediaTek for providing information on the
+> internal EEE switch bit.
 > 
-> I fail to see how this is different from earlycon=3Dsbi
+> [...]
 
-Yep, you are right, this patch duplicates the functionality of
-earlycon=sbi, and should be discarded.
+Here is the summary with links:
+  - [net,v3] net: dsa: mt7530: fix enabling EEE on MT7531 switch on all boards
+    https://git.kernel.org/netdev/net/c/06dfcd4098cf
 
-Thanks,
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Jinglin Wen
+
 
