@@ -1,658 +1,116 @@
-Return-Path: <linux-kernel+bounces-140752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 832788A18BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:30:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15DC68A18C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:32:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38E3F2848B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:30:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5517285E94
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:32:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 250A41757D;
-	Thu, 11 Apr 2024 15:30:30 +0000 (UTC)
-Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E465818042;
+	Thu, 11 Apr 2024 15:31:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="R3YY2n/0"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FFA813ADC;
-	Thu, 11 Apr 2024 15:30:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5281175A6
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849428; cv=none; b=CWLObmEivuriUHCspb2dSuKWtcRkA1fovpVmUqHfNSZ2wGRGx+YhoFl9FjeaQD6uusg33FXiFsDjI1X4hR8PCqQCEoC0HhBh6H/2EtLnu9TrtPuRjzcJe6cPMBbIM8YcWmGX/RJ4JjNqkcJrroCypOVN7xYb563ijLu0RQ7Ob1Y=
+	t=1712849498; cv=none; b=mMWl5qvzVTe/C9SweY6fTjESGai8qlylFSK8vfmOw8d10UARKzFvNoJLegPm5X5fkpol6PhcPkSUYYXk4Ls/xI5Tc9bNKlg5jnZ4tkCv2yGyHTMdw8I0YFH2mY7+MMAEaElGYfGnMHMfYzE62xdvLjJNHq28ehM8VycSoxZOMrY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849428; c=relaxed/simple;
-	bh=bH5EJNNyaiBTp6uK6ySgp1XkjTEWgRw0YXQaar9Rm0U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nlOLHYofhdsHGKDQLuCF70NAUNN7TGg3qEy+sLfRmaBO7/ou6XfNTkz/Y2flsX5H2WgeXy6nYI/RfBF8OeXylrgL3p3X6ShnKlcuA6RxFENZj03mMZXQGFu9gD+JEhfOhb37YOAuMrF5E0+lnuNLudaWw74I23mhwSMZrK11Fzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
-Received: by air.basealt.ru (Postfix, from userid 490)
-	id AA2612F20243; Thu, 11 Apr 2024 15:30:24 +0000 (UTC)
-X-Spam-Level: 
-Received: from [10.88.128.156] (obninsk.basealt.ru [217.15.195.17])
-	by air.basealt.ru (Postfix) with ESMTPSA id 38BCA2F2021D;
-	Thu, 11 Apr 2024 15:30:22 +0000 (UTC)
-Message-ID: <f8bb62a7-5845-53ed-7fbe-c0557c2745f2@basealt.ru>
-Date: Thu, 11 Apr 2024 18:30:22 +0300
+	s=arc-20240116; t=1712849498; c=relaxed/simple;
+	bh=1F8FDCWi7kV0VWLSz4mlwqNZHS3BzwqFKom/1e6MPAQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DhcmkywuvYeReIX9O3w4BFjjBc99jD0kcLrkeDYp1BYmmISbJg8S7eCVsPxoqht1jzXNEIhd0qihVXNN+FfuYPDSg5qEKnqKAC3luvN9ASwjTW9cwIr0Z6TxLUzM/lO6kB+R+vJ/NnOtpYXMPZmgj4UE76UiuRWgC8tXOz4gxeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=R3YY2n/0; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e3ca4fe4cfso37123405ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:31:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712849496; x=1713454296; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=h26jApcI47a9THxXWamb//DMym3AleVu6sOiT6ZGH/o=;
+        b=R3YY2n/0VwUwWve61b5CZ3IBPO30oLs/f2nMFH8EREXjpTHIHlEmK6get3jv1H+7Nr
+         LzLwT/KT3I9cYPiTYeAtKbFQ6f901IeroZqNTuKDBaW3EylhQBA8i1SXI31oI+p33vMs
+         5VvKi8iWLhGCK22xr7AnHWH+fsEQ0KNWXvrlI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712849496; x=1713454296;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h26jApcI47a9THxXWamb//DMym3AleVu6sOiT6ZGH/o=;
+        b=lBz866X6CARvjBkukdl2B9WgLZPPj5Kzb7DrRhCvzdQrH8R5ohhJ5BW/u6yKiLOQXP
+         yLoXHI31MkrhLP6N612ovrRdBRHUXpCRAM0RDkNQrA2TT+rbhwkTHxcgpUU1J0raRc2t
+         AqFUBzXwdx8DXz50BkRP/a0bKMnTqh93/uyMY/R4p5Qe6WxAT0Gnv33whdN/N/JQRlFy
+         GoWKlEIk/qOvh2FoYfMQO8dB4Y7ohzaHQNEHHV/JnHzyggMxGEhbkynSJ+QQC+6fmbON
+         suBa2mnpAmmAcETv+mcdL0tYUN+w8unzTZZCRpYvG2d2etjVNYBKoyJHN3G/CKtY4RkP
+         3Kbg==
+X-Forwarded-Encrypted: i=1; AJvYcCU+l8OrAUoLaB8uIyRe4bZU5K3EIvii5jCciQRXvEXPIkTOe2TUik4QzN7QXIIQRhM/3cAMzcxfckgcIyBMk+v+DUcNqXB2dPUbuVhx
+X-Gm-Message-State: AOJu0Yz+uCxM+NNtm4qF7dcIYefwg88CjMchCe6tzDOMZLyAoT4ieH6n
+	BnTio+rBf9uu0Dw8mfHxcvp+fN/zdODpJLZkSfS3lhxHBRohwpCq6JKf0z7zfw==
+X-Google-Smtp-Source: AGHT+IEejten/fI5yIJ4OdU9ANzlh7kmTzwwsMRkhZrYGCJfDgxUgiz8KKlY5DuuhFAg3kagyyJlHw==
+X-Received: by 2002:a17:902:e80f:b0:1e3:e0a2:ccc3 with SMTP id u15-20020a170902e80f00b001e3e0a2ccc3mr6911262plg.30.1712849495918;
+        Thu, 11 Apr 2024 08:31:35 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id l5-20020a170902d34500b001e26191b9c2sm1304039plk.67.2024.04.11.08.31.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 08:31:35 -0700 (PDT)
+Date: Thu, 11 Apr 2024 08:31:34 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Chandan Babu R <chandan.babu@oracle.com>,
+	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] xfs: replace deprecated strncpy with strscpy_pad
+Message-ID: <202404110829.D3A5A56@keescook>
+References: <20240405-strncpy-xfs-split1-v1-1-3e3df465adb9@google.com>
+ <202404090921.A203626A@keescook>
+ <CAFhGd8pr5XycTH1iCUgBodCOV8_WY_da=aH+WZGPXfuOY5_Zgg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH net] Bluetooth: hci_event: fix double hci_conn_drop() when
- conn->state == BT_CONNECTED
-Content-Language: en-US
-To: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
- linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: lvc-project@linuxtesting.org, nickel@altlinux.org,
- oficerovas@altlinux.org, dutyrok@altlinux.org, stable@vger.kernel.org
-References: <20240411151810.403167-1-kovalev@altlinux.org>
-From: kovalev@altlinux.org
-In-Reply-To: <20240411151810.403167-1-kovalev@altlinux.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFhGd8pr5XycTH1iCUgBodCOV8_WY_da=aH+WZGPXfuOY5_Zgg@mail.gmail.com>
 
-11.04.2024 18:18, kovalev@altlinux.org wrote:
-> From: Vasiliy Kovalev <kovalev@altlinux.org>
+On Wed, Apr 10, 2024 at 01:45:21PM -0700, Justin Stitt wrote:
+> On Tue, Apr 9, 2024 at 9:22 AM Kees Cook <keescook@chromium.org> wrote:
+> > >
+> > > -     /* 1 larger than sb_fname, so this ensures a trailing NUL char */
+> > > -     memset(label, 0, sizeof(label));
+> > >       spin_lock(&mp->m_sb_lock);
+> > > -     strncpy(label, sbp->sb_fname, XFSLABEL_MAX);
+> > > +     strscpy_pad(label, sbp->sb_fname);
+> >
+> > Is sbp->sb_fname itself NUL-terminated? This looks like another case of
+> > needing the memtostr() helper?
+> >
 > 
-> There is no need to drop the connection of some functions in which the
-> conn->state in BT_CONNECTED is marked, since in the future the same check
-> takes place (for example, in the hci_encrypt_change_evt() function) and
-> the hci_conn_drop() is called.
+> I sent a patch [1].
 > 
-> Otherwise, the conn->refcnt will become below zero, which will trigger a
-> warning and may cause a crash on kernels with the panic_on_warn parameter
-> enabled.
-> 
-repro.c generated by syzkaller:
+> Obviously it depends on your implementation patch landing first; what
+> tree should it go to?
 
-#define _GNU_SOURCE
+This "flavor" of conversion may need to wait a release? There's no
+urgency on the conversion, and there are plenty more to do for this
+cycle. ;)
 
-#include <dirent.h>
-#include <endian.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <pthread.h>
-#include <sched.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/epoll.h>
-#include <sys/ioctl.h>
-#include <sys/mount.h>
-#include <sys/prctl.h>
-#include <sys/resource.h>
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/syscall.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/uio.h>
-#include <sys/wait.h>
-#include <time.h>
-#include <unistd.h>
+-Kees
 
-#include <linux/capability.h>
-#include <linux/rfkill.h>
-
-static void sleep_ms(uint64_t ms)
-{
-         usleep(ms * 1000);
-}
-
-static uint64_t current_time_ms(void)
-{
-         struct timespec ts;
-         if (clock_gettime(CLOCK_MONOTONIC, &ts))
-         exit(1);
-         return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
-}
-
-static bool write_file(const char* file, const char* what, ...)
-{
-         char buf[1024];
-         va_list args;
-         va_start(args, what);
-         vsnprintf(buf, sizeof(buf), what, args);
-         va_end(args);
-         buf[sizeof(buf) - 1] = 0;
-         int len = strlen(buf);
-         int fd = open(file, O_WRONLY | O_CLOEXEC);
-         if (fd == -1)
-                 return false;
-         if (write(fd, buf, len) != len) {
-                 int err = errno;
-                 close(fd);
-                 errno = err;
-                 return false;
-         }
-         close(fd);
-         return true;
-}
-
-#define MAX_FDS 30
-
-#define BTPROTO_HCI 1
-#define ACL_LINK 1
-#define SCAN_PAGE 2
-
-typedef struct {
-         uint8_t b[6];
-} __attribute__((packed)) bdaddr_t;
-
-#define HCI_COMMAND_PKT 1
-#define HCI_EVENT_PKT 4
-#define HCI_VENDOR_PKT 0xff
-
-struct hci_command_hdr {
-         uint16_t opcode;
-         uint8_t plen;
-} __attribute__((packed));
-
-struct hci_event_hdr {
-         uint8_t evt;
-         uint8_t plen;
-} __attribute__((packed));
-
-#define HCI_EV_CONN_COMPLETE 0x03
-struct hci_ev_conn_complete {
-         uint8_t status;
-         uint16_t handle;
-         bdaddr_t bdaddr;
-         uint8_t link_type;
-         uint8_t encr_mode;
-} __attribute__((packed));
-
-#define HCI_EV_CONN_REQUEST 0x04
-struct hci_ev_conn_request {
-         bdaddr_t bdaddr;
-         uint8_t dev_class[3];
-         uint8_t link_type;
-} __attribute__((packed));
-
-#define HCI_EV_REMOTE_FEATURES 0x0b
-struct hci_ev_remote_features {
-         uint8_t status;
-         uint16_t handle;
-         uint8_t features[8];
-} __attribute__((packed));
-
-#define HCI_EV_CMD_COMPLETE 0x0e
-struct hci_ev_cmd_complete {
-         uint8_t ncmd;
-         uint16_t opcode;
-} __attribute__((packed));
-
-#define HCI_OP_WRITE_SCAN_ENABLE 0x0c1a
-
-#define HCI_OP_READ_BUFFER_SIZE 0x1005
-struct hci_rp_read_buffer_size {
-         uint8_t status;
-         uint16_t acl_mtu;
-         uint8_t sco_mtu;
-         uint16_t acl_max_pkt;
-         uint16_t sco_max_pkt;
-} __attribute__((packed));
-
-#define HCI_OP_READ_BD_ADDR 0x1009
-struct hci_rp_read_bd_addr {
-         uint8_t status;
-         bdaddr_t bdaddr;
-} __attribute__((packed));
-
-#define HCI_EV_LE_META 0x3e
-struct hci_ev_le_meta {
-         uint8_t subevent;
-} __attribute__((packed));
-
-#define HCI_EV_LE_CONN_COMPLETE 0x01
-struct hci_ev_le_conn_complete {
-         uint8_t status;
-         uint16_t handle;
-         uint8_t role;
-         uint8_t bdaddr_type;
-         bdaddr_t bdaddr;
-         uint16_t interval;
-         uint16_t latency;
-         uint16_t supervision_timeout;
-         uint8_t clk_accurancy;
-} __attribute__((packed));
-
-struct hci_dev_req {
-         uint16_t dev_id;
-         uint32_t dev_opt;
-};
-
-struct vhci_vendor_pkt {
-         uint8_t type;
-         uint8_t opcode;
-         uint16_t id;
-};
-
-#define HCIDEVUP _IOW('H', 201, int)
-#define HCISETSCAN _IOW('H', 221, int)
-
-static int vhci_fd = -1;
-
-static void rfkill_unblock_all()
-{
-         int fd = open("/dev/rfkill", O_WRONLY);
-         if (fd < 0)
-         exit(1);
-         struct rfkill_event event = {0};
-         event.idx = 0;
-         event.type = RFKILL_TYPE_ALL;
-         event.op = RFKILL_OP_CHANGE_ALL;
-         event.soft = 0;
-         event.hard = 0;
-         if (write(fd, &event, sizeof(event)) < 0)
-         exit(1);
-         close(fd);
-}
-
-static void hci_send_event_packet(int fd, uint8_t evt, void* data, 
-size_t data_len)
-{
-         struct iovec iv[3];
-         struct hci_event_hdr hdr;
-         hdr.evt = evt;
-         hdr.plen = data_len;
-         uint8_t type = HCI_EVENT_PKT;
-         iv[0].iov_base = &type;
-         iv[0].iov_len = sizeof(type);
-         iv[1].iov_base = &hdr;
-         iv[1].iov_len = sizeof(hdr);
-         iv[2].iov_base = data;
-         iv[2].iov_len = data_len;
-         if (writev(fd, iv, sizeof(iv) / sizeof(struct iovec)) < 0)
-         exit(1);
-}
-
-static void hci_send_event_cmd_complete(int fd, uint16_t opcode, void* 
-data, size_t data_len)
-{
-         struct iovec iv[4];
-         struct hci_event_hdr hdr;
-         hdr.evt = HCI_EV_CMD_COMPLETE;
-         hdr.plen = sizeof(struct hci_ev_cmd_complete) + data_len;
-         struct hci_ev_cmd_complete evt_hdr;
-         evt_hdr.ncmd = 1;
-         evt_hdr.opcode = opcode;
-         uint8_t type = HCI_EVENT_PKT;
-         iv[0].iov_base = &type;
-         iv[0].iov_len = sizeof(type);
-         iv[1].iov_base = &hdr;
-         iv[1].iov_len = sizeof(hdr);
-         iv[2].iov_base = &evt_hdr;
-         iv[2].iov_len = sizeof(evt_hdr);
-         iv[3].iov_base = data;
-         iv[3].iov_len = data_len;
-         if (writev(fd, iv, sizeof(iv) / sizeof(struct iovec)) < 0)
-         exit(1);
-}
-
-static bool process_command_pkt(int fd, char* buf, ssize_t buf_size)
-{
-         struct hci_command_hdr* hdr = (struct hci_command_hdr*)buf;
-         if (buf_size < (ssize_t)sizeof(struct hci_command_hdr) ||
-             hdr->plen != buf_size - sizeof(struct hci_command_hdr))
-         exit(1);
-         switch (hdr->opcode) {
-         case HCI_OP_WRITE_SCAN_ENABLE: {
-                 uint8_t status = 0;
-                 hci_send_event_cmd_complete(fd, hdr->opcode, &status, 
-sizeof(status));
-                 return true;
-         }
-         case HCI_OP_READ_BD_ADDR: {
-                 struct hci_rp_read_bd_addr rp = {0};
-                 rp.status = 0;
-                 memset(&rp.bdaddr, 0xaa, 6);
-                 hci_send_event_cmd_complete(fd, hdr->opcode, &rp, 
-sizeof(rp));
-                 return false;
-         }
-         case HCI_OP_READ_BUFFER_SIZE: {
-                 struct hci_rp_read_buffer_size rp = {0};
-                 rp.status = 0;
-                 rp.acl_mtu = 1021;
-                 rp.sco_mtu = 96;
-                 rp.acl_max_pkt = 4;
-                 rp.sco_max_pkt = 6;
-                 hci_send_event_cmd_complete(fd, hdr->opcode, &rp, 
-sizeof(rp));
-                 return false;
-         }
-         }
-         char dummy[0xf9] = {0};
-         hci_send_event_cmd_complete(fd, hdr->opcode, dummy, sizeof(dummy));
-         return false;
-}
-
-static void* event_thread(void* arg)
-{
-         while (1) {
-                 char buf[1024] = {0};
-                 ssize_t buf_size = read(vhci_fd, buf, sizeof(buf));
-                 if (buf_size < 0)
-         exit(1);
-                 if (buf_size > 0 && buf[0] == HCI_COMMAND_PKT) {
-                         if (process_command_pkt(vhci_fd, buf + 1, 
-buf_size - 1))
-                                 break;
-                 }
-         }
-         return NULL;
-}
-#define HCI_HANDLE_1 200
-#define HCI_HANDLE_2 201
-
-static void initialize_vhci()
-{
-         int hci_sock = socket(AF_BLUETOOTH, SOCK_RAW, BTPROTO_HCI);
-         if (hci_sock < 0)
-         exit(1);
-         vhci_fd = open("/dev/vhci", O_RDWR);
-         if (vhci_fd == -1)
-         exit(1);
-         const int kVhciFd = 202;
-         if (dup2(vhci_fd, kVhciFd) < 0)
-         exit(1);
-         close(vhci_fd);
-         vhci_fd = kVhciFd;
-         struct vhci_vendor_pkt vendor_pkt;
-         if (read(vhci_fd, &vendor_pkt, sizeof(vendor_pkt)) != 
-sizeof(vendor_pkt))
-         exit(1);
-         if (vendor_pkt.type != HCI_VENDOR_PKT)
-         exit(1);
-         pthread_t th;
-         if (pthread_create(&th, NULL, event_thread, NULL))
-         exit(1);
-         int ret = ioctl(hci_sock, HCIDEVUP, vendor_pkt.id);
-         if (ret) {
-                 if (errno == ERFKILL) {
-                         rfkill_unblock_all();
-                         ret = ioctl(hci_sock, HCIDEVUP, vendor_pkt.id);
-                 }
-                 if (ret && errno != EALREADY)
-         exit(1);
-         }
-         struct hci_dev_req dr = {0};
-         dr.dev_id = vendor_pkt.id;
-         dr.dev_opt = SCAN_PAGE;
-         if (ioctl(hci_sock, HCISETSCAN, &dr))
-         exit(1);
-         struct hci_ev_conn_request request;
-         memset(&request, 0, sizeof(request));
-         memset(&request.bdaddr, 0xaa, 6);
-         *(uint8_t*)&request.bdaddr.b[5] = 0x10;
-         request.link_type = ACL_LINK;
-         hci_send_event_packet(vhci_fd, HCI_EV_CONN_REQUEST, &request, 
-sizeof(request));
-         struct hci_ev_conn_complete complete;
-         memset(&complete, 0, sizeof(complete));
-         complete.status = 0;
-         complete.handle = HCI_HANDLE_1;
-         memset(&complete.bdaddr, 0xaa, 6);
-         *(uint8_t*)&complete.bdaddr.b[5] = 0x10;
-         complete.link_type = ACL_LINK;
-         complete.encr_mode = 0;
-         hci_send_event_packet(vhci_fd, HCI_EV_CONN_COMPLETE, &complete, 
-sizeof(complete));
-         struct hci_ev_remote_features features;
-         memset(&features, 0, sizeof(features));
-         features.status = 0;
-         features.handle = HCI_HANDLE_1;
-         hci_send_event_packet(vhci_fd, HCI_EV_REMOTE_FEATURES, 
-&features, sizeof(features));
-         struct {
-                 struct hci_ev_le_meta le_meta;
-                 struct hci_ev_le_conn_complete le_conn;
-         } le_conn;
-         memset(&le_conn, 0, sizeof(le_conn));
-         le_conn.le_meta.subevent = HCI_EV_LE_CONN_COMPLETE;
-         memset(&le_conn.le_conn.bdaddr, 0xaa, 6);
-         *(uint8_t*)&le_conn.le_conn.bdaddr.b[5] = 0x11;
-         le_conn.le_conn.role = 1;
-         le_conn.le_conn.handle = HCI_HANDLE_2;
-         hci_send_event_packet(vhci_fd, HCI_EV_LE_META, &le_conn, 
-sizeof(le_conn));
-         pthread_join(th, NULL);
-         close(hci_sock);
-}
-
-static long syz_emit_vhci(volatile long a0, volatile long a1)
-{
-         if (vhci_fd < 0)
-                 return (uintptr_t)-1;
-         char* data = (char*)a0;
-         uint32_t length = a1;
-         return write(vhci_fd, data, length);
-}
-
-static void setup_common()
-{
-         if (mount(0, "/sys/fs/fuse/connections", "fusectl", 0, 0)) {
-         }
-}
-
-static void setup_binderfs()
-{
-         if (mkdir("/dev/binderfs", 0777)) {
-         }
-         if (mount("binder", "/dev/binderfs", "binder", 0, NULL)) {
-         }
-         if (symlink("/dev/binderfs", "./binderfs")) {
-         }
-}
-
-static void loop();
-
-static void sandbox_common()
-{
-         prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
-         setsid();
-         struct rlimit rlim;
-         rlim.rlim_cur = rlim.rlim_max = (200 << 20);
-         setrlimit(RLIMIT_AS, &rlim);
-         rlim.rlim_cur = rlim.rlim_max = 32 << 20;
-         setrlimit(RLIMIT_MEMLOCK, &rlim);
-         rlim.rlim_cur = rlim.rlim_max = 136 << 20;
-         setrlimit(RLIMIT_FSIZE, &rlim);
-         rlim.rlim_cur = rlim.rlim_max = 1 << 20;
-         setrlimit(RLIMIT_STACK, &rlim);
-         rlim.rlim_cur = rlim.rlim_max = 0;
-         setrlimit(RLIMIT_CORE, &rlim);
-         rlim.rlim_cur = rlim.rlim_max = 256;
-         setrlimit(RLIMIT_NOFILE, &rlim);
-         if (unshare(CLONE_NEWNS)) {
-         }
-         if (mount(NULL, "/", NULL, MS_REC | MS_PRIVATE, NULL)) {
-         }
-         if (unshare(CLONE_NEWIPC)) {
-         }
-         if (unshare(0x02000000)) {
-         }
-         if (unshare(CLONE_NEWUTS)) {
-         }
-         if (unshare(CLONE_SYSVSEM)) {
-         }
-         typedef struct {
-                 const char* name;
-                 const char* value;
-         } sysctl_t;
-         static const sysctl_t sysctls[] = {
-             {"/proc/sys/kernel/shmmax", "16777216"},
-             {"/proc/sys/kernel/shmall", "536870912"},
-             {"/proc/sys/kernel/shmmni", "1024"},
-             {"/proc/sys/kernel/msgmax", "8192"},
-             {"/proc/sys/kernel/msgmni", "1024"},
-             {"/proc/sys/kernel/msgmnb", "1024"},
-             {"/proc/sys/kernel/sem", "1024 1048576 500 1024"},
-         };
-         unsigned i;
-         for (i = 0; i < sizeof(sysctls) / sizeof(sysctls[0]); i++)
-                 write_file(sysctls[i].name, sysctls[i].value);
-}
-
-static int wait_for_loop(int pid)
-{
-         if (pid < 0)
-         exit(1);
-         int status = 0;
-         while (waitpid(-1, &status, __WALL) != pid) {
-         }
-         return WEXITSTATUS(status);
-}
-
-static void drop_caps(void)
-{
-         struct __user_cap_header_struct cap_hdr = {};
-         struct __user_cap_data_struct cap_data[2] = {};
-         cap_hdr.version = _LINUX_CAPABILITY_VERSION_3;
-         cap_hdr.pid = getpid();
-         if (syscall(SYS_capget, &cap_hdr, &cap_data))
-         exit(1);
-         const int drop = (1 << CAP_SYS_PTRACE) | (1 << CAP_SYS_NICE);
-         cap_data[0].effective &= ~drop;
-         cap_data[0].permitted &= ~drop;
-         cap_data[0].inheritable &= ~drop;
-         if (syscall(SYS_capset, &cap_hdr, &cap_data))
-         exit(1);
-}
-
-static int do_sandbox_none(void)
-{
-         if (unshare(CLONE_NEWPID)) {
-         }
-         int pid = fork();
-         if (pid != 0)
-                 return wait_for_loop(pid);
-         setup_common();
-         initialize_vhci();
-         sandbox_common();
-         drop_caps();
-         if (unshare(CLONE_NEWNET)) {
-         }
-         setup_binderfs();
-         loop();
-         exit(1);
-}
-
-static void kill_and_wait(int pid, int* status)
-{
-         kill(-pid, SIGKILL);
-         kill(pid, SIGKILL);
-         for (int i = 0; i < 100; i++) {
-                 if (waitpid(-1, status, WNOHANG | __WALL) == pid)
-                         return;
-                 usleep(1000);
-         }
-         DIR* dir = opendir("/sys/fs/fuse/connections");
-         if (dir) {
-                 for (;;) {
-                         struct dirent* ent = readdir(dir);
-                         if (!ent)
-                                 break;
-                         if (strcmp(ent->d_name, ".") == 0 || 
-strcmp(ent->d_name, "..") == 0)
-                                 continue;
-                         char abort[300];
-                         snprintf(abort, sizeof(abort), 
-"/sys/fs/fuse/connections/%s/abort", ent->d_name);
-                         int fd = open(abort, O_WRONLY);
-                         if (fd == -1) {
-                                 continue;
-                         }
-                         if (write(fd, abort, 1) < 0) {
-                         }
-                         close(fd);
-                 }
-                 closedir(dir);
-         } else {
-         }
-         while (waitpid(-1, status, __WALL) != pid) {
-         }
-}
-
-static void setup_test()
-{
-         prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
-         setpgrp();
-         write_file("/proc/self/oom_score_adj", "1000");
-}
-
-static void close_fds()
-{
-         for (int fd = 3; fd < MAX_FDS; fd++)
-                 close(fd);
-}
-
-static void execute_one(void);
-
-#define WAIT_FLAGS __WALL
-
-static void loop(void)
-{
-         int iter = 0;
-         for (;; iter++) {
-                 int pid = fork();
-                 if (pid < 0)
-         exit(1);
-                 if (pid == 0) {
-                         setup_test();
-                         execute_one();
-                         close_fds();
-                         exit(0);
-                 }
-                 int status = 0;
-                 uint64_t start = current_time_ms();
-                 for (;;) {
-                         if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) 
-== pid)
-                                 break;
-                         sleep_ms(1);
-                         if (current_time_ms() - start < 5000)
-                                 continue;
-                         kill_and_wait(pid, &status);
-                         break;
-                 }
-         }
-}
-
-void execute_one(void)
-{
-*(uint8_t*)0x20000040 = 4;
-*(uint8_t*)0x20000041 = 8;
-*(uint8_t*)0x20000042 = 4;
-*(uint8_t*)0x20000043 = 0xf9;
-*(uint16_t*)0x20000044 = 0xc8;
-*(uint8_t*)0x20000046 = 2;
-syz_emit_vhci(0x20000040, 7);
-
-}
-int main(void)
-{
-                 syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, 
--1, 0ul);
-         syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 
-0ul);
-         syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
-                         do_sandbox_none();
-         return 0;
-}
+> [1]: https://lore.kernel.org/r/20240410-strncpy-xfs-split1-v2-1-7c651502bcb0@google.com
 
 -- 
-Regards,
-Vasiliy Kovalev
+Kees Cook
 
