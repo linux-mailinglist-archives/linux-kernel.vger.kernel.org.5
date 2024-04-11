@@ -1,230 +1,307 @@
-Return-Path: <linux-kernel+bounces-139682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B31A18A066F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:01:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D6C48A0673
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:02:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42A9F1F25E2C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:01:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 259B01C23BBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C252D13BAC8;
-	Thu, 11 Apr 2024 03:00:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13FAB13B5BF;
+	Thu, 11 Apr 2024 03:02:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XBuO32Tg"
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JGIPT99o"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9AD13B5A7;
-	Thu, 11 Apr 2024 03:00:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261866215F;
+	Thu, 11 Apr 2024 03:02:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712804457; cv=none; b=sDR9gt4hpk05kBExhj48yGoEqjW/VeDlHA1wUha6ylisn71qQ7Afzddi0zp0X9Qeto/g2dOrDBwajyNHxK+rgojr4CR+Ljk0WR7XROD2eB7aVzEJDRAT6mubBoQVfpeyd7uKBhZdKTAxQSryI5tTAYk0ROjz8iI4LemZ8W2N46k=
+	t=1712804566; cv=none; b=Yt4pE0439Anj++NG81LZ00v9wLgIM15MJouM60VaqhXR0VIehpU7bbtaO/9nb0lvRHhgoSg4Zf7Dkx/fbSWUZPHMHVQsMkHofMSOQj3JdcslqOFua2p8HYAnKBTsoe5hj87WBICN2uMcdysXt49Q+STRlPbBCAOuTRQfAnBBIh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712804457; c=relaxed/simple;
-	bh=JHPfVU2SbhevASOUuCl9jIR7oh3kyRirjd2zOQml7Hs=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=DxPmI07B3bpjpgtpznubK4OkJ75uvMgBr8zMPAsyeHdEHdgd1uoZCSl08pIcoAxth3DDv6vn81zNT6m2xRjyG56yPwlgHdL8HURTaq4XRrS69YGJ1bmKbyH0qqQ+gsCRJnoC3bFqRy4Okyxnk3m/TM3hVhgcCue1eS/SiDsX8zg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XBuO32Tg; arc=none smtp.client-ip=209.85.217.44
+	s=arc-20240116; t=1712804566; c=relaxed/simple;
+	bh=uf0UxxzaxwfPygGpy1/6L66WB+5xFpGE0UtHzOk97J8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Eyr7eLggKIIdUvW8T1IEazKyCm43WYjU9l7P1vNKt9yDe8OTFwHv/yg3EOghzLQcWgtW98JTLtSsirwdaRkUxgi00LUxgTIyqdw0xYVxhqGedquh+iCK2tLbQSu8uYE7hP6+9uTP7ZIkYzGtWBZmh+YmF+FAJjBpYQRwj4lng8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JGIPT99o; arc=none smtp.client-ip=209.85.167.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-47a0bebeacaso1408978137.0;
-        Wed, 10 Apr 2024 20:00:55 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-516dd07d373so3755308e87.3;
+        Wed, 10 Apr 2024 20:02:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712804454; x=1713409254; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1712804562; x=1713409362; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0EwanpfmN8Wfp66ZF7BNbhmU8e95IyJQR7hcqQHi9SE=;
-        b=XBuO32Tg752fagbeXHtwp1MHJTRkF2QL42BqrUqUhDHTXN8DhfxYkIX608O/QgKEt2
-         v2Zmbik50uAV0obQ6XZZCFf+6mYP+LOK/LjIZ4s92/TrhaAjB9X9xfU9nJunA4oPjYYh
-         SOz73LFpU5fOgkKBtWyo3NgQY9jei6kT2a315sXCJ5VKPOb/+7ouuYPch6AEleCTip7C
-         Xt+q923rn0BBStMk6P98O5g7cKg1pVF6y2ZwvdmmdLtoIRybacOcixAIn52m2x3M3Foq
-         LfD8MijxxKGf8detMWzHhuG+U2QwyAHPt8AH9W1m8NmvQIOtFbuIT1O4eWXe8HaCKNq9
-         aIQw==
+        bh=23k+0ul/LQsBcOETnyrxnDyWLX/i2RS+Anx3RNRM2nE=;
+        b=JGIPT99ooH05ilinkuFf9Q+PrxZ+wYsK/OFX/MjgSAE3mIL6nGI4ImVeUjDoh8oDCe
+         7q29cC77VQZx5GZ8OyreZk1YnW1VIxw04Q4FvCEnokYEOGkW6Tm23mnGw0LMkiEFMkWW
+         U8uNcT8Cd85wJybNYhSslHGZF6t6V6MB+kPQn0uNyJqImWMpSY5aKsrOoeIjoALc200p
+         EkmySsmPpX8ZVtpqXGqT1NSmMaHPbxdilo6xY9C8tCaIhwdl8C8PvyrLs9Re32nCLNKB
+         6caLUJJt4+L7Q0NxKxfshpP+9T0u/bkimAn4Qm2nNiXNxWO4wFEhwYEYoIIr0yAotJOz
+         GutQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712804454; x=1713409254;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=0EwanpfmN8Wfp66ZF7BNbhmU8e95IyJQR7hcqQHi9SE=;
-        b=GE5wrbtQ2gWfI6nYeRBHR1NiaIHy7aSWPryyWdwyJ429CVv2+FwfFmBM5lj9HL2a9W
-         KCZckTohZmoBOORSmTeNIYKbgk02klWnAyP3avpM7HPtAPEv2eXzLd84FMIsnyRBEU4V
-         YGzFYCdU8rzw6ekvpuNlHtrHs9nrsDXT+GBTfK9sQKphr0T41bFICTGW97W5IcsMDpy5
-         FJysQqZ0viI+60zHAoydjHT+QWCbXjVVsazHC4YCUIFhz/HngmF6Rq4Wiq9veJAMpGl5
-         Zb/vDicvwq06j0Uu/CIVcE+zGD61XF65Zfcxk8Fl3sKSqt870sOSeZTD3HCcbtYZUaOo
-         qexA==
-X-Forwarded-Encrypted: i=1; AJvYcCVTNYR2pNhWyWed+WoUScbJmkmX//UTCMP0ACkivm8kCjbqIqNsUBxiwWhBNvedJc/4bOfZUZ1nJy2JXvSNL6L3s5O9JPPyZs7Hl05cADAa/ntOmku5fnq5wnrvr3nfdmiZdjUu4cfkiEjCt+NSUOUZX4g8R2EjPQ8n+QKP8KJQ
-X-Gm-Message-State: AOJu0YyUho9rPEEsNlZJ712hByc8NogVf8qokxCpt5XiB+b/jVVuhHO0
-	BHeVWOUbByB1L8yM6tptKGfqNsC3kLoIgcwh+rbX8Z3WKAxgjAdL
-X-Google-Smtp-Source: AGHT+IF0n8eerAqlwySj3arpU4ymiZD5M8Xwc5+6Pmjoc1p7/OStmssdMR0jQeZb02m9Ymt0t5OAUQ==
-X-Received: by 2002:a05:6102:955:b0:47a:317f:eff7 with SMTP id a21-20020a056102095500b0047a317feff7mr1918245vsi.0.1712804454115;
-        Wed, 10 Apr 2024 20:00:54 -0700 (PDT)
-Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
-        by smtp.gmail.com with ESMTPSA id e7-20020a0cf747000000b0069943d0e5a3sm358899qvo.93.2024.04.10.20.00.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 20:00:53 -0700 (PDT)
-Date: Wed, 10 Apr 2024 23:00:53 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Kory Maincent <kory.maincent@bootlin.com>, 
- Florian Fainelli <florian.fainelli@broadcom.com>, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
- Andrew Lunn <andrew@lunn.ch>, 
- Heiner Kallweit <hkallweit1@gmail.com>, 
- Russell King <linux@armlinux.org.uk>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Richard Cochran <richardcochran@gmail.com>, 
- Radu Pirea <radu-nicolae.pirea@oss.nxp.com>, 
- Jay Vosburgh <j.vosburgh@gmail.com>, 
- Andy Gospodarek <andy@greyhouse.net>, 
- Nicolas Ferre <nicolas.ferre@microchip.com>, 
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Jonathan Corbet <corbet@lwn.net>, 
- Horatiu Vultur <horatiu.vultur@microchip.com>, 
- UNGLinuxDriver@microchip.com, 
- Simon Horman <horms@kernel.org>, 
- Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- linux-doc@vger.kernel.org, 
- Maxime Chevallier <maxime.chevallier@bootlin.com>, 
- Rahul Rameshbabu <rrameshbabu@nvidia.com>, 
- Kory Maincent <kory.maincent@bootlin.com>
-Message-ID: <66175265992c8_2d6bc6294d8@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20240409-feature_ptp_netnext-v10-8-0fa2ea5c89a9@bootlin.com>
-References: <20240409-feature_ptp_netnext-v10-0-0fa2ea5c89a9@bootlin.com>
- <20240409-feature_ptp_netnext-v10-8-0fa2ea5c89a9@bootlin.com>
-Subject: Re: [PATCH net-next v10 08/13] ptp: Add phc source and helpers to
- register specific PTP clock or get information
+        d=1e100.net; s=20230601; t=1712804562; x=1713409362;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=23k+0ul/LQsBcOETnyrxnDyWLX/i2RS+Anx3RNRM2nE=;
+        b=Utbs5DKDZ/mw6cKPLfxQ/yCyt2yU1mca/ZoTMauJrzbAzt0Dei7l80YGIRgO3DbhpD
+         DdsO1IufF1gHybLhKi8UyEM7R2Ol/2kXyI5so/MwH8HMNB1eUNqxqL7N0QFcNbvQyuNe
+         L22Dm9vo3/p81pvE0xurxOyqa3HIRRgf0r5kygWBb4ZZj/idf2RmQafzWqCpCHlZC3MW
+         1M35G/AJL62z3A8Rw9hPEjXaite8rSNYYugI/aXWSOPBTS9LoA9+kYUYHoyX8O8teqrf
+         hR9koARetFXuHaFCjvZObA97DzxBMIuJZ4DrjVI1kz7NiiB9Sl3cJ1Zb+9XmUb3i83JU
+         IPow==
+X-Forwarded-Encrypted: i=1; AJvYcCXkbmeVVFu0CHl/dXJgkYz+Of5/UtiCoP8gK5fbINurFOpX8Mq8QYDHQyb09YCxYKl5JfANH22G5ELhI6jfgqRpuA7cGW9AUf6HOT2JpYJLlo9GbKqHQAts7uALZj4yi6wC4S2t64TUrQFjGCMs3FeNu6mk0We4BnMTGUc4vozMZZLByrPU+aUB
+X-Gm-Message-State: AOJu0YyQVm4hnQjGyfQNjJN0u716PAWygmg89YWdb1xRdLrzFIOBRLYW
+	N3jiBrUlyQ8tTsOizXxt+E1vxJC9u1+jqQvXP5D6pmdGd4dxlFtvI2XfNGhCnFAJdVKPPLpbsf9
+	K2tXaQWDpjn5Y33IX3IznvEsTfC0=
+X-Google-Smtp-Source: AGHT+IGnpNyOeDM/Irajhzo3fENwd3PDZXJ//iOTmn0GKdYrsUu4IHsIC95k1OFsfc4+LcYrlCmXIL8PjnmUPbh9u0A=
+X-Received: by 2002:a05:6512:31cb:b0:515:d60d:bbb with SMTP id
+ j11-20020a05651231cb00b00515d60d0bbbmr3560726lfe.0.1712804561937; Wed, 10 Apr
+ 2024 20:02:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <CAL+tcoC0wRbXfFziaXzvP9wuw4Qe6tZj5QRxbUhAcW5Np6kEgw@mail.gmail.com>
+ <20240411023316.137800-1-peilinhe2020@163.com>
+In-Reply-To: <20240411023316.137800-1-peilinhe2020@163.com>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Thu, 11 Apr 2024 11:02:05 +0800
+Message-ID: <CAL+tcoDS6yGAP0UqN9YCSzB2zSUz5b7Vmh+M7Gk-k3SZdmfj1Q@mail.gmail.com>
+Subject: Re: Re: Re: Subject: [PATCH net-next v4] net/ipv4: add tracepoint for icmp_send
+To: Peilin He <peilinhe2020@163.com>
+Cc: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com, 
+	fan.yu9@zte.com.cn, he.peilin@zte.com.cn, jiang.xuexin@zte.com.cn, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, liu.chun2@zte.com.cn, mhiramat@kernel.org, 
+	netdev@vger.kernel.org, qiu.yutan@zte.com.cn, rostedt@goodmis.org, 
+	xu.xin16@zte.com.cn, yang.yang29@zte.com.cn, zhang.yunkai@zte.com.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Kory Maincent wrote:
-> Prepare for future hardware timestamp selection by adding source and
-> corresponding pointers to ptp_clock structure. Additionally, introduce
-> helpers for registering specific phydev or netdev PTP clocks, retrieving
-> PTP clock information such as hwtstamp source or phydev/netdev pointers,
-> and obtaining the ptp_clock structure from the phc index.
-> 
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-> ---
-> 
-> Change in v8:
-> - New patch.
-> 
-> Change in v10:
-> - Add get and put function to avoid unregistering a ptp clock object used.
-> - Fix kdoc issues.
-> ---
->  drivers/ptp/ptp_clock.c          | 114 +++++++++++++++++++++++++++++++++++++++
->  drivers/ptp/ptp_private.h        |   5 ++
->  include/linux/ptp_clock_kernel.h | 104 +++++++++++++++++++++++++++++++++++
->  3 files changed, 223 insertions(+)
-> 
-> diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
-> index c56cd0f63909..f962f460ec9d 100644
-> --- a/drivers/ptp/ptp_clock.c
-> +++ b/drivers/ptp/ptp_clock.c
-> @@ -512,6 +512,120 @@ void ptp_cancel_worker_sync(struct ptp_clock *ptp)
->  }
->  EXPORT_SYMBOL(ptp_cancel_worker_sync);
->  
-> +struct ptp_clock *netdev_ptp_clock_register(struct ptp_clock_info *info,
-> +					    struct net_device *dev)
-> +{
-> +	struct ptp_clock *ptp;
-> +
-> +	ptp = ptp_clock_register(info, &dev->dev);
-> +	if (IS_ERR(ptp))
-> +		return ptp;
-> +
-> +	ptp->phc_source = HWTSTAMP_SOURCE_NETDEV;
-> +	ptp->netdev = dev;
-> +
-> +	return ptp;
-> +}
-> +EXPORT_SYMBOL(netdev_ptp_clock_register);
-> +
-> +struct ptp_clock *phydev_ptp_clock_register(struct ptp_clock_info *info,
-> +					    struct phy_device *phydev)
-> +{
-> +	struct ptp_clock *ptp;
-> +
-> +	ptp = ptp_clock_register(info, &phydev->mdio.dev);
-> +	if (IS_ERR(ptp))
-> +		return ptp;
-> +
-> +	ptp->phc_source = HWTSTAMP_SOURCE_PHYLIB;
-> +	ptp->phydev = phydev;
-> +
-> +	return ptp;
-> +}
-> +EXPORT_SYMBOL(phydev_ptp_clock_register);
-> +
-> +bool ptp_clock_from_phylib(struct ptp_clock *ptp)
-> +{
-> +	return ptp->phc_source == HWTSTAMP_SOURCE_PHYLIB;
-> +}
-> +EXPORT_SYMBOL(ptp_clock_from_phylib);
-> +
-> +bool ptp_clock_from_netdev(struct ptp_clock *ptp)
-> +{
-> +	return ptp->phc_source == HWTSTAMP_SOURCE_NETDEV;
-> +}
-> +EXPORT_SYMBOL(ptp_clock_from_netdev);
-> +
-> +struct net_device *ptp_clock_netdev(struct ptp_clock *ptp)
-> +{
-> +	if (ptp->phc_source != HWTSTAMP_SOURCE_NETDEV)
-> +		return NULL;
-> +
-> +	return ptp->netdev;
-> +}
-> +EXPORT_SYMBOL(ptp_clock_netdev);
-> +
-> +struct phy_device *ptp_clock_phydev(struct ptp_clock *ptp)
-> +{
-> +	if (ptp->phc_source != HWTSTAMP_SOURCE_PHYLIB)
-> +		return NULL;
-> +
-> +	return ptp->phydev;
-> +}
-> +EXPORT_SYMBOL(ptp_clock_phydev);
+On Thu, Apr 11, 2024 at 10:34=E2=80=AFAM Peilin He <peilinhe2020@163.com> w=
+rote:
+>
+> >[...]
+> >> >I think my understanding based on what Eric depicted differs from you=
+:
+> >> >we're supposed to filter out those many invalid cases and only trace
+> >> >the valid action of sending a icmp, so where to add a new tracepoint
+> >> >is important instead of adding more checks in the tracepoint itself.
+> >> >Please refer to what trace_tcp_retransmit_skb() does :)
+> >> >
+> >> >Thanks,
+> >> >Jason
+> >> Okay, thank you for your suggestion. In order to avoid filtering out
+> >> those many invalid cases and only tracing the valid action of sending
+> >> a icmp, the next patch will add udd_fail_no_port trancepoint to the
+> >> include/trace/events/udp.h. This will solve the problem you mentioned
+> >> very well. At this point, only UDP protocol exceptions will be tracked=
+,
+> >> without the need to track them in icmp_send.
+> >
+> >I'm not against what you did (tracing all the icmp_send() for UDP) in
+> >your original patch. I was suggesting that you could put
+> >trace_icmp_send() in the right place, then you don't have to check the
+> >possible error condition (like if the skb->head is valid or not, ...)
+> >in your trace function.
+> >
+> >One example that can avoid various checks existing in the
+> >__icmp_send() function:
+> >diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
+> >index e63a3bf99617..2c9f7364de45 100644
+> >--- a/net/ipv4/icmp.c
+> >+++ b/net/ipv4/icmp.c
+> >@@ -767,6 +767,7 @@ void __icmp_send(struct sk_buff *skb_in, int type,
+> >int code, __be32 info,
+> >        if (!fl4.saddr)
+> >                fl4.saddr =3D htonl(INADDR_DUMMY);
+> >
+> >+       trace_icmp_send(skb_in, type, code);
+> >        icmp_push_reply(sk, &icmp_param, &fl4, &ipc, &rt);
+> > ende
+> >        ip_rt_put(rt);
+> >
+> >If we go here, it means we are ready to send the ICMP skb because
+> >we're done extracting the right information in the 'struct sk_buff
+> >skb_in'. Simpler and easier, right?
+> >
+> >Thanks,
+> >Jason
+>
+> I may not fully agree with this viewpoint. When trace_icmp_send is placed
+> in this position, it cannot guarantee that all skbs in icmp are UDP proto=
+cols
+> (UDP needs to be distinguished based on the proto_4!=3DIPPROTO_UDP condit=
+ion),
+> nor can it guarantee the legitimacy of udphdr (*uh legitimacy check is re=
+quired).
 
-IMHO these four helpers just add a layer of indirection without much
-benefit.
+Of course, the UDP test statement is absolutely needed! Eric
+previously pointed this out in the V1 patch thread. I'm not referring
+to this one but like skb->head check something like this which exists
+in __icmp_send() function. You can see there are so many checks in it
+before sending.
 
-Do we ever expect more than two sources? Else, the phc_source could be
-embedded as the least significant bit of the pointer in the union. In
-that case we would need helpers to return the pointer without that LSB.
-But space in struct ptp_clock is probably not so valuable that we need
-to play such games.
+So only keeping the UDP check is enough, I think.
 
-> +/**
-> + * netdev_ptp_clock_register() - register a PTP hardware clock driver for
-> + *				 a net device
-> + *
-> + * @info: Structure describing the new clock.
-> + * @dev:  Pointer of the net device
-> + */
-> +
-> +extern struct ptp_clock *
-> +netdev_ptp_clock_register(struct ptp_clock_info *info,
-> +			  struct net_device *dev);
+Thanks,
+Jason
 
-No need for explicit extern?
+>
+> With best wishes
+> Peilin He
+>
+> >>
+> >> >> 2.Target this patch for net-next.
+> >> >>
+> >> >> v2->v3:
+> >> >> Some fixes according to
+> >> >> https://lore.kernel.org/all/20240319102549.7f7f6f53@gandalf.local.h=
+ome/
+> >> >> 1. Change the tracking directory to/sys/kernel/tracking.
+> >> >> 2. Adjust the layout of the TP-STRUCT_entry parameter structure.
+> >> >>
+> >> >> v1->v2:
+> >> >> Some fixes according to
+> >> >> https://lore.kernel.org/all/CANn89iL-y9e_VFpdw=3D3DsZtRnKRu_tnUwqHu=
+FQTJvJsv=3D
+> >> >-nz1xPDw@mail.gmail.com/
+> >> >> 1. adjust the trace_icmp_send() to more protocols than UDP.
+> >> >> 2. move the calling of trace_icmp_send after sanity checks
+> >> >> in __icmp_send().
+> >> >>
+> >> >> Signed-off-by: Peilin He<he.peilin@zte.com.cn>
+> >> >> Reviewed-by: xu xin <xu.xin16@zte.com.cn>
+> >> >> Reviewed-by: Yunkai Zhang <zhang.yunkai@zte.com.cn>
+> >> >> Cc: Yang Yang <yang.yang29@zte.com.cn>
+> >> >> Cc: Liu Chun <liu.chun2@zte.com.cn>
+> >> >> Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
+> >> >> ---
+> >> >>  include/trace/events/icmp.h | 65 +++++++++++++++++++++++++++++++++=
+++++
+> >> >>  net/ipv4/icmp.c             |  4 +++
+> >> >>  2 files changed, 69 insertions(+)
+> >> >>  create mode 100644 include/trace/events/icmp.h
+> >> >>
+> >> >> diff --git a/include/trace/events/icmp.h b/include/trace/events/icm=
+p.h
+> >> >> new file mode 100644
+> >> >> index 000000000000..7d5190f48a28
+> >> >> --- /dev/null
+> >> >> +++ b/include/trace/events/icmp.h
+> >> >> @@ -0,0 +1,65 @@
+> >> >> +/* SPDX-License-Identifier: GPL-2.0 */
+> >> >> +#undef TRACE_SYSTEM
+> >> >> +#define TRACE_SYSTEM icmp
+> >> >> +
+> >> >> +#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
+> >> >> +#define _TRACE_ICMP_H
+> >> >> +
+> >> >> +#include <linux/icmp.h>
+> >> >> +#include <linux/tracepoint.h>
+> >> >> +
+> >> >> +TRACE_EVENT(icmp_send,
+> >> >> +
+> >> >> +               TP_PROTO(const struct sk_buff *skb, int type, int c=
+ode),
+> >> >> +
+> >> >> +               TP_ARGS(skb, type, code),
+> >> >> +
+> >> >> +               TP_STRUCT__entry(
+> >> >> +                       __field(const void *, skbaddr)
+> >> >> +                       __field(int, type)
+> >> >> +                       __field(int, code)
+> >> >> +                       __array(__u8, saddr, 4)
+> >> >> +                       __array(__u8, daddr, 4)
+> >> >> +                       __field(__u16, sport)
+> >> >> +                       __field(__u16, dport)
+> >> >> +                       __field(unsigned short, ulen)
+> >> >> +               ),
+> >> >> +
+> >> >> +               TP_fast_assign(
+> >> >> +                       struct iphdr *iph =3D3D ip_hdr(skb);
+> >> >> +                       int proto_4 =3D3D iph->protocol;
+> >> >> +                       __be32 *p32;
+> >> >> +
+> >> >> +                       __entry->skbaddr =3D3D skb;
+> >> >> +                       __entry->type =3D3D type;
+> >> >> +                       __entry->code =3D3D code;
+> >> >> +
+> >> >> +                       struct udphdr *uh =3D3D udp_hdr(skb);
+> >> >> +                       if (proto_4 !=3D3D IPPROTO_UDP || (u8 *)uh =
+< skb->h=3D
+> >> >ead ||
+> >> >> +                               (u8 *)uh + sizeof(struct udphdr) > =
+skb_ta=3D
+> >> >il_pointer(skb)) {
+> >> >> +                               __entry->sport =3D3D 0;
+> >> >> +                               __entry->dport =3D3D 0;
+> >> >> +                               __entry->ulen =3D3D 0;
+> >> >> +                       } else {
+> >> >> +                               __entry->sport =3D3D ntohs(uh->sour=
+ce);
+> >> >> +                               __entry->dport =3D3D ntohs(uh->dest=
+);
+> >> >> +                               __entry->ulen =3D3D ntohs(uh->len);
+> >> >> +                       }
+> >> >> +
+> >> >> +                       p32 =3D3D (__be32 *) __entry->saddr;
+> >> >> +                       *p32 =3D3D iph->saddr;
+> >> >> +
+> >> >> +                       p32 =3D3D (__be32 *) __entry->daddr;
+> >> >> +                       *p32 =3D3D iph->daddr;
+> >> >> +               ),
+> >> >> +
+> >> >> +               TP_printk("icmp_send: type=3D3D%d, code=3D3D%d. Fro=
+m %pI4:%u =3D
+> >> >to %pI4:%u ulen=3D3D%d skbaddr=3D3D%p",
+> >> >> +                       __entry->type, __entry->code,
+> >> >> +                       __entry->saddr, __entry->sport, __entry->da=
+ddr,
+> >> >> +                       __entry->dport, __entry->ulen, __entry->skb=
+addr)
+> >> >> +);
+> >> >> +
+> >> >> +#endif /* _TRACE_ICMP_H */
+> >> >> +
+> >> >> +/* This part must be outside protection */
+> >> >> +#include <trace/define_trace.h>
+> >> >> \ No newline at end of file
+> >> >> diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
+> >> >> index 8cebb476b3ab..224551d75c02 100644
+> >> >> --- a/net/ipv4/icmp.c
+> >> >> +++ b/net/ipv4/icmp.c
+> >> >> @@ -92,6 +92,8 @@
+> >> >>  #include <net/inet_common.h>
+> >> >>  #include <net/ip_fib.h>
+> >> >>  #include <net/l3mdev.h>
+> >> >> +#define CREATE_TRACE_POINTS
+> >> >> +#include <trace/events/icmp.h>
+> >> >>
+> >> >>  /*
+> >> >>   *     Build xmit assembly blocks
+> >> >> @@ -672,6 +674,8 @@ void __icmp_send(struct sk_buff *skb_in, int ty=
+pe, in=3D
+> >> >t code, __be32 info,
+> >> >>                 }
+> >> >>         }
+> >> >>
+> >> >> +       trace_icmp_send(skb_in, type, code);
+> >> >> +
+> >> >>         /* Needed by both icmp_global_allow and icmp_xmit_lock */
+> >> >>         local_bh_disable();
+> >> >>
+> >> >> --
+> >> >> 2.25.1
+>
+>
 
