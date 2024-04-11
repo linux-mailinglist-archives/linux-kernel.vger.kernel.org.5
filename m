@@ -1,74 +1,47 @@
-Return-Path: <linux-kernel+bounces-139838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38F658A0850
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:18:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1E98A0853
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:18:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9BAF1F24C84
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:18:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60FDE2816F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 315B113CAA7;
-	Thu, 11 Apr 2024 06:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E52413CAB3;
+	Thu, 11 Apr 2024 06:18:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pdclmzqo"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="a9eKsWH2"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8365F13CA8F
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:17:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 036DD13CA91;
+	Thu, 11 Apr 2024 06:18:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712816281; cv=none; b=FxXg642xgnv0vt2MWjKOgqgjQd126am5tFA6ULVKgrvCaELaXnV6HcLvnIKiB+zAHsFX5WTV9vUCJFoFocRaDjBRvKhnVt573TzBNKOeRyM5ru2hPrcvBrZSK6s8mxIfoETgvTn+CZnpmzQ2HBB4OSZ6JhJOfa1sY/qb924u+VM=
+	t=1712816302; cv=none; b=TNcOjIswjAXFIFSILGa/611HIGBeRdN52jdYSNK5bdRnZNilfipd62td+lPpcAjexNr2SueFWMMEJXPyxs1raP5Jvmwrf+PdlYRSn+5udC62+oEpz/tYlKdnKkXR69EClQ9c/+BjPewlNPSoEbVRX/fU8SzdJrOl2EBY7CpigrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712816281; c=relaxed/simple;
-	bh=i9P3bAcnwVB5TPl/lPoV1TrVudMdEcrlGwHTwNAN+Ms=;
+	s=arc-20240116; t=1712816302; c=relaxed/simple;
+	bh=ZW1aGT3uhnc1jK2K8WMi9TSmoiF9Ns/S0B4BMYY9Rao=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ozgNWhBTh86gva3DwpE0eqxYlUP9dYAE73Nj/xdn63taD5S3Jrtcon74veBCEjXjfVjtldkkvc7ZDPF5YCwrvu6KC3GzZx6MF0RB8tvIKU9DorNgWcx/Ad5Dd+6ux92RKA5ey5neEWpglCDRsfuZXkbFAnUBLtgKFeY8MW+NTtM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pdclmzqo; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-346b94fa7ecso314976f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 23:17:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712816278; x=1713421078; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=dIqGBLkwho0VDUiHAkhF1AiHua3U+TbpGgqUfassRGY=;
-        b=pdclmzqoKgm+9vNElevyUUDKHT/OD6ai/Wxmgaepuwc/sDD63s6sVpkQSfCVK9e3X+
-         jkAp/n+Iiy8jxzIIwzWvgdpGY/VDhGD4zoCDgDVrEV7NbscvbOH1pyxAghtzYjP33IHv
-         hpkljpvp4Zyh43WkrtTqhAtm/rbzGPgHY6/ecHbh8krBCi2Qz1Y/Q/yM46rRYgEC4VkX
-         drXi5XwhjLMr06q4WfUlsfsUR2zzfBEG5ox+jdoHcUY+R7WNU3XFsi15QLnkVOjsrrZV
-         2WSqLS2nR4pGTwaC7R3k1/mlL9qj4IVigDa2ZOtZXpO43dtJIl9aGb+faiqUGAQ1DBsR
-         zFiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712816278; x=1713421078;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dIqGBLkwho0VDUiHAkhF1AiHua3U+TbpGgqUfassRGY=;
-        b=SDFUJw52MrdNan3NioojVni70O5qvDxrbYXQwrA8zdOi7LdvUKVliRn+ei+jiO1mvj
-         v27neqiqrdpAHeS8SucYa8jZyNlecoB5xrgdZlS5EqeXXDXjlhVBJD0i1LjyPFWWAzWI
-         GzevW0NFuHRmm6WvFkJIxTuW6yz4ZoaaVUuOEaiReqWvZL2lhT7zwys4MEXSciDNY+tx
-         W1/FBXNjoPI3VZIeaCdbJAgKfbZmL4P1QOuyp+Jwr31N0AOqu86D3X7Fl4YYeCPeYAY6
-         BO6FsLe1+9PcXSn6qHoEbUpG4KMX8bAWu97h/Tax809GerpZHvHT1gv8UR0/gZ/+Riu4
-         JlJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVzPY/FjRJib6wit2uGO/t+u1/DhaULzRapGDYlJfyW7uxFGZMeqHetjHoeq6RYuQ5sOW/JlwRwP+CrjgUB1rZDuLtFLAU7kfuKKbJy
-X-Gm-Message-State: AOJu0Yw5g7wu9gKREtf+ucyrettBxHaNWUvrhaUc8/sOXWLgyCHcCHlH
-	B3tq2eCrUowbnWppjMQsHXB4bQ1a1d1kGIQlzW0aS5gzXg9GBzU+b76VMppLBF8=
-X-Google-Smtp-Source: AGHT+IEJxgJl8yVXSeIGYg35EweCjbaFB2dDJFg8DQCcoBybET4ev5s9QxHjmm6Hc4tA0Ocqh3UGjw==
-X-Received: by 2002:adf:fc46:0:b0:33e:cf4d:c583 with SMTP id e6-20020adffc46000000b0033ecf4dc583mr3434952wrs.16.1712816277879;
-        Wed, 10 Apr 2024 23:17:57 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id s19-20020adfe013000000b00346bb778e8bsm769518wrh.5.2024.04.10.23.17.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Apr 2024 23:17:57 -0700 (PDT)
-Message-ID: <130d47d8-3294-44be-9a8c-8474d342cb12@linaro.org>
-Date: Thu, 11 Apr 2024 08:17:55 +0200
+	 In-Reply-To:Content-Type; b=fq7k9RxW/VqqYS3XDxGHXq3T+rd1PK+Mh4Mt7PWpKhkocvwKtCZwqwbkqIqkEImWizfAzqUJEuNmU4VPoro0jYUXgOLzs5L0+ZyRXvteHVaOe3WZIQafH2UaLJ1BSUomox1ht8odyx4CypkqTBBCUslGTkHSLNA4LS02jv56xis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=a9eKsWH2; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5389723F;
+	Thu, 11 Apr 2024 08:17:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1712816256;
+	bh=ZW1aGT3uhnc1jK2K8WMi9TSmoiF9Ns/S0B4BMYY9Rao=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=a9eKsWH2fHcfoLW5vgHAo3gjKNKiFJEK81szBuOFQ/0TSj+58IAT8AgUgM1pEvnmU
+	 VZbMYM5XwNphpZEEwEpZ2DbnMInpxuNHD2n8eRhZUEGfy7b7q/W31PWz+DdAT48KBZ
+	 6iX1xnBV+/ofO2SYRvvOyxNKN5JP5ynCv/FW9MhY=
+Message-ID: <acbb93ce-33f3-4571-a5fb-ccf503924c8f@ideasonboard.com>
+Date: Thu, 11 Apr 2024 09:18:15 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,148 +49,151 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] dt-bindings: rtc: lpc32xx-rtc: convert to dtschema
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
- Vladimir Zapolskiy <vz@mleia.com>, Joel Stanley <joel@jms.id.au>,
- Andrew Jeffery <andrew@codeconstruct.com.au>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-rtc@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20240410-rtc_dtschema-v2-0-d32a11ab0745@gmail.com>
- <20240410-rtc_dtschema-v2-2-d32a11ab0745@gmail.com>
- <202404102043571b7450b5@mail.local>
+Subject: Re: [PATCH v3 3/9] media: subdev: Add checks for subdev features
+To: Umang Jain <umang.jain@ideasonboard.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Hans Verkuil
+ <hverkuil@xs4all.nl>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>
+References: <20240410-enable-streams-impro-v3-0-e5e7a5da7420@ideasonboard.com>
+ <20240410-enable-streams-impro-v3-3-e5e7a5da7420@ideasonboard.com>
+ <397c3723-2100-4717-9206-d53e71eae885@ideasonboard.com>
 Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <202404102043571b7450b5@mail.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <397c3723-2100-4717-9206-d53e71eae885@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 10/04/2024 22:43, Alexandre Belloni wrote:
-> On 10/04/2024 17:55:34+0200, Javier Carrasco wrote:
->> Convert existing binding to dtschema to support validation.
->>
->> Add the undocumented 'clocks' property.
->>
->> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
->> ---
->>  .../devicetree/bindings/rtc/lpc32xx-rtc.txt        | 15 --------
->>  .../devicetree/bindings/rtc/nxp,lpc32xx-rtc.yaml   | 41 ++++++++++++++++++++++
->>  2 files changed, 41 insertions(+), 15 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/rtc/lpc32xx-rtc.txt b/Documentation/devicetree/bindings/rtc/lpc32xx-rtc.txt
->> deleted file mode 100644
->> index a87a1e9bc060..000000000000
->> --- a/Documentation/devicetree/bindings/rtc/lpc32xx-rtc.txt
->> +++ /dev/null
->> @@ -1,15 +0,0 @@
->> -* NXP LPC32xx SoC Real Time Clock controller
->> -
->> -Required properties:
->> -- compatible: must be "nxp,lpc3220-rtc"
->> -- reg: physical base address of the controller and length of memory mapped
->> -  region.
->> -- interrupts: The RTC interrupt
->> -
->> -Example:
->> -
->> -	rtc@40024000 {
->> -		compatible = "nxp,lpc3220-rtc";
->> -		reg = <0x40024000 0x1000>;
->> -		interrupts = <52 0>;
->> -	};
->> diff --git a/Documentation/devicetree/bindings/rtc/nxp,lpc32xx-rtc.yaml b/Documentation/devicetree/bindings/rtc/nxp,lpc32xx-rtc.yaml
->> new file mode 100644
->> index 000000000000..62ddeef961e9
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/rtc/nxp,lpc32xx-rtc.yaml
->> @@ -0,0 +1,41 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/rtc/nxp,lpc32xx-rtc.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: NXP LPC32xx SoC Real Time Clock
->> +
->> +maintainers:
->> +  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
->> +
->> +allOf:
->> +  - $ref: rtc.yaml#
->> +
->> +properties:
->> +  compatible:
->> +    const: nxp,lpc3220-rtc
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
+On 11/04/2024 08:34, Umang Jain wrote:
+> Hi Tomi,
 > 
-> As I explained the clock doesn't really exist, there is no control over
-> it, it is a fixed 32768 Hz crystal, there is no point in describing it
-> as this is already the input clock of the SoC.
+> On 10/04/24 6:05 pm, Tomi Valkeinen wrote:
+>> Add some checks to verify that the subdev driver implements required
+>> features.
+>>
+>> A subdevice that supports streams (V4L2_SUBDEV_FL_STREAMS) must do one
+>> of the following:
+>>
+>> - Implement neither .enable/disable_streams() nor .s_stream(), if the
+>>    subdev is part of a video driver that uses an internal method to
+>>    enable the subdev.
+>> - Implement only .enable/disable_streams(), if support for legacy
+>>    sink-side subdevices is not needed.
+>> - Implement .enable/disable_streams() and .s_stream(), if support for
+>>    legacy sink-side subdevices is needed.
+>>
+>> At the moment the framework doesn't check this requirement. Add the
+>> check.
+>>
+>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> 
+> The code looks aligned with the restrictions mentioned in the commit 
+> message.
+> 
+> Only one question in case 3), does the .s_stream() needs to be helper 
+> function I think, can we (or do we) need to check that as well?
 
-That's common for many SoCs but it is still (at least for them) input to
-the RTC. On some SoC boards 32 kHz is controllable.
+Do you mean if in case 3, the s_stream should always be set to 
+v4l2_subdev_s_stream_helper()?
 
-But if you think it is not correct here, then we should drop it from DTS.
+I don't think so. The helper only works for subdevices with a single 
+source pad. And even if the helper worked for multiple source pads, I 
+don't see any specific reason to prevent the drivers from having their 
+own implementation.
 
-Best regards,
-Krzysztof
+  Tomi
+
+> Reviewed-by: Umang Jain <umang.jain@ideasonboard.com>
+> 
+>> ---
+>>   drivers/media/v4l2-core/v4l2-subdev.c | 27 +++++++++++++++++++++++++++
+>>   1 file changed, 27 insertions(+)
+>>
+>> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c 
+>> b/drivers/media/v4l2-core/v4l2-subdev.c
+>> index 4a531c2b16c4..606a909cd778 100644
+>> --- a/drivers/media/v4l2-core/v4l2-subdev.c
+>> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
+>> @@ -1533,6 +1533,33 @@ int __v4l2_subdev_init_finalize(struct 
+>> v4l2_subdev *sd, const char *name,
+>>                   struct lock_class_key *key)
+>>   {
+>>       struct v4l2_subdev_state *state;
+>> +    struct device *dev = sd->dev;
+>> +    bool has_disable_streams;
+>> +    bool has_enable_streams;
+>> +    bool has_s_stream;
+>> +
+>> +    /* Check that the subdevice implements the required features */
+>> +
+>> +    has_s_stream = v4l2_subdev_has_op(sd, video, s_stream);
+>> +    has_enable_streams = v4l2_subdev_has_op(sd, pad, enable_streams);
+>> +    has_disable_streams = v4l2_subdev_has_op(sd, pad, disable_streams);
+>> +
+>> +    if (has_enable_streams != has_disable_streams) {
+>> +        dev_err(dev,
+>> +            "subdev '%s' must implement both or neither of 
+>> .enable_streams() and .disable_streams()\n",
+>> +            sd->name);
+>> +        return -EINVAL;
+>> +    }
+>> +
+>> +    if (sd->flags & V4L2_SUBDEV_FL_STREAMS) {
+>> +        if (has_s_stream && !has_enable_streams) {
+>> +            dev_err(dev,
+>> +                "subdev '%s' must implement 
+>> .enable/disable_streams()\n",
+>> +                sd->name);
+>> +
+>> +            return -EINVAL;
+>> +        }
+>> +    }
+>>       state = __v4l2_subdev_state_alloc(sd, name, key);
+>>       if (IS_ERR(state))
+>>
+> 
 
 
