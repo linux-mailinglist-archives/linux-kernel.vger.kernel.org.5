@@ -1,117 +1,118 @@
-Return-Path: <linux-kernel+bounces-141726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5541D8A229C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:51:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 710D78A22A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:52:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E984E1F232BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:51:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0029CB220CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:52:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E022D4AEEA;
-	Thu, 11 Apr 2024 23:51:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648174C629;
+	Thu, 11 Apr 2024 23:52:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="GxmSpXlm"
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="g2IQ/siG"
+Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D51BE481C2
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 23:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF5C47A48;
+	Thu, 11 Apr 2024 23:52:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.171.188.204
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712879478; cv=none; b=bZDpZ3g8gda1bx1ocv8rhT2aTJxNrT32aklG80mR5SpQ9pxHnWx493fL557/442Vub9Cvf4ghqiWjRGbuY0NxOK0zUqQ7UKgqAKZ/MmD4DlutfYx5xFFiUE8OjezGZlwvE9hUzMI8h0LmjDFJLxAxRYGjMv4fwxroQa9UFDebJY=
+	t=1712879559; cv=none; b=iXNkU6whZqwvETC8TrIdSQ7VutJmIQplUh6NaFyp0s8qJmEnbsGfw4PsHp3cix54C8305HizT8qfDdGfxnGQ8xH/gsesPKkrym0d/lAEzDv5Urtnf+hE/1c2okD1O+1F+IhWo8oTwYL3diHkG8fWlfjRxDJu5ATlGyV/8prbUGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712879478; c=relaxed/simple;
-	bh=5n/c10tZw8i8ramDDL8gGaAfX2dPojeKb0kPmPkSSRc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E4hmBcpJ4cfuvTECHwhyxIJXTUipnxdQ6qIGhMQD1c5qtdkfKhPvTeGC5mo1i2Trv+d+CXrzd2eB7QiyBM3pdboTn2Fvjd5HOC5adq3Whn2ckISq9LiVwqlMvv3Sa7k0smjZZRQqGOZ/DamAtOkZch6TRlxUNc4rKVoKicvH+E4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=GxmSpXlm; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-36a1c0bf9faso296445ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:51:16 -0700 (PDT)
+	s=arc-20240116; t=1712879559; c=relaxed/simple;
+	bh=tgpYEE6LUepn+5geXe7MWga6OcWkQHTaKntZy3YoMzI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ciS7vJRYTWB5yZ6U3PWgfVVvpFAdaGvIt8opQ5v/Ja50aK+uxIommDRufPBR3hGxipgoexI1tbHreSXRigmW/FPx4BZ+iGRBFkIgGRmeyiJ7Z8cTgvX4AdAAg0H0hVLiVt8eGyAj1C489GskKfv48c6oiTRQQ/8cMIJrj+n9mFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=g2IQ/siG; arc=none smtp.client-ip=207.171.188.204
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1712879476; x=1713484276; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BTOuSbb8hB+vYzGueSyEZMnAtdrSDuj/9HdWkOKBA30=;
-        b=GxmSpXlm5JWGeS61UaT5VjpJFM7Dr/iTtUJgdr0aGjKIE7rRqt2F53hC1NxEuhFDN7
-         1aayl2Fe13Pr9TcXVnUCH0UxawBEOUUgVwlJyN+0uoNGiOrbcXItwsHVrWrHQ339Nqx7
-         Ss0T6v8vYFxj/vz0+s9Qe7PapOpy5iojZv4rY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712879476; x=1713484276;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BTOuSbb8hB+vYzGueSyEZMnAtdrSDuj/9HdWkOKBA30=;
-        b=LFzTYlIWrRKPzd3SCyLU/NyhmlwV1dZv0pkCaLTMt7/tmpGni4l5sm3TOEVga0m2im
-         0oV1+rcqUDBKEt0EnlmkiT6yeQA6Yw/jelYMX9RsP7J5nsRnIu1RsyxvZn6PXz47eSYw
-         7klDXKkE+IlW3iOLV+fs/Ml8pLF6bBACOob+RQzR4Jk6U7/JLSsemxjb/w/FmFhXC4Kb
-         kZA4jLX1RHyQvXB5rU5btRz6TzNwde9CLW+d+48z4/ArMS0/N7MKCV7L2urJf8Pj9lqC
-         3fhbwq+JiBGcKqNY7OpW66AfJv1WIZom928mWON5c14FeC8c/MpIqVt136J3Z7I5VQ8F
-         XEbw==
-X-Forwarded-Encrypted: i=1; AJvYcCVD5C0EM8bPggu3IYCIloJ3sfJ78qy10fvoLyaXhBBMmFhjfDJBejiPYlV76Bs0EcI91+F+YxYfb5R2M75Xh/K88e9vcS25jvhVVDw2
-X-Gm-Message-State: AOJu0YznXX5rQrEg3omLrFiVlMkEzjvyyNYkM5fXrb2Meyv7SR5f/ipH
-	QCoO0j4m0JJg8Ns2I6zC9shUMmGHWgybaUI5l4SHtkQlGeiKYLBZLhvsbaWAnqw=
-X-Google-Smtp-Source: AGHT+IELDyd3FIIEpM35tZjAK3mc3g8KNLKNwq9rZRUw1w9eybeYd4+fTEfh95HgJWqypKO3mqmkXw==
-X-Received: by 2002:a6b:f312:0:b0:7d5:de23:13a9 with SMTP id m18-20020a6bf312000000b007d5de2313a9mr1352400ioh.1.1712879476075;
-        Thu, 11 Apr 2024 16:51:16 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id is13-20020a056638850d00b004829581b0d4sm680676jab.111.2024.04.11.16.51.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 16:51:15 -0700 (PDT)
-Message-ID: <2fc1e5fa-07ef-4045-ae31-654a14844efa@linuxfoundation.org>
-Date: Thu, 11 Apr 2024 17:51:14 -0600
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1712879559; x=1744415559;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lB3haLy2Df6RpkVbSyqVIyO9vLkYGW4NzjkWWLDQawQ=;
+  b=g2IQ/siGRi2iAaWD0IwSeLE5sG6FiJ4qg64dwGNyeP0kJ0rdqiORy/ZH
+   2dPMJ0kgHGNKYijk5wYuej+rwY2qJA8lkN/9vry8ee486r6lXV1Sf6zPS
+   MYrJmyQRgAVv0tSrJwlmKvKL3G7d5utfn8EHWXihoywEO0XQ65XhaCpJM
+   c=;
+X-IronPort-AV: E=Sophos;i="6.07,194,1708387200"; 
+   d="scan'208";a="718520978"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 23:52:38 +0000
+Received: from EX19MTAUWB001.ant.amazon.com [10.0.38.20:38767]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.6.244:2525] with esmtp (Farcaster)
+ id d8c349d6-737f-45da-a243-e0955767f67f; Thu, 11 Apr 2024 23:52:37 +0000 (UTC)
+X-Farcaster-Flow-ID: d8c349d6-737f-45da-a243-e0955767f67f
+Received: from EX19D046UWA003.ant.amazon.com (10.13.139.18) by
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Thu, 11 Apr 2024 23:52:33 +0000
+Received: from EX19MTAUEA001.ant.amazon.com (10.252.134.203) by
+ EX19D046UWA003.ant.amazon.com (10.13.139.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Thu, 11 Apr 2024 23:52:33 +0000
+Received: from dev-dsk-hailmo-2b-4e49cd2f.us-west-2.amazon.com (172.16.42.153)
+ by mail-relay.amazon.com (10.252.134.102) with Microsoft SMTP Server id
+ 15.2.1258.28 via Frontend Transport; Thu, 11 Apr 2024 23:52:32 +0000
+Received: by dev-dsk-hailmo-2b-4e49cd2f.us-west-2.amazon.com (Postfix, from userid 13307802)
+	id A5E5F41829; Thu, 11 Apr 2024 23:52:32 +0000 (UTC)
+From: Hailey Mothershead <hailmo@amazon.com>
+To: <herbert@gondor.apana.org.au>
+CC: <davem@davemloft.net>, <linux-crypto@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <hailmo@amazon.com>
+Subject: [PATCH 1/2] crypto: ecdh - zeroize crpytographic keys after use
+Date: Thu, 11 Apr 2024 23:51:56 +0000
+Message-ID: <20240411235157.19801-1-hailmo@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.4 000/215] 5.4.274-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240411095424.875421572@linuxfoundation.org>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240411095424.875421572@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On 4/11/24 03:53, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.274 release.
-> There are 215 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.274-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Fips 140-3 specifies that Sensitive Security Parameters (SSPs) must be
+zeroized after use and that overwriting these variables with a new SSP
+is not sufficient for zeroization. So explicitly zeroize the private key
+before it is overwritten in ecdh_set_secret.
 
-Compiled and booted on my test system. No dmesg regressions.
+It also requires that variables used in the creation of SSPs
+be zeroized once they are no longer in use. Zeroize the public key as it
+is used in the creation of the shared secret.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Hailey Mothershead <hailmo@amazon.com>
+---
+ crypto/ecdh.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-thanks,
--- Shuah
+diff --git a/crypto/ecdh.c b/crypto/ecdh.c
+index 80afee3234fb..71599cadf0bc 100644
+--- a/crypto/ecdh.c
++++ b/crypto/ecdh.c
+@@ -33,6 +33,8 @@ static int ecdh_set_secret(struct crypto_kpp *tfm, const void *buf,
+ 	    params.key_size > sizeof(u64) * ctx->ndigits)
+ 		return -EINVAL;
+ 
++	memset(ctx->private_key, 0, sizeof(ctx->private_key));
++
+ 	if (!params.key || !params.key_size)
+ 		return ecc_gen_privkey(ctx->curve_id, ctx->ndigits,
+ 				       ctx->private_key);
+@@ -111,7 +113,7 @@ static int ecdh_compute_value(struct kpp_request *req)
+ free_all:
+ 	kfree_sensitive(shared_secret);
+ free_pubkey:
+-	kfree(public_key);
++	kfree_sensitive(public_key);
+ 	return ret;
+ }
+ 
+-- 
+2.40.1
+
 
