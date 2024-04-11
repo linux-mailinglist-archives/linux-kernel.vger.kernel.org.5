@@ -1,214 +1,116 @@
-Return-Path: <linux-kernel+bounces-141596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 026058A207B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:54:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3059A8A2084
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:55:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 244391C21AEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:54:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF7B2283F46
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:55:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E0E2942C;
-	Thu, 11 Apr 2024 20:54:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454ED2942D;
+	Thu, 11 Apr 2024 20:55:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="kv3VYS1n";
-	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="2lz6/kgt"
-Received: from mailrelay1-1.pub.mailoutpod2-cph3.one.com (mailrelay1-1.pub.mailoutpod2-cph3.one.com [46.30.211.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="ImPLbIuQ"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 939A72E40D
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:53:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA0D25575
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:55:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712868842; cv=none; b=cxAt0aC/GJ8A7x/lxwEXRzvdEXH9IoviqMcdsC1Qi0aZYVuAzdHdN5exJLaQlDiMNA9KkVJZKCyDuVZKnuEbHsdQXLom5NVbyplJ9afRtPcIWUJV1WnUDCGgEpXM6DradRs1geto128mobPSPaK4c3yxUnPjZKW4gRAFdfda3Sc=
+	t=1712868918; cv=none; b=YJpZjGKK59IE/j6IpXsocgJ6IwkNfHPrdPx3e8+Qvz29OL4eElCBt2Jh6Xzu/W0eUcjeNmWOIhOGTNIwXVDW+24YiFNGLz/BDpmx0lSF5hnUY35wAKCqdR5yJM9QZc6H+2YvYVKjAPj/j1z4FBpt9/J2+IKP8Gk4QJb32empYQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712868842; c=relaxed/simple;
-	bh=TF5y+t4h39/TPgiK6Hbd3LRpWjocizBPcHQbaJ6xqOE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jZNxpyNWCfGM1tOegzCZjRWt0CdKI587vCpyxntidwsbe+39NUgB/trZmy9VXRv54n6D1vPSAV3r/KHgjsedJgxR5wrFozlzwHrl8Xn0My8FCsAiYKAQQlfcJ1st7cK5iHX0cexBzEKPwaE4SUvROqf3yJX6OrNSZhhNHGZ39k4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=kv3VYS1n; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=2lz6/kgt; arc=none smtp.client-ip=46.30.211.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
+	s=arc-20240116; t=1712868918; c=relaxed/simple;
+	bh=k9VBLg1H9CzivP0CT3EcHbPvxlP9ags2QLYALoadN0Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=evMucOcrw7Lx1EcbDnqRH1fU1mHcujA/vep4mMT/W4KLiJSbCtiWqmi2W6ssvi29Rr3hMFl4n5o9GWFyvVUv56QXvPlzPHv6Z877HxYcFFdJlliU3U7iy8EBeoLA8x2XYusPgPBhnVznedz9S5QUlip+2AvwEPoneB2znjiHnY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=ImPLbIuQ; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a51a1c8d931so24672266b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:55:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=rsa1;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=8iZCIbXv/o+9vFGi/T/APUrhuAqs9LM6RRA1ferZ2wg=;
-	b=kv3VYS1nb+1jhVe9oEyryqOQdogTQlFfldT5zGFYz9zCFOW49UnzyKwrJoDnpG5By8Wz6/89q37/J
-	 74y1ANyGrc4+nAdiZLdwTQ7At1BMHShrpW21ksmQCnho4ndLVURK71dGIBPbwAmFDNXGQ3nhWfJORf
-	 kv6U7sF+UeIM9uVpTWy6T9yWjx+pcsw/GMhx3KJhDEBn/z0Ta31X9WEj03K6p1on5B6YlTztmnenxM
-	 6t/dz3ghpSDNSSOo+Nh+gwCqPRCFFIbfiAkM9VZsrPcOKFRvNMfm1iQmPZN5y4JbJlPGl97XHjBdfO
-	 1z6v1BSheYGCsHilS105+mOpPAp8U2Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-	d=ravnborg.org; s=ed1;
-	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-	 from:date:from;
-	bh=8iZCIbXv/o+9vFGi/T/APUrhuAqs9LM6RRA1ferZ2wg=;
-	b=2lz6/kgt5Ws9Bwhsrc83nOkDSczAnngGL2Yh8km6qYY8h6ibpExr6aVD63x7Bbyn4q9jSyAbA/9ij
-	 5z3+8uwDQ==
-X-HalOne-ID: 9634f2b2-f845-11ee-b2f6-516168859393
-Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-	by mailrelay1.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
-	id 9634f2b2-f845-11ee-b2f6-516168859393;
-	Thu, 11 Apr 2024 20:53:48 +0000 (UTC)
-Date: Thu, 11 Apr 2024 22:53:46 +0200
-From: Sam Ravnborg <sam@ravnborg.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Donald Dutile <ddutile@redhat.com>,
-	Eric Chanudet <echanude@redhat.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 06/15] mm/execmem, arch: convert simple overrides of
- module_alloc to execmem
-Message-ID: <20240411205346.GA66667@ravnborg.org>
-References: <20240411160051.2093261-1-rppt@kernel.org>
- <20240411160051.2093261-7-rppt@kernel.org>
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1712868915; x=1713473715; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XGeIUkWiU2G7D7Pkgh73ZiOzseLlkdctPoHzYVgSQ10=;
+        b=ImPLbIuQ08Be1mWjv3m6YXNHZ479EJ0RQOI9iQj5a1TVbRcC4wp3NbLzS8wPorFB0M
+         qki/z24xH8Obc03X5Z+2h3IDSZzRunAU+NeJ8Hlw+UyKHyGRtp1VgNnhWbTwfPMqQ0Xl
+         vAs23ol/9iWsqkJF+Pm1Vafod6F+nRXx8IwkbglvDFR4EqTXnMT0GYZ5FPlCPSS/80X8
+         PM8v+4FDK+tIKKO8zd7JKAEizwpseyEKI/1OQXhcyvPnaGgn/N2h34LBAhyr8KjBadAP
+         /Q5J8qASFG+WunGUyJJiElC/p5hGxAWITkSJ664tyigaV/mHoQ31GlYUaB2M9QgFbw1h
+         paHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712868915; x=1713473715;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XGeIUkWiU2G7D7Pkgh73ZiOzseLlkdctPoHzYVgSQ10=;
+        b=CL9rc+Z+MoHrsGQdbyY/4CBiPfn82g+6aVAMLfAbfGzwvp0/FcEW5deHpnTqXVsUtt
+         YoKrhakRGHPiTxVYkwtC1q2L6jcvWbCCZfdW8fxLH5ybFlP9bZooivtMycoUCCD+75G4
+         pvrpNlsAJ1cdIArkn7lJLc8+KsU0fbNcDlV3W0Dxm/PQdo+1KZVvnBv2p3TyV2M3jPcQ
+         Y3aO53lKHLXsTxdcWv3tmxI8CcRk9URBhDGDLDeEsXv3XElRpGaL71pFaEH0A5YMw9MU
+         5w81DDkKU2BwGXm6555Mwr4DB8IuhpYO6lYomLzA2/z/QqjfdusERVkbO86T6T/JtnwK
+         upUA==
+X-Forwarded-Encrypted: i=1; AJvYcCVpOMhTwzJupKKzqad2z3RJA2a2LngqnEso0fSEWKAGVTFArQIVlrRVuLXj5MSVEfKm06d2l9TBMTmZyb02ZcbgHGAY198S3GMdfSfW
+X-Gm-Message-State: AOJu0YyhxVy2x56HEXZfnkmXKf1wYN4jPFigOBqKh/9fUsOMopzrDtHB
+	HjTMd/pjnMl/tHH6NsLgjURdXGNJJhvsGYWTjEKLgG9zaTIMkLYFt70woddjKihQ2qenMRDJQqd
+	vfqA=
+X-Google-Smtp-Source: AGHT+IGwc97UXhoPZ6M3Kgu7iGdB98KgV5PyUpA28YHAnjcOxwHKPtp8UV7sfm2xKhMn9v2qab9rJg==
+X-Received: by 2002:a17:907:7da1:b0:a51:db9e:4cce with SMTP id oz33-20020a1709077da100b00a51db9e4ccemr585965ejc.3.1712868915426;
+        Thu, 11 Apr 2024 13:55:15 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
+        by smtp.gmail.com with ESMTPSA id nb17-20020a1709071c9100b00a4e6582edf8sm1063406ejc.102.2024.04.11.13.55.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 13:55:15 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: Miguel Ojeda <ojeda@kernel.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Alice Ryhl <aliceryhl@google.com>
+Cc: rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] rust: helpers: Fix grammar in comment
+Date: Thu, 11 Apr 2024 22:54:28 +0200
+Message-ID: <20240411205428.537700-1-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411160051.2093261-7-rppt@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-Hi Mike.
+s/directly the bindings/the bindings directly/
 
-On Thu, Apr 11, 2024 at 07:00:42PM +0300, Mike Rapoport wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> 
-> Several architectures override module_alloc() only to define address
-> range for code allocations different than VMALLOC address space.
-> 
-> Provide a generic implementation in execmem that uses the parameters for
-> address space ranges, required alignment and page protections provided
-> by architectures.
-> 
-> The architectures must fill execmem_info structure and implement
-> execmem_arch_setup() that returns a pointer to that structure. This way the
-> execmem initialization won't be called from every architecture, but rather
-> from a central place, namely a core_initcall() in execmem.
-> 
-> The execmem provides execmem_alloc() API that wraps __vmalloc_node_range()
-> with the parameters defined by the architectures.  If an architecture does
-> not implement execmem_arch_setup(), execmem_alloc() will fall back to
-> module_alloc().
-> 
-> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> ---
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ rust/helpers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This code snippet could be more readable ...
-> diff --git a/arch/sparc/kernel/module.c b/arch/sparc/kernel/module.c
-> index 66c45a2764bc..b70047f944cc 100644
-> --- a/arch/sparc/kernel/module.c
-> +++ b/arch/sparc/kernel/module.c
-> @@ -14,6 +14,7 @@
->  #include <linux/string.h>
->  #include <linux/ctype.h>
->  #include <linux/mm.h>
-> +#include <linux/execmem.h>
->  
->  #include <asm/processor.h>
->  #include <asm/spitfire.h>
-> @@ -21,34 +22,26 @@
->  
->  #include "entry.h"
->  
-> +static struct execmem_info execmem_info __ro_after_init = {
-> +	.ranges = {
-> +		[EXECMEM_DEFAULT] = {
->  #ifdef CONFIG_SPARC64
-> -
-> -#include <linux/jump_label.h>
-> -
-> -static void *module_map(unsigned long size)
-> -{
-> -	if (PAGE_ALIGN(size) > MODULES_LEN)
-> -		return NULL;
-> -	return __vmalloc_node_range(size, 1, MODULES_VADDR, MODULES_END,
-> -				GFP_KERNEL, PAGE_KERNEL, 0, NUMA_NO_NODE,
-> -				__builtin_return_address(0));
-> -}
-> +			.start = MODULES_VADDR,
-> +			.end = MODULES_END,
->  #else
-> -static void *module_map(unsigned long size)
-> +			.start = VMALLOC_START,
-> +			.end = VMALLOC_END,
-> +#endif
-> +			.alignment = 1,
-> +		},
-> +	},
-> +};
-> +
-> +struct execmem_info __init *execmem_arch_setup(void)
->  {
-> -	return vmalloc(size);
-> -}
-> -#endif /* CONFIG_SPARC64 */
-> -
-> -void *module_alloc(unsigned long size)
-> -{
-> -	void *ret;
-> -
-> -	ret = module_map(size);
-> -	if (ret)
-> -		memset(ret, 0, size);
-> +	execmem_info.ranges[EXECMEM_DEFAULT].pgprot = PAGE_KERNEL;
->  
-> -	return ret;
-> +	return &execmem_info;
->  }
->  
->  /* Make generic code ignore STT_REGISTER dummy undefined symbols.  */
+diff --git a/rust/helpers.c b/rust/helpers.c
+index 70e59efd92bc..4c8b7b92a4f4 100644
+--- a/rust/helpers.c
++++ b/rust/helpers.c
+@@ -4,7 +4,7 @@
+  * cannot be called either. This file explicitly creates functions ("helpers")
+  * that wrap those so that they can be called from Rust.
+  *
+- * Even though Rust kernel modules should never use directly the bindings, some
++ * Even though Rust kernel modules should never use the bindings directly, some
+  * of these helpers need to be exported because Rust generics and inlined
+  * functions may not get their code generated in the crate where they are
+  * defined. Other helpers, called from non-inline functions, may not be
+-- 
+2.44.0
 
-.. if the following was added:
-
-diff --git a/arch/sparc/include/asm/pgtable_32.h b/arch/sparc/include/asm/pgtable_32.h
-index 9e85d57ac3f2..62bcafe38b1f 100644
---- a/arch/sparc/include/asm/pgtable_32.h
-+++ b/arch/sparc/include/asm/pgtable_32.h
-@@ -432,6 +432,8 @@ static inline int io_remap_pfn_range(struct vm_area_struct *vma,
-
- #define VMALLOC_START           _AC(0xfe600000,UL)
- #define VMALLOC_END             _AC(0xffc00000,UL)
-+#define MODULES_VADDR           VMALLOC_START
-+#define MODULES_END             VMALLOC_END
-
-
-Then the #ifdef CONFIG_SPARC64 could be dropped and the code would be
-the same for 32 and 64 bits.
-
-Just a drive-by comment.
-
-	Sam
 
