@@ -1,137 +1,144 @@
-Return-Path: <linux-kernel+bounces-140722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A47128A183E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:09:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3988E8A1841
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:10:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6CC91C21710
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:09:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAD4228765B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:10:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B9C313FF6;
-	Thu, 11 Apr 2024 15:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37F2013FFC;
+	Thu, 11 Apr 2024 15:10:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b="aZbdSLyI"
-Received: from smtp1.ms.mff.cuni.cz (smtp-in1.ms.mff.cuni.cz [195.113.20.234])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vCWsz4ut"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75EA8D534;
-	Thu, 11 Apr 2024 15:09:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.234
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE9115E85;
+	Thu, 11 Apr 2024 15:10:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712848186; cv=none; b=GsPnhbzsbh8HiwH02qo+4HfOs+0VwGin7oEwumyELaYWq2Izt5toVkxKXHw25z1zW3QmWTRIq24VNo+JYaXVas2MdAHQnhHPBjWvZoUMzbGnJZopSWwYcIP426HUMzO7eu493A/hepGOBQFICLStSBm8HxF8EGGPf+sruKfuzyM=
+	t=1712848212; cv=none; b=oW3/kfWF2EFiTgDxrPQlUYZ/67H8jtyAyhNvnKYTpFaQKQPIXKNg47nZFIQTwa2ae/ovn/NC2sHr6uBx6wdU7q0YAwiY1rP7TS0ywBX1ZcexSa4Q2JcvgbjqNitcC1LNYAi22rlRN4AJ/vK10aXTax0ZuevcKEhxuv04IJ40NfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712848186; c=relaxed/simple;
-	bh=Weouvo161mz85+Ws3kWCHEAN8xCME/9Sry1jGNBqSMk=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:To:From:
-	 References:In-Reply-To; b=jSDbCY6qQws53GZUgVbNSNtz062+J71d1hcs7nycPv1yY6ocP7ZeoPV3dULSz7AYLbf/IomDudIpfvbEvMUNRleLaV0DIeGytQ/udepXPnH7eGlpeS6FcQbyTUcgGowP7A4YmjLA2dr+g8NXdTeXjw5lwUh39luxnSDb9qBF020=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz; spf=pass smtp.mailfrom=matfyz.cz; dkim=pass (2048-bit key) header.d=mff.cuni.cz header.i=@mff.cuni.cz header.b=aZbdSLyI; arc=none smtp.client-ip=195.113.20.234
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=matfyz.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=matfyz.cz
-X-SubmittedBy: id balejk@matfyz.cz subject /postalCode=110+2000/O=Univerzita+20Karlova/street=Ovocn+5CxC3+5CxBD+20trh+20560/5/ST=Praha,+20Hlavn+5CxC3+5CxAD+20m+5CxC4+5Cx9Bsto/C=CZ/CN=Karel+20Balej/emailAddress=balejk@matfyz.cz
-	serial F5FD910E8FE2121B897F7E55B84E351D
-	issued by /C=NL/O=GEANT+20Vereniging/CN=GEANT+20Personal+20CA+204
-	auth type TLS.CUNI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mff.cuni.cz;
-	s=submission; t=1712848147; x=1714148147;
-	bh=cCeEsEVNtOvyeZAP8P6CFO9h6vuYp0g9sWCTeF8QBqc=; h=From;
-	b=aZbdSLyIVl3tvrFOIk+Zr5D1SzvZAbhOXUdHCwd0UGiy1HV/xtG2xvif53SQKGZVD
-	 GlSQSwoDJnZAU18Tn8N3UoMiINOwj2Eoh9Ohs4RAg/Qas/XfZmkqHLHTDowJHhz9Dn
-	 zGAK1q4EoU6T42iW01R3rM7xDiNXGiajh8N5VqD6uf4tPE55vigQj1M7/TdSu7MPVx
-	 PG9bfGFkXeRhofxZXZ56749LgtBba2obs6DrXTd+2FGglYVN5OVvLJXRVSjunagMRg
-	 iEE93/oB2n+Mdp12ees3RkmlxOcetPxmkq0hrmM17dPmR59egM5i/0fDQ48QZXOICh
-	 dhBomyUksKlPQ==
-Received: from localhost (koleje-wifi-0017.koleje.cuni.cz [78.128.191.17])
-	(authenticated)
-	by smtp1.ms.mff.cuni.cz (8.16.1/8.16.1) with ESMTPS id 43BF95MH032359
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=OK);
-	Thu, 11 Apr 2024 17:09:07 +0200 (CEST)
-	(envelope-from balejk@matfyz.cz)
+	s=arc-20240116; t=1712848212; c=relaxed/simple;
+	bh=tH5GwggbPz305Kl6EbUr95HFBDOSgGMYA7QcHk6KzVo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JujqfxPzhQbHH/3niTkScXfw/ym4qDDuKCnJbIUy125veS4LGYxrsUs8ESFi7C6naxNXER98j72J6m4Ly+qFH5tnwU3EiahUKN54VESobogM5jHJQ1G9G+hSLJC/eDyfYv1dViTJq8TPqA0qmxW6zXKfqWuG3JybU39R1Qh6uHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vCWsz4ut; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3738EC113CD;
+	Thu, 11 Apr 2024 15:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712848212;
+	bh=tH5GwggbPz305Kl6EbUr95HFBDOSgGMYA7QcHk6KzVo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vCWsz4utmYewzyojhx2V/JATN+mTcnX3uUCcUXBn8RrUxl3EcU+vM1rnGHeehzkDm
+	 mEYEYcAKBiLAxdxoGhlEBppFtAMOcQ8ZFAQscjY1Iyq2SnjBAStAvFTu/bXLTPOGyG
+	 RfdG2OhyIteF+eIpIrHZ2siXlHpxIXDOIq9mvakK9J+z/Z+eniQ3u/sXW0xNDx2c4x
+	 id3FHIisD3k5kTlOIt1haLd1xpdfh5oyE6IkcdFCy/10pXwMSyd64Zcmny3e6gVI8j
+	 FgPJBIgNIpYiPYWOtS8WKcMBO0Iln9LzSSqDADXyL3d9s80SKDkbSsV6dE3kGtqmy7
+	 wGnwWa6PYObZQ==
+Date: Thu, 11 Apr 2024 16:10:06 +0100
+From: Conor Dooley <conor@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: linux-scsi@vger.kernel.org, alim.akhtar@samsung.com,
+	avri.altman@wdc.com, bvanassche@acm.org, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	peter.wang@mediatek.com, chu.stanley@gmail.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, lgirdwood@gmail.com, broonie@kernel.org,
+	matthias.bgg@gmail.com, stanley.chu@mediatek.com,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mediatek@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 7/8] dt-bindings: ufs: mediatek,ufs: Document
+ additional clocks
+Message-ID: <20240411-filth-trekker-8a8c185d589b@spud>
+References: <20240411114300.169055-1-angelogioacchino.delregno@collabora.com>
+ <20240411114300.169055-8-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="83ERy7+r+DSooO69"
+Content-Disposition: inline
+In-Reply-To: <20240411114300.169055-8-angelogioacchino.delregno@collabora.com>
+
+
+--83ERy7+r+DSooO69
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 11 Apr 2024 17:09:40 +0200
-Message-Id: <D0HE07BHD1T8.HQLIBUHTRVGT@matfyz.cz>
-Cc: "Rob Herring" <robh@kernel.org>,
-        "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
-        "Liam Girdwood"
- <lgirdwood@gmail.com>,
-        "Mark Brown" <broonie@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
-        =?utf-8?q?Duje_Mihanovi=C4=87?=
- <duje.mihanovic@skole.hr>,
-        <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>
-Subject: Re: [PATCH 2/5] mfd: add driver for Marvell 88PM886 PMIC
-To: "Lee Jones" <lee@kernel.org>
-From: "Karel Balej" <balejk@matfyz.cz>
-References: <20240331105608.7338-2-balejk@matfyz.cz>
- <20240331105608.7338-4-balejk@matfyz.cz>
- <20240411113726.GH1980182@google.com>
-In-Reply-To: <20240411113726.GH1980182@google.com>
 
-Lee Jones, 2024-04-11T12:37:26+01:00:
-[...]
-> > diff --git a/drivers/mfd/88pm886.c b/drivers/mfd/88pm886.c
-> > new file mode 100644
-> > index 000000000000..e06d418a5da9
-> > --- /dev/null
-> > +++ b/drivers/mfd/88pm886.c
-> > @@ -0,0 +1,157 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +#include <linux/i2c.h>
-> > +#include <linux/mfd/core.h>
-> > +#include <linux/module.h>
-> > +#include <linux/notifier.h>
-> > +#include <linux/of.h>
-> > +#include <linux/reboot.h>
-> > +#include <linux/regmap.h>
-> > +
-> > +#include <linux/mfd/88pm886.h>
-> > +
-> > +#define PM886_REG_INT_STATUS1			0x05
-> > +
-> > +#define PM886_REG_INT_ENA_1			0x0a
-> > +#define PM886_INT_ENA1_ONKEY			BIT(0)
-> > +
-> > +#define PM886_IRQ_ONKEY				0
-> > +
-> > +#define PM886_REGMAP_CONF_MAX_REG		0xef
->
-> Why have you split the defines up between here and the header?
+On Thu, Apr 11, 2024 at 01:42:59PM +0200, AngeloGioacchino Del Regno wrote:
+> Add additional clocks, used on all MediaTek SoCs' UFSHCI controllers:
 
-I tried to keep defines tied to the code which uses them and only put
-defines needed in multiple places in the header. With the exception of
-closely related things, such as register bits which I am keeping
-together with the respective register definitions for clarity. Does that
-not make sense?
+I appreciate being told they're on all, rather than it being unsaid and
+having to ask.
 
-> Please place them all in the header.
+> some of these clocks are optional and used only for scaling purposes
+> to save power, or to improve performance in the case of the crypt
+> clocks.
+>=20
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@coll=
+abora.com>
+> ---
+>  .../devicetree/bindings/ufs/mediatek,ufs.yaml      | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/ufs/mediatek,ufs.yaml b/Do=
+cumentation/devicetree/bindings/ufs/mediatek,ufs.yaml
+> index e2c276da3f2c..21b038db100c 100644
+> --- a/Documentation/devicetree/bindings/ufs/mediatek,ufs.yaml
+> +++ b/Documentation/devicetree/bindings/ufs/mediatek,ufs.yaml
+> @@ -26,11 +26,23 @@ properties:
+>            - const: mediatek,mt8183-ufshci
+> =20
+>    clocks:
+> -    maxItems: 1
+> +    minItems: 1
 
-Would you then also have me move all the definitions from the regulators
-driver there?
+Could you add an itemised list to the clocks property please?
 
-[...]
+> =20
+>    clock-names:
+> +    minItems: 1
+>      items:
+>        - const: ufs
+> +      - const: ufs-aes
 
-> > +	err =3D devm_mfd_add_devices(dev, 0, pm886_devs, ARRAY_SIZE(pm886_dev=
-s),
->
-> Why 0?
 
-PLATFORM_DEVID_AUTO then? Or will PLATFORM_DEVID_NONE suffice since the
-cells all have different names now (it would probably cause problems
-though if the driver was used multiple times for some reason, wouldn't
-it?)?
+> +      - const: ufs-tick
+> +      - const: unipro-sys
+> +      - const: unipro-tick
+> +      - const: ufs-sap
+> +      - const: ufs-tx-symbol
+> +      - const: ufs-rx-symbol
+> +      - const: ufs-mem
+> +      - const: crypt-mux
+> +      - const: crypt-lp
+> +      - const: crypt-perf
+> =20
+>    phys:
+>      maxItems: 1
+> --=20
+> 2.44.0
+>=20
 
-Thank you,
-K. B.
+--83ERy7+r+DSooO69
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhf9TgAKCRB4tDGHoIJi
+0nPsAQDR9MO4nmtSmAMmQ8o43G0oFD2I4Ib5sc7/3XCMceiSbAD/ZQOJyUwxivM/
+5IxvlYIjm4x83lwZ0N6c2CYnEQXh0QE=
+=NwEY
+-----END PGP SIGNATURE-----
+
+--83ERy7+r+DSooO69--
 
