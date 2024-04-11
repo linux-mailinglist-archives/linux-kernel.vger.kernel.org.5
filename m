@@ -1,94 +1,85 @@
-Return-Path: <linux-kernel+bounces-140669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCA158A178E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:41:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D074C8A1794
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:41:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CC3D1F21883
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:41:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BD2C1F21761
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:41:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4344E10788;
-	Thu, 11 Apr 2024 14:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E8C14A9F;
+	Thu, 11 Apr 2024 14:40:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i6/S8A8b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BOnEcr4i"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7732DD518;
-	Thu, 11 Apr 2024 14:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94B4413FE7;
+	Thu, 11 Apr 2024 14:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712846383; cv=none; b=I8F4ENRWgOsI3RpNWRpNyZXyx4MhpV6kSVqzag8t3vbQBzjBK/UA8NwP5QU4pOansUbQq8+ijHf1EglbUroRG+s5dlU64M40BLq5yzCwzB1dqGSVzka+U0+FlZK3jMfrekpp3A0AfN1JfkUJ4ishBqAP/Ka/KUXet7u1b7e/7b0=
+	t=1712846410; cv=none; b=fsGBAuRXYL9rg2KNCSm5skYlGtBN1nKF9GzITAvKtXjE8dkZvwse/DklpCVqmpS4o1b04/sgC4xDaJOOZOaNm4Lk/GxdhFFHQTdg2aMZOGZm/PnVioYUaqe1AcwY4UV2GU8wOOHb6PD4DKdliQCZqyRcAXnxiQpByvINaTa+gM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712846383; c=relaxed/simple;
-	bh=HYiF5RVgmWfeB2q5YS1rVM15Tb6+J3pcTtrzx/qL7YA=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=aak4ioRJXBrmqa+EUxbscrJz9HeGLy9tqgc738Tky+zJwlW4QrsRHYseMS+Z39rbPoQe2+ptX4AzLpd8fT+B48cYTlX73BihuYg1rXsQ4stAAGu9oR9yAwwEDVVqtXAgoyW8sNRfkae+RlhNDvWjXVh8kj78Lqo2/0QNucGEFXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i6/S8A8b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5052FC2BD10;
-	Thu, 11 Apr 2024 14:39:43 +0000 (UTC)
+	s=arc-20240116; t=1712846410; c=relaxed/simple;
+	bh=v7xu8aHGMOmzRWDzQT1VMpjnmvWW56s5ws8lgB6X6WE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=b5wtLVMHsVymroJW0mpQ0FkCInBoN36WBuwctgQqgKppSATyDl6f6ei5bSGJLK7yU986jEJNRoO3yo4XHJqIxq8nvg9XZS96KDyhqQR7r4Nyk/5eB6HxOTY0RXcYZdQIJIFr6xxFXh4Si53Hti+3SkGj7SJM6AtBCKnkN8jA/dI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BOnEcr4i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15BE6C113CD;
+	Thu, 11 Apr 2024 14:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712846383;
-	bh=HYiF5RVgmWfeB2q5YS1rVM15Tb6+J3pcTtrzx/qL7YA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=i6/S8A8bTGR+/yvGoSEMsFzMc3SDFPyIcz7MVXzsI0mE+HlMOkMHlf+/HetMJnANR
-	 oXT1H1DE2utRxYKEbHL66S1AyyUraB/Qa8DLoz0qDXRI0WoYD2ItdUATJeXC476g3l
-	 yh/mxKvAiWl4kq6pstH9+oH0YIH8Ii8xYh6sUvLrhasoTFT/3zzxSSihWSftzzvVy/
-	 WHvOizJES3haTKNglUJ/wGxyFVbteZj/6GFHVquN8nct6RAGCh08wfi5nBQDCTGrFs
-	 xaTTEiIWBWUYTjo3tjY8VVokU0Hb8oB7BWpNI2AyU15UbxP8XZRAXxItBBKyJplpP8
-	 fF3IH+BqY7IBw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3EF45C433F2;
-	Thu, 11 Apr 2024 14:39:43 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1712846409;
+	bh=v7xu8aHGMOmzRWDzQT1VMpjnmvWW56s5ws8lgB6X6WE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=BOnEcr4iT+QDMBY0YeWzqFDyryz6nD2Z1ucfJpB2TjsEROXQPYOXb388WYt+UCB0m
+	 798x9sdpFXwX9/ve1lF/arewiTUFI9uv1o3gw0CBxYRKcQxqIEH1KtytlSRAfF4kFJ
+	 OA7uyt9Y3vmqSfKz1TZ7PltzJdRiy+T0pAGKcTVa/Hj10bhQA5lzOSecH881a1oUkh
+	 tf7e2Nd3GjBMsAD++i8poGtmjA4eFfNXMUFZzoDaWZiR2eIHqti9iVxdHKnmITQu6O
+	 wHA+ext4FodQQelluMAns0wYpaX5wldxV7jcCBxPES6QZi43IIdXaERylFo6FVBayq
+	 vcyDKPpVld0ZQ==
+Date: Thu, 11 Apr 2024 07:40:07 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Edward Cree <ecree.xilinx@gmail.com>, Erick Archer
+ <erick.archer@outlook.com>, Long Li <longli@microsoft.com>, Ajay Sharma
+ <sharmaajay@microsoft.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Haiyang
+ Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, Dexuan Cui
+ <decui@microsoft.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Kees Cook
+ <keescook@chromium.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers
+ <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, Justin Stitt
+ <justinstitt@google.com>, Jason Gunthorpe <jgg@ziepe.ca>, Shradha Gupta
+ <shradhagupta@linux.microsoft.com>, Konstantin Taranov
+ <kotaranov@microsoft.com>, linux-rdma@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+ llvm@lists.linux.dev
+Subject: Re: [PATCH v3 0/3] RDMA/mana_ib: Add flex array to struct
+ mana_cfg_rx_steer_req_v2
+Message-ID: <20240411074007.3f4d2b2f@kernel.org>
+In-Reply-To: <20240411105839.GN4195@unreal>
+References: <AS8PR02MB72374BD1B23728F2E3C3B1A18B022@AS8PR02MB7237.eurprd02.prod.outlook.com>
+	<20240408110730.GE8764@unreal>
+	<20240408183657.7fb6cc35@kernel.org>
+	<ca8a0df8-b178-31ff-026f-b2d298f3aa84@gmail.com>
+	<20240409144419.6dc12ebb@kernel.org>
+	<20240411105839.GN4195@unreal>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [RESEND. PATCH v2] Bluetooth: btusb: Add Realtek RTL8852BE support ID
- 0x0bda:0x4853
-From: patchwork-bot+bluetooth@kernel.org
-Message-Id: 
- <171284638325.18150.6436513987613825530.git-patchwork-notify@kernel.org>
-Date: Thu, 11 Apr 2024 14:39:43 +0000
-References: <883A1BECA61AB8B7+20240329023440.191799-1-wangyuli@uniontech.com>
-In-Reply-To: <883A1BECA61AB8B7+20240329023440.191799-1-wangyuli@uniontech.com>
-To: WangYuli <wangyuli@uniontech.com>
-Cc: Larry.Finger@lwfinger.net, marcel@holtmann.org, luiz.dentz@gmail.com,
- gustavo@padovan.org, johan.hedberg@gmail.com, guanwentao@uniontech.com,
- linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
+On Thu, 11 Apr 2024 13:58:39 +0300 Leon Romanovsky wrote:
+> I prepared mana-ib-flex branch https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/log/?h=mana-ib-flex
+> and merge ti to our wip branch https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/commit/?h=wip/leon-for-next&id=e537deecda03e0911e9406095ccd48bd42f328c7
 
-This patch was applied to bluetooth/bluetooth-next.git (master)
-by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
-
-On Fri, 29 Mar 2024 10:34:39 +0800 you wrote:
-> Add the support ID(0x0bda, 0x4853) to usb_device_id table for
-> Realtek RTL8852BE.
-> 
-> Without this change the device utilizes an obsolete version of
-> the firmware that is encoded in it rather than the updated Realtek
-> firmware and config files from the firmware directory. The latter
-> files implement many new features.
-> 
-> [...]
-
-Here is the summary with links:
-  - [RESEND.,v2] Bluetooth: btusb: Add Realtek RTL8852BE support ID 0x0bda:0x4853
-    https://git.kernel.org/bluetooth/bluetooth-next/c/cf396a443d37
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks!
 
