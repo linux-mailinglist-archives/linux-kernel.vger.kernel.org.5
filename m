@@ -1,136 +1,113 @@
-Return-Path: <linux-kernel+bounces-140357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 798988A134B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:43:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4F908A1348
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:43:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E8061F233C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:43:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01E921C20F2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:43:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58CF14A099;
-	Thu, 11 Apr 2024 11:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 046BD149C7C;
+	Thu, 11 Apr 2024 11:43:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="k7ulCCAu"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e4TVqH7X"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74229149C75;
-	Thu, 11 Apr 2024 11:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD69147C9D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:42:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712835789; cv=none; b=GbOKfo657VU/69DoB6P3ybqXtyRwhhKXDK5doacfjUXD9qZdMi58v4pIUvG5v5t+sgTdThIVWi46Qv7nGwh9C81DDKjwW+Zyulgn3I/EF7gNS5JBqFkKTd8TbXjv6NKizWpOi6ZSjHDzRaqnah0kZ8B80/JS3D8YgA8t+JM2b6w=
+	t=1712835779; cv=none; b=bd3UiVWTRnQOP0mK1xKdwrxoUmiZd7KNvzZJ7I9npv9lNhJ58AiVm5UjNYkQbZmc7U1aG6u3j+baSTL47WKM5KNH3OI1JzJIb6XZDsR9yf/TrQsyNixJWMqogiC+3+ekJZSgnFWWJDfZ2YhYfRRSrfUAo5ugb2BGe27/fdh2vh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712835789; c=relaxed/simple;
-	bh=hZOqM1m3fh6Pq5Sr9fpO6+gQjVeXP2CN8smO/JG0VAs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RDrwt3HkU+udLpt9BvIvFJZF7LmSZrnWhbyFliiAI7lKP/S7WMpMTvbe4hVJR67/Peg19eEuvzFlmRgE5Xtvip1oUVDs7O6WutosVoWw8UmOyTcCwYmhJvVR3OOiqZX718dG1zq4WwxU6+nS98aQungzdtZLqaSEhAfhLat5hsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=k7ulCCAu; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712835785;
-	bh=hZOqM1m3fh6Pq5Sr9fpO6+gQjVeXP2CN8smO/JG0VAs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=k7ulCCAuOzpzMtCSSwJbToT4VvETX+O+bmx76FwmVxTB56ycdPpWvbmYTO2D8Rw27
-	 278feKMJpxmNQX/zYDmA6NUF5apyPXCV4+mqb1PBul4EVNRZlIoO4Y87+yajpz7wSU
-	 raO/0wToFReAHXlskJ563wsQlst8BG0MVGCsM3FxMyaeFTga0LiD6BcUoK414GoCtq
-	 vpKeoAmEvvwQc+zfs0CQBVHQEwM10C/EEmf0IWmcSX8piRJA41m2gDjjoyCiDSlZdR
-	 /6Z47bX6wUecgnr9nxL3DT6aewxd9BwFEJbttrNb8SBCyaKdgDuTduRF8CvQdqdd1a
-	 goSDMWIlBbSjQ==
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id EF20D378208C;
-	Thu, 11 Apr 2024 11:43:03 +0000 (UTC)
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: linux-scsi@vger.kernel.org
-Cc: alim.akhtar@samsung.com,
-	avri.altman@wdc.com,
-	bvanassche@acm.org,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	peter.wang@mediatek.com,
-	chu.stanley@gmail.com,
-	jejb@linux.ibm.com,
-	martin.petersen@oracle.com,
-	lgirdwood@gmail.com,
-	broonie@kernel.org,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	stanley.chu@mediatek.com,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 0/8] MediaTek UFS fixes and cleanups - Part 1
-Date: Thu, 11 Apr 2024 13:42:52 +0200
-Message-ID: <20240411114300.169055-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712835779; c=relaxed/simple;
+	bh=ZYjfr8vSJfgtkk0nxlBYHs/zHAElYFLXCl8Xsw/iVgQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=aXROfTQadr8a5wkSIuLmvnnkLWCl0L8+rdznnw6qAOi7NtzbarNyoi1RBHw8zxRYtIEbJ4FJOd4be5ACIWSI2srARtYHqfJIhEcZO9M6SOwPFbyVe/kMLRQtMNDBkTWrIIUOqT0x3fzO7XLg0r1tuJMUenS6SoEY1PDVeMx+xMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e4TVqH7X; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e0bec01232so62663055ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 04:42:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712835777; x=1713440577; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=yAbLwjokjxdd5BNSzipuHZHQoJZV0t/MjoYnx5AOvWs=;
+        b=e4TVqH7XsPGbf0JTmK3F14Vogy8D3zleK6UAdU1GPnuNeCV6M/HfWiOSD2XXxMqtMm
+         kb6z2rvT+XTn87dDf6E2oJjPHnKPTyLOEMW/Q4+HLyXfZgYR3ZoL/KVVuf3Z/xXMF+Py
+         uHU9TsU9d5rp70zdMLL72vfzWeBsJx2TF+jRgOqKAjdK+dj5mt60iFf/SW4MhBCQzMV7
+         n48ObLYXWQs22nBEJI7nNP4iPkNnpt39uIJ4WaSE28tRNlNtazPqTBZK1JxdSl6ENuYP
+         feyd76mMDv0xefS9ZwrW0W1kTRFTiuUPV167XSM/BL7lktbcXJfMVcUMpoHTQAvJ0y05
+         iWbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712835777; x=1713440577;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yAbLwjokjxdd5BNSzipuHZHQoJZV0t/MjoYnx5AOvWs=;
+        b=shjxNj6G+GdrUpXtprytu3HV7+MID+mumzubIq4+WF5TUh6ScJaqt1lgp5ZzIFV7s2
+         CieP9m6oECr/8ZtYixUgjkSv+LogP/MXpHNoB2+R320U+9xFQORSGLkCRo3tiMkoauQZ
+         Zr74N4b5gAOabQHGV4p952UWgACUQyUAQCdSpK6DfxWCaOYh+fHP5jxF5BWvzpl49BDP
+         IO1kxKdfWIp6s23h/jYziSknJkW9cTejq35YnR61YdTvgSmcGvHo4dmXXBRIHsxM4Lj/
+         oANKyaNNeKt+/pKKjYXfIn9zLKMr0Rga+kSFMxIz7IBOGTCgQhzX/rwkc9CiMjIUHIXy
+         gWiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXjipN1UH7/NC9tRa5rHBRugjtsKYyXJWYg/Kp14/YAAxli9jXO17vzD2illgI0ooj0yT3o+yveHBC13rCtR/U3q4h6YciPVsO9XmvT
+X-Gm-Message-State: AOJu0YzGZds12xGTzkL9zoLlHdT1P/TEw4/MhXuGABPNdPOugzGZRt3B
+	pCLspDhJ6wBpgA6xM8/Qjdw/TRoJSZ+mjrNQXsH2QIBzDNQFxYHK
+X-Google-Smtp-Source: AGHT+IFmsxC2FK54ROVvYBOwvDu7+bDSMp6SKdgV4WY/Po2x2ggQ57HHTS0bQO/V3Dz+88BsJ+63MA==
+X-Received: by 2002:a17:902:a718:b0:1e5:28cd:4ef9 with SMTP id w24-20020a170902a71800b001e528cd4ef9mr2592295plq.30.1712835777008;
+        Thu, 11 Apr 2024 04:42:57 -0700 (PDT)
+Received: from [192.168.255.10] ([43.132.141.20])
+        by smtp.gmail.com with ESMTPSA id x16-20020a170902ec9000b001e3fe207a15sm982224plg.138.2024.04.11.04.42.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 04:42:56 -0700 (PDT)
+Message-ID: <add08bec-f474-476e-a985-9017dbb33a88@gmail.com>
+Date: Thu, 11 Apr 2024 19:42:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-Changes in v2:
- - Rebased over next-20240409 (because of merge issue for patch 1)
- - Added ufs: prefix to patch 1
- - Added forgotten ufs-rx-symbol clock to the binding
-
-
-This series performs some fixes and cleanups for the MediaTek UFSHCI
-controller driver.
-
-In particular, while adding the MT8195 compatible to the mediatek,ufs
-binding, I noticed that it was allowing just one clock, completely
-ignoring the optional ones, including the crypt-xxx clocks, all of
-the optional regulators, and other properties.
-
-Between all the other properties, two are completely useless, as they
-are there just to activate features that, on SoCs that don't support
-these, won't anyway be activated because of missing clocks or missing
-regulators, or missing other properties;
-as for the other vendor-specific properties, like ufs-disable-ah8,
-ufs-broken-vcc, ufs-pmc-via-fastauto, since the current merge window
-is closing, I didn't do extensive research so I've left them in place
-but didn't add them to the devicetree binding yet.
-
-The plan is to check those later and eventually give them a removal
-treatment, or add them to the bindings in a part two series.
-
-For now, at least, this is already a big improvement.
-
-P.S.: The only SoC having UFSHCI upstream is MT8183, which only has
-just one clock, and *nothing else* uses properties, clocks, etc that
-were renamed in this cleanup.
-
-Cheers!
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 09/10] mm/ksm: rename get_ksm_page_flags() to
+ ksm_get_folio_flags
+To: David Hildenbrand <david@redhat.com>, alexs@kernel.org,
+ Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, zik.eidus@ravellosystems.com,
+ willy@infradead.org, aarcange@redhat.com, hughd@google.com,
+ chrisw@sous-sol.org
+References: <20240411061713.1847574-1-alexs@kernel.org>
+ <20240411061713.1847574-10-alexs@kernel.org>
+ <192aaa5c-3ff3-40c1-b12a-b674518bf5de@redhat.com>
+Content-Language: en-US
+From: Alex Shi <seakeel@gmail.com>
+In-Reply-To: <192aaa5c-3ff3-40c1-b12a-b674518bf5de@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
-AngeloGioacchino Del Regno (8):
-  scsi: ufs: ufs-mediatek: Remove useless mediatek,ufs-support-va09 property
-  scsi: ufs: ufs-mediatek: Fix property name for crypt boost voltage
-  scsi: ufs: ufs-mediatek: Remove useless mediatek,ufs-boost-crypt
-    property
-  scsi: ufs: ufs-mediatek: Avoid underscores in crypt clock names
-  dt-bindings: ufs: mediatek,ufs: Document MT8192 compatible with MT8183
-  dt-bindings: ufs: mediatek,ufs: Document MT8195 compatible
-  dt-bindings: ufs: mediatek,ufs: Document additional clocks
-  dt-bindings: ufs: mediatek,ufs: Document optional dvfsrc/va09
-    regulators
 
- .../devicetree/bindings/ufs/mediatek,ufs.yaml | 29 +++++-
- drivers/ufs/host/ufs-mediatek.c               | 91 +++++++++++--------
- 2 files changed, 80 insertions(+), 40 deletions(-)
+On 4/11/24 3:51 PM, David Hildenbrand wrote:
+> On 11.04.24 08:17, alexs@kernel.org wrote:
+>> From: David Hildenbrand <david@redhat.com>
+>>
+>> As we are removing get_ksm_page_flags(), make the flags match the new
+>> function name.
+>>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> Reviewed-by: Alex Shi <alexs@kernel.org>
+>> ---
+> 
+> s/get_ksm_page_flags()/get_ksm_page_flags/ in title, otherwise LGTM.
+> 
 
--- 
-2.44.0
+Uh, for this trivial issue, do I need to sent a new version? or left to maintainer for a quick fix?
 
+Thanks!
 
