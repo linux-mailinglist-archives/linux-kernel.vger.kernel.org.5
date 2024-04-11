@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-139773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FE8F8A0786
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:16:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 852318A078D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:19:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C86F285617
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:16:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AE831F24C55
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:19:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5778813C80C;
-	Thu, 11 Apr 2024 05:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D345C13C8E6;
+	Thu, 11 Apr 2024 05:19:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="p4pegSC5"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EkC/P1S8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF15B27702;
-	Thu, 11 Apr 2024 05:16:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BAC613C838;
+	Thu, 11 Apr 2024 05:19:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712812604; cv=none; b=TfX+0y1TOeC0hp2eAY4FA7O/q6n6d9g0Tlbp9dyQdhiqcZIUDxQqRVBA3s8uMxdO4YiEJXiIompDE8x6gR156nBsHSuD0uZmFGFYr3QXEljAhTfD8Z1I4QNF/bsx/TNp0/7b+E49EAP7/NVxSRtkHzYFyxKUZ+SLBkgEfEMAExU=
+	t=1712812744; cv=none; b=GBE9jNqdSA95NWJywCZsJmK4e3kNWI1ooYH6ZGy/8mBoJRE3tG3nx1KI/3UGySQfo2ANMBhNcVIip4sAwMHgnvjfnOULeTXOohqI3N0q6mNa4xMEnAS7sBoenipi5qA7vQx4rpkk/YMSUrJyJeWQIJSMFOkIxk7rswhyEOBjN8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712812604; c=relaxed/simple;
-	bh=ijLlkfEOixlQrBb4bdG6kkTwGrC0yh3+ME1KUOt1vj0=;
+	s=arc-20240116; t=1712812744; c=relaxed/simple;
+	bh=XgFUk20c57p70PXg9xZ1MkCgiZA4e9NkJIiIFaVCIWs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q1Yk069fJTJX0qjDiwuW5u/PyfP8n3TUX9SxLOgWjsH3TtejmtXnWvdJmXYAvhgK8WYF0F90FATui2Ox005x3fFnmYozcEUQX62J3b9cCRSupSavohL0QyGdmgDqjA5bq2uQ6fkfvfWwsUaxDGeVTsa/ak+Mkk0YJhOPF5jQj3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=p4pegSC5; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.1.108] (unknown [103.86.18.224])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6CB07E1;
-	Thu, 11 Apr 2024 07:15:56 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1712812558;
-	bh=ijLlkfEOixlQrBb4bdG6kkTwGrC0yh3+ME1KUOt1vj0=;
+	 In-Reply-To:Content-Type; b=msg312gdaiOoGPgnpupLAZBVPut+6AlasUop1pC2L2FlptVkbshYlTxy9S+3mYbyGn5nNTVJRyv2qDrn27L5pgpygGYRot32EHQmB5UVUnqiDIdplVtjMDPThYEyxoX/QP48oF0W5Z7yVyHfx2ocucRWCo4Qn9VXjjR8mDK2hkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EkC/P1S8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77BCCC433C7;
+	Thu, 11 Apr 2024 05:19:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712812743;
+	bh=XgFUk20c57p70PXg9xZ1MkCgiZA4e9NkJIiIFaVCIWs=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=p4pegSC56pJULx/a8E8LMIJUc3iQrlti8xQQnHrZTV2LeRzwVkxr8XulFT+Us5X5U
-	 iYpUHrV4vjS1gHyK/Sd9QQtpa548O8r4vi52QExCO+qL7YtCI3WBANJyYm65t+0NXG
-	 tWqY+/2Sai8aZXnnCF0uMisGu4n8jOFN9PO5AiVw=
-Message-ID: <a808c81c-2006-410e-ba8c-74c5405acbdf@ideasonboard.com>
-Date: Thu, 11 Apr 2024 10:46:33 +0530
+	b=EkC/P1S8ZLFmo/55ZH+2juxzh/cOeAJu6NiJ9nZ+sdOxBtcGPd3gaKhQLIWqmX7Jq
+	 DzNKWvBaC/aQORzZPQLfhl5PkomYFyn6jkV1zgRut5qJNjyNpZYiH8GZ+ssmoeLw1l
+	 mC+RZwRxWT+6EtvRY1e/Yzsvu9fO8rDrvcGkL/G82PZm2Lg0IKZUarM70yzGbOfkm9
+	 YJQZFProYuohwqrJIq8/b+TnHY1bS1OTwvRNLZcKaUTuJE9W/Nu27L2UC70qadZ/fM
+	 gUYyMLLnPBP3lswkTcFKA24y9zf3MtVvyh7U/j1pSzcEnAq/ccSxh8NIgKNWva+9Sj
+	 EeCVh9OtbFVWQ==
+Message-ID: <5a83c1f7-3ab8-486a-b633-33b44858d290@kernel.org>
+Date: Thu, 11 Apr 2024 14:19:00 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,103 +49,90 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/9] media: subdev: Fix use of sd->enabled_streams in
- call_s_stream()
+Subject: Re: [PATCH] block: add max_dispatch to sysfs
+To: Jens Axboe <axboe@kernel.dk>, Dongliang Cui <dongliang.cui@unisoc.com>
+Cc: ke.wang@unisoc.com, hongyu.jin.cn@gmail.com, niuzhiguo84@gmail.com,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ cuidongliang390@gmail.com
+References: <20240410101858.1149134-1-dongliang.cui@unisoc.com>
+ <5a67c4f7-4794-45b4-838c-7b739372d3a5@kernel.dk>
+From: Damien Le Moal <dlemoal@kernel.org>
 Content-Language: en-US
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>, Hans Verkuil
- <hverkuil@xs4all.nl>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240410-enable-streams-impro-v3-0-e5e7a5da7420@ideasonboard.com>
- <20240410-enable-streams-impro-v3-4-e5e7a5da7420@ideasonboard.com>
-From: Umang Jain <umang.jain@ideasonboard.com>
-In-Reply-To: <20240410-enable-streams-impro-v3-4-e5e7a5da7420@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Organization: Western Digital Research
+In-Reply-To: <5a67c4f7-4794-45b4-838c-7b739372d3a5@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Hi Tomi,
+On 4/10/24 22:17, Jens Axboe wrote:
+> On 4/10/24 4:18 AM, Dongliang Cui wrote:
+>> The default configuration in the current code is that when the device
+>> is not busy, a single dispatch will attempt to pull 'nr_requests'
+>> requests out of the schedule queue.
+>>
+>> I tried to track the dispatch process:
+>>
+>> COMM            TYPE    SEC_START       IOPRIO       INDEX
+>> fio-17304       R	196798040	0x2005	     0
+>> fio-17306       R	197060504	0x2005	     1
+>> fio-17307       R	197346904	0x2005	     2
+>> fio-17308       R	197609400	0x2005	     3
+>> fio-17309       R	197873048	0x2005	     4
+>> fio-17310       R	198134936	0x2005	     5
+>> ...
+>> fio-17237       R	197122936	  0x0	    57
+>> fio-17238       R	197384984	  0x0	    58
+>> <...>-17239     R	197647128	  0x0	    59
+>> fio-17240       R	197909208	  0x0	    60
+>> fio-17241       R	198171320	  0x0	    61
+>> fio-17242       R	198433432	  0x0	    62
+>> fio-17300       R	195744088	0x2005	     0
+>> fio-17301       R	196008504	0x2005	     0
+>>
+>> The above data is calculated based on the block event trace, with each
+>> column containing: process name, request type, sector start address,
+>> IO priority.
+>>
+>> The INDEX represents the order in which the requests are extracted from
+>> the scheduler queue during a single dispatch process.
+>>
+>> Some low-speed devices cannot process these requests at once, and they will
+>> be requeued to hctx->dispatch and wait for the next issuance.
+>>
+>> There will be a problem here, when the IO priority is enabled, if you try
+>> to dispatch "nr_request" requests at once, the IO priority will be ignored
+>> from the scheduler queue and all requests will be extracted.
+>>
+>> In this scenario, if a high priority request is inserted into the scheduler
+>> queue, it needs to wait for the low priority request in the hctx->dispatch
+>> to be processed first.
+>>
+>> --------------------dispatch 1st----------------------
+>> fio-17241       R       198171320         0x0       61
+>> fio-17242       R       198433432         0x0       62
+>> --------------------dispatch 2nd----------------------
+>> fio-17300       R       195744088       0x2005       0
+>>
+>> In certain scenarios, we hope that requests can be processed in order of io
+>> priority as much as possible.
+>>
+>> Maybe max_dispatch should not be a fixed value, but can be adjusted
+>> according to device conditions.
+>>
+>> So we give a interface to control the maximum value of single dispatch
+>> so that users can configure it according to devices characteristics.
+> 
+> I agree that pulling 'nr_requests' out of the scheduler will kind of
+> defeat the purpose of the scheduler to some extent. But rather than add
+> another knob that nobody knows about or ever will touch (and extra queue
+> variables that just take up space), why not just default to something a
+> bit saner? Eg we could default to 1/8 or 1/4 of the scheduler depth
+> instead.
 
-Thank you for the patch
+Why not default to pulling what can actually be executed, that is, up to the
+number of free hw tags / budget ? Anything more than that will be requeued anyway.
 
-On 10/04/24 6:05 pm, Tomi Valkeinen wrote:
-> call_s_stream() uses sd->enabled_streams to track whether streaming has
-> already been enabled. However,
-> v4l2_subdev_enable/disable_streams_fallback(), which was the original
-> user of this field, already uses it, and
-> v4l2_subdev_enable/disable_streams_fallback() will call call_s_stream().
->
-> This leads to a conflict as both functions set the field. Afaics, both
-> functions set the field to the same value, so it won't cause a runtime
-> bug, but it's still wrong and if we, e.g., change how
-> v4l2_subdev_enable/disable_streams_fallback() operates we might easily
-> cause bugs.
->
-> Fix this by adding a new field, 'streaming_enabled', for
-> call_s_stream().
-
-Just a suggestion, as this is only used in call_s_stream(), maybe naming 
-this field 's_stream_enabled' ?
-
-Rest looks good to me,
-
-Reviewed-by: Umang Jain <umang.jain@ideasonboard.com>
-
->
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
->   drivers/media/v4l2-core/v4l2-subdev.c | 8 ++------
->   include/media/v4l2-subdev.h           | 3 +++
->   2 files changed, 5 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> index 606a909cd778..6cd353d83dfc 100644
-> --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> @@ -421,12 +421,8 @@ static int call_s_stream(struct v4l2_subdev *sd, int enable)
->   	 * The .s_stream() operation must never be called to start or stop an
->   	 * already started or stopped subdev. Catch offenders but don't return
->   	 * an error yet to avoid regressions.
-> -	 *
-> -	 * As .s_stream() is mutually exclusive with the .enable_streams() and
-> -	 * .disable_streams() operation, we can use the enabled_streams field
-> -	 * to store the subdev streaming state.
->   	 */
-> -	if (WARN_ON(!!sd->enabled_streams == !!enable))
-> +	if (WARN_ON(sd->streaming_enabled == !!enable))
->   		return 0;
->   
->   	ret = sd->ops->video->s_stream(sd, enable);
-> @@ -437,7 +433,7 @@ static int call_s_stream(struct v4l2_subdev *sd, int enable)
->   	}
->   
->   	if (!ret) {
-> -		sd->enabled_streams = enable ? BIT(0) : 0;
-> +		sd->streaming_enabled = enable;
->   
->   		if (enable)
->   			v4l2_subdev_enable_privacy_led(sd);
-> diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-> index a9e6b8146279..f55d03e0acc1 100644
-> --- a/include/media/v4l2-subdev.h
-> +++ b/include/media/v4l2-subdev.h
-> @@ -1043,6 +1043,8 @@ struct v4l2_subdev_platform_data {
->    *		     v4l2_subdev_enable_streams() and
->    *		     v4l2_subdev_disable_streams() helper functions for fallback
->    *		     cases.
-> + * @streaming_enabled: Tracks whether streaming has been enabled with s_stream.
-> + *                     This is only for call_s_stream() internal use.
->    *
->    * Each instance of a subdev driver should create this struct, either
->    * stand-alone or embedded in a larger struct.
-> @@ -1091,6 +1093,7 @@ struct v4l2_subdev {
->   	 */
->   	struct v4l2_subdev_state *active_state;
->   	u64 enabled_streams;
-> +	bool streaming_enabled;
->   };
->   
->   
->
+-- 
+Damien Le Moal
+Western Digital Research
 
 
