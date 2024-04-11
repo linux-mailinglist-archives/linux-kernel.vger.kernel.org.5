@@ -1,113 +1,121 @@
-Return-Path: <linux-kernel+bounces-140402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 164AB8A13F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:04:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 944688A1448
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:19:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93F4FB25A81
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:04:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12F43B21A88
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21D6D14B065;
-	Thu, 11 Apr 2024 12:04:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 968A414C585;
+	Thu, 11 Apr 2024 12:19:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ItXuUV94"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=qq.com header.i=@qq.com header.b="l40O6oGQ"
+Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60C9D14AD0E;
-	Thu, 11 Apr 2024 12:04:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 349991E895;
+	Thu, 11 Apr 2024 12:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712837085; cv=none; b=PXEzSerTNfPUowWZjoxPAZ66p5BKrji0FLoIiK+i17bsgwhQV4sxKMO8WAyKac4SbL4zIhnn3AxiVr8seHJ9k2oyqrWyncb4+/y8XBHuP7SApz+o1H5KBKyRfkGyLy7H/nSncd1pT7NWm83sRv6ppW0yARMJv/Nb89B38QBCHEA=
+	t=1712837958; cv=none; b=rDaRcTYZTNv3Rbqy5AR13/LtsYXcJSTbRDqPWYNQrkVTenWjwDj+lxChenP4PM1WwcRfOe520Jodsrwfy1gQkTNdyoPgnzYBAO2DQNlTM4B2NGnIZP2D2KP68aiB3joIfH+GfzIMixZ3ef+g5L+JfjHCfEALkILbyAPCi7K/xxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712837085; c=relaxed/simple;
-	bh=xTkF8wx7JBTmFK3mgmRAiHBZbcPnN27OP3J1vTmrxhI=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=XRMWAciv979Fxpvts8SDCIThfOGpR/WoMQFBWvcc3EdhbmZhbipAF+CTlNxCk3W8sRHACaq8zdIst5rvbpx9ehB++9Xy7x3woMWDgTKXin0BpwFlxEBelP701xJhb3yjnuzUz71Ekvhq87ArBXBgMVxruDSsr6gDEiquaFA+Crc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ItXuUV94; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712837084; x=1744373084;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=xTkF8wx7JBTmFK3mgmRAiHBZbcPnN27OP3J1vTmrxhI=;
-  b=ItXuUV94o1tq0Bc2sModz7zMmbSR1Wz/SG2O7wwAzelWDHSHRG8GShwg
-   OIvEnWKvhnanaExAmrtGGKN0G0o1zwrcF/DZjOEI8uxcMHTZxEktr6oHx
-   4JmGfIRWvGC2VUV05+DI2ncCYVm1ImA31L/TwdKMyBf18G6wgXP7dmGRJ
-   BvnZNKsyjFhfxjpfYmZrN4BZ7QVE8Q63rho7l75de6YRm/SLRU9vGPqbR
-   BAEc79QhIa+ejuSyDs+mOOu2+tcxZEdMNqYfPFtVuVXJXIUt1YE7+sRfC
-   Gz3OLi7YhUy0YYd/tR/uqIwBZLdOWXRWev5cJY3FeXULlwtaiOA35dYWS
-   g==;
-X-CSE-ConnectionGUID: VEDatFd/Sq+VkObhLgbnRQ==
-X-CSE-MsgGUID: bop0ol1+TeOisslIG0GDtA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8093915"
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="8093915"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 05:04:43 -0700
-X-CSE-ConnectionGUID: Ks/IUgP/QAKd3BhXy+A8GA==
-X-CSE-MsgGUID: ARmyUGWSQl6RoziNKLSn0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="20954852"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.215.66])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 05:04:40 -0700
-Message-ID: <97124d27-066d-4df3-99c6-e040c90c314e@intel.com>
-Date: Thu, 11 Apr 2024 15:04:37 +0300
+	s=arc-20240116; t=1712837958; c=relaxed/simple;
+	bh=RT+xIqfnDDbgIj8uJAxoJ4nw3qi4SV6fgAP1DKs9/dc=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=elVNCaa4+e62Tog+x85mVWadFHuZyXA34qP/iDX379wA3Aw3zu8UGop/ZwLXmkruN2YT+QJGrDdBmHKVlGKNAukIqBLrgfsCIstNUdgOxZo80JNUPqsN7DQauLhOqFC2Xav1kL2ZJadYV8E9hdLeTYyr0V+pl21Q0Qm/C9FLOYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=l40O6oGQ; arc=none smtp.client-ip=162.62.57.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1712837945; bh=tuHA1e8X3klZLTfe7IoJd81w8+BJeqW9FDqVUSy7N5g=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=l40O6oGQj8+qU/cY/eOfzWo0valnvf/ojuIbetfL5r0nJUc3sCxtFdesVRo4I1tM3
+	 UIZxGhXGVqHcb7rMUdCilTrvR8nrS6ENJZfEyxqUa1r4ohOX79dhuAEkMJ/2bYiu3G
+	 PiYaWOOl31v/cgUZLW8s5P3fE/yzhU6fdsluZS+w=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrszc19-0.qq.com (NewEsmtp) with SMTP
+	id 15BBE4D3; Thu, 11 Apr 2024 20:05:27 +0800
+X-QQ-mid: xmsmtpt1712837127th3fua2c4
+Message-ID: <tencent_4AA6ED5ECD6879FE6FD02EFD6D109638E80A@qq.com>
+X-QQ-XMAILINFO: OZZSS56D9fAjI4P3w0jk/ucTXkXPH6oE2Y8+QRawsqZtKzMg9Settplp+91tJC
+	 mwwQUC7HFmA5AvdnpBfoJf/mGj0IxYphBZbw0J1rfhCBY4tJ+RZcwUb1i6uUkR0LFaIwUxZgls9G
+	 KLUHY7YEDSoxIlzQpUv1lp9TIYKevlcYwfv3/uglMg3PZn22pYD26YDc0fgllE3Y3/0GS4EQabWg
+	 LURnCE3str0hVFa6boFUZDltVIAqHGZrkjl3xVF9Eonx1EnmlXuyYkFERvAxzJMimKe+ZIsihKWa
+	 ZW8CSON7pUP2yQStVrqE3cWwj0YIQ4DhbYcQXPCPsCblwILMFe/SWhExLL9M3ul4SdzBH69gLVWh
+	 1xr61RsRMWnOZfjfuND64kYirZaD5g99pTJinO8Tonk2+rwDvP7BdQ3Kq18osiju+M3QGFuIBseP
+	 KEg3xygKnWgG2DQjEwVjVmz73KVcymsyWQmcv7BHeMmKK2kkfODLQIQjpFviA0trxt9GsqjyB6tG
+	 kx0De1kGb141dPZ7Ns8dTxU/e6otA2FacCi2QIR+zcWsqOFPj39LvuUZlKZnEZcCDBMWXrKa359p
+	 9vIm/WFae9t5uXL9iGVJFH3G5Cgh3E1YZyUHs7xHcS+6D+47rMEwkMOzCQ0FMguwpK6LWzTOu4so
+	 BnB3/RpIIQjPinIGER7tOuolzN8m01TZ9zizWTVGKdJYdcEvmRNjSVttV9zC99ceqXNeboitrwcU
+	 SwCtMus1xJW4SeRgN4Fr8Q37ig3S5UeFn4TjI8YsUnVrhu+R4uy8W2H9RSakzPBWtFG8oA8Le/zL
+	 Dw3PlkKxPK9eMvNScBuSHSAPo+cmLkxe85ZI55jxqLQDAKiXrjYHhwxhQKQYckU6wugLwwdKXpUN
+	 r6jsFuSpp6Vl2QDJXf6RYff+OsJFjAqdlj++eGFHTRM9O05iN97jqUqCq8ErjoESKouUVd7e8sVo
+	 8xmAsQjhcgr5B5sFIoelvQjwIPgpnv
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+From: Edward Adam Davis <eadavis@qq.com>
+To: dave.kleikamp@oracle.com
+Cc: eadavis@qq.com,
+	jfs-discussion@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+bba84aef3a26fb93deb9@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH V2] jfs: fix null ptr deref in dtInsertEntry
+Date: Thu, 11 Apr 2024 20:05:28 +0800
+X-OQ-MSGID: <20240411120527.1315528-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <f4f7c644-b229-486b-973b-97c55dac334f@oracle.com>
+References: <f4f7c644-b229-486b-973b-97c55dac334f@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] perf scripts python: Add a script to run instances of
- perf script in parallel
-From: Adrian Hunter <adrian.hunter@intel.com>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <20240313123634.4353-1-adrian.hunter@intel.com>
-Content-Language: en-US
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20240313123634.4353-1-adrian.hunter@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 13/03/24 14:36, Adrian Hunter wrote:
-> Add a Python script to run a perf script command multiple times in
-> parallel, using perf script options --cpu and --time so that each job
-> processes a different chunk of the data.
-> 
-> The script supports the use of normal perf script options like
->  --dlfilter and --script, so that the benefit of running parallel jobs
-> naturally extends to them also. In addition, a command can be provided
-> (refer --pipe-to option) to pipe standard output to a custom command.
-> 
-> Refer to the script's own help text at the end of the patch for more
-> details.
-> 
-> The script is useful for Intel PT traces, that can be efficiently
-> decoded by perf script when split by CPU and/or time ranges. Running
-> jobs in parallel can decrease the overall decoding time.
-> 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
-> 
-> 
-> Changes in V2:
-> 
-> 	Added option to pipe to a custom command
-> 	Added option to set a minimum time interval
-> 	Minor tidying
+[syzbot reported]
+general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN PTI
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+CPU: 0 PID: 5061 Comm: syz-executor404 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:dtInsertEntry+0xd0c/0x1780 fs/jfs/jfs_dtree.c:3713
+..
+[Analyze]
+In dtInsertEntry(), when the pointer h has the same value as p, after writing
+name in UniStrncpy_to_le(), p->header.flag will be cleared. This will cause the
+previously true judgment "p->header.flag & BT-LEAF" to change to no after writing
+the name operation, this leads to entering an incorrect branch and accessing the
+uninitialized object ih when judging this condition for the second time.
 
-Any comments?
+[Fix]
+After got the page, check freelist first, if freelist == 0 then exit dtInsert()
+and return -EINVAL.
+
+Reported-by: syzbot+bba84aef3a26fb93deb9@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ fs/jfs/jfs_dtree.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/jfs/jfs_dtree.c b/fs/jfs/jfs_dtree.c
+index 031d8f570f58..5d3127ca68a4 100644
+--- a/fs/jfs/jfs_dtree.c
++++ b/fs/jfs/jfs_dtree.c
+@@ -834,6 +834,8 @@ int dtInsert(tid_t tid, struct inode *ip,
+ 	 * the full page.
+ 	 */
+ 	DT_GETSEARCH(ip, btstack->top, bn, mp, p, index);
++	if (p->header.freelist == 0)
++		return -EINVAL;
+ 
+ 	/*
+ 	 *	insert entry for new key
+-- 
+2.43.0
 
 
