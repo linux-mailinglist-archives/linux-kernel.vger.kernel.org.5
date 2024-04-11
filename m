@@ -1,92 +1,105 @@
-Return-Path: <linux-kernel+bounces-141499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21AB68A1F0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:04:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18FE78A1F59
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:19:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0F13283E68
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:04:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9803FB24F61
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:05:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A6D413AE2;
-	Thu, 11 Apr 2024 19:04:20 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7C5B1427E;
+	Thu, 11 Apr 2024 19:05:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OTCyS/BY"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A312A12E5D
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:04:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35421D51D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712862259; cv=none; b=e4P+JuVsONqLMrl9jsT6lcd59UEqm54ooF8QoUMI0QLsv6X+jR9A/HA9TwNNzPQTUy2pNiRc9x/kdzdZYxxavmnle174OejfzMdobKJ8tJpz42F3FEOG63sjOHY1nwjwo03SiyQxf6zGTZIB2u16qSRlhp1musDxFm9aj2dn42Q=
+	t=1712862333; cv=none; b=Aq5vO+XFglFGudr0RN+05GbpT9evBUlkGE2Sq1rRcfVGxOrQrZbFMr2/OTkPtbNVreAzUPc2HsKdn+AGioLbs6XTt3V79iFB8ogN+FrcQgQwG5fadme4rvz9F1ByVfO5lPhIVXkjfBEFiNoJrUHyFdEkjYlq75dmmx8MvkLFpjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712862259; c=relaxed/simple;
-	bh=MjvEpvhSAMQerqqsTV4xv/8womw6S1H48fLXNk2fiEE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XkGGzt5gvZ7q1FBqevSW86vnItHVrHtYamA2MINyO7KpnGfDSZDaA1CZP5LcsSuodowzIcdzureh8wIxaO5RvxrV0kpTPbA+95BJh2cx+NPV2t8FV+Sw0y8yn9u9k00z5njjYNAd5vQmmu4uzDkYGek02ODHa9ngVe7bohVtfIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from ip-185-104-138-67.ptr.icomera.net ([185.104.138.67] helo=phil.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1ruziS-0002HW-BR; Thu, 11 Apr 2024 21:04:08 +0200
-From: Heiko Stuebner <heiko@sntech.de>
-To: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Algea Cao <algea.cao@rock-chips.com>,
- Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-Cc: linux-phy@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] phy: phy-rockchip-samsung-hdptx: Select CONFIG_RATIONAL
-Date: Thu, 11 Apr 2024 21:03:44 +0200
-Message-ID: <114516975.nniJfEyVGO@phil>
-In-Reply-To: <20240408222926.32708-1-cristian.ciocaltea@collabora.com>
-References: <20240408222926.32708-1-cristian.ciocaltea@collabora.com>
+	s=arc-20240116; t=1712862333; c=relaxed/simple;
+	bh=Ocy+0fEzfXS5sQAYwDMV8ViHyq+Ou3j+fV+ygiLQfSY=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=l85Jc0YTZcqr0aDFXLxBkB06V+e1Qv0PW5rO8uEm+mxW1tfBCgJ/JPOLPxViC9Uk0KSXzDTv4I+fg5j2x0sWcHGCqharwSK8MEIJCM5cujf64paXjd7+HXL6yzP9jJ1YxUk9VZVVaVqngBziF6Bbx9Gy+javAxjUMvJe1WYXSb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OTCyS/BY; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-615372710c4so1410717b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:05:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712862330; x=1713467130; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=clKeq70RPFc9QXZP7aF0MPVECFwTUekvQYtIoU4m4cM=;
+        b=OTCyS/BYVf+ENgYAbGX1LJ0oJYrmUiuxBZ/VR6HPeVtHXNopiRvTh2WrqWgog5NVdp
+         WRHDekQiezQu2dKpus+TOWdcr4w7qQmi8zZMRYfe3r3LsYBTaYKrcVEp/yBJxU22Qq2a
+         gfZ93fQKkNHIKQCBWwLOMxKn0jaj4/h6kZAn1wIj0Lxuu2ea6U5inln+Bvqm+z6u/RSw
+         /o5GezRrFWkZZErs4epuwRfjyGCN6gmSCNTaDqhsv+k7+T7EsMaAgLnRi88wZ713b5Pk
+         9nArVE/XAWOyNU1YzhH62q+hnWRiUUUEs84TgJLsB/c7pa+TtDwk+tmyP4XQxqnCCoEO
+         n4MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712862330; x=1713467130;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=clKeq70RPFc9QXZP7aF0MPVECFwTUekvQYtIoU4m4cM=;
+        b=w+9l5b2thEaRUqQasJgqPfhtT2wQPoK9jPT2U7jXlHXGPD47VA5Bq5FeJlA/K5KIkd
+         Fna8Uld8RZkSsi8fEBEivwDN7NAKLO2De6FR7mfYDrMmsag+Y3yzZlnZPiFl5+H0qYPL
+         jSSo1WVTwMKnqQLSDxPDvIi1AihSU4AN2vyA0rUBWZJhapPALrNH3fvwbTxFRgYJqkCC
+         wAvJds2aW8xxmL0BdOZRDFmmp36woMyu6ZlFMOlb5eg94upRkV/1MuFWkk/nOqx47qHu
+         AXqRjbTEpw4ZAFivKicdUHAEZVKtl3XuRN9sbNv/2ENK+ocMVWKaoeo13umEc3sNpX3C
+         A+7w==
+X-Forwarded-Encrypted: i=1; AJvYcCX5oiO6u6uC5gZAwhRit0Siy5OR4oXxKowgSdiUCxHdp9/94kvR3Qja5B2Z3el0zQpXJbyocMO+ykukUJWHLSSfT9B/xGT/b+R6sg7v
+X-Gm-Message-State: AOJu0YxE55JS3YxAnQkO3ciAN88EQ7haDxXUsPUjxZrFZOborBiOXDOx
+	R37EfRoHmuCwcSLvmf3w1gwyZnM7e4fnxTNEwslbphkmX6Vc4Y15oLnEhfRR1WofIjW9VOhfEGN
+	dIw==
+X-Google-Smtp-Source: AGHT+IEVV0K/NsKHvincQvOwZ5oaygUzm9suLbxzrsAifLIiHpIfA1J2Hnh30X4NcZ4Nz043OpUOk6/CXhI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:848b:0:b0:615:ca8:6058 with SMTP id
+ u133-20020a81848b000000b006150ca86058mr70184ywf.5.1712862330335; Thu, 11 Apr
+ 2024 12:05:30 -0700 (PDT)
+Date: Thu, 11 Apr 2024 12:05:28 -0700
+In-Reply-To: <ZhgZdqAB6LlvJLof@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+Mime-Version: 1.0
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
+ <20240126085444.324918-5-xiong.y.zhang@linux.intel.com> <ZhgZdqAB6LlvJLof@google.com>
+Message-ID: <Zhg0eLwnJsNhPu93@google.com>
+Subject: Re: [RFC PATCH 04/41] perf: core/x86: Add support to register a new
+ vector for PMI handling
+From: Sean Christopherson <seanjc@google.com>
+To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
+Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
+	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
+	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
+	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
+	chao.gao@intel.com, Xiong Zhang <xiong.y.zhang@intel.com>
 Content-Type: text/plain; charset="us-ascii"
 
-Am Dienstag, 9. April 2024, 00:29:25 CEST schrieb Cristian Ciocaltea:
-> Ensure CONFIG_RATIONAL is selected in order to fix the following link
-> error with some kernel configurations:
+On Thu, Apr 11, 2024, Sean Christopherson wrote:
+> > diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
+> > index 05fd175cec7d..d1b58366bc21 100644
+> > --- a/arch/x86/include/asm/idtentry.h
+> > +++ b/arch/x86/include/asm/idtentry.h
+> > @@ -675,6 +675,7 @@ DECLARE_IDTENTRY_SYSVEC(IRQ_WORK_VECTOR,		sysvec_irq_work);
+> >  DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_VECTOR,		sysvec_kvm_posted_intr_ipi);
+> >  DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_WAKEUP_VECTOR,	sysvec_kvm_posted_intr_wakeup_ipi);
+> >  DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_NESTED_VECTOR,	sysvec_kvm_posted_intr_nested_ipi);
+> > +DECLARE_IDTENTRY_SYSVEC(KVM_VPMU_VECTOR,	        sysvec_kvm_vpmu_handler);
 > 
-> drivers/phy/rockchip/phy-rockchip-samsung-hdptx.o: in function `rk_hdptx_ropll_tmds_cmn_config':
-> phy-rockchip-samsung-hdptx.c:(.text+0x950): undefined reference to `rational_best_approximation'
-> 
-> Fixes: 553be2830c5f ("phy: rockchip: Add Samsung HDMI/eDP Combo PHY driver")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202404090540.2l1TEkDF-lkp@intel.com/
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+> I vote for KVM_VIRTUAL_PMI_VECTOR.  I don't see any reasy to abbreviate "virtual",
+> and the vector is a for a Performance Monitoring Interupt.
 
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-
-> ---
->  drivers/phy/rockchip/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/phy/rockchip/Kconfig b/drivers/phy/rockchip/Kconfig
-> index a34f67bb7e61..b60a4b60451e 100644
-> --- a/drivers/phy/rockchip/Kconfig
-> +++ b/drivers/phy/rockchip/Kconfig
-> @@ -87,6 +87,7 @@ config PHY_ROCKCHIP_SAMSUNG_HDPTX
->  	tristate "Rockchip Samsung HDMI/eDP Combo PHY driver"
->  	depends on (ARCH_ROCKCHIP || COMPILE_TEST) && OF
->  	select GENERIC_PHY
-> +	select RATIONAL
->  	help
->  	  Enable this to support the Rockchip HDMI/eDP Combo PHY
->  	  with Samsung IP block.
-> 
-
-
-
-
+Actually, I vote for KVM_GUEST_PMI_VECTOR.  The IRQ/PMI itself isn't virtual, it
+is quite literally the vector that is used for PMIs in KVM guests.
 
