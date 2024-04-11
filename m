@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-141626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F90C8A20D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:23:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F1538A20D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:26:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 361CA1F240DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:23:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86A591C21971
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CD42381B9;
-	Thu, 11 Apr 2024 21:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3164D3A1CB;
+	Thu, 11 Apr 2024 21:26:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XFm20QOy"
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uoU5d5i4"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3B683BBE3
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456233716F
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:26:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712870605; cv=none; b=O0b9z7GtysL4mo4/hv31xK1qfS6bXqg8MyEQf3aLUOTEj44dGquvhMMEjhcU0ZPDCpGgiOxLq00dn0LqzjQ42ESSpctlSP69TurUdtd/eVr/APycfFlnZNENkOTykhWgUo49XFBIUJ4x8RSH91gOJtVEXxrZ2Dae3loNObvX/fU=
+	t=1712870784; cv=none; b=LSItINM55COw/3Cm2maOPJhCiS1SYmtStCfJaY9G7s/prF7o0nRQC5iPjQ+UVgLhOun0wBpO7zcFOsYZuRMnZqZ/ug80oXGwiJisGRBtAv2vuIv9VdFr2IcYfT/ZvWrtrE1xZOGobdHMTkny4zRz+jKVLp6mYN/fojXcJ80nlrM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712870605; c=relaxed/simple;
-	bh=+D2gqeHElRX7BXeeD1K9fckk7QQ7DkL0FOAQt6ybymU=;
+	s=arc-20240116; t=1712870784; c=relaxed/simple;
+	bh=wd5HLscLEDiELJ0ZS76nEkXx2Pqd+QH6QZ5/zGGUrh4=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=XDjt24S9E+P2syAykJAKCW1UN6fGK+GnKkh6AxVMKtuABqn/NkR1+iGAwGtUdL/CNn2i/eG7GCnlT/ZsQMjteEaXGjr2nsUfPZhiyMgEYzNzU7+HkojEy6OvT9EshSPyq63u304HVTV4TCmeAaw3qF+rp65KJ53gjG3gbscvyPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XFm20QOy; arc=none smtp.client-ip=209.85.216.74
+	 To:Cc:Content-Type; b=jRJFoHJX6GAcatorx1g1a4CiGz6C/8X0ZZHFQ6bJafO6Zd/sA/6/xkbRNFsPu5HVUD9OT2tAYsuN4pFqfaLbQAGHx/xBh0rkkq0g7m5ktXsKtgTtpiGOR0/+lZ1Lod+Ti1eZc06kn+QvIx/mUJznqdhvM3klnx0wPDzmo8sO+Jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uoU5d5i4; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2a2c4a28e43so182103a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:23:24 -0700 (PDT)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-615372710c4so3746027b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:26:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712870604; x=1713475404; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712870782; x=1713475582; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f4sYynhcMrBtwb48cfVkTJ5DoHsaKANS6hAxyOyilKo=;
-        b=XFm20QOy/jSp8lW2aAR1UhriMz5YlZh9GILImy2itFB9NLKz0smphMXgcSAbjjFQvU
-         PbLdAs11yFZDPu7PcKWKdxdiOrmcrgGO5n8QUeV6NQwa9V+Mf3XJEwtkbOVtLoGggRZ8
-         mCy3sRiwR3LRSZivYti1JvcguV0K+eHjtXKFy03zMqaoG05cPWQTZ9CGQ2Fxejl5f9YX
-         TTJE3o7AYJAylMX5FUYhBQOzqBLdv1gl+t1rsVhOiJACdL+Ddv2103TFagu8f86OtidM
-         gXWlFwvDiU47gQgelhH8fxayK8/OWoqRTDzYXXG7ROvWHuGhod40Vd6OWhEWe7pvE/oM
-         pbuw==
+        bh=WdgVI9xUvckPONDhFdSvuL71fgWc1Ta050v5yu5aktg=;
+        b=uoU5d5i4dY6iLPoOw4Oao6TjLJvaGIWfMSy9DDt+HsNDtevOF1LQ4FpcavbaFTeuAq
+         MrkVWNW/ljMXPlpsJsjydtSmwabSBoRGhAqfNFG4BV0bInSiGtKOzcxEU1z0Pn2613sU
+         j3ebtJ8YWfxtZpZVfSwJF2HJnBbrXT8yx49k/MRTyCVKiE/BpI3KseTYclLXjl0liSd3
+         QwiEBuQx6qF6BZIvzNTT2Bus+8LZk53uABsJv10BX6W8es/z/eFfwWh1q20ctRjZxyTg
+         l8XHOSCQ48ltNROIIcn6eI38W95j4tv/UbPidLWDjRi2sL702aUuiCxgkfucXu3Xxayr
+         pECA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712870604; x=1713475404;
+        d=1e100.net; s=20230601; t=1712870782; x=1713475582;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f4sYynhcMrBtwb48cfVkTJ5DoHsaKANS6hAxyOyilKo=;
-        b=OWi/k3ptgfyUBrXBL4dCA1ltBTbM1sE6Poq12IYXG3fBAcdNSlFCaoBPcJOI+tBT90
-         U+0coY2H/hr6gq1XFM4HSz7USIFqfMAINAz5XXKY54xBa+HtwVMwTkDXKPSJtDEoaVVM
-         RcbxtyjAL9lGZZJQf04SkBAqmG1LHXjB+ioz0nr4yB93WmBig+Ov5jCmH71n0G/uZDkG
-         U+DjsJ2+ZxcyJjrrvo2aT1zB/gkoxI91YUEG6LkhnGrc/TRpslFjIOU6P4wbjxicEgNk
-         12bII0clFeQYCm9KCDzazNzuUGAHsPOSl9C537pfRasElNTkNkJAeOV9An1ZVWQmlSLt
-         X+vQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXQBXrLmN0e93pHGKp8tpbwq6JyDYaXFqoEhI4nW55bDiuquoUeiwOI8M0c75zE5EA22uf9lAT8s3vtFUITGj9AhWF/VhubY/acG5nx
-X-Gm-Message-State: AOJu0YypSc3NkYzEKAC/LQ7mhUoJ2ZBAKEW8bIZPKnhg/ei1IKIvqwno
-	feytinbCUbzVvvfnb3CQeEOvEthfmsGidpXJZEL1r11i8LoPpi56Pxjxj3gKnysrqqKKYr6v8eq
-	gJg==
-X-Google-Smtp-Source: AGHT+IGLnJWSe1pvT4fYPO2ARANLiP/Na43gje8HhGRqItkZXxuLiueYxnrbicDCpCBuUCuFLqQcY6Xcom8=
+        bh=WdgVI9xUvckPONDhFdSvuL71fgWc1Ta050v5yu5aktg=;
+        b=lrn8ocG/u8/qWdH5HjEEvBxoCUKin+ETDFHUoXMzC9V+Nzuee0KyUrIxUwCaJ5+HyN
+         ks5XWSJhWyBCtJy5XVstfrkScbDrrsoQaRakZffy6eFk9DnTucly2pDm+Wt2UvpYhTQ7
+         Yv35ztmV43cDyVVIjwtcqzlE3EC86mk03wqaTMAhcSSKdZEfOhYwuFJz7lgd3dadUGNl
+         ugUydqX3n6JeEoxXCw8r5zwrxOgfhNMyKtNhZp4IaGmrbUG8hVAA/y6Z6nbTFvweZPsu
+         A1ST5SHoIu2mbUJKGv+Jd1AGeP/HblQ8st7/P+tBNS8D2x09qjRdgrDLXuhZv19jbFO/
+         RUXA==
+X-Forwarded-Encrypted: i=1; AJvYcCUYcB9JuPMFyhxJAnetJcGAUZt1hPHWs6KHP4O7PQ0t725622al6RGUqxUnbVDoJyvcmFy5l2170YJJHZdRhD+GNokwGfhSs95Fpurf
+X-Gm-Message-State: AOJu0YyyY69aAkXKiz87MrQAYd+HFJDXrcbFAG1+Dxmi12GnZBUbw1Hh
+	FO8PTvlRNrlYimVV0hPHaBkEPcvNSF/rQK+FvC/OXqSzOpCdB6XwQv0VHVXYaMDdec0W09HUAHN
+	ggw==
+X-Google-Smtp-Source: AGHT+IERLT1fHmu0phRd1Cb5WaKzvHqAUsRSAXNTckY9QqvWHGzZwtnbcyq7lvIqiZ7x8IZjmTkQPM52S+A=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:e213:b0:2a5:c05e:6e3d with SMTP id
- a19-20020a17090ae21300b002a5c05e6e3dmr2191pjz.0.1712870603948; Thu, 11 Apr
- 2024 14:23:23 -0700 (PDT)
-Date: Thu, 11 Apr 2024 14:23:22 -0700
-In-Reply-To: <20240126085444.324918-19-xiong.y.zhang@linux.intel.com>
+ (user=seanjc job=sendgmr) by 2002:a0d:ca07:0:b0:615:27b6:7624 with SMTP id
+ m7-20020a0dca07000000b0061527b67624mr155166ywd.6.1712870782385; Thu, 11 Apr
+ 2024 14:26:22 -0700 (PDT)
+Date: Thu, 11 Apr 2024 14:26:20 -0700
+In-Reply-To: <20240126085444.324918-24-xiong.y.zhang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <20240126085444.324918-19-xiong.y.zhang@linux.intel.com>
-Message-ID: <ZhhUyk2uAXqG7GEd@google.com>
-Subject: Re: [RFC PATCH 18/41] KVM: x86/pmu: Intercept full-width GP counter
- MSRs by checking with perf capabilities
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <20240126085444.324918-24-xiong.y.zhang@linux.intel.com>
+Message-ID: <ZhhVfOhFBfOWtK8E@google.com>
+Subject: Re: [RFC PATCH 23/41] KVM: x86/pmu: Implement the save/restore of PMU
+ state for Intel CPU
 From: Sean Christopherson <seanjc@google.com>
 To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
 Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
@@ -82,38 +82,59 @@ Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com,
 	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
 	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
 	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com, Xiong Zhang <xiong.y.zhang@intel.com>
+	chao.gao@intel.com
 Content-Type: text/plain; charset="us-ascii"
 
 On Fri, Jan 26, 2024, Xiong Zhang wrote:
-> From: Mingwei Zhang <mizhang@google.com>
-> 
-> Intercept full-width GP counter MSRs in passthrough PMU if guest does not
-> have the capability to write in full-width. In addition, opportunistically
-> add a warning if non-full-width counter MSRs are also intercepted, in which
-> case it is a clear mistake.
-> 
-> Co-developed-by: Xiong Zhang <xiong.y.zhang@intel.com>
-> Signed-off-by: Xiong Zhang <xiong.y.zhang@intel.com>
-> Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> ---
->  arch/x86/kvm/vmx/pmu_intel.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-> index 7f6cabb2c378..49df154fbb5b 100644
-> --- a/arch/x86/kvm/vmx/pmu_intel.c
-> +++ b/arch/x86/kvm/vmx/pmu_intel.c
-> @@ -429,6 +429,13 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  	default:
->  		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0)) ||
->  		    (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
-> +			if (is_passthrough_pmu_enabled(vcpu) &&
-> +			    !(msr & MSR_PMC_FULL_WIDTH_BIT) &&
-> +			    !msr_info->host_initiated) {
-> +				pr_warn_once("passthrough PMU never intercepts non-full-width PMU counters\n");
-> +				return 1;
+>  static void intel_save_pmu_context(struct kvm_vcpu *vcpu)
+>  {
+> +	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+> +	struct kvm_pmc *pmc;
+> +	u32 i;
+> +
+> +	if (pmu->version != 2) {
+> +		pr_warn("only PerfMon v2 is supported for passthrough PMU");
+> +		return;
+> +	}
+> +
+> +	/* Global ctrl register is already saved at VM-exit. */
+> +	rdmsrl(MSR_CORE_PERF_GLOBAL_STATUS, pmu->global_status);
+> +	/* Clear hardware MSR_CORE_PERF_GLOBAL_STATUS MSR, if non-zero. */
+> +	if (pmu->global_status)
+> +		wrmsrl(MSR_CORE_PERF_GLOBAL_OVF_CTRL, pmu->global_status);
+> +
+> +	for (i = 0; i < pmu->nr_arch_gp_counters; i++) {
+> +		pmc = &pmu->gp_counters[i];
+> +		rdpmcl(i, pmc->counter);
+> +		rdmsrl(i + MSR_ARCH_PERFMON_EVENTSEL0, pmc->eventsel);
+> +		/*
+> +		 * Clear hardware PERFMON_EVENTSELx and its counter to avoid
+> +		 * leakage and also avoid this guest GP counter get accidentally
+> +		 * enabled during host running when host enable global ctrl.
+> +		 */
+> +		if (pmc->eventsel)
+> +			wrmsrl(MSR_ARCH_PERFMON_EVENTSEL0 + i, 0);
+> +		if (pmc->counter)
+> +			wrmsrl(MSR_IA32_PMC0 + i, 0);
+> +	}
+> +
+> +	rdmsrl(MSR_CORE_PERF_FIXED_CTR_CTRL, pmu->fixed_ctr_ctrl);
+> +	/*
+> +	 * Clear hardware FIXED_CTR_CTRL MSR to avoid information leakage and
+> +	 * also avoid these guest fixed counters get accidentially enabled
+> +	 * during host running when host enable global ctrl.
+> +	 */
+> +	if (pmu->fixed_ctr_ctrl)
+> +		wrmsrl(MSR_CORE_PERF_FIXED_CTR_CTRL, 0);
+> +	for (i = 0; i < pmu->nr_arch_fixed_counters; i++) {
+> +		pmc = &pmu->fixed_counters[i];
+> +		rdpmcl(INTEL_PMC_FIXED_RDPMC_BASE | i, pmc->counter);
+> +		if (pmc->counter)
+> +			wrmsrl(MSR_CORE_PERF_FIXED_CTR0 + i, 0);
+> +	}
 
-This is broken, KVM must be prepared to handle WRMSR (and RDMSR and RDPMC) that
-come in through the emulator.
+For the next RFC, please make that it includes AMD support.  Mostly because I'm
+pretty all of this code can be in common x86.  The fixed counters are ugly,
+but pmu->nr_arch_fixed_counters is guaranteed to '0' on AMD, so it's _just_ ugly,
+i.e. not functionally problematic. 
 
