@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03D8C8A1ADF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:11:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 042BF8A1A44
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:44:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46B3AB30D5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:44:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3611283BA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:44:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 880991D2145;
-	Thu, 11 Apr 2024 15:39:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C9591D215C;
+	Thu, 11 Apr 2024 15:39:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="jmfoVQB2"
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="hEmy5Eoa"
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B4A15535B
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:39:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19DED1D06B7
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:39:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849973; cv=none; b=NcJmRg6frFjD+Sy+daNZVZsn4Pcon4fFhn4Dsa9O0GipDRWrTfV5mThNVtoaVQi+hLpcSAAAWcEiM3pF0CYRRZVft+b0RvTahQabYaDWfia1ahEkkOrvkzbqlxwwSAdN6rJ6lxqciOB29JZ+gU4kAbuN+XTSw2UkLjwlQhLkNFA=
+	t=1712849974; cv=none; b=jC9VR76PuVRR/hZH7+YYC1cWchZfTxFazPYTeLVhfSRGWlOE8EJpDJHLYgLy0qUkOeXLlfqslzCnUF6iXsQlMuftwpH7Xxydo08EdLBeEdlUnot+ON3WKyVtvLJYHt7RUnlIwxcq7b/uvNG64K4VfdnUkOWnNwyf5+OqIfa51vE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849973; c=relaxed/simple;
-	bh=kBOG6gh9L+YlXUEO5PvC5HwNjQ+tJN1HQ2raep5WTkw=;
+	s=arc-20240116; t=1712849974; c=relaxed/simple;
+	bh=sKPRHeETElflsb6nSEP14O/1aFOyRze+VoqZ/IV2QSo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=d0e3t/ge5CZW2AS39c/fOUOSNoYc9+atSUwOQleQAvvem7/Fy7NM+QHyNscw3qOEHaaTGXlRDGygGitgerJxM+IatTffSWebOGSSnrQuPHagGRpN1FTUHoryMOGpSsNjDJ2ZbwAxVO0zOSSonXXJ/FZKWbkoPGrKxGyUlrd4L1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=jmfoVQB2; arc=none smtp.client-ip=209.85.166.52
+	 MIME-Version; b=OLJ9D3WNhAl+mmsaz43wZxKMOrqAH/zFW84rBG32J0wvJZcStfdghhFJaSGECfojBNfavmmQv8egxg/LzCwBuqip41FiSrAyB3hHhU72/7hMZDehH41ibF4osUfQLrrQVozAy1Pne7H0GKEZELRUquoEt8BGRj6a8bVEIc/jOSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=hEmy5Eoa; arc=none smtp.client-ip=209.85.166.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7c8e4c0412dso69635839f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:39:31 -0700 (PDT)
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7d5ed700c2dso16212839f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:39:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849969; x=1713454769; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849971; x=1713454771; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wyiv3PYk9uivp8uRbPKfheMtxKLuVXL7eV2fO7HBsks=;
-        b=jmfoVQB2l7npa+vChySWBlEM7k9h/jRMrg3OL++SemkaaPhXopomw2KYADHoOuE688
-         yBjtb8szD28w05ikvOzt2v2720i+kMJWKXhFxF2dqo6LygiHIbyP9a/s1U4C/AXF0wQc
-         JPWh75ul5gWCi3ApwZD/YEyripLBCTJAJSdkYFKVK7uKJXZQ11zGxYnm/lL78z3csCsE
-         FxDawscqYeSX0/E9TGztT7jjec5Cr9HklhTCFpfxkNcUjoUofdbIAO6NoLD1l2HSDsZ3
-         bjIHevRakpBMW4XhMDW0Bl4mb8LtI4U49O753G5eCOzMWRQeYXiDXo3PmbXfmZpQusW8
-         LdRw==
+        bh=3pjd3b1JXXFVuK6R3VsMghe7Mtr0cnNAn12vvOo0KLY=;
+        b=hEmy5EoaPOISReBPOt++EXM1j1sWG112FYYRi57MIkbsN72BHafDHv0yc1joJWPILA
+         +lEdt9Fh+09KYorlubdiIiaVu4cZxXq2fUfmq7C5/KUSLIQoUBC6Mhg6KN8vish/ZdGf
+         MQM3SRgE6QxK/oXzUKfE1S75HqBr3xqS1RR6EDD6crgy5lfMzd+tDWIzT7asiLMkXnLM
+         FbgsIwZIvzF0w/L4DVZZeuGE9gSyOPP2/nT8/7ADWKcePPA0YsnfZSh15qOeZ1jU5aWC
+         3DDyBDriOaLT1XbcYgxTpXzyVWIwzHh16V922u4f2kr52/fZzMrDAuH0AjZSbxoLDFER
+         vMzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849969; x=1713454769;
+        d=1e100.net; s=20230601; t=1712849971; x=1713454771;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wyiv3PYk9uivp8uRbPKfheMtxKLuVXL7eV2fO7HBsks=;
-        b=akGMd67fkZgXjGIrEO8vI4fKiVK37z1JYxA3V4akQzviKOR6sSDMcuiT82fwz8s4rq
-         Xqif3BXKjtEmYowPWHe1vAudNoNk8WJtoLSXfxHA+QE//oY/RDrGaET5OTjHWOBkbfH4
-         CoapP51ct8gAQNHQ41NDkHID/6fjwmRAmWMieeTwqn7kr8KvzFvrRw2AW84d9uYTYV9M
-         2aGMfZIVnoqyYbLbvyUMPVS/xyM03sGBNRVL/M7xvkWzSOLsxKA9X8KjRwZNc10k3nQI
-         o0VtVcITd8Ztq+G9zdNT8MVNLuI6xsFg/jFi68vrsQn5uYDLWf1Ti9yj6BnyO1c1k9Ky
-         kWEg==
-X-Gm-Message-State: AOJu0YxBEBX9vYd8Vw7gA1nUyJaoevGNue9T46ouZqwhjIWRngIf2KG9
-	KvAQxj5quEQVvXlHta4ePcxnwiAKUHwhb+UZnrkfRxMJI30ctDUTe7eik94tHCOCd8L9oRPUCog
-	h
-X-Google-Smtp-Source: AGHT+IHnHqHFdbaYWaxk1fQBzMyd2DbudQT1Wh4gn2HLzuhQ7Cs4H7PH0h48GZ0QDr0OdZw8jfahzg==
-X-Received: by 2002:a6b:c34e:0:b0:7d6:7b7c:8257 with SMTP id t75-20020a6bc34e000000b007d67b7c8257mr227452iof.0.1712849969399;
-        Thu, 11 Apr 2024 08:39:29 -0700 (PDT)
+        bh=3pjd3b1JXXFVuK6R3VsMghe7Mtr0cnNAn12vvOo0KLY=;
+        b=JqxmmYM8+KtTgMx8Qy0r6A7a8LU7UykYtMdPV8E6lfgMNJwDjKFX+MHa5RGnjFHtxH
+         iPUHqDVl4poJorlqSY3UYh9WLGLO6K7LlDDIUTt6rcnwJ7dyIqX2lYAtSrtEXrGx/HLU
+         umKaomBEXcLjrv2HplJGjc0joris4c5S87kpHFBerTyEPJ9sKVKDtpsN9VyQtgqf7JL7
+         9Yoo7pLHc9rKUqo3YH4ttX6/wkoHCjC2+4XO6FZOBTkvfmts50qGeOKaImtd8NiNmp8k
+         iVEv+MGhYGpXQxHN/sTtPyxx5b/u7NLpPuF+YjlDpOzz41CsnXmhT/KcfTfYzAR5nSiz
+         vN8w==
+X-Gm-Message-State: AOJu0YzXCxoCa4uXM5UjjtYZZLEO4n4JKdONAPAz24LYUN/3XiE0IGRS
+	OCZo3kSEwwEd10RMlpzwgS5TsYqh11ncjjRZAmdDJqOAvU3Ory5AQBHhryok9GfYJnMVqw8Tii8
+	S
+X-Google-Smtp-Source: AGHT+IEPPNqk26FmdivXxob7LijqHEfjQTrgSAleyaKOFR57EK5kRAD+PqOXxVXJxGlY9CG/ZYAz9g==
+X-Received: by 2002:a05:6602:38d:b0:7d6:513b:254 with SMTP id f13-20020a056602038d00b007d6513b0254mr195682iov.2.1712849970400;
+        Thu, 11 Apr 2024 08:39:30 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.39.28
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.39.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:39:28 -0700 (PDT)
+        Thu, 11 Apr 2024 08:39:29 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 283/437] fs/binfmt_misc: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:17:03 -0600
-Message-ID: <20240411153126.16201-284-axboe@kernel.dk>
+Subject: [PATCH 284/437] fs/coda: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:17:04 -0600
+Message-ID: <20240411153126.16201-285-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,92 +85,66 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- fs/binfmt_misc.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+ fs/coda/psdev.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/fs/binfmt_misc.c b/fs/binfmt_misc.c
-index 68fa225f89e5..f44b626c4df7 100644
---- a/fs/binfmt_misc.c
-+++ b/fs/binfmt_misc.c
-@@ -734,10 +734,9 @@ static void remove_binfmt_handler(struct binfmt_misc *misc, Node *e)
+diff --git a/fs/coda/psdev.c b/fs/coda/psdev.c
+index 3c3148588491..1c7f1c5c4941 100644
+--- a/fs/coda/psdev.c
++++ b/fs/coda/psdev.c
+@@ -196,16 +196,17 @@ static ssize_t coda_psdev_write(struct file *file, const char __user *buf,
+ out:
+         return(count ? count : retval);  
+ }
++FOPS_WRITE_ITER_HELPER(coda_psdev_write);
  
- /* /<entry> */
+ /*
+  *	Read a message from the kernel to Venus
+  */
  
--static ssize_t
--bm_entry_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
-+static ssize_t bm_entry_read(struct kiocb *iocb, struct iov_iter *to)
+-static ssize_t coda_psdev_read(struct file * file, char __user * buf, 
+-			       size_t nbytes, loff_t *off)
++static ssize_t coda_psdev_read(struct kiocb *iocb, struct iov_iter *to)
  {
--	Node *e = file_inode(file)->i_private;
-+	Node *e = file_inode(iocb->ki_filp)->i_private;
- 	ssize_t res;
- 	char *page;
+ 	DECLARE_WAITQUEUE(wait, current);
+-        struct venus_comm *vcp = (struct venus_comm *) file->private_data;
++	struct venus_comm *vcp = iocb->ki_filp->private_data;
++	size_t nbytes = iov_iter_count(to);
+         struct upc_req *req;
+ 	ssize_t retval = 0, count = 0;
  
-@@ -747,7 +746,7 @@ bm_entry_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
+@@ -218,7 +219,7 @@ static ssize_t coda_psdev_read(struct file * file, char __user * buf,
+ 	set_current_state(TASK_INTERRUPTIBLE);
  
- 	entry_status(e, page);
+ 	while (list_empty(&vcp->vc_pending)) {
+-		if (file->f_flags & O_NONBLOCK) {
++		if (iocb->ki_filp->f_flags & O_NONBLOCK) {
+ 			retval = -EAGAIN;
+ 			break;
+ 		}
+@@ -248,9 +249,9 @@ static ssize_t coda_psdev_read(struct file * file, char __user * buf,
+ 		count = nbytes;
+         }
  
--	res = simple_read_from_buffer(buf, nbytes, ppos, page, strlen(page));
-+	res = simple_copy_to_iter(page, &iocb->ki_pos, strlen(page), to);
+-	if (copy_to_user(buf, req->uc_data, count))
++	if (!copy_to_iter_full(req->uc_data, count, to))
+ 	        retval = -EFAULT;
+-        
++
+ 	/* If request was not a signal, enqueue and don't free */
+ 	if (!(req->uc_flags & CODA_REQ_ASYNC)) {
+ 		req->uc_flags |= CODA_REQ_READ;
+@@ -344,8 +345,8 @@ static int coda_psdev_release(struct inode * inode, struct file * file)
  
- 	free_page((unsigned long) page);
- 	return res;
-@@ -794,10 +793,11 @@ static ssize_t bm_entry_write(struct file *file, const char __user *buffer,
- 
- 	return count;
- }
-+FOPS_WRITE_ITER_HELPER(bm_entry_write);
- 
- static const struct file_operations bm_entry_operations = {
--	.read		= bm_entry_read,
--	.write		= bm_entry_write,
-+	.read_iter	= bm_entry_read,
-+	.write_iter	= bm_entry_write_iter,
- 	.llseek		= default_llseek,
- };
- 
-@@ -882,23 +882,23 @@ static ssize_t bm_register_write(struct file *file, const char __user *buffer,
- 	}
- 	return count;
- }
-+FOPS_WRITE_ITER_HELPER(bm_register_write);
- 
- static const struct file_operations bm_register_operations = {
--	.write		= bm_register_write,
-+	.write_iter	= bm_register_write_iter,
- 	.llseek		= noop_llseek,
- };
- 
- /* /status */
- 
--static ssize_t
--bm_status_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
-+static ssize_t bm_status_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	struct binfmt_misc *misc;
- 	char *s;
- 
--	misc = i_binfmt_misc(file_inode(file));
-+	misc = i_binfmt_misc(file_inode(iocb->ki_filp));
- 	s = misc->enabled ? "enabled\n" : "disabled\n";
--	return simple_read_from_buffer(buf, nbytes, ppos, s, strlen(s));
-+	return simple_copy_to_iter(s, &iocb->ki_pos, strlen(s), to);
- }
- 
- static ssize_t bm_status_write(struct file *file, const char __user *buffer,
-@@ -944,10 +944,11 @@ static ssize_t bm_status_write(struct file *file, const char __user *buffer,
- 
- 	return count;
- }
-+FOPS_WRITE_ITER_HELPER(bm_status_write);
- 
- static const struct file_operations bm_status_operations = {
--	.read		= bm_status_read,
--	.write		= bm_status_write,
-+	.read_iter	= bm_status_read,
-+	.write_iter	= bm_status_write_iter,
- 	.llseek		= default_llseek,
- };
- 
+ static const struct file_operations coda_psdev_fops = {
+ 	.owner		= THIS_MODULE,
+-	.read		= coda_psdev_read,
+-	.write		= coda_psdev_write,
++	.read_iter	= coda_psdev_read,
++	.write_iter	= coda_psdev_write_iter,
+ 	.poll		= coda_psdev_poll,
+ 	.unlocked_ioctl	= coda_psdev_ioctl,
+ 	.open		= coda_psdev_open,
 -- 
 2.43.0
 
