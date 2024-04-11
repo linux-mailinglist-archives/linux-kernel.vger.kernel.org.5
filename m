@@ -1,292 +1,166 @@
-Return-Path: <linux-kernel+bounces-140550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4ECA8A1617
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A069A8A161A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:46:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C8241F22270
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:45:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A7311F2171C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:46:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2983B14EC44;
-	Thu, 11 Apr 2024 13:39:41 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A203114E2D7
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:39:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89BE14F116;
+	Thu, 11 Apr 2024 13:39:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XUC9jrel"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 381BF14F108
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712842780; cv=none; b=AmduhUo0bX9jOezBPvX7XywtU3+vWYYupn4onHYk2orzLcy9EUwq5X/7tCATa6pFRO33wtvnuOAidUiQgp24Sluk02+O+ePJ/bmpLtC6288tDMyWIt39+ppQc5+rpXWzjvMSCC+I9sMo5LxOKOV/rLU6+bSvF48xcmJGMUL5Lxs=
+	t=1712842785; cv=none; b=E7hshCjKxo1XViY0ejtfUhaI3ID4RfKdovjbrnKQGpLhjNYUGHJChFrr1O55MBpNIX9+Tg/B/woU0613G62YzDAIud+M+ciz1AxVdDZFAnLb5PdkrOK48pQ4NRCEZQ35y68TsnFaAP70xV9qodcg8iK0MiQem6lh6WLkEddTi7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712842780; c=relaxed/simple;
-	bh=Yu08hPu4Qxe18qT5duwjLM12VUXGWp6kc9F+5ecVI6o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=S+oI3PY4BP2u5FlgzJz637X3sH5pGEHFchojlt9D8xXaKOty84SnTOK6ldrvb8Hcpw74raTGqSHLd+ICGU3P51+wPob20rQrUlfSN26BgqoaLHt+G6lT5UunkQJnoVj7UMM7Vx6Vh4JXyVZow0f2Mu90RSl6eB7s8Qdiu4pwBHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 933F7113E;
-	Thu, 11 Apr 2024 06:40:07 -0700 (PDT)
-Received: from [10.1.38.151] (XHFQ2J9959.cambridge.arm.com [10.1.38.151])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB9493F64C;
-	Thu, 11 Apr 2024 06:39:36 -0700 (PDT)
-Message-ID: <c6450dbe-b280-4096-b666-191311d957c3@arm.com>
-Date: Thu, 11 Apr 2024 14:39:35 +0100
+	s=arc-20240116; t=1712842785; c=relaxed/simple;
+	bh=4oN+a+zwOcFIxBURlcm9yUU4A+T5A8wkvMcvEQR5ceA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K1v5JiV+DGEdD/S/Yh4rHEgWRRxgKgcjOmC4ijNOYwniSBY8XBecOMcB/C815pFhgjj1Q7DL/YQkr6uDCb1zpUNsAbDMNJBfxwm6nhQ5FYSt6vmP8PpO9uFrkutH/zXCHENwBunG7g4W4VE+Nww1v/JiWZTaw438GMvZbUPGdFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XUC9jrel; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a46de423039so539558866b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:39:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712842782; x=1713447582; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=D12lcUYKF2o3izGuPoofsyaAfBqSAmidnmp2XsHMons=;
+        b=XUC9jrelGLYrWJFSqaiKinSfj4+NvjvtKT03FS0liexmYrFjSnQ/aoc7zkRZ/WtYKE
+         7y7LYO5rCDoWjJsocBYRCJ/rm37zSeX/Cl2r/7iiRC7KjCiNo09S3oxbKJO59/z2YStk
+         Y0pXPYZDmYPXjLCRBFa7GOgbarQx97r/6qUaBSqrOMfY9D+RC0cTtgI/rToS6OqAXZnI
+         EdfCrwbOpuFJXMiPthycQHyv/KbVmZNnR3Vqu9J6aFq5sWDnrsnZuqh9FpHJIJJwhKPK
+         Mogi+MnA4Nvx0nYsrY3HXrd3hWwgPIBezRj4O4lFy47JNVD67P6l4ML3tN331NLUap5H
+         hHkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712842782; x=1713447582;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D12lcUYKF2o3izGuPoofsyaAfBqSAmidnmp2XsHMons=;
+        b=QVE0jVfVS3ls/Dky173K4muhOJBivlpd1ktEgBuNQJ11bOBMgZgYM2TE7k/zeBG3cI
+         lSIIlIJJKNjgISD07KNkb1XYxoitYvVkUmnsyNtIsr8p96gwwXjt1zNpQjmwn9/SPFaO
+         rbcY8mRHDLllr/UqL/5PkvitIcobSV4hDk1FpzGzl4c2E+mUe4NmTazSmqDxgkakAo/f
+         4cPT5f+rZRMw/F2OxBD2O8Sh50NY9K7cDviDuPYbJpWTJ8aUGI1PGBd5w9ZS2tyrVrzF
+         82kUxSQTT9lW69+Ejg6il1T9N2nIF5FWfWie0qncmII5oajm2voxVWbdDlTEBwqWGQen
+         hklg==
+X-Gm-Message-State: AOJu0YyPqu9FE9lupSTJyPIDauC/mUGEdGxqbDlpUKPJKo8TyXB51B1Z
+	q2drVFPtUlG/FIHgGcVQkcQEmYtOm5mdHNuTAjt9azMoZZ2oi+Sl
+X-Google-Smtp-Source: AGHT+IE1JY1W8Es9jN5la+0VIgGMI5cJCiRcCOKfL69j/DB7dEodD5OQlpLBngX0v6iXd1MqLN8BRg==
+X-Received: by 2002:a50:baa7:0:b0:56e:2e0e:2544 with SMTP id x36-20020a50baa7000000b0056e2e0e2544mr4586678ede.33.1712842782174;
+        Thu, 11 Apr 2024 06:39:42 -0700 (PDT)
+Received: from gmail.com (1F2EF1A5.nat.pool.telekom.hu. [31.46.241.165])
+        by smtp.gmail.com with ESMTPSA id u12-20020a056402110c00b0056e51535a2esm703800edv.82.2024.04.11.06.39.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 06:39:41 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Thu, 11 Apr 2024 15:39:39 +0200
+From: Ingo Molnar <mingo@kernel.org>
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Conrad Grobler <grobler@google.com>,
+	Kevin Loughlin <kevinloughlin@google.com>
+Subject: Re: [PATCH v2] x86/boot/64: Clear CR4.PGE to disable global 1:1
+ mappings
+Message-ID: <ZhfoG1ghBUopaAH1@gmail.com>
+References: <20240410151354.506098-2-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] arm64: mm: Lazily clear pte table mappings from
- fixmap
-Content-Language: en-GB
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, David Hildenbrand <david@redhat.com>,
- Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Itaru Kitayama <itaru.kitayama@fujitsu.com>
-References: <20240404143308.2224141-1-ryan.roberts@arm.com>
- <20240404143308.2224141-5-ryan.roberts@arm.com>
- <ZhfkibgO7Gz_QeTx@FVFF77S0Q05N>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ZhfkibgO7Gz_QeTx@FVFF77S0Q05N>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410151354.506098-2-ardb+git@google.com>
 
-On 11/04/2024 14:24, Mark Rutland wrote:
-> On Thu, Apr 04, 2024 at 03:33:08PM +0100, Ryan Roberts wrote:
->> With the pgtable operations abstracted into `struct pgtable_ops`, the
->> early pgtable alloc, map and unmap operations are nicely centralized. So
->> let's enhance the implementation to speed up the clearing of pte table
->> mappings in the fixmap.
->>
->> Extend FIX_MAP so that we now have 16 slots in the fixmap dedicated for
->> pte tables. At alloc/map time, we select the next slot in the series and
->> map it. Or if we are at the end and no more slots are available, clear
->> down all of the slots and start at the beginning again. Batching the
->> clear like this means we can issue tlbis more efficiently.
->>
->> Due to the batching, there may still be some slots mapped at the end, so
->> address this by adding an optional cleanup() function to `struct
->> pgtable_ops` to handle this for us.
->>
->> Execution time of map_mem(), which creates the kernel linear map page
->> tables, was measured on different machines with different RAM configs:
->>
->>                | Apple M2 VM | Ampere Altra| Ampere Altra| Ampere Altra
->>                | VM, 16G     | VM, 64G     | VM, 256G    | Metal, 512G
->> ---------------|-------------|-------------|-------------|-------------
->>                |   ms    (%) |   ms    (%) |   ms    (%) |    ms    (%)
->> ---------------|-------------|-------------|-------------|-------------
->> before         |   11   (0%) |  109   (0%) |  449   (0%) |  1257   (0%)
->> after          |    6 (-46%) |   61 (-44%) |  257 (-43%) |   838 (-33%)
-> 
-> I'd prefer to leave this as-is for now, as compared to the baseline this is the
-> last 2-3%, and (assuming my comments on patch 3 hold) that way we don't need
-> the pgtable_ops indirection, which'll keep the code fairly simple to understand.
-> 
-> So unless Catalin or Will feel otherwise, I'd suggest that we take patches 1
-> and 2, drop 3 and 4 for now, and maybe try the alternative approach I've
-> commented on patch 3.
-> 
-> Does that sound ok to you?
 
-In principle, yes. Let me do some benchmarking with your proposed set of patches
-to confim :)
+* Ard Biesheuvel <ardb+git@google.com> wrote:
 
+> From: Ard Biesheuvel <ardb@kernel.org>
 > 
-> Mark.
+> The early 64-bit boot code must be entered with a 1:1 mapping of the
+> bootable image, but it cannot operate without a 1:1 mapping of all the
+> assets in memory that it accesses, and therefore, it creates such
+> mappings for all known assets upfront, and additional ones on demand
+> when a page fault happens on a memory address.
 > 
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> Tested-by: Itaru Kitayama <itaru.kitayama@fujitsu.com>
->> Tested-by: Eric Chanudet <echanude@redhat.com>
->> ---
->>  arch/arm64/include/asm/fixmap.h  |  5 +++-
->>  arch/arm64/include/asm/pgtable.h |  4 ---
->>  arch/arm64/mm/fixmap.c           | 11 ++++++++
->>  arch/arm64/mm/mmu.c              | 44 +++++++++++++++++++++++++++++---
->>  4 files changed, 56 insertions(+), 8 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/fixmap.h b/arch/arm64/include/asm/fixmap.h
->> index 87e307804b99..91fcd7c5c513 100644
->> --- a/arch/arm64/include/asm/fixmap.h
->> +++ b/arch/arm64/include/asm/fixmap.h
->> @@ -84,7 +84,9 @@ enum fixed_addresses {
->>  	 * Used for kernel page table creation, so unmapped memory may be used
->>  	 * for tables.
->>  	 */
->> -	FIX_PTE,
->> +#define NR_PTE_SLOTS		16
->> +	FIX_PTE_END,
->> +	FIX_PTE_BEGIN = FIX_PTE_END + NR_PTE_SLOTS - 1,
->>  	FIX_PMD,
->>  	FIX_PUD,
->>  	FIX_P4D,
->> @@ -108,6 +110,7 @@ void __init early_fixmap_init(void);
->>  #define __late_clear_fixmap(idx) __set_fixmap((idx), 0, FIXMAP_PAGE_CLEAR)
->>  
->>  extern void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot);
->> +void __init clear_fixmap_nosync(enum fixed_addresses idx);
->>  
->>  #include <asm-generic/fixmap.h>
->>  
->> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->> index 92c9aed5e7af..4c7114d49697 100644
->> --- a/arch/arm64/include/asm/pgtable.h
->> +++ b/arch/arm64/include/asm/pgtable.h
->> @@ -691,10 +691,6 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
->>  /* Find an entry in the third-level page table. */
->>  #define pte_offset_phys(dir,addr)	(pmd_page_paddr(READ_ONCE(*(dir))) + pte_index(addr) * sizeof(pte_t))
->>  
->> -#define pte_set_fixmap(addr)		((pte_t *)set_fixmap_offset(FIX_PTE, addr))
->> -#define pte_set_fixmap_offset(pmd, addr)	pte_set_fixmap(pte_offset_phys(pmd, addr))
->> -#define pte_clear_fixmap()		clear_fixmap(FIX_PTE)
->> -
->>  #define pmd_page(pmd)			phys_to_page(__pmd_to_phys(pmd))
->>  
->>  /* use ONLY for statically allocated translation tables */
->> diff --git a/arch/arm64/mm/fixmap.c b/arch/arm64/mm/fixmap.c
->> index de1e09d986ad..0cb09bedeeec 100644
->> --- a/arch/arm64/mm/fixmap.c
->> +++ b/arch/arm64/mm/fixmap.c
->> @@ -131,6 +131,17 @@ void __set_fixmap(enum fixed_addresses idx,
->>  	}
->>  }
->>  
->> +void __init clear_fixmap_nosync(enum fixed_addresses idx)
->> +{
->> +	unsigned long addr = __fix_to_virt(idx);
->> +	pte_t *ptep;
->> +
->> +	BUG_ON(idx <= FIX_HOLE || idx >= __end_of_fixed_addresses);
->> +
->> +	ptep = fixmap_pte(addr);
->> +	__pte_clear(&init_mm, addr, ptep);
->> +}
->> +
->>  void *__init fixmap_remap_fdt(phys_addr_t dt_phys, int *size, pgprot_t prot)
->>  {
->>  	const u64 dt_virt_base = __fix_to_virt(FIX_FDT);
->> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
->> index 90bf822859b8..2e3b594aa23c 100644
->> --- a/arch/arm64/mm/mmu.c
->> +++ b/arch/arm64/mm/mmu.c
->> @@ -66,11 +66,14 @@ enum pgtable_type {
->>   *              mapped either as a result of a previous call to alloc() or
->>   *              map(). The page's virtual address must be considered invalid
->>   *              after this call returns.
->> + * @cleanup:    (Optional) Called at the end of a set of operations to cleanup
->> + *              any lazy state.
->>   */
->>  struct pgtable_ops {
->>  	void *(*alloc)(int type, phys_addr_t *pa);
->>  	void *(*map)(int type, void *parent, unsigned long addr);
->>  	void (*unmap)(int type);
->> +	void (*cleanup)(void);
->>  };
->>  
->>  #define NO_BLOCK_MAPPINGS	BIT(0)
->> @@ -139,9 +142,33 @@ pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
->>  }
->>  EXPORT_SYMBOL(phys_mem_access_prot);
->>  
->> +static int pte_slot_next __initdata = FIX_PTE_BEGIN;
->> +
->> +static void __init clear_pte_fixmap_slots(void)
->> +{
->> +	unsigned long start = __fix_to_virt(FIX_PTE_BEGIN);
->> +	unsigned long end = __fix_to_virt(pte_slot_next);
->> +	int i;
->> +
->> +	for (i = FIX_PTE_BEGIN; i > pte_slot_next; i--)
->> +		clear_fixmap_nosync(i);
->> +
->> +	flush_tlb_kernel_range(start, end);
->> +	pte_slot_next = FIX_PTE_BEGIN;
->> +}
->> +
->> +static int __init pte_fixmap_slot(void)
->> +{
->> +	if (pte_slot_next < FIX_PTE_END)
->> +		clear_pte_fixmap_slots();
->> +
->> +	return pte_slot_next--;
->> +}
->> +
->>  static void *__init early_pgtable_alloc(int type, phys_addr_t *pa)
->>  {
->>  	void *va;
->> +	int slot;
->>  
->>  	*pa = memblock_phys_alloc_range(PAGE_SIZE, PAGE_SIZE, 0,
->>  					MEMBLOCK_ALLOC_NOLEAKTRACE);
->> @@ -159,7 +186,9 @@ static void *__init early_pgtable_alloc(int type, phys_addr_t *pa)
->>  		va = pmd_set_fixmap(*pa);
->>  		break;
->>  	case TYPE_PTE:
->> -		va = pte_set_fixmap(*pa);
->> +		slot = pte_fixmap_slot();
->> +		set_fixmap(slot, *pa);
->> +		va = (pte_t *)__fix_to_virt(slot);
->>  		break;
->>  	default:
->>  		BUG();
->> @@ -174,7 +203,9 @@ static void *__init early_pgtable_alloc(int type, phys_addr_t *pa)
->>  
->>  static void *__init early_pgtable_map(int type, void *parent, unsigned long addr)
->>  {
->> +	phys_addr_t pa;
->>  	void *entry;
->> +	int slot;
->>  
->>  	switch (type) {
->>  	case TYPE_P4D:
->> @@ -187,7 +218,10 @@ static void *__init early_pgtable_map(int type, void *parent, unsigned long addr
->>  		entry = pmd_set_fixmap_offset((pud_t *)parent, addr);
->>  		break;
->>  	case TYPE_PTE:
->> -		entry = pte_set_fixmap_offset((pmd_t *)parent, addr);
->> +		slot = pte_fixmap_slot();
->> +		pa = pte_offset_phys((pmd_t *)parent, addr);
->> +		set_fixmap(slot, pa);
->> +		entry = (pte_t *)(__fix_to_virt(slot) + (pa & (PAGE_SIZE - 1)));
->>  		break;
->>  	default:
->>  		BUG();
->> @@ -209,7 +243,7 @@ static void __init early_pgtable_unmap(int type)
->>  		pmd_clear_fixmap();
->>  		break;
->>  	case TYPE_PTE:
->> -		pte_clear_fixmap();
->> +		// Unmap lazily: see clear_pte_fixmap_slots().
->>  		break;
->>  	default:
->>  		BUG();
->> @@ -220,6 +254,7 @@ static struct pgtable_ops early_pgtable_ops __initdata = {
->>  	.alloc = early_pgtable_alloc,
->>  	.map = early_pgtable_map,
->>  	.unmap = early_pgtable_unmap,
->> +	.cleanup = clear_pte_fixmap_slots,
->>  };
->>  
->>  bool pgattr_change_is_safe(u64 old, u64 new)
->> @@ -538,6 +573,9 @@ static void __create_pgd_mapping_locked(pgd_t *pgdir, phys_addr_t phys,
->>  		alloc_init_p4d(pgdp, addr, next, phys, prot, ops, flags);
->>  		phys += next - addr;
->>  	} while (pgdp++, addr = next, addr != end);
->> +
->> +	if (ops->cleanup)
->> +		ops->cleanup();
->>  }
->>  
->>  static void __create_pgd_mapping(pgd_t *pgdir, phys_addr_t phys,
->> -- 
->> 2.25.1
->>
+> These mappings are created with the global bit G set, as the flags used
+> to create page table descriptors are based on __PAGE_KERNEL_LARGE_EXEC
+> defined by the core kernel, even though the context where these mappings
+> are used is very different.
+> 
+> This means that the TLB maintenance carried out by the decompressor is
+> not sufficient if it is entered with CR4.PGE enabled, which has been
+> observed to happen with the stage0 bootloader of project Oak. While this
+> is a dubious practice if no global mappings are being used to begin
+> with, the decompressor is clearly at fault here for creating global
+> mappings and not performing the appropriate TLB maintenance.
+> 
+> Since commit
+> 
+>   f97b67a773cd84b ("x86/decompressor: Only call the trampoline when changing paging levels")
+> 
+> CR4 is no longer modified by the decompressor if no change in the number
+> of paging levels is needed. Before that, CR4 would always be set to a
+> consistent value with PGE cleared.
+> 
+> So let's reinstate a simplified version of the original logic to put CR4
+> into a known state, and preserve the PAE, MCE and LA57 bits, none of
+> which can be modified freely at this point (PAE and LA57 cannot be
+> changed while running in long mode, and MCE cannot be cleared when
+> running under some hypervisors)
+> 
+> Cc: Conrad Grobler <grobler@google.com>
+> Cc: Kevin Loughlin <kevinloughlin@google.com>
+> Fixes: f97b67a773cd84b ("x86/decompressor: Only call the trampoline when ...")
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+> v2: Bring back the original logic rather than only clearing PGE. Note
+>     that this means that the load of CR4 cannot be elided since MCE and
+>     LA57 cannot be set unconditionally.
+> 
+>  arch/x86/boot/compressed/head_64.S | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+> index bf4a10a5794f..d0f2c591f730 100644
+> --- a/arch/x86/boot/compressed/head_64.S
+> +++ b/arch/x86/boot/compressed/head_64.S
+> @@ -398,6 +398,11 @@ SYM_CODE_START(startup_64)
+>  	call	sev_enable
+>  #endif
+>  
+> +	/* Preserve only the CR4 bits that must be preserved, and clear the rest */
+> +	movq	%cr4, %rax
+> +	andl	$(X86_CR4_PAE | X86_CR4_MCE | X86_CR4_LA57), %eax
+> +	movq	%rax, %cr4
 
+Yeah, this is still better IMO than the original patch.
+
+Note that you reused the original title, which isn't entirely accurate 
+anymore:
+
+   x86/boot/64: Clear CR4.PGE to disable global 1:1 mappings
+
+I updated it to:
+
+   x86/boot/64: Clear most of CR4 in startup_64(), except PAE, MCE and LA57
+
+Thanks,
+
+	Ingo
 
