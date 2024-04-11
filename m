@@ -1,180 +1,130 @@
-Return-Path: <linux-kernel+bounces-141530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B23A38A1F72
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:25:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3DE68A1F6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:24:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2C901C236E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:25:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF29FB24482
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:23:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32EE3A8D8;
-	Thu, 11 Apr 2024 19:23:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3674814AA7;
+	Thu, 11 Apr 2024 19:23:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TKpeiYRa"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="X4ADJCl3"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 783253613C
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:23:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 813CD12E7F
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:23:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712863415; cv=none; b=uzrFNhpGWCvGMmC56tDTztMpIC8Gf71MRIVbOZg1ZOCHpKmOnyrOmRxB/WrBV385NBlibvBXXvpm4gtn1fzgvDvv6YzWQyclf36RRZb+1WzVB2JhEEsl3wQsUP1GU2K+8rWMLHjD/DOhzYgFAUrSbKWCJTADYXi7J8ZK7zU41vo=
+	t=1712863382; cv=none; b=IK+w9EQDCr7kjIH6uF1cGsMJbQQSRlSXZMU7yckLe4wm9uktx0ptwpxKGtf76iq0/ZbH9DBvBaWuXjSrBujlX/kv6ZCtLXEMQDc8DnrnV17y+0paQYZj7TycN5a3zlwWqSKvevLEfG5dKzImsSRP+KUR/NTd1hajEYFykEoCLLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712863415; c=relaxed/simple;
-	bh=4qF8LVg03IpZBigtPGrJsn6WXzeLjF3rCWk0/VL3jgY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bTUPtyyIXCwObc5g/NkyEDolkO6Us4jYVh3cpjZdZC4liJXB9R00SoGvEv/d3q6URaWihujrAyF8Hd2uZ3DrVkoFITSvvxoBntAOHqpnLjDPwWiADrktVtP8kP6IN8WT4NzLaGN2R0ghMZE6pmlKddDBjSoGBpjTn3UWm1ctUng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TKpeiYRa; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56e2ac1c16aso183610a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:23:32 -0700 (PDT)
+	s=arc-20240116; t=1712863382; c=relaxed/simple;
+	bh=fT4P0gGE+O7sWBDiZ8pLxxyQEVTnnen55DJKAfs9ezU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=Ubl65JoPe5m2z1yonY+8LaQpIdv5arRpQgvnWSTt9p/gFt7Tv2uDd0F5mQO+hCBLtl2xPZ4hyp5vO62DwwCjA8Qy0s46TA6x/BDIsdTiCryAfC9W5gY1KBd0QCbVkgQHswcqjvUmDI55+2u8gwfviptsPt7UovlDTPpLlotaOPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=X4ADJCl3; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-618596c23b4so1887287b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:23:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712863411; x=1713468211; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9+0zEhyNCy29nBwGx3biGzoNsU5jpKW6uCTMA8YgqkA=;
-        b=TKpeiYRa+fSOeo9B8/CXmNIh+yB/PnMsA2G7ag1Hfz8/gmQa7Vr++gBv5zOb33GRKB
-         Edv7zWHhcPTArv9THTzJMCfipna2Xe2mVy+vviRe8fH/5p8rZzPka+4s7s12x5Tci7uL
-         OpgcWGivtaufEw6HhBx0f38SsO9rFEoszla1qhI3RQ7sNgWIjEdAhi+OZn3VNrZmDOit
-         Fyk6cfRlAoffch5jflXpElxj6Svhusa0uiabxZZ/mRFSFZsWtebxY973y2+bg3DeFVKg
-         Z3wgWBTYYKw3TErxltmR4H76IukBf4K966LKQlSTcBhJa0870bF2aHJEkvr02zbOE2/y
-         cyzA==
+        d=google.com; s=20230601; t=1712863379; x=1713468179; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZWyDifNB+g3/yqoVnm4if7NwdO+FurrszL4Rzn9n/PI=;
+        b=X4ADJCl3aXslKO6WR1GzXOkIx0F8RxwRThktrxh9RgpI76pJwgZ7dMeC4vPKWdryr7
+         NyvINpteUicAKPS/0EdyiSoTk/iB8XAl66qjAMj22rb35cwl1ahQf/ZGOBHaLswN21p+
+         Coj8WrxEOUz/KyypUDOlXG7Ayc9Wcag0eMGY1AcQ8Ke1tzRypVB/LGTxm0ZZEElfXh3r
+         QBj7b7rBXv9Kk2IV4CIp+33I+UQdShsd5G/5YLdTm6SXXzvxyktb2mminHz+xEGNOAGL
+         jqDzOxpblthADLbthzW0AV7ziin4Wgo1DXDSoseD+Sai/PTPu9dpnIxu8xgqUIz/3AeF
+         zVmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712863411; x=1713468211;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9+0zEhyNCy29nBwGx3biGzoNsU5jpKW6uCTMA8YgqkA=;
-        b=TFKYRKn1daNokQFfUgzj0f8D8HpNkHw6cU4SI3iwx+bdaCNYIFsV8hS51yvc3N9Xsn
-         267i16HxFL5R5o8PKcKWiIUU7pWhrfXSqgcCeluByWcIQUq/XAMWCsPzkJiEsUf86Oxx
-         XmH2vMuYAAz6pguI4Kk6Umbx6iKYSYrR24hWAoS4vGx9VsEHdsu+RUnZ2czy0Vtbcexf
-         iFUIErU/JIX9M1CKoe4zdZcM8r9cKHiq1n1cQOsk7SoAzzdiWv8JuGCiZ8Cagci2rnzL
-         X3Fka7XMhVQjk7T+AegrB5g7IJGrM4O4uxuNJTD1eECanNaqnWWmE7WeqQcQ+2F2lT5C
-         qRdA==
-X-Forwarded-Encrypted: i=1; AJvYcCV0o3M5OBuHgHyvSVmbu4LZ8lAT4DhlhwN3C4/fYDGtSHD0k8unB1OvsuCHbqodP06HGFAURcBEfQraZSx0lnzkV+QA2juqBVDPdPRz
-X-Gm-Message-State: AOJu0YzQWRN4zrMmRVEMVZNzk/OhjCn6Edg41xDX6ZXgRJpmz7VYu/3s
-	7MeCuBQ4yY2+Ey5aiM/vtfr8pIp2IN88SZkG6rzDB+ZpKzZY5csf
-X-Google-Smtp-Source: AGHT+IHcj5LLRcrVHG4N2iiyTX8OxoujFrcXL1dvqmf5qwrsRyLa49sVVlTzIfor4bPf4keif1NzDg==
-X-Received: by 2002:a17:906:ae99:b0:a51:9438:af01 with SMTP id md25-20020a170906ae9900b00a519438af01mr308401ejb.76.1712863410548;
-        Thu, 11 Apr 2024 12:23:30 -0700 (PDT)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id dk5-20020a170907940500b00a518b14d6cesm1026406ejc.172.2024.04.11.12.23.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 12:23:29 -0700 (PDT)
-From: Uros Bizjak <ubizjak@gmail.com>
-To: x86@kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Uros Bizjak <ubizjak@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH v2 2/2] locking/pvqspinlock: Use try_cmpxchg() in qspinlock_paravirt.h
-Date: Thu, 11 Apr 2024 21:22:55 +0200
-Message-ID: <20240411192317.25432-2-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240411192317.25432-1-ubizjak@gmail.com>
-References: <20240411192317.25432-1-ubizjak@gmail.com>
+        d=1e100.net; s=20230601; t=1712863379; x=1713468179;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZWyDifNB+g3/yqoVnm4if7NwdO+FurrszL4Rzn9n/PI=;
+        b=lzgKxQQn+KqRVoWIyyYKuc3VRdTDj1U2kWWFjAOO/aNpb8ABAJFuEgCtKacy1kbHMW
+         LHzr9uWBTHEPSwskR634BrgxEZlQnH/7ubvtuDEe77YD+KuPi6x5VYpIOnyjBIjiSahU
+         D3BhkcDzi8gtJcX9qEomCs32/WXLBhWvBvaG/9etvx83ysKsin8ylHJJJOUVnnTVBeqq
+         L9aFRJofwBxqjD1uTRzJodoAdDS57+jux5FiYr/SSanqoprOE0vuFkVAGbTvLMqG5Mln
+         qjTLda4iSPPVDBJrVXrCugG6VJ2qyVbc37YzsuotIDdqudiT9zj67CSEqEjeztbZUoi8
+         JVxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXDEQLF3YGORoyTLsOMnn7fKB0GQD5pg5i0eBAmCVHoaVcrVUXeSTE7hDZFBDkqPijb8ZvJXgdVrb4MzO2VD7vR9bDGDxBeg2tR8hkQ
+X-Gm-Message-State: AOJu0YzUC99xrHhy6+WoQVQViwMDdzAcjvHIsJd++nUo+HwbSUETTUOU
+	EapnG3y7KYYTzGhO7oRvjgAfFtmHjxcOpVSqaZj2Rs2bMQIuGjkAEBhabL75tFd1zRwdpN6n0Gy
+	Ovg==
+X-Google-Smtp-Source: AGHT+IEkfHzR+4m+Th6V2ts/oqUxiy0aOaoToSSBUi9LCjdVmQdDERNlhn8Fq9lXwBTSzwWtpL0hLyOgrA4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:6cc9:0:b0:615:2597:7246 with SMTP id
+ h192-20020a816cc9000000b0061525977246mr83113ywc.6.1712863379573; Thu, 11 Apr
+ 2024 12:22:59 -0700 (PDT)
+Date: Thu, 11 Apr 2024 12:22:58 -0700
+In-Reply-To: <20240126085444.324918-9-xiong.y.zhang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <20240126085444.324918-9-xiong.y.zhang@linux.intel.com>
+Message-ID: <Zhg4kkDzmdUiCYg8@google.com>
+Subject: Re: [RFC PATCH 08/41] KVM: x86/pmu: Add get virtual LVTPC_MASK bit function
+From: Sean Christopherson <seanjc@google.com>
+To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
+Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
+	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
+	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
+	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
+	chao.gao@intel.com, Xiong Zhang <xiong.y.zhang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
 
-Use try_cmpxchg(*ptr, &old, new) instead of
-cmpxchg(*ptr, old, new) == old in qspinlock_paravirt.h
-x86 CMPXCHG instruction returns success in ZF flag, so
-this change saves a compare after cmpxchg.
+On Fri, Jan 26, 2024, Xiong Zhang wrote:
+> From: Xiong Zhang <xiong.y.zhang@intel.com>
+> 
+> On PMU passthrough mode, guest virtual LVTPC_MASK bit must be reflected
+> onto HW, especially when guest clear it, the HW bit should be cleared also.
+> Otherwise processor can't generate PMI until the HW mask bit is cleared.
+> 
+> This commit add a function to get virtual LVTPC_MASK bit, so that
 
-No functional change intended.
+No "This commit", "This patch", or any other variation.  Please read through:
 
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Reviewed-by: Waiman Long <longman@redhat.com>
----
-v2: Correct a build error in __pv_queued_spin_unlock().
----
- kernel/locking/qspinlock_paravirt.h | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+  Documentation/process/maintainer-tip.rst 
+  Documentation/process/maintainer-kvm-x86.rst
 
-diff --git a/kernel/locking/qspinlock_paravirt.h b/kernel/locking/qspinlock_paravirt.h
-index 77ba80bd95f9..f5a36e67b593 100644
---- a/kernel/locking/qspinlock_paravirt.h
-+++ b/kernel/locking/qspinlock_paravirt.h
-@@ -86,9 +86,10 @@ static inline bool pv_hybrid_queued_unfair_trylock(struct qspinlock *lock)
- 	 */
- 	for (;;) {
- 		int val = atomic_read(&lock->val);
-+		u8 old = 0;
- 
- 		if (!(val & _Q_LOCKED_PENDING_MASK) &&
--		   (cmpxchg_acquire(&lock->locked, 0, _Q_LOCKED_VAL) == 0)) {
-+		    try_cmpxchg_acquire(&lock->locked, &old, _Q_LOCKED_VAL)) {
- 			lockevent_inc(pv_lock_stealing);
- 			return true;
- 		}
-@@ -211,8 +212,9 @@ static struct qspinlock **pv_hash(struct qspinlock *lock, struct pv_node *node)
- 	int hopcnt = 0;
- 
- 	for_each_hash_entry(he, offset, hash) {
-+		struct qspinlock *old = NULL;
- 		hopcnt++;
--		if (!cmpxchg(&he->lock, NULL, lock)) {
-+		if (try_cmpxchg(&he->lock, &old, lock)) {
- 			WRITE_ONCE(he->node, node);
- 			lockevent_pv_hop(hopcnt);
- 			return &he->lock;
-@@ -355,7 +357,7 @@ static void pv_wait_node(struct mcs_spinlock *node, struct mcs_spinlock *prev)
- static void pv_kick_node(struct qspinlock *lock, struct mcs_spinlock *node)
- {
- 	struct pv_node *pn = (struct pv_node *)node;
--
-+	enum vcpu_state old = vcpu_halted;
- 	/*
- 	 * If the vCPU is indeed halted, advance its state to match that of
- 	 * pv_wait_node(). If OTOH this fails, the vCPU was running and will
-@@ -372,8 +374,7 @@ static void pv_kick_node(struct qspinlock *lock, struct mcs_spinlock *node)
- 	 * subsequent writes.
- 	 */
- 	smp_mb__before_atomic();
--	if (cmpxchg_relaxed(&pn->state, vcpu_halted, vcpu_hashed)
--	    != vcpu_halted)
-+	if (!try_cmpxchg_relaxed(&pn->state, &old, vcpu_hashed))
- 		return;
- 
- 	/*
-@@ -541,15 +542,14 @@ __pv_queued_spin_unlock_slowpath(struct qspinlock *lock, u8 locked)
- #ifndef __pv_queued_spin_unlock
- __visible __lockfunc void __pv_queued_spin_unlock(struct qspinlock *lock)
- {
--	u8 locked;
-+	u8 locked = _Q_LOCKED_VAL;
- 
- 	/*
- 	 * We must not unlock if SLOW, because in that case we must first
- 	 * unhash. Otherwise it would be possible to have multiple @lock
- 	 * entries, which would be BAD.
- 	 */
--	locked = cmpxchg_release(&lock->locked, _Q_LOCKED_VAL, 0);
--	if (likely(locked == _Q_LOCKED_VAL))
-+	if (try_cmpxchg_release(&lock->locked, &locked, 0))
- 		return;
- 
- 	__pv_queued_spin_unlock_slowpath(lock, locked);
--- 
-2.42.0
+> it can be set onto HW later.
+> 
+> Signed-off-by: Xiong Zhang <xiong.y.zhang@intel.com>
+> ---
+>  arch/x86/kvm/lapic.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/lapic.h b/arch/x86/kvm/lapic.h
+> index e30641d5ac90..dafae44325d1 100644
+> --- a/arch/x86/kvm/lapic.h
+> +++ b/arch/x86/kvm/lapic.h
+> @@ -277,4 +277,10 @@ static inline u8 kvm_xapic_id(struct kvm_lapic *apic)
+>  {
+>  	return kvm_lapic_get_reg(apic, APIC_ID) >> 24;
+>  }
+> +
+> +static inline bool kvm_lapic_get_lvtpc_mask(struct kvm_vcpu *vcpu)
+> +{
+> +	return lapic_in_kernel(vcpu) &&
+> +	       (kvm_lapic_get_reg(vcpu->arch.apic, APIC_LVTPC) & APIC_LVT_MASKED);
+> +}
 
+As suggested in the previous patch, I'm pretty sure we can safely omit this
+helper.
+
+>  #endif
+> -- 
+> 2.34.1
+> 
 
