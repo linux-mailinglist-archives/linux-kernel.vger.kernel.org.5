@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 038C48A19EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FDB38A19ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:27:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3065F1C21759
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:27:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CC321C21731
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:27:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF8C1BE405;
-	Thu, 11 Apr 2024 15:37:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF3C6824A9;
+	Thu, 11 Apr 2024 15:37:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="inMV2Mjz"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="zHw/Aszq"
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0479F3B2A8
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:37:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC831BE402
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:37:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849860; cv=none; b=Ho0U+8aohNnNDhnFEU6cc2Ld1HYaoU7+pVilxPklzKmhFaslp6aWOQD1jSlpgczUBeI9M2GPDXJIO4KiNPCc7Qsr1QVnvTJ6fxmeK2tk48VbDU1yd/eXGmHpLjuP6x+t77ML7c562XO8W3ORR+3uySKZClgkjsnjG4fEnef3vrE=
+	t=1712849862; cv=none; b=Oo+bgmZA6kHGA2xZLTviBL/d6RUDeYiyb/1jVk691Tfu4g21BHnJFielPYw2W5YVSsIuNrHZW+d6bIHYhbw4u6slsYIdXtQ8NF+tSHyG6wvXih0OVoj3KrvxjOJ3DL3DbaNPugnM5gMPZVkfs2wskTHle1gIXmPXkjwEMjkg7kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849860; c=relaxed/simple;
-	bh=fuNH7H35Fr1gbYOH3tDTlpJb1H8dO6w2oUmmxKFFPCY=;
+	s=arc-20240116; t=1712849862; c=relaxed/simple;
+	bh=XLKt5eZDBTC++5sY/reTHPqBAamAX+Hj6woXPkidhOg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YmS+NpbVdyng2YJ9hL7iso+TkYHkKDE/xunxv0SVFQdYV9bHd8+10OhW2TRgXkdVdf7LRsnvFuCGRBFKYpcwm1vdCukDp0/EEIpE3T0oODWUVj1fgemEJRZ7BoHBQXSRQ3B8cRmFRZwQztrvqhpKhXygZJW3C03UofpOUiVfhMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=inMV2Mjz; arc=none smtp.client-ip=209.85.166.176
+	 MIME-Version; b=TPwY2pXVag46vE0jUdg+x9nSRyfPVrJUPOucFkAbGOrhRqUos/MjQ8gWid1TqTLm1fryxrHUvSPcyW3/nbMtABNgBOtUNhlQg3jeD7e8C2fgzmtxsVzbfuUsMTktEHJVSFFQL10gx7Wz5a844VyUO2R4dE9g5kwHdwM83v1JX+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=zHw/Aszq; arc=none smtp.client-ip=209.85.166.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-36a224d7414so185945ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:37:38 -0700 (PDT)
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7d6812b37a6so8976839f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:37:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849858; x=1713454658; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849859; x=1713454659; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DkxbKUE7zw8SWj7NeL7kJSvCh3cG4pC9ZQfME48WxZw=;
-        b=inMV2MjzKoN+cf3DzJHPQuVvJviolz7MUoaVtiouD+ZxB7nunvPS/PxpCwA0M5kvp4
-         CFIuNHIq5yDxV/1lsYtAIDMx0erA6MQv9sWdnXvT9BeMtlbVu98lo8/cL41FovOEY7wq
-         FHm6o4XwArumDCHuov1Q2AZLzh5MwYt/D2r66k69pVKqUDPoDLVK3FCcipyKxv0fuBhu
-         YlRYsJ9IyY1nfa6seuOMTTMhm/mSB+Y8wPCXjZoSDc/+sNmMdnt8WdVImwx5ETQuuhaZ
-         ym/cC2c0zNoNKkvmsKrV2h15wbNIZnCQ3x3CNPjyZ2cx8xYzgvnVSPaWVkIb7T80fEi8
-         9HNw==
+        bh=bGKEb36ML3r27fIXcnvi5oJlug0A+w9Xl9vTN9Gmtag=;
+        b=zHw/Aszqtd+VKhT2B8BgPzyLBQNsLqMzorWOR9e1dGjgGS/5bBaxDsZf53P44tU4cm
+         ek1H2Dx7L3uJ5m7/zbT9NKPV2zL8LmWDbPNMF+hKbaxjGCSFtm55cJDfU2aILN7Xkq0x
+         0CYDWrYTmUdSebxZI3MeGau5f4DhgzUBEaC98tWmtYM8sr9iipJGpki695rzpyErnyBK
+         HcXRDQlZsxyKxb6Qry+aXWCOjsFJ/OPH7rwmSpW6MJ/fkir00eY3dNnzv4l54S1ZVmV+
+         8uH3psAW9UXXe8ad+sRb8bPi59vmLxLVY+DQgxOu7f1UJSjWbAzsdhfxegXRk0+Pfi8W
+         xwYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849858; x=1713454658;
+        d=1e100.net; s=20230601; t=1712849859; x=1713454659;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DkxbKUE7zw8SWj7NeL7kJSvCh3cG4pC9ZQfME48WxZw=;
-        b=fgURrv44nFI64iO++vgoYF1TZn4rWEHNPzGZkGT7m/WHV1ZjpfDTHHoqCxpN1tVBnY
-         JRL/4/MqFnaEP7RXz2eNHBitzHbgNpTf1U18hiyivvTm42xUgCZrZ38l6xi9qrTgw2yZ
-         a1UuC4B9QKImIYdk0uBTXFHwDZ47P+ii1wQ72duCaVwFkBbavC8wTWrzM04k7dPGpoQz
-         PSxLu7GVFvvQUdxmizyiQGhLe7yablnofQYaGQkz8WhfO3eCkuHqXCPfx9XnCfjT1O+e
-         5XWDlm6yee1I0MvtDe+vgpiXEDvhA3NB2nvtm4BUedG/pec+2ooC+OVlRFfooRIC7hcT
-         9F7w==
-X-Gm-Message-State: AOJu0YwAX+evFMCORqdaiMq6MSh0iIx/3Njnv/OY27cDOQyu0kfyfIik
-	xcCnhVjkoCv53C3EQ2DxHks9vB/qRsppUaCtFF/TTJD8IDqF3X+FF7B9QJrdWaA3lld597+vRJQ
-	Y
-X-Google-Smtp-Source: AGHT+IGXxfNPFZVg02CSpk2D+4CXTmtslsx+KNhszjd3sOKYvU0s9Xsise+s1/EAJOXbgUaWYjL6NA==
-X-Received: by 2002:a6b:6605:0:b0:7d4:1dae:da1a with SMTP id a5-20020a6b6605000000b007d41daeda1amr152695ioc.2.1712849857826;
-        Thu, 11 Apr 2024 08:37:37 -0700 (PDT)
+        bh=bGKEb36ML3r27fIXcnvi5oJlug0A+w9Xl9vTN9Gmtag=;
+        b=LwogDigQbVo1Kcnv3cBJy5tzembiInkGFVGRqHZRuR5WJ/JWaZLn7qxYSTlfIjVt48
+         5I40jtE+G40yIj2yCdtHqhh2rdglhFmAGKZ4i5xdNc5qL2cyU+OPlpkB1RCDKm00IrnW
+         0uPolrSiog/iBWSkyOMwVSpP82m7obY0eDH7HLra8ADYZ/f6/CkJ1iXw7OJz36Izt3R8
+         hnxMSWoTOoF8KhT5jrg9GrVmtsORiL4KGDEZNn4TVAr433AHHOluOuGw1rvcpIu7u2gG
+         qCjKm41lLuly/t03L9Zwi9XEemchATlEQ0cMf/qD7AYZB3PjHAcR72KXxn37rTCwDFng
+         tiZA==
+X-Gm-Message-State: AOJu0YzphYEhDBFlmB+hr+5h1Pk3+Oz2MYb+lKvXtBlyNIAQB55+/AOB
+	ccqnX4ZXwoa8F9fFTX0JYw4ojmg1gv+vba49rPQrfkSoIE8R5OlqRq2liubPLqLhqKU7aUFkc2M
+	S
+X-Google-Smtp-Source: AGHT+IE+1ky5a5pzX9vWbt+tq4TPiJFUTZ8+sFIEPAzFX6Mrk7iWvRZdjBYHoKhkcZHzma7LUtx7Mg==
+X-Received: by 2002:a05:6602:21d7:b0:7d6:9ddf:5095 with SMTP id c23-20020a05660221d700b007d69ddf5095mr20294ioc.1.1712849859497;
+        Thu, 11 Apr 2024 08:37:39 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.35
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:37:36 -0700 (PDT)
+        Thu, 11 Apr 2024 08:37:38 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 214/437] misc: eeprom/idt_89hpesx: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:15:54 -0600
-Message-ID: <20240411153126.16201-215-axboe@kernel.dk>
+Subject: [PATCH 215/437] misc: hpilo: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:15:55 -0600
+Message-ID: <20240411153126.16201-216-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,72 +85,84 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/misc/eeprom/idt_89hpesx.c | 21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
+ drivers/misc/hpilo.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/misc/eeprom/idt_89hpesx.c b/drivers/misc/eeprom/idt_89hpesx.c
-index 327afb866b21..dfb68c0cc999 100644
---- a/drivers/misc/eeprom/idt_89hpesx.c
-+++ b/drivers/misc/eeprom/idt_89hpesx.c
-@@ -900,20 +900,20 @@ static ssize_t eeprom_read(struct file *filp, struct kobject *kobj,
-  * "<reg addr>:<value>". Register address must be aligned within 4 bytes
-  * (one DWORD).
-  */
--static ssize_t idt_dbgfs_csr_write(struct file *filep, const char __user *ubuf,
--				   size_t count, loff_t *offp)
-+static ssize_t idt_dbgfs_csr_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct idt_89hpesx_dev *pdev = filep->private_data;
-+	struct idt_89hpesx_dev *pdev = iocb->ki_filp->private_data;
- 	char *colon_ch, *csraddr_str, *csrval_str;
-+	size_t count = iov_iter_count(from);
- 	int ret;
- 	u32 csraddr, csrval;
- 	char *buf;
+diff --git a/drivers/misc/hpilo.c b/drivers/misc/hpilo.c
+index 04bd34c8c506..27282629e383 100644
+--- a/drivers/misc/hpilo.c
++++ b/drivers/misc/hpilo.c
+@@ -23,6 +23,7 @@
+ #include <linux/wait.h>
+ #include <linux/poll.h>
+ #include <linux/slab.h>
++#include <linux/uio.h>
+ #include "hpilo.h"
  
--	if (*offp)
-+	if (iocb->ki_pos)
- 		return 0;
- 
- 	/* Copy data from User-space */
--	buf = memdup_user_nul(ubuf, count);
-+	buf = iterdup(from, count);
- 	if (IS_ERR(buf))
- 		return PTR_ERR(buf);
- 
-@@ -987,10 +987,9 @@ static ssize_t idt_dbgfs_csr_write(struct file *filep, const char __user *ubuf,
-  * It just prints the pair "0x<reg addr>:0x<value>" to passed buffer.
-  */
- #define CSRBUF_SIZE	((size_t)32)
--static ssize_t idt_dbgfs_csr_read(struct file *filep, char __user *ubuf,
--				  size_t count, loff_t *offp)
-+static ssize_t idt_dbgfs_csr_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct idt_89hpesx_dev *pdev = filep->private_data;
-+	struct idt_89hpesx_dev *pdev = iocb->ki_filp->private_data;
- 	u32 csraddr, csrval;
- 	char buf[CSRBUF_SIZE];
- 	int ret, size;
-@@ -1008,7 +1007,7 @@ static ssize_t idt_dbgfs_csr_read(struct file *filep, char __user *ubuf,
- 		(unsigned int)csraddr, (unsigned int)csrval);
- 
- 	/* Copy data to User-space */
--	return simple_read_from_buffer(ubuf, count, offp, buf, size);
-+	return simple_copy_to_iter(buf, &iocb->ki_pos, size, to);
+ static const struct class ilo_class = {
+@@ -431,13 +432,13 @@ static void ilo_set_reset(struct ilo_hwinfo *hw)
+ 	}
  }
  
- /*
-@@ -1025,8 +1024,8 @@ static BIN_ATTR_RW(eeprom, EEPROM_DEF_SIZE);
- static const struct file_operations csr_dbgfs_ops = {
- 	.owner = THIS_MODULE,
- 	.open = simple_open,
--	.write = idt_dbgfs_csr_write,
--	.read = idt_dbgfs_csr_read
-+	.write_iter = idt_dbgfs_csr_write,
-+	.read_iter = idt_dbgfs_csr_read
- };
+-static ssize_t ilo_read(struct file *fp, char __user *buf,
+-			size_t len, loff_t *off)
++static ssize_t ilo_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+ 	int err, found, cnt, pkt_id, pkt_len;
+-	struct ccb_data *data = fp->private_data;
++	struct ccb_data *data = iocb->ki_filp->private_data;
+ 	struct ccb *driver_ccb = &data->driver_ccb;
+ 	struct ilo_hwinfo *hw = data->ilo_hw;
++	size_t len = iov_iter_count(to);
+ 	void *pkt;
  
- /*===========================================================================
+ 	if (is_channel_reset(driver_ccb)) {
+@@ -473,7 +474,7 @@ static ssize_t ilo_read(struct file *fp, char __user *buf,
+ 	if (pkt_len < len)
+ 		len = pkt_len;
+ 
+-	err = copy_to_user(buf, pkt, len);
++	err = !copy_to_iter_full(pkt, len, to);
+ 
+ 	/* return the received packet to the queue */
+ 	ilo_pkt_enqueue(hw, driver_ccb, RECVQ, pkt_id, desc_mem_sz(1));
+@@ -481,13 +482,13 @@ static ssize_t ilo_read(struct file *fp, char __user *buf,
+ 	return err ? -EFAULT : len;
+ }
+ 
+-static ssize_t ilo_write(struct file *fp, const char __user *buf,
+-			 size_t len, loff_t *off)
++static ssize_t ilo_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+ 	int err, pkt_id, pkt_len;
+-	struct ccb_data *data = fp->private_data;
++	struct ccb_data *data = iocb->ki_filp->private_data;
+ 	struct ccb *driver_ccb = &data->driver_ccb;
+ 	struct ilo_hwinfo *hw = data->ilo_hw;
++	size_t len = iov_iter_count(from);
+ 	void *pkt;
+ 
+ 	if (is_channel_reset(driver_ccb))
+@@ -502,7 +503,7 @@ static ssize_t ilo_write(struct file *fp, const char __user *buf,
+ 		len = pkt_len;
+ 
+ 	/* on failure, set the len to 0 to return empty packet to the device */
+-	err = copy_from_user(pkt, buf, len);
++	err = !copy_from_iter_full(pkt, len, from);
+ 	if (err)
+ 		len = 0;
+ 
+@@ -635,8 +636,8 @@ static int ilo_open(struct inode *ip, struct file *fp)
+ 
+ static const struct file_operations ilo_fops = {
+ 	.owner		= THIS_MODULE,
+-	.read		= ilo_read,
+-	.write		= ilo_write,
++	.read_iter	= ilo_read,
++	.write_iter	= ilo_write,
+ 	.poll		= ilo_poll,
+ 	.open 		= ilo_open,
+ 	.release 	= ilo_close,
 -- 
 2.43.0
 
