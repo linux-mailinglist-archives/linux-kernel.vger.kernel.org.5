@@ -1,202 +1,239 @@
-Return-Path: <linux-kernel+bounces-140005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DE4A8A0A39
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:42:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24C9B8A0A46
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:43:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78FFC1F222A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:42:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE9A0B2A924
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB41013DDC7;
-	Thu, 11 Apr 2024 07:41:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2479F13E882;
+	Thu, 11 Apr 2024 07:41:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hAHeFNwU"
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="D+Jler6Z"
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F56A13D623
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:40:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8872513E3E5;
+	Thu, 11 Apr 2024 07:41:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712821260; cv=none; b=FX7rw3BUkUrApCm16Oll2dEYX20vVJaGxVKsbL4pm78BkSvQ0vpoBZEsnsoL6XVVXxxwmarb2wkDzE2skIvQ2lgXHKGFkTfxqM3ww0136iXRMhZGRehp24MlXkI139SlztAnkbximIkwj9WrMWJJEl1akDjDtU6wiZtH1IZOMkw=
+	t=1712821306; cv=none; b=PRgsXOd9dmTeneAF6Yo2Mv437P4eVFc9gs1jS/9X61tPjjIPQPfzkkOFYG3Hp/9dYfu/niyuxcOuJrgxfHzkK6K42GPJsdPoSJzdXc1XTJxATq/ARrrwFWcS1srUie91FBDkM/AoK7KGcrtod5vYhqxHIZu/ra2g7KrYcMdOQkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712821260; c=relaxed/simple;
-	bh=R0uX/xVvn2RVjrdPRgwj4lLpQHY6VHsNg+Od2h8Mims=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W1lK9t1jlXANAcBylnMav9WFVttZwhxL8Pcc397nunFmjmIVeT4KFYplV6AqTGmIcC1taQDkFU7i2EG9NJ2oCRrBjB8shvaatM6vlBgotQY7nCKDaDnrSlZlQpBx/0U7NWyTXPIKxAxTI4PXnA5SGSMGiHRz0DTHchQLHdya898=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hAHeFNwU; arc=none smtp.client-ip=209.85.222.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-78d61a716ddso319980085a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:40:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712821256; x=1713426056; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9nNN6WlUUNGTzkwo1N4M16DUFdPJ6ZM0diRivpuzi2Y=;
-        b=hAHeFNwU4CeQv6OpWsp2FsHgq22Rh2zXkWdmubu6jgwWh2iZdVkyhZ3tg2aEDXTGHK
-         3V4xfZBaeIqg6YlXUONy0t8wvXwVb2EJSAxJ4RXOya58N97M8snW0vbTs1dk0eFo7Sbf
-         3UWPoex5Kr44wZF9TvUNKSze3AWN70f3yz6hM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712821256; x=1713426056;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9nNN6WlUUNGTzkwo1N4M16DUFdPJ6ZM0diRivpuzi2Y=;
-        b=L6eYm8ytuJaqXTWXwzWjw7kF1nYhA95HT8bCVpinZUA3+VuiJ52M6t+sYiU+Z1IZfM
-         G8aSJas00txWokmouXrQqYlaaKvb1KsJp5yZm0zOsE9ZlaGMse8IKuGkWgBQNiCM6Hhr
-         T1rVVLBmuVDTyo3xWwhimKHLcmIFEggj5zTYzX48R+AackKe9/+TimgR9/C03S1wQ4jN
-         hHsCvqAigNlrSQKKl18CZDCaSPtAH5QsiWvZfDQOhZ2P+8WNMPhxVaaeOlWnVksSFb45
-         5orJKQvWuVte7Jx8uaBlQbic7X8rLDuG0GflJt7FQxg2KhVJ1cSOveSlUmrqn6jPqrwk
-         STAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXG1BfXSVDU3Y2PhNzZwLEDjizRwPrE86a5xXxjXLSUCADGEUY6vKtSar/GIyc6Wkf3p+pPI40gpRQ6vbLoNReU39rv4vSx9RghjJJt
-X-Gm-Message-State: AOJu0YzYNui0L3J20yElq1e+brNCHyCSO3tViHE6z/3kGp2nccrpvaPK
-	rr+b7f3n9T67Zu5/YJ+mKAI9GAfapdX9VJd8f+ca3JjVFu9a/aIfTO++ISCD0nUK+dx/kBNgqK0
-	wig==
-X-Google-Smtp-Source: AGHT+IH5euYPxXUZXXjsxMGaih3pl79ck64Edh4G6lVBruFm4nryWOOrC/E9TX3ZQtl/y+7U3yb7zQ==
-X-Received: by 2002:a05:620a:14b3:b0:78a:af3:23b3 with SMTP id x19-20020a05620a14b300b0078a0af323b3mr4543119qkj.32.1712821256525;
-        Thu, 11 Apr 2024 00:40:56 -0700 (PDT)
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com. [209.85.160.172])
-        by smtp.gmail.com with ESMTPSA id po3-20020a05620a384300b0078ec5d53404sm99783qkn.93.2024.04.11.00.40.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 00:40:55 -0700 (PDT)
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-434b5abbb0dso162001cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:40:55 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVtZ3PFhTaUu88FygUuSZ+IUCJfQkh0GL1WaV0yX4f5p9vxxExN1fDFCg02mGILPUd5+qI/M6zgPHqNmxPzIVycR4u8tG3dPoCDPIEP
-X-Received: by 2002:a05:622a:4c12:b0:434:7a13:2e7e with SMTP id
- ey18-20020a05622a4c1200b004347a132e7emr198846qtb.24.1712821254947; Thu, 11
- Apr 2024 00:40:54 -0700 (PDT)
+	s=arc-20240116; t=1712821306; c=relaxed/simple;
+	bh=1zRWSXfH24xM+juILZQVIUm8hs+OQD/BWNknxMwOY5s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pubOszxV/PhjLLoLAGNjFREoxg+BeMPJMk0XUhoDhNj0HvvPWwHuzZigvtxkuTDIMlxpmhrYUBfTQlTWy9fBBhwmPK2cy6DPyjmIHvOW5ruhRngfSf+e8fA4mb5OMZBWZSYU4+Pb5u+OD7n2OTAgD7mc6Y1Oc2ZhdIFTf7inOpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=D+Jler6Z; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712821300; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=Wy8/fiKaZNwlfMDJNjam2Eo/3fPP4NAAJyni7X89V1A=;
+	b=D+Jler6Ztp91+3u4/OfTg6DMuKQUZr2CTqFk459KGC2GBFS0ro0vNqgkh2HxtwuXHNCv2Skl4/kRkFKs6NuPu6OeaEtq5p3a0UcxEvSzEKZthjzfhc2Q7x6JeLTPYFkvSAhbylL5aCDANLBH9d3xv5bDN5IJof6SP0WEDSMYSoM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W4KbQ8G_1712821297;
+Received: from localhost.localdomain(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W4KbQ8G_1712821297)
+          by smtp.aliyun-inc.com;
+          Thu, 11 Apr 2024 15:41:39 +0800
+From: Bitao Hu <yaoma@linux.alibaba.com>
+To: dianders@chromium.org,
+	tglx@linutronix.de,
+	liusong@linux.alibaba.com,
+	akpm@linux-foundation.org,
+	pmladek@suse.com,
+	kernelfans@gmail.com,
+	deller@gmx.de,
+	npiggin@gmail.com,
+	tsbogend@alpha.franken.de,
+	James.Bottomley@HansenPartnership.com,
+	jan.kiszka@siemens.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	yaoma@linux.alibaba.com
+Subject: [PATCHv13 0/5] *** Detect interrupt storm in softlockup ***
+Date: Thu, 11 Apr 2024 15:41:29 +0800
+Message-Id: <20240411074134.30922-1-yaoma@linux.alibaba.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410071439.2152588-1-yangcong5@huaqin.corp-partner.google.com>
- <20240410071439.2152588-3-yangcong5@huaqin.corp-partner.google.com>
-In-Reply-To: <20240410071439.2152588-3-yangcong5@huaqin.corp-partner.google.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Thu, 11 Apr 2024 00:40:38 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=V2J=Tth2zhpo-kPo4uvESt70mFneO2V6TV-haac0VZuQ@mail.gmail.com>
-Message-ID: <CAD=FV=V2J=Tth2zhpo-kPo4uvESt70mFneO2V6TV-haac0VZuQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/4] drm/panel: boe-tv101wum-nl6: Support for BOE
- nv110wum-l60 MIPI-DSI panel
-To: Cong Yang <yangcong5@huaqin.corp-partner.google.com>, 
-	LinusW <linus.walleij@linaro.org>
-Cc: sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch, 
-	airlied@gmail.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	conor+dt@kernel.org, dri-devel@lists.freedesktop.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Hi, guys.
+I have implemented a low-overhead method for detecting interrupt
+storm in softlockup. Please review it, all comments are welcome.
 
-On Wed, Apr 10, 2024 at 12:15=E2=80=AFAM Cong Yang
-<yangcong5@huaqin.corp-partner.google.com> wrote:
->
-> The BOE nv110wum-l60 is a 11.0" WUXGA TFT LCD panel, which fits in nicely
-> with the existing panel-boe-tv101wum-nl6 driver. Hence, we add a new
-> compatible with panel specific config.
+Changes from v12 to v13:
 
-I guess we have the same question we've had with this driver in the
-past: do we add more tables here, or do we break this out into a
-separate driver like we ended up doing with "ili9882t". I guess the
-question is: what is the display controller used with this panel and
-is it the same (or nearly the same) display controller as other panels
-in this driver or is it a completely different display controller.
-Maybe you could provide this information in the commit message to help
-reviewers understand.
+- Update patch #1 based on the latest kernel code.
 
+- From Thomas, split patch #1 into two. The new patch #1 converts
+kstat_irqs into a struct with just the count in it; the new
+patch #2 introduces a snapshot mechanism for interrupt statistics.
+Due to the code being split, I removed the Reviewed-by tags from
+LiuSong and Douglas in patch #1 and patch #2.
+Please review it again, and all comments are welcome.
 
-> Signed-off-by: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
-> ---
->  .../gpu/drm/panel/panel-boe-tv101wum-nl6.c    | 115 ++++++++++++++++++
->  1 file changed, 115 insertions(+)
+- Revised the comment for using printk() instead of pr_crit() to make
+the reasoning clearer.
 
-Maybe add Linus W to your patches since he has had opinions on this
-driver in the past. I've added him as CC here but you should make sure
-to CC him on future versions unless he says not to. ;-)
+Changes from v11 to v12:
 
+- From Douglas and Thomas, add a new kconfig knob save memory when
+the softlock detector code is not enabled.
 
-> diff --git a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c b/drivers/gpu=
-/drm/panel/panel-boe-tv101wum-nl6.c
-> index 0ffe8f8c01de..f91827e1548c 100644
-> --- a/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
-> +++ b/drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c
-> @@ -1368,6 +1368,91 @@ static const struct panel_init_cmd starry_himax831=
-02_j02_init_cmd[] =3D {
->         {},
->  };
->
-> +static const struct panel_init_cmd boe_nv110wum_init_cmd[] =3D {
-> +       _INIT_DELAY_CMD(60),
-> +       _INIT_DCS_CMD(0xB9, 0x83, 0x10, 0x21, 0x55, 0x00),
+- Adjust the order of the patches; patch #1 and patch #2 are related
+to genirq, while patch #3 and patch #4 are related to watchdog/softlockup,
+making the dependency relationships clearer.
 
-Given that the first command of "(0xB9, 0x83, 0x10, 0x21, 0x55, 0x00)"
-seems to be the same as "starry_himax83102_j02" maybe those two are
-the same controller? I'm just guessing, but if those are the same
-controller as the two new ones you're adding in this series, maybe all
-3 of them should be in their own driver? Maybe we can do something to
-make more sense of some of these commands too? There certainly seem to
-be a lot of commonalities in the init sequences of all 3 and if we can
-define the init sequence more logically then we can share more of the
-code between the different panels and we don't have a giant duplicated
-blob.
+- Add the 'Reviewed-by' tag of Douglas.
 
+Changes from v10 to v11:
 
-> +       _INIT_DCS_CMD(0xB9, 0x00, 0x00, 0x00),
-> +       _INIT_DELAY_CMD(50),
-> +       _INIT_DCS_CMD(0x11),
-> +       _INIT_DELAY_CMD(110),
-> +       _INIT_DCS_CMD(0x29),
-> +       _INIT_DELAY_CMD(25),
-> +       {},
-> +};
->  static inline struct boe_panel *to_boe_panel(struct drm_panel *panel)
+- Only patch #2 and patch #3 have been changed.
 
-nit: should have a blank line between the end of your struct and the
-next function.
+- Add comments to explain each field of 'struct irqstat' in patch #2.
 
+- Split the inner summation logic out of kstat_irqs() and encapsulate
+it into kstat_irqs_desc() in patch #3.
 
-> +static const struct panel_desc boe_nv110wum_desc =3D {
-> +       .modes =3D &boe_tv110wum_default_mode,
-> +       .bpc =3D 8,
-> +       .size =3D {
-> +               .width_mm =3D 147,
-> +               .height_mm =3D 235,
-> +       },
-> +       .lanes =3D 4,
-> +       .format =3D MIPI_DSI_FMT_RGB888,
-> +       .mode_flags =3D MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PU=
-LSE |
-> +                     MIPI_DSI_MODE_LPM,
-> +       .init_cmds =3D boe_nv110wum_init_cmd,
-> +       .lp11_before_reset =3D true,
-> +};
->  static int boe_panel_get_modes(struct drm_panel *panel,
->                                struct drm_connector *connector)
+- Adopt Thomas's change log for patch #3.
 
-nit: should have a blank line between the end of your struct and the
-next function.
+- Add the 'Reviewed-by' tag of Liu Song.
 
+Changes from v9 to v10:
 
-> @@ -1973,6 +2085,9 @@ static const struct of_device_id boe_of_match[] =3D=
- {
->         { .compatible =3D "starry,himax83102-j02",
->           .data =3D &starry_himax83102_j02_desc
->         },
-> +       { .compatible =3D "boe,nv110wum-l60",
-> +         .data =3D &boe_nv110wum_desc
-> +       },
+- The two patches related to 'watchdog/softlockup' remain unchanged.
 
-nit: the existing panels that are supported are sorted alphabetically.
-Please sort things alphabetically throughout your patch series.
+- The majority of the work related to 'genirq' is contributed by
+Thomas, indicated by adding 'Originally-by' tag. And I'd like to
+express my gratitude for Thomas's contributions and guidance here.
 
--Doug
+- Adopt Thomas's change log for the snapshot mechanism for interrupt
+statistics.
+
+- Split unrelated change in patch #2 into a separate patch #3.
+
+Changes from v8 to v9:
+
+- Patch #1 remains unchanged.
+
+- From Thomas Gleixner, split patch #2 into two patches. Interrupt
+infrastructure first and then the actual usage site in the
+watchdog code.
+
+Changes from v7 to v8:
+
+- From Thomas Gleixner, implement statistics within the interrupt
+core code and provide sensible interfaces for the watchdog code.
+
+- Patch #1 remains unchanged. Patch #2 has significant changes
+based on Thomas's suggestions, which is why I have removed
+Liu Song and Douglas's Reviewed-by from patch #2. Please review
+it again, and all comments are welcome.
+
+Changes from v6 to v7:
+
+- Remove "READ_ONCE" in "start_counting_irqs"
+
+- Replace the hard-coded 5 with "NUM_SAMPLE_PERIODS" macro in
+"set_sample_period".
+
+- Add empty lines to help with reading the code.
+
+- Remove the branch that processes IRQs where "counts_diff = 0".
+
+- Add the Reviewed-by of Liu Song and Douglas.
+
+Changes from v5 to v6:
+
+- Use "./scripts/checkpatch.pl --strict" to get a few extra
+style nits and fix them.
+
+- Squash patch #3 into patch #1, and wrapp the help text to
+80 columns.
+
+- Sort existing headers alphabetically in watchdog.c
+
+- Drop "softlockup_hardirq_cpus", just read "hardirq_counts"
+and see if it's non-NULL.
+
+- Store "nr_irqs" in a local variable.
+
+- Simplify the calculation of "cpu_diff".
+
+Changes from v4 to v5:
+
+- Rearranging variable placement to make code look neater.
+
+Changes from v3 to v4:
+
+- Renaming some variable and function names to make the code logic
+more readable.
+
+- Change the code location to avoid predeclaring.
+
+- Just swap rather than a double loop in tabulate_irq_count.
+
+- Since nr_irqs has the potential to grow at runtime, bounds-check
+logic has been implemented.
+
+- Add SOFTLOCKUP_DETECTOR_INTR_STORM Kconfig knob.
+
+Changes from v2 to v3:
+
+- From Liu Song, using enum instead of macro for cpu_stats, shortening
+the name 'idx_to_stat' to 'stats', adding 'get_16bit_precesion' instead
+of using right shift operations, and using 'struct irq_counts'.
+
+- From kernel robot test, using '__this_cpu_read' and '__this_cpu_write'
+instead of accessing to an per-cpu array directly, in order to avoid
+this warning.
+'sparse: incorrect type in initializer (different modifiers)'
+
+Changes from v1 to v2:
+
+- From Douglas, optimize the memory of cpustats. With the maximum number
+of CPUs, that's now this.
+2 * 8192 * 4 + 1 * 8192 * 5 * 4 + 1 * 8192 = 237,568 bytes.
+
+- From Liu Song, refactor the code format and add necessary comments.
+
+- From Douglas, use interrupt counts instead of interrupt time to
+determine the cause of softlockup.
+
+- Remove the cmdline parameter added in PATCHv1.
+
+Bitao Hu (5):
+  genirq: Convert kstat_irqs to a struct
+  genirq: Provide a snapshot mechanism for interrupt statistics
+  genirq: Avoid summation loops for /proc/interrupts
+  watchdog/softlockup: low-overhead detection of interrupt storm
+  watchdog/softlockup: report the most frequent interrupts
+
+ arch/mips/dec/setup.c                |   2 +-
+ arch/parisc/kernel/smp.c             |   2 +-
+ arch/powerpc/kvm/book3s_hv_rm_xics.c |   2 +-
+ include/linux/irqdesc.h              |  16 +-
+ include/linux/kernel_stat.h          |   8 +
+ kernel/irq/Kconfig                   |   4 +
+ kernel/irq/internals.h               |   4 +-
+ kernel/irq/irqdesc.c                 |  50 +++++--
+ kernel/irq/proc.c                    |   9 +-
+ kernel/watchdog.c                    | 215 ++++++++++++++++++++++++++-
+ lib/Kconfig.debug                    |  14 ++
+ scripts/gdb/linux/interrupts.py      |   6 +-
+ 12 files changed, 302 insertions(+), 30 deletions(-)
+
+-- 
+2.37.1 (Apple Git-137.1)
+
 
