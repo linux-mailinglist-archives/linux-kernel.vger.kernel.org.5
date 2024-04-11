@@ -1,156 +1,169 @@
-Return-Path: <linux-kernel+bounces-139999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139998-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C3CA8A0A1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:40:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A24598A0A1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:40:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3243B284DEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:40:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57B81285FAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:40:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7C9113E8AC;
-	Thu, 11 Apr 2024 07:38:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0AA213E413;
+	Thu, 11 Apr 2024 07:38:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="PyXZMQnv"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="qWSEX+77"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11olkn2081.outbound.protection.outlook.com [40.92.20.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54A3913E05F
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:38:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712821126; cv=none; b=dRz2bP7ECOGO8qWKPEiwQSsTACu8shutPJVl3X6gR4zi0Fo9TOqlfeRPO3nckspGWgpz/AKRKsCIJ2PMhpV4fcruZFB1WALlfHrCjNTLKKhwEQ5YE5mcXs46utuINCZIJW3JoKMEtaH2izmpaZNQk0m8sCUEvu+1VgON9WUij8Q=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712821126; c=relaxed/simple;
-	bh=1vkXgr7mU8ODetSlTUd524GtmWxMzUtCT+xXdKXnC+Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c2lrlw2xcNoVFnx69oJ2GvzSxOLgEydL2mfHP8i6/7C/JgamqYEhGa7nK+6L2YNGqfX/utrPz+HOkDuKKux6hFg2lGJlnRAZil/huBf9WC8NJlNgWHsho2TDYONu+bcTO3TomBJVBVMcp6QQa/iNAnXMkA5gJQv6DDEid24Pi+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=PyXZMQnv; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a5224dfa9adso28264066b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1712821122; x=1713425922; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Qi1RHVmEtAvgNYlK/Z30HZoUwL3LvYqcc/16dHeni2I=;
-        b=PyXZMQnv7q/B4067/6mgaOEdkORETeuEB3mvFDQ4A0rKtG2pvW2uRyba18ydAUoWmM
-         6AUgOfSAYS1UorUFUhBo88UfWUOA2xPYmi84UgPQMJxKYo/pykINfEuKLiyx4crR14fq
-         nUsk5eUgBVGU0QsugfbOyQ/WLxwRXxSQ9R6LbXqY8vRueJpePn4WFi9FK1G/VbwYZ/kC
-         VL5z1uE86679A0/BxlJIegJiLKMFt9oiA/SVNS3bdtfbrdfDdzdiKJuwgVPqcp8gdLDY
-         6S5qVnuyXtGd5ztBBL+ddfBQJmMQDmN1rYIlemg1I41JRAWPSP33boe+WKqaXHAPp5Xm
-         rEyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712821122; x=1713425922;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qi1RHVmEtAvgNYlK/Z30HZoUwL3LvYqcc/16dHeni2I=;
-        b=gOCZsPWHjOIBBx9EO1W2XSuR9w9aojLIr2tHOunyzgofMQfbQSR55mQ70gSzhQFs2a
-         Vkvaq9SuQJuoOyRzl3AsH/57IpMNf+s1Wz9QCaeMJ8CjJjv2X0aJNIzUjvJgETbetS9S
-         v7aw/qQOTRubUee771/f9pMl2IwMMhr5Xv4yNA2pivIfYZXsCeyirT/7ExUr7ATXVG8M
-         6+uAcZHdgKqQNIuTVF1Ti8lCaagDNik7auQ6EP2cVXEJbBRtOLsdlWc6xMP61ScxtUbB
-         7ck+XHX+oZfEQxgqJrmByIOGSHndoPhyqDCqk/96VbFz7iY6bOmP9ygpm0xjm81Aw/SH
-         o5Og==
-X-Forwarded-Encrypted: i=1; AJvYcCVGYJnZVrB+BGCRGpLmxRVFvTHRDEmA87EXy+ksA3wr3LBjvu2142N+8w3DpJPMhOtpMYwG7Q2C3Gc4h9KMhVvnFdWQSh20udzjRcI2
-X-Gm-Message-State: AOJu0Yx2Zvx8Re/Liq6nPWpyxhQ1gDYCG2s6CtUwYx0qrOCXX9bOj1f7
-	Pvrc6mRlgMdu3sm+PjzFc/BTrfnlr+gRVPhF3pm+O/uvwY+ONziPZSlVdSaMnkaDHqvMWhDNGah
-	R
-X-Google-Smtp-Source: AGHT+IHndxelT9zzrPtEEf61xurR5ZhY/uXW2mp7zI7XhBJBneHaSOP3oqNpAKZ/ndwpR0RWwH9wFg==
-X-Received: by 2002:a17:907:1c2a:b0:a4e:410e:9525 with SMTP id nc42-20020a1709071c2a00b00a4e410e9525mr1764454ejc.30.1712821122486;
-        Thu, 11 Apr 2024 00:38:42 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id gv7-20020a170906f10700b00a4e0df9e793sm478233ejb.136.2024.04.11.00.38.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 00:38:42 -0700 (PDT)
-Date: Thu, 11 Apr 2024 09:38:41 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Atish Patra <atishp@rivosinc.com>
-Cc: Atish Patra <atishp@atishpatra.org>, linux-kernel@vger.kernel.org, 
-	Anup Patel <anup@brainfault.org>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Conor Dooley <conor.dooley@microchip.com>, 
-	Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org, 
-	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Shuah Khan <shuah@kernel.org>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v4 07/15] RISC-V: KVM: No need to exit to the user space
- if perf event failed
-Message-ID: <20240411-6fe47ccc32d9cb7baa121b4d@orel>
-References: <20240229010130.1380926-1-atishp@rivosinc.com>
- <20240229010130.1380926-8-atishp@rivosinc.com>
- <20240302-1a3c0df25f2422e1e6abecf3@orel>
- <CAOnJCUJCQjBfLZFW-3iLUB6ygyRmz1Anu+fhfrT4Lpoj2iNB5Q@mail.gmail.com>
- <20240404-ea40bc0237635d671e64fef6@orel>
- <7d02c86e-8c36-4e78-9fa8-5e30f3431eb3@rivosinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F8A13E051;
+	Thu, 11 Apr 2024 07:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.20.81
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712821123; cv=fail; b=WDoqXRUsUwGKDOG3OH4A9WJudEWI48j3bT/D2WOmoYpB8GHFj/kcDQfsZSiVEBRNiiXTvTv/tWqMZKaLiE+JG7zoBPxrVtnuqqu4ArZSCbAIvYoSyqdbxd4sYZ/LKGrvlW3SjlCwzJb377SMxUdExN4fXBsySeOtF40pcA48ons=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712821123; c=relaxed/simple;
+	bh=VZjcUvfqSrsUxAejDXbi43M9YbfSdAkT3wTyesH36T4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Em7NaOH+QuA2eUcx1KEGD03aoY0DbixWSiNBEErOOKL6y64JEoyXI5bzENDUornyVUwBULpHqpiKzM0G5MF3OGhuPzJPkInj1NSw0J1AuFfuS+jNPg1EOB0TMeNaJltat7JBDxUBu/FE82BvBBE7JmDBZveUXIKF4yLvDgHqfQM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=qWSEX+77; arc=fail smtp.client-ip=40.92.20.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n33ped5ohpkz4oo5OhWyrwRlVEiAeUzVPVWNFBVKBAGUTj9lifMRNNFZW/fzlMdbYoXXIEp5qk8U9WiDZkYH7Hk1iHnoo6CfKwcyOfUErsw952xuOCQ+aG06/cuwaB+0KJka8LLyYwWJcHuGupiNwRSPuUXuqGG5s0Asr3SankcTnG9LflwQBCyiwJY+7WkQ7SFEB61fHTjJlEK0KctdHYOTbioF7pfuGNhjb8xI2wjHm3u2pwPyqsUqbZggLM78HBpjRWBCChCrnce3f1dWxdZUVmS6eWy4LMS2HT66F2Aduck3dlTJyyzH2Zns3RJXB27IET8XBv7Mo7szHbXS/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fEQqN+W+wKuKybelqNiTnJZCWU0PpTbjgDYNvqxYRCs=;
+ b=ZgY4l5kefGqTPftFKykN+Yw+g6tnJ3ObaPou0rHl3rSsi8hf71CMViQkVdWr9XB5YDw+LHwlRin3FsaG4/68ngNV4vnduQIfqt3skqRjTPs8HQYY2NFGUqwaDE8SyaGV/NJz2CuCBoTtfjo48smLRzUqbuK0Oc+iOZhnOlhgGINVGjIoEf5iP6NbBQlOIgsubBIucgwoxrN7tr0ptBfiRSYoly39ZH0gtbZy6GAVhe1ZKHSZMW0Uwl5BkTwo8VrWdBII+YMKH7ZEY+iSB325q6K7lqNjx96azk7DBXQOjPALwlUrGPjcfxhwTNoPtJ67b+aYzUyi8ro/6EcPSZJKCQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fEQqN+W+wKuKybelqNiTnJZCWU0PpTbjgDYNvqxYRCs=;
+ b=qWSEX+77gjB6mRcU9HNIRauybXS8+iBsH/tZ5wh9/e8ZdwGBqQfrV5+QuAg/RbAWMJa0iipDJJOEsce+2p7Yxc8RKTc2H5BrFAwVjtUp2au7Oh/N62yVU+hv67LFMyUBSzASRYwOlcj8wsmLWFn9F2hZAJxiJD/EeRfyxS1FgCUV9ZkKOzuUAsmljiwX7rHZ+exjqKCERtnLCP2iuHMnxIgi+9uVO3XuunUG6RU9uOOt7Q0kv7AlJwvANLhgol3C6uK/2zjbyoI3sswHnTdzSZuPp/ZnKPl2+aXUQgkiICUDVKNSIEHDTFe4Qx1AIZs13FOUiM6ek5SezSvOAEaUXA==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by PH7PR20MB5308.namprd20.prod.outlook.com (2603:10b6:510:1ba::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Thu, 11 Apr
+ 2024 07:38:37 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7409.042; Thu, 11 Apr 2024
+ 07:38:36 +0000
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chao Wei <chao.wei@sophgo.com>,
+	Chen Wang <unicorn_wang@outlook.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Inochi Amaoto <inochiama@outlook.com>
+Cc: Jisheng Zhang <jszhang@kernel.org>,
+	Liu Gui <kenneth.liu@sophgo.com>,
+	Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
+	dlan@gentoo.org,
+	linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: Re: (subset) [PATCH v9 0/6] riscv: sophgo: add clock support for Sophgo CV1800/SG2000 SoCs
+Date: Thu, 11 Apr 2024 15:38:53 +0800
+Message-ID:
+ <IA1PR20MB4953E5E78F930EE25A86EE1CBB052@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <IA1PR20MB4953512A4DCAF293D7B1CBC2BB262@IA1PR20MB4953.namprd20.prod.outlook.com>
+References: <IA1PR20MB4953512A4DCAF293D7B1CBC2BB262@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-TMN: [iDtaGmXGwD/g9EANelqzXZc6pF8UbrUjRKGkiBcA1ns=]
+X-ClientProxiedBy: TYWPR01CA0009.jpnprd01.prod.outlook.com
+ (2603:1096:400:a9::14) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID:
+ <171282109234.564827.16346291400943800204.b4-ty@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7d02c86e-8c36-4e78-9fa8-5e30f3431eb3@rivosinc.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|PH7PR20MB5308:EE_
+X-MS-Office365-Filtering-Correlation-Id: 467fae24-5bed-4ab3-e657-08dc59fa64da
+X-MS-Exchange-SLBlob-MailProps:
+	ymJijV9pwJm+jY4Q11pAguX0vq6mPxhXIgrpc7SQiJT9YZkbhQJ5aHyogEsH3iMpBbkF3jw+LwZa/NUQMOQYlYj0M6UCteUSubOjP992e5LfphLHKlxhhSlN4tzmSk9HE37jIqVzDgjYZNCA+3pipxukj+8Fk/DUAqnchD/Blh5enseCcgSsspEAjSZU9jyoEdPf/RpMB+N22q+hloze1bwhVbo8rEmCKZ3oBR9t2Y/x7MfJDSlcWaWHLD4f6GwMfEPZUs8Xp3U3T0yV9mCr4mlgI7FfKEnrrVibHURDhXlI4f3LvXRHDt0LetBoP25qBdNERzI9yG0vyIFo+rTBgC1y9TTmrif5uIoql/qZEIQSQU1EkBEOQdi/a5hZVBua7VpKB8x2NsSvg3vTWEVtLsrkZZ65aPsaCCit6s1IVyh2MnrbHh4gkT/s0KfEUq8rMmzcvdnsn23mmV8PMoid/tmT1uY+CNRtazRpN8AIDrG7zFLOmuuPoYalrF9o/SELZA7kioRr+10E8Tui7jSlrArcAVl4aLMs2YYg3P7zI3XoMCAVlbSo944/RDh6fa9AngWcz4q1yfhY0DUpgZpywlhCBWuNVUg5CO3eybpk0rzZt13aHigIVU++MehKqlp4Es+cBN5rk6LXZ5jjyPNtG3G7b0yxdwKxAhb2EgC/LSE8bCQB2C/HkBnF4kCOiBPf1j++rsIdHjYNrc0i7BEJ1jjVjHKjxAC/8VTMjFBi5t2gOes8bmLkGC6CxY/13ZUhrlDWPpfDcrOn9hSxVudUTYSMlLi2Ql4nNfxmdP2Yiga/HK9Q++OLF7eB4On5K90r
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	qs5wmL5YaVfmncpW98DQam8SuxW/sphW15/lw+6HNtM3NVb4YoDy+nTfVx/Xr9duS3zFSwzBWSowxTpuQqTTiCdFZGmwVsfyhIBnXJWFH8EsuAIJGaPy1fSmoUO5Ou+lTog24MwZi8bIVcRqvXpG3ac/t64iSC1PbgwN3L72+ibE4E7MHIhtcOgaB9nh30nLJJA+FQRhmkUQGNuLp89SJD5gq04JFN4jnKXO88SdNLVJTzl38g2rL6QD7n/nmzvlZ3aN4CC//wzgO7ztOpTB6wM1m2J4GlSZcUZjw2S9dLQVVjhcx390B3T7TXQ4XyjyunT0IpMGVNgleZApi6yfZ2nrKWnebNqEd0JI20VCnpRxlt2pExzDkZd6AcofTxLkDZwTnePlr7xJCPYoyHZy6mtREn8Q68n/hXUjOS6xPA1bE+JyC9aNbNUyeU3Z2iEn/1WE4ZQDutcOyK6oKKhAFsAjCy6iDm2DzibVdO9eOB0SgeGzCXOQJZMhAxFytj4Dfd2Wj62VX+aYJM1lxJLuaxFgyRf73eQVilk9eNuzrr4HlR7ouuWmRGSsmDpvPMZbfndp6yfC60DuW/DeaCbQuB3PEmvpn9kI2ffSL56xch3xhoRQzHzEjX2JWUF+TmWkipnVO1KXvMgq+OMXRO1vFT9PyB9EBgeRKrmYYjSVjg+j3rzF+J6s38YjJue9yn4uJ8ep4JS7fKAHdZ2aeNmFQA==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?YUM4VEF5YlEvc1dDSGRYdXE0RHAvdUs0Mk9uY3p2MTdzWGRwUTNJVGFsM3ll?=
+ =?utf-8?B?bDJacGlpNGd1YjA0dmw0VVVLaEFkUGswQWdSVm10TDBSWXd6ZWtOS2txM1pL?=
+ =?utf-8?B?eGZ1bWMyMGFoQ0JHRVhtZ2hRRklscGM2UTVaTmx3eXlmU0ZrQ0xoUVBMWmhl?=
+ =?utf-8?B?a2E1ZElFanQyMCsrcXA4bGcySzRQNS9rbUlBVU9mT25lZHRjTE1CTFlKQjRz?=
+ =?utf-8?B?WWVhVlNXMVc0dTRaZ0svK0pyNWY3Q1lnUWJ3RkhiL1BITzhxeTVNVExMQlMr?=
+ =?utf-8?B?NURRdUM3RnpRNlc2QTdBWTd3Zlh5VWFyTzhHNWx4VnIrUWVNczhIYkI4Z05u?=
+ =?utf-8?B?OW8ydFNuR0tXMzBzQzZseGN5VTBqYkN4d1VyVXR2bXBINldqTGRFYjQzL21M?=
+ =?utf-8?B?anp2WkxuL1JLcFY5bjNBRzJseGRxK1FCeDBteldyTG1oUlVhTFZFdFZUYU5s?=
+ =?utf-8?B?MllCUUczTzhSRUxvWmk4OEpDVGF4N3pRUlcwQUJIVkRaU29BL3d1RnVtRmlq?=
+ =?utf-8?B?cHJ6SnE1R3l0MGVWQVFsYnBJdk1Vb2pmV2xqWnhvVUVPaU1qNktZdDFQK3cv?=
+ =?utf-8?B?dXZSckxXbW5YSytIeUw1eHd1SG1WWWpTTFRySTliUHd4MDRwTU9Qeld4amFm?=
+ =?utf-8?B?SDRhWXNKWGVWbG50Q1lUWjBmdHNFLzI2N090VWZ1VzlvUjZnV3BseGlCV1cr?=
+ =?utf-8?B?QldRcXdMQmkrRk11M1MwalZXeEx1NFkwY05KV2xXUGJLSlFzRHVsRm5Ra3FK?=
+ =?utf-8?B?TFlhMTdzMDBaUWZ4WE5qeXJBVEZOK3ZObDJ1R0JBTGRxRWp6LzF6ekpHYWkz?=
+ =?utf-8?B?NlgxUXgrUXVNb1poOU9RYmVlRzkyWHRmU3BRaDlVcjR6enBqKzRpOGVVay9B?=
+ =?utf-8?B?SmhXWEhrQzRmbVkzY0Y0WUVhU1NnNTZGWUdyUUs0ai9iUkNFMnUzT1Vyd2V2?=
+ =?utf-8?B?TDJRRXpQZUJicXZldk5KQTdFRmVBZ1dyWk1yQ21nU2xjYjk4cmNKKzZLVGRh?=
+ =?utf-8?B?NjQ2aGZ6U3IycnBkblNkUTNwY0NxT3czQzJNejFqYXE4dWc3eGNSNGxSb2N6?=
+ =?utf-8?B?TzhqeDhlY3N0cDNyMnZwOTU3MUdieFpBUmV3WDBwYkFOVGhIUExPMTQwUDNj?=
+ =?utf-8?B?NFV1KzBhaUZOaTNjRDQ0UndsSGZXZ0ZPTWR0cXN5U3hWTGxxZzk0VGN0RHZF?=
+ =?utf-8?B?MGpGTnVqd2FISzdVUWtVdEdiV3JTakdRTWcxOGZ1VWtsUDE5aHhHdlhFTS9R?=
+ =?utf-8?B?REV2MGYvRG1nMkRJM1FRbHJFMHpWM0ptV1NpTmNMT0taMkRFTldsaDcyb1FV?=
+ =?utf-8?B?M0tVdkRYTWp6Q0tHY1QvM3dEYnhKY0x5WXN2VVFBczh5RUtRcTlPUlRIRXlo?=
+ =?utf-8?B?aUdwVkxmTCtLL2JEZFdFQTROUWhBY2crV2E5NkozYzFiYndhZ202ODkraThI?=
+ =?utf-8?B?ZjZxYUJRK1EzSjgxcFhQVXlmQ3phVHAyOWlMU2UzR0ovT2RXby9QLzZuSjhv?=
+ =?utf-8?B?dTFLaW9Ya1orWmtaTDdqdmQwbVhKeFhLTVBoSmJsRllkSTJoUk0zeDUxSGlj?=
+ =?utf-8?B?VlVZa3ZZTUIyRXRFYXR1UTlhUWI1K0FTQjZlSkZHaW1PYWxHczcybEJrOEth?=
+ =?utf-8?B?Mm94Nk9USDBLQUNCNnFreWpTNTVXUkllN1hZZTBsNG1RaUpYNGlKNWg0Nnp3?=
+ =?utf-8?Q?/Srgtl4aNOLY1jSK59v4?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 467fae24-5bed-4ab3-e657-08dc59fa64da
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 07:38:35.2381
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR20MB5308
 
-On Wed, Apr 10, 2024 at 03:44:32PM -0700, Atish Patra wrote:
-> On 4/4/24 05:16, Andrew Jones wrote:
-> > On Mon, Apr 01, 2024 at 03:37:01PM -0700, Atish Patra wrote:
-> > > On Sat, Mar 2, 2024 at 12:16 AM Andrew Jones <ajones@ventanamicro.com> wrote:
-> > > > 
-> > > > On Wed, Feb 28, 2024 at 05:01:22PM -0800, Atish Patra wrote:
-> > > > > Currently, we return a linux error code if creating a perf event failed
-> > > > > in kvm. That shouldn't be necessary as guest can continue to operate
-> > > > > without perf profiling or profiling with firmware counters.
-> > > > > 
-> > > > > Return appropriate SBI error code to indicate that PMU configuration
-> > > > > failed. An error message in kvm already describes the reason for failure.
-> > > > 
-> > > > I don't know enough about the perf subsystem to know if there may be
-> > > > a concern that resources are temporarily unavailable. If so, then this
-> > > 
-> > > Do you mean the hardware resources unavailable because the host is using it ?
-> > 
-> > Yes (I think). The issue I'm thinking of is if kvm_pmu_create_perf_event
-> > (perf_event_create_kernel_counter) returns something like EBUSY and then
-> > we translate that to SBI_ERR_NOT_SUPPORTED. I'm not sure guests would
-> > interpret not-supported as an error which means they can retry. Or if
-> > they retry and get something other than not-supported if they'd be
-> > confused.
-> > 
+On Sat, 9 Mar 2024 17:01:21 +0800, Inochi Amaoto wrote:
+> Add clock controller support for the Sophgo CV1800B, CV1812H and SG2000.
 > 
-> At least in Linux driver, treats -ENOTSUPP and it just fails. Other guest OS
-> implementation may interpret it differently. But they should fail at that
-> point as well. I don't see how can they interpret to be retry.
+> Changed from v8:
+> 1. improve code.
+> 2. remove default config in Kconfig.
+> 3. merge patch 2-4 of v8 into one.
 > 
-> The perf user can retry again with assumption that may be enough counters
-> are not available at this moment. But that's different from return a retry
-> from driver code.
-> 
-> Even if we support a retry error code, when does the caller retry it ?
-> The driver doesn't know how long the user is going to run the perf command
-> to keep the hardware resources occupied.
-> 
-> I feel the perf user is the best entity to know that and should retry if it
-> knows the previous run is over which might have released the hardware
-> resources.
+> [...]
 
-I agree, but how does the user know that retrying makes sense? I presume
--ENOTSUPP will get propagated all the way to the user in a form that
-means "not supported". Or, can the user list all resources and then
-when they see "not supported" know that means "not supported at the
-moment", as they've already seen that the resources exist?
+Applied to sophgo/for-next, thanks!
 
-Anyway, as I said, I don't know enough about the perf subsystem to know
-if this is a real concern or not, but it sort of looks like we have
-potential to tell users that something isn't supported when in fact it
-is supported, but only temporarily unavailable.
+[5/6] riscv: dts: sophgo: add clock generator for Sophgo CV1800 series SoC
+      https://github.com/sophgo/linux/commit/bb7b3419627eb34f3466022d1f4b3c942c09712d
+[6/6] riscv: dts: sophgo: add uart clock for Sophgo CV1800 series SoC
+      https://github.com/sophgo/linux/commit/18e8c6d2cced6c57d62813f49b57eeb8ee02f984
 
 Thanks,
-drew
+Inochi
+
 
