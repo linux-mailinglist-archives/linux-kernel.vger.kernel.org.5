@@ -1,182 +1,252 @@
-Return-Path: <linux-kernel+bounces-141371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF91D8A1D5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:09:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD35E8A1E7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:36:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A2371F21B9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:09:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A18CB24BFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:09:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A43A1D42AB;
-	Thu, 11 Apr 2024 17:03:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iG6++Tkx"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F8E1D4296;
+	Thu, 11 Apr 2024 17:03:40 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F4E72E3E9
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 17:03:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7274F21D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 17:03:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712855020; cv=none; b=Ln+sgBHZczM0Tfkg5ujQGNdJotz6bnjvQ59If0FgpLWML19UHdb00Mnpag0sg+JSziZW1YOB/jsDVU79hK+a3U4hdAgwrX5JVId8SsTlMrJIg3g1Wwga0ui6I3tq1IOmZ4a4r63/PXiUMFiZMCvnJbXnzcmF4L2Z0h/geSCGDl8=
+	t=1712855019; cv=none; b=TIQkwLOhS/YROI7YVzkP8JzUtT4mxt1rvMe6uPmlvPbUkABQ+wicoE0VQuSIeLFbsbsNIiaxerJWUxzvilyD5YCtMCWYY4hV29wqV5HO3FSdVJI6VL36fQXeqSKLGrICl0ADbNW5oE5fLXp1Yxmm9Xhx56BG3rJyklc7KHY6zN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712855020; c=relaxed/simple;
-	bh=atNz7o/Atoh6+JRJ4K/8ocTdr56+cF7aLa6JWMaTE8Q=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=L2JHQgYQZpQjG7c3jAuSl+jtdDbqhnOehC5oeO1zl7xn9DkiIYIogwPwBfCDYA6nbYzKoQqip8mFGcTw9uaks0NeQ5ctt1iXuTTvI58WgzCJ1juKG0hfmtUCQ+xJSe4O3HtNFYHmTMHll+/2dTiC3h9HloGdupHLzHXkL5aJVeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iG6++Tkx; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-610b96c8ca2so133062197b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:03:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712855018; x=1713459818; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aHiyBrCf2EF07WYxlcVRpDjkENbbQGRrolG7oRWf4Js=;
-        b=iG6++TkxN78RRYO+hUmrMc/tBKsHQAq0k+D6jH4U8JRSv3JBi08+EArRLTl1kIBI5m
-         foUUK3M3hYo7/WqmWhi/gEbYcvbbD+IECwBJOctYksMizf46mfNaipjKfMbB9kMBIqrW
-         UN8l66+bGhAMJTrzOWsuse4/7/pRzd9YPTZWry/oSF9M22LTHtpfFkqWO7jRLJ/hfqW1
-         Nf6dUwuv2VPHDnUVRYSZpSdrrdWBeZN5JFUpb3Je4/hNfwKN6WMMw3J3ECEzKhWU0Rdh
-         fkH4h81VwXH/f7Ny23BwuwuUhzzNwmFYv6kRlgaumBfofbBUk8atavAubhl8fVgIfRZ2
-         wtVQ==
+	s=arc-20240116; t=1712855019; c=relaxed/simple;
+	bh=dnaM3GqXhEndWfy7lmeLBcJFLVPFM0ewZGwnnAppOoo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=tmp8PuiU1ktLZphGNTOVWRkjEQCNRegDpM2McaNhndJrSh2SpHubbwu9vX+jejxLafaLZUn9PhMeHmbAg9ojbH4+ZeRqHmBoL6NgKsHKeI4v50M9DHdv1YNs4Z7fMgV3QAmRfjsBj+r4cuL/SikrG2IY2JItKx0i7TqxQ2lfNi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36a1ab65a52so789245ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:03:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712855018; x=1713459818;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aHiyBrCf2EF07WYxlcVRpDjkENbbQGRrolG7oRWf4Js=;
-        b=EoitzW8o+wk1o2jyd+FSfCHop9QDWCjEcQFrcIIrwUFT4qr3ArQSMAp2Wil05wa+hZ
-         cA+VNkELw7viEc5Rr+5JeLCEZjFnS2QtTZQtIouw3gbrJSi2HiC5TnKiobpFSi1/M/Wi
-         S7sOKwbxcXBVThADRuZFkljcy3cz+JEJUgjK5ipQFjE3MHbygRxhz6SPZ8WTPKb5yvXM
-         Rss30rq5pNQGRugsPjYOAtJmHg9jzWFsp7/Wn/apyhTbDjW6vMyWpie89Ago7oEsw+HA
-         BxPSf8+rwDYh6d/cux8jatWhZyLXDLxOLqRYKOwgvkLcFGAXm5CCpox+OCqKUTPQPpTK
-         Q5ow==
-X-Forwarded-Encrypted: i=1; AJvYcCV2rcA9AeX6ap8dYFXeNCi9OQGtkB+6IyhjeRm7xdRzZU81sX6VIjBN3jY3/TlUQkk4hrQBCm/HtV0eg66xQ/djkbq3CSdRjYp2tWbF
-X-Gm-Message-State: AOJu0YyOSF0uzk+/gN1wZs4mB3eOeBbkHTKhjTXR0uv+vxHBRWQ7QCu+
-	tFZrneRfFE+6iLdyyRuOZ7xBU8k0MaX8SRghqx2OKL9ot7Js8H4+r+VrLknF+PaRIIRD7WpVGRL
-	Jdg==
-X-Google-Smtp-Source: AGHT+IF6jeOHUmhJ8aHuaekWulkjlMt+kUMfPktqjoSjKqLilk2hoOWcefaDLzldIcM9M9Xx/fUE5fKcL4g=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:120a:b0:dc7:68b5:4f21 with SMTP id
- s10-20020a056902120a00b00dc768b54f21mr20344ybu.9.1712855018241; Thu, 11 Apr
- 2024 10:03:38 -0700 (PDT)
-Date: Thu, 11 Apr 2024 10:03:36 -0700
-In-Reply-To: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
+        d=1e100.net; s=20230601; t=1712855017; x=1713459817;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LD4Dej9wVib/8Ke490DpdvB28vLogXA7Za+Vfqj32gg=;
+        b=ET3ZeIgS9A2eY8ZaOFN4J4O3wnxpy5JpAh6Qzy8IHLBIt/EJNoPaKWAkE2nZ3LsPCw
+         LBGnNSzHtX6o3+7JUXIRSkJBb/PWSzq6sT85HcUaflo6roSO38xVuv8p0vQfCHJwGDyw
+         RR/lk2mGwD/wLEqZPGy6jg6FqATN9nBZz0ViDT1a2Ysnk9H7Oxek64k81Im3yG2wwqor
+         TG+wOgHF5YB7/i31Q3HvEmhKajl+5sFLyZd/cMm1GZXdOoKhfnvaHAShhuWRK83sweFb
+         +MgcEl/fAxeEnpH4jrZhwMiilP4c/sgFKEC9EP2cgcgInJsB0vbU/UMWCignN3+8Sqr+
+         Naig==
+X-Gm-Message-State: AOJu0YwM07ROfL3MwzgpBzah8vM2CClmlHdMgUyO/B0Ipyh4p8kHhaOu
+	TzoQXQRZc5oYG0WgM6K6Uypli6ItGEo5jxPZ6bRW6dg/2esQKcw8QUPC12NTkCGUOQPgr2UbhKB
+	9RjNI6cqUpww39OJyo6Oanf9Ghkqp+TQ1EfVBmdkDpc1fwTgiLNSYSPg=
+X-Google-Smtp-Source: AGHT+IFhOpaGIuYKeU+rjQv1gh2el87cA+XCD5vcAIwpZ5uvqwNODSZd2Sqydxkz77a9kHk6BB4Rcf6oqnGXlO33QhPWBxriAvNO
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
-Message-ID: <ZhgX6BStTh05OfEd@google.com>
-Subject: Re: [RFC PATCH 00/41] KVM: x86/pmu: Introduce passthrough vPM
-From: Sean Christopherson <seanjc@google.com>
-To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
-Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
-	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
-	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
-	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+X-Received: by 2002:a92:ca0d:0:b0:36a:3615:33e4 with SMTP id
+ j13-20020a92ca0d000000b0036a361533e4mr3698ils.4.1712855017321; Thu, 11 Apr
+ 2024 10:03:37 -0700 (PDT)
+Date: Thu, 11 Apr 2024 10:03:37 -0700
+In-Reply-To: <0000000000000c4ce90615d48234@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dc09110615d5224e@google.com>
+Subject: Re: [syzbot] [sound?] inconsistent lock state in snd_timer_interrupt (3)
+From: syzbot <syzbot+0a26629966fddb6d4760@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, linux-sound@vger.kernel.org, perex@perex.cz, 
+	syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
 
-<bikeshed>
+syzbot has found a reproducer for the following issue on:
 
-I think we should call this a mediated PMU, not a passthrough PMU.  KVM still
-emulates the control plane (controls and event selectors), while the data is
-fully passed through (counters).
+HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=121359f3180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aef2a55903e5791c
+dashboard link: https://syzkaller.appspot.com/bug?extid=0a26629966fddb6d4760
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=108019d5180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17274c85180000
 
-</bikeshed>
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/089e25869df5/disk-fe46a7dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/423b1787914f/vmlinux-fe46a7dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4c043e30c07d/bzImage-fe46a7dd.xz
 
-On Fri, Jan 26, 2024, Xiong Zhang wrote:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0a26629966fddb6d4760@syzkaller.appspotmail.com
 
-> 1. host system wide / QEMU events handling during VM running
->    At VM-entry, all the host perf events which use host x86 PMU will be
->    stopped. These events with attr.exclude_guest = 1 will be stopped here
->    and re-started after vm-exit. These events without attr.exclude_guest=1
->    will be in error state, and they cannot recovery into active state even
->    if the guest stops running. This impacts host perf a lot and request
->    host system wide perf events have attr.exclude_guest=1.
-> 
->    This requests QEMU Process's perf event with attr.exclude_guest=1 also.
-> 
->    During VM running, perf event creation for system wide and QEMU
->    process without attr.exclude_guest=1 fail with -EBUSY. 
-> 
-> 2. NMI watchdog
->    the perf event for NMI watchdog is a system wide cpu pinned event, it
->    will be stopped also during vm running, but it doesn't have
->    attr.exclude_guest=1, we add it in this RFC. But this still means NMI
->    watchdog loses function during VM running.
-> 
->    Two candidates exist for replacing perf event of NMI watchdog:
->    a. Buddy hardlock detector[3] may be not reliable to replace perf event.
->    b. HPET-based hardlock detector [4] isn't in the upstream kernel.
+================================
+WARNING: inconsistent lock state
+6.8.0-syzkaller-08951-gfe46a7dd189e #0 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+swapper/1/0 [HC0[0]:SC1[1]:HE0:SE0] takes:
+ffff888029e8d948 (&timer->lock){+.?.}-{2:2}, at: class_spinlock_irqsave_constructor include/linux/spinlock.h:574 [inline]
+ffff888029e8d948 (&timer->lock){+.?.}-{2:2}, at: snd_timer_interrupt.part.0+0x31/0xd80 sound/core/timer.c:818
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5754 [inline]
+  lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+  __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+  _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+  spin_lock include/linux/spinlock.h:351 [inline]
+  class_spinlock_constructor include/linux/spinlock.h:561 [inline]
+  snd_timer_close_locked+0x65/0xbd0 sound/core/timer.c:412
+  snd_timer_close+0x8b/0xf0 sound/core/timer.c:464
+  snd_timer_user_release+0x91/0x260 sound/core/timer.c:1468
+  __fput+0x270/0xb80 fs/file_table.c:422
+  task_work_run+0x14e/0x250 kernel/task_work.c:180
+  exit_task_work include/linux/task_work.h:38 [inline]
+  do_exit+0xa7d/0x2be0 kernel/exit.c:878
+  do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
+  __do_sys_exit_group kernel/exit.c:1038 [inline]
+  __se_sys_exit_group kernel/exit.c:1036 [inline]
+  __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1036
+  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+  do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+  entry_SYSCALL_64_after_hwframe+0x6d/0x75
+irq event stamp: 171005
+hardirqs last  enabled at (171004): [<ffffffff8ad60263>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:159 [inline]
+hardirqs last  enabled at (171004): [<ffffffff8ad60263>] _raw_spin_unlock_irq+0x23/0x50 kernel/locking/spinlock.c:202
+hardirqs last disabled at (171005): [<ffffffff8ad60002>] __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
+hardirqs last disabled at (171005): [<ffffffff8ad60002>] _raw_spin_lock_irqsave+0x52/0x60 kernel/locking/spinlock.c:162
+softirqs last  enabled at (170994): [<ffffffff8ad63156>] softirq_handle_end kernel/softirq.c:400 [inline]
+softirqs last  enabled at (170994): [<ffffffff8ad63156>] __do_softirq+0x596/0x8de kernel/softirq.c:583
+softirqs last disabled at (171001): [<ffffffff8151a149>] invoke_softirq kernel/softirq.c:428 [inline]
+softirqs last disabled at (171001): [<ffffffff8151a149>] __irq_exit_rcu kernel/softirq.c:633 [inline]
+softirqs last disabled at (171001): [<ffffffff8151a149>] irq_exit_rcu+0xb9/0x120 kernel/softirq.c:645
 
-I think the simplest solution is to allow mediated PMU usage if and only if
-the NMI watchdog is disabled.  Then whether or not the host replaces the NMI
-watchdog with something else becomes an orthogonal discussion, i.e. not KVM's
-problem to solve.
+other info that might help us debug this:
+ Possible unsafe locking scenario:
 
-> 3. Dedicated kvm_pmi_vector
->    In emulated vPMU, host PMI handler notify KVM to inject a virtual
->    PMI into guest when physical PMI belongs to guest counter. If the
->    same mechanism is used in passthrough vPMU and PMI skid exists
->    which cause physical PMI belonging to guest happens after VM-exit,
->    then the host PMI handler couldn't identify this PMI belongs to
->    host or guest.
->    So this RFC uses a dedicated kvm_pmi_vector, PMI belonging to guest
->    has this vector only. The PMI belonging to host still has an NMI
->    vector.
-> 
->    Without considering PMI skid especially for AMD, the host NMI vector
->    could be used for guest PMI also, this method is simpler and doesn't
+       CPU0
+       ----
+  lock(&timer->lock);
+  <Interrupt>
+    lock(&timer->lock);
 
-I don't see how multiplexing NMIs between guest and host is simpler.  At best,
-the complexity is a wash, just in different locations, and I highly doubt it's
-a wash.  AFAIK, there is no way to precisely know that an NMI came in via the
-LVTPC.
+ *** DEADLOCK ***
 
-E.g. if an IPI NMI arrives before the host's PMU is loaded, confusion may ensue.
-SVM has the luxury of running with GIF=0, but that simply isn't an option on VMX.
+1 lock held by swapper/1/0:
+ #0: ffffc90000a08cb0 ((&priv->tlist)){+.-.}-{0:0}, at: call_timer_fn+0x11a/0x5b0 kernel/time/timer.c:1789
 
->    need x86 subsystem to reserve the dedicated kvm_pmi_vector, and we
->    didn't meet the skid PMI issue on modern Intel processors.
-> 
-> 4. per-VM passthrough mode configuration
->    Current RFC uses a KVM module enable_passthrough_pmu RO parameter,
->    it decides vPMU is passthrough mode or emulated mode at kvm module
->    load time.
->    Do we need the capability of per-VM passthrough mode configuration?
->    So an admin can launch some non-passthrough VM and profile these
->    non-passthrough VMs in host, but admin still cannot profile all
->    the VMs once passthrough VM existence. This means passthrough vPMU
->    and emulated vPMU mix on one platform, it has challenges to implement.
->    As the commit message in commit 0011, the main challenge is 
->    passthrough vPMU and emulated vPMU have different vPMU features, this
->    ends up with two different values for kvm_cap.supported_perf_cap, which
->    is initialized at module load time. To support it, more refactor is
->    needed.
+stack backtrace:
+CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ print_usage_bug kernel/locking/lockdep.c:3971 [inline]
+ valid_state kernel/locking/lockdep.c:4013 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:4216 [inline]
+ mark_lock+0x923/0xc60 kernel/locking/lockdep.c:4678
+ mark_usage kernel/locking/lockdep.c:4567 [inline]
+ __lock_acquire+0x13d4/0x3b30 kernel/locking/lockdep.c:5091
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
+ class_spinlock_irqsave_constructor include/linux/spinlock.h:574 [inline]
+ snd_timer_interrupt.part.0+0x31/0xd80 sound/core/timer.c:818
+ snd_timer_interrupt sound/core/timer.c:1107 [inline]
+ snd_timer_s_function+0x14f/0x200 sound/core/timer.c:1107
+ call_timer_fn+0x1a0/0x5b0 kernel/time/timer.c:1792
+ expire_timers kernel/time/timer.c:1843 [inline]
+ __run_timers+0x74b/0xab0 kernel/time/timer.c:2408
+ __run_timer_base kernel/time/timer.c:2419 [inline]
+ __run_timer_base kernel/time/timer.c:2412 [inline]
+ run_timer_base+0x111/0x190 kernel/time/timer.c:2428
+ run_timer_softirq+0x1a/0x40 kernel/time/timer.c:2438
+ __do_softirq+0x218/0x8de kernel/softirq.c:554
+ invoke_softirq kernel/softirq.c:428 [inline]
+ __irq_exit_rcu kernel/softirq.c:633 [inline]
+ irq_exit_rcu+0xb9/0x120 kernel/softirq.c:645
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
+ sysvec_apic_timer_interrupt+0x95/0xb0 arch/x86/kernel/apic/apic.c:1043
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+RIP: 0010:native_irq_disable arch/x86/include/asm/irqflags.h:37 [inline]
+RIP: 0010:arch_local_irq_disable arch/x86/include/asm/irqflags.h:72 [inline]
+RIP: 0010:acpi_safe_halt+0x1a/0x20 drivers/acpi/processor_idle.c:113
+Code: 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 65 48 8b 05 d8 60 31 75 48 8b 00 a8 08 75 0c 66 90 0f 00 2d c8 73 a7 00 fb f4 <fa> c3 cc cc cc cc 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90
+RSP: 0018:ffffc90000197d58 EFLAGS: 00000246
+RAX: 0000000000004000 RBX: 0000000000000001 RCX: ffffffff8ad255f9
+RDX: 0000000000000001 RSI: ffff88801bef0800 RDI: ffff88801bef0864
+RBP: ffff88801bef0864 R08: 0000000000000001 R09: ffffed10172a6fdd
+R10: ffff8880b9537eeb R11: 0000000000000000 R12: ffff888017bbe000
+R13: ffffffff8e31fbc0 R14: 0000000000000001 R15: 0000000000000000
+ acpi_idle_enter+0xc5/0x160 drivers/acpi/processor_idle.c:707
+ cpuidle_enter_state+0x85/0x510 drivers/cpuidle/cpuidle.c:267
+ cpuidle_enter+0x4e/0xa0 drivers/cpuidle/cpuidle.c:388
+ cpuidle_idle_call kernel/sched/idle.c:236 [inline]
+ do_idle+0x313/0x3f0 kernel/sched/idle.c:332
+ cpu_startup_entry+0x4f/0x60 kernel/sched/idle.c:430
+ start_secondary+0x220/0x2b0 arch/x86/kernel/smpboot.c:313
+ common_startup_64+0x13e/0x148
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	90                   	nop
+   1:	90                   	nop
+   2:	90                   	nop
+   3:	90                   	nop
+   4:	90                   	nop
+   5:	90                   	nop
+   6:	90                   	nop
+   7:	90                   	nop
+   8:	90                   	nop
+   9:	90                   	nop
+   a:	90                   	nop
+   b:	90                   	nop
+   c:	90                   	nop
+   d:	90                   	nop
+   e:	90                   	nop
+   f:	90                   	nop
+  10:	65 48 8b 05 d8 60 31 	mov    %gs:0x753160d8(%rip),%rax        # 0x753160f0
+  17:	75
+  18:	48 8b 00             	mov    (%rax),%rax
+  1b:	a8 08                	test   $0x8,%al
+  1d:	75 0c                	jne    0x2b
+  1f:	66 90                	xchg   %ax,%ax
+  21:	0f 00 2d c8 73 a7 00 	verw   0xa773c8(%rip)        # 0xa773f0
+  28:	fb                   	sti
+  29:	f4                   	hlt
+* 2a:	fa                   	cli <-- trapping instruction
+  2b:	c3                   	ret
+  2c:	cc                   	int3
+  2d:	cc                   	int3
+  2e:	cc                   	int3
+  2f:	cc                   	int3
+  30:	90                   	nop
+  31:	90                   	nop
+  32:	90                   	nop
+  33:	90                   	nop
+  34:	90                   	nop
+  35:	90                   	nop
+  36:	90                   	nop
+  37:	90                   	nop
+  38:	90                   	nop
+  39:	90                   	nop
+  3a:	90                   	nop
+  3b:	90                   	nop
+  3c:	90                   	nop
+  3d:	90                   	nop
+  3e:	90                   	nop
+  3f:	90                   	nop
 
-I have no objection to an all-or-nothing setup.  I'd honestly love to rip out the
-existing vPMU support entirely, but that's probably not be realistic, at least not
-in the near future.
 
-> Remain Works
-> ===
-> 1. To reduce passthrough vPMU overhead, optimize the PMU context switch.
-
-Before this gets out of its "RFC" phase, I would at least like line of sight to
-a more optimized switch.  I 100% agree that starting with a conservative
-implementation is the way to go, and the kernel absolutely needs to be able to
-profile KVM itself (and everything KVM calls into), i.e. _always_ keeping the
-guest PMU loaded for the entirety of KVM_RUN isn't a viable option.
-
-But I also don't want to get into a situation where can't figure out a clean,
-robust way to do the optimized context switch without needing (another) massive
-rewrite.
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
