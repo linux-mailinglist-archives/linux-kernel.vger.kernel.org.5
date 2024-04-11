@@ -1,107 +1,155 @@
-Return-Path: <linux-kernel+bounces-140698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 135A48A17DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:53:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAFB88A17F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:55:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 447D41C21D60
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:53:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B2461F229DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C05DF5C;
-	Thu, 11 Apr 2024 14:53:05 +0000 (UTC)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 676B7DDCB;
-	Thu, 11 Apr 2024 14:53:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7DCE55F;
+	Thu, 11 Apr 2024 14:54:25 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B68C4A0F
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:54:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712847184; cv=none; b=ceJHmDLzfQzvW0T7izkXf2knoGmQX/OccG7pSvZGwgU49lYww1ZuR/BIVMtpXZKSD2UBmBv/t+Wqet4zAt2BcHLfTvzc+Ia6BBktM1AR06H/a0Jbevrx+yAf++ATisxPqESG0ejsJdOexxIkZaG/vp53b6Wy3vAeQUJfKMTs3oY=
+	t=1712847265; cv=none; b=KjFW7kirJOdc/u7RGvCO5ITP/742nEKm+iDq/K+y2UdZuHknBLJ4fdeia3Ad+nt8oj77FjIAlZb8bAcCK+9ZDDB7p7gy16IsfX2lwzKaCsQliPdMgxgHSSgbxHpBrWuJm/jZuUx89w33PUOL+GbbjByF1LOC5rwc8IOuv7VpPxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712847184; c=relaxed/simple;
-	bh=EyhnWJiAS0nR8fJyhRZTkbp1BLMobMq6UhnnwGa9dmU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rvBneR4zl7ICKTbOrSRI7AH142uYNlBx6Dr/RkY6gK7wY42ouC00jwPvMhMvMrMkBeABbe6WJmzrO6u697sYva5CWn8pAwTIR9zbA/lvD7nuzfFNTfm+lFQR5ivJtsHjUc0OKQaraBktEywfaHSBLwp1M157lxuRNpNeeDefbUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d886f17740so10359581fa.1;
-        Thu, 11 Apr 2024 07:53:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712847180; x=1713451980;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KVjsRotGn7u6Rn7aIZqkg7iAwWDdxhRzncPX3YRKcQk=;
-        b=OCmYHKHaFAhcNayLW8UM7bjr3GNq4pqLtgwMC0OMuLQB3sHvZDLwXNGNKhcyLO1JvC
-         EOv7sbkJf3eT9sSDuRmpc7d0UoQpoLkbw6Yl11+9aeLxvMEVxYo0ofr33aCT7DlbnrjA
-         vOzm8L9ssBi6SEqZFpIA43KjwTdC2L/zll5kImoXjQmReDxrW15uKvKgLAzOWLWgyKRH
-         s228Y7HrIyew3CqtGwViHgrTSIq9Q19zQq5ZXWXALH11IP0d9f2zG/nel8PNvLRVJI8f
-         IO2816L984qSbzvfRokRN4fOa33ZgqPTEYp9NsQVu40LOi0DfcGUXBZeTU/PcCvmKurB
-         1Ouw==
-X-Forwarded-Encrypted: i=1; AJvYcCWBJhIZvsEAGMcxzUtDDyGv70orFvfIApxuDNpXdPcDABJ0dqdb4ewPHLf2RniFlMek7WKG9ugZawb5Lu6C/Un/K6hOxYMZ6wajEUXMCXeGngH/t6a2F+0IoMYhoau+skXxvYAXF8pHKAXChYoQkAAD8hd/91E5YYncX7SVQfZFkaCQWKORjnG820k0
-X-Gm-Message-State: AOJu0YzfG+YbP9ms85tvacLHFq5QGEfR4glnsJ/w5gsozdZI3RKMHtRc
-	hrh4i4t8yzYp9U7QDGBbpEHYDpkKxC2b0r6d+cedphC19dfX87z8/ez9jaVD1ck=
-X-Google-Smtp-Source: AGHT+IHtmYPwBRwzhlRVjfyHCc9sHZCUVQpmG1us9sILUW81OOhjlK0NGYvuhXXXnTKxFPVadxX9Hg==
-X-Received: by 2002:a05:651c:1416:b0:2d8:cea3:85e7 with SMTP id u22-20020a05651c141600b002d8cea385e7mr826281lje.12.1712847179572;
-        Thu, 11 Apr 2024 07:52:59 -0700 (PDT)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id t5-20020a2e9545000000b002d865254e49sm233406ljh.16.2024.04.11.07.52.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 07:52:59 -0700 (PDT)
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516d264d0e4so997522e87.0;
-        Thu, 11 Apr 2024 07:52:59 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVmJDqE8L/XUA8FP6Ny0/bic1vVecCTT8ffmr3LDR4EeeIAUfe+zFp7FoiACSXF63aZDDh95DiKb7FyvI2QwZTQ2jYeoorJ/SxtWSsWiFMhEKloglGTFaTfQBVYx5k5Cpdw43eIcIcQXlkV6zoFyS1RakSmw/OuclwLQdSKiEg98WPQ4K7Yc6rTAvFa
-X-Received: by 2002:a05:6512:33d2:b0:516:ac69:3bf5 with SMTP id
- d18-20020a05651233d200b00516ac693bf5mr1161921lfg.0.1712847179026; Thu, 11 Apr
- 2024 07:52:59 -0700 (PDT)
+	s=arc-20240116; t=1712847265; c=relaxed/simple;
+	bh=p2VWx9wX7pfCoV8KYD5Fn4zeoCayR9uXClpB4Y7jwt8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IEXhv2QQ+vwARk+4UG2+bGfLqsab8DQ/f8o80Dtny1zU/U5AErZzQHl0T5UT/yGwC2AbthtMpKPJYhXhFmqwzorPmXjUXDqRkKmiRG+qMZsYCNSSzzFthERljKFNncV8xJPnk9XYDjToYRYAQUJqd+LwIrJKmpsGvYwoYV7nHAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A66F113E;
+	Thu, 11 Apr 2024 07:54:52 -0700 (PDT)
+Received: from [10.1.38.151] (XHFQ2J9959.cambridge.arm.com [10.1.38.151])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7634A3F6C4;
+	Thu, 11 Apr 2024 07:54:20 -0700 (PDT)
+Message-ID: <744f795b-7ce8-40ab-911b-60906aa4fed1@arm.com>
+Date: Thu, 11 Apr 2024 15:54:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240226192530.141945-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20240226192530.141945-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 11 Apr 2024 16:52:44 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUwwV85e02q+WqMSQ28zeVjLAjqNOHqjiDpX1swTg2c9Q@mail.gmail.com>
-Message-ID: <CAMuHMdUwwV85e02q+WqMSQ28zeVjLAjqNOHqjiDpX1swTg2c9Q@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: renesas: pinctrl-rzg2l: Remove extra space in
- function parameter
-To: Prabhakar <prabhakar.csengg@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, linux-renesas-soc@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/5] mm: swap_pte_batch: add an output argument to
+ reture if all swap entries are exclusive
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org
+Cc: baolin.wang@linux.alibaba.com, chrisl@kernel.org, david@redhat.com,
+ hanchuanhua@oppo.com, hannes@cmpxchg.org, hughd@google.com,
+ kasong@tencent.com, surenb@google.com, v-songbaohua@oppo.com,
+ willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
+ yosryahmed@google.com, yuzhao@google.com, ziy@nvidia.com,
+ linux-kernel@vger.kernel.org
+References: <20240409082631.187483-1-21cnbao@gmail.com>
+ <20240409082631.187483-4-21cnbao@gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240409082631.187483-4-21cnbao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 26, 2024 at 8:25=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
-om> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Remove unnecessary space in rzg2l_pinctrl_pm_setup_pfc() function
-> parameter.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On 09/04/2024 09:26, Barry Song wrote:
+> From: Barry Song <v-songbaohua@oppo.com>
+> 
+> Add a boolean argument named any_shared. If any of the swap entries are
+> non-exclusive, set any_shared to true. The function do_swap_page() can
+> then utilize this information to determine whether the entire large
+> folio can be reused.
+> 
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> ---
+>  mm/internal.h | 9 ++++++++-
+>  mm/madvise.c  | 2 +-
+>  mm/memory.c   | 2 +-
+>  3 files changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 9d3250b4a08a..cae39c372bfc 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -238,7 +238,8 @@ static inline pte_t pte_next_swp_offset(pte_t pte)
+>   *
+>   * Return: the number of table entries in the batch.
+>   */
+> -static inline int swap_pte_batch(pte_t *start_ptep, int max_nr, pte_t pte)
+> +static inline int swap_pte_batch(pte_t *start_ptep, int max_nr, pte_t pte,
+> +				bool *any_shared)
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-pinctrl for v6.10.
+Please update the docs in the comment above this for the new param; follow
+folio_pte_batch()'s docs as a template.
 
-Gr{oetje,eeting}s,
+>  {
+>  	pte_t expected_pte = pte_next_swp_offset(pte);
+>  	const pte_t *end_ptep = start_ptep + max_nr;
+> @@ -248,12 +249,18 @@ static inline int swap_pte_batch(pte_t *start_ptep, int max_nr, pte_t pte)
+>  	VM_WARN_ON(!is_swap_pte(pte));
+>  	VM_WARN_ON(non_swap_entry(pte_to_swp_entry(pte)));
+>  
+> +	if (any_shared)
+> +		*any_shared |= !pte_swp_exclusive(pte);
 
-                        Geert
+This is different from the approach in folio_pte_batch(). It inits *any_shared
+to false and does NOT include the value of the first pte. I think that's odd,
+personally and I prefer your approach. I'm not sure if there was a good reason
+that David chose the other approach? Regardless, I think both functions should
+follow the same pattern here.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+If sticking with your approach, why is this initial flag being ORed? Surely it
+should just be initialized to get rid of any previous guff?
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Thanks,
+Ryan
+
+
+> +
+>  	while (ptep < end_ptep) {
+>  		pte = ptep_get(ptep);
+>  
+>  		if (!pte_same(pte, expected_pte))
+>  			break;
+>  
+> +		if (any_shared)
+> +			*any_shared |= !pte_swp_exclusive(pte);
+> +
+>  		expected_pte = pte_next_swp_offset(expected_pte);
+>  		ptep++;
+>  	}
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index f59169888b8e..d34ca6983227 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -671,7 +671,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+>  			entry = pte_to_swp_entry(ptent);
+>  			if (!non_swap_entry(entry)) {
+>  				max_nr = (end - addr) / PAGE_SIZE;
+> -				nr = swap_pte_batch(pte, max_nr, ptent);
+> +				nr = swap_pte_batch(pte, max_nr, ptent, NULL);
+>  				nr_swap -= nr;
+>  				free_swap_and_cache_nr(entry, nr);
+>  				clear_not_present_full_ptes(mm, addr, pte, nr, tlb->fullmm);
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 2702d449880e..c4a52e8d740a 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -1638,7 +1638,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>  			folio_put(folio);
+>  		} else if (!non_swap_entry(entry)) {
+>  			max_nr = (end - addr) / PAGE_SIZE;
+> -			nr = swap_pte_batch(pte, max_nr, ptent);
+> +			nr = swap_pte_batch(pte, max_nr, ptent, NULL);
+>  			/* Genuine swap entries, hence a private anon pages */
+>  			if (!should_zap_cows(details))
+>  				continue;
+
 
