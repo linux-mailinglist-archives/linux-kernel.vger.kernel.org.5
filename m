@@ -1,144 +1,172 @@
-Return-Path: <linux-kernel+bounces-140099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DA6A8A0B6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:37:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22B5D8A0B6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:38:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF2131C21178
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:37:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE752285ED4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:38:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E231419A6;
-	Thu, 11 Apr 2024 08:36:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qhh7A5m3"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 217B713FD85;
+	Thu, 11 Apr 2024 08:38:06 +0000 (UTC)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94BCF1E50B;
-	Thu, 11 Apr 2024 08:36:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D51C913CF91
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712824618; cv=none; b=sh9SL1SwdceOZwPWAJzvXReLKtM0m2JrTePOfVBmdlY5b0557LTSj1X67lph1VL0dPwpYG3gcGpeX2ZbdbxtjdXaCetWSIOiXFfmLiuFSW4LcV+DRcXMNDENtx9DwzAZCescbrNfDZS/omPa/nRKFLzE2ZmkXBH5257zBp3WSwg=
+	t=1712824685; cv=none; b=VBIxaTHObB6JuPy+/SFmA4ayOrejx+tbiBJHGiXJw6jkejk9oqQLcIW7A42yxJBjscWA0cBGRQG+tpwbsU4WmSsior0SwxW77q2r62DDw4UA0R46h9QU2hQYaZyqhIru9FXfKCPf68c0DmaOrQxJbfA+hSyNorwjnXtfl8zS6bc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712824618; c=relaxed/simple;
-	bh=unC3x+nKSIK9u/ndQdxIJyL6zS/jbDXkiDpSXnhD5yQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lVkmx9DZ1X4Kg+kDSpTyFVG7Me+wj6h5q0diHBKLdQQOgU03D7rGbL9bgQK066Vo/lgzhqomt6JLYo3+OxYfOkMD30R7SuoaAs4PDc3f7DZCChMc/IfYv7QVKEZgzRsZSAk20blrKj62Vd4jq1kprzEaaxkb4ueQP4tM0/pplDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qhh7A5m3; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1712824685; c=relaxed/simple;
+	bh=laA130yrwEguuAhoKvRDBYkw1ABegIvHvgso1mUrLoU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f+rNP7/pZhAz1Y6z1RfEX/oOYDp4uYIpdHfpZgfK/GsM5CJfTyopJiTrSiZuj+ZDSzU8/7DN3Y8nS1ENdYHpWY+OtOVh5PbntOiKu4VG9nfF/q33ZN8LMrf4QFX1YIO1iRi99LPr9q6M0dMEDhdv3r3Vk8yDY4bkicHuEWGxKpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d858501412so96282021fa.0;
-        Thu, 11 Apr 2024 01:36:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712824615; x=1713429415; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1u+KIu05ihNMsOZBDu+U/wU/eh0uP4ZgU6yLRCPBFzw=;
-        b=Qhh7A5m3QaviOs4Q519VzWvhnC85Px3d2g45XBjZOwbAFINvyYOwdPP+Mpim2zH0kN
-         UkLzkOVUsuLFRd0JuloScIFe2stPs8/BC6NZLdgBUgDJLoeofO25EV2jcf2Du0XRwFQb
-         6/rh+upmd9ATBNJnTu82X7lDn/lEkKA8F69VTJK3woNtqjR04cy4nc7a4m5cLHfUZH++
-         VhX9kZXA72mDD2pdhoTqXb9HdyM8i8ZiMajwSMLEwvbElWQaV8/TrPBbEFk7DCDMwijP
-         cyECFeVr2hsJHsQszOauiLW6EaNJnUAmpQSZzOY5zw0KMJgRUWodg2CWbIGUVMIYoCZU
-         YPcA==
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a52231daf92so9497366b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 01:38:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712824615; x=1713429415;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1u+KIu05ihNMsOZBDu+U/wU/eh0uP4ZgU6yLRCPBFzw=;
-        b=TLUl6WHMvhtT7/Np7+53WinkO/4i9AlFXibo7BN/8tBhC0VAq0Or16S/lNmRAp7A7F
-         ZrtsRpcQO+Uxw+ThVzE+d+No9f+1FLLp7OI7lWj1Mf7Xv3Tqv9GeBRjRALto5N4uI/vF
-         /75lRNau7SYJXivrUMI0v8Vko2rb6uFUXWHQ+fnaE/fw8jaM5g6XhHc4BCwpDd9Z7rAv
-         wH6F7VsZHHi9V4stF9bSUvY8WCRhSJm3zkX9Re3qY0FPoGBJ+cFPYuVtyVAZn9W3rSlF
-         ZJsJ5m77SL8wcUoAFhFJyEhXly/f6kQS5PDoc8o4lOLCK9USbgBKdBeihpFX4LjIJxMT
-         sRYA==
-X-Forwarded-Encrypted: i=1; AJvYcCU2avCOhcQ+QS6Wap+gdVvXl8q7VbYuIjHFLnmaPIN5oKufonIYlgenYwONURlTnas7wi0XhDYpYA74swozLyvNedeGLHxTNrw0626YkBQqQ+ogvrg2m3cO/MHjduiEAx/eQEgloPJPscT+67m5Zn1t0McF8ShOaFnKWF9lAqof0SeLPsIXd9vgbZOUkXEIXB6ynAP8inCNJOTsKA==
-X-Gm-Message-State: AOJu0Yz6JDHJSimfUa3urdhFse5VlAGG81chkwDQvik5EaBpRzaYxDmo
-	WHRapblPd1JuULdY/PBsSPwk1g2P09akr2CkKwibjD0PpTg9s+HOGtHuwGHYHnRZa4qbohFLQBQ
-	lRiFCHaImdbw5f+UKh/ptrXdncjs=
-X-Google-Smtp-Source: AGHT+IF4jpfgO6KrvCVpvX1EqpYoDxh3vVK9JKFWkheC89nBbr0BesQjZ1tf+Ubo6b8fD7/nohBsJkHAlSiq+ko/taY=
-X-Received: by 2002:a05:651c:10a4:b0:2d8:1267:320e with SMTP id
- k4-20020a05651c10a400b002d81267320emr3245491ljn.5.1712824614314; Thu, 11 Apr
- 2024 01:36:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712824682; x=1713429482;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QlTxrc8UGeYsYju69cSCDIVBGjrkM+HpaU154MNsK+c=;
+        b=kNSpdqG5mgsonTrezxqcigVxxxFSRrN3jeVCtcMt75GbhlYPAYWMH6GbNDNfY+hzyo
+         oqR8GXNIpYXVLKLb+OhUcsIdGcAPL4dzGnhiOOqpZ0EFy0ewGA91qC21ORWG+Gd8WS+s
+         Ry2GqESPCi8SZ9j3ppeleIuWm4blcX4ej69TT4pconX2S4jM8YuaFMtFyBIgVFEAFLe4
+         bcxIwHiNt0erFaU6FaNwmNFncf9DgNvbzfe3SOxR6a3MDqGEKvhxD51zWUtwizo3nlP5
+         3qVEWQ7VX7ALsIPtENMnWUqKymkttc0zkWpu5O78sjU37KFRwwHVAJ+sl83tNfZ633Cx
+         vsRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUixYdnoj4iIqi2hy0uUBV2a6coCBAxTerXhcNNURPOvN8cZ4p9nTUY8IkMCy6Fy00b/jDExAnIn9CN9CCgjf19eco1Q47XIA7+CZ98
+X-Gm-Message-State: AOJu0YxM5grO1hPc3Gvay1DqzuIWqLFl2cPmQsi0yW/D874kIdznpjqt
+	xMsQ1qi5GqJZkrxuamlxVpUhlW+nYX3UkGeWWD5K7HADdau5pQnZ
+X-Google-Smtp-Source: AGHT+IExhgCxrfw7ZhllSpKTX8uANrAEqjLHXMCdVPydNm8bg8RDAc9UCSptADWK4A4vVBXV/AZJKw==
+X-Received: by 2002:a17:906:6a29:b0:a51:d463:335a with SMTP id qw41-20020a1709066a2900b00a51d463335amr3545971ejc.3.1712824681808;
+        Thu, 11 Apr 2024 01:38:01 -0700 (PDT)
+Received: from [10.100.102.74] (85.65.192.64.dynamic.barak-online.net. [85.65.192.64])
+        by smtp.gmail.com with ESMTPSA id bg25-20020a05600c3c9900b004162d06768bsm4861841wmb.21.2024.04.11.01.38.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 01:38:01 -0700 (PDT)
+Message-ID: <7dbdce29-621a-4286-a832-2918ec1794e4@grimberg.me>
+Date: Thu, 11 Apr 2024 11:37:59 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327-ccb56fc7a6e80136db80876c@djalal> <20240327225334.58474-1-tixxdz@gmail.com>
- <ex2uipr54lb2odxwzwp22ycvlwplsy4mm3shx26hczo3mjtkvz@uuzyk6535prw>
- <705d7180-aced-46ba-80a6-84ac4e2b96b9@gmail.com> <eosbqsdycwdaezg6huqwpjvttxdxgbu6ptjmpxesy6i2rl276i@72w2orzveyes>
-In-Reply-To: <eosbqsdycwdaezg6huqwpjvttxdxgbu6ptjmpxesy6i2rl276i@72w2orzveyes>
-From: Djalal Harouni <tixxdz@gmail.com>
-Date: Thu, 11 Apr 2024 10:36:27 +0200
-Message-ID: <CAEiveUdCMCxp4n+gZKU_99y_xap83otQVmz+XqSaO+JAjrKM1Q@mail.gmail.com>
-Subject: Re: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/6] nvme: authentication error are always
+ non-retryable
+To: Hannes Reinecke <hare@suse.de>, Daniel Wagner <dwagner@suse.de>
+Cc: Christoph Hellwig <hch@lst.de>, Keith Busch <kbusch@kernel.org>,
+ James Smart <james.smart@broadcom.com>, linux-nvme@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240409093510.12321-1-dwagner@suse.de>
+ <20240409093510.12321-2-dwagner@suse.de>
+ <ac48d955-8169-467d-962c-e7f55854ba06@grimberg.me>
+ <7jqbhmskuzfvpjlavk7oqefmc72m5j2wj7525c7y2vlsfnaajx@57pfbmfvf4kt>
+ <8c9a980f-4885-479c-9078-7f87dc92175c@grimberg.me>
+ <03370383-d8d1-4b43-89f4-e9a3985c96e9@suse.de>
+ <959e5458-4c4d-4ab4-b9c2-8740156005cc@grimberg.me>
+ <88684d2f-8b36-40c4-99c8-ea07f42dd805@suse.de>
+Content-Language: he-IL, en-US
+From: Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <88684d2f-8b36-40c4-99c8-ea07f42dd805@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 9, 2024 at 5:32=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.com=
-> wrote:
+
+
+On 11/04/2024 10:11, Hannes Reinecke wrote:
+> On 4/10/24 15:50, Sagi Grimberg wrote:
+>>
+>>
+>> On 10/04/2024 15:05, Hannes Reinecke wrote:
+>>> On 4/10/24 12:21, Sagi Grimberg wrote:
+>>>>
+>>>>
+>>>> On 10/04/2024 9:52, Daniel Wagner wrote:
+>>>>> On Tue, Apr 09, 2024 at 11:26:00PM +0300, Sagi Grimberg wrote:
+>>>>>>
+>>>>>> On 09/04/2024 12:35, Daniel Wagner wrote:
+>>>>>>> From: Hannes Reinecke <hare@suse.de>
+>>>>>>>
+>>>>>>> Any authentication errors which are generated internally are always
+>>>>>>> non-retryable, so use negative error codes to ensure they are not
+>>>>>>> retried.
+>>>>>> The patch title says that any authentication error is not 
+>>>>>> retryable, and
+>>>>>> the patch body says "authentication errors which are generated 
+>>>>>> locally
+>>>>>> are non-retryable" so which one is it?
+>>>>> Forgot to update the commit message. What about:
+>>>>>
+>>>>>    All authentication errors are non-retryable, so use negative error
+>>>>>    codes to ensure they are not retried.
+>>>>>
+>>>>> ?
+>>>>
+>>>> I have a question, what happens if nvmet updated its credentials 
+>>>> (by the admin) and in the period until the host got his credentials 
+>>>> updated, it
+>>>> happens to disconnect/reconnect. It will see an authentication
+>>>> error, so it will not retry and remove the controller altogether?
+>>>>
+>>>> Sounds like an issue to me.
+>>>
+>>> Usual thing: we cannot differentiate (on the host side) whether the
+>>> current PSK is _about_ to be replaced; how should the kernel
+>>> know that the admin will replace the PSK in the next minutes?
+>>>
+>>> But that really is an issue with the standard. Currently there is no
+>>> way how a target could inform the initiator that the credentials have
+>>> been updated.
+>>
+>> I'd say that the sane thing for the host to do in this case is to 
+>> reconnect
+>> until giving up with hope that it may work. This seems like a better 
+>> approach
+>> than to abruptly remove the controller no?
+>>
+>>>
+>>> We would need to define a new status code for this.
+>>> In the meantime the safe operations model is to set a lifetime
+>>> for each PSK, and ensure that the PSK is updated on both sides
+>>> during the lifetime. With that there is a timeframe during which
+>>> both PSKs are available (on the target), and the older will expire
+>>> automatically once the lifetime limit is reached.
+>>
+>> That is a good solution, and will also prevent a loss of service until
+>> the host credentials are updated as well.
+>>
+>> But regardless I have a feeling that simply removing the controller upon
+>> an authentication error is not the right thing to do here.
 >
-> Hi.
->
-> On Tue, Apr 02, 2024 at 07:20:45PM +0100, Djalal Harouni <tixxdz@gmail.co=
-m> wrote:
-> > Thanks yes, I would expect freeze to behave like signal, and if one
-> > wants to block immediately there is the LSM override return. The
-> > selftest attached tries to do exactly that.
->
-> Are you refering to this part:
->
->         int BPF_PROG(lsm_freeze_cgroup, int cmd, union bpf_attr *attr, un=
-signed int size)
->                 ...
->                 ret =3D bpf_task_freeze_cgroup(task, 1);
->                 if (!ret) {
->                         ret =3D -EPERM;
->                         /* reset for next call */
-> ?
+> Guess what; that's what I tried to do initially. But then Christoph 
+> objected that we shouldn't generate NVMe status codes internally.
+> But if we can't do that then we'll have to invent yet another way to 
+> return a retryable error, leading to even more band-aid.
+> So I am not quite sure how we could achieve that, short of making 
+> _every_ error retryable...
 
-Yes.
+So this whole thing is that you want to make the host to not reconnect 
+if the controller
+sent a DNR and reconnect otherwise?
 
->
-> > Could be security signals, reading sensitive files or related to any
-> > operation management, for X reasons this user session should be freezed
-> > or killed.
->
-> What can be done with a frozen cgroup after anything of that happens?
-> Anything besides killing anyway?
+What are you returning today if the authentication failed? Am I reading 
+it right that you are
+returning -ECONNREFUSED? I think that for the specific case of 
+credentials mismatch (that and only
+that) you may want to return -EKEYREJECTED. That according to the 
+documentation (/* Key was rejected by service */)
+is specific enough that perhaps we can treat it specially when asking 
+"should I reconnect?"
 
-Some users would like to inspect.
-
-
-> Killing of an offending process could be caught by its supervisor (like
-> container runtime or systemd) and propagated accordingly to the whole
-> cgroup.
-
-Most bpf technologies do not run as a supervisor.
-
-> > The kill is an effective defense against fork-bombs as an example.
->
-> There are several ways how to prevent fork-bombs in kernel already, it
-> looks like a contrived example.
-
-I doubt if they are as effective, flexible and reflect today's workflow
-as the cgroup way.
-
-Thanks
+Thoughts?
 
