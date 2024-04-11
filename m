@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A05428A1989
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:11:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 408ED8A198E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:12:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BE4C285DB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:11:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F615287459
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:12:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75A1716130D;
-	Thu, 11 Apr 2024 15:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D0CF16DEB3;
+	Thu, 11 Apr 2024 15:35:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="RCrX26Fc"
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="r3DjbFjr"
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A17B15FA8A
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:35:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52465161301
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:35:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849744; cv=none; b=gx6GqPLYmGV3UNkutqStAt4uwnITYTrvnR+XfU6stQqq5zeAzdeyzqXBOiORoBQp0Z6wcuShMShWlAIpqE3cG5u3xDBzXrOd2DnAWHFu89hM44NwGYQyXB6SkkbvqVA44XifW6jjbuleR3UmtqPvKjUmcA8DkEEyHJKWRapagek=
+	t=1712849746; cv=none; b=UUV00mka+8bBoeM593Wvxgwh9inWOnFVgm1zRnqW2eidrwnneDiDg1v1Cw5h4XYlr3s0dSCF9L9+5KWCsT7RxkhYBjQi5llsKRmBll3xaU+HUz020VHs3hUQnhbBUM+f3qSYA42LM9r1lNoJjNJsAuSX6MgbYGOD3pRSMpb2Ms4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849744; c=relaxed/simple;
-	bh=gL5rAXowAGRcXaVBOvm9G+t3o9spcMoINLf7As2dKXk=;
+	s=arc-20240116; t=1712849746; c=relaxed/simple;
+	bh=lFWKPmtADZ77fK4ueBYj9oz0C6yf67EywTWQwCps9UA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HuaTC2V4N3h/FtGUdszkLoJpJVGeX1FwnZCgrCew3kOTBwOwnhbeB4hrUOGfYDmfhDUtuP2TpznwRU80iAeCkBAT+v5ZmiiDcjDDzHrVUt4Q1p/iQT+9G7WQwlh2o2p2Tnpy3Xdzn4H2EZYaLRH1F8Q/rbqW85P98b0RjmUa7Os=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=RCrX26Fc; arc=none smtp.client-ip=209.85.166.47
+	 MIME-Version; b=SsMz6vJPOPIwBpmZw/jjUBbVqoAfEsUHsbjK2EeTiMf+x7lA/LtMgwGpQ0C3OufLrQSGGP1OkEFrTvB9/rnHSyjTeRHS/kRguKuLtjqbG+US+DV+iOyuQeafkG8V63T/1zJrqh7sNeJGLbdq0uv+E5SMD9mbhO+B9CAR6KxEK2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=r3DjbFjr; arc=none smtp.client-ip=209.85.166.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so170506539f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:35:43 -0700 (PDT)
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7d5ed700c2dso16150739f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:35:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849742; x=1713454542; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849744; x=1713454544; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=W3VjsqHvsbMOxlKPUgYkeLDi3mwVEdCEjMoi0qF7dVw=;
-        b=RCrX26Fcm4dDMrZ3Nl+s6iV1UfNZ1mZYbC0k7Re7+gMJz7Mj8Rx+ZdDMXMIjlYux/u
-         +nHjwHn+DZ0MBuQriQ5oQEBtNhwBbe1Qcl51puwI0vRkasmT13dDHw4Nuhd16tfcFcy2
-         QawY0FTak29sHPqOeuPEAiNoIpeBlneJtihhFcFsDTMHam2skNIqLlAMBdYGnMtJp+wq
-         IuxmDzSdADAmvDq7lsNjkXONWIhEaF844H5rtdJJcg8vK7eyyhBgAQx5dENdjDtEQG6I
-         uoNJGGghIWS2ARPKocuGjg8n9xaYfEPAck+L6PHtHCQPvsxgzJePrK2rMdo742DHPH7s
-         sgWA==
+        bh=n6mqJFUy2iUjIxDPhjI3lLEspk5VVjXPoCyQkSzQDwo=;
+        b=r3DjbFjrBt6yGwH+hg/z8ES1Q8tTQPLNmHRSOHV+7ZjWgQZhSZdzJ550Pq39oMKaMl
+         qSq2r9a/omp3d7VnhCjzSMjghj5pfywM9qUE0h24aKxvG0j0abs5BkcN+n/uLFbNC4Uc
+         KdB+qKoeAY/GkVFTLWcEZnKlYBafR3pheY1kYMCrIRg1T4S3BNVr2mHyvnkk6viDKOVv
+         mEcsypP4OmxKJ79t/MpR0IZqYzZV0aYw6pqbTzxdv9/GbWd2xz7LK1ibYzVUBjgnNyvv
+         Dk/wq4y4eS+z5BPloHBANNROxu+kqLliO3IpJ3pfCWmJ7E8nrr6a1Sf4bNwVSfcDCY2o
+         LzQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849742; x=1713454542;
+        d=1e100.net; s=20230601; t=1712849744; x=1713454544;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=W3VjsqHvsbMOxlKPUgYkeLDi3mwVEdCEjMoi0qF7dVw=;
-        b=ivD0orqdGGUA+jwPiC9YJ+Wu6H+788FOnGJMkOEycHUyIAD68DlKvczQXFxuac5cTl
-         R7vs5xs+zExNyYU2bqWB8XxQKd81uf+hd+Cj07jaJOeGA+7qglwk8I77RnB1zYQ/op1+
-         pjQZOAMAbWbLBO2KpgnZxVIPHy1Yc3LSDxrcctj43MsyQz3ycYBidqwrxh3VUxdq5Bdj
-         qY8eyk05+81eqJpmKIztJOGpIt/27BB0Hy75etCrmHXqJ1ba0Rk+NwHngEMqu8waBwTF
-         P+pFfbzWcVLr4sNeHgC/wVlGVmuVx7/hnmR95i6lGSG6z3fmyeRKYhhBh6id1c/qSGFk
-         ThJw==
-X-Gm-Message-State: AOJu0YzEWV2kZjFGfA8zpb37ZgVnr0roLkon6qmsIm/W7lYWRIxhsC7N
-	nnEPjprXhyqQMlj7Fn+EWcpYTYwN4uxWYsPlwwOUf/kS4B9lAHyPHNrAptdtsDXEYGZ8F7o9Eol
-	U
-X-Google-Smtp-Source: AGHT+IExv45aBJtRiiUt52E8nPqCRI2CwS9qZlU4Uaf/CSootiAOJ7f/Q3WvQJwhWEeB2UqgoGKl9w==
-X-Received: by 2002:a05:6602:21d7:b0:7d6:9ddf:5095 with SMTP id c23-20020a05660221d700b007d69ddf5095mr14189ioc.1.1712849742432;
-        Thu, 11 Apr 2024 08:35:42 -0700 (PDT)
+        bh=n6mqJFUy2iUjIxDPhjI3lLEspk5VVjXPoCyQkSzQDwo=;
+        b=kqaFKapDgwv0jSermPJ88JWKFsb9FjBOhwD32pyBy5FI7kW4V8MmITvVRhDARmK1gj
+         ZcEWpAG2wsS/9zJCd1nSZGLZfGuLlodTXtzMi0iawt5tU9pP+3Ds4S5kGZ1ldwJeXL47
+         H8od6P93EDcHqorUzc8M8RUa+kd4ZsxbFkSokj0KHVdIlKY9S0SnCQ4udK6QhJTufm6S
+         6SUEi9Dk4CBBoY65hvYLWspN1bqQAJU1gRoFJROm7jOdUhVcgDLYRvqUZT9eXLSh/+nu
+         xZD7qn8pgRTykq7Uj3x0t4npNoWyiSV1DsuA3/qMkukAILHtGflCQ+TaUOX0/PmSiiZe
+         oDjw==
+X-Gm-Message-State: AOJu0YzyKdZo/s7K/eNMmtoMqNQgYAeJALFwP+sI+EW8aPQrqnyuM08h
+	oeJ+oOhPUiqxP3KAvAjjOWdSOJEByVchUCBtmYtfZKHpGFzrq3AXEcC04fYLgms0Cm01hkFbGKI
+	k
+X-Google-Smtp-Source: AGHT+IEKVU5p0lHw7ZbqDjprrXcw8tYzsPT3YOqu+wDxZN8OtyLpvHMqI1us2mx4quV/CJL6eoFcmA==
+X-Received: by 2002:a05:6602:38d:b0:7d6:513b:254 with SMTP id f13-20020a056602038d00b007d6513b0254mr182837iov.2.1712849744086;
+        Thu, 11 Apr 2024 08:35:44 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.35.39
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.35.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:35:39 -0700 (PDT)
+        Thu, 11 Apr 2024 08:35:42 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 144/437] drm/bridge: it6505: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:14:44 -0600
-Message-ID: <20240411153126.16201-145-axboe@kernel.dk>
+Subject: [PATCH 145/437] drm/imagination: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:14:45 -0600
+Message-ID: <20240411153126.16201-146-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,52 +85,38 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/gpu/drm/bridge/ite-it6505.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/imagination/pvr_fw_trace.c | 2 +-
+ drivers/gpu/drm/imagination/pvr_params.c   | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/bridge/ite-it6505.c b/drivers/gpu/drm/bridge/ite-it6505.c
-index 27334173e911..3f280f85d49d 100644
---- a/drivers/gpu/drm/bridge/ite-it6505.c
-+++ b/drivers/gpu/drm/bridge/ite-it6505.c
-@@ -3208,14 +3208,14 @@ static void it6505_parse_dt(struct it6505 *it6505)
- 			     it6505->max_dpi_pixel_clock);
- }
- 
--static ssize_t receive_timing_debugfs_show(struct file *file, char __user *buf,
--					   size_t len, loff_t *ppos)
-+static ssize_t receive_timing_debugfs_show(struct kiocb *iocb,
-+					   struct iov_iter *to)
- {
--	struct it6505 *it6505 = file->private_data;
-+	struct it6505 *it6505 = iocb->ki_filp->private_data;
- 	struct drm_display_mode *vid;
- 	u8 read_buf[READ_BUFFER_SIZE];
- 	u8 *str = read_buf, *end = read_buf + READ_BUFFER_SIZE;
--	ssize_t ret, count;
-+	ssize_t count;
- 
- 	if (!it6505)
- 		return -ENODEV;
-@@ -3243,9 +3243,7 @@ static ssize_t receive_timing_debugfs_show(struct file *file, char __user *buf,
- 			 vid->vtotal - vid->vsync_end);
- 
- 	count = str - read_buf;
--	ret = simple_read_from_buffer(buf, len, ppos, read_buf, count);
--
--	return ret;
-+	return simple_copy_to_iter(read_buf, &iocb->ki_pos, count, to);
- }
- 
- static int force_power_on_off_debugfs_write(void *data, u64 value)
-@@ -3307,7 +3305,7 @@ static int enable_drv_hold_debugfs_write(void *data, u64 drv_hold)
- static const struct file_operations receive_timing_fops = {
+diff --git a/drivers/gpu/drm/imagination/pvr_fw_trace.c b/drivers/gpu/drm/imagination/pvr_fw_trace.c
+index 31199e45b72e..ff5827dd6390 100644
+--- a/drivers/gpu/drm/imagination/pvr_fw_trace.c
++++ b/drivers/gpu/drm/imagination/pvr_fw_trace.c
+@@ -438,7 +438,7 @@ static int fw_trace_release(struct inode *inode, struct file *file)
+ static const struct file_operations pvr_fw_trace_fops = {
  	.owner = THIS_MODULE,
- 	.open = simple_open,
--	.read = receive_timing_debugfs_show,
-+	.read_iter = receive_timing_debugfs_show,
- 	.llseek = default_llseek,
+ 	.open = fw_trace_open,
+-	.read = seq_read,
++	.read_iter = seq_read_iter,
+ 	.llseek = seq_lseek,
+ 	.release = fw_trace_release,
  };
- 
+diff --git a/drivers/gpu/drm/imagination/pvr_params.c b/drivers/gpu/drm/imagination/pvr_params.c
+index b91759f362c5..4fe0105ca0c9 100644
+--- a/drivers/gpu/drm/imagination/pvr_params.c
++++ b/drivers/gpu/drm/imagination/pvr_params.c
+@@ -119,8 +119,8 @@ static struct {
+ 		.owner = THIS_MODULE,                      \
+ 		.open = __pvr_device_param_##name_##_open, \
+ 		.release = simple_attr_release,            \
+-		.read = simple_attr_read,                  \
+-		.write = simple_attr_write,                \
++		.read_iter = simple_attr_read_iter,        \
++		.write_iter = simple_attr_write_iter,      \
+ 		.llseek = generic_file_llseek,             \
+ 	},
+ 	PVR_DEVICE_PARAMS
 -- 
 2.43.0
 
