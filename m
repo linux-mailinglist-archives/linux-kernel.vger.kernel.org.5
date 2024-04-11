@@ -1,112 +1,146 @@
-Return-Path: <linux-kernel+bounces-139609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F9FE8A054F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:06:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4BA38A0550
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:06:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 193D72833B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:06:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D60471C210D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:06:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 790F8612D3;
-	Thu, 11 Apr 2024 01:06:00 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C545657D3;
+	Thu, 11 Apr 2024 01:06:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jyg+0vMn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC8460DCF;
-	Thu, 11 Apr 2024 01:05:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7712F657A3
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 01:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712797560; cv=none; b=UWHfVtO0a6w52IYKzqnZJpuJud710/B07cwWF0S6YRBkKKw8AZpoGLqV+qut3e284PFW7XwNSFQ2e85E3I65tbk4t1ID0R16OIOix3hX2rvQgOPGwr0uGmSqDB3C4bgzU5pXjNdeJhMUOcgxdVdOSx63yOea0DZsUqfkXOJ/LNo=
+	t=1712797585; cv=none; b=kbv29vueukAXLuhAiMF643Kwr+SuNpn2nL5pnZnaHgqaL9cLCcKUJJftflAWiu8PvsMciriu+xd3VxAp4Kb+/rSiNN0ZWsxKKj/pL5bvYDaK1eehnX+fQ84/TtVojvwv+I30KVaf3CIQtR9p/AQpZPfjZuKksAkfhIMKbbUqcOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712797560; c=relaxed/simple;
-	bh=SKcWXd9G9NkbxA74hLki2oajbTrX9Hro54JIkBOU/Cg=;
-	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=GQ70bsfzx2EoMmsqZeG1+zrwH8BdmUnUB4dRPCAV73ljRkB6ZhlwP3V5wGRl/m3IQUKw4QVt2mWygkry21ljqHaBceUGNixeDeP5qkxCvKjAxV6aGqWt4KuMy4CpZ0pkldWP9IZlh+XdHfbzlHoDZerounajuiipwtQsvlODg0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VFLzM003Yz1R5Sd;
-	Thu, 11 Apr 2024 09:03:10 +0800 (CST)
-Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0B244140414;
-	Thu, 11 Apr 2024 09:05:55 +0800 (CST)
-Received: from [10.67.120.192] (10.67.120.192) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 11 Apr 2024 09:05:54 +0800
-Message-ID: <16347737-f0ac-4710-85ee-189abed59d6b@huawei.com>
-Date: Thu, 11 Apr 2024 09:05:53 +0800
+	s=arc-20240116; t=1712797585; c=relaxed/simple;
+	bh=zhLDADHOwmHHPH8g5hxQ5LSBrm2Fmoz5QVlMxcXmoXc=;
+	h=Date:From:To:Cc:Subject:Message-Id:Mime-Version:Content-Type; b=dCDXRbTlvprwJyba09lYMPKMzM0TzJO73W/qkgHKqDiMMGa+q9ZG+0xdIX1XmGIVdHIqRiKhZf6yovNmBJ9oG43mxveuLO7T2WZ2t3XQnPEFLQb3D0UgBnHNiHqhRPSsmZ0vNfhzVa2QGIpSeKhejMf8Eme4kUy+JowcP4Gf2LQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jyg+0vMn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A6D3C433F1;
+	Thu, 11 Apr 2024 01:06:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712797585;
+	bh=zhLDADHOwmHHPH8g5hxQ5LSBrm2Fmoz5QVlMxcXmoXc=;
+	h=Date:From:To:Cc:Subject:From;
+	b=Jyg+0vMnyURozpnMc2Xc4q3nFO2f5qbLlsZ9hwgkKxwYNaRo3CFfxkCT6bSPiRtR4
+	 BWTW6cZqOLQMb7FKK4uQ3Cd9nQl9o8Y5EKxpIQ/AezQ4O6X0aAhhud431ka0H68fsr
+	 mk1+X7g5+q85XIwUA80CJ2ebTpin/eh5sVmCWs0aNl/mR4IXxgM3FzcwXw9PqE3rnE
+	 Ug44ykKSf8fYA21TSgdsDk6mSVxgAchwRs+rxfJgq3Z1EgmFTpNG7ZLu7j9nOTHRTV
+	 oP+vcC8uUQorXvSs3OH6JzZSNv4t7wuOXGBnxeWM8GRZKUfhwnWW3udr/IKOLe8S2U
+	 /pi5AtO+GulHA==
+Date: Thu, 11 Apr 2024 10:06:21 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Zhenhua Huang
+ <quic_zhenhuah@quicinc.com>, Steven Rostedt <rostedt@goodmis.org>, Masami
+ Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bootconfig: Fixes for v6.9-rc3
+Message-Id: <20240411100621.d3fd98310487cef580456853@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC: <shaojijie@huawei.com>, <yisen.zhuang@huawei.com>,
-	<salil.mehta@huawei.com>, <davem@davemloft.net>, <edumazet@google.com>,
-	<kuba@kernel.org>, <pabeni@redhat.com>, <horms@kernel.org>,
-	<rkannoth@marvell.com>, <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-	<liuyonglong@huawei.com>, <chenhao418@huawei.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V7 net-next 4/4] net: hns3: add support to query scc
- version by devlink info
-To: Jiri Pirko <jiri@resnulli.us>
-References: <20240410125354.2177067-1-shaojijie@huawei.com>
- <20240410125354.2177067-5-shaojijie@huawei.com> <ZhapUja4xXiJe4Q2@nanopsycho>
-From: Jijie Shao <shaojijie@huawei.com>
-In-Reply-To: <ZhapUja4xXiJe4Q2@nanopsycho>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600007.china.huawei.com (7.193.23.208)
+
+Hi Linus,
+
+Bootconfig fixes for v6.9-rc3:
+
+- fs/proc: Fix to not show original kernel cmdline more than twice on
+  /proc/bootconfig.
+- fs/proc: Fix to show the original cmdline only if the bootconfig
+  modifies it.
 
 
-on 2024/4/10 22:59, Jiri Pirko wrote:
-> Wed, Apr 10, 2024 at 02:53:54PM CEST, shaojijie@huawei.com wrote:
->> From: Hao Chen <chenhao418@huawei.com>
->>
->> Add support to query scc version by devlink info for device V3.
->>
->> Signed-off-by: Hao Chen <chenhao418@huawei.com>
->> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
->> ---
->> Documentation/networking/devlink/hns3.rst     |  3 ++
->> drivers/net/ethernet/hisilicon/hns3/hnae3.h   |  9 ++++
->> .../hns3/hns3_common/hclge_comm_cmd.h         |  8 ++++
->> .../hisilicon/hns3/hns3pf/hclge_devlink.c     | 44 +++++++++++++++++--
->> .../hisilicon/hns3/hns3pf/hclge_devlink.h     |  2 +
->> .../hisilicon/hns3/hns3pf/hclge_main.c        | 18 ++++++++
->> .../hisilicon/hns3/hns3pf/hclge_main.h        |  1 +
->> 7 files changed, 82 insertions(+), 3 deletions(-)
->>
->> diff --git a/Documentation/networking/devlink/hns3.rst b/Documentation/networking/devlink/hns3.rst
->> index 4562a6e4782f..e19dea8ef924 100644
->> --- a/Documentation/networking/devlink/hns3.rst
->> +++ b/Documentation/networking/devlink/hns3.rst
->> @@ -23,3 +23,6 @@ The ``hns3`` driver reports the following versions
->>     * - ``fw``
->>       - running
->>       - Used to represent the firmware version.
->> +   * - ``fw.scc``
-> What's scc? I don't see it described anywhere.
+Please pull the latest bootconfig-fixes-v6.9-rc3 tree, which can be found at:
 
-diff --git a/Documentation/networking/devlink/hns3.rst b/Documentation/networking/devlink/hns3.rst
-index 4562a6e4782f..e19dea8ef924 100644
---- a/Documentation/networking/devlink/hns3.rst
-+++ b/Documentation/networking/devlink/hns3.rst
-@@ -23,3 +23,6 @@ The ``hns3`` driver reports the following versions
-     * - ``fw``
-       - running
-       - Used to represent the firmware version.
-+   * - ``fw.scc``
-+     - running
-+     - Used to represent the soft congestion control firmware version.
 
-scc means "soft congestion control"
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+bootconfig-fixes-v6.9-rc3
 
+Tag SHA1: b0066d569a0eed92657edc836868122a6761da49
+Head SHA1: c722cea208789d9e2660992bcd05fb9fac3adb56
+
+
+Masami Hiramatsu (1):
+      fs/proc: Skip bootloader comment if no embedded kernel parameters
+
+Zhenhua Huang (1):
+      fs/proc: remove redundant comments from /proc/bootconfig
+
+----
+ fs/proc/bootconfig.c       | 12 ++++++------
+ include/linux/bootconfig.h |  1 +
+ init/main.c                |  5 +++++
+ 3 files changed, 12 insertions(+), 6 deletions(-)
+---------------------------
+diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
+index 902b326e1e56..87dcaae32ff8 100644
+--- a/fs/proc/bootconfig.c
++++ b/fs/proc/bootconfig.c
+@@ -62,12 +62,12 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
+ 				break;
+ 			dst += ret;
+ 		}
+-		if (ret >= 0 && boot_command_line[0]) {
+-			ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
+-				       boot_command_line);
+-			if (ret > 0)
+-				dst += ret;
+-		}
++	}
++	if (cmdline_has_extra_options() && ret >= 0 && boot_command_line[0]) {
++		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
++			       boot_command_line);
++		if (ret > 0)
++			dst += ret;
+ 	}
+ out:
+ 	kfree(key);
+diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
+index ca73940e26df..e5ee2c694401 100644
+--- a/include/linux/bootconfig.h
++++ b/include/linux/bootconfig.h
+@@ -10,6 +10,7 @@
+ #ifdef __KERNEL__
+ #include <linux/kernel.h>
+ #include <linux/types.h>
++bool __init cmdline_has_extra_options(void);
+ #else /* !__KERNEL__ */
+ /*
+  * NOTE: This is only for tools/bootconfig, because tools/bootconfig will
+diff --git a/init/main.c b/init/main.c
+index 2ca52474d0c3..881f6230ee59 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -487,6 +487,11 @@ static int __init warn_bootconfig(char *str)
+ 
+ early_param("bootconfig", warn_bootconfig);
+ 
++bool __init cmdline_has_extra_options(void)
++{
++	return extra_command_line || extra_init_args;
++}
++
+ /* Change NUL term back to "=", to make "param" the whole string. */
+ static void __init repair_env_string(char *param, char *val)
+ {
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
