@@ -1,79 +1,49 @@
-Return-Path: <linux-kernel+bounces-140699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47BAF8A17E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:54:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EE578A17D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:50:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F258B1F22760
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:54:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE2672837BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8808616415;
-	Thu, 11 Apr 2024 14:53:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE295EAF0;
+	Thu, 11 Apr 2024 14:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TE8nO/Kr"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jd5AQd9c"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 105E9134D1;
-	Thu, 11 Apr 2024 14:53:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AA68D534;
+	Thu, 11 Apr 2024 14:50:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712847237; cv=none; b=BOvyg/0TnDdAfSmuTBGT/oh+DMzxYynKj/+NMMPsnkaXKvDaaDloCmr2Fk/YV2FyLofTklikzUyiYXnFw1bH6iyt+WnjPtJh1VssxDcu3YbfJr1PWHp+7XTITVaNdx45qG1hxqbDyk+cWByVXkpY18DyZmdz8PTMkpRzf9jhaXY=
+	t=1712847028; cv=none; b=r5/4x9E0dBNrteonZqQuuDLp+wB2wuyXFYxsx95dqCuAucfEatRSaBv8atQWmeFMl0QTAXMLm1yP8ou8tWhqJXl93pWaaKh3aZDV269H/aJ3zKY/NByf5F7f79H5La5UaiEZlmptzXtPi7HSE4Ww4/BUXcK3yxBS4JmpuOLbT9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712847237; c=relaxed/simple;
-	bh=tOn7zspEOJuo3RQx9oTcVrEl/b2IGzPG/7ARcezpV7c=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TgpKbahkdaCSYz+aa/73gBPOR1saC9g7ciiM8Trrhi5Ud+ZXOC9EtFXchM9sTpJ0BbffZolArZLLbnmqohASZ/6wNC4Cyw5RBUDxiwzweIMsC4nhrk0uwYex/z4cNPPD7R699Mo+kg4Zl7iJFxTUM4wj79iTY/cd2EhLEy0bL2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TE8nO/Kr; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712847236; x=1744383236;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=tOn7zspEOJuo3RQx9oTcVrEl/b2IGzPG/7ARcezpV7c=;
-  b=TE8nO/KrDqohaYihEmn96tj9GfP/NiYSE1XfWM5QDCA34q8clvoRDLzO
-   teovQ2mO+0ayVRV5b/y3wgsOGoW51mATr+KtjWfWeKm77DnKdY/OPTzzW
-   rQD5N0YroaYzVd3EsQ2DNIqFSrdqtUs+38S8zEL3cdGfN90L9TS1k5HP4
-   IPLLQvVeExrJdZPvGhQixUHybxi7H2xto33KEuo6U8b6N/tF4tUZaHZz6
-   /E/Spu69n+YO7UPm7BakLbhCiRbA5/eANC4LBsg4rn2+68kSRD64t2VsJ
-   LIUxs2gUqDLMYFDUXT5ghIRRN24lNdUjHtdEacYC6WkuqfGrQV2Zr6JDu
-   Q==;
-X-CSE-ConnectionGUID: edOyOLtfSKunMtMZUCi0qg==
-X-CSE-MsgGUID: 9mLS1ZeYQ5OH72ASzSXS4Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="11225195"
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="11225195"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 07:53:55 -0700
-X-CSE-ConnectionGUID: xy0iLq3QSf+JRgzXp3SsNA==
-X-CSE-MsgGUID: MVX73wf/Q5aPrOkMcVxcCw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="25442273"
-Received: from tower.bj.intel.com ([10.238.157.70])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 07:53:52 -0700
-From: Yanfei Xu <yanfei.xu@intel.com>
-To: peterz@infradead.org,
-	mingo@redhat.com,
-	acme@kernel.org,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	namhyung@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	kan.liang@linux.intel.com
-Cc: linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	yanfei.xu@intel.com
-Subject: [PATCH] perf parse-events: Avoid two scenarios involving the reordering of topdown events
-Date: Thu, 11 Apr 2024 22:48:52 +0800
-Message-Id: <20240411144852.2507143-1-yanfei.xu@intel.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712847028; c=relaxed/simple;
+	bh=RK8HPzL73Quew+tMOrVpkfmMzV4s5rg6BXSQRmSLg8w=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Y7rQJEkNKqSqQSAvRxrF3OAGKcJ6Y0lvnWjpyca7CS8VpIbYMZHGcPq03PYzGMgIIS0+w/LS+opr8IbIp5R7srIobXGX3Nd15efnvswQLdlbGG8HwMVtczSxgK3U5fwFKVtqulleMSaPPGaCyT1NC8g3Yw1IcphwAg7EnXHrcjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jd5AQd9c; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B9A01C113CE;
+	Thu, 11 Apr 2024 14:50:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712847027;
+	bh=RK8HPzL73Quew+tMOrVpkfmMzV4s5rg6BXSQRmSLg8w=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Jd5AQd9c+Y+DVjeZhRA51xRwPAFPk6ny9Nly0y/GGIhczEKr22hWMYCjS18dsAbcm
+	 SBvNIG6yngZiZjIFrzq3yM41dxSy5YvzBJXVyvpgBMrdFVf4EVKS2K5cLuPVkNWung
+	 3eC9SvbTIAM9/ksLbXoQE93t6AUsWvQTZWbiF1VYooRD0dy7gqU101QW9cCW9oEOnT
+	 +MK0xXDmbSEY0Co6guBWZukqGhMkwOSoBhUulamUCMO/9z7fm0RfxIlgXKSB2znv97
+	 TSy7J79SVgJFcl5MaxOCfihWDsIeZky6uT++YnsTeenQO7oUvKaNdBFXYujUjq7RDJ
+	 Kz6gFOWlrbORg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A465FC4339F;
+	Thu, 11 Apr 2024 14:50:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,174 +51,56 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 0/3] RDMA/mana_ib: Add flex array to struct
+ mana_cfg_rx_steer_req_v2
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171284702766.5792.6538200625585720132.git-patchwork-notify@kernel.org>
+Date: Thu, 11 Apr 2024 14:50:27 +0000
+References: <AS8PR02MB72374BD1B23728F2E3C3B1A18B022@AS8PR02MB7237.eurprd02.prod.outlook.com>
+In-Reply-To: <AS8PR02MB72374BD1B23728F2E3C3B1A18B022@AS8PR02MB7237.eurprd02.prod.outlook.com>
+To: Erick Archer <erick.archer@outlook.com>
+Cc: longli@microsoft.com, sharmaajay@microsoft.com, kys@microsoft.com,
+ haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ keescook@chromium.org, gustavoars@kernel.org, nathan@kernel.org,
+ ndesaulniers@google.com, morbo@google.com, justinstitt@google.com,
+ jgg@ziepe.ca, leon@kernel.org, shradhagupta@linux.microsoft.com,
+ kotaranov@microsoft.com, linux-rdma@vger.kernel.org,
+ linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+ llvm@lists.linux.dev
 
-We found that even an events group with slots but without topdown events
-will still reroder to place the slots first. It's unnecessary, and may
-break tools expecting the command line order to match the printed order.
-The issue was previously fixed [1], but was later discarded since [2].
+Hello:
 
-Add an extra check of evsel leader, variable must_be_in_group, to ensure
-the slots event is only moved if the group has non-slots topdown events.
+This series was applied to netdev/net-next.git (main)
+by Leon Romanovsky <leon@kernel.org>:
 
-Without the patch:
+On Sat,  6 Apr 2024 16:23:34 +0200 you wrote:
+> The "struct mana_cfg_rx_steer_req_v2" uses a dynamically sized set of
+> trailing elements. Specifically, it uses a "mana_handle_t" array. So,
+> use the preferred way in the kernel declaring a flexible array [1].
+> 
+> At the same time, prepare for the coming implementation by GCC and Clang
+> of the __counted_by attribute. Flexible array members annotated with
+> __counted_by can have their accesses bounds-checked at run-time via
+> CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE (for
+> strcpy/memcpy-family functions).
+> 
+> [...]
 
-  $ perf stat  -e '{cpu/cpu-cycles/,slots}'  sleep 1
-  WARNING: events were regrouped to match PMUs
+Here is the summary with links:
+  - [v3,1/3] net: mana: Add flex array to struct mana_cfg_rx_steer_req_v2
+    https://git.kernel.org/netdev/net-next/c/bfec4e18f943
+  - [v3,2/3] RDMA/mana_ib: Prefer struct_size over open coded arithmetic
+    https://git.kernel.org/netdev/net-next/c/29b8e13a8b4c
+  - [v3,3/3] net: mana: Avoid open coded arithmetic
+    https://git.kernel.org/netdev/net-next/c/a68292eb4316
 
-   Performance counter stats for 'sleep 1':
-
-           2,663,256      slots:u
-             443,876      cpu/cpu-cycles/u
-
-         1.001079566 seconds time elapsed
-
-         0.001054000 seconds user
-         0.000000000 seconds sys
-
-With the patch:
-
-  $ perf stat  -e '{cpu/cpu-cycles/,slots}'  sleep 1
-
-   Performance counter stats for 'sleep 1':
-
-            469,039      cpu/cpu-cycles/u
-          2,814,234      slots:u
-
-        1.001148306 seconds time elapsed
-
-        0.001123000 seconds user
-        0.000000000 seconds sys
-
-In cases where both slots and topdown events are present, moving the
-slots event to be the first event is necessary. However there is no
-requirement to move the topdown events to be adjacent to slots event.
-So keep the original order of the topdown events is expected. Further
-more, if a group doesn't have slots event, the topdown events will be
-unexpectedly moved to the head of the group.
-
-Remove the movements regarding topdown events in arch_evlist__cmp()
-
-Without the patch:
-
-  $ perf stat -e '{slots,cpu/cpu-cycles/,cpu/topdown-bad-spec/}' sleep 1
-  WARNING: events were regrouped to match PMUs
-
-   Performance counter stats for 'sleep 1':
-
-          2,681,460      slots:u
-            336,496      cpu/topdown-bad-spec/u
-            446,910      cpu/cpu-cycles/u
-
-        1.001210088 seconds time elapsed
-
-        0.001160000 seconds user
-        0.000000000 seconds sys
-
-With the patch:
-
-  $ perf stat -e '{slots,cpu/cpu-cycles/,cpu/topdown-bad-spec/}' sleep 1
-
-   Performance counter stats for 'sleep 1':
-
-          2,715,486      slots:u
-            452,581      cpu/cpu-cycles/u
-            340,766      cpu/topdown-bad-spec/u
-
-        1.001116709 seconds time elapsed
-
-        0.001111000 seconds user
-        0.000000000 seconds sys
-
-[1] https://lore.kernel.org/lkml/20220321223344.1034479-1-irogers@google.com/#/
-[2] https://lore.kernel.org/lkml/20230302041211.852330-10-irogers@google.com/#/
-
-Fixes: 347c2f0a0988 ("perf parse-events: Sort and group parsed events")
-Signed-off-by: Yanfei Xu <yanfei.xu@intel.com>
----
- tools/perf/arch/x86/util/evlist.c | 13 +++++--------
- tools/perf/arch/x86/util/evsel.c  |  6 ++++++
- tools/perf/util/evsel.h           |  2 ++
- tools/perf/util/parse-events.c    |  9 ++++++---
- 4 files changed, 19 insertions(+), 11 deletions(-)
-
-diff --git a/tools/perf/arch/x86/util/evlist.c b/tools/perf/arch/x86/util/evlist.c
-index b1ce0c52d88d..eed0a74c561a 100644
---- a/tools/perf/arch/x86/util/evlist.c
-+++ b/tools/perf/arch/x86/util/evlist.c
-@@ -75,17 +75,14 @@ int arch_evlist__add_default_attrs(struct evlist *evlist,
- 
- int arch_evlist__cmp(const struct evsel *lhs, const struct evsel *rhs)
- {
-+	struct evsel *leader;
-+
- 	if (topdown_sys_has_perf_metrics() &&
- 	    (arch_evsel__must_be_in_group(lhs) || arch_evsel__must_be_in_group(rhs))) {
-+		leader = evsel__leader(rhs);
- 		/* Ensure the topdown slots comes first. */
--		if (strcasestr(lhs->name, "slots") && !strcasestr(lhs->name, "uops_retired.slots"))
--			return -1;
--		if (strcasestr(rhs->name, "slots") && !strcasestr(rhs->name, "uops_retired.slots"))
--			return 1;
--		/* Followed by topdown events. */
--		if (strcasestr(lhs->name, "topdown") && !strcasestr(rhs->name, "topdown"))
--			return -1;
--		if (!strcasestr(lhs->name, "topdown") && strcasestr(rhs->name, "topdown"))
-+		if (strcasestr(rhs->name, "slots") && !strcasestr(rhs->name, "uops_retired.slots")
-+			&& leader->must_be_in_group)
- 			return 1;
- 	}
- 
-diff --git a/tools/perf/arch/x86/util/evsel.c b/tools/perf/arch/x86/util/evsel.c
-index 090d0f371891..16f42fcfbe0b 100644
---- a/tools/perf/arch/x86/util/evsel.c
-+++ b/tools/perf/arch/x86/util/evsel.c
-@@ -44,6 +44,12 @@ bool arch_evsel__must_be_in_group(const struct evsel *evsel)
- 	    strcasestr(evsel->name, "uops_retired.slots"))
- 		return false;
- 
-+	if (strcasestr(evsel->name, "topdown")) {
-+		struct evsel *leader = evsel__leader(evsel);
-+
-+		leader->must_be_in_group = true;
-+	}
-+
- 	return strcasestr(evsel->name, "topdown") || strcasestr(evsel->name, "slots");
- }
- 
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index 517cff431de2..a7ab266bc915 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -98,6 +98,8 @@ struct evsel {
- 		bool			bpf_counter;
- 		bool			use_config_name;
- 		bool			skippable;
-+		/* any evsels with the flag set must be in a group */
-+		bool            must_be_in_group;
- 		int			bpf_fd;
- 		struct bpf_object	*bpf_obj;
- 		struct list_head	config_terms;
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 6f8b0fa17689..37950056a661 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -2052,9 +2052,12 @@ static int parse_events__sort_events_and_fix_groups(struct list_head *list)
- 		 */
- 		pos->core.idx = idx++;
- 
--		/* Remember an index to sort all forced grouped events together to. */
--		if (force_grouped_idx == -1 && pos == pos_leader && pos->core.nr_members < 2 &&
--		    arch_evsel__must_be_in_group(pos))
-+		/*
-+		 * Remember an index to sort all forced grouped events together to,
-+		 * and check each evsel for setting must_be_in_group of its leader.
-+		 */
-+		if (arch_evsel__must_be_in_group(pos) && force_grouped_idx == -1 &&
-+			pos == pos_leader && pos->core.nr_members < 2)
- 			force_grouped_idx = pos->core.idx;
- 	}
- 
+You are awesome, thank you!
 -- 
-2.40.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
