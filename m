@@ -1,209 +1,194 @@
-Return-Path: <linux-kernel+bounces-141226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4E5A8A1B18
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:21:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DC208A1B19
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:21:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AF821F2164E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:21:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BB721C22664
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:21:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67D0E537FB;
-	Thu, 11 Apr 2024 15:46:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD6817BA2;
+	Thu, 11 Apr 2024 15:47:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G2ADhQG4"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HPDanV/N"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D815653815
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:46:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9FAA17C79
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:47:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850412; cv=none; b=S8vy4UWDu5FhHc01EKmoT3cstlLsIYaJBpzZziYQmuaHOzUANc9/rfCtnST7bza5gVd1zj+rleXZ+V0srIaaTAxdtu0+IMERL+xs/hvULnnhyq3cge7daxH5Vago3SzYCprczLjOHVX1NzgQMJnaJVAEF1a6BQO9d7ZBnmrFmXA=
+	t=1712850475; cv=none; b=MdMmK+qddMi3MHNJUOg/Zw3W1vyNKQZhwbTLa7l53EWNR9YocqXxNNuOZH0m0U2Lup9L8WkJ4RI8Zm4780S68cTbvbQwxxw7KopHq6y0zKeZIJfDKug6gdrlwCQnr6imS7DG9Un7wZFU29tbJxsckdH4lLSXpKTA0YbnUMxj++o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850412; c=relaxed/simple;
-	bh=FoPVgdFbMGDkUH7fKW2usuW1gpP2wbkHhfwYrcnMxyA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iHqAawzdZR9DatmDdTt4P8Ysnd/4i172L9uuFV5vay1X+mjFSq2CcPLC86bbk10sEkrtHe2aUgyj/b/QhgREzJhngUhdIMHH9wVc0yULBOv2ey3AxTKvgzeapmFtc3JBN2eOswX8qaKcMn1RVa0lESHQuqk304fJd2rpWJ/J4fE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=G2ADhQG4; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712850409;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=UEZGV9VCe3aTsy6N7RQCWu4uCsIfjLyWqxbtHAKGNN4=;
-	b=G2ADhQG4O6Z19KevAZbKLiplPMyXUNrE9j/ZW9Bcdp8zGI+m9fVNaVJCF+PELtb2UWRpil
-	PNIZAtKO2CEh4i3X35Bhiii6YdgAh7NRz8od0zgQurbaUq+G9oQYemBcX0Hldj/wiAeH9a
-	sKaj5vNC85Gyg4GcHED1Ta52eacCbC8=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-597-oZ6mRIZ8NRC0piBEhFsW0Q-1; Thu, 11 Apr 2024 11:46:48 -0400
-X-MC-Unique: oZ6mRIZ8NRC0piBEhFsW0Q-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-416e58bdc1eso4205e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:46:48 -0700 (PDT)
+	s=arc-20240116; t=1712850475; c=relaxed/simple;
+	bh=PzE+yYSOEJ4diQY4L54RVbdmvbw7Q4WJOH1i6rXSY4M=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=NlNFop9AQKNgysJAgLE7smd4t31XryjLypaBF1zzE3GtfdHgsDmALDU7oBugr+sZP/KJEqf/U9nApPH7WpxcTFSBSFTZL/OX+ewwAgm7rjZFKCvMFQhjXSR8km+aJaJWUH400r2Hcfk71WMho5fjestrtqnBs1d+7be8TOGf+gM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HPDanV/N; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6eddff25e4eso2648b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:47:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712850473; x=1713455273; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=txRvtwl1sJfPVBbrOHJOF6lPrBYCV0WvIn/IYxdE2rg=;
+        b=HPDanV/NSyx0MwJNXdwHrkQK4DiBksI3goDaPbKD7FWcXvcUGziqrE3nVl/z3f9e60
+         fFiUIS5Oy1xBpnGe19kySa6OdDcu9/F/c90hHc5bd3EB76G7qMAw5sGtH9UvWiP1k7ea
+         52LhGyUBIt692Mx5NJaVB90rq1m8TG2XyOCgTpozvnd8msiEWc1QWJ43NsfkMMbiMJ1x
+         iQj/p72KhSmaHya6sQxwsGjDtAajc7n4p5vb5T5/9fdunlSmzaHSGjGoolYAt7DGodZI
+         Uocx82mxDCXMTwhuQvF67RpHCMU9fc4hFsrysNRBE7VmMTdRa3mnHJX79M+HCL7ewstZ
+         h2lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850407; x=1713455207;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=UEZGV9VCe3aTsy6N7RQCWu4uCsIfjLyWqxbtHAKGNN4=;
-        b=GTqA3gFazaAsI+NBIlpzJnFSFcg2q6xaLMM6j2K6UoG8BsSMXLHQoFFm0j/HK/ZgGl
-         khMTHMo8IxVhuZhcTT8KAblsnxwcBhDLyIiocvpJbQKWjnBE/EEMH/uCSlpwPebdU8hS
-         /jkCtzH1ehHNlyTo/8jrcherlMqzQDGM0JnZ58dIXCKMJgAgwa5XNSzobaGhJQ8tnVmg
-         L3CSj95uAwrDQFr3IMXXS9n7rzbMUKJcK9dlgnkwmznT6HOVPwZ67WatPDCrmoRgnVdv
-         wZ0RJ1RxzCNifB6vNzF2SxH1i4LSOqmKqx2EIhCRkVHTs+cV9lpGFD6/sb/D3JngqUPY
-         4uhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUZuJzqXHDr8MvDyHB9NnV5IzySVldFrkYZZLzwkANnHGNWrN/kggBmEZG8OmWozc23Ji/8Yt/Mcv5K/1nz//+OYP307+bcbqVTW7ik
-X-Gm-Message-State: AOJu0YxbMB/h1NVeSB7jtjHziGUWFErL4HSYAdijDwUVsTriQwBLnun2
-	LmzF0nxsQMOPlBaEkngUH2mXFmfnIFmOs7iNKlYYinsfRDKGGZH5Dz7MSBJdjwh6nPUt6lo9v6w
-	MBXxfnIC6MiBIHfhs1bLUkcO7spmVrCBOfm2AQm/mqc/JZYdAx97UKjWpaN22YM/eqdfFSA==
-X-Received: by 2002:a05:600c:35ce:b0:416:9e38:3bdd with SMTP id r14-20020a05600c35ce00b004169e383bddmr129431wmq.27.1712850407037;
-        Thu, 11 Apr 2024 08:46:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGxor1/9ucJeIy1LK54eldxqmchESlilSiUTk4WniHLuvcgqIR+xz6Rwmt5XvZDncL3E9GVSQ==
-X-Received: by 2002:a05:600c:35ce:b0:416:9e38:3bdd with SMTP id r14-20020a05600c35ce00b004169e383bddmr129396wmq.27.1712850405736;
-        Thu, 11 Apr 2024 08:46:45 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c724:4300:430f:1c83:1abc:1d66? (p200300cbc7244300430f1c831abc1d66.dip0.t-ipconnect.de. [2003:cb:c724:4300:430f:1c83:1abc:1d66])
-        by smtp.gmail.com with ESMTPSA id o4-20020a05600c510400b0041624ddff48sm5919487wms.28.2024.04.11.08.46.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 08:46:45 -0700 (PDT)
-Message-ID: <ffbbade3-2de5-4bbe-a6e4-49d2ff7a2f0e@redhat.com>
-Date: Thu, 11 Apr 2024 17:46:44 +0200
+        d=1e100.net; s=20230601; t=1712850473; x=1713455273;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=txRvtwl1sJfPVBbrOHJOF6lPrBYCV0WvIn/IYxdE2rg=;
+        b=uHOiXNSif8O2I/TCU9YUJUMhwG51eU2mo7b4sU5RP5V2AfOPbGfzMP4bX5Dps5i3op
+         3j2gWvr+/CgzuJVkkpXfkjfAJ8YLwXn+X56jJSO1DRZzYeWhLeGszMB/rKvwGJthPqoy
+         +d4rKF9pfZfz4zbuIcBy3kpWMSlpdURyVLtjWeoxAxX8ifUx2QMazK/JB//KBWVIUD35
+         ponsJL8KQbCaJW9rOCxpOLy8uDHfxBFnK/MgHuPgcs3qDwM2NkxRaRk2hZ7bEi8FkdNp
+         FD/vVuUDuggd7HpXrSEzme+Up4+S1aMW3ZQ947j6pohT263Md50F+nMkFrpI72avoyUS
+         rXwg==
+X-Forwarded-Encrypted: i=1; AJvYcCVZVRDV74e+oqBBSijpT8ratxhkqTwCXvsNwXuENXGhC/ezGhJvwffkdoBPAB6bAVZ55proChVY/L2OSMIERmZHCLc82bCJ8iu7JoSV
+X-Gm-Message-State: AOJu0YyPjtpHFG2WNTsYo/lZIgnooJuZVcrqxiskcyiEpzYpXbZKQj5l
+	vkv4VYoZu6ihog8tNqr5zjBRMbfMo7dZhQ5QluQyodZYYNnNBBlO
+X-Google-Smtp-Source: AGHT+IH9v6BA0i5KInsYOR9PJPeQoxuhkHpP9v9nVDSEk4lTlUuLmU4Bgwb3OF5cp+rpkMIdTb39iw==
+X-Received: by 2002:a05:6a21:35c4:b0:1a3:dc86:40b1 with SMTP id ba4-20020a056a2135c400b001a3dc8640b1mr160425pzc.36.1712850472878;
+        Thu, 11 Apr 2024 08:47:52 -0700 (PDT)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id p12-20020aa7860c000000b006eae2d9298esm1318251pfn.194.2024.04.11.08.47.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 08:47:52 -0700 (PDT)
+From: Yuntao Wang <ytcoode@gmail.com>
+To: mhiramat@kernel.org
+Cc: akpm@linux-foundation.org,
+	arnd@arndb.de,
+	christophe.leroy@csgroup.eu,
+	geert@linux-m68k.org,
+	jpoimboe@kernel.org,
+	kjlx@templeofstupid.com,
+	linux-kernel@vger.kernel.org,
+	ndesaulniers@google.com,
+	peterz@infradead.org,
+	rppt@kernel.org,
+	tglx@linutronix.de,
+	tj@kernel.org,
+	ytcoode@gmail.com
+Subject: Re: [PATCH] init/main.c: Fix potential static_command_line memory overflow
+Date: Thu, 11 Apr 2024 23:47:41 +0800
+Message-ID: <20240411154742.258238-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240412000858.7d81a7b946af172e6aed554d@kernel.org>
+References: <20240412000858.7d81a7b946af172e6aed554d@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm/rmap: do not add fully unmapped large folio to
- deferred split list
-To: Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Yang Shi <shy828301@gmail.com>, Ryan Roberts <ryan.roberts@arm.com>,
- Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org
-References: <20240411153232.169560-1-zi.yan@sent.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240411153232.169560-1-zi.yan@sent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 11.04.24 17:32, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
+On Fri, 12 Apr 2024 00:08:58 +0900, Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+
+> On Thu, 11 Apr 2024 22:27:23 +0800
+> Yuntao Wang <ytcoode@gmail.com> wrote:
 > 
-> In __folio_remove_rmap(), a large folio is added to deferred split list
-> if any page in a folio loses its final mapping. It is possible that
-> the folio is unmapped fully, but it is unnecessary to add the folio
-> to deferred split list at all. Fix it by checking folio mapcount before
-> adding a folio to deferred split list.
+> > On Thu, 11 Apr 2024 16:21:37 +0300, Mike Rapoport <rppt@kernel.org> wrote:
+> > > On Thu, Apr 11, 2024 at 09:23:47AM +0200, Geert Uytterhoeven wrote:
+> > > > CC Hiramatsu-san
+> > > > 
+> > > > On Thu, Apr 11, 2024 at 5:25 AM Yuntao Wang <ytcoode@gmail.com> wrote:
+> > > > > We allocate memory of size 'xlen + strlen(boot_command_line) + 1' for
+> > > > > static_command_line, but the strings copied into static_command_line are
+> > > > > extra_command_line and command_line, rather than extra_command_line and
+> > > > > boot_command_line.
+> > > > >
+> > > > > When strlen(command_line) > strlen(boot_command_line), static_command_line
+> > > > > will overflow.
+> > > 
+> > > Can this ever happen? 
+> > > Did you observe the overflow or is this a theoretical bug?
+> > 
+> > I didn't observe the overflow, it's just a theoretical bug.
+> > 
+> > > > > Fixes: f5c7310ac73e ("init/main: add checks for the return value of memblock_alloc*()")
+> > > 
+> > > f5c7310ac73e didn't have the logic for calculating allocation size, we
+> > > surely don't want to go back that far wiht Fixes.
+> > 
+> > Before commit f5c7310ac73e, the memory size allocated for static_command_line
+> > was 'strlen(command_line) + 1', but commit f5c7310ac73e changed this size
+> > to 'strlen(boot_command_line) + 1'. I think this should be wrong.
 > 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> ---
->   mm/rmap.c | 9 ++++++---
->   1 file changed, 6 insertions(+), 3 deletions(-)
+> Ah, OK. that sounds reasonable. 
+
+:-)
+
+> > 
+> > > > > Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> > > > > ---
+> > > > >  init/main.c | 8 +++++---
+> > > > >  1 file changed, 5 insertions(+), 3 deletions(-)
+> > > > >
+> > > > > diff --git a/init/main.c b/init/main.c
+> > > > > index 2ca52474d0c3..a7b1f5f3e3b6 100644
+> > > > > --- a/init/main.c
+> > > > > +++ b/init/main.c
+> > > > > @@ -625,11 +625,13 @@ static void __init setup_command_line(char *command_line)
+> > > > >         if (extra_init_args)
+> > > > >                 ilen = strlen(extra_init_args) + 4; /* for " -- " */
+> > > > >
+> > > > > -       len = xlen + strlen(boot_command_line) + 1;
+> > > > > +       len = xlen + strlen(boot_command_line) + ilen + 1;
+> > > > >
+> > > > > -       saved_command_line = memblock_alloc(len + ilen, SMP_CACHE_BYTES);
+> > > > > +       saved_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
+> > > > >         if (!saved_command_line)
+> > > > > -               panic("%s: Failed to allocate %zu bytes\n", __func__, len + ilen);
+> > > > > +               panic("%s: Failed to allocate %zu bytes\n", __func__, len);
+> > > > > +
+> > > > > +       len = xlen + strlen(command_line) + 1;
 > 
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 2608c40dffad..d599a772e282 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1494,7 +1494,7 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
->   		enum rmap_level level)
->   {
->   	atomic_t *mapped = &folio->_nr_pages_mapped;
-> -	int last, nr = 0, nr_pmdmapped = 0;
-> +	int last, nr = 0, nr_pmdmapped = 0, mapcount = 0;
->   	enum node_stat_item idx;
->   
->   	__folio_rmap_sanity_checks(folio, page, nr_pages, level);
-> @@ -1506,7 +1506,8 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
->   			break;
->   		}
->   
-> -		atomic_sub(nr_pages, &folio->_large_mapcount);
-> +		mapcount = atomic_sub_return(nr_pages,
-> +					     &folio->_large_mapcount) + 1;
+> Ah, I missed this line. Sorry. So this looks good to me but you don't need any
+> other lines, because those are not related to the bug you want to fix.
+> Please just focus on 1 fix.
+> 
+> Thank you,
 
-That becomes a new memory barrier on some archs. Rather just re-read it 
-below. Re-reading should be fine here.
+The other few lines of modification are some very small optimization.
+I thought they were not worth posting a separate patch for at the time,
+so I post them together. If necessary, I can separate them.
 
->   		do {
->   			last = atomic_add_negative(-1, &page->_mapcount);
->   			if (last) {
-> @@ -1554,7 +1555,9 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
->   		 * is still mapped.
->   		 */
->   		if (folio_test_large(folio) && folio_test_anon(folio))
-> -			if (level == RMAP_LEVEL_PTE || nr < nr_pmdmapped)
-> +			if ((level == RMAP_LEVEL_PTE &&
-> +			     mapcount != 0) ||
-> +			    (level == RMAP_LEVEL_PMD && nr < nr_pmdmapped))
->   				deferred_split_folio(folio);
->   	}
+Thanks.
 
-But I do wonder if we really care? Usually the folio will simply get 
-freed afterwards, where we simply remove it from the list.
-
-If it's pinned, we won't be able to free or reclaim, but it's rather a 
-corner case ...
-
-Is it really worth the added code? Not convinced.
-
--- 
-Cheers,
-
-David / dhildenb
-
+> > > > >
+> > > > >         static_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
+> > > > >         if (!static_command_line)
+> > > > 
+> > > > Gr{oetje,eeting}s,
+> > > > 
+> > > >                         Geert
+> > > > 
+> > > > -- 
+> > > > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> > > > 
+> > > > In personal conversations with technical people, I call myself a hacker. But
+> > > > when I'm talking to journalists I just say "programmer" or something like that.
+> > > >                                 -- Linus Torvalds
+> > > 
+> > > -- 
+> > > Sincerely yours,
+> > > Mike.
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
