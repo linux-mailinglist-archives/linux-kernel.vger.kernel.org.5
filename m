@@ -1,107 +1,120 @@
-Return-Path: <linux-kernel+bounces-141580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4DF18A2047
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:34:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27F9F8A204B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:35:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0018D1C214F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:34:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6CF9281EE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:35:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553B41C292;
-	Thu, 11 Apr 2024 20:34:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C0B2941C;
+	Thu, 11 Apr 2024 20:34:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="bTjlyc0+"
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="slQfO4Yu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD7B524C
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:34:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8A3029417;
+	Thu, 11 Apr 2024 20:34:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712867684; cv=none; b=WWqWnPzt8Cz4A4oa//nUD2Mg5LonLdDgoM1sRPe+xiTkaSCeeELw82Unk+7z2CzRctGDVFZPrRDMylXQutvOfak2jy0HAHN9K4vV4REbcPhIq8xuHnr3wu8xJV6G4jxUea7xr8tecpCMKDXE/8AIMKxerjGFCwnbAGiLW5UioPQ=
+	t=1712867693; cv=none; b=T3sMEgIHIcTI7bC8kzwVdKycOvKW2Y2/CVpC1tue/SkhaK/aiwz6Ag7TPoU89djrshLXFvKAhyNqjJa2v49NxLgoPP6N7lC6sAR9HV0+trjj93yzBXPLJRWcwQ6eFidf3dEOCfrMST/8/Sj4fX0vfA1rwln3Gt/BsS55sGlPXaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712867684; c=relaxed/simple;
-	bh=pvL1Zd6rBjAA4vL2Y6BHYHDyyPCV5v1Mwu3xdblacAA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A+Ax++7QC97Yqky1n6Wl/C5BcSwGorvdKcmcri7c5lCG5Oq9SWx2C1x1iYtGiMr24kZTT4LghGScyiPNmcWClprPBgHhECp2zmjPrUssi9ftFMF2URx0334Z5p5BhMdAcYIgecayK8JdPzca94YuvpmK5kzZTtnInOfKEI9fNiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=bTjlyc0+; arc=none smtp.client-ip=209.85.166.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7d67d1073easo4287439f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:34:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712867681; x=1713472481; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HFQrioCTLKkhRptmdIkcvOHp0QHA+wFxGV+r5aMx7Jc=;
-        b=bTjlyc0+HwIIU3VomJCm/sp5XJCC1sMADa5lN7A5qtvEbwPtYvg+8o1tHea8RYsHQ2
-         R47nBePXMNAhTBkL7MWvgucXNCUGUuPerMQJV5i90gkpaiaN3fh911nT8JwpJZsPWIqc
-         BZDjmHrEYIwDzMors5j0dljGB4K8MbrjLhy02eQEmKae9derjbntvhClh3pFq+YdtrnT
-         nRu+Dw/fe/uTkC19oM8kNai/jo3x/UuKvkeJqlNeEBq+mn15q4H7v8bWoSZu0/9Nq/GG
-         gUeEdvNkC4OTWTHY6p+We5mHpJ37IgVMDa1pmluxBJ9wcAJe8wKSHCCDqF+Yt45+UXcB
-         tghA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712867681; x=1713472481;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HFQrioCTLKkhRptmdIkcvOHp0QHA+wFxGV+r5aMx7Jc=;
-        b=pJjbs6ovh95c9RJWmThUaBsaS8INMQqMsFDCxGUveLrHa66oryluM/jjU9fx2GxSmI
-         EV8AEitWYyDseonfkHpWqswUP34cclFZxI8UYzhEYKqhTDwsYrexnyfgsLf0DNXQECAc
-         mHVRZbdxnHTYqbM99guXCVW8lvxg+2bwd0z++c11Dkz7cFNBfGcJCsMKceBxAN7SksB6
-         WQPqRjN74NgmADDv+Gnyq7HiNcdyoCOBWGqtEWBDKt7jAVqf+wLSMjUpGlEoYAGcJevT
-         5rXf9eVq+zz+V7nZ0MOsJbwZNryHApl+/hqP+xpm+hgdDttO1zNsbjiDeho9aQpPd6q3
-         2uaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVZASnitwUxMla79JyW0gBTfbdeIR90BjSXG9gW9xcE/PXmbpNA97Bi4HzV4UmgipMM8jTRkuYVn/k7QFXjCi13dgBOF37jFJaMn/ZZ
-X-Gm-Message-State: AOJu0YxXEol4Cakpbwir46XLTbOaDO1dnE+7uM9rc0/59fHLLMF/TFvR
-	hEZ+jcT5QVgzI3jmiA7OFBvpJSzm/8zAlQM3xG+wjs9LIx8nqkA4hyZT+gJnKyBzz5m04zB2ZUp
-	9
-X-Google-Smtp-Source: AGHT+IH2/BSQLLGqgAq5/+W7YHGk2rJZKu3FRGNYECp9/GB8j1FiT0Mhj+rId81twI/jAAZAKwpqwg==
-X-Received: by 2002:a6b:c34e:0:b0:7d6:7b7c:8257 with SMTP id t75-20020a6bc34e000000b007d67b7c8257mr980356iof.0.1712867681396;
-        Thu, 11 Apr 2024 13:34:41 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id u20-20020a056638135400b00482ba6c8fe7sm602849jad.116.2024.04.11.13.34.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 13:34:40 -0700 (PDT)
-Message-ID: <2378b252-678c-44a2-9303-a0450a4cea4c@kernel.dk>
-Date: Thu, 11 Apr 2024 14:34:39 -0600
+	s=arc-20240116; t=1712867693; c=relaxed/simple;
+	bh=9I3BW9al1fnQ0MtkczhNQoRl2kehBKmTZx4LxVoh0cQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IRlxFiV5iAZ26uI74smCxlIIN6C1pGt/hIxg3kVOhrpFCMLy7hGfCW2t6jSMcBCzXfg4r1nANgsDquvABV1Tzm7/CmCkDvyS4HhxgMJA5itVsPP+dPkd2DqxYM6IumMhlGEUex75RjMKy23ZcEf+cGh3sRhxhV9LXaAZGHroO0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=slQfO4Yu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EFD8C072AA;
+	Thu, 11 Apr 2024 20:34:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712867692;
+	bh=9I3BW9al1fnQ0MtkczhNQoRl2kehBKmTZx4LxVoh0cQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=slQfO4YuWHa5Kq1Dp9bOG+CYajJ0A8owzrfeBgxdPAjvZLlJGWQF0nCkyF6hbdrAA
+	 U6oHGUoSj+rTAvCp5iywDP3kj64mXITzC0KOYKjGJHrC0JtPTcYApUcEjX18TiIHCm
+	 1nsF7rzWwkOxCZNGzC6U53V8aFAZbblD8KRo0KMuOCCKA9h+iVQ2CDu9n5bM71dHk7
+	 5yDx1iFXzuOvL1VHz3mv4JQFiT3D4tWoHe8peAV2aghVefoAjZQk4GJrONS6M42qXl
+	 proNfIXgjsGvEp/SpZdQmvMMCpgvnWUIYNBLykY7I1LW2Om7aAJkbSwhNEBsZPgSHZ
+	 oxZPqk4QJSgbQ==
+Date: Thu, 11 Apr 2024 15:34:49 -0500
+From: Rob Herring <robh@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Herve Codina <herve.codina@bootlin.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, Lizhi Hou <lizhi.hou@amd.com>,
+	Max Zhen <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>,
+	Stefano Stabellini <stefano.stabellini@xilinx.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	Allan Nielsen <allan.nielsen@microchip.com>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>,
+	Steen Hegelund <steen.hegelund@microchip.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] PCI: of: Attach created of_node to existing device
+Message-ID: <20240411203449.GA2641-robh@kernel.org>
+References: <20240325153919.199337-1-herve.codina@bootlin.com>
+ <20240325153919.199337-3-herve.codina@bootlin.com>
+ <2024041142-applause-spearman-bd38@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: commit e57bf9cda9cd ("timerfd: convert to ->read_iter()") breaks
- booting on debian stable (bookworm, 12.5)
-Content-Language: en-US
-To: Bert Karwatzki <spasswolf@web.de>, linux-kernel@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org
-References: <fa36ba8c12e0243c717ba33d3fec29cf9f107556.camel@web.de>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <fa36ba8c12e0243c717ba33d3fec29cf9f107556.camel@web.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024041142-applause-spearman-bd38@gregkh>
 
-On 4/11/24 2:31 PM, Bert Karwatzki wrote:
-> Since linux-next-20240411 the booting process on debian stable hangs during the
-> init messages. I bisected this to commit e57bf9cda9cd, and reverting this commit
-> in linux-next-20240411 fixes the issue. I'm running debian stable (amd64) on an
-> MSI Alpha 15 laptop with 64G ram and the following hardware:
+On Thu, Apr 11, 2024 at 03:23:55PM +0200, Greg Kroah-Hartman wrote:
+> On Mon, Mar 25, 2024 at 04:39:15PM +0100, Herve Codina wrote:
+> > The commit 407d1a51921e ("PCI: Create device tree node for bridge")
+> > creates of_node for PCI devices.
+> > 
+> > During the insertion handling of these new DT nodes done by of_platform,
+> > new devices (struct device) are created. For each PCI devices a struct
+> > device is already present (created and handled by the PCI core).
+> > Having a second struct device to represent the exact same PCI device is
+> > not correct.
+> > 
+> > On the of_node creation:
+> > - tell the of_platform that there is no need to create a device for this
+> >   node (OF_POPULATED flag),
+> > - link this newly created of_node to the already present device,
+> > - tell fwnode that the device attached to this of_node is ready using
+> >   fwnode_dev_initialized().
+> > 
+> > With this fix, the of_node are available in the sysfs device tree:
+> > /sys/devices/platform/soc/d0070000.pcie/
+> > + of_node -> .../devicetree/base/soc/pcie@d0070000
+> > + pci0000:00
+> >   + 0000:00:00.0
+> >     + of_node -> .../devicetree/base/soc/pcie@d0070000/pci@0,0
+> >     + 0000:01:00.0
+> >       + of_node -> .../devicetree/base/soc/pcie@d0070000/pci@0,0/dev@0,0
+> > 
+> > On the of_node removal, revert the operations.
+> > 
+> > Fixes: 407d1a51921e ("PCI: Create device tree node for bridge")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> 
+> I need an ack from the maintainer here before I can take this.
 
-Thanks, this is known:
+Correct me if I'm wrong, but having the of_node sysfs link populated or 
+changed after device_add is a race we lost. Userspace is notified about 
+the new device and then some time later the symlink shows up.
 
-https://lore.kernel.org/linux-fsdevel/20240409152438.77960-1-axboe@kernel.dk/T/#m07fe27b781a2e558ee6d260e317b79e72f401321
+However, it so far is not appearing that there's an easy way to 
+reshuffle order of things to fix this.
 
-and the current trees have the right commit. Tomorrow's linux-next should
-be fine again, sorry about that.
+Maybe the short term (and stable) answer just don't create any of_node 
+symlinks on these dynamically created nodes.
 
--- 
-Jens Axboe
-
-
+Rob
 
