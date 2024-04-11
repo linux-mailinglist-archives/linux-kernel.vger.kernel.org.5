@@ -1,118 +1,116 @@
-Return-Path: <linux-kernel+bounces-141115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A0B18A1AD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:09:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F5AD8A1AB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:05:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 319C4B2502B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:57:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A511B28D557
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:05:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80A91E7934;
-	Thu, 11 Apr 2024 15:41:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12DC51F0B88;
+	Thu, 11 Apr 2024 15:42:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="K2jBXDJZ"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VjdpAGl7"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C99C11E6F5F
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9EF01ECE9D;
+	Thu, 11 Apr 2024 15:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850061; cv=none; b=fKKc1f90ZG9AJxdn6paR1oFWxKZsjK9K4jucvnJLgpw0QouexrEZ5tnSCtccGoXk4T0omUlQacoWWX5XHivq+b4g1Zue9Piet2vWpIU7tBzPu+Yr/hFk5fVcjfVPabHIC58ZBCRr0bqzYZv6pzfslkZDjFLriSpst45TJ6a6RqM=
+	t=1712850127; cv=none; b=KMNHImXGuOAnqRgNCqA6We0zeqM8JXqxh84xPMkizf5dFtzPkInzbCDOnO93ZpWm8mG8sObjrdsXykGCCUjuKBy/CgjtdGkkCKy/oTuSQU8bBjqS7egSqIj2ddJQshkcE+MjeT2kDEy2aUodDcY6K2qmbbyqNPgNSUDYmoGSQ4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850061; c=relaxed/simple;
-	bh=20UuiQFkTockG+yyYjHc4F13je0ENmFxiz4QhWzCdQ4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=A1oEll6g/PX2/s1HgQdjqzv+DXZ5jJ3eFktFybAcceLhcnHPIhcSNIm+1f0UkNSBVxvgIF3obbOka92QtCoUnZCttaZrrNyonxD6gmZ/6Bn4z7LZX8Z1YFDusK0/jDJ6oTiRDMQbfOqgQvi0GEpr5p6n0mp3hhHIkAHOMJJ9Qr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=K2jBXDJZ; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2a68a2b3747so313048a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:40:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712850059; x=1713454859; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TNCBXKOK5vc3YGKFYUbQmuJn7ivy3cDWCe8OlWYsEZM=;
-        b=K2jBXDJZ7wjvKfKnwiMLofu6RwQ6rusISxBzPJ5lI3R7EyiNkROirQre/eI+PorQXO
-         auLgTDXyOBcC9CduWzqhBTHI/2vifhzkGkIvUd2cOrHFB5gvqa1yQ2FWoL8cu7U0n5bJ
-         uIFH8weIUJsHtaLPXOzo0KdSu8coM3QSMMfrc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850059; x=1713454859;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TNCBXKOK5vc3YGKFYUbQmuJn7ivy3cDWCe8OlWYsEZM=;
-        b=pTPOcMiqGdUyLDRdkRjpGEB4/i9iPvmi9bkqG+7neYS7OIsN5lLZnPq0/YVEENcoDG
-         Fk78tSULZWq1thPwK0h2swlvLpLYB7ZwI7SLjFMSSItZrybYZ6e8WPqnJGlYhZneDAIb
-         7a/8ZVcAkQyPrIGJokl1o1T5nnAfFB3WO6r27AEWxJ5G9KDTthNjkFGUXJ4M7c0PWjX+
-         hUxkNNl1WDokp4GoqKWd4GBmbsHYdZ0Bq1HkFpGRr9HVBqBXuDkNPLObOD4T4hQOhAX9
-         0iq0an+d9lAb2/J89WJoz6jl1EzZrn2P8iFc559JHkHEmZ+Sf9ZoT7r5wKxNXoa0337P
-         DhwA==
-X-Forwarded-Encrypted: i=1; AJvYcCXOozmBy/BWN6EY0wBiT92+pMeyV2LMtc34U4RLh3WVIhlb7tbjsWej2yOwEcDaIw3BQTDBCtVCwKEpZtIQCAKwt1OTZaeQkM+3uMGG
-X-Gm-Message-State: AOJu0YxB+WG87Jke+h9t3iFVCJDq7YSXFQHmrqNdkr+E3Ohzj0Wa8TOv
-	TpM+MCIC3pqxMJ66EvV28XwQVGeDtEbHD3X1KLi819t05duuQ9lsf1EWvWHPVQ==
-X-Google-Smtp-Source: AGHT+IH9jxm0Fb4/9rDpVIPFtRTSYrpVWRroIqBhY1mn62exKNoGoLU12zMbf7I0bbrEMi3h9K0kNg==
-X-Received: by 2002:a17:90a:f3c5:b0:2a5:7e31:5030 with SMTP id ha5-20020a17090af3c500b002a57e315030mr5833139pjb.15.1712850058943;
-        Thu, 11 Apr 2024 08:40:58 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id gk16-20020a17090b119000b002a42d247a93sm1266081pjb.36.2024.04.11.08.40.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:40:58 -0700 (PDT)
-From: Kees Cook <keescook@chromium.org>
-To: Steven Rostedt <rostedt@goodmis.org>,
-	Marco Elver <elver@google.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [PATCH v2] tracing: Add sched_prepare_exec tracepoint
-Date: Thu, 11 Apr 2024 08:40:51 -0700
-Message-Id: <171285004930.3255679.4082124903503205236.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240411102158.1272267-1-elver@google.com>
-References: <20240411102158.1272267-1-elver@google.com>
+	s=arc-20240116; t=1712850127; c=relaxed/simple;
+	bh=s++XfARygyr9QzWg7t9rh68e9ZZCT9EVQZhozNyWOWc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a2e6FaLTmtsn9HchJeEQxu+0WTFtEZzsqbBrWHvQPFnR1rGRzFu18H46hKYBpLGhRjL08V5K+SRDEGFAcQLuqewoPXQe00KFf7LSaC2IwZ0VS4exWhv1Xt3121kxyVChzzJrLParkKJxt8G4vE5gs7lcumXs1rLMi0jIHh5SfVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VjdpAGl7; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712850126; x=1744386126;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=s++XfARygyr9QzWg7t9rh68e9ZZCT9EVQZhozNyWOWc=;
+  b=VjdpAGl70T3jUzXGmSycH8jv9c877LaXBc04h96due9ukVyR/QcofCPJ
+   ialXweeHEDFWhXDgmI22aYMEP/Ql8TmwDFqf3+iv+SIOHaR3+Wn9wRCuZ
+   2PxPcrrHNW1poR553CJcZjsajOb0rn8WZhrKHpr/GrJglSuvmFZNJqf/O
+   2lpp7CYoDs4rLbMf33tbqGJUL9iHkuU1LaKP9NjcLgYTYeoWGFfTl/tej
+   64yLEpURXgdczjLWMM7ENvMgvC5QhpCqjUTJ35daCUUhIKPCjFKymmf8x
+   ioi3g5skdFmI7656d58nwepB7Q0V0S9XmThpCd9kOu1covpR6YjiNs6X8
+   g==;
+X-CSE-ConnectionGUID: alg6nNwBR3CGad53UkPW2Q==
+X-CSE-MsgGUID: t/TVSiUUTzCerlITNo08UA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="12119268"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="12119268"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 08:42:06 -0700
+X-CSE-ConnectionGUID: Tj1tx9SVT5Cf9s1DZaN/pw==
+X-CSE-MsgGUID: MzsmU3NKTOSrrK0nECiQ9Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="25587756"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.242.48]) ([10.124.242.48])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 08:42:02 -0700
+Message-ID: <02a23b4f-1b2d-4e85-8826-23842790d237@intel.com>
+Date: Thu, 11 Apr 2024 23:41:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [ANNOUNCE] PUCK Notes - 2024.04.03 - TDX Upstreaming Strategy
+To: Sean Christopherson <seanjc@google.com>
+Cc: Rick P Edgecombe <rick.p.edgecombe@intel.com>,
+ "davidskidmore@google.com" <davidskidmore@google.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "srutherford@google.com" <srutherford@google.com>,
+ "pankaj.gupta@amd.com" <pankaj.gupta@amd.com>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ Isaku Yamahata <isaku.yamahata@intel.com>, Wei W Wang <wei.w.wang@intel.com>
+References: <ZhRxWxRLbnrqwQYw@google.com>
+ <957b26d18ba7db611ed6582366066667267d10b8.camel@intel.com>
+ <ZhSb28hHoyJ55-ga@google.com>
+ <8b40f8b1d1fa915116ef1c95a13db0e55d3d91f2.camel@intel.com>
+ <ZhVdh4afvTPq5ssx@google.com>
+ <4ae4769a6f343a2f4d3648e4348810df069f24b7.camel@intel.com>
+ <ZhVsHVqaff7AKagu@google.com>
+ <b1d112bf0ff55073c4e33a76377f17d48dc038ac.camel@intel.com>
+ <ZhfyNLKsTBUOI7Vp@google.com>
+ <2c11bb62-874e-4e9e-89b1-859df5b560bc@intel.com>
+ <ZhgBGkPTwpIsE6P6@google.com>
+Content-Language: en-US
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <ZhgBGkPTwpIsE6P6@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, 11 Apr 2024 12:20:57 +0200, Marco Elver wrote:
-> Add "sched_prepare_exec" tracepoint, which is run right after the point
-> of no return but before the current task assumes its new exec identity.
+On 4/11/2024 11:26 PM, Sean Christopherson wrote:
+> On Thu, Apr 11, 2024, Xiaoyao Li wrote:
+>> flexible (configurable) bits is known to VMM (KVM and userspace) because TDX
+>> module has interface to report them. So we can treat a bit as fixed if it is
+>> not reported in the flexible group. (of course the dynamic bits are special
+>> and excluded.)
 > 
-> Unlike the tracepoint "sched_process_exec", the "sched_prepare_exec"
-> tracepoint runs before flushing the old exec, i.e. while the task still
-> has the original state (such as original MM), but when the new exec
-> either succeeds or crashes (but never returns to the original exec).
-> 
-> [...]
+> Does that interface reported the fixed _values_?
 
-Applied to for-next/execve, thanks!
+No.
 
-[1/1] tracing: Add sched_prepare_exec tracepoint
-      https://git.kernel.org/kees/c/5c5fad46e48c
+But as I said, we can get what the fixed _values_ are after TD is 
+initialized by TDH.MNG.INIT via another interface.
 
-Take care,
+Yes. It is a bit late. But at least we have interface to get the fixed 
+value runtime instead of hardcoding them.
 
--- 
-Kees Cook
-
+Meanwhile, we are working internally with TDX architecture team to 
+request new interface to report fixed bits and values as the 
+configurable bits that doesn't require the TD is initialized. But not 
+guarantee on it and not sure when it will be public.
 
