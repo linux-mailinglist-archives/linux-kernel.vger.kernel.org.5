@@ -1,197 +1,110 @@
-Return-Path: <linux-kernel+bounces-140188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B46DA8A0C8B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:38:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDD1E8A0CA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:40:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D79B81C208C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:38:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9923328113E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:40:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A566D145339;
-	Thu, 11 Apr 2024 09:38:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 476ED145FE6;
+	Thu, 11 Apr 2024 09:40:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="O769IPCy"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EH4GLPYB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B679144D2B
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:38:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D5D145B08
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712828296; cv=none; b=EwDVvQcnyBG9vSJFxMxrfQ4MGkrvn7uTOmHLxaXDC3qmKKiNXfwIJQnX5Tpi4OZOhmMksys97624Ol9CDFs5NZEnPGBYR/SpUqe8W8YSFXsi8H3T0S5rIBCv4J4xPE09Vl+XmANm3lXXczTDIXXbrUeQWpTnUj1SkgreLbV/k7E=
+	t=1712828433; cv=none; b=gxVyqVTXeBj+giUnn3Ktq1BFvwMcCHqWV0YEi4iAflLQ8jnG1DGZ88ZAHSE9dc3Rv/Ic30PmMIwkBqpwTPaRfjWo1+3u2OavcXfrpDAs7r6F9s0bak3Ftsv4KF9pdZenJRok0P3jd4TzsOYIqWMaLO9lBseZADP7kbAnUfJ4CD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712828296; c=relaxed/simple;
-	bh=f/I9w6sfetJETzwe+/hnnc2vMvlramUWvNgeJvmG5bA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IKfLcHn5Ssrd2p1wFQ1YRmDOVT4VGozyBU2J/vdN9WCdKOn+hLNABiUp16c9wAtwVOJQ1zHs1lDVW15uVRqQqb9ZAiYDeJAOQ3Mlji9ZrJ8GNXNfbzM1ujbBuE9SCEhA2K6qnpllC62UJXyMXKZL/oAXXKo12fVIRn3k5CkZm/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=O769IPCy; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dcc73148611so8171562276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 02:38:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1712828294; x=1713433094; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=f/I9w6sfetJETzwe+/hnnc2vMvlramUWvNgeJvmG5bA=;
-        b=O769IPCytoq9tq3VZqLV085oGlzJpVdk0GXoD1TZ34aBiRllGx43qsGEJnrrzmPW8s
-         5RDYo01j/8WdNEfmCw9DpMr6+vhdkVm31bjYlRABHlVM2huPFOlcwCabEbh8aGjA/cUa
-         DG8YQSOgxZaPNcg7jLk6hA9t0ZrjgF8K169bU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712828294; x=1713433094;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f/I9w6sfetJETzwe+/hnnc2vMvlramUWvNgeJvmG5bA=;
-        b=HXnk0ZJ0vS9AXDVhX6aQ697EY1wyLj1lDMYTtbuYSX6DUPZgqI7oyTnwuMsjrupmVt
-         wOlcu9q59Ck+kIL+jUkrFohIUtQkJKpAd7BaRUMDLcSRzu88fjvNuWD9A3fsUw4Qz8hC
-         sUu6FiRFLAVY5BlBwvkzChKpsMWL0CIxW7zy84Fg938vtPMuEx29KDaC71qPgUMpI6m7
-         HgbBGHN25jPSEKjYpzEIBHJsxLLU+6NKoRu/i8DWhsL5EU5eaaNfmuoqVK6Tcc/mQJss
-         1c5BmJqF/aWbCFkW7fkgF+XAwWialkvS67thcmVQX99b2qB1HMNmZvL6kxpEjl/Bmd1A
-         ODRA==
-X-Gm-Message-State: AOJu0YyNvpr53jCOxOm3bd66iZUkWA5OY0+4ve6e7RhMydYR3yhAITbE
-	S7SObKwrT8WdmZyATXKvwRpxe5cq5kIVBlanPZ8LjTbTkYuaJncPvcwaO5c1QBQ=
-X-Google-Smtp-Source: AGHT+IG/fTGMXT11lLGkeiN4djWdRSuP6/7o/MFwiKk2QSEWzuhbX6g9A1hYx9sCqfqHL6Tsq3cf4w==
-X-Received: by 2002:a5b:5c5:0:b0:dcd:4e54:9420 with SMTP id w5-20020a5b05c5000000b00dcd4e549420mr5647972ybp.5.1712828294250;
-        Thu, 11 Apr 2024 02:38:14 -0700 (PDT)
-Received: from [10.80.67.140] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
-        by smtp.gmail.com with ESMTPSA id cz6-20020a056214088600b00696b282f582sm720350qvb.97.2024.04.11.02.38.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 02:38:13 -0700 (PDT)
-Message-ID: <d47dcc77-3c8b-4f78-954a-a64d3a905224@citrix.com>
-Date: Thu, 11 Apr 2024 10:38:10 +0100
+	s=arc-20240116; t=1712828433; c=relaxed/simple;
+	bh=azO9wtV6llgdxAslyD4HARSVVta3ZzPnL/RhPI/orH0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m58aghmw78Yqq/kRsiYyQlBRmAWB1VhTRvduT02YnXj15ciLJX1fL3bna8ki2EzbG0x/qEyXuDlB4U/j74xPOpsuP/nq7OkAjKmaBt3mr+xz/T2yyGeJYNjLRbj9LkJi/WkIxPUQB/Qy0LISoHKEIgG7iaNuVyHIfPosfzmLXDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EH4GLPYB; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712828430;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EmraJ1/O9LsKt0hu6c7bP8/lU6CtsirLWmswTT7M3Eg=;
+	b=EH4GLPYBlpBMECP8CoRzhDJ37RBiMrDR4aqy5sILSrV/Nb5JhlZg+lZw6tHq0EhF/MSooC
+	kMvagcLlE3YFFBXuT3SPoW70PQ9nf1bgXbgvi0YKSZJmKgzlMMbVXZP/6WPMSZmwlQZGjj
+	ijPwaXmPv2zpqXbfaj3qu4HQaeo+QY4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-407-NDfhiVXhNJqRSFUu2Uapog-1; Thu, 11 Apr 2024 05:40:27 -0400
+X-MC-Unique: NDfhiVXhNJqRSFUu2Uapog-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3909C104456D;
+	Thu, 11 Apr 2024 09:40:26 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.235])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 83B30C28102;
+	Thu, 11 Apr 2024 09:40:22 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu, 11 Apr 2024 11:39:00 +0200 (CEST)
+Date: Thu, 11 Apr 2024 11:38:51 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: John Stultz <jstultz@google.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Edward Liaw <edliaw@google.com>,
+	Carlos Llamas <cmllamas@google.com>, kernel-team@android.com,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 1/3] selftests: timers: Fix posix_timers ksft_print_msg
+ warning
+Message-ID: <20240411093851.GB5494@redhat.com>
+References: <20240410232637.4135564-1-jstultz@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: x86: Set BHI_NO in guest when host is not affected
- by BHI
-To: Alexandre Chartre <alexandre.chartre@oracle.com>, x86@kernel.org,
- kvm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, daniel.sneddon@linux.intel.com,
- pawan.kumar.gupta@linux.intel.com, tglx@linutronix.de,
- konrad.wilk@oracle.com, peterz@infradead.org, gregkh@linuxfoundation.org,
- seanjc@google.com, dave.hansen@linux.intel.com, nik.borisov@suse.com,
- kpsingh@kernel.org, longman@redhat.com, bp@alien8.de, pbonzini@redhat.com
-References: <20240411072445.522731-1-alexandre.chartre@oracle.com>
- <7f1faa48-6252-4409-aefc-2ed2f38fb1c3@citrix.com>
- <caa51938-c587-4403-a9cd-16e8b585bc13@oracle.com>
-Content-Language: en-GB
-From: Andrew Cooper <andrew.cooper3@citrix.com>
-Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
- 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
- 6+ahAA==
-In-Reply-To: <caa51938-c587-4403-a9cd-16e8b585bc13@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410232637.4135564-1-jstultz@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-On 11/04/2024 10:33 am, Alexandre Chartre wrote:
+On 04/10, John Stultz wrote:
 >
+> After commit 6d029c25b71f ("selftests/timers/posix_timers:
+> Reimplement check_timer_distribution()") I started seeing the
+> following warning building with an older gcc:
 >
-> On 4/11/24 10:43, Andrew Cooper wrote:
->> On 11/04/2024 8:24 am, Alexandre Chartre wrote:
->>> When a system is not affected by the BHI bug then KVM should
->>> configure guests with BHI_NO to ensure they won't enable any
->>> BHI mitigation.
->>>
->>> Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
->>> ---
->>>   arch/x86/kvm/x86.c | 3 +++
->>>   1 file changed, 3 insertions(+)
->>>
->>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->>> index 984ea2089efc..f43d3c15a6b7 100644
->>> --- a/arch/x86/kvm/x86.c
->>> +++ b/arch/x86/kvm/x86.c
->>> @@ -1678,6 +1678,9 @@ static u64 kvm_get_arch_capabilities(void)
->>>       if (!boot_cpu_has_bug(X86_BUG_GDS) || gds_ucode_mitigated())
->>>           data |= ARCH_CAP_GDS_NO;
->>>   +    if (!boot_cpu_has_bug(X86_BUG_BHI))
->>> +        data |= ARCH_CAP_BHI_NO;
->>
->> This isn't true or safe.
->>
->> Linux only sets X86_BUG_BHI on a subset of affected parts.
->>
->> Skylake for example *is* affected by BHI.  It's just that existing
->> mitigations are believed to suffice to mitigate BHI too.
->>
->> "you happen to be safe if you're doing something else too" doesn't
->> remotely have the same meaning as "hardware doesn't have a history based
->> predictor".
->>
->
-> So you mean we can't set ARCH_CAP_BHI_NO for the guest because we
-> don't know
-> if the guest will run the (other) existing mitigations which are
-> believed to
-> suffice to mitigate BHI?
+> posix_timers.c:250:2: warning: format not a string literal and no format arguments [-Wformat-security]
+>   250 |  ksft_print_msg(errmsg);
+>       |  ^~~~~~~~~~~~~~
 
-Correct.
+..
 
-Also, when a VM really is migrating between different CPUs, things get
-far more complicated.
+> -	ksft_print_msg(errmsg);
+> +	ksft_print_msg("%s", errmsg);
+>  	return -1;
 
->
-> The problem is that we can end up with a guest running extra BHI
-> mitigations
-> while this is not needed. Could we inform the guest that eIBRS is not
-> available
-> on the system so a Linux guest doesn't run with extra BHI mitigations?
+Thanks,
 
-Well, that's why Intel specified some MSRs at 0x5000xxxx.
+Oleg.
 
-Except I don't know anyone currently interested in implementing them,
-and I'm still not sure if they work correctly for some of the more
-complicated migration cases.
-
-~Andrew
 
