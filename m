@@ -1,116 +1,198 @@
-Return-Path: <linux-kernel+bounces-141395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B68AF8A1EF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:53:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF2EC8A1DAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:16:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1856B2A890
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:16:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DCA271C245BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:16:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA6B6182B1;
-	Thu, 11 Apr 2024 17:24:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5199224D8;
+	Thu, 11 Apr 2024 17:24:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ICJlgC4d"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q1nuJfjU"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD5F8205E3D
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 17:24:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A05117C72;
+	Thu, 11 Apr 2024 17:24:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712856264; cv=none; b=utqffH5GzbWQFSqvMsgvicffhB8SX53wXu7MjiPh501GGqZynMm7MtQ0zKqS2vncshkWI6JFuz91eRxACxr9uwsFYnA9M2SQcAd5+rHpSxN+CNFD2M55D81FMrBbf7t6BxB9FoszRj5cCeQIVe7kqyUTX/oRWQeSjfPXrJxUL0E=
+	t=1712856283; cv=none; b=X1RbNEz1CVWh+g4fqowYuIj9dvaKr7YHOdFs0Aj4EB84NSdDWeGNzIrIqClFDECVvkMxp6+o+DyXVOa5MSoTbSPgy4pV3F6hxXUR48P76zswWVQvCyRYG9uq6b8iC0AAih7Er1vCyK3iQPmjCJmw5usEorZRzOZ+ZQbWmHckHvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712856264; c=relaxed/simple;
-	bh=OvyPA4qcqhT8afxo9TDbGb0P1gxyjdE+tUpwI4Y5ptU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CCVuE9OcpXQILv+I/vC9fMpfILlPrIAyiNuw9rtaS8vglRWjoLJB817X7Xw3IboIn5Nhy9vOP5RrMH5SjGFDFVNCpUzH0psZE84iFHqw7iHYOwGHBf+yIjK3Znk5CsZWVWMVsEw0fMkXodPVnT3pCmGeF1FFjRrAQVCKGHCSMLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ICJlgC4d; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56e2e851794so873a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:24:22 -0700 (PDT)
+	s=arc-20240116; t=1712856283; c=relaxed/simple;
+	bh=3CrqLFN0sU4j3EisFD3rui+nSRvGpntYJwF4YCA+1DQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uOdTqzDRPAnrPgteEJpbTxM7ajCyWA+dLYMVNNMLEescvrpIyMLKk6DODHChZjFAq9vA2ptjwA5ue3QMXo+iqwhkrusaktcLYSyYfxOf05Pw9avYR4WvrT9+bpfNCn8B6U8BtkqMdCzvF+bcbb8PrClhyQQl/p+rc9OPLEyWAH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q1nuJfjU; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dcc7cdb3a98so42165276.2;
+        Thu, 11 Apr 2024 10:24:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712856261; x=1713461061; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pbe+N+ArnFJu6oo3t2QxqRzeLGyanm8Bt8NltXAuiV8=;
-        b=ICJlgC4d/3wHMB2y72CNjmO71BwtmgY37MSB65HSmXeoh04wOjETNAhmw92q6w005D
-         W6xRGC+nJ4D6BG90xmeuaKWLDaEnnRXd/uuiAwqtSYfk/VemLXly5A7nGfdpDEhlOsGH
-         afm9ZPVInUgdPYK7Cd3z5j1M67Lw0yOlgAoNmhEgkC47zayfJTAGSYZgqONvtEzFuhlQ
-         CRz1FOilUjB1d/3vlV90xwjXsqZSfdOfCe3nKx5Zj+iz7F+2P2xetdAiozyDF0fJczGl
-         sKionBW7wZGtJ4LWgbe6SLFzQZvN9S2slsJ0JbC4BHyx/xDeTbV4PBc6zdwLP8SGwtcb
-         RIqg==
+        d=gmail.com; s=20230601; t=1712856280; x=1713461080; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3aU+VDcnxdJAiLiKhNqs0MWODsXShfL8imzNJx8uWYI=;
+        b=Q1nuJfjU2wEw/pqUw2jvSlMLG9/zGKRXlrgY3Kgoljreh5M9Pc+oMFIKc2lKu1pkHc
+         wOF7elvzTBvyYoH+w77ZnxTPJf0pguHQYI4ewxGyzICS2pBQGZ9kEXCGoQaPOv4G2eAH
+         3jqgYl22gG9uvaP8j/4O4lBBCJJ/jGakk2ghnxGXlDZauQMRGCU0/Zk2zZK/OgVbTmQ5
+         VfAdLsN+61c+COS28VmX8n18I2KRCg/tQfl2gS1J/jqZfGVf0IpklwaFFrLUtpOwiX5i
+         At+sxaes0ek3zgzBZV+T6AMDu8EJzDhdmLoOxGLKpkx2BusDDl6wMUErHUHvmJro7FyL
+         OrSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712856261; x=1713461061;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pbe+N+ArnFJu6oo3t2QxqRzeLGyanm8Bt8NltXAuiV8=;
-        b=EiEVcVUaO7PaJjZV5e5G3eAEdC3E6Wian8GAxM8m8jrVkHludUTREIN6L4oxxuEdO4
-         Q3MFTRfVptiY+3zxcUmxC9rlWFsMLyR2l06z0TfaVC5G1VVRMhPCRSJhuX1NJy+xLE6g
-         mpyLc1wpNWA4dkSSJSAAGPn8gvpPRJ1aFgqIORxNHJNWy59LxigcXi8fWegSTqvkZykJ
-         4Pic1RHl9NG4i2dGPnI/YvRcSf/Ntxn8S+khLly9et5i8JKXzi3AzfOg3IkwrwSuXPNP
-         t0mxsJskJ8v4mq2tXwmkc0blqR5CgxSeXRrfCloW6aPUrT8YOZ24aWnA5A9DCzKQqmQA
-         4+Ng==
-X-Forwarded-Encrypted: i=1; AJvYcCXWsqORqNgZk7SqzWgibdKL0DCNeOLzyg2c28KonNu03PK2JMI4TKp+IV23e2J2ttxLiJvDGP2PHEfNEgfSyo3WXXpr+FVyDoiZGCtJ
-X-Gm-Message-State: AOJu0Yx7q+0PkaG2ZeGXS6gzcRp2JvTidBeoqF85QnJAQ+KkBOkv+CW0
-	VZgct8X4puQO1p/reTzLonTQBd41B2cWQ+kDrHryFtc6sNqAZ8AEL8zJz6S+9cqCYvNOAfWwguK
-	YwDnG61hBUazi9NiuMwwJ8HPmM/GnvPk/hKS0
-X-Google-Smtp-Source: AGHT+IGzM0+wIr54mp1dxlbIvqgdkGtnaeo28Ht38EKsuTcHsjkq3lzshCVsTDzwCECDVlz2tWHzcducMqzsXDKXJ0w=
-X-Received: by 2002:a05:6402:34ca:b0:56f:ed6f:2b6d with SMTP id
- w10-20020a05640234ca00b0056fed6f2b6dmr129606edc.6.1712856260820; Thu, 11 Apr
- 2024 10:24:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712856280; x=1713461080;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3aU+VDcnxdJAiLiKhNqs0MWODsXShfL8imzNJx8uWYI=;
+        b=t+jP1DZaHIAnNIBjmyi0NfkXDuLOyIK6/Qj1YWdc98AuSCUQ+o9k9S8ioe8rNYBG4R
+         1R5JhEX6PC+JE1MH/9M4wpvgOeo3ggEayz5ZdIilQDn5Yz9D/LsqvhOe94Y10DqRHdhG
+         Wv64YtCRGmbV02ow09UnOsXPfRLFJ81+4EN/wAZs5d+JaY1h5H1mGiharTLdRPgbcyxU
+         JZ0TOYWh+y++ZDe6LbCO5FObH8f8YpN9/GL9rUiqJMR8aBJXRxD03MUY1PFOizLU5vHD
+         NZjBF3SADZBc7PlG2f0cdsIm0oFvxvmiUPTCvP7/g28IEJq7kfUovuN4zOByNUgBMywg
+         8Img==
+X-Forwarded-Encrypted: i=1; AJvYcCVQubd1zrD3ePdXFy3E3osJK2hASq35EqOCBvAuHbUHpN4LVts2hVf31MCGtgFLlPAY9YgyweN2GAC5xxMjsIwgZlHDPcrz8cpRpbADTNqPW5EmBEcapk6JI7FSf9U7EGM4vs/KMJz77Q==
+X-Gm-Message-State: AOJu0Yz0hZxK3H/agGxCuGM8MwIW+N2MzC+rL1MZe5VTRPfXXm4FESKa
+	NYjWHCdlw704GTMmuE/hG0M7k+1TCJD7r+6s4WUEm7STIOG+da5f
+X-Google-Smtp-Source: AGHT+IHwtXI6RPcAx6JYyAqjw9V9RWwxVxik8CVr64O0+hIJzbXQ+BRGV5uoANxfOjFaDBQ5uvvq2Q==
+X-Received: by 2002:a05:6902:150b:b0:dc6:4d0c:e9de with SMTP id q11-20020a056902150b00b00dc64d0ce9demr210219ybu.0.1712856280449;
+        Thu, 11 Apr 2024 10:24:40 -0700 (PDT)
+Received: from [192.168.7.169] (c-98-197-58-203.hsd1.tx.comcast.net. [98.197.58.203])
+        by smtp.gmail.com with ESMTPSA id j127-20020a255585000000b00dcc7b9115fcsm383512ybb.3.2024.04.11.10.24.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 10:24:39 -0700 (PDT)
+Message-ID: <144398ae-42ae-b816-62d6-a90738544ca4@gmail.com>
+Date: Thu, 11 Apr 2024 12:24:38 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
- <20240126085444.324918-2-xiong.y.zhang@linux.intel.com> <ZhgYD4B1szpbvlHq@google.com>
- <56a98cae-36c5-40f8-8554-77f9d9c9a1b0@linux.intel.com>
-In-Reply-To: <56a98cae-36c5-40f8-8554-77f9d9c9a1b0@linux.intel.com>
-From: Jim Mattson <jmattson@google.com>
-Date: Thu, 11 Apr 2024 10:24:06 -0700
-Message-ID: <CALMp9eRwsyBUHRtjKZDyU6i13hr5tif3ty7tpNjfs=Zq3RA8RA@mail.gmail.com>
-Subject: Re: [RFC PATCH 01/41] perf: x86/intel: Support PERF_PMU_CAP_VPMU_PASSTHROUGH
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: Sean Christopherson <seanjc@google.com>, Xiong Zhang <xiong.y.zhang@linux.intel.com>, 
-	pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
-	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
-	kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
-	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 5/7] dt-bindings: phy: qcom,ipq8074-qmp-pcie: add
+ ipq9574 gen3x2 PHY
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240409190833.3485824-1-mr.nuke.me@gmail.com>
+ <20240409190833.3485824-6-mr.nuke.me@gmail.com>
+ <019180df-67b9-438b-a10d-f92fd4ddec03@linaro.org>
+ <33461c22-21a3-023b-4750-c69304471ea8@gmail.com>
+ <2379377e-ca1c-453f-bb74-186ab738ce39@linaro.org>
+ <a23adb9c-6377-467b-ac3c-0ec51fc97253@linaro.org>
+ <d827ec3c-84fd-9352-b321-79bdc4bdcd40@gmail.com>
+ <27b4b37b-c736-4d6b-98f0-0856e09ec5b6@linaro.org>
+From: mr.nuke.me@gmail.com
+In-Reply-To: <27b4b37b-c736-4d6b-98f0-0856e09ec5b6@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 11, 2024 at 10:21=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.=
-com> wrote:
->
->
->
-> On 2024-04-11 1:04 p.m., Sean Christopherson wrote:
-> > On Fri, Jan 26, 2024, Xiong Zhang wrote:
-> >> From: Kan Liang <kan.liang@linux.intel.com>
-> >>
-> >> Define and apply the PERF_PMU_CAP_VPMU_PASSTHROUGH flag for the versio=
-n 4
-> >> and later PMUs
-> >
-> > Why?  I get that is an RFC, but it's not at all obvious to me why this =
-needs to
-> > take a dependency on v4+.
->
-> The IA32_PERF_GLOBAL_STATUS_RESET/SET MSRs are introduced in v4. They
-> are used in the save/restore of PMU state. Please see PATCH 23/41.
-> So it's limited to v4+ for now.
 
-Prior to version 4, semi-passthrough is possible, but
-IA32_PERF_GLOBAL_STATUS has to be intercepted and emulated, since it
-is non-trivial to set bits in this MSR.
+
+On 4/10/24 14:36, Krzysztof Kozlowski wrote:
+> On 10/04/2024 18:29, mr.nuke.me@gmail.com wrote:
+>>
+>>
+>> On 4/10/24 02:02, Krzysztof Kozlowski wrote:
+>>> On 10/04/2024 08:59, Krzysztof Kozlowski wrote:
+>>>> On 09/04/2024 22:19, mr.nuke.me@gmail.com wrote:
+>>>>>>
+>>>>>>
+>>>>>>>     
+>>>>>>>       clock-names:
+>>>>>>>         items:
+>>>>>>>           - const: aux
+>>>>>>>           - const: cfg_ahb
+>>>>>>>           - const: pipe
+>>>>>>> +      - const: anoc
+>>>>>>> +      - const: snoc
+>>>>>>
+>>>>>> OK, you did not test it. Neither this, nor DTS. I stop review, please
+>>>>>> test first.
+>>>>>
+>>>>> I ran both `checkpatch.pl` and `make dt_binding_check`. What in this
+>>>>> patch makes you say I "did not test it", and what test or tests did I miss?
+>>>>>
+>>>>
+>>>> ... and no, you did not. If you tested, you would easily see error:
+>>>> 	clock-names: ['aux', 'cfg_ahb', 'pipe'] is too short
+>>>>
+>>>> When you receive comment from reviewer, please investigate thoroughly
+>>>> what could get wrong. Don't answer just to get rid of reviewer. It's
+>>>> fine to make mistakes, but if reviewer points to issue and you
+>>>> immediately respond "no issue", that's waste of my time.
+>>>
+>>> To clarify: "no issue" response is waste of my time. If you responded
+>>> "oh, I see the error, but I don't know how to fix it", it would be ok, I
+>>> can clarify and help in this.
+>>
+>> I apologize if I gave you this impression. I tried to follow the testing
+>> process, it did not turn out as expected. Obviously, I missed something.
+>> I tried to ask what I missed, and in order for that question to make
+>> sense, I need to describe what I tried.
+>>
+>> It turns out what I missed was "make check_dtbs". I only found that out
+>> after an automated email from Rob describing some troubleshooting steps.
+> 
+> No, the dt_binding_check fails. You don't need to go to dtbs_check even,
+> because the binding already has a failure.
+> 
+>>
+>> If I may have a few sentences to rant, I see the dt-schema as a hurdle
+>> to making an otherwise useful change. I am told I can ask for help when
+>> I get stuck, yet I manage to insult the maintainer by aking for help. I
+>> find this very intimidating.
+> 
+> I don't feel insulted but I feel my time is wasted if I tell you to test
+> your binding and you immediately within few minutes respond "I tested",
+> but then:
+> 1. Bot confirms it was not tested,
+> 2. I apply your patch and test it and see the failure.
+
+Thank you for double checking, and I am sorry this escalated in this 
+manner. I believed you the first time that something is wrong, and I had 
+a hard time figuring out what.
+
+I am now able to repro the errors, and the below changes appear to work. 
+Is that sufficient?
+
+    clocks:
+      minItems: 3
+      maxItems: 5
+
+    clock-names:
+      minItems: 3
+      items:
+        - ... (5 clock names here)
+
+For ipq6018/ipq8074:
+
+       properties:
+         clocks:
+           maxItems: 3
+         clock-names:
+           maxItems: 3
+
+For ipq9574:
+
+       properties:
+         clocks:
+           minItems: 5
+         clock-names:
+           minItems: 5
+
+
 
