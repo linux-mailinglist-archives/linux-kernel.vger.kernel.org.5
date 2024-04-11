@@ -1,113 +1,189 @@
-Return-Path: <linux-kernel+bounces-140335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6F168A12EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:28:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 815098A12E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:27:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6CB91C2181B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:28:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10B641F21E9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:27:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C73671487C5;
-	Thu, 11 Apr 2024 11:27:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45809148858;
+	Thu, 11 Apr 2024 11:27:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WYoGdsT1"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="L082FRQF"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EF5214A0AE;
-	Thu, 11 Apr 2024 11:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA49B1F171
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712834855; cv=none; b=gZtnUmmE7FTFyGtaxMqdBqhP7e03W9DhjV79V4mTfr4my1Xg2w528j9UQv6vaTfo08RUUiQk1cNnRkXnL9bjJ61CDoNMXA13Qcpwnz85SK4iJm8QU4DjeyvD29+W/dO7jqtLbO1WMGG7IK/UrxPMrRWltKiF6gUSfuR4HMZecJQ=
+	t=1712834841; cv=none; b=cfDoV/fYIiYuriY0Uaepo3gSAQYn2Q1j3I/CWrRK9B8du5At+gWVs+FB5DMQusNmhS2JdCF1DIoqVxCeB4rubNqRvxIK+2qgwbS8OdZPvuxiG5TSZDflytFZPWhm4qlXao/aYwieaGr7h0vZNxBjGvg47F74Qk89Xl9wV3d47dE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712834855; c=relaxed/simple;
-	bh=pEPBqeAYoMzDCWxRgfG/69Jmpftv9TJ/hXdVNM+Wvtw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Z2UwezikbwskwJtsSkzxBPfZmA2RmhY78JuzbfNaOylBpRw7B/8l+Xi8gwc9jPDDuZ68rjDCnX/CRGaaRUR5Dqmp0T1ka0KpOubqdP9v4JKRE+ns1gQtP+AGgqVN3BEv9pPhmBbS30vEx3SzaEcciVWKNINdOcT298FyY6g/Qws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WYoGdsT1; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a4702457ccbso986059766b.3;
-        Thu, 11 Apr 2024 04:27:33 -0700 (PDT)
+	s=arc-20240116; t=1712834841; c=relaxed/simple;
+	bh=SXj9y6dEQyLjYVUDk/uY67G232uAsHDAK22JxGiQ7zc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NMEijUzIHebIsQqXKoLMZrX7Tf6R89Ul30hDtYn/n7mLVSwrSKaenTcIbhv9/FS18hRa5uzf93z9DESO1/XsCtDFFVzMymeN2x5H4kcdX1Fpm5IreiS2i0On8FjoKZ42559ccuiT/BJbSLLZg/4tjArp9YLCxW+tUd4+FsjbPyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=L082FRQF; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56c5d05128dso8726789a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 04:27:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712834852; x=1713439652; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pEPBqeAYoMzDCWxRgfG/69Jmpftv9TJ/hXdVNM+Wvtw=;
-        b=WYoGdsT1QqwGPVldwLpf7yC/Qg+S/8D7Q0tj6nL4NZpxEQdg7IQzz5H5cD8IdsifPe
-         CqHn9cQHGiD9htCNBJlaif50k1ctgEZbMyJsh0hhrnyR8ToYFTHnFB1ynbcEc6V1t1mN
-         /jT13EyaDnquDsDZ/ltjCxOD3RAwQ/KfLchZA61HWR1Ag+had8srDfdpP0ka1DLg+k0i
-         qIl3NZ8hKW4Egk+7/v+b1nJ5Y66q8ImijR7ldqI4mjwsiEsoPmlVicPcrh6t0U8B5Azw
-         Q8JpEyzWyFIkPChhWJA4dn/MmVWt2g2NEiqWKfJczQiDKjTsc3z/ZuW0d6sIGRf06k/I
-         rtTg==
+        d=linaro.org; s=google; t=1712834838; x=1713439638; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JPgHHwHJQUjcN9+ZETRpKSXHrtMV9qPUP/hzLNBulq4=;
+        b=L082FRQFnAl2gmqT3iHTAD04J85CNWw2zd7i9oITMl+sox/OdsvJ54jy4Y0iGLMgM5
+         xQpmhGqv8XkoCsxEQPb6xTVUcqurpTfB8QGs4EjObDWSnRL3xaTkevjuB0SnpD2R+wtq
+         Bfo6ef7cKOHy73MchxRrN+Cgg9rzH/rawAGMvL5bf5/8WTpW40ru24dWu3OWjfcQjUkX
+         wGbt+6lpdkSUkU8xfF43w7214iCTYCGLcL35FJTaj5D6OumB1ayNmNIN6bN8I3gbQ5rF
+         Hr+Z2cTfX/LxQPpR8OdpSGu4r/8IBJ2bf05J7woxcfg5TFazDyrsqhleR8XUBLcGMmOJ
+         vKQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712834852; x=1713439652;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pEPBqeAYoMzDCWxRgfG/69Jmpftv9TJ/hXdVNM+Wvtw=;
-        b=LQy1RpdaqMNMg6F3TGnrr7if0G8NhcdX+VSmtVWzfUNG2k5D+mUUVWhYACGSvCLKZa
-         h1rR9OS+uxOTtfkPTSB2X1xGhy0INXQ9p2XaxZgIISyv+VWkyoYlh9vSzet6QXqwrozo
-         oYo7Jp8xZZ4hBbZBJaG0okRju3OaodU2LCO4Eimfid8IG1p9JcDG3Kbov1jLre2tXvfP
-         tOESwtH5R1m3guypGH2fVgonVRxzUDlRVQly7Da7hhsdPpF2mER66qlh+69k16Bfpui6
-         K56aPQuFhXzMOscygVOBIesBpd89e/rlJJU6dIOJE7ps8Xf/rt+QR4VOiBKL1lgVSUL0
-         RvGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWJdJaGeT481RvQEEyx5FKzEyLh/ojAe2NuXd72NTk4nSNLTNtBTeeis2sJUTfVO/TY4PhYUsWxTBwtjaybC3GZ8Q79rv4kHTXT/aQ8
-X-Gm-Message-State: AOJu0YwipTGnsseBFmwYaqnUvqtw2mWY+ibs8eueJxWq9LaP8pJpi7h2
-	QTEnO8rfD5r/5PeksWQ96uq2Hx6DVQfUJiM7vJu6PSSyeVvg10JjJMMsQYilvSJBjDSTE6lsptE
-	3q4/A5ACaZ48iHldWsyTNZLbpOj8=
-X-Google-Smtp-Source: AGHT+IF+E92mUFFdtpNUANWgNMqjMWcwkQ91fGDlFrc79EFg49AYNX+hnHqm1OSkN2DdbtEPzilPP4XYYCDdgrWnzpg=
-X-Received: by 2002:a17:907:9302:b0:a52:26fc:3203 with SMTP id
- bu2-20020a170907930200b00a5226fc3203mr754807ejc.27.1712834851568; Thu, 11 Apr
- 2024 04:27:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712834838; x=1713439638;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JPgHHwHJQUjcN9+ZETRpKSXHrtMV9qPUP/hzLNBulq4=;
+        b=FRjk/pi9tVOwejJUMDyxbf7pgxMJqcym+GObbSVih4hj5XojjSQsUt6zc99nFp/HWg
+         MalMT93o1DvO2HmtGyJDKrHGSm8DFK6yDDY2N9IEHGcwEPOmaPG+FxHja2lTzBZA8EZC
+         yBSgE0S57MMsEnHJ1ywsIvkrb+SCvUd9SWOmQVHcv4PzeDA11YqW8aFNhUqVVBAOJIe6
+         XEqVSVAtxLDtSo9saic9QFiWOU+TSJJ2FRFpAAyEJJz6BCge3utQueVmpPMTdySgZuBA
+         CdBoP2nQjmAV+tYB/dVVg1wkrDzhMXEXUpCUSwnQabJw1LqCCQYoqGA/HI8HCw8GhzH4
+         Od/A==
+X-Forwarded-Encrypted: i=1; AJvYcCXUfeaku6QGwPbgPU9aKK0s6SYBgTHNkXzebKLDKsnMkeVvzjc3u0mpwr5NRK+kfu/YgwF/Uk2ag6rJcOkiWUcQLOaYHXphoVWGIyPd
+X-Gm-Message-State: AOJu0YzTnvzBN5Pq6tZLEFbwY8JHKLGGFjVQkJjs9G7u2Wufgjxn60Yu
+	lZsTqES/eAcOcDqBrQRaYv0nS98fNz2meRjgFyclPmh0C80RpZiy9IXedhsFUks=
+X-Google-Smtp-Source: AGHT+IFwLt+iueu2j3MLe7sPxKEVm12o1woUYsl+DRSYf62oseMX9GHG+9X4QGSFZmjrEH6UfyAexA==
+X-Received: by 2002:a50:ab18:0:b0:56d:c4eb:6328 with SMTP id s24-20020a50ab18000000b0056dc4eb6328mr3413547edc.29.1712834837783;
+        Thu, 11 Apr 2024 04:27:17 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id er15-20020a056402448f00b0056e637f188fsm592949edb.11.2024.04.11.04.27.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 04:27:17 -0700 (PDT)
+Date: Thu, 11 Apr 2024 14:27:13 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Tung Quang Nguyen <tung.q.nguyen@dektech.com.au>
+Cc: "Colin King (gmail)" <colin.i.king@gmail.com>,
+	Jon Maloy <jmaloy@redhat.com>, Ying Xue <ying.xue@windriver.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"tipc-discussion@lists.sourceforge.net" <tipc-discussion@lists.sourceforge.net>,
+	"kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][next] tipc: remove redundant assignment to ret, simplify
+ code
+Message-ID: <a9c41116-98b6-461b-b936-37995a343a51@moroto.mountain>
+References: <20240411091704.306752-1-colin.i.king@gmail.com>
+ <AS4PR05MB96479D9B6F9EC765371AA8A588052@AS4PR05MB9647.eurprd05.prod.outlook.com>
+ <ce0a63fc-1985-4e25-a08b-c0045ae095f4@moroto.mountain>
+ <3011ca26-08d4-4b4e-847e-d68c0751f98d@gmail.com>
+ <AS4PR05MB9647FC45E89AECEDC01068C388052@AS4PR05MB9647.eurprd05.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410063930.1199355-1-andy.shevchenko@gmail.com> <D0H8EQB97VFA.2P27K85EJXCTB@kernel.org>
-In-Reply-To: <D0H8EQB97VFA.2P27K85EJXCTB@kernel.org>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Thu, 11 Apr 2024 14:26:54 +0300
-Message-ID: <CAHp75Vf8vWe=wn62w1yxt5C_Aue9q9C0H7ML7VchEiz999ffxw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpio: regmap: Use -ENOTSUPP consistently
-To: Michael Walle <mwalle@kernel.org>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AS4PR05MB9647FC45E89AECEDC01068C388052@AS4PR05MB9647.eurprd05.prod.outlook.com>
 
-On Thu, Apr 11, 2024 at 1:46=E2=80=AFPM Michael Walle <mwalle@kernel.org> w=
-rote:
-> On Wed Apr 10, 2024 at 8:39 AM CEST, Andy Shevchenko wrote:
-> > The GPIO library expects the drivers to return -ENOTSUPP in some cases
-> > and not using analogue POSIX code. Make the driver to follow this.
+On Thu, Apr 11, 2024 at 11:04:15AM +0000, Tung Quang Nguyen wrote:
+> >Subject: Re: [PATCH][next] tipc: remove redundant assignment to ret, simplify code
+> >
+> >On 11/04/2024 11:31, Dan Carpenter wrote:
+> >> On Thu, Apr 11, 2024 at 10:04:10AM +0000, Tung Quang Nguyen wrote:
+> >>>>
+> >>> I suggest that err variable should be completely removed. Could you
+> >>> please also do the same thing for this code ?
+> >>> "
+> >>> ...
+> >>> err = skb_handler(skb, cb, tsk);
+> >>> if (err) {
+> >>
+> >> If we write the code as:
+> >>
+> >> 	if (some_function(parameters)) {
+> >>
+> >> then at first that looks like a boolean.  People probably think the
+> >> function returns true/false.  But if we leave it as-is:
+> >>
+> >> 	err = some_function(parameters);
+> >> 	if (err) {
+> >>
+> >> Then that looks like error handling.
+> >>
+> >> So it's better and more readable to leave it as-is.
+> >>
+> >> regards,
+> >> dan carpenter
+> >
+> >I concur with Dan's comments.
+> >
+> >Colin
+> I have a different view.
+> It does not make sense to me to use stack variable 'err' just for
+> checking return code of the functions (__tipc_nl_add_sk/
+> __tipc_add_sock_diag) that we know always return true on error.
 >
-> I don't care too much, so if you like you can add
->
-> Reviewed-by: Michael Walle <mwalle@kernel.org>
 
-Thank you!
+I think you are trying to mirco optimize the code at the expense
+of readability.  It is unnecessary.  The compiler is smart enough to
+generate the same code either way.  I have just tested this on my system
+and it is true.
 
-> But.. isn't it the wrong errno and isn't it discouraged to use it
-> because it's a NFS only errno? Thus, wouldn't it make more sense for
-> the core to accept EOPNOTSUPP and maybe convert it to ENOTSUPP if we
-> don't want to break userspace?
+$ md5sum net/tipc/socket.o.*
+f5ebea97eeb9736c5b8097158c2b12e5  net/tipc/socket.o.without_var
+f5ebea97eeb9736c5b8097158c2b12e5  net/tipc/socket.o.with_var
+$
 
-We don't break user space as it is used purely internally to the GPIO
-/ pin control subsystems (which are in our area of interest, unlike
-plenty of other users).
+When you're doing these tests, you need to ensure that the line numbers
+do change so I have commented out the old lines instead of deleting
+them.
 
-The decision to have this error code had been made long time ago and
-now somebody probably is welcome to update, but for the sake of
-consistency let's continue what was done by design.
+regards,
+dan carpenter
 
---=20
-With Best Regards,
-Andy Shevchenko
+diff --git a/net/tipc/socket.c b/net/tipc/socket.c
+index 7e4135db5816..879a8a9786b0 100644
+--- a/net/tipc/socket.c
++++ b/net/tipc/socket.c
+@@ -3560,24 +3560,21 @@ int tipc_nl_sk_walk(struct sk_buff *skb, struct netlink_callback *cb,
+ {
+ 	struct rhashtable_iter *iter = (void *)cb->args[4];
+ 	struct tipc_sock *tsk;
+-	int err;
++//	int err;
+ 
+ 	rhashtable_walk_start(iter);
+ 	while ((tsk = rhashtable_walk_next(iter)) != NULL) {
+ 		if (IS_ERR(tsk)) {
+-			err = PTR_ERR(tsk);
+-			if (err == -EAGAIN) {
+-				err = 0;
++			if (PTR_ERR(tsk) == -EAGAIN)
+ 				continue;
+-			}
+ 			break;
+ 		}
+ 
+ 		sock_hold(&tsk->sk);
+ 		rhashtable_walk_stop(iter);
+ 		lock_sock(&tsk->sk);
+-		err = skb_handler(skb, cb, tsk);
+-		if (err) {
++//		err = skb_handler(skb, cb, tsk);
++		if (skb_handler(skb, cb, tsk)) {
+ 			release_sock(&tsk->sk);
+ 			sock_put(&tsk->sk);
+ 			goto out;
+
+
 
