@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-141284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3D258A1C22
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:39:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0787A8A1C21
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:39:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87812285478
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:39:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B169D1F21FD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:39:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76525153828;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D0EB15380F;
 	Thu, 11 Apr 2024 16:10:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Iw900Lxy"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="jDuGxCxX"
 Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D30D5153562;
-	Thu, 11 Apr 2024 16:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B8B17C66;
+	Thu, 11 Apr 2024 16:10:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712851845; cv=none; b=EhTrCRt9vb83WxvB+R8CD3Gd6EZqC7hfdtH9iiVwwUPotI04+khh/22sPdS/vUkrWCcti9VfUmZZfnGpRBa8NiR+SXcKbgKwKOHwSBWhDdqjYQHs6rntpmaUVUhWnqWPcgcsFelduqLhJuC8WJlxqvVRumtxQYAACPlA+E0TRtc=
+	t=1712851845; cv=none; b=SV2OOYSSQTzHH9o7k3k0wcfZlFJL1+jvemAEXO1FUF95h8W817dPwdUxVqeYikQfB6chVtguquQkKOKZ4fUnZg3K7r5TN/a7cLl0jg3TdLS1+LY3DExSS2aVMP8zyttbvOsRgsAvFnKnb/3jQke3/uwqAXob9wIN2EMTQ2zFw8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712851845; c=relaxed/simple;
-	bh=O+/5Qfe6xSZp7zEJFi6AkcyF9CZxZ1oINfXN3oIU5zg=;
+	bh=e69E9XiKbn3qnCR9v9riXoYG/Elb7S93jjrX4imdQRc=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GHoSVXkCuW0upcvhOgZ7ntCS/PxSXafuFSuTMhnOyn0xZhdF/mJSR0RNCSWZItDs+lH2uCiHQvwFqNi/o6V+sLUIdhdYFKLYUPoSa3mpB8UKU4xVDxZ3gaaZpCFiQ2PdSZOgESmIcGt3EB2peosEWhjVtLqpJXXAuZZxk+TlPTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=Iw900Lxy; arc=none smtp.client-ip=45.89.224.132
+	 MIME-Version:Content-Type; b=qHpWN5kD4xQUi7AE8dqBJPHhaIn6UfQfcLErHwsSU+OG+EN++oaj1qaYO05haoPDfwjNC0Y3H071lONMN+mS+XlJda58Qp6XFS8tZEn+rLbHoM0lFncRRjcXXSyoiGaIenplIC3wnd1wtzkJ4+V5bficL5sqraTR6fxonjt92Tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=jDuGxCxX; arc=none smtp.client-ip=45.89.224.132
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
 Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id EA96912006B;
-	Thu, 11 Apr 2024 19:10:40 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru EA96912006B
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 20438120072;
+	Thu, 11 Apr 2024 19:10:41 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 20438120072
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1712851840;
-	bh=Y2II5xeW1Ynwt+PAV1JC6hWSCxp47DaIjYUreI3mipQ=;
+	s=mail; t=1712851841;
+	bh=V36gHZChttM+wJGAKw+EV7JCxHF68jFXBdZerKqAVC0=;
 	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=Iw900Lxy3Ft8CZDYvz7AZ1gLvs828vMokD9XzSSXTSlgLMzreTftmkCRImytozohh
-	 LbMmv+IWiSXFgyeMV/E5sX5Z3S4+KeJmy6e8vGXq2r9ZKkQI5tCfolCTwiTaBJ6wUg
-	 k1Bb55ei5eerCV4vXxIsVaMGJIqO0gfmQjcDw+do17vne0uf91337HGRWUUuR6wnPZ
-	 +KYfjTd6HpAajLzXz1eaYz9+egrJXlgx89Ppy7+9Je9KegfNB81qmEi/Wg5GopQvt6
-	 u6MEdU/lkU4Lnz0uU6sZMPs14zCYFuXm9SSzAP1oOOF+KWdkWWLY5Asl4b1REyDVQh
-	 p1CRmtTkfoa1Q==
+	b=jDuGxCxXy/DDPRsiNB+cKYPFouILqgKRI8boeF40K9p8tghDnnO8dc+Zrclw7PXeH
+	 HYHQaIoEa3nFyV1V9imCFmPHCoDuL52Dc4IYyushHaVmJuqj2cWT2XtoSYKNhJJYL9
+	 cX/ZeH8nNs2e9v+7SN8/dgHdc3TsAdfMO6VANCUBa6bcKV5MgPBCtXtXg5O59ptyzn
+	 nT44iSsJ7Apl7p4NI9YF2VpGW/wqKZO0lJ6DAt7P2pVAkRa5TPGEKwc/Gh6IOSWwG/
+	 r6hdEahXrSfFqxxkIR+MHbn/b2kPRU+mdqmT3GWv05FAQhY1O9D2/ywjMErQ2Mj+4E
+	 Bl+l2zz3aGQKg==
 Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
@@ -61,9 +61,9 @@ To: <andy.shevchenko@gmail.com>, <pavel@ucw.cz>, <lee@kernel.org>,
 	<nikitos.tr@gmail.com>, <marek.behun@nic.cz>, <kabel@kernel.org>
 CC: <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<kernel@salutedevices.com>, George Stark <gnstark@salutedevices.com>
-Subject: [PATCH v8 5/8] leds: lm3532: use devm API to cleanup module's resources
-Date: Thu, 11 Apr 2024 19:10:29 +0300
-Message-ID: <20240411161032.609544-6-gnstark@salutedevices.com>
+Subject: [PATCH v8 6/8] leds: nic78bx: use devm API to cleanup module's resources
+Date: Thu, 11 Apr 2024 19:10:30 +0300
+Message-ID: <20240411161032.609544-7-gnstark@salutedevices.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240411161032.609544-1-gnstark@salutedevices.com>
 References: <20240411161032.609544-1-gnstark@salutedevices.com>
@@ -103,77 +103,64 @@ in module's remove() so use devm API instead of remove().
 Signed-off-by: George Stark <gnstark@salutedevices.com>
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- drivers/leds/leds-lm3532.c | 29 +++++++++++++++++------------
- 1 file changed, 17 insertions(+), 12 deletions(-)
+ drivers/leds/leds-nic78bx.c | 23 +++++++++++++----------
+ 1 file changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/leds/leds-lm3532.c b/drivers/leds/leds-lm3532.c
-index 13662a4aa1f2..8c90701dc50d 100644
---- a/drivers/leds/leds-lm3532.c
-+++ b/drivers/leds/leds-lm3532.c
-@@ -542,6 +542,13 @@ static int lm3532_parse_als(struct lm3532_data *priv)
- 	return ret;
- }
+diff --git a/drivers/leds/leds-nic78bx.c b/drivers/leds/leds-nic78bx.c
+index a86b43dd995e..282d9e4cf116 100644
+--- a/drivers/leds/leds-nic78bx.c
++++ b/drivers/leds/leds-nic78bx.c
+@@ -118,6 +118,15 @@ static struct nic78bx_led nic78bx_leds[] = {
+ 	}
+ };
  
-+static void gpio_set_low_action(void *data)
++static void lock_led_reg_action(void *data)
 +{
-+	struct lm3532_data *priv = data;
++	struct nic78bx_led_data *led_data = data;
 +
-+	gpiod_direction_output(priv->enable_gpio, 0);
++	/* Lock LED register */
++	outb(NIC78BX_LOCK_VALUE,
++	     led_data->io_base + NIC78BX_LOCK_REG_OFFSET);
 +}
 +
- static int lm3532_parse_node(struct lm3532_data *priv)
+ static int nic78bx_probe(struct platform_device *pdev)
  {
- 	struct fwnode_handle *child = NULL;
-@@ -556,6 +563,12 @@ static int lm3532_parse_node(struct lm3532_data *priv)
- 	if (IS_ERR(priv->enable_gpio))
- 		priv->enable_gpio = NULL;
+ 	struct device *dev = &pdev->dev;
+@@ -152,6 +161,10 @@ static int nic78bx_probe(struct platform_device *pdev)
+ 	led_data->io_base = io_rc->start;
+ 	spin_lock_init(&led_data->lock);
  
-+	if (priv->enable_gpio) {
-+		ret = devm_add_action(&priv->client->dev, gpio_set_low_action, priv);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	priv->regulator = devm_regulator_get(&priv->client->dev, "vin");
- 	if (IS_ERR(priv->regulator))
- 		priv->regulator = NULL;
-@@ -691,7 +704,10 @@ static int lm3532_probe(struct i2c_client *client)
- 		return ret;
- 	}
- 
--	mutex_init(&drvdata->lock);
-+	ret = devm_mutex_init(&client->dev, &drvdata->lock);
++	ret = devm_add_action(dev, lock_led_reg_action, led_data);
 +	if (ret)
 +		return ret;
 +
- 	i2c_set_clientdata(client, drvdata);
+ 	for (i = 0; i < ARRAY_SIZE(nic78bx_leds); i++) {
+ 		nic78bx_leds[i].data = led_data;
  
- 	ret = lm3532_parse_node(drvdata);
-@@ -703,16 +719,6 @@ static int lm3532_probe(struct i2c_client *client)
+@@ -167,15 +180,6 @@ static int nic78bx_probe(struct platform_device *pdev)
  	return ret;
  }
  
--static void lm3532_remove(struct i2c_client *client)
+-static void nic78bx_remove(struct platform_device *pdev)
 -{
--	struct lm3532_data *drvdata = i2c_get_clientdata(client);
+-	struct nic78bx_led_data *led_data = platform_get_drvdata(pdev);
 -
--	mutex_destroy(&drvdata->lock);
--
--	if (drvdata->enable_gpio)
--		gpiod_direction_output(drvdata->enable_gpio, 0);
+-	/* Lock LED register */
+-	outb(NIC78BX_LOCK_VALUE,
+-	     led_data->io_base + NIC78BX_LOCK_REG_OFFSET);
 -}
 -
- static const struct of_device_id of_lm3532_leds_match[] = {
- 	{ .compatible = "ti,lm3532", },
- 	{},
-@@ -727,7 +733,6 @@ MODULE_DEVICE_TABLE(i2c, lm3532_id);
+ static const struct acpi_device_id led_device_ids[] = {
+ 	{"NIC78B3", 0},
+ 	{"", 0},
+@@ -184,7 +188,6 @@ MODULE_DEVICE_TABLE(acpi, led_device_ids);
  
- static struct i2c_driver lm3532_i2c_driver = {
- 	.probe = lm3532_probe,
--	.remove = lm3532_remove,
- 	.id_table = lm3532_id,
+ static struct platform_driver led_driver = {
+ 	.probe = nic78bx_probe,
+-	.remove_new = nic78bx_remove,
  	.driver = {
- 		.name = LM3532_NAME,
+ 		.name = KBUILD_MODNAME,
+ 		.acpi_match_table = ACPI_PTR(led_device_ids),
 -- 
 2.25.1
 
