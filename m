@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2311F8A1AE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:13:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75BC88A1B41
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:26:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A51C71F23BD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:13:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 135CBB2E2A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:13:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76881FB092;
-	Thu, 11 Apr 2024 15:43:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37FA91FB09A;
+	Thu, 11 Apr 2024 15:43:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="MgRY62So"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="TKq4BZlw"
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E63C1FB062
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:43:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F321FB076
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:43:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850185; cv=none; b=EyXXmJMHo8UKibcwB+vcC5JUeM/csennW6bTqKDE3dETpWsM2b7eGC+GkrYRU1/rlKO270hyKpqZBTbSuXG+0X61Y1VDy5MYFY6HLt53N6n0EWp2yV6qMoqDOX+xXuNk5y6urtKAFJyoo1TNX1iWWpUph+l7lx2z6LI+xCZnZ7Y=
+	t=1712850186; cv=none; b=BVIfxxoaDKlEA5lvCrn4z9KE1YFBuAuryz2GXw5z3XHZ+KvoFh37WYNWoqPxo1RF5K0D+xDNeCQQRUUzLPD+UcHIZCRbwHzifyacMNZdQzzqPvhYnAokjRteNv7gfBC6Lo1kwxbRjYVmUxqI/M6lAtsLI9cuPFF0zSvIWFGgrwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850185; c=relaxed/simple;
-	bh=1DciV3y8UGrC/lVqzO1pHnNbzoVj/m2ff/R35slerew=;
+	s=arc-20240116; t=1712850186; c=relaxed/simple;
+	bh=tzqgYXHzifgFmNnKob1SoOuBoJxCVRmCZTCP63ibsvs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cMC2sKErCs7EBI3PXlit+Xz9waCS4ktU7YtTOQabEK6c9JW+0wIQWHqXkzk3UqlrBJFBKyxAQ0IEp3+1OVOScodK04ka2cvcyPVPl0L5E61su4H5/dq2ykw8d7gCpDz+MvFtQ86xpXnGEvpBMmPKxT+BobWO582pH2/ykdKMP4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=MgRY62So; arc=none smtp.client-ip=209.85.166.41
+	 MIME-Version; b=AQrgZvBlvb38kBX9afhsgH8Q13Ruj9BPQ2iZBKK5rrXOWti9zvzRc6wsyV2HYZ3AqhWqurUzOGEUEn1IFCyHyv71TbHf2AHsiHZkcUWGuyRicwR0W0On3H80XQOIcz9gtd4HDysFZOZT8hsUMHVLK0VgisgSgoqULQVGK0FugOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=TKq4BZlw; arc=none smtp.client-ip=209.85.166.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso58278339f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:43:03 -0700 (PDT)
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7d6812b37a6so9108439f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:43:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850181; x=1713454981; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850183; x=1713454983; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YrTxzfM+6WU2DAQS8Yib8wiNqJhwbvOzxcj5vKuDbIY=;
-        b=MgRY62SoaEENZOCvYURqW8Hh0HfJmNSIBodhZLFNkgBBd1HL/3sWBvHYRcnU+XP/P4
-         PpuYdo2Lig+6pKs7VyU04dPFqF9hJVJ9zGEpYXC+lrCeTnFn1dGeDqNakMsNuLeOnwzz
-         EUgtRxlXTzMe3e0QWFUt9qKcrIxwKQn849f0GMMzLOXV6QX13cU9YP70skt6NOiA5B+o
-         Rw60FPpkNUMzl5XyZjzqKsvN0eYIZEldv+d8GGCgWgwLlEljm0WYa/SGdjrNBZHkWLjU
-         Cx8zRstocUpyKLqD5Oxujv3gG7uqJCi/jyefUVt09CEyBoM/5vQf6Vr6zaISCUgaoMuy
-         UlnA==
+        bh=/bbkgh6wS8rrxa/aA5ey6xEyhGsyTyT+2gX7v9UKwI0=;
+        b=TKq4BZlwz6JbpPI1XZvdynz/9Wi1Js65ryfBFaqpB0JaHfXc3N1kB3WN8xPs5pgIY6
+         1PNT2xmhNIvaSyeRSjp6LxkN27HsmN6NFX5GsO8sEr0jdfxQBsD0SGrfLJY2EOdNhFNe
+         JH1KZ3EG1B4ugr+jOhXt+BjA+fIw3PJgMD/AQPEuGQ7ULDKPmpi2cr72ehCq2GqFJt1p
+         Yc5uR0zOIJGl8VDLs9HIGXoh1YgybxND9AHDEJ5lE2gwlOwJjJUKy8+aM7nndfD9/lMG
+         DqLyZXofMOjHgTb19Jq08g2XQc0Iv++csIZ7DJM/beiD1f3ZDRva6mm1OHVgvcnKgMal
+         eUtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850182; x=1713454982;
+        d=1e100.net; s=20230601; t=1712850183; x=1713454983;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YrTxzfM+6WU2DAQS8Yib8wiNqJhwbvOzxcj5vKuDbIY=;
-        b=Quf6SkXtJxFnHgn4tZ0nXkpny3zlzf45CYLzMh8Agdregnue7dUy3wxQbJIT3DX6Bp
-         i0QxCRnYAA9mUxvNk0ujcJ6GczGUoelWK2CL4471TZhidqj6MQZNfUKqLDaHnt3zy4e9
-         n0b1ZRt3a7WGb9oSAlWXJ1DohvPVH+0LaL87slgLsuGZ8QFSp9gInGfAJhep0LB+FBX4
-         YQ0NPjEd4z7wEH0RN/J8SUiB99MzsLfQlG6xSLVkoLmJE7lKO5P1C1wpdrVcyz6j85xa
-         ENnujI4lW+Hh+ODk4Y+uQK9SWy0mF+wOXhzE09+dKxt5MW69KK2POZ+y7iryjh7sVV/P
-         /gkQ==
-X-Gm-Message-State: AOJu0Ywz6pmYRRX02sVlY0mP0aaTaH4AAh7NoYrkgLo22s3bLx9bxhm7
-	3OEhtTMIl5VQzaLpHyRkiLyisTp4lzbjOdBkndxTTigDlfNbHYPKMUXm9HAVtYrGUlPYX3MEJHk
-	K
-X-Google-Smtp-Source: AGHT+IFocqbYhIMD5u6YKi83vIJBHBB03R6VEKuMuInFe3w9BcMj9k8y8hKgk0wluXb8oorDvN0rQg==
-X-Received: by 2002:a6b:cd08:0:b0:7d5:fe3e:90ff with SMTP id d8-20020a6bcd08000000b007d5fe3e90ffmr214322iog.0.1712850181564;
-        Thu, 11 Apr 2024 08:43:01 -0700 (PDT)
+        bh=/bbkgh6wS8rrxa/aA5ey6xEyhGsyTyT+2gX7v9UKwI0=;
+        b=sfh8NLYEAWRzncqk1XEeyeTJW4b/Gaug7mg7eC2Z5WwpqsNi7y7wsmR8Dv3LRGlqL5
+         zQg8RSiZLKdlRr4WfZIftZQyp6HjLtGEq759qRLCOA+YK6tCe3YDGK7deqQg9Gzwiszd
+         hGQIgiIuHuKyJF6F+XsytEo34HewtFukxSuT+uB4pCWwg1L787/KUZw2TZm8UatWPZDi
+         GKBgt5rl4L/stHNhYxKVINEpbOhlMH2FwhXQHM3t23ieLsR9JPYt5gy2mlyR9l979QXi
+         /m8kBQNLmTFa2BsLuMasS6RGe0Jr1DVTPszDeCyAHZu+JybqgwdRPCHEveVSXgeBdtcI
+         BQQA==
+X-Gm-Message-State: AOJu0YwxTvY3zMDFSiY31JHrVWKsyqYlwnm96t8hpL+j70IzqlCPw4LY
+	l+MW366NUgCYe4dPMWdPAIrNIfr3qYY46LDR/uxwJtGJH96kzhIu4r04hgl1XK5OY/RrwELt/Yk
+	Y
+X-Google-Smtp-Source: AGHT+IFNS2ho9/DrVY3U4ajiFCP4C3UwWJDDLZf9vXn0GqoDYpz/E9QhMoSgWimR9OR17r25y7DSnA==
+X-Received: by 2002:a05:6602:21d7:b0:7d6:9ddf:5095 with SMTP id c23-20020a05660221d700b007d69ddf5095mr34699ioc.1.1712850182327;
+        Thu, 11 Apr 2024 08:43:02 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.43.00
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.43.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:43:00 -0700 (PDT)
+        Thu, 11 Apr 2024 08:43:01 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 406/437] infiniband/hfi1: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:19:06 -0600
-Message-ID: <20240411153126.16201-407-axboe@kernel.dk>
+Subject: [PATCH 407/437] infiniband/mlx5: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:19:07 -0600
+Message-ID: <20240411153126.16201-408-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,577 +85,305 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/infiniband/hw/hfi1/debugfs.c | 162 +++++++++++++--------------
- drivers/infiniband/hw/hfi1/debugfs.h |   6 +-
- drivers/infiniband/hw/hfi1/fault.c   |  27 +++--
- 3 files changed, 91 insertions(+), 104 deletions(-)
+ drivers/infiniband/hw/mlx5/cong.c | 19 ++++++++--------
+ drivers/infiniband/hw/mlx5/devx.c | 24 +++++++++----------
+ drivers/infiniband/hw/mlx5/main.c | 20 ++++++++--------
+ drivers/infiniband/hw/mlx5/mr.c   | 38 +++++++++++++++----------------
+ 4 files changed, 49 insertions(+), 52 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/debugfs.c b/drivers/infiniband/hw/hfi1/debugfs.c
-index a1e01b447265..9b6c9d726c11 100644
---- a/drivers/infiniband/hw/hfi1/debugfs.c
-+++ b/drivers/infiniband/hw/hfi1/debugfs.c
-@@ -23,16 +23,15 @@
- static struct dentry *hfi1_dbg_root;
- 
- /* wrappers to enforce srcu in seq file */
--ssize_t hfi1_seq_read(struct file *file, char __user *buf, size_t size,
--		      loff_t *ppos)
-+ssize_t hfi1_seq_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct dentry *d = file->f_path.dentry;
-+	struct dentry *d = iocb->ki_filp->f_path.dentry;
- 	ssize_t r;
- 
- 	r = debugfs_file_get(d);
- 	if (unlikely(r))
- 		return r;
--	r = seq_read(file, buf, size, ppos);
-+	r = seq_read_iter(iocb, to);
- 	debugfs_file_put(d);
- 	return r;
- }
-@@ -414,33 +413,27 @@ DEBUGFS_SEQ_FILE_OPEN(pios)
- DEBUGFS_FILE_OPS(pios);
- 
- /* read the per-device counters */
--static ssize_t dev_counters_read(struct file *file, char __user *buf,
--				 size_t count, loff_t *ppos)
-+static ssize_t dev_counters_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	u64 *counters;
- 	size_t avail;
- 	struct hfi1_devdata *dd;
--	ssize_t rval;
- 
--	dd = private2dd(file);
-+	dd = private2dd(iocb->ki_filp);
- 	avail = hfi1_read_cntrs(dd, NULL, &counters);
--	rval =  simple_read_from_buffer(buf, count, ppos, counters, avail);
--	return rval;
-+	return simple_copy_to_iter(counters, &iocb->ki_pos, avail, to);
+diff --git a/drivers/infiniband/hw/mlx5/cong.c b/drivers/infiniband/hw/mlx5/cong.c
+index a78a067e3ce7..b7ca85f516fc 100644
+--- a/drivers/infiniband/hw/mlx5/cong.c
++++ b/drivers/infiniband/hw/mlx5/cong.c
+@@ -368,10 +368,10 @@ static int mlx5_ib_set_cc_params(struct mlx5_ib_dev *dev, u32 port_num,
+ 	return err;
  }
  
- /* read the per-device counters */
--static ssize_t dev_names_read(struct file *file, char __user *buf,
--			      size_t count, loff_t *ppos)
-+static ssize_t dev_names_read(struct kiocb *iocb, struct iov_iter *to)
+-static ssize_t set_param(struct file *filp, const char __user *buf,
+-			 size_t count, loff_t *pos)
++static ssize_t set_param(struct kiocb *iocb, struct iov_iter *from)
  {
- 	char *names;
- 	size_t avail;
- 	struct hfi1_devdata *dd;
--	ssize_t rval;
- 
--	dd = private2dd(file);
-+	dd = private2dd(iocb->ki_filp);
- 	avail = hfi1_read_cntrs(dd, &names, NULL);
--	rval =  simple_read_from_buffer(buf, count, ppos, names, avail);
--	return rval;
-+	return simple_copy_to_iter(names, &iocb->ki_pos, avail, to);
- }
- 
- struct counter_info {
-@@ -454,33 +447,27 @@ struct counter_info {
-  */
- 
- /* read the per-port names (same for each port) */
--static ssize_t portnames_read(struct file *file, char __user *buf,
--			      size_t count, loff_t *ppos)
-+static ssize_t portnames_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	char *names;
- 	size_t avail;
- 	struct hfi1_devdata *dd;
--	ssize_t rval;
- 
--	dd = private2dd(file);
-+	dd = private2dd(iocb->ki_filp);
- 	avail = hfi1_read_portcntrs(dd->pport, &names, NULL);
--	rval = simple_read_from_buffer(buf, count, ppos, names, avail);
--	return rval;
-+	return simple_copy_to_iter(names, &iocb->ki_pos, avail, to);
- }
- 
- /* read the per-port counters */
--static ssize_t portcntrs_debugfs_read(struct file *file, char __user *buf,
--				      size_t count, loff_t *ppos)
-+static ssize_t portcntrs_debugfs_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	u64 *counters;
- 	size_t avail;
- 	struct hfi1_pportdata *ppd;
--	ssize_t rval;
- 
--	ppd = private2ppd(file);
-+	ppd = private2ppd(iocb->ki_filp);
- 	avail = hfi1_read_portcntrs(ppd, NULL, &counters);
--	rval = simple_read_from_buffer(buf, count, ppos, counters, avail);
--	return rval;
-+	return simple_copy_to_iter(counters, &iocb->ki_pos, avail, to);
- }
- 
- static void check_dyn_flag(u64 scratch0, char *p, int size, int *used,
-@@ -497,8 +484,7 @@ static void check_dyn_flag(u64 scratch0, char *p, int size, int *used,
- 	}
- }
- 
--static ssize_t asic_flags_read(struct file *file, char __user *buf,
--			       size_t count, loff_t *ppos)
-+static ssize_t asic_flags_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	struct hfi1_pportdata *ppd;
- 	struct hfi1_devdata *dd;
-@@ -509,7 +495,7 @@ static ssize_t asic_flags_read(struct file *file, char __user *buf,
- 	int used;
- 	int i;
- 
--	ppd = private2ppd(file);
-+	ppd = private2ppd(iocb->ki_filp);
- 	dd = ppd->dd;
- 	size = PAGE_SIZE;
- 	used = 0;
-@@ -541,14 +527,14 @@ static ssize_t asic_flags_read(struct file *file, char __user *buf,
- 	}
- 	used += scnprintf(tmp + used, size - used, "Write bits to clear\n");
- 
--	ret = simple_read_from_buffer(buf, count, ppos, tmp, used);
-+	ret = simple_copy_to_iter(tmp, &iocb->ki_pos, used, to);
- 	kfree(tmp);
- 	return ret;
- }
- 
--static ssize_t asic_flags_write(struct file *file, const char __user *buf,
--				size_t count, loff_t *ppos)
-+static ssize_t asic_flags_write(struct kiocb *iocb, struct iov_iter *from)
- {
+-	struct mlx5_ib_dbg_param *param = filp->private_data;
++	struct mlx5_ib_dbg_param *param = iocb->ki_filp->private_data;
 +	size_t count = iov_iter_count(from);
- 	struct hfi1_pportdata *ppd;
- 	struct hfi1_devdata *dd;
- 	char *buff;
-@@ -557,11 +543,11 @@ static ssize_t asic_flags_write(struct file *file, const char __user *buf,
- 	u64 scratch0;
- 	u64 clear;
- 
--	ppd = private2ppd(file);
-+	ppd = private2ppd(iocb->ki_filp);
- 	dd = ppd->dd;
- 
- 	/* zero terminate and read the expected integer */
--	buff = memdup_user_nul(buf, count);
-+	buff = iterdup_nul(from, count);
- 	if (IS_ERR(buff))
- 		return PTR_ERR(buff);
- 
-@@ -592,16 +578,16 @@ static ssize_t asic_flags_write(struct file *file, const char __user *buf,
- }
- 
- /* read the dc8051 memory */
--static ssize_t dc8051_memory_read(struct file *file, char __user *buf,
--				  size_t count, loff_t *ppos)
-+static ssize_t dc8051_memory_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct hfi1_pportdata *ppd = private2ppd(file);
-+	struct hfi1_pportdata *ppd = private2ppd(iocb->ki_filp);
-+	size_t count = iov_iter_count(to);
- 	ssize_t rval;
- 	void *tmp;
- 	loff_t start, end;
- 
- 	/* the checks below expect the position to be positive */
--	if (*ppos < 0)
-+	if (iocb->ki_pos < 0)
+ 	int offset = param->offset;
+ 	char lbuf[11] = { };
+ 	u32 var;
+@@ -380,7 +380,7 @@ static ssize_t set_param(struct file *filp, const char __user *buf,
+ 	if (count > sizeof(lbuf))
  		return -EINVAL;
  
- 	tmp = kzalloc(DC8051_DATA_MEM_SIZE, GFP_KERNEL);
-@@ -614,9 +600,9 @@ static ssize_t dc8051_memory_read(struct file *file, char __user *buf,
- 	 * Adjust start and end to fit.  Skip reading anything if out of
- 	 * range.
- 	 */
--	start = *ppos & ~0x7;	/* round down */
-+	start = iocb->ki_pos & ~0x7;	/* round down */
- 	if (start < DC8051_DATA_MEM_SIZE) {
--		end = (*ppos + count + 7) & ~0x7; /* round up */
-+		end = (iocb->ki_pos + count + 7) & ~0x7; /* round up */
- 		if (end > DC8051_DATA_MEM_SIZE)
- 			end = DC8051_DATA_MEM_SIZE;
- 		rval = read_8051_data(ppd->dd, start, end - start,
-@@ -625,98 +611,96 @@ static ssize_t dc8051_memory_read(struct file *file, char __user *buf,
- 			goto done;
- 	}
- 
--	rval = simple_read_from_buffer(buf, count, ppos, tmp,
--				       DC8051_DATA_MEM_SIZE);
-+	rval = simple_copy_to_iter(tmp, &iocb->ki_pos, DC8051_DATA_MEM_SIZE, to);
- done:
- 	kfree(tmp);
- 	return rval;
- }
- 
--static ssize_t debugfs_lcb_read(struct file *file, char __user *buf,
--				size_t count, loff_t *ppos)
-+static ssize_t debugfs_lcb_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct hfi1_pportdata *ppd = private2ppd(file);
-+	struct hfi1_pportdata *ppd = private2ppd(iocb->ki_filp);
-+	size_t count = iov_iter_count(to);
- 	struct hfi1_devdata *dd = ppd->dd;
- 	unsigned long total, csr_off;
- 	u64 data;
- 
--	if (*ppos < 0)
-+	if (iocb->ki_pos < 0)
- 		return -EINVAL;
- 	/* only read 8 byte quantities */
- 	if ((count % 8) != 0)
- 		return -EINVAL;
- 	/* offset must be 8-byte aligned */
--	if ((*ppos % 8) != 0)
-+	if ((iocb->ki_pos % 8) != 0)
- 		return -EINVAL;
- 	/* do nothing if out of range or zero count */
--	if (*ppos >= (LCB_END - LCB_START) || !count)
-+	if (iocb->ki_pos >= (LCB_END - LCB_START) || !count)
- 		return 0;
- 	/* reduce count if needed */
--	if (*ppos + count > LCB_END - LCB_START)
--		count = (LCB_END - LCB_START) - *ppos;
-+	if (iocb->ki_pos + count > LCB_END - LCB_START)
-+		count = (LCB_END - LCB_START) - iocb->ki_pos;
- 
--	csr_off = LCB_START + *ppos;
-+	csr_off = LCB_START + iocb->ki_pos;
- 	for (total = 0; total < count; total += 8, csr_off += 8) {
- 		if (read_lcb_csr(dd, csr_off, (u64 *)&data))
- 			break; /* failed */
--		if (put_user(data, (unsigned long __user *)(buf + total)))
-+		if (!copy_to_iter_full(&data, sizeof(data), to))
- 			break;
- 	}
--	*ppos += total;
-+	iocb->ki_pos += total;
- 	return total;
- }
- 
--static ssize_t debugfs_lcb_write(struct file *file, const char __user *buf,
--				 size_t count, loff_t *ppos)
-+static ssize_t debugfs_lcb_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct hfi1_pportdata *ppd = private2ppd(file);
-+	struct hfi1_pportdata *ppd = private2ppd(iocb->ki_filp);
-+	size_t count = iov_iter_count(from);
- 	struct hfi1_devdata *dd = ppd->dd;
- 	unsigned long total, csr_off, data;
- 
--	if (*ppos < 0)
-+	if (iocb->ki_pos < 0)
- 		return -EINVAL;
- 	/* only write 8 byte quantities */
- 	if ((count % 8) != 0)
- 		return -EINVAL;
- 	/* offset must be 8-byte aligned */
--	if ((*ppos % 8) != 0)
-+	if ((iocb->ki_pos % 8) != 0)
- 		return -EINVAL;
- 	/* do nothing if out of range or zero count */
--	if (*ppos >= (LCB_END - LCB_START) || !count)
-+	if (iocb->ki_pos >= (LCB_END - LCB_START) || !count)
- 		return 0;
- 	/* reduce count if needed */
--	if (*ppos + count > LCB_END - LCB_START)
--		count = (LCB_END - LCB_START) - *ppos;
-+	if (iocb->ki_pos + count > LCB_END - LCB_START)
-+		count = (LCB_END - LCB_START) - iocb->ki_pos;
- 
--	csr_off = LCB_START + *ppos;
-+	csr_off = LCB_START + iocb->ki_pos;
- 	for (total = 0; total < count; total += 8, csr_off += 8) {
--		if (get_user(data, (unsigned long __user *)(buf + total)))
-+		if (!copy_from_iter_full(&data, sizeof(data), from))
- 			break;
- 		if (write_lcb_csr(dd, csr_off, data))
- 			break; /* failed */
- 	}
--	*ppos += total;
-+	iocb->ki_pos += total;
- 	return total;
- }
- 
- /*
-  * read the per-port QSFP data for ppd
-  */
--static ssize_t qsfp_debugfs_dump(struct file *file, char __user *buf,
--				 size_t count, loff_t *ppos)
-+static ssize_t qsfp_debugfs_dump(struct kiocb *iocb, struct iov_iter *to)
- {
- 	struct hfi1_pportdata *ppd;
- 	char *tmp;
- 	int ret;
- 
--	ppd = private2ppd(file);
-+	ppd = private2ppd(iocb->ki_filp);
- 	tmp = kmalloc(PAGE_SIZE, GFP_KERNEL);
- 	if (!tmp)
- 		return -ENOMEM;
- 
- 	ret = qsfp_dump(ppd, tmp, PAGE_SIZE);
- 	if (ret > 0)
--		ret = simple_read_from_buffer(buf, count, ppos, tmp, ret);
-+		ret = simple_copy_to_iter(tmp, &iocb->ki_pos, ret, to);
- 	kfree(tmp);
- 	return ret;
- }
-@@ -767,6 +751,7 @@ static ssize_t i2c1_debugfs_write(struct file *file, const char __user *buf,
- {
- 	return __i2c_debugfs_write(file, buf, count, ppos, 0);
- }
-+FOPS_WRITE_ITER_HELPER(i2c1_debugfs_write);
- 
- /* Do an i2c write operation on chain for HFI 1. */
- static ssize_t i2c2_debugfs_write(struct file *file, const char __user *buf,
-@@ -774,6 +759,7 @@ static ssize_t i2c2_debugfs_write(struct file *file, const char __user *buf,
- {
- 	return __i2c_debugfs_write(file, buf, count, ppos, 1);
- }
-+FOPS_WRITE_ITER_HELPER(i2c2_debugfs_write);
- 
- /* Do an i2c read operation on the chain for the given HFI. */
- static ssize_t __i2c_debugfs_read(struct file *file, char __user *buf,
-@@ -827,6 +813,7 @@ static ssize_t i2c1_debugfs_read(struct file *file, char __user *buf,
- {
- 	return __i2c_debugfs_read(file, buf, count, ppos, 0);
- }
-+FOPS_READ_ITER_HELPER(i2c1_debugfs_read);
- 
- /* Do an i2c read operation on chain for HFI 1. */
- static ssize_t i2c2_debugfs_read(struct file *file, char __user *buf,
-@@ -834,6 +821,7 @@ static ssize_t i2c2_debugfs_read(struct file *file, char __user *buf,
- {
- 	return __i2c_debugfs_read(file, buf, count, ppos, 1);
- }
-+FOPS_READ_ITER_HELPER(i2c2_debugfs_read);
- 
- /* Do a QSFP write operation on the i2c chain for the given HFI. */
- static ssize_t __qsfp_debugfs_write(struct file *file, const char __user *buf,
-@@ -874,6 +862,7 @@ static ssize_t qsfp1_debugfs_write(struct file *file, const char __user *buf,
- {
- 	return __qsfp_debugfs_write(file, buf, count, ppos, 0);
- }
-+FOPS_WRITE_ITER_HELPER(qsfp1_debugfs_write);
- 
- /* Do a QSFP write operation on i2c chain for HFI 1. */
- static ssize_t qsfp2_debugfs_write(struct file *file, const char __user *buf,
-@@ -881,6 +870,7 @@ static ssize_t qsfp2_debugfs_write(struct file *file, const char __user *buf,
- {
- 	return __qsfp_debugfs_write(file, buf, count, ppos, 1);
- }
-+FOPS_WRITE_ITER_HELPER(qsfp2_debugfs_write);
- 
- /* Do a QSFP read operation on the i2c chain for the given HFI. */
- static ssize_t __qsfp_debugfs_read(struct file *file, char __user *buf,
-@@ -932,6 +922,7 @@ static ssize_t qsfp1_debugfs_read(struct file *file, char __user *buf,
- {
- 	return __qsfp_debugfs_read(file, buf, count, ppos, 0);
- }
-+FOPS_READ_ITER_HELPER(qsfp1_debugfs_read);
- 
- /* Do a QSFP read operation on i2c chain for HFI 1. */
- static ssize_t qsfp2_debugfs_read(struct file *file, char __user *buf,
-@@ -939,6 +930,7 @@ static ssize_t qsfp2_debugfs_read(struct file *file, char __user *buf,
- {
- 	return __qsfp_debugfs_read(file, buf, count, ppos, 1);
- }
-+FOPS_READ_ITER_HELPER(qsfp2_debugfs_read);
- 
- static int __i2c_debugfs_open(struct inode *in, struct file *fp, u32 target)
- {
-@@ -1043,22 +1035,20 @@ static int exprom_wp_set(struct hfi1_devdata *dd, bool disable)
- 	return 0;
- }
- 
--static ssize_t exprom_wp_debugfs_read(struct file *file, char __user *buf,
--				      size_t count, loff_t *ppos)
-+static ssize_t exprom_wp_debugfs_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	return 0;
- }
- 
--static ssize_t exprom_wp_debugfs_write(struct file *file,
--				       const char __user *buf, size_t count,
--				       loff_t *ppos)
-+static ssize_t exprom_wp_debugfs_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct hfi1_pportdata *ppd = private2ppd(file);
-+	struct hfi1_pportdata *ppd = private2ppd(iocb->ki_filp);
-+	size_t count = iov_iter_count(from);
- 	char cdata;
- 
- 	if (count != 1)
- 		return -EINVAL;
--	if (get_user(cdata, buf))
-+	if (get_iter(cdata, from))
+-	if (copy_from_user(lbuf, buf, count))
++	if (!copy_from_iter_full(lbuf, count, from))
  		return -EFAULT;
- 	if (cdata == '0')
- 		exprom_wp_set(ppd->dd, false);
-@@ -1096,8 +1086,8 @@ static int exprom_wp_debugfs_release(struct inode *in, struct file *fp)
- 	.name = nm, \
- 	.ops = { \
- 		.owner = THIS_MODULE, \
--		.read = readroutine, \
--		.write = writeroutine, \
-+		.read_iter = readroutine, \
-+		.write_iter = writeroutine, \
- 		.llseek = generic_file_llseek, \
- 	}, \
- }
-@@ -1107,8 +1097,8 @@ static int exprom_wp_debugfs_release(struct inode *in, struct file *fp)
- 	.name = nm, \
- 	.ops = { \
- 		.owner = THIS_MODULE, \
--		.read = readf, \
--		.write = writef, \
-+		.read_iter = readf, \
-+		.write_iter = writef, \
- 		.llseek = generic_file_llseek, \
- 		.open = openf, \
- 		.release = releasef \
-@@ -1123,14 +1113,14 @@ static const struct counter_info cntr_ops[] = {
  
- static const struct counter_info port_cntr_ops[] = {
- 	DEBUGFS_OPS("port%dcounters", portcntrs_debugfs_read, NULL),
--	DEBUGFS_XOPS("i2c1", i2c1_debugfs_read, i2c1_debugfs_write,
-+	DEBUGFS_XOPS("i2c1", i2c1_debugfs_read_iter, i2c1_debugfs_write_iter,
- 		     i2c1_debugfs_open, i2c1_debugfs_release),
--	DEBUGFS_XOPS("i2c2", i2c2_debugfs_read, i2c2_debugfs_write,
-+	DEBUGFS_XOPS("i2c2", i2c2_debugfs_read_iter, i2c2_debugfs_write_iter,
- 		     i2c2_debugfs_open, i2c2_debugfs_release),
- 	DEBUGFS_OPS("qsfp_dump%d", qsfp_debugfs_dump, NULL),
--	DEBUGFS_XOPS("qsfp1", qsfp1_debugfs_read, qsfp1_debugfs_write,
-+	DEBUGFS_XOPS("qsfp1", qsfp1_debugfs_read_iter, qsfp1_debugfs_write_iter,
- 		     qsfp1_debugfs_open, qsfp1_debugfs_release),
--	DEBUGFS_XOPS("qsfp2", qsfp2_debugfs_read, qsfp2_debugfs_write,
-+	DEBUGFS_XOPS("qsfp2", qsfp2_debugfs_read_iter, qsfp2_debugfs_write_iter,
- 		     qsfp2_debugfs_open, qsfp2_debugfs_release),
- 	DEBUGFS_XOPS("exprom_wp", exprom_wp_debugfs_read,
- 		     exprom_wp_debugfs_write, exprom_wp_debugfs_open,
-@@ -1222,7 +1212,7 @@ void hfi1_dbg_ibdev_init(struct hfi1_ibdev *ibd)
- 				 port_cntr_ops[i].name,
- 				 j + 1);
- 			debugfs_create_file(name,
--					    !port_cntr_ops[i].ops.write ?
-+					    !port_cntr_ops[i].ops.write_iter ?
- 						    S_IRUGO :
- 						    S_IRUGO | S_IWUSR,
- 					    root, ppd, &port_cntr_ops[i].ops);
-diff --git a/drivers/infiniband/hw/hfi1/debugfs.h b/drivers/infiniband/hw/hfi1/debugfs.h
-index 54d952a4016c..62f549a1adb4 100644
---- a/drivers/infiniband/hw/hfi1/debugfs.h
-+++ b/drivers/infiniband/hw/hfi1/debugfs.h
-@@ -33,14 +33,12 @@ static int _##name##_open(struct inode *inode, struct file *s) \
- static const struct file_operations _##name##_file_ops = { \
- 	.owner   = THIS_MODULE, \
- 	.open    = _##name##_open, \
--	.read    = hfi1_seq_read, \
-+	.read_iter = hfi1_seq_read, \
- 	.llseek  = hfi1_seq_lseek, \
- 	.release = seq_release \
+ 	lbuf[sizeof(lbuf) - 1] = '\0';
+@@ -392,10 +392,9 @@ static ssize_t set_param(struct file *filp, const char __user *buf,
+ 	return ret ? ret : count;
  }
  
--
--ssize_t hfi1_seq_read(struct file *file, char __user *buf, size_t size,
--		      loff_t *ppos);
-+ssize_t hfi1_seq_read(struct kiocb *iocb, struct iov_iter *to);
- loff_t hfi1_seq_lseek(struct file *file, loff_t offset, int whence);
- 
- #ifdef CONFIG_DEBUG_FS
-diff --git a/drivers/infiniband/hw/hfi1/fault.c b/drivers/infiniband/hw/hfi1/fault.c
-index 35d2382ee618..0fe332245501 100644
---- a/drivers/infiniband/hw/hfi1/fault.c
-+++ b/drivers/infiniband/hw/hfi1/fault.c
-@@ -86,25 +86,25 @@ static int fault_opcodes_open(struct inode *inode, struct file *file)
- 	return nonseekable_open(inode, file);
- }
- 
--static ssize_t fault_opcodes_write(struct file *file, const char __user *buf,
--				   size_t len, loff_t *pos)
-+static ssize_t fault_opcodes_write(struct kiocb *iocb, struct iov_iter *from)
+-static ssize_t get_param(struct file *filp, char __user *buf, size_t count,
+-			 loff_t *pos)
++static ssize_t get_param(struct kiocb *iocb, struct iov_iter *to)
  {
- 	ssize_t ret = 0;
- 	/* 1280 = 256 opcodes * 4 chars/opcode + 255 commas + NULL */
- 	size_t copy, datalen = 1280;
- 	char *data, *token, *ptr, *end;
--	struct fault *fault = file->private_data;
-+	struct fault *fault = iocb->ki_filp->private_data;
-+	size_t len = iov_iter_count(from);
+-	struct mlx5_ib_dbg_param *param = filp->private_data;
++	struct mlx5_ib_dbg_param *param = iocb->ki_filp->private_data;
+ 	int offset = param->offset;
+ 	u32 var = 0;
+ 	int ret;
+@@ -409,14 +408,14 @@ static ssize_t get_param(struct file *filp, char __user *buf, size_t count,
+ 	if (ret < 0)
+ 		return ret;
  
- 	data = kcalloc(datalen, sizeof(*data), GFP_KERNEL);
- 	if (!data)
- 		return -ENOMEM;
- 	copy = min(len, datalen - 1);
--	if (copy_from_user(data, buf, copy)) {
-+	if (!copy_from_iter_full(data, copy, from)) {
- 		ret = -EFAULT;
- 		goto free_data;
- 	}
- 
--	ret = debugfs_file_get(file->f_path.dentry);
-+	ret = debugfs_file_get(iocb->ki_filp->f_path.dentry);
- 	if (unlikely(ret))
- 		goto free_data;
- 	ptr = data;
-@@ -154,26 +154,25 @@ static ssize_t fault_opcodes_write(struct file *file, const char __user *buf,
- 	}
- 	ret = len;
- 
--	debugfs_file_put(file->f_path.dentry);
-+	debugfs_file_put(iocb->ki_filp->f_path.dentry);
- free_data:
- 	kfree(data);
- 	return ret;
+-	return simple_read_from_buffer(buf, count, pos, lbuf, ret);
++	return simple_copy_to_iter(lbuf, &iocb->ki_pos, ret, to);
  }
  
--static ssize_t fault_opcodes_read(struct file *file, char __user *buf,
--				  size_t len, loff_t *pos)
-+static ssize_t fault_opcodes_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	ssize_t ret = 0;
- 	char *data;
- 	size_t datalen = 1280, size = 0; /* see fault_opcodes_write() */
- 	unsigned long bit = 0, zero = 0;
--	struct fault *fault = file->private_data;
-+	struct fault *fault = iocb->ki_filp->private_data;
- 	size_t bitsize = sizeof(fault->opcodes) * BITS_PER_BYTE;
- 
- 	data = kcalloc(datalen, sizeof(*data), GFP_KERNEL);
- 	if (!data)
- 		return -ENOMEM;
--	ret = debugfs_file_get(file->f_path.dentry);
-+	ret = debugfs_file_get(iocb->ki_filp->f_path.dentry);
- 	if (unlikely(ret))
- 		goto free_data;
- 	bit = find_first_bit(fault->opcodes, bitsize);
-@@ -189,10 +188,10 @@ static ssize_t fault_opcodes_read(struct file *file, char __user *buf,
- 					 bit);
- 		bit = find_next_bit(fault->opcodes, bitsize, zero);
- 	}
--	debugfs_file_put(file->f_path.dentry);
-+	debugfs_file_put(iocb->ki_filp->f_path.dentry);
- 	data[size - 1] = '\n';
- 	data[size] = '\0';
--	ret = simple_read_from_buffer(buf, len, pos, data, size);
-+	ret = simple_copy_to_iter(data, &iocb->ki_pos, size, to);
- free_data:
- 	kfree(data);
- 	return ret;
-@@ -201,8 +200,8 @@ static ssize_t fault_opcodes_read(struct file *file, char __user *buf,
- static const struct file_operations __fault_opcodes_fops = {
- 	.owner = THIS_MODULE,
- 	.open = fault_opcodes_open,
--	.read = fault_opcodes_read,
--	.write = fault_opcodes_write,
-+	.read_iter = fault_opcodes_read,
-+	.write_iter = fault_opcodes_write,
- 	.llseek = no_llseek
+ static const struct file_operations dbg_cc_fops = {
+ 	.owner	= THIS_MODULE,
+ 	.open	= simple_open,
+-	.write	= set_param,
+-	.read	= get_param,
++	.write_iter	= set_param,
++	.read_iter	= get_param,
  };
  
+ void mlx5_ib_cleanup_cong_debugfs(struct mlx5_ib_dev *dev, u32 port_num)
+diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+index 253fea374a72..a73c9ba11912 100644
+--- a/drivers/infiniband/hw/mlx5/devx.c
++++ b/drivers/infiniband/hw/mlx5/devx.c
+@@ -2595,11 +2595,11 @@ void mlx5_ib_devx_cleanup(struct mlx5_ib_dev *dev)
+ 	}
+ }
+ 
+-static ssize_t devx_async_cmd_event_read(struct file *filp, char __user *buf,
+-					 size_t count, loff_t *pos)
++static ssize_t devx_async_cmd_event_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	struct devx_async_cmd_event_file *comp_ev_file = filp->private_data;
++	struct devx_async_cmd_event_file *comp_ev_file = iocb->ki_filp->private_data;
+ 	struct devx_async_event_queue *ev_queue = &comp_ev_file->ev_queue;
++	size_t count = iov_iter_count(to);
+ 	struct devx_async_data *event;
+ 	int ret = 0;
+ 	size_t eventsz;
+@@ -2609,7 +2609,7 @@ static ssize_t devx_async_cmd_event_read(struct file *filp, char __user *buf,
+ 	while (list_empty(&ev_queue->event_list)) {
+ 		spin_unlock_irq(&ev_queue->lock);
+ 
+-		if (filp->f_flags & O_NONBLOCK)
++		if (iocb->ki_filp->f_flags & O_NONBLOCK)
+ 			return -EAGAIN;
+ 
+ 		if (wait_event_interruptible(
+@@ -2639,7 +2639,7 @@ static ssize_t devx_async_cmd_event_read(struct file *filp, char __user *buf,
+ 	list_del(ev_queue->event_list.next);
+ 	spin_unlock_irq(&ev_queue->lock);
+ 
+-	if (copy_to_user(buf, &event->hdr, eventsz))
++	if (!copy_to_iter_full(&event->hdr, eventsz, to))
+ 		ret = -EFAULT;
+ 	else
+ 		ret = eventsz;
+@@ -2670,18 +2670,18 @@ static __poll_t devx_async_cmd_event_poll(struct file *filp,
+ 
+ static const struct file_operations devx_async_cmd_event_fops = {
+ 	.owner	 = THIS_MODULE,
+-	.read	 = devx_async_cmd_event_read,
++	.read_iter	 = devx_async_cmd_event_read,
+ 	.poll    = devx_async_cmd_event_poll,
+ 	.release = uverbs_uobject_fd_release,
+ 	.llseek	 = no_llseek,
+ };
+ 
+-static ssize_t devx_async_event_read(struct file *filp, char __user *buf,
+-				     size_t count, loff_t *pos)
++static ssize_t devx_async_event_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	struct devx_async_event_file *ev_file = filp->private_data;
++	struct devx_async_event_file *ev_file = iocb->ki_filp->private_data;
+ 	struct devx_event_subscription *event_sub;
+ 	struct devx_async_event_data *event;
++	size_t count = iov_iter_count(to);
+ 	int ret = 0;
+ 	size_t eventsz;
+ 	bool omit_data;
+@@ -2701,7 +2701,7 @@ static ssize_t devx_async_event_read(struct file *filp, char __user *buf,
+ 	while (list_empty(&ev_file->event_list)) {
+ 		spin_unlock_irq(&ev_file->lock);
+ 
+-		if (filp->f_flags & O_NONBLOCK)
++		if (iocb->ki_filp->f_flags & O_NONBLOCK)
+ 			return -EAGAIN;
+ 
+ 		if (wait_event_interruptible(ev_file->poll_wait,
+@@ -2743,7 +2743,7 @@ static ssize_t devx_async_event_read(struct file *filp, char __user *buf,
+ 
+ 	spin_unlock_irq(&ev_file->lock);
+ 
+-	if (copy_to_user(buf, event_data, eventsz))
++	if (!copy_to_iter_full(event_data, eventsz, to))
+ 		/* This points to an application issue, not a kernel concern */
+ 		ret = -EFAULT;
+ 	else
+@@ -2785,7 +2785,7 @@ static void devx_free_subscription(struct rcu_head *rcu)
+ 
+ static const struct file_operations devx_async_event_fops = {
+ 	.owner	 = THIS_MODULE,
+-	.read	 = devx_async_event_read,
++	.read_iter	 = devx_async_event_read,
+ 	.poll    = devx_async_event_poll,
+ 	.release = uverbs_uobject_fd_release,
+ 	.llseek	 = no_llseek,
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index c2b557e64290..f531568cfead 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -3154,25 +3154,25 @@ static int mlx5_ib_rn_get_params(struct ib_device *device, u32 port_num,
+ 	return mlx5_rdma_rn_get_params(to_mdev(device)->mdev, device, params);
+ }
+ 
+-static ssize_t delay_drop_timeout_read(struct file *filp, char __user *buf,
+-				       size_t count, loff_t *pos)
++static ssize_t delay_drop_timeout_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	struct mlx5_ib_delay_drop *delay_drop = filp->private_data;
++	struct mlx5_ib_delay_drop *delay_drop = iocb->ki_filp->private_data;
+ 	char lbuf[20];
+ 	int len;
+ 
+ 	len = snprintf(lbuf, sizeof(lbuf), "%u\n", delay_drop->timeout);
+-	return simple_read_from_buffer(buf, count, pos, lbuf, len);
++	return simple_copy_to_iter(lbuf, &iocb->ki_pos, len, to);
+ }
+ 
+-static ssize_t delay_drop_timeout_write(struct file *filp, const char __user *buf,
+-					size_t count, loff_t *pos)
++static ssize_t delay_drop_timeout_write(struct kiocb *iocb,
++					struct iov_iter *from)
+ {
+-	struct mlx5_ib_delay_drop *delay_drop = filp->private_data;
++	struct mlx5_ib_delay_drop *delay_drop = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(from);
+ 	u32 timeout;
+ 	u32 var;
+ 
+-	if (kstrtouint_from_user(buf, count, 0, &var))
++	if (kstrtouint_from_iter(from, count, 0, &var))
+ 		return -EFAULT;
+ 
+ 	timeout = min_t(u32, roundup(var, 100), MLX5_MAX_DELAY_DROP_TIMEOUT_MS *
+@@ -3189,8 +3189,8 @@ static ssize_t delay_drop_timeout_write(struct file *filp, const char __user *bu
+ static const struct file_operations fops_delay_drop_timeout = {
+ 	.owner	= THIS_MODULE,
+ 	.open	= simple_open,
+-	.write	= delay_drop_timeout_write,
+-	.read	= delay_drop_timeout_read,
++	.write_iter	= delay_drop_timeout_write,
++	.read_iter	= delay_drop_timeout_read,
+ };
+ 
+ static void mlx5_ib_unbind_slave_port(struct mlx5_ib_dev *ibdev,
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index a8ee2ca1f4a1..779da5c2f911 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -366,14 +366,14 @@ static int resize_available_mrs(struct mlx5_cache_ent *ent, unsigned int target,
+ 	}
+ }
+ 
+-static ssize_t size_write(struct file *filp, const char __user *buf,
+-			  size_t count, loff_t *pos)
++static ssize_t size_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct mlx5_cache_ent *ent = filp->private_data;
++	struct mlx5_cache_ent *ent = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(from);
+ 	u32 target;
+ 	int err;
+ 
+-	err = kstrtou32_from_user(buf, count, 0, &target);
++	err = kstrtou32_from_iter(from, count, 0, &target);
+ 	if (err)
+ 		return err;
+ 
+@@ -404,10 +404,9 @@ static ssize_t size_write(struct file *filp, const char __user *buf,
+ 	return err;
+ }
+ 
+-static ssize_t size_read(struct file *filp, char __user *buf, size_t count,
+-			 loff_t *pos)
++static ssize_t size_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	struct mlx5_cache_ent *ent = filp->private_data;
++	struct mlx5_cache_ent *ent = iocb->ki_filp->private_data;
+ 	char lbuf[20];
+ 	int err;
+ 
+@@ -416,24 +415,24 @@ static ssize_t size_read(struct file *filp, char __user *buf, size_t count,
+ 	if (err < 0)
+ 		return err;
+ 
+-	return simple_read_from_buffer(buf, count, pos, lbuf, err);
++	return simple_copy_to_iter(lbuf, &iocb->ki_pos, err, to);
+ }
+ 
+ static const struct file_operations size_fops = {
+ 	.owner	= THIS_MODULE,
+ 	.open	= simple_open,
+-	.write	= size_write,
+-	.read	= size_read,
++	.write_iter	= size_write,
++	.read_iter	= size_read,
+ };
+ 
+-static ssize_t limit_write(struct file *filp, const char __user *buf,
+-			   size_t count, loff_t *pos)
++static ssize_t limit_write(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct mlx5_cache_ent *ent = filp->private_data;
++	struct mlx5_cache_ent *ent = iocb->ki_filp->private_data;
++	size_t count = iov_iter_count(from);
+ 	u32 var;
+ 	int err;
+ 
+-	err = kstrtou32_from_user(buf, count, 0, &var);
++	err = kstrtou32_from_iter(from, count, 0, &var);
+ 	if (err)
+ 		return err;
+ 
+@@ -450,10 +449,9 @@ static ssize_t limit_write(struct file *filp, const char __user *buf,
+ 	return count;
+ }
+ 
+-static ssize_t limit_read(struct file *filp, char __user *buf, size_t count,
+-			  loff_t *pos)
++static ssize_t limit_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	struct mlx5_cache_ent *ent = filp->private_data;
++	struct mlx5_cache_ent *ent = iocb->ki_filp->private_data;
+ 	char lbuf[20];
+ 	int err;
+ 
+@@ -461,14 +459,14 @@ static ssize_t limit_read(struct file *filp, char __user *buf, size_t count,
+ 	if (err < 0)
+ 		return err;
+ 
+-	return simple_read_from_buffer(buf, count, pos, lbuf, err);
++	return simple_copy_to_iter(lbuf, &iocb->ki_pos, err, to);
+ }
+ 
+ static const struct file_operations limit_fops = {
+ 	.owner	= THIS_MODULE,
+ 	.open	= simple_open,
+-	.write	= limit_write,
+-	.read	= limit_read,
++	.write_iter	= limit_write,
++	.read_iter	= limit_read,
+ };
+ 
+ static bool someone_adding(struct mlx5_mkey_cache *cache)
 -- 
 2.43.0
 
