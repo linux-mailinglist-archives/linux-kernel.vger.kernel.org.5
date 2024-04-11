@@ -1,171 +1,158 @@
-Return-Path: <linux-kernel+bounces-139903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A0FE8A08FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:59:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 042998A0904
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:00:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 221251C20FC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:59:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C4281F21FB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:00:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F9E13DB8D;
-	Thu, 11 Apr 2024 06:58:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1DD113DDA6;
+	Thu, 11 Apr 2024 07:00:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="IyMZwl5F"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=corigine.onmicrosoft.com header.i=@corigine.onmicrosoft.com header.b="ZmWzbjoX"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2135.outbound.protection.outlook.com [40.107.243.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E7013DDBD;
-	Thu, 11 Apr 2024 06:58:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712818726; cv=none; b=miFS3s5dflOXqGYzBH/GxG2ShE9gk5K4krNfUvZtvkdMEuUBwwt7oaH0MfRZ/vTIVYS5xzZlD75A+bBAw96SNxeJ3IC6LVVI6pD5GhTrT1dabAEnGYPTb8QZO4y1EgVE1HRSxJoaYBDfcbVl7DKPylwm07Ulzy9gEVjOT3mFZec=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712818726; c=relaxed/simple;
-	bh=LMM+ez524Aboe2mGPKwqNrGqAQc9aK5c4yyXY0LCoss=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hx77fKP/wdyQ7m8Jjb2AfmiW1BDctESpH9LIGJeqMdiQKGWoopWzr8aqFHVXcJW2VBvqiRIxw/XZXooNW2IQidmEw/ffla8mlpk8zv4fSyoJq3zbpkiNDY2XDAnlW/4T983N0hktrT1JRQbqWXt7hlz1TrXXOks/q/Vrn3LwHIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=IyMZwl5F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA2E5C433F1;
-	Thu, 11 Apr 2024 06:58:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712818726;
-	bh=LMM+ez524Aboe2mGPKwqNrGqAQc9aK5c4yyXY0LCoss=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IyMZwl5FpJTPzEbw308SeJc3Ty8Un2aBddHUk/JLXbiBBH165npc4RDa4iuNxYX6h
-	 nzWXejLUWk9e59IKjl7fGYFQtb8GyPsUMMhhJTSB+BQPagt73nRfUNaw7ETL10RZq+
-	 upjX3vcsrNeDu1CXU8PxaOAc8UmjPzrbvybMUhVM=
-Date: Thu, 11 Apr 2024 08:58:43 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Sam Sun <samsun1006219@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-	Alan Stern <stern@rowland.harvard.edu>, swboyd@chromium.org,
-	ricardo@marliere.net, hkallweit1@gmail.com,
-	heikki.krogerus@linux.intel.com, mathias.nyman@linux.intel.com,
-	royluo@google.com, syzkaller-bugs@googlegroups.com,
-	xrivendell7@gmail.com
-Subject: Re: [Linux kernel bug] general protection fault in disable_store
-Message-ID: <2024041125-anemic-decorated-52aa@gregkh>
-References: <CAEkJfYON+ry7xPx=AiLR9jzUNT+i_Va68ACajOC3HoacOfL1ig@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 603E013CA96;
+	Thu, 11 Apr 2024 07:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.135
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712818844; cv=fail; b=bQ68axAxcvw13oUOE+VBMuhblw9WdLATu1UTTZRoo4wzcRXF7/9LNKRmophBGqaNyqZ0kcuyT8ll97ElGNRMUf5OdTDkKk1t/DxtYG2i6G+JPQcbjYQHfXVdr62Je5bb/ybDiQRnjrs2NaDvfVo6WJBDGaNqhXYoFq36Sq10TBs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712818844; c=relaxed/simple;
+	bh=IP4SR54bvNdzQyXpJ8GXI86oWAHZQRBBkn/53EmpClc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=WvoIOprQa6HdBlFadLFDfKEMJKzJme1WasIqYn1LaXz/6XHKGrM7y4cJvk6uWQ1tc8+t4M9h4Ux0K1xr+dRuvu5r1TntlvNaoBQdU6ec00DtdOnT0IwlNqsLCe+6dJJgGhwSoLGys862cc1KR38YbzRFIiWeYlzGsoqP4+uRx1s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=corigine.com; spf=pass smtp.mailfrom=corigine.com; dkim=fail (1024-bit key) header.d=corigine.onmicrosoft.com header.i=@corigine.onmicrosoft.com header.b=ZmWzbjoX reason="signature verification failed"; arc=fail smtp.client-ip=40.107.243.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=corigine.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=corigine.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W/YVEPtydnuC2VI+UDetepJi2gRu9b+L/XmBd3x/5/aowoYUk8MDT0ZFRDmvD6DtN16q4AeARrZYnn6TbAXYSOcx4X1Oiquf6mpFZZSO5m34tYAwOMAAT7Rt5+ARPwcCDb8URUWa2zH2WSyDkeMpoKJqNKtQQiH9bYoi5FiTcYFwm38cpSl5U6fPnACqeCdyABay+Z2By4qtWACnZAFe7ImgAaQJ0wCW0xCFIYeqI1JNUNZnkR1EJKhAYKWEgiLcjekfnbY1ViTjNZ/XsjW0DbcSqzYo/1WJqIVgIX7yUj+GvUFCCeiBxWX14KTpRu1a5FcBGwiTm610DTScGrpzFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0OG6MLZJ67GAftDRIGxhLIz4YIqfVM7HU+TiQhveiag=;
+ b=AT+Na4g0ul8wWh2V3ZjDkJmd1Rsg4S3MfifzlMf7ml7B2eOfo8wKxiD9XqaF+J5K0+I1zWEHvK3au/34i1C4VvDY7i7dVq2J4V7C62e8hENNm+Uhk3WeC6L/gN0uq2F5izlZk8r8TGIdAjQZiYyiWA3905DUlSslS49DYLBNtF24Hvs07tLIf7Utmh6uCUW60GFaNAd2y+CLOKNUwDRw9PoVqzfW9KoLLb57DJiL/t2OcyfZHwl1FgVxqkVgOOFb5XSxOYyD+ZTR2TGbE+qPh7elchZ60tWS1BPLS75xgeERAeEk+dy+GQ3Y3Ck3HBKKJt1zlBtf8xauvV+YrfIS4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0OG6MLZJ67GAftDRIGxhLIz4YIqfVM7HU+TiQhveiag=;
+ b=ZmWzbjoXKokgHXu2L/56UCgwg6N0qe8qpL0mq34pA9cb6ozMalW9TuyBS7llo+KYSgiGOf9Qju4Qqma/uHETCOpA5go62A6B7ikUproqY7LdSYr8i/kRLfDoLgWKmyKmmKqt4jsXPhku3NGPpi59NJz56J4QZb0RR/HMsY7Okt8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=corigine.com;
+Received: from BL0PR13MB4403.namprd13.prod.outlook.com (2603:10b6:208:1c4::8)
+ by DS7PR13MB4589.namprd13.prod.outlook.com (2603:10b6:5:3a2::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Thu, 11 Apr
+ 2024 07:00:39 +0000
+Received: from BL0PR13MB4403.namprd13.prod.outlook.com
+ ([fe80::bbcb:1c13:7639:bdc0]) by BL0PR13MB4403.namprd13.prod.outlook.com
+ ([fe80::bbcb:1c13:7639:bdc0%6]) with mapi id 15.20.7409.053; Thu, 11 Apr 2024
+ 07:00:38 +0000
+Date: Thu, 11 Apr 2024 08:59:25 +0200
+From: Louis Peens <louis.peens@corigine.com>
+To: =?iso-8859-1?Q?Asbj=F8rn_Sloth_T=F8nnesen?= <ast@fiberby.net>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-kernel@vger.kernel.org, Yanguo Li <yanguo.li@corigine.com>,
+	oss-drivers@corigine.com, Taras Chornyi <taras.chornyi@plvision.eu>,
+	Woojung Huh <woojung.huh@microchip.com>,
+	UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	Edward Cree <ecree.xilinx@gmail.com>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>
+Subject: Re: [PATCH net-next v2 2/4] nfp: flower: fix check for unsupported
+ control flags
+Message-ID: <ZheKTadCKyX23U0k@LouisNoVo>
+References: <20240410093235.5334-1-ast@fiberby.net>
+ <20240410093235.5334-3-ast@fiberby.net>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240410093235.5334-3-ast@fiberby.net>
+X-ClientProxiedBy: JNXP275CA0009.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:19::21)
+ To BL0PR13MB4403.namprd13.prod.outlook.com (2603:10b6:208:1c4::8)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEkJfYON+ry7xPx=AiLR9jzUNT+i_Va68ACajOC3HoacOfL1ig@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL0PR13MB4403:EE_|DS7PR13MB4589:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1933afc1-5eff-4b45-7363-08dc59f51806
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	8zk0LPIiO1MTc/YdpTkAf6qxcvu7yb7Lc4OHcp/nEq8YyMw+m2dZaLy0E1TVCcgJH2NDCJsuqrlANz15f+ZW/cDYjrUQKUkJ42Bl57PvQkOHEapyitPB62eSYLX2r2K/y9fz2QHQdOitXGeu/hIkJ5GrBthDJlFF1PvBAPeMU91zU/X/Fjkeoz0ONPM9b47nTDqDY5cXQB4Vs7kqkEHKsZ748G4WXu/o2+PWp6EPMZGo3zGgKNS53kR0U9+DF0wWRuq2621WQ6JelXH0tFY37DZGLAlGy0YWDJqq+eYe63GhX+PfVce3KlrkA3bTdcvbdj0vtCA46aTwJnTukTOL5QYAAzbF9Pw5TdgZYcRyLtFzTgaL4ZSbXFNeuXBkklVYF1V5kGDpK6vtWmeDPeqrYFJPJOE++KMihe/zVr5UUrG+h3gW000nv/uP2rTHOztZWUf+JG2N76mp5LZCtkjqm8XvGESlSoVn5az1VzzaTmFVTcKKXTp6mbGel2xRnURWUq2HZbFUHTxJnXZ9d/ZPz8QyX+5txtDH2ZXkN2QQfNnVI1q0axZh6qG4xoOBFM/E/zlj1vUeSsD0VVLFwWvKPJ+N/p6YLyHPxUjobWszXorn8aBKnVUogAxLh/zpqXLmS2LK96QRKtHpBEXgICuF54afXNNnfyMtfvfAu7juVbU=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR13MB4403.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?iso-8859-1?Q?wtQ7o+plg3PGrhAtJ6eqCfVQcTRdUTEyhszFVwzGy4UwptVQ0uhYszM0xX?=
+ =?iso-8859-1?Q?IgMHS6WDqHoL07eXUppzvEbonwsheCOcg2RExWjERuC04Kie47YrvoJVnF?=
+ =?iso-8859-1?Q?8O8szglxywxg1g7UEDji/RLV4SeuyqJP7juSjIn9vjgC4nkV15yeBADrTf?=
+ =?iso-8859-1?Q?wEQ4pW5HAV5X63Hzq7egARxh77QgrJn9eEUtSO7QjethDqaL6yCHKuM11R?=
+ =?iso-8859-1?Q?gjKLxxx6gOcKQ2ek0vYykKd1wzwMA5320pBrLAqFBFIysygPq9/DQDIJ4H?=
+ =?iso-8859-1?Q?yyJR0II0OKcmNM0zx8E0Im6+y12RAplEqY6ETyRAV3cs8vjVlz8AP3UxLW?=
+ =?iso-8859-1?Q?CFgByL3sROcI2Hl6MBqenWdr+KPi6AJp7rYhVLN7EENQmjZsjKSz3KLUdm?=
+ =?iso-8859-1?Q?9MfdhrBKiIp+mJXwosfHNpcckE1oYI2KoMnkKh+qjwZ4bdIW7B7RCWxtw5?=
+ =?iso-8859-1?Q?nyxrxsEOYAsR/QCM0xHKgF/TIAqIf4p43OZ3mz54z3U3A8puv5r1IIsg8h?=
+ =?iso-8859-1?Q?hpzAV/eSueUtqvlKLAQY1XRuhkt9Qg+U+Gb9TuFZ/w97bSzqqB60RA4Kn6?=
+ =?iso-8859-1?Q?P0pOcsLRHCzOfz7RY1P1RJoUjF6taeL5hx/buWvYTHA6haTdn/J6qL9iYE?=
+ =?iso-8859-1?Q?rDAdL6Yuxs5luFq3zqUyvxTNymkCyXPnvGdjLh7jIwdIFawVOpgeEMftcD?=
+ =?iso-8859-1?Q?+TyAXJy754PX2fOBulYu9pNqxNigj+SASwRSr/OkEXnr9CN5d5q3CbJNrV?=
+ =?iso-8859-1?Q?DPRY583I6DgTJwQ0UrqIwCZ8wKd6BavHm9u5IbwcCAJNOLc+1zlleCBwRO?=
+ =?iso-8859-1?Q?28yRrrRWKd5k4tyu2AJxOR0zNqIA7o7KZIBozLPnRwSj5ZqxVVr+WxFlBH?=
+ =?iso-8859-1?Q?QgbMjrQwA/Ew03l1bccfix/ogIeetYQVsJauRJ9P5esjI4uwbtigboojKJ?=
+ =?iso-8859-1?Q?D88WOPXqKuRWfSLo4ji5TurEFM75seYcLnI3KwJTwZcEnTiqT+Gsn0fX5I?=
+ =?iso-8859-1?Q?kCgs0aNRTadoqX+vIwmWeXWrLxmWSx4AkSxruQ1aJLbkqEGhTxV2kTxM/n?=
+ =?iso-8859-1?Q?039R4nbUe4Web9UXBnvNu7FLrPnvUocY6WC7huLO52h68WFsQmttINk7L0?=
+ =?iso-8859-1?Q?ftvRI0bgFRLRi1q9yFbEJRLyfYYVhMKUOt40PT/UQo0DSeGeQkToCe/svb?=
+ =?iso-8859-1?Q?06E0Ti6agjLr0RMBbVhF3HKILH1kidkYzDJEkrK5qLdv6BIGFmQ8LqosfU?=
+ =?iso-8859-1?Q?OIXboVbXIjW03CbAKi9btpTWhKzuBUoaXkXVDJ1BbIdSsPsp1Efl6p/knb?=
+ =?iso-8859-1?Q?JXqpa0it26C7Ewh9BEgy0W0ujrci6C+/WOWpsZKHANv3TFXo6JqbcgYwOE?=
+ =?iso-8859-1?Q?M2Wskah9rTC9xCr+l5M7KrZCCNFYkzZ1ay1oHIyRymHydX+M7pOtlv81u/?=
+ =?iso-8859-1?Q?7uFkniWJeNcZiYtl5ODOSMdOO05AIbGlFsiCbseUKdtC1awGaaLyohzrTe?=
+ =?iso-8859-1?Q?Ne80jBtXpH1HK/hlW02Lp+QPcHuVVUs2E1rtLU8DsvKiRfgQ6CdageCffZ?=
+ =?iso-8859-1?Q?s9BITTtHkoOD3GudA1NRreb0MGNBXdt5acaQzYergauDY3NDPj12vMjoLg?=
+ =?iso-8859-1?Q?m9AL2iPBK30yrJ/dFTMojX78f4aQIoUM0ljdFaeNO5Zp025bLjPVBSIQ?=
+ =?iso-8859-1?Q?=3D=3D?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1933afc1-5eff-4b45-7363-08dc59f51806
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR13MB4403.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 07:00:38.5653
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KRNOz5qkj8hfEnHtJ5qk3OXk23/3Et4JF4Z/cDy789NNFnE8i9VNiMhhBk8Jwq9NWIfgaKd1hKjzaibG1dSzg8kUDoCD6fXkceR5NaSD3UI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR13MB4589
 
-On Thu, Apr 11, 2024 at 02:52:27PM +0800, Sam Sun wrote:
-> Dear developers and maintainers,
+On Wed, Apr 10, 2024 at 09:32:23AM +0000, Asbjørn Sloth Tønnesen wrote:
+> Use flow_rule_is_supp_control_flags()
 > 
-> We encountered a general protection fault in function disable_store.
-> It is tested against the latest upstream linux (tag 6.9-rc3). C repro
-> and kernel config are attached to this email. Kernel crash log is
-> listed below.
-> ```
-> general protection fault, probably for non-canonical address
-> 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-> CPU: 1 PID: 9459 Comm: syz-executor414 Not tainted 6.7.0-rc7 #2
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-> RIP: 0010:disable_store+0xd0/0x3d0 drivers/usb/core/port.c:88
-> Code: 02 00 00 4c 8b 75 40 4d 8d be 58 ff ff ff 4c 89 ff e8 a4 20 fa
-> ff 48 89 c2 48 89 c5 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c
-> 02 00 0f 85 b0 02 00 00 48 8b 45 00 48 8d bb 34 05 00 00 48
-> RSP: 0018:ffffc90006e3fc08 EFLAGS: 00010246
-> RAX: dffffc0000000000 RBX: ffff88801d4d4008 RCX: ffffffff86706be8
-> RDX: 0000000000000000 RSI: ffffffff86706c4d RDI: 0000000000000005
-> RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: 1ffff92000dc7f85
-> R13: ffff88810f4bfb18 R14: ffff88801d4d10a8 R15: ffff88801d4d1000
-> FS:  00007fa0af71b640(0000) GS:ffff888135c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fa0af71a4b8 CR3: 0000000022f5f000 CR4: 0000000000750ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> Call Trace:
->  <TASK>
->  dev_attr_store+0x54/0x80 drivers/base/core.c:2366
->  sysfs_kf_write+0x114/0x170 fs/sysfs/file.c:136
->  kernfs_fop_write_iter+0x337/0x500 fs/kernfs/file.c:334
->  call_write_iter include/linux/fs.h:2020 [inline]
->  new_sync_write fs/read_write.c:491 [inline]
->  vfs_write+0x96a/0xd80 fs/read_write.c:584
->  ksys_write+0x122/0x250 fs/read_write.c:637
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x63/0x6b
-> RIP: 0033:0x7fa0aff9ee1f
-> Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 a9 f4 02 00 48 8b 54
-> 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d
-> 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 ec f4 02 00 48
-> RSP: 002b:00007fa0af71a460 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
-> RAX: ffffffffffffffda RBX: 00000000ffffffff RCX: 00007fa0aff9ee1f
-> RDX: 0000000000000004 RSI: 00007fa0af71acc0 RDI: 0000000000000005
-> RBP: 0000000000000005 R08: 0000000000000000 R09: 00007fffdb6af2cf
-> R10: 0000000000000000 R11: 0000000000000293 R12: 00007fa0af71acc0
-> R13: 000000000000006e R14: 00007fa0aff613d0 R15: 00007fa0af6fb000
->  </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:disable_store+0xd0/0x3d0 drivers/usb/core/port.c:88
-> Code: 02 00 00 4c 8b 75 40 4d 8d be 58 ff ff ff 4c 89 ff e8 a4 20 fa
-> ff 48 89 c2 48 89 c5 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c
-> 02 00 0f 85 b0 02 00 00 48 8b 45 00 48 8d bb 34 05 00 00 48
-> RSP: 0018:ffffc90006e3fc08 EFLAGS: 00010246
-> RAX: dffffc0000000000 RBX: ffff88801d4d4008 RCX: ffffffff86706be8
-> RDX: 0000000000000000 RSI: ffffffff86706c4d RDI: 0000000000000005
-> RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: 1ffff92000dc7f85
-> R13: ffff88810f4bfb18 R14: ffff88801d4d10a8 R15: ffff88801d4d1000
-> FS:  00007fa0af71b640(0000) GS:ffff888063a00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000055d23050c460 CR3: 0000000022f5f000 CR4: 0000000000750ef0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> ----------------
-> Code disassembly (best guess):
->    0:    02 00                    add    (%rax),%al
->    2:    00 4c 8b 75              add    %cl,0x75(%rbx,%rcx,4)
->    6:    40                       rex
->    7:    4d 8d be 58 ff ff ff     lea    -0xa8(%r14),%r15
->    e:    4c 89 ff                 mov    %r15,%rdi
->   11:    e8 a4 20 fa ff           call   0xfffa20ba
->   16:    48 89 c2                 mov    %rax,%rdx
->   19:    48 89 c5                 mov    %rax,%rbp
->   1c:    48 b8 00 00 00 00 00     movabs $0xdffffc0000000000,%rax
->   23:    fc ff df
->   26:    48 c1 ea 03              shr    $0x3,%rdx
-> * 2a:    80 3c 02 00              cmpb   $0x0,(%rdx,%rax,1) <--
-> trapping instruction
->   2e:    0f 85 b0 02 00 00        jne    0x2e4
->   34:    48 8b 45 00              mov    0x0(%rbp),%rax
->   38:    48 8d bb 34 05 00 00     lea    0x534(%rbx),%rdi
->   3f:    48                       rex.W
-> ```
-> We analyzed the root cause of this bug. When calling disable_store()
-> in drivers/usb/core/port.c, if function authorized_store() is calling
-> usb_deauthorized_device() concurrently, the usb_interface will be
-> removed by usb_disable_device. However, in function disable_store,
-> usb_hub_to_struct_hub() would try to deref interface, causing
-> nullptr-deref. We also tested other functions in
-> drivers/usb/core/port.c. So far we haven't found a similar problem.
+> Check the mask, not the key, for unsupported control flags.
 > 
-> If you have any questions, please contact us.
+> Only compile-tested, no access to HW
 > 
-> Reported by Yue Sun <samsun1006219@gmail.com>
-> Reported by xingwei lee <xrivendell7@gmail.com>
+> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+> ---
+>  drivers/net/ethernet/netronome/nfp/flower/offload.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-Do you have a proposed patch to fix this as you have a way to easily
-test this?
-
-thanks,
-
-greg k-h
+Thanks for updating:
+Reviewed-by: Louis Peens <louis.peens@corigine.com>
 
