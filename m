@@ -1,287 +1,94 @@
-Return-Path: <linux-kernel+bounces-141404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC76A8A1EE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:50:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 958628A1E10
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:27:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 079AFB28D31
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:20:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BF44B27C3D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DC455FBB2;
-	Thu, 11 Apr 2024 17:30:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81F2F69D05;
+	Thu, 11 Apr 2024 17:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AcrNhveZ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S7+fhPxI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C215FDA5
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 17:30:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB22459160;
+	Thu, 11 Apr 2024 17:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712856615; cv=none; b=enff9/ZCquEFq0cTelHWqkN1px88uluPzdhynALa7MtxVwy9eJeO4SnboAPjgSyQDjWJUe8oh9fuYpsWecf0zbai+XhH/FUj9rOwuL8lCxp2tY9XPplPUPUTiQlMxzwq8bU98g6VAQhLgOZnNDtyWjo+mjbuxgWZsLdrdp4yytg=
+	t=1712856629; cv=none; b=oybJ6zz8UbhZPVuWwsOxRQEKcxBq6VN4pgFF8j2zQ74vsPnkqzWV0ZjkxhP1XwTvBO8jHRT9jTn9Fo5hNk94SOTHxzep6Fu0+E7514fDbstBr318QhLPx9JHun/4ZYuvdaAgXSVxYr2VwJcNNrEu2YY4PbxP8yvJmMo4De6SsNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712856615; c=relaxed/simple;
-	bh=coXlODZfnq7h5xpUpn/o3CBsPtjfYjFFjiRQ4X0YcmI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Sb0X3bXAKFvIos/WFyNqIzeXZ1OYTd7ZdcC8PS0ddmKekoWxD7jojMt50+FBpuLJ8vTCDmjOtexgXBDpsnaAAGbWvfwGqssZEbTxFw4u1PPBvv1/hl5QOkRV8uarCID+TQFIKAdeercoNh5a3AZ/xR6xQJkAiCyc0HB3yIvhkVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AcrNhveZ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712856612;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JA70ylDgRN0gmRtnn7ierQ4wSnxSZyu6IwhBgJQKKoo=;
-	b=AcrNhveZtmLb8+cAu0SfoeATDArqHZQadYWUJp/cJYj6DVXaXY03smQhMRNX+R3Rji/2td
-	B1HfY8f7pXJ2ipqbifNQUgw1vzktN9vyt4sw/tiHK7roJAoRixIIzPvTVpQXQBGHsIe6Aw
-	WErIG/I8UBwVgrYDIA9FhrOf8XVIv00=
-Received: from mail-vk1-f199.google.com (mail-vk1-f199.google.com
- [209.85.221.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-482-XUx43BG3M1yOkK_1nCRF2A-1; Thu, 11 Apr 2024 13:30:11 -0400
-X-MC-Unique: XUx43BG3M1yOkK_1nCRF2A-1
-Received: by mail-vk1-f199.google.com with SMTP id 71dfb90a1353d-4daa117d98fso16563e0c.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:30:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712856611; x=1713461411;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JA70ylDgRN0gmRtnn7ierQ4wSnxSZyu6IwhBgJQKKoo=;
-        b=fswYhx2uXTGN2NbXIGj1x0zWRq6LrDPrijT/PBozehG2Jd0Ln/DDvexQ5FyaWm2F3V
-         RiBf8ia3uHTAqTcgIoJ7hO3fADbOgovnvLlAQnfGM1vl33xWoORy0K3TDu3ncyb9dXXP
-         8C/WqF+ys9ybjz2W/nWKy4XVvgVsIqGWKZalc6/xW8QEvBZZjyWhvbc7/0rNQbcW9I/F
-         fZV6vTPphSWhUKIQXUe1HhT192JK7rtiDf8p0FeDzoxX1eu1rxsdPD3GrITQB+OgzZGA
-         2CVJrf//QYnoiARKTs/jpSTqfWg3xDJ8uZYUm5fHgmO4Y1QdNo8Wlc28Wvjpgnzf66O+
-         9m1A==
-X-Forwarded-Encrypted: i=1; AJvYcCUFg94SVnz+efJFjG5BOfpwB25lkBF6BOQLGvfThtGy8AY/B64XbgAL9oJ6Lw6MmyN96Jll9um8oEhXM1+PAmU2mhjyl2Xq5F+75tZt
-X-Gm-Message-State: AOJu0YwvFHfYtvsgjgD/ar7Enl7R6A/yVczCMQzrn6fjOeEs971PTemK
-	MwHjI95+EvCjC2fbktNelCURkZMCj7or9l1EbHIukHF9C/emBRlqaziREZlvfdcON7pg8nEtv3T
-	zf3zSynIrcpuCYrDpwgDMh/soDHIo7SiAs5fOjocA90BXEgBa9Q2vT5pMPwIEMK4MV2OyEkQZZA
-	m9+XgmHhXV41mMlHb8XYi0kJQ0JPMx9xpcFKulo8IGhN+FnbI=
-X-Received: by 2002:a05:6122:250e:b0:4d4:11a6:a4ff with SMTP id cl14-20020a056122250e00b004d411a6a4ffmr506652vkb.3.1712856610441;
-        Thu, 11 Apr 2024 10:30:10 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGioIN4sX6H5w/uce8bUQd7RADoNIWXoYNWiGNhTkE+MvuXBmR+hfpEeNC1U/pe/bfWGLV+LDpHBplGVebCjmE=
-X-Received: by 2002:a05:6122:250e:b0:4d4:11a6:a4ff with SMTP id
- cl14-20020a056122250e00b004d411a6a4ffmr506610vkb.3.1712856609810; Thu, 11 Apr
- 2024 10:30:09 -0700 (PDT)
+	s=arc-20240116; t=1712856629; c=relaxed/simple;
+	bh=vUH25OsPFa4RcBBeVz7wpTctxBONPQTL7NjwQVVnSok=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ZRoYESYMBD681EWJoZKGxPCWk1w0QUshttAxbUtf8jivBm9MJx+blKSr4WVb+NcXak53T58cgAVIT483+2tvVbbKrerBOKBtIAbXVH/q0qxbVkdVhasiN65Vc9/8tZe1UHeQJwZqcLTm/qoEPXTk1NwErOnazQDbPzo5aRS42wU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S7+fhPxI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3610AC113CD;
+	Thu, 11 Apr 2024 17:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712856629;
+	bh=vUH25OsPFa4RcBBeVz7wpTctxBONPQTL7NjwQVVnSok=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=S7+fhPxIcy/4bgIhutbfJAdv2uH+nG0YuAJ4cbhJE+9zmSQBN4S7CXL96Ey1cqxU9
+	 6GABvx0BvzB4nO3yy/T/b6D8rQvqDgD/PfLGbQl3gpTMsK7RCENnDeZ7CFfZKucceJ
+	 4iLIUnOi/J2C5kLoCAuPKCX4U77qcwWLtp91zP37ox/B4q+adLzcLdniNGuhWisXR3
+	 DELm+S40U+5OdUTDChm6JLs35XzGJAjjDPdnZql7CMRYIeyRCTVL5mgmPMFmM2AL5j
+	 IH3X1ISXrEtjqYkrmB+/5HWqXbtuBEV1hksqZYTyulP/4Ov58B/LJBqFTbSRT/RmyD
+	 0y2K2aHcjPAug==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 20662C433F2;
+	Thu, 11 Apr 2024 17:30:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411001012.12513-1-torvalds@linux-foundation.org>
- <CAHk-=wiaoij30cnx=jfvg=Br3YTxhQjp4VWRc6=xYE2=+EVRPg@mail.gmail.com>
- <20240411-alben-kocht-219170e9dc99@brauner> <CAHk-=wjrPDx=f5OSnQVbbJ4id6SZk-exB1VW9Uz3R7rKFvTQeQ@mail.gmail.com>
- <CABe3_aGbsPHY9Z5B9WyVWakeWFtief4DpBrDxUiD00qk1irMrg@mail.gmail.com>
-In-Reply-To: <CABe3_aGbsPHY9Z5B9WyVWakeWFtief4DpBrDxUiD00qk1irMrg@mail.gmail.com>
-From: Charles Mirabile <cmirabil@redhat.com>
-Date: Thu, 11 Apr 2024 13:29:58 -0400
-Message-ID: <CABe3_aGGf7kb97gE4FdGmT79Kh5OhbB_2Hqt898WZ+4XGg6j4Q@mail.gmail.com>
-Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() - requirements
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v2 0/2] mptcp: add last time fields in mptcp_info
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171285662912.10890.774534823632472407.git-patchwork-notify@kernel.org>
+Date: Thu, 11 Apr 2024 17:30:29 +0000
+References: <20240410-upstream-net-next-20240405-mptcp-last-time-info-v2-0-f95bd6b33e51@kernel.org>
+In-Reply-To: <20240410-upstream-net-next-20240405-mptcp-last-time-info-v2-0-f95bd6b33e51@kernel.org>
+To: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+Cc: mptcp@lists.linux.dev, martineau@kernel.org, geliang@kernel.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ shuah@kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, tanggeliang@kylinos.cn
 
-Here is an updated version of linus's patch that makes the check
-namespace relative
----
- fs/namei.c            | 17 ++++++++++++-----
- include/linux/namei.h |  1 +
- 2 files changed, 13 insertions(+), 5 deletions(-)
+Hello:
 
-diff --git a/fs/namei.c b/fs/namei.c
-index 4e0de939fea1..2bcc10976ba7 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -2419,6 +2419,14 @@ static const char *path_init(struct nameidata
-*nd, unsigned flags)
-         if (!f.file)
-             return ERR_PTR(-EBADF);
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-+        if (flags & LOOKUP_DFD_MATCH_CREDS) {
-+            if (f.file->f_cred !=3D current_cred() &&
-+                !ns_capable(f.file->f_cred->user_ns, CAP_DAC_READ_SEARCH))=
- {
-+                fdput(f);
-+                return ERR_PTR(-ENOENT);
-+            }
-+        }
-+
-         dentry =3D f.file->f_path.dentry;
+On Wed, 10 Apr 2024 11:48:23 +0200 you wrote:
+> These patches from Geliang add support for the "last time" field in
+> MPTCP Info, and verify that the counters look valid.
+> 
+> Patch 1 adds these counters: last_data_sent, last_data_recv and
+> last_ack_recv. They are available in the MPTCP Info, so exposed via
+> getsockopt(MPTCP_INFO) and the Netlink Diag interface.
+> 
+> [...]
 
-         if (*s && unlikely(!d_can_lookup(dentry))) {
-@@ -4640,14 +4648,13 @@ int do_linkat(int olddfd, struct filename
-*old, int newdfd,
-         goto out_putnames;
-     }
-     /*
--     * To use null names we require CAP_DAC_READ_SEARCH
-+     * To use null names we require CAP_DAC_READ_SEARCH or
-+     * that the open-time creds of the dfd matches current.
-      * This ensures that not everyone will be able to create
-      * handlink using the passed filedescriptor.
-      */
--    if (flags & AT_EMPTY_PATH && !capable(CAP_DAC_READ_SEARCH)) {
--        error =3D -ENOENT;
--        goto out_putnames;
--    }
-+    if (flags & AT_EMPTY_PATH)
-+        how |=3D LOOKUP_DFD_MATCH_CREDS;
+Here is the summary with links:
+  - [net-next,v2,1/2] mptcp: add last time fields in mptcp_info
+    https://git.kernel.org/netdev/net-next/c/18d82cde7432
+  - [net-next,v2,2/2] selftests: mptcp: test last time mptcp_info
+    https://git.kernel.org/netdev/net-next/c/22724c89892f
 
-     if (flags & AT_SYMLINK_FOLLOW)
-         how |=3D LOOKUP_FOLLOW;
-diff --git a/include/linux/namei.h b/include/linux/namei.h
-index 74e0cc14ebf8..678ffe4acf99 100644
---- a/include/linux/namei.h
-+++ b/include/linux/namei.h
-@@ -44,6 +44,7 @@ enum {LAST_NORM, LAST_ROOT, LAST_DOT, LAST_DOTDOT};
- #define LOOKUP_BENEATH        0x080000 /* No escaping from starting point.=
- */
- #define LOOKUP_IN_ROOT        0x100000 /* Treat dirfd as fs root. */
- #define LOOKUP_CACHED        0x200000 /* Only do cached lookup */
-+#define LOOKUP_DFD_MATCH_CREDS    0x400000 /* Require that dfd creds
-match current */
- /* LOOKUP_* flags which do scope-related checks based on the dirfd. */
- #define LOOKUP_IS_SCOPED (LOOKUP_BENEATH | LOOKUP_IN_ROOT)
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
---=20
-2.44.0
-
-On Thu, Apr 11, 2024 at 12:44=E2=80=AFPM Charles Mirabile <cmirabil@redhat.=
-com> wrote:
->
-> On Thu, Apr 11, 2024 at 12:15=E2=80=AFPM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > On Thu, 11 Apr 2024 at 02:05, Christian Brauner <brauner@kernel.org> wr=
-ote:
-> > >
-> > > I had a similar discussion a while back someone requested that we rel=
-ax
-> > > permissions so linkat can be used in containers.
-> >
-> > Hmm.
-> >
-> > Ok, that's different - it just wants root to be able to do it, but
-> > "root" being just in the container itself.
-> >
-> > I don't think that's all that useful - I think one of the issues with
-> > linkat(AT_EMPTY_PATH) is exactly that "it's only useful for root",
-> > which means that it's effectively useless. Inside a container or out.
-> >
-> > Because very few loads run as root-only (and fewer still run with any
-> > capability bits that aren't just "root or nothing").
-> >
-> > Before I did all this, I did a Debian code search for linkat with
-> > AT_EMPTY_PATH, and it's almost non-existent. And I think it's exactly
-> > because of this "when it's only useful for root, it's hardly useful at
-> > all" issue.
-> >
-> > (Of course, my Debian code search may have been broken).
-> >
-> > So I suspect your special case is actually largely useless, and what
-> > the container user actually wanted was what my patch does, but they
-> > didn't think that was possible, so they asked to just extend the
-> > "root" notion.
-> >
-> Yes, that is absolutely the case. When Christian poked holes in my
-> initial submission, I started working on a v2 but haven't had a chance
-> to send it because I wanted to make sure my arguments etc were
-> airtight because I am well aware of just how long and storied the
-> history of flink is. In the v2 that I didn't post yet, I extended the
-> ability to link *any* file from only true root to also "root" within a
-> container following the potentially suspect approach that christian
-> suggested (I see where you are coming from with the unobvious approach
-> to avoiding toctou though I obviously support this patch being
-> merged), but I added a followup patch that checks for whether the file
-> in question is an `__O_TMPFILE` file which is trivial once we are
-> jumping through the hoops of looking up the struct file. If it is a
-> tmpfile (i.e. linkcount =3D 0) I think that all the concerns raised
-> about processes that inherit a fd being able to create links to the
-> file inappropriately are moot. Here is an excerpt from the cover
-> letter I was planning to send that explains my reasoning.
->
->  -  the ability to create an unnamed file, adjust its contents
-> and attributes (i.e. uid, gid, mode, xattrs, etc) and then only give it a=
- name
-> once they are ready is exactly the ideal use-case for a hypothetical `fli=
-nk`
-> system call. The ability to use `AT_EMPTY_PATH` with `linkat` essentially=
- turns
-> it into `flink`, but these restrictions hamper it from actually being use=
-d, as
-> most code is not privileged. By checking whether the file to be linked is=
- a
-> temporary (i.e. unnamed) file we can allow this useful case without allow=
-ing
-> the more risky cases that could have security implications.
->
->  - Although it might appear that the security posture is affected, it is =
-not.
-> Callers who open an extant file on disk in read only mode for sharing wit=
-h
-> potentially untrustworthy code can trust that this change will not affect=
- them
-> because it only applies to temporary files. Callers who open a temporary =
-file
-> need to do so with write access if they want to actually put any data in =
-it,
-> so they will already have to reopen the file (e.g. by linking it to a pat=
-h
-> and opening that path, or opening the magic symlink in proc) if they want=
- to
-> share it in read-only mode with untrustworthy code. As such, that new fil=
-e
-> description will no longer be marked as a temporary file and thus these c=
-hanges
-> do not apply. The final case I can think of is the unlikely possibility o=
-f
-> intentionally sharing read write access to data stored in a temporary fil=
-e with
-> untrustworthy code, but where that code being able to make a link would s=
-till
-> be deleterious. In such a bizarre case, the `O_EXCL` can and should be us=
-ed to
-> fully prevent the temporary file from ever having a name, and this change=
- does
-> not alter its efficacy.
->
-> > I've added Charles to the Cc.
-> >
-> > But yes, with my patch, it would now be trivial to make that
-> >
-> >         capable(CAP_DAC_READ_SEARCH)
-> >
-> > test also be
-> >
-> >         ns_capable(f.file->f_cred->user_ns, CAP_DAC_READ_SEARCH)
-> >
-> > instead. I suspect not very many would care any more, but it does seem
-> > conceptually sensible.
-> >
-> > As to your patch - I don't like your nd->root  games in that patch at
-> > all. That looks odd.
-> >
-> > Yes, it makes lookup ignore the dfd (so you avoid the TOCTOU issue),
-> > but it also makes lookup ignore "/". Which happens to be ok with an
-> > empty path, but still...
-> >
-> > So it feels to me like that patch of yours mis-uses something that is
-> > just meant for vfs_path_lookup().
-> >
-> > It may happen to work, but it smells really odd to me.
-> >
-> >              Linus
-> >
 
 
