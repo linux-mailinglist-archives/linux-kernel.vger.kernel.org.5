@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE9928A19EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:27:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D9E38A19EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:28:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76046282B42
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:27:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6F161F27BB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AFAF1BED79;
-	Thu, 11 Apr 2024 15:37:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83BC21BED7F;
+	Thu, 11 Apr 2024 15:37:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="DOMfSM0d"
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Qv40WMGZ"
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DF0A1BE418
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:37:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83D951BED7B
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:37:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849863; cv=none; b=mhMpK0k+3qwcdsTzRUVJNr8RdT3DG7a9ah9gFZ4EaHJJ78u0pMrxCH5LZN85vZ0wiVJ8XTLFhZRTqmvMyMIIUCrUc7ojph2ieHVCXlZgDDYMaVDJ+SP0v/v4x3Wc+F5Z486jHzHpg5FvmenaycOsMvYUccLvZ4rQws4p/bTccpk=
+	t=1712849865; cv=none; b=du7A0y4P4FbJ3+S9nLZRelU7t1lfLadRhrZGluM71pVoab61Q1+fRyDPjyGgAzyCQnecXyLRSUeLmdEe5lYVUQj+QZVODOnbGhLMEcAkTSzkMRuP87d5r66Ir4Tllil8ds0nZqw6lggvi0hUD+HCY4vJ9zO/TRYwytaqT+LzO68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849863; c=relaxed/simple;
-	bh=b8fBtgiZiqGJZMi5lYFhAdirVPCXkwCkZCiHBhjnpKA=;
+	s=arc-20240116; t=1712849865; c=relaxed/simple;
+	bh=myd+Daz97F2ut49cTnMTTS/WXIDFCLtYMyovDtiMPJM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p/E/LhmsyQKg8uYlqkRQfGtwDIpmAXArj60jlHdR3Uhuxh8MQTsknWVzLevA/2jYyeMSBcC12fhnoIvXQreACAynUqrYN907ZDRerf3oKJU8jDFhp51j4Q3lyThmHnabBs0i+g0A2Imy7qtjm1UYqG55+daQ5u7eVIXADkxuCHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=DOMfSM0d; arc=none smtp.client-ip=209.85.166.52
+	 MIME-Version; b=BzPs1z4RAZOr8QWK6uIMtQxUh0K4FCx03n8IzCDBKgBXZdL6sna2XqIqDARSYKAruvTxkgnpn0e7/VOLqDhWYU16tzchE1983vAVPctvSFpcT7E+gbKySlvcneJz4lM2JxtVVBQnxCOmyFjl1U1NE1r2zJfLhrlGy+XQFid56AU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Qv40WMGZ; arc=none smtp.client-ip=209.85.166.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso58109239f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:37:42 -0700 (PDT)
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-36a34b68277so113155ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:37:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849861; x=1713454661; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849863; x=1713454663; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7FyqLSYmWmwJxpm8RitgJ8rY2UKti8lQVAXLtysgzwI=;
-        b=DOMfSM0d9YWlEQDz4Oa+utjVjIXvsHJ758WskB605NoBkEbWOAIGQ73RmIR5+RRLco
-         a9bFlYoQrKev+XP4ivx7mFdYkVTFRwuf8hUul61Fx5QggQ3EQLqXvBbPYMeqX+nmcZUU
-         GOMJYF4rqnAivuXUNKocmVmRFkXH6CFeSY1ylcBOqzgDLm1+or8gRy00qE9HuIATwK2r
-         tlKObKjah3RPOEGLAWz4CYyQ8hY0UM4wSVs6D+xErDzCos+C7tNRQlfkPLfEWbzUPE/t
-         l5fePqusQpdo2SCxDRddnXLUWY/Xd994m6V+GXmRjb0nYnOD17770DvSZ5uuiTrFqeYP
-         JH8w==
+        bh=HWM7bBVX/AOnqo7s8vRCNjIByq38EP8G7k94XlB2Tzo=;
+        b=Qv40WMGZ0blJJBdZlXq3Qeu9umfuXmdhOTrblt08L1b33zlz8/m+9bKozTIO7ZN6Ic
+         5bfuh8xmCJD0/6J8t+IKTMGcDUgMmBkXb5ZuAu1fER5kcIn4KGvADEHNydzHCBmXNJl5
+         5pvJ1BWcBx9YbLCdnKskJ2GHBUYbRKHTITvGkNVSZKHb7KpCo2RgXdheebpPfmleAvHH
+         BNnKTejhnGZ4hec47SGbhchZDMRcy07Pcw/vKtQVUe0h+/WVVsUCFRzotne+FvZ7MnTX
+         GjwT3AFdwEwJEjbbSeoPjX+P0zSB3aY1ahKAhgYvg2XFQbn64b8haMfbk0Lovo/6/SNE
+         WDgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849861; x=1713454661;
+        d=1e100.net; s=20230601; t=1712849863; x=1713454663;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7FyqLSYmWmwJxpm8RitgJ8rY2UKti8lQVAXLtysgzwI=;
-        b=Sg+KM4QkCOvLBm2/pbhAkOZpPTKuA2bY3Qj9ATjamyfHmQvxGD8HsMAaIYcd44+LuJ
-         NprEWtDCgTOGmY6kgF+uPJ/wDenLNB9HCgWhkUxdSH8JjsjF9ZatdmAKwN8xaFzAyl3j
-         PipAl9/E2zGjZuoJ73os4zSiZ1poy+aYRKTLGQug1GVfMs/EaWPMNEwUveoHIZBXwpza
-         +ZzM4iGhl9Y3CYOw1DrhC45oe2GZYn46NctyfAwI1TBc2T2rPG+C46/hKPMRzZR5iHhU
-         Et8Q3g5eohCTN+MhQPqphsTGvlmPWQ89PK1OdL+T5SIULURMokyplD5vFG4UtDgmuqWb
-         blPA==
-X-Gm-Message-State: AOJu0Yymv2xpj+9luXPhZgLEhkJ+QGj4iibowS0j0s/mKEb0iFjouglQ
-	cQKHdPbmPMCk+xXhwdZtdjG0aEywMdhND0/VTzN6G4m1BXy+Rdlt12gK5fwRmeGVdNVfP8Sxcrl
-	E
-X-Google-Smtp-Source: AGHT+IF0y7qbQbSe1fj9uYpj2j+i794cOX9/VCudphc1XHGTQq40b4cfW70Y89FIB9QO2cYwhxF92A==
-X-Received: by 2002:a05:6602:38d:b0:7d6:513b:254 with SMTP id f13-20020a056602038d00b007d6513b0254mr189457iov.2.1712849861103;
-        Thu, 11 Apr 2024 08:37:41 -0700 (PDT)
+        bh=HWM7bBVX/AOnqo7s8vRCNjIByq38EP8G7k94XlB2Tzo=;
+        b=H1VJ/nUvdkLfCCh3pe4PWCd9WrmgprtZuMociXPDdZt3tLIMjLFw0TisQrbIqCmybB
+         xIONoQ0kcvwB/C30v+JVixHeyCd6wX5gBr+YrfOs6SXdwb+OuWw1h32J2UIAlemudjeU
+         7J1RvGB62r9mKMcRGmmezyMR8ueyiFnoVWlRI/jKOtjTYCk3URRP6yNe7rva6cRHI7u6
+         B2gLWcSyISfJELTPbxa05z9oBPT3wrRuxDgOFIEeCbkDEkvQe5VYfzU1KSvAsTAeLg5E
+         V833vW0DhCPZ2wZLYHryRJxR1tIcsTWkcFUsZv2wnNPFHtxRl13kWQ7K0TixMyIFtSWR
+         BJwA==
+X-Gm-Message-State: AOJu0Yxp9Bte6cROtZsfhYSlLT702PyHM+U7C/ruqOSZwLE05DQssWmr
+	3HNwk2sBu9LulvAIkdQcohTmn4PmzCfYy+1QwAUrOuU9Q7UjSRYOZzptHGkK2oV7+uS3x2WPt+C
+	B
+X-Google-Smtp-Source: AGHT+IFnJhbCydeWVqztP5Nfh1oYFE624XpSmg9S+kK42TiXNmAxZXJRd6n/5jEqq/MpmI3wf9BsRw==
+X-Received: by 2002:a92:d812:0:b0:369:bf80:e367 with SMTP id y18-20020a92d812000000b00369bf80e367mr6246145ilm.3.1712849863315;
+        Thu, 11 Apr 2024 08:37:43 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.39
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:37:39 -0700 (PDT)
+        Thu, 11 Apr 2024 08:37:41 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 216/437] misc: lkdtm: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:15:56 -0600
-Message-ID: <20240411153126.16201-217-axboe@kernel.dk>
+Subject: [PATCH 217/437] misc: open-dice: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:15:57 -0600
+Message-ID: <20240411153126.16201-218-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,135 +85,65 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/misc/lkdtm/core.c | 40 +++++++++++++++++----------------------
- 1 file changed, 17 insertions(+), 23 deletions(-)
+ drivers/misc/open-dice.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
-index 5732fd59a227..12f02713f39c 100644
---- a/drivers/misc/lkdtm/core.c
-+++ b/drivers/misc/lkdtm/core.c
-@@ -27,20 +27,17 @@
- #include <linux/slab.h>
- #include <linux/debugfs.h>
- #include <linux/utsname.h>
+diff --git a/drivers/misc/open-dice.c b/drivers/misc/open-dice.c
+index 1e3eb2aa44d9..0fe66a17f27d 100644
+--- a/drivers/misc/open-dice.c
++++ b/drivers/misc/open-dice.c
+@@ -25,6 +25,7 @@
+ #include <linux/module.h>
+ #include <linux/of_reserved_mem.h>
+ #include <linux/platform_device.h>
 +#include <linux/uio.h>
  
- #define DEFAULT_COUNT 10
+ #define DRIVER_NAME "open-dice"
  
- static int lkdtm_debugfs_open(struct inode *inode, struct file *file);
--static ssize_t lkdtm_debugfs_read(struct file *f, char __user *user_buf,
--		size_t count, loff_t *off);
--static ssize_t direct_entry(struct file *f, const char __user *user_buf,
--			    size_t count, loff_t *off);
-+static ssize_t lkdtm_debugfs_read(struct kiocb *iocb, struct iov_iter *to);
-+static ssize_t direct_entry(struct kiocb *iocb, struct iov_iter *from);
+@@ -61,26 +62,24 @@ static int open_dice_wipe(struct open_dice_drvdata *drvdata)
+ /*
+  * Copies the size of the reserved memory region to the user-provided buffer.
+  */
+-static ssize_t open_dice_read(struct file *filp, char __user *ptr, size_t len,
+-			      loff_t *off)
++static ssize_t open_dice_read(struct kiocb *iocb, struct iov_iter *to)
+ {
+-	unsigned long val = to_open_dice_drvdata(filp)->rmem->size;
++	unsigned long val = to_open_dice_drvdata(iocb->ki_filp)->rmem->size;
  
- #ifdef CONFIG_KPROBES
- static int lkdtm_kprobe_handler(struct kprobe *kp, struct pt_regs *regs);
--static ssize_t lkdtm_debugfs_entry(struct file *f,
--				   const char __user *user_buf,
--				   size_t count, loff_t *off);
-+static ssize_t lkdtm_debugfs_entry(struct kiocb *iocb, struct iov_iter *from);
- # define CRASHPOINT_KPROBE(_symbol)				\
- 		.kprobe = {					\
- 			.symbol_name = (_symbol),		\
-@@ -64,10 +61,10 @@ struct crashpoint {
- 	{							\
- 		.name = _name,					\
- 		.fops = {					\
--			.read	= lkdtm_debugfs_read,		\
-+			.read_iter= lkdtm_debugfs_read,		\
- 			.llseek	= generic_file_llseek,		\
- 			.open	= lkdtm_debugfs_open,		\
--			.write	= CRASHPOINT_WRITE(_symbol)	\
-+			.write_iter = CRASHPOINT_WRITE(_symbol)	\
- 		},						\
- 		CRASHPOINT_KPROBE(_symbol)			\
- 	}
-@@ -224,12 +221,11 @@ static int lkdtm_kprobe_handler(struct kprobe *kp, struct pt_regs *regs)
- 	return 0;
+-	return simple_read_from_buffer(ptr, len, off, &val, sizeof(val));
++	return simple_copy_to_iter(&val, &iocb->ki_pos, sizeof(val), to);
  }
  
--static ssize_t lkdtm_debugfs_entry(struct file *f,
--				   const char __user *user_buf,
--				   size_t count, loff_t *off)
-+static ssize_t lkdtm_debugfs_entry(struct kiocb *iocb, struct iov_iter *from)
+ /*
+  * Triggers a wipe of the reserved memory region. The user-provided pointer
+  * is never dereferenced.
+  */
+-static ssize_t open_dice_write(struct file *filp, const char __user *ptr,
+-			       size_t len, loff_t *off)
++static ssize_t open_dice_write(struct kiocb *iocb, struct iov_iter *from)
  {
--	struct crashpoint *crashpoint = file_inode(f)->i_private;
-+	struct crashpoint *crashpoint = file_inode(iocb->ki_filp)->i_private;
- 	const struct crashtype *crashtype = NULL;
-+	size_t count = iov_iter_count(from);
- 	char *buf;
- 	int err;
+-	if (open_dice_wipe(to_open_dice_drvdata(filp)))
++	if (open_dice_wipe(to_open_dice_drvdata(iocb->ki_filp)))
+ 		return -EIO;
  
-@@ -239,7 +235,7 @@ static ssize_t lkdtm_debugfs_entry(struct file *f,
- 	buf = (char *)__get_free_page(GFP_KERNEL);
- 	if (!buf)
- 		return -ENOMEM;
--	if (copy_from_user(buf, user_buf, count)) {
-+	if (!copy_from_iter_full(buf, count, from)) {
- 		free_page((unsigned long) buf);
- 		return -EFAULT;
- 	}
-@@ -257,15 +253,14 @@ static ssize_t lkdtm_debugfs_entry(struct file *f,
- 	if (err < 0)
- 		return err;
- 
--	*off += count;
-+	iocb->ki_pos += count;
- 
- 	return count;
- }
- #endif
- 
- /* Generic read callback that just prints out the available crash types */
--static ssize_t lkdtm_debugfs_read(struct file *f, char __user *user_buf,
--		size_t count, loff_t *off)
-+static ssize_t lkdtm_debugfs_read(struct kiocb *iocb, struct iov_iter *to)
- {
- 	int n, cat, idx;
- 	ssize_t out;
-@@ -288,8 +283,7 @@ static ssize_t lkdtm_debugfs_read(struct file *f, char __user *user_buf,
- 	}
- 	buf[n] = '\0';
- 
--	out = simple_read_from_buffer(user_buf, count, off,
--				      buf, n);
-+	out = simple_copy_to_iter(buf, &iocb->ki_pos, n, to);
- 	free_page((unsigned long) buf);
- 
- 	return out;
-@@ -301,10 +295,10 @@ static int lkdtm_debugfs_open(struct inode *inode, struct file *file)
+ 	/* Consume the input buffer. */
+-	return len;
++	return iov_iter_count(from);
  }
  
- /* Special entry to just crash directly. Available without KPROBEs */
--static ssize_t direct_entry(struct file *f, const char __user *user_buf,
--		size_t count, loff_t *off)
-+static ssize_t direct_entry(struct kiocb *iocb, struct iov_iter *from)
- {
- 	const struct crashtype *crashtype;
-+	size_t count = iov_iter_count(from);
- 	char *buf;
- 	int err;
+ /*
+@@ -106,8 +105,8 @@ static int open_dice_mmap(struct file *filp, struct vm_area_struct *vma)
  
-@@ -316,7 +310,7 @@ static ssize_t direct_entry(struct file *f, const char __user *user_buf,
- 	buf = (char *)__get_free_page(GFP_KERNEL);
- 	if (!buf)
- 		return -ENOMEM;
--	if (copy_from_user(buf, user_buf, count)) {
-+	if (!copy_from_iter_full(buf, count, from)) {
- 		free_page((unsigned long) buf);
- 		return -EFAULT;
- 	}
-@@ -331,7 +325,7 @@ static ssize_t direct_entry(struct file *f, const char __user *user_buf,
+ static const struct file_operations open_dice_fops = {
+ 	.owner = THIS_MODULE,
+-	.read = open_dice_read,
+-	.write = open_dice_write,
++	.read_iter = open_dice_read,
++	.write_iter = open_dice_write,
+ 	.mmap = open_dice_mmap,
+ };
  
- 	pr_info("Performing direct entry %s\n", crashtype->name);
- 	err = lkdtm_do_action(crashtype);
--	*off += count;
-+	iocb->ki_pos += count;
- 
- 	if (err)
- 		return err;
 -- 
 2.43.0
 
