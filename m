@@ -1,181 +1,128 @@
-Return-Path: <linux-kernel+bounces-140734-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BEBD8A186E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B283F8A1A52
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:47:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7846CB25803
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:18:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 337C1B2F0B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:35:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C50517597;
-	Thu, 11 Apr 2024 15:16:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 192A417D036;
+	Thu, 11 Apr 2024 15:38:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b0uoEBIw"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="cBOCkMds"
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A18C14F61;
-	Thu, 11 Apr 2024 15:16:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B9C17D005
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712848588; cv=none; b=g/oGY3gdyxZSQKTM5rAgDGq5W8U75vqNcryxxuKna10ZHSzS+eD0FG0v2Xk2/adG50N2zSpbkm6vs9j5EROAGCbvPaUvHGZOM1e59KqqSIXRdtHw1tHNeuIXMZA+6JngMgfZ9l2rLyQpwIog4ccQqA2xNDJ/bU3+0pU2pU+xBhM=
+	t=1712849904; cv=none; b=NRRO6C6fjU0Er4hoxf9grgofNd155G92bwU4ppKpCe5MyfvL4Y2Y5aBl9nU0Leh3KWKCdVkesgjEr2nyVHEjvZj52HPuqjgATEv6IYyqV8JDwYQQdPtgDk3Y1G+PoOko/obKhIY0oDsApz18LqzHeMg1mFUwdwgndshGMDxZ7LA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712848588; c=relaxed/simple;
-	bh=lVC9B1IxKNezJlsW9o1nTkrk+HcRCjDg79ZgiyQJjWM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BnwXBPdYS0Tp0c4pbbAJDPq9whEua5HwAUSrfP4KkYQqvExv/dAZ1vgOY5nazVpkW7Zjtwc8rkMwgAn3YoimG7ITBWXeX0UHEtHwk7f5R5PLcdKqf8h1g1Q1yMXlo84DMhJrReClUJDm9e0qNJnuRIYEGRLtWbVnNvoaFbWNMkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b0uoEBIw; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712848586; x=1744384586;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=lVC9B1IxKNezJlsW9o1nTkrk+HcRCjDg79ZgiyQJjWM=;
-  b=b0uoEBIwDxosro6wO1mJMXDsrzPYp/YClmmXKUJj6+Utuc7zhoz7rsNE
-   BtV1cWDmWYzyt8srbn4f+SMSD2QKSnAmmqgMFp1L6n8SAYmEJRD4/GgsI
-   +gShWzNiw160O5XpUK2gH6Rm7gwayy43mN5GmMbHlkNFWnXCu2RZLuTzv
-   NpuvASUYN0OBh7d+yKwr4I767pvGhqPCd9yQ1B2uJKgdZ64o6G7BfThI1
-   52Kl8W0h7SeAOnnwGYr8MrjtE02P59slJGGq7hUkxUGbvAom+yMTIrIlK
-   2TNIAU+3vowTyAdbzwTsA1dAnuWXg6zESbDEmpiJqyMaxXKGUbrJW+cG9
-   w==;
-X-CSE-ConnectionGUID: ALYiUuGoTjqWAfYmmhaxPA==
-X-CSE-MsgGUID: H3mMwBL/TKaQt+n6Y+YFww==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8123111"
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="8123111"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 08:16:25 -0700
-X-CSE-ConnectionGUID: V5RbhwPNR2SR5w/fw0G6Xg==
-X-CSE-MsgGUID: pgvLL74GRxOGz//JyPY66A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="21522233"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.124.242.48]) ([10.124.242.48])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 08:16:22 -0700
-Message-ID: <2c11bb62-874e-4e9e-89b1-859df5b560bc@intel.com>
-Date: Thu, 11 Apr 2024 23:16:19 +0800
+	s=arc-20240116; t=1712849904; c=relaxed/simple;
+	bh=E2wx/0FL1TQR0BsAabiuUfktTaJ7onkJ24+tyDM+ewU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=oW6Pxy9sNnAUO2zK0sIfjVSO4i0R6XDARDi4RAiMndvwQQf8BJDh+CrybZ/iH4+ZSTspyGuTP4XnFSSBeTvbsaKLCmN/IeBT6q2KqvpZm7ixqBMxqkZUZk4shAxafMDre3rd03drA2SLiO3Bw/5bBGlOSzB8nxNu+zkEVrluLzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=cBOCkMds; arc=none smtp.client-ip=209.85.166.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7d6812b37a6so8991939f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:38:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849902; x=1713454702; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qdXV8ZsMH7zUbt3+z3Z9fZuxmHYAX1pvA/Y9quQEfus=;
+        b=cBOCkMdsBOAcYmA6bitrpRVwtKBPwqSIB6WBeekRnbtnRqZUqmjvct2ECwB7nQ3dv9
+         4aUjWb2aQnqvds2IKjKw9Fhh2w7waSzgRO4SaIWjj+sKa4DoNQSa+lvO98kBOX45PuMB
+         Em21HbW4/DULHz9Td9ZZZgZWUrq1jXKXWm9hd/JgQ+DaKEaBv633UZMN2ZiQ3hdx2y8Y
+         tIbxSw5t/SiyVTUL9eI0lF61dac84RQBAY5oF3ulFlg7ahbqgBiiv7WGYpZFEMRPu721
+         P9vuxzXA8sFcbTJ1XMFUQEPLIuaVkY93sjy88sty9lrNxk7eS6nch1QaXHB9sGiVlIMc
+         TbKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712849902; x=1713454702;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qdXV8ZsMH7zUbt3+z3Z9fZuxmHYAX1pvA/Y9quQEfus=;
+        b=c5fUEOP/d8pu01VHjZXty+uZsXlcqtZRq61VoMTD3+pRyVMIYfQVdgnAX57CyT8RWw
+         Rx5dvFtqE2C4GVYXV3uQTiZ31VkO1GJ6MSQDBugulsl0F0rpZ7x0mOULJaMMyNL6qGvp
+         l8X50+s4fqous7OFw0kXfqo/0olXcIOKnAr3QkFTVynphuHF3mlVgB2HyVCl31K8zeBD
+         WYO9U3JL778SxzAd04hfTIA0U2s0Yxlt2v8lgbBKQTzy1DaWu7znl1767Ak1S1CLgSJe
+         IUB9cdHAM9ljuovpXile3H76/sVFOb2Vz8BKcbre2v0mdQCpnVdA1TB1cUj2seiglznn
+         pNXA==
+X-Gm-Message-State: AOJu0YydmK6trUVDvQxpDYkA8sF+0ddwZfkfRVBY+3AtxlCPudpa/Efu
+	hcJcvgIA4B0sF1krg7feGsR+l4xNWztW7KnTtZ8zuVv64JuIPu+SS3KAs9BM2G/WTFNbOgbGLiI
+	j
+X-Google-Smtp-Source: AGHT+IHZFZfM0kIu9pfljFzZLFycWuKGa7YxO9qmmY+N0Y1NVNfICo8J+2Ib/cobvcwvH2ZU+Xsj2A==
+X-Received: by 2002:a92:2912:0:b0:36a:f9aa:5757 with SMTP id l18-20020a922912000000b0036af9aa5757mr3588463ilg.2.1712849900494;
+        Thu, 11 Apr 2024 08:38:20 -0700 (PDT)
+Received: from localhost.localdomain ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.38.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 08:38:19 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: linux-kernel@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 240/437] watchdog: geodewdt: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:16:20 -0600
+Message-ID: <20240411153126.16201-241-axboe@kernel.dk>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
+References: <20240411153126.16201-1-axboe@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [ANNOUNCE] PUCK Notes - 2024.04.03 - TDX Upstreaming Strategy
-To: Sean Christopherson <seanjc@google.com>,
- Rick P Edgecombe <rick.p.edgecombe@intel.com>
-Cc: "davidskidmore@google.com" <davidskidmore@google.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "srutherford@google.com" <srutherford@google.com>,
- "pankaj.gupta@amd.com" <pankaj.gupta@amd.com>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- Isaku Yamahata <isaku.yamahata@intel.com>, Wei W Wang <wei.w.wang@intel.com>
-References: <ZhQ8UCf40UeGyfE_@google.com>
- <5faaeaa7bc66dbc4ea86a64ef8e8f9b22fd22ef4.camel@intel.com>
- <ZhRxWxRLbnrqwQYw@google.com>
- <957b26d18ba7db611ed6582366066667267d10b8.camel@intel.com>
- <ZhSb28hHoyJ55-ga@google.com>
- <8b40f8b1d1fa915116ef1c95a13db0e55d3d91f2.camel@intel.com>
- <ZhVdh4afvTPq5ssx@google.com>
- <4ae4769a6f343a2f4d3648e4348810df069f24b7.camel@intel.com>
- <ZhVsHVqaff7AKagu@google.com>
- <b1d112bf0ff55073c4e33a76377f17d48dc038ac.camel@intel.com>
- <ZhfyNLKsTBUOI7Vp@google.com>
-Content-Language: en-US
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <ZhfyNLKsTBUOI7Vp@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 4/11/2024 10:22 PM, Sean Christopherson wrote:
-> On Thu, Apr 11, 2024, Rick P Edgecombe wrote:
->> On Tue, 2024-04-09 at 09:26 -0700, Sean Christopherson wrote:
->>>> Haha, if this is the confusion, I see why you reacted that way to "JSON".
->>>> That would be quite the curious choice for a TDX module API.
->>>>
->>>> So it is easy to convert it to a C struct and embed it in KVM. It's just not
->>>> that useful because it will not necessarily be valid for future TDX modules.
->>>
->>> No, I don't want to embed anything in KVM, that's the exact same as hardcoding
->>> crud into KVM, which is what I want to avoid.  I want to be able to roll out a
->>> new TDX module with any kernel changes, and I want userspace to be able to
->>> assert
->>> that, for a given TDX module, the effective guest CPUID configuration aligns
->>> with
->>> userspace's desired the vCPU model, i.e. that the value of fixed bits match up
->>> with the guest CPUID that userspace wants to define.
->>>
->>> Maybe that just means converting the JSON file into some binary format that
->>> the
->>> kernel can already parse.  But I want Intel to commit to providing that
->>> metadata
->>> along with every TDX module.
->>
->> Oof. It turns out in one of the JSON files there is a description of a different
->> interface (TDX module runtime interface) that provides a way to read CPUID data
->> that is configured in a TD, including fixed bits. It works like:
->> 1. VMM queries which CPUID bits are directly configurable.
->> 2. VMM provides directly configurable CPUID bits, along with XFAM and
->> ATTRIBUTES, via TDH.MNG.INIT. (KVM_TDX_INIT_VM)
->> 3. Then VMM can use this other interface via TDH.MNG.RD, to query the resulting
->> values of specific CPUID leafs.
->>
->> This does not provide a way to query the fixed bits specifically, it tells you
->> what ended up getting configuring in a specific TD, which includes the fixed
->> bits and anything else. So we need to do KVM_TDX_INIT_VM before KVM_SET_CPUID in
->> order to have something to check against. But there was discussion of
->> KVM_SET_CPUID on CPU0 having the CPUID state to pass to KVM_TDX_INIT_VM. So that
->> would need to be sorted.
->>
->> If we pass the directly configurable values with KVM_TDX_INIT_VM, like we do
->> today, then the data provided by this interface should allow us to check
->> consistency between KVM_SET_CPUID and the actual configured TD CPUID behavior.
-> 
-> I think it would be a good (optional?) sanity check, e.g. KVM_BUG_ON() if the
-> post-KVM_TDX_INIT_VM CPUID set doesn't match KVM's internal data.  But that alone
-> provides a terrible experience for userspace.
-> 
->   - The VMM would still need to hardcode knowledge of fixed bits, without a way
->     to do a sanity check of its own.
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+---
+ drivers/watchdog/geodewdt.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Maybe we can do it this way to avoid hardcode:
+diff --git a/drivers/watchdog/geodewdt.c b/drivers/watchdog/geodewdt.c
+index 5186c37ad451..2a0c904536d9 100644
+--- a/drivers/watchdog/geodewdt.c
++++ b/drivers/watchdog/geodewdt.c
+@@ -108,9 +108,9 @@ static int geodewdt_release(struct inode *inode, struct file *file)
+ 	return 0;
+ }
+ 
+-static ssize_t geodewdt_write(struct file *file, const char __user *data,
+-				size_t len, loff_t *ppos)
++static ssize_t geodewdt_write(struct kiocb *iocb, struct iov_iter *from)
+ {
++	size_t len = iov_iter_count(from);
+ 	if (len) {
+ 		if (!nowayout) {
+ 			size_t i;
+@@ -119,7 +119,7 @@ static ssize_t geodewdt_write(struct file *file, const char __user *data,
+ 			for (i = 0; i != len; i++) {
+ 				char c;
+ 
+-				if (get_user(c, data + i))
++				if (get_iter(c, from))
+ 					return -EFAULT;
+ 
+ 				if (c == 'V')
+@@ -197,7 +197,7 @@ static long geodewdt_ioctl(struct file *file, unsigned int cmd,
+ static const struct file_operations geodewdt_fops = {
+ 	.owner          = THIS_MODULE,
+ 	.llseek         = no_llseek,
+-	.write          = geodewdt_write,
++	.write_iter     = geodewdt_write,
+ 	.unlocked_ioctl = geodewdt_ioctl,
+ 	.compat_ioctl	= compat_ptr_ioctl,
+ 	.open           = geodewdt_open,
+-- 
+2.43.0
 
-1. KVM can get the configurable CPUID bits from TDX module with 
-TDH.SYS.RD (they are the old info of TD_SYSINFO.CPUID_CONFIG[]), and 
-report them to userspace;
-
-2. userspace configures the configurable CPUID bits and pass them to KVM 
-to init TD.
-
-3. After TD is initialized via TDH.MNG.INIT, KVM can get a full CPUID 
-list of TD via TDH.MNG.RD. KVM provides interface to report the full 
-CPUID list to userspace.
-
-4. Userspace can sanity check the full CPUID list.
-    - the configurable bits reported in #1 should be what they have been 
-configured;
-    - the dynamic bits and other special bits will be checked case by case;
-    - the rest bits should be fixed. If the value is not what user 
-wants, userspace prints error to user and stop.
-
-Does it sounds reasonable?
-
->   - Lack of a sanity check means the VMM can't fail VM creation early.
-> 
->   - KVM_SET_CPUID2 doesn't have a way to inform userspace _which_ CPUID bits are
->     "bad".
-> 
->   - Neither userspace nor KVM can programming detect when bits are fixed vs.
->     flexible.  E.g. it's not impossible that userspace would want to do X if a
->     feature is fixed, but Y if it's flexible.
-
-flexible (configurable) bits is known to VMM (KVM and userspace) because 
-TDX module has interface to report them. So we can treat a bit as fixed 
-if it is not reported in the flexible group. (of course the dynamic bits 
-are special and excluded.)
 
