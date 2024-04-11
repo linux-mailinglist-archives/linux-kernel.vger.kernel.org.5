@@ -1,455 +1,223 @@
-Return-Path: <linux-kernel+bounces-140318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82B7E8A12A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:12:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ED638A12AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:12:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D92FFB22411
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:12:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 524371C21F94
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:12:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E82147C77;
-	Thu, 11 Apr 2024 11:12:02 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECD3613DDD6
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:11:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E761482FC;
+	Thu, 11 Apr 2024 11:12:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="QWJFcBlU"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CECB1474BA;
+	Thu, 11 Apr 2024 11:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712833921; cv=none; b=G1ZSEx7P6LL5cPcVFh4rKkTItEAfhBeTXuJD8Rzyvo2olkPDr5ruiZb+Dyifg9b2xJAtWdqZiGksXcYIZwleoAmjjbJYE1/0nQ5f1rD4Iqb1BSZ3N0zpK3MAmX14fY8hjGozoLJC0KSBWwxsGjvYNiacR9phs+wXXO2Gl/7zNrM=
+	t=1712833959; cv=none; b=BQbBrcGB8NkcQ3IIkaptcUrxDXV/TjfspaNGTQZcVbmSi01us56+CqIEXsJ4iNhnJ8/7i0Zr1CJcimJH4NyyLDpWliepBE2wCqdWsspJdp/m2yUsrkRVyduT0Unv+nmp6t1T9UghmhdxwDXRwaDKSaXWQdwDXRkIGXJoBKioejY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712833921; c=relaxed/simple;
-	bh=dV7d/nEj7HEPXNLX5RSXjjWn9KacwCzxfecD+XKTQCw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uV1oCw1MIxHQwqhyvFFaGx1IW5EttB5lIL5CohEftsdDSR/xkD3cWvKyHdSxX99hmGdLsevnRTMybW6/OWhu0x+dKZHcIYZpBE8I9uGwUTG2XkoqMX6hZjhAWgbtyTZwzt9w0t4pvmhJEd4m/emKKfShaUPwoELpzJDvENfcMLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6056F113E;
-	Thu, 11 Apr 2024 04:12:27 -0700 (PDT)
-Received: from [10.1.38.151] (XHFQ2J9959.cambridge.arm.com [10.1.38.151])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DF2243F64C;
-	Thu, 11 Apr 2024 04:11:55 -0700 (PDT)
-Message-ID: <38c4add8-53a2-49ca-9f1b-f62c2ee3e764@arm.com>
-Date: Thu, 11 Apr 2024 12:11:54 +0100
+	s=arc-20240116; t=1712833959; c=relaxed/simple;
+	bh=XWXUyl1Nz91NBxdPg+48EdN2ElgiJkR3ew64Yn5yz/Q=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=d5MAWuXLPLtdseCGh2x0VPQ6dTQ8NKUaD1ta/1H/BcYAjTgu6C38injBLZDtSfSscxxXV4oJfugCkCE7cy1wesIL1a+xqjh0fsnWJ+6+IznBqoLQnjjTxbPh+GPKiRhIL1m3F7hMBi6ZcUCWcV5/ma8lfNJ4B5leSNNLIum+Er4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=QWJFcBlU; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43BAW5lC027333;
+	Thu, 11 Apr 2024 11:12:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=uhcvB6tpxrkxE/KaZ+ck3RH3SA1Z9JkugprvYlNNlwk=;
+ b=QWJFcBlUByKAlYtOaYGkA8IRTEAbJODcZ945EbsZLdKxBHI6hiwSjqRFPPLUxTVp9CD4
+ oaKs+pMb16VK8nL0CDf56CyosGxXQvpaGbcASX6138cUXuDR/rThAZd+W0UMZ1wUJ19d
+ P+U24VUJZOzf4DI/a/GSnIlrgB8wUVk/OdE1ZAB9yzooD2hIO6NW6cDr30UjkJLMMI3f
+ AZVxi/mRtfLWszRCVMwOwFJiQctqXCm7V+nP25ljgyVFgHnc6NuaYzVQ6DwP9LPDJi87
+ D72LROOzInxQ1M6JAf0aEe13fZ2YlKIyF4JUfTsKPFHGgcS1drvAwg4O+XaVMB4el8JI eA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xebfy8eda-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 11:12:30 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43BBCT3h021006;
+	Thu, 11 Apr 2024 11:12:29 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xebfy8ed6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 11:12:29 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43B8ZDpV013544;
+	Thu, 11 Apr 2024 11:12:29 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xbgqtu1qt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 11:12:28 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43BBCNUX16974168
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 11 Apr 2024 11:12:25 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id AC8CE2004B;
+	Thu, 11 Apr 2024 11:12:23 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5D04A20043;
+	Thu, 11 Apr 2024 11:12:23 +0000 (GMT)
+Received: from [9.152.224.141] (unknown [9.152.224.141])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 11 Apr 2024 11:12:23 +0000 (GMT)
+Message-ID: <12ae995f-4af4-4c6b-9130-04672d157293@linux.ibm.com>
+Date: Thu, 11 Apr 2024 13:12:23 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v5 04/11] net/smc: implement some unsupported
+ operations of loopback-ism
+To: Wen Gu <guwen@linux.alibaba.com>,
+        Niklas Schnelle
+ <schnelle@linux.ibm.com>,
+        Gerd Bayer <gbayer@linux.ibm.com>, twinkler@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, wenjia@linux.ibm.com, jaka@linux.ibm.com
+Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
+        tonylu@linux.alibaba.com, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org
+References: <20240324135522.108564-1-guwen@linux.alibaba.com>
+ <20240324135522.108564-5-guwen@linux.alibaba.com>
+ <3122eece5b484abcf8d23f85d6c18c36f0b939ff.camel@linux.ibm.com>
+ <1db6ccab-b49f-45d2-a93c-05b0f79371a3@linux.alibaba.com>
+ <3b3ff37643e9030ec1246e67720683a2cf5660e5.camel@linux.ibm.com>
+ <7a0fc481-658e-4c99-add7-ccbd5f9dce1e@linux.alibaba.com>
+ <7291dd1b2d16fd9bbd90988ac5bcc3a46d17e3f4.camel@linux.ibm.com>
+ <46e8e227-8058-4062-a9db-6b9c774f63cc@linux.alibaba.com>
+Content-Language: en-US
+From: Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <46e8e227-8058-4062-a9db-6b9c774f63cc@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: lH8IiSDzd6CHB4tJ3S8jUQABn86FFQBx
+X-Proofpoint-ORIG-GUID: Dn9t7sHizOmtClU9DfBA8utLe4LTNm47
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/2] mm/madvise: optimize lazyfreeing with mTHP in
- madvise_free
-Content-Language: en-GB
-To: Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org
-Cc: david@redhat.com, 21cnbao@gmail.com, mhocko@suse.com,
- fengwei.yin@intel.com, zokeefe@google.com, shy828301@gmail.com,
- xiehuan09@gmail.com, wangkefeng.wang@huawei.com, songmuchun@bytedance.com,
- peterx@redhat.com, minchan@kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240408042437.10951-1-ioworker0@gmail.com>
- <20240408042437.10951-2-ioworker0@gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240408042437.10951-2-ioworker0@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-11_04,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ spamscore=0 lowpriorityscore=0 impostorscore=0 mlxlogscore=999 mlxscore=0
+ bulkscore=0 adultscore=0 phishscore=0 malwarescore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404110081
 
-On 08/04/2024 05:24, Lance Yang wrote:
-> This patch optimizes lazyfreeing with PTE-mapped mTHP[1]
-> (Inspired by David Hildenbrand[2]). We aim to avoid unnecessary folio
-> splitting if the large folio is fully mapped within the target range.
+
+
+On 09.04.24 03:44, Wen Gu wrote:
 > 
-> If a large folio is locked or shared, or if we fail to split it, we just
-> leave it in place and advance to the next PTE in the range. But note that
-> the behavior is changed; previously, any failure of this sort would cause
-> the entire operation to give up. As large folios become more common,
-> sticking to the old way could result in wasted opportunities.
 > 
-> On an Intel I5 CPU, lazyfreeing a 1GiB VMA backed by PTE-mapped folios of
-> the same size results in the following runtimes for madvise(MADV_FREE) in
-> seconds (shorter is better):
+> On 2024/4/4 23:15, Niklas Schnelle wrote:
+>> On Thu, 2024-04-04 at 21:12 +0800, Wen Gu wrote:
+>>>
+>>> On 2024/4/4 19:42, Niklas Schnelle wrote:
+>>>> On Thu, 2024-04-04 at 17:32 +0800, Wen Gu wrote:
+>>>>>
+>>>>> On 2024/4/4 00:25, Gerd Bayer wrote:
+>>>>>> On Sun, 2024-03-24 at 21:55 +0800, Wen Gu wrote:
+>>>>>>> This implements some operations that loopback-ism does not support
+>>>>>>> currently:
+>>>>>>>     - vlan operations, since there is no strong use-case for it.
+>>>>>>>     - signal_event operations, since there is no event to be processed
+>>>>>>> by the loopback-ism device.
+>>>>>>
+>>>>>> Hi Wen,
+>>>>>>
+>>>>>> I wonder if the these operations that are not supported by loopback-ism
+>>>>>> should rather be marked "optional" in the struct smcd_ops, and the
+>>>>>> calling code should call these only when they are implemented.
+>>>>>>
+>>>>>> Of course this would mean more changes to net/smc/smc_core.c - but
+>>>>>> loopback-ism could omit these "boiler-plate" functions.
+>>>>>>
+>>>>>
+>>>>> Hi Gerd.
+>>>>>
+>>>>> Thank you for the thoughts! I agree that checks like 'if(smcd->ops->xxx)'
+>>>>> can avoid the device driver from implementing unsupported operations. But I
+>>>>> am afraid that which operations need to be defined as 'optional' may differ
+>>>>> from different device perspectives (e.g. for loopback-ism they are vlan-related
+>>>>> opts and signal_event). So I perfer to simply let the smc protocol assume
+>>>>> that all operations have been implemented, and let drivers to decide which
+>>>>> ones are unsupported in implementation. What do you think?
+>>>>>
+>>>>> Thanks!
+>>>>>
+>>>>
+>>>> I agree with Gerd, in my opinion it is better to document ops as
+>>>> optional and then allow their function pointers to be NULL and check
+>>>> for that. Acting like they are supported and then they turn out to be
+>>>> nops to me seems to contradict the principle of least surprises. I also
+>>>> think we can find a subset of mandatory ops without which SMC-D is
+>>>> impossible and then everything else should be optional.
+>>>
+>>> I see. If we all agree to classify smcd_ops into mandatory and optional ones,
+>>> I'll add a patch to mark the optional ops and check if they are implemented.
+>>
+>> Keep in mind I don't speak for the SMC maintainers but that does sound
+>> reasonable to me.
+>>
 > 
-> Folio Size |   Old    |   New    | Change
-> ------------------------------------------
->       4KiB | 0.590251 | 0.590259 |    0%
->      16KiB | 2.990447 | 0.185655 |  -94%
->      32KiB | 2.547831 | 0.104870 |  -95%
->      64KiB | 2.457796 | 0.052812 |  -97%
->     128KiB | 2.281034 | 0.032777 |  -99%
->     256KiB | 2.230387 | 0.017496 |  -99%
->     512KiB | 2.189106 | 0.010781 |  -99%
->    1024KiB | 2.183949 | 0.007753 |  -99%
->    2048KiB | 0.002799 | 0.002804 |    0%
+> Hi Wenjia and Jan, do you have any comments on this and [1]? Thanks!
 > 
-> [1] https://lkml.kernel.org/r/20231207161211.2374093-5-ryan.roberts@arm.com
-> [2] https://lore.kernel.org/linux-mm/20240214204435.167852-1-david@redhat.com
+> [1] https://lore.kernel.org/netdev/60b4aec0b4bf4474d651b653c86c280dafc4518a.camel@linux.ibm.com/
 > 
-> Signed-off-by: Lance Yang <ioworker0@gmail.com>
-> ---
->  include/linux/pgtable.h |  34 +++++++++
->  mm/internal.h           |  12 +++-
->  mm/madvise.c            | 149 ++++++++++++++++++++++------------------
->  mm/memory.c             |   4 +-
->  4 files changed, 129 insertions(+), 70 deletions(-)
+>>>
+>>>>
+>>>> As a first guess I think the following options may be mandatory:
+>>>>
+>>>> * query_remote_gid()
+>>>> * register_dmb()/unregister_dmb()
+>>>> * move_data()
+>>>>     For this one could argue that either move_data() or
+>>>>     attach_dmb()/detach_dmb() is required though personally I would
+>>>>     prefer to always have move_data() as a fallback and simple API
+>>>> * supports_v2()
+>>>> * get_local_gid()
+>>>> * get_chid()
+>>>> * get_dev()
+>>> I agree with this classification. Just one point, maybe we can take
+>>> supports_v2() as an optional ops, like support_dmb_nocopy()? e.g. if
+>>> it is not implemented, we treat it as an ISMv1.
+>>>
+>>> Thanks!
+>>
+>> Interpreting a NULL supports_v2() as not supporting v2 sounds
+>> reasonable to me.
 > 
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index 0f4b2faa1d71..4dd442787420 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -489,6 +489,40 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
->  }
->  #endif
->  
-> +#ifndef mkold_clean_ptes
-> +/**
-> + * mkold_clean_ptes - Mark PTEs that map consecutive pages of the same folio
-> + *		as old and clean.
-> + * @mm: Address space the pages are mapped into.
-> + * @addr: Address the first page is mapped at.
-> + * @ptep: Page table pointer for the first entry.
-> + * @nr: Number of entries to mark old and clean.
-> + *
-> + * May be overridden by the architecture; otherwise, implemented by
-> + * get_and_clear/modify/set for each pte in the range.
-> + *
-> + * Note that PTE bits in the PTE range besides the PFN can differ. For example,
-> + * some PTEs might be write-protected.
-> + *
-> + * Context: The caller holds the page table lock.  The PTEs map consecutive
-> + * pages that belong to the same folio.  The PTEs are all in the same PMD.
-> + */
-> +static inline void mkold_clean_ptes(struct mm_struct *mm, unsigned long addr,
-> +				    pte_t *ptep, unsigned int nr)
 
-Just thinking out loud, I wonder if it would be cleaner to convert mkold_ptes()
-(which I added as part of swap-out) to something like:
+Let me add my thoughts to the discussion:
+For the vlan operations and signal_event operations that loopback-ism does
+not support:
+I like the idea to set the ops to NULL and make sure the caller checks that
+and can live with it. That is readable and efficient.
 
-clear_young_dirty_ptes(struct mm_struct *mm, unsigned long addr,
-		       pte_t *ptep, unsigned int nr,
-		       bool clear_young, bool clear_dirty);
+I don't think there is a need to discuss a strategy now, which ops could be
+optional in the future. This is all inside the kernel. loopback-ism is even 
+inside the smc module. Such comments in the code get outdated very easily.
 
-Then we can use the same function for both use cases and also have the ability
-to only clear dirty in future if we ever need it. The other advantage is that we
-only need to plumb a single function down the arm64 arch code. As it currently
-stands, those 2 functions would be duplicating most of their code.
+I would propose to mark those as optional struct smcd_ops, where all callers can 
+handle a NULL pointer and still be productive.
+Future support of other devices for SMC-D can update that.
 
-Generated code would still be the same since I'd expect the callsites to be
-passing in constants for clear_young and clear_dirty.
 
-> +{
-> +	pte_t pte;
-> +
-> +	for (;;) {
-> +		pte = ptep_get_and_clear(mm, addr, ptep);
-> +		set_pte_at(mm, addr, ptep, pte_mkclean(pte_mkold(pte)));
-> +		if (--nr == 0)
-> +			break;
-> +		ptep++;
-> +		addr += PAGE_SIZE;
-> +	}
-> +}
-> +#endif
-> +
->  static inline void ptep_clear(struct mm_struct *mm, unsigned long addr,
->  			      pte_t *ptep)
->  {
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 57c1055d5568..792a9baf0d14 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -132,6 +132,8 @@ static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
->   *		  first one is writable.
->   * @any_young: Optional pointer to indicate whether any entry except the
->   *		  first one is young.
-> + * @any_dirty: Optional pointer to indicate whether any entry except the
-> + *		  first one is dirty.
->   *
->   * Detect a PTE batch: consecutive (present) PTEs that map consecutive
->   * pages of the same large folio.
-> @@ -147,18 +149,20 @@ static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
->   */
->  static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
->  		pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
-> -		bool *any_writable, bool *any_young)
-> +		bool *any_writable, bool *any_young, bool *any_dirty)
->  {
->  	unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
->  	const pte_t *end_ptep = start_ptep + max_nr;
->  	pte_t expected_pte, *ptep;
-> -	bool writable, young;
-> +	bool writable, young, dirty;
->  	int nr;
->  
->  	if (any_writable)
->  		*any_writable = false;
->  	if (any_young)
->  		*any_young = false;
-> +	if (any_dirty)
-> +		*any_dirty = false;
->  
->  	VM_WARN_ON_FOLIO(!pte_present(pte), folio);
->  	VM_WARN_ON_FOLIO(!folio_test_large(folio) || max_nr < 1, folio);
-> @@ -174,6 +178,8 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
->  			writable = !!pte_write(pte);
->  		if (any_young)
->  			young = !!pte_young(pte);
-> +		if (any_dirty)
-> +			dirty = !!pte_dirty(pte);
->  		pte = __pte_batch_clear_ignored(pte, flags);
->  
->  		if (!pte_same(pte, expected_pte))
-> @@ -191,6 +197,8 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
->  			*any_writable |= writable;
->  		if (any_young)
->  			*any_young |= young;
-> +		if (any_dirty)
-> +			*any_dirty |= dirty;
->  
->  		nr = pte_batch_hint(ptep, pte);
->  		expected_pte = pte_advance_pfn(expected_pte, nr);
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index bf26cf2b7715..0777df2e3691 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -321,6 +321,39 @@ static inline bool can_do_file_pageout(struct vm_area_struct *vma)
->  	       file_permission(vma->vm_file, MAY_WRITE) == 0;
->  }
->  
-> +static inline int madvise_folio_pte_batch(unsigned long addr, unsigned long end,
-> +					  struct folio *folio, pte_t *ptep,
-> +					  pte_t pte, bool *any_young,
-> +					  bool *any_dirty)
-> +{
-> +	int max_nr = (end - addr) / PAGE_SIZE;
-> +	const fpb_t fpb_flags = FPB_IGNORE_DIRTY | FPB_IGNORE_SOFT_DIRTY;
-> +
-> +	return folio_pte_batch(folio, addr, ptep, pte, max_nr, fpb_flags, NULL,
-> +			       any_young, any_dirty);
-> +}
-> +
-> +static inline bool madvise_pte_split_folio(struct mm_struct *mm, pmd_t *pmd,
-> +					   unsigned long addr,
-> +					   struct folio *folio, pte_t **pte,
-> +					   spinlock_t **ptl)
-> +{
-> +	int err;
-> +
-> +	if (!folio_trylock(folio))
-> +		return false;
-> +
-> +	folio_get(folio);
-> +	pte_unmap_unlock(*pte, *ptl);
-> +	err = split_folio(folio);
-> +	folio_unlock(folio);
-> +	folio_put(folio);
-> +
-> +	*pte = pte_offset_map_lock(mm, pmd, addr, ptl);
-> +
-> +	return err == 0;
-> +}
-> +
->  static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->  				unsigned long addr, unsigned long end,
->  				struct mm_walk *walk)
-> @@ -456,41 +489,29 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->  		 * next pte in the range.
->  		 */
->  		if (folio_test_large(folio)) {
-> -			const fpb_t fpb_flags = FPB_IGNORE_DIRTY |
-> -						FPB_IGNORE_SOFT_DIRTY;
-> -			int max_nr = (end - addr) / PAGE_SIZE;
->  			bool any_young;
-> -
-
-nit: there should be a blank line between variable declarations and following
-code. You have removed it here (and similar in free function). Did you run
-checkpatch.pl? It would have caught these things.
-
-> -			nr = folio_pte_batch(folio, addr, pte, ptent, max_nr,
-> -					     fpb_flags, NULL, &any_young);
-> -			if (any_young)
-> -				ptent = pte_mkyoung(ptent);
-> +			nr = madvise_folio_pte_batch(addr, end, folio, pte,
-> +						     ptent, &any_young, NULL);
->  
->  			if (nr < folio_nr_pages(folio)) {
-> -				int err;
-> -
->  				if (folio_likely_mapped_shared(folio))
->  					continue;
->  				if (pageout_anon_only_filter && !folio_test_anon(folio))
->  					continue;
-> -				if (!folio_trylock(folio))
-> -					continue;
-> -				folio_get(folio);
-> +
->  				arch_leave_lazy_mmu_mode();
-> -				pte_unmap_unlock(start_pte, ptl);
-> -				start_pte = NULL;
-> -				err = split_folio(folio);
-> -				folio_unlock(folio);
-> -				folio_put(folio);
-> -				start_pte = pte =
-> -					pte_offset_map_lock(mm, pmd, addr, &ptl);
-> +				if (madvise_pte_split_folio(mm, pmd, addr,
-> +							    folio, &start_pte, &ptl))
-> +					nr = 0;
->  				if (!start_pte)
->  					break;
-> +				pte = start_pte;
->  				arch_enter_lazy_mmu_mode();
-> -				if (!err)
-> -					nr = 0;
->  				continue;
->  			}
-> +
-> +			if (any_young)
-> +				ptent = pte_mkyoung(ptent);
->  		}
->  
->  		/*
-> @@ -687,47 +708,54 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->  			continue;
->  
->  		/*
-> -		 * If pmd isn't transhuge but the folio is large and
-> -		 * is owned by only this process, split it and
-> -		 * deactivate all pages.
-> +		 * If we encounter a large folio, only split it if it is not
-> +		 * fully mapped within the range we are operating on. Otherwise
-> +		 * leave it as is so that it can be marked as lazyfree. If we
-> +		 * fail to split a folio, leave it in place and advance to the
-> +		 * next pte in the range.
->  		 */
->  		if (folio_test_large(folio)) {
-> -			int err;
-> +			bool any_young, any_dirty;
-> +			nr = madvise_folio_pte_batch(addr, end, folio, pte,
-> +						     ptent, &any_young, &any_dirty);
->  
-> -			if (folio_likely_mapped_shared(folio))
-> -				break;
-> -			if (!folio_trylock(folio))
-> -				break;
-> -			folio_get(folio);
-> -			arch_leave_lazy_mmu_mode();
-> -			pte_unmap_unlock(start_pte, ptl);
-> -			start_pte = NULL;
-> -			err = split_folio(folio);
-> +			if (nr < folio_nr_pages(folio)) {
-> +				if (folio_likely_mapped_shared(folio))
-> +					continue;
-> +
-> +				arch_leave_lazy_mmu_mode();
-> +				if (madvise_pte_split_folio(mm, pmd, addr,
-> +							    folio, &start_pte, &ptl))
-> +					nr = 0;
-> +				if (!start_pte)
-> +					break;
-> +				pte = start_pte;
-> +				arch_enter_lazy_mmu_mode();
-> +				continue;
-> +			}
-> +
-> +			if (any_young)
-> +				ptent = pte_mkyoung(ptent);
-> +			if (any_dirty)
-> +				ptent = pte_mkdirty(ptent);
-> +		}
-> +
-> +		if (!folio_trylock(folio))
-> +			continue;
-
-This is still wrong. This should all be protected by the "if
-(folio_test_swapcache(folio) || folio_test_dirty(folio))" as it was previously
-so that you only call folio_trylock() if that condition is true. You are
-unconditionally locking here, then unlocking, then relocking below if the
-condition is met. Just put everything inside the condition and lock once.
-
-Thanks,
-Ryan
-
-> +		/*
-> +		 * If we have a large folio at this point, we know it is fully mapped
-> +		 * so if its mapcount is the same as its number of pages, it must be
-> +		 * exclusive.
-> +		 */
-> +		if (folio_mapcount(folio) != folio_nr_pages(folio)) {
->  			folio_unlock(folio);
-> -			folio_put(folio);
-> -			if (err)
-> -				break;
-> -			start_pte = pte =
-> -				pte_offset_map_lock(mm, pmd, addr, &ptl);
-> -			if (!start_pte)
-> -				break;
-> -			arch_enter_lazy_mmu_mode();
-> -			pte--;
-> -			addr -= PAGE_SIZE;
->  			continue;
->  		}
-> +		folio_unlock(folio);
->  
->  		if (folio_test_swapcache(folio) || folio_test_dirty(folio)) {
->  			if (!folio_trylock(folio))
->  				continue;
-> -			/*
-> -			 * If folio is shared with others, we mustn't clear
-> -			 * the folio's dirty flag.
-> -			 */
-> -			if (folio_mapcount(folio) != 1) {
-> -				folio_unlock(folio);
-> -				continue;
-> -			}
->  
->  			if (folio_test_swapcache(folio) &&
->  			    !folio_free_swap(folio)) {
-> @@ -740,19 +768,8 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->  		}
->  
->  		if (pte_young(ptent) || pte_dirty(ptent)) {
-> -			/*
-> -			 * Some of architecture(ex, PPC) don't update TLB
-> -			 * with set_pte_at and tlb_remove_tlb_entry so for
-> -			 * the portability, remap the pte with old|clean
-> -			 * after pte clearing.
-> -			 */
-> -			ptent = ptep_get_and_clear_full(mm, addr, pte,
-> -							tlb->fullmm);
-> -
-> -			ptent = pte_mkold(ptent);
-> -			ptent = pte_mkclean(ptent);
-> -			set_pte_at(mm, addr, pte, ptent);
-> -			tlb_remove_tlb_entry(tlb, pte, addr);
-> +			mkold_clean_ptes(mm, addr, pte, nr);
-> +			tlb_remove_tlb_entries(tlb, pte, nr, addr);
->  		}
->  		folio_mark_lazyfree(folio);
->  	}
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 1723c8ddf9cb..fe9d4d64c627 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -989,7 +989,7 @@ copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
->  			flags |= FPB_IGNORE_SOFT_DIRTY;
->  
->  		nr = folio_pte_batch(folio, addr, src_pte, pte, max_nr, flags,
-> -				     &any_writable, NULL);
-> +				     &any_writable, NULL, NULL);
->  		folio_ref_add(folio, nr);
->  		if (folio_test_anon(folio)) {
->  			if (unlikely(folio_try_dup_anon_rmap_ptes(folio, page,
-> @@ -1559,7 +1559,7 @@ static inline int zap_present_ptes(struct mmu_gather *tlb,
->  	 */
->  	if (unlikely(folio_test_large(folio) && max_nr != 1)) {
->  		nr = folio_pte_batch(folio, addr, pte, ptent, max_nr, fpb_flags,
-> -				     NULL, NULL);
-> +				     NULL, NULL, NULL);
->  
->  		zap_present_folio_ptes(tlb, vma, folio, page, pte, ptent, nr,
->  				       addr, details, rss, force_flush,
 
 
