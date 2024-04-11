@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F2B88A1924
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:54:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 972578A1925
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:54:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D85A8281624
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:54:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C05EB1C235AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:54:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7602712A157;
-	Thu, 11 Apr 2024 15:33:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F074C12BF2E;
+	Thu, 11 Apr 2024 15:33:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="LsW/5tR1"
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="B65VB4p9"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B4E886622
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:33:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16E471292EC
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:33:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849621; cv=none; b=Fd7AX+Rm43Kysp4MXo+wm0eCMcKfN9dxJ26RNqMvWpvSH/bF1b4/LwXvv0Z9n1ndehKFCetXTymisK8asu10pfpmmkk4l1KXnLMnEAkjjF9n7nf/uN27Zit5ne7hRCEW05XbP75K9ySYpSZE9YwneO+F+C6XSolRfyRAwnSzT30=
+	t=1712849623; cv=none; b=fPA8wI+86BsqwAQN4/J2upqwjMmS+da03yIm45rFhWde4OOhrlKT4o31H/qz4ajza+j65JWVAetw6Yn2+NJk8E5nFm2ilwkXlCPcmW16Q/MdSbOEfmGOuI71ZpF5Exz6odG5CO2y98cylKSbhUyx1buR1uJnmCpmwzSiNKmLqvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849621; c=relaxed/simple;
-	bh=M1yBKWFPsh8UjcS1TxiPSNkIkPKwtGPrveg4hdeWyT4=;
+	s=arc-20240116; t=1712849623; c=relaxed/simple;
+	bh=WNAX5SJpcq0j8O2B8qpl0MAxfztr0WzIybgaYGlBzBU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hdirZ1m5tsV0rGsiS1FiCLB6YlD9aipRl4Cd7+MHruKM/wy26gH8WqkXsWVVVvjwsHv3AU2nsGH8h3OpDzn8p6KPBXD5d+w/e5jhb/azGYVgWNgyXq6AJjbpzEJAfp/3DCUZGKWCqrwCZOmlkFxdOTj4Uuy4C/1/NH7mkzY8Yg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=LsW/5tR1; arc=none smtp.client-ip=209.85.166.43
+	 MIME-Version; b=oqH4ZjBHbWC+n/EWtHlxixiTpWIfRvjDzHlzaMCfb+pZsVdTEDILZVXBWaf8MH6qmrhw+YZWTJTquMQTGWnTei8CKt4ohn0IpryIqEvrT9blpXsIGbrciX+yV8A5dKwNntdWPGPUAl8sqpGJeh4aBVUxNI+2BA1pxnfS6cWKmG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=B65VB4p9; arc=none smtp.client-ip=209.85.166.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7d6812b37a6so8888939f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:33:40 -0700 (PDT)
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7d67d1073easo9735939f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:33:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849619; x=1713454419; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849621; x=1713454421; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yX8scuHFoGsccMxsL+ssPJRgE4pOVMRH5JWrmkuuark=;
-        b=LsW/5tR1y3LC1mWAazjYA447c88IVi60RGG5+p1ioBjkpzw1kdByb8GUXZZjK2MxLd
-         vRgV4+1m+WfCQ5I7sZThm8ITvrQK7iPAKoB3LDBETiVlLQEktvnwHvUvKKp4/hGld6UF
-         Wmm9I7Aj761ikTUy25BVLeIhZ4ftWaqjShAQ4K3dVbBegO4vct+tmm47FwjTPL1yk7Fs
-         ZdNbbEUYpBaGpQXfHxmJLinFc3eUZmBeC7PqY8np9vIbHz7WzbSVi9qFBzUhSDy84dXf
-         bxZGvg8cHE0rAfrow4cBubsvcvdbrvo4XBd/dwJ7BfWdruqDcjkxv0PonANap9EiyGlo
-         DoMQ==
+        bh=wVT7B+DWzQgD/wpg5m/fC11AaNvArZbFf8tVIDElahQ=;
+        b=B65VB4p9vR/R/xo+QAZh1l64Ezt1Z/xtd7TgBj4MqcjkjyDYf6qhtfEKuPvYt1SQpd
+         q7YCAa5PidZ77VjZr1LCG3NELFzMVS23W5m1ZvhfBqdnLwxuOTVPSEVDoNXTty1dCuWS
+         YUNlmITQk4h1UV5nX3pvFMm2rGrhM2Po10pybXHrt1lpHeR5lxrQO8KRFBpIddrcMuUn
+         x0QX+AzSnrMszjJjJgKzf2LFyNJ2YwLLjAvSY43lI4eNuu5t9+BRQhSHAQHRHwp9lOMm
+         FmTFv/nFs7LCbagAXtsLtcsBHYoe7dNpbctQgHJbWsNM2ux0jU1TybhEb6XLvkU2g0Mx
+         LdQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849619; x=1713454419;
+        d=1e100.net; s=20230601; t=1712849621; x=1713454421;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yX8scuHFoGsccMxsL+ssPJRgE4pOVMRH5JWrmkuuark=;
-        b=fLwlKWnvMR0Qa204S9fQ7u6VYr9CS75T47oABIJneiVn6Aj/qYSyKboKAwCKWABCiu
-         pbnP2FUzR/+k5cHATu3E2PhjynC/3+K0trS81LgHBG+obZ4EGNOsLkvxX5MKEVs4a80M
-         UP8PQhmYTBgj2F80r30PH4n91U3uHgMK5SeLFwEmjiL+YDKs41XfrMtVcZpRCN62Abyp
-         CMCuWpF/KPgdUfDWsQA+DYVX+K1ULj/YlttRZIB+DtUSgEFnLtUi94fdwhu+wrqfPRxM
-         dIp9s1EklIciHELmgZwn7AuEv0gC7q/jhF9qcMqIV0iPix62+ygu4NBy1q62yo4A7BBj
-         VqaA==
-X-Gm-Message-State: AOJu0YwgpLlpFNb4AQ6JhKjNFX8d3/SqgFdEOLViPhOpGjr0QU08G3yH
-	IIRPDa5KaKhyEwzpX2dDcOF2iSsDapyzOOoywfff0aHUUY9fYlvpQx7o0eunAgL9YiDZ6u1bUUQ
-	r
-X-Google-Smtp-Source: AGHT+IFEbNc3hw/FJZNUKKlnMZ/E01TSqXu3r9QbYCsjxW4BvsFilorImtYb4IjvLHgldjhCLi1y4Q==
-X-Received: by 2002:a6b:5b10:0:b0:7d0:bd2b:43ba with SMTP id v16-20020a6b5b10000000b007d0bd2b43bamr215554ioh.0.1712849619094;
-        Thu, 11 Apr 2024 08:33:39 -0700 (PDT)
+        bh=wVT7B+DWzQgD/wpg5m/fC11AaNvArZbFf8tVIDElahQ=;
+        b=PawWsHPdT7WvK3nFTEnpHfZTUGFdT/65PMD/gm0dmcegMgD3iiZqB9j8nCFYOnpHdZ
+         B1sfeZAhU4UMA8TK5TKKJ4AaZu+ykG4geBMcYQJPgMlU62aIO52A6Y6aczj67fX6/vvI
+         geH7pST4WkVMiLxiXrtejc6GuF2ZfgdIC1OAPB8W0AN2BmGMZYgeCWUEK4NyKxTGw4e9
+         Cjk7gOhJf/I7l25wQHxwRZKrMI6HlgdJjx7jmahIQIysC4azH0cbCDJhhtO1Lx9Ksaoy
+         BqlBOW/k9gqxiXB3rhhhzTkw3laJ3G2V22uYmuHHZ6eKfs5h7EBgD0L6AAKGJUkFj+gX
+         EJCA==
+X-Gm-Message-State: AOJu0YySTbhIoOyjbZhlTbXEsjIPfqbT9xqIU8AFLoo9m8KcCwzIocg6
+	qaAyYAVIY8ac9+5SM2iX5NAOrP7/CA5rA0MYlAaxHDw+qfQwJnlvYns4xdm+gfT10fNnRIRMkfH
+	c
+X-Google-Smtp-Source: AGHT+IGsQpJIEk0JpLHIp2BKx3R2XxDhfoEWKjBehBQCOQy5is92YOU5mFa+l0f9ryCan+BXK9sApQ==
+X-Received: by 2002:a6b:c34e:0:b0:7d6:7b7c:8257 with SMTP id t75-20020a6bc34e000000b007d67b7c8257mr208672iof.0.1712849620845;
+        Thu, 11 Apr 2024 08:33:40 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.33.37
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.33.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:33:37 -0700 (PDT)
+        Thu, 11 Apr 2024 08:33:39 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 069/437] bpf: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:13:29 -0600
-Message-ID: <20240411153126.16201-70-axboe@kernel.dk>
+Subject: [PATCH 070/437] perf: convert events to read/write iterators
+Date: Thu, 11 Apr 2024 09:13:30 -0600
+Message-ID: <20240411153126.16201-71-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,135 +85,30 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- kernel/bpf/bpf_iter.c | 14 +++++++-------
- kernel/bpf/inode.c    |  2 +-
- kernel/bpf/syscall.c  | 18 ++++++++----------
- 3 files changed, 16 insertions(+), 18 deletions(-)
+ kernel/events/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-index 112581cf97e7..f2bbe98234df 100644
---- a/kernel/bpf/bpf_iter.c
-+++ b/kernel/bpf/bpf_iter.c
-@@ -91,10 +91,10 @@ static bool bpf_iter_support_resched(struct seq_file *seq)
-  *  . assuming NULL ->llseek()
-  *  . stop() may call bpf program, handling potential overflow there
-  */
--static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
--			    loff_t *ppos)
-+static ssize_t bpf_seq_read_iter(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct seq_file *seq = file->private_data;
-+	struct seq_file *seq = iocb->ki_filp->private_data;
-+	size_t size = iov_iter_count(to);
- 	size_t n, offs, copied = 0;
- 	int err = 0, num_objs = 0;
- 	bool can_resched;
-@@ -113,7 +113,7 @@ static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 724e6d7e128f..2c94801bef4b 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -5688,6 +5688,7 @@ perf_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
  
- 	if (seq->count) {
- 		n = min(seq->count, size);
--		err = copy_to_user(buf, seq->buf + seq->from, n);
-+		err = !copy_to_iter_full(seq->buf + seq->from, n, to);
- 		if (err) {
- 			err = -EFAULT;
- 			goto done;
-@@ -222,7 +222,7 @@ static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
- 	}
- 
- 	n = min(seq->count, size);
--	err = copy_to_user(buf, seq->buf, n);
-+	err = !copy_to_iter_full(seq->buf, n, to);
- 	if (err) {
- 		err = -EFAULT;
- 		goto done;
-@@ -234,7 +234,7 @@ static ssize_t bpf_seq_read(struct file *file, char __user *buf, size_t size,
- 	if (!copied)
- 		copied = err;
- 	else
--		*ppos += copied;
-+		iocb->ki_pos += copied;
- 	mutex_unlock(&seq->lock);
- 	return copied;
+ 	return ret;
  }
-@@ -284,7 +284,7 @@ static int iter_release(struct inode *inode, struct file *file)
- const struct file_operations bpf_iter_fops = {
- 	.open		= iter_open,
- 	.llseek		= no_llseek,
--	.read		= bpf_seq_read,
-+	.read_iter	= bpf_seq_read_iter,
- 	.release	= iter_release,
- };
++FOPS_READ_ITER_HELPER(perf_read);
  
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index af5d2ffadd70..5e35f1eb1dec 100644
---- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -313,7 +313,7 @@ static int bpffs_map_release(struct inode *inode, struct file *file)
-  */
- static const struct file_operations bpffs_map_fops = {
- 	.open		= bpffs_map_open,
--	.read		= seq_read,
-+	.read_iter	= seq_read_iter,
- 	.release	= bpffs_map_release,
- };
- 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index c287925471f6..385995dc69a0 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -872,8 +872,7 @@ static void bpf_map_show_fdinfo(struct seq_file *m, struct file *filp)
- }
- #endif
- 
--static ssize_t bpf_dummy_read(struct file *filp, char __user *buf, size_t siz,
--			      loff_t *ppos)
-+static ssize_t bpf_dummy_read(struct kiocb *iocb, struct iov_iter *to)
+ static __poll_t perf_poll(struct file *file, poll_table *wait)
  {
- 	/* We need this handler such that alloc_file() enables
- 	 * f_mode with FMODE_CAN_READ.
-@@ -881,8 +880,7 @@ static ssize_t bpf_dummy_read(struct file *filp, char __user *buf, size_t siz,
- 	return -EINVAL;
- }
- 
--static ssize_t bpf_dummy_write(struct file *filp, const char __user *buf,
--			       size_t siz, loff_t *ppos)
-+static ssize_t bpf_dummy_write(struct kiocb *iocb, struct iov_iter *to)
- {
- 	/* We need this handler such that alloc_file() enables
- 	 * f_mode with FMODE_CAN_WRITE.
-@@ -991,8 +989,8 @@ const struct file_operations bpf_map_fops = {
- 	.show_fdinfo	= bpf_map_show_fdinfo,
- #endif
- 	.release	= bpf_map_release,
--	.read		= bpf_dummy_read,
--	.write		= bpf_dummy_write,
-+	.read_iter	= bpf_dummy_read,
-+	.write_iter	= bpf_dummy_write,
- 	.mmap		= bpf_map_mmap,
- 	.poll		= bpf_map_poll,
- 	.get_unmapped_area = bpf_get_unmapped_area,
-@@ -2378,8 +2376,8 @@ const struct file_operations bpf_prog_fops = {
- 	.show_fdinfo	= bpf_prog_show_fdinfo,
- #endif
- 	.release	= bpf_prog_release,
--	.read		= bpf_dummy_read,
--	.write		= bpf_dummy_write,
-+	.read_iter	= bpf_dummy_read,
-+	.write_iter	= bpf_dummy_write,
- };
- 
- int bpf_prog_new_fd(struct bpf_prog *prog)
-@@ -3142,8 +3140,8 @@ static const struct file_operations bpf_link_fops = {
- 	.show_fdinfo	= bpf_link_show_fdinfo,
- #endif
- 	.release	= bpf_link_release,
--	.read		= bpf_dummy_read,
--	.write		= bpf_dummy_write,
-+	.read_iter	= bpf_dummy_read,
-+	.write_iter	= bpf_dummy_write,
- };
- 
- static int bpf_link_alloc_id(struct bpf_link *link)
+@@ -6669,7 +6670,7 @@ static int perf_fasync(int fd, struct file *filp, int on)
+ static const struct file_operations perf_fops = {
+ 	.llseek			= no_llseek,
+ 	.release		= perf_release,
+-	.read			= perf_read,
++	.read_iter		= perf_read_iter,
+ 	.poll			= perf_poll,
+ 	.unlocked_ioctl		= perf_ioctl,
+ 	.compat_ioctl		= perf_compat_ioctl,
 -- 
 2.43.0
 
