@@ -1,98 +1,109 @@
-Return-Path: <linux-kernel+bounces-140330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75EA68A12DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:22:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC7F98A12E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:22:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 296E51F22A8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:22:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D1711F22CE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:22:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3311D1482E6;
-	Thu, 11 Apr 2024 11:22:26 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0B3149C59;
+	Thu, 11 Apr 2024 11:22:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EOG9CM45"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDAA913BC33
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:22:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 995D613BC33;
+	Thu, 11 Apr 2024 11:22:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712834545; cv=none; b=TdLbGOns9kCPLJEwmcWKTQUofCGrSYCsVpSIZAiFutbQrcgRFtdhOxo0oyP1HTsx0VpPzoW5lhEaC6pVQxqoMROhWNxLBsVmrD4CmfHZUNrbODIr6IKbf6OtLFTX9mfVB9YbSVRxJmCvxYigTpo25KySTRookAsfZn/MVKE3tuA=
+	t=1712834547; cv=none; b=gYXBUT92NTzgpilN+fTjrA9qGQM08xyKXxeOYlnoKCzJbObf3CPyA9ajTJdafhwqjcTy1/eG9tRS2+OQ/Bfqx0m6B6oCEUdWH9k9j7h/LcTbzQJ/IIs0ejSItYx/jAaj/n8MzqlLjUee4/pxAIc21RhkauPk6vF5VTax9CYQ8Fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712834545; c=relaxed/simple;
-	bh=fTMl6zXHK+rSadzbwABHstG/A9xLT+lsxxrNWzi0tNQ=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZbIKWZcZKSFhoXM/am3e+j3AjoBv2vqqUM/1xKutsZonlYSjFxcpLKZL0pqhzNYCIZiXg3gALUuQ7qJnJyssDe92eXLdjiEyxhzUR7nejWIbr9dN/T3KCQqvFiv/o0MpZk4vF2P96WeUFrYg8E20q4NxOAm8myU7D6eiVYxpW6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VFcfQ2H00z2NW5r;
-	Thu, 11 Apr 2024 19:19:26 +0800 (CST)
-Received: from kwepemd100011.china.huawei.com (unknown [7.221.188.204])
-	by mail.maildlp.com (Postfix) with ESMTPS id E48D61A0172;
-	Thu, 11 Apr 2024 19:22:18 +0800 (CST)
-Received: from M910t.huawei.com (10.110.54.157) by
- kwepemd100011.china.huawei.com (7.221.188.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 11 Apr 2024 19:22:17 +0800
-From: Changbin Du <changbin.du@huawei.com>
-To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
-	<vincent.guittot@linaro.org>
-CC: Dietmar Eggemann <dietmar.eggemann@arm.com>, Steven Rostedt
-	<rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman
-	<mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin
- Schneider <vschneid@redhat.com>, <linux-kernel@vger.kernel.org>, Changbin Du
-	<changbin.du@huawei.com>
-Subject: [PATCH] sched/cputime: remove unused vtime_account_kernel
-Date: Thu, 11 Apr 2024 19:22:12 +0800
-Message-ID: <20240411112212.2061899-1-changbin.du@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1712834547; c=relaxed/simple;
+	bh=AboIvwKEkvx2wl+siJ2bnUL5g+OOjP+I7jd8D6N6LZk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WfWByavvYUSamEptzfR1LrIEOOdMNkm3qakS7EYNQzvukT8CN+GFlJuPULoiwNooutuOvfKL0TxBWui2NV3gxezE0W+tPLsa2xa8KbaLePIoq/IniZSigxPxGj39xKyBcjHDf3T85GSy/27UpF+/A8tZk7wLA+PxKg5T4PU9iEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EOG9CM45; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5807BC433C7;
+	Thu, 11 Apr 2024 11:22:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712834547;
+	bh=AboIvwKEkvx2wl+siJ2bnUL5g+OOjP+I7jd8D6N6LZk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EOG9CM45kn9Q91tY3xRKqPCxlgj/yVlitdovvmOVUhRtYAkAafiVagsDb5/Cx6aNO
+	 zDbeqdP9fS/dWGA230oszhssMMghOQ75t6bK0MbLxreVYGwmcDXv2ORVxcBo//kqMl
+	 R/94ldLCIVgVh+o2yO5ACS+QmmUwHHAfoWBQ4Ow2UQgeh84rdHu+m/h4sGatqNkQ8y
+	 MLG9LFNfaO/QNHN1TJaIxAKMV75xunq4mV8tLWdnYl1bufsKCOJz4Dr+GVxaah+GJu
+	 c0trW4/vpsPTfKhPpnp+rD40mzViXjS57hQWL9IWVFjH3MCvIeYl2+G/OeCN/tMSlF
+	 h552hEPGImvxA==
+Date: Thu, 11 Apr 2024 12:22:21 +0100
+From: Lee Jones <lee@kernel.org>
+To: Andre Przywara <andre.przywara@arm.com>
+Cc: Chen-Yu Tsai <wens@csie.org>, Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Ryan Walklin <ryan@testtoast.com>,
+	Chris Morgan <macroalpha82@gmail.com>
+Subject: Re: [PATCH 0/4] regulator: Fix AXP717 PMIC support
+Message-ID: <20240411112221.GG1980182@google.com>
+References: <20240329235033.25309-1-andre.przywara@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemd100011.china.huawei.com (7.221.188.204)
+In-Reply-To: <20240329235033.25309-1-andre.przywara@arm.com>
 
-This removes the vtime_account_kernel() function in generic vtime
-accounting. It's never used anymore.
+On Fri, 29 Mar 2024, Andre Przywara wrote:
 
-Signed-off-by: Changbin Du <changbin.du@huawei.com>
----
- kernel/sched/cputime.c | 12 ------------
- 1 file changed, 12 deletions(-)
+> Here are some fixes to the AXP717 PMIC support series. Lee put that in
+> an immutable branch already, so these here go on top.
+> Patch 1 contains fixes to the regulator descriptions: the LDOs had the
+> wrong supply source, and two numbers were wrong. The datasheet describes
+> the voltage ranges and register values differently from what our macros
+> expect, in a way that literally begs for off-by-ones, so here you go.
+> I don't know if that's still feasible, but it would be a good candidate
+> to squash into the patch that it fixes.
+> 
+> The other three patches add the "boost" regulator, which is meant to
+> provide the 5V USB VBUS power when operating from the battery. It's the
+> usual trinity of binding/mfd/regulator patches.
+> Again this could be squashed into the respective patches from the
+> original series, if people agree.
+> 
+> Please have a look and test on a device, since I could not do this.
+> 
+> Based on mfd/ib-mfd-regulator-6.10, as detailed below.
+> 
+> Cheers,
+> Andre
+> 
+> Andre Przywara (4):
+>   regulator: axp20x: AXP717: fix LDO supply rails and off-by-ones
+>   dt-bindings: mfd: x-powers,axp152: add boost regulator
+>   mfd: axp20x: AXP717: Add support for boost regulator
+>   regulator: axp20x: AXP717: Add boost regulator
+> 
+>  .../bindings/mfd/x-powers,axp152.yaml         |  2 +-
+>  drivers/mfd/axp20x.c                          |  2 ++
+>  drivers/regulator/axp20x-regulator.c          | 32 +++++++++++--------
+>  include/linux/mfd/axp20x.h                    |  3 ++
+>  4 files changed, 24 insertions(+), 15 deletions(-)
 
-diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-index af7952f12e6c..29320e66abdc 100644
---- a/kernel/sched/cputime.c
-+++ b/kernel/sched/cputime.c
-@@ -709,18 +709,6 @@ static void __vtime_account_kernel(struct task_struct *tsk,
- 		vtime_account_system(tsk, vtime);
- }
- 
--void vtime_account_kernel(struct task_struct *tsk)
--{
--	struct vtime *vtime = &tsk->vtime;
--
--	if (!vtime_delta(vtime))
--		return;
--
--	write_seqcount_begin(&vtime->seqcount);
--	__vtime_account_kernel(tsk, vtime);
--	write_seqcount_end(&vtime->seqcount);
--}
--
- void vtime_user_enter(struct task_struct *tsk)
- {
- 	struct vtime *vtime = &tsk->vtime;
+I need an Ack from Mark before I can process these.
+
 -- 
-2.34.1
-
+Lee Jones [李琼斯]
 
