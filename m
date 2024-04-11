@@ -1,39 +1,54 @@
-Return-Path: <linux-kernel+bounces-140337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6AA78A12EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:28:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E0538A1304
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:31:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30641B24BE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:28:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0EEF1F222C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B40A6149C75;
-	Thu, 11 Apr 2024 11:27:54 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6918213D258
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:27:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB561487F1;
+	Thu, 11 Apr 2024 11:30:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="I6ZlEQ2J"
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2031A145B08;
+	Thu, 11 Apr 2024 11:30:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712834874; cv=none; b=FKAjjRU8khb1kB5ru2Vh1ZD+rs92i7TMTVYEPIKMcYIPbIYy92NkvZGjWmIibX/O/qaUjk6ZkmWCG9z/q8kBKkuvhtTcXqr09IcjN2HYGAgFY+fY2KOM+cEEgGQFdxhOr+tcbfUI2cyICew9M3sxLVDS0sOf0U7YNkCmHn74l/k=
+	t=1712835053; cv=none; b=VoX4WD+QhU+suzFmTQbBtOoDBvnUCAKdkPlUxii6x9F9CvtwNZhpLEs1o6aVUcuQLgM66kIC165Jseh/wvoqugxEhrNcvvAbDyirFUcMaaOzP9LHoexhmlfLGfSpbNzff2rxF6flcF9I22RLeYH0ncNxIaePrZ9R0wBQ/r0hYLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712834874; c=relaxed/simple;
-	bh=9zkVJL8zRVuR9kRv+VB0FpDhOZ3XwqRKYTV5gfmfVMc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Qs6LiQGzYMIuFIlMHKNR0AkmEehwy9ODgmtyFo2Nd6A3/hPBs+WF7cHcf4k6hjcsKTPA6VSXZdYZRTAb2VmKS3u1/zh1ZW2uLcqamhDizet9B8wVtjGsqJDcmUjzo1X0gmNkhjCEFmY94wiTWxwfpyRP5H1YUslPg/zgJ9kQ8k8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 56423113E;
-	Thu, 11 Apr 2024 04:28:21 -0700 (PDT)
-Received: from [10.1.38.151] (XHFQ2J9959.cambridge.arm.com [10.1.38.151])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 229323F64C;
-	Thu, 11 Apr 2024 04:27:49 -0700 (PDT)
-Message-ID: <a59496b6-ffdf-40ce-b030-283cc911203e@arm.com>
-Date: Thu, 11 Apr 2024 12:27:47 +0100
+	s=arc-20240116; t=1712835053; c=relaxed/simple;
+	bh=4uxuOFC2LQMADBNRGOlEQBqFMMT+ww4A8mDJbPx4eGk=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=BYfPA+RpCzuIR2bvkq7tvUWIzc/l5d11f8AvyLdEeFo9rqMx8xDhmSKHntKFerMumiUtO6svOtUtU7+tcdihcD4+KDmUQFQm6BswA3P5ZhL93jQnD9TysO25fHZkrrqZz0BMqq3b2TPepKoXSKFVLGHVgTMdZTvIinlzqNY1B5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=I6ZlEQ2J; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1712835032; x=1713439832; i=markus.elfring@web.de;
+	bh=1MsBQoKPQBvY56tmOKQbngcG97IfyuuH90Ag15As1m8=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=I6ZlEQ2JvSUikaceGmWfyc1DG7vRViPOuFxRwagGeKyzODQ8D2uybYbB+4aUFcgd
+	 laELh9hB1A2CEjKNLRWm+Dg1dM6WTATFL1kTi8rNVb2/TPinmNvrk+FTP7vWFcb/r
+	 T+vbA5bAw6UaS3IZ8NTeZfiPUzCEw670ZZzOetunK48vYAiq4yOx/80btN8fjSz++
+	 Ja1QPuAWOmvvBKnatMsZAh2YOaqy0OMVcGf+KskdV7ipgPS0pAQWSbP11eRNFiXEm
+	 dUjj0rkpjle0cFyxSts/qjPmcaEdap93vSs5GVj+sVMYezARcPEJ/ou/AONjcxRBg
+	 xYZy+Rnx6ZSQ47ydYg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.81.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1Mc1VF-1sUDBf1l3X-00dFah; Thu, 11
+ Apr 2024 13:30:32 +0200
+Message-ID: <505b6da5-93ca-481d-ab57-c246ad9a4eaf@web.de>
+Date: Thu, 11 Apr 2024 13:30:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,112 +56,68 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/2] mm/madvise: optimize lazyfreeing with mTHP in
- madvise_free
+To: Richard Fitzgerald <rf@opensource.cirrus.com>,
+ patches@opensource.cirrus.com, kernel-janitors@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20240411103724.54063-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH] regmap: kunit: Fix memory leaks in gen_regmap() and
+ gen_raw_regmap()
 Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>, Lance Yang <ioworker0@gmail.com>,
- akpm@linux-foundation.org
-Cc: 21cnbao@gmail.com, mhocko@suse.com, fengwei.yin@intel.com,
- zokeefe@google.com, shy828301@gmail.com, xiehuan09@gmail.com,
- wangkefeng.wang@huawei.com, songmuchun@bytedance.com, peterx@redhat.com,
- minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240408042437.10951-1-ioworker0@gmail.com>
- <20240408042437.10951-2-ioworker0@gmail.com>
- <38c4add8-53a2-49ca-9f1b-f62c2ee3e764@arm.com>
- <013334d5-62d2-4256-8045-168893a0a0cf@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <013334d5-62d2-4256-8045-168893a0a0cf@redhat.com>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240411103724.54063-1-rf@opensource.cirrus.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:G36xJVj5LcbfRx1/yNSc7IodjkuXRLfKxjiAdK0J1wkEvyjMcA7
+ a0SCDCGKuf1a/dwgB4C0emJJ89KheufFpvauj6S9bJev4yaJZZmii5q9zpYGji4+CZKn2XM
+ it3XzoHNSbkZrUDIHwqGoR8ncYxnjLhFXIkGFPGIyoTd2fHPbaXM4R9P4kx+xreGdSof93x
+ iDGd9SlADc2eAfurdJ5RA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:M614dYlKZ94=;o/oEVF9NGqD24Cfy52KMSmY5Qd9
+ WZRy8PZlqsv7dnNRTROG+xZhf7PvxvfC9KgxF/U0/SHKv5kPjZbVBUHPoDZRFfTKQdono69kR
+ DezKnsjGYrjC0unjqQIkRWzAjTw2fWhwTh0Dzvh8WakzG8XJ1uY7S0R87dTvbhPM3+JRzYn+s
+ rGxoBkU7FHGYPaDDpDu/dpESrMRSRlSTNWYRFzSImNhujATfEiuOrjljM3pXyV6zJHDmwNgCa
+ xIVkOVQ9sXR05/NOBu3fmLNQ7D5M655jIp4bJWard6BON3HNAUOz9jct+BpLsb8sWMjPCx1uv
+ 1bnk0obzE7UJgakmBvlRbu2Ylnm4duQrXKKnuP2As9qKr1ZIR4WIj3tOoLiQxNVsOMrQvCl6j
+ K0+RNcpEfnP1IEDXwRBBnTdNLb55vdtEecy8RgGafAEK6bHuXkkKizyTMXTehfkfF6eXmg4Yv
+ 2rU6Y54r/U/Gyy3ROisyHJaaEcnp8wmMzUBZxP0RGdQpUdzPA7JSmT9LH4P4XD6J1lpoWFET8
+ wWKR5htqpp+RwBlJW3dMP5LiQAJjUxDruB4djImsmvF408uSUdBTFjlxWNYYNhmtvLKGm1qGn
+ DTvQJvsqoIHja375XJ2qYR+9V8v7A+qLvxJWjFn7G/dpolkTnKg8YbqhcuO8vQlNrPdpNa0OB
+ J+DuX7BSYjBNdir56zNHwBlo4rzfyPdnkPY7ZJJnt5v7CMp/plZJVVxyHwJxHfXoOjRb+K313
+ KdnZ5dWdaTiN5aSlARby4YclPLyfO5xcwRUH8gy2zUUKg/NSNRdVl4kjBqWOlhMuGZ9+I3GWh
+ 6rB0ACqdv9dlJ8FT6sSFLWTTEjykNA+XoeK2Er5IQTJtQ=
 
-On 11/04/2024 12:20, David Hildenbrand wrote:
-> On 11.04.24 13:11, Ryan Roberts wrote:
->> On 08/04/2024 05:24, Lance Yang wrote:
->>> This patch optimizes lazyfreeing with PTE-mapped mTHP[1]
->>> (Inspired by David Hildenbrand[2]). We aim to avoid unnecessary folio
->>> splitting if the large folio is fully mapped within the target range.
->>>
->>> If a large folio is locked or shared, or if we fail to split it, we just
->>> leave it in place and advance to the next PTE in the range. But note that
->>> the behavior is changed; previously, any failure of this sort would cause
->>> the entire operation to give up. As large folios become more common,
->>> sticking to the old way could result in wasted opportunities.
->>>
->>> On an Intel I5 CPU, lazyfreeing a 1GiB VMA backed by PTE-mapped folios of
->>> the same size results in the following runtimes for madvise(MADV_FREE) in
->>> seconds (shorter is better):
->>>
->>> Folio Size |   Old    |   New    | Change
->>> ------------------------------------------
->>>        4KiB | 0.590251 | 0.590259 |    0%
->>>       16KiB | 2.990447 | 0.185655 |  -94%
->>>       32KiB | 2.547831 | 0.104870 |  -95%
->>>       64KiB | 2.457796 | 0.052812 |  -97%
->>>      128KiB | 2.281034 | 0.032777 |  -99%
->>>      256KiB | 2.230387 | 0.017496 |  -99%
->>>      512KiB | 2.189106 | 0.010781 |  -99%
->>>     1024KiB | 2.183949 | 0.007753 |  -99%
->>>     2048KiB | 0.002799 | 0.002804 |    0%
->>>
->>> [1] https://lkml.kernel.org/r/20231207161211.2374093-5-ryan.roberts@arm.com
->>> [2] https://lore.kernel.org/linux-mm/20240214204435.167852-1-david@redhat.com
->>>
->>> Signed-off-by: Lance Yang <ioworker0@gmail.com>
->>> ---
->>>   include/linux/pgtable.h |  34 +++++++++
->>>   mm/internal.h           |  12 +++-
->>>   mm/madvise.c            | 149 ++++++++++++++++++++++------------------
->>>   mm/memory.c             |   4 +-
->>>   4 files changed, 129 insertions(+), 70 deletions(-)
->>>
->>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
->>> index 0f4b2faa1d71..4dd442787420 100644
->>> --- a/include/linux/pgtable.h
->>> +++ b/include/linux/pgtable.h
->>> @@ -489,6 +489,40 @@ static inline pte_t ptep_get_and_clear(struct mm_struct
->>> *mm,
->>>   }
->>>   #endif
->>>   +#ifndef mkold_clean_ptes
->>> +/**
->>> + * mkold_clean_ptes - Mark PTEs that map consecutive pages of the same folio
->>> + *        as old and clean.
->>> + * @mm: Address space the pages are mapped into.
->>> + * @addr: Address the first page is mapped at.
->>> + * @ptep: Page table pointer for the first entry.
->>> + * @nr: Number of entries to mark old and clean.
->>> + *
->>> + * May be overridden by the architecture; otherwise, implemented by
->>> + * get_and_clear/modify/set for each pte in the range.
->>> + *
->>> + * Note that PTE bits in the PTE range besides the PFN can differ. For example,
->>> + * some PTEs might be write-protected.
->>> + *
->>> + * Context: The caller holds the page table lock.  The PTEs map consecutive
->>> + * pages that belong to the same folio.  The PTEs are all in the same PMD.
->>> + */
->>> +static inline void mkold_clean_ptes(struct mm_struct *mm, unsigned long addr,
->>> +                    pte_t *ptep, unsigned int nr)
->>
->> Just thinking out loud, I wonder if it would be cleaner to convert mkold_ptes()
->> (which I added as part of swap-out) to something like:
->>
->> clear_young_dirty_ptes(struct mm_struct *mm, unsigned long addr,
->>                pte_t *ptep, unsigned int nr,
->>                bool clear_young, bool clear_dirty);
->>
->> Then we can use the same function for both use cases and also have the ability
->> to only clear dirty in future if we ever need it. The other advantage is that we
->> only need to plumb a single function down the arm64 arch code. As it currently
->> stands, those 2 functions would be duplicating most of their code.
-> 
-> Yes. Maybe better use proper __bitwise flags, the compiler should be smart
-> enough to optimize either way.
+=E2=80=A6
+> - kfree() the buf and *data buffers on the error paths.
+=E2=80=A6
 
-Agreed. I was also thinking perhaps it makes sense to start using output bitwise
-flags for folio_pte_batch() since this patch set takes us up to 3 optional bool
-pointers for different things. Might be cleaner to have input flags to tell it
-what we care about and output flags to highlight those things. I guess the
-compiler should be able to optimize in the same way.
+Will development interests grow for scope-based resource management?
 
+
+=E2=80=A6
++++ b/drivers/base/regmap/regmap-kunit.c
+@@ -145,9 +145,9 @@ static struct regmap *gen_regmap(struct kunit *test,
+=E2=80=A6
+-	struct regmap *ret;
++	struct regmap *ret =3D ERR_PTR(-ENOMEM);
+=E2=80=A6
+
+How do you think about to use the statement =E2=80=9Creturn ERR_PTR(-ENOME=
+M);=E2=80=9D at the end
+instead of the extra variable initialisation?
+
+
+=E2=80=A6
+@@ -172,15 +172,17 @@ static struct regmap *gen_regmap(struct kunit *test,
+
+ 	*data =3D kzalloc(sizeof(**data), GFP_KERNEL);
+ 	if (!(*data))
+-		return ERR_PTR(-ENOMEM);
++		goto out_free;
+=E2=80=A6
+
+I suggest to reconsider the label selection.
+
+Regards,
+Markus
 
