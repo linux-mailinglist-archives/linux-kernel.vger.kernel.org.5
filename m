@@ -1,258 +1,189 @@
-Return-Path: <linux-kernel+bounces-140114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F3C98A0B8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:44:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A5408A0B94
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:47:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0C7A1F23819
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:44:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3FFCB2345E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:47:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 277891411F3;
-	Thu, 11 Apr 2024 08:44:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 987BF1411D1;
+	Thu, 11 Apr 2024 08:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="EN8Nmyen"
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2062.outbound.protection.outlook.com [40.107.215.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Osz6pd0J"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3803913CAA2;
-	Thu, 11 Apr 2024 08:43:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.62
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712825039; cv=fail; b=B2OLHeG+emTEQSUBZR3Dpi3EAYmEKZQh8Dp9QRU6t33c6ecV9/j+7ayxLzviVOJBxGiSEqiitaolMottns0u/LyUl6bOkqMUOPm4b/bauBDcFBThPHpIjXPmZaLqIHJwfmAA2gx+M4Ex/wRH4WkYkrFQqdKtZ8B9S0s/1oFLRLA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712825039; c=relaxed/simple;
-	bh=Zc+FtKc5dRZUt+MnQybmhskpB6NEO9o8xMEP7N9ZV0k=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=KVXCOfjbA4x9+HrWrdeFJsquffit9CIqCE563866+4wLviPVfYuS8NejBysYKYFZRyEj7EIpmxLYDcaeCsMuiJCP7ttKfSEf/apk5AYABZJH0qG7M4VHsbkCDUXFsoah+cFCYBFn56dxsmvk3VnH2srG8oX6DwZTkldI2ZwEy4c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=EN8Nmyen; arc=fail smtp.client-ip=40.107.215.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gPZAC99mUn1DYKpNRgj8pz4U5VF9hOgXwLsJa4dCdrjPJRnJEaPOJ93CIrUYDp4gnon/6AYEL0u5obec8In47G8ZD+MAOxq2/q3yOEBtN+UyCOlKVYoV2/qWKVTZ/9KLDbAqkoocHZdMpQO+6O5dLs5VBexFIDrxGMFNLFYfDP7H7I2zP4l5IKSJCsXd0ejqBe4kUxsBHTLCuzQYgBDUXdReTwt4gvThty5GUtCbl1L7m5sGF1KV8yDJvDXHnuk7r2Wbr2oiPsaEwSk1fKoqHwzVGqM2GkJhyG2S5QvaPZ0/bKE9h5Q0YREIuLRNK2Dq7RlA0oYN6nGMVzaDI7l0PA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YdICYd8AHPB/nqHMaPuFEH7y6fHOJe7YCrfuid59zlA=;
- b=G5mdKMdoXxM7pgwfETk+/zJkWhZrYRb7JnWfqTwY7n1pHJUdYoDY60JhYnaNLp1U0uiffmo/dWj3bWVBkIce2sVFum+udhrUg+yRv2FRjpQ5bdIRwuUsQJ4XLiwze88Uch0qT2BiePMWZ1RQZ7+FxscBDBtgwVjdKgNQDWQiedcnBxXDrzMGVNxL3ixuMWEgz+GZSvuHFpoq+cBAizYqp2y91++izI6esiuFGjaXgGNUentVA/lPu347+cQCmTl0kaDVzMpFbQupBrpJAo7qiTDlOLIMVXtHzuOoA7JyfVSZ83HIGBETVBVxx9Xkqtxh90IIROPkczgyf42g7kOPZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YdICYd8AHPB/nqHMaPuFEH7y6fHOJe7YCrfuid59zlA=;
- b=EN8Nmyen2/aDpKTQv27JamiB+YYUDuvsNepnZS2sgZqhoJHc2R3TR7Hnzp/rYj6W2NjeU8Dqlc8kmLEkzRgoSfCryryb769goeY2H+lFgyKebs9x7rdau1PhZpXC/BRBwEbtXGzn7cxPjzejZ+2rCbQeUagEW2IrV/qwciQrycEOMmSr6ChafQgFgr/lBMTlXVja2VlFBnUems0gcOpoahiA4j7N1FvdEsr0DeagRXXuj6ZIpnobaJ0NGlUkFntg00KkVkrZJBh4Wk0+N5CMWxD4YEBrnf9c2GhTh31+rUycEWjWEOYrhPTa3O+zoz6Ef5Y/ZYLiuJhFt5mkXTW2CQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SI2PR06MB5140.apcprd06.prod.outlook.com (2603:1096:4:1af::9) by
- JH0PR06MB6703.apcprd06.prod.outlook.com (2603:1096:990:36::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.55; Thu, 11 Apr 2024 08:43:51 +0000
-Received: from SI2PR06MB5140.apcprd06.prod.outlook.com
- ([fe80::a60c:298:c201:e4a1]) by SI2PR06MB5140.apcprd06.prod.outlook.com
- ([fe80::a60c:298:c201:e4a1%3]) with mapi id 15.20.7409.053; Thu, 11 Apr 2024
- 08:43:51 +0000
-Message-ID: <32f166c8-7810-4cef-befb-44e34f9b5372@vivo.com>
-Date: Thu, 11 Apr 2024 16:43:46 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dma-buf: add DMA_BUF_IOCTL_SYNC_PARTIAL support
-Content-Language: en-US
-To: "T.J. Mercier" <tjmercier@google.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc: Rong Qianfeng <rongqianfeng@vivo.com>, Jianqun Xu
- <jay.xu@rock-chips.com>, sumit.semwal@linaro.org,
- pekka.paalanen@collabora.com, daniel.vetter@ffwll.ch, jason@jlekstrand.net,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
- linux-rockchip@lists.infradead.org
-References: <20211113062222.3743909-1-jay.xu@rock-chips.com>
- <1da5cdf0-ccb8-3740-cf96-794c4d5b2eb4@amd.com>
- <3175d41a-fc44-4741-91ac-005c8f21abb8@vivo.com>
- <9e6f1f52-db49-43bb-a0c2-b0ad12c28aa1@amd.com>
- <5c7ac24c-79fa-45fc-a4fd-5b8fc77a741b@vivo.com>
- <CABdmKX1OZ9yT3YQA9e7JzKND9wfiL-hnf87Q6v9pwtnAeLHrdA@mail.gmail.com>
- <0df41277-ded5-4a42-9df5-864d2b6646f5@amd.com>
- <CABdmKX03Of7OE_9PfAy5DWcCwwvQvJGXDjzAE8c4WRrz_0Z_eg@mail.gmail.com>
-From: Rong Qianfeng <11065417@vivo.com>
-In-Reply-To: <CABdmKX03Of7OE_9PfAy5DWcCwwvQvJGXDjzAE8c4WRrz_0Z_eg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: TYCPR01CA0058.jpnprd01.prod.outlook.com
- (2603:1096:405:2::22) To SI2PR06MB5140.apcprd06.prod.outlook.com
- (2603:1096:4:1af::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B196140E2F
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:47:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712825239; cv=none; b=bRnUxGKZGHo1kiCKXGfMudZAElj65S+9Z9m6AlIOkKBAy5o9zS9QVUXfdjPZCnyUDQOxX866QhaFeet61r0SHnzyY0USJR8e/WUHz43Ww31tfTfa10ZK5BW4EPpjcL9OVzur0FoLY4b0Ghr9yh4uFCHUTW1Y16OIGc046v0mkW4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712825239; c=relaxed/simple;
+	bh=yB6JYunY8EXkmrBU9V8SnkS97vIvnw2jVMSGoyThXlA=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=i00ET3etRVElVtcEkMf3utXQFFiFCJ5PBKvqCpbLwcoG5ePhdD8UMWdkBEsD4OpIfdWryQGd/fLBszChXvfYdDACpq8s1T7jvrXyRhlvJ0E1XPs2xvE+8f81Fh33pVgwNg7uWZP4QUm1XQMmsm7AkZVI1/t/tQvbpClGx5YktCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Osz6pd0J; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-343c2f5b50fso4946390f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 01:47:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712825236; x=1713430036; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=WGvYdrh9pjeShwzsHtKJ3B7j1+HaDBQWly/Ok2V2fDA=;
+        b=Osz6pd0JRFmO6/wv63VkIBWRqd8ByDD4g56eJA9vVzuaNQPUiV5DA2r8RE6Su1k3BN
+         XqiRPRxRHo4Dko1iRUvsA72JQ9SBWbpQWdi2RbgVpW1i2BzhxZHazIcymXa6MAGDLKYQ
+         xP8husgE79uJthaV02Lz3878xbP5FHMzyieW1NjbZcdhEvNoNhGHv1qMMy5425U+fc+K
+         QXPXsRG009BNaOTI21ex0mzdQRj9DVvV8ocAec8Lspy6Yq78tfPjo4muY1wYZNt8s7G5
+         q2eK1CLjdy3Z1fZwcck3TEUJhA/3RPu3fnwgdF9SVcXv7oOBzsibK/eOycat+/WNbs7b
+         lFrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712825236; x=1713430036;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WGvYdrh9pjeShwzsHtKJ3B7j1+HaDBQWly/Ok2V2fDA=;
+        b=wPugyLkCrLvw8r2trKeQBjBpdg484Gcz3pMEbIlHv7LsphMa+EsBIKE1Tb7lVhW4Iy
+         Ls7/xlKwJLADDKwr7es1VmtoEycrOK+zS5GmnfGUR8qXq8PURl1ieFh+SvhGRAKaf0ZU
+         YVY6JAhtGoM0ybBcFOjwZpBAthyc4xQj+Sp1AKoVTGPFzWKMEqEy1xtfnimO3bn1lHzr
+         /Aual4hXD0UbX2pYw8C4JQoA++QL7f3/eMQtH3aDB4GQTsiPTd7cPVVDlKC6CM/dUQNZ
+         eW9ZCc2wkMBh6cWrM4J/1+xHttKhLiNzeIfGQLntRWQdsQ/8qZu1sFTNvdhmaWm9Gkav
+         RNOw==
+X-Forwarded-Encrypted: i=1; AJvYcCWFUQ4EyiRoeSAhIyRmk40s1/ODSSAyqbEvJRD3v4tEGnmyFwikTVIz+3fgb0docvKzj9oI5HsZ1GQRWT5O6ilwEgHslHzJBPFaRxKE
+X-Gm-Message-State: AOJu0YzPwvZImDQfXOieUTAjSJ8G2M9lfYHqQ6bRfyuEgg73b72Iu2eh
+	pp5GMV4KQ04ifrg2dWtJhpJLnj1NErDajOiB9IB1b8vMcMOH+9mtkUJfAIzN/kQ=
+X-Google-Smtp-Source: AGHT+IEVnyycSJjD/BjnBncJtERr0l0A8WqQtwo7eX8HaIYmIUcX1aoVYefAc7MGFuu5r9vLq2aKUw==
+X-Received: by 2002:a05:6000:1101:b0:343:6ca4:97e4 with SMTP id z1-20020a056000110100b003436ca497e4mr3354318wrw.51.1712825236289;
+        Thu, 11 Apr 2024 01:47:16 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id j10-20020adff00a000000b003469e7f5c52sm1258222wro.80.2024.04.11.01.47.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 01:47:15 -0700 (PDT)
+Message-ID: <fda53b22-c3b6-4c9f-80e6-8f22637b8b63@linaro.org>
+Date: Thu, 11 Apr 2024 10:47:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SI2PR06MB5140:EE_|JH0PR06MB6703:EE_
-X-MS-Office365-Filtering-Correlation-Id: 20d083b1-c31a-4df6-045e-08dc5a038340
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	JliPPk+JxF9RK3lSif6gsh2/Gkn26W9T8AMHohRj2FTd+V6Z7BuL9/6UzGdVgYSILrr76gU9fwY6Lj9aAmnmkGIpyjCkUcWs7bgeNEIS1fZHzCyM0FciDp0XFBFMQIaCMWLenzgXducC6OOPjcSwcQC9uGmyfiXn0iU81ZZENRbwKvDKs7LU1F/YtNW651DNNgt3/t846OwXI30w3pDoidr5n6GTJ4U1oUCko4QqY/r+jYgFIXDWTphnwkoNigHF9KBU9v4NEUBigtLVy0vqCjxIn+BKJoeCeCpf7Fdy7aHDbLF+nb1+IKOfHN6+fVhc2LScI+DCIiom9SXLEtbLVYHpjUg9JWwFKGiBOZTEkCkF8qpFIkuEjPTYIoFljyY3RGH35xUZmE2+MRWAq64VNoxBidoGBCi7sBsdKmaARepaKDaYgjzbrMpUPh0twAW+PH3VGfjl7RJE9ukb/Xk9gEGpImUTNOyhH/oaAKzAvgmqK6yphR4H+jEelN1S+N3CFQtJs8xhoQ7f+Z3mBqBqd4peWF5BS50USEmQrorF8l8EdwgpC0IYffVR8x+zryvsEirotTBZVRH5vy0gDIfe1sX/lD0DG/ZtvXyaq7/VYjVf+eI7O2PDCp3xI4un9vrQxGRGoIlWsZr/2STBCtRQ5gXKdx6vHE6nJl8bdB70U7CuR3R8l9cLNIeSawgqZyDr
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR06MB5140.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(1800799015)(376005)(366007)(7416005)(38350700005)(81742002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?OXNyV3E5R05HdURORXVZUHhoK1pZQXNEblZzMzI0d0JUVVVQUnNmREIzNzlS?=
- =?utf-8?B?Qi9jNUM3ck84dHg2OXQyWXBzZFFjcWFCRjNJdHQrVnRGVnJnSlNsNENoNi9m?=
- =?utf-8?B?ZVg3NytCVERwTDZ1dlh0ZElkVkdESmticVpsLzczQ1BhVHRkSkV0aGJUeWR3?=
- =?utf-8?B?ZFo4OXMvczcxdmo3a283VlRzdStZczZra1lIVmI0YnRBSkJmL1B3ZmpKN0Ir?=
- =?utf-8?B?N3hYUHNpV3UwQWxRa1V6Tldpb0p2RnpaZFJuUDNVZ0RFNjgwRW5BS3VXd2cy?=
- =?utf-8?B?WFpTOGtvc1FoS3YraGg2aFc2ekh6cThrV2llbXp5QWhzYXhvNmxPYTVIMlhG?=
- =?utf-8?B?WkxWOVlUZ3pmdkFCWFA3dVBYczJKM242c1dVSU13OFZxM3QxMFBQbm43SklD?=
- =?utf-8?B?NmdaOC9aMWNERjZOY0RqeGZvTDJTUjlBVGJmR3lPYzhyM1pSNkZlb1lwSDN1?=
- =?utf-8?B?bkQ3WUEvN29XV0hGSWxEQ3hTWmVqanJyNkVuTFowUG1sUGdDcFhHdFpyU0VF?=
- =?utf-8?B?aFRhTEhQVC9SY1RpN210RXB6cG5aa0Y4YVJxamEyUnlNcW93THRIbzJjbjR4?=
- =?utf-8?B?MHBLSEtuRk9wZ0ZoTTFRb2FqTXV3cVR4aU44cGNpek9NWlFUbFY1U3IybnM2?=
- =?utf-8?B?WmRpcFIrNDFOSkl6cUVFenNPZkc5NVFhb2wvMjBQSUZoUGQrYkxMQW5TRmtz?=
- =?utf-8?B?QVhySkt2SythdFhmL1p1N09RU3lpTnV1QzFraHgxWTBWMnlWY2hJekg2S0Zy?=
- =?utf-8?B?eDZrY3VIN2FEUXZJUnd0dEhwRW1WbkExTTB1ZkFIbUxEYkhuQTRhRFdGQ0F3?=
- =?utf-8?B?ZExsZDQvWjY0U1dsWGY5ME5ZYTk0QkJkU2VnbEtsa2RkaVhXQ09sNEhCNmhE?=
- =?utf-8?B?dkE5SzRNWmlqcVBFTUhoUWxaN1QrcjhMWC92REdidWpqazVodEk0ejhQWGxm?=
- =?utf-8?B?aC9SRll0Z2M2ODdYRWIybVZYRFN0d0JoN1B3OEUyMmc5ZUMxeHdvZjFwV0I0?=
- =?utf-8?B?anFkTUZBOUZxQVE1Q29UQ2pkNm02dm53MWJNeS9iMU1vRC9PWXhwMk50RXpG?=
- =?utf-8?B?WklTaGpLSVVDdnMyeEd1MCtrUjBHektybURnVTUybEF2Z2dWQVQ1bU1zUWZ5?=
- =?utf-8?B?YWhWdW5kYlVLSVlwRStrVGRqbXJnWjJIQVBsWmgxMm44cTFUblpBeHNnelNO?=
- =?utf-8?B?STJ4UDlBc013ZTJzUWJlVEozSDdrdE81Y0drYklaYzFIcWZyUTJ2RDBha1NJ?=
- =?utf-8?B?UmRKeDd0Zkk5RVptQUhyMTY5N2F6bEwvMTdQc05GRGNZOHA3U3g4bkJSUnpU?=
- =?utf-8?B?bmlVMnpQR21pQXpSYk42U0VPQmUybzFTalJXMDYrUFJXQlVXUDVrU0hDUHFV?=
- =?utf-8?B?RjA2MnZTUFNoMFNFaS9KVWJ2YlFqbkpFM0o0VG1Yc21ZYm0yZDBzTUlEYkV4?=
- =?utf-8?B?bEFNR0dhcnd0L2o2WFJjNTlFSUM4YWVXSW5kcTFkVVp2Tll0UkhWTjUvOGVD?=
- =?utf-8?B?VjNMU1U3Yjd3MGRyckNsK1hvLytvNVppYzJ0bFZlUkMwODJzaE40cTZtZU1S?=
- =?utf-8?B?a2VrdnZaS0ZiUFUvblRndnpTdEtmcTcwZkprNVlYcmEvSXVjS0lmRWdGa21s?=
- =?utf-8?B?Nm00RDhXb0hscE5yMEw4NUViWGlVeWE1ZEowY3pLYXJrVjk2SHRuRlhLWity?=
- =?utf-8?B?eGJucUYxYi9US0ZEV2xTRXdkS0VYWWg1S1V1TE9ERWswbGtJVWEzVlo4UG1O?=
- =?utf-8?B?aThZcmNrZ0kvMnNvY1B1eWQxS3VUK0VDNEpqenFCdG9IdzE1NC9oNzNOVHZl?=
- =?utf-8?B?dW9Zenl0MFFnRVpWaVMwdThJb241VlNYdlhDcEhWcitDVTF1c3lPbTRYOGZU?=
- =?utf-8?B?dDRPQ09KZU8yQURBSnhNejJETnUvQjJEUlBRTkxxMGwwbXlGdWRsOFBYR09r?=
- =?utf-8?B?a2pxNmVJWkpTdmRDZHNnMTd0MWppbEJvOXVnYVM4dERPK3pmbEpZT21BS204?=
- =?utf-8?B?UTB3eWlRTlRGYTREeHBrMmlxK3JDT3ZFV1FTSS82NTlKRXc0ZDNneEdyQ2FL?=
- =?utf-8?B?VWJ0aHlFZVBVZjF0MnN4eTlkL2VqRFEvWElkQU1FSzUwWGVNSVNUeUdTNENq?=
- =?utf-8?Q?u7Y7f6oMlIo9tXOtvT0ELVPm9?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20d083b1-c31a-4df6-045e-08dc5a038340
-X-MS-Exchange-CrossTenant-AuthSource: SI2PR06MB5140.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 08:43:51.5678
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zrk6kkKR4Dd6+Ibr+AUoezzmZq6cQOnLsaO6fcmzm/N6LPJJZfI6BRqQ9IsSVluUlPqu0OTH2Rji31wLMehorQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB6703
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/2] Samsung Galaxy Z Fold5 initial support
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Alexandru Serdeliuc <serdeliuk@yahoo.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240410-samsung-galaxy-zfold5-q5q-v5-0-9311ee9a55f7@yahoo.com>
+ <8f2c7963-c660-41b6-a93c-0ac19818ecda@linaro.org>
+ <46bee5df-3d66-44c1-9d7a-86e32a2149dc@yahoo.com>
+ <37c5710a-426f-4054-8632-e24b9d920bcc@linaro.org>
+Content-Language: en-US
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <37c5710a-426f-4054-8632-e24b9d920bcc@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-
-在 2024/4/10 23:07, T.J. Mercier 写道:
-> [You don't often get email from tjmercier@google.com. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
->
-> On Wed, Apr 10, 2024 at 7:22 AM Christian König
-> <christian.koenig@amd.com> wrote:
->> Am 09.04.24 um 18:37 schrieb T.J. Mercier:
->>> On Tue, Apr 9, 2024 at 12:34 AM Rong Qianfeng <11065417@vivo.com> wrote:
->>>> 在 2024/4/8 15:58, Christian König 写道:
->>>>> Am 07.04.24 um 09:50 schrieb Rong Qianfeng:
->>>>>> [SNIP]
->>>>>>> Am 13.11.21 um 07:22 schrieb Jianqun Xu:
->>>>>>>> Add DMA_BUF_IOCTL_SYNC_PARTIAL support for user to sync dma-buf with
->>>>>>>> offset and len.
->>>>>>> You have not given an use case for this so it is a bit hard to
->>>>>>> review. And from the existing use cases I don't see why this should
->>>>>>> be necessary.
->>>>>>>
->>>>>>> Even worse from the existing backend implementation I don't even see
->>>>>>> how drivers should be able to fulfill this semantics.
->>>>>>>
->>>>>>> Please explain further,
->>>>>>> Christian.
->>>>>> Here is a practical case:
->>>>>> The user space can allocate a large chunk of dma-buf for
->>>>>> self-management, used as a shared memory pool.
->>>>>> Small dma-buf can be allocated from this shared memory pool and
->>>>>> released back to it after use, thus improving the speed of dma-buf
->>>>>> allocation and release.
->>>>>> Additionally, custom functionalities such as memory statistics and
->>>>>> boundary checking can be implemented in the user space.
->>>>>> Of course, the above-mentioned functionalities require the
->>>>>> implementation of a partial cache sync interface.
->>>>> Well that is obvious, but where is the code doing that?
->>>>>
->>>>> You can't send out code without an actual user of it. That will
->>>>> obviously be rejected.
->>>>>
->>>>> Regards,
->>>>> Christian.
->>>> In fact, we have already used the user-level dma-buf memory pool in the
->>>> camera shooting scenario on the phone.
->>>>
->>>>    From the test results, The execution time of the photo shooting
->>>> algorithm has been reduced from 3.8s to 3s.
->>>>
->>> For phones, the (out of tree) Android version of the system heap has a
->>> page pool connected to a shrinker.
->> Well, it should be obvious but I'm going to repeat it here: Submitting
->> kernel patches for our of tree code is a rather *extreme* no-go.
+On 11/04/2024 09:34, Krzysztof Kozlowski wrote:
+> On 11/04/2024 08:36, Alexandru Serdeliuc wrote:
+>> Hi,
 >>
-> Sorry I think my comment led to some confusion. I wasn't suggesting
-> you should take the patch; it's clearly incomplete. I was pointing out
-> another option to Rong. It appears Rong is creating a single oversized
-> dma-buf, and subdividing it in userspace to avoid multiple allocations
-> for multiple buffers. That would lead to a need for a partial sync of
-> the buffer from userspace. Instead of that, using a heap with a page
-> pool gets you kind of the same thing with a lot less headache in
-> userspace, and no need for partial sync. So I wanted to share that
-> option, and that can go in just Android if necessary without this
-> patch.
-
-Hi T.J.
-
-If there is a chance to use this patch on Android, I can explain to you 
-in detail
-
-why the user layer needs the dma-buf memory pool.
-
-Thanks
-
-Rong Qianfeng
-
->
->> That in kernel code *must* have an in kernel user is a number one rule.
+>> The list of changes  (changelog) from the cover is not what I should  add?
 >>
->> When somebody violates this rule he pretty much disqualifying himself as
->> reliable source of patches since maintainers then have to assume that
->> this person tries to submit code which doesn't have a justification to
->> be upstream.
+>> My patches received only two ACK tags, on V3 and on the initial request 
+>> (v1), I was not able to identify any other, I added them to their place 
+>> in the change log
 >>
->> So while this actually looks useful from the technical side as long as
->> nobody does an implementation based on an upstream driver I absolutely
->> have to reject it from the organizational side.
+>> ...
+>> - v3
+>>    . added b4 version 3
+>>    . removed address and size cells in device description
+>>    Acked-by: Rob Herring<robh@kernel.org>
+>> ...
+>> - v1
+>>    . The initial request was split in two patches sent due to the following checkpatch warning, was requested to re send them together:
+>>      WARNING: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
+>>    Acked-by: Krzysztof Kozlowski<krzysztof.kozlowski@linaro.org>
 >>
->> Regards,
->> Christian.
->>
->>>    That allows you to skip page
->>> allocation without fully pinning the memory like you get when
->>> allocating a dma-buf that's way larger than necessary. If it's for a
->>> camera maybe you need physically contiguous memory, but it's also
->>> possible to set that up.
->>>
->>> https://android.googlesource.com/kernel/common/+/refs/heads/android14-6.1/drivers/dma-buf/heaps/system_heap.c#377
->>>
->>>
->>>> To be honest, I didn't understand your concern "...how drivers should be
->>>> able to fulfill this semantics." Can you please help explain it in more
->>>> detail?
->>>>
->>>> Thanks,
->>>>
->>>> Rong Qianfeng.
->>>>
->>>>>> Thanks
->>>>>> Rong Qianfeng.
+>> I suppose that adding them to their place in change log is wrong, I 
+>> should create a v6 and put them at the end of the cover letter? Or how 
+>> to proceed?
+> 
+> Please don't top post. If you add them to the changelog, how are they
+> going to be effective? Please apply your patch (e.g. b4 shazam) and look
+> for them...
+> 
+> Submitting patches explains where to add tags. Look at other mailings.
+> And finally: why even bothering about this if b4 does it for you?
+> 
+
+BTW, in reply to your first posting I gave you detailed instruction how
+to proceed with tags. Let me quote:
+
+"Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag"
+
+I think it is clear where you should add it. I gave this instruction on
+purpose so we will avoid this mess...
+
+Drop all invalid acks from cover letter and send v6 with proper tags
+places in mentioned place.
+
+Best regards,
+Krzysztof
+
 
