@@ -1,100 +1,150 @@
-Return-Path: <linux-kernel+bounces-141588-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141589-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6802E8A205D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:44:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA8118A2060
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:46:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E6D81C21D85
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:44:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2CE1FB218FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:46:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D951C686;
-	Thu, 11 Apr 2024 20:44:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 221F81C294;
+	Thu, 11 Apr 2024 20:45:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jDQpnlld"
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="f/w+zXY8"
+Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15021865A;
-	Thu, 11 Apr 2024 20:44:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C018C205E15
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:45:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712868269; cv=none; b=aDKlB+IUbQ1hVmPjITRAqn9eya1stIcz9bGsKdOUW+VwYNNP243HX1hzFbdrg5jXCYHI3lN4LNCVgVDN8YtMzEY24rI3ZTbo2ej5wifoGK0UAyikvrfeEieUQjc+SL+Ns7uN2jr3UC3hgeb9lTWH2ARC+LqVXsYHiHKXfqC1lCQ=
+	t=1712868355; cv=none; b=RpnbkOMFw0swfv8+PUFbTPFd72zhcyL5ijOoqqASgVuQALXpthak4JeKqIWH4DzrZP1dNiSVmY3svdbVA0Yim16p18CrY4ORM+GoWEr0mt1khTMyctzD1TBXp9gpuq2EJt3NXz6SRXbTfMNUVptNN0ELqePyKRhoZLnJdKGGPf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712868269; c=relaxed/simple;
-	bh=sJRicuIMdyPXST1iBQBaTpdPs5znDsy3fUbKNGxvvP4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jE993pWlzNdSaQenq+NSmCrUAs+kPGthCZSqsNYER8jXMqLxiQLGvJGyZUL4Wp5Itmxen2xu5gJvf+taPyh+YhiM+wBOqHScC5rFMBp3ygE69s9KTHoQ5JZfTKL9Jukp1JUb2J3Ry+7HUVpY3+Ah2CBAjwyOpZ7Wx2An/0BCh8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jDQpnlld; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2a2d0ca3c92so181989a91.0;
-        Thu, 11 Apr 2024 13:44:27 -0700 (PDT)
+	s=arc-20240116; t=1712868355; c=relaxed/simple;
+	bh=//ZjAiaXc2P8treOFUP0BwgmcWVeopDlRI0E5DLLuMc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Lhsqxj6n0KQwXRfPNCaY0l5NqhsuiAnrnHzpm1z7LAGaeo/tzmxppWLnRk1Wo5Ze3oRr3lKE+xUOnFWTIghw2M9bk2dzWbS5zuu9vHl2x/Ns3tMd8O09B871L7uZIgMwQa/yglaBYUGT11ENwqMR/mPs0yU5wBrxY/bhLmHSI4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=f/w+zXY8; arc=none smtp.client-ip=209.85.166.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso4802939f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:45:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712868267; x=1713473067; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vC6CFfrU7nNG00X2ZGZqSPYkqlRpBYfzzvwanWOLN0w=;
-        b=jDQpnlldzjEKWuaaZXfC2OIHSqJ4gqMcF42HQs/xGgJYuZA5AeWMHJYmPBbuXzBQ2d
-         HGt8Mp0G4VxWauUt9ZA6LcPnIiVh1OsufkzcDRIeajxjiftutouDGz50k/4/N+6Pk2SL
-         7bgtMDzNwVC9OWwVGnlsEpi38zVIXsqRWhXKalHEPgn013RD9wbEamBGt1pOiV5SvLHD
-         uGJ75bdgmsiddgv8c5dQOqgeWhRu+2AUqYcCJf3Blx1vhSuFEB3srUxqYI6HzyBdj4fL
-         q1QFukweTfvk1yVezbk8YXqROwFiRxtHuY3Sp/qNq0kXWhWeH7JYvb3dQkcm+2qAw5nI
-         wNrw==
+        d=linuxfoundation.org; s=google; t=1712868353; x=1713473153; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Fo4GEr311EYbdOzDjeChQAAjd+hDg5qPX6VqqIVrpLA=;
+        b=f/w+zXY8TL/Mf0YsoDFELJdPOkX5l322B1XedX1zWJqdssy/LUUDGjnB2yq+gQ3I/M
+         3V0FvRCj3Wr6Nd/cRZ/f7Y9cWRw4laHblLSMYi2OiVvDQ9GBSF9kCbbI1b+5/H3vMH9i
+         IXC7NgxrSRHQWDmKy8rybQ3p6TqQD+IrjPvvA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712868267; x=1713473067;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vC6CFfrU7nNG00X2ZGZqSPYkqlRpBYfzzvwanWOLN0w=;
-        b=IzKEJFHzumDhass2aGsDRIMDcD+GwOzeqmoeajdmwK4GOus1RaJGl99hrJQLbtRSm+
-         EAOIy425DV6jZu/F7k9KKQqB5UeuRI5V0PY16vmuKftrMC8ARRAbn6sGkWfE1bhtMipE
-         Bjzd1c0r50WX8DLlnQl4yvTp9PeCgQcQvpiKKx+XG8qt6XBCV8EK16QgIpqS89+btdeu
-         yG/ibO6BUuMnpIhNKOWaAgISEWAO3F7cP62VXOqccobrwdOq0EB9sq+0wTuSaSKKbEN0
-         RhbUKJigQXb0nSFpIqGZjrAGv74csqbMURsF6+oL4Kzn0l8bNuTO1uY1hl4VcegQ8ODH
-         Ccyg==
-X-Forwarded-Encrypted: i=1; AJvYcCXKXGH7oO7FdNK2gJwXJUzhbtQsYr9lp2tH2W5msSfEpq0FkqOsFjfV+KY4mlJ1d3kn9ws788tRRuMtEZ1BP9o8Dg5v65Z9RCMSvxM/Tkmh5hMgDRm6M6jti9Dz0mI4I23XGQnCwd9+4Q==
-X-Gm-Message-State: AOJu0YwjIaFiQMnUDGmfjmcFrB/Fxgq/Ch+iXmA08kUpGM9gy3OErv7O
-	PBSPcCuHH087+QsoSeuHMaUXqKpWTIclpINj24SVTTJy1Rp5mQLwoMaYdyqVA9Ony7bURP84zPQ
-	CBusNZdM03kkvguD4IA9BVMnTFKzm2g==
-X-Google-Smtp-Source: AGHT+IGiQm77cSB4QuSfQ02Bfp5Rm6BkGApg0uafJ0k/8V2knSJ7Kwp/cNvH2c29/Sa95IMhd1Z6a7OXTecubQVEk2g=
-X-Received: by 2002:a17:90a:df86:b0:2a5:3f30:f5f6 with SMTP id
- p6-20020a17090adf8600b002a53f30f5f6mr1007173pjv.20.1712868267056; Thu, 11 Apr
- 2024 13:44:27 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712868353; x=1713473153;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fo4GEr311EYbdOzDjeChQAAjd+hDg5qPX6VqqIVrpLA=;
+        b=xArzqwbHoJbG2ypaETaATSniK1EqlDMtuXwgyjDhnippTuynBhMo3H5hdwdPPDH2br
+         vX1Dds0sfo5ZZpaxGIwaQIFGuh5SdsuZeLj12A1fFqx6Jz/o1lT5MPdDVlBdkjwOuR7V
+         mb8Zyp4RuhlY3bTIUqHSa2n7vvR8F7evEmy5WpaDl1C13tkGd5DsE0KRG/cgUEZBTwb6
+         dsFPdiP2oZ8MEGp/TXi/ZuiF0j0gKLOzluXYJN/fvPvI33O/YlIo9f1+1oytQ36AFYHJ
+         XTdPZs6XOuDyiO6xhuMfLIJujfcYUMkXSzo6qqobf54OZOvgYaLyQMaGdbTwxh7cKGBR
+         +hkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXC6udN4xAU3vFEIonHtxg+OVPmjIG/mkdmNRxXl2yqsoTNCCkWEgGRU5oPnoghtOwrw6dtb6tf81/aJhb4izgEEJJwzdw7kZPFMPT1
+X-Gm-Message-State: AOJu0YwSn8u30Ct071srDoBolYVrqIyLN2egKEBROWIfB88ycprWJMOS
+	xwOeZPJSnceMommjVPqxqQzNRBZE4Xm6ShIxyKvfBgVnw+xGHomAvtB9j0h/ZrA=
+X-Google-Smtp-Source: AGHT+IH9OX1Moo1mlEB4y0c5wMRaDjl4BfEDLf4mplpYTFEyOf+192EOakCyOtoz5nCIBbH3JHDNnQ==
+X-Received: by 2002:a6b:cd08:0:b0:7d5:fe3e:90ff with SMTP id d8-20020a6bcd08000000b007d5fe3e90ffmr957446iog.0.1712868351549;
+        Thu, 11 Apr 2024 13:45:51 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id t5-20020a6b5f05000000b007d5ddfda6a8sm647641iob.7.2024.04.11.13.45.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 13:45:51 -0700 (PDT)
+Message-ID: <001f99f4-9463-451d-ac16-0cda91e37e67@linuxfoundation.org>
+Date: Thu, 11 Apr 2024 14:45:49 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CANiq72mdRgMuQVD53Kp=hqaoiSNwPVZVSrbbMxRYehi73FZf9A@mail.gmail.com>
- <mhng-7603cdcc-24ee-4b19-b049-64d1bd4151b9@palmer-ri-x1c9a>
-In-Reply-To: <mhng-7603cdcc-24ee-4b19-b049-64d1bd4151b9@palmer-ri-x1c9a>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Thu, 11 Apr 2024 22:43:35 +0200
-Message-ID: <CANiq72kMvJAKCbOhYXZgUbfrHjeskRsW_FpL=TkfYa19By64Hg@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the risc-v tree with the rust-fixes tree
-To: Palmer Dabbelt <palmer@rivosinc.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Paul Walmsley <paul@pwsan.com>, ojeda@kernel.org, 
-	tim.chenbw@gmail.com, Conor Dooley <conor.dooley@microchip.com>, gary@garyguo.net, 
-	linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] selftests: timers: Fix posix_timers ksft_print_msg
+ warning
+To: John Stultz <jstultz@google.com>, LKML <linux-kernel@vger.kernel.org>
+Cc: Shuah Khan <shuah@kernel.org>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ Oleg Nesterov <oleg@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Edward Liaw <edliaw@google.com>, Carlos Llamas <cmllamas@google.com>,
+ kernel-team@android.com, linux-kselftest@vger.kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240410232637.4135564-1-jstultz@google.com>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240410232637.4135564-1-jstultz@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 11, 2024 at 9:59=E2=80=AFPM Palmer Dabbelt <palmer@rivosinc.com=
-> wrote:
->
-> I'm assuming rust-fixes will make it up to Linus well before I send the R=
-ISC-V
-> for-next (ie, next merge window).  So I'll just call this one out when I =
-send
-> it up.
+On 4/10/24 17:26, John Stultz wrote:
+> After commit 6d029c25b71f ("selftests/timers/posix_timers:
 
-Yeah, sounds good. Thanks!
+Tried to apply this for linux-kselftest next with Nathan's patch.
+I can't find this commit in Linux 6.9-rc3? Is this is timers
+tree?
 
-Cheers,
-Miguel
+> Reimplement check_timer_distribution()") I started seeing the
+> following warning building with an older gcc:
+> 
+> posix_timers.c:250:2: warning: format not a string literal and no format arguments [-Wformat-security]
+>    250 |  ksft_print_msg(errmsg);
+>        |  ^~~~~~~~~~~~~~
+> 
+> Fix this up by changing it to ksft_print_msg("%s", errmsg)
+> 
+> Cc: Shuah Khan <shuah@kernel.org>
+> Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> Cc: Frederic Weisbecker <frederic@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Bill Wendling <morbo@google.com>
+> Cc: Justin Stitt <justinstitt@google.com>
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Edward Liaw <edliaw@google.com>
+> Cc: Carlos Llamas <cmllamas@google.com>
+> Cc: kernel-team@android.com
+> Cc: linux-kselftest@vger.kernel.org
+> Fixes: 6d029c25b71f ("selftests/timers/posix_timers: Reimplement check_timer_distribution()")
+> Signed-off-by: John Stultz <jstultz@google.com>
+> ---
+>   tools/testing/selftests/timers/posix_timers.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/timers/posix_timers.c b/tools/testing/selftests/timers/posix_timers.c
+> index d86a0e00711e..348f47176e0a 100644
+> --- a/tools/testing/selftests/timers/posix_timers.c
+> +++ b/tools/testing/selftests/timers/posix_timers.c
+> @@ -247,7 +247,7 @@ static int check_timer_distribution(void)
+>   		ksft_test_result_skip("check signal distribution (old kernel)\n");
+>   	return 0;
+>   err:
+> -	ksft_print_msg(errmsg);
+> +	ksft_print_msg("%s", errmsg);
+>   	return -1;
+>   }
+>  
+
+thanks,
+-- Shuah
+
 
