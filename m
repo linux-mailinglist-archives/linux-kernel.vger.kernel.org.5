@@ -1,186 +1,181 @@
-Return-Path: <linux-kernel+bounces-140702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8817E8A17F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:57:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F075A8A17FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:59:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4284E284283
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:57:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 653C11F22E93
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:59:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5C9FDF43;
-	Thu, 11 Apr 2024 14:57:09 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6717DDB3
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84489DF71;
+	Thu, 11 Apr 2024 14:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jILJ0s7V"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B18DF43
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712847429; cv=none; b=UM2r95Ggm549A2n0qBrqOBwh2zkZ1n6owA09l0XyDm5ZnsP3tK6rTtMC2zQki5/EnQy37Qi9boYvyqjeMWEBAAzVx7LaNe4DAThjmVAQZSqsPWPUf6lPAXgdaSH5M1WXqkJqkzKyrkF/6RBzyNfLWH0P/kVMDeurMeVhCYD9FZ8=
+	t=1712847583; cv=none; b=bqP2Dcu+ebSpAA7piIZRCR0A66E6nX2+x1mVmK1ygvpTKXWcOi/b1XvoPEfXqUz9B/GiQrgz2zGrxAH25h5FPIUmAYMJH7wEw2oeDMssU8cwxXQoPWCJUWkvdragNidi1TfG3qEI5+psKrf4BgItL/PWKXNYx06AQIu8D3km5v4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712847429; c=relaxed/simple;
-	bh=a2M7BUpxQHgNp9nwEuklEobokTxst/uAol9oGZetN8w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d0n8Kc+goYpHlfWGarO6mxPgK7HKZtU7wbiBzcF8M6h+6g2ExT6C+10eCM5PLdUBhBJxdPyRsERE8FYAye1BIhAc0IZO6RKQtfo3q2ntGz1c2hylX+n+5GYc1tEG3TYmzNjREeL6S1tDGBTWtXwyyQ2AlP2Tjve39xE3vn6QHsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 915EE113E;
-	Thu, 11 Apr 2024 07:57:36 -0700 (PDT)
-Received: from [10.1.38.151] (XHFQ2J9959.cambridge.arm.com [10.1.38.151])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4EF6C3F6C4;
-	Thu, 11 Apr 2024 07:57:05 -0700 (PDT)
-Message-ID: <d9582c0e-af24-46a1-9c3e-b9dc68af20d8@arm.com>
-Date: Thu, 11 Apr 2024 15:57:04 +0100
+	s=arc-20240116; t=1712847583; c=relaxed/simple;
+	bh=XOkuJ7liq7HFtOSOqifMgfnooi/w2Xowz/+JJWDXXeE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TSH1ZoeDl2uu06b29WQQ6fZeqiiLbShd+n13D8kG1YIJYhS9P5stxCGQayBG6tMfvox8b49leFLv1LpBWcHbXIacoox3XYchG5E2GfvEGSKh0fJ6g/Jx4kS9vSxlqakCMfAjgRlUJY8jKPd5OjPVTDWBUPqS5BRqWCOMYI0qycY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jILJ0s7V; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ecee1f325bso7045478b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:59:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712847579; x=1713452379; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mWl7aWejmOmSmRavRDDwn4JBr1uDDkzku1Ac+VvzCk0=;
+        b=jILJ0s7VA4SP8HuAN07FKC5D0JUemCwKI78gX8SXZdq4BSv27dr8/T/VRgQHVWYUBZ
+         ol7Xar+D2S4V0Ws3rVbO5le7YtiONVbQrUIIBCbiO7q9qL3E4MpAEFHxWHYXzYtqV86e
+         eCEjLno0gmFrlfzh32Hz5wOmfLvEEusa3T5ceGoPX0rcPQ+NjGLAqFgYFmvUT0WHz9FB
+         MzQsKKZ0Ras9Pd+rDIJLOpImyXn7ocHLqljc9WIwwIQ1OrKKozRVDmSOBGjC/qvDOAjT
+         04pbO+PY4otVZCOYTmaOvXCYUxExom3/LvDrPZMhQG5IXcgdXx/EvGE6dYHSbFiOKF9L
+         gkag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712847579; x=1713452379;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mWl7aWejmOmSmRavRDDwn4JBr1uDDkzku1Ac+VvzCk0=;
+        b=KV5qcMz+Gr6Acfok95T9kDPfOS/GhEkvyI0jpHlUK8QZnAOFUGwgFqGcm9BL7/KlFE
+         Yo8pIY4IEdaXHEKk7hPovzLJDXrUWUNk/Lw8yWb6F/jL7aVW/P0inv4uVrJpzp6N8An8
+         DoRrvWN7Q8zi6CnVrm4nAQ5zXoB69svHi+fCGQOUhR9X3KIbV+V4S4FznM83gCZDve12
+         L2oTw7l0wFa2QBCkpQt0CBCFGMNoW8os4FTmL8nrNMTx5PzqM9tJPhMrMO25XVNDzOqg
+         sSRSjgndG6/WogNlMJqi3d29cvBIX3fIYShn8P8Ha3bUEZ4p/k0f+qDqWfPTkymYcSVD
+         BgDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCViGRIBWzd+2pXtmFrKsHCJf0wEEEG3UK9rsA0vMsjgJJ8G85uKvyko2A6rGWEGT3q/5L08oNe67uxaBdGitaqo/2LB0n8Qemylk3fG
+X-Gm-Message-State: AOJu0Yw1UftITtJLeKT5cGWpGoEATA5G0Hlcl2k1NzMHGmnlJAJtLtar
+	LucLkTBPKmL5h9V5/ujS66UohM6EYyDKm5VC16/hy4tM4BqKyWZM
+X-Google-Smtp-Source: AGHT+IGzNTLV3q3qwdvhih+Jkkh97YUaF6n8VQQV0vmWxFQzyMrvwM5ZUWv7OZnTGSPZQUROlhQhqw==
+X-Received: by 2002:a05:6300:808b:b0:1a7:5100:7559 with SMTP id ap11-20020a056300808b00b001a751007559mr58821pzc.32.1712847579504;
+        Thu, 11 Apr 2024 07:59:39 -0700 (PDT)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id j16-20020a62b610000000b006ecceed26bfsm1256171pff.219.2024.04.11.07.59.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 07:59:39 -0700 (PDT)
+From: Yuntao Wang <ytcoode@gmail.com>
+To: mhiramat@kernel.org
+Cc: akpm@linux-foundation.org,
+	arnd@arndb.de,
+	christophe.leroy@csgroup.eu,
+	geert@linux-m68k.org,
+	jpoimboe@kernel.org,
+	kjlx@templeofstupid.com,
+	linux-kernel@vger.kernel.org,
+	ndesaulniers@google.com,
+	peterz@infradead.org,
+	rppt@kernel.org,
+	tglx@linutronix.de,
+	tj@kernel.org,
+	ytcoode@gmail.com
+Subject: Re: [PATCH] init/main.c: Fix potential static_command_line memory overflow
+Date: Thu, 11 Apr 2024 22:59:26 +0800
+Message-ID: <20240411145928.247071-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240411232901.2c0aaa13f790d0ef97e484cd@kernel.org>
+References: <20240411232901.2c0aaa13f790d0ef97e484cd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] arm64: mm: Don't remap pgtables for allocate vs
- populate
-Content-Language: en-GB
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, David Hildenbrand <david@redhat.com>,
- Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Itaru Kitayama <itaru.kitayama@fujitsu.com>
-References: <20240404143308.2224141-1-ryan.roberts@arm.com>
- <20240404143308.2224141-4-ryan.roberts@arm.com>
- <ZhffSyrqCQsMV2pG@FVFF77S0Q05N>
- <37d4c278-3780-49ce-bd7e-e8f2ff4501fd@arm.com>
- <Zhf4LqNhQFN8ezx1@FVFF77S0Q05N>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <Zhf4LqNhQFN8ezx1@FVFF77S0Q05N>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 11/04/2024 15:48, Mark Rutland wrote:
-> On Thu, Apr 11, 2024 at 02:37:49PM +0100, Ryan Roberts wrote:
->> On 11/04/2024 14:02, Mark Rutland wrote:
->>> On Thu, Apr 04, 2024 at 03:33:07PM +0100, Ryan Roberts wrote:
->>>> During linear map pgtable creation, each pgtable is fixmapped /
->>>> fixunmapped twice; once during allocation to zero the memory, and a
->>>> again during population to write the entries. This means each table has
->>>> 2 TLB invalidations issued against it. Let's fix this so that each table
->>>> is only fixmapped/fixunmapped once, halving the number of TLBIs, and
->>>> improving performance.
->>>>
->>>> Achieve this by abstracting pgtable allocate, map and unmap operations
->>>> out of the main pgtable population loop code and into a `struct
->>>> pgtable_ops` function pointer structure. This allows us to formalize the
->>>> semantics of "alloc" to mean "alloc and map", requiring an "unmap" when
->>>> finished. So "map" is only performed (and also matched by "unmap") if
->>>> the pgtable has already been allocated.
->>>>
->>>> As a side effect of this refactoring, we no longer need to use the
->>>> fixmap at all once pages have been mapped in the linear map because
->>>> their "map" operation can simply do a __va() translation. So with this
->>>> change, we are down to 1 TLBI per table when doing early pgtable
->>>> manipulations, and 0 TLBIs when doing late pgtable manipulations.
->>>>
->>>> Execution time of map_mem(), which creates the kernel linear map page
->>>> tables, was measured on different machines with different RAM configs:
->>>>
->>>>                | Apple M2 VM | Ampere Altra| Ampere Altra| Ampere Altra
->>>>                | VM, 16G     | VM, 64G     | VM, 256G    | Metal, 512G
->>>> ---------------|-------------|-------------|-------------|-------------
->>>>                |   ms    (%) |   ms    (%) |   ms    (%) |    ms    (%)
->>>> ---------------|-------------|-------------|-------------|-------------
->>>> before         |   13   (0%) |  162   (0%) |  655   (0%) |  1656   (0%)
->>>> after          |   11 (-15%) |  109 (-33%) |  449 (-31%) |  1257 (-24%)
->>>
->>> Do we know how much of that gain is due to the early pgtable creation doing
->>> fewer fixmap/fixunmap ops vs the later operations using the linear map?
->>>
->>> I suspect that the bulk of that is down to the early pgtable creation, and if
->>> so I think that we can get most of the benefit with a simpler change (see
->>> below).
->>
->> All of this improvement is due to early pgtable creation doing fewer
->> fixmap/fixunmaps; I'm only measuring the execution time of map_mem(), which only
->> uses the early ops.
->>
->> I haven't even looked to see if there are any hot paths where the late ops
->> benefit. I just saw it as a happy side-effect.
-> 
-> Ah, of course. I skimmed this and forgot this was just timing map_mem().
-> 
-> [...]
-> 
->>> There's a lot of boilerplate that results from having the TYPE_Pxx enumeration
->>> and needing to handle that in the callbacks, and it's somewhat unfortunate that
->>> the callbacks can't use the enum type directly (becuase the KPTI allocator is
->>> in another file).
->>>
->>> I'm not too keen on all of that.
->>
->> Yes, I agree its quite a big change. And all the switches are naff. But I
->> couldn't see a way to avoid it and still get all the "benefits".
->>
->>> As above, I suspect that most of the benefit comes from minimizing the
->>> map/unmap calls in the early table creation, and I think that we can do that
->>> without needing all this infrastructure if we keep the fixmapping explciit
->>> in the alloc_init_pXX() functions, but factor that out of
->>> early_pgtable_alloc().
->>>
->>> Does something like the below look ok to you? 
->>
->> Yes this is actually quite similar to my first attempt, but then I realised I
->> could get rid of the redudancies too.
->>
->>> The trade-off performance-wise is
->>> that late uses will still use the fixmap, and will redundantly zero the tables,
->>
->> I think we can mitigate the redudant zeroing for most kernel configs; tell the
->> allocator we don't need it to be zeroed. There are some obscure configs where
->> pages are zeroed on free instead of on alloc IIRC, so those would still have a
->> redundant clear but they are not widely used AIUI. (see bleow).
-> 
-> That sounds fine to me; minor comment below.
-> 
->>> but the logic remains fairly simple, and I suspect the overhead for late
->>> allocations might not matter since the bulk of late changes are non-allocating.
->>
->> Its just the fixmap overhead that remains...
-> 
-> True; my thinking there is that almost all of the later changes are for smaller
-> ranges than the linear map (~10s of MB vs GBs in your test data), so I'd expect
-> the overhead of those to be dominated by the cost of mappin the linear map.
-> 
-> The only big exception is arch_add_memory(), but memory hotplug is incredibly
-> rare, and we're not making it massively slower than it already was...
+On Thu, 11 Apr 2024 23:29:01 +0900, Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-What about something like coco guest mem (or whatever its called). Isn't that
-scrubbed out of the linear map? So if a coco VM is started with GBs of memory,
-could that be a real case we want to optimize?
+> On Thu, 11 Apr 2024 09:23:47 +0200
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> 
+> > CC Hiramatsu-san
+> > 
+> > On Thu, Apr 11, 2024 at 5:25 AM Yuntao Wang <ytcoode@gmail.com> wrote:
+> > > We allocate memory of size 'xlen + strlen(boot_command_line) + 1' for
+> > > static_command_line, but the strings copied into static_command_line are
+> > > extra_command_line and command_line, rather than extra_command_line and
+> > > boot_command_line.
+> > >
+> > > When strlen(command_line) > strlen(boot_command_line), static_command_line
+> > > will overflow.
+> 
+> Hi Yuntao,
+> 
+> OK, but this is not a good way to fix.
+> We should introduce "slen = strlen(command_line) + xlen + 1" and use it for
+> allocating static_command_line.
 
-> 
->> I'll benchmark with your below change, and also have a deeper look to check if
->> there are real places where fixmap might cause slowness for late ops.
-> 
-> Thanks!
-> 
-> [...]
-> 
->>> @@ -475,8 +491,6 @@ static phys_addr_t __pgd_pgtable_alloc(int shift)
->>>  	void *ptr = (void *)__get_free_page(GFP_PGTABLE_KERNEL);
->>
->> How about:
->>
->> 	void *ptr = (void *)__get_free_page(GFP_PGTABLE_KERNEL & ~__GFP_ZERO);
-> 
-> Looks good to me, assuming we add a comment to say it'll be zeroed in
-> init_clear_pgtable().
+Hi Masami,
 
-Sure.
+But this would introduce an additional variable 'slen', which seems unnecessary.
 
+In fact, we can use 'len' directly, this makes the code more concise.
+
+> > >
+> > > Fixes: f5c7310ac73e ("init/main: add checks for the return value of memblock_alloc*()")
 > 
-> Mark.
+> As Mike pointed, this is not the best commit.
+> 
+> Fixes: 51887d03aca1 ("bootconfig: init: Allow admin to use bootconfig for kernel command line")
+> 
+> Thank you,
 
+I have reviewed the commit 51887d03aca1, but I don't think this commit introduced the issue.
+I still think it was introduced by the f5c7310ac73e commit. Or perhaps I missed something?
+
+> > > Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> > > ---
+> > >  init/main.c | 8 +++++---
+> > >  1 file changed, 5 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/init/main.c b/init/main.c
+> > > index 2ca52474d0c3..a7b1f5f3e3b6 100644
+> > > --- a/init/main.c
+> > > +++ b/init/main.c
+> > > @@ -625,11 +625,13 @@ static void __init setup_command_line(char *command_line)
+> > >         if (extra_init_args)
+> > >                 ilen = strlen(extra_init_args) + 4; /* for " -- " */
+> > >
+> > > -       len = xlen + strlen(boot_command_line) + 1;
+> > > +       len = xlen + strlen(boot_command_line) + ilen + 1;
+> > >
+> > > -       saved_command_line = memblock_alloc(len + ilen, SMP_CACHE_BYTES);
+> > > +       saved_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
+> > >         if (!saved_command_line)
+> > > -               panic("%s: Failed to allocate %zu bytes\n", __func__, len + ilen);
+> > > +               panic("%s: Failed to allocate %zu bytes\n", __func__, len);
+> > > +
+> > > +       len = xlen + strlen(command_line) + 1;
+> > >
+> > >         static_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
+> > >         if (!static_command_line)
+> > 
+> > Gr{oetje,eeting}s,
+> > 
+> >                         Geert
+> > 
+> > -- 
+> > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68korg
+> > 
+> > In personal conversations with technical people, I call myself a hacker. But
+> > when I'm talking to journalists I just say "programmer" or something like that.
+> >                                 -- Linus Torvalds
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
