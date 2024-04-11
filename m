@@ -1,139 +1,96 @@
-Return-Path: <linux-kernel+bounces-140250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 796118A102C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:32:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 979C58A1016
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:31:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FC0A1F2A6C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:32:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8F571C228B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:31:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C4C145323;
-	Thu, 11 Apr 2024 10:30:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="qnR0lz6c"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0337C13C9A5;
+	Thu, 11 Apr 2024 10:30:30 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5D9914600E;
-	Thu, 11 Apr 2024 10:30:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D596146D79;
+	Thu, 11 Apr 2024 10:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712831456; cv=none; b=OzS74lzhynEwYX2fFhOLfiBPZnYAf7hChAv9BgH8IW4C9jGkTsmUgoSVMFUyR+Mq6ziIXuIoVYloaQ426KINh118OhSd0ogMFr7ClBq8IoxOxYgBDzwa2QWksk7KIcELedFwaKnRb3Ra/T4i8CvJJClFGqghn4+5DbUsnkpk+yE=
+	t=1712831429; cv=none; b=UhnFrrkIbquX4KmyWwgsdWxqQR4ccp51nWnGtyCsHoXwBRXAKewT0FiW53dwIO2mDFk1cl3fgvQcJd756/cWVvweXIFMALLjbsdxOyLad1tF/FHo2z3+L/ULeSELJ+azQQrueK2PW2ogw5rBqsPMw3SgQ9JuvW8Tq4mjyzlq5O0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712831456; c=relaxed/simple;
-	bh=wRis+jvLiwfcvURS3pt9dGRgB6cIii2qwGUUMZpjF6g=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZiafAL3cVqGJHw2JOtIUSfapg0DeUqh1ORoA3++8TBTuU8A1Kfkm2v3kIGdaEkEibz2l/4poY7Iu5xS9yACRucF/0FcK0MuzkOAbYhsh9l2PYTyKVeaTe5BfbRUNYLcdsWr4uqj0gKmJUIgUE8BnF3Xc8/xceIgrzFqN9+owsJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=qnR0lz6c; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712831454; x=1744367454;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wRis+jvLiwfcvURS3pt9dGRgB6cIii2qwGUUMZpjF6g=;
-  b=qnR0lz6cQJ0dslC09SxcEDakX3mqJKiW5FwYmT2jjz6D0jYEDUMRjrfS
-   n6SNolNt/C33IWIhEV96zynEUI6+7S+GFPAL+10wwydTzkewiSH9mxCuN
-   8KlPS291FgLnVdFWpPu6NlX7CagiVXzS/K/RF+21ODo/onap/LiCanEkQ
-   ZW2hEgb2cV4QdDa4gc7KCvd/e5J+q1o2kzaLif3DMVF0Z5TyaNIwMeMh8
-   2eprMGyBnk1AcdbLDBslZRlB88br9BzXAVPhRm+66NFh2c7jxRd/l6gin
-   WA4RZ1hz23pIF4qOLxRUobsFqTfpfpgS0o+YC5QhqYOBMWSTduzvmxkRG
-   g==;
-X-CSE-ConnectionGUID: 0of7XxqXRZujtHuEzDEvOw==
-X-CSE-MsgGUID: 5pyW+N2xTlub9U791V2XWA==
-X-IronPort-AV: E=Sophos;i="6.07,193,1708412400"; 
-   d="asc'?scan'208";a="251346984"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Apr 2024 03:30:53 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 11 Apr 2024 03:30:44 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Thu, 11 Apr 2024 03:30:41 -0700
-Date: Thu, 11 Apr 2024 11:29:51 +0100
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Stephen Boyd <sboyd@kernel.org>
-CC: Sia Jee Heng <jeeheng.sia@starfivetech.com>, <aou@eecs.berkeley.edu>,
-	<conor@kernel.org>, <emil.renner.berthing@canonical.com>,
-	<hal.feng@starfivetech.com>, <kernel@esmil.dk>,
-	<krzysztof.kozlowski+dt@linaro.org>, <mturquette@baylibre.com>,
-	<p.zabel@pengutronix.de>, <palmer@dabbelt.com>, <paul.walmsley@sifive.com>,
-	<robh+dt@kernel.org>, <xingyu.wu@starfivetech.com>,
-	<linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-	<leyfoon.tan@starfivetech.com>
-Subject: Re: [RFC v3 00/16] Basic clock and reset support for StarFive JH8100
- RISC-V SoC
-Message-ID: <20240411-euphemism-ended-706f23d4a5ca@wendy>
-References: <20240110133128.286657-1-jeeheng.sia@starfivetech.com>
- <a83130157adf70f6f58f4d2e6b9d25db.sboyd@kernel.org>
+	s=arc-20240116; t=1712831429; c=relaxed/simple;
+	bh=wComOVfoaefWwC2Rt0UKt2s8/ND86+TBpIl7IK3UsSg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MnDJVlghXABE9/vx5VirleCbo3GMNILMda0TZTQ4FG9+xknAb/Zr05AxsnCOhfP6+rsj9KZqiPKOxjL+I8l78X8tQvY/Slys4KU8H4CPAVkVZ98MuRJo1O0y0Pd1FfuVxxJlcRdxz31hObR7W5B3hBKMhOm8r2vwzaX0m7alQDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00654C433F1;
+	Thu, 11 Apr 2024 10:30:26 +0000 (UTC)
+From: Huacai Chen <chenhuacai@loongson.cn>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Huacai Chen <chenhuacai@kernel.org>
+Cc: loongarch@lists.linux.dev,
+	linux-arch@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Guo Ren <guoren@kernel.org>,
+	Xuerui Wang <kernel@xen0n.name>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Huacai Chen <chenhuacai@loongson.cn>
+Subject: [GIT PULL] LoongArch fixes for v6.9-rc4
+Date: Thu, 11 Apr 2024 18:30:00 +0800
+Message-ID: <20240411103000.2655846-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lisQmnqROX183EFJ"
-Content-Disposition: inline
-In-Reply-To: <a83130157adf70f6f58f4d2e6b9d25db.sboyd@kernel.org>
+Content-Transfer-Encoding: 8bit
 
---lisQmnqROX183EFJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The following changes since commit fec50db7033ea478773b159e0e2efb135270e3b7:
 
-On Thu, Apr 11, 2024 at 12:40:09AM -0700, Stephen Boyd wrote:
-> Quoting Sia Jee Heng (2024-01-10 05:31:12)
-> > This patch series enabled basic clock & reset support for StarFive
-> > JH8100 SoC.
-> >=20
-> > This patch series depends on the Initial device tree support for
-> > StarFive JH8100 SoC patch series which can be found at [1].
-> >=20
-> > As it is recommended to refrain from merging fundamental patches like
-> > Device Tree, Clock & Reset, and PINCTRL tested on FPGA/Emulator, into t=
-he
-> > RISC-V Mainline, this patch series has been renamed to "RFC" patches. Y=
-et,
-> > thanks to the reviewers who have reviewed the patches at [2]. The chang=
-es
-> > are captured below.
->=20
-> I don't think that's what should be happening. Instead, clk patches
-> should be sent to clk maintainers, reset patches to reset maintainers,
-> pinctrl patches to pinctrl maintainers, etc. The DTS can be sent later
-> when it's no longer an FPGA/Emulator? Right now I'm ignoring this series
-> because it's tagged as an RFC.
+  Linux 6.9-rc3 (2024-04-07 13:22:46 -0700)
 
-Since this comes back to something I said, what I didn't want to happen
-was a bunch of pinctrl/clock/reset dt-binding headers that getting merged
-(and therefore exported to other projects) and then have those change
-later on when the chip was taped out. I don't really care if the drivers
-themselves get merged. If the JH8100 is being taped out soon (or already
-has been internally) and there's unlikely to be any changes, there's not
-really a reason to block the binding headers any more.
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.9-1
 
---lisQmnqROX183EFJ
-Content-Type: application/pgp-signature; name="signature.asc"
+for you to fetch changes up to a07c772fa658645887119184de48b255bf19a46e:
 
------BEGIN PGP SIGNATURE-----
+  LoongArch: Include linux/sizes.h in addrspace.h to prevent build errors (2024-04-10 21:08:51 +0800)
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhe7ngAKCRB4tDGHoIJi
-0oN8AQDJCMKWJWymNQyrXdSAIbIQWmLkJXGtohqPQ27J6cA5rQD9FaZ3m59i+b/i
-qcLnFDJe8daHP7ulI/YtwBRLJ+WBHAs=
-=Bkv+
------END PGP SIGNATURE-----
+----------------------------------------------------------------
+LoongArch fixes for v6.9-rc4
 
---lisQmnqROX183EFJ--
+Make {virt, phys, page, pfn} translation work with KFENCE for LoongArch
+(otherwise NVMe and virtio-blk cannot work with KFENCE enabled), update
+dts files for Loongson-2K series to make devices work correctly, and fix
+a build error.
+----------------------------------------------------------------
+Huacai Chen (7):
+      mm: Move lowmem_page_address() a little later
+      LoongArch: Make {virt, phys, page, pfn} translation work with KFENCE
+      LoongArch: Make virt_addr_valid()/__virt_addr_valid() work with KFENCE
+      LoongArch: Update dts for Loongson-2K1000 to support ISA/LPC
+      LoongArch: Update dts for Loongson-2K2000 to support ISA/LPC
+      LoongArch: Update dts for Loongson-2K2000 to support PCI-MSI
+      LoongArch: Update dts for Loongson-2K2000 to support GMAC/GNET
+
+Randy Dunlap (1):
+      LoongArch: Include linux/sizes.h in addrspace.h to prevent build errors
+
+ arch/loongarch/boot/dts/loongson-2k1000.dtsi    |  7 ++++++
+ arch/loongarch/boot/dts/loongson-2k2000-ref.dts | 33 +++++++++++++++++++++++++
+ arch/loongarch/boot/dts/loongson-2k2000.dtsi    | 24 +++++++++++++++---
+ arch/loongarch/include/asm/addrspace.h          |  1 +
+ arch/loongarch/include/asm/io.h                 | 20 +++++++++++----
+ arch/loongarch/include/asm/kfence.h             |  9 +++++++
+ arch/loongarch/include/asm/page.h               | 26 ++++++++++++++++++-
+ arch/loongarch/mm/mmap.c                        |  4 +++
+ arch/loongarch/mm/pgtable.c                     |  4 +--
+ include/linux/mm.h                              | 10 ++++----
+ 10 files changed, 121 insertions(+), 17 deletions(-)
 
