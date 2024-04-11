@@ -1,79 +1,83 @@
-Return-Path: <linux-kernel+bounces-139915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7595C8A091A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:06:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 943D88A0920
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:06:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E32261F22117
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:06:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B720D1C20DA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:06:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CCD213DDB0;
-	Thu, 11 Apr 2024 07:06:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D3513E055;
+	Thu, 11 Apr 2024 07:06:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e2pHIqQJ"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R0KE177j"
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C2513D8B1;
-	Thu, 11 Apr 2024 07:06:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A351813E028;
+	Thu, 11 Apr 2024 07:06:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712819174; cv=none; b=CGRapyhfuy0ziRtaCBIIMsBjPyICTenmJMAxL880GwdkMjVDjsO8skWXfwwHZJ6FMG1pwuzVpyPOnbD8HBZ+uKpSRFeYkKj+OeEGAB/6c329YBqHjyWbAs8BzoGNVMy8IkWwBibZi8FfAsUUB5oU8RhcWSO/034lmmHR7bwEq/4=
+	t=1712819179; cv=none; b=Ebkyk/rVUn2yk3D3/KFqImuj3J1ahGV7y3JQQqc0crn7RsR5uzT/39hTc96NtAmaNOzhdwhzurWLIJkCffEZJNp9s46XHvyWm4jPRxhl/4jTMWW+HcvcRSyA0uR2XbNek++r9faWJGBK/mOTjilSLzrN8uU566+zvAfHXJ9fK1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712819174; c=relaxed/simple;
-	bh=W0e4pg4PP4tjMTxh70e5OvmUG/fRkSt5GiNNmx8dKIg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jVRbezFbp0vcggVZljiJiZD7A71AQ6BrnRDC0VN3NbfRyAIbmkcKq5AGs3taiQnqn3Zv0bpFjbNl19GTDyPRUUARijFYhe69N3V5LKpGoXtP7z8gWbdf2KIb2J+yYOYM9Ww0WlUJnl2NJ1wyjwKYFmKD/WK/cJcjslXpXA5fyrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e2pHIqQJ; arc=none smtp.client-ip=209.85.210.173
+	s=arc-20240116; t=1712819179; c=relaxed/simple;
+	bh=nFRMU6xTbrzOS51FDYFjCaA/OJfcz6/qg6Mj1TgIBms=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=R9FG8sb5bhP8Ko8coZXuf5dpVjgUTMXq9YiCoPzJ3SvwN8SKSzMh6dIicaVaJRGdMRtyZPsisMAvMINDOMr3mJLTz9lSlgmvBBj/0un81RehAnrR2JmrjbSxHIv8zcm8vbeM295sZKZnSuj7rSHRzQ5UqySdn0OC7f9AFxSPA3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R0KE177j; arc=none smtp.client-ip=209.85.167.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e46dcd8feaso3852427b3a.2;
-        Thu, 11 Apr 2024 00:06:12 -0700 (PDT)
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c397193878so4053640b6e.3;
+        Thu, 11 Apr 2024 00:06:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712819172; x=1713423972; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vTjSPf2T8PYEikwUD6FZmfJCtqLzKWgWP6VBa8LC/Eg=;
-        b=e2pHIqQJuuXlYfMTOOE008rvgi1ZOT0LRQfeNs72pxOjwHNcjTzUshk5WBnp4H0UO7
-         z5FF9nwltGPHxlYsA9StCMPi7j4HQEKv7nKgxpAVsUyNxu3K7ldczUN1EWsNlHkRT730
-         nhsHmqQD/HxT6zcdxp/Ue1TSTj/76ewERJeap3DrOMaRfz46qOI2Ls97MLThz14yg5av
-         G+08CNYIErwhAmVPnP56T1Z/nTcu3CqzAJHu4m+VQ/KAocWwZJdeF4S2OlWVNA1y7fcP
-         A2WSi+9Hg/7TDyJcK3GGvRKL3Lj+u2LGsP0fQC+jC3bJD91BBmz3RlZyErJn18ZtRI9Q
-         xIjg==
+        d=gmail.com; s=20230601; t=1712819176; x=1713423976; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n8lUCW6/osKWYcttIWv//iPm23yYuW3M1dv6E9h9iCk=;
+        b=R0KE177jIgyOkKBsRG3rrneXZD5urcWtS3iKCgxAUmonJb+LYBrahmfCxN2yygB8h7
+         mdXGK1UA3nxL0ExEm1jaQopLSkd77roXHAT7fakXFrjT3H1RGqEwQdWmaOvHqgXYqDmt
+         zIkGdvcg+7/IqEHVvhwVGVuKqLGYhn+/o/jMFyOIVBuLslYAu0aqPE85loH2uMijuHaQ
+         qIrmeSw79jnDh2Kil1xF5YZxluM72i4oUdanA+O4QUys7ig7LTlcJ4IfUAVHtmGzO4re
+         QdnanaPjv/W6/8Z+qDzzVZJctp8Jb5OihUQ7UbpiEdE4bdswcvO3DqNTTRw6Gzn0BPOr
+         34uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712819172; x=1713423972;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vTjSPf2T8PYEikwUD6FZmfJCtqLzKWgWP6VBa8LC/Eg=;
-        b=S+4bN7vts9GdmLRa6NdjvqXRcjE8qw5nZW8Xrf3Um0b1rNW90CIU6CCZJlqruErVd9
-         7VjrQo9btllMI8D4pXQ4NBiRApv1v5wSRheIp1Mh0tzuwMxa+MiJVtw17pCWhk7BAMUw
-         8XvBoydImoXRz2GL672/vqDJ/+6zaWhECX1MH+IG8GqSHMa66vKlnA1SJ0P8UO8E8TYl
-         R++n830ys94HWwxa0ejb82lH6VgVUMQbzdphM9G3oqPe06KVYDIdL57MeA2oHyy7jepe
-         x15J8C6GhwO0EgVAu2EYm4Ot25wta/W9M56Y+pzdQGygMNfuTKtMbMw7aPhnnHslwgBL
-         JkOw==
-X-Forwarded-Encrypted: i=1; AJvYcCWP1uMKHCd6FAMDmfI5D1FOND6fUyxSnVKQQexdg7+EoNSMzh5Fk/Yj36N+qSaTgfz0kn4EwsuXXWjqPU+KzN/lPVL6EScwxBJ6wLSU
-X-Gm-Message-State: AOJu0Yw1B6de+zfBLyH/8M1u76GKNLlWFJ2iydlSUATHG+6F0pruC7EG
-	8BlTgcVAbUPgLtOQn/GBlvnzSKJVl1VwUeZaTHw0ntl7QIpIr3oJN4ObB3QP
-X-Google-Smtp-Source: AGHT+IEe9JsSEfHb1JkQFnhZ08MDxZREUzhKcn6DjOf4ie3kKlgN/z6KGo6qkNUZiN3/FMBzQvYSOA==
-X-Received: by 2002:aa7:8885:0:b0:6e7:3223:4556 with SMTP id z5-20020aa78885000000b006e732234556mr5087249pfe.32.1712819171895;
-        Thu, 11 Apr 2024 00:06:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712819176; x=1713423976;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n8lUCW6/osKWYcttIWv//iPm23yYuW3M1dv6E9h9iCk=;
+        b=HvGB6KDlpX2dCREt7Ni1/dX80xYfyideL6cgwjprfB5yzCYbXKYc2DA1M3EVM8/Xo2
+         Wrwz/UpO893kL0jVNn8Ej5BTEchloYmrvSZ40SDsWO2sNRikbOZuUPNQusWON7EvGbfG
+         kWlq7LvTN/bXQ9rtWoCnAkYELJDZ91KUyvVWtKLTyX8E6ANZfo1oPfTlHZJ6QE4W/TRf
+         zRqRtTV36j9phsEb4uUBD683jgsXk8ATG4UoXQHspUUIv2C0Qz2zugty5TnlS8cuh7h0
+         3syYngQNqK3Ze2l/4ovdNy2M7JFDawn76bc20QygtwvsX1Z+9anns7Zhfez+9fCmfqL8
+         /WUA==
+X-Forwarded-Encrypted: i=1; AJvYcCXAEMcANPwY0u0xL7yQDdNU9GQ/o3eBwp4uBbMbwjDIgOELh9Ul6+W8n5Lq4VeidUiJf5CnhBcsql4op8WnvZuxNyW3jNX+lkYKcW92
+X-Gm-Message-State: AOJu0YwlaLc4hK4wXeaA43yDSriN3NwFVK5b0NpDWZaBNBjLIVAudSrl
+	3elQeZTrOgDVqEVAjAtIaIwjpNFNP+rGcddUIMD3zbNjBYLnmJR5tc+u9Lhc
+X-Google-Smtp-Source: AGHT+IGC4QIgBtWz2aPepwQ80C3S0TplI0vNB3uO+8Hs2dqzgeh/z80TkvkFn2HrmpuGPgBAqFEivg==
+X-Received: by 2002:a05:6870:a10c:b0:229:8236:ae9 with SMTP id m12-20020a056870a10c00b0022982360ae9mr4565215oae.59.1712819176187;
+        Thu, 11 Apr 2024 00:06:16 -0700 (PDT)
 Received: from d.wok.cipunited.com ([104.28.213.200])
-        by smtp.gmail.com with ESMTPSA id g5-20020a056a0023c500b006e6be006637sm647402pfc.135.2024.04.11.00.06.08
+        by smtp.gmail.com with ESMTPSA id g5-20020a056a0023c500b006e6be006637sm647402pfc.135.2024.04.11.00.06.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 00:06:11 -0700 (PDT)
+        Thu, 11 Apr 2024 00:06:15 -0700 (PDT)
 From: David Yang <mmyangfl@gmail.com>
 To: linux-clk@vger.kernel.org
 Cc: Michael Turquette <mturquette@baylibre.com>,
 	Stephen Boyd <sboyd@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	David Yang <mmyangfl@gmail.com>
-Subject: [PATCH v8 00/13] clk: hisilicon: Migrate devm APIs
-Date: Thu, 11 Apr 2024 15:04:45 +0800
-Message-ID: <20240411070503.38093-2-mmyangfl@gmail.com>
+Subject: [PATCH v8 01/13] clk: hisilicon: Add helper functions for platform driver
+Date: Thu, 11 Apr 2024 15:04:46 +0800
+Message-ID: <20240411070503.38093-3-mmyangfl@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240411070503.38093-2-mmyangfl@gmail.com>
+References: <20240411070503.38093-2-mmyangfl@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,75 +86,357 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Migrate devm APIs for HiSilicon clock drivers and remove redundant codes.
+Helper functions extract common operations on platform drivers.
 
-This series is a partial improvement of [1]
+During migration to devm APIs, (virtual) fixed clocks were found hard on
+devm APIs, since they often depended by crucial peripherals, thus require
+early initialization before device probing, and cannot use devm APIs.
 
-v2: fix test robot error
-v3:
-  * size_t for all these num types
-  * hisi_clk_unregister() change into separate patch
-  * keep relevant header inclusions
-  * split driver files changes into separate patches
-  * explain hisi_clk_register_fn() checkpatch warnings
-  * not fixed: MODULE_LICENSE("GPL v2"), as stated in SPDX-License-Identifier
-  * not fixed: "hisilicon,hip04-clock" un-documented, as none of dts files in
-    arch/ use it, better to ask hisi people why they pushed this driver
-v4:
-  * typo: hisi_clocks_get_nr() should check clks->nr first
-  * unexport hisi_clk_unregister_fn() as no one use them outside
-v5: catch up with remove_new refactoring
-v6: fix compilation error and expand macros
-v7: rebase and use mod_devicetable.h instead
-v8: rebase again
+One solution to this problem is to add a "fixed-clock" node to device tree,
+independent to clock device, and make those peripherals depend on that.
+However, there is also some devices that do use fixed clocks provided by
+drivers, for example clk-hi3660.c .
 
-Links:
-[1]: https://lore.kernel.org/r/20230322164201.2454771-1-mmyangfl@gmail.com
-v1: https://lore.kernel.org/r/20230326052757.297551-1-mmyangfl@gmail.com
-v2: https://lore.kernel.org/r/20230329075104.165176-1-mmyangfl@gmail.com
-v3: https://lore.kernel.org/r/20230410110733.192151-1-mmyangfl@gmail.com
-v4: https://lore.kernel.org/r/20230411174329.424763-1-mmyangfl@gmail.com
-v5: https://lore.kernel.org/r/20230723162245.35033-1-mmyangfl@gmail.com
-v6: https://lore.kernel.org/r/20230731121821.22242-1-mmyangfl@gmail.com
-v7: https://lore.kernel.org/r/20240225065234.413687-1-mmyangfl@gmail.com
+To simplify codes, we migrate clocks of other types to devm APIs, while
+keep fixed clocks self-managed, alongside with struct hisi_clock_data, and
+remove devm-managed hisi_clock_data.
 
-David Yang (13):
-  clk: hisilicon: Add helper functions for platform driver
-  clk: hisilicon: hi3516cv300: Use helper functions
-  clk: hisilicon: hi3798cv200: Use helper functions
-  clk: hisilicon: Remove hisi_crg_funcs
-  clk: hisilicon: hi3519: Use helper functions
-  clk: hisilicon: hi3559a: Use helper functions
-  clk: hisilicon: hi3660: Convert into module
-  clk: hisilicon: hi3670: Convert into module
-  clk: hisilicon: hi3620: Convert into platform driver module
-  clk: hisilicon: hi6220: Convert into platform driver module
-  clk: hisilicon: hip04: Convert into platform driver module
-  clk: hisilicon: hix5hd2: Convert into platform driver module
-  clk: hisilicon: Migrate devm APIs
+hisi_clk_alloc() will be removed in the following patch.
 
- drivers/clk/hisilicon/clk-hi3519.c        | 127 +-----
- drivers/clk/hisilicon/clk-hi3559a.c       | 251 +++---------
- drivers/clk/hisilicon/clk-hi3620.c        | 215 +++++-----
- drivers/clk/hisilicon/clk-hi3660.c        | 194 +++------
- drivers/clk/hisilicon/clk-hi3670.c        | 250 ++++--------
- drivers/clk/hisilicon/clk-hi6220-stub.c   |   9 +-
- drivers/clk/hisilicon/clk-hi6220.c        | 228 ++++++-----
- drivers/clk/hisilicon/clk-hip04.c         |  38 +-
- drivers/clk/hisilicon/clk-hisi-phase.c    |  13 +-
- drivers/clk/hisilicon/clk-hix5hd2.c       |  98 +++--
- drivers/clk/hisilicon/clk.c               | 457 +++++++++++-----------
- drivers/clk/hisilicon/clk.h               | 141 ++++---
- drivers/clk/hisilicon/clkdivider-hi6220.c |  24 +-
- drivers/clk/hisilicon/clkgate-separated.c |  26 +-
- drivers/clk/hisilicon/crg-hi3516cv300.c   | 171 +-------
- drivers/clk/hisilicon/crg-hi3798cv200.c   | 200 ++--------
- drivers/clk/hisilicon/crg.h               |  11 +-
- drivers/clk/hisilicon/reset.c             |  42 ++
- 18 files changed, 945 insertions(+), 1550 deletions(-)
+Signed-off-by: David Yang <mmyangfl@gmail.com>
+---
+ drivers/clk/hisilicon/clk.c   | 157 ++++++++++++++++++++++++++++++++++
+ drivers/clk/hisilicon/clk.h   |  46 +++++++++-
+ drivers/clk/hisilicon/crg.h   |   5 ++
+ drivers/clk/hisilicon/reset.c |  42 +++++++++
+ 4 files changed, 248 insertions(+), 2 deletions(-)
 
-
-base-commit: e8c39d0f57f358950356a8e44ee5159f57f86ec5
+diff --git a/drivers/clk/hisilicon/clk.c b/drivers/clk/hisilicon/clk.c
+index 09368fd32bef..e50115f8e236 100644
+--- a/drivers/clk/hisilicon/clk.c
++++ b/drivers/clk/hisilicon/clk.c
+@@ -88,6 +88,25 @@ struct hisi_clock_data *hisi_clk_init(struct device_node *np,
+ }
+ EXPORT_SYMBOL_GPL(hisi_clk_init);
+ 
++void hisi_clk_free(struct device_node *np, struct hisi_clock_data *data)
++{
++	if (data->clks) {
++		if (data->clks->fixed_rate_clks_num)
++			hisi_clk_unregister_fixed_rate(data->clks->fixed_rate_clks,
++						       data->clks->fixed_rate_clks_num,
++						       data);
++		if (data->clks->fixed_factor_clks_num)
++			hisi_clk_unregister_fixed_factor(data->clks->fixed_factor_clks,
++							 data->clks->fixed_factor_clks_num,
++							 data);
++	}
++
++	of_clk_del_provider(np);
++	kfree(data->clk_data.clks);
++	kfree(data);
++}
++EXPORT_SYMBOL_GPL(hisi_clk_free);
++
+ int hisi_clk_register_fixed_rate(const struct hisi_fixed_rate_clock *clks,
+ 					 int nums, struct hisi_clock_data *data)
+ {
+@@ -341,3 +360,141 @@ void __init hi6220_clk_register_divider(const struct hi6220_divider_clock *clks,
+ 		data->clk_data.clks[clks[i].id] = clk;
+ 	}
+ }
++
++static size_t hisi_clocks_get_nr(const struct hisi_clocks *clks)
++{
++	if (clks->nr)
++		return clks->nr;
++
++	return clks->fixed_rate_clks_num + clks->fixed_factor_clks_num +
++		clks->mux_clks_num + clks->phase_clks_num +
++		clks->divider_clks_num + clks->gate_clks_num +
++		clks->gate_sep_clks_num + clks->customized_clks_num;
++}
++
++int hisi_clk_early_init(struct device_node *np, const struct hisi_clocks *clks)
++{
++	struct hisi_clock_data *data;
++	int ret;
++
++	data = hisi_clk_init(np, hisi_clocks_get_nr(clks));
++	if (!data)
++		return -ENOMEM;
++	data->clks = clks;
++
++	ret = hisi_clk_register_fixed_rate(clks->fixed_rate_clks,
++					   clks->fixed_rate_clks_num, data);
++	if (ret)
++		goto err;
++
++	ret = hisi_clk_register_fixed_factor(clks->fixed_factor_clks,
++					     clks->fixed_factor_clks_num, data);
++	if (ret)
++		goto err;
++
++	np->data = data;
++	return 0;
++
++err:
++	hisi_clk_free(np, data);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(hisi_clk_early_init);
++
++static int hisi_clk_register(struct device *dev, const struct hisi_clocks *clks,
++			     struct hisi_clock_data *data)
++{
++	int ret;
++
++	if (clks->mux_clks_num) {
++		ret = hisi_clk_register_mux(clks->mux_clks,
++					    clks->mux_clks_num, data);
++		if (ret)
++			return ret;
++	}
++
++	if (clks->phase_clks_num) {
++		ret = hisi_clk_register_phase(dev, clks->phase_clks,
++					      clks->phase_clks_num, data);
++		if (ret)
++			return ret;
++	}
++
++	if (clks->divider_clks_num) {
++		ret = hisi_clk_register_divider(clks->divider_clks,
++						clks->divider_clks_num, data);
++		if (ret)
++			return ret;
++	}
++
++	if (clks->gate_clks_num) {
++		ret = hisi_clk_register_gate(clks->gate_clks,
++					     clks->gate_clks_num, data);
++		if (ret)
++			return ret;
++	}
++
++	if (clks->gate_sep_clks_num) {
++		hisi_clk_register_gate_sep(clks->gate_sep_clks,
++					   clks->gate_sep_clks_num, data);
++	}
++
++	if (clks->clk_register_customized && clks->customized_clks_num) {
++		ret = clks->clk_register_customized(dev, clks->customized_clks,
++						    clks->customized_clks_num, data);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
++int hisi_clk_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct device_node *np = dev->of_node;
++	const struct hisi_clocks *clks;
++	struct hisi_clock_data *data;
++	int ret;
++
++	clks = of_device_get_match_data(dev);
++	if (!clks)
++		return -ENOENT;
++
++	if (!np->data) {
++		ret = hisi_clk_early_init(np, clks);
++		if (ret)
++			return ret;
++	}
++
++	data = np->data;
++	np->data = NULL;
++
++	if (clks->prologue) {
++		ret = clks->prologue(dev, data);
++		if (ret)
++			goto err;
++	}
++
++	ret = hisi_clk_register(dev, clks, data);
++	if (ret)
++		goto err;
++
++	platform_set_drvdata(pdev, data);
++	return 0;
++
++err:
++	hisi_clk_free(np, data);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(hisi_clk_probe);
++
++void hisi_clk_remove(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct device_node *np = dev->of_node;
++	struct hisi_clock_data *data = platform_get_drvdata(pdev);
++
++	hisi_clk_free(np, data);
++}
++EXPORT_SYMBOL_GPL(hisi_clk_remove);
+diff --git a/drivers/clk/hisilicon/clk.h b/drivers/clk/hisilicon/clk.h
+index 7a9b42e1b027..87b17e9b79a3 100644
+--- a/drivers/clk/hisilicon/clk.h
++++ b/drivers/clk/hisilicon/clk.h
+@@ -17,10 +17,12 @@
+ #include <linux/spinlock.h>
+ 
+ struct platform_device;
++struct hisi_clocks;
+ 
+ struct hisi_clock_data {
+-	struct clk_onecell_data	clk_data;
+-	void __iomem		*base;
++	struct clk_onecell_data		clk_data;
++	void __iomem			*base;
++	const struct hisi_clocks	*clks;
+ };
+ 
+ struct hisi_fixed_rate_clock {
+@@ -103,6 +105,39 @@ struct hisi_gate_clock {
+ 	const char		*alias;
+ };
+ 
++struct hisi_clocks {
++	/* if 0, sum all *_num */
++	size_t nr;
++
++	int (*prologue)(struct device *dev, struct hisi_clock_data *data);
++
++	const struct hisi_fixed_rate_clock *fixed_rate_clks;
++	size_t fixed_rate_clks_num;
++
++	const struct hisi_fixed_factor_clock *fixed_factor_clks;
++	size_t fixed_factor_clks_num;
++
++	const struct hisi_mux_clock *mux_clks;
++	size_t mux_clks_num;
++
++	const struct hisi_phase_clock *phase_clks;
++	size_t phase_clks_num;
++
++	const struct hisi_divider_clock *divider_clks;
++	size_t divider_clks_num;
++
++	const struct hisi_gate_clock *gate_clks;
++	size_t gate_clks_num;
++
++	const struct hisi_gate_clock *gate_sep_clks;
++	size_t gate_sep_clks_num;
++
++	const void *customized_clks;
++	size_t customized_clks_num;
++	int (*clk_register_customized)(struct device *dev, const void *clks,
++				       size_t num, struct hisi_clock_data *data);
++};
++
+ struct clk *hisi_register_clkgate_sep(struct device *, const char *,
+ 				const char *, unsigned long,
+ 				void __iomem *, u8,
+@@ -113,6 +148,7 @@ struct clk *hi6220_register_clkdiv(struct device *dev, const char *name,
+ 
+ struct hisi_clock_data *hisi_clk_alloc(struct platform_device *, int);
+ struct hisi_clock_data *hisi_clk_init(struct device_node *, int);
++void hisi_clk_free(struct device_node *np, struct hisi_clock_data *data);
+ int hisi_clk_register_fixed_rate(const struct hisi_fixed_rate_clock *,
+ 				int, struct hisi_clock_data *);
+ int hisi_clk_register_fixed_factor(const struct hisi_fixed_factor_clock *,
+@@ -154,4 +190,10 @@ hisi_clk_unregister(mux)
+ hisi_clk_unregister(divider)
+ hisi_clk_unregister(gate)
+ 
++/* helper functions for platform driver */
++
++int hisi_clk_early_init(struct device_node *np, const struct hisi_clocks *clks);
++int hisi_clk_probe(struct platform_device *pdev);
++void hisi_clk_remove(struct platform_device *pdev);
++
+ #endif	/* __HISI_CLK_H */
+diff --git a/drivers/clk/hisilicon/crg.h b/drivers/clk/hisilicon/crg.h
+index 803f6ba6d7a2..bd8e76b1f6d7 100644
+--- a/drivers/clk/hisilicon/crg.h
++++ b/drivers/clk/hisilicon/crg.h
+@@ -22,4 +22,9 @@ struct hisi_crg_dev {
+ 	const struct hisi_crg_funcs *funcs;
+ };
+ 
++/* helper functions for platform driver */
++
++int hisi_crg_probe(struct platform_device *pdev);
++void hisi_crg_remove(struct platform_device *pdev);
++
+ #endif	/* __HISI_CRG_H */
+diff --git a/drivers/clk/hisilicon/reset.c b/drivers/clk/hisilicon/reset.c
+index 93cee17db8b1..c7d4c9ea7183 100644
+--- a/drivers/clk/hisilicon/reset.c
++++ b/drivers/clk/hisilicon/reset.c
+@@ -6,11 +6,15 @@
+  */
+ 
+ #include <linux/io.h>
++#include <linux/kernel.h>
+ #include <linux/of_address.h>
+ #include <linux/platform_device.h>
+ #include <linux/reset-controller.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
++
++#include "clk.h"
++#include "crg.h"
+ #include "reset.h"
+ 
+ #define	HISI_RESET_BIT_MASK	0x1f
+@@ -116,3 +120,41 @@ void hisi_reset_exit(struct hisi_reset_controller *rstc)
+ 	reset_controller_unregister(&rstc->rcdev);
+ }
+ EXPORT_SYMBOL_GPL(hisi_reset_exit);
++
++int hisi_crg_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct hisi_crg_dev *crg;
++	int ret;
++
++	crg = devm_kmalloc(dev, sizeof(*crg), GFP_KERNEL);
++	if (!crg)
++		return -ENOMEM;
++
++	ret = hisi_clk_probe(pdev);
++	if (ret)
++		return ret;
++
++	crg->rstc = hisi_reset_init(pdev);
++	if (!crg->rstc) {
++		ret = -ENOMEM;
++		goto err;
++	}
++
++	platform_set_drvdata(pdev, crg);
++	return 0;
++
++err:
++	hisi_clk_remove(pdev);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(hisi_crg_probe);
++
++void hisi_crg_remove(struct platform_device *pdev)
++{
++	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
++
++	hisi_reset_exit(crg->rstc);
++	hisi_clk_remove(pdev);
++}
++EXPORT_SYMBOL_GPL(hisi_crg_remove);
 -- 
 2.43.0
 
