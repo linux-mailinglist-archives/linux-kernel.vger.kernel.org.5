@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60DD78A1B0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:20:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 874928A1C91
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:50:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD2F21F280D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:20:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74068B27054
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:20:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36D982049FF;
-	Thu, 11 Apr 2024 15:43:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 102C220404B;
+	Thu, 11 Apr 2024 15:43:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="MIzfvxo+"
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="jlUaS+ys"
+Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3042B2049E6
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFDB2049F8
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:43:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850229; cv=none; b=WSEf6LSBu8rvlICZXtrBUWE6lwfAu2T+H/nxXlI8Gnhxvg7KoFVnA8oWeJONYXpkZGhprkiCjJyldChubT8zUA/wSrTmwevYTXgdd3Wzm6gEiGkM/7DULiFYtSM17xrSSDTIdCyESfVPNjqlO4Ut87L7YB29Uw8O583Xm2Afz9U=
+	t=1712850231; cv=none; b=SLEBHY5Ycpu0p2Fy6G5mbNR21VYN0kWXwvOoR3aIxyn/tiAbylwCFgXb+79Mw+GqWAgCwu0hyzYZ/KDFtW7Y+cDxEvikWVlVXjL0lAp4EpmN24kTZi3uE552hPSSMstfxHRq+hq9ofQuv0d+hl0g9wqiiZULGJ4mw4AMolWh+9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850229; c=relaxed/simple;
-	bh=sv+Gy7cP78hJU/E9MRKEv2Jk7PK6pCxYpgtnsPuhQ9I=;
+	s=arc-20240116; t=1712850231; c=relaxed/simple;
+	bh=javgIbxkE1+7A6rhREq95g8HCMcpsCkLIkqCYQtKuUs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LqMAiqB/QR/2mNPwBaVvVYlhMBFCKEOsqcODPzePzdkIHGEJF3QoUJNCOp2XeZAdCZzovNjIdleYokczhqiY5vV+NvuoSXFakQwdKn52NZJC8ESaasQBVQG8qK6WW32p/NOMvJy1HlPRYbr9N6hfVaZgTCmpSA+lKTwZ6KyrsMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=MIzfvxo+; arc=none smtp.client-ip=209.85.166.43
+	 MIME-Version; b=tP4gOAI9Geupn26mWPq72/2VtdCYln56cZYgYgyoJCZ8c/QJbWCTY8f6lHbAeATTnNu8hCBp4jqXGAG4G06dMNeiGrQOUNDwB3HLz3mm7o0aSdckZ0+7wcBTTm0J3PWaywyW+MMKeKq6yw5233n/vnmUnoXEoOE88GD4c4mM2UA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=jlUaS+ys; arc=none smtp.client-ip=209.85.166.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso58297839f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:43:47 -0700 (PDT)
+Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-36a34b68277so125625ab.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:43:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850227; x=1713455027; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850229; x=1713455029; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=824kdpvNQEIg3JNyqLD6HhMGF1p3p7yQd55ATdhdNV4=;
-        b=MIzfvxo+y6fUVIbKE7P0VtLAg5TOqui2CVzW6n9d1UAJ4p4tm5Jjuo8cbSwYEgenhk
-         AjFvHJ7oEMXzLAGGdnysMyUfqGW12wWdUmTvc4+bXWe/X4O98JZu5fNncCaEXkY3Yk8q
-         2l/wYYwI49aC38kRUcEXt8tQBxgrnGkTZ9SBdXqq5Hqh2r6u+CR8nV7PZ+PJuCin3ciJ
-         2L6HHPfY0exDGMC/poQzws4PhJ4rj094oMZwdMatzKoOQSNivgSsakRRb6Ejv2+2tM3h
-         /0IGGVHxSQI0sDGD15gyzW6vV91ycZHhhFcvnuNNZzgQlPSSteI680NxJes00wikgsVY
-         EFog==
+        bh=o0Ldb0OWw+BFeSwp6J+TFEGOy1nUuoCa5jXwSLo8ftE=;
+        b=jlUaS+ysKpGyGbjPnX1KzAVsrQoq7ruz0hsgvJu6eSgczJRg3kwhDTIpOQAmjz/4uV
+         Q9beO9h3Y9n5apuWyGxBi/+XTjG4viX2KnrkmjHUFpMRzoAgDgK7Q64dE/jf4knvV2oi
+         lA8dXwcX/78D1sV3skIrZgC1E5U13lDQmx/OKZMO/fO2YcmHgrBQGDaiyOiVUWoH3sK9
+         AuXW7aokg8l0h+c2lWSAnoDmZ2IyxAejzGp8qvTkIKMVJN8k7xXcyFip73dLRGxkjtru
+         R7IFfgLa6Ce0c1SM1A22PnCdQRp8sV0sWPnrJXpds8u2BfqqvOVPMf3xfkiKsdq8NSKF
+         peHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712850227; x=1713455027;
+        d=1e100.net; s=20230601; t=1712850229; x=1713455029;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=824kdpvNQEIg3JNyqLD6HhMGF1p3p7yQd55ATdhdNV4=;
-        b=q6NqIjOO5mHHnC2/DhjJI7JXum7m4LC/DOPAD8Oat1cR/BkW+mmtyO5U2uMJZ10n8S
-         vpVrNLOFxH942oh2wulb4f9sK32xlZ0PGbtnNZO5pnruCbldEm/7olrr3W7+Sqr1EGiv
-         ItAZKbpDV1dAG1Mr3Lo3viWY4vfd+u1k6DFYDwff58NmZKsQNj3CeV91peK9UZkg724K
-         tlwcl6Ds5K5BX6r/rIWQQ7NTs5ojczzt8JnRWtJOyvqTH1v0cQn2acULShO6npocR1zm
-         SpBWOasiaBILsNIfX48F3DZ9le+r6OYGqlxAwA2dC/a5GCmsuXA3Nflrb3ueO5M2OebG
-         gmtw==
-X-Gm-Message-State: AOJu0Yw5QTU8579wbHpBiZ+T0bVycYYchzyNEULt+Uwn6eBFJiVKpQd6
-	7bxvecdpFp5XNnA1ctFALIKqvCLXNV7gdRUK4ihJPeQjtYK97IU+R5ihUTuatDuuR7djjCGVqpR
-	x
-X-Google-Smtp-Source: AGHT+IHqzU7puz4UtLND2YpZCz3Xtb1Qczy4JVmbVtWC3C7R8Kk6z1Gvy7cc2GXD6NSAbTLiGAwKfA==
-X-Received: by 2002:a92:60b:0:b0:369:f53b:6c2 with SMTP id x11-20020a92060b000000b00369f53b06c2mr5354910ilg.1.1712850227027;
-        Thu, 11 Apr 2024 08:43:47 -0700 (PDT)
+        bh=o0Ldb0OWw+BFeSwp6J+TFEGOy1nUuoCa5jXwSLo8ftE=;
+        b=f/ioS8ZHU+YVCiTbvopJYfI4il/fqagyZLYrr1zJtubNoyBHELuWgzyzKENVKtT1ub
+         +P+LeweQew3YnI7X+7bd8n2WEu7TPER139bgH4ddQnaNsDlTnDrITTK0M52qVNCNX/uT
+         q8q/2p/qlTa/JUVRx1kvoZaufsaL7/UgklovULUS4EMW2AokPgviLZ/Yq5+LOIMYQWRd
+         ofwKiwH6LkVB7C5jD5Jp4wGcbIlLnxOfCRp8xqNBFLCbWuy0O0WfB399sLyAJg4z+qa7
+         TLJZM7Y1+/wJ5YIxas1zRAWoPmx/U9stl1CBDiqJhnND4GaG2VJwl5UkOQ8vyXdKme5s
+         jOVQ==
+X-Gm-Message-State: AOJu0YxwXIklL/GkCZp68r9tTNjtAzSa/fQPClvZWhRRfpT7we18W4+a
+	N424XpWuICEVabhoaYDbyATkMi9B6aqLm4+WlKkejUoXM9Buy9tzCNtxHeXyLYxLvfDSGYBt6xn
+	c
+X-Google-Smtp-Source: AGHT+IFpFHSz7Hea4rg3qKqsQ1AOKmrfuLzFkj77vfljNyXFRiMumTJa70jT/Ytbn9tM/hLjQxdNqA==
+X-Received: by 2002:a6b:6605:0:b0:7d4:1dae:da1a with SMTP id a5-20020a6b6605000000b007d41daeda1amr166987ioc.2.1712850228798;
+        Thu, 11 Apr 2024 08:43:48 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.43.45
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.43.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:43:45 -0700 (PDT)
+        Thu, 11 Apr 2024 08:43:47 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 434/437] lib/string_helpers: kill parse_int_array_user()
-Date: Thu, 11 Apr 2024 09:19:34 -0600
-Message-ID: <20240411153126.16201-435-axboe@kernel.dk>
+Subject: [PATCH 435/437] fs: kill off non-iter variants of simple_attr_{read,write}*
+Date: Thu, 11 Apr 2024 09:19:35 -0600
+Message-ID: <20240411153126.16201-436-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -83,109 +83,138 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It's no longer used, get rid of it.
+They are no longer used, kill them with fire.
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- include/linux/string_helpers.h |  1 -
- lib/string_helpers.c           | 61 ++++++++++------------------------
- 2 files changed, 18 insertions(+), 44 deletions(-)
+ fs/libfs.c         | 89 ----------------------------------------------
+ include/linux/fs.h |  6 ----
+ 2 files changed, 95 deletions(-)
 
-diff --git a/include/linux/string_helpers.h b/include/linux/string_helpers.h
-index f38157114fc0..5e913f1fad60 100644
---- a/include/linux/string_helpers.h
-+++ b/include/linux/string_helpers.h
-@@ -32,7 +32,6 @@ enum string_size_units {
- int string_get_size(u64 size, u64 blk_size, const enum string_size_units units,
- 		    char *buf, int len);
- 
--int parse_int_array_user(const char __user *from, size_t count, int **array);
- int parse_int_array_iter(struct iov_iter *from, int **array);
- 
- #define UNESCAPE_SPACE		BIT(0)
-diff --git a/lib/string_helpers.c b/lib/string_helpers.c
-index ced4f77dc5e8..8582f9adfa76 100644
---- a/lib/string_helpers.c
-+++ b/lib/string_helpers.c
-@@ -138,10 +138,27 @@ int string_get_size(u64 size, u64 blk_size, const enum string_size_units units,
+diff --git a/fs/libfs.c b/fs/libfs.c
+index 56b404ad4cfb..74159f63334e 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -1337,44 +1337,6 @@ int simple_attr_release(struct inode *inode, struct file *file)
  }
- EXPORT_SYMBOL(string_get_size);
+ EXPORT_SYMBOL_GPL(simple_attr_release);	/* GPL-only?  This?  Really? */
  
--static int __parse_int_array(char *buf, int **array)
-+/**
-+ * parse_int_array_iter - Split string into a sequence of integers
-+ * @from:	The iov_iter buffer to read from
-+ * @array:	Returned pointer to sequence of integers
-+ *
-+ * On success @array is allocated and initialized with a sequence of
-+ * integers extracted from the @from plus an additional element that
-+ * begins the sequence and specifies the integers count.
-+ *
-+ * Caller takes responsibility for freeing @array when it is no longer
-+ * needed.
-+ */
-+int parse_int_array_iter(struct iov_iter *from, int **array)
+-/* read from the buffer that is filled with the get function */
+-ssize_t simple_attr_read(struct file *file, char __user *buf,
+-			 size_t len, loff_t *ppos)
+-{
+-	struct simple_attr *attr;
+-	size_t size;
+-	ssize_t ret;
+-
+-	attr = file->private_data;
+-
+-	if (!attr->get)
+-		return -EACCES;
+-
+-	ret = mutex_lock_interruptible(&attr->mutex);
+-	if (ret)
+-		return ret;
+-
+-	if (*ppos && attr->get_buf[0]) {
+-		/* continued read */
+-		size = strlen(attr->get_buf);
+-	} else {
+-		/* first read */
+-		u64 val;
+-		ret = attr->get(attr->data, &val);
+-		if (ret)
+-			goto out;
+-
+-		size = scnprintf(attr->get_buf, sizeof(attr->get_buf),
+-				 attr->fmt, (unsigned long long)val);
+-	}
+-
+-	ret = simple_read_from_buffer(buf, len, ppos, attr->get_buf, size);
+-out:
+-	mutex_unlock(&attr->mutex);
+-	return ret;
+-}
+-EXPORT_SYMBOL_GPL(simple_attr_read);
+-
+ /* read from the buffer that is filled with the get function */
+ ssize_t simple_attr_read_iter(struct kiocb *iocb, struct iov_iter *to)
  {
- 	int *ints, nints;
- 	int ret = 0;
-+	char *buf;
-+
-+	buf = iterdup_nul(from, iov_iter_count(from));
-+	if (IS_ERR(buf))
-+		return PTR_ERR(buf);
- 
- 	get_options(buf, 0, &nints);
- 	if (!nints) {
-@@ -161,49 +178,7 @@ static int __parse_int_array(char *buf, int **array)
- free_buf:
- 	kfree(buf);
- 	return ret;
--}
--
--/**
-- * parse_int_array_user - Split string into a sequence of integers
-- * @from:	The user space buffer to read from
-- * @count:	The maximum number of bytes to read
-- * @array:	Returned pointer to sequence of integers
-- *
-- * On success @array is allocated and initialized with a sequence of
-- * integers extracted from the @from plus an additional element that
-- * begins the sequence and specifies the integers count.
-- *
-- * Caller takes responsibility for freeing @array when it is no longer
-- * needed.
-- */
--int parse_int_array_user(const char __user *from, size_t count, int **array)
--{
--	char *buf;
--
--	buf = memdup_user_nul(from, count);
--	if (IS_ERR(buf))
--		return PTR_ERR(buf);
--
--	return __parse_int_array(buf, array);
--}
--EXPORT_SYMBOL(parse_int_array_user);
--
--/**
-- * parse_int_array_iter - Split string into a sequence of integers
-- * @from:	The iov_iter buffer to read from
-- * @array:	Returned pointer to sequence of integers
-- *
-- * See @parse_int_array_user, this is just the iov_iter variant.
-- */
--int parse_int_array_iter(struct iov_iter *from, int **array)
--{
--	char *buf;
--
--	buf = iterdup_nul(from, iov_iter_count(from));
--	if (IS_ERR(buf))
--		return PTR_ERR(buf);
- 
--	return __parse_int_array(buf, array);
+@@ -1462,57 +1424,6 @@ ssize_t simple_attr_write_iter_signed(struct kiocb *iocb, struct iov_iter *from)
  }
- EXPORT_SYMBOL(parse_int_array_iter);
+ EXPORT_SYMBOL_GPL(simple_attr_write_iter_signed);
  
+-/* interpret the buffer as a number to call the set function with */
+-static ssize_t simple_attr_write_xsigned(struct file *file, const char __user *buf,
+-			  size_t len, loff_t *ppos, bool is_signed)
+-{
+-	struct simple_attr *attr;
+-	unsigned long long val;
+-	size_t size;
+-	ssize_t ret;
+-
+-	attr = file->private_data;
+-	if (!attr->set)
+-		return -EACCES;
+-
+-	ret = mutex_lock_interruptible(&attr->mutex);
+-	if (ret)
+-		return ret;
+-
+-	ret = -EFAULT;
+-	size = min(sizeof(attr->set_buf) - 1, len);
+-	if (copy_from_user(attr->set_buf, buf, size))
+-		goto out;
+-
+-	attr->set_buf[size] = '\0';
+-	if (is_signed)
+-		ret = kstrtoll(attr->set_buf, 0, &val);
+-	else
+-		ret = kstrtoull(attr->set_buf, 0, &val);
+-	if (ret)
+-		goto out;
+-	ret = attr->set(attr->data, val);
+-	if (ret == 0)
+-		ret = len; /* on success, claim we got the whole input */
+-out:
+-	mutex_unlock(&attr->mutex);
+-	return ret;
+-}
+-
+-ssize_t simple_attr_write(struct file *file, const char __user *buf,
+-			  size_t len, loff_t *ppos)
+-{
+-	return simple_attr_write_xsigned(file, buf, len, ppos, false);
+-}
+-EXPORT_SYMBOL_GPL(simple_attr_write);
+-
+-ssize_t simple_attr_write_signed(struct file *file, const char __user *buf,
+-			  size_t len, loff_t *ppos)
+-{
+-	return simple_attr_write_xsigned(file, buf, len, ppos, true);
+-}
+-EXPORT_SYMBOL_GPL(simple_attr_write_signed);
+-
+ /**
+  * generic_encode_ino32_fh - generic export_operations->encode_fh function
+  * @inode:   the object to encode
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 85db7dde4778..55fc02b99cf6 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3552,12 +3552,6 @@ int simple_attr_open(struct inode *inode, struct file *file,
+ 		     int (*get)(void *, u64 *), int (*set)(void *, u64),
+ 		     const char *fmt);
+ int simple_attr_release(struct inode *inode, struct file *file);
+-ssize_t simple_attr_read(struct file *file, char __user *buf,
+-			 size_t len, loff_t *ppos);
+-ssize_t simple_attr_write(struct file *file, const char __user *buf,
+-			  size_t len, loff_t *ppos);
+-ssize_t simple_attr_write_signed(struct file *file, const char __user *buf,
+-				 size_t len, loff_t *ppos);
+ ssize_t simple_attr_read_iter(struct kiocb *iocb, struct iov_iter *to);
+ ssize_t simple_attr_write_iter(struct kiocb *iocb, struct iov_iter *from);
+ ssize_t simple_attr_write_iter_signed(struct kiocb *iocb, struct iov_iter *from);
 -- 
 2.43.0
 
