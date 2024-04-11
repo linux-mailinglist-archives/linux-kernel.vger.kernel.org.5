@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-140617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3302B8A16EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:16:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 128F78A16F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:17:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2111288D0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:16:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3543AB29868
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:16:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3442C14EC49;
-	Thu, 11 Apr 2024 14:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F74B14F103;
+	Thu, 11 Apr 2024 14:15:31 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98FD914EC40
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3C6D14B09C
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:15:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712844914; cv=none; b=pULCo3MnvDXcLl1P3WGyV96dXhIIhhL1flRtWbHQXRL55piDVGajeRW13/BRAWjzkjsZbfhSRpXNiKuF+5UFCNRMF7nKkRML+VF6+VGqGgss2b/OHB491gmGWDxg7LshdZJsUPIRM13a43JV5SuYD59y9lqxQl44z+1LZnw8e1o=
+	t=1712844931; cv=none; b=QNozCxNdorbUrrFMhajqkCgVlsT21wcW7l39i/op9D+ozftA8X6oUAG7a9oApdkQDi+d53o1YptDHibeXCOiSp0CBKpVjIMidlIkInZkURUh6IAgf7eaHJevfvNGf+oBsTrl1RfLprPS5xvokHpVKK64OToPUhKdZJW3OsrMUGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712844914; c=relaxed/simple;
-	bh=tBwVtxSBMQcM3gTJe/ADrOfHAy0L66S9KG99F9o1+hs=;
+	s=arc-20240116; t=1712844931; c=relaxed/simple;
+	bh=xYTEtJd3jX6lHoibME6XnWLIsyGQx9FKXlixpmOQ0D8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oTqIcmQ4wBry6MXSlC57Nt1hDy8eA4O3ejy2rBJkhmc9LtbMih7oW/+mIojZROi+F2WdHjMRv7L3xc4/8JOzZrnyrbNmEfE2V6+EpKroJBqtI+3fMVWQQtCeE71+LSf4uMIhn9LFzE6seCwDlpCENvK6/Z3y9a6Xs/R8aM/VtnQ=
+	 Content-Type:Content-Disposition:In-Reply-To; b=puqqNcACXkVOs5RGHzPULZVoHhj1NljP4dYDwaWCKHX85Cf9vtIGPMImLlQyRf95d87oVcUYG8QMOTlddXCYCxGgrvv5bN79Ig70VBAKt9H0sPJJEjhPByKU0tv+GrW8+J2glRmTJf8q39+wJHVuDeV3RKuvvf3j19pI9gSwqwM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8A628339;
-	Thu, 11 Apr 2024 07:15:42 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95ED2339;
+	Thu, 11 Apr 2024 07:15:58 -0700 (PDT)
 Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3D5AC3F64C;
-	Thu, 11 Apr 2024 07:15:10 -0700 (PDT)
-Date: Thu, 11 Apr 2024 15:15:07 +0100
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 48E393F64C;
+	Thu, 11 Apr 2024 07:15:26 -0700 (PDT)
+Date: Thu, 11 Apr 2024 15:15:23 +0100
 From: Dave Martin <Dave.Martin@arm.com>
 To: Reinette Chatre <reinette.chatre@intel.com>
 Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
@@ -49,12 +49,12 @@ Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
 	dfustini@baylibre.com, amitsinght@marvell.com,
 	David Hildenbrand <david@redhat.com>,
 	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: Re: [PATCH v1 07/31] x86/resctrl: Wrap resctrl_arch_find_domain()
- around rdt_find_domain()
-Message-ID: <ZhfwazGdJk2NbWxI@e133380.arm.com>
+Subject: Re: [PATCH v1 11/31] x86/resctrl: Move monitor exit work to a restrl
+ exit call
+Message-ID: <Zhfwe6Xhyec20LzC@e133380.arm.com>
 References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-8-james.morse@arm.com>
- <f0243dbb-f333-4c06-a315-ceaca8fa0bc2@intel.com>
+ <20240321165106.31602-12-james.morse@arm.com>
+ <92187846-374f-4b45-865e-543ba198b6b9@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,33 +63,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f0243dbb-f333-4c06-a315-ceaca8fa0bc2@intel.com>
+In-Reply-To: <92187846-374f-4b45-865e-543ba198b6b9@intel.com>
 
-On Mon, Apr 08, 2024 at 08:17:12PM -0700, Reinette Chatre wrote:
+On Mon, Apr 08, 2024 at 08:19:00PM -0700, Reinette Chatre wrote:
 > Hi James,
 > 
 > On 3/21/2024 9:50 AM, James Morse wrote:
-> > rdt_find_domain() finds a domain given a resource and a cache-id.
-> > It's not quite right for the resctrl arch API as it also returns the
-> > position to insert a new domain, which is needed when bringing a
-> > domain online in the arch code.
+> > rdt_put_mon_l3_config() is called via the architecture's
+> > resctrl_arch_exit() call, and appears to free the rmid_ptrs[]
+> > and closid_num_dirty_rmid[] arrays. In reality this code is marked
+> > __exit, and is removed by the linker as resctl can't be built
+> 
+> resctl -> resctrl
+
+Noted, thanks (also, there is "restrl" in the subject line.)
+
+> 
+> > as a module.
 > > 
-> > Wrap rdt_find_domain() in a another function resctrl_arch_find_domain()
+> > MPAM can make use of this code from its error interrupt handler,
+> > a later patch drops all the __init/__exit annotations.
 > 
-> "in a another" -> "in another"
+> Reminder:
+> https://lore.kernel.org/lkml/85f8756a-23a0-444e-b37d-a7817b600f46@intel.com/
 
-Noted for James' attention.
+The "Drop __init/__exit on assorted symbols" patch speaks for itself,
+I guess. I think it's probably sufficient for now to comfirm that this
+patch is deliberately not changing the annotations for now.
 
+Does the following work?
 
-> > so we avoid the unnecessary argument outside the arch code.
-> 
-> Please do not impersonate code.
+--8<--
 
-[...]
+Since there is no immediate need to change them, leave the __exit
+annotations as-is.  This will need to be revisited as and when there is
+a need to call these functions other than at __exit time.
 
-> Reinette
-
-Noted.
+-->8--
 
 Cheers
 ---Dave
