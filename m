@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-141060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 515258A1A45
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:45:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2CC88A1A48
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:45:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCEBB1F22D4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:45:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 206751C22A15
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D32D1D29EB;
-	Thu, 11 Apr 2024 15:39:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F5271D2A08;
+	Thu, 11 Apr 2024 15:39:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="KT8+WxK/"
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="nYUqtFwi"
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E14DB1D214F
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:39:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 440081D29E7
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849976; cv=none; b=VMJYwctq8944LJUwaBBGdDzydF1oXk3+hz2gTFFWudyZFlmjyYTbBLHhYmqdqW7Ef4JCZYtvEOyaE5RRxkl5S6/ZUFRWHcQK1NohYyW50psXB4GNl44liJ5PmB4ADwq0taSk8Ae2cb3nOJQXxAESk3CX3R3lbTjsSJQ0Cyk5X6E=
+	t=1712849978; cv=none; b=TKl0Qy/h0OQxxmV5Efomy7KGAFvxx8owr/XnOojMcC27vUT1CE9t0jGY37Yi2rI0hhWRszLdB6SB6EbW82YG1n/o7sAt8ipn9HZdhOP99lhFXWnOSKDnJPvrFDI5Umgj1RnAg/JsS6hsmG3qjXT6OpQX+PY5KEjzzxMuN7Pc+ps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849976; c=relaxed/simple;
-	bh=bSyPTnaqBqw4Xs8QnICt+Ts5wtEFukOjwG63LhUNraA=;
+	s=arc-20240116; t=1712849978; c=relaxed/simple;
+	bh=Oi1CL4SZ7jF5iZGPiPuWgGK8ZRI8ipyz2HPqUMkXGTo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tAxtvq0PUYM7Ttw2rSfK7YOUWanYImykniq/yqDG2Su/xeIM7+NQvEGYdAHpLwW9h4po/0adEYlQZkNzFm6dPjzN6bdAM/Iny7MA6GOdCFUmR5ge+uwVqqKE1F5osptK+If3hDLTeqLgbcspmdFMfxK3xqpj48T295u46xe2Cdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=KT8+WxK/; arc=none smtp.client-ip=209.85.166.45
+	 MIME-Version; b=AdDDjrSpTZgZRGsP+zDbl0Nd1LQtzxl2Ctr/HvkXTVXcR1Lt7twmJTHFwa4MFpCi0wnFvHnWMrxjYOfZOJQQ6rhfFwV25Dy7p/CUPlEYkMsq1nOR74jw4ka4LmPosH7RDuGvgw3Tj1PDehYAPjJtwNXg1lrCIHmsPErk2dEmqM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=nYUqtFwi; arc=none smtp.client-ip=209.85.166.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso58164339f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:39:34 -0700 (PDT)
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7d5ed700c2dso16213939f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:39:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849974; x=1713454774; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849976; x=1713454776; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=08PAtrhbE+R6iK58OUJxn9BiTqf8PwssoESggNQBtJA=;
-        b=KT8+WxK/lV217baW2oBNVcPCkbn+Yj2nWrsTsSqqmXGvjsP0KjK3yxISz9FG6mJGd1
-         /bX1qg5+UUin/1QsYxBZkWufG+S4hTV4dasdEu1DUfKMFoF9fyQ6/JyrdDjxp6m2YASh
-         14eAlZSivMwwr1oU8m+Mj+jOV8sdA6BnmnZ0FXEOq4wJ9YJRxj7Kfj8GByh9mYTACITY
-         1EKxsSCK5vZ9BK59KXv4OnvNrrOLgQq6W4JSrBeWKhQIbGCvOup7ISNBkU24eUBmsKSk
-         3px1Gl5rthsRc8iVOBeW6IdHtGJ9TISWUtaHSd/RfAMH9jVarF02SDzafzn5UMFaooNu
-         1x3A==
+        bh=wCrr/tS5aR2avoRP2BBFyz38JLXO1ubG5EpJ8aJmhaU=;
+        b=nYUqtFwipJX7ZeQxeOhAPZz9k7x8bbpazOLQUdCiFqtURc1xG4LJ3gcAAxoYlOd9+R
+         aMMFFZVagv5CFPCQ9MtZJurD6x5mc9DCCIdTJEuOgnXCTGVaaBj5WitR7FEDT8Gbvy9u
+         pVl3yzapGqwwpk5t3v7plarfSa70ddacA8HtdMJTCUUTCagFzp46fYOynfmeWENI+k1D
+         K1q+pVBWKxYcoriaEeckmzLTKecCInIvw23/AVGEtVo0904qO41HvRUd/Jwg44RCPHrG
+         CNhdAu86CdJLzuAsiK3TRMV2GYWOYQ7/f5a+jwiPY0wpQdHIGTlpMSwnGszESk0Gggzt
+         EMqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849974; x=1713454774;
+        d=1e100.net; s=20230601; t=1712849976; x=1713454776;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=08PAtrhbE+R6iK58OUJxn9BiTqf8PwssoESggNQBtJA=;
-        b=pWe7aS0t3BwfuPLNTlXLjbHKLclzCX+jjFte8DGXeW3ufhdo6GGxCM5Hbbs6lJTNlY
-         Sd4Xq1vlmnSRdBaCRxcT3YuQdZWMAgBCln0iXAna+R7UaTEXxXBddPDoNDaDhFGinG9B
-         JDtx9bfbiNNG4kgHjWUGpbYd9TJhIAjalBgvJwqH07YeUt//08GXpM8qtLERYrq0aQ+z
-         jnywhKixn5yQ92Yh7ZgcUY1sY49tA36Q+p4TXrhrX+sB1I+ku0bHsHYTSTXt6+HUKOt7
-         0xgmGZSj/iiAADVq6zwWQ6gidqYvj9B8s9xK/wnnEFdj9U7l5589N9xyWPXhYDHSW/ku
-         lGPw==
-X-Gm-Message-State: AOJu0YwcUFp+v5PZduBuhs0WaRDf/dJallNg7RksqLPwWfADwgELc3rx
-	90DtLqq8zzBsT5YOWAfAojFYRuApAP+7x5zKsEKxiUITVFi9IXkjMpL+52ehBkN50g0G44yErLX
-	m
-X-Google-Smtp-Source: AGHT+IE2C1+VxSUMyChMtYz/iB/fEb/18L0FB9m2Venps3jy90x+a0TUyubgTvbaJWYr7oSwn1WmwQ==
-X-Received: by 2002:a05:6602:38d:b0:7d6:513b:254 with SMTP id f13-20020a056602038d00b007d6513b0254mr195838iov.2.1712849973657;
-        Thu, 11 Apr 2024 08:39:33 -0700 (PDT)
+        bh=wCrr/tS5aR2avoRP2BBFyz38JLXO1ubG5EpJ8aJmhaU=;
+        b=DJM02hMqZR9QDCSIJIZcPFVonawi4xMRkXsDyOZIJ6U/h21H1K0L4VRehq4CKCqHfL
+         7g/TUSbGnB0aOjOK9v8eR6TgyuPWuEzRQnX6hEFuxwkaOKqf1H4x3Hxf+oJiEr/kKRVG
+         MlIxBxeejTTBmaayUFqDyxDbezTfack4pcgOjE2Nrwira82O76VJtzkJTFwEtGaNtGHJ
+         P/Z0MpbJ7Zql2di4Pspg1XF1APwsLAAUc8iLYb/nm0Jj2srQupaM5z8n0DQ2m1g5b91H
+         CToQ6tZAe2M28HZ9/ZbOionYQGBXDA7NAIq2pQnt/CqaniqTFRA8V+352qgusPeq5vSx
+         fRsA==
+X-Gm-Message-State: AOJu0YyVlRSS23BL14Iq4XsWQ9ik+iYAn5z1N/vY/FbdG2BRfmrMQdGB
+	uA/9QYFS+dF9INSHZ8EkpNsVfZiLPgFIkvyqUWoQoSTBwXNz4kCE/MREKhTBaRWQxNGacKk7o2Q
+	D
+X-Google-Smtp-Source: AGHT+IG3PcXy2sM7qioOv3aZPlpA11Fr3mjwfnVeG9gcwygon6ME7zge95ABkf8g6X/YripE4PZpAg==
+X-Received: by 2002:a6b:cd08:0:b0:7d5:fe3e:90ff with SMTP id d8-20020a6bcd08000000b007d5fe3e90ffmr209462iog.0.1712849976065;
+        Thu, 11 Apr 2024 08:39:36 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.39.31
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.39.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:39:31 -0700 (PDT)
+        Thu, 11 Apr 2024 08:39:33 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 286/437] ubifs: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:17:06 -0600
-Message-ID: <20240411153126.16201-287-axboe@kernel.dk>
+Subject: [PATCH 287/437] cachefiles: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:17:07 -0600
+Message-ID: <20240411153126.16201-288-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,171 +85,155 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- fs/ubifs/debug.c | 59 ++++++++++++++++++++++--------------------------
- 1 file changed, 27 insertions(+), 32 deletions(-)
+ fs/cachefiles/daemon.c   | 35 ++++++++++++++++-------------------
+ fs/cachefiles/internal.h |  4 ++--
+ fs/cachefiles/ondemand.c |  5 +++--
+ 3 files changed, 21 insertions(+), 23 deletions(-)
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 2d63f57aca6f..52f93ea1ac7f 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -2677,17 +2677,15 @@ static int dfs_file_open(struct inode *inode, struct file *file)
- /**
-  * provide_user_output - provide output to the user reading a debugfs file.
-  * @val: boolean value for the answer
-- * @u: the buffer to store the answer at
-- * @count: size of the buffer
-- * @ppos: position in the @u output buffer
-+ * @iocb: metadata for IO
-+ * @to: the buffer to store the answer at
-  *
-  * This is a simple helper function which stores @val boolean value in the user
-  * buffer when the user reads one of UBIFS debugfs files. Returns amount of
-  * bytes written to @u in case of success and a negative error code in case of
-  * failure.
-  */
--static int provide_user_output(int val, char __user *u, size_t count,
--			       loff_t *ppos)
-+static int provide_user_output(int val, struct kiocb *iocb, struct iov_iter *to)
- {
- 	char buf[3];
+diff --git a/fs/cachefiles/daemon.c b/fs/cachefiles/daemon.c
+index 6465e2574230..4a6a31a76d35 100644
+--- a/fs/cachefiles/daemon.c
++++ b/fs/cachefiles/daemon.c
+@@ -23,10 +23,8 @@
  
-@@ -2698,14 +2696,13 @@ static int provide_user_output(int val, char __user *u, size_t count,
- 	buf[1] = '\n';
- 	buf[2] = 0x00;
- 
--	return simple_read_from_buffer(u, count, ppos, buf, 2);
-+	return simple_copy_to_iter(buf, &iocb->ki_pos, 2, to);
+ static int cachefiles_daemon_open(struct inode *, struct file *);
+ static int cachefiles_daemon_release(struct inode *, struct file *);
+-static ssize_t cachefiles_daemon_read(struct file *, char __user *, size_t,
+-				      loff_t *);
+-static ssize_t cachefiles_daemon_write(struct file *, const char __user *,
+-				       size_t, loff_t *);
++static ssize_t cachefiles_daemon_read(struct kiocb *, struct iov_iter *);
++static ssize_t cachefiles_daemon_write(struct kiocb *, struct iov_iter *);
+ static __poll_t cachefiles_daemon_poll(struct file *,
+ 					   struct poll_table_struct *);
+ static int cachefiles_daemon_frun(struct cachefiles_cache *, char *);
+@@ -50,8 +48,8 @@ const struct file_operations cachefiles_daemon_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.open		= cachefiles_daemon_open,
+ 	.release	= cachefiles_daemon_release,
+-	.read		= cachefiles_daemon_read,
+-	.write		= cachefiles_daemon_write,
++	.read_iter	= cachefiles_daemon_read,
++	.write_iter	= cachefiles_daemon_write,
+ 	.poll		= cachefiles_daemon_poll,
+ 	.llseek		= noop_llseek,
+ };
+@@ -207,8 +205,9 @@ static int cachefiles_daemon_release(struct inode *inode, struct file *file)
  }
  
--static ssize_t dfs_file_read(struct file *file, char __user *u, size_t count,
--			     loff_t *ppos)
-+static ssize_t dfs_file_read(struct kiocb *iocb, struct iov_iter *to)
+ static ssize_t cachefiles_do_daemon_read(struct cachefiles_cache *cache,
+-					 char __user *_buffer, size_t buflen)
++					 struct iov_iter *to)
  {
--	struct dentry *dent = file->f_path.dentry;
--	struct ubifs_info *c = file->private_data;
-+	struct dentry *dent = iocb->ki_filp->f_path.dentry;
-+	struct ubifs_info *c = iocb->ki_filp->private_data;
- 	struct ubifs_debug_info *d = c->dbg;
- 	int val;
++	size_t buflen = iov_iter_count(to);
+ 	unsigned long long b_released;
+ 	unsigned f_released;
+ 	char buffer[256];
+@@ -245,7 +244,7 @@ static ssize_t cachefiles_do_daemon_read(struct cachefiles_cache *cache,
+ 	if (n > buflen)
+ 		return -EMSGSIZE;
  
-@@ -2726,26 +2723,25 @@ static ssize_t dfs_file_read(struct file *file, char __user *u, size_t count,
- 	else
- 		return -EINVAL;
- 
--	return provide_user_output(val, u, count, ppos);
-+	return provide_user_output(val, iocb, to);
- }
--FOPS_READ_ITER_HELPER(dfs_file_read);
- 
- /**
-  * interpret_user_input - interpret user debugfs file input.
-- * @u: user-provided buffer with the input
-- * @count: buffer size
-+ * @from: user-provided buffer with the input
-  *
-  * This is a helper function which interpret user input to a boolean UBIFS
-  * debugfs file. Returns %0 or %1 in case of success and a negative error code
-  * in case of failure.
-  */
--static int interpret_user_input(const char __user *u, size_t count)
-+static int interpret_user_input(struct iov_iter *from)
- {
-+	size_t count = iov_iter_count(from);
- 	size_t buf_size;
- 	char buf[8];
- 
- 	buf_size = min_t(size_t, count, (sizeof(buf) - 1));
--	if (copy_from_user(buf, u, buf_size))
-+	if (!copy_from_iter_full(buf, buf_size, from))
+-	if (copy_to_user(_buffer, buffer, n) != 0)
++	if (!copy_to_iter_full(buffer, n, to) != 0)
  		return -EFAULT;
  
- 	if (buf[0] == '1')
-@@ -2756,12 +2752,13 @@ static int interpret_user_input(const char __user *u, size_t count)
- 	return -EINVAL;
- }
- 
--static ssize_t dfs_file_write(struct file *file, const char __user *u,
--			      size_t count, loff_t *ppos)
-+static ssize_t dfs_file_write(struct kiocb *iocb, struct iov_iter *from)
+ 	return n;
+@@ -254,10 +253,9 @@ static ssize_t cachefiles_do_daemon_read(struct cachefiles_cache *cache,
+ /*
+  * Read the cache state.
+  */
+-static ssize_t cachefiles_daemon_read(struct file *file, char __user *_buffer,
+-				      size_t buflen, loff_t *pos)
++static ssize_t cachefiles_daemon_read(struct kiocb *iocb, struct iov_iter *to)
  {
-+	struct file *file = iocb->ki_filp;
- 	struct ubifs_info *c = file->private_data;
- 	struct ubifs_debug_info *d = c->dbg;
- 	struct dentry *dent = file->f_path.dentry;
-+	size_t count = iov_iter_count(from);
- 	int val;
+-	struct cachefiles_cache *cache = file->private_data;
++	struct cachefiles_cache *cache = iocb->ki_filp->private_data;
  
- 	if (file->f_path.dentry == d->dfs_dump_lprops) {
-@@ -2779,7 +2776,7 @@ static ssize_t dfs_file_write(struct file *file, const char __user *u,
- 		return count;
- 	}
+ 	//_enter(",,%zu,", buflen);
  
--	val = interpret_user_input(u, count);
-+	val = interpret_user_input(from);
- 	if (val < 0)
- 		return val;
+@@ -265,21 +263,20 @@ static ssize_t cachefiles_daemon_read(struct file *file, char __user *_buffer,
+ 		return 0;
  
-@@ -2802,12 +2799,11 @@ static ssize_t dfs_file_write(struct file *file, const char __user *u,
- 
- 	return count;
- }
--FOPS_WRITE_ITER_HELPER(dfs_file_write);
- 
- static const struct file_operations dfs_fops = {
- 	.open = dfs_file_open,
--	.read_iter = dfs_file_read_iter,
--	.write_iter = dfs_file_write_iter,
-+	.read_iter = dfs_file_read,
-+	.write_iter = dfs_file_write,
- 	.owner = THIS_MODULE,
- 	.llseek = no_llseek,
- };
-@@ -2898,10 +2894,9 @@ static struct dentry *dfs_chk_lprops;
- static struct dentry *dfs_chk_fs;
- static struct dentry *dfs_tst_rcvry;
- 
--static ssize_t dfs_global_file_read(struct file *file, char __user *u,
--				    size_t count, loff_t *ppos)
-+static ssize_t dfs_global_file_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct dentry *dent = file->f_path.dentry;
-+	struct dentry *dent = iocb->ki_filp->f_path.dentry;
- 	int val;
- 
- 	if (dent == dfs_chk_gen)
-@@ -2919,16 +2914,16 @@ static ssize_t dfs_global_file_read(struct file *file, char __user *u,
+ 	if (cachefiles_in_ondemand_mode(cache))
+-		return cachefiles_ondemand_daemon_read(cache, _buffer, buflen);
++		return cachefiles_ondemand_daemon_read(cache, to);
  	else
- 		return -EINVAL;
- 
--	return provide_user_output(val, u, count, ppos);
-+	return provide_user_output(val, iocb, to);
+-		return cachefiles_do_daemon_read(cache, _buffer, buflen);
++		return cachefiles_do_daemon_read(cache, to);
  }
  
--static ssize_t dfs_global_file_write(struct file *file, const char __user *u,
--				     size_t count, loff_t *ppos)
-+static ssize_t dfs_global_file_write(struct kiocb *iocb, struct iov_iter *from)
+ /*
+  * Take a command from cachefilesd, parse it and act on it.
+  */
+-static ssize_t cachefiles_daemon_write(struct file *file,
+-				       const char __user *_data,
+-				       size_t datalen,
+-				       loff_t *pos)
++static ssize_t cachefiles_daemon_write(struct kiocb *iocb,
++				       struct iov_iter *from)
  {
--	struct dentry *dent = file->f_path.dentry;
-+	struct dentry *dent = iocb->ki_filp->f_path.dentry;
-+	size_t count = iov_iter_count(from);
- 	int val;
+ 	const struct cachefiles_daemon_cmd *cmd;
+-	struct cachefiles_cache *cache = file->private_data;
++	struct cachefiles_cache *cache = iocb->ki_filp->private_data;
++	size_t datalen = iov_iter_count(from);
+ 	ssize_t ret;
+ 	char *data, *args, *cp;
  
--	val = interpret_user_input(u, count);
-+	val = interpret_user_input(from);
- 	if (val < 0)
- 		return val;
+@@ -294,7 +291,7 @@ static ssize_t cachefiles_daemon_write(struct file *file,
+ 		return -EOPNOTSUPP;
  
-@@ -2951,8 +2946,8 @@ static ssize_t dfs_global_file_write(struct file *file, const char __user *u,
+ 	/* drag the command string into the kernel so we can parse it */
+-	data = memdup_user_nul(_data, datalen);
++	data = iterdup_nul(from, datalen);
+ 	if (IS_ERR(data))
+ 		return PTR_ERR(data);
+ 
+diff --git a/fs/cachefiles/internal.h b/fs/cachefiles/internal.h
+index d33169f0018b..2b5565d38cb3 100644
+--- a/fs/cachefiles/internal.h
++++ b/fs/cachefiles/internal.h
+@@ -298,7 +298,7 @@ extern bool cachefiles_commit_tmpfile(struct cachefiles_cache *cache,
+  */
+ #ifdef CONFIG_CACHEFILES_ONDEMAND
+ extern ssize_t cachefiles_ondemand_daemon_read(struct cachefiles_cache *cache,
+-					char __user *_buffer, size_t buflen);
++					struct iov_iter *to);
+ 
+ extern int cachefiles_ondemand_copen(struct cachefiles_cache *cache,
+ 				     char *args);
+@@ -341,7 +341,7 @@ static inline bool cachefiles_ondemand_is_reopening_read(struct cachefiles_req *
+ 
+ #else
+ static inline ssize_t cachefiles_ondemand_daemon_read(struct cachefiles_cache *cache,
+-					char __user *_buffer, size_t buflen)
++					struct iov_iter *to)
+ {
+ 	return -EOPNOTSUPP;
+ }
+diff --git a/fs/cachefiles/ondemand.c b/fs/cachefiles/ondemand.c
+index 4ba42f1fa3b4..e27144ff2050 100644
+--- a/fs/cachefiles/ondemand.c
++++ b/fs/cachefiles/ondemand.c
+@@ -295,8 +295,9 @@ static struct cachefiles_req *cachefiles_ondemand_select_req(struct xa_state *xa
  }
  
- static const struct file_operations dfs_global_fops = {
--	.read = dfs_global_file_read,
--	.write = dfs_global_file_write,
-+	.read_iter = dfs_global_file_read,
-+	.write_iter = dfs_global_file_write,
- 	.owner = THIS_MODULE,
- 	.llseek = no_llseek,
- };
+ ssize_t cachefiles_ondemand_daemon_read(struct cachefiles_cache *cache,
+-					char __user *_buffer, size_t buflen)
++					struct iov_iter *to)
+ {
++	size_t buflen = iov_iter_count(to);
+ 	struct cachefiles_req *req;
+ 	struct cachefiles_msg *msg;
+ 	unsigned long id = 0;
+@@ -345,7 +346,7 @@ ssize_t cachefiles_ondemand_daemon_read(struct cachefiles_cache *cache,
+ 	msg->msg_id = id;
+ 	msg->object_id = req->object->ondemand->ondemand_id;
+ 
+-	if (copy_to_user(_buffer, msg, n) != 0) {
++	if (!copy_to_iter_full(msg, n, to) != 0) {
+ 		ret = -EFAULT;
+ 		goto err_put_fd;
+ 	}
 -- 
 2.43.0
 
