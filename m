@@ -1,232 +1,272 @@
-Return-Path: <linux-kernel+bounces-141424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141422-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A859B8A1E0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:26:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3DC88A1E99
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:39:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1ABDF1F261EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:26:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DE54B3254F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:26:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5181F13248E;
-	Thu, 11 Apr 2024 17:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70E282899;
+	Thu, 11 Apr 2024 17:44:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="cw926R2Z"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PXJesQx2"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79F4131E2E;
-	Thu, 11 Apr 2024 17:46:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712857574; cv=none; b=jVZQte/qTSceA65LmGk45nCSdc+zq6Wxtr12WJyLtl1bV8UpEPhdyxg+he0ctRrELgGfPML2MIZLjpZOImpt4HA8t1jMK+Cm1llU0dOYJzfA2+fHlBwW1odeqIg2HEjc+/UGpd40mo2FBFNlCEEMo95usRa5azvnHyx9+Reuf38=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712857574; c=relaxed/simple;
-	bh=OKxXIh/WXhatcgx1Ou+NvsrOJcDB3Ihf5QKnsGO8RQI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OzHZVf0WNYrbVsGcW+xSi5IZ9fkgshsZtjlY5CjG5EPWpWtd3RXJddfq1tK3RhUV24fTyaSju+TPcO14X+zbEygo+6jm3uLABSCaSzLnGK++/YKr0wcKuabYCw7cDKCOmpqDxd8NEGlnFjizpDQIq9hvs/tfd6pNrV6WX7bs1PY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=cw926R2Z; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1712857563;
-	bh=OKxXIh/WXhatcgx1Ou+NvsrOJcDB3Ihf5QKnsGO8RQI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=cw926R2ZfZ1029Vbp53hck1uPrzSwQh8tRDZhRSYvJRpmGGx6eXEKOMBajPcXeAiM
-	 62lGtEXeEuE7Bh79gMY/YrQ7Ix11qWduAI5cuBM2MJ4HF8Bdm/pJJQQgI5zzAWOGl8
-	 g7v/GJekpVD2eEh4gTp5Hw5IkehtGrQZg4LsgB96VecOZWTPRevSsyrrudfmx+Rf7h
-	 EqugCQIzkPP17GYgRErQJh3FIntGNYOPODSjK5ZZ1SXX40e41jWtIxAk4zbNOA+bNj
-	 jbRhNSO0j8FJ1E8xg/thTSJbuVcEGgtjj9+BsqRGKJSpKpkOZvs4xCRDsS5JpF4viv
-	 dbGRGq6E0YUmA==
-Received: from localhost.localdomain (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4VFnDV4cYWzsHQ;
-	Thu, 11 Apr 2024 13:46:02 -0400 (EDT)
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	"levi . yun" <yeoreum.yun@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	stable@vger.kernel.org,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Aaron Lu <aaron.lu@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Borislav Petkov <bp@alien8.de>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	linux-arch@vger.kernel.org,
-	linux-mm@kvack.org,
-	x86@kernel.org
-Subject: [PATCH] sched: Add missing memory barrier in switch_mm_cid
-Date: Thu, 11 Apr 2024 13:43:02 -0400
-Message-Id: <20240411174302.353889-1-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56C1312E7F
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 17:44:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712857443; cv=fail; b=a/asmafaLzb41FB/iYBW0sDKQKoecBGphWIm3k31KnWd1AHAygg8BIdlH1zbKqLLU3hVj+YFgIeyacQJjNzbWPBMjx5Ea2mSvcuW/5bzkmwPX17JtCzewBGXrkIuCtHh8p9h63nHIy5L8aI63l8DzxhEt2N3/CYLjX1+CPUbuq4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712857443; c=relaxed/simple;
+	bh=i8NPFpm1N4yBK7qGqsT8Q8SayiGlKyjJjjPqMcW2K5o=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=aSD7AuF22cjkkTqgK3hXSEZPBHU4MeYPoQlyeqSNnbTzcqQzRyUDpi2aOO5aiZzg95qwBt/AMg4IE2OUDQ+JUWrhEKJcStaEuY81ZWhjcgc62iRFARTOJnGqrXDVPRMdWgWjZa/bqqGzLUO1t5TGvdZcZJ1Lr8Z+Xwi+qbHi23I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PXJesQx2; arc=fail smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712857442; x=1744393442;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=i8NPFpm1N4yBK7qGqsT8Q8SayiGlKyjJjjPqMcW2K5o=;
+  b=PXJesQx2TzZIUlG+xikaoJ0HTIvEHAZ03duPk0Pn/Ovb9EoYMemQ4M+K
+   P+pQTl0rhP6ttBzkioA24aRS/yIpIWGsn78JymWu4ejjSELcnDPWY6fN4
+   c2yFFgMVNb5KCSa/zWVGbIONzvGOfit60Bc0Vhzz6N448+KVF/NTBdu9r
+   7M0mhp1dqh2GLvvm7/5JUpWdCLFqs609UQGtm0WPPVINKYwHPyP+NZ4N7
+   Zm2ZDN3Rbg9YYBe4hW5DLlebNBSenJHDOSw3A54EgFTWDlVzqZ+Y6GcBk
+   CQixf5GenjxYHXslgm90j0rQo9aUrcbiUWc7/vzSFuTwrQYuTGN3T81OJ
+   g==;
+X-CSE-ConnectionGUID: zZtR0g9hQpa64JU2K1HBQA==
+X-CSE-MsgGUID: LAita0ooT2SGeicxcfeENg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8463393"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="8463393"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 10:44:01 -0700
+X-CSE-ConnectionGUID: olSlmPyrSJqhqjViHyDYeg==
+X-CSE-MsgGUID: Bh6Lj+SGRgmmNK2v+qYh3w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="44256805"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Apr 2024 10:44:01 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 11 Apr 2024 10:44:00 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 11 Apr 2024 10:44:00 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 11 Apr 2024 10:44:00 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 11 Apr 2024 10:44:00 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KxMBts3/qjLee0J4QHuWNlTRhB6nQsldWaA1pjXr5DrJQxaZyz85gb2qBV3mwEejmW23CCnqrCBxLf1cdW1vGvmhXBkpKD40C93Kp2eTFGeopLUz+/X3rXxyRs0Xbag+FFsK7tyjXdi5YKb9DvPAQGXzvv+9apA5i6jmtjcJbLZt0E5cuj2roFrNhjh/YzO0zYYkjhBdjJ5fJSIcqDqLU4G4KYxIIhk6berd+yJCBhQSgN1D994rjHTyC/KtV7eLfyvt4qtBRBEfCBRe/zKofUgylioH0hlr9QQZhsCjS4PzMr89qqp59bTG/5JOVf1Ha6g1/2hXUMKbDFTRYwMvsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cJl8OGs8uN+rspA/Az1KeCPAmr85mIsZUihtDao+lYM=;
+ b=VBl2oUcPCPcBdscLHVDEsS/wfn2XE31r9ePrEGhjVYzkt9p/okdG/01bspg+lBEmfYNtKFKkELDzjLPvzZ+n6os/uVju7JArcK+p8kThNVgcNbsHPxKDh81ZZOCpSuayJcQoMr+penRgR3yhTjQLlsFU9Y8od4zKoOcAAH9fCdpuC8M01oHFLdQXJepLSxRRe2HU7s7w6pN1Psk6azjLnc3UV6eXtSp7WGxSa+TaNkng//PirHNEk6ngp4ly0X0YgZXyPhuT8MThFffouUDtDI5aUcWSDA+GmNmO4b57IJCoS5zaSO6IyhiNbnMwELTfGYRFN/0Rm3F3erE3D0wqHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by DM6PR11MB4721.namprd11.prod.outlook.com (2603:10b6:5:2a3::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.26; Thu, 11 Apr
+ 2024 17:43:58 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::d610:9c43:6085:9e68]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::d610:9c43:6085:9e68%7]) with mapi id 15.20.7452.019; Thu, 11 Apr 2024
+ 17:43:58 +0000
+Message-ID: <0baf690b-4ed4-4dad-9f50-e5df93d599fd@intel.com>
+Date: Thu, 11 Apr 2024 10:43:55 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 30/31] x86/resctrl: Move the filesystem bits to headers
+ visible to fs/resctrl
+To: Dave Martin <Dave.Martin@arm.com>
+CC: James Morse <james.morse@arm.com>, <x86@kernel.org>,
+	<linux-kernel@vger.kernel.org>, Fenghua Yu <fenghua.yu@intel.com>, "Thomas
+ Gleixner" <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "Borislav
+ Petkov" <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>, Babu Moger
+	<Babu.Moger@amd.com>, <shameerali.kolothum.thodi@huawei.com>, "D Scott
+ Phillips OS" <scott@os.amperecomputing.com>, <carl@os.amperecomputing.com>,
+	<lcherian@marvell.com>, <bobo.shaobowang@huawei.com>,
+	<tan.shaopeng@fujitsu.com>, <baolin.wang@linux.alibaba.com>, Jamie Iles
+	<quic_jiles@quicinc.com>, Xin Hao <xhao@linux.alibaba.com>,
+	<peternewman@google.com>, <dfustini@baylibre.com>, <amitsinght@marvell.com>,
+	David Hildenbrand <david@redhat.com>, Rex Nie <rex.nie@jaguarmicro.com>
+References: <20240321165106.31602-1-james.morse@arm.com>
+ <20240321165106.31602-31-james.morse@arm.com>
+ <8f4a05d5-2040-4cf2-8c05-a190c25d64db@intel.com>
+ <ZhfznA2Sp3KFdjrA@e133380.arm.com>
+Content-Language: en-US
+From: Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <ZhfznA2Sp3KFdjrA@e133380.arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR04CA0270.namprd04.prod.outlook.com
+ (2603:10b6:303:88::35) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DM6PR11MB4721:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6c8378be-2690-46af-9316-08dc5a4ef6e5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BhZCDpifpMBrNfEOM3+hs2ooxUMoRgJWnjQsuVPoPmOdH9Y/pp+M6v8Gez0K/fi2kE3m7a8XetLDR1vK9xONflw8DSAcO9hFmHF4PV+qcH/5Y4SomMf4z9aSsCAVxtmYnn6LuxxKYyx55SyYrxwl5HBfn4+P3khPxMQUUF2deyBPAYqugvncqeTGXrwmVzjLHk3spmUXtOyerfHD8gTx2U/O0FIS+kh2oqbH0OCQlhau9tOG2rANjiljU1jnsyLWgA6BjhWbZXbYyn6jBhOKkmpsdJKEmew0mKN45wBLJCOBfTdcwerAoHuJg1f4kLrwP+CQIUIrFA7qkJHm/QqAaZNwyVS/NEIh7hsE2flTs8MrfUjh5q8xBaI5mRlcg5nhVuA+ZlLDccwSNAAFmFe9AJ/vjoFnde+Yc0+LjMn7z7UQfBSys/7IFkq/CMXq+ITSDTssNf2sM+41AC4X0vpLw/TOyhLJtcVYOIDhBV9sdso1GYLQG+AAJJUzGmYFLoYWLZTlw/tqEwcxUPYuxQe7w6ldVSNyphAszk0/qtCtMZEWAWgxiZYvjfWjIZ7mqD60fWifT5oqcwjMX08FdEUDM//LJzwqorEXqCBVJ9u+gTkseniBUtz1VZukNaI8X7CSiLEw+awLeyGE+wUZNc4mlOhUW8WA4WfPXZE1aM2kuCA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZXRxUFlwNHZkUFZMN3ZhRzIrUklQWFI5MER2K0Mya01vL3FWd2IvMExrOElE?=
+ =?utf-8?B?Z2lWbHJQTmh3V2VnMzVjcGVZZjFqMnNTTlc3YlNMRWtUcmNORWZEd2t1ZEJM?=
+ =?utf-8?B?eG9FNGpmN2JUZkxXU0hoOExQY2Jtek9nY3RZWFRxdkFJTEIrR1d0UWpOell4?=
+ =?utf-8?B?bFdRYnY2MWpGenEwRkN0cUVqM0lUWm1vOGxSVS9GazF4ZnNHZ2FMTjdlWThY?=
+ =?utf-8?B?QWs0eURRdmR3aERjWEVodndiSEh2WW1DOUF2OVFKa1NMNExuaGNXSWNIRlgw?=
+ =?utf-8?B?WTl3L2xReWkzeWtVUjZUVWlzODhwM3pXT1FQeWU4UmlodHhHNkxLNVN5VnUw?=
+ =?utf-8?B?UGtJM05TL1c5UlhMVDdNWG5lWHBQd3Y3RmlCR25zb3M4MDhBbG95c2p5VjIz?=
+ =?utf-8?B?ZUJWaW10YnlidkVtYzFNa1F1Y04yK0ZVWW0rNkdXcHhkSWxsdHRHTTRuUk1D?=
+ =?utf-8?B?YUxMZGFHL3RsMzM0TUdFNm9vVU1ybko1V1ptNzQvSHVVY2xEUzNTK2p5MEtn?=
+ =?utf-8?B?b1l0Wnpaa0JoYjB2Ylpmb1hYUW5lMzQvMVZ6KzRCazlXckJiVElWOElZSE9E?=
+ =?utf-8?B?MG5FWGNBVE9QK2pSeXhMZXd6eGU4SmhKZkZiOHdUUG9DZHJFOUdDbjNRYU1i?=
+ =?utf-8?B?ZW1zNW5RMy84TjRKK2NXQUNaeHVNWlo1Ty9jUEZjbXA0U0t5NGFTSVIrdnZ2?=
+ =?utf-8?B?ZkVTVEpaSE50ZDJ6NW1UbDdlYlJGSWRtRkhKcDYyTmR1OXZZV3NMaTR3WStK?=
+ =?utf-8?B?N2k0MThsNG05MnB0SVB4N2d4dUt1Q2dZTkphVTY5Ym5DcVBDQU9xOVNVNEdp?=
+ =?utf-8?B?RUZsQzlPQkJyYWh2cU5rVGlhM2lJZExxTVVRWXVMcktCcEc0T0J0ck11QlFL?=
+ =?utf-8?B?RmtTUmc1RkRPdUZtWGVCTVdjY2lxWHViTHIvUTZ2dGpxZ2RvVVV1ZVhtK0VT?=
+ =?utf-8?B?U0Y3QUw3aUJLbnR1VGFFNEZ5T2FRaGNWdXQ0T0RPT1c2SmZmVEY3aVRHTWpT?=
+ =?utf-8?B?dTNUV2ZucXFTY3JDNVVPcjFiZGVqZWl3YWRJdkxkRlo1cmk3em5ZcXZ5SmFa?=
+ =?utf-8?B?RWNFZVNJMkJlQk1JSU83TS92M0VrTUtSeU4yNm53WHhKbzZqdEgvd1RYRUs5?=
+ =?utf-8?B?QmZTaUd4eTg1cFI0eG9rajEvaitHQXdVdHNTbVFYZUc2Q1QxbGkzaU9idFFO?=
+ =?utf-8?B?U1FZR3puSVJabERYWDNZMnAwZXcxSUkwTzUxQm9GSzdlRnNJZ1djRFRxSlhD?=
+ =?utf-8?B?VEJ0bGNwcXQyVXJMM1JHTFBkVlhhcytLWU5Rekh4aTYxTmxzM1crRktsYmNZ?=
+ =?utf-8?B?L3ZhemR0eEo5STU2TjExdVV0b2x0ZGxCakJEdDRTOGd1UHpoTGlKS2FBeGpD?=
+ =?utf-8?B?WkxraVRadDFnc0RMWmtvM25FdDJWVFRIV1NZSi8yd2lTRDlHLzdTZXh3QVVG?=
+ =?utf-8?B?d3d4dUhEaUoyZ1krbnlLa0trOUpOS1J4eFFnYktHaFY0VkZJRnRkd3F2eTZD?=
+ =?utf-8?B?dmJJOGcwZ213dkR1cTFlbitER2RZSDFRV0JWaXFCV3hMVlp2U0h6U1FCaG9o?=
+ =?utf-8?B?SmcxdVluNm1GTEdXM2xpSWRBSGg4anRZeW9RZHlITHlIVFN0NVBsaE9Qa3Z0?=
+ =?utf-8?B?a21hdGwvTkZCY2V6RHFseFdaL2dnK09peU9CUFlKNkU2aTRnMU1uVUQyM3pE?=
+ =?utf-8?B?Rkx5SXRyNEhYQlNrTjU0alhLTS9RazhrQ1A3dVltVjlId29vQ1lFbDZOM0Qw?=
+ =?utf-8?B?M1ZYVlNBYTFISE5GUEFUNU8reisrZWxsYkxGOCt6OWtIWkY4Q015TnpqbUFO?=
+ =?utf-8?B?ZEloK0YvcXAxcTJDSDJkRmJJYW9zWU9vOG1hQnBaYkVNUGlEZE9LUWVxc2xH?=
+ =?utf-8?B?Y0gvZ3hQWWhWa1NEcVJ4YlV3ZTBCV1JEWGJVOGJpVkdtNXVIL29GejNUTjBj?=
+ =?utf-8?B?N0txaGNlT3ZBUnlRYnUxQzEvNjJBMzJIN1E1UVJnc3VTRTRxU29qQmFwREpK?=
+ =?utf-8?B?QlNMUE41ZFdzVHBpMEVJVld5cnN1QTJ4SmZkOEY5cTF5enRsL0RqRkp1VmE3?=
+ =?utf-8?B?YWwydTVJUjV1T2RZNXpzVm1qaWtyMkNaRDdXZTdVZ1R0L3ArOCtScERlbUlk?=
+ =?utf-8?B?WWRkVzNlblozM1REOGt0Tlo3Q3JXQmZLRVJMNWZyNWJrV0x5dDFZMGVhNUYv?=
+ =?utf-8?B?dGc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c8378be-2690-46af-9316-08dc5a4ef6e5
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 17:43:57.7272
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vhmJpZIXi+yeNPfkUg9zu25QTfzF5/Gx1UG7fdqM+3tOLtyzkuBgr0US5S6Qi9yCLh2usH9F6pdzv1FK/Z2jmtEhzmGT8w2s/K8rK9wIre0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4721
+X-OriginatorOrg: intel.com
 
-Many architectures' switch_mm() (e.g. arm64) do not have an smp_mb()
-which the core scheduler code has depended upon since commit:
+Hi Dave,
 
-    commit 223baf9d17f25 ("sched: Fix performance regression introduced by mm_cid")
+On 4/11/2024 7:28 AM, Dave Martin wrote:
+> On Mon, Apr 08, 2024 at 08:42:00PM -0700, Reinette Chatre wrote:
+>> Hi James,
+>>
+>> On 3/21/2024 9:51 AM, James Morse wrote:
+>> ..
+>>> diff --git a/include/linux/resctrl_types.h b/include/linux/resctrl_types.h
+>>> index 4788bd95dac6..fe0b10b589c0 100644
+>>> --- a/include/linux/resctrl_types.h
+>>> +++ b/include/linux/resctrl_types.h
+>>> @@ -7,6 +7,36 @@
+>>>  #ifndef __LINUX_RESCTRL_TYPES_H
+>>>  #define __LINUX_RESCTRL_TYPES_H
+>>>  
+>>> +#define CQM_LIMBOCHECK_INTERVAL	1000
+>>> +
+>>> +#define MBM_CNTR_WIDTH_BASE		24
+>>> +#define MBM_OVERFLOW_INTERVAL		1000
+>>> +#define MAX_MBA_BW			100u
+>>> +#define MBA_IS_LINEAR			0x4
+>>> +
+>>> +/* rdtgroup.flags */
+>>> +#define	RDT_DELETED		1
+>>> +
+>>> +/* rftype.flags */
+>>> +#define RFTYPE_FLAGS_CPUS_LIST	1
+>>> +
+>>> +/*
+>>> + * Define the file type flags for base and info directories.
+>>> + */
+>>> +#define RFTYPE_INFO			BIT(0)
+>>> +#define RFTYPE_BASE			BIT(1)
+>>> +#define RFTYPE_CTRL			BIT(4)
+>>> +#define RFTYPE_MON			BIT(5)
+>>> +#define RFTYPE_TOP			BIT(6)
+>>> +#define RFTYPE_RES_CACHE		BIT(8)
+>>> +#define RFTYPE_RES_MB			BIT(9)
+>>> +#define RFTYPE_DEBUG			BIT(10)
+>>> +#define RFTYPE_CTRL_INFO		(RFTYPE_INFO | RFTYPE_CTRL)
+>>> +#define RFTYPE_MON_INFO			(RFTYPE_INFO | RFTYPE_MON)
+>>> +#define RFTYPE_TOP_INFO			(RFTYPE_INFO | RFTYPE_TOP)
+>>> +#define RFTYPE_CTRL_BASE		(RFTYPE_BASE | RFTYPE_CTRL)
+>>> +#define RFTYPE_MON_BASE			(RFTYPE_BASE | RFTYPE_MON)
+>>> +
+>>>  /* Reads to Local DRAM Memory */
+>>>  #define READS_TO_LOCAL_MEM		BIT(0)
+>>>  
+>>
+>> Not all these new seem to belong in this file. Could you please confirm?
+>>
+>> For example:
+>> Earlier in series it was mentioned that struct rdtgroup is private to the
+>> fs so having RDT_DELETED is unexpected as it implies access to struct rdtgroup.
+>>
+>> CQM_LIMBOCHECK_INTERVAL seems private to the fs code, so too
+>> RFTYPE_FLAGS_CPUS_LIST.
+>>
+>> Reinette
+>>
+> 
+> I'll flag this for James to review.
+> 
+> These have to be moved out of the x86 private headers, but you're right
+> that some of them seem logically private to the resctrl core.
+> 
+> I guess some of these could move to fs/resctrl/internal.h?
 
-If switch_mm() doesn't call smp_mb(), sched_mm_cid_remote_clear() can
-unset the actively used cid when it fails to observe active task after it
-sets lazy_put.
+It looks to me that way.
 
-There *is* a memory barrier between storing to rq->curr and _return to
-userspace_ (as required by membarrier), but the rseq mm_cid has stricter
-requirements: the barrier needs to be issued between store to rq->curr
-and switch_mm_cid(), which happens earlier than:
+> 
+> OTOH, might it be preferable to keep all the flag definitions for a
+> given member together for ease of maintenance, even if some are for
+> resctrl internal use only?
 
-- spin_unlock(),
-- switch_to().
+Indeed, those RFTYPE flags really seem to be fs code but I agree that
+architectures' use of RFTYPE_RES_CACHE and RFTYPE_RES_MB does make this
+complicated and having these in a central place is reasonable to me.
 
-So it's fine when the architecture switch_mm() happens to have that
-barrier already, but less so when the architecture only provides the
-full barrier in switch_to() or spin_unlock().
-
-It is a bug in the rseq switch_mm_cid() implementation. All architectures
-that don't have memory barriers in switch_mm(), but rather have the full
-barrier either in finish_lock_switch() or switch_to() have them too late
-for the needs of switch_mm_cid().
-
-Introduce a new smp_mb__after_switch_mm(), defined as smp_mb() in the
-generic barrier.h header, and use it in switch_mm_cid() for scheduler
-transitions where switch_mm() is expected to provide a memory barrier.
-
-Architectures can override smp_mb__after_switch_mm() if their
-switch_mm() implementation provides an implicit memory barrier.
-Override it with a no-op on x86 which implicitly provide this memory
-barrier by writing to CR3.
-
-Link: https://lore.kernel.org/lkml/20240305145335.2696125-1-yeoreum.yun@arm.com/
-Reported-by: levi.yun <yeoreum.yun@arm.com>
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com> # for arm64
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com> # for x86
-Fixes: 223baf9d17f2 ("sched: Fix performance regression introduced by mm_cid")
-Cc: <stable@vger.kernel.org> # 6.4.x
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Valentin Schneider <vschneid@redhat.com>
-Cc: levi.yun <yeoreum.yun@arm.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Aaron Lu <aaron.lu@intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-arch@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: x86@kernel.org
----
- arch/x86/include/asm/barrier.h |  3 +++
- include/asm-generic/barrier.h  |  8 ++++++++
- kernel/sched/sched.h           | 20 ++++++++++++++------
- 3 files changed, 25 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/include/asm/barrier.h b/arch/x86/include/asm/barrier.h
-index 0216f63a366b..d0795b5fab46 100644
---- a/arch/x86/include/asm/barrier.h
-+++ b/arch/x86/include/asm/barrier.h
-@@ -79,6 +79,9 @@ do {									\
- #define __smp_mb__before_atomic()	do { } while (0)
- #define __smp_mb__after_atomic()	do { } while (0)
- 
-+/* Writing to CR3 provides a full memory barrier in switch_mm(). */
-+#define smp_mb__after_switch_mm()	do { } while (0)
-+
- #include <asm-generic/barrier.h>
- 
- #endif /* _ASM_X86_BARRIER_H */
-diff --git a/include/asm-generic/barrier.h b/include/asm-generic/barrier.h
-index 961f4d88f9ef..5a6c94d7a598 100644
---- a/include/asm-generic/barrier.h
-+++ b/include/asm-generic/barrier.h
-@@ -296,5 +296,13 @@ do {									\
- #define io_stop_wc() do { } while (0)
- #endif
- 
-+/*
-+ * Architectures that guarantee an implicit smp_mb() in switch_mm()
-+ * can override smp_mb__after_switch_mm.
-+ */
-+#ifndef smp_mb__after_switch_mm
-+#define smp_mb__after_switch_mm()	smp_mb()
-+#endif
-+
- #endif /* !__ASSEMBLY__ */
- #endif /* __ASM_GENERIC_BARRIER_H */
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 001fe047bd5d..35717359d3ca 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -79,6 +79,8 @@
- # include <asm/paravirt_api_clock.h>
- #endif
- 
-+#include <asm/barrier.h>
-+
- #include "cpupri.h"
- #include "cpudeadline.h"
- 
-@@ -3445,13 +3447,19 @@ static inline void switch_mm_cid(struct rq *rq,
- 		 * between rq->curr store and load of {prev,next}->mm->pcpu_cid[cpu].
- 		 * Provide it here.
- 		 */
--		if (!prev->mm)                          // from kernel
-+		if (!prev->mm) {                        // from kernel
- 			smp_mb();
--		/*
--		 * user -> user transition guarantees a memory barrier through
--		 * switch_mm() when current->mm changes. If current->mm is
--		 * unchanged, no barrier is needed.
--		 */
-+		} else {				// from user
-+			/*
-+			 * user -> user transition relies on an implicit
-+			 * memory barrier in switch_mm() when
-+			 * current->mm changes. If the architecture
-+			 * switch_mm() does not have an implicit memory
-+			 * barrier, it is emitted here.  If current->mm
-+			 * is unchanged, no barrier is needed.
-+			 */
-+			smp_mb__after_switch_mm();
-+		}
- 	}
- 	if (prev->mm_cid_active) {
- 		mm_cid_snapshot_time(rq, prev->mm);
--- 
-2.25.1
+Reinette
 
 
