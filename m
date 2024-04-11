@@ -1,108 +1,280 @@
-Return-Path: <linux-kernel+bounces-140516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 283718A15AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:35:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D2D68A15AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:35:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85A22287518
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:35:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 607741C21821
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:35:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A251514C3;
-	Thu, 11 Apr 2024 13:34:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E78BB152198;
+	Thu, 11 Apr 2024 13:34:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="LC+0coqd"
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="mecmvzr5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5210B14F9DF
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD3D41514C6;
+	Thu, 11 Apr 2024 13:34:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712842464; cv=none; b=dCmBMEgxdnsV3YbnCMOVQG0Gg28tiDTE5ULghM700d3A2oqjAg+g5KY8rNnRxO2k2h+8SqMGLsqr3kE73AwyBm7dgEHDWzAQwUOz4oIghVmMSMAgZ93SUJo2SP0PNX0fx9TREYXUUtVZVY4vzSV/g3g4zK7LHplAvPFlB1ZP7hw=
+	t=1712842467; cv=none; b=nnwKXftJg1oPELOz52AFfu2CuEpKolsd9E931kK2Bzeru7yB5EZM8q9q6hoJWuseGmiSj3KMYtO4M6oZnsu/OTOYr39Sh16B13eBhQuDVYjAptpdPWX1qDcVRl8LSTWgyvMg9teZ2r68lkOPbvObvNbv01QiShrc6LotmG9Lkss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712842464; c=relaxed/simple;
-	bh=RxBpwU/kRRGgr7s9/OHBVmoLUXFS+qobsZ+FAmDrctg=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=VxVUk3CLU0XHj5iA+MVBG39VkIDUnNebM7/RBP/qnRBfYVm9ssx16zNjGCIKPpekTB8A30lLDKGSFgMDHP4VCASg14163MCBYC/NDwPv0W8PxFjBOWTo6PhQzLzDLQ2xtNWC+ZRWNVu1zJV57bRplZWCgoSsRjhd4QuBHk3DgV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=LC+0coqd; arc=none smtp.client-ip=209.85.166.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7d0772bb5ffso177615039f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:34:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712842460; x=1713447260; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AV7BST669sfKAU9q9E3PjsM74g2J5F0Mood+knoqfgg=;
-        b=LC+0coqdTkgpTbgkorzzXpIMonNy0zuKuSw0ismcr4Dmz9x/07tiIUP8IyJYtuo9Qj
-         ysIjv964TxfsfTlvj6NZee6ynVYb38MNFN+4YJ1dJhwkLjZngslVSn77t2LmY/TC+maA
-         gMP642YwcMRla0qhzRUMV1KkXESLMN8E6IAYddTiH3IVStA5Ar3aGvPP0KtTodZbhIN1
-         MnUiFY8iq/tFasW+Hy5M1X+kfbweBvFqvf8j9M/0uyU/5sCBVNM53adtyOqgoUJWIMSM
-         5Lh9u25qsEFYqTZhXAgs8n7t30NYeYI9dzgN2bLKqKnj6lt3OGJT0EFSg9LVPCZ8rKce
-         c8TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712842460; x=1713447260;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AV7BST669sfKAU9q9E3PjsM74g2J5F0Mood+knoqfgg=;
-        b=vfjlDDfl64aAmidvS3pCQvIUZTWWlFtEHhsETI+rh3ubGYnG5wqQ674nNEX+fPmVtc
-         fn/TgnfgCRNwImORFK4ystAyrHeJIKwvYJq/sb7TA9gXDZrz9IKw/o0IivFjct9c+RdR
-         PDklVmefUVim6BhNF5PlhnqVPPt1KoWq64Qc3BMuUL+TEsy398rY0La+su6q0KiCDaK3
-         t19HzVCSlyTe+3gmOpfyhjTtOMi/TnUpHgL6d8P+Uz7Zc8G01XojhUoCf1F9zR7TzgcB
-         EODIpg4USORPDPwVSgmcVP5St3D6cgPNn58RtmjTD1LnysJfCQK+V3OMq/fd+GKLeru3
-         cukQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVV0183Mg0PDhx/tsWKRIiQcSAuX4qBCPuzAKORtTfoYO326qjKC8/KtwHLiCh8qWnpryrZD+iYcriidQUo7sowuw9YRrPIjoNUQZp2
-X-Gm-Message-State: AOJu0Yx9R8tAnf+2kQ5DsI/2NvvCJtrXBaP/tsjFmT2atLzldoDpm5jH
-	kPFD6KuyiHeIXVAXto2DbDyYHRkwLkbFOcnGqp1J2Cl2ciZZqjF3qKupDrBjwr8=
-X-Google-Smtp-Source: AGHT+IEG6+vVsFTe7a6HgkCt4LmRNF24rYL9lHjQgXZx6ZeAEiB7i5mPrzAnIpYtF2GFHjZNEP6aVg==
-X-Received: by 2002:a5e:8d03:0:b0:7d4:1dae:da1a with SMTP id m3-20020a5e8d03000000b007d41daeda1amr5848363ioj.2.1712842459538;
-        Thu, 11 Apr 2024 06:34:19 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id g5-20020a6b7605000000b007d65ee260d0sm394777iom.6.2024.04.11.06.34.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 06:34:18 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Ruyi Zhang <ruyi.zhang@samsung.com>
-Cc: asml.silence@gmail.com, io-uring@vger.kernel.org, 
- linux-kernel@vger.kernel.org, peiwei.li@samsung.com, xue01.he@samsung.com
-In-Reply-To: <20240411055953.2029218-1-ruyi.zhang@samsung.com>
-References: <CGME20240411060014epcas5p1658ee85070dfc22544e4fbff9436cb46@epcas5p1.samsung.com>
- <20240411055953.2029218-1-ruyi.zhang@samsung.com>
-Subject: Re: [PATCH] io_uring/timeout: remove duplicate initialization of
- the io_timeout list.
-Message-Id: <171284245862.3311.11180570371949756929.b4-ty@kernel.dk>
-Date: Thu, 11 Apr 2024 07:34:18 -0600
+	s=arc-20240116; t=1712842467; c=relaxed/simple;
+	bh=jqJuramCDR7jmfxW4yTxzq1cOltP2kf08eFDobz423U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LAZeu+IoH5RdLPzjUi/4KnEACq5sMxLjV6SEhuCuQrHcKXZBCNiagbFct6f1dyPK3nmBGGLCWJtGL/bGftXfTE7LP52HP9F40Cbu/H+O6k0UEZpgjAjsGCflhwvM2eJMYWqDn2gTBV9DNetAACsljdO09GFHnJJ4wfW6cYoIecs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=mecmvzr5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFD55C113CD;
+	Thu, 11 Apr 2024 13:34:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712842466;
+	bh=jqJuramCDR7jmfxW4yTxzq1cOltP2kf08eFDobz423U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mecmvzr55gWeALLBb1riwK2ND7lPfeh33a0/ekf2kbfDTOXf/IxKv+GLeoYE42W4O
+	 N7xqV7WvuRjztComG5Av621tejs8M08DUxThcgc+oz079aylN44EoVnqKm2M7DGcHn
+	 Tr2PNbYq1k664b12Ok1PGwxJeEBRfwr4XGwoxa04=
+Date: Thu, 11 Apr 2024 15:34:23 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Elizabeth Figura <zfigura@codeweavers.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-api@vger.kernel.org, wine-devel@winehq.org,
+	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+	Wolfram Sang <wsa@kernel.org>,
+	Arkadiusz Hiler <ahiler@codeweavers.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andy Lutomirski <luto@kernel.org>, linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v3 04/30] ntsync: Introduce NTSYNC_IOC_WAIT_ANY.
+Message-ID: <2024041111-handsaw-scruffy-27f3@gregkh>
+References: <20240329000621.148791-1-zfigura@codeweavers.com>
+ <20240329000621.148791-5-zfigura@codeweavers.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.5-dev-2aabd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240329000621.148791-5-zfigura@codeweavers.com>
 
-
-On Thu, 11 Apr 2024 13:59:53 +0800, Ruyi Zhang wrote:
-> In the __io_timeout_prep function, the io_timeout list is initialized
-> twice, removing the meaningless second initialization.
+On Thu, Mar 28, 2024 at 07:05:55PM -0500, Elizabeth Figura wrote:
+> This corresponds to part of the functionality of the NT syscall
+> NtWaitForMultipleObjects(). Specifically, it implements the behaviour where
+> the third argument (wait_any) is TRUE, and it does not handle alertable waits.
+> Those features have been split out into separate patches to ease review.
 > 
+> NTSYNC_IOC_WAIT_ANY is a vectored wait function similar to poll(). Unlike
+> poll(), it "consumes" objects when they are signaled. For semaphores, this means
+> decreasing one from the internal counter. At most one object can be consumed by
+> this function.
 > 
+> Up to 64 objects can be waited on at once. As soon as one is signaled, the
+> object with the lowest index is consumed, and that index is returned via the
+> "index" field.
 
-Applied, thanks!
+So it's kind of like our internal locks already?  Or futex?
 
-[1/1] io_uring/timeout: remove duplicate initialization of the io_timeout list.
-      commit: 99e440c5b1d70084eeb2097bd035e50c2de62884
+> 
+> A timeout is supported. The timeout is passed as a u64 nanosecond value, which
+> represents absolute time measured against either the MONOTONIC or REALTIME clock
+> (controlled by the flags argument). If U64_MAX is passed, the ioctl waits
+> indefinitely.
+> 
+> This ioctl validates that all objects belong to the relevant device. This is not
+> necessary for any technical reason related to NTSYNC_IOC_WAIT_ANY, but will be
+> necessary for NTSYNC_IOC_WAIT_ALL introduced in the following patch.
+> 
+> Two u32s of padding are left in the ntsync_wait_args structure; one will be used
+> by a patch later in the series (which is split out to ease review).
+> 
+> Signed-off-by: Elizabeth Figura <zfigura@codeweavers.com>
+> ---
+>  drivers/misc/ntsync.c       | 250 ++++++++++++++++++++++++++++++++++++
+>  include/uapi/linux/ntsync.h |  16 +++
+>  2 files changed, 266 insertions(+)
+> 
+> diff --git a/drivers/misc/ntsync.c b/drivers/misc/ntsync.c
+> index 3c2f743c58b0..c6f84a5fc8c0 100644
+> --- a/drivers/misc/ntsync.c
+> +++ b/drivers/misc/ntsync.c
+> @@ -6,11 +6,16 @@
+>   */
+>  
+>  #include <linux/anon_inodes.h>
+> +#include <linux/atomic.h>
+>  #include <linux/file.h>
+>  #include <linux/fs.h>
+> +#include <linux/hrtimer.h>
+> +#include <linux/ktime.h>
+>  #include <linux/miscdevice.h>
+>  #include <linux/module.h>
+>  #include <linux/overflow.h>
+> +#include <linux/sched.h>
+> +#include <linux/sched/signal.h>
+>  #include <linux/slab.h>
+>  #include <linux/spinlock.h>
+>  #include <uapi/linux/ntsync.h>
+> @@ -30,6 +35,8 @@ enum ntsync_type {
+>   *
+>   * Both rely on struct file for reference counting. Individual
+>   * ntsync_obj objects take a reference to the device when created.
+> + * Wait operations take a reference to each object being waited on for
+> + * the duration of the wait.
+>   */
+>  
+>  struct ntsync_obj {
+> @@ -47,12 +54,56 @@ struct ntsync_obj {
+>  			__u32 max;
+>  		} sem;
+>  	} u;
+> +
+> +	struct list_head any_waiters;
+> +};
+> +
+> +struct ntsync_q_entry {
+> +	struct list_head node;
+> +	struct ntsync_q *q;
+> +	struct ntsync_obj *obj;
+> +	__u32 index;
+> +};
+> +
+> +struct ntsync_q {
+> +	struct task_struct *task;
+> +	__u32 owner;
+> +
+> +	/*
+> +	 * Protected via atomic_try_cmpxchg(). Only the thread that wins the
+> +	 * compare-and-swap may actually change object states and wake this
+> +	 * task.
+> +	 */
+> +	atomic_t signaled;
 
-Best regards,
--- 
-Jens Axboe
+This feels odd, why are you duplicating a normal lock functionality
+here?
 
+> +
+> +	__u32 count;
+> +	struct ntsync_q_entry entries[];
+>  };
+>  
+>  struct ntsync_device {
+>  	struct file *file;
+>  };
+>  
+> +static void try_wake_any_sem(struct ntsync_obj *sem)
+> +{
+> +	struct ntsync_q_entry *entry;
+> +
+> +	lockdep_assert_held(&sem->lock);
+> +
+> +	list_for_each_entry(entry, &sem->any_waiters, node) {
+> +		struct ntsync_q *q = entry->q;
+> +		int signaled = -1;
+> +
+> +		if (!sem->u.sem.count)
+> +			break;
+> +
+> +		if (atomic_try_cmpxchg(&q->signaled, &signaled, entry->index)) {
+> +			sem->u.sem.count--;
+> +			wake_up_process(q->task);
+> +		}
 
+You are waking up _all_ "locks" that with the atomic_try_cmpxchg() call,
+right?  Not just the "first".
 
+Or am I confused?
+
+> +	}
+> +}
+> +
+>  /*
+>   * Actually change the semaphore state, returning -EOVERFLOW if it is made
+>   * invalid.
+> @@ -88,6 +139,8 @@ static int ntsync_sem_post(struct ntsync_obj *sem, void __user *argp)
+>  
+>  	prev_count = sem->u.sem.count;
+>  	ret = post_sem_state(sem, args);
+> +	if (!ret)
+> +		try_wake_any_sem(sem);
+>  
+>  	spin_unlock(&sem->lock);
+>  
+> @@ -141,6 +194,7 @@ static struct ntsync_obj *ntsync_alloc_obj(struct ntsync_device *dev,
+>  	obj->dev = dev;
+>  	get_file(dev->file);
+>  	spin_lock_init(&obj->lock);
+> +	INIT_LIST_HEAD(&obj->any_waiters);
+>  
+>  	return obj;
+>  }
+> @@ -191,6 +245,200 @@ static int ntsync_create_sem(struct ntsync_device *dev, void __user *argp)
+>  	return put_user(fd, &user_args->sem);
+>  }
+>  
+> +static struct ntsync_obj *get_obj(struct ntsync_device *dev, int fd)
+> +{
+> +	struct file *file = fget(fd);
+> +	struct ntsync_obj *obj;
+> +
+> +	if (!file)
+> +		return NULL;
+> +
+> +	if (file->f_op != &ntsync_obj_fops) {
+> +		fput(file);
+> +		return NULL;
+> +	}
+> +
+> +	obj = file->private_data;
+> +	if (obj->dev != dev) {
+> +		fput(file);
+> +		return NULL;
+> +	}
+> +
+> +	return obj;
+> +}
+> +
+> +static void put_obj(struct ntsync_obj *obj)
+> +{
+> +	fput(obj->file);
+> +}
+> +
+> +static int ntsync_schedule(const struct ntsync_q *q, const struct ntsync_wait_args *args)
+> +{
+> +	ktime_t timeout = ns_to_ktime(args->timeout);
+> +	clockid_t clock = CLOCK_MONOTONIC;
+> +	ktime_t *timeout_ptr;
+> +	int ret = 0;
+> +
+> +	timeout_ptr = (args->timeout == U64_MAX ? NULL : &timeout);
+> +
+> +	if (args->flags & NTSYNC_WAIT_REALTIME)
+> +		clock = CLOCK_REALTIME;
+> +
+> +	do {
+> +		if (signal_pending(current)) {
+> +			ret = -ERESTARTSYS;
+> +			break;
+> +		}
+> +
+> +		set_current_state(TASK_INTERRUPTIBLE);
+> +		if (atomic_read(&q->signaled) != -1) {
+> +			ret = 0;
+> +			break;
+
+What happens if the value changes right after you read it?
+
+Rolling your own lock is tricky, and needs review from the locking
+maintainers.  And probably some more documentation as to what is
+happening and why our normal types of locks can't be used here?
+
+thanks,
+
+greg k-h
 
