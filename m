@@ -1,173 +1,189 @@
-Return-Path: <linux-kernel+bounces-140128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B05D58A0BC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:02:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 650128A0BCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:04:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1FD81C21AE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:02:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4F8D1F25DE4
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:04:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B3514264F;
-	Thu, 11 Apr 2024 09:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A471A14263A;
+	Thu, 11 Apr 2024 09:04:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mDNRm6y9"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="tlvu/boS"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DC9C13FD8E;
-	Thu, 11 Apr 2024 09:01:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71BEC143C62;
+	Thu, 11 Apr 2024 09:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712826117; cv=none; b=LoG4owra30ipdKxJvW+uFrM4LnAPSt1PLH9eM00Ee7HLtRYSbyQrOBy6cg7Q5tF0N6WUa+Z9F/jARPELDFy6wkE1qd93sPcNhYgLSm0GXLCETsCNdXxwezVRM0FlkGdxm2cVdTgKHpG/DKjl5jV8PXYpYoxQHqFS3VQ0kfGlHmg=
+	t=1712826250; cv=none; b=L3VKh8HszYV7A3xk+cdAd5FkhyRJBtD8VFyrKb2Vx7UESlwlU9naE7g6myLzMvi1MtONtZjpjcp4aVVQbLE6zF9Cbpg2z4r7JiCIsK4BfDskYdS0KBkiDPy/xJsoFg9UUYzycYmpozYfU69hoqW5hCB5X1Z3fJ9/5UebxUXb+Hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712826117; c=relaxed/simple;
-	bh=xVedsV4VfEGQGozEUtdTCCWXlxXgIeyFTHtRuT3EuY8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gQ7B2DKUFqoHer1+/gIvSLf/XG10ZwTIUf/sQloLReic7DEkdsSxvboLhIrw0971I713Bl1uaHV15JmgvgKQHg9hqRprR67tYnD6wyBcU8O/G/iD1Hcz4Vr1IuzNxIgUtx8X6HcNlRcratsEgkGevG4lQ8l8zVVdnJlaZ8vWbwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mDNRm6y9; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1712826250; c=relaxed/simple;
+	bh=6TmusjUX3vnMkNQepVsH4u+5hT3VrOI3o3ZMH1yhilU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aF5Xhdb9KVgTHAzlMuxo3J3irhZvR79PAPIzvuP/En6CqNFTL3IO744Hrm8M1v+S4IltWiOnQyiiof30+p1QJkiDVG0rIp37cdcI95HsA2mRVYGY+k9qQey4WVH3RUiEh5nTpHfbuzEuLjCp05TK6uy0Zly3StSkYr/e32+M1rk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=tlvu/boS; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712826115; x=1744362115;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=xVedsV4VfEGQGozEUtdTCCWXlxXgIeyFTHtRuT3EuY8=;
-  b=mDNRm6y9Q0AIhdmyI8HNXQB7TF/kxi/eMNb4KmkpPkW1CBbcoHD1U2l8
-   JoxFkRG+fnA3weHYuNwSXz3rrLWLnn/hlNQ9EpcD9QsTihofqdjka+LUk
-   +Lh/wLT6ipGyxYqkDGZN/dOdcoHsXbFjp95C3LCzaaH/IrWTkdhKCZyPO
-   osLg/X+G26dAgdDXW9zXwwn8qY/UXUmVCcDQTVEwAaMAZEj2tv3720V3Q
-   +h8QmavlY2lFr3yVNB5Bm/2EZG5itzbzKcfi7MRzHiodcz5UKbv9goCBi
-   MKBQI8+mB5u75IF0Cq7w9p6gAuO6hlAQciZ6VIXbu7I0ReohhRHjK+LCV
-   A==;
-X-CSE-ConnectionGUID: JCKLWtmrQnu6q4LSSnb2Zw==
-X-CSE-MsgGUID: rh+gDR0+SqKcSbADgvUOtg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8444815"
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="8444815"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 02:01:54 -0700
-X-CSE-ConnectionGUID: koQlii8mRDy4cv4dCye4BQ==
-X-CSE-MsgGUID: 5TFrG8/vT4GgcnntO57C4w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="21436532"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.215.66])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 02:01:53 -0700
-Message-ID: <7ef5951b-fab2-4364-99cd-3ad8fef2dd3f@intel.com>
-Date: Thu, 11 Apr 2024 12:01:48 +0300
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1712826248; x=1744362248;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6TmusjUX3vnMkNQepVsH4u+5hT3VrOI3o3ZMH1yhilU=;
+  b=tlvu/boSLS6EuRsVNYCNe07oBP3KIstqVJKSGcysn2LCoaYO0Icn5Elk
+   e9QROPNo2INRavrnWtB4HLOfPgJPgkRj9PKjHMUdAjak9/GQD3H0wBWT6
+   g3mt4tg+CjQMm3er3iM5j+oG9hTMDQcWATJA/y6bKLZWrwW0g77q+lyq9
+   zmkqEEzbRFYRtTt8i3UvDmIjdas2VqpRx/GEEFX/fDshv6VZSI340j122
+   dQhtuSunlMynZPBtyQLzqaDoG53ELrigBDKtRsvFfwtYaeRd7kF7frGuN
+   yyam8huptlC9hp+wUph1cFR6zoh/PiQR8I03xczdZnUn6ox8PL8u8wCBD
+   g==;
+X-CSE-ConnectionGUID: sBUxEcpYQIqblsPw1hMyfQ==
+X-CSE-MsgGUID: 6LquUSg4QDGyfAHGclQ3bA==
+X-IronPort-AV: E=Sophos;i="6.07,193,1708412400"; 
+   d="asc'?scan'208";a="21080514"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 11 Apr 2024 02:04:03 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 11 Apr 2024 02:03:57 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Thu, 11 Apr 2024 02:03:53 -0700
+Date: Thu, 11 Apr 2024 10:03:03 +0100
+From: Conor Dooley <conor.dooley@microchip.com>
+To: =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
+CC: Deepak Gupta <debug@rivosinc.com>, Conor Dooley <conor@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Rob
+ Herring <robh@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Anup Patel <anup@brainfault.org>, Shuah
+ Khan <shuah@kernel.org>, Atish Patra <atishp@atishpatra.org>,
+	<linux-doc@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<kvm@vger.kernel.org>, <kvm-riscv@lists.infradead.org>,
+	<linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH 07/10] riscv: add ISA extension parsing for Zcmop
+Message-ID: <20240411-superglue-errant-b32e5118695f@wendy>
+References: <20240410091106.749233-1-cleger@rivosinc.com>
+ <20240410091106.749233-8-cleger@rivosinc.com>
+ <ZhcFeVYUQJmBAKuv@debug.ba.rivosinc.com>
+ <20240410-jawless-cavalry-a3eaf9c562a4@spud>
+ <20240410-judgingly-appease-5df493852b70@spud>
+ <ZhcTiakvfbjb2hon@debug.ba.rivosinc.com>
+ <1287e6e9-cb8e-4a78-9195-ce29f1c4bace@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf tools: Simplify is_event_supported()
-To: Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
- linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <20240410104450.15602-1-adrian.hunter@intel.com>
- <CAP-5=fXw+HEnyiry=6LWhpPcexbNu=CzknNfcjr=MHa78ujkpw@mail.gmail.com>
- <CAM9d7cg54QYtyOO0986ffBFU2yV49RV7OgTmX5drRAqV84aKSQ@mail.gmail.com>
-Content-Language: en-US
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAM9d7cg54QYtyOO0986ffBFU2yV49RV7OgTmX5drRAqV84aKSQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="4EMZ8FslzLz1hx5z"
+Content-Disposition: inline
+In-Reply-To: <1287e6e9-cb8e-4a78-9195-ce29f1c4bace@rivosinc.com>
 
-On 10/04/24 20:45, Namhyung Kim wrote:
-> On Wed, Apr 10, 2024 at 9:08 AM Ian Rogers <irogers@google.com> wrote:
->>
->> On Wed, Apr 10, 2024 at 3:45 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>>
->>> Simplify is_event_supported by using sys_perf_event_open() directly like
->>> other perf API probe functions and move it into perf_api_probe.c where
->>> other perf API probe functions reside.
->>>
->>> A side effect is that the probed events do not appear when debug prints
->>> are enabled, which is beneficial because otherwise they can be confused
->>> with selected events.
->>>
->>> This also affects "Test per-thread recording" in
->>> "Miscellaneous Intel PT testing" which expects the debug prints of
->>> only selected events to appear between the debug prints:
->>> "perf record opening and mmapping events" and
->>> "perf record done opening and mmapping events"
->>>
->>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
->>
->> nit:
->> Closes: https://lore.kernel.org/lkml/ZhVfc5jYLarnGzKa@x1/
->>
->>> ---
->>>  tools/perf/util/perf_api_probe.c | 40 +++++++++++++++++++++++++
->>>  tools/perf/util/perf_api_probe.h |  2 ++
->>>  tools/perf/util/pmus.c           |  1 +
->>>  tools/perf/util/print-events.c   | 50 +-------------------------------
->>>  tools/perf/util/print-events.h   |  1 -
->>>  5 files changed, 44 insertions(+), 50 deletions(-)
->>>
->>> diff --git a/tools/perf/util/perf_api_probe.c b/tools/perf/util/perf_api_probe.c
->>> index 1de3b69cdf4a..13acb34a4e1c 100644
->>> --- a/tools/perf/util/perf_api_probe.c
->>> +++ b/tools/perf/util/perf_api_probe.c
->>> @@ -195,3 +195,43 @@ bool perf_can_record_cgroup(void)
->>>  {
->>>         return perf_probe_api(perf_probe_cgroup);
->>>  }
->>> +
->>> +bool is_event_supported(u8 type, u64 config)
->>> +{
->>> +       struct perf_event_attr attr = {
->>> +               .type = type,
->>> +               .config = config,
->>> +               .disabled = 1,
->>> +       };
->>> +       int fd = sys_perf_event_open(&attr, 0, -1, -1, 0);
->>
->> It looks like this is a change to the actual perf_event_open
->> arguments, I don't think it is an issue but wanted to flag it.
->>
->>> +
->>> +       if (fd < 0) {
->>> +               /*
->>> +                * The event may fail to open if the paranoid value
->>> +                * /proc/sys/kernel/perf_event_paranoid is set to 2
->>> +                * Re-run with exclude_kernel set; we don't do that by
->>> +                * default as some ARM machines do not support it.
->>> +                */
->>> +               attr.exclude_kernel = 1;
->>
->> I worry about the duplicated fallback logic getting out of sync,
->> perhaps we could have a quiet option for evsel__open option, or better
->> delineate the particular log entries.
+--4EMZ8FslzLz1hx5z
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-That seemed like it would be messy, but upon closer inspection
-was straight forward.  Patch here:
+On Thu, Apr 11, 2024 at 09:25:06AM +0200, Cl=E9ment L=E9ger wrote:
+>=20
+>=20
+> On 11/04/2024 00:32, Deepak Gupta wrote:
+> > On Wed, Apr 10, 2024 at 11:27:16PM +0100, Conor Dooley wrote:
+> >> On Wed, Apr 10, 2024 at 11:16:11PM +0100, Conor Dooley wrote:
+> >>> On Wed, Apr 10, 2024 at 02:32:41PM -0700, Deepak Gupta wrote:
+> >>> > On Wed, Apr 10, 2024 at 11:11:00AM +0200, Cl=E9ment L=E9ger wrote:
+> >>> > > Add parsing for Zcmop ISA extension which was ratified in commit
+> >>> > > b854a709c00 ("Zcmop is ratified/1.0") of the riscv-isa-manual.
+> >>> > >
+> >>> > > Signed-off-by: Cl=E9ment L=E9ger <cleger@rivosinc.com>
+> >>> > > ---
+> >>> > > arch/riscv/include/asm/hwcap.h | 1 +
+> >>> > > arch/riscv/kernel/cpufeature.c | 1 +
+> >>> > > 2 files changed, 2 insertions(+)
+> >>> > >
+> >>> > > diff --git a/arch/riscv/include/asm/hwcap.h
+> >>> b/arch/riscv/include/asm/hwcap.h
+> >>> > > index b7551bad341b..cff7660de268 100644
+> >>> > > --- a/arch/riscv/include/asm/hwcap.h
+> >>> > > +++ b/arch/riscv/include/asm/hwcap.h
+> >>> > > @@ -86,6 +86,7 @@
+> >>> > > #define RISCV_ISA_EXT_ZCB=A0=A0=A0=A0=A0=A0=A0 77
+> >>> > > #define RISCV_ISA_EXT_ZCD=A0=A0=A0=A0=A0=A0=A0 78
+> >>> > > #define RISCV_ISA_EXT_ZCF=A0=A0=A0=A0=A0=A0=A0 79
+> >>> > > +#define RISCV_ISA_EXT_ZCMOP=A0=A0=A0=A0=A0=A0=A0 80
+> >>> > >
+> >>> > > #define RISCV_ISA_EXT_XLINUXENVCFG=A0=A0=A0 127
+> >>> > >
+> >>> > > diff --git a/arch/riscv/kernel/cpufeature.c
+> >>> b/arch/riscv/kernel/cpufeature.c
+> >>> > > index 09dee071274d..f1450cd7231e 100644
+> >>> > > --- a/arch/riscv/kernel/cpufeature.c
+> >>> > > +++ b/arch/riscv/kernel/cpufeature.c
+> >>> > > @@ -265,6 +265,7 @@ const struct riscv_isa_ext_data
+> >>> riscv_isa_ext[] =3D {
+> >>> > >=A0=A0=A0=A0 __RISCV_ISA_EXT_DATA(zcb, RISCV_ISA_EXT_ZCB),
+> >>> > >=A0=A0=A0=A0 __RISCV_ISA_EXT_DATA(zcd, RISCV_ISA_EXT_ZCD),
+> >>> > >=A0=A0=A0=A0 __RISCV_ISA_EXT_DATA(zcf, RISCV_ISA_EXT_ZCF),
+> >>> > > +=A0=A0=A0 __RISCV_ISA_EXT_DATA(zcmop, RISCV_ISA_EXT_ZCMOP),
+> >>> >
+> >>> > As per spec zcmop is dependent on zca. So perhaps below ?
+> >>> >
+> >>> > __RISCV_ISA_EXT_SUPERSET(zicboz, RISCV_ISA_EXT_ZCMOP,
+> >>> RISCV_ISA_EXT_ZCA)
+> >>>
+> >>> What's zicboz got to do with it, copy-pasto I guess?
+> >=20
+> > Yes, copy-pasta :-)
+> >=20
+> >>> If we're gonna imply stuff like this though I think we need some
+> >>> comments explaining why it's okay.
+> >>
+> >> Also, I'm inclined to call that out specifically in the binding, I've
+> >> not yet checked if dependencies actually work for elements of a string
+> >> array like the do for individual properties. I'll todo list that..
+> >=20
+> > Earlier examples of specifying dependency on envcfg actually had functi=
+onal
+> > use case.
+> > So you are right, I am not sure if its actually needed in this
+> > particular case.
+>=20
+> I actually saw that and think about addressing it but AFAICT, this
+> should be handled by the machine firmware passing the isa string to the
+> kernel (ie, it should be valid). In the case of QEMU, it takes care of
+> setting the extension that are required by this extension itself.
+>=20
+> If we consider to have potentially broken isa string (ie extensions
+> dependencies not correctly handled), then we'll need some way to
+> validate this within the kernel.
 
-	https://lore.kernel.org/linux-perf-users/20240411075447.17306-1-adrian.hunter@intel.com/T/#u	
+No, the DT passed to the kernel should be correct and we by and large we
+should not have to do validation of it. What I meant above was writing
+the binding so that something invalid will not pass dtbs_check.
 
->>                                       I don't really have a good
->> alternative idea and kind of like that detecting an event is available
->> loses the evsel baggage. I would kind of like event parsing just to
->> give 1 or more perf_event_attr for similar reasons.
-> 
-> We have the missing feature check in the evsel open code,
-> and I think we should check the exclude-bits first than others.
-> Currently struct pmu has missing_features.exclude_guest only
-> and it can have exclude_kernel or others too.
-> 
-> Anyway, I'm ok with this change.
-> 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
-> 
-> Thanks,
-> Namhyung
+--4EMZ8FslzLz1hx5z
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhenRgAKCRB4tDGHoIJi
+0ntrAP0Tj4WJ1c21e2spkfDS6PwV7wHiJYoWI9/4CiHZwAQORAEApMmTK1BWuikT
+fiLbYMmFEHJbe4+ND/jrK1UaiylnyQ8=
+=p9pA
+-----END PGP SIGNATURE-----
+
+--4EMZ8FslzLz1hx5z--
 
