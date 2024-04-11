@@ -1,230 +1,139 @@
-Return-Path: <linux-kernel+bounces-141335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FB3D8A1CCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97DF18A1CCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:56:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4168E1C2262A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:56:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C891C1C23AE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:56:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF7A31BED6D;
-	Thu, 11 Apr 2024 16:39:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE1D1BAA8F;
+	Thu, 11 Apr 2024 16:39:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cx/UTL2q"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rn0ESlg4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEA2943ADA;
-	Thu, 11 Apr 2024 16:39:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FFF243ADA;
+	Thu, 11 Apr 2024 16:39:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712853564; cv=none; b=QYHcRA2tTqU6rGx+PVM3peO7vCAatvCUpkLvx2nVDqHZydpVoGAvhw5cXQyqtgLusUUp+KOZz8cQvemuu4wFifr/nxURi5Evihw4ccNDjDa28zSbyKR9kguoVDrL0YcB/eJqVd9vXjpe2O8TImFaBogRm40RzgNu+HbaVW5EipM=
+	t=1712853557; cv=none; b=RImuLkac/YCLXivnif8Ng+yO3HgKinxRNiplY9ON4IUVXqPfkzr2LzlwsqiJBiN+LlD1pbeBDOVuhNkRvTQDtmp3fwhgrzbGrVqReprvERWIjR8howD/aPTb50/yLLcDYPFGLKZCpFMHj9swEvpdAMvjVKeu+d1Ms/qysdpWAEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712853564; c=relaxed/simple;
-	bh=PWmjccZkSJXuxx9lT+7Acx5QZuHRZr9OGDvcIRNXG9E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ehjyopkho8M7qH/ZVq2BzSBlNbGOg0QyWmcI2R41cFNnJdAl7DhcEAYKmJ8eqrM4crrCWooPAfqGgc6SYTriyuMkdj0JGMjGSsQqFlGSbugGy28FqWj4vKBMRLn7jPHtxfLvERFIfCRe2g1VTgBDhEigoiHVj3sT7UiTmXdVrac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cx/UTL2q; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712853562; x=1744389562;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=PWmjccZkSJXuxx9lT+7Acx5QZuHRZr9OGDvcIRNXG9E=;
-  b=cx/UTL2q7h9VdIjV+yQ7rf6qoVIRcW2nkbVNtKMYoJNoqG7zmr6UmAL5
-   KKYaFvxALysfDroqIcl2Zl8Q8G5OG60XAPMGy9pBl7Eim5Oc7uAY1ypyv
-   5JvfA3J+KB+8HY6kmd7PtHR0TL8Qx7SNQFCepU/Y0h++NGstRMQmYNtcG
-   8QHZX7jFWPfnq4z92ax3rFsXyOIAMxopv+gfoQF0aYnuTx5lLD9dfguAt
-   saopHAKeW7oIjM/ve65NPm09RC3Qu4BsQBdv4suaBoc1Ln3CtU89ru6LT
-   DK9BXqZUyj4RpgCFrEUpKteY+9W1pmskE4te/X1XdD+0MrYktvaQcv2XS
-   Q==;
-X-CSE-ConnectionGUID: 3238KIjDRx25DqRSZrsIww==
-X-CSE-MsgGUID: J6qkCiaARWSudogiOth7NQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="25789947"
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="25789947"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 09:39:21 -0700
-X-CSE-ConnectionGUID: ojrizVxnSCCBXMY+bzMywA==
-X-CSE-MsgGUID: BWNOhvUhQaOMIIs4rQHKgA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="25735575"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.215.66])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 09:39:18 -0700
-Message-ID: <f3381541-822b-4e94-93f7-699afc6aa6a3@intel.com>
-Date: Thu, 11 Apr 2024 19:39:11 +0300
+	s=arc-20240116; t=1712853557; c=relaxed/simple;
+	bh=KA0gmwx5RKIsM+SMGYg8VxRvhIzvngglfYJ4j6bCzqA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qSV/lMdgt325tSH8x0W5DukmEMcO1LENLQeV0iGl57EK2xpHy678lkbVe2pmSXSzB/Di0kZVRKCTuF5FD2Uwcw0Gkr3F3pegd5KOrSJTOCDfs52BoHSy4BuI4Ec3KA4Kiq2Ap2Ne0dazSSNYIG4ig2QOdIzogGNyDOQC7RD0XKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rn0ESlg4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A48EC072AA;
+	Thu, 11 Apr 2024 16:39:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712853557;
+	bh=KA0gmwx5RKIsM+SMGYg8VxRvhIzvngglfYJ4j6bCzqA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Rn0ESlg4jtpBagbAkT5po/N7qvhzWQy6/9Sx7TaKfeWCIsILTCVpTiBNXjaZwIQBG
+	 dyjURdnyg0YlITzPxqnTPvyR0/mVD34GWYx4jFShg7xGGgWqNtbUu1HvVp2/pHmHSd
+	 Ru+piYEQ1rOrjDwuFrfO6kOW31UPGdCScil/+mNQDF3MvZyN4zgGI0oX8VDb3hW7ut
+	 ZMmND06bgNpHIdPEh0aEzN6sh9nTCKBtTEmZdvOc8rXqjKzK3+0ekK7nVjFQl2fWjY
+	 /AXmrcieLHDYX7M+JUFH9RyUIRk+6cUUpGXvqIcoekPvjG2XR0ESXlmmLrh/OBwN39
+	 k1OcPMGHmRnpA==
+Date: Thu, 11 Apr 2024 17:39:11 +0100
+From: Lee Jones <lee@kernel.org>
+To: Karel Balej <balejk@matfyz.cz>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+	Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org
+Subject: Re: [PATCH 2/5] mfd: add driver for Marvell 88PM886 PMIC
+Message-ID: <20240411163911.GJ2399047@google.com>
+References: <20240331105608.7338-2-balejk@matfyz.cz>
+ <20240331105608.7338-4-balejk@matfyz.cz>
+ <20240411113726.GH1980182@google.com>
+ <D0HE07BHD1T8.HQLIBUHTRVGT@matfyz.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 076/130] KVM: TDX: Finalize VM initialization
-To: isaku.yamahata@intel.com, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org, "Edgecombe, Rick P"
- <rick.p.edgecombe@intel.com>
-Cc: isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <e3c862ae9c78bda2988768c1038fec100bb372cf.1708933498.git.isaku.yamahata@intel.com>
-Content-Language: en-US
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <e3c862ae9c78bda2988768c1038fec100bb372cf.1708933498.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <D0HE07BHD1T8.HQLIBUHTRVGT@matfyz.cz>
 
-On 26/02/24 10:26, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
+On Thu, 11 Apr 2024, Karel Balej wrote:
+
+> Lee Jones, 2024-04-11T12:37:26+01:00:
+> [...]
+> > > diff --git a/drivers/mfd/88pm886.c b/drivers/mfd/88pm886.c
+> > > new file mode 100644
+> > > index 000000000000..e06d418a5da9
+> > > --- /dev/null
+> > > +++ b/drivers/mfd/88pm886.c
+> > > @@ -0,0 +1,157 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > +#include <linux/i2c.h>
+> > > +#include <linux/mfd/core.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/notifier.h>
+> > > +#include <linux/of.h>
+> > > +#include <linux/reboot.h>
+> > > +#include <linux/regmap.h>
+> > > +
+> > > +#include <linux/mfd/88pm886.h>
+> > > +
+> > > +#define PM886_REG_INT_STATUS1			0x05
+> > > +
+> > > +#define PM886_REG_INT_ENA_1			0x0a
+> > > +#define PM886_INT_ENA1_ONKEY			BIT(0)
+> > > +
+> > > +#define PM886_IRQ_ONKEY				0
+> > > +
+> > > +#define PM886_REGMAP_CONF_MAX_REG		0xef
+> >
+> > Why have you split the defines up between here and the header?
 > 
-> To protect the initial contents of the guest TD, the TDX module measures
-> the guest TD during the build process as SHA-384 measurement.  The
-> measurement of the guest TD contents needs to be completed to make the
-> guest TD ready to run.
+> I tried to keep defines tied to the code which uses them and only put
+> defines needed in multiple places in the header. With the exception of
+> closely related things, such as register bits which I am keeping
+> together with the respective register definitions for clarity. Does that
+> not make sense?
+
+It makes sense and it's a nice thought, but I think it's nicer to keep
+them all together, rather than have to worry about which ones are and
+which ones are not used here or there.  Also, there will be holes in the
+definitions, etc.
+
+> > Please place them all in the header.
 > 
-> Add a new subcommand, KVM_TDX_FINALIZE_VM, for VM-scoped
-> KVM_MEMORY_ENCRYPT_OP to finalize the measurement and mark the TDX VM ready
-> to run.
+> Would you then also have me move all the definitions from the regulators
+> driver there?
 
-Perhaps a spruced up commit message would be:
+I think it would be nice to have them all nice and contiguous.
 
-<BEGIN>
-Add a new VM-scoped KVM_MEMORY_ENCRYPT_OP IOCTL subcommand,
-KVM_TDX_FINALIZE_VM, to perform TD Measurement Finalization.
+So, yes.
 
-Documentation for the API is added in another patch:
-"Documentation/virt/kvm: Document on Trust Domain Extensions(TDX)"
-
-For the purpose of attestation, a measurement must be made of the TDX VM
-initial state. This is referred to as TD Measurement Finalization, and
-uses SEAMCALL TDH.MR.FINALIZE, after which:
-1. The VMM adding TD private pages with arbitrary content is no longer
-   allowed
-2. The TDX VM is runnable
-<END>
-
-History:
-
-This code is essentially unchanged from V1, as below.
-Except for V5, the code has never had any comments.
-Paolo's comment from then still appears unaddressed.
-
-V19:		Unchanged
-V18:		Undoes change of V17
-V17:		Also change tools/arch/x86/include/uapi/asm/kvm.h
-V16:		Unchanged
-V15:		Undoes change of V10
-V11-V14:	Unchanged
-V10:		Adds a hack (related to TDH_MEM_TRACK)
-		that was later removed in V15
-V6-V9:		Unchanged
-V5		Broke out the code into a separate patch and
-		received its only comments, which were from Paolo:
-
-	"Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-	Note however that errors should be passed back in the struct."
-		
-	This presumably refers to struct kvm_tdx_cmd which has an "error"
-	member, but that is not updated by tdx_td_finalizemr()
-
-V4 was a cut-down series and the code was not present
-V3 introduced WARN_ON_ONCE for the error condition
-V2 accommodated renaming the seamcall function and ID
-
-Outstanding:
-
-1. Address Paolo's comment about the error code
-2. Is WARN_ON sensible?
-
-Final note:
-
-It might be possible to make TD Measurement Finalization
-transparent to the user space VMM and forego another API, but it seems
-doubtful that would really make anything much simpler.
-
+> [...]
 > 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> > > +	err = devm_mfd_add_devices(dev, 0, pm886_devs, ARRAY_SIZE(pm886_devs),
+> >
+> > Why 0?
 > 
-> ---
-> v18:
-> - Remove the change of tools/arch/x86/include/uapi/asm/kvm.h.
-> 
-> v14 -> v15:
-> - removed unconditional tdx_track() by tdx_flush_tlb_current() that
->   does tdx_track().
-> 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->  arch/x86/include/uapi/asm/kvm.h |  1 +
->  arch/x86/kvm/vmx/tdx.c          | 21 +++++++++++++++++++++
->  2 files changed, 22 insertions(+)
-> 
-> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-> index 34167404020c..c160f60189d1 100644
-> --- a/arch/x86/include/uapi/asm/kvm.h
-> +++ b/arch/x86/include/uapi/asm/kvm.h
-> @@ -573,6 +573,7 @@ enum kvm_tdx_cmd_id {
->  	KVM_TDX_INIT_VM,
->  	KVM_TDX_INIT_VCPU,
->  	KVM_TDX_EXTEND_MEMORY,
-> +	KVM_TDX_FINALIZE_VM,
->  
->  	KVM_TDX_CMD_NR_MAX,
->  };
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index 3cfba63a7762..6aff3f7e2488 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -1400,6 +1400,24 @@ static int tdx_extend_memory(struct kvm *kvm, struct kvm_tdx_cmd *cmd)
->  	return ret;
->  }
->  
-> +static int tdx_td_finalizemr(struct kvm *kvm)
-> +{
-> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> +	u64 err;
-> +
-> +	if (!is_hkid_assigned(kvm_tdx) || is_td_finalized(kvm_tdx))
-> +		return -EINVAL;
-> +
-> +	err = tdh_mr_finalize(kvm_tdx->tdr_pa);
-> +	if (WARN_ON_ONCE(err)) {
+> PLATFORM_DEVID_AUTO then? Or will PLATFORM_DEVID_NONE suffice since the
+> cells all have different names now (it would probably cause problems
+> though if the driver was used multiple times for some reason, wouldn't
+> it?)?
 
-Is a failed SEAMCALL really something to WARN over?
+You tell me.  Please try and understand the code you author. :)
 
-> +		pr_tdx_error(TDH_MR_FINALIZE, err, NULL);
-
-As per Paolo, error code is not returned in struct kvm_tdx_cmd
-
-> +		return -EIO;
-> +	}
-> +
-> +	kvm_tdx->finalized = true;
-> +	return 0;
-> +}
-> +
->  int tdx_vm_ioctl(struct kvm *kvm, void __user *argp)
->  {
->  	struct kvm_tdx_cmd tdx_cmd;
-> @@ -1422,6 +1440,9 @@ int tdx_vm_ioctl(struct kvm *kvm, void __user *argp)
->  	case KVM_TDX_EXTEND_MEMORY:
->  		r = tdx_extend_memory(kvm, &tdx_cmd);
->  		break;
-> +	case KVM_TDX_FINALIZE_VM:
-> +		r = tdx_td_finalizemr(kvm);
-> +		break;
->  	default:
->  		r = -EINVAL;
->  		goto out;
-
+-- 
+Lee Jones [李琼斯]
 
