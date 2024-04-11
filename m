@@ -1,106 +1,87 @@
-Return-Path: <linux-kernel+bounces-141703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E5D38A222B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:17:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1926D8A2234
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:19:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84CB3B22251
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:17:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 296581C22C91
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:19:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 577BE47A6A;
-	Thu, 11 Apr 2024 23:17:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 094D647F64;
+	Thu, 11 Apr 2024 23:19:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aWZcZKLB"
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AAD8D53C
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 23:17:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="amFCXyaU"
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844584AED1;
+	Thu, 11 Apr 2024 23:19:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712877428; cv=none; b=LVae5uF1xJ5rIv+oYqz6SPZQuBkllvdCSfGazH78Eezf+k8OcZ62hKZ5qG2fen76HGVoXhZd02NUrSAYxffyC8jIUk0Cfk5+Ccrl1z9xYkrJammy0UkJG23Ow+a+Z95M1QAkYp+UfK+XmTQM7ihCMiJY8ZOwXL36zbdXoV+I4BI=
+	t=1712877560; cv=none; b=NTOaNRr5R6WYaIiWauFv9EMDINRk2Hrte6BsAe4NA3d6G59LjTHaWE78eBsZ9SDN58/rXMS/5lFJrIA/fCZgxr0jTzIgrPKeNRKvtv6UEZ/ydompn7/7eojsnVHOn4NNX9sYeCbmcCy1Zi5/As1PsLVDjFKmmvaQdCuN6f7/V+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712877428; c=relaxed/simple;
-	bh=BpVlVa98Ld8N5k9yDGC7wHjA38fX++HWC68Q50KplEE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=dLZ+4DIvfIODL4qWl7lFyfdZuM5DG/xx3h1W5hLpWTbIgO29MGfHAzNxXJrxUybaUwpGMt/VTWqmzs7pyiMMXjB6oXAWbD7/AK3cvAYVR+x/H+Q+CFIfG3IdGafs7leHXEFKEbCy1yg/YYuWrlHlGRCjoO/W2pygGK/Iwzjov4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aWZcZKLB; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1e2be2a866aso3945815ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:17:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712877427; x=1713482227; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZaEKPQTfggD2ocO67Q/mDYf6kXhBuyVqa9iBD72w+wg=;
-        b=aWZcZKLBn1y7sJMp2f7AVhsDaHqe2pAuwnpUz5r+6NnTbjbgIHxYS69qzAWbC9NnVR
-         aGSVHYPL7GJsy2r0edzuB35fazSSSKkL/xU7n4eTfSJ7p4vb94xzOKJkKeFe/2iLq3Fq
-         P3dhqhLNh7cJVPcKfwCX+PmD7UoogEgF1sr1/bo1k0oYfJbdMSxdsXdsnZ84EIBmdVj4
-         XUbgzPfEhpdXrH2pG89w4v5WS1HRVvA1nmDFHYYtUhvSHTq7soWeSRsAPOXxZBbUXMHa
-         GN9FOwSvBPFqZMRXvYDnG20QhEc2Sl+EVD5lSWVrENqxFbQNkmm9h9g3FnhJhrYnB1gr
-         x4fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712877427; x=1713482227;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZaEKPQTfggD2ocO67Q/mDYf6kXhBuyVqa9iBD72w+wg=;
-        b=DLj9mYj0kIzlynyByfuIvCp2e3EoDiZzQRYyDVimx/Kin+gqoXfIkgtn48m7h4gY5K
-         1T71JB+6P3iJT6UPOzDsd/AIhgr5751m8uZqo+JCa7/7FiHBcxim1pNfcisSkoTk48xu
-         /kA7CZHtNL1bGJu/h+6rfkZOOO59Dsb98L17zFEYyMw4j4AYtjDmOBAoqsaEhEwPcWib
-         CR+Dd7GM0UvV+X92JkOK2Pr7BY0utFKlqJTXx0Z/4XEC/CnrsDMoP4Tzte8+fCb4NQVI
-         JFF5lmrKSLLa+PNr8RbkQ8mgozOMWMpw62RTRxnzl9nSnOBDmV2KpjYUfn5JLR6kiy3p
-         Ph+g==
-X-Forwarded-Encrypted: i=1; AJvYcCWDCkzd40PABbumjhrrH0Q5qiljlZGW1vpK4jTjgr0N+M3ClBbz6ejts4b9G+GyE1CLpNJXKR4CFJqvS73Js8dbgza4xrvohdpczZ2E
-X-Gm-Message-State: AOJu0Ywqs5jWgFzDv3GGmEIaGEAjQFqZPCwCpwIF3anI77ZQzh59Z/Sy
-	DdQ1hsKeC8FNgIDiobJNbIiAz2P8nVbqBIbXvZPjg72P2NUsjoOFlxDBSidshNugwkpcjzfAVtg
-	Utw==
-X-Google-Smtp-Source: AGHT+IFkh8UwGORNfKAIhGU1TPD5433RiqkcctsyOHy6puas+6uDcvtX8qjhjvOj/SL+DVl0b2HUd131kpU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:2444:b0:1e3:cf18:7336 with SMTP id
- l4-20020a170903244400b001e3cf187336mr3032pls.2.1712877426911; Thu, 11 Apr
- 2024 16:17:06 -0700 (PDT)
-Date: Thu, 11 Apr 2024 16:17:05 -0700
-In-Reply-To: <ZhhucuZcaCKVPb5R@google.com>
+	s=arc-20240116; t=1712877560; c=relaxed/simple;
+	bh=aNmoCty2E2taxbJGZXgC0zkBJXRsGV5eZ6MA4fcTBgM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=p9nZgl3cDmnOJEfT0RjjCheF9oPAS1WjqAvn2UbITGa1jlJg/KNddZS0Uy1MEI9Om8cnoPRHF27OHYjbT0dhyw5GfuxwNKMXHL4GKg0TXJC5QymbSlxRORqIskVDkbqrqTNjKjLnCKzJvbsqkqYyWc2Tv0N0NoODY4z9ivqjYWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=amFCXyaU; arc=none smtp.client-ip=117.135.210.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=c5Pzo
+	m9ggE+lnrPwITXXUuzreNabMc9C3d5zN36J6+c=; b=amFCXyaUffXBkkMLeLToV
+	JsIFN/Qm4MymU9dGml6IAyca4lHTkUtHFbzhsGjv1wSWHmjoQbGkRdQhdfN2L2J9
+	uHNOntu12Fg3/vXXR8spzqbXE2tNbH4Xkjfi0r3/B+sF+/pkRxre47zBbsiEWH75
+	AM+fIY9fJOOryPQUIJv234=
+Received: from localhost.localdomain (unknown [101.86.127.38])
+	by gzga-smtp-mta-g3-3 (Coremail) with SMTP id _____wD3H47CbxhmuzOoAA--.32437S4;
+	Fri, 12 Apr 2024 07:18:51 +0800 (CST)
+From: Lizhe <sensor1010@163.com>
+To: rafael@kernel.org,
+	viresh.kumar@linaro.org,
+	linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Lizhe <sensor1010@163.com>
+Subject: [PATCH] cpufreq: Fixed kernel crash caused by cpufreq issues
+Date: Thu, 11 Apr 2024 16:18:18 -0700
+Message-Id: <20240411231818.2471-1-sensor1010@163.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
- <20240126085444.324918-40-xiong.y.zhang@linux.intel.com> <ZhhucuZcaCKVPb5R@google.com>
-Message-ID: <Zhhvcd1R_uz_xbRU@google.com>
-Subject: Re: [RFC PATCH 39/41] KVM: x86/pmu: Implement emulated counter
- increment for passthrough PMU
-From: Sean Christopherson <seanjc@google.com>
-To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
-Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
-	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
-	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
-	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
-	chao.gao@intel.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3H47CbxhmuzOoAA--.32437S4
+X-Coremail-Antispam: 1Uf129KBjvdXoW7GF1UAr1xWw1fKr4rJrW3trb_yoW3Crg_ur
+	1rWr1xXr4Duw10vF17Cr4Svr1Yy3W3WrnavF18t39xJa4UAr9Yyw18Xrn3Xa4rX3yxGFZr
+	XrWUtF1UCr1kGjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRXyCLJUUUUU==
+X-CM-SenderInfo: 5vhq20jurqiii6rwjhhfrp/1tbiSBy9q2XAk244cQAAsT
 
-On Thu, Apr 11, 2024, Sean Christopherson wrote:
-> > +	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
-> > +	int bit;
-> > +
-> > +	for_each_set_bit(bit, pmu->incremented_pmc_idx, X86_PMC_IDX_MAX) {
-> 
-> I don't love the "incremented_pmc_idx" name.  It's specifically for emulated
-> events, that should ideally be clear in the name.
-> 
-> And does the tracking the emulated counters actually buy anything?  Iterating
-> over all PMCs and checking emulated_counter doesn't seem like it'd be measurably
-> slow, especially not when this path is likely writing multiple MSRs.
-> 
-> Wait, why use that and not reprogram_pmi?
+When the cpufreq_driver does not provide an exit() function.
+cpufreq offline operations can result in a kernel crash.
 
-If the name is a sticking point, just rename it to something generic, e.g.
-dirty_pmcs or something.
+Signed-off-by: Lizhe <sensor1010@163.com>
+---
+ drivers/cpufreq/cpufreq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index 04d349372de3..e8660bc7d232 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -1739,7 +1739,7 @@ static void cpufreq_remove_dev(struct device *dev, struct subsys_interface *sif)
+ 	}
+ 
+ 	/* We did light-weight exit earlier, do full tear down now */
+-	if (cpufreq_driver->offline)
++	if (cpufreq_driver->offline && cpufreq_driver->exit)
+ 		cpufreq_driver->exit(policy);
+ 
+ 	up_write(&policy->rwsem);
+-- 
+2.25.1
+
 
