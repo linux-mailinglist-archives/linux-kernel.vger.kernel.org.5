@@ -1,246 +1,287 @@
-Return-Path: <linux-kernel+bounces-141402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6892E8A1DC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:18:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC76A8A1EE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:50:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EE2028AD25
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:18:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 079AFB28D31
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:20:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9C7C57316;
-	Thu, 11 Apr 2024 17:28:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DC455FBB2;
+	Thu, 11 Apr 2024 17:30:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1Ba8scFc"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AcrNhveZ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55BC956B89
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 17:28:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C215FDA5
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 17:30:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712856522; cv=none; b=kn6tr4Dl/o3ksmbJontzPffptlF7r7Jfvh/cm08bPK0QN/Gx6U1mpb3ClDHgtQVNK3L5VNV/sjQmJLYzqEwgxATSl+h/o+fqf3tZgRHpi1Kw210A3so1hUO8fp5S/dCTyEvi+ucwJemc0T9yVedRKN+Hn+sNjTD3DDTv28xthbs=
+	t=1712856615; cv=none; b=enff9/ZCquEFq0cTelHWqkN1px88uluPzdhynALa7MtxVwy9eJeO4SnboAPjgSyQDjWJUe8oh9fuYpsWecf0zbai+XhH/FUj9rOwuL8lCxp2tY9XPplPUPUTiQlMxzwq8bU98g6VAQhLgOZnNDtyWjo+mjbuxgWZsLdrdp4yytg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712856522; c=relaxed/simple;
-	bh=YU2VLd18c7WKYUwXK8lM7bD6O3ynStX6B+W9q8BizTI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UAkhtJP7Ejmgzs+XSgxOndJNCOmooMHDLJvPUkwe2kJGyFb+/pWa1FGPnucCYro/43XFwdDZ0B0LrjYOlDyigJec8q18kI8C9PFGaX48Yx3zD66P3G1FzPKbRqedMNP8DMgxRXRyiWQT2J1eUGjFvbBmezu8J+O/KQEgQolffmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1Ba8scFc; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6ed11782727so106668b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:28:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712856521; x=1713461321; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=89Ohds8IaE0Yxua4zAHj3lBzHQSIcJMIu/8p76cYkP8=;
-        b=1Ba8scFcPFugImLRysB0tpZVNVvqE3lC0MzXWZF2QrzVLpKCj6EHAr5JLr4Q0UwcA7
-         e5Jnk8mnCpIU2XIBUBskMx0ZczrGjvoHmtIthX4qEkcUDpQThEN4kSZ3HjBbmdqAgeFA
-         yLkVS6xF805rJie9exgxfw61RgWBA4Yb+8khHATOxnbMe+sfSP7B9hJT2v2TX78jOGIY
-         A+v53GuD7fUSniacZuSIL5nDSUZuT7Ep970JcIZlrktzKMHypQuObe4wxrJdGb32WJcc
-         7J7MET4OZ2E09kyjH6vfbqhUYEY+N9xwSkMp6cwyH280XB6QoKgVjWN13AUh1aZH574B
-         C5CQ==
+	s=arc-20240116; t=1712856615; c=relaxed/simple;
+	bh=coXlODZfnq7h5xpUpn/o3CBsPtjfYjFFjiRQ4X0YcmI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Sb0X3bXAKFvIos/WFyNqIzeXZ1OYTd7ZdcC8PS0ddmKekoWxD7jojMt50+FBpuLJ8vTCDmjOtexgXBDpsnaAAGbWvfwGqssZEbTxFw4u1PPBvv1/hl5QOkRV8uarCID+TQFIKAdeercoNh5a3AZ/xR6xQJkAiCyc0HB3yIvhkVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AcrNhveZ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712856612;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JA70ylDgRN0gmRtnn7ierQ4wSnxSZyu6IwhBgJQKKoo=;
+	b=AcrNhveZtmLb8+cAu0SfoeATDArqHZQadYWUJp/cJYj6DVXaXY03smQhMRNX+R3Rji/2td
+	B1HfY8f7pXJ2ipqbifNQUgw1vzktN9vyt4sw/tiHK7roJAoRixIIzPvTVpQXQBGHsIe6Aw
+	WErIG/I8UBwVgrYDIA9FhrOf8XVIv00=
+Received: from mail-vk1-f199.google.com (mail-vk1-f199.google.com
+ [209.85.221.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-482-XUx43BG3M1yOkK_1nCRF2A-1; Thu, 11 Apr 2024 13:30:11 -0400
+X-MC-Unique: XUx43BG3M1yOkK_1nCRF2A-1
+Received: by mail-vk1-f199.google.com with SMTP id 71dfb90a1353d-4daa117d98fso16563e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:30:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712856521; x=1713461321;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=89Ohds8IaE0Yxua4zAHj3lBzHQSIcJMIu/8p76cYkP8=;
-        b=MNylhaPwyO03x2maFwntBCIyA/PJIWsHN2VDFfntOhL5+ulaLsOswS6BheMZzz+dAg
-         FkXg+TdlIl4D6LU7exGygOvg/t0CQ9sZvVKqCQG00K+aVqK/EwofpDS3G3a/QrU3VOjo
-         Aes/RgXA8JD+/ul67pIVdMRmwGDzSYjXTei9eoXjBtOuZFkmx3TQso2c2Sx0UIFdCxUD
-         YA2Iy3pNvCxsL7ldaAPhJre4/lYp81cw9Rgo399Kl7Q7tVnwkfGPndkJif1c8tWZDlwq
-         YnF5/DDAArFlKqsPKhMJw74bLFvPv650u6pk3jE7ecb5PmaX29uAAYGbH/Vf2PT7FmcY
-         +/Lw==
-X-Forwarded-Encrypted: i=1; AJvYcCV1tflnk8dnc2mVu/liE65Au/tRGmj7yjMK7Ofdk14BHrVzY4X9Z1kISrNdcSleCvbTWNuUfh6phf4O6Y9/0SltDU305QRcyuPPOR8T
-X-Gm-Message-State: AOJu0YzVTm8KomF2574RQYMdJnqLedZJe9Bwf2qlNRdckG11dseZohqH
-	hWrG7bY5Oiporhynqvp+wO4DMlVVv0jKgZ9fmqR7ER+jSqz4onJzCsv6PVl/ng==
-X-Google-Smtp-Source: AGHT+IGk9fMHrTOJhbVacJwX4HkkiAnG2/NY48bYHirkrQIHsXa3eN5po5lEPEP/llFVVtvrszeHoA==
-X-Received: by 2002:a05:6a00:2d22:b0:6ec:e733:c66f with SMTP id fa34-20020a056a002d2200b006ece733c66fmr466537pfb.0.1712856520380;
-        Thu, 11 Apr 2024 10:28:40 -0700 (PDT)
-Received: from google.com (210.73.125.34.bc.googleusercontent.com. [34.125.73.210])
-        by smtp.gmail.com with ESMTPSA id m14-20020a63580e000000b005dc4806ad7dsm1340545pgb.40.2024.04.11.10.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 10:28:39 -0700 (PDT)
-Date: Thu, 11 Apr 2024 10:28:35 -0700
-From: David Matlack <dmatlack@google.com>
-To: James Houghton <jthoughton@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Paolo Bonzini <pbonzini@redhat.com>, Yu Zhao <yuzhao@google.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Sean Christopherson <seanjc@google.com>,
-	Jonathan Corbet <corbet@lwn.net>, James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Shaoqin Huang <shahuang@redhat.com>, Gavin Shan <gshan@redhat.com>,
-	Ricardo Koller <ricarkol@google.com>,
-	Raghavendra Rao Ananta <rananta@google.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	David Rientjes <rientjes@google.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/7] KVM: x86: Participate in bitmap-based PTE aging
-Message-ID: <Zhgdw8mVNYZvzgWH@google.com>
-References: <20240401232946.1837665-1-jthoughton@google.com>
- <20240401232946.1837665-6-jthoughton@google.com>
- <ZhgZHJH3c5Lb5SBs@google.com>
+        d=1e100.net; s=20230601; t=1712856611; x=1713461411;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JA70ylDgRN0gmRtnn7ierQ4wSnxSZyu6IwhBgJQKKoo=;
+        b=fswYhx2uXTGN2NbXIGj1x0zWRq6LrDPrijT/PBozehG2Jd0Ln/DDvexQ5FyaWm2F3V
+         RiBf8ia3uHTAqTcgIoJ7hO3fADbOgovnvLlAQnfGM1vl33xWoORy0K3TDu3ncyb9dXXP
+         8C/WqF+ys9ybjz2W/nWKy4XVvgVsIqGWKZalc6/xW8QEvBZZjyWhvbc7/0rNQbcW9I/F
+         fZV6vTPphSWhUKIQXUe1HhT192JK7rtiDf8p0FeDzoxX1eu1rxsdPD3GrITQB+OgzZGA
+         2CVJrf//QYnoiARKTs/jpSTqfWg3xDJ8uZYUm5fHgmO4Y1QdNo8Wlc28Wvjpgnzf66O+
+         9m1A==
+X-Forwarded-Encrypted: i=1; AJvYcCUFg94SVnz+efJFjG5BOfpwB25lkBF6BOQLGvfThtGy8AY/B64XbgAL9oJ6Lw6MmyN96Jll9um8oEhXM1+PAmU2mhjyl2Xq5F+75tZt
+X-Gm-Message-State: AOJu0YwvFHfYtvsgjgD/ar7Enl7R6A/yVczCMQzrn6fjOeEs971PTemK
+	MwHjI95+EvCjC2fbktNelCURkZMCj7or9l1EbHIukHF9C/emBRlqaziREZlvfdcON7pg8nEtv3T
+	zf3zSynIrcpuCYrDpwgDMh/soDHIo7SiAs5fOjocA90BXEgBa9Q2vT5pMPwIEMK4MV2OyEkQZZA
+	m9+XgmHhXV41mMlHb8XYi0kJQ0JPMx9xpcFKulo8IGhN+FnbI=
+X-Received: by 2002:a05:6122:250e:b0:4d4:11a6:a4ff with SMTP id cl14-20020a056122250e00b004d411a6a4ffmr506652vkb.3.1712856610441;
+        Thu, 11 Apr 2024 10:30:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGioIN4sX6H5w/uce8bUQd7RADoNIWXoYNWiGNhTkE+MvuXBmR+hfpEeNC1U/pe/bfWGLV+LDpHBplGVebCjmE=
+X-Received: by 2002:a05:6122:250e:b0:4d4:11a6:a4ff with SMTP id
+ cl14-20020a056122250e00b004d411a6a4ffmr506610vkb.3.1712856609810; Thu, 11 Apr
+ 2024 10:30:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhgZHJH3c5Lb5SBs@google.com>
+References: <20240411001012.12513-1-torvalds@linux-foundation.org>
+ <CAHk-=wiaoij30cnx=jfvg=Br3YTxhQjp4VWRc6=xYE2=+EVRPg@mail.gmail.com>
+ <20240411-alben-kocht-219170e9dc99@brauner> <CAHk-=wjrPDx=f5OSnQVbbJ4id6SZk-exB1VW9Uz3R7rKFvTQeQ@mail.gmail.com>
+ <CABe3_aGbsPHY9Z5B9WyVWakeWFtief4DpBrDxUiD00qk1irMrg@mail.gmail.com>
+In-Reply-To: <CABe3_aGbsPHY9Z5B9WyVWakeWFtief4DpBrDxUiD00qk1irMrg@mail.gmail.com>
+From: Charles Mirabile <cmirabil@redhat.com>
+Date: Thu, 11 Apr 2024 13:29:58 -0400
+Message-ID: <CABe3_aGGf7kb97gE4FdGmT79Kh5OhbB_2Hqt898WZ+4XGg6j4Q@mail.gmail.com>
+Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() - requirements
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-04-11 10:08 AM, David Matlack wrote:
-> On 2024-04-01 11:29 PM, James Houghton wrote:
-> > Only handle the TDP MMU case for now. In other cases, if a bitmap was
-> > not provided, fallback to the slowpath that takes mmu_lock, or, if a
-> > bitmap was provided, inform the caller that the bitmap is unreliable.
-> > 
-> > Suggested-by: Yu Zhao <yuzhao@google.com>
-> > Signed-off-by: James Houghton <jthoughton@google.com>
-> > ---
-> >  arch/x86/include/asm/kvm_host.h | 14 ++++++++++++++
-> >  arch/x86/kvm/mmu/mmu.c          | 16 ++++++++++++++--
-> >  arch/x86/kvm/mmu/tdp_mmu.c      | 10 +++++++++-
-> >  3 files changed, 37 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> > index 3b58e2306621..c30918d0887e 100644
-> > --- a/arch/x86/include/asm/kvm_host.h
-> > +++ b/arch/x86/include/asm/kvm_host.h
-> > @@ -2324,4 +2324,18 @@ int memslot_rmap_alloc(struct kvm_memory_slot *slot, unsigned long npages);
-> >   */
-> >  #define KVM_EXIT_HYPERCALL_MBZ		GENMASK_ULL(31, 1)
-> >  
-> > +#define kvm_arch_prepare_bitmap_age kvm_arch_prepare_bitmap_age
-> > +static inline bool kvm_arch_prepare_bitmap_age(struct mmu_notifier *mn)
-> > +{
-> > +	/*
-> > +	 * Indicate that we support bitmap-based aging when using the TDP MMU
-> > +	 * and the accessed bit is available in the TDP page tables.
-> > +	 *
-> > +	 * We have no other preparatory work to do here, so we do not need to
-> > +	 * redefine kvm_arch_finish_bitmap_age().
-> > +	 */
-> > +	return IS_ENABLED(CONFIG_X86_64) && tdp_mmu_enabled
-> > +					 && shadow_accessed_mask;
-> > +}
-> > +
-> >  #endif /* _ASM_X86_KVM_HOST_H */
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 992e651540e8..fae1a75750bb 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -1674,8 +1674,14 @@ bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
-> >  {
-> >  	bool young = false;
-> >  
-> > -	if (kvm_memslots_have_rmaps(kvm))
-> > +	if (kvm_memslots_have_rmaps(kvm)) {
-> > +		if (range->lockless) {
-> > +			kvm_age_set_unreliable(range);
-> > +			return false;
-> > +		}
-> 
-> If a VM has TDP MMU enabled, supports A/D bits, and is using nested
-> virtualization, MGLRU will effectively be blind to all accesses made by
-> the VM.
-> 
-> kvm_arch_prepare_bitmap_age() will return true indicating that the
-> bitmap is supported. But then kvm_age_gfn() and kvm_test_age_gfn() will
-> return false immediately and indicate the bitmap is unreliable because a
-> shadow root is allocate. The notfier will then return
-> MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE.
-> 
-> Looking at the callers, MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE is never
-> consumed or used. So I think MGLRU will assume all memory is
-> unaccessed?
-> 
-> One way to improve the situation would be to re-order the TDP MMU
-> function first and return young instead of false, so that way MGLRU at
-> least has visibility into accesses made by L1 (and L2 if EPT is disable
-> in L2). But that still means MGLRU is blind to accesses made by L2.
-> 
-> What about grabbing the mmu_lock if there's a shadow root allocated and
-> get rid of MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE altogether?
-> 
-> 	if (kvm_memslots_have_rmaps(kvm)) {
-> 		write_lock(&kvm->mmu_lock);
-> 		young |= kvm_handle_gfn_range(kvm, range, kvm_age_rmap);
-> 		write_unlock(&kvm->mmu_lock);
-> 	}
-> 
-> The TDP MMU walk would still be lockless. KVM only has to take the
-> mmu_lock to collect accesses made by L2.
-> 
-> kvm_age_rmap() and kvm_test_age_rmap() will need to become bitmap-aware
-> as well, but that seems relatively simple with the helper functions.
+Here is an updated version of linus's patch that makes the check
+namespace relative
+---
+ fs/namei.c            | 17 ++++++++++++-----
+ include/linux/namei.h |  1 +
+ 2 files changed, 13 insertions(+), 5 deletions(-)
 
-Wait, even simpler, just check kvm_memslots_have_rmaps() in
-kvm_arch_prepare_bitmap_age() and skip the shadow MMU when processing a
-bitmap request.
+diff --git a/fs/namei.c b/fs/namei.c
+index 4e0de939fea1..2bcc10976ba7 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -2419,6 +2419,14 @@ static const char *path_init(struct nameidata
+*nd, unsigned flags)
+         if (!f.file)
+             return ERR_PTR(-EBADF);
 
-i.e.
++        if (flags & LOOKUP_DFD_MATCH_CREDS) {
++            if (f.file->f_cred !=3D current_cred() &&
++                !ns_capable(f.file->f_cred->user_ns, CAP_DAC_READ_SEARCH))=
+ {
++                fdput(f);
++                return ERR_PTR(-ENOENT);
++            }
++        }
++
+         dentry =3D f.file->f_path.dentry;
 
-static inline bool kvm_arch_prepare_bitmap_age(struct kvm *kvm, struct mmu_notifier *mn)
-{
-	/*
-	 * Indicate that we support bitmap-based aging when using the TDP MMU
-	 * and the accessed bit is available in the TDP page tables.
-	 *
-	 * We have no other preparatory work to do here, so we do not need to
-	 * redefine kvm_arch_finish_bitmap_age().
-	 */
-	return IS_ENABLED(CONFIG_X86_64)
-		&& tdp_mmu_enabled
-		&& shadow_accessed_mask
-		&& !kvm_memslots_have_rmaps(kvm);
-}
+         if (*s && unlikely(!d_can_lookup(dentry))) {
+@@ -4640,14 +4648,13 @@ int do_linkat(int olddfd, struct filename
+*old, int newdfd,
+         goto out_putnames;
+     }
+     /*
+-     * To use null names we require CAP_DAC_READ_SEARCH
++     * To use null names we require CAP_DAC_READ_SEARCH or
++     * that the open-time creds of the dfd matches current.
+      * This ensures that not everyone will be able to create
+      * handlink using the passed filedescriptor.
+      */
+-    if (flags & AT_EMPTY_PATH && !capable(CAP_DAC_READ_SEARCH)) {
+-        error =3D -ENOENT;
+-        goto out_putnames;
+-    }
++    if (flags & AT_EMPTY_PATH)
++        how |=3D LOOKUP_DFD_MATCH_CREDS;
 
-bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
-{
-        bool young = false;
+     if (flags & AT_SYMLINK_FOLLOW)
+         how |=3D LOOKUP_FOLLOW;
+diff --git a/include/linux/namei.h b/include/linux/namei.h
+index 74e0cc14ebf8..678ffe4acf99 100644
+--- a/include/linux/namei.h
++++ b/include/linux/namei.h
+@@ -44,6 +44,7 @@ enum {LAST_NORM, LAST_ROOT, LAST_DOT, LAST_DOTDOT};
+ #define LOOKUP_BENEATH        0x080000 /* No escaping from starting point.=
+ */
+ #define LOOKUP_IN_ROOT        0x100000 /* Treat dirfd as fs root. */
+ #define LOOKUP_CACHED        0x200000 /* Only do cached lookup */
++#define LOOKUP_DFD_MATCH_CREDS    0x400000 /* Require that dfd creds
+match current */
+ /* LOOKUP_* flags which do scope-related checks based on the dirfd. */
+ #define LOOKUP_IS_SCOPED (LOOKUP_BENEATH | LOOKUP_IN_ROOT)
 
-        if (!range->arg.metadata->bitmap && kvm_memslots_have_rmaps(kvm))
-                young = kvm_handle_gfn_range(kvm, range, kvm_age_rmap);
+--=20
+2.44.0
 
-        if (tdp_mmu_enabled)
-                young |= kvm_tdp_mmu_age_gfn_range(kvm, range);
+On Thu, Apr 11, 2024 at 12:44=E2=80=AFPM Charles Mirabile <cmirabil@redhat.=
+com> wrote:
+>
+> On Thu, Apr 11, 2024 at 12:15=E2=80=AFPM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Thu, 11 Apr 2024 at 02:05, Christian Brauner <brauner@kernel.org> wr=
+ote:
+> > >
+> > > I had a similar discussion a while back someone requested that we rel=
+ax
+> > > permissions so linkat can be used in containers.
+> >
+> > Hmm.
+> >
+> > Ok, that's different - it just wants root to be able to do it, but
+> > "root" being just in the container itself.
+> >
+> > I don't think that's all that useful - I think one of the issues with
+> > linkat(AT_EMPTY_PATH) is exactly that "it's only useful for root",
+> > which means that it's effectively useless. Inside a container or out.
+> >
+> > Because very few loads run as root-only (and fewer still run with any
+> > capability bits that aren't just "root or nothing").
+> >
+> > Before I did all this, I did a Debian code search for linkat with
+> > AT_EMPTY_PATH, and it's almost non-existent. And I think it's exactly
+> > because of this "when it's only useful for root, it's hardly useful at
+> > all" issue.
+> >
+> > (Of course, my Debian code search may have been broken).
+> >
+> > So I suspect your special case is actually largely useless, and what
+> > the container user actually wanted was what my patch does, but they
+> > didn't think that was possible, so they asked to just extend the
+> > "root" notion.
+> >
+> Yes, that is absolutely the case. When Christian poked holes in my
+> initial submission, I started working on a v2 but haven't had a chance
+> to send it because I wanted to make sure my arguments etc were
+> airtight because I am well aware of just how long and storied the
+> history of flink is. In the v2 that I didn't post yet, I extended the
+> ability to link *any* file from only true root to also "root" within a
+> container following the potentially suspect approach that christian
+> suggested (I see where you are coming from with the unobvious approach
+> to avoiding toctou though I obviously support this patch being
+> merged), but I added a followup patch that checks for whether the file
+> in question is an `__O_TMPFILE` file which is trivial once we are
+> jumping through the hoops of looking up the struct file. If it is a
+> tmpfile (i.e. linkcount =3D 0) I think that all the concerns raised
+> about processes that inherit a fd being able to create links to the
+> file inappropriately are moot. Here is an excerpt from the cover
+> letter I was planning to send that explains my reasoning.
+>
+>  -  the ability to create an unnamed file, adjust its contents
+> and attributes (i.e. uid, gid, mode, xattrs, etc) and then only give it a=
+ name
+> once they are ready is exactly the ideal use-case for a hypothetical `fli=
+nk`
+> system call. The ability to use `AT_EMPTY_PATH` with `linkat` essentially=
+ turns
+> it into `flink`, but these restrictions hamper it from actually being use=
+d, as
+> most code is not privileged. By checking whether the file to be linked is=
+ a
+> temporary (i.e. unnamed) file we can allow this useful case without allow=
+ing
+> the more risky cases that could have security implications.
+>
+>  - Although it might appear that the security posture is affected, it is =
+not.
+> Callers who open an extant file on disk in read only mode for sharing wit=
+h
+> potentially untrustworthy code can trust that this change will not affect=
+ them
+> because it only applies to temporary files. Callers who open a temporary =
+file
+> need to do so with write access if they want to actually put any data in =
+it,
+> so they will already have to reopen the file (e.g. by linking it to a pat=
+h
+> and opening that path, or opening the magic symlink in proc) if they want=
+ to
+> share it in read-only mode with untrustworthy code. As such, that new fil=
+e
+> description will no longer be marked as a temporary file and thus these c=
+hanges
+> do not apply. The final case I can think of is the unlikely possibility o=
+f
+> intentionally sharing read write access to data stored in a temporary fil=
+e with
+> untrustworthy code, but where that code being able to make a link would s=
+till
+> be deleterious. In such a bizarre case, the `O_EXCL` can and should be us=
+ed to
+> fully prevent the temporary file from ever having a name, and this change=
+ does
+> not alter its efficacy.
+>
+> > I've added Charles to the Cc.
+> >
+> > But yes, with my patch, it would now be trivial to make that
+> >
+> >         capable(CAP_DAC_READ_SEARCH)
+> >
+> > test also be
+> >
+> >         ns_capable(f.file->f_cred->user_ns, CAP_DAC_READ_SEARCH)
+> >
+> > instead. I suspect not very many would care any more, but it does seem
+> > conceptually sensible.
+> >
+> > As to your patch - I don't like your nd->root  games in that patch at
+> > all. That looks odd.
+> >
+> > Yes, it makes lookup ignore the dfd (so you avoid the TOCTOU issue),
+> > but it also makes lookup ignore "/". Which happens to be ok with an
+> > empty path, but still...
+> >
+> > So it feels to me like that patch of yours mis-uses something that is
+> > just meant for vfs_path_lookup().
+> >
+> > It may happen to work, but it smells really odd to me.
+> >
+> >              Linus
+> >
 
-        return young;
-}
-
-bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
-{
-        bool young = false;
-
-        if (!range->arg.metadata->bitmap && kvm_memslots_have_rmaps(kvm))
-                young = kvm_handle_gfn_range(kvm, range, kvm_test_age_rmap);
-
-        if (tdp_mmu_enabled)
-                young |= kvm_tdp_mmu_test_age_gfn(kvm, range);
-
-        return young;
-}
-
-Sure this could race with the creation of a shadow root but so can the
-non-bitmap code.
 
