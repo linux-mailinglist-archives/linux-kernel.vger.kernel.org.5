@@ -1,174 +1,169 @@
-Return-Path: <linux-kernel+bounces-141558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC2FF8A1FE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:08:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 921848A1FEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:09:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D7141F239DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:08:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2C761C230BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:09:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BFBF17C6A;
-	Thu, 11 Apr 2024 20:08:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD97817C6A;
+	Thu, 11 Apr 2024 20:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZRLTKw3k"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="o/fm7/6X"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19A8A17BCD
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:08:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8393A179BC;
+	Thu, 11 Apr 2024 20:09:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712866116; cv=none; b=qEm49feKuP6M7u7hkeBeGSOvGfhiNOw0FQyB1BlDVMkaNiW/skx/O82T5/DDGyGb8Qbj/2Rb4Ya0cVfnHnO4AUC7Va3O5BVGhnVp1fKOR4gOBqTfxQL8sftUG7eW8yZ9j10es+5GX7944LN5zky5m4nD8ZLhj90qi2a2VRpu90s=
+	t=1712866190; cv=none; b=CLtFYLAixPta9QW1iqLWinaALQKJejl13icPziRCFxqw2RK6W1V6AKMSqgVgiutYMDMnP2UhJvJIsiclbTJ+FSMLRC/ZnhqFSRYDzMEvAxErKWRKrketzSi25Zgsa5iLOnsnrmAbDI1hd70aASnrNmXMyO+mntVPUNRAuRc+ggQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712866116; c=relaxed/simple;
-	bh=l+PB/X/jZM3qJjqtjIgT7OoU8QEgAnESwOLn2wQcnWg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=t4UaIpVW54vxtMGoYAnqcwUULgztxTkA3GrE7jWj/N5ZpS+mH3lI28ilaLP8XiqpIT8w7ixnpZy4OEEFs5VGUL6P5o2hSrPxqNX90EpyGrM9wAI3i/NwoIctLCnXkZ69DuUsczC9L+FYcVFIWc89CtMoA7MdjldLiMOEX8lkup0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZRLTKw3k; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712866114;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=15OsQdeGUPPIY8R4FO9J86rTE+tpV49YjQLRrYO/E4U=;
-	b=ZRLTKw3kZSB5rFgAf0m3TNEzY2ZqKaoVNoJzcZZkvMM27sihFul+w3xsuUvA4XZDAOegJH
-	UwFn/0EcVnwngEAXCwwbb/ozQmfs6CISvjhgVF5G+JpbZHqPS0NP9GFr0WC7PBbAD7udMm
-	JwbwCm4w3FlNdzh2rlwR2u9I3dWBqaY=
-Received: from mail-vk1-f200.google.com (mail-vk1-f200.google.com
- [209.85.221.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-441-h3S8uv_QMcqVPzWDpoKiXw-1; Thu, 11 Apr 2024 16:08:32 -0400
-X-MC-Unique: h3S8uv_QMcqVPzWDpoKiXw-1
-Received: by mail-vk1-f200.google.com with SMTP id 71dfb90a1353d-4dac0642ce5so61324e0c.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:08:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712866112; x=1713470912;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=15OsQdeGUPPIY8R4FO9J86rTE+tpV49YjQLRrYO/E4U=;
-        b=qSXt1G0nCAUxz0DoDNleI3j01MVbucDJ2gfInzZWoYriJXpTkrjRN5gk7U0zMdibI7
-         C7Cp9EDjcMVCAIKbvC1XvC5A/tRqFnrxxGEVXRijxbukY2qpZ6HVFQyxsbicRHJAr7ko
-         g4m78vgGLjykmDCy9Ib32OvgNVPC5SCynk1+JN+3tCRr4jlTrebUqlnAu05KvahGTT/g
-         ET4/jco9f6TGLplqApYpho1U6VNzlyA1MmYX5K0dFXQTHkB2pILGwijSq0CiX42ZdYuZ
-         kwTTShH6p4D5NFrUon5QvNJ4umRNnnQAqGXIeCk/Lf+zk+xwaWUjPGauXyGXvmZxF7Gs
-         QpWg==
-X-Forwarded-Encrypted: i=1; AJvYcCWdr1fNmga5z+gKkwuagCZAKph0W7W7pnMdYMB1nnJtA1BbrOcnG0g2OjW51Bzt2cioNXRs/nGPQcYjaVXuHFf5w2u48clMu7Iscd0L
-X-Gm-Message-State: AOJu0YwTCvb8+sL5HVupCBNDP2hsnbKHp9NjD0xy/RLZV8fEUaOOLUQc
-	oQ0zDdgntCzObUjycjmf+bFtvYzgaMaWU1xgovVMa1dfEGP2heBfqxKnLejl5+EsQj1hp2HjySp
-	yXU+PmHROsm9ldJUxefJIdYsyDuydqhuI0lxH2WnmzVeNOB8iR+zmaqCx813kwU9VD/VpAhdLF8
-	cP7f+VMscKp+gLprdCNNM0pP/WTbREylzoziLh
-X-Received: by 2002:a05:6122:d9d:b0:4d3:37d1:5a70 with SMTP id bc29-20020a0561220d9d00b004d337d15a70mr1015166vkb.7.1712866112008;
-        Thu, 11 Apr 2024 13:08:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHUkpeZPdl+9XB0K3wqFbYhfySrBjKq5GwEQWeFlW5WQ+7YEepZDRFXCzVBaekpO51v410ufvYyJwpPShSXxG4=
-X-Received: by 2002:a05:6122:d9d:b0:4d3:37d1:5a70 with SMTP id
- bc29-20020a0561220d9d00b004d337d15a70mr1015153vkb.7.1712866111667; Thu, 11
- Apr 2024 13:08:31 -0700 (PDT)
+	s=arc-20240116; t=1712866190; c=relaxed/simple;
+	bh=RK2ixbwK8Ja+qmayWS4S3Uie2jWdpXyVQ+zHMnUpoqg=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IENdoGgqIIDBB5Rx3rV3Xe2KnlOyR/OG9rRHWDfSy8Qe5+LaBcgzBriouhd2zrwEt6iOB6c0fGXkDTPvU4cfffmih9W1s+w2koixOoA6HBkXwM70rPktNZrj6Z5CtUy5KfJeeyik/8HlylqCM/up26vhJpUffGnT/TVMRQk4ss4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=o/fm7/6X; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43BK9b50030157;
+	Thu, 11 Apr 2024 20:09:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=oT+kBQk8myAJZWEuknOlg
+	stGciuw3yJhM5+CnC+sUXI=; b=o/fm7/6XdJLGpgcBILMKFyA6DSkQs3lCmcpj/
+	/QxMNCtlhdtKr8e22vIJx2ECce80B24H+b6D3xMTfIiGK1l+j4DvoHnzQPvR44i9
+	BG7osgp2o5nrMMY1ovK8wfL7f+MZBgBLFjOTnrSiPpZy1+KTbu1mpnkTi/OqRNUE
+	6ncyaSNbvSJzGB9MB6ZcMO6ouCTqW+unR5KUXumZiDt8hMVqXXHzUf1Q48ytB/vt
+	SpMhLJxBR9/iv5wD2kkOw/VX9LCuZdYnkp5USUHqfVgCnp9pHBBi79mC2yIoKA3b
+	PUGuYCOEKbSpyrctS7+IKbQsHm0fhiTLCf0SGjsLW0ti+lqbw==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xedugsme8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 20:09:37 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43BK9a6Z010806
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 20:09:36 GMT
+Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Thu, 11 Apr 2024 13:09:35 -0700
+Date: Thu, 11 Apr 2024 13:09:35 -0700
+From: Elliot Berman <quic_eberman@quicinc.com>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>, Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten
+	<marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, "Daniel
+ Vetter" <daniel@ffwll.ch>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Subject: Re: [PATCH 1/6] soc: qcom: Move some socinfo defines to the header,
+ expand them
+Message-ID: <20240411130802689-0700.eberman@hu-eberman-lv.qualcomm.com>
+References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
+ <20240405-topic-smem_speedbin-v1-1-ce2b864251b1@linaro.org>
+ <20240410132510649-0700.eberman@hu-eberman-lv.qualcomm.com>
+ <2c2bca6c-b429-4cef-b63a-ee3bd6c9eecb@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411001012.12513-1-torvalds@linux-foundation.org>
- <CAHk-=wiaoij30cnx=jfvg=Br3YTxhQjp4VWRc6=xYE2=+EVRPg@mail.gmail.com>
- <20240411-alben-kocht-219170e9dc99@brauner> <CAHk-=wjrPDx=f5OSnQVbbJ4id6SZk-exB1VW9Uz3R7rKFvTQeQ@mail.gmail.com>
- <CABe3_aGbsPHY9Z5B9WyVWakeWFtief4DpBrDxUiD00qk1irMrg@mail.gmail.com>
- <CABe3_aGGf7kb97gE4FdGmT79Kh5OhbB_2Hqt898WZ+4XGg6j4Q@mail.gmail.com>
- <CABe3_aE_quPE0zKe-p11DF1rBx-+ecJKORY=96WyJ_b+dbxL9A@mail.gmail.com> <CAHk-=wjuzUTH0ZiPe0dAZ4rcVeNoJxhK8Hh_WRBY-ZqM-pGBqg@mail.gmail.com>
-In-Reply-To: <CAHk-=wjuzUTH0ZiPe0dAZ4rcVeNoJxhK8Hh_WRBY-ZqM-pGBqg@mail.gmail.com>
-From: Charles Mirabile <cmirabil@redhat.com>
-Date: Thu, 11 Apr 2024 16:08:20 -0400
-Message-ID: <CABe3_aEccnYHm6_pvXKNYkWQ98N9q4JWXTbftgwOMMo+FrmA0Q@mail.gmail.com>
-Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() - requirements
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <2c2bca6c-b429-4cef-b63a-ee3bd6c9eecb@linaro.org>
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: N-2hjQ6NN5_fsWQdiyhe_wsTQEBaVcKO
+X-Proofpoint-ORIG-GUID: N-2hjQ6NN5_fsWQdiyhe_wsTQEBaVcKO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-11_10,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ priorityscore=1501 adultscore=0 suspectscore=0 bulkscore=0
+ lowpriorityscore=0 mlxlogscore=999 impostorscore=0 clxscore=1015
+ malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2404010003 definitions=main-2404110148
 
-On Thu, Apr 11, 2024 at 2:14=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Thu, 11 Apr 2024 at 10:35, Charles Mirabile <cmirabil@redhat.com> wrot=
-e:
-> >
-> > And a slightly dubious addition to bypass these checks for tmpfiles
-> > across the board.
->
-> Does this make sense?
->
-> I 100% agree that one of the primary reasons why people want flink()
-> is that "open tmpfile, finalize contents and permissions, then link
-> the final result into the filesystem".
->
-> But I would expect that the "same credentials as open" check is the
-> one that really matters.
+On Thu, Apr 11, 2024 at 10:05:30PM +0200, Konrad Dybcio wrote:
+> 
+> 
+> On 4/11/24 20:55, Elliot Berman wrote:
+> > On Fri, Apr 05, 2024 at 10:41:29AM +0200, Konrad Dybcio wrote:
+> > > In preparation for parsing the chip "feature code" (FC) and "product
+> > > code" (PC) (essentially the parameters that let us conclusively
+> > > characterize the sillicon we're running on, including various speed
+> > > bins), move the socinfo version defines to the public header and
+> > > include some more FC/PC defines.
+> > > 
+> > > Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> > > ---
+> 
+> [...]
+> 
+> > > +	SOCINFO_FC_EXT_RESERVE,
+> > > +};
+> > 
+> > SOCINFO_FC_EXT_RESERVE was a convenient limit since we mapped
+> > SOCINFO_FC_AA -> string "AA" via an array, and we've only needed the 8
+> > feature codes so far.
+> > 
+> > We should remove the EXT_RESERVE and test for the Y0-YF (internal
+> > feature code) values instead.
+> 
+> OK
+> 
+> > 
+> > > +
+> > > +/* Internal feature codes */
+> > > +/* Valid values: 0 <= n <= 0xf */
+> > > +#define SOCINFO_FC_Yn(n)		(0xf1 + n)
+> > > +#define SOCINFO_FC_INT_RESERVE		SOCINFO_FC_Yn(0x10)
+> > 
+> > We probably should've named this SOCINFO_FC_INT_MAX. Reserve implies
+> > it's reserved for some future use, but it's really the max value it
+> > could be.
+> 
+> So, should SOCINFO_FC_Yn(0x10) also be considered valid, or is (0xf)
+> the last one?
+> 
 
-Certainly. I think that in almost all cases, the pattern of preparing
-a file and then using linkat to give it its final name will occur
-without changing creds and as such your patch will fix it. When
-combined with making the CAP_DAC_READ_SEARCH override aware of
-namespaces, I think that covers almost all of the remaining edges
-cases (i.e. if the difference in creds was actually you becoming more
-privileged and not less, then sure  you can do it).
+0xf is the last one.
 
-The only possibility that remains is a difference in creds where the
-new creds are not privileged. This is the maybe scary situation that
-has blocked flink in the past. All I am suggesting is that you can
-decompose this niche situation still further into the case where the
-file was opened "ordinarily" in some sense which is the case that is
-really concerning (oops, when I forked and dropped privileges before
-exec, I forgot to set cloexec on one of my fds that points to
-something important, and even though I opened it with O_RDONLY, the
-unprivileged code is able to make a new link to it in a directory
-they control and re-open with O_RDWR because the mode bits allow say
-o+w (extremely bizarre and honestly hypothetical in my opinion, but
-ok)) and other special situations.
+Thanks,
+Elliot
 
-Those situations namely being O_PATH and O_TMPFILE where by
-specifying these special flags during open you are indicating that
-you intend to do something special with the file descriptor. I think
-if either of these flags are present in the file flags, then we are
-not in the concerning case, and I think it could be appropriate to
-bypass the matching creds check.
-
->
-> And __O_TMPFILE is just a special case that might not even be used -
-> it's entirely possible to just do the same with a real file (ie
-> non-O_TMPFILE) and link it in place and remove the original.
->
-> Not to mention that ->tmpfile() isn't necessarily even available, so
-> the whole concept of "use O_TMPFILE and then linkat" is actually
-> broken. It *has* to be able to fall back to a regular file to work at
-> all on NFS.
->
-> So while I understand your motivation, I actually think it's actively
-> wrong to special-case __O_TMPFILE, because it encourages a pattern
-> that is bad.
-
-The problem with this is that another process might be able to access
-the file during via that name during the brief period before it is
-unlinked. If I am not using NFS, I am always going to prefer using
-O_TMPFILE. I would rather be able to do that without restriction even
-if it isn't the most robust solution by your definition.
-
-In my opinion I think it is more robust in the sense that it is truly
-atomic and making a named file is the kludge that you have to do to
-work around NFS limitations, but I agree that this is a tiny detail
-that I certainly do not want to block this patch over because it
-already solves the problem I was actually dealing with. Whether or
-not it solves this hypothetical problem is less important.
-
->
->                     Linus
->
-
+> > 
+> > > +
+> > > +/* Product codes */
+> > > +#define SOCINFO_PC_UNKNOWN		0
+> > > +/* Valid values: 0 <= n <= 8, the rest is reserved */
+> > > +#define SOCINFO_PCn(n)			(n + 1)
+> > > +#define SOCINFO_PC_RESERVE		(BIT(31) - 1)
+> > 
+> > Similar comments here as the SOCINFO_FC_EXT_*. It's more like known
+> > values are [0,8], but more values could come in future chipsets.
+> 
+> Ok, sounds good, I'll remove the comment then
+> 
+> Konrad
 
