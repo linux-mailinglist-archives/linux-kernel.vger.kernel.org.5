@@ -1,131 +1,251 @@
-Return-Path: <linux-kernel+bounces-140826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 274AA8A1980
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:10:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EDC48A192A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:56:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F7ABB279FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:53:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BF231F22DF5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:56:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A456385959;
-	Thu, 11 Apr 2024 15:33:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DfIUfbjf"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7547D85281
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:33:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2677A13248B;
+	Thu, 11 Apr 2024 15:34:02 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD2B4131E3A
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:33:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849616; cv=none; b=DgP0HIIsbRV4Qt69JFfvz0e78nq1BvkLsUGW/fnmEjPuUah8Or+TFadobJt5IC4aeNTz57Tz0vOMi8Y5usLIZh/V1Bkv7l5KBmWj+UKgFv1/HatseFQjnjbTBlXB3hSzEu+Pcfun8+xatcWC29vNUZ97yx7jMngLfgSIQPbCxdc=
+	t=1712849641; cv=none; b=qsZo9ad0EqoqcA4k3M1ML/GzpZgFOLZiZHDR7sfuiWnYnl4rIxzxASsbW4lCToVzRwa2WcisMUiuy9lje4NDM1dM9BuV8SISe1uHUR4BAwV1A3qmb/PUWSTd2VQTtcOuM2DnvMVoxAbcTuO5R9/V/9zYVGV+rPXOrYMOAMrJcjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849616; c=relaxed/simple;
-	bh=PbLspCwu5bkgUdK2U9YWWFJDaTS6qgXYBAw1NQGhQTc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BONGxgHqalKAlYvGTB5G9xbCR5L/TACD0weWnxdU3LKctw6FT7xk9vJSTGqgURk32u8GBZMuvpEAqWQPokUJOTPna3Q1C0zkcbaGrwMuGFGZhTa3lgHY/fNkLkuse72q6BwhV+dMrqbnt2kaZcoXPDkVQqfxoCwr4mtG/D2G13k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DfIUfbjf; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-41687826509so93545e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:33:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712849614; x=1713454414; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WWEKgvL/ZOpKjtTgIwws6qhc3HHfgaLuekbpj/jm1oc=;
-        b=DfIUfbjfC35idweQK7LNh05x+QHPEk6q6gaQAtg8Lbv75BznVDCQI/yKui6fvLDhLi
-         OLVB9sI1Zv0VqZvTly7QyiVTUpfXd7w6zyqj8DAkg8tH3zVgcUTLakzL2Wo6Stl1g+gi
-         cX8qVz+xEwD0OX10qn0xx4cQJ9mKxvPNy7gKino9urfmR6OHCXJNeX5RiUkPcY2ArUMV
-         bG7rjElKIj8ePleuSlqfZ6VUOMLiSXTeGdzNV9u9ME/kQSQrzkwpIGqGNhSq6BdjvYw7
-         PnTJRuUz+S7DMwSURQMFv5adDi2glOl6Fe7fSxIH3+pcNfzd2Fb/KNXF+ABq/rpGsvQ6
-         vH4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849614; x=1713454414;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WWEKgvL/ZOpKjtTgIwws6qhc3HHfgaLuekbpj/jm1oc=;
-        b=IoJJMzozEZwYhyrjneG5hboEFUCgIEfGwGTbC10LhYJ9cpVR/y+uZ/bC4sUQbaUVC6
-         D3QSOLp354hI+dU4xtCezhEIOfNbBcEdWEVMiuzc8/o1lpOEdwQB+wnq1BqDf6hZm2zb
-         kRjfU/3bwC42PdxYuvhJwVcZ9a+FiQ3uKMdMRCYHUcuMJNyJBwOn2Sp5xsc6/gCc6X/S
-         /CJwtpsr8WX1SgDlzyE1kTwwC+uoaL0quWeEOeAuv5HFcRCvO1+T65iFbZAcsGWaHjQo
-         QDPfqkfN7eUFstHAw8dtb4Skk+3N78bwFr/QXE9kOmHgxSZbPrKoo04kCneuSHWKBi7e
-         LT2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVE8QWp0AGycoyddYzj64fv3s+oQXfNZpG0VzOjwXMJwvW2vWzlFbgvStpZmn75joB3grIOB8MxCM6b2SoDR3Xa87xJiTr0JewwLfb8
-X-Gm-Message-State: AOJu0YzydrS+LulNYifWggoRfvQ6LmdMJx8gNXhs8cnn2aNfYaQMaSsb
-	4cmq4sSJWjEXnwjpe3axr6foY18pfCcOa1jAc/QU4BEZYS+srzDaeQjCRqq4JQgN9Lzg0fFphRw
-	+D+94nhPl6BaJS85OLFIOr4QQeZdFi/67+ls=
-X-Google-Smtp-Source: AGHT+IFSA46efEwvLckuLo22i0EaoWGKSXc3A8+EHYGsJ0Jh6gXKAMZ59K5Ow6WfR7oga9HRD4hRH0d17iec05aSqZo=
-X-Received: by 2002:a05:600c:3b93:b0:417:3f9e:5cac with SMTP id
- n19-20020a05600c3b9300b004173f9e5cacmr177314wms.3.1712849613449; Thu, 11 Apr
- 2024 08:33:33 -0700 (PDT)
+	s=arc-20240116; t=1712849641; c=relaxed/simple;
+	bh=1+6YDXwbCpxGbp/uhTyuUqLzfyfMgk+8nnvTf69RPCM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QXy/wZ8v+i8ciLbkpbY7C3ARY5Ur6BsOPwYWGjBoKhEqG6jXdSL3TpCu5sevWoRd52zRBqgTFfGAS30IRYcZB/9jfrbAaETBfw98Yw8ZV2vHYfCcUaZzmkYe55ODsfrf5r+QYylJB13zkeTX6Nxv5tuM0dvECxB3ulgBcdcWGr0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 33778113E;
+	Thu, 11 Apr 2024 08:34:28 -0700 (PDT)
+Received: from [10.1.38.151] (XHFQ2J9959.cambridge.arm.com [10.1.38.151])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F8313F6C4;
+	Thu, 11 Apr 2024 08:33:56 -0700 (PDT)
+Message-ID: <1008d688-757a-4c2d-86bd-793f5e787d30@arm.com>
+Date: Thu, 11 Apr 2024 16:33:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <87sf02bgez.ffs@tglx> <87r0fmbe65.ffs@tglx> <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
- <87o7aqb6uw.ffs@tglx> <CANDhNCreA6nJp4ZUhgcxNB5Zye1aySDoU99+_GDS57HAF4jZ_Q@mail.gmail.com>
- <87frw2axv0.ffs@tglx> <20240404145408.GD7153@redhat.com> <87le5t9f14.ffs@tglx>
- <20240406150950.GA3060@redhat.com> <a9a4a964-6f0c-43a5-9fa8-10926d74fbf1@sirena.org.uk>
-In-Reply-To: <a9a4a964-6f0c-43a5-9fa8-10926d74fbf1@sirena.org.uk>
-From: John Stultz <jstultz@google.com>
-Date: Thu, 11 Apr 2024 08:33:20 -0700
-Message-ID: <CANDhNCp=7mTSSO4cXQjYbtLrK8XRCbCyse8Bq5Wbt5V4G-K_dQ@mail.gmail.com>
-Subject: Re: [PATCH] selftests/timers/posix_timers: reimplement check_timer_distribution()
-To: Mark Brown <broonie@kernel.org>
-Cc: Oleg Nesterov <oleg@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Marco Elver <elver@google.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
-	"Eric W. Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>, 
-	kasan-dev@googlegroups.com, Edward Liaw <edliaw@google.com>, 
-	Carlos Llamas <cmllamas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/5] mm: swap: entirely map large folios found in
+ swapcache
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org
+Cc: baolin.wang@linux.alibaba.com, chrisl@kernel.org, david@redhat.com,
+ hanchuanhua@oppo.com, hannes@cmpxchg.org, hughd@google.com,
+ kasong@tencent.com, surenb@google.com, v-songbaohua@oppo.com,
+ willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
+ yosryahmed@google.com, yuzhao@google.com, ziy@nvidia.com,
+ linux-kernel@vger.kernel.org
+References: <20240409082631.187483-1-21cnbao@gmail.com>
+ <20240409082631.187483-5-21cnbao@gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240409082631.187483-5-21cnbao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 11, 2024 at 5:42=E2=80=AFAM Mark Brown <broonie@kernel.org> wro=
-te:
-> On Sat, Apr 06, 2024 at 05:09:51PM +0200, Oleg Nesterov wrote:
-> > Without the commit bcb7ee79029d ("posix-timers: Prefer delivery of sign=
-als
-> > to the current thread") the test-case fails immediately, the very 1st t=
-ick
-> > wakes the leader up. Otherwise it quickly succeeds after 100 ticks.
->
-> This has landed in -next and is causing warning spam throughout
-> kselftest when built with clang:
->
-> /home/broonie/git/bisect/tools/testing/selftests/kselftest.h:435:6: warni=
-ng: variable 'major' is used uninitialized whenever '||' condition is true =
-[-Wsometimes-uninitialized]
->         if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor=
-) !=3D 2)
->             ^~~~~~~~~~~~
-> /home/broonie/git/bisect/tools/testing/selftests/kselftest.h:438:9: note:=
- uninitialized use occurs here
->         return major > min_major || (major =3D=3D min_major && minor >=3D=
- min_minor);
->                ^~~~~
-> /home/broonie/git/bisect/tools/testing/selftests/kselftest.h:435:6: note:=
- remove the '||' if its condition is always false
->         if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor=
-) !=3D 2)
->             ^~~~~~~~~~~~~~~
-> /home/broonie/git/bisect/tools/testing/selftests/kselftest.h:432:20: note=
-: initialize the variable 'major' to silence this warning
->         unsigned int major, minor;
->                           ^
->                            =3D 0
+On 09/04/2024 09:26, Barry Song wrote:
+> From: Chuanhua Han <hanchuanhua@oppo.com>
+> 
+> When a large folio is found in the swapcache, the current implementation
+> requires calling do_swap_page() nr_pages times, resulting in nr_pages
+> page faults. This patch opts to map the entire large folio at once to
+> minimize page faults. Additionally, redundant checks and early exits
+> for ARM64 MTE restoring are removed.
+> 
+> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
+> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> ---
+>  mm/memory.c | 64 +++++++++++++++++++++++++++++++++++++++++++----------
+>  1 file changed, 52 insertions(+), 12 deletions(-)
+> 
+> diff --git a/mm/memory.c b/mm/memory.c
+> index c4a52e8d740a..9818dc1893c8 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -3947,6 +3947,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  	pte_t pte;
+>  	vm_fault_t ret = 0;
+>  	void *shadow = NULL;
+> +	int nr_pages = 1;
+> +	unsigned long start_address = vmf->address;
+> +	pte_t *start_pte = vmf->pte;
 
-I hit this one too yesterday and included a fix for it here:
-  https://lore.kernel.org/lkml/20240410232637.4135564-2-jstultz@google.com/
+possible bug?: there are code paths that assign to vmf-pte below in this
+function, so couldn't start_pte be stale in some cases? I'd just do the
+assignment (all 4 of these variables in fact) in an else clause below, after any
+messing about with them is complete.
 
-thanks
--john
+nit: rename start_pte -> start_ptep ?
+
+> +	bool any_swap_shared = false;
+
+Suggest you defer initialization of this to your "We hit large folios in
+swapcache" block below, and init it to:
+
+	any_swap_shared = !pte_swp_exclusive(vmf->pte);
+
+Then the any_shared semantic in swap_pte_batch() can be the same as for
+folio_pte_batch().
+
+>  
+>  	if (!pte_unmap_same(vmf))
+>  		goto out;
+> @@ -4137,6 +4141,35 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  	 */
+>  	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
+>  			&vmf->ptl);
+
+bug: vmf->pte may be NULL and you are not checking it until check_pte:. Byt you
+are using it in this block. It also seems odd to do all the work in the below
+block under the PTL but before checking if the pte has changed. Suggest moving
+both checks here.
+
+> +
+> +	/* We hit large folios in swapcache */
+> +	if (start_pte && folio_test_large(folio) && folio_test_swapcache(folio)) {
+
+What's the start_pte check protecting?
+
+> +		int nr = folio_nr_pages(folio);
+> +		int idx = folio_page_idx(folio, page);
+> +		unsigned long folio_start = vmf->address - idx * PAGE_SIZE;
+> +		unsigned long folio_end = folio_start + nr * PAGE_SIZE;
+> +		pte_t *folio_ptep;
+> +		pte_t folio_pte;
+> +
+> +		if (unlikely(folio_start < max(vmf->address & PMD_MASK, vma->vm_start)))
+> +			goto check_pte;
+> +		if (unlikely(folio_end > pmd_addr_end(vmf->address, vma->vm_end)))
+> +			goto check_pte;
+> +
+> +		folio_ptep = vmf->pte - idx;
+> +		folio_pte = ptep_get(folio_ptep);
+> +		if (!is_swap_pte(folio_pte) || non_swap_entry(pte_to_swp_entry(folio_pte)) ||
+> +		    swap_pte_batch(folio_ptep, nr, folio_pte, &any_swap_shared) != nr)
+> +			goto check_pte;
+> +
+> +		start_address = folio_start;
+> +		start_pte = folio_ptep;
+> +		nr_pages = nr;
+> +		entry = folio->swap;
+> +		page = &folio->page;
+> +	}
+> +
+> +check_pte:
+>  	if (unlikely(!vmf->pte || !pte_same(ptep_get(vmf->pte), vmf->orig_pte)))
+>  		goto out_nomap;
+>  
+> @@ -4190,6 +4223,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  			 */
+>  			exclusive = false;
+>  		}
+> +
+> +		/* Reuse the whole large folio iff all entries are exclusive */
+> +		if (nr_pages > 1 && any_swap_shared)
+> +			exclusive = false;
+
+If you init any_shared with the firt pte as I suggested then you could just set
+exclusive = !any_shared at the top of this if block without needing this
+separate fixup.
+>  	}
+>  
+>  	/*
+> @@ -4204,12 +4241,14 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  	 * We're already holding a reference on the page but haven't mapped it
+>  	 * yet.
+>  	 */
+> -	swap_free(entry);
+> +	swap_free_nr(entry, nr_pages);
+>  	if (should_try_to_free_swap(folio, vma, vmf->flags))
+>  		folio_free_swap(folio);
+>  
+> -	inc_mm_counter(vma->vm_mm, MM_ANONPAGES);
+> -	dec_mm_counter(vma->vm_mm, MM_SWAPENTS);
+> +	folio_ref_add(folio, nr_pages - 1);
+> +	add_mm_counter(vma->vm_mm, MM_ANONPAGES, nr_pages);
+> +	add_mm_counter(vma->vm_mm, MM_SWAPENTS, -nr_pages);
+> +
+>  	pte = mk_pte(page, vma->vm_page_prot);
+>  
+>  	/*
+> @@ -4219,33 +4258,34 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  	 * exclusivity.
+>  	 */
+>  	if (!folio_test_ksm(folio) &&
+> -	    (exclusive || folio_ref_count(folio) == 1)) {
+> +	    (exclusive || (folio_ref_count(folio) == nr_pages &&
+> +			   folio_nr_pages(folio) == nr_pages))) {
+>  		if (vmf->flags & FAULT_FLAG_WRITE) {
+>  			pte = maybe_mkwrite(pte_mkdirty(pte), vma);
+>  			vmf->flags &= ~FAULT_FLAG_WRITE;
+>  		}
+>  		rmap_flags |= RMAP_EXCLUSIVE;
+>  	}
+> -	flush_icache_page(vma, page);
+> +	flush_icache_pages(vma, page, nr_pages);
+>  	if (pte_swp_soft_dirty(vmf->orig_pte))
+>  		pte = pte_mksoft_dirty(pte);
+>  	if (pte_swp_uffd_wp(vmf->orig_pte))
+>  		pte = pte_mkuffd_wp(pte);
+
+I'm not sure about all this... you are smearing these SW bits from the faulting
+PTE across all the ptes you are mapping. Although I guess actually that's ok
+because swap_pte_batch() only returns a batch with all these bits the same?
+
+> -	vmf->orig_pte = pte;
+
+Instead of doing a readback below, perhaps:
+
+	vmf->orig_pte = pte_advance_pfn(pte, nr_pages);
+
+>  
+>  	/* ksm created a completely new copy */
+>  	if (unlikely(folio != swapcache && swapcache)) {
+> -		folio_add_new_anon_rmap(folio, vma, vmf->address);
+> +		folio_add_new_anon_rmap(folio, vma, start_address);
+>  		folio_add_lru_vma(folio, vma);
+>  	} else {
+> -		folio_add_anon_rmap_pte(folio, page, vma, vmf->address,
+> -					rmap_flags);
+> +		folio_add_anon_rmap_ptes(folio, page, nr_pages, vma, start_address,
+> +					 rmap_flags);
+>  	}
+>  
+>  	VM_BUG_ON(!folio_test_anon(folio) ||
+>  			(pte_write(pte) && !PageAnonExclusive(page)));
+> -	set_pte_at(vma->vm_mm, vmf->address, vmf->pte, pte);
+> -	arch_do_swap_page(vma->vm_mm, vma, vmf->address, pte, vmf->orig_pte);
+> +	set_ptes(vma->vm_mm, start_address, start_pte, pte, nr_pages);
+> +	vmf->orig_pte = ptep_get(vmf->pte);
+> +	arch_do_swap_page(vma->vm_mm, vma, start_address, pte, pte);
+>  
+>  	folio_unlock(folio);
+>  	if (folio != swapcache && swapcache) {
+> @@ -4269,7 +4309,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  	}
+>  
+>  	/* No need to invalidate - it was non-present before */
+> -	update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
+> +	update_mmu_cache_range(vmf, vma, start_address, start_pte, nr_pages);
+>  unlock:
+>  	if (vmf->pte)
+>  		pte_unmap_unlock(vmf->pte, vmf->ptl);
+
 
