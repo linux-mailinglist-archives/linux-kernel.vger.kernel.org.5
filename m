@@ -1,219 +1,172 @@
-Return-Path: <linux-kernel+bounces-140433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB6CB8A1462
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:24:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F3568A1457
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:21:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B8441C22022
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:24:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AE3DB22C3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:21:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A482F14AD3D;
-	Thu, 11 Apr 2024 12:24:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 142EE14B093;
+	Thu, 11 Apr 2024 12:21:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="gKstezKD";
-	dkim=permerror (0-bit key) header.d=gerhold.net header.i=@gerhold.net header.b="rooxR1Vj"
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="Hs5mLXPZ"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12olkn2095.outbound.protection.outlook.com [40.92.21.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DF814A618;
-	Thu, 11 Apr 2024 12:24:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.167
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6CB13DDD6;
+	Thu, 11 Apr 2024 12:21:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.21.95
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712838266; cv=pass; b=q/fLXgORd7oe7OpVM4SOJg05xM/5zT26yIeB08V27F+J/wW8eA9gF3zxJMigdcj6fTfWLsgp6NnnxDNJicsTZU4GcsbFE+MttcTyBVJ6PD7do1qVyu3u2q0Fr3+GDvC0pjRQjtYHk5oXMUmOFDj7VCd7XHHodlsVRskdlN8xkuo=
+	t=1712838080; cv=fail; b=XwRSUdrFpZ0ArHiih5Fg4mVVbQCAMN8TrlHEkhagjrOi2YJ4VJh54T+RHE6ffdnZoiEVfue1svkWIsNEwG8keYQA6WXP8as/hh31ASRfUY/xp/i7tUMOwqXHc7Tcc4K9Uzh4+qJixpht4G87zsisYIP52fW5JzxM592wT6HVKlE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712838266; c=relaxed/simple;
-	bh=jxjQrutkS0QSDPxdDwN89QMeToUj5RfRvAH7a9ATGS4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QKWxZhf0nV4QON34nXRvQim/T1owG+CDTP5sOV9/hVj6DR7SKqKg/p22t7pfwacSh432wz8P0vhhmEhMKDtkNocYBI67yQNdrI3swdkVMbBehmuWsjSwoXPgUQgDXnDBo2rTu8dXX5MSf1T0Yz2GJiPZkpTaO6Swg/L4N8tXJKw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net; spf=none smtp.mailfrom=gerhold.net; dkim=pass (2048-bit key) header.d=gerhold.net header.i=@gerhold.net header.b=gKstezKD; dkim=permerror (0-bit key) header.d=gerhold.net header.i=@gerhold.net header.b=rooxR1Vj; arc=pass smtp.client-ip=81.169.146.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gerhold.net
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=gerhold.net
-ARC-Seal: i=1; a=rsa-sha256; t=1712838073; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=InQx95xAc4L6biXu2OgUkreAtSraUppMwRNSn5SZ6zITosGWsm71L+nuNwEetQTGza
-    KlqjOSGtA8C79LJmqJguaDB8qwREjlPVXsEi6TWJkwma3YMKfPI8ZA8w7sCafm+T5QDr
-    CForCpf98S9CITaSLzNHVvWcJRfgldhu3YU7l/Yj1p9ETKHwm9SfA7xuec2x+P8E6QYj
-    og3qL16Thn/hgUrUNmD+/7PZg2WYGsv3+M1RpZdMMvXVs1MAzly61wsztoMEFfoSXaio
-    W/UyRSQsdlSKYN0rX4p9rBohYFlsHAPc6eudbnMT5HGh/s1Y5H38pD/4tnARp1qjv+J9
-    KMmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1712838073;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=91/+JORYq9Vk3O48jL+rWZC6A47c0kJxSMnJ7mQVasw=;
-    b=alQ+osTqueBdKBWZPdlg/DMcR4zymdq8AHYlvUYiRnkX2jF5HdG/NUwwB1qyEk+V8w
-    0q+Y+kmIpcbseTDLNnPtbdrN9vc3OFibNLx6DM+OWzrgST1hAbKCTZuK9WvqJ4qla6Sb
-    ALHiM0uN5EhFFA2T0AbjJBFqrrcP/shRzjiR84W522yLGGGt+Ep9z+Fwu6+aYOezkbNy
-    MW2t/OyIv8OrapZGIRzj0A1sEh3Lz8twjzBPRxC53MuZ5hugiVayF7VCviZHsmGe1E2Y
-    /Dy/VvKMBB4Wxs+QABhyP7vMiFzVsjFXsoyE25jC+ekOjhUK2aPYy5ZWsZsWG0Ays9fB
-    /37w==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1712838073;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=91/+JORYq9Vk3O48jL+rWZC6A47c0kJxSMnJ7mQVasw=;
-    b=gKstezKDNUMPCiuOMOkgrqC6PaZ/o/C6UZ10LdVT7n20LIMKiG6cJcDHzGxVuYZ0Gy
-    mtxBXyDz8RutYiZMP/IKsJUoz5ujWg7jI/o2/jm7iP+s/iVjh4D1iPb7Im1OHCBeS19d
-    sa0ehe919kza6BiFpmdEajnyK3Zusa3jHOIDpzgdRib1vFi2Tq1SGur9SG1AJvYfSqNT
-    HCquT9R498sTu3loeVf2wKQGIYlKhRff1QutdXZ1H+l3ZY1Ekh++SiNj1qJV3nhBw0CI
-    9inB/T2pJ/DOPkWpayilrSk1TZyY8LrygIxmQZIA9ePQPjRrfiw76z9roRAjJ/CzjA0E
-    xvBw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1712838073;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=91/+JORYq9Vk3O48jL+rWZC6A47c0kJxSMnJ7mQVasw=;
-    b=rooxR1VjT/AXQigk1HaPqEBxwaK6FAgAhWWMPhI3FExUBVAcavHCop/nqi//NvvPWs
-    ydgQMVQWKfWyQqACumDA==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA+p3h"
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 50.3.2 DYNA|AUTH)
-    with ESMTPSA id Raf12503BCLCcfz
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Thu, 11 Apr 2024 14:21:12 +0200 (CEST)
-Date: Thu, 11 Apr 2024 14:21:07 +0200
-From: Stephan Gerhold <stephan@gerhold.net>
-To: Volodymyr Babchuk <Volodymyr_Babchuk@epam.com>
-Cc: "stable@vger.kernel.org" <stable@vger.kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
+	s=arc-20240116; t=1712838080; c=relaxed/simple;
+	bh=xvioZmuaZvgXi2QcGpYLDx96ibDulVrNwlvJIeH/Ux0=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=guZl0RB207oi4aNSR9LEIB754RUVpAKTOzXT4glV6Y8WDi4MBYBjfIzQ1tQMt9fazfKik+N5kIqT0mx/3xfFtInOk2x9DU3gesBKw/Cb+bn/pLjdnaBF64VcouC10ZRKt4M905OyfffgnWJbANph9Iw7BAMOivGH4jNCBZCWuVI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=Hs5mLXPZ; arc=fail smtp.client-ip=40.92.21.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GjjKZWXX5A4Y89nz0ZcoADg9AwDNz962JcvHN9d8fy7fYl9QiTWSo5ImHXw8A5nFr8dYNsKCJFXBIuU5wCP/E96a2g1TdEcjfM+4l+v3dJ5LCy3zuWR6l3pCB/TDMJiUxSAqhMTgcm7XmaX5M1XaCjEO1Yn6+mXy0HhKyLF9rAc0cWkdE1bsG6KGwJGsL7jj1bYrSerEL0FFg37uMyWX122LNa6P4+qUFYp/EMEmmJ+ztEIFUa2KE+/F8ayDY0Va9ye8OQGSCas/7pKx0EToBUKti0xmRcsFVFOfir0WBh+mHlTr7+keJ+y5zTNPnK2x38qI2uXfH6pqdIW8O2XdsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dhKpUZevkYPltCISaDvXBPMAxwJx6OomIJ1ckJTeX98=;
+ b=g27SutoJZvMEvTKJSdtE4wMyiUPM35UTiAYmxClOxms3W9ZR0ottZNZTu+TXWH9YRfs4SQSbnrVu8rKQ84SUl7NIQ0sSiR0j0u0Mem5fQQ2mAR13kdotO91F0kZ5KRaeoatzw0nK8sruCF5mKNuhDE7r52UG4MBWoV+OyHUpHKCYNkpOiowACudSUHjb/yNr+yleCta28vTUMK9g/xmOKL1tTJYKw5cZDwMFzFtQ+nlBJybJxSv2HPu6Y/7KH2vaVReRCVgX7d1npwmeaQEKsHP2fD/jlPbcEn9mLWhHG8OTkVgdWt2nvQNk76Fu97An+lvg03oFIVBKCwU0VxY0pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dhKpUZevkYPltCISaDvXBPMAxwJx6OomIJ1ckJTeX98=;
+ b=Hs5mLXPZUGaYoDcCPCj1ABVWqpTGxGRp5q5xy4pofpiv2Ug3ay55B5grQ4lXSR4VDf9rNZ4FsJclqTt6+csQAqZatefmEx7YwxFy/uQoh2fVkKUty7nXd+woXgbapl/Zp2/8qvoGBAyZCIBB8/3abdl4z5OZVa9Fx1vEzw3AZQICpJnQOdP5o6WlL+gAxntuPHrNiBS/CbhHoErMWM+UFfzheKwjI3Y8DV0ScMTf5TnriOOPqoUbrVVKVaTT75sNGpQp1Ju7F/YsGCQUvlNkCYarQWeFwAQ/0tLtleQBTbLIbEq2Xz1Z6DWFJOyIVuV+eB9smnaMPmQ9fqx5O+/SYw==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by IA1PR20MB6245.namprd20.prod.outlook.com (2603:10b6:208:3f7::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Thu, 11 Apr
+ 2024 12:21:16 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7409.042; Thu, 11 Apr 2024
+ 12:21:16 +0000
+From: Inochi Amaoto <inochiama@outlook.com>
+To: Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] arm64: dts: qcom: sa8155p-adp: fix SDHC2 configuration
-Message-ID: <ZhfVsww6fL3O7tsC@gerhold.net>
-References: <20240410134022.732767-1-volodymyr_babchuk@epam.com>
- <20240411115506.1170360-1-volodymyr_babchuk@epam.com>
+	Chen Wang <unicorn_wang@outlook.com>,
+	Inochi Amaoto <inochiama@outlook.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Jisheng Zhang <jszhang@kernel.org>
+Cc: devicetree@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: dts: sophgo: use real clock for sdhci
+Date: Thu, 11 Apr 2024 20:21:35 +0800
+Message-ID:
+ <IA1PR20MB4953CA5D46EA8913B130D502BB052@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.44.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [Hjz5IfWffUx3hxm4nKiDE1XoRhgcmDzWsQ/YzfUSQQI=]
+X-ClientProxiedBy: SI1PR02CA0033.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::14) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID:
+ <20240411122136.793528-1-inochiama@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411115506.1170360-1-volodymyr_babchuk@epam.com>
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|IA1PR20MB6245:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0bfb4f37-466a-4655-7a94-08dc5a21e295
+X-MS-Exchange-SLBlob-MailProps:
+	dx7TrgQSB6fRphPAZkDOXKiJlf+rSXUByCx+8qhstiUj7tIcA51KpS2vy+RYr2SJtTaMKCoFvvpiBx1+ho1eJ9f1IMrjVvh20KY2k7vU6fWeVtpHAhEvlEMmTTAOGbZZkyMV7RMGCxzj3UjULp1UgePoYHN9SIOGfFTivKyELTj+vdj08VrjLu1q8XM3Uyz1Rvhn4+wQIyTdxX7uK7rsBcfe7VTmL5GojqIvjgXGHynhg7355Gpl9D4wIw/RY/2iHdSg98SRYPYwY1K5i2Py3mSZ7fhxSSeVo5L9TuZqrvLmMX/Wie3E55DyAwYMwHW9uisQXZZz29Pib0mc3ajl/+BoDO3yNl3IoTPkJ0V1/wAgTy4/OEu5FMMRYpXOQ42KhpULqjL7Ts7AAkV80/zP7Y3QBHf0C/r2tU9QhvmTlkaQBsPX/jVWy3+IHhhaXsTs9LM5cFcpPuWVZ0TuIfWEyaK6AkDxJc7VvEpBMEZHTt2m6pdpHpf5z1/3DQQA3yipvXRynlCJvB/oUArUgYC9WoA5wD7DkW52sczRErfm3xXK//glJ46tn+OT5mLxZHmt1G5CnfpFzBKr5G1ShwDwwqrh/UBANLlFe9kW/RXanAro9GggBFxUm5ZIcTN7fa8aqYSXCjhU0fc3QfVHzU8x3yLuAcUng6N4BFHpoMJUREDSJg84IAyJ4dMkjC+VXG32OtYjbxOt1XU0pI2qXbBWqW2sTd8in1ilSS77cF9IBDWMrerclRrqMtXcj4Sr+eZilhZtwQ+dOv8=
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	BUseaETwBXt4yH0QYxsnIBdb1KFCh07Dudlhk08WxHDHuk0DFyQGaJ/+m3pDp+4JtCKe+NfVhYUO8jAkOIx+QqIp2zvOnSZmZpcZ1ILZEXZk/n+BO0aQoRGeMCJNu7W2MCfylSGGawEmSCo4Rhx/nTHS5ThoL9jYh394NFnMq8PGNn+ovQVwbrKyB/HNfr3I57WzzkQthgSVkJMmWKGneo91LiNAlDzBz7z0+V0DaCPFC6SsKp5WIF9JmIUw/uutWHH+XfL2g7NbZ2TVcatz16b1kx9aNMA1RmWPccxJay1Ek5tAuw3yqhaSwIz2EZEGo/TnVgwiDXwWFqZUEd8GSX7TrtgZKEBXuy5QPPMGxlwiZ1WA8g60tra1H8+roArifUxlr2tt8Oc5Jz1XqEhMJh5IlqWwLvO7BHVGXH3QFLcqBmRyXdFv7vFCZpIfVI0iAYhvVyKUgYVnNMaUZ9d+s0hb9EsE/y2DQIu6n5/PDd4mAYwBpEM+6SZX1ShruNA3wzgiWPq6LKxL5YAOUlaRhx8T8OuHIZCb4b0m+ZcRPHc7Rq3Ly9xWJGZyDEeyglKXOJnClFcgChGdbpEs/Ksvqy9HOI4M6m8rwb71qrQK2ja0eRYpjRlHcw5NOhcDzbpa
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?TZiTJe5zTyd/KiMOZkHmSIZPHJ/EaDNrw2cdT2AJLNSYu8oxHm5nLwtKTtX/?=
+ =?us-ascii?Q?KyXIIQEKLCnFXBw2nntBKYMoKn1xqN7he/UVuUUi4MiwQpvVLJTsmOJ62EPp?=
+ =?us-ascii?Q?SINiNc1x8BQFbNrhLPHi4cXabRXk7RoQ1eMoq2P83U2L03EmSgi5w7RSxigC?=
+ =?us-ascii?Q?dkIpJHoMonGpazfRI3ycVEV74/IldOLMxFVhNn8fDHeeZG9gPdMeVYvgxVSO?=
+ =?us-ascii?Q?DZfX9/a84GI+/dhmFdRpvj41D9dllTQQz2/shhwB3lM5SYNVaYqYa7luR4kq?=
+ =?us-ascii?Q?cEyJwWnpnJdcCoLCJWNu1sjxqR6qk4GD5HbMkuQlXlZXVtkvNtrwLseR+VTf?=
+ =?us-ascii?Q?lLeRSYSIGVNoUB5FEc3szAuhS/gYLH+2c28N5+szmcTrOoKoO99gALAh6OqF?=
+ =?us-ascii?Q?9L4NLtirBOWfT4pT2155MWPKqmHJXZ1lXVwd90jOvsvvmjMJrsHIA2stVtHI?=
+ =?us-ascii?Q?E9tO56GEq58joBTNwSlGk/WgPRgr1Ki51hPAy0sISe1blq74OTpZimp1pjrN?=
+ =?us-ascii?Q?BBDFNssNa1+5/bm28VjL9NDgvzif/atPcWMV5SE+3HQccdc1QYuuhoFxKwV1?=
+ =?us-ascii?Q?hVfIWpQT4AUzxgeZUBdChJ6yrXWEFutZT1t8IcAYWLebwVmfFPX5K9q1Mi33?=
+ =?us-ascii?Q?HRi/IF4jNiTnfcGgfkK8E1sg9Wzy2kmTTVe7qIDSzr9XIXgtJu3OE5Q1wXCo?=
+ =?us-ascii?Q?2KmgrnnwDW7X/g/TCeMSQYORmw3WsJBIoPFRVliwKi8uV0XrmhhWYY6g+yxo?=
+ =?us-ascii?Q?9VDCaDpXb7f3NPDHFjFfRQEj0+cOGGk6MwxzmTUMp57oJon3wmSQeg9YobX4?=
+ =?us-ascii?Q?DJ6shP8wCtkqQPuE4GQFWp9yZFEhhSL9RZnOtNkF0HTBMGATyQUgXOstL9h8?=
+ =?us-ascii?Q?TnRPt2SeakABwW3gxqH+RKKLRn5xWMFgJrA1wOiGBjgUbqfT5zze6bGo0T0V?=
+ =?us-ascii?Q?rJP3T8/EwBcZOkUfpJgf6angsWOvM3+syUGf/I7ZnprPAZjcCVFqhchTto5B?=
+ =?us-ascii?Q?PD1ua7t8a/BbWRVCHaEW0hWWCySZ/JAHAY2h0z9CR5CcBgKonsdprN0O8oxB?=
+ =?us-ascii?Q?MbOU+WaDN3+I0Tzk/wfo/Kt06fsaGNdCwvuSI2kigqPlWE38ld6Jxi57Vw41?=
+ =?us-ascii?Q?R4V3WhqCZk1NnfmG9A2x39qyHYGto91dkv19cUsb8GAdIhQ0lzc/xVrE3QnS?=
+ =?us-ascii?Q?YvIoV/FIZAIHGWtzWi5zwtLOuoiuApAnJnmut9gtfInZDapzAIenBUvZ/V9R?=
+ =?us-ascii?Q?+/BRgYI4hiMXkvzZ57M6?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0bfb4f37-466a-4655-7a94-08dc5a21e295
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 12:21:16.3195
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR20MB6245
 
-On Thu, Apr 11, 2024 at 11:55:55AM +0000, Volodymyr Babchuk wrote:
-> There are multiple issues with SDHC2 configuration for SA8155P-ADP,
-> which prevent use of SDHC2 and causes issues with ethernet:
-> 
-> - Card Detect pin for SHDC2 on SA8155P-ADP is connected to gpio4 of
->   PMM8155AU_1, not to SoC itself. SoC's gpio4 is used for DWMAC
->   TX. If sdhc driver probes after dwmac driver, it reconfigures
->   gpio4 and this breaks Ethernet MAC.
-> 
-> - pinctrl configuration mentions gpio96 as CD pin. It seems it was
->   copied from some SM8150 example, because as mentioned above,
->   correct CD pin is gpio4 on PMM8155AU_1.
-> 
-> - L13C voltage regulator limits minimal voltage to 2.504V, which
->   prevents use 1.8V to power SD card, which in turns does not allow
->   card to work in UHS mode.
-> 
-> This patch fixes all the mentioned issues.
-> 
-> Fixes: 0deb2624e2d0 ("arm64: dts: qcom: sa8155p-adp: Add support for uSD card")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Volodymyr Babchuk <volodymyr_babchuk@epam.com>
-> 
-> ---
-> 
-> In v2:
->  - Added "Fixes:" tag
->  - CCed stable ML
->  - Fixed pinctrl configuration
->  - Extended voltage range for L13C voltage regulator
-> ---
->  arch/arm64/boot/dts/qcom/sa8155p-adp.dts | 32 +++++++++++-------------
->  1 file changed, 14 insertions(+), 18 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sa8155p-adp.dts b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-> index 5e4287f8c8cd1..b9d56bda96759 100644
-> --- a/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-> @@ -283,7 +283,7 @@ vreg_l12c_1p808: ldo12 {
->  
->  		vreg_l13c_2p96: ldo13 {
->  			regulator-name = "vreg_l13c_2p96";
-> -			regulator-min-microvolt = <2504000>;
-> +			regulator-min-microvolt = <1800000>;
->  			regulator-max-microvolt = <2960000>;
->  			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
->  		};
-> @@ -384,10 +384,10 @@ &remoteproc_cdsp {
->  &sdhc_2 {
->  	status = "okay";
->  
-> -	cd-gpios = <&tlmm 4 GPIO_ACTIVE_LOW>;
-> +	cd-gpios = <&pmm8155au_1_gpios 4 GPIO_ACTIVE_LOW>;
->  	pinctrl-names = "default", "sleep";
-> -	pinctrl-0 = <&sdc2_on>;
-> -	pinctrl-1 = <&sdc2_off>;
-> +	pinctrl-0 = <&sdc2_on &pmm8155au_1_sdc2_cd>;
-> +	pinctrl-1 = <&sdc2_off &pmm8155au_1_sdc2_cd>;
->  	vqmmc-supply = <&vreg_l13c_2p96>; /* IO line power */
->  	vmmc-supply = <&vreg_l17a_2p96>;  /* Card power line */
->  	bus-width = <4>;
-> @@ -505,13 +505,6 @@ data-pins {
->  			bias-pull-up;		/* pull up */
->  			drive-strength = <16>;	/* 16 MA */
->  		};
-> -
-> -		sd-cd-pins {
-> -			pins = "gpio96";
-> -			function = "gpio";
-> -			bias-pull-up;		/* pull up */
-> -			drive-strength = <2>;	/* 2 MA */
-> -		};
->  	};
->  
->  	sdc2_off: sdc2-off-state {
-> @@ -532,13 +525,6 @@ data-pins {
->  			bias-pull-up;		/* pull up */
->  			drive-strength = <2>;	/* 2 MA */
->  		};
-> -
-> -		sd-cd-pins {
-> -			pins = "gpio96";
-> -			function = "gpio";
-> -			bias-pull-up;		/* pull up */
-> -			drive-strength = <2>;	/* 2 MA */
-> -		};
->  	};
->  
->  	usb2phy_ac_en1_default: usb2phy-ac-en1-default-state {
-> @@ -604,3 +590,13 @@ phy-reset-pins {
->  		};
->  	};
->  };
-> +
-> +&pmm8155au_1_gpios {
-> +	pmm8155au_1_sdc2_cd: pmm8155au_1-sdc2-cd {
-> +			pins = "gpio4";
-> +			function = "normal";
-> +			input-enable;
-> +			bias-pull-up;
-> +			power-source = <0>;
+As the clk patch is merged, Use real clocks for sdhci0.
 
-Nitpick: There is one indentation level too much here (remove a tab).
+Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+---
+ arch/riscv/boot/dts/sophgo/cv18xx.dtsi | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-Barely worth mentioning, but I guess there will be a v3 to address
-Krzysztof's comments. :)
+diff --git a/arch/riscv/boot/dts/sophgo/cv18xx.dtsi b/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
+index 75d0c57f4ffb..891932ae470f 100644
+--- a/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
+@@ -47,13 +47,6 @@ osc: oscillator {
+ 		#clock-cells = <0>;
+ 	};
 
-Thanks,
-Stephan
+-	sdhci_clk: sdhci-clock {
+-		compatible = "fixed-clock";
+-		clock-frequency = <375000000>;
+-		clock-output-names = "sdhci_clk";
+-		#clock-cells = <0>;
+-	};
+-
+ 	soc {
+ 		compatible = "simple-bus";
+ 		interrupt-parent = <&plic>;
+@@ -298,8 +291,9 @@ sdhci0: mmc@4310000 {
+ 			compatible = "sophgo,cv1800b-dwcmshc";
+ 			reg = <0x4310000 0x1000>;
+ 			interrupts = <36 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&sdhci_clk>;
+-			clock-names = "core";
++			clocks = <&clk CLK_AXI4_SD0>,
++				 <&clk CLK_SD0>;
++			clock-names = "core", "bus";
+ 			status = "disabled";
+ 		};
+
+--
+2.44.0
+
 
