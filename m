@@ -1,47 +1,62 @@
-Return-Path: <linux-kernel+bounces-140245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 979C58A1016
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:31:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71E578A1025
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:32:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8F571C228B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:31:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8E9BB2610C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:32:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0337C13C9A5;
-	Thu, 11 Apr 2024 10:30:30 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26538146582;
+	Thu, 11 Apr 2024 10:30:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="u1S11NYq"
+Received: from forward102c.mail.yandex.net (forward102c.mail.yandex.net [178.154.239.213])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D596146D79;
-	Thu, 11 Apr 2024 10:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B317C14884E;
+	Thu, 11 Apr 2024 10:30:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.213
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712831429; cv=none; b=UhnFrrkIbquX4KmyWwgsdWxqQR4ccp51nWnGtyCsHoXwBRXAKewT0FiW53dwIO2mDFk1cl3fgvQcJd756/cWVvweXIFMALLjbsdxOyLad1tF/FHo2z3+L/ULeSELJ+azQQrueK2PW2ogw5rBqsPMw3SgQ9JuvW8Tq4mjyzlq5O0=
+	t=1712831442; cv=none; b=XSv7r0i4b2LGOd7rjH+gQk7bgnBWkPq9TZnWOGM8s+ZvtCxI5ZIWTQRKj9u5LwuHnpUvh0yDtu039CGMQMIBqMDdXQ/eCtz+/75So1tkp5fQs5vWwx7QHUGyG/w63zfUEN5FuNpzUQIvxI/0Qpnm4WCBdUQT1+UVy2GC3yQ3LZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712831429; c=relaxed/simple;
-	bh=wComOVfoaefWwC2Rt0UKt2s8/ND86+TBpIl7IK3UsSg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MnDJVlghXABE9/vx5VirleCbo3GMNILMda0TZTQ4FG9+xknAb/Zr05AxsnCOhfP6+rsj9KZqiPKOxjL+I8l78X8tQvY/Slys4KU8H4CPAVkVZ98MuRJo1O0y0Pd1FfuVxxJlcRdxz31hObR7W5B3hBKMhOm8r2vwzaX0m7alQDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00654C433F1;
-	Thu, 11 Apr 2024 10:30:26 +0000 (UTC)
-From: Huacai Chen <chenhuacai@loongson.cn>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Huacai Chen <chenhuacai@kernel.org>
-Cc: loongarch@lists.linux.dev,
-	linux-arch@vger.kernel.org,
+	s=arc-20240116; t=1712831442; c=relaxed/simple;
+	bh=Tyd5sjSQq0uCOIAQla9jv62vIEKZInGcvL7SV3Eq3Zo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=g5VJmF2qwjXehNWIgwwfiocrdJZF1Jv2hjQIKBqZNA2bCyqATFz+BznAt7WhRD5T9ms3PnUWsIFmTAlUJvKA9kPkL27dPuM7qgljQlVMSkJ8SIL0bAeHU05w8Of1XZEx77ZTI/KzgwWJ3ZYJpL2C3gfNh/Kv5b6Pk/d7kT8FtXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=u1S11NYq; arc=none smtp.client-ip=178.154.239.213
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+Received: from mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:40a8:0:640:e4a0:0])
+	by forward102c.mail.yandex.net (Yandex) with ESMTPS id CD7C8608C4;
+	Thu, 11 Apr 2024 13:30:29 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id GUYvfB6Aa0U0-eq8haQBw;
+	Thu, 11 Apr 2024 13:30:29 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1712831429; bh=0U309rUe4lYr52AcQxtvvnxUZcPXlp+u/Y/o6hkGyZI=;
+	h=Message-Id:Date:Cc:Subject:To:From;
+	b=u1S11NYqae0MtTOiEqXrQt/PitXzQLm6BeWlLEi7t1094HbIapfPIH3QrrqzTdxmI
+	 YxZR9ZiEJtNBuJ1J49yFZru0joH/S5On00oyjUzwVTDR8biNGFfitIf/opSpFqDKjL
+	 bu2Gu0ZLWnoIOmfXuTLTm9hi2jFEeiQ/K7cxQoOs=
+Authentication-Results: mail-nwsmtp-smtp-production-main-91.myt.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+From: Mikhail Ukhin <mish.uxin2012@yandex.ru>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jens Axboe <axboe@kernel.dk>
+Cc: Mikhail Ukhin <mish.uxin2012@yandex.ru>,
+	stable@vger.kernel.org,
+	linux-ide@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Guo Ren <guoren@kernel.org>,
-	Xuerui Wang <kernel@xen0n.name>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Huacai Chen <chenhuacai@loongson.cn>
-Subject: [GIT PULL] LoongArch fixes for v6.9-rc4
-Date: Thu, 11 Apr 2024 18:30:00 +0800
-Message-ID: <20240411103000.2655846-1-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.43.0
+	Pavel Koshutin <koshutin.pavel@yandex.ru>,
+	lvc-project@linuxtesting.org,
+	Artem Sadovnikov <ancowi69@gmail.com>,
+	Mikhail Ivanov <iwanov-23@bk.ru>
+Subject: [PATCH v2 5.10/5.15] ata: libata-scsi: check cdb length for VARIABLE_LENGTH_CMD commands
+Date: Thu, 11 Apr 2024 13:30:13 +0300
+Message-Id: <20240411103013.5547-1-mish.uxin2012@yandex.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -50,47 +65,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The following changes since commit fec50db7033ea478773b159e0e2efb135270e3b7:
+No upstream commit exists for this patch.
 
-  Linux 6.9-rc3 (2024-04-07 13:22:46 -0700)
+Fuzzing of 5.10 stable branch reports a slab-out-of-bounds error in
+ata_scsi_pass_thru.
 
-are available in the Git repository at:
+The error is fixed in 5.18 by commit ce70fd9a551a ("scsi: core: Remove the
+cmd field from struct scsi_request") upstream.
+Backporting this commit would require significant changes to the code so
+it is bettter to use a simple fix for that particular error.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/chenhuacai/linux-loongson.git tags/loongarch-fixes-6.9-1
+The problem is that the length of the received SCSI command is not
+validated if scsi_op == VARIABLE_LENGTH_CMD. It can lead to out-of-bounds
+reading if the user sends a request with SCSI command of length less than
+32.
 
-for you to fetch changes up to a07c772fa658645887119184de48b255bf19a46e:
+Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
 
-  LoongArch: Include linux/sizes.h in addrspace.h to prevent build errors (2024-04-10 21:08:51 +0800)
+Signed-off-by: Artem Sadovnikov <ancowi69@gmail.com>
+Signed-off-by: Mikhail Ivanov <iwanov-23@bk.ru>
+Signed-off-by: Mikhail Ukhin <mish.uxin2012@yandex.ru>
+---
+ v2: The new addresses were added and the text was updated. 
+ drivers/ata/libata-scsi.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-----------------------------------------------------------------
-LoongArch fixes for v6.9-rc4
+diff --git a/drivers/ata/libata-scsi.c b/drivers/ata/libata-scsi.c
+index dfa090ccd21c..77589e911d3d 100644
+--- a/drivers/ata/libata-scsi.c
++++ b/drivers/ata/libata-scsi.c
+@@ -4065,6 +4065,9 @@ int __ata_scsi_queuecmd(struct scsi_cmnd *scmd, struct ata_device *dev)
+ 
+ 	if (unlikely(!scmd->cmd_len))
+ 		goto bad_cdb_len;
++
++	if (scsi_op == VARIABLE_LENGTH_CMD && scmd->cmd_len < 32)
++		goto bad_cdb_len;
+ 
+ 	if (dev->class == ATA_DEV_ATA || dev->class == ATA_DEV_ZAC) {
+ 		if (unlikely(scmd->cmd_len > dev->cdb_len))
+-- 
+2.25.1
 
-Make {virt, phys, page, pfn} translation work with KFENCE for LoongArch
-(otherwise NVMe and virtio-blk cannot work with KFENCE enabled), update
-dts files for Loongson-2K series to make devices work correctly, and fix
-a build error.
-----------------------------------------------------------------
-Huacai Chen (7):
-      mm: Move lowmem_page_address() a little later
-      LoongArch: Make {virt, phys, page, pfn} translation work with KFENCE
-      LoongArch: Make virt_addr_valid()/__virt_addr_valid() work with KFENCE
-      LoongArch: Update dts for Loongson-2K1000 to support ISA/LPC
-      LoongArch: Update dts for Loongson-2K2000 to support ISA/LPC
-      LoongArch: Update dts for Loongson-2K2000 to support PCI-MSI
-      LoongArch: Update dts for Loongson-2K2000 to support GMAC/GNET
-
-Randy Dunlap (1):
-      LoongArch: Include linux/sizes.h in addrspace.h to prevent build errors
-
- arch/loongarch/boot/dts/loongson-2k1000.dtsi    |  7 ++++++
- arch/loongarch/boot/dts/loongson-2k2000-ref.dts | 33 +++++++++++++++++++++++++
- arch/loongarch/boot/dts/loongson-2k2000.dtsi    | 24 +++++++++++++++---
- arch/loongarch/include/asm/addrspace.h          |  1 +
- arch/loongarch/include/asm/io.h                 | 20 +++++++++++----
- arch/loongarch/include/asm/kfence.h             |  9 +++++++
- arch/loongarch/include/asm/page.h               | 26 ++++++++++++++++++-
- arch/loongarch/mm/mmap.c                        |  4 +++
- arch/loongarch/mm/pgtable.c                     |  4 +--
- include/linux/mm.h                              | 10 ++++----
- 10 files changed, 121 insertions(+), 17 deletions(-)
 
