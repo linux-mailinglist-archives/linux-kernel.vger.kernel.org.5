@@ -1,129 +1,115 @@
-Return-Path: <linux-kernel+bounces-141568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E4888A201E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:24:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0E428A202C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:26:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2BBE28BD40
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:24:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7175B1F254A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:26:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1A4317C7F;
-	Thu, 11 Apr 2024 20:24:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 347C01D526;
+	Thu, 11 Apr 2024 20:26:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HEPP92Ch"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="uILZbEWM"
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A3117C6D
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:24:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C94A017BD4;
+	Thu, 11 Apr 2024 20:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712867054; cv=none; b=O1W6ojC2nUkR8lZdFVj/LPq24z7YmYAGbM34DQjzPeY16UIr/UK+I75dlfJSerLDQ1xf/oAtlHg++hV/ef2E9ec3wtBYOWKkKPwmhcKoqkLThpB80cCpCIQUeaTVUDLsWBgbJqLCgJ0ESWhT6bEi5wCCyb6wMUGGfkT5O8boPC8=
+	t=1712867165; cv=none; b=Le8tHkLAHwKLywvxg1ICQoxN3+4OQsc4Wv7TrufU0bZahNKuxXUpcNj4wt+mKc6gN52fC+fz26HWRUhC23YBjrdwUlMyOA4j4Sen05RBenGOjMAp8ELcAJGB3x+s0aMUl+mxMB1UwvlUg7VDYUSlO9sQ3rs+bEhaRa1fI4qtECw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712867054; c=relaxed/simple;
-	bh=QqxmKREBd98R95lxy1BDt4/C4X/1ZCgWeLkeabMbOEM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GD1TMsJX2tSKYeT75qvmrxvf0ZswmRdJw0hj5wkLlRF9D1DLuzluecsEYCzvLGZ7gu0RnHJf0myLgxUXkHPLzLMJE/NbbMj4O+qnyvlQ0641NsdqtS+NSRe2uWPB4Pc/J5E4ETGvBhkXgvYo+83+yxnXkEkYtBJ8/RCjDGEr3i4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HEPP92Ch; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d485886545so2670391fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:24:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712867051; x=1713471851; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OkivZAy8vHp+8K7Um26GAxu/l7QEtqH2ogeAPyc9feU=;
-        b=HEPP92ChPg4pOcong9yW0dsFZyHT0Pau2psj7nyeyyH7dnFsQGY4Y0h8klNpaIPMFr
-         uB1oCbuOnyZ/QQu4ltfgALX6pNC/G7Sh7z4twNAlZx5wIuoBbSrdqdKIvmQhq9z2R/MR
-         +FdaocwAISbH14MZQHBHxIID+chGKo2W6UFwVVXucOu/C0yWXPd6Tj7d5i2BiTvRC4KB
-         IoZDWRlpLYoB0ofPYmPPsq1I4GdWCbBCjy6ks9KT9nC/gLQLaIxMvfJ8GIC4L6GNC5fe
-         SLIDs3RhnrOGijK63uTkIC1GZDTBu8UFn+Chy0WQaEBxiXSZnTzCpUSL5RZMFni0CcYG
-         h9BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712867051; x=1713471851;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OkivZAy8vHp+8K7Um26GAxu/l7QEtqH2ogeAPyc9feU=;
-        b=b92BSNOYRVVdgH4GCxaYFqtZSHsZW520h9db37TfGkcPJwNjeRauGB5qRbW+t5ianS
-         MA5UkdeSk+JXgidoBj538h0qeWgq/+aojAvs61LSEupo22s6c2T0eJcerLILNWiNY7Fx
-         L90D8f8nF44ZfXEPbFu+Ecwj0IhlLhNHjHmzcK1Ey30bUzxkaoosZDoWpY031hSgSLeM
-         oJX1Y+I89ENi1YwctpfgBbTWWWHtWr6ZOjhyWyYzCTa7cLJJwqloW9Nl7LexPBfrOiaa
-         4GfnTulFgb/2vom1Tl628Dgf7KGWRrSGJxfKFGB+ne2E68vspWiZa+LiCVmZIZbY8R+t
-         q9Yw==
-X-Forwarded-Encrypted: i=1; AJvYcCVWyPoUweGD/hQ7plWrNCwreygWwnFthPP2A9XFcRCyaRgz5GBGQpzPLBRD4H0X2lIalQQm+iqW/dw2/Vz5zqMCVIpEGv91oi08hWmJ
-X-Gm-Message-State: AOJu0YxpIzoRymFWUlN29PI69w2LsRcugG8WbqzZZCnlKKbmqqEefpTG
-	KKCJz+fN9TKaNKRRSj+XlTzhJOMYA4bJEmHBARL+FloqXj3KYa/XBE22F3ug7Ic=
-X-Google-Smtp-Source: AGHT+IFmKV1cZUNf2RDPXfgrp5jM/80Z18N3yhtpLtRxKHZ1VDKWNvDrx521CSjJRJIGHFCmxXfoWA==
-X-Received: by 2002:a2e:7d15:0:b0:2d4:49d1:38e with SMTP id y21-20020a2e7d15000000b002d449d1038emr508466ljc.28.1712867050958;
-        Thu, 11 Apr 2024 13:24:10 -0700 (PDT)
-Received: from [172.30.204.35] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id f24-20020a2e6a18000000b002d4295d8563sm291115ljc.62.2024.04.11.13.24.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 13:24:10 -0700 (PDT)
-Message-ID: <bbec514f-9672-4e5a-bd83-20ab59b3dcd9@linaro.org>
-Date: Thu, 11 Apr 2024 22:24:08 +0200
+	s=arc-20240116; t=1712867165; c=relaxed/simple;
+	bh=LDIXVCb6LHYhQvsivq7jCY36uodU+fCNx85pPyntecI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eKOqHUye7AjBbeQqSPpkKUeaJeMzMfBy1BqDPYKu+HTs40IZsjzrRhrAU3ZzgL6UTEBBL9JDSksiijl3rcO8klvop0YY8flTnvwBIp+gvac+dW2nVky2Y6Fs8DgsY3/4k4vK/ZuldzjRJTy1e2xJ3SCFFrDzUcJEU009wkTaH/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=uILZbEWM; arc=none smtp.client-ip=74.208.4.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
+	s=s1-ionos; t=1712867157; x=1713471957; i=parker@finest.io;
+	bh=TCukniCmiJlFXJkYUeOOK8Y0LFIFkQtEUht+JsI0uWU=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=uILZbEWM0Dx0HwskptMO62BgJqkQDp6uOdlGv4+8iyGdIv2tmc+eCrXiDKNJNX05
+	 yjeg60DONDbh59uHYJ8cJC7OipxIzuIPSObI2z2do2FMAZIC6e5jr4YLG4QpqKuY8
+	 E2GlTLwtINXA/RLdeXsQUGG228EON/u1o4mqWocC31BdnFYxzfWaxx2fKpIFBL6hv
+	 zZ1VfJPNFTA4ZaUnpLAw1hr5IIY+TjIEZeHb3y2YzwaKlpNTUTEPNiM93gu2bHLQm
+	 tlePDZQnI9NTUCtolay3zfeItPbl+8N+TXMQb7959ZnV8uwJ6FJ1lDQ5CFbAYO8OD
+	 vCBXYLC//pxJoIwSLg==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from finest.io ([98.159.241.229]) by mrelay.perfora.net (mreueus002
+ [74.208.5.2]) with ESMTPSA (Nemesis) id 0MhBdX-1s8R6b3j2v-00W18b; Thu, 11 Apr
+ 2024 22:25:56 +0200
+From: parker@finest.io
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Cc: Parker Newman <pnewman@connecttech.com>
+Subject: [PATCH v2 0/7] serial: exar: add Connect Tech serial cards to Exar driver
+Date: Thu, 11 Apr 2024 16:25:38 -0400
+Message-ID: <cover.1712863999.git.pnewman@connecttech.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] soc: qcom: Move some socinfo defines to the header,
- expand them
-To: Elliot Berman <quic_eberman@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Rob Clark <robdclark@gmail.com>,
- Abhinav Kumar <quic_abhinavk@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
- Neil Armstrong <neil.armstrong@linaro.org>
-References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
- <20240405-topic-smem_speedbin-v1-1-ce2b864251b1@linaro.org>
- <20240410132510649-0700.eberman@hu-eberman-lv.qualcomm.com>
- <2c2bca6c-b429-4cef-b63a-ee3bd6c9eecb@linaro.org>
- <20240411130802689-0700.eberman@hu-eberman-lv.qualcomm.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240411130802689-0700.eberman@hu-eberman-lv.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:keuYo7IoL7zHMss6ufd5ZM/kGYYN/UQgpmS2Phj6qju4LM//Aoi
+ KYGu5gpsu+Id//c7ZXkCB//saBrCNYartYQ3A2bCAKJ6HVo8G12jskb/kWN+guR8GZsT4iw
+ WzruQnjnM1B4r+IR/HuAHid9F22GFv3lj8pjSW4Ng4C3sXKTBJHoC9XxhpAxrAafG+CyvsI
+ t+B+04EUDRQOvBVNaCv+Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:znEOoshHSL0=;0/XCIqmQMvCFYHqy32hpX9+MZWA
+ +rRcK6F3PdzmjW2mz5XdrIC9ZhGmNx6mSAIgdCX+GENSFkeIGs0FcE+3o905IZLGTQM/piFGW
+ QVIeecU6I8UYWNlGUasuUcOkU/lw18Q73XX0XEyY4SZeZ0Jr6AW7/ivGT+6ArCBM8aKawsE+C
+ x+TBzcvZ4s5i3Ma1oNJbCRTzDrnL7gPWFNCWGr8sdE0xPQD9+KNMOU76yTlIks/pfQy7K2AZF
+ 4UgYMuiv9cjohLfyh5pjbLlO0F1Xiq0s7D4meddOJqmV772Glo8v/PgafG+dZrvXzA0RigBks
+ szFm6as04GtE0W+ePde1qQSZatUBPcyS1DUTIL/dKvXkGS2ukTaE7nTR9v6a8VSahMYwJMmtS
+ x1vzUoSs5MVMvKsxlRQY6a32Ls97UP7dYQKyhTH6dwLTIbU2V+dItjATCF+PYfZX8fcTySRLK
+ GaYAgXMjCKcougzpt7nZl1aqXXcLqIWgf1d2FJEzwW52WS5dJHiFnskeqT2e1EUZ8iyu/y3MR
+ 8+Xm5jpXPr67fepEXhO1aqT5Y/YzVgJGO6EmeGyLU+ygiKP9LDKMNEIPvMMHQ0nEvHCGNMnT7
+ yHhp5tKEMgcpTewHRSw5bllraaViJkdApwlMEga8Pe5s5szqZaQlFGTdmn3FcfVOqAI2STbx5
+ dn5iS7SsOFo9zR2Q+JWcStgPamokLAZHuO/NKgY35uaZBH6s8eDMrGp2vOGTTV2Krjpez8AWH
+ rIuPTAHyuX9oAXBu1GDxzdCtbFf+d/V/z/GKDF/RdqFgEsJ9BOgDH4=
+
+From: Parker Newman <pnewman@connecttech.com>
+
+Hello,
+These patches add proper support for most of Connect Tech's (CTI) Exar
+based serial cards. Previously, only a subset of CTI's cards would work
+with the Exar driver while the rest required the CTI out-of-tree driver.
+These patches are intended to phase out the out-of-tree driver.
+
+I am new to the mailing lists and contributing to the kernel so please
+let me know if I have made any mistakes or if you have any feedback.
+
+Changes in v2:
+- Put missing PCI IDs in 8250_exar.c instead of pci_ids.h
+- Split large patch into smaller ones
+
+Thank you,
+
+Parker Newman (7):
+  serial: exar: adding missing CTI and Exar PCI ids
+  serial: exar: add support for reading from Exar EEPROM
+  serial: exar: add support for config/set single MPIO
+  serial: exar: add optional board_setup function
+  serial: exar: add some CTI helper functions
+  serial: exar: add CTI board and port setup functions
+  serial: exar: fix: fix crash during shutdown if setup fails
+
+ drivers/tty/serial/8250/8250_exar.c | 1083 +++++++++++++++++++++++++--
+ 1 file changed, 1017 insertions(+), 66 deletions(-)
 
 
+base-commit: fec50db7033ea478773b159e0e2efb135270e3b7
+=2D-
+2.43.2
 
-On 4/11/24 22:09, Elliot Berman wrote:
-> On Thu, Apr 11, 2024 at 10:05:30PM +0200, Konrad Dybcio wrote:
->>
->>
->> On 4/11/24 20:55, Elliot Berman wrote:
->>> On Fri, Apr 05, 2024 at 10:41:29AM +0200, Konrad Dybcio wrote:
->>>> In preparation for parsing the chip "feature code" (FC) and "product
->>>> code" (PC) (essentially the parameters that let us conclusively
->>>> characterize the sillicon we're running on, including various speed
->>>> bins), move the socinfo version defines to the public header and
->>>> include some more FC/PC defines.
->>>>
->>>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->>>> ---
-
-[...]
-
-> 
-> 0xf is the last one.
-
-One more question, are the "internal/external feature codes" referring to
-internality/externality of the chips (i.e. "are they QC-lab-only engineering
-samples), or what else does that represent?
-
-Konrad
 
