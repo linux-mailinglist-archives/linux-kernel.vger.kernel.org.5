@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CADA8A18DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:38:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93E4A8A18DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:38:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBD0C283B23
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:38:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33C481F24EFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:38:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86CF4122C;
-	Thu, 11 Apr 2024 15:31:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CC7142077;
+	Thu, 11 Apr 2024 15:31:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="dKVzgqzC"
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="1/FyNbSU"
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A27043FB1C
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:31:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7076F40870
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:31:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849512; cv=none; b=r6CPGJ1mcgxCU9/OscYo8h0b544yqh8hoJyfPurO3yvk5jjmDTyvye5A4yLXxfkhMp52nlqJOJmfCESpNtvf0xU2oCa2LLS2EjaGSIPe5GlAON2MnOIlANakXgwKY+nW7+54aBoxE5tFNf+olwakmXqhxTp/fZNqDcsTYbNGEmg=
+	t=1712849513; cv=none; b=XD3jMTw0kegJ+QEUnBvCxToU5S8mi5gLyooWJUKKYz8CKWiw+XqcEpsiDFK6PGwZdo+PK8FqTFa8/HQ0YfFwQ5hQG9lcVjmOEKd3CAx038XwYIcYOvBpLVUGrEn9/Y6iyS9qnaziL9fYSgvHUJ345BfV9JRKgwvM/0U/wED+plA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849512; c=relaxed/simple;
-	bh=cHwNtPSO4l9UcgbnVRkBJekVjoSEK2X5F+I523oZ65A=;
+	s=arc-20240116; t=1712849513; c=relaxed/simple;
+	bh=0BbIai3xcoBMm6AX7CtizvK5uk1tBG0zn92zXX7H6gI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L9Ey0uVGO6m6aikDSc3JAlX/niwZGNSJpYXkYgRP+NSO57d9LmUxSzWPnYxO1E08rEyUkj+1WHxHCAw6uEdXXeiIUOcX+ON/xpa1acBZEp6ca790DayPQlhhqmKwjzdZFG/b8w8P3Pc9j3ezY4EMbZUeOgUYN3k8BBeO04KT9lc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=dKVzgqzC; arc=none smtp.client-ip=209.85.166.47
+	 MIME-Version; b=ucTJhqWcLaBD9Xk/RpmszMQICC8bnoFgr/DIUVqcy6+dwHhm/hItDEhxxMtkP2vCpGF5mhcJ54/p1eerI+V35p6ws/dqtRaQ7y+wz6gDQ6s9rn2VBznDaLvCimrbeSgIQSi6ljxerl9gYs2o0BELOWY1jLWAccIvpKF1/wd1H2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=1/FyNbSU; arc=none smtp.client-ip=209.85.166.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7d0772bb5ffso180585339f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:31:50 -0700 (PDT)
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7d0772bb5ffso180585739f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:31:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849509; x=1713454309; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849511; x=1713454311; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ewHA3RTUIDnyZGZEA9VPS2PhyM7qn+xOwc2x/PdL7Ak=;
-        b=dKVzgqzCsh/6gU3VET4lRxgR6XQuR6BxZQnGtkiqV4RmjU/NP+5FasiNqtdFe9cPcn
-         4JauJZYac2uwZRuA2ha0MjGdTDTgyKmhJuaQbqpY3DKU4B6NO68Gm9cKhfpLeH58+Cxz
-         ZrTQZlVqkpAORPTgwouxX0a33bRwmagQbSZH4VqbGxgTOjTLbE2hNFXeE3YWWJfFcrsd
-         VOaQeqrE0HIhW1Yb0qnXru6IjM2IflXUz8LW/rLOlkeJf6ybV+v/mrQKgev0ViJcSffJ
-         5tKvXXQKcyF2geupG4UrN8kmhjiiYYr1B1sEuSRmvvJASIAOJgE6jd2vk3sii389Vq/a
-         HuiQ==
+        bh=RAtR2mhDsnYSMCpP/HQol96/PSpuexfwRhsrrIksyFM=;
+        b=1/FyNbSU69Js0zJxJDdHEkvI5pscHO56XsenNR1leP7dwkyBBxefvSYSLT/CnjdZif
+         WEvssdHOTWTyLfSeGrAoI+HwuYvX+dbB9Q4Dfc5nRWX3Ofx6u8U4e5syEmoSe+8UYjGP
+         UVp9pAWbTgHbj4/8oYcRsxrVJFtnAA+OWH5c7u1DBj0JNmOMoV8nXHU9RcBXEtfI2CNr
+         Csu1GfnVnMAQKVKUxmjJDKqEjdgOsE7tSkfM0cunqJnnkAw/lWMZqqYh8BVhYrpZAH6N
+         MQmMt0sIOYJbmFrK9IoTe3Fk4FYT6Znyu3aFY6V1y/mG0N4DqqCLu4d2htL0R8zDGfjY
+         IdTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849509; x=1713454309;
+        d=1e100.net; s=20230601; t=1712849511; x=1713454311;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ewHA3RTUIDnyZGZEA9VPS2PhyM7qn+xOwc2x/PdL7Ak=;
-        b=PwdBxl0G4YsR9vppa/37L+ZcV5lv/7ROogQhPPpJAbOtPf5gTpPzsTYlWfDna555Qy
-         6VFwy+KmpNGCV0jz0wapJLttbA6k3rhq/t31kKQfbpl4OiS8kv/V91exrVswqS5FpKDj
-         2SMIH+QedulrLh7z2cjMhEahhG8UUc7DAKEMl4vCuBCLH1Ezr6JV7gSIMj5y/S5IjnSS
-         PjNoEAbpeYopC0Co6v32z4DSSyldhHyUhsa0S0vniA7x/rh9UHwZCmDs0ZtGfjlOIJ34
-         OtPGTqF3d2h7Ap621auocKx/C6Uqb7VY3EdUc2V9UD01BUnvfsHLEgNin3D1xF3zj2/W
-         r09Q==
-X-Gm-Message-State: AOJu0YxTvdcrUTk4/Dtj86Vpnq8B+wehwAkZqkSaBedtly416Q4N576k
-	acWygz09QAHJr1V5OdoDsAusXXJtrVxMAug9ruXVzvUHOrOikf26Gh2VQ/bTns5SKlryfjq4CHr
-	L
-X-Google-Smtp-Source: AGHT+IHPNClr/AxM+RpUvIM8DRJoCqBmVgVIiH9+RuPt+cqJusK0mX98D86/OawZ3vXByIRgfVJO+g==
-X-Received: by 2002:a05:6602:4ed7:b0:7d5:ddc8:504d with SMTP id gk23-20020a0566024ed700b007d5ddc8504dmr176643iob.0.1712849509392;
-        Thu, 11 Apr 2024 08:31:49 -0700 (PDT)
+        bh=RAtR2mhDsnYSMCpP/HQol96/PSpuexfwRhsrrIksyFM=;
+        b=c2bGOiATMmNNcXJYb4vSjsJcLGKy6DXVGMwbTQJ3Q/4UhZZMpLs7BH1rgiKfGU46Ee
+         SFczJcS9Wnl9IpHQsUW6vATMzrJi/FEVAoghhX8TuzVwiMu/MgBU7OXvWDq6pTK34OnK
+         z2MeYH8+32WV6YwJRpRPhUluniNevX8hR1mK0i4ZKGbnoOw8Wbv771sqeB0J354JH0RC
+         +qoTe6PS7XRbJdDlm5k2+pRic18vCm4aXz7y2XWH/uom4fxfW2FOq0jOekhNi7SwXT9L
+         1RG5Ec+pv+OdsPap6oUGqx5X/BUK1at747XQihn1lt9/VE+giKnng3CWTpTkv2K4Cs05
+         EVaA==
+X-Gm-Message-State: AOJu0Yy78FBo1uTXB5bAXQg4gzTWiZ4nBIYIWBIOOSJPQ8nq2tzStB8F
+	gDGXR1LtR3aw0iTU4tOegW4HFqrIROvh17loz9dP+yQAeiK5dlrpri+XOAoPBXwssHYLcWbNV97
+	o
+X-Google-Smtp-Source: AGHT+IGGM2PRznFIekb0G+/kIHXXmeEVV/8kDzhczLXSVgKJuYLtjxASpFSx1O4nd6jHSL9nCB2tSg==
+X-Received: by 2002:a6b:4e14:0:b0:7d6:631d:7b0 with SMTP id c20-20020a6b4e14000000b007d6631d07b0mr171892iob.1.1712849511189;
+        Thu, 11 Apr 2024 08:31:51 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.31.47
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.31.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:31:47 -0700 (PDT)
+        Thu, 11 Apr 2024 08:31:49 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 012/437] char/adi: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:12:32 -0600
-Message-ID: <20240411153126.16201-13-axboe@kernel.dk>
+Subject: [PATCH 013/437] char/apm-emulation: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:12:33 -0600
+Message-ID: <20240411153126.16201-14-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,101 +85,60 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/char/adi.c | 26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
+ drivers/char/apm-emulation.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/char/adi.c b/drivers/char/adi.c
-index 751d7cc0da1b..941188be2385 100644
---- a/drivers/char/adi.c
-+++ b/drivers/char/adi.c
-@@ -51,10 +51,10 @@ static int read_mcd_tag(unsigned long addr)
- 		return ver;
+diff --git a/drivers/char/apm-emulation.c b/drivers/char/apm-emulation.c
+index e795390b070f..6b0ea84cf9c6 100644
+--- a/drivers/char/apm-emulation.c
++++ b/drivers/char/apm-emulation.c
+@@ -31,6 +31,7 @@
+ #include <linux/completion.h>
+ #include <linux/kthread.h>
+ #include <linux/delay.h>
++#include <linux/uio.h>
+ 
+ /*
+  * One option can be changed at boot time as follows:
+@@ -200,9 +201,11 @@ static void queue_event(apm_event_t event)
+ 	wake_up_interruptible(&apm_waitqueue);
  }
  
--static ssize_t adi_read(struct file *file, char __user *buf,
--			size_t count, loff_t *offp)
-+static ssize_t adi_read(struct kiocb *iocb, struct iov_iter *to)
+-static ssize_t apm_read(struct file *fp, char __user *buf, size_t count, loff_t *ppos)
++static ssize_t apm_read(struct kiocb *iocb, struct iov_iter *to)
  {
- 	size_t ver_buf_sz, bytes_read = 0;
++	struct file *fp = iocb->ki_filp;
+ 	struct apm_user *as = fp->private_data;
 +	size_t count = iov_iter_count(to);
- 	int ver_buf_idx = 0;
- 	loff_t offset;
- 	u8 *ver_buf;
-@@ -65,7 +65,7 @@ static ssize_t adi_read(struct file *file, char __user *buf,
- 	if (!ver_buf)
- 		return -ENOMEM;
+ 	apm_event_t event;
+ 	int i = count, ret = 0;
  
--	offset = (*offp) * adi_blksize();
-+	offset = iocb->ki_pos * adi_blksize();
+@@ -218,7 +221,7 @@ static ssize_t apm_read(struct file *fp, char __user *buf, size_t count, loff_t
+ 		event = queue_get_event(&as->queue);
  
- 	while (bytes_read < count) {
- 		ret = read_mcd_tag(offset);
-@@ -77,8 +77,7 @@ static ssize_t adi_read(struct file *file, char __user *buf,
- 		offset += adi_blksize();
+ 		ret = -EFAULT;
+-		if (copy_to_user(buf, &event, sizeof(event)))
++		if (!copy_to_iter_full(&event, sizeof(event), to))
+ 			break;
  
- 		if (ver_buf_idx >= ver_buf_sz) {
--			if (copy_to_user(buf + bytes_read, ver_buf,
--					 ver_buf_sz)) {
-+			if (!copy_to_iter_full(ver_buf, ver_buf_sz, to)) {
- 				ret = -EFAULT;
- 				goto out;
- 			}
-@@ -91,7 +90,7 @@ static ssize_t adi_read(struct file *file, char __user *buf,
- 		}
+ 		mutex_lock(&state_lock);
+@@ -227,7 +230,6 @@ static ssize_t apm_read(struct file *fp, char __user *buf, size_t count, loff_t
+ 			as->suspend_state = SUSPEND_READ;
+ 		mutex_unlock(&state_lock);
+ 
+-		buf += sizeof(event);
+ 		i -= sizeof(event);
  	}
  
--	(*offp) += bytes_read;
-+	iocb->ki_pos += bytes_read;
- 	ret = bytes_read;
- out:
- 	kfree(ver_buf);
-@@ -128,10 +127,10 @@ static int set_mcd_tag(unsigned long addr, u8 ver)
- 		return ver;
- }
+@@ -379,7 +381,7 @@ static int apm_open(struct inode * inode, struct file * filp)
  
--static ssize_t adi_write(struct file *file, const char __user *buf,
--			 size_t count, loff_t *offp)
-+static ssize_t adi_write(struct kiocb *iocb, struct iov_iter *from)
- {
- 	size_t ver_buf_sz, bytes_written = 0;
-+	size_t count = iov_iter_count(from);
- 	loff_t offset;
- 	u8 *ver_buf;
- 	ssize_t ret;
-@@ -145,11 +144,10 @@ static ssize_t adi_write(struct file *file, const char __user *buf,
- 	if (!ver_buf)
- 		return -ENOMEM;
- 
--	offset = (*offp) * adi_blksize();
-+	offset = iocb->ki_pos * adi_blksize();
- 
- 	do {
--		if (copy_from_user(ver_buf, &buf[bytes_written],
--				   ver_buf_sz)) {
-+		if (!copy_from_iter_full(ver_buf, ver_buf_sz, from)) {
- 			ret = -EFAULT;
- 			goto out;
- 		}
-@@ -166,7 +164,7 @@ static ssize_t adi_write(struct file *file, const char __user *buf,
- 		ver_buf_sz = min(count - bytes_written, (size_t)MAX_BUF_SZ);
- 	} while (bytes_written < count);
- 
--	(*offp) += bytes_written;
-+	iocb->ki_pos += bytes_written;
- 	ret = bytes_written;
- out:
- 	__asm__ __volatile__("membar #Sync");
-@@ -207,8 +205,8 @@ static const struct file_operations adi_fops = {
+ static const struct file_operations apm_bios_fops = {
  	.owner		= THIS_MODULE,
- 	.llseek		= adi_llseek,
- 	.open		= adi_open,
--	.read		= adi_read,
--	.write		= adi_write,
-+	.read_iter	= adi_read,
-+	.write_iter	= adi_write,
- };
- 
- static struct miscdevice adi_miscdev = {
+-	.read		= apm_read,
++	.read_iter	= apm_read,
+ 	.poll		= apm_poll,
+ 	.unlocked_ioctl	= apm_ioctl,
+ 	.open		= apm_open,
 -- 
 2.43.0
 
