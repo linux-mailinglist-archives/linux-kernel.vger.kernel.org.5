@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-139728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D25668A06EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:48:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E32BC8A06ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:49:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 727271F23365
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:48:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2042E1C22555
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E3513BAF2;
-	Thu, 11 Apr 2024 03:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A252F13BAF2;
+	Thu, 11 Apr 2024 03:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uOTLsMD/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZMB06dxZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C2C13B58D;
-	Thu, 11 Apr 2024 03:48:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E487D13B58D;
+	Thu, 11 Apr 2024 03:49:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712807327; cv=none; b=Un8k4maHzSZ2/1fjJapXZIAIa2ihABjg6GIoifqr0kGbPPVDlbWYCAK0J5FkA8HZBS4/CcmZwjpwI6SptI3Vb5e5Aklncnvrg4XcbCOnltYz0MbF67w58Wrrs2yShRABA4d3zqvGQ3YwmWTOqzq7q0sg9szWdBt96dXjIxwakCM=
+	t=1712807391; cv=none; b=OmZ4FNe1ZA4JFTVMf2i37MB+q8lZuuokjpcBoIOZP8WfKBeZNiR7YPL10Eb7i5CvPIkrhsSzEUM2EjStTiy/R84/29eKXQF9Cb4CPacmGsnXm9QHMfvacdkEZyFEA2pCy9pZbDECGrtm7HXoNCA3TRh7oh/VOxk2JyUQ6vb+iEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712807327; c=relaxed/simple;
-	bh=aBDw+HokdUlrHR8iGqI7UsQz0OKWOH0/+fH0gryYk1I=;
+	s=arc-20240116; t=1712807391; c=relaxed/simple;
+	bh=jncq167E+A7c/9mv2GMObRw2ajRb87w4vjjHtsLhEDU=;
 	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=TLIBMDFfw1kWBhF7Ji86T3JD0vkif3v9eWdxlh1b+jzsTt8K+YHzm/DhBLrMKx4yk29uFBjPGBnBXm/f+rugn6RBIy4zPVzb1HzERoICv3/T1drxjNdtu8TvcV2PRdAHOSj/N37UBIbsroS8F2D9CTZGM0Hf+3DmgMqCeRNrmi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uOTLsMD/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48261C433F1;
-	Thu, 11 Apr 2024 03:48:47 +0000 (UTC)
+	 Subject:From:Cc:To:Date; b=VM1NKKlnXntsw9bIw9TSmp3Xfh3AW+kv8jsZXcuew78EgyID99ojM8x2kin1dwMUL/1I8m/78KwnU266RCfN/ITVZYgDtg8qp1cjfNno8kjQsOkFTnjtbx20sfNfUwIio0oks4UpJfGK4ijW/knms8A2/nzNPqb4hsGoaJbWGHk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZMB06dxZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FD65C433C7;
+	Thu, 11 Apr 2024 03:49:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712807327;
-	bh=aBDw+HokdUlrHR8iGqI7UsQz0OKWOH0/+fH0gryYk1I=;
+	s=k20201202; t=1712807390;
+	bh=jncq167E+A7c/9mv2GMObRw2ajRb87w4vjjHtsLhEDU=;
 	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=uOTLsMD/6bGWI/YDWW53/mkGXyoqEyZPUIZWJzgXI85IhfbANNCLeT0p0viTZKNmz
-	 2lA+J+UyWa45KGRkMCUWvR81YMujOBDxRCl92Zbdicxl5nGHoKltAOQKhrB1VboLLL
-	 AyL+Rthux0akdTmaKCVrhRdmATzALrOuNEwrOqJpW4oppbLQYdqClRhuaextB5RZpw
-	 0cbuzEt6NK8bTEYP2CXFoz9JjBat0PnVPIXeGYtkAhkX0po97wQcmKA+oUdJDjIRpf
-	 FU6R9DDls2jVrFaEFwx1bo/HWL5nMJfM7wQZZLD+5qpxfw4nPSvA86Pg3s5SgbsH03
-	 bUwYLLQwbv0Qg==
-Message-ID: <0e92e72d610bd97963b686366c5334d2.sboyd@kernel.org>
+	b=ZMB06dxZAeP6Fh8v/d5cTELajQvG44msTGTutJyBVYVlACllHBEJ/U4R/k/Z9ds2t
+	 069Zb3Pn39roSSei160kK47u/VY7WIZeIPH0GwclDUSh+HRbsmu6QIUv92ej10Jif+
+	 2TJI5kBYfmM8Mj/sNgoXbqsJl0m3BGCtIJKiRo9ZeRpY98Oy5qKk7vHYbE9UvZwCFo
+	 oF2n5PX9yYkTVKI6EGhEaB+eTZaVUpNU+EYkMoiuwxQc8vClqhcI3c2rx6llnI27aN
+	 EaYshG/eqP+/P9Url3k9gj+UFWlBibXYcUyMJnpymMnuCUsWnyJTI0mEEpIep1Xs8+
+	 XwpzEZhrtIiDA==
+Message-ID: <e6ecf39d6b4378731f3aa19350e0d5b7.sboyd@kernel.org>
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -49,44 +49,34 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240312115249.3341654-1-treapking@chromium.org>
-References: <20240312115249.3341654-1-treapking@chromium.org>
-Subject: Re: [PATCH v4] clk: mediatek: Do a runtime PM get on controllers during probe
+In-Reply-To: <20240308-mtk-fhctl-no-node-error-v1-1-51e446eb149a@collabora.com>
+References: <20240308-mtk-fhctl-no-node-error-v1-1-51e446eb149a@collabora.com>
+Subject: Re: [PATCH] clk: mediatek: pllfh: Don't log error for missing fhctl node
 From: Stephen Boyd <sboyd@kernel.org>
-Cc: Chen-Yu Tsai <wenst@chromium.org>, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, Pin-yen Lin <treapking@chromium.org>, Weiyi Lu <weiyi.lu@mediatek.com>, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, Bosi Zhang <u201911157@hust.edu.cn>, Nicolas Boichat <drinkcat@chromium.org>, Uwe =?utf-8?q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Matthias Brugger <matthias.bgg@gmail.com>, Michael Turquette <mturquette@baylibre.com>, Pin-yen Lin <treapking@chromium.org>
-Date: Wed, 10 Apr 2024 20:48:45 -0700
+Cc: kernel@collabora.com, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, =?utf-8?q?N=C3=ADcolas?= F. R. A. Prado <nfraprado@collabora.com>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Chen-Yu Tsai <wenst@chromium.org>, Edward-JW Yang <edward-jw.yang@mediatek.com>, Johnson Wang <johnson.wang@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, Michael Turquette <mturquette@baylibre.com>, =?utf-8?q?N=C3=ADcolas?= F. R. A. Prado <nfraprado@collabora.com>
+Date: Wed, 10 Apr 2024 20:49:48 -0700
 User-Agent: alot/0.10
 
-Quoting Pin-yen Lin (2024-03-12 04:51:55)
-> mt8183-mfgcfg has a mutual dependency with genpd during the probing
-> stage, which leads to a deadlock in the following call stack:
+Quoting N=C3=ADcolas F. R. A. Prado (2024-03-08 12:29:56)
+> Support for fhctl clocks in apmixedsys was introduced at a later point
+> and to this moment only one mt6795 based platform has a fhctl DT node
+> present. Therefore the fhctl support in apmixedsys should be seen as
+> optional and not cause an error when it is missing.
 >=20
-> CPU0:  genpd_lock --> clk_prepare_lock
-> genpd_power_off_work_fn()
->  genpd_lock()
->  generic_pm_domain::power_off()
->     clk_unprepare()
->       clk_prepare_lock()
+> Change the message's log level to warning. The warning level is chosen
+> so that it will still alert the fact that fhctl support might be
+> unintentionally missing, but without implying that this is necessarily
+> an issue.
 >=20
-> CPU1: clk_prepare_lock --> genpd_lock
-> clk_register()
->   __clk_core_init()
->     clk_prepare_lock()
->     clk_pm_runtime_get()
->       genpd_lock()
+> Even if the FHCTL DT nodes are added to all current platforms moving
+> forward, since those changes won't be backported, this ensures stable
+> kernel releases won't have live with this error.
 >=20
-> Do a runtime PM get at the probe function to make sure clk_register()
-> won't acquire the genpd lock. Instead of only modifying mt8183-mfgcfg,
-> do this on all mediatek clock controller probings because we don't
-> believe this would cause any regression.
->=20
-> Verified on MT8183 and MT8192 Chromebooks.
->=20
-> Fixes: acddfc2c261b ("clk: mediatek: Add MT8183 clock support")
-> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
->=20
+> Fixes: d7964de8a8ea ("clk: mediatek: Add new clock driver to handle FHCTL=
+ hardware")
+> Signed-off-by: N=C3=ADcolas F. R. A. Prado <nfraprado@collabora.com>
 > ---
 
-Applied to clk-fixes
+Applied to clk-next
 
