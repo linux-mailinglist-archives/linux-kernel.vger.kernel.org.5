@@ -1,123 +1,114 @@
-Return-Path: <linux-kernel+bounces-140626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C4228A16F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:18:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31F4F8A16FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:18:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF2391F210BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:18:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E121228A138
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1CF714EC49;
-	Thu, 11 Apr 2024 14:17:41 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D43514D45D
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:17:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99D4614F9E2;
+	Thu, 11 Apr 2024 14:17:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4kjBAKBi";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YYbHCtpq"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75AB514F9DE;
+	Thu, 11 Apr 2024 14:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712845061; cv=none; b=o/9FC4+qCOldUQXxfymYq4wp8OMQJwv8FVnEPvrPvnJ3ikwcyhehDy8OFfsUlZqwgt2YoGBVVPEFnUGAixDFBlWmnqAngwt0rG4ZmBrlDhu9ZBQv31bdAdhga0tnn0PVUkRyB4OAc0v3Aq7kjorYZR8+cyemb7zopar2onmH7mQ=
+	t=1712845068; cv=none; b=RXRf4yRPksz//2agF+igmFo2zk9GNHmBLEgx3VgbeIyKU/vpsS6rgXFnzhqgjYsWB/QM0cTvLpotCq+7PbiEo8PDnV5ku1yP7l2a8vIJYSjhRt5V5fc5c9wjbxSO/byJinlBaazHXCnjWm0quyRfiw40tnQUIF3j+6pjqjZbHro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712845061; c=relaxed/simple;
-	bh=xuNCmJ693hUGjHHj4/JkD+xhls4nmb8lLaS8Z6bnGN4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kUm9NeCYhGzrEcMWazq1o2iu9d8sVdrUL91P01XKVy1wRfGr+JV/N+ZP42pb40ObBVSvRGigBheaHywEpT0vygW06oUDFVigL+X+jcUIcSSAHWXZAtyQIwRGLXrl0j+4KgLaImPf6QaRkd2wmeMTG/cCTYGO6klhFusEEilAgLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 29055339;
-	Thu, 11 Apr 2024 07:18:09 -0700 (PDT)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C9D403F64C;
-	Thu, 11 Apr 2024 07:17:36 -0700 (PDT)
-Date: Thu, 11 Apr 2024 15:17:34 +0100
-From: Dave Martin <Dave.Martin@arm.com>
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
-	shameerali.kolothum.thodi@huawei.com,
-	D Scott Phillips OS <scott@os.amperecomputing.com>,
-	carl@os.amperecomputing.com, lcherian@marvell.com,
-	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
-	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-	dfustini@baylibre.com, amitsinght@marvell.com,
-	David Hildenbrand <david@redhat.com>,
-	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: Re: [PATCH v1 20/31] x86/resctrl: Allow an architecture to disable
- pseudo lock
-Message-ID: <Zhfw/uEZaYk9492j@e133380.arm.com>
-References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-21-james.morse@arm.com>
- <6d563361-87c0-474d-812c-b33e79eacf3a@intel.com>
+	s=arc-20240116; t=1712845068; c=relaxed/simple;
+	bh=5x0MJ3oCoUFbEb4ZlnmuvTMNgcR/kZw65+jhCj9cLhM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=mBPPj+V7ZkY8PA+6qySVIL4c5m8jKcyYjz7ON9ZHwWMAuJK7ZEHmc+oAvna8RtYdgjWID9e0AaGLFv99cZZPStNJB2ez5EwOTL/Z2Fe8wNlAC3hfLQ+V2LmE/pQRZuqTCwqceSbNYCrUgMKbafcsDKt8VAaqmHMx2zJ/I/gdMUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4kjBAKBi; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YYbHCtpq; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712845064;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MuXafFQRttff2dvLyAB+pKNoH9ktNnb1Y8CD+U2h2iw=;
+	b=4kjBAKBiMhS93Omd+VB6jNMZSvXVrGz1kFAWONWeGzGTKO5eL7Gdl+KiPuK7RGKvdUg2IY
+	WG0QwXptatQ1UrCGETre4IlEb7zLIKlRHI8oYc7s3ACVAXV2QrmY+KVIEC7DsdRdNpPnuf
+	exnkzDLQiU8wOKWXSena8KavR2cxIpBkQ/r54FAmrWtt6KDn6K2Ny8vvGzYvlMTL48Pk9Z
+	B5UCuPojjhHjyDyc1EJzhoa7ovOEMaCOzfScvsj8UMM/b3w2p+gCwerH+ZcucRCVbXFJSX
+	K5IUjobSD+323YETmKHV9rrBRM+O35ydu6xN+g7fUKn5kD3bxrVFk1PKBXCy4Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712845064;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MuXafFQRttff2dvLyAB+pKNoH9ktNnb1Y8CD+U2h2iw=;
+	b=YYbHCtpqVdErGD/xWX7jCfyMJ7RKGG5XMnFy87uCVQbX8RlmIzJNMA5yAu3RiqBkuQnuGD
+	NtDUNUM+6hyyESAQ==
+To: Mark Brown <broonie@kernel.org>, Oleg Nesterov <oleg@redhat.com>
+Cc: John Stultz <jstultz@google.com>, Marco Elver <elver@google.com>, Peter
+ Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, "Eric W.
+ Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+ kasan-dev@googlegroups.com, Edward Liaw <edliaw@google.com>, Carlos Llamas
+ <cmllamas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] selftests/timers/posix_timers: reimplement
+ check_timer_distribution()
+In-Reply-To: <f0523b3a-ea08-4615-b0fb-5b504a2d39df@sirena.org.uk>
+References: <87sf02bgez.ffs@tglx> <87r0fmbe65.ffs@tglx>
+ <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
+ <87o7aqb6uw.ffs@tglx>
+ <CANDhNCreA6nJp4ZUhgcxNB5Zye1aySDoU99+_GDS57HAF4jZ_Q@mail.gmail.com>
+ <87frw2axv0.ffs@tglx> <20240404145408.GD7153@redhat.com>
+ <87le5t9f14.ffs@tglx> <20240406150950.GA3060@redhat.com>
+ <f0523b3a-ea08-4615-b0fb-5b504a2d39df@sirena.org.uk>
+Date: Thu, 11 Apr 2024 16:17:43 +0200
+Message-ID: <87il0o0yrc.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6d563361-87c0-474d-812c-b33e79eacf3a@intel.com>
+Content-Type: text/plain
 
-On Mon, Apr 08, 2024 at 08:24:12PM -0700, Reinette Chatre wrote:
-> Hi James,
-> 
-> On 3/21/2024 9:50 AM, James Morse wrote:
-> > Pseudo-lock relies on knowledge of the micro-architecture to disable
-> > prefetchers etc.
-> > 
-> > On arm64 these controls are typically secure only, meaning linux can't
-> > access them. Arm's cache-lockdown feature works in a very different
-> > way. Resctrl's pseudo-lock isn't going to be used on arm64 platforms.
-> > 
-> > Add a Kconfig symbol that can be selected by the architecture. This
-> > enables or disables building of the psuedo_lock.c file, and replaces
-> 
-> pseudo_lock.c
+On Thu, Apr 11 2024 at 13:44, Mark Brown wrote:
+> On Sat, Apr 06, 2024 at 05:09:51PM +0200, Oleg Nesterov wrote:
+>> Thomas says:
+>> 
+>> 	The signal distribution test has a tendency to hang for a long
+>> 	time as the signal delivery is not really evenly distributed. In
+>> 	fact it might never be distributed across all threads ever in
+>> 	the way it is written.
+>> 
+>> To me even the
+>> 
+>> 	This primarily tests that the kernel does not favour any one.
+>
+> Further to my previous mail it's also broken the arm64 selftest builds,
+> they use kselftest.h with nolibc in order to test low level
+> functionality mainly used by libc implementations and nolibc doesn't
+> implement uname():
+>
+> In file included from za-fork.c:12:
+> ../../kselftest.h:433:17: error: variable has incomplete type 'struct utsname'
+>         struct utsname info;
+>                        ^
+> ../../kselftest.h:433:9: note: forward declaration of 'struct utsname'
+>         struct utsname info;
+>                ^
+> ../../kselftest.h:435:6: error: call to undeclared function 'uname'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+>         if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor) != 2)
+>             ^
+> ../../kselftest.h:435:22: error: call to undeclared function 'sscanf'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+>         if (uname(&info) || sscanf(info.release, "%u.%u.", &major, &minor) != 2)
 
-Noted.
+Grrr. Let me stare at this.
 
-> > the functions with stubs. An additional IS_ENABLED() check is needed
-> > in rdtgroup_mode_write() so that attempting to enable pseudo-lock
-> > reports an "Unknown or unsupported mode" to user-space.
-> > 
-> 
-> I am missing something here. It is not obvious to me why the IS_ENABLED()
-> check is needed. Wouldn't rdtgroup_locksetup_enter()
-> return -EOPNOTSUPP if CONFIG_RESCTRL_FS_PSEUDO_LOCK is not enabled?
-> 
-> Reinette
-> 
-
-Hmm, if I've understood all this correctly, then it looks like the
-existing code in rdtgroup_mode_write() relies on the dispatched
-function (rdtgroup_locksetup_enter() etc.) to do an appropriate
-rdt_last_cmd_puts() on failure.  If no function is called at all and
-the requested mode change is not a no-op or otherwise trivially
-successful, then it looks like we're supposed to fall into the else
-clause.
-
-I'd guess James' intent here was to use the fallback else {} to write
-a suitable status string, while keeping the stub functions as trivial
-as possible.
-
-Just taking the IS_ENABLED() away would result in error return from the
-write(), but no suitable last_cmd_status string.
-
-For consistency with the existing x86 implementation, I wonder whether
-we should put a suitable rdt_last_cmd_puts() in the stub for
-rdtgroup_locksetup_enter().
-
-There might be other ways to refactor or simplify this, though.
-
-Thoughts?
-
-Cheers
----Dave
 
