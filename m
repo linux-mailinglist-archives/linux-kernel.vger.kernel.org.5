@@ -1,167 +1,214 @@
-Return-Path: <linux-kernel+bounces-139640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F0EE8A05A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:47:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA5D8A05A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:48:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 923E81C22865
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:47:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38BC128757D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 01:48:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54EA26215F;
-	Thu, 11 Apr 2024 01:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HRapF9GF"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F81626CB;
+	Thu, 11 Apr 2024 01:48:49 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F43C60EC4
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 01:46:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF3AE23BF;
+	Thu, 11 Apr 2024 01:48:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712800018; cv=none; b=kymiFXJpgKT0Uk3IKTyo3l2I4ZbSjnYCCuIKPXaQqJpR2lwTJKv2AQIqWS0fmc7X8ss7DsPPBo5BqODaXx77GNbqAtFDyuDybvipMHV1+XFzSmRjWHq8ZJhn4PrR7axNTep8t/WqHdT2NupFFNkSZDCCY6ZLhN7PgNUZ44/uGvg=
+	t=1712800128; cv=none; b=WwKB0axrncp5Yy4CaMwP7omrwzc7mYSVjN4CvpUQ86ner7DVvHzduHmC68jj9aZB4gK/409GhKNOgylWpKQnhiPH6ICu7BWM+y3LqV1SS8o0Hqo+kZnWGpDSsFK4TPTJF4Q7Iv3Lxk/LKZD5056o9ZMAqI17I/O3cqMTosBnmQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712800018; c=relaxed/simple;
-	bh=BFo3JVFEHL1mrx8xnMU9B1mY4rA+IblCBl9UOAIhXhU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=b+SkLp2FDZGZRJUCEmt818Zx1/uRyPiABXsIGdOs0FARwpjINBNgUmzwqjgOyo+/0NQk5RyNVZk2R90+RVmJ7AYnCoFZ2qa/Qsldzb2rNSF02d9At31xaINoBWx0NtRhEAoVxMpW9SHBLlQVzuE670rAFoUJo2XOdIVMexJdHZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HRapF9GF; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed267f2936so3216512b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 10 Apr 2024 18:46:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712800016; x=1713404816; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SBkc5xYVwMKEG/SI/x9eG7MtNlDql2BuiF4/x6PZqbY=;
-        b=HRapF9GFCD512HtI02QWKUY7wZy7a60efadnDSxWJ4unAcrFaJfQG6E4R8/DD8FEnF
-         goB1Qa050adK9VMfJh262jhDZZKopBZckN65qQbdNjaRcZ+Exz+pP8Dqq3Hrp26HD+rV
-         1fZ79S3wTHpWY0dPrwNEr73NpIrhh9fjxXhiGVkezsAk49wlpJ8Omq2ZTjem3l1/hcRr
-         P3YExJkiFlb6Owjv84sSMbeSHc1xw9jh1KUk1gWhysvfwblUFPiYqHQy/+b3N4FYnv1c
-         mJTD33XzjNFAU4Id/kfJjjx5SV+MlZChQdcis84fm8Lcw/Q+EsXVrdWFiwWmVolGl0ng
-         pPMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712800016; x=1713404816;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SBkc5xYVwMKEG/SI/x9eG7MtNlDql2BuiF4/x6PZqbY=;
-        b=h7f/ujKpgvrDR4Xs2s7LNDtPYSMCZWaeRLvGrf6WcgbLFgyh6XyqvPu3Zm3gT37V68
-         DGyFUbxDW/4yeGby6ATQpycNmC8ISctjROgLpRC4vPm4NXzJPW486x5tnauJPpS529jO
-         uxsQEXt7SMNlMy53IEfZNGBTk3P5+nkiI6sgBLtq6AWBfp1ZyaxStYu9qppmV/cT0bxZ
-         3vvG0QgitsAOhBtJOIviCvdCKfyixnytTdXo7vTN8h0r1xUpglguqViLBI4reUsej7em
-         ZlRRF4CxS2MJrECwvAWP+gpE0zIYPd5TTWtFNrY20gmDOyG1e/7Zk70IIm42q0bnG9OS
-         /TRA==
-X-Forwarded-Encrypted: i=1; AJvYcCU7q4f9aUm8xLmzj48p+FdavTgjfWLoz7gmwC76PKRtBF6HFZHE3TzjmH1ZRfNJuOp8eswreFVRjLlXW22VvVcX2lYLR3xTJkRQ9Stx
-X-Gm-Message-State: AOJu0YzfJHsHwbzguWRtW3yCDmk3N3c7S5H1cgJgeKdaV/1tl9GgN8XC
-	Hx5nI0lgjVP7z3aj0ME0fDs9UiQXwwnBX/cxLA6fHM+9T8jM3SMN
-X-Google-Smtp-Source: AGHT+IEEmEz02QQP8SKCrvx6IzhdE10K7XIaKIEQQio2L3lnH2XboM4Zvu+Ae/3Xc0aAJOJYwyO8Pw==
-X-Received: by 2002:a05:6a00:2d8f:b0:6ed:416d:e9a with SMTP id fb15-20020a056a002d8f00b006ed416d0e9amr4359419pfb.7.1712800016324;
-        Wed, 10 Apr 2024 18:46:56 -0700 (PDT)
-Received: from localhost.localdomain ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
-        by smtp.gmail.com with ESMTPSA id j16-20020a62b610000000b006ecceed26bfsm294724pff.219.2024.04.10.18.46.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Apr 2024 18:46:55 -0700 (PDT)
-From: Barry Song <21cnbao@gmail.com>
-To: sj@kernel.org
-Cc: 21cnbao@gmail.com,
-	akpm@linux-foundation.org,
-	baolin.wang@linux.alibaba.com,
-	chrisl@kernel.org,
-	david@redhat.com,
-	hanchuanhua@oppo.com,
-	hannes@cmpxchg.org,
-	hughd@google.com,
-	kasong@tencent.com,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	ryan.roberts@arm.com,
-	surenb@google.com,
-	v-songbaohua@oppo.com,
-	willy@infradead.org,
-	xiang@kernel.org,
-	ying.huang@intel.com,
-	yosryahmed@google.com,
-	yuzhao@google.com,
-	ziy@nvidia.com
-Subject: Re: [PATCH v2 5/5] mm: add per-order mTHP swpin_refault counter
-Date: Thu, 11 Apr 2024 13:46:36 +1200
-Message-Id: <20240411014636.14023-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240410231538.131175-1-sj@kernel.org>
-References: <20240410231538.131175-1-sj@kernel.org>
+	s=arc-20240116; t=1712800128; c=relaxed/simple;
+	bh=N4j2LsCt6jsQg4mJYqpEIoEwMWFBhNHEMtvgTrBl+5Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=dRcdEL206CR4Dk8kzewb9FamkMhVhEP/t4TuwC3TnuBfindg0hTkmFxDWGg2bY1QUmLSa9W8sNu24q7dQaI1+XXTJ7XZl5wJ+R5DaFDbGmJwD9gd+HDnsYVExVIMr/9Z+o+8cZr3HstyWxcZrRZxw2mdlPRFaaFOMCRS8UNi7wE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4VFMyj57fzz1wr2Z;
+	Thu, 11 Apr 2024 09:47:41 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (unknown [7.185.36.15])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6F44C1400D9;
+	Thu, 11 Apr 2024 09:48:37 +0800 (CST)
+Received: from [10.67.111.172] (10.67.111.172) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 11 Apr 2024 09:48:37 +0800
+Message-ID: <781a6c75-2783-c459-1b82-c85419898a17@huawei.com>
+Date: Thu, 11 Apr 2024 09:48:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] ftrace: Fix use-after-free issue in ftrace_location()
+Content-Language: en-US
+To: Steven Rostedt <rostedt@goodmis.org>
+CC: <mhiramat@kernel.org>, <mark.rutland@arm.com>,
+	<mathieu.desnoyers@efficios.com>, <linux-kernel@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>
+References: <20240401125543.1282845-1-zhengyejian1@huawei.com>
+ <20240410112823.1d084c8f@gandalf.local.home>
+From: Zheng Yejian <zhengyejian1@huawei.com>
+In-Reply-To: <20240410112823.1d084c8f@gandalf.local.home>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
 
->> +		count_mthp_stat(folio_order(folio), MTHP_STAT_ANON_SWPIN_REFAULT);
->>  	}
->> 
-> From the latest mm-unstable tree, I get below kunit build failure and
-> 'git bisect' points this patch.
+On 2024/4/10 23:28, Steven Rostedt wrote:
+> On Mon, 1 Apr 2024 20:55:43 +0800
+> Zheng Yejian <zhengyejian1@huawei.com> wrote:
 > 
->     $ ./tools/testing/kunit/kunit.py run --build_dir ../kunit.out/
->     [16:07:40] Configuring KUnit Kernel ...
->     [16:07:40] Building KUnit Kernel ...
->     Populating config with:
->     $ make ARCH=um O=../kunit.out/ olddefconfig
->     Building with:
->     $ make ARCH=um O=../kunit.out/ --jobs=36
->     ERROR:root:.../mm/memory.c: In function ‘do_swap_page’:
->     .../mm/memory.c:4169:17: error: implicit declaration of function ‘count_mthp_stat’ [-Werror=implicit-function-declaration]
->      4169 |                 count_mthp_stat(folio_order(folio), MTHP_STAT_ANON_SWPIN_REFAULT);
->           |                 ^~~~~~~~~~~~~~~
->     .../mm/memory.c:4169:53: error: ‘MTHP_STAT_ANON_SWPIN_REFAULT’ undeclared (first use in this function)
->      4169 |                 count_mthp_stat(folio_order(folio), MTHP_STAT_ANON_SWPIN_REFAULT);
->           |                                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->     .../mm/memory.c:4169:53: note: each undeclared identifier is reported only once for each function it appears in
->     cc1: some warnings being treated as errors
+>> KASAN reports a bug:
+>>
+>>    BUG: KASAN: use-after-free in ftrace_location+0x90/0x120
+>>    Read of size 8 at addr ffff888141d40010 by task insmod/424
+>>    CPU: 8 PID: 424 Comm: insmod Tainted: G        W          6.9.0-rc2+ #213
+>>    [...]
+>>    Call Trace:
+>>     <TASK>
+>>     dump_stack_lvl+0x68/0xa0
+>>     print_report+0xcf/0x610
+>>     kasan_report+0xb5/0xe0
+>>     ftrace_location+0x90/0x120
+>>     register_kprobe+0x14b/0xa40
+>>     kprobe_init+0x2d/0xff0 [kprobe_example]
+>>     do_one_initcall+0x8f/0x2d0
+>>     do_init_module+0x13a/0x3c0
+>>     load_module+0x3082/0x33d0
+>>     init_module_from_file+0xd2/0x130
+>>     __x64_sys_finit_module+0x306/0x440
+>>     do_syscall_64+0x68/0x140
+>>     entry_SYSCALL_64_after_hwframe+0x71/0x79
+>>
+>> The root cause is that when lookup_rec() is lookuping ftrace record of
+>> an address in some module, and at the same time in ftrace_release_mod(),
+>> the memory that saving ftrace records has been freed as that module is
+>> being deleted.
+>>
+>>    register_kprobes() {
+>>      check_kprobe_address_safe() {
+>>        arch_check_ftrace_location() {
+>>          ftrace_location() {
+>>            lookup_rec()  // access memory that has been freed by
+>>                          // ftrace_release_mod() !!!
+>>
+>> It seems that the ftrace_lock is required when lookuping records in
+>> ftrace_location(), so is ftrace_location_range().
+>>
+>> Fixes: ae6aa16fdc16 ("kprobes: introduce ftrace based optimization")
+>> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+>> ---
+>>   kernel/trace/ftrace.c | 28 ++++++++++++++++++----------
+>>   1 file changed, 18 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+>> index da1710499698..838d175709c1 100644
+>> --- a/kernel/trace/ftrace.c
+>> +++ b/kernel/trace/ftrace.c
+>> @@ -1581,7 +1581,7 @@ static struct dyn_ftrace *lookup_rec(unsigned long start, unsigned long end)
+>>   }
+>>   
+>>   /**
+>> - * ftrace_location_range - return the first address of a traced location
+>> + * ftrace_location_range_locked - return the first address of a traced location
+>>    *	if it touches the given ip range
+>>    * @start: start of range to search.
+>>    * @end: end of range to search (inclusive). @end points to the last byte
+>> @@ -1592,7 +1592,7 @@ static struct dyn_ftrace *lookup_rec(unsigned long start, unsigned long end)
+>>    * that is either a NOP or call to the function tracer. It checks the ftrace
+>>    * internal tables to determine if the address belongs or not.
+>>    */
+>> -unsigned long ftrace_location_range(unsigned long start, unsigned long end)
+>> +static unsigned long ftrace_location_range_locked(unsigned long start, unsigned long end)
+>>   {
+>>   	struct dyn_ftrace *rec;
+>>   
+>> @@ -1603,6 +1603,17 @@ unsigned long ftrace_location_range(unsigned long start, unsigned long end)
+>>   	return 0;
+>>   }
+>>   
+>> +unsigned long ftrace_location_range(unsigned long start, unsigned long end)
+>> +{
+>> +	unsigned long loc;
+>> +
+>> +	mutex_lock(&ftrace_lock);
+>> +	loc = ftrace_location_range_locked(start, end);
+>> +	mutex_unlock(&ftrace_lock);
 > 
-> My kunit build config doesn't have CONFIG_TRANSPARE_HUGEPAGE.  Maybe that's the
-> reason and this patch, or the patch that introduced the function and the enum
-> need to take care of the case?
+> I'm not so sure we can take a mutex in all places that call this function.
+> 
+> What about using RCU?
+> 
+> 	rcu_read_lock();
+> 	loc = ftrace_location_range_rcu(start, end);
+> 	rcu_read_unlock();
+> 
+> Then in ftrace_release_mod() we can have:
+> 
+>   out_unlock:
+> 	mutex_unlock();
+> 
+> 	/* Need to synchronize with ftrace_location() */
+> 	if (tmp_pages)
+> 		synchronize_rcu();
+> 
+> -- Steve
 
-Hi SeongJae,
-Thanks very much, can you check if the below fix the build? If yes, I will
-include this fix while sending v3.
+Yes, it is better to use RCU, I'll do it in v2.
 
-Subject: [PATCH] mm: fix build errors on CONFIG_TRANSPARENT_HUGEPAGE=N
+--
+Thanks
+Zheng Yejian
 
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
----
- mm/memory.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/mm/memory.c b/mm/memory.c
-index acc023795a4d..1d587d1eb432 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4142,6 +4142,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
- 			&vmf->ptl);
- 
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
- 	/* We hit large folios in swapcache */
- 	if (start_pte && folio_test_large(folio) && folio_test_swapcache(folio)) {
- 		int nr = folio_nr_pages(folio);
-@@ -4171,6 +4172,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	}
- 
- check_pte:
-+#endif
- 	if (unlikely(!vmf->pte || !pte_same(ptep_get(vmf->pte), vmf->orig_pte)))
- 		goto out_nomap;
- 
--- 
-2.34.1
+> 
+> 
+>> +
+>> +	return loc;
+>> +}
+>> +
+>>   /**
+>>    * ftrace_location - return the ftrace location
+>>    * @ip: the instruction pointer to check
+>> @@ -1614,25 +1625,22 @@ unsigned long ftrace_location_range(unsigned long start, unsigned long end)
+>>    */
+>>   unsigned long ftrace_location(unsigned long ip)
+>>   {
+>> -	struct dyn_ftrace *rec;
+>> +	unsigned long loc;
+>>   	unsigned long offset;
+>>   	unsigned long size;
+>>   
+>> -	rec = lookup_rec(ip, ip);
+>> -	if (!rec) {
+>> +	loc = ftrace_location_range(ip, ip);
+>> +	if (!loc) {
+>>   		if (!kallsyms_lookup_size_offset(ip, &size, &offset))
+>>   			goto out;
+>>   
+>>   		/* map sym+0 to __fentry__ */
+>>   		if (!offset)
+>> -			rec = lookup_rec(ip, ip + size - 1);
+>> +			loc = ftrace_location_range(ip, ip + size - 1);
+>>   	}
+>>   
+>> -	if (rec)
+>> -		return rec->ip;
+>> -
+>>   out:
+>> -	return 0;
+>> +	return loc;
+>>   }
+>>   
+>>   /**
+> 
 
 
