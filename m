@@ -1,137 +1,171 @@
-Return-Path: <linux-kernel+bounces-141304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 346708A1C4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:44:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDF2E8A1C98
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:51:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF36A1F28675
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:44:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13D3AB309FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:45:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E484915F402;
-	Thu, 11 Apr 2024 16:15:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638A215FA87;
+	Thu, 11 Apr 2024 16:16:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ISpH3VVU"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s1Ydj4WO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E55B815F3EC
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:15:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1D915FA69;
+	Thu, 11 Apr 2024 16:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712852144; cv=none; b=jNtYj4LGQDKRAZA08J4wo/acRSPKbSV852XZdCVbcwxzrSFjDrcdmyIq70LAmkQwZOn92DC9CyqZDeslfuZtoTPPGXmx4t1Duu44gqkAzK/ceXAqEC+rPJh2sxDJZMU9bMTvmciGvqsEIR+EzKOpTPPdANbOPGDnQpDrZlKPxEk=
+	t=1712852217; cv=none; b=LLTN1L9C9NpvDpplczY9SzHKUfFEX9YuXUlo8H5VeaLhmELDZWhg4rwpua/fcLW3AhUnxkkr4tdhf7qfYpX0kgrc08CZjbAO1VR3HbiDAjB8zg4KKmvQxWPv0w7qwEPA7gxMTgV6wqrtwZroRqmMhfPI75iox4NZMdmlZ0yrvmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712852144; c=relaxed/simple;
-	bh=tdZgX5nfBuYfMPaNrv80HJY9z415EFRiBOih/5/8FZY=;
+	s=arc-20240116; t=1712852217; c=relaxed/simple;
+	bh=oxB2IinreaN+GlXA7UgrWU6a+FGBjajYG4vubHueojQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=onn9SkIb7BloSbSTtkUqa3tNAvX+/qIOR2pRWRctHmEJoCb2XdB7vj9kFVkGg+8XKynUjABVrrc5A2UVGGxUGlHP+dYSLHLjbcKfcLNv/nt8km7F5J2fzsvbiXHA0q+07SjLysW4K7PG/q0LKd24/psKECQhsqmPX9k96jALcJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ISpH3VVU; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712852142;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jZmlfwQwEwqX8N6AuyRgtrgEEEIO7a43RiQoCYN1PMM=;
-	b=ISpH3VVUbcrbPvxbJI0k5w9kiSbUFQibRu6ac3nrfCKLDMHiuCyb9ZFTU5WfnxGSxP3mMc
-	fXG2lI2eIqzyMwAe8bBYbnIQml9Zc0JrX9ei8WnMIwUfh6xHOdVQlRzUK/xQ1IDEmMjFh4
-	pW45RLXPK3m6mzag7XTlhO0W02cyjBE=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-287-nq2w6T9CO8-2H_oyBWd4jA-1; Thu, 11 Apr 2024 12:15:40 -0400
-X-MC-Unique: nq2w6T9CO8-2H_oyBWd4jA-1
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6ea19a84c22so10646a34.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:15:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712852140; x=1713456940;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jZmlfwQwEwqX8N6AuyRgtrgEEEIO7a43RiQoCYN1PMM=;
-        b=JnOr0W/uFbnSh3xonLKIZ6vgQVWC8WP26btzO8uqZpUB7IZZKp4NSHYgzoUsK1RORU
-         p1nNPxsni8IvOOq6ZzUfXku9Aak+ywqay5of6bD2t3M7e/F6+MhlASwPgXvgJ+H475Hi
-         ZS6GoYIXT8eQ322Ox98zxGSUyTSu5AK7tPa3SB1spR7/bZBRVQpu/lB+3xFlWtPUOXEn
-         YZWlhlclh9qQHlz982o03trwP1AIXLOuSQEu8r/YhT5czA6PkmM0w7Jy0SgyCZjE8MDX
-         ude7Djr9zuP7jHdU5ccW7nbHop/Ta38/J1Mn9En0wadFjNS0p7lhv8GkXKtTtrzaaeBy
-         egOA==
-X-Forwarded-Encrypted: i=1; AJvYcCWQgALrjtBjqT+KPeKp9MTQlYE4V8TfLG4EiK6vyWlrEkkW9pI8x88BHvgJuxO1xE6jIRlez06BtVWz+X3/4SMpnylfaL9pXaUIMJy8
-X-Gm-Message-State: AOJu0YxGDjmZMvx87I5HSJMjs6O7Gl4sy+wpPYCz4CazmjQYbbm344Dc
-	UoP69WBLYClo1FnbQIho7n2qIaJ9khAfJvPONBO6oDNiTf88YMocrRvFbb9A75Umu0yJzuLA6L3
-	ko3294gTbp3AI3flnmDnrM7KBSrQLU0riZRPTWh3w8Sr4BLuqvYFTX3eMwNpPrSLy26Mz4w==
-X-Received: by 2002:a05:6870:7183:b0:222:81cc:ac9c with SMTP id d3-20020a056870718300b0022281ccac9cmr6146576oah.5.1712852139658;
-        Thu, 11 Apr 2024 09:15:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGHX6QtF5SydubwLrtRDzMOYoSKh757kSXH1BgbFRQt1iTYEViuMR5roQkhSWQN8EQKuvV3vQ==
-X-Received: by 2002:a05:6870:7183:b0:222:81cc:ac9c with SMTP id d3-20020a056870718300b0022281ccac9cmr6146547oah.5.1712852139258;
-        Thu, 11 Apr 2024 09:15:39 -0700 (PDT)
-Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id bi36-20020a05620a31a400b0078d677e72f3sm1195367qkb.118.2024.04.11.09.15.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 09:15:38 -0700 (PDT)
-Date: Thu, 11 Apr 2024 12:15:36 -0400
-From: Peter Xu <peterx@redhat.com>
-To: Jason Gunthorpe <jgg@nvidia.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: Re: [RFC PATCH 0/8] Reimplement huge pages without hugepd on powerpc
- 8xx
-Message-ID: <ZhgMqF7SNaISrYMJ@x1n>
-References: <cover.1711377230.git.christophe.leroy@csgroup.eu>
- <20240325163840.GF6245@nvidia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZklVwRB6VETAcBlkKMqDR6EKh5Oyz73V87oeJofSAbrMsJcsJfTmRLF6ftUcxxKVSX0Axr6H2AmwUTB0roLhnZDDQl+Ti6mychhV6H6ihW/7cj45D+hbD014xWrEXIPAw4O21mdelBkkXwQ+wJKE2aEYKnhWKDCeEQ7wm0Mcb7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s1Ydj4WO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC8B4C072AA;
+	Thu, 11 Apr 2024 16:16:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712852217;
+	bh=oxB2IinreaN+GlXA7UgrWU6a+FGBjajYG4vubHueojQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=s1Ydj4WOYaJ5p5COnprJBHKI3qO0ZBy8B05ZBo4YiZOiXke0h6NZXRe1hYep8EMUO
+	 7IjZGcAb0oxZSi1KvHIEsppYJHW+rnhKdtzit7WinR63u+yMlu0vg/iVOluLI1Gvo7
+	 dvcQJaihtIuZ8kPwuHumRftjhm5YDhVpf6JnVGapfSUXyACvOP2RwKIaPGU+JsBlOG
+	 2uFNDr+L/1jrIz9Y8ev42ZYPmiF5JUYxtNaJErUtXSIHaItezqGDlf1nk7TEmbUxQJ
+	 1JJ3JXl1ePNmbjKhieT4Wu062CehbJz1MdUhImtJM6WiKYI2oWGqeCE0rA1D52p8VK
+	 yOItmbxK8vxsA==
+Date: Thu, 11 Apr 2024 09:16:55 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Stefan Kanthak <stefan.kanthak@nexgo.de>
+Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ardb@kernel.org
+Subject: Re: [PATCH 1/2] crypto: x86/sha256-ni - convert to use rounds macros
+Message-ID: <20240411161655.GA9356@sol.localdomain>
+References: <20240409124216.9261-1-ebiggers@kernel.org>
+ <20240409124216.9261-2-ebiggers@kernel.org>
+ <C0FA88ECA90F43B1BF9E7849C53440D7@H270>
+ <20240409233650.GA1609@quark.localdomain>
+ <450F5ED9B5834B2EA883786C32E1A30E@H270>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240325163840.GF6245@nvidia.com>
+In-Reply-To: <450F5ED9B5834B2EA883786C32E1A30E@H270>
 
-On Mon, Mar 25, 2024 at 01:38:40PM -0300, Jason Gunthorpe wrote:
-> On Mon, Mar 25, 2024 at 03:55:53PM +0100, Christophe Leroy wrote:
-> > This series reimplements hugepages with hugepd on powerpc 8xx.
-> > 
-> > Unlike most architectures, powerpc 8xx HW requires a two-level
-> > pagetable topology for all page sizes. So a leaf PMD-contig approach
-> > is not feasible as such.
-> > 
-> > Possible sizes are 4k, 16k, 512k and 8M.
-> > 
-> > First level (PGD/PMD) covers 4M per entry. For 8M pages, two PMD entries
-> > must point to a single entry level-2 page table. Until now that was
-> > done using hugepd. This series changes it to use standard page tables
-> > where the entry is replicated 1024 times on each of the two pagetables
-> > refered by the two associated PMD entries for that 8M page.
-> > 
-> > At the moment it has to look into each helper to know if the
-> > hugepage ptep is a PTE or a PMD in order to know it is a 8M page or
-> > a lower size. I hope this can me handled by core-mm in the future.
-> > 
-> > There are probably several ways to implement stuff, so feedback is
-> > very welcome.
+Hi Stefan,
+
+On Thu, Apr 11, 2024 at 09:42:00AM +0200, Stefan Kanthak wrote:
+> "Eric Biggers" <ebiggers@kernel.org> wrote:
 > 
-> I thought it looks pretty good!
+> > On Tue, Apr 09, 2024 at 06:52:02PM +0200, Stefan Kanthak wrote:
+> >> "Eric Biggers" <ebiggers@kernel.org> wrote:
+> >> 
+> >> > +.macro do_4rounds i, m0, m1, m2, m3
+> >> > +.if \i < 16
+> >> > +        movdqu  \i*4(DATA_PTR), MSG
+> >> > +        pshufb  SHUF_MASK, MSG
+> >> > +        movdqa  MSG, \m0
+> >> > +.else
+> >> > +        movdqa  \m0, MSG
+> >> > +.endif
+> >> > +        paddd   \i*4(SHA256CONSTANTS), MSG
+> >> 
+> >> To load the round constant independent from and parallel to the previous
+> >> instructions which use \m0 I recommend to change the first lines of the
+> >> do_4rounds macro as follows (this might save 1+ cycle per macro invocation,
+> >> and most obviously 2 lines):
+> >> 
+> >> .macro do_4rounds i, m0, m1, m2, m3
+> >> .if \i < 16
+> >>         movdqu  \i*4(DATA_PTR), \m0
+> >>         pshufb  SHUF_MASK, \m0
+> >> .endif
+> >>         movdqa  \i*4(SHA256CONSTANTS), MSG
+> >>         paddd   \m0, MSG
+> >> ...
+> > 
+> > Yes, your suggestion looks good.  I don't see any performance difference on
+> > Ice Lake, but it does shorten the source code.  It belongs in a separate patch
+> > though, since this patch isn't meant to change the output.
+> 
+> Hmmm... the output was already changed: 2 palignr/pblendw and 16 pshufd
+> have been replaced with punpck?qdq, and 17 displacements changed.
 
-I second it.
+Yes, the second patch does that.  Your comment is on the first patch, so I
+thought you were suggesting changing the first patch.  I'll handle your
+suggestion in another patch.  I'm just trying to keep changes to the actual
+output separate from source code only cleanups.
 
-I saw the discussions in patch 1.  Christophe, I suppose you're exploring
-the big hammer over hugepd, and perhaps went already with the 32bit pmd
-solution for nohash/32bit challenge you mentioned?
+> Next simplification, and 5 more lines gone: replace the macro do_16rounds
+> with a repetition
+> 
+> @@ ...
+> -.macro do_16rounds i
+> -        do_4rounds (\i + 0),  MSGTMP0, MSGTMP1, MSGTMP2, MSGTMP3
+> -        do_4rounds (\i + 4),  MSGTMP1, MSGTMP2, MSGTMP3, MSGTMP0
+> -        do_4rounds (\i + 8),  MSGTMP2, MSGTMP3, MSGTMP0, MSGTMP1
+> -        do_4rounds (\i + 12), MSGTMP3, MSGTMP0, MSGTMP1, MSGTMP2
+> -.endm
+> -
+> @@ ...
+> -        do_16rounds 0
+> -        do_16rounds 16
+> -        do_16rounds 32
+> -        do_16rounds 48
+> +.irp i, 0, 16, 32, 48
+> +        do_4rounds (\i + 0),  MSGTMP0, MSGTMP1, MSGTMP2, MSGTMP3
+> +        do_4rounds (\i + 4),  MSGTMP1, MSGTMP2, MSGTMP3, MSGTMP0
+> +        do_4rounds (\i + 8),  MSGTMP2, MSGTMP3, MSGTMP0, MSGTMP1
+> +        do_4rounds (\i + 12), MSGTMP3, MSGTMP0, MSGTMP1, MSGTMP2
+> +.endr
+> 
+> This doesn't change the instructions generated, so it belongs to this patch.
 
-I'm trying to position my next step; it seems like at least I should not
-adding any more hugepd code, then should I go with ARCH_HAS_HUGEPD checks,
-or you're going to have an RFC soon then I can base on top?
+Yes, that makes sense.
+
+> The following suggestion changes instructions: AFAIK all processors which
+> support the SHA extensions support AVX too
+
+No (unfortunately).  Several generations of Intel's low-power CPUs support SHA
+but not AVX.  Namely Goldmont, Goldmont Plus, and Tremont.
+
+We could provide two SHA-256 implementations, one with AVX and one without.  I
+think it's not worthwhile, though.
+
+We ran into this issue with AES-NI too; I was hoping that we could just provide
+the new AES-NI + AVX implementation of AES-XTS, and remove the older
+implementation that uses AES-NI alone.  However, apparently the above-mentioned
+low-power CPUs do need the implementation that uses AES-NI alone.
+
+> And last: are the "#define ... %xmm?" really necessary?
+> 
+> - MSG can't be anything but %xmm0;
+> - MSGTMP4 is despite its prefix MSG also used to shuffle STATE0 and STATE1,
+>   so it should be named TMP instead (if kept);
+> - MSGTMP0 to MSGTMP3 are the circular message schedule, they should be named
+>   MSG0 to MSG3 instead (if kept).
+> 
+> I suggest to remove at least those which are now encapsulated in the macro
+> and the repetition.
+
+Yes, I noticed the weird naming too.  I'll rename MSGTMP[0-3] to MSG[0-3], and
+MSGTMP4 to TMP.
+
+You're correct that MSG has to be xmm0 because of how sha256rnds2 uses xmm0 as
+an implicit operand.  I think I'll leave the '#define' for MSG anyway because
+the list of aliases helps make it clear what each register is used for.
 
 Thanks,
 
--- 
-Peter Xu
-
+- Eric
 
