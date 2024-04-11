@@ -1,151 +1,95 @@
-Return-Path: <linux-kernel+bounces-140418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC188A1422
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:14:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 776828A1423
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:14:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24AFF1F234EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:14:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A69261C21DA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CCF014BF8B;
-	Thu, 11 Apr 2024 12:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A98214B07F;
+	Thu, 11 Apr 2024 12:14:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZDCP2AVr"
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UUnJnOil";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="5qa4bEXp"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EAC14A08D
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:14:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D98314B075
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:14:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712837649; cv=none; b=IDm2wa8qw+2wA4RfulLKbGYfS7qOtFFPHsiYwBECPrtk5OxKq+c/IDTuZqno0ZqvlKP3UBre3E6ab9kY5BJXWrq51gN/rLIp8A++OtP/Iq3Z6xOXOC2mH9eXHxDlQoEubmfTX7iSuWjj81TctJBFkJnyV8V95s+WT2rD1CssRo0=
+	t=1712837655; cv=none; b=m7amGR2bHzMyQlkg7g6aWtqRl09eeiuqM6MEDyN/YtNtbCUzYp7xNVwDJ6YlHR0nPPPzMGl0RCtVQZfGswv25tuwMcnzYJaF4UREkbFYTuNxn1ef6TA7jIo8Cbe8mS49sztDO9p4snvJL1Gk/QseItar7QX9p4meDrbh7FtH+b8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712837649; c=relaxed/simple;
-	bh=BakRmhmicJbDKcrReng5xepS9oRzju+Zi4eHkXz5Gjo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=LgX0MVIjWjhDsXhN/EzW1UCLwiera53aH+i+rFe5ij8i+0drf0WmrDepW22WufyNClqVT/AaE5pB5i9ogbjv2BfIj5E+a4tREiNx3pHBW39fOKRLMy8OOL6bxXnMccK0hpOa1BOD2bUEa7HuNQMsczOVCBpH1Xms1wD6ghnZv4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ZDCP2AVr; arc=none smtp.client-ip=209.85.221.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4db24342894so160372e0c.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 05:14:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712837646; x=1713442446; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1vhafsI5LvdFGZSOAF0fGhLimdJSORh40J/r9x8oZUU=;
-        b=ZDCP2AVr58e+6I9Laiyd9ffuj/n6oixpjNdGqpamYQDXQmJwzn3CiyVohbQZdHagsI
-         wZftIm6B/bnfuZWsoX04Gf0nBGgqagm0EP/CPYQ6NTiHqgWMGfTbcat/HpfpyR/oGnBe
-         oO1O1VYEDoSaKwTazzcPdhNKnvl/FKEga6kDw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712837646; x=1713442446;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1vhafsI5LvdFGZSOAF0fGhLimdJSORh40J/r9x8oZUU=;
-        b=YOPEfYkbkSn8IOIG0iX7kr7Q7R861ElQUjquLFUcwkY6RTkSog4YoVJ0EqE/UrsCUQ
-         2sRlgWFVi3O28UFP9006DNmzf56eq7+V+g5PEMnSOQgcTxe5q+xlYbqwsmyJ3RYBgG21
-         i0F4hg5TP42AnAWyMryNvUvZ2Qq2gHQHihQ46yccntaOK2tsGngAdD+KkaZnng4wa6+A
-         6FrmqTQttNCOvjU60GDCL3Ilj435H3hh7PTBPTW2AVsBg7cuHCHoyqbgJjDc1Q53W1k6
-         1XvGN4Tu4kSdNCZbwh1LU9TUrMHkTDHhgL8W1jANi+4pzJMIb0R6/7Ifd1s7TfEB/P7+
-         KJ3w==
-X-Forwarded-Encrypted: i=1; AJvYcCU3UuLa7qSLpKNJO1M7VfFgxzI+aCQ070RlPv+QV9bFoDjrdTbpGjayn1BnG5VfFFwtkmUDd570Aqed874CcG2RB+9FP4qUI6bLvdeh
-X-Gm-Message-State: AOJu0YxKeAXrHt8DjtZm7v1K331MGRf2TzqlkbwhdYCT4M+T2+erlgHF
-	QDgMSBA5ZyK3edeO5BOQVnbXpHRGdMOyWfTCYvWkn3sYevmkEan/Dyv0X+9mOXcBDMi6AtvFFmr
-	jj8Uz
-X-Google-Smtp-Source: AGHT+IGrz19TKSvIV3DMbiUB+Anzc4f3GG8bD5xEZa2OJ57IT5TTkk/P+nBFmtMj28v6ucHX2QJjqQ==
-X-Received: by 2002:a05:6102:290e:b0:47a:2545:12e with SMTP id cz14-20020a056102290e00b0047a2545012emr4256388vsb.5.1712837645325;
-        Thu, 11 Apr 2024 05:14:05 -0700 (PDT)
-Received: from denia.c.googlers.com (200.234.86.34.bc.googleusercontent.com. [34.86.234.200])
-        by smtp.gmail.com with ESMTPSA id l18-20020a0ce092000000b0069b12b5ab57sm855799qvk.89.2024.04.11.05.14.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 05:14:04 -0700 (PDT)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Thu, 11 Apr 2024 12:14:03 +0000
-Subject: [PATCH] media: c8sectpfe: Do not depend on DEBUG_FS
+	s=arc-20240116; t=1712837655; c=relaxed/simple;
+	bh=avFSOEoI1zEvuZnhhf45vojpYeuYVijGIRwOstBRl1E=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=DDrGu1uPwdWftEtAOoYBFOLee6n7l8zcpBsBbqcPlwUCtqigo68XdhmYFqdH/Jeq748nB4w5j3EidD46QPM/ZvJJCFcBIDlqBGDWwpDNO0oUHKO61lHavm7Xjluw79WeDAgH7jhieSMfmzR2VQMXm0YfoZJCg55uvbEYj4NHE0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UUnJnOil; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=5qa4bEXp; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712837652;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dWtCYEoymlFCIzVZNgg2aWjtKrhpbjhpZI3uAp4Wakc=;
+	b=UUnJnOilnpM0ZPtxjtMXFPTjkrq+2p5RCeYZiCLVX37PcPdd+JS4ng69VlfSVRW/ZrQ5iy
+	DSqhCZM8xlgvfltkxOQD/H58PW23Sxi0YxBNqQCMh9Ac1HAantHwSF079BnXfSx6eroBwL
+	owJW72cNYxlRynopYc1g+tJ7I54KNp7XExA+1yBRHNaKV12RzjMzmESmkB2C5xQGYCNhHq
+	1c2PQxotbpv3oU0ZUUInmL6fqKbPzE+N4h4MSIm+agilyxTSTsYKSEkgiVKhudVTE2g+9B
+	iswncZKgaIjDrU4pefYpDXHIvIWVCB0JjWjdo1ZLwFlX0vk1fve3M3G/h+h8cQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712837652;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dWtCYEoymlFCIzVZNgg2aWjtKrhpbjhpZI3uAp4Wakc=;
+	b=5qa4bEXpkPz8KZgMSbB+4pZXuaJ2Nzr2OQ8N8PHwrK3pGp+32Yisg7P1z23VwWLmhRV85e
+	2QkH3buxgGxodLCQ==
+To: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>, Laura Nao <laura.nao@collabora.com>
+Cc: kernel@collabora.com, linux-kernel@vger.kernel.org,
+ regressions@lists.linux.dev, x86@kernel.org, "kernelci.org bot"
+ <bot@kernelci.org>
+Subject: Re: [patch 0/2] x86/cpu/amd: Fixup the topology rework fallout
+In-Reply-To: <6d4d3956-baf3-441c-86b6-493eb3ff72bd@leemhuis.info>
+References: <20240410194002.909839385@linutronix.de>
+ <20240411112743.232798-1-laura.nao@collabora.com>
+ <6d4d3956-baf3-441c-86b6-493eb3ff72bd@leemhuis.info>
+Date: Thu, 11 Apr 2024 14:14:11 +0200
+Message-ID: <87le5k14h8.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240411-debugfs-v1-1-220c164afaf5@chromium.org>
-X-B4-Tracking: v=1; b=H4sIAArUF2YC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDE0ND3ZTUpNL0tGLdtBSzZEPjRANzk7QUJaDqgqLUtMwKsEnRsbW1ANs
- Oln5ZAAAA
-To: Patrice Chotard <patrice.chotard@foss.st.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>, 
- linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain
 
-Make dependency on DEBUG_FS conditional, that way we are not forced to
-enable DEBUG_FS if we can to use this driver.
+On Thu, Apr 11 2024 at 13:37, Linux regression tracking (Thorsten Leemhuis) wrote:
+> On 11.04.24 13:27, Laura Nao wrote:
+> No need to wait, we can do that now:
+>
+> #regzbot fix: x86/cpu/amd: Make the NODEID_MSR union actually work
+>
+> But ideally Thomas would add Link: or Closes: tag to the patch
+> description (e.g.
+>
+>  Closes:
+> https://lore.kernel.org/all/20240322175210.124416-1-laura.nao@collabora.com/
+>
+> ) just like Linus asked him to do a while ago already[1], as then this
+> would not be necessary at all. ;) (SCNR)
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- drivers/media/platform/st/sti/c8sectpfe/Kconfig             | 1 -
- drivers/media/platform/st/sti/c8sectpfe/Makefile            | 7 +++++--
- drivers/media/platform/st/sti/c8sectpfe/c8sectpfe-debugfs.h | 5 +++++
- 3 files changed, 10 insertions(+), 3 deletions(-)
+Will do when applying them and I try to remember that Closes thing, but
+you know at my age ....
 
-diff --git a/drivers/media/platform/st/sti/c8sectpfe/Kconfig b/drivers/media/platform/st/sti/c8sectpfe/Kconfig
-index 702b910509c9c..01c33d9c9ec37 100644
---- a/drivers/media/platform/st/sti/c8sectpfe/Kconfig
-+++ b/drivers/media/platform/st/sti/c8sectpfe/Kconfig
-@@ -5,7 +5,6 @@ config DVB_C8SECTPFE
- 	depends on PINCTRL && DVB_CORE && I2C
- 	depends on ARCH_STI || ARCH_MULTIPLATFORM || COMPILE_TEST
- 	select FW_LOADER
--	select DEBUG_FS
- 	select DVB_LNBP21 if MEDIA_SUBDRV_AUTOSELECT
- 	select DVB_STV090x if MEDIA_SUBDRV_AUTOSELECT
- 	select DVB_STB6100 if MEDIA_SUBDRV_AUTOSELECT
-diff --git a/drivers/media/platform/st/sti/c8sectpfe/Makefile b/drivers/media/platform/st/sti/c8sectpfe/Makefile
-index aedfc725cc19d..99425137ee0a9 100644
---- a/drivers/media/platform/st/sti/c8sectpfe/Makefile
-+++ b/drivers/media/platform/st/sti/c8sectpfe/Makefile
-@@ -1,6 +1,9 @@
- # SPDX-License-Identifier: GPL-2.0
--c8sectpfe-y += c8sectpfe-core.o c8sectpfe-common.o c8sectpfe-dvb.o \
--		c8sectpfe-debugfs.o
-+c8sectpfe-y += c8sectpfe-core.o c8sectpfe-common.o c8sectpfe-dvb.o
-+
-+ifneq ($(CONFIG_DEBUG_FS),)
-+c8sectpfe-y += c8sectpfe-debugfs.o
-+endif
- 
- obj-$(CONFIG_DVB_C8SECTPFE) += c8sectpfe.o
- 
-diff --git a/drivers/media/platform/st/sti/c8sectpfe/c8sectpfe-debugfs.h b/drivers/media/platform/st/sti/c8sectpfe/c8sectpfe-debugfs.h
-index d2c35fb32d7ef..8e1bfd8605247 100644
---- a/drivers/media/platform/st/sti/c8sectpfe/c8sectpfe-debugfs.h
-+++ b/drivers/media/platform/st/sti/c8sectpfe/c8sectpfe-debugfs.h
-@@ -12,7 +12,12 @@
- 
- #include "c8sectpfe-core.h"
- 
-+#if defined(CONFIG_DEBUG_FS)
- void c8sectpfe_debugfs_init(struct c8sectpfei *);
- void c8sectpfe_debugfs_exit(struct c8sectpfei *);
-+#else
-+static inline void c8sectpfe_debugfs_init(struct c8sectpfei *) {};
-+static inline void c8sectpfe_debugfs_exit(struct c8sectpfei *) {};
-+#endif
- 
- #endif /* __C8SECTPFE_DEBUG_H */
+Thanks,
 
----
-base-commit: 34d7bf1c8e59f5fbf438ee32c96389ebe41ca2e8
-change-id: 20240411-debugfs-fd6c13a074fd
-
-Best regards,
--- 
-Ricardo Ribalda <ribalda@chromium.org>
-
+        tglx
 
