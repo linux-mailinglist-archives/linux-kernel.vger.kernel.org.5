@@ -1,133 +1,152 @@
-Return-Path: <linux-kernel+bounces-140720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D5408A183A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:09:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B83E68A183B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:09:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 870EEB2608E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:08:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E90061C212FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D59114005;
-	Thu, 11 Apr 2024 15:08:52 +0000 (UTC)
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E690913FF6;
+	Thu, 11 Apr 2024 15:09:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bbOhPmBV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F00FA134D1;
-	Thu, 11 Apr 2024 15:08:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 372BF134A6
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:09:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712848131; cv=none; b=cmDpcTGJKfhMUK4XtqT6SjenzrHwKHwjNhgcKjj+BbuhHMWhejQdIQWuTqGiPeyVXtII2XCLo7qWTzmjojwo0BMoOOeE4/ChkUHdcykxs+/2gf0LCiAMsgKoBYPvovUmBgzeq1czjlGaVSRHU1QNSaMOaQMddxLSPiGMtvC4uEs=
+	t=1712848145; cv=none; b=YRi4U4ZeacJJwUUwU14cOr/3qQKSumqTFO61uYWninB2c/WwH9nckfS2b30TPjFyMxp5d5GE4UFtGHSgB3JFuOuCXww6me8qlKKKhsA0e3c6tb5o9fZ7BH+Qqw9UQax0HT3D/bZDl0+rAEreJrfqlgI35tNyWPvOZ27PZW2hQec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712848131; c=relaxed/simple;
-	bh=oU5pCmDkLmmc1H+EyQIYHeeb2Fb2Jfhgrf2CdpJQj8Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Yh2aEpuJpZc+7/lVzOILT1zqrqvbHjqgIFADzPUj7I69Wa8i0La1GyYGuNKLiBXX/1oEb2cPOmRY2wkvuQEhfujpiEYqkNp1bxMpr9WFf2JCMFoUo+NBwhPDU2U/qshAnSl2kzPoP9meAC0a/wy6DsOQo46TidrGHBO4JogdE7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5aa369179e1so3489509eaf.3;
-        Thu, 11 Apr 2024 08:08:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712848128; x=1713452928;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E9hehHCvMAi0CNOjOnNQIxMp+8eSHK8c3QluG1cpQEI=;
-        b=hz4QGYuzWr2n2amu7D31TFJmxANeRJsYllIdIe35MWbW3CVLAqaqEm3UtlwO/nF73s
-         sXV67kGbld3w8LKw3XZt3AHT7DRxUnW00w+0XbXpa8VFB7cfsNQGWHe9vDcy26v/jcQD
-         Ap75NxllBOFQL0DXzKjVBKHgjDstk4sNGF55mwnSj4uaSVeU+p/6/zu964UntFd3KmgD
-         RqkJwWFwlYLWvhA8Ul8DA/MgYpPKKRfkemk/lEoocJh4RxZzM9/A+NsCQrOd8olNabfC
-         T2Mbv4+qEr6MDjXQED6T8fA90TIE83B2Gxysno2ffIhxZ5fHKs4/xe+tfrAt1f646RSu
-         JUBg==
-X-Forwarded-Encrypted: i=1; AJvYcCVU3iFdoXjT9koiwvAA6Sp/kGjdVymi6noVM0koO/OXA3RIvH7XIVX/HdxRqlggDr2+r4aQWykBZwMQPySYc2k97N2atT6zB4sc9pZqphrdw2s6N3ptk+o8ebXaXEA9m0wiS4QkvGkhzqB0oZl2eHXy8fZt2iPT7FIy2L65GRzOIkkOYvj/r2oN4En2NVxF5RREqJiRcTRM7R5riU6tXYExnm3DOGjc
-X-Gm-Message-State: AOJu0YwqWU0rydjKUm9F4x/opKpce6fMKMmSKrENuLZE6Mjg8Uo7PMsV
-	EpsKj8B3CXqzsWSk9OAaNZ8L+BFsTDYuBKPC6vcqyaUBhObf//YPUlLez8s9
-X-Google-Smtp-Source: AGHT+IEJmf89EuiAaKtpLNEr9G1LONI/+H9TLXaQI+A+h7gS1EcDEb3mORpif3yGMOl9JUO9quNKYg==
-X-Received: by 2002:a05:6820:1391:b0:5aa:3b8a:b491 with SMTP id i17-20020a056820139100b005aa3b8ab491mr6955693oow.4.1712848128089;
-        Thu, 11 Apr 2024 08:08:48 -0700 (PDT)
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com. [209.85.167.182])
-        by smtp.gmail.com with ESMTPSA id di12-20020a0568201e8c00b005a4bcb155basm352018oob.23.2024.04.11.08.08.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 08:08:47 -0700 (PDT)
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3c5ee4ce695so795992b6e.0;
-        Thu, 11 Apr 2024 08:08:47 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWga1MW07g+6xV7sR//DAQStXMyY8aX6RtrMyR8BRcIFROJBCdbMkZPaz4ixHRrn3sCUkbUiWFlxZ1R7dALvzcZ0LXZ27Rcjys37oV+XfSXQZa06FOUOWt5J2+FDoDIBPDmMlv3kbipyXrOxldeTBywZ0XLiW0JrX+vLNy/4mLCQWVDpUf4CUwTeD+z2Sxdmx1v4daR2p3f0PRRE2kpZc7twG9zntKZ
-X-Received: by 2002:a05:6808:644:b0:3c5:eaaf:babe with SMTP id
- z4-20020a056808064400b003c5eaafbabemr5366936oih.7.1712848127440; Thu, 11 Apr
- 2024 08:08:47 -0700 (PDT)
+	s=arc-20240116; t=1712848145; c=relaxed/simple;
+	bh=RVORxIAI43gTiQrKWQVAC9zIU4DsuLvhV4Kx4jfwHSw=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=T1gesl46Riu24ni4dz4S1RKT3+rCnrdpXWcOyKk6MKno8cfxC3U12v+zt9kNKeJnpmtzsywUKXEUGsdXF2zHQFb6JlXm0JYc8w30eabOaOq7fmIuUVZlUBKnSCZ4X4IjAZBuDtcSmdSp4BBphvFEOesiZFYJmJmEOzxZkkzlAiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bbOhPmBV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6C0BC072AA;
+	Thu, 11 Apr 2024 15:09:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712848143;
+	bh=RVORxIAI43gTiQrKWQVAC9zIU4DsuLvhV4Kx4jfwHSw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=bbOhPmBVluMbGNnFm8dJm3MaHLuHVNTGgV/zUSV2cpGCbxTpfRjSsBGx6gGA0IeXx
+	 tFAPlcA+ttz0wTaV/RGNrVwCF7PXnxVjTm5zY2WBTKdggeJffZtOaWITxtnC2nHd+6
+	 Z+z2GhSO3q6QjN94f6cizbSOUu32KIr5wIbgILBhkSSzekyKjtpKl/z6qXOE7XAY7e
+	 VXlrA0prld3mRQbVn7UQVvlz3LY+aOm0CgrOkUGBPw7Zpo3hEmSe15IWtjO6naGiKK
+	 b0Y8UmBPqp4+/CaLYFRLNWr+YcpAePnVnUW/LYaDkQNIBoGb+eD9h+cD+Cw2Hzcnnm
+	 Qt9tAh4qFwKag==
+Date: Fri, 12 Apr 2024 00:08:58 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Yuntao Wang <ytcoode@gmail.com>
+Cc: rppt@kernel.org, akpm@linux-foundation.org, arnd@arndb.de,
+ christophe.leroy@csgroup.eu, geert@linux-m68k.org, jpoimboe@kernel.org,
+ kjlx@templeofstupid.com, linux-kernel@vger.kernel.org, mhiramat@kernel.org,
+ ndesaulniers@google.com, peterz@infradead.org, tglx@linutronix.de,
+ tj@kernel.org
+Subject: Re: [PATCH] init/main.c: Fix potential static_command_line memory
+ overflow
+Message-Id: <20240412000858.7d81a7b946af172e6aed554d@kernel.org>
+In-Reply-To: <20240411142735.245515-1-ytcoode@gmail.com>
+References: <Zhfj4T1-u354E_KP@kernel.org>
+	<20240411142735.245515-1-ytcoode@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240410122657.2051132-1-claudiu.beznea.uj@bp.renesas.com> <20240410122657.2051132-9-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240410122657.2051132-9-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 11 Apr 2024 17:08:35 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdW4CEbR0K2OfADS1S834GyRwE45Squ2OY82nDqkPLPUVQ@mail.gmail.com>
-Message-ID: <CAMuHMdW4CEbR0K2OfADS1S834GyRwE45Squ2OY82nDqkPLPUVQ@mail.gmail.com>
-Subject: Re: [PATCH v3 8/9] clk: renesas: rzg2l-cpg: Add suspend/resume
- support for power domains
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
-	krzk+dt@kernel.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
-	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 10, 2024 at 2:27=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> =
-wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> RZ/G3S supports deep sleep states that it can reach with the help of the
-> TF-A.
->
-> RZ/G3S has a few power domains (e.g. GIC) that need to be always-on while
-> Linux is running. These domains are initialized (and powered on) when
-> clock driver is probed.
->
-> As the TF-A takes control at the very last(suspend)/first(resume)
-> phase of configuring the deep sleep state, it can do it's own settings on
-> power domains.
->
-> Thus, to restore the proper Linux state, add rzg2l_cpg_resume() which
-> powers on the always-on domains and rzg2l_cpg_complete() which activates
-> the power down mode for the IPs selected through CPG_PWRDN_IP{1, 2}.
->
-> Along with it, added the suspend_check member to the RZ/G2L power domain
-> data structure whose purpose is to checks if a domain can be powered off
-> while the system is going to suspend. This is necessary for the serial
-> console domain which needs to be powered on if no_console_suspend is
-> available in bootargs.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->
-> Changes in v3:
-> - populate pd->suspend_check on rzg2l_cpg_attach_dev() for serial
->   console; due to this the rzg2l_pd_suspend_check_console() was moved
->   before rzg2l_cpg_attach_dev()
-> - removed RZG2L_PD_F_CONSOLE define
+On Thu, 11 Apr 2024 22:27:23 +0800
+Yuntao Wang <ytcoode@gmail.com> wrote:
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> On Thu, 11 Apr 2024 16:21:37 +0300, Mike Rapoport <rppt@kernel.org> wrote:
+> > On Thu, Apr 11, 2024 at 09:23:47AM +0200, Geert Uytterhoeven wrote:
+> > > CC Hiramatsu-san
+> > > 
+> > > On Thu, Apr 11, 2024 at 5:25 AM Yuntao Wang <ytcoode@gmail.com> wrote:
+> > > > We allocate memory of size 'xlen + strlen(boot_command_line) + 1' for
+> > > > static_command_line, but the strings copied into static_command_line are
+> > > > extra_command_line and command_line, rather than extra_command_line and
+> > > > boot_command_line.
+> > > >
+> > > > When strlen(command_line) > strlen(boot_command_line), static_command_line
+> > > > will overflow.
+> > 
+> > Can this ever happen? 
+> > Did you observe the overflow or is this a theoretical bug?
+> 
+> I didn't observe the overflow, it's just a theoretical bug.
+> 
+> > > > Fixes: f5c7310ac73e ("init/main: add checks for the return value of memblock_alloc*()")
+> > 
+> > f5c7310ac73e didn't have the logic for calculating allocation size, we
+> > surely don't want to go back that far wiht Fixes.
+> 
+> Before commit f5c7310ac73e, the memory size allocated for static_command_line
+> was 'strlen(command_line) + 1', but commit f5c7310ac73e changed this size
+> to 'strlen(boot_command_line) + 1'. I think this should be wrong.
 
-Gr{oetje,eeting}s,
+Ah, OK. that sounds reasonable. 
 
-                        Geert
+> 
+> > > > Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> > > > ---
+> > > >  init/main.c | 8 +++++---
+> > > >  1 file changed, 5 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/init/main.c b/init/main.c
+> > > > index 2ca52474d0c3..a7b1f5f3e3b6 100644
+> > > > --- a/init/main.c
+> > > > +++ b/init/main.c
+> > > > @@ -625,11 +625,13 @@ static void __init setup_command_line(char *command_line)
+> > > >         if (extra_init_args)
+> > > >                 ilen = strlen(extra_init_args) + 4; /* for " -- " */
+> > > >
+> > > > -       len = xlen + strlen(boot_command_line) + 1;
+> > > > +       len = xlen + strlen(boot_command_line) + ilen + 1;
+> > > >
+> > > > -       saved_command_line = memblock_alloc(len + ilen, SMP_CACHE_BYTES);
+> > > > +       saved_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
+> > > >         if (!saved_command_line)
+> > > > -               panic("%s: Failed to allocate %zu bytes\n", __func__, len + ilen);
+> > > > +               panic("%s: Failed to allocate %zu bytes\n", __func__, len);
+> > > > +
+> > > > +       len = xlen + strlen(command_line) + 1;
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+Ah, I missed this line. Sorry. So this looks good to me but you don't need any
+other lines, because those are not related to the bug you want to fix.
+Please just focus on 1 fix.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Thank you,
+
+> > > >
+> > > >         static_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
+> > > >         if (!static_command_line)
+> > > 
+> > > Gr{oetje,eeting}s,
+> > > 
+> > >                         Geert
+> > > 
+> > > -- 
+> > > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> > > 
+> > > In personal conversations with technical people, I call myself a hacker. But
+> > > when I'm talking to journalists I just say "programmer" or something like that.
+> > >                                 -- Linus Torvalds
+> > 
+> > -- 
+> > Sincerely yours,
+> > Mike.
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
