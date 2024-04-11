@@ -1,50 +1,53 @@
-Return-Path: <linux-kernel+bounces-139707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA2CD8A06B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC05C8A06AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:27:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 904671F2621E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:28:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58AEE1F22DB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:27:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D56D013BAC3;
-	Thu, 11 Apr 2024 03:27:43 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DB313BAD0;
+	Thu, 11 Apr 2024 03:27:39 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8991813C677
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 03:27:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 454021F176
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 03:27:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712806063; cv=none; b=DImd8Nq4wJZSbqO2KbM9KwB60ZttLJPIxjBXB2hRqw8+TJygtNkSoFtk5hobBzhqyCxn0zFSRmSNcG16E44khKchFLq/jZA4Uhdv0bYKkCGaLVqNNvtpByIBiAX0cns/2BARLHDVMMS8PXlAtVmdKS2aQXVLq6dAVp7afSkGUeI=
+	t=1712806058; cv=none; b=DLcTS5xO5tY03X0/xv+TdxFww8ALXkdJUn/7XtK/Y7pt6gs3+LkXq6NAAlAsYt55/NNKPXh/QKs860LIbHyelOaGxlLmcJYVUzb6PHKEsWM2mfl4P6bVfZvE962sY1J3znclTFGGEjYO5+UJmky4rWkkJZg9C74o8UVSxJqPGtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712806063; c=relaxed/simple;
-	bh=rHGH6lCkBOQ/TXVwUpLe/mbxZddhNL23jRwKH3SUq1o=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PO87NC9dJZsSprNhMLNaIUdVk7lrUPTr+f6qR4YcA+a9PRaF1g74Zk9/NTW5hI6szek3xINOmMd5jWYXeXs6vcugqnpafvi3uvcFUsIhsNol/I4u8oBpVeCHuPrZLX0UC0BfA6RhTSWeh/K4sKbfSd37JmYW5GRwkpTIO6LOHe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+	s=arc-20240116; t=1712806058; c=relaxed/simple;
+	bh=L7+yEMnAAQhrm90UXztYYYVX1BAD5yIkJu/9V9n1ex4=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=O5AThAW9rMEYw6VI7j+EZeAGw3P9OtDQTsycG3crmZmNJwFwtrZoYFL9AFq0hLtqNPoK3JPEilUd8eU0hfsfgDUTdsouWkd6lEw/q6rEayHYF7T1zrHcBr4GoS5DraTTAHaL6P7TKeBN2gK9wFZYVxte80sX4DRMiUzvuenA7hE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VFQ6t6HLsz1R5Sm;
-	Thu, 11 Apr 2024 11:24:54 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VFQ923Rjpz1GGdb;
+	Thu, 11 Apr 2024 11:26:46 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0F68B14010C;
-	Thu, 11 Apr 2024 11:27:39 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 4D2541A0172;
+	Thu, 11 Apr 2024 11:27:33 +0800 (CST)
 Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
  (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 11 Apr
- 2024 11:27:31 +0800
+ 2024 11:27:32 +0800
 From: Zhihao Cheng <chengzhihao1@huawei.com>
 To: <richard@nod.at>, <miquel.raynal@bootlin.com>, <ben.hutchings@mind.be>,
 	<daniel@makrotopia.org>
 CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 0/4] ubi: Fix serious of resource leaking problems
-Date: Thu, 11 Apr 2024 11:18:59 +0800
-Message-ID: <20240411031903.3050278-1-chengzhihao1@huawei.com>
+Subject: [PATCH v2 1/4] ubi: ubi_init: Fix missed debugfs cleanup in error handling path
+Date: Thu, 11 Apr 2024 11:19:00 +0800
+Message-ID: <20240411031903.3050278-2-chengzhihao1@huawei.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240411031903.3050278-1-chengzhihao1@huawei.com>
+References: <20240411031903.3050278-1-chengzhihao1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,30 +59,39 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 
-v1->v2:
-  Combine Ben[1] and my[2] patches.
-  Modify second patch in [1], don't drop warning message if debugfs
-  failed to be initialized.
-  Modify second patch in [2], move ubiblock_init to the end of ubi_init.
-  Add new patch to replace IS_ERR_OR_NULL with IS_ERR.
+The debugfs dir is created in ubi_init, but it is not destroyed in error
+handling path of ubi_init when ubi is loaded by inserting module (eg.
+attaching failure), which leads to subsequent ubi_init calls failed.
+Fix it by destroying debugfs dir in corresponding error handling path.
 
-[1] https://lore.kernel.org/linux-mtd/cover.1712788087.git.ben.hutchings@mind.be/
-[2] https://lore.kernel.org/lkml/20240410074033.2523399-3-chengzhihao1@huawei.com/T/
+Fixes: 927c145208b0 ("mtd: ubi: attach from device tree")
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+---
+ drivers/mtd/ubi/build.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Ben Hutchings (1):
-  mtd: ubi: Ignore all debugfs initialisation failures
-
-Zhihao Cheng (3):
-  ubi: ubi_init: Fix missed debugfs cleanup in error handling path
-  ubi: ubi_init: Fix missed ubiblock cleanup in error handling path
-  ubi: debugfs: Replace IS_ERR_OR_NULL with IS_ERR in error checking
-    path
-
- drivers/mtd/ubi/build.c | 61 ++++++++++++++++++++---------------------
- drivers/mtd/ubi/debug.c | 35 +++++++++--------------
- drivers/mtd/ubi/debug.h |  4 +--
- 3 files changed, 44 insertions(+), 56 deletions(-)
-
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index a7e3a6246c0e..7f95fd7968a8 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1372,7 +1372,7 @@ static int __init ubi_init(void)
+ 
+ 		/* See comment above re-ubi_is_module(). */
+ 		if (ubi_is_module())
+-			goto out_slab;
++			goto out_debugfs;
+ 	}
+ 
+ 	register_mtd_user(&ubi_mtd_notifier);
+@@ -1387,6 +1387,8 @@ static int __init ubi_init(void)
+ 
+ out_mtd_notifier:
+ 	unregister_mtd_user(&ubi_mtd_notifier);
++out_debugfs:
++	ubi_debugfs_exit();
+ out_slab:
+ 	kmem_cache_destroy(ubi_wl_entry_slab);
+ out_dev_unreg:
 -- 
 2.39.2
 
