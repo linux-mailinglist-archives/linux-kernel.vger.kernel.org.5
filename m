@@ -1,87 +1,143 @@
-Return-Path: <linux-kernel+bounces-141706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1926D8A2234
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:19:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A12858A222F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:18:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 296581C22C91
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:19:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57FE9288E7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:18:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 094D647F64;
-	Thu, 11 Apr 2024 23:19:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FE7747A6A;
+	Thu, 11 Apr 2024 23:18:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="amFCXyaU"
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844584AED1;
-	Thu, 11 Apr 2024 23:19:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="h/QwSUcT"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C2B9D53C
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 23:18:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712877560; cv=none; b=NTOaNRr5R6WYaIiWauFv9EMDINRk2Hrte6BsAe4NA3d6G59LjTHaWE78eBsZ9SDN58/rXMS/5lFJrIA/fCZgxr0jTzIgrPKeNRKvtv6UEZ/ydompn7/7eojsnVHOn4NNX9sYeCbmcCy1Zi5/As1PsLVDjFKmmvaQdCuN6f7/V+g=
+	t=1712877519; cv=none; b=jTzDoHjtBLKKE8PdGjJ8Nb6VSItQxwQrQD0CYy74MdWJZXX3ynp+KkagGRlHQnoEn7DFj2l+ymGN8QU1g2Z9J+/chk05P3mUR3RLIDG+7fPAyNuxevsbPfn4LYZgNwnp5/fY9E800uCn8NeQyWYk7hktkhb3T2gR9x0kMqpIaRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712877560; c=relaxed/simple;
-	bh=aNmoCty2E2taxbJGZXgC0zkBJXRsGV5eZ6MA4fcTBgM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=p9nZgl3cDmnOJEfT0RjjCheF9oPAS1WjqAvn2UbITGa1jlJg/KNddZS0Uy1MEI9Om8cnoPRHF27OHYjbT0dhyw5GfuxwNKMXHL4GKg0TXJC5QymbSlxRORqIskVDkbqrqTNjKjLnCKzJvbsqkqYyWc2Tv0N0NoODY4z9ivqjYWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=amFCXyaU; arc=none smtp.client-ip=117.135.210.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=c5Pzo
-	m9ggE+lnrPwITXXUuzreNabMc9C3d5zN36J6+c=; b=amFCXyaUffXBkkMLeLToV
-	JsIFN/Qm4MymU9dGml6IAyca4lHTkUtHFbzhsGjv1wSWHmjoQbGkRdQhdfN2L2J9
-	uHNOntu12Fg3/vXXR8spzqbXE2tNbH4Xkjfi0r3/B+sF+/pkRxre47zBbsiEWH75
-	AM+fIY9fJOOryPQUIJv234=
-Received: from localhost.localdomain (unknown [101.86.127.38])
-	by gzga-smtp-mta-g3-3 (Coremail) with SMTP id _____wD3H47CbxhmuzOoAA--.32437S4;
-	Fri, 12 Apr 2024 07:18:51 +0800 (CST)
-From: Lizhe <sensor1010@163.com>
-To: rafael@kernel.org,
-	viresh.kumar@linaro.org,
-	linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Lizhe <sensor1010@163.com>
-Subject: [PATCH] cpufreq: Fixed kernel crash caused by cpufreq issues
-Date: Thu, 11 Apr 2024 16:18:18 -0700
-Message-Id: <20240411231818.2471-1-sensor1010@163.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712877519; c=relaxed/simple;
+	bh=ChViTqgL4O0iExSvoXkrz8rlXUh1To7gRM7Ht5KUpHs=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=mkvH6QKdq2+9kHPj0pdnXk4BpvK8E5XJVlJaB0YWrnhvZDLPVI+480TKy2gkzJdEPWxZ05FzOOd0qQHZvDPfmpxeBiVphCz+z8pWwZ2mwOwWWgXzH6DwjBHSeV2UvayrnD5IJqbeZ9gln35r+peNRomaotQHwtyR5EgZS5zHgPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=h/QwSUcT; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6ed34f8b3c8so406621b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:18:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712877517; x=1713482317; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=saPqzjSurmxMimUcoDIYz/TWWrwnNJQ5t2nRzRoA9jA=;
+        b=h/QwSUcTAknLsH0caevy7UKRPMtWKy6/z7ghO5vniGVd3mm3HU6XDtnhVf2db15dfT
+         F0VN/DcHUNszYK1VXwKavgO0HnsJMqRa9geE66u1BClVgQWZAalgxxaB1xS2Wz6413dA
+         BgXqdTsTY5MUhGAFwAF3jFnOzkr89SuXllbKF+026xVY78ElHvshqPNa+wjQEhvbJizb
+         I8+xHXxydnOZC686bzB6g0bBria+OFKJm7pk26UGAzqJzqikJm6wkH88wZrmZ5/3BH3J
+         pRwvy2Nttd9uhWH10rTJD4037xLONIWW6jdcfLtbfRuOp5QzUQY7CqWzxl/yyFsubVhH
+         9ipA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712877517; x=1713482317;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=saPqzjSurmxMimUcoDIYz/TWWrwnNJQ5t2nRzRoA9jA=;
+        b=JOT8+4mSMvPwb3gQBmQekxnyQ17MtMMmKIgesrsqCJWbxFWKFZsoDgEQJc/VFOvz55
+         mQua4qghW8pZQpwgEZKt34Lgs9vf9Pk/pBQO6CO4Io1UcCTBu2J2xuMjmVxUoEmIAZS8
+         zuvrx+PK8d0mhSDqFoKHWAqRpLvIh+fbmGLgGplHruhMhkKZkynSXf+rlWbMQEtOGB2l
+         F5NQ5ZHG3FvFRViiPIB1KhsTK8Bqx2X6c0060xpOAnAcydwY/e4aLmoi4Auud/kwyCKz
+         cUcul47kJdau8VPWgGpPKdzqKGE+2VtgP8gy9WDQltFpAuNFAx4TMuvgEJYEH4Q8sSjH
+         Y2iQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUpPkDYchgDzDd2MWngVTOi9weSrgYRJ9BFuQtcVcta6b8RQ30W9V+fTSH9WQm/q/eWsb7iyFtwaLk7xEQuyMWGqFLmF+tNxzC+Tw+0
+X-Gm-Message-State: AOJu0YwE/PoyVGAKhV4T9Xj0s4r5TaNDHrnXcHArPJhuY0x/QHmAX3Xz
+	6Qu7SuztwhE679siqwLdM3aBibE8BiwCDJAcQMvB5whoAYvWHXbeG/qh/S7AHquAqtRHLgL8TQK
+	GSg==
+X-Google-Smtp-Source: AGHT+IG8Zh+SkroWzAkIZMDgaZKlj32yE60tkT4BNAP8+QtCUFi+5DUdxxp9vGpRq/V5umwS9iv9z7OxYOM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2d17:b0:6ea:c2e5:3fc6 with SMTP id
+ fa23-20020a056a002d1700b006eac2e53fc6mr40035pfb.4.1712877516535; Thu, 11 Apr
+ 2024 16:18:36 -0700 (PDT)
+Date: Thu, 11 Apr 2024 16:18:34 -0700
+In-Reply-To: <20240126085444.324918-41-xiong.y.zhang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3H47CbxhmuzOoAA--.32437S4
-X-Coremail-Antispam: 1Uf129KBjvdXoW7GF1UAr1xWw1fKr4rJrW3trb_yoW3Crg_ur
-	1rWr1xXr4Duw10vF17Cr4Svr1Yy3W3WrnavF18t39xJa4UAr9Yyw18Xrn3Xa4rX3yxGFZr
-	XrWUtF1UCr1kGjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRXyCLJUUUUU==
-X-CM-SenderInfo: 5vhq20jurqiii6rwjhhfrp/1tbiSBy9q2XAk244cQAAsT
+Mime-Version: 1.0
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <20240126085444.324918-41-xiong.y.zhang@linux.intel.com>
+Message-ID: <ZhhvyhdvF-1LZNlu@google.com>
+Subject: Re: [RFC PATCH 40/41] KVM: x86/pmu: Separate passthrough PMU logic in
+ set/get_msr() from non-passthrough vPMU
+From: Sean Christopherson <seanjc@google.com>
+To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
+Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
+	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
+	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
+	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
+	chao.gao@intel.com
+Content-Type: text/plain; charset="us-ascii"
 
-When the cpufreq_driver does not provide an exit() function.
-cpufreq offline operations can result in a kernel crash.
+On Fri, Jan 26, 2024, Xiong Zhang wrote:
+> From: Mingwei Zhang <mizhang@google.com>
+> 
+> Separate passthrough PMU logic from non-passthrough vPMU code. There are
+> two places in passthrough vPMU when set/get_msr() may call into the
+> existing non-passthrough vPMU code: 1) set/get counters; 2) set global_ctrl
+> MSR.
+> 
+> In the former case, non-passthrough vPMU will call into
+> pmc_{read,write}_counter() which wires to the perf API. Update these
+> functions to avoid the perf API invocation.
+> 
+> The 2nd case is where global_ctrl MSR writes invokes reprogram_counters()
+> which will invokes the non-passthrough PMU logic. So use pmu->passthrough
+> flag to wrap out the call.
+> 
+> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> ---
+>  arch/x86/kvm/pmu.c |  4 +++-
+>  arch/x86/kvm/pmu.h | 10 +++++++++-
+>  2 files changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+> index 9e62e96fe48a..de653a67ba93 100644
+> --- a/arch/x86/kvm/pmu.c
+> +++ b/arch/x86/kvm/pmu.c
+> @@ -652,7 +652,9 @@ int kvm_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+>  		if (pmu->global_ctrl != data) {
+>  			diff = pmu->global_ctrl ^ data;
+>  			pmu->global_ctrl = data;
+> -			reprogram_counters(pmu, diff);
+> +			/* Passthrough vPMU never reprogram counters. */
+> +			if (!pmu->passthrough)
 
-Signed-off-by: Lizhe <sensor1010@163.com>
----
- drivers/cpufreq/cpufreq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This should probably be handled in reprogram_counters(), otherwise we'll be
+playing whack-a-mole, e.g. this misses MSR_IA32_PEBS_ENABLE, which benign, but
+only because PEBS isn't yet supported.
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 04d349372de3..e8660bc7d232 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -1739,7 +1739,7 @@ static void cpufreq_remove_dev(struct device *dev, struct subsys_interface *sif)
- 	}
- 
- 	/* We did light-weight exit earlier, do full tear down now */
--	if (cpufreq_driver->offline)
-+	if (cpufreq_driver->offline && cpufreq_driver->exit)
- 		cpufreq_driver->exit(policy);
- 
- 	up_write(&policy->rwsem);
--- 
-2.25.1
+> +				reprogram_counters(pmu, diff);
+>  		}
+>  		break;
+>  	case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
+> diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
+> index 0fc37a06fe48..ab8d4a8e58a8 100644
+> --- a/arch/x86/kvm/pmu.h
+> +++ b/arch/x86/kvm/pmu.h
+> @@ -70,6 +70,9 @@ static inline u64 pmc_read_counter(struct kvm_pmc *pmc)
+>  	u64 counter, enabled, running;
+>  
+>  	counter = pmc->counter;
+> +	if (pmc_to_pmu(pmc)->passthrough)
+> +		return counter & pmc_bitmask(pmc);
 
+Won't perf_event always be NULL for mediated counters?  I.e. this can be dropped,
+I think.
 
