@@ -1,130 +1,234 @@
-Return-Path: <linux-kernel+bounces-141564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 238DE8A2006
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:17:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F8A58A2008
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:18:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81B26B25FA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:17:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17BA92843C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:18:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D6D1805A;
-	Thu, 11 Apr 2024 20:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADD0C17C9E;
+	Thu, 11 Apr 2024 20:18:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Knz3FE+h"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="WqZ52UBq"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5447117BCF
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:17:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5E5617C6A;
+	Thu, 11 Apr 2024 20:18:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712866660; cv=none; b=skfNkH9rE3UBsmPA1qe+EiL385zi2DOd5vj6xSx4stYyGdhy82s7xwZRvA5SLNAXMtx7NUWsW/yU79ZVU0pHoobbh4ggbRPTSv0iyM2eabVcCYHSJxd1s/uNGKQn4Lt4dYSt86sz16mo3xG5bGKk5eaomVLFeLOdRxTLptsWbxQ=
+	t=1712866688; cv=none; b=XLZGXQ1393AOv/qTPPaKbHkqFejSYJ/TOUhYgRL/l3HjgQzE9tf4prT9shmsR4keJNOKbwnkmJ+30GP02qreCNS6DV0ip5+hwqxnJKtRyqyEZz4OOV4XzsswqefTRJzNjptUALi/JpONbpZWiIw+Tn6rPvxNICEW2mSlc7eoNPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712866660; c=relaxed/simple;
-	bh=CCSNMZUxTrpa3dpyGwuD+xpGXVDYKUY8cALIjx+vkrw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I4UQ7ktJmsf2900Up78WzDpg0nJVyWcFsTmTmqfOkDW3F+s7GZw8CmDtXzexoObbHQ1Xo4AXbtJBT3NZJRSs5gH3h8XSP7pMQWK05acr93+5X1x1FRisoFlaCGvQ4T0SnX3HXthFQrQh/QrW+crv9DhWDOsaVXFqYfOUorulT0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Knz3FE+h; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-516b6e75dc3so277532e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:17:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712866656; x=1713471456; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=jnVkVi9PCVLQ2a4WdlMXHYl3KUjY5EPaBz9jWbvlviA=;
-        b=Knz3FE+h116Jw56r8DRB5MhfbTQPpKuJ3aOu/rh9BozCqCRQbUtZhiG0aJvWulQNYI
-         tDL1PrY0SS9nWsENFLzkiEIlIxEEA80z8l/MP/SJVGmPpokKywCpyEbikGjPo/DBTHxl
-         UsG0yIF+0YDRdrjA9/P1zMEElLADiOX3WerCML/Cyf5XUsV4hY9NSS4jAB/lMItID6+j
-         8cAMzSbJrQBGWZkATr//ZvJZiN3FbDkR9gK15Sqq+sSk0Dyy4MfJUQOnurLq68bf+tdY
-         jRt3fL71IhTf+h8YRn2/kBNYRwfAXYzyek6A8XzVDEDsAkK/joo5oYx00Ze+qNgd2y+n
-         D7Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712866656; x=1713471456;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jnVkVi9PCVLQ2a4WdlMXHYl3KUjY5EPaBz9jWbvlviA=;
-        b=Gc8IOMe7lswbE2FkQZd5OPx8eFHwuljwTBr0VxX6lZ8VsAewlPZ7WGvt0HvybMnj5I
-         an7qS2FvBOIUnDurOwgoOoCFFY8JwMy55Q7kPDSSsJIRSHnHI0j5067+AwVMVFnWjT3W
-         3wOpS/jMo14SC2izdinag9chQRblKGiaZiMeLYXDKWypayQNTFnkHJQoycXb3pYTKKkE
-         8hkrHZ3Es/Wh6I43vtdy1PdPLMfP4o1GCvTyUd+nC9q0c7wYHOWigvAtg5hDmqUe+WN8
-         wwuwn/4XPXqYkZgGo37oBIc9pIZwv+SvumahOhSAGE7u4pz3/24Yu0FuST1fjFieiff8
-         DMTA==
-X-Forwarded-Encrypted: i=1; AJvYcCViynS578s7zpuh5e1QmlTuagcbf18l/fA2mnk8+8bhqPY2LpnAbGXNLlJ0pJL195ScmR2/b+PNGvk6N4hpFMpI/+0dk716NcX2H+wB
-X-Gm-Message-State: AOJu0YwGtJ/vHaxrtfL/u+g92Y6JYXVp2jr/jyXD8QjOe1y7CRojEuKd
-	8sHqLIhdWxVGhp05b9fCHnpUJ9Hy6oBUUX23R8OsW7IWwZxGa/6GdNsGCzlthDour55UdUuqRI0
-	K
-X-Google-Smtp-Source: AGHT+IHA4u0Jp+6NhFXOfmsl2KdwlH94xIcKS3tE0NrfLh8isx/EqVT2vR5geDzP5kQ0Wsmf9+Nzzg==
-X-Received: by 2002:ac2:5982:0:b0:516:d692:5e0b with SMTP id w2-20020ac25982000000b00516d6925e0bmr374592lfn.54.1712866656444;
-        Thu, 11 Apr 2024 13:17:36 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
-        by smtp.gmail.com with ESMTPSA id u23-20020a196a17000000b00515a52e362fsm293917lfu.189.2024.04.11.13.17.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 13:17:36 -0700 (PDT)
-Date: Thu, 11 Apr 2024 23:17:34 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-	Pavel Machek <pavel@ucw.cz>, phone-devel@vger.kernel.org, 
-	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
-	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org
-Subject: Re: [PATCHv3 1/2] dt-bindings: usb: typec: anx7688: start a binding
- document
-Message-ID: <cogegnmniilyhjfvptdws4sybmoyuovo6p37tofdinxxbml4ua@hq43tv4dzr7e>
-References: <ZhPTTxI4oTF3pgrk@duo.ucw.cz>
- <e7841ad2-fa3d-442d-804d-51f12e05c234@linaro.org>
- <e6vvuttix5k5fioy7q44ick5wj6u5gleh7mht36s4zjjcym7vy@bziejyohtc4b>
- <7976e254-ed1e-406d-870b-1ecdc4b1e23c@linaro.org>
- <uoo7xltbfx7u6iai7urj3wez7cwotokxt6lwjhff57xbljusqn@fr2xejnrlak7>
- <1502383c-9caf-4362-8bd6-ed719a304f08@linaro.org>
- <vbo7bacecuagu4qzrr6tsdh4qlejrv7ia67yylf6ay4u7qnwge@kqj27bun2m7d>
- <97f2d38d-c863-4c76-91f1-52cd250759d7@linaro.org>
- <ounfv3vgg2esvxk2cxckeqyy52mghiyps2rszh7sf5poryyjzs@ftumsalmthza>
- <025d268f-96d0-49fa-9a67-f80ab81ed102@linaro.org>
+	s=arc-20240116; t=1712866688; c=relaxed/simple;
+	bh=Dkxz0oOJhLLiLmdJabYuZs91XvVvYDFVsDL9pIpUZ0Q=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JssRJ/501yRHFxB1SbINZFtkWeoJmAlK11yWgUvh1sUrTpdP22lKSdSeVFx1Wml2cdZ/hVvrDuWIPlj+jfB6h9vTjJ1wpUujXHtYbHEEwkjUquN3frAktR2G7Zh83xsh2yiOHqaOwAtqsXyXtp6QaNgY6Zw1KSmgH86QEbp3UAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=WqZ52UBq; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43BKHoOc073858;
+	Thu, 11 Apr 2024 15:17:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712866670;
+	bh=Ny804HOoYc6ylEytgO4kim26aktoBtQvjAQvIOKhzoQ=;
+	h=From:To:CC:Subject:Date;
+	b=WqZ52UBqTpyjrFdP/0faL0a3VK/pOcosa+hHzgGtvNzHFEzFayhM1ST+F4mn8Metu
+	 xwHDwj5shSBegOx8yel4Ld06pTj/FU6o9Yds99oNmAWt35q7+6kTznMjhizfcE23zA
+	 TrrjbT9X0X/7eJdQruooXGVOCTAtujw2+ftuV5R8=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43BKHoTi016398
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 11 Apr 2024 15:17:50 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 11
+ Apr 2024 15:17:49 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 11 Apr 2024 15:17:49 -0500
+Received: from localhost ([10.249.131.201])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43BKHmwx115633;
+	Thu, 11 Apr 2024 15:17:49 -0500
+From: Bhavya Kapoor <b-kapoor@ti.com>
+To: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+CC: <b-kapoor@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <conor+dt@kernel.org>, <krzk+dt@kernel.org>, <robh@kernel.org>,
+        <kristo@kernel.org>, <vigneshr@ti.com>, <nm@ti.com>
+Subject: [PATCH] arm64: dts: ti: k3-j784s4-evm: Add support for multiple CAN instances
+Date: Fri, 12 Apr 2024 01:47:47 +0530
+Message-ID: <20240411201747.18697-1-b-kapoor@ti.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <025d268f-96d0-49fa-9a67-f80ab81ed102@linaro.org>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu, Apr 11, 2024 at 09:59:35PM +0200, Krzysztof Kozlowski wrote:
-> On 10/04/2024 04:20, Ondřej Jirman wrote:
-> > On Mon, Apr 08, 2024 at 10:12:30PM GMT, Krzysztof Kozlowski wrote:
-> >> On 08/04/2024 17:17, Ondřej Jirman wrote:
-> >>>
-> >>> Now for things to not fail during suspend/resume based on PM callbacks
-> >>> invocation order, anx7688 driver needs to enable this regulator too, as long
-> >>> as it needs it.
-> >>
-> >> No, the I2C bus driver needs to manage it. Not one individual I2C
-> >> device. Again, why anx7688 is specific? If you next phone has anx8867,
-> >> using different driver, you also add there i2c-supply? And if it is
-> >> nxp,ptn5100 as well?
-> > 
-> > Yes, that could work, if I2C core would manage this.
-> 
-> Either I don't understand about which I2C regulator you speak or this is
-> not I2C core regulator. This is a regulator to be managed by the I2C
-> controller, not by I2C core.
+CAN instances 0 and 1 in the mcu domain and 16 in the main domain are
+brought on the evm through headers J42, J43 and J46 respectively. Thus,
+add their respective transceiver's 0, 1 and 2 dt nodes to add support
+for these CAN instances.
 
-If it is a supply that pulls up the SDA/SCL lines, then it is generic
-enough to be handled by the core. For example, on Qualcomm platforms CCI
-lines also usually have external supply as a pull-up.
+CAN instance 4 in the main domain is brought on the evm through header
+J45. The CAN High and Low lines from the SoC are routed through a mux
+on the evm. The select lines need to be set for the CAN signals to
+reach to its transceiver on the evm. Therefore, add transceiver 3
+dt node to add support for this CAN instance.
 
+Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
+---
 
+rebased to next-20240411
+
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 107 +++++++++++++++++++++++
+ 1 file changed, 107 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+index 81fd7afac8c5..e56901973895 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+@@ -272,6 +272,45 @@ dp0_connector_in: endpoint {
+ 			};
+ 		};
+ 	};
++
++	transceiver0: can-phy0 {
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <5000000>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&mcu_mcan0_gpio_pins_default>;
++		standby-gpios = <&wkup_gpio0 69 GPIO_ACTIVE_HIGH>;
++	};
++
++	transceiver1: can-phy1 {
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <5000000>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&mcu_mcan1_gpio_pins_default>;
++		standby-gpios = <&wkup_gpio0 2 GPIO_ACTIVE_HIGH>;
++	};
++
++	transceiver2: can-phy2 {
++		/* standby pin has been grounded by default */
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <5000000>;
++	};
++
++	transceiver3: can-phy3 {
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <5000000>;
++		standby-gpios = <&exp2 7 GPIO_ACTIVE_HIGH>;
++		mux-states = <&mux1 1>;
++	};
++
++	mux1: mux-controller {
++		compatible = "gpio-mux";
++		#mux-state-cells = <1>;
++		mux-gpios = <&exp2 14 GPIO_ACTIVE_HIGH>;
++	};
+ };
+ 
+ &wkup_gpio0 {
+@@ -336,6 +375,20 @@ J784S4_IOPAD(0x014, PIN_INPUT_PULLUP, 8) /* (AG33) MCAN14_TX.I2C4_SCL */
+ 			J784S4_IOPAD(0x010, PIN_INPUT_PULLUP, 8) /* (AH33) MCAN13_RX.I2C4_SDA */
+ 		>;
+ 	};
++
++	main_mcan4_pins_default: main-mcan4-default-pins {
++		pinctrl-single,pins = <
++			J784S4_IOPAD(0x088, PIN_INPUT, 0) /* (AF36) MCAN4_RX */
++			J784S4_IOPAD(0x084, PIN_OUTPUT, 0) /* (AG38) MCAN4_TX */
++		>;
++	};
++
++	main_mcan16_pins_default: main-mcan16-default-pins {
++		pinctrl-single,pins = <
++			J784S4_IOPAD(0x028, PIN_INPUT, 0) /* (AE33) MCAN16_RX */
++			J784S4_IOPAD(0x024, PIN_OUTPUT, 0) /* (AH34) MCAN16_TX */
++		>;
++	};
+ };
+ 
+ &wkup_pmx2 {
+@@ -415,6 +468,32 @@ J784S4_WKUP_IOPAD(0x104, PIN_INPUT, 0) /* (U33) MCU_ADC1_AIN6 */
+ 			J784S4_WKUP_IOPAD(0x108, PIN_INPUT, 0) /* (Y36) MCU_ADC1_AIN7 */
+ 		>;
+ 	};
++
++	mcu_mcan0_pins_default: mcu-mcan0-default-pins {
++		pinctrl-single,pins = <
++			J784S4_WKUP_IOPAD(0x050, PIN_OUTPUT, 0) /* (K33) MCU_MCAN0_TX */
++			J784S4_WKUP_IOPAD(0x054, PIN_INPUT, 0) /* (F38) MCU_MCAN0_RX */
++		>;
++	};
++
++	mcu_mcan1_pins_default: mcu-mcan1-default-pins {
++		pinctrl-single,pins = <
++			J784S4_WKUP_IOPAD(0x068, PIN_OUTPUT, 0) /* (H35) WKUP_GPIO0_4.MCU_MCAN1_TX */
++			J784S4_WKUP_IOPAD(0x06c, PIN_INPUT, 0) /* (K36) WKUP_GPIO0_5.MCU_MCAN1_RX */
++		>;
++	};
++
++	mcu_mcan0_gpio_pins_default: mcu-mcan0-gpio-default-pins {
++		pinctrl-single,pins = <
++			J784S4_WKUP_IOPAD(0x040, PIN_INPUT, 7) /* (J38) MCU_SPI0_D1.WKUP_GPIO0_69 */
++		>;
++	};
++
++	mcu_mcan1_gpio_pins_default: mcu-mcan1-gpio-default-pins {
++		pinctrl-single,pins = <
++			J784S4_WKUP_IOPAD(0x060, PIN_INPUT, 7) /* (J35) WKUP_GPIO0_2 */
++		>;
++	};
+ };
+ 
+ &wkup_pmx1 {
+@@ -1105,3 +1184,31 @@ dp0_out: endpoint {
+ 		};
+ 	};
+ };
++
++&mcu_mcan0 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcu_mcan0_pins_default>;
++	phys = <&transceiver0>;
++};
++
++&mcu_mcan1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcu_mcan1_pins_default>;
++	phys = <&transceiver1>;
++};
++
++&main_mcan16 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mcan16_pins_default>;
++	phys = <&transceiver2>;
++};
++
++&main_mcan4 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mcan4_pins_default>;
++	phys = <&transceiver3>;
++};
 -- 
-With best wishes
-Dmitry
+2.40.1
+
 
