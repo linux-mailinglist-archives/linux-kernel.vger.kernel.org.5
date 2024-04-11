@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA0E58A1A09
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:31:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6756B8A1A51
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:46:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DFF52824FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:31:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6667FB2F059
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A31031C125F;
-	Thu, 11 Apr 2024 15:38:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9619F1C2FCD;
+	Thu, 11 Apr 2024 15:38:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="x1tJ53kN"
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="beUsZ5f4"
+Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD3081C1AE6
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9485F1C1B1C
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849882; cv=none; b=Rba1FCcJSM2LfqXIh5gyjB92huD7Z1W67kFTTTBCpyr6sgUKBqPexuokyOolRbBftEsNgHflnLtMUCnEUtR2IBW7i2IUzVpeC9PCYWuA6H2OS+Gs4FFjW/sc6T9I31BOPT7INZ/iCljg/jv7fDzE0g2vEcQPpRIWoPRVp6dnH6Y=
+	t=1712849883; cv=none; b=TLqYQVOeb6EYdYPYGGdHRt22Bz1H6wwmN6hoHrPI6PXG6ZY5z1hoiT/U4GhmMhzut0wqjalGFRVIHIQdsm+aaOA5NE2yQ433hg+whx/OmGx9qCREkwkSICaw6LwlsIhHwVLvN/wxu06NqLGiCNQGX8jeklv8zWZ8Q6j86dVUJhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849882; c=relaxed/simple;
-	bh=6X6jAKa3dWU3lq3ru8ux95v8OJLf7IzSdNHkXzZB8OE=;
+	s=arc-20240116; t=1712849883; c=relaxed/simple;
+	bh=mYl5XN2Q12i1GShXzHmxni38VagWFUolvBXdQvo6NdQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tBOnAXkXxHI7qb5pO/xIehxO1rXRFQIhV+yaDYbIAf4RxaVNy00FPXrvni0GUuWkeRPSXIZA69x0+K42uNQ4q6+SlpHsn5fzxWUVZvpWv/7jAWu9Kpl7WOd8tKZxQYwuBUUqUEe04ie8+n9R9RvySz4VZp9Hi+Un2cczzc3fVDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=x1tJ53kN; arc=none smtp.client-ip=209.85.166.44
+	 MIME-Version; b=MpwctQohZYb+RpmvZ0Up2IcwdFC/e+S04Sgwp0n8L7H/3m7ddprjHj/N6YTW3xqRsQ0XOAZdNI0TWSQy+WzQ2EHKoEhTlv3Bly3IAgG/aVbseO038+0gBVqhQuXKp5jq8Q/A/jQ9foMhPFpBHmSeaLgKg2W1KLF2gauCv16GVdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=beUsZ5f4; arc=none smtp.client-ip=209.85.166.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7d67d1073easo9830239f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:38:00 -0700 (PDT)
+Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7c8e4c0412dso69612939f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:38:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849879; x=1713454679; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849881; x=1713454681; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=c8tWM1HuHPpRlDt3cdCZk4Rq3a8/t27j4pr9RvVTiQw=;
-        b=x1tJ53kNOkdfmhpAh3hFLz4VrevEvyFGYp47wU9Xq4V723wpRkiPDJAhX1dIZOUfSv
-         mgwsxnzBsqXSBsjBLnKcwa0Dtc1zkTKKkjA75d3cOAH2HpLZwRdrZKbqr69hjrX+6Hhn
-         Jd7/X7vgci56z3hkQHpE9vlPv/sYIb3onCfqWqMTZJW0jf/w4qT+VcjUWE1E5piK3irm
-         ewRtA0bjlgnSXrm/mjhhMWQLsFnQEZz0CjkmAM0Nz4mObYMfclKop0u8I/dh13hXvcVd
-         04r5NhDbMNsUqVHVwamO9ts5Q56IRaam7c2nG54A8b6L+zb25AEGjDR9IwgLyV771N3H
-         2OBw==
+        bh=4jOOzNnHmJV0Fu/jL3HQdbehM157IGkalVPtNhVpP6k=;
+        b=beUsZ5f4HaSYmGZ6byTqSwdqTYN0IUyu8fMQljxaWJZh3vWTXkG/eDgbXuc+qxrvXr
+         ptjtbYzoJedcCTDCJhcb1dvasuucErASKFeKf+o9ljj4OfiZvRbRYKmtoufJpArEFE/D
+         VujwwgEqmpCg2qWqfzGlZRQizR8th3JMprfBsL5G9HeQXbrrA4Qkb5s0U9Gw3nxYEHso
+         kMR/UtSSXtrbcgteB1g7/N90LrXKUEkpCLW5hqL8r28fDzpWeMX8sqB61nQ8YiTGbckj
+         lKjy7Hw18Od+Q+KKqYLtS41YUn6l0bJ+vIOU0If/0HpWyfIxj/Gsq0U73IkDjur6ZT5X
+         aBZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849879; x=1713454679;
+        d=1e100.net; s=20230601; t=1712849881; x=1713454681;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=c8tWM1HuHPpRlDt3cdCZk4Rq3a8/t27j4pr9RvVTiQw=;
-        b=RFBds3HotLAbrvJpysytukgZPe/zfV/OcQc00ZzwS+R3TzESKSbsnFmBZRXH1ngK0W
-         peeooIHUgm9pJfkPDvn5BZrCiNsqg4kC4UfsTG3NOYwCcmD6c5zpnnd9fvXPImVGTG7D
-         JEiJv62vzNQ6+hWG19kAOgTwF2/9CtqaT33aWjwbOOSscLk3tqsVZz22+PYdqvGcbrSZ
-         d8Tfxr2TTf6X0p4muNEGtG7L0odWUyw76sYMZKUbWji6Pec35si2IjJ32Tcyg2MGKDOO
-         qZ326pXO+DV0o2zD81kyf6Q7kDdxHRNkUEolutjNCIHnkKdE61W46hGpwmeUnh2mF4HB
-         ASMQ==
-X-Gm-Message-State: AOJu0YzzbgkSciDrsr0n+tOR9gfAV0HNmIPH8raSGPBrBuSjmXjc5ozK
-	5nO+7W4WyxbdCgXczsvMZ/YzNDntGnN/YzqbMsik6rPAPM3SXbf4EbJ3E6lWyPrqMlSQKAscf19
-	3
-X-Google-Smtp-Source: AGHT+IHMkSCiCyAQ43i3rGFmnOms9FbdSB+Lgec75jE2V21MxYMsWwTg2GqPaKFenYH199gPJkWELw==
-X-Received: by 2002:a05:6602:84:b0:7d6:9d75:6de2 with SMTP id h4-20020a056602008400b007d69d756de2mr46000iob.2.1712849879651;
-        Thu, 11 Apr 2024 08:37:59 -0700 (PDT)
+        bh=4jOOzNnHmJV0Fu/jL3HQdbehM157IGkalVPtNhVpP6k=;
+        b=Wk0sEJZrwK42vlWZ3zQ7mrjfP+N1UjajQ1zzV+bD6rxoV/1vtv/cwrX8rG9nAGeIEd
+         gu9I/AR8928OV0vPA6zvD5gm+kJn9G02F+HCApcvn8F1P9gjJ1NbGGNIGKNO8qGAJmpq
+         XP84qlNn86v+tMXFqDmaKLfgt9HHG1tLjXygumk8nTcbk62M7c+eAhuuSaV+2up9WVwo
+         kEwiem3OOKWchqjKw+4llyVNAWrE0ltErU8f63uLCc4xdp+l6kkH9zIHQ22LTlDdZmTT
+         XxHemkjGBjmN+9HJo4QO/9bhzLAuCMzCC9Zi4UV9S/0293EBxF3tJRuyBRjz6lcoaij9
+         SLAw==
+X-Gm-Message-State: AOJu0YytpejSodRi0ZBjEvBUy+UoDe7gVnXeP9muZ/Y9kufxdDcrC5wV
+	2CWZUQ77Ac1fU6y1jffnd/MMmeFdEAWdHvnhwO8eSkrOBlnzlIG2kdbWhLf6AajORkXzTOW9qC5
+	F
+X-Google-Smtp-Source: AGHT+IGlR1p56kEdU8dyVq4RHJtB5RWJIu3PnVaVc0rf4t53SGUVPOHPkpHnRNc/JWTmDhdDwwkOYw==
+X-Received: by 2002:a6b:7b05:0:b0:7d6:60dc:bc8e with SMTP id l5-20020a6b7b05000000b007d660dcbc8emr197747iop.1.1712849881443;
+        Thu, 11 Apr 2024 08:38:01 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.57
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.37.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:37:58 -0700 (PDT)
+        Thu, 11 Apr 2024 08:37:59 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 227/437] misc: ibmasm: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:16:07 -0600
-Message-ID: <20240411153126.16201-228-axboe@kernel.dk>
+Subject: [PATCH 228/437] drivers/spi: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:16:08 -0600
+Message-ID: <20240411153126.16201-229-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,266 +85,93 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/misc/ibmasm/ibmasmfs.c | 94 ++++++++++++++++++----------------
- 1 file changed, 50 insertions(+), 44 deletions(-)
+ drivers/spi/spidev.c | 33 +++++++++++++++++----------------
+ 1 file changed, 17 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/misc/ibmasm/ibmasmfs.c b/drivers/misc/ibmasm/ibmasmfs.c
-index c44de892a61e..8f7ea4214d20 100644
---- a/drivers/misc/ibmasm/ibmasmfs.c
-+++ b/drivers/misc/ibmasm/ibmasmfs.c
-@@ -256,18 +256,19 @@ static int command_file_close(struct inode *inode, struct file *file)
- 	return 0;
- }
+diff --git a/drivers/spi/spidev.c b/drivers/spi/spidev.c
+index 95fb5f1c91c1..1b5e13492b4d 100644
+--- a/drivers/spi/spidev.c
++++ b/drivers/spi/spidev.c
+@@ -154,27 +154,28 @@ spidev_sync_read(struct spidev_data *spidev, size_t len)
  
--static ssize_t command_file_read(struct file *file, char __user *buf, size_t count, loff_t *offset)
-+static ssize_t command_file_read(struct kiocb *iocb, struct iov_iter *to)
+ /* Read-only message with current device setup */
+ static ssize_t
+-spidev_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos)
++spidev_read(struct kiocb *iocb, struct iov_iter *to)
  {
--	struct ibmasmfs_command_data *command_data = file->private_data;
-+	struct ibmasmfs_command_data *command_data = iocb->ki_filp->private_data;
-+	size_t count = iov_iter_count(to);
- 	struct command *cmd;
- 	int len;
- 	unsigned long flags;
+ 	struct spidev_data	*spidev;
+ 	ssize_t			status;
++	size_t			count = iov_iter_count(to);
  
--	if (*offset < 0)
-+	if (iocb->ki_pos < 0)
- 		return -EINVAL;
- 	if (count == 0 || count > IBMASM_CMD_MAX_BUFFER_SIZE)
- 		return 0;
--	if (*offset != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
+ 	/* chipselect only toggles at start or end of operation */
+ 	if (count > bufsiz)
+ 		return -EMSGSIZE;
  
- 	spin_lock_irqsave(&command_data->sp->lock, flags);
-@@ -284,7 +285,7 @@ static ssize_t command_file_read(struct file *file, char __user *buf, size_t cou
- 		return -EIO;
+-	spidev = filp->private_data;
++	spidev = iocb->ki_filp->private_data;
+ 
+ 	mutex_lock(&spidev->buf_lock);
+ 	status = spidev_sync_read(spidev, count);
+ 	if (status > 0) {
+-		unsigned long	missing;
++		unsigned long	copied;
+ 
+-		missing = copy_to_user(buf, spidev->rx_buffer, status);
+-		if (missing == status)
++		copied = copy_to_iter(spidev->rx_buffer, status, to);
++		if (!copied)
+ 			status = -EFAULT;
+ 		else
+-			status = status - missing;
++			status = status - copied;
  	}
- 	len = min(count, cmd->buffer_size);
--	if (copy_to_user(buf, cmd->buffer, len)) {
-+	if (!copy_to_iter_full(cmd->buffer, len, to)) {
- 		command_put(cmd);
- 		return -EFAULT;
- 	}
-@@ -293,17 +294,18 @@ static ssize_t command_file_read(struct file *file, char __user *buf, size_t cou
- 	return len;
- }
+ 	mutex_unlock(&spidev->buf_lock);
  
--static ssize_t command_file_write(struct file *file, const char __user *ubuff, size_t count, loff_t *offset)
-+static ssize_t command_file_write(struct kiocb *iocb, struct iov_iter *from)
+@@ -183,25 +184,25 @@ spidev_read(struct file *filp, char __user *buf, size_t count, loff_t *f_pos)
+ 
+ /* Write-only message with current device setup */
+ static ssize_t
+-spidev_write(struct file *filp, const char __user *buf,
+-		size_t count, loff_t *f_pos)
++spidev_write(struct kiocb *iocb, struct iov_iter *from)
  {
--	struct ibmasmfs_command_data *command_data = file->private_data;
-+	struct ibmasmfs_command_data *command_data = iocb->ki_filp->private_data;
-+	size_t count = iov_iter_count(from);
- 	struct command *cmd;
- 	unsigned long flags;
+ 	struct spidev_data	*spidev;
+ 	ssize_t			status;
+-	unsigned long		missing;
++	unsigned long		copied;
++	size_t			count = iov_iter_count(from);
  
--	if (*offset < 0)
-+	if (iocb->ki_pos < 0)
- 		return -EINVAL;
- 	if (count == 0 || count > IBMASM_CMD_MAX_BUFFER_SIZE)
- 		return 0;
--	if (*offset != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
+ 	/* chipselect only toggles at start or end of operation */
+ 	if (count > bufsiz)
+ 		return -EMSGSIZE;
  
- 	/* commands are executed sequentially, only one command at a time */
-@@ -314,7 +316,7 @@ static ssize_t command_file_write(struct file *file, const char __user *ubuff, s
- 	if (!cmd)
- 		return -ENOMEM;
+-	spidev = filp->private_data;
++	spidev = iocb->ki_filp->private_data;
  
--	if (copy_from_user(cmd->buffer, ubuff, count)) {
-+	if (!copy_from_iter_full(cmd->buffer, count, from)) {
- 		command_put(cmd);
- 		return -EFAULT;
- 	}
-@@ -365,19 +367,20 @@ static int event_file_close(struct inode *inode, struct file *file)
- 	return 0;
- }
+ 	mutex_lock(&spidev->buf_lock);
+-	missing = copy_from_user(spidev->tx_buffer, buf, count);
+-	if (missing == 0)
+-		status = spidev_sync_write(spidev, count);
+-	else
++	copied = copy_from_iter(spidev->tx_buffer, count, from);
++	if (copied == 0)
+ 		status = -EFAULT;
++	else
++		status = spidev_sync_write(spidev, count);
+ 	mutex_unlock(&spidev->buf_lock);
  
--static ssize_t event_file_read(struct file *file, char __user *buf, size_t count, loff_t *offset)
-+static ssize_t event_file_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct ibmasmfs_event_data *event_data = file->private_data;
-+	struct ibmasmfs_event_data *event_data = iocb->ki_filp->private_data;
- 	struct event_reader *reader = &event_data->reader;
- 	struct service_processor *sp = event_data->sp;
-+	size_t count = iov_iter_count(to);
- 	int ret;
- 	unsigned long flags;
- 
--	if (*offset < 0)
-+	if (iocb->ki_pos < 0)
- 		return -EINVAL;
- 	if (count == 0 || count > IBMASM_EVENT_MAX_SIZE)
- 		return 0;
--	if (*offset != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 
- 	spin_lock_irqsave(&sp->lock, flags);
-@@ -397,7 +400,7 @@ static ssize_t event_file_read(struct file *file, char __user *buf, size_t count
- 		goto out;
- 	}
- 
--        if (copy_to_user(buf, reader->data, reader->data_size)) {
-+        if (!copy_to_iter_full(reader->data, reader->data_size, to)) {
- 		ret = -EFAULT;
- 		goto out;
- 	}
-@@ -408,15 +411,16 @@ static ssize_t event_file_read(struct file *file, char __user *buf, size_t count
- 	return ret;
- }
- 
--static ssize_t event_file_write(struct file *file, const char __user *buf, size_t count, loff_t *offset)
-+static ssize_t event_file_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct ibmasmfs_event_data *event_data = file->private_data;
-+	struct ibmasmfs_event_data *event_data = iocb->ki_filp->private_data;
-+	size_t count = iov_iter_count(from);
- 
--	if (*offset < 0)
-+	if (iocb->ki_pos < 0)
- 		return -EINVAL;
- 	if (count != 1)
- 		return 0;
--	if (*offset != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 
- 	ibmasm_cancel_next_event(&event_data->reader);
-@@ -449,17 +453,18 @@ static int r_heartbeat_file_close(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
--static ssize_t r_heartbeat_file_read(struct file *file, char __user *buf, size_t count, loff_t *offset)
-+static ssize_t r_heartbeat_file_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct ibmasmfs_heartbeat_data *rhbeat = file->private_data;
-+	struct ibmasmfs_heartbeat_data *rhbeat = iocb->ki_filp->private_data;
-+	size_t count = iov_iter_count(to);
- 	unsigned long flags;
- 	int result;
- 
--	if (*offset < 0)
-+	if (iocb->ki_pos < 0)
- 		return -EINVAL;
- 	if (count == 0 || count > 1024)
- 		return 0;
--	if (*offset != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 
- 	/* allow only one reverse heartbeat per process */
-@@ -477,15 +482,16 @@ static ssize_t r_heartbeat_file_read(struct file *file, char __user *buf, size_t
- 	return result;
- }
- 
--static ssize_t r_heartbeat_file_write(struct file *file, const char __user *buf, size_t count, loff_t *offset)
-+static ssize_t r_heartbeat_file_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct ibmasmfs_heartbeat_data *rhbeat = file->private_data;
-+	struct ibmasmfs_heartbeat_data *rhbeat = iocb->ki_filp->private_data;
-+	size_t count = iov_iter_count(from);
- 
--	if (*offset < 0)
-+	if (iocb->ki_pos < 0)
- 		return -EINVAL;
- 	if (count != 1)
- 		return 0;
--	if (*offset != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 
- 	if (rhbeat->active)
-@@ -499,9 +505,9 @@ static int remote_settings_file_close(struct inode *inode, struct file *file)
- 	return 0;
- }
- 
--static ssize_t remote_settings_file_read(struct file *file, char __user *buf, size_t count, loff_t *offset)
-+static ssize_t remote_settings_file_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	void __iomem *address = (void __iomem *)file->private_data;
-+	void __iomem *address = (void __iomem *)iocb->ki_filp->private_data;
- 	int len = 0;
- 	unsigned int value;
- 	char lbuf[20];
-@@ -509,28 +515,28 @@ static ssize_t remote_settings_file_read(struct file *file, char __user *buf, si
- 	value = readl(address);
- 	len = snprintf(lbuf, sizeof(lbuf), "%d\n", value);
- 
--	return simple_read_from_buffer(buf, count, offset, lbuf, len);
-+	return simple_copy_to_iter(lbuf, &iocb->ki_pos, len, to);
- }
- 
--static ssize_t remote_settings_file_write(struct file *file, const char __user *ubuff, size_t count, loff_t *offset)
-+static ssize_t remote_settings_file_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	void __iomem *address = (void __iomem *)file->private_data;
-+	void __iomem *address = (void __iomem *)iocb->ki_filp->private_data;
-+	size_t count = iov_iter_count(from);
- 	char *buff;
- 	unsigned int value;
- 
--	if (*offset < 0)
-+	if (iocb->ki_pos < 0)
- 		return -EINVAL;
- 	if (count == 0 || count > 1024)
- 		return 0;
--	if (*offset != 0)
-+	if (iocb->ki_pos != 0)
- 		return 0;
- 
- 	buff = kzalloc (count + 1, GFP_KERNEL);
- 	if (!buff)
- 		return -ENOMEM;
- 
--
--	if (copy_from_user(buff, ubuff, count)) {
-+	if (!copy_from_iter_full(buff, count, from)) {
- 		kfree(buff);
- 		return -EFAULT;
- 	}
-@@ -545,32 +551,32 @@ static ssize_t remote_settings_file_write(struct file *file, const char __user *
- static const struct file_operations command_fops = {
- 	.open =		command_file_open,
- 	.release =	command_file_close,
--	.read =		command_file_read,
--	.write =	command_file_write,
-+	.read_iter =	command_file_read,
-+	.write_iter =	command_file_write,
- 	.llseek =	generic_file_llseek,
- };
- 
- static const struct file_operations event_fops = {
- 	.open =		event_file_open,
- 	.release =	event_file_close,
--	.read =		event_file_read,
--	.write =	event_file_write,
-+	.read_iter =	event_file_read,
-+	.write_iter =	event_file_write,
- 	.llseek =	generic_file_llseek,
- };
- 
- static const struct file_operations r_heartbeat_fops = {
- 	.open =		r_heartbeat_file_open,
- 	.release =	r_heartbeat_file_close,
--	.read =		r_heartbeat_file_read,
--	.write =	r_heartbeat_file_write,
-+	.read_iter =	r_heartbeat_file_read,
-+	.write_iter =	r_heartbeat_file_write,
- 	.llseek =	generic_file_llseek,
- };
- 
- static const struct file_operations remote_settings_fops = {
- 	.open =		simple_open,
- 	.release =	remote_settings_file_close,
--	.read =		remote_settings_file_read,
--	.write =	remote_settings_file_write,
-+	.read_iter =	remote_settings_file_read,
-+	.write_iter =	remote_settings_file_write,
- 	.llseek =	generic_file_llseek,
- };
- 
+ 	return status;
+@@ -679,8 +680,8 @@ static const struct file_operations spidev_fops = {
+ 	 * gets more complete API coverage.  It'll simplify things
+ 	 * too, except for the locking.
+ 	 */
+-	.write =	spidev_write,
+-	.read =		spidev_read,
++	.write_iter =	spidev_write,
++	.read_iter =	spidev_read,
+ 	.unlocked_ioctl = spidev_ioctl,
+ 	.compat_ioctl = spidev_compat_ioctl,
+ 	.open =		spidev_open,
 -- 
 2.43.0
 
