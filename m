@@ -1,145 +1,209 @@
-Return-Path: <linux-kernel+bounces-141225-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 284598A1B17
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E4E5A8A1B18
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:21:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B775B1F22586
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:21:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AF821F2164E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:21:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B454D205E39;
-	Thu, 11 Apr 2024 15:45:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67D0E537FB;
+	Thu, 11 Apr 2024 15:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Hh1T/l8A"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G2ADhQG4"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5C01205E26;
-	Thu, 11 Apr 2024 15:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D815653815
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:46:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712850308; cv=none; b=tzkzQDvhtHNLBAEScaV1MQsRmx93BK5EiTU73vy0dlg8l+XSjE0X4Q3DfyNFHQKv3Ol88M8whbLFKg/CvcZXjvhpOM5w7a8aWwHlqk2SChtjfT3UeJJPXAAqqLlnTYJ3vVQIGYF0ti4P0wTRPkfozsxy7nAgwswWcEZ12RtnRUQ=
+	t=1712850412; cv=none; b=S8vy4UWDu5FhHc01EKmoT3cstlLsIYaJBpzZziYQmuaHOzUANc9/rfCtnST7bza5gVd1zj+rleXZ+V0srIaaTAxdtu0+IMERL+xs/hvULnnhyq3cge7daxH5Vago3SzYCprczLjOHVX1NzgQMJnaJVAEF1a6BQO9d7ZBnmrFmXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712850308; c=relaxed/simple;
-	bh=/IRr60aMZOeOyFiScIJ7Hqy89Fa77PW2HAAbz3xI4jQ=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=efAXcmlEhSHdBfi0o1uUgguWkg82vehvhJt/QOQKRdFm2MrQy8Quy+SRmSpg3mIMYLAH2CYYeEvSW3w2H4slf9kCWHgkLtq+6+52R0Ot6ledVM9j/HXVsm/90rrAs5ZHifA5S4bGAbBke5M8h7VjRgawHxjHpDFD4bC0BXypfME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Hh1T/l8A; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43BDG7bV024388;
-	Thu, 11 Apr 2024 15:44:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=haD8srUSA/7piIQcBMU+j
-	z1u8jwrb7rUW232cvqEx3s=; b=Hh1T/l8AZXIPiuPJqEb+2xEhcwSozimpdVr7/
-	ABvip+E1Wk/J/Zj8agqdbWyJOXCUiT7kxIstytMkXA+Kr/EioGE0k1drFabachGG
-	e/twcqTZYzv9/ZuLmnPN3qe1clHinSdawWe/XA3nIErgRDeW4uRtXUcQGNH/g5LB
-	rnwWMlOrXRIsrFHYwNEFgG5AxakO2YYA/gPwVGw0SJvV8jq4U85e4u4sjAhUfnBv
-	psRlDjeOV5LSTGoaaOr+7fn2w0mbIocdr5edRg/SDi57nOvFQPmti6rJF1yvUb50
-	dcbDTpIE+iyP7jKi+xqrz3TUbZFyfzUAR9PjsEMo8l8BCqSDQ==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xebqx9mg6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 15:44:46 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43BFijB4032349
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 15:44:45 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Thu, 11 Apr 2024 08:44:45 -0700
-Date: Thu, 11 Apr 2024 08:44:44 -0700
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-CC: Dong Aisheng <aisheng.dong@nxp.com>, Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix
- Kernel Team <kernel@pengutronix.de>,
-        Linus Walleij
-	<linus.walleij@linaro.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sean Wang
-	<sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-        zhanghongchen <zhanghongchen@loongson.cn>,
-        Yinbo Zhu <zhuyinbo@loongson.cn>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        <linux-gpio@vger.kernel.org>, <imx@lists.linux.dev>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>
-Subject: Re: [PATCH v2 4/5] pinctrl: qcom: sm7150: fix module autoloading
-Message-ID: <ZhgFbKg8DPBsRrac@hu-bjorande-lv.qualcomm.com>
-References: <20240411064614.7409-1-krzk@kernel.org>
- <20240411064614.7409-4-krzk@kernel.org>
+	s=arc-20240116; t=1712850412; c=relaxed/simple;
+	bh=FoPVgdFbMGDkUH7fKW2usuW1gpP2wbkHhfwYrcnMxyA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iHqAawzdZR9DatmDdTt4P8Ysnd/4i172L9uuFV5vay1X+mjFSq2CcPLC86bbk10sEkrtHe2aUgyj/b/QhgREzJhngUhdIMHH9wVc0yULBOv2ey3AxTKvgzeapmFtc3JBN2eOswX8qaKcMn1RVa0lESHQuqk304fJd2rpWJ/J4fE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=G2ADhQG4; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712850409;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=UEZGV9VCe3aTsy6N7RQCWu4uCsIfjLyWqxbtHAKGNN4=;
+	b=G2ADhQG4O6Z19KevAZbKLiplPMyXUNrE9j/ZW9Bcdp8zGI+m9fVNaVJCF+PELtb2UWRpil
+	PNIZAtKO2CEh4i3X35Bhiii6YdgAh7NRz8od0zgQurbaUq+G9oQYemBcX0Hldj/wiAeH9a
+	sKaj5vNC85Gyg4GcHED1Ta52eacCbC8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-597-oZ6mRIZ8NRC0piBEhFsW0Q-1; Thu, 11 Apr 2024 11:46:48 -0400
+X-MC-Unique: oZ6mRIZ8NRC0piBEhFsW0Q-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-416e58bdc1eso4205e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:46:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712850407; x=1713455207;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=UEZGV9VCe3aTsy6N7RQCWu4uCsIfjLyWqxbtHAKGNN4=;
+        b=GTqA3gFazaAsI+NBIlpzJnFSFcg2q6xaLMM6j2K6UoG8BsSMXLHQoFFm0j/HK/ZgGl
+         khMTHMo8IxVhuZhcTT8KAblsnxwcBhDLyIiocvpJbQKWjnBE/EEMH/uCSlpwPebdU8hS
+         /jkCtzH1ehHNlyTo/8jrcherlMqzQDGM0JnZ58dIXCKMJgAgwa5XNSzobaGhJQ8tnVmg
+         L3CSj95uAwrDQFr3IMXXS9n7rzbMUKJcK9dlgnkwmznT6HOVPwZ67WatPDCrmoRgnVdv
+         wZ0RJ1RxzCNifB6vNzF2SxH1i4LSOqmKqx2EIhCRkVHTs+cV9lpGFD6/sb/D3JngqUPY
+         4uhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUZuJzqXHDr8MvDyHB9NnV5IzySVldFrkYZZLzwkANnHGNWrN/kggBmEZG8OmWozc23Ji/8Yt/Mcv5K/1nz//+OYP307+bcbqVTW7ik
+X-Gm-Message-State: AOJu0YxbMB/h1NVeSB7jtjHziGUWFErL4HSYAdijDwUVsTriQwBLnun2
+	LmzF0nxsQMOPlBaEkngUH2mXFmfnIFmOs7iNKlYYinsfRDKGGZH5Dz7MSBJdjwh6nPUt6lo9v6w
+	MBXxfnIC6MiBIHfhs1bLUkcO7spmVrCBOfm2AQm/mqc/JZYdAx97UKjWpaN22YM/eqdfFSA==
+X-Received: by 2002:a05:600c:35ce:b0:416:9e38:3bdd with SMTP id r14-20020a05600c35ce00b004169e383bddmr129431wmq.27.1712850407037;
+        Thu, 11 Apr 2024 08:46:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGxor1/9ucJeIy1LK54eldxqmchESlilSiUTk4WniHLuvcgqIR+xz6Rwmt5XvZDncL3E9GVSQ==
+X-Received: by 2002:a05:600c:35ce:b0:416:9e38:3bdd with SMTP id r14-20020a05600c35ce00b004169e383bddmr129396wmq.27.1712850405736;
+        Thu, 11 Apr 2024 08:46:45 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c724:4300:430f:1c83:1abc:1d66? (p200300cbc7244300430f1c831abc1d66.dip0.t-ipconnect.de. [2003:cb:c724:4300:430f:1c83:1abc:1d66])
+        by smtp.gmail.com with ESMTPSA id o4-20020a05600c510400b0041624ddff48sm5919487wms.28.2024.04.11.08.46.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 08:46:45 -0700 (PDT)
+Message-ID: <ffbbade3-2de5-4bbe-a6e4-49d2ff7a2f0e@redhat.com>
+Date: Thu, 11 Apr 2024 17:46:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240411064614.7409-4-krzk@kernel.org>
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: KU4mU--SOy6t8CFhdoXd3JVsuCKtrbVx
-X-Proofpoint-ORIG-GUID: KU4mU--SOy6t8CFhdoXd3JVsuCKtrbVx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-11_08,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 suspectscore=0
- adultscore=0 spamscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404110115
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/rmap: do not add fully unmapped large folio to
+ deferred split list
+To: Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Yang Shi <shy828301@gmail.com>, Ryan Roberts <ryan.roberts@arm.com>,
+ Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org
+References: <20240411153232.169560-1-zi.yan@sent.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240411153232.169560-1-zi.yan@sent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 11, 2024 at 08:46:13AM +0200, Krzysztof Kozlowski wrote:
-> Add MODULE_DEVICE_TABLE(), so the module could be properly autoloaded
-> based on the alias from of_device_id table.  Pin controllers are
-> considered core components, so usually they are built-in, however these
-> can be built and used as modules on some generic kernel.
+On 11.04.24 17:32, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
 > 
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> In __folio_remove_rmap(), a large folio is added to deferred split list
+> if any page in a folio loses its final mapping. It is possible that
+> the folio is unmapped fully, but it is unnecessary to add the folio
+> to deferred split list at all. Fix it by checking folio mapcount before
+> adding a folio to deferred split list.
 > 
-
-Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-
-Regards,
-Bjorn
-
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
 > ---
+>   mm/rmap.c | 9 ++++++---
+>   1 file changed, 6 insertions(+), 3 deletions(-)
 > 
-> Changes in v2:
-> 1. Add ack
-> ---
->  drivers/pinctrl/qcom/pinctrl-sm7150.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-sm7150.c b/drivers/pinctrl/qcom/pinctrl-sm7150.c
-> index c25357ca1963..c542f9bc6bcd 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-sm7150.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-sm7150.c
-> @@ -1246,6 +1246,7 @@ static const struct of_device_id sm7150_tlmm_of_match[] = {
->  	{ .compatible = "qcom,sm7150-tlmm", },
->  	{ },
->  };
-> +MODULE_DEVICE_TABLE(of, sm7150_tlmm_of_match);
->  
->  static struct platform_driver sm7150_tlmm_driver = {
->  	.driver = {
-> -- 
-> 2.34.1
-> 
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index 2608c40dffad..d599a772e282 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -1494,7 +1494,7 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
+>   		enum rmap_level level)
+>   {
+>   	atomic_t *mapped = &folio->_nr_pages_mapped;
+> -	int last, nr = 0, nr_pmdmapped = 0;
+> +	int last, nr = 0, nr_pmdmapped = 0, mapcount = 0;
+>   	enum node_stat_item idx;
+>   
+>   	__folio_rmap_sanity_checks(folio, page, nr_pages, level);
+> @@ -1506,7 +1506,8 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
+>   			break;
+>   		}
+>   
+> -		atomic_sub(nr_pages, &folio->_large_mapcount);
+> +		mapcount = atomic_sub_return(nr_pages,
+> +					     &folio->_large_mapcount) + 1;
+
+That becomes a new memory barrier on some archs. Rather just re-read it 
+below. Re-reading should be fine here.
+
+>   		do {
+>   			last = atomic_add_negative(-1, &page->_mapcount);
+>   			if (last) {
+> @@ -1554,7 +1555,9 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
+>   		 * is still mapped.
+>   		 */
+>   		if (folio_test_large(folio) && folio_test_anon(folio))
+> -			if (level == RMAP_LEVEL_PTE || nr < nr_pmdmapped)
+> +			if ((level == RMAP_LEVEL_PTE &&
+> +			     mapcount != 0) ||
+> +			    (level == RMAP_LEVEL_PMD && nr < nr_pmdmapped))
+>   				deferred_split_folio(folio);
+>   	}
+
+But I do wonder if we really care? Usually the folio will simply get 
+freed afterwards, where we simply remove it from the list.
+
+If it's pinned, we won't be able to free or reclaim, but it's rather a 
+corner case ...
+
+Is it really worth the added code? Not convinced.
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
