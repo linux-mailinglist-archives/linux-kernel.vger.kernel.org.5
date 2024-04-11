@@ -1,102 +1,82 @@
-Return-Path: <linux-kernel+bounces-141470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A3098A1EA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:41:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 113C28A1F03
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:00:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35DE22941F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:40:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 620F6B33AE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:41:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64EF253E0E;
-	Thu, 11 Apr 2024 18:20:16 +0000 (UTC)
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E71FA54662;
+	Thu, 11 Apr 2024 18:23:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="ztVqzLNc"
+Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88925380F;
-	Thu, 11 Apr 2024 18:20:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFBC629416;
+	Thu, 11 Apr 2024 18:23:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712859616; cv=none; b=gRiwqTGCYDBhZXjoGp4orgKA7JtEpcU9PASFWeCjXUlbiCGmHcdAkSYBfSaSJzXF+8SiwP4QVVTb+J/VnHHbFtOq1qAKkpeXZ8YNLt95fjA2ANPgMlUSoic4Ef56EMYnf+gcoq/HoAWvorG1h3RygtLBmjSQxgdLJ9W/nPJe/dA=
+	t=1712859798; cv=none; b=Pv108EgrcrXzzxVpUDsK3jUdH4d3EolwUxhlY4uLmy9CZBO6+6DwHxzUHj1ehV+JG4YsdQ6QGoqWUNRSLneQ2AAETJibse3EbjqDzhhg76i4yCvG4DV71ORDQGtPvW2fDqi2P3vcJ/6IOu/w8SmtE9IUoFuHhSOCUfHHE6jY3jU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712859616; c=relaxed/simple;
-	bh=S6BbPnTwdycm64mGNGE9rNMDIIUFWfyMUwmQclD8Mto=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=szMPaFUL/AyjCOs7A5eVKslmNI6GM5EPdiOFlYRvYNPgqTYI5IyKj1ekb4TIGP1pALrpkmOrI2f/MZF1VDQDL3SBWJP6bCyW0QAbtCRSEdfbHnFJo2qpxsDhtkMSyXT0VNCHrmUB3DerNPtp8Yl5zlEPEFQ4+Qh9UfwA4kUTqnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6eb5511088aso110639a34.2;
-        Thu, 11 Apr 2024 11:20:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712859614; x=1713464414;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S6BbPnTwdycm64mGNGE9rNMDIIUFWfyMUwmQclD8Mto=;
-        b=mrOJjsDv8tsd5dvZhPFiz7YWXQYea7sfLXWPEBAhHIJZqlj3NRF8r3wuL6WvwR08X5
-         P2aTZOBZlb/XEnrSQk3arkLiF/l0n1dKHBQb8Bv1Fkq3obqLQNaDcJmZ5vMxL8FuV83l
-         w6lI+1q/lZNoxIy364nwj64EXBId1nNsz8kSkj/tYwOsr6y8ZbbLZxQ1iHYvyNsjjdcf
-         9Xxfk8Ulevq0quu3gcnW2K1D0hdjr7Gjk7LTyKFdB1wBcn+TEXTTESRMDgf28pyG2orC
-         lvg4xOb5kMhXn/cVBld2XPcUR7q0wYfH/gkNxjtg4mI1CEOmtJCN1flCO3eEfPdk06Jm
-         wEWg==
-X-Forwarded-Encrypted: i=1; AJvYcCVSc7vbu3Npx1YofH6jkDY1CNu6/u/E8Efc4s1f0I4/oESPXPDryZ7kXm2wqi5pzbPF/B8sKxAbbMiuYxdWQlPKRljDyG3GLtMeQtOy
-X-Gm-Message-State: AOJu0YxMAtaDl2IBdSXioOEZzsa8cSuzqRkpj5+IjoSZi/1mQg+iRzGt
-	sucTqEeaaQ0pemVBN3o56wMRgr5/stES9/4vSx/kErwRuNPQUOqYsadXA4aJTEMnc7sIn9lyjx+
-	axrzZ4kY16N1VRGkBjVoyYw3O0WhehA==
-X-Google-Smtp-Source: AGHT+IGfOQrSozcDeM1LPWL9Oz5KLScywrgAK+QlWW15/KT6k2ppVPLYa8awmW89vNOiBQ57yevzPHBrjdngDd57Zw0=
-X-Received: by 2002:a05:6870:1650:b0:22e:1514:8077 with SMTP id
- c16-20020a056870165000b0022e15148077mr304248oae.43.1712859613789; Thu, 11 Apr
- 2024 11:20:13 -0700 (PDT)
+	s=arc-20240116; t=1712859798; c=relaxed/simple;
+	bh=FRIggP1YvWWV3rj+5WU1Cj2nMoZrQOSbDSPE/2jMC40=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=uJApwUQdkMU2LVnA3kOAdmT5QabOQmsc4DpkWamx54uHIY7xr2B6n9oFUQTqNeCOBPV4huteUp8c3jRd4vThSlzQEpfio9y7T3bwgiXGM6Xj/azWTq/6MbrpILtxDY0H5uPYV5QGnb7FDW/bJboLAdTFjMNC0Pj3l3q4CV142wE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=ztVqzLNc; arc=none smtp.client-ip=199.89.1.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 008.lax.mailroute.net (Postfix) with ESMTP id 4VFp3L30MYz6Cnk8t;
+	Thu, 11 Apr 2024 18:23:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1712859787; x=1715451788; bh=FRIggP1YvWWV3rj+5WU1Cj2n
+	MoZrQOSbDSPE/2jMC40=; b=ztVqzLNcki93qPYwl22dc3jRpgrZo5cKjYRQ4Bf2
+	W0+E8Uhn4JBUUmVyEPYlp6qI+lHns4xGuIHTWiWR3nTD3cvm7biTShu6x4hocQxF
+	gFIlD1uxRzTJVktZSgZ0Gr+JlxtHmoZn4ywiD+NQe/rxbdfACNdpHWPpueB1zvH5
+	1e66aOsdJQtPp+er3Wxnq/ZHDRi18Cwly6fyAxc2sgKdkj2F3Tl4+7hhhi06r0S/
+	Dwp9/6D5W8v4gXgY2vuiaun9m9iwpe5Oooqbn8ofqHafXbllD5vyDkNVmOtOwqig
+	rSauuP6Tz7D3/luY1aHG3s05ur0cL10kUsYkpQG3FVp7qw==
+X-Virus-Scanned: by MailRoute
+Received: from 008.lax.mailroute.net ([127.0.0.1])
+ by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id L8PhjzVZZJ8Z; Thu, 11 Apr 2024 18:23:07 +0000 (UTC)
+Received: from [100.96.154.26] (unknown [104.132.0.90])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4VFp3C5dfhz6Cnk8m;
+	Thu, 11 Apr 2024 18:23:03 +0000 (UTC)
+Message-ID: <7c546232-0ad5-4ad3-bb12-2927c1b65c0e@acm.org>
+Date: Thu, 11 Apr 2024 11:23:01 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJvTdKmK_U7nChpm=MzaDyw3T9V6hSua-6C89WCjo828vxm+yw@mail.gmail.com>
- <CAHk-=wgaTzpJssX2z7OiQOLL0BZzHGAfJn0MYPhuN9oU0R2f-Q@mail.gmail.com>
-In-Reply-To: <CAHk-=wgaTzpJssX2z7OiQOLL0BZzHGAfJn0MYPhuN9oU0R2f-Q@mail.gmail.com>
-From: Len Brown <lenb@kernel.org>
-Date: Thu, 11 Apr 2024 14:20:02 -0400
-Message-ID: <CAJvTdK=BO2YtUCrNzjMR8EydaDzaPasfi9m3_4UreC2J1MYjTg@mail.gmail.com>
-Subject: Re: [GIT PULL] turbostat 2024.04.10
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Linux PM list <linux-pm@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] scsi: ufs: core: changing the status to check inflight
+To: SEO HOYOUNG <hy50.seo@samsung.com>, linux-scsi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, alim.akhtar@samsung.com, avri.altman@wdc.com,
+ jejb@linux.ibm.com, martin.petersen@oracle.com, beanhuo@micron.com,
+ kwangwon.min@samsung.com, kwmad.kim@samsung.com, sh425.lee@samsung.com,
+ quic_nguyenb@quicinc.com, cpgs@samsung.com, h10.kim@samsung.com
+References: <CGME20240411071042epcas2p4b2e6937a952e6dfa879db166983b1c54@epcas2p4.samsung.com>
+ <20240411071444.51873-1-hy50.seo@samsung.com>
+Content-Language: en-US
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240411071444.51873-1-hy50.seo@samsung.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 10, 2024 at 4:18=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, 10 Apr 2024 at 06:24, Len Brown <lenb@kernel.org> wrote:
-> >
-> > Turbostat version 2024.04.10
->
-> Tssk. Things like this should still come in during the merge window
-> and preferably be in linux-next.
->
-> I have pulled this, since it's obviously just tooling (and the
-> maintainer file pattern update), but stil...
-
-ISTR that once upon a time at the kernel summit you expressed a
-preference that things
-like utilities (which sometimes depend on merge window changes) come
-in after rc1 is declared
-to basically stay out of the way.
-
-Yes, this batch was delayed a week or so after that due to some revisions..=
-.
-
-Happy to send this kind of thing during the merge window when
-dependencies allow (yes, they would have this time)
-since that is your current preference.
-
-Also, yes, I can have my turbostat branch routinely included in linux-next.
-
-thanks,
--Len
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 
