@@ -1,135 +1,219 @@
-Return-Path: <linux-kernel+bounces-140016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D42E18A0A60
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:46:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43E598A0A65
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:46:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E727283A0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:46:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75FB61C21265
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A37113E8A1;
-	Thu, 11 Apr 2024 07:45:43 +0000 (UTC)
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63C5313FD8C;
+	Thu, 11 Apr 2024 07:45:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tG/lFgCu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AF8013E04A;
-	Thu, 11 Apr 2024 07:45:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F8A713E8B9;
+	Thu, 11 Apr 2024 07:45:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712821543; cv=none; b=j4Wpn99/9SobHdR0k5oAu3jehOOhZSRYYheKaqS2yW+9WTeGtS1rRk1kHI0Ep9Jyi1g3T39RV6xt1QjZtgvOORB5A+BDHyksRZUEv8I766Y6dFSM8uakHVYhvgr5Qe7w7Wo+6UPoP0ausPw3UuFjj5d38Eicfpkg7l04/xN483o=
+	t=1712821546; cv=none; b=D/dMnEBHrh2da4zBznv5r/lj1iHNVrXKnmlp0+vf/PF1VbzVlZQ3SXMcqoFmBZ2nBaiys1WDlHzAZb3XXoVuIxef48OmHDTkMBI/NQHHcYbpkcd0/Zf7hjfhBuCyKjH+Utfx38H+plzaTUXEHTs1f90U45ZMWfy39uDAqZOZbUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712821543; c=relaxed/simple;
-	bh=r+uHfO6nhURoV/pkGignKxKYOu+ttuewlNGxARe0TkE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y6VOOQebcHmAXwsLeLOrW2VypTo+HdJ9iGl1XJsktEWzrCsjnMJp2r4NBGFeU7AtNCJx2acWHLzN8VfyOXoNZ/0iXJxDPOWXJAGOTbY2+0l9tiYCnl9EIZd2Rn5mosOu6HnTRzuBfqvKzurSXV8I2PprC+gOKzrZiYycrtA8V7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6154a1812ffso80578817b3.1;
-        Thu, 11 Apr 2024 00:45:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712821540; x=1713426340;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TLCbqACAEmw1RFUJ3MP/4fcprBXm3Vbx6jGa7VJAGWQ=;
-        b=OdBrqMC8rgyGSRr1LOisp9C30R/Zv14t4gB3XDE1ukbQePjv1EH1l4rZeKsQ9VzK25
-         Bgv+lYObqDSHXccnpaM/BlcRO9HOK8exXzcSAroSrHZXiAB52uDC86v0GHUw1XlePn3g
-         I0ib0nLy3FkHlPRQtnV03/ZD5cGNg0aLz8kuN846Yb66lmvlA41n+GxP8VoheSxOX1aw
-         rXOyxUOjmMnKjEibmxzGwqEIKkW/LAmKs5vUM31cTsbR6PvrEEpCdliQj27MiXJnxuFz
-         HjRqAgSPs4YS+3VJLcfZBk1QmDjbe5gciRXAABPQ8LXmJahUZ4na5Ps9dED9C+6GoPd6
-         dw5w==
-X-Forwarded-Encrypted: i=1; AJvYcCVKQnDNZ9feocadqAyDBtrkJYdFTMoIzxkcyIUDoOijN8H3DyiclH45UrALlgud/vhYQXTQ+yPl+biCcvuBav0RR/9cZmcKU5ybsY7gzWgAqD7uwLUA8cfUABqITzxwcHvcLtRPtYMVxSGfvToj8l5OBCieJm/u0CggIgxuV+wEck+PvHTT6nH06q1s4QRVIsmD8Ea332HMICWp25cmCTFvGRBZ
-X-Gm-Message-State: AOJu0Yy/Msn/+5Q2gxOUmxYlsZjXOC5Ykew2/VCYP0wmPWG9rfHVZCA7
-	wqz+hcSb79pcULm81rZdt4twCdEpXr4QcJfEwICxTblqcaNeCv+22O5UEBqU
-X-Google-Smtp-Source: AGHT+IGKOjCRJkfXoOUxCfYnLsPI278dml6c6tmCPCYSOIZxVLfSUYlod+COy7K/iibLYcAICafx8A==
-X-Received: by 2002:a25:ed0b:0:b0:dc7:6f13:61e2 with SMTP id k11-20020a25ed0b000000b00dc76f1361e2mr4843231ybh.58.1712821539691;
-        Thu, 11 Apr 2024 00:45:39 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id g36-20020a25ae64000000b00dcd2c2e7550sm184862ybe.21.2024.04.11.00.45.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 00:45:39 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso4969494276.1;
-        Thu, 11 Apr 2024 00:45:39 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUHYsRRfFzE46a8v1BVVF/E4cXEeVYYKzbi/2Q81Ll0wfIS6aXURBHTjdWmWggumJ9cT1ETJWOZjVr/QrfcJy7oj0ZaZNzD7L+sg6tV2ZkD8BbPF0A6ei+npHBs4w2U5oYHovw6gLvRdv+9BLjfqOAXz8kEwO9BwazYUbtYZjaQHUSDv9mNQzMpHbN8653Q9CIxe22sHcf9mwnOLP64d9WFCMUa
-X-Received: by 2002:a25:bac9:0:b0:dda:abbd:7395 with SMTP id
- a9-20020a25bac9000000b00ddaabbd7395mr4287330ybk.51.1712821539199; Thu, 11 Apr
- 2024 00:45:39 -0700 (PDT)
+	s=arc-20240116; t=1712821546; c=relaxed/simple;
+	bh=bIJYJVzqanaZpwzfS5AEQO7u84UA48mefo7TJ6Lffno=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=SrIveMa1ElwBrtLOSSIgaDH9eAdK59dwMvVK2EQ1U3bwgtrBGN9DyJWTfoKmy96AMXqwQM0+tBRVllp+1R9WOsoap0f2gAgSMXfnBG4t30StZqx73TPfEw8JkKc3oskOCmcru/SEExTBF9S4uUN5OZOg+q88oV025K9teR79GgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tG/lFgCu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03B73C433F1;
+	Thu, 11 Apr 2024 07:45:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712821546;
+	bh=bIJYJVzqanaZpwzfS5AEQO7u84UA48mefo7TJ6Lffno=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=tG/lFgCur7g9BOwGLDPzXN5cSqy9ewWid7Mh0o4YCsdccnNmtKYDatti9HQ6V2FeY
+	 KNSoDo/Wqe3RsMPhSIouPSrXHQ5+1/AqjC0QW2sDlU3z5RW3e6y6zhmZobwDcYlSJS
+	 kw+Kekd3JK5Kz0IIgwkI4CtMbYlWs9zbtaoI1aR9hXpJFCSzoR10y3WQNwFFhpe6x2
+	 b30i3G6oDWPxmbv9D7Pae6AUQqso6INKBRJC2Vh5GqSnAHxB88Cf8uJkAOEU9Wmkhg
+	 ZmBzpLnDCIpumupVEiZ7KmI1owJ/pQlPUekASduGLkIAZlVYeHnR8KkzHKfDZBjTZ4
+	 1sbajJFOa/UFA==
+Message-ID: <deb23094f40df7df9e7330e95af4e64d.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240409-rzn1-gmac1-v2-0-79ca45f2fc79@bootlin.com>
- <20240409-rzn1-gmac1-v2-4-79ca45f2fc79@bootlin.com> <CAMuHMdX-F8LXWx=Ras4f+Dt_r485HKjRDLydDXZsnZBW8HJzxw@mail.gmail.com>
- <9bd8eee4-952d-d5b2-c462-45c1466c54d6@bootlin.com>
-In-Reply-To: <9bd8eee4-952d-d5b2-c462-45c1466c54d6@bootlin.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 11 Apr 2024 09:45:27 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVAB8CuSkrnp+b7-+s3v0eHLr0Lvm1=MveGMVRW3T9T-A@mail.gmail.com>
-Message-ID: <CAMuHMdVAB8CuSkrnp+b7-+s3v0eHLr0Lvm1=MveGMVRW3T9T-A@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 4/5] net: stmmac: add support for RZ/N1 GMAC
-To: Romain Gantois <romain.gantois@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Russell King <linux@armlinux.org.uk>, 
-	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240110133128.286657-7-jeeheng.sia@starfivetech.com>
+References: <20240110133128.286657-1-jeeheng.sia@starfivetech.com> <20240110133128.286657-7-jeeheng.sia@starfivetech.com>
+Subject: Re: [RFC v3 06/16] clk: starfive: Add JH8100 System clock generator driver
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, jeeheng.sia@starfivetech.com, leyfoon.tan@starfivetech.com
+To: Sia Jee Heng <jeeheng.sia@starfivetech.com>, aou@eecs.berkeley.edu, conor@kernel.org, emil.renner.berthing@canonical.com, hal.feng@starfivetech.com, kernel@esmil.dk, krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com, p.zabel@pengutronix.de, palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org, xingyu.wu@starfivetech.com
+Date: Thu, 11 Apr 2024 00:45:43 -0700
+User-Agent: alot/0.10
 
-Hi Romain,
+Quoting Sia Jee Heng (2024-01-10 05:31:18)
+> diff --git a/drivers/clk/starfive/clk-starfive-jh8100-sys.c b/drivers/clk=
+/starfive/clk-starfive-jh8100-sys.c
+> new file mode 100644
+> index 000000000000..6d7e750dce82
+> --- /dev/null
+> +++ b/drivers/clk/starfive/clk-starfive-jh8100-sys.c
+> @@ -0,0 +1,415 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * StarFive JH8100 System Clock Driver
+> + *
+> + * Copyright (C) 2023 StarFive Technology Co., Ltd.
+> + *
+> + * Author: Jee Heng Sia <jeeheng.sia@starfivetech.com>
+> + *
+> + */
+> +
+> +#include <linux/clk.h>
 
-On Wed, Apr 10, 2024 at 2:24=E2=80=AFPM Romain Gantois
-<romain.gantois@bootlin.com> wrote:
-> On Tue, 9 Apr 2024, Geert Uytterhoeven wrote:
-> > > +config DWMAC_RZN1
-> > > +       tristate "Renesas RZ/N1 dwmac support"
-> > > +       default ARCH_RZN1
-> >
-> > Why default to enabled?
-> >
-> > > +       depends on OF && (ARCH_RZN1 || COMPILE_TEST)
->
-> The kernel doc states this as one of the possible cases where setting def=
-ault
-> y/m makes sense:
->
-> ```
-> Sub-driver behavior or similar options for a driver that is =E2=80=9Cdefa=
-ult n=E2=80=9D. This
-> allows you to provide sane defaults.
-> ```
->
-> In the case of DWMAC_RZN1, it is a suboption of stmmac which is "default =
-n", and
-> I think it makes sense to enable the RZN1 ethernet controller driver if b=
-oth the
-> stmmac driver and the RZN1 architecture were explicitely selected.
+Drop this unused include.
 
-Thanks for your answer, that makes perfect sense!
+> +#include <linux/auxiliary_bus.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/init.h>
+> +#include <linux/io.h>
 
-Gr{oetje,eeting}s,
+Is this include used in this file?
 
-                        Geert
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +
+> +#include <soc/starfive/reset-starfive-common.h>
+> +
+> +#include <dt-bindings/clock/starfive,jh8100-crg.h>
+> +
+> +#include "clk-starfive-jh8100.h"
+> +
+> +#define JH8100_SYSCLK_NUM_CLKS                 (JH8100_SYSCLK_NNE_ICG_EN=
+ + 1)
+> +
+[...]
+> +
+> +static void jh8100_reset_adev_release(struct device *dev)
+> +{
+> +       struct auxiliary_device *adev =3D to_auxiliary_dev(dev);
+> +       struct starfive_reset_adev *rdev =3D to_starfive_reset_adev(adev);
+> +
+> +       kfree(rdev);
+> +}
+> +
+> +int jh8100_reset_controller_register(struct starfive_clk_priv *priv,
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+Just pass 'dev' and 'base' instead.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+> +                                    const char *adev_name,
+> +                                    u32 adev_id)
+> +{
+> +       struct starfive_reset_adev *rdev;
+> +       struct auxiliary_device *adev;
+> +       int ret;
+> +
+> +       rdev =3D kzalloc(sizeof(*rdev), GFP_KERNEL);
+> +       if (!rdev)
+> +               return -ENOMEM;
+> +
+> +       rdev->base =3D priv->base;
+> +
+> +       adev =3D &rdev->adev;
+> +       adev->name =3D adev_name;
+> +       adev->dev.parent =3D priv->dev;
+> +       adev->dev.release =3D jh8100_reset_adev_release;
+> +       adev->id =3D adev_id;
+> +
+> +       ret =3D auxiliary_device_init(adev);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret =3D auxiliary_device_add(adev);
+> +       if (ret) {
+> +               auxiliary_device_uninit(adev);
+> +               return ret;
+> +       }
+> +
+> +       return devm_add_action_or_reset(priv->dev,
+> +                                       jh8100_reset_unregister_adev, ade=
+v);
+> +}
+> +EXPORT_SYMBOL_GPL(jh8100_reset_controller_register);
+
+Move this to drivers/reset/ please.
+
+> +
+> +static int __init jh8100_syscrg_probe(struct platform_device *pdev)
+> +{
+> +       struct starfive_clk_priv *priv;
+> +       unsigned int idx;
+> +       int ret;
+> +
+> +       priv =3D devm_kzalloc(&pdev->dev,
+> +                           struct_size(priv, reg, JH8100_SYSCLK_NUM_CLKS=
+),
+> +                           GFP_KERNEL);
+> +       if (!priv)
+> +               return -ENOMEM;
+> +
+> +       spin_lock_init(&priv->rmw_lock);
+> +       priv->dev =3D &pdev->dev;
+> +       priv->base =3D devm_platform_ioremap_resource(pdev, 0);
+> +       if (IS_ERR(priv->base))
+> +               return PTR_ERR(priv->base);
+[...]
+> +
+> +       ret =3D devm_of_clk_add_hw_provider(&pdev->dev, jh8100_sysclk_get=
+, priv);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return jh8100_reset_controller_register(priv, "rst-sys", 0);
+> +}
+> +
+> +static const struct of_device_id jh8100_syscrg_match[] =3D {
+> +       { .compatible =3D "starfive,jh8100-syscrg" },
+> +       { /* sentinel */ }
+> +};
+> +
+> +static struct platform_driver jh8100_syscrg_driver =3D {
+> +       .driver =3D {
+> +               .name =3D "clk-starfive-jh8100-sys",
+> +               .of_match_table =3D jh8100_syscrg_match,
+> +               .suppress_bind_attrs =3D true,
+> +       },
+> +};
+> +builtin_platform_driver_probe(jh8100_syscrg_driver, jh8100_syscrg_probe);
+> diff --git a/drivers/clk/starfive/clk-starfive-jh8100.h b/drivers/clk/sta=
+rfive/clk-starfive-jh8100.h
+> new file mode 100644
+> index 000000000000..9b69a56fe5fc
+> --- /dev/null
+> +++ b/drivers/clk/starfive/clk-starfive-jh8100.h
+> @@ -0,0 +1,11 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __CLK_STARFIVE_JH8100_H
+> +#define __CLK_STARFIVE_JH8100_H
+> +
+> +#include "clk-starfive-common.h"
+
+Drop this include.
+
+> +
+> +int jh8100_reset_controller_register(struct starfive_clk_priv *priv,
+
+Forward declare starfive_clk_priv instead.
+
+> +                                    const char *adev_name,
+> +                                    u32 adev_id);
+
+Why is this header here at all?
 
