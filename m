@@ -1,223 +1,254 @@
-Return-Path: <linux-kernel+bounces-140589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DF388A1692
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DAD78A1671
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 16:01:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B828C28831C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:04:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6875286B16
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:01:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 974351591F1;
-	Thu, 11 Apr 2024 14:00:45 +0000 (UTC)
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08FA5150990;
+	Thu, 11 Apr 2024 14:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IuYQoFWL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CE5A14C5BE;
-	Thu, 11 Apr 2024 14:00:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECCC14E2C8;
+	Thu, 11 Apr 2024 14:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712844045; cv=none; b=qwxTmx+2eND4uOmv0IkcOyjaLWEOXXydVeiRx4C6ZI6fPu3mQKE9HLnhpARH8sa01IVt6gyoRMGq+6JIg2xMOOknJ4X/a5J8mf+aLLBin+F1gWuwnP12sIGwC9V8UGEKaFMITxCD71t1WRlmHnaIL8zQyUL0vgKE9ZRlfix3slw=
+	t=1712844023; cv=none; b=XRy+sC7yqNsirSDjEDHHx4P+/nFMZ6N1pIdIbQtF1z5656sN84tIj6VsFKayvBnp0AO+zl/pgXJdY9pGi7LEM4A7KGOQ+folF4euMyrD3Fwu0PdPuK/IgvzRfjO/WdcomStiq7ici5/kpIdaGp3YBibDibjaWZns1zso8Tdf4D8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712844045; c=relaxed/simple;
-	bh=C2/enydAC2YCsBNnm5NUTUC6WvB4CkjpCpQsFsdVyag=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cr8hveX1litAB+SkTDOh/te2+jP4rKqkovl/XOzWIz0c8EQkAr3oXwfF/7vOZFToMM8v59CeR6jVjJjaF9fiYhoRlFfJcKa3YpEp1S8+D6n9U2lc1FPzedIMhls4PkpWHg1Hif88GO4ss707Lok1szEGzI97SHhbf9UpiL1jnEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a51a7d4466bso788729166b.2;
-        Thu, 11 Apr 2024 07:00:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712844042; x=1713448842;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xrYnp1tDsZ0sxZFnn5u9gBZrt+Gb2bRXco5M67sATos=;
-        b=Dq281TTlzkBsGh9adJHenMuBxsyBDePlba/lltBL87hI1tdka61vUMm/N3xwhXRwpi
-         NpHIXStoVNObBWCuxCtxrG6F7KnyIdgPJfvIs+M+e9KWL6SWPN03OH7RhgRZN7befnwK
-         omKMINTJjbPpsyCjJmYPoowDZ+A3mMELrKosp81diMky5+adRp0hoXb5gR/OIH1r/uid
-         HAuktFIer6kMgTMpMTZM4/Y2D6XuMUD2Uf4Pz2ZUnZNUbfl+6q4kpi0EcY6GdyIHfOsN
-         xz3nV7U8XMTsaNTQ42+VZGcYWly/JvVUyHmD57s7wyL5hDy1SsMWAToQah3zOOSKUX8J
-         Yuzg==
-X-Forwarded-Encrypted: i=1; AJvYcCU/1dl7x1Ll8KYx2PNA6hbWUWxsknAZey+3I0Wg4RBL0osM329QhRfoJJub3Oiv3Q+AIe5js8PuixC/ynUvLUv+wm+Gah/XbAdXoco0EEzazyKxMV74ODkzhryOYX8X8TlLkpZdAqaMA9qeksFFWWi/Fn2ANclA80l2OLww/r9oPciod/MB9OlbGdmPZth5YdiVME2VF34MuQc=
-X-Gm-Message-State: AOJu0YwjHxSk2lLVf/oqtW3WFe6+8+PFoZT7BdRci8N0b2An6MnyPAIQ
-	B796WyPFJaix9S3qHjhs4e48LNvjwuuI7sa065J5Vl1/RQH/AoSi
-X-Google-Smtp-Source: AGHT+IFZGP/scO0ubNJmt0aoTujRGQZJOvjmWlRs+FjC+tWdWZmrmvYWjoweGZeS25kI0JSSKLCy0w==
-X-Received: by 2002:a17:906:e95:b0:a51:b00b:45a5 with SMTP id p21-20020a1709060e9500b00a51b00b45a5mr2923428ejf.74.1712844041681;
-        Thu, 11 Apr 2024 07:00:41 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-001.fbsv.net. [2a03:2880:30ff:1::face:b00c])
-        by smtp.gmail.com with ESMTPSA id ox2-20020a170907100200b00a522bef9f06sm212031ejb.181.2024.04.11.07.00.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 07:00:41 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: aleksander.lobakin@intel.com,
-	kuba@kernel.org,
-	davem@davemloft.net,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	elder@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	nbd@nbd.name,
-	sean.wang@mediatek.com,
-	Mark-MC.Lee@mediatek.com,
-	lorenzo@kernel.org,
-	taras.chornyi@plvision.eu,
-	ath11k@lists.infradead.org,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	geomatsi@gmail.com,
-	kvalo@kernel.org,
-	Jeff Johnson <jjohnson@kernel.org>
-Cc: quic_jjohnson@quicinc.com,
-	leon@kernel.org,
-	dennis.dalessandro@cornelisnetworks.com,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	idosch@idosch.org,
-	leitao@debian.org
-Subject: [PATCH net-next v6 10/10] wifi: ath11k: allocate dummy net_device dynamically
-Date: Thu, 11 Apr 2024 06:59:34 -0700
-Message-ID: <20240411135952.1096696-11-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240411135952.1096696-1-leitao@debian.org>
-References: <20240411135952.1096696-1-leitao@debian.org>
+	s=arc-20240116; t=1712844023; c=relaxed/simple;
+	bh=tRqmwlzhcYdgVr2YujS1WgTqkzUd0nEXs80I0voRZ+c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fQmJBxqLBSL/CaLPMizOHVM4HrtlV/BCh94Tq5IU+EDU9j2EyKDNoLNAv4+mq48watUtCnmKYsnQxHInGgRfZEflKyVtZj5omPkNXzte0iv/akVX8EFqmJ7AvuEdjMlQ5pNCMJZNyEptX2kUA9bXUG1I5i4zy5IaWxLDnt1Jo40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IuYQoFWL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4C7FC113CD;
+	Thu, 11 Apr 2024 14:00:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712844022;
+	bh=tRqmwlzhcYdgVr2YujS1WgTqkzUd0nEXs80I0voRZ+c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IuYQoFWLDW0TewoWOc1egpvTc7oRKlFdRDOxTdOO6mj8F+jf/LWNPnH6utlZMgCRp
+	 Wlm7VdDje7q00dBLqJawgrlJWje3n8r7h5914tgSM1R4vzFi/aElZWtaxhbFhhmRgC
+	 e58DoLz7Np5deIUBaY59yKM3JF4OYy/zVNTZAdncc0IZG9wlVf/Lp3ONzbho3qDhxA
+	 7PiLNDS4jimFjHuyBxgGXNcQIY7QPBXIJgMAFhYS1GK6mqT4LKEvKcSN1Nce0pzVqp
+	 IrVB4USDmK+/pPizmKeVnvc18vBGueLeCeNv0UC1glnbvyiNGiLZG0DyscUb1jvVjk
+	 uYc17bsqWwNLA==
+Date: Thu, 11 Apr 2024 16:00:16 +0200
+From: Helge Deller <deller@kernel.org>
+To: Niklas Schnelle <schnelle@linux.ibm.com>
+Cc: Helge Deller <deller@gmx.de>, linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, Arnd Bergmann <arnd@kernel.org>,
+	Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] video: Handle HAS_IOPORT dependencies
+Message-ID: <Zhfs8CN5XdgldKUn@carbonx1>
+References: <20240410142329.3567824-1-schnelle@linux.ibm.com>
+ <20240410142329.3567824-2-schnelle@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240410142329.3567824-2-schnelle@linux.ibm.com>
 
-Embedding net_device into structures prohibits the usage of flexible
-arrays in the net_device structure. For more details, see the discussion
-at [1].
+* Niklas Schnelle <schnelle@linux.ibm.com>:
+> In a future patch HAS_IOPORT=n will disable inb()/outb() and friends at
+> compile time. We thus need to #ifdef functions and their callsites which
+> unconditionally use these I/O accessors. In the include/video/vga.h
+> these are conveniently all those functions with the vga_io_* prefix.
 
-Un-embed the net_device from struct ath11k_ext_irq_grp by converting it
-into a pointer. Then use the leverage alloc_netdev() to allocate the
-net_device object at ath11k_ahb_config_ext_irq() for ahb, and
-ath11k_pcic_ext_irq_config() for pcic.
+Why don't you code it like in the patch below?
+inb_p(), outb_p() and outw() would then need to be defined externally
+without an implementation so that they would generate link time errors
+(instead of compile time errors).
 
-The free of the device occurs at ath11k_ahb_free_ext_irq() for the ahb
-case, and ath11k_pcic_free_ext_irq() for the pcic case.
-
-[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-
-Signed-off-by: Breno Leitao <leitao@debian.org>
-Tested-by: Kalle Valo <kvalo@kernel.org>
----
- drivers/net/wireless/ath/ath11k/ahb.c  |  9 +++++++--
- drivers/net/wireless/ath/ath11k/core.h |  2 +-
- drivers/net/wireless/ath/ath11k/pcic.c | 21 +++++++++++++++++----
- 3 files changed, 25 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath11k/ahb.c b/drivers/net/wireless/ath/ath11k/ahb.c
-index 7c0a23517949..7f3f6479d553 100644
---- a/drivers/net/wireless/ath/ath11k/ahb.c
-+++ b/drivers/net/wireless/ath/ath11k/ahb.c
-@@ -442,6 +442,7 @@ static void ath11k_ahb_free_ext_irq(struct ath11k_base *ab)
- 			free_irq(ab->irq_num[irq_grp->irqs[j]], irq_grp);
+diff --git a/include/video/vga.h b/include/video/vga.h
+index 947c0abd04ef..32c915e109fa 100644
+--- a/include/video/vga.h
++++ b/include/video/vga.h
+@@ -203,18 +203,20 @@ extern int restore_vga(struct vgastate *state);
  
- 		netif_napi_del(&irq_grp->napi);
-+		free_netdev(irq_grp->napi_ndev);
- 	}
- }
- 
-@@ -533,8 +534,12 @@ static int ath11k_ahb_config_ext_irq(struct ath11k_base *ab)
- 
- 		irq_grp->ab = ab;
- 		irq_grp->grp_id = i;
--		init_dummy_netdev(&irq_grp->napi_ndev);
--		netif_napi_add(&irq_grp->napi_ndev, &irq_grp->napi,
-+
-+		irq_grp->napi_ndev = alloc_netdev_dummy(0);
-+		if (!irq_grp->napi_ndev)
-+			return -ENOMEM;
-+
-+		netif_napi_add(irq_grp->napi_ndev, &irq_grp->napi,
- 			       ath11k_ahb_ext_grp_napi_poll);
- 
- 		for (j = 0; j < ATH11K_EXT_IRQ_NUM_MAX; j++) {
-diff --git a/drivers/net/wireless/ath/ath11k/core.h b/drivers/net/wireless/ath/ath11k/core.h
-index b3fb74a226fb..590307ca7a11 100644
---- a/drivers/net/wireless/ath/ath11k/core.h
-+++ b/drivers/net/wireless/ath/ath11k/core.h
-@@ -174,7 +174,7 @@ struct ath11k_ext_irq_grp {
- 	u64 timestamp;
- 	bool napi_enabled;
- 	struct napi_struct napi;
--	struct net_device napi_ndev;
-+	struct net_device *napi_ndev;
- };
- 
- enum ath11k_smbios_cc_type {
-diff --git a/drivers/net/wireless/ath/ath11k/pcic.c b/drivers/net/wireless/ath/ath11k/pcic.c
-index add4db4c50bc..79eb3f9c902f 100644
---- a/drivers/net/wireless/ath/ath11k/pcic.c
-+++ b/drivers/net/wireless/ath/ath11k/pcic.c
-@@ -316,6 +316,7 @@ static void ath11k_pcic_free_ext_irq(struct ath11k_base *ab)
- 			free_irq(ab->irq_num[irq_grp->irqs[j]], irq_grp);
- 
- 		netif_napi_del(&irq_grp->napi);
-+		free_netdev(irq_grp->napi_ndev);
- 	}
- }
- 
-@@ -558,7 +559,7 @@ ath11k_pcic_get_msi_irq(struct ath11k_base *ab, unsigned int vector)
- 
- static int ath11k_pcic_ext_irq_config(struct ath11k_base *ab)
+ static inline unsigned char vga_io_r (unsigned short port)
  {
--	int i, j, ret, num_vectors = 0;
-+	int i, j, n, ret, num_vectors = 0;
- 	u32 user_base_data = 0, base_vector = 0;
- 	unsigned long irq_flags;
+-	return inb_p(port);
++	return IS_ENABLED(CONFIG_HAS_IOPORT) ? inb_p(port) : 0;
+ }
  
-@@ -578,8 +579,11 @@ static int ath11k_pcic_ext_irq_config(struct ath11k_base *ab)
+ static inline void vga_io_w (unsigned short port, unsigned char val)
+ {
+-	outb_p(val, port);
++	if (IS_ENABLED(CONFIG_HAS_IOPORT))
++		outb_p(val, port);
+ }
  
- 		irq_grp->ab = ab;
- 		irq_grp->grp_id = i;
--		init_dummy_netdev(&irq_grp->napi_ndev);
--		netif_napi_add(&irq_grp->napi_ndev, &irq_grp->napi,
-+		irq_grp->napi_ndev = alloc_netdev_dummy(0);
-+		if (!irq_grp->napi_ndev)
-+			return -ENOMEM;
-+
-+		netif_napi_add(irq_grp->napi_ndev, &irq_grp->napi,
- 			       ath11k_pcic_ext_grp_napi_poll);
+ static inline void vga_io_w_fast (unsigned short port, unsigned char reg,
+ 				  unsigned char val)
+ {
+-	outw(VGA_OUT16VAL (val, reg), port);
++	if (IS_ENABLED(CONFIG_HAS_IOPORT))
++		outw(VGA_OUT16VAL (val, reg), port);
+ }
  
- 		if (ab->hw_params.ring_mask->tx[i] ||
-@@ -601,8 +605,13 @@ static int ath11k_pcic_ext_irq_config(struct ath11k_base *ab)
- 			int vector = (i % num_vectors) + base_vector;
- 			int irq = ath11k_pcic_get_msi_irq(ab, vector);
- 
--			if (irq < 0)
-+			if (irq < 0) {
-+				for (n = 0; n <= i; n++) {
-+					irq_grp = &ab->ext_irq_grp[n];
-+					free_netdev(irq_grp->napi_ndev);
-+				}
- 				return irq;
-+			}
- 
- 			ab->irq_num[irq_idx] = irq;
- 
-@@ -615,6 +624,10 @@ static int ath11k_pcic_ext_irq_config(struct ath11k_base *ab)
- 			if (ret) {
- 				ath11k_err(ab, "failed request irq %d: %d\n",
- 					   vector, ret);
-+				for (n = 0; n <= i; n++) {
-+					irq_grp = &ab->ext_irq_grp[n];
-+					free_netdev(irq_grp->napi_ndev);
-+				}
- 				return ret;
- 			}
- 		}
--- 
-2.43.0
+ static inline unsigned char vga_mm_r (void __iomem *regbase, unsigned short port)
 
+
+
+> 
+> Co-developed-by: Arnd Bergmann <arnd@kernel.org>
+> Signed-off-by: Arnd Bergmann <arnd@kernel.org>
+> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> ---
+> Note: This patch does not depend any not-yet-mainline HAS_IOPORT changes
+> and may be merged via subsystem specific trees at your earliest
+> convenience.
+> 
+>  include/video/vga.h | 35 +++++++++++++++++++++++++----------
+>  1 file changed, 25 insertions(+), 10 deletions(-)
+> 
+> diff --git a/include/video/vga.h b/include/video/vga.h
+> index 947c0abd04ef..ed89295941c4 100644
+> --- a/include/video/vga.h
+> +++ b/include/video/vga.h
+> @@ -201,6 +201,7 @@ extern int restore_vga(struct vgastate *state);
+>   * generic VGA port read/write
+>   */
+>  
+> +#ifdef CONFIG_HAS_IOPORT
+>  static inline unsigned char vga_io_r (unsigned short port)
+>  {
+>  	return inb_p(port);
+> @@ -210,12 +211,12 @@ static inline void vga_io_w (unsigned short port, unsigned char val)
+>  {
+>  	outb_p(val, port);
+>  }
+> -
+>  static inline void vga_io_w_fast (unsigned short port, unsigned char reg,
+>  				  unsigned char val)
+>  {
+>  	outw(VGA_OUT16VAL (val, reg), port);
+>  }
+> +#endif /* CONFIG_HAS_IOPORT */
+>  
+>  static inline unsigned char vga_mm_r (void __iomem *regbase, unsigned short port)
+>  {
+> @@ -235,28 +236,34 @@ static inline void vga_mm_w_fast (void __iomem *regbase, unsigned short port,
+>  
+>  static inline unsigned char vga_r (void __iomem *regbase, unsigned short port)
+>  {
+> -	if (regbase)
+> -		return vga_mm_r (regbase, port);
+> -	else
+> +#ifdef CONFIG_HAS_IOPORT
+> +	if (!regbase)
+>  		return vga_io_r (port);
+> +	else
+> +#endif /* CONFIG_HAS_IOPORT */
+> +		return vga_mm_r (regbase, port);
+>  }
+>  
+>  static inline void vga_w (void __iomem *regbase, unsigned short port, unsigned char val)
+>  {
+> -	if (regbase)
+> -		vga_mm_w (regbase, port, val);
+> -	else
+> +#ifdef CONFIG_HAS_IOPORT
+> +	if (!regbase)
+>  		vga_io_w (port, val);
+> +	else
+> +#endif /* CONFIG_HAS_IOPORT */
+> +		vga_mm_w (regbase, port, val);
+>  }
+>  
+>  
+>  static inline void vga_w_fast (void __iomem *regbase, unsigned short port,
+>  			       unsigned char reg, unsigned char val)
+>  {
+> -	if (regbase)
+> -		vga_mm_w_fast (regbase, port, reg, val);
+> -	else
+> +#ifdef CONFIG_HAS_IOPORT
+> +	if (!regbase)
+>  		vga_io_w_fast (port, reg, val);
+> +	else
+> +#endif /* CONFIG_HAS_IOPORT */
+> +		vga_mm_w_fast (regbase, port, reg, val);
+>  }
+>  
+>  
+> @@ -280,6 +287,7 @@ static inline void vga_wcrt (void __iomem *regbase, unsigned char reg, unsigned
+>  #endif /* VGA_OUTW_WRITE */
+>  }
+>  
+> +#ifdef CONFIG_HAS_IOPORT
+>  static inline unsigned char vga_io_rcrt (unsigned char reg)
+>  {
+>          vga_io_w (VGA_CRT_IC, reg);
+> @@ -295,6 +303,7 @@ static inline void vga_io_wcrt (unsigned char reg, unsigned char val)
+>          vga_io_w (VGA_CRT_DC, val);
+>  #endif /* VGA_OUTW_WRITE */
+>  }
+> +#endif /* CONFIG_HAS_IOPORT */
+>  
+>  static inline unsigned char vga_mm_rcrt (void __iomem *regbase, unsigned char reg)
+>  {
+> @@ -333,6 +342,7 @@ static inline void vga_wseq (void __iomem *regbase, unsigned char reg, unsigned
+>  #endif /* VGA_OUTW_WRITE */
+>  }
+>  
+> +#ifdef CONFIG_HAS_IOPORT
+>  static inline unsigned char vga_io_rseq (unsigned char reg)
+>  {
+>          vga_io_w (VGA_SEQ_I, reg);
+> @@ -348,6 +358,7 @@ static inline void vga_io_wseq (unsigned char reg, unsigned char val)
+>          vga_io_w (VGA_SEQ_D, val);
+>  #endif /* VGA_OUTW_WRITE */
+>  }
+> +#endif /* CONFIG_HAS_IOPORT */
+>  
+>  static inline unsigned char vga_mm_rseq (void __iomem *regbase, unsigned char reg)
+>  {
+> @@ -385,6 +396,7 @@ static inline void vga_wgfx (void __iomem *regbase, unsigned char reg, unsigned
+>  #endif /* VGA_OUTW_WRITE */
+>  }
+>  
+> +#ifdef CONFIG_HAS_IOPORT
+>  static inline unsigned char vga_io_rgfx (unsigned char reg)
+>  {
+>          vga_io_w (VGA_GFX_I, reg);
+> @@ -400,6 +412,7 @@ static inline void vga_io_wgfx (unsigned char reg, unsigned char val)
+>          vga_io_w (VGA_GFX_D, val);
+>  #endif /* VGA_OUTW_WRITE */
+>  }
+> +#endif /* CONFIG_HAS_IOPORT */
+>  
+>  static inline unsigned char vga_mm_rgfx (void __iomem *regbase, unsigned char reg)
+>  {
+> @@ -434,6 +447,7 @@ static inline void vga_wattr (void __iomem *regbase, unsigned char reg, unsigned
+>          vga_w (regbase, VGA_ATT_W, val);
+>  }
+>  
+> +#ifdef CONFIG_HAS_IOPORT
+>  static inline unsigned char vga_io_rattr (unsigned char reg)
+>  {
+>          vga_io_w (VGA_ATT_IW, reg);
+> @@ -445,6 +459,7 @@ static inline void vga_io_wattr (unsigned char reg, unsigned char val)
+>          vga_io_w (VGA_ATT_IW, reg);
+>          vga_io_w (VGA_ATT_W, val);
+>  }
+> +#endif /* CONFIG_HAS_IOPORT */
+>  
+>  static inline unsigned char vga_mm_rattr (void __iomem *regbase, unsigned char reg)
+>  {
+> -- 
+> 2.40.1
+> 
 
