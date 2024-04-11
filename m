@@ -1,89 +1,151 @@
-Return-Path: <linux-kernel+bounces-139808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F8168A07F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DEF088A0802
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:05:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 063791F22FEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:59:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94E861F25881
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 06:05:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AECC113CA89;
-	Thu, 11 Apr 2024 05:59:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BEAB13CA8A;
+	Thu, 11 Apr 2024 06:05:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="tRS0lQdX"
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="sFSjJx4I"
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A88B13C806;
-	Thu, 11 Apr 2024 05:59:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7544613C3F4
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712815188; cv=none; b=SlM8KwVWWULp9OvlI45vE5O6Xt8hmc6AD+VsUse6b9mhpAiWQDUiq0KOaIZIOsSgiGQKNg7oBz8Bhm38XDRP0JM5q47TRCMBMkStpo6xqxNhRFTB+m0Bo8iRoSHH5v9DXDW+VS7nh0pOj9+3fJUNaHg0g5dWdNWU1eYZhriaaNg=
+	t=1712815538; cv=none; b=sWPLxGe+KMYCm4VnOn6Po2HqWKdsS8RX5GNebndRQhFpfACvRDTWOwxhSzVgHdq78AAxVtlgUj7vCIN+cr6PLoDLM0YxfG8Y8elsVM65mX3qMXP+QI2HrXIfFDtxZOOveD/eDTJsy879bj7/ENCv561KP4WWFDH+ATviUsE9tGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712815188; c=relaxed/simple;
-	bh=swbeK4DJ7LPs/mIk5Mf0PwIYPP6cgE8DuNRWYr0mNIE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XD/Brhfa5iNtoefklza5bKAbDk6EwWyOa87ji4iWgXOgOFUabgt3uQVQd6iLQy6pMF3aNBtgxIuW//p7jS2H7ytwkz9DhtUe5Q4OTRFxrp5tc7V+0IHp7XKrltXU99JlIrABlBnEY+juAVpihkVrbB4KRtJa2/fo4F0nV8ac4I8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=tRS0lQdX; arc=none smtp.client-ip=74.50.62.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-	by mail5.25mail.st (Postfix) with ESMTPSA id 12134603E6;
-	Thu, 11 Apr 2024 05:59:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-	s=25mailst; t=1712815185;
-	bh=swbeK4DJ7LPs/mIk5Mf0PwIYPP6cgE8DuNRWYr0mNIE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tRS0lQdXk51Ymbj/ChyZPXFbjmyrzT7nS71JsdRPKSqF7w4ZR1ExXrV9DwA8e6Cck
-	 g0+/AK2b6MiKztsZaD0NLKq72uNB5SJKDYlIGD5A15641XYBWQdRO30KuK6/oAPtKV
-	 DGrDBziI5A/nJM0Tf6UmfeQe0uAtGFePp3/yy9mgnIpnjGmtlU2A1CWIwMC5IrPGdR
-	 zxeJ3nd6D64hPJchajC/eaL/O2pfzBNf9/OXCgtqBD0tekc8TYwK1CTv5puUQox+bs
-	 yquhwyQH79cbIjdFUC/cxdiNHJ4YyW/SSo1OHheK/DT1JgeV5N8xtopbllj+d7X7AS
-	 5hp+T7swM1FCg==
-Date: Thu, 11 Apr 2024 08:59:33 +0300
-From: Tony Lindgren <tony@atomide.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Greg KH <greg@kroah.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the tty tree
-Message-ID: <20240411055933.GD5156@atomide.com>
-References: <20240411154844.5bbcde63@canb.auug.org.au>
+	s=arc-20240116; t=1712815538; c=relaxed/simple;
+	bh=42veAAZ1dmk9QYrh+vn6lWmZlzNtZBuk69PshOdKmeE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:
+	 References; b=RvaVIVjpoz96o8xYVVCMT/No0I4JWj5b5nmN1LFWbB4MeF3fN5VengDP4F+0T8HBXWtFkkEdLif5jnMZOdqJYscj4JreQPBROPsIn3+VP6cpqQrNWinRggJ8KnEkmGvXBAlBvnh9YP5y/HKyx62w0G8OF3eE0R7/8eBNngZSqA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=sFSjJx4I; arc=none smtp.client-ip=203.254.224.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240411060528epoutp0161a87c310db759fda12cf54192e26177~FJKXzI4Rq3216732167epoutp01S
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 06:05:28 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240411060528epoutp0161a87c310db759fda12cf54192e26177~FJKXzI4Rq3216732167epoutp01S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1712815528;
+	bh=ueO3PHartKhKKBjiq1R8BXyfBbFyxQMwMGF45bNUZ4k=;
+	h=From:To:Cc:Subject:Date:References:From;
+	b=sFSjJx4ICisHNOtF/YWhS2C8kR6urN5PnLYicCOP9ULtOWxPQK3/IuzYSeMiS2gyy
+	 OxF9g0W+3sRGqlQuGBH+wiu+9g73t9Aex7iMyHwIlp/Nfg+OM244VNZK1UOdSTFkD0
+	 AQzSnKX7+qlvcAzDA7/ueO29o4tllym69IKwij/8=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+	20240411060528epcas5p3e596de18a8d9ae25ac6d4c40f712dad9~FJKXZo5CG1762317623epcas5p3_;
+	Thu, 11 Apr 2024 06:05:28 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.177]) by
+	epsnrtp3.localdomain (Postfix) with ESMTP id 4VFTh65dq9z4x9Pw; Thu, 11 Apr
+	2024 06:05:26 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	0F.3D.09688.6AD77166; Thu, 11 Apr 2024 15:05:26 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240411060014epcas5p1658ee85070dfc22544e4fbff9436cb46~FJFzZaKHd2631926319epcas5p1l;
+	Thu, 11 Apr 2024 06:00:14 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240411060014epsmtrp2a06b907980456bcdf47db28310e25746~FJFzYkpx70880608806epsmtrp2o;
+	Thu, 11 Apr 2024 06:00:14 +0000 (GMT)
+X-AuditID: b6c32a4a-837fa700000025d8-ac-66177da6b5f6
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	90.D4.08924.E6C77166; Thu, 11 Apr 2024 15:00:14 +0900 (KST)
+Received: from testpc11818.samsungds.net (unknown [109.105.118.18]) by
+	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240411060013epsmtip2f3c98ab1d7d0a2b84e952df61d96a39b~FJFyTpV4Z2118521185epsmtip2R;
+	Thu, 11 Apr 2024 06:00:13 +0000 (GMT)
+From: Ruyi Zhang <ruyi.zhang@samsung.com>
+To: axboe@kernel.dk
+Cc: asml.silence@gmail.com, io-uring@vger.kernel.org,
+	linux-kernel@vger.kernel.org, peiwei.li@samsung.com, ruyi.zhang@samsung.com,
+	xue01.he@samsung.com
+Subject: [PATCH] io_uring/timeout: remove duplicate initialization of the
+ io_timeout list.
+Date: Thu, 11 Apr 2024 13:59:53 +0800
+Message-Id: <20240411055953.2029218-1-ruyi.zhang@samsung.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240411154844.5bbcde63@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnk+LIzCtJLcpLzFFi42LZdlhTQ3dZrXiawZEmHYs5q7YxWqy+289m
+	8a71HIvFr+67jBaXd81hs3i2l9Piy+Hv7BZnJ3xgtei6cIrNgdNj56y77B6Xz5Z69G1Zxejx
+	eZNcAEtUtk1GamJKapFCal5yfkpmXrqtkndwvHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO
+	0CVKCmWJOaVAoYDE4mIlfTubovzSklSFjPziElul1IKUnAKTAr3ixNzi0rx0vbzUEitDAwMj
+	U6DChOyM2XdOMRecZq34e7qTsYHxDksXIyeHhICJxPHWE8xdjFwcQgK7GSVOTbwG5XxilGj/
+	cwTK+cYo8eb0A3aYlu1PL7BCJPYySsz5cBfK+cEoseHIW0aQKjYBTYnLMxvAbBEBYYn9Ha0s
+	IEXMArMZJa7+fMAKkhAWiJHYu3sTE4jNIqAqcfzSNLCreAVsJX6+f8YEsU5e4mbXfmaIuKDE
+	yZlPwGqYgeLNW2eD3SchcIpd4tDVm1ANLhKLb59ghrCFJV4d3wJ1t5TE53d72boYOYDsYomH
+	ffkQ4QZGiW2/6yBsa4l/V/awgJQwAz2wfpc+RFhWYuqpdUwQa/kken8/gdrEK7FjHoytIvF+
+	xTsmmE3rW3dD2R4S/Sv6wa4REoiVeNF6n30Co/wsJN/MQvLNLITNCxiZVzFKphYU56anFpsW
+	GOWllsNjNjk/dxMjOEVqee1gfPjgg94hRiYOxkOMEhzMSiK80lqiaUK8KYmVValF+fFFpTmp
+	xYcYTYFBPJFZSjQ5H5ik80riDU0sDUzMzMxMLI3NDJXEeV+3zk0REkhPLEnNTk0tSC2C6WPi
+	4JRqYOKI/TLrv5LhnfOf5k+eXXi/TzXnzqxrd1ed+Drpvml7dfGdwNOWaY+6/qjnBj9P+7dh
+	SXLvgtwHP6Ve6Ed2Lu40qBY5OV33/HVJ3u410T+2rJx3+WTcErEg/rU1ovm7pJXYN91zE8sz
+	P32LY8aznzXtGzX3MLAzXP3m8X0fn/y/b08l1z6a5S3TqFLb6K8zzfbjvigBiWCH32+qF5ZW
+	/9YOOrtk/mWZy2t8H3ZIvX2yYsbDI449a5zyel58rj/qc2T5N9+5tqoe4j45y2unWktsW/Py
+	wOz2OZJbhUMtl9m/nLpaqfyikEPD0/6CkrkfpY7WxKn9Y5ttu+9pg/0nD0WVnm8B5g/3ZFU5
+	VBj73qlWYinOSDTUYi4qTgQAxIjo5RoEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrELMWRmVeSWpSXmKPExsWy7bCSvG5ejXiaQetPMYs5q7YxWqy+289m
+	8a71HIvFr+67jBaXd81hs3i2l9Piy+Hv7BZnJ3xgtei6cIrNgdNj56y77B6Xz5Z69G1Zxejx
+	eZNcAEsUl01Kak5mWWqRvl0CV8bsO6eYC06zVvw93cnYwHiHpYuRk0NCwERi+9MLrF2MXBxC
+	ArsZJXr/vGCFSEhJ3Gw6xgRhC0us/PecHaLoG6NE5/VXjCAJNgFNicszG8BsEaCi/R2tYFOZ
+	BRYySlyfpQBiCwtESTz6/xpsKIuAqsTxS9PAangFbCV+vn8GtUBe4mbXfmaIuKDEyZlPoObI
+	SzRvnc08gZFvFpLULCSpBYxMqxglUwuKc9Nziw0LDPNSy/WKE3OLS/PS9ZLzczcxgoNVS3MH
+	4/ZVH/QOMTJxMB5ilOBgVhLhldYSTRPiTUmsrEotyo8vKs1JLT7EKM3BoiTOK/6iN0VIID2x
+	JDU7NbUgtQgmy8TBKdXAVPJ4wo1qlv2tTXKq2sEyAtvLXufHSwseYexKsPu0sVAreTpnPucZ
+	vTcMJ5v9gpkKTP6dXCz/ebERm4uWWctcxsfP2Pa9ZpliVXGPgfGmzuJfH1Zl1al945X/vGxz
+	xsJX0cZa0Q7L/shr+qqlbHogovj9/GGBGW8cdB+cm+ux91r30ZWaupn1KTM3FWcFp24K2q1h
+	Lnl2P3/FMvEj1TIapjlL/2XILi2zP1+7xzq28P/PC+udzzOYuLE9DGNpZApZtW714R2n/Jwe
+	H3iw/56AXZdx4K2DzT0cZueuCNQubLt7x06h51Pe1JbFIvYbF8kbM0zZXjjntuj2xbFXGaex
+	+SuXfNB7FDRjSpxP89wVSizFGYmGWsxFxYkA57IzRMUCAAA=
+X-CMS-MailID: 20240411060014epcas5p1658ee85070dfc22544e4fbff9436cb46
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240411060014epcas5p1658ee85070dfc22544e4fbff9436cb46
+References: <CGME20240411060014epcas5p1658ee85070dfc22544e4fbff9436cb46@epcas5p1.samsung.com>
 
-* Stephen Rothwell <sfr@canb.auug.org.au> [240411 05:48]:
-> Hi all,
->=20
-> After merging the tty tree, today's linux-next build (x86_64 allmodconfig)
-> failed like this:
->=20
-> ERROR: modpost: "serial_base_add_isa_preferred_console" [drivers/tty/seri=
-al/8250/8250.ko] undefined!
->=20
-> Caused by commit
->=20
->   a8b04cfe7dad ("serial: 8250: Add preferred console in serial8250_isa_in=
-it_ports()")
->=20
-> I have used the tty tree from next-20240410 for today.
+In the __io_timeout_prep function, the io_timeout list is initialized
+twice, removing the meaningless second initialization.
 
-OK thanks, I'll take a look and send a fix.
+Signed-off-by: Ruyi Zhang <ruyi.zhang@samsung.com>
+---
+ io_uring/timeout.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Regards,
-
-Tony
+diff --git a/io_uring/timeout.c b/io_uring/timeout.c
+index 7fd7dbb211d6..93ff94e82fd4 100644
+--- a/io_uring/timeout.c
++++ b/io_uring/timeout.c
+@@ -541,7 +541,6 @@ static int __io_timeout_prep(struct io_kiocb *req,
+ 	if (data->ts.tv_sec < 0 || data->ts.tv_nsec < 0)
+ 		return -EINVAL;
+ 
+-	INIT_LIST_HEAD(&timeout->list);
+ 	data->mode = io_translate_timeout_mode(flags);
+ 	hrtimer_init(&data->timer, io_timeout_get_clock(data), data->mode);
+ 
+-- 
+2.40.1
 
 
