@@ -1,61 +1,60 @@
-Return-Path: <linux-kernel+bounces-139780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 233928A079E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:24:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 873438A07A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:25:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2CF928AB5A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:24:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4215228B841
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F9A13C80D;
-	Thu, 11 Apr 2024 05:24:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF54213C8EF;
+	Thu, 11 Apr 2024 05:25:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="AeUASavu"
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="P47NtRUq"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6455D13C80B;
-	Thu, 11 Apr 2024 05:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A14913C807;
+	Thu, 11 Apr 2024 05:25:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712813074; cv=none; b=mjqBNqxawufwt0cVisZc9K4eBlG+OX3dp2STVfEMY02z5E8q/lUhWCkeHii/DG9208sStxeZFum/epfp15ZqJ/nKdSZ34PKNIsDXCP9OV5gCt0Ft645LjtIH7shhg6Ig1FpjjkfnwFB3vxMAt9XdByh+sLN1hg5CGclotgfBRYQ=
+	t=1712813114; cv=none; b=jNcWNoIbYR6xTA8zO4zOsSz9TRSYxbMKiKp6xqt41XofJapmk9TvwPAovyyz8xPEMx24MG8oERMJMlk55GClfvsW3DBtAna3MzQbhcEqZVJkFCmc4XjQG6q0BS/mmhocAghOxuo+oY//bq8m9ZeNFZ323JxWocEvpwguRCeWJwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712813074; c=relaxed/simple;
-	bh=cMcNbp6qZx7YcqIcrUoQemHHiu6y77uoRqWrfG6QieM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pv/croC6fy1Nn4mKTkJ6UHajbTPi729MkssR2SJw4CmmqxkocGB/CwCKyFXIPTN1Zx4KjpE8ipnujNsfmR0sJsNkyyikZ4GGTMAMDge17sugcDWKjeZXUwL3l1ptOi6s+wP2iwkZvRUtg3Q74XtyKajPrUjI8H6EbzeIMtdP72Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=AeUASavu; arc=none smtp.client-ip=74.50.62.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-	by mail5.25mail.st (Postfix) with ESMTPSA id E1BD7603E6;
-	Thu, 11 Apr 2024 05:24:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-	s=25mailst; t=1712813071;
-	bh=cMcNbp6qZx7YcqIcrUoQemHHiu6y77uoRqWrfG6QieM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AeUASavufVbze58Mcc9yiMZJUZ+AJzhhii033h76dvsglXYe3qZI2Lsq77j8/xr2J
-	 3HwNxRpYEhzkwfafWiENZPo1PYovEvN/M4piTHHX52WYTrZPqXrhMGG/UUlW4vNO7U
-	 KyKRqAeOKBWATbTiy2JwaPaWAOev0HLF2gxr+pLblT5Vwajz0Mv89evAkTeeBKTVdw
-	 X19HisXNj4blrVKw4sk7BsvR+MH4Y9zezDI0QEApL6ji7Q+E7uHA6oO3xB4/e70QvH
-	 r4f/eUqv2ppiFs8RFXA1jjA2TxTpVnHdd+yvWGC/6qdL6zHTmVnGFPZpGg8x0qxpvG
-	 r6KCs1WxRJG7w==
-From: Tony Lindgren <tony@atomide.com>
-To: linux-omap@vger.kernel.org
-Cc: Dhruva Gole <d-gole@ti.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Subject: [RFC PATCH 4/4] serial: 8250: omap: Use reset control for resets
-Date: Thu, 11 Apr 2024 08:22:57 +0300
-Message-ID: <20240411052257.2113-5-tony@atomide.com>
+	s=arc-20240116; t=1712813114; c=relaxed/simple;
+	bh=lBPikJEMl0rOFLCy2Mqs76RURlUaUj/5zw0nHOMGgjA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IDPdBh7Rt0lN0ufFIq90S+/L0Kw0V9hwHWrulnYwXE27GdDUwKzIHljj+zedHVepkAoglSmq/il1A+xLxGWXr5V0u0Nz9qDSFcRJJJbKZAl/nPO+MxfppfXcmQGJdPbzbatsFn0m1qOGHeg63FU5m8zoC4IT2R69LTdHN4rJ2o4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=P47NtRUq; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:From:Sender:Reply-To:Subject:Date:
+	Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=to3hBhFvWbGmGr5fYwaE8VtNPBpJwUxIoxQcqm7kk6o=; t=1712813112; x=1713245112;
+	 b=P47NtRUqjHAL3ZLzHAjhrY+6330gpLr5NBvvegPOSRB7zQVQsc+D9LYuNVDRtL/hvMgoR06SEB
+	7G6eXc8TuagjnCIIMjIodYEZxHAcKobkGE8ycV/pdwHDNmK3ODc6s4AgjmwggAVqKW7LeG0IP+4JI
+	gP39cCOgvPNnuXnvJjiIpJO+MVrPiufyV4TSa+3nhr/eXAh2Qy692ESTmzsVOLgVSxfSxLOwQEB/N
+	inkLZMBJW6HDNJtnV99KSvyqc9VF/Dc+A13GffMshmbw7DzTAg6g+GvCBCZCmcvKgAJytuQ9JNZU0
+	I5zRiG3vwGpif50JO+j5UUn8nM754wppj86Xg==;
+Received: from ip4d148da6.dynamic.kabel-deutschland.de ([77.20.141.166] helo=truhe.fritz.box); authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	id 1rumvq-0000rh-OW; Thu, 11 Apr 2024 07:25:06 +0200
+From: Thorsten Leemhuis <linux@leemhuis.info>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sasha Levin <sashal@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	stable@vger.kernel.org,
+	workflows@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/4] docs: stable-kernel-rules: fine-tuning and 'no semi-automatic backport'
+Date: Thu, 11 Apr 2024 07:25:02 +0200
+Message-ID: <cover.1712812895.git.linux@leemhuis.info>
 X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240411052257.2113-1-tony@atomide.com>
-References: <20240411052257.2113-1-tony@atomide.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,120 +62,29 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1712813112;8245af4a;
+X-HE-SMSGID: 1rumvq-0000rh-OW
 
-For at least am335x and omap4, we set the UART_ERRATA_CLOCK_DISABLE quirk
-that ends up calling reset for the interconnect target. We can do this with
-reset control framework and simplify the 8250_omap driver.
+After a recent discussion regarding "do we need a 'nobackport' tag" I
+set out to create one change for stable-kernel-rules.rst.  This is now
+the second patch in the series, which links to that discussion; the
+other stuff is fine-tuning that happened along the way.
 
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/tty/serial/8250/8250_omap.c | 66 +++++++++++------------------
- 1 file changed, 24 insertions(+), 42 deletions(-)
+Ciao, Thorsten
 
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -29,6 +29,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/sys_soc.h>
- #include <linux/pm_domain.h>
-+#include <linux/reset.h>
- 
- #include "8250.h"
- 
-@@ -147,6 +148,7 @@ struct omap8250_priv {
- 	struct pm_qos_request pm_qos_request;
- 	struct work_struct qos_work;
- 	struct uart_8250_dma omap8250_dma;
-+	struct reset_control *reset;
- 	spinlock_t rx_dma_lock;
- 	bool rx_dma_broken;
- 	bool throttled;
-@@ -1490,6 +1492,14 @@ static int omap8250_probe(struct platform_device *pdev)
- 	priv->line = -ENODEV;
- 	priv->latency = PM_QOS_CPU_LATENCY_DEFAULT_VALUE;
- 	priv->calc_latency = PM_QOS_CPU_LATENCY_DEFAULT_VALUE;
-+
-+	if (priv->habit & UART_ERRATA_CLOCK_DISABLE) {
-+		priv->reset = devm_reset_control_get_exclusive(&pdev->dev,
-+							       "softreset");
-+		if (IS_ERR(priv->reset))
-+			return PTR_ERR(priv->reset);
-+	}
-+
- 	cpu_latency_qos_add_request(&priv->pm_qos_request, priv->latency);
- 	INIT_WORK(&priv->qos_work, omap8250_uart_qos_work);
- 
-@@ -1695,47 +1705,6 @@ static void uart_write(struct omap8250_priv *priv, u32 reg, u32 val)
- 	writel(val, priv->membase + (reg << OMAP_UART_REGSHIFT));
- }
- 
--/* TODO: in future, this should happen via API in drivers/reset/ */
--static int omap8250_soft_reset(struct device *dev)
--{
--	struct omap8250_priv *priv = dev_get_drvdata(dev);
--	int timeout = 100;
--	int sysc;
--	int syss;
--
--	/*
--	 * At least on omap4, unused uarts may not idle after reset without
--	 * a basic scr dma configuration even with no dma in use. The
--	 * module clkctrl status bits will be 1 instead of 3 blocking idle
--	 * for the whole clockdomain. The softreset below will clear scr,
--	 * and we restore it on resume so this is safe to do on all SoCs
--	 * needing omap8250_soft_reset() quirk. Do it in two writes as
--	 * recommended in the comment for omap8250_update_scr().
--	 */
--	uart_write(priv, UART_OMAP_SCR, OMAP_UART_SCR_DMAMODE_1);
--	uart_write(priv, UART_OMAP_SCR,
--		   OMAP_UART_SCR_DMAMODE_1 | OMAP_UART_SCR_DMAMODE_CTL);
--
--	sysc = uart_read(priv, UART_OMAP_SYSC);
--
--	/* softreset the UART */
--	sysc |= OMAP_UART_SYSC_SOFTRESET;
--	uart_write(priv, UART_OMAP_SYSC, sysc);
--
--	/* By experiments, 1us enough for reset complete on AM335x */
--	do {
--		udelay(1);
--		syss = uart_read(priv, UART_OMAP_SYSS);
--	} while (--timeout && !(syss & OMAP_UART_SYSS_RESETDONE));
--
--	if (!timeout) {
--		dev_err(dev, "timed out waiting for reset done\n");
--		return -ETIMEDOUT;
--	}
--
--	return 0;
--}
--
- static int omap8250_runtime_suspend(struct device *dev)
- {
- 	struct omap8250_priv *priv = dev_get_drvdata(dev);
-@@ -1747,7 +1716,20 @@ static int omap8250_runtime_suspend(struct device *dev)
- 	if (priv->habit & UART_ERRATA_CLOCK_DISABLE) {
- 		int ret;
- 
--		ret = omap8250_soft_reset(dev);
-+		/*
-+		 * At least on omap4, unused uarts may not idle after reset without
-+		 * a basic scr dma configuration even with no dma in use. The
-+		 * module clkctrl status bits will be 1 instead of 3 blocking idle
-+		 * for the whole clockdomain. The softreset below will clear scr,
-+		 * and we restore it on resume so this is safe to do on all SoCs
-+		 * needing omap8250_soft_reset() quirk. Do it in two writes as
-+		 * recommended in the comment for omap8250_update_scr().
-+		 */
-+		uart_write(priv, UART_OMAP_SCR, OMAP_UART_SCR_DMAMODE_1);
-+		uart_write(priv, UART_OMAP_SCR,
-+			   OMAP_UART_SCR_DMAMODE_1 | OMAP_UART_SCR_DMAMODE_CTL);
-+
-+		ret = reset_control_reset(priv->reset);
- 		if (ret)
- 			return ret;
- 
+Thorsten Leemhuis (4):
+  docs: stable-kernel-rules: reduce redundancy
+  docs: stable-kernel-rules: mention "no semi-automatic backport"
+  docs: stable-kernel-rules: call mainline by its name and change
+    example
+  docs: stable-kernel-rules: remove code-labels tags
+
+ Documentation/process/stable-kernel-rules.rst | 50 +++++++------------
+ 1 file changed, 18 insertions(+), 32 deletions(-)
+
+
+base-commit: 3f86ed6ec0b390c033eae7f9c487a3fea268e027
 -- 
 2.44.0
+
 
