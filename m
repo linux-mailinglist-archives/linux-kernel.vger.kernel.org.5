@@ -1,119 +1,132 @@
-Return-Path: <linux-kernel+bounces-140434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F09F98A1492
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:26:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77F9E8A1499
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 14:27:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A62401F23D13
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:26:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8EDA1C2227C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCEA14D296;
-	Thu, 11 Apr 2024 12:25:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF9B14D458;
+	Thu, 11 Apr 2024 12:26:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NMzqooGb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aI70pwew"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA8D14C58E;
-	Thu, 11 Apr 2024 12:25:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0F4F14C587;
+	Thu, 11 Apr 2024 12:26:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712838316; cv=none; b=iZOrcPmWRkfY3G8TgSxyGRR9gJ9/E+EIp+v5SZvuZt0ED0+jPIZUpVDHkPD531gBviAtSSi7L9M8bJ2aU5huo7GLfr7rta6Na8Oy6pJjB9+OlmytlhYOJgeEsZd3vwYmt7PMPbWCjsq8TvopUv5lpZRVzFxyssLwuO0gu490p8k=
+	t=1712838410; cv=none; b=FovsbY+Hyl55YW3pvYi3xIhRCrHfuQOaZzato64wEeacHGijG7ep34lSlLZvjD8xVnBaXSCzz+FylcNMZCYW2OScjjBVP8kIxCR3GQ0tkkgS9u0ZW+53aJ2xjG/IL0GccxCeRjNZThuvrf6HtBrirpNZz8kX5Pa+954w4Ee7W84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712838316; c=relaxed/simple;
-	bh=aohTe/5BUf2j0WTU/Tb8M1ao1SPHAhY0rWZFFRvQq70=;
+	s=arc-20240116; t=1712838410; c=relaxed/simple;
+	bh=j9QEZErwSiPeHI7etNSggt8jQ1vfzV580Nrz8drvUL4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p3TDJDHlMDNplM3Mr+bA3RSTuDLVufcJ/SO6ByLzCq8rhZd2V+vI/SvsPYboMyr0AfHbDyyydAMWrfjXUBhbpYo9Rd3MVdQ/eW8BMT145jafapmAVTvNjgTXp3ZIZ/BvyY/SQP1FHRHnUqoaS0SBhcYvHsghevDkFLWZcYaxVfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NMzqooGb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A4ECC433C7;
-	Thu, 11 Apr 2024 12:25:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712838315;
-	bh=aohTe/5BUf2j0WTU/Tb8M1ao1SPHAhY0rWZFFRvQq70=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NMzqooGb0Q7tyAo2CNJZtyGy3w87FSaJXtQZM/CIf/i+wMhpJrYT4i/d4AIq3QsEQ
-	 /Yt+kfc4LAD9Pdxj+7frOiZiLvaEdLqYwRowCIlhm4IGj3H8e2xhfTz7SHruDfN9Pd
-	 jV5JyQKSLZfA/HOxhIY0giYZFO0/upBxek+Cv7T9szNLrbELvZAx8ajnVjavVKdn16
-	 Xl4SF8bflCCrxHqgYLQG7XSFSZBz60xsDrUeZlqmBJMgO9IJ1C095nU0wtRyPW96yK
-	 L7BP7E4E0wuhN9P3kYH0VAYZ5sL1+PB0w6p6PmJnPCa1E5VCNryGXyTifOEImGBf3P
-	 o7YT/ugjj/xHg==
-Date: Thu, 11 Apr 2024 14:25:10 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>
-Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() -
- requirements
-Message-ID: <20240411-adressieren-preschen-9ed276614069@brauner>
-References: <20240411001012.12513-1-torvalds@linux-foundation.org>
- <CAHk-=wiaoij30cnx=jfvg=Br3YTxhQjp4VWRc6=xYE2=+EVRPg@mail.gmail.com>
- <20240411-alben-kocht-219170e9dc99@brauner>
+	 Content-Type:Content-Disposition:In-Reply-To; b=CGE9DGtOr54k1FlbXjn7WK/b9TIL3KzT82Xmpkw1iFSgiOmp43oHtOgMXSn6jU/n8hvqvrXb6TYjPaIayzRxxwJCeW2YVIJ1mYeTT1Q7oU+NzrEcD+d/QuptGDzRji4g/eP5zHFo5t8w1wjozzavea2nXAiVHocAmf817KET3Xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aI70pwew; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43BCBE53020993;
+	Thu, 11 Apr 2024 12:26:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=S5QeKmmUoyX5xyyZhHh7vdWOWq+vB95HSexOwbAxSU4=;
+ b=aI70pwew3Ptt4D9mUA/jBzfD6xITb3lu4gnGWLvmE2taiQVMsU2hMOOEHAnoqNJhNpkW
+ p6wjw+uy1/NR9pGFXNu6F+RnxwyRzgOV5W4+hfHqXAmFTttcFLmtMmxvZzq0VRhEVVrs
+ 0rtAxk4IQCtGoFDQf0qdYc2I6Y1iMaG0XYNA//NB7PXUrsEEOqO6yPUVjhU5sth/+jGP
+ 4iZIVTS0zd9+PwXjXApCoOZTe9IXO8d+3Hb0cUByIifqtdo0vTfWekNWdj2lKU0UKRxj
+ A9m/lKrlnRevjhmiy87BysbIpnDct3SLQThxcJfPeOppBdmK5UB7WhlRUcj7kD7IaG0R Ag== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xefh8019q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 12:26:30 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43BCQTt8009899;
+	Thu, 11 Apr 2024 12:26:29 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xefh8019m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 12:26:29 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43BAluX6021511;
+	Thu, 11 Apr 2024 12:26:29 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xbjxm2t8q-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 12:26:28 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43BCQN4W50069998
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 11 Apr 2024 12:26:25 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9435C2004B;
+	Thu, 11 Apr 2024 12:26:23 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 413FC20040;
+	Thu, 11 Apr 2024 12:26:23 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 11 Apr 2024 12:26:23 +0000 (GMT)
+Date: Thu, 11 Apr 2024 14:26:22 +0200
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Sven Schnelle <svens@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] mm/userfaultfd: don't place zeropages when
+ zeropages are disallowed
+Message-ID: <ZhfW7qzAGPQo3mJN@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240327171737.919590-1-david@redhat.com>
+ <20240327171737.919590-2-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240411-alben-kocht-219170e9dc99@brauner>
+In-Reply-To: <20240327171737.919590-2-david@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 19erZIHPx_Nmi6mLSyQwNP8VzM7VBOk0
+X-Proofpoint-ORIG-GUID: zulkTfLbj6WQeASqUSZ-sbV7sEDYxcvu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-11_05,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 suspectscore=0 clxscore=1011 impostorscore=0 spamscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 mlxscore=0 mlxlogscore=569
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404110088
 
-On Thu, Apr 11, 2024 at 11:04:59AM +0200, Christian Brauner wrote:
-> On Wed, Apr 10, 2024 at 07:39:49PM -0700, Linus Torvalds wrote:
-> > On Wed, 10 Apr 2024 at 17:10, Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > +               if (flags & LOOKUP_DFD_MATCH_CREDS) {
-> > > +                       if (f.file->f_cred != current_cred() &&
-> > > +                           !capable(CAP_DAC_READ_SEARCH)) {
-> > > +                               fdput(f);
-> > > +                               return ERR_PTR(-ENOENT);
-> > > +                       }
-> > > +               }
-> > 
-> > Side note: I suspect that this could possibly be relaxed further, by
-> > making the rule be that if something has been explicitly opened to be
-> > used as a path (ie O_PATH was used at open time), we can link to it
-> > even across different credentials.
-> 
-> I had a similar discussion a while back someone requested that we relax
-> permissions so linkat can be used in containers. And I drafted the
-> following patch back then:
-> 
-> https://lore.kernel.org/all/20231113-undenkbar-gediegen-efde5f1c34bc@brauner
-> 
-> IOW, I had intended to make this work with containers so that we check
-> CAP_DAC_READ_SEARCH in the namespace of the opener of the file. My
-> thinking had been that this can serve as a way to say "Hey, I could've
-> opened this file in the openers namespace therefore let me make a path
-> to it.". I didn't actually send it because I thought the original author
-> would but imho, that would be a worthwhile addition to your patch if
-> this makes sense...
+On Wed, Mar 27, 2024 at 06:17:36PM +0100, David Hildenbrand wrote:
 
-For example, say someone opened an O_PATH fd in the initial user ns and
-then send that file over an AF_UNIX socket to some other container the
-ns_capable(f_cred->user_ns, CAP_DAC_READ_SEARCH) would always be false.
-The other way around though would work. Which imho is exactly what we
-want to make such cross-container interactions with linkat() safe.
+Hi David,
+..
+>  static int mfill_atomic_pte_zeropage(pmd_t *dst_pmd,
+>  				     struct vm_area_struct *dst_vma,
+>  				     unsigned long dst_addr)
+> @@ -324,6 +355,9 @@ static int mfill_atomic_pte_zeropage(pmd_t *dst_pmd,
+>  	spinlock_t *ptl;
+>  	int ret;
+>  
+> +	if (mm_forbids_zeropage(dst_vma->mm))
 
-And this didn't aim to solve the problem of allowing unprivileged users
-in the initial namespace to do linkat(), of course which yours does.
+I assume, you were going to pass dst_vma->vm_mm here?
+This patch does not compile otherwise.
+..
 
-Btw, I think we should try to avoid putting this into path_init() and
-confine this to linkat() itself imho. The way I tried to do it was by
-presetting a root for filename_lookup(); means we also don't need a
-LOOKUP_* flag for this as this is mostly a linkat thing.
-
-So maybe your suggestion combined with my own attempt would make this
-work for unprivileged users and containers?
-
-if (f.file->f_cred != current_cred() &&
-    !ns_capable(f.file->f_cred->user_ns, CAP_DAC_READ_SEARCH))
-
-Worst case we get a repeat of the revert and get to make this a 10 year
-anniversary patch attempt?
+Thanks!
 
