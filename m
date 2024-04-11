@@ -1,158 +1,178 @@
-Return-Path: <linux-kernel+bounces-140737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CD518A187E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:21:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3470B8A1AD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:10:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6C62B281E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:19:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A04C71F23742
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:10:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317B618028;
-	Thu, 11 Apr 2024 15:18:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 344691F7858;
+	Thu, 11 Apr 2024 15:42:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GCZY6d/s"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="mVLEirOo"
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B091617C7B
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A8C1F6F26
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:42:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712848735; cv=none; b=MX1ulQqdDBzPhqBuxXS4eHiITJ9qDRkUt1CD40ioScwdcF0Y5n194TZv8BHLnfb7b+QpsbOITkGIuF2JOoZ1WEisJJdKzBAe3KSh+hjx7BDhCntSZQxlYR2d9cewD+e6Y9Y3TmEAHmDfRfOarUgdlUyXCtSKeV8KNBif2KKGX+M=
+	t=1712850160; cv=none; b=KsOa5LzUEWlAhy1H/zUKr+vThmx2C1KKuVeyJ+VhLdoQ1ikPUxUMnvZFoC4peBpDOs2CMcfMdeOFqVHRJjmnNAZ33zXSUzJPfyUf6IKEf2VN6tK4Wd3B9+Yu+GL8m87SB2C43GxtYNzfyK5lcGQDnxKdsMV/j7C3XZU50pfk/64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712848735; c=relaxed/simple;
-	bh=mS3XpqrtEw/9wg+qFlBy8jz9sIb/oyLwgCvRhmYMKl0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nubat4qbA+VanlbBnioC90XdY2uYSlT7hclqvBRDkBAx4ZSohhtaNCiUqQAoOXgJUOBjoVcU3P4dI5mDdSi3v4i5GsAUHHovvlWQzoj31Tvetw90oaST40+Y4WbhSJT3Ren86vdj5jLHqSxItXukhDGd5FHdGUiMvyM35uNvLXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GCZY6d/s; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712848734; x=1744384734;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=mS3XpqrtEw/9wg+qFlBy8jz9sIb/oyLwgCvRhmYMKl0=;
-  b=GCZY6d/secRBJMJbFD/ouY6aRtQVAtQxjQ0PEUJcswg41onem5C7vFpy
-   VA8ui9glco9Z/ZIGD3QHujRUP5CxFxF7WGIdgJ8KtCG7jxG91jjF91hWl
-   FtTZxWF6eyws4dufyfmc3mICyFL5RzRu6nVbWP9G0taDFbgSwW/H6Xd3j
-   V37uEP4JlcTsW9IHzH6eufudreVG3zCQp5xhw//hBZ1Fi2HT1pyMDieFq
-   eESMRlCjUZc3NoaWTnJV8qDPZzwrJtjQJS/9brVpOk3p6uKZORX58k5i0
-   IaEMlHj9VB3Hkh3EMSfxatcaUesGDHRNK833sf6slmrKk+VY2aOjB8pbs
-   A==;
-X-CSE-ConnectionGUID: 7mNGsIOrR1iUC+AGTb6oqw==
-X-CSE-MsgGUID: ATcKTrveSPyv1ovDyugF/A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8116797"
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="8116797"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 08:18:54 -0700
-X-CSE-ConnectionGUID: BSGRf2OeRz+tRQ/AyhlKTQ==
-X-CSE-MsgGUID: CncflsZBTiGgTPo4x/t9jQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="52110751"
-Received: from tgrabows-mobl.amr.corp.intel.com (HELO [10.209.89.64]) ([10.209.89.64])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 08:18:52 -0700
-Message-ID: <99d6583a-1541-499f-a682-e1818507e472@intel.com>
-Date: Thu, 11 Apr 2024 08:18:52 -0700
+	s=arc-20240116; t=1712850160; c=relaxed/simple;
+	bh=Vrqcyec6hF25kX7zHSZZ5y7GOl5rDk+A82uY/0vxUJc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=o8NJ1Aqu5aA4otE9+ZI83YIO/QagPEbU6mqMWDiYqh9WOhxdhQ4L/2nMEONoyrV3zxbrLJ+te3YlI8OEKF56fY3/ZjC5wha1i4pmbVc+GNeVInkkzTRbp78+CdLWbLDISnpa4RThx/sbMRF5Hg828wBjcvHe01fKW/bJFpQcHmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=mVLEirOo; arc=none smtp.client-ip=209.85.166.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so170650939f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:42:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712850158; x=1713454958; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6AsYF62zoKQ6xHxSJoAgeCHEcijXHfRzPoZD4kOFFmI=;
+        b=mVLEirOoDlqmgO0w9H9gxlbALLdQuScCVDy369vgTrwcVwommeYw4UpGUklzHaj4UV
+         B9ENJ9mw4iyeOCtLUoR/gT4eEH4AuEhxlndBJJiuDubSfqqTyHV89Knb3Rr+j2jaah8M
+         +WIg/mEN++3kixCU+USjgIb7L6Xche8WMsCksvSI3+cry4DyBbeHbgiR5Bi4jkmSa6Mc
+         /ITmb+xm+aKaOTfHC2zqrSSjsFCE8AuKeImTf985CswPeqsXxW//HeTFr5nCygkumgu5
+         iKXikpqlpn31/1V4ZeRSJXCqCxYAGPrsCbsYuzfJKhdfZp9Av0LjPrmjrpqvDFLFh1KE
+         yJfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712850158; x=1713454958;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6AsYF62zoKQ6xHxSJoAgeCHEcijXHfRzPoZD4kOFFmI=;
+        b=LTVW71BBPp3Qh/PsAf5RNlP26RNQJWuOgtgYRExByYz31WoeWFkBIVmCOJOduzNRN6
+         2GoqP7f4l8MTv6kS2eoNktlvfzv0Fn57dDoYRiSSlX/cnjkjd/aXd9g64kaibYBwasDU
+         WbNqrY/WK1QpSBMhwAyUUATkamWJDMLzE/3X8jU0pVqEs5olb9ecDCEk/d0WE5nhA0VG
+         YybzzpwuJNQUztSJK9jBSpaAKwzaeVTnYHAOoMDcDdyN0ktOG0io03M4WzMp1OriuelJ
+         hA9mJeTFw3sEwX0ogzIBeJ7AfcPd+BG6CP+vzqwxWxNPxXMCNO/NbWOSj8RXfXUbGTW+
+         5h2A==
+X-Gm-Message-State: AOJu0YwgRn3OiQVt7WlgHlZa0PX5EIoCtkVf46HaesQdI1pSyuwUhrPR
+	1PBci/s/C9zQIlpfwli29XyX4uhUaaqdKVFsvY6l7IVKb8dtvfkX2WEfXcUHqIYgxWDRbLk+xNb
+	/
+X-Google-Smtp-Source: AGHT+IGmDy3Lrp9Xa7qppe8MiNfgohckfX1lXC3Zl14juX584SBJh8/sedFE7cxdJNPyukdee14BJA==
+X-Received: by 2002:a5e:9907:0:b0:7d6:751f:192 with SMTP id t7-20020a5e9907000000b007d6751f0192mr198506ioj.2.1712850158005;
+        Thu, 11 Apr 2024 08:42:38 -0700 (PDT)
+Received: from localhost.localdomain ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.42.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 08:42:36 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: linux-kernel@vger.kernel.org
+Cc: Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 392/437] EDAC/altera: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:18:52 -0600
+Message-ID: <20240411153126.16201-393-axboe@kernel.dk>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
+References: <20240411153126.16201-1-axboe@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6] x86/mm: Don't disable INVLPG if "incomplete Global
- INVLPG flushes" is fixed by microcode or the kernel is running in a
- hypervisor
-To: Xi Ruoyao <xry111@xry111.site>, Dave Hansen
- <dave.hansen@linux.intel.com>, Michael Kelley <mhklinux@outlook.com>,
- Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc: Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
- x86@kernel.org, linux-kernel@vger.kernel.org,
- Sean Christopherson <seanjc@google.com>,
- Andrew Cooper <andrew.cooper3@citrix.com>
-References: <20240411104822.6429-1-xry111@xry111.site>
- <3ee70b6c-3399-43f9-8934-cb5a0e51f006@intel.com>
- <1f5d53596e2ac8948332570e3bda17c3877fd499.camel@xry111.site>
-Content-Language: en-US
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <1f5d53596e2ac8948332570e3bda17c3877fd499.camel@xry111.site>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 4/11/24 07:48, Xi Ruoyao wrote:
-> On Thu, 2024-04-11 at 07:44 -0700, Dave Hansen wrote:
->> On 4/11/24 03:48, Xi Ruoyao wrote:
->>> +	/*
->>> +	 * The Intel errata claims: "this erratum does not apply in VMX
->>> +	 * non-root operation.  It applies only when PCIDs are enabled
->>> +	 * and either in VMX root operation or outside VMX operation."
->>> +	 * So we are safe if we are surely running in a hypervisor.
->>> +	 */
->> When you revise this, could you please work to make this more succinct?
->> The Intel language on these things tends to be a bit flowery and is not
->> always well-suited for the kernel.
-> Oops, bad timing.  I just sent v7 before getting this reply.
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+---
+ drivers/edac/altera_edac.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-One way to avoid bad timing like this is to wait more than 4 hours
-between patch revisions.
-
-> I'm not a native English speaker, so could you give some hint about how
-> to write this comment clearly?
-
-Something like this would be fine:
-
-	/* Only bare-metal is affected.  PCIDs in guests are OK. */
-
+diff --git a/drivers/edac/altera_edac.c b/drivers/edac/altera_edac.c
+index ae17ce4d9722..889722751163 100644
+--- a/drivers/edac/altera_edac.c
++++ b/drivers/edac/altera_edac.c
+@@ -115,13 +115,13 @@ static irqreturn_t altr_sdram_mc_err_handler(int irq, void *dev_id)
+ 	return IRQ_NONE;
+ }
+ 
+-static ssize_t altr_sdr_mc_err_inject_write(struct file *file,
+-					    const char __user *data,
+-					    size_t count, loff_t *ppos)
++static ssize_t altr_sdr_mc_err_inject_write(struct kiocb *iocb,
++					    struct iov_iter *from)
+ {
+-	struct mem_ctl_info *mci = file->private_data;
++	struct mem_ctl_info *mci = iocb->ki_filp->private_data;
+ 	struct altr_sdram_mc_data *drvdata = mci->pvt_info;
+ 	const struct altr_sdram_prv_data *priv = drvdata->data;
++	size_t count = iov_iter_count(from);
+ 	u32 *ptemp;
+ 	dma_addr_t dma_handle;
+ 	u32 reg, read_reg;
+@@ -187,7 +187,7 @@ static ssize_t altr_sdr_mc_err_inject_write(struct file *file,
+ 
+ static const struct file_operations altr_sdr_mc_debug_inject_fops = {
+ 	.open = simple_open,
+-	.write = altr_sdr_mc_err_inject_write,
++	.write_iter = altr_sdr_mc_err_inject_write,
+ 	.llseek = generic_file_llseek,
+ };
+ 
+@@ -640,30 +640,29 @@ altr_edac_device_trig(struct file *file, const char __user *user_buf,
+ 
+ 	return count;
+ }
++FOPS_WRITE_ITER_HELPER(altr_edac_device_trig);
+ 
+ static const struct file_operations altr_edac_device_inject_fops __maybe_unused = {
+ 	.open = simple_open,
+-	.write = altr_edac_device_trig,
++	.write_iter = altr_edac_device_trig_iter,
+ 	.llseek = generic_file_llseek,
+ };
+ 
+ static ssize_t __maybe_unused
+-altr_edac_a10_device_trig(struct file *file, const char __user *user_buf,
+-			  size_t count, loff_t *ppos);
++altr_edac_a10_device_trig_iter(struct kiocb *iocb, struct iov_iter *from);
+ 
+ static const struct file_operations altr_edac_a10_device_inject_fops __maybe_unused = {
+ 	.open = simple_open,
+-	.write = altr_edac_a10_device_trig,
++	.write_iter = altr_edac_a10_device_trig_iter,
+ 	.llseek = generic_file_llseek,
+ };
+ 
+ static ssize_t __maybe_unused
+-altr_edac_a10_device_trig2(struct file *file, const char __user *user_buf,
+-			   size_t count, loff_t *ppos);
++altr_edac_a10_device_trig2_iter(struct kiocb *iocb, struct iov_iter *from);
+ 
+ static const struct file_operations altr_edac_a10_device_inject2_fops __maybe_unused = {
+ 	.open = simple_open,
+-	.write = altr_edac_a10_device_trig2,
++	.write_iter = altr_edac_a10_device_trig2_iter,
+ 	.llseek = generic_file_llseek,
+ };
+ 
+@@ -1760,6 +1759,7 @@ altr_edac_a10_device_trig(struct file *file, const char __user *user_buf,
+ 
+ 	return count;
+ }
++FOPS_WRITE_ITER_HELPER(altr_edac_a10_device_trig);
+ 
+ /*
+  * The Stratix10 EDAC Error Injection Functions differ from Arria10
+@@ -1823,6 +1823,7 @@ altr_edac_a10_device_trig2(struct file *file, const char __user *user_buf,
+ 
+ 	return count;
+ }
++FOPS_WRITE_ITER_HELPER(altr_edac_a10_device_trig2);
+ 
+ static void altr_edac_a10_irq_handler(struct irq_desc *desc)
+ {
+-- 
+2.43.0
 
 
