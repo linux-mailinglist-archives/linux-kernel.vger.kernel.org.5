@@ -1,142 +1,98 @@
-Return-Path: <linux-kernel+bounces-141455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 562048A1E7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:36:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 433C38A1EAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:42:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C52171F28AD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:36:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46425B25C7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:37:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D11451C43;
-	Thu, 11 Apr 2024 18:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9380C139562;
+	Thu, 11 Apr 2024 18:10:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="GP088t5u"
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="NncTN4tR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3BE15102E
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:09:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDBF84F20A;
+	Thu, 11 Apr 2024 18:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712858980; cv=none; b=t24OvIX7aQfMc57ojw+2crNwWtK9dLh48zqh2R5HXrOhoUTLA1ckFQUIKHXpSeKxB9cNPgAfzbZK9rFYjOSfQAQi+F1HpdQseeVk50cL2BSuqD/oUTDO3+F1dzJQBiAAaEh2JgMHAN7GhMnerZosbmET48nFqV8AVQFCIFpZRL8=
+	t=1712859006; cv=none; b=H8VD1G1GpxQCN6mpXw+DsKPrA6hCgzgWskpMsu1Vl+pNgpnBNw8zfHjdVbwvQ3orfg9KfcSGZFZUUbPZVVK9F2aA0/yoIltAV8yAc3bS9fAKdyDS17FwuXR+w2bqyQe9bI5XUfGKKZ4s+G4XQRUOGiuJiks8Bn/00Nz1gWtkdOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712858980; c=relaxed/simple;
-	bh=7sQCResQHcHFaajY/affxbUQdzkJ+QOQsXOVt7r+6/o=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=MjZAMOLMYmbJDNQym1wZ3AzLkHqn9ZsXNlcdn4FfHFHc1XfDYBqb/x/E7zVYcmup6kBrS67eXJE3bKt1hHnKc/kBhKN6RwUqZNoyFRFlNub2RiLpWj3Rt4jUTnBmZu/lXSXBSSVvXFPPWOD3cnyhJLzBuRdwr/WUw5rfAtdv2h8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=GP088t5u; arc=none smtp.client-ip=209.85.128.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-617e6c873f3so309217b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 11:09:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1712858978; x=1713463778; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xbtisnhUzZ5+5osOX2htiyEfxmKmwf+lNIM3kB5/lv8=;
-        b=GP088t5uqDEAw37lXuL6pzgmZg8DkXCZq+lMEya04SkKxaBIJrrwYkTBG5aZLUYUhd
-         X2C7mXN8iM14w4H9EsdAcqqGTYsBIwH6Mb3wzrM8hE7c4pZNvcqz6VLR67qRdxETy65q
-         sYJiS5rKYYoD+i3QWuRtqFUaBOyJ08u87Kedf8QbKQX2Ef9uQeot7T9rQiFI7PE2MA2o
-         VUXIOYVT0kZsK/hBoNWjfnWWmmugr54x55wv/5d+kqr+Rn6lAObvdzGjOt5skH8NdoPn
-         7hBHgCDaC6uTfKHLGOu/jOPS7dGzEB+O+Rxei3xfMbbLntUPMYNYG/PXp2bIpz3TaiXa
-         QUFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712858978; x=1713463778;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xbtisnhUzZ5+5osOX2htiyEfxmKmwf+lNIM3kB5/lv8=;
-        b=HW/3hGkzjB/po1pbvvaK+lfwlzjvRrXbpVUlIZBN1aqHE/AQ75umOOm7g7f+Qa3nlh
-         zqLzspIN8gOBQjkFhN7Y/J6zWzXwyC1hn37TtfEHIl1CbjlSDWJYjVe2TLhO2+i4GcDM
-         NZiTP7by2PdqFbItHtB1F3tCiby68NDB6UdYR4OVncdskxIOhp89LqSLYjXuWJuiz9CV
-         LF9PvhuOllqw4BKSdqxdw3ParW83GudNP4drmqHClCqpsR8R3oSj3oJmH8LKM6RoIoRn
-         E9sXLb8ZNqmiogV8UAuoRl1NtAIfB+h9v/l4PocCExLHNq/QUM/jTg+Cl4mKvK/lY09w
-         1zzA==
-X-Forwarded-Encrypted: i=1; AJvYcCXuqkgumkzUNsyNiIKGDM0LwOtj2fpKrrMNZ3jusEOSTJf710bMROdFa90eNtiYI10UAIwhfFoQYa/F7xWIT7VQhx56P2GM7Gp1lHqb
-X-Gm-Message-State: AOJu0YxLpt0nzWPXT8HmOAz9ykm9AmInCw+6lKb1B/cOgzPdHU8Mh7z0
-	lu4N7cogJ4XVAWROUW9tADrPM22+rJMioH+j9GttnSvWVbH6JI6iuBlJ0OyxSee8gbUWGwbJ51t
-	UFW0m2ytlHc1Ps5DHPKgY+i8CLnWi/2OlHmpl/Q==
-X-Google-Smtp-Source: AGHT+IFjut8ojZSB7SsskjRLnevw7J7Ig31tm4K7lbYdaL9osUI14ma4WRSeewKQg94P/MTh+oQCy1TSxXzOI4oUCa4=
-X-Received: by 2002:a0d:d695:0:b0:611:18fc:9489 with SMTP id
- y143-20020a0dd695000000b0061118fc9489mr218230ywd.28.1712858977725; Thu, 11
- Apr 2024 11:09:37 -0700 (PDT)
+	s=arc-20240116; t=1712859006; c=relaxed/simple;
+	bh=ZGBgyafpmKoKHUJVnGr1ydBDerMlQpXQky8psG7f2Z8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UyeGWJwGlFYRS9AkNcEHPqUw9FM3v1MYPEBtnBXQt0jcoVFAIvYqbkNlqyUJ1jd8G9Ppdau92V4uSiwTXZNTfyG8peVQDsmZYJbFZJjFMbpl916OlQ7xP92YtLd9n9hDNNOkvJibRua5Xqlfkes5WIzeZ5fUqB2hHYznJuY28u0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=NncTN4tR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E288EC072AA;
+	Thu, 11 Apr 2024 18:10:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712859006;
+	bh=ZGBgyafpmKoKHUJVnGr1ydBDerMlQpXQky8psG7f2Z8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NncTN4tRRsKOdV9NtIGff+qoDc46Z4ObDpdAgzuruKoHADJX5L7lRNQrV8yzYPfjY
+	 0C85GAbh2ZxuNe77XxZ0YHHxV4Q42syNW8mUeV0SnTO5EZ1yiawD6eSxWSTyEIo4ra
+	 saisB5m3XEdmKzSIcY4DFtN4CUGAZeHBtSpH/MbQ=
+Date: Thu, 11 Apr 2024 20:10:03 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Roman Storozhenko <romeusmeister@gmail.com>
+Cc: jirislaby@kernel.org, Julia.Lawall@inria.fr, skhan@linuxfoundation.org,
+	javier.carrasco.cruz@gmail.com, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org
+Subject: Re: [PATCH] sysrq: Auto release device node using __free attribute
+Message-ID: <2024041146-exciting-predefine-05bb@gregkh>
+References: <20240411180256.61001-1-romeusmeister@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Ivan Babrou <ivan@cloudflare.com>
-Date: Thu, 11 Apr 2024 11:09:26 -0700
-Message-ID: <CABWYdi0ujdzC+MF_7fJ7h1m+16izL=pzAVWnRG296qNt_ati-w@mail.gmail.com>
-Subject: Incorrect BPF stats accounting for fentry on arm64
-To: bpf <bpf@vger.kernel.org>
-Cc: kernel-team <kernel-team@cloudflare.com>, Xu Kuohai <xukuohai@huaweicloud.com>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240411180256.61001-1-romeusmeister@gmail.com>
 
-Hello,
+On Thu, Apr 11, 2024 at 08:02:56PM +0200, Roman Storozhenko wrote:
+> Add a cleanup function attribute '__free(device_node)' to the device node
+> pointer initialization statement and remove the pairing cleanup function
+> call of 'of_node_put' at the end of the function.
+> The '_free()' attrubute is introduced by scope-based resource management
+> in-kernel framework implemented in 'cleanup.h'. A pointer marked with
+> '__free()' attribute makes a compiler insert a cleanup function call
+> to the places where the pointer goes out of the scope. This feature
+> allows to get rid of manual cleanup function calls.
+> 
+> Suggested-by: Julia.Lawall <Julia.Lawall@inria.fr>
+> Signed-off-by: Roman Storozhenko <romeusmeister@gmail.com>
+> ---
+> This patch targets the next tree:
+> tree: git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+> tag: next-20240411
+> ---
+>  drivers/tty/sysrq.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+> index 02217e3c916b..1d1261f618c0 100644
+> --- a/drivers/tty/sysrq.c
+> +++ b/drivers/tty/sysrq.c
+> @@ -758,11 +758,12 @@ static void sysrq_detect_reset_sequence(struct sysrq_state *state,
+>  static void sysrq_of_get_keyreset_config(void)
+>  {
+>  	u32 key;
+> -	struct device_node *np;
+>  	struct property *prop;
+>  	const __be32 *p;
+>  
+> -	np = of_find_node_by_path("/chosen/linux,sysrq-reset-seq");
+> +	struct device_node *np __free(device_node) =
+> +		of_find_node_by_path("/chosen/linux,sysrq-reset-seq");
+> +
 
-We're seeing incorrect data for bpf runtime stats on arm64. Here's an example:
+Did you run this through checkpatch.pl?  Please do so.
 
-$ sudo bpftool prog show id 693110
-693110: tracing  name __tcp_retransmit_skb  tag e37be2fbe8be4726  gpl
-run_time_ns 2493581964213176 run_cnt 1133532 recursion_misses 1
-    loaded_at 2024-04-10T22:33:09+0000  uid 62727
-    xlated 312B  jited 344B  memlock 4096B  map_ids 8550445,8550441
-    btf_id 8726522
-    pids prometheus-ebpf(2224907)
-
-According to bpftool, this program reported 66555800ns of runtime at
-one point and then it jumped to 2493581675247416ns just 53s later when
-we looked at it again. This is happening only on arm64 nodes in our
-fleet on both v6.1.82 and v6.6.25.
-
-We have two services that are involved:
-
-* ebpf_exporter attaches bpf programs to the kernel and exports
-prometheus metrics and opentelementry traces driven by its probes
-* bpf_stats_exporter runs bpftool every 53s to capture bpf runtime metrics
-
-The problematic fentry is attached to __tcp_retransmit_skb, but an
-identical one is also attached to tcp_send_loss_probe, which does not
-exhibit the same issue:
-
-SEC("fentry/__tcp_retransmit_skb")
-int BPF_PROG(__tcp_retransmit_skb, struct sock *sk)
-{
-  return handle_sk((struct pt_regs *) ctx, sk, sk_kind_tcp_retransmit_skb);
-}
-
-SEC("fentry/tcp_send_loss_probe")
-int BPF_PROG(tcp_send_loss_probe, struct sock *sk)
-{
-  return handle_sk((struct pt_regs *) ctx, sk, sk_kind_tcp_send_loss_probe);
-}
-
-In handle_sk we do a map lookup and an optional ringbuf push. There is
-no sleeping (I don't think it's even allowed on v6.1). It's
-interesting that it only happens for the retransmit, but not for the
-loss probe.
-
-The issue manifests some time after we restart ebpf_exporter and
-reattach the probes. It doesn't happen immediately, as we need to
-capture metrics 53s apart to produce a visible spike in metrics.
-
-There is no corresponding spike in execution count, only in execution time.
-
-It doesn't happen deterministically. Some ebpf_exporter restarts show
-it, some don't.
-
-It doesn't keep happening after ebpf_exporter restart. It happens once
-and that's it.
-
-Maybe recursion_misses plays a role here? We see none for
-tcp_send_loss_probe. We do see some for inet_sk_error_report
-tracepoint, but it doesn't spike like __tcp_retransmit_skb does.
-
-The biggest smoking gun is that it only happens on arm64.
-
-I'm happy to try out patches to figure this one out.
 
