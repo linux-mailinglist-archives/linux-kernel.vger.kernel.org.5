@@ -1,195 +1,156 @@
-Return-Path: <linux-kernel+bounces-141710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E24838A2242
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F9378A2245
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:26:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FF531C21403
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:24:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52C1F1C20EC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 284FD481C0;
-	Thu, 11 Apr 2024 23:24:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A92E481D5;
+	Thu, 11 Apr 2024 23:25:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="gwW6UqsI"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10olkn2109.outbound.protection.outlook.com [40.92.40.109])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RQIFsRtN"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BDA5524C;
-	Thu, 11 Apr 2024 23:24:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.40.109
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712877869; cv=fail; b=L9ypBjOlpXpvNBa79p3HlyKTnd87Gztis4r+9cwo1qdemVTpYLJxUKKn6lq9avG/aFeL8e9A7emyHSbyP3+rgavXbsTbyXufs7spWcbHS7gtcC9yDT17OV5Z5HSrlRg71j7+1erktbFaFf4Torag/9pf9sh5KvzA+1lOuie4Oys=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712877869; c=relaxed/simple;
-	bh=2AYawMi/hK/nZPQitzKj7E7kVOaaQFpiCrgqNEXjM6E=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=KdGy2nhXXDQy3wQp6OIXuaYV28FXGZGZqyQCKUFnQE3YfwGQN2mr5SJXOvOiVbhYZC5LF8x5jhVSH+rkmqGwFnGXl4t6Tlw5FJtWwre0nGOLA42ZLdO0hrbUkRcbyOY/iQ38/eKbCeQUXXm3V80sEhcLm1tjBn7Nhm334kO+vac=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=gwW6UqsI; arc=fail smtp.client-ip=40.92.40.109
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y2SjfsER30rMlbBK+M9SNLZCYJYLZ0n3VpuPnBzZAj8oTsd1vux5+NVS2RvTbtfIGMWnF4NsLWLgj+FMVcaGHYIg3CIixfvfsHMMlUo3ehNkYrP3TIiYJRl1yhZ56jb5SY9xd1YcEH+qWmPAqf1jQNiATEC70vhbMeoerQQNZyzasZj9rxrkwpNrhEKv5U8tkXOSLTUl8Wa7O3Df3SSSKdSQ4MJ3lgEj69ke6mTc5x7tBuFbydU9uF79ROU5tO0mKLmbtz9/KmTuOPFitrFTHvoh+2CeLyhF+jsbUbVV9TaqIw22GB8mPLB9zQAQZzhtgiYaBuweO3MprfCcu8ntFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Rv57fzAH9saHLKUggP8aUacXLLc9M49kD/wyTvIElm8=;
- b=OnFUAzed+5eqaFOIUkVGVAaKu/TT2kMtrcjZ4vQeYhzJFCRJC6dD+hmv0qzVIEovWRXsJVCNenUi21cwDmezTuouSQuK6soarn8pQhBywUsNWmjCkYfJjJ76E+I8bQEnD+gIfkMd5GqXM8QQEunOHePW8ytexDCSKmttSAPaGoiBei2jn5rsl6e++nk5dKhuZBtydsPRqqHOpNjZjVHCtGTOHBzEIicq7LEHCCQWLwehvLx+I37Yp+cFSLB9ELHHx8zIGPlFqa++ZfXE5xbzk41tsP0b0FbX3GX3/ULQWf+jx5mVqTMnwGfFzRqguEiIeVC+A24Zv+usiAhyfChW7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rv57fzAH9saHLKUggP8aUacXLLc9M49kD/wyTvIElm8=;
- b=gwW6UqsIXuNdWoUACuOVykJRDhvqGDy4EjkQBCFQoJro3eNqr25LJcoprDrGprU21IcDIufde8AifTu4BugVzGym/w+fW0oVF6vUBOcNVwUTggEZmC8/DU/vB+kqH4TrsQxKxqldWGaKf0bG5Lb/UCQ7BSfH6NDacVkRZ+OXECW3YSXRVCIszssbwLCjmCxp8RB/LiDLE0lqLiiw8NoFO5naWbTbHN156uld1JhDz7a8R+QFSl7Ko3ITIVR7fQxcVIiyzx4lAeCfRvAOg9a1dP2QC82G9aJOR+uJ1kUgQsGMS+lPt9vtBqE5lLTQVncgE5uBeuG3jYPDHW1lQbJzSg==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by SJ0PR20MB5253.namprd20.prod.outlook.com (2603:10b6:a03:47b::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 11 Apr
- 2024 23:24:24 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7409.042; Thu, 11 Apr 2024
- 23:24:24 +0000
-From: Inochi Amaoto <inochiama@outlook.com>
-To: Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Chen Wang <unicorn_wang@outlook.com>,
-	Inochi Amaoto <inochiama@outlook.com>
-Cc: linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: sophgo: Make synthesizer struct static
-Date: Fri, 12 Apr 2024 07:24:38 +0800
-Message-ID:
- <IA1PR20MB49531E437735A71A163694AEBB052@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.44.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [AEDZjpx2crW5zowcsgcG/x0VwXZo3DeozUOS85e+G5k=]
-X-ClientProxiedBy: TY2PR02CA0032.apcprd02.prod.outlook.com
- (2603:1096:404:a6::20) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID:
- <20240411232439.71651-1-inochiama@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826572C68F
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 23:25:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712877958; cv=none; b=uZ7PAl8lc4pOYiOZFSOGOCrZ8MTyAFVjelEcA8064vz0Bcqsu+KoA2X6aaEl4yuvq2JIdlhb1FDzWQ+Lqc56bpR9QYtxkyR3knbsT/x9qj4jEEEuTlFE4ueSMzJa464bxsrTXnw9njpuAT/LKTK3KP2SLgO/iZ1yJGvumrnkf8o=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712877958; c=relaxed/simple;
+	bh=Vi/2xASu1BxKX4lM8VAO/Am54CJvEJC5TgkBtmp5PPU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=MeaTo85ZU0OTwab2+QQOHs7lhdtGV/arCvNSPlqg4IPT8YPsiloObSHbkdpF4GpoqhJIDk1xXjaXOVWxTA7gJJ4/6u89J6rbeza3ukcQRXBizxThwJQW5PnpWonZOK04jHOG4PCvzHyGbADoNldo0OtQE7cT1775ers5jy0gbLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RQIFsRtN; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5dbddee3694so174281a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:25:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712877957; x=1713482757; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0SBa5EsG+dA7Im52unjbubbrECIOknLW2YGglXB1T+g=;
+        b=RQIFsRtNGlt/nv43uQ8oG7WM8XsQcUmp6US2Q1cx5SJirloCYhW1seAa6lacop/zZw
+         ni/cL7981m5LRY7s5f8KmpFcuQoft17ps7gG1Rc5A22Hr3SUkzcHQ212kpXmvLH9mEhH
+         R7ol6zYep7hLbCj1HHdXYAO2YqH7d3hNOy7PBSdaWGYo2ww1txKgs02Vtkp6Wk59MrVd
+         D4zETNN8gKEvHGeZP1hqOcISuNrKNrRHs+rBww4o1pS1pAc3/VIG9Rlglp7OLrmT7POg
+         DfdIkv9x49DRoBP4w0y27JRisYLZ8C0gDCDjdUtaroBcCCYzkjFgjTrhQdUWbwnxfGRE
+         bbbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712877957; x=1713482757;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0SBa5EsG+dA7Im52unjbubbrECIOknLW2YGglXB1T+g=;
+        b=EFlKZuWSWIFfLQNtYwW4mIAqelkpoOKrPlegIesQapKsYJ1OGsMnqnPSMXNl0ZQR0Z
+         aXacAXm2rUEbHJSKqx4Jd3TpIyUrkRs+SAuRzcK/mxtT+rZYj6xkHNYig16gXRcXnxJF
+         J9RZqgnImHazWSIhaU0sO1oj2A8Mzvai5ClT8hDJSZQDLbq8cVSbo7saU8oPoJOJbUdo
+         bwY0dpqkEOOS67t6WIKyEKJXUnjiv8c9GnKuIGBuNpG3RjUZPb4pOmfcsMgWzimocq1Y
+         WOiCPj6PTyuhhCUtggsOY0yXNhHw3gw5W0CrZzx2esKkrczA9ATc2QHa270hIBSrRj4s
+         mEqw==
+X-Forwarded-Encrypted: i=1; AJvYcCWNpc7UlLo3X/dfpFVRK6ZHvWiEwYNWcXFP1mYloOjyr8a6fd6zgux+WjbewkjP2qgXjPwoIE5TiqJkkjJnnGpLNPwgUvn5XI0bind7
+X-Gm-Message-State: AOJu0YzaUr+ZST3iJr+cA1dvXkVhuPpw3JFhVzr4qjvzus5nCvomSYv9
+	cb6n0FnO2AR2SdHVMVNLzbsvuKf5BAbfMlmzg17vDZRMdYTn5RHop0S+g0Z6lU45hY2/0509A2N
+	Ncg==
+X-Google-Smtp-Source: AGHT+IHyFg0c4G2zelykoKwgq1TYbzSAKGdL6gHaImhSh+/66Pan1Vfc60LX/7BV6fA+CJx/673mL3wSNyg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:d70a:0:b0:5f4:36ab:acad with SMTP id
+ d10-20020a63d70a000000b005f436abacadmr19603pgg.5.1712877956702; Thu, 11 Apr
+ 2024 16:25:56 -0700 (PDT)
+Date: Thu, 11 Apr 2024 16:25:55 -0700
+In-Reply-To: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|SJ0PR20MB5253:EE_
-X-MS-Office365-Filtering-Correlation-Id: c87ef73f-58b5-4c6d-cc19-08dc5a7e8627
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	znCB40dinQwUWZSFXmv2i5lv0OBsPPLnYmcszKex40TyzYnLKlAtgePFROC/hWCxpAi7HvcnbJ+m35tZeQFMowTGaTQmZL0yqQzzVEeKHqSxfGjmqep7XMFafAl+PwLGyq1kicWPJHrGtMJ16HCsHETELaG43jI1N8xbw+OFNi60s3ow27FqD7GNboXPMuK6O5YCGuMfxIrCm5vXbtGgcKzF0VhQMZQmmbjN92UUWXKNDZFIchlK7NUmbFmgDc8OnvTbF1DrGuhduD1Dh1ZYoj+MEu6S+DTjTge5iLSL9tIdKXb//xM7Je0Kr60r840VQrF5mJdcIehewLe7zN95h0uth+/f7/G5srn4LahroxONFK4MTMEN6bNEKjemd1IXIpa47VxrnEjR0FZOT/E50aAEBcFBFc5grfYA+yz7kUKWScrIFRAlmHDNPZGNFbFWSTBKLAH3jeWIPbg3MShkzcgepF2o8E8AvScntR2vOndlbzeI0WB1zo/e7oV2LyPUmL93/ANldXTGPurOQGIM7D57Gs3+25N8UWtgMowz43i5QW82LvJZHBaGUQU3bhOHwPWmXofHK/Rotec7CsGf4ZnP6bMRydP6+du4gCpumNIcYxpqn+wOXhDegpmwIYq2
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?L+mJjZPuh3nT0uZtKAfh1TQVxOPTV66gakzDHmbWvWPsWfDmlle/87Mg13al?=
- =?us-ascii?Q?XAprGkoeo+PPg79lrXohiYC/pe8NxQgq4tZ8m/+74tvZtdA5Z6gb+k57IHrd?=
- =?us-ascii?Q?VlU8jNzHW3LBmunFVvgDeQQnNx9hH6f6NIRcM4zLUFQxfa18NDEu5vIrsNXr?=
- =?us-ascii?Q?/85rZz45kdw3FjTnv5n2WGGMBbP5Q2aHXMWGyaX5wQfrt/96O3/jyi7GcFky?=
- =?us-ascii?Q?3reIBPVNKU5WUk6WCww7wBRRG4znvrNJ4WQ6dYm9ZMyxkJE4UtxapNsYTFeA?=
- =?us-ascii?Q?UHJRkyCn91LKp7WzH8QWXCcieCQwUGzb79IOTeoILx2AH+oP73jvf3Hoqg6E?=
- =?us-ascii?Q?014Zqt/rgIiqPl/WgS7GcTeGVD8cHQsNAlCse84z6taoAvl0I9kFROEQitUe?=
- =?us-ascii?Q?FQbMDFcoQJj6HvoP4lEh0CU3x4Jt3v0iGx6zLKDf3WasCzI+wU1HMkfWJJ1m?=
- =?us-ascii?Q?j18Z2U+bh+fO2OevvjYdB/DJld8bkaqMpxlQP+PYDJ6ddefAYVtUs16mM2kZ?=
- =?us-ascii?Q?WsdM04F2e3xaTE+XJ8c3ve5AI0Sf93oDMIm1D+BZr1Knpqqcixke7vbNyrhF?=
- =?us-ascii?Q?8Xhaak9Q6H+4PcwRekOlPNzM4o/agikOMo8WnGs3aAjmZRpU99zk5hgviK9U?=
- =?us-ascii?Q?zUF2ag7POyuNLOw13o2GzHbDLfQ5ydbaIJcOeSVATAUWQ/d7fad/DLv5HTwn?=
- =?us-ascii?Q?zTzbqMq/5vci7LPy0is+ohk0oyhHSA8wAIcfTDEl3f408c/TLgFMEEfKkx/6?=
- =?us-ascii?Q?cGEPqTX9VkxSF0QgabV1oBAKAwGh925ecBzU0D1iD5JtfCswac7V3PSvHLWo?=
- =?us-ascii?Q?OqGrSeNNt3tV+S23jMd1F4l4mWmesArFmJNg8GSR05Xo3HTHhY/mBdODeeYu?=
- =?us-ascii?Q?7tZcYgH9zV1FBafw6CoEOTwVYRCF6BLUaZfcFjD97RnhdcXR8TUGhrZaImEh?=
- =?us-ascii?Q?TBkI9GD2yaz0afF88KIGLsVRefxv9PAkNjUZouGjJNjIFy26bvR9Aa1MyfpF?=
- =?us-ascii?Q?/1eRYLNEFKLnTuXU//CjE8kdZILk8lrMcwVnuziC0+LTPZJHkZNrrnQThq4q?=
- =?us-ascii?Q?MiCVBa3Wff7XeLveFNUPZ70OO5y2/NcF48wjKNNVUYNCltrqHuIiO4ACBYVO?=
- =?us-ascii?Q?3A6Q2tGf8qL4eq0YY8AhacAcqg58hIvNJyR7GF5C7I+Cx9/xSm1bzroEFR0x?=
- =?us-ascii?Q?xnrRFA8lUOPCQ7efqvhe3dpzvjJitEVAytAkuDH4UYMEQlW/nMM82XUNGIIq?=
- =?us-ascii?Q?CGW55jZppcMrRdFQk/tN?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c87ef73f-58b5-4c6d-cc19-08dc5a7e8627
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 23:24:24.5944
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR20MB5253
+Mime-Version: 1.0
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
+Message-ID: <Zhhxg7VvBD38nymZ@google.com>
+Subject: Re: [RFC PATCH 00/41] KVM: x86/pmu: Introduce passthrough vPM
+From: Sean Christopherson <seanjc@google.com>
+To: Xiong Zhang <xiong.y.zhang@linux.intel.com>
+Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com, 
+	kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, 
+	jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
+	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
+	chao.gao@intel.com
+Content-Type: text/plain; charset="us-ascii"
 
-Let all synthesizer structs are static to make the compiler happy.
+On Fri, Jan 26, 2024, Xiong Zhang wrote:
+> Dapeng Mi (4):
+>   x86: Introduce MSR_CORE_PERF_GLOBAL_STATUS_SET for passthrough PMU
+>   KVM: x86/pmu: Implement the save/restore of PMU state for Intel CPU
+>   KVM: x86/pmu: Introduce macro PMU_CAP_PERF_METRICS
+>   KVM: x86/pmu: Clear PERF_METRICS MSR for guest
+> 
+> Kan Liang (2):
+>   perf: x86/intel: Support PERF_PMU_CAP_VPMU_PASSTHROUGH
+>   perf: Support guest enter/exit interfaces
+> 
+> Mingwei Zhang (22):
+>   perf: core/x86: Forbid PMI handler when guest own PMU
+>   perf: core/x86: Plumb passthrough PMU capability from x86_pmu to
+>     x86_pmu_cap
+>   KVM: x86/pmu: Introduce enable_passthrough_pmu module parameter and
+>     propage to KVM instance
+>   KVM: x86/pmu: Plumb through passthrough PMU to vcpu for Intel CPUs
+>   KVM: x86/pmu: Add a helper to check if passthrough PMU is enabled
+>   KVM: x86/pmu: Allow RDPMC pass through
+>   KVM: x86/pmu: Create a function prototype to disable MSR interception
+>   KVM: x86/pmu: Implement pmu function for Intel CPU to disable MSR
+>     interception
+>   KVM: x86/pmu: Intercept full-width GP counter MSRs by checking with
+>     perf capabilities
+>   KVM: x86/pmu: Whitelist PMU MSRs for passthrough PMU
+>   KVM: x86/pmu: Introduce PMU operation prototypes for save/restore PMU
+>     context
+>   KVM: x86/pmu: Introduce function prototype for Intel CPU to
+>     save/restore PMU context
+>   KVM: x86/pmu: Zero out unexposed Counters/Selectors to avoid
+>     information leakage
+>   KVM: x86/pmu: Add host_perf_cap field in kvm_caps to record host PMU
+>     capability
+>   KVM: x86/pmu: Exclude existing vLBR logic from the passthrough PMU
+>   KVM: x86/pmu: Make check_pmu_event_filter() an exported function
+>   KVM: x86/pmu: Allow writing to event selector for GP counters if event
+>     is allowed
+>   KVM: x86/pmu: Allow writing to fixed counter selector if counter is
+>     exposed
+>   KVM: x86/pmu: Introduce PMU helper to increment counter
+>   KVM: x86/pmu: Implement emulated counter increment for passthrough PMU
+>   KVM: x86/pmu: Separate passthrough PMU logic in set/get_msr() from
+>     non-passthrough vPMU
+>   KVM: nVMX: Add nested virtualization support for passthrough PMU
+> 
+> Xiong Zhang (13):
+>   perf: Set exclude_guest onto nmi_watchdog
+>   perf: core/x86: Add support to register a new vector for PMI handling
+>   KVM: x86/pmu: Register PMI handler for passthrough PMU
+>   perf: x86: Add function to switch PMI handler
+>   perf/x86: Add interface to reflect virtual LVTPC_MASK bit onto HW
+>   KVM: x86/pmu: Add get virtual LVTPC_MASK bit function
+>   KVM: x86/pmu: Manage MSR interception for IA32_PERF_GLOBAL_CTRL
+>   KVM: x86/pmu: Switch IA32_PERF_GLOBAL_CTRL at VM boundary
+>   KVM: x86/pmu: Switch PMI handler at KVM context switch boundary
+>   KVM: x86/pmu: Call perf_guest_enter() at PMU context switch
+>   KVM: x86/pmu: Add support for PMU context switch at VM-exit/enter
+>   KVM: x86/pmu: Intercept EVENT_SELECT MSR
+>   KVM: x86/pmu: Intercept FIXED_CTR_CTRL MSR
 
-Fixes: 80fd61ec4612 ("clk: sophgo: Add clock support for CV1800 SoC")
-Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
----
-This patch based on the clk/for-next branch.
----
- drivers/clk/sophgo/clk-cv1800.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+All done with this pass.  Looks quite good, nothing on the KVM side scares me.  Nice!
 
-diff --git a/drivers/clk/sophgo/clk-cv1800.c b/drivers/clk/sophgo/clk-cv1800.c
-index 956de5b21a80..2da4c24621cf 100644
---- a/drivers/clk/sophgo/clk-cv1800.c
-+++ b/drivers/clk/sophgo/clk-cv1800.c
-@@ -79,7 +79,7 @@ static const struct clk_parent_data clk_bypass_fpll_parents[] = {
- 	{ .hw = &clk_fpll.common.hw },
- };
+I haven't spent much time thinking about whether or not the overall implementation
+correct/optimal, i.e. I mostly just reviewed the mechanics.  I'll make sure to
+spend a bit more time on that for the next RFC.
 
--struct cv1800_clk_pll_synthesizer clk_mpll_synthesizer = {
-+static struct cv1800_clk_pll_synthesizer clk_mpll_synthesizer = {
- 	.en		= CV1800_CLK_BIT(REG_PLL_G6_SSC_SYN_CTRL, 2),
- 	.clk_half	= CV1800_CLK_BIT(REG_PLL_G6_SSC_SYN_CTRL, 0),
- 	.ctrl		= REG_MPLL_SSC_SYN_CTRL,
-@@ -93,7 +93,7 @@ static CV1800_FACTIONAL_PLL(clk_mpll, clk_bypass_mipimpll_parents,
- 			    &clk_mpll_synthesizer,
- 			    CLK_IS_CRITICAL);
-
--struct cv1800_clk_pll_synthesizer clk_tpll_synthesizer = {
-+static struct cv1800_clk_pll_synthesizer clk_tpll_synthesizer = {
- 	.en		= CV1800_CLK_BIT(REG_PLL_G6_SSC_SYN_CTRL, 3),
- 	.clk_half	= CV1800_CLK_BIT(REG_PLL_G6_SSC_SYN_CTRL, 0),
- 	.ctrl		= REG_TPLL_SSC_SYN_CTRL,
-@@ -107,7 +107,7 @@ static CV1800_FACTIONAL_PLL(clk_tpll, clk_bypass_mipimpll_parents,
- 			    &clk_tpll_synthesizer,
- 			    CLK_IS_CRITICAL);
-
--struct cv1800_clk_pll_synthesizer clk_a0pll_synthesizer = {
-+static struct cv1800_clk_pll_synthesizer clk_a0pll_synthesizer = {
- 	.en		= CV1800_CLK_BIT(REG_PLL_G2_SSC_SYN_CTRL, 2),
- 	.clk_half	= CV1800_CLK_BIT(REG_PLL_G2_SSC_SYN_CTRL, 0),
- 	.ctrl		= REG_A0PLL_SSC_SYN_CTRL,
-@@ -121,7 +121,7 @@ static CV1800_FACTIONAL_PLL(clk_a0pll, clk_bypass_mipimpll_parents,
- 			    &clk_a0pll_synthesizer,
- 			    CLK_IS_CRITICAL);
-
--struct cv1800_clk_pll_synthesizer clk_disppll_synthesizer = {
-+static struct cv1800_clk_pll_synthesizer clk_disppll_synthesizer = {
- 	.en		= CV1800_CLK_BIT(REG_PLL_G2_SSC_SYN_CTRL, 3),
- 	.clk_half	= CV1800_CLK_BIT(REG_PLL_G2_SSC_SYN_CTRL, 0),
- 	.ctrl		= REG_DISPPLL_SSC_SYN_CTRL,
-@@ -135,7 +135,7 @@ static CV1800_FACTIONAL_PLL(clk_disppll, clk_bypass_mipimpll_parents,
- 			    &clk_disppll_synthesizer,
- 			    CLK_IS_CRITICAL);
-
--struct cv1800_clk_pll_synthesizer clk_cam0pll_synthesizer = {
-+static struct cv1800_clk_pll_synthesizer clk_cam0pll_synthesizer = {
- 	.en		= CV1800_CLK_BIT(REG_PLL_G2_SSC_SYN_CTRL, 4),
- 	.clk_half	= CV1800_CLK_BIT(REG_PLL_G2_SSC_SYN_CTRL, 0),
- 	.ctrl		= REG_CAM0PLL_SSC_SYN_CTRL,
-@@ -149,7 +149,7 @@ static CV1800_FACTIONAL_PLL(clk_cam0pll, clk_bypass_mipimpll_parents,
- 			    &clk_cam0pll_synthesizer,
- 			    CLK_IGNORE_UNUSED);
-
--struct cv1800_clk_pll_synthesizer clk_cam1pll_synthesizer = {
-+static struct cv1800_clk_pll_synthesizer clk_cam1pll_synthesizer = {
- 	.en		= CV1800_CLK_BIT(REG_PLL_G2_SSC_SYN_CTRL, 5),
- 	.clk_half	= CV1800_CLK_BIT(REG_PLL_G2_SSC_SYN_CTRL, 0),
- 	.ctrl		= REG_CAM1PLL_SSC_SYN_CTRL,
---
-2.44.0
-
+Please be sure to rebase to kvm-x86/next for the next RFC, there are a few patches
+that will change quite a bit.
 
