@@ -1,87 +1,56 @@
-Return-Path: <linux-kernel+bounces-140745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F014C8A18B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:29:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62DEF8A18D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:34:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26DC0B2A419
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:28:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 500C3B2A655
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3C0F2BD1C;
-	Thu, 11 Apr 2024 15:25:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="U5YRkVIs"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 704C115E85
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:25:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FCF43398E;
+	Thu, 11 Apr 2024 15:25:47 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8496715E85
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:25:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849142; cv=none; b=Svf7NOEd3CWENxWbm/VtY2TwGDt1qRU6641qmI5Ua9bOkHmvxYbKglC+8lXuvgpOUthWrqU4Yjxz6sSAFV/gBdZCPR42KYC6b86f5u59cVZFDmcwrpB2dhKekUiI9F0xkHTzNbj/LHp9SK/RLfjq5MkEZM/g82IY0vb+BkKJ4Mc=
+	t=1712849147; cv=none; b=QNztD+kfWflwNY2a71i3dTmM2jagLz8+G6fD1H6yvHzFau9xEGBo//am8txJprGDzE1TMWPbDlCPqvW2aCDnc0/50z18N6k7X0OKD7/ChDMX8PifdevIu3Q1jOFZWwfm2+DdrrZcK8yJs0obGHqns7lCaSafJKDJXxbbogI7TyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849142; c=relaxed/simple;
-	bh=S0tSkli8JleHY8iE9O2afY6bV3mjLC/eVHPCMEho8Ww=;
+	s=arc-20240116; t=1712849147; c=relaxed/simple;
+	bh=dgfr9kddIcMvQMEC+xA9ZzQEu4QL1FEzezLmB3J0a9c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fsk8dbQetVKEZBqNSFDZFsL+Gt03+iASl0FOywurA2Q9YqqIyJN0YtvnW4OBe6k5Rc5EHAmIxjR+P11an5li0ZD1eu3KWmhvNcf1LpOY9/DWY6/1/sTSqmgvxkMoXuyACWxym+ujcVM/UjI1pDwa7CXIq1qxI4CSLqY+ldHH09g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=U5YRkVIs; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a51a1c8d931so791401266b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:25:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712849138; x=1713453938; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CABfqMACNUngHNLxS+WM0hHJ1yaxWLelGbJxYjHioD0=;
-        b=U5YRkVIsfjsdxYrqviqFldW3aGgJpxI95Xx9WtuZtRE4oGNUou/5vryJRC9Fm9mbWI
-         0oW0BHPWPWBNjOdKKZtlJlPuSTA7JCxqdpogQMFdoBWF1OD3kPk3rs7hdHqbvgvZDg0g
-         FPiIFMNvhw/PbASOX8xkWBMy8iKmqHbZbXdnniQgC1etonGUdgwPRRGtUD4z+eu6vlgb
-         Hnq5Ee+6VznM1khG44NboOAIt8kYqj5Q2zDb+onyXfL4pNnVpUZMlB7sfzDCSNFLZ1Ss
-         C8s8Fb2FJ1eVCLip9agNb+b1Vd0rUZFWc6akd2nrOheBpdsw0oUWp/Fy5ElLUlEqV/k0
-         LcXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849138; x=1713453938;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CABfqMACNUngHNLxS+WM0hHJ1yaxWLelGbJxYjHioD0=;
-        b=OCiBKeAg1My5ApVERSlrcInT3QjjRbzwrfvVonMZo8n/jRL/x5HtuK+M1KIkpc7t0A
-         umGNTZMNLX/wLvyvAyGk4U15O9DgZIK9hMmujjAyR70c6dM93p73Tkb6EQ2BvoCkwqtl
-         a26RRppNuqa8WhJZ6fXdV8BLG//hG3wjPK9PMXd9PUU5+gu4rnP1Wc+FjJyVT41xfrNT
-         UZNmSMZ5HqEqdOiup14VuLRME8biH420G8xLaySfQ34BwAHprs56q/GCqcYeI63jy2wI
-         /RCnX1580ew493/vMpEnCuU6hhnVrMvmqC68UI/kCXRkLigwherW8gRkLi6kimClLYnw
-         u8jg==
-X-Forwarded-Encrypted: i=1; AJvYcCVrz3AVz5Iwx9uE+igEWIpfjKFKzCinDQKXbxeyQuyfT+vYCltLk3HrTZk4W7rkqxJh6Ny1fP6naJM/L8CVRbidfv44B9k++1qqHoJu
-X-Gm-Message-State: AOJu0YxbIajbuubVEp1dRTjsENN8nKMbC0Lsbf2QC/Y0Rc1d7qwpO8ch
-	QkTDa6AdOgROIGdMYY9OPKnIfdhDjkBuA0aPNVcrmLs+bA/XfgvQCp8NHIjf/mA=
-X-Google-Smtp-Source: AGHT+IEEewk7llSPmgrxe/7mA2rySV/OUDonUpYE2d0l2M0z39pI2HKiyjdOd8AbAw/PCbmxmW//Bg==
-X-Received: by 2002:a17:906:4f06:b0:a52:3d1:6769 with SMTP id t6-20020a1709064f0600b00a5203d16769mr44591eju.14.1712849137563;
-        Thu, 11 Apr 2024 08:25:37 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id r3-20020a170906350300b00a522c69f28asm225076eja.216.2024.04.11.08.25.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:25:36 -0700 (PDT)
-Date: Thu, 11 Apr 2024 18:25:32 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-	speakup@linux-speakup.org, intel-gfx@lists.freedesktop.org,
-	intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-afs@lists.infradead.org, ecryptfs@vger.kernel.org,
-	netfs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-unionfs@vger.kernel.org, linux-arch@vger.kernel.org,
-	io-uring@vger.kernel.org, cocci@inria.fr,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH] treewide: Fix common grammar mistake "the the"
-Message-ID: <0bd7ccc2-4d8c-455b-a6c2-972ebe1fcb08@moroto.mountain>
-References: <20240411150437.496153-4-thorsten.blum@toblux.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=K0QQzRmUrL2akA8NDguOIhUIh74EpSluJFM8sXhLBvezE1ZWIjIbcHCaN5hoAAJep5gnCItbw6ahoyTdFcxGJe992JMLoZKT+plEkOyh2Kai4fPUJW7TFvZsB/OUkXNii7lQQ6cYvkZk3piJj9p90EdZnvidrp6pxeC/PYjLD78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2198A113E;
+	Thu, 11 Apr 2024 08:26:12 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.16.129])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C7F7E3F6C4;
+	Thu, 11 Apr 2024 08:25:40 -0700 (PDT)
+Date: Thu, 11 Apr 2024 16:25:37 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	David Hildenbrand <david@redhat.com>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Itaru Kitayama <itaru.kitayama@fujitsu.com>
+Subject: Re: [PATCH v2 3/4] arm64: mm: Don't remap pgtables for allocate vs
+ populate
+Message-ID: <ZhgA8WDkZDbYIDHg@FVFF77S0Q05N>
+References: <20240404143308.2224141-1-ryan.roberts@arm.com>
+ <20240404143308.2224141-4-ryan.roberts@arm.com>
+ <ZhffSyrqCQsMV2pG@FVFF77S0Q05N>
+ <37d4c278-3780-49ce-bd7e-e8f2ff4501fd@arm.com>
+ <Zhf4LqNhQFN8ezx1@FVFF77S0Q05N>
+ <d9582c0e-af24-46a1-9c3e-b9dc68af20d8@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,23 +59,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240411150437.496153-4-thorsten.blum@toblux.com>
+In-Reply-To: <d9582c0e-af24-46a1-9c3e-b9dc68af20d8@arm.com>
 
-On Thu, Apr 11, 2024 at 05:04:40PM +0200, Thorsten Blum wrote:
-> Use `find . -type f -exec sed -i 's/\<the the\>/the/g' {} +` to find all
-> occurrences of "the the" and replace them with a single "the".
+On Thu, Apr 11, 2024 at 03:57:04PM +0100, Ryan Roberts wrote:
+> On 11/04/2024 15:48, Mark Rutland wrote:
+> > On Thu, Apr 11, 2024 at 02:37:49PM +0100, Ryan Roberts wrote:
+> >> On 11/04/2024 14:02, Mark Rutland wrote:
+> >>> but the logic remains fairly simple, and I suspect the overhead for late
+> >>> allocations might not matter since the bulk of late changes are non-allocating.
+> >>
+> >> Its just the fixmap overhead that remains...
+> > 
+> > True; my thinking there is that almost all of the later changes are for smaller
+> > ranges than the linear map (~10s of MB vs GBs in your test data), so I'd expect
+> > the overhead of those to be dominated by the cost of mappin the linear map.
+> > 
+> > The only big exception is arch_add_memory(), but memory hotplug is incredibly
+> > rare, and we're not making it massively slower than it already was...
 > 
-> Changes only comments and documentation - no code changes.
-> 
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-> ---
+> What about something like coco guest mem (or whatever its called). Isn't that
+> scrubbed out of the linear map? So if a coco VM is started with GBs of memory,
+> could that be a real case we want to optimize?
 
-It's tricky to know which tree a patch like this would go through.  We
-used to have a trivial tree for this stuff but I guess that didn't work.
-It's possible that it could go through linux-doc, but probably it has to
-go as a set of patches through each of the trees in the CC list.
+I think that's already handled -- the functions we have to carve portions out
+of the linear map use apply_to_page_range(), which doesn't use the fixmap. See
+set_memory_*() and set_direct_map_*() in arch/arm64/mm/pageattr.c.
 
-regards,
-dan carpenter
+Note that apply_to_page_range() does what its name implies and *only* handles
+mappings at page granularity. Hence not using that for
+mark_linear_text_alias_ro() and mark_rodata_ro() which need to be able to
+handle blocks.
 
+Mark.
 
