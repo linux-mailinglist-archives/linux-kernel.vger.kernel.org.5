@@ -1,167 +1,121 @@
-Return-Path: <linux-kernel+bounces-141540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 709438A1F8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:35:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38C0B8A1F91
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:37:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27B8B28638C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:35:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8F20286192
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1657317582;
-	Thu, 11 Apr 2024 19:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156E7175A6;
+	Thu, 11 Apr 2024 19:37:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="WTzaXJlO"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GkXdMT0y"
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77CA313AE2
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:35:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F07171C9
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:37:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712864114; cv=none; b=KFD+SrW9iueLBXv2KOdpDa9GYebtM3ihdDVI4AvrmzMj0MH4UxGMweRY9tyxAXfBWx0LgfvfVGjXS2bAPkNMcLcyO+buwGu0v7XaXRvBKI50NTRPTugxbG4t1128sPSs1KgPlWGmIeFHDRVinVCfil03/KZFn0xS/Iui4zXYviE=
+	t=1712864245; cv=none; b=P1YpBY6P+qVDKZOftb/2m/mhLZjeqV7YG4GRt3lOrYpBblsMiXeH6i964hInzX+ADTlR86JBeHVYW67Gy+JCpU4a1Tg2SLJiF276iDEVhFy/IAaf4AgtVyl8Hqv6b2fXynV81Ngi1rFjVtmQTep3vgoE5C27FdE3pnQRIMmdenc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712864114; c=relaxed/simple;
-	bh=5KVFeFerRH8GLwfSRDO//pTmkAv+uv/gwR3NCKN8Cdg=;
+	s=arc-20240116; t=1712864245; c=relaxed/simple;
+	bh=Gl8eUkD08CMPCn17a5LUCFQwsdrr+BTJp82u/LJ464E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WyutQgUxwfsXhpSzP8RUZdr2iw1qDYQMB+OCDvT765lkOtRTvREkM3HUg5Hdf+QQsoajJY1UBnyDQgZSjNOIP9V4ukH3aE0vc0gdnpevy2EAH2qR0JQ43dACvCW0Q+plDNxw8IFH12vK+5KC9sXCSLTeEJi35Mis7STcxTMHIWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=WTzaXJlO; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d8129797fcso1409181fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:35:12 -0700 (PDT)
+	 To:Cc:Content-Type; b=fogO81BAjIAlTmvh38v48c2KBaLu7ipx9achO2G/FHpR+N8RwCpx+MlFioh37DEvoDJVHRnCQ31ihH0gUnN6H2feKqf1XmJSxMiDofKsRolwtpZmqveOYa6QEnIjSoKgNgkJrMOrMnihHGZNL0Z6KhKQFquL7RpQysCKKW6YliU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GkXdMT0y; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-69b40061bbeso1256176d6.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:37:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1712864110; x=1713468910; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=qhujaawioP0edqzESewC5qrutyIfvYKamEof/gouabc=;
-        b=WTzaXJlOO/kVxxr1UkWojPQ/xwlyFTzOJSP5b0jR/awylRo5f1TXq5e9VoMDDY3kO2
-         FFLH/bUak6hUenp9hECToGe5ICfRIfzKfk90FANs+DTVMzj3e0K5xRZ7x080OufLuOAP
-         z6rlyTv541da48Ok+wcK3uaiY64r9X/GDlcuY=
+        d=google.com; s=20230601; t=1712864243; x=1713469043; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7gaZ8PNPW8x1uU3bx7SgotAf3Gi9LIM4a4uzTn6Vt2w=;
+        b=GkXdMT0yPgfIZdOMrvvyM2Yk42tja2P6tBgQigKhubso6S/gOlDFUZq8IdJz8GYdWZ
+         KnvveHtPrhdKdwqB+DVDlAAXKaj5UvAS3dxzToB4L6HSoRcDscY2XxpPsc5+HSJutfxK
+         LS3dbhoZogsApJAWOKfWKpsVWcyC2z0K8wxw1rk9ZVSLs9zsoRTkVlmGPZo8OjL+UNUh
+         oFUTO7Lup1W05prPGRSDNI9bFE4m10M5t1w6/p2qXOnp8VyuBaBLAObSaIuRfUQxyN8T
+         ksQqMWQBp897v5dy427z/YdubVW2yKg2gTf8It0perft6oQkOVNUyjuZX9AQ6GqIhCat
+         0IpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712864110; x=1713468910;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qhujaawioP0edqzESewC5qrutyIfvYKamEof/gouabc=;
-        b=HS2SoQFUyUh1r03He6h8svjUmrHD2gjl3YbVDCcPAxrXsf0PjvCWoscnuHBxKiFUm8
-         yCIbqTf8Ni5fAMTdULxy2ncM5e3MF6pZCiUNgnFiToBMCS0Y6VgNs/oPpLAnLLQEyWjx
-         276pZfHKvtUUdNZulEvOlrr2B2AtjR3stg2xOpUOUtKccEwq14MlMqm5sWoUVKf5S85g
-         o4CkHpZncczorkF2FQemQOPOymO92yGji2+WwtaNmGBdOri0z32DyzGhOvN8S3RRlBxP
-         qwZdCzxs5sPBOqVKOAH/UfS+9iu1+P5boMTCJU3sU39C+l4V6Nc1uQaKC7Xdd+GbMbM7
-         UhVg==
-X-Forwarded-Encrypted: i=1; AJvYcCWf+Jjeqvg+ryC9y061oCeUFmg0F0cgCC3pCMS+Zd9PTicPz8/saM6+ayJijrkdkHU29jiXiXQSrbxy/wRGEued0HELQwNOgyEo9iRz
-X-Gm-Message-State: AOJu0YxTeXrhPDMqmqSLeLXRRuxtSroekFiTCUoZWDzWseYXR6cgw193
-	G3enFnHNQmJchuqDFnQ6VXZ3gdPBiN6nWv+1n6bpySrLtGGjlebq9hvmBy9zbJ7MkhhHoW9BvUV
-	6FufrtA==
-X-Google-Smtp-Source: AGHT+IFw2+Lh2FafyqDQylF2+vel37vCZLYMzft8itWuJW5AD2fZCz6DcWMfMjdi9ali/AYwCB6lwg==
-X-Received: by 2002:a2e:be86:0:b0:2d8:d472:581e with SMTP id a6-20020a2ebe86000000b002d8d472581emr528389ljr.37.1712864110364;
-        Thu, 11 Apr 2024 12:35:10 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id f15-20020a2e6a0f000000b002d868f2939bsm276785ljc.103.2024.04.11.12.35.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 12:35:09 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-516d2600569so275958e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:35:09 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVPwyMcBgDMERRSML1YVdLwHvKFfMwV0Vas0boYuD90S3dq+RdYUj9p4RtXpoWpksJ9Y74NTqGoIYJ15h2nu7TwJAvcI8DVWOxLw5KT
-X-Received: by 2002:a19:3855:0:b0:516:d11b:5532 with SMTP id
- d21-20020a193855000000b00516d11b5532mr402271lfj.23.1712864109199; Thu, 11 Apr
- 2024 12:35:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712864243; x=1713469043;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7gaZ8PNPW8x1uU3bx7SgotAf3Gi9LIM4a4uzTn6Vt2w=;
+        b=C3Y/zLVrDeuIjWINbz7GnOlfWblAFCwxl1XgdrnFPE4BtY9hZieWINgBkjPYCW8v+b
+         E+AWiX50TpyKftH/tucuICfCQVZOEAeo5KgPiHb8WqElyO4dG1z6hMradsWI7I6NG6mS
+         SqfLWqRhysHX8jwqDCH9FJa2+n9+RSSokaKkyKc/Xol0SY/JSvhZibV9VvHzr9WN6s97
+         GFvCLEWeNd9E8Z8pEtIcwKWiPDQ6IRPfDm8Y7rIvXpow/LTXz6l0U43ezEIp93sG0V8U
+         /BJ9ji5gskAyN4zyletK0aMgg8HsEu3O3zQiqRv5Mbaw+nHeybE0D4t4XIO1raXXA6Sl
+         gcvA==
+X-Forwarded-Encrypted: i=1; AJvYcCXBIsgbMWvMgm7AJbbYR/mGNZHXF/9lrMap9Cpl3IfbsMnm9eG9YW5M0gSy67LipLW2BeHIvaf4halOZTYrt65BpCZTW2SqL59T1NN/
+X-Gm-Message-State: AOJu0Yzl0TjbtgC/hW0ufztmpVBLdB9R5uS7HBtoQaS/5puneiIWvHur
+	RLT87ZZU5fYi1pO6fDaXzEU04b+lyJBHP+2O7IosVtdSCzjz1v1JPZ2i8DOtJiAVaqvXEyQsY1K
+	AUWKeKbkqZBrs+5AwIO+Q0xeWKZzB08BlZMhI
+X-Google-Smtp-Source: AGHT+IHrTNsTajLfM6vlDskL/RW7t8LKDaCP9DtOscLyK8RqjJnIqxBEqvIo/4H4Zc/+wNBbw0jAa1TTD0veOmsdSPM=
+X-Received: by 2002:a05:6214:1933:b0:69b:1e64:413d with SMTP id
+ es19-20020a056214193300b0069b1e64413dmr734971qvb.52.1712864242836; Thu, 11
+ Apr 2024 12:37:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411001012.12513-1-torvalds@linux-foundation.org>
- <CAHk-=wiaoij30cnx=jfvg=Br3YTxhQjp4VWRc6=xYE2=+EVRPg@mail.gmail.com>
- <20240411-alben-kocht-219170e9dc99@brauner> <CAHk-=wjrPDx=f5OSnQVbbJ4id6SZk-exB1VW9Uz3R7rKFvTQeQ@mail.gmail.com>
- <CABe3_aGbsPHY9Z5B9WyVWakeWFtief4DpBrDxUiD00qk1irMrg@mail.gmail.com>
- <CABe3_aGGf7kb97gE4FdGmT79Kh5OhbB_2Hqt898WZ+4XGg6j4Q@mail.gmail.com>
- <CABe3_aE_quPE0zKe-p11DF1rBx-+ecJKORY=96WyJ_b+dbxL9A@mail.gmail.com> <CAHk-=wjuzUTH0ZiPe0dAZ4rcVeNoJxhK8Hh_WRBY-ZqM-pGBqg@mail.gmail.com>
-In-Reply-To: <CAHk-=wjuzUTH0ZiPe0dAZ4rcVeNoJxhK8Hh_WRBY-ZqM-pGBqg@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 11 Apr 2024 12:34:52 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgEdyUeiu=94iuJsf2vEfeyjqTXa+dSpUD6F4jvJ=87cw@mail.gmail.com>
-Message-ID: <CAHk-=wgEdyUeiu=94iuJsf2vEfeyjqTXa+dSpUD6F4jvJ=87cw@mail.gmail.com>
-Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() - requirements
-To: Charles Mirabile <cmirabil@redhat.com>
-Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>
+References: <20240408180918.2773238-1-jfraker@google.com> <20240409172602.3284f1c6@kernel.org>
+ <66175758bab7c_2dcc3c294a@willemb.c.googlers.com.notmuch>
+In-Reply-To: <66175758bab7c_2dcc3c294a@willemb.c.googlers.com.notmuch>
+From: John Fraker <jfraker@google.com>
+Date: Thu, 11 Apr 2024 12:37:11 -0700
+Message-ID: <CAGH0z2Hn-D1_wEZEN-Y9+hO1c+Ddn3dsO5_XCG6qQ8KioeGeGg@mail.gmail.com>
+Subject: Re: [PATCH net-next] gve: Correctly report software timestamping capabilities
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shailend Chand <shailend@google.com>, Willem de Bruijn <willemb@google.com>, 
+	"David S. Miller" <davem@davemloft.net>, Junfeng Guo <junfeng.guo@intel.com>, 
+	Ziwei Xiao <ziweixiao@google.com>, Jeroen de Borst <jeroendb@google.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 11 Apr 2024 at 11:13, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Wed, Apr 10, 2024 at 8:22=E2=80=AFPM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
 >
-> So while I understand your motivation, I actually think it's actively
-> wrong to special-case __O_TMPFILE, because it encourages a pattern
-> that is bad.
+> Jakub Kicinski wrote:
+> > On Mon,  8 Apr 2024 11:09:01 -0700 John Fraker wrote:
+> > > gve has supported software timestamp generation since its inception,
+> > > but has not advertised that support via ethtool. This patch correctly
+> > > advertises that support.
+> > >
+> > > Reviewed-by: Praveen Kaligineedi <pkaligineedi@google.com>
+> > > Reviewed-by: Harshitha Ramamurthy <hramamurthy@google.com>
+> > > Signed-off-by: John Fraker <jfraker@google.com>
+> >
+> > I think it should be a single line diff:
+> >
+> > +     .get_ts_info =3D ethtool_op_get_ts_info,
+> >
+> > right?
+>
+> If inserted above .get_link_ksettings that works. The current
+> ordering is not based on actual struct layout anyway.
+>
+> Probably all statements should just end in a comma, including a
+> trailing comma. To avoid these two line changes on each subsequent
+> change.
 
-Just to clarify: I think the ns_capable() change is a good idea and
-makes sense. The whole "limited to global root" makes no sense if the
-file was opened within a namespace, and I think it always just came
-from the better check not being obvious at the point where
-AT_EMPTY_PATH was checked for.
+Thanks all!
 
-Similarly, while the FMODE_PATH test _looks_ very similar to an
-O_TMPFILE check, I think it's fundamentally different in a conceptual
-sense: not only is FMODE_PATH filesystem-agnostic, a FMODE_PATH file
-is *only* useful as a pathname (ie no read/write semantics).
+I'll send the one-line v2.
 
-And so if a FMODE_PATH file descriptor is passed in from the outside,
-I feel like the "you cannot use this to create a path" is kind of a
-fundamentally nonsensical rule.
-
-IOW, whoever is passing that FMODE_PATH file descriptor around must
-have actually thought about it, and must have opened it with O_PATH,
-and it isn't useful for anything else than as a starting point for a
-path lookup.
-
-So while I don't think the __O_TMPFILE exception would necessarily be
-wrong per se, I am afraid that it would result in people writing
-convenient code that "appears to work" in testing, but then fails when
-run in an environment where the directory is mounted over NFS (or any
-other filesystem that doesn't do ->tmpfile()).
-
-I am certainly open to be convinced otherwise, but I really think that
-the real pattern to aim for should just be "look, I opened the file
-myself, then filled in the detail, and now I'm doing a linkat() to
-expose it" and that the real protection issue should be that "my
-credentials are the same for open and linkat".
-
-The other rules (ie the capability check or the FMODE_PATH case) would
-be literally about situations where you *want* to pass things around
-between protection domains.
-
-In that context, the ns_capable() and the FMODE_PATH check make sense to me.
-
-In contrast, the __O_TMPFILE check just feels like a random detail.
-
-Hmm?
-
-Anyway, end result of that is that this is what that part of the patch
-looks like for me right now:
-
-+               if (flags & LOOKUP_DFD_MATCH_CREDS) {
-+                       const struct cred *cred = f.file->f_cred;
-+                       if (!(f.file->f_mode & FMODE_PATH) &&
-+                           cred != current_cred() &&
-+                           !ns_capable(cred->user_ns, CAP_DAC_READ_SEARCH)) {
-+                               fdput(f);
-+                               return ERR_PTR(-ENOENT);
-+                       }
-+               }
-
-and that _seems_ sensible to me.
-
-But yes, this all has been something that we have failed to do right
-for at least a quarter of a century so far, so this needs a *lot* of
-thought, even if the patch itself is rather small and looks relatively
-obvious.
-
-                 Linus
+> The rest of the discussion in this thread is actually quite
+> unrelated to this patch. Didn't meant to sidetrack that.
 
