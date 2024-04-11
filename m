@@ -1,129 +1,222 @@
-Return-Path: <linux-kernel+bounces-140346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F00F8A1322
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:36:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53C178A1320
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:35:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84D971C217AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:36:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DAD6B2318F
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:35:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E98E1149C59;
-	Thu, 11 Apr 2024 11:35:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="bnMNR991";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QG58MyLn"
-Received: from wfout7-smtp.messagingengine.com (wfout7-smtp.messagingengine.com [64.147.123.150])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A05149C7C;
+	Thu, 11 Apr 2024 11:35:31 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF2246441;
-	Thu, 11 Apr 2024 11:35:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A53A5145B08;
+	Thu, 11 Apr 2024 11:35:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712835348; cv=none; b=lP7T3gnCnMgDLUQAq2NKoqbICcGdS8NTU9a8BR+jbNUgAKBCmIfW7ZJ0a86X7HjPwohffO2Be9ozWwtjYcBLXUw7ARq6l0c/bHaNPQ8G7JpsxMsV6CR46y4PI1cAVACHGd9OzLAS548BBTPrBt4vSI2rgAdGA/FXzZV5Bo503Gk=
+	t=1712835330; cv=none; b=Hbehevc1NMptQTQf3LGreMFahzHdL70Wkk+NdrRQmXW1AQ+3VBK/iDa3ippdLxIdYHkGRL3WZxoSvRoU4WD8b/H68y4oGgGUkTIWAgAvPYrd5W18Icvr3CkCTXG9pxgQgj6gPjUKwMsH6KXMG15Xk0S/N1Vb/Fy0bFjCrFrhLTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712835348; c=relaxed/simple;
-	bh=ajeu2BiA/YKzCiQqdIEBCBbdqVTBmASd7P1eQEFpois=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=K7GM90/Sc1X9PfeVvNl9eeGuVZ9a2AAxx1zaWYcp5zVhLXp3XOfjkGdMVvdYfabRPnP7LweFPGM1Rjw6Z70zTjGgrtWzyhbigaFtbBEgL+jHtEhWvIZzCdXSfvSpAjjK4440FVuuYWvUUjKHHZc0jk/O8/TwGyj41PDAMq9Ut04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=bnMNR991; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QG58MyLn; arc=none smtp.client-ip=64.147.123.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.west.internal (Postfix) with ESMTP id CE96D1C000EC;
-	Thu, 11 Apr 2024 07:35:43 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 11 Apr 2024 07:35:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1712835343; x=1712921743; bh=P8MYPGxCIj
-	Ne3mVE8A2eowCiRlrk81aBVzAF/rIv8g0=; b=bnMNR991EO/fzRUIlUsUo7ahiu
-	qb62PceZ1wtjdl6FRbzcBmg7gFKzadUuGlBJRE0bV15wwLKm31vrzNuFWULKPCwl
-	wcjQkawx67wTb/vAIZBFLbLNN0aOe2hBT7QVwO/lL3E/LV/Kuvrfmdt5A+SNBPAc
-	DM1PVXuSmOW/0GD2h44GXCT8IghgC93UuE/9icOuJ5Y4kiJSdgqRqs39Z+W7mM0d
-	SG/0Rt1Yc0jjGXTZxVZtt3PnVAfICd4d9LgxhVNVVkmweh9dLQzllb7ZUE4SY8P3
-	fe+obljMws0wxnjnM1XOTyc8mBbPd8HwG9s2pEbR7bL0G8yD6FGhzuQIf8Qw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712835343; x=1712921743; bh=P8MYPGxCIjNe3mVE8A2eowCiRlrk
-	81aBVzAF/rIv8g0=; b=QG58MyLniWrPS1pdKGAzLbuZ/TMSc3cMAvJv6fC9qIg7
-	n0vdzSKsiFVeknrN8QzmosqFxkasJ9yfsPdf5Q5DzWoLxl6XnbfVAeje1BRbLyEP
-	fzwKAJMzIkA0hCtoXPOnbksd20x/1APdjag3kZ3/CeGRglyVhIlClPiAUAGIBmdk
-	c8o1bACgadLuXbZhaBlv2Me1FomnUpIsYwcU5V0M6eFB+5Q1QGSezFN6O950F7LE
-	1/RTJHMWizr3dtkOitvzACSaWG7m9Mhb/vVpN0mSMoQlRIrut9oUQPmU6Kgj6RuW
-	i4o6tT2Eixnf01w+L6NMzF1HvUKKDQUUUTU8JgLSoQ==
-X-ME-Sender: <xms:DcsXZt7SkqQZSNWmueqinwpbscul48mRYAMyLY3VfUjPy9efgIJBlQ>
-    <xme:DcsXZq5YlSx_V8WPlJ1vH7Qekn40x1A1rIahz3v-uBDKDdtWRPpUbbkI9ffbCZKLE
-    ATjmHxLUaOh5RfGSug>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehkedggeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:DcsXZkduC8UpNHqOK7fnOZGUq8yg-pUvpzwLsPmoK57GIKC94wMTow>
-    <xmx:DcsXZmIqSavaJkn4HcDrg3W0wAAHEC_PQgARIaDE8Bwsy9K32XLtrg>
-    <xmx:DcsXZhLc1vQcYkF-vFu4UeFeRUocPM2P8q9hCe30iyPNnGummM9_Xw>
-    <xmx:DcsXZvx7ska2iapcMuhquoLJjrVHZ7KHN3uLSWJ04-WcC57EeatfzQ>
-    <xmx:D8sXZqguWQrev3ZMooMwLrx0i47WEB3gReRZL-o4riD8eSXOTLqE79i3>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id E7849B60092; Thu, 11 Apr 2024 07:35:40 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
+	s=arc-20240116; t=1712835330; c=relaxed/simple;
+	bh=2QoydNUa8ohr5BSqBTKFBG9DaUQmDb6Pl/IqqSheoek=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Siggv+M5vIGlvTY4z9aEuhxh2gsnyc2VMBeiz7H9duYZ4+dwfLobYhJl4M5uqNNyFq3pQoQvFdnjqlvhXVpG4ttlA1Gn82ZGX1E4NnzfNpsVjZgXwZDqTaPkt4GgbHQ8Kp2HKR49SqpkZ8a/Li53/NzSKhFymZtnxWE/sevlz80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VFcyt3VLqz6JB2Q;
+	Thu, 11 Apr 2024 19:33:42 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 09DC51400E7;
+	Thu, 11 Apr 2024 19:35:25 +0800 (CST)
+Received: from localhost (10.122.247.231) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 11 Apr
+ 2024 12:35:24 +0100
+Date: Thu, 11 Apr 2024 12:35:23 +0100
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+CC: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+	<x86@kernel.org>, <acpica-devel@lists.linuxfoundation.org>,
+	<linux-csky@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-ia64@vger.kernel.org>, <linux-parisc@vger.kernel.org>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	<jianyong.wu@arm.com>, <justin.he@arm.com>, James Morse
+	<james.morse@arm.com>, "Rafael J. Wysocki" <rafael@kernel.org>, Miguel Luis
+	<miguel.luis@oracle.com>
+Subject: Re: [PATCH RFC v4 12/15] arm64: psci: Ignore DENIED CPUs
+Message-ID: <20240411123523.0000487a@huawei.com>
+In-Reply-To: <E1rVDnK-0027ZN-40@rmk-PC.armlinux.org.uk>
+References: <Zbp5xzmFhKDAgHws@shell.armlinux.org.uk>
+	<E1rVDnK-0027ZN-40@rmk-PC.armlinux.org.uk>
+Organization: Huawei Technologies R&D (UK) Ltd.
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.29; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <773febee-ace3-4ad6-8ff6-04563dbbb759@app.fastmail.com>
-In-Reply-To: <20240410174540.GB3649628@dev-arch.thelio-3990X>
-References: <20240216202657.2493685-1-arnd@kernel.org>
- <202402161301.BBFA14EE@keescook>
- <763214eb-20eb-4627-8d4b-2e7f29db829a@app.fastmail.com>
- <20240409161517.GA3219862@dev-arch.thelio-3990X>
- <f94c6943-eb93-4533-8e4d-3645ef38b990@app.fastmail.com>
- <20240410174540.GB3649628@dev-arch.thelio-3990X>
-Date: Thu, 11 Apr 2024 13:35:05 +0200
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Nathan Chancellor" <nathan@kernel.org>
-Cc: "Kees Cook" <keescook@chromium.org>, "Arnd Bergmann" <arnd@kernel.org>,
- "Steffen Klassert" <steffen.klassert@secunet.com>,
- "Herbert Xu" <herbert@gondor.apana.org.au>,
- "David S . Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Bill Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- "Leon Romanovsky" <leon@kernel.org>, "Lin Ma" <linma@zju.edu.cn>,
- "Simon Horman" <horms@kernel.org>, "Breno Leitao" <leitao@debian.org>,
- "Tobias Brunner" <tobias@strongswan.org>, "Raed Salem" <raeds@nvidia.com>,
- Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
- llvm@lists.linux.dev
-Subject: Re: [PATCH] [RFC] xfrm: work around a clang-19 fortifiy-string false-positive
-Content-Type: text/plain
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Wed, Apr 10, 2024, at 19:45, Nathan Chancellor wrote:
+On Wed, 31 Jan 2024 16:50:38 +0000
+Russell King (Oracle) <rmk+kernel@armlinux.org.uk> wrote:
 
-> Unfortunately, I have no idea why it is complaining nor why your patch
-> resolves it but the combination of FORTIFY_SOURCE and KASAN certainly
-> seems like a reasonable place to start looking. I will see if I can come
-> up with a smaller reproducer to see if it becomes more obvious why this
-> code triggers this warning.
+> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> 
+> When a CPU is marked as disabled, but online capable in the MADT, PSCI
+> applies some firmware policy to control when it can be brought online.
+> PSCI returns DENIED to a CPU_ON request if this is not currently
+> permitted. The OS can learn the current policy from the _STA enabled bit.
+> 
+> Handle the PSCI DENIED return code gracefully instead of printing an
+> error.
+> 
+> See https://developer.arm.com/documentation/den0022/f/?lang=en page 58.
+> 
+> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> [ morse: Rewrote commit message ]
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Tested-by: Miguel Luis <miguel.luis@oracle.com>
+> Tested-by: Vishnu Pajjuri <vishnu@os.amperecomputing.com>
+> Tested-by: Jianyong Wu <jianyong.wu@arm.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> ---
 
-I know at least why my patch avoids the warning -- it removes the
-call to memset() that contains the check. Unfortunately that still
-doesn't explain what caused it.
+This change to return failure from __cpu_up in non error cases exposes
+an possible issue with cpu_up() in kernel/cpu.c in that it brings the numa node
+before we try (and fail) to bring up CPUs that may be denied.
 
-      Arnd
+We could try offlining the numa node on error, or just register it later.
+
+Currently I'm testing this change which I think is harmless for cases that don't
+fail the cpu_up()
+
+For the cpu hotplug path note the node only comes online wiht the cpu online, not
+the earlier hotplug. Reasonable given there is nothing online in the node before
+that point.
+
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 537099bf5d02..a4730396ccea 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1742,10 +1742,6 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
+                return -EINVAL;
+        }
+
+-       err = try_online_node(cpu_to_node(cpu));
+-       if (err)
+-               return err;
+-
+        cpu_maps_update_begin();
+
+        if (cpu_hotplug_disabled) {
+@@ -1760,7 +1756,10 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
+        err = _cpu_up(cpu, 0, target);
+ out:
+        cpu_maps_update_done();
+-       return err;
++       if (err)
++               return err;
++
++       return try_online_node(cpu_to_node(cpu));
+ }
+
+There is a kicker in the remove path where currently check_cpu_on_node()
+checks for_each_present_cpu() whereas to work for us we need to use
+for_each_online_cpu() or the node is never removed.
+
+Now my current view is that we should only show
+nodes in /sys/bus/nodes/devices/ if there is a CPU online (assuming no other
+reasons the node should be online such as memory).
+That's easy enough to make work but all I'm really learning is that the semantics
+of what is an online form a node point of view is not consistent.
+
+Fixing this will create a minor change on x86 but does anyone really care
+about what happens in the offline path wrt to 'when' the node disappears?
+I think the corner case is.
+
+1. Add 2 CPUs (A, B) in a CPU only node.
+2. Online CPU A - this brings /sys/bus/devices/nodeX online
+3. Remove CPU A - no effect because the check for try_remove is on presence and CPU B is
+   still present.
+4. Online CPU B - no change.
+5. Offline CPU B - no change.
+4. Remove CPU B - /sys/bus/device/nodeX offline (disappears)
+
+To make it work on arm64 where we never make CPUs not present.
+
+1. Add 2 CPUs (A, B) in a CPU only node.
+2. Online CPU A - this brings /sys/bus/devices/nodeX online
+3. Remove CPU A - /sys/bus/devices/nodeX offline (disappears)
+4. Online CPU B - this brings /sys/bus/device/nodeX online
+5. Offline CPU B - no change (node updates only happen in hotplug code)
+6. Remove CPU B - /sys/bus/device/nodeX offline (disappears).
+
+Step 5 may seem weird but I think we can't mess with nodes there because
+userspace may well rely on them still being around for some reason
+(it's a much more common situation).
+
+My assumption is that step3 removing the node isn't going to hurt anyone?
+
+If no one shouts, i'll go ahead with rolling a v5 patch set where this is done.
+
+
+Jonathan
+
+
+
+
+
+> Changes since RFC v2
+>  * Add specification reference
+>  * Use EPERM rather than EPROBE_DEFER
+> Changes since RFC v3:
+>  * Use EPERM everywhere
+>  * Drop unnecessary changes to drivers/firmware/psci/psci.c
+> ---
+>  arch/arm64/kernel/psci.c | 2 +-
+>  arch/arm64/kernel/smp.c  | 3 ++-
+>  2 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/psci.c b/arch/arm64/kernel/psci.c
+> index 29a8e444db83..fabd732d0a2d 100644
+> --- a/arch/arm64/kernel/psci.c
+> +++ b/arch/arm64/kernel/psci.c
+> @@ -40,7 +40,7 @@ static int cpu_psci_cpu_boot(unsigned int cpu)
+>  {
+>  	phys_addr_t pa_secondary_entry = __pa_symbol(secondary_entry);
+>  	int err = psci_ops.cpu_on(cpu_logical_map(cpu), pa_secondary_entry);
+> -	if (err)
+> +	if (err && err != -EPERM)
+>  		pr_err("failed to boot CPU%d (%d)\n", cpu, err);
+>  
+>  	return err;
+> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> index 4ced34f62dab..dc0e0b3ec2d4 100644
+> --- a/arch/arm64/kernel/smp.c
+> +++ b/arch/arm64/kernel/smp.c
+> @@ -132,7 +132,8 @@ int __cpu_up(unsigned int cpu, struct task_struct *idle)
+>  	/* Now bring the CPU into our world */
+>  	ret = boot_secondary(cpu, idle);
+>  	if (ret) {
+> -		pr_err("CPU%u: failed to boot: %d\n", cpu, ret);
+> +		if (ret != -EPERM)
+> +			pr_err("CPU%u: failed to boot: %d\n", cpu, ret);
+>  		return ret;
+>  	}
+>  
+
 
