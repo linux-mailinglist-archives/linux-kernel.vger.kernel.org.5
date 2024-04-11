@@ -1,117 +1,121 @@
-Return-Path: <linux-kernel+bounces-141729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B842F8A22A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:56:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B0CF8A22A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:56:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9D6C1C21308
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:56:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0CD71F23BD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:56:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17BCE4AEFE;
-	Thu, 11 Apr 2024 23:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E8EF4B5CD;
+	Thu, 11 Apr 2024 23:56:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ax+8tY8H"
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tEwNWHMg"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7825647A48
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 23:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BAB44D5A1
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 23:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712879777; cv=none; b=U8y0iRcHvF6q3h0mV/YCzUdFQOqlPCBVGyPSSRD9xfqRqSV4Q463oLd5REDLvQuUaBAktHwYbqOR0VViLG3UArFowvTXkgy8Jcs5nuwdHFNRd8vnIbACv0AcMkCwbOIeSoosD64W5woa+m8cP/4MZordrqyqU3dBCOWbvPchth8=
+	t=1712879788; cv=none; b=k3ZrUc2mDLOMQ7SOR6zFpagSDx/oHcyGSdx+RqhTtDTFHI1JnYprmVgqC9Uwzolv0J7X9OFG+sbsP23GNMfNn8G0nB68sK3v12+ThqlVGhT7JsgGidFyPcATtqZ3HYUTe5h5lufMbam3U2nOTOhsOUik2vVkb6n/qMnrThzJBJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712879777; c=relaxed/simple;
-	bh=1hJuW4Q6DIb/H/sHiYOYExJ//bqXgHS7kwabOym3u1c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qnX1zI8dc5m9RvxqlmzhJzT6WskfLVWzSrHnWZj5RqL58Fe8/W4t463vmWBgg1HgdpApOe+6jmF99zhCBjqM+XwTowdhl6KeknK1n7ttUmFSy72NaQ490QX1nwQfb8boRk5I1q7U+YBREDkpEBxjZrdC6Y00jMkqYgBzMdxzQJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ax+8tY8H; arc=none smtp.client-ip=209.85.166.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7d0772bb5ffso7992039f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:56:15 -0700 (PDT)
+	s=arc-20240116; t=1712879788; c=relaxed/simple;
+	bh=MioIrT4usEvNVbA3gUwhZR5hWnkV5a7eD0MVoAZp/Hg=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=bn6mR2/u7WW47ebxSIH0U8ignJuHJxdWk0SgFseiKqz7mVKCG3qRjxZaCJlr2DY6TWe2+i/zMJ1hArWAQ5Bh8SYvx64YY/hO9kXta199R52H6Ku36KylQ72yjHkeYo3CQhxrwn+eq9RKtzWx39doRQ1RYEQWr2T0HRQpDrtET4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tEwNWHMg; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60a20c33f06so4235087b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:56:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1712879774; x=1713484574; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Qe0CvRWLgYscYGo8HB4Lqcq6jCdobjBtnisZZSsYEYM=;
-        b=ax+8tY8Hx9T+pGfzUTLwrcFhDUP6gZduZygzmij8iEUD/K9t63R2hSY0r5TO34whZk
-         4DSVX4/IC+85oXl+NGdzkgVOu02adxYYPChJ6NUyc+IHH8XsW1wQdmsjBqXV+XFofOEh
-         IajvAi6/GaZdNGq1LNX/yzxYSZsReZBpAohz8=
+        d=google.com; s=20230601; t=1712879786; x=1713484586; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=O0iRscBO4bdcIhUu420mbq2doNMaDlIpBi8l/p1zhKs=;
+        b=tEwNWHMgGsPkrEAf0mcEWf1N2jjPeeE6xdLNTIGi0g8Jn9Ifbpd+RIV+ozrEDg189n
+         PYSDstCBlKNWhvMKW1z7lr56sK5qWYf6qm4jwHjdp6P59AHldqaz629T0zzv+MTbgRnI
+         4PRRdM9GEcy4V5iMHeqLbCISBDf9U+xffRpS0PdCXYIi0fgytZiiNqbOscPtAVEUcKlg
+         K3C5U2Rem0rSDNvMzW0PbaPxRf5nW2jq8hxvpZ4K5eYSI/JKkGKRkpbBE0eL9I6ysKZj
+         uu1D0mVp1XbkjwPLWHPTVxE7JtnM6bPYzEz4F1VyPZQVg+IWE4hMUARJP3oJIIGYa+Mm
+         liiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712879774; x=1713484574;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qe0CvRWLgYscYGo8HB4Lqcq6jCdobjBtnisZZSsYEYM=;
-        b=INSKNW6W1/XRPajzJqvs11YshsfrMWaFiEdGh1NDS9Bxm9iNIPZFWqfQFgGjFK1wR3
-         oRYA5VMiwD8jiqq+fPIgPKSG38iS0XVfG/dHMUZCj9QhUZVi7+1GUOYkEP5isvo7t4Qw
-         yPX0pJ6L24cRmOJ2CmxysIV4me1U5z8OtKRlCbgrJN5dUHSOgEqoOSvOT1LIU1AwM0Z9
-         yjsoc1WAESrtrQi6dz/1vt//L+xZ9dgC3Eo9qbdHCyPj3JFjlXZRlsu73y9F6A6xh2+V
-         SOEYuvSiXGwLHnhKCaG9comT5uaff/eDwYAxS2UeCtWMjB2ZD4F2mV/nfNR2vGJLQZFW
-         E4sA==
-X-Forwarded-Encrypted: i=1; AJvYcCXjfvJ2R1mbBQ8t/Q0By2zKHttSdYMQmfMjDCo9KhxBI1FWehgrevseeH659aJ9ktrTRcJaJJ3b8seGdHaKM9hAqT7RzXJFmx7FUv5h
-X-Gm-Message-State: AOJu0YwYJfLjUfjNUjnWTEXzAgttEHxY4DHRQAvQ6KD8YZnZgE/buViT
-	oYR5a3KzxJj0/JKmkq8stBc6ejQN4qbq+NvTuyJrzTN/OlHrzzT3B9myztm/RpY=
-X-Google-Smtp-Source: AGHT+IGV0IhqS2O6YRkP3iIt3Yudyqf3AzBPtdznd78B8RXYp98RlusRMAJ9uzdymcwqzIpF6kSb0w==
-X-Received: by 2002:a05:6e02:194f:b0:369:e37d:541f with SMTP id x15-20020a056e02194f00b00369e37d541fmr1456230ilu.1.1712879774647;
-        Thu, 11 Apr 2024 16:56:14 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id r13-20020a92c50d000000b003698fc3a541sm644512ilg.80.2024.04.11.16.56.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 16:56:14 -0700 (PDT)
-Message-ID: <8de5278c-9bf5-46ab-9fa0-ffba4c95b4fc@linuxfoundation.org>
-Date: Thu, 11 Apr 2024 17:56:13 -0600
+        d=1e100.net; s=20230601; t=1712879786; x=1713484586;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=O0iRscBO4bdcIhUu420mbq2doNMaDlIpBi8l/p1zhKs=;
+        b=ICR2WuZ94lq+0aDx+1vrDSQ/KKkBcJaK8isfgVQ+iUlFnZmzLC8hi5ysNv4wLR7LgJ
+         Io0YjUqowaPgKIDl1qLAnwt5kGOBJlClJCTbNuXckxJb+QJvdXfCsHnqy8vv0lVoAPF0
+         cw9YuVjEXqHf7D1WFcdTw1s7l9dglW2azSfvFZ7fPNsT05BQ72WT0bDltIiMjQOnA6nW
+         PpUwUQLbhlnjYJ0YbCKTmyHnf9rYbH9q+rGC+2mpSAXG3TMB8vY9pYJdi+G4/e5QhPoB
+         fNuLqx6mzXs88ooxHsHNFP03k3Nzc5qchFWwtL6nsPuTDHwATxpmUgh2O8xuUaM6cMoU
+         ZJoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVLCqtmO651v+nFRBp+R4MsWaZ8feA7dDfmLGG+egSuxu+6pAZv0WrXbJCxpG7u4mH1z9zkAQbiNcq5Rfrp1G/JRjDa/19zFipeDWfA
+X-Gm-Message-State: AOJu0YxQ4Md9s7+fMxFTKnJ0xmPn/9kWfjXkFtfYu9owLhtV+27cNOyZ
+	SWA3X5+zetMqa5cC0tpgN+NmyS8I6xCPkJyrbJFm8RXRLs9hgnbsaPxlZLPVwYomsZOE049+kKZ
+	zf8By0DuNj+G1UA==
+X-Google-Smtp-Source: AGHT+IFosAoa851C7hPGmSTJhtx34QZTzAQeM/iXE6mN4LYGNHAkSwi0R89BgZ48h/lVqrxY4bUEsjpXIA52Xog=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:a472:f40c:d4ba:c29])
+ (user=saravanak job=sendgmr) by 2002:a0d:ea90:0:b0:615:2ae1:6cd3 with SMTP id
+ t138-20020a0dea90000000b006152ae16cd3mr215649ywe.3.1712879786349; Thu, 11 Apr
+ 2024 16:56:26 -0700 (PDT)
+Date: Thu, 11 Apr 2024 16:56:20 -0700
+Message-Id: <20240411235623.1260061-1-saravanak@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4.19 000/175] 4.19.312-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240411095419.532012976@linuxfoundation.org>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240411095419.532012976@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
+Subject: [PATCH v3 0/2] fw_devlink overlay fix
+From: Saravana Kannan <saravanak@google.com>
+To: Herve Codina <herve.codina@bootlin.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	Wolfram Sang <wsa+renesas@sang-engineering.com>, Rob Herring <robh@kernel.org>, 
+	Saravana Kannan <saravanak@google.com>, Mark Brown <broonie@kernel.org>, Len Brown <lenb@kernel.org>, 
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Scally <djrscally@gmail.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: kernel-team@android.com, Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org, 
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-spi@vger.kernel.org, linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 4/11/24 03:53, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.312 release.
-> There are 175 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.312-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Overlays don't work correctly with fw_devlink. This patch series fixes
+it. This series is now ready for review and merging once Geert and Herve
+give they Tested-by.
 
-Compiled and booted on my test system. No dmesg regressions.
+Geert and Herve,
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+This patch series should hopefully fix both of your use cases [1][2][3].
+Can you please check to make sure the device links created to/from the
+overlay devices are to/from the right ones?
 
-thanks,
--- Shuah
+Thanks,
+Saravana
+
+Saravana Kannan (2):
+  Revert "treewide: Fix probing of devices in DT overlays"
+  of: dynamic: Fix overlayed devices not probing because of fw_devlink
+
+ drivers/base/core.c       | 76 ++++++++++++++++++++++++++++++++++-----
+ drivers/bus/imx-weim.c    |  6 ----
+ drivers/i2c/i2c-core-of.c |  5 ---
+ drivers/of/dynamic.c      |  1 -
+ drivers/of/overlay.c      | 15 ++++++++
+ drivers/of/platform.c     |  5 ---
+ drivers/spi/spi.c         |  5 ---
+ include/linux/fwnode.h    |  1 +
+ 8 files changed, 83 insertions(+), 31 deletions(-)
+
+-- 
+2.44.0.683.g7961c838ac-goog
+
 
