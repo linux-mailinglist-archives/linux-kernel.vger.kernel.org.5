@@ -1,123 +1,130 @@
-Return-Path: <linux-kernel+bounces-140486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140488-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA2798A1556
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:13:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 677908A155A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:14:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A35012825F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:13:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E684CB23090
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 13:14:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BAB714C597;
-	Thu, 11 Apr 2024 13:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3727214D296;
+	Thu, 11 Apr 2024 13:13:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XrTQIeY3"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aaQaIiX6"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBEE128FD
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:13:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B14C1EB26;
+	Thu, 11 Apr 2024 13:13:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712841204; cv=none; b=d+j+dxIJRHBfLt3vzBzDTbhh2pD8lm1Ir0HmulCNQw8h0Fn1HxOr4brdk4vWwDwPtcZQWcCAeKmaVvCQLVwXxR0OQBwIraCno1AoH9XPrc7l49005wb0Xn2ShJjY/na2P8LQT3bw6bBsJMQ62tPW+Q0UZGToSxVMYuQYacikHNk=
+	t=1712841230; cv=none; b=cI/XKI2LVcbg3y+VpkW2RIqShGwu60/n09xUtEyYdHroP8GBHHAdYDFjoKPoGcsbp24EnHoTRiMmZRKCwkoqX9AFhoGdpLy0u26233d1bCtwNNTzHsJ4keFIh2iuQxJ8h+oYanz/kbSeQ91JfWsO3S11ZtTIQ0nLZjUQ7Aiaje4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712841204; c=relaxed/simple;
-	bh=Qc0t+cqqeoMdgUIn/T47SwdSm2G2cSbQh1SlaJhaCXc=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=R2QEYG+YfEzijbuVx+S7gOGXns85XaX8p+R1cFike+diu10DC9uvsyVZXITXEXZmu7lzb5Re0aHjOYFp66nzRJhFBUxwpG4fVdUTpeRwpPP4AsJU2zKd+lJ7c2pBb8atE7HeAmIQgXTEpCQ5Kx65nPQDYrxfryQMwhLhT4cu7Q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XrTQIeY3; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712841203; x=1744377203;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Qc0t+cqqeoMdgUIn/T47SwdSm2G2cSbQh1SlaJhaCXc=;
-  b=XrTQIeY3R949q19BxD60BtD/fNpTSiHoTWTfJ5/RXjXw+FHeA9Ev/YvA
-   VCNenCufrRG2xsNrYBwzGQiUt+3HvK/6NzkRDgYf9Jab8LdvFqkkNST3D
-   s1/R8RgZ+kFupKXPlgeuBeJ3kb3pDWH5gPbTxCMF2Nev2eblMbGWmTByT
-   Kl/zdwWFMV9kvGgTszREoUBvPgujT0Qi9AHez17LIxT8SMYYkeuGj5fkd
-   u2aFyQh67fZGjE/VnskWQmbrDuIEOU5LyFzR4G+iYUYDD029v0S9hZJ+9
-   ilEVKtkdhiPkfDGe+B4t3oRoltKB4VOS7V7DR5WgYMriQOfKJUcpdME5k
-   w==;
-X-CSE-ConnectionGUID: HcUKcSMTTu+qi5kz634NgQ==
-X-CSE-MsgGUID: 8Y9oBlNYRu6ytz4BMVZZgA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8808910"
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="8808910"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 06:13:22 -0700
-X-CSE-ConnectionGUID: BS9oqWvmRAGAwxMO9xlh1w==
-X-CSE-MsgGUID: tJcYxFp1SZKyrviBDzrgMg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="20857588"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.124.237.86]) ([10.124.237.86])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 06:13:20 -0700
-Message-ID: <83c02530-230a-4ae0-8853-5da95c0ee814@linux.intel.com>
-Date: Thu, 11 Apr 2024 21:13:17 +0800
+	s=arc-20240116; t=1712841230; c=relaxed/simple;
+	bh=xYKRnU8aOM8TF+MV61TVLYuU1636UekHg3sEM42a8Go=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R/4E849v2B8hy0s9kTxImDGxSAbRsXcccpz78wIAVTmX5EajBFq+g5Ak5MhN/M1yPUj58RgJTZP0ItO/gBgLOAqyuOWq5tpdKHpqTBGl3uFN64R7I8AloLj0FlxiTI9eHCBpPZbEvZjT5AbGismPTZ0ZlgAwlK5UV56mlVL8hrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aaQaIiX6; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43BAxQor024252;
+	Thu, 11 Apr 2024 13:13:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=n38Thl8pnQJDOXNyW6qsfYn3wnZKegsAGh9jLryh8ws=;
+ b=aaQaIiX6Yo4cvMUuvNAwrVA/9S//HhGkyzwLMOit4gtENzaOKo4srMo35IcA/YJ4eDc+
+ pgzqOmJ2O5cDUhdlGIj5aAaHZfRMTRT3qb/UmgrnpgBeR4sFB6KvPcphSvUpaR79py/5
+ EyzVZMIoSqg3xkACTOY/8nUZsrg5dhhkTZ203BiUpMw+i3QdnKAuRuGD4kwYNkqvC1+s
+ hsWBE4crZoJCJH6gj6k8o/RGRTxgjOu0dS8DQ6p748EHAmCkeilp/Px8VHiJM2I1cl0R
+ EZQP8Hpteg5TGI6TO2TnY19vboxPrpir5/j2M6BjhvLQMlV28uaZ1taDAsIvVcFkJQBK Cw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xeegar9th-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 13:13:34 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43BDDXpR025251;
+	Thu, 11 Apr 2024 13:13:34 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xeegar9td-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 13:13:33 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43BCpK1x022573;
+	Thu, 11 Apr 2024 13:13:33 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbhqpb9fm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 13:13:33 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43BDDR7645285866
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 11 Apr 2024 13:13:29 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7F2E92004B;
+	Thu, 11 Apr 2024 13:13:27 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4521620040;
+	Thu, 11 Apr 2024 13:13:27 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 11 Apr 2024 13:13:27 +0000 (GMT)
+Date: Thu, 11 Apr 2024 15:13:26 +0200
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Thomas Huth <thuth@redhat.com>
+Subject: Re: [PATCH v1 1/5] s390/uv: don't call wait_on_page_writeback()
+ without a reference
+Message-ID: <Zhfh9m200e0Lz6od@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20240404163642.1125529-1-david@redhat.com>
+ <20240404163642.1125529-2-david@redhat.com>
+ <20240410192128.2ad60f9b@p-imbrenda>
+ <63f39394-380a-4817-8d5b-f5d468b0092e@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Kevin Tian <kevin.tian@intel.com>, Tina Zhang <tina.zhang@intel.com>,
- Yi Liu <yi.l.liu@intel.com>, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 12/12] iommu/vt-d: Retire struct intel_svm
-To: Jason Gunthorpe <jgg@ziepe.ca>
-References: <20240410020844.253535-1-baolu.lu@linux.intel.com>
- <20240410020844.253535-13-baolu.lu@linux.intel.com>
- <20240410154951.GH223006@ziepe.ca>
- <b24f3380-1ac3-41c4-9163-56c1dcff6297@linux.intel.com>
- <20240411130759.GJ223006@ziepe.ca>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240411130759.GJ223006@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <63f39394-380a-4817-8d5b-f5d468b0092e@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 71cSxIvAPIM5a1Va6TsrQFdb9gmX2mI2
+X-Proofpoint-ORIG-GUID: xmJTjyn2SelvuiZ8qBB9ZINXrftMPhbN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-11_06,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
+ adultscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=694
+ lowpriorityscore=0 suspectscore=0 spamscore=0 phishscore=0 clxscore=1015
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404110096
 
-On 2024/4/11 21:07, Jason Gunthorpe wrote:
->> +static void intel_mm_free_notifier(struct mmu_notifier *mn)
->> +{
->> +       kfree(container_of(mn, struct dmar_domain, notifier));
->> +}
->> +
->>   static const struct mmu_notifier_ops intel_mmuops = {
->>          .release = intel_mm_release,
->>          .arch_invalidate_secondary_tlbs =
->> intel_arch_invalidate_secondary_tlbs,
->> +       .free_notifier = intel_mm_free_notifier,
->>   };
->>
->>   static int intel_svm_set_dev_pasid(struct iommu_domain *domain,
->> @@ -598,10 +604,8 @@ static void intel_svm_domain_free(struct iommu_domain
->> *domain)
->>   {
->>          struct dmar_domain *dmar_domain = to_dmar_domain(domain);
->>
->> -       if (dmar_domain->notifier.ops)
->> -               mmu_notifier_unregister(&dmar_domain->notifier, domain->mm);
->> -
->> -       kfree(dmar_domain);
->> +       /* dmar_domain free is defered to the mmu free_notifier callback. */
->> +       mmu_notifier_put(&dmar_domain->notifier);
->>   }
-> Yeah, that is better.
+On Thu, Apr 11, 2024 at 10:24:23AM +0200, David Hildenbrand wrote:
+> Thanks! I'll rebase this series on top of the s390/features tree for now,
+> where Willy's cleanups already reside.
+
+Yes, rebase it on to of s390/features, please.
+
+> If maintainers want to have that fix first, I can send it out with Willy's
+> patches rebased on this fix. Whatever people prefer.
+
+Many thanks!
+
+> -- 
+> Cheers,
 > 
-> Also you need to have mmu notifier call on module unload when using
-> this scheme.
-
-The Intel IOMMU driver doesn't support being a module. It's always
-built-in.
-
-Best regards,
-baolu
+> David / dhildenb
 
