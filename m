@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-139689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2AEF8A0684
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:09:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5E4A8A0685
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 05:09:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A78161F25CFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:09:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5591D1F25E32
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 03:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F1413B792;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0FB713BAE3;
 	Thu, 11 Apr 2024 03:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GRyKRaQS"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zj3Xqoc+"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CDDC13B5B7
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 03:08:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F7013B795
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 03:09:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712804941; cv=none; b=qF3BXBNAo6aZm4ie7VUta4aSet03pKjKzGEonbBYt3vjdfqp2I3o0U0yHFCc2VwGcMyfdIqsfks0UBhc23ZoWLnnT5TMZOM8siCKMchutl8YFqo9dwFF3vBJZ9QGioM3gywJ2ZKFkgb6gyWKIFiHi6uY6wYP7PYJ7o0MOzVgnFo=
+	t=1712804942; cv=none; b=u3B5dgdF3u56U6GVfa8fVQn8Y/ZqKMwIxegXWM8Ku1Vebn4rz9e8TlTmyCWcSUVPVq81vb09Ti648IV8vjtu8Bq1flyIiV+mebXBpipSspJnA1eSkMuz0eqGqujjY80Zh6xcJMCCIqb7kBL5mG6ks8nu04ziaLEm7lac+/iTcsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712804941; c=relaxed/simple;
-	bh=CrCQveiZdwYAH0mjaVPcjR6DITjQEl30tKTsxVaY4M0=;
+	s=arc-20240116; t=1712804942; c=relaxed/simple;
+	bh=OGnOMxkpin9TYenIr8jNLqVcXysJ8LZw6T1asCHfxQA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oGNLlvwSM8T70OiIqRr/PgIPxsI45PgWhNpbNnfWuHuMkrEuSSGZkZ04CObt2JY77PcpwJIK2tlJgJw+mIgtvHuzJSrvkHjG3fzGaRuTN86V2U9Hhd6JRIPp3iwu4enilG/xRCsQXTMcjY3QFK1FCP8pIWDQZISLH+8m08FsN1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GRyKRaQS; arc=none smtp.client-ip=198.175.65.9
+	 MIME-Version; b=Ddnfg2dNNhgIAhWcSBiUCS4j8du74rnViqW1nCFfLeCMpzPuZvBWAWZ8DfWPeGvWAgbEzxdnu0pWgJNtHbJ2Hci3OAB0e5Mp2Qh5cW6aYJl0n2B9vKGLbnHqKgOP7ePSdRMNY3BDv94B8l8lhlxcqXiUAj8otPRoJL7s5sFNKMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Zj3Xqoc+; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712804940; x=1744340940;
+  t=1712804941; x=1744340941;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=CrCQveiZdwYAH0mjaVPcjR6DITjQEl30tKTsxVaY4M0=;
-  b=GRyKRaQSyI0JIockxFlNIh7R7vxnsTGbdd0S8N+PJlNHhyYOWFAJEhJy
-   3sSmXZJjb/Il489d5Rgz7kpgms/4SqksIGEsn6K+MMLfPA5+pcfSWANii
-   1xXO/Zv4HjfLgWtruOznpAvTO7zHVNO6WqTEFW/ObL8IFv+bYWYNOw7WV
-   uEm/BX8K8HZOLpbcVfX6390zfSh5WMm4XyBNRBHz+4GXtZ+6ShAykvz1Q
-   yw0Mm9xfOaFzY2sECANVyvzXsmDq2b9F8mKXvOCl/Alz9L5/M62dhCKkn
-   WzQlZtarKyHSf9srvL3Yur01AiTmXFLFbKqxElT4TguKNy7tfJ9QGImaT
-   w==;
-X-CSE-ConnectionGUID: faPHAm63TeSvCcMfzzkCZw==
-X-CSE-MsgGUID: +CXydNXaR6CHR/2PTL3IhA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="30681438"
+  bh=OGnOMxkpin9TYenIr8jNLqVcXysJ8LZw6T1asCHfxQA=;
+  b=Zj3Xqoc+OJ9ze3/clfGcrAhgCK93eZMLd7ARnjRzAEtoO8w2IqyRW4Gm
+   QmZjOmyotw4yK561QJN2w8uPLDjqob+Cp5LsemROJwUiIF8XPqY0Ln5X5
+   ScNYcV6GGKSohwIE5IW0Fx5QxvW2Nv1xshy/pXQo7F9X85ClVzBFANrge
+   XyPZ2Kb/mkWy1S92KlqW6JDnV9bCINoKt2Vd4o6342jyBaX2dtjyQ7pVU
+   XLpVOLpuUh4xIQu4PQ1F0BMeFJ9aEikzerOnHiyuU2U8K7+VOo47rWtsd
+   jmbkjPEhRBeWehnyGh2A6xoCgWIHXvOnev3mmTu3LXdfaIgTHjuqgbj6s
+   Q==;
+X-CSE-ConnectionGUID: HSHb+TRARp6y58sem3PMMw==
+X-CSE-MsgGUID: aP0GrKg6T32tSWtgKZkTSA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="30681442"
 X-IronPort-AV: E=Sophos;i="6.07,192,1708416000"; 
-   d="scan'208";a="30681438"
+   d="scan'208";a="30681442"
 Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 20:08:59 -0700
-X-CSE-ConnectionGUID: 6U1REfodQoa03XAI2YHA1Q==
-X-CSE-MsgGUID: Q0hxQO99SRKIYxHMhqIDTw==
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2024 20:09:00 -0700
+X-CSE-ConnectionGUID: c67rkbpHQduq8UVS+RAUvg==
+X-CSE-MsgGUID: BDA9RDfFQgWOqCEdwfaKcw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,192,1708416000"; 
-   d="scan'208";a="20822964"
+   d="scan'208";a="20822973"
 Received: from unknown (HELO allen-box.sh.intel.com) ([10.239.159.127])
-  by fmviesa007.fm.intel.com with ESMTP; 10 Apr 2024 20:08:57 -0700
+  by fmviesa007.fm.intel.com with ESMTP; 10 Apr 2024 20:08:59 -0700
 From: Lu Baolu <baolu.lu@linux.intel.com>
 To: Joerg Roedel <joro@8bytes.org>
 Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>,
 	Xuchun Shang <xuchun.shang@linux.alibaba.com>,
 	iommu@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] iommu/vt-d: Fix wrong use of pasid config
-Date: Thu, 11 Apr 2024 11:07:42 +0800
-Message-Id: <20240411030744.273460-2-baolu.lu@linux.intel.com>
+Subject: [PATCH 2/3] iommu/vt-d: Allocate local memory for page request queue
+Date: Thu, 11 Apr 2024 11:07:43 +0800
+Message-Id: <20240411030744.273460-3-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240411030744.273460-1-baolu.lu@linux.intel.com>
 References: <20240411030744.273460-1-baolu.lu@linux.intel.com>
@@ -77,33 +77,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Xuchun Shang <xuchun.shang@linux.alibaba.com>
+From: Jacob Pan <jacob.jun.pan@linux.intel.com>
 
-The commit "iommu/vt-d: Add IOMMU perfmon support" introduce IOMMU
-PMU feature, but use the wrong config when set pasid filter.
+The page request queue is per IOMMU, its allocation should be made
+NUMA-aware for performance reasons.
 
-Fixes: 7232ab8b89e9 ("iommu/vt-d: Add IOMMU perfmon support")
-Signed-off-by: Xuchun Shang <xuchun.shang@linux.alibaba.com>
-Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
-Link: https://lore.kernel.org/r/20240401060753.3321318-1-xuchun.shang@linux.alibaba.com
+Fixes: a222a7f0bb6c ("iommu/vt-d: Implement page request handling")
+Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Link: https://lore.kernel.org/r/20240403214007.985600-1-jacob.jun.pan@linux.intel.com
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 ---
- drivers/iommu/intel/perfmon.c | 2 +-
+ drivers/iommu/intel/svm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/intel/perfmon.c b/drivers/iommu/intel/perfmon.c
-index cf43e798eca4..44083d01852d 100644
---- a/drivers/iommu/intel/perfmon.c
-+++ b/drivers/iommu/intel/perfmon.c
-@@ -438,7 +438,7 @@ static int iommu_pmu_assign_event(struct iommu_pmu *iommu_pmu,
- 	iommu_pmu_set_filter(domain, event->attr.config1,
- 			     IOMMU_PMU_FILTER_DOMAIN, idx,
- 			     event->attr.config1);
--	iommu_pmu_set_filter(pasid, event->attr.config1,
-+	iommu_pmu_set_filter(pasid, event->attr.config2,
- 			     IOMMU_PMU_FILTER_PASID, idx,
- 			     event->attr.config1);
- 	iommu_pmu_set_filter(ats, event->attr.config2,
+diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+index c1bed89b1026..ee3b469e2da1 100644
+--- a/drivers/iommu/intel/svm.c
++++ b/drivers/iommu/intel/svm.c
+@@ -66,7 +66,7 @@ int intel_svm_enable_prq(struct intel_iommu *iommu)
+ 	struct page *pages;
+ 	int irq, ret;
+ 
+-	pages = alloc_pages(GFP_KERNEL | __GFP_ZERO, PRQ_ORDER);
++	pages = alloc_pages_node(iommu->node, GFP_KERNEL | __GFP_ZERO, PRQ_ORDER);
+ 	if (!pages) {
+ 		pr_warn("IOMMU: %s: Failed to allocate page request queue\n",
+ 			iommu->name);
 -- 
 2.34.1
 
