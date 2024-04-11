@@ -1,201 +1,168 @@
-Return-Path: <linux-kernel+bounces-140069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6342B8A0B11
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:22:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DCF98A0B13
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:24:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 961CBB261F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:22:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F6B21C21AF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E953140364;
-	Thu, 11 Apr 2024 08:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B89813FD7E;
+	Thu, 11 Apr 2024 08:24:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="Z6yc7E2n"
-Received: from PR0P264CU014.outbound.protection.outlook.com (mail-francecentralazon11022018.outbound.protection.outlook.com [52.101.167.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fWecwx1y"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFA6013FD6E;
-	Thu, 11 Apr 2024 08:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.167.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712823760; cv=fail; b=UzrJdm32VRZb/qETiLOJr2U3UyeNIhh1BJ7/MpWjL8d116m1qnS8o6NR+Zvj/vQL0qn+XKjd6IMf0eFbYPFUsvi9eYIzHZamHfVejIdDW/a8hebbdIZoxhGYyMwsijKRxW6cujjjCXgRsO1AvCynBrGPRSfDw2n17ajV0HhDP9I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712823760; c=relaxed/simple;
-	bh=99byordJLQuq/MnRFJ7FpXR0Yk4ikCyNE2wZlGTzWaE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=lk9QnAF3xVJm0oPhi9nf68Z9BCmDEdlRfBXg5cD9un61qW0RyQNcf9PNwwVBi6yBljGWUNSyUpMBGrHomdm2bX1ULPHHTZdlN3MdcE5Ucqjuwmm0Xg4s2/ZENCL5xd7XbxXOJeylqohTigYlxOCy53zl5ku5vKBZ0yHRNp5nxS4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=Z6yc7E2n; arc=fail smtp.client-ip=52.101.167.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FUMojlN+HnqOc3T9OLzzTLaqEcnI8zTCYfsDTFHplUHWyUzn6e0y/Y9BMpEQz9IDlRoEk14DHgPwUsjI9XPJE2NlIXWkfvPw/ovPo5MsyjSDea+RXGY/eXmMrJiVzrcnQgkyCNl3CI+A20D2cYkMtgF7PrX/97rqNm7eevrXKH3DsFZgGR7SfyRbw5q0i2zOBgbota5kykGqBi/m4G0OYqpgMVnykHFPRSk8sjg0NUS+8f4wKo+q8oK/SYwzvxzuu4A8lCt7KC1JH7ugOdOYTXYMZSV9In+EQiscioQ0V/rRukJ2lzSQFXYil+OewQ6ydkbph+dt/TBihL4DJJCUJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=99byordJLQuq/MnRFJ7FpXR0Yk4ikCyNE2wZlGTzWaE=;
- b=XsIwlc18DwnjprxQK1x/iL4sibhlHw7SiICyOA8gcbHHdVO2ideU2V9n2yDkPcD3FFSImbCSb8oKp+I5xVc4btzAAP0/+hqyOk0dpGrhfvONknIBjY/gbz4ogjEP5Y5VwAi2aX6m9TLTQvQswGkwL6o1tCgejiopjH31cJzCo5QEjk19ieJUJMEkUYlrYYfWZbJYOjIIH1WlfPbrsCapV+uIzVg7wG1lgxBOvbKymt+DS93YKN9hmBnbZn2VDKYSyHhKgyDSblDPek4KgZnnM4z8x5W+Tte8WvQZz4F/xo3GpsbDfZgtrq2ukRRloHEBMrAl6LHDLUO8Fx52vhk9nA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=99byordJLQuq/MnRFJ7FpXR0Yk4ikCyNE2wZlGTzWaE=;
- b=Z6yc7E2ntupQXIN/ibYCd8Twyj4kE+e/IHr225ao4nglF+xwwqa44xxsxgu3H+P/P2QINuabZ8DwEYUNfdbFd9SdiS45LYmWOs+uduOj9RfqAYQrlcLsDcK4glCvbXChit8mzpmGy3EIzksjIX8q1Ozirbrh3ry61RWPyXCac0f9FDpFM6DHJjaW9HTOW+UiPleagvUDqkbRbjnlNKkESM1ctVRm8/x9kHBRVGbnXGj4M20T80WYLeDC3m9+SQoMUUCcKuwxVadr7BmLi45YOxSMWOPX/IKx+6K/QISJ/4JOpmG1j1iG1V0QV9pvlvoetg7ASLWXWyskfWwPgsVoCg==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MRZP264MB2588.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:1d::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Thu, 11 Apr
- 2024 08:22:35 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::1f75:cb9f:416:4dbb]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::1f75:cb9f:416:4dbb%7]) with mapi id 15.20.7409.053; Thu, 11 Apr 2024
- 08:22:35 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Adrian Hunter <adrian.hunter@intel.com>, Arnd Bergmann <arnd@arndb.de>
-CC: Naresh Kamboju <naresh.kamboju@linaro.org>, Michael Ellerman
-	<mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Aneesh Kumar K.V
-	<aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger
-	<borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Ingo Molnar
-	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, "x86@kernel.org" <x86@kernel.org>, "H. Peter
- Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, Vincenzo Frascino
-	<vincenzo.frascino@arm.com>, John Stultz <jstultz@google.com>, Stephen Boyd
-	<sboyd@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Randy Dunlap
-	<rdunlap@infradead.org>, Bjorn Helgaas <bhelgaas@google.com>, Anna-Maria
- Gleixner <anna-maria@linutronix.de>, "linuxppc-dev@lists.ozlabs.org"
-	<linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-s390@vger.kernel.org"
-	<linux-s390@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] bug: Fix no-return-statement warning with !CONFIG_BUG
-Thread-Topic: [PATCH] bug: Fix no-return-statement warning with !CONFIG_BUG
-Thread-Index: AQHai1xRYzjVdYtCeEepwMKzYWvQLLFipl4AgAADMgCAAA/YgIAAAq+A
-Date: Thu, 11 Apr 2024 08:22:35 +0000
-Message-ID: <ff9d7032-a3b6-4ecd-ac26-d7d4a06a5c7f@csgroup.eu>
-References: <20240410153212.127477-1-adrian.hunter@intel.com>
- <87be83da-6102-483d-b1dc-a77eecc9f780@app.fastmail.com>
- <c9f382b2-cd96-4ee3-ad68-95381d9e09c0@intel.com>
- <a434248a-1e9f-4f4f-8f90-d36d8e979f53@csgroup.eu>
-In-Reply-To: <a434248a-1e9f-4f4f-8f90-d36d8e979f53@csgroup.eu>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MRZP264MB2588:EE_
-x-ms-office365-filtering-correlation-id: 9e518b61-287b-42da-7d27-08dc5a008abc
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- t6TUMKX8bISKumWAVk2RJRCVJZUYzbOJ4XSD/qfwUVLxXuB8jb9dqoPbOnA5991LCKSO7hyI1+/n4LmCu3uI7BlW9jgcdpPzkYfS6o233zTvVsXZ1mEd+ywzLoM2UnRH6VVespoaPn6lsYeS89wZAsdnW+SAYTHy31Mk1+0Uujeux+bLVAWh0cbTm/HvTjl848YxcYMwpMiQUWqgziVgZQt23kDX5AqDzucJSlArrgukR7NKRgZq7/LW5UAdjxzhEb2vMFXvGgWcfKt6iuDnC1d8YlQTtCKPqVyNaBhQ5Mc0d0wCbfHWN4lqhfYbfAnbJjDDZxsVrKkjLo5KV//tbI9VIixj5dlnzZeRCQG871wyhlLMe1tDgNoubeO5FHmk4bsWnmWfODRgrfNEO56AxE5lLKtIIXj8q31LQkDp93l0t1uy/7uer5SVD4SVxD/70x6H48RItAsQ93IZ1DvcVlpHWMC24VXzF2Du88p6Q9220MytoqGO8fdYW9EtLk9jJmbqP5gyeo2ye9kIPv51/OjMjnkTvxKA9AvSQ/L4GBEOAVzR6881ZeoIkDs8Z+Tq2LKcOXOk6FoA3Jipp2ANDMFjgVs5sQzICqEC2ywmQhSyu6RPtLeWM30+j8+36skyZiRvTpzPUt5cm1Q4Yx2JLZ1yMmlZ0/rloHXoF+d+XmU=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(366007)(376005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?R1ZUMmt5YU9lRjlNWVBkUlFmTWdBLy9MSGJTeG1VbmYvNnlvcTdTaUJTL2Jj?=
- =?utf-8?B?ay9id1ZGMEZXTUloRHc5T2tMTzVwbXFLSlV5SUxKd1pDZlFueVRvcnkvUFpm?=
- =?utf-8?B?OE16dGJaRjJtNjFDU3hqdGZCdFhiY3RzOU01UE84b1R2WHJqbnV1bmE5d0k5?=
- =?utf-8?B?dGl6aGNlK2NiSVNrYTFpZjRsWlkyYzBneHFYYlNCdmgxTUpVelhNckE0em1n?=
- =?utf-8?B?cldKeWVpanZ5eWRmd3g0UmF6RCtQUWhpdGN0NzlVNG9pKzl0V2FQWU96TVF4?=
- =?utf-8?B?cGcrVXdMTnVrYStrWDNZcHBYdFJDTlZaZG11alh4Mmx4NkROTjhWdUwvR2Zq?=
- =?utf-8?B?UVhEbnBOTy8vOEFHN0RJay8yTXhQSUNXbW03YWY1M2hDV0hFbTN1bmthYTRF?=
- =?utf-8?B?SDdtdm8xY09YQjVmRHFjT2xScDZFakttc3NpYXRuOHpwenNBT1luaXNwMU10?=
- =?utf-8?B?SW9vcE1jcUhOMlN2QnVFbzBBazU4MVRrNWI1Vzh0OStueERUYS9UOE1xWlRo?=
- =?utf-8?B?dkV2Sy9yTExCSXo1MjBNQWE3bnZwUXlaTnJobkNjV2tPSWVjcVRudnptS0FF?=
- =?utf-8?B?Ym0wR0pJSHQ5NGlmbHhLcnVmdENPUG84aTFXaGw3bnkwRC8reFRhQjQwNm9y?=
- =?utf-8?B?dnM3UkRmSkdYa0Q4MzEvOXFWTlNhdEZiSzdRTkI4Ni81N2xjQ1pJUmR5YzU5?=
- =?utf-8?B?a2ZBbmN4dEwwSmR4c091b1RocHBlUUZzNllKMzBTNTFwa2x1YUhnNGVBdFhB?=
- =?utf-8?B?bS9Ta0t6NjR3ODBTcVJZVkt0NFhTaTlNbWdLc3dIc2FMRmdIMmFpdEFPUTB2?=
- =?utf-8?B?d0RpcDJhVStUTkZhbzNxNVNCMVhmTjVublhuYVlNL250anorUStzWHRNMitv?=
- =?utf-8?B?V1QxRmJwdVQ0cnlkUDNGNUU1RjMzWGtrdU1DSXdheXIrckd2UGNqVmlwb1lR?=
- =?utf-8?B?N1lOdlNFNHRKWGdmU20zR1JGYnRpM0JPVW9oblArSzNXa2FyVVptWU51MXF2?=
- =?utf-8?B?WmxjRmVlcUt5WGNSZDBBQzhROExSZ0hoZUZ5TGpWWE9FN0diU3BDcjVTTjFx?=
- =?utf-8?B?UUo1aDEvdXNKYmFDWDlpZitud1lURk5EeFg5dk5pUkxaQW9KdndaajkvRS82?=
- =?utf-8?B?N3NCZ0EwRktZUlVqMVl4eUIxajJBRGxkcGlMb1ZSUStKMVlFOXg5MXVITzZY?=
- =?utf-8?B?Z0tJUDNQTWRwaDZmREhVb25yK3BNWktOOVhPQ2M5S1lrWDdVWTk5aXdHL3pB?=
- =?utf-8?B?c1ZpOVhVMUdKMjdSanJCZVYzU3BPV1pZaXFZNy9tazljZE5TSmZGelArYXBy?=
- =?utf-8?B?QkxQek9zVDdpYVltak9mQXBVZEc4T0xWM1QyUFdBRE1odWJrUEY2UTlYdTlR?=
- =?utf-8?B?MTVaaUVOZEZWNjBrM0Q5YStaY1UyNFFqTkZiKzdrSWU3aUw0cHJyWHlyK2xW?=
- =?utf-8?B?SjV1U3o5SkpyaGZqTE45U2lnZkllS0FqdU9SY1NwakRydUVPU29Ha0g4Vlo3?=
- =?utf-8?B?NkFPYlRDcjFwMUZMUlZtT0svQ1hYVDl5T0xWRG8vT3lLYzV3cXBCSFhITGVa?=
- =?utf-8?B?MmpoR24xR0Y0eTJRNXJVWlk5SE50UnVucVVKNm05WlRhTisvNUMxeFZGZFJy?=
- =?utf-8?B?MFFORFFIMHNzcmVSclJqRkJzcktkcFRCMlhpNGovSFoxdGk3QUNnZ3BpVkRN?=
- =?utf-8?B?bmxMcjQrUzB4TUFLVzlYYWZHZGtPNVAwRHZFSWJGVTBlZkh0VnN6eDZxVEt0?=
- =?utf-8?B?S3RWcld0WVhUM0dMWjBUTmVyYjhjcjRLMTdXYk5PR202Z0xzMzBjQWxxbGhl?=
- =?utf-8?B?RzlHeGZMTFZKS2FjU2FYRDJxQlEyWnJRdHNxQ0tZMnY5akJjd2YyQm90YlVU?=
- =?utf-8?B?djkraW5IZ05aaHlwQ2RZVGsrdGRkbWpHWUo1dmpZOFlJbi9GcTF3WW5NUmla?=
- =?utf-8?B?U1FoaDlaYnFCZHh2dnBGNFhETC9QTm9rZHBNKys3aXdSSE95eDE4Qk9JditX?=
- =?utf-8?B?OG4vRitZd2R2ZFd0NHJsUU5uTE1SQnBiWnpiUTFCLzV6NGNQck1JR1o0YldK?=
- =?utf-8?B?T3FIMHkydWI1ZFZJZkJaUWJOUFVZc3FieEY4MkpVcDE4RThYZ1UwYUtUNWVi?=
- =?utf-8?Q?xrKNQBGOuC325PDoO4ms+1XBa?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7CE8263CDE2D3A41A7E732A851462DD4@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2D3026ACC
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:24:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712823843; cv=none; b=JCZ9Ebuox3Fvm5Dn0lfOm/A1t8uXlVdzE03WT2mvOX/lgNfG7ACSWUuFsg86BprjOhX+vbqEEvWgIbg0ulXjPfLva3rC2VvRhagVW27yhbNqCmEOiov8QwFwPdo8R3f2Kig7iEeVSwreiZki/maCGrHkId+WirzYks2DLx91L6U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712823843; c=relaxed/simple;
+	bh=HGrPWL/UFBpYufo7bXlquMGLiLIjYpTaziY24qzx4y8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BcQufiYg2EPyZZViIztcrQ6UUvCMVwtK0ArahOIak2kcJXJqAQWh20MgZNmbaxG05bdLJZPu3zVKjH4j4L6N84mfNBRrBw5Co5lSCRxZkRiBHa5LvQWg9MKqFrF1kzZA8iC6rFTsGOdiSFnlTkEV2XnqZ79/ysn4CRJ5+PACou0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fWecwx1y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22EB9C433C7;
+	Thu, 11 Apr 2024 08:24:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712823843;
+	bh=HGrPWL/UFBpYufo7bXlquMGLiLIjYpTaziY24qzx4y8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=fWecwx1yk0PFl68/D7X5P0gstlR7wk3ZmH6pWAtzw28T+Xl/Xl0CQlVKuQL1obn0v
+	 1CEv7whB+3wOvRes7t39a7EVus2VGM+FFfqH97Px4ZwQ4dPNemPtHkV1snHKFQjFF8
+	 fvPe7VcF3Dw4obej4Zk2IIcOdKc0wOIDC9Xdd9/criA4UGZ7vvQZLlS/OAIl+0EbOb
+	 uljL5UBwckorfQoRp3oWw2iA+mA3aD9tA8uMfhU7HnxpAI9Bh93xE0tVp85XovHNzq
+	 VhlJEeGF8CfRV7g3140ia+ExaTJV/GyKurMT74ILFtuInSG+57MEWccxGOW9jpTLye
+	 xjY0oGWbgRMdg==
+From: Chao Yu <chao@kernel.org>
+To: jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	Chao Yu <chao@kernel.org>
+Subject: [PATCH v2 1/2] f2fs: use per-log target_bitmap to improve lookup performace of ssr allocation
+Date: Thu, 11 Apr 2024 16:23:53 +0800
+Message-Id: <20240411082354.1691820-1-chao@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e518b61-287b-42da-7d27-08dc5a008abc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Apr 2024 08:22:35.3828
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SEL614yGy9Hm6h7Jg1glRz6zG+lZzNlIxwHgQ0iXmIEjf5+gAbZwvSD8asbHFQCA0u6x6BMa3tMyDrD4AGOXnsWpc1U07JwmTn3r5FqcWZw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MRZP264MB2588
+Content-Transfer-Encoding: 8bit
 
-DQoNCkxlIDExLzA0LzIwMjQgw6AgMTA6MTIsIENocmlzdG9waGUgTGVyb3kgYSDDqWNyaXTCoDoN
-Cj4gDQo+IA0KPiBMZSAxMS8wNC8yMDI0IMOgIDA5OjE2LCBBZHJpYW4gSHVudGVyIGEgw6ljcml0
-wqA6DQo+PiBPbiAxMS8wNC8yNCAxMDowNCwgQXJuZCBCZXJnbWFubiB3cm90ZToNCj4+PiBPbiBX
-ZWQsIEFwciAxMCwgMjAyNCwgYXQgMTc6MzIsIEFkcmlhbiBIdW50ZXIgd3JvdGU6DQo+Pj4+IEJV
-RygpIGRvZXMgbm90IHJldHVybiwgYW5kIGFyY2ggaW1wbGVtZW50YXRpb25zIG9mIEJVRygpIHVz
-ZSANCj4+Pj4gdW5yZWFjaGFibGUoKQ0KPj4+PiBvciBvdGhlciBub24tcmV0dXJuaW5nIGNvZGUu
-IEhvd2V2ZXIgd2l0aCAhQ09ORklHX0JVRywgdGhlIGRlZmF1bHQNCj4+Pj4gaW1wbGVtZW50YXRp
-b24gaXMgb2Z0ZW4gdXNlZCBpbnN0ZWFkLCBhbmQgdGhhdCBkb2VzIG5vdCBkbyB0aGF0LiB4ODYg
-DQo+Pj4+IGFsd2F5cw0KPj4+PiB1c2VzIGl0cyBvd24gaW1wbGVtZW50YXRpb24sIGJ1dCBwb3dl
-cnBjIHdpdGggIUNPTkZJR19CVUcgZ2l2ZXMgYSBidWlsZA0KPj4+PiBlcnJvcjoNCj4+Pj4NCj4+
-Pj4gwqDCoCBrZXJuZWwvdGltZS90aW1la2VlcGluZy5jOiBJbiBmdW5jdGlvbiDigJh0aW1la2Vl
-cGluZ19kZWJ1Z19nZXRfbnPigJk6DQo+Pj4+IMKgwqAga2VybmVsL3RpbWUvdGltZWtlZXBpbmcu
-YzoyODY6MTogZXJyb3I6IG5vIHJldHVybiBzdGF0ZW1lbnQgaW4gDQo+Pj4+IGZ1bmN0aW9uDQo+
-Pj4+IMKgwqAgcmV0dXJuaW5nIG5vbi12b2lkIFstV2Vycm9yPXJldHVybi10eXBlXQ0KPj4+Pg0K
-Pj4+PiBBZGQgdW5yZWFjaGFibGUoKSB0byBkZWZhdWx0ICFDT05GSUdfQlVHIEJVRygpIGltcGxl
-bWVudGF0aW9uLg0KPj4+DQo+Pj4gSSdtIGEgYml0IHdvcnJpZWQgYWJvdXQgdGhpcyBwYXRjaCwg
-c2luY2Ugd2UgaGF2ZSBoYWQgcHJvYmxlbXMNCj4+PiB3aXRoIHVucmVhY2hhYmxlKCkgaW5zaWRl
-IG9mIEJVRygpIGluIHRoZSBwYXN0LCBhbmQgYXMgZmFyIGFzIEkNCj4+PiBjYW4gcmVtZW1iZXIs
-IHRoZSBjdXJyZW50IHZlcnNpb24gd2FzIHRoZSBvbmx5IG9uZSB0aGF0DQo+Pj4gYWN0dWFsbHkg
-ZGlkIHRoZSByaWdodCB0aGluZyBvbiBhbGwgY29tcGlsZXJzLg0KPj4+DQo+Pj4gT25lIHByb2Js
-ZW0gd2l0aCBhbiB1bnJlYWNoYWJsZSgpIGFubm90YXRpb24gaGVyZSBpcyB0aGF0IGlmDQo+Pj4g
-YSBjb21waWxlciBtaXNhbmFseXNlcyB0aGUgZW5kbGVzcyBsb29wLCBpdCBjYW4gZGVjaWRlIHRv
-DQo+Pj4gdGhyb3cgb3V0IHRoZSBlbnRpcmUgY29kZSBwYXRoIGxlYWRpbmcgdXAgdG8gaXQgYW5k
-IGp1c3QNCj4+PiBydW4gaW50byB1bmRlZmluZWQgYmVoYXZpb3IgaW5zdGVhZCBvZiBwcmludGlu
-ZyBhIEJVRygpDQo+Pj4gbWVzc2FnZS4NCj4+Pg0KPj4+IERvIHlvdSBrbm93IHdoaWNoIGNvbXBp
-bGVyIHZlcnNpb24gc2hvdyB0aGUgd2FybmluZyBhYm92ZT8NCj4+DQo+PiBPcmlnaW5hbCByZXBv
-cnQgaGFzIGEgbGlzdA0KPj4NCj4+IMKgwqDCoMKgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxs
-L0NBK0c5Zll2amRaQ1c9N1pHeFM2QV8zYnlzalE1NllGN1MtK1BOTFFfOGE0REtoMUJoZ0BtYWls
-LmdtYWlsLmNvbS8NCj4+DQo+IA0KPiBMb29raW5nIGF0IHRoZSByZXBvcnQsIEkgdGhpbmsgdGhl
-IGNvcnJlY3QgZml4IHNob3VsZCBiZSB0byB1c2UgDQo+IEJVSUxEX0JVRygpIGluc3RlYWQgb2Yg
-QlVHKCkNCg0KSSBjb25maXJtIHRoZSBlcnJvciBnb2VzIGF3YXkgd2l0aCB0aGUgZm9sbG93aW5n
-IGNoYW5nZSB0byBuZXh0LTIwMjQwNDExIA0Kb24gcG93ZXJwYyB0aW55Y29uZmlnIHdpdGggZ2Nj
-IDEzLjINCg0KZGlmZiAtLWdpdCBhL2tlcm5lbC90aW1lL3RpbWVrZWVwaW5nLmMgYi9rZXJuZWwv
-dGltZS90aW1la2VlcGluZy5jDQppbmRleCA0ZTE4ZGIxODE5ZjguLjNkNWFjMGNkZDcyMSAxMDA2
-NDQNCi0tLSBhL2tlcm5lbC90aW1lL3RpbWVrZWVwaW5nLmMNCisrKyBiL2tlcm5lbC90aW1lL3Rp
-bWVrZWVwaW5nLmMNCkBAIC0yODIsNyArMjgyLDcgQEAgc3RhdGljIGlubGluZSB2b2lkIHRpbWVr
-ZWVwaW5nX2NoZWNrX3VwZGF0ZShzdHJ1Y3QgDQp0aW1la2VlcGVyICp0aywgdTY0IG9mZnNldCkN
-CiAgfQ0KICBzdGF0aWMgaW5saW5lIHU2NCB0aW1la2VlcGluZ19kZWJ1Z19nZXRfbnMoY29uc3Qg
-c3RydWN0IHRrX3JlYWRfYmFzZSAqdGtyKQ0KICB7DQotCUJVRygpOw0KKwlCVUlMRF9CVUcoKTsN
-CiAgfQ0KICAjZW5kaWYNCg0K
+After commit 899fee36fac0 ("f2fs: fix to avoid data corruption by
+forbidding SSR overwrite"), valid block bitmap of current openned
+segment is fixed, let's introduce a per-log bitmap instead of temp
+bitmap to avoid unnecessary calculation overhead whenever allocating
+free slot w/ SSR allocator.
+
+Signed-off-by: Chao Yu <chao@kernel.org>
+---
+v2:
+- rebase to last dev-test branch.
+ fs/f2fs/segment.c | 30 ++++++++++++++++++++++--------
+ fs/f2fs/segment.h |  1 +
+ 2 files changed, 23 insertions(+), 8 deletions(-)
+
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 6474b7338e81..af716925db19 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -2840,31 +2840,39 @@ static int new_curseg(struct f2fs_sb_info *sbi, int type, bool new_sec)
+ 	return 0;
+ }
+ 
+-static int __next_free_blkoff(struct f2fs_sb_info *sbi,
+-					int segno, block_t start)
++static void __get_segment_bitmap(struct f2fs_sb_info *sbi,
++					unsigned long *target_map,
++					int segno)
+ {
+ 	struct seg_entry *se = get_seg_entry(sbi, segno);
+ 	int entries = SIT_VBLOCK_MAP_SIZE / sizeof(unsigned long);
+-	unsigned long *target_map = SIT_I(sbi)->tmp_map;
+ 	unsigned long *ckpt_map = (unsigned long *)se->ckpt_valid_map;
+ 	unsigned long *cur_map = (unsigned long *)se->cur_valid_map;
+ 	int i;
+ 
+ 	for (i = 0; i < entries; i++)
+ 		target_map[i] = ckpt_map[i] | cur_map[i];
++}
++
++static int __next_free_blkoff(struct f2fs_sb_info *sbi, unsigned long *bitmap,
++					int segno, block_t start)
++{
++	__get_segment_bitmap(sbi, bitmap, segno);
+ 
+-	return __find_rev_next_zero_bit(target_map, BLKS_PER_SEG(sbi), start);
++	return __find_rev_next_zero_bit(bitmap, BLKS_PER_SEG(sbi), start);
+ }
+ 
+ static int f2fs_find_next_ssr_block(struct f2fs_sb_info *sbi,
+-		struct curseg_info *seg)
++					struct curseg_info *seg)
+ {
+-	return __next_free_blkoff(sbi, seg->segno, seg->next_blkoff + 1);
++	return __find_rev_next_zero_bit(seg->target_map,
++				BLKS_PER_SEG(sbi), seg->next_blkoff + 1);
+ }
+ 
+ bool f2fs_segment_has_free_slot(struct f2fs_sb_info *sbi, int segno)
+ {
+-	return __next_free_blkoff(sbi, segno, 0) < BLKS_PER_SEG(sbi);
++	return __next_free_blkoff(sbi, SIT_I(sbi)->tmp_map, segno, 0) <
++							BLKS_PER_SEG(sbi);
+ }
+ 
+ /*
+@@ -2890,7 +2898,8 @@ static int change_curseg(struct f2fs_sb_info *sbi, int type)
+ 
+ 	reset_curseg(sbi, type, 1);
+ 	curseg->alloc_type = SSR;
+-	curseg->next_blkoff = __next_free_blkoff(sbi, curseg->segno, 0);
++	curseg->next_blkoff = __next_free_blkoff(sbi, curseg->target_map,
++							curseg->segno, 0);
+ 
+ 	sum_page = f2fs_get_sum_page(sbi, new_segno);
+ 	if (IS_ERR(sum_page)) {
+@@ -4635,6 +4644,10 @@ static int build_curseg(struct f2fs_sb_info *sbi)
+ 				sizeof(struct f2fs_journal), GFP_KERNEL);
+ 		if (!array[i].journal)
+ 			return -ENOMEM;
++		array[i].target_map = f2fs_kzalloc(sbi, SIT_VBLOCK_MAP_SIZE,
++								GFP_KERNEL);
++		if (!array[i].target_map)
++			return -ENOMEM;
+ 		if (i < NR_PERSISTENT_LOG)
+ 			array[i].seg_type = CURSEG_HOT_DATA + i;
+ 		else if (i == CURSEG_COLD_DATA_PINNED)
+@@ -5453,6 +5466,7 @@ static void destroy_curseg(struct f2fs_sb_info *sbi)
+ 	for (i = 0; i < NR_CURSEG_TYPE; i++) {
+ 		kfree(array[i].sum_blk);
+ 		kfree(array[i].journal);
++		kfree(array[i].target_map);
+ 	}
+ 	kfree(array);
+ }
+diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
+index e1c0f418aa11..10f3e44f036f 100644
+--- a/fs/f2fs/segment.h
++++ b/fs/f2fs/segment.h
+@@ -292,6 +292,7 @@ struct curseg_info {
+ 	struct f2fs_summary_block *sum_blk;	/* cached summary block */
+ 	struct rw_semaphore journal_rwsem;	/* protect journal area */
+ 	struct f2fs_journal *journal;		/* cached journal info */
++	unsigned long *target_map;		/* bitmap for SSR allocator */
+ 	unsigned char alloc_type;		/* current allocation type */
+ 	unsigned short seg_type;		/* segment type like CURSEG_XXX_TYPE */
+ 	unsigned int segno;			/* current segment number */
+-- 
+2.40.1
+
 
