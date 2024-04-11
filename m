@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-140778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2BF48A18EC
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9AC48A18EB
 	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:40:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8A272868CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:40:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32F251F2123C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:40:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B47FC4AEC3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B66BC4AEC7;
 	Thu, 11 Apr 2024 15:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Zv/ZZfuW"
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="ez1gL4pw"
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B185D481B4
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:32:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C019481C6
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 15:32:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849528; cv=none; b=bZD7de3TluMBqbKYM2kPnTZDfEwUGNxX6gdJ9rbKbg4f1gTrkoiOgnJQeZhIrYFdoa8QdPUGMbJFj53jk7UMQTBJjMR46yUgg5UiXkGHXSpOFOjNS6mzGBXxhGcuwzXxUQG4HZ/EA3wsx3kKmB7gEjJTHe7ASHRZ4kG4yIdCiQc=
+	t=1712849528; cv=none; b=gYNDiux8ztuXIBWh/vdyZocdcnU5SFcT6sZ9HlDpe7LFyNAfGd44cvRZtp9HX4/2n9CD/XYJZfDHV1fPDbjQ08PEN9EYM8G/ExSo9eOjytMuGpAiiUiba9NkduA4FM67buXTBLuIjn/jeRC1atUhRAi3U4mG5Hrnu01lHkViXFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712849528; c=relaxed/simple;
-	bh=mBIHrHSx0t1Gu8X++/2wE1bS/peUOddMrWDqDawEdEQ=;
+	bh=TIg6/xRT1sF2uz3iDSlDLHbUI07ew3w55/s+64nRfV8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AoeFadHmWNuIMSASKhOFGBPdrgAdLLHe+SRO1h9xbg5t0JIlHORLz2NpPVECyfGrhWE6BG/H3W5kRwcKXIeiE7D5QqZB8MSUl8CN6Rplhuj+Eim5csBvoZfdTmJkPYxb6lDBqESY9rp4voSeTn9a4Kr3HOaJQ8FB7DxXQFEpgRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Zv/ZZfuW; arc=none smtp.client-ip=209.85.166.46
+	 MIME-Version; b=E8IJiHoRTYKGl7GJCY2MzOW0EMhLPWEFYGNY3u606nypZOVN8W2kt0Q66B+6qWCPFRIYdfubeo1WW1pYYvNmWJWiRJ+rVzEyqzJH0LOcm8StJNu5WC3yDVSaaoQFvLAxJ32IU2EAxnM0Sq4GQ9Wj3OlvqRaFLv3IveMFehqvOII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=ez1gL4pw; arc=none smtp.client-ip=209.85.166.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7d5ed700c2dso16098339f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:32:06 -0700 (PDT)
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7d6812b37a6so8849039f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 08:32:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849525; x=1713454325; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712849526; x=1713454326; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=f2l6h/jCu8YubbMk7Y4sKs4D1pQIix1cvMgP8JlWQTk=;
-        b=Zv/ZZfuWIAN1bizlDPK9Rp3QqEQjaHS4CaOWNjxl9m6NXwAbmKQ+x+FDezO6peu9To
-         wFVD1IPGvDEe8BgNtNr/nuvI3Ms36/5JpRzzfUuEhtrrLRY1u+wowzbnE7cbTQw5JR/W
-         pMlQZKCS76+8wjqJnxEFFBgJAIdsKWwCEpEI6NM3Jp7fcKS+EN06LAI8+Mj/l4DsiYAb
-         VnSTphDAOCZZwJySpXnmj7xA13cdpVxdJJcBZbPy7P++4t3rI3vskuT+zH1vjd8oH/zI
-         j6/Qrr4C6Hp7NMyiM1psWjtdF1mu/vTWNk5hnfIWgb17F6fBWnSoe8EaF0gxvjJ4ReVF
-         rXlg==
+        bh=AEIqreAhrWHWiNMJ3bjnYGKI5wqJlayBXmXujNYutLg=;
+        b=ez1gL4pwlEyMCyQR2Zirsbqd7MrMj8Xz31E18QCzs8FqdAU74+dvbvMiVzHCktYddE
+         yPi056SSpFwyJgCtiTdOpfSDW5dyvLGVc1EvulEhxEodj5i6mroYB2rIkJby7q8sh0Uf
+         qejLos2HarmFyZgHS/EgfvGPKWlEezeoMCpxHaPMELO0MIYfrWl2meH4GlToLvvHnWtQ
+         a3ZoeeL2XHuaYEUlZWxuuR02j5oWlwe+b6Jc4E/POW+0fdolET5lidxItc+Gqej90rgj
+         1BSybtS/DWH4ABlRZVIuI2fkeXh9R2DN8JsAhU5ykrJX6Tq7RCOOVWcXHOVsTtmdRQLq
+         kxgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849525; x=1713454325;
+        d=1e100.net; s=20230601; t=1712849526; x=1713454326;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=f2l6h/jCu8YubbMk7Y4sKs4D1pQIix1cvMgP8JlWQTk=;
-        b=hqp1o0Z2Ffv6GbolUL3WorKODdAWgJosDigrVoRwir0HVuJStaifJxwNE1TWAaDHAI
-         PKTuHRWU3PzPZBawwxrDu1hXd4p0I5tA1qULjMoKaQ25JZYQZ+IuIBs5GKwPBzdNbyki
-         VXboGbZb0E+l2Il/4TntEA+jYRIa/L+LW0QOrAmtQB7gusPtK6Vfydt9qWbs4QguB/+V
-         DtKt6OX8wPMy2x5RVIAFzxld7FDjWErc/fzZZVyw8SybDHJq7u5bwWoPQXklxe0vW1id
-         ekFa1YUwm/wcjihV7hwRu0xnaHPpOW6qCQXaxC4Wc3UDfPV8yEiiOkgN9BhtWnljwwwp
-         MvfA==
-X-Gm-Message-State: AOJu0YyvbFMjLr4hLtnsvY1crGK9Ex39Ip070nFauGh83WGxjeaKsowJ
-	TMk81NGN17PLkHpT12bDUB0r0ReZCUVbhPNYpnEMnx2czyJUAV4sU3LQxplHwojWrsUAMfPsFqu
-	Z
-X-Google-Smtp-Source: AGHT+IEn9kx7aES2I5uP8b+SHKHJtQQRCy1KF63sdUmtkcYEPlFtiKWDcG5UMW2RZJn7sbd1CorbQA==
-X-Received: by 2002:a6b:f312:0:b0:7d5:de23:13a9 with SMTP id m18-20020a6bf312000000b007d5de2313a9mr148153ioh.1.1712849524925;
-        Thu, 11 Apr 2024 08:32:04 -0700 (PDT)
+        bh=AEIqreAhrWHWiNMJ3bjnYGKI5wqJlayBXmXujNYutLg=;
+        b=ljK1irn9grFM5lbBRVRLbD9tA4YVt8Q9OMpwYkp136Z75kj56Z/u3WtRSRoshmhr8a
+         URWqRqgpm1XEhJpCNoGOcWwHtlYZ/hwy9iQWjBZ2a28K4w5xT0y+APt/I6Rm9efeKI+2
+         ljMgdLTJi2HRxv+R8tJlqBLwlQYA0dlywUTtPLVQEeCi5jCGIikOfuHCqYhrVvhbQLA8
+         1oLWVal07h3W/1RHyVw8gX/p03M6yTtcXl29t0hizRasDLKmEzqyEfDbmuzxsdI60CHX
+         bh7Vg7l6a31K9wtoS38sssmxaViTrP9HE47cHk7FuhrW/fiihQQ3iZ6kh48IizUn1Xer
+         GKlw==
+X-Gm-Message-State: AOJu0Yw4QqM86RXfYdUi+1QOCpDZUPQQteT8hYFh+7h1dZsxFFrLzP6d
+	I+zxJ/08Lg0AzSKh21+LKnDqaIBMEPElPiEZ5OQ5Fn9Z5T1J/bCiYCt7B1m863BTeG2XhHiMoF5
+	o
+X-Google-Smtp-Source: AGHT+IES27zf7b+QjVz8qu+U8JgrFMdX8B/9/TvD1n6gnb6LfTBJJ2czbrnOTW1DjjgViqiyVk+zAQ==
+X-Received: by 2002:a05:6602:21d7:b0:7d6:9ddf:5095 with SMTP id c23-20020a05660221d700b007d69ddf5095mr2844ioc.1.1712849525775;
+        Thu, 11 Apr 2024 08:32:05 -0700 (PDT)
 Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.32.03
+        by smtp.gmail.com with ESMTPSA id jc25-20020a056638891900b0047f14b7f6c0sm457056jab.5.2024.04.11.08.32.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 08:32:03 -0700 (PDT)
+        Thu, 11 Apr 2024 08:32:05 -0700 (PDT)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-kernel@vger.kernel.org
 Cc: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 021/437] char/ipmi: convert to read/write iterators
-Date: Thu, 11 Apr 2024 09:12:41 -0600
-Message-ID: <20240411153126.16201-22-axboe@kernel.dk>
+Subject: [PATCH 022/437] char/tpm: convert to read/write iterators
+Date: Thu, 11 Apr 2024 09:12:42 -0600
+Message-ID: <20240411153126.16201-23-axboe@kernel.dk>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240411153126.16201-1-axboe@kernel.dk>
 References: <20240411153126.16201-1-axboe@kernel.dk>
@@ -85,383 +85,219 @@ Content-Transfer-Encoding: 8bit
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- drivers/char/ipmi/bt-bmc.c            | 27 +++++++++++++--------------
- drivers/char/ipmi/ipmb_dev_int.c      | 19 ++++++++++---------
- drivers/char/ipmi/ipmi_watchdog.c     | 16 ++++++++--------
- drivers/char/ipmi/kcs_bmc_cdev_ipmi.c | 23 ++++++++++++-----------
- drivers/char/ipmi/ssif_bmc.c          | 25 ++++++++++++++-----------
- 5 files changed, 57 insertions(+), 53 deletions(-)
+ drivers/char/tpm/eventlog/common.c |  2 +-
+ drivers/char/tpm/tpm-dev-common.c  | 26 +++++++++++++-------------
+ drivers/char/tpm/tpm-dev.c         |  4 ++--
+ drivers/char/tpm/tpm-dev.h         |  6 ++----
+ drivers/char/tpm/tpm_vtpm_proxy.c  | 20 ++++++++++----------
+ drivers/char/tpm/tpmrm-dev.c       |  4 ++--
+ 6 files changed, 30 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/char/ipmi/bt-bmc.c b/drivers/char/ipmi/bt-bmc.c
-index 7450904e330a..d8b2e513ed2a 100644
---- a/drivers/char/ipmi/bt-bmc.c
-+++ b/drivers/char/ipmi/bt-bmc.c
-@@ -15,6 +15,7 @@
- #include <linux/poll.h>
- #include <linux/sched.h>
- #include <linux/timer.h>
-+#include <linux/uio.h>
- 
- /*
-  * This is a BMC device used to communicate to the host
-@@ -172,17 +173,17 @@ static int bt_bmc_open(struct inode *inode, struct file *file)
-  *    Length  NetFn/LUN  Seq     Cmd     Data
-  *
-  */
--static ssize_t bt_bmc_read(struct file *file, char __user *buf,
--			   size_t count, loff_t *ppos)
-+static ssize_t bt_bmc_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct bt_bmc *bt_bmc = file_bt_bmc(file);
-+	struct bt_bmc *bt_bmc = file_bt_bmc(iocb->ki_filp);
-+	size_t count = iov_iter_count(to);
- 	u8 len;
- 	int len_byte = 1;
- 	u8 kbuffer[BT_BMC_BUFFER_SIZE];
- 	ssize_t ret = 0;
- 	ssize_t nread;
- 
--	WARN_ON(*ppos);
-+	WARN_ON(iocb->ki_pos);
- 
- 	if (wait_event_interruptible(bt_bmc->queue,
- 				     bt_inb(bt_bmc, BT_CTRL) & BT_CTRL_H2B_ATN))
-@@ -215,12 +216,11 @@ static ssize_t bt_bmc_read(struct file *file, char __user *buf,
- 
- 		bt_readn(bt_bmc, kbuffer + len_byte, nread);
- 
--		if (copy_to_user(buf, kbuffer, nread + len_byte)) {
-+		if (!copy_to_iter_full(kbuffer, nread + len_byte, to)) {
- 			ret = -EFAULT;
- 			break;
- 		}
- 		len -= nread;
--		buf += nread + len_byte;
- 		ret += nread + len_byte;
- 		len_byte = 0;
- 	}
-@@ -238,10 +238,10 @@ static ssize_t bt_bmc_read(struct file *file, char __user *buf,
-  *    Byte 1  Byte 2     Byte 3  Byte 4  Byte 5  Byte 6:N
-  *    Length  NetFn/LUN  Seq     Cmd     Code    Data
-  */
--static ssize_t bt_bmc_write(struct file *file, const char __user *buf,
--			    size_t count, loff_t *ppos)
-+static ssize_t bt_bmc_write(struct kiocb *iocb, struct iov_iter *from)
- {
--	struct bt_bmc *bt_bmc = file_bt_bmc(file);
-+	struct bt_bmc *bt_bmc = file_bt_bmc(iocb->ki_filp);
-+	size_t count = iov_iter_count(from);
- 	u8 kbuffer[BT_BMC_BUFFER_SIZE];
- 	ssize_t ret = 0;
- 	ssize_t nwritten;
-@@ -252,7 +252,7 @@ static ssize_t bt_bmc_write(struct file *file, const char __user *buf,
- 	if (count < 5)
- 		return -EINVAL;
- 
--	WARN_ON(*ppos);
-+	WARN_ON(iocb->ki_pos);
- 
- 	/*
- 	 * There's no interrupt for clearing bmc busy so we have to
-@@ -275,7 +275,7 @@ static ssize_t bt_bmc_write(struct file *file, const char __user *buf,
- 
- 	while (count) {
- 		nwritten = min_t(ssize_t, count, sizeof(kbuffer));
--		if (copy_from_user(&kbuffer, buf, nwritten)) {
-+		if (!copy_from_iter_full(&kbuffer, nwritten, from)) {
- 			ret = -EFAULT;
- 			break;
- 		}
-@@ -283,7 +283,6 @@ static ssize_t bt_bmc_write(struct file *file, const char __user *buf,
- 		bt_writen(bt_bmc, kbuffer, nwritten);
- 
- 		count -= nwritten;
--		buf += nwritten;
- 		ret += nwritten;
- 	}
- 
-@@ -338,8 +337,8 @@ static __poll_t bt_bmc_poll(struct file *file, poll_table *wait)
- static const struct file_operations bt_bmc_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= bt_bmc_open,
--	.read		= bt_bmc_read,
--	.write		= bt_bmc_write,
-+	.read_iter	= bt_bmc_read,
-+	.write_iter	= bt_bmc_write,
- 	.release	= bt_bmc_release,
- 	.poll		= bt_bmc_poll,
- 	.unlocked_ioctl	= bt_bmc_ioctl,
-diff --git a/drivers/char/ipmi/ipmb_dev_int.c b/drivers/char/ipmi/ipmb_dev_int.c
-index 49100845fcb7..5344095e32a0 100644
---- a/drivers/char/ipmi/ipmb_dev_int.c
-+++ b/drivers/char/ipmi/ipmb_dev_int.c
-@@ -71,11 +71,11 @@ static inline struct ipmb_dev *to_ipmb_dev(struct file *file)
- 	return container_of(file->private_data, struct ipmb_dev, miscdev);
- }
- 
--static ssize_t ipmb_read(struct file *file, char __user *buf, size_t count,
--			loff_t *ppos)
-+static ssize_t ipmb_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct ipmb_dev *ipmb_dev = to_ipmb_dev(file);
-+	struct ipmb_dev *ipmb_dev = to_ipmb_dev(iocb->ki_filp);
- 	struct ipmb_request_elem *queue_elem;
-+	size_t count = iov_iter_count(to);
- 	struct ipmb_msg msg;
- 	ssize_t ret = 0;
- 
-@@ -86,7 +86,7 @@ static ssize_t ipmb_read(struct file *file, char __user *buf, size_t count,
- 	while (list_empty(&ipmb_dev->request_queue)) {
- 		spin_unlock_irq(&ipmb_dev->lock);
- 
--		if (file->f_flags & O_NONBLOCK)
-+		if (iocb->ki_filp->f_flags & O_NONBLOCK)
- 			return -EAGAIN;
- 
- 		ret = wait_event_interruptible(ipmb_dev->wait_queue,
-@@ -107,7 +107,7 @@ static ssize_t ipmb_read(struct file *file, char __user *buf, size_t count,
- 	spin_unlock_irq(&ipmb_dev->lock);
- 
- 	count = min_t(size_t, count, msg.len + 1);
--	if (copy_to_user(buf, &msg, count))
-+	if (!copy_to_iter_full(&msg, count, to))
- 		ret = -EFAULT;
- 
- 	return ret < 0 ? ret : count;
-@@ -176,6 +176,7 @@ static ssize_t ipmb_write(struct file *file, const char __user *buf,
- 
- 	return ret < 0 ? ret : count;
- }
-+FOPS_WRITE_ITER_HELPER(ipmb_write);
- 
- static __poll_t ipmb_poll(struct file *file, poll_table *wait)
- {
-@@ -193,10 +194,10 @@ static __poll_t ipmb_poll(struct file *file, poll_table *wait)
- }
- 
- static const struct file_operations ipmb_fops = {
--	.owner	= THIS_MODULE,
--	.read	= ipmb_read,
--	.write	= ipmb_write,
--	.poll	= ipmb_poll,
-+	.owner		= THIS_MODULE,
-+	.read_iter	= ipmb_read,
-+	.write_iter	= ipmb_write_iter,
-+	.poll		= ipmb_poll,
+diff --git a/drivers/char/tpm/eventlog/common.c b/drivers/char/tpm/eventlog/common.c
+index 639c3f395a5a..5df887f7b119 100644
+--- a/drivers/char/tpm/eventlog/common.c
++++ b/drivers/char/tpm/eventlog/common.c
+@@ -66,7 +66,7 @@ static int tpm_bios_measurements_release(struct inode *inode,
+ static const struct file_operations tpm_bios_measurements_ops = {
+ 	.owner = THIS_MODULE,
+ 	.open = tpm_bios_measurements_open,
+-	.read = seq_read,
++	.read_iter = seq_read_iter,
+ 	.llseek = seq_lseek,
+ 	.release = tpm_bios_measurements_release,
  };
- 
- /* Called with ipmb_dev->lock held. */
-diff --git a/drivers/char/ipmi/ipmi_watchdog.c b/drivers/char/ipmi/ipmi_watchdog.c
-index 9a459257489f..001a6b522ce4 100644
---- a/drivers/char/ipmi/ipmi_watchdog.c
-+++ b/drivers/char/ipmi/ipmi_watchdog.c
-@@ -37,6 +37,7 @@
- #include <linux/delay.h>
- #include <linux/atomic.h>
- #include <linux/sched/signal.h>
-+#include <linux/uio.h>
- 
- #ifdef CONFIG_X86
- /*
-@@ -777,12 +778,11 @@ static ssize_t ipmi_write(struct file *file,
- 	}
- 	return len;
+diff --git a/drivers/char/tpm/tpm-dev-common.c b/drivers/char/tpm/tpm-dev-common.c
+index 30b4c288c1bb..6cb20cb43ac0 100644
+--- a/drivers/char/tpm/tpm-dev-common.c
++++ b/drivers/char/tpm/tpm-dev-common.c
+@@ -122,10 +122,10 @@ void tpm_common_open(struct file *file, struct tpm_chip *chip,
+ 	file->private_data = priv;
  }
-+FOPS_WRITE_ITER_HELPER(ipmi_write);
  
--static ssize_t ipmi_read(struct file *file,
--			 char        __user *buf,
--			 size_t      count,
--			 loff_t      *ppos)
-+static ssize_t ipmi_read(struct kiocb *iocb, struct iov_iter *to)
+-ssize_t tpm_common_read(struct file *file, char __user *buf,
+-			size_t size, loff_t *off)
++ssize_t tpm_common_read_iter(struct kiocb *iocb, struct iov_iter *to)
  {
-+	size_t count = iov_iter_count(to);
- 	int          rv = 0;
- 	wait_queue_entry_t wait;
+-	struct file_priv *priv = file->private_data;
++	struct file_priv *priv = iocb->ki_filp->private_data;
++	size_t size = iov_iter_count(to);
+ 	ssize_t ret_size = 0;
+ 	int rc;
  
-@@ -795,7 +795,7 @@ static ssize_t ipmi_read(struct file *file,
- 	 */
- 	spin_lock_irq(&ipmi_read_lock);
- 	if (!data_to_read) {
--		if (file->f_flags & O_NONBLOCK) {
-+		if (iocb->ki_filp->f_flags & O_NONBLOCK) {
- 			rv = -EAGAIN;
+@@ -140,21 +140,21 @@ ssize_t tpm_common_read(struct file *file, char __user *buf,
  			goto out;
  		}
-@@ -821,7 +821,7 @@ static ssize_t ipmi_read(struct file *file,
- 	spin_unlock_irq(&ipmi_read_lock);
  
- 	if (rv == 0) {
--		if (copy_to_user(buf, &data_to_read, 1))
-+		if (!copy_to_iter_full(&data_to_read, 1, to))
- 			rv = -EFAULT;
- 		else
- 			rv = 1;
-@@ -895,9 +895,9 @@ static int ipmi_close(struct inode *ino, struct file *filep)
- 
- static const struct file_operations ipmi_wdog_fops = {
- 	.owner   = THIS_MODULE,
--	.read    = ipmi_read,
-+	.read_iter    = ipmi_read,
- 	.poll    = ipmi_poll,
--	.write   = ipmi_write,
-+	.write_iter   = ipmi_write_iter,
- 	.unlocked_ioctl = ipmi_unlocked_ioctl,
- 	.compat_ioctl	= compat_ptr_ioctl,
- 	.open    = ipmi_open,
-diff --git a/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c b/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
-index cf670e891966..1cd9b4c1fec9 100644
---- a/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
-+++ b/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
-@@ -16,6 +16,7 @@
- #include <linux/poll.h>
- #include <linux/sched.h>
- #include <linux/slab.h>
-+#include <linux/uio.h>
- 
- #include "kcs_bmc_client.h"
- 
-@@ -317,15 +318,15 @@ static __poll_t kcs_bmc_ipmi_poll(struct file *filp, poll_table *wait)
- 	return mask;
- }
- 
--static ssize_t kcs_bmc_ipmi_read(struct file *filp, char __user *buf,
--			    size_t count, loff_t *ppos)
-+static ssize_t kcs_bmc_ipmi_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct kcs_bmc_ipmi *priv = to_kcs_bmc(filp);
-+	struct kcs_bmc_ipmi *priv = to_kcs_bmc(iocb->ki_filp);
-+	size_t count = iov_iter_count(to);
- 	bool data_avail;
- 	size_t data_len;
- 	ssize_t ret;
- 
--	if (!(filp->f_flags & O_NONBLOCK))
-+	if (!(iocb->ki_filp->f_flags & O_NONBLOCK))
- 		wait_event_interruptible(priv->queue,
- 					 priv->data_in_avail);
- 
-@@ -356,7 +357,7 @@ static ssize_t kcs_bmc_ipmi_read(struct file *filp, char __user *buf,
- 		goto out_unlock;
+-		rc = copy_to_user(buf, priv->data_buffer + *off, ret_size);
++		rc = !copy_to_iter_full(priv->data_buffer + iocb->ki_pos, ret_size, to);
+ 		if (rc) {
+ 			memset(priv->data_buffer, 0, TPM_BUFSIZE);
+ 			priv->response_length = 0;
+ 			ret_size = -EFAULT;
+ 		} else {
+-			memset(priv->data_buffer + *off, 0, ret_size);
++			memset(priv->data_buffer + iocb->ki_pos, 0, ret_size);
+ 			priv->response_length -= ret_size;
+-			*off += ret_size;
++			iocb->ki_pos += ret_size;
+ 		}
  	}
  
--	if (copy_to_user(buf, priv->kbuffer, data_len)) {
-+	if (!copy_to_iter_full(priv->kbuffer, data_len, to)) {
+ out:
+ 	if (!priv->response_length) {
+-		*off = 0;
++		iocb->ki_pos = 0;
+ 		del_timer_sync(&priv->user_read_timer);
+ 		flush_work(&priv->timeout_work);
+ 	}
+@@ -162,10 +162,10 @@ ssize_t tpm_common_read(struct file *file, char __user *buf,
+ 	return ret_size;
+ }
+ 
+-ssize_t tpm_common_write(struct file *file, const char __user *buf,
+-			 size_t size, loff_t *off)
++ssize_t tpm_common_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ {
+-	struct file_priv *priv = file->private_data;
++	struct file_priv *priv = iocb->ki_filp->private_data;
++	size_t size = iov_iter_count(from);
+ 	int ret = 0;
+ 
+ 	if (size > TPM_BUFSIZE)
+@@ -183,7 +183,7 @@ ssize_t tpm_common_write(struct file *file, const char __user *buf,
+ 		goto out;
+ 	}
+ 
+-	if (copy_from_user(priv->data_buffer, buf, size)) {
++	if (!copy_from_iter_full(priv->data_buffer, size, from)) {
  		ret = -EFAULT;
- 		goto out_unlock;
+ 		goto out;
  	}
-@@ -379,10 +380,10 @@ static ssize_t kcs_bmc_ipmi_read(struct file *filp, char __user *buf,
- 	return ret;
- }
+@@ -196,7 +196,7 @@ ssize_t tpm_common_write(struct file *file, const char __user *buf,
  
--static ssize_t kcs_bmc_ipmi_write(struct file *filp, const char __user *buf,
--			     size_t count, loff_t *ppos)
-+static ssize_t kcs_bmc_ipmi_write(struct kiocb *iocb, struct iov_iter *from)
+ 	priv->response_length = 0;
+ 	priv->response_read = false;
+-	*off = 0;
++	iocb->ki_pos = 0;
+ 
+ 	/*
+ 	 * If in nonblocking mode schedule an async job to send
+@@ -204,7 +204,7 @@ ssize_t tpm_common_write(struct file *file, const char __user *buf,
+ 	 * In case of error the err code will be returned in
+ 	 * the subsequent read call.
+ 	 */
+-	if (file->f_flags & O_NONBLOCK) {
++	if (iocb->ki_filp->f_flags & O_NONBLOCK) {
+ 		priv->command_enqueued = true;
+ 		queue_work(tpm_dev_wq, &priv->async_work);
+ 		mutex_unlock(&priv->buffer_mutex);
+diff --git a/drivers/char/tpm/tpm-dev.c b/drivers/char/tpm/tpm-dev.c
+index e2c0baa69fef..2f499c38fef5 100644
+--- a/drivers/char/tpm/tpm-dev.c
++++ b/drivers/char/tpm/tpm-dev.c
+@@ -61,8 +61,8 @@ const struct file_operations tpm_fops = {
+ 	.owner = THIS_MODULE,
+ 	.llseek = no_llseek,
+ 	.open = tpm_open,
+-	.read = tpm_common_read,
+-	.write = tpm_common_write,
++	.read_iter = tpm_common_read_iter,
++	.write_iter = tpm_common_write_iter,
+ 	.poll = tpm_common_poll,
+ 	.release = tpm_release,
+ };
+diff --git a/drivers/char/tpm/tpm-dev.h b/drivers/char/tpm/tpm-dev.h
+index f3742bcc73e3..bc02b9509724 100644
+--- a/drivers/char/tpm/tpm-dev.h
++++ b/drivers/char/tpm/tpm-dev.h
+@@ -23,10 +23,8 @@ struct file_priv {
+ 
+ void tpm_common_open(struct file *file, struct tpm_chip *chip,
+ 		     struct file_priv *priv, struct tpm_space *space);
+-ssize_t tpm_common_read(struct file *file, char __user *buf,
+-			size_t size, loff_t *off);
+-ssize_t tpm_common_write(struct file *file, const char __user *buf,
+-			 size_t size, loff_t *off);
++ssize_t tpm_common_read_iter(struct kiocb *iocb, struct iov_iter *to);
++ssize_t tpm_common_write_iter(struct kiocb *iocb, struct iov_iter *from);
+ __poll_t tpm_common_poll(struct file *file, poll_table *wait);
+ 
+ void tpm_common_release(struct file *file, struct file_priv *priv);
+diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
+index 11c502039faf..70d51ccb9a98 100644
+--- a/drivers/char/tpm/tpm_vtpm_proxy.c
++++ b/drivers/char/tpm/tpm_vtpm_proxy.c
+@@ -69,10 +69,10 @@ static void vtpm_proxy_delete_device(struct proxy_dev *proxy_dev);
+  * Return:
+  *	Number of bytes read or negative error code
+  */
+-static ssize_t vtpm_proxy_fops_read(struct file *filp, char __user *buf,
+-				    size_t count, loff_t *off)
++static ssize_t vtpm_proxy_fops_read(struct kiocb *iocb, struct iov_iter *to)
  {
--	struct kcs_bmc_ipmi *priv = to_kcs_bmc(filp);
-+	struct kcs_bmc_ipmi *priv = to_kcs_bmc(iocb->ki_filp);
-+	size_t count = iov_iter_count(from);
- 	ssize_t ret;
- 
- 	/* a minimum response size '3' : netfn + cmd + ccode */
-@@ -391,7 +392,7 @@ static ssize_t kcs_bmc_ipmi_write(struct file *filp, const char __user *buf,
- 
- 	mutex_lock(&priv->mutex);
- 
--	if (copy_from_user(priv->kbuffer, buf, count)) {
-+	if (!copy_from_iter_full(priv->kbuffer, count, from)) {
- 		ret = -EFAULT;
- 		goto out_unlock;
- 	}
-@@ -459,8 +460,8 @@ static int kcs_bmc_ipmi_release(struct inode *inode, struct file *filp)
- static const struct file_operations kcs_bmc_ipmi_fops = {
- 	.owner          = THIS_MODULE,
- 	.open           = kcs_bmc_ipmi_open,
--	.read           = kcs_bmc_ipmi_read,
--	.write          = kcs_bmc_ipmi_write,
-+	.read_iter      = kcs_bmc_ipmi_read,
-+	.write_iter     = kcs_bmc_ipmi_write,
- 	.release        = kcs_bmc_ipmi_release,
- 	.poll           = kcs_bmc_ipmi_poll,
- 	.unlocked_ioctl = kcs_bmc_ipmi_ioctl,
-diff --git a/drivers/char/ipmi/ssif_bmc.c b/drivers/char/ipmi/ssif_bmc.c
-index 56346fb32872..9a907c84d182 100644
---- a/drivers/char/ipmi/ssif_bmc.c
-+++ b/drivers/char/ipmi/ssif_bmc.c
-@@ -130,9 +130,10 @@ static const char *state_to_string(enum ssif_state state)
- }
- 
- /* Handle SSIF message that will be sent to user */
--static ssize_t ssif_bmc_read(struct file *file, char __user *buf, size_t count, loff_t *ppos)
-+static ssize_t ssif_bmc_read(struct kiocb *iocb, struct iov_iter *to)
- {
--	struct ssif_bmc_ctx *ssif_bmc = to_ssif_bmc(file);
-+	struct ssif_bmc_ctx *ssif_bmc = to_ssif_bmc(iocb->ki_filp);
+-	struct proxy_dev *proxy_dev = filp->private_data;
++	struct proxy_dev *proxy_dev = iocb->ki_filp->private_data;
 +	size_t count = iov_iter_count(to);
- 	struct ipmi_ssif_msg msg;
- 	unsigned long flags;
- 	ssize_t ret;
-@@ -140,7 +141,7 @@ static ssize_t ssif_bmc_read(struct file *file, char __user *buf, size_t count,
- 	spin_lock_irqsave(&ssif_bmc->lock, flags);
- 	while (!ssif_bmc->request_available) {
- 		spin_unlock_irqrestore(&ssif_bmc->lock, flags);
--		if (file->f_flags & O_NONBLOCK)
-+		if (iocb->ki_filp->f_flags & O_NONBLOCK)
- 			return -EAGAIN;
- 		ret = wait_event_interruptible(ssif_bmc->wait_queue,
- 					       ssif_bmc->request_available);
-@@ -162,17 +163,19 @@ static ssize_t ssif_bmc_read(struct file *file, char __user *buf, size_t count,
- 		ssif_bmc->request_available = false;
- 		spin_unlock_irqrestore(&ssif_bmc->lock, flags);
+ 	size_t len;
+ 	int sig, rc;
  
--		ret = copy_to_user(buf, &msg, count);
-+		ret = -EFAULT;
-+		if (copy_to_iter_full(&msg, count, to))
-+			ret = 0;
+@@ -98,7 +98,7 @@ static ssize_t vtpm_proxy_fops_read(struct file *filp, char __user *buf,
+ 		return -EIO;
  	}
  
- 	return (ret < 0) ? ret : count;
- }
+-	rc = copy_to_user(buf, proxy_dev->buffer, len);
++	rc = !copy_to_iter_full(proxy_dev->buffer, len, to);
+ 	memset(proxy_dev->buffer, 0, len);
+ 	proxy_dev->req_len = 0;
  
- /* Handle SSIF message that is written by user */
--static ssize_t ssif_bmc_write(struct file *file, const char __user *buf, size_t count,
--			      loff_t *ppos)
-+static ssize_t ssif_bmc_write(struct kiocb *iocb, struct iov_iter *from)
+@@ -124,10 +124,10 @@ static ssize_t vtpm_proxy_fops_read(struct file *filp, char __user *buf,
+  * Return:
+  *	Number of bytes read or negative error value
+  */
+-static ssize_t vtpm_proxy_fops_write(struct file *filp, const char __user *buf,
+-				     size_t count, loff_t *off)
++static ssize_t vtpm_proxy_fops_write(struct kiocb *iocb, struct iov_iter *from)
  {
--	struct ssif_bmc_ctx *ssif_bmc = to_ssif_bmc(file);
-+	struct ssif_bmc_ctx *ssif_bmc = to_ssif_bmc(iocb->ki_filp);
+-	struct proxy_dev *proxy_dev = filp->private_data;
++	struct proxy_dev *proxy_dev = iocb->ki_filp->private_data;
 +	size_t count = iov_iter_count(from);
- 	struct ipmi_ssif_msg msg;
- 	unsigned long flags;
- 	ssize_t ret;
-@@ -180,7 +183,7 @@ static ssize_t ssif_bmc_write(struct file *file, const char __user *buf, size_t
- 	if (count > sizeof(struct ipmi_ssif_msg))
- 		return -EINVAL;
  
--	if (copy_from_user(&msg, buf, count))
-+	if (!copy_from_iter_full(&msg, count, from))
+ 	mutex_lock(&proxy_dev->buf_lock);
+ 
+@@ -146,7 +146,7 @@ static ssize_t vtpm_proxy_fops_write(struct file *filp, const char __user *buf,
+ 
+ 	proxy_dev->req_len = 0;
+ 
+-	if (copy_from_user(proxy_dev->buffer, buf, count)) {
++	if (!copy_from_iter_full(proxy_dev->buffer, count, from)) {
+ 		mutex_unlock(&proxy_dev->buf_lock);
  		return -EFAULT;
- 
- 	if (!msg.len || count < sizeof_field(struct ipmi_ssif_msg, len) + msg.len)
-@@ -189,7 +192,7 @@ static ssize_t ssif_bmc_write(struct file *file, const char __user *buf, size_t
- 	spin_lock_irqsave(&ssif_bmc->lock, flags);
- 	while (ssif_bmc->response_in_progress) {
- 		spin_unlock_irqrestore(&ssif_bmc->lock, flags);
--		if (file->f_flags & O_NONBLOCK)
-+		if (iocb->ki_filp->f_flags & O_NONBLOCK)
- 			return -EAGAIN;
- 		ret = wait_event_interruptible(ssif_bmc->wait_queue,
- 					       !ssif_bmc->response_in_progress);
-@@ -275,8 +278,8 @@ static int ssif_bmc_release(struct inode *inode, struct file *file)
- static const struct file_operations ssif_bmc_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= ssif_bmc_open,
--	.read		= ssif_bmc_read,
--	.write		= ssif_bmc_write,
-+	.read_iter	= ssif_bmc_read,
-+	.write_iter	= ssif_bmc_write,
- 	.release	= ssif_bmc_release,
- 	.poll		= ssif_bmc_poll,
+ 	}
+@@ -244,8 +244,8 @@ static int vtpm_proxy_fops_release(struct inode *inode, struct file *filp)
+ static const struct file_operations vtpm_proxy_fops = {
+ 	.owner = THIS_MODULE,
+ 	.llseek = no_llseek,
+-	.read = vtpm_proxy_fops_read,
+-	.write = vtpm_proxy_fops_write,
++	.read_iter = vtpm_proxy_fops_read,
++	.write_iter = vtpm_proxy_fops_write,
+ 	.poll = vtpm_proxy_fops_poll,
+ 	.release = vtpm_proxy_fops_release,
+ };
+diff --git a/drivers/char/tpm/tpmrm-dev.c b/drivers/char/tpm/tpmrm-dev.c
+index eef0fb06ea83..f1f5cc0ba627 100644
+--- a/drivers/char/tpm/tpmrm-dev.c
++++ b/drivers/char/tpm/tpmrm-dev.c
+@@ -48,8 +48,8 @@ const struct file_operations tpmrm_fops = {
+ 	.owner = THIS_MODULE,
+ 	.llseek = no_llseek,
+ 	.open = tpmrm_open,
+-	.read = tpm_common_read,
+-	.write = tpm_common_write,
++	.read_iter = tpm_common_read_iter,
++	.write_iter = tpm_common_write_iter,
+ 	.poll = tpm_common_poll,
+ 	.release = tpmrm_release,
  };
 -- 
 2.43.0
