@@ -1,77 +1,66 @@
-Return-Path: <linux-kernel+bounces-141679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 249F48A21F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:53:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D57148A21FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:55:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 601F4287CF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:53:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63808B23EA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:55:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 126CF47A5D;
-	Thu, 11 Apr 2024 22:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A372A47F51;
+	Thu, 11 Apr 2024 22:53:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="D0zKLJTs"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796AD224FA;
-	Thu, 11 Apr 2024 22:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="qzatVyx4"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF424778E;
+	Thu, 11 Apr 2024 22:53:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712875988; cv=none; b=e0pL41j2x6MUJ5daA8o2OPy6bQ3a34KghNCIUWustnOP+SwvuPFMxJKndq9cIssRnmdm5Tm1JTzUIsZm4bJnw4uljS/svoKlZjrEzxKsgTBfIv2ON69M9Axwvubl3l6WHkTn9FG8zcMP+7C0sqYL+5xialzB9+tsdJlP/EwpbXE=
+	t=1712876031; cv=none; b=je80hVh7fsHX9ApK2aS+8IvY6oW0bNf/wWtwHlbMNVpch3QpnvtibtgacRDGkATRCaKI9XXOw7lBjGvCBy3Ufa4SFSEyfq6ejibSSJ7NUsoZjwznKC8fTp565CwLHjUUeVD6G04UWdjNwluNHucVrveBywhxcb4CGvtyonAXxY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712875988; c=relaxed/simple;
-	bh=zvmvF417rrunT9iqHHfUQkubRPufaxCziKLZeyjCEiU=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=A3RZVvK+CoBHE1RnOnOJNwd4pb2GXYFjAcTNoHVgebZ+YY3xp9cugHbAwIkjQ1jL6dCmw1yz00G6XIfRDyE8OhCpSyJUsjupYVfbwYv8VM8PwYo7tnDd9KQ89lMD+/wd3hvO42YxhI5DMQUskMM4B3Xgn29sj+4UvsPoCYLRS9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=D0zKLJTs; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43BMqwIe106823;
-	Thu, 11 Apr 2024 17:52:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712875978;
-	bh=2LfTDKlFS9AeONkXkDfJQ8nmESoidJKOear7mi/CZWg=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=D0zKLJTsLgbiDY0k/nZoElt03uCqZTNTQPqUZ/QWRgiBEpbx/kV7KiOvjzXnbFZrE
-	 91nUFIYd5fGuH53/DYBx6I56duAIrEHcoI5L/ysZSMywK0czdfiEygsBsfI1a/2Dzc
-	 mTM7lfnPjgVj06hdwG4Hnts/FuyqLoGw2RFBciDI=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43BMqwqX108003
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 11 Apr 2024 17:52:58 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 11
- Apr 2024 17:52:57 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 11 Apr 2024 17:52:57 -0500
-Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43BMqv7d002381;
-	Thu, 11 Apr 2024 17:52:57 -0500
-From: Judith Mendez <jm@ti.com>
-To: Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>
-CC: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero
- Kristo <kristo@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Bhavya Kapoor <b-kapoor@ti.com>,
-        Dasnavis
- Sabiya <sabiya.d@ti.com>, Udit Kumar <u-kumar1@ti.com>
-Subject: [PATCH 7/7] arm64: dts: ti: k3-j784s4-evm: Remove HS400 mode support for eMMC
-Date: Thu, 11 Apr 2024 17:52:57 -0500
-Message-ID: <20240411225257.383889-8-jm@ti.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240411225257.383889-1-jm@ti.com>
-References: <20240411225257.383889-1-jm@ti.com>
+	s=arc-20240116; t=1712876031; c=relaxed/simple;
+	bh=qWSQajGvAFp8rYeLSWNIrAWsrlGO3m7nZf+qzgyXh60=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u+6puQQOh6W6dfE39v1lEEzMlOz5KyIv1R8JCZPPyaHYLO1aDhe1QacGOMWJVjKST9NKYlo53yWWny/E5akuKgnKCEcsKyPjGh52L+Pf1oSOaDQrwq/AdBXeL4KYbvxotsCyANLfRsc18ONkITFSoIHklHGJk3TtU3igW/J8Ebk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=qzatVyx4; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from nell-linux-vm-03-21.gri2q54hbuce1hot0vo1lnhzqd.bx.internal.cloudapp.net (unknown [172.191.244.78])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 9E2F920EC318;
+	Thu, 11 Apr 2024 15:53:48 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9E2F920EC318
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1712876030;
+	bh=llre/MDl7IywXh8WJ6+smgivWD460w0JI7M1HXl7uHU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qzatVyx42RykiqdKow7smAP17n/BvU/34tiZ1k7zzuvss7nhYzH9zPuec7yln8qJy
+	 eIbAZAmxYVPQmviKjIl4uQLgDhSqTvNiIbFXuHMJA8YYzN8v6Y8+DPtyKSEc3QweDt
+	 L9ns8Gs3OBDvt2POGQKwmKFv7Kq4QXz7/KkUU/9I=
+From: Nell Shamrell-Harrington <nells@linux.microsoft.com>
+To: ojeda@kernel.org,
+	alex.gaynor@gmail.com,
+	wedsonaf@gmail.com
+Cc: boqun.feng@gmail.com,
+	gary@garyguo.net,
+	bjorn3_gh@protonmail.com,
+	benno.lossin@proton.me,
+	a.hindborg@samsung.com,
+	aliceryhl@google.com,
+	fujita.tomonori@gmail.com,
+	tmgross@umich.edu,
+	yakoyoku@gmail.com,
+	kent.overstreet@gmail.com,
+	matthew.brost@intel.com,
+	kernel@valentinobst.de,
+	netdev@vger.kernel.org,
+	rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] rust: remove unneeded `kernel::prelude` imports from doctests
+Date: Thu, 11 Apr 2024 22:53:31 +0000
+Message-Id: <20240411225331.274662-1-nells@linux.microsoft.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,40 +68,92 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-From: Udit Kumar <u-kumar1@ti.com>
+Rust doctests implicitly include `kernel::prelude::*`.
 
-The eMMC fails to enumerate intermittently on HS400 mode. Also
-observing multiple CQE recovery warnings.
+Removes explicit `kernel::prelude` imports from doctests.
 
-Update the sdhci0 node to disable HS400.
-
-Cc: Vignesh Raghavendra <vigneshr@ti.com>
-Cc: Bhavya Kapoor <b-kapoor@ti.com>
-Cc: Siddharth Vadapalli <s-vadapalli@ti.com>
-Signed-off-by: Udit Kumar <u-kumar1@ti.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-[Judith: Reword commit]
-Signed-off-by: Judith Mendez <jm@ti.com>
+Suggested-by: Miguel Ojeda <ojeda@kernel.org>
+Link: https://github.com/Rust-for-Linux/linux/issues/1064
+Signed-off-by: Nell Shamrell-Harrington <nells@linux.microsoft.com>
 ---
- arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 1 +
- 1 file changed, 1 insertion(+)
+ rust/kernel/init.rs      | 6 +++---
+ rust/kernel/net/phy.rs   | 1 -
+ rust/kernel/workqueue.rs | 3 ---
+ 3 files changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-index 81fd7afac8c57..04a241a91e6b8 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-@@ -791,6 +791,7 @@ &main_sdhci0 {
- 	non-removable;
- 	ti,driver-strength-ohm = <50>;
- 	disable-wp;
-+	no-mmc-hs400;
- };
- 
- &main_sdhci1 {
+diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
+index 424257284d16..8f0380697c09 100644
+--- a/rust/kernel/init.rs
++++ b/rust/kernel/init.rs
+@@ -87,7 +87,7 @@
+ //!
+ //! ```rust
+ //! # #![allow(clippy::disallowed_names)]
+-//! # use kernel::{sync::Mutex, prelude::*, new_mutex, init::PinInit, try_pin_init};
++//! # use kernel::{sync::Mutex, new_mutex, init::PinInit, try_pin_init};
+ //! #[pin_data]
+ //! struct DriverData {
+ //!     #[pin]
+@@ -121,7 +121,7 @@
+ //!
+ //! ```rust
+ //! # #![allow(unreachable_pub, clippy::disallowed_names)]
+-//! use kernel::{prelude::*, init, types::Opaque};
++//! use kernel::{init, types::Opaque};
+ //! use core::{ptr::addr_of_mut, marker::PhantomPinned, pin::Pin};
+ //! # mod bindings {
+ //! #     #![allow(non_camel_case_types)]
+@@ -412,7 +412,7 @@ macro_rules! stack_try_pin_init {
+ ///
+ /// ```rust
+ /// # #![allow(clippy::disallowed_names)]
+-/// # use kernel::{init, pin_init, prelude::*, init::*};
++/// # use kernel::{init, pin_init, init::*};
+ /// # use core::pin::Pin;
+ /// # #[pin_data]
+ /// # struct Foo {
+diff --git a/rust/kernel/net/phy.rs b/rust/kernel/net/phy.rs
+index 96e09c6e8530..d10a415c376f 100644
+--- a/rust/kernel/net/phy.rs
++++ b/rust/kernel/net/phy.rs
+@@ -766,7 +766,6 @@ const fn as_int(&self) -> u32 {
+ /// # mod module_phy_driver_sample {
+ /// use kernel::c_str;
+ /// use kernel::net::phy::{self, DeviceId};
+-/// use kernel::prelude::*;
+ ///
+ /// kernel::module_phy_driver! {
+ ///     drivers: [PhySample],
+diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
+index c22504d5c8ad..7884f0007b38 100644
+--- a/rust/kernel/workqueue.rs
++++ b/rust/kernel/workqueue.rs
+@@ -33,7 +33,6 @@
+ //! we do not need to specify ids for the fields.
+ //!
+ //! ```
+-//! use kernel::prelude::*;
+ //! use kernel::sync::Arc;
+ //! use kernel::workqueue::{self, impl_has_work, new_work, Work, WorkItem};
+ //!
+@@ -75,7 +74,6 @@
+ //! The following example shows how multiple `work_struct` fields can be used:
+ //!
+ //! ```
+-//! use kernel::prelude::*;
+ //! use kernel::sync::Arc;
+ //! use kernel::workqueue::{self, impl_has_work, new_work, Work, WorkItem};
+ //!
+@@ -411,7 +409,6 @@ pub unsafe fn raw_get(ptr: *const Self) -> *mut bindings::work_struct {
+ /// like this:
+ ///
+ /// ```no_run
+-/// use kernel::prelude::*;
+ /// use kernel::workqueue::{impl_has_work, Work};
+ ///
+ /// struct MyWorkItem {
 -- 
-2.43.2
+2.34.1
 
 
