@@ -1,232 +1,298 @@
-Return-Path: <linux-kernel+bounces-141412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 626718A1DF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:23:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 072568A1DFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:23:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 852E71C24EC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:23:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B15BB28E756
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:23:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EFDE85277;
-	Thu, 11 Apr 2024 17:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D08C58613B;
+	Thu, 11 Apr 2024 17:38:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k3qN8xu/"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="etVfMtxx"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22F11E892
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 17:37:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.7
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712857055; cv=fail; b=Kj8w9x8XNu1mKaLYASZWW2rbmcm+qdE+/aIvTLdxGaNTW7Sbbp2JKUGx3hDS1d0LIZR5LbjUNS8NwMr5JwHJxXS92osO3yNT25K0+Wo3rL6QsZGwquvfKC6f6wDeoOzkrg4mdiIPegYGkExJAUQ5rSz6z/QXBF71T5bVCmMUsy4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712857055; c=relaxed/simple;
-	bh=/yyyxdntoJXS+Luv6/uQefQ3xVoFTWa8f7fqvzVnFC4=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=JsjU/Djol8bRUzZkLkvffMF00l08LVeDp9XJiXzK48UFMOWyhjayIDGKmmwb+mNBS0mvvGuA2ipiCgarWoym+cRiU+1C++GtGs08uuJAfcWYLzEsM0tFIpjF1n6iVjOIjzQSEckzjl+k+AEAT8SeiVOYwx0Y08QsOfFL6AmOkJ4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k3qN8xu/; arc=fail smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712857054; x=1744393054;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=/yyyxdntoJXS+Luv6/uQefQ3xVoFTWa8f7fqvzVnFC4=;
-  b=k3qN8xu/L1x8VDfRI6Ad/hXUl9VUd8d5ga4xo48JC+dDssmjl1//C2V2
-   iPbSk4txXIRzsefzRm0v9T+Mmk5kJ4qPNxhhuuxgZiMk0ebqUlf/cPreD
-   GE3uE+rDCIoGI26Qxtz39HrHMWrb1Wy2cIxT4m6ymUSSTcdewQkppHrtI
-   B/kwSwFrLNi/I5DnmcHwFNMF+vC154FopmaBqrcoQ3vHQuEMzgzMZ5KLV
-   Yo3Ni7MDcyhayJM5VCRu+ov5qxdnsz1iSWKTAAbNf7wupJS0d23yXiuJE
-   7Bvp4P5IqVVkrjhRjnyJlF71t8Zj5APTvgW+qanSGI5j19QrLEBXIDhi2
-   g==;
-X-CSE-ConnectionGUID: XFZVSSkYRWSHro0UqceyPg==
-X-CSE-MsgGUID: Ma6ImYFBQUuRvvw1OxFtYw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="33682577"
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="33682577"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 10:37:33 -0700
-X-CSE-ConnectionGUID: p+F7HskqQ1WOOWrmAYYrEw==
-X-CSE-MsgGUID: 6WinneohS7eJrBsuK82P/A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
-   d="scan'208";a="25753065"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Apr 2024 10:37:33 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 11 Apr 2024 10:37:31 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 11 Apr 2024 10:37:31 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 11 Apr 2024 10:37:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mIB4CMIyoZpp9pZt0JcBqtyW8TS89OcHeoqO27luc7L5TGMbRTeWM55Zi8TsD11Kb+ks0O51pZ8hCiMUunidf8aAE96TeAMuFfLKShAnkXIK3TbPFWEKsAg+Bo4MOnKjZOLd/VL5Q65DOj1QQPtAZ1/aJYRmQd5sQbaxqYTDrFdSlmuP2gBJjQBqLO5osQShOFYCeKoMkFHoEA6EM8eFJAVOPSIOVfFk2kcy9CmJn58e0Q6lwo/qDhcBP8qwck37Db9ykWXmdsuNPi7XZnBJ/UIrz5jyB4WIOHWct5vpgg1pznkfNW99o9FLB9urHti48/d8238jF2X6viCjtBLbUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MAxlYTaITCo48Zn9yPjt8Vpxz2VcQEI8QmPUv0ldbug=;
- b=VfCkLRM4jG+CmaYjTip0ZWY12mRlINLBv04leW6Ne5MfiqkCO8I2pTPnfCsqu8ys/Lyw3sumuvBzZbbR5zpez5Ksx1ew5LDs6G9l67Ur6/NeADJEeHsdG0S7ITIDXLq3LJ8iAqeLr+AZeXztL0hs64EOwgq+5uLRzlOsqKyFq50FmJc3ZCGAzSp3jgnNM5Myo9LZRFpPblGXrZPKFEwwWKfr+EKR5dTY94q34ye9Ktle9jW/CCvAzaqRM3N6lhD1C57LgO5y9xR8JK+slKB1QADOtIwj5AsXlyQMSPE36pgs4CY8HbO/4J0rEQ88feUEqQ8zAHlqUNt8oQGgLMBTGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by BN9PR11MB5225.namprd11.prod.outlook.com (2603:10b6:408:132::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.26; Thu, 11 Apr
- 2024 17:37:29 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68%7]) with mapi id 15.20.7452.019; Thu, 11 Apr 2024
- 17:37:29 +0000
-Message-ID: <f919fdc9-e0e3-43ad-979e-024ae0cdd997@intel.com>
-Date: Thu, 11 Apr 2024 10:37:27 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 11/31] x86/resctrl: Move monitor exit work to a restrl
- exit call
-To: Dave Martin <Dave.Martin@arm.com>
-CC: James Morse <james.morse@arm.com>, <x86@kernel.org>,
-	<linux-kernel@vger.kernel.org>, Fenghua Yu <fenghua.yu@intel.com>, "Thomas
- Gleixner" <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "Borislav
- Petkov" <bp@alien8.de>, H Peter Anvin <hpa@zytor.com>, Babu Moger
-	<Babu.Moger@amd.com>, <shameerali.kolothum.thodi@huawei.com>, "D Scott
- Phillips OS" <scott@os.amperecomputing.com>, <carl@os.amperecomputing.com>,
-	<lcherian@marvell.com>, <bobo.shaobowang@huawei.com>,
-	<tan.shaopeng@fujitsu.com>, <baolin.wang@linux.alibaba.com>, Jamie Iles
-	<quic_jiles@quicinc.com>, Xin Hao <xhao@linux.alibaba.com>,
-	<peternewman@google.com>, <dfustini@baylibre.com>, <amitsinght@marvell.com>,
-	David Hildenbrand <david@redhat.com>, Rex Nie <rex.nie@jaguarmicro.com>
-References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-12-james.morse@arm.com>
- <92187846-374f-4b45-865e-543ba198b6b9@intel.com>
- <Zhfwe6Xhyec20LzC@e133380.arm.com>
-Content-Language: en-US
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <Zhfwe6Xhyec20LzC@e133380.arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0123.namprd04.prod.outlook.com
- (2603:10b6:303:84::8) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1825284FB9;
+	Thu, 11 Apr 2024 17:38:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712857113; cv=none; b=RESZLqlZPvJfYwmy9W72xwOJ7/WTcu6leWk3SSZ0QN5FmPviJzv7N3Yopj3oE6LF6OtkUS/F/7Bhh4+Y0hxN059mfXAYj6g2YpY9/90ZxrCkaz5q7ofQV43nnh68ZRl/YbGNKT4Qz3aO09YHE/xkZhWDHINz44mzX7O70gM+TXU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712857113; c=relaxed/simple;
+	bh=/ppWfbWsKd/vtU/KAgj6kfo561bqeGX4nuUVnQ0yucY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=p/iYLchz9EZtvuLH/vZQ9dljXfNV70FIywaPuZeHowBZn3Dcrzw+kbDCf5bSXXQqOXMMKVswSvU2IQVgb3CyKrRRl7CvD5Lygs2mBne5T6KY303fjtzqQn+C0xPqn/NU4OduTzm7R75tcEsVLRF+pNXqam/r8dL4jTU22XpqwGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=etVfMtxx; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ecf1bb7f38so139410b3a.0;
+        Thu, 11 Apr 2024 10:38:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712857111; x=1713461911; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WFf2rziloQsBNtn8MN+cl9d+3fgl7aoSqeYIidWC6OY=;
+        b=etVfMtxxJp1p/YcFcW7M1Ldyb0ZMf9rtqmD7b6kodFEJUTs3KZFPW57i9UOOUDW9Am
+         unsRFwR1zU9PZYc+P4L5BRdk5lOzKDp49WAQAjSi56DOU7Tq0GhVGR9LuZlZjBfGbHTS
+         f6oyU86ZhA6qDxgslJLLZjFIk2olX4wavgq92qkz9yZK0dflyeSCNBEJGN2dcztBXiH4
+         Gpne0wlRTYbjlG4h6mM/GXZe1coDUidEhdujNiLl8dpqoCYnq9U3+pBhMHAacfE9Tsxx
+         TTbfnuNjlvTKDEh5BkEE8B08yw9UqeThd8nNJvGTMuEvggK67ESV9JE45Z0xtcdUI1h0
+         Ufig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712857111; x=1713461911;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WFf2rziloQsBNtn8MN+cl9d+3fgl7aoSqeYIidWC6OY=;
+        b=MBPsnH02Hfib9Tq1ASf2vTZBMLIcuEGQ2otzttnNvsMrNjLkyUwrBaqxmCvOtKyGvw
+         n3ncZsAyni5dOQXL4SkjnhFE3VdQz4r7uFs7MbuIObgZQdQ6HUzBexYltElmtlfDB7QG
+         qg8nlFG7LyMp9t2/jzKvoM61ZIjjEIaMM1khdyNzLu8cIZL3x0lIpv6CMLzGZAcroXq8
+         TkDRJhOz9O22dh0PeZjdoCtckIBLpviZKsLBpoAsbY9b7i48earO6WuHcs3Z/9tiy5f5
+         B5ecnZ3/NihfLB+qJblG33eIlwAutKZlaYDCObieWTHitMuUnzaf/SNVkx0vK5KCNRKl
+         5Fmw==
+X-Forwarded-Encrypted: i=1; AJvYcCWUGX+o+UTViOAWeRPF7Q0hF22rFoCCWoRbaS1+K1IuRKAbQGaXE84MiiNNYgeamdl7pRCfzs3DrgUES/YwSsKeEf+vCid8WUWCsWLjMDsq9tdOcb5Sd7KjLKbB8hjU5EkASPnA8HGoYOhAoqIMWf50pshQT0ruz1ERazY8A+dwKRQBSYCx
+X-Gm-Message-State: AOJu0YyuviA6PZNU4/V1dWYktlkM6YLuQYOCrG1JSLvaWVKdf+HSD4QC
+	/6A/KZbfUHv1NGzNB3EBjvHhFT9TshPhtvsmWi9jYdqMtlKFSfGVY1F0amOJ8CQ14tyulTtOZMT
+	0Tms5NVCpX0ruXrFQe16zsLqrNeM=
+X-Google-Smtp-Source: AGHT+IF0zP6I83vHCHUxFWyDK8ntc01PNKHR4xAZMm4tbfiQpKNDm4L6eJzS4qcwkyWgeqHMov8EgeRO1Z3T6ufsp6c=
+X-Received: by 2002:a17:90a:9ac:b0:2a0:4c3b:2c39 with SMTP id
+ 41-20020a17090a09ac00b002a04c3b2c39mr266428pjo.23.1712857111182; Thu, 11 Apr
+ 2024 10:38:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|BN9PR11MB5225:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4b1dbda8-959a-4812-e1c1-08dc5a4e0f8d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZdcrcW3eY1xhUeDKLXN19AMrY/40mqbefj8wdaMsmGrm6qCHMp0ld5h5dTq+BCbXpWtI+Emje54zDhsfCvCB/xODLDzxJ4DbbzA2JG1+4Qy+tRADwEbi78J4gr4VmL9z4zy+Psa48fN4l9fv5fL0XO8CveJ//1XuAmjKvgK+NQWVfT1oW+cKHA40WcE2flBgv28ouj9n1oeGHdo3/tK/twPtP4PKRVOqn/HRRO4rRubaiafU0ki0iw1vc2NQ7n7nB0e7fpmGz6aOnBoLbnx9re+b4RrL7ExTJLdZlCEBJQCWhVa9bQ3/oDMmVo53Pxv42gtejrRkPxw8nLEU54ZUu/Jq8mhF+13M0bSbmSok3cVvv2tKIQIBLrswMXIw/pvQ/gOSFEqtb0ylKsEkn+QxbIEYp6ZTISrHjgcCPq6aJ6+c2ZgAoJjoyi7w8TPCdt6RJv+89NkYeMRLBqCDLADbbTIOQvM4A0MgWiwwOvxt1tzm3OURU1KRsyjZO/zOu66YG/xMeUzcuvlSYa6nyMhr4WODBav5BNlGpJL0IzZC60ipMFmWTF+iDOLLTsjX93OisQScdO6NUK/LaeKAuu1RqwBdna+gXWiknVFpp4hNzzrLwlItP+kB1vs2ZrpwwH3gS3MrVJO2f1APaVdMtir+DP1im7naOtkGQTcCz8udR8w=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N3JNL0xLZ28zd3g1OUN2ZVBUcWNQb2R6OTBuajh3TVVXVEFMQklCU0VRQ2N2?=
- =?utf-8?B?eGJ6ZFJ0Z0sxb2RoV0UwcjBHbjBCZW1BUVlpTkR1cHQ0b3ZFazhva0FKeFlV?=
- =?utf-8?B?ZGpJZ0tRa0RqVW12U2cxR2RDZjhpYVhoZzVFMDF5eGEzVzJEd0pmKzcvckVG?=
- =?utf-8?B?RVNCQ0k5V2tUcG5yaDZCWVB4RzR5VnpYeUdwK3hVcGJZTFIzdS83S0Y1bDVm?=
- =?utf-8?B?QU84WGlCQUlrUzN6NGp1OC9zWXhsSWl0SmVQL2lsMHR5ZmtHNi85ZnBhR1Zj?=
- =?utf-8?B?b2Rwcm9VWldQMHVyR1U1ejJQSCs5ZTVFaExMdHJoMkVxQzRkMkhjbi9WSmpu?=
- =?utf-8?B?S0lDdDlzVDhibUxVWVQ3bWowYS81cW9ldDhXdXRjaStQdkg4cWlNSWszeG9L?=
- =?utf-8?B?ZCtUVEVkb0grRGQrSFlOTDFiNHBsZXlhV3E5SStBbjRzN1lIK2pCNFlCTTlQ?=
- =?utf-8?B?dUc2QTJGM0ZVNVJnbFU5aVJzc3Y4RzgyM2g3cHF5M3pqei9qbXE0ZHQ3TmJt?=
- =?utf-8?B?ZmRpVE5tTWd3aWJhRjFkOTdPWVg0dDdBVFlRN1ZieFNKOFRCVVVBMk1Db2Vi?=
- =?utf-8?B?WjVsU0o1OUlaMGxwR2Uyb1BSMzJTZ25sNnhndldndDRXS0EyajNZUHczd2Jm?=
- =?utf-8?B?OEtDSVAxaEJrWkd0c0psSG0vcjNMZ1ZRcXZUbDJUYzk4N0RKeGFlNW9NQ3pq?=
- =?utf-8?B?QjIwc3I0emd4dzh1NnQ2Wlc1MTB6Q1ZrdkpZT3d0MGZlVlpoRVRNMm9pOXNv?=
- =?utf-8?B?UXQ2aUV3aUgwYnRkdi9paWRhN0Voc3NROHdQc2FsVkJmZldxa0JPOHNLN3do?=
- =?utf-8?B?SU5CeUFNUVIyNXNzRFRzME1iSlpTVzNYL2J4UG9FcHdPVWFjNFYya2loZEV5?=
- =?utf-8?B?UHgwNWtwWkRjbllGUGpQR2ZqQm1SdkswSkNpOTFvaSsyWXowVDRtVjc0ejBE?=
- =?utf-8?B?Z0RlQkZ5ZmIrcittVUpkYSt1LzhLRzlrVFNCTUtrUlRTMDNDRTRjRjZKU1NL?=
- =?utf-8?B?TmZ4eXFSQTRRRTdmZDZUeVR0ZGg1WlpaZkI2OHpFbW9vRVZIZlg3c1lmV3di?=
- =?utf-8?B?UUgvL3plYTVvY1NuQVRXcHBydnN6dnFNWlFpTC9HUFJrWnZiaDN2TkJmOVgx?=
- =?utf-8?B?NjVLQmxuaDEvSE8rdGRKN2FSQlhVd0xpNWhVblcrOXRCY3dhT0theXRoVXMz?=
- =?utf-8?B?aHhrcVp2SURUMnE1N3Y1MjB4TkUvVlc4djFCc0pxREJWUVlLUEczZVRXTkp6?=
- =?utf-8?B?VFpNWitNc2FtN1N1dGFwVi8vbEtVY1ZuSGViUjlldkJuT0dkQmc0Y010UEpx?=
- =?utf-8?B?M0ZPOGpRczY5SU1BNnFuM2RRYnp5YW9kK3kxN3VKTldMekV4SEtnMml3Y01l?=
- =?utf-8?B?TmVKVEdwWUwrNHdrMXpBd0xpbVZXcnlJNTJvR3ZwSnRIRlpuOElRd2xwZENz?=
- =?utf-8?B?QlV2bW9FclpzNGNpM3lDR1J5WVh1Qm9PancrdUNid0lIOEJ5K0tKSzZqcnN5?=
- =?utf-8?B?SjUyNUgxa0k2MGRrNkxSTGxhaWlOWWNmaTdxUDJmY29SRjFSZ1ZuYXYzRUpa?=
- =?utf-8?B?eVBwZmd0bHZjU2FoUjNyOEFsVkpueURyUm1HNXVIdDRqY1RzVWlURmtza1lL?=
- =?utf-8?B?NCtKVXJ6a01nbmtEeEJsREF3RHlSYzRIY01NQ2JSREZyNkwzcUlPNTNvcGh1?=
- =?utf-8?B?aDVXVHc0OHh6RkxtcE1XbStiMVdpWmpaQjRELzVTOUxWNlQxOGZRbHRFUEYx?=
- =?utf-8?B?YlNwZ29aZEJBQXJTM0dZcDl1NVRuVTQxTVE4NVlWSWlCMURtbmdhVkI2WmF6?=
- =?utf-8?B?alhhYStQazBmL090ZG1QWEhWVzM3dWpUNDVlcWFnaE52ZUtpQy9qZ3Rha0F6?=
- =?utf-8?B?TUVKeDYyL0E3bVc3QlpCUmtsdUhTOFUxenp4SXppVHdWajBLN3BZWldOSDYv?=
- =?utf-8?B?MlBDWERpQUs1M2hoUTZBM3JuNW40OWVCYmx5YlVUVnBiSHJPakw5ejI3MXBD?=
- =?utf-8?B?N3Ntc1FEVmE4QmhDTVFlSDNpZExLK1Q4Tzl4eG45Y21NS01mWTdDc2t6SDhv?=
- =?utf-8?B?ZERLaERHS2drQTFhaVpWRXFFdnZXbWhvNkZXZjUzYnFjcjBzZkFQdFVsUFFo?=
- =?utf-8?B?V1R1T0JJQ255RlFIY3laUVluZ2IvbDg3aDIzdHNaMmduc0lRQ0lRUjhsc3lp?=
- =?utf-8?B?Wmc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b1dbda8-959a-4812-e1c1-08dc5a4e0f8d
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 17:37:29.5925
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UJDg/wf+oelooiuzD2xewMYnJQvliEpzB2rsSbh4Hdf7z5iKb0JIzv9fAZJjKJRW+icgB2+jzPiTTCnZwVFg6jYCIlvKW/CAAArstqURxPk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5225
-X-OriginatorOrg: intel.com
+References: <20240411151810.403167-1-kovalev@altlinux.org>
+In-Reply-To: <20240411151810.403167-1-kovalev@altlinux.org>
+From: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date: Thu, 11 Apr 2024 13:38:16 -0400
+Message-ID: <CABBYNZJs1FHX_KihTTeVaV5i1AbenHw6gwfrM4TzicJjs038MQ@mail.gmail.com>
+Subject: Re: [PATCH net] Bluetooth: hci_event: fix double hci_conn_drop() when
+ conn->state == BT_CONNECTED
+To: kovalev@altlinux.org
+Cc: marcel@holtmann.org, johan.hedberg@gmail.com, 
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	lvc-project@linuxtesting.org, nickel@altlinux.org, oficerovas@altlinux.org, 
+	dutyrok@altlinux.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Dave,
+Hi,
 
-On 4/11/2024 7:15 AM, Dave Martin wrote:
-> On Mon, Apr 08, 2024 at 08:19:00PM -0700, Reinette Chatre wrote:
->> On 3/21/2024 9:50 AM, James Morse wrote:
->>> rdt_put_mon_l3_config() is called via the architecture's
->>> resctrl_arch_exit() call, and appears to free the rmid_ptrs[]
->>> and closid_num_dirty_rmid[] arrays. In reality this code is marked
->>> __exit, and is removed by the linker as resctl can't be built
->>
->> resctl -> resctrl
-> 
-> Noted, thanks (also, there is "restrl" in the subject line.)
+On Thu, Apr 11, 2024 at 11:18=E2=80=AFAM <kovalev@altlinux.org> wrote:
+>
+> From: Vasiliy Kovalev <kovalev@altlinux.org>
+>
+> There is no need to drop the connection of some functions in which the
+> conn->state in BT_CONNECTED is marked, since in the future the same check
+> takes place (for example, in the hci_encrypt_change_evt() function) and
+> the hci_conn_drop() is called.
+>
+> Otherwise, the conn->refcnt will become below zero, which will trigger a
+> warning and may cause a crash on kernels with the panic_on_warn parameter
+> enabled.
+>
+> Syzkaller hit 'WARNING in hci_conn_timeout' bug.
+>
+> [   23.485892] Bluetooth: Core ver 2.22
+> [   23.485916] NET: Registered PF_BLUETOOTH protocol family
+> [   23.485917] Bluetooth: HCI device and connection manager initialized
+> [   23.486407] Bluetooth: HCI socket layer initialized
+> [   23.486410] Bluetooth: L2CAP socket layer initialized
+> [   23.486413] Bluetooth: SCO socket layer initialized
+> [   24.507112] Bluetooth: hci0: unexpected cc 0x0c03 length: 249 > 1
+> [   24.507142] Bluetooth: hci0: unexpected cc 0x1003 length: 249 > 9
+> [   24.507165] Bluetooth: hci0: unexpected cc 0x1001 length: 249 > 9
+> [   24.508091] Bluetooth: hci0: unexpected cc 0x0c23 length: 249 > 4
+> [   24.508109] Bluetooth: hci0: unexpected cc 0x0c25 length: 249 > 3
+> [   24.508117] Bluetooth: hci0: unexpected cc 0x0c38 length: 249 > 2
+> [   24.545962] Bluetooth: BNEP (Ethernet Emulation) ver 1.3
+> [   24.545969] Bluetooth: BNEP filters: protocol multicast
+> [   24.545973] Bluetooth: BNEP socket layer initialized
+> [   24.547521] Bluetooth: MGMT ver 1.22
+> [   26.553008] Bluetooth: hci0: command tx timeout
+> [   26.561518] Bluetooth: RFCOMM TTY layer initialized
+> [   26.561526] Bluetooth: RFCOMM socket layer initialized
+> [   26.561532] Bluetooth: RFCOMM ver 1.11
+> [   28.602024] Bluetooth: hci0: Opcode 0x0c13 failed: -110
+> [   28.602054] Bluetooth: hci0: command tx timeout
+> [   30.650011] Bluetooth: hci0: Opcode 0x0c24 failed: -110
+> [   30.650021] Bluetooth: hci0: command tx timeout
+> [   32.696973] Bluetooth: hci0: command tx timeout
+> [   32.696985] Bluetooth: hci0: Opcode 0x0c24 failed: -110
+> [   34.744973] Bluetooth: hci0: command 0x0406 tx timeout
+> [   34.745008] Bluetooth: hci0: Opcode 0x0c24 failed: -110
+> [   36.792966] Bluetooth: hci0: Opcode 0x0c24 failed: -110
+> [   36.792980] Bluetooth: hci0: command 0x0406 tx timeout
+> [   38.841027] Bluetooth: hci0: command 0x0406 tx timeout
+> [   38.841035] Bluetooth: hci0: Opcode 0x0c24 failed: -110
+> [   40.889026] Bluetooth: hci0: Opcode 0x0c24 failed: -110
+> [   40.889999] Bluetooth: hci0: command 0x0406 tx timeout
+> [   40.890012] Bluetooth: hci0: Opcode 0x0c24 failed: -110
+> [   40.893629] NET: Registered PF_ALG protocol family
+> [   42.937008] Bluetooth: hci0: Opcode 0x0c24 failed: -110
+> [   42.937023] Bluetooth: hci0: command 0x0406 tx timeout
+> [   44.984984] Bluetooth: hci0: Opcode 0x0c24 failed: -110
+> [   44.985008] Bluetooth: hci0: command 0x0406 tx timeout
+> [   47.033023] Bluetooth: hci0: Opcode 0x0c1a failed: -110
+> [   47.033044] Bluetooth: hci0: command 0x0406 tx timeout
+> [   49.080976] Bluetooth: hci0: command 0x0406 tx timeout
+> [   49.080985] Bluetooth: hci0: Opcode 0x0c24 failed: -110
+> [   51.129140] Bluetooth: hci0: Opcode 0x0c24 failed: -110
+> [   51.130051] Bluetooth: hci0: command 0x0406 tx timeout
+> [   53.177011] Bluetooth: hci0: command 0x0406 tx timeout
+> [   55.225969] Bluetooth: hci0: command 0x0406 tx timeout
+> [   57.272968] Bluetooth: hci0: command 0x0406 tx timeout
+> [   59.320982] Bluetooth: hci0: command 0x0406 tx timeout
+> [   61.368989] Bluetooth: hci0: command 0x0406 tx timeout
+> [  148.474066] ------------[ cut here ]------------
+> [  148.474072] WARNING: CPU: 0 PID: 3835 at net/bluetooth/hci_conn.c:612
+>                                 hci_conn_timeout+0x16/0x60 [bluetooth]
+> [  148.474115] Modules linked in: cmac algif_hash algif_skcipher af_alg
+>         rfcomm bnep hci_vhci bluetooth ecdh_generic uinput af_packet
+>         rfkill joydev hid_generic usbhid hid qrtr intel_rapl_msr
+>         intel_rapl_common intel_pmc_core kvm_intel nls_utf8 iTCO_wdt
+>         intel_pmc_bxt iTCO_vendor_support nls_cp866 vfat fat kvm irqbypas=
+s
+>         crct10dif_pclmul crc32_pclmul snd_hda_codec_generic crc32c_intel
+>         ghash_clmulni_intel ledtrig_audio sha512_ssse3 snd_hda_intel
+>         sha256_ssse3 sha1_ssse3 snd_intel_dspcfg snd_intel_sdw_acpi
+>         snd_hda_codec aesni_intel crypto_simd cryptd i2c_i801 snd_hda_cor=
+e
+>         psmouse snd_hwdep i2c_smbus xhci_pci pcspkr snd_pcm lpc_ich
+>         xhci_pci_renesas xhci_hcd tiny_power_button qemu_fw_cfg button
+>         sch_fq_codel vboxvideo drm_vram_helper drm_ttm_helper ttm vboxsf
+>         vboxguest snd_seq_midi snd_seq_midi_event snd_seq snd_rawmidi
+>         snd_seq_device snd_timer snd soundcore msr fuse efi_pstore dm_mod
+>         ip_tables x_tables autofs4 virtio_gpu virtio_net virtio_dma_buf
+>         drm_shmem_helper net_failover drm_kms_helper
+> [  148.474210]  virtio_rng drm virtio_scsi rng_core virtio_console
+>         virtio_balloon virtio_blk failover ahci libahci libata evdev
+>         input_leds serio_raw scsi_mod scsi_common virtio_pci
+>         virtio_pci_legacy_dev virtio_pci_modern_dev virtio_ring virtio
+>         intel_agp intel_gtt
+> [  148.474234] CPU: 0 PID: 3835 Comm: kworker/u5:2
+>                 Not tainted 6.1.85-un-def-alt1 #1
+> [  148.474238] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+>                 BIOS 1.16.0-alt1 04/01/2014
+> [  148.474241] Workqueue: hci0 hci_conn_timeout [bluetooth]
+> [  148.474265] RIP: 0010:hci_conn_timeout+0x16/0x60 [bluetooth]
+> [  148.474288] Code: 00 00 66 89 44 24 06 e8 58 a7 ff ff eb a8 e8 41 7b e=
+e
+>                 c1 90 0f 1f 44 00 00 8b 87 20 fd ff ff 85 c0 78 07 74 07 =
+c3
+>                 cc cc cc cc <0f> 0b 55 0f b6 87 49 fd ff ff 48 8d af 10 f=
+d
+>                 ff ff 3c 01 74 12 be
+> [  148.474291] RSP: 0018:ffffa7fd80b53e90 EFLAGS: 00010286
+> [  148.474295] RAX: 00000000fffe728b RBX: ffff8959c46ab180 RCX: ffff8959c=
+3b70028
+> [  148.474297] RDX: 0000000000000001 RSI: ffff8959c86ce0b0 RDI: ffff895a1=
+05aeaf0
+> [  148.474299] RBP: ffff895a105aeaf0 R08: ffff8959c86ce0b0 R09: ffff8959c=
+46ab1f4
+> [  148.474301] R10: 0000000000000005 R11: 0000000000000005 R12: ffff8959c=
+3b70000
+> [  148.474302] R13: ffff8959ec495400 R14: 0000000000000000 R15: ffff8959e=
+c495405
+> [  148.474305] FS:  0000000000000000(0000) GS:ffff895a3dc00000(0000)
+>                                                 knlGS:0000000000000000
+> [  148.474308] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  148.474310] CR2: 00007f2a1b7baa48 CR3: 0000000034b98000 CR4: 000000000=
+0750ef0
+> [  148.474317] PKRU: 55555554
+> [  148.474319] Call Trace:
+> [  148.474323]  <TASK>
+> [  148.474327]  ? __warn+0x79/0xc0
+> [  148.474343]  ? hci_conn_timeout+0x16/0x60 [bluetooth]
+> [  148.474364]  ? report_bug+0xff/0x150
+> [  148.474375]  ? handle_bug+0x49/0xa0
+> [  148.474398]  ? exc_invalid_op+0x14/0x70
+> [  148.474402]  ? asm_exc_invalid_op+0x16/0x20
+> [  148.474408]  ? hci_conn_timeout+0x16/0x60 [bluetooth]
+> [  148.474441]  process_one_work+0x217/0x3e0
+> [  148.474467]  worker_thread+0x4d/0x3c0
+> [  148.474473]  ? process_one_work+0x3e0/0x3e0
+> [  148.474478]  kthread+0xd6/0x100
+> [  148.474482]  ? kthread_complete_and_exit+0x20/0x20
+> [  148.474486]  ret_from_fork+0x1f/0x30
+> [  148.474500]  </TASK>
+> [  148.474502] ---[ end trace 0000000000000000 ]---
+>
+> Fixes: 0fe29fd1cd77 ("Bluetooth: Read LE remote features during connectio=
+n establishment")
+> Fixes: 769be974d0c7 ("[Bluetooth] Use ACL config stage to retrieve remote=
+ features")
+> Fixes: f8558555f31e ("[Bluetooth] Initiate authentication during connecti=
+on establishment")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
+> ---
+>  net/bluetooth/hci_event.c | 4 ----
+>  1 file changed, 4 deletions(-)
+>
+> diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+> index a8b8cfebe0180c..64477e1bde7cec 100644
+> --- a/net/bluetooth/hci_event.c
+> +++ b/net/bluetooth/hci_event.c
+> @@ -3529,7 +3529,6 @@ static void hci_auth_complete_evt(struct hci_dev *h=
+dev, void *data,
+>                 } else {
+>                         conn->state =3D BT_CONNECTED;
+>                         hci_connect_cfm(conn, ev->status);
+> -                       hci_conn_drop(conn);
+>                 }
+>         } else {
+>                 hci_auth_cfm(conn, ev->status);
+> @@ -3776,7 +3775,6 @@ static void hci_remote_features_evt(struct hci_dev =
+*hdev, void *data,
+>         if (!hci_outgoing_auth_needed(hdev, conn)) {
+>                 conn->state =3D BT_CONNECTED;
+>                 hci_connect_cfm(conn, ev->status);
+> -               hci_conn_drop(conn);
+>         }
+>
+>  unlock:
+> @@ -5030,7 +5028,6 @@ static void hci_remote_ext_features_evt(struct hci_=
+dev *hdev, void *data,
+>         if (!hci_outgoing_auth_needed(hdev, conn)) {
+>                 conn->state =3D BT_CONNECTED;
+>                 hci_connect_cfm(conn, ev->status);
+> -               hci_conn_drop(conn);
+>         }
+>
+>  unlock:
+> @@ -6561,7 +6558,6 @@ static void hci_le_remote_feat_complete_evt(struct =
+hci_dev *hdev, void *data,
+>
+>                         conn->state =3D BT_CONNECTED;
+>                         hci_connect_cfm(conn, status);
+> -                       hci_conn_drop(conn);
+>                 }
+>         }
+>
+> --
+> 2.33.8
 
-Thank you for catching that.
+The instances are called when the connection procedure is considered
+finished so hci_connect_cfm is called, etc, which is assumed to be
+done only once per hci_conn, we could in theory even do the state
+change and hci_conn_drop inside hci_connect_cfm and ignore if there
+are calls to it after it had move to connected state for example,
+anyway szykaller probably doesn't really follow the procedures
+accordingly and just generate events regardless if there are commands
+being generated or not which would explain why we have never seem this
+with real controllers, but you can't really remove these calls like
+this because it would probably result in memory leaks.
 
-> 
->>
->>> as a module.
->>>
->>> MPAM can make use of this code from its error interrupt handler,
->>> a later patch drops all the __init/__exit annotations.
->>
->> Reminder:
->> https://lore.kernel.org/lkml/85f8756a-23a0-444e-b37d-a7817b600f46@intel.com/
-> 
-> The "Drop __init/__exit on assorted symbols" patch speaks for itself,
-> I guess. I think it's probably sufficient for now to comfirm that this
-> patch is deliberately not changing the annotations for now.
-> 
-> Does the following work?
-> 
-> --8<--
-> 
-> Since there is no immediate need to change them, leave the __exit
-> annotations as-is.  This will need to be revisited as and when there is
-> a need to call these functions other than at __exit time.
-> 
-> -->8--
-
-Sounds good. I find a big focus on the __init/__exit annotations
-distracting. As I understand this has nothing to do with the goal of
-this patch, which is to move code from architecture side to filesystem side. 
-
-Reinette
-
+--=20
+Luiz Augusto von Dentz
 
