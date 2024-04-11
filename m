@@ -1,115 +1,155 @@
-Return-Path: <linux-kernel+bounces-141555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1571A8A1FD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:00:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22ED58A2121
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:51:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C613A28B2F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:00:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C255F1F24372
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FF111947D;
-	Thu, 11 Apr 2024 19:59:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 904153B2A8;
+	Thu, 11 Apr 2024 21:51:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="rfoSI3MU"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="BtgfNEll"
+Received: from msa.smtpout.orange.fr (smtp-66.smtpout.orange.fr [80.12.242.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E9318037
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:59:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC513D544;
+	Thu, 11 Apr 2024 21:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712865585; cv=none; b=P6B8yYY7OIfx7yTtI7BtTJOFO6oytVou4q3qVn/r94w3QmKE8yt4rWo2oo/jR+TqfYE22n6eN5uBatXsnztNw6l969Xth/TtTL1tsgd2ousMl+/litJnTs9mLlUZMvpCo6kEmT0c1IupD7/XZmxtZDTPAJDlFnP4f3v+6ebtnlM=
+	t=1712872294; cv=none; b=Fmu5q10xKND6bjFqjXLBxqoDUG8dNiP1oP7I0M2YpT6miOqgPwEhCrAZxhXUVxKLEyJKhwqWWSuUdp93DM3oy2bbRu0e9VdlUKurqb0Cr3Ox/bzs3pC63o3d+wv2nqk7qlASTOpEVG2w+S5Hex7Dq6QqM1BWe7afw/xjxj3a0do=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712865585; c=relaxed/simple;
-	bh=dW8XAmqM7eeyW4vgfPztKLtEUda+8GEk7kYd6Pd6ni8=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=F0FPPtG+hz4sSJ8RZ2VOnP5FsXX0/gUK3LUqV7r8dMOE3lWosrx+5DxnEfKjYu+903lIvQd8PqwMSG0BuzXa/QKFGJnVcL3MO79INhJ1jbM5vEqRYMfrJLC6dQgOc0JiO/Qi72atN5/DNnwqCDaDXAOfJ+mKsFfSCmpg0ugCSHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=rfoSI3MU; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6ecf8ebff50so145134b3a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:59:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712865583; x=1713470383; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FjT+6o0lq0aPcW1oUwnjeSeQ1BXltNR4mobET1Ks5iw=;
-        b=rfoSI3MU9PoLxX3Xl0qnpQORHr/yIeoBU7PnqNW6Yzef92nCw81UmEth8M8EJbrbrS
-         VxdvZ1yxEw1Py9eRkeSbhfro0sglx45suuGPP0zY7gVLrSx/pSLdJ3Jzuv9cbhNOq/Q3
-         Swl3RxVgPt3ZpESg1hYiBbxTmSi5HWll2ySVF5xq+kFB0uNQLIyJG3cnuuXirlxDlIlv
-         twh5Vx3a0bkau2OqfkMDS1ghTY0z+dBqGBXFSjv9TmNvFMF5TpgAsPGRZHhxUqOTzCgZ
-         NTDeO6mtilg+eg46982T5TXHUaqG+9M0No6llDMRmxHdM05eZk9uhkasHes3NZSVvQSW
-         u5vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712865583; x=1713470383;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FjT+6o0lq0aPcW1oUwnjeSeQ1BXltNR4mobET1Ks5iw=;
-        b=k3JywDYGQQNWiCRuAgvR/ciJmQqIDobaatDf6vOKMnbdHmLzy2EvaPSPEDqkffEJEw
-         LTH4PpBL/zYaRy0tvV/Wz8IqY2Iam+6u8StwOx+3KBcGjbv/UeRJ19AHFtFmdClFwo3D
-         mlZKZtSWPoys5PUD6SCa2Vk0GFXVroHPIS4CgUesD7YBJXanrbZ3LJHv7yrQqHzXBFdP
-         v33itHhrgCKiSoxmnxlT7vLhjbytyKXvbWnSYWMbTCl+7bauj9gq+W3I678nwLteEZYD
-         EDEYmueDFXLMYZ4o18c2scoXZ1cOPm9ZMfhFpXV6nLH9z9Ps5q1b37A270LPlxU02w62
-         rRdw==
-X-Forwarded-Encrypted: i=1; AJvYcCXAtkC+JC7BPTN1Wrqk0NhmEhX9HSCiiAvomBftdUh3mqlu0qruSATQK+i4j3aEvvEM9o8zGAhWAlqDja3kddA5vQWdJ+AWhmGPlV07
-X-Gm-Message-State: AOJu0YzXBvzMzeGk4+2EeXxRLAUet+oJUGXTfFU+JCVxjdFCrxtPO8DP
-	HhNDyv7B2TxkEGErDf5cCZo1wBZ2VelTzbKM9OsJmUAYY8MdnghXJV8QgCN1VmA=
-X-Google-Smtp-Source: AGHT+IHx+CIoxL14UTCSROAp5Y5aR0T5W2Mz/yPhBy5R39P5WnajKLD/VsBki0J7hnVrX6QyZDI6tg==
-X-Received: by 2002:aa7:888b:0:b0:6ec:fa34:34ab with SMTP id z11-20020aa7888b000000b006ecfa3434abmr844703pfe.9.1712865582845;
-        Thu, 11 Apr 2024 12:59:42 -0700 (PDT)
-Received: from localhost ([50.145.13.30])
-        by smtp.gmail.com with ESMTPSA id b12-20020a056a000a8c00b006ed64f4767asm1538680pfl.112.2024.04.11.12.59.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 12:59:42 -0700 (PDT)
-Date: Thu, 11 Apr 2024 12:59:42 -0700 (PDT)
-X-Google-Original-Date: Thu, 11 Apr 2024 12:58:54 PDT (-0700)
-Subject:     Re: linux-next: manual merge of the risc-v tree with the rust-fixes tree
-In-Reply-To: <CANiq72mdRgMuQVD53Kp=hqaoiSNwPVZVSrbbMxRYehi73FZf9A@mail.gmail.com>
-CC: Stephen Rothwell <sfr@canb.auug.org.au>, Paul Walmsley <paul@pwsan.com>,
-  ojeda@kernel.org, tim.chenbw@gmail.com, Conor Dooley <conor.dooley@microchip.com>,
-  gary@garyguo.net, linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
-From: Palmer Dabbelt <palmer@rivosinc.com>
-To: miguel.ojeda.sandonis@gmail.com
-Message-ID: <mhng-7603cdcc-24ee-4b19-b049-64d1bd4151b9@palmer-ri-x1c9a>
+	s=arc-20240116; t=1712872294; c=relaxed/simple;
+	bh=AVclvdL6//c5Rcr+h+dJy4tgWHKepODdJXELWxA94E4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dnHi2ig4rUWjvjFJiwV1pwkSMF3zHA2Y8Qf4Gqq0EbIDK+/C4+O3VK/HKSUuTk4LepgG53cxlMacienVcp1hiyXww/7DkK7+BsHLdI5toQxkdcYFUUtn7xLJ4rKOqHK07VaIuQ1y9n4bitWfGsV5mrDi4eFIhYz3APfapsZo7RI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=BtgfNEll; arc=none smtp.client-ip=80.12.242.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id v0c7r4ySyA2vSv0c7rijm1; Thu, 11 Apr 2024 22:01:40 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1712865700;
+	bh=DVVJHd+qbC3ifuZnV4XwadjAT7VtaXweCZnA1mXn8hk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=BtgfNEllbSY5CLAf5rhYxFyA92jERCdt70gtxu6N4Gg5Ho7HLtj7f3BhdQJ9rD/lu
+	 G34584g1aTgi2d9IcJWg/F8FUNGqpKQr3HYAMmHsq/xhxFSGS45Tq3T5+mmOzlZ3ff
+	 kq20VkdmWOM47997evgwsvIJEsdefod9jQ8hkLvgL9pHwhB0OBI00SJ3TUceHEsXwY
+	 BdwVf0M8TbozlPji+ihr/CA3Y6/nxp1/zIL3MMmFtNVmRSAhSh91si/zk1TpSlCPUR
+	 rOSjzsJgQ9VrsJJtAH2P94MV/tPOByG9W+ZS4NJ9e0eXj8w0M8tSJObFNl+ht03B1s
+	 gjj65t2ISmjzA==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 11 Apr 2024 22:01:40 +0200
+X-ME-IP: 86.243.17.157
+Message-ID: <48d593c1-c706-4af3-aacf-d1329a8b0d4b@wanadoo.fr>
+Date: Thu, 11 Apr 2024 22:01:39 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] checkpatch: add check for snprintf to scnprintf
+To: Justin Stitt <justinstitt@google.com>, Andy Whitcroft
+ <apw@canonical.com>, Joe Perches <joe@perches.com>,
+ Dwaipayan Ray <dwaipayanray1@gmail.com>,
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>,
+ linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+ Finn Thain <fthain@linux-m68k.org>
+References: <20240408-snprintf-checkpatch-v4-1-8697c96ac94b@google.com>
+Content-Language: en-MW
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20240408-snprintf-checkpatch-v4-1-8697c96ac94b@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On Thu, 11 Apr 2024 03:47:43 PDT (-0700), miguel.ojeda.sandonis@gmail.com wrote:
-> On Thu, Apr 11, 2024 at 1:43 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->>   =============  ================  ==============================================
->>   ``arm64``      Maintained        Little Endian only.
->>  -``loongarch``  Maintained        -
->>  +``loongarch``  Maintained        \-
->> + ``riscv``      Maintained        ``riscv64`` only.
->>   ``um``         Maintained        ``x86_64`` only.
->>   ``x86``        Maintained        ``x86_64`` only.
->>   =============  ================  ==============================================
+Le 08/04/2024 à 22:53, Justin Stitt a écrit :
+> I am going to quote Lee Jones who has been doing some snprintf ->
+> scnprintf refactorings:
 > 
-> Looks good, of course, thanks!
-
-Ya, and I think there's not a ton we can do about this one.  Just two 
-in-flight features colliding in the docs, some sort of shared tag seems 
-overkill.
-
-I'm assuming rust-fixes will make it up to Linus well before I send the RISC-V
-for-next (ie, next merge window).  So I'll just call this one out when I send
-it up.
-
-Thanks!
-
+> "There is a general misunderstanding amongst engineers that
+> {v}snprintf() returns the length of the data *actually* encoded into the
+> destination array.  However, as per the C99 standard {v}snprintf()
+> really returns the length of the data that *would have been* written if
+> there were enough space for it.  This misunderstanding has led to
+> buffer-overruns in the past.  It's generally considered safer to use the
+> {v}scnprintf() variants in their place (or even sprintf() in simple
+> cases).  So let's do that."
 > 
-> Cheers,
-> Miguel
+> To help prevent new instances of snprintf() from popping up, let's add a
+> check to checkpatch.pl.
+> 
+> Suggested-by: Finn Thain <fthain@linux-m68k.org>
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Changes in v4:
+> - also check for vsnprintf variant (thanks Bill)
+> - Link to v3: https://lore.kernel.org/r/20240315-snprintf-checkpatch-v3-1-a451e7664306@google.com
+> 
+> Changes in v3:
+> - fix indentation
+> - add reference link (https://github.com/KSPP/linux/issues/105) (thanks Joe)
+> - Link to v2: https://lore.kernel.org/r/20240221-snprintf-checkpatch-v2-1-9baeb59dae30@google.com
+> 
+> Changes in v2:
+> - Had a vim moment and deleted a character before sending the patch.
+> - Replaced the character :)
+> - Link to v1: https://lore.kernel.org/r/20240221-snprintf-checkpatch-v1-1-3ac5025b5961@google.com
+> ---
+>  From a discussion here [1].
+> 
+> [1]: https://lore.kernel.org/all/0f9c95f9-2c14-eee6-7faf-635880edcea4@linux-m68k.org/
+> ---
+>   scripts/checkpatch.pl | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 9c4c4a61bc83..a0fd681ea837 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -7012,6 +7012,12 @@ sub process {
+>   			     "Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see: https://github.com/KSPP/linux/issues/90\n" . $herecurr);
+>   		}
+>   
+> +# {v}snprintf uses that should likely be {v}scnprintf
+> +		if ($line =~ /\b(v|)snprintf\s*\(\s*/) {
+
+Hi,
+
+for my understanding, what is the purpose of the 2nd "\s*"?
+IMHO, it could be just removed.
+
+> +			WARN("SNPRINTF",
+> +			     "Prefer {v}scnprintf over {v}snprintf - see: https://github.com/KSPP/linux/issues/105\n" . $herecurr);
+
+Maybe $1 instead of {v} in both places, so that is displays the real 
+function name that is and should be used?
+
+CJ
+
+> +		}
+> +
+>   # ethtool_sprintf uses that should likely be ethtool_puts
+>   		if ($line =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*$FuncArg\s*\)/) {
+>   			if (WARN("PREFER_ETHTOOL_PUTS",
+> 
+> ---
+> base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
+> change-id: 20240221-snprintf-checkpatch-a864ed67ebd0
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
+> 
+> 
+
 
