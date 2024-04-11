@@ -1,154 +1,167 @@
-Return-Path: <linux-kernel+bounces-141545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F16908A1FA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:42:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 709438A1F8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:35:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69E2F1F25C0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:42:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27B8B28638C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20707175BF;
-	Thu, 11 Apr 2024 19:42:48 +0000 (UTC)
-Received: from mail.itouring.de (mail.itouring.de [85.10.202.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1657317582;
+	Thu, 11 Apr 2024 19:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="WTzaXJlO"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04DB6175AD;
-	Thu, 11 Apr 2024 19:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.10.202.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77CA313AE2
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 19:35:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712864567; cv=none; b=DeX9ZrI2hDX5cd+RHcYVvS8inpAoX8MsHANRb7k1FlvGnIku33FncLv0ITGPbXkTigz0CdAALh+y/gmdt/U6vbsvNxS0UBLRW/XMWCpJ6xhZwnANhmHkq1g/QiVPu75jxNSPr5IyrH0CuCHuUSv6X009mSqS2M+2PGejbx0JQ78=
+	t=1712864114; cv=none; b=KFD+SrW9iueLBXv2KOdpDa9GYebtM3ihdDVI4AvrmzMj0MH4UxGMweRY9tyxAXfBWx0LgfvfVGjXS2bAPkNMcLcyO+buwGu0v7XaXRvBKI50NTRPTugxbG4t1128sPSs1KgPlWGmIeFHDRVinVCfil03/KZFn0xS/Iui4zXYviE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712864567; c=relaxed/simple;
-	bh=UJBRZUK4e9eLdqQMw3ivQwpCvgp4H+Bnb9TUiy3whug=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=RD1ip89RFc6WIE0nkeCXZ9hcBwifOogN5ml/5W6zk3zfNl6GVVBbAnJwHDL4Dd5/hNu1VfPa6iBiKNpz6npjBX/q9V0QFSEVi1ZavroQumrgYMrGYjt0KNFtwHX9S+Ue1jNb/GP2SdenRZijUCsaWlchLGrA0SG5grwtt1MHeFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=applied-asynchrony.com; spf=pass smtp.mailfrom=applied-asynchrony.com; arc=none smtp.client-ip=85.10.202.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=applied-asynchrony.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=applied-asynchrony.com
-Received: from tux.applied-asynchrony.com (p5ddd7672.dip0.t-ipconnect.de [93.221.118.114])
-	by mail.itouring.de (Postfix) with ESMTPSA id 920C4103762;
-	Thu, 11 Apr 2024 21:34:41 +0200 (CEST)
-Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
-	by tux.applied-asynchrony.com (Postfix) with ESMTP id 3244CF01607;
-	Thu, 11 Apr 2024 21:34:41 +0200 (CEST)
-Subject: Re: [PATCH 6.8 000/143] 6.8.6-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
-References: <20240411095420.903937140@linuxfoundation.org>
-From: =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <0386180b-d01d-81d6-bb7b-d6641ab4d719@applied-asynchrony.com>
-Date: Thu, 11 Apr 2024 21:34:41 +0200
+	s=arc-20240116; t=1712864114; c=relaxed/simple;
+	bh=5KVFeFerRH8GLwfSRDO//pTmkAv+uv/gwR3NCKN8Cdg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WyutQgUxwfsXhpSzP8RUZdr2iw1qDYQMB+OCDvT765lkOtRTvREkM3HUg5Hdf+QQsoajJY1UBnyDQgZSjNOIP9V4ukH3aE0vc0gdnpevy2EAH2qR0JQ43dACvCW0Q+plDNxw8IFH12vK+5KC9sXCSLTeEJi35Mis7STcxTMHIWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=WTzaXJlO; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d8129797fcso1409181fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:35:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1712864110; x=1713468910; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qhujaawioP0edqzESewC5qrutyIfvYKamEof/gouabc=;
+        b=WTzaXJlOO/kVxxr1UkWojPQ/xwlyFTzOJSP5b0jR/awylRo5f1TXq5e9VoMDDY3kO2
+         FFLH/bUak6hUenp9hECToGe5ICfRIfzKfk90FANs+DTVMzj3e0K5xRZ7x080OufLuOAP
+         z6rlyTv541da48Ok+wcK3uaiY64r9X/GDlcuY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712864110; x=1713468910;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qhujaawioP0edqzESewC5qrutyIfvYKamEof/gouabc=;
+        b=HS2SoQFUyUh1r03He6h8svjUmrHD2gjl3YbVDCcPAxrXsf0PjvCWoscnuHBxKiFUm8
+         yCIbqTf8Ni5fAMTdULxy2ncM5e3MF6pZCiUNgnFiToBMCS0Y6VgNs/oPpLAnLLQEyWjx
+         276pZfHKvtUUdNZulEvOlrr2B2AtjR3stg2xOpUOUtKccEwq14MlMqm5sWoUVKf5S85g
+         o4CkHpZncczorkF2FQemQOPOymO92yGji2+WwtaNmGBdOri0z32DyzGhOvN8S3RRlBxP
+         qwZdCzxs5sPBOqVKOAH/UfS+9iu1+P5boMTCJU3sU39C+l4V6Nc1uQaKC7Xdd+GbMbM7
+         UhVg==
+X-Forwarded-Encrypted: i=1; AJvYcCWf+Jjeqvg+ryC9y061oCeUFmg0F0cgCC3pCMS+Zd9PTicPz8/saM6+ayJijrkdkHU29jiXiXQSrbxy/wRGEued0HELQwNOgyEo9iRz
+X-Gm-Message-State: AOJu0YxTeXrhPDMqmqSLeLXRRuxtSroekFiTCUoZWDzWseYXR6cgw193
+	G3enFnHNQmJchuqDFnQ6VXZ3gdPBiN6nWv+1n6bpySrLtGGjlebq9hvmBy9zbJ7MkhhHoW9BvUV
+	6FufrtA==
+X-Google-Smtp-Source: AGHT+IFw2+Lh2FafyqDQylF2+vel37vCZLYMzft8itWuJW5AD2fZCz6DcWMfMjdi9ali/AYwCB6lwg==
+X-Received: by 2002:a2e:be86:0:b0:2d8:d472:581e with SMTP id a6-20020a2ebe86000000b002d8d472581emr528389ljr.37.1712864110364;
+        Thu, 11 Apr 2024 12:35:10 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id f15-20020a2e6a0f000000b002d868f2939bsm276785ljc.103.2024.04.11.12.35.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 12:35:09 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-516d2600569so275958e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 12:35:09 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVPwyMcBgDMERRSML1YVdLwHvKFfMwV0Vas0boYuD90S3dq+RdYUj9p4RtXpoWpksJ9Y74NTqGoIYJ15h2nu7TwJAvcI8DVWOxLw5KT
+X-Received: by 2002:a19:3855:0:b0:516:d11b:5532 with SMTP id
+ d21-20020a193855000000b00516d11b5532mr402271lfj.23.1712864109199; Thu, 11 Apr
+ 2024 12:35:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240411095420.903937140@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20240411001012.12513-1-torvalds@linux-foundation.org>
+ <CAHk-=wiaoij30cnx=jfvg=Br3YTxhQjp4VWRc6=xYE2=+EVRPg@mail.gmail.com>
+ <20240411-alben-kocht-219170e9dc99@brauner> <CAHk-=wjrPDx=f5OSnQVbbJ4id6SZk-exB1VW9Uz3R7rKFvTQeQ@mail.gmail.com>
+ <CABe3_aGbsPHY9Z5B9WyVWakeWFtief4DpBrDxUiD00qk1irMrg@mail.gmail.com>
+ <CABe3_aGGf7kb97gE4FdGmT79Kh5OhbB_2Hqt898WZ+4XGg6j4Q@mail.gmail.com>
+ <CABe3_aE_quPE0zKe-p11DF1rBx-+ecJKORY=96WyJ_b+dbxL9A@mail.gmail.com> <CAHk-=wjuzUTH0ZiPe0dAZ4rcVeNoJxhK8Hh_WRBY-ZqM-pGBqg@mail.gmail.com>
+In-Reply-To: <CAHk-=wjuzUTH0ZiPe0dAZ4rcVeNoJxhK8Hh_WRBY-ZqM-pGBqg@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 11 Apr 2024 12:34:52 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgEdyUeiu=94iuJsf2vEfeyjqTXa+dSpUD6F4jvJ=87cw@mail.gmail.com>
+Message-ID: <CAHk-=wgEdyUeiu=94iuJsf2vEfeyjqTXa+dSpUD6F4jvJ=87cw@mail.gmail.com>
+Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() - requirements
+To: Charles Mirabile <cmirabil@redhat.com>
+Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024-04-11 11:54, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.8.6 release.
-> There are 143 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, 11 Apr 2024 at 11:13, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> So while I understand your motivation, I actually think it's actively
+> wrong to special-case __O_TMPFILE, because it encourages a pattern
+> that is bad.
 
-With this -rc1 I see the following WARNING noise on my AMD Zen2 Thinkpad
-during boot:
+Just to clarify: I think the ns_capable() change is a good idea and
+makes sense. The whole "limited to global root" makes no sense if the
+file was opened within a namespace, and I think it always just came
+from the better check not being obvious at the point where
+AT_EMPTY_PATH was checked for.
 
---snip--
-Apr 11 16:08:45 hho kernel: [drm] Initialized amdgpu 3.57.0 20150101 for 0000:06:00.0 on minor 0
-Apr 11 16:08:45 hho kernel: ------------[ cut here ]------------
-Apr 11 16:08:45 hho kernel: amdgpu 0000:06:00.0: drm_WARN_ON_ONCE(!dev->mode_config.poll_enabled)
-Apr 11 16:08:45 hho kernel: WARNING: CPU: 10 PID: 728 at drivers/gpu/drm/drm_probe_helper.c:305 drm_kms_helper_poll_enable+0x129/0x130 [drm_kms_helper]
-Apr 11 16:08:45 hho kernel: Modules linked in: sch_fq_codel bpf_preload uvcvideo videobuf2_vmalloc videobuf2_memops uvc videobuf2_v4l2 mousedev videodev videobuf2_common mc snd_ctl_led snd_hda_codec_realtek iwlmvm amdgpu(+) snd_hda_codec_generic mac80211 libarc4 snd_hda_codec_hdmi pkcs8_key_parser edac_mce_amd i2c_algo_bit drm_ttm_helper crct10dif_pclmul crc32_pclmul crc32c_intel ttm snd_hda_intel ghash_clmulni_intel drm_exec snd_intel_dspcfg sha512_ssse3 drm_suballoc_helper amdxcp sha256_ssse3 snd_hda_codec drm_buddy gpu_sched sha1_ssse3 snd_hwdep iwlwifi snd_hda_core lm92 drm_display_helper thinkpad_acpi snd_pcm cec snd_rn_pci_acp3x ledtrig_audio snd_timer wmi_bmof drivetemp drm_kms_helper psmouse rapl r8169 platform_profile snd_acp_config cfg80211 serio_raw realtek k10temp snd_soc_acpi ipmi_devintf snd ucsi_acpi mdio_devres drm snd_pci_acp3x i2c_piix4 soundcore rfkill typec_ucsi ipmi_msghandler libphy video roles typec battery ac wmi i2c_scmi button
-Apr 11 16:08:45 hho kernel: CPU: 10 PID: 728 Comm: (udev-worker) Not tainted 6.8.6 #1
-Apr 11 16:08:45 hho kernel: Hardware name: LENOVO 20U50001GE/20U50001GE, BIOS R19ET32W (1.16 ) 01/26/2021
-Apr 11 16:08:45 hho kernel: RIP: 0010:drm_kms_helper_poll_enable+0x129/0x130 [drm_kms_helper]
-Apr 11 16:08:45 hho kernel: Code: 48 8b 5f 50 48 85 db 75 03 48 8b 1f e8 90 58 f8 e0 48 c7 c1 a0 0a 67 a0 48 89 da 48 c7 c7 84 14 67 a0 48 89 c6 e8 27 b2 a6 e0 <0f> 0b e9 08 ff ff ff 0f 1f 44 00 00 48 b8 e0 ff ff ff 0f 00 00 00
-Apr 11 16:08:45 hho kernel: RSP: 0018:ffffc900005ff918 EFLAGS: 00010296
-Apr 11 16:08:45 hho kernel: RAX: 0000000000000045 RBX: ffff88810173c5b0 RCX: 0000000000000027
-Apr 11 16:08:45 hho kernel: RDX: ffff8887ef69c6c8 RSI: 0000000000000001 RDI: ffff8887ef69c6c0
-Apr 11 16:08:45 hho kernel: RBP: 0000000000000000 R08: 00000000fffeffff R09: 0000000000000001
-Apr 11 16:08:45 hho kernel: R10: 0000000000000000 R11: ffff8887eec80000 R12: ffff88810e380010
-Apr 11 16:08:45 hho kernel: R13: ffff88810e380010 R14: 0000000000000003 R15: ffffffffa03b69ce
-Apr 11 16:08:45 hho kernel: FS:  00007f7472869800(0000) GS:ffff8887ef680000(0000) knlGS:0000000000000000
-Apr 11 16:08:45 hho kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-Apr 11 16:08:45 hho kernel: CR2: 00005607b50f5000 CR3: 0000000104f3e000 CR4: 0000000000350ef0
-Apr 11 16:08:45 hho kernel: Call Trace:
-Apr 11 16:08:45 hho kernel:  <TASK>
-Apr 11 16:08:45 hho kernel:  ? drm_kms_helper_poll_enable+0x129/0x130 [drm_kms_helper]
-Apr 11 16:08:45 hho kernel:  ? __warn+0x7d/0x120
-Apr 11 16:08:45 hho kernel:  ? drm_kms_helper_poll_enable+0x129/0x130 [drm_kms_helper]
-Apr 11 16:08:45 hho kernel:  ? report_bug+0x155/0x180
-Apr 11 16:08:45 hho kernel:  ? handle_bug+0x36/0x70
-Apr 11 16:08:45 hho kernel:  ? exc_invalid_op+0x13/0x60
-Apr 11 16:08:45 hho kernel:  ? asm_exc_invalid_op+0x16/0x20
-Apr 11 16:08:45 hho kernel:  ? drm_kms_helper_poll_enable+0x129/0x130 [drm_kms_helper]
-Apr 11 16:08:45 hho kernel:  ? drm_kms_helper_poll_enable+0x129/0x130 [drm_kms_helper]
-Apr 11 16:08:45 hho kernel:  drm_helper_probe_single_connector_modes+0x167/0x4f0 [drm_kms_helper]
-Apr 11 16:08:45 hho kernel:  drm_client_modeset_probe+0x1e0/0x1350 [drm]
-Apr 11 16:08:45 hho kernel:  ? __cond_resched+0x16/0x40
-Apr 11 16:08:45 hho kernel:  ? kmalloc_trace+0xfd/0x280
-Apr 11 16:08:45 hho kernel:  ? __pm_runtime_suspend+0x67/0xb0
-Apr 11 16:08:45 hho kernel:  __drm_fb_helper_initial_config_and_unlock+0x2d/0x490 [drm_kms_helper]
-Apr 11 16:08:45 hho kernel:  ? drm_file_alloc+0x1af/0x250 [drm]
-Apr 11 16:08:45 hho kernel:  ? __cond_resched+0x16/0x40
-Apr 11 16:08:45 hho kernel:  drm_fbdev_generic_client_hotplug+0x62/0xb0 [drm_kms_helper]
-Apr 11 16:08:45 hho kernel:  drm_client_register+0x5a/0x90 [drm]
-Apr 11 16:08:45 hho kernel:  amdgpu_pci_probe+0x465/0x4d0 [amdgpu]
-Apr 11 16:08:45 hho kernel:  local_pci_probe+0x39/0x80
-Apr 11 16:08:45 hho kernel:  pci_device_probe+0xa1/0x1b0
-Apr 11 16:08:45 hho kernel:  really_probe+0x156/0x2e0
-Apr 11 16:08:45 hho kernel:  ? __device_attach_driver+0x100/0x100
-Apr 11 16:08:45 hho kernel:  __driver_probe_device+0x73/0x110
-Apr 11 16:08:45 hho kernel:  driver_probe_device+0x1f/0xe0
-Apr 11 16:08:45 hho kernel:  __driver_attach+0x7d/0x180
-Apr 11 16:08:45 hho kernel:  bus_for_each_dev+0x60/0x90
-Apr 11 16:08:45 hho kernel:  bus_add_driver+0xe4/0x1e0
-Apr 11 16:08:45 hho kernel:  driver_register+0x55/0xf0
-Apr 11 16:08:45 hho kernel:  ? 0xffffffffa020a000
-Apr 11 16:08:45 hho kernel:  do_one_initcall+0x41/0x1c0
-Apr 11 16:08:45 hho kernel:  ? kmalloc_trace+0x1d5/0x280
-Apr 11 16:08:45 hho kernel:  do_init_module+0x60/0x230
-Apr 11 16:08:45 hho kernel:  init_module_from_file+0x79/0xb0
-Apr 11 16:08:45 hho kernel:  __x64_sys_finit_module+0x155/0x280
-Apr 11 16:08:45 hho kernel:  do_syscall_64+0x49/0x110
-Apr 11 16:08:45 hho kernel:  entry_SYSCALL_64_after_hwframe+0x4b/0x53
-Apr 11 16:08:45 hho kernel: RIP: 0033:0x7f7472a740e9
-Apr 11 16:08:45 hho kernel: Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 07 ed 0c 00 f7 d8 64 89 01 48
-Apr 11 16:08:45 hho kernel: RSP: 002b:00007ffcff3f42d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
-Apr 11 16:08:45 hho kernel: RAX: ffffffffffffffda RBX: 0000564f9b3f5d50 RCX: 00007f7472a740e9
-Apr 11 16:08:45 hho kernel: RDX: 0000000000000004 RSI: 00007f7472c50369 RDI: 0000000000000017
-Apr 11 16:08:45 hho kernel: RBP: 0000000000000004 R08: 00007f7472b43b20 R09: 0000564f9b3af700
-Apr 11 16:08:45 hho kernel: R10: 0000000000000050 R11: 0000000000000246 R12: 00007f7472c50369
-Apr 11 16:08:45 hho kernel: R13: 0000000000020000 R14: 0000564f9b41d6b0 R15: 0000000000000000
-Apr 11 16:08:45 hho kernel:  </TASK>
-Apr 11 16:08:45 hho kernel: ---[ end trace 0000000000000000 ]---
-Apr 11 16:08:45 hho kernel: fbcon: amdgpudrmfb (fb0) is primary device
---snap--
+Similarly, while the FMODE_PATH test _looks_ very similar to an
+O_TMPFILE check, I think it's fundamentally different in a conceptual
+sense: not only is FMODE_PATH filesystem-agnostic, a FMODE_PATH file
+is *only* useful as a pathname (ie no read/write semantics).
 
-This is due to "drm-check-output-polling-initialized-before-disablin.patch" which
-needs a followup patch to work properly, otherwise the above drm_WARN_ON_ONCE
-always fires for the wrong reason.
+And so if a FMODE_PATH file descriptor is passed in from the outside,
+I feel like the "you cannot use this to create a path" is kind of a
+fundamentally nonsensical rule.
 
-The commit in mainline is:
+IOW, whoever is passing that FMODE_PATH file descriptor around must
+have actually thought about it, and must have opened it with O_PATH,
+and it isn't useful for anything else than as a starting point for a
+path lookup.
 
-048a36d8a608 "drm: Check polling initialized before enabling in drm_helper_probe_single_connector_modes"
+So while I don't think the __O_TMPFILE exception would necessarily be
+wrong per se, I am afraid that it would result in people writing
+convenient code that "appears to work" in testing, but then fails when
+run in an environment where the directory is mounted over NFS (or any
+other filesystem that doesn't do ->tmpfile()).
 
-With that commit amdgpu initialisation is happy again: no more WARN_ON_ONCE on boot.
+I am certainly open to be convinced otherwise, but I really think that
+the real pattern to aim for should just be "look, I opened the file
+myself, then filled in the detail, and now I'm doing a linkat() to
+expose it" and that the real protection issue should be that "my
+credentials are the same for open and linkat".
 
-cheers
-Holger
+The other rules (ie the capability check or the FMODE_PATH case) would
+be literally about situations where you *want* to pass things around
+between protection domains.
+
+In that context, the ns_capable() and the FMODE_PATH check make sense to me.
+
+In contrast, the __O_TMPFILE check just feels like a random detail.
+
+Hmm?
+
+Anyway, end result of that is that this is what that part of the patch
+looks like for me right now:
+
++               if (flags & LOOKUP_DFD_MATCH_CREDS) {
++                       const struct cred *cred = f.file->f_cred;
++                       if (!(f.file->f_mode & FMODE_PATH) &&
++                           cred != current_cred() &&
++                           !ns_capable(cred->user_ns, CAP_DAC_READ_SEARCH)) {
++                               fdput(f);
++                               return ERR_PTR(-ENOENT);
++                       }
++               }
+
+and that _seems_ sensible to me.
+
+But yes, this all has been something that we have failed to do right
+for at least a quarter of a century so far, so this needs a *lot* of
+thought, even if the patch itself is rather small and looks relatively
+obvious.
+
+                 Linus
 
