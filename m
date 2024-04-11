@@ -1,69 +1,70 @@
-Return-Path: <linux-kernel+bounces-141607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD6398A20A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:04:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2314A8A20A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:05:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EEA21F23DF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:04:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D479F283796
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8036A2BD18;
-	Thu, 11 Apr 2024 21:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 304FE32C8B;
+	Thu, 11 Apr 2024 21:05:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="A3WtTUkA"
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PG8P1t86"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 817593C699
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED3A524C;
+	Thu, 11 Apr 2024 21:04:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712869450; cv=none; b=GbnNLd37Vx3/iqIIWZryZJIPK61QFRiJM+YzxBHNZFd2xP/RIheIsrXV7hP7plX75HB3EbFbzH4PW0T8/M7jhgDPxvlSPT8G4nT5Gdd/xshC/PrDkwnbPSPzDbLBf0wFxxZq8f9FGc8VhDUx2xyM0hbNqmQGA3HX+fCQm0QgWHc=
+	t=1712869499; cv=none; b=oqZ/63y4Xv0RJ8+lvu3XJmdSw6+/87D+qTC84CjNTuv/P3HZvh4F7OmFY3doYm/jDv+D4CCMF4OdVRU3iOnGHGUutYJETzGE5q/V0t6iZx5oQeMYR6rhcdY7wTih6wq3b2FDQt3eOOUBgKN/S3F8+1xa/r52DmFtL9HD8rOaRMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712869450; c=relaxed/simple;
-	bh=9QuO6BYTsmplOuE/hQFARvTiNY0alp0xXqrG4P0kAo8=;
+	s=arc-20240116; t=1712869499; c=relaxed/simple;
+	bh=CGaiRDnTdz5GIe5+v4+BmkyLEBDRNdDaieIGQ/ZwpCo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=M3YJhtYqSqymxroVKf0UqW+c/yNtuv9PYaIufI4fTGYUhbqWLotDoxglVyC5ottpJh5jEQa/36iHiWP+/nPwU06dlTN3CJYVqzj/0SI71p2hQyidloDUTnYMkWFuYm1JCYlHXJo0X1M9nEoZxhMk/zrdxlKtL/ywGhrdlTVfggU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=A3WtTUkA; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-36a29832cbdso348045ab.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 14:04:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1712869449; x=1713474249; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3TuTiWcX4Y8DY4u+xZNnrYgu/EvbcTtLk+NQFTWO1Ns=;
-        b=A3WtTUkANLKjLpllh4hoR6Fbyx1lwigxuZPys/n3n5k8zv4KWeEWx8dE/8SWVmtgN3
-         06RS3eFtdCHvMbTQlbh3ZVFwt5JTpAujmV/ptijw7sQQf+OVM3fUAuSjZDaSzWZizMBu
-         BfXd8M86Qyfx09tFjVhuNfO/AegVhylQttaHI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712869449; x=1713474249;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3TuTiWcX4Y8DY4u+xZNnrYgu/EvbcTtLk+NQFTWO1Ns=;
-        b=spYNwXXKnKAOxFveDzC4HIADe2ZRhhc1eAmg9xO3GJs6l1E6rLAzN4X6V+svgnI2uK
-         puf1XSRv4pC3QZjOXNuG8+gtZK4e86bAlBUJE2GQpRL9zym5gpewQAMxcw4PrZc+i4za
-         3VVMg5Fz1Lanf4mJy0kK3icmGiPvifVt+0hrcBI+VKOiSeCsp4fh5WPLWU8ct2wxho3G
-         GjZFXVOhF4kJ2+ZePUJz2TLUmcRSRKtR57JqC+goqkQHsMg1/5k/9rpxurdkfHWfxjrB
-         upOd7Y6ZS1ymVncqhzDxJgpzWiu3QuQeZPoPpuu1Wcq5JzdQZxo0QWc0/Crv/p174OgT
-         PniA==
-X-Gm-Message-State: AOJu0YyzUvBopUnUqniuhZhWG3z85bYHGNtPaOD4Br+9mJrcO/Qa+YMq
-	WFb3zxCP+wV+5ryexFBMV0uQabqtPDWLBR3WxZWjji/3aMIjy1rGUBV0sG8Mrt4=
-X-Google-Smtp-Source: AGHT+IHG+pQPO6KcbDu18ykiy4QGeKOajDiBNItJBLgSxxwoQw8J9scYu4BS+mOOQgBpwruIUJi20g==
-X-Received: by 2002:a5e:9247:0:b0:7d6:a165:217a with SMTP id z7-20020a5e9247000000b007d6a165217amr625104iop.2.1712869448773;
-        Thu, 11 Apr 2024 14:04:08 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id g7-20020a05660226c700b007d5c66e048fsm615248ioo.34.2024.04.11.14.04.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 14:04:08 -0700 (PDT)
-Message-ID: <55e05bd2-eeaa-4baa-bb10-42ba15e67867@linuxfoundation.org>
-Date: Thu, 11 Apr 2024 15:04:07 -0600
+	 In-Reply-To:Content-Type; b=Sq/OJv71ouJQZvsfZGrWOvNPNN+HNI/SrozaIeZ6wJnghkwRIRRa0SuE1jiF4ivLfaaZdPD31wqzifHscQh3K1+oVcMdqmdtHLyEiNtlKSAwkt8Xfbmv+kVuNlKi3z7VupT4UkFo3cXRGZIxfZOFi8v7oFJkBlSAX0fJ8sIlPc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PG8P1t86; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712869498; x=1744405498;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=CGaiRDnTdz5GIe5+v4+BmkyLEBDRNdDaieIGQ/ZwpCo=;
+  b=PG8P1t863MrvyTMepBtNBk4kizsKbPZc/zc8dNBFvOOmVgXayL/aaIJL
+   7JZT2Ywei8XNAt3N6l3hz21qNXIssnf6tXWSayJtc+EJxC0t8YPHMsa1/
+   Av5W+Pf7TYhb7978s30xfeQ7lF3N7a56h32HkIkj/UHBXNyKZJrWJGz4v
+   JCBu9OuzqlUiFzyaXgR++Uys5DO2TR8OGsLtciXh0VwKsYw+B3IhXsHg1
+   xbiKh9u1nuU6GrlTLdIRAcgHoydfTH+Db6hk1Nsvv1ht10lRQTSklBQZz
+   FEwEQurl7Ws9mthbBK1yG6LeeHOYpRYezatTQEnlgA3PA1VL87uKDRUUk
+   w==;
+X-CSE-ConnectionGUID: o7Khgz8FTcGXz+ug4hoaxQ==
+X-CSE-MsgGUID: YEEzYUn+QCOYCDQpH7L9yA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8475048"
+X-IronPort-AV: E=Sophos;i="6.07,194,1708416000"; 
+   d="scan'208";a="8475048"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 14:04:57 -0700
+X-CSE-ConnectionGUID: foXovo82Q9St841fCTJc1A==
+X-CSE-MsgGUID: vkHBmpNNQBqF/9YZOKKfCw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,194,1708416000"; 
+   d="scan'208";a="44309191"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 14:04:57 -0700
+Received: from [10.212.101.117] (kliang2-mobl1.ccr.corp.intel.com [10.212.101.117])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id 30CC120921DA;
+	Thu, 11 Apr 2024 14:04:54 -0700 (PDT)
+Message-ID: <f18c309d-f5dd-4b55-a55e-aa77ee334cd9@linux.intel.com>
+Date: Thu, 11 Apr 2024 17:04:52 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,52 +72,66 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests/clone3: Fix compiler warning
-To: Mark Brown <broonie@kernel.org>, Christian Brauner <brauner@kernel.org>,
- Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240409-clone3-warning-fix-v1-1-03720200f1b4@kernel.org>
+Subject: Re: [RFC PATCH 01/41] perf: x86/intel: Support
+ PERF_PMU_CAP_VPMU_PASSTHROUGH
+To: Sean Christopherson <seanjc@google.com>
+Cc: Jim Mattson <jmattson@google.com>,
+ Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com,
+ peterz@infradead.org, mizhang@google.com, kan.liang@intel.com,
+ zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, kvm@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ zhiyuan.lv@intel.com, eranian@google.com, irogers@google.com,
+ samantha.alt@intel.com, like.xu.linux@gmail.com, chao.gao@intel.com
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
+ <20240126085444.324918-2-xiong.y.zhang@linux.intel.com>
+ <ZhgYD4B1szpbvlHq@google.com>
+ <56a98cae-36c5-40f8-8554-77f9d9c9a1b0@linux.intel.com>
+ <CALMp9eRwsyBUHRtjKZDyU6i13hr5tif3ty7tpNjfs=Zq3RA8RA@mail.gmail.com>
+ <Zhgh_vQYx2MCzma6@google.com>
+ <afb9faeb-11f4-47a2-a77b-4f2496182952@linux.intel.com>
+ <ZhhLZFcNhTIidGRy@google.com>
 Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240409-clone3-warning-fix-v1-1-03720200f1b4@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <ZhhLZFcNhTIidGRy@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 4/9/24 16:24, Mark Brown wrote:
-> Shuah reported a compiler warning with an Ubuntu GCC 13 build, I've been
-> unable to reproduce it but hopefully this fixes the issue:
-> 
-> clone3_set_tid.c:136:43: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘size_t’ {aka ‘long unsigned int’} [-Wformat=]
-> 
-> Reported-by: Shuah Khan <skhan@linuxfoundation.org>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->   tools/testing/selftests/clone3/clone3_set_tid.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/clone3/clone3_set_tid.c b/tools/testing/selftests/clone3/clone3_set_tid.c
-> index 9ae38733cb6e..fbf813a5a06f 100644
-> --- a/tools/testing/selftests/clone3/clone3_set_tid.c
-> +++ b/tools/testing/selftests/clone3/clone3_set_tid.c
-> @@ -133,7 +133,7 @@ static void test_clone3_set_tid(const char *desc,
->   		"[%d] clone3() with CLONE_SET_TID %d says: %d - expected %d\n",
->   		getpid(), set_tid[0], ret, expected);
->   
-> -	ksft_test_result(ret == expected, "%s with %d TIDs and flags 0x%x\n",
-> +	ksft_test_result(ret == expected, "%s with %zu TIDs and flags 0x%x\n",
->   			 desc, set_tid_size, flags);
->   }
->   
-> 
-> ---
-> base-commit: a053fd3ca5d1b927a8655f239c84b0d790218fda
-> change-id: 20240409-clone3-warning-fix-89a363c6899e
-> 
-> Best regards,
 
-Applied to linux-kselftest next for Linux 6.10-rc1.
 
-thanks,
--- Shuah
+On 2024-04-11 4:43 p.m., Sean Christopherson wrote:
+>>> And peeking ahead, IIUC perf effectively _forces_ a passthrough model when
+>>> has_vpmu_passthrough_cap() is true, which is wrong.  There needs to be a user/admin
+>>> opt-in (or opt-out) to that behavior, at a kernel/perf level, not just at a KVM
+>>> level.  Hmm, or is perf relying on KVM to do that right thing?  I.e. relying on
+>>> KVM to do perf_guest_{enter,exit}() if and only if the PMU can support the
+>>> passthrough model.
+>>>
+>> Yes, perf relies on KVM to tell if a guest is entering the passthrough mode.
+>>
+>>> If that's the case, most of the has_vpmu_passthrough_cap() checks are gratiutous
+>>> and confusing, e.g. just WARN if KVM (or some other module) tries to trigger a
+>>> PMU context switch when it's not supported by perf.
+>> If there is only non supported PMUs running in the host, perf wouldn't
+>> do any context switch. The guest can feel free to use the core PMU. We
+>> should not WARN for this case.
+> I'm struggling to wrap my head around this.  If there is no supported PMU in the
+> host, how can there be a core PMU for the guest to use?  KVM virtualizes a PMU
+> if and only if kvm_init_pmu_capability() reports a compatible PMU, and IIUC that
+> reporting is done based on the core PMU.
+> 
+> Specifically, I want to ensure we don't screw is passing through PMU MSR access,
+> e.g. because KVM thinks perf will context switch those MSRs, but perf doesn't
+
+Perf only context switches the MSRs of the PMU with the
+PERF_PMU_CAP_VPMU_PASSTHROUGH flag. (Only the core PMU for this RFC).
+
+For other PMUs without the PERF_PMU_CAP_VPMU_PASSTHROUGH, perf does
+nothing in perf_guest_enter/exit().
+
+KVM can rely on the flag to decide whether to enable the passthrough
+mode for the PMU.
+
+Thanks,
+Kan
+
 
