@@ -1,214 +1,658 @@
-Return-Path: <linux-kernel+bounces-140753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140752-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D989F8A18BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:30:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 832788A18BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:30:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 592541F245B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:30:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38E3F2848B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 15:30:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C141917548;
-	Thu, 11 Apr 2024 15:30:29 +0000 (UTC)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 250A41757D;
+	Thu, 11 Apr 2024 15:30:30 +0000 (UTC)
+Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F465134A6;
-	Thu, 11 Apr 2024 15:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FFA813ADC;
+	Thu, 11 Apr 2024 15:30:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712849429; cv=none; b=KOLujgScWDZe5TmMmzBlHx0BYX1EedGm9i1uVxmKVZg9R2UXzZcaef/Rcaf1gkzaOTTvrhcG+eHQkAjWibw7o1teZyZ9BsNxWc5lF3CYj3fGEXB43IhVAIRoJCMkCbdyyRXuhIni5QVYBzl9FrF/T58dlZYO2/4EByGCS8G7ZBU=
+	t=1712849428; cv=none; b=CWLObmEivuriUHCspb2dSuKWtcRkA1fovpVmUqHfNSZ2wGRGx+YhoFl9FjeaQD6uusg33FXiFsDjI1X4hR8PCqQCEoC0HhBh6H/2EtLnu9TrtPuRjzcJe6cPMBbIM8YcWmGX/RJ4JjNqkcJrroCypOVN7xYb563ijLu0RQ7Ob1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712849429; c=relaxed/simple;
-	bh=ps1xOL6ELTTcn7yAkxq7TG9H88LTPOId2QS1+tyr4qQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LV9IBKNgS6fF1zrMV6JbZge/SVdu3kTJQOBzNDBb3IvfTAQIOzelWBKenaHfxDul10QKKEDLtO/7UPXzpKtVTcbU4fJKhxeU6jLuEHQrxleOCknOV6Mla6J4Hh0hDkHHZO1SCGetJmfK7FM9n4yo6zYSGb11ipHZOETRFAipwtI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-617d4797d9bso54830927b3.1;
-        Thu, 11 Apr 2024 08:30:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712849425; x=1713454225;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gzJvHUhbTKkwyCzYyYOpeKZow/fyzwMhCB4qWJj26+0=;
-        b=gwPLh13knDJbQ68O+fjEeB8nZHRDSMmEX//G4/JTVqBn2AdOKjwJ4DEnI5Ce3G7JDD
-         IAE6IViZigUwgrSvQkd0Dsqe9w776fBQxxSBYk/qLEP9nZjhFNsdJ3hoGkkIvttMO0Yr
-         ENDnA6yStaf1Kr/9g/j6zgIOY5KPlKwDvT90Bn+87KLmTih7FfvzrwJAs/ZvFCcEj3oX
-         DMyodt707YrCtRf3tDIP2VPT1h1RzB+eD2pPiG7d1hLtTmEfnf1cjsLB7fKxOG+CVQY8
-         yoB6cHaG5SXoIlxxP49JTaFm7pB+SA4F9ji+TyZgpYvEuFznzQQvFzLe8WeRN1shh9Ib
-         NyvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVhHGg2UrebrDiWezV9PBIoQKnqhNOVU5bDZ40+PnF4rGOPngYT2NZIET7f7dKgM4dCEhSvX6yMxT4SObgexp6P2RpmeR1Pz34g5yNjvAvsPqvOZT9R3ZfEsSQRP5MaZddHPje6Mqhku6r18BcX1JtdhHy2JvZIeO0DY4SoGTZtvxz6BmjhYNIhcMCiLo067AxOuYAYJ6JNOSZGVJfv8y3ruvw2PqNLw/A2zOpYGUH5asDpW1+P4pOSjjJMXLJ77HU9V6i9hcjU9Tg/iIFWEYOQyW2kXSDfWOqUk+ZOZSxrKA==
-X-Gm-Message-State: AOJu0Yw1z+u1lZIwuy2vN8yIs50jggW7eaK1lYA9BXNSUx0umMBniSIg
-	K//N8TpQIutVAIyJEgfREH4rFGeTBDEF6jNoBwZiJL/j9ZEO8FMVxXPBMidg
-X-Google-Smtp-Source: AGHT+IGjkmgb/PRW5qBpRmJQ7gE0JwsUYvjq4rYZimiiwRrHd1DVbnft+SOh6C/YW0BZp+x1Rr9ImA==
-X-Received: by 2002:a0d:db46:0:b0:614:2dcf:b5d6 with SMTP id d67-20020a0ddb46000000b006142dcfb5d6mr6360482ywe.23.1712849424999;
-        Thu, 11 Apr 2024 08:30:24 -0700 (PDT)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id o5-20020a81c545000000b006186d990dbbsm185932ywj.105.2024.04.11.08.30.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 08:30:24 -0700 (PDT)
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso8350732276.2;
-        Thu, 11 Apr 2024 08:30:24 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXxIYv+pzCliukR/uxhL1I2Fm4f20JfZxOADKvM/nQDYRF8rPeyNeSGXwwkUGTbRXEOKHNWSinqRP1KTagOfHPcZB24HMkawdfeZ7t8f3/tLdBqWx/9KkZ/eAsU3kWoRMWEsGLMWTrhHXDaXnnosIqF1lH0G4qvZjgnEt57ynl8Lu7ToETuj5yFsvKTjQJLn02N4mY51ZBGZzlV7AkWzAzYweVi/LtG3kR13r5EllILUn8IaZi/DofCmht9coleWIEVcYHaOnmeVGsVkp4DigHjvehHQzwaIzw/8Eul1xGrXA==
-X-Received: by 2002:a05:6902:2b86:b0:dcb:e82c:f7d with SMTP id
- fj6-20020a0569022b8600b00dcbe82c0f7dmr7239402ybb.41.1712849424313; Thu, 11
- Apr 2024 08:30:24 -0700 (PDT)
+	s=arc-20240116; t=1712849428; c=relaxed/simple;
+	bh=bH5EJNNyaiBTp6uK6ySgp1XkjTEWgRw0YXQaar9Rm0U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nlOLHYofhdsHGKDQLuCF70NAUNN7TGg3qEy+sLfRmaBO7/ou6XfNTkz/Y2flsX5H2WgeXy6nYI/RfBF8OeXylrgL3p3X6ShnKlcuA6RxFENZj03mMZXQGFu9gD+JEhfOhb37YOAuMrF5E0+lnuNLudaWw74I23mhwSMZrK11Fzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
+Received: by air.basealt.ru (Postfix, from userid 490)
+	id AA2612F20243; Thu, 11 Apr 2024 15:30:24 +0000 (UTC)
+X-Spam-Level: 
+Received: from [10.88.128.156] (obninsk.basealt.ru [217.15.195.17])
+	by air.basealt.ru (Postfix) with ESMTPSA id 38BCA2F2021D;
+	Thu, 11 Apr 2024 15:30:22 +0000 (UTC)
+Message-ID: <f8bb62a7-5845-53ed-7fbe-c0557c2745f2@basealt.ru>
+Date: Thu, 11 Apr 2024 18:30:22 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410122657.2051132-1-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240410122657.2051132-1-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 11 Apr 2024 17:30:12 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdUesJe0396MsH9PSUMEq=sWx3BYc=QrAFzR2EVcLhm03Q@mail.gmail.com>
-Message-ID: <CAMuHMdUesJe0396MsH9PSUMEq=sWx3BYc=QrAFzR2EVcLhm03Q@mail.gmail.com>
-Subject: Re: [PATCH v3 0/9] clk: renesas: rzg2l: Add support for power domains
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org, 
-	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, 
-	magnus.damm@gmail.com, linux-renesas-soc@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
-	Linux PM list <linux-pm@vger.kernel.org>, Guenter Roeck <linux@roeck-us.net>, 
-	Wim Van Sebroeck <wim@linux-watchdog.org>, 
-	Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH net] Bluetooth: hci_event: fix double hci_conn_drop() when
+ conn->state == BT_CONNECTED
+Content-Language: en-US
+To: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+ linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: lvc-project@linuxtesting.org, nickel@altlinux.org,
+ oficerovas@altlinux.org, dutyrok@altlinux.org, stable@vger.kernel.org
+References: <20240411151810.403167-1-kovalev@altlinux.org>
+From: kovalev@altlinux.org
+In-Reply-To: <20240411151810.403167-1-kovalev@altlinux.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Claudiu,
+11.04.2024 18:18, kovalev@altlinux.org wrote:
+> From: Vasiliy Kovalev <kovalev@altlinux.org>
+> 
+> There is no need to drop the connection of some functions in which the
+> conn->state in BT_CONNECTED is marked, since in the future the same check
+> takes place (for example, in the hci_encrypt_change_evt() function) and
+> the hci_conn_drop() is called.
+> 
+> Otherwise, the conn->refcnt will become below zero, which will trigger a
+> warning and may cause a crash on kernels with the panic_on_warn parameter
+> enabled.
+> 
+repro.c generated by syzkaller:
 
-CC pmdomain, watchdog
+#define _GNU_SOURCE
 
-On Wed, Apr 10, 2024 at 2:27=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> =
-wrote:
-> Series adds support for power domains on rzg2l driver.
->
-> RZ/G2L kind of devices support a functionality called MSTOP (module
-> stop/standby). According to hardware manual the module could be switch
-> to standby after its clocks are disabled. The reverse order of operation
-> should be done when enabling a module (get the module out of standby,
-> enable its clocks etc).
->
-> In [1] the MSTOP settings were implemented by adding code in driver
-> to attach the MSTOP state to the IP clocks. But it has been proposed
-> to implement it as power domain. The result is this series.
->
-> Along with MSTOP functionality there is also module power down
-> functionality (which is currently available only on RZ/G3S). This has
-> been also implemented through power domains.
->
-> The DT bindings were updated with power domain IDs (plain integers
-> that matches the DT with driver data structures). The current DT
-> bindings were updated with module IDs for the modules listed in tables
-> with name "Registers for Module Standby Mode" (see HW manual) exception
-> being RZ/G3S where, due to the power down functionality, the DDR,
-> TZCDDR, OTFDE_DDR were also added, to avoid system being blocked due
-> to the following lines of code from patch 6/9.
->
-> +       /* Prepare for power down the BUSes in power down mode. */
-> +       if (info->pm_domain_pwrdn_mstop)
-> +               writel(CPG_PWRDN_MSTOP_ENABLE, priv->base + CPG_PWRDN_MST=
-OP);
->
-> Domain IDs were added to all SoC specific bindings.
->
-> Thank you,
-> Claudiu Beznea
->
-> Changes in v3:
-> - collected tags
-> - dinamically detect if a SCIF is serial console and populate
->   pd->suspend_check
-> - dropped patch 09/10 from v2
+#include <dirent.h>
+#include <endian.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <pthread.h>
+#include <sched.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/epoll.h>
+#include <sys/ioctl.h>
+#include <sys/mount.h>
+#include <sys/prctl.h>
+#include <sys/resource.h>
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/uio.h>
+#include <sys/wait.h>
+#include <time.h>
+#include <unistd.h>
 
-Thanks for the update!
+#include <linux/capability.h>
+#include <linux/rfkill.h>
 
-I have provided my R-b for all patches, and the usual path for these
-patches would be for me to queue patches 1-8 in renesas-clk for v6.10,
-and to queue 9 in renesas-devel.
+static void sleep_ms(uint64_t ms)
+{
+         usleep(ms * 1000);
+}
 
-However:
-  1. I had missed before the pmdomain people weren't CCed before,
-     they still might have some comments,
-  2. Patch 9 has a hard dependency on the rest of the series, so
-     it has to wait one more cycle,
-  3. Adding the watchdog domain has a dependency on [1].
+static uint64_t current_time_ms(void)
+{
+         struct timespec ts;
+         if (clock_gettime(CLOCK_MONOTONIC, &ts))
+         exit(1);
+         return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+}
 
-2 and 2 may be resolved using an immutable branch.
-Are my assumptions correct?
+static bool write_file(const char* file, const char* what, ...)
+{
+         char buf[1024];
+         va_list args;
+         va_start(args, what);
+         vsnprintf(buf, sizeof(buf), what, args);
+         va_end(args);
+         buf[sizeof(buf) - 1] = 0;
+         int len = strlen(buf);
+         int fd = open(file, O_WRONLY | O_CLOEXEC);
+         if (fd == -1)
+                 return false;
+         if (write(fd, buf, len) != len) {
+                 int err = errno;
+                 close(fd);
+                 errno = err;
+                 return false;
+         }
+         close(fd);
+         return true;
+}
 
-Thanks!
+#define MAX_FDS 30
 
-[1] "[PATCH RESEND v8 09/10] watchdog: rzg2l_wdt: Power on the PM
-    domain in rzg2l_wdt_restart()"
-    https://lore.kernel.org/all/20240410134044.2138310-10-claudiu.beznea.uj=
-@bp.renesas.com
+#define BTPROTO_HCI 1
+#define ACL_LINK 1
+#define SCAN_PAGE 2
 
-> Changes in v2:
-> - addressed review comments
-> - dropped:
->     - dt-bindings: clock: r9a09g011-cpg: Add always-on power domain IDs
->     - clk: renesas: r9a07g043: Add initial support for power domains
->     - clk: renesas: r9a07g044: Add initial support for power domains
->     - clk: renesas: r9a09g011: Add initial support for power domains
->     - clk: renesas: r9a09g011: Add initial support for power domains
->     - arm64: dts: renesas: r9a07g043: Update #power-domain-cells =3D <1>
->     - arm64: dts: renesas: r9a07g044: Update #power-domain-cells =3D <1>
->     - arm64: dts: renesas: r9a07g054: Update #power-domain-cells =3D <1>
->     - arm64: dts: renesas: r9a09g011: Update #power-domain-cells =3D <1>
->   as suggested in the review process
-> - dropped "arm64: dts: renesas: rzg3s-smarc-som: Guard the ethernet IRQ
->   GPIOs with proper flags" patch as it was integrated
-> - added suspend to RAM support
-> - collected tag
->
-> [1] https://lore.kernel.org/all/20231120070024.4079344-4-claudiu.beznea.u=
-j@bp.renesas.com/
->
->
-> Claudiu Beznea (9):
->   dt-bindings: clock: r9a07g043-cpg: Add power domain IDs
->   dt-bindings: clock: r9a07g044-cpg: Add power domain IDs
->   dt-bindings: clock: r9a07g054-cpg: Add power domain IDs
->   dt-bindings: clock: r9a08g045-cpg: Add power domain IDs
->   dt-bindings: clock: renesas,rzg2l-cpg: Update #power-domain-cells =3D
->     <1> for RZ/G3S
->   clk: renesas: rzg2l: Extend power domain support
->   clk: renesas: r9a08g045: Add support for power domains
->   clk: renesas: rzg2l-cpg: Add suspend/resume support for power domains
->   arm64: dts: renesas: r9a08g045: Update #power-domain-cells =3D <1>
->
->  .../bindings/clock/renesas,rzg2l-cpg.yaml     |  18 +-
->  arch/arm64/boot/dts/renesas/r9a08g045.dtsi    |  20 +-
->  drivers/clk/renesas/r9a08g045-cpg.c           |  61 ++++
->  drivers/clk/renesas/rzg2l-cpg.c               | 269 +++++++++++++++++-
->  drivers/clk/renesas/rzg2l-cpg.h               |  77 +++++
->  include/dt-bindings/clock/r9a07g043-cpg.h     |  52 ++++
->  include/dt-bindings/clock/r9a07g044-cpg.h     |  58 ++++
->  include/dt-bindings/clock/r9a07g054-cpg.h     |  58 ++++
->  include/dt-bindings/clock/r9a08g045-cpg.h     |  70 +++++
->  9 files changed, 659 insertions(+), 24 deletions(-)
+typedef struct {
+         uint8_t b[6];
+} __attribute__((packed)) bdaddr_t;
 
-Gr{oetje,eeting}s,
+#define HCI_COMMAND_PKT 1
+#define HCI_EVENT_PKT 4
+#define HCI_VENDOR_PKT 0xff
 
-                        Geert
+struct hci_command_hdr {
+         uint16_t opcode;
+         uint8_t plen;
+} __attribute__((packed));
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+struct hci_event_hdr {
+         uint8_t evt;
+         uint8_t plen;
+} __attribute__((packed));
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+#define HCI_EV_CONN_COMPLETE 0x03
+struct hci_ev_conn_complete {
+         uint8_t status;
+         uint16_t handle;
+         bdaddr_t bdaddr;
+         uint8_t link_type;
+         uint8_t encr_mode;
+} __attribute__((packed));
+
+#define HCI_EV_CONN_REQUEST 0x04
+struct hci_ev_conn_request {
+         bdaddr_t bdaddr;
+         uint8_t dev_class[3];
+         uint8_t link_type;
+} __attribute__((packed));
+
+#define HCI_EV_REMOTE_FEATURES 0x0b
+struct hci_ev_remote_features {
+         uint8_t status;
+         uint16_t handle;
+         uint8_t features[8];
+} __attribute__((packed));
+
+#define HCI_EV_CMD_COMPLETE 0x0e
+struct hci_ev_cmd_complete {
+         uint8_t ncmd;
+         uint16_t opcode;
+} __attribute__((packed));
+
+#define HCI_OP_WRITE_SCAN_ENABLE 0x0c1a
+
+#define HCI_OP_READ_BUFFER_SIZE 0x1005
+struct hci_rp_read_buffer_size {
+         uint8_t status;
+         uint16_t acl_mtu;
+         uint8_t sco_mtu;
+         uint16_t acl_max_pkt;
+         uint16_t sco_max_pkt;
+} __attribute__((packed));
+
+#define HCI_OP_READ_BD_ADDR 0x1009
+struct hci_rp_read_bd_addr {
+         uint8_t status;
+         bdaddr_t bdaddr;
+} __attribute__((packed));
+
+#define HCI_EV_LE_META 0x3e
+struct hci_ev_le_meta {
+         uint8_t subevent;
+} __attribute__((packed));
+
+#define HCI_EV_LE_CONN_COMPLETE 0x01
+struct hci_ev_le_conn_complete {
+         uint8_t status;
+         uint16_t handle;
+         uint8_t role;
+         uint8_t bdaddr_type;
+         bdaddr_t bdaddr;
+         uint16_t interval;
+         uint16_t latency;
+         uint16_t supervision_timeout;
+         uint8_t clk_accurancy;
+} __attribute__((packed));
+
+struct hci_dev_req {
+         uint16_t dev_id;
+         uint32_t dev_opt;
+};
+
+struct vhci_vendor_pkt {
+         uint8_t type;
+         uint8_t opcode;
+         uint16_t id;
+};
+
+#define HCIDEVUP _IOW('H', 201, int)
+#define HCISETSCAN _IOW('H', 221, int)
+
+static int vhci_fd = -1;
+
+static void rfkill_unblock_all()
+{
+         int fd = open("/dev/rfkill", O_WRONLY);
+         if (fd < 0)
+         exit(1);
+         struct rfkill_event event = {0};
+         event.idx = 0;
+         event.type = RFKILL_TYPE_ALL;
+         event.op = RFKILL_OP_CHANGE_ALL;
+         event.soft = 0;
+         event.hard = 0;
+         if (write(fd, &event, sizeof(event)) < 0)
+         exit(1);
+         close(fd);
+}
+
+static void hci_send_event_packet(int fd, uint8_t evt, void* data, 
+size_t data_len)
+{
+         struct iovec iv[3];
+         struct hci_event_hdr hdr;
+         hdr.evt = evt;
+         hdr.plen = data_len;
+         uint8_t type = HCI_EVENT_PKT;
+         iv[0].iov_base = &type;
+         iv[0].iov_len = sizeof(type);
+         iv[1].iov_base = &hdr;
+         iv[1].iov_len = sizeof(hdr);
+         iv[2].iov_base = data;
+         iv[2].iov_len = data_len;
+         if (writev(fd, iv, sizeof(iv) / sizeof(struct iovec)) < 0)
+         exit(1);
+}
+
+static void hci_send_event_cmd_complete(int fd, uint16_t opcode, void* 
+data, size_t data_len)
+{
+         struct iovec iv[4];
+         struct hci_event_hdr hdr;
+         hdr.evt = HCI_EV_CMD_COMPLETE;
+         hdr.plen = sizeof(struct hci_ev_cmd_complete) + data_len;
+         struct hci_ev_cmd_complete evt_hdr;
+         evt_hdr.ncmd = 1;
+         evt_hdr.opcode = opcode;
+         uint8_t type = HCI_EVENT_PKT;
+         iv[0].iov_base = &type;
+         iv[0].iov_len = sizeof(type);
+         iv[1].iov_base = &hdr;
+         iv[1].iov_len = sizeof(hdr);
+         iv[2].iov_base = &evt_hdr;
+         iv[2].iov_len = sizeof(evt_hdr);
+         iv[3].iov_base = data;
+         iv[3].iov_len = data_len;
+         if (writev(fd, iv, sizeof(iv) / sizeof(struct iovec)) < 0)
+         exit(1);
+}
+
+static bool process_command_pkt(int fd, char* buf, ssize_t buf_size)
+{
+         struct hci_command_hdr* hdr = (struct hci_command_hdr*)buf;
+         if (buf_size < (ssize_t)sizeof(struct hci_command_hdr) ||
+             hdr->plen != buf_size - sizeof(struct hci_command_hdr))
+         exit(1);
+         switch (hdr->opcode) {
+         case HCI_OP_WRITE_SCAN_ENABLE: {
+                 uint8_t status = 0;
+                 hci_send_event_cmd_complete(fd, hdr->opcode, &status, 
+sizeof(status));
+                 return true;
+         }
+         case HCI_OP_READ_BD_ADDR: {
+                 struct hci_rp_read_bd_addr rp = {0};
+                 rp.status = 0;
+                 memset(&rp.bdaddr, 0xaa, 6);
+                 hci_send_event_cmd_complete(fd, hdr->opcode, &rp, 
+sizeof(rp));
+                 return false;
+         }
+         case HCI_OP_READ_BUFFER_SIZE: {
+                 struct hci_rp_read_buffer_size rp = {0};
+                 rp.status = 0;
+                 rp.acl_mtu = 1021;
+                 rp.sco_mtu = 96;
+                 rp.acl_max_pkt = 4;
+                 rp.sco_max_pkt = 6;
+                 hci_send_event_cmd_complete(fd, hdr->opcode, &rp, 
+sizeof(rp));
+                 return false;
+         }
+         }
+         char dummy[0xf9] = {0};
+         hci_send_event_cmd_complete(fd, hdr->opcode, dummy, sizeof(dummy));
+         return false;
+}
+
+static void* event_thread(void* arg)
+{
+         while (1) {
+                 char buf[1024] = {0};
+                 ssize_t buf_size = read(vhci_fd, buf, sizeof(buf));
+                 if (buf_size < 0)
+         exit(1);
+                 if (buf_size > 0 && buf[0] == HCI_COMMAND_PKT) {
+                         if (process_command_pkt(vhci_fd, buf + 1, 
+buf_size - 1))
+                                 break;
+                 }
+         }
+         return NULL;
+}
+#define HCI_HANDLE_1 200
+#define HCI_HANDLE_2 201
+
+static void initialize_vhci()
+{
+         int hci_sock = socket(AF_BLUETOOTH, SOCK_RAW, BTPROTO_HCI);
+         if (hci_sock < 0)
+         exit(1);
+         vhci_fd = open("/dev/vhci", O_RDWR);
+         if (vhci_fd == -1)
+         exit(1);
+         const int kVhciFd = 202;
+         if (dup2(vhci_fd, kVhciFd) < 0)
+         exit(1);
+         close(vhci_fd);
+         vhci_fd = kVhciFd;
+         struct vhci_vendor_pkt vendor_pkt;
+         if (read(vhci_fd, &vendor_pkt, sizeof(vendor_pkt)) != 
+sizeof(vendor_pkt))
+         exit(1);
+         if (vendor_pkt.type != HCI_VENDOR_PKT)
+         exit(1);
+         pthread_t th;
+         if (pthread_create(&th, NULL, event_thread, NULL))
+         exit(1);
+         int ret = ioctl(hci_sock, HCIDEVUP, vendor_pkt.id);
+         if (ret) {
+                 if (errno == ERFKILL) {
+                         rfkill_unblock_all();
+                         ret = ioctl(hci_sock, HCIDEVUP, vendor_pkt.id);
+                 }
+                 if (ret && errno != EALREADY)
+         exit(1);
+         }
+         struct hci_dev_req dr = {0};
+         dr.dev_id = vendor_pkt.id;
+         dr.dev_opt = SCAN_PAGE;
+         if (ioctl(hci_sock, HCISETSCAN, &dr))
+         exit(1);
+         struct hci_ev_conn_request request;
+         memset(&request, 0, sizeof(request));
+         memset(&request.bdaddr, 0xaa, 6);
+         *(uint8_t*)&request.bdaddr.b[5] = 0x10;
+         request.link_type = ACL_LINK;
+         hci_send_event_packet(vhci_fd, HCI_EV_CONN_REQUEST, &request, 
+sizeof(request));
+         struct hci_ev_conn_complete complete;
+         memset(&complete, 0, sizeof(complete));
+         complete.status = 0;
+         complete.handle = HCI_HANDLE_1;
+         memset(&complete.bdaddr, 0xaa, 6);
+         *(uint8_t*)&complete.bdaddr.b[5] = 0x10;
+         complete.link_type = ACL_LINK;
+         complete.encr_mode = 0;
+         hci_send_event_packet(vhci_fd, HCI_EV_CONN_COMPLETE, &complete, 
+sizeof(complete));
+         struct hci_ev_remote_features features;
+         memset(&features, 0, sizeof(features));
+         features.status = 0;
+         features.handle = HCI_HANDLE_1;
+         hci_send_event_packet(vhci_fd, HCI_EV_REMOTE_FEATURES, 
+&features, sizeof(features));
+         struct {
+                 struct hci_ev_le_meta le_meta;
+                 struct hci_ev_le_conn_complete le_conn;
+         } le_conn;
+         memset(&le_conn, 0, sizeof(le_conn));
+         le_conn.le_meta.subevent = HCI_EV_LE_CONN_COMPLETE;
+         memset(&le_conn.le_conn.bdaddr, 0xaa, 6);
+         *(uint8_t*)&le_conn.le_conn.bdaddr.b[5] = 0x11;
+         le_conn.le_conn.role = 1;
+         le_conn.le_conn.handle = HCI_HANDLE_2;
+         hci_send_event_packet(vhci_fd, HCI_EV_LE_META, &le_conn, 
+sizeof(le_conn));
+         pthread_join(th, NULL);
+         close(hci_sock);
+}
+
+static long syz_emit_vhci(volatile long a0, volatile long a1)
+{
+         if (vhci_fd < 0)
+                 return (uintptr_t)-1;
+         char* data = (char*)a0;
+         uint32_t length = a1;
+         return write(vhci_fd, data, length);
+}
+
+static void setup_common()
+{
+         if (mount(0, "/sys/fs/fuse/connections", "fusectl", 0, 0)) {
+         }
+}
+
+static void setup_binderfs()
+{
+         if (mkdir("/dev/binderfs", 0777)) {
+         }
+         if (mount("binder", "/dev/binderfs", "binder", 0, NULL)) {
+         }
+         if (symlink("/dev/binderfs", "./binderfs")) {
+         }
+}
+
+static void loop();
+
+static void sandbox_common()
+{
+         prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
+         setsid();
+         struct rlimit rlim;
+         rlim.rlim_cur = rlim.rlim_max = (200 << 20);
+         setrlimit(RLIMIT_AS, &rlim);
+         rlim.rlim_cur = rlim.rlim_max = 32 << 20;
+         setrlimit(RLIMIT_MEMLOCK, &rlim);
+         rlim.rlim_cur = rlim.rlim_max = 136 << 20;
+         setrlimit(RLIMIT_FSIZE, &rlim);
+         rlim.rlim_cur = rlim.rlim_max = 1 << 20;
+         setrlimit(RLIMIT_STACK, &rlim);
+         rlim.rlim_cur = rlim.rlim_max = 0;
+         setrlimit(RLIMIT_CORE, &rlim);
+         rlim.rlim_cur = rlim.rlim_max = 256;
+         setrlimit(RLIMIT_NOFILE, &rlim);
+         if (unshare(CLONE_NEWNS)) {
+         }
+         if (mount(NULL, "/", NULL, MS_REC | MS_PRIVATE, NULL)) {
+         }
+         if (unshare(CLONE_NEWIPC)) {
+         }
+         if (unshare(0x02000000)) {
+         }
+         if (unshare(CLONE_NEWUTS)) {
+         }
+         if (unshare(CLONE_SYSVSEM)) {
+         }
+         typedef struct {
+                 const char* name;
+                 const char* value;
+         } sysctl_t;
+         static const sysctl_t sysctls[] = {
+             {"/proc/sys/kernel/shmmax", "16777216"},
+             {"/proc/sys/kernel/shmall", "536870912"},
+             {"/proc/sys/kernel/shmmni", "1024"},
+             {"/proc/sys/kernel/msgmax", "8192"},
+             {"/proc/sys/kernel/msgmni", "1024"},
+             {"/proc/sys/kernel/msgmnb", "1024"},
+             {"/proc/sys/kernel/sem", "1024 1048576 500 1024"},
+         };
+         unsigned i;
+         for (i = 0; i < sizeof(sysctls) / sizeof(sysctls[0]); i++)
+                 write_file(sysctls[i].name, sysctls[i].value);
+}
+
+static int wait_for_loop(int pid)
+{
+         if (pid < 0)
+         exit(1);
+         int status = 0;
+         while (waitpid(-1, &status, __WALL) != pid) {
+         }
+         return WEXITSTATUS(status);
+}
+
+static void drop_caps(void)
+{
+         struct __user_cap_header_struct cap_hdr = {};
+         struct __user_cap_data_struct cap_data[2] = {};
+         cap_hdr.version = _LINUX_CAPABILITY_VERSION_3;
+         cap_hdr.pid = getpid();
+         if (syscall(SYS_capget, &cap_hdr, &cap_data))
+         exit(1);
+         const int drop = (1 << CAP_SYS_PTRACE) | (1 << CAP_SYS_NICE);
+         cap_data[0].effective &= ~drop;
+         cap_data[0].permitted &= ~drop;
+         cap_data[0].inheritable &= ~drop;
+         if (syscall(SYS_capset, &cap_hdr, &cap_data))
+         exit(1);
+}
+
+static int do_sandbox_none(void)
+{
+         if (unshare(CLONE_NEWPID)) {
+         }
+         int pid = fork();
+         if (pid != 0)
+                 return wait_for_loop(pid);
+         setup_common();
+         initialize_vhci();
+         sandbox_common();
+         drop_caps();
+         if (unshare(CLONE_NEWNET)) {
+         }
+         setup_binderfs();
+         loop();
+         exit(1);
+}
+
+static void kill_and_wait(int pid, int* status)
+{
+         kill(-pid, SIGKILL);
+         kill(pid, SIGKILL);
+         for (int i = 0; i < 100; i++) {
+                 if (waitpid(-1, status, WNOHANG | __WALL) == pid)
+                         return;
+                 usleep(1000);
+         }
+         DIR* dir = opendir("/sys/fs/fuse/connections");
+         if (dir) {
+                 for (;;) {
+                         struct dirent* ent = readdir(dir);
+                         if (!ent)
+                                 break;
+                         if (strcmp(ent->d_name, ".") == 0 || 
+strcmp(ent->d_name, "..") == 0)
+                                 continue;
+                         char abort[300];
+                         snprintf(abort, sizeof(abort), 
+"/sys/fs/fuse/connections/%s/abort", ent->d_name);
+                         int fd = open(abort, O_WRONLY);
+                         if (fd == -1) {
+                                 continue;
+                         }
+                         if (write(fd, abort, 1) < 0) {
+                         }
+                         close(fd);
+                 }
+                 closedir(dir);
+         } else {
+         }
+         while (waitpid(-1, status, __WALL) != pid) {
+         }
+}
+
+static void setup_test()
+{
+         prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
+         setpgrp();
+         write_file("/proc/self/oom_score_adj", "1000");
+}
+
+static void close_fds()
+{
+         for (int fd = 3; fd < MAX_FDS; fd++)
+                 close(fd);
+}
+
+static void execute_one(void);
+
+#define WAIT_FLAGS __WALL
+
+static void loop(void)
+{
+         int iter = 0;
+         for (;; iter++) {
+                 int pid = fork();
+                 if (pid < 0)
+         exit(1);
+                 if (pid == 0) {
+                         setup_test();
+                         execute_one();
+                         close_fds();
+                         exit(0);
+                 }
+                 int status = 0;
+                 uint64_t start = current_time_ms();
+                 for (;;) {
+                         if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) 
+== pid)
+                                 break;
+                         sleep_ms(1);
+                         if (current_time_ms() - start < 5000)
+                                 continue;
+                         kill_and_wait(pid, &status);
+                         break;
+                 }
+         }
+}
+
+void execute_one(void)
+{
+*(uint8_t*)0x20000040 = 4;
+*(uint8_t*)0x20000041 = 8;
+*(uint8_t*)0x20000042 = 4;
+*(uint8_t*)0x20000043 = 0xf9;
+*(uint16_t*)0x20000044 = 0xc8;
+*(uint8_t*)0x20000046 = 2;
+syz_emit_vhci(0x20000040, 7);
+
+}
+int main(void)
+{
+                 syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, 
+-1, 0ul);
+         syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 
+0ul);
+         syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
+                         do_sandbox_none();
+         return 0;
+}
+
+-- 
+Regards,
+Vasiliy Kovalev
 
