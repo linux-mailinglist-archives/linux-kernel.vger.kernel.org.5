@@ -1,427 +1,188 @@
-Return-Path: <linux-kernel+bounces-140057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 273FF8A0AE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8803D8A0AEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:13:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92DE61F26B7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:12:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00DB01F21CDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:13:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E571513FD65;
-	Thu, 11 Apr 2024 08:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A4413FD6E;
+	Thu, 11 Apr 2024 08:13:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chipsnmedia.com header.i=@chipsnmedia.com header.b="SFaYfT7O"
-Received: from SLXP216CU001.outbound.protection.outlook.com (mail-koreacentralazon11020003.outbound.protection.outlook.com [52.101.154.3])
+	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="l9lcOn+V"
+Received: from PA5P264CU001.outbound.protection.outlook.com (mail-francecentralazon11020002.outbound.protection.outlook.com [52.101.167.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83C51E86A;
-	Thu, 11 Apr 2024 08:11:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.154.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05B12EAE5;
+	Thu, 11 Apr 2024 08:13:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.167.2
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712823102; cv=fail; b=C+qyrYButbc3m74XRtz3/tiFEBtsZ3sTyOyv36FSskLZEZCAaPfCRWId+czOW1kB6L4TGtpcbY7+emQL7suVg0oWt3V5HZUtNRsgbYIyH3dh6385RBIvccaNT6IPS9MvdgmuWOWcqb5Q+15y/B5l54w6kYbpVBO8cQzQsFI7/oA=
+	t=1712823184; cv=fail; b=XrTF4Iu9aEkEsu/81a16OerVsvlQgH2eLn+6MrM9cb6/D6VoN9AUDKldGZwqbndnxGc85tJggpX/yZrNb6/AtAPagwxfNIUs7365cOGtRjTU+LhpVv/SfRfmcOyYRP+vxKvDPSYN+HjoUR08t0dGGiaM+W3oiM98a1q72Ns6kwk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712823102; c=relaxed/simple;
-	bh=zR3vXwy+H4Uox3ua3KfiatjcIJDnqgUTAsRuxV4PCQA=;
+	s=arc-20240116; t=1712823184; c=relaxed/simple;
+	bh=koK6a8UOYKQJ/PUsC+eUTVUeKbRyJmYEr/E6W4xIUCQ=;
 	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=elT+CZgDZDL/0WQg6eKEKw3AxA5BSo4QTUQYd0GQEWal2BvBej2ln6oQV9LSvc9upfPIu6pc20pJ5kV01n0LD2A7qRE1fzXxtz77HMhFiuyNWabad88g/94uDZXeFXD87OU2NGRFB7skKWprE+VA6LCup6u1SZmMC2eDBu6fyxI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chipsnmedia.com; spf=pass smtp.mailfrom=chipsnmedia.com; dkim=pass (1024-bit key) header.d=chipsnmedia.com header.i=@chipsnmedia.com header.b=SFaYfT7O; arc=fail smtp.client-ip=52.101.154.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chipsnmedia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chipsnmedia.com
+	 Content-Type:MIME-Version; b=uFoGgVOEhVoSv8NwDykqJLP184ot88RO6Wu/ythJRqxwIdobiWGlcjdYbJfZKEzsjTPMJDQ2MQES9pQfjeOVtvYxaRKLaCiJkBG3tanlMtpJdHL+85hIrfoIakcHpbU2BU+LmDRrvR30M6MoZYFLI4UZ3BwZNih2AGMAKdCIl8o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=l9lcOn+V; arc=fail smtp.client-ip=52.101.167.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DoCM7UV27fiVD1txd++E4lnriIrR9OtpraTws3cmbU3H/0EYhh3eB0i2J1pGV2pC17n+Nnf6Ttijl05GpHtJDAV/rvpxfJ2UFU3JhzLioxAXSgIOCiSpB1bwVl9LCJUtBtD7/0DDbTyd2SicCUWBKK3120LvOe3iJNLZkSlJgH0aLQb3Wky7/48Ib2s9wCTm6qUtdWaVd4r9FxBKGxIZ9Y4cJ305ZOiFPgsv9Aj5q75SoWJgb0VnOAMoxCAQqWJwAS6ObJORH5Ua1opsjvNniBGHPkgkgFqpaTqTVxkUDeed7svotaBBDd4+38wVqA4trFfK31pz6obYTY5WXDuHXQ==
+ b=Zk4xo4HDhkgI74hOs1BC2KAxdz0YW2zHcuRP2FXrVNrBFw2PD7gUfZbSGVE87C7U01RGvUFMreaWhhWxWO9oZ++HoD2uAt0JS7O+MkBfmCFmQ1aiUvefzdgSSQfJ4O6BwfEQF1bR1rJ5s/rFq1WoW5mfWB43mNFwthI1gGY8YTqZPHGgqEzM031AEqa7o+SbAF7MiuZw4BOzR7z/yrqbiYiX+25TVXcBDTmWFyJcBPw9LrzbN5od0JvTAG8vGoE1o1a1g2x/n9u1DbSlH/xFVUkGm8qMRj8z2W/ydQtJrGoaBIklo1Q6ZWiOMvsKC40/oI92EKhYFv0HDFVrNSkXxA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kNNvgDXkjC3cUu+owJEc6EFaC+xVdW8hHx6j9+4ph+c=;
- b=bOYZpf6Kz+tgH/kRC7Y26p75DDWYJ2w5vljC+d78QMREuSbdoar13iyRT5UD2hKkz1nxJjrTDlEUY3K0kE96m4h6doRFuuqCAo/rZBspF/fAxsPGH4NXYef92itZ3Nm030CAAqWvVgCshuko5AI89YRUZ9r+rViYgH4mD1XsOdp0VWVifxf2S/7maGGQuxekDfsJSVGeeucWrmx/JYTNn9HansGT8pmTfdajoBwjmmj/dOTzgE69CzeO86ZxCO3OV1qkkq5kZ7Dl+Mya3SsmhDAclTAvXGfnkz1t20xxscUqfxq4/cF7dbbuzQyOkNbs/62q0YIjGL9yVtxNFCZFRg==
+ bh=koK6a8UOYKQJ/PUsC+eUTVUeKbRyJmYEr/E6W4xIUCQ=;
+ b=YWxrEsF8JO6gKtH8MiJEmA/xWdAKvPo9DDRNShG2Scc45lVjzpD2VZFcag0oA2jY7MAcLSsasuBXF8XxhW+EZf9jczoXUxBvYtv1TIq8mMoBT3MZmdgViIHSwn6jCTuo2p3RrzC+yMx810Dnjg5ONeLxCBrIWTas0YlXtGS4I3gFwv/qSRwBEpbNu+8d9nJQ7OaNp+4AxBuo9FrGmW1Xg+zuivcMnccqPnscOlebcwO3o25EZN2wrEbOEbFVulJsE4g040UgSLWQi5xGZ3befC84i9m1k7CELpP6XhOP0aY5qt5z4zInBlbNgnwjKN/6MhbtoPArXpt6NotesyzKNQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=chipsnmedia.com; dmarc=pass action=none
- header.from=chipsnmedia.com; dkim=pass header.d=chipsnmedia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chipsnmedia.com;
- s=selector1;
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kNNvgDXkjC3cUu+owJEc6EFaC+xVdW8hHx6j9+4ph+c=;
- b=SFaYfT7OiHeExxB8Fn8tYjL1bXJ8ABo8JOnh5hvPtPwzSmIPEbN31pvuJbPzt3RTU/RVX7wMZ/AdD6nBjXJCbogNtxBlM3HMSjHcu7YvtlCN7WORgtH69nq88JvlNIsY8hJJrIrHbOBY0jFS8Q8RtnNfiLyOe5lP4/oefyLtUl4=
-Received: from SE1P216MB1303.KORP216.PROD.OUTLOOK.COM (2603:1096:101:15::5) by
- PU4P216MB2306.KORP216.PROD.OUTLOOK.COM (2603:1096:301:12a::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.55; Thu, 11 Apr 2024 08:11:37 +0000
-Received: from SE1P216MB1303.KORP216.PROD.OUTLOOK.COM
- ([fe80::4fff:e9f3:e95:3d05]) by SE1P216MB1303.KORP216.PROD.OUTLOOK.COM
- ([fe80::4fff:e9f3:e95:3d05%3]) with mapi id 15.20.7409.053; Thu, 11 Apr 2024
- 08:11:37 +0000
-From: jackson.lee <jackson.lee@chipsnmedia.com>
-To: Ivan Bornyakov <brnkv.i1@gmail.com>
-CC: Nas Chung <nas.chung@chipsnmedia.com>, Mauro Carvalho Chehab
-	<mchehab@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Sebastian
- Fricke <sebastian.fricke@collabora.com>, "linux-media@vger.kernel.org"
-	<linux-media@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: RE: [PATCH v3 4/5] media: chips-media: wave5: drop "sram-size" DT
- prop
-Thread-Topic: RE: [PATCH v3 4/5] media: chips-media: wave5: drop "sram-size"
- DT prop
-Thread-Index: AQHah3giAH17WLkhgEm3NaPxm3r//7FfYuJQgAA5ZYCAAyPFEA==
-Date: Thu, 11 Apr 2024 08:11:36 +0000
-Message-ID:
- <SE1P216MB1303CB49E8C7C83904EA337CED052@SE1P216MB1303.KORP216.PROD.OUTLOOK.COM>
-References: <20240405164112.24571-1-brnkv.i1@gmail.com>
- <20240405164112.24571-5-brnkv.i1@gmail.com>
- <SE1P216MB130327BE82553DA3F34BBF17ED072@SE1P216MB1303.KORP216.PROD.OUTLOOK.COM>
- <zrwlu2e2slf7g4izorqbzwahysz6a3diux6zjyfmgtkofzdpuj@cvfl4kqhzvef>
-In-Reply-To: <zrwlu2e2slf7g4izorqbzwahysz6a3diux6zjyfmgtkofzdpuj@cvfl4kqhzvef>
-Accept-Language: ko-KR, en-US
-Content-Language: ko-KR
+ bh=koK6a8UOYKQJ/PUsC+eUTVUeKbRyJmYEr/E6W4xIUCQ=;
+ b=l9lcOn+VIlYi7HROuw93iocyrp94ymJPyyV4NDGQed3ZxZrzXDT7SqWIUn7eOg7ON1STjyGefgpj+oSD0OFYlD0MYm5au2LzmmCtzRofeHOl/YQzbfiCTw9rCIHelSaBIx+Xw/33VKuo+ZepuDsqmozWJ1XkKHmRL/3DHxF1osVsT5cJOuD018/leWv879Qk6N9ny65mE9pF4P6fpa+NZdI8e7MUb59YkbKbYTHajGYYid7CSMM+J6wuAbPjZNJoHpkIJnn72D/IdixDknLBXHVXgf76W27nvh8oP1S9QSFEZ7quHQLFUkFXdqZwRlhRFOW5nCtiyqepARVlkpenEA==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by PR1P264MB3360.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1b::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 11 Apr
+ 2024 08:13:00 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::1f75:cb9f:416:4dbb]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::1f75:cb9f:416:4dbb%7]) with mapi id 15.20.7409.053; Thu, 11 Apr 2024
+ 08:13:00 +0000
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Adrian Hunter <adrian.hunter@intel.com>, Arnd Bergmann <arnd@arndb.de>
+CC: Naresh Kamboju <naresh.kamboju@linaro.org>, Michael Ellerman
+	<mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Aneesh Kumar K.V
+	<aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger
+	<borntraeger@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, "x86@kernel.org" <x86@kernel.org>, "H. Peter
+ Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>, Vincenzo Frascino
+	<vincenzo.frascino@arm.com>, John Stultz <jstultz@google.com>, Stephen Boyd
+	<sboyd@kernel.org>, Peter Zijlstra <peterz@infradead.org>, Randy Dunlap
+	<rdunlap@infradead.org>, Bjorn Helgaas <bhelgaas@google.com>, Anna-Maria
+ Gleixner <anna-maria@linutronix.de>, "linuxppc-dev@lists.ozlabs.org"
+	<linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-s390@vger.kernel.org"
+	<linux-s390@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] bug: Fix no-return-statement warning with !CONFIG_BUG
+Thread-Topic: [PATCH] bug: Fix no-return-statement warning with !CONFIG_BUG
+Thread-Index: AQHai1xRYzjVdYtCeEepwMKzYWvQLLFipl4AgAADMgCAAA/YgA==
+Date: Thu, 11 Apr 2024 08:13:00 +0000
+Message-ID: <a434248a-1e9f-4f4f-8f90-d36d8e979f53@csgroup.eu>
+References: <20240410153212.127477-1-adrian.hunter@intel.com>
+ <87be83da-6102-483d-b1dc-a77eecc9f780@app.fastmail.com>
+ <c9f382b2-cd96-4ee3-ad68-95381d9e09c0@intel.com>
+In-Reply-To: <c9f382b2-cd96-4ee3-ad68-95381d9e09c0@intel.com>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
 X-MS-Has-Attach:
 X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
 authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=chipsnmedia.com;
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SE1P216MB1303:EE_|PU4P216MB2306:EE_
-x-ms-office365-filtering-correlation-id: 64dd73ab-c133-4a3d-9691-08dc59ff0244
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR1P264MB3360:EE_
+x-ms-office365-filtering-correlation-id: c0921e86-58f8-46af-de7d-08dc59ff33cd
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
 x-microsoft-antispam-message-info:
- lnLzth0ic0sKIlXBCAVrIaKYFnDOizb052z7YwyLsIdsZx/pZAnDMKJEYth5X7LOk2y4dB4+X2lMS7keMtxfPkIgX3QwSkBPqEjrM9IeiSAI6buhlwg1gkQKGQUgGr2rSTwXtQOKEDjZHonQzJR+1gMW4/6oRsINSG/yN6LmTV1lefH1XRz3DIAKc6zSNJiX0uhIBa2b++41BB006q1XsY1qlseRKjphgEIanQ0d9n07KV9fFpIbVRoxvBKgeXwphLw3MoZMyEH5ZOrmstC2TvlbFYzQAc62F9vmGETQdHRx3HaD38WJqwNwt7/EhXtTZbXDKJLhe6v37P9O0Z0MEjg1IFMAH82BY4GYD0N4aVV4jkMS0xhbty5yc5vf6wnsX+kWDIW/vw8K4xhSrqn+bDg8gtv7WmcH35znLo+B+YMjBrFUgCnv1LWV+x0re2lK/k8ITIQ8wYlbLDTNr6e2tOA5V2RqO0i8VTlNOqc86ULQQQCdWmMVrlTFzGECJOxaFcjJq71QphSfrJHy8Yi3AWDvhMU9CrydFjXKtDnb2rXVHjmYnF6erGKI60WJE5ve9NKQACQZwdFgBuWptPReVQC5WMojbveiqhnCUBvw9Ojxc6c4gvzi1lDoGJEf08fJN8EaWrceOH/fY08Fg8t1geU/FPi6PshzvjAhnAHlX4UfJrOyast1LGqwSxBi4VDBbmHG90RXuxChv2KyrZSL2/cCaGzRibNUW5iUVLonHW8=
+ BBPoLzeeo+SAFKYCOqeeyyJFHemfDEMu3S3W1FMsoOZBWRgw3C8BJm2YJgaD9Jj5y7RW3IWLceOfemIeKFAEGXR/Kb5GYNMj/2y5GN08/+mhUGEkOnLOGjFWnk/RRKoCi746thcLL5GprYBL/lmiVWvOio6FSn7Nz3XKexG5fI6vLeffviuitn49BLJNCKfIEv7VKYnlDjk9LjiBsgg8xOrNrmHzb9oxDMz/IK0pM423Mcib1atQLbSnR/h5Bck5JU8o3xqhcbnBbSA6wBlo+od0KCg8oLeLyCr3ZTccnKLZAy0wpVrYVYx6+YfF7RmhPmLvMrMlfY+Pob+xLaPnBcNoPdNFaGnQ3fH0lXPr/GRDuY8vwunU8Ca6xzL3GSq26cFn3xDP5Z3lVnAJJ2lPS/VcAqQmJ6j4i0Ix7FPt9g3ERfO+xZyLXGiTINtHffpvsF/ugIaN/DX+feWtN5oMER03+vGuaOlxD5dQcPY/1GYH9jEtOZBQjdDlS9HcbOWwq6STHoCdg0dsTZbH7OAaDD+pnaVTZtyJjTvMFh4ozUSofYy0PrwyxzulAv4jF9T7SbFB1CMa4SwOKgG7PqxWrl/ThztpVYDSE+OYAL1LawJDt7916RiMVzT6q78kQewDUE2ie82KVUdntZlcLA57wrXj/KBPY+kBiD6DA0DaJgo=
 x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SE1P216MB1303.KORP216.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1102;
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007)(38070700009);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
 x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?T1hnOynlRth13UfpocrQIxOnyE7qMTB+YLhnbrUslAT2SNERJJ2IgkgFWtgv?=
- =?us-ascii?Q?5GtDozwXi7hmt3PscAcisIBTqJP9B1BeSEqEhl8B5v2Z19FY9pROzaKR7TH7?=
- =?us-ascii?Q?uEh+ETQ439l991Z7rST/mzkxaqvG/EXIfAdxP+D6zztC78NZrW7BC59Vb0Ez?=
- =?us-ascii?Q?YQipqmoeVcINvjjQbomP0PCI4uznxoAuN5ZOtaMb1rEv9+Czgia3nn6o078u?=
- =?us-ascii?Q?FahyCbnL4G9HLFAEPfR7euygGVuwYf696pxp5Mmwf6o2siPWBpIf1rsqz15O?=
- =?us-ascii?Q?121t/SaxEYLVnq4iYhkx09Qeqt+t75Xw/Ahbqhi5W3WS9hxdkq4bDNFg/xY2?=
- =?us-ascii?Q?uiTxArasU9EBntmc979XVln7NXu53n2LRXVq+2dq31WLJJ3CN3AMYuuq17J9?=
- =?us-ascii?Q?/1e5yVHO4VwrR0yda7LZHf9YnvbLVzGGACfV9wwijf5tsFaNHIIt5mP/4XDl?=
- =?us-ascii?Q?wa/0+sEvMrYGI2fSthDJ0ietEJ3m0ESWyBbrmSTpyD+DX0FC9YtlVSpdnE0+?=
- =?us-ascii?Q?htk5rurKNVcQmn5/LPeepr4MUcDBlu11grTiGFrAtFCz9A/+Y1DU5uovZT7t?=
- =?us-ascii?Q?B+4inrHV0h8H/0JrKMD9QuoF3DbqWR9uKS1SkR16Dw5djW/QSCcnFTRrjXOq?=
- =?us-ascii?Q?O5g3Ss01mBq4mlYz9fmSrIYfWsGDJqAt0Eu54Ue/h0Y3Fqb7JFD1eZNAXk1b?=
- =?us-ascii?Q?EfDX6HPRQtQnTMdQUzelZi8pfT4Xv5FmEtc6CKpqqsTTNmmhqO+7voWz92cl?=
- =?us-ascii?Q?G65PP1s/A3iNo0wkXjFAR9aj05erp6Qfhy+UTcs2xEG3EP5AYtvSL94OWa5R?=
- =?us-ascii?Q?eI9vRvsXD4u+CmKnLC0fNQe1v4UoHuyE+FopezE5CdDHWUBKKaPDhgjHIA+h?=
- =?us-ascii?Q?BwCYGou7OshauU80lnzlwq17AgJjTmFEdkn+0MN00iXjr1KhpzbG0bOZkQ3A?=
- =?us-ascii?Q?3i9QIBfOclLUaAwGOA53UPhxLnxaIH4WiHBN4zftqefAuACK0IYEqEDOSuxR?=
- =?us-ascii?Q?8x41krvNz992VgHbT4zuFaYInzhsIYcbfIK8/NeF/MUhoyLib989B7O5vTlM?=
- =?us-ascii?Q?oyONR3FkO9oRVVY9tizCaK7EwZf3k5hKd5SGByjSUNa99aGQJgEmYInklpiJ?=
- =?us-ascii?Q?CCpxNk0Fxez0aLGUqyrlsn+Ljgk4S3p3DceaZw8i6ASNHofDrL0kwHuyfZln?=
- =?us-ascii?Q?hrWbVQLzVdQ2Feh/goCQTKw0qlSePNIvYu1AbMCbbqBzwP9T8hD9L1VdSwL5?=
- =?us-ascii?Q?g0ondlpYAqglagj3qG9JAKsQ6Y4xDPW3vXqLCdq8/I5QN8m1jSXBClGMFAEC?=
- =?us-ascii?Q?RCn01+Ry9NfaxJPEuvTTKO2PgvK+qM4BHdlIiotUWFJbnxmuDwCcR9U/wXK7?=
- =?us-ascii?Q?W7Q/TI5zeI+ThiG2qrH7le+yRYcnXWak52FWBQnUd5OfDDgY6Zpn/EcjQAX8?=
- =?us-ascii?Q?dGYYWUF63XQ4GyAnxAvd2GKdZnLIWjQSw0mCp2MIIM1/3yRNlyQIyzKJeEuX?=
- =?us-ascii?Q?ihRomLttnyGjVtimpY5RwXb8bPVpjR6OjPexVYhm2toeQWVw3IZ5kKhxs07B?=
- =?us-ascii?Q?MQin3iU6LtZVkmuHNpTX2RR4XY7pXqWKT4jp9Q1kHFdUh/mbz9VwILeAFPZ5?=
- =?us-ascii?Q?1A=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ =?utf-8?B?ZFU5RldRU09PNUcwL0ttSno4Z0VjUFY0K29wc28vK1RKZkN0R3lnNmNFWnJw?=
+ =?utf-8?B?OE0xSVRNMWQ3dE9HeGtaVWlOT09BTjZGRTM3dUtKaXlQcnpjWHF6cDZ1ekMv?=
+ =?utf-8?B?dmNTQ0lCNnZpVStPWkZ2dkI4NkVoMUhJaUlRN0pkVSs5QVlIbTVhT0FqbFRt?=
+ =?utf-8?B?Uk5zVUpJb2FjN1RONnJHL2NkQ0M5YU5pUER0a0s5LzlReWVvcG5PM25qbjF6?=
+ =?utf-8?B?RzcweXZ6Q1hNUCtFODlPQ3RiMWJiai80RlZONFBENTdxaDZkV3VRU1BnbXE5?=
+ =?utf-8?B?aGMwRnBJZlZLZXlTRXJPdkRjRlNHUGREVzhDVnZKc0FvUUFDb29SaHdwYXFm?=
+ =?utf-8?B?V3dlaEJYd2hNRlZta1pEYXN0Y25IeUppVHhKNHRWMHdmd1JRNlBBSDJ2NzJm?=
+ =?utf-8?B?Tk9uZFRtUUh1aUFHNFZaUTAxZmlzeTUyS3J2SHlDTmhFTHFlMmVPUmczMEZI?=
+ =?utf-8?B?TXBzMDUyWXcyL0t2dktNT1lxRHRjRGdMZjEzMkpGQ2o0eDZjTUhGNGRaRllG?=
+ =?utf-8?B?OFlzMVI0aDd1RlQ1K1duTC9UWTI5cmZRbGtZTC80eHp4aTc5OTZqaTk1QVZu?=
+ =?utf-8?B?ZkRlb1duT1VSVVFTcnVtYUcrYVJLcisybTFoZERtRnhhdDk2UExTdDRNZUJi?=
+ =?utf-8?B?UDBqNmJkaFNxY1RhbUdHV200b3VHVFFWZVRNOUVuSEVNVXBSSy85V3dpbDM3?=
+ =?utf-8?B?UHEvQis5dWZjbUVRRHc3cW5ld09GZFljK0RORHhydklGc2dhSCtqbXprbWp3?=
+ =?utf-8?B?Q1h5a0FRb0lVY3NzVDRNM3BCVDZqbEh5Z0RnekZRZDZ5Mnd4OTRzeThOSmtL?=
+ =?utf-8?B?QllJbmdaazA0OW1mbzJEK1lLSlpMWTVNT0h2WDNleVpOQWZ0SXBQZjhGSTlY?=
+ =?utf-8?B?WTFlMGs0NlJjbWE2K3ZkUzJaMVlmYTNQQUdMR1VNWHNUMllBdThGR0JxR2dm?=
+ =?utf-8?B?cTZMQTNocTNReHRmV0tzcVlTUDZYVVVFejdhTEZzZlRxZjUxalhoSGF1amM1?=
+ =?utf-8?B?QUl1N2pBdWp0ZWZFMVVMaER6ei9QV1FDdm9GaFBlQTdlaXhvMUU1Qm1RSjdP?=
+ =?utf-8?B?YjdOeHBtdG9lWXVCU3hjZkVFb2drOUNvQlduWUlmY2NPTUc1WkVMUHVFV1F1?=
+ =?utf-8?B?dXo4ZEVySGtjRW9zUytsdVFIM2pmTGRuT3BiRXB5NkQ2cUwyTmRRVHBEajFR?=
+ =?utf-8?B?UEs0TU9qWkppUnhpdU1XU3IyZkhrU1gvNkQza3J2cWdBOUtmS0V4OEhhRDR1?=
+ =?utf-8?B?T3lVZUtBOHF3SXVQMnloaDN3Zk5uaFNURFJ2czhLYnpQTUV3TE1sWmZFbnBq?=
+ =?utf-8?B?R0ErOHQ2aXp0WTVLVHJIeXQxelltOVUwK0VSTUhRdGhVYkcyajluN0Z4TzlU?=
+ =?utf-8?B?Ri9vOTZLelY1Y1NPZ2xHbjMvQ09CZVVxaEIvNFMxb1RibXBiQngwYUdqbGk1?=
+ =?utf-8?B?RFpIN0luVS9rSDBxajFPRFlObEpzRThTUVVuMXIya1JSOGd1S0pkT09KQmFJ?=
+ =?utf-8?B?eTNTbUZlblQ5V1BZQmcwV2pMZWlSeFEyYUNidXFmZHpVc2V0UGY3aWlBUVlH?=
+ =?utf-8?B?aUMrWmtiQ0NoVmx5TVhKbFdLdzg1YXRmVTJRMlZ2Nk9zMG9SRDhsdzNJOGtx?=
+ =?utf-8?B?dklkbWdqQkhrWEtSQTVvaVl6dUI0RDhXeUdhSEd3WFlERmJWVUcxSGhzWmNh?=
+ =?utf-8?B?NEJLK3I3aEdxbTUrQW5iNkxDU1dpTFJ4dVVuR1l3QnpCVDBzNEZTaWRwWTNl?=
+ =?utf-8?B?SmpZZEVTdkRlYkgrYmQ5NHZ0dDdRSnY0dExVeEg0aFBCaXcwb2tsc3R0Ykdx?=
+ =?utf-8?B?Tmp0QkQwMjBtOE0xN2trUmgwbC9za0QraGkvUGZUb1p4Q3RMZU5MWlF0QzZq?=
+ =?utf-8?B?RjdRNTF0cVByU3NaclE2UWJMZE90MUdrRVVKOVhPVTBZV2dvZ0IxRktsUTJJ?=
+ =?utf-8?B?S3NKbzRUM0EvUGZlc3Q0R0ZMVlF3RzBhL08wSU1SWldtSG9maDMxcDUrQkpE?=
+ =?utf-8?B?Vk9iYXUzUDMwYlQzeXBQRVBEQVNTK3pBcDBlWXlKY2hva29NQThQTy8zd3VN?=
+ =?utf-8?B?dGlPVHpUdkFHZmhtMlVqWHYwWmtXaEFXR0YzS1FQUmxvN3lYMkNtS0dOcVBi?=
+ =?utf-8?Q?ZsPnu4dti3CgC36kmV55rO233?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C427D870CB1A6543B3011634FFB090E5@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: chipsnmedia.com
+X-OriginatorOrg: csgroup.eu
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SE1P216MB1303.KORP216.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64dd73ab-c133-4a3d-9691-08dc59ff0244
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Apr 2024 08:11:36.8923
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0921e86-58f8-46af-de7d-08dc59ff33cd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Apr 2024 08:13:00.0255
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4d70c8e9-142b-4389-b7f2-fa8a3c68c467
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NdG1PayBCNQAUijLfwhTNsAHs3W2jkv1cGBtehLRWzf4ZZlZxkDZSuawkS58BjK5lQJ2Zx69LZglJlIwwOknmiM0gtV8i1n8VyWa8gq0Bqg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PU4P216MB2306
+X-MS-Exchange-CrossTenant-userprincipalname: ddInuKTAlBL/9fnMRcfMpPvjkBHDY2nkmRiKkRHS1jEHqHZRW3ZA4cuyMcdhQxDyDVMMvqMg3+a14C2RSy8+ciViIoJDvpnqg8G5qT1Scbo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB3360
 
-Hi Ivan
-
-> -----Original Message-----
-> From: Ivan Bornyakov <brnkv.i1@gmail.com>
-> Sent: Tuesday, April 9, 2024 5:12 PM
-> To: jackson.lee <jackson.lee@chipsnmedia.com>
-> Cc: Nas Chung <nas.chung@chipsnmedia.com>; Mauro Carvalho Chehab
-> <mchehab@kernel.org>; Philipp Zabel <p.zabel@pengutronix.de>; Sebastian
-> Fricke <sebastian.fricke@collabora.com>; linux-media@vger.kernel.org;
-> linux-kernel@vger.kernel.org
-> Subject: Re: RE: [PATCH v3 4/5] media: chips-media: wave5: drop "sram-
-> size" DT prop
->=20
-> Hi, Jackson
->=20
-> On Tue, Apr 09, 2024 at 04:50:15AM +0000, jackson.lee wrote:
-> > Hey Ivan
-> >
-> > > -----Original Message-----
-> > > From: Ivan Bornyakov <brnkv.i1@gmail.com>
-> > > Sent: Saturday, April 6, 2024 1:41 AM
-> > > To: Nas Chung <nas.chung@chipsnmedia.com>; jackson.lee
-> > > <jackson.lee@chipsnmedia.com>; Mauro Carvalho Chehab
-> > > <mchehab@kernel.org>; Philipp Zabel <p.zabel@pengutronix.de>;
-> > > Sebastian Fricke <sebastian.fricke@collabora.com>
-> > > Cc: Ivan Bornyakov <brnkv.i1@gmail.com>;
-> > > linux-media@vger.kernel.org; linux-kernel@vger.kernel.org
-> > > Subject: [PATCH v3 4/5] media: chips-media: wave5: drop "sram-size"
-> > > DT prop
-> > >
-> > > Move excessive "sram-size" device-tree property to device match data.
-> > > Also change SRAM memory allocation strategy: instead of allocation
-> > > exact sram_size bytes, allocate all available SRAM memory up to
-> sram_size.
-> > > Add placeholders wave5_vpu_dec_validate_sec_axi() and
-> > > wave5_vpu_enc_validate_sec_axi() for validation that allocated SRAM
-> > > memory is enough to decode/encode bitstream of given resolution.
-> > >
-> > > Signed-off-by: Ivan Bornyakov <brnkv.i1@gmail.com>
-> > > ---
-> > >  .../platform/chips-media/wave5/wave5-hw.c     | 62 +++++++++++++++++=
---
-> > >  .../platform/chips-media/wave5/wave5-vdi.c    | 21 ++++---
-> > >  .../platform/chips-media/wave5/wave5-vpu.c    | 11 ++--
-> > >  3 files changed, 72 insertions(+), 22 deletions(-)
-> > >
-> > > diff --git a/drivers/media/platform/chips-media/wave5/wave5-hw.c
-> > > b/drivers/media/platform/chips-media/wave5/wave5-hw.c
-> > > index cdd0a0948a94..36f2fc818013 100644
-> > > --- a/drivers/media/platform/chips-media/wave5/wave5-hw.c
-> > > +++ b/drivers/media/platform/chips-media/wave5/wave5-hw.c
-> > > @@ -843,6 +843,36 @@ int wave5_vpu_dec_register_framebuffer(struct
-> > > vpu_instance *inst, struct frame_b
-> > >  	return ret;
-> > >  }
-> > >
-> > > +static u32 wave5_vpu_dec_validate_sec_axi(struct vpu_instance *inst)
-> {
-> > > +	struct dec_info *p_dec_info =3D &inst->codec_info->dec_info;
-> > > +	u32 bit_size =3D 0, ip_size =3D 0, lf_size =3D 0, ret =3D 0;
-> >
-> > The bit_size, ip_size and 1f_size is always 0? If so, why are you using
-> them ?
-> >
->=20
-> Since I don't have documentation on Wave521, this is a placeholder for
-> someone who have documentation to write proper SRAM size validation, henc=
-e
-> TODO comment.
->=20
-> In the next patch "media: chips-media: wave5: support Wave515 decoder"
-> I added validation of SRAM usage for Wave515, for which I do have
-> documentation.
->=20
-> >
-> > > +	u32 sram_size =3D inst->dev->sram_size;
-> > > +
-> > > +	if (!sram_size)
-> > > +		return 0;
-> > > +
-> > > +	/*
-> > > +	 * TODO: calculate bit_size, ip_size, lf_size from inst-
-> > > >src_fmt.width
-> > > +	 * and inst->codec_info->dec_info.initial_info.luma_bitdepth
-> > > +	 */
-> > > +
-> > > +	if (p_dec_info->sec_axi_info.use_bit_enable && sram_size >=3D
-> > > bit_size) {
-> > > +		ret |=3D BIT(0);
-> > > +		sram_size -=3D bit_size;
-> > > +	}
-> > > +
-> > > +	if (p_dec_info->sec_axi_info.use_ip_enable && sram_size >=3D
-> > > +ip_size)
-> > > {
-> > > +		ret |=3D BIT(9);
-> > > +		sram_size -=3D ip_size;
-> > > +	}
-> > > +
-> > > +	if (p_dec_info->sec_axi_info.use_lf_row_enable && sram_size >=3D
-> > > lf_size)
-> > > +		ret |=3D BIT(15);
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > >  int wave5_vpu_decode(struct vpu_instance *inst, u32 *fail_res)  {
-> > >  	u32 reg_val;
-> > > @@ -855,9 +885,7 @@ int wave5_vpu_decode(struct vpu_instance *inst,
-> > > u32
-> > > *fail_res)
-> > >  	vpu_write_reg(inst->dev, W5_BS_OPTION,
-> > > get_bitstream_options(p_dec_info));
-> > >
-> > >  	/* secondary AXI */
-> > > -	reg_val =3D p_dec_info->sec_axi_info.use_bit_enable |
-> > > -		(p_dec_info->sec_axi_info.use_ip_enable << 9) |
-> > > -		(p_dec_info->sec_axi_info.use_lf_row_enable << 15);
-> > > +	reg_val =3D wave5_vpu_dec_validate_sec_axi(inst);
-> > >  	vpu_write_reg(inst->dev, W5_USE_SEC_AXI, reg_val);
-> > >
-> > >  	/* set attributes of user buffer */ @@ -1938,6 +1966,31 @@ int
-> > > wave5_vpu_enc_register_framebuffer(struct
-> > > device *dev, struct vpu_instance *
-> > >  	return ret;
-> > >  }
-> > >
-> > > +static u32 wave5_vpu_enc_validate_sec_axi(struct vpu_instance *inst)
-> {
-> > > +	struct enc_info *p_enc_info =3D &inst->codec_info->enc_info;
-> > > +	u32 rdo_size =3D 0, lf_size =3D 0, ret =3D 0;
-> >
-> > The rdo_size and 1f_size is always 0? If so, why are you using them ?
-> >
->=20
-> Same as above. It is a placeholder for someone else to implement these.
->=20
-> > > +	u32 sram_size =3D inst->dev->sram_size;
-> > > +
-> > > +	if (!sram_size)
-> > > +		return 0;
-> > > +
-> > > +	/*
-> > > +	 * TODO: calculate rdo_size and lf_size from inst->src_fmt.width
-> > > and
-> > > +	 * inst->codec_info-
-> > > >enc_info.open_param.wave_param.internal_bit_depth
-> > > +	 */
-> > > +
-> > > +	if (p_enc_info->sec_axi_info.use_enc_rdo_enable && sram_size >=3D
-> > > rdo_size) {
-> > > +		ret |=3D BIT(11);
-> > > +		sram_size -=3D rdo_size;
-> > > +	}
-> > > +
-> > > +	if (p_enc_info->sec_axi_info.use_enc_lf_enable && sram_size >=3D
-> > > lf_size)
-> > > +		ret |=3D BIT(15);
-> > > +
-> > > +	return ret;
-> > > +}
-> > > +
-> > >  int wave5_vpu_encode(struct vpu_instance *inst, struct enc_param
-> > > *option,
-> > > u32 *fail_res)  {
-> > >  	u32 src_frame_format;
-> > > @@ -1959,8 +2012,7 @@ int wave5_vpu_encode(struct vpu_instance
-> > > *inst, struct enc_param *option, u32 *f
-> > >
-> > >  	vpu_write_reg(inst->dev, W5_CMD_ENC_PIC_SRC_AXI_SEL,
-> > > DEFAULT_SRC_AXI);
-> > >  	/* secondary AXI */
-> > > -	reg_val =3D (p_enc_info->sec_axi_info.use_enc_rdo_enable << 11) |
-> > > -		(p_enc_info->sec_axi_info.use_enc_lf_enable << 15);
-> > > +	reg_val =3D wave5_vpu_enc_validate_sec_axi(inst);
-> > >  	vpu_write_reg(inst->dev, W5_CMD_ENC_PIC_USE_SEC_AXI, reg_val);
-> > >
-> > >  	vpu_write_reg(inst->dev, W5_CMD_ENC_PIC_REPORT_PARAM, 0); diff --
-> > > git a/drivers/media/platform/chips-media/wave5/wave5-vdi.c
-> > > b/drivers/media/platform/chips-media/wave5/wave5-vdi.c
-> > > index 3809f70bc0b4..556de2f043fe 100644
-> > > --- a/drivers/media/platform/chips-media/wave5/wave5-vdi.c
-> > > +++ b/drivers/media/platform/chips-media/wave5/wave5-vdi.c
-> >
-> >
-> > The below code is not based on the current upstream code. Where did you
-> get the original code ?
-> >
->=20
-> What do you mean? This patch series is based on the latest linux-next.
-
-
-I was confused, please ignore the above comment.
-
->=20
-> > > @@ -174,16 +174,19 @@ int wave5_vdi_allocate_array(struct vpu_device
-> > > *vpu_dev, struct vpu_buf *array,  void
-> > > wave5_vdi_allocate_sram(struct vpu_device *vpu_dev)  {
-> > >  	struct vpu_buf *vb =3D &vpu_dev->sram_buf;
-> > > +	dma_addr_t daddr;
-> > > +	void *vaddr;
-> > > +	size_t size;
-> > >
-> > > -	if (!vpu_dev->sram_pool || !vpu_dev->sram_size)
-> > > +	if (!vpu_dev->sram_pool || vb->vaddr)
-> > >  		return;
-> > >
-> > > -	if (!vb->vaddr) {
-> > > -		vb->size =3D vpu_dev->sram_size;
-> > > -		vb->vaddr =3D gen_pool_dma_alloc(vpu_dev->sram_pool, vb->size,
-> > > -					       &vb->daddr);
-> > > -		if (!vb->vaddr)
-> > > -			vb->size =3D 0;
-> > > +	size =3D min_t(size_t, vpu_dev->sram_size, gen_pool_avail(vpu_dev-
-> > > >sram_pool));
-> > > +	vaddr =3D gen_pool_dma_alloc(vpu_dev->sram_pool, size, &daddr);
-> > > +	if (vaddr) {
-> > > +		vb->vaddr =3D vaddr;
-> > > +		vb->daddr =3D daddr;
-> > > +		vb->size =3D size;
-> > >  	}
-> > >
-> > >  	dev_dbg(vpu_dev->dev, "%s: sram daddr: %pad, size: %zu, vaddr:
-> > > 0x%p\n", @@ -197,9 +200,7 @@ void wave5_vdi_free_sram(struct
-> > > vpu_device
-> > > *vpu_dev)
-> > >  	if (!vb->size || !vb->vaddr)
-> > >  		return;
-> > >
-> > > -	if (vb->vaddr)
-> > > -		gen_pool_free(vpu_dev->sram_pool, (unsigned long)vb->vaddr,
-> > > -			      vb->size);
-> > > +	gen_pool_free(vpu_dev->sram_pool, (unsigned long)vb->vaddr, vb-
-> > > >size);
-> > >
-> > >  	memset(vb, 0, sizeof(*vb));
-> > >  }
-> > > diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-> > > b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-> > > index 1e631da58e15..9e93969ab6db 100644
-> > > --- a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-> > > +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-> > > @@ -25,6 +25,7 @@
-> > >  struct wave5_match_data {
-> > >  	int flags;
-> > >  	const char *fw_name;
-> > > +	u32 sram_size;
-> > >  };
-> > >
-> > >  int wave5_vpu_wait_interrupt(struct vpu_instance *inst, unsigned
-> > > int
-> > > timeout) @@ -177,17 +178,12 @@ static int wave5_vpu_probe(struct
-> > > platform_device *pdev)
-> > >  		goto err_reset_assert;
-> > >  	}
-> > >
-> > > -	ret =3D of_property_read_u32(pdev->dev.of_node, "sram-size",
-> > > -				   &dev->sram_size);
-> > > -	if (ret) {
-> > > -		dev_warn(&pdev->dev, "sram-size not found\n");
-> > > -		dev->sram_size =3D 0;
-> > > -	}
-> > > -
-> > >  	dev->sram_pool =3D of_gen_pool_get(pdev->dev.of_node, "sram", 0);
-> > >  	if (!dev->sram_pool)
-> > >  		dev_warn(&pdev->dev, "sram node not found\n");
-> > >
-> > > +	dev->sram_size =3D match_data->sram_size;
-> > > +
-> > >  	dev->product_code =3D wave5_vdi_read_register(dev,
-> > > VPU_PRODUCT_CODE_REGISTER);
-> > >  	ret =3D wave5_vdi_init(&pdev->dev);
-> > >  	if (ret < 0) {
-> > > @@ -281,6 +277,7 @@ static void wave5_vpu_remove(struct
-> > > platform_device
-> > > *pdev)  static const struct wave5_match_data ti_wave521c_data =3D {
-> > >  	.flags =3D WAVE5_IS_ENC | WAVE5_IS_DEC,
-> > >  	.fw_name =3D "cnm/wave521c_k3_codec_fw.bin",
-> > > +	.sram_size =3D (64 * 1024),
-> > >  };
-> > >
-> > >  static const struct of_device_id wave5_dt_ids[] =3D {
-> > > --
-> > > 2.44.0
-> >
+DQoNCkxlIDExLzA0LzIwMjQgw6AgMDk6MTYsIEFkcmlhbiBIdW50ZXIgYSDDqWNyaXTCoDoNCj4g
+T24gMTEvMDQvMjQgMTA6MDQsIEFybmQgQmVyZ21hbm4gd3JvdGU6DQo+PiBPbiBXZWQsIEFwciAx
+MCwgMjAyNCwgYXQgMTc6MzIsIEFkcmlhbiBIdW50ZXIgd3JvdGU6DQo+Pj4gQlVHKCkgZG9lcyBu
+b3QgcmV0dXJuLCBhbmQgYXJjaCBpbXBsZW1lbnRhdGlvbnMgb2YgQlVHKCkgdXNlIHVucmVhY2hh
+YmxlKCkNCj4+PiBvciBvdGhlciBub24tcmV0dXJuaW5nIGNvZGUuIEhvd2V2ZXIgd2l0aCAhQ09O
+RklHX0JVRywgdGhlIGRlZmF1bHQNCj4+PiBpbXBsZW1lbnRhdGlvbiBpcyBvZnRlbiB1c2VkIGlu
+c3RlYWQsIGFuZCB0aGF0IGRvZXMgbm90IGRvIHRoYXQuIHg4NiBhbHdheXMNCj4+PiB1c2VzIGl0
+cyBvd24gaW1wbGVtZW50YXRpb24sIGJ1dCBwb3dlcnBjIHdpdGggIUNPTkZJR19CVUcgZ2l2ZXMg
+YSBidWlsZA0KPj4+IGVycm9yOg0KPj4+DQo+Pj4gICAga2VybmVsL3RpbWUvdGltZWtlZXBpbmcu
+YzogSW4gZnVuY3Rpb24g4oCYdGltZWtlZXBpbmdfZGVidWdfZ2V0X25z4oCZOg0KPj4+ICAgIGtl
+cm5lbC90aW1lL3RpbWVrZWVwaW5nLmM6Mjg2OjE6IGVycm9yOiBubyByZXR1cm4gc3RhdGVtZW50
+IGluIGZ1bmN0aW9uDQo+Pj4gICAgcmV0dXJuaW5nIG5vbi12b2lkIFstV2Vycm9yPXJldHVybi10
+eXBlXQ0KPj4+DQo+Pj4gQWRkIHVucmVhY2hhYmxlKCkgdG8gZGVmYXVsdCAhQ09ORklHX0JVRyBC
+VUcoKSBpbXBsZW1lbnRhdGlvbi4NCj4+DQo+PiBJJ20gYSBiaXQgd29ycmllZCBhYm91dCB0aGlz
+IHBhdGNoLCBzaW5jZSB3ZSBoYXZlIGhhZCBwcm9ibGVtcw0KPj4gd2l0aCB1bnJlYWNoYWJsZSgp
+IGluc2lkZSBvZiBCVUcoKSBpbiB0aGUgcGFzdCwgYW5kIGFzIGZhciBhcyBJDQo+PiBjYW4gcmVt
+ZW1iZXIsIHRoZSBjdXJyZW50IHZlcnNpb24gd2FzIHRoZSBvbmx5IG9uZSB0aGF0DQo+PiBhY3R1
+YWxseSBkaWQgdGhlIHJpZ2h0IHRoaW5nIG9uIGFsbCBjb21waWxlcnMuDQo+Pg0KPj4gT25lIHBy
+b2JsZW0gd2l0aCBhbiB1bnJlYWNoYWJsZSgpIGFubm90YXRpb24gaGVyZSBpcyB0aGF0IGlmDQo+
+PiBhIGNvbXBpbGVyIG1pc2FuYWx5c2VzIHRoZSBlbmRsZXNzIGxvb3AsIGl0IGNhbiBkZWNpZGUg
+dG8NCj4+IHRocm93IG91dCB0aGUgZW50aXJlIGNvZGUgcGF0aCBsZWFkaW5nIHVwIHRvIGl0IGFu
+ZCBqdXN0DQo+PiBydW4gaW50byB1bmRlZmluZWQgYmVoYXZpb3IgaW5zdGVhZCBvZiBwcmludGlu
+ZyBhIEJVRygpDQo+PiBtZXNzYWdlLg0KPj4NCj4+IERvIHlvdSBrbm93IHdoaWNoIGNvbXBpbGVy
+IHZlcnNpb24gc2hvdyB0aGUgd2FybmluZyBhYm92ZT8NCj4gDQo+IE9yaWdpbmFsIHJlcG9ydCBo
+YXMgYSBsaXN0DQo+IA0KPiAJaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsL0NBK0c5Zll2amRa
+Q1c9N1pHeFM2QV8zYnlzalE1NllGN1MtK1BOTFFfOGE0REtoMUJoZ0BtYWlsLmdtYWlsLmNvbS8N
+Cj4gDQoNCkxvb2tpbmcgYXQgdGhlIHJlcG9ydCwgSSB0aGluayB0aGUgY29ycmVjdCBmaXggc2hv
+dWxkIGJlIHRvIHVzZSANCkJVSUxEX0JVRygpIGluc3RlYWQgb2YgQlVHKCkNCg==
 
