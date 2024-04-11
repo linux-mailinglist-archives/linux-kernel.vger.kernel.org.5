@@ -1,136 +1,123 @@
-Return-Path: <linux-kernel+bounces-140260-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140261-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6019A8A1079
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:36:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C05A8A1085
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 12:36:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AD8F28AB61
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:36:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC1161C21C4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:36:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C58314D449;
-	Thu, 11 Apr 2024 10:33:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6070714B07B;
+	Thu, 11 Apr 2024 10:34:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2geq2B1u";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zTAv3j0i"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BABgEOv2"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 527A6146A74;
-	Thu, 11 Apr 2024 10:33:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4574614C591
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 10:34:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712831620; cv=none; b=RfxQsHR1y5JKXbRk+mtcv/owEWt9lvJW+4PPKmbGzEEfTviYQUc6aACi6hPdORXaN1qV8bCBH9TAp/KBC2UWHiNHf+SKooiX5J+skbqQRxRlJHbebT74Sg0PmUKJSNZs1G5qyHTQlCEK3s34xK5XWwx2z81wz5J7kF1J0sMT/Y0=
+	t=1712831652; cv=none; b=mDszBcht2BygvTqinVELQ1fQUl0Ox9RN7nl00/up/wdi+tMcooJ/Y0GVEPlAAQRBRXSkUO01AZ6AUsDEZely+b37yRHwVE8XbxIqfEvOHmIbOLo8SPH4rUtSF+GIiWTqjf13i3VuAu9bOV3eusL5DjMNNZw7iA2/6s1SsXCEjJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712831620; c=relaxed/simple;
-	bh=yT4/VxLXMB/+uJJSBfHcYF/pCdSW8LMQJNrERz9bZuI=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=DlzokZWag8bcIp1WDQFNRNB0dfvvZ57on07RnUzsPjNMMAMOSw2gpNm7j+uXYPybTkoQlvNv/UoCclFMYR+maP2aLZrVyJbT+KbiBpQkf/6sUXBYJNurobYmFXsG3IGIAbq9ghp14Pz4TcYo2eqN1xKct7j45DRC51XMQSKkRn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2geq2B1u; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zTAv3j0i; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 11 Apr 2024 10:33:35 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712831616;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4e387RiNr07lgjmO0ZNePR+Ip91jIkCIo+LZIehyfm0=;
-	b=2geq2B1u1JLxzdHIpnD3eD3Ri+G/HnYC9VdtLRqXzcxQgU5quHo7Dj+nTyMP34uP7IplPC
-	A8Q+dJxoCsTGEpdP6ZjlepxzoScRATV43Q66OXBuROXmaHiD41AFni0crF+Ic8zMlyA4km
-	WuXxJJpJUv7keEAltD89xTt/5nXtRbgxnq7KLKh/ANdA79voIRMk3gt5lihsE/6b+6TZNe
-	PBu/N9XotXbS19Zhhn57aPugLN4YQ79V94wf4JSzpTrcYafEwhj3clRX0HofO99GBjkeKc
-	tMpWjZvqn7gl27qmLKr7r0k6ePaKuPInBgQwJ4nPxo0Q0PszwF3qvIu6sUiKgQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712831616;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4e387RiNr07lgjmO0ZNePR+Ip91jIkCIo+LZIehyfm0=;
-	b=zTAv3j0icFrLxooArsN+YJ7sLmNdmUhfr6I6IH+ukEBnRNqSx8vSDcQ+M2dKC3RM8SJC9S
-	DKcM/Nymv16DqFCw==
-From: "tip-bot2 for Andy Shevchenko" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq: Update MAINTAINERS to include interrupt
- related header files
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20240405185726.3931703-2-andriy.shevchenko@linux.intel.com>
-References: <20240405185726.3931703-2-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1712831652; c=relaxed/simple;
+	bh=ebVF2ZciJkJmRePFWK6ngOAeaEJihaFUUs75GT3EkW8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rnQl2QLbE3CG4sgFv/oTqQiXA3/NdiBFkW9M5uOBTI5Xb4ArjVQQZ3aj7ED1le6qJc06QzBVCUJV+JzqUSvkbUcT8TM7wC5AeIZNj43Urpwpsl3bHLljdFILstkE0VY1n3nMXldZ0zpYJs9QbMkT5kjon+W7eQ5K8K/IrPc1v54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BABgEOv2; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712831651; x=1744367651;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=ebVF2ZciJkJmRePFWK6ngOAeaEJihaFUUs75GT3EkW8=;
+  b=BABgEOv2pSO+cxvUE0rOa1o8uqXEb4QAiVLYn6lxbSBnmrOsdTrC+Was
+   uLsqYMZgZPXk2P6jj/ksRe7mcb8NJGWnKvudGZSPwjWRJ0qfIei70ZsB5
+   K+YhqRoMx2L3qt03tSvQpijD5nWYPaWPMesqZpE4cwFlPXk11lP2AgBV7
+   4VYoqTt4y2n9IyM1i5BwxjKJbVSQuUwluAuP5F9hpxbHtP+Nq33XtAhDt
+   P7W0hd1DsJ21X15T5/JoHypAuodi++AFWQia8VEqThZKuMmWsNtVu5YXa
+   FbsZyYnQ6Y1ZUoM5kwwpkR4kW8wy7FAdYYpEk/ZRPJSbPjVFa5e1ZnPBL
+   w==;
+X-CSE-ConnectionGUID: twOMlH6hSoymHgOnUmYFqw==
+X-CSE-MsgGUID: aeMMv82PSkaI2E/4KRhqvQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="8453597"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="8453597"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 03:34:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11039"; a="915459789"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="915459789"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 03:34:09 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rurkt-00000003K4C-36mp;
+	Thu, 11 Apr 2024 13:34:07 +0300
+Date: Thu, 11 Apr 2024 13:34:07 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] auxdisplay: charlcd: Don't rebuild when
+ CONFIG_PANEL_BOOT_MESSAGE=y
+Message-ID: <Zhe8n1VBRQ0wLMGT@smile.fi.intel.com>
+References: <20240409173921.1080616-1-andriy.shevchenko@linux.intel.com>
+ <CAMuHMdUm77VFSraw0KTKYoUknZ4Eyfgt9GeP9T-0_ET7L_zVsA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171283161501.10875.11908832823188260337.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdUm77VFSraw0KTKYoUknZ4Eyfgt9GeP9T-0_ET7L_zVsA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-The following commit has been merged into the irq/core branch of tip:
+On Thu, Apr 11, 2024 at 09:43:48AM +0200, Geert Uytterhoeven wrote:
+> On Tue, Apr 9, 2024 at 7:39 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > When CONFIG_PANEL_BOOT_MESSAGE=y the module still includes
+> > the generated header and gets rebuilt even if it doesn't use
+> > anything from that header.  Include generated header conditionally
+> > to avoid unnecessary rebuilds.
+> >
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> Thanks for your patch!
+> 
+> > --- a/drivers/auxdisplay/charlcd.c
+> > +++ b/drivers/auxdisplay/charlcd.c
+> > @@ -17,7 +17,9 @@
+> >  #include <linux/uaccess.h>
+> >  #include <linux/workqueue.h>
+> >
+> > +#ifndef CONFIG_PANEL_BOOT_MESSAGE
+> >  #include <generated/utsrelease.h>
+> > +#endif
+> 
+> Perhaps move the existing "#ifdef CONFIG_PANEL_BOOT_MESSAGE"-block
+> up, and move the #include inside the #else branch?
 
-Commit-ID:     81e4cb0fd45c84d416e3edffbf6ae62c89ce6b5a
-Gitweb:        https://git.kernel.org/tip/81e4cb0fd45c84d416e3edffbf6ae62c89ce6b5a
-Author:        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-AuthorDate:    Fri, 05 Apr 2024 21:56:45 +03:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 11 Apr 2024 12:29:40 +02:00
+I was thinking about it, but decided to group headers together.
 
-genirq: Update MAINTAINERS to include interrupt related header files
+> >  #include "charlcd.h"
+> 
+> Regardless
+> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Interrupt related header files seems orphaned, add them to the respective
-subsystem records.
+Pushed to my review and testing queue, thanks!
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20240405185726.3931703-2-andriy.shevchenko@linux.intel.com
+-- 
+With Best Regards,
+Andy Shevchenko
 
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4a909b1..adab4f3 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11435,6 +11435,7 @@ S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
- F:	Documentation/core-api/irq/irq-domain.rst
- F:	include/linux/irqdomain.h
-+F:	include/linux/irqdomain_defs.h
- F:	kernel/irq/irqdomain.c
- F:	kernel/irq/msi.c
- 
-@@ -11444,6 +11445,10 @@ L:	linux-kernel@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
- F:	include/linux/group_cpus.h
-+F:	include/linux/irq.h
-+F:	include/linux/irqhandler.h
-+F:	include/linux/irqnr.h
-+F:	include/linux/irqreturn.h
- F:	kernel/irq/
- F:	lib/group_cpus.c
- 
-@@ -11454,6 +11459,7 @@ S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
- F:	Documentation/devicetree/bindings/interrupt-controller/
- F:	drivers/irqchip/
-+F:	include/linux/irqchip.h
- 
- ISA
- M:	William Breathitt Gray <william.gray@linaro.org>
 
