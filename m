@@ -1,125 +1,170 @@
-Return-Path: <linux-kernel+bounces-140153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23D328A0C1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:17:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ACB18A0C23
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 11:18:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 530AA1C2382E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:17:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D280B23D3C
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:17:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AAC214431D;
-	Thu, 11 Apr 2024 09:17:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4E231448D6;
+	Thu, 11 Apr 2024 09:17:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jWkNwXT1"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LE8IbOiq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B8A143C51;
-	Thu, 11 Apr 2024 09:17:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9C71442FA;
+	Thu, 11 Apr 2024 09:17:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712827029; cv=none; b=MhbBQ2RFfywttCpCL0h/3+JtxcH8OxbE3TvrmmxpzlQNE9B5HTeHWIkb5Rii97QxzjC/jpPB+6XG64co554c+n6nVSSkWFBnC5eUoTnmCPjHZePCfGa2Q/bwhSkIr5nl3sWw42EpxHi26O54HKem2q050XWMzKjLUXeaDk7GoJU=
+	t=1712827066; cv=none; b=GdfAioQtlgAb0+xLDne143P8pmWczcwSYAA8fA0Jgp9k9uuewcU9v+D1QP6w7ZrV7PAIBCoPflbI605Azrg0JO/s8HK1QX9tXfO9CCUsy0hgR3qTJBXQXsJHDPX8ACN3qOTATWORxuH7DRQAFR2irWwrAZIxLQtzFBvbbAR42qQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712827029; c=relaxed/simple;
-	bh=2syYPClYSp9LRVX4/oUCM4ZbsrvXWU1ybAOzeY9Qd2E=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=VbzfSiThQmMkl4x4VP0tPjH3TCY/n7qsdlxVAxH+u3nVOZMV8ql6e6S1k4E5+4DXHMv6GEoGSh8GspJTlki56iWzYKWUE7JMPREzpWxsZZaOy63DzAp4YDX65CDZavifdsLsH5MqZtEfJbNGR5ybUe8eXiMLQIWvuseNWnqmrJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jWkNwXT1; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-516d727074eso7414064e87.0;
-        Thu, 11 Apr 2024 02:17:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712827026; x=1713431826; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FzBEVk0HW76GLGB3lVYaqyPSlW2zjUkEkvFNmqFhr9w=;
-        b=jWkNwXT1vnYE37l0WVNMwK82XLpuHZ/vzpG5+D3W22+/miO7uPEciT8x+g5VMe7lkv
-         o2FOCcVeWvh9D5Exto5aZKr625rHz3M5ysqbHpiXDQlr1Fz/KDV/0I/MrMdMckQN3DSo
-         QeXbzj51TP6vXQWzAAX94fSmx3jvY9/fbgsnYBilOgaZbpwFmr2ECbVIRRX0ENW/wToz
-         1+Y0O6QJuXSvjwRygE14A/6NE6MkmgFPFfL39ZlKmJuonw72OQ3vh23yMJoNjTKc3ui8
-         PTTkpFTTlPVg6YZpCWewIKcXboB/laDto0Nt5dpNcL07AoTWT6CK1IPoOvEpxd/xL41I
-         BIxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712827026; x=1713431826;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FzBEVk0HW76GLGB3lVYaqyPSlW2zjUkEkvFNmqFhr9w=;
-        b=wTiIQZ6Zrr8SJUs9AGZTQSPWqMz3OIkgINAq59uCpHlIUMvhO24kqn9kPh6gQdBL9n
-         CsGeQV2ikGPEks4TArpVg8s0VmYq9XYyJrNllmi3pHkExlo6tgm7xEnCiZ12seih6Ef/
-         3Ggti2EvCcOvtr7u4sNUD/hIlyu4psA3g2a7ALLhI0ART2BsU66anKlUFtuaBFGOEWgn
-         udQbhAsZrxJs1pNTG6u5akLGLPLgTFrG+bN16aJV1XzWBt5c+D6A4BkPHHRdlNh5XwCS
-         V9ww13BN/HimAof418e/S2CVZK9xeDuHAD4Qv772XPrrjgQ9aZuY2yJz8fFtvzHZmmSs
-         T8rg==
-X-Forwarded-Encrypted: i=1; AJvYcCVDwoxvcXMtWpDYAB5CpaCPT4yrSN+1G2LcsKvAIoGgLcsEQonFTBb7/IRi/wH1I2VKuoUuvHPlSHvZkD4496KdevHS+2zJmYwAi2LR+ldgyI/YKEJLluviTe8EcRyz1J8X3ZpA
-X-Gm-Message-State: AOJu0YwLv9MvPrTvrEAIQxQbmy5HpMKAlsRbAV5eysFGu1U4qaIn+4ga
-	aXkTE21RAwIjejMfLIQX7afiRo94GiINKL5BndmASpyxxIf8mZvYi0jRnF8b
-X-Google-Smtp-Source: AGHT+IFquHk0icIe7gA89smDZQv78rcQ3Av1zWeYeS+HxuiU9dGbqT1wEiIRM8hbwuVmU+uAto584g==
-X-Received: by 2002:a05:6512:3c89:b0:518:6ea2:a2a3 with SMTP id h9-20020a0565123c8900b005186ea2a2a3mr16840lfv.54.1712827025767;
-        Thu, 11 Apr 2024 02:17:05 -0700 (PDT)
-Received: from localhost (craw-09-b2-v4wan-169726-cust2117.vm24.cable.virginm.net. [92.238.24.70])
-        by smtp.gmail.com with ESMTPSA id p5-20020a05600c1d8500b00417e227f40bsm596853wms.3.2024.04.11.02.17.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 02:17:05 -0700 (PDT)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Jon Maloy <jmaloy@redhat.com>,
-	Ying Xue <ying.xue@windriver.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org,
-	tipc-discussion@lists.sourceforge.net
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] tipc: remove redundant assignment to ret, simplify code
-Date: Thu, 11 Apr 2024 10:17:04 +0100
-Message-Id: <20240411091704.306752-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712827066; c=relaxed/simple;
+	bh=m53nnFpzQz5oa1v/Euu3FIxD4QTQaLgZyNyzPdTs6Rg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nCcx43R9EiDgiVZTnJnN2AjiaYKgXJ5FOGriMuPJCyyrVXvoOkX2QBc8zScVK4FfdwiUfevunr7ikBSzd+PZuSnd0L0o1D1uVSN9h9pRm7lhT/8YtNmjA1SBCSbAQ8FD86RLLtbqe5nHli18dTds0pdJFRXdPo/6xqqVNe2end4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LE8IbOiq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBCEDC433C7;
+	Thu, 11 Apr 2024 09:17:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712827065;
+	bh=m53nnFpzQz5oa1v/Euu3FIxD4QTQaLgZyNyzPdTs6Rg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=LE8IbOiqmjrO6CE65HQ6hZD7IoKOFza7js5vu8KknTIp7vqUjzjfw4yFAfwp5Z0k1
+	 cphzy/9aL20qork06Rm98zcwXvgH6eAkRoya6inGKHltIJJbDvaSIzETVqxTjEqJAx
+	 ereCYOFOWOA5A9GP+kSMRjdz4qnm/8SDD35kdVZ/iRE9t2PDmBhcK1luQb3yx9emER
+	 KQv849WxEYmGuqSCNcFRhOuusGS49sIJeWhuiWM+HQwlmVNOY+jc672UW255conZ+l
+	 oTFOrgv5Ad+3TJqrucHhfUVPZiCkyhZxL2XKryeqLJoH4dbYsbtXByORWeCmayjgaC
+	 5eOUhgAihCQKw==
+Message-ID: <d7faeacc-0442-4cee-a0ae-4b39b75d0cda@kernel.org>
+Date: Thu, 11 Apr 2024 11:17:39 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH net-next v2 0/2] mptcp: add last time fields in mptcp_info
+Content-Language: en-GB
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
+ Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
+ Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Geliang Tang <tanggeliang@kylinos.cn>
+References: <20240410-upstream-net-next-20240405-mptcp-last-time-info-v2-0-f95bd6b33e51@kernel.org>
+ <20240410113452.56f156f4@kernel.org>
+ <b8c14751-37a9-4a3d-b9af-a5c697d34781@kernel.org>
+ <20240410140103.37b94193@kernel.org>
+From: Matthieu Baerts <matttbe@kernel.org>
+Autocrypt: addr=matttbe@kernel.org; keydata=
+ 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
+ lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
+Organization: NGI0 Core
+In-Reply-To: <20240410140103.37b94193@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Variable err is being assigned a zero value and it is never read
-afterwards in either the break path or continue path, the assignment
-is redundant and can be removed. With it removed, the if statement
-can also be simplified.
+Hi Jakub,
 
-Cleans up clang scan warning:
-net/tipc/socket.c:3570:5: warning: Value stored to 'err' is never
-read [deadcode.DeadStores]
+On 10/04/2024 23:01, Jakub Kicinski wrote:
+> On Wed, 10 Apr 2024 21:31:13 +0200 (GMT+02:00) Matthieu Baerts wrote:
+>>> Hi Mat, is this causing skips in selftests by any chance?
+>>>
+>>> # 07 ....chk last_data_sent                            [SKIP] Feature probably not supported
+>>> # 08 ....chk last_data_recv                            [SKIP] Feature probably not supported
+>>> # 09 ....chk last_ack_recv                             [SKIP] Feature probably not supported  
+>>
+>> Yes it does, I should have added a note about that, sorry: that's because
+>> SS needs to be patched as well to display the new counters.
+>>
+>> https://patchwork.kernel.org/project/mptcp/patch/fd9e850f1e00691204f1dfebc63c01c6a4318c10.1711705327.git.geliang@kernel.org/
+>>
+>> This patch will be sent when the kernel one will be accepted.
+> 
+> I see, applied locally now, thanks!
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- net/tipc/socket.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Thank you!
 
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index 7e4135db5816..798397b6811e 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -3565,11 +3565,8 @@ int tipc_nl_sk_walk(struct sk_buff *skb, struct netlink_callback *cb,
- 	rhashtable_walk_start(iter);
- 	while ((tsk = rhashtable_walk_next(iter)) != NULL) {
- 		if (IS_ERR(tsk)) {
--			err = PTR_ERR(tsk);
--			if (err == -EAGAIN) {
--				err = 0;
-+			if (PTR_ERR(tsk) == -EAGAIN)
- 				continue;
--			}
- 			break;
- 		}
- 
+>> Is it an issue? The modification of the selftests can be applied later
+>> if you prefer.
+> 
+> Not sure. If it doesn't happen super often maybe co-post the iproute2
+> patch as described:
+> https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#co-posting-changes-to-user-space-components
+> and I'll apply it on the worker machines manually.
+
+I missed that. Indeed, that should be rare. We will do that next time!
+
+>> Earlier today, I was looking at changing NIPA not to mark the whole
+>> selftest as "SKIP" but I saw it was not a bug: a check is there to
+>> mark everything as skipped if one subtest is marked as skipped
+>> from what I understood. So I guess we don't want to change that :)
+> 
+> Correct :) It's working as intended :)
+
+It can maybe be modified when we can re-use the option to parse embedded
+TAP results :)
+
+>>> I'll "hide it" from patchwork for now..
+>>> --
+>>> pw-bot: defer  
+>>
+>> Thank you! Do you prefer if I resend only patch 1/2 for now?
+> 
+> No need, restored the patches back, let's see if next run is clean.
+
+Thank you! It looks like they are OK now!
+
+Cheers,
+Matt
 -- 
-2.39.2
+Sponsored by the NGI0 Core fund.
 
 
