@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-141524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3B578A1F66
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:23:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92CFB8A1F68
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 21:23:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 211411C22C53
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:23:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4ED3328446B
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A74E214F65;
-	Thu, 11 Apr 2024 19:23:17 +0000 (UTC)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE9017C67;
+	Thu, 11 Apr 2024 19:23:20 +0000 (UTC)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8571798E;
-	Thu, 11 Apr 2024 19:23:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9F617BA5;
+	Thu, 11 Apr 2024 19:23:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712863397; cv=none; b=N31QlApxwAjqdLKZWej1aGf2QWhFIBP2BL0rxio/IFzW90kZPUr8dZTsWtESnXk/9aJXUQGXcXvYNSgBdV2gMOE0XCQFhUUnyHxR7QsEJK2hoG6QS2Rfp0/RZ8H9AUl0Gwf/79+F7j3RCmmwWm14+n8yjaj0C++fTcXtBjtHaL0=
+	t=1712863400; cv=none; b=qb4+Cnfm2v3vknQ9CL2LgIMTSvklbsnwKsZssBSxreuqO2vT5ouSBe8MpdedKj7HeWZGOQ+tqM7Sfibn45+7GXwAi3YWf9TMOqJLWrgBw/QGprjyiyC4P3Q1MdEi4PP7BEdJCt4qWLhcSkyiplGXonN3mDhfgd3trivJ+Gca5Q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712863397; c=relaxed/simple;
-	bh=TI1GSDhfKjhAQ+1D3J9jkicNBNjV6XsaqUxxT18ZyJ8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tFM2gMk4zTye4k7qhSdXBN+lv4V/HsUnxtYo2RyAmk1NHJ15A7+6rwY0vT3NjmAdg566ajFUTJvTOdHO2X2ebE6EwLNBS2vQKHbb4uGAyTc8PJgE4vrJBCZAG+7e2+EE4kAd36s00ib1BkS+FEnJkRJ29ghi93gPgpZAyqnA31s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.176
+	s=arc-20240116; t=1712863400; c=relaxed/simple;
+	bh=Ymi8vcGeV5U25n5hHY6p/NSyc58XMyU2LXdmqZKED6g=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=eGS3MUspYOcdfRFGyBAV8G0fngv1TeecPgpdxNvgmZ68L4+zgEqKXEgCd5XFCENNb309AjHoKnJfllY1bkBLNN2OfpyB4saqZf4o9k0733to6qDZk3y1vIqviINUl3boe9D4bOMl+QTaX1ent3Up7FrFGY31IoFxwq924rP/UFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d82713f473so1924211fa.3;
-        Thu, 11 Apr 2024 12:23:15 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-516d536f6f2so193202e87.2;
+        Thu, 11 Apr 2024 12:23:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712863394; x=1713468194;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qIBXaQpWGDZLuod73VoHOj9O9W3K2JcAK0KSYOPcVaQ=;
-        b=Iwmq8EtglV3xjWL8QawG2znIS5Putzew9DI1upEvDpeF1bjrp+v9MXieIbbi9G5v7h
-         asrrM+GGMb3rqdV1E4U7rmjwnOddIfmMrgyE93ekiBCsVjH8iJsxBxuTBwSkMmWJem/j
-         lIAhYkr+HGeNv4WfRbc2UQVxhe0f/XBxbHYy68EWyuSHMWIenTRCGlynfjI3JtaRcm1t
-         qloJgswBqRLn9wOCqTvRwh4bHDJt/vVPkoGZ+0uh2IfpaZCW6hupCmLK/wYYExjPz5M0
-         YykH8uZtWRVmPA4N9DuKSk8aG7kD4lHYfSI4SQdbpgKoAKfZ10mKslq3EiH5ueeidJ67
-         8GbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWUAGssXj8CuTkBv/mslP2jfWwOCCe9IVb678Nawh3Negok+E9AcY2oJ/0sa1Q3XDbnZe3QFiNtTOpgcmJr/UBsjNPs78nc
-X-Gm-Message-State: AOJu0YxbEtEmNhExHUJnIgWHQfFa281ISOzdM7l+FtFCMwz5c3kEG7Q2
-	R3WhL18RMY6cnIvwrxMdBOvwHPgStSh2D6uhi9CuLyHZYI/0M5yp
-X-Google-Smtp-Source: AGHT+IEt7RbiKpbYhIe9xJ71P9L1Z5U6C0nSsv1vHmYIfX0j8xDQZwFKW9WvmOYy3SPWHCY4MCN07Q==
-X-Received: by 2002:a2e:b00e:0:b0:2d8:36f9:67af with SMTP id y14-20020a2eb00e000000b002d836f967afmr353683ljk.44.1712863393363;
-        Thu, 11 Apr 2024 12:23:13 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-117.fbsv.net. [2a03:2880:30ff:75::face:b00c])
-        by smtp.gmail.com with ESMTPSA id q5-20020a170906360500b00a51da296f66sm1016692ejb.41.2024.04.11.12.23.12
+        d=1e100.net; s=20230601; t=1712863397; x=1713468197;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G8m6X0YutT7uWn1TO1PGQ+ufRs6DUh470J81GT16/S0=;
+        b=HKL1P5zEn7W7xwIyAj7kDpV6dS84g8ifaeyj3/1J7KFlH1u83Q/JixQbXslOppjk/z
+         BnGYwiMq6iIdSIrgL3Es8swzipGjJ2Zxt/Omgm8K1fDUgx86kdguQgn089ODfQOV8wV9
+         Ccimp3Id1boD3v5L3nr30u4u2Bk7TQyD46GDCl7HyEycxNN8SXJz+2ryKTnmN0LA65Ws
+         GMxlveDNKB5cL4JeQe6X7sYyCMGmWF4GPOsusxZ/HqDueSsROGgXdqH3YsALWpy9JQla
+         F2G0/h7EbdfHPHFwwOQWnC5dcFEAv5eVrCwCVoGsFhYOSo49cFHJ8kTIPq86SAXYu0af
+         BQnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUlLiCBfMIUPyTjyUHF/zUj5GpcDUG2QXe0bxRsdfgYK9XHuS+oReAMMwmy4K5+WlgbwypdAVgG2L8PymCTH9DtqGT+uJNj
+X-Gm-Message-State: AOJu0Yz4BLi3Xf4yikxFlu7DIp+70LaRrX97LalKwVXvdVNCCCSMM12R
+	gvX2L6rIQUGNal2dxSP7iaXWvtqqKCKbDZ2rZzZUCOlCB4jfawF9
+X-Google-Smtp-Source: AGHT+IFEK2Wfqx5XDgZrycIj/QUR1Ldag37mqz5FG4t4KvnVqFSYp/J133+dSXm9gJDoRtxEh/bxJQ==
+X-Received: by 2002:a05:6512:3d02:b0:516:d444:b26b with SMTP id d2-20020a0565123d0200b00516d444b26bmr632560lfv.46.1712863396852;
+        Thu, 11 Apr 2024 12:23:16 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-005.fbsv.net. [2a03:2880:30ff:5::face:b00c])
+        by smtp.gmail.com with ESMTPSA id my48-20020a1709065a7000b00a518debfd49sm1021740ejc.116.2024.04.11.12.23.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 12:23:12 -0700 (PDT)
+        Thu, 11 Apr 2024 12:23:16 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
@@ -58,10 +59,12 @@ To: kuba@kernel.org,
 	edumazet@google.com
 Cc: linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH net-next v3 0/4] net: dqs: optimize if stall threshold is not set
-Date: Thu, 11 Apr 2024 12:22:28 -0700
-Message-ID: <20240411192241.2498631-1-leitao@debian.org>
+Subject: [PATCH net-next v3 1/4] net: dql: Avoid calling BUG() when WARN() is enough
+Date: Thu, 11 Apr 2024 12:22:29 -0700
+Message-ID: <20240411192241.2498631-2-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240411192241.2498631-1-leitao@debian.org>
+References: <20240411192241.2498631-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,46 +73,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Here are four patches aimed at enhancing the Dynamic Queue Limit (DQL)
-subsystem within the networking stack.
+If the dql_queued() function receives an invalid argument, WARN about it
+and continue, instead of crashing the kernel.
 
-The first two commits involve code refactoring, while the third patch
-introduces the actual change. The fourth patch just improves the cache
-locality.
+This was raised by checkpatch, when I am refactoring this code (see
+following patch/commit)
 
-Typically, when DQL is enabled, stall information is always populated
-through dql_queue_stall(). However, this information is only necessary
-if a stall threshold is set, which is stored in struct dql->stall_thrs.
+	WARNING: Do not crash the kernel unless it is absolutely unavoidable--use WARN_ON_ONCE() plus recovery code (if feasible) instead of BUG() or variants
 
-Although dql_queue_stall() is relatively inexpensive, it is not entirely
-free due to memory barriers and similar overheads.
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ include/linux/dynamic_queue_limits.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-To optimize performance, refrain from calling dql_queue_stall() when no
-stall threshold is set, thus avoiding the processing of unnecessary
-information.
-
-Changelog:
-
-v3:
-	* Read stall_thrs earlier, at dql_completed(), to avoid any
-	  performance penalty, as suggested by Jakub.
-v2:
-	* Moved the stall_thrs to the very first cache line, as a new
-	  patch. Suggested by Eric Dumazet.
-v1:
-	* https://lore.kernel.org/all/20240404145939.3601097-1-leitao@debian.org/
-
-
-Breno Leitao (4):
-  net: dql: Avoid calling BUG() when WARN() is enough
-  net: dql: Separate queue function responsibilities
-  net: dql: Optimize stall information population
-  net: dqs: make struct dql more cache efficient
-
- include/linux/dynamic_queue_limits.h | 50 +++++++++++++++++-----------
- lib/dynamic_queue_limits.c           | 13 +++++---
- 2 files changed, 39 insertions(+), 24 deletions(-)
-
+diff --git a/include/linux/dynamic_queue_limits.h b/include/linux/dynamic_queue_limits.h
+index 5693a4be0d9a..ff9c65841ae8 100644
+--- a/include/linux/dynamic_queue_limits.h
++++ b/include/linux/dynamic_queue_limits.h
+@@ -91,7 +91,8 @@ static inline void dql_queued(struct dql *dql, unsigned int count)
+ {
+ 	unsigned long map, now, now_hi, i;
+ 
+-	BUG_ON(count > DQL_MAX_OBJECT);
++	if (WARN_ON_ONCE(count > DQL_MAX_OBJECT))
++		return;
+ 
+ 	dql->last_obj_cnt = count;
+ 
 -- 
 2.43.0
 
