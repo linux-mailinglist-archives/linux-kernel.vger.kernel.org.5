@@ -1,169 +1,111 @@
-Return-Path: <linux-kernel+bounces-141559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 921848A1FEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:09:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51C978A1FEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:12:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2C761C230BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:09:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D31ECB22AB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD97817C6A;
-	Thu, 11 Apr 2024 20:09:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D12E17C6A;
+	Thu, 11 Apr 2024 20:12:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="o/fm7/6X"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="LSunOtQC"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8393A179BC;
-	Thu, 11 Apr 2024 20:09:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3EC1773D
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:12:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712866190; cv=none; b=CLtFYLAixPta9QW1iqLWinaALQKJejl13icPziRCFxqw2RK6W1V6AKMSqgVgiutYMDMnP2UhJvJIsiclbTJ+FSMLRC/ZnhqFSRYDzMEvAxErKWRKrketzSi25Zgsa5iLOnsnrmAbDI1hd70aASnrNmXMyO+mntVPUNRAuRc+ggQ=
+	t=1712866353; cv=none; b=K7A+Dzf7ZHfguDfsUtw+MwSCsX9ZW0glIhHtQWzPcrrDEvAdCwAKZJwUT9rujMgIHQls5cvduplADXdRfKE8vlKjyJpeLgES1ICyei284rJb/44CdNkz5RuzNKQnnmumTQ/QhwkwywvfIENKAPfMQPdnJJGdodX/wbM1FPa/Mpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712866190; c=relaxed/simple;
-	bh=RK2ixbwK8Ja+qmayWS4S3Uie2jWdpXyVQ+zHMnUpoqg=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IENdoGgqIIDBB5Rx3rV3Xe2KnlOyR/OG9rRHWDfSy8Qe5+LaBcgzBriouhd2zrwEt6iOB6c0fGXkDTPvU4cfffmih9W1s+w2koixOoA6HBkXwM70rPktNZrj6Z5CtUy5KfJeeyik/8HlylqCM/up26vhJpUffGnT/TVMRQk4ss4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=o/fm7/6X; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43BK9b50030157;
-	Thu, 11 Apr 2024 20:09:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=oT+kBQk8myAJZWEuknOlg
-	stGciuw3yJhM5+CnC+sUXI=; b=o/fm7/6XdJLGpgcBILMKFyA6DSkQs3lCmcpj/
-	/QxMNCtlhdtKr8e22vIJx2ECce80B24H+b6D3xMTfIiGK1l+j4DvoHnzQPvR44i9
-	BG7osgp2o5nrMMY1ovK8wfL7f+MZBgBLFjOTnrSiPpZy1+KTbu1mpnkTi/OqRNUE
-	6ncyaSNbvSJzGB9MB6ZcMO6ouCTqW+unR5KUXumZiDt8hMVqXXHzUf1Q48ytB/vt
-	SpMhLJxBR9/iv5wD2kkOw/VX9LCuZdYnkp5USUHqfVgCnp9pHBBi79mC2yIoKA3b
-	PUGuYCOEKbSpyrctS7+IKbQsHm0fhiTLCf0SGjsLW0ti+lqbw==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xedugsme8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 20:09:37 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43BK9a6Z010806
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 20:09:36 GMT
-Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.9; Thu, 11 Apr 2024 13:09:35 -0700
-Date: Thu, 11 Apr 2024 13:09:35 -0700
-From: Elliot Berman <quic_eberman@quicinc.com>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>, Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, "Daniel
- Vetter" <daniel@ffwll.ch>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Subject: Re: [PATCH 1/6] soc: qcom: Move some socinfo defines to the header,
- expand them
-Message-ID: <20240411130802689-0700.eberman@hu-eberman-lv.qualcomm.com>
-References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
- <20240405-topic-smem_speedbin-v1-1-ce2b864251b1@linaro.org>
- <20240410132510649-0700.eberman@hu-eberman-lv.qualcomm.com>
- <2c2bca6c-b429-4cef-b63a-ee3bd6c9eecb@linaro.org>
+	s=arc-20240116; t=1712866353; c=relaxed/simple;
+	bh=IOzWZkywOwA2ndhPjHmzQHWJ3c7dhd0+FGx+Rn/xt1s=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=FzvVUJ5DXp1/y3CWDqUqc0h9U96WlEzQUs6oBXHB13RJIy4X516KFNM9Va/gNT19Z8ScYMzON1yhSN2R8jYZYVc9EGHHwwpJKJczE/YdNrxrbmGlYxeA/XPL8VA9aHxjPnjUvbECFAHLuBh3H2FEBhFwo6FOo8F5eHbDYOE9HWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ipylypiv.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=LSunOtQC; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ipylypiv.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc4563611cso305083276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:12:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712866351; x=1713471151; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=z2BoP91YkDa6Qt/uP+LjX8R6BByP1pkp+j1WZvkyP9c=;
+        b=LSunOtQCeDJXWRMpWM0I9BZDPudqJhateHSTyy5LiNMp5LRgOi2UsqoZ7Rs0dg4QFP
+         IQou8hmjncJR+3z1NMq31bFDRND0/+rDL72LZeBopzHnVOoYJvwi31u7V2idB1cyd9Bx
+         e7hctJf6RcMTc8IEKlGV3shp1DKN9ic1Ii6YDq7id05dgRZdkrTzTdA5TlQfQ0+LO6jd
+         r1LCUTit1XPtwJn6vmLhKmuleRtK5+3NaJH1AFbCrHOvXIJoGERVSLrFPYMILmM0uHH8
+         r60VUq4+vgePfQCoKU0TEQkSXJPd74K9ITA9jcKKQkB4vUnKW4lj9bDpQO36WIPMhoX2
+         JREg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712866351; x=1713471151;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z2BoP91YkDa6Qt/uP+LjX8R6BByP1pkp+j1WZvkyP9c=;
+        b=jcfWBuEqnC1S0saZrwGFRYT48kYI8+Pj0+xjccvl2XknUrd6loqLoV1a2eXFogYiPe
+         B3ZPmwzWqtSUDA38PbXBdv3O+rWW+nK2bXojhwphcpkJtM5kP8Cw4+zAsGZTH+BZC4NZ
+         K6LG70xMYvriCZZTLUJ+GGXUk0jdW2aai3XWzd+uU0VnBsp/jxDrtq1ni87y29lq3y3O
+         f1Kg/av3de1wvDOqQdFNXstzOml8BLtAhVshtOVLxL26rrN80vUNFmpOHsZcpOd2r7Jn
+         V3tvxXnnDODILxUzdVokfqKIjWMf+CC3E7a0F2lQNd0m/vxO8b6Sq2x8K4xl/120bJGL
+         uXfw==
+X-Forwarded-Encrypted: i=1; AJvYcCWxcjwbPA+5yJrKJbTisGwUN2z10uvxy5hUrebSu13hEQeiWFTW/7pESTKr44ZH0ytGWB3t+P1juLS1H7zbzbhCeb7JO0vdZXQRJO6D
+X-Gm-Message-State: AOJu0Ywkkpg1aADFe+apdKxinBZdvF/AmMCtDMFKQBo0KRc+RH8zAW+o
+	sPOxVsuKuNdI7VsrMBobTiwkSHgbWfviECdIbKxN2E6PD4gpQxshuaH7Os0bJBXf2D2DgxleFkZ
+	EeoWe1r4Xhg==
+X-Google-Smtp-Source: AGHT+IHP35EiL8Z/ThcjwbVilIgOWIx7kty8BvrtYfdYdh6PolWqYRFhau0jCfMJznCy7ffkzl2wn12Va+2G0A==
+X-Received: from ip.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:57f3])
+ (user=ipylypiv job=sendgmr) by 2002:a05:6902:100b:b0:dcc:f01f:65e1 with SMTP
+ id w11-20020a056902100b00b00dccf01f65e1mr157365ybt.8.1712866350713; Thu, 11
+ Apr 2024 13:12:30 -0700 (PDT)
+Date: Thu, 11 Apr 2024 20:12:24 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <2c2bca6c-b429-4cef-b63a-ee3bd6c9eecb@linaro.org>
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: N-2hjQ6NN5_fsWQdiyhe_wsTQEBaVcKO
-X-Proofpoint-ORIG-GUID: N-2hjQ6NN5_fsWQdiyhe_wsTQEBaVcKO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-11_10,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- priorityscore=1501 adultscore=0 suspectscore=0 bulkscore=0
- lowpriorityscore=0 mlxlogscore=999 impostorscore=0 clxscore=1015
- malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2404110148
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
+Message-ID: <20240411201224.1311198-1-ipylypiv@google.com>
+Subject: [PATCH] ata: libata-core: Allow command duration limits detection for
+ ACS-4 drives
+From: Igor Pylypiv <ipylypiv@google.com>
+To: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>
+Cc: linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Igor Pylypiv <ipylypiv@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Apr 11, 2024 at 10:05:30PM +0200, Konrad Dybcio wrote:
-> 
-> 
-> On 4/11/24 20:55, Elliot Berman wrote:
-> > On Fri, Apr 05, 2024 at 10:41:29AM +0200, Konrad Dybcio wrote:
-> > > In preparation for parsing the chip "feature code" (FC) and "product
-> > > code" (PC) (essentially the parameters that let us conclusively
-> > > characterize the sillicon we're running on, including various speed
-> > > bins), move the socinfo version defines to the public header and
-> > > include some more FC/PC defines.
-> > > 
-> > > Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> > > ---
-> 
-> [...]
-> 
-> > > +	SOCINFO_FC_EXT_RESERVE,
-> > > +};
-> > 
-> > SOCINFO_FC_EXT_RESERVE was a convenient limit since we mapped
-> > SOCINFO_FC_AA -> string "AA" via an array, and we've only needed the 8
-> > feature codes so far.
-> > 
-> > We should remove the EXT_RESERVE and test for the Y0-YF (internal
-> > feature code) values instead.
-> 
-> OK
-> 
-> > 
-> > > +
-> > > +/* Internal feature codes */
-> > > +/* Valid values: 0 <= n <= 0xf */
-> > > +#define SOCINFO_FC_Yn(n)		(0xf1 + n)
-> > > +#define SOCINFO_FC_INT_RESERVE		SOCINFO_FC_Yn(0x10)
-> > 
-> > We probably should've named this SOCINFO_FC_INT_MAX. Reserve implies
-> > it's reserved for some future use, but it's really the max value it
-> > could be.
-> 
-> So, should SOCINFO_FC_Yn(0x10) also be considered valid, or is (0xf)
-> the last one?
-> 
+Even though the command duration limits (CDL) feature was first added
+in ACS-5 (major version 12), there are some ACS-4 (major version 11)
+drives that implement CDL as well.
 
-0xf is the last one.
+IDENTIFY_DEVICE, SUPPORTED_CAPABILITIES, and CURRENT_SETTINGS log pages
+are mandatory in the ACS-4 standard so it should be safe to read these
+log pages on older drives implementing the ACS-4 standard.
 
-Thanks,
-Elliot
+Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
+---
+ drivers/ata/libata-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > 
-> > > +
-> > > +/* Product codes */
-> > > +#define SOCINFO_PC_UNKNOWN		0
-> > > +/* Valid values: 0 <= n <= 8, the rest is reserved */
-> > > +#define SOCINFO_PCn(n)			(n + 1)
-> > > +#define SOCINFO_PC_RESERVE		(BIT(31) - 1)
-> > 
-> > Similar comments here as the SOCINFO_FC_EXT_*. It's more like known
-> > values are [0,8], but more values could come in future chipsets.
-> 
-> Ok, sounds good, I'll remove the comment then
-> 
-> Konrad
+diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
+index be3412cdb22e..c449d60d9bb9 100644
+--- a/drivers/ata/libata-core.c
++++ b/drivers/ata/libata-core.c
+@@ -2539,7 +2539,7 @@ static void ata_dev_config_cdl(struct ata_device *dev)
+ 	bool cdl_enabled;
+ 	u64 val;
+ 
+-	if (ata_id_major_version(dev->id) < 12)
++	if (ata_id_major_version(dev->id) < 11)
+ 		goto not_supported;
+ 
+ 	if (!ata_log_supported(dev, ATA_LOG_IDENTIFY_DEVICE) ||
+-- 
+2.44.0.683.g7961c838ac-goog
+
 
