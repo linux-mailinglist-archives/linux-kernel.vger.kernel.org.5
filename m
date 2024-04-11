@@ -1,114 +1,161 @@
-Return-Path: <linux-kernel+bounces-141312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 602178A1C72
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:48:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF9338A1C77
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:49:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 164081F2186C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:48:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C6E4286B59
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:49:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17CDE19DF73;
-	Thu, 11 Apr 2024 16:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3641B1A0B0D;
+	Thu, 11 Apr 2024 16:23:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="Rp/6YmRb"
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XIsGPPx3"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDB11199EAC;
-	Thu, 11 Apr 2024 16:22:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 156CA1A0AE7;
+	Thu, 11 Apr 2024 16:23:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712852579; cv=none; b=c7/wCZiz5cRmRoCR0guReZpu/0RqPuSM3PrF+N3jV1m/NtHizGLhUN+vEXp9sTql9fvPX62bZAOYX5poQdie0PThoJ5ZCnkz72YLXHN7r4VeX3fKWSX8CsfkP4S3qfycRkNJe2OXETCXNjleh2TJ86lXX06RXG8CZNSbr02SXjU=
+	t=1712852604; cv=none; b=oQn7tJgrdFHQ3nqLFBhStEqjZ+u9YqToXIhcoCRtlmAxbBioEDFfAtXBbh9qpc1L0MAPgO2i9jJcbTk7a2AsNrT41MPabIZesFB+7qZV8FKqFnx2vJGq9J/swZM1uJt+7YJRWUqvBbK66Nia+B1YGPy56RwHGjGhJ8dE6kyG8uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712852579; c=relaxed/simple;
-	bh=WvA6WiAIcx48MsampV65+//J153uNQiTZJE17RY9yfY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZrbjBNL5UpLJa0Z6j0mK5pvkjh73RMNPNWBSR9ZTBXx/FWPYLz4kaKOgVAb03r14nh8Kd/WBubSE8dIEWROLTynjo2P3MZZcnZo1W1/ruGhwyOGHa2iC5wBGf/aqjo9T70TtlJiN8tkH2H/dOz/sdf5bVWtNvuvTHw+9wmZpPwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=Rp/6YmRb; arc=none smtp.client-ip=74.208.4.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
-	s=s1-ionos; t=1712852571; x=1713457371; i=parker@finest.io;
-	bh=hwWgxxmXda6kOw96M4hFTIyZvfWGTAS0PHP54N9tvUg=;
-	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:In-Reply-To:
-	 References;
-	b=Rp/6YmRbqNs6BYufkZOMf/ZBhld93ZsokpFJWV9mAHPrYVKs7MhkVLDvq5YCmif1
-	 RqzAHrjFm5Vb84aeOgEKLl8ztAJwjJs/6kQE27EunsbyGc8wg6eur13Y2KCdjcKY3
-	 dGwmSia9+bvPlniGSmeLeVcgksNmdutiulXashSe4wLx4ClaCAHYgaUx/SoXoExg0
-	 5EMsab31nxRgGmcnJGj2V8mKKQt7gZYm9sS+Mus+ZHj2VJvvCkq6lGM7XXhp8AuNn
-	 deB8eOYwHqlP/Hyb2W+qXbCry/ayESA8ZPN+mGEVL1GDwXz9ESdh9Cg0aeYDYPgJ0
-	 eCPBmTUjL/2E/tuqXw==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from SWDEV2.connecttech.local ([98.159.241.229]) by
- mrelay.perfora.net (mreueus003 [74.208.5.2]) with ESMTPSA (Nemesis) id
- 0LlDCS-1sVvuX2GM2-00b6Km; Thu, 11 Apr 2024 18:22:51 +0200
-Date: Thu, 11 Apr 2024 12:22:48 -0400
-From: Parker Newman <parker@finest.io>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
- linux-pci@vger.kernel.org, Parker Newman <pnewman@connecttech.com>
-Subject: Re: [PATCH 1/2] serial: exar: add missing CTI/Exar PCI IDs to
- include/linux/pci_ids.h
-Message-ID: <20240411122248.5070c840@SWDEV2.connecttech.local>
-In-Reply-To: <2024041124-blah-obligate-5f6d@gregkh>
-References: <cover.1712846025.git.pnewman@connecttech.com>
-	<936439b200c810f83076a710eab81acd1e79ec83.1712846025.git.pnewman@connecttech.com>
-	<2024041124-blah-obligate-5f6d@gregkh>
-Organization: Connect Tech Inc.
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712852604; c=relaxed/simple;
+	bh=nN/Hr+UlT6emx/RUIJVSa74QG/O0VgJ/byKbQpUfmyY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VWVaNTMrArzwXpUAPHTmX9pqckVf8Y9iEtFipuXz7cMNaIXCIqHf/GgUa7hmk+GHQ4qVqOJ2dS/2zrRgt0iPNlEDUG7Xtxh9OW7yoVsaz55FTL2ANhPZ2NsqZAxdRf+HPKGhb+VaVxmAouLKeTQP8C3h/UcUXuKOQxqloIgOpy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XIsGPPx3; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+	bh=w8fDcPBM4Ze2RPgrAoXs/w5z2M5QE6GW5bGItfgRyJ8=; b=XIsGPPx3mZgUgXDqmsW3zFEUMM
+	hrAF6AwyKjg5u/7JpKuZqbRzY4v8HjoVwEuBNAQVw14POMEREkb9sOqKwAN3ZchA3+E1NH+q43G9i
+	h89UzTlMT34ILaOSNIjqzh/1hopUZTMHNrak55UHbof7sc3viEOIyBCwxIJ6BThh3W7K7EUlGy4np
+	TJb5EIRDb4TXgd7PW5tv8xQPgKoVmMRy+YgpCoXVAMMOQ9WQZGo/nl38Gs8Cc4AV4c2NEYmM7UFcA
+	N6nfqhSWnnj5rSE7+/wwPBIg+h68sSddrjQYwRJvDbTOvqfFAn0OFruiNIfUzQl1/VooT2EV9uDuG
+	6YpTaT4w==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1ruxCN-0000000D38A-1CHz;
+	Thu, 11 Apr 2024 16:22:51 +0000
+Date: Thu, 11 Apr 2024 09:22:51 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: Dan Helmick <dan.helmick@samsung.com>, axboe@kernel.dk,
+	kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, djwong@kernel.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
+	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, nilay@linux.ibm.com,
+	ritesh.list@gmail.com, willy@infradead.org,
+	Alan Adamson <alan.adamson@oracle.com>
+Subject: Re: [PATCH v6 10/10] nvme: Atomic write support
+Message-ID: <ZhgOW8yBPuuae4ni@bombadil.infradead.org>
+References: <20240326133813.3224593-1-john.g.garry@oracle.com>
+ <20240326133813.3224593-11-john.g.garry@oracle.com>
+ <Zhcu5m8fmwD1W5bG@bombadil.infradead.org>
+ <143e3d55-773f-4fcb-889c-bb24c0acabba@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pjdGvLr/eoeXrJdCn078IyqSe+0HQmPzG1q90oBpDFWQRB32DH2
- cCIfMeB/FWtUc0oPDKcfbnOFdoJsQa8Qiwq++9A73Q8qv2WoiS7xepA6vBR55tn1FBxyfUd
- 2jpbLou1RCA9z1rfgiE8xbUPOhAUUz3BhBh1+nALzi6HdTTnN5lkdTceinyaYT8avPkuB2t
- GOA2lYntt1PTE0dA9NrgQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:aqGDdD3EIFw=;0d/rEnUuyg9oWdY1xKNe5Pmvl2G
- WU7QwO4nHirmSzCqtDlmcV/WSXbBG7VJxtepxuiPwS8GwORoMCD9ZOGPAW9xvLkIJxJJONyXU
- 8EcFP873ITtDy1J1V/jgGgRAWl7G9opSSwlE1VYVCphddQmbj1qKtIEcLZQrOCvaWGOxqMFoB
- 8fx1fjjjlPrrsVzJHDrTU5Wtg/ZRWgnZtPbqCk7Yvx3OSvPfodBH8NozhaJ9i2LWdQh42vlpW
- 4rGZVKzrsz7nNnBFME+InyMfwIQj7RumBNzbFCcFen0UZHJPSeQNv8SUJxa4E/HqaSrb8PUBJ
- Q0EgXFIngPygONnDfpwSu24npTFDyGqQ/p2KeOUZ8yn1hW2wkyq2YTRSCvuEFqCr75o7Objnm
- +B2I3EKSBg92jZP5gJWmoKBBkfrojUmaq8iYUeCcGZZFCPKos1vA6EwELt1yewjHjZBfPxywl
- zKvaq/+7wMD1s4BRkpLIt53PP018mzaFIKH8Nya+nu1jue2MhesiuGkzc4r3nEDLbud/AJBH0
- C2u7Cgx8a6iqHbVl1KmLVKdJ9EzJDa0y9w+04dIjibLCj6hPDGDMbWyeR940j+lqICrUIyzrb
- Gg3hve4K2vgO9iyt8G9BxQMBQJiqmTJWUB4BhSlK74t4drNqcUEXDOvkcveSGINONMJhSt78Y
- krDZWB5rGiTT7P28SGaHP2nwfwQqicGdPoS9LRJG5HyuwIz+s1IOeLZ4k04jUMiqC2TIg/Y/F
- XiWCDchRsD061WMxoIQ2OLAN0i9UXpKnFIOXCgbPxJURIjSZkbzPtE=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <143e3d55-773f-4fcb-889c-bb24c0acabba@oracle.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Thu, 11 Apr 2024 17:54:45 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Thu, Apr 11, 2024 at 09:59:57AM +0100, John Garry wrote:
+> On 11/04/2024 01:29, Luis Chamberlain wrote:
+> > On Tue, Mar 26, 2024 at 01:38:13PM +0000, John Garry wrote:
+> > > From: Alan Adamson <alan.adamson@oracle.com>
+> > > 
+> > > Add support to set block layer request_queue atomic write limits. The
+> > > limits will be derived from either the namespace or controller atomic
+> > > parameters.
+> > > 
+> > > NVMe atomic-related parameters are grouped into "normal" and "power-fail"
+> > > (or PF) class of parameter. For atomic write support, only PF parameters
+> > > are of interest. The "normal" parameters are concerned with racing reads
+> > > and writes (which also applies to PF). See NVM Command Set Specification
+> > > Revision 1.0d section 2.1.4 for reference.
+> > > 
+> > > Whether to use per namespace or controller atomic parameters is decided by
+> > > NSFEAT bit 1 - see Figure 97: Identify – Identify Namespace Data
+> > > Structure, NVM Command Set.
+> > > 
+> > > NVMe namespaces may define an atomic boundary, whereby no atomic guarantees
+> > > are provided for a write which straddles this per-lba space boundary. The
+> > > block layer merging policy is such that no merges may occur in which the
+> > > resultant request would straddle such a boundary.
+> > > 
+> > > Unlike SCSI, NVMe specifies no granularity or alignment rules, apart from
+> > > atomic boundary rule.
+> > 
+> > Larger IU drives a larger alignment *preference*, and it can be multiples
+> > of the LBA format, it's called Namespace Preferred Write Granularity (NPWG)
+> > and the NVMe driver already parses it. So say you have a 4k LBA format
+> > but a 16k NPWG. I suspect this means we'd want atomics writes to align to 16k
+> > but I can let Dan confirm.
+> 
+> If we need to be aligned to NPWG, then the min atomic write unit would also
+> need to be NPWG. Any NPWG relation to atomic writes is not defined in the
+> spec, AFAICS.
 
-> On Thu, Apr 11, 2024 at 11:29:26AM -0400, parker@finest.io wrote:
-> > From: Parker Newman <pnewman@connecttech.com>
-> >
-> > - Added missing CTI serial car PCI IDs
-> > - Added missing Exar XR17V25X PCI IDs
-> > - Moved XR17V4358 and XR17V8358 PCI ID defines to pci_ids.h
->
-> Did you read the top of the pci_ids.h file?  Don't add new ids there
-> unless it is going to be needed in multiple files please.
->
-> thanks,
->
-> greg k-h
-No sorry I missed that... I was just trying to consolidate them all
-in one place.
+NPWG is just a preference, not a requirement, so it is different than
+logical block size. As far as I can tell we have no block topology
+information to represent it. LBS will help users opt-in to align to
+the NPWG, and a respective NAWUPF will ensure you can also atomically
+write the respective sector size.
 
-Would it be better to move all the Connect Tech sub-IDs from
-pci_ids.h into 8250_exar.c? Or should I just add the missing ones
-to 8250_exar.c instead of pci_ids.h?
+For atomics, NABSPF is what we want to use.
 
-Thank you,
--Parker
+The above statement on the commit log just seems a bit misleading then.
+
+> We simply use the LBA data size as the min atomic unit in this patch.
+
+I thought NABSPF is used.
+
+> > > Note on NABSPF:
+> > > There seems to be some vagueness in the spec as to whether NABSPF applies
+> > > for NSFEAT bit 1 being unset. Figure 97 does not explicitly mention NABSPF
+> > > and how it is affected by bit 1. However Figure 4 does tell to check Figure
+> > > 97 for info about per-namespace parameters, which NABSPF is, so it is
+> > > implied. However currently nvme_update_disk_info() does check namespace
+> > > parameter NABO regardless of this bit.
+> > 
+> > Yeah that its quirky.
+> > 
+> > Also today we set the physical block size to min(npwg, atomic) and that
+> > means for a today's average 4k IU drive if they get 16k atomic the
+> > physical block size would still be 4k. As the physical block size in
+> > practice can also lift the sector size filesystems used it would seem
+> > odd only a larger npwg could lift it.
+> It seems to me that if you want to provide atomic guarantees for this large
+> "physical block size", then it needs to be based on (N)AWUPF and NPWG.
+
+For atomicity, I read it as needing to use NABSPF. Aligning to NPWG will just
+help performance.
+
+The NPWG comes from an internal mapping table constructed and kept on
+DRAM on a drive in units of an IU size [0], and so not aligning to the
+IU just causes having to work with entries in the able rather than just
+one, and also incurs a read-modify-write. Contrary to the logical block
+size, a write below NPWG but respecting the logical block size is allowed,
+its just not optimal.
+
+[0] https://kernelnewbies.org/KernelProjects/large-block-size#Indirection_Unit_size_increases
+
+  Luis
 
