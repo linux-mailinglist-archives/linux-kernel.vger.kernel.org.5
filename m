@@ -1,270 +1,183 @@
-Return-Path: <linux-kernel+bounces-141732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2A418A22B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:57:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC3578A22B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:57:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFB9CB238D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:57:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 623FD287820
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 23:57:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FEAD50276;
-	Thu, 11 Apr 2024 23:56:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C012E4D135;
+	Thu, 11 Apr 2024 23:57:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dnidCYdd"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nBcfZ/6G"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F464F897
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 23:56:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6470C482ED
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 23:57:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712879796; cv=none; b=gWrG2yQkPmLbb0WMZN2u+g89qOwPdGsuzgnJuyZmSRvap+ueIQpOdkQbonS1wdZkPM+1HJ0FFrN29OyQoDEcUJLFkL0Q+tK1qefABkQa7iZKeo00XC8NVuimjuI+sFT+pf2Ix0XvKEn0MWfUHkDDu4k6HvdnTMJ1Q2Lp61EJ4B0=
+	t=1712879842; cv=none; b=BP3cmrDYDG8u8jKGUza+eIUrSTCMbZw70QST/OhCWJmUmlnzY4SBfpcdtJBz8OMmqZXYXxxsga9l5SP3vJb+6/0hlIEDBcaROUfdJMUrGzMVCUmgrp9m2H+xdRwBqshzZwvob6kH6kWSCniAIEQVF32uF28vbFCU7grYb2GYgPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712879796; c=relaxed/simple;
-	bh=UD3bfhO0YU3iaHR4sW0PiOGB9kKHCclU23sLM4TNyko=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Cc:Content-Type; b=R/eRRm8pslZhCtBUzc6Zv6tMr8rv7Qq7D9/DKld0FeCzH0Rn2MEE24XK/r9qRr2Twq2fltKJeRSXCRt+LUsJdH+r3Yjairpe6MY1SDUoUngAteAyoZI4awhJxv44UcB6EPKV3rHB16930SyyARUdYgJ6uzpvHAmQ7FvIgGPlhcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dnidCYdd; arc=none smtp.client-ip=209.85.216.73
+	s=arc-20240116; t=1712879842; c=relaxed/simple;
+	bh=QBuULRrtaRnnhZMlTYGm7HbOpsKwcgNmcTmfa5NNbhk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ksl2taBKYLnS1MNZ2OBsXJJZiYKMCU2BXu4CtUUuUywGpq4T5IxyHXFDdiPHea+r9GvZjsCBdxErBY9GNtGQPGi2geepAjiZ71xf6yVeAgrlFxIyImYIqLgC4iOi5CBzcTZyAFbLYg+8Wk9TUHOp/KLrBwWo2kdtwOaTIwaAApk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nBcfZ/6G; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saravanak.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2a2e0a51adfso329509a91.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:56:34 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a52176b2cb6so37188366b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:57:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712879794; x=1713484594; darn=vger.kernel.org;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HizrqH7rz47v2QLp5elrgTIyG7EQRo9SAEpqH/+kBy0=;
-        b=dnidCYddh4Hp9/Vk+RCG0BRni9c0LPOYrEwhKFJyNl7c/MkHmQJip5tAHce/H/Vcll
-         7gOfQ5VXal3ql81vb0cp0r+oJ4Z/MT5if8yfm4L9Q+spCXxYRvGpat49lkLVez4Qv2rt
-         MdVhkQ46PUzxtNCYg8mHF32SepKfyudYxbPhK84zddM4CzU1ckGkH0OfwgmrysIf8YE3
-         sx7m2XO+lPECyrqGKJPfSn4SuMbCZzPeuXyr4R0u9PGoCyzPQzNzkmFRpLdvr6fZVF4N
-         a+7pfCI7zOBT5D0MLV66V6FQVadHDmlriHdIf3OYW1XrZVkdoGIQA/M4X9AW8+iOJS7e
-         /Fyg==
+        d=google.com; s=20230601; t=1712879839; x=1713484639; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oJmBil8hMiXltO9cI7CiQAcj05S/4ZhSQgUi9evlkRg=;
+        b=nBcfZ/6GqVj1oFIKGAB5LLkuobcTZJYyuHkkDj4qZuYzcMfGVVmZPpthY8qqFpaoLL
+         6M8zvRpFNQmomfGPmZylhgw0I8OVFr7fhhk05EfTPh1yOFvtHoBGY9PtuRbnE6d3VF7B
+         ez41A9tqjuUr01/44yKqNlVKmCqDAwuMd0a/iKPxxS4rWinQb5YuZxHAS8DDLc2f0G/E
+         CVaYqhJNptp2PL1hPxe0aLc7c0LFZqikPGLd3fZssuYctL+rViUMY+0DdPOUU6FAA+tR
+         3lbweKMYZ2Wh2kTmfZQBLCQt21EBb4XUh1goIh7oWB3h+U20HhsRN23b1RW5J6Q0bWqa
+         iFDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712879794; x=1713484594;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HizrqH7rz47v2QLp5elrgTIyG7EQRo9SAEpqH/+kBy0=;
-        b=tSPSoDXN2Jr0dKvmwYdEQh9qOK+bdzEJtWGP7M9xA5VPM3lHj8XIINusms9vTIcxHV
-         ZwP/3daAKYPEAkjCiropo/FBBkc4w+Ua92MZeCnBy8mZZIbT0FNpYhpFiBkBXQRPd5IW
-         FbXNMm1mJmbWdQEwxeMgMS3RCeYrgAhfn1nR6+A3fekjTo9L5a08EKYN8jCf0aACqdHN
-         NvBXfXhCd25D0+OvRlMM3JfmqwDyBeBVUv79Dzfn9ACm5HGhIioJTkMzT2KvqHMt1Hor
-         tuPDMpP4CkLjf31aGlmctxCurD31Kel0AGc2KoRjp7sxiI9XdMk318XJeo3JcX5Z0fwT
-         Cxcw==
-X-Forwarded-Encrypted: i=1; AJvYcCXuBJPxQ5sx/+P3ZbzBBddinpZQNyQfvDxeRoHx1ghJxDEWQ3zBYbBqVbj12Plh2owQpWx/bM+4eI3t90D8BMUDR31PuyXWGokg73vt
-X-Gm-Message-State: AOJu0YwUQS0XYvtDcJsYf+nhF9II6ybwFq1Xwu+UYHPKCht9tMfCxYyl
-	rq/nwp9O+y0OGwhxox2hMnqyPmF9Fwa2o4Iu8CZ6eGT3IYSkdrfwkxcw+2pIB7RZUrI4CTBmU7A
-	OJK7Q9h/DJ7Ubpg==
-X-Google-Smtp-Source: AGHT+IHqTq2UPkwQrTsIwISL3TPeqKf9uyBTI5tIlaviAP1Wf5pw15DCSNWSteziJ1gjlX/gPxjg3k35MoA1MA0=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:a472:f40c:d4ba:c29])
- (user=saravanak job=sendgmr) by 2002:a17:90a:6546:b0:2a5:fb3a:32e6 with SMTP
- id f6-20020a17090a654600b002a5fb3a32e6mr3270pjs.4.1712879793807; Thu, 11 Apr
- 2024 16:56:33 -0700 (PDT)
-Date: Thu, 11 Apr 2024 16:56:22 -0700
-In-Reply-To: <20240411235623.1260061-1-saravanak@google.com>
-Message-Id: <20240411235623.1260061-3-saravanak@google.com>
+        d=1e100.net; s=20230601; t=1712879839; x=1713484639;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oJmBil8hMiXltO9cI7CiQAcj05S/4ZhSQgUi9evlkRg=;
+        b=HI3wbf3dnczqLtf6rptKJsSc2CLbKkfp9aJSBjlse5ry4lkpMsUN7WUwMSNR2q1jct
+         BmzVijPDgkaPVyKGwcGfOid7sG3GyP03FCoBdm60XyD+HupnDqBUrvHkqfdX8AcawJpu
+         Or7pAe13lgI+tH7o+Vgx5uGUpYfqhfPz5yehiigAs6u5b89HuZDkfj4igtRjZaq7wAH4
+         WKuZ//4FJNiEFsPv7q2bq4AqO5eXQYckjtCCsjY9PH4JmKVn/CKUIgtkZ8nO5EoreaW2
+         7pInoFxOsKB68atsp0aPtYb7B9qHdWpTRavu0/mVy8fBfxIiZSKTMJatc9ek6qDf4IDN
+         Oo5A==
+X-Forwarded-Encrypted: i=1; AJvYcCX3jj9R9FYzgvZz7oCJ4gFdjgLwct7/xBZadU11ze4y9ETRmGHG0hekFOMm5ep1A77nEZPeLmj9o3oaK5iLiE1wKEeLWTtiETvI5Z1+
+X-Gm-Message-State: AOJu0Yz+hSB1vNZWAZkS5Dx8vo88Uqbi8ppvFUr8IBHUTfw0jSJUT20n
+	RB0v0YtcaiC//MJjXwq8RJNqdlbrHNX5aRr21KnHbupBPgpejW0hGpfSdcy28PDupQsZZkNDJG9
+	+d7dTN6SzgsbEfgNOYoigXtGTAc9R3JLbn33M
+X-Google-Smtp-Source: AGHT+IF+X2P5TqWnhZ8FvJMZqUUFtJQMg6fg+29pF46qHVeB3vK6Vh/LpUf892lnAuaTAoZdwDB8s3Cb6IHxPXZJXUA=
+X-Received: by 2002:a17:906:3110:b0:a4e:21e0:2e6e with SMTP id
+ 16-20020a170906311000b00a4e21e02e6emr588361ejx.5.1712879838488; Thu, 11 Apr
+ 2024 16:57:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240411235623.1260061-1-saravanak@google.com>
-X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
-Subject: [PATCH v3 2/2] of: dynamic: Fix overlayed devices not probing because
- of fw_devlink
-From: Saravana Kannan <saravanak@google.com>
-To: Herve Codina <herve.codina@bootlin.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
-	Wolfram Sang <wsa+renesas@sang-engineering.com>, Rob Herring <robh@kernel.org>, 
-	Saravana Kannan <saravanak@google.com>, Mark Brown <broonie@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Daniel Scally <djrscally@gmail.com>, 
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: kernel-team@android.com, Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org, 
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-spi@vger.kernel.org, linux-acpi@vger.kernel.org
+MIME-Version: 1.0
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com> <Zhhxg7VvBD38nymZ@google.com>
+In-Reply-To: <Zhhxg7VvBD38nymZ@google.com>
+From: Mingwei Zhang <mizhang@google.com>
+Date: Thu, 11 Apr 2024 16:56:41 -0700
+Message-ID: <CAL715WLYN+S2Nk4OrqEuCMmyQypZt6r+WOyv1YYXfi+Moo--Mw@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/41] KVM: x86/pmu: Introduce passthrough vPM
+To: Sean Christopherson <seanjc@google.com>
+Cc: Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com, 
+	peterz@infradead.org, kan.liang@intel.com, zhenyuw@linux.intel.com, 
+	dapeng1.mi@linux.intel.com, jmattson@google.com, kvm@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	zhiyuan.lv@intel.com, eranian@google.com, irogers@google.com, 
+	samantha.alt@intel.com, like.xu.linux@gmail.com, chao.gao@intel.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When an overlay is applied, if the target device has already probed
-successfully and bound to a device, then some of the fw_devlink logic
-that ran when the device was probed needs to be rerun. This allows newly
-created dangling consumers of the overlayed device tree nodes to be
-moved to become consumers of the target device.
+Hi Sean,
 
-Fixes: 1a50d9403fb9 ("treewide: Fix probing of devices in DT overlays")
-Reported-by: Herve Codina <herve.codina@bootlin.com>
-Closes: https://lore.kernel.org/lkml/CAMuHMdXEnSD4rRJ-o90x4OprUacN_rJgyo8x6=9F9rZ+-KzjOg@mail.gmail.com/
-Closes: https://lore.kernel.org/all/20240221095137.616d2aaa@bootlin.com/
-Closes: https://lore.kernel.org/lkml/20240312151835.29ef62a0@bootlin.com/
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
- drivers/base/core.c    | 76 +++++++++++++++++++++++++++++++++++++-----
- drivers/of/overlay.c   | 15 +++++++++
- include/linux/fwnode.h |  1 +
- 3 files changed, 83 insertions(+), 9 deletions(-)
+On Thu, Apr 11, 2024 at 4:26=E2=80=AFPM Sean Christopherson <seanjc@google.=
+com> wrote:
+>
+> On Fri, Jan 26, 2024, Xiong Zhang wrote:
+> > Dapeng Mi (4):
+> >   x86: Introduce MSR_CORE_PERF_GLOBAL_STATUS_SET for passthrough PMU
+> >   KVM: x86/pmu: Implement the save/restore of PMU state for Intel CPU
+> >   KVM: x86/pmu: Introduce macro PMU_CAP_PERF_METRICS
+> >   KVM: x86/pmu: Clear PERF_METRICS MSR for guest
+> >
+> > Kan Liang (2):
+> >   perf: x86/intel: Support PERF_PMU_CAP_VPMU_PASSTHROUGH
+> >   perf: Support guest enter/exit interfaces
+> >
+> > Mingwei Zhang (22):
+> >   perf: core/x86: Forbid PMI handler when guest own PMU
+> >   perf: core/x86: Plumb passthrough PMU capability from x86_pmu to
+> >     x86_pmu_cap
+> >   KVM: x86/pmu: Introduce enable_passthrough_pmu module parameter and
+> >     propage to KVM instance
+> >   KVM: x86/pmu: Plumb through passthrough PMU to vcpu for Intel CPUs
+> >   KVM: x86/pmu: Add a helper to check if passthrough PMU is enabled
+> >   KVM: x86/pmu: Allow RDPMC pass through
+> >   KVM: x86/pmu: Create a function prototype to disable MSR interception
+> >   KVM: x86/pmu: Implement pmu function for Intel CPU to disable MSR
+> >     interception
+> >   KVM: x86/pmu: Intercept full-width GP counter MSRs by checking with
+> >     perf capabilities
+> >   KVM: x86/pmu: Whitelist PMU MSRs for passthrough PMU
+> >   KVM: x86/pmu: Introduce PMU operation prototypes for save/restore PMU
+> >     context
+> >   KVM: x86/pmu: Introduce function prototype for Intel CPU to
+> >     save/restore PMU context
+> >   KVM: x86/pmu: Zero out unexposed Counters/Selectors to avoid
+> >     information leakage
+> >   KVM: x86/pmu: Add host_perf_cap field in kvm_caps to record host PMU
+> >     capability
+> >   KVM: x86/pmu: Exclude existing vLBR logic from the passthrough PMU
+> >   KVM: x86/pmu: Make check_pmu_event_filter() an exported function
+> >   KVM: x86/pmu: Allow writing to event selector for GP counters if even=
+t
+> >     is allowed
+> >   KVM: x86/pmu: Allow writing to fixed counter selector if counter is
+> >     exposed
+> >   KVM: x86/pmu: Introduce PMU helper to increment counter
+> >   KVM: x86/pmu: Implement emulated counter increment for passthrough PM=
+U
+> >   KVM: x86/pmu: Separate passthrough PMU logic in set/get_msr() from
+> >     non-passthrough vPMU
+> >   KVM: nVMX: Add nested virtualization support for passthrough PMU
+> >
+> > Xiong Zhang (13):
+> >   perf: Set exclude_guest onto nmi_watchdog
+> >   perf: core/x86: Add support to register a new vector for PMI handling
+> >   KVM: x86/pmu: Register PMI handler for passthrough PMU
+> >   perf: x86: Add function to switch PMI handler
+> >   perf/x86: Add interface to reflect virtual LVTPC_MASK bit onto HW
+> >   KVM: x86/pmu: Add get virtual LVTPC_MASK bit function
+> >   KVM: x86/pmu: Manage MSR interception for IA32_PERF_GLOBAL_CTRL
+> >   KVM: x86/pmu: Switch IA32_PERF_GLOBAL_CTRL at VM boundary
+> >   KVM: x86/pmu: Switch PMI handler at KVM context switch boundary
+> >   KVM: x86/pmu: Call perf_guest_enter() at PMU context switch
+> >   KVM: x86/pmu: Add support for PMU context switch at VM-exit/enter
+> >   KVM: x86/pmu: Intercept EVENT_SELECT MSR
+> >   KVM: x86/pmu: Intercept FIXED_CTR_CTRL MSR
+>
+> All done with this pass.  Looks quite good, nothing on the KVM side scare=
+s me.  Nice!
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 5f4e03336e68..1a646f393dd7 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -46,6 +46,8 @@ static bool fw_devlink_drv_reg_done;
- static bool fw_devlink_best_effort;
- static struct workqueue_struct *device_link_wq;
- 
-+#define get_dev_from_fwnode(fwnode)	get_device((fwnode)->dev)
-+
- /**
-  * __fwnode_link_add - Create a link between two fwnode_handles.
-  * @con: Consumer end of the link.
-@@ -237,6 +239,70 @@ static void __fw_devlink_pickup_dangling_consumers(struct fwnode_handle *fwnode,
- 		__fw_devlink_pickup_dangling_consumers(child, new_sup);
- }
- 
-+static void fw_devlink_pickup_dangling_consumers(struct device *dev)
-+{
-+	struct fwnode_handle *child;
-+
-+	mutex_lock(&fwnode_link_lock);
-+	fwnode_for_each_available_child_node(dev->fwnode, child)
-+		__fw_devlink_pickup_dangling_consumers(child, dev->fwnode);
-+	__fw_devlink_link_to_consumers(dev);
-+	mutex_unlock(&fwnode_link_lock);
-+}
-+
-+/**
-+ * fw_devlink_refresh_fwnode - Recheck the tree under this firmware node
-+ * @fwnode: The fwnode under which the fwnode tree has changed
-+ *
-+ * This function is mainly meant to adjust the supplier/consumer dependencies
-+ * after a fwnode tree overlay has occurred.
-+ */
-+void fw_devlink_refresh_fwnode(struct fwnode_handle *fwnode)
-+{
-+	struct device *dev;
-+
-+	/*
-+	 * Find the closest ancestor fwnode that has been converted to a device
-+	 * that can bind to a driver (bus device).
-+	 */
-+	fwnode_handle_get(fwnode);
-+	do {
-+		if (fwnode->flags & FWNODE_FLAG_NOT_DEVICE)
-+			continue;
-+
-+		dev = get_dev_from_fwnode(fwnode);
-+		if (!dev)
-+			continue;
-+
-+		if (dev->bus)
-+			break;
-+
-+		put_device(dev);
-+	} while ((fwnode = fwnode_get_next_parent(fwnode)));
-+
-+	/*
-+	 * If none of the ancestor fwnodes have (yet) been converted to a device
-+	 * that can bind to a driver, there's nothing to fix up.
-+	 */
-+	if (!fwnode)
-+		return;
-+
-+	WARN(device_is_bound(dev) && dev->links.status != DL_DEV_DRIVER_BOUND,
-+	     "Don't multithread overlaying and probing the same device!\n");
-+
-+	/*
-+	 * If the device has already bound to a driver, then we need to redo
-+	 * some of the work that was done after the device was bound to a
-+	 * driver. If the device hasn't bound to a driver, running thing too
-+	 * soon would incorrectly pick up consumers that it shouldn't.
-+	 */
-+	if (dev->links.status == DL_DEV_DRIVER_BOUND)
-+		fw_devlink_pickup_dangling_consumers(dev);
-+
-+	put_device(dev);
-+	fwnode_handle_put(fwnode);
-+}
-+
- static DEFINE_MUTEX(device_links_lock);
- DEFINE_STATIC_SRCU(device_links_srcu);
- 
-@@ -1322,14 +1388,8 @@ void device_links_driver_bound(struct device *dev)
- 	 * child firmware node.
- 	 */
- 	if (dev->fwnode && dev->fwnode->dev == dev) {
--		struct fwnode_handle *child;
- 		fwnode_links_purge_suppliers(dev->fwnode);
--		mutex_lock(&fwnode_link_lock);
--		fwnode_for_each_available_child_node(dev->fwnode, child)
--			__fw_devlink_pickup_dangling_consumers(child,
--							       dev->fwnode);
--		__fw_devlink_link_to_consumers(dev);
--		mutex_unlock(&fwnode_link_lock);
-+		fw_devlink_pickup_dangling_consumers(dev);
- 	}
- 	device_remove_file(dev, &dev_attr_waiting_for_supplier);
- 
-@@ -1888,8 +1948,6 @@ static void fw_devlink_unblock_consumers(struct device *dev)
- 	device_links_write_unlock();
- }
- 
--#define get_dev_from_fwnode(fwnode)	get_device((fwnode)->dev)
--
- static bool fwnode_init_without_drv(struct fwnode_handle *fwnode)
- {
- 	struct device *dev;
-diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
-index 2ae7e9d24a64..7b2396c53127 100644
---- a/drivers/of/overlay.c
-+++ b/drivers/of/overlay.c
-@@ -179,6 +179,15 @@ static int overlay_notify(struct overlay_changeset *ovcs,
- 	return 0;
- }
- 
-+static void overlay_fw_devlink_refresh(struct overlay_changeset *ovcs)
-+{
-+	for (int i = 0; i < ovcs->count; i++) {
-+		struct device_node *np = ovcs->fragments[i].target;
-+
-+		fw_devlink_refresh_fwnode(of_fwnode_handle(np));
-+	}
-+}
-+
- /*
-  * The values of properties in the "/__symbols__" node are paths in
-  * the ovcs->overlay_root.  When duplicating the properties, the paths
-@@ -953,6 +962,12 @@ static int of_overlay_apply(struct overlay_changeset *ovcs,
- 		pr_err("overlay apply changeset entry notify error %d\n", ret);
- 	/* notify failure is not fatal, continue */
- 
-+	/*
-+	 * Needs to happen after changset notify to give the listeners a chance
-+	 * to finish creating all the devices they need to create.
-+	 */
-+	overlay_fw_devlink_refresh(ovcs);
-+
- 	ret_tmp = overlay_notify(ovcs, OF_OVERLAY_POST_APPLY);
- 	if (ret_tmp)
- 		if (!ret)
-diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
-index 0d79070c5a70..95a78b87777a 100644
---- a/include/linux/fwnode.h
-+++ b/include/linux/fwnode.h
-@@ -220,6 +220,7 @@ int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup,
- 		    u8 flags);
- void fwnode_links_purge(struct fwnode_handle *fwnode);
- void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode);
-+void fw_devlink_refresh_fwnode(struct fwnode_handle *fwnode);
- bool fw_devlink_is_strict(void);
- 
- #endif
--- 
-2.44.0.683.g7961c838ac-goog
+yay! Thank you Sean for the review!
 
+>
+> I haven't spent much time thinking about whether or not the overall imple=
+mentation
+> correct/optimal, i.e. I mostly just reviewed the mechanics.  I'll make su=
+re to
+> spend a bit more time on that for the next RFC.
+
+Yes, I am expecting the debate/discussion in PUCK after v2 is sent
+out. There should be room for optimization as well.
+
+>
+> Please be sure to rebase to kvm-x86/next for the next RFC, there are a fe=
+w patches
+> that will change quite a bit.
+
+Will do the rebase and all of the feedback will be taken and into
+updates in v2. In v2, we will incorporate passthrough vPMU with AMD
+support. Will do our best to get it in high quality.
+
+Thanks.
+-Mingwei
 
