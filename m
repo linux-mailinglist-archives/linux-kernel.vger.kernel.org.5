@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-140082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-140083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CF9D8A0B36
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:32:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 951988A0B3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 10:33:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEECA1C23102
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:32:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C52531C20F75
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 08:32:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C930C1442FA;
-	Thu, 11 Apr 2024 08:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0BA1448F3;
+	Thu, 11 Apr 2024 08:32:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="P5MXL+2w"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="vFs4T7kg"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C03C140366;
-	Thu, 11 Apr 2024 08:31:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0DA142E69;
+	Thu, 11 Apr 2024 08:31:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712824320; cv=none; b=lJ5sC/Q5H+A/fgzAkV2IinXigGDLw5tWEPmnOIBfRD7/oQE0sInruT8cIMKh+H3SCqbw8eSXlxNanEpLeZ4cye4Ed7D3+KsC8tH22biHa9YudzlFRiD52no0lP1kSQQXWSLOnAvnHCNLfyPI2xIDblXNWy5vwj35DhEXilHJtuI=
+	t=1712824321; cv=none; b=Cnz0Qxv83KSgCuI+PAdjBORJMZ1kIIhLFHMr9zbMWtYXLjCu/nVZuBq72qp/XFAjJlNsNE93FXkU0mcbyFa63i/CEpZCTliAmP6dLAkX/+HNT/X2Y83QU/4An2JkEgaeFuP1b1cnct/SnPtMy992rcO69RcyiudOs0vXFLo+ffw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712824320; c=relaxed/simple;
-	bh=6l72IQpDXHhr8j3mG8r2TihhpBbmFrvrFd/CtXYdp6g=;
+	s=arc-20240116; t=1712824321; c=relaxed/simple;
+	bh=F6W/HVSlQd+0v0oSIGT3n+veRGpMV08z19t8e68fgfk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=b0vdxGWvgaWuV95latJSftymuQqSNMSgQVMbdTQ+vUX5L+KfOf++5bnRco8wowT96DJMjKZhVsIp6ZINlWA9sO1twfvtgz4Kaf8zioeN3uXOMkk2exJE9RaHsBRQP5Hd+A4apUwfcN6GdxsdPcAlNvwm9rV2QEq+9W4BaC5CJYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=P5MXL+2w; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version; b=GGQs3HFjWAQeCjj8LPGHL/V/YKLeGMEcQ+0jToQf5pySAaIJy1TaWEJ2PEdHAEv7Myp/iQqnXP0FygdS65wCyV0ZXHvKSGOtocnzn/+UQ5QZUo+A7BfYyDd0MjYpV1bm+VvQmGoV24L8wVCyNrbgX/x9cu8hWs7f7Fh83w6UG3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=vFs4T7kg; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712824316;
-	bh=6l72IQpDXHhr8j3mG8r2TihhpBbmFrvrFd/CtXYdp6g=;
+	s=mail; t=1712824318;
+	bh=F6W/HVSlQd+0v0oSIGT3n+veRGpMV08z19t8e68fgfk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=P5MXL+2wSbrrcb45TYS01vVPET6xr4CrQ4soPFEXO1ZTCmFrMbhzovXk70/FYY4kq
-	 4rdX3caGR8xs2wzE0NVF/Z887zvzazPNKZc6/TCFiqLyX00L3uchJ5Xtr0LXfFApBG
-	 tyiSVsBDs8BVTBBHMh5aZNz0z9Bnz9a8xmxLjXULmdrMRDn2ybVN1dOTdOvhGf4/bG
-	 vaqF0iTXBCHJFY/gJ43PkOqH+gOkrPeIim1TE9RGdtAVvFHNEvipBBz0JusxnsOPIP
-	 PF5bvfKzRjKxaUKYmuHadut2sRV0V7TaJoArwuy0giJhAo3CLruTdW+E/nOayT3uGh
-	 IteN46wSwIl5g==
+	b=vFs4T7kgxZRrWTniL6Jn9u3Mej6ZOZ/CSGrMQZq3BR1TazZCtSzoEjhWEs9SSn4fT
+	 zwe97X0Di+YJsQ5BSzON/hHMsw/kEMSC/0wjQhgvPcfSDoVHcDOb7HcaIM8ickZb5B
+	 l9ll2Z6UhQezIskO8/FFba8uL0TKKgGZ8ljo9g6bk3E06TgOG6HN44qYPZrWJKDG1w
+	 L7V0ygg2WL8TsFx84csFpBDOnegXI/gUCkrPSgKm5xOdcPgoQKbsx8IU6NB4lZMrM5
+	 R8YRNLjs7cIOYgb6v2efgRczHJDDL4F1Gv83Nwv8lB3sQqPeQ/bqhaWsxHZ5ZlasCR
+	 SLRRK0aabh3zQ==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 719A5378212C;
-	Thu, 11 Apr 2024 08:31:55 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E0A863782132;
+	Thu, 11 Apr 2024 08:31:56 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: linux-scsi@vger.kernel.org
 Cc: alim.akhtar@samsung.com,
@@ -69,9 +69,9 @@ Cc: alim.akhtar@samsung.com,
 	linux-mediatek@lists.infradead.org,
 	linux-arm-kernel@lists.infradead.org,
 	kernel@collabora.com
-Subject: [PATCH v1 2/8] scsi: ufs: ufs-mediatek: Fix property name for crypt boost voltage
-Date: Thu, 11 Apr 2024 10:31:43 +0200
-Message-ID: <20240411083149.78537-3-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v1 3/8] scsi: ufs: ufs-mediatek: Remove useless mediatek,ufs-boost-crypt property
+Date: Thu, 11 Apr 2024 10:31:44 +0200
+Message-ID: <20240411083149.78537-4-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240411083149.78537-1-angelogioacchino.delregno@collabora.com>
 References: <20240411083149.78537-1-angelogioacchino.delregno@collabora.com>
@@ -83,38 +83,125 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rename "boost-crypt-vcore-min" to "mediatek,boost-crypt-microvolt":
-this is a vendor specific property and needs the "mediatek," prefix,
-moreover, this is not defining a minimum voltage per-se;
+There is no need to have a property that activates the inline crypto
+boost feature, as this needs many things: a regulator, three clocks,
+and the mediatek,boost-crypt-microvolt property to be set.
 
-Even if technically a call to regulator_set_voltage() does indeed
-internally set a VMIN for a regulator, the API also supports other
-calls to set VMIN-VMAX constraints, so this "vcore-min"->"microvolt"
-rename is performed in order to avoid confusion, other than adding
-the "microvolt" suffix to it (as this does take microvolts!).
+If any one of these is missing, the feature won't be activated,
+hence, it is useless to have yet one more property to enable that.
 
-Fixes: 590b0d2372fe ("scsi: ufs-mediatek: Support performance mode for inline encryption engine")
+While at it, also address another two issues:
+1. Give back the return value to the caller and make sure to fail
+   probing if we get an -EPROBE_DEFER or -ENOMEM; and
+2. Free the ufs_mtk_crypt_cfg structure allocated in the crypto
+   boost function if said functionality could not be enabled because
+   it's not supported, as that'd be only wasted memory.
+
+Last but not least, move the devm_kzalloc() call for ufs_mtk_crypt_cfg
+to after getting the dvfsrc-vcore regulator and the boost microvolt
+property, as if those fail there's no reason to even allocate that.
+
+Fixes: ac8c2459091c ("scsi: ufs-mediatek: Decouple features from platform bindings")
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- drivers/ufs/host/ufs-mediatek.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/ufs/host/ufs-mediatek.c | 55 ++++++++++++++++++---------------
+ 1 file changed, 30 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/ufs/host/ufs-mediatek.c b/drivers/ufs/host/ufs-mediatek.c
-index 5186ad99ad8b..90cd11d4a026 100644
+index 90cd11d4a026..16a76b02c934 100644
 --- a/drivers/ufs/host/ufs-mediatek.c
 +++ b/drivers/ufs/host/ufs-mediatek.c
-@@ -564,9 +564,9 @@ static void ufs_mtk_init_boost_crypt(struct ufs_hba *hba)
- 		goto disable_caps;
+@@ -544,51 +544,55 @@ static int ufs_mtk_init_host_clk(struct ufs_hba *hba, const char *name,
+ 	return ret;
+ }
+ 
+-static void ufs_mtk_init_boost_crypt(struct ufs_hba *hba)
++static int ufs_mtk_init_boost_crypt(struct ufs_hba *hba)
+ {
+ 	struct ufs_mtk_host *host = ufshcd_get_variant(hba);
+ 	struct ufs_mtk_crypt_cfg *cfg;
+ 	struct device *dev = hba->dev;
+ 	struct regulator *reg;
+ 	u32 volt;
+-
+-	host->crypt = devm_kzalloc(dev, sizeof(*(host->crypt)),
+-				   GFP_KERNEL);
+-	if (!host->crypt)
+-		goto disable_caps;
++	int ret;
+ 
+ 	reg = devm_regulator_get_optional(dev, "dvfsrc-vcore");
+ 	if (IS_ERR(reg)) {
+-		dev_info(dev, "failed to get dvfsrc-vcore: %ld",
+-			 PTR_ERR(reg));
+-		goto disable_caps;
++		ret = PTR_ERR(reg);
++		if (ret == -EPROBE_DEFER)
++			return ret;
++
++		return 0;
  	}
  
--	if (of_property_read_u32(dev->of_node, "boost-crypt-vcore-min",
-+	if (of_property_read_u32(dev->of_node, "mediatek,boost-crypt-microvolt",
- 				 &volt)) {
--		dev_info(dev, "failed to get boost-crypt-vcore-min");
-+		dev_info(dev, "failed to get mediatek,boost-crypt-microvolt");
- 		goto disable_caps;
+-	if (of_property_read_u32(dev->of_node, "mediatek,boost-crypt-microvolt",
+-				 &volt)) {
++	ret = of_property_read_u32(dev->of_node, "mediatek,boost-crypt-microvolt", &volt);
++	if (ret) {
+ 		dev_info(dev, "failed to get mediatek,boost-crypt-microvolt");
+-		goto disable_caps;
++		return 0;
  	}
  
++	host->crypt = devm_kzalloc(dev, sizeof(*host->crypt), GFP_KERNEL);
++	if (!host->crypt)
++		return -ENOMEM;
++
+ 	cfg = host->crypt;
+-	if (ufs_mtk_init_host_clk(hba, "crypt_mux",
+-				  &cfg->clk_crypt_mux))
+-		goto disable_caps;
++	ret = ufs_mtk_init_host_clk(hba, "crypt_mux", &cfg->clk_crypt_mux);
++	if (ret)
++		goto out;
+ 
+-	if (ufs_mtk_init_host_clk(hba, "crypt_lp",
+-				  &cfg->clk_crypt_lp))
+-		goto disable_caps;
++	ret = ufs_mtk_init_host_clk(hba, "crypt_lp", &cfg->clk_crypt_lp);
++	if (ret)
++		goto out;
+ 
+-	if (ufs_mtk_init_host_clk(hba, "crypt_perf",
+-				  &cfg->clk_crypt_perf))
+-		goto disable_caps;
++	ret = ufs_mtk_init_host_clk(hba, "crypt_perf", &cfg->clk_crypt_perf);
++	if (ret)
++		goto out;
+ 
+ 	cfg->reg_vcore = reg;
+ 	cfg->vcore_volt = volt;
+ 	host->caps |= UFS_MTK_CAP_BOOST_CRYPT_ENGINE;
+ 
+-disable_caps:
+-	return;
++out:
++	if (ret)
++		devm_kfree(dev, host->crypt);
++	return 0;
+ }
+ 
+ static int ufs_mtk_init_va09_pwr_ctrl(struct ufs_hba *hba)
+@@ -617,8 +621,9 @@ static int ufs_mtk_init_host_caps(struct ufs_hba *hba)
+ 	struct device_node *np = hba->dev->of_node;
+ 	int ret;
+ 
+-	if (of_property_read_bool(np, "mediatek,ufs-boost-crypt"))
+-		ufs_mtk_init_boost_crypt(hba);
++	ret = ufs_mtk_init_boost_crypt(hba);
++	if (ret)
++		return ret;
+ 
+ 	ret = ufs_mtk_init_va09_pwr_ctrl(hba);
+ 	if (ret)
 -- 
 2.44.0
 
