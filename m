@@ -1,74 +1,77 @@
-Return-Path: <linux-kernel+bounces-141431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25BFF8A1E25
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:28:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87D6B8A1E26
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:29:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 486CD1C23243
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:28:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CB1E28B12D
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 18:29:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174053A1CB;
-	Thu, 11 Apr 2024 17:52:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A7E3D3A5;
+	Thu, 11 Apr 2024 17:53:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="AbH0x84f"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04olkn2095.outbound.protection.outlook.com [40.92.46.95])
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="ENo0QoJh"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04olkn2021.outbound.protection.outlook.com [40.92.46.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AFFF39FD5
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 17:52:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.46.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1C43CF40
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 17:52:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.46.21
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712857975; cv=fail; b=DU8NsS+yT6PUIPsusLqeXj0vwU6G6Sc91ot86euvJAOYt/1Dzf5ZBQKgoDb2dnxtqpc2aKTCX1TDG9jPnzWYh6jf6+H786sxaFlDVL3LWiOQTvPOY9Q0CVrfecSDY0zjX05LZtpmkCERWnSpm0x4jtWj7/XvUsK/gjJl1xQ2OJc=
+	t=1712857981; cv=fail; b=DHpUC5a2cYWn2zOhfN7HIT486k7F+BtzC2iMV9e1zcquNSZQ2PNZb7iB7NZ0O4ci6Wovp+g4yg8UhaSspBndhqJ66575Pm9FpU29qP6tZECV1fG6uTQPJqct71KbtZdHwJeqYMBs9xj2U9iV7m40EnTnlSd6uzwgSdSYA9VVlOk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712857975; c=relaxed/simple;
-	bh=a2wxkvTEJwEhe0ExV+/jelE077FR07JP+bJPxEg+1sQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=XqfONFlOqWMhgh9B5JwG+r7/lnGDLWD+avxiPL3Jvi2xbGc/zZ1WG1HGieq08QlkqiHV5W1Ly/b9XvXoM3ktuRkoGWQCAZVBEjCJR64y7aAmrMel7D6eyVZYr+SSXlEvKMHSbMEvsZxWOJLOK7IO6zrUewctcSzKIXNtwZL9KV4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com; spf=pass smtp.mailfrom=hotmail.com; dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b=AbH0x84f; arc=fail smtp.client-ip=40.92.46.95
+	s=arc-20240116; t=1712857981; c=relaxed/simple;
+	bh=oiOlpeQ8+pKut2TV6xpH0LS+1v75EqCt50JjtLV3MxE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=V5NP4TiB6awJpue/fSF9ZQa+Gx7t3X6SQweBBoI9ZiAgxawNpo0+BOcsLCVwAwFn/LM92sSAK8+W4HKxKFWQIGTK8jVtSRMvmhgRnkttfZHMFnL/sKxZWc4lt/wyEgc+ST/CaIMgMtEAA9rccldFN0Aok3JIwbPbhNnlyQPgsFY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com; spf=pass smtp.mailfrom=hotmail.com; dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b=ENo0QoJh; arc=fail smtp.client-ip=40.92.46.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TZQIvsAL15/A45VfBwA1DGx/1U5+ZXCRTSJBkIOYOunLrr7x2pJJyQHvZy4YHsbJi1PquGO1P1WTuR2TIYMRZkcm14M3EDUWJRvgSQ5BsFmGV9gozLaFQunVdi991JX9FbeYCD+EUWZOGVJFkD7zBumypvkL5lig6zgAogrsvxxd8mK4iF1iH/hP2bqQ/UGHCvqekchD4/VHz9XXCsLEKXZWepwQ9GYgqEhzAHSK35PLlrmEXNcldniCDBnnvRYFWEjI+uPyOHWG68noqyYkir31PDEAflckYAZS6K2dkdaZXAMIZQtPkMHOLeK8mQ7wUumuNG9KkQGc1Xl6wa5axQ==
+ b=bFn+jPaLw2sN9DDBmnyCVDZKAgVAVF1l735vppQRJ+ICaNpm0SBzDoS38041hzlMLp/IUWuit3qVgsoIBnl9LLXb8vvIQH+HsQ2i5mETeIoWX/fRzgo48BlwWIeuJTHLPJ4fcfONofXdBh682mIGbNYbM/TTP9fZAZTXLQP1lb82AE75tZIMGVFPwAe0SnNJCMf/qIaNCSVRRhQLofp3niv3QsUg0LF8z9arNglawxKpGnSlbjGmxEzqkTqe9+jKzxU2wrz5qQkRYj2fht2fWvCzR7NgW0SXMhice25mUdwkYlIoGhFEj3PwD9D1lpqzoV/mE9Fy3fRNDFODQsD5zQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LejaDCVGC4w5zFGP+Y3j6qN744oVMRHjWP21dmQDO6A=;
- b=QCPQENoRP1h//4f2PypgUtsGi6qvdtT+g4lElEFkGssuYn43aIu7qtAH29BJDO+cbq2Pv4WadkEGyPCvQorTK41KibztwZ5P3XnExNMH4gvN19MZN5AdISuAtkUILMj3LzQnhLuN06v/tXEl60BWBE9rKrGCZNwQ0PPaf/8s1b5nEzfdiWXHwrVOXSkAet7Y1412fc56qLjZ15+fvf89KkdDUbAza5P1BAmjW1/ZjhG0xOTWr/KR59DG6vhVD76JNvyWCptQyOknVkwNBnrVi7n0PIkub+Lzw/GLSShAbeSXLdphNKUjhb7Ar1VCuhWopTIksCSgzpadr7Zcn4cOoQ==
+ bh=SJOCqS/AvEeq91GY1q5dIHbRScPtPDOQhbsNbWeuIzQ=;
+ b=BbK1BsgEZ0Ty70XlHdP+RaCVUrhjHJ02sChho6m0EjI6xwCJwDgU1/m247VQa5GSr7d0V3jkRczB+0whvaI7HyeooYvFrwL1T7NY9CI9drvrhbQVrY6Qe0f9JtP+b4cm5Ewy09cTsQeWV0o6iwqBEDPYQRPzE1CDB4G04oFcY1r1kEXfKJdaJU9bePLSlpDI0WUPRpEbmVgdKrGITvN8i3jn+zjXc2tx90Eks7bzNe+JrKJgfbWNf74DsZZT/IZHqljR0Fw3RgWq8jfGQM0JcKjYCxt3CtokJt6aqzfVR9n6sXSkj5u8Oj4zsY07UClrM0BlgkIPcUEZCmnOjQ+MLA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LejaDCVGC4w5zFGP+Y3j6qN744oVMRHjWP21dmQDO6A=;
- b=AbH0x84fcioXgpBInrAnb3IhvQ/ih3gN3C9y+jxH1mbepjIEvSsjbsV/zxoFSuPSBUZFL0G7yueY1ayYZjIqA1V3745Tb1lY5E2snSsGGQfGK48OqZorr7TlUXfoglFLOtQ/txY3ydqdKFQz0PYFhceh4tcb9Ux263G9ujOdmPB7cK0J21sdV9K3xaSEfWk/oXEWOofYay85xFM0t/SKYK9Ne7KygV2aN8AJdMMS6NcRslsvFWRRbdF8wTFv48z/vTsxzmxf6nNqXchFsgNGvHx019pi8iGlCDAuvUaQrxHRHu//8tvY7ffY6Z0vP5ytCdlakD8maGMqlzQz2qbY5g==
+ bh=SJOCqS/AvEeq91GY1q5dIHbRScPtPDOQhbsNbWeuIzQ=;
+ b=ENo0QoJhBFv0ttO4jYwUpG/GJ28EVd2fTVZTUqK4JRZQY6fg5/elEvsxdXYJRwvw7wFok+5Hn0bHeXr3Q9zrVwD4kRnDJx1O3yy9SXEitGcgNZ2tVjHbIdBBvF/lhs7BJQ3BdCb7R0UPgIgNRrQLU7HH32n3rAKSZWY9wmz2nS/0OXF8C1WU9vlkuv/Ii+j8OPnCsQYPe1aCGGPmh6qWc2BCTs7Ak6EobmANw4ACe0sykehf5ObPk131v8YXjX1G4EwB1tmyzvJ5NIAz92Dzp18gQom5miuv+5KoS2xyFnsEw3NM9FNx+xjSBn27LFBYjJNH4Ccnkj7RjWAKT9wY0Q==
 Received: from LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM (2603:10b6:408:1ac::6)
  by LV3P220MB1055.NAMP220.PROD.OUTLOOK.COM (2603:10b6:408:1de::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Thu, 11 Apr
- 2024 17:52:52 +0000
+ 2024 17:52:58 +0000
 Received: from LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
  ([fe80::57aa:102b:db4b:e05]) by LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
  ([fe80::57aa:102b:db4b:e05%7]) with mapi id 15.20.7409.042; Thu, 11 Apr 2024
- 17:52:52 +0000
+ 17:52:58 +0000
 From: Min Li <lnimi@hotmail.com>
 To: lee@kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	Min Li <min.li.xe@renesas.com>
-Subject: [PATCH mfd v1 1/2] mfd: rsmu: support I2C SMBus access
-Date: Thu, 11 Apr 2024 13:52:39 -0400
+Subject: [PATCH mfd v1 2/2] mfd: rsmu: add FemtoClock3 support
+Date: Thu, 11 Apr 2024 13:52:40 -0400
 Message-ID:
- <LV3P220MB12022B2F96505825BDDE6A2AA0052@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
+ <LV3P220MB12025D3DF84F591EC0A9262FA0052@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <53efc0ac491055cedbef156b3c3410fa5342e637.1712857691.git.lnimi@hotmail.com>
+References: <53efc0ac491055cedbef156b3c3410fa5342e637.1712857691.git.lnimi@hotmail.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN: [PzCDDYMYUdykLqaqX1jOKf1U2iY9VqCf]
+X-TMN: [593r5wHdYYdXOdNfMe4JZIKf38Hrze8L]
 X-ClientProxiedBy: YQBPR01CA0117.CANPRD01.PROD.OUTLOOK.COM
  (2603:10b6:c01:1::17) To LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
  (2603:10b6:408:1ac::6)
 X-Microsoft-Original-Message-ID:
- <53efc0ac491055cedbef156b3c3410fa5342e637.1712857691.git.lnimi@hotmail.com>
+ <b45c947b06a4d902ec482ea07ab4d764df984e99.1712857691.git.lnimi@hotmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,39 +81,39 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: LV3P220MB1202:EE_|LV3P220MB1055:EE_
-X-MS-Office365-Filtering-Correlation-Id: bc2899e3-ce2d-4064-0d08-08dc5a5035a5
+X-MS-Office365-Filtering-Correlation-Id: edb1fefe-fcac-4f76-7f34-08dc5a5038de
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	/9v9zola1v4NiQ/1AsVAeJVhDLs63KP/ntFGI7ijBy/VTT+/BQ3fmAiplKHnsLMiyQH0F3yRDJm/iEivjjgCR372+lFZwqNRGOarssJBAZs9nc6TsfRtoWJQpSlW5E7svVHPSZ50oKCz7HzkGcHgpLWzE1KpDJyRJ67Zn6HfSwvUs08s6Q5m+yD+Drxj8ZfJgkDDp6Ln5QGaZWdBNX1a+rvfuOaOWYH9/QS/e5tCw4V8VSy+FbiEWAtnuhuuMlUdjC/iMAHbJE8lSOnToCxFRHKMPnjbXMs/5JMhw7x9qvkkikEwxcMQyt+HQ7qWK8AvLK9QoFj/ae0peF60PC0d1clu1elEtnApJyvnEr7oIilN6TSHF6vNUtI4CHCNJmuVVf1iEquuKOSuaiJ1eBmevPI7FrefIdjqSXcCmIW5bn7DyI4vU3NfSB2jUJtvFm7f6O8iUuiC6aIpKmR4thlJwl5Ll7nq68K1aMbg3kztl5g57LMxtAGdv0335goD3e62yT9Oe9h4btRBV7Xa3Zz71Bgnno3oRMWQ6AzID2jMCDJoVovNOn9q5Zzfuq/N/YOW
+	oU9bA0i3PYAwRrV2dcS8tr9i20MlQskMQp8oYk1AGIMYZRJxuIdHjccw8PPHOn/YvE6GS894vbpQRJKHlm/GVOsPNTTkdWen5nVjValuTCo7xM1I2v9zUy2+gGHhmNVlhugs1uA+b5MFAYszmixTxMMjHrlH4+nCcPnS2ZvQQAVtc2l0B0nt4tXWYbO97//+O3h6yaU8inds8KvJJuIrIJttNl9b1osMZIjVzISO18mmDXeDtHdTb7cq9CFfvoYDcYQMfZyGn9oDv87uXXQODWTj+iCvtZ2A770OCmIW1P8g7hXSk2wHpMrEB8QmnO6lWRJ6+e5JgO16qPreD+6+Gn68sa5EsLGsvtTKd9SRBIZzUJ0vriry/hVXx2fcQ2LhI80bNOWqtK33vyamRO9KAyeWq555BMOYAZtkCLviY6IrYQeNxawvXyjvzhJrfYtwhhSfhs7M0PYz+1ZVnvQ3lpU3AOKkX244FKZmUpLsVcLoVEDn2ZqlApS2ju22ejVk3JIKRlwr4QAE0KkGj2l3gh19SKEpZEUPeeKY3dAoavo=
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?/FKKXRND4NeUBbt1VGc+1C9afGPVvsUWSt64l9o12aaPhZDB0Al9DlJU8CER?=
- =?us-ascii?Q?2Pft8cZJv3ODlvPRZFD3rj48NlsiuuMZFfZo2Ds+gS9m2tkbVIGWYYCx2cIw?=
- =?us-ascii?Q?B/a7xpFkhPvXohw85lmB1CkgcpAWLZwAz7ziweMB6VjmwDjaO5J0uh0VbPLW?=
- =?us-ascii?Q?9OslnsNYD0i/x7E4UOk9Kfe9gTHG0WKQmBMtkGmp8RVSPLOITINzsdbcf5eH?=
- =?us-ascii?Q?a7bK00SEOSA+abRo1PVuWWbYTP0kItjLVz9k7luRBldmq3j06tTwK4UfxIVj?=
- =?us-ascii?Q?v5NS+JeGVnCEZ0CrvPjekeojVHK8JiTBv9Jpp9UQN7tyOTd84exOmoFFidXW?=
- =?us-ascii?Q?VIuVouO+2fC4YQ5ZIJketxYP+zPwCIkb18f4fMKFVKI9mY5FTMQ0wGiYa232?=
- =?us-ascii?Q?u+7dmihLToIhShMJ+mu3PtCRMv5S4EeudySWHhLlEwPbrbh/wLkxKASyuIO2?=
- =?us-ascii?Q?yaSNjw3v9/1qwW2Vs2bP8izP/pWqwG4ptXgvooJra5lvoKkfhD91qZNN2vI/?=
- =?us-ascii?Q?FZB+IBkLZEJ7grC369BkkkgEg+uVXmNJBgj4zk9XdFpMrRfsBlZ6GCqcRXcV?=
- =?us-ascii?Q?y1+ODp34YYH6e3POAE2PNkY0jt+mwMbxZgjGNnpBTr6zRZ9c6OVRdj6uudz5?=
- =?us-ascii?Q?tgwb8a6MHLsVMX+sxGodqnCBerdtNk9GH1b22JtNuA7CxdcDaKbpAR8QqudS?=
- =?us-ascii?Q?uROm753JTGJNeKBbuK4KBL7Stvlmp69Bpg+P6pBH4P+ocPR+xCb34hPkiW05?=
- =?us-ascii?Q?2EdwWFnxP0eCRQbL/qDRKx86ZNIRs+Nzt1nYDHjb4x/puBI1VnecEaXJFb7a?=
- =?us-ascii?Q?TiLT+k/+TA3Ku8yUqjiy0siZaJ0sZWq4tKQkXW2k2CK6vGUzGYK2GeffI09w?=
- =?us-ascii?Q?rtgvck6Bsre4ivirgtY9FsDqnOb0DEXeHcBU6X2aS0IFZoSSSlBzaw0nxzu+?=
- =?us-ascii?Q?Rx+codXzhadrNc5Jxkpur/7r+0fi/ws4PWeISPUWfY6nyJEbW/zmO4Su97fb?=
- =?us-ascii?Q?luZVX5/MwOO3o1b945XeaA33zIkGvXcct2E74J6aE+kDvQAcmma2HM57muWB?=
- =?us-ascii?Q?M8my4FnzoDZBC7mUra9DXPOAczSbzpHnWcKXkjcN5mvIHLWemypfxLcsFX1C?=
- =?us-ascii?Q?NXNTF6LEENzrWZ1Dmte05Y6U3R3zfKZ3tL3KtSWPMcUlzSIGHanKPzov1Lls?=
- =?us-ascii?Q?GVYTxhZxQ5+7u/AHy/Xn5fWUbsg0imO5nVMkJA55TsDUUjzCSCGqWsjkyvg?=
+	=?us-ascii?Q?ptjBt9XwfHC4xDZyug6Z90x5lt5irt2mXP42fgJ/TGDx4gVZnb8XIZ89b98W?=
+ =?us-ascii?Q?gUp1kqvzPvPlYVbxJwBqv8rsHhWPdsWHlkj1LiyfjAhAy1FyQatuGKSuu04E?=
+ =?us-ascii?Q?Rlj8OComIwACMUs4T5sw3Qmv/KNECWtnDJ+wT1j+jF3uUfAcHSsWiJjQ6bA1?=
+ =?us-ascii?Q?Cy3U0a32jOBdXPF0uvlSz5eZMoEMLjowiJvDiZCOTQuK4SmonAq+RileoxFU?=
+ =?us-ascii?Q?EE1jWCvyLMa6EPBQ08PEVr3JIGBgE96SBw19l/ZVgCgvUylDL0nphHpaCiZJ?=
+ =?us-ascii?Q?GkWBZYoKCzU60zrXXCF5STUBw1AVHpc9hYlThiWJYMQ4Fgi58roju9KbXsLt?=
+ =?us-ascii?Q?vjoGeotavAJ6Twr38eRhqVAT+zlQ/FpKR/hWE+hPHbXErY6SD84JXVP3Lmpt?=
+ =?us-ascii?Q?by+UddkCm/330qXTiz8oB+bzCwlguYWSrX6j0Eiq1KmmDtB4t5mmO3Hgl2Sc?=
+ =?us-ascii?Q?OXU5zpYKPy1kSjjveIiYHr5To+y7Hw19j+cowVPdEHn9wH+yXA5TCTFFlgk/?=
+ =?us-ascii?Q?IFwDSSpAMbX8gIdEh9qxjyX7cdIUOFTUlu3h8pC79j9kn2/Q+1Tu9CG/aNhA?=
+ =?us-ascii?Q?w0JG0/j5ORLCmOZuWpzg5H749MwS2sLc+1zvhZyltXc3ojGR/u4vVbWbZipv?=
+ =?us-ascii?Q?rpC0AXoaZLTIe28O8Pvpb+XK1BiN4GqlD/wpKH+zTitC0sW8R0GAHjRsBxfg?=
+ =?us-ascii?Q?vta9r5CXgdbHuBZnkEwZgWNxNapoSzkUaG7zc7tN13+LiMg1XvWDy2PhGuf6?=
+ =?us-ascii?Q?RGN3dXyTo42r7Z1bqp6mCycqInOcao4rRrUgSyvNJcYNCOeYC6WsSAAUYh3b?=
+ =?us-ascii?Q?IY1MP/SeGLe4VUeohnu1DOxvJeKdKFLaM3Wrob/2U2Gp6MD3A2wTRk5djEaw?=
+ =?us-ascii?Q?q4KCMk5l9ShFAAxsmApUQ3Dp73pYy5Nd6Dl4t5OZohTTkjsOtL+DwAtLbij+?=
+ =?us-ascii?Q?jyMiD/UhkNjXI/aIez667D4UfI32lS1r5tCP9K5AHV99fJMO7Ay6DyhPfr8c?=
+ =?us-ascii?Q?AC/14/W/M/YdXD82MZHPPkLXhRLEUPDXkswLYp3E+rHRPS3AgCjq6egkWi4G?=
+ =?us-ascii?Q?aKd28UWZDawU0T1QmVaznoOgJaOlqI238n/wRmz9kTEgybBSXQp5itO+2USk?=
+ =?us-ascii?Q?3L2axUX2TYf+YOncW1661U9eGPtaEOXQOL+PAsBa1EIlWNPraSZIZCeFl51G?=
+ =?us-ascii?Q?gfC7diX0Z2OXiz3rnxP9Q+iF5aoP9CPBwHzyKQw6++oye/wIUQtM7tKZs6c?=
  =?us-ascii?Q?=3D?=
 X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-3458f.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc2899e3-ce2d-4064-0d08-08dc5a5035a5
+X-MS-Exchange-CrossTenant-Network-Message-Id: edb1fefe-fcac-4f76-7f34-08dc5a5038de
 X-MS-Exchange-CrossTenant-AuthSource: LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 17:52:52.7637
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 17:52:58.1628
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -120,232 +123,117 @@ X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3P220MB1055
 
 From: Min Li <min.li.xe@renesas.com>
 
-8a3400x device implements its own reg_read and reg_write,
-which only supports I2C bus access. This patch adds support
-for SMBus access.
+The RENESAS FemtoClock3 Wireless is a high-performance
+jitter attenuator, frequency translator, and clock
+synthesizer. This patch only adds support for I2C.
 
 Signed-off-by: Min Li <min.li.xe@renesas.com>
 ---
-send the patch series as --thread suggested by Lee
+ drivers/mfd/rsmu_core.c  | 10 +++++-----
+ drivers/mfd/rsmu_i2c.c   | 16 ++++++++--------
+ include/linux/mfd/rsmu.h |  4 ++--
+ 3 files changed, 15 insertions(+), 15 deletions(-)
 
- drivers/mfd/rsmu_i2c.c | 107 +++++++++++++++++++++++++++++++++++------
- drivers/mfd/rsmu_spi.c |   8 +--
- 2 files changed, 97 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/mfd/rsmu_i2c.c b/drivers/mfd/rsmu_i2c.c
-index 5711e512b..cba64f107 100644
---- a/drivers/mfd/rsmu_i2c.c
-+++ b/drivers/mfd/rsmu_i2c.c
-@@ -32,6 +32,8 @@
- #define	RSMU_SABRE_PAGE_ADDR		0x7F
- #define	RSMU_SABRE_PAGE_WINDOW		128
- 
-+typedef int (*rsmu_rw_device)(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u8 bytes);
-+
- static const struct regmap_range_cfg rsmu_sabre_range_cfg[] = {
- 	{
- 		.range_min = 0,
-@@ -54,7 +56,28 @@ static bool rsmu_sabre_volatile_reg(struct device *dev, unsigned int reg)
- 	}
- }
- 
--static int rsmu_read_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u16 bytes)
-+static int rsmu_smbus_i2c_write_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u8 bytes)
-+{
-+	struct i2c_client *client = to_i2c_client(rsmu->dev);
-+
-+	return i2c_smbus_write_i2c_block_data(client, reg, bytes, buf);
-+}
-+
-+static int rsmu_smbus_i2c_read_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u8 bytes)
-+{
-+	struct i2c_client *client = to_i2c_client(rsmu->dev);
-+	int ret;
-+
-+	ret = i2c_smbus_read_i2c_block_data(client, reg, bytes, buf);
-+	if (ret == bytes)
-+		return 0;
-+	else if (ret < 0)
-+		return ret;
-+	else
-+		return -EIO;
-+}
-+
-+static int rsmu_i2c_read_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u8 bytes)
- {
- 	struct i2c_client *client = to_i2c_client(rsmu->dev);
- 	struct i2c_msg msg[2];
-@@ -84,10 +107,11 @@ static int rsmu_read_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u16 bytes)
- 	return 0;
- }
- 
--static int rsmu_write_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u16 bytes)
-+static int rsmu_i2c_write_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u8 bytes)
- {
- 	struct i2c_client *client = to_i2c_client(rsmu->dev);
--	u8 msg[RSMU_MAX_WRITE_COUNT + 1]; /* 1 Byte added for the device register */
-+	/* we add 1 byte for device register */
-+	u8 msg[RSMU_MAX_WRITE_COUNT + 1];
- 	int cnt;
- 
- 	if (bytes > RSMU_MAX_WRITE_COUNT)
-@@ -107,7 +131,8 @@ static int rsmu_write_device(struct rsmu_ddata *rsmu, u8 reg, u8 *buf, u16 bytes
- 	return 0;
- }
- 
--static int rsmu_write_page_register(struct rsmu_ddata *rsmu, u32 reg)
-+static int rsmu_write_page_register(struct rsmu_ddata *rsmu, u32 reg,
-+				    rsmu_rw_device rsmu_write_device)
- {
- 	u32 page = reg & RSMU_CM_PAGE_MASK;
- 	u8 buf[4];
-@@ -136,35 +161,35 @@ static int rsmu_write_page_register(struct rsmu_ddata *rsmu, u32 reg)
- 	return err;
- }
- 
--static int rsmu_reg_read(void *context, unsigned int reg, unsigned int *val)
-+static int rsmu_i2c_reg_read(void *context, unsigned int reg, unsigned int *val)
- {
- 	struct rsmu_ddata *rsmu = i2c_get_clientdata((struct i2c_client *)context);
- 	u8 addr = (u8)(reg & RSMU_CM_ADDRESS_MASK);
- 	int err;
- 
--	err = rsmu_write_page_register(rsmu, reg);
-+	err = rsmu_write_page_register(rsmu, reg, rsmu_i2c_write_device);
- 	if (err)
- 		return err;
- 
--	err = rsmu_read_device(rsmu, addr, (u8 *)val, 1);
-+	err = rsmu_i2c_read_device(rsmu, addr, (u8 *)val, 1);
- 	if (err)
- 		dev_err(rsmu->dev, "Failed to read offset address 0x%x\n", addr);
- 
- 	return err;
- }
- 
--static int rsmu_reg_write(void *context, unsigned int reg, unsigned int val)
-+static int rsmu_i2c_reg_write(void *context, unsigned int reg, unsigned int val)
- {
- 	struct rsmu_ddata *rsmu = i2c_get_clientdata((struct i2c_client *)context);
- 	u8 addr = (u8)(reg & RSMU_CM_ADDRESS_MASK);
- 	u8 data = (u8)val;
- 	int err;
- 
--	err = rsmu_write_page_register(rsmu, reg);
-+	err = rsmu_write_page_register(rsmu, reg, rsmu_i2c_write_device);
- 	if (err)
- 		return err;
- 
--	err = rsmu_write_device(rsmu, addr, &data, 1);
-+	err = rsmu_i2c_write_device(rsmu, addr, &data, 1);
- 	if (err)
- 		dev_err(rsmu->dev,
- 			"Failed to write offset address 0x%x\n", addr);
-@@ -172,12 +197,57 @@ static int rsmu_reg_write(void *context, unsigned int reg, unsigned int val)
- 	return err;
- }
- 
--static const struct regmap_config rsmu_cm_regmap_config = {
-+static int rsmu_smbus_i2c_reg_read(void *context, unsigned int reg, unsigned int *val)
-+{
-+	struct rsmu_ddata *rsmu = i2c_get_clientdata((struct i2c_client *)context);
-+	u8 addr = (u8)(reg & RSMU_CM_ADDRESS_MASK);
-+	int err;
-+
-+	err = rsmu_write_page_register(rsmu, reg, rsmu_smbus_i2c_write_device);
-+	if (err)
-+		return err;
-+
-+	err = rsmu_smbus_i2c_read_device(rsmu, addr, (u8 *)val, 1);
-+	if (err)
-+		dev_err(rsmu->dev, "Failed to read offset address 0x%x\n", addr);
-+
-+	return err;
-+}
-+
-+static int rsmu_smbus_i2c_reg_write(void *context, unsigned int reg, unsigned int val)
-+{
-+	struct rsmu_ddata *rsmu = i2c_get_clientdata((struct i2c_client *)context);
-+	u8 addr = (u8)(reg & RSMU_CM_ADDRESS_MASK);
-+	u8 data = (u8)val;
-+	int err;
-+
-+	err = rsmu_write_page_register(rsmu, reg, rsmu_smbus_i2c_write_device);
-+	if (err)
-+		return err;
-+
-+	err = rsmu_smbus_i2c_write_device(rsmu, addr, &data, 1);
-+	if (err)
-+		dev_err(rsmu->dev,
-+			"Failed to write offset address 0x%x\n", addr);
-+
-+	return err;
-+}
-+
-+static const struct regmap_config rsmu_i2c_cm_regmap_config = {
- 	.reg_bits = 32,
- 	.val_bits = 8,
- 	.max_register = 0x20120000,
--	.reg_read = rsmu_reg_read,
--	.reg_write = rsmu_reg_write,
-+	.reg_read = rsmu_i2c_reg_read,
-+	.reg_write = rsmu_i2c_reg_write,
-+	.cache_type = REGCACHE_NONE,
-+};
-+
-+static const struct regmap_config rsmu_smbus_i2c_cm_regmap_config = {
-+	.reg_bits = 32,
-+	.val_bits = 8,
-+	.max_register = 0x20120000,
-+	.reg_read = rsmu_smbus_i2c_reg_read,
-+	.reg_write = rsmu_smbus_i2c_reg_write,
- 	.cache_type = REGCACHE_NONE,
+diff --git a/drivers/mfd/rsmu_core.c b/drivers/mfd/rsmu_core.c
+index 29437fd0b..951ddd92c 100644
+--- a/drivers/mfd/rsmu_core.c
++++ b/drivers/mfd/rsmu_core.c
+@@ -40,12 +40,12 @@ static struct mfd_cell rsmu_sabre_devs[] = {
+ 	},
  };
  
-@@ -219,7 +289,15 @@ static int rsmu_i2c_probe(struct i2c_client *client)
+-static struct mfd_cell rsmu_sl_devs[] = {
++static struct mfd_cell rsmu_fc3_devs[] = {
+ 	[RSMU_PHC] = {
+-		.name = "8v19n85x-phc",
++		.name = "rc38xxx-phc",
+ 	},
+ 	[RSMU_CDEV] = {
+-		.name = "8v19n85x-cdev",
++		.name = "rc38xxx-cdev",
+ 	},
+ };
  
- 	switch (rsmu->type) {
- 	case RSMU_CM:
--		cfg = &rsmu_cm_regmap_config;
-+		if (i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
-+			cfg = &rsmu_i2c_cm_regmap_config;
-+		} else if (i2c_check_functionality(client->adapter,
-+						   I2C_FUNC_SMBUS_I2C_BLOCK)) {
-+			cfg = &rsmu_smbus_i2c_cm_regmap_config;
-+		} else {
-+			dev_err(rsmu->dev, "Unsupported i2c adapter\n");
-+			return -ENOTSUPP;
-+		}
+@@ -61,8 +61,8 @@ int rsmu_core_init(struct rsmu_ddata *rsmu)
+ 	case RSMU_SABRE:
+ 		cells = rsmu_sabre_devs;
  		break;
+-	case RSMU_SL:
+-		cells = rsmu_sl_devs;
++	case RSMU_FC3:
++		cells = rsmu_fc3_devs;
+ 		break;
+ 	default:
+ 		dev_err(rsmu->dev, "Unsupported RSMU device type: %d\n", rsmu->type);
+diff --git a/drivers/mfd/rsmu_i2c.c b/drivers/mfd/rsmu_i2c.c
+index cba64f107..a3f50a184 100644
+--- a/drivers/mfd/rsmu_i2c.c
++++ b/drivers/mfd/rsmu_i2c.c
+@@ -262,11 +262,11 @@ static const struct regmap_config rsmu_sabre_regmap_config = {
+ 	.can_multi_write = true,
+ };
+ 
+-static const struct regmap_config rsmu_sl_regmap_config = {
++static const struct regmap_config rsmu_fc3_regmap_config = {
+ 	.reg_bits = 16,
+ 	.val_bits = 8,
+ 	.reg_format_endian = REGMAP_ENDIAN_BIG,
+-	.max_register = 0x340,
++	.max_register = 0xE88,
+ 	.cache_type = REGCACHE_NONE,
+ 	.can_multi_write = true,
+ };
+@@ -302,8 +302,8 @@ static int rsmu_i2c_probe(struct i2c_client *client)
  	case RSMU_SABRE:
  		cfg = &rsmu_sabre_regmap_config;
-@@ -236,6 +314,7 @@ static int rsmu_i2c_probe(struct i2c_client *client)
- 		rsmu->regmap = devm_regmap_init(&client->dev, NULL, client, cfg);
- 	else
- 		rsmu->regmap = devm_regmap_init_i2c(client, cfg);
-+
- 	if (IS_ERR(rsmu->regmap)) {
- 		ret = PTR_ERR(rsmu->regmap);
- 		dev_err(rsmu->dev, "Failed to allocate register map: %d\n", ret);
-diff --git a/drivers/mfd/rsmu_spi.c b/drivers/mfd/rsmu_spi.c
-index ca0a1202c..39d9be1e1 100644
---- a/drivers/mfd/rsmu_spi.c
-+++ b/drivers/mfd/rsmu_spi.c
-@@ -106,10 +106,10 @@ static int rsmu_write_page_register(struct rsmu_ddata *rsmu, u32 reg)
- 			return 0;
- 		page_reg = RSMU_CM_PAGE_ADDR;
- 		page = reg & RSMU_PAGE_MASK;
--		buf[0] = (u8)(page & 0xff);
--		buf[1] = (u8)((page >> 8) & 0xff);
--		buf[2] = (u8)((page >> 16) & 0xff);
--		buf[3] = (u8)((page >> 24) & 0xff);
-+		buf[0] = (u8)(page & 0xFF);
-+		buf[1] = (u8)((page >> 8) & 0xFF);
-+		buf[2] = (u8)((page >> 16) & 0xFF);
-+		buf[3] = (u8)((page >> 24) & 0xFF);
- 		bytes = 4;
  		break;
- 	case RSMU_SABRE:
+-	case RSMU_SL:
+-		cfg = &rsmu_sl_regmap_config;
++	case RSMU_FC3:
++		cfg = &rsmu_fc3_regmap_config;
+ 		break;
+ 	default:
+ 		dev_err(rsmu->dev, "Unsupported RSMU device type: %d\n", rsmu->type);
+@@ -336,8 +336,8 @@ static const struct i2c_device_id rsmu_i2c_id[] = {
+ 	{ "8a34001",  RSMU_CM },
+ 	{ "82p33810", RSMU_SABRE },
+ 	{ "82p33811", RSMU_SABRE },
+-	{ "8v19n850", RSMU_SL },
+-	{ "8v19n851", RSMU_SL },
++	{ "rc38xxx0", RSMU_FC3 },
++	{ "rc38xxx1", RSMU_FC3 },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(i2c, rsmu_i2c_id);
+@@ -347,8 +347,8 @@ static const struct of_device_id rsmu_i2c_of_match[] = {
+ 	{ .compatible = "idt,8a34001",  .data = (void *)RSMU_CM },
+ 	{ .compatible = "idt,82p33810", .data = (void *)RSMU_SABRE },
+ 	{ .compatible = "idt,82p33811", .data = (void *)RSMU_SABRE },
+-	{ .compatible = "idt,8v19n850", .data = (void *)RSMU_SL },
+-	{ .compatible = "idt,8v19n851", .data = (void *)RSMU_SL },
++	{ .compatible = "idt,rc38xxx0", .data = (void *)RSMU_FC3 },
++	{ .compatible = "idt,rc38xxx1", .data = (void *)RSMU_FC3 },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, rsmu_i2c_of_match);
+diff --git a/include/linux/mfd/rsmu.h b/include/linux/mfd/rsmu.h
+index 0379aa207..b4a90fc81 100644
+--- a/include/linux/mfd/rsmu.h
++++ b/include/linux/mfd/rsmu.h
+@@ -11,11 +11,11 @@
+ #define RSMU_MAX_WRITE_COUNT	(255)
+ #define RSMU_MAX_READ_COUNT	(255)
+ 
+-/* The supported devices are ClockMatrix, Sabre and SnowLotus */
++/* The supported devices are ClockMatrix, Sabre and FemtoClock3 */
+ enum rsmu_type {
+ 	RSMU_CM		= 0x34000,
+ 	RSMU_SABRE	= 0x33810,
+-	RSMU_SL		= 0x19850,
++	RSMU_FC3	= 0x38312,
+ };
+ 
+ /**
 -- 
 2.39.2
 
