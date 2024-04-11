@@ -1,128 +1,159 @@
-Return-Path: <linux-kernel+bounces-139916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-139929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29F698A091D
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:06:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68C758A0938
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 09:09:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D93A6282D85
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:06:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 086C61F21B2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 07:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 566E513DDC3;
-	Thu, 11 Apr 2024 07:06:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="vfw7bfqh"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E02B114389A;
+	Thu, 11 Apr 2024 07:07:08 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E44F013DDDB
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:06:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AB8A142633
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 07:07:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712819177; cv=none; b=aCtyfc5B7jrcmUIgmPcMeTzuZMxfXhxPPtWy0430LLGr9lp5kS3zjitA07ojH/hIWbHUU1UQOs+DK5u9tyelM6MnD7xalgtVpH3MC0knp2WrXQJB3ewXHWLidPtraIkXvElE/fGTnccwOJanWTTHNEBGcHblMKCVLfNgBnloRHQ=
+	t=1712819228; cv=none; b=UmUd1ucA7OUPFzwm5ys6XB0oIkAWjw1YnlaXtQlJ2W7iYTv5n/8GEfZ5JQjxaz5vtfoW7WdNMqSbqOnMFMSbKRZj8zDd9iPmxog3OBYWjn8iiWfKyNcruMmLfrThfOdI8F3cODJG5Kv2ORIVF+YsrLpylyl7ggp891tTNRHVyWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712819177; c=relaxed/simple;
-	bh=+o7I+daoENcP8Ct9wXBNksspsxmRSv7JiVNJMZWs3cQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=J4P++qdJBH5mcCUlmuId1BNWbx7nockZD2h9cVt1UefucrfmCEfDpLG+o4Kz3LXlTEixOVKZsUCMbWZBvFHccLcDlldhPAyydb3oNXHDZgvvrdFhv3m00AieS1GrfgkP3v/bMe0U0PK21Umon9fdrszAxfUH+WCflkwcNIj299c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=vfw7bfqh; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a52140ea1b5so157545266b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 00:06:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1712819174; x=1713423974; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IPHgQp5i5ObZBE7aupcoMPs0PyMl+eJyHyekbE5zlXs=;
-        b=vfw7bfqhq2me01f9pYWrujssM0ZpdqY2OyNMTHWnZ0602bCm7OXPJKfa+i9quNpHx+
-         ndSMFzW9qXDgd9oBU7FO+WWBsRfv8uVr8Pdrq9/R61rPf7sa61iH3hon1qeKA93U6i8W
-         UstI8UQvbLAQUu34OrBWYDi8Djs2CU06MHVTfODGEPa6YsjZ9W6c5ydDX3n2SxHqH29E
-         Pz1SO2Uurev7cyiNbtqGeGXWGCBS83l53y0WDfLZfU+9CkcETX1W8nBll8pz+WqbRh4i
-         NAeidYSVWmgXy3kx6EHugal5bU7TXZO47mbZDsjv/RNVAA0G383+vabVEdrGFfpPZmFM
-         VAMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712819174; x=1713423974;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IPHgQp5i5ObZBE7aupcoMPs0PyMl+eJyHyekbE5zlXs=;
-        b=bmamqZYxYunfddMtD6182htS22yulvni6KnPpvUKkPpjVQ37INsktOSLrLDrGoMeI9
-         SiiLfF/3iGnVEO2cxqoJX+S8XuBSUHMJFFby3591ezOJzCM/WfKydX+Xv7hDGiXendIt
-         B2b8wBlF6NubLT1BispTG9GdYa0fc3ymcUOQfr0Cs+kKn1T9jDii1m/Y3gPbDR4f1Kmi
-         Zl1ZGUF0GU9HE5l1jJnl8kTlB01BXji6/Cw4s2iRDnvlWbBxECL4erZyEfED42/uDuLE
-         +CGJXmZmuGVEZ8elwG4exQBqz/CcZT/JbR0opZ91emQ+AbsNVlgvkaJ2Oe9UB/0vnHzZ
-         CqmA==
-X-Forwarded-Encrypted: i=1; AJvYcCVqQEnkPdr/NwwGPhh/83AdMGimR7dbOGEwqeDrmS1mHVBk9DFViyJDe3bMW5l33yv7wRkHrNEX3I4Mr2QLVfke1OgyZbC5YSyYXM27
-X-Gm-Message-State: AOJu0YzE28lWdNwmyIidPpHTDfULe0CcmGexRkRGoD2Oqp1+lxlzSTBn
-	oen5Byyv0Kcij3K/jjVUDXxV7R9ZZGizlgHV8+5y0dPu3KI81l/B4wzRuA/UtKE=
-X-Google-Smtp-Source: AGHT+IFwO1V0PB5oOIQfGSzjLElMTnZJSoZTIjXmfOa0FvKysbniFvJxcp6z+3c0bN4piGw2hz2Bbw==
-X-Received: by 2002:a17:906:ee87:b0:a51:962d:cf0d with SMTP id wt7-20020a170906ee8700b00a51962dcf0dmr3622218ejb.12.1712819174137;
-        Thu, 11 Apr 2024 00:06:14 -0700 (PDT)
-Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id dk5-20020a170907940500b00a518b14d6cesm461397ejc.172.2024.04.11.00.06.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 00:06:13 -0700 (PDT)
-From: Luca Weiss <luca.weiss@fairphone.com>
-Date: Thu, 11 Apr 2024 09:06:11 +0200
-Subject: [PATCH] arm64: dts: qcom: qcm6490-fairphone-fp5: Add USB-C
- orientation GPIO
+	s=arc-20240116; t=1712819228; c=relaxed/simple;
+	bh=z102dTd1Nsgv3jalN8kJhAvPFw+vCjjDKRui0D+eUEo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JXxBYevUcntVS/S278VS97qz+r+DzMNV+CFYsH52r4gSexqLr2GQL0bDmtJVhn0B/yxU/sJDCa6fgaozOGqFtEOc0nzkTQrVR5cA89mho7d+pSKxdKMEMKHqkGdkMM0cjGPg2L+lF0w++9+3/RHhS7Q2Wmhh2MgcMU6RRhthxq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ruoWV-0005Mr-SR; Thu, 11 Apr 2024 09:07:03 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ruoWV-00BdY4-50; Thu, 11 Apr 2024 09:07:03 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1ruoWV-000OX6-0E;
+	Thu, 11 Apr 2024 09:07:03 +0200
+Date: Thu, 11 Apr 2024 09:07:02 +0200
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH 7/8] intel_th: Convert to platform remove callback
+ returning void
+Message-ID: <rnybbv5sddkgtnxzad7sg2jyosr77vvud6t7ii3sssfsi7td2u@3b5nbhsprcaf>
+References: <20231107202818.4005791-1-u.kleine-koenig@pengutronix.de>
+ <20231107202818.4005791-8-u.kleine-koenig@pengutronix.de>
+ <i3oybmf3axeyk5rcef5kgfdb4cucd63h24gup6idn62nq3vvav@4mfzwzyamq27>
+ <jawceotzgdydpz74qr2e5dwgfumwjmt4wxvi43qlwldlbgemzf@v3qa2hoopawv>
+ <qiiln66o6uy2nsqdjcykygp3yumonn7jqp7q4wxf56i6pazics@iqfaiglmsgwt>
+ <87edd5y7lz.fsf@ubik.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240411-fp5-usb-c-gpio-v1-1-78f11deb940a@fairphone.com>
-X-B4-Tracking: v=1; b=H4sIAOKLF2YC/x3MQQqAIBBA0avErBtQMYKuEi1MR5uNilIE4t2Tl
- m/xf4NKhanCNjUo9HDlFAfkPIG9TAyE7IZBCaWFlhJ9XvCuJ1oMmRMa75RatTTOOhhRLuT5/Yf
- 70fsHiFICB2AAAAA=
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.13.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yl2xwhqpkfytrksb"
+Content-Disposition: inline
+In-Reply-To: <87edd5y7lz.fsf@ubik.fi.intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Define the USB-C orientation GPIOs so that the USB-C ports orientation
-is known without having to resort to the altmode notifications.
 
-On PCB level this is the signal from PM7250B (pin CC_OUT) which is
-called USB_PHY_PS.
+--yl2xwhqpkfytrksb
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
-Depends on (for bindings): https://lore.kernel.org/linux-arm-msm/20240409-hdk-orientation-gpios-v2-0-658efd993987@linaro.org/
----
- arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts | 2 ++
- 1 file changed, 2 insertions(+)
+Hello Alex,
 
-diff --git a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-index 4ff9fc24e50e..f3432701945f 100644
---- a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-+++ b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-@@ -77,6 +77,8 @@ pmic-glink {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 
-+		orientation-gpios = <&tlmm 140 GPIO_ACTIVE_HIGH>;
-+
- 		connector@0 {
- 			compatible = "usb-c-connector";
- 			reg = <0>;
+On Wed, Feb 21, 2024 at 08:50:32PM +0200, Alexander Shishkin wrote:
+> Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de> writes:
+> > On Thu, Feb 15, 2024 at 10:16:41PM +0100, Uwe Kleine-K=F6nig wrote:
+> >> On Wed, Jan 10, 2024 at 09:41:54AM +0100, Uwe Kleine-K=F6nig wrote:
+> >> > On Tue, Nov 07, 2023 at 09:28:26PM +0100, Uwe Kleine-K=F6nig wrote:
+> >> > > The .remove() callback for a platform driver returns an int which =
+makes
+> >> > > many driver authors wrongly assume it's possible to do error handl=
+ing by
+> >> > > returning an error code. However the value returned is ignored (ap=
+art
+> >> > > from emitting a warning) and this typically results in resource le=
+aks.
+> >> > >=20
+> >> > > To improve here there is a quest to make the remove callback return
+> >> > > void. In the first step of this quest all drivers are converted to
+> >> > > .remove_new(), which already returns void. Eventually after all dr=
+ivers
+> >> > > are converted, .remove_new() will be renamed to .remove().
+> >> > >=20
+> >> > > Trivially convert this driver from always returning zero in the re=
+move
+> >> > > callback to the void returning variant.
+> >> > >=20
+> >> > > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> >> >=20
+> >> > I didn't get any feedback to this patch and it didn't make it into n=
+ext
+> >> > up to now.
+> >> >=20
+> >> > Is this still on someone's radar?
+> >>=20
+> >> Is there a chance to get this patch into v6.9-rc1? Are you the right o=
+ne
+> >> to talk to about this patch? (According to MAINTAINERS you are.)
+> >>=20
+> >> The patch was sent during the 6.7 merge window and now already missed
+> >> the 6.8 one :-\
+> >
+> > I failed in several attempts to get feedback on this patch. You applied
+> > the last two patches for this driver (that is all patches since the
+> > driver was born). Would you care for that one, too? Tell me if you want
+> > a resend. Note that the other 7 patches from this series are already
+> > cared for, so if you're using b4 am or shazam, make use of -P7.
+>=20
+> Apologies. This looks good to me, I will pick it up for my next
+> submission to Greg unless somebody objects.
 
----
-base-commit: 65b0418f6e86eef0f62fc053fb3622fbaa3e506e
-change-id: 20240411-fp5-usb-c-gpio-afd22741adcd
+Given there are not that many patches left (~50) as of today's next, I'd
+like to see this patch going in during the next merge window, that I can
+finalize the (next step of the) quest around platform_driver::remove.
 
-Best regards,
--- 
-Luca Weiss <luca.weiss@fairphone.com>
+Is sending this patch to Greg still on your todo list?
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--yl2xwhqpkfytrksb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYXjBYACgkQj4D7WH0S
+/k5fEAf+Nq54JrvztGVvk0m0iweAHUrUGtKa/QdaIu1S6HXWyc8KHWLfOPVpGSm/
+VPRbXnkPNHB24gmJ4/kamiVXJ8ookD6+Z7Co6R5v/siXNy6lYvnR1q6UpkB7ONib
+Oxhj5GgBBJSMnKcpZujnQyHJnt5iyAOAogyCeAjz6syL2CPGfKu3TAflAXTJqgyI
+t0SMSFzzoID/lnC3mPSUn0pVvU0477JmvPSJBZLC1r3Y5IqdTdA1mYEkXqZwLSDF
+PiRmmof2nTlciKRkm3fvrphGvCi3Fm2xlibmNBJ1OoT8BRtzvfHn8zcwZV1VC1nn
+1gIYEMb27GE1QUSBlR/A8X+W4QxMSQ==
+=dCQr
+-----END PGP SIGNATURE-----
+
+--yl2xwhqpkfytrksb--
 
