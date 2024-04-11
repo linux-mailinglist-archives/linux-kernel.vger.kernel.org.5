@@ -1,174 +1,168 @@
-Return-Path: <linux-kernel+bounces-141278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C2EC8A1C0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:38:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 078648A1C11
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:38:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C585A1F2284C
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:38:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 298681C21BAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:38:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07A01514F5;
-	Thu, 11 Apr 2024 16:07:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34078152185;
+	Thu, 11 Apr 2024 16:07:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YNd/H66f"
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HOX6F5ZF"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FEB72E415;
-	Thu, 11 Apr 2024 16:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2799152160;
+	Thu, 11 Apr 2024 16:07:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712851634; cv=none; b=adb0ZqSr1BWcGS2n54N+w6iCH4eWCaKObJKd+6pGsRl5Q3lK39lwzc3761x6VP+dM1cuqyMX5iNLrnoDjuYG+5gAtCZcqXonHp7DoxRNhpjyNKQF5tTRIU4GnvEaWTQFF9OT6Cx1UnboWmQjj5Peg0gFx+/wDs1RQgvbanGrvPQ=
+	t=1712851646; cv=none; b=dESNgcBFUqT88JLSuK9BQi9soohYM5zdjb4XxYBXqvfuhsuxhsj7Qe0E+HSrusV8pmocgPE8TYbzoXDlraESuI2WBPXJfqqeKtU40cZPPQlKOHonNCGCU+j6JCqHIAIt4wEe1hd73Rz26jedsVoxlz7covIJiAXG0OnvEnECOBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712851634; c=relaxed/simple;
-	bh=5PGOcfSSdDYshGRmZx13mgK8FTOFF2BORnZNhaSwLC4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XbGI3dR5Jy9auYArWmgzeztJsgvex4aQsrJcLTu0KseE4BGatY1lpar90KSbW8ixm1IJcat8q1KC0ojhJASoUFtK6yfraxMQiQ7sJH9Ju+pmes//C5KypH+C9YIqWgyhEkWcAfOOqtsmZq/to/5vq5yFLridirwVAyheX8w65dQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YNd/H66f; arc=none smtp.client-ip=209.85.219.53
+	s=arc-20240116; t=1712851646; c=relaxed/simple;
+	bh=gwdASi3hCoFHEfTMfnWOtRvHJtLoeC8FToYRqET1b5M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ZFUeqFIRe1yMsxYiPDsKyXRoUDarAV8CHlfGNJf+gY78PJbOhA+vBKMgZJd0QqJdpLrMJstM9m3kse+HVSJ+GNH6f1jiXaDtS4OBv1PfQ8/OFr/S0BIuhXE/S1e5EuZLwfvP9S/163+gbzkQhNxkjIw8sZgajI/diMm8fEdLW9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HOX6F5ZF; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-69629b4ae2bso223296d6.3;
-        Thu, 11 Apr 2024 09:07:13 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4167fce0a41so6195575e9.0;
+        Thu, 11 Apr 2024 09:07:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712851632; x=1713456432; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vCJL7Yhjai6trMhKxfXz5O8cCLAAGPaww8mADW8uTPk=;
-        b=YNd/H66fgtx61ngunZcjWPx1iYIFMoGis/uPkUeU5fl0pTfwZMNwDrMWfB2xojO5Lp
-         84d9PQ/+rVPBXAkM6UbRqn4zXQGHPlXxEUHbdTgTEFqyxak48aZ6BlqvSZgE4qcTv49C
-         sjYr8VqxWs+WXZVe+UPb9+d33ymwDVO91XSr5kVM/JR3t2CU8RHdt0LL+oZF+0jhc6e5
-         w+poypX43o7BTcYfCJAhkZ27RBYywfdtni5kVKY6VwAxkorKLTGrDW45ptmMJ8H5kONV
-         zZlTyqzNFNMLF7ZjyLdmS9QdTxA+w3kSxkISrQhZHf91oIoOrTTG9TKAjK7ybn2zBjO7
-         O5tQ==
+        d=gmail.com; s=20230601; t=1712851643; x=1713456443; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Zc6hg2CYz2524rvKTk6iwGY4Cg5w2/pVyRvL3+/C1YQ=;
+        b=HOX6F5ZFWvAu06cdMsCg7lqYfBv4ZuCY6AxBMLhcnnLFJn9nLWwyt5dkWSjPedT3TO
+         O2co7oDaze5SOyy+KT7it/0qrBDfdYQjwF382kX5c1iKGrSHuIU11zJlyqTuyUjxWo4r
+         16CpFvqDP/ZhUrZKfJhx7zBWCGr3GvEDzFxHZ0Q9ms0lkc48SPShSjP/Jz1lTA1CZben
+         pIfDzmUIn6n73K27efpDAlTXMHoETvs72hwcgfbv3/5KLikidxgIohW4hYYY6kAqZSfo
+         wfUP9zS1W7xBeZqWhmm5BdyGqbr9TSNj5KruBoRtySBEypUBJyOmAR15YTAVT0zQ0BZk
+         XdOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712851632; x=1713456432;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vCJL7Yhjai6trMhKxfXz5O8cCLAAGPaww8mADW8uTPk=;
-        b=V7n4IbtBTN635XUX191CRCxccuTbWH7Xua6NSA8qyBKB2AVBP7t2akx990ZU5SYiZ6
-         5SWuH6UuCSQtiIel20oear+ECHGy6S0cBUJZzvyapf19+KdMna8xrGu/f8lrdoCyLS6m
-         PyBRGZakEV+LvnNOeb6W4tiykC8bUWUzRlKrXioSX6WEgAu2OGSAgF4Yuf1l1q3h51xm
-         zqleX5uVGa9W8TutQGf0qksBBF1Mu7n9xrcQd3eV8k7nH2bz0GrFlA71WyvFy0fMoUdV
-         OY0F0US0iFZh8LzdRizz3dpVJkqN4tlUaPds0Z1LMAuRMmaiaJNVEQ/TjcQZ9FCxE6o9
-         Ddmw==
-X-Forwarded-Encrypted: i=1; AJvYcCV6PJ68Mo1pDfSv6v4aq/HIfKiYx++e7bSFT70ISioN82kPkKWCBrR9JKPdp5cP4gjam7bKopJojFdFiFYjO4LFHz/7lVUGyoDP+LcQ2NLeNo8DK9dIcIZhzaf17Ae5X5na0Ff8IdYv2AqC9oAGMXCgYkiDFAD4aUv1yv8D46j9wuSj0wiE/1M=
-X-Gm-Message-State: AOJu0YxasVzQKRXK9KF8C45+YibQKcVy9o/yApSvWXP4pnt1c4MA/1cy
-	AO3xvVwN/d0mwLbwCSkL5YgkOTh+ePlmdoJoGQlCg1N8P86FDLJzWgrUrpe8chr8+eJzM9cvFrb
-	ET/dfHkr0YUlXR8AbFind7VPSB1Q=
-X-Google-Smtp-Source: AGHT+IHGB8ZcfvsLjGVcI1/X1Vol3VjdRqvuRMFmABVLbUb66s7gO1K52gIUaCsdklEC72iOo7wpwSMBZ7zYSw5fRkU=
-X-Received: by 2002:ad4:53c7:0:b0:699:1877:b0fb with SMTP id
- k7-20020ad453c7000000b006991877b0fbmr129384qvv.3.1712851632384; Thu, 11 Apr
- 2024 09:07:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712851643; x=1713456443;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Zc6hg2CYz2524rvKTk6iwGY4Cg5w2/pVyRvL3+/C1YQ=;
+        b=f0N9u3Prv4QaG8XzmvqL0bRCWxv7cbK493gChriptOSCj2i1GXEWbHNgTo+9VtrjZs
+         IuMPUTJQxjJK9sE8R58k0L613xv5e39TO3LKsUYb/dhcmhx3jGgWvrNpfjPbI3aNvkpH
+         NxQlkM6M+MEq1+IYy9zmH1tmVmu9SD3DRbG1fu8CpbIZtr/Vfu7RUjBWDrSKU4CcFVZz
+         zXfCfZ2lgXe1kI76bSAQcVXzlw85pBRcJX3T4oRDc/Nim+VhxsHCkYnlJK/KmgTNpJe/
+         UrpjnwNQ2zTlPyzeehd9V9vQUgFmIjsxKbnf2UL/JsfCfvmSVAca2EFgVSupn0mcnQVx
+         AY4g==
+X-Forwarded-Encrypted: i=1; AJvYcCVYJlzMEt44y8ShEYzmnvT4UQtFg4Wc5REv5D0vYm3DYh4pvooTdinTvFDKDBJoGtldpLciKHgdaowyHUN+77UmkdbIaQ3Js8K5w/R064LpHamD9NNzg5+35KInpYVJ34fmJqqHrkP7pwjqOXjxTioPD4/+LLGxBD+XkOjLL54J6T5HOvNG
+X-Gm-Message-State: AOJu0YysR/9fAxvtydK/LuCO/Wn79Q401tx5EVHMGnTBteRMon92lP79
+	TZge5VBMRLoY9oxcrYPQWQVFiJ8Pcj5TZu2e9ODeS/9KAalXFXop
+X-Google-Smtp-Source: AGHT+IFhDLkByLfx6NOUxjkxXkl/jVzcbsfer/tFuPIPpCQMyKIrMErq5JCEFUUWxpGBv7JbA3tPGA==
+X-Received: by 2002:a05:600c:35c5:b0:416:69cf:d5f8 with SMTP id r5-20020a05600c35c500b0041669cfd5f8mr3084869wmq.6.1712851643082;
+        Thu, 11 Apr 2024 09:07:23 -0700 (PDT)
+Received: from debian ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id f19-20020a05600c4e9300b00417d624cffbsm2524206wmq.6.2024.04.11.09.07.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 11 Apr 2024 09:07:22 -0700 (PDT)
+Message-ID: <24daf0f8-1e81-4bdb-81f3-0f95bf4392f4@gmail.com>
+Date: Thu, 11 Apr 2024 18:07:13 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000042c9190615cdb315@google.com> <20240411121319.adhz4ylacbv6ocuu@quack3>
-In-Reply-To: <20240411121319.adhz4ylacbv6ocuu@quack3>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 11 Apr 2024 19:07:00 +0300
-Message-ID: <CAOQ4uxi9L_Rs7q=fcLGqJMx15jLAArOWGwGfdCL8LOUCPR3L+w@mail.gmail.com>
-Subject: Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in fsnotify
-To: Jan Kara <jack@suse.cz>
-Cc: syzbot <syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com>, 
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, repnop@google.com, 
-	syzkaller-bugs@googlegroups.com, Gabriel Krisman Bertazi <krisman@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net-next v6 5/6] net: gro: move L3 flush checks to
+ tcp_gro_receive and udp_gro_receive_segment
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org,
+ dsahern@kernel.org, aduyck@mirantis.com, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240410153423.107381-1-richardbgobert@gmail.com>
+ <20240410153423.107381-6-richardbgobert@gmail.com>
+ <66174ec5bbd29_2d6bc629481@willemb.c.googlers.com.notmuch>
+From: Richard Gobert <richardbgobert@gmail.com>
+In-Reply-To: <66174ec5bbd29_2d6bc629481@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 11, 2024 at 3:13=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
->
-> On Thu 11-04-24 01:11:20, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    6ebf211bb11d Add linux-next specific files for 20240410
-> > git tree:       linux-next
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D12be955d180=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D16ca158ef7e=
-08662
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D5e3f9b2a67b45=
-f16d4e6
-> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for D=
-ebian) 2.40
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D13c911751=
-80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1621af9d180=
-000
-> >
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/b050f81f73ed/d=
-isk-6ebf211b.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/412c9b9a536e/vmli=
-nux-6ebf211b.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/016527216c47=
-/bzImage-6ebf211b.xz
-> > mounted in repro: https://storage.googleapis.com/syzbot-assets/75ad050c=
-9945/mount_0.gz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com
-> >
-> > Quota error (device loop0): do_check_range: Getting block 0 out of rang=
-e 1-5
-> > EXT4-fs error (device loop0): ext4_release_dquot:6905: comm kworker/u8:=
-4: Failed to release dquot type 1
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > BUG: KASAN: slab-use-after-free in fsnotify+0x2a4/0x1f70 fs/notify/fsno=
-tify.c:539
-> > Read of size 8 at addr ffff88802f1dce80 by task kworker/u8:4/62
-> >
-> > CPU: 0 PID: 62 Comm: kworker/u8:4 Not tainted 6.9.0-rc3-next-20240410-s=
-yzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
- Google 03/27/2024
-> > Workqueue: events_unbound quota_release_workfn
-> > Call Trace:
-> >  <TASK>
-> >  __dump_stack lib/dump_stack.c:88 [inline]
-> >  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
-> >  print_address_description mm/kasan/report.c:377 [inline]
-> >  print_report+0x169/0x550 mm/kasan/report.c:488
-> >  kasan_report+0x143/0x180 mm/kasan/report.c:601
-> >  fsnotify+0x2a4/0x1f70 fs/notify/fsnotify.c:539
-> >  fsnotify_sb_error include/linux/fsnotify.h:456 [inline]
-> >  __ext4_error+0x255/0x3b0 fs/ext4/super.c:843
-> >  ext4_release_dquot+0x326/0x450 fs/ext4/super.c:6903
-> >  quota_release_workfn+0x39f/0x650 fs/quota/dquot.c:840
-> >  process_one_work kernel/workqueue.c:3218 [inline]
-> >  process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3299
-> >  worker_thread+0x86d/0xd70 kernel/workqueue.c:3380
-> >  kthread+0x2f0/0x390 kernel/kthread.c:389
-> >  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-> >  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-> >  </TASK>
->
-> Amir, I believe this happens on umount when the filesystem calls
-> fsnotify_sb_error() after calling fsnotify_sb_delete(). In theory these t=
-wo
-> calls can even run in parallel and fsnotify() can be holding
-> fsnotify_sb_info pointer while fsnotify_sb_delete() is freeing it so we
-> need to figure out some proper synchronization for that...
+Willem de Bruijn wrote:
+> Richard Gobert wrote:
+>> {inet,ipv6}_gro_receive functions perform flush checks (ttl, flags,
+>> iph->id, ...) against all packets in a loop. These flush checks are used
+>> currently only in tcp flows in GRO.
+>>
+>> These checks need to be done only once in tcp_gro_receive and only against
+>> the found p skb, since they only affect flush and not same_flow.
+> 
+> I don't quite understand where the performance improvements arise.
+> As inet_gro_receive will skip any p that does not match:
+> 
+>       if (!NAPI_GRO_CB(p)->same_flow)
+>               continue;
+> 
+>       iph2 = (struct iphdr *)(p->data + off);
+>       /* The above works because, with the exception of the top
+>        * (inner most) layer, we only aggregate pkts with the same
+>        * hdr length so all the hdrs we'll need to verify will start
+>        * at the same offset.
+>        */
+>       if ((iph->protocol ^ iph2->protocol) |
+>           ((__force u32)iph->saddr ^ (__force u32)iph2->saddr) |
+>           ((__force u32)iph->daddr ^ (__force u32)iph2->daddr)) {
+>               NAPI_GRO_CB(p)->same_flow = 0;
+>               continue;
+>       }
+> 
+> So these checks are already only performed against a p that matches.
+>  
 
-Is it really needed to handle any for non SB_ACTIVE sb?
-How about something like this?
-Is that enough? or more synchronization is needed?
 
-#syz test: https://github.com/amir73il/linux fsnotify-fixes
+Thanks for the review!
 
-Thanks,
-Amir.
+flush/flush_id is calculated for all other p with same_flow = 1 (which is
+not always determined to be 0 before inet_gro_receive) and same src/dst
+addr in the bucket. Moving it to udp_gro_receive_segment/tcp_gro_receive
+will make it run only once when a matching p is found.
+
+In addition, UDP flows where skb_gro_receive_list is called -
+flush/flush_id is not relevant and does not need to be calculated. In these
+cases total CPU time in GRO should drop. I could post perf numbers for
+this flow as well.
+
+
+>> Leveraging the previous commit in the series, in which correct network
+>> header offsets are saved for both outer and inner network headers -
+>> allowing these checks to be done only once, in tcp_gro_receive. As a
+> 
+> Comments should be updated to reflect both TCP and L4 UDP. Can
+> generalize to transport callbacks.
+> 
+>> result, NAPI_GRO_CB(p)->flush is not used at all. In addition, flush_id
+>> checks are more declarative and contained in inet_gro_flush, thus removing
+>> the need for flush_id in napi_gro_cb.
+>>
+>> This results in less parsing code for UDP flows and non-loop flush tests
+>> for TCP flows.
+> 
+> This moves network layer tests out of the network layer callbacks into
+> helpers called from the transport layer callback. And then the helper
+> has to look up the network layer header and demultiplex the protocol
+> again:
+> 
+>     +		if (((struct iphdr *)nh)->version == 6)
+>     +			flush |= ipv6_gro_flush(nh, nh2);
+>     +		else
+>     +			flush |= inet_gro_flush(nh, nh2, p, i != encap_mark);
+> 
+> That just seems a bit roundabout.
+
+IMO this commit could be a part of a larger change, where all
+loops in gro_list_prepare, inet_gro_receive and ipv6_gro_receive can be
+removed, and the logic for finding a matching p will be moved to L4.  This
+means that when p is found, the rest of the gro_list would not need to be
+traversed and thus would not even dirty cache lines at all. I can provide a
+code snippet which would explain it better.
 
