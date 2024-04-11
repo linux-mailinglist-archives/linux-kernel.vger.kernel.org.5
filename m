@@ -1,171 +1,310 @@
-Return-Path: <linux-kernel+bounces-141305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDF2E8A1C98
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 19:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA13D8A1D9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:14:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13D3AB309FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:45:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B700AB271AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 17:45:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638A215FA87;
-	Thu, 11 Apr 2024 16:16:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s1Ydj4WO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC43E161314;
+	Thu, 11 Apr 2024 16:17:45 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1D915FA69;
-	Thu, 11 Apr 2024 16:16:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FFF0160792
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 16:17:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712852217; cv=none; b=LLTN1L9C9NpvDpplczY9SzHKUfFEX9YuXUlo8H5VeaLhmELDZWhg4rwpua/fcLW3AhUnxkkr4tdhf7qfYpX0kgrc08CZjbAO1VR3HbiDAjB8zg4KKmvQxWPv0w7qwEPA7gxMTgV6wqrtwZroRqmMhfPI75iox4NZMdmlZ0yrvmo=
+	t=1712852263; cv=none; b=fdb3DKGM+zO7q8af1EB0ieRZeV/E/mnglqgQUQH7c7/qyEUKVYKLHKnTwOB/S5UAcnEtsSxuX0FebtPYZiB+yoVjlWjsDvecMb9UrOM/gESnXHCQ/52AmTYCdh+4geK7HVn2LvTQYWqeJ9e7ZCu5Hqzm5uaPKbCKDv8+JnnQZr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712852217; c=relaxed/simple;
-	bh=oxB2IinreaN+GlXA7UgrWU6a+FGBjajYG4vubHueojQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZklVwRB6VETAcBlkKMqDR6EKh5Oyz73V87oeJofSAbrMsJcsJfTmRLF6ftUcxxKVSX0Axr6H2AmwUTB0roLhnZDDQl+Ti6mychhV6H6ihW/7cj45D+hbD014xWrEXIPAw4O21mdelBkkXwQ+wJKE2aEYKnhWKDCeEQ7wm0Mcb7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s1Ydj4WO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC8B4C072AA;
-	Thu, 11 Apr 2024 16:16:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712852217;
-	bh=oxB2IinreaN+GlXA7UgrWU6a+FGBjajYG4vubHueojQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s1Ydj4WOYaJ5p5COnprJBHKI3qO0ZBy8B05ZBo4YiZOiXke0h6NZXRe1hYep8EMUO
-	 7IjZGcAb0oxZSi1KvHIEsppYJHW+rnhKdtzit7WinR63u+yMlu0vg/iVOluLI1Gvo7
-	 dvcQJaihtIuZ8kPwuHumRftjhm5YDhVpf6JnVGapfSUXyACvOP2RwKIaPGU+JsBlOG
-	 2uFNDr+L/1jrIz9Y8ev42ZYPmiF5JUYxtNaJErUtXSIHaItezqGDlf1nk7TEmbUxQJ
-	 1JJ3JXl1ePNmbjKhieT4Wu062CehbJz1MdUhImtJM6WiKYI2oWGqeCE0rA1D52p8VK
-	 yOItmbxK8vxsA==
-Date: Thu, 11 Apr 2024 09:16:55 -0700
-From: Eric Biggers <ebiggers@kernel.org>
-To: Stefan Kanthak <stefan.kanthak@nexgo.de>
-Cc: linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ardb@kernel.org
-Subject: Re: [PATCH 1/2] crypto: x86/sha256-ni - convert to use rounds macros
-Message-ID: <20240411161655.GA9356@sol.localdomain>
-References: <20240409124216.9261-1-ebiggers@kernel.org>
- <20240409124216.9261-2-ebiggers@kernel.org>
- <C0FA88ECA90F43B1BF9E7849C53440D7@H270>
- <20240409233650.GA1609@quark.localdomain>
- <450F5ED9B5834B2EA883786C32E1A30E@H270>
+	s=arc-20240116; t=1712852263; c=relaxed/simple;
+	bh=RtuHXctgfiOYrGiYfq+e/OTERtXigR4+wb783+m1Dp8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=IJXTDdSlqXAmo7JC2tN9bkQsGTjM5KhkOnmU3xQCkxSEuqnBoXTBuRkzmdbb1EpuBJ5/uom6YJ14BlDlLHEYl+EMFsyGHDBltgnmz8Z8GcZqP/0WiKAWCKVj5EiM3XQxvkd0UtSeVYCURh+jtcjauqmhfCEAlKgRrjmxA6adazg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36a208afb78so143745ab.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 09:17:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712852256; x=1713457056;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1d7kQPd3I2BsF0hyHoGzV2RNfmF4ykWGkYznWmyDBko=;
+        b=mRSiLR6GC1M1nF7tZw+TeCypO0rkbJlhIEhy03Rp1oQbe2T45tNcXgO05QsPOe+uiU
+         NPn0SZazaqCS5lq5ORDiFK6mdWwVJ7xXdYskd1XwzZxJ7uwyZyPSBlhzYtBodnk0/Ezl
+         RDAUFCkadN10S3vucUK8dGBx6qmRvb7yLP+eOEcZ7x8+rKw6XB51Na9P43s7bu/KAAO9
+         eeDRDUzVVoJ6NM1mD82mkc+LCu3zPLxoWfayK3bSTyoN0d1Hetgm1MOR+Ah0nWgxT8bL
+         tf21SAsq6Le/nMhrtc7Ggf63C2j7W5v18eLy2rKO1R5D88YF7YeMUl124AT8S2p0WKhZ
+         IVvA==
+X-Forwarded-Encrypted: i=1; AJvYcCWJZ8EsSUdSf1Mk9xuTjaahzPYNcHuq/kobwZDG64FD+UqLDwqrTF8mimCop8bUen5sMWW4fpWT03jr3Gs8DGaxq57TTKiWWrGIcMq+
+X-Gm-Message-State: AOJu0YyaA5gxtMI352T/yI5P2t7sycaV+cHwUZg6DZMIRMdRkn9yj+C0
+	+QcPZrcYW+1GtHGkQgdROT0KuzyTZkhhJ6sXwb0b8NRfJh2SXheFMEV/18oNDEvR3QzJZ/pgHeJ
+	ekCEcyKpsdhA/ZcdxHgn2TpN+KGuUHYUb6uL4xAK4Yfj3R0PUu/eOw68=
+X-Google-Smtp-Source: AGHT+IHv2a4kUISj8aISAEEpksJbCdjrcpVuiOr291qVbATDu1HYshEyLe1Jk8+7jNl/4NvppSY2vjK2El4KJcG04q6rYzgQ3OCz
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <450F5ED9B5834B2EA883786C32E1A30E@H270>
+X-Received: by 2002:a05:6e02:1566:b0:36a:20a2:e47b with SMTP id
+ k6-20020a056e02156600b0036a20a2e47bmr406669ilu.6.1712852256636; Thu, 11 Apr
+ 2024 09:17:36 -0700 (PDT)
+Date: Thu, 11 Apr 2024 09:17:36 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004f557c0615d47e6d@google.com>
+Subject: [syzbot] [gfs2?] KASAN: slab-use-after-free Read in gfs2_invalidate_folio
+From: syzbot <syzbot+3a36aeabd31497d63f6e@syzkaller.appspotmail.com>
+To: agruenba@redhat.com, gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Stefan,
+Hello,
 
-On Thu, Apr 11, 2024 at 09:42:00AM +0200, Stefan Kanthak wrote:
-> "Eric Biggers" <ebiggers@kernel.org> wrote:
-> 
-> > On Tue, Apr 09, 2024 at 06:52:02PM +0200, Stefan Kanthak wrote:
-> >> "Eric Biggers" <ebiggers@kernel.org> wrote:
-> >> 
-> >> > +.macro do_4rounds i, m0, m1, m2, m3
-> >> > +.if \i < 16
-> >> > +        movdqu  \i*4(DATA_PTR), MSG
-> >> > +        pshufb  SHUF_MASK, MSG
-> >> > +        movdqa  MSG, \m0
-> >> > +.else
-> >> > +        movdqa  \m0, MSG
-> >> > +.endif
-> >> > +        paddd   \i*4(SHA256CONSTANTS), MSG
-> >> 
-> >> To load the round constant independent from and parallel to the previous
-> >> instructions which use \m0 I recommend to change the first lines of the
-> >> do_4rounds macro as follows (this might save 1+ cycle per macro invocation,
-> >> and most obviously 2 lines):
-> >> 
-> >> .macro do_4rounds i, m0, m1, m2, m3
-> >> .if \i < 16
-> >>         movdqu  \i*4(DATA_PTR), \m0
-> >>         pshufb  SHUF_MASK, \m0
-> >> .endif
-> >>         movdqa  \i*4(SHA256CONSTANTS), MSG
-> >>         paddd   \m0, MSG
-> >> ...
-> > 
-> > Yes, your suggestion looks good.  I don't see any performance difference on
-> > Ice Lake, but it does shorten the source code.  It belongs in a separate patch
-> > though, since this patch isn't meant to change the output.
-> 
-> Hmmm... the output was already changed: 2 palignr/pblendw and 16 pshufd
-> have been replaced with punpck?qdq, and 17 displacements changed.
+syzbot found the following issue on:
 
-Yes, the second patch does that.  Your comment is on the first patch, so I
-thought you were suggesting changing the first patch.  I'll handle your
-suggestion in another patch.  I'm just trying to keep changes to the actual
-output separate from source code only cleanups.
+HEAD commit:    e8c39d0f57f3 Merge tag 'probes-fixes-v6.9-rc3' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12ce66a3180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=285be8dd6baeb438
+dashboard link: https://syzkaller.appspot.com/bug?extid=3a36aeabd31497d63f6e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16892dcb180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=130547bd180000
 
-> Next simplification, and 5 more lines gone: replace the macro do_16rounds
-> with a repetition
-> 
-> @@ ...
-> -.macro do_16rounds i
-> -        do_4rounds (\i + 0),  MSGTMP0, MSGTMP1, MSGTMP2, MSGTMP3
-> -        do_4rounds (\i + 4),  MSGTMP1, MSGTMP2, MSGTMP3, MSGTMP0
-> -        do_4rounds (\i + 8),  MSGTMP2, MSGTMP3, MSGTMP0, MSGTMP1
-> -        do_4rounds (\i + 12), MSGTMP3, MSGTMP0, MSGTMP1, MSGTMP2
-> -.endm
-> -
-> @@ ...
-> -        do_16rounds 0
-> -        do_16rounds 16
-> -        do_16rounds 32
-> -        do_16rounds 48
-> +.irp i, 0, 16, 32, 48
-> +        do_4rounds (\i + 0),  MSGTMP0, MSGTMP1, MSGTMP2, MSGTMP3
-> +        do_4rounds (\i + 4),  MSGTMP1, MSGTMP2, MSGTMP3, MSGTMP0
-> +        do_4rounds (\i + 8),  MSGTMP2, MSGTMP3, MSGTMP0, MSGTMP1
-> +        do_4rounds (\i + 12), MSGTMP3, MSGTMP0, MSGTMP1, MSGTMP2
-> +.endr
-> 
-> This doesn't change the instructions generated, so it belongs to this patch.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-e8c39d0f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d33b002ae0bf/vmlinux-e8c39d0f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/047d0bfb2db7/bzImage-e8c39d0f.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/749aec76707a/mount_0.gz
 
-Yes, that makes sense.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3a36aeabd31497d63f6e@syzkaller.appspotmail.com
 
-> The following suggestion changes instructions: AFAIK all processors which
-> support the SHA extensions support AVX too
+==================================================================
+BUG: KASAN: slab-use-after-free in list_empty include/linux/list.h:373 [inline]
+BUG: KASAN: slab-use-after-free in gfs2_discard fs/gfs2/aops.c:617 [inline]
+BUG: KASAN: slab-use-after-free in gfs2_invalidate_folio+0x718/0x820 fs/gfs2/aops.c:655
+Read of size 8 at addr ffff88801db08168 by task syz-executor595/5186
 
-No (unfortunately).  Several generations of Intel's low-power CPUs support SHA
-but not AVX.  Namely Goldmont, Goldmont Plus, and Tremont.
+CPU: 3 PID: 5186 Comm: syz-executor595 Not tainted 6.9.0-rc3-syzkaller-00073-ge8c39d0f57f3 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0xc3/0x620 mm/kasan/report.c:488
+ kasan_report+0xd9/0x110 mm/kasan/report.c:601
+ list_empty include/linux/list.h:373 [inline]
+ gfs2_discard fs/gfs2/aops.c:617 [inline]
+ gfs2_invalidate_folio+0x718/0x820 fs/gfs2/aops.c:655
+ folio_invalidate mm/truncate.c:158 [inline]
+ truncate_cleanup_folio+0x2ac/0x3e0 mm/truncate.c:178
+ truncate_inode_pages_range+0x271/0xe90 mm/truncate.c:358
+ gfs2_evict_inode+0x75b/0x1460 fs/gfs2/super.c:1508
+ evict+0x2ed/0x6c0 fs/inode.c:667
+ iput_final fs/inode.c:1741 [inline]
+ iput.part.0+0x5a8/0x7f0 fs/inode.c:1767
+ iput+0x5c/0x80 fs/inode.c:1757
+ gfs2_put_super+0x2bd/0x760 fs/gfs2/super.c:625
+ generic_shutdown_super+0x159/0x3d0 fs/super.c:641
+ kill_block_super+0x3b/0x90 fs/super.c:1675
+ gfs2_kill_sb+0x360/0x410 fs/gfs2/ops_fstype.c:1804
+ deactivate_locked_super+0xbe/0x1a0 fs/super.c:472
+ deactivate_super+0xde/0x100 fs/super.c:505
+ cleanup_mnt+0x222/0x450 fs/namespace.c:1267
+ task_work_run+0x14e/0x250 kernel/task_work.c:180
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0xa7d/0x2c10 kernel/exit.c:878
+ do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
+ __do_sys_exit_group kernel/exit.c:1038 [inline]
+ __se_sys_exit_group kernel/exit.c:1036 [inline]
+ __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1036
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fe708777789
+Code: Unable to access opcode bytes at 0x7fe70877775f.
+RSP: 002b:00007ffd15e3f838 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007fe708777789
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000001
+RBP: 00007fe7088122b0 R08: ffffffffffffffb8 R09: 000000000001f6db
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fe7088122b0
+R13: 0000000000000000 R14: 00007fe708813020 R15: 00007fe708745cc0
+ </TASK>
 
-We could provide two SHA-256 implementations, one with AVX and one without.  I
-think it's not worthwhile, though.
+Allocated by task 5186:
+ kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:68
+ unpoison_slab_object mm/kasan/common.c:312 [inline]
+ __kasan_slab_alloc+0x89/0x90 mm/kasan/common.c:338
+ kasan_slab_alloc include/linux/kasan.h:201 [inline]
+ slab_post_alloc_hook mm/slub.c:3798 [inline]
+ slab_alloc_node mm/slub.c:3845 [inline]
+ kmem_cache_alloc+0x136/0x320 mm/slub.c:3852
+ kmem_cache_zalloc include/linux/slab.h:739 [inline]
+ gfs2_alloc_bufdata fs/gfs2/trans.c:168 [inline]
+ gfs2_trans_add_data+0x4b3/0x7f0 fs/gfs2/trans.c:209
+ gfs2_unstuffer_folio fs/gfs2/bmap.c:81 [inline]
+ __gfs2_unstuff_inode fs/gfs2/bmap.c:119 [inline]
+ gfs2_unstuff_dinode+0xad9/0x1460 fs/gfs2/bmap.c:166
+ gfs2_adjust_quota+0x124/0xb10 fs/gfs2/quota.c:879
+ do_sync+0xa73/0xd30 fs/gfs2/quota.c:990
+ gfs2_quota_sync+0x419/0x630 fs/gfs2/quota.c:1370
+ gfs2_sync_fs+0x44/0xb0 fs/gfs2/super.c:669
+ sync_filesystem+0x10d/0x290 fs/sync.c:56
+ generic_shutdown_super+0x7e/0x3d0 fs/super.c:620
+ kill_block_super+0x3b/0x90 fs/super.c:1675
+ gfs2_kill_sb+0x360/0x410 fs/gfs2/ops_fstype.c:1804
+ deactivate_locked_super+0xbe/0x1a0 fs/super.c:472
+ deactivate_super+0xde/0x100 fs/super.c:505
+ cleanup_mnt+0x222/0x450 fs/namespace.c:1267
+ task_work_run+0x14e/0x250 kernel/task_work.c:180
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0xa7d/0x2c10 kernel/exit.c:878
+ do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
+ __do_sys_exit_group kernel/exit.c:1038 [inline]
+ __se_sys_exit_group kernel/exit.c:1036 [inline]
+ __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1036
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-We ran into this issue with AES-NI too; I was hoping that we could just provide
-the new AES-NI + AVX implementation of AES-XTS, and remove the older
-implementation that uses AES-NI alone.  However, apparently the above-mentioned
-low-power CPUs do need the implementation that uses AES-NI alone.
+Freed by task 5186:
+ kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:68
+ kasan_save_free_info+0x3b/0x60 mm/kasan/generic.c:579
+ poison_slab_object mm/kasan/common.c:240 [inline]
+ __kasan_slab_free+0x11d/0x1a0 mm/kasan/common.c:256
+ kasan_slab_free include/linux/kasan.h:184 [inline]
+ slab_free_hook mm/slub.c:2106 [inline]
+ slab_free mm/slub.c:4280 [inline]
+ kmem_cache_free+0x12e/0x380 mm/slub.c:4344
+ trans_drain fs/gfs2/log.c:1028 [inline]
+ gfs2_log_flush+0x1486/0x29b0 fs/gfs2/log.c:1167
+ do_sync+0x550/0xd30 fs/gfs2/quota.c:1010
+ gfs2_quota_sync+0x419/0x630 fs/gfs2/quota.c:1370
+ gfs2_sync_fs+0x44/0xb0 fs/gfs2/super.c:669
+ sync_filesystem+0x10d/0x290 fs/sync.c:56
+ generic_shutdown_super+0x7e/0x3d0 fs/super.c:620
+ kill_block_super+0x3b/0x90 fs/super.c:1675
+ gfs2_kill_sb+0x360/0x410 fs/gfs2/ops_fstype.c:1804
+ deactivate_locked_super+0xbe/0x1a0 fs/super.c:472
+ deactivate_super+0xde/0x100 fs/super.c:505
+ cleanup_mnt+0x222/0x450 fs/namespace.c:1267
+ task_work_run+0x14e/0x250 kernel/task_work.c:180
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0xa7d/0x2c10 kernel/exit.c:878
+ do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
+ __do_sys_exit_group kernel/exit.c:1038 [inline]
+ __se_sys_exit_group kernel/exit.c:1036 [inline]
+ __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1036
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-> And last: are the "#define ... %xmm?" really necessary?
-> 
-> - MSG can't be anything but %xmm0;
-> - MSGTMP4 is despite its prefix MSG also used to shuffle STATE0 and STATE1,
->   so it should be named TMP instead (if kept);
-> - MSGTMP0 to MSGTMP3 are the circular message schedule, they should be named
->   MSG0 to MSG3 instead (if kept).
-> 
-> I suggest to remove at least those which are now encapsulated in the macro
-> and the repetition.
+The buggy address belongs to the object at ffff88801db08150
+ which belongs to the cache gfs2_bufdata of size 80
+The buggy address is located 24 bytes inside of
+ freed 80-byte region [ffff88801db08150, ffff88801db081a0)
 
-Yes, I noticed the weird naming too.  I'll rename MSGTMP[0-3] to MSG[0-3], and
-MSGTMP4 to TMP.
+The buggy address belongs to the physical page:
+page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1db08
+flags: 0xfff80000000800(slab|node=0|zone=1|lastcpupid=0xfff)
+page_type: 0xffffffff()
+raw: 00fff80000000800 ffff88801a5aedc0 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000080240024 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12c40(GFP_NOFS|__GFP_NOWARN|__GFP_NORETRY), pid 5186, tgid 5186 (syz-executor595), ts 45296183443, free_ts 44935801807
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x2d4/0x350 mm/page_alloc.c:1534
+ prep_new_page mm/page_alloc.c:1541 [inline]
+ get_page_from_freelist+0xa28/0x3780 mm/page_alloc.c:3317
+ __alloc_pages+0x22b/0x2460 mm/page_alloc.c:4575
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ alloc_pages_node include/linux/gfp.h:261 [inline]
+ alloc_slab_page mm/slub.c:2175 [inline]
+ allocate_slab mm/slub.c:2338 [inline]
+ new_slab+0xcc/0x3a0 mm/slub.c:2391
+ ___slab_alloc+0x66d/0x1790 mm/slub.c:3525
+ __slab_alloc.constprop.0+0x56/0xb0 mm/slub.c:3610
+ __slab_alloc_node mm/slub.c:3663 [inline]
+ slab_alloc_node mm/slub.c:3835 [inline]
+ kmem_cache_alloc+0x2e9/0x320 mm/slub.c:3852
+ kmem_cache_zalloc include/linux/slab.h:739 [inline]
+ gfs2_alloc_bufdata fs/gfs2/trans.c:168 [inline]
+ gfs2_trans_add_meta+0xade/0xf50 fs/gfs2/trans.c:251
+ gfs2_alloc_extent fs/gfs2/rgrp.c:2239 [inline]
+ gfs2_alloc_blocks+0x46c/0x19c0 fs/gfs2/rgrp.c:2449
+ __gfs2_unstuff_inode fs/gfs2/bmap.c:107 [inline]
+ gfs2_unstuff_dinode+0x499/0x1460 fs/gfs2/bmap.c:166
+ gfs2_adjust_quota+0x124/0xb10 fs/gfs2/quota.c:879
+ do_sync+0xa73/0xd30 fs/gfs2/quota.c:990
+ gfs2_quota_sync+0x419/0x630 fs/gfs2/quota.c:1370
+ gfs2_sync_fs+0x44/0xb0 fs/gfs2/super.c:669
+ sync_filesystem+0x10d/0x290 fs/sync.c:56
+ generic_shutdown_super+0x7e/0x3d0 fs/super.c:620
+page last free pid 4684 tgid 4684 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1141 [inline]
+ free_unref_page_prepare+0x527/0xb10 mm/page_alloc.c:2347
+ free_unref_page+0x33/0x3c0 mm/page_alloc.c:2487
+ __put_partials+0x14c/0x170 mm/slub.c:2906
+ qlink_free mm/kasan/quarantine.c:163 [inline]
+ qlist_free_all+0x4e/0x140 mm/kasan/quarantine.c:179
+ kasan_quarantine_reduce+0x192/0x1e0 mm/kasan/quarantine.c:286
+ __kasan_slab_alloc+0x69/0x90 mm/kasan/common.c:322
+ kasan_slab_alloc include/linux/kasan.h:201 [inline]
+ slab_post_alloc_hook mm/slub.c:3798 [inline]
+ slab_alloc_node mm/slub.c:3845 [inline]
+ kmem_cache_alloc+0x136/0x320 mm/slub.c:3852
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:139
+ getname_flags+0x9b/0xf0 include/linux/audit.h:322
+ vfs_fstatat+0x9a/0x150 fs/stat.c:303
+ __do_sys_newfstatat+0x98/0x120 fs/stat.c:468
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-You're correct that MSG has to be xmm0 because of how sha256rnds2 uses xmm0 as
-an implicit operand.  I think I'll leave the '#define' for MSG anyway because
-the list of aliases helps make it clear what each register is used for.
+Memory state around the buggy address:
+ ffff88801db08000: fa fb fb fb fb fb fb fb fb fb fc fc fc fc fa fb
+ ffff88801db08080: fb fb fb fb fb fb fb fb fc fc fc fc fa fb fb fb
+>ffff88801db08100: fb fb fb fb fb fb fc fc fc fc fa fb fb fb fb fb
+                                                          ^
+ ffff88801db08180: fb fb fb fb fc fc fc fc fa fb fb fb fb fb fb fb
+ ffff88801db08200: fb fb fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
 
-Thanks,
 
-- Eric
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
