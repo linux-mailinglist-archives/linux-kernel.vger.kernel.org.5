@@ -1,140 +1,130 @@
-Return-Path: <linux-kernel+bounces-141563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8016A8A2002
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:16:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 238DE8A2006
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 22:17:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20FDB1F25491
-	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:16:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81B26B25FA5
+	for <lists+linux-kernel@lfdr.de>; Thu, 11 Apr 2024 20:17:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 754541805A;
-	Thu, 11 Apr 2024 20:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D6D1805A;
+	Thu, 11 Apr 2024 20:17:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="3Ul7+m29"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Knz3FE+h"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1649C17BD5
-	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:16:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5447117BCF
+	for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:17:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712866597; cv=none; b=XazBtP16CLlHPf2BQv2pKMahNT8YsDXN0IxqjS3BZXnpQarj8nWW1QOcI+nIF0ETQZvGN770xkbVGbPttKpuyo8fiCvVUMrm7PO0io5p+5ZePQzuz3VEVZQ1uIWf8yqPzm7CppcXnGwfkA/+5FNAWacxpZber3dxLFfiZ4GkBL4=
+	t=1712866660; cv=none; b=skfNkH9rE3UBsmPA1qe+EiL385zi2DOd5vj6xSx4stYyGdhy82s7xwZRvA5SLNAXMtx7NUWsW/yU79ZVU0pHoobbh4ggbRPTSv0iyM2eabVcCYHSJxd1s/uNGKQn4Lt4dYSt86sz16mo3xG5bGKk5eaomVLFeLOdRxTLptsWbxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712866597; c=relaxed/simple;
-	bh=FigJPmeeol9aTT8r85nc2virpzTGMjItOeicZjOZH+E=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=RzihqNIptsOpzbWk3PZDiDzAsjrkcdn2TuZj4asJj3fSY8sAmCc+lFZS7GCYrW5l0FleMfVJ+bNw67PG0vXmg5cm0EVzv8KTKtv2TcvkjtyoV56luqjRFrY5E+B3jqW5cAAGBEncJdfaD4jq1Wfb76uJlGlyBq563Y/cU+BjZN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=3Ul7+m29; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e3ff14f249so1776395ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:16:35 -0700 (PDT)
+	s=arc-20240116; t=1712866660; c=relaxed/simple;
+	bh=CCSNMZUxTrpa3dpyGwuD+xpGXVDYKUY8cALIjx+vkrw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I4UQ7ktJmsf2900Up78WzDpg0nJVyWcFsTmTmqfOkDW3F+s7GZw8CmDtXzexoObbHQ1Xo4AXbtJBT3NZJRSs5gH3h8XSP7pMQWK05acr93+5X1x1FRisoFlaCGvQ4T0SnX3HXthFQrQh/QrW+crv9DhWDOsaVXFqYfOUorulT0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Knz3FE+h; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-516b6e75dc3so277532e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 13:17:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1712866595; x=1713471395; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MI1lrr2uhxwJR+eCQKQup9QfuAe/qWYI7Ljrnyz9U00=;
-        b=3Ul7+m299p0PqqNmFeoRnx57/6NSLuBQBefAd0mBuWNXvrS6+NdjRv/mdc4iZve0aU
-         RPtlLMFkB2yKoY4DCEYSUlD6aKYyurMGdccerptNqD1eBi0NhJDSEN9benvZcWghNGYi
-         iDUEOsZXlIdHOSUULFRbADQCF4Ac9TGKE+kWCnDZ62+Ct+Mktf2heRKEqLV4ctfgun6S
-         tpyA4Zbeir3M1itx29XGHIbafgmeNRukYkJulXqcnX0PUwiRzRed/bFDx1/Kk1p61RwW
-         SDToXYK0Ci38Gswaff15gCNbi3ZXwyl0kOm1lytJ0vJIWsXsU/bLWvXilH0jprMSYUHE
-         RgNA==
+        d=linaro.org; s=google; t=1712866656; x=1713471456; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jnVkVi9PCVLQ2a4WdlMXHYl3KUjY5EPaBz9jWbvlviA=;
+        b=Knz3FE+h116Jw56r8DRB5MhfbTQPpKuJ3aOu/rh9BozCqCRQbUtZhiG0aJvWulQNYI
+         tDL1PrY0SS9nWsENFLzkiEIlIxEEA80z8l/MP/SJVGmPpokKywCpyEbikGjPo/DBTHxl
+         UsG0yIF+0YDRdrjA9/P1zMEElLADiOX3WerCML/Cyf5XUsV4hY9NSS4jAB/lMItID6+j
+         8cAMzSbJrQBGWZkATr//ZvJZiN3FbDkR9gK15Sqq+sSk0Dyy4MfJUQOnurLq68bf+tdY
+         jRt3fL71IhTf+h8YRn2/kBNYRwfAXYzyek6A8XzVDEDsAkK/joo5oYx00Ze+qNgd2y+n
+         D7Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712866595; x=1713471395;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MI1lrr2uhxwJR+eCQKQup9QfuAe/qWYI7Ljrnyz9U00=;
-        b=VuYXt2HdatscXM36NLlc+v3HnRloRAubTpR9KCak/YXXhVmGTArhqdtk/dLIX/M+E6
-         DBsOhwRQgN7rUDG8FiUeu+YHEg1rn+bY04uPIvWSJx7iku0nv212C1B7J3rH6JtUAdpG
-         7J92fDmyAFNepx7bszKyczq3y9qXfcfaUXhngLG14/JmKgMqEMmOKb9xAP+TxZPxOftB
-         6IWMdTetPjSTnb0rlR0p51KYG6/Yhuq+jtVgiMh558GhVKBCSsUpTuykz7huiKF+g5oA
-         CV72A3yeAZXKpndwYmN/bgR6uX79i/LHRvLVIMTCilPlpXQq7ztDa7ZdFb2Mbl3yC0Kn
-         dKUg==
-X-Forwarded-Encrypted: i=1; AJvYcCXkmTX3oH0VSRDBT44F8ab/bs6HkgKQu8YA50zTe6wFKKBtS7EsRZaseYDpBQgaDjNLOZY5MhKBPbCcQA8RxnJVwzJdzXhfFP/Lr3Mh
-X-Gm-Message-State: AOJu0YwYQ4booz8tspTn3mFr0KcpdLcITfGFTIJLTxN6xo8iF8GANSBk
-	Ay56BSFTBDywzRlesQz5Hr0g3Mo8bYRuZOKypJpL7jLaZwedptogib03GP3gCS8=
-X-Google-Smtp-Source: AGHT+IFccneSwJaJyGfCasupHSlPcb2gw+0X/vWttGvs1X1hMf9iaiQzERVC7/I+eNsLdsBCcZbteg==
-X-Received: by 2002:a17:902:e80d:b0:1e2:abc5:e28b with SMTP id u13-20020a170902e80d00b001e2abc5e28bmr1009284plg.19.1712866595166;
-        Thu, 11 Apr 2024 13:16:35 -0700 (PDT)
-Received: from localhost ([50.145.13.30])
-        by smtp.gmail.com with ESMTPSA id f4-20020a170902ab8400b001e512537a5fsm1576849plr.9.2024.04.11.13.16.33
+        d=1e100.net; s=20230601; t=1712866656; x=1713471456;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jnVkVi9PCVLQ2a4WdlMXHYl3KUjY5EPaBz9jWbvlviA=;
+        b=Gc8IOMe7lswbE2FkQZd5OPx8eFHwuljwTBr0VxX6lZ8VsAewlPZ7WGvt0HvybMnj5I
+         an7qS2FvBOIUnDurOwgoOoCFFY8JwMy55Q7kPDSSsJIRSHnHI0j5067+AwVMVFnWjT3W
+         3wOpS/jMo14SC2izdinag9chQRblKGiaZiMeLYXDKWypayQNTFnkHJQoycXb3pYTKKkE
+         8hkrHZ3Es/Wh6I43vtdy1PdPLMfP4o1GCvTyUd+nC9q0c7wYHOWigvAtg5hDmqUe+WN8
+         wwuwn/4XPXqYkZgGo37oBIc9pIZwv+SvumahOhSAGE7u4pz3/24Yu0FuST1fjFieiff8
+         DMTA==
+X-Forwarded-Encrypted: i=1; AJvYcCViynS578s7zpuh5e1QmlTuagcbf18l/fA2mnk8+8bhqPY2LpnAbGXNLlJ0pJL195ScmR2/b+PNGvk6N4hpFMpI/+0dk716NcX2H+wB
+X-Gm-Message-State: AOJu0YwGtJ/vHaxrtfL/u+g92Y6JYXVp2jr/jyXD8QjOe1y7CRojEuKd
+	8sHqLIhdWxVGhp05b9fCHnpUJ9Hy6oBUUX23R8OsW7IWwZxGa/6GdNsGCzlthDour55UdUuqRI0
+	K
+X-Google-Smtp-Source: AGHT+IHA4u0Jp+6NhFXOfmsl2KdwlH94xIcKS3tE0NrfLh8isx/EqVT2vR5geDzP5kQ0Wsmf9+Nzzg==
+X-Received: by 2002:ac2:5982:0:b0:516:d692:5e0b with SMTP id w2-20020ac25982000000b00516d6925e0bmr374592lfn.54.1712866656444;
+        Thu, 11 Apr 2024 13:17:36 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzdbxzyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0c3:3a00::227])
+        by smtp.gmail.com with ESMTPSA id u23-20020a196a17000000b00515a52e362fsm293917lfu.189.2024.04.11.13.17.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 13:16:33 -0700 (PDT)
-Date: Thu, 11 Apr 2024 13:16:33 -0700 (PDT)
-X-Google-Original-Date: Thu, 11 Apr 2024 13:16:31 PDT (-0700)
-Subject:     Re: linux-next: manual merge of the riscv-dt tree with the risc-v tree
-In-Reply-To: <20240411094901.2130c36e@canb.auug.org.au>
-CC: Conor Dooley <conor.dooley@microchip.com>, Paul Walmsley <paul@pwsan.com>,
-  linux-kernel@vger.kernel.org, linux-next@vger.kernel.org, masahiroy@kernel.org, cyy@cyyself.name
-From: Palmer Dabbelt <palmer@dabbelt.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Message-ID: <mhng-ec3820b2-2b47-4d5d-af2b-8d0f349336de@palmer-ri-x1c9a>
+        Thu, 11 Apr 2024 13:17:36 -0700 (PDT)
+Date: Thu, 11 Apr 2024 23:17:34 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
+	Pavel Machek <pavel@ucw.cz>, phone-devel@vger.kernel.org, 
+	kernel list <linux-kernel@vger.kernel.org>, fiona.klute@gmx.de, martijn@brixit.nl, samuel@sholland.org, 
+	heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org, linux-usb@vger.kernel.org, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org
+Subject: Re: [PATCHv3 1/2] dt-bindings: usb: typec: anx7688: start a binding
+ document
+Message-ID: <cogegnmniilyhjfvptdws4sybmoyuovo6p37tofdinxxbml4ua@hq43tv4dzr7e>
+References: <ZhPTTxI4oTF3pgrk@duo.ucw.cz>
+ <e7841ad2-fa3d-442d-804d-51f12e05c234@linaro.org>
+ <e6vvuttix5k5fioy7q44ick5wj6u5gleh7mht36s4zjjcym7vy@bziejyohtc4b>
+ <7976e254-ed1e-406d-870b-1ecdc4b1e23c@linaro.org>
+ <uoo7xltbfx7u6iai7urj3wez7cwotokxt6lwjhff57xbljusqn@fr2xejnrlak7>
+ <1502383c-9caf-4362-8bd6-ed719a304f08@linaro.org>
+ <vbo7bacecuagu4qzrr6tsdh4qlejrv7ia67yylf6ay4u7qnwge@kqj27bun2m7d>
+ <97f2d38d-c863-4c76-91f1-52cd250759d7@linaro.org>
+ <ounfv3vgg2esvxk2cxckeqyy52mghiyps2rszh7sf5poryyjzs@ftumsalmthza>
+ <025d268f-96d0-49fa-9a67-f80ab81ed102@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <025d268f-96d0-49fa-9a67-f80ab81ed102@linaro.org>
 
-On Wed, 10 Apr 2024 16:49:01 PDT (-0700), Stephen Rothwell wrote:
-> Hi all,
->
-> Today's linux-next merge of the riscv-dt tree got a conflict in:
->
->   arch/riscv/Makefile
->
-> between commit:
->
->   3b938e231b66 ("riscv: merge two if-blocks for KBUILD_IMAGE")
->
-> from the risc-v tree and commit:
->
->   ef10bdf9c3e6 ("riscv: Kconfig.socs: Split ARCH_CANAAN and SOC_CANAAN_K210")
->
-> from the riscv-dt tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->
-> -- 
-> Cheers,
-> Stephen Rothwell
->
-> diff --cc arch/riscv/Makefile
-> index 7c60bbe1f785,fa6c389c3986..000000000000
-> --- a/arch/riscv/Makefile
-> +++ b/arch/riscv/Makefile
-> @@@ -143,15 -133,7 +143,15 @@@ boot		:= arch/riscv/boo
->   ifeq ($(CONFIG_XIP_KERNEL),y)
->   KBUILD_IMAGE := $(boot)/xipImage
->   else
-> - ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_ARCH_CANAAN),yy)
-> ++ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN_K210),yy)
->  +KBUILD_IMAGE := $(boot)/loader.bin
->  +else
->  +ifeq ($(CONFIG_EFI_ZBOOT),)
->   KBUILD_IMAGE	:= $(boot)/Image.gz
->  +else
->  +KBUILD_IMAGE := $(boot)/vmlinuz.efi
->  +endif
->  +endif
->   endif
->   
->   libs-y += arch/riscv/lib/
+On Thu, Apr 11, 2024 at 09:59:35PM +0200, Krzysztof Kozlowski wrote:
+> On 10/04/2024 04:20, Ondřej Jirman wrote:
+> > On Mon, Apr 08, 2024 at 10:12:30PM GMT, Krzysztof Kozlowski wrote:
+> >> On 08/04/2024 17:17, Ondřej Jirman wrote:
+> >>>
+> >>> Now for things to not fail during suspend/resume based on PM callbacks
+> >>> invocation order, anx7688 driver needs to enable this regulator too, as long
+> >>> as it needs it.
+> >>
+> >> No, the I2C bus driver needs to manage it. Not one individual I2C
+> >> device. Again, why anx7688 is specific? If you next phone has anx8867,
+> >> using different driver, you also add there i2c-supply? And if it is
+> >> nxp,ptn5100 as well?
+> > 
+> > Yes, that could work, if I2C core would manage this.
+> 
+> Either I don't understand about which I2C regulator you speak or this is
+> not I2C core regulator. This is a regulator to be managed by the I2C
+> controller, not by I2C core.
 
-Thanks.  I guess I should have looked a bit closer before Acking, but 
-I'm not sure this one warrants a shared tag or anything -- it's just 
-some Makefile refactoring that happens to step on each other.
+If it is a supply that pulls up the SDA/SCL lines, then it is generic
+enough to be handled by the core. For example, on Qualcomm platforms CCI
+lines also usually have external supply as a pull-up.
+
+
+-- 
+With best wishes
+Dmitry
 
