@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-143364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D31C8A3798
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:10:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFAAB8A3799
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:10:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E53E6B24E99
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:10:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48D3BB253B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0773153563;
-	Fri, 12 Apr 2024 21:08:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5B3153813;
+	Fri, 12 Apr 2024 21:08:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RUHLddYj"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S9JR3dqg"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F164515253B;
-	Fri, 12 Apr 2024 21:08:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B965152E0F;
+	Fri, 12 Apr 2024 21:08:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712956098; cv=none; b=Es0RDZ9tuDNTCyRnhyBLwTO93/LFn4xzKUfX0U71jgrmpJOn451PORAPYF1n+Aemx2A2FCHq8zNbTanGg8EIXW+HCyjFi8OaPYb54SnJ3cqLU409meswCol9el6BECrZCAUbtZKxs3+DJSse7X3pQLPXZ0FVK9t4MfTBNqY668o=
+	t=1712956099; cv=none; b=CR7Ap3jCtrlDq6TvsUdvvEJ+HTcDCCGGPyPnvMS0XRgcB30G211X74CJKhHSMrW4VsYzs+fchHKo/o41ij2DmOO4gD7eN3BFfIQXaUjUfbdKQ15ccYBUbn/FB/vGbAtvGtlzl4BshG0ncFTuXdXPNL1CCH4/auX4u0qmuVygTRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712956098; c=relaxed/simple;
-	bh=ogrxKE2gR5mVkVtp7MLCNz0k+qduvC4zFBtBAG24Xhg=;
+	s=arc-20240116; t=1712956099; c=relaxed/simple;
+	bh=SLRT/YXI45DriY5Ez7bnNSFDk+ZX/MfZJIlKThgJlpo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tPNVgv8bxUHshS29qtoa8vMw9chn/qbYbk3Yj41EY/hXohSQPEGHge7fUG9/kZj2Q01bKN/2iMT0GRonLilsLF4xicSpnMo/5ZeSSBZcFUkuvdXu/hZ5aDqttlcGEYeAPiBVVB/S3GCYJmR9ruLpaNGMVnRnzTXbhqyqHNqJaiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RUHLddYj; arc=none smtp.client-ip=198.175.65.13
+	 MIME-Version; b=STs532n8rtLNapoRpwnbAWvSvEVBlj8ksMbFlR2qdlO6yUbqLECBI4f/PeYbon0x0gYlQhsi00PQq6vjgaVd6JupSaDVoewlhVU/iW+kWlhwajxaUGmTBHsdsQHECBxyNAdIBmPAr7N+6u+TNfi5FQPRRJT+Cuq15+vIe37xzjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S9JR3dqg; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712956097; x=1744492097;
+  t=1712956098; x=1744492098;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ogrxKE2gR5mVkVtp7MLCNz0k+qduvC4zFBtBAG24Xhg=;
-  b=RUHLddYjbcNDu3mYWdyD8JHX7tTlkj7VEBOmua+Wk5SVpHCDu0rsb/Y8
-   B+4jf+vy7cRH/WQJrORtb1le1W7fvbosEG/RO8kDL/uf/+IRot7LknUbo
-   RSEwEEHUlsUSI8Ty1SwtkmtJyDl9xqg8fgsx8+Wrlz53R1c0VNYnbjPM9
-   UIoIKMlGPVSQ1DOH285FemsdNdam3VrQSnSU4yz8HWrOm6U9RhX+i49f4
-   yX9ZFBVYve0SkQNCjZSj8fjtmS5pVrJjQrwNl4C3010Pm0sAAMkPXfPV2
-   3rweNbLw/aXHj859c5Nax/2L1xnKbhmj9c23b/ZoHajA1euwhjY4KryL/
+  bh=SLRT/YXI45DriY5Ez7bnNSFDk+ZX/MfZJIlKThgJlpo=;
+  b=S9JR3dqgFcs1uLSZHjEky6YDOKt5GjzkFyghurYh9ees58qjKM4zo2kO
+   cfcHvB+4NIXLwboXP1n36YE0qCshFtaI4Z431rW6g6hMAXmEUnttq6sDt
+   yDDzdCNz9j4FTCJ2akk9Sev46k8hVD9qxrDXjgViy96Alj6U6dAsMouci
+   /SskbRmmxdhyvTbofya6Zv64QusWGcOJVxiMxettAdzqeyQ9DAqKpsAcE
+   guR66npLcz/YIkxz8r9od7NkEsy21hwbetzNm8tzw3cgXHK5Tr7J6gQhP
+   iAFVP/P2laY4FNa9doWjnunAGqvjmmuMOGbA//paaHDrCMPIaXSgpAHVS
    g==;
-X-CSE-ConnectionGUID: TPbLbcXtTwqXpq/+4cud4Q==
-X-CSE-MsgGUID: S0DG0pzESvme0MhmGkG43A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="19575486"
+X-CSE-ConnectionGUID: j83IAigkQAyJXzlZfgLi7Q==
+X-CSE-MsgGUID: WP9QZJH3T7uZ8A5pBmfOiQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="19575488"
 X-IronPort-AV: E=Sophos;i="6.07,197,1708416000"; 
-   d="scan'208";a="19575486"
+   d="scan'208";a="19575488"
 Received: from orviesa006.jf.intel.com ([10.64.159.146])
   by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 14:08:11 -0700
-X-CSE-ConnectionGUID: ishY4e1mTE2web46tuLqAg==
-X-CSE-MsgGUID: bwfcFw67RAeYZSDash3Scw==
+X-CSE-ConnectionGUID: sqyXSFLWTg+rLmERYp2xNg==
+X-CSE-MsgGUID: F1OduXFwQFO6CrRLWdmANw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,197,1708416000"; 
-   d="scan'208";a="21772111"
+   d="scan'208";a="21772114"
 Received: from b49691a74b80.jf.intel.com ([10.165.54.183])
-  by orviesa006.jf.intel.com with ESMTP; 12 Apr 2024 14:08:10 -0700
+  by orviesa006.jf.intel.com with ESMTP; 12 Apr 2024 14:08:11 -0700
 From: weilin.wang@intel.com
 To: weilin.wang@intel.com,
 	Ian Rogers <irogers@google.com>,
@@ -73,9 +73,9 @@ Cc: linux-perf-users@vger.kernel.org,
 	Perry Taylor <perry.taylor@intel.com>,
 	Samantha Alt <samantha.alt@intel.com>,
 	Caleb Biggers <caleb.biggers@intel.com>
-Subject: [RFC PATCH v5 11/16] perf stat: Add partial support on MSR in hardware-grouping
-Date: Fri, 12 Apr 2024 14:07:51 -0700
-Message-ID: <20240412210756.309828-12-weilin.wang@intel.com>
+Subject: [RFC PATCH v5 12/16] perf stat: Handle NMI in hardware-grouping
+Date: Fri, 12 Apr 2024 14:07:52 -0700
+Message-ID: <20240412210756.309828-13-weilin.wang@intel.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20240412210756.309828-1-weilin.wang@intel.com>
 References: <20240412210756.309828-1-weilin.wang@intel.com>
@@ -89,149 +89,31 @@ Content-Transfer-Encoding: 8bit
 
 From: Weilin Wang <weilin.wang@intel.com>
 
-Add MSR usage into consideration when grouping. Each group can only
-include one event that requires one specific MSR. Currently, we only
-support events that requries one MSR. For some OCR events that have
-multiple MSRs in their MSRIndex field, this commit will treat them as
-one "large MSR". We're planning to improve this part in future.
+Add an easy nmi watchdog support in grouping. When nmi watchdog is enabled,
+we reduce the total num of events could be assigned to one group by 1. A
+more efficient solution will be added in later.
 
+Reviewed-by: Ian Rogers <irogers@google.com>
 Signed-off-by: Weilin Wang <weilin.wang@intel.com>
 ---
- tools/perf/pmu-events/jevents.py   |  4 +++-
- tools/perf/pmu-events/pmu-events.h |  6 ++++++
- tools/perf/util/metricgroup.c      | 27 ++++++++++++++++++++++-----
- 3 files changed, 31 insertions(+), 6 deletions(-)
+ tools/perf/util/metricgroup.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
-index 7cfd86d77fea..66531c2df224 100755
---- a/tools/perf/pmu-events/jevents.py
-+++ b/tools/perf/pmu-events/jevents.py
-@@ -54,7 +54,9 @@ _json_event_attributes = [
-     # Short things in alphabetical order.
-     'compat', 'deprecated', 'perpkg', 'unit',
-     # Longer things (the last won't be iterated over during decompress).
--    'long_desc'
-+    'long_desc',
-+    # MSRIndex required by the event. NULL if no MSR is required.
-+    'msr'
- ]
- 
- # Attributes that are in pmu_unit_layout.
-diff --git a/tools/perf/pmu-events/pmu-events.h b/tools/perf/pmu-events/pmu-events.h
-index 5b42a18693cf..76ec2b431dce 100644
---- a/tools/perf/pmu-events/pmu-events.h
-+++ b/tools/perf/pmu-events/pmu-events.h
-@@ -54,6 +54,12 @@ struct pmu_event {
- 	const char *unit;
- 	bool perpkg;
- 	bool deprecated;
-+	/*
-+	 * MSR is another resource that restricts grouping. Currently, we
-+	 * support only MSRIndex 0x3F6 and 0x3F7.  TODO: add support for all the
-+	 * MSRs related to event grouping.
-+	 */
-+	const char *msr;
- };
- 
- struct pmu_metric {
 diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index b9e46dff1e17..9548654c9f6d 100644
+index 9548654c9f6d..31036035484c 100644
 --- a/tools/perf/util/metricgroup.c
 +++ b/tools/perf/util/metricgroup.c
-@@ -193,6 +193,7 @@ struct metricgroup__event_info {
- 	 * during the event grouping.
- 	 */
- 	bool free_counter;
-+	const char *msr;
- 	/** The counters the event allowed to be collected on. */
- 	DECLARE_BITMAP(counters, NR_COUNTERS);
- };
-@@ -240,6 +241,7 @@ struct metricgroup__group {
- 	DECLARE_BITMAP(fixed_counters, NR_COUNTERS);
- 	/** Head to the list of event names in this group*/
- 	struct list_head event_head;
-+	const char *msr;
- };
- 
- struct metricgroup__group_events {
-@@ -1747,6 +1749,7 @@ static void metricgroup__free_pmu_info(struct list_head *pmu_info_list)
- static struct metricgroup__event_info *event_info__new(const char *name,
- 						      const char *pmu_name,
- 						      const char *counter,
-+						      const char *msr,
- 						      bool free_counter)
+@@ -1993,6 +1993,10 @@ static int insert_new_group(struct list_head *head,
+ 			   size_t counters_num_fixed)
  {
- 	int ret = 0;
-@@ -1764,6 +1767,11 @@ static struct metricgroup__event_info *event_info__new(const char *name,
- 	e->pmu_name = strdup(pmu_name);
- 	if (!e->pmu_name || !e->name)
- 		return NULL;
-+	if (msr) {
-+		e->msr = strdup(msr);
-+		if (!e->msr)
-+			return NULL;
+ 	INIT_LIST_HEAD(&new_group->event_head);
++	if (sysctl__nmi_watchdog_enabled()) {
++		pr_debug("NMI watchdog is enabled. Reduce num of counters by 1\n");
++		counters_num_gp -= 1;
 +	}
- 	e->free_counter = free_counter;
- 	if (free_counter) {
- 		ret = set_counter_bitmap(0, e->counters);
-@@ -1801,7 +1809,8 @@ static int metricgroup__add_metric_event_callback(const struct pmu_event *pe,
- 	if (!strcasecmp(pe->name, d->event_name)) {
- 		if (!pe->counters_list)
- 			return -EINVAL;
--		event = event_info__new(d->event_id, pe->pmu, pe->counters_list, /*free_counter=*/false);
-+		event = event_info__new(d->event_id, pe->pmu, pe->counters_list,
-+					pe->msr, /*free_counter=*/false);
- 		if (!event)
- 			return -ENOMEM;
- 		list_add(&event->nd, d->list);
-@@ -1927,7 +1936,9 @@ static int find_and_set_counters(struct metricgroup__event_info *e,
- {
- 	int ret;
- 	unsigned long find_bit = 0;
--
-+	if (e->msr != NULL && current_group->msr != NULL && !strcmp(e->msr, current_group->msr)) {
-+		pr_debug("current group uses the required MSR %s already\n", e->msr);
-+		return -ENOSPC;
- 	if (e->free_counter)
- 		return 0;
- 	if (e->fixed_counter) {
-@@ -1964,11 +1975,17 @@ static int _insert_event(struct metricgroup__event_info *e,
- 		list_add(&event->nd, &group->event_head);
- 	else
- 		list_add_tail(&event->nd, &group->event_head);
-+	if (e->msr != NULL) {
-+		group->msr = strdup(e->msr);
-+		pr_debug("Add event %s to group, uses MSR %s\n", e->name, e->msr);
-+		if (!group->msr)
-+			return -ENOMEM;
-+	}
- 	return 0;
- }
- 
- /**
-- * Insert the new_group node at the end of the group list.
-+ * Initialize the new group and insert it to the end of the group list.
-  */
- static int insert_new_group(struct list_head *head,
- 			   struct metricgroup__group *new_group,
-@@ -2185,7 +2202,7 @@ static int create_grouping(struct list_head *pmu_info_list,
- 		bitmap_scnprintf(e->counters, NR_COUNTERS, bit_buf, NR_COUNTERS);
- 		pr_debug("Event name %s, [pmu]=%s, [counters]=%s\n", e->name,
- 			e->pmu_name, bit_buf);
--		ret = assign_event_grouping(e, pmu_info_list, &groups);
-+		ret = assign_event_grouping(e, pmu_info_list, grouping);
- 		if (ret)
- 			goto out;
- 	}
-@@ -2231,7 +2248,7 @@ static int hw_aware_build_grouping(struct expr_parse_ctx *ctx __maybe_unused,
- 		if (is_special_event(id)) {
- 			struct metricgroup__event_info *event;
- 
--			event = event_info__new(id, "default_core", "0",
-+			event = event_info__new(id, "default_core", "0", /*msr=*/NULL,
- 						/*free_counter=*/true);
- 			if (!event)
- 				goto err_out;
+ 	fill_counter_bitmap(new_group->gp_counters, 0, counters_num_gp);
+ 	fill_counter_bitmap(new_group->fixed_counters, 0, counters_num_fixed);
+ 	list_add_tail(&new_group->nd, head);
 -- 
 2.42.0
 
