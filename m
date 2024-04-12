@@ -1,114 +1,127 @@
-Return-Path: <linux-kernel+bounces-143115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6EF08A347B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:08:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 886C98A347A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:08:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DADF1F21D30
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:08:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B74D21C2337A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:08:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD5114EC4E;
-	Fri, 12 Apr 2024 17:07:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DED8614D702;
+	Fri, 12 Apr 2024 17:07:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="ilasTqh7"
-Received: from forward500b.mail.yandex.net (forward500b.mail.yandex.net [178.154.239.144])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="b10B7Zi0"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82303D547;
-	Fri, 12 Apr 2024 17:07:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6566A14D431
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:07:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712941657; cv=none; b=OT+sps4WTwYF+agx2MWrkR/N1eXmyMe9BMrPFbUCM6/VsHMggAlAMoUtRWxzfsps6eEDLdwCQ24dKlLiT7F3pscepMluzdA+ZwIu4utlBFLl0tsDue67PcbJ2PyOkMMxlAjKCFRN1dhz+vbu8m1m7rtXN+Ptr1rbeA2szt8bcS4=
+	t=1712941657; cv=none; b=IS1pykVbykByu+dsbWPP6RHIkPxJpYVrlTA7RR+HUH08A9gey1Umz/W3gxZvs5lL5CSAChHWbo1A8DlIbHNQNXrb2RjspC9xazhChv+nu8uEl9MNgFlKyhs3eL0HuBVfjN6S/gecMq880S2LaR5I+VUKJE0cuaWb1/0PZRQvtCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712941657; c=relaxed/simple;
-	bh=oGuGBrm2XsTgORrHIbPdgygwOqLpvFTPAvUMytMG5+I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Gd6mb3n0Ebv1UB+8ZsIZNjVSFoIUWhwozyF76X7PgO5Jgr3v/mjpVF7ELD9ZKkJZnQ3tbSFeMf5y/kidAYUqkdIV0lX3cwGB0TbE6EScZE4FaaVJiIPrKxD/L6fnl2ZxYL5tsA/hH9O7KOHRy8v8ikpib/ICoq7eLB1I23SEnCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=ilasTqh7; arc=none smtp.client-ip=178.154.239.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
-Received: from mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net [IPv6:2a02:6b8:c08:f220:0:640:b85:0])
-	by forward500b.mail.yandex.net (Yandex) with ESMTPS id 9A7EC61178;
-	Fri, 12 Apr 2024 20:07:26 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id O7gElsHl4Ko0-OxaUhniM;
-	Fri, 12 Apr 2024 20:07:25 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1712941646; bh=oGuGBrm2XsTgORrHIbPdgygwOqLpvFTPAvUMytMG5+I=;
-	h=In-Reply-To:To:From:Cc:Date:References:Subject:Message-ID;
-	b=ilasTqh75y8DdbfUD2T4KfuqpekbxqBzeYmIZOU/X/l6MSmvIt8fnT2AB1KgcRB3/
-	 g5vZ/zW/u/jTwXPjtfCVRvlydEiz8Gv9iHPnqbjJWdQRujIszvCeikvTp+E4zElajB
-	 9ltzzenaqKHj3pPKjDb/a/jJpSStB6jkjTC9DFkk=
-Authentication-Results: mail-nwsmtp-smtp-production-main-39.sas.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-Message-ID: <31236394-8211-4d93-81bd-ada9b039a2d4@yandex.ru>
-Date: Fri, 12 Apr 2024 20:07:24 +0300
+	bh=B04EjOgsZVPqyEh4DH0TEKubNhHXrgRXG0HP80hbpPM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uWMORwkRYH2uRFLVhYyYRLO8AeL+IBNMfGrSFechGJ1zkbQJZCZkqdeHlRRmD93GQqrExXuV8wK+aJ4KoZB/sIXAv3FOmPO4eJkWeodW4AJqjddTVNlP52KJo29hJAtato29yFmO+9gsG+ZjYJ7kanASkI72j9JN4a1HWmjJ6Vc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=b10B7Zi0; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712941655; x=1744477655;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=B04EjOgsZVPqyEh4DH0TEKubNhHXrgRXG0HP80hbpPM=;
+  b=b10B7Zi0lnKMtSy1RA3NDLHw5qy0Ro2cTRDPrw6o0VSlaIGrw0w4BAQS
+   jPdQj6EGPuo+IU5mAyHu9bsW6rwx5frf03ioygOtaQukmujVEhZIgSfid
+   yfi+luUfQ1ZGEXw5AqeG3cUpS1hBpnJy8aPEyen6IldC8YOqQtO9RFsJv
+   DGHWO7F7/YOVhtKKJG4oy73A4Mx1XJfNmLV3toAiqaVGghKzwbnQik9r3
+   Uoj7XVzN0wLl5iHCipNxd9rYMOAtBIMo3MUbhRhYAAwQdGTDwl88ncslo
+   tNcNc68Sr70Xxb85h8KY38z65cA3HbdXsF2enMdlXLeDZBBbeSsb/kykD
+   A==;
+X-CSE-ConnectionGUID: Rd8mZuETSky9+C9Yn7z5CQ==
+X-CSE-MsgGUID: MBIRj0M3SEiXo6L2IlDyoQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8958757"
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="8958757"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 10:07:34 -0700
+X-CSE-ConnectionGUID: 1+gUySJsSrWAvD9uZENAsg==
+X-CSE-MsgGUID: 8FxrbthFQo6bvN8zu8QswA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="25976939"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 10:07:33 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rvKN8-00000003iHk-0Gx1;
+	Fri, 12 Apr 2024 20:07:30 +0300
+Date: Fri, 12 Apr 2024 20:07:29 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Raag Jadav <raag.jadav@intel.com>, linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de, "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH] driver core: Make dev_err_probe() silent for -ENOMEM
+Message-ID: <ZhlqUdywIur4dzgE@smile.fi.intel.com>
+References: <20240412164405.335657-2-u.kleine-koenig@pengutronix.de>
+ <ZhlmpPNbEMRye2wZ@smile.fi.intel.com>
+ <cl5fmton3n5ayzr7ondnw7lzjaxoppyqhnoervj2fn4et75ish@cyko4abxbslg>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ACPICA: Fix memory leak then namespace lookup fails
-To: Armin Wolf <W_Armin@gmx.de>, "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org,
- linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20240403004718.11902-1-W_Armin@gmx.de>
- <CAJZ5v0i3TAyDERxCm5caud5x5kLbc6J6MKqXXFWecShYe-gCrA@mail.gmail.com>
- <23c89f70-98d3-41a5-927c-ff4f2300ab7e@gmx.de>
-Content-Language: en-US
-From: Dmitry Antipov <dmantipov@yandex.ru>
-Autocrypt: addr=dmantipov@yandex.ru; keydata=
- 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
- A/UwwXBRuvydGV0=
-In-Reply-To: <23c89f70-98d3-41a5-927c-ff4f2300ab7e@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cl5fmton3n5ayzr7ondnw7lzjaxoppyqhnoervj2fn4et75ish@cyko4abxbslg>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On 4/12/24 19:16, Armin Wolf wrote:
+On Fri, Apr 12, 2024 at 07:03:01PM +0200, Uwe Kleine-König wrote:
+> On Fri, Apr 12, 2024 at 07:51:48PM +0300, Andy Shevchenko wrote:
+> > On Fri, Apr 12, 2024 at 06:44:05PM +0200, Uwe Kleine-König wrote:
+> > > For an out-of-memory error there should be no additional output. Adapt
+> > > dev_err_probe() to not emit the error message when err is -ENOMEM.
+> > > This simplifies handling errors that might among others be -ENOMEM.
 
-> Dmitry, do you think that this memory leak is critical? If not, then i think
-> we can wait till the next ACPICA release.
+> > ...
+> > 
+> > 	BUILD_BUG_ON(err == -ENOMEM);
+> > 
+> > Done!
+> 
+> Well no, that doesn't do the trick. Consider for example device_add().
+> That function can return (at least) -EINVAL and -ENOMEM. To properly
+> ensure that the error handling is silent with the current
+> dev_err_probe(), we'd need to do:
+> 
+> 	ret = device_add(...);
+> 	if (ret) {
+> 		if (ret != -ENOMEM)
+> 			return dev_err_probe(...);
+> 		else
+> 			return ret;
+> 	}
+> 
+> With my suggested patch this can be reduced to:
+> 
+> 	ret = device_add(...);
+> 	if (ret)
+> 		return dev_err_probe(...);
 
-Hopefully not too critical. The leak itself is small, and it's highly depended
-from the particular notebook model and/or UEFI BIOS revision, so it should be
-safe to wait.
+Fair enough, but these two should be combined.
+Mine is for the rejecting a dead code on the phase of the submission.
 
-Dmitry
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
