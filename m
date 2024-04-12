@@ -1,123 +1,200 @@
-Return-Path: <linux-kernel+bounces-142581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18F1D8A2D6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:29:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17E138A2D63
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:28:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B2D11C21D77
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:29:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFCE028250D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:28:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41FD42069;
-	Fri, 12 Apr 2024 11:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="DnUYCztZ"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B88154F8C;
-	Fri, 12 Apr 2024 11:29:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B69B54FBE;
+	Fri, 12 Apr 2024 11:28:31 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A42EE5490A
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:28:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712921352; cv=none; b=tJYq9wIwYbgYACX6r7MSVkggtzaYJoFh8rF6wQfSOwW7rVkef8HVbMwlMpYdVs+8GduChI4pMAGyDfoRYiZ31FnXHQpF25Vk4T5URbJ8qw0WlrAsMsfcORO2oZy06+FiOvf/GPJYzoZNvl8kRCWt341hOTYDSVnguGanpZAr200=
+	t=1712921310; cv=none; b=NB3JWBgXrUcO0IM5bRSeglyMwVEXUBRK4VtiYr9VZOLs1HoIwsj72uyJ/ZdDrZnDGYdG5EI898ydlQvEIKLqPteB30M28AlGBio0yROO3uVOXHn+1kNuLEqm4htfVreHE2jyDxCUsh+spB1BJlIyrPqL/+4f+kYgAxZo0b81Z6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712921352; c=relaxed/simple;
-	bh=iquIxgsQ5Z0mH9RFgypFv0gNEXhHWS+sF3ZCfjbshog=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TTb7OCox379Qt076ESy8Lj5uZ+d8E8wk71t/1YA5NMgxvpqn4GqmNYBKSo4aywqzazetuDkCw4Oat87z4GozhRxpmw2m6KASQ8WYimB0Qm2RjU9BOhIFCZZ3f6T5Su74HaXNtP3Hf0ooUyJxIls0yic1LR0rsXMxScZRok6feHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=DnUYCztZ; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712921349; x=1744457349;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=iquIxgsQ5Z0mH9RFgypFv0gNEXhHWS+sF3ZCfjbshog=;
-  b=DnUYCztZc4n08wUpkJ9KzxUEULZvyuBmpGEiRENqw+spcJ2dWC92zDlD
-   vDZ/sHLjbSjVXjRpWKzSaEJoO0pfaJ0gk0t2IEbjwOZkhLAZ139Z2zV7G
-   M5Ot1ithL9PEMtqrrFA5hCgTK58drIpy5LuZuQnNXXQUzYbdNqPpauXbQ
-   KcJxU6ivrWbWC4kce+5dQbQsl44ZpGWvu0Ynk/qNgsGiFPZ3k1SIUOMLB
-   LQDggLzfYT5DMGeifUQ4YKaQ67q4vyIi8AKC+JWdqoqjQQBKIgqWpJpOj
-   QBEZ0GhphGhkQ62FIi6HAvsLBYYRo8XaV+0lXUA8xEuPDFlzfYzMkpYJX
-   w==;
-X-CSE-ConnectionGUID: UqSsJJfvSp2/HXPpn3qbvQ==
-X-CSE-MsgGUID: gSMNaP1WQzarJHb4JiP76w==
-X-IronPort-AV: E=Sophos;i="6.07,195,1708412400"; 
-   d="asc'?scan'208";a="22708479"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Apr 2024 04:29:08 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 12 Apr 2024 04:28:45 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Fri, 12 Apr 2024 04:28:41 -0700
-Date: Fri, 12 Apr 2024 12:27:50 +0100
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Charlie Jenkins <charlie@rivosinc.com>
-CC: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, Conor Dooley
-	<conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
-	<jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, Evan Green
-	<evan@rivosinc.com>, =?iso-8859-1?Q?Cl=E9ment_L=E9ger?=
-	<cleger@rivosinc.com>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan
-	<shuah@kernel.org>, <linux-riscv@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Palmer Dabbelt
-	<palmer@rivosinc.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-sunxi@lists.linux.dev>, <linux-doc@vger.kernel.org>,
-	<linux-kselftest@vger.kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Subject: Re: [PATCH 10/19] RISC-V: define the elements of the VCSR vector CSR
-Message-ID: <20240412-viper-bullish-d57d19805a0c@wendy>
-References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
- <20240411-dev-charlie-support_thead_vector_6_9-v1-10-4af9815ec746@rivosinc.com>
+	s=arc-20240116; t=1712921310; c=relaxed/simple;
+	bh=iFkkJ4gu5lFXEXw2w7qqEFUR/9XtHssnEUIom6DrWVI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eNEyKu02Jr/L1/rcG5Z/SmTp3iNVT9qFDDVw32jeS5i+gLKWmhXTZTbBRTMh3hMxxsZosUu7jo8Jn/D48cwl4Jbaqk16o0dPRZkmT31dIIAdFX/suCLxu7EauYt1OM8W/pSbmnIq7poFjjBaFPlIwhnykAo+Wvg7k53iyzqyYQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C208D339;
+	Fri, 12 Apr 2024 04:28:56 -0700 (PDT)
+Received: from [10.57.73.208] (unknown [10.57.73.208])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA6D73F766;
+	Fri, 12 Apr 2024 04:28:24 -0700 (PDT)
+Message-ID: <66afc978-0221-488b-9fc6-7d5213d385ed@arm.com>
+Date: Fri, 12 Apr 2024 12:28:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="1/ezE870fxXOLLQw"
-Content-Disposition: inline
-In-Reply-To: <20240411-dev-charlie-support_thead_vector_6_9-v1-10-4af9815ec746@rivosinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/5] mm: swap: introduce swap_free_nr() for batched
+ swap_free()
+Content-Language: en-GB
+To: Chuanhua Han <chuanhuahan@gmail.com>
+Cc: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org, baolin.wang@linux.alibaba.com, chrisl@kernel.org,
+ david@redhat.com, hanchuanhua@oppo.com, hannes@cmpxchg.org,
+ hughd@google.com, kasong@tencent.com, surenb@google.com,
+ v-songbaohua@oppo.com, willy@infradead.org, xiang@kernel.org,
+ ying.huang@intel.com, yosryahmed@google.com, yuzhao@google.com,
+ ziy@nvidia.com, linux-kernel@vger.kernel.org
+References: <20240409082631.187483-1-21cnbao@gmail.com>
+ <20240409082631.187483-2-21cnbao@gmail.com>
+ <95bc0ebb-49f4-4331-8809-3e4625f1d91a@arm.com>
+ <CANzGp4Jzw9bUnQw1zVdw7V6=pARx7x5s8QTyXJGfdEzrXVkZTA@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CANzGp4Jzw9bUnQw1zVdw7V6=pARx7x5s8QTyXJGfdEzrXVkZTA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
---1/ezE870fxXOLLQw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 12/04/2024 03:07, Chuanhua Han wrote:
+> Ryan Roberts <ryan.roberts@arm.com> 于2024年4月11日周四 22:30写道：
+>>
+>> On 09/04/2024 09:26, Barry Song wrote:
+>>> From: Chuanhua Han <hanchuanhua@oppo.com>
+>>>
+>>> While swapping in a large folio, we need to free swaps related to the whole
+>>> folio. To avoid frequently acquiring and releasing swap locks, it is better
+>>> to introduce an API for batched free.
+>>>
+>>> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
+>>> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
+>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+>>
+>> Couple of nits; feel free to ignore.
+>>
+>> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+>>
+>>> ---
+>>>  include/linux/swap.h |  5 +++++
+>>>  mm/swapfile.c        | 51 ++++++++++++++++++++++++++++++++++++++++++++
+>>>  2 files changed, 56 insertions(+)
+>>>
+>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>>> index 11c53692f65f..b7a107e983b8 100644
+>>> --- a/include/linux/swap.h
+>>> +++ b/include/linux/swap.h
+>>> @@ -483,6 +483,7 @@ extern void swap_shmem_alloc(swp_entry_t);
+>>>  extern int swap_duplicate(swp_entry_t);
+>>>  extern int swapcache_prepare(swp_entry_t);
+>>>  extern void swap_free(swp_entry_t);
+>>> +extern void swap_free_nr(swp_entry_t entry, int nr_pages);
+>>>  extern void swapcache_free_entries(swp_entry_t *entries, int n);
+>>>  extern void free_swap_and_cache_nr(swp_entry_t entry, int nr);
+>>>  int swap_type_of(dev_t device, sector_t offset);
+>>> @@ -564,6 +565,10 @@ static inline void swap_free(swp_entry_t swp)
+>>>  {
+>>>  }
+>>>
+>>> +void swap_free_nr(swp_entry_t entry, int nr_pages)
+>>> +{
+>>> +}
+>>> +
+>>>  static inline void put_swap_folio(struct folio *folio, swp_entry_t swp)
+>>>  {
+>>>  }
+>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>>> index 28642c188c93..f4c65aeb088d 100644
+>>> --- a/mm/swapfile.c
+>>> +++ b/mm/swapfile.c
+>>> @@ -1356,6 +1356,57 @@ void swap_free(swp_entry_t entry)
+>>>               __swap_entry_free(p, entry);
+>>>  }
+>>>
+>>> +/*
+>>> + * Free up the maximum number of swap entries at once to limit the
+>>> + * maximum kernel stack usage.
+>>> + */
+>>> +#define SWAP_BATCH_NR (SWAPFILE_CLUSTER > 512 ? 512 : SWAPFILE_CLUSTER)
+>>> +
+>>> +/*
+>>> + * Called after swapping in a large folio, batched free swap entries
+>>> + * for this large folio, entry should be for the first subpage and
+>>> + * its offset is aligned with nr_pages
+>>> + */
+>>> +void swap_free_nr(swp_entry_t entry, int nr_pages)
+>>> +{
+>>> +     int i, j;
+>>> +     struct swap_cluster_info *ci;
+>>> +     struct swap_info_struct *p;
+>>> +     unsigned int type = swp_type(entry);
+>>> +     unsigned long offset = swp_offset(entry);
+>>> +     int batch_nr, remain_nr;
+>>> +     DECLARE_BITMAP(usage, SWAP_BATCH_NR) = { 0 };
+>>> +
+>>> +     /* all swap entries are within a cluster for mTHP */
+>>> +     VM_BUG_ON(offset % SWAPFILE_CLUSTER + nr_pages > SWAPFILE_CLUSTER);
+>>> +
+>>> +     if (nr_pages == 1) {
+>>> +             swap_free(entry);
+>>> +             return;
+>>> +     }
+>>> +
+>>> +     remain_nr = nr_pages;
+>>> +     p = _swap_info_get(entry);
+>>> +     if (p) {
+>>
+>> nit: perhaps return early if (!p) ? Then you dedent the for() block.
+> 
+> Agreed!
+> 
+>>
+>>> +             for (i = 0; i < nr_pages; i += batch_nr) {
+>>> +                     batch_nr = min_t(int, SWAP_BATCH_NR, remain_nr);
+>>> +
+>>> +                     ci = lock_cluster_or_swap_info(p, offset);
+>>> +                     for (j = 0; j < batch_nr; j++) {
+>>> +                             if (__swap_entry_free_locked(p, offset + i * SWAP_BATCH_NR + j, 1))
+>>> +                                     __bitmap_set(usage, j, 1);
+>>> +                     }
+>>> +                     unlock_cluster_or_swap_info(p, ci);
+>>> +
+>>> +                     for_each_clear_bit(j, usage, batch_nr)
+>>> +                             free_swap_slot(swp_entry(type, offset + i * SWAP_BATCH_NR + j));
+>>> +
+>>
+>> nit: perhaps change to for (;;), and do the checks here to avoid clearing the
+>> bitmap on the last run:
+>>
+>>                         i += batch_nr;
+>>                         if (i < nr_pages)
+>>                                 break;
+> Great, thank you for your advice!
 
-On Thu, Apr 11, 2024 at 09:11:16PM -0700, Charlie Jenkins wrote:
-> From: Heiko Stuebner <heiko@sntech.de>
->=20
-> The VCSR CSR contains two elements VXRM[2:1] and VXSAT[0].
->=20
-> Define constants for those to access the elements in a readable way.
->=20
-> Acked-by: Guo Ren <guoren@kernel.org>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> Signed-off-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
+Or maybe leave the for() as is, but don't explicitly init the bitmap at the
+start of the function and instead call:
 
-You need to sign off on this as the submitter Charlie.
+	bitmap_clear(usage, 0, SWAP_BATCH_NR);
 
---1/ezE870fxXOLLQw
-Content-Type: application/pgp-signature; name="signature.asc"
+At the start of each loop?
 
------BEGIN PGP SIGNATURE-----
+>>
+>>> +                     bitmap_clear(usage, 0, SWAP_BATCH_NR);
+>>> +                     remain_nr -= batch_nr;
+>>> +             }
+>>> +     }
+>>> +}
+>>> +
+>>>  /*
+>>>   * Called after dropping swapcache to decrease refcnt to swap entries.
+>>>   */
+>>
+>>
+> 
+> 
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhkatgAKCRB4tDGHoIJi
-0qMCAP9WmrMY90YHP5yda7KsglQlByWGisuGhCvnYWypcd/ApAEAs5xulwNb27Gc
-2B7pEO73kwar/VMuJdyiGb3RMX/V4Ao=
-=n51g
------END PGP SIGNATURE-----
-
---1/ezE870fxXOLLQw--
 
