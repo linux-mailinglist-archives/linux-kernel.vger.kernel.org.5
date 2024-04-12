@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-143076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C831F8A33C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 700928A33CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:27:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83E4D281735
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:26:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CECD2811FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A87291494C7;
-	Fri, 12 Apr 2024 16:25:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28EE514A604;
+	Fri, 12 Apr 2024 16:25:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TgEaykqD"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e8504dgn"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D96A1474D2;
-	Fri, 12 Apr 2024 16:25:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C60F4148313;
+	Fri, 12 Apr 2024 16:25:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712939117; cv=none; b=NV48gfQe0WWJwp+jrksRw8PfQljsUfTAddiRs62CRagWpny5qDb2rTpJ4tRvqnHqgGLkAWtfH65s6YpyG1qzXylssy+LsNphMMJ63T9zjiaKZdd0Fd++fADdpfzfotpS3TdH3P2Ydaw4/5mLYcr400qCSwv4f7qQTZGZa92+qJs=
+	t=1712939118; cv=none; b=kXaY1O4vX5DbuvpJnxJEqbEkAL7H5LhEi0XNAckK6sosJYHxHGrHewFSm2vagZr/vD1LFW0P8wAJJpM36WctmCpkCSdubePADXFfr8pnxmSruBw/dwYlDtIQIvFZvXne9cyEghZccpCAzKOmD8a7uMKl8jo/1ALcN7H/ALHe2jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712939117; c=relaxed/simple;
-	bh=IOBMceW+zAzriiimOV4JYDNFwggkdO0bj8MIHegPP4c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=juABtv1dWE6P8eCtsu/AfmF7U9z3J7a8vf6dxUAW+Jyueu+RwrmgONNYJl0rhPZoNX6cWV60zzVwV/jX9TQKuN+UecEfFdW2sDuxPgV3X3EkaReCj7F6Y4PL/x21wWVf4jhca2WhWqFqpH1NdzdC1IEi1OYdbZl5wxo5JvbRXdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TgEaykqD; arc=none smtp.client-ip=209.85.167.49
+	s=arc-20240116; t=1712939118; c=relaxed/simple;
+	bh=+/Ao6tah8HHTzxYdBhw2rCA83A9fOpuOCf642ssB/IA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=bq84A9SohPuyRIkveS3j30uhroi1mEjhwmg3fLpwjXUGKOkpbnacrFgPgzR/DOb1naMGLjnqkUz0IpxC8JLASe3biq95q0gQ65Qbt81trLbsZnnI3NfImwUOsiiJ13aTOYgyBw6K0rC241DH/vPmyTPyHVl3nEQBPEHAFyK/WU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e8504dgn; arc=none smtp.client-ip=209.85.208.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-518872fcb89so836965e87.3;
-        Fri, 12 Apr 2024 09:25:15 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d8a2cbe1baso11947051fa.0;
+        Fri, 12 Apr 2024 09:25:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712939113; x=1713543913; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=caQTinMj4HV+puo76LX890/vq6ddN+KcGH/X/bwBRlw=;
-        b=TgEaykqD9of5s+HZgpZ+sOQOKxFbjki9tZO8R5x26rW2YOB3sY6W0ZgCI1Rwzt4gji
-         NsKcxbOg2DyPkIny8FPWRr3WA5GYaASP9TVHZMDPr6GxWlmIBmwc3JDH/cX6zi0gMPYU
-         8By+I7CEbArQmGoDWwlIIGCRaG5nzWab6413+DOKDy5AfoFY5n4ri7XU83npFo9/2K0e
-         wHU3TZL8mSo1IL17DEqjJCXRGo36jFhMtyBYeRFpPnu45t8MOT9SlZMnq2SoCMXJCgHZ
-         N2SxZgC6cMxz0x5PI86E0eFaTxc38A8Gp4abLHB5452NeeWDJLKvaKZDuvy9JgY/BKoT
-         Iwhw==
+        d=gmail.com; s=20230601; t=1712939115; x=1713543915; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j1ZiDdEdBLa6WUq6dSl5bzwxlD6MdFYlMkt9vqw7lek=;
+        b=e8504dgnbJ+K6UBCdyiyKmMZTjip0hVHGbjosKHXBBxV5ejQnU+YkxY2REMf6gS2KN
+         k94nYE6uvWl/8lkZsDdocwjBxUEt8+J0VYHn0eCR+wBN5maVFUME5B/P+l2MaMRNW7mI
+         AGFL7oMn3vEbPLAAcycpjd6C5ri34sWvFKxqXP/OOSXLApOhz3S8Yf0MP/XqiFBSQlAa
+         oAqOtwnQ6nM5cm/hoip0tAcTMXP3aJ4DL1q0rokhFnwjsUIHkEs8AKdZZF3g56LL0TFF
+         JJsMmLm1IJykGJIevevvPxNfjAim4IxHK5pNxrN8llNE7SwN900y0GMlj527BM9wUNjj
+         NmDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712939113; x=1713543913;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=caQTinMj4HV+puo76LX890/vq6ddN+KcGH/X/bwBRlw=;
-        b=euLlGO2j50n4eXBoQma6wkDkrL3wIMQtMaH4wP2s942mM4irKDUwV9uAdBSqIPF5do
-         ilRzsWKIM3egxwxXyMTsVIxsm3s2pyElqEU/GmK+nlqHD4IS+7L+8xreU+QQyFdFkH81
-         Os1aCkTX49h/oI9XifoYeM7/E5SGxI0r9yzA0Qmk5DRSBtkuOQHe3hAOgTwZwMak7YQe
-         Cs0RUCy9ZR8iftsICBlCUT51e+06ku2PEIANctTbBUav73V6775aiPrRW6wPrDEfiqqN
-         MvdbvozX+H0dKx6c05S+krKxDA7KGAY7sbJvX0yCt3QALRJY5eMXm7eV2VB5bA6gAaE2
-         uGZg==
-X-Forwarded-Encrypted: i=1; AJvYcCWHkysRmQbT/Upq88ClgTZ6o3QsieeNhqepsaA06upVY0lH3BkjjI+iMGTD5SmcucTxbCRcXL0GlE6OV5h+0rKlbbCBwArcRPers9hBvxduk5Mhx3QodCoe/JOLqLcvy6C3MeTaIPrEDhCn7oRNy+rLRzopjzKMhWa91iJKzdYO+N/U5tn0ONDlIm85qxEf7RMqSoF7ABxTdjxMLehtlSaz
-X-Gm-Message-State: AOJu0Yw25hbt3AGkZcaAsx5i/vuh6rALaMZEgjUtbtxZPOso7WPLpCYu
-	eN0Slqw8vzzean8KPWWMxKW8XDO+EvyalpbCWnciw1XtQWQRuoJC
-X-Google-Smtp-Source: AGHT+IFSMXcf/XnY1RW70gVLOV7EXutIJ9X7L4Sz2vOg6Nlj4vKSBVkxS1dxMXOgsnqrl1AAn7dn/w==
-X-Received: by 2002:a05:6512:499:b0:517:855e:2e3e with SMTP id v25-20020a056512049900b00517855e2e3emr2064344lfq.6.1712939113253;
-        Fri, 12 Apr 2024 09:25:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712939115; x=1713543915;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j1ZiDdEdBLa6WUq6dSl5bzwxlD6MdFYlMkt9vqw7lek=;
+        b=p/+9K/hfo6acze3Mjmsk5Zyo3QyCi0v93incSr78v3m8rPhqOQIwchAbJX97Ec2Czv
+         iZ7fftSv6hZexA9/5PM/9T1rB9h/aZUwWYrfqJ3hWkHjxXcDvswh9RAPU3FljeTXPKST
+         fYK0DaaCtsORNnABuxEZ/fUk+kbg+fj7O9r5UmjayjM+cXeaF3ptXSpmMa+fnEKyz3OV
+         dbiTot0smW+BXG0pm/CMwrkUkttldE0I547vAAz4o9GNZmuXYcr0rmauw7LFqDwL30+T
+         RWto5TpMthvSDrHLZ7rkDRvuUfkfVkdrmCnk3WuFMK8GcLiepmucn6zOzppFE9HO4O95
+         wHYg==
+X-Forwarded-Encrypted: i=1; AJvYcCWnFUPxT1HIElbv/3dWp7ChhxNbA7awOqLpO8wxEKrJSszgg4rSLGW7vXIO9PKIhi+tt2A2JEUUy6yUmfKMY9VKgzYXsyQkQ5JN4VWN1/Deq1ofG5iFA+szErvhppvSKSnHnwgQ3C0CiT9ERoIqXisLKOp+ujFoJLigfCfn8Cx9omRhJbx8MLL1taam84a6XYY7JBld6gWjbw0BTOGgpEdf
+X-Gm-Message-State: AOJu0Yz85IGk5Pxfa4cR+XdcstNGL5yVwAvBTa6yAu8F6d3w+17maHLn
+	aYnzQCxo9UheFFtD9nhgQIu9JIPsF76b8hwj5DzdO/s3i67b5/QY
+X-Google-Smtp-Source: AGHT+IEA2Mx2PVZ0wxEHfJ9V8RofGxmOrjMMCiJmTk1zmlFqSPe8iGWGd2yd72AmB/HZ5oyd/lApWA==
+X-Received: by 2002:a2e:7c19:0:b0:2d8:cd7f:3cc8 with SMTP id x25-20020a2e7c19000000b002d8cd7f3cc8mr2526091ljc.20.1712939114765;
+        Fri, 12 Apr 2024 09:25:14 -0700 (PDT)
 Received: from fedora.. (d-zg2-064.globalnet.hr. [213.149.37.64])
-        by smtp.googlemail.com with ESMTPSA id q4-20020adff504000000b0034635bd6ba5sm4576554wro.92.2024.04.12.09.25.11
+        by smtp.googlemail.com with ESMTPSA id q4-20020adff504000000b0034635bd6ba5sm4576554wro.92.2024.04.12.09.25.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 09:25:12 -0700 (PDT)
+        Fri, 12 Apr 2024 09:25:14 -0700 (PDT)
 From: Robert Marko <robimarko@gmail.com>
 To: kvalo@kernel.org,
 	davem@davemloft.net,
@@ -80,10 +82,12 @@ To: kvalo@kernel.org,
 	ath11k@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Cc: Robert Marko <robimarko@gmail.com>
-Subject: [PATCH 1/2] dt-bindings: net: wireless: ath11k: add ieee80211-freq-limit property
-Date: Fri, 12 Apr 2024 18:24:08 +0200
-Message-ID: <20240412162510.29483-1-robimarko@gmail.com>
+Subject: [PATCH 2/2] wifi: ath11k: support DT ieee80211-freq-limit property to limit channels
+Date: Fri, 12 Apr 2024 18:24:09 +0200
+Message-ID: <20240412162510.29483-2-robimarko@gmail.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240412162510.29483-1-robimarko@gmail.com>
+References: <20240412162510.29483-1-robimarko@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,36 +96,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is an existing optional property that ieee80211.yaml/cfg80211
-provides. It's useful to further restrict supported frequencies
-for a specified device through device-tree.
+The common DT property can be used to limit the available channels
+but ath11k has to manually call wiphy_read_of_freq_limits().
 
 Signed-off-by: Robert Marko <robimarko@gmail.com>
 ---
- .../devicetree/bindings/net/wireless/qcom,ath11k.yaml          | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/wireless/ath/ath11k/mac.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
-index 672282cdfc2f..907bbb646614 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
-@@ -55,6 +55,8 @@ properties:
-       phandle to a node describing reserved memory (System RAM memory)
-       used by ath11k firmware (see bindings/reserved-memory/reserved-memory.txt)
+diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
+index c32be587000d..59bde128d351 100644
+--- a/drivers/net/wireless/ath/ath11k/mac.c
++++ b/drivers/net/wireless/ath/ath11k/mac.c
+@@ -10124,6 +10124,7 @@ static int __ath11k_mac_register(struct ath11k *ar)
+ 	if (ret)
+ 		goto err;
  
-+  ieee80211-freq-limit: true
-+
-   iommus:
-     minItems: 1
-     maxItems: 2
-@@ -88,6 +90,7 @@ required:
- additionalProperties: false
++	wiphy_read_of_freq_limits(ar->hw->wiphy);
+ 	ath11k_mac_setup_ht_vht_cap(ar, cap, &ht_cap);
+ 	ath11k_mac_setup_he_cap(ar, cap);
  
- allOf:
-+  - $ref: ieee80211.yaml#
-   - if:
-       properties:
-         compatible:
 -- 
 2.44.0
 
