@@ -1,113 +1,137 @@
-Return-Path: <linux-kernel+bounces-141968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92D288A2599
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:18:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C67A08A259F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:19:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 213F0B21F1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:18:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81D432848B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:19:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F4318C1A;
-	Fri, 12 Apr 2024 05:18:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1751BC4B;
+	Fri, 12 Apr 2024 05:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wwe+EtfK"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="aOInRbYw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 473B717731;
-	Fri, 12 Apr 2024 05:18:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1839E1F619;
+	Fri, 12 Apr 2024 05:18:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712899108; cv=none; b=av1Oqp4DI9CqtuatkfaV1XOMNam6mk/OiIuCrANCOMsLMsIE1iWjkFx9Gy90rZ9xLeLftWwlUNvAq/BXq+h0HYpkiwTOQcGtF2FSrES5q5Jag04T0cQueK+RhcmCFTjMAlwX2i0jMHPurfZlbuDMY+Iiv/y8nLwy8e6HTZ1/ARU=
+	t=1712899123; cv=none; b=p1tpxEi8KlXTzEUP2gDU+PBNPfqowQcrjDxVGu63pNOr6xmi2yR3xDrlni4soJ1ku5C5qNje920sLVE/mKUI9q9gQm4sjQzh5cg8vsJhTQQk1KBQTfEePksQJiKJdVoLOJ9FUzkq7r6WwQRmJhpX1x0LqSOuKDNZpVwVviI1a7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712899108; c=relaxed/simple;
-	bh=INmCQ1fpE400k9JPfwAu6ECyCbxAnmhVAOebNyCBIzw=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=edL6oEXBZDpO6jGL2p5xW8DgE82iHGDQM1y98DZXsOtKrjsyAV+SjhWocUkUm+HQDeTUND77j+adljrpo/BtF209q1UIPTY/bJ0ab1QiFHC8NzG0OYGWCbjSjUqlg0IyCOgkRGBvHps6+s9hpdsLPjJrWMvpkT7sULSyCK8RNys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wwe+EtfK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B32BC2BBFC;
-	Fri, 12 Apr 2024 05:18:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712899108;
-	bh=INmCQ1fpE400k9JPfwAu6ECyCbxAnmhVAOebNyCBIzw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Wwe+EtfK2fuopyb9scsa5ijsx9IAenvkV1Y4fCPsafZeHf8NFOTiZ2rW7s5/gtgpB
-	 38r9mK9dWztcuiMTUevejtFmil1CZJWkISsOxYCNRqo9+wHbxGcHmLPHXM03NvOCUV
-	 UBxKH2ccMDBWv9ewyY1dQT5MeP9qYgpQJ1S0TrKypiEiiIQtf/mAqD3GDTVcr5c0di
-	 aM5lPi07dfPDqtf+2QXr9QNgbCwwhQA4QIWNJacEjiFatOKyFUY/AUGBsQ1XxFXYoX
-	 2Vtv4wlJvJ2yWG7TySsWtWIoHRQP/uX0iIHGR4Y6MmVHuLrtn1Qzq9tXdhQGjI5Auq
-	 jvfFPb4NFDVDg==
-Date: Fri, 12 Apr 2024 14:18:22 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Yuntao Wang <ytcoode@gmail.com>
-Cc: akpm@linux-foundation.org, arnd@arndb.de, changbin.du@huawei.com,
- christophe.leroy@csgroup.eu, geert@linux-m68k.org, jpoimboe@kernel.org,
- kjlx@templeofstupid.com, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, ndesaulniers@google.com,
- peterz@infradead.org, tglx@linutronix.de, tj@kernel.org
-Subject: Re: [PATCH v2] init/main.c: Remove redundant space from
- saved_command_line
-Message-Id: <20240412141822.bc7cb44065dab62bf9f2e5ff@kernel.org>
-In-Reply-To: <20240412032950.12687-1-ytcoode@gmail.com>
-References: <20240412080839.c903a0058bd6594d31bc1d3e@kernel.org>
-	<20240412032950.12687-1-ytcoode@gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712899123; c=relaxed/simple;
+	bh=4wqTxoZFHiWRIlPPIHGTjlolEmrgei5d04Xo/JlN0go=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Wrivz/lYLeE6wxRIGeWWikS1FiR0Jt0IiUuSO9upwXStfFdABhTV/5ACjWAbEpek8WmjFtkLQbg7v0lIzxs6vow4d3g4FfOktemeSwmhXgP52MwxgF8iUsqlfGkBj39wAShREv20YAoSJsVYPiRdYesTy9fQidpOfeLv35RPJjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=aOInRbYw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33ADDC2BBFC;
+	Fri, 12 Apr 2024 05:18:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712899122;
+	bh=4wqTxoZFHiWRIlPPIHGTjlolEmrgei5d04Xo/JlN0go=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aOInRbYwcY73F+9XzxfeawyYGu3hSjC4p32UJ3k+cLbqQ6ALnD+/pTkngXODLnbhX
+	 IAURGE0AROPtapKw1AWf5OvVrHzn9bL3N+lL2yZRJr9bNBrmi5fig4c+Oy/THCl01R
+	 t9VHgsqEOQynEAScuTJOGA4Pz+9cD18PRIqcMVmU=
+Date: Fri, 12 Apr 2024 07:18:39 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Ivan Avdeev <me@provod.works>
+Cc: laurent.pinchart@ideasonboard.com, dan.scally@ideasonboard.com,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: gadget: uvc: use correct buffer size when parsing
+ configfs lists
+Message-ID: <2024041230-preaching-ranger-66fe@gregkh>
+References: <20240411164616.4130163-1-me@provod.works>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240411164616.4130163-1-me@provod.works>
 
-On Fri, 12 Apr 2024 11:29:50 +0800
-Yuntao Wang <ytcoode@gmail.com> wrote:
-
-> There is a space at the end of extra_init_args. In the current logic,
-> copying extra_init_args to saved_command_line will cause extra spaces
-> in saved_command_line here or there. Remove the trailing space from
-> extra_init_args to make the string in saved_command_line look more perfect.
+On Thu, Apr 11, 2024 at 12:46:16PM -0400, Ivan Avdeev wrote:
+> This commit fixes uvc gadget support on 32-bit platforms.
 > 
-> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-
-OK, this looks good to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Let me pick this to bootconfig/for-next.
-
-Thank you,
-
+> Commit 0df28607c5cb ("usb: gadget: uvc: Generalise helper functions for
+> reuse") introduced a helper function __uvcg_iter_item_entries() to aid
+> with parsing lists of items on configfs attributes stores. This function
+> is a generalization of another very similar function, which used a
+> stack-allocated temporary buffer of fixed size for each item in the list
+> and used the sizeof() operator to check for potential buffer overruns.
+> The new function was changed to allocate the now variably sized temp
+> buffer on heap, but wasn't properly updated to also check for max buffer
+> size using the computed size instead of sizeof() operator.
+> 
+> As a result, the maximum item size was 7 (plus null terminator) on
+> 64-bit platforms, and 3 on 32-bit ones. While 7 is accidentally just
+> barely enough, 3 is definitely too small for some of UVC configfs
+> attributes. For example, dwFrameInteval, specified in 100ns units,
+> usually has 6-digit item values, e.g. 166666 for 60fps.
+> 
+> Fixes: 0df28607c5cb ("usb: gadget: uvc: Generalise helper functions for reuse")
+> Signed-off-by: Ivan Avdeev <me@provod.works>
 > ---
-> v1 -> v2: Fix the issue using the method suggested by Masami
+>  drivers/usb/gadget/function/uvc_configfs.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
->  init/main.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> diff --git a/drivers/usb/gadget/function/uvc_configfs.c b/drivers/usb/gadget/function/uvc_configfs.c
+> index 7e704b2bcfd1..a4377df612f5 100644
+> --- a/drivers/usb/gadget/function/uvc_configfs.c
+> +++ b/drivers/usb/gadget/function/uvc_configfs.c
+> @@ -92,10 +92,10 @@ static int __uvcg_iter_item_entries(const char *page, size_t len,
+>  
+>  	while (pg - page < len) {
+>  		i = 0;
+> -		while (i < sizeof(buf) && (pg - page < len) &&
+> +		while (i < bufsize && (pg - page < len) &&
+>  		       *pg != '\0' && *pg != '\n')
+>  			buf[i++] = *pg++;
+> -		if (i == sizeof(buf)) {
+> +		if (i == bufsize) {
+>  			ret = -EINVAL;
+>  			goto out_free_buf;
+>  		}
 > 
-> diff --git a/init/main.c b/init/main.c
-> index 881f6230ee59..0f03dd15e0e2 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -627,8 +627,10 @@ static void __init setup_command_line(char *command_line)
->  
->  	if (extra_command_line)
->  		xlen = strlen(extra_command_line);
-> -	if (extra_init_args)
-> +	if (extra_init_args) {
-> +		extra_init_args = strim(extra_init_args); /* remove trailing space */
->  		ilen = strlen(extra_init_args) + 4; /* for " -- " */
-> +	}
->  
->  	len = xlen + strlen(boot_command_line) + 1;
->  
+> base-commit: 2c71fdf02a95b3dd425b42f28fd47fb2b1d22702
 > -- 
-> 2.44.0
+> 2.43.2
+> 
 > 
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Hi,
+
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- You have marked a patch with a "Fixes:" tag for a commit that is in an
+  older released kernel, yet you do not have a cc: stable line in the
+  signed-off-by area at all, which means that the patch will not be
+  applied to any older kernel releases.  To properly fix this, please
+  follow the documented rules in the
+  Documentation/process/stable-kernel-rules.rst file for how to resolve
+  this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
 
