@@ -1,105 +1,158 @@
-Return-Path: <linux-kernel+bounces-142655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0CEA8A2E65
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:36:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 861198A2E79
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:37:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D9EBB218D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:36:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 261F51F227DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:37:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C305914B;
-	Fri, 12 Apr 2024 12:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC16B5CDE7;
+	Fri, 12 Apr 2024 12:36:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="I2cTeQU7"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dw/AbNB9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489FD58AD3
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 12:36:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DAA658ABF;
+	Fri, 12 Apr 2024 12:36:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712925395; cv=none; b=jIEyWj1zbAEbkv5LT8qMxox7wQ6GVx/8ZA4/g9VaEgso6DOPKqy0IP/JJu7DNF54yUOj/+SakP/vV6PzAVmvjWkv4bFCSEybt0aY8nlAOXTyvYbS2OYqnc9bb7L7wuXlnup/AAjxo0pFhFi2LoCU0y3Em83Xm5pjcGQeH9mrZ+A=
+	t=1712925406; cv=none; b=L9MabLCspj2maeIlwCLRGEOYEzKTkJkz5FglX0URLHt7Wto3kcWNeD4aImxjZX/GOlTdZC4jFSJj8Lk2rQ2mDA3Yj/uLHILFTajLQQXGEWDIK3xE14WXGLOGgiIsKRWmegU1pfRJNPIaaD4in+/e3b1SaRnQ9BpUtO2wPRfD3Us=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712925395; c=relaxed/simple;
-	bh=q/zq68O6+sSBrl97NyQg0CjTsV0FrQQrptYSnKIK5qA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aYyum+uvQcBL+wXjBN9ZtacA87jXYDEwKDDX1znM3MJzSSs8i0ktM/2+uJdp2nobXmEm9bhuY80OXlzOkpJb9rJ+nXG6oLKtoKL3wPig1eym29aSWz45fLP/TPJ8ftvgqjfgmJHR6b26RY/KBWU5v9G0jQf9hdjg2oPrk7AJfb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=I2cTeQU7; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56e37503115so725544a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 05:36:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1712925392; x=1713530192; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=q9BoxTR1JROCUR8SnlVHtABNOhFI4wAk1SS2lfIXdDc=;
-        b=I2cTeQU7a/6nht7u7IlFLRW8F3L9jO5d/Bl4jCCshuKL+u57vSgP/Zp2EOz5JH2LUw
-         VqWgpOJR3euy+da4CXbTUaWGX3f5IDN3HCtPBZmyANHYpqymjtb1mELL/fxCq/czYe4l
-         J3XfyR6j8PigD24xvPiQFbHh2gmrSC+kBtBJA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712925392; x=1713530192;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=q9BoxTR1JROCUR8SnlVHtABNOhFI4wAk1SS2lfIXdDc=;
-        b=eCmK/IIdknHqLtfa3+6hV84A0kWsIuEhUBxnJJ1Rt6h/DgALJxwtiDYyVbD8FVVhXg
-         0awcRyg/O2ii4FrYdLrVJ/B9fnvA5One5m2n2iIBeHSnPnBPKk/d59RNWm3RApe5qSmk
-         RTDGOaAawIgtDRaTX8hE+D6ER67CAZr2xCbfgHYAHt0lmCqEHwPOFEFb9rQN8vDBe7na
-         tISiNej+DnyY+SYIKlx3zx8Mi/aixQVRfjjl+2v7eLm2kssRSFlStfkLk5BgRozb/0hK
-         KziaF6tWtJg/b+H05wfEeIfgZS0iF/tlCtrfBH1ELLPEPFDjwplqyn2VsBWxOa8wjef3
-         8oBg==
-X-Forwarded-Encrypted: i=1; AJvYcCXhZ4eRmfxQNYrZb30RJnMKusnSOk58pA7ixyt7mC+LGo1zpUpHFFKXmU9S+N2ndaz2F3jv+pmH1kJx9zNrYBLSretIc43NgHesSFq9
-X-Gm-Message-State: AOJu0YziCTE+hJHsesBQE4wMcHDCVaNuXxjJbBSYmyyFfBezJYw0UP1e
-	0tXZP7jbtEHSyhew3g6XkAlbzHbz6b7rbE4wQP0dXreWTB5UP4oeWMIc25SFRHoTeVVdNConpz2
-	PVO/7UafyBLV0eumppp2h/qcSqzVB+yYNJg/NjQ==
-X-Google-Smtp-Source: AGHT+IF0OXEoT3ZY3zlYrIJBP9t60HKo5W88sTuoOTax+N/wQVoD3KFVgeyr2E2zTF30Vq1n1+Eqqz1nG3Ytmq9tODw=
-X-Received: by 2002:a17:907:94c1:b0:a51:e5c7:55b7 with SMTP id
- dn1-20020a17090794c100b00a51e5c755b7mr1811230ejc.47.1712925392535; Fri, 12
- Apr 2024 05:36:32 -0700 (PDT)
+	s=arc-20240116; t=1712925406; c=relaxed/simple;
+	bh=uVRPkLUxeBeImJcfochb9CYj4hSQ+3CFeTdiRt6pTwE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=gOti9ToqazY8IA+2PBc/u+pxpPoR8Uzw+8z7wPGcwceStpdXaE9POCzxca1T+UVujYwrNWVrE8F0bT2D8UgSn6+u64Ctfma8mTaSJs6NeGaQCPhdDSehjmZExm1mPUgRgDLUBM2mpEvPQ0TsQfu2dcJ9YkaYIe3Vqks+878t1Jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dw/AbNB9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1CDBBC113CC;
+	Fri, 12 Apr 2024 12:36:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712925406;
+	bh=uVRPkLUxeBeImJcfochb9CYj4hSQ+3CFeTdiRt6pTwE=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=Dw/AbNB9vlLv3iFDsfvpkG4gW68/EYBtd6nAC++cY18JZdosuWPPc2DNb4bHeEfFj
+	 zCXQBKHKGhRWJD/bzfxlY748zZcEzab1/UBlASNbZ42dscsniAxhiK8rnR24Pu8ovw
+	 n3HPcd4xFQyMas24TPODnaiiScAgBPv5mgoYasoc94E4GQJJnD9HPqAosFmALcgro8
+	 sYu9Ukr4GD+osFheQyRYeh7LP5MXGoEh0SWm08iH1nXlXh09qRGVPsoj+5xQ+uaavX
+	 t7ZBpbqFUdXCTa+e7Flrb2dj5gkwtg7kbgcTr9tNakimiNZ/BdY4OSWE3hTTIMm1EJ
+	 1ri659aiJ2q6g==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 053DFC4345F;
+	Fri, 12 Apr 2024 12:36:46 +0000 (UTC)
+From: Fenglin Wu via B4 Relay <devnull+quic_fenglinw.quicinc.com@kernel.org>
+Subject: [PATCH v10 0/4] Add support for vibrator in multiple PMICs
+Date: Fri, 12 Apr 2024 20:36:24 +0800
+Message-Id: <20240412-pm8xxx-vibrator-new-design-v10-0-0ec0ad133866@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403021808.309900-1-vinicius.gomes@intel.com>
-In-Reply-To: <20240403021808.309900-1-vinicius.gomes@intel.com>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Fri, 12 Apr 2024 14:36:21 +0200
-Message-ID: <CAJfpeguqW4mPE9UyLmccisTex_gmwq6p9_6_EfVm-1oh6CrEBA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] overlayfs: Optimize override/revert creds
-To: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Cc: brauner@kernel.org, amir73il@gmail.com, hu1.chen@intel.com, 
-	malini.bhandaru@intel.com, tim.c.chen@intel.com, mikko.ylinen@intel.com, 
-	lizhen.you@intel.com, linux-unionfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAMgqGWYC/33NPRLCIBQE4KtkqMUB8kesvIdjAeQleYUkgiJOJ
+ neXxEablLsz++1MPDgET07ZTBwE9DjaFDg7ZMQMyvZAsU0FEUwULBeSTjcZY6QBtVOP0VELL9q
+ Cx95SKCXnqi0bkIokYHLQYdz0yzXlAX1avLezINf2yxaM77FBUkarTmipWa4LU5/vTzRozdGMN
+ 7LCofnB+D7WJKzWXVkZ3Qgt5D+2LMsHlfGQjxQBAAA=
+To: kernel@quicinc.com, Andy Gross <agross@kernel.org>, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-input@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+ Fenglin Wu <quic_fenglinw@quicinc.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712925404; l=3007;
+ i=quic_fenglinw@quicinc.com; s=20240327; h=from:subject:message-id;
+ bh=uVRPkLUxeBeImJcfochb9CYj4hSQ+3CFeTdiRt6pTwE=;
+ b=3dgECVg3VxSnfiFMIJQ37rIrQuj5BeG0VyJXrmba1yHgjbZ3tFN0W0WUqz+vH7ymBbraGcj+d
+ yiMwMwWyBGzANJTDLrgAxLmBYPgdzwbtnFsKBtmPYwwdJR4mdtyiZP6
+X-Developer-Key: i=quic_fenglinw@quicinc.com; a=ed25519;
+ pk=BF8SA4IVDk8/EBCwlBehKtn2hp6kipuuAuDAHh9s+K4=
+X-Endpoint-Received: by B4 Relay for quic_fenglinw@quicinc.com/20240327
+ with auth_id=146
+X-Original-From: Fenglin Wu <quic_fenglinw@quicinc.com>
+Reply-To: quic_fenglinw@quicinc.com
 
-On Wed, 3 Apr 2024 at 04:18, Vinicius Costa Gomes
-<vinicius.gomes@intel.com> wrote:
+Add SW support for the vibrator module inside PMI632, PM7250B, PM7325B, PM7550BA.
+It is very similar to the vibrator module inside PM8916 which is supported in
+pm8xxx-vib driver but just the drive amplitude is controlled with 2 registers,
+and the register base offset in each PMIC is different.
 
->  - in ovl_rename() I had to manually call the "light" the overrides,
->    both using the guard() macro or using the non-light version causes
->    the workload to crash the kernel. I still have to investigate why
->    this is happening. Hints are appreciated.
+Changes in v10:
+  1. Add Fixes tag
+  2. Update SSBI vibrator to use DT 'reg' value
+  3. Add drv_in_step flag for programming vibrator level in steps
+     Link to v9: https://lore.kernel.org/r/20240411-pm8xxx-vibrator-new-design-v9-0-7bf56cb92b28@quicinc.com
 
-Don't know.  Well, there's nesting (in ovl_nlink_end()) but I don't
-see why that should be an issue.
+Changes in v9:
+  1. Add a preceding change to correct VIB_MAX_LEVELS calculation
+  2. Address review comments from Konrad
+     Link to v8: https://lore.kernel.org/r/20240401-pm8xxx-vibrator-new-design-v8-0-6f2b8b03b4c7@quicinc.com
 
-I see why Amir suggested moving away from scoped guards, but that also
-introduces the possibility of subtle bugs if we don't audit every one
-of those sites carefully...
+Changes in v8:
+  1. Remove hw_type, and still keep the register info in match data
+  2. Update to use register offset in pm8xxx_regs, and the base address
+     defined in DT for SPMI vibrator will be added in register access
+  3. Update voltage output range for SPMI vibrator which has 2 bytes drive
+     registers
 
-Maybe patchset should be restructured to first do the
-override_creds_light() conversion without guards, and then move over
-to guards.   Or the other way round, I don't have a preference.  But
-mixing these two independent changes doesn't sound like a great idea
-in any case.
+Changes in v7:
+  1. Fix a typo: SSBL_VIB_DRV_REG --> SSBI_VIB_DRV_REG
+  2. Move the hw_type switch case in pm8xxx_vib_set() to the refactoring
+     change.
 
-Thanks,
-Miklos
+Changes in v6:
+  1. Add "qcom,pmi632-vib" as a standalone compatible string.
+
+Changes in v5:
+  1. Drop "qcom,spmi-vib-gen2" generic compatible string as requested
+     and use device specific compatible strings only.
+
+Changes in v4:
+  1. Update to use the combination of the HW type and register offset
+     as the constant match data, the register base address defined in
+     'reg' property will be added when accessing SPMI registers using
+     regmap APIs.
+  2. Remove 'qcom,spmi-vib-gen1' generic compatible string.
+
+Changes in v3:
+  1. Refactor the driver to support different type of the vibrators with
+    better flexibility by introducing the HW type with corresponding
+    register fields definitions.
+  2. Add 'qcom,spmi-vib-gen1' and 'qcom,spmi-vib-gen2' compatible
+    strings, and add PMI632, PM7250B, PM7325B, PM7550BA as compatbile as
+    spmi-vib-gen2.
+
+Changes in v2:
+  Remove the "pm7550ba-vib" compatible string as it's compatible with pm7325b.
+
+Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+---
+Fenglin Wu (4):
+      input: pm8xxx-vibrator: correct VIB_MAX_LEVELS calculation
+      input: pm8xxx-vibrator: refactor to support new SPMI vibrator
+      dt-bindings: input: qcom,pm8xxx-vib: add new SPMI vibrator module
+      input: pm8xxx-vibrator: add new SPMI vibrator support
+
+ .../devicetree/bindings/input/qcom,pm8xxx-vib.yaml | 16 +++-
+ drivers/input/misc/pm8xxx-vibrator.c               | 95 ++++++++++++++++------
+ 2 files changed, 84 insertions(+), 27 deletions(-)
+---
+base-commit: 650cda2ce25f08e8fae391b3ba6be27e7296c6a5
+change-id: 20240328-pm8xxx-vibrator-new-design-e5811ad59e8a
+
+Best regards,
+-- 
+Fenglin Wu <quic_fenglinw@quicinc.com>
+
+
 
