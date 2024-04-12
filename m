@@ -1,139 +1,139 @@
-Return-Path: <linux-kernel+bounces-142703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E245C8A2F26
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:17:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A45F8A2F2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:17:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 704F0B22E3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:17:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F94A1F22839
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:17:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CBA564CF9;
-	Fri, 12 Apr 2024 13:16:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C75267E69;
+	Fri, 12 Apr 2024 13:16:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="t+5MkzCM"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="lT+dK4IB"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE9C64CD0;
-	Fri, 12 Apr 2024 13:16:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC67666B57;
+	Fri, 12 Apr 2024 13:16:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712927810; cv=none; b=Qvc354iR7pBXvhoplApmlJIZBkkBZWyYB/ve1MunP5LrwH/OebC0iEzWUzi7DUgi/sZGP/sC1vXKWqOJ9yb1RIZU88zxFX/NmomcKm19MQGJGuwLEjV2HGL4y8h8pFMtnRN7MnV+YrK+MjXWJNtTL5xSKcrewgRk04BMngtaRtg=
+	t=1712927815; cv=none; b=mBBMR6Lq5zVpv5aviejGaKEhnAGiYhJ2JD3PeamEi5j3+CpyR5P9nM/nbXrh32YRKuvVWxQfJ7LEFvMKZxo4NDfNuZ/+0Wmj50i3epfMKlgAAYoCYemfNOUl/Y7VlJZzccbzlEbI258J1WgKxMrnW6u/Tms1B7gqvuN9QEXceWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712927810; c=relaxed/simple;
-	bh=MaGSYA2Udrt5OpxI+Noda33oYVm+GYTXXkzp8OxlUIs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bSk2C+H1GaFRUSChJRbg9V7wpOi9Tmi2MjM7NlZswwb/89geS3/YiQEc5tsslyB2SkWWeugO/fmRZMmAO0sm3HsUBR5RILzRvgKRzp+yutUrtRoZJjCrMG63evfRIo5CzPKo1lB/Fa5mcPh3UjVNaSPdroYs2ugo61esMo6kWoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=t+5MkzCM; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.1.105] (unknown [103.251.226.65])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1FCA9A12;
-	Fri, 12 Apr 2024 15:16:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1712927763;
-	bh=MaGSYA2Udrt5OpxI+Noda33oYVm+GYTXXkzp8OxlUIs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=t+5MkzCMs5CrvGPkUIU44pXddxI4oJasu4maLhApJXGy9DfJZx23YjHrj5c6i+7Jd
-	 wQKzb2ad0OH00plsFJGTwsOfdlWaacwk6O0htPjEEZ4uvwBV3HwOxJuw7ErZMxm+zz
-	 Grab0Ztl3KHAKzftajg2UzGKwjm5ACvAVbLxPLx0=
-Message-ID: <3092092b-5989-4a7f-8f3b-4e1bf2aed385@ideasonboard.com>
-Date: Fri, 12 Apr 2024 18:46:39 +0530
+	s=arc-20240116; t=1712927815; c=relaxed/simple;
+	bh=USOM0XCZ0/wu4cKnQkzgmul4MrjCVr2FMP7oVZE2duc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BK0Mk5x2Qnob7xE4loO3u0djxEo6/5O6YMIT77ltKc7vW0Nxc8q2dg9FTQdeKM9Xc0qIW8WbbctNrhrJgQnaVZOIAggDV6db5nTVUD0+ecobObvOsOJlLnq0KBec3DA5Z7EpRPLb7JknN7XTmR/vb2zMsTXpqXd9WQTVTl+5sm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=lT+dK4IB; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C3A03240004;
+	Fri, 12 Apr 2024 13:16:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712927811;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O5+3+rElzUNybXHG/ZwL7fFM6Iw46bn7txCnEsQ1q2w=;
+	b=lT+dK4IBl81ohQ/NsUOa/zq3G805EZLYGAN0wFqWK2ljT7vjQaRpWC3Qc03ndnkG3TgUpm
+	y5JxQB8JVB0AWSxNHLhB5+9J4mEX3PQHvJKATw9N02+A1o6CzbVSlRScL+Vvw4fEzSikpl
+	Ar+zsj31zbD3D8pmx1BOjkGhR27phYPcPmg5VPaBym1oM8z2jNl5tRBaCzSEBBKeFseFry
+	cllGgnhW1ZjimKFdazfcL24xB0XWJE/p0ext0rfJE3JAPM06bwiaJOyBbVXewadjWe/xwk
+	pCmfiIrcTavpUHqLfiguFM7YV/WI8W9/qJe/FGcWsa2fYLeJkyaFrnrc8r+T2w==
+Date: Fri, 12 Apr 2024 15:16:48 +0200
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: Antoine Tenart <atenart@kernel.org>
+Cc: davem@davemloft.net, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
+ <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Russell King
+ <linux@armlinux.org.uk>, linux-arm-kernel@lists.infradead.org, Christophe
+ Leroy <christophe.leroy@csgroup.eu>, Herve Codina
+ <herve.codina@bootlin.com>, Florian Fainelli <f.fainelli@gmail.com>, Heiner
+ Kallweit <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
+ =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
+ <jesse.brandeburg@intel.com>, Marek =?UTF-8?B?QmVow7pu?=
+ <kabel@kernel.org>, Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, =?UTF-8?B?Tmljb2zDsg==?= Veronese
+ <nicveronese@gmail.com>, Simon Horman <horms@kernel.org>,
+ mwojtas@chromium.org, Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH net-next] net: phy: phy_link_topology: Handle NULL
+ topologies
+Message-ID: <20240412151648.653d41be@device-28.home>
+In-Reply-To: <171292699033.4917.4025686054785818967@kwain>
+References: <20240412104615.3779632-1-maxime.chevallier@bootlin.com>
+	<171292699033.4917.4025686054785818967@kwain>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/6] media: imx335: Parse fwnode properties
-Content-Language: en-US
-To: Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: linux-media@vger.kernel.org,
- Alexander Shiyan <eagle.alexander923@gmail.com>,
- Kieran Bingham <kieran.bingham@ideasonboard.com>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240412122842.193713-1-umang.jain@ideasonboard.com>
- <20240412122842.193713-3-umang.jain@ideasonboard.com>
- <ZhkxJeQSKMxj0O7b@kekkonen.localdomain>
-From: Umang Jain <umang.jain@ideasonboard.com>
-In-Reply-To: <ZhkxJeQSKMxj0O7b@kekkonen.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-Hi Sakari,
+Hi Antoine,
 
-On 12/04/24 6:33 pm, Sakari Ailus wrote:
-> Hi Umang,
->
-> On Fri, Apr 12, 2024 at 05:58:38PM +0530, Umang Jain wrote:
->> From: Kieran Bingham <kieran.bingham@ideasonboard.com>
->>
->> Call the V4L2 fwnode device parser to handle controls that are
->> standardised by the framework.
->>
->> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
->> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
->> ---
->>   drivers/media/i2c/imx335.c | 16 ++++++++++++----
->>   1 file changed, 12 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
->> index c633ea1380e7..3ea9c0ebe278 100644
->> --- a/drivers/media/i2c/imx335.c
->> +++ b/drivers/media/i2c/imx335.c
->> @@ -1227,10 +1227,12 @@ static int imx335_init_controls(struct imx335 *imx335)
->>   {
->>   	struct v4l2_ctrl_handler *ctrl_hdlr = &imx335->ctrl_handler;
->>   	const struct imx335_mode *mode = imx335->cur_mode;
->> +	struct v4l2_fwnode_device_properties props;
->>   	u32 lpfr;
->>   	int ret;
->>   
->> -	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 7);
->> +	/* v4l2_fwnode_device_properties can add two more controls */
->> +	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 9);
->>   	if (ret)
->>   		return ret;
->>   
->> @@ -1295,9 +1297,15 @@ static int imx335_init_controls(struct imx335 *imx335)
->>   	if (imx335->hblank_ctrl)
->>   		imx335->hblank_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
->>   
->> -	if (ctrl_hdlr->error) {
->> -		dev_err(imx335->dev, "control init failed: %d\n",
->> -			ctrl_hdlr->error);
->> +	ret = v4l2_fwnode_device_parse(imx335->dev, &props);
->> +	if (!ret) {
->> +		/* Failure sets ctrl_hdlr->error, which we check afterwards anyway */
->> +		v4l2_ctrl_new_fwnode_properties(ctrl_hdlr, &imx335_ctrl_ops,
->> +						&props);
->> +	}
->> +
->> +	if (ctrl_hdlr->error || ret) {
->> +		dev_err(imx335->dev, "control init failed: %d\n", ctrl_hdlr->error);
-> Too long line.
->
->>   		v4l2_ctrl_handler_free(ctrl_hdlr);
->>   		return ctrl_hdlr->error;
-> The handler may not be in error state if only v4l2_fwnode_device_parse()
-> failed.
+On Fri, 12 Apr 2024 15:03:10 +0200
+Antoine Tenart <atenart@kernel.org> wrote:
 
-I read some more drivers and it seems v4l2_fwnode_device_parse() can 
-probably be checked at start of init_controls() and return early on 
-non-zero return value.
+> Hi Maxime,
+> 
+> Quoting Maxime Chevallier (2024-04-12 12:46:14)
+> > 
+> > This patch fixes a commit that is in net-next, hence the net-next tag and the
+> > lack of "Fixes" tag.  
+> 
+> You can use Fixes: on net-next, that still helps to identify which
+> commit is being fixed (eg. for reviews, while looking at the history,
+> etc).
 
-Is that something that should be done here as well ?
->
-> Should that be something that should prevent probing a driver though, or
-> could it just be ignored? I.e. in that case I'd only check for handler's
-> error, not ret.
+Won't the tag become invalid when the commit gets merged into an -rc
+release then ?
 
-So we should probably check for ret and ctrl_hdlr->error separately ?
->
->>   	}
+> 
+> > diff --git a/drivers/net/phy/phy_link_topology.c b/drivers/net/phy/phy_link_topology.c
+> > index 985941c5c558..0f3973f07fac 100644
+> > --- a/drivers/net/phy/phy_link_topology.c
+> > +++ b/drivers/net/phy/phy_link_topology.c
+> > @@ -42,6 +42,9 @@ int phy_link_topo_add_phy(struct phy_link_topology *topo,
+> >         struct phy_device_node *pdn;
+> >         int ret;
+> >  
+> > +       if (!topo)
+> > +               return 0;
+> > +  
+> 
+> With that phy_sfp_connect_phy does not need to check the topo validity
+> before calling phy_link_topo_add_phy. The other way around is fine too.
+> 
+> > @@ -93,7 +96,12 @@ EXPORT_SYMBOL_GPL(phy_link_topo_add_phy);
+> >  void phy_link_topo_del_phy(struct phy_link_topology *topo,
+> >                            struct phy_device *phy)
+> >  {
+> > -       struct phy_device_node *pdn = xa_erase(&topo->phys, phy->phyindex);
+> > +       struct phy_device_node *pdn;
+> > +
+> > +       if (!topo)
+> > +               return;
+> > +
+> > +       pdn = xa_erase(&topo->phys, phy->phyindex);  
+> 
+> Same here with phy_sfp_disconnect_phy.
+
+Ah right, well spotted, thanks !
+
+Maxime
+
+> 
+> Thanks!
+> Antoine
 
 
