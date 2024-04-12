@@ -1,43 +1,44 @@
-Return-Path: <linux-kernel+bounces-141748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A587C8A22E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:18:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B37E68A22E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:18:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B14581C22E9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:18:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F1991F22AD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:18:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CF81DDAA;
-	Fri, 12 Apr 2024 00:17:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70C13C2D;
+	Fri, 12 Apr 2024 00:17:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="fa4D8Gq5"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="pHbs6rc2"
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49E3161;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89E2195;
 	Fri, 12 Apr 2024 00:17:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712881073; cv=none; b=R5bI1Kn6SVt0Q7n6rULHBvMPl7xZPi51AkNjAOySVGtTWLPUPuL8HHjj/PrDnJSzqrJgw6zkSCoKpG32xCX4arBJa51+MfYIV2wBkzoa/EzsvO8PqEZSVzbGMjKFZV6LSlJfVNQb4nHIW6NlVbmfRmlXp77uyDTRIyxBgS6WDH0=
+	t=1712881072; cv=none; b=g8Jpq5cefJTleJc2XmoRcNKJrOWEzrfjfYLIgQ9xIxvZptVxi9aMjmUiRIETjNXLh1hOP7r3prQdxvR7YfxeP0TjAm4HgPLlTb2hYHaBEhA+tSR3R7zd5/8GCTMKjG+QSKHOUnhAs2yeOQPjKLgKyRGnq73VqjUY7vOBc2YcR8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712881073; c=relaxed/simple;
-	bh=DTkKtlAWf9eZANoDsVjxIB/a9kELTR3q5gy+PbPy7a4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IAWu1PtJvnjV2E0oZP6eSyQdUqGhwtpyAj4wRC2j1qgIqx+OaWTjJlO9nAtCh5zmEymW0L6ARjF5UyoqVGUxJF5JVN5X/bknVDDivUp2Z7WGLSPbbABjg9wrHdrH02a6UNirGpeSo6Qlu8Z/8xqpn50fXllpCw4K9y2ko5HEEI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=fa4D8Gq5; arc=none smtp.client-ip=13.77.154.182
+	s=arc-20240116; t=1712881072; c=relaxed/simple;
+	bh=BNNGY5+CHDXfjGHZyVuZHwM0zX798QLsj57JCFZBkCM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=IQReKa6HK1StAH/phDzT44cvYnP9GFLVYEMHFUqMwV/16R8U17aKrPN92rjcWyPPpeCQGzSCC16R0KjQ1Qk3Fh8yob/sAilomF2oiqFePXq4xqIlAWxd7EoJojanDkChP0Mx8haLDdFz3uk/P7FNPJpKkGoWguqrGyjRWXSJ/gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=pHbs6rc2; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: from localhost.localdomain (unknown [4.155.48.125])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 35E6220EC320;
+	by linux.microsoft.com (Postfix) with ESMTPSA id 5443720EC323;
 	Thu, 11 Apr 2024 17:17:50 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 35E6220EC320
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5443720EC323
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1712881070;
-	bh=ohaBFCxKwM2w9anQtabwDeHmM+q2b/tliDpfFTTctww=;
-	h=From:To:Cc:Subject:Date:From;
-	b=fa4D8Gq5TxOMmlXkz5nlY53rrOMUKSHZ6AelVdhsFr5Tg2U2hq8XayHeCtJ6migLu
-	 +ELxtYu/rVldteRy4s5f42oLvRDhC2Tv9Ivv5KzVMuGL2DMkN/W/yob27q4i4urH9T
-	 bnykiCISePlCyod64FzgjmkudJjivpegQ6rLsJk8=
+	bh=FcYc71XiBGnC8Gok9z2Cask+yzIzGSZjKrNW1Wp57BQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=pHbs6rc2Hz4XH0t/RUJ0X9ZWZ6aQbFRsQqZM5mwhNekKT53ImaIjfq95Y5xTO5kAK
+	 rdf/MPPBiFUU0FLQXoP2tbi+vFFmc4bTtM3ui0v5lFV6IIFezUdGQrERlGTlzCajVc
+	 fP+hQStG4MLRgUfOAtKCdwUC/YAqSKLjDlBC+di4=
 From: Beau Belgrave <beaub@linux.microsoft.com>
 To: peterz@infradead.org,
 	mingo@redhat.com,
@@ -57,10 +58,12 @@ Cc: linux-kernel@vger.kernel.org,
 	primiano@google.com,
 	aahringo@redhat.com,
 	dcook@linux.microsoft.com
-Subject: [RFC PATCH 0/4] perf: Correlating user process data to samples
-Date: Fri, 12 Apr 2024 00:17:28 +0000
-Message-Id: <20240412001732.475-1-beaub@linux.microsoft.com>
+Subject: [RFC PATCH 1/4] perf/core: Introduce perf_prepare_dump_data()
+Date: Fri, 12 Apr 2024 00:17:29 +0000
+Message-Id: <20240412001732.475-2-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240412001732.475-1-beaub@linux.microsoft.com>
+References: <20240412001732.475-1-beaub@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,88 +72,150 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In the Open Telemetry profiling SIG [1], we are trying to find a way to
-grab a tracing association quickly on a per-sample basis. The team at
-Elastic has a bespoke way to do this [2], however, I'd like to see a
-more general way to achieve this. The folks I've been talking with seem
-open to the idea of just having a TLS value for this we could capture
-upon each sample. We could then just state, Open Telemetry SDKs should
-have a TLS value for span correlation. However, we need a way to sample
-the TLS or other value(s) when a sampling event is generated. This is
-supported today on Windows via EventActivityIdControl() [3]. Since
-Open Telemetry works on both Windows and Linux, ideally we can do
-something as efficient for Linux based workloads.
+Factor out perf_prepare_dump_data() so that the same logic is used for
+dumping stack data as other types, such as TLS.
 
-This series is to explore how it would be best possible to collect
-supporting data from a user process when a profile sample is collected.
-Having a value stored in TLS makes a lot of sense for this however
-there are other ways to explore. Whatever is chosen, kernel samples
-taken in process context should be able to get this supporting data.
-In these patches on X64 the fsbase and gsbase are used for this.
+Slightly refactor perf_sample_ustack_size() to perf_sample_dump_size().
+Move reg checks up into perf_ustack_task_size() since the task size
+must now be calculated before preparing dump data.
 
-An option to explore suggested by Mathieu Desnoyers is to utilize rseq
-for processes to register a value location that can be included when
-profiling if desired. This would allow a tighter contract between user
-processes and a profiler.  It would allow better labeling/categorizing
-the correlation values.
+Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
+---
+ kernel/events/core.c | 79 ++++++++++++++++++++++++++------------------
+ 1 file changed, 47 insertions(+), 32 deletions(-)
 
-An idea flow would look like this:
-User Task		Profile
-do_work();		sample() -> IP + No activity
-..
-set_activity(123);
-..
-do_work();		sample() -> IP + activity (123)
-..
-set_activity(124);
-..
-do_work();		sample() -> IP + activity (124)
-
-Ideally, the set_activity() method would not be a syscall. It needs to
-be very cheap as this should not bottleneck work. Ideally this is just
-a memcpy of 16-20 bytes as it is on Windows via EventActivityIdControl()
-using EVENT_ACTIVITY_CTRL_SET_ID.
-
-For those not aware, Open Telemetry allows collecting data from multiple
-machines and show where time was spent. The tracing context is already
-available for logs, but not for profiling samples. The idea is to show
-where slowdowns occur and have profile samples to explain why they
-slowed down. This must be possible without having to track context
-switches to do this correlation. This is because the profiling rates
-are typically 20hz - 1Khz, while the context switching rates are much
-higher. We do not want to have to consume high context switch rates
-just to know a correlation for a 20hz signal. Often these 20hz signals
-are always enabled in some environments.
-
-Regardless if TLS, rseq, or other source is used I believe we will need
-a way for perf_events to include it within a sample. The changes in this
-series show how it could be done with TLS. There is some factoring work
-under perf to make it easier to add more dump types using the existing
-ABI. This is mostly to make the patches clearer, certainly the refactor
-parts could get dropped and we could have duplicated/specialized paths.
-
-1. https://opentelemetry.io/blog/2024/profiling/
-2. https://www.elastic.co/blog/continuous-profiling-distributed-tracing-correlation
-3. https://learn.microsoft.com/en-us/windows/win32/api/evntprov/nf-evntprov-eventactivityidcontrol
-
-Beau Belgrave (4):
-  perf/core: Introduce perf_prepare_dump_data()
-  perf: Introduce PERF_SAMPLE_TLS_USER sample type
-  perf/core: Factor perf_output_sample_udump()
-  perf/x86/core: Add tls dump support
-
- arch/Kconfig                      |   7 ++
- arch/x86/Kconfig                  |   1 +
- arch/x86/events/core.c            |  14 +++
- arch/x86/include/asm/perf_event.h |   5 +
- include/linux/perf_event.h        |   7 ++
- include/uapi/linux/perf_event.h   |   5 +-
- kernel/events/core.c              | 166 +++++++++++++++++++++++-------
- kernel/events/internal.h          |  16 +++
- 8 files changed, 180 insertions(+), 41 deletions(-)
-
-
-base-commit: fec50db7033ea478773b159e0e2efb135270e3b7
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 724e6d7e128f..07de5cc2aa25 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -6912,7 +6912,13 @@ static void perf_sample_regs_intr(struct perf_regs *regs_intr,
+  */
+ static u64 perf_ustack_task_size(struct pt_regs *regs)
+ {
+-	unsigned long addr = perf_user_stack_pointer(regs);
++	unsigned long addr;
++
++	/* No regs, no stack pointer, no dump. */
++	if (!regs)
++		return 0;
++
++	addr = perf_user_stack_pointer(regs);
+ 
+ 	if (!addr || addr >= TASK_SIZE)
+ 		return 0;
+@@ -6921,42 +6927,35 @@ static u64 perf_ustack_task_size(struct pt_regs *regs)
+ }
+ 
+ static u16
+-perf_sample_ustack_size(u16 stack_size, u16 header_size,
+-			struct pt_regs *regs)
++perf_sample_dump_size(u16 dump_size, u16 header_size, u64 task_size)
+ {
+-	u64 task_size;
+-
+-	/* No regs, no stack pointer, no dump. */
+-	if (!regs)
+-		return 0;
+-
+ 	/*
+-	 * Check if we fit in with the requested stack size into the:
++	 * Check if we fit in with the requested dump size into the:
+ 	 * - TASK_SIZE
+ 	 *   If we don't, we limit the size to the TASK_SIZE.
+ 	 *
+ 	 * - remaining sample size
+-	 *   If we don't, we customize the stack size to
++	 *   If we don't, we customize the dump size to
+ 	 *   fit in to the remaining sample size.
+ 	 */
+ 
+-	task_size  = min((u64) USHRT_MAX, perf_ustack_task_size(regs));
+-	stack_size = min(stack_size, (u16) task_size);
++	task_size  = min((u64) USHRT_MAX, task_size);
++	dump_size = min(dump_size, (u16) task_size);
+ 
+ 	/* Current header size plus static size and dynamic size. */
+ 	header_size += 2 * sizeof(u64);
+ 
+-	/* Do we fit in with the current stack dump size? */
+-	if ((u16) (header_size + stack_size) < header_size) {
++	/* Do we fit in with the current dump size? */
++	if ((u16) (header_size + dump_size) < header_size) {
+ 		/*
+ 		 * If we overflow the maximum size for the sample,
+-		 * we customize the stack dump size to fit in.
++		 * we customize the dump size to fit in.
+ 		 */
+-		stack_size = USHRT_MAX - header_size - sizeof(u64);
+-		stack_size = round_up(stack_size, sizeof(u64));
++		dump_size = USHRT_MAX - header_size - sizeof(u64);
++		dump_size = round_up(dump_size, sizeof(u64));
+ 	}
+ 
+-	return stack_size;
++	return dump_size;
+ }
+ 
+ static void
+@@ -7648,6 +7647,32 @@ static __always_inline u64 __cond_set(u64 flags, u64 s, u64 d)
+ 	return d * !!(flags & s);
+ }
+ 
++static inline u16
++perf_prepare_dump_data(struct perf_sample_data *data,
++		       struct perf_event *event,
++		       struct pt_regs *regs,
++		       u16 dump_size,
++		       u64 task_size)
++{
++	u16 header_size = perf_sample_data_size(data, event);
++	u16 size = sizeof(u64);
++
++	dump_size = perf_sample_dump_size(dump_size, header_size,
++					  task_size);
++
++	/*
++	 * If there is something to dump, add space for the dump
++	 * itself and for the field that tells the dynamic size,
++	 * which is how many have been actually dumped.
++	 */
++	if (dump_size)
++		size += sizeof(u64) + dump_size;
++
++	data->dyn_size += size;
++
++	return dump_size;
++}
++
+ void perf_prepare_sample(struct perf_sample_data *data,
+ 			 struct perf_event *event,
+ 			 struct pt_regs *regs)
+@@ -7725,22 +7750,12 @@ void perf_prepare_sample(struct perf_sample_data *data,
+ 		 * up the rest of the sample size.
+ 		 */
+ 		u16 stack_size = event->attr.sample_stack_user;
+-		u16 header_size = perf_sample_data_size(data, event);
+-		u16 size = sizeof(u64);
+-
+-		stack_size = perf_sample_ustack_size(stack_size, header_size,
+-						     data->regs_user.regs);
++		u64 task_size = perf_ustack_task_size(regs);
+ 
+-		/*
+-		 * If there is something to dump, add space for the dump
+-		 * itself and for the field that tells the dynamic size,
+-		 * which is how many have been actually dumped.
+-		 */
+-		if (stack_size)
+-			size += sizeof(u64) + stack_size;
++		stack_size = perf_prepare_dump_data(data, event, regs,
++						    stack_size, task_size);
+ 
+ 		data->stack_user_size = stack_size;
+-		data->dyn_size += size;
+ 		data->sample_flags |= PERF_SAMPLE_STACK_USER;
+ 	}
+ 
 -- 
 2.34.1
 
