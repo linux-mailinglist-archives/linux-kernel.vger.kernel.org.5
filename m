@@ -1,132 +1,134 @@
-Return-Path: <linux-kernel+bounces-142257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D9DC8A2990
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:44:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77C748A29AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:48:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2923F281F30
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:44:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7A951C212C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 481415467B;
-	Fri, 12 Apr 2024 08:42:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eWl/lkBW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819AE53E1E;
-	Fri, 12 Apr 2024 08:42:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A32BD5EE78;
+	Fri, 12 Apr 2024 08:43:29 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF76F5D75F;
+	Fri, 12 Apr 2024 08:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712911354; cv=none; b=AzP1lGVCQxQPDlO79FAz4+jHlDQwfPZ8KLEM25ruJcCc9zVaPRlQiaLeB1p5Je/kyHg60NkYh8VHqb1x2VIzawmeR6uC7ojcpJc9OQz2HIrASQiAT6Ig/9wD+gb8NSTzdZIEOjufpm3Nqe9iQhAjuSgJiApUwMhK4+bnj2Nbw20=
+	t=1712911409; cv=none; b=I8NQ2kieeelhFz8hLE88VUSX+bK2c51a/XtGgd3SNG3pRsicT94vtKAiAqVn6buxogd1dmclspdYffQAiIF2/dSkSmcRmoozTSUiVE0UFpc3JlzY+VN9t/bmQZ/FDoN+LAii6n0+/aV0FTQesPOO1/dj5L6PgK+TiwZ7fMtUCFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712911354; c=relaxed/simple;
-	bh=A+G6ElGrbdxKFc19F1WFdjKXJ4NPRwN4ZSGf2BITplc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=en/sBPAts5iTGbVDk/mixJBCqyalVE8l32RLYalk8jiwqTRFCgoLMv1IFuyuBOGfh3oVYVSv7jgJlEJWrcr6d6si3wlbFMj9RQmMeDqm/mm/gFhv+AefV1JE4oYnIOGOcaEPqc0YqPLkk5dyL0Q8SzeiC5hLpnIibpQH5k+cU2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eWl/lkBW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F0D75C32786;
-	Fri, 12 Apr 2024 08:42:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712911354;
-	bh=A+G6ElGrbdxKFc19F1WFdjKXJ4NPRwN4ZSGf2BITplc=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=eWl/lkBW00ATexLk5CJ4hGJJhnDZK12QlOi9JNpuuLncH0QM6T/lRbazUc4x5HGjZ
-	 MDNqkrXt3e43Yz5moOpe3hzw8Nm253TQpJa2GuU5PPw89QQqLBJmBViaYg5O/KRQBe
-	 5n+LVd540vk7a5zljRj0nPK3TYLDniAUUrLgPtFt/c+tC50UbJ4RMjDskneVv0d39W
-	 EVnUmzlLNVds26f6d6bKnxFQlpvXm8eB5LUW5DV683PxUv/FpC4Wk8xuTjl2X4oI+5
-	 4VylVWq401sPKwAbdFhEkGmrIslN8oMANk1e2Fc239pIdftOKodGlAeikWgi380Lgw
-	 FE5D3N9dSTYvg==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D47EFC4345F;
-	Fri, 12 Apr 2024 08:42:33 +0000 (UTC)
-From: Xianwei Zhao via B4 Relay <devnull+xianwei.zhao.amlogic.com@kernel.org>
-Date: Fri, 12 Apr 2024 16:42:30 +0800
-Subject: [PATCH v2] arm64: dts: meson: fix S4 power-controller node
+	s=arc-20240116; t=1712911409; c=relaxed/simple;
+	bh=Ox6SOG38reckBpTmGjgfYv4eHrY8DM+Y27fncDbNbcc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Myc8Qbg8Wh/2OkN99/1UIAXL660Z6PRmACTe+l87dOcbOmHl11OcrtSWjCm3SgGLO312LaHlFMt5k5YCK47UPOYc/roLykrnPyfOLxqAmfVTvlPpR2s8luDWFN2VzlJdlqqOt4wD3k3++fnH5Uj2bwcQfshmkR3Apdxp2aH6fng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A33FC1596;
+	Fri, 12 Apr 2024 01:43:56 -0700 (PDT)
+Received: from e112269-lin.cambridge.arm.com (e112269-lin.cambridge.arm.com [10.1.194.51])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 473FC3F6C4;
+	Fri, 12 Apr 2024 01:43:25 -0700 (PDT)
+From: Steven Price <steven.price@arm.com>
+To: kvm@vger.kernel.org,
+	kvmarm@lists.linux.dev
+Cc: Steven Price <steven.price@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Will Deacon <will@kernel.org>,
+	James Morse <james.morse@arm.com>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Joey Gouly <joey.gouly@arm.com>,
+	Alexandru Elisei <alexandru.elisei@arm.com>,
+	Christoffer Dall <christoffer.dall@arm.com>,
+	Fuad Tabba <tabba@google.com>,
+	linux-coco@lists.linux.dev,
+	Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+Subject: [PATCH v2 04/43] arm64: RME: Handle Granule Protection Faults (GPFs)
+Date: Fri, 12 Apr 2024 09:42:30 +0100
+Message-Id: <20240412084309.1733783-5-steven.price@arm.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240412084309.1733783-1-steven.price@arm.com>
+References: <20240412084056.1733704-1-steven.price@arm.com>
+ <20240412084309.1733783-1-steven.price@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240412-fix-secpwr-s4-v2-1-3802fd936d77@amlogic.com>
-X-B4-Tracking: v=1; b=H4sIAPXzGGYC/3WMQQ6CMBBFr0Jm7Zi2qSKuvIdh0ZQpTCKUdEzVk
- N7dyt7l+/nvbSCUmASuzQaJMgvHpYI5NOAnt4yEPFQGo4xVVl0w8BuF/PpKKBZd14XQndWgHEF
- 11kT1sPfufeWJ5RnTZ89n/Vv/lbJGjUo71xK1xp/Mzc2POLI/+jhDX0r5AkNlCI+sAAAA
-To: Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, 
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Xianwei Zhao <xianwei.zhao@amlogic.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712911352; l=1368;
- i=xianwei.zhao@amlogic.com; s=20231208; h=from:subject:message-id;
- bh=oKEf8J5zEQ5VRP4drtkFgH9o2pd0Lw+wi/tMBGddobo=;
- b=g58n8V9t/QOY/0zH12yHIGuXoV1zedqzQpBb4TpKujUbaYz9w6Iv3V+0IJTaDWu4CybnE7KPy
- U0mZWlwsjwxBksQosAldqYNI8h4o8x1+ufJ+NDJhg+Mhz7pmacs70Z5
-X-Developer-Key: i=xianwei.zhao@amlogic.com; a=ed25519;
- pk=o4fDH8ZXL6xQg5h17eNzRljf6pwZHWWjqcOSsj3dW24=
-X-Endpoint-Received: by B4 Relay for xianwei.zhao@amlogic.com/20231208 with
- auth_id=107
-X-Original-From: Xianwei Zhao <xianwei.zhao@amlogic.com>
-Reply-To: xianwei.zhao@amlogic.com
+Content-Transfer-Encoding: 8bit
 
-From: Xianwei Zhao <xianwei.zhao@amlogic.com>
+If the host attempts to access granules that have been delegated for use
+in a realm these accesses will be caught and will trigger a Granule
+Protection Fault (GPF).
 
-The power-controller module works well by adding its parent
-node secure-monitor.
+A fault during a page walk signals a bug in the kernel and is handled by
+oopsing the kernel. A non-page walk fault could be caused by user space
+having access to a page which has been delegated to the kernel and will
+trigger a SIGBUS to allow debugging why user space is trying to access a
+delegated page.
 
-Fixes: 085f7a298a14 ("arm64: dts: add support for S4 power domain controller")
-Signed-off-by: Xianwei Zhao <xianwei.zhao@amlogic.com>
+Signed-off-by: Steven Price <steven.price@arm.com>
 ---
-Changes in v2:
-- Add fixes tags in commit message.
-- Add firmware node to adapt documentation.
-- Link to v1: https://lore.kernel.org/r/20240408-fix-secpwr-s4-v1-1-01aa7ee72c52@amlogic.com
----
- arch/arm64/boot/dts/amlogic/meson-s4.dtsi | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ arch/arm64/mm/fault.c | 29 ++++++++++++++++++++++++-----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi b/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
-index ce90b35686a2..10896f9df682 100644
---- a/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-s4.dtsi
-@@ -65,10 +65,15 @@ xtal: xtal-clk {
- 		#clock-cells = <0>;
- 	};
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index 8251e2fea9c7..91da0f446dd9 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -765,6 +765,25 @@ static int do_tag_check_fault(unsigned long far, unsigned long esr,
+ 	return 0;
+ }
  
--	pwrc: power-controller {
--		compatible = "amlogic,meson-s4-pwrc";
--		#power-domain-cells = <1>;
--		status = "okay";
-+	firmware {
-+		sm: secure-monitor {
-+			compatible = "amlogic,meson-gxbb-sm";
++static int do_gpf_ptw(unsigned long far, unsigned long esr, struct pt_regs *regs)
++{
++	const struct fault_info *inf = esr_to_fault_info(esr);
 +
-+			pwrc: power-controller {
-+				compatible = "amlogic,meson-s4-pwrc";
-+				#power-domain-cells = <1>;
-+			};
-+		};
- 	};
- 
- 	soc {
-
----
-base-commit: 4cece764965020c22cff7665b18a012006359095
-change-id: 20240408-fix-secpwr-s4-a99ff960d0ae
-
-Best regards,
++	die_kernel_fault(inf->name, far, esr, regs);
++	return 0;
++}
++
++static int do_gpf(unsigned long far, unsigned long esr, struct pt_regs *regs)
++{
++	const struct fault_info *inf = esr_to_fault_info(esr);
++
++	if (!is_el1_instruction_abort(esr) && fixup_exception(regs))
++		return 0;
++
++	arm64_notify_die(inf->name, regs, inf->sig, inf->code, far, esr);
++	return 0;
++}
++
+ static const struct fault_info fault_info[] = {
+ 	{ do_bad,		SIGKILL, SI_KERNEL,	"ttbr address size fault"	},
+ 	{ do_bad,		SIGKILL, SI_KERNEL,	"level 1 address size fault"	},
+@@ -802,11 +821,11 @@ static const struct fault_info fault_info[] = {
+ 	{ do_alignment_fault,	SIGBUS,  BUS_ADRALN,	"alignment fault"		},
+ 	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 34"			},
+ 	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 35"			},
+-	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 36"			},
+-	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 37"			},
+-	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 38"			},
+-	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 39"			},
+-	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 40"			},
++	{ do_gpf_ptw,		SIGKILL, SI_KERNEL,	"Granule Protection Fault at level 0" },
++	{ do_gpf_ptw,		SIGKILL, SI_KERNEL,	"Granule Protection Fault at level 1" },
++	{ do_gpf_ptw,		SIGKILL, SI_KERNEL,	"Granule Protection Fault at level 2" },
++	{ do_gpf_ptw,		SIGKILL, SI_KERNEL,	"Granule Protection Fault at level 3" },
++	{ do_gpf,		SIGBUS,  SI_KERNEL,	"Granule Protection Fault not on table walk" },
+ 	{ do_bad,		SIGKILL, SI_KERNEL,	"level -1 address size fault"	},
+ 	{ do_bad,		SIGKILL, SI_KERNEL,	"unknown 42"			},
+ 	{ do_translation_fault,	SIGSEGV, SEGV_MAPERR,	"level -1 translation fault"	},
 -- 
-Xianwei Zhao <xianwei.zhao@amlogic.com>
-
+2.34.1
 
 
