@@ -1,194 +1,171 @@
-Return-Path: <linux-kernel+bounces-143144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 311B18A34F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:39:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D04178A34F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:40:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAB091F23069
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:39:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4656F1F2409C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:40:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39B9714D45A;
-	Fri, 12 Apr 2024 17:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C224D14EC4F;
+	Fri, 12 Apr 2024 17:39:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TeDX5t0h"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LyPQISXo"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A53149009;
-	Fri, 12 Apr 2024 17:39:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC81149009;
+	Fri, 12 Apr 2024 17:39:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712943577; cv=none; b=J3Gp+Nr8VYflIACYKTI56SO/wrKj+2tGUNBMr+1DA9kLk9vv8CU9sTy0m6xPwGnVbe3oumk337EJQVjOIqrKzoVOK/Kmg8jwNuqw0u317V5OPPO06qC+G7J7GUYCZ7tfbmgeAq58kAYZGm2O6XUEG9FJNdHHMDAXocUg39uUxOg=
+	t=1712943583; cv=none; b=cDIDEqyTiNDmympcLiGNkbXll365v8wy0qQPXR9W+voZmN4DykfRCvSWaknEf2ll451yLC3NcyppHpPPVL9gGKqg8ZQAe+/92DuTTYUtF/AJAOKBU3olqTlHfhOzD/4cLyfDgeymrJI/GzRYBb4K+LC0D6YLLsxYlYcpri99ggQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712943577; c=relaxed/simple;
-	bh=WX2C22JYEAq+JyD5cs6erlsGiFqL70FmZLflNcjHv1I=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qY8KFkgBNT/UpCskZug9vlrnOptU/bqDGsKKZC4Swf5RlvhLQ5CnDPwsYW+LbvCuV9+rMtNWWQ6Lw9a2tAEI9JyPtgeryvr8NRJZ0MDhOzKmpbmoK/7+vPtBl82xiPJK67veZxPvGdwIxcgwovx97sGVSKfrX5u7+dn2YJmj604=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TeDX5t0h; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1712943583; c=relaxed/simple;
+	bh=BLEtjVnBJnqOweid/o9LC3AV3pOUNEEl+F0GkqNkFZY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FH+ZouSA/BXCU+3TM+AZWD7zhZjLBUyuObm26h8QZJHpsSJh3PtYwkXsuUbW88VBJ27FqDoz4uQyw8iDZD34miTbT6tyb49wNVWnpHn+THBLX0a5GbfhmKdZYRrB1pUFRQH1H+/UESkM1+f6beGFZxBeuqKadCXkBseZF9npp7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LyPQISXo; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712943576; x=1744479576;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=WX2C22JYEAq+JyD5cs6erlsGiFqL70FmZLflNcjHv1I=;
-  b=TeDX5t0he17UQABD2fg6eGyBLqFlCDNKNoC0tvkkLZTbLXKbN1LsFGwW
-   nmEkuaNteiI82nUhDg/jKw0y/88DJou97X1xSSPE9PKCyqyTl9xODQ6Cs
-   st9Gw2xQIIDQ/P9fuRO+g7G51xeUyuJK7lVs0LfSh9C4nmZmEH6wN8Sdm
-   4MtM69j1wNiqnMNLwGSSVV9FOoeHkf+zup2udNX1FrTIPn4yeleX2YNyQ
-   uc0ETR7zBHxGPoYAkseFbQOx5PFdK6r7AcfIu+jNOiqWFoTaObeJthttG
-   2nAyronUIsDVHvd3f7YTiLw5wXuZfJ3T9xngRy0jXesMR4cW2MjFw8kZf
-   Q==;
-X-CSE-ConnectionGUID: AYshO3FGQ3mfG1lEjoYhLw==
-X-CSE-MsgGUID: +ISbItpARxCNlMPJEeGDjw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="33801723"
+  t=1712943581; x=1744479581;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=BLEtjVnBJnqOweid/o9LC3AV3pOUNEEl+F0GkqNkFZY=;
+  b=LyPQISXowwLs8hF6e9XiqxVrGM9ZpDw/e21JwcdiM2RC+l5DI5CcjkCb
+   TNNHbPfPxpNGn3tUxPPpxY76wPGb+J7VgomC2jT+SDekifRbAt4m5Fuwq
+   gCKAgqPRNW9t7+c4iTcKj3K4lr9KUMcv9lZX5Z5yf8jRzAR4VnI9CUtsK
+   6SBsqH/kgjfZxhSkkE3m+e1QV8qccb1fCHdWADUYlyXNuuQvNKRClGZLW
+   4rFJosugwQbLXEDrg8GRaHfUYjGdR8dNn7UumrrM7Z8XPX+dSmcFF2UfH
+   G3ThtBHFBemj0FaqlfCRmzByj4vPsD3e2HTX07cm4iQQr7GsHScYYKooB
+   g==;
+X-CSE-ConnectionGUID: ztjrNoHFSye3GXWj8f/EhQ==
+X-CSE-MsgGUID: MoJXHl80TjWVm4geLrv+HA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8277874"
 X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="33801723"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 10:39:35 -0700
-X-CSE-ConnectionGUID: a6dgsmHMRSiCEwUxEqa/9g==
-X-CSE-MsgGUID: Hk6QlCg4R6a4mLN90Q/PUQ==
+   d="scan'208";a="8277874"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 10:39:41 -0700
+X-CSE-ConnectionGUID: Q/wtgR9TSKKcHm8USHN4oA==
+X-CSE-MsgGUID: x4MyejV5RhG52WFZYasWAA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="25942392"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa004.fm.intel.com with ESMTP; 12 Apr 2024 10:39:33 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id A1E0BFF; Fri, 12 Apr 2024 20:39:32 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH v1 1/1] serial: 8250_dw: Deduplicate LCR checks
-Date: Fri, 12 Apr 2024 20:39:31 +0300
-Message-ID: <20240412173931.187411-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
+   d="scan'208";a="26094811"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 10:39:41 -0700
+Date: Fri, 12 Apr 2024 10:39:35 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Xiaoyao Li <xiaoyao.li@intel.com>
+Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"davidskidmore@google.com" <davidskidmore@google.com>,
+	"srutherford@google.com" <srutherford@google.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"pankaj.gupta@amd.com" <pankaj.gupta@amd.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Wang, Wei W" <wei.w.wang@intel.com>,
+	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [ANNOUNCE] PUCK Notes - 2024.04.03 - TDX Upstreaming Strategy
+Message-ID: <20240412173935.GH3039520@ls.amr.corp.intel.com>
+References: <8b40f8b1d1fa915116ef1c95a13db0e55d3d91f2.camel@intel.com>
+ <ZhVdh4afvTPq5ssx@google.com>
+ <4ae4769a6f343a2f4d3648e4348810df069f24b7.camel@intel.com>
+ <ZhVsHVqaff7AKagu@google.com>
+ <b1d112bf0ff55073c4e33a76377f17d48dc038ac.camel@intel.com>
+ <ZhfyNLKsTBUOI7Vp@google.com>
+ <2c11bb62-874e-4e9e-89b1-859df5b560bc@intel.com>
+ <ZhgBGkPTwpIsE6P6@google.com>
+ <437e0da5de22c0a1e77e25fcb7ebb1f052fef754.camel@intel.com>
+ <19a0f47e-6840-42f8-b200-570a9aa7455d@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <19a0f47e-6840-42f8-b200-570a9aa7455d@intel.com>
 
-All callers of dw8250_check_lcr() perform the same check.
-Deduplicate it by moving them into respective call.
+On Fri, Apr 12, 2024 at 04:40:37PM +0800,
+Xiaoyao Li <xiaoyao.li@intel.com> wrote:
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/tty/serial/8250/8250_dw.c | 41 +++++++++++--------------------
- 1 file changed, 15 insertions(+), 26 deletions(-)
+> > The second issue is that userspace can’t know what CPUID values are configured
+> > in the TD. In the existing API for normal guests, it knows because it tells the
+> > guest what CPUID values to have. But for the TDX module that model is
+> > complicated to fit into in its API where you tell it some things and it gives
+> > you the resulting leaves. How to handle KVM_SET_CPUID kind of follows from this
+> > issue.
+> > 
+> > One option is to demand the TDX module change to be able to efficiently wedge
+> > into KVM’s exiting “tell” model. This looks like the metadata API to query the
+> > fixed bits. Then userspace can know what bits it has to set, and call
+> > KVM_SET_CPUID with them. I think it is still kind of awkward. "Tell me what you
+> > want to hear?", "Ok here it is".
+> > 
+> > Another option would be to add TDX specific KVM APIs that work for the TDX
+> > module's “ask” model, and meet the enumerated two goals. It could look something
+> > like:
+> > 1. KVM_TDX_GET_CONFIG_CPUID provides a list of directly configurable bits by
+> > KVM. This is based on static data on what KVM supports, with sanity check of
+> > TD_SYSINFO.CPUID_CONFIG[]. Bits that KVM doesn’t know about, but are returned as
+> > configurable by TD_SYSINFO.CPUID_CONFIG[] are not exposed as configurable. (they
+> > will be set to 1 by KVM, per the recommendation)
+> 
+> This is not how KVM works. KVM will never enable unknown features blindly.
+> If the feature is unknown to KVM, it cannot be enable for guest. That's why
+> every new feature needs enabling patch in KVM, even the simplest case that
+> needs one patch to enumerate the CPUID of new instruction in
+> KVM_GET_SUPPORTED_CPUID.
 
-diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
-index 1300c92b8702..1e81024f8fd3 100644
---- a/drivers/tty/serial/8250/8250_dw.c
-+++ b/drivers/tty/serial/8250/8250_dw.c
-@@ -100,14 +100,18 @@ static void dw8250_force_idle(struct uart_port *p)
- 	(void)p->serial_in(p, UART_RX);
- }
- 
--static void dw8250_check_lcr(struct uart_port *p, int value)
-+static void dw8250_check_lcr(struct uart_port *p, int offset, int value)
- {
--	void __iomem *offset = p->membase + (UART_LCR << p->regshift);
-+	struct dw8250_data *d = to_dw8250_data(p->private_data);
-+	void __iomem *addr = p->membase + (offset << p->regshift);
- 	int tries = 1000;
- 
-+	if (offset != UART_LCR || d->uart_16550_compatible)
-+		return;
-+
- 	/* Make sure LCR write wasn't ignored */
- 	while (tries--) {
--		unsigned int lcr = p->serial_in(p, UART_LCR);
-+		unsigned int lcr = p->serial_in(p, offset);
- 
- 		if ((value & ~UART_LCR_SPAR) == (lcr & ~UART_LCR_SPAR))
- 			return;
-@@ -116,15 +120,15 @@ static void dw8250_check_lcr(struct uart_port *p, int value)
- 
- #ifdef CONFIG_64BIT
- 		if (p->type == PORT_OCTEON)
--			__raw_writeq(value & 0xff, offset);
-+			__raw_writeq(value & 0xff, addr);
- 		else
- #endif
- 		if (p->iotype == UPIO_MEM32)
--			writel(value, offset);
-+			writel(value, addr);
- 		else if (p->iotype == UPIO_MEM32BE)
--			iowrite32be(value, offset);
-+			iowrite32be(value, addr);
- 		else
--			writeb(value, offset);
-+			writeb(value, addr);
- 	}
- 	/*
- 	 * FIXME: this deadlocks if port->lock is already held
-@@ -158,12 +162,8 @@ static void dw8250_tx_wait_empty(struct uart_port *p)
- 
- static void dw8250_serial_out(struct uart_port *p, int offset, int value)
- {
--	struct dw8250_data *d = to_dw8250_data(p->private_data);
--
- 	writeb(value, p->membase + (offset << p->regshift));
--
--	if (offset == UART_LCR && !d->uart_16550_compatible)
--		dw8250_check_lcr(p, value);
-+	dw8250_check_lcr(p, offset, value);
- }
- 
- static void dw8250_serial_out38x(struct uart_port *p, int offset, int value)
-@@ -194,26 +194,19 @@ static unsigned int dw8250_serial_inq(struct uart_port *p, int offset)
- 
- static void dw8250_serial_outq(struct uart_port *p, int offset, int value)
- {
--	struct dw8250_data *d = to_dw8250_data(p->private_data);
--
- 	value &= 0xff;
- 	__raw_writeq(value, p->membase + (offset << p->regshift));
- 	/* Read back to ensure register write ordering. */
- 	__raw_readq(p->membase + (UART_LCR << p->regshift));
- 
--	if (offset == UART_LCR && !d->uart_16550_compatible)
--		dw8250_check_lcr(p, value);
-+	dw8250_check_lcr(p, offset, value);
- }
- #endif /* CONFIG_64BIT */
- 
- static void dw8250_serial_out32(struct uart_port *p, int offset, int value)
- {
--	struct dw8250_data *d = to_dw8250_data(p->private_data);
--
- 	writel(value, p->membase + (offset << p->regshift));
--
--	if (offset == UART_LCR && !d->uart_16550_compatible)
--		dw8250_check_lcr(p, value);
-+	dw8250_check_lcr(p, offset, value);
- }
- 
- static unsigned int dw8250_serial_in32(struct uart_port *p, int offset)
-@@ -225,12 +218,8 @@ static unsigned int dw8250_serial_in32(struct uart_port *p, int offset)
- 
- static void dw8250_serial_out32be(struct uart_port *p, int offset, int value)
- {
--	struct dw8250_data *d = to_dw8250_data(p->private_data);
--
- 	iowrite32be(value, p->membase + (offset << p->regshift));
--
--	if (offset == UART_LCR && !d->uart_16550_compatible)
--		dw8250_check_lcr(p, value);
-+	dw8250_check_lcr(p, offset, value);
- }
- 
- static unsigned int dw8250_serial_in32be(struct uart_port *p, int offset)
+We can use device attributes as discussed at
+https://lore.kernel.org/kvm/CABgObfZzkNiP3q8p=KpvvFnh8m6qcHX4=tATaJc7cvVv2QWpJQ@mail.gmail.com/
+https://lore.kernel.org/kvm/20240404121327.3107131-6-pbonzini@redhat.com/
+
+Something like
+
+#define KVM_X86_GRP_TDX         2
+ioctl(fd, KVM_GET_DEVICE_ATTR, (KVM_X86_GRP_TDX, metadata_field_id))
+
+
+> > 2. KVM_TDX_INIT_VM is passed userspaces choice of configurable bits, along with
+> > XFAM and ATTRIBUTES as dedicated fields. They go into TDH.MNG.INIT.
+> > 3. KVM_TDX_INIT_VCPU_CPUID takes a list of CPUID leafs. It pulls the CPUID bits
+> > actually configured in the TD for these leafs. They go into the struct kvm_vcpu,
+> > and are also passed up to userspace so everyone knows what actually got
+> > configured.
+
+Any reason to introduce KVM_TDX_INIT_VCPU_CPUID in addition to
+KVM_TDX_INIT_VCPU?  We can make single vCPU KVM TDX ioctl do all.
+
+
+> > KVM_SET_CPUID is not used for TDX.
+
+What cpuid does KVM_TDX_INIT_VCPU_CPUID accept?  The one that TDX module
+accepts with TDH.MNG.INIT()?  Or any cpuids that KVM_SET_CPUID2 accepts?
+I'm asking it because TDX module virtualizes only subset of CPUIDs. 
+TDG.VP.VMCALL<CPUID> would need info from KVM_SET_CPUID.
+
+
+> > Then we get TDX module folks to commit to never breaking KVM/userspace that
+> > follows this logic. One thing still missing is how to handle unknown future
+> > leafs with fixed bits. If a future leaf is defined and gets fixed 1, QEMU
+> > wouldn't know to query it.
+> 
+> We can make KVM_TDX_INIT_VCPU_CPUID provide a large enough CPUID leafs and
+> KVM reports every leafs to userpsace. Instead of something that userspace
+> cares leafs X,Y,Z and KVM only reports back leafs X,Y,Z via
+> KVM_TDX_INIT_VCPU_CPUID.
+
+If new CPUID index is introduced, the userspace will get default values of
+CPUIDs and don't touch unknown CPUIDs?  Or KVM_TDX_GET_CONFIG_CPUID will mask
+out CPUID unknown to KVM?
 -- 
-2.43.0.rc1.1336.g36b5255a03ac
-
+Isaku Yamahata <isaku.yamahata@intel.com>
 
