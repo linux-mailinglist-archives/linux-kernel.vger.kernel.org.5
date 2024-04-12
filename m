@@ -1,107 +1,167 @@
-Return-Path: <linux-kernel+bounces-142774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6ADE8A2FF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F0D1C8A2FF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:55:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 029C31C21FAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:54:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DD171C23EAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:55:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09FE85926;
-	Fri, 12 Apr 2024 13:54:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AB4685931;
+	Fri, 12 Apr 2024 13:55:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="HR0FYA6s"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M8b90VHG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 569BE55E43
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:54:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 465B1E542;
+	Fri, 12 Apr 2024 13:55:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712930092; cv=none; b=LEdLj2ZlayUnvOr7+T9TRjPGaz92klSHX78Edzyp8CcSkRkJpIlRxQoE35mJARETHMps1wLIeaExIRjKFFEdhRqNcm7MJ8CBfX711Kt4L2wO+HQ3aVCocZ4fUaFGCtpQDuv/3mxU/fvBHYycMnZNdTEM3bvvF+3zjzFD763Itdw=
+	t=1712930121; cv=none; b=AtYYeC2yvzbziGeR/NT+HNar4ufSvEgwWtxtVfOWkHU4ZwpYgRVMqjvdHdwhso5BFOaDRUnowgsCIL+qbiD385pr6CtVBoUEEiMdjOxExUzHM9oL+yVqb94JVY+tgR96I6K02fW9wRxbmA6nEcpyWGV+uifRw6OVyo75xUAzRzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712930092; c=relaxed/simple;
-	bh=vzZDCSF+kVOp0Lt6aAnjTGFDPDyqI/182rQxYNpYQFM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lekf5b81pGp84Uwc+NdaAJXpKq4CilGgnwaz32YAnXRtqMd6m4G6Pcx4XuKew/3JTY/V657GzFrzD7lGhNcn9Py+1U72BwV8WcWUKOud6htwPE2v8SylM56tM0QL9USk1XREuNiaqpeIbiY9ToA6bKAxUau1eyYl8+wKpXGUNWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=HR0FYA6s; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a51a7dc45easo94203466b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 06:54:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1712930087; x=1713534887; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2fQ11RQlzmXFE9029rSHanI+TkjNjC7if1EAKo5wgPM=;
-        b=HR0FYA6spSo7iIPtxTvqjsVUyRDoYi/FUhuMxLHhrvWsO8TYpFLWJcM7vhBK56Dv7U
-         +kZCNYGwp/aONa0+q5H9hrcO5Y0vpheyJE8VVocNnfaSfkXk/Flr2KPb0P7rO+RwAJYO
-         aA2dXR1jDItR3n+4XFcRtuNk/L48yQcDLbhNbt/THbg+avIxc2SjGZisWAGWkWcuGYYt
-         F2kz6/0+xtnErfjSfeFldLa0n/JuDdR3vgykTUeHKpDrnIiHTuw5QOrzeQYWoOVbuOSz
-         8A7GVRpSuwE9N4GLl5f70CFLO7MLgiC359rTtI0VT/kZSBsEQv+rN+i/bWiRATyen6jc
-         C1Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712930087; x=1713534887;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2fQ11RQlzmXFE9029rSHanI+TkjNjC7if1EAKo5wgPM=;
-        b=f7wpgS6r6ArLGF7/PmNqDthnQzNvqOLwHRXPswH5MInejyXKSVhbKR8jRHUquxKvp+
-         EFQErxpOriRgo4QOjO+Ri/BHHvizXFdErHYA8TBrdqQlMrhp74/WkpNe/9Qs5Xq9HJRf
-         7aZgrBK9EfTMu7VbEFbdLMDYj1znQk2gwnSIDbn66Hec0RIEpnBLRkoijKjX5cL0JUkq
-         rsqt7GUnguym+IAQCczwEGv9cO1nXqGAxTCjFe0l8rIYJ+tXNTEwbe3dKJkHYlo32p6+
-         wm8GKqCqDBNPNxvRPOPK5ECOy5X1XyN6d14J1SFNY3WPThAgFNx4gLkSOI63J/E73uW4
-         3fXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUCOkMj2qsfBiHJRSNoscvhUQHjUdaMZsmKyAhxsbXjVXE0q4MX+kUOyAFVd6qF34AIXofn9u4dOMVC84TaqCGfFovv1et/Wa5bqw4l
-X-Gm-Message-State: AOJu0YwsFnhisnVUR7jbnpZPVn+hUAhZCyKjzUk+2gm3fiFlAbOhfpAf
-	CiP7gVeGlT6tJubSEEMJBzJd/rFZs710JAp2XmpZ4ha+OOLkjz+4wMq19w/4dXs=
-X-Google-Smtp-Source: AGHT+IF850IG4CKSDch1swr8IAF7wkkB0yqEyQ8/ZgeJyByhW8mQWl4Bn6m9PzQQWJJiMFjydqCcqw==
-X-Received: by 2002:a17:906:80c7:b0:a51:bc68:fa94 with SMTP id a7-20020a17090680c700b00a51bc68fa94mr1961360ejx.21.1712930087545;
-        Fri, 12 Apr 2024 06:54:47 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
-        by smtp.gmail.com with ESMTPSA id q23-20020a170906a09700b00a519ec0a965sm1839412ejy.49.2024.04.12.06.54.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 06:54:47 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arch@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] bug: Improve comment
-Date: Fri, 12 Apr 2024 15:54:07 +0200
-Message-ID: <20240412135406.155947-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712930121; c=relaxed/simple;
+	bh=6TmX4w4nn9aEsWZzU+YqQ0aoR97tm4JTGPuVtWmpvk0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QPY5myU2p0h5RuCRGGhL9av7MK/H7Ebr/bdDHNAArV4udk+MM+hXQxHiXGJYuCA+itVY0QdLSBuC37NWJf1OLjQyhiDor1uzai9jzEAEmaCVe1WaIIcsZDtfPNFnLnT1V4NqrQJe7zbttDDwnTWbFJsPp0fWh800nCgLwf1wpZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M8b90VHG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4964EC113CC;
+	Fri, 12 Apr 2024 13:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712930120;
+	bh=6TmX4w4nn9aEsWZzU+YqQ0aoR97tm4JTGPuVtWmpvk0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=M8b90VHG3dFi6r7H4peNaQ7XyuyXMW7KTbXYe1ETTnZez/mDTaliiN7Zy2Lf/9vGG
+	 PI5zvovIwRO41dnkMHiJI8UCuvN7FBtIhTgaBTNoTgrLIp9hbJYgOowoOqel3MSN/1
+	 D/XOGuTwT7ZVJVjOg55lfvt90KjlWNIxwS+UZAZMOgSoTKXSt11M03H12qL7bkkH+L
+	 cT27lKJydShJqHAR7i6W09q4n8LFB7kbt8D+1M2p4CiXjXQj2zR3l4Lnf7lv1gWY3s
+	 umsKiPX9Q7meJZW2tlO8jstSeQk/vINPne/Iv2b/spbWDA+hO2p6F6abjHkYhHFRGf
+	 Oig6PwAnFDe4A==
+Date: Fri, 12 Apr 2024 14:55:13 +0100
+From: Will Deacon <will@kernel.org>
+To: Douglas Anderson <dianders@chromium.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
+	Misono Tomohiro <misono.tomohiro@fujitsu.com>,
+	Chen-Yu Tsai <wens@csie.org>, Stephen Boyd <swboyd@chromium.org>,
+	Daniel Thompson <daniel.thompson@linaro.org>,
+	Sumit Garg <sumit.garg@linaro.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Tony Luck <tony.luck@intel.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: smp: smp_send_stop() and crash_smp_send_stop()
+ should try non-NMI first
+Message-ID: <20240412135513.GA28004@willie-the-truck>
+References: <20231207170251.1.Id4817adef610302554b8aa42b090d57270dc119c@changeid>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207170251.1.Id4817adef610302554b8aa42b090d57270dc119c@changeid>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Add parentheses to WARN_ON_ONCE() for consistency.
+Hi Doug,
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- include/asm-generic/bug.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'm doing some inbox Spring cleaning!
 
-diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
-index 6e794420bd39..6dc1c855a2d1 100644
---- a/include/asm-generic/bug.h
-+++ b/include/asm-generic/bug.h
-@@ -72,7 +72,7 @@ struct bug_entry {
- #endif
- 
- /*
-- * WARN(), WARN_ON(), WARN_ON_ONCE, and so on can be used to report
-+ * WARN(), WARN_ON(), WARN_ON_ONCE(), and so on can be used to report
-  * significant kernel issues that need prompt attention if they should ever
-  * appear at runtime.
-  *
--- 
-2.44.0
+On Thu, Dec 07, 2023 at 05:02:56PM -0800, Douglas Anderson wrote:
+> When testing hard lockup handling on my sc7180-trogdor-lazor device
+> with pseudo-NMI enabled, with serial console enabled and with kgdb
+> disabled, I found that the stack crawls printed to the serial console
+> ended up as a jumbled mess. After rebooting, the pstore-based console
+> looked fine though. Also, enabling kgdb to trap the panic made the
+> console look fine and avoided the mess.
+>
+> After a bit of tracking down, I came to the conclusion that this was
+> what was happening:
+> 1. The panic path was stopping all other CPUs with
+>    panic_other_cpus_shutdown().
+> 2. At least one of those other CPUs was in the middle of printing to
+>    the serial console and holding the console port's lock, which is
+>    grabbed with "irqsave". ...but since we were stopping with an NMI
+>    we didn't care about the "irqsave" and interrupted anyway.
+> 3. Since we stopped the CPU while it was holding the lock it would
+>    never release it.
+> 4. All future calls to output to the console would end up failing to
+>    get the lock in qcom_geni_serial_console_write(). This isn't
+>    _totally_ unexpected at panic time but it's a code path that's not
+>    well tested, hard to get right, and apparently doesn't work
+>    terribly well on the Qualcomm geni serial driver.
+> 
+> It would probably be a reasonable idea to try to make the Qualcomm
+> geni serial driver work better, but also it's nice not to get into
+> this situation in the first place.
+> 
+> Taking a page from what x86 appears to do in native_stop_other_cpus(),
+> let's do this:
+> 1. First, we'll try to stop other CPUs with a normal IPI and wait a
+>    second. This gives them a chance to leave critical sections.
+> 2. If CPUs fail to stop then we'll retry with an NMI, but give a much
+>    lower timeout since there's no good reason for a CPU not to react
+>    quickly to a NMI.
+> 
+> This works well and avoids the corrupted console and (presumably)
+> could help avoid other similar issues.
+> 
+> In order to do this, we need to do a little re-organization of our
+> IPIs since we don't have any more free IDs. We'll do what was
+> suggested in previous conversations and combine "stop" and "crash
+> stop". That frees up an IPI so now we can have a "stop" and "stop
+> NMI".
+> 
+> In order to do this we also need a slight change in the way we keep
+> track of which CPUs still need to be stopped. We need to know
+> specifically which CPUs haven't stopped yet when we fall back to NMI
+> but in the "crash stop" case the "cpu_online_mask" isn't updated as
+> CPUs go down. This is why that code path had an atomic of the number
+> of CPUs left. We'll solve this by making the cpumask into a
+> global. This has a potential memory implication--with NR_CPUs = 4096
+> this is 4096/8 = 512 bytes of globals. On the upside in that same case
+> we take 512 bytes off the stack which could potentially have made the
+> stop code less reliable. It can be noted that the NMI backtrace code
+> (lib/nmi_backtrace.c) uses the same approach and that use also
+> confirms that updating the mask is safe from NMI.
 
+Updating the global masks without any synchronisation feels broken though:
+
+> @@ -1085,77 +1080,75 @@ void smp_send_stop(void)
+>  {
+>  	unsigned long timeout;
+>  
+> -	if (num_other_online_cpus()) {
+> -		cpumask_t mask;
+> +	/*
+> +	 * If this cpu is the only one alive at this point in time, online or
+> +	 * not, there are no stop messages to be sent around, so just back out.
+> +	 */
+> +	if (num_other_online_cpus() == 0)
+> +		goto skip_ipi;
+>  
+> -		cpumask_copy(&mask, cpu_online_mask);
+> -		cpumask_clear_cpu(smp_processor_id(), &mask);
+> +	cpumask_copy(to_cpumask(stop_mask), cpu_online_mask);
+> +	cpumask_clear_cpu(smp_processor_id(), to_cpumask(stop_mask));
+
+I don't see what prevents multiple CPUs getting in here concurrently and
+tripping over the masks. x86 seems to avoid that with an atomic
+'stopping_cpu' variable in native_stop_other_cpus(). Do we need something
+similar?
+
+Apart from that, I'm fine with the gist of the patch.
+
+Will
 
