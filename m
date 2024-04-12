@@ -1,67 +1,79 @@
-Return-Path: <linux-kernel+bounces-141828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90BD58A23FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B0CA8A2403
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:57:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FAC52818EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:55:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16172283A31
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:57:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 492B4125D5;
-	Fri, 12 Apr 2024 02:55:48 +0000 (UTC)
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC10212E6A;
+	Fri, 12 Apr 2024 02:57:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QBXPtoxV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02E4EAE4;
-	Fri, 12 Apr 2024 02:55:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB12A2581;
+	Fri, 12 Apr 2024 02:57:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712890547; cv=none; b=OAyttlyeeQRbAOsK03fiQyv11P769G2ext6pLqTzMPziSWkrG279nyWfIEjAcaI9BGirtmi6fktmgp1vFfGB/OhLzpH73KWzBMu7tivnN0NUwzJR3D/UEokT1sShBAQTihp3So4YmXpyj34vasdajlUh8cz+tXFPBsLwOl0x0js=
+	t=1712890632; cv=none; b=mm5QEvdAxlJq2Gq/vHSSYFsCaAlDdvlWoZoVUt316rVgEwQ1IIZvjfUUfwExHLvaD/nlbSFg5pGWNWaNg7Y2IOTrzeh3i3JNT/Mkc6KRqGL82IFTeaERRh+ay+AxMJjvzsMoXaGfV7SR7WZHtXt9mg9KqmEhnmrTfNv2TeZJn4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712890547; c=relaxed/simple;
-	bh=XNCGNyHwYRCwwpANiBlvWrPXTAHWMfZsAYPVTFtFQSo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Oc6oi79AaB94csqmipIWkfvZ+660EHhbFpl3p0T7maeb+dF72qxH7qN49wEJBw1HJnd3XhvR8U2AJwFaZV+77dGRuhx32XhiUwc2EaV0gSp+TSA8TVzDOtC2+SkCRzMM25QbtXbOXaUOkeBapguN2BT8b/r/kfENVqFHwSjda+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1rv74j-000gmk-Pq; Fri, 12 Apr 2024 10:55:38 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 12 Apr 2024 10:55:55 +0800
-Date: Fri, 12 Apr 2024 10:55:55 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Hailey Mothershead <hailmo@amazon.com>
-Cc: davem@davemloft.net, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] crypto: ecdh - zeroize crpytographic keys after use
-Message-ID: <Zhiiu0GCySQ9OxrH@gondor.apana.org.au>
-References: <20240411235157.19801-1-hailmo@amazon.com>
+	s=arc-20240116; t=1712890632; c=relaxed/simple;
+	bh=p+4XkXpOxunuKnnWO83NDMUzum9+mHSSGqv0fFD9r7s=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=L6JyFkn2NKnr/r1c1ydjG3XVmK4h0FWLV1miMn/3gXcXuBF0R2N3+scHv2ObOAu+HOlYug/HOV9iOrPvEiX4+RGMnjWrVD5F1Atnd3O+qPj2Y0JDmjt9Em8EqImeVTB7MlCutjNGDtT/WHEwETI6SCXibHkeAoj9kLQXp+xNGgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QBXPtoxV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CD58C072AA;
+	Fri, 12 Apr 2024 02:57:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712890631;
+	bh=p+4XkXpOxunuKnnWO83NDMUzum9+mHSSGqv0fFD9r7s=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=QBXPtoxV+vVyS1Qy7tf9k5jCPndXuhDBFvVab65uRIOAwl3+UUsVjhrMNQUyMB0U9
+	 XWrzecCBpSJSY9I7tZfg98E82DlruZ0nEfe9Ebj6o4hw7cfP8Pe9Q+pT9QLqmUv2MF
+	 Ua41VD2K+WiMR8pTxP61JOap3vM/LcNhERXRRRY+DpxhhBBzpTP9Aeobv0aIDhzjkt
+	 LXu0X0iGFgWDydnmQJB9nuxUQoIkHlJp/C8J7tRJjPzd2atq3+WOyGRtIVQ9deYEYD
+	 OKm6mRknWQLxRiZIP/r2Xv7wFQJOp3b+7oypEKXtTwIzx+piu5r8KAcEpn9MWFdc+x
+	 TQEXkVRPsIM2A==
+Message-ID: <58b23157c088cb4774d579cc8700de85.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411235157.19801-1-hailmo@amazon.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <de4c56a8-488d-4cdb-9d6c-e9d6e63b22b9@skole.hr>
+References: <20240402-pxa1908-lkml-v9-0-25a003e83c6f@skole.hr> <20240402-pxa1908-lkml-v9-5-25a003e83c6f@skole.hr> <3838e4684f98e1ce3818bfb6983844bc.sboyd@kernel.org> <de4c56a8-488d-4cdb-9d6c-e9d6e63b22b9@skole.hr>
+Subject: Re: [PATCH v9 5/9] clk: mmp: Add Marvell PXA1908 clock driver
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, Karel Balej <balejk@matfyz.cz>, David Wronek <david@mainlining.org>, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Catalin Marinas <catalin.marinas@arm.com>, Conor Dooley <conor+dt@kernel.org>, Duje =?utf-8?q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>, Guilherme G. Piccoli <gpiccoli@igalia.com>, Haojian Zhuang <haojian.zhuang@linaro.org>, Kees Cook <keescook@chromium.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Lubomir Rintel <lkundrak@v3.sk>, Michael Turquette <mturquette@baylibre.com>, Rob Herring <robh+dt@kernel.org>, Rob Herring <robh@kernel.org>, Tony Lindgren <tony@atomide.com>, Tony Luck <tony.luck@intel.com>, Will Deacon <will@kernel.org>
+Date: Thu, 11 Apr 2024 19:57:09 -0700
+User-Agent: alot/0.10
 
-On Thu, Apr 11, 2024 at 11:51:56PM +0000, Hailey Mothershead wrote:
->
-> @@ -111,7 +113,7 @@ static int ecdh_compute_value(struct kpp_request *req)
->  free_all:
->  	kfree_sensitive(shared_secret);
->  free_pubkey:
-> -	kfree(public_key);
-> +	kfree_sensitive(public_key);
+Quoting Duje Mihanovi=C4=87 (2024-04-11 03:15:34)
+> On 4/11/2024 10:00 AM, Stephen Boyd wrote:
+> >=20
+> > Is there a reason this file can't be a platform driver?
+>=20
+> Not that I know of, I did it like this only because the other in-tree=20
+> MMP clk drivers do so. I guess the initialization should look like any=20
+> of the qcom GCC drivers then?
 
-It makes no sense to zero the public key.  Nack.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Yes.
+
+>=20
+> While at it, do you think the other MMP clk drivers could use a conversio=
+n?
+>=20
+
+Sure, go for it. I'm a little wary if the conversion cannot be tested
+though. It doesn't hurt that other drivers haven't been converted.
 
