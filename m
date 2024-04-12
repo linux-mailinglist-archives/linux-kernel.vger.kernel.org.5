@@ -1,98 +1,124 @@
-Return-Path: <linux-kernel+bounces-142894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C93B8A31BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A2CB8A31BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:02:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 534DB284086
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:01:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23491285080
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:02:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B1B1474D9;
-	Fri, 12 Apr 2024 15:01:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68EB9145333;
+	Fri, 12 Apr 2024 15:02:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N7V7gCFu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bm1cA1ya"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 112BA145333;
-	Fri, 12 Apr 2024 15:01:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0521F146D68
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712934107; cv=none; b=S04JxTHls8YtJnCCVnomxL9LK/EYQF2D4o2zF4237fYxSjlEocY7OaBBHORSbYFk411adht+Up0jl8wgHQZxiwf2/c3FYRBGonJCubcNlTN5qikN6kWM2oyuNGqRTMAVheb9zwvcguCLj4CAq2rJSb7B1GOosqp05te6N7cT7iI=
+	t=1712934124; cv=none; b=rVT/6BNtKxL6mHcWvn+bfon701weM7UlXYKnUPLt3yeL4azSwUWYBNuXLashHMil5ojUAaaPzke4bfiaR8xH/e3IkwlB+Nrn1enSqZCyCTean7YwNzmhyJAWzF5L1/REKPF5WdpJ5Jyh0cQgfREdQrxsH8QbMr6SlUFjuYhcvtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712934107; c=relaxed/simple;
-	bh=g07M7yc8kYh3zRKK1iY+krBO5+7cUmhQyw/ZFdMq8cs=;
+	s=arc-20240116; t=1712934124; c=relaxed/simple;
+	bh=uMShFtLOUG8eV3KMCwAPHQbJV1SdgUmb18i0oOTiTpk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sXWZXdAjzBg9paLj4kgyDAsckZIlqpT2E6bCazRP6wwmUhVI0NX7MEm7R3FLv/eypMKDO8O4L4j3eMDEDk4xkorJQNTu7UQfOLaOfMj4E8SSDaHajEvaXFiCuPTctwdgbghp3ALYPNBQ4eC0RXaZXmZQbJjTGJ14qg2DfEcmPgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N7V7gCFu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4961DC113CC;
-	Fri, 12 Apr 2024 15:01:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712934106;
-	bh=g07M7yc8kYh3zRKK1iY+krBO5+7cUmhQyw/ZFdMq8cs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=N7V7gCFurKvzNIYjIChC2uSv6vjjlgWNopsQAtmkyS+1eoGqOvjIpBkHg2u2Rpwxn
-	 ZsFbS5IyCEAkoY9B5L/ssNVDc5p2FGgd74BenOWltOFAUgVbXquJPLEv/FT+a1xV1R
-	 nYO6UQqHkg/9xRJ2BvxhMn65d/JGfCQiSZD1SVfhWhoBx09k4576drKqB2rSE6VhtM
-	 L21jllWoNqllhPpM5ejC/DQySylvPz3ypdi7bPCcJG5U/rZqKmf6Omgn1Fuf7LiW1H
-	 xnDWtOoQEtR5A5LkcoGsz8SyNJgFSIju+9U1mY5Za3BkX4I79nXkJxJq5J3EpYvHZo
-	 6LdbPAY+kl79w==
-Date: Fri, 12 Apr 2024 12:01:43 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] perf test: Display number of remaining tests
-Message-ID: <ZhlM19baK_P0zREj@x1>
-References: <20240405070931.1231245-1-irogers@google.com>
- <20240405070931.1231245-2-irogers@google.com>
- <ZhP7VBvlSPrJKDP6@x1>
- <CAP-5=fVbhf_JgO9APwgOVyktazOAyEL-3vM2d-M4ropMDdYH2w@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bgQK1TUi5F3DMMUFEF9W8wB2jmMmjIuQB95PUaeGlHvu6dRxEJHU8T7507Pa7u8CVHninn7LfNc9S91dDsCmVunizgxHBXwbml+NpNX/dPJLglpQEt/5ScmyfWVfuW27DtNg/RdQQuqkG80cS/kG6Eu+RyVLq+G95/mEKd/KvRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bm1cA1ya; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712934123; x=1744470123;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=uMShFtLOUG8eV3KMCwAPHQbJV1SdgUmb18i0oOTiTpk=;
+  b=bm1cA1yak0r3+RMO/7mjcuGJ+l1khXSGO1Px3NdmDd1nn0zjdU9mL67+
+   +fpwkEBcfspBQmBLcYbetygYc20eSkM+oQRkliB1wisD9T6V9C63pmSWI
+   ChhXdVe7BSBVKTzONujeb00ujz7S6ge7j1HKkG1yJjivgdeH/lV94hblU
+   NdLz6iSXkvN7yokOlVGK6gmZFlTLIKBB6ZrUzI88RReGRrNWLZ6FM1/Oi
+   CC6CEIsb/U68G9JdBxCuZeG62uO3noRMqt7s3/z/emCJGzKRdycvLL0dZ
+   WbH8D4/IoK42l3PcvEo/ARRiLUcKenTLE7UmvQOfu6FiJmLgNFE+Q/6xX
+   Q==;
+X-CSE-ConnectionGUID: fGfX9lJvShKktvByN47pOw==
+X-CSE-MsgGUID: +qSY3yqEQwmR9MqLvNDv3A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="19786970"
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="19786970"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 08:02:02 -0700
+X-CSE-ConnectionGUID: /S7f/l5ET5e4oP9wsilGiw==
+X-CSE-MsgGUID: kE81WDBHRhuHx/4CFCqFjg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="26063040"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa004.jf.intel.com with ESMTP; 12 Apr 2024 08:01:59 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id 43ED4E7; Fri, 12 Apr 2024 18:01:58 +0300 (EEST)
+Date: Fri, 12 Apr 2024 18:01:58 +0300
+From: "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "tglx@linutronix.de" <tglx@linutronix.de>, 
+	"mingo@redhat.com" <mingo@redhat.com>, "Hansen, Dave" <dave.hansen@intel.com>, 
+	"bp@alien8.de" <bp@alien8.de>, 
+	"sathyanarayanan.kuppuswamy@linux.intel.com" <sathyanarayanan.kuppuswamy@linux.intel.com>, "hpa@zytor.com" <hpa@zytor.com>, 
+	"Reshetova, Elena" <elena.reshetova@intel.com>, "seanjc@google.com" <seanjc@google.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCHv2 0/4] x86/tdx: Adjust TD settings on boot
+Message-ID: <gpqnnq6zubgltybaruzbpvdd3k27exylp3bzmz6cqpvhx5ee5e@vto2bmdz7kji>
+References: <20240325104607.2653307-1-kirill.shutemov@linux.intel.com>
+ <sbunoj5dm6xifhqog5aaeujrbiilfqufum5msoiqtp2di3nsbs@wdoa37qkziwe>
+ <46cb81e0dda6196a1339cdfc93ea93f2d13c3e4b.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fVbhf_JgO9APwgOVyktazOAyEL-3vM2d-M4ropMDdYH2w@mail.gmail.com>
+In-Reply-To: <46cb81e0dda6196a1339cdfc93ea93f2d13c3e4b.camel@intel.com>
 
-On Thu, Apr 11, 2024 at 10:22:42PM -0700, Ian Rogers wrote:
-> On Mon, Apr 8, 2024 at 7:12â€¯AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> >
-> > On Fri, Apr 05, 2024 at 12:09:31AM -0700, Ian Rogers wrote:
-> > > Before polling or sleeping to wait for a test to complete, print out
-> > > ": Running (<num> remaining)" where the number of remaining tests is
-> > > determined by iterating over the remaining tests and seeing which
-> > > return true for check_if_command_finished. After the delay, erase the
-> > > line and either update it with the new number of remaining tests, or
-> > > print the test's result. This allows a user to know a test is running
-> > > and in parallel mode (default) how many of the tests are waiting to
-> > > complete. If color mode is disabled then avoid displaying the
-> > > "Running" message.
-> >
-> > Tested and applied, great improvement!
+On Wed, Apr 10, 2024 at 02:41:13PM +0000, Edgecombe, Rick P wrote:
+> On Wed, 2024-04-10 at 17:37 +0300, Kirill A. Shutemov wrote:
+> > On Mon, Mar 25, 2024 at 12:46:03PM +0200, Kirill A. Shutemov wrote:
+> > > Adjust TD setting on boot:
+> > > 
+> > >    - Disable EPT violation #VE on private memory if TD can
+> > >      control it;
+> > > 
+> > >    - Enable virtualization of topology-related CPUID leafs
+> > >      X2APIC_APICID MSR;
+> > 
+> > Any feedback?
 > 
-> And I think it is broken. Specifically I think the nohang waitpid can
-> cause the later read of the stdout/err pipe to fail. We may need to
-> drain the files before checking. I suspect this as I've seen an
-> increase test fails where the verbose output shows nothing. The only
-> remedy for that in the current code would be to run the tests
-> sequentially, so we should probably back this out for now.
+> It is missing a lot of the normal things that come in coverletters like what is
+> the problem and importance. It might help attract more review.
 
-Removing it then,
+What about this:
 
-- Arnaldo
+The patchset adjusts a few TD settings on boot for the optimal functioning
+of the system:
+
+  - Disable EPT violation #VE on private memory if TD can control it
+
+    The newer TDX module allows the guest to control whether it wants to
+    see #VE on EPT violation on private memory. The Linux kernel does not
+    want such #VEs and needs to disable them.
+
+  - Enable virtualization of topology-related CPUID leafs X2APIC_APICID MSR;
+
+    The ENUM_TOPOLOGY feature allows the VMM to provide topology
+    information to the guest. Enabling the feature eliminates
+    topology-related #VEs: the TDX module virtualizes accesses to the
+    CPUID leafs and the MSR.
+
+    It allows TDX guest to run with non-trivial topology configuration.
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
