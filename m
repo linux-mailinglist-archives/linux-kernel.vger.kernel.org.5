@@ -1,118 +1,137 @@
-Return-Path: <linux-kernel+bounces-141850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2E7E8A243B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A15AF8A243D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:15:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82D241F23902
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:14:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4131D1F23D30
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:15:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A3B717BD4;
-	Fri, 12 Apr 2024 03:14:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 422581BC35;
+	Fri, 12 Apr 2024 03:14:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KtW9kNUd"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="WeOSneIB"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2FE017BA3
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 03:14:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABE83199D9;
+	Fri, 12 Apr 2024 03:14:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712891671; cv=none; b=MGZB1Wb9G0CiChHcjDIsmZIdVYdZNx/Eb+haVhs9W3EDZNHHllVZLBmGww9JztwV9wKVKg/mSUJECtkSQnCVn8EZLEJgg6h+6duVa38CGTNudWeyTcIcbpz9CUEbXO/M/w/j6VjwwR67r3hXgOuPTyereoWNsZSY/emVLICMny0=
+	t=1712891698; cv=none; b=OoyWpVzCc+Btcr5+bocYz5kqU5SWmCHoyipDuTRsuxaloXEde4g9TCY7EzVt1YUzphF7VtdRGiCoAKUhnCK06eNE1HnTTVSrRR5DC9oaE9UOByFP8YvZxwl9Ka2behMH2s9BAHXVIKGuQILpA8T2n7SteALK1cL/GIVm/L+VuaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712891671; c=relaxed/simple;
-	bh=rAQk+kKyo5+ykiCHa3D6Bcpj5Kr3HCi018yi7/XzLg4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OjVSj3pQkYcR05DL4dvOiXomJtMTZ9Y1Eg1JjSwDDKJcukyYvUxwtGk8Yp1Io0voFhXBEAGeFgYISqp8aME0+PI2qPLE0l4G9B4SXdhAj5F4vW3NH2Xkas6gkOUxMiBBYKrc9y2NVek9c22kFVd3r59j0VUKLQA/M0BBwNUrfmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=KtW9kNUd; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=wPr+h0K5F7dGg0tbz5/EPlcYvQeTFXmy0cKIv+ld4zo=; b=KtW9kNUd9SNwiVUFb1dvz18ngy
-	fp5w3WqcTYHQz/YeqZZFLfRcnm9XUW+my2nnrFj7DcG4K/NW+A3s5cXEixFmtiEkApmN+he9l6lZC
-	B4/y6LudZkZD5xlRxmfqdNIDoKDCLG7wLor4ZSa7ztXGrtjZIOs9pNP5CCkVrc04SatWQE8iqS5pM
-	1Sm089TgDyL11WUQGrHTO6R2AtZYywaAoR2+hWycKdhj4n2a99Sc10i9e/Z3FW2cMDh6aeRD3X0E1
-	k7SbyQupmNi8PXBjSm3EjEk8kZVj3lKHkz3bdugnqVZQV2bZmV9tz4OUFIhQu9VoMM5n81uY7d1vq
-	dw1DlrKQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rv7Mn-00000008Hlx-03RU;
-	Fri, 12 Apr 2024 03:14:17 +0000
-Date: Fri, 12 Apr 2024 04:14:16 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: Peter Xu <peterx@redhat.com>
-Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Lokesh Gidra <lokeshgidra@google.com>,
-	Alistair Popple <apopple@nvidia.com>
-Subject: Re: [PATCH] mm: Always sanity check anon_vma first for per-vma locks
-Message-ID: <ZhinCD-PoblxGFm0@casper.infradead.org>
-References: <20240410170621.2011171-1-peterx@redhat.com>
- <20240411171319.almhz23xulg4f7op@revolver>
- <ZhhSItiyLYBEdAX3@x1n>
- <ZhhV3PKgEX9d7_vA@casper.infradead.org>
- <ZhhaRXHKk7w_hKgi@x1n>
- <Zhhd-A7w1A8JUadM@casper.infradead.org>
+	s=arc-20240116; t=1712891698; c=relaxed/simple;
+	bh=GMSCKdtp7p5x5tKn0fvsWFlKFRuMmTOJXY3eOciD3LI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=pUg3hWwhnFxiSbGqz3x3XyMjaqfXzua2fybZ5NFuoHqFZQZ9y9p4cU16FrGqDWXKzamPjwj4vXzuqaSBzQ8dUUL1d57ke7x2zgGDHAeWJPG1rDYFhti7SNzVZxLM1fLzWZrEfp5W6xiCn9O/8VvjeQeLNWErM9mDYxYQ5HViyqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=WeOSneIB; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1712891691;
+	bh=EY3WqoWVQVYhu6CX8mA3X80QuETTVo1FlNuaCnjkIEI=;
+	h=Date:From:To:Cc:Subject:From;
+	b=WeOSneIBpWl5HEVoW37Hhd4Oh891LmOTg4am5vxz4vGFE/H2ppo7Ai0uCK7nf3veB
+	 MnGA0ZrABbEscv9fWrM+Chi7LzyJQNXDQ7vKCvcv7Xh+oSdD2Qu+rnWpfpUdbjeBPO
+	 aem/qZbAM09Mj638suQEdlOfTkLW7zK8dDhQaKo7vEy01XFeCqRjuOwBr9gEDqpJJa
+	 e0tanMd3TonJ3JZMVVM8zcYuw5kSOscyjPAEheRdMS+5cBXB2dWK1mC3iBWNTF5A1h
+	 vZA3jylkhYRWc+xu5jKliDSUpwiAGcrrzH3p5v++BVeE3nB0NErqc4O7wN/CuBWYaB
+	 pBzBp9caDZ9Qg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VG1rp6TzWz4wqM;
+	Fri, 12 Apr 2024 13:14:50 +1000 (AEST)
+Date: Fri, 12 Apr 2024 13:14:48 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini
+ <pbonzini@redhat.com>
+Cc: KVM <kvm@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the kvm-x86 tree with the kvm tree
+Message-ID: <20240412131448.4403df6a@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zhhd-A7w1A8JUadM@casper.infradead.org>
+Content-Type: multipart/signed; boundary="Sig_/3N_WPBCBiQSNIeSEhY.ZcO9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Thu, Apr 11, 2024 at 11:02:32PM +0100, Matthew Wilcox wrote:
-> > How many instructions it takes for a late RETRY for WRITEs to private file
-> > mappings, fallback to mmap_sem?
-> 
-> Doesn't matter.  That happens _once_ per VMA, and it's dwarfed by the
-> cost of allocating and initialising the COWed page.  You're adding
-> instructions to every single page fault.  I'm not happy that we had to
-> add extra instructions to the fault path for single-threaded programs,
-> but we at least had the justification that we were improving scalability
-> on large systems.  Your excuse is "it makes the code cleaner".  And
-> honestly, I don't think it even does that.
+--Sig_/3N_WPBCBiQSNIeSEhY.ZcO9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Suren, what would you think to this?
+Hi all,
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 6e2fe960473d..e495adcbe968 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -5821,15 +5821,6 @@ struct vm_area_struct *lock_vma_under_rcu(struct mm_struct *mm,
-        if (!vma_start_read(vma))
-                goto inval;
+Today's linux-next merge of the kvm-x86 tree got a conflict in:
 
--       /*
--        * find_mergeable_anon_vma uses adjacent vmas which are not locked.
--        * This check must happen after vma_start_read(); otherwise, a
--        * concurrent mremap() with MREMAP_DONTUNMAP could dissociate the VMA
--        * from its anon_vma.
--        */
--       if (unlikely(vma_is_anonymous(vma) && !vma->anon_vma))
--               goto inval_end_read;
--
-        /* Check since vm_start/vm_end might change before we lock the VMA */
-        if (unlikely(address < vma->vm_start || address >= vma->vm_end))
-                goto inval_end_read;
+  arch/x86/kvm/svm/svm.c
 
-That takes a few insns out of the page fault path (good!) at the cost
-of one extra trip around the fault handler for the first fault on an
-anon vma.  It makes the file & anon paths more similar to each other
-(good!)
+between commit:
 
-We'd need some data to be sure it's really a win, but less code is
-always good.
+  605bbdc12bc8 ("KVM: SEV: store VMSA features in kvm_sev_info")
 
-We could even eagerly initialise vma->anon_vma for anon vmas.  I don't
-know why we don't do that.
+from the kvm tree and commit:
+
+  c92be2fd8edf ("KVM: SVM: Save/restore non-volatile GPRs in SEV-ES VMRUN v=
+ia host save area")
+
+from the kvm-x86 tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/x86/kvm/svm/svm.c
+index 0f3b59da0d4a,9aaf83c8d57d..000000000000
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@@ -1511,12 -1524,8 +1516,8 @@@ static void svm_prepare_switch_to_guest
+  	 * or subsequent vmload of host save area.
+  	 */
+  	vmsave(sd->save_area_pa);
+- 	if (sev_es_guest(vcpu->kvm)) {
+- 		struct sev_es_save_area *hostsa;
+- 		hostsa =3D (struct sev_es_save_area *)(page_address(sd->save_area) + 0x=
+400);
+-=20
+- 		sev_es_prepare_switch_to_guest(svm, hostsa);
+- 	}
++ 	if (sev_es_guest(vcpu->kvm))
+ -		sev_es_prepare_switch_to_guest(sev_es_host_save_area(sd));
+++		sev_es_prepare_switch_to_guest(svm, sev_es_host_save_area(sd));
+ =20
+  	if (tsc_scaling)
+  		__svm_write_tsc_multiplier(vcpu->arch.tsc_scaling_ratio);
+
+--Sig_/3N_WPBCBiQSNIeSEhY.ZcO9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYYpygACgkQAVBC80lX
+0GxBPwf/VFRBOWGuSGfmrscNLd6XvmE0R0vpMIqwr5pdezQfl130qO1JY1QoZiFj
+rvYF7lsDnxpRWNG2uYw6to5xtj4JX+dGvy6qMPUdYCLCD5uYO6JzE0w/rOcXit05
+zjcseqoGqo00wKRxSlj4vTflz4/Z6stt5HQnq8F1kqPuvQNpwAAxxgOa4XIgQzHP
+7w3ojlToNlsDOR8/JYHE1cvKvCwG5cbgqjbxdeeE7moQBR/omoCE8Rl7zslH3Xar
+/KgFryHn7kZJlNAvYQZcezZZIaV8dSygIa3brBD4bAzxjLt4LMk261ieW5ZOyS84
+Cdfi4OkLQYUxK0pqQ0OIVTRoa4xlhw==
+=AyeR
+-----END PGP SIGNATURE-----
+
+--Sig_/3N_WPBCBiQSNIeSEhY.ZcO9--
 
