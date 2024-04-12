@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-143032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DBBC8A336C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:15:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE5A98A3375
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:15:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C273B25B00
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:15:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63BA91F225E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:15:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB7FC14882F;
-	Fri, 12 Apr 2024 16:15:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13EC91494D7;
+	Fri, 12 Apr 2024 16:15:36 +0000 (UTC)
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4E05491F;
-	Fri, 12 Apr 2024 16:15:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495ED148853;
+	Fri, 12 Apr 2024 16:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712938505; cv=none; b=P6B1gAzKuxErbO7w4NoPCicFSOK0qGUWMR7RO9WM9k4E8RLmF2eGqJNTKQCTTIKKZTjrPWyo7xvghUX3EalpT5lJLKAYCNQxMSnge3i+JER/F1k/qCZAtxfHXlkPNiwjWuv4bskDmRvB6/XuudPVvD14RtL70uEIt1jpPMd/2+E=
+	t=1712938535; cv=none; b=REMw8JnscqflJhWlU6ewNJj06sG3NRPhoq28DASuHdIAewNJutMX6Q859gbx2pcuTePXXsyiYn9cy8SfnVN8ipuVzwDBURBzV0BKK6AMnNijO3SfZ7YV5RKyK1om6u7qM5R9PbPJ1fvQOT/rd1eIaPRwnFPI3ySBcBiKPtTnTyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712938505; c=relaxed/simple;
-	bh=+IWy99af1h3JEWXUPm1/plozSegm1w4gAbK6Yqz41xQ=;
+	s=arc-20240116; t=1712938535; c=relaxed/simple;
+	bh=/pzofHOtjjBuBu6uCg/ZJgmRq2KbW+P1FAixdoSkvYo=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RjXL2n4ePWQeAqGDtMLbr0KhN7bGi9aYreK2nMMYKCFY2S8pTCYoijJIglFQNzg+jQ9iTjgiM5Yzy7OqQPsDPtsoYWxaFCD0HEgcBC4tuDKmaqKDB3ei7gZm2W71e5RNRBIy7/Cd99yXE1sO+BKXOU8VNaGy08Ld1PsDdHc+hw8=
+	 MIME-Version:Content-Type; b=urVodN96QpJQYz6eQF1BXlPkzx/qJdKlPhPK25cvAuj5HI/bh81Eycs9q7cih531moXY900qSWUChJMCiOH1FmZzhc7YnBj1zaUZaShfNqkHz/DbHOArMtj8MZK+oOXbNjlO2u/++qlm/kgbOjOcMunJ4rnGIJmSlTQi7kadtMY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VGM3R0Q5nz688p7;
-	Sat, 13 Apr 2024 00:10:11 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VGM7Z1Ksgz67Lmq;
+	Sat, 13 Apr 2024 00:13:46 +0800 (CST)
 Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 79F991400F4;
-	Sat, 13 Apr 2024 00:15:01 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 25D07140119;
+	Sat, 13 Apr 2024 00:15:32 +0800 (CST)
 Received: from SecurePC-101-06.china.huawei.com (10.122.247.231) by
  lhrpeml500005.china.huawei.com (7.191.163.240) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 12 Apr 2024 17:15:00 +0100
+ 15.1.2507.35; Fri, 12 Apr 2024 17:15:31 +0100
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 To: Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra
 	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
@@ -55,9 +55,9 @@ CC: <linuxarm@huawei.com>, Shaokun Zhang <zhangshaokun@hisilicon.com>, Yicong
 	<hao.wu@intel.com>, Tom Rix <trix@redhat.com>, <linux-fpga@vger.kernel.org>,
 	Suzuki K Poulose <suzuki.poulose@arm.com>, Liang Kan
 	<kan.liang@linux.intel.com>
-Subject: [PATCH v2 08/30] Documentation: xgene-pmu: Use /sys/bus/event_source/devices paths
-Date: Fri, 12 Apr 2024 17:10:35 +0100
-Message-ID: <20240412161057.14099-9-Jonathan.Cameron@huawei.com>
+Subject: [PATCH v2 09/30] perf/xgene: Assign parents for event_source devices
+Date: Fri, 12 Apr 2024 17:10:36 +0100
+Message-ID: <20240412161057.14099-10-Jonathan.Cameron@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240412161057.14099-1-Jonathan.Cameron@huawei.com>
 References: <20240412161057.14099-1-Jonathan.Cameron@huawei.com>
@@ -72,27 +72,29 @@ Content-Type: text/plain
 X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
  lhrpeml500005.china.huawei.com (7.191.163.240)
 
-To allow setting an appropriate parent for the struct pmu device
-remove existing references to /sys/devices/ path.
+Currently all these devices appear directly under /sys/devices/
+Only root busses should appear there, so instead assign the pmu->dev
+parents to be the hardware related struct device.
 
+Link: https://lore.kernel.org/linux-cxl/ZCLI9A40PJsyqAmq@kroah.com/
+Cc: Khuong Dinh <khuong@os.amperecomputing.com>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 ---
- Documentation/admin-guide/perf/xgene-pmu.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/perf/xgene_pmu.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/admin-guide/perf/xgene-pmu.rst b/Documentation/admin-guide/perf/xgene-pmu.rst
-index 644f8ed89152..98ccb8e777c4 100644
---- a/Documentation/admin-guide/perf/xgene-pmu.rst
-+++ b/Documentation/admin-guide/perf/xgene-pmu.rst
-@@ -13,7 +13,7 @@ PMU (perf) driver
+diff --git a/drivers/perf/xgene_pmu.c b/drivers/perf/xgene_pmu.c
+index 0d49343d704b..8823b4c6b556 100644
+--- a/drivers/perf/xgene_pmu.c
++++ b/drivers/perf/xgene_pmu.c
+@@ -1102,6 +1102,7 @@ static int xgene_init_perf(struct xgene_pmu_dev *pmu_dev, char *name)
  
- The xgene-pmu driver registers several perf PMU drivers. Each of the perf
- driver provides description of its available events and configuration options
--in sysfs, see /sys/devices/<l3cX/iobX/mcbX/mcX>/.
-+in sysfs, see /sys/bus/event_source/devices/<l3cX/iobX/mcbX/mcX>/.
- 
- The "format" directory describes format of the config (event ID),
- config1 (agent ID) fields of the perf_event_attr structure. The "events"
+ 	/* Perf driver registration */
+ 	pmu_dev->pmu = (struct pmu) {
++		.parent		= pmu_dev->parent->dev,
+ 		.attr_groups	= pmu_dev->attr_groups,
+ 		.task_ctx_nr	= perf_invalid_context,
+ 		.pmu_enable	= xgene_perf_pmu_enable,
 -- 
 2.39.2
 
