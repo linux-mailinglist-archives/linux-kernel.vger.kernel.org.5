@@ -1,100 +1,105 @@
-Return-Path: <linux-kernel+bounces-143007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF5038A3321
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:07:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 867498A3322
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:08:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C8EE1C21D6C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:07:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FF97281F77
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:07:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93095149DE6;
-	Fri, 12 Apr 2024 16:07:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E44A148852;
+	Fri, 12 Apr 2024 16:07:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gsmLtJW9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="SLalmpmo"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6672149DE2
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:07:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A831487E4
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:07:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712938021; cv=none; b=dtLx7e4vLbFOEeUrMAYrUr/2qq7Z8t0XDNC2s+BaxigmAjZTJe19VbBkXnsoTh7nWQ4jSi8JlTvCSi86FYHb23sTG0x1eQ7+fwGO6iHf0H+xoJDGL3F2TN9AnUANE5N/YBLfCSjxuQCxE8zHiXPsFP59qD6xzBMjuG/bvcE+cYg=
+	t=1712938059; cv=none; b=AoY8uWdkeSuf9EDQAvo3At8qjkSf282g5OwAVJx1JGcdPO3qy4sig+2QRX6X4IME6y45hG7K3vfYDGpmLZfqKmrEGXTQhmH1/iLTPdGz1J7QfkGWSrMzM6OYlXmMkjFK4Ja13A3l60fNabLnh1nhnJSXC9koSAjopPhO96maxwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712938021; c=relaxed/simple;
-	bh=Kq2Qv5HKN8VTt0ixnatAxkoSanE29MgxLBoVDR7PqWY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ftXatXEehsDptSeDsboibUBg8vQJMIY9SPqKxA9agBNKePF5++K/mi/i98+y6OMkWiPT8USZdwXtm463ipyA8D0fERbQvvcZRrvOv80iqI8luszX3q6JSs5mh0qqnn/NAyBsj6p7K8pisY+ANXqWP+/b9w1oP+TvqugeOc2dV3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gsmLtJW9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2377FC2BD11;
-	Fri, 12 Apr 2024 16:06:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712938021;
-	bh=Kq2Qv5HKN8VTt0ixnatAxkoSanE29MgxLBoVDR7PqWY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gsmLtJW9LTMwyOItD4ObLaKXkh2lfqifIDB8SftWrBMw9G5Yc5SKyoEyBqdEijis1
-	 RHJx1UXz0nG3E5XDBR9fG3x4RcFxUGHMrAsXYibTEEM8ZQ4EF/Jw8ClIOh/L79CdeT
-	 2xaRmoQbU0QaY6RNzeJ8qen22yv2S4sUMWHfNljofJhd2GKSRipZhhjBU9UQkiy61B
-	 5WKomkGPY4CtW16Kb8lF9q0zxEjq3w+XY0D4nXzKsX6uLYu/NdbBsbLytk8sjdr4T5
-	 fMIfKQVSZK3DyI5XnTvSsQR3raR4OhKoeCylRVwJlZWc3QG7A+Vy0hEelMAL28Vglt
-	 Zb/R17NaS9Sww==
-From: Will Deacon <will@kernel.org>
-To: mark.rutland@arm.com,
-	catalin.marinas@arm.com,
-	broonie@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Yicong Yang <yangyicong@huawei.com>
-Cc: kernel-team@android.com,
-	Will Deacon <will@kernel.org>,
-	jonathan.cameron@huawei.com,
-	prime.zeng@hisilicon.com,
-	linuxarm@huawei.com,
-	yangyicong@hisilicon.com
-Subject: Re: [PATCH v2] arm64: arm_pmuv3: Correctly extract and check the PMUVer
-Date: Fri, 12 Apr 2024 17:06:43 +0100
-Message-Id: <171292289666.129267.8434461494891295538.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240411123030.7201-1-yangyicong@huawei.com>
-References: <20240411123030.7201-1-yangyicong@huawei.com>
+	s=arc-20240116; t=1712938059; c=relaxed/simple;
+	bh=fvWvh5FWVbuLQ7Jx+PSlpJADo+WJiPUgm/CsRvJo010=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=U2C9m56vrGc2GFGzIiKuz7MMr+yKbF8+RC5ImFnMthfyI4BWVUir9qYf608MqraJ4soEqpLA9OhG9oKG9BBeuZChWXcv0HrYn97o2NVRWYQ5+Fq4zSLJ1SRvySPKGdaes2uYvPZSD0toZzmPary9xaKfb7gv1oO3wMTDnS/Nw4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=SLalmpmo; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a5200afe39eso127514366b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 09:07:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1712938056; x=1713542856; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WCixfb+YFPc8XTlcPM6xbP4h1EJ8glxU4TlgV2ptkiw=;
+        b=SLalmpmokPfs7mmtCFnJNPV5wFMYlxWMKdqZUU4nXbGQG+71ii3KfzOP/s0LCqYIX0
+         P/yz4NS4DDBHjIZYeosNBl0Il9vaEikzLzEI685vaaAznAut3dUGnKECnpSCAgZvKaC1
+         LsGbN3gEIKPCOm0tQdWHShXfpjyOYg6LMvQHs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712938056; x=1713542856;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WCixfb+YFPc8XTlcPM6xbP4h1EJ8glxU4TlgV2ptkiw=;
+        b=dmB51rD4Dlvwd93rSD24bXd706aj+ehMjMSNzJ8QgcHOImLXtNspMe+jW4Y/Xt9hvq
+         eQKzbuWdnMyGxyNRnkLibg/20ZwNW4Uq08etrq5UOpuI5WIGSVPgyEnI563iWxloPHP/
+         WM0eOR6wA3PmCX6yHIyadHIQbRxA4KJZDflvCriJosffnejJmL+biprn+SB9BJ7BypRL
+         aeAZa+4jgtx0famiXx0bdEEW66yZvMmfodkLLAVkWPJ+EgWxABlSda/XTvd0TykC0g2l
+         frKxJc44Z651YrxRZZGV6aipx2l8YC+kJ8wunYuh75IauTilYOGVXnOp5Crmq02W/1LX
+         cpsw==
+X-Gm-Message-State: AOJu0Yzn7urH0Kxy/ynLpt55CHDTVJnzPR7NsaRvEPtIzoLYzgyeDsbT
+	ukTkWW2w+eU0jq41JuE1r2+8eqAjBWweJXvmifLSWteF3zI71xsEVXcq8cHP5p6D9OJNbty4zir
+	HhjeJEQ==
+X-Google-Smtp-Source: AGHT+IF0VPb6yoR7HZSk5JbwpnFYx4T0gKzYiISf40jBLVt6chrFuGaKD1GSmqatgD4dm5ghdHpCOA==
+X-Received: by 2002:a17:906:770c:b0:a51:fe13:b400 with SMTP id q12-20020a170906770c00b00a51fe13b400mr2476118ejm.31.1712938056050;
+        Fri, 12 Apr 2024 09:07:36 -0700 (PDT)
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
+        by smtp.gmail.com with ESMTPSA id g8-20020a17090670c800b00a52244ab819sm1726961ejk.170.2024.04.12.09.07.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Apr 2024 09:07:35 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a5200afe39eso127510266b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 09:07:35 -0700 (PDT)
+X-Received: by 2002:a17:906:b0c2:b0:a51:e0de:2758 with SMTP id
+ bk2-20020a170906b0c200b00a51e0de2758mr2542075ejb.42.1712938055063; Fri, 12
+ Apr 2024 09:07:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20240412103204.453d912c@gandalf.local.home>
+In-Reply-To: <20240412103204.453d912c@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 12 Apr 2024 09:07:18 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgw2NW5tar-Xew614JZPKfyTdet5fC0mgwK+2sUsZ0Ekw@mail.gmail.com>
+Message-ID: <CAHk-=wgw2NW5tar-Xew614JZPKfyTdet5fC0mgwK+2sUsZ0Ekw@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing: Fixes for v6.9
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Prasad Pandit <pjp@fedoraproject.org>, 
+	Yang Li <yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 11 Apr 2024 20:30:30 +0800, Yicong Yang wrote:
-> Currently we're using "sbfx" to extract the PMUVer from ID_AA64DFR0_EL1
-> and skip the init/reset if no PMU present when the extracted PMUVer is
-> negative or is zero. However for PMUv3p8 the PMUVer will be 0b1000 and
-> PMUVer extracted by "sbfx" will always be negative and we'll skip the
-> init/reset in __init_el2_debug/reset_pmuserenr_el0 unexpectedly.
-> 
-> So this patch use "ubfx" instead of "sbfx" to extract the PMUVer. If
-> the PMUVer is implementation defined (0b1111) or not implemented(0b0000)
-> then skip the reset/init. Previously we'll also skip the init/reset
-> if the PMUVer is higher than the version we known (currently PMUv3p9),
-> with this patch we'll only skip if the PMU is not implemented or
-> implementation defined. This keeps consistence with how we probe
-> the PMU in the driver with pmuv3_implemented().
-> 
-> [...]
+On Fri, 12 Apr 2024 at 07:29, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> - Replace bad tab with space in Kconfig for FTRACE_RECORD_RECURSION_SIZE
 
-Applied to will (for-next/perf), thanks!
+Argh. What parser is this? We need to fix this craziness.
 
-[1/1] arm64: arm_pmuv3: Correctly extract and check the PMUVer
-      https://git.kernel.org/will/c/b782e8d07baa
+Yes, yes, we have "tabs and spaces" issues due to the fundamental
+brokenness of make, and we can't get rid of *that* bogosity.
 
-Cheers,
--- 
-Will
+But for our own Kconfig files? Whitespace is whitespace (ignoring
+crazy unicode extensions), we need to get away from "tabs and spaces
+act differently".
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+              Linus
 
