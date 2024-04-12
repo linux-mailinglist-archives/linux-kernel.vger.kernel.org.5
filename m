@@ -1,201 +1,191 @@
-Return-Path: <linux-kernel+bounces-142653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB40F8A2E56
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:31:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 701BC8A2E52
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:31:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1147B22309
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:31:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D2341C227B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:31:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D2B57337;
-	Fri, 12 Apr 2024 12:31:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1891545C04;
+	Fri, 12 Apr 2024 12:30:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="YAHg2XAj"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XR9POcIY"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001004597F;
-	Fri, 12 Apr 2024 12:31:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7404597E
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 12:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712925071; cv=none; b=A0IcYShq3v6awrMTK5UAL38mw3DrgTDg8Sa4fmWxBWr2CPUehIyEYt8o6NGKOxU6qQiFPpMbhXWFPyr02xSq617R930/+4XjEPYIZpN7aEVxUThbeZ+rK7E32qYXCLbTpW/fn+x1puaetqLRpXlYQLGCtaJyWjyPB8foMM4znqw=
+	t=1712925054; cv=none; b=lhwP0mjxmiYcyZibfPO2M/HRhetxM7x0C1PVX4+f/HOeCmwvDCpeRMkmUwFd0EmDENG8rNeW/X1CA00YrhCFBCznxZ3z+dAOwK14S4/j+yFqp3Wp7vZg5wR8Hj3Synct+YvprqzwqEQi9wOBvfg7XKbpkDWgAAqqYJpt4a2davc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712925071; c=relaxed/simple;
-	bh=o8YSWsoCfZ7tptBqUVVtBw1fFnKL06BvA0qNMfnioDw=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hrKgMjZgU6xYp+kONcTUnwd/shQlVeMwqsTBstoVwlEBRGLrGq4+SgzFwFIupwpegcnzhpHIudEcjTcvF/pYHBU+bk1ZqIJQyRY/DU1f3daxeAqtihNksiiaP55Yic0GZtaV7RDYz872oJ0aKVOLWWf39kMGwFvW3kq5CfrHeXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=YAHg2XAj; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712925068; x=1744461068;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=o8YSWsoCfZ7tptBqUVVtBw1fFnKL06BvA0qNMfnioDw=;
-  b=YAHg2XAjz7reUSlwhHo3OfF5Idv4gtTNL0u6hg6Ez4/4TdvRQE+0Jm3h
-   eXn6PURY+LVOAyym2nk8cV6tG4V8Adyy4MCmL4zkXa7z9bcCsuteA58IN
-   Ha84RKCsIEWH+PNTJ7opAhaIvRxwwk5ihL7RUGSDd1ABonlbtKSdziEFZ
-   pbBirLOAHzDllFbmpm3kiWWs/7hfmWVWyP+QxFLNQ4exZxai+XIgE4Fg0
-   i7GMOjQorX47q/94/Ygabzs/O1WULRC3MQhhRU1TpywpP6J5z1tRRocuK
-   xpUsvI+ciSXJH94rX7hYQMd5XQldcMZ4evKM91uEAZmKKXnQqsp7dzxoC
-   Q==;
-X-CSE-ConnectionGUID: 8n3UuTh2QzaDn5A8rQGjFg==
-X-CSE-MsgGUID: nqO9YiBGTYCscAdrhaD7/w==
-X-IronPort-AV: E=Sophos;i="6.07,196,1708412400"; 
-   d="asc'?scan'208";a="188017039"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Apr 2024 05:31:07 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 12 Apr 2024 05:31:03 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Fri, 12 Apr 2024 05:30:59 -0700
-Date: Fri, 12 Apr 2024 13:30:08 +0100
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Charlie Jenkins <charlie@rivosinc.com>
-CC: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, Conor Dooley
-	<conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
-	<jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, Evan Green
-	<evan@rivosinc.com>, =?iso-8859-1?Q?Cl=E9ment_L=E9ger?=
-	<cleger@rivosinc.com>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan
-	<shuah@kernel.org>, <linux-riscv@lists.infradead.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Palmer Dabbelt
-	<palmer@rivosinc.com>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-sunxi@lists.linux.dev>, <linux-doc@vger.kernel.org>,
-	<linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH 06/19] riscv: Extend cpufeature.c to detect vendor
- extensions
-Message-ID: <20240412-sprawl-product-1e1d02e25bca@wendy>
-References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
- <20240411-dev-charlie-support_thead_vector_6_9-v1-6-4af9815ec746@rivosinc.com>
+	s=arc-20240116; t=1712925054; c=relaxed/simple;
+	bh=Vb6XdN2lfMY03jDF1qrR94KLXYE49Am0mLjanbcKARo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BnMoEa5Gm53ZQ+UO1n30f9tlfXqyfvQ0d0IXYiAOSi0A9oRhcXFz6XAqYmqXc77lNRnhfKu+57Ecm0RVejBr6AbkfRB7TwiXCWuO7by9Hqvbc9ncpx7VfKXM0DzqAKJvW7PKIoeYsjSkYmSlvDWeFgJ23V9QMH5cRwLPO6ZbzcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XR9POcIY; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ed267f2936so726915b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 05:30:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712925052; x=1713529852; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UBp2pQhn2lVJ6DLLpM94qL9WNtmqnM/dHEgV5vi8MEs=;
+        b=XR9POcIYrc/qdZt2gwTgaTHcpbD4dFQzj9Zl5TD/hmYcCSAkCTwmYZkVE9kSbSoDYF
+         RiJLR3pRnXimz+/vNTHrDGXBv8fM8q0PX1jK6xMr42gPaepEZixpnmdPiko8pqna5+uk
+         dSS86RO9yn+T1NHSp+MrELy1JmF2I4TLiNYEnA2nKMruxBC2HdxOZTAZ9YB5onrb5NJ5
+         guDNzui1tz4HhWbeg4a6lFpY9O8pPYBAt/GGQ2bGiR7xVg+f7Dey1QVCQKfyLCvs7Y+T
+         VZCxueF8AKkCFi4kSO50em4nCkz1K8WoQvGjZXRsfx8zMuifQ9yJ0g6KnAfuPD6gtv8q
+         bZbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712925052; x=1713529852;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UBp2pQhn2lVJ6DLLpM94qL9WNtmqnM/dHEgV5vi8MEs=;
+        b=BYwUsTCR4B+zCwuKCREFLdy+6yAXacWGZuXs1u8GcLP+jGjY7HjTPjkHmkG66fl9X0
+         C9kadW/MPJuzUjFKWhUSxDTLdtbo/pvB427et0YF7HtacLO9enl90/t0h8gE7Ad8GB3q
+         7c/x5jMgXMU1QgmTxLQZPW08XqsjVRI3kv5u0oJueeeXCjrNEKk3iuN2koQitIbnNoVB
+         MAQh3rYrpOBJEklrCbeQbh0+zGc3McJg/sx4d7ot2z6Ur1S5Inl5JFeD0vQXWAgDgHat
+         s8JCXTSFqmfObeiM6YEx5hbp0NlVPPvnl+RtURWetEyWT3Usn58zi9FurRza0A/gbdIg
+         9LgA==
+X-Gm-Message-State: AOJu0Yy5JaEVM9M3EgAOdWfdWW9NmAvduBzcbidNKph0ruaUvc4POCpy
+	25F29pvNiDhTmSxvHpkEfigfaQYbx9XFsRHzx8VIfb8vkC3a0/eo
+X-Google-Smtp-Source: AGHT+IFIUprURx2SnyjUhwDxV4Bh2nvA3DyQ8qZ4jt626IUF0nOKgdRgq8pciGun9s1GWuqw1O8L/g==
+X-Received: by 2002:a05:6a20:4309:b0:1a9:9e0f:142b with SMTP id h9-20020a056a20430900b001a99e0f142bmr2619543pzk.39.1712925052106;
+        Fri, 12 Apr 2024 05:30:52 -0700 (PDT)
+Received: from localhost.localdomain ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
+        by smtp.gmail.com with ESMTPSA id g6-20020a1709026b4600b001e520495f51sm2864065plt.124.2024.04.12.05.30.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 05:30:51 -0700 (PDT)
+From: Barry Song <21cnbao@gmail.com>
+To: akpm@linux-foundation.org,
+	willy@infradead.org,
+	vbabka@suse.cz,
+	hannes@cmpxchg.org,
+	linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org,
+	Barry Song <v-songbaohua@oppo.com>,
+	Ryan Roberts <ryan.roberts@arm.com>
+Subject: [RFC PATCH] mm/vmstat: sum up all possible CPUs instead of using vm_events_fold_cpu
+Date: Sat, 13 Apr 2024 00:30:39 +1200
+Message-Id: <20240412123039.442743-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="/rKIhypokaxpjzdO"
-Content-Disposition: inline
-In-Reply-To: <20240411-dev-charlie-support_thead_vector_6_9-v1-6-4af9815ec746@rivosinc.com>
+Content-Transfer-Encoding: 8bit
 
---/rKIhypokaxpjzdO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From: Barry Song <v-songbaohua@oppo.com>
 
-On Thu, Apr 11, 2024 at 09:11:12PM -0700, Charlie Jenkins wrote:
->  static void __init riscv_parse_isa_string(unsigned long *this_hwcap, str=
-uct riscv_isainfo *isainfo,
+When unplugging a CPU, the current code merges its vm_events
+with an online CPU. Because, during summation, it only considers
+online CPUs, which is a crude workaround. By transitioning to
+summing up all possible CPUs, we can eliminate the need for
+vm_events_fold_cpu.
 
-> -					  unsigned long *isa2hwcap, const char *isa)
-> +					struct riscv_isainfo *isavendorinfo, unsigned long vendorid,
-> +					unsigned long *isa2hwcap, const char *isa)
->  {
->  	/*
->  	 * For all possible cpus, we have already validated in
-> @@ -349,8 +384,30 @@ static void __init riscv_parse_isa_string(unsigned l=
-ong *this_hwcap, struct risc
->  		const char *ext =3D isa++;
->  		const char *ext_end =3D isa;
->  		bool ext_long =3D false, ext_err =3D false;
-> +		struct riscv_isainfo *selected_isainfo =3D isainfo;
-> +		const struct riscv_isa_ext_data *selected_riscv_isa_ext =3D riscv_isa_=
-ext;
-> +		size_t selected_riscv_isa_ext_count =3D riscv_isa_ext_count;
-> +		unsigned int id_offset =3D 0;
-> =20
->  		switch (*ext) {
-> +		case 'x':
-> +		case 'X':
+Suggested-by: Ryan Roberts <ryan.roberts@arm.com>
+Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+---
+ -v1:
+ originally suggested by Ryan while he reviewed mTHP counters
+ patchset[1]; I am also applying this suggestion to vm_events
 
-One quick remark is that we should not go and support this stuff via
-riscv,isa in my opinion, only allowing it for the riscv,isa-extensions
-parsing. We don't have a way to define meanings for vendor extensions in
-this way. ACPI also uses this codepath and at the moment the kernel's
-docs say we're gonna follow isa string parsing rules in a specific version
-of the ISA manual. While that manual provides a format for the string and
-meanings for standard extensions, there's nothing in there that allows us
-to get consistent meanings for specific vendor extensions, so I think we
-should avoid intentionally supporting this here.
+ [1] https://lore.kernel.org/linux-mm/ca73cbf1-8304-4790-a721-3c3a42f9d293@arm.com/
 
-I'd probably go as far as to actively skip vendor extensions in
-riscv_parse_isa_string() to avoid any potential issues.
+ include/linux/vmstat.h |  5 -----
+ mm/page_alloc.c        |  8 --------
+ mm/vmstat.c            | 19 +------------------
+ 3 files changed, 1 insertion(+), 31 deletions(-)
 
-> +			bool found;
-> +
-> +			found =3D get_isa_vendor_ext(vendorid,
-> +						   &selected_riscv_isa_ext,
-> +						   &selected_riscv_isa_ext_count);
-> +			selected_isainfo =3D isavendorinfo;
-> +			id_offset =3D RISCV_ISA_VENDOR_EXT_BASE;
-> +			if (!found) {
-> +				pr_warn("No associated vendor extensions with vendor id: %lx\n",
-> +					vendorid);
+diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+index 735eae6e272c..f7eaeb8bfa47 100644
+--- a/include/linux/vmstat.h
++++ b/include/linux/vmstat.h
+@@ -83,8 +83,6 @@ static inline void count_vm_events(enum vm_event_item item, long delta)
+ 
+ extern void all_vm_events(unsigned long *);
+ 
+-extern void vm_events_fold_cpu(int cpu);
+-
+ #else
+ 
+ /* Disable counters */
+@@ -103,9 +101,6 @@ static inline void __count_vm_events(enum vm_event_item item, long delta)
+ static inline void all_vm_events(unsigned long *ret)
+ {
+ }
+-static inline void vm_events_fold_cpu(int cpu)
+-{
+-}
+ 
+ #endif /* CONFIG_VM_EVENT_COUNTERS */
+ 
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b51becf03d1e..640d5752e400 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5832,14 +5832,6 @@ static int page_alloc_cpu_dead(unsigned int cpu)
+ 	mlock_drain_remote(cpu);
+ 	drain_pages(cpu);
+ 
+-	/*
+-	 * Spill the event counters of the dead processor
+-	 * into the current processors event counters.
+-	 * This artificially elevates the count of the current
+-	 * processor.
+-	 */
+-	vm_events_fold_cpu(cpu);
+-
+ 	/*
+ 	 * Zero the differential counters of the dead processor
+ 	 * so that the vm statistics are consistent.
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index db79935e4a54..bae6ff476870 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -114,7 +114,7 @@ static void sum_vm_events(unsigned long *ret)
+ 
+ 	memset(ret, 0, NR_VM_EVENT_ITEMS * sizeof(unsigned long));
+ 
+-	for_each_online_cpu(cpu) {
++	for_each_possible_cpu(cpu) {
+ 		struct vm_event_state *this = &per_cpu(vm_event_states, cpu);
+ 
+ 		for (i = 0; i < NR_VM_EVENT_ITEMS; i++)
+@@ -135,23 +135,6 @@ void all_vm_events(unsigned long *ret)
+ }
+ EXPORT_SYMBOL_GPL(all_vm_events);
+ 
+-/*
+- * Fold the foreign cpu events into our own.
+- *
+- * This is adding to the events on one processor
+- * but keeps the global counts constant.
+- */
+-void vm_events_fold_cpu(int cpu)
+-{
+-	struct vm_event_state *fold_state = &per_cpu(vm_event_states, cpu);
+-	int i;
+-
+-	for (i = 0; i < NR_VM_EVENT_ITEMS; i++) {
+-		count_vm_events(i, fold_state->event[i]);
+-		fold_state->event[i] = 0;
+-	}
+-}
+-
+ #endif /* CONFIG_VM_EVENT_COUNTERS */
+ 
+ /*
+-- 
+2.34.1
 
-This should not be a warning, anything we don't understand should be
-silently ignored to avoid spamming just because the kernel has not grown
-support for it yet.
-
-Thanks,
-Conor.
-
-> +				for (; *isa && *isa !=3D '_'; ++isa)
-> +					;
-> +				ext_err =3D true;
-> +				break;
-> +			}
-> +			fallthrough;
->  		case 's':
->  			/*
->  			 * Workaround for invalid single-letter 's' & 'u' (QEMU).
-> @@ -366,8 +423,6 @@ static void __init riscv_parse_isa_string(unsigned lo=
-ng *this_hwcap, struct risc
->  			}
->  			fallthrough;
->  		case 'S':
-> -		case 'x':
-> -		case 'X':
->  		case 'z':
->  		case 'Z':
->  			/*
-> @@ -476,8 +531,10 @@ static void __init riscv_parse_isa_string(unsigned l=
-ong *this_hwcap, struct risc
->  				set_bit(nr, isainfo->isa);
->  			}
->  		} else {
-> -			for (int i =3D 0; i < riscv_isa_ext_count; i++)
-> -				match_isa_ext(&riscv_isa_ext[i], ext, ext_end, isainfo);
-> +			for (int i =3D 0; i < selected_riscv_isa_ext_count; i++)
-> +				match_isa_ext(&selected_riscv_isa_ext[i], ext,
-> +					      ext_end, selected_isainfo,
-> +					      id_offset);
->  		}
->  	}
->  }
-
---/rKIhypokaxpjzdO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhkpUAAKCRB4tDGHoIJi
-0suMAP9hVav0oRL2jmBJm2ACwJ1+CNYfBT488OIk7AWbRjBIigEAtUP/mmReLFMY
-g7/EcQ6a/96RixRPX9yYcg23rYMJOQE=
-=w9t9
------END PGP SIGNATURE-----
-
---/rKIhypokaxpjzdO--
 
