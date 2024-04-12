@@ -1,144 +1,108 @@
-Return-Path: <linux-kernel+bounces-143175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 299278A3562
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:10:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5363C8A3563
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:10:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 889D9B20FCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:10:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 098231F229B1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:10:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 386C314E2F9;
-	Fri, 12 Apr 2024 18:10:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B77714EC44;
+	Fri, 12 Apr 2024 18:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eN5ZO6yp"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O8tIr7YP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A5DF146D7B;
-	Fri, 12 Apr 2024 18:09:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D1114E2ED
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 18:10:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712945400; cv=none; b=XLLcFbs2Nz8KtO8UWMN2C5cf4TrJd+Dj7av8UK+v6pvNS5tSP4VTmHaA3diRs+qf+tScsR+p+eLmE16Obx9W+rn3JGSrl42fSfzbnwGFR4bqZESybQKBrDjCKEh3uCKaDAso12ILt4ZnoHXHhHrQeLOphZER1B0RY4FclYsdd6E=
+	t=1712945439; cv=none; b=joyN5Vc5/8pyGyvP79GpxvCJagJs3mYfIwBbMltYJ9Ff8teeAiueJceRDxNE4fTlQJyufAxHCGq9++Qc0cikUPw10S1/92R1LRJxyamz3wJU34b1nkuzdeXM1Ie9O3yOvNOrMyj2ba5SqcEGbYg2w+BWAfr2HnnkzrrNgGBGiW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712945400; c=relaxed/simple;
-	bh=0J4SlgDGf+5ax9loRJCtM8+Hj8SjQZHESyQGU7tmxW4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jr93Ei+HOssBUO8ytyh1y1ohaLAtd+zO+AJ2jcu2jnHP8zKIKRwcBt06ZsP+jR+q/Y5Utz9XatjnQk7FUsBzKhwK1B1F6G2WAKuCLJN17u9HuJZ1yJyEG7dtDt0KEkV8B3GHo+32LzZsRWJiPlxh4ja8pPHRLjBNbwivTCSKV4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eN5ZO6yp; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712945399; x=1744481399;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0J4SlgDGf+5ax9loRJCtM8+Hj8SjQZHESyQGU7tmxW4=;
-  b=eN5ZO6ypRnrWN8psJZ0kj2nAI5zDa0PziW84KwNfttSwo4pKOFuhAWjH
-   YdU1C3FBGhbR1zbf8L5cYTW7vd7Az3pf/ZTaeKsqMtMVYXWBlKn0vRGvv
-   /OeT3j1P72HzJdFokT3PSzahs6I9UnJP464044Oj0mvNScdFEVCI2gJ2g
-   y65gpG7yyoR0cbfE8tsFMof4pepA0EsACMWPlf7tSjs1N8yqI9TJpKYw1
-   QFvoFeqjGBSbRwHXadqvCcEE96gFcAo2VEpixphbGZK0INC0pavYaoEda
-   0NLeKQb5JNGmmGhRNmcAG2vUn4N3pJbSXfroNK7xxxXZhyqkW5SEtBszg
-   A==;
-X-CSE-ConnectionGUID: hl63ZS0dTQeh8NO64IYkYA==
-X-CSE-MsgGUID: L1Ixrb6gQJuF8Z1zjWflKQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8583247"
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="8583247"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 11:09:58 -0700
-X-CSE-ConnectionGUID: kYEP+10GTD69RVfRQuSdHA==
-X-CSE-MsgGUID: mx5ldHYRSBqXgJI8J5lA0A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="52262517"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 11:09:57 -0700
-Date: Fri, 12 Apr 2024 11:09:57 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Isaku Yamahata <isaku.yamahata@intel.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-	erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 076/130] KVM: TDX: Finalize VM initialization
-Message-ID: <20240412180957.GI3039520@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <e3c862ae9c78bda2988768c1038fec100bb372cf.1708933498.git.isaku.yamahata@intel.com>
- <f3381541-822b-4e94-93f7-699afc6aa6a3@intel.com>
- <20240412010848.GG3039520@ls.amr.corp.intel.com>
- <a876accc-a7bf-4317-9612-d6d5a1fbaf9c@intel.com>
+	s=arc-20240116; t=1712945439; c=relaxed/simple;
+	bh=OVzb40MuAf19OLIDKMX2DbaQqyFY7kzh0AQPb96onAk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QntMOGjrppEn1BcajL3/BQjPZpB+6x7PFYcI4jM8bxQxATd6sfgq8F7er9W0SnYIHwGT8iXv9INKx3CsAmqBTW3mf0J4aV/yR/byqbucPl+BHWPy0nqpMz5Evi8P7h2a7aHlvt/dEMFZ2TXdCy/PNwoZzQLXCUmK55xS7f/tQYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O8tIr7YP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56D00C113CC;
+	Fri, 12 Apr 2024 18:10:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712945439;
+	bh=OVzb40MuAf19OLIDKMX2DbaQqyFY7kzh0AQPb96onAk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=O8tIr7YPF8a9IwVX1NB0QZGx/kqwLhiYVOOcg2emiECUjM2qdWj1EQTtGBX+o4eES
+	 xYRp5Gcz7OUOvEUT0t4a9nHlJZJB83+RejkhxEkeJAy+w77RI3Nr1PIYo12hX8KBOT
+	 BY1gkplUC91nC9tA6vJFsUZWQdNQxt3B9nchgBnxssdvFMzZzHVvy5xcCwkUk6EDOv
+	 wVle4eD9JsCz9LZduNzQoSCzjC+DzX+pigigCbVYCch86uxra1SHRrR1u53wexKqS+
+	 uV/CUuTPl5b8oT3T1DRYPVW5dnHNgFe4192JM5+l3BjFBb/o9wwuzP4OGv+y44/5Ko
+	 LHYQ9s8LREOkA==
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: x86@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Alexandre Chartre <alexandre.chartre@oracle.com>,
+	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Nikolay Borisov <nik.borisov@suse.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Ingo Molnar <mingo@kernel.org>
+Subject: [PATCH 0/3] x86/bugs: BHI fixes / improvements - round 2
+Date: Fri, 12 Apr 2024 11:10:31 -0700
+Message-ID: <cover.1712944776.git.jpoimboe@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <a876accc-a7bf-4317-9612-d6d5a1fbaf9c@intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 12, 2024 at 03:22:00PM +0300,
-Adrian Hunter <adrian.hunter@intel.com> wrote:
+BHI fixes round 2:
 
-> > diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> > index 0d3b79b5c42a..c7ff819ccaf1 100644
-> > --- a/arch/x86/kvm/vmx/tdx.c
-> > +++ b/arch/x86/kvm/vmx/tdx.c
-> > @@ -2757,6 +2757,12 @@ static int tdx_td_finalizemr(struct kvm *kvm)
-> >  		return -EINVAL;
-> >  
-> >  	err = tdh_mr_finalize(kvm_tdx);
-> > +	kvm_tdx->hw_error = err;
-> > +
-> > +	if (err == (TDX_OPERAND_BUSY | TDX_OPERAND_ID_RCX))
-> 
-> There seem to be also implicit operand codes.  How sure are
-> we that TDX_OPERAND_ID_RCX is the only valid busy operand?
+- An updated version of "Only harden syscalls when needed" with review
+  comments addressed
 
-According to the description of TDH.MR.FINALIZE, it locks exclusively,
-RCX in TDR, TDCS as implicit, OP_STATE as implicit.  And the basic TDX feature
-to run guest TD, TDX module locks in order of TDR => OP_STATE. We won't see
-OP_STATE lock failure after gaining TDR lock.
+- A BHI retpoline check fix
 
-If you worry for future, we can code it as
-(err & TDX_SEAMCALL_STATUS_MASK) == TDX_OPERAND_BUSY.  We should do it
-consistently, though.
+- Remove the obsolete LFENCE "retpolines"
 
-> > +		return -EAGAIN;
-> > +	if (err == TDX_NO_VCPUS)
-> 
-> TDX_NO_VCPUS is not one of the completion status codes for
-> TDH.MR.FINALIZE
+Josh Poimboeuf (3):
+  x86/bugs: Only harden syscalls when needed
+  x86/bugs: Fix BHI retpoline check
+  x86/bugs: Remove support for Spectre v2 LFENCE "retpolines"
 
-It depends on the document version.  Need to check TDX_OP_STATE_INCORRECT
-to be defensive.
+ arch/x86/Makefile                             |  1 -
+ arch/x86/entry/common.c                       | 15 +++-
+ arch/x86/entry/syscall_32.c                   | 11 +--
+ arch/x86/entry/syscall_64.c                   |  6 --
+ arch/x86/entry/syscall_x32.c                  |  7 +-
+ arch/x86/include/asm/cpufeatures.h            |  2 +-
+ arch/x86/include/asm/disabled-features.h      |  3 +-
+ arch/x86/include/asm/nospec-branch.h          | 18 +---
+ arch/x86/include/asm/syscall.h                |  8 +-
+ arch/x86/kernel/alternative.c                 | 17 +---
+ arch/x86/kernel/cpu/bugs.c                    | 88 +++++++------------
+ arch/x86/kernel/cpu/cpu.h                     |  3 +-
+ arch/x86/lib/retpoline.S                      |  5 +-
+ arch/x86/net/bpf_jit_comp.c                   |  5 +-
+ tools/arch/x86/include/asm/cpufeatures.h      |  1 -
+ .../arch/x86/include/asm/disabled-features.h  |  3 +-
+ 16 files changed, 69 insertions(+), 124 deletions(-)
 
-
-> > diff --git a/arch/x86/kvm/vmx/tdx.h b/arch/x86/kvm/vmx/tdx.h
-> > index 98f5d7c5891a..dc150b8bdd5f 100644
-> > --- a/arch/x86/kvm/vmx/tdx.h
-> > +++ b/arch/x86/kvm/vmx/tdx.h
-> > @@ -18,6 +18,9 @@ struct kvm_tdx {
-> >  	u64 xfam;
-> >  	int hkid;
-> >  
-> > +	/* For KVM_TDX ioctl to return SEAMCALL status code. */
-> > +	u64 hw_error;
-> 
-> For this case, it seems weird to have a struct member
-> to pass back a return status code,  why not make it a parameter
-> of tdx_td_finalizemr() or pass &tdx_cmd?
-
-I created the patch too quick. Given KVM_TDX_CAPABILITIES and KVM_TDX_INIT_VM
-take tdx_cmd already, it's consistent to make tdx_td_finalize() take it.
 -- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+2.44.0
+
 
