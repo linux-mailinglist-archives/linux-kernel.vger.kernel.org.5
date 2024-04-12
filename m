@@ -1,130 +1,104 @@
-Return-Path: <linux-kernel+bounces-142188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BA718A289E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:59:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23A938A28A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:00:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CCBF1F225BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:59:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3383287DB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:59:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9AFB4E1D1;
-	Fri, 12 Apr 2024 07:58:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0B14E1DA;
+	Fri, 12 Apr 2024 07:59:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="oUfvOicy";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KLXxa4pl"
-Received: from fout3-smtp.messagingengine.com (fout3-smtp.messagingengine.com [103.168.172.146])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J2N7oNR6"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084F94D9F4;
-	Fri, 12 Apr 2024 07:58:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FF81CD04;
+	Fri, 12 Apr 2024 07:59:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712908738; cv=none; b=N4N8cjmdQ1Gt3D5/DfVIrmSD60kXL0lbFp18oTbavdpKhs/BTH0ef5qvFhJv3zs2dwqzhSFRxVREJ8bWbZ+FydFm+cKI5qD8beJEjlvVxtZKuj9ONPkuUx3x7o3B0ncvBuGqgtT/BwtOd97R0GOQ9NZrV6B4ChK+aeeuWlRIJ4s=
+	t=1712908791; cv=none; b=Fhzt7MW/u59TnlhYGzaLrIBgn5Wev1F+1P9777uLfD3il7Wc5DzSVMH4VrZk64QT54rj8NQJGvqaTaaZ/6u4FR1rh37F64+tcBtfz7F95AXlsq9TeV9mfQOE3A99AQPtpI0orTuicJVIsqn9vRPUT0SUW3Zu9xK3vUdef1WJXW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712908738; c=relaxed/simple;
-	bh=lmVnj/emWhVKwKCtmjKZRdhyHpBtd8H9cYECpX359ho=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fXBnaEpZRJ30HzVucJsVO+yfxZShyyBq7FHMz6FMH4ITloud8vvu6J+GjHqLBA4hordrUAE4VEVCNknRoLIM1vw2/yXlUeXAauatxURxFXT2MAkfMIVQ/iF09sWgXwcb5OMIRCMDp0z7JLMjQ86GuXHAA5Hks5RO9Hq081WS1mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=oUfvOicy; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KLXxa4pl; arc=none smtp.client-ip=103.168.172.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 1C28813802B1;
-	Fri, 12 Apr 2024 03:58:55 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 12 Apr 2024 03:58:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1712908735; x=1712995135; bh=s31rwbj8SN
-	Bg4iN0/PPWZvrHHKOJYGRuoenfpsDBgto=; b=oUfvOicy7kexQHgq7JWRDtgeQ7
-	rHw4DsCF4ji5rviHM1EDbSsmWQH7G2vJBx+KZbUAldiK/YDxZX4bMCl1pJhiN83z
-	nDDfiy1zXM3EremULKvCdFTqSNd2VSh4by9JxG9YAzNRoBMfk28nGAjQdcJj6ma0
-	ZzERQyFuesNCppMxpqDpkl4zxtIo0lOTxliSb0kOTl1RcKWcKTTDSHmOdU2zOv2G
-	Iql8gAQQYIiCzgryMPWP4U3y2xJV8fnTRgfxI+9BkMuuQZcndtqo24SpdrR3PfBp
-	UupMmOwSgeE2NtVaEsXzs9qYXnKLpffqZctwqFuA1tHBS1S+SZI5pDH20FkA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712908735; x=1712995135; bh=s31rwbj8SNBg4iN0/PPWZvrHHKOJ
-	YGRuoenfpsDBgto=; b=KLXxa4plzc/U5gbE57bVpuYdYtxYxHS03X01SRup9CBc
-	oyTkh0/2dVvM6MugA6VRFd/mVq95vH7UovLY/ipNb6LpR+QUoL/Qy/5wEgBNGHJy
-	dr4DuYW0+mbi5qAPm7vYPtYqDbuPMDmBWothllFriMJTOBHlDLmSqTajVOrXVSC9
-	VHa6E4jE4o/FlOp+Y5rTVVJud5ItjcM3sxFbca+8FbBuWU+JjtDF5cgwgPKeSiTN
-	D2W45HZ+GdVY1Ec7pYle3t7t/lZANsi2MFeY6A2ibi1PLPPhVn5XlnATt6llm8tF
-	0EE5FJy/moPIHkVJhmndVqJl32fYn6h2iXWCFbCrdQ==
-X-ME-Sender: <xms:vukYZsU0jeI1slJuUqvwdT8MNsnl2Hz91F1T1-XT_jgZWHAyw9Ed-Q>
-    <xme:vukYZgmSGhdDcUvDsW0k43BPZg0N_dii5gTQvGkYFzRHhIBQfUvWZolqzK1EUkmSm
-    TfzTmRzHxaLkg>
-X-ME-Received: <xmr:vukYZgacMBviOUY1NFACLxQ-uybJhwncj9Yk7HpgQm3azGljQ3enL2ym9PsIaS05o6W_AkEhY0GAyQeL89_jttUxO3998VZHJR1IZQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeitddgledvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
-    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
-    hhrdgtohhm
-X-ME-Proxy: <xmx:vukYZrU-S47P-G5whlvP8vtnLYAa9wcbxiU-XdPVYsTiEjNA57bSYA>
-    <xmx:vukYZmkVgDFXKXHb4PeXoTnImc-4iUX96SUVpCIIe5FwnWcPnAE0OA>
-    <xmx:vukYZgcQeHJpt4_KotMmPXEj9I1Ok4M74EtmkeW7IsGJWlw626I-xA>
-    <xmx:vukYZoGulublib9wY4My3LJJgB-f0urpdh2PyJzjgro0lddUpPuGzQ>
-    <xmx:v-kYZvfTqjUFQYiGBXNpLtzZXi9UToZss17bRSTry1vUen3YcM_XkT0B>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 12 Apr 2024 03:58:54 -0400 (EDT)
-Date: Fri, 12 Apr 2024 09:58:52 +0200
-From: Greg KH <greg@kroah.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Fabio Estevam <festevam@denx.de>,
-	Javier Carrasco <javier.carrasco@wolfvision.net>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the usb tree with the usb.current
- tree
-Message-ID: <2024041230-slaw-subsiding-9e85@gregkh>
-References: <20240412142547.3598ff68@canb.auug.org.au>
+	s=arc-20240116; t=1712908791; c=relaxed/simple;
+	bh=9kpc36YLxfEtad6uDI4ebX5d/dPQszIr4wDX8T1iaos=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BAu/PcBKnR1B+qBcVo8aAfz5M4dpyNmwu78aMNG9rP1fispPxiY98Htgw9NEAlLiuJCBY1YqIcGr52G5RQnAs5sXAxYwNWVbPj0fSqVjh1fiH8f5FRo7fc3NQRUqfOn9PJYvkwg0xvFhorcIJRa7oVAvYmr+Es9rkch2LGcPigU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J2N7oNR6; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2a484f772e2so339095a91.3;
+        Fri, 12 Apr 2024 00:59:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712908789; x=1713513589; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9kpc36YLxfEtad6uDI4ebX5d/dPQszIr4wDX8T1iaos=;
+        b=J2N7oNR6XpowICMG8bhO7Q3ua1q4zYr8DrMHQK/wpzUE6DNe/J6r1xh0WdNMDUxnm0
+         29KPL6S8R/v5SCZugx66tsb64MSMNr8JrkpnOze+nDs/1/z8FAz1My/cAp/iAWw8DPnu
+         3GmYuT9BDpepnRIhFxWLYEVPWZIm38lgdCJSbeMacibUfKoxqHumbDvrkymaFwLWKwos
+         2OczxTNHAWOlsMZkvkg4PXFrOoGJO/TX5qqv6FHkZzl5J0Y8dqHMLiuCfI8csISBjyZT
+         nfwGlJWXVkz5i7N3vwnm34QH2BOLAQaLeHfjbfVmdAjmfd1TftOfHuVkWpTmOObQQSkm
+         mjpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712908789; x=1713513589;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9kpc36YLxfEtad6uDI4ebX5d/dPQszIr4wDX8T1iaos=;
+        b=NTUYuO5FKE3nhzmV1rrda7aNnoBnZTGm21KGXBBMGXWxgw9KuW/Kis0A0BZSxh6ynX
+         7+nSjrmjWwdLMOnBh877KWlkgt0zhkago6Tksk0gHdedlOfjj2IUiP+m6C1KuWO0gEjZ
+         dJRaraTMmsqc1co1yF34dj/YMAEWT2opFSTQ+idNlbCWOEyja7qV4r+BhVradhtvxiqh
+         7pNjHD9i+FRrjKLZuOlcgFNx7SDq78kznp8JfDIkyf2jyo16exiyhqzUhdSDgUpwOFOG
+         GBJLoYhS2h9kgzwrImeqfzE+gZYYoYXN7Dcz3NzkbuTQ+dZ/lTvjutqMuYa4fJwgxDOx
+         Cz6w==
+X-Forwarded-Encrypted: i=1; AJvYcCXSGm1gPVDGmnEhWPwnw5aEKtD6roYa6PCsxXc0dSWJiigIbRLKjn/vSP06meMOkVZ0Vdp/dq6zLv/2lNMlCsEgWWfLeyMZ9HPeRUC8Nz3U3eN1leZQhjOWYZn/FFLMG5D7Rku54QPlCEtHc1Y=
+X-Gm-Message-State: AOJu0Yw87YTKmOCvcEz3G50wkf0FHMtf0U63J4BvE+W42T3kA8fxPxmT
+	N0Ij/T+XZUC0mYmIkbjtKFNdgCNMIVUXAty53i6Ux46xWspVjS33Wzq9zuMEEGgZFgQ/u5M7uss
+	C43uLAjtriTNYqlge05GN6NprnHw=
+X-Google-Smtp-Source: AGHT+IF0LmnrUMH1fIRVp//RBL8ny0hZaULM61m5B+UVkT149AnGKaI8tyLWdVG+hmnpUnRermOk7Cz9D1ANXmmDu60=
+X-Received: by 2002:a17:90a:c397:b0:2a4:9836:aa2c with SMTP id
+ h23-20020a17090ac39700b002a49836aa2cmr1681059pjt.28.1712908789034; Fri, 12
+ Apr 2024 00:59:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412142547.3598ff68@canb.auug.org.au>
+References: <20240411230801.1504496-1-boqun.feng@gmail.com>
+ <20240411230801.1504496-3-boqun.feng@gmail.com> <CANiq72nSSAVkynVaAq7bQKoL6N8K2JUXp8AOVvu7vN+siAhk-Q@mail.gmail.com>
+ <f08c06a4e8361f2cb55cd0dc1fa2bc2b0a046049.camel@redhat.com>
+In-Reply-To: <f08c06a4e8361f2cb55cd0dc1fa2bc2b0a046049.camel@redhat.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Fri, 12 Apr 2024 09:58:57 +0200
+Message-ID: <CANiq72kMZ6mpK+LaL9Xfsp032CZOfAEtr6Dp9A2R-m6dC3gkWQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] rust: time: Use wrapping_sub() for Ktime::sub()
+To: Philipp Stanner <pstanner@redhat.com>, Kees Cook <kees@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Miguel Ojeda <ojeda@kernel.org>, John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	bjorn3_gh@protonmail.com, Benno Lossin <benno.lossin@proton.me>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 12, 2024 at 02:25:47PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the usb tree got a conflict in:
-> 
->   drivers/usb/misc/onboard_usb_hub.c
-> 
-> between commit:
-> 
->   34b990e9bb54 ("usb: misc: onboard_usb_hub: Disable the USB hub clock on failure")
-> 
-> from the usb.current tree and commit:
-> 
->   31e7f6c015d9 ("usb: misc: onboard_hub: rename to onboard_dev")
-> 
-> from the usb tree.
-> 
-> I fixed it up (I deleted this file and applied the following patch) and
-> can carry the fix as necessary. This is now fixed as far as linux-next
-> is concerned, but any non trivial conflicts should be mentioned to your
-> upstream maintainer when your tree is submitted for merging.  You may
-> also want to consider cooperating with the maintainer of the conflicting
-> tree to minimise any particularly complex conflicts.
+On Fri, Apr 12, 2024 at 9:43=E2=80=AFAM Philipp Stanner <pstanner@redhat.co=
+m> wrote:
+>
+> Is that going to remain enabled by default or what was the plan here?
 
-Thanks, I knew this would happen, I'll apply your fixup when merging the
-two branches together.
+The plan is to ideally keep it enabled by default, but I defer to Kees
+with whom we discussed this back then (Cc'd).
 
-greg k-h
+The goal is that Rust code, since the beginning, has all wrapping
+operations marked explicitly as such.
+
+Cheers,
+Miguel
 
