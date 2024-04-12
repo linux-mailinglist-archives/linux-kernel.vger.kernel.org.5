@@ -1,223 +1,155 @@
-Return-Path: <linux-kernel+bounces-142878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2A168A317C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:50:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B9A28A319F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:55:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78E0C282A13
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:50:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADE601C223E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7CD1487FF;
-	Fri, 12 Apr 2024 14:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F26146A86;
+	Fri, 12 Apr 2024 14:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OJsHa854"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jZMOLO9M"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1BF6145FF7;
-	Fri, 12 Apr 2024 14:48:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C18E147C9C
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:54:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712933327; cv=none; b=pSXPm+EGl8QbPeWMobr/dUQmD/OAGlcXAW98eQH5irlqgYWOrl+nDHMoQsKs03nsbPvpJQazp+qhEMdnICSK2Tht3iWdi96SyttUL4fVrSxVGul+f3ZQqh+u6nB+6F9JT4mTVPEseEyxDHY9py0LHUsBs22fds24eCuVEOqVCkU=
+	t=1712933666; cv=none; b=ZPOtBwBt9AmSv/TGPkt94mCX9/GOnXlyN9LtYhA9IVzGuUFHYWYa8Ie5iBBY+JSUim4UeZak2DM+E1HFuwnuc0JEKn6CV4XBnyh2AOEU8h8rWsc1Y0p9gfKHJJG69WDsqJmieiCII8IKbPf1jMNJoWfdodTQyZZVkLpisvY6PFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712933327; c=relaxed/simple;
-	bh=kabtR8KWJp1tD7U7DLovE/0TfamXboAHVXoNqhGqQ/o=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=HyisDEnUSyGg3wky6oQ3e2ab/90foMhiuokU8+UTqqQ/WRfirbmVO5JbiY2zsl9DwibNwzDW0ayrqC+Tgmu2CWivoEVCtZP5f+FcO4gyTjGzHuJ2uwWBn1xJnF6anjMQ4Jl7QjByUE1WFcnhREmKy8s2+1yD2qfZbRuU/I2XjDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OJsHa854; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 685E9C4AF18;
-	Fri, 12 Apr 2024 14:48:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712933326;
-	bh=kabtR8KWJp1tD7U7DLovE/0TfamXboAHVXoNqhGqQ/o=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=OJsHa854rZOdPPGu329O3QmWgIpDjvADmkoZUrVKVS2dTNwGs7T7HmX/8M+PYsVCa
-	 Hq7BBvG+ZcqUYlzTuV8oa3YDZY7Di60ugMfVUDDztMWLDZrh3Y64ZtQmEUyQN+RV/c
-	 DJoEBAHXBJzFtA+GckwBp6nC22d71YUfnj8TEo6D3YZtIYw3uTRAf5zHzEnWibrjK5
-	 hvP9P0GJTRq1hbcO8GVSZzAMNtyFkWJER/c2wRonlAXpOLUaVom1f8gbKs2SqwKkgg
-	 yPGx2mTbg5lfYHN+3traEX9uz87oeAv4bbnP/HqEYZjmm9D4DyVQVXF9tLSpyBU3Gs
-	 Hr9PY/0Xks3Yg==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B936C4345F;
-	Fri, 12 Apr 2024 14:48:46 +0000 (UTC)
-From: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>
-Date: Fri, 12 Apr 2024 16:48:32 +0200
-Subject: [PATCH v3 4/4] ax.25: Remove the now superfluous sentinel elements
- from ctl_table array
+	s=arc-20240116; t=1712933666; c=relaxed/simple;
+	bh=ZtUMxIcPii7SYptK1bsvjnMTv2XY+8o/C+H99TV4mko=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=HIXOA/KRT2CZIZmBrbTz/+pjgNy6r3I0elDpFHaq9urgmbQT+n9lyckIhuIYmTEhESe/viuczcQAUMz+PDLfCn+KhzD77rOooVQmbPk/XjyOgl6ePE8qajIytEORDaG8wAli6h6y04X+5N6HciwlnEZqpgi3dTf/zG1+p01xlR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jZMOLO9M; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6ed33476d82so978133b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:54:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712933664; x=1713538464; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZrmdCrVWtwb7lFW6AyHWbgOgdloa5ymd2fy0iQuLqTo=;
+        b=jZMOLO9Mr0xDTGxrxV8mIoSXOfsy0NmwYQW0zI/ASTTgNcMfwZ1UQ+4+EWeTJclvO0
+         Taso9FlZRd68oNAXtsEXqF+Zh6esim3EnEM79tEAtREazLVZQ6C9RcZr2bB6YXUecyGS
+         i7mCDGukKBi1YWkZxqotQaPbtcMhvIO0ZTKV6N8znDXDGxWCjC5OU7bIOqzfxP3fuG1U
+         E2JP1zqWTjEE923qoZFUYQEtzonrgr20LU+ra6Rlt0Z1LsoznWEvbR4GBs+l5h7rbR0e
+         cIJ7OWbCRDSO7twJVl7NouedyjTGtc284+QIYkl4d3Zq7NLXu8Bt0ccYTnihc37Pwxpl
+         yNYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712933664; x=1713538464;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZrmdCrVWtwb7lFW6AyHWbgOgdloa5ymd2fy0iQuLqTo=;
+        b=de939af+32QF5/yX1PNMPdUAoFGycKAPYHQsk27kxeubknU+PyudTxL8lgGwYMvnnt
+         rxLIoXrZAZEAFCFfjEYqd5jjdqGJ9gm39tydXVrqxiS88KCuduSN31B29MyAci7FWVoD
+         J5hpiz75eLLy+OPSSYfAmaIi8EdEBRVHD8jc9fcbzlHU8S9LyDv8oXdYTs6H1BbWcdxD
+         LkKj0+MvbMLJyVlNfSiKKEPVqyIhXMAbLGKmzISXywyia3ZJbhT1+G54j4+Uxil+CA1e
+         FOki7c7zfaZ1G18Fti8nbVQWNIa4H9O3gVZcCWSf4NxYmvPcNabveAlG1Mzf8npGebwT
+         QaeA==
+X-Forwarded-Encrypted: i=1; AJvYcCUWCMfMT7nJ9czeAUsGM6zYeRdcv60LDGWYYUr46+jLSBXr9H1jfgA0GJ/yH7BEm0L14CR3jz5A+lGEHI7XWTi/xVTkxsi2qOOTrTTk
+X-Gm-Message-State: AOJu0Yx+A8dtseQDg7olg5LmSfa0gnLPZ6zi9YQhnBeklSxk6MmMfCDn
+	pKidktvbzXaSxEDYvTeGLG8frCZoi/JFvxedzDttHbGLe7anMzi0xBKEuX8A0U0AekP6mWSLsM9
+	AJw==
+X-Google-Smtp-Source: AGHT+IE8CrGE6yHurBu6oRRUdhNStzcxsQMqGws9O1toyt+VIrjo1lbnGIr3E72VqB9zErBllk+K4v4iLAw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2d94:b0:6ed:95ce:3417 with SMTP id
+ fb20-20020a056a002d9400b006ed95ce3417mr191844pfb.5.1712933663717; Fri, 12 Apr
+ 2024 07:54:23 -0700 (PDT)
+Date: Fri, 12 Apr 2024 07:54:22 -0700
+In-Reply-To: <86jzl2sovz.wl-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240412-jag-sysctl_remset_net-v3-4-11187d13c211@samsung.com>
-References: <20240412-jag-sysctl_remset_net-v3-0-11187d13c211@samsung.com>
-In-Reply-To: <20240412-jag-sysctl_remset_net-v3-0-11187d13c211@samsung.com>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Alexander Aring <alex.aring@gmail.com>, 
- Stefan Schmidt <stefan@datenfreihafen.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, David Ahern <dsahern@kernel.org>, 
- Steffen Klassert <steffen.klassert@secunet.com>, 
- Herbert Xu <herbert@gondor.apana.org.au>, 
- Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>, 
- Geliang Tang <geliang@kernel.org>, Ralf Baechle <ralf@linux-mips.org>, 
- Remi Denis-Courmont <courmisch@gmail.com>, 
- Allison Henderson <allison.henderson@oracle.com>, 
- David Howells <dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, 
- Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>, 
- Xin Long <lucien.xin@gmail.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
- Jan Karcher <jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>, 
- Tony Lu <tonylu@linux.alibaba.com>, Wen Gu <guwen@linux.alibaba.com>, 
- Trond Myklebust <trond.myklebust@hammerspace.com>, 
- Anna Schumaker <anna@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
- Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>, 
- Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
- Tom Talpey <tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>, 
- Ying Xue <ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>, 
- Pablo Neira Ayuso <pablo@netfilter.org>, 
- Jozsef Kadlecsik <kadlec@netfilter.org>, Florian Westphal <fw@strlen.de>, 
- Roopa Prabhu <roopa@nvidia.com>, Nikolay Aleksandrov <razor@blackwall.org>, 
- Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>, 
- Joerg Reuter <jreuter@yaina.de>, Luis Chamberlain <mcgrof@kernel.org>, 
- Kees Cook <keescook@chromium.org>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- dccp@vger.kernel.org, linux-wpan@vger.kernel.org, mptcp@lists.linux.dev, 
- linux-hams@vger.kernel.org, linux-rdma@vger.kernel.org, 
- rds-devel@oss.oracle.com, linux-afs@lists.infradead.org, 
- linux-sctp@vger.kernel.org, linux-s390@vger.kernel.org, 
- linux-nfs@vger.kernel.org, tipc-discussion@lists.sourceforge.net, 
- linux-x25@vger.kernel.org, netfilter-devel@vger.kernel.org, 
- coreteam@netfilter.org, bridge@lists.linux.dev, lvs-devel@vger.kernel.org, 
- Joel Granados <j.granados@samsung.com>
-X-Mailer: b4 0.13-dev-2d940
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3615;
- i=j.granados@samsung.com; h=from:subject:message-id;
- bh=CsYowwLbkJaYf30UOT/yoW/0LONY7umz9p0pFyf5n0w=;
- b=owJ4nAHtARL+kA0DAAoBupfNUreWQU8ByyZiAGYZScxgWqGgs+HWHWKs1qufcsukehfTFkxB4
- qfcLlXm7S21V4kBswQAAQoAHRYhBK5HCVcl5jElzssnkLqXzVK3lkFPBQJmGUnMAAoJELqXzVK3
- lkFPyIYMAJKeHHeh4RoOTaX1NdP5ohrHbpZVGSiik49E67/0ZPgzvWovZ7wB4Imi076PjZu4bKj
- AW6SArlLiGXRpxRP8lsFLWi8JSxw7/cpw1LABPA/4GMJBEMdOuJidHVg/2HsRjoALLBpHgvp+pZ
- /xtrYavCFZ/+FRq1c4aO6NIIP/2rYJGT9vtCr4ec4V822hrgs9adA5JapsW4m0D7E8a1G72iOA5
- 4aD6ApucM/2+2VmxWx3sz2eg+rkXJBOOdNjqm6UdJDdVw3qz3ZPl6odHuM5WcF+2lPxLEbSGF9c
- k86yuwPNW3t7Vdka4VYc0CdWp2tS9Flt6z00h0vuHHCz6t8jDPvIAGRrRVNIMtKXOaPxaFt7V/P
- 9v/LxFQlQeLS4cAqXZtkUrbXUIe5gV5p0/EwN7393eVg16kZpbMJL31ogZ37+42SheKZa2PFu6W
- ljhF0aXKJhFf7Bt6kP53Fo8OSAj7QMj7JQitj2FIDPZhD+rd20eL9WJNB0Q+bG98xOExHQQV4t8
- Kc=
-X-Developer-Key: i=j.granados@samsung.com; a=openpgp;
- fpr=F1F8E46D30F0F6C4A45FF4465895FAAC338C6E77
-X-Endpoint-Received: by B4 Relay for j.granados@samsung.com/default with
- auth_id=70
-X-Original-From: Joel Granados <j.granados@samsung.com>
-Reply-To: j.granados@samsung.com
+Mime-Version: 1.0
+References: <20240405115815.3226315-1-pbonzini@redhat.com> <20240405115815.3226315-2-pbonzini@redhat.com>
+ <20240412104408.GA27645@willie-the-truck> <86jzl2sovz.wl-maz@kernel.org>
+Message-ID: <ZhlLHtfeSHk9gRRO@google.com>
+Subject: Re: [PATCH 1/4] KVM: delete .change_pte MMU notifier callback
+From: Sean Christopherson <seanjc@google.com>
+To: Marc Zyngier <maz@kernel.org>
+Cc: Will Deacon <will@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org, 
+	kvm@vger.kernel.org, Oliver Upton <oliver.upton@linux.dev>, 
+	Tianrui Zhao <zhaotianrui@loongson.cn>, Bibo Mao <maobibo@loongson.cn>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Nicholas Piggin <npiggin@gmail.com>, 
+	Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, 
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org, 
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-From: Joel Granados <j.granados@samsung.com>
+On Fri, Apr 12, 2024, Marc Zyngier wrote:
+> On Fri, 12 Apr 2024 11:44:09 +0100, Will Deacon <will@kernel.org> wrote:
+> > On Fri, Apr 05, 2024 at 07:58:12AM -0400, Paolo Bonzini wrote:
+> > Also, if you're in the business of hacking the MMU notifier code, it
+> > would be really great to change the .clear_flush_young() callback so
+> > that the architecture could handle the TLB invalidation. At the moment,
+> > the core KVM code invalidates the whole VMID courtesy of 'flush_on_ret'
+> > being set by kvm_handle_hva_range(), whereas we could do a much
+> > lighter-weight and targetted TLBI in the architecture page-table code
+> > when we actually update the ptes for small ranges.
+> 
+> Indeed, and I was looking at this earlier this week as it has a pretty
+> devastating effect with NV (it blows the shadow S2 for that VMID, with
+> costly consequences).
+> 
+> In general, it feels like the TLB invalidation should stay with the
+> code that deals with the page tables, as it has a pretty good idea of
+> what needs to be invalidated and how -- specially on architectures
+> that have a HW-broadcast facility like arm64.
 
-This commit comes at the tail end of a greater effort to remove the
-empty elements at the end of the ctl_table arrays (sentinels) which will
-reduce the overall build time size of the kernel and run time memory
-bloat by ~64 bytes per sentinel (further information Link :
-https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+Would this be roughly on par with an in-line flush on arm64?  The simpler, more
+straightforward solution would be to let architectures override flush_on_ret,
+but I would prefer something like the below as x86 can also utilize a range-based
+flush when running as a nested hypervisor.
 
-Avoid a buffer overflow when traversing the ctl_table by ensuring that
-AX25_MAX_VALUES is the same as the size of ax25_param_table. This is
-done with a BUILD_BUG_ON where ax25_param_table is defined and a
-CONFIG_AX25_DAMA_SLAVE guard in the unnamed enum definition as well as
-in the ax25_dev_device_up and ax25_ds_set_timer functions.
-
-The overflow happened when the sentinel was removed from
-ax25_param_table. The sentinel's data element was changed when
-CONFIG_AX25_DAMA_SLAVE was undefined. This had no adverse effects as it
-still stopped on the sentinel's null procname but needed to be addressed
-once the sentinel was removed.
-
-Signed-off-by: Joel Granados <j.granados@samsung.com>
----
- include/net/ax25.h         | 2 ++
- net/ax25/ax25_dev.c        | 3 +++
- net/ax25/ax25_ds_timer.c   | 4 ++++
- net/ax25/sysctl_net_ax25.c | 3 +--
- 4 files changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/include/net/ax25.h b/include/net/ax25.h
-index 0d939e5aee4e..eb9cee8252c8 100644
---- a/include/net/ax25.h
-+++ b/include/net/ax25.h
-@@ -139,7 +139,9 @@ enum {
- 	AX25_VALUES_N2,		/* Default N2 value */
- 	AX25_VALUES_PACLEN,	/* AX.25 MTU */
- 	AX25_VALUES_PROTOCOL,	/* Std AX.25, DAMA Slave, DAMA Master */
-+#ifdef CONFIG_AX25_DAMA_SLAVE
- 	AX25_VALUES_DS_TIMEOUT,	/* DAMA Slave timeout */
-+#endif
- 	AX25_MAX_VALUES		/* THIS MUST REMAIN THE LAST ENTRY OF THIS LIST */
- };
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index ff0a20565f90..b65116294efe 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -601,6 +601,7 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_range(struct kvm *kvm,
+        struct kvm_gfn_range gfn_range;
+        struct kvm_memory_slot *slot;
+        struct kvm_memslots *slots;
++       bool need_flush = false;
+        int i, idx;
  
-diff --git a/net/ax25/ax25_dev.c b/net/ax25/ax25_dev.c
-index c5462486dbca..af547e185a94 100644
---- a/net/ax25/ax25_dev.c
-+++ b/net/ax25/ax25_dev.c
-@@ -78,7 +78,10 @@ void ax25_dev_device_up(struct net_device *dev)
- 	ax25_dev->values[AX25_VALUES_N2]        = AX25_DEF_N2;
- 	ax25_dev->values[AX25_VALUES_PACLEN]	= AX25_DEF_PACLEN;
- 	ax25_dev->values[AX25_VALUES_PROTOCOL]  = AX25_DEF_PROTOCOL;
+        if (WARN_ON_ONCE(range->end <= range->start))
+@@ -653,10 +654,22 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_range(struct kvm *kvm,
+                                        break;
+                        }
+                        r.ret |= range->handler(kvm, &gfn_range);
 +
-+#ifdef CONFIG_AX25_DAMA_SLAVE
- 	ax25_dev->values[AX25_VALUES_DS_TIMEOUT]= AX25_DEF_DS_TIMEOUT;
-+#endif
++                       /*
++                        * Use a precise gfn-based TLB flush when possible, as
++                        * most mmu_notifier events affect a small-ish range.
++                        * Fall back to a full TLB flush if the gfn-based flush
++                        * fails, and don't bother trying the gfn-based flush
++                        * if a full flush is already pending.
++                        */
++                       if (range->flush_on_ret && !need_flush && r.ret &&
++                           kvm_arch_flush_remote_tlbs_range(kvm, gfn_range.start
++                                                            gfn_range.end - gfn_range.start + 1))
++                               need_flush = true;
+                }
+        }
  
- #if defined(CONFIG_AX25_DAMA_SLAVE) || defined(CONFIG_AX25_DAMA_MASTER)
- 	ax25_ds_setup_timer(ax25_dev);
-diff --git a/net/ax25/ax25_ds_timer.c b/net/ax25/ax25_ds_timer.c
-index c4f8adbf8144..8f385d2a7628 100644
---- a/net/ax25/ax25_ds_timer.c
-+++ b/net/ax25/ax25_ds_timer.c
-@@ -49,12 +49,16 @@ void ax25_ds_del_timer(ax25_dev *ax25_dev)
+-       if (range->flush_on_ret && r.ret)
++       if (need_flush)
+                kvm_flush_remote_tlbs(kvm);
  
- void ax25_ds_set_timer(ax25_dev *ax25_dev)
- {
-+#ifdef CONFIG_AX25_DAMA_SLAVE
- 	if (ax25_dev == NULL)		/* paranoia */
- 		return;
- 
- 	ax25_dev->dama.slave_timeout =
- 		msecs_to_jiffies(ax25_dev->values[AX25_VALUES_DS_TIMEOUT]) / 10;
- 	mod_timer(&ax25_dev->dama.slave_timer, jiffies + HZ);
-+#else
-+	return;
-+#endif
- }
- 
- /*
-diff --git a/net/ax25/sysctl_net_ax25.c b/net/ax25/sysctl_net_ax25.c
-index db66e11e7fe8..fb9966926e90 100644
---- a/net/ax25/sysctl_net_ax25.c
-+++ b/net/ax25/sysctl_net_ax25.c
-@@ -141,8 +141,6 @@ static const struct ctl_table ax25_param_table[] = {
- 		.extra2		= &max_ds_timeout
- 	},
- #endif
--
--	{ }	/* that's all, folks! */
- };
- 
- int ax25_register_dev_sysctl(ax25_dev *ax25_dev)
-@@ -155,6 +153,7 @@ int ax25_register_dev_sysctl(ax25_dev *ax25_dev)
- 	if (!table)
- 		return -ENOMEM;
- 
-+	BUILD_BUG_ON(AX25_MAX_VALUES != ARRAY_SIZE(ax25_param_table));
- 	for (k = 0; k < AX25_MAX_VALUES; k++)
- 		table[k].data = &ax25_dev->values[k];
- 
-
--- 
-2.43.0
-
+        if (r.found_memslot)
 
 
