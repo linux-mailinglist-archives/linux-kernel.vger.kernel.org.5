@@ -1,276 +1,150 @@
-Return-Path: <linux-kernel+bounces-142982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 210998A32E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:53:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA8948A32E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:55:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 437241C22D65
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:53:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63E9F283A3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D21914882A;
-	Fri, 12 Apr 2024 15:52:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71595148825;
+	Fri, 12 Apr 2024 15:55:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="mdeUb6K9"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2086.outbound.protection.outlook.com [40.107.92.86])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=elkcl.ru header.i=@elkcl.ru header.b="uxD6ELAT"
+Received: from smtp43.i.mail.ru (smtp43.i.mail.ru [95.163.41.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2631487EB
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:52:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.86
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712937168; cv=fail; b=nimQ0zqfFcUKmywZ8qjSWjmPULFmbSzbV/s4qAbC6QryYv9MFGOrVLkT0osotgfpxM/yTAoafoKlvHMv4Vdcg+yt3EuyD09NcKGO/PuxP56mFOdwWRNXbY5JqnrHfddPOiKmZLPzqWVILMcXbYGCPePkiL+QAS1vZWZKF6+5l+8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712937168; c=relaxed/simple;
-	bh=okLufqXGPKtylXVl8sNesoOmUQkASBZXB7rYMFl+n1c=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=c/tKabYp2j4EmHdpLBu5FZobOwo+njYyqoTz2PXPqm+AV2NcDQdx72iTwXmaaDgdlvo1cwRJZpRet5i11q7yZT2/vbSm7clZM+UWr18GD5pBBFx/Vh+YyCbNVutKcLvGfOvjYbuDYt9i6GJkHp8o02B8G0kMzRsQplv3fj+QJg8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=mdeUb6K9; arc=fail smtp.client-ip=40.107.92.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OtsYqjBiCcjB/1neYGRhHjDxRXWyOSCUXzpqEPerjk1GRRakHN4tsNXsITkruoXcz8FyKuk9yQKWwN+pZ0X2cLx8qK+JQMvptwLTQcUkz3kdCd9y1KQA25y8J1f3azzmaYIdeZYqXg+OIO5qBJputbx19kNof8tctLmTxTLVh9Qewro6vuaaLNPrDnHJ0YuhQl3kNv5ROrjY/hu0vnjRWXSbIGgSoq3sQ/wPiRCmqvJwSkFGfubCX4fvSVwKNEWNUA2KON1kjo+okzrl+QlSDNOI8edBKN+LTyI7MhmPZpSTH44lEyKCOF0RNia9u7f9IwwJr/WjZGm6lTlArjygWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bBcAPA3PSbuCASCghD8Amfazdu4/aMtn1ZMbaS61Y58=;
- b=Nv5Pf8Ks84V/hxRjJn0N8kLuXeJWPLj0qv5dhCUUt8DUfJymdE+GknZeqYttofoh9+2m6iQWPQioIfWOlxFqxsOz9Ks3q5EoNJmEz8txsgh0SLk3qmpFSDG0Gl5uRsi4gps4yeDALJIWEuRKaz54BONjERHSbu9WYMZKY/SxTBq1DeruCeRx4DaAMycTR2DsArwmML44uSAdA/6B3IjB/opWq50RAsF/6FXfEjTyECP8aPkHtzORrsQg7vHrmt89ya4PVe1oyoKyMxX39t1D8ITWTLtr6M9bHFuGG75P4wAg7eHRJlhbtEPZTTD9AMYFuU/oHP1/yoDl56Rqs5wQdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bBcAPA3PSbuCASCghD8Amfazdu4/aMtn1ZMbaS61Y58=;
- b=mdeUb6K9NcdpTqHLHqq4J7VorxToOIt0OHGnC84trRv7kVdPs22oHPIXKAff3PYelMG/e0N3q4nGutnwiQJNFcRD1yvruxv1nEbgKP0Su1IsCTosNjZp7D0jkmYhE4kAJisnY113mG1nty0eCQkyH1VKMY5gQjW1UNqgJOaxvwg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com (2603:10b6:208:387::17)
- by BL1PR12MB5851.namprd12.prod.outlook.com (2603:10b6:208:396::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Fri, 12 Apr
- 2024 15:52:43 +0000
-Received: from BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::1032:4da5:7572:508]) by BL1PR12MB5732.namprd12.prod.outlook.com
- ([fe80::1032:4da5:7572:508%6]) with mapi id 15.20.7409.042; Fri, 12 Apr 2024
- 15:52:43 +0000
-Message-ID: <19d69960-e548-a2e6-87d9-c463f2851613@amd.com>
-Date: Fri, 12 Apr 2024 10:52:40 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 13/14] x86/sev: Hide SVSM attestation entries if not
- running under an SVSM
-Content-Language: en-US
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
- linux-kernel@vger.kernel.org, x86@kernel.org, linux-coco@lists.linux.dev,
- svsm-devel@coconut-svsm.dev
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Dan Williams <dan.j.williams@intel.com>, Michael Roth
- <michael.roth@amd.com>, Ashish Kalra <ashish.kalra@amd.com>,
- Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
-References: <cover.1711405593.git.thomas.lendacky@amd.com>
- <67893f352bc54de61160bfe251cba0bdf0431f37.1711405593.git.thomas.lendacky@amd.com>
- <1f6f4477-0f2a-434a-8c89-3b5d51d61581@linux.intel.com>
-From: Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <1f6f4477-0f2a-434a-8c89-3b5d51d61581@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN6PR2101CA0014.namprd21.prod.outlook.com
- (2603:10b6:805:106::24) To BL1PR12MB5732.namprd12.prod.outlook.com
- (2603:10b6:208:387::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 387C51487F4
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.163.41.66
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712937305; cv=none; b=WRqF66DmVfaVXGP3/SHFDDbpXoiTLFA0yf2bsN5Jxtp+t8+WFQMJsHNwFB04QIKqkmAFBvHdIeh0jwFKxhNE1E8vQ+WrrYhCOXQqLlFSNdpfKLjEfReIfFQaTP0pZLBHHXA0L2V43rh/NzZvZhYf3Hz2Pi6xTyoHciGGle7ny+c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712937305; c=relaxed/simple;
+	bh=9oTCvBGu9JzO7ONavS1zFKdYX8JxPtnMFI92mjnC84g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hPvgKdr2rs//OWXd65S6TPciD4ZiyW5kVMCAZoykqFYrwUI4K02WvpjZGfy9RFSzNbJNRFCIv+guifSkFdjkFuADaDmgaPHzA21jtzNCdH8s6Huhk9H6vQKe3/s6j70s+WGyGAG7U5uQr/LpeFEG/lE5FH44zDz7SfoLl3cZqS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=elkcl.ru; spf=pass smtp.mailfrom=elkcl.ru; dkim=pass (1024-bit key) header.d=elkcl.ru header.i=@elkcl.ru header.b=uxD6ELAT; arc=none smtp.client-ip=95.163.41.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=elkcl.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=elkcl.ru
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=elkcl.ru;
+	s=mailru; h=Sender:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:
+	Subject:Cc:To:From:From:Sender:Reply-To:To:Cc:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
+	References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:
+	List-Owner:List-Archive:X-Cloud-Ids:Disposition-Notification-To;
+	bh=QFS0D/M7dvwApK3A76KiviBzof0kZdBxTZ34NthdSy8=; t=1712937301; x=1713027301; 
+	b=uxD6ELAT5CotYeU6q8qm/8Tqu6CQxWl3MQJqPwtdBnDh2k4fCxlrZSyd4lvKBzBBTmiQCVm2v7D
+	u+yAFfl5AR9tr8r799Bc6oIl9oWYyMh1m5XqmvoKEZPgfcrOGPfNyhbnejSJM7w8JDM2T7IgbPuc7
+	4eiB9h3k6R5bdb0hWBM=;
+Received: by smtp43.i.mail.ru with esmtpa (envelope-from <pub@elkcl.ru>)
+	id 1rvJEp-0000000BIcj-2x1T; Fri, 12 Apr 2024 18:54:52 +0300
+From: Ilya Denisyev <dev@elkcl.ru>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Ilya Denisyev <dev@elkcl.ru>,
+	Richard Weinberger <richard@nod.at>,
+	Christian Brauner <brauner@kernel.org>,
+	Zhihao Cheng <chengzhihao1@huawei.com>,
+	Fabian Frederick <fabf@skynet.be>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Wedson Almeida Filho <walmeida@microsoft.com>,
+	KaiGai Kohei <kaigai@ak.jp.nec.com>,
+	linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org
+Subject: [PATCH] jffs2: prevent xattr node from overflowing the eraseblock
+Date: Fri, 12 Apr 2024 18:53:54 +0300
+Message-ID: <20240412155357.237803-1-dev@elkcl.ru>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5732:EE_|BL1PR12MB5851:EE_
-X-MS-Office365-Filtering-Correlation-Id: 95100450-afe0-4003-a556-08dc5b089712
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	UU/RqnDQEDLGGVzJrk1KBdaT/E0RSX+DQdMQ8Fshnwb0B6GFdVzPNUzZ/zEETLv+X/TKJsCpPhBzTyPJbpggiWzgeyAkc+7TQqClWEeMm7E/7/YxPrTKmmgVJBvznk5l5HVey4PJ/oSOeatyu5FTke5OAhWt1d/wCu4L1/fFAh/65UIp3hvvoNOAZ3ZOhvMX4C+w48zLzxonAui5lF9SSwGp6q/28g/S9E34LWW3SUlBN7+J/2piUw44YNaBeWmvwAOWeY2U6T6z4/kiDWHhhlkll9OTum35C6J32lY1FORH+f8Wf03srF6qdEZmSaxm60/Q7snq5pdQoGpsr9G1ed5B5rf7tnytY5mKSb8tZcAP60jpTAEmddLZwvWnx4eOSSUGmVRP8sE9Xim26EYRkQgFK8H1xkcpVKD9nIFS6WZNWGoVb1JcB7KzCo5GKHAw0QX3ELLCGs2uUW2lB7+p2K5BUiQYEnZVL9ccLBBXCVy37VA3GpH5DXxPZWRrNsW5Nsc2JVVsX5LPteI2TcXhEzijAbTGrj3jP3kXEAt6j5bQF1dMVa56+Qh5W6rJyK78JWy4t0W2Jzr8uTehiyuN6NMNUtdc1lxLL9Hr4mHm2ugaz1gZLsiGzZuWOtXAQXHunAbaTG4e0N0FQqB2t8p4Mv5NfptmSaY8prRyeLsIVkk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5732.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WEZEM0pNY1QvcDhoVnJXVFBUUGh5OVg2K1Fwak13U1RSb0hUWXlBUFZtaW1m?=
- =?utf-8?B?TWhoby83K1BvWGZNVXQ0NkUvM2ZvYmcxVjg2TXFuOHY5cmZBdnl2QWwwRXM4?=
- =?utf-8?B?OVI3ODZCTnBRVmRmQUZ0bjljSmo3b21ucXJXYkthRzRybGtHYkpiekhBNGtU?=
- =?utf-8?B?ZC9lUmxGNEcvRTVnYTdiVGt6ZE00SG1kT3YwQi9MTkZTbStjZWExVGloYkl2?=
- =?utf-8?B?RE9uaUVzdk1NZkdwTkdjcWVQcGl3eFN1RE54anZYcGk0d3E0cDIvRDljUzYx?=
- =?utf-8?B?M1g0OGJNWE5KTHFMdnVKQy92Z1JxakFmbVBsT043Z0tuTHpJaXloZ1pIUVRQ?=
- =?utf-8?B?bkRGVlVRUmgrN2N5cDZyVmo1RzRqQVhUWm5Qd29JSkdvZGREb2haK2dSV251?=
- =?utf-8?B?Vmplc0RzZ2x2WHdFODY4S3NqM0RRSmhuMm1xNnltaTJzZTI4RDRaS0FDRzN4?=
- =?utf-8?B?NVF1S2lOSk5MSlFib0lSSnBpYkxMUmxoQUpHcGRwUlllVlNpSkF1aWtUWTNI?=
- =?utf-8?B?enJzbXV1eEU0aHVGcHgzN1BaQm1BVVBCMEhpdkZDSDRHK0JwSEErTkk4WVN3?=
- =?utf-8?B?NUVOcW56aGxCZXdQRTVJV3VVajFsYWx3dm14RitDdU4yUVVUcitJVU9vZUFZ?=
- =?utf-8?B?Ylo1Z2hjV2ZqQ2hqUzVQRzg0cjRaY2hVUDE5SERrMVBjdk9FeWhCN0JxQ09H?=
- =?utf-8?B?cStqYjF0RFFqWlV3bHUvc0Q1MXFhQ3kzcVNWWjhOSG5BV1U5OW9IVnFIR0Ns?=
- =?utf-8?B?SEgxSHY1OHZyWVlKa1VmcVcrV2kyQVQ3dVNOTlhmMTZpM2QxajdxZEQvajZT?=
- =?utf-8?B?M0ErcXo1TVpSR0VtL0s5RjZNcnN4NlNxK09FZDJ5bWtZMXhVSkJWNS9DTUcr?=
- =?utf-8?B?d2IxMXhvNmxuYWRUSGlsdHkwVnhCVjZYZmV5dTNuLzhaU2Ura2EzaENYQkxq?=
- =?utf-8?B?akF0MGdXWnVkTmR1eVdOL1pXZW40YXE2bWViN2wxRlErZWpTUlo2RmxRRVpB?=
- =?utf-8?B?MkMzNzAzM2w4cDNXMHA4ekhPcnhLQldKUUFCeVpHb0pYZ01qWTJ4Wk9mZng0?=
- =?utf-8?B?SEwwalhQalUzYWJyOWlVcjdoa3M0My9ZVDg4cTFVMVNZS1NyTVppVmRrWDU1?=
- =?utf-8?B?MVBrQzRTSk1QWUJBaTRrL0U1NDBGZ250V1hPaDJoN2ZPc0trUmhhaytPWG8w?=
- =?utf-8?B?QS9hUkxnQkdZRXVDNUl6enpXUkgxemlpT3Q1NmpHczBMeFZyckNldmk0NFpQ?=
- =?utf-8?B?Tm42YzNyUU5WMUdqa3JaNlk3QXdUZVRjZWpiS2JEdm1QNjlCQ043Z0hNMXI3?=
- =?utf-8?B?cDRuRVl2OEsvNThxbzJkRk5tVExtekJoWk5mWlNxL0tad0d6S0FQRSt5enU3?=
- =?utf-8?B?aEdkdHVxYnBieWpoLy9jOS9EUU90bGZiNVhaeHFkR0ZuN2RQa0oycGZUUG5r?=
- =?utf-8?B?VEtCelVYZnJodlo4K3ZzcnpFVUEySnhGTFNhZkZqMXVXellRUHNwYjRucjVj?=
- =?utf-8?B?VmlKdlc2SmJ4UzNlblRxZlhTZVhYZEdjT3FXV1RUZnNZRmcrK09ZRStzWVhU?=
- =?utf-8?B?OGdhOSszVXFZektlUjJ2Ty9NNStvYzh0T3BNOGpoVElweGU1amdOSmhxTFV3?=
- =?utf-8?B?M0JMelBSQjVTQnlWZlpjS015dFRPMXNMOUhwYVZ6ZWFHbmVtVHBmcytuZEFt?=
- =?utf-8?B?ZWtWOHR3YnYrcGlGMm1UUTVmYU1ZSnVpdTV2cW5hbDNKZUxHZzhUdjBmSkJX?=
- =?utf-8?B?eGNUUkRqZU8ydDBYY1BJWEw5em5LQmxQbGtHa0ZMNDBlcGZOcWNuc0tnTGJV?=
- =?utf-8?B?ajJ5dUU2R0ZxY3dqTDVVZXg0cTBDeElheHRiRnRraEloRkZnWHJxdkdKbmRn?=
- =?utf-8?B?OW8vMFd6WnBydUkwQ0VFcVNKem9hSjFWQTA2LzVIMFRhWkViSWlVQ21QS1M2?=
- =?utf-8?B?eWt2dFlLeURFSXJVazBEMXhlKzhQb05LbDNHcmw0SG1SK2l4UzZLbkYxMGlq?=
- =?utf-8?B?RjJ4UlB3NXkrLzdsNHJCV3NnS24xMndwNEdLZ1BwOWNVYTJKUFVwVTVzbnFa?=
- =?utf-8?B?TTMvRi9QN29aWm4yMlpOcVFiUkx4Qko0MWxWbmZjWW1SVU9CZk9nalFWR0xa?=
- =?utf-8?Q?Ut3PB+7GTtJxY9T09RqNdz1hb?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95100450-afe0-4003-a556-08dc5b089712
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5732.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 15:52:43.4060
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TJ297CwTXkljKOCc54y9mJufJicdu5U34EWoDhYlEgvijDzrXiWNi1e8rE1OZu+RFt7bwPP9jy05FfHCdj6PwA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5851
+Content-Transfer-Encoding: 8bit
+Sender: pub@elkcl.ru
+Authentication-Results: smtp43.i.mail.ru; auth=pass smtp.auth=pub@elkcl.ru smtp.mailfrom=pub@elkcl.ru
+X-Mailru-Src: smtp
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD9D327C87852EB66D3B5F9CEDACDA8A37625F0445A84289E9B182A05F538085040843BD67FAA79768F33594132A326AF8BCEAE490106F7B863C222E478C8B5E4506837A08AC964547F
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE78CB87876C5D626D4EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006371D26D2A8652661258638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8147B5DEEC622027DEEA818C3B420E6A81562A0DB420D21BECC7F00164DA146DAFE8445B8C89999728AA50765F7900637BA2F0AEB80054583389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8AD74539164518AE5F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947C17119E5299B287EEAD7EC71F1DB884274AD6D5ED66289B523666184CF4C3C14F6136E347CC761E07725E5C173C3A84C356E3D212986C9D9EBA3038C0950A5D36B5C8C57E37DE458B330BD67F2E7D9AF16D1867E19FE14079C09775C1D3CA48CF17B107DEF921CE791DD303D21008E298D5E8D9A59859A8B6B372FE9A2E580EFC725E5C173C3A84C3F6A27782D052760535872C767BF85DA2F004C90652538430E4A6367B16DE6309
+X-C1DE0DAB: 0D63561A33F958A54E068876C7DE3C8E5002B1117B3ED696538D2A3C96BE7402484B8D70797403F6823CB91A9FED034534781492E4B8EEADDFC043C56F70D752C79554A2A72441328621D336A7BC284946AD531847A6065A17B107DEF921CE79BDAD6C7F3747799A
+X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF1D5D3BAAD1272071CBB8234144E1EBE2896135156D9F16CB998C73ECA2F75A71963129249CAA680A1E5F415AA55898CCA736FDAA89DE208D695903BF9C1DC331129538D5484F1A9442BF32D1DA1046D202C26D483E81D6BE8B4B3506CD0458C56E5349047F11E5783FCF178C6DD14203
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojj8Sl06kWf03Ngj57zzxREA==
+X-Mailru-Sender: 7971DA0162A9842A75A8A63AE98D4FF4703F3DE0473E7D67D4570605F44DF537BF768613B42F11ECD8649DE294F77099CA0B8C118E355A7C54A42CAEBACFBF7EF55A8A299F926F354FD7C49A7833DCB4162D03413E14ADD05FEEDEB644C299C0ED14614B50AE0675
+X-Mras: Ok
 
-On 4/9/24 13:12, Kuppuswamy Sathyanarayanan wrote:
-> 
-> On 3/25/24 3:26 PM, Tom Lendacky wrote:
->> Config-fs provides support to hide individual attribute entries. Using
->> this support, base the display of the SVSM related entries on the presence
->> of an SVSM.
->>
->> Cc: Joel Becker <jlbec@evilplan.org>
->> Cc: Christoph Hellwig <hch@lst.de>
->> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
->> ---
->>   arch/x86/coco/core.c        |  4 ++++
->>   drivers/virt/coco/tsm.c     | 14 ++++++++++----
->>   include/linux/cc_platform.h |  8 ++++++++
->>   3 files changed, 22 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
->> index d07be9d05cd0..efa0f648f754 100644
->> --- a/arch/x86/coco/core.c
->> +++ b/arch/x86/coco/core.c
->> @@ -12,6 +12,7 @@
->>   
->>   #include <asm/coco.h>
->>   #include <asm/processor.h>
->> +#include <asm/sev.h>
->>   
->>   enum cc_vendor cc_vendor __ro_after_init = CC_VENDOR_NONE;
->>   u64 cc_mask __ro_after_init;
->> @@ -78,6 +79,9 @@ static bool noinstr amd_cc_platform_has(enum cc_attr attr)
->>   	case CC_ATTR_GUEST_STATE_ENCRYPT:
->>   		return sev_status & MSR_AMD64_SEV_ES_ENABLED;
->>   
->> +	case CC_ATTR_GUEST_SVSM_PRESENT:
->> +		return snp_get_vmpl();
->> +
->>   	/*
->>   	 * With SEV, the rep string I/O instructions need to be unrolled
->>   	 * but SEV-ES supports them through the #VC handler.
->> diff --git a/drivers/virt/coco/tsm.c b/drivers/virt/coco/tsm.c
->> index 46f230bf13ac..d30471874e87 100644
->> --- a/drivers/virt/coco/tsm.c
->> +++ b/drivers/virt/coco/tsm.c
->> @@ -64,6 +64,12 @@ static struct tsm_report_state *to_state(struct tsm_report *report)
->>   	return container_of(report, struct tsm_report_state, report);
->>   }
->>   
->> +static bool provider_visibility(const struct config_item *item,
->> +				const struct configfs_attribute *attr)
->> +{
->> +	return cc_platform_has(CC_ATTR_GUEST_SVSM_PRESENT);
->> +}
->> +
-> 
-> Any comment about the following query? I think introducing a CC flag for this use
-> case is over kill.
-> 
-> https://lore.kernel.org/lkml/6b90b223-46e0-4e6d-a17c-5caf72e3c949@linux.intel.com/
+Add a check to make sure that the requested xattr node size is no larger
+than the eraseblock minus the cleanmarker.
 
-If you don't think TDX will be able to make use of the SVSM attribute I 
-can look at adding a callback. But I was waiting to see if anyone else had 
-comments, for or against, before re-doing it all.
+Unlike the usual inode nodes, the xattr nodes aren't split into parts
+and spread across multiple eraseblocks, which means that a xattr node
+must not occupy more than one eraseblock. If the requested xattr value is
+too large, the xattr node can spill onto the next eraseblock, overwriting
+the nodes and causing errors such as:
 
-Thanks,
-Tom
+jffs2: argh. node added in wrong place at 0x0000b050(2)
+jffs2: nextblock 0x0000a000, expected at 0000b00c
+jffs2: error: (823) do_verify_xattr_datum: node CRC failed at 0x01e050, 
+read=0xfc892c93, calc=0x000000
+jffs2: notice: (823) jffs2_get_inode_nodes: Node header CRC failed 
+at 0x01e00c. {848f,2fc4,0fef511f,59a3d171}
+jffs2: Node at 0x0000000c with length 0x00001044 would run over the 
+end of the erase block
+jffs2: Perhaps the file system was created with the wrong erase size?
+jffs2: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found
+at 0x00000010: 0x1044 instead
 
-> 
->>   static int try_advance_write_generation(struct tsm_report *report)
->>   {
->>   	struct tsm_report_state *state = to_state(report);
->> @@ -144,7 +150,7 @@ static ssize_t tsm_report_service_provider_store(struct config_item *cfg,
->>   
->>   	return len;
->>   }
->> -CONFIGFS_ATTR_WO(tsm_report_, service_provider);
->> +CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, service_provider, provider_visibility);
->>   
->>   static ssize_t tsm_report_service_guid_store(struct config_item *cfg,
->>   					     const char *buf, size_t len)
->> @@ -165,7 +171,7 @@ static ssize_t tsm_report_service_guid_store(struct config_item *cfg,
->>   
->>   	return len;
->>   }
->> -CONFIGFS_ATTR_WO(tsm_report_, service_guid);
->> +CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, service_guid, provider_visibility);
->>   
->>   static ssize_t tsm_report_service_manifest_version_store(struct config_item *cfg,
->>   							 const char *buf, size_t len)
->> @@ -186,7 +192,7 @@ static ssize_t tsm_report_service_manifest_version_store(struct config_item *cfg
->>   
->>   	return len;
->>   }
->> -CONFIGFS_ATTR_WO(tsm_report_, service_manifest_version);
->> +CONFIGFS_ATTR_VISIBLE_WO(tsm_report_, service_manifest_version, provider_visibility);
->>   
->>   static ssize_t tsm_report_inblob_write(struct config_item *cfg,
->>   				       const void *buf, size_t count)
->> @@ -333,7 +339,7 @@ static ssize_t tsm_report_manifestblob_read(struct config_item *cfg, void *buf,
->>   
->>   	return tsm_report_read(report, buf, count, TSM_MANIFEST);
->>   }
->> -CONFIGFS_BIN_ATTR_RO(tsm_report_, manifestblob, NULL, TSM_OUTBLOB_MAX);
->> +CONFIGFS_BIN_ATTR_VISIBLE_RO(tsm_report_, manifestblob, NULL, TSM_OUTBLOB_MAX, provider_visibility);
->>   
->>   #define TSM_DEFAULT_ATTRS() \
->>   	&tsm_report_attr_generation, \
->> diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
->> index cb0d6cd1c12f..f1b4266c1484 100644
->> --- a/include/linux/cc_platform.h
->> +++ b/include/linux/cc_platform.h
->> @@ -90,6 +90,14 @@ enum cc_attr {
->>   	 * Examples include TDX Guest.
->>   	 */
->>   	CC_ATTR_HOTPLUG_DISABLED,
->> +
->> +	/**
->> +	 * @CC_ATTR_GUEST_SVSM_PRESENT: Guest is running under an SVSM
->> +	 *
->> +	 * The platform/OS is running as a guest/virtual machine and is
->> +	 * running under a Secure VM Service Module (SVSM).
->> +	 */
->> +	CC_ATTR_GUEST_SVSM_PRESENT,
->>   };
->>   
->>   #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
-> 
+This breaks the filesystem and can lead to KASAN crashes such as:
+
+BUG: KASAN: slab-out-of-bounds in jffs2_sum_add_kvec+0x125e/0x15d0
+Read of size 4 at addr ffff88802c31e914 by task repro/830
+CPU: 0 PID: 830 Comm: repro Not tainted 6.9.0-rc3+ #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
+BIOS Arch Linux 1.16.3-1-1 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0xc6/0x120
+ print_report+0xc4/0x620
+ ? __virt_addr_valid+0x308/0x5b0
+ kasan_report+0xc1/0xf0
+ ? jffs2_sum_add_kvec+0x125e/0x15d0
+ ? jffs2_sum_add_kvec+0x125e/0x15d0
+ jffs2_sum_add_kvec+0x125e/0x15d0
+ jffs2_flash_direct_writev+0xa8/0xd0
+ jffs2_flash_writev+0x9c9/0xef0
+ ? __x64_sys_setxattr+0xc4/0x160
+ ? do_syscall_64+0x69/0x140
+ ? entry_SYSCALL_64_after_hwframe+0x76/0x7e
+ [...]
+
+Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+
+Fixes: aa98d7cf59b5 ("[JFFS2][XATTR] XATTR support on JFFS2 (version. 5)")
+Signed-off-by: Ilya Denisyev <dev@elkcl.ru>
+---
+ fs/jffs2/xattr.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
+index 00224f3a8d6e..9509b33f7675 100644
+--- a/fs/jffs2/xattr.c
++++ b/fs/jffs2/xattr.c
+@@ -1110,6 +1110,9 @@ int do_jffs2_setxattr(struct inode *inode, int xprefix, const char *xname,
+ 		return rc;
+ 
+ 	request = PAD(sizeof(struct jffs2_raw_xattr) + strlen(xname) + 1 + size);
++	if (request > c->sector_size - c->cleanmarker_size)
++		return -ERANGE;
++
+ 	rc = jffs2_reserve_space(c, request, &length,
+ 				 ALLOC_NORMAL, JFFS2_SUMMARY_XATTR_SIZE);
+ 	if (rc) {
+-- 
+2.44.0
+
 
