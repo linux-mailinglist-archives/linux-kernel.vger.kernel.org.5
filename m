@@ -1,39 +1,74 @@
-Return-Path: <linux-kernel+bounces-142181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9A428A2887
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:53:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE7348A288F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:54:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC2E01C22C03
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:53:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B19F1F24A8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:54:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D6E50279;
-	Fri, 12 Apr 2024 07:53:25 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23614F613
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95B2C4D9FD;
+	Fri, 12 Apr 2024 07:53:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Dfw51veW"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3DE4D5B0
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:53:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712908404; cv=none; b=Dz1oNYHrKR9B1vZEkjBCMmBuTpQ47+bkCJdfIkJ04i8y9xKmIDnjiatIBbBLLw1rP7U7eMHN1uZbMMYnLE65H4mmZDyX+wOId3fL5W7P2hcJQNSZGiDCDbpOuLjN1BT/k57bHu2iY/2J+xbU1/vCi/pzrSgxVYyuZRYMjAu4dUw=
+	t=1712908437; cv=none; b=FzoL63a2Uk1SkxjDzlCGDDbgzcT6wvtKGJwbWRAZa4GXu/wy+3WOMsvmaY3aPWaPpJ2fYl9e4DncTxJEwkYpQtir6PQ7ZIL1fVskG0iP/BzqcX1xWIbsFCTT0LCx3xmPp9+XZlPRoANhY7p+hXs0xhCUn1C806QTU3nbxHcuEI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712908404; c=relaxed/simple;
-	bh=cN8LZzqiF0iXw1IRK2mxtwca3ikor0Lzvme1Z/+UwxI=;
+	s=arc-20240116; t=1712908437; c=relaxed/simple;
+	bh=+BIRz40w1PCKmMO2wtU7DDFRbUrYoEXEr9tRma336A4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ryLVpoWoFSGpFeyC1c1qEDnP6ke8aYAl3/my2hBW4e7A/QWVMUd3BVA7UfBp6pDejLcbiM6ZV5qfx2FfmzNgC2FU9QpXGevydUhGxSodrKIqfDSO2DzjkE6ei985d0Oyl8oHKBQZrnsjw0pMg9Qg1l9CjjJb2hd1lU5+VupQ0v0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1962339;
-	Fri, 12 Apr 2024 00:53:50 -0700 (PDT)
-Received: from [10.57.73.208] (unknown [10.57.73.208])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5199F3F6C4;
-	Fri, 12 Apr 2024 00:53:20 -0700 (PDT)
-Message-ID: <37336367-f876-4429-a8a6-f887fc7f69ee@arm.com>
-Date: Fri, 12 Apr 2024 08:53:18 +0100
+	 In-Reply-To:Content-Type; b=c4S4/UVtiPajSgsxgp+fjJKm2wLfiJ6oAaL7JfOZa6CnYhFu+dfCUk3uy9kQ+zJXkUdvAn+tRoxYsDs9/1rfeOucCVFppuW8Z1MBBBtdLCnuR/+fZxvc5QEH7MlWApgL/i6ustTZXJxG/2N1gJXn+2AH5/6FOghpuANYqH3dNLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Dfw51veW; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56e4a148aeeso239827a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 00:53:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712908433; x=1713513233; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=RzM6dFST6MTowNeFATbCFv+juTS+kCT2d3nPXhzUOJc=;
+        b=Dfw51veWuu0iob6nylNAghEPZzhHVJB1JrvEbMJk/IH0l0Ilj9EFyY0KqLuyhBaWRA
+         NygyRw4jW68lIZLNheoRep72tdK31oysA1Q5AtlDKBUR076xfECABvvM73Z8Weahjd1n
+         OsFqkDbLED6U/+PQkOkkfOsfbRy8CjkmtI5b9F5g9fEPoATOOLXX5GD7NjBixTjxU+cc
+         zCvNrKfXgtZHtlyQuQcdwSgkVSDRIpizZ99s/pAeWl0ELY3IjeRgvit/5bn3i2FgGQtC
+         DnAukD11fVciZqCc/V3PGH2vaLedEEORje0/8quK9ef4RBWqY7AgD+qUgTmmllzzDPI3
+         mQhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712908433; x=1713513233;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RzM6dFST6MTowNeFATbCFv+juTS+kCT2d3nPXhzUOJc=;
+        b=syv1HaHrXFyvtPERRlbu3V0GokeXZj0CbWkCXGm0phj0Ll/5vb3hVc0Ah/XyivN80s
+         QNi8yjkcd3C89LJuR1SBD2dWiNaM8/pRLbHadrXV8Z849TOxv9OngM1FmWgUU6LeI/4K
+         0SXnQLNqsbJ7Mob55afXdWJSoyUG7zKQmBnMzN1ZpgGkIKM4GYwaksZFqFxQQ4uILiwf
+         +3bUHU040UM6yZTCPyF6fpIDbIv/BMNZbRnrjWwkP2oUAQJM8CUkE4DKRCiye9NEjMhx
+         n7SZ1hqjSOU+z0E3JWKycX/26uwl6eFL5OHSHCzsm21JsZRD71vVudyTtuEQUw6j9Bdi
+         MVaw==
+X-Forwarded-Encrypted: i=1; AJvYcCX14Nsat/iWH5rnXsh/CsUuiufXMuKGVwOTMsqdTt1+CP5IPexMNWuSdpYwb5u1AdIEJHsUO41WDKgL9/SjVo9oF6jltGxqF12wv7+9
+X-Gm-Message-State: AOJu0YwpFzvgBMn999mq7W3lwBL3YZNC2k45+JMmn0Duf4HF/89RcqVH
+	KDzQr3PXeilalO7JAZxvpOhALP5V5GivQVJvHd1d1EBhECPrK4Axxu7AXPVc/C8=
+X-Google-Smtp-Source: AGHT+IHJo9Noj1BumEXH5oWny29fKEvKgw2utImwVpfaNDH8ddjvz9U+Ue1Q8sPDVqAZNqEYjELC0A==
+X-Received: by 2002:a50:a455:0:b0:56d:fc89:ecf8 with SMTP id v21-20020a50a455000000b0056dfc89ecf8mr1552881edb.10.1712908433531;
+        Fri, 12 Apr 2024 00:53:53 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id g29-20020a056402321d00b00570020fbedfsm69375eda.37.2024.04.12.00.53.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Apr 2024 00:53:53 -0700 (PDT)
+Message-ID: <becac82e-aa5a-4ee3-83c7-17b8478439d0@linaro.org>
+Date: Fri, 12 Apr 2024 09:53:49 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,226 +76,99 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] arm64: mm: Don't remap pgtables for allocate vs
- populate
-Content-Language: en-GB
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Ard Biesheuvel <ardb@kernel.org>, David Hildenbrand <david@redhat.com>,
- Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Itaru Kitayama <itaru.kitayama@fujitsu.com>
-References: <20240404143308.2224141-1-ryan.roberts@arm.com>
- <20240404143308.2224141-4-ryan.roberts@arm.com>
- <ZhffSyrqCQsMV2pG@FVFF77S0Q05N>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ZhffSyrqCQsMV2pG@FVFF77S0Q05N>
+Subject: Re: [PATCH v7 04/16] dt-bindings: net: wireless: qcom,ath11k:
+ describe the ath11k on QCA6390
+To: Bartosz Golaszewski <brgl@bgdev.pl>, Marcel Holtmann
+ <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>, Saravana Kannan <saravanak@google.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>,
+ Lukas Wunner <lukas@wunner.de>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Amit Pundir <amit.pundir@linaro.org>, Xilin Wu <wuxilin123@gmail.com>
+Cc: linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+ linux-pm@vger.kernel.org,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20240410124628.171783-1-brgl@bgdev.pl>
+ <20240410124628.171783-5-brgl@bgdev.pl>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240410124628.171783-5-brgl@bgdev.pl>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Hi Mark,
-
-[...]
-
-> Does something like the below look ok to you? The trade-off performance-wise is
-> that late uses will still use the fixmap, and will redundantly zero the tables,
-> but the logic remains fairly simple, and I suspect the overhead for late
-> allocations might not matter since the bulk of late changes are non-allocating.
+On 10/04/2024 14:46, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> Mark
+> Add a PCI compatible for the ATH11K module on QCA6390 and describe the
+> power inputs from the PMU that it consumes.
 > 
-> ---->8-----
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index 105a95a8845c5..1eecf87021bd0 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -1010,6 +1010,8 @@ static inline p4d_t *p4d_offset_kimg(pgd_t *pgdp, u64 addr)
->  
->  static inline bool pgtable_l5_enabled(void) { return false; }
->  
-> +#define p4d_index(addr)              (((addr) >> P4D_SHIFT) & (PTRS_PER_P4D - 1)
-> +
->  /* Match p4d_offset folding in <asm/generic/pgtable-nop4d.h> */
->  #define p4d_set_fixmap(addr)		NULL
->  #define p4d_set_fixmap_offset(p4dp, addr)	((p4d_t *)p4dp)
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index dc86dceb0efe6..4b944ef8f618c 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -109,28 +109,12 @@ EXPORT_SYMBOL(phys_mem_access_prot);
->  static phys_addr_t __init early_pgtable_alloc(int shift)
->  {
->  	phys_addr_t phys;
-> -	void *ptr;
->  
->  	phys = memblock_phys_alloc_range(PAGE_SIZE, PAGE_SIZE, 0,
->  					 MEMBLOCK_ALLOC_NOLEAKTRACE);
->  	if (!phys)
->  		panic("Failed to allocate page table page\n");
->  
-> -	/*
-> -	 * The FIX_{PGD,PUD,PMD} slots may be in active use, but the FIX_PTE
-> -	 * slot will be free, so we can (ab)use the FIX_PTE slot to initialise
-> -	 * any level of table.
-> -	 */
-> -	ptr = pte_set_fixmap(phys);
-> -
-> -	memset(ptr, 0, PAGE_SIZE);
-> -
-> -	/*
-> -	 * Implicit barriers also ensure the zeroed page is visible to the page
-> -	 * table walker
-> -	 */
-> -	pte_clear_fixmap();
-> -
->  	return phys;
->  }
->  
-> @@ -172,6 +156,14 @@ bool pgattr_change_is_safe(u64 old, u64 new)
->  	return ((old ^ new) & ~mask) == 0;
->  }
->  
-> +static void init_clear_pgtable(void *table)
-> +{
-> +	clear_page(table);
-> +
-> +	/* Ensure the zeroing is observed by page table walks. */
-> +	dsb(ishst);
-> +}
-> +
->  static pte_t *init_pte(pte_t *ptep, unsigned long addr, unsigned long end,
->  		       phys_addr_t phys, pgprot_t prot)
->  {
-> @@ -216,12 +208,18 @@ static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
->  			pmdval |= PMD_TABLE_PXN;
->  		BUG_ON(!pgtable_alloc);
->  		pte_phys = pgtable_alloc(PAGE_SHIFT);
-> +
-> +		ptep = pte_set_fixmap(pte_phys);
-> +		init_clear_pgtable(ptep);
-> +
->  		__pmd_populate(pmdp, pte_phys, pmdval);
->  		pmd = READ_ONCE(*pmdp);
-> +	} else {
-> +		ptep = pte_set_fixmap(pmd_page_paddr(pmd));
->  	}
->  	BUG_ON(pmd_bad(pmd));
->  
-> -	ptep = pte_set_fixmap_offset(pmdp, addr);
-> +	ptep += pte_index(addr);
->  	do {
->  		pgprot_t __prot = prot;
->  
-> @@ -303,12 +301,18 @@ static void alloc_init_cont_pmd(pud_t *pudp, unsigned long addr,
->  			pudval |= PUD_TABLE_PXN;
->  		BUG_ON(!pgtable_alloc);
->  		pmd_phys = pgtable_alloc(PMD_SHIFT);
-> +
-> +		pmdp = pmd_set_fixmap(pmd_phys);
-> +		init_clear_pgtable(pmdp);
-> +
->  		__pud_populate(pudp, pmd_phys, pudval);
->  		pud = READ_ONCE(*pudp);
-> +	} else {
-> +		pmdp = pmd_set_fixmap(pud_page_paddr(pud));
->  	}
->  	BUG_ON(pud_bad(pud));
->  
-> -	pmdp = pmd_set_fixmap_offset(pudp, addr);
-> +	pmdp += pmd_index(addr);
->  	do {
->  		pgprot_t __prot = prot;
->  
-> @@ -345,12 +349,18 @@ static void alloc_init_pud(p4d_t *p4dp, unsigned long addr, unsigned long end,
->  			p4dval |= P4D_TABLE_PXN;
->  		BUG_ON(!pgtable_alloc);
->  		pud_phys = pgtable_alloc(PUD_SHIFT);
-> +
-> +		pudp = pud_set_fixmap(pud_phys);
-> +		init_clear_pgtable(pudp);
-> +
->  		__p4d_populate(p4dp, pud_phys, p4dval);
->  		p4d = READ_ONCE(*p4dp);
-> +	} else {
-> +		pudp = pud_set_fixmap(p4d_page_paddr(p4d));
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
 
-With this change I end up in pgtable folding hell. pXX_set_fixmap() is defined
-as NULL when the level is folded (and pXX_page_paddr() is not defined at all).
-So it all compiles, but doesn't boot.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-I think the simplest approach is to follow this pattern:
-
-----8<----
-@@ -340,12 +338,15 @@ static void alloc_init_pud(p4d_t *p4dp, unsigned long
-addr, unsigned long end,
-                        p4dval |= P4D_TABLE_PXN;
-                BUG_ON(!pgtable_alloc);
-                pud_phys = pgtable_alloc(PUD_SHIFT);
-+               pudp = pud_set_fixmap(pud_phys);
-+               init_clear_pgtable(pudp);
-+               pudp += pud_index(addr);
-                __p4d_populate(p4dp, pud_phys, p4dval);
--               p4d = READ_ONCE(*p4dp);
-+       } else {
-+               BUG_ON(p4d_bad(p4d));
-+               pudp = pud_set_fixmap_offset(p4dp, addr);
-        }
--       BUG_ON(p4d_bad(p4d));
-
--       pudp = pud_set_fixmap_offset(p4dp, addr);
-        do {
-                pud_t old_pud = READ_ONCE(*pudp);
-----8<----
-
-For the map case, we continue to use pud_set_fixmap_offset() which is always
-defined (and always works correctly).
-
-Note also that the previously unconditional BUG_ON needs to be prior to the
-fixmap call to be useful, and its really only valuable in the map case because
-for the alloc case we are the ones setting the p4d so we already know its not
-bad. This means we don't need the READ_ONCE() in the alloc case.
-
-Shout if you disagree.
-
-Thanks,
-Ryan
-
->  	}
->  	BUG_ON(p4d_bad(p4d));
->  
-> -	pudp = pud_set_fixmap_offset(p4dp, addr);
-> +	pudp += pud_index(addr);
->  	do {
->  		pud_t old_pud = READ_ONCE(*pudp);
->  
-> @@ -400,12 +410,18 @@ static void alloc_init_p4d(pgd_t *pgdp, unsigned long addr, unsigned long end,
->  			pgdval |= PGD_TABLE_PXN;
->  		BUG_ON(!pgtable_alloc);
->  		p4d_phys = pgtable_alloc(P4D_SHIFT);
-> +
-> +		p4dp = p4d_set_fixmap(p4d_phys);
-> +		init_clear_pgtable(p4dp);
-> +
->  		__pgd_populate(pgdp, p4d_phys, pgdval);
->  		pgd = READ_ONCE(*pgdp);
-> +	} else {
-> +		p4dp = p4d_set_fixmap(pgd_page_paddr(pgd));
->  	}
->  	BUG_ON(pgd_bad(pgd));
->  
-> -	p4dp = p4d_set_fixmap_offset(pgdp, addr);
-> +	p4dp += p4d_index(addr);
->  	do {
->  		p4d_t old_p4d = READ_ONCE(*p4dp);
->  
-> @@ -475,8 +491,6 @@ static phys_addr_t __pgd_pgtable_alloc(int shift)
->  	void *ptr = (void *)__get_free_page(GFP_PGTABLE_KERNEL);
->  	BUG_ON(!ptr);
->  
-> -	/* Ensure the zeroed page is visible to the page table walker */
-> -	dsb(ishst);
->  	return __pa(ptr);
->  }
->  
+Best regards,
+Krzysztof
 
 
