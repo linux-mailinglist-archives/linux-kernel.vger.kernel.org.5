@@ -1,311 +1,207 @@
-Return-Path: <linux-kernel+bounces-143159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 207F58A352D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:53:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFE378A352E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:55:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A19191F23FB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:53:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D34E288B8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:55:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F35414F10D;
-	Fri, 12 Apr 2024 17:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906D214E2EC;
+	Fri, 12 Apr 2024 17:55:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="J40qsZ/o"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wNMqfQSi"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2057.outbound.protection.outlook.com [40.107.94.57])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1C1614F103
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:53:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712944403; cv=none; b=VrX2+rVsKidLh7Qps1EeAcGNAeYQXZFbG9VMznnNfDwlI55C6avWg0ZS5Fok0/Q0tM7/4vJXGgTpvlP72xVnEc+3rIf36j330kg/6cq6QCmbKh5Vz5Queu9Qc+xbxu+Hg7RWSUP0odrOhA2C9toJKTq6naPXaGvRs1Kh3xuFgXQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712944403; c=relaxed/simple;
-	bh=Vy2PIzMgnUyeUzulkPx73WrRDMmKgp/2MfijXqNpzkA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=l4fbuUr2sxMrV6K+Lc05aw5ukPw0LVOtQNHyKaS4Ts5H++WF2dSCsHzkpOshPQUsF2ue99RVAjfJnDBGnn3QlZkbYT/ul4OInjesDyWs2i+g7Z8vc1xJra+yC/7n1mhDE98ULlAebmmHZCJPps3UsXQi/yoizfslq8tiMFbSOSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=J40qsZ/o; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a46a7208eedso162360266b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 10:53:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712944400; x=1713549200; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=nKSg4RwnYAFK/sdZVIxX1EI01vqvwtxplSvYVO3pwdw=;
-        b=J40qsZ/oCObbwCh/3eaCg98IrVG7FuMDYzTgR7tAr7+0AHWRwmBFLnGbwTAxwa+fg8
-         IN5IMXTEKcQ+GcnSHzloYNxw0VEgauPZblmCp2uZ4ZE0beeFYmehl8CWIcJDmiRuU7lB
-         oSgFTVGdBIhnGGQk4pAcaYiD/rxyTUPUzioMdKgdOm1LketMhEdhQlGyqQYy54MHhhQH
-         VozbQc497XqoqMo8HudyEmv/NN1lE4eGcEkZJad71LSdhwR8I8syRbOgajRen7v4ANQz
-         98Cdge0jb60qW7p5EI9sdc9oL87YCj5rX7dfjVFncBukeijGTj+Ns2rTUCLKAdIPia+i
-         3JjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712944400; x=1713549200;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nKSg4RwnYAFK/sdZVIxX1EI01vqvwtxplSvYVO3pwdw=;
-        b=Y5iaU+4n3sZcBiV8sFfelS1cJ2E7N6qpQ/FYeMPGAIGQpAyfvmvsIKI0T3SNJqXWyY
-         2i6m7j9mGqP995oVS85UYoGbBIu6IjAYb/Oz84Sz49ApAT3S3UBDFD6GNrFudAZ3fi63
-         u7x3HSVJZQYNAKIkUqPC0vzhImiJ5pcqrolrzcyeObhz3IYVS0H04sq6B2WZJLuXh+AT
-         Jhdlf7hCb/9DCmKN6gHLO/YxfrGx+2sFm7yWdS48kp33wFDchaDhviIQUTZIGRDTBwbP
-         uAOQaCn71DacCKvGxiAua+e6OX9AbhRAZW32igLrhcCx+6UomrF184q+S2VEPhLJ2yy3
-         28WQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX3T5EB5n0/MCGGZe9tN8y2Dki4/wLwuLoU/GZylbymiyjZVDi9jx43ak+yaHYuhkVs7siXhVpemf+BBAK2tbA3TIKljnVrF/9fOZcM
-X-Gm-Message-State: AOJu0Yzm/yN2FSJ9qM1kCMH3jIBEvzRViSafCiOsLCjnfr52nyXIllW+
-	6s0VQVP3lgQrNJK/Ayyoir96IyhaLsie1jTlCv7ZgOzFGdQRc4RHbUuimVz9M3s=
-X-Google-Smtp-Source: AGHT+IE+48AwCZJK1tO3vPUrupImxUEL4FlsEHnWSK5nuwyle2XzTwNHPamxrL/MXwiOKVnKZh8Acg==
-X-Received: by 2002:a17:906:e2cd:b0:a52:b11:5406 with SMTP id gr13-20020a170906e2cd00b00a520b115406mr2043944ejb.16.1712944399823;
-        Fri, 12 Apr 2024 10:53:19 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id bb2-20020a1709070a0200b00a520e463227sm2061592ejc.127.2024.04.12.10.53.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Apr 2024 10:53:19 -0700 (PDT)
-Message-ID: <dca6c1bf-4e7f-4177-bfe6-f43e0591b535@linaro.org>
-Date: Fri, 12 Apr 2024 19:53:16 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1530714D44F;
+	Fri, 12 Apr 2024 17:55:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.57
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712944528; cv=fail; b=oF/ClhSvzIaL175CmLY2PQUn2/mnwEZYZvl9zzTBmbSBbxwLLL4kVCOP+Qfrmoy83PPzS2zdElP3jB85gMeNU4eo2jeYB/Mo4dAYmIUFfOEvmx2OGBLEA9/EUbbo2o+fiuf0qsljpQ1DcORs/At/s7c7XDmWbYuQYVD7BxY37ow=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712944528; c=relaxed/simple;
+	bh=R7UhHZArmV5IDC4eInIRuoz87QJ0u4i3pVmfYJE7DsE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=V5dIrb4QUJpKiOFANahvL5GUhmymMvfFNeg5253YF+qHB6GerbRPZ8N596k3/EFgCNfDwgrFOR9i0ojv14UnJZAFo+nHBKfO3LnFJZ32wsLUKfdHh+Ikbj/64g8JFqNS7Qd0UFCcZvGQbGFAO1DVQv3T5HPnkvaG5amsbqCKk+E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=wNMqfQSi; arc=fail smtp.client-ip=40.107.94.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P8AJpvdPhj7j1op2uvvttjGR14XO7I+fXknkO9mtCuiOKqfXFrLccvSTP6gCNvucKJEBXdWMXmfdm2QG4Zd0sjEG7gOlkMLYnEx8vZDfL3P/2J9JkDPelW0n+ZBChmfF5CQSvd+mAtpd+H4Vwt+ryOV4WvbMEmpRhk5xGk9xkvKe2B7pR0pAwRbuJYbp8xli0aIRWa5Uf3eVjEYbmCblmAH4NUKqzqr0xMOVuk5O+A05qKW9ceA3dN22Ai9tZPYxlT55jyQSY1eKaKbacl1oWiXS7+rp5uT5KGePA66z2zZs4zxAd9P6i7o7Gqz87Tz4ENNlaXnVXJ4Zvf/NqWTNLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aQsmjPcWV4ajg59WtSsQbrcNKJJ/IKwSgzEykSST9Ks=;
+ b=SLNs9eYc4+Lb9xPT8eareOzoQgJyRNProLJDek3ZNcIU0rbrKIpRoGjMLGiNAd/qYnXlUta/njTeISFrLRht6+tj4kkxt9vBH29uN4ScQmBVI7hkfz18Q9A0iVX41YWmVWJFb72RuduISbLL7we03LO5YrjINacfkBxOUgA1zTcYahiEjgOJdd07Bo5FjsUV2WHxeXc/Jet8V+XORghN/zVjqhKdmDx3TkRaRlILbXzrC5eibgcq04IKQITUx+Yd1IfV9bWX0QEk/GnancS//ae5iUeQtAm+M+dn27d0aPVvZ0fvKIYSNIK+5z85KKqUOGO/srYBfm8KqJjX6OtdVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aQsmjPcWV4ajg59WtSsQbrcNKJJ/IKwSgzEykSST9Ks=;
+ b=wNMqfQSiUwVxNaiya8G5aVhG1wV4wdrQ+rGTcJvnsGVAwayPru9rzgFt14GvqAvsHXCu/VWGpo3lPYWtsrjPzz85Ip0D44FmsKBRuW88l8n9YSQhvXHqVDDyb2l8pHnyDKCocFXYLOGCSv5XqWD30zWTyLfTqPvB5U8qqvz8Hxw=
+Received: from BLAPR03CA0120.namprd03.prod.outlook.com (2603:10b6:208:32a::35)
+ by CY5PR12MB6347.namprd12.prod.outlook.com (2603:10b6:930:20::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Fri, 12 Apr
+ 2024 17:55:21 +0000
+Received: from BL6PEPF0001AB77.namprd02.prod.outlook.com
+ (2603:10b6:208:32a:cafe::25) by BLAPR03CA0120.outlook.office365.com
+ (2603:10b6:208:32a::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.30 via Frontend
+ Transport; Fri, 12 Apr 2024 17:55:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL6PEPF0001AB77.mail.protection.outlook.com (10.167.242.170) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7452.22 via Frontend Transport; Fri, 12 Apr 2024 17:55:20 +0000
+Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 12 Apr
+ 2024 12:55:20 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB08.amd.com
+ (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 12 Apr
+ 2024 10:55:20 -0700
+Received: from xsjlizhih40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Fri, 12 Apr 2024 12:55:19 -0500
+From: Lizhi Hou <lizhi.hou@amd.com>
+To: <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+CC: Lizhi Hou <lizhi.hou@amd.com>, <nishad.saraf@amd.com>,
+	<sonal.santan@amd.com>, <max.zhen@amd.com>
+Subject: [PATCH V11 0/1] AMD QDMA driver
+Date: Fri, 12 Apr 2024 10:54:00 -0700
+Message-ID: <1712944441-28029-1-git-send-email-lizhi.hou@amd.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] arm64: dts: qcom: sa8155p-adp: fix SDHC2 configuration
-To: Volodymyr Babchuk <Volodymyr_Babchuk@epam.com>
-Cc: Stephan Gerhold <stephan@gerhold.net>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Bhupesh Sharma <bhupesh.sharma@linaro.org>,
- "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240410134022.732767-1-volodymyr_babchuk@epam.com>
- <20240411115506.1170360-1-volodymyr_babchuk@epam.com>
- <769a6a2a-2f38-42de-b3ce-8585b8b0a758@linaro.org> <87v84m4nah.fsf@epam.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <87v84m4nah.fsf@epam.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB77:EE_|CY5PR12MB6347:EE_
+X-MS-Office365-Filtering-Correlation-Id: 66439ac7-c069-45bc-d8e5-08dc5b19b883
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	UvydliJ/HYo4IeuVxBl7iTl3ZQKaKqLiKirKsOc3uD/V+BXj/XzTNszrxbkT81b0T3U5Ws0PHnY/5sTIClUR1dwynEdmTMsgomSQef5ROQIHvogHWdIe+XEqXkcEVTEOlGubWcChMhBcbtCeDlUutT/LkMEtwvIDMBp6y/YmV3T2qHOOqZfHT7i7lqLlNeZux7cxwU2qd/8TTBQOO1eXmx00TrZ50eQyOl3j0A+ZWPz85OrGo2WE4h0p5GIi3jf1zNi+F6BJQntfG/FRotkMiGLb5ejR2/0c07CccZ7oty6k4ZBArvObxntP9aqM0eXhqiuXI+OHPHXiiIR9fjQBO4Ge8vfExYkwVOZv5AwmSPHL9hK9g8VsrihjvaPG4WY1MwS2NsZYPaxqyluC1+GyysTinJhQJVeqTFep012sidC/5xEIjD3gMqWWLlurXOx4eJHIGEbMlU++NHEp+SWQAzYz8Do65aGdP/k3MIZLIqahy9YKtwFBsd+F7HmqhMyrGzaXaGV4UBL47dmkAjsiVs8hT5aB45LrYv7ZIGMkVhy9cdVGbsL9QQ8aombJ4ZMJi0UkC8zCaP/fFPM9oGCjTWvGrLJgxEOTKgPsT/AunwlwOBzCT+BOAKseki/++27e7f/osIVEht3xJVND5xVcTVX8CS0ZX7NpUVwzHbdUmVYjWRHmkPBupKGRMt9dQJaKWB8h8R4/ccrPWgu19lEsb/+4xPSwMT/Jkszy5apzzaPlnpfMiSycUYV6QmANwms6aIJ7/ZSmcUEdqlUPykC45Q==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 17:55:20.7257
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 66439ac7-c069-45bc-d8e5-08dc5b19b883
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB77.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6347
 
-On 12/04/2024 17:24, Volodymyr Babchuk wrote:
-> 
-> Hi Krzysztof,
-> 
-> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> writes:
-> 
->> On 11/04/2024 13:55, Volodymyr Babchuk wrote:
->>> There are multiple issues with SDHC2 configuration for SA8155P-ADP,
->>> which prevent use of SDHC2 and causes issues with ethernet:
->>>
->>> - Card Detect pin for SHDC2 on SA8155P-ADP is connected to gpio4 of
->>>   PMM8155AU_1, not to SoC itself. SoC's gpio4 is used for DWMAC
->>>   TX. If sdhc driver probes after dwmac driver, it reconfigures
->>>   gpio4 and this breaks Ethernet MAC.
->>>
->>> - pinctrl configuration mentions gpio96 as CD pin. It seems it was
->>>   copied from some SM8150 example, because as mentioned above,
->>>   correct CD pin is gpio4 on PMM8155AU_1.
->>>
->>> - L13C voltage regulator limits minimal voltage to 2.504V, which
->>>   prevents use 1.8V to power SD card, which in turns does not allow
->>>   card to work in UHS mode.
->>
->> That's not really related. One issue, one commit.
->>
->>>
->>> This patch fixes all the mentioned issues.
->>>
->>> Fixes: 0deb2624e2d0 ("arm64: dts: qcom: sa8155p-adp: Add support for uSD card")
->>> Cc: stable@vger.kernel.org
->>> Signed-off-by: Volodymyr Babchuk <volodymyr_babchuk@epam.com>
->>>
->>> ---
->>>
->>> In v2:
->>>  - Added "Fixes:" tag
->>>  - CCed stable ML
->>>  - Fixed pinctrl configuration
->>>  - Extended voltage range for L13C voltage regulator
->>> ---
->>>  arch/arm64/boot/dts/qcom/sa8155p-adp.dts | 32 +++++++++++-------------
->>>  1 file changed, 14 insertions(+), 18 deletions(-)
->>>
->>> diff --git a/arch/arm64/boot/dts/qcom/sa8155p-adp.dts b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
->>> index 5e4287f8c8cd1..b9d56bda96759 100644
->>> --- a/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
->>> +++ b/arch/arm64/boot/dts/qcom/sa8155p-adp.dts
->>> @@ -283,7 +283,7 @@ vreg_l12c_1p808: ldo12 {
->>>  
->>>  		vreg_l13c_2p96: ldo13 {
->>>  			regulator-name = "vreg_l13c_2p96";
->>> -			regulator-min-microvolt = <2504000>;
->>> +			regulator-min-microvolt = <1800000>;
->>>  			regulator-max-microvolt = <2960000>;
->>>  			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
->>>  		};
->>> @@ -384,10 +384,10 @@ &remoteproc_cdsp {
->>>  &sdhc_2 {
->>>  	status = "okay";
->>>  
->>> -	cd-gpios = <&tlmm 4 GPIO_ACTIVE_LOW>;
->>> +	cd-gpios = <&pmm8155au_1_gpios 4 GPIO_ACTIVE_LOW>;
->>>  	pinctrl-names = "default", "sleep";
->>> -	pinctrl-0 = <&sdc2_on>;
->>> -	pinctrl-1 = <&sdc2_off>;
->>> +	pinctrl-0 = <&sdc2_on &pmm8155au_1_sdc2_cd>;
->>> +	pinctrl-1 = <&sdc2_off &pmm8155au_1_sdc2_cd>;
->>>  	vqmmc-supply = <&vreg_l13c_2p96>; /* IO line power */
->>>  	vmmc-supply = <&vreg_l17a_2p96>;  /* Card power line */
->>>  	bus-width = <4>;
->>> @@ -505,13 +505,6 @@ data-pins {
->>>  			bias-pull-up;		/* pull up */
->>>  			drive-strength = <16>;	/* 16 MA */
->>>  		};
->>> -
->>> -		sd-cd-pins {
->>> -			pins = "gpio96";
->>> -			function = "gpio";
->>> -			bias-pull-up;		/* pull up */
->>> -			drive-strength = <2>;	/* 2 MA */
->>> -		};
->>>  	};
->>>  
->>>  	sdc2_off: sdc2-off-state {
->>> @@ -532,13 +525,6 @@ data-pins {
->>>  			bias-pull-up;		/* pull up */
->>>  			drive-strength = <2>;	/* 2 MA */
->>>  		};
->>> -
->>> -		sd-cd-pins {
->>> -			pins = "gpio96";
->>> -			function = "gpio";
->>> -			bias-pull-up;		/* pull up */
->>> -			drive-strength = <2>;	/* 2 MA */
->>> -		};
->>>  	};
->>>  
->>>  	usb2phy_ac_en1_default: usb2phy-ac-en1-default-state {
->>> @@ -604,3 +590,13 @@ phy-reset-pins {
->>>  		};
->>>  	};
->>>  };
->>> +
->>> +&pmm8155au_1_gpios {
->>> +	pmm8155au_1_sdc2_cd: pmm8155au_1-sdc2-cd {
->>
->> No underscores in node names.
-> 
-> Fill fix.
-> 
->> Please also follow tlmm style of naming nodes.
-> 
-> Just to be on the same page, will "pmm8155au_1_sdc2_cd: sdc2-cd-pins" be fine?
+Hello,
 
-pins are for sublevel, so you want -state. Just like other pmic GPIOs.
+The QDMA subsystem is used in conjunction with the PCI Express IP block
+to provide high performance data transfer between host memory and the
+card's DMA subsystem.
 
-> 
->> Also does not look like node is placed in alphabetical place. Where did
->> you put it?
-> 
-> I can't say that the file is sorted in the first place:
-> 
-> # grep "^&" arch/arm64/boot/dts/qcom/sa8155p-adp.dts
-> &apps_rsc {
-> &ethernet {
-> &qupv3_id_1 {
-> &remoteproc_adsp {
-> &remoteproc_cdsp {
-> &sdhc_2 {
-> &uart2 {
-> &uart9 {
-> &ufs_mem_hc {
-> &ufs_mem_phy {
-> &usb_1 {
-> &usb_1_dwc3 {
-> &usb_1_hsphy {
-> &usb_1_qmpphy {
-> &usb_2 {
-> &usb_2_dwc3 {
-> &usb_2_hsphy {
-> &usb_2_qmpphy {
+            +-------+       +-------+       +-----------+
+   PCIe     |       |       |       |       |           |
+   Tx/Rx    |       |       |       |  AXI  |           |
+ <=======>  | PCIE  | <===> | QDMA  | <====>| User Logic|
+            |       |       |       |       |           |
+            +-------+       +-------+       +-----------+
 
-Was sorted till here...
+Comparing to AMD/Xilinx XDMA subsystem,
+    https://lore.kernel.org/lkml/Y+XeKt5yPr1nGGaq@matsya/
+the QDMA subsystem is a queue based, configurable scatter-gather DMA
+implementation which provides thousands of queues, support for multiple
+physical/virtual functions with single-root I/O virtualization (SR-IOV),
+and advanced interrupt support. In this mode the IP provides AXI4-MM and
+AXI4-Stream user interfaces which may be configured on a per-queue basis.
 
-> &pcie0 {
-> &pcie0_phy {
-> &pcie1_phy {
-> &tlmm {
+The QDMA has been used for Xilinx Alveo PCIe devices.
+    https://www.xilinx.com/applications/data-center/v70.html
 
-and here second sorting started...
+This patch series is to provide the platform driver for AMD QDMA subsystem
+to support AXI4-MM DMA transfers. More functions, such as AXI4-Stream
+and SR-IOV, will be supported by future patches.
 
-> &pmm8155au_1_gpios {
+The device driver for any FPGA based PCIe device which leverages QDMA can
+call the standard dmaengine APIs to discover and use the QDMA subsystem
+without duplicating the QDMA driver code in its own driver.
 
-and you started third.
+Changes since v10:
+- Fixed Copyright
 
-> 
-> 
-> So, I can put after &pci1 to have it grouped with other entries that
-> start with p*, or I can put right after &ethernet to make it appear in
-> alphabetical order. It is your call.
+Changes since v9:
+- Merge 2 patches into 1 patch
 
-Please put it in the first group, so after ethernet. If this gets ever
-sorted, then at least one less move.
+Changes since v8:
+- Replaced dma_alloc_coherent() with dmam_alloc_coherent()
 
-Best regards,
-Krzysztof
+Changes since v7:
+- Fixed smatch warnings
+
+Changes since v6:
+- Added a patch to create amd/ and empty Kconfig/Makefile for AMD drivers
+- Moved source code under amd/qdma/
+- Minor changes for code review comments
+
+Changes since v5:
+- Add more in patch description.
+
+Changes since v4:
+- Convert to use platform driver callback .remove_new()
+
+Changes since v3:
+- Minor changes in Kconfig description.
+
+Changes since v2:
+- A minor change from code review comments.
+
+Changes since v1:
+- Minor changes from code review comments.
+- Fixed kernel robot warning.
+
+Nishad Saraf (1):
+  dmaengine: amd: qdma: Add AMD QDMA driver
+
+ MAINTAINERS                            |    8 +
+ drivers/dma/Kconfig                    |    2 +
+ drivers/dma/Makefile                   |    1 +
+ drivers/dma/amd/Kconfig                |   14 +
+ drivers/dma/amd/Makefile               |    3 +
+ drivers/dma/amd/qdma/Makefile          |    5 +
+ drivers/dma/amd/qdma/qdma-comm-regs.c  |   64 ++
+ drivers/dma/amd/qdma/qdma.c            | 1162 ++++++++++++++++++++++++
+ drivers/dma/amd/qdma/qdma.h            |  265 ++++++
+ include/linux/platform_data/amd_qdma.h |   36 +
+ 10 files changed, 1560 insertions(+)
+ create mode 100644 drivers/dma/amd/Kconfig
+ create mode 100644 drivers/dma/amd/Makefile
+ create mode 100644 drivers/dma/amd/qdma/Makefile
+ create mode 100644 drivers/dma/amd/qdma/qdma-comm-regs.c
+ create mode 100644 drivers/dma/amd/qdma/qdma.c
+ create mode 100644 drivers/dma/amd/qdma/qdma.h
+ create mode 100644 include/linux/platform_data/amd_qdma.h
+
+-- 
+2.34.1
 
 
