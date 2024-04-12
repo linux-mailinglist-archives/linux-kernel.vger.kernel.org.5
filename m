@@ -1,171 +1,310 @@
-Return-Path: <linux-kernel+bounces-142862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 032E28A3105
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:42:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 873598A3127
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:44:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F29D1F245E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:42:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CBEA2820E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:44:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB49D142E88;
-	Fri, 12 Apr 2024 14:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 905E7143C48;
+	Fri, 12 Apr 2024 14:44:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CaaXOpS1"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hziH+W09"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 955F81422CD;
-	Fri, 12 Apr 2024 14:42:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D875213C9B9;
+	Fri, 12 Apr 2024 14:44:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712932940; cv=none; b=EvzLaYdzbbQ3PHWKU6XdxT5Ns1C1TheRxEBEb/5DT7H36RqUHSghAPfbJlU9EHf338rKDBil/TxUVTvdu6K+w0Oc69DewbY8Wpws7li/T3ROw+NElM3t3kxAJWbOhHwS+DLc+KqkfLOF7DPnxA8ryrKuo3BKPaXQaZA61B5k0Tk=
+	t=1712933086; cv=none; b=qti0SuTfplFCi1Hliu57DMaBiIpqsUufqxD+mXg/3l6Cj/PUDC6itSZxiqfqbADs/xSytF1fBYmI40x1SHQHzcHlluq+yicSJzZcPZuNlvdQfbLPdTtkXhjzGg2489IpYkEJMFO5a/nhKkVL0+2F/eyc+pcE1QzIn6KucviQmXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712932940; c=relaxed/simple;
-	bh=Vx9AcN4PoALM5/qtOiCZ6N7gbWAJhqxvNWL/3pXbHDQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BHsg2jLtYK3MevF4xIMq/eERY82hfIzMD/uN7PzBGArHLZxhbIczOyF80AlItlJUHA4g8ifol6pPMm5C/8AC7pHsTwn3WEw8UrQ3mgGiqYzXk71GH9zjVMuWWOiLVHaqfKnabCdL1aNp3dT0u3mej7zRyRMfuyKT9gIRLwgWG0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CaaXOpS1; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5dbcfa0eb5dso743415a12.3;
-        Fri, 12 Apr 2024 07:42:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712932938; x=1713537738; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6QFhwob2H+YmXGrRuSyJw5ag+KZ6vVeg830c04nwrNg=;
-        b=CaaXOpS13Ccuz7QZIsx9i19yM84GIdG0To3bsPxJH6uToHI4HSfVtLKK0KZXFbrvnD
-         w8TCaVpZtcllS5EHipk3QyUqLhyGO+BIRdNjWqlQ+aHQJIose6+7m5K0mP/UBLemFkEK
-         To9l1NOajPXy8i+OoPl3kUMwvH/Uc27Wr3SNyRL2TpWDh9u8HfGlTk97yZnMKoEXbem6
-         v6TXOXdIlmciBVlhkoUsffWVgBXqIxClmNgw7o5KHHiqdFXtSliF4BbQEU5wihpujsar
-         ssNyMxeyHu2Krl2acGpNU6Fpodu5Eu07IP+av+9vLumB3rtKQ3d1eiOyQyO99KxO9Upl
-         SLbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712932938; x=1713537738;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6QFhwob2H+YmXGrRuSyJw5ag+KZ6vVeg830c04nwrNg=;
-        b=nXE6KVBUhkMpaJqLL/wj3WmoyE6wDudpqaIkmq8UUiUpRi1/9BsleYBIt3+dSbsyAs
-         nJ/0Gt9HDjxFTfrCSUMphf9jAK9PgMaIo4GK1DMxqinFh+/clfcIdvjUrkzM9K+I7W4g
-         JfY26b87P1ZFd/y6j/NKn83nDT6SpFLktT/knnuqD3qUjA2oH/A8MnDWYBWDZXT3BRuH
-         nmXFye72AR4QSCHPwqMpqFOGwT1+qiTdd8mCWAR6iuDCd8oYRiveZ+5h8VFZeGFd39kn
-         9HWBJ5MlL33v7Q7vb9uFHLKwcxRKEGZfXJ3+uhaUAkqnDDU7zBXg4cJBK2WF2H9ReW5c
-         jlVg==
-X-Forwarded-Encrypted: i=1; AJvYcCVAhV9dQVQHH2JQvpGXZArB9qpW7z7A8h4Sp5Y8a2xAAQqBBv3tKJMeFSZBcUt1W+6LamWjErUm/2JfurIFizrJwdtBvUGQBqzJ4wpxhHDroKJapQ6/QOiIUFRXvysLlZ1MhkcWNXv15EMthUQ=
-X-Gm-Message-State: AOJu0Yxx/iOFcNbzs6+iyRswCeqeJvseQvLQZfuDs1KrosNdyzECQ6N9
-	izekgh2dFsLhHT3zhExIOKsVjJHOSBbXqXxXrO5Ng1MTTMn8Tu3aLo6I/+38/fcOGOGY6ir6WNL
-	zso3sOEt3SDsL7ZbiEygypXITGco=
-X-Google-Smtp-Source: AGHT+IE9wnsUg4rH8z6mmvraJI+4Eo9u935Luu9KrcObKEviVUPWS/ECrhs1BDPQihTBCvx/S6Hyv8KVZGvxU0Dc4t4=
-X-Received: by 2002:a17:90a:8c0e:b0:2a5:d313:4d3f with SMTP id
- a14-20020a17090a8c0e00b002a5d3134d3fmr2963704pjo.34.1712932937744; Fri, 12
- Apr 2024 07:42:17 -0700 (PDT)
+	s=arc-20240116; t=1712933086; c=relaxed/simple;
+	bh=/27W4DpK6bm6LK7sKH9qasHWmiyh/v2gPTVYEgX1MA8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EFeh5u7oxNTGQw04fUJgrFXQzRv7QIoXeItiawo1TtRA4dz8lmuM231Wd9drZzngSKpCQQTEvyvNN3cBROP6s2Qri8h0fwItba0rLge/xHw3hxj1f32yktGFGZMX/Ad+awr9d261ERm/RlootB+e1usOL5hgiXMqvaEKragpzOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hziH+W09; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712933085; x=1744469085;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/27W4DpK6bm6LK7sKH9qasHWmiyh/v2gPTVYEgX1MA8=;
+  b=hziH+W09nMOfdiUcXPvtn1l/PH7EK832ZzFBpYGx4KhynoGsnEAgJjSo
+   4X2EWLQ2LYi3j8mnaHjRO0MQqd8hTp/Iy9f2OPpvJSRbuBDd50AstW/q5
+   ei0njLGCrVgT4KdSvWH6rgAqzK8LISVoxAUBVxCosV4g5hWVVwBlWDhiO
+   7A9AGiz0vjp992gv4XWGqHqZtB0DsZNu0fEL/nq3rpCh1Gmfk8CuRSCD/
+   NFWTTdewi2fOgT6pJRwWbzgbPZzHyADpPvW5nDQkz8MDhoYB4cyyCNQvH
+   dfEJS3yy8mdGkpxHZwJvvtm9q27OsEM6Spa3WCPuV6KbsBUKdT4QcQOrE
+   g==;
+X-CSE-ConnectionGUID: XLvtH7GESQSfeaPbbev3hw==
+X-CSE-MsgGUID: LzmUQ09SQh+qZNyUbl9R9g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8245408"
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="8245408"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 07:44:44 -0700
+X-CSE-ConnectionGUID: TmtMmztsQmaNnVyTO82zCQ==
+X-CSE-MsgGUID: T0wQPY3cQIa8GTKycwqySw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="21161233"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 12 Apr 2024 07:44:38 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rvI8p-0009qL-1l;
+	Fri, 12 Apr 2024 14:44:35 +0000
+Date: Fri, 12 Apr 2024 22:44:22 +0800
+From: kernel test robot <lkp@intel.com>
+To: Charlie Jenkins <charlie@rivosinc.com>, Conor Dooley <conor@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev, linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Charlie Jenkins <charlie@rivosinc.com>
+Subject: Re: [PATCH 06/19] riscv: Extend cpufeature.c to detect vendor
+ extensions
+Message-ID: <202404122206.TkXKhj29-lkp@intel.com>
+References: <20240411-dev-charlie-support_thead_vector_6_9-v1-6-4af9815ec746@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411230801.1504496-1-boqun.feng@gmail.com>
- <20240411230801.1504496-3-boqun.feng@gmail.com> <CANiq72nSSAVkynVaAq7bQKoL6N8K2JUXp8AOVvu7vN+siAhk-Q@mail.gmail.com>
- <Zhk4Uqc4LImR2n_r@Boquns-Mac-mini.home>
-In-Reply-To: <Zhk4Uqc4LImR2n_r@Boquns-Mac-mini.home>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Fri, 12 Apr 2024 16:41:26 +0200
-Message-ID: <CANiq72ka4UvJzb4dN12fpA1WirgDHXcvPurvc7B9t+iPUfWnew@mail.gmail.com>
-Subject: Re: [PATCH 2/2] rust: time: Use wrapping_sub() for Ktime::sub()
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Miguel Ojeda <ojeda@kernel.org>, 
-	John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	bjorn3_gh@protonmail.com, Benno Lossin <benno.lossin@proton.me>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Vegard Nossum <vegard.nossum@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240411-dev-charlie-support_thead_vector_6_9-v1-6-4af9815ec746@rivosinc.com>
 
-On Fri, Apr 12, 2024 at 3:34=E2=80=AFPM Boqun Feng <boqun.feng@gmail.com> w=
-rote:
->
-> That works for me, although I would prefer `Ktime::sub()` is wrapping
-> sub and we have another function doing a safe version of sub.
+Hi Charlie,
 
-Why? It goes against the "normal" case in integers. It is also not
-what `ktime_sub()` does, which is the "normal" case here, vs.
-`_unsafe()` and `_safe()` ones.
+kernel test robot noticed the following build warnings:
 
-> Exactly, ktime_add_safe() doesn't panic if overflow happens, right?
-> I think that's pretty clear on how time subsystem wants to handle
-> overflow (saturating it, or zeroing it instead of panicing).
+[auto build test WARNING on 4cece764965020c22cff7665b18a012006359095]
 
-There are three variants in C (for addition) that I can see:
+url:    https://github.com/intel-lab-lkp/linux/commits/Charlie-Jenkins/dt-bindings-riscv-Add-vendorid-and-archid/20240412-121709
+base:   4cece764965020c22cff7665b18a012006359095
+patch link:    https://lore.kernel.org/r/20240411-dev-charlie-support_thead_vector_6_9-v1-6-4af9815ec746%40rivosinc.com
+patch subject: [PATCH 06/19] riscv: Extend cpufeature.c to detect vendor extensions
+config: riscv-defconfig (https://download.01.org/0day-ci/archive/20240412/202404122206.TkXKhj29-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 8b3b4a92adee40483c27f26c478a384cd69c6f05)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240412/202404122206.TkXKhj29-lkp@intel.com/reproduce)
 
-  - No suffix: not supposed to wrap.
-  - `_unsafe()`: wraps.
-  - `_safe()`: saturates.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404122206.TkXKhj29-lkp@intel.com/
 
-The first one, in normal C, would be UB. In kernel C, it wraps but may
-be detected by UBSAN (this is what Kees is re-introducing very
-recently with 557f8c582a9b ("ubsan: Reintroduce signed overflow
-sanitizer")).
+All warnings (new ones prefixed by >>):
 
-So, in Rust terms, the three options above would map to:
+   In file included from arch/riscv/kernel/cpufeature.c:20:
+   In file included from arch/riscv/include/asm/cacheflush.h:9:
+   In file included from include/linux/mm.h:2208:
+   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+>> arch/riscv/kernel/cpufeature.c:395:4: warning: label followed by a declaration is a C23 extension [-Wc23-extensions]
+     395 |                         bool found;
+         |                         ^
+   2 warnings generated.
 
-  - Raw operators.
-  - `wrapping_`.
-  - `saturating_`.
 
-Because the raw operators are what we use for arithmetic that is "not
-supposed to wrap" too. That is, they wrap, but may be checked by the
-Kconfig option. Of course, it may be worth having an intermediate
-option that does not actually go for a full-blown Rust-panic for that,
-but the point is that the current "not supposed to wrap" methods are
-the raw operators.
+vim +395 arch/riscv/kernel/cpufeature.c
 
-All three, in fact, are "safe" in Rust terms, since none can actually
-trigger UB (in kernel C at least -- it would be different in normal C:
-the first one would map to an unsafe Rust method, i.e. `unchecked_`).
+   370	
+   371	static void __init riscv_parse_isa_string(unsigned long *this_hwcap, struct riscv_isainfo *isainfo,
+   372						struct riscv_isainfo *isavendorinfo, unsigned long vendorid,
+   373						unsigned long *isa2hwcap, const char *isa)
+   374	{
+   375		/*
+   376		 * For all possible cpus, we have already validated in
+   377		 * the boot process that they at least contain "rv" and
+   378		 * whichever of "32"/"64" this kernel supports, and so this
+   379		 * section can be skipped.
+   380		 */
+   381		isa += 4;
+   382	
+   383		while (*isa) {
+   384			const char *ext = isa++;
+   385			const char *ext_end = isa;
+   386			bool ext_long = false, ext_err = false;
+   387			struct riscv_isainfo *selected_isainfo = isainfo;
+   388			const struct riscv_isa_ext_data *selected_riscv_isa_ext = riscv_isa_ext;
+   389			size_t selected_riscv_isa_ext_count = riscv_isa_ext_count;
+   390			unsigned int id_offset = 0;
+   391	
+   392			switch (*ext) {
+   393			case 'x':
+   394			case 'X':
+ > 395				bool found;
+   396	
+   397				found = get_isa_vendor_ext(vendorid,
+   398							   &selected_riscv_isa_ext,
+   399							   &selected_riscv_isa_ext_count);
+   400				selected_isainfo = isavendorinfo;
+   401				id_offset = RISCV_ISA_VENDOR_EXT_BASE;
+   402				if (!found) {
+   403					pr_warn("No associated vendor extensions with vendor id: %lx\n",
+   404						vendorid);
+   405					for (; *isa && *isa != '_'; ++isa)
+   406						;
+   407					ext_err = true;
+   408					break;
+   409				}
+   410				fallthrough;
+   411			case 's':
+   412				/*
+   413				 * Workaround for invalid single-letter 's' & 'u' (QEMU).
+   414				 * No need to set the bit in riscv_isa as 's' & 'u' are
+   415				 * not valid ISA extensions. It works unless the first
+   416				 * multi-letter extension in the ISA string begins with
+   417				 * "Su" and is not prefixed with an underscore.
+   418				 */
+   419				if (ext[-1] != '_' && ext[1] == 'u') {
+   420					++isa;
+   421					ext_err = true;
+   422					break;
+   423				}
+   424				fallthrough;
+   425			case 'S':
+   426			case 'z':
+   427			case 'Z':
+   428				/*
+   429				 * Before attempting to parse the extension itself, we find its end.
+   430				 * As multi-letter extensions must be split from other multi-letter
+   431				 * extensions with an "_", the end of a multi-letter extension will
+   432				 * either be the null character or the "_" at the start of the next
+   433				 * multi-letter extension.
+   434				 *
+   435				 * Next, as the extensions version is currently ignored, we
+   436				 * eliminate that portion. This is done by parsing backwards from
+   437				 * the end of the extension, removing any numbers. This may be a
+   438				 * major or minor number however, so the process is repeated if a
+   439				 * minor number was found.
+   440				 *
+   441				 * ext_end is intended to represent the first character *after* the
+   442				 * name portion of an extension, but will be decremented to the last
+   443				 * character itself while eliminating the extensions version number.
+   444				 * A simple re-increment solves this problem.
+   445				 */
+   446				ext_long = true;
+   447				for (; *isa && *isa != '_'; ++isa)
+   448					if (unlikely(!isalnum(*isa)))
+   449						ext_err = true;
+   450	
+   451				ext_end = isa;
+   452				if (unlikely(ext_err))
+   453					break;
+   454	
+   455				if (!isdigit(ext_end[-1]))
+   456					break;
+   457	
+   458				while (isdigit(*--ext_end))
+   459					;
+   460	
+   461				if (tolower(ext_end[0]) != 'p' || !isdigit(ext_end[-1])) {
+   462					++ext_end;
+   463					break;
+   464				}
+   465	
+   466				while (isdigit(*--ext_end))
+   467					;
+   468	
+   469				++ext_end;
+   470				break;
+   471			default:
+   472				/*
+   473				 * Things are a little easier for single-letter extensions, as they
+   474				 * are parsed forwards.
+   475				 *
+   476				 * After checking that our starting position is valid, we need to
+   477				 * ensure that, when isa was incremented at the start of the loop,
+   478				 * that it arrived at the start of the next extension.
+   479				 *
+   480				 * If we are already on a non-digit, there is nothing to do. Either
+   481				 * we have a multi-letter extension's _, or the start of an
+   482				 * extension.
+   483				 *
+   484				 * Otherwise we have found the current extension's major version
+   485				 * number. Parse past it, and a subsequent p/minor version number
+   486				 * if present. The `p` extension must not appear immediately after
+   487				 * a number, so there is no fear of missing it.
+   488				 *
+   489				 */
+   490				if (unlikely(!isalpha(*ext))) {
+   491					ext_err = true;
+   492					break;
+   493				}
+   494	
+   495				if (!isdigit(*isa))
+   496					break;
+   497	
+   498				while (isdigit(*++isa))
+   499					;
+   500	
+   501				if (tolower(*isa) != 'p')
+   502					break;
+   503	
+   504				if (!isdigit(*++isa)) {
+   505					--isa;
+   506					break;
+   507				}
+   508	
+   509				while (isdigit(*++isa))
+   510					;
+   511	
+   512				break;
+   513			}
+   514	
+   515			/*
+   516			 * The parser expects that at the start of an iteration isa points to the
+   517			 * first character of the next extension. As we stop parsing an extension
+   518			 * on meeting a non-alphanumeric character, an extra increment is needed
+   519			 * where the succeeding extension is a multi-letter prefixed with an "_".
+   520			 */
+   521			if (*isa == '_')
+   522				++isa;
+   523	
+   524			if (unlikely(ext_err))
+   525				continue;
+   526			if (!ext_long) {
+   527				int nr = tolower(*ext) - 'a';
+   528	
+   529				if (riscv_isa_extension_check(nr)) {
+   530					*this_hwcap |= isa2hwcap[nr];
+   531					set_bit(nr, isainfo->isa);
+   532				}
+   533			} else {
+   534				for (int i = 0; i < selected_riscv_isa_ext_count; i++)
+   535					match_isa_ext(&selected_riscv_isa_ext[i], ext,
+   536						      ext_end, selected_isainfo,
+   537						      id_offset);
+   538			}
+   539		}
+   540	}
+   541	
 
-Instead, in the C side, `_unsafe()` seems to be used to mean instead
-"you should be checking for overflow if needed, because it will never
-be reported by UBSAN unlike the raw one". Again, this is based on my
-reading of that commit and the docs on `_unsafe()`. It may be wrong,
-or maybe the subtraction is supposed to be different. It should
-probably be clarified in the C side anyway.
-
-And, relatedly, I see that when the `union` was removed in commit
-2456e8553544 ("ktime: Get rid of the union"), `ktime_add_unsafe()`
-stopped returning a `ktime_t` even when both inputs are `ktime_t`s
-themselves:
-
-    static_assert(_Generic(ktime_add(a, b), ktime_t: true, default:
-false)); // OK
-    static_assert(_Generic(ktime_add_unsafe(a, b), ktime_t: true,
-default: false)); // Bad
-
-It returns an `u64` now, which could surprise users, and probably
-should be fixed. The only user just puts the result into a `ktime_t`,
-so there is no actual issue today.
-
-> I must defer this to Thomas.
-
-Yeah, the question on the C API was meant for Thomas et al.
-
-> Maybe, however neither of this function probably shouldn't have the
-> panic-on-overflow behavior. So I agree that overflow checking is not a
-> bad thing, but when to check and how to handle overflow should be
-> controlled by the users, and making the default behavior
-> panic-on-overflow doesn't look reasonable to me.
-
-Yes, it should be controlled by callers, but the point above is that,
-from the looks of it, these interfaces are not meant to overflow to
-begin with.
-
-Cheers,
-Miguel
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
