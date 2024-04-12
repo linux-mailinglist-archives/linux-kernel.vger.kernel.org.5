@@ -1,94 +1,77 @@
-Return-Path: <linux-kernel+bounces-143198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8B9F8A3599
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:26:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 945C28A35B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:29:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 256281F21BFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:26:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3C2EB23535
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:29:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2755014EC6E;
-	Fri, 12 Apr 2024 18:26:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 800F314F123;
+	Fri, 12 Apr 2024 18:28:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="IqYYPFzH"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="g4enleGk"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8329D14BF9B
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 18:26:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C915514E2E0;
+	Fri, 12 Apr 2024 18:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712946377; cv=none; b=sze9pMfiFi7TBStOGiHXYdUux+iaRUMWLTLeoyNfz0aDxSrTGRU0YftzALy2kGQC5yVKu7qcD9w1K3HDLuos/l4+JDGWZSxqzB7tLwhpv0xYum6csMHTaAMpHtHeNyn2yaoJlwBZqD6ssZi38wYao3Jv5HBwxBM5qTIqi3JdFYc=
+	t=1712946532; cv=none; b=Yjwwik/8yFHONX3FX+7g4NNsec0lgCUQwvhuLFAM75dCsxooWBMgCygOBsV05PLOM01k4H++fTlKU3D3gq8VCMS5v1NsOfzOcMkKYQG3aGes1uPA/ZFb3c1l9/SJvA29cPGEgBuTPE84CnvRoixQeriJwmXUNrkJtl6UiW2CXlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712946377; c=relaxed/simple;
-	bh=R6+sR1n2H8lveCws8FYqyXIHci1kpgk6V6NXn8xBGM4=;
+	s=arc-20240116; t=1712946532; c=relaxed/simple;
+	bh=X9j9yFm/65nRAckgOYZMNKOekN37E9FIFTz7phVScao=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dot5ZS64xkVafd04uDJZ/uDViYGAXaPVoLB1HOot9D8zLd96xSUpPt0y3F8H3p6tNAuNUY76drNq6WeL8tT0yvaoGX4jC8Dol1wK0CKk9KEr+MHt9TxsWJDu0jCOQILTYvROv1Ujwakuh2HzR56ZnQ+ZUieP4xoRZ/RPoYSyXdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=IqYYPFzH; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ed054f282aso1027817b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:26:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712946375; x=1713551175; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oMxTHfwmfGngfKcHt9BB7WUlzUr2s5LaZsK/l59Ii3w=;
-        b=IqYYPFzHrWkKzXyyATo8fp1XTg/P/PLzPTOf6FPbfGmOsfizXWJwHOrSTXfghPxDBS
-         uZxZcMnR3zzl3bADTURz7NuYbWQOJFK0S0iNWVj69+KYaiyvyB4us/nRTbYRzAd181OT
-         5a6x6qgLP7BjzcpD6OedSCRQqTCj05WGFhIV3unDBaS9tOklkVeEgfSRbgyfENiBuXPh
-         wWS+fUVE7Gof7SaAcFwpTQVmxEGLDz+yGGe4AWPOLF3W64ibERCH4JQzH3jY6Cg8/Lfa
-         5972KNx7SEXqYnei1rHtFEhxpLbpVQNikNaUvfhV2w9qoSDCLgJfpvAW6WcEZ/Wz8zTz
-         JKSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712946375; x=1713551175;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oMxTHfwmfGngfKcHt9BB7WUlzUr2s5LaZsK/l59Ii3w=;
-        b=MWbnrQuw9GDXPmeaGArqEOJ2ttWR+nPQlcMBwQc1fOo4uxfbmQ5A62JFwViRIGBg+e
-         10d9nzPtAWEBbGljhK90SDvpdHe/hCksu0DhmArm6A41MS1gGVmH1KoDSTGiY2uqIAcR
-         KwsOvdYDAoU0f64lzblwNns+n0jF/PTvQDPrpj11UszkEW1ZQl4G/+C6tDL1iSGsz9HF
-         +Lh/knz03Cye0SMzROYPqDnctca5rTGZoANOiLBvM130QMVmDjOxqYf3bX+gzlB/zXix
-         ClZRzjsvJkPVAK10W1GSYfFxxLprwxdMoOS4IW9OrbW94K9tcY1HVK/UJx3UTiYzEU55
-         JErQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVTz0Bgq/NB3MbYivYtxPsD7i/oJ8BXivMdVc/DpwsPI5ljg7giJDh0++Y1jFWAomJ4bjy5v+6eU4x9SZywcUMsice7DyD+Xb1x5DDc
-X-Gm-Message-State: AOJu0YxBibwy4JqB+R++TFs6ppz8vss8HedtpmTF568sCA8fql04OFX9
-	6sJPFKG4smfXMimWhYz9YFP2CJjUqaMN4L9SD3lh3ujTiRsmdHknGh5SiczY/CQ=
-X-Google-Smtp-Source: AGHT+IF+XDdyB5UuM6N1UjqqE0/VQom0I9Op5dF9IOxOPYX/5ovaNt57ADIRPWe8tJpR7LWz5w/zoQ==
-X-Received: by 2002:a05:6a20:9717:b0:1a9:8861:9e77 with SMTP id hr23-20020a056a20971700b001a988619e77mr3208395pzc.28.1712946374944;
-        Fri, 12 Apr 2024 11:26:14 -0700 (PDT)
-Received: from ghost (mobile-166-137-160-039.mycingular.net. [166.137.160.39])
-        by smtp.gmail.com with ESMTPSA id q18-20020a63d612000000b005dc9ab425c2sm3053438pgg.35.2024.04.12.11.26.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 11:26:14 -0700 (PDT)
-Date: Fri, 12 Apr 2024 11:26:10 -0700
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Conor Dooley <conor.dooley@microchip.com>
-Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 15/19] riscv: hwcap: Add v to hwcap if xtheadvector
- enabled
-Message-ID: <Zhl8wtc5ikM2Btjv@ghost>
-References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
- <20240411-dev-charlie-support_thead_vector_6_9-v1-15-4af9815ec746@rivosinc.com>
- <20240412-thrill-amnesty-019897f21466@wendy>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VFMbdsFJLpawZEWS+H6Zz6WLBy2u42TVNfzxw0/i2Y5LDy5ZV0l6Ss2iBjFHIsnod+UE1cE/GCF5Yk2XtApUmYqSiGlZInjlcVPKULkwfUm15N2uNZ2qsVUUtozX3uBvPGbLaMUVViSQfbGik8Rbd/abymDlJfFhcG5Gs3dFDZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=g4enleGk; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=s9uyMrI2kBzD/jir8Kf5BQ4KLVX7ZmHiKzONe0aRyLQ=; b=g4enleGkCJEEwc71HQKni0x9GL
+	WQaciMczjdvFq3ggaGdSSVerJPZOnRP70tf/jJYONFwjo9AoRzjwNg1jZ9M6ngZW5iMlU+zpXLUW+
+	C9zDOOJMqEmOd6JzljE5sC7YvKO8mFIzOpi+wuvjAXUVr9SZ358OD4vWFo034mtRdmCrH29tnhQbE
+	dlN7RuMr4Fvg37WpbT3NYaYZIyDt4GuGQ41syaaAGsXyHbnvtFukS0XAo6x8EtzXWRmXwg5RtczDq
+	HV/tchkMzR/ZAUM21RhtdRQJLJo86VziZRS8/dEaVWKErEijWWzQNAFfc4tuKo+/zMQHY52RRcbZU
+	tAwukUoA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rvLdf-00000000rhY-0qAo;
+	Fri, 12 Apr 2024 18:28:39 +0000
+Date: Fri, 12 Apr 2024 11:28:39 -0700
+From: Luis Chamberlain <mcgrof@kernel.org>
+To: John Garry <john.g.garry@oracle.com>,
+	Dan Helmick <dan.helmick@samsung.com>
+Cc: Matthew Wilcox <willy@infradead.org>,
+	Pankaj Raghav <p.raghav@samsung.com>,
+	Daniel Gomez <da.gomez@samsung.com>,
+	Javier =?iso-8859-1?Q?Gonz=E1lez?= <javier.gonz@samsung.com>,
+	axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+	jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
+	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, nilay@linux.ibm.com,
+	ritesh.list@gmail.com
+Subject: Re: [PATCH v6 00/10] block atomic writes
+Message-ID: <Zhl9VxTVxIEYc4cF@bombadil.infradead.org>
+References: <20240326133813.3224593-1-john.g.garry@oracle.com>
+ <ZgOXb_oZjsUU12YL@casper.infradead.org>
+ <c4c0dad5-41a4-44b4-8f40-2a250571180b@oracle.com>
+ <Zg7Z4aJtn3SxY5w1@casper.infradead.org>
+ <f3c1d321-0dfc-466f-9f6a-fe2f0513d944@oracle.com>
+ <ZhQud1NbO4aMt0MH@bombadil.infradead.org>
+ <b0789a97-7dcf-48aa-9980-8525942dabfa@oracle.com>
+ <Zhg0_Pvlh9zy4zzG@bombadil.infradead.org>
+ <6d8e98bb-24d1-49be-8965-b6afa97dfdaa@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,72 +80,68 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240412-thrill-amnesty-019897f21466@wendy>
+In-Reply-To: <6d8e98bb-24d1-49be-8965-b6afa97dfdaa@oracle.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 
-On Fri, Apr 12, 2024 at 12:37:08PM +0100, Conor Dooley wrote:
-> On Thu, Apr 11, 2024 at 09:11:21PM -0700, Charlie Jenkins wrote:
-> > xtheadvector is not vector 1.0 compatible, but it can leverage all of
-> > the same save/restore routines as vector plus
-> > riscv_v_first_use_handler(). vector 1.0 and xtheadvector are mutually
-> > exclusive so there is no risk of overlap.
++ Dan,
+
+On Fri, Apr 12, 2024 at 09:15:57AM +0100, John Garry wrote:
+> On 11/04/2024 20:07, Luis Chamberlain wrote:
+> > > So if you
+> > > have a 4K PBS and 512B LBS, then WRITE_ATOMIC_16 would be required to write
+> > > 16KB atomically.
+> > Ugh. Why does SCSI requires a special command for this?
 > 
-> I think this not okay to do - if a program checks hwcap to see if vector
-> is supported they'll get told it is on T-Head system where only the 0.7.1
-> is.
+> The actual question from others is why does NVMe not have a dedicated
+> command for this, like:
+> https://lore.kernel.org/linux-nvme/20240129062035.GB19796@lst.de/
 
-That's fair. I did remove it from the hwprobe result but this is kind of
-a gross way of doing it. I'll mess around with this so this isn't
-necessary.
+Because we don't really need it for the hardware that supports it if the
+host does the respective topology checks. For instance the respective
+checks for NVMe are that atomics respect AWUN as the cap as the drive
+already can go up to AWUN, and the limit for power-fail is implicit by
+checking for AWUPF / NAWUPF. The alignment constraints can be dealt with
+by the host software.
 
-- Charlie
+> It's a data integrity feature, and we want to know if it works properly.
 
+For drives which already support this integrity is ensured already for
+you. An NVMe specific atomic write command could be useful for for
+existing drives for other reasons or future uses but its not a requirement
+with the existing use cases if the NVMe alignment / atomic are respected by
+the host.
+
+> > Now we know what would be needed to bump the physical block size, it is
+> > certainly a different feature, however I think it would be good to
+> > evaluate that world too. For NVMe we don't have such special write
+> > requirements.
+> > 
+> > I put together this kludge with the last patches series of LBS + the
+> > bdev cache aops stuff (which as I said before needs an alternative
+> > solution) and just the scsi atomics topology + physical block size
+> > change to easily experiment to see what would break:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=20240408-lbs-scsi-kludge
+> > 
+> > Using a larger sector size works but it does not use the special scsi
+> > atomic write.
+> 
+> If you are using scsi_debug driver, then you can just pass the desired
+> physblk_exp and sector_size args - they both default to 512B. Then you don't
+> need bother with sd.c atomic stuff, which I think is what you want.
 > 
 > > 
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > ---
-> >  arch/riscv/kernel/cpufeature.c | 17 +++++++++++++++--
-> >  1 file changed, 15 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> > index 41a4d2028428..59f628b1341c 100644
-> > --- a/arch/riscv/kernel/cpufeature.c
-> > +++ b/arch/riscv/kernel/cpufeature.c
-> > @@ -647,9 +647,13 @@ static void __init riscv_fill_hwcap_from_isa_string(unsigned long *isa2hwcap)
-> >  		 * Many vendors with T-Head CPU cores which implement the 0.7.1
-> >  		 * version of the vector specification put "v" into their DTs.
-> >  		 * CPU cores with the ratified spec will contain non-zero
-> > -		 * marchid.
-> > +		 * marchid. Only allow "v" to be set if xtheadvector is present.
-> >  		 */
-> > -		if (acpi_disabled && this_vendorid == THEAD_VENDOR_ID &&
-> > +		if (__riscv_isa_vendor_extension_available(isavendorinfo->isa,
-> > +							   RISCV_ISA_VENDOR_EXT_XTHEADVECTOR)) {
-> > +			this_hwcap |= isa2hwcap[RISCV_ISA_EXT_v];
-> > +			set_bit(RISCV_ISA_EXT_v, isainfo->isa);
-> > +		} else if (acpi_disabled && this_vendorid == THEAD_VENDOR_ID &&
-> >  		    this_archid == 0x0) {
-> >  			this_hwcap &= ~isa2hwcap[RISCV_ISA_EXT_v];
-> >  			clear_bit(RISCV_ISA_EXT_v, isainfo->isa);
-> > @@ -776,6 +780,15 @@ static int __init riscv_fill_hwcap_from_ext_list(unsigned long *isa2hwcap)
-> >  
-> >  		of_node_put(cpu_node);
-> >  
-> > +		/*
-> > +		 * Enable kernel vector routines if xtheadvector is present
-> > +		 */
-> > +		if (__riscv_isa_vendor_extension_available(isavendorinfo->isa,
-> > +							   RISCV_ISA_VENDOR_EXT_XTHEADVECTOR)) {
-> > +			this_hwcap |= isa2hwcap[RISCV_ISA_EXT_v];
-> > +			set_bit(RISCV_ISA_EXT_v, isainfo->isa);
-> > +		}
-> > +
-> >  		/*
-> >  		 * All "okay" harts should have same isa. Set HWCAP based on
-> >  		 * common capabilities of every "okay" hart, in case they don't.
-> > 
-> > -- 
-> > 2.44.0
-> > 
+> > > > > To me, O_ATOMIC would be required for buffered atomic writes IO, as we want
+> > > > > a fixed-sized IO, so that would mean no mixing of atomic and non-atomic IO.
+> > > > Would using the same min and max order for the inode work instead?
+> > > Maybe, I would need to check further.
+> > I'd be happy to help review too.
+> 
+> Yeah, I'm starting to think that min and max inode would make life easier,
+> as we don't need to deal with the scenario of an atomic write to a folio >
+> atomic write size.
 
+And aligments constraints could be dealt with as well.
 
+  Luis
 
