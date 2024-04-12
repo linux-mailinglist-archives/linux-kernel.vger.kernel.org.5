@@ -1,142 +1,238 @@
-Return-Path: <linux-kernel+bounces-142771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 109908A2FED
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A95E8A2FEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:54:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C26091F21761
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:53:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF4881F21779
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:54:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8598624E;
-	Fri, 12 Apr 2024 13:53:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C176E85287;
+	Fri, 12 Apr 2024 13:53:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W9a7fOds"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CBD/MbzD";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7AuqAnHB";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CBD/MbzD";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7AuqAnHB"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6C785287
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01F9086247
 	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:53:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712930015; cv=none; b=qFabAFOOkaSJ4K7T1m2e+SqtHiqoJCGTXcrk0shv3JAi3wRSKF3uFjw+SlfKNQJSjOFEbmhSraVJ9Not65M3n6uXML27VffMWidOkHdSK+7I+ZuBODiH8Cgr7ImUvPG0gQLDLYMXvDdb4rhLIisv1PqRXmrdCBwjCZpsXDh1WWA=
+	t=1712930017; cv=none; b=FLyCI/FTl56ojS+mLMEy/y7ofUmm+TRNlfD4UkKslZfim7Z0QuZqJ/4FG3tE1gVWcrk2L2X7WsrkEWCMyXia/XuJQky411YHZK2KIwlYn2v4dE+kaNx+nVet8fml3ArXBGwdX6S0trFEfddSs6uvA78QrsVqbEKIaXsdr9COaeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712930015; c=relaxed/simple;
-	bh=5GhNa5rV7rEKpJFGc4DkQalPEvkcxeBWtDg5sglJ6Wg=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XKe2sRhZqHfLkHTpEMw1UHrBuQNIYTqrSo0dYug3tuONxip2FEX9wCkxXQDSZVVzEkRxsa6WWeGGGYvJBjFn3RYVuXzg2Y5yTNXC03LIJ+7axAOR2AmPPyi6fow2zwE09cY6HAduWiix4580rUbKEgGeGttZw+18EIlHKjGNmiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W9a7fOds; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9A5DC113CC;
-	Fri, 12 Apr 2024 13:53:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712930014;
-	bh=5GhNa5rV7rEKpJFGc4DkQalPEvkcxeBWtDg5sglJ6Wg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=W9a7fOdsyAsT9KPJSmC4jmJx/R5x73DoZAAq3r4MbDekw9YffvuNlg/3TB3/YDWOg
-	 jG9iWLUttC9672FJoCSS66UZMY12TBa0X2xi58WVSqGx1wyh3mpXUsrZkqF6KhIs4B
-	 hG9Lbjw2EftNLn+9N9R4wTqdFUP6WhwSOBWryoOeUmRW1pqh7pF6voYiAZOYiCujsc
-	 hhr+nvhPNgPGWYJ0A6pj5emN/hAZm36uR0vzzzcHLbfAAkxlfV+4RfVDAuDCvMSzUd
-	 iUpXIwCNdIFtCd0wH6YxaEq5xAEnPVHJlS5EpIFlRUSrRZjpcV/HmIUjvozk7zsJef
-	 uAcuYUdbH5nWQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rvHLQ-003uFv-GW;
-	Fri, 12 Apr 2024 14:53:32 +0100
-Date: Fri, 12 Apr 2024 14:53:32 +0100
-Message-ID: <86il0msn4z.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Dawei Li <dawei.li@shingroup.cn>
-Cc: tglx@linutronix.de,
-	yury.norov@gmail.com,
-	akpm@linux-foundation.org,
-	florian.fainelli@broadcom.com,
-	chenhuacai@kernel.org,
-	jiaxun.yang@flygoat.com,
-	anup@brainfault.org,
-	palmer@dabbelt.com,
-	samuel.holland@sifive.com,
-	linux@rasmusvillemoes.dk,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] irqchip/gic-v3-its: Avoid explicit cpumask allocation on stack
-In-Reply-To: <20240412105839.2896281-4-dawei.li@shingroup.cn>
-References: <20240412105839.2896281-1-dawei.li@shingroup.cn>
-	<20240412105839.2896281-4-dawei.li@shingroup.cn>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1712930017; c=relaxed/simple;
+	bh=GpRfNZdAiZw1cko3Adj7uXMEBStX4Kvb6FwPmKFY+Zg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MIKnQwhVVIcDdxNFKmemBrhxwoKnENaJddswTcKe3Z0qsELug+Q0Nospev4tvdZnQbsE9OP533n+8Pupun2OZ4fdoE/WYfBIF99y+93s9bjlQ/M8znSBjacrE3+HgGp1dhT9m8V4Xe5Iou0lm0bqbe/i78aqWCSDS+/4/+eFYro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CBD/MbzD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7AuqAnHB; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CBD/MbzD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7AuqAnHB; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id F337E3830F;
+	Fri, 12 Apr 2024 13:53:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712930014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jCLBp0r4GxrmZerl3rC8Ggqs0l1ATGPD2aQmbUqPAUc=;
+	b=CBD/MbzDWjQxuey1zwBm6rnFSe32HR4hrhhkHaHodFYalLO6TlPXNHri8G0bE2G4xVeeTb
+	jW+ooGE7kZG4iLYvVCHW5upttpBzAQ1/kyHcmVt0vthqpdbEbyXN5iKG4oHwieR0twYkwI
+	hll/Dy6z5NTe5Y/PB3XLuypUfR7posI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712930014;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jCLBp0r4GxrmZerl3rC8Ggqs0l1ATGPD2aQmbUqPAUc=;
+	b=7AuqAnHBi6HzN+IXZm6EqRvPOTn+ifE0iMDwxISYQ9A9DjH0F8CdrTTvga+MgtlnopAZAq
+	ssNK/HhvvJjJrJDw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712930014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jCLBp0r4GxrmZerl3rC8Ggqs0l1ATGPD2aQmbUqPAUc=;
+	b=CBD/MbzDWjQxuey1zwBm6rnFSe32HR4hrhhkHaHodFYalLO6TlPXNHri8G0bE2G4xVeeTb
+	jW+ooGE7kZG4iLYvVCHW5upttpBzAQ1/kyHcmVt0vthqpdbEbyXN5iKG4oHwieR0twYkwI
+	hll/Dy6z5NTe5Y/PB3XLuypUfR7posI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712930014;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jCLBp0r4GxrmZerl3rC8Ggqs0l1ATGPD2aQmbUqPAUc=;
+	b=7AuqAnHBi6HzN+IXZm6EqRvPOTn+ifE0iMDwxISYQ9A9DjH0F8CdrTTvga+MgtlnopAZAq
+	ssNK/HhvvJjJrJDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D978413942;
+	Fri, 12 Apr 2024 13:53:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Tr4MNd08GWaFZgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 12 Apr 2024 13:53:33 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 5758CA071E; Fri, 12 Apr 2024 15:53:33 +0200 (CEST)
+Date: Fri, 12 Apr 2024 15:53:33 +0200
+From: Jan Kara <jack@suse.cz>
+To: Peng Zhang <zhangpeng362@huawei.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org, dennisszhou@gmail.com,
+	shakeelb@google.com, jack@suse.cz, surenb@google.com,
+	kent.overstreet@linux.dev, mhocko@suse.cz, vbabka@suse.cz,
+	yuzhao@google.com, yu.ma@intel.com, wangkefeng.wang@huawei.com,
+	sunnanyong@huawei.com
+Subject: Re: [RFC PATCH 0/3] mm: convert mm's rss stats into
+ lazy_percpu_counter
+Message-ID: <20240412135333.btd6e7wfprg4cmx2@quack3>
+References: <20240412092441.3112481-1-zhangpeng362@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: dawei.li@shingroup.cn, tglx@linutronix.de, yury.norov@gmail.com, akpm@linux-foundation.org, florian.fainelli@broadcom.com, chenhuacai@kernel.org, jiaxun.yang@flygoat.com, anup@brainfault.org, palmer@dabbelt.com, samuel.holland@sifive.com, linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240412092441.3112481-1-zhangpeng362@huawei.com>
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kvack.org,vger.kernel.org,linux-foundation.org,gmail.com,google.com,suse.cz,linux.dev,intel.com,huawei.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.com:email]
 
-On Fri, 12 Apr 2024 11:58:36 +0100,
-Dawei Li <dawei.li@shingroup.cn> wrote:
+On Fri 12-04-24 17:24:38, Peng Zhang wrote:
+> From: ZhangPeng <zhangpeng362@huawei.com>
 > 
-> In general it's preferable to avoid placing cpumasks on the stack, as
-> for large values of NR_CPUS these can consume significant amounts of
-> stack space and make stack overflows more likely.
->
-> Remove cpumask var on stack and use proper cpumask API to address it.
-
-Define proper. Or better, define what is "improper" about the current
-usage.
-
->
-> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
-> ---
->  drivers/irqchip/irq-gic-v3-its.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
+> Since commit f1a7941243c1 ("mm: convert mm's rss stats into
+> percpu_counter"), the rss_stats have converted into percpu_counter,
+> which convert the error margin from (nr_threads * 64) to approximately
+> (nr_cpus ^ 2). However, the new percpu allocation in mm_init() causes a
+> performance regression on fork/exec/shell. Even after commit
+> 14ef95be6f55 ("kernel/fork: group allocation/free of per-cpu counters
+> for mm struct"), the performance of fork/exec/shell is still poor
+> compared to previous kernel versions.
 > 
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index fca888b36680..a821396c4261 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -3826,7 +3826,7 @@ static int its_vpe_set_affinity(struct irq_data *d,
->  				bool force)
->  {
->  	struct its_vpe *vpe = irq_data_get_irq_chip_data(d);
-> -	struct cpumask common, *table_mask;
-> +	struct cpumask *table_mask;
->  	unsigned long flags;
->  	int from, cpu;
->  
-> @@ -3850,8 +3850,11 @@ static int its_vpe_set_affinity(struct irq_data *d,
->  	 * If we are offered another CPU in the same GICv4.1 ITS
->  	 * affinity, pick this one. Otherwise, any CPU will do.
->  	 */
-> -	if (table_mask && cpumask_and(&common, mask_val, table_mask))
-> -		cpu = cpumask_test_cpu(from, &common) ? from : cpumask_first(&common);
-> +	if (table_mask && cpumask_intersects(mask_val, table_mask)) {
-> +		cpu = cpumask_test_cpu(from, mask_val) &&
-> +		      cpumask_test_cpu(from, table_mask) ?
-> +		      from : cpumask_first_and(mask_val, table_mask);
+> To mitigate performance regression, we use lazy_percpu_counter[1] to
+> delay the allocation of percpu memory for rss_stats. After lmbench test,
+> we will get 3% ~ 6% performance improvement for lmbench
+> fork_proc/exec_proc/shell_proc after conversion.
+> 
+> The test results are as follows:
+> 
+>              base           base+revert        base+lazy_percpu_counter
+> 
+> fork_proc    427.4ms        394.1ms  (7.8%)    413.9ms  (3.2%)
+> exec_proc    2205.1ms       2042.2ms (7.4%)    2072.0ms (6.0%)
+> shell_proc   3180.9ms       2963.7ms (6.8%)    3010.7ms (5.4%)
+> 
+> This solution has not been fully evaluated and tested. The main idea of
+> this RFC patch series is to get the community's opinion on this approach.
 
-So we may end-up computing the AND of the two bitmaps twice (once for
-cpumask_intersects(), once for cpumask_first_and()), instead of only
-doing it once.
+Thanks! I like the idea and in fact I wanted to do something similar (just
+never got to it). Thread [2] has couple of good observations regarding this
+problem. Couple of thoughts regarding your approach:
 
-I don't expect that to be horrible, but I also note that you don't
-even talk about the trade-offs you are choosing to make.
+1) I think switching to pcpu counter when update rate exceeds 256 updates/s
+is not a great fit for RSS because the updates are going to be frequent in
+some cases but usually they will all happen from one thread. So I think it
+would make more sense to move the decision of switching to pcpu mode from
+the counter itself into the callers and just switch on clone() when the
+second thread gets created.
 
-> +	}
->  	else
->  		cpu = cpumask_first(mask_val);
+2) I thought that for RSS lazy percpu counters, we could directly use
+struct percpu_counter and just make it that if 'counters' is NULL, the
+counter is in atomic mode (count is used as atomic_long_t), if counters !=
+NULL, we are in pcpu mode.
 
-Please fix the coding style (if () { ... } else { ... }).
+3) In [2] Mateusz had a good observation that the old RSS counters actually
+used atomic operations only in rare cases so even lazy pcpu counters are
+going to have worse performance for singlethreaded processes than the old
+code. We could *almost* get away with non-atomic updates to counter->count
+if it was not for occasional RSS updates from unrelated tasks. So it might
+be worth it to further optimize the counters as:
 
-	M.
+struct rss_counter_single {
+	void *state;			/* To detect switching to pcpu mode */
+	atomic_long_t counter_atomic;	/* Used for foreign updates */
+	long counter;			/* Used by local updates */
+}
 
+struct rss_counter {
+	union {
+		struct rss_counter_single single;
+		/* struct percpu_counter needs to be modified to have
+		 * 'counters' first to avoid issues for different
+		 * architectures or with CONFIG_HOTPLUG_CPU enabled */
+		struct percpu_counter pcpu;
+	}
+}
+
+But I'm not sure this complexity is worth it so I'd do it as a separate
+patch with separate benchmarking if at all.
+
+								Honza
+
+[2] https://lore.kernel.org/all/ZOPSEJTzrow8YFix@snowbird/
+
+> 
+> [1] https://lore.kernel.org/linux-iommu/20230501165450.15352-8-surenb@google.com/
+> 
+> Kent Overstreet (1):
+>   Lazy percpu counters
+> 
+> ZhangPeng (2):
+>   lazy_percpu_counter: include struct percpu_counter in struct
+>     lazy_percpu_counter
+>   mm: convert mm's rss stats into lazy_percpu_counter
+> 
+>  include/linux/lazy-percpu-counter.h |  88 +++++++++++++++++++
+>  include/linux/mm.h                  |   8 +-
+>  include/linux/mm_types.h            |   4 +-
+>  include/trace/events/kmem.h         |   4 +-
+>  kernel/fork.c                       |  12 +--
+>  lib/Makefile                        |   2 +-
+>  lib/lazy-percpu-counter.c           | 131 ++++++++++++++++++++++++++++
+>  7 files changed, 232 insertions(+), 17 deletions(-)
+>  create mode 100644 include/linux/lazy-percpu-counter.h
+>  create mode 100644 lib/lazy-percpu-counter.c
+> 
+> -- 
+> 2.25.1
+> 
 -- 
-Without deviation from the norm, progress is not possible.
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
