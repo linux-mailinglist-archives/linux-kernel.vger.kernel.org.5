@@ -1,131 +1,100 @@
-Return-Path: <linux-kernel+bounces-142246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7C688A2974
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:39:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5499E8A2976
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:39:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56748B25258
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:39:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B403CB254DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:39:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF2E37145;
-	Fri, 12 Apr 2024 08:39:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6693218B;
+	Fri, 12 Apr 2024 08:39:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lrGkQ3RP"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UeLqydDC"
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FEF52C6B3
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 08:39:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C40D1224F2
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 08:39:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712911154; cv=none; b=AtBH1Sx7DDpDN6x15HM+BAENZEuddx9qoBdUCxPUxhPPPcx5J12xtPSVfAtf3JlIIs5y0Rslz5bRWO7hwSIyVK0Vdexv3Ei6tSZ6qfx84iiqKxpS0M/J08QnPWtU1gizd2F0bkyQ6NH9utV6HUUF3fStGQApXoUPY4PS0K4xbKk=
+	t=1712911168; cv=none; b=f4Hs1aPHDz6KbsfclxehaUuK0lRMLj+7UQcc85bMQ+Xbg86/SCVNgNRAyKVSur+ztwpvIEXTYjwYF5HGsjFeuAnABv49Z8UkwpczuiP8m3qmjo1QsO2t/sSB12IAx/aPWqvmN5hKC7RlyIE7QaYXzIqht+oZkrTfhe4D7MY9mYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712911154; c=relaxed/simple;
-	bh=6C6aLpyj0Z+TA672hlz8aMVf1BHtqYDAkYSXq5qkj70=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dXsq4eS7I7HFq1r6wQRzcUSRsHogFQ+GBsBpAmpjlRdklXkan68DBjWN+PTR5T7GTNisvf5jl95uHYf7EHE05iSLrzRvLs8qLLNU/Np17inxIw5K+e77upFU1FfI79zxb75o9/ap/vtYgnI6kkHgZXjJx8Oahj0l/fEJJYLXpxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lrGkQ3RP; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56e4a148aeeso261587a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 01:39:12 -0700 (PDT)
+	s=arc-20240116; t=1712911168; c=relaxed/simple;
+	bh=BKiNXIsCkaahnSmQczV2Zt9OVi9hAuJTJ2qFlAnZEfU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=F1prppOcNKDbKfuP7bJKf9CZDGgNZSbrrbBvu6A2e7bNZFlny1p1rJTzjatLx89UPWjx7IfdXkiOQeyioTU/FFzozAKlqYNBPYlrnr3x0lRJkshZJ0ZD5nfcJPTIGvaB7gqQ7veIRX0I3x14Ts0b3I7Pjrq6zVLBbJeWq90cCoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UeLqydDC; arc=none smtp.client-ip=209.85.219.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc236729a2bso660324276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 01:39:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712911151; x=1713515951; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=e0J1yegJWFmYmKya5wd2c47UHSHOnE6ubSSo/EOMOjI=;
-        b=lrGkQ3RPAFSfKIkPdJSV42t1zRnZ0xjoL91nyGYJIydQsfP0vo7iWlODAUDJpq8svF
-         1JNYJHD94Obg9g94cWLvB2wHI9wvrPQ+nqOMvH3oC7KdDX2qlsZItUuMV+i5QJeAwS63
-         gx2makBxDwiHTaDZ9f5YAzcB5Id2l2iKSM+q1P2ZhmGVPn7ya9BN+H3rVg4MryWLeAIw
-         GN7bn7vF2HQPR1zww6xgwN2qynMSIZZ6gI2knPreSJ9P33QAOFTp1nJG35jOoZ3XDVxQ
-         MAvf/i9GwvNuDpCIpiryuBDd1Qh6cWyUag1s9Avv49OXBu+o4+Hu41HMrpKMi37XSHXk
-         21Iw==
+        d=linaro.org; s=google; t=1712911166; x=1713515966; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BKiNXIsCkaahnSmQczV2Zt9OVi9hAuJTJ2qFlAnZEfU=;
+        b=UeLqydDCYx6GdtFOLh6VLP50BTgV0a+N0dTI7VsHXzyC/cFK+XNr9C2K9rDrXiSGB4
+         IFsZEb+nhsgxTJ4nc7aVFaOcVpeBxb4XQBo1B18F1hHHwJLOYC3sE1DOi+CgLj9EE9Td
+         dCgQEvyEvgof2zLE4Lim9xzUMA5N+dwQhyyvElCDjV0yZgIyPMdxdzyEUiaDm9Iax6QO
+         qpfcxk5h2M7YSfMsnPn+Rc/rVAOLlkd3paWvrBUnYfeIBYjjlwT8p4FS092irZWJkMbz
+         Umg8XZPopsTeIVu1h1Sd7DYj6k4QsUoEjXhJJNnZ3eLmtxQUAPU1koSj36kNZTuDII1g
+         3G2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712911151; x=1713515951;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e0J1yegJWFmYmKya5wd2c47UHSHOnE6ubSSo/EOMOjI=;
-        b=t1xKPTIvpoF5XTwLrQxL4Gq7z8DUCk+wJbP2cSBUMPy2A9eiU6UezbHaKG5qbuypMA
-         qBJ9cATVPYglF93E1UH5IjlSmA+deym+D5xuvr9bUZGbeyBHqc6g0+vTeIStPBTeowfz
-         E+aSxQ5LDxiN9EnuxxCTvTj9U3ZRORKqLvrjl46yp9UxSB5v+CTxKqlX6mdZ2dI9you5
-         30CpQYz4Le8wrK3d0xYB71SHmGK6QKHnhBfxk8tH6IzjMNpRGObUHHvhjXzOFU2suUik
-         WHs/JhN2JyJSNmeh6UcSdUgCHldl4Zl3OTm8oz/ID3PIWRbX9bL65zAC5H0nt9r9bwOR
-         8TTw==
-X-Forwarded-Encrypted: i=1; AJvYcCVlBZsJ81k8+hQSCUxnEV78FAQIIQ9Di9IswAv4UcrTs7buHj8YQNLWOjKMK4PhhySN4L5Xf5i8KGFCvsqGeARAWmQYf+6Wh5lhD7ZV
-X-Gm-Message-State: AOJu0Yx3n+aUGE8JN3G4QoZeobO6AOejW55c275ssi3iKG1H70Yb/yOx
-	ALKK4ITmx0Jv0UGZYWoJCtg7sadqufAGz9kByWlP0Zr+LT2fkY4O
-X-Google-Smtp-Source: AGHT+IHJOD5BFrp+ZVDKjkEBpm1iuOIXoLXZccSCmTb7oNL9FcLiSkg1eKw4Q221sIpf6ehW8LMJZA==
-X-Received: by 2002:a50:8e12:0:b0:56e:2433:a0ab with SMTP id 18-20020a508e12000000b0056e2433a0abmr1806709edw.34.1712911151080;
-        Fri, 12 Apr 2024 01:39:11 -0700 (PDT)
-Received: from fedora.iskraemeco.si ([193.77.86.250])
-        by smtp.gmail.com with ESMTPSA id l11-20020aa7c30b000000b0056fe3d81b5bsm1454634edq.79.2024.04.12.01.39.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 01:39:10 -0700 (PDT)
-From: Uros Bizjak <ubizjak@gmail.com>
-To: x86@kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Uros Bizjak <ubizjak@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>
-Subject: [PATCH] locking/pvqspinlock/x86: Remove redundant CMP after CMPXCHG in __raw_callee_save___pv_queued_spin_unlock()
-Date: Fri, 12 Apr 2024 10:38:53 +0200
-Message-ID: <20240412083908.282802-1-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1712911166; x=1713515966;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BKiNXIsCkaahnSmQczV2Zt9OVi9hAuJTJ2qFlAnZEfU=;
+        b=pZpFaW5GStWnsNdRj4qxjyv6Z49byE7I2klr1LROXOn/GIWhmlWWTAf1Z0S5A5rJjG
+         ReiY7ptoFEeGbyJ2u+3qg9gOG/6sidjWSvB925HEMaWZ7+3ijz8YLagPOghrxMWhwjAU
+         Fi1GbRFSWYT2V4oi6nUbVTIG8EAX4ckMj29Y6DUuvleZFOBiFtjiT1+TQVz9e4c9hVH+
+         cA5ixcLAXLF1srA6Jl+jkSYkBhyX5ELX53WAy3OmH05am11m4xvSO+CW6u8sVTOyaCNe
+         JAhJhcoFJNBw1ofGmGEev1UZEhSv5BPhhj7H3PD10s5Qx13Ib8XuONVrMr9/7sZZhEC8
+         oE4g==
+X-Forwarded-Encrypted: i=1; AJvYcCVmk0/1ikGlTnVG8BiIhEE6V5SDHX9xj9gHlquvkYlTlnTy0VkS8KOV766ScfAiplJZThSyhAG55KRwgQRRbAYZPAlXeJmeUoshkkmh
+X-Gm-Message-State: AOJu0Yz5VLsaBFHIWsLhhsfpykwx3M7rOLefjknkl4nMRgVKLmEwSt+p
+	Akp01VSGxgE/hYBVMC7R65X/17fy7mtL8luCW7AdwPgKE0O0wtWtCEwuKwOyWbLRVzCVVb72i28
+	jBxRcI2dbRHUdxFbOZooa5IxgQtTJyHM/Hyyshg==
+X-Google-Smtp-Source: AGHT+IHeqDWfes7rNkl5Br3aVeehemQeABtc1rPmx316LH4tLt/aurBODWB0ADu277UFiBEq0OYwZg2k2Ul3QX17x60=
+X-Received: by 2002:a25:ab13:0:b0:dcf:464d:8ec3 with SMTP id
+ u19-20020a25ab13000000b00dcf464d8ec3mr1811975ybi.3.1712911165802; Fri, 12 Apr
+ 2024 01:39:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240410112418.6400-20-wsa+renesas@sang-engineering.com> <20240410112418.6400-29-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20240410112418.6400-29-wsa+renesas@sang-engineering.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Fri, 12 Apr 2024 10:39:14 +0200
+Message-ID: <CACRpkdYD2PP0_BEBPSX7ZTRPtx3PJ9ERC+-xpRRnreN7KpRFtQ@mail.gmail.com>
+Subject: Re: [PATCH 09/18] i2c: nomadik: remove printout on handled timeouts
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-i2c@vger.kernel.org, Andi Shyti <andi.shyti@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-x86 CMPXCHG instruction returns success in the ZF flag. Remove
-redundant CMP instruction after CMPXCHG that performs the same check.
+On Wed, Apr 10, 2024 at 1:25=E2=80=AFPM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
 
-Also update the function comment to mention the modern version
-of the equivalent C code.
+> I2C and SMBus timeouts are not something the user needs to be informed
+> about on controller level. The client driver may know if that really is
+> a problem and give more detailed information to the user. The controller
+> should just pass this information upwards. Remove the printout.
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Boqun Feng <boqun.feng@gmail.com>
----
- arch/x86/include/asm/qspinlock_paravirt.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Thanks Wolfram,
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-diff --git a/arch/x86/include/asm/qspinlock_paravirt.h b/arch/x86/include/asm/qspinlock_paravirt.h
-index ef9697f20129..466af57b8ed6 100644
---- a/arch/x86/include/asm/qspinlock_paravirt.h
-+++ b/arch/x86/include/asm/qspinlock_paravirt.h
-@@ -25,9 +25,9 @@ __PV_CALLEE_SAVE_REGS_THUNK(__pv_queued_spin_unlock_slowpath, ".spinlock.text");
-  *
-  * void __lockfunc __pv_queued_spin_unlock(struct qspinlock *lock)
-  * {
-- *	u8 lockval = cmpxchg(&lock->locked, _Q_LOCKED_VAL, 0);
-+ *	u8 lockval = _Q_LOCKED_VAL;
-  *
-- *	if (likely(lockval == _Q_LOCKED_VAL))
-+ *	if (try_cmpxchg(&lock->locked, &lockval, 0))
-  *		return;
-  *	pv_queued_spin_unlock_slowpath(lock, lockval);
-  * }
-@@ -43,7 +43,6 @@ __PV_CALLEE_SAVE_REGS_THUNK(__pv_queued_spin_unlock_slowpath, ".spinlock.text");
- 	"mov   $0x1,%eax\n\t"						\
- 	"xor   %edx,%edx\n\t"						\
- 	LOCK_PREFIX "cmpxchg %dl,(%rdi)\n\t"				\
--	"cmp   $0x1,%al\n\t"						\
- 	"jne   .slowpath\n\t"						\
- 	"pop   %rdx\n\t"						\
- 	FRAME_END							\
--- 
-2.44.0
-
+Yours,
+Linus Walleij
 
