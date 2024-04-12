@@ -1,39 +1,46 @@
-Return-Path: <linux-kernel+bounces-141816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BDAA8A23D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:41:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D28C88A23D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:42:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B66D1C22FBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:41:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C57AB233CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35A5410A0D;
-	Fri, 12 Apr 2024 02:41:35 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85775DDA5
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 02:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C7A9168A8;
+	Fri, 12 Apr 2024 02:41:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="BDohIcd+"
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165AC134BD;
+	Fri, 12 Apr 2024 02:41:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712889694; cv=none; b=oivQ8QsfvGTujLzJJ0NFrXckUyhB3gfukY6Qt4H93V9Qx8Gt9kQLRD2jrX+9yGls61Uxda8CUd642Z9qaFoJ7a3+AfNGce7ZOj+PSdo6p1+iNelctHQDMpWI3vZmKm6iAhXdIdKQ/9eaSWp8x7+CuAHaPnUkDy+pvLWqGkC96/o=
+	t=1712889705; cv=none; b=DBS0AWrYFXFmxc5wRVxEFZHbCViuLTKWyKCtYfYxRADglb8DjeGbRtM2WzBOUFDEkW4wjj6f5XVRnhZHEIs/YeM8YRHYX2UuB2GkhRfdE8YLnlc1NpFW7bndxFHg1EAGccizmZlCOY0OTC1Vpyc2ATkqyWp4YSaTRvYO8n/eGp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712889694; c=relaxed/simple;
-	bh=r6duq0FA6ngzfgA6UdUjSasdAsCWCsz0uNz4wVJf528=;
+	s=arc-20240116; t=1712889705; c=relaxed/simple;
+	bh=kPTWyd27qtpz0j7CiJ8MLUsJpEDcMvRcWprNNYOooUM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BjEdohWrdR1BR9rihimULKvon6PRbSRWW1ZI47aPRYwxkv6z+9roi2EnCNPnI+aWDxnpUrAI/Vw4PpwycsW1rkaaUzCDh0kHScxIsPv/J9OOyEi/jFJOQJJBhF8j/5T9KsZqgD1OoMRF96JMBXfUF3B9/MkwQ1kY/kirBsAl73I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F2A11339;
-	Thu, 11 Apr 2024 19:41:59 -0700 (PDT)
-Received: from [10.162.42.6] (a077893.blr.arm.com [10.162.42.6])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A2F243F6C4;
-	Thu, 11 Apr 2024 19:41:26 -0700 (PDT)
-Message-ID: <5a2a74b3-f6cd-4cb6-8ee8-5dd7dc2bd686@arm.com>
-Date: Fri, 12 Apr 2024 08:11:23 +0530
+	 In-Reply-To:Content-Type; b=YFnOoBMQGV8dIZ+HPHQCEN8hdjdteSAI5DgvAoonHia0SlSnm/WZrMRO+3cHf7wf6Ka6w/99fwq4uLXKibTqDZFHjsnG1QqkHaR1++252H8Sq1YWVlS7+/qM3SlkGOpHAGxp63munPYOaL6o8BxLQfUk/+2PUJI5yOI4Pe/psco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=BDohIcd+; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712889693; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=YjwBFUKfQzATV8MN0CZKmv5/RE4aS2y4MQlXc0URcto=;
+	b=BDohIcd+BA1HWdfhgGDJAB4OvcRuI7Bm+8EGF0jJ3kxgDTZWRqtV6H2voAk90PRsZaJRHLsQBXgdXFba11+Jeb5m1zR7jdryVSmgFdvcwkMqcwSvhFHJm0fn6atpRyOQwowrId6DC/kycD9UfLkhihsPa7Gr66MuuRwohPm0bVU=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=tianruidong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W4MgPBj_1712889692;
+Received: from 30.221.130.139(mailfrom:tianruidong@linux.alibaba.com fp:SMTPD_---0W4MgPBj_1712889692)
+          by smtp.aliyun-inc.com;
+          Fri, 12 Apr 2024 10:41:32 +0800
+Message-ID: <8ff4deab-13ab-4fdf-b418-fbfefe46c087@linux.alibaba.com>
+Date: Fri, 12 Apr 2024 10:41:31 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,116 +48,59 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 5/8] KVM: arm64: Explicitly handle MDSELR_EL1 traps as
- UNDEFINED
+Subject: Re: [PATCH v2 0/2] ACPICA: AEST: Support AEST V2
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: robert.moore@intel.com, rafael.j.wysocki@intel.com, lenb@kernel.org,
+ linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20240410063602.41540-1-tianruidong@linux.alibaba.com>
+ <ZhZacAOVpAXK8lDE@bogus>
+ <e3c91a7b-4bcc-45ce-92e6-c6a50ad80479@linux.alibaba.com>
+ <Zhep-UCqqPlg9BIh@bogus>
 Content-Language: en-US
-To: Marc Zyngier <maz@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, Jonathan Corbet <corbet@lwn.net>,
- Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240405080008.1225223-1-anshuman.khandual@arm.com>
- <20240405080008.1225223-6-anshuman.khandual@arm.com>
- <86a5m8t8s6.wl-maz@kernel.org>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <86a5m8t8s6.wl-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Ruidong Tian <tianruidong@linux.alibaba.com>
+In-Reply-To: <Zhep-UCqqPlg9BIh@bogus>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
 
-On 4/5/24 15:45, Marc Zyngier wrote:
-> On Fri, 05 Apr 2024 09:00:05 +0100,
-> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+在 2024/4/11 17:14, Sudeep Holla 写道:
+> On Thu, Apr 11, 2024 at 03:54:48PM +0800, Ruidong Tian wrote:
 >>
->> Currently read_sanitised_id_aa64dfr0_el1() caps the ID_AA64DFR0.DebugVer to
->> ID_AA64DFR0_DebugVer_V8P8, resulting in FEAT_Debugv8p9 not being exposed to
->> the guest. MDSELR_EL1 register access in the guest, is currently trapped by
->> the existing configuration of the fine-grained traps.
+>>
+>> 在 2024/4/10 17:22, Sudeep Holla 写道:
+>>> On Wed, Apr 10, 2024 at 02:36:00PM +0800, Ruidong Tian wrote:
+>>>> AEST V2 was published[1], add V2 support based on AEST V1.
+>>>>
+>>>
+>>> Any changes to ACPICA has to get merged in the external ACPICA project.
+>>> Refer [1] for details from Rafael. You can also refer [2] in the kernel
+>>> docs.
+>>>
+>>
+>> Patch1 is just a fix to follow kernel code style.
 > 
-> Please add support for the HDFGxTR2_EL2 registers in the trap routing
-> arrays, add support for the corresponding FGUs in the corresponding
+> IIUC such changes are not allowed as ACPICA changes are always imported
+> from the external project. So you have to take same route as patch2
 
-Afraid that I might not have enough background here to sufficiently understand
-your suggestion above, but nonetheless here is an attempt in this regard.
+In ACPICA, all struct use typedef which is not allowed in kernel:
 
-- Add HDFGRTR2_EL2/HDFGWTR2_EL2 to enum vcpu_sysreg
-	enum vcpu_sysreg {
-		..........
-		VNCR(HDFGRTR2_EL2),
-		VNCR(HDFGWTR2_EL2),
-		..........
-	}
+     It's a **mistake** to use typedef for structures and pointers[1].
 
-- Add their VNCR mappings addresses
+I see all other structs in actbl2.h follow this rule, so I fix all 
+typedef in AEST struct to follow kernel code style. But i can not apple 
+this fix in ACPICA. Patch1 is just a kernel patch.
 
-	#define VNCR_HDFGRTR2_EL2      0x1A0
-	#define VNCR_HDFGWTR2_EL2      0x1B0
+[1]: Documentation/process/coding-style.rst
 
-- Add HDFGRTR2_EL2/HDFGWTR2_EL2 to sys_reg_descs[]
-
-static const struct sys_reg_desc sys_reg_descs[] = {
-	..........
-	EL2_REG_VNCR(HDFGRTR2_EL2, reset_val, 0),
-	EL2_REG_VNCR(HDFGWTR2_EL2, reset_val, 0),
-	..........
-}
-
-- Add HDFGRTR2_GROUP to enum fgt_group_id
-- Add HDFGRTR2_GROUP to reg_to_fgt_group_id()
-- Update triage_sysreg_trap() for HDFGRTR2_GROUP
-- Update __activate_traps_hfgxtr() both for HDFGRTR2_EL2 and HDFGWTR2_EL2
-- Updated __deactivate_traps_hfgxtr() both for HDFGRTR2_EL2 and HDFGWTR2_EL2
-
-> structure, and condition the UNDEF on the lack of *guest* support for
-> the feature.
-
-Does something like the following looks OK for preventing guest access into
-MDSELR_EL1 instead ?
-
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -1711,6 +1711,19 @@ static u64 read_sanitised_id_aa64dfr0_el1(struct kvm_vcpu *vcpu,
-        return val;
- }
- 
-+static bool trap_mdselr_el1(struct kvm_vcpu *vcpu,
-+                          struct sys_reg_params *p,
-+                          const struct sys_reg_desc *r)
-+{
-+       u64 dfr0 = read_sanitised_id_aa64dfr0_el1(vcpu, r);
-+       int dver = cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_DebugVer_SHIFT);
-+
-+       if (dver != ID_AA64DFR0_EL1_DebugVer_V8P9)
-+               return undef_access(vcpu, p, r);
-+
-+       return true;
-+}
-+
- static int set_id_aa64dfr0_el1(struct kvm_vcpu *vcpu,
-                               const struct sys_reg_desc *rd,
-                               u64 val)
-@@ -2203,7 +2216,7 @@ static const struct sys_reg_desc sys_reg_descs[] = {
-        { SYS_DESC(SYS_MDSCR_EL1), trap_debug_regs, reset_val, MDSCR_EL1, 0 },
-        DBG_BCR_BVR_WCR_WVR_EL1(2),
-        DBG_BCR_BVR_WCR_WVR_EL1(3),
--       { SYS_DESC(SYS_MDSELR_EL1), undef_access },
-+       { SYS_DESC(SYS_MDSELR_EL1), trap_mdselr_el1 },
-        DBG_BCR_BVR_WCR_WVR_EL1(4),
-        DBG_BCR_BVR_WCR_WVR_EL1(5),
-        DBG_BCR_BVR_WCR_WVR_EL1(6),
-
-I am sure this is rather incomplete, but will really appreciate if you could
-provide some details and pointers.
-
+> 1
+>> Patch2 had merged to
+>> acpica project, PR link can be see in patch2 comment:
+>>
+>>    Link: https://github.com/acpica/acpica/commit/ebb4979
 > 
-> In short, implement the architecture as described in the pseudocode,
-> and not a cheap shortcut.
-> 
-> Thanks,
-> 
-> 	M.
+> Thanks, this will then get imported into kernel next time ACPICA changes
+> get merged which usually happens regularly.
 > 
 
