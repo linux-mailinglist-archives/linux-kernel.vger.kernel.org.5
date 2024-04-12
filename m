@@ -1,960 +1,296 @@
-Return-Path: <linux-kernel+bounces-141859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 529FA8A2454
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:22:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04A5E8A2456
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:23:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D42941F23CA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:22:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE2C52832BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:23:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F6AC1C684;
-	Fri, 12 Apr 2024 03:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A2F17579;
+	Fri, 12 Apr 2024 03:23:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="Yy0K3BTg"
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="QCxsykk8"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFE771C29F;
-	Fri, 12 Apr 2024 03:21:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1771514A9D
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 03:23:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712892119; cv=none; b=mnCyRct8+oCC7I0nllOH1v7I83jbxdof8egFgercdcfi3fV91fe8uJ8gm7pnRNAWe9sV/qfEuGIEj/vGSqXqM6ApxDZpzpkqsHOLQmuK04xceDKOgdrx33xzLWIXbc87lB/Zf8J2gm11j5bYsfIUnHwVQ0I3g3Cr/mohWXau7cU=
+	t=1712892219; cv=none; b=tCHDWvIF/o0zoQoXc+1jMvfNJC3MsJ1DPejhRnQylJKyyZ5ummL/TF6L0FwT+VgAN66D9i4IGz0DxCEhn+bSR1nYVuBXK9BNcuUyJs5qngCivOmnHrQ4LE6u+rT7zFIDESMhMqLZq7DyYEhoqG5+ld/ch2lQWuQHdd9EEZzFvkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712892119; c=relaxed/simple;
-	bh=AKPe30Lkkb2ALaF3MpW3QAR6qGafn8d626/Wc/B6FjI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iLWsg9xMXFOBSgt+bbZULd0e9fC6wxntsLAdgUHPM19hyGhN6bWvPvW03fba1bV/8Jg1d6RsN8BpZKtpYTMxDC0C6fVvlAlsr7AFweJPxqMyhrFdHc0JARVcBJSHH8ZrJ+YPJWoVPS0J+z4FAcQ/Cnp1uVIJ5N3esFOcu7lYrUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=Yy0K3BTg; arc=none smtp.client-ip=148.163.135.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-	by mx0a-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43C2Ov8t017716;
-	Thu, 11 Apr 2024 23:21:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type:content-transfer-encoding; s=DKIM;
-	 bh=a4Mul6E1bdinbHUPpudcNBMMnS1YS7YiBaHomYCsbY0=; b=Yy0K3BTgsNhs
-	Vc6ZF9Jus/XQ5ZhDtyA+WuHB7ljf2MkyeaDHXxzYDuKsOnnr9E5B9/B9jfhTqaQW
-	UHXwl9EviZy1jdC+m+BN380exYA//i5it1Hu96AFx7UB/pEtyMz3/oP+4FG0rb0n
-	rnapq6bFD46pPstbYJvB0Uws87b6r8MTj/77+je3m99ozlL74bePfajx/f7OJiNx
-	qZ+qsL1oYK4KZwdQ/88LBOIIqr4QXDEBsb7DimjwciA+IRvbx5+SurIrsW+DKLKN
-	/i0IhZ48Y8tEuJAgK4FiNIVmx1wXJpT79BetcrPLAgMtSkM4APx4pG1lmPvNoXr0
-	CgkCzx9Ysw==
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-	by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3xek1et81e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Apr 2024 23:21:40 -0400 (EDT)
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-	by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 43C3LdKH021590
-	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 11 Apr 2024 23:21:39 -0400
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Thu, 11 Apr 2024 23:21:38 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Thu, 11 Apr 2024 23:21:38 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Thu, 11 Apr 2024 23:21:38 -0400
-Received: from kim-VirtualBox.ad.analog.com (KPALLER2-L03.ad.analog.com [10.117.220.36])
-	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 43C3L8pi021230;
-	Thu, 11 Apr 2024 23:21:32 -0400
-From: Kim Seer Paller <kimseer.paller@analog.com>
-To: <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC: Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "Liam Girdwood" <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-        "David Lechner" <dlechner@baylibre.com>,
-        Michael Hennerich
-	<michael.hennerich@analog.com>
-Subject: [PATCH 4/4] iio: dac: ltc2664: Add driver for LTC2664 and LTC2672
-Date: Fri, 12 Apr 2024 11:21:02 +0800
-Message-ID: <20240412032102.136071-5-kimseer.paller@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240412032102.136071-1-kimseer.paller@analog.com>
-References: <20240412032102.136071-1-kimseer.paller@analog.com>
+	s=arc-20240116; t=1712892219; c=relaxed/simple;
+	bh=lbZfCZMbltnxV6tgNSSvxf6vnYZpqdzKFJqirF1s91E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RKnQBujrDj4CR3gkeLgWBQSVF6+wz51SU1TypRer5QLXEAAKbx/uSg8p0Ec9o5jRYAJ9HUkYP5hc48yDrA98C+1c0rgxMRkKcJ8cudd0dEuVAq4z3riGS6iYzyzS/SDfd/9vmHsOCQqsKxhnnxRTuNE7kAnEf9eB74aWe0z4l5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QCxsykk8; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56fd95160e5so3651a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:23:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712892216; x=1713497016; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kDxKauMTJ+hoZAazHhBsNCDC1noxkdeHLCmejLMFsdg=;
+        b=QCxsykk8aAShHKZX7t+eVZqWQVBblZo2Xp+1H1JNhdROmTt0sWOU1Rf2pknx3Px4Cl
+         XT4kPFQqrGF9JrRDb4oBb4129v4jwmIRley8HFwc+Y3pJlvHyS6ebl5vwR0qBBrgAj7t
+         AeO/lIREMjXLxQmukF/4zdx1bzZnw9P8F98qAMRFBiRM1g6JnLIAhHdRegqMFsiKQPgY
+         xX5vsr76iu0ITttDAPna64Bd0Zw8XQnPdyn4nOjdPhoLzuk+9lJCryOpgBlZnCq8bpO/
+         K/OxCJyqNyzTzIu5EUe95OhtRjBNPAHtDJ26zM84rW1rh2vspqsl06DuK+TcBPjKTEi4
+         +X0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712892216; x=1713497016;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kDxKauMTJ+hoZAazHhBsNCDC1noxkdeHLCmejLMFsdg=;
+        b=k5hYEfa9LNaq7Jrryf9dz0oOkpE75opSIN4ryO3UfUdCNOBmd1b7ftB7bDwROxXHBt
+         evOJ4yAkgPJ9UJW0F+d0/4qCEQkb64kbuBCcikpVR6BxKHu4kwjv+g24bwQIbVzXIwdk
+         4S6hXmfFwZa8bFGHGCQBo5vYKhSDwUP+vdknqWffewQVfno+ucr8OnFI8AU17Ay0HS8W
+         0fqYdh83yithk0ETKVMUhHBz4DEwGWjqszmvIKCA7XRNVQwwuEsPt0jP2EaLwvMCtkc1
+         OzbdotwOQTv5CyJt2x3M7KOGh6g1+8XyLEOJnA6fkjBnc2DLzEkRftK7Xcy4RE7vcf5G
+         izmw==
+X-Forwarded-Encrypted: i=1; AJvYcCWmklIbR2ETvq3mRdllrmFJ/cLN/dVDLi+B9hiKrUjkf63G+/RTK/igqffTqi99PsJWrPNjIYxVmzFgsPFwEfFijMIdTzuHIjmf7Bci
+X-Gm-Message-State: AOJu0Yxd6dZ3zVC2xZUCMh1x9Gh0xR+hGPANGXwG/BfYgDXErPdhllFA
+	WmliXbLHD4V4pN9pdo8mMwOM05zp97qzc9hVzCRw/iesjchiBn5YRdj01IEKz5LailbhOF78t6D
+	jUpi+p/vi8RW7uLVF5/vCSerR9RG4W4+0H3xh
+X-Google-Smtp-Source: AGHT+IEjyRIqr/MBhVFLlV2YuYK6oIGg3tyUXMzSZsv/6YgDcwouS8Yjp1ti0XmShXkydlDPnZAQ6aMDoSfdmG3rQxg=
+X-Received: by 2002:aa7:df8c:0:b0:56e:34de:69c1 with SMTP id
+ b12-20020aa7df8c000000b0056e34de69c1mr96679edy.4.1712892216184; Thu, 11 Apr
+ 2024 20:23:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240410102710.35911-1-naresh.kamboju@linaro.org>
+ <20240410152307.GA25111@willie-the-truck> <CABVgOSmJX=scCGZ7FWafpKB8CdQD17Uh5MuTeoFx2BhGC0DMSw@mail.gmail.com>
+In-Reply-To: <CABVgOSmJX=scCGZ7FWafpKB8CdQD17Uh5MuTeoFx2BhGC0DMSw@mail.gmail.com>
+From: David Gow <davidgow@google.com>
+Date: Fri, 12 Apr 2024 11:23:23 +0800
+Message-ID: <CABVgOSkdZpm8z_T_DmZ+6GqZh4B3_uV5uu4AvBO=mEC5A6rm+w@mail.gmail.com>
+Subject: Re: BUG: KASAN: null-ptr-deref in _raw_spin_lock_irq next-20240410
+To: Will Deacon <will@kernel.org>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>, mic@digikod.net, keescook@chromium.org, 
+	rmoar@google.com, lkft-triage@lists.linaro.org, kunit-dev@googlegroups.com, 
+	linux-kernel@vger.kernel.org, peterz@infradead.org, mingo@redhat.com, 
+	longman@redhat.com, boqun.feng@gmail.com, anders.roxell@linaro.org, 
+	dan.carpenter@linaro.org, arnd@arndb.de, linux@roeck-us.net, 
+	Linux Kernel Functional Testing <lkft@linaro.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="0000000000001cf21d0615ddccbf"
+
+--0000000000001cf21d0615ddccbf
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: wPLmqIIC7UZmU9zH3468uIz8zTZU-xQ9
-X-Proofpoint-GUID: wPLmqIIC7UZmU9zH3468uIz8zTZU-xQ9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-11_14,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- bulkscore=0 mlxscore=0 clxscore=1015 suspectscore=0 phishscore=0
- priorityscore=1501 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404120023
+Content-Transfer-Encoding: quoted-printable
 
-LTC2664 4 channel, 16 bit Voltage Output SoftSpan DAC
-LTC2672 5 channel, 16 bit Current Output Softspan DAC
+On Thu, 11 Apr 2024 at 12:25, David Gow <davidgow@google.com> wrote:
+>
+> On Wed, 10 Apr 2024 at 23:23, Will Deacon <will@kernel.org> wrote:
+> >
+> > On Wed, Apr 10, 2024 at 03:57:10PM +0530, Naresh Kamboju wrote:
+> > > Following kernel crash noticed on Linux next-20240410 tag while runni=
+ng
+> > > kunit testing on qemu-arm64 and qemu-x86_64.
+> > >
+> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > >
+> > > Crash log on qemu-arm64:
+> > > ----------------
+> > > <3>[ 30.465716] BUG: KASAN: null-ptr-deref in _raw_spin_lock_irq (inc=
+lude/linux/instrumented.h:96 include/linux/atomic/atomic-instrumented.h:130=
+1 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/=
+linux/spinlock_api_smp.h:120 kernel/locking/spinlock.c:170)
+> > > <3>[   30.467097] Write of size 4 at addr 0000000000000008 by task sw=
+apper/0/1
+> > > <3>[   30.468059]
+> > > <3>[   30.468393] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G    B      =
+      N 6.9.0-rc3-next-20240410 #1
+> > > <3>[   30.469209] Hardware name: linux,dummy-virt (DT)
+> > > <3>[   30.469645] Call trace:
+> > > <3>[ 30.469919] dump_backtrace (arch/arm64/kernel/stacktrace.c:319)
+> > > <3>[ 30.471622] show_stack (arch/arm64/kernel/stacktrace.c:326)
+> > > <3>[ 30.472124] dump_stack_lvl (lib/dump_stack.c:117)
+> > > <3>[ 30.472947] print_report (mm/kasan/report.c:493)
+> > > <3>[ 30.473755] kasan_report (mm/kasan/report.c:603)
+> > > <3>[ 30.474524] kasan_check_range (mm/kasan/generic.c:175 mm/kasan/ge=
+neric.c:189)
+> > > <3>[ 30.475094] __kasan_check_write (mm/kasan/shadow.c:38)
+> > > <3>[ 30.475683] _raw_spin_lock_irq (include/linux/instrumented.h:96 i=
+nclude/linux/atomic/atomic-instrumented.h:1301 include/asm-generic/qspinloc=
+k.h:111 include/linux/spinlock.h:187 include/linux/spinlock_api_smp.h:120 k=
+ernel/locking/spinlock.c:170)
+> > > <3>[ 30.476257] wait_for_completion_timeout (kernel/sched/completion.=
+c:84 kernel/sched/completion.c:116 kernel/sched/completion.c:127 kernel/sch=
+ed/completion.c:167)
+> > > <3>[ 30.476909] kunit_try_catch_run (lib/kunit/try-catch.c:86)
+> > > <3>[ 30.477628] kunit_run_case_catch_errors (lib/kunit/test.c:544)
+> > > <3>[ 30.478311] kunit_run_tests (lib/kunit/test.c:635)
+> > > <3>[ 30.478865] __kunit_test_suites_init (lib/kunit/test.c:729 (discr=
+iminator 1))
+> > > <3>[ 30.479482] kunit_run_all_tests (lib/kunit/executor.c:276 lib/kun=
+it/executor.c:392)
+> > > <3>[ 30.480079] kernel_init_freeable (init/main.c:1578)
+> > > <3>[ 30.480747] kernel_init (init/main.c:1465)
+> > > <3>[ 30.481474] ret_from_fork (arch/arm64/kernel/entry.S:861)
+> > > <3>[   30.482080] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > <1>[   30.484503] Unable to handle kernel NULL pointer dereference at=
+ virtual address 0000000000000008
+> > > <1>[   30.485369] Mem abort info:
+> > > <1>[   30.485923]   ESR =3D 0x000000009600006b
+> > > <1>[   30.486943]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+> > > <1>[   30.487540]   SET =3D 0, FnV =3D 0
+> > > <1>[   30.488007]   EA =3D 0, S1PTW =3D 0
+> > > <1>[   30.488509]   FSC =3D 0x2b: level -1 translation fault
+> > > <1>[   30.489150] Data abort info:
+> > > <1>[   30.489610]   ISV =3D 0, ISS =3D 0x0000006b, ISS2 =3D 0x0000000=
+0
+> > > <1>[   30.490360]   CM =3D 0, WnR =3D 1, TnD =3D 0, TagAccess =3D 0
+> > > <1>[   30.491057]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D =
+0
+> > > <1>[   30.491822] [0000000000000008] user address but active_mm is sw=
+apper
+> > > <0>[   30.493008] Internal error: Oops: 000000009600006b [#1] PREEMPT=
+ SMP
+> > > <4>[   30.494105] Modules linked in:
+> > > <4>[   30.496244] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G    B      =
+      N 6.9.0-rc3-next-20240410 #1
+> > > <4>[   30.497171] Hardware name: linux,dummy-virt (DT)
+> > > <4>[   30.497905] pstate: 224000c9 (nzCv daIF +PAN -UAO +TCO -DIT -SS=
+BS BTYPE=3D--)
+> > > <4>[ 30.498895] pc : _raw_spin_lock_irq (arch/arm64/include/asm/atomi=
+c_lse.h:271 arch/arm64/include/asm/cmpxchg.h:120 arch/arm64/include/asm/cmp=
+xchg.h:169 include/linux/atomic/atomic-arch-fallback.h:2055 include/linux/a=
+tomic/atomic-arch-fallback.h:2173 include/linux/atomic/atomic-instrumented.=
+h:1302 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 inc=
+lude/linux/spinlock_api_smp.h:120 kernel/locking/spinlock.c:170)
+> > > <4>[ 30.499542] lr : _raw_spin_lock_irq (include/linux/atomic/atomic-=
+arch-fallback.h:2172 (discriminator 1) include/linux/atomic/atomic-instrume=
+nted.h:1302 (discriminator 1) include/asm-generic/qspinlock.h:111 (discrimi=
+nator 1) include/linux/spinlock.h:187 (discriminator 1) include/linux/spinl=
+ock_api_smp.h:120 (discriminator 1) kernel/locking/spinlock.c:170 (discrimi=
+nator 1))
+> > >
+> > > <trim>
+> >
+> > It's a shame that you have trimmed the register dump here.
+> >
+> > > <4>[   30.511022] Call trace:
+> > > <4>[ 30.511437] _raw_spin_lock_irq (arch/arm64/include/asm/atomic_lse=
+h:271 arch/arm64/include/asm/cmpxchg.h:120 arch/arm64/include/asm/cmpxchg.=
+h:169 include/linux/atomic/atomic-arch-fallback.h:2055 include/linux/atomic=
+/atomic-arch-fallback.h:2173 include/linux/atomic/atomic-instrumented.h:130=
+2 include/asm-generic/qspinlock.h:111 include/linux/spinlock.h:187 include/=
+linux/spinlock_api_smp.h:120 kernel/locking/spinlock.c:170)
+> > > <4>[ 30.512013] wait_for_completion_timeout (kernel/sched/completion.=
+c:84 kernel/sched/completion.c:116 kernel/sched/completion.c:127 kernel/sch=
+ed/completion.c:167)
+> > > <4>[ 30.512627] kunit_try_catch_run (lib/kunit/try-catch.c:86)
+> > > <4>[ 30.513188] kunit_run_case_catch_errors (lib/kunit/test.c:544)
+> > > <4>[ 30.513801] kunit_run_tests (lib/kunit/test.c:635)
+> >
+> > Ok, so 'task_struct->vfork_done' is NULL. Looks like this code was adde=
+d
+> > recently, so adding Micka=C3=ABl to cc.
+> >
+>
+> Thanks. This looks like a race condition where the KUnit test kthread
+> can terminate before we wait on it.
+>
+> Micka=C3=ABl, does this seem like a correct fix to you?
 
-Co-developed-by: Michael Hennerich <michael.hennerich@analog.com>
-Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
-Signed-off-by: Kim Seer Paller <kimseer.paller@analog.com>
----
- MAINTAINERS               |   1 +
- drivers/iio/dac/Kconfig   |  11 +
- drivers/iio/dac/Makefile  |   1 +
- drivers/iio/dac/ltc2664.c | 785 ++++++++++++++++++++++++++++++++++++++
- 4 files changed, 798 insertions(+)
- create mode 100644 drivers/iio/dac/ltc2664.c
+<snip>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index fba8bacc0..9b5c3d6d1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12845,6 +12845,7 @@ W:	https://ez.analog.com/linux-software-drivers
- F:	Documentation/ABI/testing/sysfs-bus-iio-dac-ltc2664
- F:	Documentation/ABI/testing/sysfs-bus-iio-dac-ltc2672
- F:	Documentation/devicetree/bindings/iio/dac/adi,ltc2664.yaml
-+F:	drivers/iio/dac/ltc2664.c
- 
- LTC2688 IIO DAC DRIVER
- M:	Nuno Sá <nuno.sa@analog.com>
-diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
-index 34eb40bb9..79b7a547e 100644
---- a/drivers/iio/dac/Kconfig
-+++ b/drivers/iio/dac/Kconfig
-@@ -333,6 +333,17 @@ config LTC2632
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called ltc2632.
- 
-+config LTC2664
-+	tristate "Analog Devices LTC2664 and LTC2672 DAC SPI driver"
-+	depends on SPI
-+	select REGMAP
-+	help
-+	  Say yes here to build support for Analog Devices
-+	  LTC2664 and LTC2672 converters (DAC).
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called ltc2664.
-+
- config M62332
- 	tristate "Mitsubishi M62332 DAC driver"
- 	depends on I2C
-diff --git a/drivers/iio/dac/Makefile b/drivers/iio/dac/Makefile
-index 55bf89739..62df8d7e4 100644
---- a/drivers/iio/dac/Makefile
-+++ b/drivers/iio/dac/Makefile
-@@ -35,6 +35,7 @@ obj-$(CONFIG_DS4424) += ds4424.o
- obj-$(CONFIG_LPC18XX_DAC) += lpc18xx_dac.o
- obj-$(CONFIG_LTC1660) += ltc1660.o
- obj-$(CONFIG_LTC2632) += ltc2632.o
-+obj-$(CONFIG_LTC2664) += ltc2664.o
- obj-$(CONFIG_LTC2688) += ltc2688.o
- obj-$(CONFIG_M62332) += m62332.o
- obj-$(CONFIG_MAX517) += max517.o
-diff --git a/drivers/iio/dac/ltc2664.c b/drivers/iio/dac/ltc2664.c
-new file mode 100644
-index 000000000..70c43fe17
---- /dev/null
-+++ b/drivers/iio/dac/ltc2664.c
-@@ -0,0 +1,785 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * LTC2664 4 channel, 16 bit Voltage Output SoftSpan DAC driver
-+ * LTC2672 5 channel, 16 bit Current Output Softspan DAC driver
-+ *
-+ * Copyright 2024 Analog Devices Inc.
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/cleanup.h>
-+#include <linux/device.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/iio/iio.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/mutex.h>
-+#include <linux/property.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
-+#include <linux/spi/spi.h>
-+
-+#define LTC2664_CMD_WRITE_N(n)		(0x00 + (n))
-+#define LTC2664_CMD_UPDATE_N(n)		(0x10 + (n))
-+#define LTC2664_CMD_WRITE_N_UPDATE_ALL	0x20
-+#define LTC2664_CMD_WRITE_N_UPDATE_N(n)	(0x30 + (n))
-+#define LTC2664_CMD_POWER_DOWN_N(n)	(0x40 + (n))
-+#define LTC2664_CMD_POWER_DOWN_ALL	0x50
-+#define LTC2664_CMD_SPAN_N(n)		(0x60 + (n))
-+#define LTC2664_CMD_CONFIG		0x70
-+#define LTC2664_CMD_MUX			0xB0
-+#define LTC2664_CMD_TOGGLE_SEL		0xC0
-+#define LTC2664_CMD_GLOBAL_TOGGLE	0xD0
-+#define LTC2664_CMD_NO_OPERATION	0xF0
-+#define LTC2664_REF_DISABLE		0x0001
-+#define LTC2664_MSPAN_SOFTSPAN		7
-+
-+#define LTC2672_MAX_CHANNEL		5
-+#define LTC2672_MAX_SPAN		7
-+#define LTC2672_OFFSET_CODE		384
-+#define LTC2672_SCALE_MULTIPLIER(n)	(50 * BIT(n))
-+
-+enum ltc2664_ids {
-+	LTC2664,
-+	LTC2672,
-+};
-+
-+enum {
-+	LTC2664_SPAN_RANGE_0V_5V,
-+	LTC2664_SPAN_RANGE_0V_10V,
-+	LTC2664_SPAN_RANGE_M5V_5V,
-+	LTC2664_SPAN_RANGE_M10V_10V,
-+	LTC2664_SPAN_RANGE_M2V5_2V5,
-+};
-+
-+enum {
-+	LTC2664_INPUT_A,
-+	LTC2664_INPUT_B,
-+	LTC2664_INPUT_B_AVAIL,
-+	LTC2664_POWERDOWN,
-+	LTC2664_TOGGLE_EN,
-+	LTC2664_GLOBAL_TOGGLE,
-+};
-+
-+static const u16 ltc2664_mspan_lut[8][2] = {
-+	{LTC2664_SPAN_RANGE_M10V_10V, 32768}, /* MPS2=0, MPS1=0, MSP0=0 (0)*/
-+	{LTC2664_SPAN_RANGE_M5V_5V, 32768}, /* MPS2=0, MPS1=0, MSP0=1 (1)*/
-+	{LTC2664_SPAN_RANGE_M2V5_2V5, 32768}, /* MPS2=0, MPS1=1, MSP0=0 (2)*/
-+	{LTC2664_SPAN_RANGE_0V_10V, 0}, /* MPS2=0, MPS1=1, MSP0=1 (3)*/
-+	{LTC2664_SPAN_RANGE_0V_10V, 32768}, /* MPS2=1, MPS1=0, MSP0=0 (4)*/
-+	{LTC2664_SPAN_RANGE_0V_5V, 0}, /* MPS2=1, MPS1=0, MSP0=1 (5)*/
-+	{LTC2664_SPAN_RANGE_0V_5V, 32768}, /* MPS2=1, MPS1=1, MSP0=0 (6)*/
-+	{LTC2664_SPAN_RANGE_0V_5V, 0} /* MPS2=1, MPS1=1, MSP0=1 (7)*/
-+};
-+
-+struct ltc2664_chip_info {
-+	enum ltc2664_ids id;
-+	const char *name;
-+	unsigned int num_channels;
-+	const struct iio_chan_spec *iio_chan;
-+	const int (*span_helper)[2];
-+	unsigned int num_span;
-+};
-+
-+struct ltc2664_chan {
-+	bool toggle_chan;
-+	bool powerdown;
-+	u8 span;
-+	u16 raw[2]; /* A/B */
-+};
-+
-+struct ltc2664_state {
-+	struct spi_device *spi;
-+	struct regmap *regmap;
-+	struct ltc2664_chan channels[LTC2672_MAX_CHANNEL];
-+	/* lock to protect against multiple access to the device and shared data */
-+	struct mutex lock;
-+	const struct ltc2664_chip_info *chip_info;
-+	struct iio_chan_spec *iio_channels;
-+	int vref;
-+	u32 toggle_sel;
-+	u32 global_toggle;
-+	u32 rfsadj;
-+};
-+
-+static const int ltc2664_span_helper[][2] = {
-+	{0, 5000}, {0, 10000}, {-5000, 5000}, {-10000, 10000}, {-2500, 2500},
-+};
-+
-+static const int ltc2672_span_helper[][2] = {
-+	{0, 3125}, {0, 6250}, {0, 12500}, {0, 25000}, {0, 50000}, {0, 100000},
-+	{0, 200000}, {0, 300000},
-+};
-+
-+static int ltc2664_scale_get(const struct ltc2664_state *st, int c, int *val)
-+{
-+	const struct ltc2664_chan *chan = &st->channels[c];
-+	const int (*span_helper)[2] = st->chip_info->span_helper;
-+	int span, fs;
-+
-+	span = chan->span;
-+	if (span < 0)
-+		return span;
-+
-+	switch (st->chip_info->id) {
-+	case LTC2664:
-+		fs = span_helper[span][1] - span_helper[span][0];
-+
-+		if (st->vref)
-+			*val = (fs / 2500) * st->vref;
-+		else
-+			*val = fs;
-+
-+		return 0;
-+	case LTC2672:
-+		if (span == LTC2672_MAX_SPAN)
-+			*val = 4800 * (1000 * st->vref / st->rfsadj);
-+		else
-+			*val = LTC2672_SCALE_MULTIPLIER(span) *
-+			       (1000 * st->vref / st->rfsadj);
-+
-+		return 0;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int ltc2664_offset_get(const struct ltc2664_state *st, int c, int *val)
-+{
-+	const struct ltc2664_chan *chan = &st->channels[c];
-+	int span;
-+
-+	span = chan->span;
-+	if (span < 0)
-+		return span;
-+
-+	if (st->chip_info->span_helper[span][0] < 0)
-+		*val = -32768;
-+	else if (chan->raw[0] >= LTC2672_OFFSET_CODE ||
-+		 chan->raw[1] >= LTC2672_OFFSET_CODE)
-+		*val = st->chip_info->span_helper[1][span] / 250;
-+	else
-+		*val = 0;
-+
-+	return 0;
-+}
-+
-+static int ltc2664_dac_code_write(struct ltc2664_state *st, u32 chan, u32 input,
-+				  u16 code)
-+{
-+	struct ltc2664_chan *c = &st->channels[chan];
-+	int ret, reg;
-+
-+	guard(mutex)(&st->lock);
-+	/* select the correct input register to write to */
-+	if (c->toggle_chan) {
-+		ret = regmap_write(st->regmap, LTC2664_CMD_TOGGLE_SEL,
-+				   input << chan);
-+		if (ret)
-+			return ret;
-+	}
-+	/*
-+	 * If in toggle mode the dac should be updated by an
-+	 * external signal (or sw toggle) and not here.
-+	 */
-+	if (st->toggle_sel & BIT(chan))
-+		reg = LTC2664_CMD_WRITE_N(chan);
-+	else
-+		reg = LTC2664_CMD_WRITE_N_UPDATE_N(chan);
-+
-+	ret = regmap_write(st->regmap, reg, code);
-+	if (ret)
-+		return ret;
-+
-+	c->raw[input] = code;
-+
-+	if (c->toggle_chan) {
-+		ret = regmap_write(st->regmap, LTC2664_CMD_TOGGLE_SEL,
-+				   st->toggle_sel);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return ret;
-+}
-+
-+static int ltc2664_dac_code_read(struct ltc2664_state *st, u32 chan, u32 input,
-+				 u32 *code)
-+{
-+	guard(mutex)(&st->lock);
-+	*code = st->channels[chan].raw[input];
-+
-+	return 0;
-+}
-+
-+static const int ltc2664_raw_range[] = {0, 1, U16_MAX};
-+
-+static int ltc2664_read_avail(struct iio_dev *indio_dev,
-+			      struct iio_chan_spec const *chan,
-+			      const int **vals, int *type, int *length,
-+			      long info)
-+{
-+	switch (info) {
-+	case IIO_CHAN_INFO_RAW:
-+		*vals = ltc2664_raw_range;
-+		*type = IIO_VAL_INT;
-+
-+		return IIO_AVAIL_RANGE;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int ltc2664_read_raw(struct iio_dev *indio_dev,
-+			    struct iio_chan_spec const *chan, int *val,
-+			    int *val2, long info)
-+{
-+	struct ltc2664_state *st = iio_priv(indio_dev);
-+	int ret;
-+
-+	switch (info) {
-+	case IIO_CHAN_INFO_RAW:
-+		ret = ltc2664_dac_code_read(st, chan->channel,
-+					    LTC2664_INPUT_A, val);
-+		if (ret)
-+			return ret;
-+
-+		return IIO_VAL_INT;
-+	case IIO_CHAN_INFO_OFFSET:
-+		ret = ltc2664_offset_get(st, chan->channel, val);
-+		if (ret)
-+			return ret;
-+
-+		return IIO_VAL_INT;
-+	case IIO_CHAN_INFO_SCALE:
-+		ret = ltc2664_scale_get(st, chan->channel, val);
-+		if (ret)
-+			return ret;
-+
-+		*val2 = 16;
-+
-+		return IIO_VAL_FRACTIONAL_LOG2;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int ltc2664_write_raw(struct iio_dev *indio_dev,
-+			     struct iio_chan_spec const *chan, int val,
-+			     int val2, long info)
-+{
-+	struct ltc2664_state *st = iio_priv(indio_dev);
-+
-+	switch (info) {
-+	case IIO_CHAN_INFO_RAW:
-+		if (val > U16_MAX || val < 0)
-+			return -EINVAL;
-+
-+		return ltc2664_dac_code_write(st, chan->channel,
-+					      LTC2664_INPUT_A, val);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static ssize_t ltc2664_reg_bool_get(struct iio_dev *indio_dev,
-+				    uintptr_t private,
-+				    const struct iio_chan_spec *chan,
-+				    char *buf)
-+{
-+	struct ltc2664_state *st = iio_priv(indio_dev);
-+	u32 val;
-+
-+	guard(mutex)(&st->lock);
-+	switch (private) {
-+	case LTC2664_POWERDOWN:
-+		val = st->channels[chan->channel].powerdown;
-+
-+		return sysfs_emit(buf, "%u\n", val);
-+	case LTC2664_TOGGLE_EN:
-+		val = !!(st->toggle_sel & BIT(chan->channel));
-+
-+		return sysfs_emit(buf, "%u\n", val);
-+	case LTC2664_GLOBAL_TOGGLE:
-+		val = st->global_toggle;
-+
-+		return sysfs_emit(buf, "%u\n", val);
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static ssize_t ltc2664_reg_bool_set(struct iio_dev *indio_dev,
-+				    uintptr_t private,
-+				    const struct iio_chan_spec *chan,
-+				    const char *buf, size_t len)
-+{
-+	struct ltc2664_state *st = iio_priv(indio_dev);
-+	int ret;
-+	bool en;
-+
-+	ret = kstrtobool(buf, &en);
-+	if (ret)
-+		return ret;
-+
-+	guard(mutex)(&st->lock);
-+	switch (private) {
-+	case LTC2664_POWERDOWN:
-+		ret = regmap_write(st->regmap,
-+				   en ? LTC2664_CMD_POWER_DOWN_N(chan->channel) :
-+				   LTC2664_CMD_UPDATE_N(chan->channel), en);
-+		if (ret)
-+			return ret;
-+
-+		st->channels[chan->channel].powerdown = en;
-+
-+		return len;
-+	case LTC2664_TOGGLE_EN:
-+		if (en)
-+			st->toggle_sel |= BIT(chan->channel);
-+		else
-+			st->toggle_sel &= ~BIT(chan->channel);
-+
-+		ret = regmap_write(st->regmap, LTC2664_CMD_TOGGLE_SEL,
-+				   st->toggle_sel);
-+		if (ret)
-+			return ret;
-+
-+		return len;
-+	case LTC2664_GLOBAL_TOGGLE:
-+		ret = regmap_write(st->regmap, LTC2664_CMD_GLOBAL_TOGGLE, en);
-+		if (ret)
-+			return ret;
-+
-+		st->global_toggle = en;
-+
-+		return len;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static ssize_t ltc2664_dac_input_read(struct iio_dev *indio_dev,
-+				      uintptr_t private,
-+				      const struct iio_chan_spec *chan,
-+				      char *buf)
-+{
-+	struct ltc2664_state *st = iio_priv(indio_dev);
-+	int ret;
-+	u32 val;
-+
-+	if (private == LTC2664_INPUT_B_AVAIL)
-+		return sysfs_emit(buf, "[%u %u %u]\n", ltc2664_raw_range[0],
-+				  ltc2664_raw_range[1],
-+				  ltc2664_raw_range[2] / 4);
-+
-+	ret = ltc2664_dac_code_read(st, chan->channel, private, &val);
-+	if (ret)
-+		return ret;
-+
-+	return sysfs_emit(buf, "%u\n", val);
-+}
-+
-+static ssize_t ltc2664_dac_input_write(struct iio_dev *indio_dev,
-+				       uintptr_t private,
-+				       const struct iio_chan_spec *chan,
-+				       const char *buf, size_t len)
-+{
-+	struct ltc2664_state *st = iio_priv(indio_dev);
-+	int ret;
-+	u16 val;
-+
-+	if (private == LTC2664_INPUT_B_AVAIL)
-+		return -EINVAL;
-+
-+	ret = kstrtou16(buf, 10, &val);
-+	if (ret)
-+		return ret;
-+
-+	ret = ltc2664_dac_code_write(st, chan->channel, private, val);
-+	if (ret)
-+		return ret;
-+
-+	return len;
-+}
-+
-+static int ltc2664_reg_access(struct iio_dev *indio_dev,
-+			      unsigned int reg,
-+			      unsigned int writeval,
-+			      unsigned int *readval)
-+{
-+	struct ltc2664_state *st = iio_priv(indio_dev);
-+
-+	if (readval)
-+		return -EOPNOTSUPP;
-+
-+	return regmap_write(st->regmap, reg, writeval);
-+}
-+
-+#define LTC2664_CHAN_EXT_INFO(_name, _what, _shared, _read, _write) {	\
-+	.name = _name,							\
-+	.read = (_read),						\
-+	.write = (_write),						\
-+	.private = (_what),						\
-+	.shared = (_shared),						\
-+}
-+
-+/*
-+ * For toggle mode we only expose the symbol attr (sw_toggle) in case a TGPx is
-+ * not provided in dts.
-+ */
-+static const struct iio_chan_spec_ext_info ltc2664_toggle_sym_ext_info[] = {
-+	LTC2664_CHAN_EXT_INFO("raw0", LTC2664_INPUT_A, IIO_SEPARATE,
-+			      ltc2664_dac_input_read, ltc2664_dac_input_write),
-+	LTC2664_CHAN_EXT_INFO("raw1", LTC2664_INPUT_B, IIO_SEPARATE,
-+			      ltc2664_dac_input_read, ltc2664_dac_input_write),
-+	LTC2664_CHAN_EXT_INFO("powerdown", LTC2664_POWERDOWN, IIO_SEPARATE,
-+			      ltc2664_reg_bool_get, ltc2664_reg_bool_set),
-+	LTC2664_CHAN_EXT_INFO("symbol", LTC2664_GLOBAL_TOGGLE, IIO_SEPARATE,
-+			      ltc2664_reg_bool_get, ltc2664_reg_bool_set),
-+	LTC2664_CHAN_EXT_INFO("toggle_en", LTC2664_TOGGLE_EN,
-+			      IIO_SEPARATE, ltc2664_reg_bool_get,
-+			      ltc2664_reg_bool_set),
-+	{}
-+};
-+
-+static const struct iio_chan_spec_ext_info ltc2664_ext_info[] = {
-+	LTC2664_CHAN_EXT_INFO("powerdown", LTC2664_POWERDOWN, IIO_SEPARATE,
-+			      ltc2664_reg_bool_get, ltc2664_reg_bool_set),
-+	{}
-+};
-+
-+#define LTC2664_CHANNEL(_chan) {					\
-+	.indexed = 1,							\
-+	.output = 1,							\
-+	.channel = (_chan),						\
-+	.info_mask_separate = BIT(IIO_CHAN_INFO_SCALE) |		\
-+		BIT(IIO_CHAN_INFO_OFFSET) | BIT(IIO_CHAN_INFO_RAW),	\
-+	.info_mask_separate_available = BIT(IIO_CHAN_INFO_RAW),		\
-+	.ext_info = ltc2664_ext_info,					\
-+}
-+
-+static const struct iio_chan_spec ltc2664_channels[] = {
-+	LTC2664_CHANNEL(0),
-+	LTC2664_CHANNEL(1),
-+	LTC2664_CHANNEL(2),
-+	LTC2664_CHANNEL(3),
-+};
-+
-+static const struct iio_chan_spec ltc2672_channels[] = {
-+	LTC2664_CHANNEL(0),
-+	LTC2664_CHANNEL(1),
-+	LTC2664_CHANNEL(2),
-+	LTC2664_CHANNEL(3),
-+	LTC2664_CHANNEL(4),
-+};
-+
-+static const struct ltc2664_chip_info ltc2664_chip = {
-+	.id = LTC2664,
-+	.name = "ltc2664",
-+	.num_channels = ARRAY_SIZE(ltc2664_channels),
-+	.iio_chan = ltc2664_channels,
-+	.span_helper = ltc2664_span_helper,
-+	.num_span = ARRAY_SIZE(ltc2664_span_helper),
-+};
-+
-+static const struct ltc2664_chip_info ltc2672_chip = {
-+	.id = LTC2672,
-+	.name = "ltc2672",
-+	.num_channels = ARRAY_SIZE(ltc2672_channels),
-+	.iio_chan = ltc2672_channels,
-+	.span_helper = ltc2672_span_helper,
-+	.num_span = ARRAY_SIZE(ltc2672_span_helper),
-+};
-+
-+static int ltc2664_span_lookup(const struct ltc2664_state *st, int min, int max)
-+{
-+	const int (*span_helper)[2] = st->chip_info->span_helper;
-+	int span;
-+
-+	for (span = 0; span < st->chip_info->num_span; span++) {
-+		if (min == span_helper[span][0] && max == span_helper[span][1])
-+			return span;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int ltc2664_channel_config(struct ltc2664_state *st)
-+{
-+	const struct ltc2664_chip_info *chip_info = st->chip_info;
-+	struct device *dev = &st->spi->dev;
-+	u32 reg, tmp[2], mspan;
-+	int ret, span;
-+
-+	mspan = LTC2664_MSPAN_SOFTSPAN;
-+	ret = device_property_read_u32(dev, "adi,manual-span-operation-config",
-+				       &mspan);
-+	if (!ret) {
-+		if (chip_info->id != LTC2664)
-+			return dev_err_probe(dev, -EINVAL,
-+				"adi,manual-span-operation-config not supported\n");
-+
-+		if (mspan > ARRAY_SIZE(ltc2664_mspan_lut))
-+			return dev_err_probe(dev, -EINVAL,
-+				"adi,manual-span-operation-config not in range\n");
-+	}
-+
-+	st->rfsadj = 20000;
-+	ret = device_property_read_u32(dev, "adi,rfsadj-ohms", &st->rfsadj);
-+	if (!ret) {
-+		if (chip_info->id != LTC2672)
-+			return dev_err_probe(dev, -EINVAL,
-+					     "adi,rfsadj-ohms not supported\n");
-+
-+		if ((st->rfsadj < 19000 || st->rfsadj > 41000) ||
-+		     chip_info->id != LTC2672)
-+			return dev_err_probe(dev, -EINVAL,
-+					     "adi,rfsadj-ohms not in range\n");
-+	}
-+
-+	device_for_each_child_node_scoped(dev, child) {
-+		struct ltc2664_chan *chan;
-+
-+		ret = fwnode_property_read_u32(child, "reg", &reg);
-+		if (ret)
-+			return dev_err_probe(dev, ret,
-+					     "Failed to get reg property\n");
-+
-+		if (reg >= chip_info->num_channels)
-+			return dev_err_probe(dev, -EINVAL,
-+					     "reg bigger than: %d\n",
-+					     chip_info->num_channels);
-+
-+		chan = &st->channels[reg];
-+
-+		if (fwnode_property_read_bool(child, "adi,toggle-mode")) {
-+			chan->toggle_chan = true;
-+			/* assume sw toggle ABI */
-+			st->iio_channels[reg].ext_info = ltc2664_toggle_sym_ext_info;
-+			/*
-+			 * Clear IIO_CHAN_INFO_RAW bit as toggle channels expose
-+			 * out_voltage/current_raw{0|1} files.
-+			 */
-+			__clear_bit(IIO_CHAN_INFO_RAW,
-+				    &st->iio_channels[reg].info_mask_separate);
-+		}
-+
-+		chan->raw[0] = ltc2664_mspan_lut[mspan][1];
-+		chan->raw[1] = ltc2664_mspan_lut[mspan][1];
-+
-+		chan->span = ltc2664_mspan_lut[mspan][0];
-+
-+		ret = fwnode_property_read_u32_array(child, "adi,output-range-microvolt",
-+						     tmp, ARRAY_SIZE(tmp));
-+		if (!ret && mspan == LTC2664_MSPAN_SOFTSPAN) {
-+			/* voltage type measurement */
-+			st->iio_channels[reg].type = IIO_VOLTAGE;
-+
-+			span = ltc2664_span_lookup(st, (int)tmp[0] / 1000,
-+						   tmp[1] / 1000);
-+			if (span < 0)
-+				return dev_err_probe(dev, -EINVAL,
-+						     "output range not valid");
-+
-+			ret = regmap_write(st->regmap,
-+					   LTC2664_CMD_SPAN_N(reg),
-+					   span);
-+			if (ret)
-+				return dev_err_probe(dev, -EINVAL,
-+						"failed to set chan settings\n");
-+
-+			chan->span = span;
-+		}
-+
-+		ret = fwnode_property_read_u32(child,
-+					       "adi,output-range-microamp",
-+					       &tmp[0]);
-+		if (!ret) {
-+			/* current type measurement */
-+			st->iio_channels[reg].type = IIO_CURRENT;
-+
-+			span = ltc2664_span_lookup(st, 0,
-+						   (int)tmp[0] / 1000);
-+			if (span < 0)
-+				return dev_err_probe(dev, -EINVAL,
-+						     "output range not valid");
-+
-+			ret = regmap_write(st->regmap,
-+					   LTC2664_CMD_SPAN_N(reg),
-+					   span + 1);
-+			if (ret)
-+				return dev_err_probe(dev, -EINVAL,
-+						     "failed to set chan settings\n");
-+
-+			chan->span = span;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int ltc2664_setup(struct ltc2664_state *st, struct regulator *vref)
-+{
-+	const struct ltc2664_chip_info *chip_info = st->chip_info;
-+	struct gpio_desc *gpio;
-+	int ret;
-+
-+	/*
-+	 * If we have a clr/reset pin, use that to reset the chip.
-+	 */
-+	gpio = devm_gpiod_get_optional(&st->spi->dev, "clr", GPIOD_OUT_HIGH);
-+	if (IS_ERR(gpio))
-+		return dev_err_probe(&st->spi->dev, PTR_ERR(gpio),
-+				     "Failed to get reset gpio");
-+	if (gpio) {
-+		usleep_range(1000, 1200);
-+		/* bring device out of reset */
-+		gpiod_set_value_cansleep(gpio, 0);
-+	}
-+
-+	/*
-+	 * Duplicate the default channel configuration as it can change during
-+	 * @ltc2664_channel_config()
-+	 */
-+	st->iio_channels = devm_kmemdup(&st->spi->dev, chip_info->iio_chan,
-+					chip_info->num_channels *
-+					sizeof(*chip_info->iio_chan),
-+					GFP_KERNEL);
-+
-+	ret = ltc2664_channel_config(st);
-+	if (ret)
-+		return ret;
-+
-+	if (!vref)
-+		return 0;
-+
-+	return regmap_set_bits(st->regmap, LTC2664_CMD_CONFIG, LTC2664_REF_DISABLE);
-+}
-+
-+static void ltc2664_disable_regulator(void *regulator)
-+{
-+	regulator_disable(regulator);
-+}
-+
-+static const struct regmap_config ltc2664_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 16,
-+	.max_register = LTC2664_CMD_NO_OPERATION,
-+};
-+
-+static const struct iio_info ltc2664_info = {
-+	.write_raw = ltc2664_write_raw,
-+	.read_raw = ltc2664_read_raw,
-+	.read_avail = ltc2664_read_avail,
-+	.debugfs_reg_access = ltc2664_reg_access,
-+};
-+
-+static int ltc2664_probe(struct spi_device *spi)
-+{
-+	static const char * const regulators[] = { "vcc", "iovcc" };
-+	const struct ltc2664_chip_info *chip_info;
-+	struct device *dev = &spi->dev;
-+	struct regulator *vref_reg;
-+	struct iio_dev *indio_dev;
-+	struct ltc2664_state *st;
-+	int ret;
-+
-+	indio_dev = devm_iio_device_alloc(dev, sizeof(*st));
-+	if (!indio_dev)
-+		return -ENOMEM;
-+
-+	st = iio_priv(indio_dev);
-+	st->spi = spi;
-+
-+	chip_info = spi_get_device_match_data(spi);
-+	if (!chip_info)
-+		return -ENOMEM;
-+
-+	st->chip_info = chip_info;
-+
-+	mutex_init(&st->lock);
-+
-+	st->regmap = devm_regmap_init_spi(spi, &ltc2664_regmap_config);
-+	if (IS_ERR(st->regmap))
-+		return dev_err_probe(dev, PTR_ERR(st->regmap),
-+				     "Failed to init regmap");
-+
-+	ret = devm_regulator_bulk_get_enable(dev, ARRAY_SIZE(regulators),
-+					     regulators);
-+	if (ret)
-+		return dev_err_probe(dev, ret, "Failed to enable regulators\n");
-+
-+	vref_reg = devm_regulator_get_optional(dev, "vref");
-+	if (IS_ERR(vref_reg)) {
-+		if (PTR_ERR(vref_reg) != -ENODEV)
-+			return dev_err_probe(dev, PTR_ERR(vref_reg),
-+					     "Failed to get vref regulator");
-+
-+		vref_reg = NULL;
-+
-+		/* internal reference */
-+		if (chip_info->id == LTC2664)
-+			st->vref = 2500;
-+		else
-+			st->vref = 1250;
-+	} else {
-+		ret = regulator_enable(vref_reg);
-+		if (ret)
-+			return dev_err_probe(dev, ret,
-+					     "Failed to enable vref regulators\n");
-+
-+		ret = devm_add_action_or_reset(dev, ltc2664_disable_regulator,
-+					       vref_reg);
-+		if (ret)
-+			return ret;
-+
-+		ret = regulator_get_voltage(vref_reg);
-+		if (ret < 0)
-+			return dev_err_probe(dev, ret, "Failed to get vref\n");
-+
-+		st->vref = ret / 1000;
-+	}
-+
-+	ret = ltc2664_setup(st, vref_reg);
-+	if (ret)
-+		return ret;
-+
-+	indio_dev->name = chip_info->name;
-+	indio_dev->info = &ltc2664_info;
-+	indio_dev->modes = INDIO_DIRECT_MODE;
-+	indio_dev->channels = st->iio_channels;
-+	indio_dev->num_channels = chip_info->num_channels;
-+
-+	return devm_iio_device_register(dev, indio_dev);
-+}
-+
-+static const struct spi_device_id ltc2664_id[] = {
-+	{ "ltc2664", (kernel_ulong_t)&ltc2664_chip },
-+	{ "ltc2672", (kernel_ulong_t)&ltc2672_chip },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(spi, ltc2664_id);
-+
-+static const struct of_device_id ltc2664_of_id[] = {
-+	{ .compatible = "adi,ltc2664", .data = &ltc2664_chip },
-+	{ .compatible = "adi,ltc2672", .data = &ltc2672_chip },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, ltc2664_of_id);
-+
-+static struct spi_driver ltc2664_driver = {
-+	.driver = {
-+		.name = "ltc2664",
-+		.of_match_table = ltc2664_of_id,
-+	},
-+	.probe = ltc2664_probe,
-+	.id_table = ltc2664_id,
-+};
-+module_spi_driver(ltc2664_driver);
-+
-+MODULE_AUTHOR("Michael Hennerich <michael.hennerich@analog.com>");
-+MODULE_AUTHOR("Kim Seer Paller <kimseer.paller@analog.com>");
-+MODULE_DESCRIPTION("Analog Devices LTC2664 and LTC2672 DAC");
-+MODULE_LICENSE("GPL");
--- 
-2.34.1
+Thanks, everyone. I've sent this out here:
+https://lore.kernel.org/linux-kselftest/20240412025903.489470-1-davidgow@go=
+ogle.com/
 
+-- David
+
+--0000000000001cf21d0615ddccbf
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPqgYJKoZIhvcNAQcCoIIPmzCCD5cCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg0EMIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+7xDrOPfX3COqq162RFg/MFcGA1UdIARQME4wCQYHZ4EMAQUBATBBBgkrBgEEAaAyASgwNDAyBggr
+BgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wDAYDVR0TAQH/
+BAIwADCBmgYIKwYBBQUHAQEEgY0wgYowPgYIKwYBBQUHMAGGMmh0dHA6Ly9vY3NwLmdsb2JhbHNp
+Z24uY29tL2NhL2dzYXRsYXNyM3NtaW1lY2EyMDIwMEgGCCsGAQUFBzAChjxodHRwOi8vc2VjdXJl
+Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcnQwHwYDVR0jBBgw
+FoAUfMwKaNei6x4schvRzV2Vb4378mMwRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cDovL2NybC5nbG9i
+YWxzaWduLmNvbS9jYS9nc2F0bGFzcjNzbWltZWNhMjAyMC5jcmwwDQYJKoZIhvcNAQELBQADggEB
+AK0lDd6/eSh3qHmXaw1YUfIFy07B25BEcTvWgOdla99gF1O7sOsdYaTz/DFkZI5ghjgaPJCovgla
+mRMfNcxZCfoBtsB7mAS6iOYjuwFOZxi9cv6jhfiON6b89QWdMaPeDddg/F2Q0bxZ9Z2ZEBxyT34G
+wlDp+1p6RAqlDpHifQJW16h5jWIIwYisvm5QyfxQEVc+XH1lt+taSzCfiBT0ZLgjB9Sg+zAo8ys6
+5PHxFaT2a5Td/fj5yJ5hRSrqy/nj/hjT14w3/ZdX5uWg+cus6VjiiR/5qGSZRjHt8JoApD6t6/tg
+ITv8ZEy6ByumbU23nkHTMOzzQSxczHkT+0q10/MxggJqMIICZgIBATBoMFQxCzAJBgNVBAYTAkJF
+MRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFzIFIz
+IFNNSU1FIENBIDIwMjACEAHS+TgZvH/tCq5FcDC0n9IwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZI
+hvcNAQkEMSIEIHWHApJ3JHSd/D3m9wDQisHnrwRrzg1us0No1d3DdegMMBgGCSqGSIb3DQEJAzEL
+BgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTI0MDQxMjAzMjMzNlowaQYJKoZIhvcNAQkPMVww
+WjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkq
+hkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDSR/Ey
+eacphn03rTKP/F1WHn0zv8gcBogpzk6u3+2Yx1AGCuA9RHSIbAJGfWNyezYpecBUbQgOqDSX8DCI
+ukbVG9Oz5WZNN9YKefNUiocX4jEzcGrnxbQQM1aTsbJfqMUYnOXJak4B5Yw3odyVKUjmc85h7KYv
+oUZeOYvdo1u60jBmbphFcad6YGuPjaFpspnzLmyQ1Kw48pzLjreN74zCYlKAvlA3S21Q3TsE2dM4
+S9NoZh+X/boR7+xMjrMm1/4l0XMXrhJ9cMIjempepTKvz7WoxBSmjP078pTfWaV5XN02Tex+cB1x
+fNO3/wfifHAirEFGYltm3C4TUupPM8ui
+--0000000000001cf21d0615ddccbf--
 
