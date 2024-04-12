@@ -1,156 +1,126 @@
-Return-Path: <linux-kernel+bounces-142747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D6108A2FB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:42:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74D798A2FC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:45:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E8FBB213B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:42:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A638E1C23C0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6194184A41;
-	Fri, 12 Apr 2024 13:42:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83AF785654;
+	Fri, 12 Apr 2024 13:44:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gLlUvI1E"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dUmCERz1"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 178095914E;
-	Fri, 12 Apr 2024 13:42:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A91A684FAB;
+	Fri, 12 Apr 2024 13:44:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712929332; cv=none; b=Wi9rMdhO4JLRJwOHb6aZuF44h/RRLJolQ3aj/P1GwI2ZY7I2xG5/jnLzVyFDoLT1eiZIeNDAfG/97qjriozKk3Axsa3J21SicNp6MufpAWpM6mCZx19/th4nBkCQpzx346WmvKLVkKN/G0LDw4bg9kr+yv9O/m+vKlKOwmnLHEI=
+	t=1712929463; cv=none; b=B/x+EdVjXoSlCywLqIrhEUZz8XZK+whll6iWpPwnxLd5LIUoreoPfBK9aiNjkdf0++mqCc7SFR+73F6U5cITcE20Rx9KaiA6c6MKaiil2gvv0B19RhlUCoTdYeAWmnl+Ylqq8CxPk4U2GAEEmckE+vGDJSWrMXTI+nb01pluyUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712929332; c=relaxed/simple;
-	bh=xfhdUWr+FK3ehEq4BJSMZt6PGr4ulOUSnBROKlcRrFg=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=KZbc02B5XUt/wLWCXVnvEctrHMq62uBLw3EuLHUdzAPQqbbd5VFqFogm0j6Jo7j7ayW2vObybRv2U4TnbE+MSGf5TcrC+JUfdCUEoL1P3jG9S5nDzr8mBN7ZBEmhcqGFQA/5fSM9kLPYDhMu/Aq33xuh6QOOIRoUVJrnofEv06I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gLlUvI1E; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712929331; x=1744465331;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=xfhdUWr+FK3ehEq4BJSMZt6PGr4ulOUSnBROKlcRrFg=;
-  b=gLlUvI1Eeq6xmIWCIwoW01+qdcInd1XPskzz2/Y/11hRY4FAozQUV7jL
-   5yetN10C3/TQKRNCJyYxb3IEdamj3YyOfWkDEACilsbz/30NqJPFu+v5G
-   jco0w0tKX2vTZZOv3tqRaXGHGbCWqpP4K9txpGbj95V9dfR7opG/OFebV
-   PWs3Y83BFjzY+9L3Uy5O399Tjc+JlL+/u0SITnOIRcPrwHzV44bAj+HR6
-   4l1YnIXHK0rtg2TpkXsiXerJNgDEoS0zanKLCCBRaJtO/tnHh8NkNdDMJ
-   T03znNOEoqMa2EXGowUyoZ3QkcC9ejAo5xiYarY1JYB8N3vwpDGX8Pu1N
-   g==;
-X-CSE-ConnectionGUID: BTShjTvcQBO5Z2sAJvlYxQ==
-X-CSE-MsgGUID: CgIM26wNQAKA874tcgIbvQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8938566"
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="8938566"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 06:42:08 -0700
-X-CSE-ConnectionGUID: dex42KcgRSyWJZm0NznP4w==
-X-CSE-MsgGUID: IOloDzXJQCSWDfkvDwtNsg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="58663577"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.32])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 06:42:06 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 12 Apr 2024 16:42:01 +0300 (EEST)
-To: Mark Pearson <mpearson-lenovo@squebb.ca>
-cc: Mark Pearson <markpearson@lenovo.com>, Hans de Goede <hdegoede@redhat.com>, 
-    "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] platform/x86: think-lmi: Convert container_of()
- macros to static inline
-In-Reply-To: <212159e6-66b5-45d3-bce8-d6fde43370fe@app.fastmail.com>
-Message-ID: <3bbac14a-23fd-33f3-a55c-1dde0c81bc29@linux.intel.com>
-References: <20240412130903.2836-1-ilpo.jarvinen@linux.intel.com> <212159e6-66b5-45d3-bce8-d6fde43370fe@app.fastmail.com>
+	s=arc-20240116; t=1712929463; c=relaxed/simple;
+	bh=8geQCAid38ejEfA5++6WxsYiP02Q2buqSdVzCqz+9h4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Qs2Weeko9C1gm0MR9SyNSJ3O1ZJauVRiGmSaSl02ZuK3QyWJkoZ0AX8pfYC7EuT9hkASQo7BDJB3UQOSlWDWxZQep9wcogmDHbkQuw9xMFeMu699fVrXuCRXPQ0XtXDbteFohCmZosqGI7u4v6FVaeMtEl2vycPqN+A3fdg1X+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dUmCERz1; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56e78970853so3070036a12.0;
+        Fri, 12 Apr 2024 06:44:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712929460; x=1713534260; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5HaWhaqdaDfNBrfCl5nObWWrEOo5ajao2bIANOPV6KI=;
+        b=dUmCERz1taGZKLJeoAkVhnuB7GYeaxyeNCbJcCFr7l8pEwbi58ck7mdVcWw6//ubzn
+         /rp8MZiIAFea75+DSatrgb0/UixoRBUDXsR/Xdx3A2W3LUbJWdxllXcord61pCAxgGIV
+         fu/81wvwF2z4n3SPDOZlcp65jRza3bvOhkkKesjEutp/VJJK0sh1AvdPKsdKRzEBO7rh
+         id20Ywfbj1sTptN9DXZ6Xfsohn/6w3s8yaFheI6yFF2JVyKCEDL54RTbV81PYsLO/g7+
+         7RPzymj23BI9nU6X7qf7X5WucvqKiKvxO/RYiQR7kR2KvONe/sQ27d2a2/aN+hA1ThRt
+         aoeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712929460; x=1713534260;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5HaWhaqdaDfNBrfCl5nObWWrEOo5ajao2bIANOPV6KI=;
+        b=Vxk8FJARpaizA750UCDABDgomj9EB6JId0NKZB4joxUz1oG35xW04QLNpbmTARNn3P
+         m3ZQGyXLDx8UnBHqvS0xH+7+LFhAlELJTWv9dJuJLMa+Gf92eUk/6NQCOOoWkz718EUJ
+         yLMfqCyuRhZMnPRYVR4+Ms05BxXqObrMTQ0gqO2PJX9RpALqIYxSu1xHYk+7mml+6eX+
+         A3s521vm7GrLB8SG3yFp9CVE9Ullwjha/wWgO1MrDGDPDlfRhSd6w0RUrI/mj9I1dOT0
+         dI01eHtXOJJ5j+4rncYUlVFQoUYdAQSM3cdP2/AVNOUUD7jrI44Wt4K6L7oaUGZO/oRZ
+         3i8w==
+X-Forwarded-Encrypted: i=1; AJvYcCW2/X61F1181GzhA+oYmolxA8JOSypWuw2H3/CAIx1NvHKpLjxDfZ0J6H1XY6xngc4ORVVEsb8VwP1fZG48RcejUsK5D174/UH/g36eWj/B71FtyNOU9gsb1t8+sgpwAM0DwzdMzpPwZ9N74l5fvuIKTxcWqGiVIoDeNaK9Q594TRsKycLe
+X-Gm-Message-State: AOJu0YwdxiATibW//DKA9SN6B4BIoW8fCktlXnwp9IDimRc5DdMPCOBd
+	eANkeYWg5p5ZOfFGMfZXSp9w+HzQ82RFGGtLU6r4OrmGLA/MCnPsZLV9vzqMp3bJudd9K0NVLSB
+	3PlWHnBlzjwxRcRu4V4b4MI5/790=
+X-Google-Smtp-Source: AGHT+IFEC8uEkeMBRcT6w34by85kMHZS8oKJ5rLKlabaLd1wkl5XRtWFVYL35N3RsZ6AdPmJmF+szA/5GkrvS36dQyQ=
+X-Received: by 2002:a17:907:2ce6:b0:a52:a25:2077 with SMTP id
+ hz6-20020a1709072ce600b00a520a252077mr5020537ejc.14.1712929459777; Fri, 12
+ Apr 2024 06:44:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-449063926-1712929321=:1014"
+References: <20240410104002.1197-1-zhi.mao@mediatek.com> <20240410104002.1197-3-zhi.mao@mediatek.com>
+ <CAHp75VfF0pbrKXjWZg7sTr-T=_CbjP+deFQP-VLCGX8ooahctg@mail.gmail.com> <ZhkBIee2X0UY40yD@kekkonen.localdomain>
+In-Reply-To: <ZhkBIee2X0UY40yD@kekkonen.localdomain>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Fri, 12 Apr 2024 16:43:43 +0300
+Message-ID: <CAHp75VcKFCvzcESqsc8OQ5SVuO4gJiE5ZEUwkdoqvLzM=2PejQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] media: i2c: Add GT97xx VCM driver
+To: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: Zhi Mao <zhi.mao@mediatek.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, 
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, 
+	Heiko Stuebner <heiko@sntech.de>, Hans Verkuil <hverkuil-cisco@xs4all.nl>, 
+	Hans de Goede <hdegoede@redhat.com>, Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, 
+	Alain Volmat <alain.volmat@foss.st.com>, Paul Elder <paul.elder@ideasonboard.com>, 
+	Mehdi Djait <mehdi.djait@bootlin.com>, Bingbu Cao <bingbu.cao@intel.com>, 
+	linux-media@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org, shengnan.wang@mediatek.com, 
+	yaya.chang@mediatek.com, yunkec@chromium.org, 10572168@qq.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323328-449063926-1712929321=:1014
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-
-On Fri, 12 Apr 2024, Mark Pearson wrote:
-
-> Thanks Ilpo,
->=20
-> On Fri, Apr 12, 2024, at 9:09 AM, Ilpo J=C3=A4rvinen wrote:
-> > The macros to_tlmi_pwd_setting() and to_tlmi_attr_setting() are fragile
-> > because they expect the variable name to be 'kobj', otherwise the build
-> > will fail because container_of()'s 3rd parameter (member) is taken from
-> > the parameter given to the macro.
+On Fri, Apr 12, 2024 at 12:39=E2=80=AFPM Sakari Ailus
+<sakari.ailus@linux.intel.com> wrote:
+> On Wed, Apr 10, 2024 at 07:00:02PM +0300, Andy Shevchenko wrote:
+> > > +static int gt97xx_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh=
+ *fh)
+> > > +{
+> > > +       return pm_runtime_resume_and_get(sd->dev);
+> > > +}
+> > > +
+> > > +static int gt97xx_close(struct v4l2_subdev *sd, struct v4l2_subdev_f=
+h *fh)
+> > > +{
+> > > +       return pm_runtime_put(sd->dev);
+> > > +}
 > >
-> > While at it, move them into a more logical place.
-> >
-> > Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> > ---
-> >  drivers/platform/x86/think-lmi.c | 13 ++++++++++---
-> >  1 file changed, 10 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/platform/x86/think-lmi.c=20
-> > b/drivers/platform/x86/think-lmi.c
-> > index 9345316b45db..0f2264bb7577 100644
-> > --- a/drivers/platform/x86/think-lmi.c
-> > +++ b/drivers/platform/x86/think-lmi.c
-> > @@ -175,9 +175,6 @@ MODULE_PARM_DESC(debug_support, "Enable debug=20
-> > command support");
-> >  #define TLMI_SMP_PWD BIT(6) /* System Management */
-> >  #define TLMI_CERT    BIT(7) /* Certificate Based */
-> >=20
-> > -#define to_tlmi_pwd_setting(kobj)  container_of(kobj, struct=20
-> > tlmi_pwd_setting, kobj)
-> > -#define to_tlmi_attr_setting(kobj)  container_of(kobj, struct=20
-> > tlmi_attr_setting, kobj)
-> > -
-> >  static const struct tlmi_err_codes tlmi_errs[] =3D {
-> >  =09{"Success", 0},
-> >  =09{"Not Supported", -EOPNOTSUPP},
-> > @@ -198,6 +195,16 @@ static struct think_lmi tlmi_priv;
-> >  static const struct class *fw_attr_class;
-> >  static DEFINE_MUTEX(tlmi_mutex);
-> >=20
-> > +static inline struct tlmi_pwd_setting *to_tlmi_pwd_setting(struct=20
-> > kobject *kobj)
-> > +{
-> > +=09return container_of(kobj, struct tlmi_pwd_setting, kobj);
-> > +}
-> > +
-> > +static inline struct tlmi_attr_setting *to_tlmi_attr_setting(struct=20
-> > kobject *kobj)
-> > +{
-> > +=09return container_of(kobj, struct tlmi_attr_setting, kobj);
-> > +}
-> > +
-> >  /* Convert BIOS WMI error string to suitable error code */
-> >  static int tlmi_errstr_to_err(const char *errstr)
-> >  {
-> > --=20
-> > 2.39.2
->=20
-> Looks good to me. Let me know if you want this tested on Lenovo HW and=20
-> I'll do a build with this in - but it looks very uncontroversial :)=20
->=20
-> Reviewed-by Mark Pearson <mpearson-lenovo@squebbb.ca>
+> > Hmm... Shouldn't v4l2 take care about these (PM calls)?
+>
+> Ideally yes. We don't have a good mechanism for this at the moment as the
+> lens isn't part of the image pipeline. Non-data links may be used for thi=
+s
+> in the future but that's not implemented yet.
 
-Yes, pretty uncontroversial so probably not worth the effort to test on=20
-HW. The compile done by lkp is good enough to capture stupid mistakes=20
-(which it already passed here internally before I even sent these out).
+Aren't you using devlinks? It was designed exactly to make sure that
+the PM chain of calls goes in the correct order.
 
 --=20
- i.
-
---8323328-449063926-1712929321=:1014--
+With Best Regards,
+Andy Shevchenko
 
