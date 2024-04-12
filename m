@@ -1,163 +1,295 @@
-Return-Path: <linux-kernel+bounces-142583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F2F98A2D74
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A86348A2D75
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:31:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D81742824C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:31:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D5A7286A08
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:31:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94CD154F86;
-	Fri, 12 Apr 2024 11:31:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="caZylvsN"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB50750A6C;
-	Fri, 12 Apr 2024 11:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1CD45491F;
+	Fri, 12 Apr 2024 11:31:15 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1EB05579F
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:31:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712921469; cv=none; b=bTY/tyKAMvXDZDZ5PayP5HDwfuFBrGQTNgaDw3u1TkcXl0fZSQ3GpJc2JTfG2sf/hoJ29xLmo87HsxB7vng799JTl0TRTRWzbdhI1sULy7L9kANVY6FM+xtRbEhiYzjaV4Fm61K3BVk62n+uQNzZSbbZUXvApKK/gLyHAZw0mPk=
+	t=1712921475; cv=none; b=hIbfcjbMGnfSsaViwwqN+FQINMSX66szIZ5kl0kzWH88hLEJ+Y3HfyaF1Qyppo/dAHr9e7qAX4JKKJ1+nreCu8nIT/7yJ5J2fc/FSO3sReIi6M/BVOLyvrTouY55SOF1VGe0QvgOlQuWt6Mikq6E/G9Ug1pFZebH897FDGKIZP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712921469; c=relaxed/simple;
-	bh=L960/YQ59RzbOd8aJJgKPfZJ+eguGt9hV8xigRjXTME=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BhuxBJZ9KRF2dsivc1CVIv0AqZS7X8txublp0GCNL5H14VHXX0haH1LwWNxnRSatgG7bWV7Io0PhLlIgePGTVN2oSYEVJpFvbUbqPoLiHRTwCKNsAzTTdO6ufVQABtkrX3ufDvrtSi/Ofda/kV+w1VRAz0tP0q38yHjND6gmy9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=caZylvsN; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712921468; x=1744457468;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=L960/YQ59RzbOd8aJJgKPfZJ+eguGt9hV8xigRjXTME=;
-  b=caZylvsN9zz+dU+ioKn5TP25fa07DShjHnzKP4lLs2iEWbXWEkmj72Nb
-   umtVhkaNcwfjkhOxw2nSfVs5JwpMqL2efcLLzFE8gIiAIQE5j7bEyVF5+
-   ScqdXCf/bzfp8KX6+nHL3ClpPN5YyXMG/RK9gWyi4Qtk3E9mFUGT8j5VJ
-   3wg6JfkADdLMIQIewm+4W5VZPZveMLXfmFyIB+Ae3CSxwzXTM9BrZHCUv
-   Vd0x2+P88qyexEVyobG1/qsP0sPAJIwN3Om+7OYj1bZ3zTiAQu/72dVnd
-   eXtI3FfA2OnNBc980HecdgTm0zgHeegp7urOyHpgp4M1oZqe2MXy8uY4K
-   w==;
-X-CSE-ConnectionGUID: 54COLSCpRAOcSrqKP+Xo6A==
-X-CSE-MsgGUID: y9glu24hQ9eAAehn+JAnpQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="25827805"
-X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
-   d="scan'208";a="25827805"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 04:31:08 -0700
-X-CSE-ConnectionGUID: 5KxX8M8xRwqYtvWtVt2zMA==
-X-CSE-MsgGUID: f6EmvKVfRCe5jt5OCUxFdw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
-   d="scan'208";a="21630403"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 04:31:05 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 7AEBA120359;
-	Fri, 12 Apr 2024 14:31:02 +0300 (EEST)
-Date: Fri, 12 Apr 2024 11:31:02 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Umang Jain <umang.jain@ideasonboard.com>
-Cc: linux-media@vger.kernel.org,
-	Alexander Shiyan <eagle.alexander923@gmail.com>,
-	Kieran Bingham <kieran.bingham@ideasonboard.com>,
-	open list <linux-kernel@vger.kernel.org>,
-	Dave Stevenson <dave.stevenson@raspberrypi.com>,
-	jacopo.mondi@ideasonboard.com
-Subject: Re: [PATCH v4 2/6] media: imx335: Parse fwnode properties
-Message-ID: <Zhkbdu2miLeCNbIg@kekkonen.localdomain>
-References: <20240402140924.10009-1-umang.jain@ideasonboard.com>
- <20240402140924.10009-3-umang.jain@ideasonboard.com>
+	s=arc-20240116; t=1712921475; c=relaxed/simple;
+	bh=2Tj7lNIpUpCYC+JAYGGDQXfoqtROazbatZ7tNnKHFQg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Am6kj0RcPwCft4Qa1TYeQac0GHpr14U0/Jy4q0uH+xVWxGOyLf21i2+e2Wvo6x3617v5TSlBFJattTQ/2TrXn4WijjNu/es/riESS90SXaRatt6vTM2VfxOLG7XzFcqDxdTegcJsr9hautArQjFPMMm0yT6n8hTRuD49mENEWYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 149B7339;
+	Fri, 12 Apr 2024 04:31:41 -0700 (PDT)
+Received: from [10.57.73.208] (unknown [10.57.73.208])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2B57F3F766;
+	Fri, 12 Apr 2024 04:31:09 -0700 (PDT)
+Message-ID: <2f6cc7a4-ea64-40aa-842a-8d85309a5cbd@arm.com>
+Date: Fri, 12 Apr 2024 12:31:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402140924.10009-3-umang.jain@ideasonboard.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/5] mm: swap: entirely map large folios found in
+ swapcache
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
+ baolin.wang@linux.alibaba.com, chrisl@kernel.org, david@redhat.com,
+ hanchuanhua@oppo.com, hannes@cmpxchg.org, hughd@google.com,
+ kasong@tencent.com, surenb@google.com, v-songbaohua@oppo.com,
+ willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
+ yosryahmed@google.com, yuzhao@google.com, ziy@nvidia.com,
+ linux-kernel@vger.kernel.org
+References: <20240409082631.187483-1-21cnbao@gmail.com>
+ <20240409082631.187483-5-21cnbao@gmail.com>
+ <1008d688-757a-4c2d-86bd-793f5e787d30@arm.com>
+ <CAGsJ_4wqXFcS=WnfTSuS1osPh-NGtUF_izA2U3VVEv3wEhsudA@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4wqXFcS=WnfTSuS1osPh-NGtUF_izA2U3VVEv3wEhsudA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Umang, Kieran,
-
-On Tue, Apr 02, 2024 at 07:39:20PM +0530, Umang Jain wrote:
-> From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+On 12/04/2024 00:30, Barry Song wrote:
+> On Fri, Apr 12, 2024 at 3:33 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 09/04/2024 09:26, Barry Song wrote:
+>>> From: Chuanhua Han <hanchuanhua@oppo.com>
+>>>
+>>> When a large folio is found in the swapcache, the current implementation
+>>> requires calling do_swap_page() nr_pages times, resulting in nr_pages
+>>> page faults. This patch opts to map the entire large folio at once to
+>>> minimize page faults. Additionally, redundant checks and early exits
+>>> for ARM64 MTE restoring are removed.
+>>>
+>>> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
+>>> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
+>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+>>> ---
+>>>  mm/memory.c | 64 +++++++++++++++++++++++++++++++++++++++++++----------
+>>>  1 file changed, 52 insertions(+), 12 deletions(-)
+>>>
+>>> diff --git a/mm/memory.c b/mm/memory.c
+>>> index c4a52e8d740a..9818dc1893c8 100644
+>>> --- a/mm/memory.c
+>>> +++ b/mm/memory.c
+>>> @@ -3947,6 +3947,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>       pte_t pte;
+>>>       vm_fault_t ret = 0;
+>>>       void *shadow = NULL;
+>>> +     int nr_pages = 1;
+>>> +     unsigned long start_address = vmf->address;
+>>> +     pte_t *start_pte = vmf->pte;
+>>
+>> possible bug?: there are code paths that assign to vmf-pte below in this
+>> function, so couldn't start_pte be stale in some cases? I'd just do the
+>> assignment (all 4 of these variables in fact) in an else clause below, after any
+>> messing about with them is complete.
+>>
+>> nit: rename start_pte -> start_ptep ?
 > 
-> Call the V4L2 fwnode device parser to handle controls that are
-> standardised by the framework.
+> Agreed.
 > 
-> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
-> ---
->  drivers/media/i2c/imx335.c | 24 +++++++++++++++++++-----
->  1 file changed, 19 insertions(+), 5 deletions(-)
+>>
+>>> +     bool any_swap_shared = false;
+>>
+>> Suggest you defer initialization of this to your "We hit large folios in
+>> swapcache" block below, and init it to:
+>>
+>>         any_swap_shared = !pte_swp_exclusive(vmf->pte);
+>>
+>> Then the any_shared semantic in swap_pte_batch() can be the same as for
+>> folio_pte_batch().
+>>
+>>>
+>>>       if (!pte_unmap_same(vmf))
+>>>               goto out;
+>>> @@ -4137,6 +4141,35 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>        */
+>>>       vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
+>>>                       &vmf->ptl);
+>>
+>> bug: vmf->pte may be NULL and you are not checking it until check_pte:. Byt you
+>> are using it in this block. It also seems odd to do all the work in the below
+>> block under the PTL but before checking if the pte has changed. Suggest moving
+>> both checks here.
 > 
-> diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
-> index c633ea1380e7..b8cf85984127 100644
-> --- a/drivers/media/i2c/imx335.c
-> +++ b/drivers/media/i2c/imx335.c
-> @@ -1227,10 +1227,12 @@ static int imx335_init_controls(struct imx335 *imx335)
->  {
->  	struct v4l2_ctrl_handler *ctrl_hdlr = &imx335->ctrl_handler;
->  	const struct imx335_mode *mode = imx335->cur_mode;
-> +	struct v4l2_fwnode_device_properties props;
->  	u32 lpfr;
->  	int ret;
->  
-> -	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 7);
-> +	/* v4l2_fwnode_device_properties can add two more controls */
-> +	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 9);
->  	if (ret)
->  		return ret;
->  
-> @@ -1296,15 +1298,27 @@ static int imx335_init_controls(struct imx335 *imx335)
->  		imx335->hblank_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
->  
->  	if (ctrl_hdlr->error) {
-> -		dev_err(imx335->dev, "control init failed: %d\n",
-> -			ctrl_hdlr->error);
-> -		v4l2_ctrl_handler_free(ctrl_hdlr);
-> -		return ctrl_hdlr->error;
-> +		ret = ctrl_hdlr->error;
-> +		dev_err(imx335->dev, "control init failed: %d\n", ret);
-> +		goto free_ctrl_hdlr;
->  	}
->  
-> +	ret = v4l2_fwnode_device_parse(imx335->dev, &props);
-> +	if (ret)
-> +		goto free_ctrl_hdlr;
-> +
-> +	ret = v4l2_ctrl_new_fwnode_properties(ctrl_hdlr, &imx335_ctrl_ops,
-> +					      &props);
-> +	if (ret)
-> +		goto free_ctrl_hdlr;
+> agreed.
+> 
+>>
+>>> +
+>>> +     /* We hit large folios in swapcache */
+>>> +     if (start_pte && folio_test_large(folio) && folio_test_swapcache(folio)) {
+>>
+>> What's the start_pte check protecting?
+> 
+> This is exactly protecting the case vmf->pte==NULL but for some reason it was
+> assigned in the beginning of the function incorrectly. The intention of the code
+> was actually doing start_pte = vmf->pte after "vmf->pte = pte_offset_map_lock".
+> 
+>>
+>>> +             int nr = folio_nr_pages(folio);
+>>> +             int idx = folio_page_idx(folio, page);
+>>> +             unsigned long folio_start = vmf->address - idx * PAGE_SIZE;
+>>> +             unsigned long folio_end = folio_start + nr * PAGE_SIZE;
+>>> +             pte_t *folio_ptep;
+>>> +             pte_t folio_pte;
+>>> +
+>>> +             if (unlikely(folio_start < max(vmf->address & PMD_MASK, vma->vm_start)))
+>>> +                     goto check_pte;
+>>> +             if (unlikely(folio_end > pmd_addr_end(vmf->address, vma->vm_end)))
+>>> +                     goto check_pte;
+>>> +
+>>> +             folio_ptep = vmf->pte - idx;
+>>> +             folio_pte = ptep_get(folio_ptep);
+>>> +             if (!is_swap_pte(folio_pte) || non_swap_entry(pte_to_swp_entry(folio_pte)) ||
+>>> +                 swap_pte_batch(folio_ptep, nr, folio_pte, &any_swap_shared) != nr)
+>>> +                     goto check_pte;
+>>> +
+>>> +             start_address = folio_start;
+>>> +             start_pte = folio_ptep;
+>>> +             nr_pages = nr;
+>>> +             entry = folio->swap;
+>>> +             page = &folio->page;
+>>> +     }
+>>> +
+>>> +check_pte:
+>>>       if (unlikely(!vmf->pte || !pte_same(ptep_get(vmf->pte), vmf->orig_pte)))
+>>>               goto out_nomap;
+>>>
+>>> @@ -4190,6 +4223,10 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>                        */
+>>>                       exclusive = false;
+>>>               }
+>>> +
+>>> +             /* Reuse the whole large folio iff all entries are exclusive */
+>>> +             if (nr_pages > 1 && any_swap_shared)
+>>> +                     exclusive = false;
+>>
+>> If you init any_shared with the firt pte as I suggested then you could just set
+>> exclusive = !any_shared at the top of this if block without needing this
+>> separate fixup.
+> 
+> Since your swap_pte_batch() function checks that all PTEs have the same
+> exclusive bits, I'll be removing any_shared first in version 3 per David's
+> suggestions. We could potentially develop "any_shared" as an incremental
+> patchset later on .
 
-This works but it'd be nice if v4l2_ctrl_new_fwnode_properties() behaved as
-the control framework functions, i.e. bail out if the handler's state has
-an error. Then you could have a single check for that, dropping the two
-checks above.
+Ahh yes, good point. I'll admit that your conversation about this went over my
+head at the time since I hadn't yet looked at this.
 
-Feel free to post a patch. :-)
+> 
+>>>       }
+>>>
+>>>       /*
+>>> @@ -4204,12 +4241,14 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>        * We're already holding a reference on the page but haven't mapped it
+>>>        * yet.
+>>>        */
+>>> -     swap_free(entry);
+>>> +     swap_free_nr(entry, nr_pages);
+>>>       if (should_try_to_free_swap(folio, vma, vmf->flags))
+>>>               folio_free_swap(folio);
+>>>
+>>> -     inc_mm_counter(vma->vm_mm, MM_ANONPAGES);
+>>> -     dec_mm_counter(vma->vm_mm, MM_SWAPENTS);
+>>> +     folio_ref_add(folio, nr_pages - 1);
+>>> +     add_mm_counter(vma->vm_mm, MM_ANONPAGES, nr_pages);
+>>> +     add_mm_counter(vma->vm_mm, MM_SWAPENTS, -nr_pages);
+>>> +
+>>>       pte = mk_pte(page, vma->vm_page_prot);
+>>>
+>>>       /*
+>>> @@ -4219,33 +4258,34 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>        * exclusivity.
+>>>        */
+>>>       if (!folio_test_ksm(folio) &&
+>>> -         (exclusive || folio_ref_count(folio) == 1)) {
+>>> +         (exclusive || (folio_ref_count(folio) == nr_pages &&
+>>> +                        folio_nr_pages(folio) == nr_pages))) {
+>>>               if (vmf->flags & FAULT_FLAG_WRITE) {
+>>>                       pte = maybe_mkwrite(pte_mkdirty(pte), vma);
+>>>                       vmf->flags &= ~FAULT_FLAG_WRITE;
+>>>               }
+>>>               rmap_flags |= RMAP_EXCLUSIVE;
+>>>       }
+>>> -     flush_icache_page(vma, page);
+>>> +     flush_icache_pages(vma, page, nr_pages);
+>>>       if (pte_swp_soft_dirty(vmf->orig_pte))
+>>>               pte = pte_mksoft_dirty(pte);
+>>>       if (pte_swp_uffd_wp(vmf->orig_pte))
+>>>               pte = pte_mkuffd_wp(pte);
+>>
+>> I'm not sure about all this... you are smearing these SW bits from the faulting
+>> PTE across all the ptes you are mapping. Although I guess actually that's ok
+>> because swap_pte_batch() only returns a batch with all these bits the same?
+> 
+> Initially, I didn't recognize the issue at all because the tested
+> architecture arm64
+> didn't include these bits. However, after reviewing your latest swpout series,
+> which verifies the consistent bits for soft_dirty and uffd_wp, I now
+> feel  its safety
+> even for platforms with these bits.
 
-> +
->  	imx335->sd.ctrl_handler = ctrl_hdlr;
->  
->  	return 0;
-> +
-> +free_ctrl_hdlr:
-> +	v4l2_ctrl_handler_free(ctrl_hdlr);
-> +	return ret;
->  }
->  
->  /**
+Yep, agreed.
 
--- 
-Regards,
+> 
+>>
+>>> -     vmf->orig_pte = pte;
+>>
+>> Instead of doing a readback below, perhaps:
+>>
+>>         vmf->orig_pte = pte_advance_pfn(pte, nr_pages);
+> 
+> Nice !
+> 
+>>
+>>>
+>>>       /* ksm created a completely new copy */
+>>>       if (unlikely(folio != swapcache && swapcache)) {
+>>> -             folio_add_new_anon_rmap(folio, vma, vmf->address);
+>>> +             folio_add_new_anon_rmap(folio, vma, start_address);
+>>>               folio_add_lru_vma(folio, vma);
+>>>       } else {
+>>> -             folio_add_anon_rmap_pte(folio, page, vma, vmf->address,
+>>> -                                     rmap_flags);
+>>> +             folio_add_anon_rmap_ptes(folio, page, nr_pages, vma, start_address,
+>>> +                                      rmap_flags);
+>>>       }
+>>>
+>>>       VM_BUG_ON(!folio_test_anon(folio) ||
+>>>                       (pte_write(pte) && !PageAnonExclusive(page)));
+>>> -     set_pte_at(vma->vm_mm, vmf->address, vmf->pte, pte);
+>>> -     arch_do_swap_page(vma->vm_mm, vma, vmf->address, pte, vmf->orig_pte);
+>>> +     set_ptes(vma->vm_mm, start_address, start_pte, pte, nr_pages);
+>>> +     vmf->orig_pte = ptep_get(vmf->pte);
+>>> +     arch_do_swap_page(vma->vm_mm, vma, start_address, pte, pte);
+>>>
+>>>       folio_unlock(folio);
+>>>       if (folio != swapcache && swapcache) {
+>>> @@ -4269,7 +4309,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>>       }
+>>>
+>>>       /* No need to invalidate - it was non-present before */
+>>> -     update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
+>>> +     update_mmu_cache_range(vmf, vma, start_address, start_pte, nr_pages);
+>>>  unlock:
+>>>       if (vmf->pte)
+>>>               pte_unmap_unlock(vmf->pte, vmf->ptl);
+>>
+> 
+> Thanks
+> Barry
 
-Sakari Ailus
 
