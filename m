@@ -1,100 +1,101 @@
-Return-Path: <linux-kernel+bounces-141838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBCD38A241F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:01:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 987158A2440
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:17:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A12581F22D7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:01:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 306C01F233D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 721A11757A;
-	Fri, 12 Apr 2024 03:00:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BNRDc/hD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC22518E1C;
-	Fri, 12 Apr 2024 03:00:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7DAC15491;
+	Fri, 12 Apr 2024 03:17:05 +0000 (UTC)
+Received: from njjs-sys-mailin01.njjs.baidu.com (mx309.baidu.com [180.101.52.12])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AFEA12E4E
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 03:16:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.101.52.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712890836; cv=none; b=GPKEfXkhgV+3nPbV795gghOTrdma2dHhWvJ7SzsVdjeWJoDmB9foKQFun+vPjU5kQoxCOheV2kIsLVUPk+tHsMysjkHCrSL9+Hvg8gkT8glCLYzQWolRTrvGaXbXApR1+OfZqzyaDBFXIXj/lj+oQ+BrTjmMeg5NvsqbT2hqeIk=
+	t=1712891825; cv=none; b=Wl5mTXtHmwRfZgHhbPUuV/C2Oex/JekBAJ2SU8utIrUVnhCWI7ZXWlIIe1eFFgcxmTXcafJmmzq+kduAPt6JBWTxLwqTfQdSrRqYFIaqsCw/7jq+/3zjm+tddkK7jvmZgSjC1L3tVSvhxfci6ZLFxVQfUh1lWKCghURrQGwvkmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712890836; c=relaxed/simple;
-	bh=otq3wISb2ZRkd93ltkPOvNmjY7y7cS7tl665m79FoKY=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=n++bb+tuU/sshxKz3KsxszfI2Z5tIyDEXqxbDojyiYZpic8S9926V66aaQU50hLolC7DMIcqBY5YBKA+gah4beUyYaEStciYXAHfjOuS90ys+NnQLvJvLi2W61VVWusdwjMrARzqfu4H+sUPo4fr048oyqRDHTTP0TJRd+jsZ8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BNRDc/hD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10286C072AA;
-	Fri, 12 Apr 2024 03:00:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712890836;
-	bh=otq3wISb2ZRkd93ltkPOvNmjY7y7cS7tl665m79FoKY=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=BNRDc/hDZ3wcHawmkCwPuhGf+6T/StT1d6HS+sFlNc6VXru/JhG/ZTBMd/me86ZD1
-	 4QcW+CCC/rpeIe85+4Nz1hMZoCyLQep+T+p2hdHG8E+WSGyjMNC3Fo7295pyumzuIQ
-	 DzAcw6WPGtgnOPE264Jq5KlL0DC3ORdBaCVtFQPZudNUnrUha/UHLnm00UeCxqyerG
-	 LlPiUIdqOTr8na9IxeTUSbWaK9BBnPsOJhCbBqFZ0Ikq0UQpd7Q+ah17+Y0ZU8XbaP
-	 mhoKgCfUDB1V4NJFwOE5TleaUJ5Sm4kee4cr6UJB2zpJuiyWNsR4XfYVQ7pxi6usLP
-	 F5yRansdJMVmQ==
-Message-ID: <17e03db98ea960c58b1c012ee04bcbf6.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1712891825; c=relaxed/simple;
+	bh=ZbqwmPgrkigCftAY4kWOWC9DW9S6DixYjAuHCk5fars=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=iEc3erhkJhUVVZgn8E4N6jKIpGy3aFMqXg450oQuRb9bY/AiGkr7dsjd9KskUfwekbUqaLMArry2qf68tJa3ZBnrMHZwY6GcDbcuZY26tspjiuyVr5TRc4/inClGzd0AWY9vENZ6mImCZLQON9K9UJWXIjwhRylQkZd13dZDxn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com; spf=pass smtp.mailfrom=baidu.com; arc=none smtp.client-ip=180.101.52.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=baidu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baidu.com
+Received: from localhost (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
+	by njjs-sys-mailin01.njjs.baidu.com (Postfix) with ESMTP id 462317F00043;
+	Fri, 12 Apr 2024 11:01:32 +0800 (CST)
+From: Li RongQing <lirongqing@baidu.com>
+To: tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	peterz@infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Li RongQing <lirongqing@baidu.com>
+Subject: [PATCH] x86/sev: take NUMA node into account when allocating memory for per-CPU variables
+Date: Fri, 12 Apr 2024 11:01:30 +0800
+Message-Id: <20240412030130.49704-1-lirongqing@baidu.com>
+X-Mailer: git-send-email 2.9.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240411-euphemism-ended-706f23d4a5ca@wendy>
-References: <20240110133128.286657-1-jeeheng.sia@starfivetech.com> <a83130157adf70f6f58f4d2e6b9d25db.sboyd@kernel.org> <20240411-euphemism-ended-706f23d4a5ca@wendy>
-Subject: Re: [RFC v3 00/16] Basic clock and reset support for StarFive JH8100 RISC-V SoC
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: Sia Jee Heng <jeeheng.sia@starfivetech.com>, aou@eecs.berkeley.edu, conor@kernel.org, emil.renner.berthing@canonical.com, hal.feng@starfivetech.com, kernel@esmil.dk, krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com, p.zabel@pengutronix.de, palmer@dabbelt.com, paul.walmsley@sifive.com, robh+dt@kernel.org, xingyu.wu@starfivetech.com, linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, leyfoon.tan@starfivetech.com
-To: Conor Dooley <conor.dooley@microchip.com>
-Date: Thu, 11 Apr 2024 20:00:33 -0700
-User-Agent: alot/0.10
 
-Quoting Conor Dooley (2024-04-11 03:29:51)
-> On Thu, Apr 11, 2024 at 12:40:09AM -0700, Stephen Boyd wrote:
-> > Quoting Sia Jee Heng (2024-01-10 05:31:12)
-> > > This patch series enabled basic clock & reset support for StarFive
-> > > JH8100 SoC.
-> > >=20
-> > > This patch series depends on the Initial device tree support for
-> > > StarFive JH8100 SoC patch series which can be found at [1].
-> > >=20
-> > > As it is recommended to refrain from merging fundamental patches like
-> > > Device Tree, Clock & Reset, and PINCTRL tested on FPGA/Emulator, into=
- the
-> > > RISC-V Mainline, this patch series has been renamed to "RFC" patches.=
- Yet,
-> > > thanks to the reviewers who have reviewed the patches at [2]. The cha=
-nges
-> > > are captured below.
-> >=20
-> > I don't think that's what should be happening. Instead, clk patches
-> > should be sent to clk maintainers, reset patches to reset maintainers,
-> > pinctrl patches to pinctrl maintainers, etc. The DTS can be sent later
-> > when it's no longer an FPGA/Emulator? Right now I'm ignoring this series
-> > because it's tagged as an RFC.
->=20
-> Since this comes back to something I said, what I didn't want to happen
-> was a bunch of pinctrl/clock/reset dt-binding headers that getting merged
-> (and therefore exported to other projects) and then have those change
-> later on when the chip was taped out.
+per-CPU variables are dominantly accessed from their own local CPUs,
+so allocate them node-local to improve performance.
 
-Ah ok.
+Signed-off-by: Li RongQing <lirongqing@baidu.com>
+---
+ arch/x86/kernel/sev.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-> I don't really care if the drivers
-> themselves get merged. If the JH8100 is being taped out soon (or already
-> has been internally) and there's unlikely to be any changes, there's not
-> really a reason to block the binding headers any more.
->=20
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 7e1e63cc..dfe7c69 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -938,7 +938,7 @@ static int snp_set_vmsa(void *va, bool vmsa)
+ #define INIT_LDTR_ATTRIBS	(SVM_SELECTOR_P_MASK | 2)
+ #define INIT_TR_ATTRIBS		(SVM_SELECTOR_P_MASK | 3)
+ 
+-static void *snp_alloc_vmsa_page(void)
++static void *snp_alloc_vmsa_page(int cpu)
+ {
+ 	struct page *p;
+ 
+@@ -950,7 +950,7 @@ static void *snp_alloc_vmsa_page(void)
+ 	 *
+ 	 * Allocate an 8k page which is also 8k-aligned.
+ 	 */
+-	p = alloc_pages(GFP_KERNEL_ACCOUNT | __GFP_ZERO, 1);
++	p = alloc_pages_node(cpu_to_node(cpu), GFP_KERNEL_ACCOUNT | __GFP_ZERO, 1);
+ 	if (!p)
+ 		return NULL;
+ 
+@@ -1019,7 +1019,7 @@ static int wakeup_cpu_via_vmgexit(u32 apic_id, unsigned long start_ip)
+ 	 * #VMEXIT of that vCPU would wipe out all of the settings being done
+ 	 * here.
+ 	 */
+-	vmsa = (struct sev_es_save_area *)snp_alloc_vmsa_page();
++	vmsa = (struct sev_es_save_area *)snp_alloc_vmsa_page(cpu);
+ 	if (!vmsa)
+ 		return -ENOMEM;
+ 
+@@ -1341,7 +1341,7 @@ static void __init alloc_runtime_data(int cpu)
+ {
+ 	struct sev_es_runtime_data *data;
+ 
+-	data = memblock_alloc(sizeof(*data), PAGE_SIZE);
++	data = memblock_alloc_node(sizeof(*data), PAGE_SIZE, cpu_to_node(cpu));
+ 	if (!data)
+ 		panic("Can't allocate SEV-ES runtime data");
+ 
+-- 
+2.9.4
 
-The binding headers are sometimes required for the drivers, so the
-driver can't be merged then.
 
