@@ -1,111 +1,150 @@
-Return-Path: <linux-kernel+bounces-142906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 545148A31E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B0968A31DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:13:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCD701F21ABD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:14:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C75FA1F21472
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C50AC14885D;
-	Fri, 12 Apr 2024 15:13:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81F6147C7D;
+	Fri, 12 Apr 2024 15:13:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="QA4kR7uJ"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lcUEwq41";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lcUEwq41"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D904F1487C3;
-	Fri, 12 Apr 2024 15:13:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBFF13CFB7
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:13:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712934804; cv=none; b=CwZvHQxucixsx4cMu6qrXvbsUPAtSZ0abdl0t5gJWesFkJXalRAmN7+usRI7L+LoOcUrgfzZGYofeT5YZexlgevVdDVjH8y0xAuJqaDdg+awM7jtOsZavfxqwSpBA3xn0svOiWoyPuMWUZqAj5YyE0MRJNDz5IBIMkReI4Nrzkk=
+	t=1712934787; cv=none; b=OsT7czQKBjUCaxup5/lF4zPz+pV40P2CA9NgoSE4dw/aQFwOuUfR4PpRVy6anp9HFenBayMOgD84QzQoRQdbgAxxFibwtwCJn6acA9i0YyninHZ8202eJAh5OoYx5hLE3LHoII9lEHE9YVxNDjpZ1z2TPIg0Th7EN+zYEs3V4+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712934804; c=relaxed/simple;
-	bh=D/I7zxNBS8m8Chbv2XRv0I+6HHBNWVRfkhP2l99McE0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JvjCKuCGP1cLWTlHSycjUrGAxDIaV4aclmCTutf7D+iQuShwmyEWymArXIiGSpM8vwE0syPaAE7ENhT6NYXeuJt14MD90pz9XcZKVpkQt0kh+215e1N9yCz14T+TWcGnSeYajOcfIXrHqdE3q1+/qOfk1VTzFAoLRGFdbrLrIVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=QA4kR7uJ reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
- id 8ba249045168371a; Fri, 12 Apr 2024 17:13:14 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
+	s=arc-20240116; t=1712934787; c=relaxed/simple;
+	bh=ySAB3km1TxG4xulcUuc2jfgIAWhWYY69TDvjrLBNEBM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pErEIKcwiekD5AmryEemprwYwFx/B9GjgzhhKNnkOvnMXmDJ7VKeqsVYz1UDPcgULNojmSkzMFSoen6S8TmXgIFlaswGsnmGwKY5a34tsF5gxvRh6sZSQLSrO8CWnn4jXLgjynNV51ZCva9um6mGcCNZeHbnkxTTtYDR024U4Wo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lcUEwq41; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lcUEwq41; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id EB84466CC48;
-	Fri, 12 Apr 2024 17:13:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1712934794;
-	bh=D/I7zxNBS8m8Chbv2XRv0I+6HHBNWVRfkhP2l99McE0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=QA4kR7uJKDXiNZkWegNMd3v9l1E8+saTyFWpAV5nQ+y1rK2LlvFetr5m/6t1Se1CK
-	 Vc8HxWQaMCHTbf4ZYM3j6fqt2+FDEFyJitJdoRCEbf0JkzOvssmvPOfsFjKw8ZdEf1
-	 AI59NgRPSQjNI8+wJHmpPTda2YkIiwJSjClA9NYk0VcOtoNYOtJBVoGxo5caJJ075j
-	 C2w8KPY6DTt9E4O+DO3D0T1briGf5jPrtw8CjhrB7pvbeItQRSrRARYoelasVObYb5
-	 VPbufxnDALv10nDvNRjjf8TQMMehJgF3ZUMJrVpjru1bwPsxkGJtBLqzEaabadFZPN
-	 oeYLtOLTre1KA==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux ACPI <linux-acpi@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Bob Moore <robert.moore@intel.com>,
- Saket Dumbre <saket.dumbre@intel.com>
-Subject:
- [PATCH v1 11/12] ACPICA: events/evgpeinit: don't forget to increment
- registered GPE count
-Date: Fri, 12 Apr 2024 17:12:21 +0200
-Message-ID: <8409590.NyiUUSuA9g@kreacher>
-In-Reply-To: <4920972.31r3eYUQgx@kreacher>
-References: <4920972.31r3eYUQgx@kreacher>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 73927383EA;
+	Fri, 12 Apr 2024 15:13:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712934783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ucDB1ckO4elt768cHBdZSn7izJ4VBv6RB34AFX4fxL8=;
+	b=lcUEwq41HXQ+4g3fH5pmXcpxp5yCeEJyZQELcj5ojDJdajE2waXmB0tZhdtvytt7PXimS7
+	9M5l5wMhLsxhL47bGEvRtK4oFJPgeHAWZGdH696NV4yY/exhn97DYB652slQBRpWl7fZBx
+	tzMK59GtBDJeGJJhrCADz5Zf3iCHh3E=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=lcUEwq41
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712934783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ucDB1ckO4elt768cHBdZSn7izJ4VBv6RB34AFX4fxL8=;
+	b=lcUEwq41HXQ+4g3fH5pmXcpxp5yCeEJyZQELcj5ojDJdajE2waXmB0tZhdtvytt7PXimS7
+	9M5l5wMhLsxhL47bGEvRtK4oFJPgeHAWZGdH696NV4yY/exhn97DYB652slQBRpWl7fZBx
+	tzMK59GtBDJeGJJhrCADz5Zf3iCHh3E=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D0FEE1368B;
+	Fri, 12 Apr 2024 15:13:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id /uJHLn1PGWaWAQAAD6G6ig
+	(envelope-from <jgross@suse.com>); Fri, 12 Apr 2024 15:13:01 +0000
+From: Juergen Gross <jgross@suse.com>
+To: linux-kernel@vger.kernel.org,
+	x86@kernel.org
+Cc: Juergen Gross <jgross@suse.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH v2 0/4] x86: correctly handle NX and RW bit testing
+Date: Fri, 12 Apr 2024 17:12:54 +0200
+Message-Id: <20240412151258.9171-1-jgross@suse.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudeiuddgkeeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepledtieekkeekveeikeetgffgteeuteefjeevjeegudelvdduheeiuedvieehieevnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeegpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhhosggvrhhtrdhmohhorhgvsehinhhtvghlrdgtohhmpdhrtghpthhtohepshgrkhgvthdrughumhgsrhgv
- sehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -1.65
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 73927383EA
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.65 / 50.00];
+	BAYES_HAM(-1.64)[92.69%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+]
 
-From: Daniil Tatianin <99danilt@gmail.com>
+When the processor is detecting a set NX bit on any page table level
+when doing a page table walk, the resulting page will not be suitable
+for code execution.
 
-ACPICA commit ba8a36b5c7343cb56af6b331362e97b25e898eb2
+A similar approach is taken for the RW bit: all page table levels need
+to have the RW bit set in order to result in a writable page.
 
-This was used to log the number of newly discovered GPEs post table
-load in acpi_ev_update_gpes(), but we never incremented the number inside
-acpi_ev_match_gpe_method(), so that was never logged.
+Unfortunately the kernel is only looking at the leaf page table entry
+for deciding whether e.g. a writable page is executable or not.
 
-Link: https://github.com/acpica/acpica/commit/ba8a36b5
-Signed-off-by: Daniil Tatianin <99danilt@gmail.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/acpica/evgpeinit.c | 1 +
- 1 file changed, 1 insertion(+)
+Fix that by calculating the effective NX and RW bits over all page
+table levels when doing a software address lookup, mimicking the
+hardware behavior.
 
-diff --git a/drivers/acpi/acpica/evgpeinit.c b/drivers/acpi/acpica/evgpeinit.c
-index 0dbc4d88919a..38f408cf13ce 100644
---- a/drivers/acpi/acpica/evgpeinit.c
-+++ b/drivers/acpi/acpica/evgpeinit.c
-@@ -413,6 +413,7 @@ acpi_ev_match_gpe_method(acpi_handle obj_handle,
- 	gpe_event_info->flags &= ~(ACPI_GPE_DISPATCH_MASK);
- 	gpe_event_info->flags |= (u8)(type | ACPI_GPE_DISPATCH_METHOD);
- 	gpe_event_info->dispatch.method_node = method_node;
-+	walk_info->count++;
- 
- 	ACPI_DEBUG_PRINT((ACPI_DB_LOAD,
- 			  "Registered GPE method %s as GPE number 0x%.2X\n",
+Changes in V2:
+- split the patch into multiple patches
+
+Juergen Gross (4):
+  x86/pat: introduce lookup_address_in_pgd_attr()
+  x86/mm: use lookup_address_in_pgd_attr() in show_fault_oops()
+  x86/pat: restructure _lookup_address_cpa()
+  x86/pat: fix W^X violation false-positives when running as Xen PV
+    guest
+
+ arch/x86/include/asm/pgtable_types.h |  2 +
+ arch/x86/mm/fault.c                  |  7 +--
+ arch/x86/mm/pat/set_memory.c         | 68 ++++++++++++++++++++++------
+ 3 files changed, 60 insertions(+), 17 deletions(-)
+
 -- 
 2.35.3
-
-
-
 
 
