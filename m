@@ -1,51 +1,64 @@
-Return-Path: <linux-kernel+bounces-142638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EEC98A2E22
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:20:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69CA48A2E28
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:22:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 095A4B2259E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:20:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D51C31F21F6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:22:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB1C57876;
-	Fri, 12 Apr 2024 12:20:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D08856760;
+	Fri, 12 Apr 2024 12:22:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="meRPTo3q"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Lpaeb2kn"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0BA57863
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 12:20:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8309A54FB1;
+	Fri, 12 Apr 2024 12:22:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712924431; cv=none; b=c7+m18w2CvXGpSb/9jvC+LeusZNKYVqLe4j4iodcprzw/y1NMd81zNrW8rk64pgC/MEh4pDmgX9jk3ww8iToYkXPQkwz73fgJnjnV/Mall0v8CmJRxVF84PHDPRiU2YacE11C1hsh3ZiB6wM2naCd4npJlQ45ab36nz68v2D4mc=
+	t=1712924532; cv=none; b=FwWTLskLK+G4Eo86x8EmhCV81Veia7BgTbtnAD/eA+w4XAHfeoEfwljKQseJfqbU4N1bGIsgbNZNGG0hYq4Km/5JsmXhVzVQxkNKSYkwYmOfEIirPpD76Dfuaa47VkMYygmUWsU3hToYBJDxrY6MKo3vgFbeS6iaTi7kTgop4u0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712924431; c=relaxed/simple;
-	bh=u0QycG5sxEy3Ki5TTR/2Bx884/gaAjTNZ8ar0Fu2/1s=;
+	s=arc-20240116; t=1712924532; c=relaxed/simple;
+	bh=TTl55aY4/Vx/aiX0tkcJhaSZDYNmqg+ceKBbpV2xhpI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MMK3TjYcmEVnoybv0e2bgRzWcoKhrBqEHxVS+6WmtQmG0rH/k1Mi2my12jWJAtJYWXwy4sB4imkvgVHpESUbUopXtLT9ACgJ1VvEFtKEZkOtjJiH+H53ipnxw3fGKDdIZbp9491pj/sJyNuFSyAKrAh1dIFvGCiS/zOHQ8EpR60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=meRPTo3q; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5EB6DFF806;
-	Fri, 12 Apr 2024 12:20:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712924426;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=i4sen2yAIZEdwsIiTx7q/1/5M2usUlIfq98X99An4Ik=;
-	b=meRPTo3qwCeQEEBqjbzw02iw9iaEEUF/QTM8TJFY8wTaoYx/Fp9yNBvVj+FRijImlTAP8q
-	Vx90ol5GdbTIz86xpSCMi2AlYWdXH4bgO/EBbeyDUCSDi+n1BcZq+mgpBNl0jL5Coq2rCz
-	5LRb22Ktmu0Exigy9r2Rj9vKalU3xFag/pTKy9Wna4zzQAqS95j+8dTNwQZKNEqW4U75jN
-	hWU3I1kTG7J6ICPxgiIRaWQohR+T90E1AtO487IM/6JJ2Bg1VzOPMaxnU/zFBMg1XTYUXa
-	gdOSfqbUv4jR0YfFIfXzBvtW3G1ZlJPfZguunUCraEJJIRUwpzj672pyocsz/g==
-Message-ID: <6f064bd8-7937-4634-8a39-13ee5bcd6193@bootlin.com>
-Date: Fri, 12 Apr 2024 14:20:25 +0200
+	 In-Reply-To:Content-Type; b=hZY5eI24rnBROvrhyv68CjigClsBDXl4Z/2ts6LL9O0njdQBrAmiHfwmuMytFJu48OtHvgVpsrw2vz4HZ6pI5LbXQA4QzkScDFBMTne6mTfHsxf/jMeeunT1VZkMTZpK+DFCkVFN8slLmH86r7z+IvI7GHIIHws6G1HcjA2JHq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Lpaeb2kn; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712924530; x=1744460530;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=TTl55aY4/Vx/aiX0tkcJhaSZDYNmqg+ceKBbpV2xhpI=;
+  b=Lpaeb2knZ/38K/04sGRsKZ6DWTXoCLWPd38jPRmI4PIcWdAn3HQ3+IAa
+   1OiGUYWum06bikEVs2Mp1tEmb3Loz9mH60Akr2HY/xgtxdQfeDASxF1Sa
+   CocH+TXCQ3MYMM31AM+YM0U27FHqko+n9XFk1mRjtVWD14o1MNKoqb3gL
+   eJJ0GT2N1kHbxbnbA4qluwvn2rBbWAOq0zvyeJ2j8ddz0lFqqgGFgVFEJ
+   +LzwKm/3qlxQsknpkKMbxQOWFt/lLzZTUMtSXGgenBdnbBD8q38YC8o0+
+   P0+s6HIUMk8PjhzjlcbnDIE/+gCWfZnqRH88MDYOzOcMeJ9cxI33S+Lpp
+   g==;
+X-CSE-ConnectionGUID: MaFm/kQlQlCscaoy2B4eeg==
+X-CSE-MsgGUID: YR4vNGVTTlua/TGNscfx1w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8236167"
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="8236167"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 05:22:09 -0700
+X-CSE-ConnectionGUID: YueSwZA+TWiGmEfFjYLlfA==
+X-CSE-MsgGUID: SvjLaqCFSoKCRW6BWiGWBw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="21645224"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.215.136])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 05:22:06 -0700
+Message-ID: <a876accc-a7bf-4317-9612-d6d5a1fbaf9c@intel.com>
+Date: Fri, 12 Apr 2024 15:22:00 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,89 +66,262 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] pps: clients: gpio: Bypass edge's direction check
- when not needed
-To: Rodolfo Giometti <giometti@enneenne.com>
-Cc: linux-kernel@vger.kernel.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
- christophercordahi@nanometrics.ca
-References: <20240410113502.73038-1-bastien.curutchet@bootlin.com>
- <1f7f5b2f-54d4-4dc1-90ff-b896c930faed@enneenne.com>
- <5bda0980-2373-4284-bda4-89f0c6944e76@bootlin.com>
- <eb64ec08-2ae3-48bb-9f84-3cec362280b2@enneenne.com>
- <27196117-32bc-4892-b545-d9cf43a89f0a@bootlin.com>
- <c1e93cfe-371c-4855-9a13-b4b453bb9e88@enneenne.com>
- <28c5456d-535c-4ed9-b13a-fab7f50412be@bootlin.com>
- <9255124b-958e-4ab4-a812-67ad5d36e16d@enneenne.com>
+Subject: Re: [PATCH v19 076/130] KVM: TDX: Finalize VM initialization
+To: Isaku Yamahata <isaku.yamahata@intel.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, isaku.yamahata@gmail.com,
+ Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+ Sean Christopherson <seanjc@google.com>, Sagi Shahar <sagis@google.com>,
+ Kai Huang <kai.huang@intel.com>, chen.bo@intel.com, hang.yuan@intel.com,
+ tina.zhang@intel.com, isaku.yamahata@linux.intel.com
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <e3c862ae9c78bda2988768c1038fec100bb372cf.1708933498.git.isaku.yamahata@intel.com>
+ <f3381541-822b-4e94-93f7-699afc6aa6a3@intel.com>
+ <20240412010848.GG3039520@ls.amr.corp.intel.com>
 Content-Language: en-US
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-In-Reply-To: <9255124b-958e-4ab4-a812-67ad5d36e16d@enneenne.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: bastien.curutchet@bootlin.com
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20240412010848.GG3039520@ls.amr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Rodolfo,
-
-On 4/12/24 08:44, Rodolfo Giometti wrote:
-> On 11/04/24 14:44, Bastien Curutchet wrote:
+On 12/04/24 04:08, Isaku Yamahata wrote:
+> On Thu, Apr 11, 2024 at 07:39:11PM +0300,
+> Adrian Hunter <adrian.hunter@intel.com> wrote:
+> 
+>> On 26/02/24 10:26, isaku.yamahata@intel.com wrote:
+>>> From: Isaku Yamahata <isaku.yamahata@intel.com>
 >>>
->>> However we should think very well about this modification since it 
->>> could be the case where we have a device sending both assert and 
->>> clear events but we wish to catch just the asserts... in this case we 
->>> will get doubled asserts!
+>>> To protect the initial contents of the guest TD, the TDX module measures
+>>> the guest TD during the build process as SHA-384 measurement.  The
+>>> measurement of the guest TD contents needs to be completed to make the
+>>> guest TD ready to run.
 >>>
+>>> Add a new subcommand, KVM_TDX_FINALIZE_VM, for VM-scoped
+>>> KVM_MEMORY_ENCRYPT_OP to finalize the measurement and mark the TDX VM ready
+>>> to run.
 >>
->> My understanding is that clear events are to be captured only when this
->> capture_clear boolean is set. If it is not set, the PPS_CAPTURECLEAR
->> flag is not added to pps_source_info->mode and get_irqf_trigger_flags()
->> will return only one edge flag (rising or falling depending on
->> assert-falling-edge DT property).
+>> Perhaps a spruced up commit message would be:
+>>
+>> <BEGIN>
+>> Add a new VM-scoped KVM_MEMORY_ENCRYPT_OP IOCTL subcommand,
+>> KVM_TDX_FINALIZE_VM, to perform TD Measurement Finalization.
+>>
+>> Documentation for the API is added in another patch:
+>> "Documentation/virt/kvm: Document on Trust Domain Extensions(TDX)"
+>>
+>> For the purpose of attestation, a measurement must be made of the TDX VM
+>> initial state. This is referred to as TD Measurement Finalization, and
+>> uses SEAMCALL TDH.MR.FINALIZE, after which:
+>> 1. The VMM adding TD private pages with arbitrary content is no longer
+>>    allowed
+>> 2. The TDX VM is runnable
+>> <END>
+>>
+>> History:
+>>
+>> This code is essentially unchanged from V1, as below.
+>> Except for V5, the code has never had any comments.
+>> Paolo's comment from then still appears unaddressed.
+>>
+>> V19:		Unchanged
+>> V18:		Undoes change of V17
+>> V17:		Also change tools/arch/x86/include/uapi/asm/kvm.h
+>> V16:		Unchanged
+>> V15:		Undoes change of V10
+>> V11-V14:	Unchanged
+>> V10:		Adds a hack (related to TDH_MEM_TRACK)
+>> 		that was later removed in V15
+>> V6-V9:		Unchanged
+>> V5		Broke out the code into a separate patch and
+>> 		received its only comments, which were from Paolo:
+>>
+>> 	"Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+>> 	Note however that errors should be passed back in the struct."
+>> 		
+>> 	This presumably refers to struct kvm_tdx_cmd which has an "error"
+>> 	member, but that is not updated by tdx_td_finalizemr()
+>>
+>> V4 was a cut-down series and the code was not present
+>> V3 introduced WARN_ON_ONCE for the error condition
+>> V2 accommodated renaming the seamcall function and ID
 > 
-> Yes. You are right.
+> Thank you for creating histories. Let me update the commit message.
 > 
->> By the way, I see that the capture_clear is never set since the legacy
->> platform data support has been dropped (commit ee89646619ba).
 > 
-> I see, but it can be re-enabled in the future... In this scenario, I 
-> think we should add a DT entry to enable this special behavior. Maybe we 
-> can also add a warning as below: >
-> static irqreturn_t pps_gpio_irq_handler(int irq, void *data)
-> {
->          ...
->          if ((rising_edge && !info->assert_falling_edge) ||
->                          (!rising_edge && info->assert_falling_edge))
->                  pps_event(info->pps, &ts, PPS_CAPTUREASSERT, data);
->          else if (info->capture_clear &&
->                          ((rising_edge && info->assert_falling_edge) ||
->                          (!rising_edge && !info->assert_falling_edge)))
->                  pps_event(info->pps, &ts, PPS_CAPTURECLEAR, data);
->      else
->          dev_warn_ratelimited(dev, "no ASSERT or CAPTURE event? "
->              "Maybe you need support-tiny-assert-pulse?");
+>> Outstanding:
+>>
+>> 1. Address Paolo's comment about the error code
+>> 2. Is WARN_ON sensible?
 > 
->          return IRQ_HANDLED;
-> }
+> See below.
 > 
+> 
+>> Final note:
+>>
+>> It might be possible to make TD Measurement Finalization
+>> transparent to the user space VMM and forego another API, but it seems
+>> doubtful that would really make anything much simpler.
+>>
+>>>
+>>> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+>>>
+>>> ---
+>>> v18:
+>>> - Remove the change of tools/arch/x86/include/uapi/asm/kvm.h.
+>>>
+>>> v14 -> v15:
+>>> - removed unconditional tdx_track() by tdx_flush_tlb_current() that
+>>>   does tdx_track().
+>>>
+>>> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+>>> ---
+>>>  arch/x86/include/uapi/asm/kvm.h |  1 +
+>>>  arch/x86/kvm/vmx/tdx.c          | 21 +++++++++++++++++++++
+>>>  2 files changed, 22 insertions(+)
+>>>
+>>> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
+>>> index 34167404020c..c160f60189d1 100644
+>>> --- a/arch/x86/include/uapi/asm/kvm.h
+>>> +++ b/arch/x86/include/uapi/asm/kvm.h
+>>> @@ -573,6 +573,7 @@ enum kvm_tdx_cmd_id {
+>>>  	KVM_TDX_INIT_VM,
+>>>  	KVM_TDX_INIT_VCPU,
+>>>  	KVM_TDX_EXTEND_MEMORY,
+>>> +	KVM_TDX_FINALIZE_VM,
+>>>  
+>>>  	KVM_TDX_CMD_NR_MAX,
+>>>  };
+>>> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+>>> index 3cfba63a7762..6aff3f7e2488 100644
+>>> --- a/arch/x86/kvm/vmx/tdx.c
+>>> +++ b/arch/x86/kvm/vmx/tdx.c
+>>> @@ -1400,6 +1400,24 @@ static int tdx_extend_memory(struct kvm *kvm, struct kvm_tdx_cmd *cmd)
+>>>  	return ret;
+>>>  }
+>>>  
+>>> +static int tdx_td_finalizemr(struct kvm *kvm)
+>>> +{
+>>> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+>>> +	u64 err;
+>>> +
+>>> +	if (!is_hkid_assigned(kvm_tdx) || is_td_finalized(kvm_tdx))
+>>> +		return -EINVAL;
+>>> +
+>>> +	err = tdh_mr_finalize(kvm_tdx->tdr_pa);
+>>> +	if (WARN_ON_ONCE(err)) {
+>>
+>> Is a failed SEAMCALL really something to WARN over?
+> 
+> Because user can trigger an error in some cases, we shouldn't WARN in such case.
+> Except those, TDH.MR.FINALIZE() shouldn't return error.  If we hit such error,
+> it typically implies serious error so that the recovery is difficult.  For
+> example, the TDX module was broken by the host overwriting private pages.
+> That's the reason why we have KVM_BUN_ON.  So the error check should be
+> something like
+>  
+> 
+>         /* We can hit busy error to exclusively access TDR. */
+>  	if (err == (TDX_OPERAND_BUSY | TDX_OPERAND_ID_RCX))
+> 		return -EAGAIN;
+>         /* User can call KVM_TDX_INIT_VM without any vCPUs created. */
+> 	if (err == TDX_NO_VCPUS)
+> 		return -EIO;
+>         /* Other error shouldn't happen. */
+>         if (KVM_BUG_ON(err, kvm)) {
+>                 pr_tdx_error(TDH_MR_FINALIZE, err);
+>                 return -EIO;
+>         }
+> 
+> 
+>>> +		pr_tdx_error(TDH_MR_FINALIZE, err, NULL);
+>>
+>> As per Paolo, error code is not returned in struct kvm_tdx_cmd
+> 
+> 
+> It will be something like the followings. No compile test yet.
+> 
+> 
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index 0d3b79b5c42a..c7ff819ccaf1 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -2757,6 +2757,12 @@ static int tdx_td_finalizemr(struct kvm *kvm)
+>  		return -EINVAL;
+>  
+>  	err = tdh_mr_finalize(kvm_tdx);
+> +	kvm_tdx->hw_error = err;
+> +
+> +	if (err == (TDX_OPERAND_BUSY | TDX_OPERAND_ID_RCX))
 
-I'm not sure a DT entry is needed. IMO there are two cases:
-  1) capture_clear is unset. We need to capture only assert events,
-     interrupt will be triggered by assert edge only so there is no need
-     to check GPIO state: we can use the bypass.
-  2) capture_clear is set. We need to capture assert and/or clear
-     events, interrupt will be triggered by both assert and clear edges
-     so we can't avoid the GPIO state checking to distinguish clear
-     events from assert events: we can't use the bypass.
+There seem to be also implicit operand codes.  How sure are
+we that TDX_OPERAND_ID_RCX is the only valid busy operand?
 
-So if we bypass the GPIO's state check when capture_clear is unset and
-leave current behavior when capture_clear is set:
-  - case 1) will be more efficient and we won't lose tiny pulses anymore
-  - case 2) is unchanged: we still might lose tiny pulses but as bypass
-can't be done here, I think that we can't do better.
+> +		return -EAGAIN;
+> +	if (err == TDX_NO_VCPUS)
 
-I agree that adding warning when the handler is left without triggering
-a pps event can be useful, I can add it in a V3 version.
+TDX_NO_VCPUS is not one of the completion status codes for
+TDH.MR.FINALIZE
 
+> +		return -EIO;
+>  	if (KVM_BUG_ON(err, kvm)) {
+>  		pr_tdx_error(TDH_MR_FINALIZE, err);
+>  		return -EIO;
+> @@ -2768,6 +2774,7 @@ static int tdx_td_finalizemr(struct kvm *kvm)
+>  
+>  int tdx_vm_ioctl(struct kvm *kvm, void __user *argp)
+>  {
+> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+>  	struct kvm_tdx_cmd tdx_cmd;
+>  	int r;
+>  
+> @@ -2777,6 +2784,7 @@ int tdx_vm_ioctl(struct kvm *kvm, void __user *argp)
+>  		return -EINVAL;
+>  
+>  	mutex_lock(&kvm->lock);
+> +	kvm_tdx->hw_error = 0;
+>  
+>  	switch (tdx_cmd.id) {
+>  	case KVM_TDX_CAPABILITIES:
+> @@ -2793,6 +2801,7 @@ int tdx_vm_ioctl(struct kvm *kvm, void __user *argp)
+>  		goto out;
+>  	}
+>  
+> +	tdx_cmd.error = kvm_tdx->hw_error;
+>  	if (copy_to_user(argp, &tdx_cmd, sizeof(struct kvm_tdx_cmd)))
+>  		r = -EFAULT;
+>  
+> diff --git a/arch/x86/kvm/vmx/tdx.h b/arch/x86/kvm/vmx/tdx.h
+> index 98f5d7c5891a..dc150b8bdd5f 100644
+> --- a/arch/x86/kvm/vmx/tdx.h
+> +++ b/arch/x86/kvm/vmx/tdx.h
+> @@ -18,6 +18,9 @@ struct kvm_tdx {
+>  	u64 xfam;
+>  	int hkid;
+>  
+> +	/* For KVM_TDX ioctl to return SEAMCALL status code. */
+> +	u64 hw_error;
 
-Best regards,
-Bastien
+For this case, it seems weird to have a struct member
+to pass back a return status code,  why not make it a parameter
+of tdx_td_finalizemr() or pass &tdx_cmd?
+
+> +
+>  	/*
+>  	 * Used on each TD-exit, see tdx_user_return_update_cache().
+>  	 * TSX_CTRL value on TD exit
+> diff --git a/arch/x86/kvm/vmx/tdx_errno.h b/arch/x86/kvm/vmx/tdx_errno.h
+> index a8aa8b79e9a1..6c701856c9a8 100644
+> --- a/arch/x86/kvm/vmx/tdx_errno.h
+> +++ b/arch/x86/kvm/vmx/tdx_errno.h
+> @@ -41,6 +41,7 @@
+>  #define TDX_TD_FATAL				0xC000060400000000ULL
+>  #define TDX_TD_NON_DEBUG			0xC000060500000000ULL
+>  #define TDX_LIFECYCLE_STATE_INCORRECT		0xC000060700000000ULL
+> +#define TDX_NO_VCPUS				0xC000060900000000ULL
+>  #define TDX_TDCX_NUM_INCORRECT			0xC000061000000000ULL
+>  #define TDX_VCPU_STATE_INCORRECT		0xC000070000000000ULL
+>  #define TDX_VCPU_ASSOCIATED			0x8000070100000000ULL
+
 
