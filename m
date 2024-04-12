@@ -1,38 +1,38 @@
-Return-Path: <linux-kernel+bounces-143041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D29DE8A3383
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:17:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E333E8A3387
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:18:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 012291C20FC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:17:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03DC0B279E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:18:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63F1C149DF7;
-	Fri, 12 Apr 2024 16:16:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B25A614A0BD;
+	Fri, 12 Apr 2024 16:17:20 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80BAC14882F
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A37414A083
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:17:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712938608; cv=none; b=FVLpbP3icqSUqPvWuXuHAQ+dQKRw4cMAd7h13mb7D1i4QYRPwd29N/8Cl49TiPHdk8RmEgqpBbFzzPrrxaoMivhLh7Y3SOup/ttn8Wz1xyQ/c8UC8qxJouzM3iMgOM59PoTZTIIvJObQhdiXhvPqRU+o2/TEPRwn7exP9Io9MpM=
+	t=1712938638; cv=none; b=MIl8k9oLJ1pLHzKLDuvt64sMfEk6WkWZm0CAScq2AhwWbyoMe7Ds33HgvaKvQ/2I9cNXElUok4r9kIiLwDOVBEdj0Xk1LcUDRL1X80ubRyPAdDSm5WVoOQYH2mt0Zvc6A8TGdUhKDtB0yQFJdv/Bvlr56u7Tr2uy6E1tGbS/7pk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712938608; c=relaxed/simple;
-	bh=iT8fIFzg5vFMvUBl82Bb1L7n2kIu+6n9K237w+bQp8k=;
+	s=arc-20240116; t=1712938638; c=relaxed/simple;
+	bh=5A0yCY9TJQnvNmIaTJIw1VuTL6w7WpbzHiipymvdeQk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EAmdXS42LT/hvi55u5uxt04jHVqkZXiumOh70ffjJP3CFCfL7NerFzpKuIpr7bVaLOX852YzMeJUYNdtnEtfqzQI+V0vx3whPKcfhVID8qUnu/HfkVnFsR7tJvXYKq3qbtaveOEQPJ3Xj+3QU8hkWEQL2kANqy/ZhAtkUhwQJ1k=
+	 Content-Type:Content-Disposition:In-Reply-To; b=bdKG/i6X4vqgvoTYEgJ09F3WpM0OLa0FJIvvuyD2aTWPY0S9/F4HvfIUpD/kd7w0CWmFLnjozFLrxaETzNn8fXSuyhAPp0VH45U8cZLJSN+KXIQmseyAHOf/CAW+Fny8oISapd+5T5wY3Jtk9y+aYo6Srstj6LDn8tTGA+BGneI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4F4D339;
-	Fri, 12 Apr 2024 09:17:13 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 36FB2339;
+	Fri, 12 Apr 2024 09:17:39 -0700 (PDT)
 Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ACECF3F64C;
-	Fri, 12 Apr 2024 09:16:41 -0700 (PDT)
-Date: Fri, 12 Apr 2024 17:16:39 +0100
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A37D3F64C;
+	Fri, 12 Apr 2024 09:17:07 -0700 (PDT)
+Date: Fri, 12 Apr 2024 17:17:04 +0100
 From: Dave Martin <Dave.Martin@arm.com>
 To: Reinette Chatre <reinette.chatre@intel.com>
 Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
@@ -49,12 +49,12 @@ Cc: James Morse <james.morse@arm.com>, x86@kernel.org,
 	dfustini@baylibre.com, amitsinght@marvell.com,
 	David Hildenbrand <david@redhat.com>,
 	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: Re: [PATCH v1 03/31] x86/resctrl: Move ctrlval string parsing policy
- away from the arch code
-Message-ID: <ZhleZ2q60ysIRapv@e133380.arm.com>
+Subject: Re: [PATCH v1 08/31] x86/resctrl: Move resctrl types to a separate
+ header
+Message-ID: <ZhlegNN3zZ4Q1lk6@e133380.arm.com>
 References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-4-james.morse@arm.com>
- <e85e7786-7995-42d5-a5ac-1e08a84492fe@intel.com>
+ <20240321165106.31602-9-james.morse@arm.com>
+ <0ba51259-cb7a-463e-aabd-f88bd0c4007b@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,121 +63,61 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e85e7786-7995-42d5-a5ac-1e08a84492fe@intel.com>
+In-Reply-To: <0ba51259-cb7a-463e-aabd-f88bd0c4007b@intel.com>
 
-On Mon, Apr 08, 2024 at 08:14:47PM -0700, Reinette Chatre wrote:
+On Mon, Apr 08, 2024 at 08:18:00PM -0700, Reinette Chatre wrote:
 > Hi James,
 > 
 > On 3/21/2024 9:50 AM, James Morse wrote:
-> > The policy for parsing the configuration values as a string from
-> > user-space is specified by a function pointer the arch code specifies.
-> > 
-> > These strings are part of resctrl's ABI, and the functions and their
-> > caller both live in the same file. Exporting the parsing functions and
-> > allowing the architecture to choose how a schema is parsed allows an
-> > architecture to get this wrong.
-> > 
-> > Keep this all in the flesystem parts of resctrl. This should prevent any
+> > To avoid sticky problems in the mpam glue code, move the resctrl
+> > enums into a separate header.
 > 
-> flesystem -> filesystem
+> Could you please elaborate so that "sticky problems in the mpam glue code" is
+> specific about what problems are avoided?
 
-Noted, thanks.
+Maybe just delete the the sticky clause, and leave:
 
+	Move the resctrl enums into a separate header.
 
-> > architecture's string-parsing behaviour from varying without core code
-> > changes. Use the fflags to spot caches and bandwidth resources, and use
-> > the appropriate helper.
+..since the next paragraph explains the rationale?
+
+> > 
+> > This lets the arch code declare prototypes that use these enums without
+> > creating a loop via asm<->linux resctrl.h The same logic applies to the
+> > monitor-configuration defines, move these too.
+> > 
+> > The maintainers entry for these headers was missed when resctrl.h
+> > was created. Add a wildcard entry to match both resctrl.h and
+> > resctrl_types.h.
 > > 
 > > Signed-off-by: James Morse <james.morse@arm.com>
-> > ---
 > 
 > ..
 > 
-> > @@ -195,6 +204,14 @@ int parse_cbm(struct rdt_parse_data *data, struct resctrl_schema *s,
-> >  	return 0;
-> >  }
-> >  
-> > +static ctrlval_parser_t *get_parser(struct rdt_resource *res)
-> > +{
-> > +	if (res->fflags & RFTYPE_RES_CACHE)
-> > +		return &parse_cbm;
-> > +	else
-> > +		return &parse_bw;
-> > +}
+> > diff --git a/include/linux/resctrl_types.h b/include/linux/resctrl_types.h
+> > new file mode 100644
+> > index 000000000000..4788bd95dac6
+> > --- /dev/null
+> > +++ b/include/linux/resctrl_types.h
+> > @@ -0,0 +1,68 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright (C) 2024 Arm Ltd.
+> > + * Based on arch/x86/kernel/cpu/resctrl/internal.h
+> > + */
 > 
-> This is borderline ... at minimum it expands what fflags means and how it
-> is intended to be used and that needs to be documented because it reads:
-> 
-> 	* @fflags:		flags to choose base and info files
-> 
-> I am curious why you picked fflags instead of an explicit check against
-> rid?
+> Could this header please explain how this file is intended to be used?
+> What is it intended to contain?
 > 
 > Reinette
 
-Is fflags already somewhat overloaded?  There seem to be a mix of things
-that are independent Boolean flags, while other things seem mutually
-exclusive or enum-like.
+Maybe something like the following?
 
-Do we expect RFTYPE_RES_CACHE | RFTYPE_RES_MB ever to make sense,
-as David points out?
+ * Resctrl types and constants needed for inline function definitions in
+ * the arch-specific <asm/resctrl.h> headers.
 
-
-With MPAM, we could in theory have cache population control and egress
-memory bandwidth controls on a single interconnect component.
-
-If that would always be represented through resctrl as two components
-with the MB controls considered one level out from the CACHE controls,
-then I guess these control types remain mutually exclusive from
-resctrl's point of view.
-
-Allowing a single rdt_resource to sprout multiple control types looks
-more invasive in the code, even if it logically makes sense in terms of
-the hardware.
-
-(I'm guessing that may have already been ruled out?  Apologies if I
-seem to be questioning things that were decided already.  That's not
-my intention, and James will already have thought about this in any
-case...)
-
-
-Anyway, for this patch, there seem to be a couple of assumptions:
-
-a) get_parser() doesn't get called except for rdt_resources that
-represent resource controls (so, fflags = RFTYPE_RES_foo for some "foo",
-with no other flags set), and
-
-b) there are exactly two kinds of "foo", so whatever isn't a CACHE is
-a BW.
-
-These assumptions seem to hold today (?)
-
-But the semantics of fflags already look a bit complicated, so I can
-see why it might be best to avoid anything that may add more
-complexity.
-
-
-If the main aim is to avoid silly copy-paste errors when coding up
-resources for a new arch, would it make sense to go for a more low-
-tech approach and just bundle up related fields in a macro?
-
-E.g., something like:
-
-#define RDT_RESOURCE_MB_DEFAULTS		\
-	.format_str	= "%d=%*u",		\
-	.fflags		= RFTYPE_RES_MB,	\
-	.parse_ctrlval	= parse_bw
-
-#define RDT_RESOURCE_CACHE_DEFAULTS		\
-	.format_str	= "%d=%0*x",		\
-	.fflags		= RFTYPE_RES_CACHE,	\
-	.parse_ctrlval	= parse_cbm
-
-This isn't particularly pretty, but would at least help avoid accidents
-and reduce the amount of explicit boilerplate in the resource
-definitions.
-
-Thoughts?
+(James might have had other things in mind, but this is what it looks
+like to me...)
 
 Cheers
 ---Dave
