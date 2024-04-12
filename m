@@ -1,165 +1,165 @@
-Return-Path: <linux-kernel+bounces-143132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 153638A34D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:35:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7FC98A34EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:38:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 464DB1C234B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:35:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CA3B1F2255E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:38:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C973C14EC53;
-	Fri, 12 Apr 2024 17:35:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366DA14D718;
+	Fri, 12 Apr 2024 17:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zw8jMsg1"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="t/+RsAga"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 959A014C596
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:35:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ACA984A35;
+	Fri, 12 Apr 2024 17:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712943339; cv=none; b=JbGstjY7gP/Q33mAS4tY0BlM2fSvEZZg2MIIx2Mad7ReAI3r0hZVrnAyiwSAxoD0EwzYggy53go4bQRotf7kSJMVNDxJNY7wCJtRZMVYTfpnYtC57+ibYie7p1nCKwFj9d86fjyh8j9pljVU7PNjPUlBzB/WI0+2HulB0HeksX4=
+	t=1712943434; cv=none; b=RwePFv+tHZ1w/EbrZk8Mv0HYok7ADuPQ2wFszejrZXkiYMzMlqrNPOZP1Z+5pCVwOnyUjuPsfkrZFsCNL6WzKRCctaWRXZWiD6Huc/SJbsPIS8Gl2zoyFJ3gzZ1Rl8hIVSE0/v7wt/mW6ZG3Ue3ML7WsF/ALyCfLvQ8Y6m5zI5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712943339; c=relaxed/simple;
-	bh=m6cvDpKwQxw/+1HX6xn29yBbQlMJwxJA/GOc2nFuhwM=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rC27ATsBwRixE/AN+3/mwVQK0o2V/Y88+4Edprfxw5ACdgCIYfgXNx8zTSdwsN7AGlhuFZynK7szFWWilQDz6V+pWdLdhBaYy69xDZSqJOveYS9wowIS4CTX5JeG9VExbJDeifOd7k/pONC0gWmXv1EQP9mjd979+20MmBHhQr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zw8jMsg1; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712943336;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VpeDD5FA3om+hsK2jspL++DDgX73rZcz5eJV48XG4Vk=;
-	b=Zw8jMsg1HaIQ0KrTnUZwYCsCoowXto64vOXtfmAVjPokKSUWsI/1AVvel/49RjWdk1gys1
-	/yzL7Iqis/HdrsTXN9iNv//xh8RfnKsJ5amWBfpYsbH/5HWMihPPVxoCbdKRx2dmDYmuni
-	ZcZ+4ayJL+xiRwm+VS9kbCsl1Gf4l/I=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-489-pGbX_jt3NbysqDWKIcvPAA-1; Fri, 12 Apr 2024 13:35:35 -0400
-X-MC-Unique: pGbX_jt3NbysqDWKIcvPAA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DE3291807ACE;
-	Fri, 12 Apr 2024 17:35:34 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id C64B32166B31;
-	Fri, 12 Apr 2024 17:35:34 +0000 (UTC)
-From: Paolo Bonzini <pbonzini@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Subject: [PATCH 10/10] KVM: x86/mmu: check for invalid async page faults involving private memory
-Date: Fri, 12 Apr 2024 13:35:32 -0400
-Message-ID: <20240412173532.3481264-11-pbonzini@redhat.com>
-In-Reply-To: <20240412173532.3481264-1-pbonzini@redhat.com>
-References: <20240412173532.3481264-1-pbonzini@redhat.com>
+	s=arc-20240116; t=1712943434; c=relaxed/simple;
+	bh=APF0aubO8YssKD8RnDBCjKq+iGiGF8bWVPwzW+1Ns/I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kgwZx/CT/FToHtxkEgXHH9X4KIbPzwotbd0/0n4oD5zVAre75ouALU4MLJEcUPxcCUIpbDSGjmJUnhxH1kFnH7P7HU6IdmC7Lr1Kp4VXEdJU7p5QppuRzJqBJLgis/rPOb4zfLBsM3MghBjloHgyrwloB5Qd1sPHo13fOwoatS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=t/+RsAga; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (85-76-65-73-nat.elisa-mobile.fi [85.76.65.73])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 07FDC8E1;
+	Fri, 12 Apr 2024 19:36:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1712943386;
+	bh=APF0aubO8YssKD8RnDBCjKq+iGiGF8bWVPwzW+1Ns/I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=t/+RsAgatWa7CiLsGuSqSzAAmrZ1Y6zn17AeJr3XHnMLPfkuCdTX2oncpfh2lTmtA
+	 60+6DLuZVPn4suoAWxLaUYpntPEbCue6n00ksUO5RU02xPyNbjje9eagQoRJq8K+qF
+	 QR9eCPSqUtRwT7P7ZX9M99WA6FWpy2Xg+R5bHHt8=
+Date: Fri, 12 Apr 2024 20:36:59 +0300
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Umang Jain <umang.jain@ideasonboard.com>,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/9] media: subdev: Add privacy led helpers
+Message-ID: <20240412173659.GD31122@pendragon.ideasonboard.com>
+References: <20240410-enable-streams-impro-v3-0-e5e7a5da7420@ideasonboard.com>
+ <20240410-enable-streams-impro-v3-1-e5e7a5da7420@ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240410-enable-streams-impro-v3-1-e5e7a5da7420@ideasonboard.com>
 
-Right now the error code is not used when an async page fault is completed.
-This is not a problem in the current code, but it is untidy.  For protected
-VMs, we will also need to check that the page attributes match the current
-state of the page, because asynchronous page faults can only occur on
-shared pages (private pages go through kvm_faultin_pfn_private() instead of
-__gfn_to_pfn_memslot()).
+Hi Tomi,
 
-Start by piping the error code from kvm_arch_setup_async_pf() to
-kvm_arch_async_page_ready() via the architecture-specific async page
-fault data.  For now, it can be used to assert that there are no
-async page faults on private memory.
+Thank you for the patch.
 
-Extracted from a patch by Isaku Yamahata.
+On Wed, Apr 10, 2024 at 03:35:48PM +0300, Tomi Valkeinen wrote:
+> Add helper functions to enable and disable the privacy led. This moves
+> the #if from the call site to the privacy led functions, and makes
+> adding privacy led support to v4l2_subdev_enable/disable_streams()
+> cleaner.
+> 
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+>  drivers/media/v4l2-core/v4l2-subdev.c | 30 +++++++++++++++++++++---------
+>  1 file changed, 21 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+> index 012b757eac9f..13957543d153 100644
+> --- a/drivers/media/v4l2-core/v4l2-subdev.c
+> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
+> @@ -148,6 +148,23 @@ static int subdev_close(struct file *file)
+>  }
+>  #endif /* CONFIG_VIDEO_V4L2_SUBDEV_API */
+>  
+> +static void v4l2_subdev_enable_privacy_led(struct v4l2_subdev *sd)
+> +{
+> +#if IS_REACHABLE(CONFIG_LEDS_CLASS)
+> +	if (!IS_ERR_OR_NULL(sd->privacy_led))
+> +		led_set_brightness(sd->privacy_led,
+> +				   sd->privacy_led->max_brightness);
+> +#endif
+> +}
+> +
+> +static void v4l2_subdev_disable_privacy_led(struct v4l2_subdev *sd)
+> +{
+> +#if IS_REACHABLE(CONFIG_LEDS_CLASS)
+> +	if (!IS_ERR_OR_NULL(sd->privacy_led))
+> +		led_set_brightness(sd->privacy_led, 0);
+> +#endif
+> +}
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/mmu/mmu.c          | 17 ++++++++++-------
- 2 files changed, 11 insertions(+), 7 deletions(-)
+I would have written this as
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 0b73f78dd70a..cf5f28dcda06 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1854,6 +1854,7 @@ struct kvm_arch_async_pf {
- 	gfn_t gfn;
- 	unsigned long cr3;
- 	bool direct_map;
-+	u64 error_code;
- };
- 
- extern u32 __read_mostly kvm_nr_uret_msrs;
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 0fb175ad6b9b..7b0d671cf696 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4207,24 +4207,27 @@ static u32 alloc_apf_token(struct kvm_vcpu *vcpu)
- 	return (vcpu->arch.apf.id++ << 12) | vcpu->vcpu_id;
- }
- 
--static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
--				    gfn_t gfn)
-+static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu,
-+				    struct kvm_page_fault *fault)
- {
- 	struct kvm_arch_async_pf arch;
- 
- 	arch.token = alloc_apf_token(vcpu);
--	arch.gfn = gfn;
-+	arch.gfn = fault->gfn;
- 	arch.direct_map = vcpu->arch.mmu->root_role.direct;
- 	arch.cr3 = kvm_mmu_get_guest_pgd(vcpu, vcpu->arch.mmu);
- 
--	return kvm_setup_async_pf(vcpu, cr2_or_gpa,
--				  kvm_vcpu_gfn_to_hva(vcpu, gfn), &arch);
-+	return kvm_setup_async_pf(vcpu, fault->addr,
-+				  kvm_vcpu_gfn_to_hva(vcpu, fault->gfn), &arch);
- }
- 
- void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async_pf *work)
- {
- 	int r;
- 
-+	if (WARN_ON_ONCE(work->arch.error_code & PFERR_GUEST_ENC_MASK))
-+		return;
-+
- 	if ((vcpu->arch.mmu->root_role.direct != work->arch.direct_map) ||
- 	      work->wakeup_all)
- 		return;
-@@ -4237,7 +4240,7 @@ void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async_pf *work)
- 	      work->arch.cr3 != kvm_mmu_get_guest_pgd(vcpu, vcpu->arch.mmu))
- 		return;
- 
--	kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, 0, true, NULL);
-+	kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, work->arch.error_code, true, NULL);
- }
- 
- static inline u8 kvm_max_level_for_order(int order)
-@@ -4350,7 +4353,7 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
- 			trace_kvm_async_pf_repeated_fault(fault->addr, fault->gfn);
- 			kvm_make_request(KVM_REQ_APF_HALT, vcpu);
- 			return RET_PF_RETRY;
--		} else if (kvm_arch_setup_async_pf(vcpu, fault->addr, fault->gfn)) {
-+		} else if (kvm_arch_setup_async_pf(vcpu, fault)) {
- 			return RET_PF_RETRY;
- 		}
- 	}
+#if IS_REACHABLE(CONFIG_LEDS_CLASS)
+static void v4l2_subdev_enable_privacy_led(struct v4l2_subdev *sd)
+{
+	if (!IS_ERR_OR_NULL(sd->privacy_led))
+		led_set_brightness(sd->privacy_led,
+				   sd->privacy_led->max_brightness);
+}
+
+static void v4l2_subdev_disable_privacy_led(struct v4l2_subdev *sd)
+{
+	if (!IS_ERR_OR_NULL(sd->privacy_led))
+		led_set_brightness(sd->privacy_led, 0);
+}
+#else
+static inline void v4l2_subdev_enable_privacy_led(struct v4l2_subdev *sd)
+{
+}
+
+static inline void v4l2_subdev_disable_privacy_led(struct v4l2_subdev *sd)
+{
+}
+#endif /* CONFIG_LEDS_CLASS */
+
+to avoid multipe #if but that likely makes no difference in the
+generated code. Either way,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> +
+>  static inline int check_which(u32 which)
+>  {
+>  	if (which != V4L2_SUBDEV_FORMAT_TRY &&
+> @@ -422,15 +439,10 @@ static int call_s_stream(struct v4l2_subdev *sd, int enable)
+>  	if (!ret) {
+>  		sd->enabled_streams = enable ? BIT(0) : 0;
+>  
+> -#if IS_REACHABLE(CONFIG_LEDS_CLASS)
+> -		if (!IS_ERR_OR_NULL(sd->privacy_led)) {
+> -			if (enable)
+> -				led_set_brightness(sd->privacy_led,
+> -						   sd->privacy_led->max_brightness);
+> -			else
+> -				led_set_brightness(sd->privacy_led, 0);
+> -		}
+> -#endif
+> +		if (enable)
+> +			v4l2_subdev_enable_privacy_led(sd);
+> +		else
+> +			v4l2_subdev_disable_privacy_led(sd);
+>  	}
+>  
+>  	return ret;
+> 
+
 -- 
-2.43.0
+Regards,
 
+Laurent Pinchart
 
