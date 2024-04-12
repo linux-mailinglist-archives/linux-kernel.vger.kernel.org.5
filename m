@@ -1,152 +1,222 @@
-Return-Path: <linux-kernel+bounces-141798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4774D8A238D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:03:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88C3F8A238F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:04:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBD201F22408
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:03:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F86E1C21B02
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:04:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE541D27A;
-	Fri, 12 Apr 2024 02:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36E52D527;
+	Fri, 12 Apr 2024 02:04:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AWPKjqS+"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="EJQwDDOn"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BDDE525D;
-	Fri, 12 Apr 2024 02:03:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B48738801;
+	Fri, 12 Apr 2024 02:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712887422; cv=none; b=kyaIlK5Uu8GMZG4JEhlFQ0JUxKnQzLMqGq8Ldxf2q7b7sq10qMlslsjLSTQf0sq/aKpMFvThGAgDgG6oy/xfkWKrs0Ks22jthwSqsbuQqtK8/l1Kn5CSOA4BalooiPNyfr3Fbs5nZ2rjZ8OlI6lRZfEA4my00rnio8Cq1nvcLuE=
+	t=1712887471; cv=none; b=XnTBb6MxBX295Tt2zFw5f6AX25AKQ+l+7sOgf+ICCOfNtaPWOpFidw9oKf/tF2RL848DijuTuif+aW519EQk3QTSZEiLrdXHW7h8g1mME1N7ve9DXbPE2jSsseTUVe8EgC9CUJjI1AZ/kdL5vh3CLnv065Nl1mTVDL5itJRpdbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712887422; c=relaxed/simple;
-	bh=32I00JzTHxnizPyNO+FSMhrceoVRAWHSz7lsTnztRjg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gayD2mp30Eg4I2F7lVxzICFES/UHuTtDCNJJE2AX74DLgDtxHgW5Qwbmj25h8yoDNc4TVVAWoddiRdJT2g8uYcPe1Ah1ZQaLmSuMRGrAWHghnIHRWLQ74vHY9swa/B8+BtryF+Xfl+cnh5DYn+EATM8if3lCc9IEwP/9XqQcV6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AWPKjqS+; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712887421; x=1744423421;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=32I00JzTHxnizPyNO+FSMhrceoVRAWHSz7lsTnztRjg=;
-  b=AWPKjqS+hoGmwW8TYosCncF9pA6WH99+//iZ7EPqSfi+ylLMdXh8mln/
-   onVQ7dLHWI51KYXKui5EJjMoAgcQF9lYLY0ejTXDF+sO6PpqtDaK3qhSn
-   sUrw4pC06q0OisjeRgkT+Z2vE32a4MjE/6FXUW+Ffow0kTGEEM0IqhBKA
-   0l8GT3FMlfXY1eUCO3KOD3ws435MG5oSsVWxF5WV5UGEYBiu5w5sdxR9t
-   TKIPJOmI/werEgAogrq7obeTbSSZYg9jeFj60DMx3fNbq3rzH49AD2R9k
-   kqzmW0KsPGChdE3WgTZ+tngmmxL5eYfLclMG3JSgm6MF8gT/bvHNvEq3B
-   w==;
-X-CSE-ConnectionGUID: +vN4tx8PQAiAJSgB3asmNQ==
-X-CSE-MsgGUID: 1FcdDa8oRo6U/k/IOXfGaA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8191586"
-X-IronPort-AV: E=Sophos;i="6.07,194,1708416000"; 
-   d="scan'208";a="8191586"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 19:03:40 -0700
-X-CSE-ConnectionGUID: 2IfnSC7USKmo2w+IHmccLw==
-X-CSE-MsgGUID: Tx0EYjaaR6OltRqbP5cKTw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,194,1708416000"; 
-   d="scan'208";a="21001354"
-Received: from dev-qz.sh.intel.com (HELO localhost) ([10.239.147.89])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 19:03:38 -0700
-From: qiang4.zhang@linux.intel.com
-To: Masami Hiramatsu <mhiramat@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	Qiang Zhang <qiang4.zhang@intel.com>
-Subject: [PATCH] bootconfig: use memblock_free_late to free xbc memory to buddy
-Date: Fri, 12 Apr 2024 10:03:26 +0800
-Message-Id: <20240412020325.290330-1-qiang4.zhang@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712887471; c=relaxed/simple;
+	bh=t9q+otk2Tc6NmYmjxqB1BgWWDc81IAO4Z0aG6aI6KQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=kiMh4erJ2TPJ6S3pyKVf93Mb/k2Qgtkxlc/UWY4bthfhBbyOMswUHiJfgZ4fsnf7LfI83bxm5DgvgaY7wYHMUfyRRAdaaZKocdbiohgXLZ69ovFudSMGGW+XxX8yWLQ3ehGzFFCCyzWH9VSMujkapMek/iBaw5iatOmZ02nBTMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=EJQwDDOn; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1712887465;
+	bh=DcuE7f9X1W1goW9Rw0CyhmG355kPpq2Gqbq8MdMXHsQ=;
+	h=Date:From:To:Cc:Subject:From;
+	b=EJQwDDOnAZZkWlKU+6Arj+Knp7t9fK9UCymNq/MT2dvBfs2T8aon9qUFF1+SBewY1
+	 TrDJiV8LpBztvSgxVzEokRjGOW8QuMIw7Ph3Lb7SbB1nJ5OZP8tjKxla8ln1OMcNE6
+	 BR+OK/x8cr4hKkc2O7VI1OEy2tOEaWmLAMF5r4U2GjOPuXKpFaOozisQxbNtPyz+oT
+	 pa8GkCo23I3GouQ4mJm568eeVZwVNz/KtGg05Y7WT2W7wGSyPky2XJ6UGcsVZLcb07
+	 B24R2neuwvmdmkRQgmzfRolDX3b698y0fweU3ySaPNFy+ER5Dv6IWSAhr7M4Cq1hcy
+	 qb6TNYe3/PK4g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VG0HX6P8hz4wb2;
+	Fri, 12 Apr 2024 12:04:24 +1000 (AEST)
+Date: Fri, 12 Apr 2024 12:04:21 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Luis Chamberlain <mcgrof@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>, "Mike Rapoport (IBM)"
+ <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>
+Subject: linux-next: manual merge of the modules tree with the mm tree
+Message-ID: <20240412120421.27d86c34@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/nVmWy2XDg2rYoS268/+W7Xr";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-From: Qiang Zhang <qiang4.zhang@intel.com>
+--Sig_/nVmWy2XDg2rYoS268/+W7Xr
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On the time to free xbc memory, memblock has handed over memory to buddy
-allocator. So it doesn't make sense to free memory back to memblock.
-memblock_free() called by xbc_exit() even causes UAF bugs on architectures
-with CONFIG_ARCH_KEEP_MEMBLOCK disabled like x86. Following KASAN logs
-shows this case.
+Hi all,
 
-[    9.410890] ==================================================================
-[    9.418962] BUG: KASAN: use-after-free in memblock_isolate_range+0x12d/0x260
-[    9.426850] Read of size 8 at addr ffff88845dd30000 by task swapper/0/1
+Today's linux-next merge of the modules tree got a conflict in:
 
-[    9.435901] CPU: 9 PID: 1 Comm: swapper/0 Tainted: G     U             6.9.0-rc3-00208-g586b5dfb51b9 #5
-[    9.446403] Hardware name: Intel Corporation RPLP LP5 (CPU:RaptorLake)/RPLP LP5 (ID:13), BIOS IRPPN02.01.01.00.00.19.015.D-00000000 Dec 28 2023
-[    9.460789] Call Trace:
-[    9.463518]  <TASK>
-[    9.465859]  dump_stack_lvl+0x53/0x70
-[    9.469949]  print_report+0xce/0x610
-[    9.473944]  ? __virt_addr_valid+0xf5/0x1b0
-[    9.478619]  ? memblock_isolate_range+0x12d/0x260
-[    9.483877]  kasan_report+0xc6/0x100
-[    9.487870]  ? memblock_isolate_range+0x12d/0x260
-[    9.493125]  memblock_isolate_range+0x12d/0x260
-[    9.498187]  memblock_phys_free+0xb4/0x160
-[    9.502762]  ? __pfx_memblock_phys_free+0x10/0x10
-[    9.508021]  ? mutex_unlock+0x7e/0xd0
-[    9.512111]  ? __pfx_mutex_unlock+0x10/0x10
-[    9.516786]  ? kernel_init_freeable+0x2d4/0x430
-[    9.521850]  ? __pfx_kernel_init+0x10/0x10
-[    9.526426]  xbc_exit+0x17/0x70
-[    9.529935]  kernel_init+0x38/0x1e0
-[    9.533829]  ? _raw_spin_unlock_irq+0xd/0x30
-[    9.538601]  ret_from_fork+0x2c/0x50
-[    9.542596]  ? __pfx_kernel_init+0x10/0x10
-[    9.547170]  ret_from_fork_asm+0x1a/0x30
-[    9.551552]  </TASK>
+  kernel/module/main.c
 
-[    9.555649] The buggy address belongs to the physical page:
-[    9.561875] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x45dd30
-[    9.570821] flags: 0x200000000000000(node=0|zone=2)
-[    9.576271] page_type: 0xffffffff()
-[    9.580167] raw: 0200000000000000 ffffea0011774c48 ffffea0012ba1848 0000000000000000
-[    9.588823] raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
-[    9.597476] page dumped because: kasan: bad access detected
+between commit:
 
-[    9.605362] Memory state around the buggy address:
-[    9.610714]  ffff88845dd2ff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    9.618786]  ffff88845dd2ff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[    9.626857] >ffff88845dd30000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[    9.634930]                    ^
-[    9.638534]  ffff88845dd30080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[    9.646605]  ffff88845dd30100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-[    9.654675] ==================================================================
+  58782d7a7ccd ("lib: prevent module unloading if memory is not freed")
 
-Signed-off-by: Qiang Zhang <qiang4.zhang@intel.com>
----
- lib/bootconfig.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+from the mm-unstable branch of the mm tree and commit:
 
-diff --git a/lib/bootconfig.c b/lib/bootconfig.c
-index c59d26068a64..4524ee944df0 100644
---- a/lib/bootconfig.c
-+++ b/lib/bootconfig.c
-@@ -63,7 +63,7 @@ static inline void * __init xbc_alloc_mem(size_t size)
- 
- static inline void __init xbc_free_mem(void *addr, size_t size)
- {
--	memblock_free(addr, size);
-+	memblock_free_late(__pa(addr), size);
- }
- 
- #else /* !__KERNEL__ */
--- 
-2.39.2
+  a4ee8c9b86bd ("module: make module_memory_{alloc,free} more self-containe=
+d")
 
+from the modules tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc kernel/module/main.c
+index 2d25eebc549d,d56b7df0cbb6..000000000000
+--- a/kernel/module/main.c
++++ b/kernel/module/main.c
+@@@ -56,8 -56,8 +56,9 @@@
+  #include <linux/dynamic_debug.h>
+  #include <linux/audit.h>
+  #include <linux/cfi.h>
+ +#include <linux/codetag.h>
+  #include <linux/debugfs.h>
++ #include <linux/execmem.h>
+  #include <uapi/linux/module.h>
+  #include "internal.h"
+ =20
+@@@ -1204,26 -1194,51 +1195,55 @@@ static bool mod_mem_use_vmalloc(enum mo
+  		mod_mem_type_is_core_data(type);
+  }
+ =20
+- static void *module_memory_alloc(unsigned int size, enum mod_mem_type typ=
+e)
++ static int module_memory_alloc(struct module *mod, enum mod_mem_type type)
+  {
++ 	unsigned int size =3D PAGE_ALIGN(mod->mem[type].size);
++ 	void *ptr;
++=20
++ 	mod->mem[type].size =3D size;
++=20
+  	if (mod_mem_use_vmalloc(type))
+- 		return vzalloc(size);
+- 	return module_alloc(size);
++ 		ptr =3D vmalloc(size);
++ 	else
++ 		ptr =3D execmem_alloc(EXECMEM_MODULE_TEXT, size);
++=20
++ 	if (!ptr)
++ 		return -ENOMEM;
++=20
++ 	/*
++ 	 * The pointer to these blocks of memory are stored on the module
++ 	 * structure and we keep that around so long as the module is
++ 	 * around. We only free that memory when we unload the module.
++ 	 * Just mark them as not being a leak then. The .init* ELF
++ 	 * sections *do* get freed after boot so we *could* treat them
++ 	 * slightly differently with kmemleak_ignore() and only grey
++ 	 * them out as they work as typical memory allocations which
++ 	 * *do* eventually get freed, but let's just keep things simple
++ 	 * and avoid *any* false positives.
++ 	 */
++ 	kmemleak_not_leak(ptr);
++=20
++ 	memset(ptr, 0, size);
++ 	mod->mem[type].base =3D ptr;
++=20
++ 	return 0;
+  }
+ =20
+- static void module_memory_free(void *ptr, enum mod_mem_type type,
+ -static void module_memory_free(struct module *mod, enum mod_mem_type type)
+++static void module_memory_free(struct module *mod, enum mod_mem_type type,
+ +			       bool unload_codetags)
+  {
++ 	void *ptr =3D mod->mem[type].base;
++=20
+ +	if (!unload_codetags && mod_mem_type_is_core_data(type))
+ +		return;
+ +
+  	if (mod_mem_use_vmalloc(type))
+  		vfree(ptr);
+  	else
+- 		module_memfree(ptr);
++ 		execmem_free(ptr);
+  }
+ =20
+ -static void free_mod_mem(struct module *mod)
+ +static void free_mod_mem(struct module *mod, bool unload_codetags)
+  {
+  	for_each_mod_mem_type(type) {
+  		struct module_memory *mod_mem =3D &mod->mem[type];
+@@@ -1234,13 -1249,12 +1254,13 @@@
+  		/* Free lock-classes; relies on the preceding sync_rcu(). */
+  		lockdep_free_key_range(mod_mem->base, mod_mem->size);
+  		if (mod_mem->size)
+- 			module_memory_free(mod_mem->base, type,
+ -			module_memory_free(mod, type);
+++			module_memory_free(mod, type,
+ +					   unload_codetags);
+  	}
+ =20
+  	/* MOD_DATA hosts mod, so free it at last */
+  	lockdep_free_key_range(mod->mem[MOD_DATA].base, mod->mem[MOD_DATA].size);
+- 	module_memory_free(mod->mem[MOD_DATA].base, MOD_DATA, unload_codetags);
+ -	module_memory_free(mod, MOD_DATA);
+++	module_memory_free(mod, MOD_DATA, unload_codetags);
+  }
+ =20
+  /* Free a module, remove from lists, etc. */
+@@@ -2309,7 -2301,7 +2314,7 @@@ static int move_module(struct module *m
+  	return 0;
+  out_enomem:
+  	for (t--; t >=3D 0; t--)
+- 		module_memory_free(mod->mem[t].base, t, true);
+ -		module_memory_free(mod, t);
+++		module_memory_free(mod, t, true);
+  	return ret;
+  }
+ =20
+
+--Sig_/nVmWy2XDg2rYoS268/+W7Xr
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYYlqUACgkQAVBC80lX
+0GxJqgf/YhyeAFTIWqGU0sA/nEexDdRUO7eO2SyZMYL2wq97P1eW1PoDfWq2OM+0
+ESyjDL71qFdZNEyL49W2w5WQKfCBdxVaTUZo9x9Z+sSsF0frki7MUTyc5ggQP5yU
+8Ya8Ww9ERg4jsQPqSYQliKRkwdR+ppjRAKKImxUp6/UVNd3qWLfmNspC+f3K+kmc
+xZHs8aEgV3TjWLicYG5hSH0dka3zBDyq8HUVO4SqKm5Pa5TTZHBSEMg+4CX4pyN0
+7HtV5kO/14Rq1vK5DcmrQAXM/zrICesPF8TbF+mU8//nWxW96cSGR+uHaon4ictP
+HuZiOSvduv8/LO84DTrtuwlJ0G/L0g==
+=JSMi
+-----END PGP SIGNATURE-----
+
+--Sig_/nVmWy2XDg2rYoS268/+W7Xr--
 
