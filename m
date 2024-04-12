@@ -1,184 +1,152 @@
-Return-Path: <linux-kernel+bounces-141797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CA318A238C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:03:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4774D8A238D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:03:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92384B21897
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:02:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBD201F22408
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:03:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFDFCD527;
-	Fri, 12 Apr 2024 02:02:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE541D27A;
+	Fri, 12 Apr 2024 02:03:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="SToS/+cW"
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AWPKjqS+"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F8B9523A;
-	Fri, 12 Apr 2024 02:02:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BDDE525D;
+	Fri, 12 Apr 2024 02:03:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712887366; cv=none; b=i3QnFML6UTopmxa92Ypxz9LeVTBvKHPi2HRUAkBe2e65bB0wzT5D0rS1cY2Xx0EfpG0oq9xDfGZctLUjZB9puZTM+z3T/BwLshggynmSSyk1RE8wt8r+FcU+5i7BPDGOtZV5dPKySPzrQNRMdUVDzTmrfA6AAmHH96RFN6b539o=
+	t=1712887422; cv=none; b=kyaIlK5Uu8GMZG4JEhlFQ0JUxKnQzLMqGq8Ldxf2q7b7sq10qMlslsjLSTQf0sq/aKpMFvThGAgDgG6oy/xfkWKrs0Ks22jthwSqsbuQqtK8/l1Kn5CSOA4BalooiPNyfr3Fbs5nZ2rjZ8OlI6lRZfEA4my00rnio8Cq1nvcLuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712887366; c=relaxed/simple;
-	bh=+EZtMTU/ARwhQkmhBZM/lagfNPeu0TVZRPivRQMHV8M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OicV7cyhoIoYvmBl6V5whNwuGya5Cgro69H/you89MgGArljo+SJACfluXTWc1XQ100Twww8c2t8cqldWV1CqJ7ngCx+N8Am2Nx3VuQNIA03F4y9cXx1f5bI5GRR/gAKLBcWolcbviHcxA4qPsx6s+rmXFyV9JdKu9zoWoWKLyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=SToS/+cW; arc=none smtp.client-ip=115.124.30.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1712887360; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=VKbsRDbyF9GBLUuAIXQgOv40gno2BZ2XnQ4Pd7U2cmA=;
-	b=SToS/+cWNzr3GLsIw1Xqhr4XHHC+CzL6VhJbZKCNTBITfRvSH8F88zBTsdhvgtLyECQdH1yQucLuPVX+74hr3jh/60JYJQmYrpEFyG3e8X1UH8ahy2djfhb7o9mHMobKQifANp8g7hiV6R4c4XejoNgsPITsmgC6d9Fuf8Nt9IM=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0W4Mc7Bm_1712887358;
-Received: from 30.221.129.174(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W4Mc7Bm_1712887358)
-          by smtp.aliyun-inc.com;
-          Fri, 12 Apr 2024 10:02:39 +0800
-Message-ID: <44ea7d83-4fa7-427b-9d54-678f05fd09e9@linux.alibaba.com>
-Date: Fri, 12 Apr 2024 10:02:37 +0800
+	s=arc-20240116; t=1712887422; c=relaxed/simple;
+	bh=32I00JzTHxnizPyNO+FSMhrceoVRAWHSz7lsTnztRjg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gayD2mp30Eg4I2F7lVxzICFES/UHuTtDCNJJE2AX74DLgDtxHgW5Qwbmj25h8yoDNc4TVVAWoddiRdJT2g8uYcPe1Ah1ZQaLmSuMRGrAWHghnIHRWLQ74vHY9swa/B8+BtryF+Xfl+cnh5DYn+EATM8if3lCc9IEwP/9XqQcV6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AWPKjqS+; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712887421; x=1744423421;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=32I00JzTHxnizPyNO+FSMhrceoVRAWHSz7lsTnztRjg=;
+  b=AWPKjqS+hoGmwW8TYosCncF9pA6WH99+//iZ7EPqSfi+ylLMdXh8mln/
+   onVQ7dLHWI51KYXKui5EJjMoAgcQF9lYLY0ejTXDF+sO6PpqtDaK3qhSn
+   sUrw4pC06q0OisjeRgkT+Z2vE32a4MjE/6FXUW+Ffow0kTGEEM0IqhBKA
+   0l8GT3FMlfXY1eUCO3KOD3ws435MG5oSsVWxF5WV5UGEYBiu5w5sdxR9t
+   TKIPJOmI/werEgAogrq7obeTbSSZYg9jeFj60DMx3fNbq3rzH49AD2R9k
+   kqzmW0KsPGChdE3WgTZ+tngmmxL5eYfLclMG3JSgm6MF8gT/bvHNvEq3B
+   w==;
+X-CSE-ConnectionGUID: +vN4tx8PQAiAJSgB3asmNQ==
+X-CSE-MsgGUID: 1FcdDa8oRo6U/k/IOXfGaA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8191586"
+X-IronPort-AV: E=Sophos;i="6.07,194,1708416000"; 
+   d="scan'208";a="8191586"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 19:03:40 -0700
+X-CSE-ConnectionGUID: 2IfnSC7USKmo2w+IHmccLw==
+X-CSE-MsgGUID: Tx0EYjaaR6OltRqbP5cKTw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,194,1708416000"; 
+   d="scan'208";a="21001354"
+Received: from dev-qz.sh.intel.com (HELO localhost) ([10.239.147.89])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 19:03:38 -0700
+From: qiang4.zhang@linux.intel.com
+To: Masami Hiramatsu <mhiramat@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Qiang Zhang <qiang4.zhang@intel.com>
+Subject: [PATCH] bootconfig: use memblock_free_late to free xbc memory to buddy
+Date: Fri, 12 Apr 2024 10:03:26 +0800
+Message-Id: <20240412020325.290330-1-qiang4.zhang@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v5 04/11] net/smc: implement some unsupported
- operations of loopback-ism
-To: Alexandra Winter <wintera@linux.ibm.com>,
- Niklas Schnelle <schnelle@linux.ibm.com>, Gerd Bayer <gbayer@linux.ibm.com>,
- twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
- agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com, jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
- alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20240324135522.108564-1-guwen@linux.alibaba.com>
- <20240324135522.108564-5-guwen@linux.alibaba.com>
- <3122eece5b484abcf8d23f85d6c18c36f0b939ff.camel@linux.ibm.com>
- <1db6ccab-b49f-45d2-a93c-05b0f79371a3@linux.alibaba.com>
- <3b3ff37643e9030ec1246e67720683a2cf5660e5.camel@linux.ibm.com>
- <7a0fc481-658e-4c99-add7-ccbd5f9dce1e@linux.alibaba.com>
- <7291dd1b2d16fd9bbd90988ac5bcc3a46d17e3f4.camel@linux.ibm.com>
- <46e8e227-8058-4062-a9db-6b9c774f63cc@linux.alibaba.com>
- <12ae995f-4af4-4c6b-9130-04672d157293@linux.ibm.com>
-From: Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <12ae995f-4af4-4c6b-9130-04672d157293@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+From: Qiang Zhang <qiang4.zhang@intel.com>
 
+On the time to free xbc memory, memblock has handed over memory to buddy
+allocator. So it doesn't make sense to free memory back to memblock.
+memblock_free() called by xbc_exit() even causes UAF bugs on architectures
+with CONFIG_ARCH_KEEP_MEMBLOCK disabled like x86. Following KASAN logs
+shows this case.
 
-On 2024/4/11 19:12, Alexandra Winter wrote:
-> 
-> 
-> On 09.04.24 03:44, Wen Gu wrote:
->>
->>
->> On 2024/4/4 23:15, Niklas Schnelle wrote:
->>> On Thu, 2024-04-04 at 21:12 +0800, Wen Gu wrote:
->>>>
->>>> On 2024/4/4 19:42, Niklas Schnelle wrote:
->>>>> On Thu, 2024-04-04 at 17:32 +0800, Wen Gu wrote:
->>>>>>
->>>>>> On 2024/4/4 00:25, Gerd Bayer wrote:
->>>>>>> On Sun, 2024-03-24 at 21:55 +0800, Wen Gu wrote:
->>>>>>>> This implements some operations that loopback-ism does not support
->>>>>>>> currently:
->>>>>>>>      - vlan operations, since there is no strong use-case for it.
->>>>>>>>      - signal_event operations, since there is no event to be processed
->>>>>>>> by the loopback-ism device.
->>>>>>>
->>>>>>> Hi Wen,
->>>>>>>
->>>>>>> I wonder if the these operations that are not supported by loopback-ism
->>>>>>> should rather be marked "optional" in the struct smcd_ops, and the
->>>>>>> calling code should call these only when they are implemented.
->>>>>>>
->>>>>>> Of course this would mean more changes to net/smc/smc_core.c - but
->>>>>>> loopback-ism could omit these "boiler-plate" functions.
->>>>>>>
->>>>>>
->>>>>> Hi Gerd.
->>>>>>
->>>>>> Thank you for the thoughts! I agree that checks like 'if(smcd->ops->xxx)'
->>>>>> can avoid the device driver from implementing unsupported operations. But I
->>>>>> am afraid that which operations need to be defined as 'optional' may differ
->>>>>> from different device perspectives (e.g. for loopback-ism they are vlan-related
->>>>>> opts and signal_event). So I perfer to simply let the smc protocol assume
->>>>>> that all operations have been implemented, and let drivers to decide which
->>>>>> ones are unsupported in implementation. What do you think?
->>>>>>
->>>>>> Thanks!
->>>>>>
->>>>>
->>>>> I agree with Gerd, in my opinion it is better to document ops as
->>>>> optional and then allow their function pointers to be NULL and check
->>>>> for that. Acting like they are supported and then they turn out to be
->>>>> nops to me seems to contradict the principle of least surprises. I also
->>>>> think we can find a subset of mandatory ops without which SMC-D is
->>>>> impossible and then everything else should be optional.
->>>>
->>>> I see. If we all agree to classify smcd_ops into mandatory and optional ones,
->>>> I'll add a patch to mark the optional ops and check if they are implemented.
->>>
->>> Keep in mind I don't speak for the SMC maintainers but that does sound
->>> reasonable to me.
->>>
->>
->> Hi Wenjia and Jan, do you have any comments on this and [1]? Thanks!
->>
->> [1] https://lore.kernel.org/netdev/60b4aec0b4bf4474d651b653c86c280dafc4518a.camel@linux.ibm.com/
->>
->>>>
->>>>>
->>>>> As a first guess I think the following options may be mandatory:
->>>>>
->>>>> * query_remote_gid()
->>>>> * register_dmb()/unregister_dmb()
->>>>> * move_data()
->>>>>      For this one could argue that either move_data() or
->>>>>      attach_dmb()/detach_dmb() is required though personally I would
->>>>>      prefer to always have move_data() as a fallback and simple API
->>>>> * supports_v2()
->>>>> * get_local_gid()
->>>>> * get_chid()
->>>>> * get_dev()
->>>> I agree with this classification. Just one point, maybe we can take
->>>> supports_v2() as an optional ops, like support_dmb_nocopy()? e.g. if
->>>> it is not implemented, we treat it as an ISMv1.
->>>>
->>>> Thanks!
->>>
->>> Interpreting a NULL supports_v2() as not supporting v2 sounds
->>> reasonable to me.
->>
-> 
-> Let me add my thoughts to the discussion:
-> For the vlan operations and signal_event operations that loopback-ism does
-> not support:
-> I like the idea to set the ops to NULL and make sure the caller checks that
-> and can live with it. That is readable and efficient.
-> 
-> I don't think there is a need to discuss a strategy now, which ops could be
-> optional in the future. This is all inside the kernel. loopback-ism is even
-> inside the smc module. Such comments in the code get outdated very easily.
-> 
-> I would propose to mark those as optional struct smcd_ops, where all callers can
-> handle a NULL pointer and still be productive.
-> Future support of other devices for SMC-D can update that.
-> 
-> 
+[    9.410890] ==================================================================
+[    9.418962] BUG: KASAN: use-after-free in memblock_isolate_range+0x12d/0x260
+[    9.426850] Read of size 8 at addr ffff88845dd30000 by task swapper/0/1
 
-Hi Sandy, just to confirm if I understand you correctly.
+[    9.435901] CPU: 9 PID: 1 Comm: swapper/0 Tainted: G     U             6.9.0-rc3-00208-g586b5dfb51b9 #5
+[    9.446403] Hardware name: Intel Corporation RPLP LP5 (CPU:RaptorLake)/RPLP LP5 (ID:13), BIOS IRPPN02.01.01.00.00.19.015.D-00000000 Dec 28 2023
+[    9.460789] Call Trace:
+[    9.463518]  <TASK>
+[    9.465859]  dump_stack_lvl+0x53/0x70
+[    9.469949]  print_report+0xce/0x610
+[    9.473944]  ? __virt_addr_valid+0xf5/0x1b0
+[    9.478619]  ? memblock_isolate_range+0x12d/0x260
+[    9.483877]  kasan_report+0xc6/0x100
+[    9.487870]  ? memblock_isolate_range+0x12d/0x260
+[    9.493125]  memblock_isolate_range+0x12d/0x260
+[    9.498187]  memblock_phys_free+0xb4/0x160
+[    9.502762]  ? __pfx_memblock_phys_free+0x10/0x10
+[    9.508021]  ? mutex_unlock+0x7e/0xd0
+[    9.512111]  ? __pfx_mutex_unlock+0x10/0x10
+[    9.516786]  ? kernel_init_freeable+0x2d4/0x430
+[    9.521850]  ? __pfx_kernel_init+0x10/0x10
+[    9.526426]  xbc_exit+0x17/0x70
+[    9.529935]  kernel_init+0x38/0x1e0
+[    9.533829]  ? _raw_spin_unlock_irq+0xd/0x30
+[    9.538601]  ret_from_fork+0x2c/0x50
+[    9.542596]  ? __pfx_kernel_init+0x10/0x10
+[    9.547170]  ret_from_fork_asm+0x1a/0x30
+[    9.551552]  </TASK>
 
-You are proposing that don't draw a conclusion about the classification now,
-but supplementally mark which one become a optional operation in struct smcd_ops
-during the introduction of new devices for SMC-D.
+[    9.555649] The buggy address belongs to the physical page:
+[    9.561875] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x45dd30
+[    9.570821] flags: 0x200000000000000(node=0|zone=2)
+[    9.576271] page_type: 0xffffffff()
+[    9.580167] raw: 0200000000000000 ffffea0011774c48 ffffea0012ba1848 0000000000000000
+[    9.588823] raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+[    9.597476] page dumped because: kasan: bad access detected
+
+[    9.605362] Memory state around the buggy address:
+[    9.610714]  ffff88845dd2ff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[    9.618786]  ffff88845dd2ff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+[    9.626857] >ffff88845dd30000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+[    9.634930]                    ^
+[    9.638534]  ffff88845dd30080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+[    9.646605]  ffff88845dd30100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+[    9.654675] ==================================================================
+
+Signed-off-by: Qiang Zhang <qiang4.zhang@intel.com>
+---
+ lib/bootconfig.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/bootconfig.c b/lib/bootconfig.c
+index c59d26068a64..4524ee944df0 100644
+--- a/lib/bootconfig.c
++++ b/lib/bootconfig.c
+@@ -63,7 +63,7 @@ static inline void * __init xbc_alloc_mem(size_t size)
+ 
+ static inline void __init xbc_free_mem(void *addr, size_t size)
+ {
+-	memblock_free(addr, size);
++	memblock_free_late(__pa(addr), size);
+ }
+ 
+ #else /* !__KERNEL__ */
+-- 
+2.39.2
+
 
