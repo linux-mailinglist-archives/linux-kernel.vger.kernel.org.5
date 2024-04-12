@@ -1,380 +1,249 @@
-Return-Path: <linux-kernel+bounces-143390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 017328A3800
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:42:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20A2D8A3801
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:42:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 595EEB22516
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:42:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0C941F23069
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1FF1152186;
-	Fri, 12 Apr 2024 21:42:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A16415219F;
+	Fri, 12 Apr 2024 21:42:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mSkNhyJl"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nUM/Veb+"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A5C839FD5;
-	Fri, 12 Apr 2024 21:41:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58C2F152194;
+	Fri, 12 Apr 2024 21:42:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712958119; cv=none; b=p6VsPZHxeeSroQhxnACHW6MMVLob7gR7V4tFT+byqcYagZxbZNA3lF3pby6GVM+dn8UkUGMNnJ/wn/kJ9sn+MWktCZM0RveIWblK1IBAEQ7JVlNS5QpspovY3Ml+Rdpk/f2LOt7h/7KIjZncthfCQsaAOksfHdVBWLkZfyYIRzg=
+	t=1712958125; cv=none; b=MeF9WhpGGcVlPKIpAK4Bj/tPxXjRl0q51DEg5c9qu34rc70tgcW98wuc/EWAB7jpIkNbDIVAyHQDJ7/z4hlSFcSLvY4TKPh8FtnWpO6sU7A0tEjIuhOLp/Y9GpAeO8Fghaap81W+RJUeutSQ4jJMNTOBLyGkgrYQ4jkIonM5aZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712958119; c=relaxed/simple;
-	bh=B342CtOdf9X8OyLmBAxcvx/5wPPbgymJ27LhrFXOkfA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=GNrd/XuSX62ZZzvbd5A5fyfS8FsYiZ+8edRqXFLnKC9EDSJuQtJyvOIwP9g9slYIftPIR27zkIXQguPnmkE3SQsgdYL6wqV55ytTU269HlAfISOlBk5e44ZLlxQUnX5IR6m6i918sgpQNZxEeXJ9PNdOePIUhNdGU7PnR2ILzgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=mSkNhyJl; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43CLOcCf031674;
-	Fri, 12 Apr 2024 21:40:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=Nk4TG9yDmY9Q1U96or5wfZFuqpbTyezZPX1b/MEyft4=; b=mS
-	kNhyJlU3LJuUasbUvYHNbbO4hKal6ay8cFUVgVl4i8/HWIQ9IRMh0dbzttTGor5c
-	5VC4GSi6r2uuYwQXZOg94GxzLHxWgCfQs+bZFpuTvd84+pBmHqZ0a5XqTHikhZvf
-	qAfAYnNlR2Ix/pTeeLAeHME3LfvRkHOXsAUxe5VL8gGz+KDD/05+b82+tRBf2AWt
-	WN4Y0Ax6DhVp+op8O52AS0hVowovoNNLR2bY9/SBa0ySBtm8m1X1xeHqZ8XvfWQj
-	YHDlOA5WQwJWPONlXqAPkHKmfUQXvSVmLZYvEMcBxBp9nkB/5fToW7/1DQrCqQ2i
-	ZhUjj96ONHq1WWzF8elw==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xer1ttx5b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Apr 2024 21:40:46 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43CLei3W009864
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Apr 2024 21:40:44 GMT
-Received: from [10.110.105.144] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 12 Apr
- 2024 14:40:40 -0700
-Message-ID: <7befeeb2-a481-46ac-97d0-a9d6d023427d@quicinc.com>
-Date: Fri, 12 Apr 2024 14:38:54 -0700
+	s=arc-20240116; t=1712958125; c=relaxed/simple;
+	bh=bGqbk8oXj2YBcOYqJ0LoT0L+D2Z9mSgHKxhntmajOZI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e/kL58itpRFEltPk364G3irD4y7G3kx8ErH1Xv9N1oaPQcCZmTYuGcdEnsD7zC2QOUm9mHK6EUA5DKjZDViAKUflpRM9vUMfDm+zaf7b9+Cs77U+r+pTuC+jYqu8TytGHvdo2YyXEQp7gWBldBfI4fUAk2BY60rCfXfG4X1/YTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nUM/Veb+; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712958123; x=1744494123;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bGqbk8oXj2YBcOYqJ0LoT0L+D2Z9mSgHKxhntmajOZI=;
+  b=nUM/Veb+NmrLhsrFrsb1pU9Gpom2cLKqxa/QO9dnmv8WtXUE0mLnPA9H
+   SRRoYwrtYoLs2YETcwxVFEW5is493kWXABl3fXKhaVQ8XnLkrNNGjmZaQ
+   Rl4g4be2Vc8jHIBINhTxW5bDxZd74UfAY25PMgkiprV1fI1IqKCXbNeQB
+   8XolF198D/za7skg0aeoB8Vu8iAaZDAcUpgfCv9d8GLpx/G2B8BQdNsXI
+   ccl1Xj+ZFBMYOzEP7ojxB2AhXPC+dcRo5GTmoWHpmL4BJ8xxoA4j3/m9P
+   8z/rh2W9Ucb5RiXAH8MBbRVQB3i+PHtWF3jwP9Tq9jg/R4ogBNV+r5iD6
+   w==;
+X-CSE-ConnectionGUID: 5HkuhNT2TD22eFWA1akflg==
+X-CSE-MsgGUID: mSIkSJZeTY6Nc2r76OL0tQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8348552"
+X-IronPort-AV: E=Sophos;i="6.07,197,1708416000"; 
+   d="scan'208";a="8348552"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 14:42:03 -0700
+X-CSE-ConnectionGUID: covSbDg1TE27VIdgsSf/Yg==
+X-CSE-MsgGUID: EWoHZGmHSVqBNg7MUhU1+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,197,1708416000"; 
+   d="scan'208";a="25775438"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 14:42:02 -0700
+Date: Fri, 12 Apr 2024 14:42:01 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Reinette Chatre <reinette.chatre@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 087/130] KVM: TDX: handle vcpu migration over logical
+ processor
+Message-ID: <20240412214201.GO3039520@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <b9fe57ceeaabe650f0aecb21db56ef2b1456dcfe.1708933498.git.isaku.yamahata@intel.com>
+ <0c3efffa-8dd5-4231-8e90-e0241f058a20@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/4] of: reserved_mem: Use the unflatten_devicetree
- APIs to scan reserved mem. nodes
-To: Rob Herring <robh+dt@kernel.org>
-CC: <catalin.marinas@arm.com>, <will@kernel.org>, <frowand.list@gmail.com>,
-        <vgupta@kernel.org>, <arnd@arndb.de>, <olof@lixom.net>,
-        <soc@kernel.org>, <guoren@kernel.org>, <monstr@monstr.eu>,
-        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>, <dinguyen@kernel.org>,
-        <chenhuacai@kernel.org>, <tsbogend@alpha.franken.de>,
-        <jonas@southpole.se>, <stefan.kristiansson@saunalahti.fi>,
-        <shorne@gmail.com>, <mpe@ellerman.id.au>, <ysato@users.sourceforge.jp>,
-        <dalias@libc.org>, <glaubitz@physik.fu-berlin.de>, <richard@nod.at>,
-        <anton.ivanov@cambridgegreys.com>, <johannes@sipsolutions.net>,
-        <chris@zankel.net>, <jcmvbkbc@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <kernel@quicinc.com>
-References: <20240328211543.191876-1-quic_obabatun@quicinc.com>
- <20240328211543.191876-4-quic_obabatun@quicinc.com>
- <CAL_Jsq+RQaKTqB6hnsCJ_d0zM6FkrMXQ0NF0r1P22q95_ZDM4A@mail.gmail.com>
-Content-Language: en-US
-From: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
-In-Reply-To: <CAL_Jsq+RQaKTqB6hnsCJ_d0zM6FkrMXQ0NF0r1P22q95_ZDM4A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: bUs5QiPjttYcdFzuNPx6Sq6bSgwqw58d
-X-Proofpoint-GUID: bUs5QiPjttYcdFzuNPx6Sq6bSgwqw58d
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-12_18,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 malwarescore=0 adultscore=0 suspectscore=0
- lowpriorityscore=0 spamscore=0 bulkscore=0 impostorscore=0 clxscore=1011
- mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404120156
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0c3efffa-8dd5-4231-8e90-e0241f058a20@intel.com>
+
+On Fri, Apr 12, 2024 at 09:15:29AM -0700,
+Reinette Chatre <reinette.chatre@intel.com> wrote:
+
+> Hi Isaku,
+> 
+> On 2/26/2024 12:26 AM, isaku.yamahata@intel.com wrote:
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> 
+> ...
+> 
+> > @@ -218,6 +257,87 @@ static void tdx_reclaim_control_page(unsigned long td_page_pa)
+> >  	free_page((unsigned long)__va(td_page_pa));
+> >  }
+> >  
+> > +struct tdx_flush_vp_arg {
+> > +	struct kvm_vcpu *vcpu;
+> > +	u64 err;
+> > +};
+> > +
+> > +static void tdx_flush_vp(void *arg_)
+> > +{
+> > +	struct tdx_flush_vp_arg *arg = arg_;
+> > +	struct kvm_vcpu *vcpu = arg->vcpu;
+> > +	u64 err;
+> > +
+> > +	arg->err = 0;
+> > +	lockdep_assert_irqs_disabled();
+> > +
+> > +	/* Task migration can race with CPU offlining. */
+> > +	if (unlikely(vcpu->cpu != raw_smp_processor_id()))
+> > +		return;
+> > +
+> > +	/*
+> > +	 * No need to do TDH_VP_FLUSH if the vCPU hasn't been initialized.  The
+> > +	 * list tracking still needs to be updated so that it's correct if/when
+> > +	 * the vCPU does get initialized.
+> > +	 */
+> > +	if (is_td_vcpu_created(to_tdx(vcpu))) {
+> > +		/*
+> > +		 * No need to retry.  TDX Resources needed for TDH.VP.FLUSH are,
+> > +		 * TDVPR as exclusive, TDR as shared, and TDCS as shared.  This
+> > +		 * vp flush function is called when destructing vcpu/TD or vcpu
+> > +		 * migration.  No other thread uses TDVPR in those cases.
+> > +		 */
+> 
+> (I have comment later that refer back to this comment about needing retry.)
+> 
+> ...
+> 
+> > @@ -233,26 +353,31 @@ static void tdx_do_tdh_phymem_cache_wb(void *unused)
+> >  		pr_tdx_error(TDH_PHYMEM_CACHE_WB, err, NULL);
+> >  }
+> >  
+> > -void tdx_mmu_release_hkid(struct kvm *kvm)
+> > +static int __tdx_mmu_release_hkid(struct kvm *kvm)
+> >  {
+> >  	bool packages_allocated, targets_allocated;
+> >  	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> >  	cpumask_var_t packages, targets;
+> > +	struct kvm_vcpu *vcpu;
+> > +	unsigned long j;
+> > +	int i, ret = 0;
+> >  	u64 err;
+> > -	int i;
+> >  
+> >  	if (!is_hkid_assigned(kvm_tdx))
+> > -		return;
+> > +		return 0;
+> >  
+> >  	if (!is_td_created(kvm_tdx)) {
+> >  		tdx_hkid_free(kvm_tdx);
+> > -		return;
+> > +		return 0;
+> >  	}
+> >  
+> >  	packages_allocated = zalloc_cpumask_var(&packages, GFP_KERNEL);
+> >  	targets_allocated = zalloc_cpumask_var(&targets, GFP_KERNEL);
+> >  	cpus_read_lock();
+> >  
+> > +	kvm_for_each_vcpu(j, vcpu, kvm)
+> > +		tdx_flush_vp_on_cpu(vcpu);
+> > +
+> >  	/*
+> >  	 * We can destroy multiple guest TDs simultaneously.  Prevent
+> >  	 * tdh_phymem_cache_wb from returning TDX_BUSY by serialization.
+> > @@ -270,6 +395,19 @@ void tdx_mmu_release_hkid(struct kvm *kvm)
+> >  	 */
+> >  	write_lock(&kvm->mmu_lock);
+> >  
+> > +	err = tdh_mng_vpflushdone(kvm_tdx->tdr_pa);
+> > +	if (err == TDX_FLUSHVP_NOT_DONE) {
+> > +		ret = -EBUSY;
+> > +		goto out;
+> > +	}
+> > +	if (WARN_ON_ONCE(err)) {
+> > +		pr_tdx_error(TDH_MNG_VPFLUSHDONE, err, NULL);
+> > +		pr_err("tdh_mng_vpflushdone() failed. HKID %d is leaked.\n",
+> > +		       kvm_tdx->hkid);
+> > +		ret = -EIO;
+> > +		goto out;
+> > +	}
+> > +
+> >  	for_each_online_cpu(i) {
+> >  		if (packages_allocated &&
+> >  		    cpumask_test_and_set_cpu(topology_physical_package_id(i),
+> > @@ -291,14 +429,24 @@ void tdx_mmu_release_hkid(struct kvm *kvm)
+> >  		pr_tdx_error(TDH_MNG_KEY_FREEID, err, NULL);
+> >  		pr_err("tdh_mng_key_freeid() failed. HKID %d is leaked.\n",
+> >  		       kvm_tdx->hkid);
+> > +		ret = -EIO;
+> >  	} else
+> >  		tdx_hkid_free(kvm_tdx);
+> >  
+> > +out:
+> >  	write_unlock(&kvm->mmu_lock);
+> >  	mutex_unlock(&tdx_lock);
+> >  	cpus_read_unlock();
+> >  	free_cpumask_var(targets);
+> >  	free_cpumask_var(packages);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +void tdx_mmu_release_hkid(struct kvm *kvm)
+> > +{
+> > +	while (__tdx_mmu_release_hkid(kvm) == -EBUSY)
+> > +		;
+> >  }
+> 
+> As I understand, __tdx_mmu_release_hkid() returns -EBUSY
+> after TDH.VP.FLUSH has been sent for every vCPU followed by
+> TDH.MNG.VPFLUSHDONE, which returns TDX_FLUSHVP_NOT_DONE.
+> 
+> Considering earlier comment that a retry of TDH.VP.FLUSH is not
+> needed, why is this while() loop here that sends the
+> TDH.VP.FLUSH again to all vCPUs instead of just a loop within
+> __tdx_mmu_release_hkid() to _just_ resend TDH.MNG.VPFLUSHDONE?
+> 
+> Could it be possible for a vCPU to appear during this time, thus
+> be missed in one TDH.VP.FLUSH cycle, to require a new cycle of
+> TDH.VP.FLUSH?
+
+Yes. There is a race between closing KVM vCPU fd and MMU notifier release hook.
+When KVM vCPU fd is closed, vCPU context can be loaded again.  The MMU notifier
+release hook eventually calls tdx_mmu_release_hkid().  Other kernel thread
+(concretely, vhost krenel thread) can get reference count to mmu and put it by
+timer, the MMU notifier release hook can be triggered during closing vCPU fd.
+
+The possible alternative is to make the vCPU closing path complicated not to
+load vCPU context instead f sending IPI on every retry.
 
 
-On 4/11/2024 11:59 AM, Rob Herring wrote:
-> On Thu, Mar 28, 2024 at 4:16 PM Oreoluwa Babatunde
-> <quic_obabatun@quicinc.com> wrote:
->> The unflatten_devicetree APIs have been setup and are available to be
->> used by the time the fdt_init_reserved_mem() function is called.
->> Since the unflatten_devicetree APIs are a more efficient way of scanning
->> through the DT nodes, switch to using these APIs to facilitate the rest
->> of the reserved memory processing.
-> Please use get_maintainers.pl. Specifically, you missed maintainers
-> for kernel/dma/.
+> I note that TDX_FLUSHVP_NOT_DONE is distinct from TDX_OPERAND_BUSY
+> that can also be returned from TDH.MNG.VPFLUSHDONE and
+> wonder if a retry may be needed in that case also/instead? It looks like
+> TDH.MNG.VPFLUSHDONE needs exclusive access to all operands and I
+> do not know enough yet if this is the case here.
 
-Sorry about that, Will include them in the next version.
-
->
->> Signed-off-by: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
->> ---
->>  drivers/of/of_reserved_mem.c    | 77 +++++++++++++++++++++------------
->>  include/linux/of_reserved_mem.h |  2 +-
->>  kernel/dma/coherent.c           |  8 ++--
->>  kernel/dma/contiguous.c         |  8 ++--
->>  kernel/dma/swiotlb.c            | 10 ++---
->>  5 files changed, 64 insertions(+), 41 deletions(-)
->>
->> diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
->> index 0aba366eba59..68d1f4cca4bb 100644
->> --- a/drivers/of/of_reserved_mem.c
->> +++ b/drivers/of/of_reserved_mem.c
->> @@ -99,7 +99,7 @@ static void __init alloc_reserved_mem_array(void)
->>  /*
->>   * fdt_reserved_mem_save_node() - save fdt node for second pass initialization
->>   */
->> -static void __init fdt_reserved_mem_save_node(unsigned long node, const char *uname,
->> +static void __init fdt_reserved_mem_save_node(struct device_node *node, const char *uname,
->>                                               phys_addr_t base, phys_addr_t size)
->>  {
->>         struct reserved_mem *rmem = &reserved_mem[reserved_mem_count];
->> @@ -109,7 +109,7 @@ static void __init fdt_reserved_mem_save_node(unsigned long node, const char *un
->>                 return;
->>         }
->>
->> -       rmem->fdt_node = node;
->> +       rmem->dev_node = node;
->>         rmem->name = uname;
->>         rmem->base = base;
->>         rmem->size = size;
->> @@ -178,11 +178,11 @@ static int __init __reserved_mem_reserve_reg(unsigned long node,
->>  }
->>
->>  /*
->> - * __reserved_mem_check_root() - check if #size-cells, #address-cells provided
->> + * __fdt_reserved_mem_check_root() - check if #size-cells, #address-cells provided
->>   * in /reserved-memory matches the values supported by the current implementation,
->>   * also check if ranges property has been provided
->>   */
->> -static int __init __reserved_mem_check_root(unsigned long node)
->> +static int __init __fdt_reserved_mem_check_root(unsigned long node)
->>  {
->>         const __be32 *prop;
->>
->> @@ -200,6 +200,29 @@ static int __init __reserved_mem_check_root(unsigned long node)
->>         return 0;
->>  }
->>
->> +/*
->> + * __dt_reserved_mem_check_root() - check if #size-cells, #address-cells provided
->> + * in /reserved-memory matches the values supported by the current implementation,
->> + * also check if ranges property has been provided
->> + */
->> +static int __init __dt_reserved_mem_check_root(struct device_node *node)
-> The normal prefix is 'of', not 'dt'. Weird, right?, but it dates back
-> to OpenFirmware.
-Got it! I will follow the same for the functions that I renamed in Patch 04 as well.
->
->> +{
->> +       const __be32 *prop;
->> +
->> +       prop = of_get_property(node, "#size-cells", NULL);
-> Throughout, use the appropriate typed function. Here for example,
-> of_property_read_u32().
-ack.
->
->> +       if (!prop || be32_to_cpup(prop) != dt_root_size_cells)
->> +               return -EINVAL;
->> +
->> +       prop = of_get_property(node, "#address-cells", NULL);
->> +       if (!prop || be32_to_cpup(prop) != dt_root_addr_cells)
->> +               return -EINVAL;
->> +
->> +       prop = of_get_property(node, "ranges", NULL);
-> Or for presence, just of_property_present().
-ack.
->
->> +       if (!prop)
->> +               return -EINVAL;
->> +       return 0;
->> +}
->> +
->>  /**
->>   * fdt_scan_reserved_mem_reg_nodes() - Store info for the "reg" defined
->>   * reserved memory regions.
->> @@ -213,33 +236,38 @@ static int __init __reserved_mem_check_root(unsigned long node)
->>  static void __init fdt_scan_reserved_mem_reg_nodes(void)
->>  {
->>         int t_len = (dt_root_addr_cells + dt_root_size_cells) * sizeof(__be32);
->> -       const void *fdt = initial_boot_params;
->> +       struct device_node *node, *child;
->>         phys_addr_t base, size;
->>         const __be32 *prop;
->> -       int node, child;
->>         int len;
->>
->> -       node = fdt_path_offset(fdt, "/reserved-memory");
->> -       if (node < 0) {
->> +       node = of_find_node_by_path("/reserved-memory");
->> +       if (!node) {
->>                 pr_info("Reserved memory: No reserved-memory node in the DT\n");
->>                 return;
->>         }
->>
->> -       if (__reserved_mem_check_root(node)) {
->> +       if (__dt_reserved_mem_check_root(node)) {
->>                 pr_err("Reserved memory: unsupported node format, ignoring\n");
->>                 return;
->>         }
->>
->> -       fdt_for_each_subnode(child, fdt, node) {
->> +       for_each_child_of_node(node, child) {
->>                 const char *uname;
->> +               struct reserved_mem *rmem;
->>
->> -               prop = of_get_flat_dt_prop(child, "reg", &len);
->> -               if (!prop)
->> +               if (!of_device_is_available(child))
->>                         continue;
->> -               if (!of_fdt_device_is_available(fdt, child))
->> +
->> +               prop = of_get_property(child, "reg", &len);
-> We have specific unflattened functions for reading 'reg'. Note that
-> you should use the 'translated' ones even though we have a check to
-> disallow any real translation. That restriction should be fixed at
-> some point.
-"of_address_to_resource()" seems to be a function that reads the 'reg' property
-the way you are describing here. I'll switch to that function and see how it works!
-
-Please let me know if you had another function in mind for me to use here.
->
->> +               if (!prop) {
->> +                       rmem = of_reserved_mem_lookup(child);
->> +                       if (rmem)
->> +                               rmem->dev_node = child;
->>                         continue;
->> +               }
->>
->> -               uname = fdt_get_name(fdt, child, NULL);
->> +               uname = of_node_full_name(child);
->>                 if (len && len % t_len != 0) {
->>                         pr_err("Reserved memory: invalid reg property in '%s', skipping node.\n",
->>                                uname);
->> @@ -269,7 +297,7 @@ int __init fdt_scan_reserved_mem(void)
->>         if (node < 0)
->>                 return -ENODEV;
->>
->> -       if (__reserved_mem_check_root(node) != 0) {
->> +       if (__fdt_reserved_mem_check_root(node) != 0) {
->>                 pr_err("Reserved memory: unsupported node format, ignoring\n");
->>                 return -EINVAL;
->>         }
->> @@ -447,7 +475,7 @@ static int __init __reserved_mem_alloc_size(unsigned long node, const char *unam
->>                        uname, (unsigned long)(size / SZ_1M));
->>                 return -ENOMEM;
->>         }
->> -       fdt_reserved_mem_save_node(node, uname, base, size);
->> +       fdt_reserved_mem_save_node(NULL, uname, base, size);
->>         return 0;
->>  }
->>
->> @@ -467,7 +495,7 @@ static int __init __reserved_mem_init_node(struct reserved_mem *rmem)
->>                 reservedmem_of_init_fn initfn = i->data;
->>                 const char *compat = i->compatible;
->>
->> -               if (!of_flat_dt_is_compatible(rmem->fdt_node, compat))
->> +               if (!of_device_is_compatible(rmem->dev_node, compat))
->>                         continue;
->>
->>                 ret = initfn(rmem);
->> @@ -500,11 +528,6 @@ static int __init __rmem_cmp(const void *a, const void *b)
->>         if (ra->size > rb->size)
->>                 return 1;
->>
->> -       if (ra->fdt_node < rb->fdt_node)
->> -               return -1;
->> -       if (ra->fdt_node > rb->fdt_node)
->> -               return 1;
->> -
->>         return 0;
->>  }
->>
->> @@ -551,16 +574,16 @@ void __init fdt_init_reserved_mem(void)
->>
->>         for (i = 0; i < reserved_mem_count; i++) {
->>                 struct reserved_mem *rmem = &reserved_mem[i];
->> -               unsigned long node = rmem->fdt_node;
->> +               struct device_node *node = rmem->dev_node;
->>                 int len;
->>                 const __be32 *prop;
->>                 int err = 0;
->>                 bool nomap;
->>
->> -               nomap = of_get_flat_dt_prop(node, "no-map", NULL) != NULL;
->> -               prop = of_get_flat_dt_prop(node, "phandle", &len);
->> +               nomap = of_get_property(node, "no-map", NULL) != NULL;
->> +               prop = of_get_property(node, "phandle", &len);
-> We store the phandle in struct device_node, so reading and storing it
-> here shouldn't be needed I think.
-ack.
->
->>                 if (!prop)
->> -                       prop = of_get_flat_dt_prop(node, "linux,phandle", &len);
->> +                       prop = of_get_property(node, "linux,phandle", &len);
->>                 if (prop)
->>                         rmem->phandle = of_read_number(prop, len/4);
->>
->> @@ -574,7 +597,7 @@ void __init fdt_init_reserved_mem(void)
->>                 } else {
->>                         phys_addr_t end = rmem->base + rmem->size - 1;
->>                         bool reusable =
->> -                               (of_get_flat_dt_prop(node, "reusable", NULL)) != NULL;
->> +                               (of_get_property(node, "reusable", NULL)) != NULL;
->>
->>                         pr_info("%pa..%pa (%lu KiB) %s %s %s\n",
->>                                 &rmem->base, &end, (unsigned long)(rmem->size / SZ_1K),
->> diff --git a/include/linux/of_reserved_mem.h b/include/linux/of_reserved_mem.h
->> index 4de2a24cadc9..b6107a18d170 100644
->> --- a/include/linux/of_reserved_mem.h
->> +++ b/include/linux/of_reserved_mem.h
->> @@ -10,7 +10,7 @@ struct reserved_mem_ops;
->>
->>  struct reserved_mem {
->>         const char                      *name;
->> -       unsigned long                   fdt_node;
->> +       struct device_node              *dev_node;
->>         unsigned long                   phandle;
->>         const struct reserved_mem_ops   *ops;
->>         phys_addr_t                     base;
->> diff --git a/kernel/dma/coherent.c b/kernel/dma/coherent.c
->> index ff5683a57f77..0db0aae83102 100644
->> --- a/kernel/dma/coherent.c
->> +++ b/kernel/dma/coherent.c
->> @@ -362,20 +362,20 @@ static const struct reserved_mem_ops rmem_dma_ops = {
->>
->>  static int __init rmem_dma_setup(struct reserved_mem *rmem)
->>  {
->> -       unsigned long node = rmem->fdt_node;
->> +       struct device_node *node = rmem->dev_node;
->>
->> -       if (of_get_flat_dt_prop(node, "reusable", NULL))
->> +       if (of_get_property(node, "reusable", NULL))
->>                 return -EINVAL;
->>
->>  #ifdef CONFIG_ARM
->> -       if (!of_get_flat_dt_prop(node, "no-map", NULL)) {
->> +       if (!of_get_property(node, "no-map", NULL)) {
-> While you are here, convert this to IS_ENABLED():
->
-> if (IS_ENABLED(CONFIG_ARM) && !of_property_read_bool(node)) {
->   ...
-> }
-ack.
-
-
-Thank you for your feedback!
-
-Oreoluwa
+Because we're destructing the guest and gain mmu_lock, we shouldn't have other
+thread racing.  Probably we can simply retry on TDX_OPERAND_BUSY without
+worrying race.  It would be more robust and easier to understand.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
