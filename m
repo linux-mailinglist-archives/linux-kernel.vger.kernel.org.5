@@ -1,133 +1,128 @@
-Return-Path: <linux-kernel+bounces-143416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B0658A38A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 00:46:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E80F8A38A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 00:49:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2A0AB21743
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:46:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2867F2857D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:49:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06BD14EC78;
-	Fri, 12 Apr 2024 22:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E479B14EC78;
+	Fri, 12 Apr 2024 22:49:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gfb0AnLA"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="AHMttIcm"
+Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04BB48827
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 22:46:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A67225D7;
+	Fri, 12 Apr 2024 22:49:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712961970; cv=none; b=d0VVO278jOftmiYWJw7GPmQuWntc3M7scknfjFqiIQDWZGwckiGWM0QtCwqIPhr8p6CCB4213ZHkUsCPENP5NjgNVAKA7mX2uTiLgXK+yzXgQI87hYEwlrTK5WjdcgMG/4OwmMpuKnz6g+KEXk6UYt+IbfULTz91aAg/m30ZyqY=
+	t=1712962173; cv=none; b=ZU6627XWmPu5P8IDw6/lvXKOJq1FlOQGnFVa5UyRCrS78RaVYJd26FtiDOADHtLCI44iNfLpvRwqQWjx9qFap45FfS/aJoku9AcTPUgVNWQaYARxrLJX47kbII0nW5oB0ipUrdnMGQ4LG/0Awse5yQMOlDXE2vjWZtZbGPTuics=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712961970; c=relaxed/simple;
-	bh=CVh3GoQ0Uj5EBqBGfQw29CTm8/4AiBhdQKue4WhQnYU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=uA+yer486yedxFmA98ewFOvr57uMH0IAOYK81/yD4hVF5wS7KrMyY/BNBXCjd1hhjE5QSSGo8ijwRdhfV8a9U3LjyDSp32//Bi05IEclXj9pe/G59ld7hraVvlN3Xab2il+dXT1BIzvlrCp4wAG+SpCY1GJySmj15hCOFrJUQcU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gfb0AnLA; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2a482a2360aso1874055a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:46:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712961968; x=1713566768; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=azAaAXQ+5slCG5tLzAxZ1/q0F1Xu5c3tqFk5gSJfnGk=;
-        b=gfb0AnLAz5bQDguarqegI62fEl7QhQxdhTLJvbWhhi7FN6MfeZSqs05/8EcIQmHUf1
-         /IfV749FMMl8LiA0JGJM2km8cTl/NCuIyy/dw2EHsXT0oVWlPEbB8zUPBDn6H2DTxUOY
-         xCCjJaGyUELxscJ5eLaXyTaB+7rQjCiRaQ+OzeAmbqOE6hQhGOF0IipR9hLB2vizyDU4
-         ZKr5uVuOxcQR/3/yONHemnM40qwh2C0tmmvQ5xgwb/Pti89TXhZtZk4z/t0KqI8Y7+wh
-         82ExeSqQO1G6VO2HVdENfgcNeXIMSGvKdI6qAez06CeiPj9MmnUOUEHQZKRH2H8L8aUC
-         O37g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712961968; x=1713566768;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=azAaAXQ+5slCG5tLzAxZ1/q0F1Xu5c3tqFk5gSJfnGk=;
-        b=nHfaAPwLeDjOnMfuhSUpmN1Aya7Y6gxOxRuuHApVWPYvytuDVBdxdSg9WPFbM6xpi9
-         /aWkUML8MWAqww42I8a0dBiErRQ8GidHqZNcLWwa7rbvtLS059Xw2ywvGDi0O4zASCUP
-         VEYCnnt/d6DXgWRFzwqAe1jAYjmTKhaps53xEEW1iSAxBcZ3vyyhEbe1aCWr2RRdIXVf
-         DWX7nouX+t3T0hVTpK+E4kemx57jlzUqDTOeL0yDBq95tbYsdG4EeS5dW8ZHD9cLDFko
-         8Wfh/Pz/mpNXsutpvSLX/bpN5L+WjS91gOSSrrwngG/vuxgY7OHjYBrgcRJ7DZpLcYIT
-         O87Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUs52hcI4nZr46rAzY5CuxFGj6lE47WD1EM7FuXYoNeKCoJAtxu+8+M9GgprAyj12rQssutcGYRkdjLKFaR+GbXxggQsPL4rgSro6WE
-X-Gm-Message-State: AOJu0Yx31XiJCs9UH4x75V4kj7OT0K9N+1NKV+uy3tg9jqMh12pLjKLw
-	SLt575slUFFmHaSbZQTBfY1yHJ53UJslLSFjpEkFHlE+ck4eRBDDtgwe+NinCRzOcJmC0UifH9n
-	J3g==
-X-Google-Smtp-Source: AGHT+IEa78IMUBOreaXnhO8WKAdssc3iFz0oqiOvqMH5Yz6szB/OqGs806267bfnDoRjxI6Hb7/ZXyDX410=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:a392:b0:2a6:f288:53da with SMTP id
- x18-20020a17090aa39200b002a6f28853damr12661pjp.3.1712961967328; Fri, 12 Apr
- 2024 15:46:07 -0700 (PDT)
-Date: Fri, 12 Apr 2024 15:46:05 -0700
-In-Reply-To: <20240412214201.GO3039520@ls.amr.corp.intel.com>
+	s=arc-20240116; t=1712962173; c=relaxed/simple;
+	bh=/jT/AmCpsrHeiPRDhEexKpZTtbNP+mUYlC8O4cRo/vk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Rv3zYxjF7Rad4QLYfnefGy4F293RzMVxfDiDIlVXWZ71KEb1Xazoqsf/RxYCi7cdkHY9b4/V080eboNcidN6nTYb3IUwBwpKpHrYK7oL3IPHk+07gGdTwQ6AIyd2dauR5EJnKj+pHp052Hbjm51qpUDTyXnQYZURCC3kukgsxNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=AHMttIcm; arc=none smtp.client-ip=199.89.1.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 008.lax.mailroute.net (Postfix) with ESMTP id 4VGWwB4QbQz6Cnk8t;
+	Fri, 12 Apr 2024 22:49:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1712962166; x=1715554167; bh=czbZbnWbOnnHwe4/SxmmZnUf
+	rVFJbZlvz64gCqIYWi4=; b=AHMttIcmjmw0T39PNhphPSj+4P1PjotE5mhXPaYm
+	AUtDNwHzyNOSpyerjkghvZrXc4Ul3vedUQq+G8hZ/HgS66uguilOhJAquPG8RFTj
+	3fS5c9dP6ahi8fI6JPyV4FF/2jeOOya3HlwAHk+/U1XQtt5jo0lsPtiQIU4YbC9T
+	QdXKajd2mWFwgkc0rZ0E3BJzwvOXaODWDNpMGKaV7Dmf22+rCyZQvpVfGzMAFPWc
+	pC9vSm/5sMqMXmd28KoJ0TXsX9RrPSrTsFfyc5EZmEfIogJc1W240XIwsUjwciPH
+	cQJhoGlHjGbMs13kS8wOPmG1r2TmO6tvvOebGHbpyVkpZA==
+X-Virus-Scanned: by MailRoute
+Received: from 008.lax.mailroute.net ([127.0.0.1])
+ by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id iI0JBVcoaPHh; Fri, 12 Apr 2024 22:49:26 +0000 (UTC)
+Received: from [192.168.3.219] (c-73-231-117-72.hsd1.ca.comcast.net [73.231.117.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4VGWw540GXz6Cnk8m;
+	Fri, 12 Apr 2024 22:49:25 +0000 (UTC)
+Message-ID: <2ab31b48-5f89-4ada-848d-89b844f6a6f5@acm.org>
+Date: Fri, 12 Apr 2024 15:49:24 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <b9fe57ceeaabe650f0aecb21db56ef2b1456dcfe.1708933498.git.isaku.yamahata@intel.com>
- <0c3efffa-8dd5-4231-8e90-e0241f058a20@intel.com> <20240412214201.GO3039520@ls.amr.corp.intel.com>
-Message-ID: <Zhm5rYA8eSWIUi36@google.com>
-Subject: Re: [PATCH v19 087/130] KVM: TDX: handle vcpu migration over logical processor
-From: Sean Christopherson <seanjc@google.com>
-To: Isaku Yamahata <isaku.yamahata@intel.com>
-Cc: Reinette Chatre <reinette.chatre@intel.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com, 
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com, Sagi Shahar <sagis@google.com>, 
-	Kai Huang <kai.huang@intel.com>, chen.bo@intel.com, hang.yuan@intel.com, 
-	tina.zhang@intel.com, isaku.yamahata@linux.intel.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Bug] UBSAN: shift-out-of-bounds in sg_build_indirect
+To: Sam Sun <samsun1006219@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+ martin.petersen@oracle.com, jejb@linux.ibm.com, dgilbert@interlog.com,
+ syzkaller@googlegroups.com, xrivendell7@gmail.com
+References: <CAEkJfYOs-szTK0rYvDw5UNGfzbTG_7RvjqFOZA=c6LXvxdUt2g@mail.gmail.com>
+ <CAEkJfYMcdmXAhe9oTpEPGL+_661PNAvM58Y+irwnbLW8FKohNw@mail.gmail.com>
+ <2d5e3b6c-3a66-4f74-8367-51fa55bf0a1a@acm.org>
+ <CAEkJfYMcLycLfaRzhn=DmQjAuLHn29wSXN0b0Zf0oJr=sDVBTg@mail.gmail.com>
+Content-Language: en-US
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <CAEkJfYMcLycLfaRzhn=DmQjAuLHn29wSXN0b0Zf0oJr=sDVBTg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 12, 2024, Isaku Yamahata wrote:
-> On Fri, Apr 12, 2024 at 09:15:29AM -0700, Reinette Chatre <reinette.chatre@intel.com> wrote:
-> > > +void tdx_mmu_release_hkid(struct kvm *kvm)
-> > > +{
-> > > +	while (__tdx_mmu_release_hkid(kvm) == -EBUSY)
-> > > +		;
-> > >  }
-> > 
-> > As I understand, __tdx_mmu_release_hkid() returns -EBUSY
-> > after TDH.VP.FLUSH has been sent for every vCPU followed by
-> > TDH.MNG.VPFLUSHDONE, which returns TDX_FLUSHVP_NOT_DONE.
-> > 
-> > Considering earlier comment that a retry of TDH.VP.FLUSH is not
-> > needed, why is this while() loop here that sends the
-> > TDH.VP.FLUSH again to all vCPUs instead of just a loop within
-> > __tdx_mmu_release_hkid() to _just_ resend TDH.MNG.VPFLUSHDONE?
-> > 
-> > Could it be possible for a vCPU to appear during this time, thus
-> > be missed in one TDH.VP.FLUSH cycle, to require a new cycle of
-> > TDH.VP.FLUSH?
-> 
-> Yes. There is a race between closing KVM vCPU fd and MMU notifier release hook.
-> When KVM vCPU fd is closed, vCPU context can be loaded again.
+On 4/10/24 6:17 PM, Sam Sun wrote:
+> On Wed, Apr 10, 2024 at 12:59=E2=80=AFAM Bart Van Assche <bvanassche@ac=
+m.org> wrote:
+>>
+>> On 4/9/24 05:51, Sam Sun wrote:
+>>> We further analyzed the root cause of this bug. In function
+>>> sg_build_indirect of drivers/scsi/sg.c, variable order of line 1900 i=
+s
+>>> calculated out using get_order(num), and num comes from
+>>> scatter_elem_sz. If scatter_elem_sz is equal or below zero, the order
+>>> returned will be 52, so that PAGE_SHIFT + order is 64, which is large=
+r
+>>> than 32 bits int range, causing shift-out-of bound. This bug is teste=
+d
+>>> and still remains in the latest upstream linux (6.9-rc3).
+>>> If you have any questions, please contact us.
+>>
+>> Thank you for having root-caused this issue and also for having shared
+>> your root-cause analysis. Do you perhaps plan to post a patch that fix=
+es
+>> this issue?
+>=20
+> Sure, I am glad to help! But it is my first time submitting a patch, I
+> need to find some instructions. I would appreciate if you could help
+> me out. Also, I need to double check the patch to avoid introducing a
+> new one. It might take some time.
 
-But why is _loading_ a vCPU context problematic?  If I'm reading the TDX module
-code correctly, TDX_FLUSHVP_NOT_DONE is returned when a vCPU is "associated" with
-a pCPU, and association only happens during TDH.VP_ENTER, TDH.MNG.RD, and TDH.MNG.WR,
-none of which I see in tdx_vcpu_load().
+The process for contributing a patch is as follows:
+1. Clone the Linux kernel tree for the subsystem you want to contribute
+    to. For SCSI, this is the for-next branch in
+    git://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git
+2. Make your changes to the code.
+3. Commit your changes (git commit -as), chose a patch title and explain
+    what has been changed and also why.
+4. Convert your changes into a patch, e.g. by running this command:
+      git format-patch -1
+5. Check the patch with scripts/checkpatch.pl.
+6. Send your patch with git send-email to Martin Petersen and Cc the
+    linux-scsi mailing list.
 
-Assuming there is something problematic lurking under vcpu_load(), I would love,
-love, LOVE an excuse to not do vcpu_{load,put}() in kvm_unload_vcpu_mmu(), i.e.
-get rid of that thing entirely.
+More information is available here:
+https://docs.kernel.org/process/submitting-patches.html
 
-I have definitely looked into kvm_unload_vcpu_mmu() on more than one occassion,
-but I can't remember off the top of my head why I have never yanked out the
-vcpu_{load,put}().  Maybe I was just scared of breaking something and didn't have
-a good reason to risk breakage?
+Best regards,
 
-> The MMU notifier release hook eventually calls tdx_mmu_release_hkid().  Other
-> kernel thread (concretely, vhost krenel thread) can get reference count to
-> mmu and put it by timer, the MMU notifier release hook can be triggered
-> during closing vCPU fd.
-> 
-> The possible alternative is to make the vCPU closing path complicated not to
-> load vCPU context instead f sending IPI on every retry.
+Bart.
 
