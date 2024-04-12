@@ -1,167 +1,157 @@
-Return-Path: <linux-kernel+bounces-141744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 355BA8A22DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:15:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A587C8A22E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:18:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E02911F23778
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:15:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B14581C22E9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:18:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12501109;
-	Fri, 12 Apr 2024 00:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CF81DDAA;
+	Fri, 12 Apr 2024 00:17:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bkF+T73C"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A7836C
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 00:15:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="fa4D8Gq5"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49E3161;
+	Fri, 12 Apr 2024 00:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712880934; cv=none; b=Rg+yXCJu5hZVlPGB+F9SUSXM0ht158Lylq1KxHmy86HOgWQI06DNRHd8ckGmKdYG38iUWaLYDQstZgLASSuxv1avzXC6sywKCqN3q3N9vDDzCgxEOJEBdyeIFF0sCf4Tgc4pG/V9+vKtsdT0E1R2rQCN8JJvcFGvxW87cBdd9qw=
+	t=1712881073; cv=none; b=R5bI1Kn6SVt0Q7n6rULHBvMPl7xZPi51AkNjAOySVGtTWLPUPuL8HHjj/PrDnJSzqrJgw6zkSCoKpG32xCX4arBJa51+MfYIV2wBkzoa/EzsvO8PqEZSVzbGMjKFZV6LSlJfVNQb4nHIW6NlVbmfRmlXp77uyDTRIyxBgS6WDH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712880934; c=relaxed/simple;
-	bh=MbYbHKaYYrxJIm4Fw2wvHNsnfpuTDp9lkXBmrxwCgpg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lMA6+1ZPop6fD+6C32h1/9jNHhtgH637C1PqO7btcOsSLw+E5VJb0CWjp5/dmjmutgs/36FzT7BknKRcxB3q24ghZjc7lz1I5UosolpeS1xddDjgk578cSLATALFBa579lA2zf82YCGMOzRYG9zAotnadnDsEFwuXi5+5nldSW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bkF+T73C; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712880933; x=1744416933;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MbYbHKaYYrxJIm4Fw2wvHNsnfpuTDp9lkXBmrxwCgpg=;
-  b=bkF+T73ChBwd/8e99sGdI8GLNII3frVOl+zGiCDMQ6fQ9Mf2sCLi/Alc
-   KtuW3KJnEqqd8h083Z0oO0NBDGbXHSPFwvvevYcsK9vvws8sk8kHc8R4Y
-   nthwIS4B4u9l7XTDnSDB5bmMI5PRC0W6GgPegNA+smph2TcH9S4ZwfOcQ
-   8IHdpAIWGMJncsld4/h0+n0IEOsLv7Y2ixo5M6fUoTAv42hHgnWhPqYtG
-   Nj0mMeNHKaZ/gKpRAEAGAEA/bRMaTGUa8ysRwZ0Cd+EJo+LRQ+qyFwCAK
-   ApFVK8i1cRfBT81CKIi9vEM573inrS3w6q7NctEmINv4o6Vx+LlENJ7GD
-   w==;
-X-CSE-ConnectionGUID: zFrDygX8TUm5SfMTLfSgdA==
-X-CSE-MsgGUID: t2DOCICYRA21Twh1sYrTCA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="30806482"
-X-IronPort-AV: E=Sophos;i="6.07,194,1708416000"; 
-   d="scan'208";a="30806482"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 17:15:32 -0700
-X-CSE-ConnectionGUID: RiGasNyXTBu/IwBZtzs4Ow==
-X-CSE-MsgGUID: YIq+Z4zeQPGFQy8b4Mmi9w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,194,1708416000"; 
-   d="scan'208";a="21501876"
-Received: from haigouhu-mobl1.amr.corp.intel.com (HELO desk) ([10.209.117.182])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 17:15:31 -0700
-Date: Thu, 11 Apr 2024 17:15:22 -0700
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Alexandre Chartre <alexandre.chartre@oracle.com>,
-	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Andrew Cooper <andrew.cooper3@citrix.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Nikolay Borisov <nik.borisov@suse.com>,
-	KP Singh <kpsingh@kernel.org>, Waiman Long <longman@redhat.com>,
-	Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH 5/7] x86/bugs: Only harden syscalls when needed
-Message-ID: <20240412001522.3zp2mzked4ksglkl@desk>
-References: <cover.1712813475.git.jpoimboe@kernel.org>
- <97befd7c1e008797734dee05181c49056ff6de57.1712813475.git.jpoimboe@kernel.org>
+	s=arc-20240116; t=1712881073; c=relaxed/simple;
+	bh=DTkKtlAWf9eZANoDsVjxIB/a9kELTR3q5gy+PbPy7a4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IAWu1PtJvnjV2E0oZP6eSyQdUqGhwtpyAj4wRC2j1qgIqx+OaWTjJlO9nAtCh5zmEymW0L6ARjF5UyoqVGUxJF5JVN5X/bknVDDivUp2Z7WGLSPbbABjg9wrHdrH02a6UNirGpeSo6Qlu8Z/8xqpn50fXllpCw4K9y2ko5HEEI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=fa4D8Gq5; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from localhost.localdomain (unknown [4.155.48.125])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 35E6220EC320;
+	Thu, 11 Apr 2024 17:17:50 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 35E6220EC320
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1712881070;
+	bh=ohaBFCxKwM2w9anQtabwDeHmM+q2b/tliDpfFTTctww=;
+	h=From:To:Cc:Subject:Date:From;
+	b=fa4D8Gq5TxOMmlXkz5nlY53rrOMUKSHZ6AelVdhsFr5Tg2U2hq8XayHeCtJ6migLu
+	 +ELxtYu/rVldteRy4s5f42oLvRDhC2Tv9Ivv5KzVMuGL2DMkN/W/yob27q4i4urH9T
+	 bnykiCISePlCyod64FzgjmkudJjivpegQ6rLsJk8=
+From: Beau Belgrave <beaub@linux.microsoft.com>
+To: peterz@infradead.org,
+	mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	primiano@google.com,
+	aahringo@redhat.com,
+	dcook@linux.microsoft.com
+Subject: [RFC PATCH 0/4] perf: Correlating user process data to samples
+Date: Fri, 12 Apr 2024 00:17:28 +0000
+Message-Id: <20240412001732.475-1-beaub@linux.microsoft.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <97befd7c1e008797734dee05181c49056ff6de57.1712813475.git.jpoimboe@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 10, 2024 at 10:40:49PM -0700, Josh Poimboeuf wrote:
-> Syscall hardening (i.e., converting the syscall indirect branch to a
-> series of direct branches) may cause performance regressions in certain
-> scenarios.  Only use the syscall hardening when indirect branches are
-> considered unsafe.
-> 
-> Fixes: 1e3ad78334a6 ("x86/syscall: Don't force use of indirect calls for system calls")
-> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-> ---
->  arch/x86/entry/common.c            | 30 +++++++++++++++++++++++++---
->  arch/x86/entry/syscall_32.c        | 11 +---------
->  arch/x86/entry/syscall_64.c        |  8 +-------
->  arch/x86/entry/syscall_x32.c       |  7 ++++++-
->  arch/x86/include/asm/cpufeatures.h |  1 +
->  arch/x86/include/asm/syscall.h     |  8 +++++++-
->  arch/x86/kernel/cpu/bugs.c         | 32 +++++++++++++++++++++++++++++-
->  7 files changed, 74 insertions(+), 23 deletions(-)
-> 
-> diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-> index 6de50b80702e..80d432d2fe44 100644
-> --- a/arch/x86/entry/common.c
-> +++ b/arch/x86/entry/common.c
-> @@ -39,6 +39,28 @@
->  
->  #ifdef CONFIG_X86_64
->  
-> +/*
-> + * Do either a direct or an indirect call, depending on whether indirect calls
-> + * are considered safe.
-> + */
-> +#define __do_syscall(table, func_direct, nr, regs)			\
-> +({									\
-> +	unsigned long __rax, __rdi, __rsi;				\
-> +									\
-> +	asm_inline volatile(						\
-> +		ALTERNATIVE("call " __stringify(func_direct) "\n\t",	\
-> +			    ANNOTATE_RETPOLINE_SAFE			\
-> +			    "call *%[func_ptr]\n\t",			\
+In the Open Telemetry profiling SIG [1], we are trying to find a way to
+grab a tracing association quickly on a per-sample basis. The team at
+Elastic has a bespoke way to do this [2], however, I'd like to see a
+more general way to achieve this. The folks I've been talking with seem
+open to the idea of just having a TLS value for this we could capture
+upon each sample. We could then just state, Open Telemetry SDKs should
+have a TLS value for span correlation. However, we need a way to sample
+the TLS or other value(s) when a sampling event is generated. This is
+supported today on Windows via EventActivityIdControl() [3]. Since
+Open Telemetry works on both Windows and Linux, ideally we can do
+something as efficient for Linux based workloads.
 
-This will likely not insert the lfence before the indirect call in
-spectre_v2=eibrs,lfence mode. As X86_FEATURE_INDIRECT_SAFE is not
-cleared when eIBRS is enabled, this will not be converted to direct
-call.
+This series is to explore how it would be best possible to collect
+supporting data from a user process when a profile sample is collected.
+Having a value stored in TLS makes a lot of sense for this however
+there are other ways to explore. Whatever is chosen, kernel samples
+taken in process context should be able to get this supporting data.
+In these patches on X64 the fsbase and gsbase are used for this.
 
-[...]
-> @@ -1720,6 +1744,7 @@ static void __init spectre_v2_select_mitigation(void)
->  
->  	case SPECTRE_V2_CMD_RETPOLINE_LFENCE:
->  		pr_err(SPECTRE_V2_LFENCE_MSG);
-> +		setup_clear_cpu_cap(X86_FEATURE_INDIRECT_SAFE);
+An option to explore suggested by Mathieu Desnoyers is to utilize rseq
+for processes to register a value location that can be included when
+profiling if desired. This would allow a tighter contract between user
+processes and a profiler.  It would allow better labeling/categorizing
+the correlation values.
 
-I don't know if it intentional, this seems to be the duplicate of
-X86_FEATURE_INDIRECT_SAFE clear later in SPECTRE_V2_LFENCE mode. Also it
-seems a bit odd to do this here in SPECTRE_V2_CMD handling.
+An idea flow would look like this:
+User Task		Profile
+do_work();		sample() -> IP + No activity
+..
+set_activity(123);
+..
+do_work();		sample() -> IP + activity (123)
+..
+set_activity(124);
+..
+do_work();		sample() -> IP + activity (124)
 
->  		mode = SPECTRE_V2_LFENCE;
->  		break;
->  
-> @@ -1772,11 +1797,16 @@ static void __init spectre_v2_select_mitigation(void)
->  		break;
->  
->  	case SPECTRE_V2_LFENCE:
-> +		setup_clear_cpu_cap(X86_FEATURE_INDIRECT_SAFE);
-> +		fallthrough;
->  	case SPECTRE_V2_EIBRS_LFENCE:
->  		setup_force_cpu_cap(X86_FEATURE_RETPOLINE_LFENCE);
-> -		fallthrough;
-> +		setup_force_cpu_cap(X86_FEATURE_RETPOLINE);
-> +		break;
->  
->  	case SPECTRE_V2_RETPOLINE:
-> +		setup_clear_cpu_cap(X86_FEATURE_INDIRECT_SAFE);
-> +		fallthrough;
->  	case SPECTRE_V2_EIBRS_RETPOLINE:
->  		setup_force_cpu_cap(X86_FEATURE_RETPOLINE);
->  		break;
+Ideally, the set_activity() method would not be a syscall. It needs to
+be very cheap as this should not bottleneck work. Ideally this is just
+a memcpy of 16-20 bytes as it is on Windows via EventActivityIdControl()
+using EVENT_ACTIVITY_CTRL_SET_ID.
+
+For those not aware, Open Telemetry allows collecting data from multiple
+machines and show where time was spent. The tracing context is already
+available for logs, but not for profiling samples. The idea is to show
+where slowdowns occur and have profile samples to explain why they
+slowed down. This must be possible without having to track context
+switches to do this correlation. This is because the profiling rates
+are typically 20hz - 1Khz, while the context switching rates are much
+higher. We do not want to have to consume high context switch rates
+just to know a correlation for a 20hz signal. Often these 20hz signals
+are always enabled in some environments.
+
+Regardless if TLS, rseq, or other source is used I believe we will need
+a way for perf_events to include it within a sample. The changes in this
+series show how it could be done with TLS. There is some factoring work
+under perf to make it easier to add more dump types using the existing
+ABI. This is mostly to make the patches clearer, certainly the refactor
+parts could get dropped and we could have duplicated/specialized paths.
+
+1. https://opentelemetry.io/blog/2024/profiling/
+2. https://www.elastic.co/blog/continuous-profiling-distributed-tracing-correlation
+3. https://learn.microsoft.com/en-us/windows/win32/api/evntprov/nf-evntprov-eventactivityidcontrol
+
+Beau Belgrave (4):
+  perf/core: Introduce perf_prepare_dump_data()
+  perf: Introduce PERF_SAMPLE_TLS_USER sample type
+  perf/core: Factor perf_output_sample_udump()
+  perf/x86/core: Add tls dump support
+
+ arch/Kconfig                      |   7 ++
+ arch/x86/Kconfig                  |   1 +
+ arch/x86/events/core.c            |  14 +++
+ arch/x86/include/asm/perf_event.h |   5 +
+ include/linux/perf_event.h        |   7 ++
+ include/uapi/linux/perf_event.h   |   5 +-
+ kernel/events/core.c              | 166 +++++++++++++++++++++++-------
+ kernel/events/internal.h          |  16 +++
+ 8 files changed, 180 insertions(+), 41 deletions(-)
+
+
+base-commit: fec50db7033ea478773b159e0e2efb135270e3b7
+-- 
+2.34.1
+
 
