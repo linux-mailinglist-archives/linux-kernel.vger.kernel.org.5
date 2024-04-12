@@ -1,131 +1,133 @@
-Return-Path: <linux-kernel+bounces-142621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EADA28A2DEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:03:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4EA38A2DF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:04:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 326B7B21FA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:02:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A4151F219B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:04:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F8A56440;
-	Fri, 12 Apr 2024 12:02:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13FD756443;
+	Fri, 12 Apr 2024 12:03:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PaiTwZtq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="RKcgOz/o"
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4E3D57306;
-	Fri, 12 Apr 2024 12:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7207255C3E;
+	Fri, 12 Apr 2024 12:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712923336; cv=none; b=BdGbGCIgpYM0rVhFddvJzFxIokEResCwv8LyifqiIirh0sKrLV43yaIIzknMMooW63f1FNhbtqAEuzsroflWgQiAIv44gY+RZbmpu6PkPR9hH+3X3xbHiDGCsKVRyfnbRHdh3U7IKvwrNRGFHoeI/N4/EZeT9sqeohZkipKIiq4=
+	t=1712923435; cv=none; b=CfSSl7M36idH1S4eotcapQGfHvXNxiMRPdk74w5ANcgZ7mP2Kesmer6FGooJVHuAgubGcuooYCgttbL+emk0YUI0ri++ziaGFEzcRbX82xR4aiB2pPSARbaMGwNt2hKNsFJrKz7ll9MZZOg6CNL1grahG+gG3ce0IH4WvuAaNZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712923336; c=relaxed/simple;
-	bh=3y8NvuBpN3GpgOBuBXKVR4zS66qIFVgEMZeU4j3UftM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=i9BPtN5IycPm1wuKXMLt/MuUfRcPMnP5kwm/5iKV4ZMRsPHjsQGbsBmGwBUVFS8NyFCa+avIBsrboiWm/X9Zew4gQlVNvPN+EC3GOq6ozDHf11KhmLkeY11AB/sIdHqaw62v0OI8MxTxXQsivSncAUnEVZ+2hiJ+QMT6lhfXMCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PaiTwZtq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C99FC113CD;
-	Fri, 12 Apr 2024 12:02:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712923336;
-	bh=3y8NvuBpN3GpgOBuBXKVR4zS66qIFVgEMZeU4j3UftM=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=PaiTwZtq9AlP3mLK3Jr6OGT4piCSor4fdGvafBJo80qXDOHv2BZGITA5XolZ2Xp9b
-	 q0TTnz6hB3tn9ChJzZVtYOjcDXQHkerYJLXgt+C7ilufqdak4pHNyJAlXP1vvlug2C
-	 jvnZ2eGvoEfEHzxSzbrc/FVpq7LqD9CntHjrj3b11JeRtQi5sS6sl5qan0+Im5Q1vO
-	 9taklG3Zuvc1jh9AKJX/EXs48jOtgU5eLTVrVMpcaId6UivZrS+UPiBmswzGP8KLtH
-	 s8NB//xcl1XQvzDgrFNgQ+VcSYdt8WsvOuX/VOMQSiWBEUVVtofysCeKcNVrvsIWD+
-	 1+Sgl/YRF24sA==
-From: Roger Quadros <rogerq@kernel.org>
-Date: Fri, 12 Apr 2024 15:02:00 +0300
-Subject: [PATCH v7 3/3] arm64: dts: ti: k3-am62a: Disable USB LPM
+	s=arc-20240116; t=1712923435; c=relaxed/simple;
+	bh=lRzbJyihvGMzcZ0Sl/0gTZzX9Tm+cwJBSQJ/1svgYAA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=IHVL0VUysLmoLIvTRqJkxtNR974j/XDHRk4/u4aoU5hKiFOxJcRq9rqvq7o9vi8oGe15tAnkGWWu16/taV+qQ2K5xmZwvVBOjbb2OjMoSs+Z3IuDy0Yn0QXUesvyBqSbPZBj+lkYSUOJ59xCJdX5yw2nSTBpOfOZ0cv+fzQ+Tyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=RKcgOz/o; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id 96A29600A2;
+	Fri, 12 Apr 2024 12:03:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1712923426;
+	bh=lRzbJyihvGMzcZ0Sl/0gTZzX9Tm+cwJBSQJ/1svgYAA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=RKcgOz/o7Pi81fh269tcV3qy43eZIsCoC+qnKr8OTyFI75BrR91myAJgyEd5kRy3t
+	 m1Bmo7zHOTeJ1VBs1zpietrTUgDWBiJe7bjTqCVS8KG8azmLC2QWFIWZiRI5Uphmuv
+	 nw/0tmiADlMrFbkiGOkgqu5sYSeg4tgaqT9bsYpu5cyfkWkrwGlmUwh4chaTg+272T
+	 bUW6Ohnsp7bf07o62TfdALLZw7mV3zQepgPKikqNO4lHKggzwvI3H9RitYdK5wEclG
+	 MieTn9pH1bi/kZHcpUY+Uk2u/f2SGrrETioqCfToLUMrkZ6BiT3pgsTse0gv63FEBn
+	 CM90/ZD893sRw==
+Received: by x201s (Postfix, from userid 1000)
+	id 7A15C2010E6; Fri, 12 Apr 2024 12:03:02 +0000 (UTC)
+From: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>
+To: netdev@vger.kernel.org,
+	Suman Ghosh <sumang@marvell.com>
+Cc: =?UTF-8?q?Asbj=C3=B8rn=20Sloth=20T=C3=B8nnesen?= <ast@fiberby.net>,
+	linux-kernel@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Sunil Goutham <sgoutham@marvell.com>,
+	Geetha sowjanya <gakula@marvell.com>,
+	Subbaraya Sundeep <sbhatta@marvell.com>,
+	hariprasad <hkelam@marvell.com>,
+	Jacob Keller <jacob.e.keller@intel.com>
+Subject: [PATCH net v2] octeontx2-pf: fix FLOW_DIS_IS_FRAGMENT implementation
+Date: Fri, 12 Apr 2024 12:02:56 +0000
+Message-ID: <20240412120258.233970-1-ast@fiberby.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240412-for-v6-10-am62-usb-typec-dt-v7-3-93b827adf97e@kernel.org>
-References: <20240412-for-v6-10-am62-usb-typec-dt-v7-0-93b827adf97e@kernel.org>
-In-Reply-To: <20240412-for-v6-10-am62-usb-typec-dt-v7-0-93b827adf97e@kernel.org>
-To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Tero Kristo <kristo@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: Andrew Davis <afd@ti.com>, b-liu@ti.com, srk@ti.com, 
- r-gunasekaran@ti.com, linux-arm-kernel@lists.infradead.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Roger Quadros <rogerq@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1300; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=3y8NvuBpN3GpgOBuBXKVR4zS66qIFVgEMZeU4j3UftM=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBmGSK6md56hUKdg+S6qCjHbbACODTJaVIUfD96o
- y34Kc4rE/GJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZhkiugAKCRDSWmvTvnYw
- k7dBEACxOUAiK+miJJPF39Z+KYGn7jWgNCb4uU9cEYH61MYdsfRpGQqAt6lCo+SdtciQ5j833oX
- Q/mXBbQq8j0/itQHzyJRwQRMRv5SDjeeKjYUMQiP2PePUPo1/lWHBp9QQFgpxHkUyGjVM9pzgp6
- nejEYc8YcrH9AwRpTCuTyIg8RoTUVNoz1IDaM+gH2gozlzwsPiEI9P1QHwd8jIlvX+xg4vFxEt7
- +fOpKcRG/ss59ZLK4P7jQY4B5F5RUZT+9QcKbDe750eT6W+By+rGNcm6Kgc3opyqtKm77tpB9/t
- I+aSJXLLGw+W9sd1s4uxpQxOSPblBIe241MiH/BGCI6YE+TP+Vp3ADz9BvXYI+CzIJE3WNqzLJo
- ofMiqBNDi/ZeJFeyHXoDk4INvTiW/kZgtO/UxQO2DmPQv7zGb9poziiJ5P00W7jTYX6d86LPZCX
- +xU5Jf+7133QvACKcsZKfHRYCr/8RADxm7HnJuoajv4IdIyHydMrGcksIc6UM53c9hu+S6+LUc1
- lOUtZLYrnnZXyPB4zVgaRqH+LyMRhu9BABs0LEa+70l1xBrAwccrE8z3p34Xqnuax4AUYUDgslN
- /lSWERiWZoPywtL1v6gTpgsdunoUO4RlOK/8W0gyKHb+MpJEdW4cy5wll8MuDYbLTyzOfbec3se
- QLA1m0yEU2Kqjdw==
-X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
- fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-As per AM62A TRM [1] USB Link Power Management (LPM)
-feature is not supported. Disable it else it may
-cause enumeration failure on some devices.
+Upon reviewing the flower control flags handling in
+this driver, I notice that the key wasn't being used,
+only the mask.
 
-> 4.9.2.1 USB2SS Unsupported Features
-> The following features are not supported on this family of devices:
-> ...
-> - USB 2.0 ECN: Link Power Management (LPM)
-> ...
+Ie. `tc flower ... ip_flags nofrag` was hardware
+offloaded as `... ip_flags frag`.
 
-[1] - https://www.ti.com/lit/pdf/spruj16
+Only compile tested, no access to HW.
 
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
+Fixes: c672e3727989 ("octeontx2-pf: Add support to filter packet based on IP fragment")
+Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 ---
+
 Changelog:
-v7 - Rebased to v6.9-rc1
-v6 - Rebased on next-20240226
-v5 - new patch
----
- arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-index a158df0d0ba6..adaf578280f9 100644
---- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-@@ -621,6 +621,8 @@ usb0: usb@31000000 {
- 			interrupt-names = "host", "peripheral";
- 			maximum-speed = "high-speed";
- 			dr_mode = "otg";
-+			snps,usb2-gadget-lpm-disable;
-+			snps,usb2-lpm-disable;
- 		};
- 	};
- 
-@@ -644,6 +646,8 @@ usb1: usb@31100000 {
- 			interrupt-names = "host", "peripheral";
- 			maximum-speed = "high-speed";
- 			dr_mode = "otg";
-+			snps,usb2-gadget-lpm-disable;
-+			snps,usb2-lpm-disable;
- 		};
- 	};
- 
+v2:
+- Added Reviewed-by from Jacob Keller.
 
+v1: https://lore.kernel.org/all/20240410134303.21560-1-ast@fiberby.net/
+
+ drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+index 87bdb93cb066..f4655a8c0705 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+@@ -688,22 +688,25 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
+ 	}
+ 
+ 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_CONTROL)) {
+ 		struct flow_match_control match;
++		u32 val;
+ 
+ 		flow_rule_match_control(rule, &match);
+ 		if (match.mask->flags & FLOW_DIS_FIRST_FRAG) {
+ 			NL_SET_ERR_MSG_MOD(extack, "HW doesn't support frag first/later");
+ 			return -EOPNOTSUPP;
+ 		}
+ 
+ 		if (match.mask->flags & FLOW_DIS_IS_FRAGMENT) {
++			val = match.key->flags & FLOW_DIS_IS_FRAGMENT;
+ 			if (ntohs(flow_spec->etype) == ETH_P_IP) {
+-				flow_spec->ip_flag = IPV4_FLAG_MORE;
++				flow_spec->ip_flag = val ? IPV4_FLAG_MORE : 0;
+ 				flow_mask->ip_flag = IPV4_FLAG_MORE;
+ 				req->features |= BIT_ULL(NPC_IPFRAG_IPV4);
+ 			} else if (ntohs(flow_spec->etype) == ETH_P_IPV6) {
+-				flow_spec->next_header = IPPROTO_FRAGMENT;
++				flow_spec->next_header = val ?
++							 IPPROTO_FRAGMENT : 0;
+ 				flow_mask->next_header = 0xff;
+ 				req->features |= BIT_ULL(NPC_IPFRAG_IPV6);
+ 			} else {
+ 				NL_SET_ERR_MSG_MOD(extack, "flow-type should be either IPv4 and IPv6");
 -- 
-2.34.1
+2.43.0
 
 
