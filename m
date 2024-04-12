@@ -1,256 +1,124 @@
-Return-Path: <linux-kernel+bounces-142977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E4A88A32D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:51:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B48318A32DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:52:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F6C71F221D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:51:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DC98284B1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:52:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA12814882F;
-	Fri, 12 Apr 2024 15:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B9B148FF1;
+	Fri, 12 Apr 2024 15:52:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TELDWgjK"
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LvQV5Pev"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 616E31487F2
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:51:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC89148842;
+	Fri, 12 Apr 2024 15:52:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712937066; cv=none; b=Zo3/w5gFYADbgWaGzgERuTivXKj+LGQlt6+GZq39R4+b1E/y7ptCoGxtiy7f9+/maH4MONrVJJR3l+orIskddEisnxRsuMQR7BM45DC/t8QU/93ErVkklhgD8vNYMXcfgFlzU4HB/V3oW1mbHblSww9IS75gInXdsYVLBCjd2hw=
+	t=1712937134; cv=none; b=EEEQTYpejBX2CnnfrB8kZZCZc8/MK3jtMgbNwUP+tCHOUvBPyQSfXa/cqnPl1AVQKcQtvvssIuwAfgt5kybLf2q4otNAV24+REErm09fUXEaAu+zH2ONBZCb0MV6H8b973vaT3eLs+bTWH4DtHvbcKVQxYKTsCDO5nhICNuGRKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712937066; c=relaxed/simple;
-	bh=N2PKhKVj4vOuIqthZ0upvvRLqO7t9Ims4RxMuplTs4k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aXmdxWIO4WYupfdEJ/yUPXKNEA/npSSWdqMRn1flgwF4DmnpA6Cy+kNz25TjTtjzN35/Z/SJ4bhQGoi/G7jjgHnD1H6Sq/pgo2SQc1wey1zqoDg6AomOKZuwDYkCt73zThNw1c9DVwmj42coTnFtUD3HRcouDu94W5JxKYu7LZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TELDWgjK; arc=none smtp.client-ip=209.85.217.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f47.google.com with SMTP id ada2fe7eead31-479edfd02e4so374956137.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 08:51:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712937063; x=1713541863; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=92R7Tt002+szgQqwlNMaYrd6FqA0RwfRXhl8UHoQOco=;
-        b=TELDWgjKxeoPuBwtW0IdPjb1bG6wpDq/1cbMuniKikgmzkyf8dqlRL3wOUDPPEbIGU
-         5T43CGmDpWEK1uteGhLOHRJkr3jpIYRMUpAbVowvND6bEjopTzbfVGHVt/QxASqTcFei
-         V79GSpvVr8LZlirxgEz5NUFo7m3f54ZuY1w3QoVrN4UNa53HCmb1AwZmHdH8pEG3KSnA
-         EYBliBhY/9rfKfiYb1uKVEjZvBbFEf7A5eDyl3JESRRXzZpB2pwiUmrqwWITAWjVbkMN
-         T+EUzfW+v+TtF7iqX1ntK2ReTR12ReOju64nYSLFAPXjvTc60hpdQetuYSXPnRR6UKzf
-         bV8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712937063; x=1713541863;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=92R7Tt002+szgQqwlNMaYrd6FqA0RwfRXhl8UHoQOco=;
-        b=jGjKvrmBwANY7iJfb8wV4QBTFzvJiqDo+V+MoowHX95fjqNatfGYNDXqJkCPQKOBl/
-         Y5Hfjg7XHe9HL39ordR3YuaQRxsaHvcRNncdmRLfrkZKfe60ImgGRrrywmNdbDW/ErJN
-         sG6AAMFCY7idw3CKCTsJCtAePklj/xCxmHLebF3WH5E1rE9J4LJzgWYCQcveP8SzKLCS
-         n+3DKvjx1q0WqxRD9Gl2aqRpNHeIb+Au5vOTPpEDSXoCQki2wHgwgGiy5H/JkYvzHLYf
-         8eejRFoPnogk6NgA8Zr9LnCyDxRPzxLHsNOiHgJkPTWB17PGZpjEzkAGvkgyYS9rvFIB
-         IK+w==
-X-Forwarded-Encrypted: i=1; AJvYcCXpjfPzhVu0SaKLXiy4WZBkj/RNDM0FcvKCrGPNdRNKu6pGmGOxltKVExjCw7S6wT5Cgv7wBaxwJ+Qu1EfBg5QXJdvrgw1CtxLyS5L+
-X-Gm-Message-State: AOJu0YwIgD/fHPqS65u1EEu3PLsC/1G2Eo1v9PUflArMl/MKLu0lcvjV
-	2RnDR+dCIG+TbaIfY79eJN8UDe60osA0MWoctqOOA/U40OVsyX7GQCiRj1SRJ93nHCv5s6LWfxY
-	dSFVX7n+DYPfrIDFimhBVg95BJGNdAqZrOQkOpg==
-X-Google-Smtp-Source: AGHT+IE5gWWw3tzQD7rDayWyxRVTVHjRobGJko3lvmoSOOqVtUUWsz435Qtri/FpaqKsxh9mMM5R1F9iQ3Ac1+c45bo=
-X-Received: by 2002:a05:6102:38cd:b0:47a:28d7:55ba with SMTP id
- k13-20020a05610238cd00b0047a28d755bamr3842878vst.0.1712937063266; Fri, 12 Apr
- 2024 08:51:03 -0700 (PDT)
+	s=arc-20240116; t=1712937134; c=relaxed/simple;
+	bh=SZ5A86Q+9hpxFN2aey14jYeOw4FwO5dY2Jfg/P7yfI8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=lUgLNQb3OoO361cY9OqSju01azbF9X0RhKQnXayVGDUqGnpF3KPqEgnsGBpf+1C1d9XRBFE2yquVefNEBlfDc4j1Pu8EwNOhHH2ow0VthygyJH0SO8/eyqz2CHG3aFUBO1SFrC70EFcWGaZGWZTCb3zWIzuZGEdXqAN9xodsuX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=LvQV5Pev; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43CCJlBR025087;
+	Fri, 12 Apr 2024 15:52:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=d1fpmCXwLq2bRVjY0U0+oCyAU038R/D9yejbAKhF/pA=; b=Lv
+	QV5PevzcinGxqFO8j2HMLTzhbCMHG3PW/BWoOKBzuwAZwADEb3TrdzSFfL/FtOx2
+	dOoPPf3L0qD+Uf7M2OITTIlv5DKq/ESyV8IBECMSXnaGMa2Iz6ejf05KoOs2VhcM
+	EoqEq758QabH7Sov2ZkWzSbWzSHxNWNJE2K8R98ItZZE3jyAXbeds3JUTJ99OD7w
+	JzI4vc3QTVs48vm0oTGmUrqI9j4ULfr8PXKDJJ1xpYq0jUgs/RXQfiWsK6LFLB5u
+	VxT85YGU3C7jJ6DdSFKeb43tWQP8ZeoaYnQIGPg+Mzv+dXaScWpxpXUC4wzvyPN5
+	aIqu4v8vDO4HpqxyTNPw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xeskt1sxm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 15:52:05 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43CFq35T018481
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 15:52:03 GMT
+Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 12 Apr
+ 2024 08:52:02 -0700
+Message-ID: <bba87a59-d8c0-419e-cc62-dd92bccf901d@quicinc.com>
+Date: Fri, 12 Apr 2024 09:52:02 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411095435.633465671@linuxfoundation.org>
-In-Reply-To: <20240411095435.633465671@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Fri, 12 Apr 2024 21:20:51 +0530
-Message-ID: <CA+G9fYt7okLBbGsSoA=Pyv2aVKmFEvttJywmJEUJ+FDp1SA7VQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/294] 5.10.215-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
-	broonie@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH] accel/qaic: mark debugfs stub functions as static inline
+Content-Language: en-US
+To: Arnd Bergmann <arnd@kernel.org>, Oded Gabbay <ogabbay@kernel.org>,
+        "Jacek
+ Lawrynowicz" <jacek.lawrynowicz@linux.intel.com>,
+        "Pranjal Ramajor Asha
+ Kanojiya" <quic_pkanojiy@quicinc.com>,
+        Carl Vanderlip
+	<quic_carlv@quicinc.com>
+CC: Arnd Bergmann <arnd@arndb.de>, <linux-arm-msm@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20240409133945.2976190-1-arnd@kernel.org>
+From: Jeffrey Hugo <quic_jhugo@quicinc.com>
+In-Reply-To: <20240409133945.2976190-1-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: pQvByzwBaKuXN2Mlpmr2UkLCOsZcVLj8
+X-Proofpoint-ORIG-GUID: pQvByzwBaKuXN2Mlpmr2UkLCOsZcVLj8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-12_12,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 suspectscore=0 lowpriorityscore=0 mlxscore=0
+ phishscore=0 clxscore=1011 spamscore=0 malwarescore=0 adultscore=0
+ mlxlogscore=999 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2404010003 definitions=main-2404120113
 
-On Thu, 11 Apr 2024 at 16:01, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.215 release.
-> There are 294 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.215-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 4/9/2024 7:39 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The alternative stub functions are listed as global, which produces
+> a build failure in some configs:
+> 
+> In file included from drivers/accel/qaic/qaic_drv.c:31:
+> drivers/accel/qaic/qaic_debugfs.h:16:5: error: no previous prototype for 'qaic_bootlog_register' [-Werror=missing-prototypes]
+>     16 | int qaic_bootlog_register(void) { return 0; }
+>        |     ^~~~~~~~~~~~~~~~~~~~~
+> drivers/accel/qaic/qaic_debugfs.h:17:6: error: no previous prototype for 'qaic_bootlog_unregister' [-Werror=missing-prototypes]
+>     17 | void qaic_bootlog_unregister(void) {}
+>        |      ^~~~~~~~~~~~~~~~~~~~~~~
+> drivers/accel/qaic/qaic_debugfs.h:18:6: error: no previous prototype for 'qaic_debugfs_init' [-Werror=missing-prototypes]
+>     18 | void qaic_debugfs_init(struct qaic_drm_device *qddev) {}
+>        |      ^~~~~~~~~~~~~~~~~
+> 
+> Make them static inline as intended.
+> 
+> Fixes: 5f8df5c6def6 ("accel/qaic: Add bootlog debugfs")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Doh.  Thank you for addressing this so quickly.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.10.215-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.10.y
-* git commit: 244ca117cb3cec4bb8f936b136312bb8482eeae3
-* git describe: v5.10.214-295-g244ca117cb3c
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-214-295-g244ca117cb3c
-
-## Test Regressions (compared to v5.10.214)
-
-## Metric Regressions (compared to v5.10.214)
-
-## Test Fixes (compared to v5.10.214)
-
-## Metric Fixes (compared to v5.10.214)
-
-## Test result summary
-total: 94495, pass: 74097, fail: 3307, skip: 17023, xfail: 68
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 104 total, 104 passed, 0 failed
-* arm64: 31 total, 31 passed, 0 failed
-* i386: 25 total, 25 passed, 0 failed
-* mips: 22 total, 22 passed, 0 failed
-* parisc: 3 total, 0 passed, 3 failed
-* powerpc: 23 total, 23 passed, 0 failed
-* riscv: 9 total, 9 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 6 total, 6 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mm
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-smoketest
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
+Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
 
