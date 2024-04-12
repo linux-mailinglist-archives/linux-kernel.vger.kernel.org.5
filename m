@@ -1,123 +1,156 @@
-Return-Path: <linux-kernel+bounces-143056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E15418A33A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:22:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 728708A33A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:21:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FD47B26064
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:21:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE3161F21F3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:21:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 496FF14A4EC;
-	Fri, 12 Apr 2024 16:20:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="RlVELxdm"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78DA514A4CE
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D2E614A4D2;
+	Fri, 12 Apr 2024 16:20:24 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE02B14A4D0
 	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712938824; cv=none; b=Pi8bnrXx5UZwNEtcv00Uazm8Jya5KZRALC0pyboMLk3fpwY9RXPKK5MFNhD05jWCSawaXcHCl8cyKd3DS+aqMvjWDGblT50eKm6b2cNHCyYfIKY8QNpl7OQwajtPPvow2V7LirfFtCzkicYoaXDsz1Z3e71RBSMJQHjJMQ+kWU8=
+	t=1712938824; cv=none; b=h/+stMicBnnPs+51/k4wBZyidErAMDOkZWPzlFMq9WiDWMgtn3yybWwSyxEG5nvTYtDH3dhcRQugTKDsuowac+sH4veFj7mcUKidPJMqyMnUk4jdLmodMAqCwYdOnf63JpbOl5k2TX8bmV3SaNqt5l3mrhGLwken9ySnwhORxDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712938824; c=relaxed/simple;
-	bh=e5mYNY4DUllTjOI7Oiqn8SS/QG9UHp50BnW7WhVKxFQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ELMTnjf5oGF9j6M+APf+dr/x95i7ri+IUf98ftZ9n2RqaRPZ9c7lCMZfkG3iuzK+ui5g4jSGLsuod8Q8gL8N2mmg/w8ouC4/rsVABTOgsGOFkaOfcodPkvPX7ZkiOwCvnly6PknPe3E5zWH6xzqSSUfG8H8px4oXdM5ieDWvzAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=RlVELxdm; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=1lq0SFauIf5vQAWAnoHa3FcN9F5SmZ1FACZ36sCVz5Q=; b=RlVELxdmohqA/BsrX14Bnsezkb
-	cW6dyR2a1/ZQ1Eb9MpwUbOFV1s+fxm7xqMbqjYU/TdH0F76dP3iDzY16kSaLPNawRtbJnsyJZU/bZ
-	AtGlN4zkySPIyYfUem6+QAMJ16IoO70KB0/9BP074pEEe4VWOVMsrbr+TV+yCUAHEtu3IuHan1oP6
-	9siff2+0OHdBS1s0AoSA6ZhzRB8OlRkcwVmWNNwpjrL4h8MvZMiriNUsnf7dbJLemZYvwq3qjkOwn
-	xo98fs1E/QZz4ZuHa/5EVB3azKHLsFevD1oZTohysYZs9t9O34YyVPVwQrfyMet8o5M8h/q4ZqYau
-	9JUbqxMw==;
-Received: from [2603:3004:644:9100::3458]
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rvJdM-00000009DKG-2DrY;
-	Fri, 12 Apr 2024 16:20:13 +0000
-Message-ID: <5ab77ba9-721a-413e-bb26-6c842679f61a@infradead.org>
-Date: Fri, 12 Apr 2024 09:20:06 -0700
+	bh=JcFWIlWAmP82bnMMOxigsCewAls5gbc2qooWyldRIlo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZneJsRP2TX1Kl7K85v1fcxB3g24oIuxUPOQ9U4ycDUeREmZvQhVW6sIB1GeZQXoTYRA/ClbWBFsBRp5FwO5DGNiYt3I0XZ+fq7Uuhv1e1txA4Nv88hDf9FktW0XtiXToDTizlbu9CrlbroOAiIVo2z3tj3z6Kweq7Q3QFkg6ys8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 40FAB339;
+	Fri, 12 Apr 2024 09:20:51 -0700 (PDT)
+Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 482AE3F64C;
+	Fri, 12 Apr 2024 09:20:19 -0700 (PDT)
+Date: Fri, 12 Apr 2024 17:20:16 +0100
+From: Dave Martin <Dave.Martin@arm.com>
+To: Amit Singh Tomar <amitsinght@marvell.com>
+Cc: Reinette Chatre <reinette.chatre@intel.com>,
+	James Morse <james.morse@arm.com>, x86@kernel.org,
+	linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
+	shameerali.kolothum.thodi@huawei.com,
+	D Scott Phillips OS <scott@os.amperecomputing.com>,
+	carl@os.amperecomputing.com, lcherian@marvell.com,
+	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+	dfustini@baylibre.com, David Hildenbrand <david@redhat.com>,
+	Rex Nie <rex.nie@jaguarmicro.com>
+Subject: Re: [EXTERNAL] Re: [PATCH v1 28/31] x86/resctrl: Drop __init/__exit
+ on assorted symbols
+Message-ID: <ZhlfQKMg4xeA53SD@e133380.arm.com>
+References: <20240321165106.31602-1-james.morse@arm.com>
+ <20240321165106.31602-29-james.morse@arm.com>
+ <c27c7813-5744-4363-bb7b-f9fbe80fd549@intel.com>
+ <ZhfzF8L6w1pgJJ1r@e133380.arm.com>
+ <47af4fef-35d3-4d88-9afa-42c1a99fbe07@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] tracing: Fixes for v6.9
-To: Steven Rostedt <rostedt@goodmis.org>,
- Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>, Arnd Bergmann <arnd@arndb.de>,
- Prasad Pandit <pjp@fedoraproject.org>, Yang Li <yang.lee@linux.alibaba.com>
-References: <20240412103204.453d912c@gandalf.local.home>
- <CAHk-=wgw2NW5tar-Xew614JZPKfyTdet5fC0mgwK+2sUsZ0Ekw@mail.gmail.com>
- <20240412121531.24669544@gandalf.local.home>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240412121531.24669544@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <47af4fef-35d3-4d88-9afa-42c1a99fbe07@marvell.com>
 
-
-
-On 4/12/24 9:15 AM, Steven Rostedt wrote:
-> On Fri, 12 Apr 2024 09:07:18 -0700
-> Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On Thu, Apr 11, 2024 at 09:21:38PM +0530, Amit Singh Tomar wrote:
+> Hi Dave, Reinette,
 > 
->> On Fri, 12 Apr 2024 at 07:29, Steven Rostedt <rostedt@goodmis.org> wrote:
->>>
->>> - Replace bad tab with space in Kconfig for FTRACE_RECORD_RECURSION_SIZE  
->>
->> Argh. What parser is this? We need to fix this craziness.
-
-something that fedora cares about.
-out-of-tree I expect.
-
->> Yes, yes, we have "tabs and spaces" issues due to the fundamental
->> brokenness of make, and we can't get rid of *that* bogosity.
->>
->> But for our own Kconfig files? Whitespace is whitespace (ignoring
->> crazy unicode extensions), we need to get away from "tabs and spaces
->> act differently".
+> > On Mon, Apr 08, 2024 at 08:32:36PM -0700, Reinette Chatre wrote:
+> > > Hi James,
+> > > 
+> > > On 3/21/2024 9:51 AM, James Morse wrote:
+> > > > Because ARM's MPAM controls are probed using MMIO, resctrl can't be
+> > > > initialised until enough CPUs are online to have determined the
+> > > > system-wide supported num_closid. Arm64 also supports 'late onlined
+> > > > secondaries', where only a subset of CPUs are online during boot.
+> > > > 
+> > > > These two combine to mean the MPAM driver may not be able to initialise
+> > > > resctrl until user-space has brought 'enough' CPUs online.
+> > > > 
+> > > > To allow MPAM to initialise resctrl after __init text has been free'd,
+> > > > remove all the __init markings from resctrl.
+> > > > 
+> > > > The existing __exit markings cause these functions to be removed by the
+> > > > linker as it has never been possible to build resctrl as a module. MPAM
+> > > > has an error interrupt which causes the driver to reset and disable
+> > > > itself. Remove the __exit markings to allow the MPAM driver to tear down
+> > > > resctrl when an error occurs.
+> > > 
+> > > Obviously for the reasons you state this code has never been exercised.
+> > > Were you able to test this error interrupt flow yet?
+> > > 
+> > > Reinette
+> > > 
+> > 
+> > I think this will have to wait for James to respond.
+> > 
+> > There is code to tear down resctrl in response to an MPAM error interrupt,
+> > but I don't know how it has been exercised so far (if at all).
 > 
-> Note, the tab is here:
+> We are managed to test the MPAM error interrupt (on the platform that
+> supports MPAM interrupts on software errors). For instance programming
+> more resource control groups (part IDs) than available, and It appears to
+> correctly remove the "resctrl" mount point (though mount command still shows
+> resctrl on /sys/fs/resctrl type resctrl (rw,relatime)
+> ), but
+
+Thanks for trying this out!
+
+Is it possible to unmount resctrl once the system is in this state?
+
+> # mount -t resctrl resctrl /sys/fs/resctrl
+> mount: /sys/fs/resctrl: mount point does not exist.
+
+What if you now try to mount resctrl somewhere else, e.g.:
+
+# mount -t resctrl resctrl /mnt
+
+I'm guessing this _should_ fail if you weren't able to unmount resctrl,
+since resctrl seems to forbid multiple mount instances.
+
+I'm not sure what the best behaviour is here.  Leaving resctrl "half-
+mounted" might be a good thing: at this point the system is in a semi-
+bad state we want to make sure it can't be remounted.  Unregistering the
+resctrl filesystem from the fs core feels cleaner if feasible though.
+
+Leaving an impossible unmount operation for init to do during reboot/
+shutdown feels unfortunate.
+
+We might have to look at what other filesystems do in this area.
+
+The mount machinery does provide other ways of getting into broken,
+impossible situations from userspace, so this doesn't feel like an
+entirely new problem.
+
 > 
-> -	default	128
-> +	default 128
->                ^
+> Additionally, a question regarding this, Is a complete system restart
+> necessary to regain the mount?
 > 
-> That is, the tab was between "default" and "128".
-> 
-> I'm really agnostic to if we care about it, and was questioning about
-> taking it or not. But, it looks to be a hidden tab in a weird location,
-> so I took it.
+> Thanks
+> -Amit
 
-Yes, I'm about the same. My comments were:
+I think James will need to comment on this, but I think that yes, it
+is probably appropriate to require a reboot.  I think an MPAM error
+interrupt should only happen if the software did something wrong, so
+it's a bit like hitting a BUG(): we don't promise that everything works
+100% properly until the system is restarted.  Misbehaviour should be
+contained to MPAM though.
 
-"""
-> Fix FTRACE_RECORD_RECURSION_SIZE entry, replace tab with
-
-replace the tab between "default" and "128" with a space
-
-> a space character. It helps Kconfig parsers to read file
-> without error.
-
-Parsers should accept either tab or space but this is a
-reasonable change.
-"""
-
-Guess I wasn't forceful enough.
-
+Cheers
+---Dave
 
