@@ -1,125 +1,143 @@
-Return-Path: <linux-kernel+bounces-142642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABEA38A2E62
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:36:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71B268A2E2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:27:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0389828610D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:26:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 050AA286CD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:27:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9467D5674B;
-	Fri, 12 Apr 2024 12:26:53 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0BCF56B81;
+	Fri, 12 Apr 2024 12:26:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="yL9YLsZQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FDFD56444
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 12:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F4656B73
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 12:26:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712924813; cv=none; b=REDmCZ2j+3X48prAqrNjB3s5ItqGhv0dqjwh0xxu1zW2xQd4Oi/CHrv+sNBb0vZnSS8k+yuuRpwkFSznOZPYYyF9I9vaFSd4gWxo5nqnvMFtXQAv5iTgeuBd7f3YGI0lJQKnk+Tv95qTdRdD7KIIkumu2N1VWk28xxlX9ilbJdY=
+	t=1712924814; cv=none; b=VwgVUbAR1PPEMHTKDlmFc/8seTstlnnbkS10QIAazAPJs00LiIZ9Qd0/wvt2S4o21W+YebPWPEYYwKD29wh9q8sUxkmv0ZRV+m2r+TwIjoxXnoGpU18zP53X1pxZmIIzyA3kDhIIQOSpIaeTn8eNUtBwOa04RXT7Gc/V/tOT8MA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712924813; c=relaxed/simple;
-	bh=tzP3amZEpajs2WOU6zX0VAE0WXMtT389H19L21TY/ow=;
+	s=arc-20240116; t=1712924814; c=relaxed/simple;
+	bh=mFlXd0dhK9hhZDrKKgOHHeKtkcq7FDGi2zmOZXw3Ldg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cWAsvSJcrWJ5tqB3It0IVmnUF8Li5ILnX2LIj4e8sSfo4JafjntLX3dIVgggn0/V//0GiJu8+OEmnygwr8YnwotXZusybJBZdui96B+T3DBShBKg1D6oInXSs9V3sptvep07k/I6rjSD9tCXpU1jNW2axjR7dzk1OMk3Kmksh10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rvFzV-00062F-LM; Fri, 12 Apr 2024 14:26:49 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rvFzV-00BsD2-5A; Fri, 12 Apr 2024 14:26:49 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rvFzV-000ANV-0E;
-	Fri, 12 Apr 2024 14:26:49 +0200
-Date: Fri, 12 Apr 2024 14:26:48 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Rodolfo Giometti <giometti@enneenne.com>
-Cc: linux-kernel@vger.kernel.org, kernel@pengutronix.de, 
-	linuxpps@ml.enneenne.com
-Subject: Re: [PATCH] pps: clients: gpio: Convert to platform remove callback
- returning void
-Message-ID: <4iii7uxyfovs6ntm7hs2w546k3upbhkepgzxarjk4wnlqmeern@sh6gkyuiqpjs>
-References: <f4b9402af72e5f285c8b0f068076a76418f653f5.1709886922.git.u.kleine-koenig@pengutronix.de>
- <6d73b0a4-34e6-44ce-8757-4f4931c3da85@enneenne.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q6aCDTTd2Tv4U0iUnjA83SWAckjmqK3hCjXydw4WpIKCY+PFQcM+yby70R73n+fIqJDoqty6nPNBgSmZ642CfwSWllsp8iMjCOSeR5siCHt2gervQ3NCkaiihPc9TWWks69ndZxCW1AFF3st4C4p0VhTGWCFPDLCgHZpoPo+JiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=yL9YLsZQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5645C2BD10;
+	Fri, 12 Apr 2024 12:26:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712924814;
+	bh=mFlXd0dhK9hhZDrKKgOHHeKtkcq7FDGi2zmOZXw3Ldg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=yL9YLsZQuMLjcwy5w6DOIekiL81NS21sohO86yBowSf7HYXm+G2tcdyAeYjAc/mcq
+	 d1imwTRp96XxlZ7mu2RM8WNH2isLIQjaXtBSlakVNO5o8N3sJ/XfL4qxVLvTtue9sr
+	 crr0j4hZIMq1n76HH+N3f4Yd8MLNpiDt4Rf+qRK8=
+Date: Fri, 12 Apr 2024 14:26:51 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Vamsi Attunuru <vattunuru@marvell.com>
+Cc: arnd@arndb.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/1] misc: mrvl-cn10k-dpi: add Octeon CN10K DPI
+ administrative driver
+Message-ID: <2024041250-nursing-tidy-db7e@gregkh>
+References: <MW4PR18MB5244C76290A15737DC94FFDBA6042@MW4PR18MB5244.namprd18.prod.outlook.com>
+ <20240412121005.1825881-1-vattunuru@marvell.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6gvlmrxnnidgo4ab"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6d73b0a4-34e6-44ce-8757-4f4931c3da85@enneenne.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20240412121005.1825881-1-vattunuru@marvell.com>
 
+On Fri, Apr 12, 2024 at 05:10:05AM -0700, Vamsi Attunuru wrote:
+> Adds a misc driver for Marvell CN10K DPI(DMA Engine) device's physical
+> function which initializes DPI DMA hardware's global configuration and
+> enables hardware mailbox channels between physical function (PF) and
+> it's virtual functions (VF). VF device drivers (User space drivers) use
+> this hw mailbox to communicate any required device configuration on it's
+> respective VF device. Accordingly, this DPI PF driver provisions the
+> VF device resources.
+> 
+> At the hardware level, the DPI physical function (PF) acts as a management
+> interface to setup the VF device resources, VF devices are only provisioned
+> to handle or control the actual DMA Engine's data transfer capabilities.
 
---6gvlmrxnnidgo4ab
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No pointer to the userspace code that uses this?  Why not?  How are we
+supposed to be able to review this?
 
-[Cc: +=3D linuxpps@ml.enneenne.com]
+> +config MARVELL_CN10K_DPI
+> +	tristate "Octeon CN10K DPI driver"
+> +	depends on ARM64 && PCI
+> +	help
+> +	  Enables Octeon CN10K DPI driver which intializes DPI PF device's global configuration
+> +	  and its VFs resource configuration to enable DMA transfers. DPI PF device
+> +	  does not have any data movement functionality, it only serves VF's resource
+> +	  configuration requests.
 
-On Fri, Mar 08, 2024 at 09:57:29AM +0100, Rodolfo Giometti wrote:
-> On 08/03/24 09:51, Uwe Kleine-K=F6nig wrote:
-> > The .remove() callback for a platform driver returns an int which makes
-> > many driver authors wrongly assume it's possible to do error handling by
-> > returning an error code. However the value returned is ignored (apart
-> > from emitting a warning) and this typically results in resource leaks.
-> >=20
-> > To improve here there is a quest to make the remove callback return
-> > void. In the first step of this quest all drivers are converted to
-> > .remove_new(), which already returns void. Eventually after all drivers
-> > are converted, .remove_new() will be renamed to .remove().
-> >=20
-> > Trivially convert this driver from always returning zero in the remove
-> > callback to the void returning variant.
-> >=20
-> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
->=20
-> Acked-by: Rodolfo Giometti <giometti@enneenne.com>
+Did this pass checkpatch?  Please wrap your help text at the proper
+boundry.
 
-The MAINTAINERS entry for drivers/pps lists you as single maintainer.
-Who is expected to pick up this patch given that you "only" send an ack
-but didn't pick up the patch? (Or only picked it up in a tree not
-included in next.)
+And what is "DPI"?  What is "PF"?  What is "VF"?  These are all terms
+that need to be documented somewhere, right?
 
-Best regards
-Uwe
+> --- /dev/null
+> +++ b/include/uapi/misc/mrvl_cn10k_dpi.h
+> @@ -0,0 +1,36 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
+> +/*
+> + * Marvell Octeon CN10K DPI driver
+> + *
+> + * Copyright (C) 2024 Marvell.
+> + *
+> + */
+> +
+> +#ifndef __MRVL_CN10K_DPI_H__
+> +#define __MRVL_CN10K_DPI_H__
+> +
+> +#include <linux/types.h>
+> +
+> +#define DPI_MAX_ENGINES 6
+> +
+> +struct dpi_mps_mrrs_cfg {
+> +	__u64 mrrs; /* Max read request size */
+> +	__u64 mps;  /* Max packet size */
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+You can spell out variables with more characters :)
 
---6gvlmrxnnidgo4ab
-Content-Type: application/pgp-signature; name="signature.asc"
+> +	__u64 port; /* Ebus port */
+> +};
+> +
+> +struct dpi_engine_cfg {
+> +	__u64 fifo_mask; /* FIFO size mask in KBytes */
+> +	__u64 molr[DPI_MAX_ENGINES];
 
------BEGIN PGP SIGNATURE-----
+What is a "molr"?
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYZKIgACgkQj4D7WH0S
-/k5IEwf/Q840SKxdW46c7jlpWLRe6JFxdoOz1zEv78UGoww+c6dPbdy4atrzx7gJ
-J+7Tvevw52MlzKw9D9sW49RXn5nKHtXOStgJejdomTkLhVWX7O6ci3vq6JwuSStv
-qsFe7/X325gDtP6yxPQGBO3UvjfEIHSPSWgHJPzAbVxjb+V2v6Ddb9Q2iBlpo1PZ
-x7J2p+F8zLHYLw+KP3j99IdVABZS+9DOftASjIVZfg58YzEb3sgImZA0Ukgm+Hgo
-ehExojDWdglDdmH7uIlaMzqK66ePa6XyYMjA+qm2+c2+IXF2C6/Z8pTzx0fosOyk
-VU2UVP8EJ/VhfezTto04mqcgrtS5XA==
-=VMef
------END PGP SIGNATURE-----
+> +	__u64 update_molr; /* '1' to update engine MOLR */
 
---6gvlmrxnnidgo4ab--
+You "burn" a whole 64 for 1 bit?  That feels wrong, who on your end
+reviewed this api to be correct?
+
+> +#define DPI_MAGIC_NUM	0xB8
+
+Did you document this api somewhere?
+
+> +
+> +/* Set MPS & MRRS parameters */
+> +#define DPI_MPS_MRRS_CFG _IOW(DPI_MAGIC_NUM, 1, struct dpi_mps_mrrs_cfg)
+> +
+> +/* Set Engine FIFO configuration */
+> +#define DPI_ENGINE_CFG   _IOW(DPI_MAGIC_NUM, 2, struct dpi_engine_cfg)
+> +
+> +#endif /* __MRVL_CN10K_DPI_H__ */
+> -- 
+> 2.25.1
+> 
 
