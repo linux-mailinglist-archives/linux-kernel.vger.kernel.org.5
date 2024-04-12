@@ -1,130 +1,244 @@
-Return-Path: <linux-kernel+bounces-142674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C98DD8A2EB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:01:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E39D08A2EB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:01:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E553284471
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:01:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9564B2828AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:01:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 742AA59B77;
-	Fri, 12 Apr 2024 13:00:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E860B5A78A;
+	Fri, 12 Apr 2024 13:01:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="G0AypBFB"
-Received: from smtpcmd04132.aruba.it (smtpcmd04132.aruba.it [62.149.158.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vqvar1aY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4ouxzsIt";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vqvar1aY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4ouxzsIt"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6443158231
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.158.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC23759154;
+	Fri, 12 Apr 2024 13:01:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712926856; cv=none; b=WfDnWJLul9YiLo2nY2mml6yphebqlo1H+O/AmmjE8GEysUsYFw1T9PxX7G1Y6XrIVFLW5odfXw1jKJhGyVF4Y+d6ofLrLyjoiOM5tgFkePKijvYA4HsCYOEkZTE+hNxDGndzD/vP2vYr5UASJp6faJrnaqdmRcVYdc8EXYEeVys=
+	t=1712926898; cv=none; b=m/AW7NXJod2I+hKKuOc9jg8nmop8rbyT8tsbVOG68W6DWYODNFTEDVhkT2pdcIjcroJaWWPN9s3ZbNau1s1Dvz+uV36BWv4OurjpKixeigOqP0VIVMiNPyO7l+3y4roj8DGtPXIX78srbCUY1/onoOyrhjlshGTqK6Ng5xakzKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712926856; c=relaxed/simple;
-	bh=HPrU0Wyhp98Idg6SSCatKl3na2JRMkwQ26OormfXCTI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=axwZA0eOZw65xyZEOceLuO0O7cgGHbsbBlQG5r2e5avSfG5WO+AYIwJwAG6wkCl/vm+c9GO28Ms2mU0FR6f4DniaDflnNFGANvBmAzONBQ8SwLxTfFDwgH9umrHYO8S9/PZqfNgmvsAWTXVuqeHRngHjGobt9z5KBbjDEZz6vow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=enneenne.com; spf=pass smtp.mailfrom=enneenne.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=G0AypBFB; arc=none smtp.client-ip=62.149.158.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=enneenne.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=enneenne.com
-Received: from [192.168.1.57] ([79.0.204.227])
-	by Aruba Outgoing Smtp  with ESMTPSA
-	id vGWHrbMkVoq80vGWIrTNve; Fri, 12 Apr 2024 15:00:42 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1712926842; bh=HPrU0Wyhp98Idg6SSCatKl3na2JRMkwQ26OormfXCTI=;
-	h=Date:MIME-Version:Subject:To:From:Content-Type;
-	b=G0AypBFB8BBUF6i720nidjUUkLEwRDx5W1ozwjWs/yXhhSZsaBwePJrnyJV5PuaB6
-	 GFgmOc+v4S4qiNQ+XcuSeK4bQT8bnFx8HVwq0ucYi1awiH4cSJvr8Ik0mUNfjsypDs
-	 Kfi6P4k3I1xtbWwGxtwLwxozoHvuxlfn66rjox5fQCKiwFqJAyL0W9kQP/T/pFlkbh
-	 vK3YO1d19STZPRWjBBJCYuOmGdGUx02uWHhe/BJE1cdGQwuijfsvSRX8qMQXxshHeR
-	 KNedSVriZclvJIQ/FTrEYdqQi7PjDPlyWffAQDJrUhPbvJMtyadLFGrzFr+lzkBmD1
-	 fsGOtDv+sIdNA==
-Message-ID: <30e27903-6f12-436a-a1bf-4d74749ac143@enneenne.com>
-Date: Fri, 12 Apr 2024 15:00:42 +0200
+	s=arc-20240116; t=1712926898; c=relaxed/simple;
+	bh=93uqE9gEAlGpXZ66feFhk0/jl/wt6MRWbk8fCGmdTlg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IwrpXZld3ttZiv4seo1UrQlXO/3efbsLXnU2z05RzL0AV7AauRYW/JhrvyB6oxLEYP0RSOXiq/e029DXo0NYJm9+sCtEuQuqoiixL+ugLs0uPjdvJKiygYwvCzwp5b7ZYPCLF0coPVR36Iv1tqRLpdpGF3j17joQWEPaIGgZ7u8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vqvar1aY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4ouxzsIt; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vqvar1aY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4ouxzsIt; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0F3403829D;
+	Fri, 12 Apr 2024 13:01:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712926891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8zuLpInTy0inRnIrcZ/ThCZgZYQ9g/2MUlwBJBedMgY=;
+	b=vqvar1aYJlzajQeBVvRSPF6CGapQhTqynsoIzc612hlgIc5KpI3fxllDdv1LlgOKjeFxLU
+	vfRAnCYOeYMM1JxXYWHLPpwQOs01XMpt5QpdlcJtYGwrhYsPNdVLgFOmFIeSPmFdxm7lyq
+	EdPQfCx5Frz83kWGlyfS/ZKwS57RaXo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712926891;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8zuLpInTy0inRnIrcZ/ThCZgZYQ9g/2MUlwBJBedMgY=;
+	b=4ouxzsItf8E+dW3RbkTEsicnxvAyTgVasnPSntEY09fnwXr23DJik+kyBbdsaoGfn4P+o+
+	J6/Mh+gt3ml0+LAg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=vqvar1aY;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4ouxzsIt
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712926891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8zuLpInTy0inRnIrcZ/ThCZgZYQ9g/2MUlwBJBedMgY=;
+	b=vqvar1aYJlzajQeBVvRSPF6CGapQhTqynsoIzc612hlgIc5KpI3fxllDdv1LlgOKjeFxLU
+	vfRAnCYOeYMM1JxXYWHLPpwQOs01XMpt5QpdlcJtYGwrhYsPNdVLgFOmFIeSPmFdxm7lyq
+	EdPQfCx5Frz83kWGlyfS/ZKwS57RaXo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712926891;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8zuLpInTy0inRnIrcZ/ThCZgZYQ9g/2MUlwBJBedMgY=;
+	b=4ouxzsItf8E+dW3RbkTEsicnxvAyTgVasnPSntEY09fnwXr23DJik+kyBbdsaoGfn4P+o+
+	J6/Mh+gt3ml0+LAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EF5B01368B;
+	Fri, 12 Apr 2024 13:01:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id F/toOqowGWYaVgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 12 Apr 2024 13:01:30 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 5A0F7A071E; Fri, 12 Apr 2024 15:01:30 +0200 (CEST)
+Date: Fri, 12 Apr 2024 15:01:30 +0200
+From: Jan Kara <jack@suse.cz>
+To: Chao Yu <chao@kernel.org>
+Cc: Jan Kara <jack@suse.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] quota: fix to propagate error of mark_dquot_dirty() to
+ caller
+Message-ID: <20240412130130.m4msohzpiojtve7r@quack3>
+References: <20240412094942.2131243-1-chao@kernel.org>
+ <20240412121517.dydwqiqkdzvwpwf5@quack3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] pps: clients: gpio: Convert to platform remove callback
- returning void
-To: =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: linux-kernel@vger.kernel.org, kernel@pengutronix.de,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <f4b9402af72e5f285c8b0f068076a76418f653f5.1709886922.git.u.kleine-koenig@pengutronix.de>
-From: Rodolfo Giometti <giometti@enneenne.com>
-Content-Language: en-US
-In-Reply-To: <f4b9402af72e5f285c8b0f068076a76418f653f5.1709886922.git.u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfOw0KeEWS6ddACUBkGdfxZ8IgvhfHEeQA6KqVGi6JVdmI6ymCX7gWSeCK4WByCF2oofKHyOHRxJo1GDpeYdAtlxDbTFu4YTZE8kNB4jSsNd8FoTABBuY
- caw6PzL6dAy1bxke/3wSkd+lEi3CRFHf5VoFzT5uqCKHy0NoVTaXZ9PN2KqtEIFaVWODa9TSkgL776FSMktbMWneigo5yHX2NP9AIKnVBLRwWekUN8T98dlz
- yEWIuQOoTK6DkLWY99kOOfkpkmyaFoOW+tVt+4sovY5ajHeTDKB5GAJSJY5QW46fmnGamf/z7v8VKEWj4fHySA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240412121517.dydwqiqkdzvwpwf5@quack3>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCPT_COUNT_THREE(0.00)[4];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 0F3403829D
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
 
-On 08/03/24 09:51, Uwe Kleine-König wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
+On Fri 12-04-24 14:15:17, Jan Kara wrote:
+> On Fri 12-04-24 17:49:42, Chao Yu wrote:
+> > in order to let caller be aware of failure of mark_dquot_dirty().
+> > 
+> > Signed-off-by: Chao Yu <chao@kernel.org>
 > 
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new(), which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
-> 
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> Thanks. I've added the patch to my tree.
 
-Acked-by: Rodolfo Giometti <giometti@enneenne.com>
+So this patch was buggy because mark_all_dquots() dirty was returning 1 in
+case some dquot was indeed dirtied which resulted in e.g.
+dquot_alloc_inode() to return 1 and consequently __ext4_new_inode() to fail
+and eventually we've crashed in ext4_create().  I've fixed up the patch to
+make mark_all_dquots() return 0 or error.
 
-> ---
->   drivers/pps/clients/pps-gpio.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/pps/clients/pps-gpio.c b/drivers/pps/clients/pps-gpio.c
-> index 2f4b11b4dfcd..791fdc9326dd 100644
-> --- a/drivers/pps/clients/pps-gpio.c
-> +++ b/drivers/pps/clients/pps-gpio.c
-> @@ -220,7 +220,7 @@ static int pps_gpio_probe(struct platform_device *pdev)
->   	return 0;
->   }
->   
-> -static int pps_gpio_remove(struct platform_device *pdev)
-> +static void pps_gpio_remove(struct platform_device *pdev)
->   {
->   	struct pps_gpio_device_data *data = platform_get_drvdata(pdev);
->   
-> @@ -229,7 +229,6 @@ static int pps_gpio_remove(struct platform_device *pdev)
->   	/* reset echo pin in any case */
->   	gpiod_set_value(data->echo_pin, 0);
->   	dev_info(&pdev->dev, "removed IRQ %d as PPS source\n", data->irq);
-> -	return 0;
->   }
->   
->   static const struct of_device_id pps_gpio_dt_ids[] = {
-> @@ -240,7 +239,7 @@ MODULE_DEVICE_TABLE(of, pps_gpio_dt_ids);
->   
->   static struct platform_driver pps_gpio_driver = {
->   	.probe		= pps_gpio_probe,
-> -	.remove		= pps_gpio_remove,
-> +	.remove_new	= pps_gpio_remove,
->   	.driver		= {
->   		.name	= PPS_GPIO_NAME,
->   		.of_match_table	= pps_gpio_dt_ids,
-> 
-> base-commit: 8ffc8b1bbd505e27e2c8439d326b6059c906c9dd
+								Honza
 
+> > ---
+> >  fs/quota/dquot.c | 21 ++++++++++++++-------
+> >  1 file changed, 14 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+> > index dacbee455c03..b2a109d8b198 100644
+> > --- a/fs/quota/dquot.c
+> > +++ b/fs/quota/dquot.c
+> > @@ -1737,7 +1737,7 @@ int __dquot_alloc_space(struct inode *inode, qsize_t number, int flags)
+> >  
+> >  	if (reserve)
+> >  		goto out_flush_warn;
+> > -	mark_all_dquot_dirty(dquots);
+> > +	ret = mark_all_dquot_dirty(dquots);
+> >  out_flush_warn:
+> >  	srcu_read_unlock(&dquot_srcu, index);
+> >  	flush_warnings(warn);
+> > @@ -1786,7 +1786,7 @@ int dquot_alloc_inode(struct inode *inode)
+> >  warn_put_all:
+> >  	spin_unlock(&inode->i_lock);
+> >  	if (ret == 0)
+> > -		mark_all_dquot_dirty(dquots);
+> > +		ret = mark_all_dquot_dirty(dquots);
+> >  	srcu_read_unlock(&dquot_srcu, index);
+> >  	flush_warnings(warn);
+> >  	return ret;
+> > @@ -1990,7 +1990,7 @@ int __dquot_transfer(struct inode *inode, struct dquot **transfer_to)
+> >  	qsize_t inode_usage = 1;
+> >  	struct dquot __rcu **dquots;
+> >  	struct dquot *transfer_from[MAXQUOTAS] = {};
+> > -	int cnt, index, ret = 0;
+> > +	int cnt, index, ret = 0, err;
+> >  	char is_valid[MAXQUOTAS] = {};
+> >  	struct dquot_warn warn_to[MAXQUOTAS];
+> >  	struct dquot_warn warn_from_inodes[MAXQUOTAS];
+> > @@ -2087,8 +2087,12 @@ int __dquot_transfer(struct inode *inode, struct dquot **transfer_to)
+> >  	 * mark_all_dquot_dirty().
+> >  	 */
+> >  	index = srcu_read_lock(&dquot_srcu);
+> > -	mark_all_dquot_dirty((struct dquot __rcu **)transfer_from);
+> > -	mark_all_dquot_dirty((struct dquot __rcu **)transfer_to);
+> > +	err = mark_all_dquot_dirty((struct dquot __rcu **)transfer_from);
+> > +	if (err < 0)
+> > +		ret = err;
+> > +	err = mark_all_dquot_dirty((struct dquot __rcu **)transfer_to);
+> > +	if (err < 0)
+> > +		ret = err;
+> >  	srcu_read_unlock(&dquot_srcu, index);
+> >  
+> >  	flush_warnings(warn_to);
+> > @@ -2098,7 +2102,7 @@ int __dquot_transfer(struct inode *inode, struct dquot **transfer_to)
+> >  	for (cnt = 0; cnt < MAXQUOTAS; cnt++)
+> >  		if (is_valid[cnt])
+> >  			transfer_to[cnt] = transfer_from[cnt];
+> > -	return 0;
+> > +	return ret;
+> >  over_quota:
+> >  	/* Back out changes we already did */
+> >  	for (cnt--; cnt >= 0; cnt--) {
+> > @@ -2726,6 +2730,7 @@ static int do_set_dqblk(struct dquot *dquot, struct qc_dqblk *di)
+> >  	struct mem_dqblk *dm = &dquot->dq_dqb;
+> >  	int check_blim = 0, check_ilim = 0;
+> >  	struct mem_dqinfo *dqi = &sb_dqopt(dquot->dq_sb)->info[dquot->dq_id.type];
+> > +	int ret;
+> >  
+> >  	if (di->d_fieldmask & ~VFS_QC_MASK)
+> >  		return -EINVAL;
+> > @@ -2807,7 +2812,9 @@ static int do_set_dqblk(struct dquot *dquot, struct qc_dqblk *di)
+> >  	else
+> >  		set_bit(DQ_FAKE_B, &dquot->dq_flags);
+> >  	spin_unlock(&dquot->dq_dqb_lock);
+> > -	mark_dquot_dirty(dquot);
+> > +	ret = mark_dquot_dirty(dquot);
+> > +	if (ret < 0)
+> > +		return ret;
+> >  
+> >  	return 0;
+> >  }
+> > -- 
+> > 2.40.1
+> > 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
+> 
 -- 
-GNU/Linux Solutions                  e-mail: giometti@enneenne.com
-Linux Device Driver                          giometti@linux.it
-Embedded Systems                     phone:  +39 349 2432127
-UNIX programming
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
