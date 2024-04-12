@@ -1,182 +1,193 @@
-Return-Path: <linux-kernel+bounces-141843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35E778A242A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:07:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B6178A242B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:07:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A01FA1F223C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:07:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCF6A1C21985
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:07:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09FCC14F70;
-	Fri, 12 Apr 2024 03:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="RVtvvc+5"
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2040.outbound.protection.outlook.com [40.107.104.40])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54F61798E;
+	Fri, 12 Apr 2024 03:07:06 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26EEF111A2;
-	Fri, 12 Apr 2024 03:07:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712891224; cv=fail; b=T71S1T8kGereTAjj1tc4NDSBu9AGjFKcLrZs/nXyl8Z4j/HnLPnz3y3wcr3I8EnPafJHsvo23kMGuFRQwWuoboeHGEAFDylTqXbCauvdyTcMDNRP828josl11dRenI0WFT0uicZTPcXmoRmjXW4RFaYJCbF77vGi2HiGCbQ+2HU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712891224; c=relaxed/simple;
-	bh=/HGGWt4fWPNopjXcJgr83Q70C1PFO3+nlWOMy/hdXeI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=qlzexHAeKLXYwT1M1L857ZUY7MPybXb/lqD7FHCGGGB7XrT4MB4XKNEoacEvrkaMwaVubhRgbU9LObVY9bwJfdx7/1XwjMkOWSzLXfhS5UCL0eKH9ObNkmE0p4V4w5R5BYrbGzUwccZdZFt2s2m2CVq/bL5ytWLR+Izn61iePHI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=RVtvvc+5; arc=fail smtp.client-ip=40.107.104.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZXQTUqJdtVvQzas0a6OysdAukkkIgqadT22e+1ynUo22pE3r8uvUaSTyPQmG3u8mFOdgEKpOh9r1aOZPtqE5MFNa5zy+Cawb3KASMzrA0YDpMfJ+YFXrd747wPZccOur2nG5nX4okZQkxla1bgADdOvxEPjdzDbpwqGL8tmsHf+HJz4CxP2Mbc4Lw0TpiSePjrJFGPDq9is623VdCs1HDmdj+2XsLKcyGq+19AaolAzYKw4zqgHvttQLOTS8ukx+unSsI+ZNqQ6/kOH9iVa4LanL92g+WABC0vyBRPM7ZzR9PoPOvcvR5uHHn4MeSdi0Wtfj5gy3erQcGuYF8JOqnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4aPIM7AC05nsOh8VADgJ9+bJjCgGroy7Z0cy1lwHNHQ=;
- b=OH59o8sHFbvTq5BX8YvAR6Y0iSDqziTboqsEtcwpFdBM28/I97bZ3hfuOLGyoykBGwbFCGFgIRrmNSFUvMy5mgPhrSQkxZzEGipFZIlY0eKoUK6U2OrWOpG0F5F7/TcYLSPKH2S6W26Dh/AK8e87AVQ/4Bh1fVcgUcdA1nSOi+0yFXgsw1EZgru3jIhBIyodNZ9mp+GE1Xko8aYGpa3iLk+N/ltkP4+jfBS5pUmu4pCmbl/4q/wRVPppn9BDhr0PVhISlO8abbEjHre7CcU/ZYIYl150Fykvjkz/MraILXwmNMGjdSos8qNYHDcQMHpu5c81FPc383VAPtCf4F0QDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4aPIM7AC05nsOh8VADgJ9+bJjCgGroy7Z0cy1lwHNHQ=;
- b=RVtvvc+5YglLtXFlk+meJTfLS+OB08Gk1LUDAJ96TzXyXqSYkDFFgcZckDahmNBWCPNrF6mDGoKiVkwU/qWy6tvF4iVLhw1QXJhwfzJZ4LXlVTYe8ra+qkVHNWSZTYd/gHiEG2/vOC+MakraSwMgIFOIqL/eFa1zPCjQ9eOd+dY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from DB9PR04MB9626.eurprd04.prod.outlook.com (2603:10a6:10:309::18)
- by PAXPR04MB9106.eurprd04.prod.outlook.com (2603:10a6:102:227::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.54; Fri, 12 Apr
- 2024 03:06:59 +0000
-Received: from DB9PR04MB9626.eurprd04.prod.outlook.com
- ([fe80::1d91:1c96:1413:3ab0]) by DB9PR04MB9626.eurprd04.prod.outlook.com
- ([fe80::1d91:1c96:1413:3ab0%6]) with mapi id 15.20.7409.042; Fri, 12 Apr 2024
- 03:06:58 +0000
-Date: Thu, 11 Apr 2024 23:06:50 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: Joy Zou <joy.zou@nxp.com>
-Cc: peng.fan@nxp.com, vkoul@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
-	conor+dt@kernel.org, imx@lists.linux.dev, dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] dma: dt-bindings: fsl-edma: clean up unused
- "fsl,imx8qm-adma" compatible string
-Message-ID: <ZhilSv5xh0hJ2vdX@lizhi-Precision-Tower-5810>
-References: <20240412030436.2976233-1-joy.zou@nxp.com>
- <20240412030436.2976233-3-joy.zou@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412030436.2976233-3-joy.zou@nxp.com>
-X-ClientProxiedBy: SJ0PR13CA0085.namprd13.prod.outlook.com
- (2603:10b6:a03:2c4::30) To DB9PR04MB9626.eurprd04.prod.outlook.com
- (2603:10a6:10:309::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E44134B2;
+	Fri, 12 Apr 2024 03:07:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712891226; cv=none; b=rdvlG0TfR8pHbLQPrJn9Bypw7li4m5Mviey3PYoF7uC4heuNZEmTdWw2dgwY1ukc3uPTFPIQIjCZcLiK5xfVUzyuoKst2EYRAv4FeRtNFGTJASll/pLxmGuZPwqENg7Ijg5sRmoJWR3AuMKDAuDRhmt0q5tUyReWUmf2vTYoTl0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712891226; c=relaxed/simple;
+	bh=WeQV3etAK0C96I94xGlBbd9Uo4UsxU5yT6PWfCgir+Y=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=b6wvYhfC3+3xKzghEvRWMr/tjGCupdDUB6kbnPbtBlwZuo0MhgXBkUKEJH8ZD2p9gHap2/qTF7RUqZ/KAT6IFjbnzfRLEfX9+FLhnp9uznJZ94LTFFXCzLudRcVUWUH3qVA5uTSeREFS4aZccIS8b9bMO69S1CIBq2ifCux6Esg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VG1cb4bnqztSdR;
+	Fri, 12 Apr 2024 11:04:15 +0800 (CST)
+Received: from kwepemm600005.china.huawei.com (unknown [7.193.23.191])
+	by mail.maildlp.com (Postfix) with ESMTPS id 41B30140124;
+	Fri, 12 Apr 2024 11:07:01 +0800 (CST)
+Received: from [10.67.121.110] (10.67.121.110) by
+ kwepemm600005.china.huawei.com (7.193.23.191) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 12 Apr 2024 11:07:00 +0800
+Subject: Re: [PATCH v4 2/4] hisi_acc_vfio_pci: Create subfunction for data
+ reading
+To: Alex Williamson <alex.williamson@redhat.com>
+CC: <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
+	<jonathan.cameron@huawei.com>, <kvm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+	=?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@redhat.com>
+References: <20240402032432.41004-1-liulongfang@huawei.com>
+ <20240402032432.41004-3-liulongfang@huawei.com>
+ <20240404140731.2b75cb80.alex.williamson@redhat.com>
+From: liulongfang <liulongfang@huawei.com>
+Message-ID: <f1ffdcc6-e74b-bf6c-bddb-73debd78900b@huawei.com>
+Date: Fri, 12 Apr 2024 11:07:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB9PR04MB9626:EE_|PAXPR04MB9106:EE_
-X-MS-Office365-Filtering-Correlation-Id: 25f16df9-367b-45ca-c43a-08dc5a9d9dfb
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	phdsBeMEQ4CiJjecA4fZCQF58wNn9OqtJELsbo+Y/WqEPdvl4/DKjT2a11iq/88OGyO62McVsEYwgVGlxjZDHl5OvvxFIo6NfWjDF3YueRgDWTp7Px+7b/7JCbjQCoT9P9UvZS1zy8gwgXQZH3rFsCxmHw1WlTgZRRaZTHgV6lMrrqBhFeK8J9VJVKtxMsr+rUz/3srVgKbNrsvf+h528p8EtWucDKiSZy8n1YlIz8eNQQWPAyM0scEwzGtRSN6rrZH0JkrTsOXq8Lq8z+EbElV6zdaZ7k2bDBRwjmdBAcUOAWAyk0pl1Zw0HbCpTM4Wcvn8JEeY6tn5Dn8y1CTF+HzkIGS8iwSZw8ZDIQQQtRfKe/KETXwfhpuAs8jRtlqefVERPUZKs3iTw70QNVzXgo+psvyNoWRfRPoHAGAz3vNPfxCPTSvheGamedbc0RyrdQmTqQLKx5os/n0wLBhyQB9PyqF/NoAGEyZ42Ft4gxmakAwJ2vYlSBnnuHoGPwvZG0n0FJgJ0g9OYVCNU33fUaGZd2e3EY+Iyu7rI2X1C30T6DaVpg0CRdYcsJgXkcecWxk7PTRG0zmF9sNqtO8YNOJKfx2m+ExUKZwBSWxrxUEAvHcMJ6UG35+WVjVUJshmEIyBQQO592iCsVBRSOgM8ZnrUvEPN/GWkgFfoZ+tkHHp4O0rwklEtsw6zpQswpc5IgczE2iF8G9Nvu3EukBehA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9626.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(52116005)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?CGtMzMdbQIHy3G3GrWDO9vyjNF03A3XPmT9j1uI6Ft3Lz6P/YfMYgI9nqiQY?=
- =?us-ascii?Q?LK/EDB0vjwWoef99lFqr81n2i6Udxpo45HAuJXVHl2BUh2mki1OCMr+sk0HQ?=
- =?us-ascii?Q?8Nc0OYqDN8WkhSuxV1pdGcwRI41OVv0BmsCbv9gbfJrXC8/K8JXvhhTtiiZ4?=
- =?us-ascii?Q?HGVDmqfFXX0LJKwKaIzbFPQKjWjew9CFD629IaRrREUeqL3XvqksRQb5vO9W?=
- =?us-ascii?Q?dpHPKqyHqcuIsnZHoh2XzX8AYxl+isdLpjPfyOc4AOWdAx0tGSC6bWssxoG4?=
- =?us-ascii?Q?teVlU6IrxwSK9ksMlwAjnvgbX5b99oi4Gw6HTvpFjMZWOUp2YCs5Uoxh0sp/?=
- =?us-ascii?Q?re7uKc70ogxv1G1xjfetEWZkUQLj7thi6rDKCeOw/qdyutEeEA7jMp6jnTev?=
- =?us-ascii?Q?E8qzqHOXaiuum8qeysgqRgCUwUSrrdBASy5OnL0iklXFxpCeDIlrUq7HJwlI?=
- =?us-ascii?Q?YPaIwMFxLPQdK3ocwgXtiw6DpPhJMPLHdhiOPzmLhuZH+Mgb187pU3GemFa/?=
- =?us-ascii?Q?aHGyR6HTQvvQJOuPZIc0KaLZpPRKN4EBKXwFADjVscOWJ4PoJis/J8aoVzWe?=
- =?us-ascii?Q?lNcfG0YcgFJo5h6CQDwFTQ21ooUHMhJn6A40N+TFIOXEDQZJEt7owxQaGxWU?=
- =?us-ascii?Q?ShWjbio/H4pNjg2KUnQnvU7/XGQYtpnM34vX+hV83bLQbNU/3bruQ6nLX3iM?=
- =?us-ascii?Q?YqRonSx3R42FozpdK+802JrcgHGId152Ee8f+X3h9xhX5dmmmZdBpJxkDJWH?=
- =?us-ascii?Q?Cd6y50NEIK3MWnvjiiGEOnaR4d+rWq/rRLcjoVYdu4V/Y/nh59FF1lJEVMBB?=
- =?us-ascii?Q?8zYcg901nopXV0+pLJhDuiSb6E8spxqwlon+MroK0H/TlJxMywnvux7KWKdb?=
- =?us-ascii?Q?JSnDl6EOgnu7VZ9gArLmb7EZ8j+t775cYrGJXx+kyudqNiFIJtJOFFIdxcAH?=
- =?us-ascii?Q?gIHbjdBRjRgYYbR6M1ba4Qwbjba9NZzAb+p+G34EfjzWlMG1jyOpah2qo5kR?=
- =?us-ascii?Q?BelBCGrLkIBeCRmie4D8Eo+aJYToerDFgv2DeKRXFzUbDCteJy1LoWX/YyRq?=
- =?us-ascii?Q?K3A5/spqGiCDF2h7nGdkqHiLRbxsCyXoTJD6fsEYCen99MMiOSsQvhn06CvR?=
- =?us-ascii?Q?mAPBkklhmPGEihmv1y3DHGp8ql95H7H4GB5Kfe5/GXOup8jPqu83NkGsvvEH?=
- =?us-ascii?Q?QFTmV8uq0/VbRUB37LxwKY1nDYyrWe+4Bnp9JGqgr2WMvRsVEseT+XRO0yXC?=
- =?us-ascii?Q?SrBTpwuJIOLzi0GaLto2NN9cfa5DfD9DoPWwTkVw0xu9/eK7BhJfm/zhmHgb?=
- =?us-ascii?Q?0L8ZXwBXCPD4pa/s105YdTrr0zY2gbI4C2ErMF+luv1m7xGnbYC9S8JX0PVe?=
- =?us-ascii?Q?s6fcBzSz6WmUfFO5WMKN2kWefZuZXJzAk6Tm/j9EzSgyO3WWbMg9k9SMYXj0?=
- =?us-ascii?Q?enRdkOkqmnYz/Zjw2vcYwnl0HvuV5yub3vuY7vlzRIFaWu6u4ZYW8oeKgKli?=
- =?us-ascii?Q?dYARYZQbUcuCcKBFj4V8qVg7IYBuktO8no8KsM0Ey6phFEKY2WJEmc/3rTuK?=
- =?us-ascii?Q?Se+cwnluFzgWlw49BE/H+IcxU3cx9ZwzdqtJs9Vl?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 25f16df9-367b-45ca-c43a-08dc5a9d9dfb
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9626.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 03:06:58.7834
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: q4WqXLfA2UZH9sOcRsUIoqa8FiZRqnPQBscBrmrbahumPNKnCHE3Pc+1T1WXA32WRwxyrOm5tFoKXTICNscjAA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9106
+In-Reply-To: <20240404140731.2b75cb80.alex.williamson@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600005.china.huawei.com (7.193.23.191)
 
-On Fri, Apr 12, 2024 at 11:04:36AM +0800, Joy Zou wrote:
-> The eDMA hardware issue only exist imx8QM A0. A0 never mass production.
-> The compatible string "fsl,imx8qm-adma" is unused. So remove the
-> workaround safely.
-
-
-You missed change subject:
-
-dt-bindings: fsl-edma: clean up unused "fsl,imx8qm-adma" compatible string
-
-dt-bindings should be first patch, then driver code.
-
-I suggest use the same words, "clean up" or "Remove". keep consistent for
-both patches
-
-Frank
-
+On 2024/4/5 4:07, Alex Williamson wrote:
+> On Tue, 2 Apr 2024 11:24:30 +0800
+> Longfang Liu <liulongfang@huawei.com> wrote:
 > 
-> Signed-off-by: Joy Zou <joy.zou@nxp.com>
-> ---
-> Changes for v3:
-> 1. modify the commit message.
-> 2. remove the unused compatible string "fsl,imx8qm-adma" from allOf property.
-> ---
->  Documentation/devicetree/bindings/dma/fsl,edma.yaml | 2 --
->  1 file changed, 2 deletions(-)
+>> During the live migration process. It needs to obtain various status
+>> data of drivers and devices. In order to facilitate calling it in the
+>> debugfs function. For all operations that read data from device registers,
+>> the driver creates a subfunction.
+>> Also fixed the location of address data.
 > 
-> diff --git a/Documentation/devicetree/bindings/dma/fsl,edma.yaml b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
-> index 825f4715499e..cf97ea86a7a2 100644
-> --- a/Documentation/devicetree/bindings/dma/fsl,edma.yaml
-> +++ b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
-> @@ -21,7 +21,6 @@ properties:
->        - enum:
->            - fsl,vf610-edma
->            - fsl,imx7ulp-edma
-> -          - fsl,imx8qm-adma
->            - fsl,imx8qm-edma
->            - fsl,imx8ulp-edma
->            - fsl,imx93-edma3
-> @@ -92,7 +91,6 @@ allOf:
->          compatible:
->            contains:
->              enum:
-> -              - fsl,imx8qm-adma
->                - fsl,imx8qm-edma
->                - fsl,imx93-edma3
->                - fsl,imx93-edma4
-> -- 
-> 2.37.1
+> Cédric noted privately and I agree, 1) fixes should be provided in
+> separate patches with a Fixes: tag rather than subtly included in a
+> minor refactoring, and 2) what does this imply about the existing
+> functionality of migration?  This would seem to suggest existing
+> migration data is bogus if we're offset by a register reading the DMA
+> address.  The commit log for the Fixes patch should describe this.
+>
+
+Okay, the modification of the DMA address offset part is split into
+a new patch, and the modification of this part is explained clearly.
+
+Thanks,
+Longfang.
+
+>>
+>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>> ---
+>>  .../vfio/pci/hisilicon/hisi_acc_vfio_pci.c    | 56 +++++++++++--------
+>>  .../vfio/pci/hisilicon/hisi_acc_vfio_pci.h    |  3 +
+>>  2 files changed, 37 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+>> index 45351be8e270..bf358ba94b5d 100644
+>> --- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+>> +++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+>> @@ -486,6 +486,39 @@ static int vf_qm_load_data(struct hisi_acc_vf_core_device *hisi_acc_vdev,
+>>  	return 0;
+>>  }
+>>  
+>> +static int vf_qm_read_data(struct hisi_qm *vf_qm, struct acc_vf_data *vf_data)
+>> +{
+>> +	struct device *dev = &vf_qm->pdev->dev;
+>> +	int ret;
+>> +
+>> +	ret = qm_get_regs(vf_qm, vf_data);
+>> +	if (ret)
+>> +		return -EINVAL;
+>> +
+>> +	/* Every reg is 32 bit, the dma address is 64 bit. */
+>> +	vf_data->eqe_dma = vf_data->qm_eqc_dw[QM_XQC_ADDR_HIGH];
+>> +	vf_data->eqe_dma <<= QM_XQC_ADDR_OFFSET;
+>> +	vf_data->eqe_dma |= vf_data->qm_eqc_dw[QM_XQC_ADDR_LOW];
+>> +	vf_data->aeqe_dma = vf_data->qm_aeqc_dw[QM_XQC_ADDR_HIGH];
+>> +	vf_data->aeqe_dma <<= QM_XQC_ADDR_OFFSET;
+>> +	vf_data->aeqe_dma |= vf_data->qm_aeqc_dw[QM_XQC_ADDR_LOW];
+>> +
+>> +	/* Through SQC_BT/CQC_BT to get sqc and cqc address */
+>> +	ret = qm_get_sqc(vf_qm, &vf_data->sqc_dma);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to read SQC addr!\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	ret = qm_get_cqc(vf_qm, &vf_data->cqc_dma);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to read CQC addr!\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static int vf_qm_state_save(struct hisi_acc_vf_core_device *hisi_acc_vdev,
+>>  			    struct hisi_acc_vf_migration_file *migf)
+>>  {
+>> @@ -511,31 +544,10 @@ static int vf_qm_state_save(struct hisi_acc_vf_core_device *hisi_acc_vdev,
+>>  		return ret;
+>>  	}
+>>  
+>> -	ret = qm_get_regs(vf_qm, vf_data);
+>> +	ret = vf_qm_read_data(vf_qm, vf_data);
+>>  	if (ret)
+>>  		return -EINVAL;
+>>  
+>> -	/* Every reg is 32 bit, the dma address is 64 bit. */
+>> -	vf_data->eqe_dma = vf_data->qm_eqc_dw[1];
+>> -	vf_data->eqe_dma <<= QM_XQC_ADDR_OFFSET;
+>> -	vf_data->eqe_dma |= vf_data->qm_eqc_dw[0];
+>> -	vf_data->aeqe_dma = vf_data->qm_aeqc_dw[1];
+>> -	vf_data->aeqe_dma <<= QM_XQC_ADDR_OFFSET;
+>> -	vf_data->aeqe_dma |= vf_data->qm_aeqc_dw[0];
+>> -
+>> -	/* Through SQC_BT/CQC_BT to get sqc and cqc address */
+>> -	ret = qm_get_sqc(vf_qm, &vf_data->sqc_dma);
+>> -	if (ret) {
+>> -		dev_err(dev, "failed to read SQC addr!\n");
+>> -		return -EINVAL;
+>> -	}
+>> -
+>> -	ret = qm_get_cqc(vf_qm, &vf_data->cqc_dma);
+>> -	if (ret) {
+>> -		dev_err(dev, "failed to read CQC addr!\n");
+>> -		return -EINVAL;
+>> -	}
+>> -
+>>  	migf->total_length = sizeof(struct acc_vf_data);
+>>  	return 0;
+>>  }
+>> diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
+>> index 5bab46602fad..7a9dc87627cd 100644
+>> --- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
+>> +++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
+>> @@ -38,6 +38,9 @@
+>>  #define QM_REG_ADDR_OFFSET	0x0004
+>>  
+>>  #define QM_XQC_ADDR_OFFSET	32U
+>> +#define QM_XQC_ADDR_LOW		0x1
+>> +#define QM_XQC_ADDR_HIGH	0x2
+>> +
+>>  #define QM_VF_AEQ_INT_MASK	0x0004
+>>  #define QM_VF_EQ_INT_MASK	0x000c
+>>  #define QM_IFC_INT_SOURCE_V	0x0020
+> 
+> .
 > 
 
