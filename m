@@ -1,104 +1,93 @@
-Return-Path: <linux-kernel+bounces-142972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 065A38A32C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:43:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAB088A32C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:44:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 486EF28A0EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:43:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A403B25904
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:44:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EB67148830;
-	Fri, 12 Apr 2024 15:43:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 868D81487E7;
+	Fri, 12 Apr 2024 15:44:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UxbilgA5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="fBcd5A1G"
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69E8E85278;
-	Fri, 12 Apr 2024 15:43:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEE0E148822
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:44:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712936583; cv=none; b=PGBmBmGB0FnE5cf2L+GrwTcxWv+lBSFI53t141kqi6NTzNyH//XHxNfXHBHgfdonpwRkMa8tkn9PnnxR9/QcVLE7YNVbwZajtfKIkrsQei48in/6Idq5SOFe3uG71qjfOB/Wyqgpqj4/HDkZDq0Rvy5HhWn8zqQyETsywhx1YDw=
+	t=1712936658; cv=none; b=e99YTu79LFsqYJM5tdRXCS4jdzyoEaolJFiJlmV+feutjJuzkiyLCsqm/yrXVAWenWoeMCwT1JuD2nnhJihh55JhdNWzm07H7LfHtkkdLm2VBrELOMbySOjRNVZNNDO3cDveuKOTahy8y/HRN4dSK2Fb8VSFzFRidSWD4LTdVjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712936583; c=relaxed/simple;
-	bh=3FuAGNTlMzl0LTaHUSudmgttv4WTSlpHC791d8lPyY0=;
+	s=arc-20240116; t=1712936658; c=relaxed/simple;
+	bh=eyKgQBpnmdVjpqa3281J5u2QDz7Bvs3RTzDI2S5yZQA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YBx+So6qlMBxzjbmbIH5kvYJIeht4ZbXenxt0WpMuBHGdqpsvxmwkpKChFeew1ukKHMU6+EW1O8Jj/QUf4V7qPMv3LdEHXFvSEBQFKCRznlTQYeb8P0eiaPv8L34zCArSzdKT5Piq8oIzzsGwow4hQGsw9Wd51N7WUruf+p+xNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UxbilgA5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8675DC2BBFC;
-	Fri, 12 Apr 2024 15:43:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712936583;
-	bh=3FuAGNTlMzl0LTaHUSudmgttv4WTSlpHC791d8lPyY0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UxbilgA5x95+vEmMGikb4EOm5bFpgeGcXoyUVlCYzZDhgdwJLEAs9fAt3/tDQsdIH
-	 f52CBl3LK7VwUs29mw/davGhuF2msMZOIfeJ7MNwiL7/5K7yIWwJxBEff3AVRu971f
-	 yyPEZcdnA06fKQpgQdZco0Qmbutl6XFmGMNrIjtaG0HsGQ9vhcZ0ap5tiwp8U6Y0Mi
-	 hxth2hv8k8/4/yI9y8xSQ4THKLc1ipl7L2AlZemKaPS62TVBz78Ys+2DK5Yht81uzH
-	 ml2Sz1wEVw67lfL6F2i5nn/JkrhaQnGgFyuKFvFUMFl1CCiFtI+6SW0B4bYlPS0qjC
-	 DCl7kREwssSug==
-Date: Fri, 12 Apr 2024 17:42:59 +0200
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Lukas Bulwahn <lbulwahn@redhat.com>
-Cc: Animesh Agarwal <animeshagarwal28@gmail.com>, 
-	linux-i2c@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Lukas Bulwahn <lukas.bulwahn@redhat.com>
-Subject: Re: [PATCH] MAINTAINERS: adjust file entry in ARM/LPC32XX SOC SUPPORT
-Message-ID: <j7qsoawx2d7elep35szjurw4owaccgs4itvtcfyxicyz5liruc@jn5bc3gx2453>
-References: <20240411050257.42943-1-lukas.bulwahn@redhat.com>
- <bfjccttmurk7aajps2m7gcyl532rg7rnlutfhbvupsphxjk2pa@fx5onnkr7625>
- <CAOc5a3P-LX0dkhLFxF-ggOxqkLqM0DJcXqccMJJqtF9U5rbEsQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=rmKhAs5/IfSo8skYKlTToo7xlon+xKMA6Z5aeKWrVChQwYLSL5WE8YmUrO19fDaeQXkRD0zgHqxkKl/O81Q0UMzQWNspOVVSw2BbKgBD15uiHEoyzLiIhYSUI+pFgftQUR1Vbt6zX8XJW3qoQVcuh58X/ISXoq2NS+Hc67PluoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=fBcd5A1G; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-113-2.bstnma.fios.verizon.net [173.48.113.2])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 43CFhg9b021405
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 11:43:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1712936626; bh=hNR9hJ5imm7pvcdn12hJQLsjPCdfcIBeTF5ThDzB0+I=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=fBcd5A1Gip2tvL3Hz8hd/OCcm4kh0QbVReEEeSxMB6gN7sXjwlbNkLLOsJICUoTjf
+	 n78kpNa42Efu5x5posRsHr3q3XsjA7UJBxmtGbm98Hm17gLYmVo6FmWcfWZOnz/9Vg
+	 n8oLYZ5FC0jaFQy8+ve4Vx0ua+k08ctd5jwXwCeVVzJWter0l+8FW9e+C8Td99ZpGi
+	 wGM0TpyYXT3dFiJ9NXgSemr/U+cfBA/t2GJ5Fy5+MC/AnlpxdZvRb0auFAL550oGec
+	 hFuGDfTviPwo/nUQnGw3aIiBxP2X6xP2R3NIe1GomQi+qSRtPmDfKRMScryidg4KAu
+	 iVCG5vGDFz0ww==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 4A4FD15C00DE; Fri, 12 Apr 2024 11:43:42 -0400 (EDT)
+Date: Fri, 12 Apr 2024 11:43:42 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
+        Conor Dooley <conor@kernel.org>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+Message-ID: <20240412154342.GA1310856@mit.edu>
+References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOc5a3P-LX0dkhLFxF-ggOxqkLqM0DJcXqccMJJqtF9U5rbEsQ@mail.gmail.com>
+In-Reply-To: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
 
-> On Fri, Apr 12, 2024 at 11:34â€¯AM Andi Shyti <andi.shyti@kernel.org> wrote:
-> > On Thu, Apr 11, 2024 at 07:02:57AM +0200, Lukas Bulwahn wrote:
-> > > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@redhat.com>
-> >
-> > before taking this I just want to make sure the e-mail in the SoB
-> > is correct as checkpatch is warning me about 'lbulwahn' and
-> > 'lukas.bulwahn'.
-> >
-> > It's not about the warning, just double checking the e-mail
-> > address as often to mix my addresses up and looks also your first
-> > patch with the redhat e-mail.
-> >
+On Fri, Apr 12, 2024 at 04:57:08PM +0200, Björn Töpel wrote:
+> Hi!
 > 
-> Thanks for the hint. And yes, that is a stupid setup mistake from my
-> side or at least from the email server's side.
-> 
-> I joined Red Hat at the beginning of April and hence, it was my first
-> email with the redhat address.
-> 
-> lbulwahn is my 'official email address', lukas.bulwahn is an email
-> alias to the same mailbox. I actually want to have the commits in the
-> kernel carry 'lukas.bulwahn@redhat.com' and not 'lbulwahn'.
-> 
-> I have sent them out with 'From: Lukas Bulwahn
-> <lukas.bulwahn@redhat.com>' in my patch file; so, checkpatch did not
-> complain locally.
-> 
-> The gmail server however turns this into:
-> 
-> From: Lukas Bulwahn <lbulwahn@redhat.com>
-> X-Google-Original-From: Lukas Bulwahn <lukas.bulwahn@redhat.com>
-> 
-> I will see what I can do and send out a v2.
+> I've been looking at an EXT4 splat on riscv32, that LKFT found [1]:
 
-no need... I will keep things as they are; as long as I know
-these are the same mails I'm fine.
+I'm getting a "page not found" for [1]?
+
+> This was not present in 6.7. Bisection wasn't really helpful (to me at
+> least); I got it down to commit c604110e662a ("Merge tag 'vfs-6.8.misc'
+> of git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs"), and when I
+> revert the commits in the vfs merge the splat went away, but I *really*
+> struggle to see how those are related...
+
+It sounds like you have a reliable repro; is it something that can be
+streamlined into a simple test program?  If so, is it something that
+can be reproduced on other architectures?  And could you make it
+available?
 
 Thanks,
-Andi
+
+					- Ted
 
