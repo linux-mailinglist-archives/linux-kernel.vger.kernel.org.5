@@ -1,95 +1,119 @@
-Return-Path: <linux-kernel+bounces-142052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C8928A26C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:40:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FC4D8A26C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:41:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 367381F252A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:40:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF52C287FBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D04044369;
-	Fri, 12 Apr 2024 06:40:31 +0000 (UTC)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A0333FE37;
+	Fri, 12 Apr 2024 06:41:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ObsexNNh"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B333FE5B;
-	Fri, 12 Apr 2024 06:40:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8CAC46537;
+	Fri, 12 Apr 2024 06:41:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712904031; cv=none; b=kTxH/hNPpgFb9nJFzjqn3XYt1X9CZepKqzwh9SeEnRQ3V9QCFnh11dfEqqRtOujz+cLocCCmBfS4G0NuIEWO0BsXx32Hh7qnNFxtanjkV2tZzu0YmXVymQqitqLY67HN96zRTLy3pKQcp68NNPS8fWJlaKeS6pmAIuN4zVgvz/E=
+	t=1712904076; cv=none; b=WjZqvXtvcHsHJ9Ny6KhO5Io1V5Fc0B5CvEMNcbnlFxDxB6XDUElKiTr7RbewovJ0jV2QkhPVgtzcVPjiOHbf1QojVsrS9cQtUCL11MfEsW/xnaWOxsCs1cuqyhTd038ZcTrQZ+TG/u8ySS6sTXOrTF8pj+NZcxw4uVvoQS3KGuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712904031; c=relaxed/simple;
-	bh=fMqqU5AAHYUNA3z/m84A/vEb6+lzO8qOOm33Ryc4WQ8=;
-	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
-	 Message-ID:Subject; b=dqbp7skz34+OMHHs7fUaTfcpGJ+dBEzp+cz4WeDqRv2N1eqZiusUr1hp/jSOd34569AxaklPG1po3vkc7vZMii2+F67mdhYcDRfStu8rFcMAjHjqhX5cn8iTywOUc/G/WPIIjBNq5wvY1Dm/HxhSFvjfV5iSzTzOPsSgg/9rR+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
-	by madrid.collaboradmins.com (Postfix) with ESMTP id 4539A3780C22;
-	Fri, 12 Apr 2024 06:40:26 +0000 (UTC)
-From: "Shreeya Patel" <shreeya.patel@collabora.com>
-In-Reply-To: <20240411095407.982258070@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-References: <20240411095407.982258070@linuxfoundation.org>
-Date: Fri, 12 Apr 2024 07:40:26 +0100
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org, "Gustavo Padovan" <gustavo.padovan@collabora.com>, "kernelci-regressions mailing list" <kernelci-regressions@lists.collabora.co.uk>
-To: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+	s=arc-20240116; t=1712904076; c=relaxed/simple;
+	bh=yVuvk9J4ju/MLmWKDilwX/DtLSYxVCXTim0efesibtc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=alhxyq5sFclCDbbaQR54HhGNnpk8FUweYmRS+zTN3xcwW+APlCDUnunXlM5u0hNhIfiPkKBTEs3EVsNyqiBsL/8DSxNxbxQAtnPfOiHVij9zPWkaUMSkO+/wwRyWFLbx1Q67KF1BKMbcytAf8VHpjT7ndH8D2aDdVZmOWEoGLKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ObsexNNh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5DB46C2BBFC;
+	Fri, 12 Apr 2024 06:41:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712904076;
+	bh=yVuvk9J4ju/MLmWKDilwX/DtLSYxVCXTim0efesibtc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ObsexNNh/MykjBNnn4SPa5J4Vw83Sc01t5KlHy8x9y1kPOUqqlRxAk+ZURiFuP6Iw
+	 0M/td8kbvDqcjSszKu+PADPzfBUNHKVYw1KmGPqGxdk+xhGdkKq6sJ4ECdcP7dUfUl
+	 RKCJKCEPPb+dTuEMSClietcAmU5LL32+voHWx/9F/FKNbF6/5ljU/CjPJQsbQohusl
+	 Dts3hI+jLS3wiiYMtaNX/BRIidbU6zfvbBJp6BhsPnrsftoQSENjEuLE2nMKIsg7yz
+	 o04ZVb+ONVWCPfU0sb1AJngCo3+BlYEYKJ2VI4Qu50VaxAx4ilN1f6003wMaHwZ7WE
+	 6K6EAn5LtOi4w==
+Date: Fri, 12 Apr 2024 08:41:09 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Charles Mirabile <cmirabil@redhat.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>
+Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() -
+ requirements
+Message-ID: <20240412-gefroren-abzug-49996c3ccc13@brauner>
+References: <20240411001012.12513-1-torvalds@linux-foundation.org>
+ <CAHk-=wiaoij30cnx=jfvg=Br3YTxhQjp4VWRc6=xYE2=+EVRPg@mail.gmail.com>
+ <20240411-alben-kocht-219170e9dc99@brauner>
+ <CAHk-=wjrPDx=f5OSnQVbbJ4id6SZk-exB1VW9Uz3R7rKFvTQeQ@mail.gmail.com>
+ <CABe3_aGbsPHY9Z5B9WyVWakeWFtief4DpBrDxUiD00qk1irMrg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <3c0c9c-6618d780-5cb-194ac52@77440398>
-Subject: =?utf-8?q?Re=3A?= [PATCH =?utf-8?q?5=2E15?= 00/57] 
- =?utf-8?q?5=2E15=2E155-rc1?= review
-User-Agent: SOGoMail 5.10.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABe3_aGbsPHY9Z5B9WyVWakeWFtief4DpBrDxUiD00qk1irMrg@mail.gmail.com>
 
-On Thursday, April 11, 2024 15:27 IST, Greg Kroah-Hartman <gregkh@linux=
-foundation.org> wrote:
+On Thu, Apr 11, 2024 at 12:44:46PM -0400, Charles Mirabile wrote:
+> On Thu, Apr 11, 2024 at 12:15 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Thu, 11 Apr 2024 at 02:05, Christian Brauner <brauner@kernel.org> wrote:
+> > >
+> > > I had a similar discussion a while back someone requested that we relax
+> > > permissions so linkat can be used in containers.
+> >
+> > Hmm.
+> >
+> > Ok, that's different - it just wants root to be able to do it, but
+> > "root" being just in the container itself.
+> >
+> > I don't think that's all that useful - I think one of the issues with
+> > linkat(AT_EMPTY_PATH) is exactly that "it's only useful for root",
+> > which means that it's effectively useless. Inside a container or out.
+> >
+> > Because very few loads run as root-only (and fewer still run with any
+> > capability bits that aren't just "root or nothing").
+> >
+> > Before I did all this, I did a Debian code search for linkat with
+> > AT_EMPTY_PATH, and it's almost non-existent. And I think it's exactly
+> > because of this "when it's only useful for root, it's hardly useful at
+> > all" issue.
+> >
+> > (Of course, my Debian code search may have been broken).
+> >
+> > So I suspect your special case is actually largely useless, and what
+> > the container user actually wanted was what my patch does, but they
+> > didn't think that was possible, so they asked to just extend the
+> > "root" notion.
+> >
+> Yes, that is absolutely the case. When Christian poked holes in my
+> initial submission, I started working on a v2 but haven't had a chance
+> to send it because I wanted to make sure my arguments etc were
+> airtight because I am well aware of just how long and storied the
+> history of flink is. In the v2 that I didn't post yet, I extended the
+> ability to link *any* file from only true root to also "root" within a
+> container following the potentially suspect approach that christian
+> suggested (I see where you are coming from with the unobvious approach
 
-> This is the start of the stable review cycle for the 5.15.155 release=
-.
-> There are 57 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, plea=
-se
-> let me know.
->=20
-> Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
-> Anything received after that time might be too late.
->=20
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.1=
-5.155-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc=
-git linux-5.15.y
-> and the diffstat can be found below.
->=20
+I'm sorry, what is suspect about my approach? Your patch in [1] lowered
+the capability checks to ns_capable(current_user_ns(), CAP_DAC_READ_SEARCH).
+That's very much wrong because it means root in an unprivileged
+container could linkat() any file descriptor including any opened by
+real root. The permission needs to be tied to the opener of the file.
+Otherwise that's guaranteed to break security assumptions. Whereas my
+patch avoids that.
 
-KernelCI report for stable-rc/linux-5.15.y for this week.
-
-## stable-rc HEAD for linux-5.15.y:
-Date: 2024-04-10
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.=
-git/log/?h=3Dcdfd0a7f01396303e9d4fb3513a1127636f12e5e
-
-## Build failures:
-No build failures seen for the stable-rc/linux-5.15.y commit head \o/
-
-## Boot failures:
-No **new** boot failures seen for the stable-rc/linux-5.15.y commit hea=
-d \o/
-
-Tested-by: kernelci.org bot <bot@kernelci.org>
-
-Thanks,
-Shreeya Patel
-
+[1]: https://lore.kernel.org/all/20231110170615.2168372-2-cmirabil@redhat.com
 
