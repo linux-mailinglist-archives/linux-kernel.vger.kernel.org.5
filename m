@@ -1,316 +1,228 @@
-Return-Path: <linux-kernel+bounces-143112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF7E18A345C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:06:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35B678A3458
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:06:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F1BF1F21BDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:06:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EC4D1F21BA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:06:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6203014C599;
-	Fri, 12 Apr 2024 17:06:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B2614D2A5;
+	Fri, 12 Apr 2024 17:05:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="WxJt3yaj"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Urg8vatP"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 750DC14D2AC
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:05:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0797314C599
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:05:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712941562; cv=none; b=CiEeKAZtZ+Ra0V6UvOeCZe8JaHXu20CWMSQCkL0Eee+4a83k4OrZXMGkmLgaFnSS3PqsviUS5dX44UjkSRsQD0tFc5QTdosvDvgUHRquyB/oyEEj2OBZYpfdgMagzK3UlK5vxNb+PZesesgpVW06EiUdnczsFrKkl2dYeVmEcNY=
+	t=1712941558; cv=none; b=l6ruRRExnMcIyxLGWZerCOynlyU0dXVFo0lWh/95LHxZ/IeCXbGWB87/RxtTmX4WYQJnZZGLPB+gUlnLyhiWMtUUrceghJe08xtgL+iqjFf2ptZTRYEEOv8EgbayeJC2siB6qpxcFmfpipakxfHhCkqNd0tPRZTAk2MHE7gFfSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712941562; c=relaxed/simple;
-	bh=j3u4Pfc/DXRoTLtIqFpIe/08sKRybrTTrcMzZ99pca4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mSP9EyoP0p44q5zknHPPaG3ldBJn4s56ZCrtebKxiO+Qf23gPX1ErAzPgQOE+THG+ehADM1h8aXHcYqVtBhNv+BA1OX5N9NRYZJ3ItoxdN8ekknKVgQlp8SjLJ9HEBJXqG+KJB3a010MtLgYnxc0lKjbAHk3ZURIirltgsGJARQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=WxJt3yaj; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d9fe2b37acso13612591fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 10:05:59 -0700 (PDT)
+	s=arc-20240116; t=1712941558; c=relaxed/simple;
+	bh=6x/TaZLW3SbJMRIrNr4WOHpSwTG1M/P1P5SJj9Zrj/w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DA7CyOF52rEbhSS73mDPvepoSkIHkcCQyHKJrHZoWMMBnC+kTNXRS1BumI6dxnyxc/RLsoZCeCF2b6llYWfR+fy1NNNLDQOqNG1whfSYwLJ0GTsK8pAtHOaHNSwQaulxuuqotqydUyoru+2qQ/kAxwYmDXXDZ9KFLgWl7uugMMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Urg8vatP; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ed5109d924so1028730b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 10:05:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712941558; x=1713546358; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Vu6rgY+yqOGOmOLw32t5d3GS611sOvqhECdZtjPZOA=;
-        b=WxJt3yajC3VWoWICwC0AiS1S8yKAce2dlQd3xqDY7gNy+H8lzoMqZgSJOXiDcwcBvz
-         WlUH60ecRuw39M1oleeVGzYZ5DVCsGRNO0hKaL/6jzwLPJVKsQEXjv4myrhwK9WfDdfC
-         ohR2g+E0grqq5yy19rGWdq6xPZ1n0p9CH0xMMX8mN1NyR10VZijRiovoC44xfLLDYz3z
-         HqtnOg7vHVok7wKHrE0jGrjtAb9it1K95uKkMQFMR33cl8KJLVVevv+xGNDk1FJDq6ah
-         rh3HWbE2lqyOCtynXaNIPLiG4WyRu0S21YPyD+gql44hqPMp/U6mcf/IGP1N31ankdUA
-         YFlA==
+        d=linaro.org; s=google; t=1712941555; x=1713546355; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=wOb3VaNWmITEjyce7uJI1cLG3SG5pylmX0ltpfsSKXM=;
+        b=Urg8vatPeM8aZLM+rF1tV/7KYjv/vOPp/UL/i6xSaWlaY7yN40WXiw+MuYWxUed9rM
+         0RJIcWd4pQWT26sBwLImXjEWBRD1VtD+E+Kj9oKJEiLrjnbzlNQLltvZe8SYFGB1cZpZ
+         +WlV7H0obE01J2NUdU9+xn7WJVWiIRPxx00LZ5jZylSPowFn7b2k2GnL8AOH9Zk+GHi0
+         29qUDpKrXgC9pIdWFp0gcDoEKNYKxEdOjVOZIIcJl849IQwOuWP2MjlwGtkTd6Ri57A2
+         M6Wc96o/jB0rWi7PgAB2h3l8c1KD1BHAN7R7ZzLzoRWtFxMIRWfXlHtS7+8DzQ0ZigtM
+         koXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712941558; x=1713546358;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/Vu6rgY+yqOGOmOLw32t5d3GS611sOvqhECdZtjPZOA=;
-        b=AnGjTf6k7Lf8vvQrTf1TJgoFj6ov0KNcBxEESg8wrTwQR/vzBugHfYMSUypr16NTUz
-         vfNQn5hlE9frCVx2StRusd8K347p6s0Sc6q7ORJUTIgSIuKCQKTKbCE7VgnygxeLa8Ts
-         fhLnOBZrVMFI5S1giHhfGZeZbomavW4m+I4uYyY5XSETFV6yNSFwDYGOYm05eUZlufAx
-         lHFRLY0vxyM7owoAkmDSYarbDh3w9wsYiQ59zLA/ede1bBz/yN7NDg0nAcznKaOXHNGx
-         By4JPPxW6vZezkvZrM8PVW4nkBtwu7yoLzJ0yJl14pqn3NbhyNNqlI/holVdGYRyFGgm
-         6w6g==
-X-Forwarded-Encrypted: i=1; AJvYcCWw/ElopqAJvrQSLbyX8XzQs4bqzwIter9DXTgXcCWS2yDr4VeGsJv97jD8p9Y8CIU3hUNxMW3Ng0QtIRCMLZibsKwR8hWzCHty4x19
-X-Gm-Message-State: AOJu0YwIQI+nPQQbWoU8YelB2uvs4abOWtdEkDhc6DTztxenbtctU0Wn
-	JnesZ8LB8w96qnQBk4kCXhezgxMkel3nqoyPWa64PaxCVINERkom8EzU3cv5pmQEsZsxPVrRHYS
-	h0g+VPExt+CyqcEOrlQWoi7g4mwnO+Xzgl+Aqjw==
-X-Google-Smtp-Source: AGHT+IFYpm5VEIsLiYtOAsbNkvaiNNs0hgQdNZZaIKndtEvsgJfqKFi9pXG7Zi0EdKs2kJFE7fs5OvqkFRBwjf5hH7M=
-X-Received: by 2002:a2e:be04:0:b0:2d8:da4c:5909 with SMTP id
- z4-20020a2ebe04000000b002d8da4c5909mr2118700ljq.51.1712941557792; Fri, 12 Apr
- 2024 10:05:57 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712941555; x=1713546355;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wOb3VaNWmITEjyce7uJI1cLG3SG5pylmX0ltpfsSKXM=;
+        b=j/NlSA207en3cD/sEkLv6+b5bjigGP9RYObYB9LMx4gsZfYJsV2tgWb6oRInrRZg4d
+         Ze4yjjn24zAfsG4VsFbK3GnGfQJc27KcJfPMbfS6QH0ZrvBoP7um2Q58mDZUl7B4uoYb
+         aJ8CJUUWJ9fRZzLsu9egme3fmPF5qj2LW2zt1caQ7+IZpI7yx9PXMdl5+++tj5oONx3r
+         Di1wjPAoFtQHjegoi437Da8v1lTRGrd64Nq7kS8Vsvrou+Dxald0yqDI6hGXVCVaPT8w
+         z/ItbrdDv8mFxCIoTX4kd5zhzv0Z1MCOzgYiwIlLNIyl7NoSnh2haUuJn6JL9vBxwY+T
+         GpiQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVH6qBCWkyBcst57NT8vCsRy9ByYxi8wegkymseQuIrlF2SZPFOenjWL9d76ecSYvmjZAaLnEVhF/spbl7zjGuZObqk3i7e9lz+H47t
+X-Gm-Message-State: AOJu0YxVF+fwGKGi+6kccJOvS4hPr5D1ZmhZhndnh3erw1iDgD8aADLY
+	7ssq3ofo2UtNNSOBS5XWOKbnrWgNfsQ+i43QDMwjMUn2DS97Zgon3h0p+jhxtw==
+X-Google-Smtp-Source: AGHT+IFjBxuEwzIoVYzi6cnyR/VBkOo3PqOFrn1It2Xfe10bR3GLRShmzSF5hfjlMjxCU6TEHFb0hQ==
+X-Received: by 2002:a05:6a00:2194:b0:6ed:9493:bc6d with SMTP id h20-20020a056a00219400b006ed9493bc6dmr3608347pfi.12.1712941554999;
+        Fri, 12 Apr 2024 10:05:54 -0700 (PDT)
+Received: from thinkpad ([120.56.204.201])
+        by smtp.gmail.com with ESMTPSA id ei40-20020a056a0080e800b006e6c81b6055sm3127420pfb.6.2024.04.12.10.05.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 10:05:54 -0700 (PDT)
+Date: Fri, 12 Apr 2024 22:35:48 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 5/5] PCI: dwc: Add common send PME_Turn_Off message
+ method
+Message-ID: <20240412170548.GB19020@thinkpad>
+References: <20240319-pme_msg-v5-0-af9ffe57f432@nxp.com>
+ <20240319-pme_msg-v5-5-af9ffe57f432@nxp.com>
+ <20240405062426.GB2953@thinkpad>
+ <ZhALNGyNTAzN86GF@lizhi-Precision-Tower-5810>
+ <20240406040131.GC2678@thinkpad>
+ <ZhQJD7GjRpDwa6jI@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
- <20240411-dev-charlie-support_thead_vector_6_9-v1-16-4af9815ec746@rivosinc.com>
-In-Reply-To: <20240411-dev-charlie-support_thead_vector_6_9-v1-16-4af9815ec746@rivosinc.com>
-From: Evan Green <evan@rivosinc.com>
-Date: Fri, 12 Apr 2024 10:05:21 -0700
-Message-ID: <CALs-Hss=vuNgq-8bVL1DOR431qFpn-D13yFGn6yf_2saZO0FVQ@mail.gmail.com>
-Subject: Re: [PATCH 16/19] riscv: hwprobe: Add vendor extension probing
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	Conor Dooley <conor.dooley@microchip.com>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, linux-riscv@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Palmer Dabbelt <palmer@rivosinc.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, linux-doc@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZhQJD7GjRpDwa6jI@lizhi-Precision-Tower-5810>
 
-On Thu, Apr 11, 2024 at 9:12=E2=80=AFPM Charlie Jenkins <charlie@rivosinc.c=
-om> wrote:
->
-> Add a new hwprobe key "RISCV_HWPROBE_KEY_VENDOR_EXT_0" which allows
-> userspace to probe for the new RISCV_ISA_VENDOR_EXT_XTHEADVECTOR vendor
-> extension.
->
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> ---
->  arch/riscv/include/asm/hwprobe.h      |  4 +--
->  arch/riscv/include/uapi/asm/hwprobe.h | 10 +++++-
->  arch/riscv/kernel/sys_hwprobe.c       | 59 +++++++++++++++++++++++++++++=
-++++--
->  3 files changed, 68 insertions(+), 5 deletions(-)
->
-> diff --git a/arch/riscv/include/asm/hwprobe.h b/arch/riscv/include/asm/hw=
-probe.h
-> index 630507dff5ea..e68496b4f8de 100644
-> --- a/arch/riscv/include/asm/hwprobe.h
-> +++ b/arch/riscv/include/asm/hwprobe.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
->  /*
-> - * Copyright 2023 Rivos, Inc
-> + * Copyright 2023-2024 Rivos, Inc
->   */
->
->  #ifndef _ASM_HWPROBE_H
-> @@ -8,7 +8,7 @@
->
->  #include <uapi/asm/hwprobe.h>
->
-> -#define RISCV_HWPROBE_MAX_KEY 6
-> +#define RISCV_HWPROBE_MAX_KEY 7
->
->  static inline bool riscv_hwprobe_key_is_valid(__s64 key)
->  {
-> diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/u=
-api/asm/hwprobe.h
-> index 9f2a8e3ff204..6614d3adfc75 100644
-> --- a/arch/riscv/include/uapi/asm/hwprobe.h
-> +++ b/arch/riscv/include/uapi/asm/hwprobe.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
->  /*
-> - * Copyright 2023 Rivos, Inc
-> + * Copyright 2023-2024 Rivos, Inc
->   */
->
->  #ifndef _UAPI_ASM_HWPROBE_H
-> @@ -67,6 +67,14 @@ struct riscv_hwprobe {
->  #define                RISCV_HWPROBE_MISALIGNED_UNSUPPORTED    (4 << 0)
->  #define                RISCV_HWPROBE_MISALIGNED_MASK           (7 << 0)
->  #define RISCV_HWPROBE_KEY_ZICBOZ_BLOCK_SIZE    6
-> +/*
-> + * It is not possible for one CPU to have multiple vendor ids, so each v=
-endor
-> + * has its own vendor extension "namespace". The keys for each vendor st=
-arts
-> + * at zero.
-> + */
-> +#define RISCV_HWPROBE_KEY_VENDOR_EXT_0 7
-> + /* T-Head */
-> +#define                RISCV_HWPROBE_VENDOR_EXT_XTHEADVECTOR   (1 << 0)
->  /* Increase RISCV_HWPROBE_MAX_KEY when adding items. */
->
->  /* Flags */
-> diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_hwpr=
-obe.c
-> index e0a42c851511..365ce7380443 100644
-> --- a/arch/riscv/kernel/sys_hwprobe.c
-> +++ b/arch/riscv/kernel/sys_hwprobe.c
-> @@ -69,7 +69,8 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair=
-,
->         if (riscv_isa_extension_available(NULL, c))
->                 pair->value |=3D RISCV_HWPROBE_IMA_C;
->
-> -       if (has_vector() && !riscv_has_vendor_extension_unlikely(RISCV_IS=
-A_VENDOR_EXT_XTHEADVECTOR))
-> +       if (has_vector() &&
-> +           !__riscv_isa_vendor_extension_available(NULL, RISCV_ISA_VENDO=
-R_EXT_XTHEADVECTOR))
->                 pair->value |=3D RISCV_HWPROBE_IMA_V;
->
->         /*
-> @@ -112,7 +113,8 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pa=
-ir,
->                 EXT_KEY(ZACAS);
->                 EXT_KEY(ZICOND);
->
-> -               if (has_vector() && !riscv_has_vendor_extension_unlikely(=
-RISCV_ISA_VENDOR_EXT_XTHEADVECTOR)) {
-> +               if (has_vector() &&
-> +                   !riscv_has_vendor_extension_unlikely(RISCV_ISA_VENDOR=
-_EXT_XTHEADVECTOR)) {
->                         EXT_KEY(ZVBB);
->                         EXT_KEY(ZVBC);
->                         EXT_KEY(ZVKB);
-> @@ -139,6 +141,55 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *p=
-air,
->         pair->value &=3D ~missing;
->  }
->
-> +static void hwprobe_isa_vendor_ext0(struct riscv_hwprobe *pair,
-> +                                   const struct cpumask *cpus)
-> +{
-> +       int cpu;
-> +       u64 missing =3D 0;
-> +
-> +       pair->value =3D 0;
-> +
-> +       struct riscv_hwprobe mvendorid =3D {
-> +               .key =3D RISCV_HWPROBE_KEY_MVENDORID,
-> +               .value =3D 0
-> +       };
-> +
-> +       hwprobe_arch_id(&mvendorid, cpus);
-> +
-> +       /* Set value to zero if CPUs in the set do not have the same vend=
-or. */
-> +       if (mvendorid.value =3D=3D -1ULL)
-> +               return;
-> +
-> +       /*
-> +        * Loop through and record vendor extensions that 1) anyone has, =
-and
-> +        * 2) anyone doesn't have.
-> +        */
-> +       for_each_cpu(cpu, cpus) {
-> +               struct riscv_isainfo *isavendorinfo =3D &hart_isa_vendor[=
-cpu];
-> +
-> +#define VENDOR_EXT_KEY(ext)                                             =
-               \
-> +       do {                                                             =
-               \
-> +               if (__riscv_isa_vendor_extension_available(isavendorinfo-=
->isa,          \
-> +                                                        RISCV_ISA_VENDOR=
-_EXT_##ext))   \
-> +                       pair->value |=3D RISCV_HWPROBE_VENDOR_EXT_##ext; =
-                 \
-> +               else                                                     =
-               \
-> +                       missing |=3D RISCV_HWPROBE_VENDOR_EXT_##ext;     =
-                 \
-> +       } while (false)
-> +
-> +       /*
-> +        * Only use VENDOR_EXT_KEY() for extensions which can be exposed =
-to userspace,
-> +        * regardless of the kernel's configuration, as no other checks, =
-besides
-> +        * presence in the hart_vendor_isa bitmap, are made.
-> +        */
-> +       VENDOR_EXT_KEY(XTHEADVECTOR);
-> +
-> +#undef VENDOR_EXT_KEY
+On Mon, Apr 08, 2024 at 11:11:11AM -0400, Frank Li wrote:
+> On Sat, Apr 06, 2024 at 09:31:31AM +0530, Manivannan Sadhasivam wrote:
+> > On Fri, Apr 05, 2024 at 10:31:16AM -0400, Frank Li wrote:
+> > > On Fri, Apr 05, 2024 at 11:54:26AM +0530, Manivannan Sadhasivam wrote:
+> > > > On Tue, Mar 19, 2024 at 12:07:15PM -0400, Frank Li wrote:
+> > > > 
+> > > > PCI: dwc: Add generic MSG TLP support for sending PME_Turn_Off during system suspend
+> > > > 
+> > > > > Reserve space at end of first IORESOURCE_MEM window as message TLP MMIO
+> > > > > window. This space's size is 'region_align'.
+> > > > > 
+> > > > > Set outbound ATU map memory write to send PCI message. So one MMIO write
+> > > > > can trigger a PCI message, such as PME_Turn_Off.
+> > > > > 
+> > > > > Add common dwc_pme_turn_off() function.
+> > > > > 
+> > > > > Call dwc_pme_turn_off() to send out PME_Turn_Off message in general
+> > > > > dw_pcie_suspend_noirq() if there are not platform callback pme_turn_off()
+> > > > > exist.
+> > > > > 
+> > > > 
+> > > > How about:
+> > > > 
+> > > > "Instead of relying on the vendor specific implementations to send the
+> > > > PME_Turn_Off message, let's introduce a generic way of sending the message using
+> > > > the MSG TLP.
+> > > > 
+> > > > This is achieved by reserving a region for MSG TLP of size 'pci->region_align',
+> > > > at the end of the first IORESOURCE_MEM window of the host bridge. And then
+> > > > sending the PME_Turn_Off message during system suspend with the help of iATU.
+> > > > 
+> > > > It should be noted that this generic implementation is optional for the glue
+> > > > drivers and can be overridden by a custom 'pme_turn_off' callback."
+> > > > 
+> > > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > > > ---
+> > > > >  drivers/pci/controller/dwc/pcie-designware-host.c | 94 ++++++++++++++++++++++-
+> > > > >  drivers/pci/controller/dwc/pcie-designware.h      |  3 +
+> > > > >  2 files changed, 93 insertions(+), 4 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > > > index 267687ab33cbc..d5723fce7a894 100644
+> > > > > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > > > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > > > > @@ -393,6 +393,31 @@ static int dw_pcie_msi_host_init(struct dw_pcie_rp *pp)
+> > > > >  	return 0;
+> > > > >  }
+> > > > >  
+> > > > > +static void dw_pcie_host_request_msg_tlp_res(struct dw_pcie_rp *pp)
+> > > > > +{
+> > > > > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> > > > > +	struct resource_entry *win;
+> > > > > +	struct resource *res;
+> > > > > +
+> > > > > +	win = resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
+> > > > > +	if (win) {
+> > > > > +		res = devm_kzalloc(pci->dev, sizeof(*res), GFP_KERNEL);
+> > > > > +		if (!res)
+> > > > > +			return;
+> > > > > +
+> > > > > +		/* Reserve last region_align block as message TLP space */
+> > > > > +		res->start = win->res->end - pci->region_align + 1;
+> > > > > +		res->end = win->res->end;
+> > > > 
+> > > > Don't you need to adjust the host bridge window size and end address?
+> > > 
+> > > Needn't. request_resource will reserve it from bridge window. Like malloc,
+> > > if you malloc to get a region of memory, which will never get by malloc
+> > > again utill you call free.
+> > > 
+> > 
+> > Hmm, will that modify the window->res->end address and size?
+> 
+> No. This windows already reported to pci system before this function. It is
+> not good to modify window-res-end. It just add child resource like below.
+> 
+> windows is root resource, which will create may child when call
+> request_resource.
+>           bridge -> windows
+> 		child1 -> msg
+> 		child2 -> pci ep1
+> 		child3 -> pci_ep2.
+> 		...
+> 
+> Although you see whole bridge window, 'msg' already used and put under root
+> resource,  new pci devices will never use 'msg' resource. 
+> 
+> If change windows->res->end here, I worry about it may broken resource
+> tree.
+> 
 
-Hey Charlie,
-Thanks for writing this up! At the very least I think the
-THEAD-specific stuff should probably end up in its own file, otherwise
-it'll get chaotic with vendors clamoring to add stuff right here.
-What do you think about this approach:
- * We leave RISCV_HWPROBE_MAX_KEY as the max key for the "generic
-world", eg 6-ish
- * We define that any key above 0x8000000000000000 is in the vendor
-space, so the meaning of the keys depends first on the mvendorid
-value.
- * In the kernel code, each new vendor adds on to a global struct,
-which might look something like:
-struct hwprobe_vendor_space vendor_space[] =3D {
-        {
-                .mvendorid =3D VENDOR_THEAD,
-                .max_hwprobe_key =3D THEAD_MAX_HWPROBE_KEY, // currently
-1 or 0x8000000000000001 with what you've got.
-                .hwprobe_fn =3D thead_hwprobe
-        },
-        ...
-};
+Hmm, I think your argument is fair. I was worrying that if someone try to
+map separately by referencing win->res->end, then they will see access
+violation.
 
- * A hwprobe_thead.c implements thead_hwprobe(), and is called
-whenever the generic hwprobe encounters a key >=3D0x8000000000000000.
- * Generic code for setting up the VDSO can then still call the
-vendor-specific hwprobe_fn() repeatedly with an "all CPUs" mask from
-the base to max_hwprobe_key and set up the cached tables in userspace.
- * Since the VDSO data has limited space we may have to cap the number
-of vendor keys we cache to be lower than max_hwprobe_key. Since the
-data itself is not exposed to usermode we can raise this cap later if
-needed.
+But why can't you just allocate the resource using 'alloc_resource()' API
+instead of always allocating at the end?
 
+- Mani
 
--Evan
+> > 
+> > > > 
+> > > > > +		res->name = "msg";
+> > > > > +		res->flags = win->res->flags | IORESOURCE_BUSY;
+> > > > > +
+> > > > 
+> > > > Shouldn't this resource be added back to the host bridge?
+> > > 
+> > > No, this resource will reserver for msg only for whole bridge life cycle.
+> > > Genenally alloc resource only happen at PCI devices probe. All pci space
+> > > will be fixed after system probe.
+> > > 
+> > 
+> > I don't think so. This resource still belongs to the host bridge, so we should
+> > add it back.
+> 
+> When add back?  It was reserved at bridge probe. When bridge remove, all
+> resource will released. 
+> 
+> > 
+> > - Mani
+> > 
+> > -- 
+> > மணிவண்ணன் சதாசிவம்
 
-> +       }
-> +
-> +       /* Now turn off reporting features if any CPU is missing it. */
-> +       pair->value &=3D ~missing;
-> +}
-> +
->  static bool hwprobe_ext0_has(const struct cpumask *cpus, unsigned long e=
-xt)
->  {
->         struct riscv_hwprobe pair;
-> @@ -216,6 +267,10 @@ static void hwprobe_one_pair(struct riscv_hwprobe *p=
-air,
->                         pair->value =3D riscv_cboz_block_size;
->                 break;
->
-> +       case RISCV_HWPROBE_KEY_VENDOR_EXT_0:
-> +               hwprobe_isa_vendor_ext0(pair, cpus);
-> +               break;
-> +
->         /*
->          * For forward compatibility, unknown keys don't fail the whole
->          * call, but get their element key set to -1 and value set to 0
->
-> --
-> 2.44.0
->
+-- 
+மணிவண்ணன் சதாசிவம்
 
