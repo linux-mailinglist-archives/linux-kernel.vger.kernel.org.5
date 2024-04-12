@@ -1,138 +1,111 @@
-Return-Path: <linux-kernel+bounces-141985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 517D68A25C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:35:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AA008A25CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:37:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9DA6B245D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:35:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 552CB1C22D1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:37:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95EA21BC4B;
-	Fri, 12 Apr 2024 05:35:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674191CAA1;
+	Fri, 12 Apr 2024 05:37:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Eq9dsrct"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Zqamf3bv"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B4E21B95B
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 05:34:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BCA0125CC;
+	Fri, 12 Apr 2024 05:37:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712900100; cv=none; b=ubhh98AFGAIku3mP2UZcJUhhBFdLawVMIMMJBh6apQecpdCLE19r3Vkwq4ytWiT3VmGTYkHwrmtvTsKd/VK8gxp5+oDvc59UNbIUAdkO39xnShs0A9HQdQ4jKDzNFnJMQQpZl//TZwCNeSOqqOHEfTZuGc/HWOi1NXtgY29gfNg=
+	t=1712900233; cv=none; b=t205byMa+OFFRXlhwVRowWDgTgSi5xqCGjcSy4PESl1oDvK5lC6khREpeBiGXbVs2nxgLDF86g0GMHUHdKUiWHFXCt8G5Dzd/+PdoTzKK7IV/QXVotm+ATlkPFiS9gtxosmo++JG35C6aojmC7J1PxZzzW4jCKYF5hQRv/V4nJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712900100; c=relaxed/simple;
-	bh=mekwCTMyUIHf0Fvc6QFOxa55PFHUFQeuRMLlo60az0o=;
-	h=Date:In-Reply-To:Mime-Version:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=EEUCyrtAB5JxLRZw8xlstX0auLXNLKgAdwzltvt1Z1NaZ9/WFbB7GB9uP5N/mYCQ6GpQlgi2RQca8numkXms8nt3To6Eo4Vo+6ovSqcSB8+0IBf+8t+5Cx4ZwcYQguXIX1yWDchoH2+YhN/7OGdnjKHp/TvettoydSaWH2kAf1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Eq9dsrct; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dd1395fd1bfso1047378276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 22:34:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712900099; x=1713504899; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=40CL73wib6boENITVkOBpqP4qrDROFAeF098K7rCEZo=;
-        b=Eq9dsrctp+oeiCMUetYY+mx5187uUTmAAILjPVRkuM/efzVXCL+moLjt3HW46gaFJF
-         mIt1K4bqnJPZhfCkbxP3YGzx7H1oDfr24z4inSkNYaHBlT7OVEHLv6KSuC1iG1EP5SE9
-         b5ugjNlYD/Bl/gK9y1OUKfxr2rdXutn23ND5+yJbT5D8O1VlhzU2moboODm70h0NZKvi
-         tAJvW+8Gc1saTFTD5qk2xFjCdsQQOkndgHKfMllBOjsfK8DYWOa8fSXpuHNLC1Rmitiy
-         tF1Hfk3aMKdL2dYncCWa2wItjV4ueOypd5+kyXR0xi5ESg0Jdw04f2QST0Lm1iOQEhSc
-         2kgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712900099; x=1713504899;
-        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=40CL73wib6boENITVkOBpqP4qrDROFAeF098K7rCEZo=;
-        b=KfWasHxmX5BBYCy0D7eWJPx8BH+Te/snbQ5bn9WKj6tUThmqLZfNFjmFPGNMv7Hnoh
-         xEHg1KVr2EKWSiCK1l13VUmar4IJQTNjx6csqua1I/PDKhnxwWvQ3e/OO9GdJME43Nxs
-         acp33gt+l4ojTvcHeRtBuq+xekqefrExYyTsG92AMW3Evv6Iq2JjzLYiFWBx7w1NiM5E
-         WBFMnmkL3dzHxR3sqrhrdRUg0UonLWQgnFEwZCPifePN1YFiClrsw+H1kk2VSIOZ6oMa
-         IbS1J0pv8s8p/iniWkLQpA4n4c+PY5G18BIuktzA6fReDR0+z59MeoXeh2YdTH8sw4q2
-         3VZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXItxVFsHcHawOg3W2CWehYaGpnj654b7bEl92Vj0dL5D7eJkb5tF+L9Yjh1vdSS3hizQwCTAaLDNrcdnwLL0AQuXIu6++4rjs1sOhN
-X-Gm-Message-State: AOJu0YwilXVYpDS0qriO4EgVwxegCcYc5XpA9OXADwjv8Xc70d7/gzWM
-	Ctq6nw9vaalwbPc+9RYVHutc9sIRArpuBYWarPzgwbbbknboyNHIvB1J9MGbe1Ta7fLp5RFym0F
-	9KGEViLbxT3QT5SXAkhnKUA==
-X-Google-Smtp-Source: AGHT+IHBQ7oYt8rwDGfoTH5mMc+eE3PwbtEkoZpDVDKUDzWTMm/e3olIUnsS49ugB3YTyrfsMlcwC9w28DOEHyF/JA==
-X-Received: from ctop-sg.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:1223])
- (user=ackerleytng job=sendgmr) by 2002:a05:6902:1002:b0:dc6:e5d3:5f03 with
- SMTP id w2-20020a056902100200b00dc6e5d35f03mr510040ybt.4.1712900098616; Thu,
- 11 Apr 2024 22:34:58 -0700 (PDT)
-Date: Fri, 12 Apr 2024 05:34:54 +0000
-In-Reply-To: <3d69b44a-8542-4a11-b233-16487e980d54@intel.com> (dongsheng.x.zhang@intel.com)
+	s=arc-20240116; t=1712900233; c=relaxed/simple;
+	bh=0kIJRU6gFz0aGszo0gzpp4tU6bLm/VddgMGhasHogXM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=fY0vQOopkeQ7QvbWlDUgxTORXz0Hz8Ti8iml3Ce0e3yYE8Ko3oMfdMb4N57baGQnik/Z/og7y3fkBvNo781UHCwN41xFfTYYeMZBOxvFxoM3DFmCQGr8F64YtlQayXGf5XgZzYUOzeF0XSZxM1S4v3dVPjcVOpsgQnqxSnTC5O8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Zqamf3bv; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43C5asN6082662;
+	Fri, 12 Apr 2024 00:36:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712900214;
+	bh=Io0EcHmCwXnbfHL7GZiyKT8TQNpCyGnmdDp0g/Xczrw=;
+	h=From:To:CC:Subject:Date;
+	b=Zqamf3bvFGH/7NXlbj39ATGrB1RLRh55PRzgqVZ0lIr9g2e5CSBQh89JHOmHHEDgd
+	 Ao5B9leA5FQ79Drz67whOZI9/0Pn7wFBi0mKGtFFaYud16v2V4RKJtgMp2nmo5TwjU
+	 SX/js0xhpT4tZOULTfCCH35qpRib1LJlGKnxlf4g=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43C5asel093568
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 12 Apr 2024 00:36:54 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 12
+ Apr 2024 00:36:54 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 12 Apr 2024 00:36:54 -0500
+Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (a0497641-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.36])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43C5aofX085656;
+	Fri, 12 Apr 2024 00:36:51 -0500
+From: Neha Malcom Francis <n-francis@ti.com>
+To: <robh@kernel.org>, <conor+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <vigneshr@ti.com>, <nm@ti.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kristo@kernel.org>, <u-kumar1@ti.com>,
+        <n-francis@ti.com>
+Subject: [PATCH v3 0/5] arm64: dts: ti: k3-j7*: Add missing ESM and watchdog nodes
+Date: Fri, 12 Apr 2024 11:06:45 +0530
+Message-ID: <20240412053650.703667-1-n-francis@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Message-ID: <diqzttk7jg8x.fsf@ctop-sg.c.googlers.com>
-Subject: Re: [RFC PATCH v5 05/29] KVM: selftests: Add helper functions to
- create TDX VMs
-From: Ackerley Tng <ackerleytng@google.com>
-To: dongsheng.x.zhang@intel.com
-Cc: sagis@google.com, linux-kselftest@vger.kernel.org, afranji@google.com, 
-	erdemaktas@google.com, isaku.yamahata@intel.com, seanjc@google.com, 
-	pbonzini@redhat.com, shuah@kernel.org, pgonda@google.com, haibo1.xu@intel.com, 
-	chao.p.peng@linux.intel.com, vannapurve@google.com, runanwang@google.com, 
-	vipinsh@google.com, jmattson@google.com, dmatlack@google.com, 
-	linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
+Add missing ESM and watchdog nodes for the sake of devicetree completion
+of hardware description w.r.t Linux and ESM and WDT enablement on
+U-Boot. This patch series adds the missing nodes for J721E and J7200.
 
-Thank you for your other comments!
+Boot logs (updated for v3):
+https://gist.github.com/nehamalcom/5dc94ab60f57df5d515d0a6d0da6e0d1
 
->> <snip>
+Changes since v2:
+https://lore.kernel.org/all/20240412042537.666137-1-n-francis@ti.com/
+- corrected register size for MCU watchdog instance in J7200 (Udit)
+- added Reviewed-by tag (Udit)
 
->> +static void load_td_per_vcpu_parameters(struct td_boot_parameters *params,
->> +					struct kvm_sregs *sregs,
->> +					struct kvm_vcpu *vcpu,
->> +					void *guest_code)
->> +{
->> +	/* Store vcpu_index to match what the TDX module would store internally */
->> +	static uint32_t vcpu_index;
->> +
->> +	struct td_per_vcpu_parameters *vcpu_params = &params->per_vcpu[vcpu_index];
->
-> I think we can use vcpu->id in place of vcpu_index in this function, thus removing vcpu_index
->
+Changes since v1:
+https://lore.kernel.org/all/20240326122723.2329402-1-n-francis@ti.com/
+- modified node name numbering to be in sync with TRM (Udit)
+- disabled wkup_esm node in J721E (Udit)
+- added patch (5/5) for MCU domain watchdog instances in J7200 (Udit)
 
-td_per_vcpu_parameters is used in the selftest setup code (see
-tools/testing/selftests/kvm/lib/x86_64/tdx/td_boot.S), (read via ESI) to
-access the set of parameters belonging to the vcpu running the selftest
-code, based on vcpu_index.
+Neha Malcom Francis (5):
+  arm64: dts: ti: k3-j721e-mcu: Add the WKUP ESM instance
+  arm64: dts: ti: k3-j721e-mcu: Add the MCU domain watchdog instances
+  arm64: dts: ti: k3-j721e-main: Add the MAIN domain watchdog instances
+  arm64: dts: ti: k3-j7200-main: Add the MAIN domain watchdog instances
+  arm64: dts: ti: k3-j7200-mcu: Add the MCU domain watchdog instances
 
-ESI is used because according to the TDX base spec, RSI contains the
-vcpu index, which starts "from 0 and allocated sequentially on each
-successful TDH.VP.INIT".
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 27 ++++++
+ .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 26 ++++++
+ arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 93 +++++++++++++++++++
+ .../boot/dts/ti/k3-j721e-mcu-wakeup.dtsi      | 32 +++++++
+ 4 files changed, 178 insertions(+)
 
-Hence, vcpu_index is set up to be static and is incremented once every
-time load_td_per_vcpu_parameters() is called, which is once every time
-td_vcpu_add() is called, which is aligned with the TDX base spec.
+-- 
+2.34.1
 
-vcpu->id can be specified by the user when vm_vcpu_add() is called, but
-that may not be the same as vcpu_index.
-
->> +
->> +	TEST_ASSERT(vcpu->initial_stack_addr != 0,
->> +		"initial stack address should not be 0");
->> +	TEST_ASSERT(vcpu->initial_stack_addr <= 0xffffffff,
->> +		"initial stack address must fit in 32 bits");
->> +	TEST_ASSERT((uint64_t)guest_code <= 0xffffffff,
->> +		"guest_code must fit in 32 bits");
->> +	TEST_ASSERT(sregs->cs.selector != 0, "cs.selector should not be 0");
->> +
->> +	vcpu_params->esp_gva = (uint32_t)(uint64_t)vcpu->initial_stack_addr;
->> +	vcpu_params->ljmp_target.eip_gva = (uint32_t)(uint64_t)guest_code;
->> +	vcpu_params->ljmp_target.code64_sel = sregs->cs.selector;
->> +
->> +	vcpu_index++;
->> +}
-
->> <snip>
 
