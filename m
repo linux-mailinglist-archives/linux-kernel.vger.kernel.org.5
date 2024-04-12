@@ -1,145 +1,138 @@
-Return-Path: <linux-kernel+bounces-143338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7AD18A375F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:57:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 445CF8A3763
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:57:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E160C1C232B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:57:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00F84287726
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:57:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1B6D482C1;
-	Fri, 12 Apr 2024 20:57:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3023149006;
+	Fri, 12 Apr 2024 20:57:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MW+cMZoo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kk4KEBKi"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3522C39FD5
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 20:57:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A1BD39FD5;
+	Fri, 12 Apr 2024 20:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712955447; cv=none; b=qnDhenMb3NoAsndyf6Ov9YGt38XrMQ+/A5X2MQ0ub3zaIXHDB/m92ATUYP/j2nHiD8pO1kAKiFaLwq87XV+klInNFRAotOCHwhytPcLpwzKsg8w0muKtSWF+SnR9Xx5MIlGuwrdrJ8YHuoMsDCG7+NIKoLgX3uJX3pImQ4Nlyt0=
+	t=1712955460; cv=none; b=JoqB5pvXaPNKRUUxvkvwF5uFW+4B9bSl8KFBOtZWrB1Um93zWpKVmRHxfWowASpGxCBOIPeRNySzq9YAy0Z3Z0ZiKrmDDRubkbUe6YfwXtZVQ8EF2W73Vhb88gzwN0nsVty86OoPGcyrOf/YXP1L98jwSCsKGJ+yGwQDzrbogRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712955447; c=relaxed/simple;
-	bh=N557OwkcMRzWWTkVtHcBibqTIxbQIgFLHLWudntz+/s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kFjoeqVDCZSqHklzdwDfD/hLZT4sXW+ni6RVaBim7DQ/mbd2hbU3qPlfVAUfvbq6DWoslAeKWN4Cgp5JuWSnvscTxdRXr95zmk79dhcR1m0MdsJkTRmP/qCpAtrng48EA8LNX/AosUlFcguGBgVXL3lm+2p2B3Xq6zhyIAw/iaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MW+cMZoo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E5E5C113CC;
-	Fri, 12 Apr 2024 20:57:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712955446;
-	bh=N557OwkcMRzWWTkVtHcBibqTIxbQIgFLHLWudntz+/s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MW+cMZoosDJKSB2cOLCkq7MkRggIbRTBeKR3ycmPur4UnWRKeCgOVtYKbKZ/bfvB5
-	 XfIztRiqlQKc4zg5EITFk+mkch5AHSIL7EJhqRwcKvgrwgPoKHFNgQ7hDk4dCttDOz
-	 3vaJr22oHJHxZvYMsSw5YSdEE/KilhCMRuB8ZRIPWr5Pw1njLmhsODQWPmGHf+H1Ti
-	 debFilfMRLdVoNLcAj3KVYNuWRVEV8PSqvvUmHrOUQdA6kD31c8rEK9OzOzBKiOGI1
-	 iOYSWQpXmUXbxK+NrHyKEckrN7g9oBZ+3oA/eMr5rRpxHRsP9zTl+AUPNXQxbV0qzO
-	 r+nrs1TRE9uWQ==
-Date: Fri, 12 Apr 2024 20:57:24 +0000
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Chao Yu <chao@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH 2/3] f2fs: clear writeback when compression
- failed
-Message-ID: <ZhmgNBozIPL-WFZR@google.com>
-References: <20240409203411.1885121-1-jaegeuk@kernel.org>
- <20240409203411.1885121-2-jaegeuk@kernel.org>
- <59414941-a15f-4eb0-8574-3b2a27d8ae69@kernel.org>
+	s=arc-20240116; t=1712955460; c=relaxed/simple;
+	bh=LTfEH0OW5wceSR4OBc7/jsdPA8w7QFdiyqHte0fJzYM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=q+w58MYugbJjVIXYaL2sILcmoqut+23lAjTsfLE8pUJkXMuUMMYqEod/9wzbfCCzf9YE9mhxywG1/9PZlLVpQ9tLUr8DG2/1v9izc2NUjvRu8ubI9f75VD5ubz1z+ubWnP9jCPNj0tFLD7oHyG9HyN+mC9ndo/vjtR4ZFopzVCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kk4KEBKi; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3462178fbf9so703594f8f.1;
+        Fri, 12 Apr 2024 13:57:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712955456; x=1713560256; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dg2ahnpNhhd49pJIzFyauGmvavc6mK+oTZvc0UBJgxY=;
+        b=kk4KEBKioDl7plYBwPWv+6G1EUNe0AXf2b16GdxBYUHgofQhq7j49yt+r59pW5H730
+         0Gfxktj15uRxKv+690i/ATMiGiQ8RXjpz+wmAnC9104wh++Wxnh4NPZdyHGIHfqRWgjT
+         62/RMbqSUPTQvQLSwxjqSLK7r3tS43/uslQr9VDOKRh9QycrCeGzbdPDzmKAolKTHo1I
+         g5D9F06fSntMM7XjHOjl9eOwXCEPv91GkQEfkPLERQOc9W8/EnIhFx3Tdv8aQPD6v+ld
+         ybn8k8Mj59mR+209od/F9zCxOZy+KJErMdNfG8DJ9/fAyWXM8+ivxac/5osUpTHaw1jq
+         k6ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712955456; x=1713560256;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dg2ahnpNhhd49pJIzFyauGmvavc6mK+oTZvc0UBJgxY=;
+        b=edoQv9EAiK+maBjy50Thfx9umbazUw0r3WeIkLSkIvLFV2Bwompeow2QmIDRkcNhHp
+         uS8APKQusIiTlMSutcQJzF3G7qDX3VQQU8IraaXkVO0iH27kxHH6kM99oKyLjP0x1hSG
+         VeWC8iWtMRsveG43DDMU8HWTbr8i3bdIxPKwpy6vYxBcoWzDbc3bsE/q0N9aevdosBKU
+         JLVMANfp/Ekn/l7bf1XC5oX76FHv1NBFAcgdDEkfmLI9ge/Ye14cs9lEezN9f05Xlf4h
+         0kV7wKo3/0p4KOcwKJaynaEbt/1WOPpwEK8y1mpl7PaXSYlquGBlgUFbo2Ij5qoQRa7s
+         +z/A==
+X-Forwarded-Encrypted: i=1; AJvYcCVhr3GAJo03EQCjF5QxAMloCn9BDRKiSSUTHet5S/PHfop5Q0vP3LEGjArPZYlPjcpaz50zB/pKugT5JHnBZRZZiRf1ApCtcZXshhoq
+X-Gm-Message-State: AOJu0YyMW55y1qs56LSIWwQWcP9dnUi71uZkfuEBRCOBoa1swixeAjvq
+	fGYLBPMoheqM4GL7AZTxIlZpNjbMdmIbKML7YJ4orYLQ8lEDpDka42uAXUTf
+X-Google-Smtp-Source: AGHT+IG9CTjG81WWEOCd4+OLOjxVcWFAzOSSs3Au25Q+ubb759cApR0HrsQogS1sH9U6Hpz1gZiaUQ==
+X-Received: by 2002:a5d:6744:0:b0:343:a8cb:7990 with SMTP id l4-20020a5d6744000000b00343a8cb7990mr2762792wrw.29.1712955456093;
+        Fri, 12 Apr 2024 13:57:36 -0700 (PDT)
+Received: from [127.0.1.1] (84-115-213-64.cable.dynamic.surfer.at. [84.115.213.64])
+        by smtp.gmail.com with ESMTPSA id l8-20020a5d4808000000b0034599eca6c9sm4989203wrq.41.2024.04.12.13.57.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 13:57:35 -0700 (PDT)
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Subject: [PATCH 0/6] input: use device_for_each_child_node_scoped()
+Date: Fri, 12 Apr 2024 22:57:29 +0200
+Message-Id: <20240412-input_device_for_each_child_node_scoped-v1-0-dbad1bc7ea84@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <59414941-a15f-4eb0-8574-3b2a27d8ae69@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADmgGWYC/x2NUQrCMBAFr1L220AstgWvIrIs2ddmQZKQaBFK7
+ 26Q+RoY3juooRoa3YeDKnZrllOX62WgECVtcKbdafTjzXecpfJ5s/Y0gNdcGRIih2gv5ZQV3EI
+ uUOdlmmSZRReA+lqpWO37f3o8z/MHGZsZyXkAAAA=
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.14-dev
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712955454; l=1795;
+ i=javier.carrasco.cruz@gmail.com; s=20240312; h=from:subject:message-id;
+ bh=LTfEH0OW5wceSR4OBc7/jsdPA8w7QFdiyqHte0fJzYM=;
+ b=IggHSVg34Jubfo9KeV3wgUEG6kpICuiSXv2zWHBXqWD2mnHsY2NVuMHm9RE+H+cDTL4RPq3CV
+ taaJVZY20iyCoBB6bv5l0MFGiwpmUw7qsnThJyBd6aLREe+Gtvyb0MB
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=lzSIvIzMz0JhJrzLXI0HAdPwsNPSSmEn6RbS+PTS9aQ=
 
-On 04/11, Chao Yu wrote:
-> On 2024/4/10 4:34, Jaegeuk Kim wrote:
-> > Let's stop issuing compressed writes and clear their writeback flags.
-> > 
-> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > ---
-> >   fs/f2fs/compress.c | 33 +++++++++++++++++++++++++++++++--
-> >   1 file changed, 31 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> > index d67c471ab5df..3a8ecc6aee84 100644
-> > --- a/fs/f2fs/compress.c
-> > +++ b/fs/f2fs/compress.c
-> > @@ -1031,6 +1031,25 @@ static void set_cluster_writeback(struct compress_ctx *cc)
-> >   	}
-> >   }
-> > +static void cancel_cluster_writeback(struct compress_ctx *cc, int submitted)
-> > +{
-> > +	int i;
-> > +
-> > +	for (i = 0; i < cc->cluster_size; i++) {
-> > +		if (!cc->rpages[i])
-> > +			continue;
-> > +		if (i < submitted) {
-> > +			if (i)
-> > +				f2fs_wait_on_page_writeback(cc->rpages[i],
-> > +						DATA, true, true);
-> > +			inode_inc_dirty_pages(cc->inode);
-> > +			lock_page(cc->rpages[i]);
-> > +		}
-> > +		clear_page_private_gcing(cc->rpages[i]);
-> > +		end_page_writeback(cc->rpages[i]);
-> > +	}
-> > +}
-> > +
-> >   static void set_cluster_dirty(struct compress_ctx *cc)
-> >   {
-> >   	int i;
-> > @@ -1232,7 +1251,6 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
-> >   		.page = NULL,
-> >   		.encrypted_page = NULL,
-> >   		.compressed_page = NULL,
-> > -		.submitted = 0,
-> >   		.io_type = io_type,
-> >   		.io_wbc = wbc,
-> >   		.encrypted = fscrypt_inode_uses_fs_layer_crypto(cc->inode) ?
-> > @@ -1358,7 +1376,15 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
-> >   			fio.compressed_page = cc->cpages[i - 1];
-> >   		cc->cpages[i - 1] = NULL;
-> > +		fio.submitted = 0;
-> >   		f2fs_outplace_write_data(&dn, &fio);
-> > +		if (unlikely(!fio.submitted)) {
-> > +			cancel_cluster_writeback(cc, i);
-> > +
-> > +			/* To call fscrypt_finalize_bounce_page */
-> > +			i = cc->valid_nr_cpages;
-> 
-> *submitted = 0; ?
+Switch to the _scoped() version introduced in commit 365130fd47af
+("device property: Introduce device_for_each_child_node_scoped()")
+to remove the need for manual calling of fwnode_handle_put() in the
+paths where the code exits the loop early. This modification simplifies
+the code and eliminates the risk of leaking memory if any early exit is
+added without de-allocating the child node.
 
-And, it seems this is not enough to address kernel hang on wait_on_writeback
-while running fsstress + shutdown test. Stay tuned.
+There are six users of the non-scoped version in the input subsystem:
 
-> 
-> Thanks,
-> 
-> > +			goto out_destroy_crypt;
-> > +		}
-> >   		(*submitted)++;
-> >   unlock_continue:
-> >   		inode_dec_dirty_pages(cc->inode);
-> > @@ -1392,8 +1418,11 @@ static int f2fs_write_compressed_pages(struct compress_ctx *cc,
-> >   out_destroy_crypt:
-> >   	page_array_free(cc->inode, cic->rpages, cc->cluster_size);
-> > -	for (--i; i >= 0; i--)
-> > +	for (--i; i >= 0; i--) {
-> > +		if (!cc->cpages[i])
-> > +			continue;
-> >   		fscrypt_finalize_bounce_page(&cc->cpages[i]);
-> > +	}
-> >   out_put_cic:
-> >   	kmem_cache_free(cic_entry_slab, cic);
-> >   out_put_dnode:
+- iqs269a
+- qt1050
+- gpio_keys
+- gpio_keys_polled
+- adc-keys
+- adc-joystick
+
+This series is based on the master branch of linux-next (next-20240412)
+to have access to the scoped version of device_for_each_child_node().
+
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+---
+Javier Carrasco (6):
+      input: iqs269a: use device_for_each_child_node_scoped()
+      input: qt1050: use device_for_each_child_node_scoped()
+      input: gpio_keys: use device_for_each_child_node_scoped()
+      input: gpio_keys_polled: use device_for_each_child_node_scoped()
+      input: adc-keys: use device_for_each_child_node_scoped()
+      input: adc-joystick: use device_for_each_child_node_scoped()
+
+ drivers/input/joystick/adc-joystick.c     | 16 +++++-----------
+ drivers/input/keyboard/adc-keys.c         |  5 +----
+ drivers/input/keyboard/gpio_keys.c        |  4 +---
+ drivers/input/keyboard/gpio_keys_polled.c |  4 +---
+ drivers/input/keyboard/qt1050.c           | 12 ++++--------
+ drivers/input/misc/iqs269a.c              |  7 ++-----
+ 6 files changed, 14 insertions(+), 34 deletions(-)
+---
+base-commit: 9ed46da14b9b9b2ad4edb3b0c545b6dbe5c00d39
+change-id: 20240404-input_device_for_each_child_node_scoped-0a55a76ad7ee
+
+Best regards,
+-- 
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
+
 
