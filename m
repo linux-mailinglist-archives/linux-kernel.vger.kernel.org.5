@@ -1,194 +1,205 @@
-Return-Path: <linux-kernel+bounces-142108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 281078A27A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:08:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5EA28A27AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:09:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE21C2823A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:08:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 259401F22444
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:09:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0B4A4D9E3;
-	Fri, 12 Apr 2024 07:06:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590A750A68;
+	Fri, 12 Apr 2024 07:07:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="gelWtiff"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11olkn2064.outbound.protection.outlook.com [40.92.19.64])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="km+s+JYZ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1286C2C6BC;
-	Fri, 12 Apr 2024 07:06:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.19.64
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712905582; cv=fail; b=FrwDmi6X5aaarFvvtaUhposnkxzjZQ/jmrOJpOHoi/zneGyrmT0S7tt/c2r3kYS+TgQxFHL9BxI/7ASqCVI3H0sho8aGi+uUj2nV4GfwuI7EkGO8/pLTpl01grnR2xPIs0R1TYVgOhGzboLena/f0BRNBMcV5fZgVloW8IH4W/k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712905582; c=relaxed/simple;
-	bh=P1jOG3ND4Mf1zjSBQvVz4l0JIQR4C4K7EMCPtti7aTU=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=SG98bpgm2xwLQifBC9XHcJrWaTygYemc6T77FOy2Wrx7I7jECl48Yl4ZTp2oM/MXaxAL3rIQOGCbjZYvJOaM0tP04OwMayVT0HhrCj3Y+9YM9S6zwMOaikuvw5Dn5SStN0DUhDZ9ct70QQzS4laqV4QsH/TJQERSxynOTcdXyjk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=gelWtiff; arc=fail smtp.client-ip=40.92.19.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jy7QPJxTTHTliNKDmoo2BzM41+Mmg60yCD9gZ8wUDo/YqhcI2hWHOnjT3uyi4n4r07XvCbArNE4XOolTD/8Z5n0hAEp2y2GxPyeBvjFHqSEGtX1u+13UwLWUnXDL5vUgQg2q+1l9zlO7zX7Mt8Ijtaw3OB7bt1VjasUu/MzMmtFZaBEhCE4Fx7qXBwEN0QayOoiqxz+f8Bg8yIfiQ+2l15hdgROCvT7QUT/suFm2IAoNbdGxrkfibAmPL+QVPXGfL8jz5q2jhutJdcwLTQOlBw4pIRSEHJ2TDEUr/V0D1cPogsrsn6Qp2bzK0ArMVS8ToY4E1we8HJXueMLeoHbY6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PSdhpdIFY/BUNL2KPiiab+YLI170g9vlizGWY0C00TU=;
- b=mfDjBJ+n9cjpk3EDIv6/29kPQjQTzWanZkc5qLJwNcRmRAR/cAlf4Zwl2WEK6B2oCXRCoPEaDPFQQTSxrfuUoqqnt2nDdV5TjBHUwAoawiiX47SMrSiW/qgqEXlWkDVBo6JefNabdzw1japjeC0Bs8sM9vttmP8EXkrha7vdpXNmxnu2Or3SqGLNRUzCDlqCQR21ypLwvB0utoLgWQOPs9n3b+fiPyZB3tXOzdqDrJCNQM0r6iPv5tPXcc2hLl4FIg5o1PQ2jrH5EOh4MeCnrGxmuoxniLDim1INJdtiV8OPCe1c7eaCKQb1L3s7bhr80k9sr2nw5xmIKtDu9enGPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PSdhpdIFY/BUNL2KPiiab+YLI170g9vlizGWY0C00TU=;
- b=gelWtiffPjO5yMHeRclpjFfU8KuQsTEO4P2U3p+iEEfKlKAqzuqYHMR/zO2DEfMUhaoB5/bomuC895LXMcZNilIkSNCpyI52B4bjJU5sb3wxpXfNd3BCSfb4DMkv6eRTWqpfjbitKDBW6XFtG0SaFw8epjxNFbRihKdKsCUpigass7DNEy0HARUONPPoaJCAWzNh6gF8X8jmtPB+2faF8dSkQcIpmeD8JI4iQK/2ZhBgMF3McNkgf7SVFoRxxRzq/fS9bx49Y+dy/Mas18IK9Fsa191UtJU+uqmXj4m3zStWAHLH/aShHO9XfsPFmEEhVHEF1Gq0pTK1s5O+ih4awg==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by SA1PR20MB7440.namprd20.prod.outlook.com (2603:10b6:806:3e1::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.56; Fri, 12 Apr
- 2024 07:06:17 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::182f:841b:6e76:b819%2]) with mapi id 15.20.7409.042; Fri, 12 Apr 2024
- 07:06:17 +0000
-From: Inochi Amaoto <inochiama@outlook.com>
-To: Vinod Koul <vkoul@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Chen Wang <unicorn_wang@outlook.com>,
-	Inochi Amaoto <inochiama@outlook.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Cc: Jisheng Zhang <jszhang@kernel.org>,
-	Liu Gui <kenneth.liu@sophgo.com>,
-	Jingbao Qiu <qiujingbao.dlmu@gmail.com>,
-	dlan@gentoo.org,
-	dmaengine@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: [PATCH v8 0/3] riscv: sophgo: add dmamux support for Sophgo CV1800/SG2000 SoCs
-Date: Fri, 12 Apr 2024 15:06:26 +0800
-Message-ID:
- <IA1PR20MB495359880A3A8C4947702BB5BB042@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.44.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [MtOayi7d3Pd2QjF5KvyqRN5W3CdgWaYyz81OJLYLavs=]
-X-ClientProxiedBy: TYCP286CA0330.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:3b7::19) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID:
- <20240412070632.59800-1-inochiama@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7BC0502B0
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:07:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712905658; cv=none; b=VefAvKgkbmvRywDy6NPn7bkn9gsdw8Ic+BHj23V3fzNNrSUqSoUPcynNxxp1J2Un55t2978PMmmP6yKANjWp7d2HgfgrW2/VIDeZbsB37lXRN0F7QSQ6LHOXq4z1KHvyQqI+6wYpIB6y93KXtvPDa6b8QG159ITyNxVy5+RdJFg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712905658; c=relaxed/simple;
+	bh=S5/olHRtY82jtkEid1t62Xen262cIaRAfTPfOWVCiYQ=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=HpgGboHSE5/I9ISfDvcLV7tP7xkosHnNHWEOWpAd2KhKkUFsk+WoTR3QMEMD4ZgaolXnljJcP/NVHvhA1lTwisyPmNWb5KXEIRF2PtDqDm7NhOjUYknuw4f6D2FUdUzwd5MOIbd8fyhJC76vdOJALznMKfLK/DsZMGwn8iisWj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=km+s+JYZ; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712905657; x=1744441657;
+  h=date:from:to:cc:subject:message-id;
+  bh=S5/olHRtY82jtkEid1t62Xen262cIaRAfTPfOWVCiYQ=;
+  b=km+s+JYZxsZ9RFhJjW5vVfvDHI+8M6YU0eUHtDfJ19kSsQnap48P/qN5
+   4LsxR/he8OU2E4RkvPaqHet/AYnpZHPcUU06MzzjU6G7onc2/7sAx+5kR
+   nFO0ewpYFvASydJylQpc3OrfCc+m8kvxI0QkFetDlTfwQc5KILhoe8oE9
+   9+so/z0X/69JZaM1p6J7T4yufBwELBqym2EsWl3v6LqcV3BU1op+jZAUu
+   W7qOOQQJA3Xomz+7rOQRuhZguCrBzgVyjnQ64QbdKz0svWV8ooZEBhqib
+   LcKx+YG6tMXhdvPvVQwAwRoO2UR79n/Mco89MafO6Ksghfon87sEVlPSX
+   Q==;
+X-CSE-ConnectionGUID: fDHS2i3/RQmzkAOTwgyDFg==
+X-CSE-MsgGUID: N3PyDl2TQ9GqW2IBJeX57Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8457009"
+X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
+   d="scan'208";a="8457009"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 00:07:37 -0700
+X-CSE-ConnectionGUID: 6yBYlYW+RVOieVp1i9IWOg==
+X-CSE-MsgGUID: jvzL2TlsRqWaxOXZt5jlUQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
+   d="scan'208";a="25602759"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by fmviesa005.fm.intel.com with ESMTP; 12 Apr 2024 00:07:35 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rvB0W-0009U9-2J;
+	Fri, 12 Apr 2024 07:07:32 +0000
+Date: Fri, 12 Apr 2024 15:07:31 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/boot] BUILD SUCCESS
+ a0025f587c685e5ff842fb0194036f2ca0b6eaf4
+Message-ID: <202404121528.bzosSXfK-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|SA1PR20MB7440:EE_
-X-MS-Office365-Filtering-Correlation-Id: e1361809-e541-4834-1c0d-08dc5abf0c86
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	KUdqQT7qdudnd+Wp8zVlmJOdsrJ2Ey8ts0ej8Iul7gOKq8xdZ2xUclnEeoCGgPg3m43qiTwNKXw86GXeDbPKz6Wyar3WyWxr8C6+dPnFDHypLSHdjj8eEA1UpE8TorlSArQq/BbYD/2zf+VPQfFJ8MytyvX2nnshMeS7ng5HYNA/bgcj/Rz0O0Pb47w9eUME/2Nxuuu9nPoPSrSd/NmQafwVmomKFmJCrGEOVVFqR0tQFrixJ1/NNemwfzRJNDQ4cCDccQ7OBlt1vjn/C/AbZJTBJlsPhnppKcDHZNmaHuvu8nZcAbnpHOXhfz4Ye6eFn23magDIO1ZU+tSITYzc6iO06NjGF0PtzDoLHFdD8B5FgURBYBDGEfHo9tTjAkmZ8Vl/al71iKaH7jTS2GCCQZ4T5GWsxkS+qFFgXll3Vn/PzGK68QKlHJlP827iBUZEvHILJd4g5fhQf3075HYoyCzU4uewbYBuFNxN+n/rdRPwPAe9AclEpIlmyxrwgF6e2gC1ySlzecMgb3wXUS+SbTfn1c5wS0Z32ys5SuIg+ecTk3MQVY1dHW2Cj6Xj+wnDReT9A4v9ZOvRPV3j/SE1nj9NqQSdRSF51nEHZpwTkxs=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?d4NQCEryWG5rajixR7hpkeG6yx/cnLpTZ8kVVoNx1+0jvbmXw6dGFRkf754g?=
- =?us-ascii?Q?q46UuhBNWrAMHJOaxBK5BWJI1/UnWyAIuv5AlVfsJyhvOF0vEd6mvLJg+HVd?=
- =?us-ascii?Q?3AHAXdEuabmt42wNk33CyuFY7ZI6RP0eKQq/kdrejPV0BLcy46p/zx5KHVJZ?=
- =?us-ascii?Q?iRou4ZJYd37MwYpqhUGr9HJk4AFK1e3qg/lyerknWVF/QLzGbIVmd81F5SgC?=
- =?us-ascii?Q?6T7N2rEjuCGoq8gwehBgeaBDF190zvaBubu9RdesZNU61iiTLeD13HjmtTz7?=
- =?us-ascii?Q?zRV88vNR40O2ZdD/M2PatHINrkhsAOSTfZEHhSpysfSuj8bUYI5rwe5lHV4B?=
- =?us-ascii?Q?B2iuwCtp/8D55EZBKrkHwTNbE+LEo2EF4YJhPv9WIZ2VDkhYQdTmoJtxMcsp?=
- =?us-ascii?Q?IWd0tLwf4cFamH4NxwkepvIrXC01XSE27ReZpr/d3CC3hbwMKS3Rm1Z68NiT?=
- =?us-ascii?Q?2Iv58KdpPGRSDhBfssOOqP+NZ9SE9E+NY//qcQLTyKvQDRvgwO8rnlJd4VGh?=
- =?us-ascii?Q?BHaFprdHtUjWqxHqOLU+Py0Gsh5WbyCQmmCjdfy/xLgs/UhOSoc4hUeBOCOe?=
- =?us-ascii?Q?SynUBblgKNUgEfS9D7n+sWkwvek0/sr1jPKTmW8Xy6XI0n3GaC1svt/9wC2t?=
- =?us-ascii?Q?lSdX/V+Nh8viWh4UaJKhLLdvfOhlwi/xcTvyc6pvwiO7nNIC0/2MjmEewxBS?=
- =?us-ascii?Q?k07vbUktet/KT+ujv/6LqTziTd/qAEjVjpDIq/bMLQrlGseqZwyB8yIv9Cpx?=
- =?us-ascii?Q?Fn/EbbiNgFm88A9HnFtHxsVzwGOTvi25rs958XlIqMmZsaD7cA3Ys4+2Doro?=
- =?us-ascii?Q?zKbbQe4+O7YbN2tZ+AbL/W0ZBaCd0pOxDcxLWZNKTvw6A3ZVpWDW5/+KaXf/?=
- =?us-ascii?Q?oHT6VeRtZUb9PUEZ5W+FMxPrgWXv11FeVGqxwz1JUZFmmmXpYvqFUjTxKaVT?=
- =?us-ascii?Q?hjeozyrCj6UGixUQydsUTs+HTaD1rQHeQxnmr3dgF8/7fmHKFcP+5TrHGVOY?=
- =?us-ascii?Q?UyH8B9Z+6wCg5cxK0XomzAT9GmV1zKKJ6A6oKtdloJJfdLInI2BSCfV/jq77?=
- =?us-ascii?Q?K2jSQCe92MZozEza548Rle0mlGEgk2RJu1Dtk7g5xiVSDd8xWN9JheGYIwr8?=
- =?us-ascii?Q?Pk6KlaRhhYfoIVYV3yYyQLWuhg8sViOGhKi/AKkuFHfrYQA7nXV/zNdAh8hi?=
- =?us-ascii?Q?uxdHdW+xys6lbO0sd21UanCe47p3q2QhWUycRV7pwcY8GFkws2CWHVnzy3bJ?=
- =?us-ascii?Q?T0vkec9P/u3zxUPnXeiD?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e1361809-e541-4834-1c0d-08dc5abf0c86
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 07:06:17.6984
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR20MB7440
 
-Add dma multiplexer support for the Sophgo CV1800/SG2000 SoCs.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
+branch HEAD: a0025f587c685e5ff842fb0194036f2ca0b6eaf4  x86/boot/64: Clear most of CR4 in startup_64(), except PAE, MCE and LA57
 
-As the syscon device of CV1800 have a usb phy subdevices. The
-binding of the syscon can not be complete without the usb phy
-is finished. As a result, the binding of syscon is removed
-and will be evolved in its original series after the usb phy
-binding is fully explored.
+elapsed time: 982m
 
-Changed from v7:
-1. remove unused variable
+configs tested: 113
+configs skipped: 3
 
-Changed from v6:
-1. fix copyright time.
-2. driver only output mapping info in when debugging.
-3. remove dma-master check in the driver init since the binding
-always require it.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Changed from v5:
-1. remove dead binding header.
-2. make "reg" required so the syscon binding can have the same
-example node of the dmamux binding.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                            hsdk_defconfig   gcc  
+arm                              alldefconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                       omap2plus_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   clang
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240412   gcc  
+i386         buildonly-randconfig-002-20240412   clang
+i386         buildonly-randconfig-003-20240412   gcc  
+i386         buildonly-randconfig-004-20240412   gcc  
+i386         buildonly-randconfig-005-20240412   gcc  
+i386         buildonly-randconfig-006-20240412   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240412   clang
+i386                  randconfig-002-20240412   gcc  
+i386                  randconfig-003-20240412   clang
+i386                  randconfig-004-20240412   clang
+i386                  randconfig-005-20240412   clang
+i386                  randconfig-006-20240412   gcc  
+i386                  randconfig-011-20240412   clang
+i386                  randconfig-012-20240412   gcc  
+i386                  randconfig-013-20240412   clang
+i386                  randconfig-014-20240412   gcc  
+i386                  randconfig-015-20240412   gcc  
+i386                  randconfig-016-20240412   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                     cu1000-neo_defconfig   gcc  
+mips                  decstation_64_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                      arches_defconfig   gcc  
+powerpc                     tqm5200_defconfig   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                        edosk7705_defconfig   gcc  
+sh                          rsk7203_defconfig   gcc  
+sh                          rsk7264_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
 
-Changed from v4:
-1. remove the syscon binding since it can not be complete (still
-lack some subdevices)
-2. add reg description for the binding,
-3. remove the fixed channel assign for dmamux binding
-3. driver adopt to the binding change. Now the driver allocates all the
-channel when initing and maps the request chan to the channel dynamicly.
-
-Changed from v3:
-1. fix dt-binding address issue.
-
-Changed from v2:
-1. add reg property of dmamux node in the binding of patch 2
-
-Changed from v1:
-1. fix wrong title of patch 2.
-
-
-Inochi Amaoto (3):
-  dt-bindings: dmaengine: Add dma multiplexer for CV18XX/SG200X series
-    SoC
-  soc/sophgo: add top sysctrl layout file for CV18XX/SG200X
-  dmaengine: add driver for Sophgo CV18XX/SG200X dmamux
-
- .../bindings/dma/sophgo,cv1800-dmamux.yaml    |  51 ++++
- drivers/dma/Kconfig                           |   9 +
- drivers/dma/Makefile                          |   1 +
- drivers/dma/cv1800-dmamux.c                   | 259 ++++++++++++++++++
- include/soc/sophgo/cv1800-sysctl.h            |  30 ++
- 5 files changed, 350 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/dma/sophgo,cv1800-dmamux.yaml
- create mode 100644 drivers/dma/cv1800-dmamux.c
- create mode 100644 include/soc/sophgo/cv1800-sysctl.h
-
---
-2.44.0
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
