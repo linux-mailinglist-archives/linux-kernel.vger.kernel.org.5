@@ -1,223 +1,125 @@
-Return-Path: <linux-kernel+bounces-142630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E30A8A2E09
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:15:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D55C88A2E0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:15:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 347B9283E0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:15:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63963283E88
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:15:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E955756B88;
-	Fri, 12 Apr 2024 12:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E55F56B65;
+	Fri, 12 Apr 2024 12:15:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fGBvZ4h+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8oZKfPu8";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fGBvZ4h+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8oZKfPu8"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Rx5iFdOy";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="6rlityCd"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B4156B76;
-	Fri, 12 Apr 2024 12:15:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F4B57303;
+	Fri, 12 Apr 2024 12:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712924122; cv=none; b=LdD9ZvrgA3W/3u+41dL1p7yaxP9uhISgDbWM1dA5HGUrKahxda+Z9nr7CimFoEHwUhfqzkLFOiL2vcucj0sBDw4aGoBY1ew/CeVH8OylAAKoUkt8By8dXJYtWVX6MYzqWTrhxrblWS8WVgiDHFrsLOYK/xYb8l/G54HQTwUlaxU=
+	t=1712924131; cv=none; b=MpkSsi7B+IGtfi5vcZEyPL4+5b4zuxqSypfsgBOvRZ6EOh0p0VmLIMlBlHK6vbpS3pWM6VZiLq73yXhDpGQ4X2VMcXRMny+r195KJiNDqzuLw8LFyDCClAw9DVSsDbAtfKgc+QbbQfouort6YuVz22kh9djWRbXIs5qWr0IYW1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712924122; c=relaxed/simple;
-	bh=n0eNFqjcG5/e6FD0tZqHXi2DZkGJK+tAhG3/ir6LIJc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bG3y0dtB2ehLIAgXnkppFLDFItNsGhI5+Y3fuONUR3E7PSQeXR7QaOMLt0IHxCP0o/quHBWAleBrRZBY5dVc+cBUZC7x8U4hjp26K63V4unXbxfPwlnTdPsnS1Rlbvpv3wB8QRZ2HezDBeYW1aom/D+h3imTkP6X+n1vIJd7zJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fGBvZ4h+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8oZKfPu8; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fGBvZ4h+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8oZKfPu8; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5F87D38218;
-	Fri, 12 Apr 2024 12:15:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712924118; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1712924131; c=relaxed/simple;
+	bh=vOjOVmBk53GEykb+2BS8HFGeywIifeGxZfsHU6yYkaI=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=IAuCSia3vvRfEXbjbzHbQGKC06t+bQbHxh89FBmN74goMxoiqHbb/sYIFEPwoKeCyxXXfJSua3emBs5RTXH0PgttO7kUhoXIx9YYUFoCXe+Zw1FmbaCQJyev0OG4f22VmYb8yCuNBfnzvcsbMrYj21pdlHWXkDRSqpEpkg/6yuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Rx5iFdOy; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=6rlityCd; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 12 Apr 2024 12:15:27 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712924128;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PdmWnw5E39YgmOSiekoth0B4zamZHPdp8goBAuAJSec=;
-	b=fGBvZ4h+SDbV9RclFi1NtJvW+ptq3lKfVx2SIsostAzBRNyB03HNWochdNwrCaCgoR6Kh9
-	c+hm+J5549TBe2sXKD1AD/8xn+oMrmjOxhSHTi3OGjxmEL9zXk0QLLt2E2GnnVPGGRmhBE
-	nkqfmoVcDCRBy5+pQiByVB6jRRsK0rw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712924118;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	bh=g/zum35qSt/ctc/dbKC/QNKBR2ZJ2X2QpQ9OIixOzNM=;
+	b=Rx5iFdOyfy+qzqYr1KV0d9VhV7sRJsN9/99sPiOe/XLRiI16T7+5kHYo1nsULlmO73PlRH
+	asSOlLa6CGEc3uvqHvt/5alKqCHDqtoC7edsOxZaWVYvXZJ5SL9Id6ddSMJL5ZMacDCL9h
+	dlZt6lcCasfpAvaWAC/1QI1QpfLPVseJCttzq/vaNt11G85S5nf3/KfkFWdyiof1TFVAY/
+	SDYl/rebRiMsJfQlI79Pbs2TrYFpnTSB4MXnXqCOmcPJQW/jwDvi3RZbnY9SEOzH38ay1f
+	O7cs2ailBxkQNmPrBlEQ57phOoY6rM2jUshp4+m7M3qVsQ7TJVrTV2acH6kVtA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712924128;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PdmWnw5E39YgmOSiekoth0B4zamZHPdp8goBAuAJSec=;
-	b=8oZKfPu86rJxeiMcp7C3Afp/nt2UqPrBM+fD2rO9+jtVOdlkG0GRYFHxYvYrMtpv09gKpG
-	2Pk3gcqtyArGlSBw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712924118; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PdmWnw5E39YgmOSiekoth0B4zamZHPdp8goBAuAJSec=;
-	b=fGBvZ4h+SDbV9RclFi1NtJvW+ptq3lKfVx2SIsostAzBRNyB03HNWochdNwrCaCgoR6Kh9
-	c+hm+J5549TBe2sXKD1AD/8xn+oMrmjOxhSHTi3OGjxmEL9zXk0QLLt2E2GnnVPGGRmhBE
-	nkqfmoVcDCRBy5+pQiByVB6jRRsK0rw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712924118;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PdmWnw5E39YgmOSiekoth0B4zamZHPdp8goBAuAJSec=;
-	b=8oZKfPu86rJxeiMcp7C3Afp/nt2UqPrBM+fD2rO9+jtVOdlkG0GRYFHxYvYrMtpv09gKpG
-	2Pk3gcqtyArGlSBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 53F7C1368B;
-	Fri, 12 Apr 2024 12:15:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Vxd8FNYlGWYSRwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 12 Apr 2024 12:15:18 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id EF1CEA071E; Fri, 12 Apr 2024 14:15:17 +0200 (CEST)
-Date: Fri, 12 Apr 2024 14:15:17 +0200
-From: Jan Kara <jack@suse.cz>
-To: Chao Yu <chao@kernel.org>
-Cc: Jan Kara <jack@suse.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] quota: fix to propagate error of mark_dquot_dirty() to
- caller
-Message-ID: <20240412121517.dydwqiqkdzvwpwf5@quack3>
-References: <20240412094942.2131243-1-chao@kernel.org>
+	bh=g/zum35qSt/ctc/dbKC/QNKBR2ZJ2X2QpQ9OIixOzNM=;
+	b=6rlityCdUzVupabo/5WeUifBVp0u1WOSsg/m6dSbqWELTdkIeLh6/FkvoGDf5QYV7WJ1EB
+	rK89AgS9MDWcffAA==
+From: "tip-bot2 for John Stultz" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/urgent] selftests: timers: Fix abs() warning in
+ posix_timers test
+Cc: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+ stable@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240410232637.4135564-3-jstultz@google.com>
+References: <20240410232637.4135564-3-jstultz@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412094942.2131243-1-chao@kernel.org>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Spam-Score: -3.80
-X-Spam-Flag: NO
+Message-ID: <171292412753.10875.7390048269032565457.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Fri 12-04-24 17:49:42, Chao Yu wrote:
-> in order to let caller be aware of failure of mark_dquot_dirty().
-> 
-> Signed-off-by: Chao Yu <chao@kernel.org>
+The following commit has been merged into the timers/urgent branch of tip:
 
-Thanks. I've added the patch to my tree.
+Commit-ID:     ed366de8ec89d4f960d66c85fc37d9de22f7bf6d
+Gitweb:        https://git.kernel.org/tip/ed366de8ec89d4f960d66c85fc37d9de22f7bf6d
+Author:        John Stultz <jstultz@google.com>
+AuthorDate:    Wed, 10 Apr 2024 16:26:30 -07:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 12 Apr 2024 14:11:15 +02:00
 
-								Honza
+selftests: timers: Fix abs() warning in posix_timers test
 
-> ---
->  fs/quota/dquot.c | 21 ++++++++++++++-------
->  1 file changed, 14 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-> index dacbee455c03..b2a109d8b198 100644
-> --- a/fs/quota/dquot.c
-> +++ b/fs/quota/dquot.c
-> @@ -1737,7 +1737,7 @@ int __dquot_alloc_space(struct inode *inode, qsize_t number, int flags)
->  
->  	if (reserve)
->  		goto out_flush_warn;
-> -	mark_all_dquot_dirty(dquots);
-> +	ret = mark_all_dquot_dirty(dquots);
->  out_flush_warn:
->  	srcu_read_unlock(&dquot_srcu, index);
->  	flush_warnings(warn);
-> @@ -1786,7 +1786,7 @@ int dquot_alloc_inode(struct inode *inode)
->  warn_put_all:
->  	spin_unlock(&inode->i_lock);
->  	if (ret == 0)
-> -		mark_all_dquot_dirty(dquots);
-> +		ret = mark_all_dquot_dirty(dquots);
->  	srcu_read_unlock(&dquot_srcu, index);
->  	flush_warnings(warn);
->  	return ret;
-> @@ -1990,7 +1990,7 @@ int __dquot_transfer(struct inode *inode, struct dquot **transfer_to)
->  	qsize_t inode_usage = 1;
->  	struct dquot __rcu **dquots;
->  	struct dquot *transfer_from[MAXQUOTAS] = {};
-> -	int cnt, index, ret = 0;
-> +	int cnt, index, ret = 0, err;
->  	char is_valid[MAXQUOTAS] = {};
->  	struct dquot_warn warn_to[MAXQUOTAS];
->  	struct dquot_warn warn_from_inodes[MAXQUOTAS];
-> @@ -2087,8 +2087,12 @@ int __dquot_transfer(struct inode *inode, struct dquot **transfer_to)
->  	 * mark_all_dquot_dirty().
->  	 */
->  	index = srcu_read_lock(&dquot_srcu);
-> -	mark_all_dquot_dirty((struct dquot __rcu **)transfer_from);
-> -	mark_all_dquot_dirty((struct dquot __rcu **)transfer_to);
-> +	err = mark_all_dquot_dirty((struct dquot __rcu **)transfer_from);
-> +	if (err < 0)
-> +		ret = err;
-> +	err = mark_all_dquot_dirty((struct dquot __rcu **)transfer_to);
-> +	if (err < 0)
-> +		ret = err;
->  	srcu_read_unlock(&dquot_srcu, index);
->  
->  	flush_warnings(warn_to);
-> @@ -2098,7 +2102,7 @@ int __dquot_transfer(struct inode *inode, struct dquot **transfer_to)
->  	for (cnt = 0; cnt < MAXQUOTAS; cnt++)
->  		if (is_valid[cnt])
->  			transfer_to[cnt] = transfer_from[cnt];
-> -	return 0;
-> +	return ret;
->  over_quota:
->  	/* Back out changes we already did */
->  	for (cnt--; cnt >= 0; cnt--) {
-> @@ -2726,6 +2730,7 @@ static int do_set_dqblk(struct dquot *dquot, struct qc_dqblk *di)
->  	struct mem_dqblk *dm = &dquot->dq_dqb;
->  	int check_blim = 0, check_ilim = 0;
->  	struct mem_dqinfo *dqi = &sb_dqopt(dquot->dq_sb)->info[dquot->dq_id.type];
-> +	int ret;
->  
->  	if (di->d_fieldmask & ~VFS_QC_MASK)
->  		return -EINVAL;
-> @@ -2807,7 +2812,9 @@ static int do_set_dqblk(struct dquot *dquot, struct qc_dqblk *di)
->  	else
->  		set_bit(DQ_FAKE_B, &dquot->dq_flags);
->  	spin_unlock(&dquot->dq_dqb_lock);
-> -	mark_dquot_dirty(dquot);
-> +	ret = mark_dquot_dirty(dquot);
-> +	if (ret < 0)
-> +		return ret;
->  
->  	return 0;
->  }
-> -- 
-> 2.40.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Building with clang results in the following warning:
+
+  posix_timers.c:69:6: warning: absolute value function 'abs' given an
+      argument of type 'long long' but has parameter of type 'int' which may
+      cause truncation of value [-Wabsolute-value]
+        if (abs(diff - DELAY * USECS_PER_SEC) > USECS_PER_SEC / 2) {
+            ^
+So switch to using llabs() instead.
+
+Fixes: 0bc4b0cf1570 ("selftests: add basic posix timers selftests")
+Signed-off-by: John Stultz <jstultz@google.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20240410232637.4135564-3-jstultz@google.com
+
+---
+ tools/testing/selftests/timers/posix_timers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/timers/posix_timers.c b/tools/testing/selftests/timers/posix_timers.c
+index 348f471..c001dd7 100644
+--- a/tools/testing/selftests/timers/posix_timers.c
++++ b/tools/testing/selftests/timers/posix_timers.c
+@@ -66,7 +66,7 @@ static int check_diff(struct timeval start, struct timeval end)
+ 	diff = end.tv_usec - start.tv_usec;
+ 	diff += (end.tv_sec - start.tv_sec) * USECS_PER_SEC;
+ 
+-	if (abs(diff - DELAY * USECS_PER_SEC) > USECS_PER_SEC / 2) {
++	if (llabs(diff - DELAY * USECS_PER_SEC) > USECS_PER_SEC / 2) {
+ 		printf("Diff too high: %lld..", diff);
+ 		return -1;
+ 	}
 
