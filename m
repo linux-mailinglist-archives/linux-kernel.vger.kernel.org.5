@@ -1,133 +1,158 @@
-Return-Path: <linux-kernel+bounces-142826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40F838A308A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:25:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90E538A30A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:27:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EBB01C21009
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:25:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 478B31F21A6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43A04127E36;
-	Fri, 12 Apr 2024 14:22:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA07E12D76D;
+	Fri, 12 Apr 2024 14:24:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="T3ZTSdss"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G7MJAlsu"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D99F86120
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABBC61327E8;
+	Fri, 12 Apr 2024 14:24:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712931778; cv=none; b=pCIQjN7IftL4bDSl7OZgEntZLz6mqdkfoXUyZ4gsdbnBshL6s/+VnF3cClySp2KZ89NNuShekki9d+6taARAAF+c+gunFXPzmovJYDB66iXQapAnjJaUPnFvkU6q1iXGLqcJjNAsGgdrOFDdR/fuqhlWsEP/zPsVFFhH9FnwVGw=
+	t=1712931846; cv=none; b=ZxQM0fe7sL/mN07AvEKdQ081GPS10QLR4QQF+jC1ok+Kg0I0eyTYVfdOKlqS2vq+1b/TU7x5RSmH2GNf5EErffb8luqcELTcWd8p9Rf/hj+ZdkjSHFRp9QBDRgZj2c/4SYoe+TvEDxxzZiNh8EfFkqVS5JQ8XYxnZI29CuuWl4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712931778; c=relaxed/simple;
-	bh=1nhHHey9PJ8DLGIRPcryUPM5m7e5VFRwQCHuQCVRLEo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ap6DrehbNmHK3lXflEA7dBwRcaASqHVwSeVbSoCH6WsvT/64BZ2JZJ8CPtfZEzeXNLPapgz9ytnDF1g1q1H09CcSJ7f/qfRRmU7Vv/dwRK7aExJVY3rf7FZ0fcT7YDiPBjpTEDkrdGA6CsA86B0HTgvNS4rAOERSK5vggveroG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=T3ZTSdss; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e509baddaso1041550a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:22:56 -0700 (PDT)
+	s=arc-20240116; t=1712931846; c=relaxed/simple;
+	bh=pvXRn+SGEozybqS3lhGoTzYl9NGJHGRBmtZjeThvLDU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=g6zn6mcwsBOqeLDbDZL7R+fh6zaPAWuUafZ51jsXYeLZGCHU+RKlZ/PrV6ghuJyij+161/iVQgOjGC+4vfcRM/+VP+T/mCQN4DXierj7BM77soQJaKyhC0C/O2NZyPObOBDncKqXM1NLRV7VbCCv2dOhvajFve2Vo0ffFy4ZviQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G7MJAlsu; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6ecf3943040so856158b3a.0;
+        Fri, 12 Apr 2024 07:24:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1712931775; x=1713536575; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HkmahkPkQACrnB5JyLYBblQR+A7iG3SRr36SJvXv7cI=;
-        b=T3ZTSdssnVDpAuyCks8a9zh1MTGMYhkUQFTpkvW6L++Ogb0G9gXIwdPoYikfLZBgtq
-         cbcrzMu4lHxmw66T2Ps64kn2OUofu2y7RUU6XYW7i4oQM6ST3ze3pOPmUeGokk2tMLb9
-         0ck9aWoPomsfo6p7Wpv4W9bwTqf+RLPiop0YWAJpGW3AN5O6b8AsQA50W/zg0j0dyp0I
-         iM+bVvSPWn2ndbCYM98j2EJliNj7o/Gzib2MTDTvraRC5dsz8jB9novhuX8+2Jhrt+3q
-         hyUGEAVV69DWblxAUfy3eNA3MEW+gdZrKXUNFY2hvVuXjPwh8VYuIbeSGfx0JLm/Wrca
-         Yigw==
+        d=gmail.com; s=20230601; t=1712931844; x=1713536644; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DAWpmgXV6PrUtIYpHal4V+0TG6cIPqQRmUscp00ed0M=;
+        b=G7MJAlsuVLIRuhGaGesqPK5VxkY1R7sL2AXNUzLDY2ejAIITu0WAmVQrJEsM1uj4xa
+         IAEcIpXJGkSOR/MNMB0F/elWR6YBS6yhz+uUBoC/OuFs6G3ETxTrDtIquCF57JYp1cGp
+         rUrpl0SJnECb95p82ALPIATSyD34Jw1yE0CHp+bRdHFaDio1Ue1GHEUGIm9sWk1pwdFE
+         rWdHVPx9YGg26/QMAKPIWqj21mkO/60uVrdVkAWq9T6mel7LU8SaOFYilj13ozn4LRv0
+         nKBzBSjrlASvKVjMHNPUQ/Ozm2fsUdCaBYG8nxaKSbqAfcap+zxLN2eL2fwOEZfYTKQj
+         BHeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712931775; x=1713536575;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HkmahkPkQACrnB5JyLYBblQR+A7iG3SRr36SJvXv7cI=;
-        b=NOHxxPS2mlMKXivtgwzwrXKsDJuhOvmH41AdRGM5lRAfWnPd63BklIYbiLa8TF4Mo1
-         2vhB2A8/iML3o0rZ4E5yKljjynefMx06bVj+TqrA6p9DHE/drz0++RiBL1ezT5U2BHl+
-         ZBoQB+U1cujVAUAlFXLa3K3oAr3/kaVWAznkCtsSqICGuHcm3QJKpZ5ppa6iXiQlYVVx
-         hbJuLTgjHTmhEeiaPV4Amz4iJQ1Z2M1WryUNZo4YYCadJB/ATtG4hwBx33btGe2xY2BO
-         t7D8G/hNXeMunJEyyiFvNpOreLGUggyd0h/f3fpsuq81Ha5Ee3JDHs5cJHzgkYkw10Xf
-         haTw==
-X-Forwarded-Encrypted: i=1; AJvYcCXQxJdkO3msQP22bNAVPACGKANPr6SBvMWzO4OTaS/3ziEQ84XSi6ZI4FwmPLyDGR2ODi9n1rJKt8KfuUR5jopLknu7p3UOc+j8+j8S
-X-Gm-Message-State: AOJu0YwqSNDGHc4v62HsZU521YqpM0e40GJxwhlI3kgs0I+d4/zcTGqi
-	mWPSlFj9VEiT6VrXMUlzSZAiRJF4Xf6GLbHaki//puLT0Ke1uMGJaiJBATQECQs=
-X-Google-Smtp-Source: AGHT+IG7S6kcG25Ko/iQD8E1ukj2BrMGOMo+mSr1Prx4UJqquhinYSgF59xquhk/ALw5JQrPnyfQRg==
-X-Received: by 2002:a50:d501:0:b0:56e:2186:847d with SMTP id u1-20020a50d501000000b0056e2186847dmr1909304edi.16.1712931775390;
-        Fri, 12 Apr 2024 07:22:55 -0700 (PDT)
-Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id k20-20020aa7c054000000b0056ff82e54a0sm920166edo.31.2024.04.12.07.22.54
+        d=1e100.net; s=20230601; t=1712931844; x=1713536644;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DAWpmgXV6PrUtIYpHal4V+0TG6cIPqQRmUscp00ed0M=;
+        b=YgV3C96Ed2DdEfyrLjPUmw5RYOyjVYiehCEPVKgFHHXPdX5czvdQgTcmsNNC1iK64M
+         cLk3gdIn6fpD4ZP8GKVO9Z/TPpoXQiPFwQkDEckakTEq+r7LrLlahV0x92sGhwGQFli5
+         bPQcFNAxui/tnQ2+CJaVKjMMN2GkUab06b+BISTOw0uXhKTLvqd9Qkj7DM+6JId8cXH/
+         +Thivjax/WzjhiMdFwBfua6Z2Jiy/QYgi7NlROxGXTP68oLgnM6pYyMmDz01jtVOb6y9
+         G7v/QTZfYtfZc7vV34PlbRCi10pEKCbT3Ol1MVdddwHguMVbSjJCnrcm0cUP5pFtXywJ
+         Digw==
+X-Forwarded-Encrypted: i=1; AJvYcCU8DguMeetFdNIGudSAH7WfX1AY3P8dHaCHSRWCjHw7oWcMttGLrwJvBM95LBcmBNcryPVzL0ZASUujMebvw7TiypOCFWIVikWpZihej5yxU9PEqeDiC3cq05kXuMYLGoWyytnvna/EcnXGBWzzNjkvzAYeXbyXlfvSnS//sKrB3iLufQHfp/it6CQ=
+X-Gm-Message-State: AOJu0YzDtEfK6nfwUj3puSCd+mpC0hHCLZ2cuU8I3JhlPDRIdd7askcA
+	8Odj6zg6/nUCAPJZDFdUUSWpiP2PDYMkFy8bIZEacOX5dAxPXpJq
+X-Google-Smtp-Source: AGHT+IEpGPBZdmTxxL9lDAtC+tf3WS6lK3QOjNLU9P/kh8HtQfqldD/Ks3PSn5Y+HC7kfzAkGlppsQ==
+X-Received: by 2002:a05:6a20:5659:b0:1a7:34c5:d141 with SMTP id is25-20020a056a20565900b001a734c5d141mr2909862pzc.24.1712931843931;
+        Fri, 12 Apr 2024 07:24:03 -0700 (PDT)
+Received: from localhost.localdomain ([113.30.217.222])
+        by smtp.gmail.com with ESMTPSA id n43-20020a056a000d6b00b006e5af565b1dsm2946952pfv.201.2024.04.12.07.24.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 07:22:54 -0700 (PDT)
-From: Luca Weiss <luca.weiss@fairphone.com>
-Date: Fri, 12 Apr 2024 16:22:53 +0200
-Subject: [PATCH v2] dt-bindings: mfd: qcom,spmi-pmic: Add pbs to SPMI
- device types
+        Fri, 12 Apr 2024 07:24:03 -0700 (PDT)
+From: Anand Moon <linux.amoon@gmail.com>
+To: Alan Stern <stern@rowland.harvard.edu>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>
+Cc: Anand Moon <linux.amoon@gmail.com>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Johan Hovold <johan@kernel.org>,
+	Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+	linux-usb@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 4/5] usb: ohci-exynos: Use DEFINE_SIMPLE_DEV_PM_OPS for PM functions
+Date: Fri, 12 Apr 2024 19:52:53 +0530
+Message-ID: <20240412142317.5191-5-linux.amoon@gmail.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240412142317.5191-1-linux.amoon@gmail.com>
+References: <20240412142317.5191-1-linux.amoon@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240412-pmi632-ppg-v2-1-8ac892b1bb61@fairphone.com>
-X-B4-Tracking: v=1; b=H4sIALxDGWYC/03Myw7CIBCF4VdpZi0Gpjfble9huqg4lFkUCBiia
- fruYt24/E9yvg0SRaYEY7VBpMyJvSuBpwq0nd1Cgh+lASU2UqlehJW7GkUIizCKzL2p1aVHhHI
- IkQy/Duw2lbacnj6+Dzur7/pjULb/TFZCCsK600M7oxyGq5k5BusdnbVfYdr3/QNZ7iMkqAAAA
- A==
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Lee Jones <lee@kernel.org>, 
- Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.13.0
+Content-Transfer-Encoding: 8bit
 
-Add the PBS (Programmable Boot Sequencer) to the list of devices.
+This macro has the advantage over SIMPLE_DEV_PM_OPS that we don't have to
+care about when the functions are actually used.
 
-Reviewed-by: Bjorn Andersson <andersson@kernel.org>
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+Also make use of pm_ptr() to discard all PM related stuff if CONFIG_PM
+isn't enabled.
+
+Signed-off-by: Anand Moon <linux.amoon@gmail.com>
 ---
-Changes in v2:
-- Pick up tags
-- Rebase on linux-next, drop merged patches
-- Link to v1: https://lore.kernel.org/r/20240205-pmi632-ppg-v1-0-e236c95a2099@fairphone.com
----
- Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+v3: fix using new DEFINE_SIMPLE_DEV_PM_OPS PM macro hence
+    change the $subject and the commit message
 
-diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-index 8103fb61a16c..b7f01cbb8fff 100644
---- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-+++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-@@ -160,6 +160,10 @@ patternProperties:
-     type: object
-     $ref: /schemas/nvmem/qcom,spmi-sdam.yaml#
+v2: new file
+---
+ drivers/usb/host/ohci-exynos.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/usb/host/ohci-exynos.c b/drivers/usb/host/ohci-exynos.c
+index 89e6587c089b..3c4d68fd5c33 100644
+--- a/drivers/usb/host/ohci-exynos.c
++++ b/drivers/usb/host/ohci-exynos.c
+@@ -213,7 +213,6 @@ static void exynos_ohci_shutdown(struct platform_device *pdev)
+ 		hcd->driver->shutdown(hcd);
+ }
  
-+  "^pbs@[0-9a-f]+$":
-+    type: object
-+    $ref: /schemas/soc/qcom/qcom,pbs.yaml#
-+
-   "phy@[0-9a-f]+$":
-     type: object
-     $ref: /schemas/phy/qcom,snps-eusb2-repeater.yaml#
-
----
-base-commit: fa8c2b5f446d6e8ff4bc8f67ba944b1be3aad790
-change-id: 20240117-pmi632-ppg-f1efb4318722
-
-Best regards,
+-#ifdef CONFIG_PM
+ static int exynos_ohci_suspend(struct device *dev)
+ {
+ 	struct usb_hcd *hcd = dev_get_drvdata(dev);
+@@ -250,19 +249,13 @@ static int exynos_ohci_resume(struct device *dev)
+ 
+ 	return 0;
+ }
+-#else
+-#define exynos_ohci_suspend	NULL
+-#define exynos_ohci_resume	NULL
+-#endif
+ 
+ static const struct ohci_driver_overrides exynos_overrides __initconst = {
+ 	.extra_priv_size =	sizeof(struct exynos_ohci_hcd),
+ };
+ 
+-static const struct dev_pm_ops exynos_ohci_pm_ops = {
+-	.suspend	= exynos_ohci_suspend,
+-	.resume		= exynos_ohci_resume,
+-};
++static DEFINE_SIMPLE_DEV_PM_OPS(exynos_ohci_pm_ops,
++				exynos_ohci_suspend, exynos_ohci_resume);
+ 
+ #ifdef CONFIG_OF
+ static const struct of_device_id exynos_ohci_match[] = {
+@@ -278,7 +271,7 @@ static struct platform_driver exynos_ohci_driver = {
+ 	.shutdown	= exynos_ohci_shutdown,
+ 	.driver = {
+ 		.name	= "exynos-ohci",
+-		.pm	= &exynos_ohci_pm_ops,
++		.pm	= pm_ptr(&exynos_ohci_pm_ops),
+ 		.of_match_table	= of_match_ptr(exynos_ohci_match),
+ 	}
+ };
 -- 
-Luca Weiss <luca.weiss@fairphone.com>
+2.44.0
 
 
