@@ -1,194 +1,136 @@
-Return-Path: <linux-kernel+bounces-142454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61E998A2BC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:03:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 661378A2BCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:03:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02F031F234A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:03:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD480B25B21
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:03:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D73153384;
-	Fri, 12 Apr 2024 10:01:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15538535BF;
+	Fri, 12 Apr 2024 10:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KH6DsjiM"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fiJIP4oF";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="m8XaeSpH"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0445151C54
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 10:01:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54DE551C4C;
+	Fri, 12 Apr 2024 10:03:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712916110; cv=none; b=DCthEQ7lF6rZ5Rq5+y3F2NdIxLhr12Fr8RSbH7LeT7n4hhpjbcIdDs3GCKuBTDTwNk+lcHS7NvKemcJW33oOrR9ugyDf9Vogic06me7AiOVNxayT/NQRbKHCKGBTNUni8YWNoQCXPcytc2iQrMLSMiApNnZDDBgrDQtrLXh4Cjs=
+	t=1712916207; cv=none; b=shXDECikBe862MrgqrEoHwZyVv+g/Zfg/+43MQRrxgs1Tcxd0aypHszvARzT8NDSoAuqO4usHtEPtrHxKTc239mvkZm69LL4qbsl7nOE014gsQ+ahQOYGtHr3cAYI6jHMj/f9E4GmEB4nSskcFVtlXmpKeLWUYsj1r2gGga3rfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712916110; c=relaxed/simple;
-	bh=n5UIGDnGAnQhmspgpvLN1L4/vpZPbUm9S+DnELtT/rA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=f4u3ZA8aO8XR5pdnu7JT2GSB7BIAn/Tedbax195mqQsXDZGaHlAj79xqawXZShMD9laAUhfAhXtnh2Pj+Pswlx+bRjMWL7L6qSgOY+MSS4DtIemUDkYujpMSwUb2sS8bhM7E5Vw4U6LAFn92l9UfHwFpS5EcJPDrNGT98tMzh08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KH6DsjiM; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712916106; x=1744452106;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=n5UIGDnGAnQhmspgpvLN1L4/vpZPbUm9S+DnELtT/rA=;
-  b=KH6DsjiMrGmanF1OoByJTDKT61PMa5qxffTyR6gH/B0DLxz0TKzLNGS0
-   O8zrBOvNe1t90f5U3aWpTwR1Uo6+lD3N5t3YQk3CtkUJEmRDrsAGvNmIT
-   g4cvPl1qFx+F4xZJdr1LzjE8+5p7n9nuvbW53ar2DsLBZTDDi1WP6TPj2
-   Tk79pX7yv+SIPAQTORxUAOBC2JKTwxKq6vhqNQ8u22wot+JDcfDiciS9r
-   G9DPYCrh7Sr05D6dkL43s9ivzdCc7ZsaAoKgvLYIhimOKFjvoyAkIbh1O
-   4R9cDxQ7ZatFkeNulnlgQ3Twfq3SoIodGyixRmoHfdrevOd+Na8dOdzcX
-   g==;
-X-CSE-ConnectionGUID: RefX/JqLQkSvN2iHfpoaug==
-X-CSE-MsgGUID: hyaFvKWYRRSppq97f+utug==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="18922738"
-X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
-   d="scan'208";a="18922738"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 03:01:45 -0700
-X-CSE-ConnectionGUID: IlXeGO8KSAa7B1wu4RcR3g==
-X-CSE-MsgGUID: gqWz5/k8RZ2rNOlwnX4DQg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
-   d="scan'208";a="52161505"
-Received: from mohdaris-mobl1.gar.corp.intel.com (HELO localhost) ([10.252.61.65])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 03:01:43 -0700
-From: Jani Nikula <jani.nikula@intel.com>
-To: Steven Price <steven.price@arm.com>, Andrew Morton
- <akpm@linux-foundation.org>, David Laight <David.Laight@ACULAB.COM>
-Cc: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, David Gow
- <davidgow@google.com>, Christian =?utf-8?Q?K=C3=B6nig?=
- <christian.koenig@amd.com>
-Subject: Re: [PATCH 0/4] log2: make is_power_of_2() more generic
-In-Reply-To: <8905800b-a977-e821-01ea-a43333f46904@arm.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20230330104243.2120761-1-jani.nikula@intel.com>
- <20230330125041.83b0f39fa3a4ec1a42dfd95f@linux-foundation.org>
- <549987e4967d45159573901d330c96a0@AcuMS.aculab.com>
- <20230330151846.fdbc8edbfbaa6eaddb056dc7@linux-foundation.org>
- <87edp52ufk.fsf@intel.com> <8905800b-a977-e821-01ea-a43333f46904@arm.com>
-Date: Fri, 12 Apr 2024 13:01:36 +0300
-Message-ID: <87jzl2527z.fsf@intel.com>
+	s=arc-20240116; t=1712916207; c=relaxed/simple;
+	bh=GE3zewDFEJy62QBcsshA51A2GHr1MK+CmGMdKwDY9ew=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=TdmxR39Vn09CwB1de5rmFqICKe4wFwpC5h3nxmilryS1T1v8Mtg4pwHKHrGThgRU8y13Zo1RzolTElz4ZBHlXa/KhgtIAzQAOZ1fOAxAVTC0NylYgcpvmM6LiysMwDQEHc6ONlqYxfOOi9Q7xT/9xjB+Us+MpxyPLc/Vw4an0Ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fiJIP4oF; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=m8XaeSpH; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 12 Apr 2024 10:03:21 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712916202;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aXX4u4b55YoYWQNcUt9JRPqDtNAJ3+fmaYA8NC8A0CI=;
+	b=fiJIP4oFlhPHljGqD3623yYP5JeWPR8Sd2iBBSUw9ANwbC41GUCGYhi2UCRrBwu6+tucwl
+	dtyJyuE7wOBUHcEiMWNYYsNvv99vH/efRpYvoOQjJ7MRjHSx7AJZRGsmhvVS29X98qIKv1
+	vKPbsUrun8Y/7vJVstAd/gunbFlApdJwfZ3daI4Cm53PVtXvx6ZWJLkC52x3nWe6QFKGcg
+	D1WlcoGA/yrmn33x+frXp2FAfMMtJ/o3LdEmQxggxVNRFrAdeBeSyDplWn4e2SF0GnlsFu
+	oFq4+gPNsjyzaENFs9gsZLlvUoOGEVO/+UCVvgoBnDrKUFMFsGcF/9WaO1rDlw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712916202;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aXX4u4b55YoYWQNcUt9JRPqDtNAJ3+fmaYA8NC8A0CI=;
+	b=m8XaeSpHmB91B5bmK20u2HKrMJEwJkFgr5XxVJdhzUAt//ompcalkQMZdWC/1kb1ScmCs3
+	796ILoqkwqmQYFDw==
+From: "tip-bot2 for Ingo Molnar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/bpf: Change the !CONFIG_BPF_SYSCALL stubs to
+ static inlines
+Cc: Ingo Molnar <mingo@kernel.org>, Kyle Huey <me@kylehuey.com>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <ZhkE9F4dyfR2dH2D@gmail.com>
+References: <ZhkE9F4dyfR2dH2D@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <171291620188.10875.569943657110108283.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Wed, 05 Apr 2023, Steven Price <steven.price@arm.com> wrote:
-> On 31/03/2023 09:31, Jani Nikula wrote:
->> On Thu, 30 Mar 2023, Andrew Morton <akpm@linux-foundation.org> wrote:
->>> On Thu, 30 Mar 2023 21:53:03 +0000 David Laight <David.Laight@ACULAB.COM> wrote:
->>>
->>>>> But wouldn't all these issues be addressed by simply doing
->>>>>
->>>>> #define is_power_of_2(n) (n != 0 && ((n & (n - 1)) == 0))
->>>>>
->>>>> ?
->>>>>
->>>>> (With suitable tweaks to avoid evaluating `n' more than once)
->>>>
->>>> I think you need to use the 'horrid tricks' from min() to get
->>>> a constant expression from constant inputs.
->>>
->>> This
->>>
->>> --- a/include/linux/log2.h~a
->>> +++ a/include/linux/log2.h
->>> @@ -41,11 +41,11 @@ int __ilog2_u64(u64 n)
->>>   * *not* considered a power of two.
->>>   * Return: true if @n is a power of 2, otherwise false.
->>>   */
->>> -static inline __attribute__((const))
->>> -bool is_power_of_2(unsigned long n)
->>> -{
->>> -	return (n != 0 && ((n & (n - 1)) == 0));
->>> -}
->>> +#define is_power_of_2(_n)				\
->>> +	({						\
->>> +		typeof(_n) n = (_n);			\
->>> +		n != 0 && ((n & (n - 1)) == 0);		\
->>> +	})
->>>  
->>>  /**
->>>   * __roundup_pow_of_two() - round up to nearest power of two
->>> _
->>>
->>> worked for me in a simple test.
->>>
->>> --- a/fs/open.c~b
->>> +++ a/fs/open.c
->>> @@ -1564,3 +1564,10 @@ int stream_open(struct inode *inode, str
->>>  }
->>>  
->>>  EXPORT_SYMBOL(stream_open);
->>> +
->>> +#include <linux/log2.h>
->>> +
->>> +int foo(void)
->>> +{
->>> +	return is_power_of_2(43);
->>> +}
->>> _
->>>
->>>
->>> foo:
->>> # fs/open.c:1573: }
->>> 	xorl	%eax, %eax	#
->>> 	ret	
->>>
->>>
->>> Is there some more tricky situation where it breaks?
->> 
->> It doesn't work with BUILD_BUG_ON_ZERO().
->
-> Like most programming problems, you just need another layer of
-> indirection! The below works for me in all the cases I could think of
-> (including __uint128_t).
->
->
-> #define __IS_POWER_OF_2(n) (n != 0 && ((n & (n - 1)) == 0))
->
-> #define _IS_POWER_OF_2(n, unique_n)				\
-> 	({							\
-> 		typeof(n) unique_n = (n);			\
-> 		__IS_POWER_OF_2(unique_n);			\
-> 	})
->
-> #define is_power_of_2(n)					\
-> 	__builtin_choose_expr(__is_constexpr((n)),		\
-> 			      __IS_POWER_OF_2((n)),		\
-> 			      _IS_POWER_OF_2(n, __UNIQUE_ID(_n)))
->
->
-> Although Jani's original might be easier to understand.
+The following commit has been merged into the perf/core branch of tip:
 
-I dropped the ball since I couldn't make heads or tails what I should be
-doing. And a year has passed. I'll note that the kernel has a number of
-helpers for "is power of 2" for u64 and for constant expressions,
-outside of log2.h.
+Commit-ID:     93d3fde7fd19c2e2cde7220e7986f9a75e9c5680
+Gitweb:        https://git.kernel.org/tip/93d3fde7fd19c2e2cde7220e7986f9a75e9c5680
+Author:        Ingo Molnar <mingo@kernel.org>
+AuthorDate:    Fri, 12 Apr 2024 11:55:00 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 12 Apr 2024 11:56:00 +02:00
 
-I tried to make is_power_of_2() work for all the cases. Would it be more
-palatable if I just added all the variants separately to log2.h?
+perf/bpf: Change the !CONFIG_BPF_SYSCALL stubs to static inlines
 
-- Leave is_power_of_2() as is
-- Add is_power_of_2_u64() for 32-bit build compatible 64-bit checks
-- Add IS_POWER_OF_2() macro for constant expressions
+Otherwise the compiler will be unhappy if they go unused,
+which they do on allnoconfigs.
 
-Please just tell me what to do and I'll do it.
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Kyle Huey <me@kylehuey.com>
+Link: https://lore.kernel.org/r/ZhkE9F4dyfR2dH2D@gmail.com
+---
+ kernel/events/core.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-BR,
-Jani.
-
-
--- 
-Jani Nikula, Intel
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 2212670..6708c11 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -9638,21 +9638,21 @@ static void perf_event_free_bpf_handler(struct perf_event *event)
+ 	bpf_prog_put(prog);
+ }
+ #else
+-static int bpf_overflow_handler(struct perf_event *event,
+-				struct perf_sample_data *data,
+-				struct pt_regs *regs)
++static inline int bpf_overflow_handler(struct perf_event *event,
++				       struct perf_sample_data *data,
++				       struct pt_regs *regs)
+ {
+ 	return 1;
+ }
+ 
+-static int perf_event_set_bpf_handler(struct perf_event *event,
+-				      struct bpf_prog *prog,
+-				      u64 bpf_cookie)
++static inline int perf_event_set_bpf_handler(struct perf_event *event,
++					     struct bpf_prog *prog,
++					     u64 bpf_cookie)
+ {
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static void perf_event_free_bpf_handler(struct perf_event *event)
++static inline void perf_event_free_bpf_handler(struct perf_event *event)
+ {
+ }
+ #endif
 
