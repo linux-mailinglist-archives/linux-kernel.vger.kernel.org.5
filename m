@@ -1,197 +1,101 @@
-Return-Path: <linux-kernel+bounces-141877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9CC38A2482
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:51:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1E928A248C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:56:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02A0A1C211EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:51:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80A6BB21640
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE77017BD4;
-	Fri, 12 Apr 2024 03:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ABBA17C7C;
+	Fri, 12 Apr 2024 03:56:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l4UTcjRO"
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="dOfhEEQ9"
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9BB115AF1
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 03:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1670617BBF
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 03:56:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712893881; cv=none; b=TRnZduJb2GcBviRnaRzgXwdinuCH0the+pt8l5lSa0BKPyhs1CoScWsqCAHneGwcXrbc6vHCKoqIxSGKNCgjPQutJVk+sLERpUV6DVKfVJVnGWMhCbQNhqUGBc5eNj4rvT7zuSDWYicM9U0sYvwhvpKryjyrSdgsuA4RNnMcj4I=
+	t=1712894166; cv=none; b=XAnez24Ck3wc2N8OmneC8TcQc5w7HpdhS0jZPKRydWPezUYFsxf4FqFxREUwr0Xi2ZvBlTs0+htfenefBIrn24mfziaE5HF6Otqu5fQUGkkbGpY/lccV6D3NUhtxa2gbobwtSg6sEDfxJ4TFZXK1LAX/ZUq6IplK7DsmHhKilnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712893881; c=relaxed/simple;
-	bh=pcBlVy6bPYDqNoRlb1dwSstSZkriaADkJyZMbpJXDKI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=o6fde0feoOZMLy6Me91kNYT4uJ+sQgao5OzYDxID+qLP0Nfcbof0/fgHmOse4CxJkopTlJPzTNx21jFzBkguHCj8UMVv49J/vhc41fgx95ZQ/ORR70jO8DWUt5rCxUXtS/WXuG+FVzR9nl7HDlxLzsZikD1nnFIxiGPFcHJ1U5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l4UTcjRO; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5aa22ebd048so376360eaf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:51:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712893879; x=1713498679; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4bzY4596sfM/9zLFq+hul7IoQ+dQ+EIJvV2zsj37DAk=;
-        b=l4UTcjROEsVQEhLAG1tG9FvkTbaeDu+quRyn1uq/K2J0VCbXeCtu5NuizXb3XDbJx9
-         swCjkBONSQSVpTccCsU4oSxxMhhkr08M4lJ++bpEMYaeNOiOUp/0593dGx7i4JJ7IJyd
-         nrT26eST1UOO5CgMrFKYuWaaV8W/ZGgD6JWoIxBkCveVunu6an/OcS02X2UXtLAbOuIb
-         iyNMLb5hECF8SkjOUJQFKuwTEG8e+ioCOzJGoVnSO8HZsG4c6paeiIFNwexjZ0EU/gI0
-         RW3bcxT0AQ0ldQuk5F0dU2TJSz/RxolmXCjD58okqJLmgr/vji8D8MCivATXtQdowscO
-         rm+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712893879; x=1713498679;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4bzY4596sfM/9zLFq+hul7IoQ+dQ+EIJvV2zsj37DAk=;
-        b=kWbkW4AT6oDhuj5tbM99i+6m/NtEL/ttymSSYH1n5l1XvjWRlqpNeT1qW1DsAIf3Ng
-         IC4/qcS7ZoAZ1Hf6Sw5xU+4g96BlH/a4LmKdeXhQlbgJ+jCrOp+iTQuN7IvwAKgGarhk
-         /mHXxzCUSULIF9iemIdNj44iodyes5uYBJrcGnOTAyM38U0Uwfv5Vmo2ILWi7+3eNNR2
-         XTAx9zoSlMCbgKMGladJMSa3nuMX/btPcBrRssmuWnNCVNzRJsJAiWApLozNKHS+CMSx
-         42g4CD1cpO9NStCQ2zDL1atE/CQgsi/aBtP7ewvVdOQUZ3ptrMaymtl1MoGpNCkE6Jbs
-         q1RQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUgWFK6NvzC70nWbXk/A1Kz/M2fJzl9e+OkwbHXT/fo1KIl3P5woEN++6N7JFRnCQKwFJtlH+TG7r5rKe7oRKdc0FZ8aEwwVrcdkMKr
-X-Gm-Message-State: AOJu0YwZDDTOhjoDcWbu79pwa/jK44ts3MEeVm40DkkON5+EV9eB8GlK
-	Cc7vmb3CxncpYUcqRI8TAAUcfRTghiq1bk39xDunSr/gR2QrW/KIc2MyNW7W
-X-Google-Smtp-Source: AGHT+IGCOWvN10gwtK41NG7gcU83k5LcliiTl9q4NSeG7jIUo4FN8waEU5bHybUmzOYVFJBlQ5BXiQ==
-X-Received: by 2002:a05:6358:6b0b:b0:186:41a2:cbd2 with SMTP id y11-20020a0563586b0b00b0018641a2cbd2mr1325524rwg.27.1712893878886;
-        Thu, 11 Apr 2024 20:51:18 -0700 (PDT)
-Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id c31-20020a631c5f000000b005dc9439c56bsm1815658pgm.13.2024.04.11.20.51.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 20:51:18 -0700 (PDT)
-From: Yuntao Wang <ytcoode@gmail.com>
-To: mhiramat@kernel.org
-Cc: akpm@linux-foundation.org,
-	arnd@arndb.de,
-	christophe.leroy@csgroup.eu,
-	geert@linux-m68k.org,
-	jpoimboe@kernel.org,
-	kjlx@templeofstupid.com,
-	linux-kernel@vger.kernel.org,
-	ndesaulniers@google.com,
-	peterz@infradead.org,
-	rppt@kernel.org,
-	tglx@linutronix.de,
-	tj@kernel.org,
-	ytcoode@gmail.com
-Subject: Re: [PATCH] init/main.c: Fix potential static_command_line memory overflow
-Date: Fri, 12 Apr 2024 11:51:07 +0800
-Message-ID: <20240412035109.13680-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240412000858.7d81a7b946af172e6aed554d@kernel.org>
-References: <20240412000858.7d81a7b946af172e6aed554d@kernel.org>
+	s=arc-20240116; t=1712894166; c=relaxed/simple;
+	bh=jgsySEBfBr2yKswNUwikz+FITKjJFHnZo959lH69wCc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q5pW54PSRuj5l+0T70MEIcz/53ntB/B5ThLMx/6Pb+TzaQRk5shAXkjrWlQWVJpmy0DZfu7mDmkJpGHgyq0/2hE0+IQNMM5Xughwk0KAKlmfcqtVFBB5qi6JzcnKt1nruu83LcAUPnVqKvahhIgujRKiMWaSWx7q63dfCxkAAMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=dOfhEEQ9; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-113-60.bstnma.fios.verizon.net [173.48.113.60])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 43C3taCf022568
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 11 Apr 2024 23:55:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1712894139; bh=3y/worbB/UJgc5iThuhYF+NXbVCCGkZo3/cJ22BJobY=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=dOfhEEQ9qq2eBitbPxPjKxnkbJWSMYIq1Rs9v8s7FZrm/N+xrL/FeLtG4Xhco4aa+
+	 9KjnG+3c+QEho2i8qjlsc0/V877gOB3E8JgjYiqA57Y2vbPvf49slCx5MILUZxHBmx
+	 M/uyW4qTo6mLzYZ6Rbl+m/tuv6ctdgKrStE5y97R99R2NZ4FMnpyVdqs+OENXLL/Xs
+	 2upBA/iKiGG6BwvhxfYFaA9uZbibTNfkoMhR55UJhrrzdpJGr5FIqVbuICSZAgZaXd
+	 4K5o0QgrJuXwth+ijJ0iMDwdxYa/OUnBU04kgq6AtFtWJDfbwpyKwI4SCxTPujQcUW
+	 5Gk1v01opiBUw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 7761F15C00DE; Thu, 11 Apr 2024 23:55:36 -0400 (EDT)
+Date: Thu, 11 Apr 2024 23:55:36 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: "yebin (H)" <yebin10@huawei.com>
+Cc: Jan Kara <jack@suse.cz>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] jbd2: avoid mount failed when commit block is partial
+ submitted
+Message-ID: <20240412035536.GD187181@mit.edu>
+References: <20240402090951.527619-1-yebin10@huawei.com>
+ <20240402134240.5he4mxei3nvzolb3@quack3>
+ <20240403033742.GE1189142@mit.edu>
+ <20240403101122.rmffivvvf4a33qis@quack3>
+ <6611F8D5.3030403@huawei.com>
+ <20240411133718.tq74yorf6odpla4r@quack3>
+ <20240411145559.GB187181@mit.edu>
+ <66188E1B.6070209@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66188E1B.6070209@huawei.com>
 
-On Fri, 12 Apr 2024 00:08:58 +0900, Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+On Fri, Apr 12, 2024 at 09:27:55AM +0800, yebin (H) wrote:
+> I thought of a solution that when the commit block checksum is
+> incorrect, retain the first 512 bytes of data, clear the subsequent
+> data, and then calculate the checksum to see if it is correct. This
+> solution can distinguish whether the commit is complete for
+> components that can ensure the atomicity of 512 bytes or more. But
+> for HDD, it may not be able to distinguish, but it should be
+> alleviated to some extent.
 
-> On Thu, 11 Apr 2024 22:27:23 +0800
-> Yuntao Wang <ytcoode@gmail.com> wrote:
-> 
-> > On Thu, 11 Apr 2024 16:21:37 +0300, Mike Rapoport <rppt@kernel.org> wrote:
-> > > On Thu, Apr 11, 2024 at 09:23:47AM +0200, Geert Uytterhoeven wrote:
-> > > > CC Hiramatsu-san
-> > > > 
-> > > > On Thu, Apr 11, 2024 at 5:25 AM Yuntao Wang <ytcoode@gmail.com> wrote:
-> > > > > We allocate memory of size 'xlen + strlen(boot_command_line) + 1' for
-> > > > > static_command_line, but the strings copied into static_command_line are
-> > > > > extra_command_line and command_line, rather than extra_command_line and
-> > > > > boot_command_line.
-> > > > >
-> > > > > When strlen(command_line) > strlen(boot_command_line), static_command_line
-> > > > > will overflow.
-> > > 
-> > > Can this ever happen? 
-> > > Did you observe the overflow or is this a theoretical bug?
-> > 
-> > I didn't observe the overflow, it's just a theoretical bug.
-> > 
-> > > > > Fixes: f5c7310ac73e ("init/main: add checks for the return value of memblock_alloc*()")
-> > > 
-> > > f5c7310ac73e didn't have the logic for calculating allocation size, we
-> > > surely don't want to go back that far wiht Fixes.
-> > 
-> > Before commit f5c7310ac73e, the memory size allocated for static_command_line
-> > was 'strlen(command_line) + 1', but commit f5c7310ac73e changed this size
-> > to 'strlen(boot_command_line) + 1'. I think this should be wrong.
-> 
-> Ah, OK. that sounds reasonable. 
-> 
-> > 
-> > > > > Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-> > > > > ---
-> > > > >  init/main.c | 8 +++++---
-> > > > >  1 file changed, 5 insertions(+), 3 deletions(-)
-> > > > >
-> > > > > diff --git a/init/main.c b/init/main.c
-> > > > > index 2ca52474d0c3..a7b1f5f3e3b6 100644
-> > > > > --- a/init/main.c
-> > > > > +++ b/init/main.c
-> > > > > @@ -625,11 +625,13 @@ static void __init setup_command_line(char *command_line)
-> > > > >         if (extra_init_args)
-> > > > >                 ilen = strlen(extra_init_args) + 4; /* for " -- " */
-> > > > >
-> > > > > -       len = xlen + strlen(boot_command_line) + 1;
-> > > > > +       len = xlen + strlen(boot_command_line) + ilen + 1;
-> > > > >
-> > > > > -       saved_command_line = memblock_alloc(len + ilen, SMP_CACHE_BYTES);
-> > > > > +       saved_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
-> > > > >         if (!saved_command_line)
-> > > > > -               panic("%s: Failed to allocate %zu bytes\n", __func__, len + ilen);
-> > > > > +               panic("%s: Failed to allocate %zu bytes\n", __func__, len);
-> > > > > +
-> > > > > +       len = xlen + strlen(command_line) + 1;
-> 
-> Ah, I missed this line. Sorry. So this looks good to me but you don't need any
-> other lines, because those are not related to the bug you want to fix.
-> Please just focus on 1 fix.
+Yeah, we discussed something similar at the weekly ext4 call; the idea
+was to change the kernel to zero out the jbd2 block before we fill in
+any jbd2 tags (including in the commit block) when writing the
+journal.  Then in the journal replay path, if the checksum doesn't
+match, we can try zeroing out everything beyond the size in the header
+struct, and then retry the the checksum and see if it matches.
 
-Hi Masami,
+This also has the benefit of making sure that we aren't leaking stale
+(uninitialized) kernel memory to disk, which could be considered a
+security vulnerability in some cases --- although the likelihood that
+something truly sensitive could be leaked is quite low; the attack
+requires raw access to the storate device; and exposure similar to
+what gets written to the swap device.  Still there are people who do
+worry about such things.
 
-Do I need to split this patch into two? Or should I just repost this patch
-with any other lines not related to this bug removed?
-
-Actually, I think these lines are still necessary as they make the code
-look a bit cleaner.
-
-Thanks,
-Yuntao
-
-> Thank you,
-> 
-> > > > >
-> > > > >         static_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
-> > > > >         if (!static_command_line)
-> > > > 
-> > > > Gr{oetje,eeting}s,
-> > > > 
-> > > >                         Geert
-> > > > 
-> > > > -- 
-> > > > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> > > > 
-> > > > In personal conversations with technical people, I call myself a hacker. But
-> > > > when I'm talking to journalists I just say "programmer" or something like that.
-> > > >                                 -- Linus Torvalds
-> > > 
-> > > -- 
-> > > Sincerely yours,
-> > > Mike.
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+						- Ted
 
