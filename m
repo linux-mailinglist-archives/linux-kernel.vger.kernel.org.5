@@ -1,184 +1,194 @@
-Return-Path: <linux-kernel+bounces-142737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD7B38A2F80
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:34:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 422AF8A2F81
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:34:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19A931C216D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:34:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AFCDB241AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:34:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F67083CC8;
-	Fri, 12 Apr 2024 13:34:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8B8A83CD4;
+	Fri, 12 Apr 2024 13:34:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B1F7xpqb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jY/IlpJN"
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9BB483CA6;
-	Fri, 12 Apr 2024 13:34:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C1D83CBA;
+	Fri, 12 Apr 2024 13:34:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712928843; cv=none; b=YpD8JPru9WzdWCmDmFELdw/Tu9yKodXs3tMv5UeTZjYd16ogiOqEfhQRqVnNNH9bfWZO/PVU3s/EgKgDPbMz0gtqTLCU378dJgt5PJr+/umFN6Hi9/e3qmBZASSvzjzvXYVmoi9B1lDAwkZUDZ2EQfEeDrgipHR7GU4zW2dqY6g=
+	t=1712928855; cv=none; b=F9LGXfMXzoz10MwybRY+Nnfl9Ll9X7aOcih68XXcK1WJ0HzXe8s1kyZmOEjRcjTjrjLe4gQYq4UMduq+DrNxGx+6t07/c6ASeQMuevuonXpk2uNltY8P2KeQQ71SmRolew2eOe397H7eQoDRZ+gNQxR/sGzOeYeGh4nlBJgbpBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712928843; c=relaxed/simple;
-	bh=H/5Y4943nz8CB9370bqXYhLtnrWjvViTVIaYI0FXTBU=;
+	s=arc-20240116; t=1712928855; c=relaxed/simple;
+	bh=bXuJBsmh+9cSqT7Y0dmwOptaeFP94AwFcrF1Nc5BiuI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fYhy+rsKtAnQj+uYriEWfjS5g3Xe1FTYkAE6lki93JMPo/LJYrgPUIfqqCYsCZmeapLnNbFtq4KavkMA3w6LjG0zzyzlu9cEa2ggsg6wuaIW66Hin7qIErTV50I7hyfT0yKLhOu30T0v7ddr/u1KVpEA+nd7caaIBxJ54eYzaoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B1F7xpqb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 782A1C113CC;
-	Fri, 12 Apr 2024 13:34:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712928842;
-	bh=H/5Y4943nz8CB9370bqXYhLtnrWjvViTVIaYI0FXTBU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B1F7xpqbXMlsIlbhQv7f04ytdIJi1BFBq1mId+1PLQCCrBozo1jQcO9gVDvi0Wamx
-	 KxXnTzXS/J4MiXbHcUEfJr67duV5rU+gMk51fR3uDKUg61QEAQCa0xRkbmzuHMbnX+
-	 FAIgd/g7qFdkcV5Rlc6w95Ox2msXM53kgDrPX1QXLi4uTN2gQxv0iDwEUFdPYml+VH
-	 hV5M4IiQy5iPlhy3ludusTZSeGDufHKT6GUgvSsSe8Ym+AWJPU/yQfTq5A53T60ALQ
-	 t4uARCqvgIa9VztJ2iOCTqF/dsvkA+tm9ktM+y1rn98+MDhePmdQD+XZQV1phGnHIe
-	 LMaZrzYb4KgTg==
-Date: Fri, 12 Apr 2024 08:34:00 -0500
-From: Rob Herring <robh@kernel.org>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Peng Fan <peng.fan@nxp.com>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 2/6] dt-bindings: firmware: add i.MX95 SCMI Extension
- protocol
-Message-ID: <20240412133400.GA2282201-robh@kernel.org>
-References: <20240412-imx95-bbm-misc-v2-v3-0-4380a4070980@nxp.com>
- <20240412-imx95-bbm-misc-v2-v3-2-4380a4070980@nxp.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NUiuqKF1sfUS/0s0FM15N7ESTCNspY0Suw6upXM4qylEZputXdD0tJkfidDq3jtb6zxnku9QO0QHnDg+UmhVfZ91k93fnkO3GJNnhKzaEITtb2vS8W1bBr7zQXXq+hX2VPobPTNmo5ohT+4d/VrbrANo2HtkeNuwRioIlAtqJEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jY/IlpJN; arc=none smtp.client-ip=209.85.160.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-22e6b61d652so375897fac.0;
+        Fri, 12 Apr 2024 06:34:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712928853; x=1713533653; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=KvnQBzgnQ9uzdcnNmTyAu4+OT66V0srgD7VC/MHPQzE=;
+        b=jY/IlpJN+sJu/dLKO2vpnbnmb6X1sT+W9+UBJqpfpUSwnAKl57tDb0HwFIf5PQNSsE
+         StgaWZZ1L2W2IDIDU0I4XMEQWbT9bjDnteOuGu5N1IPZbEpZFT9t4xtF0+Bce/Vwd/EU
+         vVmM6RCsFOSfGbZR4sy80OqVkl1XWfPZUL36H7d7Yw1XViNwrFLrjDKQucPzxodJ/x7U
+         za3I+k7QO4vAzlWip91jEC+EbXMHK6Lo0L6CDcDDd4GXADQizHU9M/JKea2c3Cdh5czg
+         FTp6KVOb+CFNyOSzPFTrxKvKiXJ4EMHWxM6qShnXfrCd9eICNVTVFraKbq6viJk21Dvl
+         K3mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712928853; x=1713533653;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :feedback-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KvnQBzgnQ9uzdcnNmTyAu4+OT66V0srgD7VC/MHPQzE=;
+        b=SVcdhzLP2Ha7kBrTiTv4rzQR3VbWtYSqWanVUqDAZMHtbs0DVM8G/Zo5kKrpIC4KPM
+         uBzRELgRZcf+rFNDiFbD9U+RpU2j4bToErxKNVO8v5U/URly9o6Pdm4BD87cTze2ip+f
+         93BzaE0ET5n+iLZEp8aWBcXCFukKNP54h4QNKJOv9JOU0GryAR9MOuEaJwI9zLRXN05j
+         bxqIxpiJq9gsnk/TT72cTWglaWZXeRKPuKuwo3InJQpG5MFFtfc8BtcSVEIFi9YPbHLU
+         Lwnh6yjBGEhxCSpchDR277loBHeMoOaosHdbSTM8NiY0L+N0WY93bA9PVXVav36KDcqk
+         jP1w==
+X-Forwarded-Encrypted: i=1; AJvYcCVKVqGH3Of0Mgo40jmK0LhbKoaJJdejUxQRDNTLVqxIc5B1cJ5GfSFRLsHalHCdSMTqNcUhdEZop3JfJI9qPfXx0ONz0TSIvezUx2zISiBsxFCoQXcECLR+hS+dkW9HTKulCg/5/qRojRcszK4=
+X-Gm-Message-State: AOJu0Yz5/JPsvoRwa5uODaQb/19KBIn13yvP1v3XoaRa8r8wwr2BoCuJ
+	ownQN/0Jc/eeyBk/A4hjt7psS8DqJUtBTDyn/R+rwAxcCDXM+wDh
+X-Google-Smtp-Source: AGHT+IEkVEiOlsnwx7zwiEWGQXRD4FOqTaoslwquKyUNiezCxlBMBl7euy1yuc9DBbIHaY9eVZakjw==
+X-Received: by 2002:a05:6870:4689:b0:22e:df68:ee7a with SMTP id a9-20020a056870468900b0022edf68ee7amr3006137oap.42.1712928853468;
+        Fri, 12 Apr 2024 06:34:13 -0700 (PDT)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id h13-20020ac8714d000000b00434ee466ea6sm2226084qtp.22.2024.04.12.06.34.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 06:34:12 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 7799C1200066;
+	Fri, 12 Apr 2024 09:34:12 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 12 Apr 2024 09:34:12 -0400
+X-ME-Sender: <xms:VDgZZnw8m58zfDWAICVPSINpABCStGj9owgD0koi_5J3WhbMugTX2A>
+    <xme:VDgZZvREtv-v7UFgfFK_9ynT1m5MReZZcukxuC89K6tycxzVW25QJAKZbYPwOXCr7
+    B-3kPsBGqUePHKVBg>
+X-ME-Received: <xmr:VDgZZhXs3sK4JcbIc0qob9KfgPyKNktLZii63NSIQ9LD8etloFo1y2Wjgg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeiuddgieeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhq
+    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
+    grthhtvghrnhepvefghfeuveekudetgfevudeuudejfeeltdfhgfehgeekkeeigfdukefh
+    gfegleefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epsghoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedt
+    ieegqddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfh
+    higihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:VDgZZhjPRF8HpIK5wwWhT1hdRsTM-MG8UsK8_9wr_aCzSLDBqBsDkA>
+    <xmx:VDgZZpCBv1glBUsQ2gZ2WtoWWu-h1sT4D7buVspeF887xnA3W6_r0g>
+    <xmx:VDgZZqImmKn7-K5zlthz9EdadcifVY7WHQKcutmY3dZ7LtV-yJvUkw>
+    <xmx:VDgZZoCQc3RdJ-ExBu7fGyGau8j-Kf6lGGC5Lw5pNACnpGXXQEptPg>
+    <xmx:VDgZZlxTuKeUA2JTXZUoQLm_zNPYWTppxb23VIoIeHkgg4FlVS-hO47c>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 12 Apr 2024 09:34:11 -0400 (EDT)
+Date: Fri, 12 Apr 2024 06:34:10 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Miguel Ojeda <ojeda@kernel.org>,
+	John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Gary Guo <gary@garyguo.net>, bjorn3_gh@protonmail.com,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] rust: time: Use wrapping_sub() for Ktime::sub()
+Message-ID: <Zhk4Uqc4LImR2n_r@Boquns-Mac-mini.home>
+References: <20240411230801.1504496-1-boqun.feng@gmail.com>
+ <20240411230801.1504496-3-boqun.feng@gmail.com>
+ <CANiq72nSSAVkynVaAq7bQKoL6N8K2JUXp8AOVvu7vN+siAhk-Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240412-imx95-bbm-misc-v2-v3-2-4380a4070980@nxp.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANiq72nSSAVkynVaAq7bQKoL6N8K2JUXp8AOVvu7vN+siAhk-Q@mail.gmail.com>
 
-On Fri, Apr 12, 2024 at 06:47:08PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Fri, Apr 12, 2024 at 09:14:03AM +0200, Miguel Ojeda wrote:
+> On Fri, Apr 12, 2024 at 1:08 AM Boqun Feng <boqun.feng@gmail.com> wrote:
+> >
+> > Currently since Rust code is compiled with "-Coverflow-checks=y", so a
 > 
-> Add i.MX SCMI Extension protocols bindings for:
->  - Battery Backed Module(BBM) Protocol
->    This contains persistent storage (GPR), an RTC, and the ON/OFF button.
->    The protocol can also provide access to similar functions implemented via
->    external board components.
->  - MISC Protocol.
->    This includes controls that are misc settings/actions that must be exposed
->    from the SM to agents. They are device specific and are usually define to
->    access bit fields in various mix block control modules, IOMUX_GPR, and other
->    GPR/CSR owned by the SM.
+> Nit: it is enabled by default, but configurable (`CONFIG_RUST_OVERFLOW_CHECKS`).
 > 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  .../devicetree/bindings/firmware/arm,scmi.yaml     | 21 +++++++++++++
->  .../bindings/firmware/nxp,imx95-scmi.yaml          | 36 ++++++++++++++++++++++
->  2 files changed, 57 insertions(+)
+
+Ok, I will change it accordingly.
+
+> > although overflow detection is nice to have, however this makes
+> > `Ktime::sub()` behave differently than `ktime_sub()`, moreover it's not
+> > clear that the overflow checking is helpful, since for example, the
+> > current binder usage[1] doesn't have the checking.
+> >
+> > Therefore make `Ktime::sub()` have the same semantics as `ktime_sub()`:
+> > overflow behaves like 2s-complement wrapping sub.
 > 
-> diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-> index 93fb7d05f849..fa2cc910c485 100644
-> --- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-> +++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-> @@ -247,6 +247,27 @@ properties:
->        reg:
->          const: 0x18
->  
-> +  protocol@81:
-> +    $ref: '#/$defs/protocol-node'
-> +    unevaluatedProperties: false
-> +
-> +    properties:
-> +      reg:
-> +        const: 0x81
-> +
-> +  protocol@84:
-> +    type: object
-> +    anyOf:
-> +      - allOf:
-> +          - $ref: /schemas/firmware/nxp,imx95-scmi.yaml
-> +          - $ref: '#/$defs/protocol-node'
+> If `ktime_sub()`'s callers rely on wrapping in some cases, then an
+> alternative we should consider is having a method for explicitly
+> wrapping, like the integers. This would allow callers to decide and it
 
-If you put the ref under the protocol node, then it's 1 schema file per 
-protocol per vendor. Also, we then have to list every possible protocol 
-node here, and every one listed here will be valid for every vendor.  
-What we discussed is putting the list of vendor protocol schemas at the 
-top-level here and then the vendor schemas can list out all the protocol 
-nodes.
+That works for me, although I would prefer `Ktime::sub()` is wrapping
+sub and we have another function doing a safe version of sub.
 
-Also, move "$ref: '#/$defs/protocol-node'" to nxp,imx95-scmi.yaml.
-
-> +
-> +    unevaluatedProperties: false
-> +
-> +    properties:
-> +      reg:
-> +        const: 0x84
-> +
->  additionalProperties: false
->  
->  $defs:
-> diff --git a/Documentation/devicetree/bindings/firmware/nxp,imx95-scmi.yaml b/Documentation/devicetree/bindings/firmware/nxp,imx95-scmi.yaml
-> new file mode 100644
-> index 000000000000..b84c4a53b78a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/firmware/nxp,imx95-scmi.yaml
-> @@ -0,0 +1,36 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2024 NXP
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/firmware/nxp,imx95-scmi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: i.MX95 System Control and Management Interface(SCMI) Vendor Protocols Extension
-> +
-> +maintainers:
-> +  - Peng Fan <peng.fan@nxp.com>
-> +
-> +properties:
-> +  nxp,wakeup-sources:
-> +    description:
-> +      Each entry consists of 2 integers, represents the source and electric signal edge
-> +    items:
-> +      items:
-> +        - description: the wakeup source
-> +        - description: the wakeup electric signal edge
-> +    minItems: 1
-> +    maxItems: 32
-> +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> +
-> +if:
-> +  properties:
-> +    reg:
-> +      const: 0x84
-
-This schema is only included from protocol@84 node, so how can this be 
-false?
-
-> +then:
-> +  properties:
-> +    nxp,wakeup-sources: true
-> +else:
-> +  properties:
-> +    nxp,wakeup-sources: false
-> +
-> +additionalProperties: true
+> would make the expected semantics clear since the beginning (which is
+> the easiest time to add this kind of thing) for Rust code.
 > 
-> -- 
-> 2.37.1
+> Otherwise, I agree we should at least document the preconditions clearly.
 > 
+> Having said that, I see a `ktime_add_unsafe()` too, which was added
+> due to a UBSAN report for `ktime_add()` in commit 979515c56458 ("time:
+> Avoid undefined behaviour in ktime_add_safe()"). There is also a
+> private `ktime_add_safe()` too, which is a saturating one.
+> 
+
+Exactly, ktime_add_safe() doesn't panic if overflow happens, right?
+I think that's pretty clear on how time subsystem wants to handle
+overflow (saturating it, or zeroing it instead of panicing).
+
+> So, given that, can callers actually rely on wrapping for these
+> functions, or not? The documentation on the C side could perhaps be
+> clarified here (including the mention of UB in `ktime_add_unsafe()` --
+> we use `-fno-strict-overflow`) and perhaps using the `wrapping_*()` C
+> functions too.
+> 
+
+I must defer this to Thomas.
+
+> In addition, Binder calls `ktime_ms_delta()`, not `ktime_sub()`,
+> right? In that case the arguments are called `later` and `earlier`,
+> perhaps those have a different expectation even if `ktime_sub()` is
+> allowed to overflow and thus it would make sense to check in that
+> function only instead? (and document accordingly)
+> 
+
+Maybe, however neither of this function probably shouldn't have the
+panic-on-overflow behavior. So I agree that overflow checking is not a
+bad thing, but when to check and how to handle overflow should be
+controlled by the users, and making the default behavior
+panic-on-overflow doesn't look reasonable to me.
+
+Regards,
+Boqun
+
+> Thanks!
+> 
+> Cheers,
+> Miguel
 
