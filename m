@@ -1,107 +1,231 @@
-Return-Path: <linux-kernel+bounces-143244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92EF48A363B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:14:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8B798A3640
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:17:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 475771F24009
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:14:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 481A4B22EC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:17:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20F7114F9CF;
-	Fri, 12 Apr 2024 19:14:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB5414F9F2;
+	Fri, 12 Apr 2024 19:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SjVggVJ8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BELHwLci"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D12914AD37;
-	Fri, 12 Apr 2024 19:14:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D7FF14F9CE
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 19:17:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712949245; cv=none; b=kCCGG2BFc0QP5zoRZ2h9R9aTGbZ2vlHw4sTklas0JtYs7CQ9vzqUECBBzem0ccsGXTSJcqNwIbxk/6ZTVmN+RTtw8rQp0MlyM/SV3LZwnhVcGQYzGsxX8fsRKAYbXdLoZuUVp7TyI77D2KP2uAYebz6h8Pk0DzPLFKxObOLjT78=
+	t=1712949425; cv=none; b=WaP6IWAYG1CGhwYQVwjMTO3COu+EcrO0OozeWY50EBMxXdT+FCWPxHbSBSIt2wWkv+xMHmfDhKVFimevWaU+O7nMPBzlSwWXTTH1DreM/OK1eHvvLaJXtkRiV++na/yFNVaaWeuTg2mOFOwzvrA6FHg1oXyMgSbgZ9Kr8MuzJRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712949245; c=relaxed/simple;
-	bh=cQNWyLD2FXfR0yTg5/S/h+2fInQpSquK/RmrY9b7Mz8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=uNkjP5sbbFtzF5p2kR7kEhiNUT+FnjcoYtslmQ9s27/gfowKr/vanzEfruSmZGTcn5u9SUta9PLFcj0wQ+AWzaBsFbphK+F88qEOcfp13/oIguTV/JVhHyrg1NVzKA4T5pCrrguBCav/b36uNJOQsR/jlib0Q3ew0AxXz97hohQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SjVggVJ8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2E21C113CC;
-	Fri, 12 Apr 2024 19:14:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712949244;
-	bh=cQNWyLD2FXfR0yTg5/S/h+2fInQpSquK/RmrY9b7Mz8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=SjVggVJ87kGjQuEsrOsNZnIIfAWGFMlRga+rNqiycOEgJOppv6aYB55CDWixv2RAm
-	 +iuQR4ebN6F8HeU73Ay0Z9vUXZTnoni3WoKYYOjGZcMBqYLIoVe0bNiBAW+v7y9HkG
-	 TI34d6nA8XrJYbcKnSQAPLfPkJoLdXljv2GkTCvY1YgBlPsSYXriEQmEk7Tj/vXgPi
-	 BDYlUkIR1Zhy/gF6zp/JSCtMFbRtZbOWKMp+zKki2RnPRROrnx4aylrfVW6yJvlQdY
-	 7Td/LciZFcnWYHIU8k/ka2mROB7uwYk55DqUQjJcKI9ObxPuZ3d+xOkvX/hjiRgpu9
-	 BggogoAJ7PdDA==
-Date: Fri, 12 Apr 2024 14:14:02 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Vidya Sagar <vidyas@nvidia.com>
-Cc: lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-	bhelgaas@google.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
-	linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kthota@nvidia.com,
-	mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V2] PCI: tegra194: Fix probe path for Endpoint mode
-Message-ID: <20240412191402.GA10938@bhelgaas>
+	s=arc-20240116; t=1712949425; c=relaxed/simple;
+	bh=gXSq+T7XzqPxzRC/useeLBrjqvRyaotmwCPTNi4Tu1U=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=eaYMBMbUQLoeFMJtJxpOWCjmIAm1lgKHxPPG+SXxqd3jQV8myRtodVeGsK0y94P+PJx6dkwsag2rxJD5Na4plDbyklWI00ipf5gTdo4WEqB2dCJpv8tjXKWNvdyBaUIrMuB9uCmW5RTXSUM4j5UUKzKfAw30Su+FAPc/9ZGs4J0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BELHwLci; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61807bac417so21877087b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 12:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712949422; x=1713554222; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+ZYm+Xc9AGuPFsnQm3QDSma2dM32/YHiWtmTC7mIj98=;
+        b=BELHwLciBDJOqbolC0twPLN6pusfksA9Wk1O7UW21mZKXGobDrSAWwT8s25SXaB9zn
+         1gq2sgXoyJEuZyQCQPZzvDhjomvltPVTbIUGB/ArUke6Gsf5vLSxmlbVu3mKXAHNrW9n
+         9DK8HP6dd/8kKRBVmYYA/7yKltD/VaXLnkBmZi2UIRSWN3m9osz/Ina1RdQefXGBhT8y
+         Ysf028Idia9gOI/UNfQWcpGnEW6/pfiUozYeFAEXMrqLn9D0rhzaaW7hg7aCd+e6z3mj
+         JqR8x3A6+NKplzlQqoTIh+bAK07hT8eBNM1Hzn3pdTyzrimL1CS2d1wvqD4of/FxdlTR
+         NXhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712949422; x=1713554222;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+ZYm+Xc9AGuPFsnQm3QDSma2dM32/YHiWtmTC7mIj98=;
+        b=gIUeFPfW1FTM4ipLjsMmHmuCQcGipg51rAynZf30laGkfhEERPCKwtaaPTWjiz3+qt
+         5mcCPgdtvtX1lOHANsZQ+TDSMhW4sbRMqABWbLZYpM7pmwjUmzdVyifcHJDbDxOJJ31B
+         37EzcDL6Bu4v270tfeVl6g3wSHxMckhnqMQ5Me4YxX8kDKOoVf9s5Lezz+ap3eZVaCOE
+         W7am2096b5PvTMIKlO+axtqONZLku28FUVqk/htIox7Ur8gNw3+e4Rhv3IusIPlQKeQX
+         gAL+MIyWhzkJHBmxIcoHwAtC9wr9o+3kwYzX14b972bA06ef2EaszeC8GU0l3kI49IhJ
+         3PBg==
+X-Forwarded-Encrypted: i=1; AJvYcCUjH7hTuddT9T3fV9zgGin0cLPnmqX3E+viKhpr0E2+8XY0WKcig220GUGpwq5WB1jLAR1C16MWInSi1pHUCUlzcvLNxyqdNqqo4YaH
+X-Gm-Message-State: AOJu0YyPZ3oCdOvn7DoHfMVqQcLvkG1Z5rWWyw9nE8IFxK9l1kU6K1sf
+	9CMFdfqTyV4ICLJL88Mv2xyHAN/N3zQPhE1mFf5r3S9UQCU8H92H56W7Y9nYZeFTqgqBkOuILx9
+	PVQ==
+X-Google-Smtp-Source: AGHT+IFLnup6JSKkiSb0UzDwD6karEhA7d20IDFCl5FKvYbjyr3ssyUHXmtdP3hCGhAQnldQxZ8f2unxvjc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:480d:0:b0:614:e20c:d3ef with SMTP id
+ v13-20020a81480d000000b00614e20cd3efmr785979ywa.10.1712949422548; Fri, 12 Apr
+ 2024 12:17:02 -0700 (PDT)
+Date: Fri, 12 Apr 2024 12:17:01 -0700
+In-Reply-To: <23af8648-ca9f-41d2-8782-f2ffc3c11e9e@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240408093053.3948634-1-vidyas@nvidia.com>
+Mime-Version: 1.0
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
+ <20240126085444.324918-3-xiong.y.zhang@linux.intel.com> <ZhgmrczGpccfU-cI@google.com>
+ <23af8648-ca9f-41d2-8782-f2ffc3c11e9e@linux.intel.com>
+Message-ID: <ZhmIrQQVgblrhCZs@google.com>
+Subject: Re: [RFC PATCH 02/41] perf: Support guest enter/exit interfaces
+From: Sean Christopherson <seanjc@google.com>
+To: Kan Liang <kan.liang@linux.intel.com>
+Cc: Xiong Zhang <xiong.y.zhang@linux.intel.com>, pbonzini@redhat.com, 
+	peterz@infradead.org, mizhang@google.com, kan.liang@intel.com, 
+	zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com, jmattson@google.com, 
+	kvm@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com, 
+	irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com, 
+	chao.gao@intel.com
+Content-Type: text/plain; charset="us-ascii"
 
-On Mon, Apr 08, 2024 at 03:00:53PM +0530, Vidya Sagar wrote:
-> Tegra194 PCIe probe path is taking failure path in success case for
-> Endpoint mode. Return success from the switch case instead of going
-> into the failure path.
+On Thu, Apr 11, 2024, Kan Liang wrote:
+> >> +/*
+> >> + * When a guest enters, force all active events of the PMU, which supports
+> >> + * the VPMU_PASSTHROUGH feature, to be scheduled out. The events of other
+> >> + * PMUs, such as uncore PMU, should not be impacted. The guest can
+> >> + * temporarily own all counters of the PMU.
+> >> + * During the period, all the creation of the new event of the PMU with
+> >> + * !exclude_guest are error out.
+> >> + */
+> >> +void perf_guest_enter(void)
+> >> +{
+> >> +	struct perf_cpu_context *cpuctx = this_cpu_ptr(&perf_cpu_context);
+> >> +
+> >> +	lockdep_assert_irqs_disabled();
+> >> +
+> >> +	if (__this_cpu_read(__perf_force_exclude_guest))
+> > 
+> > This should be a WARN_ON_ONCE, no?
 > 
-> Fixes: c57247f940e8 ("PCI: tegra: Add support for PCIe endpoint mode in Tegra194")
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
-> v2:
-> * Added 'Fixes' and 'Reviewed-by' from Jon Hunter
-> 
->  drivers/pci/controller/dwc/pcie-tegra194.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-> index 4bba31502ce1..1a8178dc899a 100644
-> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
-> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-> @@ -2273,11 +2273,14 @@ static int tegra_pcie_dw_probe(struct platform_device *pdev)
->  		ret = tegra_pcie_config_ep(pcie, pdev);
->  		if (ret < 0)
->  			goto fail;
-> +		else
-> +			return 0;
+> To debug the improper behavior of KVM?
 
-Wow, how did you ever notice this?  It looks like this path would
-previously have returned "ret" (which was most likely 0 for success)
-but with an extra tegra_bpmp_put() that we shouldn't have done.
+Not so much "debug" as ensure that the platform owner noticies that KVM is buggy.
 
-Eagle eyes!
-
->  		break;
->  
->  	default:
->  		dev_err(dev, "Invalid PCIe device type %d\n",
->  			pcie->of_data->mode);
-> +		ret = -EINVAL;
->  	}
->  
->  fail:
-> -- 
-> 2.25.1
+> >> +static inline int perf_force_exclude_guest_check(struct perf_event *event,
+> >> +						 int cpu, struct task_struct *task)
+> >> +{
+> >> +	bool *force_exclude_guest = NULL;
+> >> +
+> >> +	if (!has_vpmu_passthrough_cap(event->pmu))
+> >> +		return 0;
+> >> +
+> >> +	if (event->attr.exclude_guest)
+> >> +		return 0;
+> >> +
+> >> +	if (cpu != -1) {
+> >> +		force_exclude_guest = per_cpu_ptr(&__perf_force_exclude_guest, cpu);
+> >> +	} else if (task && (task->flags & PF_VCPU)) {
+> >> +		/*
+> >> +		 * Just need to check the running CPU in the event creation. If the
+> >> +		 * task is moved to another CPU which supports the force_exclude_guest.
+> >> +		 * The event will filtered out and be moved to the error stage. See
+> >> +		 * merge_sched_in().
+> >> +		 */
+> >> +		force_exclude_guest = per_cpu_ptr(&__perf_force_exclude_guest, task_cpu(task));
+> >> +	}
+> > 
+> > These checks are extremely racy, I don't see how this can possibly do the
+> > right thing.  PF_VCPU isn't a "this is a vCPU task", it's a "this task is about
+> > to do VM-Enter, or just took a VM-Exit" (the "I'm a virtual CPU" comment in
+> > include/linux/sched.h is wildly misleading, as it's _only_ valid when accounting
+> > time slices).
+> >
 > 
+> This is to reject an !exclude_guest event creation for a running
+> "passthrough" guest from host perf tool.
+> Could you please suggest a way to detect it via the struct task_struct?
+> 
+> > Digging deeper, I think __perf_force_exclude_guest has similar problems, e.g.
+> > perf_event_create_kernel_counter() calls perf_event_alloc() before acquiring the
+> > per-CPU context mutex.
+> 
+> Do you mean that the perf_guest_enter() check could be happened right
+> after the perf_force_exclude_guest_check()?
+> It's possible. For this case, the event can still be created. It will be
+> treated as an existing event and handled in merge_sched_in(). It will
+> never be scheduled when a guest is running.
+> 
+> The perf_force_exclude_guest_check() is to make sure most of the cases
+> can be rejected at the creation place. For the corner cases, they will
+> be rejected in the schedule stage.
+
+Ah, the "rejected in the schedule stage" is what I'm missing.  But that creates
+a gross ABI, because IIUC, event creation will "randomly" succeed based on whether
+or not a CPU happens to be running in a KVM guest.  I.e. it's not just the kernel
+code that has races, the entire event creation is one big race.
+
+What if perf had a global knob to enable/disable mediate PMU support?  Then when
+KVM is loaded with enable_mediated_true, call into perf to (a) check that there
+are no existing !exclude_guest events (this part could be optional), and (b) set
+the global knob to reject all new !exclude_guest events (for the core PMU?).
+
+Hmm, or probably better, do it at VM creation.  That has the advantage of playing
+nice with CONFIG_KVM=y (perf could reject the enabling without completely breaking
+KVM), and not causing problems if KVM is auto-probed but the user doesn't actually
+want to run VMs.
+
+E.g. (very roughly)
+
+int x86_perf_get_mediated_pmu(void)
+{
+	if (refcount_inc_not_zero(...))
+		return 0;
+
+	if (<system wide events>)
+		return -EBUSY;
+
+	<slow path with locking>
+}
+
+void x86_perf_put_mediated_pmu(void)
+{
+	if (!refcount_dec_and_test(...))
+		return;
+
+	<slow path with locking>
+}
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 1bbf312cbd73..f2994377ef44 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -12467,6 +12467,12 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+        if (type)
+                return -EINVAL;
+ 
++       if (enable_mediated_pmu)
++               ret = x86_perf_get_mediated_pmu();
++               if (ret)
++                       return ret;
++       }
++
+        ret = kvm_page_track_init(kvm);
+        if (ret)
+                goto out;
+@@ -12518,6 +12524,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+        kvm_mmu_uninit_vm(kvm);
+        kvm_page_track_cleanup(kvm);
+ out:
++       x86_perf_put_mediated_pmu();
+        return ret;
+ }
+ 
+@@ -12659,6 +12666,7 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
+        kvm_page_track_cleanup(kvm);
+        kvm_xen_destroy_vm(kvm);
+        kvm_hv_destroy_vm(kvm);
++       x86_perf_put_mediated_pmu();
+ }
+ 
+ static void memslot_rmap_free(struct kvm_memory_slot *slot)
+
 
