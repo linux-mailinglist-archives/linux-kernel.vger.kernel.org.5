@@ -1,167 +1,95 @@
-Return-Path: <linux-kernel+bounces-142775-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0D1C8A2FF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 956BB8A2FF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:56:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DD171C23EAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:55:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C63641C23D2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:56:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AB4685931;
-	Fri, 12 Apr 2024 13:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ECEA8564A;
+	Fri, 12 Apr 2024 13:56:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M8b90VHG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ixZlBc86"
+Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 465B1E542;
-	Fri, 12 Apr 2024 13:55:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A2AC83CDD
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:56:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712930121; cv=none; b=AtYYeC2yvzbziGeR/NT+HNar4ufSvEgwWtxtVfOWkHU4ZwpYgRVMqjvdHdwhso5BFOaDRUnowgsCIL+qbiD385pr6CtVBoUEEiMdjOxExUzHM9oL+yVqb94JVY+tgR96I6K02fW9wRxbmA6nEcpyWGV+uifRw6OVyo75xUAzRzA=
+	t=1712930188; cv=none; b=msrRBlNb5ufz3/nDB2X9j1u6dKhmgFrpGLX0Lsl8x+wTr4vFRU8g6fDFQK2YG9/JVSbSciBpqNSkI7Zkziw0QF2zyHn3fu8iRGf5jgywTJ9az9OSTLJF3YM9oij8IMjwFu8BUfY9d+CjJ6Hx5bqkVZzg7HsRG/WTN1pzql6sta0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712930121; c=relaxed/simple;
-	bh=6TmX4w4nn9aEsWZzU+YqQ0aoR97tm4JTGPuVtWmpvk0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QPY5myU2p0h5RuCRGGhL9av7MK/H7Ebr/bdDHNAArV4udk+MM+hXQxHiXGJYuCA+itVY0QdLSBuC37NWJf1OLjQyhiDor1uzai9jzEAEmaCVe1WaIIcsZDtfPNFnLnT1V4NqrQJe7zbttDDwnTWbFJsPp0fWh800nCgLwf1wpZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M8b90VHG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4964EC113CC;
-	Fri, 12 Apr 2024 13:55:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712930120;
-	bh=6TmX4w4nn9aEsWZzU+YqQ0aoR97tm4JTGPuVtWmpvk0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M8b90VHG3dFi6r7H4peNaQ7XyuyXMW7KTbXYe1ETTnZez/mDTaliiN7Zy2Lf/9vGG
-	 PI5zvovIwRO41dnkMHiJI8UCuvN7FBtIhTgaBTNoTgrLIp9hbJYgOowoOqel3MSN/1
-	 D/XOGuTwT7ZVJVjOg55lfvt90KjlWNIxwS+UZAZMOgSoTKXSt11M03H12qL7bkkH+L
-	 cT27lKJydShJqHAR7i6W09q4n8LFB7kbt8D+1M2p4CiXjXQj2zR3l4Lnf7lv1gWY3s
-	 umsKiPX9Q7meJZW2tlO8jstSeQk/vINPne/Iv2b/spbWDA+hO2p6F6abjHkYhHFRGf
-	 Oig6PwAnFDe4A==
-Date: Fri, 12 Apr 2024 14:55:13 +0100
-From: Will Deacon <will@kernel.org>
-To: Douglas Anderson <dianders@chromium.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
-	Misono Tomohiro <misono.tomohiro@fujitsu.com>,
-	Chen-Yu Tsai <wens@csie.org>, Stephen Boyd <swboyd@chromium.org>,
-	Daniel Thompson <daniel.thompson@linaro.org>,
-	Sumit Garg <sumit.garg@linaro.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Tony Luck <tony.luck@intel.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: smp: smp_send_stop() and crash_smp_send_stop()
- should try non-NMI first
-Message-ID: <20240412135513.GA28004@willie-the-truck>
-References: <20231207170251.1.Id4817adef610302554b8aa42b090d57270dc119c@changeid>
+	s=arc-20240116; t=1712930188; c=relaxed/simple;
+	bh=ZJ7SAOS7xGxTsMVG6sFaevHFQfwYJuNhpZbGStyKNJE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dNzkRTHfB3kfeVX/E8yF+yWVrDH1wfZ0J8yKNJKegdlX4xvh9gRlem9re4B0yStsbBnmO80NXl0TEou0Sovofm/UVpBeUFkCdx3952jZktumphN7firtuUV7Ddnmi8Trl67xFMHRkyQkiZnnvAc6WOOAMddI1ijOhOFokCCiSjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ixZlBc86; arc=none smtp.client-ip=209.85.218.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-a51969e780eso127232866b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 06:56:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712930185; x=1713534985; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZJ7SAOS7xGxTsMVG6sFaevHFQfwYJuNhpZbGStyKNJE=;
+        b=ixZlBc86h+s2zLgKwGXYTLSPw3Nnb8tjl/QDQst5FsQ7+Lq7E4J9qFaNSk4h8uIE4J
+         N4NU720jmRo7lzGwHl9dzgkqBwUFB1Yy2TZXQpI88oRSR53pw+GQvbhowi/egljK0Mlx
+         ihECOJDuOaEhzU6gcjTaSEGrYgfMmUr5Jh7BO8nGHwtqfpKIfnybsD86sDlvWEH42A/6
+         j0N37lNGyZEdMlzb9WqO+J+16yMAFQYf7JW9mmUJtEosjXFdVG9iSvFLas1XnLj65rQw
+         el6k5i7kh8qAaCzRoAb0yeZRgT8gtf2UHsBzgRRSsK7EUKMChgJwIAMc09dlsyWdiqjG
+         UEZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712930185; x=1713534985;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZJ7SAOS7xGxTsMVG6sFaevHFQfwYJuNhpZbGStyKNJE=;
+        b=XXVYKtX7uvc5FIcv6Uvj2R4uCBK/J8fdmysTTMIbJMk/Q3h6Bl/807l0AecdpfR9Ne
+         +nB+tYoe7SpAfVJCcBa7jTy+Fyc4BTTBlUN063dbvGHgYebO8xfmuUDVRh54bbwtJPhr
+         kb6Hfv/3EU3Dmx1v5pGOj73sIq/FDqa55Nsfp3lPHicf3mWbn3D6E7leGS94Q1JWxzcP
+         2b/ZUwZZkj03nkHRox7/r1HFoySJdgwsxzkfsJ6Qj0HaRMQEI8/Yl6eqgGjC99jn8Zqb
+         +MhaUdbsDYG+NRc9/1w8/z9Y2UZzwpfjNZ0ezNU/t6stanzN+xUsfUF0P1cXWzvpkCAS
+         YC6A==
+X-Forwarded-Encrypted: i=1; AJvYcCUkCv1sZTuJe0WJjwC0YTe2U0cpaOzYQQi3WXW2Lb+pPUR3ZPWJE3Vz4G/LJFRxauADc6nfwTOV+ztLG6nPF8tA8HPlKj44m8YyxpZR
+X-Gm-Message-State: AOJu0Yxt5QvLrGmeli8vr8YvHtRJKG+6Z9gBJvxz72HRgf9LIxcMiNZ7
+	5d4ttkaIN73ZOmKsYfOuj2bEyRaW7W/K1RSN8q4btSJz8M7LWSH3/MGnbKTS8uc45JQcBkTOZdP
+	hIumeHz93NWghgAaEbq5X0rfQfAoEKaPsRhPhJmwjOq0=
+X-Google-Smtp-Source: AGHT+IEDXrLG8FZXTHsCQpLYzMx6KHxkb2zPWOAEXIY9YlFLnDUe2aW5heCn4m5K9ZB7wM2LnpcDeVIEPG0fxFDQF48=
+X-Received: by 2002:a17:906:4c45:b0:a4e:9962:2dfc with SMTP id
+ d5-20020a1709064c4500b00a4e99622dfcmr1455682ejw.21.1712930185309; Fri, 12 Apr
+ 2024 06:56:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231207170251.1.Id4817adef610302554b8aa42b090d57270dc119c@changeid>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20240407132054.12170-1-qq810974084@gmail.com> <2024041153-undrilled-partition-2a9e@gregkh>
+ <CAH9++vFsOUADuQ5Rnx1Kv-Q7Y54pZMh_Ou46OPp9xZ2va6EpBQ@mail.gmail.com>
+In-Reply-To: <CAH9++vFsOUADuQ5Rnx1Kv-Q7Y54pZMh_Ou46OPp9xZ2va6EpBQ@mail.gmail.com>
+From: Huai-Yuan Liu <qq810974084@gmail.com>
+Date: Fri, 12 Apr 2024 21:55:46 +0800
+Message-ID: <CAH9++vG2f7Lrs=dq_RB7d9Lkni0kUL6LKA12KUU_SqwJ=GCnGw@mail.gmail.com>
+Subject: Re: [PATCH V3] ppdev: Add an error check in register_device
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: sudipm.mukherjee@gmail.com, arnd@arndb.de, linux-kernel@vger.kernel.org, 
+	baijiaju1990@outlook.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Doug,
+Hi,
 
-I'm doing some inbox Spring cleaning!
+I sincerely apologize for my negligence in not noticing the branch
+changes,, resulting in this patch not being applicable to the tree. I
+have regenerated a new patch and sent it. I apologize once again for
+any trouble caused by my oversight. And thanks to Greg KH for pointing
+this out.
 
-On Thu, Dec 07, 2023 at 05:02:56PM -0800, Douglas Anderson wrote:
-> When testing hard lockup handling on my sc7180-trogdor-lazor device
-> with pseudo-NMI enabled, with serial console enabled and with kgdb
-> disabled, I found that the stack crawls printed to the serial console
-> ended up as a jumbled mess. After rebooting, the pstore-based console
-> looked fine though. Also, enabling kgdb to trap the panic made the
-> console look fine and avoided the mess.
->
-> After a bit of tracking down, I came to the conclusion that this was
-> what was happening:
-> 1. The panic path was stopping all other CPUs with
->    panic_other_cpus_shutdown().
-> 2. At least one of those other CPUs was in the middle of printing to
->    the serial console and holding the console port's lock, which is
->    grabbed with "irqsave". ...but since we were stopping with an NMI
->    we didn't care about the "irqsave" and interrupted anyway.
-> 3. Since we stopped the CPU while it was holding the lock it would
->    never release it.
-> 4. All future calls to output to the console would end up failing to
->    get the lock in qcom_geni_serial_console_write(). This isn't
->    _totally_ unexpected at panic time but it's a code path that's not
->    well tested, hard to get right, and apparently doesn't work
->    terribly well on the Qualcomm geni serial driver.
-> 
-> It would probably be a reasonable idea to try to make the Qualcomm
-> geni serial driver work better, but also it's nice not to get into
-> this situation in the first place.
-> 
-> Taking a page from what x86 appears to do in native_stop_other_cpus(),
-> let's do this:
-> 1. First, we'll try to stop other CPUs with a normal IPI and wait a
->    second. This gives them a chance to leave critical sections.
-> 2. If CPUs fail to stop then we'll retry with an NMI, but give a much
->    lower timeout since there's no good reason for a CPU not to react
->    quickly to a NMI.
-> 
-> This works well and avoids the corrupted console and (presumably)
-> could help avoid other similar issues.
-> 
-> In order to do this, we need to do a little re-organization of our
-> IPIs since we don't have any more free IDs. We'll do what was
-> suggested in previous conversations and combine "stop" and "crash
-> stop". That frees up an IPI so now we can have a "stop" and "stop
-> NMI".
-> 
-> In order to do this we also need a slight change in the way we keep
-> track of which CPUs still need to be stopped. We need to know
-> specifically which CPUs haven't stopped yet when we fall back to NMI
-> but in the "crash stop" case the "cpu_online_mask" isn't updated as
-> CPUs go down. This is why that code path had an atomic of the number
-> of CPUs left. We'll solve this by making the cpumask into a
-> global. This has a potential memory implication--with NR_CPUs = 4096
-> this is 4096/8 = 512 bytes of globals. On the upside in that same case
-> we take 512 bytes off the stack which could potentially have made the
-> stop code less reliable. It can be noted that the NMI backtrace code
-> (lib/nmi_backtrace.c) uses the same approach and that use also
-> confirms that updating the mask is safe from NMI.
+Best regards,
 
-Updating the global masks without any synchronisation feels broken though:
-
-> @@ -1085,77 +1080,75 @@ void smp_send_stop(void)
->  {
->  	unsigned long timeout;
->  
-> -	if (num_other_online_cpus()) {
-> -		cpumask_t mask;
-> +	/*
-> +	 * If this cpu is the only one alive at this point in time, online or
-> +	 * not, there are no stop messages to be sent around, so just back out.
-> +	 */
-> +	if (num_other_online_cpus() == 0)
-> +		goto skip_ipi;
->  
-> -		cpumask_copy(&mask, cpu_online_mask);
-> -		cpumask_clear_cpu(smp_processor_id(), &mask);
-> +	cpumask_copy(to_cpumask(stop_mask), cpu_online_mask);
-> +	cpumask_clear_cpu(smp_processor_id(), to_cpumask(stop_mask));
-
-I don't see what prevents multiple CPUs getting in here concurrently and
-tripping over the masks. x86 seems to avoid that with an atomic
-'stopping_cpu' variable in native_stop_other_cpus(). Do we need something
-similar?
-
-Apart from that, I'm fine with the gist of the patch.
-
-Will
+Liu.
 
