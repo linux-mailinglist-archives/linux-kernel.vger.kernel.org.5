@@ -1,111 +1,127 @@
-Return-Path: <linux-kernel+bounces-142836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 317108A30A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:28:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 205758A319B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:54:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6260A1C241BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:28:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D05A3283FEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:54:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A20127E35;
-	Fri, 12 Apr 2024 14:27:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E7B0146A80;
+	Fri, 12 Apr 2024 14:54:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AUhnlzLK"
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PZ+7TOIl"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BAC9127E1A
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:27:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEBB9145B36;
+	Fri, 12 Apr 2024 14:54:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712932053; cv=none; b=fa0e0yA+1BsYH9FsnqFwGZ4Wh0tTJLsykADd6ZWLW6RjZpsgyimDEwAekZbXHz+SXKb39QZyivtHMbfSTZDv+GGxgd0VbRj/Aoy0fTRlmOMeRhc1HSr2RVHk1D3KA8T1JZWX46XYlstnzbVIg3g3MczWFdUsqd3ahGnFxthlJHc=
+	t=1712933657; cv=none; b=aku2LWtGaiOA4OMlfCqO+sOtYv6HLeGG37hziF2iMjGH5mMu6axqJvED27eh1Ln+Sv/Ur7GTm41TsokzEXQ7/3aHjJGvHre8lqbi6VNhMnW4TYPup6UpiO1NADK6sz07XB1t3H6UNfE1/HmM1NP3880lr4ElOnrGxCOKl3VMs9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712932053; c=relaxed/simple;
-	bh=7ZpOjyhJVYHo6veueLDSfC6MEFzr8Ojbs3xFBxi2+W8=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=afNjdXBSxJqxXEUYIiRGrNsPY/5HeMZB+Q8wo7+JzIpVRiZDh34Q/fHZyugBMQJ5kOJzmL6uDwycPM3XxxSe33tS3m63NQSWbPJIoJrd94KmH43J7BBXSmkyAsx3UcGMm9laEqKMGzP677JI+se+8gpIipE6NWvoF3nta8a/E2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AUhnlzLK; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1e44b8ebf43so8431795ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:27:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712932052; x=1713536852; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CTokiC2mOzeQb1t9UZXBIQTwfHhJ1xAuH+06DQhJnus=;
-        b=AUhnlzLKqTZDu6/WL+d3R9yn9IsNJPxyUT8YB+Hmh0HHqPpg9NL6kQOPhRs0w8VyWk
-         NKtU+BojmF/+nRDY7AtsXxxLIDqPj2cStfcqX7VZlOqCgnGQUaEQeCLoPTDUzvpxbGV9
-         BNLou0SaOCdObdzUosPn28Y9CCZZKMg+01SO1b1JhvTmwaecBp6CQDnx1ve8DWyJuaUV
-         qWLzjWiFNoRC/C1zxYLDQ3Fwjf+ync/AfXUv0gLoRPk4enxkiqxR/7Lf0N/FlNmd6xFE
-         CqY2Qe7DtokvPjbWQD/CB1YJw02HOzXcAEcqnuScQTvoxob1c3xPOty4VYTu0tYcrqpc
-         G9KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712932052; x=1713536852;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CTokiC2mOzeQb1t9UZXBIQTwfHhJ1xAuH+06DQhJnus=;
-        b=Lk/CtYe2hUGlH/PJY3DCENbDAOXqZMhLxk9OI5rNgbn8VHXMhMARx1AQlbHTmdIBCu
-         H3TfUjCSmrg2ydrSksuMzGSfzwEverJfIWdB0pVbFTDpP0Ycfn6waPVsV08aofmzt2qb
-         Aw4H3Wjd32ZG96Dw5rhJY6liJhwXaHl5j0Hu1IZH09Vf9HLSxG4oXtZ7iJG2KLvwBnV4
-         JDlStzwASiLSMujj5nY4rONfkV3Pw4+gEXA66O1BxPs3ogXOqrapiVHtuFailWwXiWKL
-         6gfVxWzp3ewO7qGp1zUcsD4MLg6Z5XwbpPXRoUv+qhVOv12TLh2YfpgBZp8EjbkmRxKh
-         EEJA==
-X-Forwarded-Encrypted: i=1; AJvYcCWfm7utJVbXTBBZpa28ytlTE1lUCSsUR3In7lJjBm8AaYO0vfeeF3wDUpahO7S4l9LtXkESBZFOv0rf+fTmECeiSazlWJU4e8xB9WS2
-X-Gm-Message-State: AOJu0YwkLRD7m9o2oQ+DX9Q/2AgYLfeM5b500az3LkudsPYT5wp/Xm+F
-	+6ahEiNHY4Flb+NdYY1MbwVGnjzDQ2EJr2f8OGLJummsBopsEhUL+NrafA6e5uVgs9pfLU5z9Hf
-	GNg==
-X-Google-Smtp-Source: AGHT+IGLwF+HfzZtGn8zwa1qm1dvlv2UkAX6QqEas4f4AXsrP0etNn5dV5dMejYckrKUvPHWx3YS/a/UIOw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:db08:b0:1e5:10e5:344 with SMTP id
- m8-20020a170902db0800b001e510e50344mr8380plx.3.1712932051773; Fri, 12 Apr
- 2024 07:27:31 -0700 (PDT)
-Date: Fri, 12 Apr 2024 07:27:30 -0700
-In-Reply-To: <BN9PR11MB527609928EA2290709CDB3E78C042@BN9PR11MB5276.namprd11.prod.outlook.com>
+	s=arc-20240116; t=1712933657; c=relaxed/simple;
+	bh=in6s0CayvsuzQeqaiNyjVowzPqlZrAQVR/B3bv4tggk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m4BU6hTSz0iODNBmRxJzExBXNEXjrWG6ihQeOuEaivSuUOY9fBsUfAeqf5cwVM2ka8Bo6Lr18b7Sy8vDM1kYGZ93iSF1fy7wwuDyfVi9cpEwnXmkHEtNSnX81/D1/eJK2ABSmqB42fth85RB4pcSPWi2qembERwJ4wtjYieDCnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PZ+7TOIl; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712933656; x=1744469656;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=in6s0CayvsuzQeqaiNyjVowzPqlZrAQVR/B3bv4tggk=;
+  b=PZ+7TOIl3IMkcVwvngqbigo3519xjbImb4htVZ5I/Ae5SO2umBr1U6cZ
+   ZoFxJMp7/lvDcoit1zc/mkZxZQfo94VDm09Ct0CrK8nof70cAcvPnZwKK
+   1JC4jwA3j8vw9fjKW3ZsfUpaFON6m2s5371j85RR4Lx78TrfdWf2DX79F
+   wv9dPSnuo3KTGXIjTcKJYCrH4KIthUS+qqKUEiRqGppfV97CYQVUe9ZzH
+   FfPNpuj6n3pRu2OBBVT9H6ozBsk5Ksap3v8ROVsMFPAHnYmktRQXBvvk/
+   ZsBBEqDCcu8jWcocQ+RpCZp0pCn917AhYFkfF9jGQnhmpCSVonjp0fcKh
+   A==;
+X-CSE-ConnectionGUID: EtnHBXRSSiGavd3eXC5xmw==
+X-CSE-MsgGUID: ZzY2kez7SpGHngCwWB3tDQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8249778"
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="8249778"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 07:54:15 -0700
+X-CSE-ConnectionGUID: 6fFYUjUFQBanhxX5HwRLfw==
+X-CSE-MsgGUID: 167iCC+KQkS2JkX98wu9pQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="21238596"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 07:54:09 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rvHtF-00000003eRB-20ZW;
+	Fri, 12 Apr 2024 17:28:29 +0300
+Date: Fri, 12 Apr 2024 17:28:29 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Saravana Kannan <saravanak@google.com>,
+	Herve Codina <herve.codina@bootlin.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Mark Brown <broonie@kernel.org>, Len Brown <lenb@kernel.org>,
+	Daniel Scally <djrscally@gmail.com>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	kernel-team@android.com, Wolfram Sang <wsa@kernel.org>,
+	linux-kernel@vger.kernel.org, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] of: dynamic: Fix overlayed devices not probing
+ because of fw_devlink
+Message-ID: <ZhlFDeDxict3ThJO@smile.fi.intel.com>
+References: <20240411235623.1260061-1-saravanak@google.com>
+ <20240411235623.1260061-3-saravanak@google.com>
+ <CAL_JsqKRVVNzgQk6PETfJ9RrDuzT1CTjHWW02Twc_T4C82t__Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
- <20240405223110.1609888-6-jacob.jun.pan@linux.intel.com> <BN9PR11MB527609928EA2290709CDB3E78C042@BN9PR11MB5276.namprd11.prod.outlook.com>
-Message-ID: <ZhlEh7-NoknHcNX7@google.com>
-Subject: Re: [PATCH v2 05/13] x86/irq: Reserve a per CPU IDT vector for posted MSIs
-From: Sean Christopherson <seanjc@google.com>
-To: Kevin Tian <kevin.tian@intel.com>
-Cc: Jacob Pan <jacob.jun.pan@linux.intel.com>, LKML <linux-kernel@vger.kernel.org>, 
-	X86 Kernel <x86@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>, Thomas Gleixner <tglx@linutronix.de>, 
-	Lu Baolu <baolu.lu@linux.intel.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, 
-	Dave Hansen <dave.hansen@intel.com>, Joerg Roedel <joro@8bytes.org>, Peter Anvin <hpa@zytor.com>, 
-	Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, Paul E Luse <paul.e.luse@intel.com>, 
-	Dan Williams <dan.j.williams@intel.com>, Jens Axboe <axboe@kernel.dk>, 
-	Ashok Raj <ashok.raj@intel.com>, "maz@kernel.org" <maz@kernel.org>, 
-	Robin Murphy <robin.murphy@arm.com>, "jim.harris@samsung.com" <jim.harris@samsung.com>, 
-	"a.manzanares@samsung.com" <a.manzanares@samsung.com>, Bjorn Helgaas <helgaas@kernel.org>, 
-	Guang Zeng <guang.zeng@intel.com>, 
-	"robert.hoo.linux@gmail.com" <robert.hoo.linux@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_JsqKRVVNzgQk6PETfJ9RrDuzT1CTjHWW02Twc_T4C82t__Q@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Fri, Apr 12, 2024, Kevin Tian wrote:
-> > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > Sent: Saturday, April 6, 2024 6:31 AM
-> > 
-> > +/*
-> > + * Posted interrupt notification vector for all device MSIs delivered to
-> > + * the host kernel.
-> > + */
-> > +#define POSTED_MSI_NOTIFICATION_VECTOR	0xeb
-> >  #define NR_VECTORS			 256
-> > 
+On Fri, Apr 12, 2024 at 07:54:32AM -0500, Rob Herring wrote:
+> On Thu, Apr 11, 2024 at 6:56 PM Saravana Kannan <saravanak@google.com> wrote:
+
+> I think it is better to not have this wrapper. We want it to be clear
+> when we're acquiring a ref. I know get_device() does that, but I have
+> to look up what get_dev_from_fwnode() does exactly.
 > 
-> Every interrupt is kind of a notification.
+> Side note: I didn't know fwnode has a ptr to the struct device. I
+> wonder if we can kill off of_find_device_by_node() using that. That's
+> for platform devices though.
 
-FWIW, I find value in having "notification" in the name to differentiate between
-the IRQ that is notifying the CPU that there's a posted IRQ to be processed, and
-the posted IRQ itself.
+I don't like the idea because we already have a big design issue with fwnode
+that is used in struct device. Ideally, fwnode has to be a node in the linked
+list, head of which is provided by the user (struct device, for example).
+When it's done, it will be easy to handle.
+
+Have you read the comment in the struct fwnode_handle definition?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
