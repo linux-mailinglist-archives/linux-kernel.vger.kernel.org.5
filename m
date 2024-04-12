@@ -1,242 +1,341 @@
-Return-Path: <linux-kernel+bounces-141754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D44678A22F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:22:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF8318A2307
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:49:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CB6D1F22EAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:22:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D28A61C22393
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:49:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2C85F9EC;
-	Fri, 12 Apr 2024 00:21:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B9474A1E;
+	Fri, 12 Apr 2024 00:49:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="J9QDXMGX"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2067.outbound.protection.outlook.com [40.107.22.67])
+	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="OTCVGLXi"
+Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CF55DDDF;
-	Fri, 12 Apr 2024 00:21:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.67
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712881301; cv=fail; b=IvSjJWLyHslV7yNGE9K4iItoQa4i0Anrp3RvRRzkQb2vZXsYLoxvRwn0PnhPnqAEu5OMe2zMa5kNVvtEgBEypgKo2iK4T/z4HmtMRUerxxnzpIANrpMUQqktGhY6/MhsWE8/bVzF2l6I41LKjkql8zF9UQ6lOILnQAm3MD/jAAA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712881301; c=relaxed/simple;
-	bh=sTbjkh5a4aL+MAQ/wjB1CKkR1t4PZQRgc81I9MVcnXg=;
-	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=HP5BOcTYJRSQmw7zozmJvoCGNlAqd8ZIJMlz7/DlOaWREYDsdmEwB0n6zzNAF3S8u73kVRcoByFMk50PgPnWAopKHgtUFfQHx6lnAkgseMgBmha2xr6koGmqT57doP7pI6MfZMNvihqtS8H4+ASVCy/61xnXTjQl1UgCftvjOa4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=J9QDXMGX; arc=fail smtp.client-ip=40.107.22.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PC7/mTKekyxxnYc/zoJLoq+EVI2X5xf9RXQMEaURp1JfQv/1WgPM55Mmn9EJvm0oh2E6OvU3m4zfXAMv5yppxVEsb2PQS0MhyAQES1dYpFtqOFpgYkYZBKg54hmEIR+H/dY42Rsp86Bwa8VN8QGNaxljjUs2/+Qi3Guopqxa3Thh2F31M9c2gO3QhZJN0duhS8+AzAtP7iZyHCCa299SDNSwIH8NKOvt8UeqE1AvzQ5aw6RCp4/rgpz+UPsVY0qAY44R9MGeEbU6ffFOcTCmZ2Dc4oq4Ialn/Tpv06+7pAv8vX0WPRaGlqnMY7zKijqb7Xot/gNHSaa2aKNXVDy7Ug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IXgMZQkn8/FX0xym20E8GQT5ndZobjEeQMFpgLdI5/0=;
- b=eDZHXTa9jAj46uaaXofmPX+OLCLwETh/VT2cRvgJ2Hy6p026yzSDyxBdJjrFchn9wELUWJeugkBx9sXrgQZHWGz3KlcapnrOFIusQ2WvjsTqDIdReNpHseonIZDdED9YMDLCYZ9pmlaz5wDtsC8DaNMhIxMmUxh7Ksd+w6wCp/DymOvxBHvE3ImWewhDlFhZCHm1oUav0wZeGrpKmOkvimEiS0Fl5qtIK890OzN8/UIv5f5rveBrxseY+J0dSHII0fUp3PWsICrhjbYIo+04h20+gQTZCd+0JPeLebydWesDSAwtICDtcTPtvD8wyvQKxbYELKOSVOAptwqJ+DVMzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IXgMZQkn8/FX0xym20E8GQT5ndZobjEeQMFpgLdI5/0=;
- b=J9QDXMGXfCIqnRnu2hgt4upxNnKISZmgx9UWMNpi1wHjsZGOCqCmwhGBEWMVrLMzhoCrisi36pytTA8UZpg5PAuxMQo4wNb5Mh4QAkJqLRsp71A//UfZtcSGFaqdi+rl0AXLcKKpT7JMKkVy7NAvWeZKp+/gYjmA44zpNVDJz2k=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AM8PR04MB7970.eurprd04.prod.outlook.com (2603:10a6:20b:24f::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Fri, 12 Apr
- 2024 00:21:37 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7386.037; Fri, 12 Apr 2024
- 00:21:37 +0000
-From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Date: Fri, 12 Apr 2024 08:29:27 +0800
-Subject: [PATCH 3/3] pinctrl: scmi: support i.MX OEM pin configuration type
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240412-pinctrl-scmi-oem-v1-v1-3-704f242544c1@nxp.com>
-References: <20240412-pinctrl-scmi-oem-v1-v1-0-704f242544c1@nxp.com>
-In-Reply-To: <20240412-pinctrl-scmi-oem-v1-v1-0-704f242544c1@nxp.com>
-To: Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, Peng Fan <peng.fan@arm.com>, 
- Sudeep Holla <sudeep.holla@arm.com>, 
- Cristian Marussi <cristian.marussi@arm.com>
-Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712881775; l=2796;
- i=peng.fan@nxp.com; s=20230812; h=from:subject:message-id;
- bh=Tzl0BI+t0SHnhwCwshMQRPsrD5//1fkJuvy5P2j38Qw=;
- b=U8QZ0gz5dmnXOpcBoRMlG0SqXZMbJHlRQrzOm3IdqicR2+AGnAGWKcEeKxfieDMDY6jm5+nZe
- lLpidbGXt0EC+z2xoV54NEIm/H9Ev9zJ5P+PPm67iG1t/I+1Xg+Sqap
-X-Developer-Key: i=peng.fan@nxp.com; a=ed25519;
- pk=I4sJg7atIT1g63H7bb5lDRGR2gJW14RKDD0wFL8TT1g=
-X-ClientProxiedBy: SI2P153CA0030.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:190::15) To DU0PR04MB9417.eurprd04.prod.outlook.com
- (2603:10a6:10:358::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0433F17E9;
+	Fri, 12 Apr 2024 00:49:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712882949; cv=none; b=n/dWn4F7YvgKZAHUU10wABjGOWJtsMio9taJ2r+yu6IOClE2BYifhTnZ87r8f37Dz7R2SiQE0+lHW7gWsKuPxkcxS5IPEfGnY3/y3TKazM8pn2bT/3oOCP0lDQ4SUVVYCxxH2I1D90mTSE+IPv9dm+ZagRHYTaA8osr9GE3IJD8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712882949; c=relaxed/simple;
+	bh=GII8TFwTY6x2+9aqL4mQgvsbHfCJTNgY4FJ84BO0oBE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pbawKa7sFO1olG0o1VYjDlRQz237640xpo1VKhdG4sg7nA1TmeOcGCn0waPW+LQEgKl5QjvXlR3NmBCzgzAY/uPxPixlCyPt/MaeCLO1R8qyoU7iLSuA108WF2ZIOnloQE0aQ2M6HQBFkja5O2WcTgrB2iH0burZtI73Jnkjc/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=OTCVGLXi; arc=none smtp.client-ip=4.36.192.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
+	bh=aoTD21VyMjzl2I/9QY+3XQkPooV4se1A6y8TQ08xYng=; b=OTCVGLXixSu/XU6hGP/HK6VTih
+	mSDP9y2mw/y7/4nHyzthmC6QLFZVfLCc6GviWq9CcGAAAPsr+F+ox7qfH+YYofPFloGvr+7dhNtqh
+	eleR1elJse7QE3fHwDuZh3zDIvT863QWCC1k2pDyubv6+17MtcBdTb9WZf1BhIasIBCLHW1m3CaaK
+	x6JLcdlnQSuyZ4OU/Vc3RazaGHjSO6Q+uCaiQ7ssd94UD/B0wOuROH6K9Efr1eeZRDNME+g2udM+4
+	SHcpJo4Yuyxqy8ZoZux/zu3/NF2zuDMiu1Eo+GT4AQe6L3+Wr1eo0czOkRWhZ60TnLezn1oXzL8gX
+	BDJi99yw==;
+Received: from cw137ip160.mn.codeweavers.com ([10.69.137.160] helo=camazotz.localnet)
+	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <zfigura@codeweavers.com>)
+	id 1rv4qp-00CL4w-1E;
+	Thu, 11 Apr 2024 19:33:07 -0500
+From: Elizabeth Figura <zfigura@codeweavers.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-api@vger.kernel.org, wine-devel@winehq.org,
+ =?ISO-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
+ Wolfram Sang <wsa@kernel.org>, Arkadiusz Hiler <ahiler@codeweavers.com>,
+ Peter Zijlstra <peterz@infradead.org>, Andy Lutomirski <luto@kernel.org>,
+ linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v3 04/30] ntsync: Introduce NTSYNC_IOC_WAIT_ANY.
+Date: Thu, 11 Apr 2024 19:33:07 -0500
+Message-ID: <25522541.6Emhk5qWAg@camazotz>
+In-Reply-To: <2024041111-handsaw-scruffy-27f3@gregkh>
+References:
+ <20240329000621.148791-1-zfigura@codeweavers.com>
+ <20240329000621.148791-5-zfigura@codeweavers.com>
+ <2024041111-handsaw-scruffy-27f3@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AM8PR04MB7970:EE_
-X-MS-Office365-Filtering-Correlation-Id: bce5f7d8-d249-466b-1a81-08dc5a868465
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	4kvyoMR6JtEaeCcNw43N4gTq24QTR21nFWNnSwcFR2Bp5WVcHkqO8fv6jk5NyYii3gpcT6OFSc04l7/Z/Gw66Jukw4Owg75Zy7UqS0R67GGcRAwPLfm5/K4r+/Uygp5Es9x72+e7J66dfob6OFC4XEAJhCNQriEHlpg1hxBq4LtXXA/ykQfQYLj8IVXys8UDECGjIfVSl3VTyfyvTB8e6sBWAdJvkXarqZT9oR3NXBLRg08kisY+qcUWn1GPaigHBuzU/IZDDwwRzUEwfjVi/LEEffDbf1NQ1n4rY5DEuqNQsv7LJkpViwcuiWvmxkGXPst2PfvlxERiYObyUJ72JfmtzXLqVBxHtpPKSwFuPT/ZQd5PsOW8LJYb5fGAVMj0rSmvdQc+Ae2TJZ10gxHQNcX/YurLOeb+/uXd+TtzfeSOhNMH9Lz27JUUHmpqxF4kamoE98ENQqwOdcM1Q1rm2cKg19oULi7HednkaNTY5F9GlG8thmaaREgxYeyBG1uPABY60W2uNq40VSRSQvqTJHNwy/Kx4CCXXDVl9MMUIhjgsFJEsqdJetONtLUQDWwFAvOQ9MYIJk6GpHk0Mt3ToJKNaiagxVCMbDj+NcG/5INzjjN53VE5TZZhnCM6Enl7tyx03vlkkbItQyGunahkUrmOuL7JrAt8UWk+IMtVJmK4X+UuvtNM28fsDbp6uqbemhxNbFOqBIflIUGfcBkkkaPW+R85jv4KaTmx+f66qLw=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(52116005)(7416005)(376005)(38350700005)(921011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?a2R5ZnFMME5SY1crRHhIcGo5eHFFZ1BkcTFyV1U3a2FlLzg2VmFXTXZVMGV2?=
- =?utf-8?B?LzNXZCtEeDh0amZQM0F0aVJmN0xkREkzMEJ2S2gxVWRpM1NlVnZTOE9qdGJ1?=
- =?utf-8?B?VExyN0JyN0pxbUJsSm1SSXoxeWJBcEN5bTErOW42YVcrUC9FRnluRG55bkQx?=
- =?utf-8?B?Mzl1Z0tMTlBuQy96dlRpb2Rvamp3a254bjlvSnZVeDYzQkErOHVmYmxlenNC?=
- =?utf-8?B?MFJXbk51M3pwR29IQVhSTHgyYlJCcXk1TVA0Z3A3WTJsRmVEVy9xcnpra3hx?=
- =?utf-8?B?WWlnN2sxVXB6TUJFM3JGeC9Qa0lWcmQ5Y25LSU1sWXMyRkFpZEcvdHBHdm4x?=
- =?utf-8?B?Y2dYZzNXbGZzVDlOS2p6OUk1SkZDNVVkZThzT1k1dzF4VXM1cFd6U0FUalRQ?=
- =?utf-8?B?V05GS2JtTC9GRHBFblhBSXJxQ2hyTW11WGpPdDZFRU9IeVVUcmVhRnFNcUVC?=
- =?utf-8?B?RENPSlN4K3dsSU00N1dBcTNmNWlXdTJMV2tLTG42YUh3dWFFNHRuajc3aXUr?=
- =?utf-8?B?bXhNWHdGSzJDbHNnZ2wxRG45dEF1QkVwOXBBVXpMRTV1QndsYU8vVEhQKzVL?=
- =?utf-8?B?NUJBUGF1K1JwTVpXdEpISjEwZ0syaE9TaWxQWGcrZllBN21GcnV6dnFXREsy?=
- =?utf-8?B?M3dCTlVVQnZ3TjAra1R4TXE1R3kvcUtBZFkwZVUzdUQ3aTVWUWc0VWxjaHpk?=
- =?utf-8?B?K1lvVWVxL0dpc2grbTlmYmFrODJla3Zrdy9henlPZHpIaFppQVNhOWR3RXNv?=
- =?utf-8?B?eFc2MGJNNG9uS0hHRVJtS1BJV2doVU1kM2wxcGNPNzN1YjJMZFpBMFJYc1BL?=
- =?utf-8?B?MytNNDU2M3ViMDRVWExWK24vVnVKamptQ0hHMWFjVkxrTlVSRmVzTEw5Ky9Y?=
- =?utf-8?B?VkUxM1g0VWdCZDZIR29KelhDU01GY3FzaXRrMk04YUd2eU9wdmtQTkxRQjFo?=
- =?utf-8?B?SUkxSy82TWcxSERWWHd1SVc5QjFEekg0OUxKSC9DMklsNGxUQVJObldNQlJK?=
- =?utf-8?B?Nlo2QWZkMDdUMno3U0Zma255Z3VHYnhaU2NOQ1crM2xMZm96T0UrOFBxeXVh?=
- =?utf-8?B?OGYrSVVQTEptV3dGRUp5dExUMXpNY1dONm5Cd2dYZ2VDbzVzR1NvQkZHcm9r?=
- =?utf-8?B?Q25ReTg4djRHOFhTTWJGT3hCaUNJaWFHVlRtWWtuZ3g3QUtSQjVjamNGSUht?=
- =?utf-8?B?cTBEMVdOSTB0Y0xabmNzdllJWFBKRmRBajFPRnoxdy9MQ09qclFaMS90Z011?=
- =?utf-8?B?dzV4aEpiZzcxUEtlTXFxYXdTUVlXL25WTEp4N28yeWZJSDBQSlM2M3hYOXNm?=
- =?utf-8?B?RmhPaGcwVzNNdXM1dFNOSXF6bDVUSlRHVS84K0NGeFl5SnI2eEtNL3NjMHNs?=
- =?utf-8?B?UXFDS3QrQXNjMXVBS0VsckNYNVNYS0YwY0Z0OHA1ekVxbmpLOXJ6UGw3TVdU?=
- =?utf-8?B?c2gyWFR1WWwxVXQ3b3UrZ0x4WkxvQlRwbEdLQitZZnJtSlduVW5TODZDbXJY?=
- =?utf-8?B?VzRrTjIvb3BvcTZtTmRObGdnNUV1a0lxbHZyNnVRcEJpZy8yU0V2MGJXQ05y?=
- =?utf-8?B?eWM0SFhoSHNTT3lWOW82a3ExZElML1ROZlBIM1ZUNWlFT1JseFBPS1lIMk0x?=
- =?utf-8?B?R3lCMnRmcG1jMUY1aDVhTXVaUml5L2tKKzNSL1UvVXh2cXNtUjY1WUNqVHlj?=
- =?utf-8?B?Sm5jNDRoWmp2QTJ6NEJRQ253OEZZVytrUmZ6WWJ1R2lwc1BCRXc4bzdtNlJQ?=
- =?utf-8?B?QlIyakVOK1IxN3kzZnp6NVZnMTByNTJKYnhjdjljRDdUalpOWHBYS1AzNW9F?=
- =?utf-8?B?MWdyaDNNNncyZEo3aDBCWWMydkpRRSt4UVVpZjhjc01NZ1BYOGNMa2dQMkxv?=
- =?utf-8?B?NmYva3BQV0prd3lYTW9YUlZXM1RLVGVFazF1Ky81cE9LZERocmFYUEpXOC9Q?=
- =?utf-8?B?NDR4ZFk3N0xPakRUQ3drNitaNTYzZmxHdVdpOVF1bUJvaEZ1WTB3M25QVExJ?=
- =?utf-8?B?aFpBMHpUOFVXNUJvYWFROVZwQUtoS3dYOFFmWlZXOUNKak5JOW11TVdDbWlC?=
- =?utf-8?B?amozMXFValNPZktuUEM0LzJEZTNvaldKbXEwbWVmbDBjQTRjOE5jUzJnZml1?=
- =?utf-8?Q?GgwiixZYbonrUZUIAVcr7Wfhf?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bce5f7d8-d249-466b-1a81-08dc5a868465
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 00:21:37.4007
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: keGm/0zTyPPysGP2SYw5Je4wbwNkoPPi/UNipdYfBBAwlmw0/fellq0R1SV04sH672b704XndmEjMg8iiGRCpg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7970
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-From: Peng Fan <peng.fan@nxp.com>
+On Thursday, 11 April 2024 08:34:23 CDT Greg Kroah-Hartman wrote:
+> On Thu, Mar 28, 2024 at 07:05:55PM -0500, Elizabeth Figura wrote:
+> > This corresponds to part of the functionality of the NT syscall
+> > NtWaitForMultipleObjects(). Specifically, it implements the behaviour where
+> > the third argument (wait_any) is TRUE, and it does not handle alertable waits.
+> > Those features have been split out into separate patches to ease review.
+> > 
+> > NTSYNC_IOC_WAIT_ANY is a vectored wait function similar to poll(). Unlike
+> > poll(), it "consumes" objects when they are signaled. For semaphores, this means
+> > decreasing one from the internal counter. At most one object can be consumed by
+> > this function.
+> > 
+> > Up to 64 objects can be waited on at once. As soon as one is signaled, the
+> > object with the lowest index is consumed, and that index is returned via the
+> > "index" field.
+> 
+> So it's kind of like our internal locks already?  Or futex?
 
-i.MX95 System Manager FW supports SCMI PINCTRL protocol, but uses
-OEM Pin Configuration type, so extend the driver to support custom
-params.
+Striking the right balance of explaining the problem space without
+inundating the reader with information has been tricky; I'll do my best
+to try to explain here.
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/pinctrl/pinctrl-scmi.c | 23 +++++++++++++++++++++++
- drivers/pinctrl/pinctrl-scmi.h | 15 +++++++++++++++
- 2 files changed, 38 insertions(+)
+The primitives include mutexes and semaphores, like our internal locks.
+I don't really want to compare them to futexes because futexes don't
+have internal state.
 
-diff --git a/drivers/pinctrl/pinctrl-scmi.c b/drivers/pinctrl/pinctrl-scmi.c
-index 0f55f000a679..97c3d9d4634b 100644
---- a/drivers/pinctrl/pinctrl-scmi.c
-+++ b/drivers/pinctrl/pinctrl-scmi.c
-@@ -20,6 +20,7 @@
- #include <linux/pinctrl/pinctrl.h>
- #include <linux/pinctrl/pinmux.h>
- 
-+#include "pinctrl-scmi.h"
- #include "pinctrl-utils.h"
- #include "core.h"
- #include "pinconf.h"
-@@ -462,6 +463,23 @@ static const struct pinconf_ops pinctrl_scmi_pinconf_ops = {
- 	.pin_config_config_dbg_show = pinconf_generic_dump_config,
- };
- 
-+static const struct pinconf_generic_params pinctrl_scmi_oem_dt_params[] = {
-+	{"nxp,func-id", IMX_SCMI_PIN_MUX, -1},
-+	{"nxp,daisy-id", IMX_SCMI_PIN_DAISY_ID, -1},
-+	{"nxp,daisy-conf", IMX_SCMI_PIN_DAISY_CFG, -1},
-+	{"nxp,pin-conf", IMX_SCMI_PIN_CONF, -1},
-+};
-+
-+#ifdef CONFIG_DEBUG_FS
-+static const
-+struct pin_config_item pinctrl_scmi_oem_conf_items[ARRAY_SIZE(pinctrl_scmi_oem_dt_params)] = {
-+	PCONFDUMP(IMX_SCMI_PIN_MUX, "FUNC-ID", NULL, true),
-+	PCONFDUMP(IMX_SCMI_PIN_DAISY_ID, "DAISY-ID", NULL, true),
-+	PCONFDUMP(IMX_SCMI_PIN_DAISY_CFG, "DAISY-CFG", NULL, true),
-+	PCONFDUMP(IMX_SCMI_PIN_CONF, "PIN-CONF", NULL, true),
-+};
-+#endif
-+
- static int pinctrl_scmi_get_pins(struct scmi_pinctrl *pmx,
- 				 struct pinctrl_desc *desc)
- {
-@@ -526,6 +544,11 @@ static int scmi_pinctrl_probe(struct scmi_device *sdev)
- 	pmx->pctl_desc.pctlops = &pinctrl_scmi_pinctrl_ops;
- 	pmx->pctl_desc.pmxops = &pinctrl_scmi_pinmux_ops;
- 	pmx->pctl_desc.confops = &pinctrl_scmi_pinconf_ops;
-+	pmx->pctl_desc.custom_params = pinctrl_scmi_oem_dt_params;
-+	pmx->pctl_desc.num_custom_params = ARRAY_SIZE(pinctrl_scmi_oem_dt_params);
-+#ifdef CONFIG_DEBUG_FS
-+	pmx->pctl_desc.custom_conf_items = pinctrl_scmi_oem_conf_items;
-+#endif
- 
- 	ret = pinctrl_scmi_get_pins(pmx, &pmx->pctl_desc);
- 	if (ret)
-diff --git a/drivers/pinctrl/pinctrl-scmi.h b/drivers/pinctrl/pinctrl-scmi.h
-new file mode 100644
-index 000000000000..fcc61bc19c98
---- /dev/null
-+++ b/drivers/pinctrl/pinctrl-scmi.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright 2024 NXP
-+ */
-+
-+#ifndef __DRIVERS_PINCTRL_SCMI_H
-+#define __DRIVERS_PINCTRL_SCMI_H
-+
-+/* OEM VENDOR Pin Configuration Type */
-+#define IMX_SCMI_PIN_MUX	192
-+#define IMX_SCMI_PIN_CONF	193
-+#define IMX_SCMI_PIN_DAISY_ID	194
-+#define IMX_SCMI_PIN_DAISY_CFG	195
-+
-+#endif /* __DRIVERS_PINCTRL_SCMI_H */
+However NT's primitives are *way* more complicated. The big part of it
+is they consume state in a way that usual wait functions don't, and as
+if that weren't enough, you can do operations with them like
+wait-for-all (wait for all objects to be simultaneously signaled and
+atomically consume them) or pulse (signal an object without changing
+its state). None of this can be expressed with poll or futex.
 
--- 
-2.37.1
+You can't even express those operations with wait_event() etc. We
+really need to replace the entire wait queue and use schedule() +
+wake_up_process() directly. ntsync_q is the wait queue struct in this.
+
+They're also really ugly things to do; they only exist for
+compatibility reasons, and retrofitting support into anything would
+complicate and slow down hot paths.
+
+> > A timeout is supported. The timeout is passed as a u64 nanosecond value, which
+> > represents absolute time measured against either the MONOTONIC or REALTIME clock
+> > (controlled by the flags argument). If U64_MAX is passed, the ioctl waits
+> > indefinitely.
+> > 
+> > This ioctl validates that all objects belong to the relevant device. This is not
+> > necessary for any technical reason related to NTSYNC_IOC_WAIT_ANY, but will be
+> > necessary for NTSYNC_IOC_WAIT_ALL introduced in the following patch.
+> > 
+> > Two u32s of padding are left in the ntsync_wait_args structure; one will be used
+> > by a patch later in the series (which is split out to ease review).
+> > 
+> > Signed-off-by: Elizabeth Figura <zfigura@codeweavers.com>
+> > ---
+> >  drivers/misc/ntsync.c       | 250 ++++++++++++++++++++++++++++++++++++
+> >  include/uapi/linux/ntsync.h |  16 +++
+> >  2 files changed, 266 insertions(+)
+> > 
+> > diff --git a/drivers/misc/ntsync.c b/drivers/misc/ntsync.c
+> > index 3c2f743c58b0..c6f84a5fc8c0 100644
+> > --- a/drivers/misc/ntsync.c
+> > +++ b/drivers/misc/ntsync.c
+> > @@ -6,11 +6,16 @@
+> >   */
+> >  
+> >  #include <linux/anon_inodes.h>
+> > +#include <linux/atomic.h>
+> >  #include <linux/file.h>
+> >  #include <linux/fs.h>
+> > +#include <linux/hrtimer.h>
+> > +#include <linux/ktime.h>
+> >  #include <linux/miscdevice.h>
+> >  #include <linux/module.h>
+> >  #include <linux/overflow.h>
+> > +#include <linux/sched.h>
+> > +#include <linux/sched/signal.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/spinlock.h>
+> >  #include <uapi/linux/ntsync.h>
+> > @@ -30,6 +35,8 @@ enum ntsync_type {
+> >   *
+> >   * Both rely on struct file for reference counting. Individual
+> >   * ntsync_obj objects take a reference to the device when created.
+> > + * Wait operations take a reference to each object being waited on for
+> > + * the duration of the wait.
+> >   */
+> >  
+> >  struct ntsync_obj {
+> > @@ -47,12 +54,56 @@ struct ntsync_obj {
+> >  			__u32 max;
+> >  		} sem;
+> >  	} u;
+> > +
+> > +	struct list_head any_waiters;
+> > +};
+> > +
+> > +struct ntsync_q_entry {
+> > +	struct list_head node;
+> > +	struct ntsync_q *q;
+> > +	struct ntsync_obj *obj;
+> > +	__u32 index;
+> > +};
+> > +
+> > +struct ntsync_q {
+> > +	struct task_struct *task;
+> > +	__u32 owner;
+> > +
+> > +	/*
+> > +	 * Protected via atomic_try_cmpxchg(). Only the thread that wins the
+> > +	 * compare-and-swap may actually change object states and wake this
+> > +	 * task.
+> > +	 */
+> > +	atomic_t signaled;
+> 
+> This feels odd, why are you duplicating a normal lock functionality
+> here?
+
+ntsync_q represents a single waiter (like struct wait_queue_entry).
+
+In short, waiting is a destructive operation; it changes the state of
+the primitives waited on. If a waiter is woken successfully then it
+must have consumed the state of exactly one object.
+
+Therefore, if task A is waiting on two primitives X and Y, and those
+primitives are respectively woken at the same time by tasks B and C, we
+need a way to ensure that B and C don't both wake A and consume the
+state of X and Y. Only one of them should win.
+
+We could do that with a lock on the ntsync_q struct, but having a
+single variable with atomic-test-and-set achieves the same thing while
+being lock-free.
+
+> > +
+> > +	__u32 count;
+> > +	struct ntsync_q_entry entries[];
+> >  };
+> >  
+> >  struct ntsync_device {
+> >  	struct file *file;
+> >  };
+> >  
+> > +static void try_wake_any_sem(struct ntsync_obj *sem)
+> > +{
+> > +	struct ntsync_q_entry *entry;
+> > +
+> > +	lockdep_assert_held(&sem->lock);
+> > +
+> > +	list_for_each_entry(entry, &sem->any_waiters, node) {
+> > +		struct ntsync_q *q = entry->q;
+> > +		int signaled = -1;
+> > +
+> > +		if (!sem->u.sem.count)
+> > +			break;
+> > +
+> > +		if (atomic_try_cmpxchg(&q->signaled, &signaled, entry->index)) {
+> > +			sem->u.sem.count--;
+> > +			wake_up_process(q->task);
+> > +		}
+> 
+> You are waking up _all_ "locks" that with the atomic_try_cmpxchg() call,
+> right?  Not just the "first".
+> 
+> Or am I confused?
+
+This is looping over all tasks trying to lock / acquire "sem", and
+waking them (assuming something else didn't wake them first) while
+decrementing "sem" state accordingly.
+
+> > +	}
+> > +}
+> > +
+> >  /*
+> >   * Actually change the semaphore state, returning -EOVERFLOW if it is made
+> >   * invalid.
+> > @@ -88,6 +139,8 @@ static int ntsync_sem_post(struct ntsync_obj *sem, void __user *argp)
+> >  
+> >  	prev_count = sem->u.sem.count;
+> >  	ret = post_sem_state(sem, args);
+> > +	if (!ret)
+> > +		try_wake_any_sem(sem);
+> >  
+> >  	spin_unlock(&sem->lock);
+> >  
+> > @@ -141,6 +194,7 @@ static struct ntsync_obj *ntsync_alloc_obj(struct ntsync_device *dev,
+> >  	obj->dev = dev;
+> >  	get_file(dev->file);
+> >  	spin_lock_init(&obj->lock);
+> > +	INIT_LIST_HEAD(&obj->any_waiters);
+> >  
+> >  	return obj;
+> >  }
+> > @@ -191,6 +245,200 @@ static int ntsync_create_sem(struct ntsync_device *dev, void __user *argp)
+> >  	return put_user(fd, &user_args->sem);
+> >  }
+> >  
+> > +static struct ntsync_obj *get_obj(struct ntsync_device *dev, int fd)
+> > +{
+> > +	struct file *file = fget(fd);
+> > +	struct ntsync_obj *obj;
+> > +
+> > +	if (!file)
+> > +		return NULL;
+> > +
+> > +	if (file->f_op != &ntsync_obj_fops) {
+> > +		fput(file);
+> > +		return NULL;
+> > +	}
+> > +
+> > +	obj = file->private_data;
+> > +	if (obj->dev != dev) {
+> > +		fput(file);
+> > +		return NULL;
+> > +	}
+> > +
+> > +	return obj;
+> > +}
+> > +
+> > +static void put_obj(struct ntsync_obj *obj)
+> > +{
+> > +	fput(obj->file);
+> > +}
+> > +
+> > +static int ntsync_schedule(const struct ntsync_q *q, const struct ntsync_wait_args *args)
+> > +{
+> > +	ktime_t timeout = ns_to_ktime(args->timeout);
+> > +	clockid_t clock = CLOCK_MONOTONIC;
+> > +	ktime_t *timeout_ptr;
+> > +	int ret = 0;
+> > +
+> > +	timeout_ptr = (args->timeout == U64_MAX ? NULL : &timeout);
+> > +
+> > +	if (args->flags & NTSYNC_WAIT_REALTIME)
+> > +		clock = CLOCK_REALTIME;
+> > +
+> > +	do {
+> > +		if (signal_pending(current)) {
+> > +			ret = -ERESTARTSYS;
+> > +			break;
+> > +		}
+> > +
+> > +		set_current_state(TASK_INTERRUPTIBLE);
+> > +		if (atomic_read(&q->signaled) != -1) {
+> > +			ret = 0;
+> > +			break;
+> 
+> What happens if the value changes right after you read it?
+
+The corresponding wake code flips signaled and then does
+wake_up_process(), so schedule() returns immediately (and we see
+q->signaled set and exit the loop.)
+
+> Rolling your own lock is tricky, and needs review from the locking
+> maintainers.  And probably some more documentation as to what is
+> happening and why our normal types of locks can't be used here?
+
+Definitely. (Unfortunately this hasn't gotten attention from any locking
+maintainer yet since your last call for review; not sure if there's
+anything I can do there.)
+
+Hopefully my comment at the top of this mail explains why we're rolling
+our own everything, but if not please let me know and I can try to
+explain more clearly.
+
+--Zeb
+
 
 
