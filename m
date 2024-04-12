@@ -1,107 +1,179 @@
-Return-Path: <linux-kernel+bounces-143386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69D1F8A37EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:33:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2DEB8A37EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:34:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8A85B24671
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:33:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C3AC1F240D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:34:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F8B615217F;
-	Fri, 12 Apr 2024 21:33:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C6D4152186;
+	Fri, 12 Apr 2024 21:34:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HhSTbhDx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QQSf3PB4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61815610B;
-	Fri, 12 Apr 2024 21:33:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4015B610B;
+	Fri, 12 Apr 2024 21:34:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712957610; cv=none; b=gYtMhdqm+FIZJZxhh4Y/v6yCxVfEmgUXfanti8upPkwTuqeqYZk9nEruH1qKUjXbLKgXbenuqpPW/LjV5W7thDhAzGD+GfUF7plDI2+kFNU5GfxO/K4wtfve6jbUjZr6g4LOjp4tRRCxjj2zeGUXZA2NOYA/sgTeF+zGerihXws=
+	t=1712957657; cv=none; b=sIWLtttjWIDHUHRq8nJYeEnKbGBBeIm77JQpmIIWz1w+15lfEdDRdnRP6Q+cBGe9TNospqALhA9WdhZVhcpaZgLNnemH4I5ADKO6Sb7C4zTHpclDSeCaXxrpReqk3i+7I2Z9mKFXF/5mpefNcwVJ+NRJhb3ukXJ7FP3wNJcVKAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712957610; c=relaxed/simple;
-	bh=CtC3I2fZQ9mZwBg/TkYlfnfS9MFN0gpK2lQ696PJfG4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=tDQpeCxcWK26FT8E/UshpxRx62RGr569tdfLVb2VxPr0bCyItzEXD3JrDIrsiVwLQ/p7LZs5YYhOduw5/UbExUplo80ZKYQVgXkAsUdhwcvc8HOwQJb+11eHfAm0dhMZ6HrsimcRzYc87eogRGTxkzs78Q6Vr4FpUAqqB0jUXJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HhSTbhDx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9BF3C113CC;
-	Fri, 12 Apr 2024 21:33:29 +0000 (UTC)
+	s=arc-20240116; t=1712957657; c=relaxed/simple;
+	bh=RPMZISUCpRH7rGFvp7EbdpEtkFygpiRP/bPV6ApwRUM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SLbNN+odO50am/JnkWc1n3ZWmfk65jXBs4VX1kbbjTLLT9wO0FlACCPKQnmBjcVqGX5g4jm5FJMTERlcpzJpSyqHO+No1M3DKyKdTJmbIUItGVqmqEEB3dbs6ZcsO8bWnbh6yxs0N3e7YmPsYUj2BsTqyX/2aTKDH3Qi5wYQxFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QQSf3PB4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36A7AC113CC;
+	Fri, 12 Apr 2024 21:34:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712957610;
-	bh=CtC3I2fZQ9mZwBg/TkYlfnfS9MFN0gpK2lQ696PJfG4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=HhSTbhDx+UWURLfC7hyj8yyHFrTuSDmbdVUCnommqoKxlUxohFWXZfu8zZy4uL+oO
-	 bNexmE9vPvhh3q/VdkYgk2zTi8NtvrRth2hbv4WSvNwDnvWnHiL6HQHAqzOScatefn
-	 noUtbdiM9PKpxBqMmC54oC5bUgu6mS6n7Nymk9BuYWJpVfJA8IVYmXtfTf6K5TOMhY
-	 CgM5RxS+q4mYVevj/nkmA1h/yhdDDT8DLjh5RwT08wbD4zgEjI7UpoFsTEAdUX6jwg
-	 n2GnhytXq2vfNm19rt+JkfOe4dU4zR3CEpSCIRp/oXtCfaN3RNJrF/rv2x8tS4Tyc6
-	 1tWYqreRv2HUw==
-Date: Fri, 12 Apr 2024 16:33:28 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc: linux-pci@vger.kernel.org, bhelgaas@google.com, lpieralisi@kernel.org,
-	kw@linux.com, robh@kernel.org, matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: mt7621: Fix possible string truncation in snprintf
-Message-ID: <20240412213328.GA19361@bhelgaas>
+	s=k20201202; t=1712957656;
+	bh=RPMZISUCpRH7rGFvp7EbdpEtkFygpiRP/bPV6ApwRUM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QQSf3PB42KVUAVL/1+OQDtLauoAha7gpWFLEfP7EkJZ7N4u8sjm1TXZET0lcr99if
+	 p323/cwpgZUxDFoAN0LtJD/WtUmkAowRMfrHXs2ADEs+POp65FYXDmivZLLbSGNrbU
+	 cK7psxBkc2pNWhws+T+BLn4rvwbGtErI3pKePtDRrrXtxg4SlAkty9qCRKwyAvaK4o
+	 4J1TYby7DtMN0iDHmvtIaHgU/2W7PPaw1EGmkk8oxy7YqdZ0CGvX2zAsbQmuPAc1vv
+	 Sybl6gdQ0nD7yXd8jpir5Kgy9dj6jXo2NV/g5uxXJoISW/2Z2e9/7qwwU4KNgSB4f8
+	 bogQT43yfNq2A==
+Date: Fri, 12 Apr 2024 22:34:10 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 08/19] riscv: Introduce vendor variants of extension
+ helpers
+Message-ID: <20240412-geranium-monotone-b47f414715d1@spud>
+References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
+ <20240411-dev-charlie-support_thead_vector_6_9-v1-8-4af9815ec746@rivosinc.com>
+ <20240412-dwarf-shower-5a7300fcd283@wendy>
+ <ZhlypvTdsFPZBr08@ghost>
+ <20240412-drab-french-55d8ff2c8cfa@spud>
+ <ZhmhtLS5NuRrPOfu@ghost>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="SiZFDomrOPZV4p3t"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240111082704.2259450-1-sergio.paracuellos@gmail.com>
+In-Reply-To: <ZhmhtLS5NuRrPOfu@ghost>
 
-On Thu, Jan 11, 2024 at 09:27:04AM +0100, Sergio Paracuellos wrote:
-> The following warning appears when driver is compiled with W=1.
-> 
-> CC      drivers/pci/controller/pcie-mt7621.o
-> drivers/pci/controller/pcie-mt7621.c: In function ‘mt7621_pcie_probe’:
-> drivers/pci/controller/pcie-mt7621.c:228:49: error: ‘snprintf’ output may
-> be truncated before the last format character [-Werror=format-truncation=]
-> 228 |         snprintf(name, sizeof(name), "pcie-phy%d", slot);
->     |                                                 ^
-> drivers/pci/controller/pcie-mt7621.c:228:9: note: ‘snprintf’ output between
-> 10 and 11 bytes into a destination of size 10
-> 228 |         snprintf(name, sizeof(name), "pcie-phy%d", slot);
->     |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Clean this up increasing destination buffer one byte.
-> 
-> Reported-by: Bjorn Helgaas <helgaas@kernel.org>
-> Closes: https://lore.kernel.org/linux-pci/20240110212302.GA2123146@bhelgaas/T/#t
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
-Krzysztof applied this to pci/controller/mt7621 for v6.10, thanks!  I
-just pulled that branch into "next", so it should appear in the next
-linux-next.
+--SiZFDomrOPZV4p3t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  drivers/pci/controller/pcie-mt7621.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/pcie-mt7621.c b/drivers/pci/controller/pcie-mt7621.c
-> index 79e225edb42a..d97b956e6e57 100644
-> --- a/drivers/pci/controller/pcie-mt7621.c
-> +++ b/drivers/pci/controller/pcie-mt7621.c
-> @@ -202,7 +202,7 @@ static int mt7621_pcie_parse_port(struct mt7621_pcie *pcie,
->  	struct mt7621_pcie_port *port;
->  	struct device *dev = pcie->dev;
->  	struct platform_device *pdev = to_platform_device(dev);
-> -	char name[10];
-> +	char name[11];
->  	int err;
->  
->  	port = devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
-> -- 
-> 2.25.1
-> 
+On Fri, Apr 12, 2024 at 02:03:48PM -0700, Charlie Jenkins wrote:
+> On Fri, Apr 12, 2024 at 09:40:03PM +0100, Conor Dooley wrote:
+> > On Fri, Apr 12, 2024 at 10:43:02AM -0700, Charlie Jenkins wrote:
+> > > On Fri, Apr 12, 2024 at 12:49:57PM +0100, Conor Dooley wrote:
+> > > > On Thu, Apr 11, 2024 at 09:11:14PM -0700, Charlie Jenkins wrote:
+> > > > > Create vendor variants of the existing extension helpers. If the
+> > > > > existing functions were instead modified to support vendor extens=
+ions, a
+> > > > > branch based on the ext value being greater than
+> > > > > RISCV_ISA_VENDOR_EXT_BASE would have to be introduced. This addit=
+ional
+> > > > > branch would have an unnecessary performance impact.
+> > > > >=20
+> > > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > > >=20
+> > > > I've not looked at the "main" patch in the series that adds all of =
+the
+> > > > probing and structures for representing this info yet beyond a curs=
+ory
+> > > > glance, but it feels like we're duplicating a bunch of infrastructu=
+re
+> > > > here before it is necessary. The IDs are all internal to Linux, so =
+I'd
+> > > > rather we kept everything in the same structure until we have more =
+than
+> > > > a handful of vendor extensions. With this patch (and the theadpmu s=
+tuff)
+> > > > we will have three vendor extensions which feels like a drop in the
+> > > > bucket compared to the standard ones.
+> > >=20
+> > > It is not duplicating infrastructure. If we merge this into the exist=
+ing
+> > > infrastructure, we would be littering if (ext > RISCV_ISA_VENDOR_EXT_=
+BASE)
+> > > in __riscv_isa_extension_available. This is particularily important
+> > > exactly because we have so few vendor extensions currently so this ch=
+eck
+> > > would be irrelevant in the vast majority of cases.
+> >=20
+> > That's only because of your implementation. The existing vendor extensi=
+on
+> > works fine without this littering. That's another thing actually, you
+> > forgot to convert over the user we already have :)
+>=20
+> Oh right, I will convert them over. The fundemental goal of this patch
+> is to allow a way for vendors to support their own extensions without
+> needing to populate riscv_isa_ext. This is to create separation between
+> vendors so they do not impact each other.
+
+The one that needs converting is xandespmu. As I said on the other patch
+a minute I don't think isolating vendors for the internal representation
+is needed and can be left in hwprobe. I also don't think we can rely on
+a behaviour of "SiFive CPUs will always have SiFive's mvendorid" or that
+kinda thing, I've heard talk of the SoC vendor getting their mvendorid
+for custom CPU cores instead of the CPU vendor and it's possible for
+the SBI implementation to "adjust" the values also.
+
+> xlinuxenvcfg does not fit into this scheme however. This scheme assumes
+> that a hart cannot have multiple vendors which that extension breaks.
+> xlinuxenvcfg is really filling a hole in the standard isa that is
+> applicible to all vendors and does not appear in the device tree so it
+> is okay for that to live outside this scheme.
+
+Ye, xlinuxenvcfg is an internal psuedo-extension that should be treated
+more like a standard one than something vendor.
+
+> > > It is also unecessary to push off the refactoring until we have some
+> > > "sufficient" amount of vendor extensions to deem changing the
+> > > infrastructure when I already have the patch available here. This does
+> > > not introduce any extra overhead to existing functions and will be ab=
+le
+> > > to support vendors into the future.
+> >=20
+> > Yeah, maybe that's true but this was my gut reaction before reading the
+> > other patch in detail (which I've still yet to do).
+>=20
+> - Charlie
+>=20
+
+--SiZFDomrOPZV4p3t
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhmo0QAKCRB4tDGHoIJi
+0sB2AP9FeUoact1liM4pnP8xEk+uEek2FyqTjYcZiaib0RlcGwD/RBzXv10rgGru
+eAFY4Rmq36PhVYfHdF4UI+zCC4yTAgw=
+=xSsQ
+-----END PGP SIGNATURE-----
+
+--SiZFDomrOPZV4p3t--
 
