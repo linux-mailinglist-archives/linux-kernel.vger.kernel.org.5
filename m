@@ -1,354 +1,160 @@
-Return-Path: <linux-kernel+bounces-142508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBFBD8A2C93
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:39:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08AE78A2CAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:42:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07FB61C23A8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:39:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6031289352
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:42:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2196026AF9;
-	Fri, 12 Apr 2024 10:38:55 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D0D53D0D5
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 10:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E1F41231;
+	Fri, 12 Apr 2024 10:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="GJNxqNCO"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A704C20310;
+	Fri, 12 Apr 2024 10:42:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712918334; cv=none; b=ibe4oIMxXEe9Jo8UDVoPGQGBWGes01uW5YA8zSBmXXs9Xo/LxoZgC6Tzt8/BCBu7s6mtmPTFo8TtrHWvm384gue2MNAH2nJicQSSn73QO5mBTEn/JwvpCC0+d2XEexDRTNl6pF0cn1gcu+Ea1Im7qwa4RZp2/4mAaba7wwqxeZg=
+	t=1712918526; cv=none; b=MJsbeDvxaVokNh5XDiiZyAX8Gdzbvbjuo0fZy9JU188lc+DDNT6rtmjA8vaFDw0FKlWpEcKDjdGBGyWelybFU/xVgBVsi+HSn16HnRmkrw67KcI6t+lhqUr1aeZiSewcQxq5E+ZhRAhSHSCpR9Yi41gwy7aYUz+Yhv0O3reEc2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712918334; c=relaxed/simple;
-	bh=peEh+aN2RdBWZcfilXaf9BGhJLLLLegsXHBfZPhCmlA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CsJldtgeaTwLCDWRSZv2/R2B2/ZiGWVZcE/rcpPaE3/VaAnAlIzxnFL2pwHf8v/4j4fsgp8X5SzxL9CwI34P7IFiQHveunFaLiULijUMiUP8/VeepOAacLVezTDgOdBgMROWuNWrLDSPGROnaVaeDqD0RDLnoxguV7ma5FJZAtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F88F113E;
-	Fri, 12 Apr 2024 03:39:21 -0700 (PDT)
-Received: from [10.57.73.208] (unknown [10.57.73.208])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0159D3F64C;
-	Fri, 12 Apr 2024 03:38:49 -0700 (PDT)
-Message-ID: <c9f425fd-285b-46b6-821e-fb758a4101e0@arm.com>
-Date: Fri, 12 Apr 2024 11:38:48 +0100
+	s=arc-20240116; t=1712918526; c=relaxed/simple;
+	bh=X/p/ft+IL0tus7dW1yBsZJutmsAr0uojLmY1LWYjZes=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CjSykpl8DynrJekHBiF5mbdmqpEl5mQuy3E3XppnrYIJcl4A2svqfZVBlpLc+RRLOJOylx5eh02d20Sc8461yfTrQSpHMLrxUboP8F35MmOZRE/ppXiVE0ivFtfyHW3fSEGKQLt8pmC4gLgVfdEGg4+081KwK6WWfHPF9CDcVBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=GJNxqNCO; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1712918524; x=1744454524;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=X/p/ft+IL0tus7dW1yBsZJutmsAr0uojLmY1LWYjZes=;
+  b=GJNxqNCOgW14345HFh2W//scsLVA5YXzVszRvY5ns/CCFepjKdJ2fyK4
+   jRN00EWC47Y3OQcvTDu++GS0E8OQ+q9Z3uMa789dHSCLAGi7YQsZ06ndy
+   kbljM56PtNzPcdVWhf9d4xxkXsJf4IiyCexleQhs59Ava6+UG8KhfDTnN
+   gKR8+7m9oG09u/RZx1gfEbYy/d2VrYOzvg81llx8IOwLaz6pgesBLKxKW
+   hupzj1RqqWVDusfd2C9vJFZ6eg1D+ZkHBO+D1mKFiAHZW0QDNfortM35R
+   jbbkEhrwBcNanlSikW/7BvC+yrSjynU2t/eSvFy2NXHALA3nlec62dlhk
+   g==;
+X-CSE-ConnectionGUID: tAWyHYMtQVGntX8nk/B7jA==
+X-CSE-MsgGUID: 13SAqUUaRYm44u3/FKnbdQ==
+X-IronPort-AV: E=Sophos;i="6.07,195,1708412400"; 
+   d="asc'?scan'208";a="20728192"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Apr 2024 03:42:02 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 12 Apr 2024 03:41:33 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Fri, 12 Apr 2024 03:41:29 -0700
+Date: Fri, 12 Apr 2024 11:40:38 +0100
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Charlie Jenkins <charlie@rivosinc.com>
+CC: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley
+	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+	<aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, Conor Dooley
+	<conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
+	<jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, Evan Green
+	<evan@rivosinc.com>, =?iso-8859-1?Q?Cl=E9ment_L=E9ger?=
+	<cleger@rivosinc.com>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan
+	<shuah@kernel.org>, <linux-riscv@lists.infradead.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Palmer Dabbelt
+	<palmer@rivosinc.com>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-sunxi@lists.linux.dev>, <linux-doc@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH 07/19] riscv: Optimize
+ riscv_cpu_isa_extension_(un)likely()
+Message-ID: <20240412-aerosol-heritage-cec1eca172fb@wendy>
+References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
+ <20240411-dev-charlie-support_thead_vector_6_9-v1-7-4af9815ec746@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/4] mm: add per-order mTHP anon_fault_alloc and
- anon_fault_fallback counters
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
- chrisl@kernel.org, corbet@lwn.net, david@redhat.com, kasong@tencent.com,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, peterx@redhat.com,
- surenb@google.com, v-songbaohua@oppo.com, willy@infradead.org,
- yosryahmed@google.com, yuzhao@google.com
-References: <f5d6e014-5d6b-441c-8379-252ff24e2260@arm.com>
- <20240412101756.296971-1-21cnbao@gmail.com>
- <744fc49e-d91b-4f5a-9a27-1a25c50c2154@arm.com>
- <CAGsJ_4z6B09wbRFTXXek+pNi9yCHSSF+ZS2gph+AtViMhZyN9w@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4z6B09wbRFTXXek+pNi9yCHSSF+ZS2gph+AtViMhZyN9w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="YUt35LWoARaS+0kq"
+Content-Disposition: inline
+In-Reply-To: <20240411-dev-charlie-support_thead_vector_6_9-v1-7-4af9815ec746@rivosinc.com>
 
-On 12/04/2024 11:29, Barry Song wrote:
-> On Fri, Apr 12, 2024 at 10:25 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 12/04/2024 11:17, Barry Song wrote:
->>> On Fri, Apr 12, 2024 at 9:56 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>
->>>> On 12/04/2024 10:43, Barry Song wrote:
->>>>> On Fri, Apr 12, 2024 at 9:27 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>>>
->>>>>> Hi Barry,
->>>>>>
->>>>>> 2 remaining comments - otherwise looks good. (same comments I just made in the
->>>>>> v4 conversation).
->>>>>>
->>>>>> On 12/04/2024 08:37, Barry Song wrote:
->>>>>>> From: Barry Song <v-songbaohua@oppo.com>
->>>>>>>
->>>>>>> Profiling a system blindly with mTHP has become challenging due to the
->>>>>>> lack of visibility into its operations.  Presenting the success rate of
->>>>>>> mTHP allocations appears to be pressing need.
->>>>>>>
->>>>>>> Recently, I've been experiencing significant difficulty debugging
->>>>>>> performance improvements and regressions without these figures.  It's
->>>>>>> crucial for us to understand the true effectiveness of mTHP in real-world
->>>>>>> scenarios, especially in systems with fragmented memory.
->>>>>>>
->>>>>>> This patch establishes the framework for per-order mTHP
->>>>>>> counters. It begins by introducing the anon_fault_alloc and
->>>>>>> anon_fault_fallback counters. Additionally, to maintain consistency
->>>>>>> with thp_fault_fallback_charge in /proc/vmstat, this patch also tracks
->>>>>>> anon_fault_fallback_charge when mem_cgroup_charge fails for mTHP.
->>>>>>> Incorporating additional counters should now be straightforward as well.
->>>>>>>
->>>>>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
->>>>>>> Cc: Chris Li <chrisl@kernel.org>
->>>>>>> Cc: David Hildenbrand <david@redhat.com>
->>>>>>> Cc: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
->>>>>>> Cc: Kairui Song <kasong@tencent.com>
->>>>>>> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
->>>>>>> Cc: Peter Xu <peterx@redhat.com>
->>>>>>> Cc: Ryan Roberts <ryan.roberts@arm.com>
->>>>>>> Cc: Suren Baghdasaryan <surenb@google.com>
->>>>>>> Cc: Yosry Ahmed <yosryahmed@google.com>
->>>>>>> Cc: Yu Zhao <yuzhao@google.com>
->>>>>>> ---
->>>>>>>  include/linux/huge_mm.h | 51 ++++++++++++++++++++++++++++++++++
->>>>>>>  mm/huge_memory.c        | 61 +++++++++++++++++++++++++++++++++++++++++
->>>>>>>  mm/memory.c             |  3 ++
->>>>>>>  mm/page_alloc.c         |  4 +++
->>>>>>>  4 files changed, 119 insertions(+)
->>>>>>>
->>>>>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->>>>>>> index e896ca4760f6..c5beb54b97cb 100644
->>>>>>> --- a/include/linux/huge_mm.h
->>>>>>> +++ b/include/linux/huge_mm.h
->>>>>>> @@ -264,6 +264,57 @@ unsigned long thp_vma_allowable_orders(struct vm_area_struct *vma,
->>>>>>>                                         enforce_sysfs, orders);
->>>>>>>  }
->>>>>>>
->>>>>>> +enum mthp_stat_item {
->>>>>>> +     MTHP_STAT_ANON_FAULT_ALLOC,
->>>>>>> +     MTHP_STAT_ANON_FAULT_FALLBACK,
->>>>>>> +     MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE,
->>>>>>> +     __MTHP_STAT_COUNT
->>>>>>> +};
->>>>>>> +
->>>>>>> +struct mthp_stat {
->>>>>>> +     unsigned long stats[0][__MTHP_STAT_COUNT];
->>>>>>> +};
->>>>>>> +
->>>>>>> +extern struct mthp_stat __percpu *mthp_stats;
->>>>>>> +
->>>>>>> +static inline void count_mthp_stat(int order, enum mthp_stat_item item)
->>>>>>> +{
->>>>>>> +     if (order <= 0 || order > PMD_ORDER || !mthp_stats)
->>>>>>> +             return;
->>>>>>> +
->>>>>>> +     this_cpu_inc(mthp_stats->stats[order][item]);
->>>>>>> +}
->>>>>>> +
->>>>>>> +static inline void count_mthp_stats(int order, enum mthp_stat_item item, long delta)
->>>>>>> +{
->>>>>>> +     if (order <= 0 || order > PMD_ORDER || !mthp_stats)
->>>>>>> +             return;
->>>>>>> +
->>>>>>> +     this_cpu_add(mthp_stats->stats[order][item], delta);
->>>>>>> +}
->>>>>>> +
->>>>>>> +/*
->>>>>>> + * Fold the foreign cpu mthp stats into our own.
->>>>>>> + *
->>>>>>> + * This is adding to the stats on one processor
->>>>>>> + * but keeps the global counts constant.
->>>>>>> + */
->>>>>>> +static inline void mthp_stats_fold_cpu(int cpu)
->>>>>>> +{
->>>>>>> +     struct mthp_stat *fold_stat;
->>>>>>> +     int i, j;
->>>>>>> +
->>>>>>> +     if (!mthp_stats)
->>>>>>> +             return;
->>>>>>> +     fold_stat = per_cpu_ptr(mthp_stats, cpu);
->>>>>>> +     for (i = 1; i <= PMD_ORDER; i++) {
->>>>>>> +             for (j = 0; j < __MTHP_STAT_COUNT; j++) {
->>>>>>> +                     count_mthp_stats(i, j, fold_stat->stats[i][j]);
->>>>>>> +                     fold_stat->stats[i][j] = 0;
->>>>>>> +             }
->>>>>>> +     }
->>>>>>> +}
->>>>>>
->>>>>> This is a pretty horrible hack; I'm pretty sure just summing for all *possible*
->>>>>> cpus should work.
->>>>>>
->>>>>>> +
->>>>>>>  #define transparent_hugepage_use_zero_page()                         \
->>>>>>>       (transparent_hugepage_flags &                                   \
->>>>>>>        (1<<TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG))
->>>>>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->>>>>>> index dc30139590e6..21c4ac74b484 100644
->>>>>>> --- a/mm/huge_memory.c
->>>>>>> +++ b/mm/huge_memory.c
->>>>>>> @@ -526,6 +526,50 @@ static const struct kobj_type thpsize_ktype = {
->>>>>>>       .sysfs_ops = &kobj_sysfs_ops,
->>>>>>>  };
->>>>>>>
->>>>>>> +struct mthp_stat __percpu *mthp_stats;
->>>>>>> +
->>>>>>> +static unsigned long sum_mthp_stat(int order, enum mthp_stat_item item)
->>>>>>> +{
->>>>>>> +     unsigned long sum = 0;
->>>>>>> +     int cpu;
->>>>>>> +
->>>>>>> +     cpus_read_lock();
->>>>>>> +     for_each_online_cpu(cpu) {
->>>>>>> +             struct mthp_stat *this = per_cpu_ptr(mthp_stats, cpu);
->>>>>>> +
->>>>>>> +             sum += this->stats[order][item];
->>>>>>> +     }
->>>>>>> +     cpus_read_unlock();
->>>>>>> +
->>>>>>> +     return sum;
->>>>>>> +}
->>>>>>> +
->>>>>>> +#define DEFINE_MTHP_STAT_ATTR(_name, _index)                                 \
->>>>>>> +static ssize_t _name##_show(struct kobject *kobj,                    \
->>>>>>> +                     struct kobj_attribute *attr, char *buf)         \
->>>>>>> +{                                                                    \
->>>>>>> +     int order = to_thpsize(kobj)->order;                            \
->>>>>>> +                                                                     \
->>>>>>> +     return sysfs_emit(buf, "%lu\n", sum_mthp_stat(order, _index));  \
->>>>>>> +}                                                                    \
->>>>>>> +static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
->>>>>>> +
->>>>>>> +DEFINE_MTHP_STAT_ATTR(anon_fault_alloc, MTHP_STAT_ANON_FAULT_ALLOC);
->>>>>>> +DEFINE_MTHP_STAT_ATTR(anon_fault_fallback, MTHP_STAT_ANON_FAULT_FALLBACK);
->>>>>>> +DEFINE_MTHP_STAT_ATTR(anon_fault_fallback_charge, MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
->>>>>>> +
->>>>>>> +static struct attribute *stats_attrs[] = {
->>>>>>> +     &anon_fault_alloc_attr.attr,
->>>>>>> +     &anon_fault_fallback_attr.attr,
->>>>>>> +     &anon_fault_fallback_charge_attr.attr,
->>>>>>> +     NULL,
->>>>>>> +};
->>>>>>> +
->>>>>>> +static struct attribute_group stats_attr_group = {
->>>>>>> +     .name = "stats",
->>>>>>> +     .attrs = stats_attrs,
->>>>>>> +};
->>>>>>> +
->>>>>>>  static struct thpsize *thpsize_create(int order, struct kobject *parent)
->>>>>>>  {
->>>>>>>       unsigned long size = (PAGE_SIZE << order) / SZ_1K;
->>>>>>> @@ -549,6 +593,12 @@ static struct thpsize *thpsize_create(int order, struct kobject *parent)
->>>>>>>               return ERR_PTR(ret);
->>>>>>>       }
->>>>>>>
->>>>>>> +     ret = sysfs_create_group(&thpsize->kobj, &stats_attr_group);
->>>>>>> +     if (ret) {
->>>>>>> +             kobject_put(&thpsize->kobj);
->>>>>>> +             return ERR_PTR(ret);
->>>>>>> +     }
->>>>>>> +
->>>>>>>       thpsize->order = order;
->>>>>>>       return thpsize;
->>>>>>>  }
->>>>>>> @@ -691,6 +741,11 @@ static int __init hugepage_init(void)
->>>>>>>        */
->>>>>>>       MAYBE_BUILD_BUG_ON(HPAGE_PMD_ORDER < 2);
->>>>>>>
->>>>>>> +     mthp_stats = __alloc_percpu((PMD_ORDER + 1) * sizeof(mthp_stats->stats[0]),
->>>>>>> +                     sizeof(unsigned long));
->>>>>>
->>>>>> Personally I think it would be cleaner to allocate statically using
->>>>>> ilog2(MAX_PTRS_PER_PTE) instead of PMD_ORDER.
->>>>>
->>>>> Hi Ryan,
->>>>>
->>>>> I don't understand why MAX_PTRS_PER_PTE is the correct size. For ARM64,
->>>>>
->>>>> #define PMD_ORDER       (PMD_SHIFT - PAGE_SHIFT)
->>>>>
->>>>> #define MAX_PTRS_PER_PTE PTRS_PER_PTE
->>>>>
->>>>> #define PTRS_PER_PTE            (1 << (PAGE_SHIFT - 3))
->>>>>
->>>>> while PAGE_SIZE is 16KiB or 64KiB, PTRS_PER_PTE can be a huge number?
->>>>>
->>>>>
->>>>> Am I missing something?
->>>>
->>>> PTRS_PER_PTE is the number of PTE entries in a PTE table. On arm64 its as follows:
->>>>
->>>> PAGE_SIZE       PAGE_SHIFT      PTRS_PER_PTE
->>>> 4K              12              512
->>>> 16K             14              2048
->>>> 64K             16              8192
->>>>
->>>> So (PTRS_PER_PTE * PAGE_SIZE) = PMD_SIZE
->>>>
->>>> PMD_ORDER is ilog2(PMD_SIZE / PAGE_SIZE) = ilog2(PTRS_PER_PTE)
->>>>
->>>> MAX_PTRS_PER_PTE is just the maximum value that PTRS_PER_PTE will ever have,
->>>> (and its equal to PTRS_PER_PTE except for powerpc).
->>>>
->>>> Pretty sure the math is correct?
->>>
->>> I am not convinced the math is correct :-)
->>>
->>> while page size is 64KiB, the page table is as below,
->>> PMD_ORDER = L2 index bits = [41:29] = 13 != ilog2(8192)
->>
->> 1 << 13 = 8192
->>
->> Right? So:
->>
->> ilog2(8192) = 13
->>
->> What's wrong with that?
->>
->> I even checked in Python to make sure I'm not going mad:
->>
->>>>> import math
->>>>> math.log2(8192)
->> 13.0
-> 
-> You're correct. My mind fixated on the '16' in the line '64K 16 8192'.
-> I mistakenly thought ilog2(8192) equals 16. Apologies for the confusion.
+--YUt35LWoARaS+0kq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No worries! We got there in the end :)
+On Thu, Apr 11, 2024 at 09:11:13PM -0700, Charlie Jenkins wrote:
+> When alternatives are disabled, riscv_cpu_isa_extension_(un)likely()
+> checks if the current cpu supports the selected extension if not all
+> cpus support the extension. It is sufficient to only check if the
+> current cpu supports the extension.
+>=20
+> The alternatives code to handle if all cpus support an extension is
+> factored out into a new function to support this.
+>=20
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> ---
 
-Of course my suggestion relies on being able to get a compile-time constant from
-ilog2(MAX_PTRS_PER_PTE). I think that should work, right?
+>  static __always_inline bool riscv_cpu_has_extension_unlikely(int cpu, co=
+nst unsigned long ext)
+>  {
+> -	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE) && riscv_has_extension_unlikel=
+y(ext))
+> -		return true;
+> +	compiletime_assert(ext < RISCV_ISA_EXT_MAX,
+> +			   "ext must be < RISCV_ISA_EXT_MAX");
+> =20
+> -	return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
+> +	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE) && __riscv_has_extension_unlik=
+ely_alternatives(ext))
+> +		return true;
+> +	else
+> +		return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
+>  }
 
-> 
->>
->>>
->>>
->>> +--------+--------+--------+--------+--------+--------+--------+--------+
->>> |63    56|55    48|47    40|39    32|31    24|23    16|15     8|7      0|
->>> +--------+--------+--------+--------+--------+--------+--------+--------+
->>>  |                 |    |               |              |
->>>  |                 |    |               |              v
->>>  |                 |    |               |            [15:0]  in-page offset
->>>  |                 |    |               +----------> [28:16] L3 index
->>>  |                 |    +--------------------------> [41:29] L2 index
->>>  |                 +-------------------------------> [47:42] L1 index (48-bit)
->>>  |                                                   [51:42] L1 index (52-bit)
->>>  +-------------------------------------------------> [63] TTBR0/1
->>>
->>> while page size is 4KiB, the page table is as below,
->>>
->>> +--------+--------+--------+--------+--------+--------+--------+--------+
->>> |63    56|55    48|47    40|39    32|31    24|23    16|15     8|7      0|
->>> +--------+--------+--------+--------+--------+--------+--------+--------+
->>>  |                 |         |         |         |         |
->>>  |                 |         |         |         |         v
->>>  |                 |         |         |         |   [11:0]  in-page offset
->>>  |                 |         |         |         +-> [20:12] L3 index
->>>  |                 |         |         +-----------> [29:21] L2 index
->>>  |                 |         +---------------------> [38:30] L1 index
->>>  |                 +-------------------------------> [47:39] L0 index
->>>  +-------------------------------------------------> [63] TTBR0/1
->>>
->>> PMD_ORDER = L2 index bits = [29:21] = 9 = ilog2(512).
->>>
->>> You are only correct while page size = 4KiB.
->>>
->>>
->>>
->>>
->>
+static __always_inline bool riscv_cpu_has_extension_likely(int cpu, const u=
+nsigned long ext)
+{
+	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE) && riscv_has_extension_likely(ext=
+))
+		return true;
 
+	return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
+}
+
+This is the code as things stand. If alternatives are disabled, the if
+statement becomes if (0 && foo) which will lead to the function call
+getting constant folded away and all you end up with is the call to
+__riscv_isa_extension_available(). Unless I am missing something, I don't
+think this patch has any affect?
+
+Thanks,
+Conor.
+
+
+--YUt35LWoARaS+0kq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhkPpgAKCRB4tDGHoIJi
+0gSNAQC+oMqT7zoEL9RxUhkl7uImpatcHajgjd6QJ8PnV2xTcgD/YMRe1XytJnd7
+9pJBNiy2EcDN51fcQvf7s4vI9GM9Awc=
+=Tq3D
+-----END PGP SIGNATURE-----
+
+--YUt35LWoARaS+0kq--
 
