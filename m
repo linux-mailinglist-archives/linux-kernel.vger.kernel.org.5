@@ -1,112 +1,167 @@
-Return-Path: <linux-kernel+bounces-142880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0144C8A318E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:53:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B15CC8A2C27
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:20:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9B231F21A29
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:53:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0CC91C2177C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:20:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9C4145FF9;
-	Fri, 12 Apr 2024 14:52:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PXAJs4g5"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83DB0145333;
-	Fri, 12 Apr 2024 14:52:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D02F53816;
+	Fri, 12 Apr 2024 10:20:02 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A60844369
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 10:19:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712933572; cv=none; b=HO8JDTJZac0eU5OdyGs2XBy28cB9pzgHDPYM/60b0HEm0999nj9zCzR12ZCUBSfsN+bvKpQqhVYvxOE/sgOrupqcsCeqxZvQ/zjdJ+5rJ1Jfh/8AXJ5YmDII1aDRdlnwWPeOcW4pqo4OTvYGzSwBJJ6r5Xv/Vo94gdI+KE82wYA=
+	t=1712917201; cv=none; b=SoIcF/LtDJTicJVMRk8x8/2LctUNeSTi9KfxzjrHnMdEvFA3lV/r3X76VE7sJNYh9hkvsvXQ4FAZrNy7BHpGPHajDhUi5d9n2nEydSyM1tcIpFzhif0EudgZdR2KV5qiN6v+vxGfzxQXk6bpqT6uGFJKWi+fw7JclHM72sHKIx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712933572; c=relaxed/simple;
-	bh=3VJO+40pwSkL8WEP5XEs7367DXnCHzRW9AIbe65tr7w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h1ixzWl+R1yCRCu+dSqbLikH2KzgyrgVoftv+40dCgeodPe8SRDdKeafVr7xfeXpJt27Kx97nlj7sXb4bFSEn/hbh52hCAoPVMuTn/sOJYO0BiQunWGtq/sPZc/xGqyJe/TgMnuKYQNiMkKNu7jBq/y2ybS6lR4WuNOZxCihp+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PXAJs4g5; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712933571; x=1744469571;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3VJO+40pwSkL8WEP5XEs7367DXnCHzRW9AIbe65tr7w=;
-  b=PXAJs4g5wg3ErC1btReuQ0iiYUy8BKv8nVcclBwEa+cM9Un6mH4WcYAe
-   AFYgML7ccsQ2l+QtWUP97joyNtmOWHPsUsM/JP5YU9EIsBCTPDt8HzF+8
-   5ng6j6Ld0NeviflAFfc74eLzX1fP4DDESayIatu4IV/9gQdGD4+kBRUpc
-   eLT0iEp5cAeu3uDms74G0cMVOB92eWBfkBDX41qmpDtKLLtcyLIZzIGKa
-   HToSXqvb5MYCYKo18wb5YUfn/kLDPA/JBLEQkGck+6BnHISAaU0utNl6g
-   LCSs7IMsBDY5SQlSgDm4RH17WBtSJaFVJ/VxYHSSVTjkzOV3zpb+3fHSk
-   g==;
-X-CSE-ConnectionGUID: 7gGmLBNDSYCUN8qqGendhg==
-X-CSE-MsgGUID: 0E1ZN7QZRTSIaYuVw6rNUA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8497359"
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="8497359"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 07:52:50 -0700
-X-CSE-ConnectionGUID: UR2HQIB/T9aOUxFJHHipNw==
-X-CSE-MsgGUID: IbdOgvKoQS2wVBiMBfp5dQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="25906271"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa004.fm.intel.com with ESMTP; 12 Apr 2024 07:52:46 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-	id CCE371B02; Fri, 12 Apr 2024 13:19:44 +0300 (EEST)
-Date: Fri, 12 Apr 2024 13:19:44 +0300
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	David Thompson <davthompson@nvidia.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Patrick Rudolph <patrick.rudolph@9elements.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org, netdev@vger.kernel.org,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v1 0/4] gpiolib: acpi: Use con_id in
- acpi_dev_gpio_irq_get_by()
-Message-ID: <20240412101944.GE112498@black.fi.intel.com>
-References: <20240411172540.4122581-2-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1712917201; c=relaxed/simple;
+	bh=K9W+Y4I98n2qqn8cSmOOvctrkBrlVZxDqpqIIWfNgRA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rW/GXMg9Hw9TgkbLMajQOy3PpKQGzo2H4KFGMcLbd5sBFLYMJLgYQhBlIqo20kHejqnt2LxLp6+XxvTNcMdqQawTUEb+usWxToH2xPyM/kvwqQLfo9VEMTx146arL2a1UvMcqmWe958AB00qqX+Jr5CkbnVMqz842U4VH4OuE34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C11CD339;
+	Fri, 12 Apr 2024 03:20:28 -0700 (PDT)
+Received: from [10.57.73.208] (unknown [10.57.73.208])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 82D393F64C;
+	Fri, 12 Apr 2024 03:19:57 -0700 (PDT)
+Message-ID: <b1f417fb-1f8b-4349-a6bc-97694b92587f@arm.com>
+Date: Fri, 12 Apr 2024 11:19:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240411172540.4122581-2-andriy.shevchenko@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/4] mm: add docs for per-order mTHP counters and
+ transhuge_page ABI
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org
+Cc: cerasuolodomenico@gmail.com, chrisl@kernel.org, david@redhat.com,
+ kasong@tencent.com, linux-kernel@vger.kernel.org, peterx@redhat.com,
+ surenb@google.com, v-songbaohua@oppo.com, willy@infradead.org,
+ yosryahmed@google.com, yuzhao@google.com, corbet@lwn.net
+References: <20240412073740.294272-1-21cnbao@gmail.com>
+ <20240412073740.294272-4-21cnbao@gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240412073740.294272-4-21cnbao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 11, 2024 at 08:22:28PM +0300, Andy Shevchenko wrote:
-> Use con_id instead of property in the acpi_dev_gpio_irq_get_by().
-> It will be aligned with other GPIO library functions.
+On 12/04/2024 08:37, Barry Song wrote:
+> From: Barry Song <v-songbaohua@oppo.com>
 > 
-> Assumed to go via my GPIO ACPI library tree follwoed by GPIO subsystem.
+> This patch includes documentation for mTHP counters and an ABI file
+> for sys-kernel-mm-transparent-hugepage, which appears to have been
+> missing for some time.
 > 
-> Andy Shevchenko (4):
->   gpiolib: acpi: Extract __acpi_find_gpio() helper
->   gpiolib: acpi: Simplify error handling in __acpi_find_gpio()
->   gpiolib: acpi: Move acpi_can_fallback_to_crs() out of
->     __acpi_find_gpio()
->   gpiolib: acpi: Pass con_id instead of property into
->     acpi_dev_gpio_irq_get_by()
-> 
->  drivers/gpio/gpio-pca953x.c                   |  2 +-
->  drivers/gpio/gpiolib-acpi.c                   | 52 +++++++++++--------
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> Cc: Chris Li <chrisl@kernel.org>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+> Cc: Kairui Song <kasong@tencent.com>
+> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Cc: Peter Xu <peterx@redhat.com>
+> Cc: Ryan Roberts <ryan.roberts@arm.com>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Yosry Ahmed <yosryahmed@google.com>
+> Cc: Yu Zhao <yuzhao@google.com>
+> Cc: Jonathan Corbet <corbet@lwn.net>
 
-For the gpiolib-acpi.c parts,
+A few nits, but regardless:
 
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+
+> ---
+>  .../sys-kernel-mm-transparent-hugepage        | 17 +++++++++++
+>  Documentation/admin-guide/mm/transhuge.rst    | 28 +++++++++++++++++++
+>  2 files changed, 45 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage
+> 
+> diff --git a/Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage b/Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage
+> new file mode 100644
+> index 000000000000..80dde0fd576c
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sys-kernel-mm-transparent-hugepage
+> @@ -0,0 +1,17 @@
+> +What:		/sys/kernel/mm/hugepages/
+
+Err, transparent_hugepage, right? copy/paste error?
+
+> +Date:		April 2024
+> +Contact:	Barry Song <baohua@kernel.org>
+
+Looks like a bunch of mm sysfs interfaces use:
+
+Contact:	Linux memory management mailing list <linux-mm@kvack.org>
+
+I'll leave that up to you!
+
+> +Description:
+> +		/sys/kernel/mm/transparent_hugepage/ contains a number of files and
+> +		subdirectories,
+> +			- defrag
+> +			- enabled
+> +			- hpage_pmd_size
+> +			- khugepaged
+> +			- shmem_enabled
+> +			- use_zero_page
+> +			- subdirectories of the form hugepages-<size>kB, where <size>
+> +			  is the page size of the hugepages supported by the kernel/CPU
+> +			  combination.
+> +
+> +		See Documentation/admin-guide/mm/transhuge.rst for details.> diff --git a/Documentation/admin-guide/mm/transhuge.rst
+b/Documentation/admin-guide/mm/transhuge.rst
+> index 04eb45a2f940..f436ff982f22 100644
+> --- a/Documentation/admin-guide/mm/transhuge.rst
+> +++ b/Documentation/admin-guide/mm/transhuge.rst
+> @@ -447,6 +447,34 @@ thp_swpout_fallback
+>  	Usually because failed to allocate some continuous swap space
+>  	for the huge page.
+>  
+> +In /sys/kernel/mm/transparent_hugepage/hugepages-<size>kB/stats, There are
+> +also individual counters for each huge page size, which can be utilized to
+> +monitor the system's effectiveness in providing huge pages for usage. Each
+> +counter has its own corresponding file.
+> +
+> +anon_fault_alloc
+> +	is incremented every time a huge page is successfully
+> +	allocated and charged to handle a page fault.
+> +
+> +anon_fault_fallback
+> +	is incremented if a page fault fails to allocate or charge
+> +	a huge page and instead falls back to using huge pages with
+> +	lower orders or small pages.
+> +
+> +anon_fault_fallback_charge
+> +	is incremented if a page fault fails to charge a huge page and
+> +	instead falls back to using huge pages with lower orders or
+> +	small pages even though the allocation was successful.
+> +
+> +anon_swpout
+> +	is incremented every time a huge page is swapout in one
+
+nit: swapout -> "swapped out"? Although I see this is just a copy/paste of the
+description of the existing counter...
+
+> +	piece without splitting.
+> +
+> +anon_swpout_fallback
+> +	is incremented if a huge page has to be split before swapout.
+> +	Usually because failed to allocate some continuous swap space
+> +	for the huge page.
+> +
+>  As the system ages, allocating huge pages may be expensive as the
+>  system uses memory compaction to copy data around memory to free a
+>  huge page for use. There are some counters in ``/proc/vmstat`` to help
+
 
