@@ -1,152 +1,87 @@
-Return-Path: <linux-kernel+bounces-142061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A58798A26EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A28038A26E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:44:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 115C7B25638
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:47:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DB1FB24DB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:44:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D7AE44C86;
-	Fri, 12 Apr 2024 06:47:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5807C481D5;
+	Fri, 12 Apr 2024 06:44:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b="QUPni0M9"
-Received: from smtpcmd03117.aruba.it (smtpcmd03117.aruba.it [62.149.158.117])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IX+9AUAk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E2344085A
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 06:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.149.158.117
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A1E547A5D;
+	Fri, 12 Apr 2024 06:44:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712904443; cv=none; b=fe1dJc/q4TSHuoL2psv4wB0d+CIaDqf1lvLKMdrvG983UCviQRscOSZz9s4mHnXGIPu9s84IYjWv5RYFUiVi7/JRF3/qvnDzm1ycZjr5ukbqFdKy3P6Bul8dqeRwinym1+yuFc9HVi6QLHmPQYMVT7sGwE8hjpAPwNbmcl4Ulu0=
+	t=1712904268; cv=none; b=bl09+sSqni1+EjGJq8Dx46pNHa10NxSkLWcXKjZk7XbdqgPjrGhT2MYgVYawUKm50KWD+E9vdIioAktZojFrxP3JjSmSedEK3598blWX5JCzgcX1vQLHS78q18Ld/AE0VGp2LEzU7A+2GLpqiZwMni7VQS6r2K3jdTQrkVAe+Wo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712904443; c=relaxed/simple;
-	bh=WyC9PNxXS/aVAIKL5oIDw9u87fuWEC6J4MSR68MMGAg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L69qhSKiFAMdlaEpRzBhR/dTJdvsy0W1tVCJqwbZfIC8m+6gv2aAKjyfq02h/+JiCK2txh8UNLLcX0SpzqqOYjQXR2t68vADnY5TRNbAn7qnmwu+Bz+VAx4CPs7RWiYpOQOzMVdKqMczGjaa5rPnVrSmqE6Awhmg5Wf/fA0Pic8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=enneenne.com; spf=pass smtp.mailfrom=enneenne.com; dkim=pass (2048-bit key) header.d=aruba.it header.i=@aruba.it header.b=QUPni0M9; arc=none smtp.client-ip=62.149.158.117
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=enneenne.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=enneenne.com
-Received: from [192.168.1.57] ([79.0.204.227])
-	by Aruba Outgoing Smtp  with ESMTPSA
-	id vAdsrE8KkQF1DvAdtre770; Fri, 12 Apr 2024 08:44:09 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-	t=1712904249; bh=WyC9PNxXS/aVAIKL5oIDw9u87fuWEC6J4MSR68MMGAg=;
-	h=Date:MIME-Version:Subject:To:From:Content-Type;
-	b=QUPni0M9weIIkUhjH94dlpYJX2G5U0niAyW1687kg5ZHZ2sYsqt9o21+502WUgO3F
-	 OXZOaihb12N76O9FnYSAXQI9lvs4r7l8xNfB4t9bqaA38anKU8JfIYWqKHkUeaFZqo
-	 atQCkeR9/XPcHpF3t7tWGLpSLwo33I1RcOZv/T357tblHHQZnb/IjXdJC/tgzSYu5W
-	 1LL0MjxVLS1gEAitP8Iogfw30/z6YSQ1ImnqQIciovHjNOg3TH7rTWsgzUmDYeus8N
-	 Z8mECTFlyHk9QBk8Qqjpp22QVOEq/dbU6goShwcaRfUYqIzB3z/zpJ8aZS47UjQqLa
-	 waYypwbIcut2w==
-Message-ID: <9255124b-958e-4ab4-a812-67ad5d36e16d@enneenne.com>
-Date: Fri, 12 Apr 2024 08:44:08 +0200
+	s=arc-20240116; t=1712904268; c=relaxed/simple;
+	bh=p/wEHDi9WkTon8K9W0QGAWN2QZ/PbnxknsFcFz7yp9M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c9v72qSIL71q4ivhPBk/Er0nxHd9btG9oE/sUJMDAT6wpY0TXfPsZLg2mfzchOGAEggYW74vrMvTtYyAchxmdQCrIrLI3yxRGu9KTNwEpTu19qm29/O5x8Vlx/AMUKajBqXUmjHt92Z0km/du8J5+8c2I8xcM2f2Cn613+TkGbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IX+9AUAk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B65E1C2BBFC;
+	Fri, 12 Apr 2024 06:44:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712904268;
+	bh=p/wEHDi9WkTon8K9W0QGAWN2QZ/PbnxknsFcFz7yp9M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IX+9AUAkW6h0r9HL+ctHFkv4loKhrTf5AD7L3futOE2ncVsLk687T62Vp+OMIugqk
+	 s4GO23iJsYZAyIP4YPY3+Tu53HBDyXXK1xg1iqpfglR/CZpRfJ5ezdcgU8yw0FMnh2
+	 eMoq9twdsdmSxmJGVd8x3z0YpCELMTyi4P5aVEerXuaXzAgppM77V4vzt6JfKV2/bi
+	 rGywNo5jF6EWnaQvYVg3RjmF19Cc9TPlEYSZv2GQ712+lf8j3gHCUuDNxiwWfRTRlD
+	 qzg2GIkd92R1n9qnC+z5K2dNCKm+qaJoesYyzHv1vFL0BMfWRqWpGsd+Rr3xZ7I7zT
+	 gNAXAs8Rs3IQA==
+Date: Fri, 12 Apr 2024 08:44:21 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Charles Mirabile <cmirabil@redhat.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Andrew Lutomirski <luto@kernel.org>, Peter Anvin <hpa@zytor.com>
+Subject: Re: [PATCH] vfs: relax linkat() AT_EMPTY_PATH - aka flink() -
+ requirements
+Message-ID: <20240412-zander-graustufen-bf63bbaa88fd@brauner>
+References: <20240411001012.12513-1-torvalds@linux-foundation.org>
+ <CAHk-=wiaoij30cnx=jfvg=Br3YTxhQjp4VWRc6=xYE2=+EVRPg@mail.gmail.com>
+ <20240411-alben-kocht-219170e9dc99@brauner>
+ <CAHk-=wjrPDx=f5OSnQVbbJ4id6SZk-exB1VW9Uz3R7rKFvTQeQ@mail.gmail.com>
+ <CABe3_aGbsPHY9Z5B9WyVWakeWFtief4DpBrDxUiD00qk1irMrg@mail.gmail.com>
+ <CABe3_aGGf7kb97gE4FdGmT79Kh5OhbB_2Hqt898WZ+4XGg6j4Q@mail.gmail.com>
+ <CABe3_aE_quPE0zKe-p11DF1rBx-+ecJKORY=96WyJ_b+dbxL9A@mail.gmail.com>
+ <CAHk-=wjuzUTH0ZiPe0dAZ4rcVeNoJxhK8Hh_WRBY-ZqM-pGBqg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] pps: clients: gpio: Bypass edge's direction check
- when not needed
-To: Bastien Curutchet <bastien.curutchet@bootlin.com>
-Cc: linux-kernel@vger.kernel.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
- christophercordahi@nanometrics.ca
-References: <20240410113502.73038-1-bastien.curutchet@bootlin.com>
- <1f7f5b2f-54d4-4dc1-90ff-b896c930faed@enneenne.com>
- <5bda0980-2373-4284-bda4-89f0c6944e76@bootlin.com>
- <eb64ec08-2ae3-48bb-9f84-3cec362280b2@enneenne.com>
- <27196117-32bc-4892-b545-d9cf43a89f0a@bootlin.com>
- <c1e93cfe-371c-4855-9a13-b4b453bb9e88@enneenne.com>
- <28c5456d-535c-4ed9-b13a-fab7f50412be@bootlin.com>
-From: Rodolfo Giometti <giometti@enneenne.com>
-Content-Language: en-US, it, it-IT
-In-Reply-To: <28c5456d-535c-4ed9-b13a-fab7f50412be@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfKB456YBgpqZ634JB5dUeyybZMVwsuXswVSVYhCb/VUND8r2xEhF5iSPw6RggeNGxEOctbMtAGW9qerebBZB1Afzf05oP6MgLrUj7bQSvPcktEvBrXAA
- W2nFtMwtaFDJF5Ulzb1sLAmquMPugbcQA7OvwM/7f0H4dvJXWRnXq08fmOC4+fAv0vvyAcNFO/Bdr2ydRZl0dTumjF+f3fUieGKiuStqPKyengfT5hSawCj5
- jbQ9IsMZ6POTZPVls34udWv8bTJzac5xEJFsgn0rU0nxVFF3gBxK+NPtdDG0Lh4OWhQDDm0GAdh8GbbyyqlYav3GzLUjrMxiVJgSKPEn+mVvjtfdcnOJPCI0
- LymDJgEKOwtX+UoMusQSdwrYGObTvA==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjuzUTH0ZiPe0dAZ4rcVeNoJxhK8Hh_WRBY-ZqM-pGBqg@mail.gmail.com>
 
-On 11/04/24 14:44, Bastien Curutchet wrote:
-> Hi Rodolfo
+On Thu, Apr 11, 2024 at 11:13:53AM -0700, Linus Torvalds wrote:
+> On Thu, 11 Apr 2024 at 10:35, Charles Mirabile <cmirabil@redhat.com> wrote:
+> >
+> > And a slightly dubious addition to bypass these checks for tmpfiles
+> > across the board.
 > 
->>>> diff --git a/drivers/pps/clients/pps-gpio.c b/drivers/pps/clients/pps-gpio.c
->>>> index 2f4b11b4dfcd..f05fb15ed7f4 100644
->>>> --- a/drivers/pps/clients/pps-gpio.c
->>>> +++ b/drivers/pps/clients/pps-gpio.c
->>>> @@ -52,7 +52,9 @@ static irqreturn_t pps_gpio_irq_handler(int irq, void *data)
->>>>
->>>>          info = data;
->>>>
->>>> -       rising_edge = gpiod_get_value(info->gpio_pin);
->>>> +       rising_edge = info->capture_clear ? \
->>>> +                       gpiod_get_value(info->gpio_pin) : \
->>>> +                       !info->assert_falling_edge;
->>>>          if ((rising_edge && !info->assert_falling_edge) ||
->>>>                          (!rising_edge && info->assert_falling_edge))
->>>>                  pps_event(info->pps, &ts, PPS_CAPTUREASSERT, data);
->>>>
->>>> Please, review and test it before resubmitting. :)
->>>>
->>>
->>> I'll try this and send a V2 after my tests, thank you.
->>
->> OK, thanks.
->>
->> However we should think very well about this modification since it could be 
->> the case where we have a device sending both assert and clear events but we 
->> wish to catch just the asserts... in this case we will get doubled asserts!
->>
+> Does this make sense?
 > 
-> My understanding is that clear events are to be captured only when this
-> capture_clear boolean is set. If it is not set, the PPS_CAPTURECLEAR
-> flag is not added to pps_source_info->mode and get_irqf_trigger_flags()
-> will return only one edge flag (rising or falling depending on
-> assert-falling-edge DT property).
+> I 100% agree that one of the primary reasons why people want flink()
+> is that "open tmpfile, finalize contents and permissions, then link
+> the final result into the filesystem".
+> 
+> But I would expect that the "same credentials as open" check is the
+> one that really matters.
 
-Yes. You are right.
-
-> By the way, I see that the capture_clear is never set since the legacy
-> platform data support has been dropped (commit ee89646619ba).
-
-I see, but it can be re-enabled in the future... In this scenario, I think we 
-should add a DT entry to enable this special behavior. Maybe we can also add a 
-warning as below:
-
-static irqreturn_t pps_gpio_irq_handler(int irq, void *data)
-{
-         ...
-         if ((rising_edge && !info->assert_falling_edge) ||
-                         (!rising_edge && info->assert_falling_edge))
-                 pps_event(info->pps, &ts, PPS_CAPTUREASSERT, data);
-         else if (info->capture_clear &&
-                         ((rising_edge && info->assert_falling_edge) ||
-                         (!rising_edge && !info->assert_falling_edge)))
-                 pps_event(info->pps, &ts, PPS_CAPTURECLEAR, data);
-	else
-		dev_warn_ratelimited(dev, "no ASSERT or CAPTURE event? "
-			"Maybe you need support-tiny-assert-pulse?");
-
-         return IRQ_HANDLED;
-}
-
-Ciao,
-
-Rodolfo
-
-P.S. I'm sorry, but I'm not good at finding names... ^_^"
-
--- 
-GNU/Linux Solutions                  e-mail: giometti@enneenne.com
-Linux Device Driver                          giometti@linux.it
-Embedded Systems                     phone:  +39 349 2432127
-UNIX programming
-
+Yes. There's no need to give O_TMPFILE special status there. We also end
+up with a collection of special-cases which is just unpleasant.
 
