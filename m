@@ -1,59 +1,80 @@
-Return-Path: <linux-kernel+bounces-142980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78B4E8A32E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:52:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 838D58A32E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:53:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA0421C22A1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:52:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BABA61C22445
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:53:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCBED148844;
-	Fri, 12 Apr 2024 15:52:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DEAF148FF1;
+	Fri, 12 Apr 2024 15:52:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KO9P4/t2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="joN38Zph"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 273681487F4;
-	Fri, 12 Apr 2024 15:52:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63431487F4;
+	Fri, 12 Apr 2024 15:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712937143; cv=none; b=mfc3n5cdwB0zujEs/hv4idYD2OW9COceVj4f9ScAOGFfR/b0c/6t25965+T6wIIvi03Sv3fejBBSFJux7Z5yR0u1zmGE7Ikxiyz+DtqCaO/mbYsF6UiO5t9nHCrHvbUIMj6lFiC0pchg1LO2eNsM5bJWHTsg81/hE1iR3BuGeXE=
+	t=1712937153; cv=none; b=ujHUciYsmzEE5/cjFhbMnruIdmMfMa0zJkWy7C6Llwi/g2qkeU/q61RG33GIFqAreOJozfQzBd/3dOEV1ZTWDiCAd872NqrWpOOLBgxK1CIgK9QeNv58CW15LQGdBPthOsTQZ3cTwMrzM935QPiL2mdTeCTVeM/0Nf+cYnQR5jY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712937143; c=relaxed/simple;
-	bh=p8OAbH8ik4uO7b+Ydee6KnfTe8Pqv3txAKJdlPzFN+s=;
+	s=arc-20240116; t=1712937153; c=relaxed/simple;
+	bh=+9Mw43B2dc8yqpBB0UYDtikznFH+l2Yt2aPRuDCoaxs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JEU8B+yJqVXete+c7WrazGscBYFprHqkgAXcgtXThVA4SQYz+gR/o0IN3yYptLlSY89oWKQnw0GuU805tQQfVrqsn+IlZyy7LIfNAh1ByHwl/FSQ84V+RybBbh8s2ezU5+WoPW12k1ULA8KB/Veb+WkLCeHpZSeikhGAQ8BcVAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KO9P4/t2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B70AC113CC;
-	Fri, 12 Apr 2024 15:52:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712937142;
-	bh=p8OAbH8ik4uO7b+Ydee6KnfTe8Pqv3txAKJdlPzFN+s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KO9P4/t2cDRuWl80w6gOUAPjO0AMXVxD7gC6uP2mwU8ISqAgxs6VNhHozXIZqPg4f
-	 IxIfIc4IjyGe/b6QhzPnay8cP37wmaDZ88pFaCzUFOMc20t0ikqGC58OGZCV+GbyDz
-	 WI93KbnDGseDAwz/NNdCUc5f/9jmB7Vx+RyIICUCQGBUzTfY6Lc75/E09y4R2RQe2v
-	 XWWzyszKnIIXYWZ4k9iyjsQE/3nSlsJtdFf1/ZKtjaJr7IAxKHUFfK6JqE2B+fM4UJ
-	 OZ/+WvCY1aZ1Sqg+hD4vkU9ARhl7iAtiPJbP+z/NrQJ8/kN6A/VFrOg8z4i27eJ5hK
-	 Ci19pwIr5RJ6Q==
-Date: Fri, 12 Apr 2024 10:52:20 -0500
-From: Rob Herring <robh@kernel.org>
-To: Seven Lee <wtli@nuvoton.com>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org, linux-sound@vger.kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-	conor+dt@kernel.org, perex@perex.cz, tiwai@suse.com,
-	YHCHuang@nuvoton.com, KCHSU0@nuvoton.com, CTLIN0@nuvoton.com,
-	SJLIN0@nuvoton.com, scott6986@gmail.com, supercraig0719@gmail.com,
-	dardar923@gmail.com, edson.drosdeck@gmail.com,
-	u.kleine-koenig@pengutronix.de
-Subject: Re: [PATCH 1/3] ASoC: dt-bindings: nau8821: Add delay control for ADC
-Message-ID: <20240412155220.GA2918590-robh@kernel.org>
-References: <20240412103554.3487290-1-wtli@nuvoton.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nDX6YVeuqeQLKz8DNwby9igoq0v2bHgLFBoToSK98FH8Oa6hWqePz5LOoiMi7jlcR/BKpSebr8KZZTLFsh5WhPlQnEl3hYaVZ824D2ML1DFdMGwno3i7dv+FRbOIcb69LirhTRoadYKYt1NL/bXdqJRNWkCGLUxed7egxI0S/Gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=joN38Zph; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712937152; x=1744473152;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+9Mw43B2dc8yqpBB0UYDtikznFH+l2Yt2aPRuDCoaxs=;
+  b=joN38ZphQ1iZxf7DrEH4eS2xDKF1T8BSJ3EaI58uXienr+KJt7Mf2/SD
+   y8SIQ4cClnM7Ouya7+8fT2g8xS1Dw01JI/3FwPPdwM/evJSkuCznQc9Qa
+   QjknC3SDnmiAJkUPnN3bFZ/Xu7+rhCk4My2GIlzo9Igy8xaNAb0DExvKl
+   vQ/XioaT0roYmmMx46d786fWSRus/2HbA/F92cl95JqOntsmuy2gI3bO/
+   2/BMt/sp8PvZhUT2ZwxINHufMILzRVUkqMbsxhIhkHd0HU+W3LubnLwSs
+   26xgL+NLk8fq1Vis5MH6UND3m6lLxR5NhCNDYrV8F3BYY7SVGiMdRF4Tl
+   g==;
+X-CSE-ConnectionGUID: icjNzD5GTImK4lcoLcTaKA==
+X-CSE-MsgGUID: v5Dfz/zGRSe2jvje0nMSIw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="19109610"
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="19109610"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 08:52:31 -0700
+X-CSE-ConnectionGUID: fcUfTuZISBWTR9K8VRnTfw==
+X-CSE-MsgGUID: G/GU/PpXRyCFNjj6D9Y8Gg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="21689461"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 08:52:29 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1rvJCS-00000003h58-3XTT;
+	Fri, 12 Apr 2024 18:52:24 +0300
+Date: Fri, 12 Apr 2024 18:52:24 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Guanbing Huang <albanhuang0@gmail.com>
+Cc: gregkh@linuxfoundation.org, rafael.j.wysocki@intel.com,
+	linux-acpi@vger.kernel.org, tony@atomide.com,
+	john.ogness@linutronix.de, yangyicong@hisilicon.com,
+	jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, lvjianmin@loongson.cn,
+	albanhuang@tencent.com, tombinfan@tencent.com
+Subject: Re: [PATCH v7 1/3] PNP: Add dev_is_pnp() macro
+Message-ID: <ZhlYuPZTrhwZl0HD@smile.fi.intel.com>
+References: <cover.1712890897.git.albanhuang@tencent.com>
+ <41d35ec4ff287ad6ab4fe7360fc80fb604a12958.1712890897.git.albanhuang@tencent.com>
+ <ZhlTdPNuD_IayWlw@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,48 +83,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240412103554.3487290-1-wtli@nuvoton.com>
+In-Reply-To: <ZhlTdPNuD_IayWlw@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Fri, Apr 12, 2024 at 06:35:52PM +0800, Seven Lee wrote:
-> Change the original fixed delay to the assignment from the property. It
-> will make it more flexible to different platforms to avoid pop noise at
-> the beginning of recording.
-> 
-> Signed-off-by: Seven Lee <wtli@nuvoton.com>
-> ---
->  .../devicetree/bindings/sound/nuvoton,nau8821.yaml        | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-> index 054b53954ac3..a726c5a9b067 100644
-> --- a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-> +++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
-> @@ -103,6 +103,13 @@ properties:
->          just limited to the left adc for design demand.
->      type: boolean
->  
-> +  nuvoton,adc-delay-ms:
-> +    description: Delay (in ms) to make input path stable and avoid pop noise.
-> +        The default value is 125 and range between 125 to 500 ms.
+On Fri, Apr 12, 2024 at 06:29:56PM +0300, Andy Shevchenko wrote:
+> On Fri, Apr 12, 2024 at 11:24:12AM +0800, Guanbing Huang wrote:
 
-No need to state constraints in prose.
+..
 
-> +    minimum: 125
-> +    maximum: 500
-> +    default: 125
-> +
->    '#sound-dai-cells':
->      const: 0
->  
-> @@ -136,6 +143,7 @@ examples:
->              nuvoton,jack-eject-debounce = <0>;
->              nuvoton,dmic-clk-threshold = <3072000>;
->              nuvoton,dmic-slew-rate = <0>;
-> +            nuvoton,nuvoton,adc-delay-ms = <125>;
->              #sound-dai-cells = <0>;
->          };
->      };
-> -- 
-> 2.25.1
+> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > 
+> I haven't given this tag _explicitly_ as it's a new code and I answered in
+> the previous email that I will give one for the new version.
+> 
+> ...
+> 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202404100523.b06UvPSB-lkp@intel.com/
+> 
+> No, the new feature can't be reported.
+> 
+> ...
+> 
+> Please, try again.
+
+To clarify, remove the above lines from your first commit.
+If you want, you may leave my Rb tags in the patches 2 & 3
+as code wasn't changed there.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
