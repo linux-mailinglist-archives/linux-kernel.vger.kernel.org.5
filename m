@@ -1,89 +1,118 @@
-Return-Path: <linux-kernel+bounces-142723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22C4D8A2F66
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:29:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 980438A2F68
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:29:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50E3F1C2101D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:29:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52A6A282E11
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:29:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2219082883;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C1182899;
 	Fri, 12 Apr 2024 13:29:33 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2ACF824A5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4F85824A8
 	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712928572; cv=none; b=O1WedcXt1qeEKhtVeSkLRTZWIUq0k2wO4mmo9woH2gBkobXBL+PlNy7/ASr5PX4Y8J7fjWWaxkbVCy1gdbb6ldg/roBgptdvcwjvXbPBIEVSOFmx0s+A6XEI0EgOIZ9VGfmKXCfu93Zo9iJ/LWU30QtCWzUCbDB1CBlKdQtRzT4=
+	t=1712928572; cv=none; b=HC1eNa1jR9ZHWjYG7TtF6+EC9fIUYeP/6ujKkAlz2RzWmI2DRMC4bGn7oGlw5l8eeeyFInxj5WUfUiXuF/2zS08IJKKpEJud2hjrYy2XNqn/paTlXqbveUw2zvKHTFM9/esxFC+QaEHakVC0ux48Fzmwdrwdgk1NtPRriyUzr5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712928572; c=relaxed/simple;
-	bh=wb27C6YDs2SEano/0L13BedK6zkVHFjvN0jOfsycobQ=;
-	h=Message-ID:Date:From:To:Cc:Subject; b=QD/Ac2d7Zpli52nYcJEHibKLzi9X3AcLYrYiaERzNbBFAamKq62Ze7XJ3fLtK3KG/Fhkq9V/XN/qm2CbGwWVuxTHWtMYvUTUEeNvwyGs1GpDT4Qc9PLwU9a9cBZ9ZnwN/hcXQCspWVx06mcno7ZPWj1+yPBsQEAQiJX3yE63tYQ=
+	bh=ANIJRUlQz6LQ5jbf92Mbu1AsZcgEwSE3Z9aKa1ZENwQ=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type; b=eIxFOhPNv5enKx+utBLljNLKoJIwuSi5Nl3GdBMIEeJLqPzLkslAOP8k3nAC1KHeet0v/7hoeZ9MLq1jTjQiP+yAY2q/En8mg0sgYyhSXQK2hAIjH/u+A8vBHxX3gk11DUEs1uPf+fpTpT2Dpcp33zL4tU1F8wi7Wy26iMrIovk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4838FC113CC;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DE99C3277B;
 	Fri, 12 Apr 2024 13:29:32 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1rvH0n-000000012ow-3O2L;
+	id 1rvH0n-000000012pR-45QV;
 	Fri, 12 Apr 2024 09:32:13 -0400
-Message-ID: <20240412133152.723632549@goodmis.org>
+Message-ID: <20240412133213.834390718@goodmis.org>
 User-Agent: quilt/0.67
-Date: Fri, 12 Apr 2024 09:31:52 -0400
+Date: Fri, 12 Apr 2024 09:31:53 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Mark Rutland <mark.rutland@arm.com>,
  Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>
-Subject: [for-linus][PATCH 0/4] tracing: Fixes for v6.9
+ Andrew Morton <akpm@linux-foundation.org>,
+ Yang Li <yang.lee@linux.alibaba.com>
+Subject: [for-linus][PATCH 1/4] eventfs: Fix kernel-doc comments to functions
+References: <20240412133152.723632549@goodmis.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 
-Tracing fixes for 6.9:
+From: Yang Li <yang.lee@linux.alibaba.com>
 
-- Fix the buffer_percent accounting as it is dependent on three variables:
-  1) pages_read - number of subbuffers read
-  2) pages_lost - number of subbuffers lost due to overwrite
-  3) pages_touched - number of pages that a writer entered
-  These three counters only increment, and to know how many active pages
-  there are on the buffer at any given time, the pages_read and
-  pages_lost are subtracted from pages_touched. But the pages touched
-  was incremented whenever any writer went to the next subbuffer even
-  if it wasn't the only one, so it was incremented more than it should
-  be causing the counter for how many subbuffers currently have content
-  incorrect, which caused the buffer_percent that holds waiters until
-  the ring buffer is filled to a given percentage to wake up early.
+This commit fix kernel-doc style comments with complete parameter
+descriptions for the lookup_file(),lookup_dir_entry() and
+lookup_file_dentry().
 
-- Fix warning of unused functions when PERF_EVENTS is not configured in
+Link: https://lore.kernel.org/linux-trace-kernel/20240322062604.28862-1-yang.lee@linux.alibaba.com
 
-- Replace bad tab with space in Kconfig for FTRACE_RECORD_RECURSION_SIZE
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ fs/tracefs/event_inode.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-- Fix to some kerneldoc function comments in eventfs code.
+diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
+index dc067eeb6387..894c6ca1e500 100644
+--- a/fs/tracefs/event_inode.c
++++ b/fs/tracefs/event_inode.c
+@@ -336,6 +336,7 @@ static void update_inode_attr(struct dentry *dentry, struct inode *inode,
+ 
+ /**
+  * lookup_file - look up a file in the tracefs filesystem
++ * @parent_ei: Pointer to the eventfs_inode that represents parent of the file
+  * @dentry: the dentry to look up
+  * @mode: the permission that the file should have.
+  * @attr: saved attributes changed by user
+@@ -389,6 +390,7 @@ static struct dentry *lookup_file(struct eventfs_inode *parent_ei,
+ /**
+  * lookup_dir_entry - look up a dir in the tracefs filesystem
+  * @dentry: the directory to look up
++ * @pei: Pointer to the parent eventfs_inode if available
+  * @ei: the eventfs_inode that represents the directory to create
+  *
+  * This function will look up a dentry for a directory represented by
+@@ -478,16 +480,20 @@ void eventfs_d_release(struct dentry *dentry)
+ 
+ /**
+  * lookup_file_dentry - create a dentry for a file of an eventfs_inode
++ * @dentry: The parent dentry under which the new file's dentry will be created
+  * @ei: the eventfs_inode that the file will be created under
+  * @idx: the index into the entry_attrs[] of the @ei
+- * @parent: The parent dentry of the created file.
+- * @name: The name of the file to create
+  * @mode: The mode of the file.
+  * @data: The data to use to set the inode of the file with on open()
+  * @fops: The fops of the file to be created.
+  *
+- * Create a dentry for a file of an eventfs_inode @ei and place it into the
+- * address located at @e_dentry.
++ * This function creates a dentry for a file associated with an
++ * eventfs_inode @ei. It uses the entry attributes specified by @idx,
++ * if available. The file will have the specified @mode and its inode will be
++ * set up with @data upon open. The file operations will be set to @fops.
++ *
++ * Return: Returns a pointer to the newly created file's dentry or an error
++ * pointer.
+  */
+ static struct dentry *
+ lookup_file_dentry(struct dentry *dentry,
+-- 
+2.43.0
 
-Arnd Bergmann (1):
-      tracing: hide unused ftrace_event_id_fops
 
-Prasad Pandit (1):
-      tracing: Fix FTRACE_RECORD_RECURSION_SIZE Kconfig entry
-
-Steven Rostedt (Google) (1):
-      ring-buffer: Only update pages_touched when a new page is touched
-
-Yang Li (1):
-      eventfs: Fix kernel-doc comments to functions
-
-----
- fs/tracefs/event_inode.c    | 14 ++++++++++----
- kernel/trace/Kconfig        |  2 +-
- kernel/trace/ring_buffer.c  |  6 +++---
- kernel/trace/trace_events.c |  4 ++++
- 4 files changed, 18 insertions(+), 8 deletions(-)
 
