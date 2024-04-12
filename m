@@ -1,271 +1,209 @@
-Return-Path: <linux-kernel+bounces-143225-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BF5E8A35EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D5A18A35EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:45:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8ECBB21256
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:46:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70474B24452
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9154414F9E3;
-	Fri, 12 Apr 2024 18:45:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC9B614F139;
+	Fri, 12 Apr 2024 18:45:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="gZSvfnsH"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1dGZk9+h"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA96814EC60;
-	Fri, 12 Apr 2024 18:45:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA2E314E2C5
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 18:45:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712947541; cv=none; b=vDj4yeVqd4SxaUbHs9D04Uonq90SQuHh9tWmdo+nTCUs6BJlPA11tNqun2RHOERYago39nCbVwlmUjyBSBQPOWt+c/RcTpghCdShnVqa51Dwlfpc9nE2d6oCyw3JzlQupuTc2Cx/7vQ+zYaRQEK5pZyxNIWvCaLItOppp25bmsU=
+	t=1712947541; cv=none; b=LUbUU0OGSU+Tfyk27UtJP4twrkp90Q+V2hxj8MccJQv/4C11/vKZtTDCQfcOKw/w4EZlCwMwdSa1Jv3Mtgc/Mv0YxczlkCjNknZRRpwwhf6r28TjrSP24eTNq3d66/DfqWHe7gUuDKBKLBl3AHIwy7FbvBrEcOGyEM86unLsqNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712947541; c=relaxed/simple;
-	bh=hM5Bar2U2SbNUBgeHwCsRu6FWTaanDGZpoF5JZ0mjKk=;
+	bh=Mxmh9m8cG1SINwjvCiVceMBEadI/CDBdioZFxVCsP84=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XUhYIuPvgYNXG1jOi1RqWOTo6pH/nFTaUxmODcEo3nFqmrd+/XyA/dPNSOD71Z5+h7SvAHq8SaZHtXwcU2CuzEgOJ0Ik9FFP3NBVGenzRAw0D57N84Xq49yW40OPuRSZeh4huBZu7c3NJis4FeivrSYRhrdTPntpLJeQ91YLfz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=gZSvfnsH; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (85-76-65-73-nat.elisa-mobile.fi [85.76.65.73])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id C9FB39D5;
-	Fri, 12 Apr 2024 20:44:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1712947494;
-	bh=hM5Bar2U2SbNUBgeHwCsRu6FWTaanDGZpoF5JZ0mjKk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gZSvfnsHkRha8KZvhjoj6aKwQyKzQUCTfrap+U1rbqUjUic+IgvdhBCrGVlKvdWIG
-	 BQec0NAZE0rEJgfAnQvhQaO9PdQekEsuuCM2yE0VKjv76frtKlpCJYUCAFHRjjMIEb
-	 VTuBPihgKryNFjXazlxVvGhOIEF5Awmmwhvh6+MU=
-Date: Fri, 12 Apr 2024 21:45:28 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Umang Jain <umang.jain@ideasonboard.com>,
-	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 8/9] media: subdev: Refactor
- v4l2_subdev_enable/disable_streams()
-Message-ID: <20240412184528.GK31122@pendragon.ideasonboard.com>
-References: <20240410-enable-streams-impro-v3-0-e5e7a5da7420@ideasonboard.com>
- <20240410-enable-streams-impro-v3-8-e5e7a5da7420@ideasonboard.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HO8QKs86UY5D52hNA2ChC5JGnvuNemEzM999Od6NFo5D8D3XgrMlcmKxB+Ld3iOz8Efjr1ejja/AEP37P+Z/jLOt6C5kyZZ0cA1hvl8oJ4krpOGpKqls+4DZJ/pILbZRZ43dVhTb36ga8cXHF8+wyTjfyuzpf4Vgqk5eQS/jzUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1dGZk9+h; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5dbf7b74402so796709a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:45:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712947539; x=1713552339; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ISLMFGOGyzbAhcth9c+vgcaA14m4ctbEbkD9TmYI1+8=;
+        b=1dGZk9+h1Q2Q9iaogm/cvA5Gz6mo72i/ro8ANc77ALWCk9pUoomZCV5HtZc3B9gK78
+         RJJnF3JQEY+ySY7/MUIZcs1FxPGHpw+DmUXC9pv/+7+W2dJXBu01QFHhdQbr8hsaGILT
+         6bEfrqaZDwY0mgRTjaxhdHWP/m33XO5k3X7ISKx+hEYcvvzOJTNlWk/EJXyJ5IGM4BDP
+         gSM3t5NDjJGirvNAWympm58UnEyz6seuba0uaRW9Li4ZYzsPl1yK99tD97M/ETKM3aqh
+         4zX74JUJ3xnee0JvOAPmRXPI4OY7FNtyWa7ncsuHS1GKsX567dqXi3btGvG+z7n9YbRr
+         ol0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712947539; x=1713552339;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ISLMFGOGyzbAhcth9c+vgcaA14m4ctbEbkD9TmYI1+8=;
+        b=Zb1oiYRpYtwXtsvxJV/XOK0kQuNS2czItj1EHLoapK0ZMDhpkOASKpq+QtqZIjLhl/
+         SHReWKWYrvMmoT+SvxuLaX2Y26jTLWXyh5xDINoxD31U8btMUojQUr/gDT9EKJG5++nt
+         JStgYOuXbiRw+9soHhdiF6ABhw/wxyK2aKm6/Gbw5j3xyo7T5+J/+N4T6edeDLs3pfX0
+         6ZuEijToHGxLcgGJvjvUoiqXg86J7XEz8tuQkOi8B3y5IfJDI4vb3bPE97qpsQ/EYchv
+         qJ3a05g05p6RzTtJBc3irjafF4tePYFxoapr9/JDut3zKO0/1/fzQR/8GNrjvendPujR
+         8M3g==
+X-Forwarded-Encrypted: i=1; AJvYcCWwXF3Or7Q0tn5+A96tlJ2VzkRRhBsu7RP3HLRecQTiptFahcqyF+0K8ySgOHwplEqpTTvExujDcqGwfXtaVLAzeZ4Up7eIWsWDnmEl
+X-Gm-Message-State: AOJu0YyrnDdrEwNdNFgiInfjgjnrBDhc+qEeJsehi6I/wRoDFsnpF/Br
+	lRHoyNwMUdQ0OZxdGKQIvLZgMzBpsLjQDMJhxkpI74udX/8egyE3VP3RiXP06g==
+X-Google-Smtp-Source: AGHT+IErdx6N/Za0LUKOOdr+VzWwjNC6bZuRp56Svh5aVZ0iXA0UlC0kIs2SDcy0//cfbrlbvHooqg==
+X-Received: by 2002:a17:90a:9af:b0:2a5:3e4e:29a0 with SMTP id 44-20020a17090a09af00b002a53e4e29a0mr3344779pjo.6.1712947538843;
+        Fri, 12 Apr 2024 11:45:38 -0700 (PDT)
+Received: from google.com (210.73.125.34.bc.googleusercontent.com. [34.125.73.210])
+        by smtp.gmail.com with ESMTPSA id i20-20020a632214000000b005cd835182c5sm3009589pgi.79.2024.04.12.11.45.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 11:45:38 -0700 (PDT)
+Date: Fri, 12 Apr 2024 11:45:33 -0700
+From: David Matlack <dmatlack@google.com>
+To: James Houghton <jthoughton@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Paolo Bonzini <pbonzini@redhat.com>, Yu Zhao <yuzhao@google.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Sean Christopherson <seanjc@google.com>,
+	Jonathan Corbet <corbet@lwn.net>, James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Shaoqin Huang <shahuang@redhat.com>, Gavin Shan <gshan@redhat.com>,
+	Ricardo Koller <ricarkol@google.com>,
+	Raghavendra Rao Ananta <rananta@google.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	David Rientjes <rientjes@google.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/7] mm: Add a bitmap into
+ mmu_notifier_{clear,test}_young
+Message-ID: <ZhmBTUIhypg-Kxbx@google.com>
+References: <20240401232946.1837665-1-jthoughton@google.com>
+ <20240401232946.1837665-2-jthoughton@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240410-enable-streams-impro-v3-8-e5e7a5da7420@ideasonboard.com>
+In-Reply-To: <20240401232946.1837665-2-jthoughton@google.com>
 
-Hi Tomi,
-
-Thank you for the patch.
-
-On Wed, Apr 10, 2024 at 03:35:55PM +0300, Tomi Valkeinen wrote:
-> Add two internal helper functions, v4l2_subdev_collect_streams() and
-> v4l2_subdev_set_streams_enabled(), which allows us to refactor
-> v4l2_subdev_enable/disable_streams() functions.
+On 2024-04-01 11:29 PM, James Houghton wrote:
+> The bitmap is provided for secondary MMUs to use if they support it. For
+> test_young(), after it returns, the bitmap represents the pages that
+> were young in the interval [start, end). For clear_young, it represents
+> the pages that we wish the secondary MMU to clear the accessed/young bit
+> for.
 > 
-> This (I think) makes the code a bit easier to read, and lets us more
-> easily add new functionality in the helper functions in the following
-> patch.
+> If a bitmap is not provided, the mmu_notifier_{test,clear}_young() API
+> should be unchanged except that if young PTEs are found and the
+> architecture supports passing in a bitmap, instead of returning 1,
+> MMU_NOTIFIER_YOUNG_FAST is returned.
 > 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
+> This allows MGLRU's look-around logic to work faster, resulting in a 4%
+> improvement in real workloads[1]. Also introduce MMU_NOTIFIER_YOUNG_FAST
+> to indicate to main mm that doing look-around is likely to be
+> beneficial.
+> 
+> If the secondary MMU doesn't support the bitmap, it must return
+> an int that contains MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE.
+> 
+> [1]: https://lore.kernel.org/all/20230609005935.42390-1-yuzhao@google.com/
+> 
+> Suggested-by: Yu Zhao <yuzhao@google.com>
+> Signed-off-by: James Houghton <jthoughton@google.com>
 > ---
->  drivers/media/v4l2-core/v4l2-subdev.c | 109 +++++++++++++++++++---------------
->  1 file changed, 60 insertions(+), 49 deletions(-)
+>  include/linux/mmu_notifier.h | 93 +++++++++++++++++++++++++++++++++---
+>  include/trace/events/kvm.h   | 13 +++--
+>  mm/mmu_notifier.c            | 20 +++++---
+>  virt/kvm/kvm_main.c          | 19 ++++++--
+>  4 files changed, 123 insertions(+), 22 deletions(-)
 > 
-> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> index f44aaa4e1fab..0d376d72ecc7 100644
-> --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> @@ -2100,6 +2100,42 @@ int v4l2_subdev_routing_validate(struct v4l2_subdev *sd,
->  }
->  EXPORT_SYMBOL_GPL(v4l2_subdev_routing_validate);
+> diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
+> index f349e08a9dfe..daaa9db625d3 100644
+> --- a/include/linux/mmu_notifier.h
+> +++ b/include/linux/mmu_notifier.h
+> @@ -61,6 +61,10 @@ enum mmu_notifier_event {
 >  
-> +static void v4l2_subdev_collect_streams(struct v4l2_subdev *sd,
-> +					struct v4l2_subdev_state *state,
-> +					u32 pad, u64 streams_mask,
-> +					u64 *found_streams,
-> +					u64 *enabled_streams)
-> +{
-> +	*found_streams = 0;
-> +	*enabled_streams = 0;
-> +
-> +	for (unsigned int i = 0; i < state->stream_configs.num_configs; ++i) {
-> +		const struct v4l2_subdev_stream_config *cfg =
-> +			&state->stream_configs.configs[i];
-> +
-> +		if (cfg->pad != pad || !(streams_mask & BIT_ULL(cfg->stream)))
-> +			continue;
-> +
-> +		*found_streams |= BIT_ULL(cfg->stream);
-> +		if (cfg->enabled)
-> +			*enabled_streams |= BIT_ULL(cfg->stream);
-> +	}
-> +}
-> +
-> +static void v4l2_subdev_set_streams_enabled(struct v4l2_subdev *sd,
-> +					    struct v4l2_subdev_state *state,
-> +					    u32 pad, u64 streams_mask,
-> +					    bool enabled)
-> +{
-> +	for (unsigned int i = 0; i < state->stream_configs.num_configs; ++i) {
-> +		struct v4l2_subdev_stream_config *cfg =
-> +			&state->stream_configs.configs[i];
-> +
-> +		if (cfg->pad == pad && (streams_mask & BIT_ULL(cfg->stream)))
-> +			cfg->enabled = enabled;
-> +	}
-> +}
-> +
->  static int v4l2_subdev_enable_streams_fallback(struct v4l2_subdev *sd, u32 pad,
->  					       u64 streams_mask)
->  {
-> @@ -2151,8 +2187,8 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
->  	struct device *dev = sd->entity.graph_obj.mdev->dev;
->  	struct v4l2_subdev_state *state;
->  	bool already_streaming;
-> -	u64 found_streams = 0;
-> -	unsigned int i;
-> +	u64 enabled_streams;
-> +	u64 found_streams;
->  	int ret;
+>  #define MMU_NOTIFIER_RANGE_BLOCKABLE (1 << 0)
 >  
->  	/* A few basic sanity checks first. */
-> @@ -2173,22 +2209,9 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
->  	 * Verify that the requested streams exist and that they are not
->  	 * already enabled.
->  	 */
-> -	for (i = 0; i < state->stream_configs.num_configs; ++i) {
-> -		struct v4l2_subdev_stream_config *cfg =
-> -			&state->stream_configs.configs[i];
->  
-> -		if (cfg->pad != pad || !(streams_mask & BIT_ULL(cfg->stream)))
-> -			continue;
-> -
-> -		found_streams |= BIT_ULL(cfg->stream);
-> -
-> -		if (cfg->enabled) {
-> -			dev_dbg(dev, "stream %u already enabled on %s:%u\n",
-> -				cfg->stream, sd->entity.name, pad);
-> -			ret = -EALREADY;
-> -			goto done;
-> -		}
-> -	}
-> +	v4l2_subdev_collect_streams(sd, state, pad, streams_mask,
-> +				    &found_streams, &enabled_streams);
->  
->  	if (found_streams != streams_mask) {
->  		dev_dbg(dev, "streams 0x%llx not found on %s:%u\n",
-> @@ -2197,6 +2220,13 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
->  		goto done;
->  	}
->  
-> +	if (enabled_streams) {
-> +		dev_dbg(dev, "streams 0x%llx already enabled on %s:%u\n",
-> +			enabled_streams, sd->entity.name, pad);
-> +		ret = -EINVAL;
-> +		goto done;
-> +	}
-> +
->  	dev_dbg(dev, "enable streams %u:%#llx\n", pad, streams_mask);
->  
->  	already_streaming = v4l2_subdev_is_streaming(sd);
-> @@ -2211,13 +2241,7 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
->  	}
->  
->  	/* Mark the streams as enabled. */
-> -	for (i = 0; i < state->stream_configs.num_configs; ++i) {
-> -		struct v4l2_subdev_stream_config *cfg =
-> -			&state->stream_configs.configs[i];
-> -
-> -		if (cfg->pad == pad && (streams_mask & BIT_ULL(cfg->stream)))
-> -			cfg->enabled = true;
-> -	}
-> +	v4l2_subdev_set_streams_enabled(sd, state, pad, streams_mask, true);
->  
->  	if (!already_streaming)
->  		v4l2_subdev_enable_privacy_led(sd);
-> @@ -2279,8 +2303,8 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
->  {
->  	struct device *dev = sd->entity.graph_obj.mdev->dev;
->  	struct v4l2_subdev_state *state;
-> -	u64 found_streams = 0;
-> -	unsigned int i;
-> +	u64 enabled_streams;
-> +	u64 found_streams;
->  	int ret;
->  
->  	/* A few basic sanity checks first. */
-> @@ -2301,22 +2325,9 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
->  	 * Verify that the requested streams exist and that they are not
->  	 * already disabled.
->  	 */
-> -	for (i = 0; i < state->stream_configs.num_configs; ++i) {
-> -		struct v4l2_subdev_stream_config *cfg =
-> -			&state->stream_configs.configs[i];
-> -
-> -		if (cfg->pad != pad || !(streams_mask & BIT_ULL(cfg->stream)))
-> -			continue;
->  
-> -		found_streams |= BIT_ULL(cfg->stream);
-> -
-> -		if (!cfg->enabled) {
-> -			dev_dbg(dev, "stream %u already disabled on %s:%u\n",
-> -				cfg->stream, sd->entity.name, pad);
-> -			ret = -EALREADY;
-> -			goto done;
-> -		}
-> -	}
-> +	v4l2_subdev_collect_streams(sd, state, pad, streams_mask,
-> +				    &found_streams, &enabled_streams);
->  
->  	if (found_streams != streams_mask) {
->  		dev_dbg(dev, "streams 0x%llx not found on %s:%u\n",
-> @@ -2325,6 +2336,13 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
->  		goto done;
->  	}
->  
-> +	if (enabled_streams != streams_mask) {
-> +		dev_dbg(dev, "streams 0x%llx already disabled on %s:%u\n",
-> +			streams_mask & ~enabled_streams, sd->entity.name, pad);
-> +		ret = -EINVAL;
-> +		goto done;
-> +	}
-> +
->  	dev_dbg(dev, "disable streams %u:%#llx\n", pad, streams_mask);
->  
->  	/* Call the .disable_streams() operation. */
-> @@ -2336,14 +2354,7 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
->  		goto done;
->  	}
->  
-> -	/* Mark the streams as disabled. */
-> -	for (i = 0; i < state->stream_configs.num_configs; ++i) {
-> -		struct v4l2_subdev_stream_config *cfg =
-> -			&state->stream_configs.configs[i];
-> -
-> -		if (cfg->pad == pad && (streams_mask & BIT_ULL(cfg->stream)))
-> -			cfg->enabled = false;
-> -	}
-> +	v4l2_subdev_set_streams_enabled(sd, state, pad, streams_mask, false);
->  
->  done:
->  	if (!v4l2_subdev_is_streaming(sd))
-> 
+> +#define MMU_NOTIFIER_YOUNG			(1 << 0)
+> +#define MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE	(1 << 1)
 
--- 
-Regards,
+MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE appears to be unused by all callers
+of test/clear_young(). I would vote to remove it.
 
-Laurent Pinchart
+> +#define MMU_NOTIFIER_YOUNG_FAST			(1 << 2)
+
+Instead of MMU_NOTIFIER_YOUNG_FAST, how about
+MMU_NOTIFIER_YOUNG_LOOK_AROUND? i.e. The secondary MMU is returning
+saying it recommends doing a look-around and passing in a bitmap?
+
+That would avoid the whole "what does FAST really mean" confusion.
+
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index fb49c2a60200..ca4b1ef9dfc2 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -917,10 +917,15 @@ static int kvm_mmu_notifier_clear_flush_young(struct mmu_notifier *mn,
+>  static int kvm_mmu_notifier_clear_young(struct mmu_notifier *mn,
+>  					struct mm_struct *mm,
+>  					unsigned long start,
+> -					unsigned long end)
+> +					unsigned long end,
+> +					unsigned long *bitmap)
+>  {
+>  	trace_kvm_age_hva(start, end);
+>  
+> +	/* We don't support bitmaps. Don't test or clear anything. */
+> +	if (bitmap)
+> +		return MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE;
+
+Wouldn't it be a bug to get a bitmap here? The main MM is only suppost
+to pass in a bitmap if the secondary MMU returns
+MMU_NOTIFIER_YOUNG_FAST, which KVM does not do at this point.
+
+Put another way, this check seems unneccessary.
+
+> +
+>  	/*
+>  	 * Even though we do not flush TLB, this will still adversely
+>  	 * affect performance on pre-Haswell Intel EPT, where there is
+> @@ -939,11 +944,17 @@ static int kvm_mmu_notifier_clear_young(struct mmu_notifier *mn,
+>  
+>  static int kvm_mmu_notifier_test_young(struct mmu_notifier *mn,
+>  				       struct mm_struct *mm,
+> -				       unsigned long address)
+> +				       unsigned long start,
+> +				       unsigned long end,
+> +				       unsigned long *bitmap)
+>  {
+> -	trace_kvm_test_age_hva(address);
+> +	trace_kvm_test_age_hva(start, end);
+> +
+> +	/* We don't support bitmaps. Don't test or clear anything. */
+> +	if (bitmap)
+> +		return MMU_NOTIFIER_YOUNG_BITMAP_UNRELIABLE;
+
+Same thing here.
 
