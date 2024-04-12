@@ -1,294 +1,185 @@
-Return-Path: <linux-kernel+bounces-141788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141785-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 402D48A2371
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:52:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 952B68A236C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:51:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2BD5B2345A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:52:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C727A1C2267C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D38EDDD2;
-	Fri, 12 Apr 2024 01:51:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 529AA4C92;
+	Fri, 12 Apr 2024 01:50:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="BBumYXRF"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="DTjsKPq0";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="kEUAe/4H"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E94FD24B23
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 01:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712886667; cv=none; b=DXafGeP5tZe+YkaYDrHrHcuCYaKfhgbaK90URU8fjCn70sz/hYoI+hTR95N1K1sHw9HIqLgLvrIXhXhhPiHMyoGWsURU6KP0ywzIgr8v2Uor70LiLtYizROAx7SJvqL/s8nCJq08ApezgLv3MUlcU8eyY6dz4OHRJcWmtDNkqy4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712886667; c=relaxed/simple;
-	bh=EfTqzolUvIxbeV77szfL3e0e1IBqxiKk0wQkbdth9Jg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=E/pRaQ5zCni/ujW2Om4c8vIXjukF3tbxQAxVnC95zSBXeUWkMmv4KYhbQgQK0UV8ll/ExvWJg6CkJSAbs6hFwxw9d+aUJNWJmODaqm+jmB8UuBOFg81fDK1DAbfQzEJ8A6/t62FMKQtmjjBBedsmBf9BAIqlJJnWB1rS2/eFKM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=BBumYXRF; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-617d4797d9bso3587177b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:51:05 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61CE1179BE;
+	Fri, 12 Apr 2024 01:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712886658; cv=fail; b=kMa3qwgRsIRhRvJl9jZ1iniQjAmqisKzW21EGYXPGQZ9HRrIVvIwryhBXQrKkjlQhVWmiDMAV6tO8Ma03cs3MrNF8jgwMgpfbN4xQotYFiZif9hreS2fuaJYOKHhigiJ9fUi/t0eETRd4qOt44IwuF/kOJmRgiuw58Z+p//KJtU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712886658; c=relaxed/simple;
+	bh=e6yTunzxvyH2+MPu5cwp+eg9LCMCEcKXActIBGslpeQ=;
+	h=To:Cc:Subject:From:In-Reply-To:Message-ID:References:Date:
+	 Content-Type:MIME-Version; b=bHmy89dorNoeHQbkG5pQ7xN1wZ/t5EOdI2EkFgR9K6ZpDuCz+dl+9YxO20kUpJq3Kdm4DRR9I4tAFrDWlGDiA4JEtAmwJIRD0VOJ+eyxQkJ98Emf8z5y2Njy0pvvOfnMp0uYwPLRx5g0DYbDULoqVv1pIP5tCmEbJJ0y2nIeKvM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=DTjsKPq0; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=kEUAe/4H; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43BNYK00008677;
+	Fri, 12 Apr 2024 01:50:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : in-reply-to : message-id : references : date : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=t/nicHX16iYVR7FAfQ0/9KnevRSOmnlNRtHK66XUuF8=;
+ b=DTjsKPq0HbaJ7x07QM54PMFs1Wh+HV1t9pMmHjbkZmk8kc23VbV7RxrgHdLuJZ+YHFcn
+ /piKSXN87wGFOxkjWECpNeSZoQM4HZ8fyuwGo3g0Fjropg9qNauBb1Qm4ygh7esrGmOr
+ IG2sL3uQGup77z5OvmklEY4meAMr8ooVcyTv7kIHLYozxuZdj9hmHWRAebryB0qoaAGz
+ UQgtr2Wo/tdqP1b4tzPuM+ifhx7UFFzATSfF63t1mCSzODfXAx6PlS2zoI2HnC1FHOxZ
+ PK9rst/+R0qBcRhw9hh3Sxs7aeMk6trl/6srYCS1lmj5a5kdNi2Jmi+dScky+N+TQo7v vA== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xawactvbm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 12 Apr 2024 01:50:37 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43BMwxR9032343;
+	Fri, 12 Apr 2024 01:50:36 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xavuaynq4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 12 Apr 2024 01:50:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NuS6WehDFRpstLEzo6H2pJCJ40rCrINCDrJVW8mMKNUEVHYQNK8zDVhI5xdsVLf16wW4m99Sm9TyOqFU0NVKJqj9teKmticegrn77n6d7fXqz3iVlIIIzfBYynog23UvPDmpsKH8I6i4Db+RmeluXr8t13HQd0uCGzvlTyiDFSJWZZunXQm87TvX8x9/ax5Cz5P0DAYMgSzWInOVC+B4Wadp7rfn1vY0Wl8C8I3h5McDpmH5vzxBYGEHJ8JZwO0eZ4EHapF3FqpJs3NSJlpHj7w3CeLeDutq2GbUXDZP88VsPOHn479Riwve4Id1tKI39Cbsii451y5nES4KdxRBww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=t/nicHX16iYVR7FAfQ0/9KnevRSOmnlNRtHK66XUuF8=;
+ b=ZJbY7CoeJ8qBCXFYvt3T7CbUlpu2t9pwQ6x78hWU+SH8u3nXNZ8Ikw4c5TK3Acp2X39LLKQHI6kA8h6hz80hpbT8iGeqi4fVU4Pa9m/zP1J/v3UEyUb3TlKmMnNpjQGFau/jD/0Q/sfrwRVj00Bo9MsWsoj7GHvVSMEa1bPEDvEyWTYqyQer41iPAMGLyGZ2s8sORtMoBEdHLvqMaqtwJAQIREpaWmizV7/KV6rXOj/Q4eY/DDxa48nyDfpxB2QbR7e0E/m322lbRswqTvI54/7o3jE0WO+LdtQctWsaDwWy2GeedcByc8wf/off6jPr36FqIm2QKux/HUTlkFmeZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1712886665; x=1713491465; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PLsAtO8E8WEI0YPLnWc4zGD4gPrub60dCUyhat+mc0A=;
-        b=BBumYXRFyY4oAk5wBat/ahkj0vo4ZnGDizw9oe7uiI4of7VQSdzqMqicfgz6Iqva3+
-         TWB3iYBSoKCwGzfyBadYhTJblNxUidbYGWt29yAxB5uG5AVFqqKSDB9JIUZvJIq3h5un
-         AqcdhEOTYPdqqEB4RwLqMoOsWiVbiB2K6Ecn3dTiLeWaFd5ZlStzsB5463mCQOB7hSHP
-         EamyeE7eoRo/SMtDLC1565o/z8czbepN5SJj7jsJXvH6TKSiN6tBk8KfyjROBuQ25zXo
-         YliCS1PX3q8xNQUWIf+bDWLpFXKq81+s1iRIV0vtGBpRQ4V73mrheJV4nWzRPm6DOH2i
-         aitQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712886665; x=1713491465;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PLsAtO8E8WEI0YPLnWc4zGD4gPrub60dCUyhat+mc0A=;
-        b=XnjZvCU9Dpn0APyImLZLDrZlCx+C+2FB8u8H6XslJHqdijkfyEPHFI/Bnn2YFIqgL6
-         +ClHx6ityJ9jdRp83ImxaEaag6KWAL0dRh8N4WrB/z+RVXA1cmZblJQ5hBpFXSGlMpwj
-         /oemwqyTCReTDqT80XZxcbVOoX2hxbNQOzfBPxw8c895/ecr18tbQujjopGrAL/0iy/O
-         ZFVq1olDgWy+RMDaWl0uuilQm7p8jdUrDUhTjJUHOIcQy6ZXlOPgllhMHSJzG9i8Gr+6
-         kFfKQMIQOTxfv0VYLLS+8AOQDCdt7imTOpoEIH5LcPCSmAZf/ZoIK/6CmS8cDGb1k9Ie
-         e3zA==
-X-Forwarded-Encrypted: i=1; AJvYcCWKNC3yQklnYPWXyAGqEaz7sz4u6EfNlrWlHv131z3vOUlX7QRjXJdonMmAvXeIr0oC+fFYfCF72JHBpxfw+FNhycTmXoV2ZU4P12o2
-X-Gm-Message-State: AOJu0YwdkCkBL2zTEHz2Qp0vZHYkVFUoIOH1XaGSiRh4sLoaeu/2lz+J
-	qWyJQylDCbVTkYR2GahBE4UeLwvSjpFDIzLvzklD96suiDac1s0vm/92ifIa5w==
-X-Google-Smtp-Source: AGHT+IF6KWE2O+uOj1W7BUPtfwmixy3UO/O70mlonobqoOzGHLL5MXKtYfA1MJKuTWaSz4KGSxyRhQ==
-X-Received: by 2002:a81:4ec7:0:b0:615:21e7:6bf6 with SMTP id c190-20020a814ec7000000b0061521e76bf6mr1172665ywb.14.1712886664785;
-        Thu, 11 Apr 2024 18:51:04 -0700 (PDT)
-Received: from ip-172-31-44-15.us-east-2.compute.internal (ec2-52-15-100-147.us-east-2.compute.amazonaws.com. [52.15.100.147])
-        by smtp.googlemail.com with ESMTPSA id f10-20020a05620a15aa00b0078d76c1178esm1756677qkk.119.2024.04.11.18.51.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 18:51:04 -0700 (PDT)
-From: Kyle Huey <me@kylehuey.com>
-X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
-To: Kyle Huey <khuey@kylehuey.com>,
-	linux-kernel@vger.kernel.org,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Marco Elver <elver@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Robert O'Callahan <robert@ocallahan.org>,
-	bpf@vger.kernel.org,
-	Song Liu <song@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Shuah Khan <shuah@kernel.org>,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v6 7/7] selftest/bpf: Test a perf bpf program that suppresses side effects.
-Date: Thu, 11 Apr 2024 18:50:19 -0700
-Message-Id: <20240412015019.7060-8-khuey@kylehuey.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240412015019.7060-1-khuey@kylehuey.com>
-References: <20240412015019.7060-1-khuey@kylehuey.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t/nicHX16iYVR7FAfQ0/9KnevRSOmnlNRtHK66XUuF8=;
+ b=kEUAe/4HyhYFxCOiQ39Pigz2R59vPJzZfo/kZjHk+UBozLqA8iMJ3lpLbp2Vn77/Dk6wC21eyrBDKEzhpfx0mP+DjAmgDufoo6eH/febuPx/bQgkzD5Xmdzxmbp2pEbxZBNhqeHKoIHl0lyCacAmRKR7QkDJVw704SDd+TkuHBg=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by SA2PR10MB4667.namprd10.prod.outlook.com (2603:10b6:806:111::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Fri, 12 Apr
+ 2024 01:50:34 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::7856:8db7:c1f6:fc59]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::7856:8db7:c1f6:fc59%4]) with mapi id 15.20.7409.042; Fri, 12 Apr 2024
+ 01:50:34 +0000
+To: Avri Altman <avri.altman@wdc.com>
+Cc: "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen"
+ <martin.petersen@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Bart Van Assche <bvanassche@acm.org>, Bean Huo <beanhuo@micron.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] scsi: ufs: Remove support for old UFSHCI versions
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+In-Reply-To: <20240410183720.908-2-avri.altman@wdc.com> (Avri Altman's message
+	of "Wed, 10 Apr 2024 21:37:19 +0300")
+Organization: Oracle Corporation
+Message-ID: <yq17ch3l57o.fsf@ca-mkp.ca.oracle.com>
+References: <20240410183720.908-1-avri.altman@wdc.com>
+	<20240410183720.908-2-avri.altman@wdc.com>
+Date: Thu, 11 Apr 2024 21:50:32 -0400
+Content-Type: text/plain
+X-ClientProxiedBy: PH1PEPF000132F3.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:518:1::38) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|SA2PR10MB4667:EE_
+X-MS-Office365-Filtering-Correlation-Id: 56ab94fb-d13e-492e-0aca-08dc5a92f137
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	8notSr+A7W8IBcYWba9IZK4G/WjUdT745+7PAeee3jjWJuYFNuSrC8rs19DnMV/mw55D7x4pG0Z46CCHYx1sS8Xd8mDYF12jVWSyap7iWmpBWThbeXHTS0PIpwwqs/IF4f2ba6QntxgIHV2/4Wi80jIegezcnHib1UMdRxercECmnAFUTWoJ4ekyLMsqsmg204+EsGKKg8BWugCn6NUlRoh69+88spTGOY4A6d22O+88VfByBxxOwCDouR109fVM1aiG/hbcIfsq7Gwc1JDQNRA2kI5wfN1xRM7OEUt3H7Qev9Q5GBioUqpoWruvZgt3tP0hZlCsx5qtkmYDelL+3MMz68GVPa5zO7R/EDrtTmoXRQg4LMINI2R6CR7hZNKYcDXil1sOWUwonyx4Acu55byI9xA+k2mOI6X+WeOpUPJScXiSGJrH2WGSTFwAvv6F5J3OC5OUuVwtJ/zcKJ3s7g64TwkACUoFrL+VlDW/pR7jDCTJKXp+Fsu5+sLkLZHR++DV7HhxabqJgfQm24RJAFOrGJnCR+itSSn+JRKE5FQ7tNx4szf6n3PNh65lu7VYxVUymaNaiZ5oUXFn2YJ2kZ/9uBSjo4VuBn5hH8B/j4TGZNARyS8KpFwgauzHuTim2EQGSo6q4YJpt9/14DfltgQ0t1Gwwiroy+Qa3o96lWY=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?nKx798KbS2OlNI2UPs0LzNuPCk7Lw6Pcic7w3pOXyFRpNtNGF6UzRboL0o7F?=
+ =?us-ascii?Q?vxMlm5TKjnFAsFffmXksxxdT1s8zPpBdx/F44DvoVs7kuDuiJokcIeV6jz3a?=
+ =?us-ascii?Q?RkUpuEAbQ4rP+dKZToIfPmS1N1PcsQAg8DbmY1uu8G//XEpTOBJnMp3rmIz7?=
+ =?us-ascii?Q?quPiyySfoH50t3RfqO9CoCfyvzMU/gka+gjOVS+svjxwtzX1gvh5RNKif+Qx?=
+ =?us-ascii?Q?HoT7f2gESEXCkju2nrbcnFk2kAqi5R6Hds5CyYkio8W81CrDEJcJwkmwlIz/?=
+ =?us-ascii?Q?fGF15Wd+VDOPDfw8NNanPdxd60IJ2Ynh2RVvaxQTiZKZMs/IjFHaSwkvE7kh?=
+ =?us-ascii?Q?Y+fWeeQ8AXVwUW4Ca+uy+1Tp5VG0UKpcXSW5tsyfbq8NNYX7NH3/CjXBCSuq?=
+ =?us-ascii?Q?hXaWSmiT+XlCR0F/x+KsDDCbkMBc3PcEQBEidocnsW0610U/s8HrWiQrsBJY?=
+ =?us-ascii?Q?3uxShWKvuSuoZ2tzCH1GtZLp5ofRPk3G75xnk5jAL03wVuJ6xpUWafYSehNI?=
+ =?us-ascii?Q?lcSvpxzGSVnaNGcU7B0DbyV9uWgPg7x5JqYaKh93oXfGyC7HDV/saPYXbpK7?=
+ =?us-ascii?Q?yblJ2csPS9fszRaD/AFD7iQP7D1YVAXEdixwND4StkqpZFLD6WO8ohrRAF6C?=
+ =?us-ascii?Q?y0M+CD+aclnv4mcORzPSH1siVDhlXsGBnoE8pURyRhAm7VBMr0tXBBZ0QjX0?=
+ =?us-ascii?Q?AQX+FNKJUJa/1BCoZWbkKM4qpKhQqZrx2HeLA3LAQwVncMOkuo/vW/ARIhQd?=
+ =?us-ascii?Q?3KwR9dVPyWOcz+eNa0vbr1qRMvbdPxijXrPfAYfl6T+fNc58aweUFE8DMuvX?=
+ =?us-ascii?Q?E1J/ub5hQiP3d8hbS7B3/YUs4Gf6eBJ4kpnYxShf6goYUBTWyvmxQ974dras?=
+ =?us-ascii?Q?xwYuwP2FjwOxxgo5PhtI9mS6PmPmVxAAWe1TxJsF0sDckqU2GNUoKvQBkiCS?=
+ =?us-ascii?Q?atpIglR2Qe2kpL88WdJJCjCB4CUVM32mxRt54LQxKEQzydp0vtv/OhFrWbYU?=
+ =?us-ascii?Q?6IGmcTfc9ddd7ogbeKklc/nSQRABuLzUexA8wWo3Mufx5a+rvIcDrp1LBY1H?=
+ =?us-ascii?Q?g1SVLITFc0Zs8p/x6yhiKsbaUVzCxgeqYNZ25DV6KhE51vg+arU5hODvsSZM?=
+ =?us-ascii?Q?W/ItT+nAiMucnJTpXKH1bt3Xl8hBf+bgr8h1B9QbN1S7EtpLQzODw/MFqhnU?=
+ =?us-ascii?Q?DoPl9pNNzq/ITY86TmUjR+eSYfG9bD0tXUsBb5yxxX+qZJjugLHTMkNF+JCM?=
+ =?us-ascii?Q?D6UH+o1qWCZzi4l6b4oU4dXRtOkAgcHhOcnxSMsqNlJRrT32fzyCCF0ZtfkA?=
+ =?us-ascii?Q?k34sQ1e9/xxvLqeph6RTWLTxcsrIyxw9qYK05B31iwbndUirGtvhGr9dP+Tr?=
+ =?us-ascii?Q?F2W6Z9fhZcZorXa9K//r1WxOIiMQ1b3nrjgH6PnBGdeji+KMOzadAJDJWtJT?=
+ =?us-ascii?Q?rxC1LD9kobPSR/GwZz8HAZp7/YhQeUJfdBTw87gC4J7+l9M1nYqfg8FUDqq7?=
+ =?us-ascii?Q?N/Uy2WKAcFfUKLuBPvxf3TDnWFUFxSERmioQIwmbHqAN1bOU1uBxtNO9VuFC?=
+ =?us-ascii?Q?pgt2NOhBJYXi7aRK44wIINGvK+GbweLpcuMoxrZGCVxa/Agu2BLCSzTPGCBY?=
+ =?us-ascii?Q?9Q=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	di3P0oO7SWSguEulfZi/r1GBDYQ0hKHBMevY8VcPa8sC/VlF6V63G9W5h7jhRnqmSl4TS4hABbxk4ZmBvckEp/Jw1QOyee72kEyGtpW1OuMk/kGjYMD/tYpUiMWzXjzzjrI5YwIUu2Rvf9ioG3v8yNhTrE6TMen0Oyj+DxLB+6Z3SDol9ADugCW3yVYGlSuh0kTbGqoQQwl2e+ktcevi1D19Laly/CrnUu70g6KAheR5cvQq9uDckY2AC9wq/sT35TOOH1ZFlBfJ8GDaB9ISwVEoHtZxizZaBvR6FCLuFTrajRSp4iY/wAkm87iWuAVPgtEG9QStVvBRhDqj9LMuHvr/vCek9eBkYQAJMGb90KFYuhzdJl/VSKMQ6LnDyqlZPheGwZhWoOlrSrFOlikmlGlKEGwa/6cUSDNkfNoqdTGMArZIiGEqjNYVnYrzD8/XpbIYD9A5MWOi6Dl+NL+ektruPbMcq+PvGo363PzkAwbuoZc5Glo5j1V0NMr3lIn5j8iOuKUziHc6z/wobgYK0kBjxV5RaHtewRtr3EzEmPaWxbYAxYxoKJ/0xuYy4Fk3oryqnqd5wsapYr25fU9zeO+pSDxCWRcCRs1s/lLuIYw=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56ab94fb-d13e-492e-0aca-08dc5a92f137
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 01:50:34.0110
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: scZ9cDpYoOcc+96OvIQIvwvw44BlbF547CSyhkWS52HqFuL9YEMKh5/yOc6Ak1uYNNq2sQhClkKGlDswL1NrE4UjBGn0j3GP76TnfBO+GO0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4667
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-11_14,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ bulkscore=0 mlxlogscore=999 mlxscore=0 adultscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404120012
+X-Proofpoint-GUID: dfJm1ujEJQ0czfL-9MSB80u_gVRHW_y7
+X-Proofpoint-ORIG-GUID: dfJm1ujEJQ0czfL-9MSB80u_gVRHW_y7
 
-The test sets a hardware breakpoint and uses a bpf program to suppress the
-side effects of a perf event sample, including I/O availability signals,
-SIGTRAPs, and decrementing the event counter limit, if the ip matches the
-expected value. Then the function with the breakpoint is executed multiple
-times to test that all effects behave as expected.
 
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-Acked-by: Song Liu <song@kernel.org>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/prog_tests/perf_skip.c      | 137 ++++++++++++++++++
- .../selftests/bpf/progs/test_perf_skip.c      |  15 ++
- 2 files changed, 152 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
+Avri,
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
-new file mode 100644
-index 000000000000..37d8618800e4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
-@@ -0,0 +1,137 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+
-+#include <test_progs.h>
-+#include "test_perf_skip.skel.h"
-+#include <linux/compiler.h>
-+#include <linux/hw_breakpoint.h>
-+#include <sys/mman.h>
-+
-+#ifndef TRAP_PERF
-+#define TRAP_PERF 6
-+#endif
-+
-+int sigio_count, sigtrap_count;
-+
-+static void handle_sigio(int sig __always_unused)
-+{
-+	++sigio_count;
-+}
-+
-+static void handle_sigtrap(int signum __always_unused,
-+			   siginfo_t *info,
-+			   void *ucontext __always_unused)
-+{
-+	ASSERT_EQ(info->si_code, TRAP_PERF, "si_code");
-+	++sigtrap_count;
-+}
-+
-+static noinline int test_function(void)
-+{
-+	asm volatile ("");
-+	return 0;
-+}
-+
-+void serial_test_perf_skip(void)
-+{
-+	struct sigaction action = {};
-+	struct sigaction previous_sigtrap;
-+	sighandler_t previous_sigio = SIG_ERR;
-+	struct test_perf_skip *skel = NULL;
-+	struct perf_event_attr attr = {};
-+	int perf_fd = -1;
-+	int err;
-+	struct f_owner_ex owner;
-+	struct bpf_link *prog_link = NULL;
-+
-+	action.sa_flags = SA_SIGINFO | SA_NODEFER;
-+	action.sa_sigaction = handle_sigtrap;
-+	sigemptyset(&action.sa_mask);
-+	if (!ASSERT_OK(sigaction(SIGTRAP, &action, &previous_sigtrap), "sigaction"))
-+		return;
-+
-+	previous_sigio = signal(SIGIO, handle_sigio);
-+	if (!ASSERT_NEQ(previous_sigio, SIG_ERR, "signal"))
-+		goto cleanup;
-+
-+	skel = test_perf_skip__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	attr.type = PERF_TYPE_BREAKPOINT;
-+	attr.size = sizeof(attr);
-+	attr.bp_type = HW_BREAKPOINT_X;
-+	attr.bp_addr = (uintptr_t)test_function;
-+	attr.bp_len = sizeof(long);
-+	attr.sample_period = 1;
-+	attr.sample_type = PERF_SAMPLE_IP;
-+	attr.pinned = 1;
-+	attr.exclude_kernel = 1;
-+	attr.exclude_hv = 1;
-+	attr.precise_ip = 3;
-+	attr.sigtrap = 1;
-+	attr.remove_on_exec = 1;
-+
-+	perf_fd = syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
-+	if (perf_fd < 0 && (errno == ENOENT || errno == EOPNOTSUPP)) {
-+		printf("SKIP:no PERF_TYPE_BREAKPOINT/HW_BREAKPOINT_X\n");
-+		test__skip();
-+		goto cleanup;
-+	}
-+	if (!ASSERT_OK(perf_fd < 0, "perf_event_open"))
-+		goto cleanup;
-+
-+	/* Configure the perf event to signal on sample. */
-+	err = fcntl(perf_fd, F_SETFL, O_ASYNC);
-+	if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
-+		goto cleanup;
-+
-+	owner.type = F_OWNER_TID;
-+	owner.pid = syscall(__NR_gettid);
-+	err = fcntl(perf_fd, F_SETOWN_EX, &owner);
-+	if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
-+		goto cleanup;
-+
-+	/* Allow at most one sample. A sample rejected by bpf should
-+	 * not count against this.
-+	 */
-+	err = ioctl(perf_fd, PERF_EVENT_IOC_REFRESH, 1);
-+	if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_REFRESH)"))
-+		goto cleanup;
-+
-+	prog_link = bpf_program__attach_perf_event(skel->progs.handler, perf_fd);
-+	if (!ASSERT_OK_PTR(prog_link, "bpf_program__attach_perf_event"))
-+		goto cleanup;
-+
-+	/* Configure the bpf program to suppress the sample. */
-+	skel->bss->ip = (uintptr_t)test_function;
-+	test_function();
-+
-+	ASSERT_EQ(sigio_count, 0, "sigio_count");
-+	ASSERT_EQ(sigtrap_count, 0, "sigtrap_count");
-+
-+	/* Configure the bpf program to allow the sample. */
-+	skel->bss->ip = 0;
-+	test_function();
-+
-+	ASSERT_EQ(sigio_count, 1, "sigio_count");
-+	ASSERT_EQ(sigtrap_count, 1, "sigtrap_count");
-+
-+	/* Test that the sample above is the only one allowed (by perf, not
-+	 * by bpf)
-+	 */
-+	test_function();
-+
-+	ASSERT_EQ(sigio_count, 1, "sigio_count");
-+	ASSERT_EQ(sigtrap_count, 1, "sigtrap_count");
-+
-+cleanup:
-+	bpf_link__destroy(prog_link);
-+	if (perf_fd >= 0)
-+		close(perf_fd);
-+	test_perf_skip__destroy(skel);
-+
-+	if (previous_sigio != SIG_ERR)
-+		signal(SIGIO, previous_sigio);
-+	sigaction(SIGTRAP, &previous_sigtrap, NULL);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools/testing/selftests/bpf/progs/test_perf_skip.c
-new file mode 100644
-index 000000000000..7eb8b6de7a57
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+uintptr_t ip;
-+
-+SEC("perf_event")
-+int handler(struct bpf_perf_event_data *data)
-+{
-+	/* Skip events that have the correct ip. */
-+	return ip != PT_REGS_IP(&data->regs);
-+}
-+
-+char _license[] SEC("license") = "GPL";
+> UFS spec version 2.1 was published more than 10 years ago. It is
+> vanishingly unlikely that even there are out there platforms that uses
+> earlier host controllers, let alone that those ancient platforms will
+> ever run a V6.10 kernel.  To be extra cautious, leave out removal of
+> UFSHCI 2.0 support from this patch, and just remove support of host
+> controllers prior to UFS2.0.
+
+Applied to 6.10/scsi-staging, thanks!
+
 -- 
-2.34.1
-
+Martin K. Petersen	Oracle Linux Engineering
 
