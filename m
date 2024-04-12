@@ -1,115 +1,148 @@
-Return-Path: <linux-kernel+bounces-142236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 015EF8A2954
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:29:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBB7B8A295C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:30:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94D021F2159E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:29:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7761C283A2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:30:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6873C50291;
-	Fri, 12 Apr 2024 08:29:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6967205E22;
+	Fri, 12 Apr 2024 08:30:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ZJZU03Kh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="i3WAUav3"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A31F24F1F5;
-	Fri, 12 Apr 2024 08:29:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763BC50299;
+	Fri, 12 Apr 2024 08:30:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712910590; cv=none; b=qi66jv9YCo6U1ik1cKKBs+QpDEOvQvjk8s4pJsGU3iwXANpXPu7kfJ4igDFqT5QelP9D6tYG2LjcCY1xhkf7dhSDr+Yw962lP82hqfmTkVn/pJcmk6qaR7pbHcrZ23rf7jr6BFCzr1yRBTfzEDAe6R3WSG9gAW/W0btC/Q1+wgo=
+	t=1712910606; cv=none; b=OVJbueF9b93t38ZyJyAZ8wEffxX9kfsf57QvUTIz38m67S8u5skSv9hnqU/V0e5GlXy3TGEdrNXHsuflN2vQdWRSpfGNUJ2VcQD4aWp0tLiii+XnPOj0MlBG8uis0TzKXVav/QFeReSLKbEwQYLByfoykav4XXPbFi1uFnr2KV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712910590; c=relaxed/simple;
-	bh=yNUCTY3R96uKh6sdpi2i9suu0OKXHjTflNqHMb3g/Zw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cO6iHRC574XY3vCjmHFRqTHxwk3S4sfKkTHUFJCJB45vQcOB9dTaEBW9yVYdhS3hFJZJWlzS7rmtYCP06ueRIyHxnx2QzuZe+DsHFDQTY85H0xHhitrHjnD6Y91KLXbq94FCt/ZfVqhW/iyOzJGXLh3vw4cK7LAIKeu85kZcRnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ZJZU03Kh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1EA3C113CC;
-	Fri, 12 Apr 2024 08:29:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712910590;
-	bh=yNUCTY3R96uKh6sdpi2i9suu0OKXHjTflNqHMb3g/Zw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZJZU03Khdu2WdxWk9+7wNcvmgMETU1OMUS2cQ7EKe2zNGS1IZnCskHzuBG7e2Zowj
-	 1fTxSOA9v625MMNkgcQxWLNFl5t6/QWyjTEe0q7btzvTJ7V5orC7we2UYWN2T38Yd5
-	 Kabaa965su4ebVWb03h4WHpzo48YTdmWFA5LUPUg=
-Date: Fri, 12 Apr 2024 10:29:47 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
-	imx@lists.linux.dev, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 4.19 000/175] 4.19.312-rc1 review
-Message-ID: <2024041240-drastic-crayon-e9d6@gregkh>
-References: <20240411095419.532012976@linuxfoundation.org>
- <CA+G9fYuwCn0D6jzrn0dBKsa+X0zUBUMiuRqcYvc-qkKToXK5dA@mail.gmail.com>
+	s=arc-20240116; t=1712910606; c=relaxed/simple;
+	bh=8KwRrw1FvglWtjh9OmpBSdmXr5luoBzt7GXnXaxrha4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=qrn9Zz6k64hfxfbFc/tOLsCdQc6MlGJzFOeV45EM7k18Sq/oF/WnzlmcsavBFdeK7ErQWIMNgYtfzWaOG8+G3PoKwJSDrdzslUM7JyWfQxdsVHPClMqBIiu3pDdpa8eua7SmQ0CkrduWbDWnnqdxU4TonZvMDIMC4hh4P4IgCSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=i3WAUav3; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 6D660120057;
+	Fri, 12 Apr 2024 11:29:58 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6D660120057
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1712910598;
+	bh=KkfixobzzUFH/w6sv2wN1/GNm+sz+aoWpuk7u8Lc5PI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=i3WAUav3rZNm0jkz/QgPAN/+xrYedE5Mq70+lpf3LFkZig4ITtkQOIy+Skz45JbPU
+	 B0SOjba+3OMXd4EFUkacpbGexzMdRsjRGvovXSQz+TfFwtDQXVTDYpcmMSCW0JDjR0
+	 CLmyuwdZKuHBX8tgknF8GyWuWYcKrrfgB4D1XJ+uq3AdlMhgGatjOu44bBSTFnce4r
+	 NY5JD14T31li3pUidfNL8g8e+PGhqg13zibe6BgeWWvSNGyuJ25Q8ewEddRHeJsoqZ
+	 bUygN/5tgB3IrjNWMPkSBXkNfHc5wcEs51AqIOol8kK8yIwPWKbFSZeigAl3Ci3IjT
+	 fzO59KuBEomSA==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Fri, 12 Apr 2024 11:29:58 +0300 (MSK)
+Received: from [192.168.1.143] (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 12 Apr 2024 11:29:57 +0300
+Message-ID: <f48ec4b6-d266-4108-bea8-baa741f2925f@salutedevices.com>
+Date: Fri, 12 Apr 2024 11:29:57 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYuwCn0D6jzrn0dBKsa+X0zUBUMiuRqcYvc-qkKToXK5dA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/5] pwm: meson: dt-bindings fixup
+To: Jerome Brunet <jbrunet@baylibre.com>, =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?=
+	<u.kleine-koenig@pengutronix.de>
+CC: Neil Armstrong <neil.armstrong@linaro.org>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Kevin Hilman <khilman@baylibre.com>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
+	<linux-pwm@vger.kernel.org>, JunYi Zhao <junyi.zhao@amlogic.com>
+References: <20240221151154.26452-1-jbrunet@baylibre.com>
+ <b6jyherdfnehu3xrg6ulkxlcfknfej6ali2om27d7rjmwncwxz@3wrtx6sv4xm7>
+ <1jsf18skat.fsf@starbuckisacylon.baylibre.com>
+ <1ja5lzovj1.fsf@starbuckisacylon.baylibre.com>
+Content-Language: en-US
+From: George Stark <gnstark@salutedevices.com>
+In-Reply-To: <1ja5lzovj1.fsf@starbuckisacylon.baylibre.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184683 [Apr 12 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 16 0.3.16 6e64c33514fcbd07e515710c86ba61de7f56194e, {Tracking_from_domain_doesnt_match_to}, smtp.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/12 02:59:00 #24750120
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Thu, Apr 11, 2024 at 07:50:57PM +0530, Naresh Kamboju wrote:
-> On Thu, 11 Apr 2024 at 15:30, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 4.19.312 release.
-> > There are 175 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.312-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> 
-> The arm imx_v6_v7_defconfig build failed with gcc-12 and clang on Linux
-> stable-rc linux-4.19.y.
-> 
-> Regressions:
->  - arm
->     * gcc-12-imx_v6_v7_defconfig - failed
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> Build log:
-> ----
-> drivers/gpu/drm/imx/parallel-display.c: In function
-> 'imx_pd_bridge_atomic_check':
-> drivers/gpu/drm/imx/parallel-display.c:222:23: error: implicit
-> declaration of function 'drm_bridge_get_next_bridge'
-> [-Werror=implicit-function-declaration]
->   222 |         next_bridge = drm_bridge_get_next_bridge(bridge);
->       |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> 
-> Links:
->  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19.311-176-gf0cf5f6110a7/testrun/23411280/suite/build/test/gcc-12-imx_v6_v7_defconfig/details/
->  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2ex1v6eevudbi33g4ozA7hJ4fvs/
+Hello Jerome, Uwe
 
-Offending commit now dropped, thanks!
+On 4/12/24 11:04, Jerome Brunet wrote:
+> 
+> On Sat 02 Mar 2024 at 16:50, Jerome Brunet <jbrunet@baylibre.com> wrote:
+> 
+>> On Sat 02 Mar 2024 at 11:04, Uwe Kleine-König <u.kleine-koenig@pengutronix.de> wrote:
+>>
+>>> [[PGP Signed Part:Undecided]]
+>>> Hello Jerome,
+>>>
+>>> On Wed, Feb 21, 2024 at 04:11:46PM +0100, Jerome Brunet wrote:
+>>>> Jerome Brunet (5):
+>>>>    dt-bindings: pwm: amlogic: fix s4 bindings
+>>>>    dt-bindings: pwm: amlogic: Add a new binding for meson8 pwm types
+>>>>    pwm: meson: generalize 4 inputs clock on meson8 pwm type
+>>>>    pwm: meson: don't carry internal clock elements around
+>>>>    pwm: meson: add generic compatible for meson8 to sm1
+>>>
+>>> I applied patches #1 to #3. This doesn't mean #4 and #5 are bad, just
+>>> that I need some more time for review.
+>>
+>> No worries. The change in those, especially #5, are pretty simple but
+>> the diff are indeed hard to read :/
+> 
+> Hello Uwe,
+> 
+> Introducing the s4 support depends on this series.
+> Is there any news ?
 
-greg k-h
+Actually we're waiting for the opportunity to introduce a1 support too.
+
+> 
+> Thanks
+> Regards
+> 
+>>
+>>>
+>>> Best regards
+>>> Uwe
+> 
+> 
+
+-- 
+Best regards
+George
 
