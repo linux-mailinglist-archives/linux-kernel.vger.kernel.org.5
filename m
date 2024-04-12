@@ -1,87 +1,150 @@
-Return-Path: <linux-kernel+bounces-142022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD8D08A264F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:16:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 051098A2654
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:17:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 799EE287442
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:16:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BA111F2269E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:17:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F171241E2;
-	Fri, 12 Apr 2024 06:16:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C772324A03;
+	Fri, 12 Apr 2024 06:17:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="QvuJDJQY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XQW/WOLi"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A6291B95B;
-	Fri, 12 Apr 2024 06:16:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6923234;
+	Fri, 12 Apr 2024 06:17:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712902572; cv=none; b=LHl4P8lMaaiz2j2yQxB8Ut97QxnOm7379D8/menHIKB+gPLTJNsHgUvnRiLCnyiHqo43lXblTDQiyhySQI50dqU9ZSU0wTv7lVF1fzcfqyaymXN/rz22ShcTaG0czDK07hLXCaB3G03GlCtNuxgGTC0xsLPc4eamuRFfbe2DY60=
+	t=1712902668; cv=none; b=NCfqqykDViRUuieM+Oh8sLFylMpcSbG3D1gVLqDqEri/cBi1YPqXAjIQtbKCW6iLBxEeP4w1kh19C/h6jMLZFH1p9dAcrrSYh2OWNgB2STff7+zoscPwNBKLbsmr8qhbkMaeJtYVJ7occ+4XNj8aEEviI8Gf6534LZ6lgp/LfN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712902572; c=relaxed/simple;
-	bh=9eQMxiafHll+DiH3/C8+rB0CEgq99HCS6lNIP6dzKx4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rD1nRgfDAJazd0ZnqUNUhoyLGbfEE4WFEq529GgTBz1S/PeQ6J6kqIutanoX4gUWWKazAF0s1tVc52tUgu2MIIA4cfi+rKgqClHPTJuh4UgTs0uPcSL9qCVlBgqSRLS1zdHc/rkL5lV0x45+m+sLYS0Pu/PJ73Q21DdLx9ixg8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=QvuJDJQY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C990C2BBFC;
-	Fri, 12 Apr 2024 06:16:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712902571;
-	bh=9eQMxiafHll+DiH3/C8+rB0CEgq99HCS6lNIP6dzKx4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QvuJDJQY8WGntppmdP4fgc8Qvksv1g81oIXeT5FLOXWg5hmN8h6pR7cGEKeqYxKIo
-	 lLP4mIs4WGguK6Huha4l0KITsm+NsODwMqAhgJ5HqPzVW5gbu6IgxfpBRjeqr61LzH
-	 gOaad1saorXuoVXrs3eGLb1Cwi5sMJSzXSTuAXN8=
-Date: Fri, 12 Apr 2024 08:16:08 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Elizabeth Figura <zfigura@codeweavers.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-api@vger.kernel.org, wine-devel@winehq.org,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	Wolfram Sang <wsa@kernel.org>,
-	Arkadiusz Hiler <ahiler@codeweavers.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Andy Lutomirski <luto@kernel.org>, linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v3 04/30] ntsync: Introduce NTSYNC_IOC_WAIT_ANY.
-Message-ID: <2024041254-that-laurel-30f9@gregkh>
-References: <20240329000621.148791-1-zfigura@codeweavers.com>
- <20240329000621.148791-5-zfigura@codeweavers.com>
- <2024041111-handsaw-scruffy-27f3@gregkh>
- <25522541.6Emhk5qWAg@camazotz>
+	s=arc-20240116; t=1712902668; c=relaxed/simple;
+	bh=fJad/M5v4UkmyQdRjVeibyM7pA9CQb94YlxCzIYU7Is=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TDmzXcjamuwUB/tRRVgm1PimRwWCduTH344T6y0iqtWdspVcKe13cRDxpYbgjf/pCoKDwjnzmk5eEUialBFA4uv17m+7lyxTT640S1+vD+baRbitje88RacUmKTHqGLbnvx+5MS7LG/pJyk+KjnszzA/QlAeaKCzM1YyFrpjuRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XQW/WOLi; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712902666; x=1744438666;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=fJad/M5v4UkmyQdRjVeibyM7pA9CQb94YlxCzIYU7Is=;
+  b=XQW/WOLiH+iuCAMxlyMvgM/EUdd7FKeaKRMmjakPe3zMdpVhmGnvYlFZ
+   3tm51Egl4JB6K//jsmHXvoO14hj12YagfI0VjAssmm6YYF3jRCc/Kn07L
+   75h7hMjdp++hBFqbtbvQup3RbRXlKoBLhup2JiYiLqJB6j/rPTlbqoGfR
+   DBTmsDq/WTGd3qrFD9zbtVvgy5A8SxDxtFauF2GOrsDO5ArjyuAppLFIQ
+   t+9UqvVGfeHbdV8r7wUr1AnQBNmXYRaBYELG/orUjX22W7/XSnhCbrRQM
+   iNi71ry2kWKw8r33/IbTwkY5nWZJjgOCaIaE09BaSfmVVZ0OpCrf1occA
+   w==;
+X-CSE-ConnectionGUID: bfogTIZBTnunq0Cr87dWRg==
+X-CSE-MsgGUID: nC+kqSMJToOQLV/PefyeLA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8477867"
+X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
+   d="scan'208";a="8477867"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 23:17:46 -0700
+X-CSE-ConnectionGUID: WoPCkQFySrilZjLdRbsGNQ==
+X-CSE-MsgGUID: MwvHk+UERuqY7ad9C/NZjw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
+   d="scan'208";a="21185053"
+Received: from xiongzha-mobl1.ccr.corp.intel.com (HELO [10.124.244.162]) ([10.124.244.162])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 23:17:41 -0700
+Message-ID: <3a0c2542-2aa7-464b-8a09-e09e570c88da@linux.intel.com>
+Date: Fri, 12 Apr 2024 14:17:38 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25522541.6Emhk5qWAg@camazotz>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 07/41] perf/x86: Add interface to reflect virtual
+ LVTPC_MASK bit onto HW
+Content-Language: en-US
+To: Sean Christopherson <seanjc@google.com>
+Cc: pbonzini@redhat.com, peterz@infradead.org, mizhang@google.com,
+ kan.liang@intel.com, zhenyuw@linux.intel.com, dapeng1.mi@linux.intel.com,
+ jmattson@google.com, kvm@vger.kernel.org, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org, zhiyuan.lv@intel.com, eranian@google.com,
+ irogers@google.com, samantha.alt@intel.com, like.xu.linux@gmail.com,
+ chao.gao@intel.com, Xiong Zhang <xiong.y.zhang@intel.com>
+References: <20240126085444.324918-1-xiong.y.zhang@linux.intel.com>
+ <20240126085444.324918-8-xiong.y.zhang@linux.intel.com>
+ <Zhg4Oph6yCpN0DeX@google.com>
+From: "Zhang, Xiong Y" <xiong.y.zhang@linux.intel.com>
+In-Reply-To: <Zhg4Oph6yCpN0DeX@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 11, 2024 at 07:33:07PM -0500, Elizabeth Figura wrote:
-> > Rolling your own lock is tricky, and needs review from the locking
-> > maintainers.  And probably some more documentation as to what is
-> > happening and why our normal types of locks can't be used here?
+
+On 4/12/2024 3:21 AM, Sean Christopherson wrote:
+> On Fri, Jan 26, 2024, Xiong Zhang wrote:
+>> From: Xiong Zhang <xiong.y.zhang@intel.com>
+>>
+>> When guest clear LVTPC_MASK bit in guest PMI handler at PMU passthrough
+>> mode, this bit should be reflected onto HW, otherwise HW couldn't generate
+>> PMI again during VM running until it is cleared.
 > 
-> Definitely. (Unfortunately this hasn't gotten attention from any locking
-> maintainer yet since your last call for review; not sure if there's
-> anything I can do there.)
+> This fixes a bug in the previous patch, i.e. this should not be a standalone
+> patch.
+> 
+>>
+>> This commit set HW LVTPC_MASK bit at PMU vecctor switching to KVM PMI
+>> vector.
+>>
+>> Signed-off-by: Xiong Zhang <xiong.y.zhang@intel.com>
+>> Signed-off-by: Mingwei Zhang <mizhang@google.com>
+>> ---
+>>  arch/x86/events/core.c            | 9 +++++++--
+>>  arch/x86/include/asm/perf_event.h | 2 +-
+>>  arch/x86/kvm/lapic.h              | 1 -
+>>  3 files changed, 8 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+>> index 3f87894d8c8e..ece042cfb470 100644
+>> --- a/arch/x86/events/core.c
+>> +++ b/arch/x86/events/core.c
+>> @@ -709,13 +709,18 @@ void perf_guest_switch_to_host_pmi_vector(void)
+>>  }
+>>  EXPORT_SYMBOL_GPL(perf_guest_switch_to_host_pmi_vector);
+>>  
+>> -void perf_guest_switch_to_kvm_pmi_vector(void)
+>> +void perf_guest_switch_to_kvm_pmi_vector(bool mask)
+>>  {
+>>  	lockdep_assert_irqs_disabled();
+>>  
+>> -	apic_write(APIC_LVTPC, APIC_DM_FIXED | KVM_VPMU_VECTOR);
+>> +	if (mask)
+>> +		apic_write(APIC_LVTPC, APIC_DM_FIXED | KVM_VPMU_VECTOR |
+>> +			   APIC_LVT_MASKED);
+>> +	else
+>> +		apic_write(APIC_LVTPC, APIC_DM_FIXED | KVM_VPMU_VECTOR);
+>>  }
+> 
+> Or more simply:
+> 
+> void perf_guest_enter(u32 guest_lvtpc)
+> {
+> 	...
+> 
+> 	apic_write(APIC_LVTPC, APIC_DM_FIXED | KVM_VPMU_VECTOR |
+> 			       (guest_lvtpc & APIC_LVT_MASKED));
+> }
+> 
+> and then on the KVM side:
+> 
+> 	perf_guest_enter(kvm_lapic_get_reg(vcpu->arch.apic, APIC_LVTPC));
+> 
+> because an in-kernel APIC should be a hard requirement for the mediated PMU.
+> this is simpler and we will follow this.
 
-You only seem to have cc:ed one of the "LOCKING PRIMITIVES" maintainers
-on this patchset, not all of them, which might be the reason why it has
-been ignored :(
-
-Perhaps change that for the next version of this patchset?
-
-thanks,
-
-greg k-h
+thanks
 
