@@ -1,83 +1,77 @@
-Return-Path: <linux-kernel+bounces-142320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5328A8A2A25
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FA858A2A26
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:03:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8427E1C20DE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:02:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F9211C209E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:03:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F33A56750;
-	Fri, 12 Apr 2024 08:49:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4153E56B7B;
+	Fri, 12 Apr 2024 08:49:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="CAZlzv/y"
-Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hob7zJgv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5DC85102F;
-	Fri, 12 Apr 2024 08:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 865475102F
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 08:49:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712911749; cv=none; b=rnB93+uvDuCyfPMeSC5wdkq90Wg5gS9nJGg5h5b08w+5XNSoFB5KQ1en3b2z0btG5OsguFmQKOl6RBeQO0d2OIJgYzGbufWwl47SRrqedrO+j+wHOnob4vz4tvMhzOW8JWPdci9ELv9X5UUhmCoPwEnTVJT29zZ4IhdcsqInc38=
+	t=1712911773; cv=none; b=MT/omeOO89TIGSMikU4U4LO38btaD7MNs5fJKET0sVqsTpw+m7s08/FV4pKN0pR8/Mf43IUJuW/9o+fnb6tLVfVDr6ov4N2LMtfmFL2LVf7UhPfhSi71zFfPGWYLGokef46Ls5dZY0GOft5YkLXHu0OhpjTSFy6aLjv5FOYxofE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712911749; c=relaxed/simple;
-	bh=25mpmnwFThR1+7u0P3ED28Wdq0tOKe4Y9k5vAsFmY1M=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nURZGwCLsxzuNg6ASR6ozjnYATgY3MC9ENeWDGIIrLmN7s9yLR1vmdGjhc68/HFWbwrShoKqcavLNk02Hd5QdCqgXH59TBuo2N8KVAHvYc3+sVOQGTEBspSsywvYbi0+mGC9HwaMQ9dQzmYUGS/+Rgt5c9Pg5iNBcnLB2LLjQwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=CAZlzv/y; arc=none smtp.client-ip=185.70.40.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1712911739; x=1713170939;
-	bh=aqmh+RULqViD5sjt54sQw5FZZ2wbvTZ6xtH4GZI/e2o=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=CAZlzv/y84Zku8f1Icgum9e76p3D25UG4jHpR0UmBosX39w24AQwF56iUMxfDZq4K
-	 YpTiql3FpxrMdCk0TmTCJ2kpsYMkvsDqcw60+vaPXppTLABUFW5Pq94n1FSxh3QUGZ
-	 LfDDKQEh+Cqi0ADX3SEN1gxpNpwnBqUdsvuICE/lvdMRxMpEplSVYaR4PQ/NsQJ7EF
-	 gWb/2/13rdtR2S7BetDGbSAZGRuquWSQSnQmrEmlx8//hvD/tFg3YveJ32AnXk/oZJ
-	 jOmoSoYhmLQMa+RRFyYXvEPgzFpXWu5xA2+8T0FGl8Ng7oNt16IzQnAzmGOYh6pKYM
-	 09nVvrFI4y+ow==
-Date: Fri, 12 Apr 2024 08:48:53 +0000
-To: Nell Shamrell-Harrington <nells@linux.microsoft.com>, ojeda@kernel.org, alex.gaynor@gmail.com, wedsonaf@gmail.com
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: boqun.feng@gmail.com, gary@garyguo.net, bjorn3_gh@protonmail.com, a.hindborg@samsung.com, aliceryhl@google.com, fujita.tomonori@gmail.com, tmgross@umich.edu, yakoyoku@gmail.com, kent.overstreet@gmail.com, matthew.brost@intel.com, kernel@valentinobst.de, netdev@vger.kernel.org, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rust: remove unneeded `kernel::prelude` imports from doctests
-Message-ID: <02b9d259-03d4-4245-8b35-ec4d11b9c323@proton.me>
-In-Reply-To: <20240411225331.274662-1-nells@linux.microsoft.com>
-References: <20240411225331.274662-1-nells@linux.microsoft.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1712911773; c=relaxed/simple;
+	bh=vckyitQ4Hj++2tnyft/GkS7Q8CWxgJuWmJ4pH7dgGNc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=DqpHNEycoo8wuGhQqQWPw3FZmyZ8m3NmJyNViNDQHROuGIeGMyCb3VhAi6UE7kDQP5J8RsZKAicNrP6C0sfGbzjCwkrkouynkjxHU2ktRexLzqN91ISbJdBzRMEQdp/ZCuDG/UJnj7dkeUfgx3n9kXUyoKl0I7ZrvyRxXscTEM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hob7zJgv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3921DC113CD;
+	Fri, 12 Apr 2024 08:49:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712911771;
+	bh=vckyitQ4Hj++2tnyft/GkS7Q8CWxgJuWmJ4pH7dgGNc=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=hob7zJgvmG/aT8tLR/PIGmH2u33sH4Lmw6vd0Xo+oPBiJEzlS7wxmLNrYYU7xNCjo
+	 d9/Z7oXt/N5bNbV/OHm/58nutoEqpoQQU734VHbOTb6rsOCRqBCGNwxtou9Ocj9dj+
+	 CK5+Rh/H3xzbua3zVlB7n8TicirgoE8WDa3aop+hQ0MWV6LkuNie4GS7uFLDFv52Fy
+	 gf0qEnagXQIYRt1yBkF5LPZJxhcSm4kjU8+XJEQLSjw+aT0HFAGu7hwLZqMQ8c+ket
+	 ocayXJj5RMPmq3lnohXrq9nM+U+GutpTrhbJwnZbfM1CXSnGgh2n+QQjRz6KccWlsM
+	 9Lj99653kw5gw==
+From: Lee Jones <lee@kernel.org>
+To: Matti Vaittinen <mazziesaccount@gmail.com>, 
+ Matti Vaittinen <mazziesaccount@gmail.com>
+Cc: Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <ZhjOj_4AUgC4Iwh_@drtxq0yyyyyyyyyyyyyby-3.rev.dnainternet.fi>
+References: <ZhjOj_4AUgC4Iwh_@drtxq0yyyyyyyyyyyyyby-3.rev.dnainternet.fi>
+Subject: Re: (subset) [PATCH] mfd: bd71828: Remove commented code lines
+Message-Id: <171291176994.2961423.7661997536361021464.b4-ty@kernel.org>
+Date: Fri, 12 Apr 2024 09:49:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.4
 
-On 12.04.24 00:53, Nell Shamrell-Harrington wrote:
-> Rust doctests implicitly include `kernel::prelude::*`.
->=20
-> Removes explicit `kernel::prelude` imports from doctests.
->=20
-> Suggested-by: Miguel Ojeda <ojeda@kernel.org>
-> Link: https://github.com/Rust-for-Linux/linux/issues/1064
-> Signed-off-by: Nell Shamrell-Harrington <nells@linux.microsoft.com>
-> ---
->  rust/kernel/init.rs      | 6 +++---
->  rust/kernel/net/phy.rs   | 1 -
->  rust/kernel/workqueue.rs | 3 ---
->  3 files changed, 3 insertions(+), 7 deletions(-)
+On Fri, 12 Apr 2024 09:02:55 +0300, Matti Vaittinen wrote:
+> Some commented out code was accidentally left in the header.
+> 
+> Clean up commented out macros.
+> 
+> 
 
-Reviewed-by: Benno Lossin <benno.lossin@proton.me>
+Applied, thanks!
 
---=20
-Cheers,
-Benno
+[1/1] mfd: bd71828: Remove commented code lines
+      commit: b13a46be702a9ab9e0ec646cfbb617dd17e1dd39
+
+--
+Lee Jones [李琼斯]
 
 
