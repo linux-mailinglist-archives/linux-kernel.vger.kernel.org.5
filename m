@@ -1,181 +1,112 @@
-Return-Path: <linux-kernel+bounces-142897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A9778A31C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:03:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A12FC8A31FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:16:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DCC61C21455
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:03:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28757B23F11
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:16:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AC35147C61;
-	Fri, 12 Apr 2024 15:03:24 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28255E22C;
-	Fri, 12 Apr 2024 15:03:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 072D914A4F4;
+	Fri, 12 Apr 2024 15:13:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="QAR9QOn+"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07231147C7D;
+	Fri, 12 Apr 2024 15:13:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712934203; cv=none; b=bE0KaBM8GHeJflbngjwJYphYtisbrzAGipzduKDmO0HsHYYxq1rUMfwutGlp3fBvlVzrnyvvDavATsps25/WN2w8u4F/+gypGLjM5q1gK2E87IdJX2SZeIDQEj4DRCm20LEpJ8bNLFX7GTm5G6fGri8Kcwo2tDy/gqZLZ6WK93A=
+	t=1712934808; cv=none; b=dQ24QW6rQ2phHXAS3v15FfKNg/TnbB9KP3y1l6YYDDbf+5JdSwn1/uIRMB1SNjMhiOj+Hx79l2tt4yETBq7La+t7DZfo8i5P3YjAaDjiFP2rMMsVuxaVQSWm0YXlGBuEH8gMxLL4I0mcTyAHL0nlaV9rg3zD/dhtpmFAu1Wq7T4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712934203; c=relaxed/simple;
-	bh=mDlAyg03Xf+YaOewa7opqqZcaya2AsaSnYev+L3GrAA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ec971CX36qcxjnRGrK23P1aWxcIH2LJCFcJKPNl3d084JeOwbWTZJ6MDPR3ldUY3w1vIMmhLAxzCX/c5vzKKnV67dvf9Cqg+er4cCD4N6DlEEw5y5h8YHNSxLu7Cf0N8Lug5+ztj2E7mFe7XkSIDkhoFPTxmbbR8JvU8LitedwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 385FF339;
-	Fri, 12 Apr 2024 08:03:47 -0700 (PDT)
-Received: from [192.168.20.58] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B84C83F64C;
-	Fri, 12 Apr 2024 08:03:15 -0700 (PDT)
-Message-ID: <2cde00c8-7878-45c0-8621-fca4e70c75e7@arm.com>
-Date: Fri, 12 Apr 2024 10:03:14 -0500
+	s=arc-20240116; t=1712934808; c=relaxed/simple;
+	bh=MXKmzl9vStH8Iy800kQYS6F4qCSKWpsJSxXMS6D7JPY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fELLoLc1f0cxpWBiVyGC6kFtJlS8Mx379oKxMjr66ryziaMnA/A1oeS2zi5uEuQDwWozqbDSBHBJBa/Y+o35GWXEDQKuZcJ9GGus5i50RpdCzxmCNIuJzppYgu8NRsozVPKaCCMQpjfQFu2Kp0W3R1qrG8xQimgiQq5Z2Kv20Ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=QAR9QOn+; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
+ id a781b9e1c20eb884; Fri, 12 Apr 2024 17:13:23 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 5FB6366CC48;
+	Fri, 12 Apr 2024 17:13:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1712934803;
+	bh=MXKmzl9vStH8Iy800kQYS6F4qCSKWpsJSxXMS6D7JPY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=QAR9QOn+tCb1qm3oL0tiqoYyPVTWX+ih1t/yvGpQBedj6lwlC+kLG+PT/pMJBZy/q
+	 qDKdS9oe4YcPRctSed63XHtxIOJ4fQfc49+G2Bw7m/TaMW4mjdn5sWZfP/l6nUr87q
+	 FIXPqyXXxo8rsX0Dly9TG88oujOJKmX4Gbue1PBVSUf5ZZj4TmozE7Sp+ZwR2gcPTD
+	 OAfeAyaQFkOunDoGVy1dNtvfdutMchN/AUMwXqswRXi6a+10SHsDDvtyLkhFI863XU
+	 VgN7ZX3rCgJNQOExbKh5Rwo2KRh9dFQy5f8U0WI+bQLtNz75JzIHBnHguJ1B/wztcJ
+	 N3lMpnKqvaT9g==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux ACPI <linux-acpi@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Bob Moore <robert.moore@intel.com>,
+ Saket Dumbre <saket.dumbre@intel.com>
+Subject: [PATCH v1 01/12] ACPICA: actbl1.h: Add EINJ CXL error types
+Date: Fri, 12 Apr 2024 17:04:16 +0200
+Message-ID: <2330760.ElGaqSPkdT@kreacher>
+In-Reply-To: <4920972.31r3eYUQgx@kreacher>
+References: <4920972.31r3eYUQgx@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [External] Re: [PATCH 1/2] ACPI: PPTT: Populate cacheinfo
- entirely with PPTT
-Content-Language: en-US
-To: yunhui cui <cuiyunhui@bytedance.com>
-Cc: rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
- aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org
-References: <20240407123829.36474-1-cuiyunhui@bytedance.com>
- <abd135fa-c432-4e37-9792-07a0e17e93d5@arm.com>
- <CAEEQ3w=+C2J0ZS227-1P-B+pe_NRp_3i4c4CxGssiKqbpXx_qw@mail.gmail.com>
-From: Jeremy Linton <jeremy.linton@arm.com>
-In-Reply-To: <CAEEQ3w=+C2J0ZS227-1P-B+pe_NRp_3i4c4CxGssiKqbpXx_qw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudeiuddgkeejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepledtieekkeekveeikeetgffgteeuteefjeevjeegudelvdduheeiuedvieehieevnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeegpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhhosggvrhhtrdhmohhorhgvsehinhhtvghlrdgtohhmpdhrtghpthhtohepshgrkhgvthdrughumhgsrhgv
+ sehinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4
 
-Hi,
+From: Ben Cheatham <Benjamin.Cheatham@amd.com>
 
+ACPICA commit c7171588a9f684afafc83c6c18ed0bab9274e5e6
 
-On 4/10/24 21:28, yunhui cui wrote:
-> Hi Jeremy,
-> 
-> On Wed, Apr 10, 2024 at 9:30 AM Jeremy Linton <jeremy.linton@arm.com> wrote:
->>
->> Hi,
->>
->>
->> First thanks for working on this.
->>
->> On 4/7/24 07:38, Yunhui Cui wrote:
->>> When the type and level information of this_leaf cannot be obtained
->>> from arch, cacheinfo is completely filled in with the content of PPTT.
->>
->> I started reviewing this, based on what I understood to be the need to
->> generate the topology entirely from the PPTT. But, it was raising more
->> questions than answers because the PPTT is far too flexable in its
->> ability to represent cache hierachies that arn't logically useful. For
->> example multiple I or D caches at the same level, or I or D caches
->> higher in the topology than unified ones.
->>
->> At least for arm64 (and I think others) there is an understood
->> simplification that there will be N levels of split I/D caches and M
->> unified levels. And from that, the number of cache leaves are computed
->> and allocated, and then we go in and largly skip PPTT cache nodes which
->> don't make sense in view of a generic topology like that. (see the
->> comment in cacheinfo.c:506)
->>
->> Both of those pieces of information are available in
->> acpi_get_cache_info(). The missing part is marking those N levels of I/D
->> cache as such.
->>
->> Looking at this code I don't really see all the error/allocation
->> logic/etc that assures the cache leaf indexing is allocated correctly
->> which worries me, although admidditly I could be missing something
->> important.
->>
->> In summary, did you consider just allocating matching I/D caches from
->> the number of split levels in acpi_get_cache_info() then removing or
->> invalidating the ones that don't have matching PPTT entries after
->> running cache_setup_acpi()? Thats a fairly trivial change AFAIK if the
->> decision is based on the lack of a cache_id or just changing the
->> this_leaf->type = CACHE_TYPE_UNIFIED assignment to the correct type and
->> assuring left over CACHE_TYPE_NOCACHE entries are removed. I think much
->> of the "significant work" is likely fixed for that to work. Just
->> tweaking detect_cache_level()/get_cache_type() to set
->> CACHE_TYPE_SEPERATE if the level is less than the acpi_get_cache_info()
->> split_level value probably also does the majority of what you need
->> outside of having unequal counts of I and D caches.
->>
->> There are probably other choices as well, thoughts?
->>
-> 
-> First, I think the current state of the ACPI PPTT specification meets
-> the requirements and is logically complete. Otherwise, the PPTT
-> specification needs to be updated, right?
+Add EINJ CXL error types added in ACPI v6.5.
 
-The specification is capable of representing all the actual physical 
-topologies I'm aware of, its also capable of representing quite a number 
-of topologies that don't make sense to (cant be) build and are largely 
-nonsense. There are some further details around replacement and 
-allocation which could be represented but were AFAIK not considered 
-worth the effort because it makes the representation far more complex.
+Link: https://github.com/acpica/acpica/commit/c7171588
+Signed-off-by: Ben Cheatham <Benjamin.Cheatham@amd.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ include/acpi/actbl1.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-So, except for minor clarifications I'm not aware of a need to update it.
-
-> Our discussion is best focused on the existing and usual case, even on
-> ARM64, which is as you say "N-level separated I/D cache, M-level
-> unified".
-
-I understood this was for RISC-V when I reviewed it, but i'm fairly 
-certain the general cache topologies of RISC-V machines don't vary in 
-their core concepts and layout much from the wide variety of 
-possibilities available elsewhere. So its roughly the same problem, you 
-will likely have one or two layers of split I/D caches and then a number 
-of unified private or shared caches above that.
+diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
+index a33375e055ad..1f58c5d86869 100644
+--- a/include/acpi/actbl1.h
++++ b/include/acpi/actbl1.h
+@@ -1096,6 +1096,12 @@ enum acpi_einj_command_status {
+ #define ACPI_EINJ_PLATFORM_CORRECTABLE      (1<<9)
+ #define ACPI_EINJ_PLATFORM_UNCORRECTABLE    (1<<10)
+ #define ACPI_EINJ_PLATFORM_FATAL            (1<<11)
++#define ACPI_EINJ_CXL_CACHE_CORRECTABLE     (1<<12)
++#define ACPI_EINJ_CXL_CACHE_UNCORRECTABLE   (1<<13)
++#define ACPI_EINJ_CXL_CACHE_FATAL           (1<<14)
++#define ACPI_EINJ_CXL_MEM_CORRECTABLE       (1<<15)
++#define ACPI_EINJ_CXL_MEM_UNCORRECTABLE     (1<<16)
++#define ACPI_EINJ_CXL_MEM_FATAL             (1<<17)
+ #define ACPI_EINJ_VENDOR_DEFINED            (1<<31)
+ 
+ /*******************************************************************************
+-- 
+2.35.3
 
 
-> 
-> And then, the problem we have now is that the RISC-V architecture does
-> not have a set of registers to describe the cache level and type like
-> ARM64 does, so we need to fully trust the contents of the PPTT table.
-> Please check the patch:
-> https://patchwork.kernel.org/project/linux-riscv/patch/20240407123829.36474-2-cuiyunhui@bytedance.com/
 
-I don't think "fully trust" is something you really want, or is helpful 
-as I suggested above.
-
-I suspect all that is needed is the construction of the missing I/D 
-layers, as the existing code will create the Unified layers above as it 
-does today. On Arm64 the unified system level caches aren't usually 
-described by the core cache registers either, which is why there is that 
-existing bit of code to change unknown caches to unified. But it also 
-turns out the pptt walking code is capable of providing the information 
-to create the I/D layers as well, if they are matched (ex there exists 
-an I cache for every D cache at a certain level).
-
-So, more clarity about the kinds of topologies you expect is helpful to 
-understand where the current code is failing.
-
-AKA, As I mentioned I'm fairly certain that its possible to construct 
-the entire cache topology from the PPTT by changing get_cache_type() to 
-return "CACHE_TYPE_SEPERATE" when the level is less than the value 
-returned as "split_level" from acpi_get_cache_info(). That tends to 
-ignore some edge cases, but I might put them in the "don't to that" bucket.
-
-
-> .
-> 
-> Judging from this requirement, can you help review this patch? Thanks.
-
-If so, can you describe the edge case you care about that isn't solved 
-with a change like that?
-
-> 
-> 
-> Thanks,
-> Yunhui
 
 
