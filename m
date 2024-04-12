@@ -1,231 +1,237 @@
-Return-Path: <linux-kernel+bounces-143380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D24518A37D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:26:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53A2D8A37DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:28:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D1871F2338A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:26:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08E6D2883BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:28:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F14415217D;
-	Fri, 12 Apr 2024 21:26:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D80515217E;
+	Fri, 12 Apr 2024 21:27:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="dl3FSX5P"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VFOO2uHj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84C6A610B
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 21:26:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B855610B;
+	Fri, 12 Apr 2024 21:27:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712957193; cv=none; b=LmGhcyasW7sL7XjXSiJSXU0jlJwO7BtMtLOh2kS0jKcD6WFSvZCQPa6cd2ZOJWrlnf07OSuAMwaGwf58Ed7QUU0bcyz2PGSgfim+Rxr6eQFsvDbJ9+bohHCzCVFKlmaapmMplCIdNPfAANtRAp2HUBP4GJyOmtE0huLBFhusSj0=
+	t=1712957274; cv=none; b=Mj0qbA7a5T4FV6i+i2ax69dGFcFAkgGX+XKdAD3aDwMQ9SAHfPK7gO0HTJiopeqbm/eI5F5z7oP+K9/QN0smMR4ulicOx/AQw7a+HSBwmeqBYI9UwTjrm6kRs4sCyU9Q0uNbgq8RhqZ9AdhXjlEOam5UWO3eSEJeJtClZxZ7TkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712957193; c=relaxed/simple;
-	bh=TnychJnfZ1ARNa8XlNX4o7oKmSbkl+T/lHYLu9auJRY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EZJsvtiDuCghdNtJDvSbE5UKybzghhiJMSB2xtN368Ue1Bbzn2NEwkVRb6idLsdcXUOGqxI2tRK4YyN14gSN/bFuWclKswIh84J6osfdkElAbdI5zX2RP6HI4dzh+SxV7+UWm1vQZvXuN7SsO62QmjAXbmJKEP2QQ0SGYrWjrcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=dl3FSX5P; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d87450361fso15659701fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:26:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712957189; x=1713561989; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q2/FnCSkb0G/WX1xU5FT6ophn/HhrSA5iG0uPSjN8aw=;
-        b=dl3FSX5PFE7nKwrsizdFbp10QHI3DlMmngJLGM3HfsAtjWyj8reBVRplzP6cpnQFD5
-         /Ue+dzvXbytwhixlORFE+5QWZi6k9T89JPFIhKzdfkg2ALt4rd6j+zGYPaoau0/jtNeR
-         Q17yFnVk0AbyTSbHY2Ym0G0r4gmRm5xC9fsFXSJxePD158SnzsLlW1fCSoBk5ImQMTZZ
-         abntmnicTLhLnHpCsYICq8I6elBKtTRtLz0v4eBlsIaFwXnxCiUVTWQ5p7J1IWQ66tQ1
-         k9/SpdgFm5fqkb9fJSf5eqxOmhL84rnAe6aMBlSb1QcE/bgh5m/gaG1lI8qUQDkJVPMG
-         U+EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712957189; x=1713561989;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q2/FnCSkb0G/WX1xU5FT6ophn/HhrSA5iG0uPSjN8aw=;
-        b=IJCbo8D1ugL+3L15avFczgrMsXAz2v7kswzUdcgcMYIAQxrSFMruNg9CrT5TZU5Dy9
-         z5zdDQF0x55firf5i7oM1EEWHExUj3rSRnpdW5v4IJqp1fRBbHDTb/uHzeIngpdGz4r8
-         3PHFcSmFavtnvZzlQ7xtaKZSG4iQaqAE1gYWOsaIOanalSxRgZh4ErlWdzRdxbRS249F
-         Cf7MrVjglL3ohc7+nI9WQbvsww/4JRfPvK1BsPLBaa1MwcLl+N3NwuHJsgKVz1QH77a2
-         WotbHk/0VfY7oqd55CpF17N4s13vekGVFAQ1l/lhduupE/Ex6NFibaMtdLqrKyIlAXX1
-         HJvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVNp4/oA4Sdj08zceCYiq/AuA1o+5neqwxnmPiGhECriHTeuakGCqJ96PZ5Ud5lsVFhH3xENW/3v32KK9s75oH2nH8dih9JsMSo7+C4
-X-Gm-Message-State: AOJu0YxcOCdyy5ejN5awNoKOVzuXbMMVGjlbUTKgkZwp20XzUl2zJVic
-	rfF/LyIbAXeSBLuQVJxVhhE3tNRnEdSUXlJ8UFlAEQdFmISkvfwwcx4U4l2NeHs+E/NiI2v6T0a
-	KbbiIlbkcngSuwpF4rPqP24vXK9QpJEVlfJIMkA==
-X-Google-Smtp-Source: AGHT+IGTDBXy40PBbc0Sok6v9xzaHIivLOEmGwOHQlmv8Pl5J+Ds/tVLRXSLxDMTmkrMsVJ63VA+1c5LECt9e27CPQY=
-X-Received: by 2002:a05:651c:1502:b0:2d8:e978:e38d with SMTP id
- e2-20020a05651c150200b002d8e978e38dmr3258335ljf.10.1712957188591; Fri, 12 Apr
- 2024 14:26:28 -0700 (PDT)
+	s=arc-20240116; t=1712957274; c=relaxed/simple;
+	bh=SZAhNfEeVcww/X2691cfrbsEdjA/UK3hcGjsVOjFIt4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eHCGmQKcJddWIdoVx43/RZOOdf3nuTA2xFV8Y9XAzUuJExqYrE6+bsjUR1WCm2xM784xHB2yZzD1tUbQ9ipDoRydQnVZJGFx/b4+AwZvOXfYZwcpXb9hc7AUQz2wZn/MhvZDvdIcdAOa92O+OPm9sIZTPoJxDzi4KqtdASk2kes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VFOO2uHj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61E3BC113CC;
+	Fri, 12 Apr 2024 21:27:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712957273;
+	bh=SZAhNfEeVcww/X2691cfrbsEdjA/UK3hcGjsVOjFIt4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VFOO2uHjBnbHrZBz78J7P32btxZfs0ikA8AuxaqnJqBW8OSR/DxBtnr8rpuok4JFa
+	 zJ/KoGf0HhdDj1ljqUwky8wdpMZHR+lq2MGJdFW2pOmmKOlw4j1r0Nd7yzC/uL8/PF
+	 dQhHuIMtgz3CWParOxHuzvSSfNzLaFru1u8twdA4MMN6pbDU/fVNKyz9Lt6INT8SQz
+	 ausyPHgsii9hWFsky8F+bF2xhgIAUu5S4f4SxYZzgNA9mk48NapQ9ZdFY9k6E424Cw
+	 lXtKecgYu39j/WT9O70i7gS7eSmFGw09nK/GSWSEdt71HkjYgo+dtOllSsOUWRY3tN
+	 b12lpFLF86zow==
+Date: Fri, 12 Apr 2024 22:27:47 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Charlie Jenkins <charlie@rivosinc.com>
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 02/19] riscv: cpufeature: Fix thead vector hwcap removal
+Message-ID: <20240412-chemist-haunt-0a30a8f280ca@spud>
+References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
+ <20240411-dev-charlie-support_thead_vector_6_9-v1-2-4af9815ec746@rivosinc.com>
+ <20240412-tuesday-resident-d9d07e75463c@wendy>
+ <ZhlrdGXfSushUNTp@ghost>
+ <20240412-eastcoast-disparity-9c9e7d178df5@spud>
+ <ZhmeLoPS+tsfqv1T@ghost>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240412032102.136071-1-kimseer.paller@analog.com> <20240412032102.136071-3-kimseer.paller@analog.com>
-In-Reply-To: <20240412032102.136071-3-kimseer.paller@analog.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Fri, 12 Apr 2024 16:26:17 -0500
-Message-ID: <CAMknhBE9XihK27pRhyPwTNM3VQX=osYdDyCmjNspz1aqe_NVTw@mail.gmail.com>
-Subject: Re: [PATCH 2/4] iio: ABI: add ABI file for the LTC2664 DAC
-To: Kim Seer Paller <kimseer.paller@analog.com>
-Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>, 
-	Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
-	Michael Hennerich <michael.hennerich@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ikEUv4YkPVdtqseT"
+Content-Disposition: inline
+In-Reply-To: <ZhmeLoPS+tsfqv1T@ghost>
+
+
+--ikEUv4YkPVdtqseT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 11, 2024 at 10:21=E2=80=AFPM Kim Seer Paller
-<kimseer.paller@analog.com> wrote:
->
-> Define the sysfs interface for toggle capable channels.
->
-> Toggle enabled channels will have:
->
->  * out_voltageY_toggle_en
+On Fri, Apr 12, 2024 at 01:48:46PM -0700, Charlie Jenkins wrote:
+> On Fri, Apr 12, 2024 at 07:47:48PM +0100, Conor Dooley wrote:
+> > On Fri, Apr 12, 2024 at 10:12:20AM -0700, Charlie Jenkins wrote:
+> > > On Fri, Apr 12, 2024 at 11:25:47AM +0100, Conor Dooley wrote:
+> > > > On Thu, Apr 11, 2024 at 09:11:08PM -0700, Charlie Jenkins wrote:
+> > > > > The riscv_cpuinfo struct that contains mvendorid and marchid is n=
+ot
+> > > > > populated until all harts are booted which happens after the DT p=
+arsing.
+> > > > > Use the vendorid/archid values from the DT if available or assume=
+ all
+> > > > > harts have the same values as the boot hart as a fallback.
+> > > > >=20
+> > > > > Fixes: d82f32202e0d ("RISC-V: Ignore V from the riscv,isa DT prop=
+erty on older T-Head CPUs")
+> > > >=20
+> > > > If this is our only use case for getting the mvendorid/marchid stuff
+> > > > from dt, then I don't think we should add it. None of the devicetre=
+es
+> > > > that the commit you're fixing here addresses will have these proper=
+ties
+> > > > and if they did have them, they'd then also be new enough to hopefu=
+lly
+> > > > not have "v" either - the issue is they're using whatever crap the
+> > > > vendor shipped.
+> > >=20
+> > > Yes, the DT those shipped with will not have the property in the DT so
+> > > will fall back on the boot hart. The addition of the DT properties al=
+low
+> > > future heterogenous systems to be able to function.
+> >=20
+> > I think you've kinda missed the point about what the original code was
+> > actually doing here. Really the kernel should not be doing validation of
+> > the devicetree at all, but I was trying to avoid people shooting
+> > themselves in the foot by doing something simple that would work for
+> > their (incorrect) vendor dtbs.
+> > Future heterogenous systems should be using riscv,isa-extensions, which
+> > is totally unaffected by this codepath (and setting actual values for
+> > mimpid/marchid too ideally!).
+> >=20
+>=20
+> I am on the same page with you about that.=20
+>=20
+> > > > If we're gonna get the information from DT, we already have somethi=
+ng
+> > > > that we can look at to perform the disable as the cpu compatibles g=
+ive
+> > > > us enough information to make the decision.
+> > > >=20
+> > > > I also think that we could just cache the boot CPU's marchid/mvendo=
+rid,
+> > > > since we already have to look at it in riscv_fill_cpu_mfr_info(), a=
+void
+> > > > repeating these ecalls on all systems.
+> > >=20
+> > > Yeah that is a minor optimization that can I can apply.
+> > >=20
+> > > >=20
+> > > > Perhaps for now we could just look at the boot CPU alone? To my
+> > > > knowledge the systems that this targets all have homogeneous
+> > > > marchid/mvendorid values of 0x0.
+> > >=20
+> > > They have an mvendorid of 0x5b7.
+> >=20
+> > That was a braino, clearly I should have typed "mimpid".
+> >=20
+> > > This is already falling back on the boot CPU, but that is not a solut=
+ion
+> > > that scales. Even though all systems currently have homogenous
+> > > marchid/mvendorid I am hesitant to assert that all systems are
+> > > homogenous without providing an option to override this.
+> >=20
+> > There are already is an option. Use the non-deprecated property in your
+> > new system for describing what extesions you support. We don't need to
+> > add any more properties (for now at least).
+>=20
+> The issue is that it is not possible to know which vendor extensions are
+> associated with a vendor. That requires a global namespace where each
+> extension can be looked up in a table. I have opted to have a
+> vendor-specific namespace so that vendors don't have to worry about
+> stepping on other vendor's toes (or the other way around). In order to
+> support that, the vendorid of the hart needs to be known prior.
 
-It looks like there are 3 toggle modes.
+Nah, I think you're mixing up something like hwprobe and having
+namespaces there with needing namespacing on the devicetree probing side
+too. You don't need any vendor namespacing, it's perfectly fine (IMO)
+for a vendor to implement someone else's extension and I think we should
+allow probing any vendors extension on any CPU.
 
-Two involve the notion of "enabled" outputs that I assume this attribute is=
- for:
+> I know a rebuttal here is that this is taking away from the point of
+> the original patch. I can split this patch up if so. The goal here is to
+> allow vendor extensions to play nicely with the rest of the system.
+> There are two uses of the mvendorid DT value, this fix, and the patch
+> that adds vendor extension support. I felt that it was applicable to
+> wrap the mvendorid DT value into this patch, but if you would prefer
+> that to live separate of this fix then that is fine too.
+>=20
+> - Charlie
+>=20
+> >=20
+> > > The overhead is
+> > > looking for a field in the DT which does not seem to be impactful eno=
+ugh
+> > > to prevent the addition of this option.
+> > >=20
+> > > >=20
+> > > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > > >=20
+> > > > > @@ -514,12 +521,23 @@ static void __init riscv_fill_hwcap_from_is=
+a_string(unsigned long *isa2hwcap)
+> > > > >  				pr_warn("Unable to find \"riscv,isa\" devicetree entry\n");
+> > > > >  				continue;
+> > > > >  			}
+> > > > > +			if (of_property_read_u64(node, "riscv,vendorid", &this_vendor=
+id) < 0) {
+> > > > > +				pr_warn("Unable to find \"riscv,vendorid\" devicetree entry,=
+ using boot hart mvendorid instead\n");
+> > > >=20
+> > > > This should 100% not be a warning, it's not a required property in =
+the
+> > > > binding.
+> > >=20
+> > > Yes definitely, thank you.
+> > >=20
+> > > - Charlie
+> > >=20
+> > > >=20
+> > > > Cheers,
+> > > > Conor.
+> > > >=20
+> > > > > +				this_vendorid =3D boot_vendorid;
+> > > > > +			}
+> > > >=20
+> > >=20
+> > >=20
+>=20
+>=20
 
-1. Toggling all enabled pins at the same time using a software trigger
-(global toggle bit)
-2. Toggling all enabled pins at the same time using a hardware trigger
-(TGP pin) and toggling pins
+--ikEUv4YkPVdtqseT
+Content-Type: application/pgp-signature; name="signature.asc"
 
-The third mode though looks like it uses the same toggle select
-register for selecting A or B for each channel instead of enabling or
-disabling each channel.
+-----BEGIN PGP SIGNATURE-----
 
-3. Toggling all pins to A or B based on the toggle select register. No
-notion of enabled pins here.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhmnUwAKCRB4tDGHoIJi
+0jigAQDfKVOtXBGsrZEzFFSHux1+TlSlG6+CUNstZFQgF4UZaAD9HgNuQ1aA632s
+vNn9o7HLtTwwww5zo9cL2A5nvA4gWQY=
+=tX/M
+-----END PGP SIGNATURE-----
 
-I haven't looked at the driver implementation, but it sounds like
-out_voltageY_toggle_en and out_voltageY_symbol would be writing to the
-same register in conflicting ways. So maybe we need yet another custom
-attribute to select the currently active toggle mode?
-
-In any case, it would be helpful if the documentation below explained
-a bit better the intention and conditions required to use each
-attribute (or add a .rst documentation file for these chips to explain
-how to use it in more detail since this is rather complex feature).
-
->  * out_voltageY_raw0
->  * out_voltageY_raw1
-
-I guess there is no enum iio_modifier that fits this. It seems like we
-could still have out_voltageY_raw for register A so that users that
-don't need to do any toggling can use standard ABI. And maybe
-out_voltageY_raw_toggled for register B (question for Jonathan)?
-
-Or just have 8 channels instead of 4 where even channels are register
-A and odd channels are register B?
-
->  * out_voltageY_symbol
-
-"symbol" is a confusing name. It sounds like this just supports
-toggling one channel individually so _toggle_select would make more
-sense to me. Are there plans for supporting toggling multiple channels
-at the same time using a software trigger as well?
-
->
-> The common interface present in all channels is:
->
->  * out_voltageY_raw (not present in toggle enabled channels)
-
-As mentioned above, I don't think we need to have to make a
-distinction between toggle enabled channels and not enabled channels.
-
->  * out_voltageY_raw_available
->  * out_voltageY_powerdown
-
-Is _powerdown a standard attribute? I don't see it documented
-anywhere. Perhaps you meant _en (via IIO_CHAN_INFO_ENABLE)?
-
-
->  * out_voltageY_scale
->  * out_voltageY_offset
->
-> Co-developed-by: Michael Hennerich <michael.hennerich@analog.com>
-> Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
-> Signed-off-by: Kim Seer Paller <kimseer.paller@analog.com>
-> ---
->  .../ABI/testing/sysfs-bus-iio-dac-ltc2664     | 30 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  2 files changed, 31 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-dac-ltc2664
->
-> diff --git a/Documentation/ABI/testing/sysfs-bus-iio-dac-ltc2664 b/Docume=
-ntation/ABI/testing/sysfs-bus-iio-dac-ltc2664
-> new file mode 100644
-> index 000000000..4b656b7af
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-bus-iio-dac-ltc2664
-> @@ -0,0 +1,30 @@
-> +What:          /sys/bus/iio/devices/iio:deviceX/out_voltageY_toggle_en
-> +KernelVersion: 5.18
-> +Contact:       linux-iio@vger.kernel.org
-> +Description:
-> +               Toggle enable. Write 1 to enable toggle or 0 to disable i=
-t. This is
-> +               useful when one wants to change the DAC output codes. The=
- way it should
-> +               be done is:
-> +
-> +               - disable toggle operation;
-> +               - change out_voltageY_raw0 and out_voltageY_raw1;
-> +               - enable toggle operation.
-> +
-> +What:          /sys/bus/iio/devices/iio:deviceX/out_voltageY_raw0
-> +What:          /sys/bus/iio/devices/iio:deviceX/out_voltageY_raw1
-> +KernelVersion: 5.18
-> +Contact:       linux-iio@vger.kernel.org
-> +Description:
-> +               It has the same meaning as out_voltageY_raw. This attribu=
-te is
-> +               specific to toggle enabled channels and refers to the DAC=
- output
-> +               code in INPUT_A (_raw0) and INPUT_B (_raw1). The same sca=
-le and offset
-> +               as in out_voltageY_raw applies.
-> +
-> +What:          /sys/bus/iio/devices/iio:deviceX/out_voltageY_symbol
-> +KernelVersion: 5.18
-> +Contact:       linux-iio@vger.kernel.org
-> +Description:
-> +               Performs a SW toggle. This attribute is specific to toggl=
-e
-> +               enabled channels and allows to toggle between out_voltage=
-Y_raw0
-> +               and out_voltageY_raw1 through software. Writing 0 will se=
-lect
-> +               out_voltageY_raw0 while 1 selects out_voltageY_raw1.
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index bd8645f6e..9ed00b364 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -12842,6 +12842,7 @@ M:      Kim Seer Paller <kimseer.paller@analog.co=
-m>
->  L:     linux-iio@vger.kernel.org
->  S:     Supported
->  W:     https://ez.analog.com/linux-software-drivers
-> +F:     Documentation/ABI/testing/sysfs-bus-iio-dac-ltc2664
->  F:     Documentation/devicetree/bindings/iio/dac/adi,ltc2664.yaml
->
->  LTC2688 IIO DAC DRIVER
-> --
-> 2.34.1
->
+--ikEUv4YkPVdtqseT--
 
