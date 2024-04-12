@@ -1,98 +1,77 @@
-Return-Path: <linux-kernel+bounces-141822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23D728A23E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C6BEB8A23EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:51:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A680EB2370F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:51:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53466B23B4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:51:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B11717BAB;
-	Fri, 12 Apr 2024 02:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F8C134B6;
+	Fri, 12 Apr 2024 02:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aR8A+kEm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DR1JybLc"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FED7134BD;
-	Fri, 12 Apr 2024 02:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8660310A24;
+	Fri, 12 Apr 2024 02:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712890231; cv=none; b=eqe9CjOLpsCBZBd4cqqbYF718mMCBrQWswqBq6QCjT0cutotJqL1DK3/svpS4VdBEv9Fs7Ak5ElbcSEYTmYcQdvejd1PCqi0vMvnR0y0pHqzRrUx+LUnHQbMnxZEphPJzTlRTyZ1Yhntd6q0f5eSdNOUx6jAokN0E1X8T/U3RKc=
+	t=1712890291; cv=none; b=cTdtLjies0HM1o7W065hzqwRNAroa9E8ighN8tL6rMw9r77tfdF4eON+fOLaWO1JyXdvpfm8ST9ccZwWjsr0EBVoB84pugvzT8npX/vwKFLf7eqjZ+BeWhYmK7GYcZ2h9s/D3lqXoHABJvNrxOQFfAJnR0uE4VmS3geQs2tIdyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712890231; c=relaxed/simple;
-	bh=cdC80TaevqpFC4O1h6P6DJKVzJoTl6Gm4dF/Z8JWHYs=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=mpQg3WS8faj8TLRD2pQ980uTORimPT6/L0i5PSUWxkgOHFlO0905k7yvNDO7TXrZQoTLzjbdzK22sbN8i4HKwRjNid7dKunD4K79xmmugasbLmQFvc91GPZAAFe+CxJjgWbPsKocbxbdXtjeYp3J6W+6QAikz3glgxHkZGe32gI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aR8A+kEm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E7F3FC2BD10;
-	Fri, 12 Apr 2024 02:50:30 +0000 (UTC)
+	s=arc-20240116; t=1712890291; c=relaxed/simple;
+	bh=JLSsFNuTS/XXGmjbgOU7MixG+Yt1/H2zmieyO7GGxMM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Vba3NiOkNuzxsOrp1MRPPtGHfNeHdfEcjsQctn/gRV+jjcFdj/4Xme3jf3de7VC43TnHvLnVDGalG+CNU9u30M/2S4QPoDBppFOQKuRDC1gPwmwLsENoA3mdmmSWoFrtugc0jaiRlWXv8n7ALFslfDYSbJXtalVm8ZLuLNkOTVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DR1JybLc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CC69C072AA;
+	Fri, 12 Apr 2024 02:51:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712890231;
-	bh=cdC80TaevqpFC4O1h6P6DJKVzJoTl6Gm4dF/Z8JWHYs=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=aR8A+kEm8u+wZpjAKGx7xspEABPb5lO7m0Y6peYlaE7CFDxM/eKZUsXR7nIDPePn+
-	 jmScGbu2VfOxUA50YkrF4ct680lZLdTUZLiw9qMernKxpIByuXJu8J0ZVhlDDFVisu
-	 BxPfVxSIOR2u4NM6X8TCzTmn4aYBpUOMTCtJ3bKaEiaq0ZmA1Sdsbkm8HcVkcmO0kl
-	 8kh7FFaDv/30qfWdf/Hdb90THS75q1pyYglBXa7tzmMBlxzKw1CrojGaJ5m3IzpFpV
-	 bIAXaA1LN3vyVYsEL+8956e3N3wi7kyY+qG2MING0+l2tUxFk2XMIbOiYtw+UEgldD
-	 LJDXQpuKSHTng==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D39FBC433E9;
-	Fri, 12 Apr 2024 02:50:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1712890291;
+	bh=JLSsFNuTS/XXGmjbgOU7MixG+Yt1/H2zmieyO7GGxMM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=DR1JybLcJI6E78CFpFQm2BDyx0OIXKm6fZPwjr/Nyu6Md+FqcBBemwL02ZZXqNM8+
+	 vgpDDW0pNaRRuMvuACSYt8A6NM+INoBUuZ3drApLMfJIY95lUdTzao7+ILFfmlA8IF
+	 dcLhGhwlkl4V9Cq6Cbya2+JdL0DaUQw7aL64oo24elKNDw43JvJC5a5fYz01EQpzut
+	 uouWdN0wfAYtRo8rUPxa8J420UVZFiaMeVn2hBZQ2HIybPqRsOH1WrvUhosiZ7oiXc
+	 cS69wqM+hR8W18Sm+FyH4irMAw+0I7ztNyXe/oC/ljPD45+/68E6LERrwJtyWnTiky
+	 gssoMX5k6Y5cw==
+Date: Thu, 11 Apr 2024 19:51:29 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+Cc: davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+ linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org, Jarkko Palviainen
+ <jarkko.palviainen@gmail.com>
+Subject: Re: [PATCH] net: usb: ax88179_178a: avoid writing the mac address
+ before first reading
+Message-ID: <20240411195129.69ff2bac@kernel.org>
+In-Reply-To: <20240410095603.502566-1-jtornosm@redhat.com>
+References: <20240410095603.502566-1-jtornosm@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v6 0/2] Minor cleanups to skb frag ref/unref
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171289023086.15367.8747822658877342896.git-patchwork-notify@kernel.org>
-Date: Fri, 12 Apr 2024 02:50:30 +0000
-References: <20240410190505.1225848-1-almasrymina@google.com>
-In-Reply-To: <20240410190505.1225848-1-almasrymina@google.com>
-To: Mina Almasry <almasrymina@google.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-rdma@vger.kernel.org, ayush.sawal@chelsio.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- mlindner@marvell.com, stephen@networkplumber.org, tariqt@nvidia.com,
- wei.liu@kernel.org, paul@xen.org, steffen.klassert@secunet.com,
- herbert@gondor.apana.org.au, dsahern@kernel.org, borisp@nvidia.com,
- john.fastabend@gmail.com, dtatulea@nvidia.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
+On Wed, 10 Apr 2024 11:55:49 +0200 Jose Ignacio Tornos Martinez wrote:
+> After the commit d2689b6a86b9 ("net: usb: ax88179_178a: avoid two
+> consecutive device resets"), reset operation, in which the default mac
+> address from the device is read, is not executed from bind operation and
+> the random address, that is pregenerated just in case, is direclty written
+> the first time in the device, so the default one from the device is not
+> even read. This writing is not dangerous because is volatile and the
+> default mac address is not missed.
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+AFAICT the reset is synchronous to resume, right?
 
-On Wed, 10 Apr 2024 12:05:00 -0700 you wrote:
-> v6:
-> - Rebased on top of net-next; dropped the merged patches.
-> - Move skb ref helpers to a new header file. (Jakub).
-> 
-> v5:
-> - Applied feedback from Eric to inline napi_pp_get_page().
-> - Applied Reviewed-By's.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v6,1/2] net: move skb ref helpers to new header
-    https://git.kernel.org/netdev/net-next/c/f6d827b180bd
-  - [net-next,v6,2/2] net: mirror skb frag ref/unref helpers
-    https://git.kernel.org/netdev/net-next/c/a580ea994fd3
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+I think you can use netif_device_detach() and netif_device_attach()
+to prevent getting called while suspended.
 
