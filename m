@@ -1,109 +1,173 @@
-Return-Path: <linux-kernel+bounces-143428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C04AD8A38DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:21:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A66DD8A38E2
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:24:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA1441C22804
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:21:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0E7D1C21D64
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E277B152516;
-	Fri, 12 Apr 2024 23:21:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7236C152530;
+	Fri, 12 Apr 2024 23:23:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="jzG2Zj/e"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tW6ap+zQ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="C6bVqxHC"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F90927442
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 23:21:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18BB9225D7;
+	Fri, 12 Apr 2024 23:23:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712964073; cv=none; b=orFNtd6wVt5uYSUH8TAOZHIvwo0v6q2nrr+gpbG+dMJsXJZNqunzYYY5L5+Qg3pHR9XSNqrNi5jK8PCJuRks5nM0WCkaB2bV2x8vXyqIKdcfKgLZNLMOsvlIHV3+rj8myzr5cwZI/6BSWz6TwY38XDMve2NdVZCAo8KuDXMDiAQ=
+	t=1712964233; cv=none; b=HEuBLnCz5ho+C6Nr9p6HLdP9LFqDxEOyf+WomaDzzGinXeQ0G1RC+HTu6cDrLjC5GU2WXebPr/b7GtrIQN/zzBRUS1FuujgVM46aoNItevlgPg5+esm3EH8F9MqffPNUiD1CwEfn03wrwn+UC3Bf+cHlZBBMIAzd8Xzm2ST/w/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712964073; c=relaxed/simple;
-	bh=2CrUSMy2ZQbQHtwUPbTAnJJXXmcemmqf6qltoaC24+0=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Yvy0RnPFpLjErR+GXG0Nl1BzpMhEvAduZkthXFQ87zL+w3qYNwwGT214+Bm4Z5XsA6egnd9z6P61urWmyFqaJRPe01A5RuShu2kkqYceQfADyQp6iDPSGtUjRPY3wn/g+JZxWnhUafBvApIZYKh4CrWZUV6PySXjdt0SfrQ0cOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=jzG2Zj/e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FBB2C113CC;
-	Fri, 12 Apr 2024 23:21:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1712964072;
-	bh=2CrUSMy2ZQbQHtwUPbTAnJJXXmcemmqf6qltoaC24+0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jzG2Zj/e+EIoPw+tfCjb2lfy5xRRoLIUrpA7NYkJKV9AQsw/dmjQbyUhxk0emFDGm
-	 d5ZkyJHIuTuWRJp9sil5OpG6X2RNotWdQ0XnbWr8+Hj/w2H+sGSRgXM9Ec5NFlIps9
-	 dRuK4XFh9hY0wAzSjyVbPtHCEv1T0eDzyzAjUq9M=
-Date: Fri, 12 Apr 2024 16:21:11 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Sidhartha Kumar <sidhartha.kumar@oracle.com>, <naoya.horiguchi@nec.com>,
- <osalvador@suse.de>, <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mm/memory-failure: fix deadlock when
- hugetlb_optimize_vmemmap is enabled
-Message-Id: <20240412162111.10f67ad0f001734464b53ad8@linux-foundation.org>
-In-Reply-To: <8d186776-f3b1-5d9a-2f94-fa249dee7d5f@huawei.com>
-References: <20240412025754.1897615-1-linmiaohe@huawei.com>
-	<48647e5b-d15b-457b-9879-fb1b6bbaee27@oracle.com>
-	<8d186776-f3b1-5d9a-2f94-fa249dee7d5f@huawei.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712964233; c=relaxed/simple;
+	bh=CbK4jt4ZdUloJNuVh6KOM2ueno3wxztt8Qa5vgstwIQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=PwLx5P2uiQode9/rlPdVsm0S0/NihuwcKmScsrOnS6auK+GM+v2gT+8x+LzhNyWqQQyOxiJShttW9an50wNFXW5IPv2LesEi2zdeBr7A0WZhAYkkaKbhBUMByTIenVN3yFGwx7cI6ClQYsz20jaSSOhBEPnj60nPi4LtrRuQYtk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tW6ap+zQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=C6bVqxHC; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712964230;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T5xu2FVtNRnOIqknb2Ux4D1eBvHtL7IvYUAUi+UDnWI=;
+	b=tW6ap+zQjCfPb0Iu5NRfFG9LND9NrDkPfEJWzzMV7FCLTiO/67DEBwqkhnToa6FAcP2EMM
+	6MUD2W5m6nuwV2lpFNG3h+9zzeXDVM+p+g58Cp/G+e4GRZcfa5YXlQCXsvhowZhIeayP0F
+	mX0bfZnV7zatQ27FSiwCVDCNzdKFDc9OqpMidB2qf2Cpn4vHrQKR1CDd5Jo0Vu7BskZTIr
+	zk34+SsJ8yxAruaTIUuw2IA0vIdHj/NMRshMO3Ypq0Afb5kNOeHECSYmsLQEyGEwXiqLV8
+	1HqLCmjoZ7R9k59MXcM+5pSKlvvx5MjGxECT/fcNGhgdh8TjLYqmzvmpqlulZQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712964230;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T5xu2FVtNRnOIqknb2Ux4D1eBvHtL7IvYUAUi+UDnWI=;
+	b=C6bVqxHCPN+wfRrnH1w7K16dZrgwWFLb9vxFt3+t2PJptgUt5gh64ablXIU/tU1hN5ia0j
+	DVRgHQA0LBs0mhCA==
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>, linux-pm@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+ x86@kernel.org, Miguel Luis <miguel.luis@oracle.com>, James Morse
+ <james.morse@arm.com>, Salil Mehta <salil.mehta@huawei.com>, Jean-Philippe
+ Brucker <jean-philippe@linaro.org>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ linuxarm@huawei.com, justin.he@arm.com, jianyong.wu@arm.com
+Subject: Re: [PATCH v5 03/18] ACPI: processor: Register deferred CPUs from
+ acpi_processor_get_info()
+In-Reply-To: <ZhmtO6zBExkQGZLk@shell.armlinux.org.uk>
+References: <20240412143719.11398-1-Jonathan.Cameron@huawei.com>
+ <20240412143719.11398-4-Jonathan.Cameron@huawei.com>
+ <CAJZ5v0gNvy2e=hOGQQ2kLpnrDr8=QGBax-E5odEJ=7BA8qW-9A@mail.gmail.com>
+ <ZhmWkE+fCEG/WFoi@shell.armlinux.org.uk> <87bk6ez4hj.ffs@tglx>
+ <ZhmtO6zBExkQGZLk@shell.armlinux.org.uk>
+Date: Sat, 13 Apr 2024 01:23:48 +0200
+Message-ID: <878r1iyxkr.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain
 
-On Fri, 12 Apr 2024 16:11:52 +0800 Miaohe Lin <linmiaohe@huawei.com> wrote:
+Russell!
 
-> > I recently sent a patch[1] to convert dissolve_free_huge_page() to folios which changes the function name and the name referenced in the comment so this will conflict with my patch. It's in mm-unstable now, would you be able to rebase to that in a new version?
-> > 
+On Fri, Apr 12 2024 at 22:52, Russell King (Oracle) wrote:
+> On Fri, Apr 12, 2024 at 10:54:32PM +0200, Thomas Gleixner wrote:
+>> > As for the cpu locking, I couldn't find anything in arch_register_cpu()
+>> > that depends on the cpu_maps_update stuff nor needs the cpus_write_lock
+>> > being taken - so I've no idea why the "make_present" case takes these
+>> > locks.
+>> 
+>> Anything which updates a CPU mask, e.g. cpu_present_mask, after early
+>> boot must hold the appropriate write locks. Otherwise it would be
+>> possible to online a CPU which just got marked present, but the
+>> registration has not completed yet.
+>
+> Yes. As far as I've been able to determine, arch_register_cpu()
+> doesn't manipulate any of the CPU masks. All it seems to be doing
+> is initialising the struct cpu, registering the embedded struct
+> device, and setting up the sysfs links to its NUMA node.
+>
+> There is nothing obvious in there which manipulates any CPU masks, and
+> this is rather my fundamental point when I said "I couldn't find
+> anything in arch_register_cpu() that depends on ...".
+>
+> If there is something, then comments in the code would be a useful aid
+> because it's highly non-obvious where such a manipulation is located,
+> and hence why the locks are necessary.
 
-This patch is a hotfixes, cc:stable one so the mm-unstable material will be
-based on top of this change.
+acpi_processor_hotadd_init()
+..
+         acpi_map_cpu(pr->handle, pr->phys_id, pr->acpi_id, &pr->id);
 
-I've queued this change up as a -fix against v1.  And I've retained
-this changelog addition:
+That ends up in fiddling with cpu_present_mask.
 
-: This issue won't occur until commit a6b40850c442 ("mm: hugetlb: replace
-: hugetlb_free_vmemmap_enabled with a static_key").  As it introduced
-: rlock(cpu_hotplug_lock) in dissolve_free_huge_page() code path while
-: lock(pcp_batch_high_lock) is already in the __page_handle_poison().
+I grant you that arch_register_cpu() is not, but it might rely on the
+external locking too. I could not be bothered to figure that out.
 
-And I've queued another -fix to reflow that block comment to 80 columns.
+>> Define "real hotplug" :)
+>> 
+>> Real physical hotplug does not really exist. That's at least true for
+>> x86, where the physical hotplug support was chased for a while, but
+>> never ended up in production.
+>> 
+>> Though virtualization happily jumped on it to hot add/remove CPUs
+>> to/from a guest.
+>> 
+>> There are limitations to this and we learned it the hard way on X86. At
+>> the end we came up with the following restrictions:
+>> 
+>>     1) All possible CPUs have to be advertised at boot time via firmware
+>>        (ACPI/DT/whatever) independent of them being present at boot time
+>>        or not.
+>> 
+>>        That guarantees proper sizing and ensures that associations
+>>        between hardware entities and software representations and the
+>>        resulting topology are stable for the lifetime of a system.
+>> 
+>>        It is really required to know the full topology of the system at
+>>        boot time especially with hybrid CPUs where some of the cores
+>>        have hyperthreading and the others do not.
+>> 
+>> 
+>>     2) Hot add can only mark an already registered (possible) CPU
+>>        present. Adding non-registered CPUs after boot is not possible.
+>> 
+>>        The CPU must have been registered in #1 already to ensure that
+>>        the system topology does not suddenly change in an incompatible
+>>        way at run-time.
+>> 
+>> The same restriction would apply to real physical hotplug. I don't think
+>> that's any different for ARM64 or any other architecture.
+>
+> This makes me wonder whether the Arm64 has been barking up the wrong
+> tree then, and whether the whole "present" vs "enabled" thing comes
+> from a misunderstanding as far as a CPU goes.
+>
+> However, there is a big difference between the two. On x86, a processor
+> is just a processor. On Arm64, a "processor" is a slice of the system
+> (includes the interrupt controller, PMUs etc) and we must enumerate
+> those even when the processor itself is not enabled. This is the whole
+> reason there's a difference between "present" and "enabled" and why
+> there's a difference between x86 cpu hotplug and arm64 cpu hotplug.
+> The processor never actually goes away in arm64, it's just prevented
+> from being used.
 
---- a/mm/memory-failure.c~mm-memory-failure-fix-deadlock-when-hugetlb_optimize_vmemmap-is-enabled-v2-fix
-+++ a/mm/memory-failure.c
-@@ -155,14 +155,16 @@ static int __page_handle_poison(struct p
- 	int ret;
- 
- 	/*
--	 * zone_pcp_disable() can't be used here. It will hold pcp_batch_high_lock and
--	 * dissolve_free_huge_page() might hold cpu_hotplug_lock via static_key_slow_dec()
--	 * when hugetlb vmemmap optimization is enabled. This will break current lock
--	 * dependency chain and leads to deadlock.
--	 * Disabling pcp before dissolving the page was a deterministic approach because
--	 * we made sure that those pages cannot end up in any PCP list. Draining PCP lists
--	 * expels those pages to the buddy system, but nothing guarantees that those pages
--	 * do not get back to a PCP queue if we need to refill those.
-+	 * zone_pcp_disable() can't be used here. It will
-+	 * hold pcp_batch_high_lock and dissolve_free_huge_page() might hold
-+	 * cpu_hotplug_lock via static_key_slow_dec() when hugetlb vmemmap
-+	 * optimization is enabled. This will break current lock dependency
-+	 * chain and leads to deadlock.
-+	 * Disabling pcp before dissolving the page was a deterministic
-+	 * approach because we made sure that those pages cannot end up in any
-+	 * PCP list. Draining PCP lists expels those pages to the buddy system,
-+	 * but nothing guarantees that those pages do not get back to a PCP
-+	 * queue if we need to refill those.
- 	 */
- 	ret = dissolve_free_huge_page(page);
- 	if (!ret) {
-_
+It's the same on X86 at least in the physical world.
+
+Thanks,
+
+        tglx
 
 
