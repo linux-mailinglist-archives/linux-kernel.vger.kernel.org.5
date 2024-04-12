@@ -1,156 +1,116 @@
-Return-Path: <linux-kernel+bounces-143055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 728708A33A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:21:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D04EB8A33AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:23:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE3161F21F3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:21:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 839EA280E18
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:23:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D2E614A4D2;
-	Fri, 12 Apr 2024 16:20:24 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE02B14A4D0
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:20:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E17914BF98;
+	Fri, 12 Apr 2024 16:20:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kbjFlzhK"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C94149016;
+	Fri, 12 Apr 2024 16:20:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712938824; cv=none; b=h/+stMicBnnPs+51/k4wBZyidErAMDOkZWPzlFMq9WiDWMgtn3yybWwSyxEG5nvTYtDH3dhcRQugTKDsuowac+sH4veFj7mcUKidPJMqyMnUk4jdLmodMAqCwYdOnf63JpbOl5k2TX8bmV3SaNqt5l3mrhGLwken9ySnwhORxDs=
+	t=1712938847; cv=none; b=oieCjVv+iHj4YAULvcAUd+EAQNSEp+bgSy3aGiXcWd+/kMWjeRlR6M0BlwWZUkASKANi1TLi08uRlE3RhNwaG0r871D/4SoE9Lz7sBZNUN2GyUWyfolpQZ9oiOmK0zJotQfUhL2/4PLr5dJ5cc+4AIVs7nXlKwOoClxW9otcWh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712938824; c=relaxed/simple;
-	bh=JcFWIlWAmP82bnMMOxigsCewAls5gbc2qooWyldRIlo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZneJsRP2TX1Kl7K85v1fcxB3g24oIuxUPOQ9U4ycDUeREmZvQhVW6sIB1GeZQXoTYRA/ClbWBFsBRp5FwO5DGNiYt3I0XZ+fq7Uuhv1e1txA4Nv88hDf9FktW0XtiXToDTizlbu9CrlbroOAiIVo2z3tj3z6Kweq7Q3QFkg6ys8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 40FAB339;
-	Fri, 12 Apr 2024 09:20:51 -0700 (PDT)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 482AE3F64C;
-	Fri, 12 Apr 2024 09:20:19 -0700 (PDT)
-Date: Fri, 12 Apr 2024 17:20:16 +0100
-From: Dave Martin <Dave.Martin@arm.com>
-To: Amit Singh Tomar <amitsinght@marvell.com>
-Cc: Reinette Chatre <reinette.chatre@intel.com>,
-	James Morse <james.morse@arm.com>, x86@kernel.org,
-	linux-kernel@vger.kernel.org, Fenghua Yu <fenghua.yu@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
-	shameerali.kolothum.thodi@huawei.com,
-	D Scott Phillips OS <scott@os.amperecomputing.com>,
-	carl@os.amperecomputing.com, lcherian@marvell.com,
-	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
-	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-	dfustini@baylibre.com, David Hildenbrand <david@redhat.com>,
-	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: Re: [EXTERNAL] Re: [PATCH v1 28/31] x86/resctrl: Drop __init/__exit
- on assorted symbols
-Message-ID: <ZhlfQKMg4xeA53SD@e133380.arm.com>
-References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-29-james.morse@arm.com>
- <c27c7813-5744-4363-bb7b-f9fbe80fd549@intel.com>
- <ZhfzF8L6w1pgJJ1r@e133380.arm.com>
- <47af4fef-35d3-4d88-9afa-42c1a99fbe07@marvell.com>
+	s=arc-20240116; t=1712938847; c=relaxed/simple;
+	bh=eBjAc1QnHYXLeH29VZzSz5/+O9flS8D/PAA7XN38YGE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=azOEOPqFClc+sqbPtjTV17Tzrx3+Bbn0qJzmSQO7sFw1rbxCTjv6VzxwkFAbiPO9ou6khVni+LawVQcbI82ow+zNLgzllQN5uIVmoF4RXcwJxnNtIbZHs1xigfk0mona/47RDIlfQlfPrUzd2KcDxhjzFTKsyYI+L8NSmHd+aHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kbjFlzhK; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-416a8ec0239so6444165e9.0;
+        Fri, 12 Apr 2024 09:20:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712938844; x=1713543644; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=g9/w1K727Z6rHmZvSAQJjGDlFmk/+J/GPSglkwvTa3A=;
+        b=kbjFlzhKgbk5FpPPmnTjbo9Ch/Gs3Wr54taonDoymq/rKQ8zY1js+zRxqg7q+97YsC
+         Yp0LXT1AYG5Jhh4/U5sgc9DU3VkX8zUZpCLusxGuOXcYFMRQIpJX5VcAfK4SjuK9+uTg
+         67vy5il1bc1E3fhBMBXItDdhjrmsmYLNRgzv/8yHghkiIwdQifGW3fWXfOIPRlxt5N20
+         gOx95cGXvlVGcBW9SovazbplGhJec081AvRLygjC9u6tYt2rTlOaiuhDAZ+8ztCIWC6A
+         YW4yKOz9sxCIZBiQ1+grTnLtLRLIp2WzeXZi0SR+qljHnkTLi1PcA2bzAzCPoWDDxPLK
+         yzXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712938844; x=1713543644;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g9/w1K727Z6rHmZvSAQJjGDlFmk/+J/GPSglkwvTa3A=;
+        b=Qgqo0GHl8LNpMigtAqeSR/X3LYf/Wu9oJJyOGvmJmONIl5pWWAol04mkK80kFIORVj
+         0hrBVk1lOGdwgWwTWSOZHNNEYrkNEqH+oz2OfI4MUl0rhTcranRbtzmA7ECeslC4AGYz
+         K7Ds1BgZRiRVv3wRVq28J4GN5IJFrO3DWTzkvwsUisgZcVfjlEj5MJ3Vih5r9yEEOcKy
+         yIQ+Xphvy7FRJSYWOWzD+UXxvfrM51faEIDF68QzrLMlwmCd5HgKCKqRgQmsC49YKUWj
+         XMI0AMUh22xxwSa9Xj2OwuMWHiKHC2eNtOmS8z3by0w75UjVb59enUxCXeOz0jh+NrsM
+         fLpA==
+X-Forwarded-Encrypted: i=1; AJvYcCVZEtyUkVTkVMjb38sRz/8NOgQsbbldDTCHQD3Gj3BvX9ranjxyPfZqp60g8Whw9eJDhlHILQ/BdCpWL12q+93Kl8OW8o80xDEMjjZw
+X-Gm-Message-State: AOJu0YyhGBWAuYgHgmzQlt1fsHNY7N6mh655RxKhJKi6ZzxaLdkBh8rC
+	UKEPrl8zLA7kGP1r7UAct3gFBdx0SZG6RtO+x4yLykvUtFyf4ecnj6MxEA==
+X-Google-Smtp-Source: AGHT+IH5jjP1wWZqDpw0dAgvQx37euPxQow/bOtATu4l4TggXccRq7DHV2UiUHhygH26BwjvwOaSXQ==
+X-Received: by 2002:a05:600c:1d2a:b0:415:4379:d36d with SMTP id l42-20020a05600c1d2a00b004154379d36dmr6090204wms.2.1712938843839;
+        Fri, 12 Apr 2024 09:20:43 -0700 (PDT)
+Received: from localhost.localdomain (ip-94-112-167-15.bb.vodafone.cz. [94.112.167.15])
+        by smtp.gmail.com with ESMTPSA id q10-20020a05600c2e4a00b00418176845ddsm126355wmf.0.2024.04.12.09.20.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 09:20:42 -0700 (PDT)
+From: Ilya Dryomov <idryomov@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: ceph-devel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Ceph fixes for 6.9-rc4
+Date: Fri, 12 Apr 2024 18:20:27 +0200
+Message-ID: <20240412162028.2447687-1-idryomov@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <47af4fef-35d3-4d88-9afa-42c1a99fbe07@marvell.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 11, 2024 at 09:21:38PM +0530, Amit Singh Tomar wrote:
-> Hi Dave, Reinette,
-> 
-> > On Mon, Apr 08, 2024 at 08:32:36PM -0700, Reinette Chatre wrote:
-> > > Hi James,
-> > > 
-> > > On 3/21/2024 9:51 AM, James Morse wrote:
-> > > > Because ARM's MPAM controls are probed using MMIO, resctrl can't be
-> > > > initialised until enough CPUs are online to have determined the
-> > > > system-wide supported num_closid. Arm64 also supports 'late onlined
-> > > > secondaries', where only a subset of CPUs are online during boot.
-> > > > 
-> > > > These two combine to mean the MPAM driver may not be able to initialise
-> > > > resctrl until user-space has brought 'enough' CPUs online.
-> > > > 
-> > > > To allow MPAM to initialise resctrl after __init text has been free'd,
-> > > > remove all the __init markings from resctrl.
-> > > > 
-> > > > The existing __exit markings cause these functions to be removed by the
-> > > > linker as it has never been possible to build resctrl as a module. MPAM
-> > > > has an error interrupt which causes the driver to reset and disable
-> > > > itself. Remove the __exit markings to allow the MPAM driver to tear down
-> > > > resctrl when an error occurs.
-> > > 
-> > > Obviously for the reasons you state this code has never been exercised.
-> > > Were you able to test this error interrupt flow yet?
-> > > 
-> > > Reinette
-> > > 
-> > 
-> > I think this will have to wait for James to respond.
-> > 
-> > There is code to tear down resctrl in response to an MPAM error interrupt,
-> > but I don't know how it has been exercised so far (if at all).
-> 
-> We are managed to test the MPAM error interrupt (on the platform that
-> supports MPAM interrupts on software errors). For instance programming
-> more resource control groups (part IDs) than available, and It appears to
-> correctly remove the "resctrl" mount point (though mount command still shows
-> resctrl on /sys/fs/resctrl type resctrl (rw,relatime)
-> ), but
+Hi Linus,
 
-Thanks for trying this out!
+The following changes since commit fec50db7033ea478773b159e0e2efb135270e3b7:
 
-Is it possible to unmount resctrl once the system is in this state?
+  Linux 6.9-rc3 (2024-04-07 13:22:46 -0700)
 
-> # mount -t resctrl resctrl /sys/fs/resctrl
-> mount: /sys/fs/resctrl: mount point does not exist.
+are available in the Git repository at:
 
-What if you now try to mount resctrl somewhere else, e.g.:
+  https://github.com/ceph/ceph-client.git tags/ceph-for-6.9-rc4
 
-# mount -t resctrl resctrl /mnt
+for you to fetch changes up to d3e0469306793972fd2b1ea016fa7ab0658c9849:
 
-I'm guessing this _should_ fail if you weren't able to unmount resctrl,
-since resctrl seems to forbid multiple mount instances.
+  MAINTAINERS: remove myself as a Reviewer for Ceph (2024-04-11 22:56:54 +0200)
 
-I'm not sure what the best behaviour is here.  Leaving resctrl "half-
-mounted" might be a good thing: at this point the system is in a semi-
-bad state we want to make sure it can't be remounted.  Unregistering the
-resctrl filesystem from the fs core feels cleaner if feasible though.
+----------------------------------------------------------------
+Two CephFS fixes marked for stable and a MAINTAINERS update.
 
-Leaving an impossible unmount operation for init to do during reboot/
-shutdown feels unfortunate.
+----------------------------------------------------------------
+Jeff Layton (1):
+      MAINTAINERS: remove myself as a Reviewer for Ceph
 
-We might have to look at what other filesystems do in this area.
+NeilBrown (1):
+      ceph: redirty page before returning AOP_WRITEPAGE_ACTIVATE
 
-The mount machinery does provide other ways of getting into broken,
-impossible situations from userspace, so this doesn't feel like an
-entirely new problem.
+Xiubo Li (1):
+      ceph: switch to use cap_delay_lock for the unlink delay list
 
-> 
-> Additionally, a question regarding this, Is a complete system restart
-> necessary to regain the mount?
-> 
-> Thanks
-> -Amit
-
-I think James will need to comment on this, but I think that yes, it
-is probably appropriate to require a reboot.  I think an MPAM error
-interrupt should only happen if the software did something wrong, so
-it's a bit like hitting a BUG(): we don't promise that everything works
-100% properly until the system is restarted.  Misbehaviour should be
-contained to MPAM though.
-
-Cheers
----Dave
+ MAINTAINERS          | 2 --
+ fs/ceph/addr.c       | 4 +++-
+ fs/ceph/caps.c       | 4 ++--
+ fs/ceph/mds_client.c | 9 ++++-----
+ fs/ceph/mds_client.h | 3 +--
+ 5 files changed, 10 insertions(+), 12 deletions(-)
 
