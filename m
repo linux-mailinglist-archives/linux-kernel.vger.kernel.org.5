@@ -1,95 +1,98 @@
-Return-Path: <linux-kernel+bounces-143194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 386078A358B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:22:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36DCA8A358A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:22:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B6931C229C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:22:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A24931F2267E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACC1A14F12E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04F2014F123;
 	Fri, 12 Apr 2024 18:22:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="jUKST0/k";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="UHIHk3wM"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="DbZwOCtl";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="GQg+9FA/"
 Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5237F14F10F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5234114F10E
 	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 18:22:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712946146; cv=fail; b=PF5cBDpGDAu1jSmvSUjQaH8/yDDB30pxP05vrU0uqdecGkVok9J4wo42IxiOAhuvssmG7A+Yb+q5ZUIjbee6oprTU6qIAn2jxYIDc/1yNRGsDPDyRli/KHjl7okcKDWs9VUTOcutZcTrjbGANmCSKsG1oU1oVkA/qRoXpZCJ9OI=
+	t=1712946145; cv=fail; b=PFaFNEyIEAtOCtCXBObVcd0nRdQ7M+mxo7iLyAiQcygzSkkPF9UJr3NGawMd9ar8u3xaPTMJfzMHUDZ1aXs7mvRIL1r3U+O9GXzZS/IRB7TPSzlO1zQgE7DqpF0SeEgV4Cu1z37Zq1QfrhX+/0rik+nNOlQtnnCj7SrYWVpyPhY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712946146; c=relaxed/simple;
-	bh=yuRyK26QBP8hG6BfRY97wBbIHkLJsSAmFq6sLLy4qVQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=HbEe/rmBE7P4PEdvj5UMuEo2ZuCxGGlS1nzPGpflWU82iJ+3tR57a0SfGVe9R+4CjHvS5rx1DqkpuX/1ngYBE8nlbOWdeEtHahCeU5DrHswmUZrQBnQ2h4cN+kRMuBv05bJ3Ppyy47ZSeRKulMfSTCb7J8H6HxLF22+wMi9+F1U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=jUKST0/k; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=UHIHk3wM; arc=fail smtp.client-ip=205.220.165.32
+	s=arc-20240116; t=1712946145; c=relaxed/simple;
+	bh=3SYCIj6EjeIw0y9zkdKrlPqqs2ensiKCDO3OzmijoZo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=dPQ4+Fs07EbR8RDvJL7Wo3JSxC16h6g5I/UqtRqYDSFlxS4KWIW41Wx7wL2Gc1TBXg1RykSelT7CaUUqGQNqC4dS9Mrler7Fh7reWbQsspuTiBrXdtfbS+xhq7pc7930Xo8g9alHKebK5b1YJlJEDOB00YuPfLr63XxWQL8+jgI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=DbZwOCtl; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=GQg+9FA/; arc=fail smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43CI9hZL026998;
-	Fri, 12 Apr 2024 18:21:51 GMT
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43CHVc5U023414;
+	Fri, 12 Apr 2024 18:22:02 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2023-11-20;
- bh=vA4YLOAyQ9xtjctU+acsQ0fDCbQX0dFxfmWmHAYHdf4=;
- b=jUKST0/krdyneCqrGpXRwvmK8KPvshjFheYeNhK40nBxhSkT1s6/UO1HTDytaDyJd8Iv
- vFPaZDysglkQNtKoswzKfchVVt/3kLKJD8730DCHmzRXsAyqeWVS5N6BzcjSWg7UGifd
- brcsCYGVMbszR48W2o8KVwML9NClrgkmkAkx7cJ89G4L0Xpc4JMAffXmBhs0nb6TadRy
- gwmgo3CacNDqZibpFFyAQm5yvduVF/dQycwl6wc2+Qrascdf7C/3LRO+n7G3/l0p0+Rx
- E/gA7jN1SsAwrwYQ9fFCy0h8xhWD8+gjiwh8HR7iZq0ZwfA4/b6f0LSa0p/wINUwMzxZ PQ== 
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2023-11-20; bh=KP68T40J5TUww6lgZMCWokKpEGUxjhNzGRaHsY4aY3I=;
+ b=DbZwOCtlxKbAUewWeIjZEfs/AQfBUYExGpc5As2r5t+NFDVDjmc/vmrE8tToTQduF399
+ AQ6QCMT6LyWkReSGmGKFrjJR3sBefar9nFzxoBoSGqBD4j9hlY5hQ6rn2JceN5JXRtjv
+ RUFW1ex7H/mURF7oumQgki474RBU+SKQGNfao8TtQ/27/vpBbo5Ic9FKnzGFC05wl9U9
+ 8VxWB82iARjpFg7XX+Hjcz0b0dt8UlCe/B0FkWacKE2wBSqSVYUXQ4RvJGzuIclyayZO
+ NFfFWFore2iY/jGglBwGyWevg/YzmqPWv0RTJfYkFSnGONluISocPu1ymvNBHYGS1HOY pg== 
 Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xaw02ckmr-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xaxxvmjcn-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 12 Apr 2024 18:21:50 +0000
+	Fri, 12 Apr 2024 18:22:02 +0000
 Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43CHoaFl008048;
-	Fri, 12 Apr 2024 18:21:50 GMT
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2041.outbound.protection.outlook.com [104.47.51.41])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xavubb4nm-1
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43CGlCcY008023;
+	Fri, 12 Apr 2024 18:22:01 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xavubb4uc-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 12 Apr 2024 18:21:50 +0000
+	Fri, 12 Apr 2024 18:22:01 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G5RL9oniyVG/cTeakegf7x3/Dc0K9W138K0R9sQAYUwO3pe4BiomkZQC1YONRUt3vf9HQkFuLZhZMuGuriFGHeZuweDm/kFNQ2/Wqu/le127dn1++D/DfQcHjmtuk/i6AI1tbV0Dvt0cHbFsTOqa3VfrprPPD1xb1xR/lfUVqbRqum+rQPpDVwa0ebFt9mvjl2M6+15GRH6v69cM5Q5/Ij6OHp9Ru8Hm8iKnwR2bEvk4cgknAPZbHB4+7o4TFU9Ab76wq4C1l4l6IqHLIHksBHwrlsnCf4M5NjPM5d2XcN5Fxuc5ESk/JVtN6wmOE2P/h9T3qRX1prvZL93tFl50+g==
+ b=KNlmYj5cRXXFMk8hlDviWWrnSNChu+/sdo7Qwt4q8tWA7y82VAxqJgZjoR4P6EqA8cHuztefsFutPn67WojlESaqPpKywQQsGn+9Y6Po9Ls5mGls22/rUp9vql8hd3yUGCpc4p7L/Hf61gHF7ECG2Axp2gpdqY7Aoi0hFocVhwkF/yUxddjGVmQ9ft+BVV1hn59N04htrpPdJ4aHML604LMr/zyrBpAG3StIeDK7ZXW9WqZB/PNDqhBKbwc+f6+4uYc0ZpIVKvyicfVn0PuPznB5w8YeOGejVdEMwkFOWjpCZpaW0gyyHUpiCpT+nTqqiAu+zHIR6LjNCOM2ElHd6w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vA4YLOAyQ9xtjctU+acsQ0fDCbQX0dFxfmWmHAYHdf4=;
- b=PuIC2GOGDp04Ap1zGMVL8AdMhisLrQZdI+p1paXan2V1qhkXI5ZF8Q8SRFVYTLMB0aeiROaK5VvZCEo+s+3rZ29oKTxmwBX/hYRuN8w1duRkFVkuR8IuWkykjV10veILMtGxdYIDMDv9OGVYrh2Owsd6nr3asqU/iqXP1gaYRdrMS+Zksqk/1qGQDX0Zpj59pIUp1JPk4EL6biZx0EbxeaqPYfR3k8vM6z20d33XqJwY+BfKtRyQ9Zqgli6s9CZAuSjeyIibhJ7tJLPPMP7LiNeeowfvDEVeGN+c9KPtku/93posYtXgYCsPKs6vDdZNe0sHdyaa9csIfFMRl1muiw==
+ bh=KP68T40J5TUww6lgZMCWokKpEGUxjhNzGRaHsY4aY3I=;
+ b=eKH5ckmQa+CFvs8Tb/E4nzVIO9kwOIIvmWsjBlvR/xlOWfCt7YImcipXd8SmiUtsrpb9IKaTJdI4lnvX3x0NV3PBCI4Z3SDOhl/u4lee6AodSlWoqT+MNPGsfyv4UFxaZbKrhCyoprzFHyr1M3+zI5BavDl4qLDu1sWIpDQouSVFy8YQp7+lvk7CDT9Y3TSxj2Ma/70BXx371JT3ruYV1JOohHollGds7u2joyxTMmFkZ1XpWjUo5AxF68d/al5It+eDOOW/ihExx1k64jWXESUVKrDGu82OXZ4VUaOMFnilVlllaIBDqWwWwxuHVMuowbZ00RYGqXJ5lomCpnZ/6g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vA4YLOAyQ9xtjctU+acsQ0fDCbQX0dFxfmWmHAYHdf4=;
- b=UHIHk3wMzBDMzVsvA+NjV7M8MrjerinmsLMhSO9Afwe0vH9c8P78paFpGr3Z+39ags2s05q841ciBqvUhOTKIb+QUnmeD0XXUsLQR0Jy69gdnNxbsFLrbG553UV0xU8/Y165cG8fFVIpEcEOVPgtSnbETEPVpKoRskWN7opKPb0=
+ bh=KP68T40J5TUww6lgZMCWokKpEGUxjhNzGRaHsY4aY3I=;
+ b=GQg+9FA/8Vosrub7dO3kMYquSfnrefsR/FLdcS9b+Lk+oCVLn6uUB9PDl6p+5cH1rpbnUGLXciU5nZ26NcbfdFz6CHw4Q4p3navYJUOVldQuqSfE+e7Pl7wJCLQLsHJieg2s1JQCBGpTF9k1yDRceq518rcombgf0opru5ZlLjU=
 Received: from CH0PR10MB5113.namprd10.prod.outlook.com (2603:10b6:610:c9::8)
- by CO1PR10MB4785.namprd10.prod.outlook.com (2603:10b6:303:95::11) with
+ by SN7PR10MB6500.namprd10.prod.outlook.com (2603:10b6:806:2a7::6) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.55; Fri, 12 Apr
- 2024 18:21:47 +0000
+ 2024 18:21:56 +0000
 Received: from CH0PR10MB5113.namprd10.prod.outlook.com
  ([fe80::6573:ea04:fecc:cc68]) by CH0PR10MB5113.namprd10.prod.outlook.com
  ([fe80::6573:ea04:fecc:cc68%5]) with mapi id 15.20.7409.042; Fri, 12 Apr 2024
- 18:21:47 +0000
+ 18:21:51 +0000
 From: Sidhartha Kumar <sidhartha.kumar@oracle.com>
 To: linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc: akpm@linux-foundation.org, willy@infradead.org, linmiaohe@huawei.com,
         jane.chu@oracle.com, muchun.song@linux.dev, nao.horiguchi@gmail.com,
         osalvador@suse.de, Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Subject: [PATCH v2 1/2] mm/hugetlb: convert dissolve_free_huge_pages() to folios
-Date: Fri, 12 Apr 2024 11:21:38 -0700
-Message-ID: <20240412182139.120871-1-sidhartha.kumar@oracle.com>
+Subject: [PATCH v2 2/2] mm/hugetlb: rename dissolve_free_huge_pages() to dissolve_free_hugetlb_folios()
+Date: Fri, 12 Apr 2024 11:21:39 -0700
+Message-ID: <20240412182139.120871-2-sidhartha.kumar@oracle.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240412182139.120871-1-sidhartha.kumar@oracle.com>
+References: <20240412182139.120871-1-sidhartha.kumar@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: MW4PR03CA0184.namprd03.prod.outlook.com
- (2603:10b6:303:b8::9) To CH0PR10MB5113.namprd10.prod.outlook.com
+X-ClientProxiedBy: BYAPR11CA0070.namprd11.prod.outlook.com
+ (2603:10b6:a03:80::47) To CH0PR10MB5113.namprd10.prod.outlook.com
  (2603:10b6:610:c9::8)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -98,193 +101,132 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH0PR10MB5113:EE_|CO1PR10MB4785:EE_
-X-MS-Office365-Filtering-Correlation-Id: c2c79d0d-aafe-4bd0-6602-08dc5b1d6a32
+X-MS-TrafficTypeDiagnostic: CH0PR10MB5113:EE_|SN7PR10MB6500:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9e89d317-7d31-412a-ad84-08dc5b1d6c9c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	H+CeL5NOvTTx1hMbacFJiHwpjJbJkgUImRRnjB86Q7UHEq6k1/znTpUql0Mrgbi+yBSxScxPicKpsopNpvRfjhOcv50X7U3zyIVTy5LZZgyZ9GOp43jp1/+QY+aMX6Kk+VWmTlhcAgwVUoFzmwZzsjYCRurhNKeHBzOa8xP7XrEgOrR0SgfkVG1yafgvRgXRL/B3C9mu+GbyXU8NDEuYEvZPcYKNcqKBEwckg1z83T2+WVGkE6RhItkq4aTAy8RgZnUI3eo0C0dYLJTL9fbztD8YtjlvM/Ti8b7L94+lXbPxGZ15ktOCk0h8H3swiSoD7L9EQTiZ+V9pJgygAzzJBqzQz4Qy6fptgYfwETuDeNmYNeQMSoyaReOXKTIjdtZv7fIJ2E1LuH1nfpqCNwg6dO7POWz7v+yJhDL51iA6j3P0NLWirg7Jdckxyx3UGT2NZv2ja7NUHBB/fmrab+e0S5lpsuld77plex5qOJ7owG1maZGdHOg1exjLBTPubiHjN0BIBwxVGepf0AyMPdg5rNmX59ieMoL7MCsIkPZO4tlQCZx6BUskFt8A+d6rj3tATkDSRARpK7Vri6KmJG5oUCb/eZ+3Z1qWVR2MHXM1SCMVb3el/P9UYuHNHWlzfLpbccMns8RSetHq3PLJugw/Qj7UTXTu8Ndr+wtkU3NUhlw=
+	hIwINZdLb+QUXn1/QAQ3/+zcCqdjxgpIX6mFTWQrOzDGzRf7YSYL9Do9y9809oQVoq+Yzaef6DttKU2P/8/d+92Ng9vh2xkGAyeVLocB0rHxxOB1iGnPUFfGs3j7BA10omPRh1M9OuDebHB0xdbDUlrqe/PjtI8KIviwxIRxLesCmKN+mV6ZuETu51QWqeDeEv02pau7MVcyIV8OOnSPbSdkaN+ZgHhzhuSLvGZbelf20JJdPsGBXY0+3z5ipDRd7uRNmXdbRHtB8PcPQVpkbnMvgThhQ+RpKc3xwvME7bn5WNR30LBtrvb4mCwpW6szz8ordNJJ3hMvY1JruhHmDMBbHN0kUEy6SLXohHw57zI7JHeAf8al2LVAm5Pnk0Nlt0Z0H6mIdf78eAs6eTYSAqUwEKuhxgDGGthLn0Ia1ADY8jlrzGqHaANH0EPr/DoyPK/8mvg9KxuNmaEg7OQx8THXEKGuuth4O0T7afQ7nsU3ztVGG2fC+1nboVeMW8sme0j3HqieAq0AB860lMGzVHRQReBrDrn7TQH6uSJIdkOlr+GReg1UnawIuvKCywt503e5XuqoaBe4+Yp4NGqqIhW0tlrRnjD/8ze8IUKEMRC/OhJviesYa3fmmOT2r9K8MrfifowbyiGBBaYcIoplTeql588S66Ks3y+6bgHmYl0=
 X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR10MB5113.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR10MB5113.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?PxzAdf7CW5193iZvN6vfeNele+JZSiIJwj1VSi243DEaqQQyfTLcq65OC67X?=
- =?us-ascii?Q?+xSC0eqHH/Rj+qtBfoMU6f4eVTRDl6+BFBP3FFREABCVbKHKGbUzgK/swlJ1?=
- =?us-ascii?Q?A5Yg5+HoaJOa8v94Gpif1GA52nAhldUsHbgXKxra5lUgfxvAVjmoj1qbbKw9?=
- =?us-ascii?Q?rx3TS0/6F0Ncg0zfmGQkNOuGuxa+tKqeYixEw2lKIdFV4il5ExQJcQhQSBFY?=
- =?us-ascii?Q?pg7kZgkA8a7areEqobtN/esp3xpGEpJKdql/82UKyiutOmw0tHTN/2GBG3k7?=
- =?us-ascii?Q?LsFJUFEs+CJU9amBaefyhQC84avc1C2GOQGsfi+U8S0P5GloFYuRr3SOlL9K?=
- =?us-ascii?Q?PvD8JQQrOHtd+FxixCfQFnHKdd0SQAUMcCBp0rsqvE663s/I03fG2EXhDx57?=
- =?us-ascii?Q?yqESf+ferIYoVv9SMvAEtZ034N2MfNnLo2kzUaOXe2gvtorlyUmDTWtn1Vd+?=
- =?us-ascii?Q?rrqdoEoaeD41ohijYv36eXXBrsMfeniR9bnuFfMvRlzPJ25Zo2G0qbzdGIGr?=
- =?us-ascii?Q?FjQpcNeOxXR2dRhnoPz28cYFQZ03h4+wmxIYrJ9MKEKdQCq4eglt9yWsnwoD?=
- =?us-ascii?Q?4/m+GBNttgruVHk71gbuGD+kZtNjF5k2S0FI1z+pSjbVUjoDj0F+aICc8dU3?=
- =?us-ascii?Q?dIA7CC823IRloqp2BSVL0NT6mlCtA8H7hBBSUJbcefTdL/4rmBc8Dcggu7Pj?=
- =?us-ascii?Q?31/4K2brk2vF3iKLBj0hXWAwzB29UH0DLDlNjMbol8tuE4x+BibzkiyRQymY?=
- =?us-ascii?Q?FOu6OP6tRL3lH0QuRqTBX0ZrzqkZMRyHd5hZq8yq848WoD9gIRohjABnBX4B?=
- =?us-ascii?Q?po0GT4GB/IKMzfA/jEmudpptkOgkrRVgEsyx/HGZagoHJFW3H26TP6qHjBOf?=
- =?us-ascii?Q?jvC6udnsVeEZgq2K/o57J8FnOdl32QyaD4UJWrcKFDBKWX4/5ONi2JLTmL6J?=
- =?us-ascii?Q?FbqI/xEY4MnlfKrm/3wmwnPXlZHnZiLIIpwNG2mXEmwyC9ZjiA0wV4xKQDov?=
- =?us-ascii?Q?onXuW2DQ2CPYcyD/6nBXfbgW1DVPX0Bz4vq0pdYxN8gVst9ePxgF58pQU30n?=
- =?us-ascii?Q?zdrseg30dGuqbs1+Q5ZrOPrqtYnfCH1+XA+AI+yYmkWfnsvXwcp/3BExRPJ0?=
- =?us-ascii?Q?acCL5CjhVrRQTnS9e+lkv21h3Y9TNZJ6k/6JCg/ZDI9noOshSzYXXpfuL3GD?=
- =?us-ascii?Q?7X3/7LGRRKCxRqga4I37o8lkNvup40xIo5EBsTIDEpYgB4ABHTAkkXFwrKq8?=
- =?us-ascii?Q?DULV5Vp8p7aClF0tGqfUI/Iyuq68hnvxGYv1MC/p4rk+EaoVc0ODMLs6qUDh?=
- =?us-ascii?Q?Fw3MO7nX/DNh68Gh0yARpAtX8hU3cGEsIpqYcFvVvE890rneELPw5j3UmnkA?=
- =?us-ascii?Q?eXM+AUxXS42P2AHDo46kGWQAjzawzYydjCf3L179NEkYlOzknrpe0/0BdYyA?=
- =?us-ascii?Q?PXQNAX0OliS0QBHukl7OqiJCt/esuSzyWpNL16+Ap/gym84s5Lt2AxwcEKtH?=
- =?us-ascii?Q?KIFrQCfl3Dv+YSwhCAAefuO8Ah64wNpPgpscLPEbB83cxlJFn6GTiiE2LOuQ?=
- =?us-ascii?Q?k0VvFd1YRWNom059ee0TQM32JBfF3uClzD1VtZOZcsBu8PRIccCJ3WKjl2sQ?=
- =?us-ascii?Q?HL6D0AD2PZn3tE8qEaxbtZA=3D?=
+	=?us-ascii?Q?0FxkmCbnLajc9G0j1hVNzQhgQYfm04MhnXar+Ad2VRjzzBjeytPic7ZCTCAJ?=
+ =?us-ascii?Q?zRAwyp5g6SRr51mWKZcI0YoLSltdIfq4P1sC8bQztqYWphKlR0tZisNHPURV?=
+ =?us-ascii?Q?gukr8sFgqOFRSBoGYupPjRniIy3CHDA1Jt7Bl17fP8Dm/Lt2L/J/+bq6rV2y?=
+ =?us-ascii?Q?45VsZghB/uqUJpVhTcVlfP1M1xUxv/fgY4luQRHbNORFwOUIOS6lEBXNl+cS?=
+ =?us-ascii?Q?EUMo4U2P9aurOcwsgblq1E5/4EFK4dseAB6x90HRSzVT5GYFBM8uBDZfK8WK?=
+ =?us-ascii?Q?6lAn76DbcUE15A054u9RJC73+LnkqocEGMqgAA0FZ0tgAl4pq+xkNu3AOMs6?=
+ =?us-ascii?Q?RQhimQRKLE2LHCC4WO1NcVZKjZwLyZ2Rj/No6EdRJusGese5r/TJ7oQm0nZS?=
+ =?us-ascii?Q?+lnafK/fAYgcUK/9k26gnpXYfTLB1GDWVQoU13mAT64XqY1w2p/zADnt9o1n?=
+ =?us-ascii?Q?V7dAEn9lFSvvV0pYkhKr0oKTRfCvl6ro2fiEFq0F+z0ItpVWa9vjVVqSWVEH?=
+ =?us-ascii?Q?YM7D+eddOpTtK8kdQWdRnnvQtkm3BbjoEzdZlC0/z+cWnZ/uaDxskaMs+GMQ?=
+ =?us-ascii?Q?7JPNTWpc0RXo6/x2DHD4teLIocRbCcm4p1I58P2b/HDaYXcqsX7v8SBNErN/?=
+ =?us-ascii?Q?HzUTqDv6VteU1WG0TgN35f931fV5hFiqbo3u7r4iXTtx0nimgu+b+HKPM6Ti?=
+ =?us-ascii?Q?A4uWnpjRjCp7fzkWUm6rnCDMVp8fqE7LuYQpxIYkkvHVT1sXcwkWGz3DkL4W?=
+ =?us-ascii?Q?bEgXZONoDJEIj6Kj8c/z9QLfcpgkfjJ+rKJQgR1KZRVru9eChHzJwg8bqI+W?=
+ =?us-ascii?Q?KkOBAE0x/WqaMYJ1dbAUNOWel0PMRiMqY+PTcLuvs2+obwTq9Ilie88uz4cG?=
+ =?us-ascii?Q?cny2ksBKeiihQg+RUtEvlVxJ35yFOssmYhNbOsUfFNpdmxhFwC2ek01mEV13?=
+ =?us-ascii?Q?oKSJQrPNv9rFP3GD4GbCjg0EFZWsOk+czKA7Zeu6yzyQy5j0sKleuQsKc7v7?=
+ =?us-ascii?Q?xD7KDg9XYgCUcK+XSH2qspm4nMyzfjlFYJlyyUQhLVuSMu73Vh5YW5yYyLL0?=
+ =?us-ascii?Q?uwP/J4s8rSuLyTnx7DkZB3o4DSpROMTzrsUn6Lil+CO91o43p8s/crCE9VO1?=
+ =?us-ascii?Q?w2QAne77mRaiasPnJLyS46DbjGxqflc8VuyyiQj+YmZLm2hNSdG3yAslQvye?=
+ =?us-ascii?Q?bQOLPAqGj7BPxZHtebqhw2SMmxBK+bdNmCoOM/z8ED+7bc/mTbl8WTFdatos?=
+ =?us-ascii?Q?YU2iqxrNGTjDfbc1zAzWg9BDuEECFAfEIiJmKkjISgk+v6mUAlzlj5+FhAAA?=
+ =?us-ascii?Q?MhanCqBGhGIcf6+bIBwZcy7I9BUOc84uJiVlC8NxVqOxTmR0k9CIkAPaUkyT?=
+ =?us-ascii?Q?KnWDMfjcbNe0BQ+eG3Lz3R5XJ30xzRafRW6/lUbaTXUWK+x6DY+yIJrf7Rg2?=
+ =?us-ascii?Q?QB0zx0MVFir0ovz7ogMGQDyzMRBl5bwhYQrssssXlVmqUrAM/GUHs0J3CeWO?=
+ =?us-ascii?Q?F/U9LNDgA+2fuLZk4N7rLfk4m82zF9RgsAwy9SIsnw/gGQTfNAiR6RBNtf2q?=
+ =?us-ascii?Q?+dEk0/C5C3O1WFWIxoIyjxErugdTOOCb1BLKCWXeB3Yq25uPIcnN6tOYzOJV?=
+ =?us-ascii?Q?OBiIfO6CTrNyYaQOGUghARY=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	dhnCS13Ru9KJQiZV/ysz6G9twMpLWS42d9VZmoaB1xDTODI7zKPlwPWT3QD5oyvug9qulozqi4g1eZpqq7idDf1cEguSubFm2TlfOHF2p7UAlC6n7cQTlc/sSioNS88f9TOSAKEZ1xHlUiItg5oc60rn27DhqdUNAWrnPmVSs/y2kwUjA+XiLB1SUBWiARxtYkIt9dWEV6VEcJiAzt9RnvgQZBMNZa/BAc2Kl0YJT8dDxNvISM4M7ii212hob6ZNO2R4kn8jC6jKF78DMv096CTwoVVB158H+0HJe0BjzX9TdigNt1ToV2k8BMGBOTeQ2SRPA97XnU+dOQRRcG3e6ENmo6veCbDx+LaP1yegH5oTu5kBX7aY28lkU0n8DE5LEdoJiuVaxSg8A8aYn6iHtmzer3BdGDbadDcMGtIkJeGkVrXHGHAGlJNKK/xqSykvvdoibG6h7R4ks+R35meG1lLF0S2LEsVBjqpwK22wp/RGFM4l8r3OLvRvPNmujw0CeIUhwPU6CuRbecuBqQ0kaCAjxiA6d4R9nhrAvCq8QP1JDeXYK8/pOWIw/34JjYM/eOu1Dc+cA2Z3xZx6COnRWRSvtSCJCKfj4Uz/vT+ZJfY=
+	dqfDmTFI2zhJvJswE07YsxxgT3z4F4G3Lq6kU5L+26DMZGqbZHh5hH2YSkAX79PeP+/Fsxi2UhAi2G0uiJsfXPDxT/+VqHp64x2ul5k9J7+V+1wvP0xXaFTpdSpwESdJcx9yhk7oYMzl3hvjGJdkBmZLwBdzVXtOhpMf0HOBuGf7Ox7NYaglXbpUCf30eudhXfifVLCjs+e77MIEYt2HprHXP9gcLbg4CZ8eS7iss+Qa/rpZK/So3tQIfKBrXyDyv8/T6EsUQGZz1FUYJi299vxCZocZQFvPlClknVh1WyWBr+q/taHc/bziEEbQW7SYFULAcD93Yw1TIP4koalVJf+prhfNZWcFjkg+K4U96HIntWy/oxkfOxhgrvt4el4tDBNXce+jMupchdLtYou2HizH0IOn2qrjVWWZo0u+gg328oSqMG7EnJ7RPRLF9PHcB5eIx9/doJTwynwmVbVGfM+HHfLKKhL10EVVf8GSe2cFf9pjGdTr9hdI1i+j1pJ5ZK0MBh1NjUGp6I7lE63a7ABrFMuzwFtyvAkTiTpIFjtq4Nc1y74zvcfD/0hbrz6jxvDxbX5Jh+OLrq5RTCWYRHLLftCCreECRAeIVWdma40=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2c79d0d-aafe-4bd0-6602-08dc5b1d6a32
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e89d317-7d31-412a-ad84-08dc5b1d6c9c
 X-MS-Exchange-CrossTenant-AuthSource: CH0PR10MB5113.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 18:21:47.6504
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 18:21:51.5391
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2CiacuYTcFimOE0p1deNnK4IHXCjIpq641IoDkNXn8w6kPPfOrUHipaK2pna+eLmUJIIx7NJxjY8Uq3wnK781xVrCXJ/Ke0pvH7wYHkpvZ8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4785
+X-MS-Exchange-CrossTenant-UserPrincipalName: X5QWKQDzMiKHo0WbS0mXj+Y6bK3R06iB4hUFBkJM0ya5bFMMBbh8Q1XdgDJc91eq3xi5tqclUJAzfb62nCV3viIUCZ0DM6W9VOZSXjUxwXw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB6500
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-12_14,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=874 suspectscore=0
  mlxscore=0 adultscore=0 phishscore=0 bulkscore=0 spamscore=0
  malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2404010000 definitions=main-2404120135
-X-Proofpoint-ORIG-GUID: K643jE3cifWuy7VSwqMOYResIwd-7T42
-X-Proofpoint-GUID: K643jE3cifWuy7VSwqMOYResIwd-7T42
+X-Proofpoint-ORIG-GUID: 6RP7bwFo1oyJXyfop7EHaO4ltTXWlf2S
+X-Proofpoint-GUID: 6RP7bwFo1oyJXyfop7EHaO4ltTXWlf2S
 
-Allows us to rename dissolve_free_huge_pages() to
-dissolve_free_hugetlb_folio(). Convert one caller to pass in a folio
-directly and use page_folio() to convert the caller in mm/memory-failure.
+dissolve_free_huge_pages() only uses folios internally, rename it to
+dissolve_free_hugetlb_folios() and change the comments which reference it.
 
 Signed-off-by: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
 ---
-
-v1 -> v2:
-	- Change additional comments which reference hugepages to
-	  hugetlb folios per Miaohe Lin. 
-	- introduce patch 2
-
- include/linux/hugetlb.h |  4 ++--
- mm/hugetlb.c            | 17 ++++++++---------
- mm/memory-failure.c     |  8 ++++----
- 3 files changed, 14 insertions(+), 15 deletions(-)
+ include/linux/hugetlb.h | 4 ++--
+ mm/hugetlb.c            | 2 +-
+ mm/memory_hotplug.c     | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 3f3e628802792..f4191b10345d6 100644
+index f4191b10345d6..9ad7b97069cda 100644
 --- a/include/linux/hugetlb.h
 +++ b/include/linux/hugetlb.h
-@@ -861,7 +861,7 @@ static inline int hstate_index(struct hstate *h)
- 	return h - hstates;
+@@ -862,7 +862,7 @@ static inline int hstate_index(struct hstate *h)
  }
  
--extern int dissolve_free_huge_page(struct page *page);
-+extern int dissolve_free_hugetlb_folio(struct folio *folio);
- extern int dissolve_free_huge_pages(unsigned long start_pfn,
+ extern int dissolve_free_hugetlb_folio(struct folio *folio);
+-extern int dissolve_free_huge_pages(unsigned long start_pfn,
++extern int dissolve_free_hugetlb_folios(unsigned long start_pfn,
  				    unsigned long end_pfn);
  
-@@ -1148,7 +1148,7 @@ static inline int hstate_index(struct hstate *h)
+ #ifdef CONFIG_MEMORY_FAILURE
+@@ -1153,7 +1153,7 @@ static inline int dissolve_free_hugetlb_folio(struct folio *folio)
  	return 0;
  }
  
--static inline int dissolve_free_huge_page(struct page *page)
-+static inline int dissolve_free_hugetlb_folio(struct folio *folio)
+-static inline int dissolve_free_huge_pages(unsigned long start_pfn,
++static inline int dissolve_free_hugetlb_folios(unsigned long start_pfn,
+ 					   unsigned long end_pfn)
  {
  	return 0;
- }
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 454900c84b303..f6dd5f597df16 100644
+index f6dd5f597df16..51665b20d90f9 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -2377,8 +2377,8 @@ static struct folio *remove_pool_hugetlb_folio(struct hstate *h,
- }
- 
- /*
-- * Dissolve a given free hugepage into free buddy pages. This function does
-- * nothing for in-use hugepages and non-hugepages.
-+ * Dissolve a given free hugetlb folio into free buddy pages. This function
-+ * does nothing for in-use hugetlb folios and non-hugetlb folios.
-  * This function returns values like below:
-  *
-  *  -ENOMEM: failed to allocate vmemmap pages to free the freed hugepages
-@@ -2390,10 +2390,9 @@ static struct folio *remove_pool_hugetlb_folio(struct hstate *h,
-  *       0:  successfully dissolved free hugepages or the page is not a
-  *           hugepage (considered as already dissolved)
+@@ -2472,7 +2472,7 @@ int dissolve_free_hugetlb_folio(struct folio *folio)
+  * Also note that if dissolve_free_hugetlb_folio() returns with an error, all
+  * free hugetlb folios that were dissolved before that error are lost.
   */
--int dissolve_free_huge_page(struct page *page)
-+int dissolve_free_hugetlb_folio(struct folio *folio)
- {
- 	int rc = -EBUSY;
--	struct folio *folio = page_folio(page);
- 
- retry:
- 	/* Not to disrupt normal path by vainly holding hugetlb_lock */
-@@ -2470,13 +2469,13 @@ int dissolve_free_huge_page(struct page *page)
-  * make specified memory blocks removable from the system.
-  * Note that this will dissolve a free gigantic hugepage completely, if any
-  * part of it lies within the given range.
-- * Also note that if dissolve_free_huge_page() returns with an error, all
-- * free hugepages that were dissolved before that error are lost.
-+ * Also note that if dissolve_free_hugetlb_folio() returns with an error, all
-+ * free hugetlb folios that were dissolved before that error are lost.
-  */
- int dissolve_free_huge_pages(unsigned long start_pfn, unsigned long end_pfn)
+-int dissolve_free_huge_pages(unsigned long start_pfn, unsigned long end_pfn)
++int dissolve_free_hugetlb_folios(unsigned long start_pfn, unsigned long end_pfn)
  {
  	unsigned long pfn;
--	struct page *page;
-+	struct folio *folio;
- 	int rc = 0;
- 	unsigned int order;
- 	struct hstate *h;
-@@ -2489,8 +2488,8 @@ int dissolve_free_huge_pages(unsigned long start_pfn, unsigned long end_pfn)
- 		order = min(order, huge_page_order(h));
+ 	struct folio *folio;
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index b79ba36e09e03..431b1f6753c0b 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -2051,11 +2051,11 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
+ 		}
  
- 	for (pfn = start_pfn; pfn < end_pfn; pfn += 1 << order) {
--		page = pfn_to_page(pfn);
--		rc = dissolve_free_huge_page(page);
-+		folio = pfn_folio(pfn);
-+		rc = dissolve_free_hugetlb_folio(folio);
- 		if (rc)
- 			break;
- 	}
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 88359a185c5f9..8cc91aa1a3f47 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -155,11 +155,11 @@ static int __page_handle_poison(struct page *page)
- 
- 	/*
- 	 * zone_pcp_disable() can't be used here. It will hold pcp_batch_high_lock and
--	 * dissolve_free_huge_page() might hold cpu_hotplug_lock via static_key_slow_dec()
-+	 * dissolve_free_hugetlb_folio() might hold cpu_hotplug_lock via static_key_slow_dec()
- 	 * when hugetlb vmemmap optimization is enabled. This will break current lock
- 	 * dependency chain and leads to deadlock.
- 	 */
--	ret = dissolve_free_huge_page(page);
-+	ret = dissolve_free_hugetlb_folio(page_folio(page));
- 	if (!ret) {
- 		drain_all_pages(page_zone(page));
- 		ret = take_page_off_buddy(page);
-@@ -172,8 +172,8 @@ static bool page_handle_poison(struct page *page, bool hugepage_or_freepage, boo
- {
- 	if (hugepage_or_freepage) {
  		/*
--		 * Doing this check for free pages is also fine since dissolve_free_huge_page
--		 * returns 0 for non-hugetlb pages as well.
-+		 * Doing this check for free pages is also fine since
-+		 * dissolve_free_hugetlb_folio() returns 0 for non-hugetlb folios as well.
+-		 * Dissolve free hugepages in the memory block before doing
++		 * Dissolve free hugetlb folios in the memory block before doing
+ 		 * offlining actually in order to make hugetlbfs's object
+ 		 * counting consistent.
  		 */
- 		if (__page_handle_poison(page) <= 0)
- 			/*
+-		ret = dissolve_free_huge_pages(start_pfn, end_pfn);
++		ret = dissolve_free_hugetlb_folios(start_pfn, end_pfn);
+ 		if (ret) {
+ 			reason = "failure to dissolve huge pages";
+ 			goto failed_removal_isolated;
 -- 
 2.44.0
 
