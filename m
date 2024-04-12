@@ -1,200 +1,184 @@
-Return-Path: <linux-kernel+bounces-142580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17E138A2D63
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:28:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62D3E8A2D70
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:29:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFCE028250D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:28:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19C69281CA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B69B54FBE;
-	Fri, 12 Apr 2024 11:28:31 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A42EE5490A
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:28:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE0754BDB;
+	Fri, 12 Apr 2024 11:29:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="CIjFB/Wj"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25BEC502AC
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:29:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712921310; cv=none; b=NB3JWBgXrUcO0IM5bRSeglyMwVEXUBRK4VtiYr9VZOLs1HoIwsj72uyJ/ZdDrZnDGYdG5EI898ydlQvEIKLqPteB30M28AlGBio0yROO3uVOXHn+1kNuLEqm4htfVreHE2jyDxCUsh+spB1BJlIyrPqL/+4f+kYgAxZo0b81Z6I=
+	t=1712921383; cv=none; b=GGprfhYt45929C5YoyVHvOHgH4+BFjEf92aKc7v4Dev3QgMCKw1USEq/4DcuGGFjs2sah5MABuCgTEvgZET4sIBhhAaWw5Ks1frQuA6Rs8kLtshvalfeEbe1PRxYU1kr2mnix9S3kLw1n/68cqGIquGPntACtCipLyaxSn3Td3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712921310; c=relaxed/simple;
-	bh=iFkkJ4gu5lFXEXw2w7qqEFUR/9XtHssnEUIom6DrWVI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eNEyKu02Jr/L1/rcG5Z/SmTp3iNVT9qFDDVw32jeS5i+gLKWmhXTZTbBRTMh3hMxxsZosUu7jo8Jn/D48cwl4Jbaqk16o0dPRZkmT31dIIAdFX/suCLxu7EauYt1OM8W/pSbmnIq7poFjjBaFPlIwhnykAo+Wvg7k53iyzqyYQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C208D339;
-	Fri, 12 Apr 2024 04:28:56 -0700 (PDT)
-Received: from [10.57.73.208] (unknown [10.57.73.208])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA6D73F766;
-	Fri, 12 Apr 2024 04:28:24 -0700 (PDT)
-Message-ID: <66afc978-0221-488b-9fc6-7d5213d385ed@arm.com>
-Date: Fri, 12 Apr 2024 12:28:23 +0100
+	s=arc-20240116; t=1712921383; c=relaxed/simple;
+	bh=I3CV3FO9RlyUKYSIF3yGSQYqWWM3IOLuY86OeqBrCKQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=c6q9qe4QDk1yMvIs3UtzE/LH45sIommh0ZnhrXCBLUxofkMcvSYzpNf5R900NSohfqHyvpolC14MNiLvKshtmSYKFOJTLHNX1m73zBKvoCUP5GN+FXlGjJuQ8OUIwpflf0wGMgqbprhRpg09MRO+CapmhV1ln4uE1Ex+upsgMx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=CIjFB/Wj; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ed32341906so855852b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:29:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1712921381; x=1713526181; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7TANC/O7vA+JiKQebAKkUVF/9/SWuImLeD8ZhsV9CTg=;
+        b=CIjFB/Wji2Ce4wUiE7CNuAa5JGmMBujoIDYcpP4TNt8WXoPKA5XaL1lvtpwkjOyXyy
+         EAJ4s4d5ixodCY/tjjHhVvQsdCH0NIp/ACX0kMxzshrG/jpw1tnKAWfF+ha1qzWElBEs
+         Yc1Dn3Zqy8PNrueCPPyyGhf7Rd8LJZDQ8oAE3j6/Tje8NLe81F5qL11qYDNg542+U0Wh
+         075LwEEZBWkhqmmUrSmnj0MXCxQ9/Ip5RgT/X0IgtmVfeVhu4C00YhKqgbzoQXqmy7pj
+         3NIY8gFhFM0fHxJuKTUolfCU6rzrsj5eab1FUfCtoV4j/Xb6GT0jdlnm59aRHggtdUD7
+         LyOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712921381; x=1713526181;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7TANC/O7vA+JiKQebAKkUVF/9/SWuImLeD8ZhsV9CTg=;
+        b=Ygoe4YqvKLR4Em+C376zzTkbfeyS/HidJ3znetfPwfDfNgMTQZ2Rlz7mSKmJ+qQAZ+
+         Nnjei1td90IxlHqXW5k9qMsh1wqOHEMS3pnBasiqgr+issfAdAzq6y6ZNrRYSfB8BCIe
+         9TKj0lkBqkuQ5IblgopBnKyU082jcPEPz/LUsQtAJqOLWJslPsIXOGbh/E7hosmJ+P7E
+         Ztuzn+CPc/nbw7e+wVedCDNcb0VyFLGgDd9lRZcyRK5qtW9zALIr5lIKuPvy2Ui6/Non
+         h1/CmZ0WrUxOTjbRzrQczGsR4UnBdG2Z8PVLuDZRzBQIjTb3ASN8RtW7UDpNRwAUcODl
+         a+yg==
+X-Forwarded-Encrypted: i=1; AJvYcCUqwHRfn8MJ7XyT72xCt9g8rIrIhpZDzzRgL7DNF4zXq6na1vjZPkgTua3w7k0DqKvSpTjW8HkA7DJK6b1YJTnxs1MkQxkOWl0QK1uq
+X-Gm-Message-State: AOJu0YxCo8y6TmW6o/oevK1Kyw8E4lP+SFbGu1qRyNhOA3VxME68nZR+
+	cq2Dh9XuzW8MZcichPuN+RD++xb2kpHQ49GMhkPFbZSJVC3S87YqM5C9S2ZbX5Q=
+X-Google-Smtp-Source: AGHT+IHY387bs/fjhRwu7PR3437O21AK+7fM8+la7npbiGwsFsFXlYS6TqYUTcepY2PQZxgsLVeTfA==
+X-Received: by 2002:a05:6a21:3395:b0:1a9:9664:ef12 with SMTP id yy21-20020a056a21339500b001a99664ef12mr2609342pzb.43.1712921381190;
+        Fri, 12 Apr 2024 04:29:41 -0700 (PDT)
+Received: from anup-ubuntu-vm.localdomain ([103.97.165.210])
+        by smtp.gmail.com with ESMTPSA id i89-20020a17090a3de200b002a005778f51sm2832846pjc.50.2024.04.12.04.29.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 04:29:40 -0700 (PDT)
+From: Anup Patel <apatel@ventanamicro.com>
+To: Rob Herring <robh@kernel.org>,
+	Saravana Kannan <saravanak@google.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Atish Patra <atishp@atishpatra.org>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Sunil V L <sunilvl@ventanamicro.com>,
+	Anup Patel <anup@brainfault.org>,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Anup Patel <apatel@ventanamicro.com>
+Subject: [PATCH] of: property: Add fw_devlink support for interrupt-map property
+Date: Fri, 12 Apr 2024 16:59:31 +0530
+Message-Id: <20240412112931.285507-1-apatel@ventanamicro.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/5] mm: swap: introduce swap_free_nr() for batched
- swap_free()
-Content-Language: en-GB
-To: Chuanhua Han <chuanhuahan@gmail.com>
-Cc: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
- linux-mm@kvack.org, baolin.wang@linux.alibaba.com, chrisl@kernel.org,
- david@redhat.com, hanchuanhua@oppo.com, hannes@cmpxchg.org,
- hughd@google.com, kasong@tencent.com, surenb@google.com,
- v-songbaohua@oppo.com, willy@infradead.org, xiang@kernel.org,
- ying.huang@intel.com, yosryahmed@google.com, yuzhao@google.com,
- ziy@nvidia.com, linux-kernel@vger.kernel.org
-References: <20240409082631.187483-1-21cnbao@gmail.com>
- <20240409082631.187483-2-21cnbao@gmail.com>
- <95bc0ebb-49f4-4331-8809-3e4625f1d91a@arm.com>
- <CANzGp4Jzw9bUnQw1zVdw7V6=pARx7x5s8QTyXJGfdEzrXVkZTA@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CANzGp4Jzw9bUnQw1zVdw7V6=pARx7x5s8QTyXJGfdEzrXVkZTA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 12/04/2024 03:07, Chuanhua Han wrote:
-> Ryan Roberts <ryan.roberts@arm.com> 于2024年4月11日周四 22:30写道：
->>
->> On 09/04/2024 09:26, Barry Song wrote:
->>> From: Chuanhua Han <hanchuanhua@oppo.com>
->>>
->>> While swapping in a large folio, we need to free swaps related to the whole
->>> folio. To avoid frequently acquiring and releasing swap locks, it is better
->>> to introduce an API for batched free.
->>>
->>> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
->>> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
->>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
->>
->> Couple of nits; feel free to ignore.
->>
->> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
->>
->>> ---
->>>  include/linux/swap.h |  5 +++++
->>>  mm/swapfile.c        | 51 ++++++++++++++++++++++++++++++++++++++++++++
->>>  2 files changed, 56 insertions(+)
->>>
->>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>> index 11c53692f65f..b7a107e983b8 100644
->>> --- a/include/linux/swap.h
->>> +++ b/include/linux/swap.h
->>> @@ -483,6 +483,7 @@ extern void swap_shmem_alloc(swp_entry_t);
->>>  extern int swap_duplicate(swp_entry_t);
->>>  extern int swapcache_prepare(swp_entry_t);
->>>  extern void swap_free(swp_entry_t);
->>> +extern void swap_free_nr(swp_entry_t entry, int nr_pages);
->>>  extern void swapcache_free_entries(swp_entry_t *entries, int n);
->>>  extern void free_swap_and_cache_nr(swp_entry_t entry, int nr);
->>>  int swap_type_of(dev_t device, sector_t offset);
->>> @@ -564,6 +565,10 @@ static inline void swap_free(swp_entry_t swp)
->>>  {
->>>  }
->>>
->>> +void swap_free_nr(swp_entry_t entry, int nr_pages)
->>> +{
->>> +}
->>> +
->>>  static inline void put_swap_folio(struct folio *folio, swp_entry_t swp)
->>>  {
->>>  }
->>> diff --git a/mm/swapfile.c b/mm/swapfile.c
->>> index 28642c188c93..f4c65aeb088d 100644
->>> --- a/mm/swapfile.c
->>> +++ b/mm/swapfile.c
->>> @@ -1356,6 +1356,57 @@ void swap_free(swp_entry_t entry)
->>>               __swap_entry_free(p, entry);
->>>  }
->>>
->>> +/*
->>> + * Free up the maximum number of swap entries at once to limit the
->>> + * maximum kernel stack usage.
->>> + */
->>> +#define SWAP_BATCH_NR (SWAPFILE_CLUSTER > 512 ? 512 : SWAPFILE_CLUSTER)
->>> +
->>> +/*
->>> + * Called after swapping in a large folio, batched free swap entries
->>> + * for this large folio, entry should be for the first subpage and
->>> + * its offset is aligned with nr_pages
->>> + */
->>> +void swap_free_nr(swp_entry_t entry, int nr_pages)
->>> +{
->>> +     int i, j;
->>> +     struct swap_cluster_info *ci;
->>> +     struct swap_info_struct *p;
->>> +     unsigned int type = swp_type(entry);
->>> +     unsigned long offset = swp_offset(entry);
->>> +     int batch_nr, remain_nr;
->>> +     DECLARE_BITMAP(usage, SWAP_BATCH_NR) = { 0 };
->>> +
->>> +     /* all swap entries are within a cluster for mTHP */
->>> +     VM_BUG_ON(offset % SWAPFILE_CLUSTER + nr_pages > SWAPFILE_CLUSTER);
->>> +
->>> +     if (nr_pages == 1) {
->>> +             swap_free(entry);
->>> +             return;
->>> +     }
->>> +
->>> +     remain_nr = nr_pages;
->>> +     p = _swap_info_get(entry);
->>> +     if (p) {
->>
->> nit: perhaps return early if (!p) ? Then you dedent the for() block.
-> 
-> Agreed!
-> 
->>
->>> +             for (i = 0; i < nr_pages; i += batch_nr) {
->>> +                     batch_nr = min_t(int, SWAP_BATCH_NR, remain_nr);
->>> +
->>> +                     ci = lock_cluster_or_swap_info(p, offset);
->>> +                     for (j = 0; j < batch_nr; j++) {
->>> +                             if (__swap_entry_free_locked(p, offset + i * SWAP_BATCH_NR + j, 1))
->>> +                                     __bitmap_set(usage, j, 1);
->>> +                     }
->>> +                     unlock_cluster_or_swap_info(p, ci);
->>> +
->>> +                     for_each_clear_bit(j, usage, batch_nr)
->>> +                             free_swap_slot(swp_entry(type, offset + i * SWAP_BATCH_NR + j));
->>> +
->>
->> nit: perhaps change to for (;;), and do the checks here to avoid clearing the
->> bitmap on the last run:
->>
->>                         i += batch_nr;
->>                         if (i < nr_pages)
->>                                 break;
-> Great, thank you for your advice!
+Some of the PCI controllers (such as generic PCI host controller)
+use "interrupt-map" DT property to describe the mapping between
+PCI endpoints and PCI interrupt pins.
 
-Or maybe leave the for() as is, but don't explicitly init the bitmap at the
-start of the function and instead call:
+Currently, there is no fw_devlink created based on "interrupt-map"
+DT property so interrupt controller is not guaranteed to be probed
+before PCI host controller. This mainly affects RISC-V platforms
+where both PCI host controller and interrupt controllers are probed
+as regular platform devices.
 
-	bitmap_clear(usage, 0, SWAP_BATCH_NR);
+This creates fw_devlink between consumers (PCI host controller) and
+supplier (interrupt controller) based on "interrupt-map" DT property.
 
-At the start of each loop?
+Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+---
+ drivers/of/property.c | 53 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
->>
->>> +                     bitmap_clear(usage, 0, SWAP_BATCH_NR);
->>> +                     remain_nr -= batch_nr;
->>> +             }
->>> +     }
->>> +}
->>> +
->>>  /*
->>>   * Called after dropping swapcache to decrease refcnt to swap entries.
->>>   */
->>
->>
-> 
-> 
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index a6358ee99b74..ccbbb651a89a 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -1311,6 +1311,58 @@ static struct device_node *parse_interrupts(struct device_node *np,
+ 	return of_irq_parse_one(np, index, &sup_args) ? NULL : sup_args.np;
+ }
+ 
++static struct device_node *parse_interrupt_map(struct device_node *np,
++					       const char *prop_name, int index)
++{
++	struct device_node *tn, *ipar, *supnp = NULL;
++	u32 addrcells, intcells, cells;
++	const __be32 *imap, *imap_end;
++	int i, imaplen;
++
++	if (!IS_ENABLED(CONFIG_OF_IRQ))
++		return NULL;
++
++	if (strcmp(prop_name, "interrupt-map"))
++		return NULL;
++
++	ipar = of_node_get(np);
++	do {
++		if (!of_property_read_u32(ipar, "#interrupt-cells", &intcells))
++			break;
++		tn = ipar;
++		ipar = of_irq_find_parent(ipar);
++		of_node_put(tn);
++	} while (ipar);
++	if (!ipar)
++		return NULL;
++	addrcells = of_bus_n_addr_cells(ipar);
++	of_node_put(ipar);
++
++	imap = of_get_property(np, "interrupt-map", &imaplen);
++	if (!imap || imaplen <= (addrcells + intcells))
++		return NULL;
++	imap_end = imap + imaplen;
++
++	for (i = 0; i <= index && imap < imap_end; i++) {
++		if (supnp)
++			of_node_put(supnp);
++
++		imap += addrcells;
++		imap += intcells;
++
++		supnp = of_find_node_by_phandle(be32_to_cpu(imap[0]));
++		if (!supnp)
++			return NULL;
++		imap += 1;
++
++		if (of_property_read_u32(supnp, "#interrupt-cells", &cells))
++			return NULL;
++		imap += cells;
++	}
++
++	return supnp;
++}
++
+ static struct device_node *parse_remote_endpoint(struct device_node *np,
+ 						 const char *prop_name,
+ 						 int index)
+@@ -1359,6 +1411,7 @@ static const struct supplier_bindings of_supplier_bindings[] = {
+ 	{ .parse_prop = parse_msi_parent, },
+ 	{ .parse_prop = parse_gpio_compat, },
+ 	{ .parse_prop = parse_interrupts, },
++	{ .parse_prop = parse_interrupt_map, },
+ 	{ .parse_prop = parse_regulators, },
+ 	{ .parse_prop = parse_gpio, },
+ 	{ .parse_prop = parse_gpios, },
+-- 
+2.34.1
 
 
