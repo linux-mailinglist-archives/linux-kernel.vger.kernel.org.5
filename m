@@ -1,221 +1,123 @@
-Return-Path: <linux-kernel+bounces-142742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63E768A2FA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 44E388A2FAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:38:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19E91284A15
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:37:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3781284527
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:38:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F1DB84A35;
-	Fri, 12 Apr 2024 13:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A6FF84E13;
+	Fri, 12 Apr 2024 13:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OxCRcSmE"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MSMaEXef"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA5C8824BC;
-	Fri, 12 Apr 2024 13:37:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F06E84DEA;
+	Fri, 12 Apr 2024 13:37:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712929030; cv=none; b=IPICDX2dbwAg+xlfAowDy/6tlP6X5ijy6lUfbWerkE54y+ZHVppMabn5oecEPdpyPct+T0QrUpuIZRi8n8tBMGFqB76Q3iUNBORXuA12x0jCimOOsmUVtQoEQ+sWxFmi2uxj5faOaBhMi9rg7j1nxvjHXrZJFF6lE3O7BfCBKNk=
+	t=1712929076; cv=none; b=mF4eMCiau9rs8lRFvFGXn3BAnJjvDkmD2qJ293Ike8J2zJMW3bVnbPedqN0P+HliBnMpWWX1MFlPmAOmYPjvvIHU/7Co+9tt6+dwUwALiokpYhkf6VZyT7G00KbSchqBr2zVM3RS+DHFZha+BjQTsPakHLp+0KuqeVZdi3ZLoUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712929030; c=relaxed/simple;
-	bh=VWKB4YBkBGiUFfx/DCMZTK1YmSwqd9/AxvqBDvCXap8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RDTtHgjKOhbDUOjXb4dM+4EXY25qWpKEKgom0hvzBbXqiSUJ5/ubvrp3YOUB7ggHlunmeYl1uqwFJmbJXiyuikjaDg41gQ32425lbE/NHuT2P1bV6Ed2Ch6j+UjC0Zz/7Z5CBDUG1yqAOSevVTp8nkeCXIerUpAi/cqfyN3DiXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OxCRcSmE; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712929028; x=1744465028;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=VWKB4YBkBGiUFfx/DCMZTK1YmSwqd9/AxvqBDvCXap8=;
-  b=OxCRcSmEgY1e0yJV1nt8hXTnKNMhJU6MBzPCIsLTvwVZHpGji0eRxhjw
-   1tP4p6dtf0DqLHlZVfQkSahlxjOOAYKCbMoJ2K9RoLW/Dz3ToNX04+EAz
-   8zZCzG/b1je3Ht1tSU4PZY+f4jdo2axVPkskkLr6QblF5/yDeYtDfXsxp
-   bICdgCalSJ3t4lb7t7Cl4QEN+Ropvx9/KFhJ3gTjPsQOUdylapj491NbL
-   J0QN4Ly8F/RDGmiS9kv/B2Q4dLs4SYPYafTQJoc3JYgMhizMDdVGK5Tkx
-   GJSpB9XpesfquRkyPJsfmTEfz9xhCS0uNViKvrMLOZW8fpkH++12E3KFr
-   Q==;
-X-CSE-ConnectionGUID: synnqT46T9m/8N0CNGnG+g==
-X-CSE-MsgGUID: UlRCxipcRzKKsNjSTX2Miw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="25897900"
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="25897900"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 06:37:08 -0700
-X-CSE-ConnectionGUID: B2Dqbe6xRFywg7xQBz1M/g==
-X-CSE-MsgGUID: aZvyjeKHQ/mN71oHXEf4VQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="21211657"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.32])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 06:37:04 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	linux-pci@vger.kernel.org,
-	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-	Oliver O'Halloran <oohall@gmail.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org
-Cc: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v3 2/2] PCI: Create helper to print TLP Header and Prefix Log
-Date: Fri, 12 Apr 2024 16:36:35 +0300
-Message-Id: <20240412133635.3831-3-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240412133635.3831-1-ilpo.jarvinen@linux.intel.com>
-References: <20240412133635.3831-1-ilpo.jarvinen@linux.intel.com>
+	s=arc-20240116; t=1712929076; c=relaxed/simple;
+	bh=RtPHTSwAiDMZibFKSA4Jdowqk+RE3EK7sCxTQ9Eflpg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Dj0w9KeUCW2XKk0m8rwCv5wFDnZJ4UHFZzIJ8vjK9zu5g336rZrUuj82ZDyq2aKUP4Zmqs5Mvtok/BTmxE+6cSIEOEY+dO8ZNgumDPwbSyQl54I3Yz/e4lycujlTSBKGuYO/FJ9/8g9ysQS6TzQ2zRzmTfT2FbuzQ5ijGFoEr+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MSMaEXef; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-516d04fc04bso1502109e87.2;
+        Fri, 12 Apr 2024 06:37:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712929073; x=1713533873; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZBZ/trnMtit0L5nOLjCK4i4uNbzRJ+y85cwstMMxmcc=;
+        b=MSMaEXefpKDDc2uYMIpOFc2i2hOxYu0eSZTRHqnSxo7CNMytbY79q2YBxCdcwMDP3v
+         x4Mj4nCuoEgBXE/1FhIJnV3qq65+FwY3z/9ZOer636GPaF2hrA5qUZZHESbkYm8kqp3k
+         g7+/B8TwTkHdqHbsmW16C5KBMdzueFFfwvQb1OiI08FvoCvFc+19KUaLrxWQPUW5Qiqb
+         ZikI0L5Q/GUH3sV1VlSmil9lLJbazMfI6ujoRkGQVuThMFcjoFbSJHDoCpyKWC4QAQ7F
+         TOea65qFLHtxL0ywCMJXt+jTsdegEI72D5s9KVWvo4Oa/RpP1h0Ge+zF3z/8pdINMedA
+         cOrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712929073; x=1713533873;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZBZ/trnMtit0L5nOLjCK4i4uNbzRJ+y85cwstMMxmcc=;
+        b=W9Pp6LQYh1iAEa3FGoUmiVeO5YB0X3aapLBKwUwCqQ3KNEC/A7Bgs/LcKALLyhlz75
+         AUiiG2bj8/WnoynGgIQf3kWwF+qKYoqM1S9zM35vMrY1kXrJqdV9sz0apvrKCksc/4sL
+         5LVn9ZIggXqjZGw1ktBEmkQ8Hn/L8cvibXaz47ENnjr+hwJUc6wqh+kinrlslNzptytl
+         +OKwm8yjRy3RCSXv1j3AKVU63FsFHvxM+2HacxUp6AAgCZcJNr6PXJqdutXKX9Gr9yP3
+         bxCLCNmTu1TqY30bmnq3hG6Go7BKpvEdfKNpYSyhxFS8CgSeYja9uzjk8Tl8E6CO65M/
+         FR1A==
+X-Forwarded-Encrypted: i=1; AJvYcCWqa9C0zhFDF4QAzmgDLOEmWjg6SXDjHeCCjGyaYXLXq7nfS7lUzDVqZnhbzdnXx/pbexNzBjDxX/0bHCXEGEGtb3wqj/JbKaTg6f2rl2gLO7ObW3dja+DufzufGHAVdc8nD/IGeDQPvdXilsWQrkOncEwOmG6NZtQJA4eYbfuVAIuNmx8=
+X-Gm-Message-State: AOJu0Yyopy9yiP4kGBgCOJNHKpyzc/eqsUtDZgR+mOr8iOquqAKVz2o7
+	WR/yNp6tfSTbL2EtRUWED/jqcEJLqJgXIeE4mDSagVmwx3z22P74ZDX0QOC0PTuBY3bxNvIU+83
+	uI7BA3zu5fIR7SeStUg6tMxqyxWg=
+X-Google-Smtp-Source: AGHT+IHNCOxpEcg7kq0YLqhVyBPLSvQx/KccK2KXiNpUI+6rMUuNO8y0wPk5vLRyn20x610DSEMMlhpS/tWB09yu4rg=
+X-Received: by 2002:a05:6512:21d1:b0:513:d5ec:afb with SMTP id
+ d17-20020a05651221d100b00513d5ec0afbmr1556007lft.40.1712929073158; Fri, 12
+ Apr 2024 06:37:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240412-pinctrl-scmi-v9-0-b817344d3a9a@nxp.com>
+ <CAHp75VfBaU+F-+3zte66mxgJ+gW9N7j8E+0gw9_T9J5DHTnsBA@mail.gmail.com> <DU0PR04MB9417DF1519C59AEBE156BC2488042@DU0PR04MB9417.eurprd04.prod.outlook.com>
+In-Reply-To: <DU0PR04MB9417DF1519C59AEBE156BC2488042@DU0PR04MB9417.eurprd04.prod.outlook.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Fri, 12 Apr 2024 16:37:16 +0300
+Message-ID: <CAHp75Vch7TzevZQK4CE_WSVOgUdzODkJXiv0=OuqrmDfgevV+A@mail.gmail.com>
+Subject: Re: [PATCH v9 0/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+To: Peng Fan <peng.fan@nxp.com>
+Cc: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, Sudeep Holla <sudeep.holla@arm.com>, 
+	Cristian Marussi <cristian.marussi@arm.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Linus Walleij <linus.walleij@linaro.org>, Dan Carpenter <dan.carpenter@linaro.org>, 
+	Dhruva Gole <d-gole@ti.com>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
+	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add pcie_print_tlp_log() helper to print TLP Header and Prefix Log.
-Print End-End Prefixes only if they are non-zero.
+On Fri, Apr 12, 2024 at 10:01=E2=80=AFAM Peng Fan <peng.fan@nxp.com> wrote:
+> > Subject: Re: [PATCH v9 0/4] firmware: arm_scmi: Add SCMI v3.2 pincontro=
+l
+> > protocol basic support
+> > On Fri, Apr 12, 2024 at 3:13=E2=80=AFAM Peng Fan (OSS) <peng.fan@oss.nx=
+p.com>
+> > wrote:
 
-Consolidate the few places which currently print TLP using custom
-formatting.
+..
 
-The first attempt used pr_cont() instead of building a string first but
-it turns out pr_cont() is not compatible with pci_err() but prints on a
-separate line. When I asked about this, Andy Shevchenko suggested
-pr_cont() should not be used in the first place (to eventually get rid
-of it) so pr_cont() is now replaced with building the string first.
+> > > - Because "pinctrl: pinconf-generic: check error value EOPNOTSUPP" wa=
+s
+> > >   applied, so pinctrl-scmi.c not convert to err return value for
+> > >   'pinctrl_ops->settings_get_one()'.
+> >
+> > Because it's there it does not mean we want it right now. I pinged Linu=
+s about
+> > it again.
+>
+> ok, let me include the diff[1], is this ok for you?
+>
+> [1]https://lore.kernel.org/all/DU0PR04MB941754A6D751E80840F9A79888012@DU0=
+PR04MB9417.eurprd04.prod.outlook.com/
 
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
- drivers/pci/pci.c      | 32 ++++++++++++++++++++++++++++++++
- drivers/pci/pcie/aer.c | 10 ++--------
- drivers/pci/pcie/dpc.c |  5 +----
- include/linux/aer.h    |  2 ++
- 4 files changed, 37 insertions(+), 12 deletions(-)
+Yes.
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index af230e6e5557..54d4872d14b8 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -9,6 +9,7 @@
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/array_size.h>
- #include <linux/kernel.h>
- #include <linux/delay.h>
- #include <linux/dmi.h>
-@@ -1116,6 +1117,37 @@ int pcie_read_tlp_log(struct pci_dev *dev, int where, int where2,
- }
- EXPORT_SYMBOL_GPL(pcie_read_tlp_log);
- 
-+/**
-+ * pcie_print_tlp_log - Print TLP Header / Prefix Log contents
-+ * @dev:	PCIe device
-+ * @tlp_log:	TLP Log structure
-+ * @pfx:	Internal string prefix (for indentation)
-+ *
-+ * Prints TLP Header and Prefix Log information held by @tlp_log.
-+ */
-+void pcie_print_tlp_log(const struct pci_dev *dev,
-+			const struct pcie_tlp_log *tlp_log, const char *pfx)
-+{
-+	char buf[(10 + 1) * (4 + ARRAY_SIZE(tlp_log->prefix)) + 14 + 1];
-+	unsigned int i;
-+	int len;
-+
-+	len = scnprintf(buf, sizeof(buf), "%#010x %#010x %#010x %#010x",
-+			tlp_log->dw[0], tlp_log->dw[1], tlp_log->dw[2],
-+			tlp_log->dw[3]);
-+
-+	if (tlp_log->prefix[0])
-+		len += scnprintf(buf + len, sizeof(buf) - len, " E-E Prefixes:");
-+	for (i = 0; i < ARRAY_SIZE(tlp_log->prefix); i++) {
-+		if (!tlp_log->prefix[i])
-+			break;
-+		len += scnprintf(buf + len, sizeof(buf) - len,
-+				 " %#010x", tlp_log->prefix[i]);
-+	}
-+
-+	pci_err(dev, "%sTLP Header: %s\n", pfx, buf);
-+}
-+
- /**
-  * pci_restore_bars - restore a device's BAR values (e.g. after wake-up)
-  * @dev: PCI device to have its BARs restored
-diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
-index ecc1dea5a208..efb9e728fe94 100644
---- a/drivers/pci/pcie/aer.c
-+++ b/drivers/pci/pcie/aer.c
-@@ -664,12 +664,6 @@ static void pci_rootport_aer_stats_incr(struct pci_dev *pdev,
- 	}
- }
- 
--static void __print_tlp_header(struct pci_dev *dev, struct pcie_tlp_log *t)
--{
--	pci_err(dev, "  TLP Header: %08x %08x %08x %08x\n",
--		t->dw[0], t->dw[1], t->dw[2], t->dw[3]);
--}
--
- static void __aer_print_error(struct pci_dev *dev,
- 			      struct aer_err_info *info)
- {
-@@ -724,7 +718,7 @@ void aer_print_error(struct pci_dev *dev, struct aer_err_info *info)
- 	__aer_print_error(dev, info);
- 
- 	if (info->tlp_header_valid)
--		__print_tlp_header(dev, &info->tlp);
-+		pcie_print_tlp_log(dev, &info->tlp, "  ");
- 
- out:
- 	if (info->id && info->error_dev_num > 1 && info->id == id)
-@@ -796,7 +790,7 @@ void pci_print_aer(struct pci_dev *dev, int aer_severity,
- 			aer->uncor_severity);
- 
- 	if (tlp_header_valid)
--		__print_tlp_header(dev, &aer->header_log);
-+		pcie_print_tlp_log(dev, &aer->header_log, "  ");
- 
- 	trace_aer_event(dev_name(&dev->dev), (status & ~mask),
- 			aer_severity, tlp_header_valid, &aer->header_log);
-diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
-index 80b1456f95fe..3f8e3b6c7948 100644
---- a/drivers/pci/pcie/dpc.c
-+++ b/drivers/pci/pcie/dpc.c
-@@ -229,10 +229,7 @@ static void dpc_process_rp_pio_error(struct pci_dev *pdev)
- 	pcie_read_tlp_log(pdev, cap + PCI_EXP_DPC_RP_PIO_HEADER_LOG,
- 			  cap + PCI_EXP_DPC_RP_PIO_TLPPREFIX_LOG,
- 			  dpc_tlp_log_len(pdev), &tlp_log);
--	pci_err(pdev, "TLP Header: %#010x %#010x %#010x %#010x\n",
--		tlp_log.dw[0], tlp_log.dw[1], tlp_log.dw[2], tlp_log.dw[3]);
--	for (i = 0; i < pdev->dpc_rp_log_size - 5; i++)
--		pci_err(pdev, "TLP Prefix Header: dw%d, %#010x\n", i, tlp_log.prefix[i]);
-+	pcie_print_tlp_log(pdev, &tlp_log, "");
- 
- 	if (pdev->dpc_rp_log_size < 5)
- 		goto clear_status;
-diff --git a/include/linux/aer.h b/include/linux/aer.h
-index 2484056feb8d..1e8c61deca65 100644
---- a/include/linux/aer.h
-+++ b/include/linux/aer.h
-@@ -41,6 +41,8 @@ struct aer_capability_regs {
- int pcie_read_tlp_log(struct pci_dev *dev, int where, int where2,
- 		      unsigned int tlp_len, struct pcie_tlp_log *log);
- unsigned int aer_tlp_log_len(struct pci_dev *dev);
-+void pcie_print_tlp_log(const struct pci_dev *dev,
-+			const struct pcie_tlp_log *tlp_log, const char *pfx);
- 
- #if defined(CONFIG_PCIEAER)
- int pci_aer_clear_nonfatal_status(struct pci_dev *dev);
--- 
-2.39.2
-
+--=20
+With Best Regards,
+Andy Shevchenko
 
