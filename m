@@ -1,143 +1,116 @@
-Return-Path: <linux-kernel+bounces-142643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71B268A2E2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:27:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94ED88A2E41
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:29:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 050AA286CD4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:27:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5C241C227C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:28:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0BCF56B81;
-	Fri, 12 Apr 2024 12:26:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD40256B7F;
+	Fri, 12 Apr 2024 12:28:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="yL9YLsZQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="qFfTFFqZ"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F4656B73
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 12:26:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFCF856B68;
+	Fri, 12 Apr 2024 12:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712924814; cv=none; b=VwgVUbAR1PPEMHTKDlmFc/8seTstlnnbkS10QIAazAPJs00LiIZ9Qd0/wvt2S4o21W+YebPWPEYYwKD29wh9q8sUxkmv0ZRV+m2r+TwIjoxXnoGpU18zP53X1pxZmIIzyA3kDhIIQOSpIaeTn8eNUtBwOa04RXT7Gc/V/tOT8MA=
+	t=1712924933; cv=none; b=eMUdr0mZZ3LrfonOF4KGY3KQCxVtQDAsg1X8fbUidCGe81emBjz7M9heV9Ajw2GIImlkfbAOR9rWmVmllHVJyrWSjUDJunuSaU4YdUGt9OPkklOLbLjfoR2dIKxxP3gFbacTonY2ejkBGybiAVHXrBBpxqOPZeEnBIqdc/uOq3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712924814; c=relaxed/simple;
-	bh=mFlXd0dhK9hhZDrKKgOHHeKtkcq7FDGi2zmOZXw3Ldg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q6aCDTTd2Tv4U0iUnjA83SWAckjmqK3hCjXydw4WpIKCY+PFQcM+yby70R73n+fIqJDoqty6nPNBgSmZ642CfwSWllsp8iMjCOSeR5siCHt2gervQ3NCkaiihPc9TWWks69ndZxCW1AFF3st4C4p0VhTGWCFPDLCgHZpoPo+JiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=yL9YLsZQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5645C2BD10;
-	Fri, 12 Apr 2024 12:26:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712924814;
-	bh=mFlXd0dhK9hhZDrKKgOHHeKtkcq7FDGi2zmOZXw3Ldg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=yL9YLsZQuMLjcwy5w6DOIekiL81NS21sohO86yBowSf7HYXm+G2tcdyAeYjAc/mcq
-	 d1imwTRp96XxlZ7mu2RM8WNH2isLIQjaXtBSlakVNO5o8N3sJ/XfL4qxVLvTtue9sr
-	 crr0j4hZIMq1n76HH+N3f4Yd8MLNpiDt4Rf+qRK8=
-Date: Fri, 12 Apr 2024 14:26:51 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Vamsi Attunuru <vattunuru@marvell.com>
-Cc: arnd@arndb.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/1] misc: mrvl-cn10k-dpi: add Octeon CN10K DPI
- administrative driver
-Message-ID: <2024041250-nursing-tidy-db7e@gregkh>
-References: <MW4PR18MB5244C76290A15737DC94FFDBA6042@MW4PR18MB5244.namprd18.prod.outlook.com>
- <20240412121005.1825881-1-vattunuru@marvell.com>
+	s=arc-20240116; t=1712924933; c=relaxed/simple;
+	bh=QHAA42jWsT5+mycQxxxM3hgROwXPxTDhSsQcKRn9cr0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TXPiGaVg1ogviZpLZ4WMJ+zXMsJAA3ngsyiD/ZAGJ2vwfRGxG4J9wbZOf1M/it3gAiGaRx94yW6Xie7sVIdVqmhMRVpAcZ9kvIFt9jOJjRAr3oz3Idz/9tIY+Xh7ziVHCuRgsHKtZfCYkY5wa/kj4LMOfAhDvBNR47KlBQXz890=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=qFfTFFqZ; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from umang.jain (unknown [103.251.226.65])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id BAB918E1;
+	Fri, 12 Apr 2024 14:28:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1712924885;
+	bh=QHAA42jWsT5+mycQxxxM3hgROwXPxTDhSsQcKRn9cr0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=qFfTFFqZdeI+dh44smJKkHOwcZIAW+N2VB/CuVX3gkLDZaUW1vR248CLTL4PL0u23
+	 pTvOUEkeMxShKhSdvLtUcFQK8XPBcOrWuI3AeprkIlziIH/LFYSgyiioYjFItTII6S
+	 fUMIxKoy3Jg2xYvPRry0UGecjBqXZjs38iFY1Hek=
+From: Umang Jain <umang.jain@ideasonboard.com>
+To: linux-media@vger.kernel.org
+Cc: Alexander Shiyan <eagle.alexander923@gmail.com>,
+	Kieran Bingham <kieran.bingham@ideasonboard.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	Umang Jain <umang.jain@ideasonboard.com>
+Subject: [PATCH v5 0/6] media: imx335: 2/4 lane ops and improvements
+Date: Fri, 12 Apr 2024 17:58:36 +0530
+Message-ID: <20240412122842.193713-1-umang.jain@ideasonboard.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412121005.1825881-1-vattunuru@marvell.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 12, 2024 at 05:10:05AM -0700, Vamsi Attunuru wrote:
-> Adds a misc driver for Marvell CN10K DPI(DMA Engine) device's physical
-> function which initializes DPI DMA hardware's global configuration and
-> enables hardware mailbox channels between physical function (PF) and
-> it's virtual functions (VF). VF device drivers (User space drivers) use
-> this hw mailbox to communicate any required device configuration on it's
-> respective VF device. Accordingly, this DPI PF driver provisions the
-> VF device resources.
-> 
-> At the hardware level, the DPI physical function (PF) acts as a management
-> interface to setup the VF device resources, VF devices are only provisioned
-> to handle or control the actual DMA Engine's data transfer capabilities.
+Another batch of improvements of the imx335 driver.
 
-No pointer to the userspace code that uses this?  Why not?  How are we
-supposed to be able to review this?
+Patch 1/6 adds support for 2 or 4 lane operation modes.
 
-> +config MARVELL_CN10K_DPI
-> +	tristate "Octeon CN10K DPI driver"
-> +	depends on ARM64 && PCI
-> +	help
-> +	  Enables Octeon CN10K DPI driver which intializes DPI PF device's global configuration
-> +	  and its VFs resource configuration to enable DMA transfers. DPI PF device
-> +	  does not have any data movement functionality, it only serves VF's resource
-> +	  configuration requests.
+Patch 2/6 call the V4L2 fwnode device parser to handle controls that are
+standardised by the framework.
 
-Did this pass checkpatch?  Please wrap your help text at the proper
-boundry.
+Patch 3/6 introduces the use of CCI for registers access.
 
-And what is "DPI"?  What is "PF"?  What is "VF"?  These are all terms
-that need to be documented somewhere, right?
+Patch 4/6 uses decimal values for sizes registers (instead of
+hexadecimal). This improves overall readability
 
-> --- /dev/null
-> +++ b/include/uapi/misc/mrvl_cn10k_dpi.h
-> @@ -0,0 +1,36 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
-> +/*
-> + * Marvell Octeon CN10K DPI driver
-> + *
-> + * Copyright (C) 2024 Marvell.
-> + *
-> + */
-> +
-> +#ifndef __MRVL_CN10K_DPI_H__
-> +#define __MRVL_CN10K_DPI_H__
-> +
-> +#include <linux/types.h>
-> +
-> +#define DPI_MAX_ENGINES 6
-> +
-> +struct dpi_mps_mrrs_cfg {
-> +	__u64 mrrs; /* Max read request size */
-> +	__u64 mps;  /* Max packet size */
+Patch 5/6 fixes the height value discrepency. Accessible height is 1944,
+as per the data sheet
 
-You can spell out variables with more characters :)
+Patch 6/6 fixes the max analogue gain value.
 
-> +	__u64 port; /* Ebus port */
-> +};
-> +
-> +struct dpi_engine_cfg {
-> +	__u64 fifo_mask; /* FIFO size mask in KBytes */
-> +	__u64 molr[DPI_MAX_ENGINES];
+Changes in v5:
+- Simplify error handling in 2/6. Check for ctrl_hdlr->error
+- Space fix around { } in 3/6. Drop /* undocumented * as well
 
-What is a "molr"?
+Changes in v4:
+- Do not change from window cropping mode in patch 4/6.
+  In v3, the sensor was changed to all pixel scan mode to
+  achieve height=1944, but it can be achieved in window
+  cropping mode as well, by fixing the mode registers
 
-> +	__u64 update_molr; /* '1' to update engine MOLR */
+changes in v3:
+- fix patch 2/6 where we need to free ctrl handler
+  on error path.
 
-You "burn" a whole 64 for 1 bit?  That feels wrong, who on your end
-reviewed this api to be correct?
+changes in v2:
+- New patch 4/6
+- Drop calculating the pixel clock from link freq.
+- CCI register address sort (incremental)
+- Fix cci_write for REG_HOLD handling and add a comment.
+- Remove  unused macros as part of 3/6
 
-> +#define DPI_MAGIC_NUM	0xB8
+Kieran Bingham (2):
+  media: imx335: Support 2 or 4 lane operation modes
+  media: imx335: Parse fwnode properties
 
-Did you document this api somewhere?
+Umang Jain (4):
+  media: imx335: Use V4L2 CCI for accessing sensor registers
+  media: imx335: Use integer values for size registers
+  media: imx335: Fix active area height discrepency
+  media: imx335: Limit analogue gain value
 
-> +
-> +/* Set MPS & MRRS parameters */
-> +#define DPI_MPS_MRRS_CFG _IOW(DPI_MAGIC_NUM, 1, struct dpi_mps_mrrs_cfg)
-> +
-> +/* Set Engine FIFO configuration */
-> +#define DPI_ENGINE_CFG   _IOW(DPI_MAGIC_NUM, 2, struct dpi_engine_cfg)
-> +
-> +#endif /* __MRVL_CN10K_DPI_H__ */
-> -- 
-> 2.25.1
-> 
+ drivers/media/i2c/Kconfig  |   1 +
+ drivers/media/i2c/imx335.c | 634 ++++++++++++++++++-------------------
+ 2 files changed, 301 insertions(+), 334 deletions(-)
+
+-- 
+2.43.0
+
 
