@@ -1,258 +1,166 @@
-Return-Path: <linux-kernel+bounces-142688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 735E58A2ED9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:07:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D84158A2EDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:08:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29D62280EA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:07:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DCCC1F21F61
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:08:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB935EE73;
-	Fri, 12 Apr 2024 13:07:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA975FBA0;
+	Fri, 12 Apr 2024 13:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b="prjL34Gr"
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.196])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VoVb/NS1"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F8055D73D;
-	Fri, 12 Apr 2024 13:07:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.208.4.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B23B62818
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:08:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712927230; cv=none; b=DOBeJy7QAB2G0LxtXJimh/CBb4F+ASzpRdAdBwhH6CGNut2WPIng8zliVkPyF05juqQR98JfwPz2cpLe44w/wMYv+owJHOKZN/a90khElpddgEbukqjry1XerpuRL/V+S9NDsf+JBEYW31WXTMl+SBhO0azeXzuBfxUZkEO035o=
+	t=1712927290; cv=none; b=Lvph8hlBgsJhSd3/cW91lyzzrrNDfbFeuEseR0gvYvW7JjyWdDQQMrtUj8dTtwzQ3MNa1FCSt9sLxFjmFkPosvSGobIGZcoCyOlBZIoud2BsGuwBMN3E2jYj+OFfsjFWxhV/J0LuzZ3rdlVvhHiKQJSx3ABf5U28Gr7BY1lUAVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712927230; c=relaxed/simple;
-	bh=rKCe+ru0sIIg/gVq56Bi1gfIUtdAzd5dD4bqK3F1UG4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iuxnBYdnW76b77ParbiV1XMSXoXg8HSAfXNT+uP+voXIcOn6Uv7rpdXtZudKcnStLs8cKv0XYv0aKI6OgzueH+78Es1TkI5idF77mSXLJIi9BkfQ9KtUw7d6uBUnWuhQWJPBp6ir2W1Aol0x926XZPaONk/OKqc6YjIxIed0eQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io; spf=pass smtp.mailfrom=finest.io; dkim=pass (2048-bit key) header.d=finest.io header.i=parker@finest.io header.b=prjL34Gr; arc=none smtp.client-ip=74.208.4.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=finest.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=finest.io
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=finest.io;
-	s=s1-ionos; t=1712927216; x=1713532016; i=parker@finest.io;
-	bh=Brp8PPWU1GgjfxLdssNi6MpQZBUA/d0iMTD/w1/+Nt8=;
-	h=X-UI-Sender-Class:Date:From:To:Cc:Subject:Message-ID:In-Reply-To:
-	 References:MIME-Version:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=prjL34GrZ0PT9lrBRioHA42gxB+lcWF2pEmALp6+fCB41lXLWYn0vXybjvaDpkdO
-	 YZOTHMEeLFYN9Af+bHrpBPJPZJ7E9fyIzfRSOAgrv2hu0hoA6JnxGC5JGZ9xPiPsp
-	 KXt4QQzSnvtYQy//KC9jyynUhbkdvAHXoWXMv0j7/UPnSrACyOMhcpKfMcHUPDKDZ
-	 OJtRpbkqTRVVlOBojv3D0A3FKfV5Kl1U9ue+EOEeAV6hO8snMyEgSX7Pgg2IEVD6p
-	 vokzs6ijPkWLpe6D8a9vKg0CE6N1G31H9FB7oun6i3G1SZ3t9hHcHOsJSQrOS5FEb
-	 2Nn44zs9OYzD/f4+6A==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from SWDEV2.connecttech.local ([98.159.241.229]) by
- mrelay.perfora.net (mreueus003 [74.208.5.2]) with ESMTPSA (Nemesis) id
- 0LvDe8-1svaOw2UMc-010IMM; Fri, 12 Apr 2024 15:06:56 +0200
-Date: Fri, 12 Apr 2024 09:06:54 -0400
-From: Parker Newman <parker@finest.io>
-To: Ilpo =?UTF-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby
- <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, Parker Newman <pnewman@connecttech.com>
-Subject: Re: [PATCH v2 2/7] serial: exar: add support for reading from Exar
- EEPROM
-Message-ID: <20240412090654.54c43612@SWDEV2.connecttech.local>
-In-Reply-To: <2b817d47-52f6-bc9b-cb24-4f540101ea50@linux.intel.com>
-References: <cover.1712863999.git.pnewman@connecttech.com>
-	<d16cb88f916914278e125023c856bbf85d0908c1.1712863999.git.pnewman@connecttech.com>
-	<2b817d47-52f6-bc9b-cb24-4f540101ea50@linux.intel.com>
-Organization: Connect Tech Inc.
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712927290; c=relaxed/simple;
+	bh=Q1Db/ZKdhoYZY4z6pe4loFoumzC09sqIMjzSkx6k370=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=jayIpPmpMa381G45d/Hk4S/d/OJfgUr0D26KRit94DSoN2DhhMla2USoGpnkzY70aJ2/ibCDjaOss/y6mag0fEpNVkKkce5SJr+1xpwaFHtC9AqgY+eKTXfNKsRRPx0dmApQZNOPdDwH8BOAereLW3x+bnRulLdUKJx9aVWxZY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VoVb/NS1; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712927287; x=1744463287;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Q1Db/ZKdhoYZY4z6pe4loFoumzC09sqIMjzSkx6k370=;
+  b=VoVb/NS1mseqbLFZczbgW/RuAgPsa+uBdSoRjm0JVrupz0oeiW3qFSMq
+   AlwLbPzF9DCs4SpzKPhrDBD+MBaW/rq6zx/cVRrY+dK7OMoOfWgIfrgGy
+   FDhkFqxKYF3bCpxs3C6SUxag9zPahtc6i2gL2N79l5KCKgGAMrR/QVApz
+   MjFwNiCvfPNhlrPxmOZ8QTu0sM2VhPfL6kMWxNyVrr05OrVtd6ZMhINN7
+   6KSfDHA+iipgICCmTa3LenN3UNmmeC/zG3V6xERveUHdRDGmjI/hWncEx
+   q+HLn3QcqtG7jx8uHDSw8v6zHFx/amlpRsDFF0yckPrXYrnmWVQk6oJ49
+   w==;
+X-CSE-ConnectionGUID: QwTLxichSIi3CeFvDvI8zA==
+X-CSE-MsgGUID: peYNsKP7RP27nmdGofz6jw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8239295"
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="8239295"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 06:08:06 -0700
+X-CSE-ConnectionGUID: N6EQa6+ZS5ePyGkc5Q8A1g==
+X-CSE-MsgGUID: jdRJ4EDWT0ydliAjldhpZA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
+   d="scan'208";a="25882120"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by fmviesa004.fm.intel.com with ESMTP; 12 Apr 2024 06:08:05 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rvGdP-0009mP-00;
+	Fri, 12 Apr 2024 13:08:03 +0000
+Date: Fri, 12 Apr 2024 21:07:20 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kyle Huey <me@kylehuey.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	x86@kernel.org, Ingo Molnar <mingo@kernel.org>
+Subject: [tip:perf/core 10/17] kernel/events/core.c:9634:13: warning:
+ 'perf_event_free_bpf_handler' defined but not used
+Message-ID: <202404122021.kE3qOoZo-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+cZav3GqS522N3/b6WTixeO4zQeD4c9H+MSi67F2JVbiFqK/Lxo
- dHMyeSPtwBvDcDHhAbYyShm004fYZBRZ//RSo85LFlvvLheuV/xuT+EmzsjEbfYfGWaSEIl
- DVUa6NImwKLmX6KHOzO8oRO72EcqgvTfGxuT9Rs3+emtKwbAprye6YFY7YnFgQ2pC/WFh+S
- DSnVCJjzAcxUCo3GmwPhw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:90UXfPez/NA=;NUO32OZvhgDrW+EPC8F4hUdjKdr
- Tjvcfu08S4skfqDiCOmkR4B1Wj26FGNfIRptEHcMgzGx5cJzVio72HpyH4dtBW5u+5Pf2F1xz
- uITYxNDICrkhzveAugTfpbjHJjDIxq19MPGtRTPK56eOHfKE0nnvXUp3IwnQzlZFdALBsMET8
- XVwntZTeL8FDxagq1euMFVZrpGuAgVgDqO7aILo/cQpZQCTL/afU/OB+OkY0o9TJdHjPwB1aJ
- PUurYnED9fqEAyYgMSSWADySXl2YqTHGuQWuNr1Y2ZKRyZpdRg2KP/ZcOf2/BRanmTDuKqYXu
- UxpfnsvSLY9wbasETPwbi6fSTt+nfca4d+ptCHESeRlHDXxY6J3da1uGdZ4XRy/p8njCDeBp3
- l7HOdrb8Cj5v0R0BlrqSESzyzwoXQmRbbQI0s7dSOOZadeoLjp7Li/4bn87hnl8hnUZYPh2qE
- uTMxjEkc38jFQn9ENAVLK3GofUtJB3dQSoh3xCcKnaBBow4JElAV32gspadY4RgP6/OWexpBW
- V2YlMhYQw9oXMeZkOZqKgFPiZyIjzFZiTTyhylRMtKncwYXMqFaK5L2KUELkXv3lj3VezKBf2
- pti6GK81wVEyq/m/dkC1EpcADkxOnJq4XtyugOrNm5/ziwnB8G+oKHWzZkPZzRUgY276Mctz9
- 2LmeQlH/Gh7gJa1G1+ozBLGolyZ0maYhQAhjfk8+4BL4UvdimVHj+keb09n/jY8RVthWsBGJz
- HmOfAJ02/q4oYyYrQcLovCGBFeZHmv0mlHsHtMd2l2gweI8wIvtHDE=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Fri, 12 Apr 2024 13:36:42 +0300 (EEST)
-Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com> wrote:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
+head:   93d3fde7fd19c2e2cde7220e7986f9a75e9c5680
+commit: 4c03fe11b96bda60610aca77002e83f37b4a2242 [10/17] perf/bpf: Reorder bpf_overflow_handler() ahead of __perf_event_overflow()
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240412/202404122021.kE3qOoZo-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240412/202404122021.kE3qOoZo-lkp@intel.com/reproduce)
 
-> On Thu, 11 Apr 2024, parker@finest.io wrote:
->=20
-> > From: Parker Newman <pnewman@connecttech.com>
-> >=20
-> > - Adds support for reading a word from the Exar EEPROM.
-> > - Adds exar_write_reg/exar_read_reg for reading and writing to the UART=
-'s
-> > config registers.
-> >=20
-> > Signed-off-by: Parker Newman <pnewman@connecttech.com>
-> > ---
-> >  drivers/tty/serial/8250/8250_exar.c | 110 ++++++++++++++++++++++++++++
-> >  1 file changed, 110 insertions(+)
-> >=20
-> > diff --git a/drivers/tty/serial/8250/8250_exar.c b/drivers/tty/serial/8=
-250/8250_exar.c
-> > index 4d1e07343d0b..49d690344e65 100644
-> > --- a/drivers/tty/serial/8250/8250_exar.c
-> > +++ b/drivers/tty/serial/8250/8250_exar.c
-> > @@ -128,6 +128,16 @@
-> >  #define UART_EXAR_DLD			0x02 /* Divisor Fractional */
-> >  #define UART_EXAR_DLD_485_POLARITY	0x80 /* RS-485 Enable Signal Polari=
-ty */
-> >=20
-> > +/* EEPROM registers */
-> > +#define UART_EXAR_REGB                  0x8e
-> > +#define UART_EXAR_REGB_EECK             BIT(4)
-> > +#define UART_EXAR_REGB_EECS             BIT(5)
-> > +#define UART_EXAR_REGB_EEDI             BIT(6)
-> > +#define UART_EXAR_REGB_EEDO             BIT(7)
-> > +#define UART_EXAR_REGB_EE_ADDR_SIZE     6
-> > +#define UART_EXAR_REGB_EE_DATA_SIZE     16
-> > +
-> > + =20
->=20
-> Extra new line.
->=20
-> >  /*
-> >   * IOT2040 MPIO wiring semantics:
-> >   *
-> > @@ -195,6 +205,106 @@ struct exar8250 {
-> >  	int			line[];
-> >  };
-> >=20
-> > +static inline void exar_write_reg(struct exar8250 *priv,
-> > +				unsigned int reg, uint8_t value)
-> > +{
-> > +	if (!priv || !priv->virt)
-> > +		return;
-> > +
-> > +	writeb(value, priv->virt + reg);
-> > +}
-> > +
-> > +static inline uint8_t exar_read_reg(struct exar8250 *priv, unsigned in=
-t reg)
-> > +{
-> > +	if (!priv || !priv->virt)
-> > +		return 0;
-> > +
-> > +	return readb(priv->virt + reg);
-> > +}
-> > +
-> > +static inline void exar_ee_select(struct exar8250 *priv, bool enable)
-> > +{
-> > +	uint8_t value =3D 0x00;
-> > +
-> > +	if (enable)
-> > +		value |=3D UART_EXAR_REGB_EECS; =20
->=20
-> You could just do:
-> 	u8 value;
->=20
-> 	value =3D enable ? UART_EXAR_REGB_EECS : 0;
->=20
-> Or even:
->=20
-> 	exar_write_reg(priv, UART_EXAR_REGB, enable ? UART_EXAR_REGB_EECS : 0);
-> > +
-> > +	exar_write_reg(priv, UART_EXAR_REGB, value);
-> > +	udelay(2);
-> > +}
-> > +
-> > +static inline void exar_ee_write_bit(struct exar8250 *priv, int bit)
-> > +{
-> > +	uint8_t value =3D UART_EXAR_REGB_EECS;
-> > +
-> > +	if (bit)
-> > +		value |=3D UART_EXAR_REGB_EEDI;
-> > +
-> > +	//Clock out the bit on the i2c interface
-> > +	exar_write_reg(priv, UART_EXAR_REGB, value);
-> > +	udelay(2);
-> > +
-> > +	value |=3D UART_EXAR_REGB_EECK;
-> > +
-> > +	exar_write_reg(priv, UART_EXAR_REGB, value);
-> > +	udelay(2);
-> > +}
-> > +
-> > +static inline uint8_t exar_ee_read_bit(struct exar8250 *priv)
-> > +{
-> > +	uint8_t regb;
-> > +	uint8_t value =3D UART_EXAR_REGB_EECS;
-> > +
-> > +	//Clock in the bit on the i2c interface
-> > +	exar_write_reg(priv, UART_EXAR_REGB, value);
-> > +	udelay(2);
-> > +
-> > +	value |=3D UART_EXAR_REGB_EECK;
-> > +
-> > +	exar_write_reg(priv, UART_EXAR_REGB, value);
-> > +	udelay(2);
-> > +
-> > +	regb =3D exar_read_reg(priv, UART_EXAR_REGB);
-> > +
-> > +	return (regb & UART_EXAR_REGB_EEDO ? 1 : 0);
-> > +}
-> > +
-> > +/**
-> > + * exar_ee_read() - Read a word from the EEPROM
-> > + * @priv: Device's private structure
-> > + * @ee_addr: Offset of EEPROM to read word from
-> > + *
-> > + * Read a single 16bit word from an Exar UART's EEPROM =20
->=20
-> Add missing .
->=20
-> > + *
-> > + * Return: EEPROM word on success, negative error code on failure =20
->=20
-> This function does not return any -Exx code as far as I can see??
->=20
-> > + */
-> > +static int exar_ee_read(struct exar8250 *priv, uint8_t ee_addr)
-> > +{
-> > +	int i;
-> > +	int data =3D 0;
-> > +
-> > +	exar_ee_select(priv, true);
-> > +
-> > +	//Send read command (opcode 110)
-> > +	exar_ee_write_bit(priv, 1);
-> > +	exar_ee_write_bit(priv, 1);
-> > +	exar_ee_write_bit(priv, 0);
-> > +
-> > +	//Send address to read from
-> > +	for (i =3D 1 << (UART_EXAR_REGB_EE_ADDR_SIZE - 1); i; i >>=3D 1)
-> > +		exar_ee_write_bit(priv, (ee_addr & i));
-> > +
-> > +	//Read data 1 bit at a time
-> > +	for (i =3D 0; i <=3D UART_EXAR_REGB_EE_DATA_SIZE; i++) {
-> > +		data <<=3D 1;
-> > +		data |=3D exar_ee_read_bit(priv);
-> > +	}
-> > +
-> > +	exar_ee_select(priv, false);
-> > +
-> > +	return data;
-> > +} =20
->=20
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404122021.kE3qOoZo-lkp@intel.com/
 
-I will fix all of these.=20
-Thanks,
--Parker
+All warnings (new ones prefixed by >>):
+
+>> kernel/events/core.c:9634:13: warning: 'perf_event_free_bpf_handler' defined but not used [-Wunused-function]
+    9634 | static void perf_event_free_bpf_handler(struct perf_event *event)
+         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> kernel/events/core.c:9596:12: warning: 'perf_event_set_bpf_handler' defined but not used [-Wunused-function]
+    9596 | static int perf_event_set_bpf_handler(struct perf_event *event,
+         |            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/perf_event_free_bpf_handler +9634 kernel/events/core.c
+
+  9595	
+> 9596	static int perf_event_set_bpf_handler(struct perf_event *event,
+  9597					      struct bpf_prog *prog,
+  9598					      u64 bpf_cookie)
+  9599	{
+  9600		if (event->overflow_handler_context)
+  9601			/* hw breakpoint or kernel counter */
+  9602			return -EINVAL;
+  9603	
+  9604		if (event->prog)
+  9605			return -EEXIST;
+  9606	
+  9607		if (prog->type != BPF_PROG_TYPE_PERF_EVENT)
+  9608			return -EINVAL;
+  9609	
+  9610		if (event->attr.precise_ip &&
+  9611		    prog->call_get_stack &&
+  9612		    (!(event->attr.sample_type & PERF_SAMPLE_CALLCHAIN) ||
+  9613		     event->attr.exclude_callchain_kernel ||
+  9614		     event->attr.exclude_callchain_user)) {
+  9615			/*
+  9616			 * On perf_event with precise_ip, calling bpf_get_stack()
+  9617			 * may trigger unwinder warnings and occasional crashes.
+  9618			 * bpf_get_[stack|stackid] works around this issue by using
+  9619			 * callchain attached to perf_sample_data. If the
+  9620			 * perf_event does not full (kernel and user) callchain
+  9621			 * attached to perf_sample_data, do not allow attaching BPF
+  9622			 * program that calls bpf_get_[stack|stackid].
+  9623			 */
+  9624			return -EPROTO;
+  9625		}
+  9626	
+  9627		event->prog = prog;
+  9628		event->bpf_cookie = bpf_cookie;
+  9629		event->orig_overflow_handler = READ_ONCE(event->overflow_handler);
+  9630		WRITE_ONCE(event->overflow_handler, bpf_overflow_handler);
+  9631		return 0;
+  9632	}
+  9633	
+> 9634	static void perf_event_free_bpf_handler(struct perf_event *event)
+  9635	{
+  9636		struct bpf_prog *prog = event->prog;
+  9637	
+  9638		if (!prog)
+  9639			return;
+  9640	
+  9641		WRITE_ONCE(event->overflow_handler, event->orig_overflow_handler);
+  9642		event->prog = NULL;
+  9643		bpf_prog_put(prog);
+  9644	}
+  9645	#else
+  9646	static int perf_event_set_bpf_handler(struct perf_event *event,
+  9647					      struct bpf_prog *prog,
+  9648					      u64 bpf_cookie)
+  9649	{
+  9650		return -EOPNOTSUPP;
+  9651	}
+  9652	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
