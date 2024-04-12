@@ -1,266 +1,153 @@
-Return-Path: <linux-kernel+bounces-143253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 146088A3656
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:26:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62D438A3658
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:29:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36B2D1C228F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:26:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E75E61F2240B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E4C1514CB;
-	Fri, 12 Apr 2024 19:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ooKAcEhg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DACF61509A0;
-	Fri, 12 Apr 2024 19:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6973314F9FB;
+	Fri, 12 Apr 2024 19:28:53 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2128413DDAC;
+	Fri, 12 Apr 2024 19:28:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712949981; cv=none; b=TIrbJivyUpHvRf7M3oKDNWuZGK9FKtH43ERqFzs2c8i66FZsZrD/zV2GsHKlvJANF25Toet12aqxqdB51FM6cuGMX5JJJh33xEP98qQVXziMvs5rnkMlql40X4bIyaXQ9ft1dE1oyor2tpn/pj45relJiU6yN89JH7dGSkhpS2E=
+	t=1712950133; cv=none; b=MRIRtTktzd7yKUq0DDw0/dBtK8bZFUaP1JgamUosxk3247Y5tovFKW1kRI/lIxjmpfdntPnnOsD4EQlmuNlRffWoaQQOwK0GCDgkKWrO3Tv7L0G2Nxjv4qnW5GxS/uQbdf8OGb73x2kjk35+lgxSmD+bOLqKte3AUgIWzmigwPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712949981; c=relaxed/simple;
-	bh=VYZYnuz55tg2RsFbxQ0z5NSOdwQiU1+mcxAMKYGkTjU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C+ZR1kvTQHp2bd5CFynjDVAO+97tinCt65TMGkb+e4c+G40A7vP88ufZVHjX546sQJJotrDoX4EbmkAXz+2GBiySs0jXjRBNIY9rQ7U1ddteTEAyvMWxDjmiw++kA5570riXL8FPji8WQLG8DWMFUTrtL7KImzwKBGbXl/VPg7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ooKAcEhg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6BB6C113CD;
-	Fri, 12 Apr 2024 19:26:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712949980;
-	bh=VYZYnuz55tg2RsFbxQ0z5NSOdwQiU1+mcxAMKYGkTjU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ooKAcEhgbd41GOVm4UG6pBYmJ02yHakeXpy/jvZyyHrEFWF+7af8i3fFkilWTjTrF
-	 xnt6jOOSdFSsfj0CAS8fUlW0ccvSz0YAkyTfAaOo5Om/Wq+rspe3an3tOVT8rEGRTT
-	 wPDGdGbUckzW2E/bLZ1SR0vyPVubC0ZDkwwzupbArJN0wDgt6wqpNWTGI8GX7PO32m
-	 ZT9ZrLx9GaoyvohEGVZDrrCb1N1Z3Ld584MyLHLjLGUiz9CJo0OFiAa6XdTHHURJAW
-	 5ZmOvAMtp0pIzTnJnGD/AZhC8vYsFZED0WOiUnOzXWkuOGksv3tjnJw4Thu1Fi4VbT
-	 snopbX9LwHcNw==
-Message-ID: <75d837cc-4d33-44f6-bb0c-7558f0488d4e@kernel.org>
-Date: Fri, 12 Apr 2024 21:26:15 +0200
+	s=arc-20240116; t=1712950133; c=relaxed/simple;
+	bh=XCy6bbyyqN1LWwKCTQigfobBsswimYECHWPI1zDHCsM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QosKAwDWEb7+UkSppC8Huu4qovPgEACmk/crh0O7diEXyMde3GiSsJ5N2pwyjOm9H/eqpvyww8xCpd0lN2CNFc4tLDMdmMQyZow9spQRG11MG8DkH+JqDINtuVMoyorvhQRbNPzYVGwkqp4/RR4B9D3QcA+xIV62o7kzb8HAj1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 18E45339;
+	Fri, 12 Apr 2024 12:29:18 -0700 (PDT)
+Received: from e120937-lin.. (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 73A953F766;
+	Fri, 12 Apr 2024 12:28:47 -0700 (PDT)
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org
+Cc: sudeep.holla@arm.com,
+	cristian.marussi@arm.com,
+	jassisinghbrar@gmail.com,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	jonathan.cameron@huawei.com
+Subject: [PATCH v4 0/2] Add initial ARM MHUv3 mailbox support
+Date: Fri, 12 Apr 2024 20:27:59 +0100
+Message-Id: <20240412192801.554464-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Advice on cgroup rstat lock
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Waiman Long <longman@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Tejun Heo <tj@kernel.org>, Jesper Dangaard Brouer <jesper@cloudflare.com>,
- "David S. Miller" <davem@davemloft.net>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Shakeel Butt <shakeelb@google.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- kernel-team <kernel-team@cloudflare.com>, cgroups@vger.kernel.org,
- Linux-MM <linux-mm@kvack.org>, Netdev <netdev@vger.kernel.org>,
- bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- Ivan Babrou <ivan@cloudflare.com>
-References: <7cd05fac-9d93-45ca-aa15-afd1a34329c6@kernel.org>
- <20240319154437.GA144716@cmpxchg.org>
- <56556042-5269-4c7e-99ed-1a1ab21ac27f@kernel.org>
- <CAJD7tkYbO7MdKUBsaOiSp6-qnDesdmVsTCiZApN_ncS3YkDqGQ@mail.gmail.com>
- <bf94f850-fab4-4171-8dfe-b19ada22f3be@kernel.org>
- <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
- <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org>
- <96728c6d-3863-48c7-986b-b0b37689849e@redhat.com>
- <CAJD7tkZrVjhe5PPUZQNoAZ5oOO4a+MZe283MVTtQHghGSxAUnA@mail.gmail.com>
- <4fd9106c-40a6-415a-9409-c346d7ab91ce@redhat.com>
- <f72ab971-989e-4a1c-9246-9b8e57201b60@kernel.org>
- <CAJD7tka=1AnBNFn=frp7AwfjGsZMGcDjw=xiWeqNygC5rPf6uQ@mail.gmail.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <CAJD7tka=1AnBNFn=frp7AwfjGsZMGcDjw=xiWeqNygC5rPf6uQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+
+Hi,
+
+This series adds support for the new ARM Message Handling Unit v3 mailbox
+controller [1].
+
+The ARM MHUv3 can optionally support various extensions, enabling the
+usage of different transport protocols.
+
+Patch [2/2] adds a platform driver which, as of now, provides support only
+for the Doorbell extension using the combined interrupt.
+
+On the other side, bindings in [1/2] are introduced for all the extensions
+described by the specification, as long as they are of interest to an
+entity running from Normal world, like Linux: as such, Doorbell, FIFO and
+FastChannel extensions are documented.
+
+In these regards, note that the ARM MHUv3 controller can optionally
+implement a considerable number of interrupts to express a great deal of
+events and many of such interrupts are defined as being per-channel: with
+the total maximum amount of possibly implemented channels across all
+extensions being 1216 (1024+128+64), it would mean *a lot* of
+interrupt-names to enumerate in the bindings.
+
+For the sake of simplicity the binding as of now only introduces interrupt
+names for a mere 8-channels in the range (0,7) for each per-channel
+interrupt type: the idea is to leave open the possibility to add more to
+this list of numbered items only when (and if) new real HW appears that
+effectively needs more than 8 channels. (like AMBA, where the maximum
+number of IRQ was progressively increased when needed, AFAIU).
+
+Based on v6.9-rc1, tested on ARM TCS23 [2]
+(TCS23 reference SW stack is still to be made fully publicly available)
+
+Thanks,
+Cristian
+
+[1]: https://developer.arm.com/documentation/aes0072/aa/?lang=en
+[2]: https://community.arm.com/arm-community-blogs/b/tools-software-ides-blog/posts/total-compute-solutions-platform-software-stack-and-fvp
 
 
-
-On 11/04/2024 19.22, Yosry Ahmed wrote:
-> [..]
->>>>>>
->>>>>> How far can we go... could cgroup_rstat_lock be converted to a mutex?
->>   >>>
->>>>> The cgroup_rstat_lock was originally a mutex. It was converted to a
->>>>> spinlock in commit 0fa294fb1985 ("group: Replace cgroup_rstat_mutex with
->>>>> a spinlock"). Irq was disabled to enable calling from atomic context.
->>>>> Since commit 0a2dc6ac3329 ("cgroup: remove
->>>>> cgroup_rstat_flush_atomic()"), the rstat API hadn't been called from
->>>>> atomic context anymore. Theoretically, we could change it back to a
->>>>> mutex or not disabling interrupt. That will require that the API cannot
->>>>> be called from atomic context going forward.
->>   >>>
->>>> I think we should avoid flushing from atomic contexts going forward
->>>> anyway tbh. It's just too much work to do with IRQs disabled, and we
->>>> observed hard lockups before in worst case scenarios.
->>>>
->>
->> Appreciate the historic commits as documentation for how the code
->> evolved.  Sounds like we agree that the IRQ-disable can be lifted,
->> at-least between the three of us.
-> 
-> It can be lifted, but whether it should be or not is a different
-> story. I tried keeping it as a spinlock without disabling IRQs before
-> and Tejun pointed out possible problems, see below.
-> 
-
-IMHO it *MUST* be lifted, as disabling IRQs here is hurting other parts
-of the system and actual production systems.
-
-The "offending" IRQ-spin_lock commit (0fa294fb1985) is from 2018, and
-GitHub noticed in 2019 (via blog[1]) and at Red Hat I backported[2]
-patches (which I now understand) only mitigate the issues.  Our prod
-systems are on 6.1 and 6.6 where we still clearly see the issue
-occurring.  Also Daniel's "rtla timerlat" tool for catching systems
-latency issues have "cgroup_rstat_flush_locked" as the poster child [3][4].
+---
+v3 -> v4
+ - avoid magic numbers for regs padding holes
+ - renaming various enums terminators to count_ instead of max_
+ - using scoped_guards for spinlock_save
+ - dropping FIRST_EXT naming for 0-indexed enum
+ - reduce indentation by using early returns or continue on failure-paths
+ - use dev_err_probe where appropriate
+ - be less noisy with dev_dbg
+ - refactored mhuv3_mbx_comb_interrupt using __free cleanups for .read_data
+ - refactored doorbell lookups with scoped_guards
+ - fail on IRQ request failures: do not carry-on best effort
+ - drop usage of platform_set_drvdata and .remove in favour of
+   devm_add_action_or_reset
+ - review failures handling on extensions initialization
+ - removed name clashes
+ - more comments on regs decorations
+ - decreasing line-lengths definitions
+ - use __ffs instead of __builtin_ctz
+ - dropped used of bitfields in favour of bitmasks
+ - reading implementer/revision/variant/product_id
+ - fixed a few misspellings
+ - DT: using ARM GIC defines in example
+ - DT: defined MHUv3 Extensions types in new file dt-bindings/arm/mhuv3-dt.h
+v2 -> v3
+ - fixed spurious tabs/spaces in DT binding
+v1 -> v2
+ - clarified DT bindings extension descriptions around configurability
+   and discoverability
+ - removed unused labels from the DT example
+ - using pattern properties to define DT interrupt-names
+ - bumped DT interrupt maxItems to 74 (allowing uo to 8 channels per extension)
+ - fixed checkpatch warnings about side-effects on write/read bitfield macros
+ - fixed sparse errors as reported
+   | Reported-by: kernel test robot <lkp@intel.com>
+   | Closes: https://lore.kernel.org/oe-kbuild-all/202403290015.tCLXudqC-lkp@intel.com/
 
 
-  [1] https://github.blog/2019-11-21-debugging-network-stalls-on-kubernetes/
-  [2] https://bugzilla.redhat.com/show_bug.cgi?id=1795049
-  [3] https://bristot.me/linux-scheduling-latency-debug-and-analysis/
-  [4] Documentation/tools/rtla/rtla-timerlat-top.rst
+Cristian Marussi (2):
+  dt-bindings: mailbox: arm,mhuv3: Add bindings
+  mailbox: arm_mhuv3: Add driver
 
->>
->>>> I think one problem that was discussed before is that flushing is
->>>> exercised from multiple contexts and could have very high concurrency
->>>> (e.g. from reclaim when the system is under memory pressure). With a
->>>> mutex, the flusher could sleep with the mutex held and block other
->>>> threads for a while.
->>>>
->>
->> Fair point, so in first iteration we keep the spin_lock but don't do the
->> IRQ disable.
-> 
-> I tried doing that before, and Tejun had some objections:
-> https://lore.kernel.org/lkml/ZBz%2FV5a7%2F6PZeM7S@slm.duckdns.org/
-> 
-> My read of that thread is that Tejun would prefer we look into
-> converting cgroup_rsat_lock into a mutex again, or more aggressively
-> drop the lock on CPU boundaries. Perhaps we can unconditionally drop
-> the lock on each CPU boundary, but I am worried that contending the
-> lock too often may be an issue, which is why I suggested dropping the
-> lock if there are pending IRQs instead -- but I am not sure how to do
-> that :)
-> 
+ .../bindings/mailbox/arm,mhuv3.yaml           |  224 ++++
+ MAINTAINERS                                   |    9 +
+ drivers/mailbox/Kconfig                       |   11 +
+ drivers/mailbox/Makefile                      |    2 +
+ drivers/mailbox/arm_mhuv3.c                   | 1102 +++++++++++++++++
+ include/dt-bindings/arm/mhuv3-dt.h            |   13 +
+ 6 files changed, 1361 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mailbox/arm,mhuv3.yaml
+ create mode 100644 drivers/mailbox/arm_mhuv3.c
+ create mode 100644 include/dt-bindings/arm/mhuv3-dt.h
 
-Like Tejun, I share the concern that keeping this a spinlock will
-can increase the chance of several CPUs contend on this lock (which is
-also a production issue we see).  This is why I suggested to "exit" if
-(1) we see the lock have been taken by somebody else, or if (2) stats
-were flushed recently.
+-- 
+2.34.1
 
-For (2), memcg have a mem_cgroup_flush_stats_ratelimited() system
-combined with memcg_vmstats_needs_flush(), which limits the pressure on
-the global lock (cgroup_rstat_lock).
-*BUT* other users of cgroup_rstat_flush() like when reading io.stat
-(blk-cgroup.c) and cpu.stat, don't have such a system to limit pressure
-on global lock. Further more, userspace can easily trigger this via
-reading those stat files.  And normal userspace stats tools (like
-cadvisor, nomad, systemd) spawn threads reading io.stat, cpu.stat and
-memory.stat, likely without realizing that kernel side they share same
-global lock...
-
-I'm working on a code solution/proposal for "ratelimiting" global lock
-access when reading io.stat and cpu.stat.
-
-
->> I already have a upstream devel kernel doing this in my
->> testlab, but I need to test this in prod to see the effects.  Can you
->> recommend a test I should run in my testlab?
-> 
-> I don't know of any existing test/benchmark. What I used to do is run
-> a synthetic test with a lot of concurrent reclaim activity (some in
-> the same cgroups, some in different ones) to stress in-kernel
-> flushers, and a synthetic test with a lot of concurrent userspace
-> reads.
-> 
-> I would mainly look into the time it took for concurrent reclaim
-> operations to complete and the userspace reads latency histograms. I
-> don't have the scripts I used now unfortunately, but I can help with
-> more details if needed.
-> 
->>
->> I'm also looking at adding some instrumentation, as my bpftrace
->> script[2] need to be adjusted to every binary build.
->> Still hoping ACME will give me an easier approach to measuring lock wait
->> and hold time? (without having to instrument *all* lock in system).
->>
->>
->>    [2]
->> https://github.com/xdp-project/xdp-project/blob/master/areas/latency/cgroup_rstat_latency_steroids.bt
->>
->>
->>>> I vaguely recall experimenting locally with changing that lock into a
->>>> mutex and not liking the results, but I can't remember much more. I
->>>> could be misremembering though.
->>>>
->>>> Currently, the lock is dropped in cgroup_rstat_flush_locked() between
->>>> CPU iterations if rescheduling is needed or the lock is being
->>>> contended (i.e. spin_needbreak() returns true). I had always wondered
->>>> if it's possible to introduce a similar primitive for IRQs? We could
->>>> also drop the lock (and re-enable IRQs) if IRQs are pending then.
->>>
->>> I am not sure if there is a way to check if a hardirq is pending, but we
->>> do have a local_softirq_pending() helper.
->>
->> The local_softirq_pending() might work well for me, as this is our prod
->> problem, that CPU local pending softirq's are getting starved.
-> 
-> If my understanding is correct, softirqs are usually scheduled by
-> IRQs, which means that local_softirq_pending() may return false if
-> there are pending IRQs (that will schedule softirqs). Is this correct?
-> 
-
-Yes, networking hard IRQ will raise softirq, but software often also
-raise softirq.
-I see where you are going with this... the cgroup_rstat_flush_locked()
-loop "play nice" check happens with IRQ lock held, so you speculate that
-IRQ handler will not be able to raise softirq, thus
-local_softirq_pending() will not work inside IRQ lock.
-
-
->>
->> In production another problematic (but rarely occurring issue) is when
->> several CPUs contend on this lock.  Yosry's recent work/patches have
->> already reduced the chances of this happening (thanks), BUT it still can
->> and does happen.
->> A simple solution to this, would be to do a spin_trylock() in
->> cgroup_rstat_flush(), and exit if we cannot get the lock, because we
->> know someone else will do the work.
-> 
-> I am not sure I understand what you mean specifically with the checks
-> below, but I generally don't like this (as you predicted :) ).
-> 
-> On the memcg side, we used to have similar logic when we used to
-> always flush the entire tree. This leaded to flushing being
-> indeterministic. You would occasionally get stale stats because of the
-> contention, which resulted in some inconsistencies (e.g. performing
-> proactive reclaim successfully then reading the stats that do not
-> reflect that).
-> 
-> Now that we dropped the logic to always flush the entire tree, it is
-> even more difficult because concurrent flushes could be in completely
-> irrelevant subtrees.
-> 
-> If we were to introduce some smart logic to figure out that the
-> subtree we are trying to flush is already being flushed, I think we
-> would need to wait for that ongoing flush to complete instead of just
-> returning (e.g. using completions). But I think such implementations
-> to find overlapping flushes and wait for them may be too compicated.
-> 
-
-We will see if you hate my current code approach ;-)
-
->> I expect someone to complain here, as cgroup_rstat_flush() takes a
->> cgroup argument, so I might starve updates on some other cgroup. I
->> wonder if I can simply check if cgroup->rstat_flush_next is not NULL, to
->> determine if this cgroup is the one currently being processed?
-
---Jesper
 
