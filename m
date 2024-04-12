@@ -1,155 +1,140 @@
-Return-Path: <linux-kernel+bounces-143130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E4D58A34D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:34:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29E648A34D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:35:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84959B22A5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:34:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B71C1C2349A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:35:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BF6A148313;
-	Fri, 12 Apr 2024 17:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EFB814D456;
+	Fri, 12 Apr 2024 17:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="qvNcdshZ"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aW0iPIR1"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED1214D2BD
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CD621E53A
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 17:35:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712943273; cv=none; b=UksGdxzKlqBNkztojolybrmS7UmRgGU9olbgeWqqT9POPLKvCqTAUIeziqf9AGT91Wj9CQtsNFUAb0lFIbbv+8FxYEeYQ4YJi3WPkdy8sN83GsJ1eahH9+R3y68K/Wt6MsfcCnEgLc07LBwkqiotp2YbxvmF/e6WRC+UfCVEB3g=
+	t=1712943337; cv=none; b=VCyGeImpDsgMAOfve4JzFdx8ymvhLGp+749/+go4KMXkKeX+kjB2+5YN7ASTRJK5qg3PlgVJygvpmt3kfhmwbHaCbTO/1NxbjHHkpk1TxNRQ1Tqh+mIEsk1hLcbQBM2sHWpgbvyNFLx5n4QgsgQCHG5cP7NPcb+r7wXNklQbT9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712943273; c=relaxed/simple;
-	bh=trPSWbts0qeWRZx2qyrUZFaFTVVwg7Cc9kvkrHlL3Yc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T8mhiujJGYMhDzISmLL16eUqwQA+gdfhVTAf+OsTsAHpLg4NVCLYJV0Qj1e3957qjQzqwe1TSgyZudvplWkT7LYts4VQfFb9yfB0y4mx+41Ss8jeTJV/cyAV9mrY4CN2BDSYz99hV+smrUYDboL7nN/EiebKbiydOI2Kwca6qvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=qvNcdshZ; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5dbf7b74402so753580a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 10:34:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712943271; x=1713548071; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PEydYnVIUiV6lB5t0xe0YqzJX4OVoeUrqtT1X9ALVoM=;
-        b=qvNcdshZoOmLKcj6Hxhn8syXlCyDMdQAZ4X+m5c3xG9coLzT5HEFz7Du7HhJBELiUZ
-         hhPsSnNxlEmbkrtle+3SGyxhiqahYZCu9IfHaqIffV1CBaoogmyG2NJKQVDx/avQN/Yq
-         RcB+RORJSbaTyyAgNkaBGxP4VepCLYccBJZoQhB2i9Nn9ZTyIMBuaaUMImVXPYiGlDXR
-         8JzSJjyZk/QareLUU0t6AtNAZNBYFWTYS8j5y/LR68DJNPUhTpUy8ZUbWBZzNmCVnhzI
-         bbWSfsfTr+ua76Bcx4wiWxQeHhr6cQmXb26YFW5n3dMFbKpaYbAkC/thhM149Bg9ffN/
-         LBJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712943271; x=1713548071;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PEydYnVIUiV6lB5t0xe0YqzJX4OVoeUrqtT1X9ALVoM=;
-        b=k8WIG+RrMklaemVoLszRC2ZeT0kw4Is+SSHH3QmgQeKrBBQgQ2o/0crS5a7WmT0/hY
-         O8+Mx9WWSdIDl60MkcORI9sIxrBqL/t9pG9gDb1Y0nCWCEOaQKAp0sr0jw1ApH4aYqfU
-         W7ijRVQxEQdLH7LhL0ri9N+AJXREFfH61HvxpWnGO9ajNEhXrTZ6r2Qe8R3RDMnzJmUt
-         24MredMKdr1n0LE84Rn4bgWZqClH53b9cBS7XO+BtD9Dpq+is0R8d8w/zhuTz4TA3IVP
-         EJV9ISFxmd30h6fH61OORsb1CTBY4dsACTAY3R66yURRTeAA2xrwtIdexerPWYfM8YrJ
-         h6Tg==
-X-Forwarded-Encrypted: i=1; AJvYcCVRhGFijdQWi3DoIeBkTVoObjhHACtCFHojymUUEYOvj1UKVeqHgTFOsNc9+Hm67IWrID1XJ8UciZhYglPH0nQ3dKR9ZA1P2oDuPyi4
-X-Gm-Message-State: AOJu0YxHjlB2gLP453OM325MoLJwNCugNaJfRNTXZJJIehhx+vsRXLXP
-	z3N0NdeF2ivFAM6I4qKX/VepfGb7RE3ocAIoUyyEFijhZ1kBIbf/EiSw3JW47vA=
-X-Google-Smtp-Source: AGHT+IGecMdCX/L7b/b4jRRmemcxcjENo5rWeeIe8AMz+k5W0w7mlpSYqVctJhJ2M4+aY/mVz0JUCQ==
-X-Received: by 2002:a17:90a:2cf:b0:2a5:733c:3105 with SMTP id d15-20020a17090a02cf00b002a5733c3105mr3650134pjd.26.1712943271582;
-        Fri, 12 Apr 2024 10:34:31 -0700 (PDT)
-Received: from ghost ([2601:647:5700:6860:121b:da6b:94f1:304])
-        by smtp.gmail.com with ESMTPSA id fs6-20020a17090af28600b002a4e331cc69sm4732571pjb.20.2024.04.12.10.34.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 10:34:31 -0700 (PDT)
-Date: Fri, 12 Apr 2024 10:34:28 -0700
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Conor Dooley <conor.dooley@microchip.com>
-Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 07/19] riscv: Optimize
- riscv_cpu_isa_extension_(un)likely()
-Message-ID: <ZhlwpKuqVkQCr6u+@ghost>
-References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
- <20240411-dev-charlie-support_thead_vector_6_9-v1-7-4af9815ec746@rivosinc.com>
- <20240412-aerosol-heritage-cec1eca172fb@wendy>
+	s=arc-20240116; t=1712943337; c=relaxed/simple;
+	bh=aJFKNG8JFdsknm0cM70DGXhrFg8VJGGZkSPTRdlR2Gw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YE8pszwLtPcZOZKfchfb1bupcM27VoDF9iXqxmOoJP0pCf6UTSePCs0wZp7gaXPSRnLMiuc8wFv9hHXYSRX4ip6DIN9rtaLUfx1HYCok73CIg0c7qpnMth9+TLbqM8KlLZ8aStlswcK0ep8ACX3c99YCSQwcmdFmyTWeNMPBk34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aW0iPIR1; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712943335;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=7F11F8b0j1hRRpTpVJdUgzEjbTqkJrpProdSq6OmwYM=;
+	b=aW0iPIR1UflS8NXIilLoUncqAeFV0TN76GAUTIqpplQigOuMftiMQbqrYx+VGX+Ni7nFOJ
+	ablkZEHGCYWxI6NGaW4/oWIkeTGxuQzqBdzc6XSXzkjJ5knYK0SfKZ6Pj6PRWjeV7cGq6M
+	bEJ2YLRSB3PP5y2/+nK6NS3dwzpPtW4=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-62-lzXLJ7bZMau5hyJugf41rg-1; Fri,
+ 12 Apr 2024 13:35:33 -0400
+X-MC-Unique: lzXLJ7bZMau5hyJugf41rg-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0F5A61C4C39B;
+	Fri, 12 Apr 2024 17:35:33 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id EBA7B492BC7;
+	Fri, 12 Apr 2024 17:35:32 +0000 (UTC)
+From: Paolo Bonzini <pbonzini@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org
+Subject: [PATCH 00/10] KVM: MMU changes for confidential computing
+Date: Fri, 12 Apr 2024 13:35:22 -0400
+Message-ID: <20240412173532.3481264-1-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412-aerosol-heritage-cec1eca172fb@wendy>
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-On Fri, Apr 12, 2024 at 11:40:38AM +0100, Conor Dooley wrote:
-> On Thu, Apr 11, 2024 at 09:11:13PM -0700, Charlie Jenkins wrote:
-> > When alternatives are disabled, riscv_cpu_isa_extension_(un)likely()
-> > checks if the current cpu supports the selected extension if not all
-> > cpus support the extension. It is sufficient to only check if the
-> > current cpu supports the extension.
-> > 
-> > The alternatives code to handle if all cpus support an extension is
-> > factored out into a new function to support this.
-> > 
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > ---
-> 
-> >  static __always_inline bool riscv_cpu_has_extension_unlikely(int cpu, const unsigned long ext)
-> >  {
-> > -	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE) && riscv_has_extension_unlikely(ext))
-> > -		return true;
-> > +	compiletime_assert(ext < RISCV_ISA_EXT_MAX,
-> > +			   "ext must be < RISCV_ISA_EXT_MAX");
-> >  
-> > -	return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
-> > +	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE) && __riscv_has_extension_unlikely_alternatives(ext))
-> > +		return true;
-> > +	else
-> > +		return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
-> >  }
-> 
-> static __always_inline bool riscv_cpu_has_extension_likely(int cpu, const unsigned long ext)
-> {
-> 	if (IS_ENABLED(CONFIG_RISCV_ALTERNATIVE) && riscv_has_extension_likely(ext))
-> 		return true;
-> 
-> 	return __riscv_isa_extension_available(hart_isa[cpu].isa, ext);
-> }
-> 
-> This is the code as things stand. If alternatives are disabled, the if
-> statement becomes if (0 && foo) which will lead to the function call
-> getting constant folded away and all you end up with is the call to
-> __riscv_isa_extension_available(). Unless I am missing something, I don't
-> think this patch has any affect?
+This includes the MMU parts of "TDX/SNP part 1 of n"[1] while the rest
+was posted as "KVM: guest_memfd: New hooks and functionality for SEV-SNP
+and TDX"[2] last week.
 
-Yeah I fumbled this one it appears. I got thrown off by the nested
-IS_ENABLED(CONFIG_RISCV_ALTERNATIVE). This patch eliminates the need for
-this and maybe can avoid avoid confusion in the future.
+It includes two basic parts:
 
-- Charlie
+- Allow non-zero value for non-present SPTE and removed SPTE, so that
+  TDX can set the "suppress VE" bit
 
-> 
-> Thanks,
-> Conor.
-> 
+- Use PFERR_GUEST_ENC_MASK to indicate fault is private.
 
+The changes from v1 are:
+
+- splitting #VE architectural definitions to their own patch
+
+- replace the module parameter to trap #VE with a Kconfig symbol,
+  enabling it by default if PROVE_MMU || DEBUG_KERNEL.
+
+- Sean's suggestion that "if we're going to bother plumbing in the error
+  code, then we should use it to do sanity checks" on async page faults.
+
+- removing the dead function kvm_mmu_set_mmio_spte_value(), which can
+  be added by TDX patches when they need it
+
+Paolo
+
+[1] https://patchew.org/linux/20240227232100.478238-1-pbonzini@redhat.com/
+[2] https://patchew.org/linux/20240404185034.3184582-1-pbonzini@redhat.com/
+
+Isaku Yamahata (3):
+  KVM: x86/mmu: Add Suppress VE bit to EPT
+    shadow_mmio_mask/shadow_present_mask
+  KVM: VMX: Introduce test mode related to EPT violation VE
+  KVM: x86/mmu: Pass around full 64-bit error code for KVM page faults
+
+Paolo Bonzini (3):
+  KVM, x86: add architectural support code for #VE
+  KVM: x86/mmu: Use PFERR_GUEST_ENC_MASK to indicate fault is private
+  KVM: x86/mmu: check for invalid async page faults involving private
+    memory
+
+Sean Christopherson (4):
+  KVM: Allow page-sized MMU caches to be initialized with custom 64-bit
+    values
+  KVM: x86/mmu: Replace hardcoded value 0 for the initial value for SPTE
+  KVM: x86/mmu: Allow non-zero value for non-present SPTE and removed
+    SPTE
+  KVM: x86/mmu: Track shadow MMIO value on a per-VM basis
+
+ arch/x86/include/asm/kvm_host.h |  5 +++
+ arch/x86/include/asm/vmx.h      | 13 +++++++
+ arch/x86/kvm/Kconfig            | 13 +++++++
+ arch/x86/kvm/mmu/mmu.c          | 50 ++++++++++++++++---------
+ arch/x86/kvm/mmu/mmu_internal.h |  6 +--
+ arch/x86/kvm/mmu/mmutrace.h     |  2 +-
+ arch/x86/kvm/mmu/paging_tmpl.h  |  4 +-
+ arch/x86/kvm/mmu/spte.c         | 10 +++--
+ arch/x86/kvm/mmu/spte.h         | 22 +++++++++--
+ arch/x86/kvm/mmu/tdp_mmu.c      | 18 ++++-----
+ arch/x86/kvm/vmx/vmcs.h         |  5 +++
+ arch/x86/kvm/vmx/vmx.c          | 65 ++++++++++++++++++++++++++++++++-
+ arch/x86/kvm/vmx/vmx.h          |  6 ++-
+ include/linux/kvm_types.h       |  1 +
+ virt/kvm/kvm_main.c             | 16 +++++++-
+ 15 files changed, 193 insertions(+), 43 deletions(-)
+
+-- 
+2.43.0
 
 
