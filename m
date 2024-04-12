@@ -1,209 +1,207 @@
-Return-Path: <linux-kernel+bounces-141776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BDF58A2357
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:47:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 672B88A2358
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:47:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE5832854B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:47:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AD3D1C21907
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:47:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA57253A7;
-	Fri, 12 Apr 2024 01:46:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC591524C;
+	Fri, 12 Apr 2024 01:47:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gsyRmwQT"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="OwHBLEZs"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38334C8E;
-	Fri, 12 Apr 2024 01:46:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5673FDDAA
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 01:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712886415; cv=none; b=sSKZIXfvT2ob6OcdqwC94Cs/rAz+V8kgiyEOL0kLfoYS4tm4DK3MfsXLU9BZ0a5dqClXI+Imz849wqHHyIVsWJVfRGpZpI0UqWCvEPDgR+H85SyhS8uN5mjr6K1DtfhvwuAtA5T0+C33XQ1H65UY5TqoqoxHrg40d3x+7A8evwo=
+	t=1712886445; cv=none; b=TZ5eN8XiyRO3sMWFf8ZgE5Z72wPL4Ni5q4xjz4xgZOhe2blh9bpN6rOSHZ1vHtBNVfJxacosFBY9rIbh85wJwKzYbfk1ybuKPIIomkTTK/Z67QUVc5RcQPBhLujJ7G5bxgS8UZTdDizm+XbxtQgdA1JyZgM6RNc41IlcWstxDnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712886415; c=relaxed/simple;
-	bh=FP/Afpm40jBtMSr+7mRP+khV1HHCSLPWOtraxZmTWng=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SiOhgMHD23ECjOPTvMNzU9wDCy5ZkMTVPMJ995o+Hqy6RDz/gSi2mBY6fV6hfTlpb3K8Ahd2WlNiD6cfxZNHxhBDS6fVE2AAR/1qfP2G/MZnLkBejHZ4cCoT/Cqf1WOs1pfw5MPzLQazkqDHU4DGg0rPMCnx77DVGTYKKgXr2Mg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gsyRmwQT; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e4149e7695so3646625ad.0;
-        Thu, 11 Apr 2024 18:46:53 -0700 (PDT)
+	s=arc-20240116; t=1712886445; c=relaxed/simple;
+	bh=g9UjYOg9Kyh9GD+IongtakgGXRYTohWmsMgeLoWdgio=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TrXkE3+365+fUGYklefeB40ni9qkvdoN1HjpHnok3S8WS6q9lgE+l5ArKru5aZCLA5u5uQm4xXAec85mT7CtG0oGXeA4EStTbboEAO+EJJ3jy0lC1W9kpqOM6oi06KLPWs7SKtnTHdNPUbf3TIAK6q8VwbCBbF9hRCsDPSpok2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=OwHBLEZs; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e48d0a632so617866a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 18:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712886413; x=1713491213; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=kylehuey.com; s=google; t=1712886441; x=1713491241; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LTNINKBvYGsXPh2qmr+1Mo5tVIYZJuJC9faeb17b8gA=;
-        b=gsyRmwQTomnmPr6c+jRZMtkmZxw+EC/mMQcsTubTHEs3OyEgz3kpqqCQm9N62npJMA
-         JhG9JyhjHbDJJABucdM3DOa/8wqZXv/a52+yJ9eJFrG6jTSJPyWYRhz6caODOMtfHKvI
-         dLX0xvx5NX/5lS9nTj7x5pBpeCkH2QYyzmRiWJnv3sZUUOfHdNOU+1/8NqOK0qil+2IL
-         ja1ePXgoYEVQqyg/EbJRq7OiCmG3iaOBqO1wSyEZz7XNHZAjxgTY4v9nYO8uRqTwrbZ8
-         PdEJASI36NjK5IpjeX0udkCcSskMDgDbjYaGDvsTtBJMHJsZAeqvRrQxVZp0fdZXSLas
-         LMFg==
+        bh=osjArfM964ZMCs2J7V2IvF4mEAZbgUY8xcLmh6ewJ6U=;
+        b=OwHBLEZsAmCbf+jjjyfuW/6e4iXuFZyG4li8l/B93Yq0slqchDM/vf+CnRCbDoWTWQ
+         Vt+bom7BBWloadEtUpWjOgb8spu8yNcbeIbnF62ALUEv+IQ6EBzIikE0cPttEvrN4K7c
+         Vg29PDyaj3j4fDL55HXh2B6zDnr0wbQbd41e5iSloLO8t+Q0LUz5sCU8hagICFGTHeLb
+         rfKVxQufPxtA3NYg8WElB39Cv+H3dOfxXiQGZpNEvWPM2quf20JihTiEhUiVQaVKBwNl
+         cDKzA+i5NCwInXtoF6LYc+zBdhMZOXSwDW2a3q6PTuaeXLImiDAqk1IXe5CnTRYVPigR
+         5hUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712886413; x=1713491213;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1712886441; x=1713491241;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LTNINKBvYGsXPh2qmr+1Mo5tVIYZJuJC9faeb17b8gA=;
-        b=XzGWnHYdVbyGiVRgUbCqzYiw0AhB0PpLli3AAFm9KmeBkaO+2fwOOV5/8MyDk7ja4d
-         Kimf5fU5cJYK96XKtJRJ2cpo9FeuseHWaS2SoDQElewhnVUf8C6qY1FKcG0l3FzO2CeG
-         Zs1ZALdUOY7KS960kRNJBm+wVAIMYdPT1phoTdXFSy13N6WX0PoUPdGi69tC4jQ0b0yC
-         UPSteTkz5bQwHjxYr2I2QmebNkvo2UFUsToSLtrUSr8IXFcYP/u3k4XhKEc/pGkUkRgw
-         xhQloAfeM0dy9DyXRa8q+Jqowd4GC8QJb83aC+7Lzg85M53HwxK0cR4aA6fhY24Gv+AF
-         tVYw==
-X-Forwarded-Encrypted: i=1; AJvYcCXBDBNt6+2D/zmxsEOQMp/dileH9Y4vGGvYD7JcO4uciG6xMpUw7V5Mj2Inb2Boit3AFXjMyeW2cIgf9q3jnr1oNNRuGQeisbxJmq3xZSzxGM4gk5Xx6IGmacQPeNymy0OTBpzlvH1WHyXtiolo1OBw
-X-Gm-Message-State: AOJu0YwJGIj12JRts3HzB/jGC27qTqHGkIQ1PS8D/mHCVwCVJjk8b3/A
-	czX2L/JuxSLtikVGyDEYPZJxqYk5t6+1n98LGGNOiv1M+M/ADLp6
-X-Google-Smtp-Source: AGHT+IGKkscy7aoUv+qJZqUTTamPos4GYD3Z5IltXF6F/wYw6XZvZsafjUTFYKbNNYBQ3TrLqtEPgA==
-X-Received: by 2002:a17:902:c94c:b0:1e4:fd4:48d4 with SMTP id i12-20020a170902c94c00b001e40fd448d4mr1479843pla.32.1712886412825;
-        Thu, 11 Apr 2024 18:46:52 -0700 (PDT)
-Received: from code.. ([144.202.108.46])
-        by smtp.gmail.com with ESMTPSA id c6-20020a170903234600b001e0c91d448fsm675904plh.112.2024.04.11.18.46.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 18:46:52 -0700 (PDT)
-From: Yuntao Wang <ytcoode@gmail.com>
-To: mhiramat@kernel.org
-Cc: akpm@linux-foundation.org,
-	arnd@arndb.de,
-	changbin.du@huawei.com,
-	christophe.leroy@csgroup.eu,
-	geert@linux-m68k.org,
-	jpoimboe@kernel.org,
-	kjlx@templeofstupid.com,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	ndesaulniers@google.com,
-	peterz@infradead.org,
-	tglx@linutronix.de,
-	tj@kernel.org,
-	ytcoode@gmail.com
-Subject: Re: [PATCH] init/main.c: Remove redundant space from saved_command_line
-Date: Fri, 12 Apr 2024 09:46:34 +0800
-Message-ID: <20240412014642.290764-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240412080839.c903a0058bd6594d31bc1d3e@kernel.org>
-References: <20240412080839.c903a0058bd6594d31bc1d3e@kernel.org>
+        bh=osjArfM964ZMCs2J7V2IvF4mEAZbgUY8xcLmh6ewJ6U=;
+        b=qW3smtnc0Gx9loFrrAkJ2QJRR8TB/sAM5u3IJi/3u6RkU3tFPlL48cOQ7cGtB/g5lZ
+         1PdxHnJLniegAsDgJ9/j88PTrj8rHzTao8dy09UTUgHLTZQcQc2bWwx3hLHi7OA0bKgf
+         N4ngZZ5xRuQq9gZXi7schN9DOzbJS+UDDGE4dR8GzZioVoTtL7YBKTByvfG1rhbuKsYE
+         wNSf2ALWegNlt4fRufFBXYZCAhzV6FsfE7xRxrP+Fgb4TvlVMB2DxagAUG+92HhmhPnX
+         ykxULaMtQ6YxVTmRCjZxYfpdMH2w/mj6wP3HPvl01fYa+Ttgz5OtdVths1kfQyOpyWsZ
+         6N5A==
+X-Gm-Message-State: AOJu0YykhAsjL1eafDC79KHXFSjElcoRRWf5PXNst0JgWJvIcU+zU3rG
+	axtCQCpNcoDVwfxcjEgkjdURrWrk3ILTFfjvqnKOnPap41D0UXa7VTfIaVhRcndvMafcRVZXbGU
+	2oq2gm0eyV1CJpAPYT1D1VTzLhaFwKFBJTjXdsFtgAhTcYBQcog==
+X-Google-Smtp-Source: AGHT+IG8i6DYHsQL51qUvlr37BR6pKSs1BXU1eUuAH2rPkS1Bv1IWQy08sQtUUrN0aKi/bNVqzgwZL5NlVG9Tsn4PC0=
+X-Received: by 2002:a50:ab5a:0:b0:56e:3172:20dd with SMTP id
+ t26-20020a50ab5a000000b0056e317220ddmr1096208edc.27.1712886441445; Thu, 11
+ Apr 2024 18:47:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240214173950.18570-1-khuey@kylehuey.com> <20240214173950.18570-2-khuey@kylehuey.com>
+ <ZhYWPGX0RzamxOHx@gmail.com> <CAP045AqQ0MbF2PAm9f5t=PnkJ4eOnwsNR624gEEjyLWEpTFz1g@mail.gmail.com>
+In-Reply-To: <CAP045AqQ0MbF2PAm9f5t=PnkJ4eOnwsNR624gEEjyLWEpTFz1g@mail.gmail.com>
+From: Kyle Huey <me@kylehuey.com>
+Date: Thu, 11 Apr 2024 21:47:09 -0400
+Message-ID: <CAP045Apm6e07tZWp8OOQeCYD_MGNz1fbfuFWx1w9Rt4DVqRfrQ@mail.gmail.com>
+Subject: Re: [RESEND PATCH v5 1/4] perf/bpf: Call bpf handler directly, not
+ through overflow machinery
+To: Ingo Molnar <mingo@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	"Robert O'Callahan" <robert@ocallahan.org>, Song Liu <song@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 12 Apr 2024 08:08:39 +0900, Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+On Thu, Apr 11, 2024 at 8:11=E2=80=AFAM Kyle Huey <me@kylehuey.com> wrote:
+>
+> On Wed, Apr 10, 2024 at 12:32=E2=80=AFAM Ingo Molnar <mingo@kernel.org> w=
+rote:
+> >
+> >
+> > * Kyle Huey <me@kylehuey.com> wrote:
+> >
+> > > To ultimately allow bpf programs attached to perf events to completel=
+y
+> > > suppress all of the effects of a perf event overflow (rather than jus=
+t the
+> > > sample output, as they do today), call bpf_overflow_handler() from
+> > > __perf_event_overflow() directly rather than modifying struct perf_ev=
+ent's
+> > > overflow_handler. Return the bpf program's return value from
+> > > bpf_overflow_handler() so that __perf_event_overflow() knows how to
+> > > proceed. Remove the now unnecessary orig_overflow_handler from struct
+> > > perf_event.
+> > >
+> > > This patch is solely a refactoring and results in no behavior change.
+> > >
+> > > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> > > Suggested-by: Namhyung Kim <namhyung@kernel.org>
+> > > Acked-by: Song Liu <song@kernel.org>
+> > > Acked-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  include/linux/perf_event.h |  6 +-----
+> > >  kernel/events/core.c       | 28 +++++++++++++++-------------
+> > >  2 files changed, 16 insertions(+), 18 deletions(-)
+> > >
+> > > diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> > > index d2a15c0c6f8a..c7f54fd74d89 100644
+> > > --- a/include/linux/perf_event.h
+> > > +++ b/include/linux/perf_event.h
+> > > @@ -810,7 +810,6 @@ struct perf_event {
+> > >       perf_overflow_handler_t         overflow_handler;
+> > >       void                            *overflow_handler_context;
+> > >  #ifdef CONFIG_BPF_SYSCALL
+> > > -     perf_overflow_handler_t         orig_overflow_handler;
+> > >       struct bpf_prog                 *prog;
+> > >       u64                             bpf_cookie;
+> > >  #endif
+> >
+> > Could we reduce the #ifdeffery please?
+>
+> Not easily.
+>
+> > On distros CONFIG_BPF_SYSCALL is almost always enabled, so it's not lik=
+e
+> > this truly saves anything on real systems.
+> >
+> > I'd suggest making the perf_event::prog and perf_event::bpf_cookie fiel=
+ds
+> > unconditional.
+>
+> That's not sufficient. See below.
+>
+> > > +#ifdef CONFIG_BPF_SYSCALL
+> > > +static int bpf_overflow_handler(struct perf_event *event,
+> > > +                             struct perf_sample_data *data,
+> > > +                             struct pt_regs *regs);
+> > > +#endif
+> >
+> > If the function definitions are misordered then first do a patch that m=
+oves
+> > the function earlier in the file, instead of slapping a random prototyp=
+e
+> > into a random place.
+>
+> Ok.
+>
+> > > -     READ_ONCE(event->overflow_handler)(event, data, regs);
+> > > +#ifdef CONFIG_BPF_SYSCALL
+> > > +     if (!(event->prog && !bpf_overflow_handler(event, data, regs)))
+> > > +#endif
+> > > +             READ_ONCE(event->overflow_handler)(event, data, regs);
+> >
+> > This #ifdef would go away too - on !CONFIG_BPF_SYSCALL event->prog shou=
+ld
+> > always be NULL.
+>
+> bpf_overflow_handler() is also #ifdef CONFIG_BPF_SYSCALL. It uses
+> bpf_prog_active, so that would need to be moved out of the ifdef,
+> which would require moving the DEFINE_PER_CPU out of bpf/syscall.c ...
+> or I'd have to add a !CONFIG_BPF_SYSCALL definition of
+> bpf_overflow_handler() that only returns 1 and never actually gets
+> called because the condition short-circuits on event->prog. Neither
+> seems like it makes my patch or the code simpler, especially since
+> this weird ifdef-that-applies-only-to-the-condition goes away in Part
+> 3 where I actually change the behavior.
 
-> On Thu, 11 Apr 2024 23:29:40 +0800
-> Yuntao Wang <ytcoode@gmail.com> wrote:
-> 
-> > On Thu, 11 Apr 2024 23:07:45 +0900, Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> > 
-> > > On Thu, 11 Apr 2024 09:19:32 +0200
-> > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > 
-> > > > CC Hiramatsu-san (now for real :-)
-> > > 
-> > > Thanks!
-> > > 
-> > > > 
-> > > > On Thu, Apr 11, 2024 at 6:13 AM Yuntao Wang <ytcoode@gmail.com> wrote:
-> > > > > extra_init_args ends with a space, so when concatenating extra_init_args
-> > > > > to saved_command_line, be sure to remove the extra space.
-> > > 
-> > > Hi Yuntao,
-> > > 
-> > > Hmm, if you want to trim the end space, you should trim extra_init_args
-> > > itself instead of this adjustment. Also, can you share the example?
-> > > 
-> > > Thank you,
-> > 
-> > At first, I also intended to fix this issue as you suggested. However,
-> > because both extra_command_line and extra_init_args end with a space,
-> > making such a change would require modifications in many places.
-> 
-> You may just need:
-> 
-> if (extra_init_args)
-> 	strim(extra_init_args);
+After fiddling with this I think the stub definition of
+bpf_overflow_handler() is fine. The other CONFIG_BPF_SYSCALL functions
+in this file already have similar stubs. I'll send a new patch set.
 
-Okay, I'll post another patch, making the changes as you suggested.
+- Kyle
 
-> > That's why I chose this approach instead.
-> > 
-> > Here are some examples before and after modification:
-> > 
-> > Before: [    0.829179] Kernel command line: 'console=ttyS0 debug -- bootconfig_arg1 '
-> > After:  [    0.032648] Kernel command line: 'console=ttyS0 debug -- bootconfig_arg1'
-> > 
-> > Before: [    0.757217] Kernel command line: 'console=ttyS0 debug -- bootconfig_arg1  arg1'
-> > After:  [    0.068184] Kernel command line: 'console=ttyS0 debug -- bootconfig_arg1 arg1'
-> > 
-> > In order to make it easier to observe spaces, I added quotes when outputting saved_command_line.
-> 
-> BTW, is this tailing space harm anything? I don't like a cosmetic change.
-> 
-> Thank you,
-
-I think this modification is necessary.
-
-If saved_command_line is only used internally in the kernel, having extra
-spaces, while not perfect, is acceptable to me. However, since saved_command_line
-can be accessed by users through the /proc/cmdline file, having these extra
-spaces here and there makes it look too casual.
-
-> > 
-> > Note that the first 'before' ends with a space, and there are two spaces between
-> > 'bootconfig_arg1' and 'arg1' in the second 'before'.
-> > 
-> > > > >
-> > > > > Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-> > > > > ---
-> > > > >  init/main.c | 4 +++-
-> > > > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/init/main.c b/init/main.c
-> > > > > index 2ca52474d0c3..cf2c22aa0e8c 100644
-> > > > > --- a/init/main.c
-> > > > > +++ b/init/main.c
-> > > > > @@ -660,12 +660,14 @@ static void __init setup_command_line(char *command_line)
-> > > > >                         strcpy(saved_command_line + len, extra_init_args);
-> > > > >                         len += ilen - 4;        /* strlen(extra_init_args) */
-> > > > >                         strcpy(saved_command_line + len,
-> > > > > -                               boot_command_line + initargs_offs - 1);
-> > > > > +                               boot_command_line + initargs_offs);
-> > > > >                 } else {
-> > > > >                         len = strlen(saved_command_line);
-> > > > >                         strcpy(saved_command_line + len, " -- ");
-> > > > >                         len += 4;
-> > > > >                         strcpy(saved_command_line + len, extra_init_args);
-> > > > > +                       len += ilen - 4; /* strlen(extra_init_args) */
-> > > > > +                       saved_command_line[len-1] = '\0'; /* remove trailing space */
-> > > > >                 }
-> > > > >         }
-> > > > 
-> > > > Gr{oetje,eeting}s,
-> > > > 
-> > > >                         Geert
-> > > > 
-> > > > -- 
-> > > > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68korg
-> > > > 
-> > > > In personal conversations with technical people, I call myself a hacker. But
-> > > > when I'm talking to journalists I just say "programmer" or something like that.
-> > > >                                 -- Linus Torvalds
-> > > > 
-> > > 
-> > > 
-> > > -- 
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> It feels like the root of your objection is that CONFIG_BPF_SYSCALL
+> exists at all. I could remove it in a separate patch if there's
+> consensus about that.
+>
+>
+>
+>
+> > Please keep the #ifdeffery reduction and function-moving patches separa=
+te
+> > from these other changes.
+> >
+> > Thanks,
+> >
+> >         Ingo
+>
+> - Kyle
 
