@@ -1,64 +1,84 @@
-Return-Path: <linux-kernel+bounces-142983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA8948A32E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:55:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FF868A32EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:56:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63E9F283A3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:55:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA7611F22520
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:56:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71595148825;
-	Fri, 12 Apr 2024 15:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7370148842;
+	Fri, 12 Apr 2024 15:56:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=elkcl.ru header.i=@elkcl.ru header.b="uxD6ELAT"
-Received: from smtp43.i.mail.ru (smtp43.i.mail.ru [95.163.41.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O7kc4ROG"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 387C51487F4
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:55:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.163.41.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF51185C52;
+	Fri, 12 Apr 2024 15:56:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712937305; cv=none; b=WRqF66DmVfaVXGP3/SHFDDbpXoiTLFA0yf2bsN5Jxtp+t8+WFQMJsHNwFB04QIKqkmAFBvHdIeh0jwFKxhNE1E8vQ+WrrYhCOXQqLlFSNdpfKLjEfReIfFQaTP0pZLBHHXA0L2V43rh/NzZvZhYf3Hz2Pi6xTyoHciGGle7ny+c=
+	t=1712937375; cv=none; b=AXLy5DhROhPXJpWyVsbCECRq42E5X96pPe8oEyKIaYrMTVGDMcXqNDfUHEhNjj5L8uDLjQAgycM46RpJpi8B1YrbDuPLO+feCnTmCNorprGk2Ug6PoaKE0JhN4NgDKjUVBnCajsTy9UHVimI0wmnn0iajJ9Bm4YyNPQQSFI/Wy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712937305; c=relaxed/simple;
-	bh=9oTCvBGu9JzO7ONavS1zFKdYX8JxPtnMFI92mjnC84g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hPvgKdr2rs//OWXd65S6TPciD4ZiyW5kVMCAZoykqFYrwUI4K02WvpjZGfy9RFSzNbJNRFCIv+guifSkFdjkFuADaDmgaPHzA21jtzNCdH8s6Huhk9H6vQKe3/s6j70s+WGyGAG7U5uQr/LpeFEG/lE5FH44zDz7SfoLl3cZqS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=elkcl.ru; spf=pass smtp.mailfrom=elkcl.ru; dkim=pass (1024-bit key) header.d=elkcl.ru header.i=@elkcl.ru header.b=uxD6ELAT; arc=none smtp.client-ip=95.163.41.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=elkcl.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=elkcl.ru
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=elkcl.ru;
-	s=mailru; h=Sender:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:
-	Subject:Cc:To:From:From:Sender:Reply-To:To:Cc:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-	References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:
-	List-Owner:List-Archive:X-Cloud-Ids:Disposition-Notification-To;
-	bh=QFS0D/M7dvwApK3A76KiviBzof0kZdBxTZ34NthdSy8=; t=1712937301; x=1713027301; 
-	b=uxD6ELAT5CotYeU6q8qm/8Tqu6CQxWl3MQJqPwtdBnDh2k4fCxlrZSyd4lvKBzBBTmiQCVm2v7D
-	u+yAFfl5AR9tr8r799Bc6oIl9oWYyMh1m5XqmvoKEZPgfcrOGPfNyhbnejSJM7w8JDM2T7IgbPuc7
-	4eiB9h3k6R5bdb0hWBM=;
-Received: by smtp43.i.mail.ru with esmtpa (envelope-from <pub@elkcl.ru>)
-	id 1rvJEp-0000000BIcj-2x1T; Fri, 12 Apr 2024 18:54:52 +0300
-From: Ilya Denisyev <dev@elkcl.ru>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Ilya Denisyev <dev@elkcl.ru>,
-	Richard Weinberger <richard@nod.at>,
-	Christian Brauner <brauner@kernel.org>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	Fabian Frederick <fabf@skynet.be>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Wedson Almeida Filho <walmeida@microsoft.com>,
-	KaiGai Kohei <kaigai@ak.jp.nec.com>,
-	linux-mtd@lists.infradead.org,
+	s=arc-20240116; t=1712937375; c=relaxed/simple;
+	bh=CWM8g/CIXJwPdo9qYSKWaUiBcAlUs3ZXqGZC+yTCa5s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LoA4KUqPAQe4lOxseKwvERgI2zJy8DFqk96JYLqUqLakJeftOsikid4sxaelqxi6G9MSsB1FpyLkC2XSJ0rsrrVca6G/13qXAiD3OMZ8QLiOFGTnM6vsTmOESEc/U6e9NRT8yFCR5iWZ3KNx7/bZgFTT6TGqqdZnb3AE7rjEmWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O7kc4ROG; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-346c5b83c6eso747887f8f.3;
+        Fri, 12 Apr 2024 08:56:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712937372; x=1713542172; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bu3sEbh7xedZD3Kgac/kjn7z9acHHxetUgBU6xP5gBk=;
+        b=O7kc4ROGEYg67sIB6T1RO3jx0uqug31DS8ZHBPOK3gPtRRteMWJ95uskqGFkYBo+sk
+         bVIzTD/vUymr313pjtaG2fuJS8fKtxbWrItJpGJ1XdHDTd7pZ5HfPzwSBOTYqrT1lMED
+         P1NI8baDPTe6COhtsf0UYI3mlrRBCf4iJbIUsBlF5A+mkb+VvaWbKdaWLaqvLKehNlct
+         ORwvOQilqoeqDWIy5qERp/OGfEW/NIwm9wxL4Ow0XU+u/50icqM+RvH0M8ft4tIz4ErN
+         oJfI4YStlicGhXcnlaib/ZdWY2kq6WlFmoH9RXe+2sbp67sVw1JY5R0ToM4KCmLx1Qmz
+         alng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712937372; x=1713542172;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bu3sEbh7xedZD3Kgac/kjn7z9acHHxetUgBU6xP5gBk=;
+        b=uc3XNVmyY/o8RYQdJnZhX8LxAPuPCZ8/ePaU1NdFErSeDENCiMaJsKUhtlOfj6BP1f
+         WKJU2lHL637z2J5bCJ5n2T8fKUzdaDG9sokP+HE0CKArUTlZKkPzcBPRdqhDKhtGK8n5
+         Zo2LpqMp1q/tRiCaTD+ncWg6y5vR9LYClij7SgWraBaftvDgJcLS2LNNRWDhnsD22oIs
+         c2rXVMGuMdioLM3gv9g//fkXoJAQOSt5+nc5fullgPh7ZC6/RrTQnvCpIOqu8TuQudzA
+         ceyz6gkwXbgcqmamtB5wbl57k+asSOhTFw8+ABcgSXKSY5CMCbAnCsUfzrf+/jjja94N
+         VVSA==
+X-Forwarded-Encrypted: i=1; AJvYcCVPZX54MnYtyA/a8n6j84bkFY11aEC7LF3kPurOdvh5aV4vpfHHrOcpbKYe8BeNmmkKBtKWu987hqqAYzi37n8wtuS3+ilPXaa724b9XKoqnuScNAPoPRPdHPB1fnVJnq69EXNHNt/2CEL/yFxafx4GMrK70GmHmZnOqlAr6PRVOqiCEaDW
+X-Gm-Message-State: AOJu0YyaKJqmQbJfqkz/pQRH+y/H94R6xo3yWeJNT9JD/MmgBQo1NuDV
+	lpbQq1z+UcW8W1cYq3iyZNPW2KvaA4GYJ8WHH+BYScwlNYJIPdZJ
+X-Google-Smtp-Source: AGHT+IF+kNepTzS+vyTA9aIEN4ndFMTXuXLMJP9SGHegD9ZH5zdAnPQ+knsC5bFPi9ZuJ46WKzxUOg==
+X-Received: by 2002:adf:f38f:0:b0:341:d833:1f7c with SMTP id m15-20020adff38f000000b00341d8331f7cmr1793215wro.70.1712937371803;
+        Fri, 12 Apr 2024 08:56:11 -0700 (PDT)
+Received: from localhost ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id d8-20020a5d5388000000b0034335f13570sm4550663wrv.116.2024.04.12.08.56.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 08:56:11 -0700 (PDT)
+From: Richard Gobert <richardbgobert@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	dsahern@kernel.org,
+	willemdebruijn.kernel@gmail.com,
+	shuah@kernel.org,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: [PATCH] jffs2: prevent xattr node from overflowing the eraseblock
-Date: Fri, 12 Apr 2024 18:53:54 +0300
-Message-ID: <20240412155357.237803-1-dev@elkcl.ru>
-X-Mailer: git-send-email 2.44.0
+	linux-kselftest@vger.kernel.org
+Cc: Richard Gobert <richardbgobert@gmail.com>
+Subject: [PATCH net-next v7 0/3] net: gro: move p->{flush/flush_id} calculations to L4
+Date: Fri, 12 Apr 2024 17:55:30 +0200
+Message-Id: <20240412155533.115507-1-richardbgobert@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,85 +86,75 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: pub@elkcl.ru
-Authentication-Results: smtp43.i.mail.ru; auth=pass smtp.auth=pub@elkcl.ru smtp.mailfrom=pub@elkcl.ru
-X-Mailru-Src: smtp
-X-7564579A: 646B95376F6C166E
-X-77F55803: 4F1203BC0FB41BD9D327C87852EB66D3B5F9CEDACDA8A37625F0445A84289E9B182A05F538085040843BD67FAA79768F33594132A326AF8BCEAE490106F7B863C222E478C8B5E4506837A08AC964547F
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE78CB87876C5D626D4EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006371D26D2A8652661258638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8147B5DEEC622027DEEA818C3B420E6A81562A0DB420D21BECC7F00164DA146DAFE8445B8C89999728AA50765F7900637BA2F0AEB80054583389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8AD74539164518AE5F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947C17119E5299B287EEAD7EC71F1DB884274AD6D5ED66289B523666184CF4C3C14F6136E347CC761E07725E5C173C3A84C356E3D212986C9D9EBA3038C0950A5D36B5C8C57E37DE458B330BD67F2E7D9AF16D1867E19FE14079C09775C1D3CA48CF17B107DEF921CE791DD303D21008E298D5E8D9A59859A8B6B372FE9A2E580EFC725E5C173C3A84C3F6A27782D052760535872C767BF85DA2F004C90652538430E4A6367B16DE6309
-X-C1DE0DAB: 0D63561A33F958A54E068876C7DE3C8E5002B1117B3ED696538D2A3C96BE7402484B8D70797403F6823CB91A9FED034534781492E4B8EEADDFC043C56F70D752C79554A2A72441328621D336A7BC284946AD531847A6065A17B107DEF921CE79BDAD6C7F3747799A
-X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF77DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CF1D5D3BAAD1272071CBB8234144E1EBE2896135156D9F16CB998C73ECA2F75A71963129249CAA680A1E5F415AA55898CCA736FDAA89DE208D695903BF9C1DC331129538D5484F1A9442BF32D1DA1046D202C26D483E81D6BE8B4B3506CD0458C56E5349047F11E5783FCF178C6DD14203
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojj8Sl06kWf03Ngj57zzxREA==
-X-Mailru-Sender: 7971DA0162A9842A75A8A63AE98D4FF4703F3DE0473E7D67D4570605F44DF537BF768613B42F11ECD8649DE294F77099CA0B8C118E355A7C54A42CAEBACFBF7EF55A8A299F926F354FD7C49A7833DCB4162D03413E14ADD05FEEDEB644C299C0ED14614B50AE0675
-X-Mras: Ok
 
-Add a check to make sure that the requested xattr node size is no larger
-than the eraseblock minus the cleanmarker.
+This patch series depends on commits in the series submitted to net.
+(https://lore.kernel.org/netdev/20240412152120.115067-1-richardbgobert@gmail.com/)
 
-Unlike the usual inode nodes, the xattr nodes aren't split into parts
-and spread across multiple eraseblocks, which means that a xattr node
-must not occupy more than one eraseblock. If the requested xattr value is
-too large, the xattr node can spill onto the next eraseblock, overwriting
-the nodes and causing errors such as:
+The fields network_offset and inner_network_offset are added to
+napi_gro_cb, and are both set during the receive phase of GRO. This is then
+leveraged in the next commit to remove flush_id state from napi_gro_cb, and
+stateful code in {ipv6,inet}_gro_receive which may be unnecessarily
+complicated due to encapsulation support in GRO.
 
-jffs2: argh. node added in wrong place at 0x0000b050(2)
-jffs2: nextblock 0x0000a000, expected at 0000b00c
-jffs2: error: (823) do_verify_xattr_datum: node CRC failed at 0x01e050, 
-read=0xfc892c93, calc=0x000000
-jffs2: notice: (823) jffs2_get_inode_nodes: Node header CRC failed 
-at 0x01e00c. {848f,2fc4,0fef511f,59a3d171}
-jffs2: Node at 0x0000000c with length 0x00001044 would run over the 
-end of the erase block
-jffs2: Perhaps the file system was created with the wrong erase size?
-jffs2: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found
-at 0x00000010: 0x1044 instead
+3rd patch adds tests for different flush_id flows in GRO.
 
-This breaks the filesystem and can lead to KASAN crashes such as:
+v6 -> v7:
+ - Moved bug fixes to a separate submission in net
+ - Added UDP fwd benchmark
+ - v6:
+   https://lore.kernel.org/all/20240410153423.107381-1-richardbgobert@gmail.com/
 
-BUG: KASAN: slab-out-of-bounds in jffs2_sum_add_kvec+0x125e/0x15d0
-Read of size 4 at addr ffff88802c31e914 by task repro/830
-CPU: 0 PID: 830 Comm: repro Not tainted 6.9.0-rc3+ #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), 
-BIOS Arch Linux 1.16.3-1-1 04/01/2014
-Call Trace:
- <TASK>
- dump_stack_lvl+0xc6/0x120
- print_report+0xc4/0x620
- ? __virt_addr_valid+0x308/0x5b0
- kasan_report+0xc1/0xf0
- ? jffs2_sum_add_kvec+0x125e/0x15d0
- ? jffs2_sum_add_kvec+0x125e/0x15d0
- jffs2_sum_add_kvec+0x125e/0x15d0
- jffs2_flash_direct_writev+0xa8/0xd0
- jffs2_flash_writev+0x9c9/0xef0
- ? __x64_sys_setxattr+0xc4/0x160
- ? do_syscall_64+0x69/0x140
- ? entry_SYSCALL_64_after_hwframe+0x76/0x7e
- [...]
+v5 -> v6:
+ - Write inner_network_offset in vxlan and geneve
+ - Ignore is_atomic when DF=0
+ - v5:
+   https://lore.kernel.org/all/20240408141720.98832-1-richardbgobert@gmail.com/
 
-Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+v4 -> v5:
+ - Add 1st commit - flush id checks in udp_gro_receive segment which can be
+   backported by itself
+ - Add TCP measurements for the 5th commit
+ - Add flush id tests to ensure flush id logic is preserved in GRO
+ - Simplify gro_inet_flush by removing a branch
+ - v4:
+   https://lore.kernel.org/all/202420325182543.87683-1-richardbgobert@gmail.com/
 
-Fixes: aa98d7cf59b5 ("[JFFS2][XATTR] XATTR support on JFFS2 (version. 5)")
-Signed-off-by: Ilya Denisyev <dev@elkcl.ru>
----
- fs/jffs2/xattr.c | 3 +++
- 1 file changed, 3 insertions(+)
+v3 -> v4:
+ - Fix code comment and commit message typos
+ - v3:
+   https://lore.kernel.org/all/f939c84a-2322-4393-a5b0-9b1e0be8ed8e@gmail.com/
 
-diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
-index 00224f3a8d6e..9509b33f7675 100644
---- a/fs/jffs2/xattr.c
-+++ b/fs/jffs2/xattr.c
-@@ -1110,6 +1110,9 @@ int do_jffs2_setxattr(struct inode *inode, int xprefix, const char *xname,
- 		return rc;
- 
- 	request = PAD(sizeof(struct jffs2_raw_xattr) + strlen(xname) + 1 + size);
-+	if (request > c->sector_size - c->cleanmarker_size)
-+		return -ERANGE;
-+
- 	rc = jffs2_reserve_space(c, request, &length,
- 				 ALLOC_NORMAL, JFFS2_SUMMARY_XATTR_SIZE);
- 	if (rc) {
+v2 -> v3:
+ - Use napi_gro_cb instead of skb->{offset}
+ - v2:
+   https://lore.kernel.org/all/2ce1600b-e733-448b-91ac-9d0ae2b866a4@gmail.com/
+
+v1 -> v2:
+ - Pass p_off in *_gro_complete to fix UDP bug
+ - Remove more conditionals and memory fetches from inet_gro_flush
+ - v1:
+   https://lore.kernel.org/netdev/e1d22505-c5f8-4c02-a997-64248480338b@gmail.com/
+
+Richard Gobert (3):
+  net: gro: add {inner_}network_offset to napi_gro_cb
+  net: gro: move L3 flush checks to tcp_gro_receive and udp_gro_receive_segment
+  selftests/net: add flush id selftests
+
+ drivers/net/geneve.c              |   1 +
+ drivers/net/vxlan/vxlan_core.c    |   1 +
+ include/net/gro.h                 |  82 +++++++++++++++--
+ net/8021q/vlan_core.c             |   2 +
+ net/core/gro.c                    |   5 +-
+ net/ethernet/eth.c                |   1 +
+ net/ipv4/af_inet.c                |  46 +---------
+ net/ipv4/gre_offload.c            |   1 +
+ net/ipv4/tcp_offload.c            |  15 +---
+ net/ipv4/udp_offload.c            |  16 +---
+ net/ipv6/ip6_offload.c            |  19 +---
+ tools/testing/selftests/net/gro.c | 144 ++++++++++++++++++++++++++++++
+ 12 files changed, 238 insertions(+), 95 deletions(-)
+
 -- 
-2.44.0
+2.36.1
 
 
