@@ -1,168 +1,147 @@
-Return-Path: <linux-kernel+bounces-143062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2D368A33AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:23:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 140D68A33B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:24:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57008B28296
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:23:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 457EB1C20AD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD701494D7;
-	Fri, 12 Apr 2024 16:21:04 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C984149C4D
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:21:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD3014A0A3;
+	Fri, 12 Apr 2024 16:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SH4ffIlJ"
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2F014A082
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712938864; cv=none; b=AF+Se0+K3xgFHP0cv2dtizM6YHKlZCHewX0+Z20D2SKRA6TpKwypzMwcfY2fLSUJ9wYxCGasE4vvbJ2zLYNV7kzRB9cxK3RY5XmjSwwhsZ4/hiVdwt/Ki361pST6YIQsu7c3BmKEsdKliH8P7TuMT+V/kqzp/FV7UatN/4H5vsY=
+	t=1712938890; cv=none; b=B6hOgL5tI9Rm9tSnLEtijc7FKcT58xIO6U5CZRlS1RF2KcAaJ7fFfijpn8ZSXbH2xQD31Bf1VCa6xPlRMwcxQQ2lQbJgbRS0XnD8/f8UNyqX2W6pP9ioa71xGU5ZY78VN2Bsm599cB0hSQmjmTmA/8htFWSOGGFS6EdMqM1COT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712938864; c=relaxed/simple;
-	bh=ThIUTkskTJ3StO15VmG5tI0v0yhSfi9cYlLfVt0C3no=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sWdM0kHROOSseTqbl3DeCst8rxQU3XTR3cbZLROKn+KH/JIvDHuR7HkWTfbGjdZmUfBfyVkOtDhZDfU278GVmY7FBQ0Q1+GpgaPz5cZ6QTcfQl00NgE2iPDToljj1YOEwArtIaBlYvdxBIh6zi89Cew9CifU+GnWfVz37M5M9KU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D5018339;
-	Fri, 12 Apr 2024 09:21:30 -0700 (PDT)
-Received: from e133380.arm.com (e133380.arm.com [10.1.197.52])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E39D43F64C;
-	Fri, 12 Apr 2024 09:20:58 -0700 (PDT)
-Date: Fri, 12 Apr 2024 17:20:56 +0100
-From: Dave Martin <Dave.Martin@arm.com>
-To: Reinette Chatre <reinette.chatre@intel.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>, James Morse <james.morse@arm.com>,
-	x86@kernel.org, linux-kernel@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
-	shameerali.kolothum.thodi@huawei.com,
-	D Scott Phillips OS <scott@os.amperecomputing.com>,
-	carl@os.amperecomputing.com, lcherian@marvell.com,
-	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
-	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-	dfustini@baylibre.com, amitsinght@marvell.com,
-	David Hildenbrand <david@redhat.com>,
-	Rex Nie <rex.nie@jaguarmicro.com>
-Subject: Re: [PATCH v1 31/31] x86/resctrl: Move the resctrl filesystem code
- to /fs/resctrl
-Message-ID: <ZhlfaHhIXe9ZLXmK@e133380.arm.com>
-References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-32-james.morse@arm.com>
- <0aaae9ce-00ae-cd0b-ed25-4d52d1620ab5@intel.com>
- <Zhfz7KHJeXYNCw9/@e133380.arm.com>
- <be03a7e9-fb0b-4edb-b22e-4452255992ad@intel.com>
+	s=arc-20240116; t=1712938890; c=relaxed/simple;
+	bh=/bBHf8+LhTSqvgNm4MM9zHrseS4i+FeUtlu8k8/NNp8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z6/0p2ejRq7FcpA3yC3PVVaTqjwL64fGIo0mUkpcbhCsYfPc9CVMDmUq2fugxA9wlM0ah+2gFGoTtcGfBGi9UPnV+QiAPmAqnFXyqLQuQW72r3+wHbxF1TQ4XDqK4RzKjZionW4vwfmnE3RUhxvJMKdxeZsGm+gUvUBJx+ooZfI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SH4ffIlJ; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-ddda842c399so1168416276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 09:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712938887; x=1713543687; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1QDHavbQQqC9GC6PjPIJvqoa4bSQDzx9RT4mlUCMRk0=;
+        b=SH4ffIlJgdxPBfX/uf10HIlaPuQoH8KQCpIWonqXA2Xxm/3i2jcf7Kqpph/TXPjMfW
+         cBB9KEnUl6AC8BmcWyGi4tp/tcpdVQH5SquWRnFqS5XaLlCayEThS45c3irsOgWYo4cm
+         eJbR/ABn2CQwz1Ggb+ltSK2g+S/l+diMNLM6EweXsRnSo9ke6ZGPKJwGNi50luM5Fw+M
+         hDedPoALa8RcnJrx7Yqkkcy3cN5QRRtHbZ/STsFv74pa5ukjYF8+jIkfdOMOGQXA+l2i
+         Z52N5j72PLxBIZTVnq7iSXFLQuffJrijun1P3CXsSadu+cZRkmhqfpEsTGkIANPq3P4E
+         zAdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712938887; x=1713543687;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1QDHavbQQqC9GC6PjPIJvqoa4bSQDzx9RT4mlUCMRk0=;
+        b=P/7rCU/7MC3iWqJdLmy1+89PN/2s5TZiUgVqsiYEZRuR1OL+SLc7+aabxugR0IwIQA
+         S75t8wT/ybgnE6MACG1C6UPe4eGpvJY7inpB8q0aADI2//3Fip7NPjmvW19EPRp9pJAy
+         9Hpz8wO0Oah6a4w90fp0q6nvOszMYmuKIG/xBsdQad27tCCE8W/8pCkcZuJiOdD7E5aC
+         Yzkg6g1E6EBSZp13sV7NWJqPCvAGOFgdrSEa/K0pXtmWHqLKehBSP8j2HGBRqQ4yrti9
+         IBTJNxrguZplRdh/AhtK77MXUhRblgL4QZyCXLlJ1474H0Jax5I2Zc4mGn1ZwESfwCPt
+         6Ucw==
+X-Forwarded-Encrypted: i=1; AJvYcCXzFSocxg5cooKyB9gGxeHksGu7PHF27oAwev8V+F/YMnjb10jw6MCjJuLSiPi3xTgEhqQhuEFYpUVTcjwiP0hYhedfCVPtapfo9cl+
+X-Gm-Message-State: AOJu0Yzw17zE2KE0ShT3xJVd+ySbCZHS1/CNSVGeDvUmc+vKliL247oz
+	/GJtUFZvvnPBzOw2x2x7BligTo+XWY29QR7Uxzu0GWRoyn3b8bMqQYw8c48VsOHeQSXSTlDf0Yf
+	hi5wjW34aHwOMVDTyNODNEzUuAI5gQnSYw6fw7g==
+X-Google-Smtp-Source: AGHT+IEz3OKXrWLV/ZvgH28LAtC8lxPsu1c1fGVznFCJajSMmkV0jqGzuKxeinO2n+Acyg6VdAJNuyazJ5Qz39MvgvU=
+X-Received: by 2002:a05:6902:e13:b0:dc7:4367:2527 with SMTP id
+ df19-20020a0569020e1300b00dc743672527mr3787576ybb.49.1712938887518; Fri, 12
+ Apr 2024 09:21:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <be03a7e9-fb0b-4edb-b22e-4452255992ad@intel.com>
+References: <20240412-pm8xxx-vibrator-new-design-v10-0-0ec0ad133866@quicinc.com>
+ <20240412-pm8xxx-vibrator-new-design-v10-1-0ec0ad133866@quicinc.com>
+In-Reply-To: <20240412-pm8xxx-vibrator-new-design-v10-1-0ec0ad133866@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 12 Apr 2024 19:21:16 +0300
+Message-ID: <CAA8EJpp-awdTyfngeYyJaOObOWz=UCSK9U08TfFPA0v=8Naz=A@mail.gmail.com>
+Subject: Re: [PATCH v10 1/4] input: pm8xxx-vibrator: correct VIB_MAX_LEVELS calculation
+To: quic_fenglinw@quicinc.com
+Cc: kernel@quicinc.com, Andy Gross <agross@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Apr 11, 2024 at 10:45:01AM -0700, Reinette Chatre wrote:
-> Hi Dave,
-> 
-> On 4/11/2024 7:30 AM, Dave Martin wrote:
-> > On Tue, Mar 26, 2024 at 12:44:26PM -0700, Fenghua Yu wrote:
-> >> Hi, James,
-> >>
-> >> On 3/21/24 09:51, James Morse wrote:
-> >>> resctrl is linux's defacto interface for managing cache and bandwidth
-> >>> policies for groups of tasks.
-> >>>
-> >>> To allow other architectures to make use of this pseudo filesystem,
-> >>> move it live in /fs/resctrl instead of /arch/x86.
-> >>>
-> >>> This move leaves behind the parts of resctrl that form the architecture
-> >>> interface for x86.
-> >>>
-> >>> Signed-off-by: James Morse <james.morse@arm.com>
-> >>> ---
-> >>> Discussion needed on how/when to merge this, as it would conflict with
-> >>> all outstanding series. It's probably worth deferring to some opportune
-> >>> time, but is included here for illustration.
-> >>> ---
-> >>>   arch/x86/kernel/cpu/resctrl/core.c        |   15 -
-> >>>   arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  505 ---
-> >>>   arch/x86/kernel/cpu/resctrl/internal.h    |  310 --
-> >>>   arch/x86/kernel/cpu/resctrl/monitor.c     |  821 -----
-> >>>   arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 1093 ------
-> >>>   arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 3994 --------------------
-> >>>   fs/resctrl/ctrlmondata.c                  |  527 +++
-> >>>   fs/resctrl/internal.h                     |  340 ++
-> >>>   fs/resctrl/monitor.c                      |  843 +++++
-> >>>   fs/resctrl/psuedo_lock.c                  | 1122 ++++++
-> >>>   fs/resctrl/rdtgroup.c                     | 4013 +++++++++++++++++++++
-> >>>   11 files changed, 6845 insertions(+), 6738 deletions(-)
-> >>>
-> >>
-> >> checkpatch reports warnings and checks on this patch. Please fix them. e.g.
-> >>
-> >> CHECK: Blank lines aren't necessary before a close brace '}'
-> >> #13340: FILE: fs/resctrl/rdtgroup.c:3184:
-> >> +
-> >> +	}
-> > 
-> > Thanks for spotting these...
-> > 
-> > However, this is a "move code around with no functional change" patch,
-> > so I think that it should paste the original code across verbatim
-> > without trying to address style violations.  (Otherwise, there is no
-> > hope of checking whether this patch is correct or not...)
-> 
-> I agree that this patch is too big for it to do more than just move
-> code (please see next comments though).
-> 
-> > 
-> > For the above example, see:
-> > 47820e73f5b3 ("x86/resctrl: Initialize a new resource group with default MBA values")
-> > 
-> > Other than code that is moved or cloned from previously existing code,
-> > do you see any new style problems actually introduced by this patch?
-> > 
-> > 
-> > Notwithstanding the above, this series will conflict with a lot of the
-> > in-flight changes pending for resctrl, so it could be a good opportunity
-> > to fix some legacy style nits.
-> > 
-> > Reinette, do you have a view on this?  If legacy style problems get
-> > addressed in the moved code, are they essential for this series or could
-> > that be done in a follow-up?
-> 
-> On its path upstream this series will be scrutinized by various checkers and 
-> to ensure a smooth merge I would like to recommend that this series aim to
-> get as clean slate as possible from the basic checkers.
-> 
-> Could a patch addressing these legacy issues precede this patch instead?
-> 
-> I do not think all need to be addressed though. Some of the spelling warnings
-> are false positives and the camel case appears to be the custom for filesystem
-> parameter code.
-> 
-> It is not obvious to me that all are legacy issues though ... could you
-> take a second look at the "WARNING: Use #include <linux/resctrl.h>
-> instead of <asm/resctrl.h>" ones?
-> 
-> Reinette
+On Fri, 12 Apr 2024 at 15:36, Fenglin Wu via B4 Relay
+<devnull+quic_fenglinw.quicinc.com@kernel.org> wrote:
+>
+> From: Fenglin Wu <quic_fenglinw@quicinc.com>
+>
+> The output voltage is inclusive hence the max level calculation is
+> off-by-one-step. Correct it.
 
-Ack, that does make sense, and it's probably better than letting the dust
-settle on this series before applying further cleanups.
+.. while we are at it also add a define for the step size instead of
+using the magic value.
 
-I'll make a note to review.
+With that in place:
 
-Some of the #include <asm/*> look to have been inherited from the
-previous x86 arch code where they would have been more appropriate, but
-perhaps some can change to <linux/*> now that more of the definitions
-are in the common headers.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Cheers
----Dave
+>
+> Fixes: 11205bb63e5c ("Input: add support for pm8xxx based vibrator driver")
+> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
+> ---
+>  drivers/input/misc/pm8xxx-vibrator.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/input/misc/pm8xxx-vibrator.c b/drivers/input/misc/pm8xxx-vibrator.c
+> index 04cb87efd799..844ca7e1f59f 100644
+> --- a/drivers/input/misc/pm8xxx-vibrator.c
+> +++ b/drivers/input/misc/pm8xxx-vibrator.c
+> @@ -14,7 +14,8 @@
+>
+>  #define VIB_MAX_LEVEL_mV       (3100)
+>  #define VIB_MIN_LEVEL_mV       (1200)
+> -#define VIB_MAX_LEVELS         (VIB_MAX_LEVEL_mV - VIB_MIN_LEVEL_mV)
+> +#define VIB_PER_STEP_mV                (100)
+> +#define VIB_MAX_LEVELS         (VIB_MAX_LEVEL_mV - VIB_MIN_LEVEL_mV + VIB_PER_STEP_mV)
+>
+>  #define MAX_FF_SPEED           0xff
+>
+> @@ -118,10 +119,10 @@ static void pm8xxx_work_handler(struct work_struct *work)
+>                 vib->active = true;
+>                 vib->level = ((VIB_MAX_LEVELS * vib->speed) / MAX_FF_SPEED) +
+>                                                 VIB_MIN_LEVEL_mV;
+> -               vib->level /= 100;
+> +               vib->level /= VIB_PER_STEP_mV;
+>         } else {
+>                 vib->active = false;
+> -               vib->level = VIB_MIN_LEVEL_mV / 100;
+> +               vib->level = VIB_MIN_LEVEL_mV / VIB_PER_STEP_mV;
+>         }
+>
+>         pm8xxx_vib_set(vib, vib->active);
+>
+> --
+> 2.25.1
+>
+>
+
+
+-- 
+With best wishes
+Dmitry
 
