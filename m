@@ -1,124 +1,188 @@
-Return-Path: <linux-kernel+bounces-143329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BE758A3747
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:49:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D74048A3748
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:50:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD5551C23148
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:49:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65CB31F227E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:50:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C20114EC4E;
-	Fri, 12 Apr 2024 20:49:44 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72FA940BE5;
+	Fri, 12 Apr 2024 20:50:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bCGYBt/2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E11E14A600
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 20:49:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE063BB2E
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 20:50:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712954983; cv=none; b=kNitw2CGRHzyJtjYYEeU/Yb72RmXUFzCldp0CXt3slQ/z3saZ7zzETKjzE9IFWqYo1Q1wxdwe1Y7Z9vqZATLCouwGLrZqvF3huN8HcqnND0W5M2UGC1/ids4RKWCzwDH0LHtymBJ6QvjkLdIKrRk8yGsdWhvTnief2DPOpRPLAQ=
+	t=1712955048; cv=none; b=tJkYl3N2+760KV392msUQB0NHTd8/vcZgl6YRPL97WR2v+jcK++oD5yKz0Do8ReoJ/AXCZPSwIsin+QFsqlHOyap3bk9oeFG6gBNeOl7in9JJLhtW8Vz7sJrPLivjBNjt64pILPakD0GPs5KjSSTCm0t+FZk00PxzyA3SuqxYG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712954983; c=relaxed/simple;
-	bh=qHPCMth1Dk6Js73rTbBzK82G3+seRbaXOvlWBerU8Jc=;
+	s=arc-20240116; t=1712955048; c=relaxed/simple;
+	bh=WPp/FYbWeS5ARJQ5SiuyphwKd3azVVv/gYSg+Jdoo4k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AwRZv24IgYS6GE9tmMTUvOmbiEOiipefxlLwqsniWvOMCBZrKfH8RId5l1vVthagWMiAzVhmSpn8Svogu4q67VjPXPoZ2NzYmoqEroEjbr9C13XOX3m1ukQ5SbkOe1a399QvtHsxuWWV5zfbb9IRbdaC9ehH6v0IeJxd3PSosdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rvNq4-0002W0-2n; Fri, 12 Apr 2024 22:49:36 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rvNq3-00BwMt-C7; Fri, 12 Apr 2024 22:49:35 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rvNq3-000NRt-0w;
-	Fri, 12 Apr 2024 22:49:35 +0200
-Date: Fri, 12 Apr 2024 22:49:35 +0200
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: Russell King <rmk+kernel@armlinux.org.uk>, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, oe-kbuild-all@lists.linux.dev, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] clk: Provide !COMMON_CLK dummy for
- devm_clk_rate_exclusive_get()
-Message-ID: <xfaf22rf6gnrxpinkciybsyk4dx2bfqgozv6udwymegtcgd26i@jq5be7fm5lhi>
-References: <202403270305.ydvX9xq1-lkp@intel.com>
- <20240327073310.520950-2-u.kleine-koenig@pengutronix.de>
- <d95554f623f023a2f5499fa2f6f76567.sboyd@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gSIC3br/hT+Mz3SSPJWZLL6P1sWi+y7ePxvZxlI5Daes1SDFGlUcdpCXN+g0ywgZEMFel85dkMPmAzbuCdVZCI/yQt15om3GcWoxROCDWjLFvUQtNjGVirg+LfJbNhwwHQPfleOyXYsksRtN3hZtzCLncDbLZMvKbUkWbrXx3nc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bCGYBt/2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5316CC113CC;
+	Fri, 12 Apr 2024 20:50:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712955048;
+	bh=WPp/FYbWeS5ARJQ5SiuyphwKd3azVVv/gYSg+Jdoo4k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bCGYBt/2Lmp82WPEchbqOXPja/snqRGuVh1aVTGJ/nRYXPr2RRWcWuEZUY55rpsB+
+	 gfUcqNBFOsBODjlBNsD+DjVUXhVWdUfw4DajU21n3PDNEBrwAlZ01fphb9Ik119qzc
+	 iopYfiNu3gaHXtwUX5mp+fzPk4g9r3WpItojB6tJ4IxH/i3Sni0P2Qt88XmO1+xizF
+	 pmf3Gog6BYV7omMr6z8SEsujqWpor6s31/0tefk3Tls0ukVr/pDYMsIexrwMFOvW5j
+	 2p0Uv+xU+Xi6MayW0GWOHRd+XxArWawSzoeORCaE6PcoyJ+1hNHU6gcS8draPMXRXb
+	 0sWAlLbKaxrDQ==
+Date: Fri, 12 Apr 2024 20:50:46 +0000
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Light Hsieh =?utf-8?B?KOisneaYjueHiCk=?= <Light.Hsieh@mediatek.com>
+Cc: Hillf Danton <hdanton@sina.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>
+Subject: Re: =?utf-8?B?5Zue6KaGOiDlm57opoY6IOWbng==?=
+ =?utf-8?B?6KaGOiBbUEFUQ0g=?= =?utf-8?Q?=5D?= f2fs: avoid the deadlock case
+ when stopping discard thread
+Message-ID: <Zhmepjudrjw0RRhn@google.com>
+References: <20240320001442.497813-1-jaegeuk@kernel.org>
+ <20240321224233.2541-1-hdanton@sina.com>
+ <ZfzQz5hwECOEGYVL@google.com>
+ <SI2PR03MB52607606AB0D29C8AB123C1484312@SI2PR03MB5260.apcprd03.prod.outlook.com>
+ <Zf4FIAkI83GbQYLB@google.com>
+ <ZgL9NLLiSdDeIMg_@google.com>
+ <SI2PR03MB526041E42B6BD9C9DA9FBAC184352@SI2PR03MB5260.apcprd03.prod.outlook.com>
+ <SI2PR03MB5260819B5B1719063EFF458A843D2@SI2PR03MB5260.apcprd03.prod.outlook.com>
+ <Zg8Fvu1X_4uqQl9A@google.com>
+ <SI2PR03MB52608626CE591F850F5F815384042@SI2PR03MB5260.apcprd03.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tcm26yzrf676zf3u"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d95554f623f023a2f5499fa2f6f76567.sboyd@kernel.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <SI2PR03MB52608626CE591F850F5F815384042@SI2PR03MB5260.apcprd03.prod.outlook.com>
 
+On 04/12, Light Hsieh (謝明燈) wrote:
+> I think 'readon' in this line may be typo of  'reason'
 
---tcm26yzrf676zf3u
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Was fixed as well. Thanks.
 
-Hello Stephen,
-
-On Thu, Mar 28, 2024 at 03:35:57PM -0700, Stephen Boyd wrote:
-> Quoting Uwe Kleine-K=F6nig (2024-03-27 00:33:10)
-> > To be able to compile drivers using devm_clk_rate_exclusive_get() also
-> > on platforms without the common clk framework, add a dummy
-> > implementation that does the same as clk_rate_exclusive_get() in that
-> > case (i.e. nothing).
-> >=20
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202403270305.ydvX9xq1-lkp=
-@intel.com/
-> > Fixes: b0cde62e4c54 ("clk: Add a devm variant of clk_rate_exclusive_get=
-()")
-> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> > ---
->=20
-> Applied to clk-fixes
-
-I assume that means it will be sent to Linus before 6.9? That would be
-great because I want to make use of this function in some drivers and
-the build bots nag about my for-next branch that in some configurations
-this function is missing.
-
-Thanks
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---tcm26yzrf676zf3u
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmYZnl4ACgkQj4D7WH0S
-/k4bhAf/dU3dIH1rQHO52ZY4eCb6/UQ6pdDM8CzZxB2oGa60PXugNfbK5LqTCNEB
-q5FVGKRHe+lbUG2Dk4belrX3ZNMXweqywtHu0bXbPZZjPjCvrYmCdRJKuHLSQgRV
-5gHxyFQshzOr49JHsWieLVj7le4bAHBbgF9r/a2gcWUsS4xOAaNNCzgPb8fR7nzX
-pcbXThX4rhn9kP65ZokC2sEJyobMFNCrTewaOXP6UNaSUt/M/qTnsgDhxMa7ywPi
-4deahcIXXS5ZKj2ICyz08cNryUnJVA+bhYNvzi7zP51TvNynLcwYfdkF+n5T5Gin
-aUgbiu3Sm38THO0Eiw5M+GgIUfYj0A==
-=/h7x
------END PGP SIGNATURE-----
-
---tcm26yzrf676zf3u--
+> 
+> +		f2fs_warn(sbi, "Stopped filesystem due to readon: %d", reason);
+> 
+> 
+> 
+> 寄件者: Jaegeuk Kim <jaegeuk@kernel.org>
+> 寄件日期: 2024年4月5日 上午 03:55
+> 收件者: Light Hsieh (謝明燈) <Light.Hsieh@mediatek.com>
+> 副本: Hillf Danton <hdanton@sina.com>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; linux-f2fs-devel@lists.sourceforge.net <linux-f2fs-devel@lists.sourceforge.net>
+> 主旨: Re: 回覆: 回覆: [PATCH] f2fs: avoid the deadlock case when stopping discard thread
+>  
+> 
+> On 04/03, Light Hsieh (謝明燈) wrote:
+> > Our log shows that thaw_super_locked() find that sb is readonly, so sb_freeze_unlock() is not invoked.
+> > 
+> > static int thaw_super_locked(struct super_block *sb, enum freeze_holder who)
+> > {
+> >       ...
+> >       if (sb_rdonly(sb)) {
+> >             sb->s_writers.freeze_holders &= ~who;
+> >             sb->s_writers.frozen = SB_UNFROZEN;
+> >             wake_up_var(&sb->s_writers.frozen);
+> >             goto out;
+> >       }
+> >                ...
+> >       sb_freeze_unlock(sb, SB_FREEZE_FS);
+> > out:
+> >       deactivate_locked_super(sb);
+> >       return 0;
+> > }
+> 
+> Thank you. Could you please take a look at this patch?
+> 
+> https://lore.kernel.org/linux-f2fs-devel/20240404195254.556896-1-jaegeuk@kernel.org/T/#u
+> 
+> > 
+> > 寄件者: Jaegeuk Kim <jaegeuk@kernel.org>
+> > 寄件日期: 2024年3月27日 上午 12:52
+> > 收件者: Light Hsieh (謝明燈) <Light.Hsieh@mediatek.com>
+> > 副本: Hillf Danton <hdanton@sina.com>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; linux-f2fs-devel@lists.sourceforge.net <linux-f2fs-devel@lists.sourceforge.net>
+> > 主旨: Re: 回覆: [PATCH] f2fs: avoid the deadlock case when stopping discard thread
+> >  
+> > 
+> > External email : Please do not click links or open attachments until you have verified the sender or the content.
+> > On 03/22, Jaegeuk Kim wrote:
+> > > On 03/22, Light Hsieh (謝明燈) wrote:
+> > > > I don't see my added log in sb_free_unlock() which will invoke percpu_up_write to release the write semaphore.
+> > > 
+> > > May I ask more details whether thaw_super() was called or not?
+> > 
+> > Ping?
+> > 
+> > > 
+> > > > 
+> > > > 
+> > > > ________________________________
+> > > > 寄件者: Jaegeuk Kim <jaegeuk@kernel.org>
+> > > > 寄件日期: 2024年3月22日 上午 08:29
+> > > > 收件者: Hillf Danton <hdanton@sina.com>
+> > > > 副本: linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; Light Hsieh (謝明燈) <Light.Hsieh@mediatek.com>; linux-f2fs-devel@lists.sourceforge.net <linux-f2fs-devel@lists.sourceforge.net>
+> > > > 主旨: Re: [PATCH] f2fs: avoid the deadlock case when stopping discard thread
+> > > > 
+> > > > 
+> > > > External email : Please do not click links or open attachments until you have verified the sender or the content.
+> > > > 
+> > > > On 03/22, Hillf Danton wrote:
+> > > > > On Tue, 19 Mar 2024 17:14:42 -0700 Jaegeuk Kim <jaegeuk@kernel.org>
+> > > > > > f2fs_ioc_shutdown(F2FS_GOING_DOWN_NOSYNC)  issue_discard_thread
+> > > > > >  - mnt_want_write_file()
+> > > > > >    - sb_start_write(SB_FREEZE_WRITE)
+> > > > >  __sb_start_write()
+> > > > >    percpu_down_read()
+> > > > > >                                              - sb_start_intwrite(SB_FREEZE_FS);
+> > > > >    __sb_start_write()
+> > > > >      percpu_down_read()
+> > > > >
+> > > > > Given lock acquirers for read on both sides, wtf deadlock are you fixing?
+> > > > 
+> > > > Damn. I couldn't think _write uses _read sem.
+> > > > 
+> > > > >
+> > > > > >  - f2fs_stop_checkpoint(sbi, false,            : waiting
+> > > > > >     STOP_CP_REASON_SHUTDOWN);
+> > > > > >  - f2fs_stop_discard_thread(sbi);
+> > > > > >    - kthread_stop()
+> > > > > >      : waiting
+> > > > > >
+> > > > > >  - mnt_drop_write_file(filp);
+> > > > >
+> > > > > More important, feel free to add in spin.
+> > > > 
+> > > > I posted this patch before Light reported.
+> > > > 
+> > > > And, in the report, I didn't get this:
+> > > > 
+> > > > f2fs_ioc_shutdown() --> freeze_bdev() --> freeze_super() --> sb_wait_write(sb, SB_FREEZE_FS) --> ... ->percpu_down_write().
+> > > > 
+> > > > because f2fs_ioc_shutdown() calls f2fs_stop_discard_thread() after thaw_bdev()
+> > > > like this order.
+> > > > 
+> > > >  -> freeze_bdev()
+> > > >  -> thaw_bdev()
+> > > >  -> f2fs_stop_discard_thread()
+> > > > 
+> > > > Am I missing something?
+> > > > 
+> > > > >
+> > > > > Reported-by: "Light Hsieh (謝明燈)" <Light.Hsieh@mediatek.com>
+> > > > 
 
