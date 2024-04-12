@@ -1,68 +1,69 @@
-Return-Path: <linux-kernel+bounces-141914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 800068A2511
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:18:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9401C8A2512
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:19:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0F891C20F6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:18:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E9FE281F46
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:19:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6351518044;
-	Fri, 12 Apr 2024 04:18:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3421017C95;
+	Fri, 12 Apr 2024 04:18:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lUtBk9Kt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="onlePDWk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41621F5FF
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797751B5AA
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:18:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712895483; cv=none; b=cetJuOCXQPc2fpZKyY1OQPKaHK5tMUfe31IkEQS5IoMe57Vb5qAs+AGyLhBhep7TFzMgSMhU8Tp2yGQ/RwLC+IvlZshULce7ERdazF7Y5NXV7bKQn3oUQPNAbxKrmQoa1g5pLuB0gYgiqlHkqHupcoiIa3a3gB1nXsQUxogGX9s=
+	t=1712895536; cv=none; b=TOQ3SqtY5Id01Rl91Y8gj60IC1cvphD7ObH4BhywjHUjj8BiPWvr0yDIJRa6YDNQwNospEtH7mv8Wjk84BVexiIH1ThWepFIV/cgYz2Nb0hlFijwvdZSYC4QNv85N0aUe9MjZK+Ql976QMNhkgkzYVl26rctfUavSEAFEO7Vpzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712895483; c=relaxed/simple;
-	bh=Rs6KpGntHCw4Yqslf2bcFsD9oUEkwjTy3lZ29ZNks2w=;
+	s=arc-20240116; t=1712895536; c=relaxed/simple;
+	bh=9qZzQZ/0gGIJAQ+03rAWiljV9/jUKUWMrXaa+HpiIv0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=j8UUqaH1P4cF+Lw9tJ8DsAktg1FiXI9pO612zbaKmeZfuOmyy2GIMQGAYZL27reNkMO4dtjGttAJZL71LpgiimPfdKQmLpTf3tSnQQTJgNjMMYHxj1ak1LlMZkjLRrlrRqh2t04Y04jd0mjTK3+I71Sn2OrDm0IrMwzmx7QKMnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lUtBk9Kt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 460F0C4AF08
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:18:02 +0000 (UTC)
+	 To:Cc:Content-Type; b=U/lC4AURrZhxv/9/yQHMxO/Jz+yQUJfpf//9+ei+y9pQYsjiYZZES+/BLOYdYdqt6MPTucn9EPhU4P7GPYJO9e1+rw5KRICZASdokibja7sv7TE94p1xMz9TAfAphJlKNtRKHyA20uwNRie3pnOjjNFg1Z0/yjgq6sRc1PZfKGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=onlePDWk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55BB1C4AF07
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:18:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712895482;
-	bh=Rs6KpGntHCw4Yqslf2bcFsD9oUEkwjTy3lZ29ZNks2w=;
+	s=k20201202; t=1712895536;
+	bh=9qZzQZ/0gGIJAQ+03rAWiljV9/jUKUWMrXaa+HpiIv0=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=lUtBk9KtFqJI+UQlt0ApruN5aBNHlZbvkbOckd8ziZLXDZfNVgF7uC9qVaPnxLn2Y
-	 8ehodt8dWSY+IoOUo2uUHnRuoVi1MD68nR8aLjRAJXYVp+Fhyrb7CBKz1GxtWkVrWW
-	 04GtGTS+mcJLpoeCU5EcQk0d0kxMftVRHtXGyTOyUIeOzC0ZYFgCr22RmnsEwWc3lg
-	 CD+p4AvTR7rWmM7QEWVeRKzQ7VUboGq1QxICzqIfO0sTjGv4IH04HRtMJQdIRf96dR
-	 Y0dCiVMtbY4vAGZAt7YtZEV5TiPSZ88h1a6qk4DMCXT6yInwztRQiNyxFvjrJ/1rCn
-	 dmOKx0pA8uLDQ==
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a52223e004dso43867966b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:18:02 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWgH6nq8F4k8Ovubptfop1fxO7gMa+xNxs0/F1G5XDNMSOA+CF1DUFYQgyOGpc3ZSqStbiUR8gUDb6MkmrkwHjQaYAog7p8OKg/EBal
-X-Gm-Message-State: AOJu0YxicFzPt6Fd/75akB/BXp1igCYrPSed2EWuV5Kgj36y2iwILpic
-	xBme5VzLCPC7CDRxeMnOpfg1OzVfPOWbleNeEuJQ4A6HkpyR2numOltOCXnu/7uX6t71fYGbFL4
-	hIRzMospoTKnJazS1ioCaFjCpXLk=
-X-Google-Smtp-Source: AGHT+IFYR5HCm3SSxFDMVvvI/UdaA9zyJSKqVqwbLkJcA88e9XoV146pitINbiUotL67uHM+pps74EmDPuIAgZou5nU=
-X-Received: by 2002:a17:906:80c7:b0:a52:1a78:e3ca with SMTP id
- a7-20020a17090680c700b00a521a78e3camr1209261ejx.6.1712895480760; Thu, 11 Apr
- 2024 21:18:00 -0700 (PDT)
+	b=onlePDWkN9uI2Lx4cugi/tuUAzigRCYq13jXCu+K8rPuxcm4xep0+KH5u0xhUmecg
+	 zS6oCXBn06utl5tfVEVoi7Xllylf15OBeV2zCdzIibLA2KwskOq2BuqvABQEKhBsO6
+	 0aUVBgX1WLL8hEnLfhJO21gyBaDb5PkKLd0h9SJhmdDlABVfWySVJLmShMItMDWX20
+	 YRBAcFlpL5bIO2HiltyvrqBM1FZH6ikEZWUU7KztjllziiPSxBRJAI/3ovfzArqkcn
+	 CLz+a2mIgaQmCjdlfDaSq8GZHDfUWk0YDls8IMW1xRLmckApTt/0v3okrqpkrTQdv7
+	 vCs6eK03RwJCg==
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a51addddbd4so51672366b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:18:56 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVvNq84Xyth1WV8O7GzFhJLe6u7wwtMm2z2j9vK/dcnSG9FE6j9dLR7J5LFQWfcCMjY9dPZxWgyrBgILdejvdckAeXHGHz6NRNHt0Ak
+X-Gm-Message-State: AOJu0YycvL11cUkO9jE5/VCHgSddTuKypTrTu7O1Aq99N8qXE90p1Tz/
+	JchAiwJZoRzxsGa2YOV5Zq48RHD9fwbe1xKmIS+dfE75mxIx3jx0vrKrwQvJer3hCPkRpEXjygc
+	PKDiI3tqZ6xs4LwsqQXVeEPtU3kM=
+X-Google-Smtp-Source: AGHT+IEyx8qHzPwepEzMA5MbbIViqFwGNoPy2RbyMnJvYxSKB+yXOtEDYUZJd40DLh/VXFETeaDLQ5rmqfVyqNR5j7c=
+X-Received: by 2002:a17:907:868b:b0:a52:3654:e42 with SMTP id
+ qa11-20020a170907868b00b00a5236540e42mr410913ejc.0.1712895534906; Thu, 11 Apr
+ 2024 21:18:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411010510.22135-1-yangtiezhu@loongson.cn> <20240411010510.22135-3-yangtiezhu@loongson.cn>
-In-Reply-To: <20240411010510.22135-3-yangtiezhu@loongson.cn>
+References: <20240411010510.22135-1-yangtiezhu@loongson.cn> <20240411010510.22135-4-yangtiezhu@loongson.cn>
+In-Reply-To: <20240411010510.22135-4-yangtiezhu@loongson.cn>
 From: Huacai Chen <chenhuacai@kernel.org>
-Date: Fri, 12 Apr 2024 12:17:53 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H73d5hVM+anfHhTFHjWDmVtC2TJdxU9hANJvQgm-E3g6w@mail.gmail.com>
-Message-ID: <CAAhV-H73d5hVM+anfHhTFHjWDmVtC2TJdxU9hANJvQgm-E3g6w@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] LoongArch: Refactor get_acpi_id_for_cpu() related code
+Date: Fri, 12 Apr 2024 12:18:46 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7SqudMeyK6_+j0ah=N=ywsv=4kk_b=hxocEQFsKZ+0bA@mail.gmail.com>
+Message-ID: <CAAhV-H7SqudMeyK6_+j0ah=N=ywsv=4kk_b=hxocEQFsKZ+0bA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] LoongArch: Save and restore PERCPU_BASE_KS for
+ ACPI S3 state
 To: Tiezhu Yang <yangtiezhu@loongson.cn>
 Cc: Thomas Gleixner <tglx@linutronix.de>, Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>, 
 	loongarch@lists.linux.dev, linux-kernel@vger.kernel.org, 
@@ -75,70 +76,58 @@ Hi, Tiezhu,
 On Thu, Apr 11, 2024 at 9:05=E2=80=AFAM Tiezhu Yang <yangtiezhu@loongson.cn=
 > wrote:
 >
-> Currently, cpu_logical_map(cpu) is defined as __cpu_logical_map[cpu]
-> in arch/loongarch/include/asm/smp.h and __cpu_logical_map[] is defined
-> in arch/loongarch/kernel/smp.c, that is to say, cpu_logical_map(cpu) is
-> vaild only under CONFIG_SMP, the implementation of get_acpi_id_for_cpu()
-> which calls cpu_logical_map(cpu) is not suitable for the case of non-SMP,
-> so refactor get_acpi_id_for_cpu() related code to make it work well for
-> both SMP and non-SMP.
-But you implement cpu_logical_map(cpu) for non-SMP in the 4th patch, right?
+> Currently, per_cpu_offset(x) is defined as __per_cpu_offset[x])
+> only under CONFIG_SMP in include/asm-generic/percpu.h, that is
+> to say, the implementation of loongarch_common_resume() which
+> calls per_cpu_offset(0) is not suitable for the case of non-SMP,
+> so do not write per_cpu_offset(0) to PERCPU_BASE_KS when resume,
+> just save the value of PERCPU_BASE_KS when suspend and restore
+> it when resume to make it work well for both SMP and non-SMP.
+For non-SMP you need PERCPU_BASE_KS to do what?
 
 Huacai
+
+>
+> Tested with the command "rtcwake -d rtc1 -s 20 -m mem -v", dmesg
+> shows that "PM: suspend entry (deep)" and "PM: suspend exit".
 >
 > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > ---
->  arch/loongarch/include/asm/acpi.h | 7 ++++++-
->  arch/loongarch/kernel/acpi.c      | 9 ++++++++-
->  2 files changed, 14 insertions(+), 2 deletions(-)
+>  arch/loongarch/power/suspend.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 >
-> diff --git a/arch/loongarch/include/asm/acpi.h b/arch/loongarch/include/a=
-sm/acpi.h
-> index 49e29b29996f..a4ad3f75bd60 100644
-> --- a/arch/loongarch/include/asm/acpi.h
-> +++ b/arch/loongarch/include/asm/acpi.h
-> @@ -39,9 +39,14 @@ extern struct acpi_madt_core_pic acpi_core_pic[MAX_COR=
-E_PIC];
+> diff --git a/arch/loongarch/power/suspend.c b/arch/loongarch/power/suspen=
+d.c
+> index 166d9e06a64b..7a97949ddade 100644
+> --- a/arch/loongarch/power/suspend.c
+> +++ b/arch/loongarch/power/suspend.c
+> @@ -16,6 +16,7 @@
+>  #include <asm/tlbflush.h>
 >
->  extern int __init parse_acpi_topology(void);
+>  u64 loongarch_suspend_addr;
+> +static u64 saved_pcpu_base;
 >
-> +static inline struct acpi_madt_core_pic *acpi_cpu_get_core_pic(int cpu)
-> +{
-> +       return &acpi_core_pic[cpu];
-> +}
-> +
->  static inline u32 get_acpi_id_for_cpu(unsigned int cpu)
->  {
-> -       return acpi_core_pic[cpu_logical_map(cpu)].processor_id;
-> +       return acpi_cpu_get_core_pic(cpu)->processor_id;
+>  struct saved_registers {
+>         u32 ecfg;
+> @@ -36,6 +37,7 @@ void loongarch_common_suspend(void)
+>         saved_regs.pwctl1 =3D csr_read32(LOONGARCH_CSR_PWCTL1);
+>         saved_regs.ecfg =3D csr_read32(LOONGARCH_CSR_ECFG);
+>         saved_regs.euen =3D csr_read32(LOONGARCH_CSR_EUEN);
+> +       saved_pcpu_base =3D csr_read64(PERCPU_BASE_KS);
+>
+>         loongarch_suspend_addr =3D loongson_sysconf.suspend_addr;
 >  }
->
->  #endif /* !CONFIG_ACPI */
-> diff --git a/arch/loongarch/kernel/acpi.c b/arch/loongarch/kernel/acpi.c
-> index 5cf59c617126..ccfa90faf0ea 100644
-> --- a/arch/loongarch/kernel/acpi.c
-> +++ b/arch/loongarch/kernel/acpi.c
-> @@ -98,8 +98,15 @@ acpi_parse_processor(union acpi_subtable_headers *head=
-er, const unsigned long en
->                 return -EINVAL;
->
->         acpi_table_print_madt_entry(&header->common);
-> +
-> +       /*
-> +        * When CONFIG_SMP is disabled, mapping won't be created for all =
-cpus.
-> +        * CPUs more than num_possible_cpus will be ignored.
-> +        */
-> +       if (processor->core_id >=3D 0 && processor->core_id < num_possibl=
-e_cpus())
-> +               acpi_core_pic[processor->core_id] =3D *processor;
-> +
->  #ifdef CONFIG_SMP
-> -       acpi_core_pic[processor->core_id] =3D *processor;
->         set_processor_mask(processor->core_id, processor->flags);
->  #endif
->
+> @@ -44,7 +46,7 @@ void loongarch_common_resume(void)
+>  {
+>         sync_counter();
+>         local_flush_tlb_all();
+> -       csr_write64(per_cpu_offset(0), PERCPU_BASE_KS);
+> +       csr_write64(saved_pcpu_base, PERCPU_BASE_KS);
+>         csr_write64(eentry, LOONGARCH_CSR_EENTRY);
+>         csr_write64(eentry, LOONGARCH_CSR_MERRENTRY);
+>         csr_write64(tlbrentry, LOONGARCH_CSR_TLBRENTRY);
 > --
 > 2.42.0
+>
 >
 
