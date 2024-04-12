@@ -1,103 +1,108 @@
-Return-Path: <linux-kernel+bounces-142035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D4CF8A2694
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:28:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 391738A2698
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:28:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 320611F251AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:28:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E80262832F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A01C3AC16;
-	Fri, 12 Apr 2024 06:28:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 967B3405C7;
+	Fri, 12 Apr 2024 06:28:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zg3kGTnW"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mcD9oVlH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B9A9249E4
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 06:28:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCAE8405F2;
+	Fri, 12 Apr 2024 06:28:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712903282; cv=none; b=jrCL0NzbHm4uzPf36qK+pY3kKIF01A450FBQcTSzVrK8Z18/xxFNz2AvrqU9MTUnxVNqfUxovVtDw0BY2PtnVLzedcO/HNhAbjyowzXxtuU2oFzWhs3yye/kwRBleRBfDNrwwezIXzL0EztyFkDJtobfbzoW1dngx0tmxOWWjJg=
+	t=1712903289; cv=none; b=ALacIFCSuDnAae8hVxjtNartRMGTSwGzDVqG+TjcduiWcbEUmprvGAVlS2uhHBWetXDYXiU0JYG0vubKOgXYGVmJ/g6q/aVGvx3gr0RZNOTMe3HM+oOfMWGP7w0aGVKxoIM39axkBjm1/Yk8uaqdL1A1Su+KrOXiyKWWwJ5HeHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712903282; c=relaxed/simple;
-	bh=Xf3Qvz06ChTjt3NNxv8JB28kb5ddfgTfylD67tibqpw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LwDOrAO19voVIWV/18dXWiEvphp7YsUeQIpEglXDx0eJO5kRHl5E4smDrNm7+4OMXS+vStoUgfLitWphHh5TI/ShpgqUS1+gUWSjNjLAbNK74DjrQl9GaByb//MuLdZAAM6xdKiFfcmr63XiU31wQq1b+Kh2kjltAvvpWxnDJhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zg3kGTnW; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6eaf1005fcaso422682b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 23:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712903281; x=1713508081; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=apPZ6XNAlNDIylQ/q/6dilZ76kjUyGxWvmJrZFzfD4w=;
-        b=zg3kGTnWfQB8h4rv5mVVSdxkiXhDrxN9A/fIb312t7+Li/9cNR2Om3yQaq+eivHujr
-         3di8auKyN6Z2L1Jt575dQOAy1wesm/z09WWWI5Oc8pw3bzm9idICKGEiQSAHR/xoeXtM
-         SeA7LSpJUnlW1le5k5I4kYpREzAlqXXIDYTvb5A3lpeXklW5brn2KR056feYSbhuEnhL
-         kpsTmjinWAJAL8X1MQPhB13XBDnxw3GF0B2tdDjKV0KyBT24Ex3ug+zm7VwkkKIUDJdg
-         aFGD4FxocpWTYxq7UGIXkvIi6WfRD4QN4P3kk3396uAbdOdzXoelMZJm5zorD1VvwOOs
-         mDcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712903281; x=1713508081;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=apPZ6XNAlNDIylQ/q/6dilZ76kjUyGxWvmJrZFzfD4w=;
-        b=wi8pIleBUTMjfuVJJ9BALy1ZZQgwLhBBv7dfOhm3pdYkp9ZKp5Eu2Nyur/PbEMzJIW
-         zdQTIqHdTHmTljk6ROOpR+iedpPMkXgj5EaS/sr6tlS1xDuFF8ehZoABXjFeCAlbYr6e
-         NHytEXo0N9gbm6/FSFQHLTv4KKpDZ3cDDx9hU13DfYy+1nDCpeYP4xrsmO1suLZPZODR
-         onVcsHQoHMn/yLV4sBA9IWOat0Tc2soAoustY/6WInURy16OoBc+/QyhZO/3VmseVYnY
-         iuhnMJIiU6UToqE1CQXywclccozqIfuPL7Uw8bZ2Y+B9mxmH6lnllYdH+ZhozNmK7nke
-         Oo1w==
-X-Forwarded-Encrypted: i=1; AJvYcCW/kQaPM1goCk4IZgtU9F8I48gAV74TpqrS+z0lJjLm1ONZIG2bE2PTVM5IWnk30aCZa2N6mBWamIH+t5y0d620qKybXaa8sTA/RpSV
-X-Gm-Message-State: AOJu0YwuYbt1NSsrJDCvXXvKcUXZsAu8R3xuVwoaD4+WHLuSwd/Pbtyb
-	Dg3AXpqYuG3dz7alzjEwfOA0VaOB18QmKMGkPqcQ9qwn5mzbxTW5u+uEqe6Bz1s=
-X-Google-Smtp-Source: AGHT+IFVbE/Eyfm80YGhaFewYbdmD554u1rNm5djLK2fqSFsGiRb8Bs1bZ3FM+N5MfgT3jVw96aFCg==
-X-Received: by 2002:a05:6a00:2387:b0:6ea:df6a:39e7 with SMTP id f7-20020a056a00238700b006eadf6a39e7mr2052486pfc.13.1712903280761;
-        Thu, 11 Apr 2024 23:28:00 -0700 (PDT)
-Received: from localhost ([122.172.85.136])
-        by smtp.gmail.com with ESMTPSA id u12-20020a056a00124c00b006ed93e7ef22sm2173178pfi.39.2024.04.11.23.27.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Apr 2024 23:28:00 -0700 (PDT)
-Date: Fri, 12 Apr 2024 11:57:58 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: lizhe <sensor1010@163.com>
-Cc: rafael <rafael@kernel.org>, linux-pm <linux-pm@vger.kernel.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cpufreq: exit() callback is optional
-Message-ID: <20240412062758.yak3lpvuus7ba2e7@vireshk-i7>
-References: <b97964653d02225f061e0c2a650b365c354b98c8.1712900945.git.viresh.kumar@linaro.org>
- <7bd5d6c1.32db8.18ed0f5e6c3.Coremail.sensor1010@163.com>
+	s=arc-20240116; t=1712903289; c=relaxed/simple;
+	bh=zgUjpYLth8c3Bov77A49CZpA8m7933+tVeBvXp/8wOY=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=qRLv4v2Mqphvx24tivS3eYfLbfmorPkMi/NiwBRdedcrV9dBcZLx433lyLaBFq1s/IkxJXBY7g8BcKWuNs5rU2rekG5DAPBnwWS49uy/7q+MLq5qkZf6XrpH9720D1wC0LbkZ2FfxUcmvQh1MyuNbnm3Ra6mNNFJuv6L1VEE7xI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mcD9oVlH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 405FDC2BBFC;
+	Fri, 12 Apr 2024 06:28:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712903289;
+	bh=zgUjpYLth8c3Bov77A49CZpA8m7933+tVeBvXp/8wOY=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=mcD9oVlH4scQ0n8FoGrPsd+Wh/j9+FrlK3kD+wBSEvJRwiB2l3BmDvsbJfmQ8YsCg
+	 bgUu5iA9baeH3R3QfZh9bYBuBVqPG9rsn2EOGxf+97lT+G0H9mnbQ9FhBpqzdW2oXh
+	 0d3j7/KzvaMREQOA8mkfLJRlpWVgFjvV/IgeKTv86yArvOytXcFl0n1QKUoQ2Vimo4
+	 Li9mZ/OQHPNMRB8mCmQW3Z84qs+wcf8MHRO9/YmmlkHqJFhW3ELj+diPpTsmzDFW/R
+	 ADRW15Nbxqr78VwBKSXFS1A3kUUgWZam+5Jt4yAOV5fJtg0nTh4P4w8QQyUXtqUl+n
+	 RhFDBtVGuR2Wg==
+Message-ID: <3d6d34c5075559f3df506d14e38a9c0c.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7bd5d6c1.32db8.18ed0f5e6c3.Coremail.sensor1010@163.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZaG2ZDCLP34jcI6Y@dell-precision-5540>
+References: <20231002180854.1603452-1-ben.wolsieffer@hefring.com> <20231002180854.1603452-2-ben.wolsieffer@hefring.com> <883a61872f94c972cc410da84eaf7b97.sboyd@kernel.org> <ZaG2ZDCLP34jcI6Y@dell-precision-5540>
+Subject: Re: [PATCH 1/2] clk: stm32: initialize syscon after clocks are registered
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, Michael Turquette <mturquette@baylibre.com>
+To: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Date: Thu, 11 Apr 2024 23:28:07 -0700
+User-Agent: alot/0.10
 
-On 12-04-24, 14:19, lizhe wrote:
-> Why did you do that? Why did you plagiarize others' achievements? Is this the style of Linaro?
+Quoting Ben Wolsieffer (2024-01-12 14:00:04)
+> On Sun, Dec 17, 2023 at 03:05:01PM -0800, Stephen Boyd wrote:
+> > Quoting Ben Wolsieffer (2023-10-02 11:08:53)
+> > > The stm32-power-config syscon (PWR peripheral) is used in this driver
+> > > and the STM32 RTC driver to enable write access to backup domain
+> > > registers. The syscon's clock has a gate controlled by this clock
+> > > driver, but this clock is currently not registered in the device tree.
+> > > This only happens to work currently because all relevant clock setup =
+and
+> > > RTC initialization happens before clk_disabled_unused(). After this
+> > > point, all syscon register writes are ignored.
+> >=20
+> > Seems like we should mark those clks as CLK_IGNORE_UNUSED and add a
+> > comment to that fact.
+>=20
+> That seems like a worse solution than specifying the clock dependency in
+> the device tree.
+>=20
+> >=20
+> > >=20
+> > > If we simply add the syscon clock in the device tree, we end up with a
+> > > circular dependency because the clock has not been registered at the
+> > > point this driver requests the syscon.
+> > >=20
+> > > This patch avoids this circular dependency by moving the syscon lookup
+> > > after the clocks are registered. This does appear to create a possible
+> > > race condition where someone could attempt to perform an operation on=
+ a
+> > > backup domain clock before the syscon has been initialized. This would
+> > > result in the operation having no effect because backup domain writes
+> > > could not be enabled. I'm not sure if this is a problem or if there is
+> > > a way to avoid it.
+> >=20
+> > There's no comment in the code that says the regmap must be set there
+> > instead of earlier. What's to stop someone from tripping over this
+> > problem later? At the least, please add a comment.
+>=20
+> Yeah, I'll fix that. Do you have any thoughts on the race condition I
+> described? Should I add some kind of locking to block
+> enable/disable_power_domain_write_protection() until stm32f4_rcc_init()
+> attempts to initialize the syscon?
 
-Even if your changes make sense, the discussions needs to be healthy. I am a
-co-maintainer of the cpufreq subsystem and its mine and Rafael's responsibility
-to keep things moving in the right direction.
-
-This patch fixes a issue you never mentioned over LKML.
-
-Lets not make this awkward, it won't help anyone.
-
-Thanks.
-
--- 
-viresh
+Maybe. I don't really know and it's probably because I don't really
+understand the problem. Maybe you can solve it by turning on the backup
+domain clock manually when the driver probes via direct register writes
+and then only publish the syscon once the backup domain clock is
+registered?
 
