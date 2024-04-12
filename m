@@ -1,145 +1,164 @@
-Return-Path: <linux-kernel+bounces-142699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9A5F8A2F19
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:14:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B88B8A2F1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:15:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52FD8B216A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:14:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B40DFB21173
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF6D4612E1;
-	Fri, 12 Apr 2024 13:14:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9E595FB85;
+	Fri, 12 Apr 2024 13:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LnXkro7h"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b="jgplKWKh";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="EBzziB8K"
+Received: from fhigh3-smtp.messagingengine.com (fhigh3-smtp.messagingengine.com [103.168.172.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85E275F575
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC0F50275;
+	Fri, 12 Apr 2024 13:15:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712927652; cv=none; b=AtbQmGNb9Wr+HHOLoC3M0tC90iE1/T3l9yIZUBzemlDAWTbDxfZv95wmKKalvt9OBK6ga6sexcMBz9ASvqfm3qswAWPz1tQSHDktQl/iDtO+Inkr/trYDY4kIsvWisynGrTaE3mJLSv6PwmjoixSjAiPm9dgtJTlOzIIzvXrER4=
+	t=1712927724; cv=none; b=tzHayyJxGlPr+gUSYT85iHH9H1bfQumsB7gpuDisQHW4CuIvwjYHJNsObYjFVbsr39J1l00UeSjyHaL7Xq/bGaxtt930A3sPsnuiZzAjE6+fpdTL18Pvke814l3riNdHjZXdTRPaflRJoDPnvO7StLIHT52QLmSCzm+VIwoe5js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712927652; c=relaxed/simple;
-	bh=PUTvlT9riZ19owzSi9HVU/vZE2mXRfMn0J3ryH6SxWA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=mZqGzWQDRJghUn3t/XCYKUwfgmtzzmm2n6YC38F5+paTKK4Be4O93bDSN/82fMRWvyETVWRAteDnXz1gtgk2tUxSPneS6dny9A0Y0h31Sz/m83rulzEx6iHSvGsbsFczo/Cu6MPSW4LSgSU0yvpBDqgEJPaFRqsSjinc/8giMxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LnXkro7h; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4180e794745so1620955e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 06:14:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712927649; x=1713532449; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aKIKmBiM6jcwJEcZrg6LHG0d6Eum207+g4jW0WFBkI4=;
-        b=LnXkro7hgw6SfUCEgnNonw5ZMrQDi4FGzC9ksXOwG6PTr5DUNyrLgZUjwfZhIPOix0
-         bJAsOOKZRx7r72hgbel1vK7AVg6OuBu9tOD9RM3piCB7eBft/rlqaDKezZEaAyv0Z+Ix
-         HWlh48KE8I1KNIxgcEZcsQLbiuuaoQu9Sp7Wk/7tXPpgn5LLGLAprTAXxbA990yJFk6P
-         GYvlYg9B/zT0apqJUwb3JrIkiXF+s3Ebt+VmccbgDlnO9MuhWjKPE32CDn6fn7qkFYAo
-         NeL0IJGlgtTea0g0ChgO4hYkOMeUxFabRYre0oUpxeuJ1crTURNbYG3XOWQZJcV4avHi
-         kPow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712927649; x=1713532449;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aKIKmBiM6jcwJEcZrg6LHG0d6Eum207+g4jW0WFBkI4=;
-        b=XkdDZMio9ENuGdUdc2r01sLLDL3qOC7tGLN7w2VRybiwEserI1nKtLgJUDgzJXLmEy
-         YGhBnCdKQLs1zCPnuUZEzRuHzJkX9wbgnUywZ0ZiU25+lUXycaM6xTeqS/8TRQO/noyI
-         Yu1WJzVEjyG3LJJO+gohNbqwKx+9sy3BTyC6tmG+PyCVnh4atz1J95b5624O2glR8Ba1
-         en9ZEVKsKqJLbu7sbwRsW2zZLPpXNer1jyCj889lLMWjBYb3ViBl3aYcpo46Jag4hVRJ
-         5QLExF4mZtdau1bJ+zl7uwIfchREwQSVT5VOTy0KkDXPT2HgoUjsuRQtE5YWY2COtK4m
-         vBtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWkd+jPqWDQP9f5MHzP4ft4TkCMubnV34EFwbUWgwJK8i86o3NbWtpys1QFPNJVEsDfL6cWrYtCefBEUQ/ASb9XHKMe4g/9UB32Krdo
-X-Gm-Message-State: AOJu0YzttZKpgi/XhUQAUL4IAkd/+a2XkybUa8PpfBdLdZ6Anm0BuOQK
-	2MYmkmC7tPgMc0KZ3fwQTIJujZlkXCM5P+BD2+ze0hyzLrmi5uKl8RONQVkQd7k=
-X-Google-Smtp-Source: AGHT+IEqWFd+QuLDbJcv6OTiLAWvUCIGZ2gJlq/aV9qLhe8ioHcLstnAVYQDw4b9SFeb9RuTfwe69Q==
-X-Received: by 2002:a05:600c:4510:b0:417:f58a:57e with SMTP id t16-20020a05600c451000b00417f58a057emr1582523wmo.0.1712927648621;
-        Fri, 12 Apr 2024 06:14:08 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id n3-20020a05600c4f8300b0041627ab1554sm8826376wmq.22.2024.04.12.06.14.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 06:14:08 -0700 (PDT)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-To: Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
- Jerome Brunet <jbrunet@baylibre.com>, Kevin Hilman <khilman@baylibre.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Jiri Slaby <jirislaby@kernel.org>, Xianwei Zhao <xianwei.zhao@amlogic.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, 
- linux-serial@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240401-basic_dt-v3-0-cb29ae1c16da@amlogic.com>
-References: <20240401-basic_dt-v3-0-cb29ae1c16da@amlogic.com>
-Subject: Re: [PATCH v3 0/5] Baisc devicetree support for Amlogic A4 and A5
-Message-Id: <171292764771.2837390.2489661650748373215.b4-ty@linaro.org>
-Date: Fri, 12 Apr 2024 15:14:07 +0200
+	s=arc-20240116; t=1712927724; c=relaxed/simple;
+	bh=G/CAnWQVwJlZsevuXGcKmZ4k1MkuHfrJSDBRwH53I+Y=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:
+	 Subject:Content-Type; b=YLFVEe9fLYwLd/mNJKwykz5NVhqqCRX1BhjSQ64DAAyIwEPXuKaNKneBLdIrtzh2bG40K4vvd5OmSfHZ4rsTSUtoSVenanBoKeZtz4Ky94/SeuX02ra05zI4PpjLpGPW+dFU1iwOwK34iJIIAImEsGzpZWoDmZO9XcT4HsZMZCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca; spf=pass smtp.mailfrom=squebb.ca; dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b=jgplKWKh; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=EBzziB8K; arc=none smtp.client-ip=103.168.172.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squebb.ca
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 3FCBC114020A;
+	Fri, 12 Apr 2024 09:15:21 -0400 (EDT)
+Received: from imap52 ([10.202.2.102])
+  by compute3.internal (MEProxy); Fri, 12 Apr 2024 09:15:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=squebb.ca; h=cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1712927721;
+	 x=1713014121; bh=LMMkhZtU6SPcb8ZErUBvL/c9FjjlKWtrP/A62oroo+s=; b=
+	jgplKWKhdFXOZLeHGMQv/uyAD0nKdEYvAoMI93sYnRBODmkGuCyTG2YJM9DLq50E
+	xMzxxXY4xHo380HZnNGFwKJe2Z3olWm9DEgUI3ftFoV62BQP3c8FMZDcZqsOmGfg
+	T1igQTnbbH1cnTNiYFMoY8WS0Xgwl+c/9hiVdcfIpnjYKfcIa+yWXJ5MHEfUYSmf
+	Cz2B/Mqfvj3th0QpULrKBmcFPTTmyP+sN9B5lgECvg4L37U6nhipm1NKBSHENAHF
+	AG4MwMsim2SR1lZFJ3gBU45q3idjeyghdUA+g/vSBhkZEZ2L4RSuCTYFqBgFDfRC
+	0qo25ljbSgYOKiW0l0a9aw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712927721; x=
+	1713014121; bh=LMMkhZtU6SPcb8ZErUBvL/c9FjjlKWtrP/A62oroo+s=; b=E
+	BzziB8K+t2FKdMlLBBXjYMHmV3ziNIXULMALO/kfhc0iWBHvH6mzdGaSeZ5f8Oww
+	AQrfGJowwXy4cd7IaBiQv0SyuPAkie8F46nnQFEIHoK8xd6FSnRiCQPCVDeBD+sS
+	wqD9BCg8vCsJuvBrsF8sY6+6d39mb5hxCXjs8Q8BqRDIfc67ZrLM+33cXinAlsf9
+	YBYCDV5wuD8bC8GGGUyN/JhTBaQpr2x1QB23Eep6A50ROCKfX4XbiqqijausCfgx
+	hZQCkivDNeY2lk/3U8XgXN4RAVEyoFFBkaIFuIe3BuwCM26zOcDLjiMyPTclL7Gl
+	K1UQUUaO6mSYI9m3DBBAQ==
+X-ME-Sender: <xms:6TMZZtTlQ4L4L4Xax8G9l2MryE1CHyGkx_iEpLLNTlwqg7_bqT-Lew>
+    <xme:6TMZZmxvy3ZMXf4o6mC4fCS62OkpI0P2gOwEsjHVRcUpmSapPMrGkm1xeLnJjaCPm
+    zcCbjekhKkmQbuXGeE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeiuddgieefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedfofgr
+    rhhkucfrvggrrhhsohhnfdcuoehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssg
+    drtggrqeenucggtffrrghtthgvrhhnpeffueevudduhefgudehtdevgeeftdehuefhleet
+    jeetvdevfefhveeuhfehgeeuieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssgdrtggr
+X-ME-Proxy: <xmx:6TMZZi3RqbGydlfUeHKVs4AZa7GjAokaw17c8AMCI-XIlnCF308QXw>
+    <xmx:6TMZZlDqm1ePRG0OT7nYGG7ayNG8zLgranGOpiwGBhMXUm5xZ50tEA>
+    <xmx:6TMZZmho6v9VM0cHKsRDQCBC3BoH1UN7MrCO3eWAh--2cWRdhO69Cw>
+    <xmx:6TMZZpqAYoFPB7wPSGmhDAZqDgu3ZJk6i2qab0SlD6KblKHeQqrEeQ>
+    <xmx:6TMZZucIUG3fFAmiWovWuUexFW2dgeGZCzrZVWpQhq_YYxY9MqsC1pIG>
+Feedback-ID: ibe194615:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id D94CFC60097; Fri, 12 Apr 2024 09:15:20 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Message-Id: <212159e6-66b5-45d3-bce8-d6fde43370fe@app.fastmail.com>
+In-Reply-To: <20240412130903.2836-1-ilpo.jarvinen@linux.intel.com>
+References: <20240412130903.2836-1-ilpo.jarvinen@linux.intel.com>
+Date: Fri, 12 Apr 2024 09:15:02 -0400
+From: "Mark Pearson" <mpearson-lenovo@squebb.ca>
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ "Mark Pearson" <markpearson@lenovo.com>,
+ "Hans de Goede" <hdegoede@redhat.com>,
+ "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] platform/x86: think-lmi: Convert container_of() macros to
+ static inline
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Thanks Ilpo,
 
-On Mon, 01 Apr 2024 18:10:48 +0800, Xianwei Zhao wrote:
-> Amlogic A4 and A5 are application processors designed for smart audio
-> and IoT applications.
-> 
-> Add the new A4 SoC/board device tree bindings.
-> 
-> Add the new A5 SoC/board device tree bindings.
-> 
-> [...]
+On Fri, Apr 12, 2024, at 9:09 AM, Ilpo J=C3=A4rvinen wrote:
+> The macros to_tlmi_pwd_setting() and to_tlmi_attr_setting() are fragile
+> because they expect the variable name to be 'kobj', otherwise the build
+> will fail because container_of()'s 3rd parameter (member) is taken from
+> the parameter given to the macro.
+>
+> While at it, move them into a more logical place.
+>
+> Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> ---
+>  drivers/platform/x86/think-lmi.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/platform/x86/think-lmi.c=20
+> b/drivers/platform/x86/think-lmi.c
+> index 9345316b45db..0f2264bb7577 100644
+> --- a/drivers/platform/x86/think-lmi.c
+> +++ b/drivers/platform/x86/think-lmi.c
+> @@ -175,9 +175,6 @@ MODULE_PARM_DESC(debug_support, "Enable debug=20
+> command support");
+>  #define TLMI_SMP_PWD BIT(6) /* System Management */
+>  #define TLMI_CERT    BIT(7) /* Certificate Based */
+>=20
+> -#define to_tlmi_pwd_setting(kobj)  container_of(kobj, struct=20
+> tlmi_pwd_setting, kobj)
+> -#define to_tlmi_attr_setting(kobj)  container_of(kobj, struct=20
+> tlmi_attr_setting, kobj)
+> -
+>  static const struct tlmi_err_codes tlmi_errs[] =3D {
+>  	{"Success", 0},
+>  	{"Not Supported", -EOPNOTSUPP},
+> @@ -198,6 +195,16 @@ static struct think_lmi tlmi_priv;
+>  static const struct class *fw_attr_class;
+>  static DEFINE_MUTEX(tlmi_mutex);
+>=20
+> +static inline struct tlmi_pwd_setting *to_tlmi_pwd_setting(struct=20
+> kobject *kobj)
+> +{
+> +	return container_of(kobj, struct tlmi_pwd_setting, kobj);
+> +}
+> +
+> +static inline struct tlmi_attr_setting *to_tlmi_attr_setting(struct=20
+> kobject *kobj)
+> +{
+> +	return container_of(kobj, struct tlmi_attr_setting, kobj);
+> +}
+> +
+>  /* Convert BIOS WMI error string to suitable error code */
+>  static int tlmi_errstr_to_err(const char *errstr)
+>  {
+> --=20
+> 2.39.2
 
-Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v6.10/arm64-dt)
+Looks good to me. Let me know if you want this tested on Lenovo HW and I=
+'ll do a build with this in - but it looks very uncontroversial :)
 
-[1/5] dt-bindings: arm: amlogic: add A4 support
-      https://git.kernel.org/amlogic/c/8b8e6e24eca07efb4860c97aa773dd36fa3a1164
-[2/5] dt-bindings: arm: amlogic: add A5 support
-      https://git.kernel.org/amlogic/c/7e05175cb7be232450e70fe75ba2a852947eecc8
-[3/5] dt-bindings: serial: amlogic,meson-uart: Add compatible string for A4
-      https://git.kernel.org/amlogic/c/a652d67a84575e09b52614a2f81399772d52876b
-[4/5] arm64: dts: add support for A4 based Amlogic BA400
-      https://git.kernel.org/amlogic/c/6ef63301fa37087414342269bc02a2a930e81779
-[5/5] arm64: dts: add support for A5 based Amlogic AV400
-      https://git.kernel.org/amlogic/c/a654af36fe8b54e360fcf155b785df3aa0eab73e
-
-These changes has been applied on the intermediate git tree [1].
-
-The v6.10/arm64-dt branch will then be sent via a formal Pull Request to the Linux SoC maintainers
-for inclusion in their intermediate git branches in order to be sent to Linus during
-the next merge window, or sooner if it's a set of fixes.
-
-In the cases of fixes, those will be merged in the current release candidate
-kernel and as soon they appear on the Linux master branch they will be
-backported to the previous Stable and Long-Stable kernels [2].
-
-The intermediate git branches are merged daily in the linux-next tree [3],
-people are encouraged testing these pre-release kernels and report issues on the
-relevant mailing-lists.
-
-If problems are discovered on those changes, please submit a signed-off-by revert
-patch followed by a corrective changeset.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
-[3] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-
--- 
-Neil
-
+Reviewed-by Mark Pearson <mpearson-lenovo@squebbb.ca>
 
