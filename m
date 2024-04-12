@@ -1,71 +1,39 @@
-Return-Path: <linux-kernel+bounces-142491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 528BB8A2C3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:25:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11E338A2C44
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 12:25:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 073FF284A08
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:25:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AC891F22745
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:25:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E65B353815;
-	Fri, 12 Apr 2024 10:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="iOXyIG1O"
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D0904A29
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 10:24:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CB3C53E1B;
+	Fri, 12 Apr 2024 10:25:37 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D50B553384
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 10:25:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712917500; cv=none; b=tOC+AhoZLf4KmG5Uhc/n8ebYhdD6iNMllmB606tZbF0Q1efu+XrYWssjo584qkiV1pWi5U0/VI09qOjm9z/Yi8kZT2smW4TEhzbXT/eUinfMmX8vW2wdsyK6DHHtNAAJ1leIcymElyONn/o/1lp5CDlRZ6SN1szN54PCSsta8yg=
+	t=1712917536; cv=none; b=QoZrGyziBzVq9Fs07d4dHBw3qNeVcV+hH2ammJ9biIxJNKv/M9IPtlSwAQFcxtVi1k6Bm9UHQn/SC8XD3I43c/t7mXB4digFDlrRw5TlufEBncnPecS0EszWvCFiJmw7D1331Jk2wB0lksu3qMa+5br8vnpvGzRGslQhNKwVIgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712917500; c=relaxed/simple;
-	bh=mTije8i7p8SYTaRp24DV1G8IgwrSNJqgcNiym+vSaCw=;
+	s=arc-20240116; t=1712917536; c=relaxed/simple;
+	bh=wasIUb5/uQ7Q+XjSsgBnPUXBYRCkQ+aZzrUyKE3vPJs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fmy8ygGvlOgRCr/2oIoecd0fNCnTTH4yjKJln0BlyRFJGtL6c1ezXEuvSP6x1P54TPw/uWcdtadm55hEAAGy1/1Z2KgzoIEgqCImWuDJ623x3x8+Vm9PfPsk5Arg19uc5IOXHPLlvB7kjjMdMfiWFafVa1LbKddHcPCMfHmPQ74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=iOXyIG1O; arc=none smtp.client-ip=209.85.222.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
-Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-78ec0d2e1e9so32772785a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 03:24:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1712917497; x=1713522297; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=yXjVQsLqyM7W96iPN2njoIot7m3tPecpIfZcOMPHqes=;
-        b=iOXyIG1OHyqnAZaQ/p7AXXNqRpnsnQ9ivTdRO6jdBZ5BLsrtu5ttTuKBv3okmplddQ
-         JmmBevMnOkR9z7Wvkzsukt5vFtC5zeXPnyQo7itzLyGAXSthkfq6S+BvXtySWmWlx9K+
-         J2xEPAO5lgxBO55EEDEaUmEajDAcXuNicAr4c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712917497; x=1713522297;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yXjVQsLqyM7W96iPN2njoIot7m3tPecpIfZcOMPHqes=;
-        b=JWuSByrkrcCU2Bae/6dayew0sElDrVsMy1kYen8RZD11qdh6/wFUWajn31sRqP15/a
-         kZaMe6udEniznZIFVsAbP6XzHCPXoZvSQIq/AbYqPeA4vAFLQkUyuzLnz6Frr8xWQjpG
-         5mUMvLW9F0kNY0LQiz23bqpSllhAOhKBnaSC1UtDTJW4iWJ2JuaBdlCjX0D7qNq10oP/
-         WEOJTgcXsxx+ueQf2Tod2pJZC2JjSaU+vjLLN8FWAZkLicgTMGah999efAJWbsHCLjaH
-         f9h9wEvTybsmsjHO7whS631uJxEKGxLJcU9jPA9hQEUYq9AwgPFFU9fiMf3+fkKOCaVP
-         +K/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXCUNtrmvzhnV5zdwXe2pMJluq2+mVzhagN4untJ3JePKwWClfvx0GMcq7PKb+fRmgcHAa16jt+ApBakzm56czF/xRii0Iw08DaSLVS
-X-Gm-Message-State: AOJu0Yz7tQ7B6jU4IvS4uEiNXYM7Mimk+8DKJg16iFoAPn8yfFf9/Xji
-	PNAkaUAd/LHZLEbf2LdadDV58qwOyOUgp4iBQQJgAkGg9pR/HBguh+14eM0br3E=
-X-Google-Smtp-Source: AGHT+IELh32E1/vBC3BVRY2WDLYXtdDGoLZ01IM5jFGJ5nrnzt8Z85XGvgFw+/XxpDOpOimf+9McRA==
-X-Received: by 2002:a05:620a:5dce:b0:78d:68de:e3ac with SMTP id xy14-20020a05620a5dce00b0078d68dee3acmr2029293qkn.76.1712917497479;
-        Fri, 12 Apr 2024 03:24:57 -0700 (PDT)
-Received: from [10.80.67.140] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
-        by smtp.gmail.com with ESMTPSA id m14-20020a05620a220e00b0078d61011c6fsm2219918qkh.6.2024.04.12.03.24.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Apr 2024 03:24:56 -0700 (PDT)
-Message-ID: <323fbfe5-ad21-4606-93c7-d3ad6bbc8620@citrix.com>
-Date: Fri, 12 Apr 2024 11:24:53 +0100
+	 In-Reply-To:Content-Type; b=pWlt3y2QsbPMOQhoi+MmoWETxpAOL2vbKgUrvFiJlsDUmShWbqzM9+JDX1MhUKlysg+3wOiWkH1I9yqTrerlD19jSfjPH6yRr9XasAVPZp7C2wIQovoLBVvgGOmU6tTUyCTPoCe8hiCzKSioNtSPYU6vqVVfZiUurYd4Tcp6zDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 607EB339;
+	Fri, 12 Apr 2024 03:26:02 -0700 (PDT)
+Received: from [10.57.73.208] (unknown [10.57.73.208])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 25C9E3F64C;
+	Fri, 12 Apr 2024 03:25:31 -0700 (PDT)
+Message-ID: <744fc49e-d91b-4f5a-9a27-1a25c50c2154@arm.com>
+Date: Fri, 12 Apr 2024 11:25:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,98 +41,298 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/7] x86/bugs: Only harden syscalls when needed
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Daniel Sneddon <daniel.sneddon@linux.intel.com>,
- Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>,
- Alexandre Chartre <alexandre.chartre@oracle.com>,
- Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Sean Christopherson <seanjc@google.com>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- Nikolay Borisov <nik.borisov@suse.com>, KP Singh <kpsingh@kernel.org>,
- Waiman Long <longman@redhat.com>, Borislav Petkov <bp@alien8.de>
-References: <cover.1712813475.git.jpoimboe@kernel.org>
- <97befd7c1e008797734dee05181c49056ff6de57.1712813475.git.jpoimboe@kernel.org>
- <90405c43-daca-48e4-b424-d66d6bf4dd87@citrix.com>
- <20240411153841.zexbsqrdli54kiez@treble>
+Subject: Re: [PATCH v5 1/4] mm: add per-order mTHP anon_fault_alloc and
+ anon_fault_fallback counters
 Content-Language: en-GB
-From: Andrew Cooper <andrew.cooper3@citrix.com>
-Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
- 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
- 6+ahAA==
-In-Reply-To: <20240411153841.zexbsqrdli54kiez@treble>
+To: Barry Song <21cnbao@gmail.com>
+Cc: akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
+ chrisl@kernel.org, corbet@lwn.net, david@redhat.com, kasong@tencent.com,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, peterx@redhat.com,
+ surenb@google.com, v-songbaohua@oppo.com, willy@infradead.org,
+ yosryahmed@google.com, yuzhao@google.com
+References: <f5d6e014-5d6b-441c-8379-252ff24e2260@arm.com>
+ <20240412101756.296971-1-21cnbao@gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240412101756.296971-1-21cnbao@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 11/04/2024 4:38 pm, Josh Poimboeuf wrote:
-> On Thu, Apr 11, 2024 at 11:06:37AM +0100, Andrew Cooper wrote:
->>> +#define __do_syscall(table, func_direct, nr, regs)			\
->>> +({									\
->>> +	unsigned long __rax, __rdi, __rsi;				\
->>> +									\
->>> +	asm_inline volatile(						\
->>> +		ALTERNATIVE("call " __stringify(func_direct) "\n\t",	\
->>> +			    ANNOTATE_RETPOLINE_SAFE			\
->>> +			    "call *%[func_ptr]\n\t",			\
->> This wants to be a plain maybe-thunk'd indirect call, and without the
->> ANNOTATE_RETPOLINE_SAFE.
+On 12/04/2024 11:17, Barry Song wrote:
+> On Fri, Apr 12, 2024 at 9:56 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
 >>
->> Or you're going to get into cases where some combinations of command
->> line options do unexpected things e.g. retpolining everything except the
->> syscall dispatch.
-> In that case won't X86_FEATURE_INDIRECT_SAFE get cleared, resulting in
-> the above using a direct call?  Or did I miss something?
+>> On 12/04/2024 10:43, Barry Song wrote:
+>>> On Fri, Apr 12, 2024 at 9:27 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>
+>>>> Hi Barry,
+>>>>
+>>>> 2 remaining comments - otherwise looks good. (same comments I just made in the
+>>>> v4 conversation).
+>>>>
+>>>> On 12/04/2024 08:37, Barry Song wrote:
+>>>>> From: Barry Song <v-songbaohua@oppo.com>
+>>>>>
+>>>>> Profiling a system blindly with mTHP has become challenging due to the
+>>>>> lack of visibility into its operations.  Presenting the success rate of
+>>>>> mTHP allocations appears to be pressing need.
+>>>>>
+>>>>> Recently, I've been experiencing significant difficulty debugging
+>>>>> performance improvements and regressions without these figures.  It's
+>>>>> crucial for us to understand the true effectiveness of mTHP in real-world
+>>>>> scenarios, especially in systems with fragmented memory.
+>>>>>
+>>>>> This patch establishes the framework for per-order mTHP
+>>>>> counters. It begins by introducing the anon_fault_alloc and
+>>>>> anon_fault_fallback counters. Additionally, to maintain consistency
+>>>>> with thp_fault_fallback_charge in /proc/vmstat, this patch also tracks
+>>>>> anon_fault_fallback_charge when mem_cgroup_charge fails for mTHP.
+>>>>> Incorporating additional counters should now be straightforward as well.
+>>>>>
+>>>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+>>>>> Cc: Chris Li <chrisl@kernel.org>
+>>>>> Cc: David Hildenbrand <david@redhat.com>
+>>>>> Cc: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+>>>>> Cc: Kairui Song <kasong@tencent.com>
+>>>>> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+>>>>> Cc: Peter Xu <peterx@redhat.com>
+>>>>> Cc: Ryan Roberts <ryan.roberts@arm.com>
+>>>>> Cc: Suren Baghdasaryan <surenb@google.com>
+>>>>> Cc: Yosry Ahmed <yosryahmed@google.com>
+>>>>> Cc: Yu Zhao <yuzhao@google.com>
+>>>>> ---
+>>>>>  include/linux/huge_mm.h | 51 ++++++++++++++++++++++++++++++++++
+>>>>>  mm/huge_memory.c        | 61 +++++++++++++++++++++++++++++++++++++++++
+>>>>>  mm/memory.c             |  3 ++
+>>>>>  mm/page_alloc.c         |  4 +++
+>>>>>  4 files changed, 119 insertions(+)
+>>>>>
+>>>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+>>>>> index e896ca4760f6..c5beb54b97cb 100644
+>>>>> --- a/include/linux/huge_mm.h
+>>>>> +++ b/include/linux/huge_mm.h
+>>>>> @@ -264,6 +264,57 @@ unsigned long thp_vma_allowable_orders(struct vm_area_struct *vma,
+>>>>>                                         enforce_sysfs, orders);
+>>>>>  }
+>>>>>
+>>>>> +enum mthp_stat_item {
+>>>>> +     MTHP_STAT_ANON_FAULT_ALLOC,
+>>>>> +     MTHP_STAT_ANON_FAULT_FALLBACK,
+>>>>> +     MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE,
+>>>>> +     __MTHP_STAT_COUNT
+>>>>> +};
+>>>>> +
+>>>>> +struct mthp_stat {
+>>>>> +     unsigned long stats[0][__MTHP_STAT_COUNT];
+>>>>> +};
+>>>>> +
+>>>>> +extern struct mthp_stat __percpu *mthp_stats;
+>>>>> +
+>>>>> +static inline void count_mthp_stat(int order, enum mthp_stat_item item)
+>>>>> +{
+>>>>> +     if (order <= 0 || order > PMD_ORDER || !mthp_stats)
+>>>>> +             return;
+>>>>> +
+>>>>> +     this_cpu_inc(mthp_stats->stats[order][item]);
+>>>>> +}
+>>>>> +
+>>>>> +static inline void count_mthp_stats(int order, enum mthp_stat_item item, long delta)
+>>>>> +{
+>>>>> +     if (order <= 0 || order > PMD_ORDER || !mthp_stats)
+>>>>> +             return;
+>>>>> +
+>>>>> +     this_cpu_add(mthp_stats->stats[order][item], delta);
+>>>>> +}
+>>>>> +
+>>>>> +/*
+>>>>> + * Fold the foreign cpu mthp stats into our own.
+>>>>> + *
+>>>>> + * This is adding to the stats on one processor
+>>>>> + * but keeps the global counts constant.
+>>>>> + */
+>>>>> +static inline void mthp_stats_fold_cpu(int cpu)
+>>>>> +{
+>>>>> +     struct mthp_stat *fold_stat;
+>>>>> +     int i, j;
+>>>>> +
+>>>>> +     if (!mthp_stats)
+>>>>> +             return;
+>>>>> +     fold_stat = per_cpu_ptr(mthp_stats, cpu);
+>>>>> +     for (i = 1; i <= PMD_ORDER; i++) {
+>>>>> +             for (j = 0; j < __MTHP_STAT_COUNT; j++) {
+>>>>> +                     count_mthp_stats(i, j, fold_stat->stats[i][j]);
+>>>>> +                     fold_stat->stats[i][j] = 0;
+>>>>> +             }
+>>>>> +     }
+>>>>> +}
+>>>>
+>>>> This is a pretty horrible hack; I'm pretty sure just summing for all *possible*
+>>>> cpus should work.
+>>>>
+>>>>> +
+>>>>>  #define transparent_hugepage_use_zero_page()                         \
+>>>>>       (transparent_hugepage_flags &                                   \
+>>>>>        (1<<TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG))
+>>>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>>>> index dc30139590e6..21c4ac74b484 100644
+>>>>> --- a/mm/huge_memory.c
+>>>>> +++ b/mm/huge_memory.c
+>>>>> @@ -526,6 +526,50 @@ static const struct kobj_type thpsize_ktype = {
+>>>>>       .sysfs_ops = &kobj_sysfs_ops,
+>>>>>  };
+>>>>>
+>>>>> +struct mthp_stat __percpu *mthp_stats;
+>>>>> +
+>>>>> +static unsigned long sum_mthp_stat(int order, enum mthp_stat_item item)
+>>>>> +{
+>>>>> +     unsigned long sum = 0;
+>>>>> +     int cpu;
+>>>>> +
+>>>>> +     cpus_read_lock();
+>>>>> +     for_each_online_cpu(cpu) {
+>>>>> +             struct mthp_stat *this = per_cpu_ptr(mthp_stats, cpu);
+>>>>> +
+>>>>> +             sum += this->stats[order][item];
+>>>>> +     }
+>>>>> +     cpus_read_unlock();
+>>>>> +
+>>>>> +     return sum;
+>>>>> +}
+>>>>> +
+>>>>> +#define DEFINE_MTHP_STAT_ATTR(_name, _index)                                 \
+>>>>> +static ssize_t _name##_show(struct kobject *kobj,                    \
+>>>>> +                     struct kobj_attribute *attr, char *buf)         \
+>>>>> +{                                                                    \
+>>>>> +     int order = to_thpsize(kobj)->order;                            \
+>>>>> +                                                                     \
+>>>>> +     return sysfs_emit(buf, "%lu\n", sum_mthp_stat(order, _index));  \
+>>>>> +}                                                                    \
+>>>>> +static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
+>>>>> +
+>>>>> +DEFINE_MTHP_STAT_ATTR(anon_fault_alloc, MTHP_STAT_ANON_FAULT_ALLOC);
+>>>>> +DEFINE_MTHP_STAT_ATTR(anon_fault_fallback, MTHP_STAT_ANON_FAULT_FALLBACK);
+>>>>> +DEFINE_MTHP_STAT_ATTR(anon_fault_fallback_charge, MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
+>>>>> +
+>>>>> +static struct attribute *stats_attrs[] = {
+>>>>> +     &anon_fault_alloc_attr.attr,
+>>>>> +     &anon_fault_fallback_attr.attr,
+>>>>> +     &anon_fault_fallback_charge_attr.attr,
+>>>>> +     NULL,
+>>>>> +};
+>>>>> +
+>>>>> +static struct attribute_group stats_attr_group = {
+>>>>> +     .name = "stats",
+>>>>> +     .attrs = stats_attrs,
+>>>>> +};
+>>>>> +
+>>>>>  static struct thpsize *thpsize_create(int order, struct kobject *parent)
+>>>>>  {
+>>>>>       unsigned long size = (PAGE_SIZE << order) / SZ_1K;
+>>>>> @@ -549,6 +593,12 @@ static struct thpsize *thpsize_create(int order, struct kobject *parent)
+>>>>>               return ERR_PTR(ret);
+>>>>>       }
+>>>>>
+>>>>> +     ret = sysfs_create_group(&thpsize->kobj, &stats_attr_group);
+>>>>> +     if (ret) {
+>>>>> +             kobject_put(&thpsize->kobj);
+>>>>> +             return ERR_PTR(ret);
+>>>>> +     }
+>>>>> +
+>>>>>       thpsize->order = order;
+>>>>>       return thpsize;
+>>>>>  }
+>>>>> @@ -691,6 +741,11 @@ static int __init hugepage_init(void)
+>>>>>        */
+>>>>>       MAYBE_BUILD_BUG_ON(HPAGE_PMD_ORDER < 2);
+>>>>>
+>>>>> +     mthp_stats = __alloc_percpu((PMD_ORDER + 1) * sizeof(mthp_stats->stats[0]),
+>>>>> +                     sizeof(unsigned long));
+>>>>
+>>>> Personally I think it would be cleaner to allocate statically using
+>>>> ilog2(MAX_PTRS_PER_PTE) instead of PMD_ORDER.
+>>>
+>>> Hi Ryan,
+>>>
+>>> I don't understand why MAX_PTRS_PER_PTE is the correct size. For ARM64,
+>>>
+>>> #define PMD_ORDER       (PMD_SHIFT - PAGE_SHIFT)
+>>>
+>>> #define MAX_PTRS_PER_PTE PTRS_PER_PTE
+>>>
+>>> #define PTRS_PER_PTE            (1 << (PAGE_SHIFT - 3))
+>>>
+>>> while PAGE_SIZE is 16KiB or 64KiB, PTRS_PER_PTE can be a huge number?
+>>>
+>>>
+>>> Am I missing something?
+>>
+>> PTRS_PER_PTE is the number of PTE entries in a PTE table. On arm64 its as follows:
+>>
+>> PAGE_SIZE       PAGE_SHIFT      PTRS_PER_PTE
+>> 4K              12              512
+>> 16K             14              2048
+>> 64K             16              8192
+>>
+>> So (PTRS_PER_PTE * PAGE_SIZE) = PMD_SIZE
+>>
+>> PMD_ORDER is ilog2(PMD_SIZE / PAGE_SIZE) = ilog2(PTRS_PER_PTE)
+>>
+>> MAX_PTRS_PER_PTE is just the maximum value that PTRS_PER_PTE will ever have,
+>> (and its equal to PTRS_PER_PTE except for powerpc).
+>>
+>> Pretty sure the math is correct?
+> 
+> I am not convinced the math is correct :-)
+> 
+> while page size is 64KiB, the page table is as below,
+> PMD_ORDER = L2 index bits = [41:29] = 13 != ilog2(8192)
 
-That works until the next time anyone touches the logic.  Then it's
-latent vulnerability, or an incorrect trial of a non-default option.
+1 << 13 = 8192
 
-I guarantee you'll save someone (probably someone on this CC list) a
-headache in the future by not introducing an unnecessary special case here.
+Right? So:
 
-~Andrew
+ilog2(8192) = 13
+
+What's wrong with that?
+
+I even checked in Python to make sure I'm not going mad:
+
+>>> import math
+>>> math.log2(8192)
+13.0
+
+> 
+> 
+> +--------+--------+--------+--------+--------+--------+--------+--------+
+> |63    56|55    48|47    40|39    32|31    24|23    16|15     8|7      0|
+> +--------+--------+--------+--------+--------+--------+--------+--------+
+>  |                 |    |               |              |
+>  |                 |    |               |              v
+>  |                 |    |               |            [15:0]  in-page offset
+>  |                 |    |               +----------> [28:16] L3 index
+>  |                 |    +--------------------------> [41:29] L2 index
+>  |                 +-------------------------------> [47:42] L1 index (48-bit)
+>  |                                                   [51:42] L1 index (52-bit)
+>  +-------------------------------------------------> [63] TTBR0/1
+>  
+> while page size is 4KiB, the page table is as below,
+> 
+> +--------+--------+--------+--------+--------+--------+--------+--------+
+> |63    56|55    48|47    40|39    32|31    24|23    16|15     8|7      0|
+> +--------+--------+--------+--------+--------+--------+--------+--------+
+>  |                 |         |         |         |         |
+>  |                 |         |         |         |         v
+>  |                 |         |         |         |   [11:0]  in-page offset
+>  |                 |         |         |         +-> [20:12] L3 index
+>  |                 |         |         +-----------> [29:21] L2 index
+>  |                 |         +---------------------> [38:30] L1 index
+>  |                 +-------------------------------> [47:39] L0 index
+>  +-------------------------------------------------> [63] TTBR0/1
+> 
+> PMD_ORDER = L2 index bits = [29:21] = 9 = ilog2(512).
+> 
+> You are only correct while page size = 4KiB.
+> 
+> 
+> 
+>  
+
 
