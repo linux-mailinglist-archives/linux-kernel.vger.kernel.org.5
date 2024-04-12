@@ -1,102 +1,315 @@
-Return-Path: <linux-kernel+bounces-143120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C76EB8A3498
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:20:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B828A8A34A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:22:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 829E8284B85
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:20:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9C271C22948
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A97BA14C582;
-	Fri, 12 Apr 2024 17:20:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="brjzMzrj"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF2AE14D43A;
+	Fri, 12 Apr 2024 17:22:48 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A354A14BFB1;
-	Fri, 12 Apr 2024 17:20:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A83C1E53A;
+	Fri, 12 Apr 2024 17:22:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712942441; cv=none; b=pxpsog50BN6hkTWJSECJc/2hx7U/Gq8whWsMjsL05XOhdHuj8sGglQrBz6TbIdbzfpATn1Niy9G/nP2L80dQfvMvsFZDK8royRxfvARf36U9K6oDm5n5wovUx/++GsvcvBXHdjaFj4wHqYux9Xq56r1EBn2jxSlRIFtVC46fmJY=
+	t=1712942568; cv=none; b=dJabSdDKL63Wq4w7UKKkUU1k6RBekcXX45Gx4PJMaMIBeVSpNddoqlMjQK9BQpLiFRyhCmopylLxrRS43DP48/+vv/iPEYqkdWC48dOV7xWGDwieSXwmcJWvXUil3HaFGU5FIERMrkFfkAFJPTImLCfoajc7nF/6T+QYUSxIjaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712942441; c=relaxed/simple;
-	bh=a1wk1OqBciJqZ7yBicCOBHEJpruyDLFfrzUJMd6JthQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NOwXZxKsRRnedfcDX3t/2Rl9Lri1bPzCVnBHh49Qb7t5HfYAd6UmDNGAGmgXFK2tQqT85oept52y2PlS3ztwiGHj1YaOBm6HleSU95rs36sklhGaFesqg9HVOP7fNAnWz6nm1eo00cjwwv72MPSTDGhZk359IEfxdEyaYX37qog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=brjzMzrj; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e4c4fb6af3so6607715ad.0;
-        Fri, 12 Apr 2024 10:20:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712942439; x=1713547239; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JJ5C18NZDFm02iL6S1RPc4RabDu1qzQWJrryPnRBtvI=;
-        b=brjzMzrj0h+srQQ4zuqhWoek8RDyjnfYdkurYkgJPcP3L2bsQNNylU734r3J3LQftY
-         u5eX99dgmSwIWTrU2UudpwqEG46CqXapv/lJmRTqTdbOsmOL6pf2JW6mi9pkPSM7Xkfj
-         Alr7Id3p4Qf3wEdeNkB2WRJmWHEshU4Ps8eLHHD25TCRNGg1vY2a81WjNfZ3N5yA9CF6
-         O2foPKt6yXfFdKHvcimHHpHZZid/+zj8aOlGP7Io3UAtKFB9gnNDEUMWtEUXbhJQz8kY
-         xuSBXX/bNeS9rO7R8bKzxujyuCjdudVvjQMiPnekLCgfXoOJu9pW4+WhnaoGOI4Kb4Vi
-         1Xhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712942439; x=1713547239;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JJ5C18NZDFm02iL6S1RPc4RabDu1qzQWJrryPnRBtvI=;
-        b=rWHKycjVq0IKqX6pY8z0A7wHOXskxe9gJJQ0oAeIrecZkZghaDhBQyAzoYGvtIVJbo
-         4SgyFuLgQZWTvDtNWOhGCLXJL5wtkey7Sl4Fi24g3IdnHJV5I//GUnxUuuWuk+DuGo89
-         UehVNz1NozyN8j8mk8JnwP0R9tBMVoRQmvl7n4S6+XudL4TZLuBrz2b06LWKF0Hlu8X5
-         Ko5/+7wnYPXFqi/S+PbTgT7Ycl+ai1s2FssfyACfK4PtHqJu6MIfqvkXoW25ol7X+tAb
-         KGo+cgOfZCMcqB4oGVosWTGFqJAXo7dU3x9VtcJlpbLIFq6EUj/lqeSYUfJ1CXQjxR+N
-         Hl8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXRD/kagrTGSu/pQy/3QyvkeusucTTPlTIbZQ7MgUJlC/6LqK3g2dMSebMWALTyKr97eUHY4HNGkcBisERNO28imFXSbggfqTPZO06iOdAqPFPiqkuJZGbv7PVnIevKW8YxyhaVlw==
-X-Gm-Message-State: AOJu0YwRU89VZxuhcH9zVJc5Z6I/DEr3BJF7GQnx6uSrf16OeFR3QESY
-	HcJQA5R3glGo1hBc9PbQGMhipBK6nW0noXcpG4SiXsGy+2/jb3gj
-X-Google-Smtp-Source: AGHT+IHIQlKworlPc8JdskXV7pjdsP4yNYr+Jkgmes8DOOAfxaMu7Ki6/4KIBuesThy1iJvrJKBtdw==
-X-Received: by 2002:a17:902:e811:b0:1e3:cb8d:e28f with SMTP id u17-20020a170902e81100b001e3cb8de28fmr8232776plg.31.1712942438893;
-        Fri, 12 Apr 2024 10:20:38 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:a5f4])
-        by smtp.gmail.com with ESMTPSA id t15-20020a170902e84f00b001e2a0d33fbbsm3220724plg.219.2024.04.12.10.20.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 10:20:38 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 12 Apr 2024 07:20:37 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
-Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] cgroup: move proc_cgroupstats_show() to cgroup.c
-Message-ID: <ZhltZYSWbKkMHmQv@slm.duckdns.org>
-References: <20240412025402.780603-1-xiujianfeng@huaweicloud.com>
+	s=arc-20240116; t=1712942568; c=relaxed/simple;
+	bh=O92YTgEoikgZ6iz+Dkm9PvGOpbulKCx8UBawRe5N7iM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QlN1Gzcon8ig3UODl8UBUX2hPZFcbp4672Q2EIUCHfuoe8rrz4/Fs4hseKDER7a1pEK40qP66CcX1T63z+AZlMu9HCUVIuaezzxsaaRrPWwIjjGbC/6DXulblMkECeiawTKWTtHMiOtKDXfgibtx4NGauIscoO7w0j2uAIzPUDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF76AC2BD11;
+	Fri, 12 Apr 2024 17:22:44 +0000 (UTC)
+Date: Fri, 12 Apr 2024 13:22:43 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc: "Luck, Tony" <tony.luck@intel.com>, Kees Cook <keescook@chromium.org>,
+ Joel Fernandes <joel@joelfernandes.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-trace-kernel@vger.kernel.org"
+ <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Vlastimil Babka <vbabka@suse.cz>, Lorenzo Stoakes <lstoakes@gmail.com>,
+ "linux-mm@kvack.org" <linux-mm@kvack.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+ <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "x86@kernel.org"
+ <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra
+ <peterz@infradead.org>, "linux-hardening@vger.kernel.org"
+ <linux-hardening@vger.kernel.org>, Guenter Roeck <linux@roeck-us.net>, Ross
+ Zwisler <zwisler@google.com>, "wklin@google.com" <wklin@google.com>,
+ Vineeth Remanan Pillai <vineeth@bitbyteword.org>, Suleiman Souhlal
+ <suleiman@google.com>, Linus Torvalds <torvalds@linuxfoundation.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Subject: Re: [POC][RFC][PATCH 0/2] pstore/mm/x86: Add wildcard memmap to map
+ pstore consistently
+Message-ID: <20240412132243.053ad096@gandalf.local.home>
+In-Reply-To: <fa5fa4c6-2b02-f47e-b9ba-65cfd85f57f8@igalia.com>
+References: <20240409210254.660888920@goodmis.org>
+	<20240409172358.34ea19f0@gandalf.local.home>
+	<202404091519.B7B2221@keescook>
+	<SJ1PR11MB608317E066B6B3390F55FCB1FC072@SJ1PR11MB6083.namprd11.prod.outlook.com>
+	<3391c693-cf54-526b-79a8-d565e7140947@igalia.com>
+	<20240411154007.5bdf8d95@gandalf.local.home>
+	<fa5fa4c6-2b02-f47e-b9ba-65cfd85f57f8@igalia.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412025402.780603-1-xiujianfeng@huaweicloud.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On Fri, 12 Apr 2024 09:17:18 -0300
+"Guilherme G. Piccoli" <gpiccoli@igalia.com> wrote:
 
-On Fri, Apr 12, 2024 at 02:54:02AM +0000, Xiu Jianfeng wrote:
-> From: Xiu Jianfeng <xiujianfeng@huawei.com>
-> 
-> Currently proc_cgroupstats_show() is in cgroup-v1.c, however it can be
-> used for v2 too, so it's better to move it cgroup.c.
+> Thanks Steve, seems a good idea. With that, I could test on kdumpst (the
+> tool used on Steam Deck), since it relies on modular pstore/ram.
 
-This isn't all that useful for cgroup2. I'd rather just leave it as-is.
+Something like this could work.
 
-Thanks.
+-- Steve
 
--- 
-tejun
+diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
+index a8831ef30c73..878aee8b2399 100644
+--- a/arch/x86/kernel/e820.c
++++ b/arch/x86/kernel/e820.c
+@@ -16,6 +16,7 @@
+ #include <linux/firmware-map.h>
+ #include <linux/sort.h>
+ #include <linux/memory_hotplug.h>
++#include <linux/mm.h>
+ 
+ #include <asm/e820/api.h>
+ #include <asm/setup.h>
+@@ -64,61 +65,6 @@ struct e820_table *e820_table __refdata			= &e820_table_init;
+ struct e820_table *e820_table_kexec __refdata		= &e820_table_kexec_init;
+ struct e820_table *e820_table_firmware __refdata	= &e820_table_firmware_init;
+ 
+-/* For wildcard memory requests, have a table to find them later */
+-#define E820_MAX_MAPS		8
+-#define E820_MAP_NAME_SIZE	16
+-struct e820_mmap_map {
+-	char			name[E820_MAP_NAME_SIZE];
+-	u64			start;
+-	u64			size;
+-};
+-static struct e820_mmap_map e820_mmap_list[E820_MAX_MAPS] __initdata;
+-static int e820_mmap_size				__initdata;
+-
+-/* Add wildcard region with a lookup name */
+-static int __init e820_add_mmap(u64 start, u64 size, const char *name)
+-{
+-	struct e820_mmap_map *map;
+-
+-	if (!name || !name[0] || strlen(name) >= E820_MAP_NAME_SIZE)
+-		return -EINVAL;
+-
+-	if (e820_mmap_size >= E820_MAX_MAPS)
+-		return -1;
+-
+-	map = &e820_mmap_list[e820_mmap_size++];
+-	map->start = start;
+-	map->size = size;
+-	strcpy(map->name, name);
+-	return 0;
+-}
+-
+-/**
+- * memmap_named - Find a wildcard region with a given name
+- * @name: The name that is attached to a wildcard region
+- * @start: If found, holds the start address
+- * @size: If found, holds the size of the address.
+- *
+- * Returns: 1 if found or 0 if not found.
+- */
+-int __init memmap_named(const char *name, u64 *start, u64 *size)
+-{
+-	struct e820_mmap_map *map;
+-	int i;
+-
+-	for (i = 0; i < e820_mmap_size; i++) {
+-		map = &e820_mmap_list[i];
+-		if (!map->size)
+-			continue;
+-		if (strcmp(name, map->name) == 0) {
+-			*start = map->start;
+-			*size = map->size;
+-			return 1;
+-		}
+-	}
+-	return 0;
+-}
+-
+ /* For PCI or other memory-mapped resources */
+ unsigned long pci_mem_start = 0xaeedbabe;
+ #ifdef CONFIG_PCI
+@@ -1024,6 +970,8 @@ static int __init parse_memmap_one(char *p)
+ 		e820__range_add(start_at, mem_size, E820_TYPE_RESERVED);
+ 	} else if (*p == '*') {
+ 		u64 align;
++		int ret;
++
+ 		/* Followed by alignment and ':' then the name */
+ 		align = memparse(p+1, &p);
+ 		start_at = e820__region(mem_size, align);
+@@ -1032,9 +980,10 @@ static int __init parse_memmap_one(char *p)
+ 		if (*p != ':')
+ 			return -EINVAL;
+ 		p++;
+-		e820_add_mmap(start_at, mem_size, p);
++		ret = memmap_add(start_at, mem_size, p);
+ 		p += strlen(p);
+-		e820__range_add(start_at, mem_size, E820_TYPE_RESERVED);
++		if (!ret)
++			e820__range_add(start_at, mem_size, E820_TYPE_RESERVED);
+ 	} else if (*p == '!') {
+ 		start_at = memparse(p+1, &p);
+ 		e820__range_add(start_at, mem_size, E820_TYPE_PRAM);
+diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
+index c200388399fb..22d2e2731dc2 100644
+--- a/fs/pstore/ram.c
++++ b/fs/pstore/ram.c
+@@ -919,7 +919,6 @@ static void __init ramoops_register_dummy(void)
+ {
+ 	struct ramoops_platform_data pdata;
+ 
+-#ifndef MODULE
+ 	/* Only allowed when builtin */
+ 	if (mem_name) {
+ 		u64 start;
+@@ -930,7 +929,6 @@ static void __init ramoops_register_dummy(void)
+ 			mem_size = size;
+ 		}
+ 	}
+-#endif
+ 
+ 	/*
+ 	 * Prepare a dummy platform data structure to carry the module
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index cf9b34454c6f..6ce1c6929d1f 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -4203,5 +4203,6 @@ static inline bool pfn_is_unaccepted_memory(unsigned long pfn)
+ }
+ 
+ int memmap_named(const char *name, u64 *start, u64 *size);
++int memmap_add(long start, long size, const char *name);
+ 
+ #endif /* _LINUX_MM_H */
+diff --git a/mm/memory.c b/mm/memory.c
+index 7a29f17df7c1..fe054e1bb678 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -120,12 +120,6 @@ static bool vmf_orig_pte_uffd_wp(struct vm_fault *vmf)
+ 	return pte_marker_uffd_wp(vmf->orig_pte);
+ }
+ 
+-int __init __weak memmap_named(const char *name, u64 *start, u64 *size)
+-{
+-	pr_info("Kernel command line: memmap=nn*align:name not supported on this kernel");
+-	/* zero means not found */
+-	return 0;
+-}
+ 
+ /*
+  * A number of key systems in x86 including ioremap() rely on the assumption
+diff --git a/mm/mm_init.c b/mm/mm_init.c
+index 549e76af8f82..e5b729b83fdc 100644
+--- a/mm/mm_init.c
++++ b/mm/mm_init.c
+@@ -154,6 +154,77 @@ static __init int set_mminit_loglevel(char *str)
+ early_param("mminit_loglevel", set_mminit_loglevel);
+ #endif /* CONFIG_DEBUG_MEMORY_INIT */
+ 
++/* For wildcard memory requests, have a table to find them later */
++#define MAX_MAPS		8
++#define MAP_NAME_SIZE	16
++struct mmap_map {
++	char			name[MAP_NAME_SIZE];
++	long			start;
++	long			size;
++};
++static struct mmap_map early_mmap_list[MAX_MAPS] __initdata;
++static int early_mmap_size			__initdata;
++static struct mmap_map *mmap_list;
++
++/* Add wildcard region with a lookup name */
++int memmap_add(long start, long size, const char *name)
++{
++	struct mmap_map *map;
++
++	if (!name || !name[0] || strlen(name) >= MAP_NAME_SIZE)
++		return -EINVAL;
++
++	if (early_mmap_size >= MAX_MAPS)
++		return -1;
++
++	map = &early_mmap_list[early_mmap_size++];
++	map->start = start;
++	map->size = size;
++	strcpy(map->name, name);
++	return 0;
++}
++
++static void __init memmap_copy(void)
++{
++	if (!early_mmap_size)
++		return;
++
++	mmap_list = kcalloc(early_mmap_size + 1, sizeof(mmap_list), GFP_KERNEL);
++	if (!mmap_list)
++		return;
++
++	for (int i = 0; i < early_mmap_size; i++)
++		mmap_list[i] = early_mmap_list[i];
++}
++
++/**
++ * memmap_named - Find a wildcard region with a given name
++ * @name: The name that is attached to a wildcard region
++ * @start: If found, holds the start address
++ * @size: If found, holds the size of the address.
++ *
++ * Returns: 1 if found or 0 if not found.
++ */
++int memmap_named(const char *name, u64 *start, u64 *size)
++{
++	struct mmap_map *map;
++
++	if (!mmap_list)
++		return 0;
++
++	for (int i = 0; mmap_list[i].name[0]; i++) {
++		map = &mmap_list[i];
++		if (!map->size)
++			continue;
++		if (strcmp(name, map->name) == 0) {
++			*start = map->start;
++			*size = map->size;
++			return 1;
++		}
++	}
++	return 0;
++}
++
+ struct kobject *mm_kobj;
+ 
+ #ifdef CONFIG_SMP
+@@ -2793,4 +2864,5 @@ void __init mm_core_init(void)
+ 	pti_init();
+ 	kmsan_init_runtime();
+ 	mm_cache_init();
++	memmap_copy();
+ }
 
