@@ -1,118 +1,221 @@
-Return-Path: <linux-kernel+bounces-142552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9C838A2D0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:05:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98BAB8A2D0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:06:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A60B1F221B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:05:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2791A1F228D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:06:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02FC653818;
-	Fri, 12 Apr 2024 11:05:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B577537FB;
+	Fri, 12 Apr 2024 11:06:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Wd3IZ2Td"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C8tjo2zW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3301548E7
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:05:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20184437D;
+	Fri, 12 Apr 2024 11:06:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712919940; cv=none; b=Fh7NMjVicHmQg6VuGiTx70wc0EFG28zdXjugxBe7cWulUs+nz0EcCxNKtwijIAiNUSzV8pxtrX955BWpmMRa6OnrP5eMDUj/9rK/Fmi+vq9mEbYzap0yr+r8gLg7sxfAo4E8ua43TZiXva9Uk+WgF2WsjDn1c26fQvz34OcYP6E=
+	t=1712919963; cv=none; b=rDDtxe7mnCoT+HZ4N3FZ6UgPg8Qmx6WdXV0b7yergm0J9gKkku5IVDeEhuOG/y7RjtT8dURImc4/OBqMuul6aQUU0lqUcQutEh1nmqzDHVI2mB3wULhbjbZD3jQSC8dSAbjJY4BrKnjjr3Sc+HHyvgQsXsHMBeriKfLFVpkgMvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712919940; c=relaxed/simple;
-	bh=0IoG0mCZOW0wJmxr2Xu4LuFbvj+6BIcyh7qESx1wVw8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=t1/bfF7cJqGRlrgIHrZUVxNY7OPr/GOHu2WQXBENhmxoqR7c0EaOSSeYaWE1d59ysl5X7I/YqWpU1NWa1q6NjTPAbopUdGpWEQdUzeAn8uG+8uPWejEnEJcQv8tjx5rAw2fuVCwnhl/+x6M50pUK27/d4tEBakQX8FBg8aPnYlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Wd3IZ2Td; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-617e6c873f3so8029747b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:05:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712919938; x=1713524738; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hzfOcKUbZNTZgqT86TeCwDD13GWyo5joeRsaFKSBZXU=;
-        b=Wd3IZ2TdZoHWnqOmtIbwnLYX4N2UhKNYymjo+ZqN0wiSFdxkSb3X/8uYf+QcwQMZ5t
-         8a9zxaZC/hnWr3tEuvuRIBleVOsamljoXiCr3pjhOiBRK0ydO/jznekn7UPAeajOfKys
-         bKWYCe29yPj8peAKZg1J3kjh5dbzSUak+3c2li8RIYSX7lvUjbmBCcMN62etyATWWo6S
-         VqyNjZPQ9GT5fdbFkGvGik3EivmCkF2ZBUWQD/Oxn2qpcf+hfWlS5OnE0yLlDTYEFOTk
-         0Ay9CKyBJcomTkXQua6Dkr+DygF1PBLkhOUa8l45zyTCyWHYaBOStKlNxrb9RnyC/Wkb
-         PUlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712919938; x=1713524738;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hzfOcKUbZNTZgqT86TeCwDD13GWyo5joeRsaFKSBZXU=;
-        b=kHfcmtFl82/Wy4CgTDdcIXw7Ay+EbxeMbGgt4wq0P80PGNtpM3CHXbJdlJQzh4TApW
-         najnYz8pbSP695ESbzXN3baNcZ8SqV8cNZpT+2OwesWd13+g68gPXHyeFNF5Z9S+kUHK
-         vhYczCg340YHeu4hK0EhobpRpF4L6FmpyiTMqOdwFOagqcSChzXjC3lywJOiJxyEvlG2
-         RgVMHFsdqBNtN7ae6wuvrQzz2yscz5NugDuzHPTvQNDn35K3wYdTLCa0KJYpqLbLrIll
-         1AjQrAezGKeZtWmPjp8rualQMia7Wy0RR9Yw8IejqT7/xMAqhVT1bczLloyXEukTnCMh
-         wrqw==
-X-Forwarded-Encrypted: i=1; AJvYcCUfJ6KnE3VErJoAODBR/zkWBAPZAAfjn0uqDTXS5rGYiO50WN3ubaiSc/vX0fGO/df0S4mx7B+BHkMyNQprndYHyOYQgA5o7CmhU/fs
-X-Gm-Message-State: AOJu0YxG5yuOaFPl4HDNtPK9Jk2aGrIRjrJZlVYGvLbqNu1Ea2P1PEBX
-	IqDj+7L3LwNR9tEqHI7v4GeTPJBon4655ud0QS/jxUMoWru9ZjzD9SD51YCjIBwboBeAOqpGPhC
-	FsahFYlnE8T3pASC1EWVWzwpbv+iwFdv+LN6D
-X-Google-Smtp-Source: AGHT+IEBnDnyttWxFfdfXd1lACxwpBaMVWQSGqXihk2W5PNA76nEeDSDYyOMEAi8SbgER2qNscvel2MUuN1FtzPft6w=
-X-Received: by 2002:a81:83cb:0:b0:615:7311:8f01 with SMTP id
- t194-20020a8183cb000000b0061573118f01mr1966333ywf.51.1712919937826; Fri, 12
- Apr 2024 04:05:37 -0700 (PDT)
+	s=arc-20240116; t=1712919963; c=relaxed/simple;
+	bh=kI1dFkSS8gY/pKOFeQhwJuPlr/Nuwuy5AW7ddjhVXUM=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZD7kSjPGooH5mf4zeprl/XpQMbUpQ+9/Vpo7ht9mUpRxvsb+8hG7EXyapPHNWwDvDH2aP77EJp28obl7PXdByRANt9jEHnIvqlr5TWyUrkwm5d83acCqtgyVQMu/jtFgO4dDnu983CjHQiK7CQ5Sem6EFy/Zdbflq4WHTjNNqRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C8tjo2zW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20C60C113CC;
+	Fri, 12 Apr 2024 11:06:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712919963;
+	bh=kI1dFkSS8gY/pKOFeQhwJuPlr/Nuwuy5AW7ddjhVXUM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=C8tjo2zWsQRLxbngOxakmQFK3AjrkWpNpRiKTtRD7EyedaZ+PPZgzHtZFPHBxPwdL
+	 vydur47SemhQD2Nd80jBfJptO0btO1/VyUQ5fOujY7FaIEBCXFX5i/N34KSL/p8l3g
+	 g+u2bnbx+jtjgxGsw3wtthukImJBfSAhbYsifDBWf5fcf4lo7LbqkWX5/YtmvfWG0R
+	 wdKweW70twQxta6ftezlKQ7VoypZZKyCRg/k1Z57v2fjsj1pGfHXjMjo8iFMhpVMws
+	 AYl7P9BE4WBU+QAL8JiEw/BNYl6Cd1Fg75kVAFFBMx348TTWEwGIqFReJAgNv9Nhp8
+	 WXnxcDmGIo1Fw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rvEjI-003rfo-OQ;
+	Fri, 12 Apr 2024 12:06:00 +0100
+Date: Fri, 12 Apr 2024 12:05:59 +0100
+Message-ID: <86mspysuw8.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org,
+	Jonathan Corbet <corbet@lwn.net>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Brown <broonie@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	kvmarm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC 5/8] KVM: arm64: Explicitly handle MDSELR_EL1 traps as UNDEFINED
+In-Reply-To: <5a2a74b3-f6cd-4cb6-8ee8-5dd7dc2bd686@arm.com>
+References: <20240405080008.1225223-1-anshuman.khandual@arm.com>
+	<20240405080008.1225223-6-anshuman.khandual@arm.com>
+	<86a5m8t8s6.wl-maz@kernel.org>
+	<5a2a74b3-f6cd-4cb6-8ee8-5dd7dc2bd686@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240411205428.537700-1-thorsten.blum@toblux.com>
-In-Reply-To: <20240411205428.537700-1-thorsten.blum@toblux.com>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Fri, 12 Apr 2024 13:05:27 +0200
-Message-ID: <CAH5fLgjx=z-bDHOD4nNiagzGyAigBaKpu+mRsYvWSF5Qj4p+xA@mail.gmail.com>
-Subject: Re: [PATCH] rust: helpers: Fix grammar in comment
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, broonie@kernel.org, mark.rutland@arm.com, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Thu, Apr 11, 2024 at 10:55=E2=80=AFPM Thorsten Blum <thorsten.blum@toblu=
-x.com> wrote:
->
-> s/directly the bindings/the bindings directly/
->
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-> ---
->  rust/helpers.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/rust/helpers.c b/rust/helpers.c
-> index 70e59efd92bc..4c8b7b92a4f4 100644
-> --- a/rust/helpers.c
-> +++ b/rust/helpers.c
-> @@ -4,7 +4,7 @@
->   * cannot be called either. This file explicitly creates functions ("hel=
-pers")
->   * that wrap those so that they can be called from Rust.
->   *
-> - * Even though Rust kernel modules should never use directly the binding=
-s, some
-> + * Even though Rust kernel modules should never use the bindings directl=
-y, some
->   * of these helpers need to be exported because Rust generics and inline=
-d
->   * functions may not get their code generated in the crate where they ar=
-e
->   * defined. Other helpers, called from non-inline functions, may not be
+On Fri, 12 Apr 2024 03:41:23 +0100,
+Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+> 
+> 
+> 
+> On 4/5/24 15:45, Marc Zyngier wrote:
+> > On Fri, 05 Apr 2024 09:00:05 +0100,
+> > Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+> >>
+> >> Currently read_sanitised_id_aa64dfr0_el1() caps the ID_AA64DFR0.DebugVer to
+> >> ID_AA64DFR0_DebugVer_V8P8, resulting in FEAT_Debugv8p9 not being exposed to
+> >> the guest. MDSELR_EL1 register access in the guest, is currently trapped by
+> >> the existing configuration of the fine-grained traps.
+> > 
+> > Please add support for the HDFGxTR2_EL2 registers in the trap routing
+> > arrays, add support for the corresponding FGUs in the corresponding
+> 
+> Afraid that I might not have enough background here to sufficiently understand
+> your suggestion above, but nonetheless here is an attempt in this regard.
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+Thanks for at least giving it a try, this is *MUCH* appreciated.
+
+>
+> - Add HDFGRTR2_EL2/HDFGWTR2_EL2 to enum vcpu_sysreg
+> 	enum vcpu_sysreg {
+> 		..........
+> 		VNCR(HDFGRTR2_EL2),
+> 		VNCR(HDFGWTR2_EL2),
+> 		..........
+> 	}
+
+Yes.
+
+> 
+> - Add their VNCR mappings addresses
+> 
+> 	#define VNCR_HDFGRTR2_EL2      0x1A0
+> 	#define VNCR_HDFGWTR2_EL2      0x1B0
+
+Yes.
+
+> 
+> - Add HDFGRTR2_EL2/HDFGWTR2_EL2 to sys_reg_descs[]
+> 
+> static const struct sys_reg_desc sys_reg_descs[] = {
+> 	..........
+> 	EL2_REG_VNCR(HDFGRTR2_EL2, reset_val, 0),
+> 	EL2_REG_VNCR(HDFGWTR2_EL2, reset_val, 0),
+> 	..........
+> }
+
+Yes
+
+> 
+> - Add HDFGRTR2_GROUP to enum fgt_group_id
+> - Add HDFGRTR2_GROUP to reg_to_fgt_group_id()
+> - Update triage_sysreg_trap() for HDFGRTR2_GROUP
+> - Update __activate_traps_hfgxtr() both for HDFGRTR2_EL2 and HDFGWTR2_EL2
+> - Updated __deactivate_traps_hfgxtr() both for HDFGRTR2_EL2 and HDFGWTR2_EL2
+
+Yes. Don't miss check_fgt_bit() though.  You also need to update
+kvm_init_nv_sysregs() to ensure that these new registers have the
+correct RES0/RES1 behaviour depending on the supported feature set for
+the guest.
+
+>
+> > structure, and condition the UNDEF on the lack of *guest* support for
+> > the feature.
+> 
+> Does something like the following looks OK for preventing guest access into
+> MDSELR_EL1 instead ?
+> 
+> --- a/arch/arm64/kvm/sys_regs.c
+> +++ b/arch/arm64/kvm/sys_regs.c
+> @@ -1711,6 +1711,19 @@ static u64 read_sanitised_id_aa64dfr0_el1(struct kvm_vcpu *vcpu,
+>         return val;
+>  }
+>  
+> +static bool trap_mdselr_el1(struct kvm_vcpu *vcpu,
+> +                          struct sys_reg_params *p,
+> +                          const struct sys_reg_desc *r)
+> +{
+> +       u64 dfr0 = read_sanitised_id_aa64dfr0_el1(vcpu, r);
+> +       int dver = cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_DebugVer_SHIFT);
+> +
+> +       if (dver != ID_AA64DFR0_EL1_DebugVer_V8P9)
+> +               return undef_access(vcpu, p, r);
+
+This is very cumbersome, and we now have a much better infrastructure
+for the stuff that is handled with FGTs, see below.
+
+> +
+> +       return true;
+> +}
+> +
+>  static int set_id_aa64dfr0_el1(struct kvm_vcpu *vcpu,
+>                                const struct sys_reg_desc *rd,
+>                                u64 val)
+> @@ -2203,7 +2216,7 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>         { SYS_DESC(SYS_MDSCR_EL1), trap_debug_regs, reset_val, MDSCR_EL1, 0 },
+>         DBG_BCR_BVR_WCR_WVR_EL1(2),
+>         DBG_BCR_BVR_WCR_WVR_EL1(3),
+> -       { SYS_DESC(SYS_MDSELR_EL1), undef_access },
+> +       { SYS_DESC(SYS_MDSELR_EL1), trap_mdselr_el1 },
+>         DBG_BCR_BVR_WCR_WVR_EL1(4),
+>         DBG_BCR_BVR_WCR_WVR_EL1(5),
+>         DBG_BCR_BVR_WCR_WVR_EL1(6),
+> 
+> I am sure this is rather incomplete, but will really appreciate if you could
+> provide some details and pointers.
+
+What is missing is the Fine-Grained-Undef part. You need to update
+kvm_init_sysreg() so that kvm->arch.fgu[HDFGRTR2_GROUP] has all the
+correct bits set for anything that needs to UNDEF depending on the
+guest configuration.
+
+For example, in your case, I'd expect to see something like:
+
+if (!kvm_has_feat(kvm, ID_AA64DFR0_EL1, DebugVer, V8P9))
+	kvm->arch.fgu[HDFGRTR2_GROUP] |= ~(HDFGRTR2_EL2_nMDSELR_EL1 | [...]);
+
+Then allowing the feature becomes conditioned on the bit being clear,
+and the trap handler only needs to deal with the actual emulation, and
+not the feature checking.
+
+I appreciate that this is a lot to swallow, but I'd be very happy to
+review patches implementing this and provide guidance. It is all
+pretty simple, just that there is a lot of parts all over the place.
+In the end, this is only about following the architecture.
+
+Thanks again,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
