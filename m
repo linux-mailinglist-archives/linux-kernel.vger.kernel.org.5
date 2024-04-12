@@ -1,89 +1,120 @@
-Return-Path: <linux-kernel+bounces-143331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD24F8A374B
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:52:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1E678A3754
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:53:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 726F91F228A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:52:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EDD21C21E8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:53:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2508353384;
-	Fri, 12 Apr 2024 20:52:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4297B14BF9B;
+	Fri, 12 Apr 2024 20:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dDl9ufB4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NrS0A2bL"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550383F9E0;
-	Fri, 12 Apr 2024 20:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0688817C7F;
+	Fri, 12 Apr 2024 20:53:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712955146; cv=none; b=s4Y0cXw1vDVIKMTW4mIMQUl9y+NnYSKIYpfgTVBhcTKLcYNma7OaLrJC22nUUQAPdRUR9RFQTonHY3LwSwVROedY0AVIqwNzGEWqGy2XBEjy/6cUW1rq3u3x2baSWUSIG/6wcO61agYvEkxnZq6Z+8v3/xwhZci5SZ41Mlmx/aM=
+	t=1712955213; cv=none; b=X51A8gf2ml0SaRINugpOUCwU3U0KXPyvn3IrxnlkJfNCoqZPxVVBqMldUIhtCGtpC5D4GefkOvDp1jEPXmRzifoYuWee5fET7HPNHBGRWFcI4fMxj+s8Iyu3kS0PzxJCimrbBnQc7RgZ4SRS1GDjFP7tt1mT9o3q041xWL1mutw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712955146; c=relaxed/simple;
-	bh=9VR+EMdsvM+WGe+zuTXXUWxuK3h8e/TNNnEiaHfUVho=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i+KB+4xEgMe46by7HikwRKKdzr6N8RrDCzcoExlJbiE+6rqe3Qq4seQQg1SpAxEux8VxKuuKUoQlkeFlUybTy3CSpvuS6S046rIGP0brjLAGhmGyAHoQ+e7lvmLNpAw7iKRx+/pEo8EwnGXKkt8tdGw/bRB6GZwHIidtDvGUgn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dDl9ufB4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E28EC113CC;
-	Fri, 12 Apr 2024 20:52:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712955145;
-	bh=9VR+EMdsvM+WGe+zuTXXUWxuK3h8e/TNNnEiaHfUVho=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dDl9ufB4pOPMR954EaVyoqW/ePbx13SJIc00VvHo4qZI/gtdxLIRvsXv5fJZcrkBl
-	 C2kKSDohBHyHGPJEunt0axpZIib5DtmH1R4xabtILoGSsSMKe6k8M6xh9IJ9aJt8rY
-	 b6XkXHhRkylK/QqEh0SCh5I4GpoVCv/2xN+WtMhzJi8jUOHU10qNaMiMxqlDWOoF81
-	 VzES6lLzhk9n4YYI6UwDmYQoSg8r4fDAqjkm7vZ6BzHQ7M1zejI3UMtVO1UorTV9v0
-	 1VpXMOVZxyDp51Wl6yi8BONMBkfWfiPMr0RwSVl1evszS8u4yCYXvUcZl4TYxAM5C9
-	 RBHRgoYuogFoQ==
-Date: Fri, 12 Apr 2024 17:52:22 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Kees Cook <keescook@chromium.org>, Andrei Vagin <avagin@google.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] perf bench uprobe: Remove lib64 from libc.so.6
- binary path
-Message-ID: <ZhmfBl9_C1fMhR3z@x1>
-References: <20240406040911.1603801-1-irogers@google.com>
- <ZhY8xzVJ6_9BI-Vd@krava>
+	s=arc-20240116; t=1712955213; c=relaxed/simple;
+	bh=gtXa1g8Diw8jhvbhoBh7settfSPef9KvqOllWKOXyXk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=mejmgUbyecRyDlpLHjxefo1QA8qpALpIXTz59XmVlqIQcg96a4LHsIzSe71iSNnZPsQQN6KOPFRLl8YI9FLtxemezcAlxfMdXXZmoI4Q0eP0MCKvUGEIjqKKEschpzeyE7VFArw6cX5hFqwa6rx5Sproxd1efyceDA8C0ZWr7MI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NrS0A2bL; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43CKTvuh002893;
+	Fri, 12 Apr 2024 20:53:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=HgJDa/2EwgakQCDAhk1JenjRlC2wN9yg1hRDEABckvY=; b=Nr
+	S0A2bL0sek98H41TF0941WBLNT3tvWmfofmy3d9Jcx/srTi7/WcjymTS0S14e8RC
+	Zq244J8TXEC+ANlFlpg/KXTjwXNf1plhYGEL4Vzmq3w2g9q8yC76MAgYv9zO4hyt
+	53aCp9iap5FZpTmwILT4PDh4+/YpF6xr35O236D2tcdyQSxVCGKOyQ1YscJMaTO4
+	kGMq2DaXCZLBkAbIiBkdBJ6tloi84bTepA6mDFFNLNhklUWZZAaQU/q3oVevijO0
+	brFSJSSpCkOWFfEUc/ycMrv8Ujasu9x1fXz71swD3grV3QljrVC1Bgd+I/EAdKeg
+	jnuoQIutiLX1OET8C8kQ==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xf9x6rjuw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 20:53:06 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43CKr5D0021876
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 20:53:05 GMT
+Received: from [10.110.37.144] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 12 Apr
+ 2024 13:53:04 -0700
+Message-ID: <c7106c8e-0c99-4160-966e-b1a8ba5770ee@quicinc.com>
+Date: Fri, 12 Apr 2024 13:53:02 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhY8xzVJ6_9BI-Vd@krava>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] wifi: ath11k: support DT ieee80211-freq-limit
+ property to limit channels
+Content-Language: en-US
+To: Christian Lamparter <christian.lamparter@isd.uni-stuttgart.de>,
+        Robert
+ Marko <robimarko@gmail.com>, <kvalo@kernel.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <jjohnson@kernel.org>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <ath11k@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20240412162510.29483-1-robimarko@gmail.com>
+ <20240412162510.29483-2-robimarko@gmail.com>
+ <4a1e0cb6-c319-4eb1-9bd1-5ff13eabfe1b@isd.uni-stuttgart.de>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <4a1e0cb6-c319-4eb1-9bd1-5ff13eabfe1b@isd.uni-stuttgart.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: oKEhJCcr9ogoabfdMqA007OIM4biwoUC
+X-Proofpoint-GUID: oKEhJCcr9ogoabfdMqA007OIM4biwoUC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-12_17,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 impostorscore=0 mlxlogscore=784 spamscore=0
+ phishscore=0 bulkscore=0 mlxscore=0 adultscore=0 priorityscore=1501
+ clxscore=1011 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2404010003 definitions=main-2404120149
 
-On Wed, Apr 10, 2024 at 09:18:44AM +0200, Jiri Olsa wrote:
-> On Fri, Apr 05, 2024 at 09:09:10PM -0700, Ian Rogers wrote:
-> > bpf_program__attach_uprobe_opts will search LD_LIBRARY_PATH and so
-> > specifying `/lib64` is unnecessary and causes failures for libc.so.6
-> > paths like `/lib/x86_64-linux-gnu/libc.so.6`.
-> > 
-> > Fixes: 7b47623b8cae ("perf bench uprobe trace_printk: Add entry attaching an BPF program that does a trace_printk")
-> > Signed-off-by: Ian Rogers <irogers@google.com>
+On 4/12/2024 12:52 PM, Christian Lamparter wrote:
+> On 4/12/24 6:24 PM, Robert Marko wrote:
+>> The common DT property can be used to limit the available channels
+>> but ath11k has to manually call wiphy_read_of_freq_limits().
+>>
+>> Signed-off-by: Robert Marko <robimarko@gmail.com>
 > 
-> patchset lgtm
+> I've seen this before.
 > 
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
+> https://patchwork.kernel.org/project/linux-wireless/patch/ed266944c721de8dbf0fe35f387a3a71b2c84037.1686486468.git.chunkeey@gmail.com/
+> 
+> (dt-binding too. it has/had an ack)
+> https://patchwork.kernel.org/project/linux-wireless/patch/fc606d2550d047a53b4289235dd3c0fe23d5daac.1686486468.git.chunkeey@gmail.com/
+> 
+> sooo.... this is awkward.
 
-Thanks, applied it to the series, b4 picked it just for this patch.
+Patchwork indicates Changes Requested
+Any idea what changes Kalle is looking for?
 
-I tried to convince Konstantin to look for "patchset lgtm", "for the
-series", but for now we need to do it manually :-)
-
-- Arnaldo
 
