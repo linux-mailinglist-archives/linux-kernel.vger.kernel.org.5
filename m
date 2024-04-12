@@ -1,172 +1,159 @@
-Return-Path: <linux-kernel+bounces-141812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47AD58A23CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B80D88A23CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:33:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D46231F22EC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:31:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54D7E1F22B03
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:33:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE791094E;
-	Fri, 12 Apr 2024 02:31:22 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0923DDA5;
+	Fri, 12 Apr 2024 02:32:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y1y6jJbH"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E92E205E34;
-	Fri, 12 Apr 2024 02:31:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA081FB2;
+	Fri, 12 Apr 2024 02:32:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712889082; cv=none; b=QpOMhPHyJQBFaXSTO7LHaSAgcoqGGlDa/LFWYAoBvNGcFFhcJQupdQdZ2wIkWk6s8V3FUCW7B6QG+C3W0ZS7w6ajSlPW6MQxOUyZKy0e7Z4fvMlQby9jYqCnQQWGn1F8xhgWPrtBEIuSnkNkn2lNxcNgoKNg4OQOU+xCyuflagI=
+	t=1712889179; cv=none; b=QXZvJjlC83CxLBmAFD4QWxbLj9Y1Zb2sRkbllIEptN9jkMO8jzneGcz//P7KBuDUP8KIxebW8E7yw02JFcScYbp1PnQNVfD5NnGMUm/AvMDtn4t9zUbRSLSQ2FUBVGTyhIS5KYr0cWhFcYsqlD0RLDuY1vdDHTK0cQCkhNyhLzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712889082; c=relaxed/simple;
-	bh=GYv3jLCzBzSLGkmeYDpAlmFWCL32zZ6LZ0+zXlJPS18=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=pB7NKRkGnQPjtARWQu9X6DOKMrSYz6rCjKPre7GtEjw5BJ+RXXPxETgC5WY1eG5mz0/T4+EC9DUmoe8ivs+ZjZro1Ru/mgd+kBW4Z7YSWEZjtn/R06FJQ3w7vipI/yPT+Eol0PTHyBSkYeNJ1rbrJBt/UyhbeCUnO8OV311SLlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VG0qD4MWyz2CcD9;
-	Fri, 12 Apr 2024 10:28:24 +0800 (CST)
-Received: from dggpeml500022.china.huawei.com (unknown [7.185.36.66])
-	by mail.maildlp.com (Postfix) with ESMTPS id F36701A0172;
-	Fri, 12 Apr 2024 10:31:17 +0800 (CST)
-Received: from [10.67.111.104] (10.67.111.104) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 12 Apr 2024 10:31:17 +0800
-Message-ID: <fa1e422c-17bd-4dff-abbd-660e15d87256@huawei.com>
-Date: Fri, 12 Apr 2024 10:31:17 +0800
+	s=arc-20240116; t=1712889179; c=relaxed/simple;
+	bh=A/sZDwPAha0gA/b8dbHLzPkdENaxz954GdpTnaChuH4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c891j+KJYJQs3gpaALwBwgpgllMuxzEq+cuQuJ1dI1HjBEBHxnNtYKmoY/4pBaRqkR+glRhOHioBxhGKP/IcdzmFO6kG/tDWqhlmVwlKI33yUukwhvtDo4K6Q+XFFSpEhlBT/wEwM7UsQouzHkj7diubgclxBVXGx2qTgZm3/04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y1y6jJbH; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712889178; x=1744425178;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=A/sZDwPAha0gA/b8dbHLzPkdENaxz954GdpTnaChuH4=;
+  b=Y1y6jJbHem8cvcUziQJPcvIK/oSvwQJJQMbHWxDoLng3LDcrYqE2s1K9
+   E/GHcx2BnZkDFImosvEAk/mUxjWGOsQqFIDvPerO2NWCcwJ15vau7MCPp
+   ZvrdxqvfaiDrNJoIqnNVHxziMj6tCTf5IxQqzHEsY9J54wLi8h6E8seDp
+   AMPnmtmQo5uF5LvdS+NidvjmVK3zi2Jh0ItAT2vtQuLy6S7SYoypln8Pi
+   OTiltqkpGbRcrepUq8g78Hc1Wx7K7cxBGIOHU06g/kPof8CJRPBOch9z9
+   3/V77VKTQFblW94HJiEJzG7qzCTSaOHyivzXRfjzOfc/CiF/YCZ7DdSke
+   g==;
+X-CSE-ConnectionGUID: 5yg44BzARVm+jY6AgPMudw==
+X-CSE-MsgGUID: kKtdSaD3TQ+WsGXqsPRUtg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8890568"
+X-IronPort-AV: E=Sophos;i="6.07,194,1708416000"; 
+   d="scan'208";a="8890568"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 19:32:57 -0700
+X-CSE-ConnectionGUID: KwdjDq55T1msDG2s3IaoFA==
+X-CSE-MsgGUID: O7WPwnZ+TnypsvhasJK0Qg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,194,1708416000"; 
+   d="scan'208";a="25880955"
+Received: from qzhang4-desk.sh.intel.com (HELO localhost) ([10.239.147.49])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 19:32:55 -0700
+Date: Fri, 12 Apr 2024 10:32:53 +0800
+From: Qiang Zhang <qiang4.zhang@linux.intel.com>
+To: Masami Hiramatsu <mhiramat@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	Qiang Zhang <qiang4.zhang@intel.com>
+Subject: Re: [PATCH] bootconfig: use memblock_free_late to free xbc memory to
+ buddy
+Message-ID: <ZhidVeMSyCyg9q+p@qzhang4-desk.sh.intel.com>
+References: <20240412020325.290330-1-qiang4.zhang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] bcachefs: chardev: make bch_chardev_class constant
-Content-Language: en-US
-From: Hongbo Li <lihongbo22@huawei.com>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>, Kent Overstreet
-	<kent.overstreet@linux.dev>, Brian Foster <bfoster@redhat.com>
-CC: <linux-bcachefs@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20240308-bcachefs-v2-1-3e84c845055e@marliere.net>
- <4ddd2362-2383-434a-b4b0-2075072572d6@huawei.com>
-In-Reply-To: <4ddd2362-2383-434a-b4b0-2075072572d6@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500022.china.huawei.com (7.185.36.66)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240412020325.290330-1-qiang4.zhang@linux.intel.com>
 
-On 2024/3/11 9:41, Hongbo Li wrote:
-> It's fine for me.
+On Fri, Apr 12, 2024 at 10:03:26AM +0800, qiang4.zhang@linux.intel.com wrote:
+>From: Qiang Zhang <qiang4.zhang@intel.com>
+>
+>On the time to free xbc memory, memblock has handed over memory to buddy
+>allocator. So it doesn't make sense to free memory back to memblock.
+>memblock_free() called by xbc_exit() even causes UAF bugs on architectures
+>with CONFIG_ARCH_KEEP_MEMBLOCK disabled like x86. Following KASAN logs
+>shows this case.
+>
+>[    9.410890] ==================================================================
+>[    9.418962] BUG: KASAN: use-after-free in memblock_isolate_range+0x12d/0x260
+>[    9.426850] Read of size 8 at addr ffff88845dd30000 by task swapper/0/1
+>
+>[    9.435901] CPU: 9 PID: 1 Comm: swapper/0 Tainted: G     U             6.9.0-rc3-00208-g586b5dfb51b9 #5
+>[    9.446403] Hardware name: Intel Corporation RPLP LP5 (CPU:RaptorLake)/RPLP LP5 (ID:13), BIOS IRPPN02.01.01.00.00.19.015.D-00000000 Dec 28 2023
+>[    9.460789] Call Trace:
+>[    9.463518]  <TASK>
+>[    9.465859]  dump_stack_lvl+0x53/0x70
+>[    9.469949]  print_report+0xce/0x610
+>[    9.473944]  ? __virt_addr_valid+0xf5/0x1b0
+>[    9.478619]  ? memblock_isolate_range+0x12d/0x260
+>[    9.483877]  kasan_report+0xc6/0x100
+>[    9.487870]  ? memblock_isolate_range+0x12d/0x260
+>[    9.493125]  memblock_isolate_range+0x12d/0x260
+>[    9.498187]  memblock_phys_free+0xb4/0x160
+>[    9.502762]  ? __pfx_memblock_phys_free+0x10/0x10
+>[    9.508021]  ? mutex_unlock+0x7e/0xd0
+>[    9.512111]  ? __pfx_mutex_unlock+0x10/0x10
+>[    9.516786]  ? kernel_init_freeable+0x2d4/0x430
+>[    9.521850]  ? __pfx_kernel_init+0x10/0x10
+>[    9.526426]  xbc_exit+0x17/0x70
+>[    9.529935]  kernel_init+0x38/0x1e0
+>[    9.533829]  ? _raw_spin_unlock_irq+0xd/0x30
+>[    9.538601]  ret_from_fork+0x2c/0x50
+>[    9.542596]  ? __pfx_kernel_init+0x10/0x10
+>[    9.547170]  ret_from_fork_asm+0x1a/0x30
+>[    9.551552]  </TASK>
+>
+>[    9.555649] The buggy address belongs to the physical page:
+>[    9.561875] page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x45dd30
+>[    9.570821] flags: 0x200000000000000(node=0|zone=2)
+>[    9.576271] page_type: 0xffffffff()
+>[    9.580167] raw: 0200000000000000 ffffea0011774c48 ffffea0012ba1848 0000000000000000
+>[    9.588823] raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+>[    9.597476] page dumped because: kasan: bad access detected
+>
+>[    9.605362] Memory state around the buggy address:
+>[    9.610714]  ffff88845dd2ff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>[    9.618786]  ffff88845dd2ff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>[    9.626857] >ffff88845dd30000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>[    9.634930]                    ^
+>[    9.638534]  ffff88845dd30080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>[    9.646605]  ffff88845dd30100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>[    9.654675] ==================================================================
+
+Sorry. Forget to Cc stable. Will send a new one.
+
+>
+>Signed-off-by: Qiang Zhang <qiang4.zhang@intel.com>
+>---
+> lib/bootconfig.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/lib/bootconfig.c b/lib/bootconfig.c
+>index c59d26068a64..4524ee944df0 100644
+>--- a/lib/bootconfig.c
+>+++ b/lib/bootconfig.c
+>@@ -63,7 +63,7 @@ static inline void * __init xbc_alloc_mem(size_t size)
 > 
-> On 2024/3/8 20:12, Ricardo B. Marliere wrote:
->> Since commit 43a7206b0963 ("driver core: class: make class_register() 
->> take
->> a const *"), the driver core allows for struct class to be in read-only
->> memory, so move the bch_chardev_class structure to be declared at build
->> time placing it into read-only memory, instead of having to be 
->> dynamically
->> allocated at boot time. Also, correctly clean up after failing paths in
->> bch2_chardev_init().
->>
->> Cc: Hongbo Li <lihongbo22@huawei.com>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
->> ---
->> Changes in v2:
->> - Used "free the last thing" pattern in bch2_chardev_init().
->> - Link to v1: 
->> https://lore.kernel.org/r/20240305-bcachefs-v1-1-436196e25729@marliere.net
->> ---
->>   fs/bcachefs/chardev.c | 35 ++++++++++++++++++++++-------------
->>   1 file changed, 22 insertions(+), 13 deletions(-)
->>
->> diff --git a/fs/bcachefs/chardev.c b/fs/bcachefs/chardev.c
->> index 226b39c17667..dc09f547dae6 100644
->> --- a/fs/bcachefs/chardev.c
->> +++ b/fs/bcachefs/chardev.c
->> @@ -940,7 +940,9 @@ static const struct file_operations 
->> bch_chardev_fops = {
->>   };
->>   static int bch_chardev_major;
->> -static struct class *bch_chardev_class;
->> +static const struct class bch_chardev_class = {
->> +    .name = "bcachefs",
->> +};
->>   static struct device *bch_chardev;
->>   void bch2_fs_chardev_exit(struct bch_fs *c)
->> @@ -957,7 +959,7 @@ int bch2_fs_chardev_init(struct bch_fs *c)
->>       if (c->minor < 0)
->>           return c->minor;
->> -    c->chardev = device_create(bch_chardev_class, NULL,
->> +    c->chardev = device_create(&bch_chardev_class, NULL,
->>                      MKDEV(bch_chardev_major, c->minor), c,
->>                      "bcachefs%u-ctl", c->minor);
->>       if (IS_ERR(c->chardev))
->> @@ -968,32 +970,39 @@ int bch2_fs_chardev_init(struct bch_fs *c)
->>   void bch2_chardev_exit(void)
->>   {
->> -    if (!IS_ERR_OR_NULL(bch_chardev_class))
->> -        device_destroy(bch_chardev_class,
->> -                   MKDEV(bch_chardev_major, U8_MAX));
->> -    if (!IS_ERR_OR_NULL(bch_chardev_class))
->> -        class_destroy(bch_chardev_class);
->> +    device_destroy(&bch_chardev_class, MKDEV(bch_chardev_major, 
->> U8_MAX));
->> +    class_unregister(&bch_chardev_class);
->>       if (bch_chardev_major > 0)
->>           unregister_chrdev(bch_chardev_major, "bcachefs");
->>   }
->>   int __init bch2_chardev_init(void)
->>   {
->> +    int ret;
->> +
->>       bch_chardev_major = register_chrdev(0, "bcachefs-ctl", 
->> &bch_chardev_fops);
->>       if (bch_chardev_major < 0)
->>           return bch_chardev_major;
->> -    bch_chardev_class = class_create("bcachefs");
->> -    if (IS_ERR(bch_chardev_class))
->> -        return PTR_ERR(bch_chardev_class);
->> +    ret = class_register(&bch_chardev_class);
->> +    if (ret)
->> +        goto major_out;
->> -    bch_chardev = device_create(bch_chardev_class, NULL,
->> +    bch_chardev = device_create(&bch_chardev_class, NULL,
->>                       MKDEV(bch_chardev_major, U8_MAX),
->>                       NULL, "bcachefs-ctl");
->> -    if (IS_ERR(bch_chardev))
->> -        return PTR_ERR(bch_chardev);
->> +    if (IS_ERR(bch_chardev)) {
->> +        ret = PTR_ERR(bch_chardev);
->> +        goto class_out;
->> +    }
->>       return 0;
->> +
->> +class_out:
->> +    class_unregister(&bch_chardev_class);
->> +major_out:
->> +    unregister_chrdev(bch_chardev_major, "bcachefs-ctl");
->> +    return ret;
->>   }
->>   #endif /* NO_BCACHEFS_CHARDEV */
->>
->> ---
->> base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
->> change-id: 20240305-bcachefs-27a4bb8b9f4f
->>
->> Best regards,
+> static inline void __init xbc_free_mem(void *addr, size_t size)
+> {
+>-	memblock_free(addr, size);
+>+	memblock_free_late(__pa(addr), size);
+> }
 > 
-
-This is a useful patch, and also works on latest code. Maybe we almost 
-forgot it.
-
-Reviewed-by: Hongbo Li <lihongbo22@huawei.com>
+> #else /* !__KERNEL__ */
+>-- 
+>2.39.2
+>
 
