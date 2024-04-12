@@ -1,67 +1,72 @@
-Return-Path: <linux-kernel+bounces-142902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B0968A31DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:13:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE4D58A31DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:13:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C75FA1F21472
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:13:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D6451C21F38
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:13:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81F6147C7D;
-	Fri, 12 Apr 2024 15:13:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8EC4147C8F;
+	Fri, 12 Apr 2024 15:13:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lcUEwq41";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lcUEwq41"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZjRsN9RL";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZjRsN9RL"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBFF13CFB7
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF85B1474C0
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:13:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712934787; cv=none; b=OsT7czQKBjUCaxup5/lF4zPz+pV40P2CA9NgoSE4dw/aQFwOuUfR4PpRVy6anp9HFenBayMOgD84QzQoRQdbgAxxFibwtwCJn6acA9i0YyninHZ8202eJAh5OoYx5hLE3LHoII9lEHE9YVxNDjpZ1z2TPIg0Th7EN+zYEs3V4+Q=
+	t=1712934793; cv=none; b=TjEKFIBhuVlj9TnJLnVEeLOB1p3MOMBgt6BTT1Y7an79Eraf/fDoCDXXxdj3KFl6iDsao0dXm8RXz+JHVsXwXWU6ZZNknIMkSFGb7sTSOWXRh7HDNaxWw6B4gjEWjXBzbYPbTVGtB9lnKS+38E7FhkHBV8K1OfVZ2oqylCSWbpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712934787; c=relaxed/simple;
-	bh=ySAB3km1TxG4xulcUuc2jfgIAWhWYY69TDvjrLBNEBM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pErEIKcwiekD5AmryEemprwYwFx/B9GjgzhhKNnkOvnMXmDJ7VKeqsVYz1UDPcgULNojmSkzMFSoen6S8TmXgIFlaswGsnmGwKY5a34tsF5gxvRh6sZSQLSrO8CWnn4jXLgjynNV51ZCva9um6mGcCNZeHbnkxTTtYDR024U4Wo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lcUEwq41; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lcUEwq41; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1712934793; c=relaxed/simple;
+	bh=2KZ+Kxd87q0yfIkZmp+1x2DgvHUNsAD7/J2Zjtf9r4U=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=rawdZooDTl1J8AgfmWbUBJ82cl5NRSteiUNaU+sLqnJYhXjO3SbTLmLKpEryf0mU0olTXb++1K+jN/Oywd2nS6DuFshvPukNbi6XRuXqyxKrraY2NsvcO/Xlh9sTH+7yccpoEy8XcvZamCisujnt0CktOxEoo/3nU6Og2hvcOVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZjRsN9RL; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZjRsN9RL; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 73927383EA;
-	Fri, 12 Apr 2024 15:13:03 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2F1505FE6D;
+	Fri, 12 Apr 2024 15:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712934783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ucDB1ckO4elt768cHBdZSn7izJ4VBv6RB34AFX4fxL8=;
-	b=lcUEwq41HXQ+4g3fH5pmXcpxp5yCeEJyZQELcj5ojDJdajE2waXmB0tZhdtvytt7PXimS7
-	9M5l5wMhLsxhL47bGEvRtK4oFJPgeHAWZGdH696NV4yY/exhn97DYB652slQBRpWl7fZBx
-	tzMK59GtBDJeGJJhrCADz5Zf3iCHh3E=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=lcUEwq41
+	t=1712934790; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gOjZMMxtEm2r83ujlyaCMb78G694svVceNS313rwkn0=;
+	b=ZjRsN9RLAq9Dr+MmClgjBktyCfMTrOM69fFLgYIRmmFF8AyK/zaEzjLnmSF72VjkI3DXlV
+	mw5yYZZedYVNuhpZRLRRYlagazGeO/3gpzK1i7bcXLMyn6iFirFnKT3Hbs7orU/jw9BBpG
+	mfqCtDD6R3S4m/lkxObeovxNDe4OzpM=
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712934783; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ucDB1ckO4elt768cHBdZSn7izJ4VBv6RB34AFX4fxL8=;
-	b=lcUEwq41HXQ+4g3fH5pmXcpxp5yCeEJyZQELcj5ojDJdajE2waXmB0tZhdtvytt7PXimS7
-	9M5l5wMhLsxhL47bGEvRtK4oFJPgeHAWZGdH696NV4yY/exhn97DYB652slQBRpWl7fZBx
-	tzMK59GtBDJeGJJhrCADz5Zf3iCHh3E=
+	t=1712934790; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gOjZMMxtEm2r83ujlyaCMb78G694svVceNS313rwkn0=;
+	b=ZjRsN9RLAq9Dr+MmClgjBktyCfMTrOM69fFLgYIRmmFF8AyK/zaEzjLnmSF72VjkI3DXlV
+	mw5yYZZedYVNuhpZRLRRYlagazGeO/3gpzK1i7bcXLMyn6iFirFnKT3Hbs7orU/jw9BBpG
+	mfqCtDD6R3S4m/lkxObeovxNDe4OzpM=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D0FEE1368B;
-	Fri, 12 Apr 2024 15:13:01 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8BE251368B;
+	Fri, 12 Apr 2024 15:13:09 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id /uJHLn1PGWaWAQAAD6G6ig
-	(envelope-from <jgross@suse.com>); Fri, 12 Apr 2024 15:13:01 +0000
+	id sbSSH4VPGWaiAQAAD6G6ig
+	(envelope-from <jgross@suse.com>); Fri, 12 Apr 2024 15:13:09 +0000
 From: Juergen Gross <jgross@suse.com>
 To: linux-kernel@vger.kernel.org,
 	x86@kernel.org
@@ -73,10 +78,12 @@ Cc: Juergen Gross <jgross@suse.com>,
 	"H. Peter Anvin" <hpa@zytor.com>,
 	Andy Lutomirski <luto@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v2 0/4] x86: correctly handle NX and RW bit testing
-Date: Fri, 12 Apr 2024 17:12:54 +0200
-Message-Id: <20240412151258.9171-1-jgross@suse.com>
+Subject: [PATCH v2 1/4] x86/pat: introduce lookup_address_in_pgd_attr()
+Date: Fri, 12 Apr 2024 17:12:55 +0200
+Message-Id: <20240412151258.9171-2-jgross@suse.com>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20240412151258.9171-1-jgross@suse.com>
+References: <20240412151258.9171-1-jgross@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,66 +91,145 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -1.65
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 73927383EA
 X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.65 / 50.00];
-	BAYES_HAM(-1.64)[92.69%];
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	RCPT_COUNT_SEVEN(0.00)[10];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
-When the processor is detecting a set NX bit on any page table level
-when doing a page table walk, the resulting page will not be suitable
-for code execution.
+Add lookup_address_in_pgd_attr() doing the same as the already
+existing lookup_address_in_pgd(), but returning the effective settings
+of the NX and RW bits of all walked page table levels, too.
 
-A similar approach is taken for the RW bit: all page table levels need
-to have the RW bit set in order to result in a writable page.
+This will be needed in order to match hardware behavior when looking
+for effective access rights, especially for detecting writable code
+pages.
 
-Unfortunately the kernel is only looking at the leaf page table entry
-for deciding whether e.g. a writable page is executable or not.
+In order to avoid code duplication, let lookup_address_in_pgd() call
+lookup_address_in_pgd_attr() with dummy parameters.
 
-Fix that by calculating the effective NX and RW bits over all page
-table levels when doing a software address lookup, mimicking the
-hardware behavior.
+Signed-off-by: Juergen Gross <jgross@suse.com>
+---
+V2:
+- split off from V1 patch (Ingo Molnar)
+- introduced new function (Ingo Molnar)
+---
+ arch/x86/include/asm/pgtable_types.h |  2 ++
+ arch/x86/mm/pat/set_memory.c         | 33 +++++++++++++++++++++++++---
+ 2 files changed, 32 insertions(+), 3 deletions(-)
 
-Changes in V2:
-- split the patch into multiple patches
-
-Juergen Gross (4):
-  x86/pat: introduce lookup_address_in_pgd_attr()
-  x86/mm: use lookup_address_in_pgd_attr() in show_fault_oops()
-  x86/pat: restructure _lookup_address_cpa()
-  x86/pat: fix W^X violation false-positives when running as Xen PV
-    guest
-
- arch/x86/include/asm/pgtable_types.h |  2 +
- arch/x86/mm/fault.c                  |  7 +--
- arch/x86/mm/pat/set_memory.c         | 68 ++++++++++++++++++++++------
- 3 files changed, 60 insertions(+), 17 deletions(-)
-
+diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+index 0b748ee16b3d..dd05caeeeeaf 100644
+--- a/arch/x86/include/asm/pgtable_types.h
++++ b/arch/x86/include/asm/pgtable_types.h
+@@ -566,6 +566,8 @@ static inline void update_page_count(int level, unsigned long pages) { }
+ extern pte_t *lookup_address(unsigned long address, unsigned int *level);
+ extern pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+ 				    unsigned int *level);
++pte_t *lookup_address_in_pgd_attr(pgd_t *pgd, unsigned long address,
++				  unsigned int *level, bool *nx, bool *rw);
+ extern pmd_t *lookup_pmd_address(unsigned long address);
+ extern phys_addr_t slow_virt_to_phys(void *__address);
+ extern int __init kernel_map_pages_in_pgd(pgd_t *pgd, u64 pfn,
+diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+index 80c9037ffadf..bfa0aae45d48 100644
+--- a/arch/x86/mm/pat/set_memory.c
++++ b/arch/x86/mm/pat/set_memory.c
+@@ -657,20 +657,26 @@ static inline pgprot_t verify_rwx(pgprot_t old, pgprot_t new, unsigned long star
+ 
+ /*
+  * Lookup the page table entry for a virtual address in a specific pgd.
+- * Return a pointer to the entry and the level of the mapping.
++ * Return a pointer to the entry, the level of the mapping, and the effective
++ * NX and RW bits of all page table levels.
+  */
+-pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+-			     unsigned int *level)
++pte_t *lookup_address_in_pgd_attr(pgd_t *pgd, unsigned long address,
++				  unsigned int *level, bool *nx, bool *rw)
+ {
+ 	p4d_t *p4d;
+ 	pud_t *pud;
+ 	pmd_t *pmd;
+ 
+ 	*level = PG_LEVEL_NONE;
++	*nx = false;
++	*rw = true;
+ 
+ 	if (pgd_none(*pgd))
+ 		return NULL;
+ 
++	*nx |= pgd_flags(*pgd) & _PAGE_NX;
++	*rw &= pgd_flags(*pgd) & _PAGE_RW;
++
+ 	p4d = p4d_offset(pgd, address);
+ 	if (p4d_none(*p4d))
+ 		return NULL;
+@@ -679,6 +685,9 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+ 	if (p4d_leaf(*p4d) || !p4d_present(*p4d))
+ 		return (pte_t *)p4d;
+ 
++	*nx |= p4d_flags(*p4d) & _PAGE_NX;
++	*rw &= p4d_flags(*p4d) & _PAGE_RW;
++
+ 	pud = pud_offset(p4d, address);
+ 	if (pud_none(*pud))
+ 		return NULL;
+@@ -687,6 +696,9 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+ 	if (pud_leaf(*pud) || !pud_present(*pud))
+ 		return (pte_t *)pud;
+ 
++	*nx |= pud_flags(*pud) & _PAGE_NX;
++	*rw &= pud_flags(*pud) & _PAGE_RW;
++
+ 	pmd = pmd_offset(pud, address);
+ 	if (pmd_none(*pmd))
+ 		return NULL;
+@@ -695,11 +707,26 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+ 	if (pmd_leaf(*pmd) || !pmd_present(*pmd))
+ 		return (pte_t *)pmd;
+ 
++	*nx |= pmd_flags(*pmd) & _PAGE_NX;
++	*rw &= pmd_flags(*pmd) & _PAGE_RW;
++
+ 	*level = PG_LEVEL_4K;
+ 
+ 	return pte_offset_kernel(pmd, address);
+ }
+ 
++/*
++ * Lookup the page table entry for a virtual address in a specific pgd.
++ * Return a pointer to the entry and the level of the mapping.
++ */
++pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
++			     unsigned int *level)
++{
++	bool nx, rw;
++
++	return lookup_address_in_pgd_attr(pgd, address, level, &nx, &rw);
++}
++
+ /*
+  * Lookup the page table entry for a virtual address. Return a pointer
+  * to the entry and the level of the mapping.
 -- 
 2.35.3
 
