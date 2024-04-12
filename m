@@ -1,127 +1,120 @@
-Return-Path: <linux-kernel+bounces-142722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B21588A2F56
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:25:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC7328A2F6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:31:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 535441F21277
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:25:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69E60B22B82
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D213882481;
-	Fri, 12 Apr 2024 13:25:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18778824B3;
+	Fri, 12 Apr 2024 13:30:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="PWlaWm+y"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Kb1oBwk0"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81FA55914B;
-	Fri, 12 Apr 2024 13:25:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDC2A5644E
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:30:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712928344; cv=none; b=jTyGSvjHM3wSj9C+rAXz6WhUXq29pilulefaBmD8HOOg3zybso85ho74yh88zoguecKc5TD0/NJR68pidhldnl5XX+K7LtqL4QJL27Kper1IoXI6PCv7LKhFmbuS72Tm/38XoBr5P2OVlCz5Qiqg7HhYa41FQy/adbfh25wTBbc=
+	t=1712928653; cv=none; b=upupkn8Xii5Z1enlYnnloFlv9YVc0cV1RJXdwxV1u0+VgtKAMBpVqEWF3L5EXWlegosmc9cJWbP4ZMyly2u/EtgHgcl5fAn7U9lfbIiW3chFev0mp+mPJ+XP6G93H0O//OKicFLLd39b4z1EOF34rHZDJmINpGm3LFBpXv1arrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712928344; c=relaxed/simple;
-	bh=K/PYnVuBs0NW40S2J0gna2ybcb3BjjN7UycpWMIRUkI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sHGv8m5uE/wmjuapUCrFCmEA5euvwRf/Akjx99dJYEPaMU3h6TlF6ut1pu17ioBEC5TvDSYE2bo3YUDMhbKl5ZPKUv3Ikemrad7o4XwehCEhVCT9qTc1Dz2UzUG7JA3wqk7l8RaOVMPFeIXws7Ta8Xi/47892stM/kgcxxwqFo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=PWlaWm+y; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43CDEigZ029173;
-	Fri, 12 Apr 2024 13:25:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=1V3Ezxl7WVDhos2t68PZAZjGKM6z5yy3zHT/ac8+FeM=;
- b=PWlaWm+yJcii3DuGyA6u+KghBCvAsrayUGxgAifIZOQMoSBinQK7vhRRodtD5V9AaWx5
- U93hHTbZdf8pjiT4oXGeoanJ5uSoQqhVCqL8RGXR5ksKAzDyc6RaHKEL6jKbK3xwBPv/
- PsirN4mnjKlZFEeDnqcKlm8FtSrJAW+lxadCmqR4WWdh4FYSGxcbll2hzS+U8L0VlWxc
- swopzkeobPGqr+bJl3L0mdnrzGHWcgwEz6Sq/20T2vZCBBCMLS8z8pGoVKg4oMM/jSXt
- MYSJaqEsDYPT6c+pAZA+JFV0jG2flWSzMDOC5urh9H55x3Bp7+9/Zl9/9BFEYCz6EgZt Ig== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xf5du81yg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Apr 2024 13:25:35 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43CDPZha016327;
-	Fri, 12 Apr 2024 13:25:35 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xf5du81yc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Apr 2024 13:25:35 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43CCf2xS017031;
-	Fri, 12 Apr 2024 13:25:34 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xbke31kva-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Apr 2024 13:25:34 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43CDPS7o50856318
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 12 Apr 2024 13:25:30 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CCB2A20043;
-	Fri, 12 Apr 2024 13:25:28 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9C81D20040;
-	Fri, 12 Apr 2024 13:25:28 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri, 12 Apr 2024 13:25:28 +0000 (GMT)
-Date: Fri, 12 Apr 2024 15:25:27 +0200
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Sven Schnelle <svens@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] s390/mm: shared zeropage + KVM fixes
-Message-ID: <Zhk2R4UsX4SQCW7R@tuxmaker.boeblingen.de.ibm.com>
-References: <20240411161441.910170-1-david@redhat.com>
+	s=arc-20240116; t=1712928653; c=relaxed/simple;
+	bh=dos5mFR7OGlo/0+OT1mBqy46jgg02Ze4GK+u8PA+3W4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Ux4qfw/EV+YpftajZLOgRmsl76RyiqMIwXBp7Tq8lwE+rqVITJ34R6Gfdw4uxFhKtWKxcLimJts+QZsBA8YfEzeczzvc2hEJap0FQCDfco16HjFEG1Etbdl37TYsVXUViC/g9lUY9377tA4fhqzDLjI/hNdWBzg+rbqezJCshg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Kb1oBwk0; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712928650;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=vN5LU15jD5iu/2/mvrypQik1qqqlfRZO/11n/IoWnz0=;
+	b=Kb1oBwk0qu7CJFZiBeFAPVn+qwMMBc2bbQ7T7A85wSiAzIMocKDWVejNEwG2jkNKYE0ZZE
+	p22a7OjvF6GyAvh8RFd0eaLmwdrVP0UIL0jW45kll3aVfVyyADUNPNBHB73tEbeLd8Pt26
+	dpN3ccd1UBtp7ne6JN0lG+1zOa0jY8A=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-594-mnuFJhWMNgacB_b7a-sh5Q-1; Fri, 12 Apr 2024 09:30:48 -0400
+X-MC-Unique: mnuFJhWMNgacB_b7a-sh5Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A42FF104D503;
+	Fri, 12 Apr 2024 13:30:48 +0000 (UTC)
+Received: from server.redhat.com (unknown [10.72.112.22])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 3A74F40C6DAE;
+	Fri, 12 Apr 2024 13:30:45 +0000 (UTC)
+From: Cindy Lu <lulu@redhat.com>
+To: lulu@redhat.com,
+	jasowang@redhat.com,
+	mst@redhat.com,
+	linux-kernel@vger.kernel.org,
+	virtualization@lists.linux-foundation.org
+Subject: [PATCH v5 0/5] vduse: Add support for reconnection
+Date: Fri, 12 Apr 2024 21:28:20 +0800
+Message-ID: <20240412133017.483407-1-lulu@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411161441.910170-1-david@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Ul0IUwYd-HCOVsPE5cAk8RWULY_gRTAH
-X-Proofpoint-GUID: JODNUjsZTdjuGQ9BHarCbC85GqjBwMpA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-12_09,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- priorityscore=1501 mlxscore=0 suspectscore=0 malwarescore=0 bulkscore=0
- clxscore=1015 adultscore=0 mlxlogscore=420 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404120095
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-> David Hildenbrand (2):
->   mm/userfaultfd: don't place zeropages when zeropages are disallowed
->   s390/mm: re-enable the shared zeropage for !PV and !skeys KVM guests
-> 
->  arch/s390/include/asm/gmap.h        |   2 +-
->  arch/s390/include/asm/mmu.h         |   5 +
->  arch/s390/include/asm/mmu_context.h |   1 +
->  arch/s390/include/asm/pgtable.h     |  16 ++-
->  arch/s390/kvm/kvm-s390.c            |   4 +-
->  arch/s390/mm/gmap.c                 | 163 +++++++++++++++++++++-------
->  mm/userfaultfd.c                    |  34 ++++++
->  7 files changed, 178 insertions(+), 47 deletions(-)
+Here is the reconnect support in vduse
 
-Applied.
-Thanks, David!
+Kernel will allocate pages for reconnection.
+Userspace needs to use mmap to map the memory to userspace and use these pages to
+save the reconnect information.
+
+test passd in vduse+dpdk-testpmd
+
+change in V2
+1. Address the comments from v1
+2. Add the document for reconnect process
+
+change in V3
+1. Move the vdpa_vq_state to the uAPI.  vduse will use this to synchronize the vq info between the kernel and userspace app.
+2. Add a new ioctl VDUSE_DEV_GET_CONFIG. userspace app use this to get config space
+3. Rewrite the commit message.
+4. Only save the address for the page address and remove the index.
+5. remove the ioctl VDUSE_GET_RECONNECT_INFO, userspace app will use uAPI VDUSE_RECONNCT_MMAP_SIZE to mmap
+6. Rewrite the document for the reconnect process to make it clearer.
+
+change in v4
+1. Change the number of map pages to VQ numbers. UserSpace APP can define and maintain the structure for saving reconnection information in userspace. The kernel will not maintain this information.
+2. Rewrite the document for the reconnect process to make it clearer.
+3. add the new ioctl for VDUSE_DEV_GET_CONFIG/VDUSE_DEV_GET_STATUS
+
+change in V5
+1. update the Documentation for vduse reconnection 
+2. merge the patch from Dan Carpenter <dan.carpenter@linaro.org> vduse: Fix off by one in vduse_dev_mmap()
+3. fix the wrong comment in the code 
+
+Signed-off-by: Cindy Lu <lulu@redhat.com>
+
+Cindy Lu (5):
+  vduse: Add new ioctl VDUSE_DEV_GET_CONFIG
+  vduse: Add new ioctl VDUSE_DEV_GET_STATUS
+  vduse: Add function to get/free the pages for reconnection
+  vduse: Add file operation for mmap
+  Documentation: Add reconnect process for VDUSE
+
+ Documentation/userspace-api/vduse.rst |  41 +++++++++
+ drivers/vdpa/vdpa_user/vduse_dev.c    | 125 ++++++++++++++++++++++++++
+ include/uapi/linux/vduse.h            |   5 ++
+ 3 files changed, 171 insertions(+)
+
+-- 
+2.43.0
+
 
