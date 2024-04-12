@@ -1,318 +1,115 @@
-Return-Path: <linux-kernel+bounces-143275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1F9F8A3687
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:52:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F21A8A36B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:00:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11EBA1C236BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:52:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38B051C23223
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:00:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B985B1509B9;
-	Fri, 12 Apr 2024 19:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E37D15099F;
+	Fri, 12 Apr 2024 20:00:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HTAVhnsp"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@isd.uni-stuttgart.de header.b="bglzD7am"
+Received: from mxex2.tik.uni-stuttgart.de (mxex2.tik.uni-stuttgart.de [129.69.192.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF36150981
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 19:51:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 903971509AB;
+	Fri, 12 Apr 2024 19:59:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.69.192.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712951511; cv=none; b=vFhGa2A4nyv0LCG90Lk3qHLjpSyawc8mzieluGjXYM+dW6H90K5U5CDCWDmMo1A1JoUNatTD6LhbJ1W7MVjP1epa3wjY+Qjb6rp0Quq9hJNV3Mb39ZvzROpESWt8LR2hAJoSfdsrcX3s3dCnPpU05jAw1c9pu/RtbtLRkntfgls=
+	t=1712951999; cv=none; b=LL6lAJbArAbIMhHwNb5gxZ1gnzBKwOAdVZbXmm//X/Yn54cpYeolPOrwESPVb9arrWdlf2+1yHZSFZxkiFQYafRUMFZL9zprKYodKd5pjvQeQcmWNaDs48JHpQSU2R6sHi35Fe2EmWWQmrxRVul+kgn/E0RpY1jxiIeEQTQtUWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712951511; c=relaxed/simple;
-	bh=q5wK8qWyu1ly6paxXG5Rsydht5XYRaIbkzHHnH6XDno=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aok6twmFirQjRCABWp2K71hxPZuygE//8eJh1LahbAg+fMlNwF6Jo3yDWC2anVMcw521o51Dk/8lt+CkuXR0L+ygST0ZlwIcll/7kqIo8oyTQRkZbZBPXyqa4zagMLi/xyCnmwfrFKQVYMlXaDvzxXOj3TxMFcRqBNBa0Y9Xf4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HTAVhnsp; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-516d6898bebso1491153e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 12:51:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712951508; x=1713556308; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jAsbWIWxDyCbTeCy6d/WiDDQ6YO4elX4E4lumQbhzs4=;
-        b=HTAVhnspWzekDgpXNC3AAyPhJBYMzbvseLYzPJ7mqHtZkgo2s6rmODHjuzSwXk90Z+
-         cUqy/Sr/CAI5zuXmO5+WfWTFpohfh3Q2VPu1vVT5CiE65klE8kiI+l6l2/oG/0E1Zt1X
-         Ayu+ozVZzJc0DKOs3gyf70epTJBS4QdNczdt1tDsI9lSkvyO7ZexPpiHMkzwaoGJGeOQ
-         UrU4Y56eYkVxvE9BrXwvDmaZ1UtIcg8Q4RILAE/JCf2LE80/k//bPB8giFbdmOJmYO9Y
-         y7cZpq5e2x98lG/oCVvycbcAspdjEIOa475T/WGa0xH86kIm/f6oUEDRhqHwUq7r1XID
-         T5og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712951508; x=1713556308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jAsbWIWxDyCbTeCy6d/WiDDQ6YO4elX4E4lumQbhzs4=;
-        b=sLQkyM8AtXnwgHM0vzyD+5XDaMx5HrG3jiU3Mq9DfpJZ+BJwZxNwX26m/3WUFR8P1m
-         1QY+ayyZBLdN6uw7lYRUU6gKIeHargl5Sye+CiN4AGYiy3h2QnRXBf+igIJ6j4RpcxFs
-         ucl9reruqE4zlE9qajphlxkW9jrFRjhoskmtom+YjuVw1dNxbccYoCK/pbCbLnL69ccz
-         5YVqqoD/OM5elbjKM3ZehKH8NKxP0O0iO0kmu2FCnEvmkHiMbm8vqHtCNmYig//ouNpV
-         hPpeXLqsci1SOI/ToeaLvJzZQcKz9yaLnFLL5rXr551iHCPJCscGWZWH8TRGZOmSk7EG
-         Fx3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVnMsusBtkLdOHCnYWjInuJ3+zWQ3ogQireLdZ9nmxRkAwWSBGArF4Y/4fmbWCEeALazrmpU7J/z18B+jMFGs+8HXU1RgJAebPqM/1v
-X-Gm-Message-State: AOJu0YzjDr3/IRwY3EpvgmRQSW0x3y11x4woBocds4MceldKrlj2MD8o
-	PQSWT76AUYuuX2XYe8Wz8pndT+VMgu9TfSJVJiMC7007uCRtbERZtxUX9xR7Gbz0pczxC7epLGT
-	tH1otgmeH3ulsV74NJDlQAqlll25Kxyrk4zgt
-X-Google-Smtp-Source: AGHT+IFHmPijgWrApfizlTcY29Rrbg05HsjLi2+sFWc0+n5uAgIKka/EAL9+99DU+fWjHK2WtZAa8S/s1vI29shmIyY=
-X-Received: by 2002:ac2:41c5:0:b0:516:cdfa:17f6 with SMTP id
- d5-20020ac241c5000000b00516cdfa17f6mr2105982lfi.67.1712951507911; Fri, 12 Apr
- 2024 12:51:47 -0700 (PDT)
+	s=arc-20240116; t=1712951999; c=relaxed/simple;
+	bh=ObWGWVtdg8U0NPbe/EAvSL2dL0N1qhqx+T4lt2FGPoo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=r7vMm2aPaXa9dn/y7ys9KrRYo6FDKKsG9UCAUo4fYpvU4qyRUUxrqV7fi66fyRPS+VgkOW4Tp0B2vJ4gjNAC6POO6sPbIsjQZ/531u1Y1PjF0kmVoTMeNgiG/cVGoNylIkvbiK+bn0jYVTM8bmGqztnuM+5Fu8/it/Dh7QtDdSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=isd.uni-stuttgart.de; spf=none smtp.mailfrom=isd.uni-stuttgart.de; dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@isd.uni-stuttgart.de header.b=bglzD7am; arc=none smtp.client-ip=129.69.192.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=isd.uni-stuttgart.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=isd.uni-stuttgart.de
+Received: from localhost (localhost [127.0.0.1])
+	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTP id CFCA660B43;
+	Fri, 12 Apr 2024 21:52:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=uni-stuttgart.de;
+	 h=content-transfer-encoding:content-type:content-type
+	:in-reply-to:organization:from:from:content-language:references
+	:subject:subject:user-agent:mime-version:date:date:message-id;
+	 s=dkim; i=@isd.uni-stuttgart.de; t=1712951522; x=1714690323;
+	 bh=ObWGWVtdg8U0NPbe/EAvSL2dL0N1qhqx+T4lt2FGPoo=; b=bglzD7amfmfJ
+	kMS2GaVF0TWKN1LuhlbIIguj1W3FyyWEpxF1gHVyoj1aT5mMCGafjtUMk3eu/KMW
+	VaW8shkw+IkpLmY1Z/hzGPDMX+lL/T1+rWcwp4PDz46j/5hqLiP4McOOOJP2uV03
+	N4cbnbv008i0dIfgyN3pDMBLUpAEnBJFAN1YN4jjiFp4FUMzfx4wiXjG0fO2ma91
+	ZDQUDIiTq8nJfUNi0sXFamJqPQ8yiJ/Goj955aYNbcbd4ua2RJIRftnR9wsdrS5G
+	6XT97+7h1jzVYmAmASVwwy+l05rXBT6U+OtOsxEcxW9pLd5gByYsTNYI0/5VoS5a
+	T8Rd5sufrw==
+X-Virus-Scanned: USTUTT mailrelay AV services at mxex2.tik.uni-stuttgart.de
+Received: from mxex2.tik.uni-stuttgart.de ([127.0.0.1])
+ by localhost (mxex2.tik.uni-stuttgart.de [127.0.0.1]) (amavis, port 10031)
+ with ESMTP id hMBUxXXMAYCz; Fri, 12 Apr 2024 21:52:02 +0200 (CEST)
+Received: from authenticated client
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTPSA
+Message-ID: <4a1e0cb6-c319-4eb1-9bd1-5ff13eabfe1b@isd.uni-stuttgart.de>
+Date: Fri, 12 Apr 2024 21:52:01 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <7cd05fac-9d93-45ca-aa15-afd1a34329c6@kernel.org>
- <20240319154437.GA144716@cmpxchg.org> <56556042-5269-4c7e-99ed-1a1ab21ac27f@kernel.org>
- <CAJD7tkYbO7MdKUBsaOiSp6-qnDesdmVsTCiZApN_ncS3YkDqGQ@mail.gmail.com>
- <bf94f850-fab4-4171-8dfe-b19ada22f3be@kernel.org> <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
- <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org> <96728c6d-3863-48c7-986b-b0b37689849e@redhat.com>
- <CAJD7tkZrVjhe5PPUZQNoAZ5oOO4a+MZe283MVTtQHghGSxAUnA@mail.gmail.com>
- <4fd9106c-40a6-415a-9409-c346d7ab91ce@redhat.com> <f72ab971-989e-4a1c-9246-9b8e57201b60@kernel.org>
- <CAJD7tka=1AnBNFn=frp7AwfjGsZMGcDjw=xiWeqNygC5rPf6uQ@mail.gmail.com> <75d837cc-4d33-44f6-bb0c-7558f0488d4e@kernel.org>
-In-Reply-To: <75d837cc-4d33-44f6-bb0c-7558f0488d4e@kernel.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 12 Apr 2024 12:51:09 -0700
-Message-ID: <CAJD7tka_ESbcK6cspyEfVqv1yTW0uhWSvvoO4bqMJExn-j-SEg@mail.gmail.com>
-Subject: Re: Advice on cgroup rstat lock
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Waiman Long <longman@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, 
-	Jesper Dangaard Brouer <jesper@cloudflare.com>, "David S. Miller" <davem@davemloft.net>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Shakeel Butt <shakeelb@google.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
-	kernel-team <kernel-team@cloudflare.com>, cgroups@vger.kernel.org, 
-	Linux-MM <linux-mm@kvack.org>, Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Ivan Babrou <ivan@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] wifi: ath11k: support DT ieee80211-freq-limit
+ property to limit channels
+To: Robert Marko <robimarko@gmail.com>, kvalo@kernel.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, jjohnson@kernel.org, linux-wireless@vger.kernel.org,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ ath11k@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240412162510.29483-1-robimarko@gmail.com>
+ <20240412162510.29483-2-robimarko@gmail.com>
+Content-Language: de-DE, en-US
+From: Christian Lamparter <christian.lamparter@isd.uni-stuttgart.de>
+Organization: Universitaet Stuttgart - ISD
+In-Reply-To: <20240412162510.29483-2-robimarko@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 12, 2024 at 12:26=E2=80=AFPM Jesper Dangaard Brouer <hawk@kerne=
-l.org> wrote:
+On 4/12/24 6:24 PM, Robert Marko wrote:
+> The common DT property can be used to limit the available channels
+> but ath11k has to manually call wiphy_read_of_freq_limits().
 >
->
->
-> On 11/04/2024 19.22, Yosry Ahmed wrote:
-> > [..]
-> >>>>>>
-> >>>>>> How far can we go... could cgroup_rstat_lock be converted to a mut=
-ex?
-> >>   >>>
-> >>>>> The cgroup_rstat_lock was originally a mutex. It was converted to a
-> >>>>> spinlock in commit 0fa294fb1985 ("group: Replace cgroup_rstat_mutex=
- with
-> >>>>> a spinlock"). Irq was disabled to enable calling from atomic contex=
-t.
-> >>>>> Since commit 0a2dc6ac3329 ("cgroup: remove
-> >>>>> cgroup_rstat_flush_atomic()"), the rstat API hadn't been called fro=
-m
-> >>>>> atomic context anymore. Theoretically, we could change it back to a
-> >>>>> mutex or not disabling interrupt. That will require that the API ca=
-nnot
-> >>>>> be called from atomic context going forward.
-> >>   >>>
-> >>>> I think we should avoid flushing from atomic contexts going forward
-> >>>> anyway tbh. It's just too much work to do with IRQs disabled, and we
-> >>>> observed hard lockups before in worst case scenarios.
-> >>>>
-> >>
-> >> Appreciate the historic commits as documentation for how the code
-> >> evolved.  Sounds like we agree that the IRQ-disable can be lifted,
-> >> at-least between the three of us.
-> >
-> > It can be lifted, but whether it should be or not is a different
-> > story. I tried keeping it as a spinlock without disabling IRQs before
-> > and Tejun pointed out possible problems, see below.
-> >
->
-> IMHO it *MUST* be lifted, as disabling IRQs here is hurting other parts
-> of the system and actual production systems.
->
-> The "offending" IRQ-spin_lock commit (0fa294fb1985) is from 2018, and
-> GitHub noticed in 2019 (via blog[1]) and at Red Hat I backported[2]
-> patches (which I now understand) only mitigate the issues.  Our prod
-> systems are on 6.1 and 6.6 where we still clearly see the issue
-> occurring.  Also Daniel's "rtla timerlat" tool for catching systems
-> latency issues have "cgroup_rstat_flush_locked" as the poster child [3][4=
-].
+> Signed-off-by: Robert Marko <robimarko@gmail.com>
 
-We have been bitten by the IRQ-spinlock before, so I cannot disagree,
-although for us removing atomic flushes and allowing the lock to be
-dropped between CPU flushes seems to be good enough (for now).
+I've seen this before.
 
+https://patchwork.kernel.org/project/linux-wireless/patch/ed266944c721de8dbf0fe35f387a3a71b2c84037.1686486468.git.chunkeey@gmail.com/
+
+(dt-binding too. it has/had an ack)
+https://patchwork.kernel.org/project/linux-wireless/patch/fc606d2550d047a53b4289235dd3c0fe23d5daac.1686486468.git.chunkeey@gmail.com/
+
+sooo.... this is awkward.
+
+> ---
+>   drivers/net/wireless/ath/ath11k/mac.c | 1 +
+>   1 file changed, 1 insertion(+)
 >
->
->   [1] https://github.blog/2019-11-21-debugging-network-stalls-on-kubernet=
-es/
->   [2] https://bugzilla.redhat.com/show_bug.cgi?id=3D1795049
->   [3] https://bristot.me/linux-scheduling-latency-debug-and-analysis/
->   [4] Documentation/tools/rtla/rtla-timerlat-top.rst
->
-> >>
-> >>>> I think one problem that was discussed before is that flushing is
-> >>>> exercised from multiple contexts and could have very high concurrenc=
-y
-> >>>> (e.g. from reclaim when the system is under memory pressure). With a
-> >>>> mutex, the flusher could sleep with the mutex held and block other
-> >>>> threads for a while.
-> >>>>
-> >>
-> >> Fair point, so in first iteration we keep the spin_lock but don't do t=
-he
-> >> IRQ disable.
-> >
-> > I tried doing that before, and Tejun had some objections:
-> > https://lore.kernel.org/lkml/ZBz%2FV5a7%2F6PZeM7S@slm.duckdns.org/
-> >
-> > My read of that thread is that Tejun would prefer we look into
-> > converting cgroup_rsat_lock into a mutex again, or more aggressively
-> > drop the lock on CPU boundaries. Perhaps we can unconditionally drop
-> > the lock on each CPU boundary, but I am worried that contending the
-> > lock too often may be an issue, which is why I suggested dropping the
-> > lock if there are pending IRQs instead -- but I am not sure how to do
-> > that :)
-> >
->
-> Like Tejun, I share the concern that keeping this a spinlock will
-> can increase the chance of several CPUs contend on this lock (which is
-> also a production issue we see).  This is why I suggested to "exit" if
-> (1) we see the lock have been taken by somebody else, or if (2) stats
-> were flushed recently.
+> diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
+> index c32be587000d..59bde128d351 100644
+> --- a/drivers/net/wireless/ath/ath11k/mac.c
+> +++ b/drivers/net/wireless/ath/ath11k/mac.c
+> @@ -10124,6 +10124,7 @@ static int __ath11k_mac_register(struct ath11k *ar)
+>   	if (ret)
+>   		goto err;
+>   
+> +	wiphy_read_of_freq_limits(ar->hw->wiphy);
+>   	ath11k_mac_setup_ht_vht_cap(ar, cap, &ht_cap);
+>   	ath11k_mac_setup_he_cap(ar, cap);
+>   
 
-When you say "exit", do you mean abort the whole thing, or just don't
-spin for the lock but wait for the ongoing flush?
-
->
-> For (2), memcg have a mem_cgroup_flush_stats_ratelimited() system
-> combined with memcg_vmstats_needs_flush(), which limits the pressure on
-> the global lock (cgroup_rstat_lock).
-> *BUT* other users of cgroup_rstat_flush() like when reading io.stat
-> (blk-cgroup.c) and cpu.stat, don't have such a system to limit pressure
-> on global lock. Further more, userspace can easily trigger this via
-> reading those stat files.  And normal userspace stats tools (like
-> cadvisor, nomad, systemd) spawn threads reading io.stat, cpu.stat and
-> memory.stat, likely without realizing that kernel side they share same
-> global lock...
->
-> I'm working on a code solution/proposal for "ratelimiting" global lock
-> access when reading io.stat and cpu.stat.
-
-I personally don't like mem_cgroup_flush_stats_ratelimited() very
-much, because it is time-based (unlike memcg_vmstats_needs_flush()),
-and a lot of changes can happen in a very short amount of time.
-However, it seems like for some workloads it's a necessary evil :/
-
-I briefly looked into a global scheme similar to
-memcg_vmstats_needs_flush() in core cgroups code, but I gave up
-quickly. Different subsystems have different incomparable stats, so we
-cannot have a simple magnitude of pending updates on a cgroup-level
-that represents all subsystems fairly.
-
-I tried to have per-subsystem callbacks to update the pending stats
-and check if flushing is required -- but it got complicated quickly
-and performance was bad.
-
-At some point, having different rstat trees for different subsystems
-was brought up. I never looked into actually implementing it, but I
-suppose if we do that we have a generic scheme similar to
-memcg_vmstats_needs_flush() that can be customized by each subsystem
-in a clean performant way? I am not sure.
-
-[..]
-> >>
-> >>>> I vaguely recall experimenting locally with changing that lock into =
-a
-> >>>> mutex and not liking the results, but I can't remember much more. I
-> >>>> could be misremembering though.
-> >>>>
-> >>>> Currently, the lock is dropped in cgroup_rstat_flush_locked() betwee=
-n
-> >>>> CPU iterations if rescheduling is needed or the lock is being
-> >>>> contended (i.e. spin_needbreak() returns true). I had always wondere=
-d
-> >>>> if it's possible to introduce a similar primitive for IRQs? We could
-> >>>> also drop the lock (and re-enable IRQs) if IRQs are pending then.
-> >>>
-> >>> I am not sure if there is a way to check if a hardirq is pending, but=
- we
-> >>> do have a local_softirq_pending() helper.
-> >>
-> >> The local_softirq_pending() might work well for me, as this is our pro=
-d
-> >> problem, that CPU local pending softirq's are getting starved.
-> >
-> > If my understanding is correct, softirqs are usually scheduled by
-> > IRQs, which means that local_softirq_pending() may return false if
-> > there are pending IRQs (that will schedule softirqs). Is this correct?
-> >
->
-> Yes, networking hard IRQ will raise softirq, but software often also
-> raise softirq.
-> I see where you are going with this... the cgroup_rstat_flush_locked()
-> loop "play nice" check happens with IRQ lock held, so you speculate that
-> IRQ handler will not be able to raise softirq, thus
-> local_softirq_pending() will not work inside IRQ lock.
-
-Exactly.
-
-I wonder if it would be okay to just unconditionally drop the lock at
-each CPU boundary. Would be interesting to experiment with this. One
-disadvantage of the mutex in this case (imo) is that outside of the
-percpu spinlock critical section, we don't really need to be holding
-the global lock/mutex. So sleeping while holding it is not needed and
-only introduces problems. Dropping the spinlock at each boundary seems
-like a way to circumvent that.
-
-If the problems you are observing are mainly on CPUs that are holding
-the lock and flushing, I suspect this should greatly. If the problems
-are mainly on CPUs spinning for the lock, I suspect it will still help
-redistribute the lock (and IRQs disablement) more often, but not as
-much.
-
->
->
-> >>
-> >> In production another problematic (but rarely occurring issue) is when
-> >> several CPUs contend on this lock.  Yosry's recent work/patches have
-> >> already reduced the chances of this happening (thanks), BUT it still c=
-an
-> >> and does happen.
-> >> A simple solution to this, would be to do a spin_trylock() in
-> >> cgroup_rstat_flush(), and exit if we cannot get the lock, because we
-> >> know someone else will do the work.
-> >
-> > I am not sure I understand what you mean specifically with the checks
-> > below, but I generally don't like this (as you predicted :) ).
-> >
-> > On the memcg side, we used to have similar logic when we used to
-> > always flush the entire tree. This leaded to flushing being
-> > indeterministic. You would occasionally get stale stats because of the
-> > contention, which resulted in some inconsistencies (e.g. performing
-> > proactive reclaim successfully then reading the stats that do not
-> > reflect that).
-> >
-> > Now that we dropped the logic to always flush the entire tree, it is
-> > even more difficult because concurrent flushes could be in completely
-> > irrelevant subtrees.
-> >
-> > If we were to introduce some smart logic to figure out that the
-> > subtree we are trying to flush is already being flushed, I think we
-> > would need to wait for that ongoing flush to complete instead of just
-> > returning (e.g. using completions). But I think such implementations
-> > to find overlapping flushes and wait for them may be too compicated.
-> >
->
-> We will see if you hate my current code approach ;-)
-
-Just to be clear, if the spinlock was to be converted to a mutex, or
-to be dropped at each CPU boundary, do you still think such
-ratelimiting is still needed to mitigate lock contention -- even if
-the IRQs latency problem is fixed?
 
