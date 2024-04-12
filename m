@@ -1,102 +1,151 @@
-Return-Path: <linux-kernel+bounces-141756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 462318A22FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:41:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 581688A230E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:50:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70B0F1C227EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:41:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4A59B22569
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 00:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD882107;
-	Fri, 12 Apr 2024 00:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E454A21;
+	Fri, 12 Apr 2024 00:49:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bNdyU1Ch"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="AuPB5wDD"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70DB205E14;
-	Fri, 12 Apr 2024 00:41:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD7FC4A1E;
+	Fri, 12 Apr 2024 00:49:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712882473; cv=none; b=kFymivb33fQDDepspufrqgqu288N+xJh9b/tmUpZBbAEpiqumIQSFvtusZAx8f6ggLC6WXwRzyPw03YxX0uqTLcklCXJnHSbdsbmySFa7wP25fX7Wo64VswtKFcYwresiQ9HNJaGGykoD9s+Vh11Q8LxwinvNsrKjyoMpTM0XgQ=
+	t=1712882995; cv=none; b=PAg+8O3j0Fb4xDVJRS24AYF87goQlrMbFPPhPFmk8876d/fiftkvolWfJQP2ZpOj/nuWzyDS6LdFtpT3h6qwiBiPYgInymezC8PWDpyseRqWQM6Fk0h8++wJlEg22esbg6/ankyOITnCmhBnw9nWqTqI2kVoS2/852nwQLqv+Vo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712882473; c=relaxed/simple;
-	bh=tkAwC8xYx2SEMYsDRYYQ97QABsmy3xXHEjMopBbT+c8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=W6Oc1qylgm7O8LMUKrCt4ehEaIJy7kx29WKZSVJZfOkhT6ONlNGUe0L2x8YMDQPTZRAs/F2HGaRDNpi8UysaRu1Lfrh64VZbsYxDdP35gVe5wT7SqT8M3k6u7uPBa8EQ/KH/uzyy59ga5IKeG/PuMuVRY6W79wK8ULvPgq3qSao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bNdyU1Ch; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D1D8C072AA;
-	Fri, 12 Apr 2024 00:41:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712882473;
-	bh=tkAwC8xYx2SEMYsDRYYQ97QABsmy3xXHEjMopBbT+c8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=bNdyU1ChaQuXySi1UCUMOwqufaYdRlPh3Y+g2ASclM16FitpF0x3TWGfDh1b4j6Fy
-	 gHaUvNHwpzh7tpoh5MlJIvdxgQ7QB9bdGEqtc2e4LlRSLbBsFxcu32AKqxs8QQ4nYJ
-	 G0zWoM7HT3nh/8KFZbrkFzrefPRMKAGJznuW1aCAgpRYIk5gqFzdU6+oC7veRazQh4
-	 sfUlK6sugnZjU8YhIgRPzJ9bzGlzP4h8B6GnwwWyDjk/y4kyYjSwNOa5urJ71yHKae
-	 B4mHUlDFoh0s5DiLY/Ab29znpyGzR3XxqRZFzFGrjlFiK3P/JgyVpGTkibqXxqD6BU
-	 SCLdwdeaZhlsQ==
-From: Mark Brown <broonie@kernel.org>
-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, 
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-In-Reply-To: <20240411142648.650921-1-sbinding@opensource.cirrus.com>
-References: <20240411142648.650921-1-sbinding@opensource.cirrus.com>
-Subject: Re: [PATCH v1] ASoC: cs35l41: Update DSP1RX5/6 Sources for DSP
- config
-Message-Id: <171288247200.110635.15927713546125669144.b4-ty@kernel.org>
-Date: Fri, 12 Apr 2024 01:41:12 +0100
+	s=arc-20240116; t=1712882995; c=relaxed/simple;
+	bh=qDYgGpcVoXWK1Oz7IhTj8AZ45cXWNF2cfJCay6+5xgo=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sXyggdndqe+SOq75RXhuXdSAJ0Nx8KZo40piHX8zXNTC1nOJI0BY4F34Hf5S/YUlboe498LdBIGe9VYx28gSb8/iG1pzruotxGCzd7vI0uwwveNEDEMCLtRPPo+ojl8XmamGE/EOmbin6HeDkKmzYCOWMHe9VEwb0LaU0gmjemw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=AuPB5wDD; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43C0M5eV005552;
+	Fri, 12 Apr 2024 00:49:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=5oLK5tzoOUKB3yOhIAUxG
+	DJCyOQUxXKysYGRltIOxZU=; b=AuPB5wDDKJ8FM6UBmHc6M36gSIa8YlAY6XIKZ
+	GPFksaJi2OmbhPK4mhshmJLyX0pTUSZVe8v60UQ3cLTCXN1hIG3b7z65MMQolkg7
+	nJtZeRwtKj68XVQF5+pYdIcwT2DpMaYa0oCHH344Ty2izsNwNfW2ylsnXkkkANkF
+	QM0jCly6HRshUeEwtbuNxPtXj9NbQDZzOUBgtfRzSvL1eC/IRZ/RxBSg/vJCtuHq
+	dVcMQ6sa3o6PwXE7G2ZrcOYytr+u2lzuGUjuf1f0b4VmEggCHLmL8KgsDmDhqD7m
+	S9FM1PRGbJq4vZg0XZLbr6P+6Mprz5ln8AYrN5witG4yETw7Q==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xedugt0vm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 00:49:43 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43C0nfJU024679
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 00:49:41 GMT
+Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.9; Thu, 11 Apr 2024 17:49:41 -0700
+Date: Thu, 11 Apr 2024 17:49:41 -0700
+From: Elliot Berman <quic_eberman@quicinc.com>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>, Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten
+	<marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, "Daniel
+ Vetter" <daniel@ffwll.ch>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzk+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Subject: Re: [PATCH 1/6] soc: qcom: Move some socinfo defines to the header,
+ expand them
+Message-ID: <20240411174914343-0700.eberman@hu-eberman-lv.qualcomm.com>
+References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
+ <20240405-topic-smem_speedbin-v1-1-ce2b864251b1@linaro.org>
+ <20240410132510649-0700.eberman@hu-eberman-lv.qualcomm.com>
+ <2c2bca6c-b429-4cef-b63a-ee3bd6c9eecb@linaro.org>
+ <20240411130802689-0700.eberman@hu-eberman-lv.qualcomm.com>
+ <bbec514f-9672-4e5a-bd83-20ab59b3dcd9@linaro.org>
+ <20240411162849104-0700.eberman@hu-eberman-lv.qualcomm.com>
+ <7634a8ba-e783-46ce-be91-779cd603bd3b@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14-dev
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <7634a8ba-e783-46ce-be91-779cd603bd3b@linaro.org>
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: O7C_Q6EzRdAyrBB5f99ahNauyd-nqlI9
+X-Proofpoint-ORIG-GUID: O7C_Q6EzRdAyrBB5f99ahNauyd-nqlI9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-11_13,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ priorityscore=1501 adultscore=0 suspectscore=0 bulkscore=0
+ lowpriorityscore=0 mlxlogscore=999 impostorscore=0 clxscore=1015
+ malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2404010003 definitions=main-2404120004
 
-On Thu, 11 Apr 2024 15:26:48 +0100, Stefan Binding wrote:
-> Currently, all ASoC systems are set to use VPMON for DSP1RX5_SRC,
-> however, this is required only for internal boost systems.
-> External boost systems require VBSTMON instead of VPMON to be the
-> input to DSP1RX5_SRC.
-> Shared Boost Active acts like Internal boost (requires VPMON).
-> Shared Boost Passive acts like External boost (requires VBSTMON)
-> All systems require DSP1RX6_SRC to be set to VBSTMON.
+On Fri, Apr 12, 2024 at 02:10:30AM +0200, Konrad Dybcio wrote:
 > 
-> [...]
+> 
+> On 4/12/24 01:49, Elliot Berman wrote:
+> > On Thu, Apr 11, 2024 at 10:24:08PM +0200, Konrad Dybcio wrote:
+> > > 
+> > > 
+> > > On 4/11/24 22:09, Elliot Berman wrote:
+> > > > On Thu, Apr 11, 2024 at 10:05:30PM +0200, Konrad Dybcio wrote:
+> > > > > 
+> > > > > 
+> > > > > On 4/11/24 20:55, Elliot Berman wrote:
+> > > > > > On Fri, Apr 05, 2024 at 10:41:29AM +0200, Konrad Dybcio wrote:
+> > > > > > > In preparation for parsing the chip "feature code" (FC) and "product
+> > > > > > > code" (PC) (essentially the parameters that let us conclusively
+> > > > > > > characterize the sillicon we're running on, including various speed
+> > > > > > > bins), move the socinfo version defines to the public header and
+> > > > > > > include some more FC/PC defines.
+> > > > > > > 
+> > > > > > > Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> > > > > > > ---
+> > > 
+> > > [...]
+> > > 
+> > > > 
+> > > > 0xf is the last one.
+> > > 
+> > > One more question, are the "internal/external feature codes" referring to
+> > > internality/externality of the chips (i.e. "are they QC-lab-only engineering
+> > > samples), or what else does that represent?
+> > 
+> > Yes, QC-lab-only engineering samples is the right interpretation of
+> > these feature codes.
+> 
+> Do you think it would be beneficial to keep the logic for these ESes in
+> the upstream GPU driver? Otherwise, I can yank out half of the added lines.
+> 
 
-Applied to
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-Thanks!
-
-[1/1] ASoC: cs35l41: Update DSP1RX5/6 Sources for DSP config
-      commit: eefb831d2e4dd58d58002a2ef75ff989e073230d
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+Should be fine to yank, IMO.
 
 
