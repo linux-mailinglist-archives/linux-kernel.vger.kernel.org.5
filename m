@@ -1,213 +1,234 @@
-Return-Path: <linux-kernel+bounces-142847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 284CF8A30C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:36:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 362A28A30CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:37:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ACBA1C20EFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:36:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F952B21AA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD27F13E403;
-	Fri, 12 Apr 2024 14:35:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OqdQgAyo"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2083.outbound.protection.outlook.com [40.107.93.83])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E70B1420BE;
+	Fri, 12 Apr 2024 14:37:31 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CD71205E22
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:35:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.83
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712932550; cv=fail; b=sRuIjFkYWuz6wGHYXN/JprYQNgJ7JDXZlCCY6ghwap2kC3F1CrWixpBedlo3VbBfR8SmGOYhLJXGQUlZYVFvJEF5pxDoWaNhyKyQlhEqbGQ6y7KEMcuBtB074XP4j0L5IW5hgsjLQ7Aolc6a35iSvZ18jLUP3fB9Q9q5mSmAmno=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712932550; c=relaxed/simple;
-	bh=BWUXdpmAR7VM3iY149HGdFbhOjptyzKToCTXqW0hrlo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=IYjK1KPgig7YbdQgi7rkjMbxEtF+PH98ED1H+Fzy6Q3QET7CjWOvZv9e2UJIgMwakgVUt0f3XiFkTHmoLQRluQk5X+uBPyzZ3KZNrPS7Y/mzrnkyaJU8xJhQtoK+ORa7epPkcb6Yd6qv7hk7Y2IBkMN/x5qZ5iHPvTcTRj/nZO0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OqdQgAyo; arc=fail smtp.client-ip=40.107.93.83
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l65SgIZ1EVuha5U7m6lTLabblYeFRiKoBNG594h5EItpq4fwn7tyDcj7R7tgB5/EdNnXir1zPRGUIl+ueKPaPiZgoMc2mABYqCz28hUfwo3UmYyp8y/3VGMNHRWAF0Z/KhVqgNH1pgSD1E3k1I6ZQw3ahGsJBzuptpif6jdPEeaulwfJ04/9Dr7YnFbUBQgn5bHyZ8e2VmtSKZd1pzPzvwUzw/Dno9PkIPTelgeoSKexKScaKgMaR79vOTtia7rVvs1TbTTyItkoAB/BVX6Zxr/NJYW8EoJUCwGteE5uYQ0+Bp/wmWRc30p0+95xglzlGiwe3aU0gAoBJa4yK5zWsQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=j+glEmo/4Gst+5eGa2JU9E5KN/+TgZtAjq0ujB8gBaQ=;
- b=czi6aVs0J2k+pesxJXKnEVAiX62fe/vuIWUaeQaM03ULSiHnHVu7MvKXEg40Xn+QdT1BJvmlo6O0Xu8LGoKAa1cA/TXyHVqE/wOtSt5vEn2YoSo0Hj3WScOGMjj15uwjTaGlqtD4Z1nYkzKZDE1vMVE+Qo88NcS3qx2bfQbdZ/MD40TDV3cbUfrDfSRmkA7WjQLbEFKo3+X3EOcs3zucWorSsxxJuisocPQrKxwvRlr82OxpWAUiefF0yd/O+AA2oH4UXnk7HNDNYmeI2A5c8pO2522WVsX4AU/h4S+y2YY3GZIf5QBPA3TYkGU8w6gdPQNf2TJewkhYRhpgw0s35g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=j+glEmo/4Gst+5eGa2JU9E5KN/+TgZtAjq0ujB8gBaQ=;
- b=OqdQgAyoxDsvWju41jguFFi4cvednkCpxrBPYIvByV1vXzrgK2IsaCf8RObdTntIvu8s+ca05KaokK7V1+n8xLpcX6d54AO3CK4r9OnHYG7wRlMdaCuVa1lYju5SBrONIm3dYUV2e8OtybhVbwh19wEBCRZz29B7EXeFOB+a5SXicKZPOuLLkr60Q6fmkeyBzUQJKG75S+ChFtPuKPbx+m8SQGTcVgJbR2pNtYw9AS6z1keowCONEUxiFa3yvSjpEgfAnGw9sokMu4WqUs5QM1mrjYLn2vkhdZgCjTPAasODJIDafFW6DCNy+pOV4tfU3m9DEF8VKBFznzwrGufeWQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- CY8PR12MB8242.namprd12.prod.outlook.com (2603:10b6:930:77::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.46; Fri, 12 Apr 2024 14:35:45 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::dc5c:2cf1:d5f5:9753]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::dc5c:2cf1:d5f5:9753%6]) with mapi id 15.20.7409.053; Fri, 12 Apr 2024
- 14:35:44 +0000
-From: Zi Yan <ziy@nvidia.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Yang Shi <shy828301@gmail.com>,
- Ryan Roberts <ryan.roberts@arm.com>, Barry Song <21cnbao@gmail.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/rmap: do not add fully unmapped large folio to
- deferred split list
-Date: Fri, 12 Apr 2024 10:35:42 -0400
-X-Mailer: MailMate (1.14r6028)
-Message-ID: <2C698A64-268C-4E43-9EDE-6238B656A391@nvidia.com>
-In-Reply-To: <ffbbade3-2de5-4bbe-a6e4-49d2ff7a2f0e@redhat.com>
-References: <20240411153232.169560-1-zi.yan@sent.com>
- <ffbbade3-2de5-4bbe-a6e4-49d2ff7a2f0e@redhat.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_125EA509-6E8A-494B-BF22-530A29437C63_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: BL1PR13CA0015.namprd13.prod.outlook.com
- (2603:10b6:208:256::20) To DS7PR12MB5744.namprd12.prod.outlook.com
- (2603:10b6:8:73::18)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398DD139D08;
+	Fri, 12 Apr 2024 14:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712932650; cv=none; b=IROwARMgcoLkx2jr/b6txEpyRaFPGNmeUxA/cSn8Gf12nZoMENUa586xKBL2iMZ+xjG1Y3xKcG0AZMmPJDCHzccu+0pSr1zSVJ6Ct4BR6mPHmfNrmRreGiTWhlaDMHgASJXrqp7JE8gUJlfkL1ZvC18/TWqVNGqH8vYXEI1lyTs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712932650; c=relaxed/simple;
+	bh=5jQ/z0hIABqGfFs/vlElMc3UutE1y31PUUouiZIidY4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=i6AzMRKE4IuSUKy+YfxvQrmgxoSuQ+PmhVoB//yXye5PdWjhSMxedyz05XfyPjs6Dv3dr+Y9vbQxKyeWGwNtkMyWaHCj8qfOutHAe4EiXRhkVfFhsu7JJSVSQjRy9nkFj9j/3eIriWVeTKGWGDbZPVLyA9Ztr4P7rfSwTwMjVDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VGJyC58Xwz6JB1y;
+	Fri, 12 Apr 2024 22:35:31 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 750BB1408FE;
+	Fri, 12 Apr 2024 22:37:17 +0800 (CST)
+Received: from SecurePC-101-06.china.huawei.com (10.122.247.231) by
+ lhrpeml500005.china.huawei.com (7.191.163.240) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 12 Apr 2024 15:37:16 +0100
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
+	<linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <x86@kernel.org>, Russell King
+	<linux@armlinux.org.uk>, "Rafael J . Wysocki" <rafael@kernel.org>, Miguel
+ Luis <miguel.luis@oracle.com>, James Morse <james.morse@arm.com>, Salil Mehta
+	<salil.mehta@huawei.com>, Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+CC: <linuxarm@huawei.com>, <justin.he@arm.com>, <jianyong.wu@arm.com>
+Subject: [PATCH v5 00/18] ACPI/arm64: add support for virtual cpu hotplug
+Date: Fri, 12 Apr 2024 15:37:01 +0100
+Message-ID: <20240412143719.11398-1-Jonathan.Cameron@huawei.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|CY8PR12MB8242:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5e32594e-1f91-4e8b-166a-08dc5afdd622
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	YvFaJ32yn+yGbXjTej5rgEs8GVBViAxbj5+/FlTJqmFyDqAuUoy4CI/elxvPquCSyyiixdWRnXRXN+O+y0vGlg5adxdwmHxK0f/K1hqiomdjV8zKJGdFuSUASvfisPAUC2osN4elei8zHc7WceUYD29ekcDOMRwJNNpGHR1a5CSftRMu0/GluyF+ORnyTzAIGFVrJzpwmpS4GAu5KFQt6B5BZFtBpDILLrG1BgTh14EZGwE0sIpLp/36OHZraeq3eMbdbXP41tp5tSYlWUIwBvdqP99/zbeOBf9Z+qQB4Pbr/VLIEK0DN7QEBNRUwfgzoLyWPcI0xj6KGcQM8I60tj9adXo/WpvL7RGJJihq4RbwqQfmR1Lg34MheZ5Brsrro0jjeAa2QCBzPPl4XC4mF7Ww+y7pSW4o5eAPaXyFF+qB/rucDyvK2z0f/IwSYGyKkw9VlEQcrruzvhITPvvLqJ6KGbUsSF68jys6KLuRL1pkFhaJUteor/Y2xaEVgjgqrEfcNRcil17sDo88B+To+XBk/7J9UM412ZGwxt1meZXsTIzUCE9ZLYcfHXgZEmwHN67n3GWtvKkTnWN7wAGEvES9iXTzUW1OO+H9RUbxzU82QCs/zd81ROpGaUetyvBpDdg+Bw+gy2XdrQaYHfX0cPJsBhsTmue++TrpdmajDP8=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?2s0UAFq1IJu1oLalWzrvmZJIArS9O2l/BUT+UwtkbkMYLfiIdJAgBzjD+Odo?=
- =?us-ascii?Q?i0xwGgpVDeG7Ny26QAd1nnTjcnW4wFm5Gu5IvtgK9rCRepRRpiIG39SklKS7?=
- =?us-ascii?Q?3vddowW81lK01oAB4YBlrWC2Om6PREs8lWoOcgF2292LxrZ5ZwN7IYkIPTg/?=
- =?us-ascii?Q?y7QlxpSAxv6KD+OiF6ZpcamK15x30isR5LpLb8XS1NAJYtefKXHtAJTvuG4a?=
- =?us-ascii?Q?tez8j+JlVb5oIguUIKeXjdmaZYgTADhPgXo1WzDNRPORCb71kOqdmRjtIk3z?=
- =?us-ascii?Q?RMKB6cB1o5JZCvfRZ326QobDYz2gjBudbZRgRN+OWihh+73mrFmeJRuSL+pq?=
- =?us-ascii?Q?LcOasII8mIWkQKn6q/SP8xXJow60sKpxmyNIS/+DzSKKylfsDUVoi8bhTZz9?=
- =?us-ascii?Q?pI40iGIEgumgstd1ZczUZJLsu5oKz2N1YXnxSgnu8pmPLB4zZDFgqZ2x63GG?=
- =?us-ascii?Q?zi+TPg/FvuOJ6+af7DhGJiyAqv/mtyjr//KGUGOEaKcUroQ7rHMM1LzLPIXk?=
- =?us-ascii?Q?yd+ISmhdt9IW+752ChsSgTFKHVvfGxrgt16o2pw3niwSm8v4o6UF7hxBAh8r?=
- =?us-ascii?Q?bHN2gN61UXEBQhrcTgEGX+TKwXDYdyCvyAaQkRBESwSFQq8aRusjCFkeRlWD?=
- =?us-ascii?Q?knSmCnuT8WKBBIJyOX1oSIRJATjddWH9xqiwANH+gPMtI1B0cQtiPRLHxcsv?=
- =?us-ascii?Q?Wwp5Uz7TTrZX1j1oow8o4gAi7PksLS8yGDoHvCqkMiEXpnZtUBnb+IY/7qK6?=
- =?us-ascii?Q?QXctRMP8djTmxMhF+anV9S1nTTSuX81ZW/k87FJo46kbTxno9uORfWsUgTZd?=
- =?us-ascii?Q?aYNa9WSLzoWqbno7iLL3rV6gUr0vwU0Ov5Gs54rHvwDzqpf98KTwcKYDCkYB?=
- =?us-ascii?Q?Mc5ksZrshHe4a6gNTkgdV3CZ/79wtS9+ZcDYkLdoliXQgIoqFpqWp8JdIMdn?=
- =?us-ascii?Q?eaXr1U8ZzihghUVE7ElhyK8nWBBtWX8Lj0dh+cyQVl0/+dht7G/asIeJODUc?=
- =?us-ascii?Q?LqNmYaYcSlJ9WN+ynXr3j7lWD44vqEHw2AIrO//JezXWa6Mm9aFRkj60UwRx?=
- =?us-ascii?Q?tRlRfR3ClYKoadwrRLofOugtiuNvuVVJhD56sm8lLoNyLm2TsKXkcVH6AK1p?=
- =?us-ascii?Q?Gi5QIUUrpVvvduzzhq3werQvhXTIMLAtAH8ORUQZB5H1RmU28VWSzGIVJrcL?=
- =?us-ascii?Q?3L9CsbQzBbLhC9Ya7gslHd3WMLSjH0lCyK3xu5GhK6PV9HPP890Om33TEkGb?=
- =?us-ascii?Q?eAK5jaz12/Me1RQpPjOI4x4l/k2KrHNuCqk0IPAZfBfPEJ7bCaCYqx3VAjbi?=
- =?us-ascii?Q?YzITkEsT00/98ZcZbmjUNJp0U9AmdtdUkoytaEQLHuM32AJO3BVB/v65dtxF?=
- =?us-ascii?Q?u1PtX7yMmEvSa7yv0iObdPl2vAJzpmmJcwGjfNlZMTz8u6mLgpfqTGFpLpei?=
- =?us-ascii?Q?Ida5kjUVymTq+NZs6CgxlS74akXeCfVvQvIxcm/r6hdZE471NpPocL+PUcak?=
- =?us-ascii?Q?749wf6ATdkNI0o7cGnGdv1hiIKw16sZJcdaJZJX68sWRR+TEfgvxp2AfdkT9?=
- =?us-ascii?Q?fFL1sM6aFJzrpm6Yfnw=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e32594e-1f91-4e8b-166a-08dc5afdd622
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 14:35:44.6995
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: l4gpTcLPAAzA9wdQcKwHV0JwQFDgpFprSKNX2LnjWHwrsgSezSX/zwiJmRvi0RaU
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB8242
-
---=_MailMate_125EA509-6E8A-494B-BF22-530A29437C63_=
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On 11 Apr 2024, at 11:46, David Hildenbrand wrote:
+This patch set changes hands again in an attempt to set a new record for
+most people who have worked on a single problem.
 
-> On 11.04.24 17:32, Zi Yan wrote:
->> From: Zi Yan <ziy@nvidia.com>
->>
->> In __folio_remove_rmap(), a large folio is added to deferred split lis=
-t
->> if any page in a folio loses its final mapping. It is possible that
->> the folio is unmapped fully, but it is unnecessary to add the folio
->> to deferred split list at all. Fix it by checking folio mapcount befor=
-e
->> adding a folio to deferred split list.
->>
->> Signed-off-by: Zi Yan <ziy@nvidia.com>
->> ---
->>   mm/rmap.c | 9 ++++++---
->>   1 file changed, 6 insertions(+), 3 deletions(-)
->>
->> diff --git a/mm/rmap.c b/mm/rmap.c
->> index 2608c40dffad..d599a772e282 100644
->> --- a/mm/rmap.c
->> +++ b/mm/rmap.c
->> @@ -1494,7 +1494,7 @@ static __always_inline void __folio_remove_rmap(=
-struct folio *folio,
->>   		enum rmap_level level)
->>   {
->>   	atomic_t *mapped =3D &folio->_nr_pages_mapped;
->> -	int last, nr =3D 0, nr_pmdmapped =3D 0;
->> +	int last, nr =3D 0, nr_pmdmapped =3D 0, mapcount =3D 0;
->>   	enum node_stat_item idx;
->>    	__folio_rmap_sanity_checks(folio, page, nr_pages, level);
->> @@ -1506,7 +1506,8 @@ static __always_inline void __folio_remove_rmap(=
-struct folio *folio,
->>   			break;
->>   		}
->>  -		atomic_sub(nr_pages, &folio->_large_mapcount);
->> +		mapcount =3D atomic_sub_return(nr_pages,
->> +					     &folio->_large_mapcount) + 1;
->
-> That becomes a new memory barrier on some archs. Rather just re-read it=
- below. Re-reading should be fine here.
+Miguel has been working on a rename and factoring out of arch
+specific code patch set that will clash with this.
+https://lore.kernel.org/linux-acpi/20240409150536.9933-1-miguel.luis@oracle.com/
+[RFC PATCH 0/4] ACPI: processor: refactor acpi_processor_{get_info|remove}
 
-Would atomic_sub_return_relaxed() work? Originally I was using atomic_rea=
-d(mapped)
-below, but to save an atomic op, I chose to read mapcount here.
+v5 changes:
+- Rebase on Rafael's rework of acpi_scan_check_and_detach() series that
+  superceeded the original first patch.
+  https://lore.kernel.org/linux-acpi/6021126.lOV4Wx5bFT@kreacher/
+  That dealt with what I thought was the most controversial part of the
+  series - checking the enabled bit ACPI _STA for CPUS.
+- Change the overall handling so that arch_register_cpu() returns
+  -EPROBE_DEFER if the particular architecture is not yet ready to
+  answer the question of whether a particular CPU maybe used.
+  This occurs for ARM64 + ACPI in 2 cases.
+  1) At the initial callsite early in boot, before the AML interpreter
+     is available and so the code can't query _STA.
+  2) If _STA is queried but a particular CPU is present but not enabled.
+     Those are the ones we are going to hotplug later.
+  For all other architectures and ARM64 DT boots the this deferred
+  flow is not used.
+- Make the _make_enabled() and _make_not_enabled() flows more similar
+  to the _make_present() and _make_not_present(). There are still
+  sufficient differences that I don't think it makes sense to combine
+  the code, but ensuring the locking and NUMA handling brings them
+  closer together.  Note than an additional series will address the
+  question of onlining and offlining the NUMA node as for now it
+  will always be present (that series is not necessary for initial
+  merge of this feature).
 
---
-Best Regards,
-Yan, Zi
+Dropped RFC because I think this is getting close to ready for merging
+and now we are interested in normal review rather than calling out
+significant remaining questions.
 
---=_MailMate_125EA509-6E8A-494B-BF22-530A29437C63_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
+Updated version of James' original introduction.
 
------BEGIN PGP SIGNATURE-----
+This series adds what looks like cpuhotplug support to arm64 for use in
+virtual machines. It does this by moving the cpu_register() calls for
+architectures that support ACPI into an arch specific call made from
+the ACPI processor driver.
+ 
+The kubernetes folk really want to be able to add CPUs to an existing VM,
+in exactly the same way they do on x86. The use-case is pre-booting guests
+with one CPU, then adding the number that were actually needed when the
+workload is provisioned.
 
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmYZRr4PHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhUzLsP/ig/ncHlFC0b40eNH++n/7FRvGkvwqockaEK
-XzJTG/rmDY7VbJv7OSX/6XG0cLAOekTjzKfz2ULN0Pa0UwcHBD09orzt2iqOhcTz
-/DEvysyedt0geBsMKXayaHnrr5s+Oug5otwV4cJ8wHw+6dj5P8n71wGD7wDWYUW4
-OrqkoQFXL2owI44h2bmxf582+6WD6IzEUTb8NPINUJ9jQIEQsyyOyUpjwlfhzeKf
-XT5/4PqLq5Vtbw2AIIiUpDVKlhArIG0+2TAUA4MSAyZQKCzYUqJDrU6jAIBYVBGC
-mvfBbKc/QCrOIRP9fZVYdhV7qaSqi6iGb6TgxSMFu6B9+e8S2eYTjs9WcMXku5MI
-o7aNMMqUMC1Y++wUcw9H+YYBVyl8+5rVqFnemSnQNyfdGSjQM94gbttDUgK8q/o7
-7sf81VRC0iCDDRfziSr3wyIxBcbrvrk1/OrrBNe1/WGNi5BA2YCtfYJxJ5rBK1lv
-N88Tt+kFRWiDWCPPgY9oz2Ze5chLSCxIu2eiii7eU9SWkj8esDIy3tjRV4aanYZI
-4oNqGcuIXZM0UgqYTSxrYAvu3PzNO61LSwXefg/OwSeUeDd0YKKfOPK3ZXDE7Qog
-CF2z5eMgd9YRRzXjhq+4PpOfPMv5E2TquBkiDnAICgnrQg6G4dPr4NBiqFKojVcE
-tXT6K1+n
-=g/El
------END PGP SIGNATURE-----
+Wait? Doesn't arm64 support cpuhotplug already!?
+In the arm world, cpuhotplug gets used to mean removing the power from a CPU.
+The CPU is offline, and remains present. For x86, and ACPI, cpuhotplug
+has the additional step of physically removing the CPU, so that it isn't
+present anymore.
+ 
+Arm64 doesn't support this, and can't support it: CPUs are really a slice
+of the SoC, and there is not enough information in the existing ACPI tables
+to describe which bits of the slice also got removed. Without a reference
+machine: adding this support to the spec is a wild goose chase.
+ 
+Critically: everything described in the firmware tables must remain present.
+ 
+For a virtual machine this is easy as all the other bits of 'virtual SoC'
+are emulated, so they can (and do) remain present when a vCPU is 'removed'.
 
---=_MailMate_125EA509-6E8A-494B-BF22-530A29437C63_=--
+On a system that supports cpuhotplug the MADT has to describe every possible
+CPU at boot. Under KVM, the vGIC needs to know about every possible vCPU before
+the guest is started.
+With these constraints, virtual-cpuhotplug is really just a hypervisor/firmware
+policy about which CPUs can be brought online.
+ 
+This series adds support for virtual-cpuhotplug as exactly that: firmware
+policy. This may even work on a physical machine too; for a guest the part of
+firmware is played by the VMM. (typically Qemu).
+ 
+PSCI support is modified to return 'DENIED' if the CPU can't be brought
+online/enabled yet. The CPU object's _STA method's enabled bit is used to
+indicate firmware's current disposition. If the CPU has its enabled bit clear,
+it will not be registered with sysfs, and attempts to bring it online will
+fail. The notifications that _STA has changed its value then work in the same
+way as physical hotplug, and firmware can cause the CPU to be registered some
+time later, allowing it to be brought online.
+ 
+This creates something that looks like cpuhotplug to user-space, as the sysfs
+files appear and disappear, and the udev notifications look the same.
+ 
+One notable difference is the CPU present mask, which is exposed via sysfs.
+Because the CPUs remain present throughout, they can still be seen in that mask.
+This value does get used by webbrowsers to estimate the number of CPUs
+as the CPU online mask is constantly changed on mobile phones.
+ 
+Linux is tolerant of PSCI returning errors, as its always been allowed to do
+that. To avoid confusing OS that can't tolerate this, we needed an additional
+bit in the MADT GICC flags. This series copies ACPI_MADT_ONLINE_CAPABLE, which
+appears to be for this purpose, but calls it ACPI_MADT_GICC_CPU_CAPABLE as it
+has a different bit position in the GICC.
+ 
+This code is unconditionally enabled for all ACPI architectures, though for
+now only arm64 will have deferred the cpu_register() calls.
+
+If there are problems with firmware tables on some devices, the CPUs will
+already be online by the time the acpi_processor_make_enabled() is called.
+A mismatch here causes a firmware-bug message and kernel taint. This should
+only affect people with broken firmware who also boot with maxcpus=1, and
+bring CPUs online later.
+ 
+If folk want to play along at home, you'll need a copy of Qemu that supports this.
+https://github.com/salil-mehta/qemu.git virt-cpuhp-armv8/rfc-v2
+
+Replace your '-smp' argument with something like:
+ | -smp cpus=1,maxcpus=3,cores=3,threads=1,sockets=1
+ 
+ then feed the following to the Qemu montior;
+ | (qemu) device_add driver=host-arm-cpu,core-id=1,id=cpu1
+ | (qemu) device_del cpu1
+
+James Morse (11):
+  ACPI: processor: Register deferred CPUs from acpi_processor_get_info()
+  ACPI: Rename acpi_processor_hotadd_init and  remove pre-processor
+    guards
+  ACPI: Add post_eject to struct acpi_scan_handler for cpu hotplug
+  ACPI: Check _STA present bit before making CPUs not present
+  ACPI: Warn when the present bit changes but the feature is not enabled
+  arm64: acpi: Move get_cpu_for_acpi_id() to a header
+  irqchip/gic-v3: Don't return errors from gic_acpi_match_gicc()
+  irqchip/gic-v3: Add support for ACPI's disabled but 'online capable'
+    CPUs
+  ACPI: add support to (un)register CPUs based on the _STA enabled bit
+  arm64: document virtual CPU hotplug's expectations
+  cpumask: Add enabled cpumask for present CPUs that can be brought
+    online
+
+Jean-Philippe Brucker (1):
+  arm64: psci: Ignore DENIED CPUs
+
+Jonathan Cameron (5):
+  cpu: Do not warn on arch_register_cpu() returning -EPROBE_DEFER
+  ACPI: processor: Set the ACPI_COMPANION for the struct cpu instance
+  ACPI: utils: Add an acpi_sta_enabled() helper and use it in
+    acpi_processor_make_present()
+  ACPI: scan: Add parameter to allow defering some actions in
+    acpi_scan_check_and_detach.
+  arm64: arch_register_cpu() variant to allow checking of ACPI _STA
+
+Russell King (1):
+  ACPI: convert acpi_processor_post_eject() to use IS_ENABLED()
+
+ .../ABI/testing/sysfs-devices-system-cpu      |   6 +
+ Documentation/arch/arm64/cpu-hotplug.rst      |  79 ++++++++++++
+ Documentation/arch/arm64/index.rst            |   1 +
+ arch/arm64/include/asm/acpi.h                 |  11 ++
+ arch/arm64/kernel/acpi_numa.c                 |  11 --
+ arch/arm64/kernel/psci.c                      |   2 +-
+ arch/arm64/kernel/smp.c                       |  23 +++-
+ drivers/acpi/acpi_processor.c                 | 112 +++++++++++++++---
+ drivers/acpi/scan.c                           |  57 +++++++--
+ drivers/acpi/utils.c                          |  21 ++++
+ drivers/base/cpu.c                            |  12 +-
+ drivers/irqchip/irq-gic-v3.c                  |  32 +++--
+ include/acpi/acpi_bus.h                       |   2 +
+ include/linux/acpi.h                          |   5 +-
+ include/linux/cpumask.h                       |  25 ++++
+ kernel/cpu.c                                  |   3 +
+ 16 files changed, 346 insertions(+), 56 deletions(-)
+ create mode 100644 Documentation/arch/arm64/cpu-hotplug.rst
+
+-- 
+2.39.2
+
 
