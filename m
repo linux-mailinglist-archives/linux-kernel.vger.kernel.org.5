@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-142568-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17A038A2D40
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:22:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 380C88A2D43
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:23:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD887282C72
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:22:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA2DB1F22EE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:23:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F3A753370;
-	Fri, 12 Apr 2024 11:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B08753811;
+	Fri, 12 Apr 2024 11:22:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f+hmoy8q"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KXPaSMQX"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 692124205A;
-	Fri, 12 Apr 2024 11:22:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 637B054670;
+	Fri, 12 Apr 2024 11:22:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712920958; cv=none; b=pJm0CgL+vhJuW1h8LK/8ka4xovUFQdAdkwY+2pnuE3H8rnU4imDnFiMqR5deWa86R2KfWrI4G4dr9kSxLhEoXOygNbfjC+9I3L0ti96kag7jVEU2LV8mG4fBKCNEFzkxUNB4FUXMCA694bLmYHuuq/4jyV6bHCPX0KiamNY2814=
+	t=1712920975; cv=none; b=czeHYucu49V0gjdzcjcnQJbyzKwR482KklVBzewNAGfS+lAzRG9l5cKemWZVLe4UKS1p9hZkuF5wn9H2uMB0s2/q+ZUUaRcX4eGIUD8AbmWrgya2cMyAtxDt3qYpcdAI0QTx2APFQwOaBFRHyIKQkOZMnXWIq2zJTNkqm3KStzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712920958; c=relaxed/simple;
-	bh=YSh/FwLiofJ/RShnTnouN0I7NZAcQTK9wHKuMhEaluo=;
+	s=arc-20240116; t=1712920975; c=relaxed/simple;
+	bh=7VRuVeqJpE/HL9U5475Bsfa08nEPvxrOFrhiR4M6pRI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L04uBJUqOBZKCk00PMJdBCAGVHBGMnIh6RpS3q0snzD+j34V7FZUY1e1DDBwlWSpMueUd93WS4yETW+NMTPMe/SKKnTUjbfPQRgCm/08y7D75QgIpZZWapTl836C4WSXvuyDWmGdz1yp888WsEusfsyp7cdFAdjz8fDdgPSGwIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f+hmoy8q; arc=none smtp.client-ip=209.85.167.52
+	 Content-Type:Content-Disposition:In-Reply-To; b=LC6I7s2cDhkL3iX8ELRT6v65N3Vcpmr8D/sSi6dnTa36inled18aekO3AWdrmfGBihzq2Dm7oiBwtWRvPpTQVArb5/qifXEG0KhAqMy2Ar5tAGqg1OiIrcnDIRBdxV96ZuU/hRmw+KjYfJiUeJMDVBAnwaMxNUC/esU9IzwvYnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KXPaSMQX; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-516d6c1e238so972513e87.2;
-        Fri, 12 Apr 2024 04:22:34 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-516d3776334so1027920e87.1;
+        Fri, 12 Apr 2024 04:22:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712920952; x=1713525752; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712920972; x=1713525772; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HBEhPgHTgvcq8BbuI2exwkjI5Tcw5nrsUJBVXL2rUSU=;
-        b=f+hmoy8qqVpPufMqdKnNVO8cceGbq6y/HWSQ1Z5yJgQV13c5/gsOSf+yVH61Tq1GzO
-         BRzP0kcXlblNYpBrdkj2u5qUGLaWYXevGai0WcxKrzABRajFw7HiY9zR6Ms334WvgSyE
-         iZ7Ov8DZDqHzi5Ltd3YAtG4qp5pRLyynMvx8CPJOC12EcOmBkIZznj9fgI29i80io5Aj
-         0PE+PmviX5X/E9L2vVL4LiipbLl9hPWBPsQN0Rt1X7apcbL4u1TtvR3QlOtng0arZ6pM
-         3CUk6qvohVHJlU78zsMdFH6NVEX2ELZdcaQsqSzZhNc9SCF9criVa84xubBU7m/B294a
-         26/A==
+        bh=b4STWKI2lb8P3u5Uj3xotvbRcQh3eVz9AayDWUkWaaA=;
+        b=KXPaSMQX7LYxnZ8A2hiAStU3K1Dy0+Sjkv/CXT1oYCEbZ5MTdGpn1C4FFuf1aHaJdy
+         chTECTYlcvnZdrlDArvZxMzrZGLJSJpDqYwNceRIwNVamPlQeCQWz8mH3tbE02+k3spx
+         hxxbAGFUEl1ctCCdNu/TZ6Cln6twMlGdnycigfd4TP8BSgRe7aonPE7QTew1cfGc5MWq
+         WG6yC5QzrpGhuQboXVpsS3X9tCVodb8nBwk9Ul4FlXyw6nlUBVEQ6aRa1K0vBuV3O+yn
+         eKalXcGhRciiffs6RhoxlHpKFuSELLZpoOKZkCmC4R0wzcfzYFAGjdnaFKGkJWTlgZ4h
+         tpKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712920952; x=1713525752;
+        d=1e100.net; s=20230601; t=1712920972; x=1713525772;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HBEhPgHTgvcq8BbuI2exwkjI5Tcw5nrsUJBVXL2rUSU=;
-        b=DM4Fn8qhy2y00LSjzgwrG8Y/lO1ZmPJi0FEYsxs0TQZ0IuLQlRNW5OcTNFZMD1HMyo
-         2znewlXgXcL6v1+AybotRwHo5/J1WJG1hyG5B+mZRNDzMvebiUuSa1BjzsAqXtB6xiLN
-         k0XT7oCr0ER159Fdzm/U1tIJNXUw1dIIhqbkHhXLHXL5vskUBYxa1E205xLjh4Nd0Err
-         ehnvKdYBFP5FpCs17p8Awg+HwAwlQqXDuUNoCY7retxZfg9rd3d5jMzZMqPcyTx9KA8c
-         LV6jdAepVJuRSpqEgT4KEHFINCTLO98C0X14A8lCKRhF34iT3gg1Ic4WtBlOBcwo9i3K
-         GCKw==
-X-Forwarded-Encrypted: i=1; AJvYcCWQp35ZmWKmpP9sNDXxZCNZ3CFTlDaqN573g06LwEQHPizV9KNGBt+qAbsM12F6LUDLnJfduCDlcrBNXv7RVb/vuKWLQweRiX7tvQPopKT9O/MkymdlAp40GvZ6PntyXNL8veDu5qdMS1PSIaLf+ARDGXV89sh1swU+J35QzRwDAZ0h9ogCD4+B
-X-Gm-Message-State: AOJu0YwyUGpwaNu3DFIhfouCupgubJcAS3f7hlCjP91U940/LoS6uJc+
-	fVYt0udB+YzBAzoJZZaeA1Dah5uGkCEfLoWUDNQCwb+eJX3fCMraoMmTow==
-X-Google-Smtp-Source: AGHT+IE59pzusk19dM0x21Ogyeh3MZm43g7FS9Fg4at5yF8vWUNL0+SxcJOEH2aGyOWJ6MJdNohkdg==
-X-Received: by 2002:a05:6512:3b0c:b0:516:bfd4:351b with SMTP id f12-20020a0565123b0c00b00516bfd4351bmr1595729lfv.65.1712920951816;
-        Fri, 12 Apr 2024 04:22:31 -0700 (PDT)
+        bh=b4STWKI2lb8P3u5Uj3xotvbRcQh3eVz9AayDWUkWaaA=;
+        b=nOz6ZAB73X+PMjfwSHzqPlCWoJJWHAUSU7bwws8efZbhJflLS36XRA/1cXucGk+YFe
+         0akhRxXUU5dH+322HkezT8USCQNuZz1febN2rmayYNMHk3HvjIUTybyC02VGDaDqFkPI
+         4rlzA7GspTZWDG4A0V5FcyR2MnSyIIvc20S9RsQbqCNwZgiwtfzgzDqOY/kdwQFIkSsE
+         jYFCEcvrlhehsPa3VifVxh2xkmSyZoFOZkuA9u9Twh40R93yyRSlSrVnpAWvIWOvlp3+
+         HS0Cz8Ooo8TbZAbjI11KG4E9wuAbIkOG6xwCgP894/CnQkdb/7+t/V+2gPZTNc+f14eQ
+         YuFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW0PvC08GqvtSCETuLLPUXyOTXdK7egJYTiHgklMM/DQ1gzfFhifekmFA/ASX/Fk3j7bltUZEoTI46A5LonF1aFL9LV8IKMOxoy1N8HxvkmLedtKeWNrATK2tDJMci8afon11GT0Zo6BZbB8yhdklzkEDpxqV2bsw/v5abLlLWGlmp5wRSgc8Mq
+X-Gm-Message-State: AOJu0YxSfo34PQM9ZdNa/fhB1kKC2ONNc/QXKnhA7zohWinCHg4N725F
+	zkX/TLpi5GnK04f7kcZvO88/j4GjKBOOTNVQaWYE+V4AvEa/M/Ic
+X-Google-Smtp-Source: AGHT+IFWEJj3Poq8Hn8frLp95R9BnK2HLmscPAkR2GjeckphlpYfDo6T7QhRSD0mFsdfu+/qM+g0rw==
+X-Received: by 2002:ac2:48a7:0:b0:516:d0d5:6f60 with SMTP id u7-20020ac248a7000000b00516d0d56f60mr1718635lfg.38.1712920971532;
+        Fri, 12 Apr 2024 04:22:51 -0700 (PDT)
 Received: from fedora ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id g21-20020a19ee15000000b00515d4d488c2sm491465lfb.263.2024.04.12.04.22.30
+        by smtp.gmail.com with ESMTPSA id s23-20020a197717000000b00516a25e9ce1sm507183lfc.294.2024.04.12.04.22.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 04:22:31 -0700 (PDT)
-Date: Fri, 12 Apr 2024 14:22:26 +0300
+        Fri, 12 Apr 2024 04:22:50 -0700 (PDT)
+Date: Fri, 12 Apr 2024 14:22:46 +0300
 From: Matti Vaittinen <mazziesaccount@gmail.com>
 To: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
 	Matti Vaittinen <mazziesaccount@gmail.com>
@@ -78,8 +78,8 @@ Cc: Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>,
 	Wim Van Sebroeck <wim@linux-watchdog.org>,
 	Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: [RFC PATCH v2 4/6] regulator: bd96801: ROHM BD96801 PMIC regulators
-Message-ID: <e4ceb9870353c13f50c290154001614a2dd9511c.1712920132.git.mazziesaccount@gmail.com>
+Subject: [RFC PATCH v2 5/6] watchdog: ROHM BD96801 PMIC WDG driver
+Message-ID: <d52fd63e98635293022e5a607fd763b580e24189.1712920132.git.mazziesaccount@gmail.com>
 References: <cover.1712920132.git.mazziesaccount@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -88,2315 +88,476 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="+k2aUZ1084g3rvgy"
+	protocol="application/pgp-signature"; boundary="wzoSZayes0OpL2hG"
 Content-Disposition: inline
 In-Reply-To: <cover.1712920132.git.mazziesaccount@gmail.com>
 
 
---+k2aUZ1084g3rvgy
+--wzoSZayes0OpL2hG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-The ROHM BD96801 "Scalable PMIC" is an automotive grade PMIC which can
-scale to different applications by allowing chaining of PMICs. The PMIC
-also supports various protection features which can be configured either
-to fire IRQs - or to shut down power outputs when failure is detected.
+Introduce driver for WDG block on ROHM BD96801 scalable PMIC.
 
-The driver supports the basic control of BUCKs and LDOs and configuring
-Over/Under-voltage, over-current, over-temperature protections via
-device-tree. Following constrains are worth noting:
+This driver only supports watchdog with I2C feeding and delayed
+response detection. Whether the watchdog toggles PRSTB pin or
+just causes an interrupt can be configured via device-tree.
 
-The voltages can be enabled/disabled and protections configured only
-when the PMIC is in STANDBY state.
-
-The protections can't be disabled. UVP limit can't be configured.
-OVP and OCP limits can be configured.
-
-OVD and UVD for a regulator have common limit.
-OCP and thermal protections are implemented by turning all INTB
-notifications fatal. This means that OVD/UVD can not be used together
-with OCP and thermal protection.
-
-Thermal limits can't be configured. TSD is fixed to 175 Celsius, and
-thermal warning is fixed close to 140 Celsius.
-
-LDO's do not have own temperature monitor. The LDO limits use PMIC
-core temperature.
+The BD96801 PMIC HW supports also window watchdog (too early
+feeding detection) and Q&A mode. These are not supported by
+this driver.
 
 Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
 
 ---
 Revision history:
 RFCv1 =3D> RFCv2:
-- Use devm_kcalloc() instead of devm_kzalloc() where appropriate
-- Use devm_kmemdup()
-- Add MODULE_DEVICE_TABLE
-- drop MODULE_ALIAS
-
-This patch requires the regulator_irq_helper() IRQ name duplication
-patch which is already in regulator tree 'for-6.9' -branch.
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git/commi=
-t/?h=3Dfor-6.9&id=3D7ab681ddedd4b6dd2b047c74af95221c5f827e1d
-
-Note. This patch implements controls which can only be done when the
-BD96801 PMIC is in a 'standby' state. These controls include the
-protection settings and 'initial' voltage settings.
-
-The PMIC has a STBY pin which is used to control the PMIC power-state.
-
-I don't have visibility to the design process or to most of the customer
-use cases - so following is speculation:
- - Original idea seems to have been that, when the PMIC goes to STBY
-   state, controlling processor will be powered-off. In the original DS1
-   version all power outputs from the PMIC were turned off when PMIC
-   entered STBY.
- - Someone somewhere needed to be able to keep the controlling processor
-   and some peripherials powered on when the PMIC is in STBY. A very
-   potential reason is to be able to do the initial voltage / protection
-   configurations by software. A configuration option to keep desired
-   power outputs enabled when PMIC is in STBY was added.
- - Current PMIC state can be read from the PMIC registers.
-
-Obvious(?) dilemma for these 'STBY only' configurations is that it is
-difficult to design generic way for the PMIC driver to synchronize the
-configurations with the state changes. Designing it would at least require
-knowledge on:
- - What is the PMIC STBY-state used for? Is it intended to be a
-   power-off (or other low-power) state for the system? Or, is it
-   intended to be used just a state where some of the configurations are
-   done?
- - How is the hardware designed to control the STBY pin?
-
-We *could* assume the STBY pin is controlled by a GPIO. We could grab
-the GPIO here, and export functions to toggle the STBY state. We could
-then 'lock' the state for the duration of config changes. But problem
-is, I don't know what is the right thing to do.
-
-So, this version of the patch just checks the PMIC state - and attempts
-to write the configs if PMIC is in STBY state. This is racy unless the
-entity controlling the STBY-pin is somehow (external to this driver)
-synchronized. We could send a notification when configurations are
-completed to help building such synchronization but this is not done as
-I don't have a real-world user for it.
-
-I am unsure if these 'STBY-only' controls should be just dropped, or if
-they should be kept here to serve as an example / basis to build on. If
-they are removed, it will be very hard for anyone using this PMIC to
-implement those controls. OTOH, if they are kept here, it may
-potentially encourage 'works on my machine' designs - although, I
-believe that those who really need to do 'STBY-only' configs at run-time
-will find a way to toggle the STBY-pin in a way that is synchronized
-with the configs here.
+- remove always running
+- add IRQ handling
+- call emergency_restart()
+- drop MODULE_ALIAS and add MODULE_DEVICE_TABLE
 ---
- drivers/regulator/Kconfig             |   12 +
- drivers/regulator/Makefile            |    2 +
- drivers/regulator/bd96801-regulator.c | 2114 +++++++++++++++++++++++++
- 3 files changed, 2128 insertions(+)
- create mode 100644 drivers/regulator/bd96801-regulator.c
+ drivers/watchdog/Kconfig       |  13 ++
+ drivers/watchdog/Makefile      |   1 +
+ drivers/watchdog/bd96801_wdt.c | 389 +++++++++++++++++++++++++++++++++
+ 3 files changed, 403 insertions(+)
+ create mode 100644 drivers/watchdog/bd96801_wdt.c
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 7db0a29b5b8d..2e8187a92952 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -268,6 +268,18 @@ config REGULATOR_BD957XMUF
- 	  This driver can also be built as a module. If so, the module
- 	  will be called bd9576-regulator.
+diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+index 6bee137cfbe0..d97e735e1faa 100644
+--- a/drivers/watchdog/Kconfig
++++ b/drivers/watchdog/Kconfig
+@@ -181,6 +181,19 @@ config BD957XMUF_WATCHDOG
+ 	  watchdog. Alternatively say M to compile the driver as a module,
+ 	  which will be called bd9576_wdt.
 =20
-+config REGULATOR_BD96801
-+	tristate "ROHM BD96801 Power Regulator"
++config BD96801_WATCHDOG
++	tristate "ROHM BD96801 PMIC Watchdog"
 +	depends on MFD_ROHM_BD96801
-+	select REGULATOR_ROHM
++	select WATCHDOG_CORE
 +	help
-+	  This driver supports voltage regulators on ROHM BD96801 PMIC.
-+	  This will enable support for the software controllable buck
-+	  and LDO regulators.
++	  Support for the watchdog in the ROHM BD96801 PMIC. Watchdog can be
++	  configured to only generate IRQ or to trigger system reset via reset
++	  pin.
 +
-+	  This driver can also be built as a module. If so, the module
-+	  will be called bd96801-regulator.
++	  Say Y here to include support for the ROHM BD96801 watchdog.
++	  Alternatively say M to compile the driver as a module,
++	  which will be called bd96801_wdt.
 +
- config REGULATOR_CPCAP
- 	tristate "Motorola CPCAP regulator"
- 	depends on MFD_CPCAP
-diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index 46fb569e6be8..ae8896e879d5 100644
---- a/drivers/regulator/Makefile
-+++ b/drivers/regulator/Makefile
-@@ -37,6 +37,8 @@ obj-$(CONFIG_REGULATOR_BD718XX) +=3D bd718x7-regulator.o
- obj-$(CONFIG_REGULATOR_BD9571MWV) +=3D bd9571mwv-regulator.o
- obj-$(CONFIG_REGULATOR_BD957XMUF) +=3D bd9576-regulator.o
- obj-$(CONFIG_REGULATOR_DA903X)	+=3D da903x-regulator.o
-+obj-$(CONFIG_REGULATOR_BD96801) +=3D bd96801-regulator.o
-+obj-$(CONFIG_REGULATOR_DA903X)	+=3D da903x.o
- obj-$(CONFIG_REGULATOR_DA9052)	+=3D da9052-regulator.o
- obj-$(CONFIG_REGULATOR_DA9055)	+=3D da9055-regulator.o
- obj-$(CONFIG_REGULATOR_DA9062)	+=3D da9062-regulator.o
-diff --git a/drivers/regulator/bd96801-regulator.c b/drivers/regulator/bd96=
-801-regulator.c
+ config CROS_EC_WATCHDOG
+ 	tristate "ChromeOS EC-based watchdog"
+ 	select WATCHDOG_CORE
+diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+index 3710c218f05e..31bc94436c81 100644
+--- a/drivers/watchdog/Makefile
++++ b/drivers/watchdog/Makefile
+@@ -217,6 +217,7 @@ obj-$(CONFIG_XEN_WDT) +=3D xen_wdt.o
+=20
+ # Architecture Independent
+ obj-$(CONFIG_BD957XMUF_WATCHDOG) +=3D bd9576_wdt.o
++obj-$(CONFIG_BD96801_WATCHDOG) +=3D bd96801_wdt.o
+ obj-$(CONFIG_CROS_EC_WATCHDOG) +=3D cros_ec_wdt.o
+ obj-$(CONFIG_DA9052_WATCHDOG) +=3D da9052_wdt.o
+ obj-$(CONFIG_DA9055_WATCHDOG) +=3D da9055_wdt.o
+diff --git a/drivers/watchdog/bd96801_wdt.c b/drivers/watchdog/bd96801_wdt.c
 new file mode 100644
-index 000000000000..6a43a4d1f349
+index 000000000000..08fab9a87aec
 --- /dev/null
-+++ b/drivers/regulator/bd96801-regulator.c
-@@ -0,0 +1,2114 @@
++++ b/drivers/watchdog/bd96801_wdt.c
+@@ -0,0 +1,389 @@
 +// SPDX-License-Identifier: GPL-2.0-only
-+// Copyright (C) 2022 ROHM Semiconductors
-+// bd96801-regulator.c ROHM BD96801 regulator driver
-+
 +/*
-+ * The DS2 sample does not allow controlling much of anything besides the =
-BUCK
-+ * voltage tune value unless the PMIC is in STANDBY. This means the usual =
-case
-+ * where PMIC is controlled using processor which is powered by the PMIC d=
-oes
-+ * not allow much of control. Eg, enable/disable status or protection limi=
-ts
-+ * can't be set.
++ * Copyright (C) 2024 ROHM Semiconductors
 + *
-+ * It is however possible that the PMIC is controlled (at least partially)=
- from
-+ * some supervisor processor which stays alive even when PMIC goes to STAN=
-DBY.
-+ *
-+ * This calls for following actions:
-+ *  - add STANDBY check also to protection setting.
-+ *  - consider whether the ERRB IRQ would be worth handling
-+ *
-+ * Right. The demand for keeping processor alive when PMIC is configured h=
-as
-+ * emerged. The DS3 solves problem by allowing SW to specify power-rails w=
-hich
-+ * are kept powered when the PMIC goes to STANDBY. Eg, SW can (at least in
-+ * theory)
-+ *
-+ * - Configure critical power-rails to be enabled at STANDBY
-+ * - Switch PMIC to STANDBY mode
-+ * - Perform the configuration
-+ * - Turn the PMIC back to the ACTIVE mode.
-+ *
-+ * Toggling the STANDBY mode from a regulator driver does definitely not s=
-ound like
-+ * "the right thing to do". That should probably be initiated by early boot
-+ * - or if it is required at later stage, then maybe by a consumer driver /
-+ *   user-space application.
-+ *
-+ * Still, if STANDBY-only configuratins are needed then someone should ens=
-ure
-+ * the STBY request line stays asserted until all the necessary configurat=
-ions
-+ * are done. Using an evaluation board this can be done toggling a swicth
-+ * manually - but for any real use-case we would need a SW control for thi=
-s.
-+ * This driver does not in any way ensure the PMIC stays in STANDBY. It on=
-ly
-+ * checks if PMIC is in STANDBY when some configuration is started - and w=
-arns
-+ * if the state is not correct.
++ * ROHM BD96801 watchdog driver
 + */
 +
-+#include <linux/delay.h>
-+#include <linux/err.h>
 +#include <linux/interrupt.h>
 +#include <linux/kernel.h>
-+#include <linux/linear_range.h>
-+#include <linux/mfd/rohm-generic.h>
 +#include <linux/mfd/rohm-bd96801.h>
++#include <linux/mfd/rohm-generic.h>
 +#include <linux/module.h>
 +#include <linux/of.h>
 +#include <linux/platform_device.h>
 +#include <linux/regmap.h>
-+#include <linux/regulator/coupler.h>
-+#include <linux/regulator/driver.h>
-+#include <linux/regulator/machine.h>
-+#include <linux/regulator/of_regulator.h>
-+#include <linux/slab.h>
-+#include <linux/timer.h>
++#include <linux/watchdog.h>
 +
-+enum {
-+	BD96801_BUCK1,
-+	BD96801_BUCK2,
-+	BD96801_BUCK3,
-+	BD96801_BUCK4,
-+	BD96801_LDO5,
-+	BD96801_LDO6,
-+	BD96801_LDO7,
-+	BD96801_REGULATOR_AMOUNT,
-+};
++static bool nowayout;
++module_param(nowayout, bool, 0);
++MODULE_PARM_DESC(nowayout,
++		"Watchdog cannot be stopped once started (default=3D\"false\")");
 +
-+enum {
-+	BD96801_PROT_OVP,
-+	BD96801_PROT_UVP,
-+	BD96801_PROT_OCP,
-+	BD96801_PROT_TEMP,
-+	BD96801_NUM_PROT,
-+};
++#define BD96801_WD_TMO_SHORT_MASK	0x70
++#define BD96801_WD_RATIO_MASK		0x3
++#define BD96801_WD_TYPE_MASK		0x4
++#define BD96801_WD_TYPE_SLOW		0x4
++#define BD96801_WD_TYPE_WIN		0x0
 +
-+#define BD96801_ALWAYS_ON_REG		0x3c
-+#define BD96801_REG_ENABLE		0x0b
-+#define BD96801_BUCK1_EN_MASK		BIT(0)
-+#define BD96801_BUCK2_EN_MASK		BIT(1)
-+#define BD96801_BUCK3_EN_MASK		BIT(2)
-+#define BD96801_BUCK4_EN_MASK		BIT(3)
-+#define BD96801_LDO5_EN_MASK		BIT(4)
-+#define BD96801_LDO6_EN_MASK		BIT(5)
-+#define BD96801_LDO7_EN_MASK		BIT(6)
++#define BD96801_WD_EN_MASK		0x3
++#define BD96801_WD_IF_EN		0x1
++#define BD96801_WD_QA_EN		0x2
++#define BD96801_WD_DISABLE		0x0
 +
-+#define BD96801_BUCK1_VSEL_REG		0x28
-+#define BD96801_BUCK2_VSEL_REG		0x29
-+#define BD96801_BUCK3_VSEL_REG		0x2a
-+#define BD96801_BUCK4_VSEL_REG		0x2b
-+#define BD96801_LDO5_VSEL_REG		0x25
-+#define BD96801_LDO6_VSEL_REG		0x26
-+#define BD96801_LDO7_VSEL_REG		0x27
-+#define BD96801_BUCK_VSEL_MASK		0x1F
-+#define BD96801_LDO_VSEL_MASK		0xff
++#define BD96801_WD_ASSERT_MASK		0x8
++#define BD96801_WD_ASSERT_RST		0x8
++#define BD96801_WD_ASSERT_IRQ		0x0
 +
-+#define BD96801_LOCK_REG		0x04
-+#define BD96801_UNLOCK			0x9d
-+#define BD96801_LOCK			0x00
++#define BD96801_WD_FEED_MASK		0x1
++#define BD96801_WD_FEED			0x1
 +
-+#define BD96801_MASK_RAMP_DELAY		0xc0
-+#define BD96801_INT_VOUT_BASE_REG	0x21
-+#define BD96801_BUCK_INT_VOUT_MASK	0xff
-+
-+#define BD96801_BUCK_VOLTS		256
-+#define BD96801_LDO_VOLTS		256
-+
-+#define BD96801_OVP_MASK		0x03
-+#define BD96801_MASK_BUCK1_OVP_SHIFT	0x00
-+#define BD96801_MASK_BUCK2_OVP_SHIFT	0x02
-+#define BD96801_MASK_BUCK3_OVP_SHIFT	0x04
-+#define BD96801_MASK_BUCK4_OVP_SHIFT	0x06
-+#define BD96801_MASK_LDO5_OVP_SHIFT	0x00
-+#define BD96801_MASK_LDO6_OVP_SHIFT	0x02
-+#define BD96801_MASK_LDO7_OVP_SHIFT	0x04
-+
-+#define BD96801_PROT_LIMIT_OCP_MIN	0x00
-+#define BD96801_PROT_LIMIT_LOW		0x01
-+#define BD96801_PROT_LIMIT_MID		0x02
-+#define BD96801_PROT_LIMIT_HI		0x03
-+
-+#define BD96801_REG_BUCK1_OCP		0x32
-+#define BD96801_REG_BUCK2_OCP		0x32
-+#define BD96801_REG_BUCK3_OCP		0x33
-+#define BD96801_REG_BUCK4_OCP		0x33
-+
-+#define BD96801_MASK_BUCK1_OCP_SHIFT	0x00
-+#define BD96801_MASK_BUCK2_OCP_SHIFT	0x04
-+#define BD96801_MASK_BUCK3_OCP_SHIFT	0x00
-+#define BD96801_MASK_BUCK4_OCP_SHIFT	0x04
-+
-+#define BD96801_REG_LDO5_OCP		0x34
-+#define BD96801_REG_LDO6_OCP		0x34
-+#define BD96801_REG_LDO7_OCP		0x34
-+
-+#define BD96801_MASK_LDO5_OCP_SHIFT	0x00
-+#define BD96801_MASK_LDO6_OCP_SHIFT	0x02
-+#define BD96801_MASK_LDO7_OCP_SHIFT	0x04
-+
-+#define BD96801_MASK_SHD_INTB		BIT(7)
-+#define BD96801_INTB_FATAL		BIT(7)
-+
-+#define BD96801_NUM_REGULATORS		7
-+#define BD96801_NUM_LDOS		4
++/* units in uS */
++#define FASTNG_MIN			3370
++#define BD96801_WDT_DEFAULT_MARGIN	6905120
++/* Unit is seconds */
++#define DEFAULT_TIMEOUT 30
 +
 +/*
-+ * Ramp rates for bucks are controlled by bits [7:6] as follows:
-+ * 00 =3D> 1 mV/uS
-+ * 01 =3D> 5 mV/uS
-+ * 10 =3D> 10 mV/uS
-+ * 11 =3D> 20 mV/uS
++ * BD96801 WDG supports window mode so the TMO consists of SHORT and LONG
++ * timeout values. SHORT time is meaningfull only in window mode where fee=
+ding
++ * period shorter than SHORT would be an error. LONG time is used to detec=
+t if
++ * feeding is not occurring within given time limit (SoC SW hangs). The LO=
+NG
++ * timeout time is a multiple of (2, 4, 8 0r 16 times) the SHORT timeout.
 + */
-+static const unsigned int buck_ramp_table[] =3D { 1000, 5000, 10000, 20000=
- };
 +
-+/*
-+ * This is a voltage range that get's appended to selected
-+ * bd96801_buck_init_volts value. The range from 0x0 to 0xF is actually
-+ * bd96801_buck_init_volts + 0 ... bd96801_buck_init_volts + 150mV
-+ * and the range from 0x10 to 0x1f is bd96801_buck_init_volts - 150mV ...
-+ * bd96801_buck_init_volts - 0. But as the members of linear_range
-+ * are all unsigned I will apply offset of -150 mV to value in
-+ * linear_range - which should increase these ranges with
-+ * 150 mV getting all the values to >=3D 0.
-+ */
-+static const struct linear_range bd96801_tune_volts[] =3D {
-+	REGULATOR_LINEAR_RANGE(150000, 0x00, 0xF, 10000),
-+	REGULATOR_LINEAR_RANGE(0, 0x10, 0x1F, 10000),
++struct wdtbd96801 {
++	struct device		*dev;
++	struct regmap		*regmap;
++	struct watchdog_device	wdt;
 +};
 +
-+static const struct linear_range bd96801_buck_init_volts[] =3D {
-+	REGULATOR_LINEAR_RANGE(500000 - 150000, 0x00, 0xc8, 5000),
-+	REGULATOR_LINEAR_RANGE(1550000 - 150000, 0xc9, 0xec, 50000),
-+	REGULATOR_LINEAR_RANGE(3300000 - 150000, 0xed, 0xff, 0),
-+};
++static int bd96801_wdt_ping(struct watchdog_device *wdt)
++{
++	struct wdtbd96801 *w =3D watchdog_get_drvdata(wdt);
 +
-+static const struct linear_range bd96801_ldo_int_volts[] =3D {
-+	REGULATOR_LINEAR_RANGE(300000, 0x00, 0x78, 25000),
-+	REGULATOR_LINEAR_RANGE(3300000, 0x79, 0xff, 0),
-+};
-+
-+#define BD96801_LDO_SD_VOLT_MASK	0x1
-+#define BD96801_LDO_MODE_MASK		0x6
-+#define BD96801_LDO_MODE_INT		0x0
-+#define BD96801_LDO_MODE_SD		0x2
-+#define BD96801_LDO_MODE_DDR		0x4
-+
-+static int ldo_ddr_volt_table[] =3D {500000, 300000};
-+static int ldo_sd_volt_table[] =3D {3300000, 1800000};
-+
-+/* Constant IRQ initialization data (templates) */
-+struct bd96801_irqinfo {
-+	int type;
-+	struct regulator_irq_desc irq_desc;
-+	int err_cfg;
-+	int wrn_cfg;
-+	const char *irq_name;
-+};
-+
-+#define BD96801_IRQINFO(_type, _name, _irqoff_ms, _irqname)	\
-+{								\
-+	.type =3D (_type),					\
-+	.err_cfg =3D -1,						\
-+	.wrn_cfg =3D -1,						\
-+	.irq_name =3D (_irqname),					\
-+	.irq_desc =3D {						\
-+		.name =3D (_name),				\
-+		.irq_off_ms =3D (_irqoff_ms),			\
-+		.map_event =3D regulator_irq_map_event_simple,	\
-+	},							\
++	return regmap_update_bits(w->regmap, BD96801_REG_WD_FEED,
++				 BD96801_WD_FEED_MASK, BD96801_WD_FEED);
 +}
 +
-+static const struct bd96801_irqinfo buck1_irqinfo[] =3D {
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "buck1-over-curr-h", 500,
-+			"bd96801-buck1-overcurr-h"),
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "buck1-over-curr-l", 500,
-+			"bd96801-buck1-overcurr-l"),
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "buck1-over-curr-n", 500,
-+			"bd96801-buck1-overcurr-n"),
-+	BD96801_IRQINFO(BD96801_PROT_OVP, "buck1-over-voltage", 500,
-+			"bd96801-buck1-overvolt"),
-+	BD96801_IRQINFO(BD96801_PROT_UVP, "buck1-under-voltage", 500,
-+			"bd96801-buck1-undervolt"),
-+	BD96801_IRQINFO(BD96801_PROT_TEMP, "buck1-over-temp", 500,
-+			"bd96801-buck1-thermal")
-+};
-+
-+static const struct bd96801_irqinfo buck2_irqinfo[] =3D {
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "buck2-over-curr-h", 500,
-+			"bd96801-buck2-overcurr-h"),
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "buck2-over-curr-l", 500,
-+			"bd96801-buck2-overcurr-l"),
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "buck2-over-curr-n", 500,
-+			"bd96801-buck2-overcurr-n"),
-+	BD96801_IRQINFO(BD96801_PROT_OVP, "buck2-over-voltage", 500,
-+			"bd96801-buck2-overvolt"),
-+	BD96801_IRQINFO(BD96801_PROT_UVP, "buck2-under-voltage", 500,
-+			"bd96801-buck2-undervolt"),
-+	BD96801_IRQINFO(BD96801_PROT_TEMP, "buck2-over-temp", 500,
-+			"bd96801-buck2-thermal")
-+};
-+
-+static const struct bd96801_irqinfo buck3_irqinfo[] =3D {
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "buck3-over-curr-h", 500,
-+			"bd96801-buck3-overcurr-h"),
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "buck3-over-curr-l", 500,
-+			"bd96801-buck3-overcurr-l"),
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "buck3-over-curr-n", 500,
-+			"bd96801-buck3-overcurr-n"),
-+	BD96801_IRQINFO(BD96801_PROT_OVP, "buck3-over-voltage", 500,
-+			"bd96801-buck3-overvolt"),
-+	BD96801_IRQINFO(BD96801_PROT_UVP, "buck3-under-voltage", 500,
-+			"bd96801-buck3-undervolt"),
-+	BD96801_IRQINFO(BD96801_PROT_TEMP, "buck3-over-temp", 500,
-+			"bd96801-buck3-thermal")
-+};
-+
-+static const struct bd96801_irqinfo buck4_irqinfo[] =3D {
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "buck4-over-curr-h", 500,
-+			"bd96801-buck4-overcurr-h"),
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "buck4-over-curr-l", 500,
-+			"bd96801-buck4-overcurr-l"),
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "buck4-over-curr-n", 500,
-+			"bd96801-buck4-overcurr-n"),
-+	BD96801_IRQINFO(BD96801_PROT_OVP, "buck4-over-voltage", 500,
-+			"bd96801-buck4-overvolt"),
-+	BD96801_IRQINFO(BD96801_PROT_UVP, "buck4-under-voltage", 500,
-+			"bd96801-buck4-undervolt"),
-+	BD96801_IRQINFO(BD96801_PROT_TEMP, "buck4-over-temp", 500,
-+			"bd96801-buck4-thermal")
-+};
-+
-+static const struct bd96801_irqinfo ldo5_irqinfo[] =3D {
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "ldo5-overcurr", 500,
-+			"bd96801-ldo5-overcurr"),
-+	BD96801_IRQINFO(BD96801_PROT_OVP, "ldo5-over-voltage", 500,
-+			"bd96801-ldo5-overvolt"),
-+	BD96801_IRQINFO(BD96801_PROT_UVP, "ldo5-under-voltage", 500,
-+			"bd96801-ldo5-undervolt"),
-+};
-+
-+static const struct bd96801_irqinfo ldo6_irqinfo[] =3D {
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "ldo6-overcurr", 500,
-+			"bd96801-ldo6-overcurr"),
-+	BD96801_IRQINFO(BD96801_PROT_OVP, "ldo6-over-voltage", 500,
-+			"bd96801-ldo6-overvolt"),
-+	BD96801_IRQINFO(BD96801_PROT_UVP, "ldo6-under-voltage", 500,
-+			"bd96801-ldo6-undervolt"),
-+};
-+
-+static const struct bd96801_irqinfo ldo7_irqinfo[] =3D {
-+	BD96801_IRQINFO(BD96801_PROT_OCP, "ldo7-overcurr", 500,
-+			"bd96801-ldo7-overcurr"),
-+	BD96801_IRQINFO(BD96801_PROT_OVP, "ldo7-over-voltage", 500,
-+			"bd96801-ldo7-overvolt"),
-+	BD96801_IRQINFO(BD96801_PROT_UVP, "ldo7-under-voltage", 500,
-+			"bd96801-ldo7-undervolt"),
-+};
-+
-+struct bd96801_irq_desc {
-+	struct bd96801_irqinfo *irqinfo;
-+	int num_irqs;
-+};
-+
-+struct bd96801_regulator_data {
-+	struct regulator_desc desc;
-+	const struct linear_range *init_ranges;
-+	int num_ranges;
-+	struct bd96801_irq_desc irq_desc;
-+	int initial_voltage;
-+	int ldo_vol_lvl;
-+	/* OCP tables are fixed size - four values */
-+	const int *ocp_table;
-+	u8 prot_reg_shift;
-+	u8 ocp_shift;
-+	u8 ovp_reg;
-+	u8 ovd_reg;
-+	u8 ocp_reg;
-+	int ldo_errs;
-+};
-+
-+struct bd96801_pmic_data {
-+	struct bd96801_regulator_data regulator_data[BD96801_NUM_REGULATORS];
-+	struct regmap *regmap;
-+	int fatal_ind;
-+};
-+
-+/*
-+ * Return 0 if limit should be set.
-+ * Return 1 if limit should not be set but we want to proceed with regulat=
-or
-+ * registration.
-+ * Return other error to propagate issues to regulator framework.
-+ */
-+static int sanity_check_ovd_uvd(struct device *dev, struct bd96801_irqinfo=
- *new,
-+				struct bd96801_irqinfo *old, int lim_uV,
-+				int severity, bool enable)
++static int bd96801_wdt_start(struct watchdog_device *wdt)
 +{
-+	int old_err =3D 0, old_wrn =3D 0;
-+	int *cfg;
-+
-+	if (!new) {
-+		dev_warn(dev, "No protection IRQ\n");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (severity =3D=3D REGULATOR_SEVERITY_ERR)
-+		cfg =3D &new->err_cfg;
-+	else
-+		cfg =3D &new->wrn_cfg;
-+
-+
-+	if (!enable) {
-+		*cfg =3D 0;
-+
-+		return 1;
-+	}
-+
-+	/* Don't allow overriding ERR with WRN */
-+	if (severity =3D=3D REGULATOR_SEVERITY_WARN && new->err_cfg &&
-+	    new->err_cfg !=3D -1) {
-+		dev_warn(dev, "Both WARNING and ERROR limits given.\n");
-+		return 1;
-+	}
-+
-+	/*
-+	 * BD96801 has common limit for OVD and UVD.
-+	 * See that there is no existing settings
-+	 * conflicting. Warn if there is.
-+	 */
-+	if (old) {
-+		if (old->err_cfg && old->err_cfg !=3D -1 && old->err_cfg !=3D 1)
-+			old_err =3D old->err_cfg;
-+		if (old->wrn_cfg && old->wrn_cfg !=3D -1 && old->wrn_cfg !=3D 1)
-+			old_wrn =3D old->wrn_cfg;
-+
-+		if (lim_uV && ((old_err && (old_err !=3D lim_uV)) ||
-+		    (old_wrn && (old_wrn !=3D lim_uV)))) {
-+			dev_warn(dev, "conflicting OVD and UVD limits given\n");
-+			/*
-+			 * If both OVD and UVD is configured, do not
-+			 * override ERR by WARN and don't increase already set
-+			 * limit.
-+			 */
-+			if (severity =3D=3D REGULATOR_SEVERITY_WARN) {
-+				if (old_err || (old_wrn && old_wrn < lim_uV))
-+					return -1;
-+			} else {
-+				/*
-+				 * We prefer ERROR over WARNING even though it
-+				 * is likely to relax the limit.
-+				 */
-+				if (old_wrn && old_wrn < lim_uV)
-+					dev_warn(dev,
-+						 "Increasing warning limit\n");
-+
-+				/*
-+				 * If for some reason the existing warning has
-+				 * strictier limit than our error - then we will
-+				 * just disable the warning to prevent it being
-+				 * errorneously sent. We won't leave warning
-+				 * and not send errors as we expect the errors
-+				 * to be much more severe.
-+				 */
-+				if (old_wrn && old_wrn > lim_uV) {
-+					dev_warn(dev,
-+						 "Disabling conflicting warning\n");
-+					old->wrn_cfg =3D 0;
-+				}
-+
-+				if (old_err && old_err < lim_uV) {
-+					dev_warn(dev, "Leaving old limit %u\n",
-+						 old_err);
-+
-+					return -1;
-+				}
-+				dev_warn(dev, "Using new limit %u\n", lim_uV);
-+			}
-+		}
-+	}
-+
-+	if (lim_uV)
-+		*cfg =3D lim_uV;
-+	else
-+		*cfg =3D 1;
-+
-+	/*
-+	 * The BD96801 has only one OVD IRQ. We can either use it for
-+	 * warning or for error - not for both
-+	 */
-+	if (new->err_cfg && new->wrn_cfg) {
-+		dev_warn(dev,
-+			 "Both WARN and ERROR limit given. Discarding WARN\n");
-+		new->wrn_cfg =3D 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static int set_ovp_limit(struct regulator_dev *rdev, int lim_uV)
-+{
-+	int voltage, lim, set_uv, shift;
-+	struct bd96801_regulator_data *rdata;
-+	struct bd96801_pmic_data *pdata;
-+	struct device *dev;
-+
-+	dev =3D rdev_get_dev(rdev);
-+	rdata =3D container_of(rdev->desc, struct bd96801_regulator_data, desc);
-+	pdata =3D rdev_get_drvdata(rdev);
-+
-+	/*
-+	 * OVP can be configured to be 9%, 15% or 20% of the set voltage.
-+	 *
-+	 * Let's compute the OVP based on the current INT_VOUT + Vtune here.
-+	 *
-+	 * This is not 100% according to the spec as the (absolute) limit
-+	 * value in HW will vary depending on the set voltage.
-+	 *
-+	 * We could store the desired limit and re-compute the proportional
-+	 * OVP/UVP values when regulator voltage is adjusted. If we're getting
-+	 * out of the spec we could then change the setting of limits to ensure
-+	 * we stay below the absolute limit value given from DT.
-+	 *
-+	 * My initial guess on the use-cases is that the INT_VOUT is only set
-+	 * at boot - and the impact of Vtune is so small we can ignore the
-+	 * potenrial limit error for now. Let's fix this only if we see actual
-+	 * problems.
-+	 */
-+	voltage =3D regulator_get_voltage_rdev(rdev);
-+	if (voltage < 0)
-+		return voltage;
-+
-+	set_uv =3D voltage * 9 / 100;
-+
-+	if (set_uv > lim_uV) {
-+		dev_err(dev, "too small OVP limit %d\n",
-+			lim_uV);
-+		lim =3D BD96801_PROT_LIMIT_LOW;
-+	} else if (voltage * 15 / 100 > lim_uV) {
-+		lim =3D BD96801_PROT_LIMIT_LOW;
-+	} else if (voltage * 20 / 9 > lim_uV) {
-+		set_uv =3D voltage * 15 / 100;
-+		lim =3D BD96801_PROT_LIMIT_MID;
-+	} else {
-+		set_uv =3D voltage * 20 / 100;
-+		lim =3D BD96801_PROT_LIMIT_HI;
-+	}
-+	dev_info(dev,
-+		 "OVP limit %u requested. Setting %u\n",
-+			 lim_uV, set_uv);
-+
-+	shift =3D rdata->prot_reg_shift;
-+
-+	return regmap_update_bits(pdata->regmap, rdata->ovp_reg,
-+				  BD96801_OVP_MASK << shift,
-+				  lim << shift);
-+}
-+
-+/*
-+ * Supported detection limits for BUCKs are absolute values, 9mV, 15mV and
-+ * 20mV. The limits for LDOs depend on initial voltage register value. Sca=
-le
-+ * limit to what is supported by HW.
-+ */
-+static int get_xvd_limits(struct regulator_dev *rdev, int *lim_uV, int *re=
-g)
-+{
-+	int ret, regu_xvd_limits[3] =3D { 9000, 15000, 20000 };
-+	struct bd96801_regulator_data *rdata;
-+	struct bd96801_pmic_data *pdata;
-+	struct device *dev;
-+
-+	dev =3D rdev_get_dev(rdev);
-+	rdata =3D container_of(rdev->desc, struct bd96801_regulator_data, desc);
-+	pdata =3D rdev_get_drvdata(rdev);
-+
-+	dev_dbg(dev, "OVD limit %u requested\n", *lim_uV);
-+
-+	if (rdata->ldo_vol_lvl) {
-+		int val;
-+
-+		ret =3D regmap_read(pdata->regmap, rdata->ldo_vol_lvl, &val);
-+		if (ret)
-+			return ret;
-+
-+		if (val > 15) {
-+			if (val < 38) {
-+				regu_xvd_limits[0] =3D 16000;
-+				regu_xvd_limits[1] =3D 30000;
-+				regu_xvd_limits[2] =3D 40000;
-+			} else {
-+				regu_xvd_limits[0] =3D 36000;
-+				regu_xvd_limits[1] =3D 60000;
-+				regu_xvd_limits[2] =3D 80000;
-+			}
-+		}
-+	}
-+	/*  LDO's have different limits */
-+	if (*lim_uV < regu_xvd_limits[0]) {
-+		dev_warn(dev, "Unsupported UVD limit %d\n",
-+			       *lim_uV);
-+		*lim_uV =3D regu_xvd_limits[0];
-+		*reg =3D BD96801_PROT_LIMIT_LOW;
-+	} else if (*lim_uV < regu_xvd_limits[1]) {
-+		*lim_uV =3D regu_xvd_limits[0];
-+		*reg =3D BD96801_PROT_LIMIT_LOW;
-+	} else if (*lim_uV < regu_xvd_limits[2]) {
-+		*lim_uV =3D regu_xvd_limits[1];
-+		*reg =3D BD96801_PROT_LIMIT_MID;
-+	} else {
-+		*lim_uV =3D regu_xvd_limits[1];
-+		*reg =3D BD96801_PROT_LIMIT_HI;
-+	}
-+	dev_info(dev, "Using UVD limit %u\n", *lim_uV);
-+
-+	return 0;
-+}
-+
-+static inline int bd96801_in_stby(struct regmap *rmap)
-+{
-+	int ret, val;
-+
-+	ret =3D regmap_read(rmap, BD96801_REG_PMIC_STATE, &val);
-+	if (ret)
-+		return ret;
-+
-+	return (val =3D=3D BD96801_STATE_STBY);
-+}
-+
-+static int bd96801_set_ovp(struct regulator_dev *rdev, int lim_uV, int sev=
-erity,
-+			   bool enable)
-+{
-+	int shift, stby;
-+	struct bd96801_pmic_data *pdata;
-+	struct bd96801_regulator_data *rdata;
-+	struct bd96801_irq_desc *idesc;
-+	struct device *dev;
-+	struct bd96801_irqinfo *ovp_iinfo =3D NULL;
-+	struct bd96801_irqinfo *uvp_iinfo =3D NULL;
-+	int reg;
++	struct wdtbd96801 *w =3D watchdog_get_drvdata(wdt);
 +	int ret;
++
++	ret =3D regmap_update_bits(w->regmap, BD96801_REG_WD_CONF,
++				 BD96801_WD_EN_MASK, BD96801_WD_IF_EN);
++
++	return ret;
++}
++
++static int bd96801_wdt_stop(struct watchdog_device *wdt)
++{
++	struct wdtbd96801 *w =3D watchdog_get_drvdata(wdt);
++
++	return regmap_update_bits(w->regmap, BD96801_REG_WD_CONF,
++				  BD96801_WD_EN_MASK, BD96801_WD_DISABLE);
++}
++
++static const struct watchdog_info bd96801_wdt_info =3D {
++	.options	=3D WDIOF_MAGICCLOSE | WDIOF_KEEPALIVEPING |
++			  WDIOF_SETTIMEOUT,
++	.identity	=3D "BD96801 Watchdog",
++};
++
++static const struct watchdog_ops bd96801_wdt_ops =3D {
++	.start		=3D bd96801_wdt_start,
++	.stop		=3D bd96801_wdt_stop,
++	.ping		=3D bd96801_wdt_ping,
++};
++
++static int find_closest_fast(int target, int *sel, int *val)
++{
 +	int i;
++	int window =3D FASTNG_MIN;
 +
-+	dev =3D rdev_get_dev(rdev);
-+	rdata =3D container_of(rdev->desc, struct bd96801_regulator_data, desc);
-+	pdata =3D rdev_get_drvdata(rdev);
-+	idesc =3D &rdata->irq_desc;
++	for (i =3D 0; i < 8 && window < target; i++)
++		window <<=3D 1;
 +
-+	if (!idesc)
-+		return -EOPNOTSUPP;
++	*val =3D window;
++	*sel =3D i;
 +
-+	stby =3D bd96801_in_stby(rdev->regmap);
-+	if (stby < 0)
-+		return stby;
-+	if (!stby)
-+		dev_warn(dev, "Can't set OVP. PMIC not in STANDBY\n");
++	if (i =3D=3D 8)
++		return -EINVAL;
 +
-+	if (severity =3D=3D REGULATOR_SEVERITY_PROT) {
-+		if (!enable) {
-+			dev_err(dev, "Can't disable over voltage protection\n");
-+			return -EOPNOTSUPP;
-+		}
-+		if (!lim_uV)
-+			return 0;
-+
-+		return set_ovp_limit(rdev, lim_uV);
-+	}
-+
-+	/* See the comment at bd96801_set_uvp() below */
-+	if (enable && pdata->fatal_ind =3D=3D 1) {
-+		dev_err(dev,
-+			"All errors are fatal. Can't provide notifications\n");
-+		if (severity =3D=3D REGULATOR_SEVERITY_WARN)
-+			return -EINVAL;
-+	}
-+
-+	if (lim_uV) {
-+		ret =3D get_xvd_limits(rdev, &lim_uV, &reg);
-+		if (ret)
-+			return ret;
-+	}
-+	for (i =3D 0; i < idesc->num_irqs; i++) {
-+		struct bd96801_irqinfo *iinfo =3D &idesc->irqinfo[i];
-+
-+		if (iinfo->type =3D=3D BD96801_PROT_OVP)
-+			ovp_iinfo =3D iinfo;
-+
-+		if (iinfo->type =3D=3D BD96801_PROT_UVP)
-+			uvp_iinfo =3D iinfo;
-+	}
-+
-+	ret =3D sanity_check_ovd_uvd(dev, ovp_iinfo, uvp_iinfo, lim_uV,
-+				   severity, enable);
-+
-+	if (ret) {
-+		if (ret =3D=3D 1)
-+			return 0;
-+		return ret;
-+	}
-+
-+	shift =3D rdata->prot_reg_shift;
-+
-+	if (enable && lim_uV)
-+		return regmap_update_bits(pdata->regmap, rdata->ovd_reg,
-+					  BD96801_OVP_MASK << shift,
-+					  reg << shift);
 +	return 0;
 +}
 +
-+static int bd96801_set_uvp(struct regulator_dev *rdev, int lim_uV, int sev=
-erity,
-+			   bool enable)
++static int find_closest_slow_by_fast(int fast_val, int *target, int *slows=
+el)
 +{
-+	int shift, stby;
-+	struct bd96801_pmic_data *pdata;
-+	struct bd96801_regulator_data *rdata;
-+	struct bd96801_irq_desc *idesc;
-+	struct device *dev;
-+	struct bd96801_irqinfo *ovp_iinfo =3D NULL;
-+	struct bd96801_irqinfo *uvp_iinfo =3D NULL;
-+	int reg;
++	int sel;
++	static const int multipliers[] =3D {2, 4, 8, 16};
++
++	for (sel =3D 0; sel < ARRAY_SIZE(multipliers) &&
++	     multipliers[sel] * fast_val < *target; sel++)
++		;
++
++	if (sel =3D=3D ARRAY_SIZE(multipliers))
++		return -EINVAL;
++
++	*slowsel =3D sel;
++	*target =3D multipliers[sel] * fast_val;
++
++	return 0;
++}
++
++static int find_closest_slow(int *target, int *slow_sel, int *fast_sel)
++{
++	static const int multipliers[] =3D {2, 4, 8, 16};
++	int i, j;
++	int val =3D 0;
++	int window =3D FASTNG_MIN;
++
++	for (i =3D 0; i < 8; i++) {
++		for (j =3D 0; j < ARRAY_SIZE(multipliers); j++) {
++			int slow;
++
++			slow =3D window * multipliers[j];
++			if (slow >=3D *target && (!val || slow < val)) {
++				val =3D slow;
++				*fast_sel =3D i;
++				*slow_sel =3D j;
++			}
++		}
++		window <<=3D 1;
++	}
++	if (!val)
++		return -EINVAL;
++
++	*target =3D val;
++
++	return 0;
++}
++
++static int bd96801_set_wdt_mode(struct wdtbd96801 *w, int hw_margin,
++			       int hw_margin_min)
++{
++	int ret, fastng, slowng, type, reg, mask;
++	struct device *dev =3D w->dev;
++
++	/* convert to uS */
++	hw_margin *=3D 1000;
++	hw_margin_min *=3D 1000;
++	if (hw_margin_min) {
++		int min;
++
++		type =3D BD96801_WD_TYPE_WIN;
++		dev_dbg(dev, "Setting type WINDOW 0x%x\n", type);
++		ret =3D find_closest_fast(hw_margin_min, &fastng, &min);
++		if (ret) {
++			dev_err(dev, "bad WDT window for fast timeout\n");
++			return ret;
++		}
++
++		ret =3D find_closest_slow_by_fast(min, &hw_margin, &slowng);
++		if (ret) {
++			dev_err(dev, "bad WDT window\n");
++			return ret;
++		}
++		w->wdt.min_hw_heartbeat_ms =3D min / 1000;
++	} else {
++		type =3D BD96801_WD_TYPE_SLOW;
++		dev_dbg(dev, "Setting type SLOW 0x%x\n", type);
++		ret =3D find_closest_slow(&hw_margin, &slowng, &fastng);
++		if (ret) {
++			dev_err(dev, "bad WDT window\n");
++			return ret;
++		}
++	}
++
++	w->wdt.max_hw_heartbeat_ms =3D hw_margin / 1000;
++
++	fastng <<=3D ffs(BD96801_WD_TMO_SHORT_MASK) - 1;
++
++	reg =3D slowng | fastng;
++	mask =3D BD96801_WD_RATIO_MASK | BD96801_WD_TMO_SHORT_MASK;
++	ret =3D regmap_update_bits(w->regmap, BD96801_REG_WD_TMO,
++				 mask, reg);
++	if (ret)
++		return ret;
++
++	ret =3D regmap_update_bits(w->regmap, BD96801_REG_WD_CONF,
++				 BD96801_WD_TYPE_MASK, type);
++
++	return ret;
++}
++
++static int bd96801_set_heartbeat_from_hw(struct wdtbd96801 *w,
++					 unsigned int conf_reg)
++{
 +	int ret;
-+	int i;
-+
-+	dev =3D rdev_get_dev(rdev);
-+	rdata =3D container_of(rdev->desc, struct bd96801_regulator_data, desc);
-+	pdata =3D rdev_get_drvdata(rdev);
-+	idesc =3D &rdata->irq_desc;
-+
-+	if (!idesc)
-+		return -EOPNOTSUPP;
-+
-+	stby =3D bd96801_in_stby(rdev->regmap);
-+	if (stby < 0)
-+		return stby;
-+	if (!stby)
-+		dev_warn(dev, "Can't set UVP. PMIC not in STANDBY\n");
-+
-+	if (severity =3D=3D REGULATOR_SEVERITY_PROT) {
-+		/* There is nothing we can do for UVP protection on BD96801 */
-+		if (!enable) {
-+			dev_err(dev, "Can't disable under voltage protection\n");
-+			return -EOPNOTSUPP;
-+		}
-+		if (lim_uV)
-+			dev_warn(dev,
-+				 "Can't set under voltage protection limit\n");
-+		return 0;
-+	}
++	unsigned int val, sel, fast;
 +
 +	/*
-+	 * The PMIC provides option to turn all indications fatal. The
-+	 * OCP (protection) does utilize this. If DT enables OCP then we
-+	 * can't provide warning/error notifications as these events are also
-+	 * causing a shutdown. If this is the case we refuse to set the WARN
-+	 * limit - but allow setting ERROR limit in order to prevent HW damage
-+	 * if someone trusts on the ERRORs. The protection shutdown won't
-+	 * inform software so this is not exactly a graceful thing. Thus punt
-+	 * error log message also for the REGULATOR_SEVERITY_ERR config.
++	 * The BD96801 supports a somewhat peculiar QA-mode, which we do not
++	 * support in this driver. If the QA-mode is enabled then we just
++	 * warn and bail-out.
 +	 */
-+	if (enable && pdata->fatal_ind =3D=3D 1) {
-+		dev_err(dev,
-+			"All errors are fatal. Can't provide notifications\n");
-+		if (severity =3D=3D REGULATOR_SEVERITY_WARN)
-+			return -EINVAL;
-+	}
-+
-+	if (lim_uV) {
-+		ret =3D get_xvd_limits(rdev, &lim_uV, &reg);
-+		if (ret)
-+			return ret;
-+	}
-+	for (i =3D 0; i < idesc->num_irqs; i++) {
-+		struct bd96801_irqinfo *iinfo =3D &idesc->irqinfo[i];
-+
-+		if (iinfo->type =3D=3D BD96801_PROT_OVP)
-+			ovp_iinfo =3D iinfo;
-+
-+		if (iinfo->type =3D=3D BD96801_PROT_UVP)
-+			uvp_iinfo =3D iinfo;
-+	}
-+
-+	ret =3D sanity_check_ovd_uvd(dev, uvp_iinfo, ovp_iinfo, lim_uV,
-+				   severity, enable);
-+
-+	if (ret) {
-+		if (ret =3D=3D 1)
-+			return 0;
-+		return ret;
-+	}
-+
-+	shift =3D rdata->prot_reg_shift;
-+
-+	if (enable && lim_uV)
-+		return regmap_update_bits(pdata->regmap, rdata->ovd_reg,
-+					  BD96801_OVP_MASK << shift,
-+					  reg << shift);
-+	return 0;
-+}
-+
-+
-+/*
-+ * Driver uses fixed size OCP tables. If new variant with more OCP values =
-is
-+ * added we need to handle different sizes and selectors
-+ */
-+
-+/* 1.5 A ... 3 A step 0.5 A*/
-+static const int bd96801_buck12_ocp[] =3D { 1500000, 2000000, 2500000, 300=
-0000 };
-+
-+/* 3 A ... 6 A *step 1 A */
-+static const int bd96801_buck34_ocp[] =3D { 3000000, 4000000, 5000000, 600=
-0000 };
-+
-+/* 400 mA ... 550 mA, step 50 mA*/
-+static const int bd96801_ldo_ocp[] =3D { 400000, 450000, 500000, 550000 };
-+
-+static int __drop_warns(struct bd96801_regulator_data *rdata,
-+			struct regmap *regmap, struct device *dev,
-+			struct bd96801_irqinfo *iinfo)
-+{
-+	int ret =3D 0;
-+
-+	if (!iinfo->wrn_cfg && !iinfo->err_cfg)
-+		return 0;
-+
-+	dev_err(dev, "All errors are fatal. Can't provide notifications\n");
-+
-+	if (iinfo->wrn_cfg) {
-+		int mask;
-+		int val;
-+
-+		if (iinfo->type =3D=3D BD96801_PROT_OVP ||
-+		    iinfo->type =3D=3D BD96801_PROT_UVP) {
-+			mask =3D BD96801_OVP_MASK << rdata->prot_reg_shift;
-+			val =3D BD96801_PROT_LIMIT_HI << rdata->prot_reg_shift;
-+
-+			ret =3D regmap_update_bits(regmap, rdata->ovd_reg,
-+						 mask, val);
-+		} else if (iinfo->type =3D=3D BD96801_PROT_OCP) {
-+			mask =3D BD96801_OVP_MASK << rdata->ocp_shift;
-+			val =3D BD96801_PROT_LIMIT_HI << rdata->ocp_shift;
-+			ret =3D regmap_update_bits(regmap, rdata->ocp_reg,
-+					 mask, val);
-+		}
-+		if (ret)
-+			return ret;
-+
-+		iinfo->wrn_cfg =3D -1;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * When we configure INTB to cause SHDN we will also make _all_ problems f=
-atal.
-+ * This is likely to cause shutdown at too early phase if WARNs are config=
-ured.
-+ * Thus we reset all already configured WARN limits.
-+ *
-+ * NOTE: We don't cancel both WARNs and ERRs. The typical and expected rec=
-overy
-+ * for ERRs is anyways a shutdown (although graceful). We'd better to leave
-+ * those limits respected even though the shutdown won't be pretty. In most
-+ * cases this should still be better than allowing things to go off more t=
-han
-+ * ERR boundary.
-+ *
-+ * For any already added WARNs we just configure the max limit. (We _could_
-+ * store the HW default at startup and use it - but let's not overdo this.=
- We
-+ * do punt out a big red error message - hopefully that is read by board R=
-&D
-+ * folks and they will review limits and fix the offending DT limits...
-+ */
-+static int bd96801_drop_all_warns(struct device *dev,
-+				  struct bd96801_pmic_data *pdata)
-+{
-+	int i, ret;
-+
-+	for (i =3D 0; i < BD96801_NUM_REGULATORS; i++) {
-+		struct bd96801_regulator_data *rdata;
-+
-+		rdata =3D &pdata->regulator_data[i];
-+		for (i =3D 0; i < rdata->irq_desc.num_irqs; i++) {
-+			struct bd96801_irqinfo *iinfo;
-+
-+			iinfo =3D &rdata->irq_desc.irqinfo[i];
-+			ret =3D __drop_warns(rdata, pdata->regmap, dev, iinfo);
-+			if (ret)
-+				return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int bd96801_set_oc_det(struct device *dev,
-+			      struct bd96801_pmic_data *pdata,
-+			      struct bd96801_regulator_data *rdata, bool enable,
-+			      int severity)
-+{
-+	struct bd96801_irqinfo *iinfo;
-+	bool found =3D false;
-+	int i, *cfg;
-+
-+	if (enable && pdata->fatal_ind =3D=3D 1) {
-+		dev_err(dev, "Can't support fatal and non fatal OCP\n");
++	if ((conf_reg & BD96801_WD_EN_MASK) !=3D BD96801_WD_IF_EN) {
++		dev_warn(w->dev, "watchdog set to Q&A mode - exiting\n");
 +		return -EINVAL;
 +	}
 +
-+	/* Bucks have 3 OCP IRQs. mark them all. */
-+	for (i =3D 0; i < rdata->irq_desc.num_irqs; i++) {
-+		iinfo =3D &rdata->irq_desc.irqinfo[i];
-+		if (iinfo->type !=3D BD96801_PROT_OCP)
-+			continue;
-+
-+		if (severity =3D=3D REGULATOR_SEVERITY_WARN) {
-+			if (enable && iinfo->err_cfg &&
-+			    iinfo->err_cfg !=3D -1) {
-+				dev_err(dev,
-+					"Can't support both OCP WARN and ERR\n");
-+				return -EINVAL;
-+			}
-+			cfg =3D &iinfo->wrn_cfg;
-+		} else {
-+			if (enable && iinfo->err_cfg &&
-+			    iinfo->err_cfg !=3D -1) {
-+				/* Print only once for this regulator's OCP */
-+				if (!found)
-+					dev_err(dev,
-+						"Can't support both OCP WARN and ERR\n");
-+				iinfo->wrn_cfg =3D 0;
-+			}
-+			cfg =3D &iinfo->err_cfg;
-+		}
-+		if (!enable)
-+			*cfg =3D 0;
-+		else
-+			*cfg =3D 1;
-+
-+		found =3D true;
-+	}
-+	if (!found)
-+		return -EOPNOTSUPP;
-+
-+	return 0;
-+}
-+
-+static int bd96801_set_ocp(struct regulator_dev *rdev, int lim_uA,
-+				int severity, bool enable)
-+{
-+	struct bd96801_pmic_data *pdata;
-+	struct bd96801_regulator_data *rdata;
-+	struct device *dev;
-+	int reg, stby;
-+
-+	dev =3D rdev_get_dev(rdev);
-+	rdata =3D container_of(rdev->desc, struct bd96801_regulator_data, desc);
-+	pdata =3D rdev_get_drvdata(rdev);
-+
-+	/*
-+	 * Most of the configs can only be done when PMIC is in STANDBY
-+	 * And yes. This is racy, we don't know when PMIC state is changed.
-+	 * So we can't promise config works as PMIC state may change right
-+	 * after this check - but at least we can warn if this attempted
-+	 * when PMIC isn't in STANDBY.
-+	 */
-+	stby =3D bd96801_in_stby(rdev->regmap);
-+	if (stby < 0)
-+		return stby;
-+	if (!stby)
-+		dev_warn(dev, "Can't set OCP. PMIC not in STANDBY\n");
-+
-+	if (severity =3D=3D REGULATOR_SEVERITY_PROT) {
-+		if (enable) {
-+			if (pdata->fatal_ind =3D=3D 0)
-+				dev_err(dev, "Conflicting protection settings.\n");
-+
-+			pdata->fatal_ind =3D 1;
-+			bd96801_drop_all_warns(dev, pdata);
-+		} else {
-+			if (pdata->fatal_ind =3D=3D 1) {
-+				dev_err(dev, "Conflicting protection settings.\n");
-+				return -EINVAL;
-+			}
-+			pdata->fatal_ind =3D 0;
-+		}
-+		if (!lim_uA)
-+			return 0;
-+	} else {
-+		int ret;
-+
-+		ret =3D bd96801_set_oc_det(dev, pdata, rdata, enable, severity);
-+		if (ret)
-+			return ret;
-+
-+		if (!enable || !lim_uA)
-+			return 0;
-+	}
-+	/*
-+	 * zero is valid selector for OCP unlike for OVP/UVP.
-+	 * We only set the limit for INT OCPH. OCPL OCPN and EXT_OCP limits
-+	 * are not supported. Those could probably be handled using own vendor
-+	 * DTS property.
-+	 */
-+	if (lim_uA > rdata->ocp_table[BD96801_PROT_LIMIT_MID]) {
-+		reg =3D BD96801_PROT_LIMIT_HI;
-+	} else if (lim_uA > rdata->ocp_table[BD96801_PROT_LIMIT_LOW]) {
-+		reg =3D BD96801_PROT_LIMIT_MID;
-+	} else if (lim_uA > rdata->ocp_table[BD96801_PROT_LIMIT_OCP_MIN]) {
-+		reg =3D BD96801_PROT_LIMIT_LOW;
-+	} else {
-+		if (lim_uA < rdata->ocp_table[BD96801_PROT_LIMIT_OCP_MIN])
-+			dev_warn(dev, "Can't support OCP %u, set %u\n",
-+					lim_uA,
-+					rdata->ocp_table[BD96801_PROT_LIMIT_OCP_MIN]);
-+		reg =3D 0;
-+	}
-+
-+	return regmap_update_bits(pdata->regmap, rdata->ocp_reg,
-+					 BD96801_OVP_MASK << rdata->ocp_shift,
-+					 reg << rdata->ocp_shift);
-+}
-+
-+#define BD96801_TSD_KELVIN	448
-+#define BD96801_TW_MIN_KELVIN	404
-+#define BD96801_TW_MAX_KELVIN	422
-+
-+static int config_thermal_prot(struct bd96801_pmic_data *pdata,
-+			       struct device *dev, int lim, bool enable)
-+{
-+	if (enable) {
-+		/*
-+		 * If limit is not given we assume the protection
-+		 * refers to the TSD at BD96801_TSD_KELVIN. This
-+		 * is always enabled so we have a no-op here.
-+		 *
-+		 * If limit is given then we try using fatal INTB
-+		 */
-+		if (!lim)
-+			return 0;
-+
-+		if (pdata->fatal_ind =3D=3D 0)
-+			dev_err(dev, "Conflicting protection settings.\n");
-+
-+		pdata->fatal_ind =3D 1;
-+		bd96801_drop_all_warns(dev, pdata);
-+	} else {
-+		if (pdata->fatal_ind =3D=3D 1) {
-+			dev_err(dev,
-+				"Conflicting protection settings.\n");
-+			return -EINVAL;
-+		}
-+		pdata->fatal_ind =3D 0;
-+	}
-+
-+	return 0;
-+}
-+
-+static int bd96801_ldo_set_tw(struct regulator_dev *rdev, int lim, int sev=
-erity,
-+			  bool enable)
-+{
-+	struct bd96801_regulator_data *rdata;
-+	struct bd96801_pmic_data *pdata;
-+	struct device *dev;
-+
-+	dev =3D rdev_get_dev(rdev);
-+	rdata =3D container_of(rdev->desc, struct bd96801_regulator_data, desc);
-+	pdata =3D rdev_get_drvdata(rdev);
-+
-+	/*
-+	 * Let's handle the TSD case, After this we can focus on INTB.
-+	 * See if given limit is the BD96801 TSD. If so, the enable request for
-+	 * protection is valid (TSD is always enabled and does always forcibly
-+	 * shut-down the PMIC. All other configurations for this temperature
-+	 * are unsupported.
-+	 */
-+	if (lim =3D=3D BD96801_TSD_KELVIN) {
-+		if (severity =3D=3D REGULATOR_SEVERITY_PROT && enable)
-+			return 0;
-+
-+		dev_err(dev, "Unsupported TSD configuration\n");
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * The PMIC provides Thermal warning IRQ with limit that is not
-+	 * configurable. If protection matching this limit is configured we can
-+	 * use the INTB IRQ either for HW protection (fatal INTB), or WARN or
-+	 * ERROR level notifications.
-+	 */
-+	if (lim && (lim < BD96801_TW_MIN_KELVIN ||
-+		      lim > BD96801_TW_MAX_KELVIN)) {
-+		dev_err(dev, "Unsupported thermal protection limit\n");
-+		return -EINVAL;
-+	}
-+
-+	if (severity =3D=3D REGULATOR_SEVERITY_PROT)
-+		return config_thermal_prot(pdata, dev, lim, enable);
-+	if (!enable)
-+		return 0;
-+
-+	if (rdata->ldo_errs) {
-+		dev_err(dev,
-+			"Multiple protection notification configs for %s\n",
-+			rdev->desc->name);
-+		return -EINVAL;
-+	}
-+	if (severity =3D=3D REGULATOR_SEVERITY_ERR)
-+		rdata->ldo_errs =3D REGULATOR_ERROR_OVER_TEMP;
-+	else
-+		rdata->ldo_errs =3D REGULATOR_ERROR_OVER_TEMP_WARN;
-+
-+	return 0;
-+}
-+
-+static int ldo_map_notif(int irq, struct regulator_irq_data *rid,
-+			 unsigned long *dev_mask)
-+{
-+	int i;
-+
-+	for (i =3D 0; i < rid->num_states; i++) {
-+		struct bd96801_regulator_data *rdata;
-+		struct regulator_dev *rdev;
-+
-+		rdev =3D rid->states[i].rdev;
-+		rdata =3D container_of(rdev->desc, struct bd96801_regulator_data,
-+				     desc);
-+		rid->states[i].notifs =3D regulator_err2notif(rdata->ldo_errs);
-+		rid->states[i].errors =3D rdata->ldo_errs;
-+		*dev_mask |=3D BIT(i);
-+	}
-+	return 0;
-+}
-+
-+/*
-+ * Data-Sheet states that for BUCKs the IC can monitor driver MOS temperat=
-ure
-+ * or each internal power MOSFET temperature. Additionally there seems to =
-be
-+ * measurement of temperature at the center of the chip. These temperature
-+ * detections will again generate INTB interrupt - and again, the INTB can
-+ * be set to shut-down the faulting power-output (or group of outputs). Li=
-mit
-+ * for thermal warning (INTB) is arounf 140 degree C. (Data-sheet says 131=
- to
-+ * 149 but I see no configuration for the limit.
-+ *
-+ * Let's use the same PROTECTION (fatal INTB behaviour) as we use with the
-+ * OCP.
-+ *
-+ * On top of this it seems the IC has TSD (thermal shut-down). This is not
-+ * configurable or maskable. The temperature limit for TSD is 175 degree C
-+ * but the measurement point is not mentioned (any of the measurements
-+ * exceed this?)
-+ */
-+static int bd96801_buck_set_tw(struct regulator_dev *rdev, int lim, int se=
-verity,
-+			       bool enable)
-+{
-+	struct bd96801_regulator_data *rdata;
-+	struct bd96801_pmic_data *pdata;
-+	struct bd96801_irqinfo *iinfo;
-+	struct device *dev;
-+	int i;
-+
-+	dev =3D rdev_get_dev(rdev);
-+	rdata =3D container_of(rdev->desc, struct bd96801_regulator_data, desc);
-+	pdata =3D rdev_get_drvdata(rdev);
-+
-+	/*
-+	 * Let's handle the TSD case, After this we can focus on INTB.
-+	 * See if given limit is the BD96801 TSD. If so, the enable request for
-+	 * protection is valid (TSD is always enabled and does always forcibly
-+	 * shut-down the PMIC). All other configurations for this temperature
-+	 * are unsupported.
-+	 */
-+	if (lim =3D=3D BD96801_TSD_KELVIN) {
-+		if (severity =3D=3D REGULATOR_SEVERITY_PROT && enable)
-+			return 0;
-+
-+		dev_err(dev, "Unsupported TSD configuration\n");
-+		return -EINVAL;
-+	}
-+
-+	for (i =3D 0; i < rdata->irq_desc.num_irqs; i++) {
-+		iinfo =3D &rdata->irq_desc.irqinfo[i];
-+		if (iinfo->type =3D=3D BD96801_PROT_TEMP)
-+			break;
-+	}
-+
-+	if (i =3D=3D rdata->irq_desc.num_irqs)
-+		return -EOPNOTSUPP;
-+	/*
-+	 * If limit is given, see it is within the detection range mentioned
-+	 * in BD96801 data-sheet. We can't configure the limit but we can fail
-+	 * if limit is given and it does not fit in typical thermal warning
-+	 * detection range.
-+	 */
-+	if (lim && (lim < BD96801_TW_MIN_KELVIN ||
-+		      lim > BD96801_TW_MAX_KELVIN)) {
-+		dev_err(dev, "Unsupported thermal protection limit\n");
-+		return -EINVAL;
-+	}
-+
-+	if (severity =3D=3D REGULATOR_SEVERITY_PROT)
-+		return config_thermal_prot(pdata, dev, lim, enable);
-+
-+	if (pdata->fatal_ind =3D=3D 1) {
-+		/*
-+		 * INTB is set fatal =3D> there will be no warning to consumers.
-+		 * Let's still not fail the probe as this is not going to fry
-+		 * the HW - it rather will make us do protection shutdown too
-+		 * early. So just spill out a warning but let the boot proceed.
-+		 */
-+		dev_warn(dev, "INTB set fatal. Notifications not supported\n");
-+		return 0;
-+	}
-+
-+	if (severity =3D=3D REGULATOR_SEVERITY_ERR)
-+		iinfo->err_cfg =3D (enable) ? 1 : 0;
-+	else
-+		iinfo->wrn_cfg =3D (enable) ? 1 : 0;
-+
-+	if (iinfo->wrn_cfg && iinfo->wrn_cfg !=3D -1 && iinfo->err_cfg &&
-+	    iinfo->err_cfg !=3D -1)
-+		dev_warn(dev, "Both temperature WARN and ERR given\n");
-+
-+	return 0;
-+}
-+
-+static int bd96801_list_voltage_lr(struct regulator_dev *rdev,
-+				   unsigned int selector)
-+{
-+	int voltage;
-+	struct bd96801_regulator_data *data;
-+
-+	data =3D container_of(rdev->desc, struct bd96801_regulator_data, desc);
-+
-+	/*
-+	 * The BD096801 has voltage setting in two registers. One giving the
-+	 * "initial voltage" (can be changed only when regulator is disabled.
-+	 * This driver caches the value and sets it only at startup. The other
-+	 * register is voltage tuning value which applies -150 mV ... +150 mV
-+	 * offset to the voltage.
-+	 *
-+	 * Note that the cached initial voltage stored in regulator data is
-+	 * 'scaled down' by the 150 mV so that all of our tuning values are
-+	 * >=3D 0. This is done because the linear_ranges uses unsigned values.
-+	 *
-+	 * As a result, we increase the tuning voltage which we get based on
-+	 * the selector by the stored initial_voltage.
-+	 */
-+	voltage =3D regulator_list_voltage_linear_range(rdev, selector);
-+	if (voltage < 0)
-+		return voltage;
-+
-+	return voltage + data->initial_voltage;
-+}
-+
-+/*
-+ * BD96801 does not allow controlling the output enable/disable status
-+ * unless PMIC is in STANDBY state. So this may be next to useless - unless
-+ * the PMIC is controlled from processor not powered by the PMIC. AFAIK
-+ * this really is a potential use-case with the BD96801 - hence these
-+ * controls are implemented.
-+ */
-+static int bd96801_enable_regmap(struct regulator_dev *rdev)
-+{
-+	int stby;
-+
-+	stby =3D bd96801_in_stby(rdev->regmap);
-+	if (stby < 0)
-+		return stby;
-+	if (!stby)
-+		return -EBUSY;
-+
-+	return regulator_enable_regmap(rdev);
-+}
-+
-+static int bd96801_disable_regmap(struct regulator_dev *rdev)
-+{
-+	int stby;
-+
-+	stby =3D bd96801_in_stby(rdev->regmap);
-+	if (stby < 0)
-+		return stby;
-+	if (!stby)
-+		return -EBUSY;
-+
-+	return regulator_disable_regmap(rdev);
-+}
-+
-+/*
-+ * Latest data-sheet says LDO voltages can only be changed in STANDBY(?)
-+ * I think the original limitation was that the LDO must not be enabled
-+ * when voltage is changed..
-+ */
-+static int bd96801_regulator_set_voltage_sel_restricted(struct regulator_d=
-ev *rdev,
-+							unsigned int sel)
-+{
-+	int stby;
-+
-+	stby =3D bd96801_in_stby(rdev->regmap);
-+	if (stby)
-+		return -EBUSY;
-+
-+	return rohm_regulator_set_voltage_sel_restricted(rdev, sel);
-+}
-+
-+static const struct regulator_ops bd96801_ldo_table_ops =3D {
-+	.enable =3D bd96801_enable_regmap,
-+	.disable =3D bd96801_disable_regmap,
-+	.is_enabled =3D regulator_is_enabled_regmap,
-+	.list_voltage =3D regulator_list_voltage_table,
-+	.set_voltage_sel =3D rohm_regulator_set_voltage_sel_restricted,
-+	.get_voltage_sel =3D regulator_get_voltage_sel_regmap,
-+	.set_over_voltage_protection =3D bd96801_set_ovp,
-+	.set_under_voltage_protection =3D bd96801_set_uvp,
-+	.set_over_current_protection =3D bd96801_set_ocp,
-+	.set_thermal_protection =3D bd96801_ldo_set_tw,
-+};
-+
-+static const struct regulator_ops bd96801_buck_ops =3D {
-+	.enable =3D regulator_enable_regmap,
-+	.disable =3D regulator_disable_regmap,
-+	.is_enabled =3D regulator_is_enabled_regmap,
-+	.list_voltage =3D bd96801_list_voltage_lr,
-+	.set_voltage_sel =3D regulator_set_voltage_sel_regmap,
-+	.get_voltage_sel =3D regulator_get_voltage_sel_regmap,
-+	.set_voltage_time_sel =3D regulator_set_voltage_time_sel,
-+	.set_ramp_delay =3D regulator_set_ramp_delay_regmap,
-+	.set_over_voltage_protection =3D bd96801_set_ovp,
-+	.set_under_voltage_protection =3D bd96801_set_uvp,
-+	.set_over_current_protection =3D bd96801_set_ocp,
-+	.set_thermal_protection =3D bd96801_buck_set_tw,
-+};
-+
-+static const struct regulator_ops bd96801_ldo_ops =3D {
-+	.enable =3D regulator_enable_regmap,
-+	.disable =3D regulator_disable_regmap,
-+	.is_enabled =3D regulator_is_enabled_regmap,
-+	.list_voltage =3D regulator_list_voltage_linear_range,
-+	.set_voltage_sel =3D bd96801_regulator_set_voltage_sel_restricted,
-+	.get_voltage_sel =3D regulator_get_voltage_sel_regmap,
-+	.set_over_voltage_protection =3D bd96801_set_ovp,
-+	.set_under_voltage_protection =3D bd96801_set_uvp,
-+	.set_over_current_protection =3D bd96801_set_ocp,
-+	.set_thermal_protection =3D bd96801_ldo_set_tw,
-+};
-+
-+static int buck_set_initial_voltage(struct regmap *regmap, struct device *=
-dev,
-+				    struct bd96801_regulator_data *data,
-+				    struct device_node *np)
-+{
-+	int ret =3D 0;
-+
-+	if (data->num_ranges) {
-+		int sel, val, stby;
-+		bool found;
-+		u32 initial_uv;
-+		int reg =3D BD96801_INT_VOUT_BASE_REG + data->desc.id;
-+
-+		/* See if initial value should be configured */
-+		ret =3D of_property_read_u32(np, "rohm,initial-voltage-microvolt",
-+					   &initial_uv);
-+		if (ret) {
-+			if (ret =3D=3D EINVAL)
-+				goto get_initial;
-+			return ret;
-+		}
-+
-+		/* We can only change initial voltage when PMIC is in STANDBY */
-+		stby =3D bd96801_in_stby(regmap);
-+		if (stby < 0)
-+			goto get_initial;
-+
-+		if (!stby) {
-+			dev_warn(dev,
-+				 "Can't set initial voltage, PMIC not in STANDBY\n");
-+			goto get_initial;
-+		}
-+
-+		/*
-+		 * Check if regulator is enabled - if not, then we can change
-+		 * the initial voltage.
-+		 */
-+		ret =3D regmap_read(regmap, data->desc.enable_reg, &val);
-+		if (ret)
-+			return ret;
-+
-+		if ((val & data->desc.enable_mask) !=3D data->desc.enable_mask) {
-+			dev_warn(dev,
-+				 "%s: enabled. Can't set initial voltage\n",
-+				 data->desc.name);
-+			goto get_initial;
-+		}
-+
-+		dev_dbg(dev, "%s: Setting INITIAL voltage %u\n",
-+			data->desc.name,  initial_uv);
-+		/*
-+		 * The initial uV range is scaled down by 150mV to make all
-+		 * tuning values positive. Hence we decrease value by 150 mV
-+		 * so that the set voltage will really match the one requested
-+		 * via DT.
-+		 */
-+		ret =3D linear_range_get_selector_low_array(data->init_ranges,
-+							  data->num_ranges,
-+							  initial_uv - 150000, &sel,
-+							  &found);
-+		if (ret) {
-+			const struct linear_range *lr;
-+			int max;
-+
-+			lr =3D &data->init_ranges[data->num_ranges - 1];
-+			max =3D linear_range_get_max_value(lr);
-+
-+			dev_err(dev, "Unsupported initial voltage %u\n",
-+				initial_uv);
-+			dev_err(dev, "%u ranges, [%u .. %u]\n",
-+				data->num_ranges, data->init_ranges->min, max);
-+			return ret;
-+		}
-+
-+		if (!found)
-+			dev_warn(dev,
-+				 "Unsupported initial voltage %u requested, setting lower\n",
-+				 initial_uv);
-+
-+		ret =3D regmap_update_bits(regmap, reg,
-+					 BD96801_BUCK_INT_VOUT_MASK,
-+					 sel);
-+		if (ret)
-+			return ret;
-+get_initial:
-+		ret =3D regmap_read(regmap, reg, &sel);
-+		sel &=3D BD96801_BUCK_INT_VOUT_MASK;
-+
-+		ret =3D linear_range_get_value_array(data->init_ranges,
-+						   data->num_ranges, sel,
-+						   &initial_uv);
-+		if (ret)
-+			return ret;
-+
-+		data->initial_voltage =3D initial_uv;
-+		dev_dbg(dev, "Tune-scaled initial voltage %u\n",
-+			data->initial_voltage);
-+	}
-+
-+	return 0;
-+}
-+
-+static int set_ldo_initial_voltage(struct regmap *regmap,
-+				   struct device *dev,
-+				   struct bd96801_regulator_data *data,
-+				   struct device_node *np)
-+{
-+	int ret, val, stby;
-+	u32 initial_uv;
-+	int cfgreg =3D 0;
-+	int mask =3D BD96801_LDO_SD_VOLT_MASK | BD96801_LDO_MODE_MASK;
-+
-+	ret =3D of_property_read_u32(np, "rohm,initial-voltage-microvolt",
-+				   &initial_uv);
-+	if (ret) {
-+		if (ret =3D=3D EINVAL)
-+			goto get_initial;
-+		return ret;
-+	}
-+
-+	/* We can only change initial voltage when PMIC is in STANDBY */
-+	stby =3D bd96801_in_stby(regmap);
-+	if (stby < 0)
-+		return stby;
-+
-+	if (!stby) {
-+		dev_warn(dev, "Can't set initial voltage, PMIC not in STANDBY\n");
-+		goto get_initial;
-+	}
-+
-+	ret =3D regmap_read(regmap, data->desc.enable_reg, &val);
++	ret =3D regmap_read(w->regmap, BD96801_REG_WD_TMO, &val);
 +	if (ret)
 +		return ret;
 +
-+	if ((val & data->desc.enable_mask) !=3D data->desc.enable_mask) {
-+		dev_warn(dev, "%s: enabled. Can't set initial voltage\n",
-+			 data->desc.name);
-+		goto get_initial;
++	sel =3D val & BD96801_WD_TMO_SHORT_MASK;
++	sel >>=3D ffs(BD96801_WD_TMO_SHORT_MASK) - 1;
++	fast =3D FASTNG_MIN << sel;
++
++	sel =3D (val & BD96801_WD_RATIO_MASK) + 1;
++	w->wdt.max_hw_heartbeat_ms =3D (fast << sel) / USEC_PER_MSEC;
++
++	if ((conf_reg & BD96801_WD_TYPE_MASK) =3D=3D BD96801_WD_TYPE_WIN)
++		w->wdt.min_hw_heartbeat_ms =3D fast / USEC_PER_MSEC;
++
++	return 0;
++}
++
++static int init_wdg_hw(struct wdtbd96801 *w)
++{
++	u32 hw_margin[2];
++	int count, ret;
++	u32 hw_margin_max =3D BD96801_WDT_DEFAULT_MARGIN, hw_margin_min =3D 0;
++
++	count =3D device_property_count_u32(w->dev->parent, "rohm,hw-timeout-ms");
++	if (count < 0 && count !=3D -EINVAL)
++		return count;
++
++	if (count > 0) {
++		if (count > ARRAY_SIZE(hw_margin))
++			return -EINVAL;
++
++		ret =3D device_property_read_u32_array(w->dev->parent,
++						     "rohm,hw-timeout-ms",
++						     &hw_margin[0], count);
++		if (ret < 0)
++			return ret;
++
++		if (count =3D=3D 1)
++			hw_margin_max =3D hw_margin[0];
++
++		if (count =3D=3D 2) {
++			hw_margin_max =3D hw_margin[1];
++			hw_margin_min =3D hw_margin[0];
++		}
 +	}
 +
-+	/* Regulator is Disabled */
-+	dev_dbg(dev, "%s: Setting INITIAL voltage %u\n", data->desc.name,
-+		initial_uv);
-+
-+	/*
-+	 * Should this be two properties - one for mode (SD/DDR) and
-+	 * one for voltage (3.3, 1.8, 0.5, 0.3?)
-+	 */
-+	switch (initial_uv) {
-+	case 300000:
-+		cfgreg |=3D BD96801_LDO_MODE_DDR;
-+		cfgreg |=3D 1;
-+		break;
-+	case 500000:
-+		cfgreg |=3D BD96801_LDO_MODE_DDR;
-+		break;
-+	case 1800000:
-+		cfgreg |=3D BD96801_LDO_MODE_SD;
-+		cfgreg |=3D 1;
-+		break;
-+	case 3300000:
-+		cfgreg |=3D BD96801_LDO_MODE_SD;
-+		break;
-+	default:
-+		dev_err(dev, "unsupported initial voltage for LDO\n");
-+		return -EINVAL;
-+	}
-+	ret =3D regmap_update_bits(regmap, data->ldo_vol_lvl, mask,
-+				 cfgreg);
++	ret =3D bd96801_set_wdt_mode(w, hw_margin_max, hw_margin_min);
 +	if (ret)
 +		return ret;
 +
-+get_initial:
-+	if (!cfgreg) {
-+		ret =3D regmap_read(regmap, data->ldo_vol_lvl, &cfgreg);
-+		if (ret)
-+			return ret;
-+	}
-+	switch (cfgreg & BD96801_LDO_MODE_MASK) {
-+	case BD96801_LDO_MODE_DDR:
-+		data->desc.volt_table =3D ldo_ddr_volt_table;
-+		data->desc.n_voltages =3D ARRAY_SIZE(ldo_ddr_volt_table);
-+		break;
-+	case BD96801_LDO_MODE_SD:
-+		data->desc.volt_table =3D ldo_sd_volt_table;
-+		data->desc.n_voltages =3D ARRAY_SIZE(ldo_sd_volt_table);
-+		break;
-+	default:
-+		dev_info(dev, "Leaving LDO to normal mode");
-+		return 0;
++	ret =3D device_property_match_string(w->dev->parent, "rohm,wdg-action",
++					   "prstb");
++	if (ret >=3D 0) {
++		ret =3D regmap_update_bits(w->regmap, BD96801_REG_WD_CONF,
++				 BD96801_WD_ASSERT_MASK,
++				 BD96801_WD_ASSERT_RST);
++		return ret;
 +	}
 +
-+	/* SD or DDR mode =3D> override default ops */
-+	data->desc.ops =3D &bd96801_ldo_table_ops,
-+	data->desc.vsel_mask =3D 1;
-+	data->desc.vsel_reg =3D data->ldo_vol_lvl;
-+
-+	return 0;
-+}
-+
-+static int set_initial_voltage(struct device *dev, struct regmap *regmap,
-+			struct bd96801_regulator_data *data,
-+			struct device_node *np)
-+{
-+	/* BUCK */
-+	if (data->desc.id <=3D BD96801_BUCK4)
-+		return buck_set_initial_voltage(regmap, dev, data, np);
-+
-+	/* LDO */
-+	return set_ldo_initial_voltage(regmap, dev, data, np);
-+}
-+
-+static int bd96801_walk_regulator_dt(struct device *dev, struct regmap *re=
-gmap,
-+				     struct bd96801_regulator_data *data,
-+				     int num)
-+{
-+	int i, ret;
-+	struct device_node *np;
-+	struct device_node *nproot =3D dev->parent->of_node;
-+
-+	nproot =3D of_get_child_by_name(nproot, "regulators");
-+	if (!nproot) {
-+		dev_err(dev, "failed to find regulators node\n");
-+		return -ENODEV;
-+	}
-+	for_each_child_of_node(nproot, np)
-+		for (i =3D 0; i < num; i++) {
-+			if (!of_node_name_eq(np, data[i].desc.of_match))
-+				continue;
-+			ret =3D set_initial_voltage(dev, regmap, &data[i], np);
-+			if (ret) {
-+				dev_err(dev,
-+					"Initializing voltages for %s failed\n",
-+					data[i].desc.name);
-+				of_node_put(np);
-+				of_node_put(nproot);
-+
-+				return ret;
-+			}
-+			if (of_property_read_bool(np, "rohm,keep-on-stby")) {
-+				ret =3D regmap_set_bits(regmap,
-+						      BD96801_ALWAYS_ON_REG,
-+						      1 << data[i].desc.id);
-+				if (ret) {
-+					dev_err(dev,
-+						"failed to set %s on-at-stby\n",
-+						data[i].desc.name);
-+					of_node_put(np);
-+					of_node_put(nproot);
-+
-+					return ret;
-+				}
-+			}
-+		}
-+	of_node_put(nproot);
-+
-+	return 0;
-+}
-+
-+/*
-+ * Template for regulator data. Probe will allocate dynamic / driver insta=
-nce
-+ * struct so we should be on a safe side even if there were multiple PMICs=
- to
-+ * control. Note that there is a plan to allow multiple PMICs to be used so
-+ * systems can scale better. I am however still slightly unsure how the
-+ * multi-PMIC case will be handled. I don't know if the processor will hav=
-e I2C
-+ * acces to all of the PMICs or only the first one. I'd guess there will be
-+ * access provided to all PMICs for voltage scaling - but the errors will =
-only
-+ * be informed via the master PMIC. Eg, we should prepare to support multi=
-ple
-+ * driver instances - either with or without the IRQs... Well, let's first
-+ * just support the simple and clear single-PMIC setup and ponder the mult=
-i PMIC
-+ * case later. What we can easly do for preparing is to not use static glo=
-bal
-+ * data for regulators though.
-+ */
-+static const struct bd96801_pmic_data bd96801_data =3D {
-+	.regulator_data =3D {
-+	{
-+		.desc =3D {
-+			.name =3D "buck1",
-+			.of_match =3D of_match_ptr("BUCK1"),
-+			.regulators_node =3D of_match_ptr("regulators"),
-+			.id =3D BD96801_BUCK1,
-+			.ops =3D &bd96801_buck_ops,
-+			.type =3D REGULATOR_VOLTAGE,
-+			.linear_ranges =3D bd96801_tune_volts,
-+			.n_linear_ranges =3D ARRAY_SIZE(bd96801_tune_volts),
-+			.n_voltages =3D BD96801_BUCK_VOLTS,
-+			.enable_reg =3D BD96801_REG_ENABLE,
-+			.enable_mask =3D BD96801_BUCK1_EN_MASK,
-+			.enable_is_inverted =3D true,
-+			.vsel_reg =3D BD96801_BUCK1_VSEL_REG,
-+			.vsel_mask =3D BD96801_BUCK_VSEL_MASK,
-+			.ramp_reg =3D BD96801_BUCK1_VSEL_REG,
-+			.ramp_mask =3D BD96801_MASK_RAMP_DELAY,
-+			.ramp_delay_table =3D &buck_ramp_table[0],
-+			.n_ramp_values =3D ARRAY_SIZE(buck_ramp_table),
-+			.owner =3D THIS_MODULE,
-+		},
-+		.init_ranges =3D bd96801_buck_init_volts,
-+		.num_ranges =3D ARRAY_SIZE(bd96801_buck_init_volts),
-+		.irq_desc =3D {
-+			.irqinfo =3D (struct bd96801_irqinfo *)&buck1_irqinfo[0],
-+			.num_irqs =3D ARRAY_SIZE(buck1_irqinfo),
-+		},
-+		.prot_reg_shift =3D BD96801_MASK_BUCK1_OVP_SHIFT,
-+		.ovp_reg =3D BD96801_REG_BUCK_OVP,
-+		.ovd_reg =3D BD96801_REG_BUCK_OVD,
-+		.ocp_table =3D bd96801_buck12_ocp,
-+		.ocp_reg =3D BD96801_REG_BUCK1_OCP,
-+		.ocp_shift =3D BD96801_MASK_BUCK1_OCP_SHIFT,
-+	},
-+	{
-+		.desc =3D {
-+			.name =3D "buck2",
-+			.of_match =3D of_match_ptr("BUCK2"),
-+			.regulators_node =3D of_match_ptr("regulators"),
-+			.id =3D BD96801_BUCK2,
-+			.ops =3D &bd96801_buck_ops,
-+			.type =3D REGULATOR_VOLTAGE,
-+			.linear_ranges =3D bd96801_tune_volts,
-+			.n_linear_ranges =3D ARRAY_SIZE(bd96801_tune_volts),
-+			.n_voltages =3D BD96801_BUCK_VOLTS,
-+			.enable_reg =3D BD96801_REG_ENABLE,
-+			.enable_mask =3D BD96801_BUCK2_EN_MASK,
-+			.enable_is_inverted =3D true,
-+			.vsel_reg =3D BD96801_BUCK2_VSEL_REG,
-+			.vsel_mask =3D BD96801_BUCK_VSEL_MASK,
-+			.ramp_reg =3D BD96801_BUCK2_VSEL_REG,
-+			.ramp_mask =3D BD96801_MASK_RAMP_DELAY,
-+			.ramp_delay_table =3D &buck_ramp_table[0],
-+			.n_ramp_values =3D ARRAY_SIZE(buck_ramp_table),
-+			.owner =3D THIS_MODULE,
-+		},
-+		.irq_desc =3D {
-+			.irqinfo =3D (struct bd96801_irqinfo *)&buck2_irqinfo[0],
-+			.num_irqs =3D ARRAY_SIZE(buck2_irqinfo),
-+		},
-+		.init_ranges =3D bd96801_buck_init_volts,
-+		.num_ranges =3D ARRAY_SIZE(bd96801_buck_init_volts),
-+		.prot_reg_shift =3D BD96801_MASK_BUCK2_OVP_SHIFT,
-+		.ovp_reg =3D BD96801_REG_BUCK_OVP,
-+		.ovd_reg =3D BD96801_REG_BUCK_OVD,
-+		.ocp_table =3D bd96801_buck12_ocp,
-+		.ocp_reg =3D BD96801_REG_BUCK2_OCP,
-+		.ocp_shift =3D BD96801_MASK_BUCK2_OCP_SHIFT,
-+	},
-+	{
-+		.desc =3D {
-+			.name =3D "buck3",
-+			.of_match =3D of_match_ptr("BUCK3"),
-+			.regulators_node =3D of_match_ptr("regulators"),
-+			.id =3D BD96801_BUCK3,
-+			.ops =3D &bd96801_buck_ops,
-+			.type =3D REGULATOR_VOLTAGE,
-+			.linear_ranges =3D bd96801_tune_volts,
-+			.n_linear_ranges =3D ARRAY_SIZE(bd96801_tune_volts),
-+			.n_voltages =3D BD96801_BUCK_VOLTS,
-+			.enable_reg =3D BD96801_REG_ENABLE,
-+			.enable_mask =3D BD96801_BUCK3_EN_MASK,
-+			.enable_is_inverted =3D true,
-+			.vsel_reg =3D BD96801_BUCK3_VSEL_REG,
-+			.vsel_mask =3D BD96801_BUCK_VSEL_MASK,
-+			.ramp_reg =3D BD96801_BUCK3_VSEL_REG,
-+			.ramp_mask =3D BD96801_MASK_RAMP_DELAY,
-+			.ramp_delay_table =3D &buck_ramp_table[0],
-+			.n_ramp_values =3D ARRAY_SIZE(buck_ramp_table),
-+			.owner =3D THIS_MODULE,
-+		},
-+		.irq_desc =3D {
-+			.irqinfo =3D (struct bd96801_irqinfo *)&buck3_irqinfo[0],
-+			.num_irqs =3D ARRAY_SIZE(buck3_irqinfo),
-+		},
-+		.init_ranges =3D bd96801_buck_init_volts,
-+		.num_ranges =3D ARRAY_SIZE(bd96801_buck_init_volts),
-+		.prot_reg_shift =3D BD96801_MASK_BUCK3_OVP_SHIFT,
-+		.ovp_reg =3D BD96801_REG_BUCK_OVP,
-+		.ovd_reg =3D BD96801_REG_BUCK_OVD,
-+		.ocp_table =3D bd96801_buck34_ocp,
-+		.ocp_reg =3D BD96801_REG_BUCK3_OCP,
-+		.ocp_shift =3D BD96801_MASK_BUCK3_OCP_SHIFT,
-+	},
-+	{
-+		.desc =3D {
-+			.name =3D "buck4",
-+			.of_match =3D of_match_ptr("BUCK4"),
-+			.regulators_node =3D of_match_ptr("regulators"),
-+			.id =3D BD96801_BUCK4,
-+			.ops =3D &bd96801_buck_ops,
-+			.type =3D REGULATOR_VOLTAGE,
-+			.linear_ranges =3D bd96801_tune_volts,
-+			.n_linear_ranges =3D ARRAY_SIZE(bd96801_tune_volts),
-+			.n_voltages =3D BD96801_BUCK_VOLTS,
-+			.enable_reg =3D BD96801_REG_ENABLE,
-+			.enable_mask =3D BD96801_BUCK4_EN_MASK,
-+			.enable_is_inverted =3D true,
-+			.vsel_reg =3D BD96801_BUCK4_VSEL_REG,
-+			.vsel_mask =3D BD96801_BUCK_VSEL_MASK,
-+			.ramp_reg =3D BD96801_BUCK4_VSEL_REG,
-+			.ramp_mask =3D BD96801_MASK_RAMP_DELAY,
-+			.ramp_delay_table =3D &buck_ramp_table[0],
-+			.n_ramp_values =3D ARRAY_SIZE(buck_ramp_table),
-+			.owner =3D THIS_MODULE,
-+		},
-+		.irq_desc =3D {
-+			.irqinfo =3D (struct bd96801_irqinfo *)&buck4_irqinfo[0],
-+			.num_irqs =3D ARRAY_SIZE(buck4_irqinfo),
-+		},
-+		.init_ranges =3D bd96801_buck_init_volts,
-+		.num_ranges =3D ARRAY_SIZE(bd96801_buck_init_volts),
-+		.prot_reg_shift =3D BD96801_MASK_BUCK4_OVP_SHIFT,
-+		.ovp_reg =3D BD96801_REG_BUCK_OVP,
-+		.ovd_reg =3D BD96801_REG_BUCK_OVD,
-+		.ocp_table =3D bd96801_buck34_ocp,
-+		.ocp_reg =3D BD96801_REG_BUCK4_OCP,
-+		.ocp_shift =3D BD96801_MASK_BUCK4_OCP_SHIFT,
-+	},
-+	{
-+		.desc =3D {
-+			.name =3D "ldo5",
-+			.of_match =3D of_match_ptr("LDO5"),
-+			.regulators_node =3D of_match_ptr("regulators"),
-+			.id =3D BD96801_LDO5,
-+			.ops =3D &bd96801_ldo_ops,
-+			.type =3D REGULATOR_VOLTAGE,
-+			.linear_ranges =3D bd96801_ldo_int_volts,
-+			.n_linear_ranges =3D ARRAY_SIZE(bd96801_ldo_int_volts),
-+			.n_voltages =3D BD96801_LDO_VOLTS,
-+			.enable_reg =3D BD96801_REG_ENABLE,
-+			.enable_mask =3D BD96801_LDO5_EN_MASK,
-+			.enable_is_inverted =3D true,
-+			.vsel_reg =3D BD96801_LDO5_VSEL_REG,
-+			.vsel_mask =3D BD96801_LDO_VSEL_MASK,
-+			.owner =3D THIS_MODULE,
-+		},
-+		.irq_desc =3D {
-+			.irqinfo =3D (struct bd96801_irqinfo *)&ldo5_irqinfo[0],
-+			.num_irqs =3D ARRAY_SIZE(ldo5_irqinfo),
-+		},
-+		.ldo_vol_lvl =3D BD96801_LDO5_VOL_LVL_REG,
-+		.prot_reg_shift =3D BD96801_MASK_LDO5_OVP_SHIFT,
-+		.ovp_reg =3D BD96801_REG_LDO_OVP,
-+		.ovd_reg =3D BD96801_REG_LDO_OVD,
-+		.ocp_table =3D bd96801_ldo_ocp,
-+		.ocp_reg =3D BD96801_REG_LDO5_OCP,
-+		.ocp_shift =3D BD96801_MASK_LDO5_OCP_SHIFT,
-+	},
-+	{
-+		.desc =3D {
-+			.name =3D "ldo6",
-+			.of_match =3D of_match_ptr("LDO6"),
-+			.regulators_node =3D of_match_ptr("regulators"),
-+			.id =3D BD96801_LDO6,
-+			.ops =3D &bd96801_ldo_ops,
-+			.type =3D REGULATOR_VOLTAGE,
-+			.linear_ranges =3D bd96801_ldo_int_volts,
-+			.n_linear_ranges =3D ARRAY_SIZE(bd96801_ldo_int_volts),
-+			.n_voltages =3D BD96801_LDO_VOLTS,
-+			.enable_reg =3D BD96801_REG_ENABLE,
-+			.enable_mask =3D BD96801_LDO6_EN_MASK,
-+			.enable_is_inverted =3D true,
-+			.vsel_reg =3D BD96801_LDO6_VSEL_REG,
-+			.vsel_mask =3D BD96801_LDO_VSEL_MASK,
-+			.owner =3D THIS_MODULE,
-+		},
-+		.irq_desc =3D {
-+			.irqinfo =3D (struct bd96801_irqinfo *)&ldo6_irqinfo[0],
-+			.num_irqs =3D ARRAY_SIZE(ldo6_irqinfo),
-+		},
-+		.ldo_vol_lvl =3D BD96801_LDO6_VOL_LVL_REG,
-+		.prot_reg_shift =3D BD96801_MASK_LDO6_OVP_SHIFT,
-+		.ovp_reg =3D BD96801_REG_LDO_OVP,
-+		.ovd_reg =3D BD96801_REG_LDO_OVD,
-+		.ocp_table =3D bd96801_ldo_ocp,
-+		.ocp_reg =3D BD96801_REG_LDO6_OCP,
-+		.ocp_shift =3D BD96801_MASK_LDO6_OCP_SHIFT,
-+	},
-+	{
-+		.desc =3D {
-+			.name =3D "ldo7",
-+			.of_match =3D of_match_ptr("LDO7"),
-+			.regulators_node =3D of_match_ptr("regulators"),
-+			.id =3D BD96801_LDO7,
-+			.ops =3D &bd96801_ldo_ops,
-+			.type =3D REGULATOR_VOLTAGE,
-+			.linear_ranges =3D bd96801_ldo_int_volts,
-+			.n_linear_ranges =3D ARRAY_SIZE(bd96801_ldo_int_volts),
-+			.n_voltages =3D BD96801_LDO_VOLTS,
-+			.enable_reg =3D BD96801_REG_ENABLE,
-+			.enable_mask =3D BD96801_LDO7_EN_MASK,
-+			.enable_is_inverted =3D true,
-+			.vsel_reg =3D BD96801_LDO7_VSEL_REG,
-+			.vsel_mask =3D BD96801_LDO_VSEL_MASK,
-+			.owner =3D THIS_MODULE,
-+		},
-+		.irq_desc =3D {
-+			.irqinfo =3D (struct bd96801_irqinfo *)&ldo7_irqinfo[0],
-+			.num_irqs =3D ARRAY_SIZE(ldo7_irqinfo),
-+		},
-+		.ldo_vol_lvl =3D BD96801_LDO7_VOL_LVL_REG,
-+		.prot_reg_shift =3D BD96801_MASK_LDO7_OVP_SHIFT,
-+		.ovp_reg =3D BD96801_REG_LDO_OVP,
-+		.ovd_reg =3D BD96801_REG_LDO_OVD,
-+		.ocp_table =3D bd96801_ldo_ocp,
-+		.ocp_reg =3D BD96801_REG_LDO7_OCP,
-+		.ocp_shift =3D BD96801_MASK_LDO7_OCP_SHIFT,
-+	},
-+	},
-+	.fatal_ind =3D -1,
-+};
-+
-+static int initialize_pmic_data(struct device *dev,
-+				struct bd96801_pmic_data *pdata)
-+{
-+	int r, i;
-+
-+	/*
-+	 * Allocate and initialize IRQ data for all of the regulators. We
-+	 * wish to modify IRQ information independently for each driver
-+	 * instance.
-+	 */
-+	for (r =3D 0; r < BD96801_NUM_REGULATORS; r++) {
-+		const struct bd96801_irqinfo *template;
-+		struct bd96801_irqinfo *new;
-+		int num_infos;
-+
-+		template =3D pdata->regulator_data[r].irq_desc.irqinfo;
-+		num_infos =3D pdata->regulator_data[r].irq_desc.num_irqs;
-+
-+		new =3D devm_kcalloc(dev, num_infos, sizeof(*new), GFP_KERNEL);
-+		if (!new)
-+			return -ENOMEM;
-+
-+		pdata->regulator_data[r].irq_desc.irqinfo =3D new;
-+
-+		for (i =3D 0; i < num_infos; i++)
-+			new[i] =3D template[i];
++	ret =3D device_property_match_string(w->dev->parent, "rohm,wdg-action",
++					   "intb-only");
++	if (ret >=3D 0) {
++		ret =3D regmap_update_bits(w->regmap, BD96801_REG_WD_CONF,
++				 BD96801_WD_ASSERT_MASK,
++				 BD96801_WD_ASSERT_IRQ);
++		return ret;
 +	}
 +
 +	return 0;
 +}
 +
-+static int bd96801_map_event_all(int irq, struct regulator_irq_data *rid,
-+			  unsigned long *dev_mask)
++extern void emergency_restart(void);
++static irqreturn_t bd96801_irq_hnd(int irq, void *data)
 +{
-+	int i;
-+
-+	for (i =3D 0; i < rid->num_states; i++) {
-+		rid->states[i].notifs =3D REGULATOR_EVENT_FAIL;
-+		rid->states[i].errors =3D REGULATOR_ERROR_FAIL;
-+		*dev_mask |=3D BIT(i);
-+	}
-+
-+	return 0;
++	emergency_restart();
++	return IRQ_NONE;
 +}
 +
-+static int bd96801_rdev_errb_irqs(struct platform_device *pdev,
-+				  struct regulator_dev *rdev)
++static int bd96801_wdt_probe(struct platform_device *pdev)
 +{
-+	int i;
-+	void *retp;
-+	static const char * const single_out_errb_irqs[] =3D {
-+		"bd96801-%s-pvin-err", "bd96801-%s-ovp-err",
-+		"bd96801-%s-uvp-err", "bd96801-%s-shdn-err",
-+	};
++	struct wdtbd96801 *w;
++	int ret, irq;
++	unsigned int val;
 +
-+	for (i =3D 0; i < ARRAY_SIZE(single_out_errb_irqs); i++) {
-+		char tmp[255];
-+		int irq;
-+		struct regulator_irq_desc id =3D {
-+			.map_event =3D bd96801_map_event_all,
-+			.irq_off_ms =3D 1000,
-+		};
-+		struct regulator_dev *rdev_arr[1] =3D { rdev };
-+
-+		snprintf(tmp, 255, single_out_errb_irqs[i], rdev->desc->name);
-+		tmp[254] =3D 0;
-+		id.name =3D tmp;
-+
-+		irq =3D platform_get_irq_byname(pdev, tmp);
-+		if (irq < 0)
-+			continue;
-+
-+		retp =3D devm_regulator_irq_helper(&pdev->dev, &id, irq, 0,
-+						 REGULATOR_ERROR_FAIL, NULL,
-+						 rdev_arr, 1);
-+		if (IS_ERR(retp))
-+			return PTR_ERR(retp);
-+
-+	}
-+	return 0;
-+}
-+
-+static int bd96801_global_errb_irqs(struct platform_device *pdev,
-+				    struct regulator_dev **rdev, int num_rdev)
-+{
-+	int i, num_irqs;
-+	void *retp;
-+	static const char * const global_errb_irqs[] =3D {
-+		"bd96801-otp-err", "bd96801-dbist-err", "bd96801-eep-err",
-+		"bd96801-abist-err", "bd96801-prstb-err", "bd96801-drmoserr1",
-+		"bd96801-drmoserr2", "bd96801-slave-err", "bd96801-vref-err",
-+		"bd96801-tsd", "bd96801-uvlo-err", "bd96801-ovlo-err",
-+		"bd96801-osc-err", "bd96801-pon-err", "bd96801-poff-err",
-+		"bd96801-cmd-shdn-err", "bd96801-int-shdn-err"
-+	};
-+
-+	num_irqs =3D ARRAY_SIZE(global_errb_irqs);
-+	for (i =3D 0; i < num_irqs; i++) {
-+		int irq;
-+		struct regulator_irq_desc id =3D {
-+			.name =3D global_errb_irqs[i],
-+			.map_event =3D bd96801_map_event_all,
-+			.irq_off_ms =3D 1000,
-+		};
-+
-+		irq =3D platform_get_irq_byname(pdev, global_errb_irqs[i]);
-+		if (irq < 0)
-+			continue;
-+
-+		retp =3D devm_regulator_irq_helper(&pdev->dev, &id, irq, 0,
-+						 REGULATOR_ERROR_FAIL, NULL,
-+						  rdev, num_rdev);
-+		if (IS_ERR(retp))
-+			return PTR_ERR(retp);
-+	}
-+
-+	return 0;
-+}
-+
-+static int bd96801_probe(struct platform_device *pdev)
-+{
-+	struct device *parent;
-+	int i, ret, irq;
-+	void *retp;
-+	struct regulator_config config =3D {};
-+	struct bd96801_regulator_data *rdesc;
-+	struct bd96801_pmic_data *pdata;
-+	struct regulator_dev *ldo_errs_rdev_arr[BD96801_NUM_LDOS];
-+	int ldo_errs_arr[BD96801_NUM_LDOS];
-+	int temp_notif_ldos =3D 0;
-+	struct regulator_dev *all_rdevs[BD96801_NUM_REGULATORS];
-+	bool use_errb;
-+
-+	parent =3D pdev->dev.parent;
-+
-+	pdata =3D devm_kmemdup(&pdev->dev, &bd96801_data, sizeof(bd96801_data),
-+			     GFP_KERNEL);
-+	if (!pdata)
++	w =3D devm_kzalloc(&pdev->dev, sizeof(*w), GFP_KERNEL);
++	if (!w)
 +		return -ENOMEM;
 +
-+	if (initialize_pmic_data(&pdev->dev, pdata))
-+		return -ENOMEM;
++	w->regmap =3D dev_get_regmap(pdev->dev.parent, NULL);
++	w->dev =3D &pdev->dev;
 +
-+	pdata->regmap =3D dev_get_regmap(parent, NULL);
-+	if (!pdata->regmap) {
-+		dev_err(&pdev->dev, "No register map found\n");
-+		return -ENODEV;
-+	}
++	w->wdt.info =3D &bd96801_wdt_info;
++	w->wdt.ops =3D  &bd96801_wdt_ops;
++	w->wdt.parent =3D pdev->dev.parent;
++	w->wdt.timeout =3D DEFAULT_TIMEOUT;
++	watchdog_set_drvdata(&w->wdt, w);
 +
-+	rdesc =3D &pdata->regulator_data[0];
-+
-+	config.driver_data =3D pdata;
-+	config.regmap =3D pdata->regmap;
-+	config.dev =3D parent;
-+
-+	ret =3D of_property_match_string(pdev->dev.parent->of_node,
-+				       "interrupt-names", "errb");
-+	if (ret < 0)
-+		use_errb =3D false;
-+	else
-+		use_errb =3D true;
-+
-+
-+	ret =3D regmap_write(pdata->regmap, BD96801_LOCK_REG, BD96801_UNLOCK);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Can't unlock PMIC\n");
-+		return ret;
-+	}
-+
-+	ret =3D bd96801_walk_regulator_dt(&pdev->dev, pdata->regmap, rdesc,
-+					BD96801_NUM_REGULATORS);
++	ret =3D regmap_read(w->regmap, BD96801_REG_WD_CONF, &val);
 +	if (ret)
-+		return ret;
++		return dev_err_probe(&pdev->dev, ret,
++				     "Failed to get the watchdog state\n");
 +
-+	for (i =3D 0; i < ARRAY_SIZE(pdata->regulator_data); i++) {
-+		struct regulator_dev *rdev;
-+		struct regulator_dev *rdev_arr[1];
-+		struct bd96801_irq_desc *idesc =3D &rdesc[i].irq_desc;
-+		int j, stby;
++	/*
++	 * If the WDG is already enabled we assume it is configured by boot.
++	 * In this case we just update the hw-timeout based on values set to
++	 * the timeout / mode registers and leave the hardware configs
++	 * untouched.
++	 */
++	if ((val & BD96801_WD_EN_MASK) !=3D BD96801_WD_DISABLE) {
++		dev_dbg(&pdev->dev, "watchdog was running during probe\n");
++		ret =3D bd96801_set_heartbeat_from_hw(w, val);
++		if (ret)
++			return ret;
 +
-+		rdev =3D devm_regulator_register(&pdev->dev,
-+					       &rdesc[i].desc, &config);
-+		if (IS_ERR(rdev)) {
-+			dev_err(&pdev->dev,
-+				"failed to register %s regulator\n",
-+				rdesc[i].desc.name);
-+			return PTR_ERR(rdev);
-+		}
-+		all_rdevs[i] =3D rdev;
-+		if (pdata->fatal_ind) {
-+			stby =3D bd96801_in_stby(pdata->regmap);
-+			if (stby < 0)
-+				return stby;
-+
-+			if (!stby)
-+				dev_warn(&pdev->dev,
-+					 "PMIC not in STANDBY. Can't change INTB fatality\n");
-+
-+			/*
-+			 * This means we may set the INTB fatality many times
-+			 * but it's better to enable it immediately after a
-+			 * regulator is enabled to protect early on.
-+			 */
-+			ret =3D regmap_update_bits(pdata->regmap,
-+						 BD96801_REG_SHD_INTB,
-+						 BD96801_MASK_SHD_INTB,
-+						 BD96801_INTB_FATAL);
-+			if (ret)
-+				return ret;
-+		}
-+		/*
-+		 * LDOs don't have own temperature monitoring. If temperature
-+		 * notification was requested for this LDO from DT then we will
-+		 * add the regulator to be notified if central IC temperature
-+		 * exceeds threshold.
-+		 */
-+		if (rdesc[i].ldo_errs) {
-+			ldo_errs_rdev_arr[temp_notif_ldos] =3D rdev;
-+			ldo_errs_arr[temp_notif_ldos] =3D rdesc[i].ldo_errs;
-+			temp_notif_ldos++;
-+		}
-+		if (!idesc)
-+			continue;
-+		/*
-+		 * TODO: Can we split adding the INTB notifiers in own
-+		 * function ?
-+		 */
-+		/* Register INTB handlers for configured protections */
-+		for (j =3D 0; j < idesc->num_irqs; j++) {
-+			struct bd96801_irqinfo *iinfo;
-+			int err =3D 0;
-+			int err_flags[] =3D {
-+				[BD96801_PROT_OVP] =3D REGULATOR_ERROR_REGULATION_OUT,
-+				[BD96801_PROT_UVP] =3D REGULATOR_ERROR_UNDER_VOLTAGE,
-+				[BD96801_PROT_OCP] =3D REGULATOR_ERROR_OVER_CURRENT,
-+				[BD96801_PROT_TEMP] =3D REGULATOR_ERROR_OVER_TEMP,
-+
-+			};
-+			int wrn_flags[] =3D {
-+				[BD96801_PROT_OVP] =3D REGULATOR_ERROR_OVER_VOLTAGE_WARN,
-+				[BD96801_PROT_UVP] =3D REGULATOR_ERROR_UNDER_VOLTAGE_WARN,
-+				[BD96801_PROT_OCP] =3D REGULATOR_ERROR_OVER_CURRENT_WARN,
-+				[BD96801_PROT_TEMP] =3D REGULATOR_ERROR_OVER_TEMP_WARN,
-+			};
-+
-+			iinfo =3D &idesc->irqinfo[j];
-+			/*
-+			 * Don't install IRQ handler if both error and warning
-+			 * notifications are explicitly disabled
-+			 */
-+			if (!iinfo->err_cfg && !iinfo->wrn_cfg)
-+				continue;
-+
-+			if (WARN_ON(iinfo->type >=3D BD96801_NUM_PROT))
-+				return -EINVAL;
-+
-+			if (iinfo->err_cfg)
-+				err =3D err_flags[iinfo->type];
-+			else if (iinfo->wrn_cfg)
-+				err =3D wrn_flags[iinfo->type];
-+
-+			iinfo->irq_desc.data =3D pdata;
-+			irq =3D platform_get_irq_byname(pdev, iinfo->irq_name);
-+			if (irq < 0)
-+				return irq;
-+			/* Find notifications for this IRQ (WARN/ERR) */
-+
-+			rdev_arr[0] =3D rdev;
-+			retp =3D devm_regulator_irq_helper(&pdev->dev,
-+							 &iinfo->irq_desc, irq,
-+							 0, err, NULL, rdev_arr,
-+							 1);
-+			if (IS_ERR(retp))
-+				return PTR_ERR(retp);
-+		}
-+		/* Register per regulator ERRB notifiers */
-+		if (use_errb) {
-+			ret =3D bd96801_rdev_errb_irqs(pdev, rdev);
-+			if (ret)
-+				return ret;
-+		}
-+	}
-+	if (temp_notif_ldos) {
-+		int irq;
-+		struct regulator_irq_desc tw_desc =3D {
-+			.name =3D "bd96801-core-thermal",
-+			.irq_off_ms =3D 500,
-+			.map_event =3D ldo_map_notif,
-+		};
-+
-+		irq =3D platform_get_irq_byname(pdev, "bd96801-core-thermal");
-+		if (irq < 0)
-+			return irq;
-+
-+		retp =3D devm_regulator_irq_helper(&pdev->dev, &tw_desc, irq, 0,
-+						 0, &ldo_errs_arr[0],
-+						 &ldo_errs_rdev_arr[0],
-+						 temp_notif_ldos);
-+		if (IS_ERR(retp))
-+			return PTR_ERR(retp);
++		set_bit(WDOG_HW_RUNNING, &w->wdt.status);
++	} else {
++		/* If WDG is not running so we will initializate it */
++		ret =3D init_wdg_hw(w);
++		if (ret)
++			return ret;
 +	}
 +
-+	if (use_errb)
-+		return bd96801_global_errb_irqs(pdev, all_rdevs,
-+						ARRAY_SIZE(all_rdevs));
++	watchdog_init_timeout(&w->wdt, 0, pdev->dev.parent);
++	watchdog_set_nowayout(&w->wdt, nowayout);
++	watchdog_stop_on_reboot(&w->wdt);
 +
-+	return 0;
++	irq =3D platform_get_irq_byname(pdev, "bd96801-wdg");
++	if (irq > 0) {
++		ret =3D devm_request_threaded_irq(&pdev->dev, irq, NULL,
++						bd96801_irq_hnd,
++						IRQF_ONESHOT,  "bd96801-wdg",
++						NULL);
++		if (ret)
++			return dev_err_probe(&pdev->dev, ret,
++					     "Failed to register IRQ\n");
++	}
++
++	return devm_watchdog_register_device(&pdev->dev, &w->wdt);
 +}
 +
-+static const struct platform_device_id bd96801_pmic_id[] =3D {
-+	{ "bd96801-pmic", },
++static const struct platform_device_id bd96801_wdt_id[] =3D {
++	{ "bd96801-wdt", },
 +	{ }
 +};
-+MODULE_DEVICE_TABLE(platform, bd96801_pmic_id);
++MODULE_DEVICE_TABLE(platform, bd96801_wdt_id);
 +
-+static struct platform_driver bd96801_regulator =3D {
++static struct platform_driver bd96801_wdt =3D {
 +	.driver =3D {
-+		.name =3D "bd96801-pmic"
++		.name =3D "bd96801-wdt"
 +	},
-+	.probe =3D bd96801_probe,
-+	.id_table =3D bd96801_pmic_id,
++	.probe =3D bd96801_wdt_probe,
++	.id_table =3D bd96801_wdt_id,
 +};
-+
-+module_platform_driver(bd96801_regulator);
++module_platform_driver(bd96801_wdt);
 +
 +MODULE_AUTHOR("Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>");
-+MODULE_DESCRIPTION("BD96801 voltage regulator driver");
++MODULE_DESCRIPTION("BD96801 watchdog driver");
 +MODULE_LICENSE("GPL");
 --=20
 2.43.2
@@ -2414,20 +575,20 @@ Simon says - in Latin please.
 ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
 Thanks to Simon Glass for the translation =3D]=20
 
---+k2aUZ1084g3rvgy
+--wzoSZayes0OpL2hG
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmYZGXIACgkQeFA3/03a
-ocWigwf+Pt+OSRl53qs5jTN009woZzimZF1cdwfHyfeoqFUt9FTd472KZJeYZFhY
-LzT1aX9hYi/t7C5Xa7CQWeb2CaSBJqeq9DHxVfU8KjMMxZ3LcmcOMiPCt/R9miyF
-a+P30juqK4vuezbft3BRxVppzTWGeVHVa4sCktxuUkg0wo279pMeAYB+RDFE9pp7
-FyK7EHzu7hGjmmr90gwyIKLyjZPRb5HDVcXLGlMFXeELwPSS6oXyJV87azKaqi/m
-TDLM0QWC1UvQ4ZWs2QOKMxfWDJ93HiBuFCU9jP/AqKwG656uEE80b63FXr4Zjibf
-0KqNVKe7qMvDBAiNlRMUl4JeRo1TUw==
-=9dlX
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmYZGYYACgkQeFA3/03a
+ocUOAwgAjbZxxDFR7/Kdt+1+nDqp0npWMdd/KdWT97nOhLY1uiG0tzL2QLkuJdZA
+RWLc2zyvf6+Dp24pViMokRVlfj5wm9TLLbu3LJdxHxjRXZph9Tbx2IOvkXE/IE+Y
+7nuEy7AxYADwRNGnQIn6D18Tg1nDHDbCqirfyXl0YmYECwcfDWQQW1CUsl3/WdsO
+HD3Yz60YDLChqTsTFvTLruYRyOYFH6f7OnfeJgXSgaBqYlYwai5fg8eM2Ns/Wnu7
+UMHzWyUboxv7VUwOBWwia6pI2uamrgqLYTKryeqtIL2jrUzdkaeJJoc4Dw/gYw1+
+1Ub3vJAQKx5i1WnLxjuZaEPb+nxmsg==
+=RyXo
 -----END PGP SIGNATURE-----
 
---+k2aUZ1084g3rvgy--
+--wzoSZayes0OpL2hG--
 
