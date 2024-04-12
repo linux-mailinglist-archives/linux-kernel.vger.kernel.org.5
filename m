@@ -1,146 +1,235 @@
-Return-Path: <linux-kernel+bounces-142213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B815A8A28F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:10:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D2DE8A28F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:12:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA776B24AE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:10:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9C581F22E29
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:12:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6525F4F613;
-	Fri, 12 Apr 2024 08:10:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="pBrJVHzS"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 356B74F613;
+	Fri, 12 Apr 2024 08:12:00 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E944C4E1B3;
-	Fri, 12 Apr 2024 08:10:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 229894EB3F
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 08:11:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712909434; cv=none; b=QbhNgKICmrNFx6xKikCQyd2+qtYGc5nkVe3eawbl0SLExEDrYpxBheWgdDHl26NzE2/XqKXYHCRfte3uPch5a+Rmo87dEkncl2OCwbkQIfyzPw6VtK/ljtCa7UiZvNxL6E6rcxak8eVW5KqB8zjB0diVJvGjKeF9p1oaqwiyAiA=
+	t=1712909519; cv=none; b=FlzQ3TlvZ2n7koR5Qj859BvjCnQmzBh8Lhj8vzXu1n+h/jcy496Q66rrYTQrUfFsbQHnWVFjvEdc+vMEPyUs+3pyXiXgN9/buTj7R2YKvECSgZIAcQmzr4X0YeWHCN786FZRmrCXAEauS1PrVC+LH5pQy6v8FXvj1HpauYDxh3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712909434; c=relaxed/simple;
-	bh=lyrvQ1jQSDzDlOlLk6Ni8xRBq5CvyRT9MGKZEiVCukg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Cp7JztNTTlUMRe+8EAsOR2MePSCS8M6YS6ziAsBDfawTvayW3fIZQomfsSPXKdv5MCfINNfXHGIlalfFZo/K85XSyEAkZFvxjoVCzfHs8xV031jXz2BtC2YEb/oWh3nnDfYo9GpK/CngphHcD3OUWe6FTKPA6tnrf5HPook8W5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=pBrJVHzS; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EFFD360007;
-	Fri, 12 Apr 2024 08:10:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712909421;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q0E7/dykhn14vt5idbhGa3zPIsvtfStWumlOd8mo6+0=;
-	b=pBrJVHzSSzlEzc5mqWMjA8Ebi4s/3qDkjT4bVoMZncY6YlMUaVSbtpMHizdauR8LTxd8hW
-	OrzVVpm/3TTgrHYaNi33eVL/nal4LrhFQDkb2JTcX6MLbJyy0Ll6EAY0HOfD/zoKqeD4fL
-	RD3Al1Mpkmry4eBsj+LCpgz1WDe1SFsKtGOpuVmBwQNdv3Ci42vGvoZ757A6/E7XPf/fV0
-	wLu85gSC6ydbLRo00vyDiB/HyVeSzh0Aty396FnUJN0//u0CBaQhWHgo7k0/x9bYPHdIJX
-	/Y+BlPo6sA5ty+IqxzIthendSUW1adLNzWGiodC05S9LXy7r4fuYGq0p1ewyEQ==
-Date: Fri, 12 Apr 2024 10:10:19 +0200
-From: Herve Codina <herve.codina@bootlin.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Rob Herring <robh@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Bjorn Helgaas <bhelgaas@google.com>, Lizhi Hou <lizhi.hou@amd.com>, Max
- Zhen <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>, Stefano
- Stabellini <stefano.stabellini@xilinx.com>, Jonathan Cameron
- <Jonathan.Cameron@huawei.com>, Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?=
- <kwilczynski@kernel.org>, linux-kernel@vger.kernel.org,
- linux-pci@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>,
- Horatiu Vultur <horatiu.vultur@microchip.com>, Steen Hegelund
- <steen.hegelund@microchip.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] PCI: of: Attach created of_node to existing
- device
-Message-ID: <20240412101019.7ceee755@bootlin.com>
-In-Reply-To: <2024041219-impure-upcountry-9e9d@gregkh>
-References: <20240325153919.199337-1-herve.codina@bootlin.com>
-	<20240325153919.199337-3-herve.codina@bootlin.com>
-	<2024041142-applause-spearman-bd38@gregkh>
-	<20240411203449.GA2641-robh@kernel.org>
-	<2024041219-impure-upcountry-9e9d@gregkh>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1712909519; c=relaxed/simple;
+	bh=5hrwS29GFt3XJfU0QDTV4KVkh+UhqkRrHM14sTWKxWE=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=VvnFoAURNWTVWi6lMfwkbPkPHYolfrRoL3kzMKRNi6xeHs3pOlKjQgpID0aeMECVuWT7ieZk2sDzoyZSdOSKpzjHuJzDQ/PGq/iS4bPp+CzuRKoVUQnO3sd/X7FI1y89m5GXd/H43nzfvDjDX48VZ4NsVjBOMVGbfrN4LDTaVM4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VG8ND4QFzz2NW71;
+	Fri, 12 Apr 2024 16:09:00 +0800 (CST)
+Received: from canpemm500002.china.huawei.com (unknown [7.192.104.244])
+	by mail.maildlp.com (Postfix) with ESMTPS id 03CAB180060;
+	Fri, 12 Apr 2024 16:11:54 +0800 (CST)
+Received: from [10.173.135.154] (10.173.135.154) by
+ canpemm500002.china.huawei.com (7.192.104.244) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 12 Apr 2024 16:11:53 +0800
+Subject: Re: [PATCH v2] mm/memory-failure: fix deadlock when
+ hugetlb_optimize_vmemmap is enabled
+To: Sidhartha Kumar <sidhartha.kumar@oracle.com>, <akpm@linux-foundation.org>
+CC: <naoya.horiguchi@nec.com>, <osalvador@suse.de>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240412025754.1897615-1-linmiaohe@huawei.com>
+ <48647e5b-d15b-457b-9879-fb1b6bbaee27@oracle.com>
+From: Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <8d186776-f3b1-5d9a-2f94-fa249dee7d5f@huawei.com>
+Date: Fri, 12 Apr 2024 16:11:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <48647e5b-d15b-457b-9879-fb1b6bbaee27@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500002.china.huawei.com (7.192.104.244)
 
-Hi Greg, Rob,
-
-On Fri, 12 Apr 2024 09:41:19 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-
-> On Thu, Apr 11, 2024 at 03:34:49PM -0500, Rob Herring wrote:
-> > On Thu, Apr 11, 2024 at 03:23:55PM +0200, Greg Kroah-Hartman wrote:  
-> > > On Mon, Mar 25, 2024 at 04:39:15PM +0100, Herve Codina wrote:  
-> > > > The commit 407d1a51921e ("PCI: Create device tree node for bridge")
-> > > > creates of_node for PCI devices.
-> > > > 
-> > > > During the insertion handling of these new DT nodes done by of_platform,
-> > > > new devices (struct device) are created. For each PCI devices a struct
-> > > > device is already present (created and handled by the PCI core).
-> > > > Having a second struct device to represent the exact same PCI device is
-> > > > not correct.
-> > > > 
-> > > > On the of_node creation:
-> > > > - tell the of_platform that there is no need to create a device for this
-> > > >   node (OF_POPULATED flag),
-> > > > - link this newly created of_node to the already present device,
-> > > > - tell fwnode that the device attached to this of_node is ready using
-> > > >   fwnode_dev_initialized().
-> > > > 
-> > > > With this fix, the of_node are available in the sysfs device tree:
-> > > > /sys/devices/platform/soc/d0070000.pcie/
-> > > > + of_node -> .../devicetree/base/soc/pcie@d0070000
-> > > > + pci0000:00
-> > > >   + 0000:00:00.0
-> > > >     + of_node -> .../devicetree/base/soc/pcie@d0070000/pci@0,0
-> > > >     + 0000:01:00.0
-> > > >       + of_node -> .../devicetree/base/soc/pcie@d0070000/pci@0,0/dev@0,0
-> > > > 
-> > > > On the of_node removal, revert the operations.
-> > > > 
-> > > > Fixes: 407d1a51921e ("PCI: Create device tree node for bridge")
-> > > > Cc: stable@vger.kernel.org
-> > > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>  
-> > > 
-> > > I need an ack from the maintainer here before I can take this.  
-> > 
-> > Correct me if I'm wrong, but having the of_node sysfs link populated or 
-> > changed after device_add is a race we lost. Userspace is notified about 
-> > the new device and then some time later the symlink shows up.  
+On 2024/4/12 11:12, Sidhartha Kumar wrote:
+> On 4/11/24 7:57 PM, Miaohe Lin wrote:
+>> When I did hard offline test with hugetlb pages, below deadlock occurs:
+>>
+>> ======================================================
+>> WARNING: possible circular locking dependency detected
+>> 6.8.0-11409-gf6cef5f8c37f #1 Not tainted
+>> ------------------------------------------------------
+>> bash/46904 is trying to acquire lock:
+>> ffffffffabe68910 (cpu_hotplug_lock){++++}-{0:0}, at: static_key_slow_dec+0x16/0x60
+>>
+>> but task is already holding lock:
+>> ffffffffabf92ea8 (pcp_batch_high_lock){+.+.}-{3:3}, at: zone_pcp_disable+0x16/0x40
+>>
+>> which lock already depends on the new lock.
+>>
+>> the existing dependency chain (in reverse order) is:
+>>
+>> -> #1 (pcp_batch_high_lock){+.+.}-{3:3}:
+>>         __mutex_lock+0x6c/0x770
+>>         page_alloc_cpu_online+0x3c/0x70
+>>         cpuhp_invoke_callback+0x397/0x5f0
+>>         __cpuhp_invoke_callback_range+0x71/0xe0
+>>         _cpu_up+0xeb/0x210
+>>         cpu_up+0x91/0xe0
+>>         cpuhp_bringup_mask+0x49/0xb0
+>>         bringup_nonboot_cpus+0xb7/0xe0
+>>         smp_init+0x25/0xa0
+>>         kernel_init_freeable+0x15f/0x3e0
+>>         kernel_init+0x15/0x1b0
+>>         ret_from_fork+0x2f/0x50
+>>         ret_from_fork_asm+0x1a/0x30
+>>
+>> -> #0 (cpu_hotplug_lock){++++}-{0:0}:
+>>         __lock_acquire+0x1298/0x1cd0
+>>         lock_acquire+0xc0/0x2b0
+>>         cpus_read_lock+0x2a/0xc0
+>>         static_key_slow_dec+0x16/0x60
+>>         __hugetlb_vmemmap_restore_folio+0x1b9/0x200
+>>         dissolve_free_huge_page+0x211/0x260
+>>         __page_handle_poison+0x45/0xc0
+>>         memory_failure+0x65e/0xc70
+>>         hard_offline_page_store+0x55/0xa0
+>>         kernfs_fop_write_iter+0x12c/0x1d0
+>>         vfs_write+0x387/0x550
+>>         ksys_write+0x64/0xe0
+>>         do_syscall_64+0xca/0x1e0
+>>         entry_SYSCALL_64_after_hwframe+0x6d/0x75
+>>
+>> other info that might help us debug this:
+>>
+>>   Possible unsafe locking scenario:
+>>
+>>         CPU0                    CPU1
+>>         ----                    ----
+>>    lock(pcp_batch_high_lock);
+>>                                 lock(cpu_hotplug_lock);
+>>                                 lock(pcp_batch_high_lock);
+>>    rlock(cpu_hotplug_lock);
+>>
+>>   *** DEADLOCK ***
+>>
+>> 5 locks held by bash/46904:
+>>   #0: ffff98f6c3bb23f0 (sb_writers#5){.+.+}-{0:0}, at: ksys_write+0x64/0xe0
+>>   #1: ffff98f6c328e488 (&of->mutex){+.+.}-{3:3}, at: kernfs_fop_write_iter+0xf8/0x1d0
+>>   #2: ffff98ef83b31890 (kn->active#113){.+.+}-{0:0}, at: kernfs_fop_write_iter+0x100/0x1d0
+>>   #3: ffffffffabf9db48 (mf_mutex){+.+.}-{3:3}, at: memory_failure+0x44/0xc70
+>>   #4: ffffffffabf92ea8 (pcp_batch_high_lock){+.+.}-{3:3}, at: zone_pcp_disable+0x16/0x40
+>>
+>> stack backtrace:
+>> CPU: 10 PID: 46904 Comm: bash Kdump: loaded Not tainted 6.8.0-11409-gf6cef5f8c37f #1
+>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+>> Call Trace:
+>>   <TASK>
+>>   dump_stack_lvl+0x68/0xa0
+>>   check_noncircular+0x129/0x140
+>>   __lock_acquire+0x1298/0x1cd0
+>>   lock_acquire+0xc0/0x2b0
+>>   cpus_read_lock+0x2a/0xc0
+>>   static_key_slow_dec+0x16/0x60
+>>   __hugetlb_vmemmap_restore_folio+0x1b9/0x200
+>>   dissolve_free_huge_page+0x211/0x260
+>>   __page_handle_poison+0x45/0xc0
+>>   memory_failure+0x65e/0xc70
+>>   hard_offline_page_store+0x55/0xa0
+>>   kernfs_fop_write_iter+0x12c/0x1d0
+>>   vfs_write+0x387/0x550
+>>   ksys_write+0x64/0xe0
+>>   do_syscall_64+0xca/0x1e0
+>>   entry_SYSCALL_64_after_hwframe+0x6d/0x75
+>> RIP: 0033:0x7fc862314887
+>> Code: 10 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+>> RSP: 002b:00007fff19311268 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+>> RAX: ffffffffffffffda RBX: 000000000000000c RCX: 00007fc862314887
+>> RDX: 000000000000000c RSI: 000056405645fe10 RDI: 0000000000000001
+>> RBP: 000056405645fe10 R08: 00007fc8623d1460 R09: 000000007fffffff
+>> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000000c
+>> R13: 00007fc86241b780 R14: 00007fc862417600 R15: 00007fc862416a00
+>>
+>> In short, below scene breaks the lock dependency chain:
+>>
+>>   memory_failure
+>>    __page_handle_poison
+>>     zone_pcp_disable -- lock(pcp_batch_high_lock)
+>>     dissolve_free_huge_page
+>>      __hugetlb_vmemmap_restore_folio
+>>       static_key_slow_dec
+>>        cpus_read_lock -- rlock(cpu_hotplug_lock)
+>>
+>> Fix this by calling drain_all_pages() instead.
+>>
+>> Fixes: a6b40850c442 ("mm: hugetlb: replace hugetlb_free_vmemmap_enabled with a static_key")
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> Acked-by: Oscar Salvador <osalvador@suse.de>
+>> Cc: <stable@vger.kernel.org>
+>> ---
+>> v2:
+>>   collect Acked-by tag and extend comment per Oscar. Thanks.
+>> ---
+>>   mm/memory-failure.c | 16 +++++++++++++---
+>>   1 file changed, 13 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+>> index edd6e114462f..c6750509d74c 100644
+>> --- a/mm/memory-failure.c
+>> +++ b/mm/memory-failure.c
+>> @@ -153,11 +153,21 @@ static int __page_handle_poison(struct page *page)
+>>   {
+>>       int ret;
+>>   -    zone_pcp_disable(page_zone(page));
+>> +    /*
+>> +     * zone_pcp_disable() can't be used here. It will hold pcp_batch_high_lock and
+>> +     * dissolve_free_huge_page() might hold cpu_hotplug_lock via static_key_slow_dec()
+>> +     * when hugetlb vmemmap optimization is enabled. This will break current lock
+>> +     * dependency chain and leads to deadlock.
+>> +     * Disabling pcp before dissolving the page was a deterministic approach because
+>> +     * we made sure that those pages cannot end up in any PCP list. Draining PCP lists
+>> +     * expels those pages to the buddy system, but nothing guarantees that those pages
+>> +     * do not get back to a PCP queue if we need to refill those.
+>> +     */
+>>       ret = dissolve_free_huge_page(page);
 > 
-> Ah, yes, I missed that, good catch, this will not work.
+> Hi Miaohe,
 > 
-> > However, it so far is not appearing that there's an easy way to 
-> > reshuffle order of things to fix this.
-> > 
-> > Maybe the short term (and stable) answer just don't create any of_node 
-> > symlinks on these dynamically created nodes.  
-> 
-> That would work, but does userspace really need to know this
-> information?
+> I recently sent a patch[1] to convert dissolve_free_huge_page() to folios which changes the function name and the name referenced in the comment so this will conflict with my patch. It's in mm-unstable now, would you be able to rebase to that in a new version?
 > 
 
-I don't think that the user space really need this information.
-I agree, it should work.
+The version 1 of this patch is in mm-unstable too. So it might be better to send a separate patch to extend the comment.
 
-Let me rework my series in that sense and perform some tests before
-sending a new iteration removing the of_node sysfs link creation.
+Thanks.
+.
 
-Best regards,
-Hervé
+> Thanks,
+> Sid
+> 
+> [1] https://lore.kernel.org/linux-mm/20240411164756.261178-1-sidhartha.kumar@oracle.com/T/#u
+> 
+> 
+>> -    if (!ret)
+>> +    if (!ret) {
+>> +        drain_all_pages(page_zone(page));
+>>           ret = take_page_off_buddy(page);
+>> -    zone_pcp_enable(page_zone(page));
+>> +    }
+>>         return ret;
+>>   }
+> 
+> .
+
 
