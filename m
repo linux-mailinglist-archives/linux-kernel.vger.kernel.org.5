@@ -1,144 +1,197 @@
-Return-Path: <linux-kernel+bounces-141876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11EFA8A247F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:48:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9CC38A2482
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:51:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FEE5B217D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:48:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02A0A1C211EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:51:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E7917BDD;
-	Fri, 12 Apr 2024 03:48:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE77017BD4;
+	Fri, 12 Apr 2024 03:51:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YvDtC67u"
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l4UTcjRO"
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CDE6125CC;
-	Fri, 12 Apr 2024 03:48:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9BB115AF1
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 03:51:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712893683; cv=none; b=RtSPJKsYs5LV9sOgJTNNJymFsCDPNuZFLc9lIMxsOqKkb9cxYtEm8UfSIRSeyx+Sek0lR4Y3D0Os6r2N3+kWz9Gp+fSGUE1knZ9cpnD8cLvTynPizSNO3TNjVgX+Ev4i7n10/u/98eJxaVFa68/gjgLQ23tpPxEJ/qDyvpKfFdw=
+	t=1712893881; cv=none; b=TRnZduJb2GcBviRnaRzgXwdinuCH0the+pt8l5lSa0BKPyhs1CoScWsqCAHneGwcXrbc6vHCKoqIxSGKNCgjPQutJVk+sLERpUV6DVKfVJVnGWMhCbQNhqUGBc5eNj4rvT7zuSDWYicM9U0sYvwhvpKryjyrSdgsuA4RNnMcj4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712893683; c=relaxed/simple;
-	bh=/rHLC/R4rfN502F/b9F/DI/sJIeNeNKUawb8/J1/9lc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CKYL2fmaQ5ERyVf2fevZav3UPp1GD6d3jDlmFNl0kf/CpFifj2cnvZXo0LGMzxLDu7CYx+XvJKFCgiaHP9ooDCjnW/uCTqLl5muZ9EooRL37Pq23pVZ3RxSpwMGrxYClwoo7tCKiAzfkYiHnmjMvlvWZzz3gLQuYEWk/CM0pzmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YvDtC67u; arc=none smtp.client-ip=209.85.210.53
+	s=arc-20240116; t=1712893881; c=relaxed/simple;
+	bh=pcBlVy6bPYDqNoRlb1dwSstSZkriaADkJyZMbpJXDKI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=o6fde0feoOZMLy6Me91kNYT4uJ+sQgao5OzYDxID+qLP0Nfcbof0/fgHmOse4CxJkopTlJPzTNx21jFzBkguHCj8UMVv49J/vhc41fgx95ZQ/ORR70jO8DWUt5rCxUXtS/WXuG+FVzR9nl7HDlxLzsZikD1nnFIxiGPFcHJ1U5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l4UTcjRO; arc=none smtp.client-ip=209.85.161.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6eb358d8a58so296893a34.1;
-        Thu, 11 Apr 2024 20:48:02 -0700 (PDT)
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5aa22ebd048so376360eaf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 20:51:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712893681; x=1713498481; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JTEo3Ir/LcEQwAwbgkuCoRg+Pp7ew9j08XlIRINI/x4=;
-        b=YvDtC67uDUM6Qw0xjSX7u8kgNMB5nR3SKx70exSUG8fMN3nzpjFLd6V3ntYJrXmoJY
-         f1uiN7QkXkNM6iqNBU2XAxu0AnfiQ/yjGHwBt2w6D+KDdItj6UWMZQP/H+W+w5Sfx03K
-         TLpHqLhR58PLGHzYiijlmdygrXe7Yjod8LenadwjTjA5vFWrU1mm290l8x0T9FznvpAT
-         vT4kGWjf7o829BBU7lYY6Kg8m34Y8eNfk4wJZ5PfP7gKG3BHojZVdscwt05yaMctB+K1
-         GLhCKpMjtH0AEtVcJX6/6oPzasZUuSYACRdIDvCEbpoDmcLMwjGSQDV8tpLqKwfRpONy
-         VC5Q==
+        d=gmail.com; s=20230601; t=1712893879; x=1713498679; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4bzY4596sfM/9zLFq+hul7IoQ+dQ+EIJvV2zsj37DAk=;
+        b=l4UTcjROEsVQEhLAG1tG9FvkTbaeDu+quRyn1uq/K2J0VCbXeCtu5NuizXb3XDbJx9
+         swCjkBONSQSVpTccCsU4oSxxMhhkr08M4lJ++bpEMYaeNOiOUp/0593dGx7i4JJ7IJyd
+         nrT26eST1UOO5CgMrFKYuWaaV8W/ZGgD6JWoIxBkCveVunu6an/OcS02X2UXtLAbOuIb
+         iyNMLb5hECF8SkjOUJQFKuwTEG8e+ioCOzJGoVnSO8HZsG4c6paeiIFNwexjZ0EU/gI0
+         RW3bcxT0AQ0ldQuk5F0dU2TJSz/RxolmXCjD58okqJLmgr/vji8D8MCivATXtQdowscO
+         rm+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712893681; x=1713498481;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JTEo3Ir/LcEQwAwbgkuCoRg+Pp7ew9j08XlIRINI/x4=;
-        b=TE51Nmc9Mxn7Is26H6wL1tzvjbKOicn3N2JLPqU9MBydCPQXEdFgRCNHhc69m6hiZG
-         zGXRhEK5CDooVxNMO1meSoRmi4DWZBHqxl3+R0RtM8o1iCUTLTM4JG5FqAEiYhdAZWwN
-         kLFtRn0gfsyYZuhrVOoeebMVzKsxhIZu68WUXs0tq/ifTed/Pw8wonJoi4YOod9xHYfw
-         YcXKBYYjiY05BWhCUAFB8YPkyEwjrtkdWV/c+k8ykidlpaWem/9X0LVy6OVMPdco8q2L
-         7hic3C3FDJuM/7TO2l5h49lwzvcRbzB3TVZ2qCGtHvNRXGPCe6f+xqg22/5O/QSou7mK
-         V+eg==
-X-Forwarded-Encrypted: i=1; AJvYcCVRsj/5Vk2oqeY2/oDLxDFXVEc5vxOkf9S/yry4r24cKGl4wO+2rjiSExmlnaLsQHW73ynPA9ZI1XkDWIb1CAMWBZ7MHarxUAyImsU8Ruxomo4X2k0aEEkLhy3BR5qOSWRAEp+/N8gK
-X-Gm-Message-State: AOJu0Yw+OO18UgNkhfazeSEvbxQX7bLXaI819KpjrJwlwdiU7JJzTu4O
-	bPJlOVuSy17zfhlbj5GfxZxfxPfSzX8MEXHAnn2Z8Qc9kzEAJTaS
-X-Google-Smtp-Source: AGHT+IG8VNh400XZR5PgXexjn/0m3GrTYv5Fa64sd9F/M/bu3INDRryNUHK5SkXwPRVvFVmZL5yeKw==
-X-Received: by 2002:a05:6808:bcf:b0:3c6:f3a0:39ad with SMTP id o15-20020a0568080bcf00b003c6f3a039admr982527oik.13.1712893681448;
-        Thu, 11 Apr 2024 20:48:01 -0700 (PDT)
-Received: from ?IPV6:2402:e280:214c:86:5d38:4ef:72ea:d357? ([2402:e280:214c:86:5d38:4ef:72ea:d357])
-        by smtp.gmail.com with ESMTPSA id f9-20020a056a001ac900b006ece7286c68sm1922753pfv.41.2024.04.11.20.47.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Apr 2024 20:48:00 -0700 (PDT)
-Message-ID: <6fbdbdd3-965f-44e7-bd25-0b0c3e9f53f9@gmail.com>
-Date: Fri, 12 Apr 2024 09:17:54 +0530
+        d=1e100.net; s=20230601; t=1712893879; x=1713498679;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4bzY4596sfM/9zLFq+hul7IoQ+dQ+EIJvV2zsj37DAk=;
+        b=kWbkW4AT6oDhuj5tbM99i+6m/NtEL/ttymSSYH1n5l1XvjWRlqpNeT1qW1DsAIf3Ng
+         IC4/qcS7ZoAZ1Hf6Sw5xU+4g96BlH/a4LmKdeXhQlbgJ+jCrOp+iTQuN7IvwAKgGarhk
+         /mHXxzCUSULIF9iemIdNj44iodyes5uYBJrcGnOTAyM38U0Uwfv5Vmo2ILWi7+3eNNR2
+         XTAx9zoSlMCbgKMGladJMSa3nuMX/btPcBrRssmuWnNCVNzRJsJAiWApLozNKHS+CMSx
+         42g4CD1cpO9NStCQ2zDL1atE/CQgsi/aBtP7ewvVdOQUZ3ptrMaymtl1MoGpNCkE6Jbs
+         q1RQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUgWFK6NvzC70nWbXk/A1Kz/M2fJzl9e+OkwbHXT/fo1KIl3P5woEN++6N7JFRnCQKwFJtlH+TG7r5rKe7oRKdc0FZ8aEwwVrcdkMKr
+X-Gm-Message-State: AOJu0YwZDDTOhjoDcWbu79pwa/jK44ts3MEeVm40DkkON5+EV9eB8GlK
+	Cc7vmb3CxncpYUcqRI8TAAUcfRTghiq1bk39xDunSr/gR2QrW/KIc2MyNW7W
+X-Google-Smtp-Source: AGHT+IGCOWvN10gwtK41NG7gcU83k5LcliiTl9q4NSeG7jIUo4FN8waEU5bHybUmzOYVFJBlQ5BXiQ==
+X-Received: by 2002:a05:6358:6b0b:b0:186:41a2:cbd2 with SMTP id y11-20020a0563586b0b00b0018641a2cbd2mr1325524rwg.27.1712893878886;
+        Thu, 11 Apr 2024 20:51:18 -0700 (PDT)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id c31-20020a631c5f000000b005dc9439c56bsm1815658pgm.13.2024.04.11.20.51.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Apr 2024 20:51:18 -0700 (PDT)
+From: Yuntao Wang <ytcoode@gmail.com>
+To: mhiramat@kernel.org
+Cc: akpm@linux-foundation.org,
+	arnd@arndb.de,
+	christophe.leroy@csgroup.eu,
+	geert@linux-m68k.org,
+	jpoimboe@kernel.org,
+	kjlx@templeofstupid.com,
+	linux-kernel@vger.kernel.org,
+	ndesaulniers@google.com,
+	peterz@infradead.org,
+	rppt@kernel.org,
+	tglx@linutronix.de,
+	tj@kernel.org,
+	ytcoode@gmail.com
+Subject: Re: [PATCH] init/main.c: Fix potential static_command_line memory overflow
+Date: Fri, 12 Apr 2024 11:51:07 +0800
+Message-ID: <20240412035109.13680-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240412000858.7d81a7b946af172e6aed554d@kernel.org>
+References: <20240412000858.7d81a7b946af172e6aed554d@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: typec: mux: replace of_node_put() with __free
- [linux-next]
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: heikki.krogerus@linux.intel.com, dmitry.baryshkov@linaro.org,
- neil.armstrong@linaro.org, christophe.jaillet@wanadoo.fr,
- u.kleine-koenig@pengutronix.de, skhan@linuxfoundation.org,
- javier.carrasco.cruz@gmail.com, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, Julia Lawall <julia.lawall@inria.fr>
-References: <20240410165222.5192-1-prosunofficial@gmail.com>
- <2024041103-doornail-professor-7c1e@gregkh>
-Content-Language: en-US
-From: "sundar.R" <prosunofficial@gmail.com>
-In-Reply-To: <2024041103-doornail-professor-7c1e@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi greg k-h,
+On Fri, 12 Apr 2024 00:08:58 +0900, Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-Thanks for comments provided.
-
-On 11/04/24 17:47, Greg KH wrote:
-> On Wed, Apr 10, 2024 at 10:22:22PM +0530, R SUNDAR wrote:
->> use the new cleanup magic to replace of_node_put() with
->> __free(device_node) marking to auto release and to simplify the error
->> paths.
->>
->> Suggested-by: Julia Lawall <julia.lawall@inria.fr>
->> Signed-off-by: R SUNDAR <prosunofficial@gmail.com>
+> On Thu, 11 Apr 2024 22:27:23 +0800
+> Yuntao Wang <ytcoode@gmail.com> wrote:
 > 
-> All CAPS for your name?  Is that how it is written on documents (for
-> some countries this is normal, but usually not, so I have to ask.)
-
-In documents it was like that.I also thought to change to small letters 
-in git user name.
-will change to small letter.
-
->> -
->> -	ep = of_graph_get_endpoint_by_regs(nb7->client->dev.of_node, 1, 0);
->> +	struct device_node *ep __free(device_node) =
+> > On Thu, 11 Apr 2024 16:21:37 +0300, Mike Rapoport <rppt@kernel.org> wrote:
+> > > On Thu, Apr 11, 2024 at 09:23:47AM +0200, Geert Uytterhoeven wrote:
+> > > > CC Hiramatsu-san
+> > > > 
+> > > > On Thu, Apr 11, 2024 at 5:25 AM Yuntao Wang <ytcoode@gmail.com> wrote:
+> > > > > We allocate memory of size 'xlen + strlen(boot_command_line) + 1' for
+> > > > > static_command_line, but the strings copied into static_command_line are
+> > > > > extra_command_line and command_line, rather than extra_command_line and
+> > > > > boot_command_line.
+> > > > >
+> > > > > When strlen(command_line) > strlen(boot_command_line), static_command_line
+> > > > > will overflow.
+> > > 
+> > > Can this ever happen? 
+> > > Did you observe the overflow or is this a theoretical bug?
+> > 
+> > I didn't observe the overflow, it's just a theoretical bug.
+> > 
+> > > > > Fixes: f5c7310ac73e ("init/main: add checks for the return value of memblock_alloc*()")
+> > > 
+> > > f5c7310ac73e didn't have the logic for calculating allocation size, we
+> > > surely don't want to go back that far wiht Fixes.
+> > 
+> > Before commit f5c7310ac73e, the memory size allocated for static_command_line
+> > was 'strlen(command_line) + 1', but commit f5c7310ac73e changed this size
+> > to 'strlen(boot_command_line) + 1'. I think this should be wrong.
 > 
-> And if so, why this random USB driver being the first one?  Have you
-> tested this?
-
-I haven't tested it.I picked this usb driver to get cleanup module 
-changes with __free.
-I believe since of_node_put() is scope based here,we can use cleanup to 
-remove the goto label uses in case of error.
-> >
->> +		of_graph_get_endpoint_by_regs(nb7->client->dev.of_node, 1, 0);
->>   
->>   	if (ep) {
+> Ah, OK. that sounds reasonable. 
 > 
->  the "common" path should not be indented, but only the exception (i.e. bail
-> if ep is not allocated properly.)
-I Tried in same line initialization, it exceeds column limit.
-so indented in next line.
-
-
+> > 
+> > > > > Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> > > > > ---
+> > > > >  init/main.c | 8 +++++---
+> > > > >  1 file changed, 5 insertions(+), 3 deletions(-)
+> > > > >
+> > > > > diff --git a/init/main.c b/init/main.c
+> > > > > index 2ca52474d0c3..a7b1f5f3e3b6 100644
+> > > > > --- a/init/main.c
+> > > > > +++ b/init/main.c
+> > > > > @@ -625,11 +625,13 @@ static void __init setup_command_line(char *command_line)
+> > > > >         if (extra_init_args)
+> > > > >                 ilen = strlen(extra_init_args) + 4; /* for " -- " */
+> > > > >
+> > > > > -       len = xlen + strlen(boot_command_line) + 1;
+> > > > > +       len = xlen + strlen(boot_command_line) + ilen + 1;
+> > > > >
+> > > > > -       saved_command_line = memblock_alloc(len + ilen, SMP_CACHE_BYTES);
+> > > > > +       saved_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
+> > > > >         if (!saved_command_line)
+> > > > > -               panic("%s: Failed to allocate %zu bytes\n", __func__, len + ilen);
+> > > > > +               panic("%s: Failed to allocate %zu bytes\n", __func__, len);
+> > > > > +
+> > > > > +       len = xlen + strlen(command_line) + 1;
 > 
-> thanks,
+> Ah, I missed this line. Sorry. So this looks good to me but you don't need any
+> other lines, because those are not related to the bug you want to fix.
+> Please just focus on 1 fix.
+
+Hi Masami,
+
+Do I need to split this patch into two? Or should I just repost this patch
+with any other lines not related to this bug removed?
+
+Actually, I think these lines are still necessary as they make the code
+look a bit cleaner.
+
+Thanks,
+Yuntao
+
+> Thank you,
 > 
-> greg k-h
-
-Regards,
-Sundar
-
+> > > > >
+> > > > >         static_command_line = memblock_alloc(len, SMP_CACHE_BYTES);
+> > > > >         if (!static_command_line)
+> > > > 
+> > > > Gr{oetje,eeting}s,
+> > > > 
+> > > >                         Geert
+> > > > 
+> > > > -- 
+> > > > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> > > > 
+> > > > In personal conversations with technical people, I call myself a hacker. But
+> > > > when I'm talking to journalists I just say "programmer" or something like that.
+> > > >                                 -- Linus Torvalds
+> > > 
+> > > -- 
+> > > Sincerely yours,
+> > > Mike.
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
