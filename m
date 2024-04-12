@@ -1,137 +1,108 @@
-Return-Path: <linux-kernel+bounces-141970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C67A08A259F
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:19:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 019448A25A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:20:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81D432848B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:19:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF3DC1C22640
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:19:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE1751BC4B;
-	Fri, 12 Apr 2024 05:18:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 851231B95B;
+	Fri, 12 Apr 2024 05:19:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="aOInRbYw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J0eg+fB9"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1839E1F619;
-	Fri, 12 Apr 2024 05:18:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B57F317BCE;
+	Fri, 12 Apr 2024 05:19:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712899123; cv=none; b=p1tpxEi8KlXTzEUP2gDU+PBNPfqowQcrjDxVGu63pNOr6xmi2yR3xDrlni4soJ1ku5C5qNje920sLVE/mKUI9q9gQm4sjQzh5cg8vsJhTQQk1KBQTfEePksQJiKJdVoLOJ9FUzkq7r6WwQRmJhpX1x0LqSOuKDNZpVwVviI1a7c=
+	t=1712899191; cv=none; b=uSACbe4/8teJa2BcNgNp/+Rr0kv3oiqm0T4fW4TzsS/o1FX+jOkHIJtoUU4OHZRZhMksTzdWSWbYF7lFILI4KQyHotC42iEg3gWSlTY0X+bR/SsKn+pKSCgKGstKRuqRxaViCrpCJX4K+AziqkUAjc+/DUHof9x6kpfvy7BODW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712899123; c=relaxed/simple;
-	bh=4wqTxoZFHiWRIlPPIHGTjlolEmrgei5d04Xo/JlN0go=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wrivz/lYLeE6wxRIGeWWikS1FiR0Jt0IiUuSO9upwXStfFdABhTV/5ACjWAbEpek8WmjFtkLQbg7v0lIzxs6vow4d3g4FfOktemeSwmhXgP52MwxgF8iUsqlfGkBj39wAShREv20YAoSJsVYPiRdYesTy9fQidpOfeLv35RPJjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=aOInRbYw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33ADDC2BBFC;
-	Fri, 12 Apr 2024 05:18:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712899122;
-	bh=4wqTxoZFHiWRIlPPIHGTjlolEmrgei5d04Xo/JlN0go=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aOInRbYwcY73F+9XzxfeawyYGu3hSjC4p32UJ3k+cLbqQ6ALnD+/pTkngXODLnbhX
-	 IAURGE0AROPtapKw1AWf5OvVrHzn9bL3N+lL2yZRJr9bNBrmi5fig4c+Oy/THCl01R
-	 t9VHgsqEOQynEAScuTJOGA4Pz+9cD18PRIqcMVmU=
-Date: Fri, 12 Apr 2024 07:18:39 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Ivan Avdeev <me@provod.works>
-Cc: laurent.pinchart@ideasonboard.com, dan.scally@ideasonboard.com,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: gadget: uvc: use correct buffer size when parsing
- configfs lists
-Message-ID: <2024041230-preaching-ranger-66fe@gregkh>
-References: <20240411164616.4130163-1-me@provod.works>
+	s=arc-20240116; t=1712899191; c=relaxed/simple;
+	bh=JnUwlu3hA8OWMeLa8KCW3yju2ShEzFTZuW+pPMy4qJU=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=QD2AMySp98HsoFUKv2W8V/6aVpSEjD+finfvHo5DEfL/X3g7sxuu5vhxX2qA6xIWE4JdqP8z0+dGefnpKxtUHqtqHQboIU6zNamvfkeGONL8QWbjzls2IclmloUB6ffMH7GbnP+UcJQ9FPJrYFO9HhWxnF2UL9zU7ivt/x0oFRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J0eg+fB9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6608AC2BBFC;
+	Fri, 12 Apr 2024 05:19:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712899191;
+	bh=JnUwlu3hA8OWMeLa8KCW3yju2ShEzFTZuW+pPMy4qJU=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=J0eg+fB9JaQywMndycZ6ohhjdQC1DvGQG//bGfPBvI17dD7Fh7ivnskva2zGeo78F
+	 g8r6mVScCv0aNZvOmVfY5nyDDruzh/GLJKQwTvKzE8AbrfxxOcgbsbCW+t3t+zxYj7
+	 xhaXcAVZCpKt5viKAByf8mv62xRXoYMcMQKeEIMLHq04iN47t7p4IMXXkbRyMvlEUm
+	 2PweoigGphpnbm30iCN0k7+gBtjMFwofoKKLAi8R+Qy3hdyEupHBtzO+qR7pvgDv+k
+	 DWYbiV4ilGXM3qv2dPtYyiOvf3BI6iDFVZLWZk8x8JPdOJ4rzWSAhqBb14m8qE4oFb
+	 W/F8WDlR+Mhjg==
+Message-ID: <32dec29a9a29ad204930fbf9eefd2b89.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240411164616.4130163-1-me@provod.works>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <D0H7PXOXYNXI.2QM4E0O02FK34@bootlin.com>
+References: <20240410-mbly-olb-v1-0-335e496d7be3@bootlin.com> <20240410-mbly-olb-v1-4-335e496d7be3@bootlin.com> <4ce9f3cea1ecd3777cf3e291cc865210.sboyd@kernel.org> <D0H7PXOXYNXI.2QM4E0O02FK34@bootlin.com>
+Subject: Re: [PATCH 04/11] clk: divider: Introduce CLK_DIVIDER_EVEN_INTEGERS flag
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org, Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, Gregory CLEMENT <gregory.clement@bootlin.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+To: Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>, =?utf-8?q?Th=C3=A9o?= Lebrun <theo.lebrun@bootlin.com>
+Date: Thu, 11 Apr 2024 22:19:49 -0700
+User-Agent: alot/0.10
 
-On Thu, Apr 11, 2024 at 12:46:16PM -0400, Ivan Avdeev wrote:
-> This commit fixes uvc gadget support on 32-bit platforms.
-> 
-> Commit 0df28607c5cb ("usb: gadget: uvc: Generalise helper functions for
-> reuse") introduced a helper function __uvcg_iter_item_entries() to aid
-> with parsing lists of items on configfs attributes stores. This function
-> is a generalization of another very similar function, which used a
-> stack-allocated temporary buffer of fixed size for each item in the list
-> and used the sizeof() operator to check for potential buffer overruns.
-> The new function was changed to allocate the now variably sized temp
-> buffer on heap, but wasn't properly updated to also check for max buffer
-> size using the computed size instead of sizeof() operator.
-> 
-> As a result, the maximum item size was 7 (plus null terminator) on
-> 64-bit platforms, and 3 on 32-bit ones. While 7 is accidentally just
-> barely enough, 3 is definitely too small for some of UVC configfs
-> attributes. For example, dwFrameInteval, specified in 100ns units,
-> usually has 6-digit item values, e.g. 166666 for 60fps.
-> 
-> Fixes: 0df28607c5cb ("usb: gadget: uvc: Generalise helper functions for reuse")
-> Signed-off-by: Ivan Avdeev <me@provod.works>
-> ---
->  drivers/usb/gadget/function/uvc_configfs.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/gadget/function/uvc_configfs.c b/drivers/usb/gadget/function/uvc_configfs.c
-> index 7e704b2bcfd1..a4377df612f5 100644
-> --- a/drivers/usb/gadget/function/uvc_configfs.c
-> +++ b/drivers/usb/gadget/function/uvc_configfs.c
-> @@ -92,10 +92,10 @@ static int __uvcg_iter_item_entries(const char *page, size_t len,
->  
->  	while (pg - page < len) {
->  		i = 0;
-> -		while (i < sizeof(buf) && (pg - page < len) &&
-> +		while (i < bufsize && (pg - page < len) &&
->  		       *pg != '\0' && *pg != '\n')
->  			buf[i++] = *pg++;
-> -		if (i == sizeof(buf)) {
-> +		if (i == bufsize) {
->  			ret = -EINVAL;
->  			goto out_free_buf;
->  		}
-> 
-> base-commit: 2c71fdf02a95b3dd425b42f28fd47fb2b1d22702
-> -- 
-> 2.43.2
-> 
-> 
+Quoting Th=C3=A9o Lebrun (2024-04-11 03:14:09)
+> Hello,
+>=20
+> On Thu Apr 11, 2024 at 5:06 AM CEST, Stephen Boyd wrote:
+> > Quoting Th=C3=A9o Lebrun (2024-04-10 10:12:33)
+> > > index 4a537260f655..cb348e502e41 100644
+> > > --- a/include/linux/clk-provider.h
+> > > +++ b/include/linux/clk-provider.h
+> > > @@ -675,13 +675,15 @@ struct clk_div_table {
+> > >   * CLK_DIVIDER_BIG_ENDIAN - By default little endian register access=
+es are used
+> > >   *     for the divider register.  Setting this flag makes the regist=
+er accesses
+> > >   *     big endian.
+> > > + * CLK_DIVIDER_EVEN_INTEGERS - clock divisor is 2, 4, 6, 8, 10, etc.
+> > > + *     Formula is 2 * (value read from hardware + 1).
+> > >   */
+> > >  struct clk_divider {
+> > >         struct clk_hw   hw;
+> > >         void __iomem    *reg;
+> > >         u8              shift;
+> > >         u8              width;
+> > > -       u8              flags;
+> > > +       u16             flags;
+> >
+> > This can stay u8
+>=20
+> It is unclear to me why it can stay u8? __clk_hw_register_divider() puts
+> clk_divider_flags into flags field of struct clk_divider.
+> BIT(8) overflows u8.
 
-Hi,
+Oh, I missed that part.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+>=20
+> >
+> > >         const struct clk_div_table      *table;
+> > >         spinlock_t      *lock;
+> > >  };
+> >
+> > We should add a kunit test.
+>=20
+> Will look into how this works and try something for next revision. I
+> guess you are talking about adding clk_divider tests, not only tests
+> for this flag? I cannot find any existing kunit tests for clk_divider.
+>=20
 
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- You have marked a patch with a "Fixes:" tag for a commit that is in an
-  older released kernel, yet you do not have a cc: stable line in the
-  signed-off-by area at all, which means that the patch will not be
-  applied to any older kernel releases.  To properly fix this, please
-  follow the documented rules in the
-  Documentation/process/stable-kernel-rules.rst file for how to resolve
-  this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+Right, there aren't any tests today. Thanks.
 
