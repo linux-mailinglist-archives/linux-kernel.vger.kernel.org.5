@@ -1,122 +1,258 @@
-Return-Path: <linux-kernel+bounces-142844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B31DB8A30C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:33:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EB6B8A30C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:35:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52D311F25390
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:33:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B9CA1F255E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:35:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEE6113D618;
-	Fri, 12 Apr 2024 14:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CDBB13D615;
+	Fri, 12 Apr 2024 14:35:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="vwk8NzmV"
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iZbbvnoH"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81BD18615C
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:33:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F3713C9B9
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:35:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712932418; cv=none; b=mT6z53e2qaOtYvedU1zsMEbWPHNoc1QR2eaF7tKDLUaNkjD1WvWdvCCx4vF9JzQE/RI86UihLY2x/kxi0cRfdmFoL0wKwMkI/YzzIzGHg95abyR53A8aYqFw3r6/blyWUYP/g+0Y6LphZod+RmkZFkwqiz6bcJro++xQmJvWWk4=
+	t=1712932504; cv=none; b=senjR8fXf6PvmWIwz6Ax3i5naNcp9YqpGPo5YWCuLCDF56pSqfJt+SMcpEfXDerWKcV3hQAImiwbagZXQqY1sdek2M/Yhsbt4xEGOiIIGdt8oXDfOyHfg7zEOk+Ik2IRi+b3lqLZwt5wyrb+s5+95hYIB115UMMY3VJ3o7CdIIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712932418; c=relaxed/simple;
-	bh=U2v0xXugGcKnm9y+KSvCKSzUBnL/1h15RrqGsLqlE9k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SkfbnZ96Z/p7ahQILCm1oZhqw2oG+FRcL3mFaknm3TuHNHqutMw8h7Uqy5lhIqYdeKzS9MARDRGX0ph06otx2clpyrMOjogoyuDsD2L0kKrjeyrZu0rngmVXtGCOmnAQTylsDCHwkxJxibLiT4omPWWqEB91K9OAjIiLrqoqqYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=vwk8NzmV; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7d6112ba6baso7279539f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:33:35 -0700 (PDT)
+	s=arc-20240116; t=1712932504; c=relaxed/simple;
+	bh=wUBzQHUwt6/ntRQQFcRF8kQGAiGeZ3n4cxtkIT5qrtA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Yf1KWqWnl2hKWe/lSLQ/Lsp0vehYJFQczqusxI6nsZ3vNjQfr/eDpJJpHDn/CU2my03w/dVD9UvkiSFc+dCy0+fXNIUtXvxbHs2CXC4eh6mRfwTBHDNBaoOQtfeHJ6QiI7WXIG5etyt8K7+hO11pem4yh7gU3UMCEI/wfzX0zcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iZbbvnoH; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-61518d33293so10920307b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:35:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712932414; x=1713537214; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BrT3sFNst7WsOgXv8+8mtDti7gnB6xBN3qOMfMoY1fI=;
-        b=vwk8NzmVhBLtsP7Mp0b2VTfD+/hgD3qlDiNBIbsFw6NANgdZ7PmauiIFsek9Ia1kjo
-         YzeGU+bp2UON9gUeQgCRmFHLA5XOY8X8+mXDlGDJfOAWM1ImlGkhrl1aMRrV2Ua0ABA4
-         wnSrdnxM7eQiDjXQzDwbuIm/mP2SApP+PhBRiTwq6Gu93KQjhV8DHnVN+rgkfAFETTpq
-         POd1elXvhDPpOhOMivrqZnDlDOcSuUZTAi059ML9sPQLb2cJOllUkDIf8NYbQRrgR7GF
-         G78gNBu4ekqG4IQGTi9/bol/Mqk6MP3AW/jw8fNU6J8927NKBc0x8EIswej9eQqeUSst
-         Kswg==
+        d=linaro.org; s=google; t=1712932500; x=1713537300; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SgOXnMStIHN46Kz0NUk8tixwh+qg++oHVyRP48CyUG0=;
+        b=iZbbvnoH0NKSiD1DwLDnt4J/0Ph+08TeSM3rlNCd7j/tmGpvKAdf4XS2rlKIiOOKK5
+         ROyjs83tnF/82uOW8cUXhme94oQUkmYQp27QbroJ0v9rZFT1eDWeXACJMJLRwAaCF/dK
+         WPsC+PXD1p/3C0gDt/yNJv0Unucs5yAjUAYF3zEd+lbrA28pufWqW/IOXqt065cGPUP0
+         xyeSwmQQ0evxo1BNverkv3sVRu/nm4J0tLLshmMA7JCCK9nya2+22xYO/7zwOUCv8kBV
+         c2wjoRhygLWIfJXMkKGunAVtRwIRQXy3nnG/NiOQBBScgPWuphhcEtEKw6TymetugwDf
+         +zCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712932414; x=1713537214;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BrT3sFNst7WsOgXv8+8mtDti7gnB6xBN3qOMfMoY1fI=;
-        b=n9K9Ey6HX//oyVe4DZOPs6wyVExPMvvgkdF0OC7k5okehPiYc9N6V1zpPNkomZ5OPy
-         7iwVMjlq77dXmm7jq9KHwecvakVarc24HVD8Oj0XTbYclmsFGJwXlN/yHll4VmHwhIW7
-         IkDkNRK42uPXIDqR4vSHeVuJFsNmpgNHryUX/jtCJ3aaM7aG2cOKMiAvNdONhjSsrjx0
-         uPG8R1AbfwUOQV9nsaoKFcGlHVRsnc1Z4oiJ9ZVpszerqwHrJ4cc+aiFPfpqPO26itkm
-         vXkfrAixbpESXogndXHEiQPxKTOFkVpUw2yyX2hL+N4bUegmOEEWeiVRGVyNXEAWrCg8
-         TONw==
-X-Forwarded-Encrypted: i=1; AJvYcCXbL/KUEbbMsQayugEgANzO4e1jXsFWDw95k/nK//EeIF5gAPVJQ/MU9SJCGyIlGLMcmWvwRliJZRAmSHDDGENR4MCmPtvF5eV5b08W
-X-Gm-Message-State: AOJu0Yyo3ST/Ml+1nua/U/0xPq2gU3mCTkfufZc9EeNuXQULzUY7iTWB
-	EnYYWti2mlrUBZcdXAaDonvCRQcm3ybLhC9yQJzaFFhD1il+yhtl4vGa4Gg2KPw=
-X-Google-Smtp-Source: AGHT+IG2h8sZqNq+N+XfUeoFr1XWCRRgSLSOhk/Zf8KsfRonGD1pAapHFvoxFp+NKFVuVSDKgPRNNA==
-X-Received: by 2002:a6b:cd08:0:b0:7d5:fe3e:90ff with SMTP id d8-20020a6bcd08000000b007d5fe3e90ffmr3147431iog.0.1712932414611;
-        Fri, 12 Apr 2024 07:33:34 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id g6-20020a056602150600b007d5ddee1d4esm1069624iow.49.2024.04.12.07.33.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Apr 2024 07:33:34 -0700 (PDT)
-Message-ID: <d071fa42-df7b-459f-832d-798e6b37184f@kernel.dk>
-Date: Fri, 12 Apr 2024 08:33:33 -0600
+        d=1e100.net; s=20230601; t=1712932500; x=1713537300;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SgOXnMStIHN46Kz0NUk8tixwh+qg++oHVyRP48CyUG0=;
+        b=ngGr+pgLl18lgWndD++Dg7JTLJ8u4sFAFYB/DCe1nCdlgiPHAkNLFhF1mlDPK2eYGb
+         oQ+sVpvpgqj2lJcSxlIzOZPceqBaSKTjnpb7fLybUuxDt57RJV3gb8ar9R6kfKnFYV3r
+         tqNeNYxZiU7/JjFkYzCO//74GQ9100Moq75n+uew2Mgfy12MMg0UaiVWZ0clmChIGg4i
+         bTKzlpAPqr9mic//3D46mDHWhZaCDsr2h/zju/C8SU4kkSIahYke4M7wB6mgcaExwrtm
+         Rsst8ChREkCnxWT19jltz9xBfmkadepqhxgETXh9Y6RUcAyXnW9Yv/JCSpTkzqRNKk3l
+         s9uQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVuhWTuZ/Tk5tqV5DGqc0zJNDc6c9TY+l7d4HpAg3aSjzIiv0WLnKziljyCBWU7L0UadBcCag4fL06j7rHXZVbKZ2hUWAaqu1Wyfwmh
+X-Gm-Message-State: AOJu0YyoXeGFLue1YQKqxaYAvoCpl8bgdUn7QPemCIiXO4k9fl28LXAm
+	Ll1jAka7nvb3n0KKtYfW3nUUyGfWeLFjJZpz8rVoHYFsZd7gHGrSazvxmAC/JCE8wTKknKQT4qe
+	peV2xfjZTEzB1+lnwbsaUn1KtMVm1Gid9L8LNHA==
+X-Google-Smtp-Source: AGHT+IGWgdpQEtJQGF8ZxvJHuaPU/CK4HM747qSvcp3vgE/92uXTsfu0SYh79YYQKRBfOo0jZ7dzfc9EO8OSYl+Z2go=
+X-Received: by 2002:a0d:cbcf:0:b0:617:c543:35b3 with SMTP id
+ n198-20020a0dcbcf000000b00617c54335b3mr2720478ywd.20.1712932500628; Fri, 12
+ Apr 2024 07:35:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next 1/2] block: fix that blk_time_get_ns() doesn't
- update time after schedule
-Content-Language: en-US
-To: Yu Kuai <yukuai3@huawei.com>, Yu Kuai <yukuai1@huaweicloud.com>,
- johannes.thumshirn@wdc.com
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com
-References: <20240411032349.3051233-1-yukuai1@huaweicloud.com>
- <20240411032349.3051233-2-yukuai1@huaweicloud.com>
- <9a4f8738-6ad5-407e-a938-83395aa1df4f@kernel.dk>
- <7baaea10-5a3d-5efa-158b-f10448232031@huawei.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <7baaea10-5a3d-5efa-158b-f10448232031@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240411095416.853744210@linuxfoundation.org>
+In-Reply-To: <20240411095416.853744210@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Fri, 12 Apr 2024 20:04:48 +0530
+Message-ID: <CA+G9fYtSkL2ru64oDqd8FSDrDSe8sjWSF__S2usLq3nhricOpQ@mail.gmail.com>
+Subject: Re: [PATCH 6.6 000/114] 6.6.27-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, 
+	broonie@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/11/24 7:24 PM, Yu Kuai wrote:
-> Hi,
-> 
-> ? 2024/04/12 0:44, Jens Axboe ??:
->> On 4/10/24 9:23 PM, Yu Kuai wrote:
->>> diff --git a/block/blk-core.c b/block/blk-core.c
->>> index a16b5abdbbf5..e317d7bc0696 100644
->>> --- a/block/blk-core.c
->>> +++ b/block/blk-core.c
->>> @@ -1195,6 +1195,7 @@ void __blk_flush_plug(struct blk_plug *plug, bool from_schedule)
->>>       if (unlikely(!rq_list_empty(plug->cached_rq)))
->>>           blk_mq_free_plug_rqs(plug);
->>>   +    plug->cur_ktime = 0;
->>>       current->flags &= ~PF_BLOCK_TS;
->>>   }
->>
->> We can just use blk_plug_invalidate_ts() here, but not really important.
->> I think this one should go into 6.9, and patch 2 should go into 6.10,
->> however.
-> 
-> This sounds great! Do you want me to update and send them separately?
+On Thu, 11 Apr 2024 at 15:56, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.6.27 release.
+> There are 114 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.6.27-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.6.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I've applied 1/2 separately, so just resend 2/2 when -rc4 has been
-tagged and I'll get that one queued for 6.10.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
--- 
-Jens Axboe
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 6.6.27-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.6.y
+* git commit: 3126167a036c76b2c9a53d19f7387cdcaf2ffd19
+* git describe: v6.6.26-115-g3126167a036c
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.2=
+6-115-g3126167a036c
+
+## Test Regressions (compared to v6.6.26)
+
+## Metric Regressions (compared to v6.6.26)
+
+## Test Fixes (compared to v6.6.26)
+
+## Metric Fixes (compared to v6.6.26)
+
+## Test result summary
+total: 242107, pass: 209368, fail: 2761, skip: 29712, xfail: 266
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 133 total, 133 passed, 0 failed
+* arm64: 41 total, 41 passed, 0 failed
+* i386: 33 total, 32 passed, 1 failed
+* mips: 26 total, 26 passed, 0 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 36 total, 36 passed, 0 failed
+* riscv: 19 total, 19 passed, 0 failed
+* s390: 13 total, 13 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 37 total, 35 passed, 2 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mm
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-smoketest
+* ltp-syscalls
+* ltp-tracing
+* perf
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
