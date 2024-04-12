@@ -1,152 +1,86 @@
-Return-Path: <linux-kernel+bounces-143332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB9418A3750
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:53:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E5E48A3756
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 22:54:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1E4A1C20C23
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:53:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AFA8282E87
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:54:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FCCC5478B;
-	Fri, 12 Apr 2024 20:53:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1154C1514E6;
+	Fri, 12 Apr 2024 20:53:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="JOEhex0/"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EkTxfwgZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377F62F875
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 20:53:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5941117C7F
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 20:53:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712955189; cv=none; b=K0Jaw1uZl+ZpUCrAe4EG8xXCpTKMkDXqCkDk3CwQo9ViFJFRXkdbXRDj0yj9zFewHXAaM/bbU5tlJKaCpI+MgF1+fc41+U7iT+WI8o+VsjHO2Ch+T3X/GDEec0xqp2MVmm2W7965sQSEXgAgY3vFotocjaE+pE2U5U96PCnRsDM=
+	t=1712955217; cv=none; b=fitqVvzRYcyfS8BatATNr6il+HDM9nxLSiWsMj1+o+vr/lexBvxT/Qz4FmOWvxcTbYkyUxDXk56ygg59FKN/21bo1LVwca0etff2fKhmLza1opzjoGZVt0A2HjiUbyA4X0d81rHPUm/ecZ66AU+6Away4ZI4Anzvh0A5Rid4y7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712955189; c=relaxed/simple;
-	bh=qGcc/rgVjEIkz41rcNhQCOoE29RUhq2mJkMJFN2mQyQ=;
+	s=arc-20240116; t=1712955217; c=relaxed/simple;
+	bh=7KHEBo/ktcL0Syd+126vMQEFQkCpI3GKOWAVYMxiir4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AmbxgWgcI7cQdcGo1TpJMRjmtNReK51uHEhUS+dShKYKhs0j6qYVnw7upL9Ok8YGCiOqzgmq5nUIAa+v2GImpPLeqFLsEQS1NdJWt+aTftB+HmAOK6O6Fav6hWnJ/uQSt4sm8MmFmuGQifnyOahogDGaLkK9GDzfDhX+g/JHuys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=JOEhex0/; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ed0e9ccca1so1272671b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:53:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712955188; x=1713559988; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kuI1xDSDY3wZqRxOoGKgeFXQbOBRCo2OPPgj3TfcWU4=;
-        b=JOEhex0/s/ow7z4CMqiadcfhvIHg0Uxi1d5Z7kkTTfVP76DW/9/u5zWsbmxg16pHAQ
-         dh3M0+xNPwCAXJPUZEp49nhrMIrqSKRfh6YvAnQ4ox9f24RzckPEO/mI2RCOcZxTjGeW
-         qZ1OhXi92XV+ThrCYM23ZigHzGsDY/NTB/6/3Yp2rEwZSYK0t4ImGWxjSIId0ZpwvcNf
-         EGxxoCHdekz6IxC/V/QZLvv68+JCmP88cxt6ftcnJPWm/LI9QixucKkf9u6NtYlkxkiz
-         oHiHNLBrxrvyII4YMOn3hZqbaF79PN64gqTN+K06a9UgnxJLcycQMxoOPI2d27eS9Szy
-         rKPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712955188; x=1713559988;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kuI1xDSDY3wZqRxOoGKgeFXQbOBRCo2OPPgj3TfcWU4=;
-        b=Lc2HdwMMiBB52tNsWhfVQkBJCu1naZCwYqKBZesEqG58jZ3OhHVuExHTZ9LeY3TKdN
-         ejEVvWLHWSxh1e40nfTzq2CRDDquLpJVAfCSz7PbtL7nuthVIJjnB2Pc7nVrRWOHZ441
-         VUlc8dlKjKB4ZqlBdyJ/4hLQB8fuTKYVvkl8pe4DXuMSoZ3rAS8CYdFN3HJx+4cJuODP
-         TDECvRy1MrU2ubGhO6bLNtG0wkAG4m11z5UXQlyCMIKTCSofF0KPN8DHAxmD8N+VqOMy
-         SeiQUfA9nJHzF5RT+XOH3ox7nFhWmZfLuD1aDLo8xpjFSKJOygtm7t/nfJBKqjdHzKlx
-         0Uvg==
-X-Forwarded-Encrypted: i=1; AJvYcCW0zd5HgfgGsynYvWLuPjXt7JxyvFt3ZzOFof62HR9MnN+7TvEE7hMvO0k/2yk2WQJ2T0235p7wioGvn8Juv4Gj2xX7z8IaNIgAvJYN
-X-Gm-Message-State: AOJu0YxRKckqvL7+jtOkAxib8QpP8WQj6RhJ6JWg4izl3znn3HGwjYz6
-	KyRv66FRgeXo+0FPcBlhuM1mfYHG48gzXe1VQfDjfMBRvGMCM8ya3je7MYOg0c4=
-X-Google-Smtp-Source: AGHT+IHrp3HzycZe7Jfb+XseUZGp1zZGIQ3nFRwoibOMYKPLe2QkUbH6yPsYO0522TOlVaFgwYmSxw==
-X-Received: by 2002:a05:6a00:1798:b0:6ea:bdbc:6a4 with SMTP id s24-20020a056a00179800b006eabdbc06a4mr4030047pfg.13.1712955187671;
-        Fri, 12 Apr 2024 13:53:07 -0700 (PDT)
-Received: from ghost ([50.145.13.30])
-        by smtp.gmail.com with ESMTPSA id j16-20020a62b610000000b006ecceed26bfsm3264351pff.219.2024.04.12.13.53.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 13:53:07 -0700 (PDT)
-Date: Fri, 12 Apr 2024 13:53:03 -0700
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 12/19] riscv: Create xtheadvector file
-Message-ID: <ZhmfL4Nutu8s4SMF@ghost>
-References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
- <20240411-dev-charlie-support_thead_vector_6_9-v1-12-4af9815ec746@rivosinc.com>
- <20240412-thirty-sacrament-db052c7fe6fe@wendy>
- <Zhl8Y+GzTB/ip7rT@ghost>
- <20240412-displease-sensually-33d91fc3fe63@spud>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iiRXFhslNsXXoAyFOlEEd7N/r08wh74nm8dLjPIrWngxgqd/Oalxd2cruW53DQm6MqrS674AeMj2UzKC9w1yNmkykcDdifKmyqT9eaxWBDVJLZq99UlUVG0au2Cl4pPR8DQqa/78QBpn3TxLfKmT3ltzCdLzYKlw1UAWAgevn/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EkTxfwgZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82740C2BD11;
+	Fri, 12 Apr 2024 20:53:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712955216;
+	bh=7KHEBo/ktcL0Syd+126vMQEFQkCpI3GKOWAVYMxiir4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EkTxfwgZyKHYF+A9q7/OS7701yzGJ8mRojg/TabzLaBZDF/95o/+nZxc5hTBA5fi5
+	 iDZOIat1qZf8x03nI0ybDg0R+AVU9jOMvz/P5zmUBFN+MDFL4p9yIi0Lp1yhGKdav/
+	 HmbIYsT8Kd0XmMOfEA0Q/uR+ZH7jeMV0jHG97J2MAccTqlCOvXPLacIkObBwDkqwhT
+	 xxOvSNRxlKNT8P1eJOiS7vxGKB/5ZoY1S16aqoX2pI1xmJmJlWKR0wbE7EyBBVpiow
+	 qm8lT5QIGSSoPI6IJc1RW+hYyKHd8dQzD2LBt8YmWKcGs/gHmgEYn9u+il+czzF8TW
+	 NfpE03UvkKYyw==
+Date: Fri, 12 Apr 2024 20:53:34 +0000
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Zhiguo Niu <niuzhiguo84@gmail.com>
+Cc: Chao Yu <chao@kernel.org>, Zhiguo Niu <zhiguo.niu@unisoc.com>,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org, ke.wang@unisoc.com,
+	hongyu.jin@unisoc.com
+Subject: Re: [PATCH V3] f2fs: add REQ_TIME time update for some user behaviors
+Message-ID: <ZhmfTousYopIc0HC@google.com>
+References: <1710915736-31823-1-git-send-email-zhiguo.niu@unisoc.com>
+ <ee24b313-a168-471e-b60f-1404c69e61a7@kernel.org>
+ <CAHJ8P3KaQF8okMOyagH80+BmUUZ=ENSoAApz2H-p_1=Pu5ZTbw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240412-displease-sensually-33d91fc3fe63@spud>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHJ8P3KaQF8okMOyagH80+BmUUZ=ENSoAApz2H-p_1=Pu5ZTbw@mail.gmail.com>
 
-On Fri, Apr 12, 2024 at 08:00:46PM +0100, Conor Dooley wrote:
-> On Fri, Apr 12, 2024 at 11:24:35AM -0700, Charlie Jenkins wrote:
-> > On Fri, Apr 12, 2024 at 12:30:32PM +0100, Conor Dooley wrote:
-> > > On Thu, Apr 11, 2024 at 09:11:18PM -0700, Charlie Jenkins wrote:
-> > > > These definitions didn't fit anywhere nicely, so create a new file to
-> > > > house various xtheadvector instruction encodings.
-> > > > 
-> > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > > > ---
-> > > >  arch/riscv/include/asm/xtheadvector.h | 25 +++++++++++++++++++++++++
-> > > >  1 file changed, 25 insertions(+)
-> > > > 
-> > > > diff --git a/arch/riscv/include/asm/xtheadvector.h b/arch/riscv/include/asm/xtheadvector.h
-> > > > new file mode 100644
-> > > > index 000000000000..348263ea164c
-> > > > --- /dev/null
-> > > > +++ b/arch/riscv/include/asm/xtheadvector.h
-> > > > @@ -0,0 +1,25 @@
-> > > > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > > > +
-> > > > +/*
-> > > > + * Vector 0.7.1 as used for example on T-Head Xuantie cores, uses an older
-> > > > + * encoding for vsetvli (ta, ma vs. d1), so provide an instruction for
-> > > > + * vsetvli	t4, x0, e8, m8, d1
-> > > > + */
-> > > > +#define THEAD_VSETVLI_T4X0E8M8D1	".long	0x00307ed7\n\t"
-> > > > +#define THEAD_VSETVLI_X0X0E8M8D1	".long	0x00307057\n\t"
-> > > > +
-> > > > +/*
-> > > > + * While in theory, the vector-0.7.1 vsb.v and vlb.v result in the same
-> > > > + * encoding as the standard vse8.v and vle8.v, compilers seem to optimize
-> > > > + * the call resulting in a different encoding and then using a value for
-> > > > + * the "mop" field that is not part of vector-0.7.1
-> > > > + * So encode specific variants for vstate_save and _restore.
-> > > 
-> > > This wording seems oddly familiar to me, did Heiko not write this?
-> > 
-> > Yeah, I wasn't sure how to attribute him. He wrote almost all of the
-> > lines in this file, but I put it together into this file. What is the
-> > standard way of doing that?
+On 04/10, Zhiguo Niu wrote:
+> Hi Jaegeuk
+> Any comments about this patch?
+
+Thank you for heads up. Applied.
+
+> thanks!
 > 
-> The original patches have his sob and authorship, so I would at least
-> expect co-developed-by.
-
-Perfect, thank you for pointing me in the right direction.
-
-- Charlie
-
+> On Wed, Mar 20, 2024 at 5:33 PM Chao Yu <chao@kernel.org> wrote:
+> >
+> > On 2024/3/20 14:22, Zhiguo Niu wrote:
+> > > some user behaviors requested filesystem operations, which
+> > > will cause filesystem not idle.
+> > > Meanwhile adjust some f2fs_update_time(REQ_TIME) positions.
+> > >
+> > > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> >
+> > Reviewed-by: Chao Yu <chao@kernel.org>
+> >
+> > Thanks,
 
