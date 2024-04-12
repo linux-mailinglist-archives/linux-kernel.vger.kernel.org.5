@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-142818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53DB18A3075
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:23:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DBDF8A3078
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:23:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B573B25BC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:23:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 589EF286580
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 14:23:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B309712C483;
-	Fri, 12 Apr 2024 14:22:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0D1A12C531;
+	Fri, 12 Apr 2024 14:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Dvh6dCTt"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O8VbATWr"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510BD12C468
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:22:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97D9F12C481
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 14:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712931729; cv=none; b=trZ1mIDJRH8fpjRCOUziKld2XkYe5wAbPHK6KSB/vV4SO3EgDjPWUXw4L7+layGnI+78fx9gQ+bQlE4m+0iB/gxYVA6o8A2c2UXfOjIp/8VASTO8T9PNm/79Vytpwwjh0GnLWQQPMIgH7uDw0w0rAJpvY4iOJ1tfcb0GefU5bNE=
+	t=1712931731; cv=none; b=EhIoG/eWtI2XrGRPBmmX8PXonY/TredGKpmDL99xIaI400wJm+ujncIVA/s5NlgVyXgZxsmCT/un6ob/FqI4Iw/jcqaobWHQP4LPGxVLyJPbjU6Gu6E3QZL4qwuwzN9e15gSZEs57ZOmtk0O4qw8I2qmnmijvdQ1q0DVUwkKQHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712931729; c=relaxed/simple;
-	bh=NYIsyAKTyDfXL1OBDe7AcstW++1OcYH4oDp5YUoFpOI=;
+	s=arc-20240116; t=1712931731; c=relaxed/simple;
+	bh=7fOLPHwtedPlEEz5+ot3Sre0AWrOfx+hG0wRkCREkFM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=d9RnCUb/n8HU/jCV/20202PtuiKif0UQ0wQqLmSN/8Wv9u8w1oOUMY7Tg5wvcQ8y8EAXmSrSfRgGytx0a6p+2Gh7FYSgB81yu3PvrDHVZ/j8K6gphCwDQc0sZrBIkdGTGKtPTlUpLT3iwaFa8rixkpDoaaqCtgz5763v0tzCyak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Dvh6dCTt; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=TDikJ/EFKhx+m8KQDUfILScv4+d8vsYhvDFZS/58sEQAkqlZ3656/qMIPXVrZlY10khCsfrdS/wPYdvXOcCp+OALvRX4PBdliEukXGbLl26xcJmK9CqppbE80eNsW7/3mdq0/+saC4Mync42Hj1+AuTfPkL8qqR9PFeYq8IqejE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O8VbATWr; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712931726;
+	s=mimecast20190719; t=1712931728;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6DKeQI6yMk4WrSKY3ISFL+eRa3o1/6tdDeS8ur8VVlk=;
-	b=Dvh6dCTt8anaCXmO6VBnFYEES3JTGEoLuH5YG3OiMdKufXAYwKkNN024Ko2ISGGy5SJlbO
-	F7zvCfQXj+sd8fS0Sz5BdJp6Q9XtzR51NJZZDZmL2eAjS8gQ1uAEPhUzdS2U2xlrNN0CWn
-	F9d6fuZZK008wpnHJzNApSPViNcHq8s=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-637-BlVDikT7O-igiyZtvUI5pw-1; Fri, 12 Apr 2024 10:22:00 -0400
-X-MC-Unique: BlVDikT7O-igiyZtvUI5pw-1
+	bh=cuxxsq8XZw+QG+w/Ssgwsbj/UZc1HUhjcOJATM75AJM=;
+	b=O8VbATWrZk8Ouq7CyPp7yvCzpskDrcwBN2ejh23WAfa6QqKv58gWEyMACxC7pwObEcGVbS
+	jPBuHNF8STD209/CpbmoPXHK/ArbuOkxV9kGAJPakmiBUl/2MPqxdGW67sUzmYBc+r1JfH
+	nHU5at6nA7crj8AyIUAkgRMAM2MPOwc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-460-EAuPk9GYPqWpjgocvxHjTQ-1; Fri,
+ 12 Apr 2024 10:22:03 -0400
+X-MC-Unique: EAuPk9GYPqWpjgocvxHjTQ-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 391BF802E4D;
-	Fri, 12 Apr 2024 14:21:59 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C67B629AB3E5;
+	Fri, 12 Apr 2024 14:22:02 +0000 (UTC)
 Received: from t14s.redhat.com (unknown [10.39.193.165])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 867AB40C6CC0;
-	Fri, 12 Apr 2024 14:21:56 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 843C740C6DAE;
+	Fri, 12 Apr 2024 14:21:59 +0000 (UTC)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: kvm@vger.kernel.org,
@@ -69,9 +69,9 @@ Cc: kvm@vger.kernel.org,
 	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
 	Matthew Wilcox <willy@infradead.org>,
 	Thomas Huth <thuth@redhat.com>
-Subject: [PATCH v2 04/10] s390/uv: convert PG_arch_1 users to only work on small folios
-Date: Fri, 12 Apr 2024 16:21:14 +0200
-Message-ID: <20240412142120.220087-5-david@redhat.com>
+Subject: [PATCH v2 05/10] s390/uv: update PG_arch_1 comment
+Date: Fri, 12 Apr 2024 16:21:15 +0200
+Message-ID: <20240412142120.220087-6-david@redhat.com>
 In-Reply-To: <20240412142120.220087-1-david@redhat.com>
 References: <20240412142120.220087-1-david@redhat.com>
 Precedence: bulk
@@ -83,129 +83,39 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-Now that make_folio_secure() may only set PG_arch_1 for small folios,
-let's convert relevant remaining UV code to only work on (small) folios
-and simply reject large folios early. This way, we'll never end up
-touching PG_arch_1 on tail pages of a large folio in UV code.
+We removed the usage of PG_arch_1 for page tables in commit
+a51324c430db ("s390/cmma: rework no-dat handling").
 
-The folio_get()/folio_put() for functions that are documented to already
-hold a folio reference look weird; likely they are required to make
-concurrent gmap_make_secure() back off because the caller might only hold
-an implicit reference due to the page mapping. So leave that alone for now.
+Let's update the comment in UV to reflect that.
 
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- arch/s390/include/asm/page.h |  2 ++
- arch/s390/kernel/uv.c        | 41 ++++++++++++++++++++++--------------
- 2 files changed, 27 insertions(+), 16 deletions(-)
+ arch/s390/kernel/uv.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/arch/s390/include/asm/page.h b/arch/s390/include/asm/page.h
-index 9381879f7ecf..b64384872c0f 100644
---- a/arch/s390/include/asm/page.h
-+++ b/arch/s390/include/asm/page.h
-@@ -214,7 +214,9 @@ static inline unsigned long __phys_addr(unsigned long x, bool is_31bit)
- #define pfn_to_phys(pfn)	((pfn) << PAGE_SHIFT)
- 
- #define phys_to_page(phys)	pfn_to_page(phys_to_pfn(phys))
-+#define phys_to_folio(phys)	page_folio(phys_to_page(phys))
- #define page_to_phys(page)	pfn_to_phys(page_to_pfn(page))
-+#define folio_to_phys(page)	pfn_to_phys(folio_pfn(folio))
- 
- static inline void *pfn_to_virt(unsigned long pfn)
- {
 diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
-index 3c6d86e3e828..914dcec27329 100644
+index 914dcec27329..ecfc08902215 100644
 --- a/arch/s390/kernel/uv.c
 +++ b/arch/s390/kernel/uv.c
-@@ -135,14 +135,18 @@ static int uv_destroy_page(unsigned long paddr)
-  */
- int uv_destroy_owned_page(unsigned long paddr)
- {
--	struct page *page = phys_to_page(paddr);
-+	struct folio *folio = phys_to_folio(paddr);
- 	int rc;
- 
--	get_page(page);
-+	/* See gmap_make_secure(): large folios cannot be secure */
-+	if (unlikely(folio_test_large(folio)))
-+		return 0;
-+
-+	folio_get(folio);
- 	rc = uv_destroy_page(paddr);
- 	if (!rc)
--		clear_bit(PG_arch_1, &page->flags);
--	put_page(page);
-+		clear_bit(PG_arch_1, &folio->flags);
-+	folio_put(folio);
- 	return rc;
- }
- 
-@@ -170,14 +174,18 @@ int uv_convert_from_secure(unsigned long paddr)
-  */
- int uv_convert_owned_from_secure(unsigned long paddr)
- {
--	struct page *page = phys_to_page(paddr);
-+	struct folio *folio = phys_to_folio(paddr);
- 	int rc;
- 
--	get_page(page);
-+	/* See gmap_make_secure(): large folios cannot be secure */
-+	if (unlikely(folio_test_large(folio)))
-+		return 0;
-+
-+	folio_get(folio);
- 	rc = uv_convert_from_secure(paddr);
- 	if (!rc)
--		clear_bit(PG_arch_1, &page->flags);
--	put_page(page);
-+		clear_bit(PG_arch_1, &folio->flags);
-+	folio_put(folio);
- 	return rc;
- }
- 
-@@ -479,33 +487,34 @@ EXPORT_SYMBOL_GPL(gmap_destroy_page);
-  */
- int arch_make_page_accessible(struct page *page)
- {
-+	struct folio *folio = page_folio(page);
- 	int rc = 0;
- 
--	/* Hugepage cannot be protected, so nothing to do */
--	if (PageHuge(page))
-+	/* See gmap_make_secure(): large folios cannot be secure */
-+	if (unlikely(folio_test_large(folio)))
+@@ -495,13 +495,12 @@ int arch_make_page_accessible(struct page *page)
  		return 0;
  
  	/*
- 	 * PG_arch_1 is used in 3 places:
- 	 * 1. for kernel page tables during early boot
- 	 * 2. for storage keys of huge pages and KVM
--	 * 3. As an indication that this page might be secure. This can
-+	 * 3. As an indication that this small folio might be secure. This can
+-	 * PG_arch_1 is used in 3 places:
+-	 * 1. for kernel page tables during early boot
+-	 * 2. for storage keys of huge pages and KVM
+-	 * 3. As an indication that this small folio might be secure. This can
++	 * PG_arch_1 is used in 2 places:
++	 * 1. for storage keys of hugetlb folios and KVM
++	 * 2. As an indication that this small folio might be secure. This can
  	 *    overindicate, e.g. we set the bit before calling
  	 *    convert_to_secure.
- 	 * As secure pages are never huge, all 3 variants can co-exists.
+-	 * As secure pages are never huge, all 3 variants can co-exists.
++	 * As secure pages are never large folios, both variants can co-exists.
  	 */
--	if (!test_bit(PG_arch_1, &page->flags))
-+	if (!test_bit(PG_arch_1, &folio->flags))
+ 	if (!test_bit(PG_arch_1, &folio->flags))
  		return 0;
- 
--	rc = uv_pin_shared(page_to_phys(page));
-+	rc = uv_pin_shared(folio_to_phys(folio));
- 	if (!rc) {
--		clear_bit(PG_arch_1, &page->flags);
-+		clear_bit(PG_arch_1, &folio->flags);
- 		return 0;
- 	}
- 
--	rc = uv_convert_from_secure(page_to_phys(page));
-+	rc = uv_convert_from_secure(folio_to_phys(folio));
- 	if (!rc) {
--		clear_bit(PG_arch_1, &page->flags);
-+		clear_bit(PG_arch_1, &folio->flags);
- 		return 0;
- 	}
- 
 -- 
 2.44.0
 
