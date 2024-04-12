@@ -1,106 +1,201 @@
-Return-Path: <linux-kernel+bounces-142957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1A108A3282
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:32:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 034C38A3285
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:33:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81B5D28694E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:32:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 863D41F24880
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:33:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 366391482FE;
-	Fri, 12 Apr 2024 15:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AAAB148308;
+	Fri, 12 Apr 2024 15:32:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RQTzucsK"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="k/FmKeKw"
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5393F5914E;
-	Fri, 12 Apr 2024 15:32:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A4795914E
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:32:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712935963; cv=none; b=VOS5mlO32hobdswFKlWcNIMOPtyJmq513/DAHCKiRW3kdUu7hXt2M8gTLBGjuTVDz3WM2WH4bMRUyJoEIvZUa6Ort1neO4UAwWrrXDfB9WSd0k0ghn7SO2hVNtJQQOJee/GfmMmPp7XaBucfIGdTrrfXwXl39nHs/KcxvGLnRtk=
+	t=1712935974; cv=none; b=toRQVJrT2VGRt+zyPAB2ljnzQAeIIJeK1ndvdocit079qlhZQIEcDZTrYR44A1H5KjT3MC2qXfQQELaQRMkLAVt8vcbvIXGzJjwV6mgGljeGqQM+KAYxjg+l3i+DEe/7cRd1PSKbBLP9SrDD/PhSIZyjh+Z9+dfaC7bEEGc9wp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712935963; c=relaxed/simple;
-	bh=YcGVppXDTZpBYsq3LZQl0x3tHjY0EsDlBXQF4JKc2kc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kuyLgd2RWS26quuH+GgWqzl7+s/kcJVY14K9zolc6r3i9aAFuwVPH5mYUS9zN8H/M72M4Z91Neyeug1XGD8mCRogCXECEDW2+oAH0C5oA1znuQ6n+D9MAhtzaMnZVMwYvzZm9lxtMUnomgSENBuw3hH8+0z3J5cQW5eMM3m8Slw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RQTzucsK; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712935963; x=1744471963;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=YcGVppXDTZpBYsq3LZQl0x3tHjY0EsDlBXQF4JKc2kc=;
-  b=RQTzucsKX3lYIBDM375wr2Up04GfAjKxuUExlcVegO/xo3viWpc+XmIG
-   glqfjZu6vCVFYF+ijwFkbyldTdcrnYQ5D8X65Ue7CZAYX1wWCkeelER3c
-   waiVYOJ1MTwRiW8xBwb6AmDgfqxIN95eSFnUF/D5Ckg+kDIQucI80m1PJ
-   pG+h4rIP2Ls/kQ7AoUk6xPrDm5g3bygfJbGTx9w6bEbANDACtm00kuNZZ
-   u7lxIl/Uc/oMlfUt8Gy6XA5sQQeFPee3C6iC1RYuKRF1XU3dpFqDzPj/x
-   94a8oyL8W3j1ofHAaAnvXrajwJtPfSro8WIKc6UjtltkhwrzJAif9hJVs
-   w==;
-X-CSE-ConnectionGUID: FTjBeGz5QhWWrYm9wimVcg==
-X-CSE-MsgGUID: czIS+8+qTlu2MzrZDz23/w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="30875189"
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="30875189"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 08:32:42 -0700
-X-CSE-ConnectionGUID: 0zUC7aeoQt+hygbpFCOnvQ==
-X-CSE-MsgGUID: akgacc3/RCez8p0U9pOJZw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="21838477"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 08:32:40 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rvItJ-00000003goC-3FW9;
-	Fri, 12 Apr 2024 18:32:37 +0300
-Date: Fri, 12 Apr 2024 18:32:37 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Raag Jadav <raag.jadav@intel.com>, jarkko.nikula@linux.intel.com,
-	mika.westerberg@linux.intel.com, linux-pwm@vger.kernel.org,
+	s=arc-20240116; t=1712935974; c=relaxed/simple;
+	bh=UFaq0ZdoaAokHjBDmb2GnGSnjteDkN3nqKEA8qMhodI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=aORCWECf+21+z+d34LbIjSJSrr0KAk4KqYTkBijWcmrZTf2BFANH1VHpujcCeab0bjnoxxmGMNLTbZDs7Qla4orJ4+Vz1Db1ETRUz6kqjP2KhrUN8iTMKOEUFZkj5kzsT2+hAVQA5+56zz7PLLKzTyeCJhRwxdPsMMfoEdxQaIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=k/FmKeKw; arc=none smtp.client-ip=209.85.166.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7d5facf3161so36504039f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 08:32:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712935972; x=1713540772; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uqDcmcdfEAxpSmSYIoRjoyegxjm8YY6DAayxwa7eB28=;
+        b=k/FmKeKwkP109g4z22eKPhum0evxOdrXuh9WFFgd+YiKVZ9ijk2zaNhsMi2h/PkW+7
+         XYz/dICCp3j/KkBA9s4OwfVSL6iuabF2bSOHdpkP1BYFCeq2s3DiD4XHD4NQK0Z7Jeth
+         KjXpZup5YyTan0IxPjF5+6A3meWnVe3hrbeqg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712935972; x=1713540772;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uqDcmcdfEAxpSmSYIoRjoyegxjm8YY6DAayxwa7eB28=;
+        b=IwZyFlJSSK10tmMybgmXqtX3EucZZxYkVUUjmyInj5VJvQHV04EudYlCzeOmVTFMkI
+         AWbu38UeLT4p/frFg0pTtsM/F3zgE2E406wQRLMEo4QwV7ew1+RNx+tjjzV/bYBNkT3E
+         4hak3wlr53cfyOiTExvqNQxe+5tEAgqLfeb6fKYYApwZIRTDbhODZDr/XeRUeAK/mTwo
+         nmqqMgdVB4wwEffWwi22aPuUHo+1004obL7yNDCrpyzMRMdMNNNSY5CTn8cLYqOZPDsI
+         NSecXJRKKzNP7y7e8r15anElcB5e5zkQQYvLHgFQGEozit4ZblPp7SrosAgTsar4nsNa
+         PvOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVYEvcbWClOr5/1rVYl++zKUXjrdf9o3ctouRafL9QjRK4rQizQYEx1w/AS5Q10DtWtswIghp7L8lkcRBWITHthvsQu4aTFi59j4BM8
+X-Gm-Message-State: AOJu0Yx3zB/OwXCRD1By31N0Z1V5T91x0uikbqc5jJ/ZUweU5GZ9UlTl
+	t3vPrODwxSYu5u2d+MFSw8k8vuv9M1Zt5eQ86jfOBU8XoAxd5txGFVibocSTdA==
+X-Google-Smtp-Source: AGHT+IHbtl8u5oM4YD0V1cyL9JOfCkw7w+xIl41C6otd6LoyoE8+lKTPybLQ5MBLMHKFw5O2MCIjbw==
+X-Received: by 2002:a05:6602:1a98:b0:7d6:3f52:2f27 with SMTP id bn24-20020a0566021a9800b007d63f522f27mr3223842iob.0.1712935972439;
+        Fri, 12 Apr 2024 08:32:52 -0700 (PDT)
+Received: from chromium.org (c-73-14-173-85.hsd1.co.comcast.net. [73.14.173.85])
+        by smtp.gmail.com with ESMTPSA id ik14-20020a0566026c0e00b007d65a95d95csm1093828iob.42.2024.04.12.08.32.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 08:32:52 -0700 (PDT)
+From: Simon Glass <sjg@chromium.org>
+To: devicetree@vger.kernel.org
+Cc: U-Boot Mailing List <u-boot@lists.denx.de>,
+	Michael Walle <mwalle@kernel.org>,
+	Tom Rini <trini@konsulko.com>,
+	linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Rob Herring <robh@kernel.org>,
+	Simon Glass <sjg@chromium.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] pwm: dwc: allow suspend/resume for 16 channels
-Message-ID: <ZhlUFZDTQum5-AIR@smile.fi.intel.com>
-References: <20240412060812.20412-1-raag.jadav@intel.com>
- <zf74jdjza2kfgmiecmlwlws46fmy3rtxvcocmkwewgx64oewpm@xfyq2zt6ts5u>
+Subject: [PATCH v11 1/2] dt-bindings: mtd: fixed-partitions: Add alignment properties
+Date: Fri, 12 Apr 2024 09:32:48 -0600
+Message-Id: <20240412153249.100787-1-sjg@chromium.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <zf74jdjza2kfgmiecmlwlws46fmy3rtxvcocmkwewgx64oewpm@xfyq2zt6ts5u>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Fri, Apr 12, 2024 at 01:12:48PM +0200, Uwe Kleine-K�nig wrote:
-> On Fri, Apr 12, 2024 at 11:38:12AM +0530, Raag Jadav wrote:
+Add three properties for controlling alignment of partitions, aka
+'entries' in fixed-partition.
 
-..
+For now there is no explicit mention of hierarchy, so a 'section' is
+just the 'fixed-partitions' node.
 
-> > +struct dwc_pwm_drvdata {
-> > +	const struct dwc_pwm_info *info;
-> > +	void __iomem *io_base;
-> 
-> .io_base is only used during init time and so doesn't need to be tracked
-> in driver data.
+These new properties are inputs to the Binman packaging process, but are
+also needed if the firmware is repacked, to ensure that alignment
+constraints are not violated. Therefore they are provided as part of
+the schema.
 
-It's me who asked for this specific change and I think it's still beneficial
-as it allows to simplify the code.
+Signed-off-by: Simon Glass <sjg@chromium.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
 
+Changes in v11:
+- Drop mention of Binman
+- Use 'content' instead of 'contents'
+
+Changes in v10:
+- Update the minimum to 2
+
+Changes in v9:
+- Move binding example to next batch to avoid build error
+
+Changes in v7:
+- Drop patch 'Add binman compatible'
+- Put the alignment properties into the fixed-partition binding
+
+Changes in v6:
+- Correct schema-validation errors missed due to older dt-schema
+  (enum fix and reg addition)
+
+Changes in v5:
+- Add value ranges
+- Consistently mention alignment must be power-of-2
+- Mention that alignment refers to bytes
+
+Changes in v2:
+- Fix 'a' typo in commit message
+
+ .../bindings/mtd/partitions/partition.yaml    | 51 +++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+index 1ebe9e2347ea..31bbeb161396 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+@@ -57,6 +57,57 @@ properties:
+       user space from
+     type: boolean
+ 
++  align:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 2
++    maximum: 0x80000000
++    multipleOf: 2
++    description:
++      This sets the alignment of the entry in bytes.
++
++      The entry offset is adjusted so that the entry starts on an aligned
++      boundary within the containing section or image. For example ‘align =
++      <16>’ means that the entry will start on a 16-byte boundary. This may
++      mean that padding is added before the entry. The padding is part of
++      the containing section but is not included in the entry, meaning that
++      an empty space may be created before the entry starts. Alignment
++      must be a power of 2. If ‘align’ is not provided, no alignment is
++      performed.
++
++  align-size:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 2
++    maximum: 0x80000000
++    multipleOf: 2
++    description:
++      This sets the alignment of the entry size in bytes. It must be a power
++      of 2.
++
++      For example, to ensure that the size of an entry is a multiple of 64
++      bytes, set this to 64. While this does not affect the content of the
++      entry itself (the padding is performed only when its parent section is
++      assembled), the end result is that the entry ends with the padding
++      bytes, so may grow. If ‘align-size’ is not provided, no alignment is
++      performed.
++
++  align-end:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 2
++    maximum: 0x80000000
++    multipleOf: 2
++    description:
++      This sets the alignment (in bytes) of the end of an entry with respect
++      to the containing section. It must be a power of 2.
++
++      Some entries require that they end on an alignment boundary,
++      regardless of where they start. This does not move the start of the
++      entry, so the content of the entry will still start at the beginning.
++      But there may be padding at the end. While this does not affect the
++      content of the entry itself (the padding is performed only when its
++      parent section is assembled), the end result is that the entry ends
++      with the padding bytes, so may grow. If ‘align-end’ is not provided,
++      no alignment is performed.
++
+ if:
+   not:
+     required: [ reg ]
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
 
