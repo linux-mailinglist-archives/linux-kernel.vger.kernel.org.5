@@ -1,191 +1,128 @@
-Return-Path: <linux-kernel+bounces-143073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F2988A33C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:26:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C831F8A33C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:26:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56210283F34
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:26:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83E4D281735
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72170149E09;
-	Fri, 12 Apr 2024 16:24:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A87291494C7;
+	Fri, 12 Apr 2024 16:25:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EX6n44HP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TgEaykqD"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 917F81494C2
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 16:24:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D96A1474D2;
+	Fri, 12 Apr 2024 16:25:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712939041; cv=none; b=FPJo9pbIIkFJJTbj2esrByia9RV2DEqjY61U8UA5a78TAWxN/igX8LBQJn1290Mte0+Dinzkgub1z19EuE/qGi3Z3JgArQH5BTsYJe6a52Nkkxatx6tCft4r2kbWNwuKpzcvKIAZFUSfvuvAC8tGLIaC+oLNMDA227haHw6JV3w=
+	t=1712939117; cv=none; b=NV48gfQe0WWJwp+jrksRw8PfQljsUfTAddiRs62CRagWpny5qDb2rTpJ4tRvqnHqgGLkAWtfH65s6YpyG1qzXylssy+LsNphMMJ63T9zjiaKZdd0Fd++fADdpfzfotpS3TdH3P2Ydaw4/5mLYcr400qCSwv4f7qQTZGZa92+qJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712939041; c=relaxed/simple;
-	bh=DVAVeZL/9jWjhVi+2NxW+2kxv9RNUM3iHWEiAb1/zXE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YfyzOUOG/O3CTaLr1mfFbGGmObjPMRqAx0GFcPgylm7y9bdtXnuF3r+T8oj4p46SNvVTeB54U9Ce9SbZ54thZH1E7tHj5t7v64GyU46kG4AQ8L42+00VBxZdPt++9B4bS2CuM0GaBiIjOccORMISsV1Q+gRKgoRYzXC6HYJ9vHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EX6n44HP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F2A1C113CC;
-	Fri, 12 Apr 2024 16:23:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712939041;
-	bh=DVAVeZL/9jWjhVi+2NxW+2kxv9RNUM3iHWEiAb1/zXE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EX6n44HPrjlfuhfE9C6H60Q1Kj5fLguRK5tnF8mC3UPreRSx5uCXnmUnjXsaTZA9W
-	 s4V9oCm76XtYYG+ckqlBIZIUtt/NIidzByUw2Qj/hOtH+9LSzgWq6Iwyl2ok3ncxbB
-	 wez6UhNfsgD3U6jpXVW58H3vtshBNcMXuN927AOSL9ZoN3XIvXohFetIkCZ2T3I8b5
-	 1mPtqfQKPckaALgW/l40Mhk9PDye1mcbrVu4fiBQE4CSD/ucX4dKU3Ccf5ulAE7ijX
-	 XDvhxJfauceeDnekNt2W1JLSGawNtxvvmYhjBEHlF/tWoSH/se9j/VmSXoumCgmg/3
-	 ri8tUv4LBirHw==
-Date: Fri, 12 Apr 2024 18:23:56 +0200
-From: Carlos Maiolino <cem@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: syzbot <syzbot+05e63c0981a31f35f3fa@syzkaller.appspotmail.com>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, syzkaller-bugs@googlegroups.com, 
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [syzbot] [mm?] general protection fault in shmem_get_next_id
-Message-ID: <ypo76gmd6u3vzzuhxc6tdtt6sbqyjcupvk65qt7euztpe6dpjr@6brizgefrft7>
-References: <000000000000a1ff78061517a148@google.com>
- <hgK3SYtGnWjzLbOQ_fdQNLYxKsQF05DY6Zsw62PEgIEFbIMC9cQqz4rx0twm_rQY_JO8IoPT074TBcvYnML1Kg==@protonmail.internalid>
- <20240403183339.7a257066e79ac04a7d6e33fd@linux-foundation.org>
+	s=arc-20240116; t=1712939117; c=relaxed/simple;
+	bh=IOBMceW+zAzriiimOV4JYDNFwggkdO0bj8MIHegPP4c=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=juABtv1dWE6P8eCtsu/AfmF7U9z3J7a8vf6dxUAW+Jyueu+RwrmgONNYJl0rhPZoNX6cWV60zzVwV/jX9TQKuN+UecEfFdW2sDuxPgV3X3EkaReCj7F6Y4PL/x21wWVf4jhca2WhWqFqpH1NdzdC1IEi1OYdbZl5wxo5JvbRXdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TgEaykqD; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-518872fcb89so836965e87.3;
+        Fri, 12 Apr 2024 09:25:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712939113; x=1713543913; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=caQTinMj4HV+puo76LX890/vq6ddN+KcGH/X/bwBRlw=;
+        b=TgEaykqD9of5s+HZgpZ+sOQOKxFbjki9tZO8R5x26rW2YOB3sY6W0ZgCI1Rwzt4gji
+         NsKcxbOg2DyPkIny8FPWRr3WA5GYaASP9TVHZMDPr6GxWlmIBmwc3JDH/cX6zi0gMPYU
+         8By+I7CEbArQmGoDWwlIIGCRaG5nzWab6413+DOKDy5AfoFY5n4ri7XU83npFo9/2K0e
+         wHU3TZL8mSo1IL17DEqjJCXRGo36jFhMtyBYeRFpPnu45t8MOT9SlZMnq2SoCMXJCgHZ
+         N2SxZgC6cMxz0x5PI86E0eFaTxc38A8Gp4abLHB5452NeeWDJLKvaKZDuvy9JgY/BKoT
+         Iwhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712939113; x=1713543913;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=caQTinMj4HV+puo76LX890/vq6ddN+KcGH/X/bwBRlw=;
+        b=euLlGO2j50n4eXBoQma6wkDkrL3wIMQtMaH4wP2s942mM4irKDUwV9uAdBSqIPF5do
+         ilRzsWKIM3egxwxXyMTsVIxsm3s2pyElqEU/GmK+nlqHD4IS+7L+8xreU+QQyFdFkH81
+         Os1aCkTX49h/oI9XifoYeM7/E5SGxI0r9yzA0Qmk5DRSBtkuOQHe3hAOgTwZwMak7YQe
+         Cs0RUCy9ZR8iftsICBlCUT51e+06ku2PEIANctTbBUav73V6775aiPrRW6wPrDEfiqqN
+         MvdbvozX+H0dKx6c05S+krKxDA7KGAY7sbJvX0yCt3QALRJY5eMXm7eV2VB5bA6gAaE2
+         uGZg==
+X-Forwarded-Encrypted: i=1; AJvYcCWHkysRmQbT/Upq88ClgTZ6o3QsieeNhqepsaA06upVY0lH3BkjjI+iMGTD5SmcucTxbCRcXL0GlE6OV5h+0rKlbbCBwArcRPers9hBvxduk5Mhx3QodCoe/JOLqLcvy6C3MeTaIPrEDhCn7oRNy+rLRzopjzKMhWa91iJKzdYO+N/U5tn0ONDlIm85qxEf7RMqSoF7ABxTdjxMLehtlSaz
+X-Gm-Message-State: AOJu0Yw25hbt3AGkZcaAsx5i/vuh6rALaMZEgjUtbtxZPOso7WPLpCYu
+	eN0Slqw8vzzean8KPWWMxKW8XDO+EvyalpbCWnciw1XtQWQRuoJC
+X-Google-Smtp-Source: AGHT+IFSMXcf/XnY1RW70gVLOV7EXutIJ9X7L4Sz2vOg6Nlj4vKSBVkxS1dxMXOgsnqrl1AAn7dn/w==
+X-Received: by 2002:a05:6512:499:b0:517:855e:2e3e with SMTP id v25-20020a056512049900b00517855e2e3emr2064344lfq.6.1712939113253;
+        Fri, 12 Apr 2024 09:25:13 -0700 (PDT)
+Received: from fedora.. (d-zg2-064.globalnet.hr. [213.149.37.64])
+        by smtp.googlemail.com with ESMTPSA id q4-20020adff504000000b0034635bd6ba5sm4576554wro.92.2024.04.12.09.25.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 09:25:12 -0700 (PDT)
+From: Robert Marko <robimarko@gmail.com>
+To: kvalo@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	jjohnson@kernel.org,
+	linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	ath11k@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Robert Marko <robimarko@gmail.com>
+Subject: [PATCH 1/2] dt-bindings: net: wireless: ath11k: add ieee80211-freq-limit property
+Date: Fri, 12 Apr 2024 18:24:08 +0200
+Message-ID: <20240412162510.29483-1-robimarko@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403183339.7a257066e79ac04a7d6e33fd@linux-foundation.org>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 03, 2024 at 06:33:39PM -0700, Andrew Morton wrote:
-> On Mon, 01 Apr 2024 23:58:20 -0700 syzbot <syzbot+05e63c0981a31f35f3fa@syzkaller.appspotmail.com> wrote:
-> 
-> > Hello,
-> 
-> Hello.
-> 
-> Seems that the new TMPFS_QUOTA code has blown up.  Cc's added, thanks
-> for the report and the reproducer!
+This is an existing optional property that ieee80211.yaml/cfg80211
+provides. It's useful to further restrict supported frequencies
+for a specified device through device-tree.
 
-Yes, this is easily reproducible here. I can't reproduce it with my earlier fix of the RB tree race.
-We can ignore this report, this has been reproduced before the race fix has been applied to the main
-tree.
+Signed-off-by: Robert Marko <robimarko@gmail.com>
+---
+ .../devicetree/bindings/net/wireless/qcom,ath11k.yaml          | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Carlos
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
+index 672282cdfc2f..907bbb646614 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
+@@ -55,6 +55,8 @@ properties:
+       phandle to a node describing reserved memory (System RAM memory)
+       used by ath11k firmware (see bindings/reserved-memory/reserved-memory.txt)
+ 
++  ieee80211-freq-limit: true
++
+   iommus:
+     minItems: 1
+     maxItems: 2
+@@ -88,6 +90,7 @@ required:
+ additionalProperties: false
+ 
+ allOf:
++  - $ref: ieee80211.yaml#
+   - if:
+       properties:
+         compatible:
+-- 
+2.44.0
 
-> 
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-> > git tree:       upstream
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=10c90795180000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=05e63c0981a31f35f3fa
-> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f51129180000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150d3cee180000
-> >
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/0f7abe4afac7/disk-fe46a7dd.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/82598d09246c/vmlinux-fe46a7dd.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/efa23788c875/bzImage-fe46a7dd.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+05e63c0981a31f35f3fa@syzkaller.appspotmail.com
-> >
-> > general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
-> > KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-> > CPU: 0 PID: 5070 Comm: syz-executor253 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-> > RIP: 0010:shmem_get_next_id+0x92/0x5c0 mm/shmem_quota.c:119
-> > Code: 04 db 49 8d 9c c6 90 02 00 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 f8 66 1b 00 48 8b 1b 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 df 66 1b 00 4c 8b 23 48 8d 5d 07
-> > RSP: 0018:ffffc900043a7be0 EFLAGS: 00010256
-> > RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff8880266c8000
-> > RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000004
-> > RBP: ffffc900043a7d00 R08: ffffffff81dcdd47 R09: ffffffff822e7d5a
-> > R10: 0000000000000003 R11: ffffffff81dcdcf0 R12: 1ffff92000874fa0
-> > R13: ffff888022110000 R14: ffff888022110000 R15: dffffc0000000000
-> > FS:  0000555578677380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 0000000020001000 CR3: 000000007a384000 CR4: 0000000000350ef0
-> > Call Trace:
-> >  <TASK>
-> >  dquot_get_next_dqblk+0x75/0x3a0 fs/quota/dquot.c:2705
-> >  quota_getnextquota+0x2c7/0x6c0 fs/quota/quota.c:250
-> >  __do_sys_quotactl_fd fs/quota/quota.c:1002 [inline]
-> >  __se_sys_quotactl_fd+0x2a1/0x440 fs/quota/quota.c:973
-> >  do_syscall_64+0xfd/0x240
-> >  entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> > RIP: 0033:0x7f5c0349b329
-> > Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> > RSP: 002b:00007ffc39d71138 EFLAGS: 00000246 ORIG_RAX: 00000000000001bb
-> > RAX: ffffffffffffffda RBX: 0031656c69662f2e RCX: 00007f5c0349b329
-> > RDX: 0000000000000000 RSI: ffffffff80000901 RDI: 0000000000000003
-> > RBP: 00007f5c0350e610 R08: 0000000000000000 R09: 00007ffc39d71308
-> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-> > R13: 00007ffc39d712f8 R14: 0000000000000001 R15: 0000000000000001
-> >  </TASK>
-> > Modules linked in:
-> > ---[ end trace 0000000000000000 ]---
-> > RIP: 0010:shmem_get_next_id+0x92/0x5c0 mm/shmem_quota.c:119
-> > Code: 04 db 49 8d 9c c6 90 02 00 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 f8 66 1b 00 48 8b 1b 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 df 66 1b 00 4c 8b 23 48 8d 5d 07
-> > RSP: 0018:ffffc900043a7be0 EFLAGS: 00010256
-> > RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff8880266c8000
-> > RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000004
-> > RBP: ffffc900043a7d00 R08: ffffffff81dcdd47 R09: ffffffff822e7d5a
-> > R10: 0000000000000003 R11: ffffffff81dcdcf0 R12: 1ffff92000874fa0
-> > R13: ffff888022110000 R14: ffff888022110000 R15: dffffc0000000000
-> > FS:  0000555578677380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 0000000020001000 CR3: 000000007a384000 CR4: 0000000000350ef0
-> > ----------------
-> > Code disassembly (best guess):
-> >    0:	04 db                	add    $0xdb,%al
-> >    2:	49 8d 9c c6 90 02 00 	lea    0x290(%r14,%rax,8),%rbx
-> >    9:	00
-> >    a:	48 89 d8             	mov    %rbx,%rax
-> >    d:	48 c1 e8 03          	shr    $0x3,%rax
-> >   11:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1)
-> >   16:	74 08                	je     0x20
-> >   18:	48 89 df             	mov    %rbx,%rdi
-> >   1b:	e8 f8 66 1b 00       	call   0x1b6718
-> >   20:	48 8b 1b             	mov    (%rbx),%rbx
-> >   23:	48 89 d8             	mov    %rbx,%rax
-> >   26:	48 c1 e8 03          	shr    $0x3,%rax
-> > * 2a:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
-> >   2f:	74 08                	je     0x39
-> >   31:	48 89 df             	mov    %rbx,%rdi
-> >   34:	e8 df 66 1b 00       	call   0x1b6718
-> >   39:	4c 8b 23             	mov    (%rbx),%r12
-> >   3c:	48 8d 5d 07          	lea    0x7(%rbp),%rbx
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
-> > If the report is already addressed, let syzbot know by replying with:
-> > #syz fix: exact-commit-title
-> >
-> > If you want syzbot to run the reproducer, reply with:
-> > #syz test: git://repo/address.git branch-or-commit-hash
-> > If you attach or paste a git patch, syzbot will apply it before testing.
-> >
-> > If you want to overwrite report's subsystems, reply with:
-> > #syz set subsystems: new-subsystem
-> > (See the list of subsystem names on the web dashboard)
-> >
-> > If the report is a duplicate of another one, reply with:
-> > #syz dup: exact-subject-of-another-report
-> >
-> > If you want to undo deduplication, reply with:
-> > #syz undup
 
