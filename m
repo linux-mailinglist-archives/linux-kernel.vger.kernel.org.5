@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-141990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA4E28A25D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:38:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39FDE8A25D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:38:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49565B24508
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:38:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C848B24565
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF2591B974;
-	Fri, 12 Apr 2024 05:37:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AE4040BE3;
+	Fri, 12 Apr 2024 05:37:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="TPqWfa6m"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="uXLuRLla"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8E403E48E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF57C3F8D1;
 	Fri, 12 Apr 2024 05:37:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712900238; cv=none; b=uf0DTq5kMZjL1fot0z5czoHmOqihIuJvMOHBuUaIzvU4w+AV2tAbKvGv31CTgmnULI5dSaVquXoUcaYzAKjiI4vk8gUXHkJnBx5/oE41WAOLXqtur/7ISsosLBCaiTjIsi0dkBWqV8gCo/S2r+7eNC3bpN5/WNETIv3hsh2/JE0=
+	t=1712900238; cv=none; b=uqffRwfPpB8Ov0tndyVEGthNheXZa6Nb8Ub8zzOkJMBSbQLhtOcHflrBWe50jCconGHRFldNL5e5nrdsLVMCqsmZeIfAFXZ9YO0fgz1pyD5d6idigMQrl9inMDzTMFdOz575Vbbxk6fKPfKIegyr7twgZ7+tAgL/EF/E0Y2LL6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712900238; c=relaxed/simple;
-	bh=tM5gY3hKJtDCzLYczWVGATv3eWXnAY8KjEiduAGvw2Y=;
+	bh=kGVOndCO8cgsyKnzy19ZlUBtYsio3STgdICqpM8MoqA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SB1WdUvDXMx+929ZBsr7o7rdmdbvT4xifvKuLDNWRz4Sb03LYi56LRtUvN/63wJIwbZaEf3onTncw/lyoNKiutADzErATc0KMTZZcx5vnCKFFQkTyTC71iIShJ56M6FDv9KExTOSGsAsfZy/jLD8S0LNWv+/JRnAy8xziyQhLrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=TPqWfa6m; arc=none smtp.client-ip=198.47.23.248
+	 MIME-Version:Content-Type; b=LoAbmKnwz94P7uJlky1BOpFTvvC956FQSNmKc/FODggy/JAYikP4iOUwqmW0e8AIrU6L6GjEbd/UPGhSWgsJZovDHRp01qqSKBGAP2MDrgR9ZYzLT7anEUYVeeyiLYk3gyfq1PpObgLtOHcz/m1pKZp8oraGhZquTjgvBWfemLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=uXLuRLla; arc=none smtp.client-ip=198.47.23.249
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
 Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43C5b81w028368;
-	Fri, 12 Apr 2024 00:37:08 -0500
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43C5bCsn082712;
+	Fri, 12 Apr 2024 00:37:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712900228;
-	bh=3cKgzy6Yi0eMhgIO9iE3bTgnSMO5yEWtriuK2INYypY=;
+	s=ti-com-17Q1; t=1712900232;
+	bh=qRGL+3UoqinLQLWI/4Jm7PGqlRKDQDmW75F9UldqsGk=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=TPqWfa6mudsmBV0xJi4ckeYBYE7Y70fUVgsB3JjD5QA8+iBFeavBYzUMAwjwUioSQ
-	 +b1waSPz2Rl2b7N3PxqCmoXcrIb/EZuDuOgcx1do5hfpvsS07VYVePCk7TJBa7P5qQ
-	 F03iI/rM5+jdxr9TLpXmTq7zNAdVbTKcciLmA0xM=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43C5b8JB054925
+	b=uXLuRLlaMfULXOhN3DalFkbBsuEapiyjOQNZS3ZD7OCIE6Mott4NYvpcjYAKNhFau
+	 gy9OQgfLPDUNwq0nBm+lBXppR4+9hMt1XVLkN/Lgzj3pjEApqFd6mLm//T4NiX+DKx
+	 1h1mjtCFA7qHe7oaDYaqQbR2qShdrcQ6IjaHUmIA=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43C5bCkg054940
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 12 Apr 2024 00:37:08 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+	Fri, 12 Apr 2024 00:37:12 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 12
- Apr 2024 00:37:08 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2024 00:37:11 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 12 Apr 2024 00:37:08 -0500
+ Frontend Transport; Fri, 12 Apr 2024 00:37:11 -0500
 Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (a0497641-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.36])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43C5aofb085656;
-	Fri, 12 Apr 2024 00:37:05 -0500
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43C5aofc085656;
+	Fri, 12 Apr 2024 00:37:08 -0500
 From: Neha Malcom Francis <n-francis@ti.com>
 To: <robh@kernel.org>, <conor+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <vigneshr@ti.com>, <nm@ti.com>
 CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <kristo@kernel.org>, <u-kumar1@ti.com>,
         <n-francis@ti.com>
-Subject: [PATCH v3 4/5] arm64: dts: ti: k3-j7200-main: Add the MAIN domain watchdog instances
-Date: Fri, 12 Apr 2024 11:06:49 +0530
-Message-ID: <20240412053650.703667-5-n-francis@ti.com>
+Subject: [PATCH v3 5/5] arm64: dts: ti: k3-j7200-mcu: Add the MCU domain watchdog instances
+Date: Fri, 12 Apr 2024 11:06:50 +0530
+Message-ID: <20240412053650.703667-6-n-francis@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240412053650.703667-1-n-francis@ti.com>
 References: <20240412053650.703667-1-n-francis@ti.com>
@@ -77,61 +77,54 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-There are 4 watchdog instances in the MAIN domain:
-	* one each for the 2 A72 cores
-	* one each for the 2 R5F cores
-
-Currently, the devicetree only describes watchdog instances for the A72
-cores and enables them. Describe the remaining but reserve them as they
-will be used by their respective firmware.
+There are 2 watchdog instances in the MCU domain. These instances are
+coupled with the MCU domain R55 instances. Reserve them as they are not
+used by A72.
 
 Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
 Reviewed-by: Udit Kumar <u-kumar1@ti.com>
 ---
 Changes since v2:
-- no changes
+- corrected register size from 0xbd to 0x100 as per TRM
 
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi | 27 +++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-index 657f9cc9f4ea..b24a6333563a 100644
---- a/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-j7200-main.dtsi
-@@ -1254,6 +1254,33 @@ watchdog1: watchdog@2210000 {
- 		assigned-clock-parents = <&k3_clks 253 5>;
+diff --git a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+index 7cf21c99956e..f6ca4ffb5ee1 100644
+--- a/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi
+@@ -686,4 +686,30 @@ mcu_mcan1: can@40568000 {
+ 		bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
+ 		status = "disabled";
  	};
- 
++
 +	/*
-+	 * The following RTI instances are coupled with MCU R5Fs so
-+	 * keeping them reserved as these will be used by their respective
-+	 * firmware
++	 * The 2 RTI instances are couple with MCU R5Fs so keeping them
++	 * reserved as these will be used by their respective firmware
 +	 */
-+	watchdog28: watchdog@23c0000 {
++	mcu_watchdog0: watchdog@40600000 {
 +		compatible = "ti,j7-rti-wdt";
-+		reg = <0x00 0x23c0000 0x00 0x100>;
-+		clocks = <&k3_clks 258 1>;
-+		power-domains = <&k3_pds 258 TI_SCI_PD_EXCLUSIVE>;
-+		assigned-clocks = <&k3_clks 258 1>;
-+		assigned-clock-parents = <&k3_clks 258 5>;
-+		/* reserved for MAIN_R5F0_0 */
++		reg = <0x00 0x40600000 0x00 0x100>;
++		clocks = <&k3_clks 262 1>;
++		power-domains = <&k3_pds 262 TI_SCI_PD_EXCLUSIVE>;
++		assigned-clocks = <&k3_clks 262 1>;
++		assigned-clock-parents = <&k3_clks 262 5>;
++		/* reserved for MCU_R5F0_0 */
 +		status = "reserved";
 +	};
 +
-+	watchdog29: watchdog@23d0000 {
++	mcu_watchdog1: watchdog@40610000 {
 +		compatible = "ti,j7-rti-wdt";
-+		reg = <0x00 0x23d0000 0x00 0x100>;
-+		clocks = <&k3_clks 259 1>;
-+		power-domains = <&k3_pds 259 TI_SCI_PD_EXCLUSIVE>;
-+		assigned-clocks = <&k3_clks 259 1>;
-+		assigned-clock-parents = <&k3_clks 259 5>;
-+		/* reserved for MAIN_R5F0_1 */
++		reg = <0x00 0x40610000 0x00 0x100>;
++		clocks = <&k3_clks 263 1>;
++		power-domains = <&k3_pds 263 TI_SCI_PD_EXCLUSIVE>;
++		assigned-clocks = <&k3_clks 263 1>;
++		assigned-clock-parents = <&k3_clks 263 5>;
++		/* reserved for MCU_R5F0_1 */
 +		status = "reserved";
 +	};
-+
- 	main_timer0: timer@2400000 {
- 		compatible = "ti,am654-timer";
- 		reg = <0x00 0x2400000 0x00 0x400>;
+ };
 -- 
 2.34.1
 
