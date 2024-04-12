@@ -1,153 +1,109 @@
-Return-Path: <linux-kernel+bounces-142978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02F328A32DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:52:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78B4E8A32E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:52:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A131B284909
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:52:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA0421C22A1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D4F14882A;
-	Fri, 12 Apr 2024 15:52:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCBED148844;
+	Fri, 12 Apr 2024 15:52:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SDGnhZZS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KO9P4/t2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E6A146A75;
-	Fri, 12 Apr 2024 15:52:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 273681487F4;
+	Fri, 12 Apr 2024 15:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712937132; cv=none; b=dPcDeVQP3K0ybSk5aO+8knfK0h8st/gIOtcpBWBbhgzHqxb1w6ohFODKXO8+mdIp1EGkxrSrOaoxvTXI8H7b6XCHyV+PmxoRSNu50QZP0NE9mD4abY5ZYToM4R8k7bEK0C3fy/zDNJ7nvOl86uvo8OFnTRm5zyrfWCheATjJ6cs=
+	t=1712937143; cv=none; b=mfc3n5cdwB0zujEs/hv4idYD2OW9COceVj4f9ScAOGFfR/b0c/6t25965+T6wIIvi03Sv3fejBBSFJux7Z5yR0u1zmGE7Ikxiyz+DtqCaO/mbYsF6UiO5t9nHCrHvbUIMj6lFiC0pchg1LO2eNsM5bJWHTsg81/hE1iR3BuGeXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712937132; c=relaxed/simple;
-	bh=n3FhrSSGNYinFWKOLI9XEyvtmcy6wfy49qe1cma28H4=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=eCtXzx6Fpe0/wUwnLpXeaHwxH7tt37IMQSa34dPGfQA53pDd9MydbQYfHyps7ZHxQLcWaHi9q8Up1G9rQq6RX/ygeYFs9/x/9TMacINvgXZImJ0OTZIIs4Dbcf8+IS6Pqf4Mn1eLUoQKBweBZ941Kh1azPZ0AXtsxonkq/c43zg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SDGnhZZS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23881C3277B;
-	Fri, 12 Apr 2024 15:52:10 +0000 (UTC)
+	s=arc-20240116; t=1712937143; c=relaxed/simple;
+	bh=p8OAbH8ik4uO7b+Ydee6KnfTe8Pqv3txAKJdlPzFN+s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JEU8B+yJqVXete+c7WrazGscBYFprHqkgAXcgtXThVA4SQYz+gR/o0IN3yYptLlSY89oWKQnw0GuU805tQQfVrqsn+IlZyy7LIfNAh1ByHwl/FSQ84V+RybBbh8s2ezU5+WoPW12k1ULA8KB/Veb+WkLCeHpZSeikhGAQ8BcVAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KO9P4/t2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B70AC113CC;
+	Fri, 12 Apr 2024 15:52:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712937131;
-	bh=n3FhrSSGNYinFWKOLI9XEyvtmcy6wfy49qe1cma28H4=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=SDGnhZZS5hf5QwVfBTJ6uevszB2ptzmTwOips9QfzlEs1pqGzbzioFNWpFk/T6KdY
-	 dcXdNeRze7eBE84N2WBpgYuzDAJjg+BphAPJssccka1Ml+DcJEp+X4N6x3KGweOicI
-	 +mZTLTMdmEcIpnEFx3zQ8KjPA9+hFIFNqdKZaKFrpgiGy4lvGBcamaV2/bDQ8Xt14Q
-	 EU8R0M9oDpqcLaCobgvEoGDC7bjIaQ6UAg/TM87nLBrk1rtUoGSKoPwK36lYMk5bIl
-	 hYYMhQlVFgOcW/w2YBAHkb3speBI66/06v4LxVFv1PGhAiScXTco+l1MN5x0Y5w+AW
-	 DQL6kjT+QLPzA==
-Date: Fri, 12 Apr 2024 17:52:09 +0200 (CEST)
-From: Jiri Kosina <jikos@kernel.org>
-To: Stefan Berzl <stefanberzl@gmail.com>
-cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
-    Nikolai Kondrashov <spbnick@gmail.com>
-Subject: Re: [PATCH] HID: uclogic: Remove useless loop
-In-Reply-To: <20240401004757.22708-1-stefanberzl@gmail.com>
-Message-ID: <nycvar.YFH.7.76.2404121751250.5680@cbobk.fhfr.pm>
-References: <20240401004757.22708-1-stefanberzl@gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+	s=k20201202; t=1712937142;
+	bh=p8OAbH8ik4uO7b+Ydee6KnfTe8Pqv3txAKJdlPzFN+s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KO9P4/t2cDRuWl80w6gOUAPjO0AMXVxD7gC6uP2mwU8ISqAgxs6VNhHozXIZqPg4f
+	 IxIfIc4IjyGe/b6QhzPnay8cP37wmaDZ88pFaCzUFOMc20t0ikqGC58OGZCV+GbyDz
+	 WI93KbnDGseDAwz/NNdCUc5f/9jmB7Vx+RyIICUCQGBUzTfY6Lc75/E09y4R2RQe2v
+	 XWWzyszKnIIXYWZ4k9iyjsQE/3nSlsJtdFf1/ZKtjaJr7IAxKHUFfK6JqE2B+fM4UJ
+	 OZ/+WvCY1aZ1Sqg+hD4vkU9ARhl7iAtiPJbP+z/NrQJ8/kN6A/VFrOg8z4i27eJ5hK
+	 Ci19pwIr5RJ6Q==
+Date: Fri, 12 Apr 2024 10:52:20 -0500
+From: Rob Herring <robh@kernel.org>
+To: Seven Lee <wtli@nuvoton.com>
+Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org, linux-sound@vger.kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+	conor+dt@kernel.org, perex@perex.cz, tiwai@suse.com,
+	YHCHuang@nuvoton.com, KCHSU0@nuvoton.com, CTLIN0@nuvoton.com,
+	SJLIN0@nuvoton.com, scott6986@gmail.com, supercraig0719@gmail.com,
+	dardar923@gmail.com, edson.drosdeck@gmail.com,
+	u.kleine-koenig@pengutronix.de
+Subject: Re: [PATCH 1/3] ASoC: dt-bindings: nau8821: Add delay control for ADC
+Message-ID: <20240412155220.GA2918590-robh@kernel.org>
+References: <20240412103554.3487290-1-wtli@nuvoton.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240412103554.3487290-1-wtli@nuvoton.com>
 
-On Mon, 1 Apr 2024, Stefan Berzl wrote:
-
-> The while in question does nothing except provide the possibility
-> to have an infinite loop in case the subreport id is actually the same
-> as the pen id.
+On Fri, Apr 12, 2024 at 06:35:52PM +0800, Seven Lee wrote:
+> Change the original fixed delay to the assignment from the property. It
+> will make it more flexible to different platforms to avoid pop noise at
+> the beginning of recording.
 > 
-> Signed-off-by: Stefan Berzl <stefanberzl@gmail.com>
-
-Let me CC Nicolai, the author of the code of question (8b013098be2c9).
-
+> Signed-off-by: Seven Lee <wtli@nuvoton.com>
 > ---
->  drivers/hid/hid-uclogic-core.c | 55 ++++++++++++++++------------------
->  1 file changed, 25 insertions(+), 30 deletions(-)
+>  .../devicetree/bindings/sound/nuvoton,nau8821.yaml        | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> diff --git a/drivers/hid/hid-uclogic-core.c b/drivers/hid/hid-uclogic-core.c
-> index ad74cbc9a0aa..a56f4de216de 100644
-> --- a/drivers/hid/hid-uclogic-core.c
-> +++ b/drivers/hid/hid-uclogic-core.c
-> @@ -431,40 +431,35 @@ static int uclogic_raw_event(struct hid_device *hdev,
->  	if (uclogic_exec_event_hook(params, data, size))
->  		return 0;
+> diff --git a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+> index 054b53954ac3..a726c5a9b067 100644
+> --- a/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+> +++ b/Documentation/devicetree/bindings/sound/nuvoton,nau8821.yaml
+> @@ -103,6 +103,13 @@ properties:
+>          just limited to the left adc for design demand.
+>      type: boolean
 >  
-> -	while (true) {
-> -		/* Tweak pen reports, if necessary */
-> -		if ((report_id == params->pen.id) && (size >= 2)) {
-> -			subreport_list_end =
-> -				params->pen.subreport_list +
-> -				ARRAY_SIZE(params->pen.subreport_list);
-> -			/* Try to match a subreport */
-> -			for (subreport = params->pen.subreport_list;
-> -			     subreport < subreport_list_end; subreport++) {
-> -				if (subreport->value != 0 &&
-> -				    subreport->value == data[1]) {
-> -					break;
-> -				}
-> -			}
-> -			/* If a subreport matched */
-> -			if (subreport < subreport_list_end) {
-> -				/* Change to subreport ID, and restart */
-> -				report_id = data[0] = subreport->id;
-> -				continue;
-> -			} else {
-> -				return uclogic_raw_event_pen(drvdata, data, size);
-> +	/* Tweak pen reports, if necessary */
-> +	if ((report_id == params->pen.id) && (size >= 2)) {
-> +		subreport_list_end =
-> +			params->pen.subreport_list +
-> +			ARRAY_SIZE(params->pen.subreport_list);
-> +		/* Try to match a subreport */
-> +		for (subreport = params->pen.subreport_list;
-> +		     subreport < subreport_list_end; subreport++) {
-> +			if (subreport->value != 0 &&
-> +			    subreport->value == data[1]) {
-> +				break;
->  			}
->  		}
-> -
-> -		/* Tweak frame control reports, if necessary */
-> -		for (i = 0; i < ARRAY_SIZE(params->frame_list); i++) {
-> -			if (report_id == params->frame_list[i].id) {
-> -				return uclogic_raw_event_frame(
-> -					drvdata, &params->frame_list[i],
-> -					data, size);
-> -			}
-> +		/* If a subreport matched */
-> +		if (subreport < subreport_list_end) {
-> +			/* Change to subreport ID, and restart */
-> +			report_id = data[0] = subreport->id;
-> +		} else {
-> +			return uclogic_raw_event_pen(drvdata, data, size);
->  		}
-> +	}
+> +  nuvoton,adc-delay-ms:
+> +    description: Delay (in ms) to make input path stable and avoid pop noise.
+> +        The default value is 125 and range between 125 to 500 ms.
+
+No need to state constraints in prose.
+
+> +    minimum: 125
+> +    maximum: 500
+> +    default: 125
+> +
+>    '#sound-dai-cells':
+>      const: 0
 >  
-> -		break;
-> +	/* Tweak frame control reports, if necessary */
-> +	for (i = 0; i < ARRAY_SIZE(params->frame_list); i++) {
-> +		if (report_id == params->frame_list[i].id) {
-> +			return uclogic_raw_event_frame(
-> +				drvdata, &params->frame_list[i],
-> +				data, size);
-> +		}
->  	}
->  
->  	return 0;
+> @@ -136,6 +143,7 @@ examples:
+>              nuvoton,jack-eject-debounce = <0>;
+>              nuvoton,dmic-clk-threshold = <3072000>;
+>              nuvoton,dmic-slew-rate = <0>;
+> +            nuvoton,nuvoton,adc-delay-ms = <125>;
+>              #sound-dai-cells = <0>;
+>          };
+>      };
 > -- 
-> 2.43.0
+> 2.25.1
 > 
-
--- 
-Jiri Kosina
-SUSE Labs
-
 
