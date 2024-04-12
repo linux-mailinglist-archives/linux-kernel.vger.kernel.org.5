@@ -1,369 +1,134 @@
-Return-Path: <linux-kernel+bounces-142444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F2DC8A2BA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:56:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 608528A2BA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:58:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56175285AF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:56:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DD7E2842A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:58:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FF3F52F92;
-	Fri, 12 Apr 2024 09:56:42 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AB8502B7
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 09:56:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 804FD52F9B;
+	Fri, 12 Apr 2024 09:57:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="mTABdcWw"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C1C4E1D5;
+	Fri, 12 Apr 2024 09:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712915801; cv=none; b=ilPKndLQ8Rql4+JwfNJvQjKUw1i7+OyYepOKSXkzVG6zmsbQmBdF3+IMGQEksDTOKIHSKOHbEaS9ym43Q3kXnVxgVS8zZtjSthtDSsTpRrYBxjbWcot6Fycdp9gj/H3Kie2tK6xd9uscGj+VDFjusReACeQt9Ll7b7cAOze50oQ=
+	t=1712915874; cv=none; b=q+K9dCfKTvMV87G8g7IlQJZER5960A6EUFuCsQmnSji/p3t5cKT4SZ6kqhUP1owgeETjSTb/Ux9aRCeLU6pZ6En+DgBTTRSmLgb593tKGR5Ua4QGiQkaOx/M0CBK9k/D9xXKRUuhdcalR7qRfomTGJ+1XNKflXrCjD4swemA0L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712915801; c=relaxed/simple;
-	bh=ha8mWULDgQz+7fXS2sqVr00HQEGEnxD4tpPbL9LuSZM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e3rj+0ipD+K9UdwgVarH31QvjrnrZxxoHSNDJkOUjze3jytMSjLdIRZlTuZTT0hxVyA6HBC6mlbyva1igMNSYhvVpkH8lKoHPVkcuwOkmnJ38NucqOYThRnZJYqfg9rtH4HyclpSpD4D02chg8EFAbWKy8REQu3G+mp4KHSSkvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0121C339;
-	Fri, 12 Apr 2024 02:57:08 -0700 (PDT)
-Received: from [10.57.73.208] (unknown [10.57.73.208])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B46DE3F64C;
-	Fri, 12 Apr 2024 02:56:36 -0700 (PDT)
-Message-ID: <f5d6e014-5d6b-441c-8379-252ff24e2260@arm.com>
-Date: Fri, 12 Apr 2024 10:56:35 +0100
+	s=arc-20240116; t=1712915874; c=relaxed/simple;
+	bh=Eomhfdpz11TIl+lDu7WtwjHUKHjwxYWVqWq54Eah4SU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uvyFpBUoNIK+G7H9iQyCQzowyhmI/JPLDiN49rEqZ8fFIIm4xr7oA/6lh6bq366svxPxVAPd4PtwbqGWVwsTIFwNz4g2BEutNZCpwDWZComlKg27EAKfv9FBNkkdR7vOanDo2YxpGRGfzpvLDEOLEo5o3ClFRbynqwaQn+jrU2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=mTABdcWw; arc=none smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 1900167af8b311ee935d6952f98a51a9-20240412
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=GUoxGu/XV4yejGo4HwhwIzs325AikFIy+EyTK0tIl50=;
+	b=mTABdcWwzlZXXTNaefgwDATRhpvn5aXW7RxaOJ0cnlJCGAgO/WM+pqnCH+xb+VyndJm17OuSa4xRHxMLPuz7Zlj2QMeMblAoo9y04/bnQhkbqxi2WLWwXv+8ZfUaWpY2egXfmg8oum3sK2TNNVqK7ydTos+LrFg7TYhcNwjBe/s=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:4b9adb20-e422-468e-8ccb-5df8c34d53ef,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:efc38091-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 1900167af8b311ee935d6952f98a51a9-20240412
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
+	(envelope-from <hao.qin@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 119018599; Fri, 12 Apr 2024 17:57:39 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 12 Apr 2024 17:57:36 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 12 Apr 2024 17:57:36 +0800
+From: Hao Qin <hao.qin@mediatek.com>
+To: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
+	<johan.hedberg@gmail.com>, Luiz Von Dentz <luiz.dentz@gmail.com>
+CC: Sean Wang <sean.wang@mediatek.com>, Deren Wu <deren.Wu@mediatek.com>,
+	Aaron Hou <aaron.hou@mediatek.com>, Chris Lu <chris.lu@mediatek.com>, "Steve
+ Lee" <steve.lee@mediatek.com>, linux-bluetooth
+	<linux-bluetooth@vger.kernel.org>, linux-kernel
+	<linux-kernel@vger.kernel.org>, linux-mediatek
+	<linux-mediatek@lists.infradead.org>, Hao Qin <hao.qin@mediatek.com>
+Subject: [PATCH] Bluetooth: btusb: mediatek: Support auto revert for MT7922
+Date: Fri, 12 Apr 2024 17:57:13 +0800
+Message-ID: <20240412095713.25641-1-hao.qin@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/4] mm: add per-order mTHP anon_fault_alloc and
- anon_fault_fallback counters
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
- cerasuolodomenico@gmail.com, chrisl@kernel.org, david@redhat.com,
- kasong@tencent.com, linux-kernel@vger.kernel.org, peterx@redhat.com,
- surenb@google.com, v-songbaohua@oppo.com, willy@infradead.org,
- yosryahmed@google.com, yuzhao@google.com, corbet@lwn.net
-References: <20240412073740.294272-1-21cnbao@gmail.com>
- <20240412073740.294272-2-21cnbao@gmail.com>
- <ca73cbf1-8304-4790-a721-3c3a42f9d293@arm.com>
- <CAGsJ_4xkRYBSF-8CrfpNpqwKACKSUyfLrwLHWuqqN+zFv29gZA@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4xkRYBSF-8CrfpNpqwKACKSUyfLrwLHWuqqN+zFv29gZA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--1.149400-8.000000
+X-TMASE-MatchedRID: uVuWzlu52Rmpk9YSiEd5IibMb0f5D0uqQl/FdRYkUZLfUZT83lbkEN6M
+	yUV+2+DZYUXcHav/Rxk/Z/74EQY5HY9oUcx9VMLgFEUknJ/kEl7dB/CxWTRRuzBqYATSOgWjFdf
+	36Pz24xgsw6pGLK+fcHBrphPcQbdOhnFBYfr+xvLDBirxwAorpCPx8YLfnf6LTrVhTMP/B9tuxo
+	3gc6EQQpFHHnx2aRWzgITnGkK0NFNRskXKHhdfKpij9M86UwHhsKHfMTjCprzAgTvs8QFuaX7cG
+	d19dSFd
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--1.149400-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 14D0662F09C9B987CEC4A61F7B7A086A01D0ABDA3FA2701977748C2005FC8B442000:8
 
-On 12/04/2024 10:43, Barry Song wrote:
-> On Fri, Apr 12, 2024 at 9:27 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> Hi Barry,
->>
->> 2 remaining comments - otherwise looks good. (same comments I just made in the
->> v4 conversation).
->>
->> On 12/04/2024 08:37, Barry Song wrote:
->>> From: Barry Song <v-songbaohua@oppo.com>
->>>
->>> Profiling a system blindly with mTHP has become challenging due to the
->>> lack of visibility into its operations.  Presenting the success rate of
->>> mTHP allocations appears to be pressing need.
->>>
->>> Recently, I've been experiencing significant difficulty debugging
->>> performance improvements and regressions without these figures.  It's
->>> crucial for us to understand the true effectiveness of mTHP in real-world
->>> scenarios, especially in systems with fragmented memory.
->>>
->>> This patch establishes the framework for per-order mTHP
->>> counters. It begins by introducing the anon_fault_alloc and
->>> anon_fault_fallback counters. Additionally, to maintain consistency
->>> with thp_fault_fallback_charge in /proc/vmstat, this patch also tracks
->>> anon_fault_fallback_charge when mem_cgroup_charge fails for mTHP.
->>> Incorporating additional counters should now be straightforward as well.
->>>
->>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
->>> Cc: Chris Li <chrisl@kernel.org>
->>> Cc: David Hildenbrand <david@redhat.com>
->>> Cc: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
->>> Cc: Kairui Song <kasong@tencent.com>
->>> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
->>> Cc: Peter Xu <peterx@redhat.com>
->>> Cc: Ryan Roberts <ryan.roberts@arm.com>
->>> Cc: Suren Baghdasaryan <surenb@google.com>
->>> Cc: Yosry Ahmed <yosryahmed@google.com>
->>> Cc: Yu Zhao <yuzhao@google.com>
->>> ---
->>>  include/linux/huge_mm.h | 51 ++++++++++++++++++++++++++++++++++
->>>  mm/huge_memory.c        | 61 +++++++++++++++++++++++++++++++++++++++++
->>>  mm/memory.c             |  3 ++
->>>  mm/page_alloc.c         |  4 +++
->>>  4 files changed, 119 insertions(+)
->>>
->>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
->>> index e896ca4760f6..c5beb54b97cb 100644
->>> --- a/include/linux/huge_mm.h
->>> +++ b/include/linux/huge_mm.h
->>> @@ -264,6 +264,57 @@ unsigned long thp_vma_allowable_orders(struct vm_area_struct *vma,
->>>                                         enforce_sysfs, orders);
->>>  }
->>>
->>> +enum mthp_stat_item {
->>> +     MTHP_STAT_ANON_FAULT_ALLOC,
->>> +     MTHP_STAT_ANON_FAULT_FALLBACK,
->>> +     MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE,
->>> +     __MTHP_STAT_COUNT
->>> +};
->>> +
->>> +struct mthp_stat {
->>> +     unsigned long stats[0][__MTHP_STAT_COUNT];
->>> +};
->>> +
->>> +extern struct mthp_stat __percpu *mthp_stats;
->>> +
->>> +static inline void count_mthp_stat(int order, enum mthp_stat_item item)
->>> +{
->>> +     if (order <= 0 || order > PMD_ORDER || !mthp_stats)
->>> +             return;
->>> +
->>> +     this_cpu_inc(mthp_stats->stats[order][item]);
->>> +}
->>> +
->>> +static inline void count_mthp_stats(int order, enum mthp_stat_item item, long delta)
->>> +{
->>> +     if (order <= 0 || order > PMD_ORDER || !mthp_stats)
->>> +             return;
->>> +
->>> +     this_cpu_add(mthp_stats->stats[order][item], delta);
->>> +}
->>> +
->>> +/*
->>> + * Fold the foreign cpu mthp stats into our own.
->>> + *
->>> + * This is adding to the stats on one processor
->>> + * but keeps the global counts constant.
->>> + */
->>> +static inline void mthp_stats_fold_cpu(int cpu)
->>> +{
->>> +     struct mthp_stat *fold_stat;
->>> +     int i, j;
->>> +
->>> +     if (!mthp_stats)
->>> +             return;
->>> +     fold_stat = per_cpu_ptr(mthp_stats, cpu);
->>> +     for (i = 1; i <= PMD_ORDER; i++) {
->>> +             for (j = 0; j < __MTHP_STAT_COUNT; j++) {
->>> +                     count_mthp_stats(i, j, fold_stat->stats[i][j]);
->>> +                     fold_stat->stats[i][j] = 0;
->>> +             }
->>> +     }
->>> +}
->>
->> This is a pretty horrible hack; I'm pretty sure just summing for all *possible*
->> cpus should work.
->>
->>> +
->>>  #define transparent_hugepage_use_zero_page()                         \
->>>       (transparent_hugepage_flags &                                   \
->>>        (1<<TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG))
->>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->>> index dc30139590e6..21c4ac74b484 100644
->>> --- a/mm/huge_memory.c
->>> +++ b/mm/huge_memory.c
->>> @@ -526,6 +526,50 @@ static const struct kobj_type thpsize_ktype = {
->>>       .sysfs_ops = &kobj_sysfs_ops,
->>>  };
->>>
->>> +struct mthp_stat __percpu *mthp_stats;
->>> +
->>> +static unsigned long sum_mthp_stat(int order, enum mthp_stat_item item)
->>> +{
->>> +     unsigned long sum = 0;
->>> +     int cpu;
->>> +
->>> +     cpus_read_lock();
->>> +     for_each_online_cpu(cpu) {
->>> +             struct mthp_stat *this = per_cpu_ptr(mthp_stats, cpu);
->>> +
->>> +             sum += this->stats[order][item];
->>> +     }
->>> +     cpus_read_unlock();
->>> +
->>> +     return sum;
->>> +}
->>> +
->>> +#define DEFINE_MTHP_STAT_ATTR(_name, _index)                                 \
->>> +static ssize_t _name##_show(struct kobject *kobj,                    \
->>> +                     struct kobj_attribute *attr, char *buf)         \
->>> +{                                                                    \
->>> +     int order = to_thpsize(kobj)->order;                            \
->>> +                                                                     \
->>> +     return sysfs_emit(buf, "%lu\n", sum_mthp_stat(order, _index));  \
->>> +}                                                                    \
->>> +static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
->>> +
->>> +DEFINE_MTHP_STAT_ATTR(anon_fault_alloc, MTHP_STAT_ANON_FAULT_ALLOC);
->>> +DEFINE_MTHP_STAT_ATTR(anon_fault_fallback, MTHP_STAT_ANON_FAULT_FALLBACK);
->>> +DEFINE_MTHP_STAT_ATTR(anon_fault_fallback_charge, MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
->>> +
->>> +static struct attribute *stats_attrs[] = {
->>> +     &anon_fault_alloc_attr.attr,
->>> +     &anon_fault_fallback_attr.attr,
->>> +     &anon_fault_fallback_charge_attr.attr,
->>> +     NULL,
->>> +};
->>> +
->>> +static struct attribute_group stats_attr_group = {
->>> +     .name = "stats",
->>> +     .attrs = stats_attrs,
->>> +};
->>> +
->>>  static struct thpsize *thpsize_create(int order, struct kobject *parent)
->>>  {
->>>       unsigned long size = (PAGE_SIZE << order) / SZ_1K;
->>> @@ -549,6 +593,12 @@ static struct thpsize *thpsize_create(int order, struct kobject *parent)
->>>               return ERR_PTR(ret);
->>>       }
->>>
->>> +     ret = sysfs_create_group(&thpsize->kobj, &stats_attr_group);
->>> +     if (ret) {
->>> +             kobject_put(&thpsize->kobj);
->>> +             return ERR_PTR(ret);
->>> +     }
->>> +
->>>       thpsize->order = order;
->>>       return thpsize;
->>>  }
->>> @@ -691,6 +741,11 @@ static int __init hugepage_init(void)
->>>        */
->>>       MAYBE_BUILD_BUG_ON(HPAGE_PMD_ORDER < 2);
->>>
->>> +     mthp_stats = __alloc_percpu((PMD_ORDER + 1) * sizeof(mthp_stats->stats[0]),
->>> +                     sizeof(unsigned long));
->>
->> Personally I think it would be cleaner to allocate statically using
->> ilog2(MAX_PTRS_PER_PTE) instead of PMD_ORDER.
-> 
-> Hi Ryan,
-> 
-> I don't understand why MAX_PTRS_PER_PTE is the correct size. For ARM64,
-> 
-> #define PMD_ORDER       (PMD_SHIFT - PAGE_SHIFT)
-> 
-> #define MAX_PTRS_PER_PTE PTRS_PER_PTE
-> 
-> #define PTRS_PER_PTE            (1 << (PAGE_SHIFT - 3))
-> 
-> while PAGE_SIZE is 16KiB or 64KiB, PTRS_PER_PTE can be a huge number?
-> 
-> 
-> Am I missing something?
+Add support for auto reverting MT7922 during reset process.
 
-PTRS_PER_PTE is the number of PTE entries in a PTE table. On arm64 its as follows:
+Signed-off-by: Hao Qin <hao.qin@mediatek.com>
+---
+ drivers/bluetooth/btusb.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-PAGE_SIZE	PAGE_SHIFT	PTRS_PER_PTE
-4K		12		512
-16K		14		2048
-64K		16		8192
-
-So (PTRS_PER_PTE * PAGE_SIZE) = PMD_SIZE
-
-PMD_ORDER is ilog2(PMD_SIZE / PAGE_SIZE) = ilog2(PTRS_PER_PTE)
-
-MAX_PTRS_PER_PTE is just the maximum value that PTRS_PER_PTE will ever have,
-(and its equal to PTRS_PER_PTE except for powerpc).
-
-Pretty sure the math is correct?
-
-> 
->>
->>> +     if (!mthp_stats)
->>> +             return -ENOMEM;
->>> +
->>>       err = hugepage_init_sysfs(&hugepage_kobj);
->>>       if (err)
->>>               goto err_sysfs;
->>> @@ -725,6 +780,8 @@ static int __init hugepage_init(void)
->>>  err_slab:
->>>       hugepage_exit_sysfs(hugepage_kobj);
->>>  err_sysfs:
->>> +     free_percpu(mthp_stats);
->>> +     mthp_stats = NULL;
->>>       return err;
->>>  }
->>>  subsys_initcall(hugepage_init);
->>> @@ -880,6 +937,8 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
->>>               folio_put(folio);
->>>               count_vm_event(THP_FAULT_FALLBACK);
->>>               count_vm_event(THP_FAULT_FALLBACK_CHARGE);
->>> +             count_mthp_stat(HPAGE_PMD_ORDER, MTHP_STAT_ANON_FAULT_FALLBACK);
->>> +             count_mthp_stat(HPAGE_PMD_ORDER, MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
->>>               return VM_FAULT_FALLBACK;
->>>       }
->>>       folio_throttle_swaprate(folio, gfp);
->>> @@ -929,6 +988,7 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
->>>               mm_inc_nr_ptes(vma->vm_mm);
->>>               spin_unlock(vmf->ptl);
->>>               count_vm_event(THP_FAULT_ALLOC);
->>> +             count_mthp_stat(HPAGE_PMD_ORDER, MTHP_STAT_ANON_FAULT_ALLOC);
->>>               count_memcg_event_mm(vma->vm_mm, THP_FAULT_ALLOC);
->>>       }
->>>
->>> @@ -1050,6 +1110,7 @@ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf)
->>>       folio = vma_alloc_folio(gfp, HPAGE_PMD_ORDER, vma, haddr, true);
->>>       if (unlikely(!folio)) {
->>>               count_vm_event(THP_FAULT_FALLBACK);
->>> +             count_mthp_stat(HPAGE_PMD_ORDER, MTHP_STAT_ANON_FAULT_FALLBACK);
->>>               return VM_FAULT_FALLBACK;
->>>       }
->>>       return __do_huge_pmd_anonymous_page(vmf, &folio->page, gfp);
->>> diff --git a/mm/memory.c b/mm/memory.c
->>> index 649a547fe8e3..06048af7cf9a 100644
->>> --- a/mm/memory.c
->>> +++ b/mm/memory.c
->>> @@ -4368,6 +4368,7 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
->>>               folio = vma_alloc_folio(gfp, order, vma, addr, true);
->>>               if (folio) {
->>>                       if (mem_cgroup_charge(folio, vma->vm_mm, gfp)) {
->>> +                             count_mthp_stat(order, MTHP_STAT_ANON_FAULT_FALLBACK_CHARGE);
->>>                               folio_put(folio);
->>>                               goto next;
->>>                       }
->>> @@ -4376,6 +4377,7 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
->>>                       return folio;
->>>               }
->>>  next:
->>> +             count_mthp_stat(order, MTHP_STAT_ANON_FAULT_FALLBACK);
->>>               order = next_order(&orders, order);
->>>       }
->>>
->>> @@ -4485,6 +4487,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
->>>
->>>       folio_ref_add(folio, nr_pages - 1);
->>>       add_mm_counter(vma->vm_mm, MM_ANONPAGES, nr_pages);
->>> +     count_mthp_stat(folio_order(folio), MTHP_STAT_ANON_FAULT_ALLOC);
->>>       folio_add_new_anon_rmap(folio, vma, addr);
->>>       folio_add_lru_vma(folio, vma);
->>>  setpte:
->>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->>> index b51becf03d1e..3135b5ca2457 100644
->>> --- a/mm/page_alloc.c
->>> +++ b/mm/page_alloc.c
->>> @@ -5840,6 +5840,10 @@ static int page_alloc_cpu_dead(unsigned int cpu)
->>>        */
->>>       vm_events_fold_cpu(cpu);
->>>
->>> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->>> +     mthp_stats_fold_cpu(cpu);
->>> +#endif
->>> +
->>>       /*
->>>        * Zero the differential counters of the dead processor
->>>        * so that the vm statistics are consistent.
->>
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index 4c0cc13adb47..0ad96ec8d31d 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -3032,7 +3032,16 @@ static int btusb_mtk_reset(struct hci_dev *hdev, void *rst_data)
+ 	usb_kill_anchored_urbs(&data->tx_anchor);
+ 	mediatek = hci_get_priv(hdev);
+ 
+-	if (mediatek->dev_id == 0x7925) {
++	if (mediatek->dev_id == 0x7922) {
++		btusb_mtk_uhw_reg_read(data, MTK_BT_SUBSYS_RST, &val);
++		val |= 0x00002020;
++		btusb_mtk_uhw_reg_write(data, MTK_BT_SUBSYS_RST, val);
++		btusb_mtk_uhw_reg_write(data, MTK_EP_RST_OPT, 0x00010001);
++		btusb_mtk_uhw_reg_read(data, MTK_BT_SUBSYS_RST, &val);
++		val |= BIT(0);
++		btusb_mtk_uhw_reg_write(data, MTK_BT_SUBSYS_RST, val);
++		msleep(100);
++	} else if (mediatek->dev_id == 0x7925) {
+ 		btusb_mtk_uhw_reg_read(data, MTK_BT_RESET_REG_CONNV3, &val);
+ 		val |= (1 << 5);
+ 		btusb_mtk_uhw_reg_write(data, MTK_BT_RESET_REG_CONNV3, val);
+@@ -3072,6 +3081,9 @@ static int btusb_mtk_reset(struct hci_dev *hdev, void *rst_data)
+ 	if (err < 0)
+ 		bt_dev_err(hdev, "Reset timeout");
+ 
++	if (mediatek->dev_id == 0x7922)
++		btusb_mtk_uhw_reg_write(data, MTK_UDMA_INT_STA_BT, 0x000000FF);
++
+ 	btusb_mtk_id_get(data, 0x70010200, &val);
+ 	if (!val)
+ 		bt_dev_err(hdev, "Can't get device id, subsys reset fail.");
+-- 
+2.18.0
 
 
