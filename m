@@ -1,198 +1,168 @@
-Return-Path: <linux-kernel+bounces-143231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AE688A35FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:49:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8B9F8A3599
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:26:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D09F1B23C45
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:49:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 256281F21BFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:26:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4793114F119;
-	Fri, 12 Apr 2024 18:49:20 +0000 (UTC)
-Received: from out02.mta.xmission.com (out02.mta.xmission.com [166.70.13.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2755014EC6E;
+	Fri, 12 Apr 2024 18:26:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="IqYYPFzH"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80025502A9
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 18:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.70.13.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8329D14BF9B
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 18:26:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712947759; cv=none; b=cGAVveQ5ilB66XxE3AGglaxCri+hzKkKEh/pJ2trnQ/6r+C6OJRX/ysBWRxrpiv+W8JbmGUvFKmBZUqLka9KDsMIp1n29dMBuCuumrt2HB4vyq0MvRt3SvLn8wmZtqL6QtJrql60hxMQ9peED6Ew2O33FRXnWNchs51W6W7CZiw=
+	t=1712946377; cv=none; b=sze9pMfiFi7TBStOGiHXYdUux+iaRUMWLTLeoyNfz0aDxSrTGRU0YftzALy2kGQC5yVKu7qcD9w1K3HDLuos/l4+JDGWZSxqzB7tLwhpv0xYum6csMHTaAMpHtHeNyn2yaoJlwBZqD6ssZi38wYao3Jv5HBwxBM5qTIqi3JdFYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712947759; c=relaxed/simple;
-	bh=WL02eMPK9kYb8AHXo+4G5xTitIGi9yc8qzdDfjjUvyc=;
-	h=From:To:Cc:References:Date:In-Reply-To:Message-ID:MIME-Version:
-	 Content-Type:Subject; b=myjGIXzZZkG7w2awSaYMZSnoGo1F1uLobIrseu7LHMDfWoe1Rx/DFVYLXUWKGt2RxuOqVb9NxnzfTVpscc+hWjjzjrifNXyula5WZ9qT17gFbSm9W2uzk8cBjwHol5MTKTkHg1qf19hS5uQdo078X0vRoZo8vTQ+sgTnGSbPVFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com; spf=pass smtp.mailfrom=xmission.com; arc=none smtp.client-ip=166.70.13.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xmission.com
-Received: from in02.mta.xmission.com ([166.70.13.52]:54098)
-	by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <ebiederm@xmission.com>)
-	id 1rvLaU-004DCh-N4; Fri, 12 Apr 2024 12:25:22 -0600
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:54354 helo=email.froward.int.ebiederm.org.xmission.com)
-	by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <ebiederm@xmission.com>)
-	id 1rvLaT-002OFR-Ol; Fri, 12 Apr 2024 12:25:22 -0600
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-To: Thomas Flexing <tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>,  Anna-Maria Behnsen
- <anna-maria@linutronix.de>,  Frederic Weisbecker <frederic@kernel.org>,
-  John Stultz <jstultz@google.com>,  Peter Zijlstra <peterz@infradead.org>,
-  Ingo Molnar <mingo@kernel.org>,  Stephen Boyd <sboyd@kernel.org>,  Oleg
- Nesterov <oleg@redhat.com>
-References: <20240410164558.316665885@linutronix.de>
-	<20240410165551.376994018@linutronix.de>
-Date: Fri, 12 Apr 2024 13:25:01 -0500
-In-Reply-To: <20240410165551.376994018@linutronix.de> (Thomas Gleixner's
-	message of "Thu, 11 Apr 2024 00:46:24 +0200 (CEST)")
-Message-ID: <87mspyxwua.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1712946377; c=relaxed/simple;
+	bh=R6+sR1n2H8lveCws8FYqyXIHci1kpgk6V6NXn8xBGM4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dot5ZS64xkVafd04uDJZ/uDViYGAXaPVoLB1HOot9D8zLd96xSUpPt0y3F8H3p6tNAuNUY76drNq6WeL8tT0yvaoGX4jC8Dol1wK0CKk9KEr+MHt9TxsWJDu0jCOQILTYvROv1Ujwakuh2HzR56ZnQ+ZUieP4xoRZ/RPoYSyXdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=IqYYPFzH; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ed054f282aso1027817b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 11:26:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712946375; x=1713551175; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oMxTHfwmfGngfKcHt9BB7WUlzUr2s5LaZsK/l59Ii3w=;
+        b=IqYYPFzHrWkKzXyyATo8fp1XTg/P/PLzPTOf6FPbfGmOsfizXWJwHOrSTXfghPxDBS
+         uZxZcMnR3zzl3bADTURz7NuYbWQOJFK0S0iNWVj69+KYaiyvyB4us/nRTbYRzAd181OT
+         5a6x6qgLP7BjzcpD6OedSCRQqTCj05WGFhIV3unDBaS9tOklkVeEgfSRbgyfENiBuXPh
+         wWS+fUVE7Gof7SaAcFwpTQVmxEGLDz+yGGe4AWPOLF3W64ibERCH4JQzH3jY6Cg8/Lfa
+         5972KNx7SEXqYnei1rHtFEhxpLbpVQNikNaUvfhV2w9qoSDCLgJfpvAW6WcEZ/Wz8zTz
+         JKSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712946375; x=1713551175;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oMxTHfwmfGngfKcHt9BB7WUlzUr2s5LaZsK/l59Ii3w=;
+        b=MWbnrQuw9GDXPmeaGArqEOJ2ttWR+nPQlcMBwQc1fOo4uxfbmQ5A62JFwViRIGBg+e
+         10d9nzPtAWEBbGljhK90SDvpdHe/hCksu0DhmArm6A41MS1gGVmH1KoDSTGiY2uqIAcR
+         KwsOvdYDAoU0f64lzblwNns+n0jF/PTvQDPrpj11UszkEW1ZQl4G/+C6tDL1iSGsz9HF
+         +Lh/knz03Cye0SMzROYPqDnctca5rTGZoANOiLBvM130QMVmDjOxqYf3bX+gzlB/zXix
+         ClZRzjsvJkPVAK10W1GSYfFxxLprwxdMoOS4IW9OrbW94K9tcY1HVK/UJx3UTiYzEU55
+         JErQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTz0Bgq/NB3MbYivYtxPsD7i/oJ8BXivMdVc/DpwsPI5ljg7giJDh0++Y1jFWAomJ4bjy5v+6eU4x9SZywcUMsice7DyD+Xb1x5DDc
+X-Gm-Message-State: AOJu0YxBibwy4JqB+R++TFs6ppz8vss8HedtpmTF568sCA8fql04OFX9
+	6sJPFKG4smfXMimWhYz9YFP2CJjUqaMN4L9SD3lh3ujTiRsmdHknGh5SiczY/CQ=
+X-Google-Smtp-Source: AGHT+IF+XDdyB5UuM6N1UjqqE0/VQom0I9Op5dF9IOxOPYX/5ovaNt57ADIRPWe8tJpR7LWz5w/zoQ==
+X-Received: by 2002:a05:6a20:9717:b0:1a9:8861:9e77 with SMTP id hr23-20020a056a20971700b001a988619e77mr3208395pzc.28.1712946374944;
+        Fri, 12 Apr 2024 11:26:14 -0700 (PDT)
+Received: from ghost (mobile-166-137-160-039.mycingular.net. [166.137.160.39])
+        by smtp.gmail.com with ESMTPSA id q18-20020a63d612000000b005dc9ab425c2sm3053438pgg.35.2024.04.12.11.26.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 11:26:14 -0700 (PDT)
+Date: Fri, 12 Apr 2024 11:26:10 -0700
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Conor Dooley <conor.dooley@microchip.com>
+Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
+	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 15/19] riscv: hwcap: Add v to hwcap if xtheadvector
+ enabled
+Message-ID: <Zhl8wtc5ikM2Btjv@ghost>
+References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
+ <20240411-dev-charlie-support_thead_vector_6_9-v1-15-4af9815ec746@rivosinc.com>
+ <20240412-thrill-amnesty-019897f21466@wendy>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1rvLaT-002OFR-Ol;;;mid=<87mspyxwua.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX1+kLfRcCRwZMP9fO8LyOXbmukixHHSgBCY=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Level: *
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	*  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-	*      [score: 0.5000]
-	*  0.7 XMSubLong Long Subject
-	*  0.5 XMGappySubj_01 Very gappy subject
-	*  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-	* -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-	*      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
-	*  0.0 T_TooManySym_01 4+ unique symbols in subject
-	*  0.0 T_TooManySym_04 7+ unique symbols in subject
-	*  0.0 T_TooManySym_03 6+ unique symbols in subject
-	*  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Thomas Flexing <tglx@linutronix.de>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 426 ms - load_scoreonly_sql: 0.07 (0.0%),
-	signal_user_changed: 11 (2.5%), b_tie_ro: 9 (2.2%), parse: 0.96 (0.2%),
-	 extract_message_metadata: 12 (2.7%), get_uri_detail_list: 1.71 (0.4%),
-	 tests_pri_-2000: 6 (1.4%), tests_pri_-1000: 2.6 (0.6%),
-	tests_pri_-950: 1.23 (0.3%), tests_pri_-900: 0.94 (0.2%),
-	tests_pri_-90: 84 (19.7%), check_bayes: 82 (19.4%), b_tokenize: 8
-	(1.9%), b_tok_get_all: 7 (1.7%), b_comp_prob: 2.1 (0.5%),
-	b_tok_touch_all: 62 (14.6%), b_finish: 0.85 (0.2%), tests_pri_0: 294
-	(69.0%), check_dkim_signature: 0.59 (0.1%), check_dkim_adsp: 2.7
-	(0.6%), poll_dns_idle: 0.93 (0.2%), tests_pri_10: 2.1 (0.5%),
-	tests_pri_500: 8 (2.0%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [patch V2 07/50] posix-cpu-timers: Split up posix_cpu_timer_get()
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240412-thrill-amnesty-019897f21466@wendy>
 
-Thomas Gleixner <tglx@linutronix.de> writes:
+On Fri, Apr 12, 2024 at 12:37:08PM +0100, Conor Dooley wrote:
+> On Thu, Apr 11, 2024 at 09:11:21PM -0700, Charlie Jenkins wrote:
+> > xtheadvector is not vector 1.0 compatible, but it can leverage all of
+> > the same save/restore routines as vector plus
+> > riscv_v_first_use_handler(). vector 1.0 and xtheadvector are mutually
+> > exclusive so there is no risk of overlap.
+> 
+> I think this not okay to do - if a program checks hwcap to see if vector
+> is supported they'll get told it is on T-Head system where only the 0.7.1
+> is.
 
-> In preparation for addressing issues in the timer_get() and timer_set()
-> functions of posix CPU timers.
+That's fair. I did remove it from the hwprobe result but this is kind of
+a gross way of doing it. I'll mess around with this so this isn't
+necessary.
 
-To see that this was safe I had to lookup and see that
-cpu_timer_getexpires is a truly trivial function.
+- Charlie
 
-static inline u64 cpu_timer_getexpires(struct cpu_timer *ctmr)
-{
-	return ctmr->node.expires;
-}
+> 
+> > 
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > ---
+> >  arch/riscv/kernel/cpufeature.c | 17 +++++++++++++++--
+> >  1 file changed, 15 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+> > index 41a4d2028428..59f628b1341c 100644
+> > --- a/arch/riscv/kernel/cpufeature.c
+> > +++ b/arch/riscv/kernel/cpufeature.c
+> > @@ -647,9 +647,13 @@ static void __init riscv_fill_hwcap_from_isa_string(unsigned long *isa2hwcap)
+> >  		 * Many vendors with T-Head CPU cores which implement the 0.7.1
+> >  		 * version of the vector specification put "v" into their DTs.
+> >  		 * CPU cores with the ratified spec will contain non-zero
+> > -		 * marchid.
+> > +		 * marchid. Only allow "v" to be set if xtheadvector is present.
+> >  		 */
+> > -		if (acpi_disabled && this_vendorid == THEAD_VENDOR_ID &&
+> > +		if (__riscv_isa_vendor_extension_available(isavendorinfo->isa,
+> > +							   RISCV_ISA_VENDOR_EXT_XTHEADVECTOR)) {
+> > +			this_hwcap |= isa2hwcap[RISCV_ISA_EXT_v];
+> > +			set_bit(RISCV_ISA_EXT_v, isainfo->isa);
+> > +		} else if (acpi_disabled && this_vendorid == THEAD_VENDOR_ID &&
+> >  		    this_archid == 0x0) {
+> >  			this_hwcap &= ~isa2hwcap[RISCV_ISA_EXT_v];
+> >  			clear_bit(RISCV_ISA_EXT_v, isainfo->isa);
+> > @@ -776,6 +780,15 @@ static int __init riscv_fill_hwcap_from_ext_list(unsigned long *isa2hwcap)
+> >  
+> >  		of_node_put(cpu_node);
+> >  
+> > +		/*
+> > +		 * Enable kernel vector routines if xtheadvector is present
+> > +		 */
+> > +		if (__riscv_isa_vendor_extension_available(isavendorinfo->isa,
+> > +							   RISCV_ISA_VENDOR_EXT_XTHEADVECTOR)) {
+> > +			this_hwcap |= isa2hwcap[RISCV_ISA_EXT_v];
+> > +			set_bit(RISCV_ISA_EXT_v, isainfo->isa);
+> > +		}
+> > +
+> >  		/*
+> >  		 * All "okay" harts should have same isa. Set HWCAP based on
+> >  		 * common capabilities of every "okay" hart, in case they don't.
+> > 
+> > -- 
+> > 2.44.0
+> > 
 
-I am a bit confused by the purpose of this function in
-posix-cpu-timers.c.  In some places this helper is used (like below),
-and in other places like bump_cpu_timer the expires member is
-accessed directly.
 
-It isn't really a problem, but it is something that might be
-worth making consistent in the code to make it easier to read.
-
-Eric
-
-> No functional change.
->
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
-> V2: Split out into new patch to make review simpler - Frederic
-> ---
->  kernel/time/posix-cpu-timers.c |   51 +++++++++++++++++++----------------------
->  1 file changed, 24 insertions(+), 27 deletions(-)
->
-> --- a/kernel/time/posix-cpu-timers.c
-> +++ b/kernel/time/posix-cpu-timers.c
-> @@ -785,33 +785,9 @@ static int posix_cpu_timer_set(struct k_
->  	return ret;
->  }
->  
-> -static void posix_cpu_timer_get(struct k_itimer *timer, struct itimerspec64 *itp)
-> +static void __posix_cpu_timer_get(struct k_itimer *timer, struct itimerspec64 *itp, u64 now)
->  {
-> -	clockid_t clkid = CPUCLOCK_WHICH(timer->it_clock);
-> -	struct cpu_timer *ctmr = &timer->it.cpu;
-> -	u64 now, expires = cpu_timer_getexpires(ctmr);
-> -	struct task_struct *p;
-> -
-> -	rcu_read_lock();
-> -	p = cpu_timer_task_rcu(timer);
-> -	if (!p)
-> -		goto out;
-> -
-> -	/*
-> -	 * Easy part: convert the reload time.
-> -	 */
-> -	itp->it_interval = ktime_to_timespec64(timer->it_interval);
-> -
-> -	if (!expires)
-> -		goto out;
-> -
-> -	/*
-> -	 * Sample the clock to take the difference with the expiry time.
-> -	 */
-> -	if (CPUCLOCK_PERTHREAD(timer->it_clock))
-> -		now = cpu_clock_sample(clkid, p);
-> -	else
-> -		now = cpu_clock_sample_group(clkid, p, false);
-> +	u64 expires = cpu_timer_getexpires(&timer->it.cpu);
->  
->  	if (now < expires) {
->  		itp->it_value = ns_to_timespec64(expires - now);
-> @@ -823,7 +799,28 @@ static void posix_cpu_timer_get(struct k
->  		itp->it_value.tv_nsec = 1;
->  		itp->it_value.tv_sec = 0;
->  	}
-> -out:
-> +}
-> +
-> +static void posix_cpu_timer_get(struct k_itimer *timer, struct itimerspec64 *itp)
-> +{
-> +	clockid_t clkid = CPUCLOCK_WHICH(timer->it_clock);
-> +	struct task_struct *p;
-> +	u64 now;
-> +
-> +	rcu_read_lock();
-> +	p = cpu_timer_task_rcu(timer);
-> +	if (p) {
-> +		itp->it_interval = ktime_to_timespec64(timer->it_interval);
-> +
-> +		if (cpu_timer_getexpires(&timer->it.cpu)) {
-> +			if (CPUCLOCK_PERTHREAD(timer->it_clock))
-> +				now = cpu_clock_sample(clkid, p);
-> +			else
-> +				now = cpu_clock_sample_group(clkid, p, false);
-> +
-> +			__posix_cpu_timer_get(timer, itp, now);
-> +		}
-> +	}
->  	rcu_read_unlock();
->  }
->  
 
