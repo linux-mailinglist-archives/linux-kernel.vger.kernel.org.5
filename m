@@ -1,55 +1,59 @@
-Return-Path: <linux-kernel+bounces-142993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28B658A3304
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:01:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98DC18A3306
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:01:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB322B21A7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:01:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CF081F22A75
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:01:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 711B5148841;
-	Fri, 12 Apr 2024 16:00:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D375149019;
+	Fri, 12 Apr 2024 16:00:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="dT+Ryr+g"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="qLFZb5Ul"
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC37484A35;
-	Fri, 12 Apr 2024 16:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20987148852;
+	Fri, 12 Apr 2024 16:00:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712937653; cv=none; b=kbOz8pUm1/K1mYVoj1Akb9t3DEfsyF75/dP3NYhbu+Od33Cgj58AUcSqYMih7QZ0KK/Oo3k8CL0CEksj4TUykz6RpokgpMZyi8CT46pV0si1gTNfcKunN18rFYjv1IQOtrdats1KtnzfOihChufv2UiCNZIo9Pm3iuj/aIpDYtE=
+	t=1712937656; cv=none; b=HLcY+QJK0tUZFK600cEcen2f5ppUepo8B5mtU4NqFt501NvXs/iSISUhIZmt0tnm6Q+3FKrLTks0OYFGLLkCU8wzEfOgqppFYrgvjPDQqq0MCiS6wSRydX7jIJ32aJhv0ySXhDepMP2nAfh5jeoPvM9foHqYpZpoeS4YLA7k9P8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712937653; c=relaxed/simple;
-	bh=VoJ3Y26a2XDlHa6cix2uE+qXKRTMTyo3m8O6z5t12GM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SE7AdM+4e/yIxf88WBjgjjxZP3ownLy/ZQASA1kz/4OX5fX+ZoTWVMocL4pMXOxx7Mk00HKkaDdw5BVy9LmIUYMwwZtOveeVeHkbhagIh9CICBG8du/jVZDxANQHxzGkcxsMKY4kFpmc796tcoZi2ecmz49bBJafUiSIUTdnJ04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=dT+Ryr+g; arc=none smtp.client-ip=213.167.242.64
+	s=arc-20240116; t=1712937656; c=relaxed/simple;
+	bh=CKkaIB1VMOnmqCrBsV70ZTXEjY9urL8LUoJA5O5CNOA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=CBZjiFIwRL+BnF33hrPUpAwALajEYYjwWiSYplJfBzDyyBVxvTZwVixcQvk3WQN41SAoFO/Od9Nm5VXabiYtTNnnLqHh0FiaXS9w4pfsQU0lck31LhtxFwEowkpLpviOaGj09L9tFXwu9X3YLuObeFFpnG3Dx933zh8iEWe1peU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=qLFZb5Ul; arc=none smtp.client-ip=213.167.242.64
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
 Received: from umang.jain (unknown [103.251.226.65])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id E25F6149D;
-	Fri, 12 Apr 2024 18:00:02 +0200 (CEST)
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 93C6C14A1;
+	Fri, 12 Apr 2024 18:00:06 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1712937605;
-	bh=VoJ3Y26a2XDlHa6cix2uE+qXKRTMTyo3m8O6z5t12GM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=dT+Ryr+g4hGfiv6gPCmYrJQ5lpvl4dHcjWHTLf8L0kKgeqxs3tXo7WHkri5E6pH41
-	 PCvYQrA/LGPiYAWjJ2y/nMAhCFTdcmELK+SpH9uOI/vv/xkUgFMPDWG38DrlTaLMTI
-	 5Jcea7XbO1CPXP7Q1P9xfUwBday6faUd8Mj7XIE0=
+	s=mail; t=1712937609;
+	bh=CKkaIB1VMOnmqCrBsV70ZTXEjY9urL8LUoJA5O5CNOA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=qLFZb5UlAVZ6BSlCm3wiJeNPr01QRBz3RgALr+Y02Ks2Bdod40IIDsVgk6wczPnc3
+	 jRjknzd1bTB/cdjbLCpRbt1w2rYRhkfKSuTb8R0OFUXHC7QuzYqQSjEaQn5nZ4jwlA
+	 9Ansl1zDLaLI8v6H3O3NyqCVIhfVJVdYFPL02oQI=
 From: Umang Jain <umang.jain@ideasonboard.com>
 To: linux-media@vger.kernel.org
 Cc: Alexander Shiyan <eagle.alexander923@gmail.com>,
 	Kieran Bingham <kieran.bingham@ideasonboard.com>,
 	Sakari Ailus <sakari.ailus@linux.intel.com>,
 	open list <linux-kernel@vger.kernel.org>,
-	Umang Jain <umang.jain@ideasonboard.com>
-Subject: [PATCH v6 0/6] media: imx335: 2/4 lane ops and improvements
-Date: Fri, 12 Apr 2024 21:30:33 +0530
-Message-ID: <20240412160039.276743-1-umang.jain@ideasonboard.com>
+	Umang Jain <umang.jain@ideasonboard.com>,
+	Tommaso Merciai <tomm.merciai@gmail.com>
+Subject: [PATCH v6 1/6] media: imx335: Support 2 or 4 lane operation modes
+Date: Fri, 12 Apr 2024 21:30:34 +0530
+Message-ID: <20240412160039.276743-2-umang.jain@ideasonboard.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240412160039.276743-1-umang.jain@ideasonboard.com>
+References: <20240412160039.276743-1-umang.jain@ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,65 +62,79 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Another batch of improvements of the imx335 driver.
+From: Kieran Bingham <kieran.bingham@ideasonboard.com>
 
-Patch 1/6 adds support for 2 or 4 lane operation modes.
+The IMX335 can support both 2 and 4 lane configurations.
+Extend the driver to configure the lane mode accordingly.
+Update the pixel rate depending on the number of lanes in use.
 
-Patch 2/6 call the V4L2 fwnode device parser to handle controls that are
-standardised by the framework.
+Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+Reviewed-by: Tommaso Merciai <tomm.merciai@gmail.com>
+---
+ drivers/media/i2c/imx335.c | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-Patch 3/6 introduces the use of CCI for registers access.
-
-Patch 4/6 uses decimal values for sizes registers (instead of
-hexadecimal). This improves overall readability
-
-Patch 5/6 fixes the height value discrepency. Accessible height is 1944,
-as per the data sheet
-
-Patch 6/6 fixes the max analogue gain value.
-
-Changes in v6: 
-- Modify 2/6 to call v4l2_fwnode_device_parse()
-  early in imx335_init_controls() and return early if error.
-- Treat v4l2_ctrl_new_fwnode_properties() as one of framework
-  functions, hence check ctrl_hdlr->error should be sufficient as
-  requested.
-
-Changes in v5:
-- Simplify error handling in 2/6. Check for ctrl_hdlr->error
-- Space fix around { } in 3/6. Drop /* undocumented * as well
-
-Changes in v4:
-- Do not change from window cropping mode in patch 4/6.
-  In v3, the sensor was changed to all pixel scan mode to
-  achieve height=1944, but it can be achieved in window
-  cropping mode as well, by fixing the mode registers
-
-changes in v3:
-- fix patch 2/6 where we need to free ctrl handler
-  on error path.
-
-changes in v2:
-- New patch 4/6
-- Drop calculating the pixel clock from link freq.
-- CCI register address sort (incremental)
-- Fix cci_write for REG_HOLD handling and add a comment.
-- Remove  unused macros as part of 3/6
-
-Kieran Bingham (2):
-  media: imx335: Support 2 or 4 lane operation modes
-  media: imx335: Parse fwnode properties
-
-Umang Jain (4):
-  media: imx335: Use V4L2 CCI for accessing sensor registers
-  media: imx335: Use integer values for size registers
-  media: imx335: Fix active area height discrepency
-  media: imx335: Limit analogue gain value
-
- drivers/media/i2c/Kconfig  |   1 +
- drivers/media/i2c/imx335.c | 628 ++++++++++++++++++-------------------
- 2 files changed, 298 insertions(+), 331 deletions(-)
-
+diff --git a/drivers/media/i2c/imx335.c b/drivers/media/i2c/imx335.c
+index dab6d080bc4c..c633ea1380e7 100644
+--- a/drivers/media/i2c/imx335.c
++++ b/drivers/media/i2c/imx335.c
+@@ -21,6 +21,11 @@
+ #define IMX335_MODE_STANDBY	0x01
+ #define IMX335_MODE_STREAMING	0x00
+ 
++/* Data Lanes */
++#define IMX335_LANEMODE		0x3a01
++#define IMX335_2LANE		1
++#define IMX335_4LANE		3
++
+ /* Lines per frame */
+ #define IMX335_REG_LPFR		0x3030
+ 
+@@ -147,6 +152,7 @@ struct imx335_mode {
+  * @exp_ctrl: Pointer to exposure control
+  * @again_ctrl: Pointer to analog gain control
+  * @vblank: Vertical blanking in lines
++ * @lane_mode Mode for number of connected data lanes
+  * @cur_mode: Pointer to current selected sensor mode
+  * @mutex: Mutex for serializing sensor controls
+  * @link_freq_bitmap: Menu bitmap for link_freq_ctrl
+@@ -171,6 +177,7 @@ struct imx335 {
+ 		struct v4l2_ctrl *again_ctrl;
+ 	};
+ 	u32 vblank;
++	u32 lane_mode;
+ 	const struct imx335_mode *cur_mode;
+ 	struct mutex mutex;
+ 	unsigned long link_freq_bitmap;
+@@ -936,6 +943,11 @@ static int imx335_start_streaming(struct imx335 *imx335)
+ 		return ret;
+ 	}
+ 
++	/* Configure lanes */
++	ret = imx335_write_reg(imx335, IMX335_LANEMODE, 1, imx335->lane_mode);
++	if (ret)
++		return ret;
++
+ 	/* Setup handler will write actual exposure and gain */
+ 	ret =  __v4l2_ctrl_handler_setup(imx335->sd.ctrl_handler);
+ 	if (ret) {
+@@ -1096,7 +1108,14 @@ static int imx335_parse_hw_config(struct imx335 *imx335)
+ 	if (ret)
+ 		return ret;
+ 
+-	if (bus_cfg.bus.mipi_csi2.num_data_lanes != IMX335_NUM_DATA_LANES) {
++	switch (bus_cfg.bus.mipi_csi2.num_data_lanes) {
++	case 2:
++		imx335->lane_mode = IMX335_2LANE;
++		break;
++	case 4:
++		imx335->lane_mode = IMX335_4LANE;
++		break;
++	default:
+ 		dev_err(imx335->dev,
+ 			"number of CSI2 data lanes %d is not supported\n",
+ 			bus_cfg.bus.mipi_csi2.num_data_lanes);
 -- 
 2.43.0
 
