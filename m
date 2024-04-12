@@ -1,200 +1,166 @@
-Return-Path: <linux-kernel+bounces-142194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FD718A28AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:03:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99B788A28A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 10:02:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70D871C2218D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:03:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37EDF1F22D4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:02:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F3E50298;
-	Fri, 12 Apr 2024 08:02:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F8A4EB31;
+	Fri, 12 Apr 2024 08:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IJ167ZVk"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="lut6OKEf"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911545028D
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 08:02:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44017487A9;
+	Fri, 12 Apr 2024 08:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712908975; cv=none; b=YQcjT/d+naPtqumyXdtjLPtwAETS9cmrnRxT8YSaHuZWge6aC4eF7d28aDQQaPWFiCPqgjz91sbIuXsej4OqzhysMDc/sPPLw8rAaE4DpVJi6orGovJcy5QiOQMdxq3b14lEh9r0kqo6Vwd3EwjYrRByF/WA3OOCSqcMEvlO51M=
+	t=1712908963; cv=none; b=aePQ1c9336eXRoPCy5FH98JcNYeFu2RiIEII5DHCK382Q8Y7732HbmSHSJoDMSEs6fGK4Df9ju5GzxIofLQ5+4tekNnnT8Ix4fNE3NzzuSNMpR1LDp5kSMRkt7agxtmGg460URJljXZNgy2Am4IHgZo/v8e03zVIJt4BpJkl8SU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712908975; c=relaxed/simple;
-	bh=krFqUqxMYFpZh1tbkYjt3LaFLR2okMC7+AptUzC+lDI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DCDG0xVCBJwFVrGi0O6KZj68lEOfQS+gUKU5ufsf0/+BdrDWoEC5cYkAvxEZ3tPG23kPZN6WQTxsUhhQG/RK+t0/yE1Z/v8ecLsE9XlX3rza2Y/bzKSifmq+SHseKvFK12vyyXTzyhQT+l7OGBacje4YXSoxPHzo0hxkLFA4C70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IJ167ZVk; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712908972;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Pz7sr6/1kgAHbwaR8rIkOs2x2hB/0ZeZUDnCetvC4ZQ=;
-	b=IJ167ZVkyqaKTQ9RAoAajFEKVTuBRPWoOu5wHEUd/tZf1ZkYeDlg4LvDvdE7wgRzJyeOyG
-	4WXfaZHycsElzKfz6rHoUTu2P2O8ideBEMovAIXxvEyORBmA9V6C1sGUx0qB15RKZAboSm
-	qYkHYc1WFcXGg48M9qgmp2NGu6JuVlc=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-357-D3uL1TMUPMOb3lXXAvKsmw-1; Fri, 12 Apr 2024 04:02:51 -0400
-X-MC-Unique: D3uL1TMUPMOb3lXXAvKsmw-1
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5dc4ffda13fso1391267a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 01:02:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712908970; x=1713513770;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Pz7sr6/1kgAHbwaR8rIkOs2x2hB/0ZeZUDnCetvC4ZQ=;
-        b=CxeMP8e8j54Ql/qwblmaPll5nvPbhQWRFdoCAadGGcCCXRAuqYebRrzyOC2IbNTeeK
-         QErV3s0CH18p1mqXMdEFSDY1a/kvWEjdWDyFPUt8UWWvLBCoR5kyTUov9cKoycl+/BR6
-         5h5Uo/3nxlg2yZaOsLK8TUbU4JhEHL3ke+XythR5rfrKkaxy8t3ezpLsTz8NH8KzOqTM
-         OTZ1R1u1Mf842OF/ZZD4kB8OnGRLUnO7uthvt9S8AZh0KY9IXadB7SHqYdceByL8HsbD
-         jBhqLxywfK9w+n0fy727RHiuIbVjP41/m5OwxFpxDtH3p8+t4MNNQe3Gp+kMlZBN5vFg
-         lxbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3XRiWigUfagz/f0ty3QipXhzPuHsjqIO3Ai0TwsduO1IUWmywZWefCtncdg0/Qmm9he7VpdBMXJiFJwk3yJX3BVDDR2s8zA1pypoj
-X-Gm-Message-State: AOJu0Yx5/fPPzeAvNsFbTX90yaBvsdnDNnbgzba19eI3yiw25uMNBmTz
-	HdJDYieBsrl5h+GlCSDD8igzlrZmxiP4bXNTvL0oMi2KtNvricRVkis+1mwQNhPhFYF0+r/bUy7
-	zJ4QWz+4Bi7NYSfFwEBfAN/mPJHV0pSc3wXqyhGPbmTfOXDQYOavIeQG+KHX74w==
-X-Received: by 2002:a17:90a:4b4e:b0:2a5:6753:98e0 with SMTP id o14-20020a17090a4b4e00b002a5675398e0mr2893963pjl.0.1712908970371;
-        Fri, 12 Apr 2024 01:02:50 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF0opAzUeUMJ2l2tzohRqw1i5Cs00vZK25Zmn1qxqR4RzTaHhyge9+KGBE/PeqC9yl/vyn2GQ==
-X-Received: by 2002:a17:90a:4b4e:b0:2a5:6753:98e0 with SMTP id o14-20020a17090a4b4e00b002a5675398e0mr2893945pjl.0.1712908970064;
-        Fri, 12 Apr 2024 01:02:50 -0700 (PDT)
-Received: from Samantha.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id c9-20020a17090abf0900b002a610ef880bsm2601514pjs.6.2024.04.12.01.02.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 01:02:49 -0700 (PDT)
-From: wefu@redhat.com
-To: jszhang@kernel.org,
-	alexandre.belloni@bootlin.com,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	guoren@kernel.org,
-	paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu
-Cc: linux-riscv@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rtc@vger.kernel.org,
-	Wei Fu <wefu@redhat.com>
-Subject: [PATCH 1/5] drivers/rtc/rtc-xgene: Add prescaler support in APM X-Gene RTC driver
-Date: Fri, 12 Apr 2024 16:01:43 +0800
-Message-ID: <20240412080238.134191-2-wefu@redhat.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240412080238.134191-1-wefu@redhat.com>
-References: <20240412080238.134191-1-wefu@redhat.com>
+	s=arc-20240116; t=1712908963; c=relaxed/simple;
+	bh=HypH+HFfZe7sG9jT4MifVrW0ikey/sQI93jaxO2O35g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=NCgFUik+d4/ecNtWw5KaXPZKFs5Ghx5GcrMarARM6SKXpnRMQMkRMYXzufUnOcOIcOKoTdL55ynCqIgyWYliXEem02SCT0Cm7qkzaU4nFdsKwX7h5lPX3A3fs6NJ28vBa//dX/zX1pcBwtLlM5nAQODX4iCvrWjYexMviC4w580=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=lut6OKEf; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43C81s5s124910;
+	Fri, 12 Apr 2024 03:01:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712908914;
+	bh=VX0Xcvc7mqlW39h0bWx5qdbe1UgbFfhzdFxCTgi5tYs=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=lut6OKEfEAifrJR0p1WxIxVaFKsg/KVIlAAEdNX55Nx2WeGQbqPMSQHQ+3CGzqc/a
+	 dj/0kzRP71mPFk8fT+WWjxsvyRxkRO/ZU8/3bfUy+PWCFPDESChQPeDCwQ7DXuIyz/
+	 Uge4C9c/GOJBFuO1A6nXkgblmxcIlwG5zCRRFAqE=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43C81sa4079143
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 12 Apr 2024 03:01:54 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 12
+ Apr 2024 03:01:54 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 12 Apr 2024 03:01:54 -0500
+Received: from [10.249.135.225] ([10.249.135.225])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43C81j69086571;
+	Fri, 12 Apr 2024 03:01:47 -0500
+Message-ID: <cae18a4a-0085-493d-93a1-1e3127a0bd64@ti.com>
+Date: Fri, 12 Apr 2024 13:31:44 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3 3/3] net: ti: icssg-prueth: Add support for
+ ICSSG switch firmware
+To: Andrew Lunn <andrew@lunn.ch>, MD Danish Anwar <danishanwar@ti.com>
+CC: Diogo Ivo <diogo.ivo@siemens.com>, Rob Herring <robh@kernel.org>,
+        Dan
+ Carpenter <dan.carpenter@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>, Simon Horman <horms@kernel.org>,
+        Wolfram Sang
+	<wsa+renesas@sang-engineering.com>,
+        Arnd Bergmann <arnd@arndb.de>, Vignesh
+ Raghavendra <vigneshr@ti.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Roger Quadros <rogerq@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Jakub
+ Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>,
+        "David S.
+ Miller" <davem@davemloft.net>,
+        <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>
+References: <20240327114054.1907278-1-danishanwar@ti.com>
+ <20240327114054.1907278-4-danishanwar@ti.com>
+ <27d960ed-8e67-431b-a910-e6b2fc12e292@lunn.ch>
+ <c94815f8-798a-4167-8f69-359b9b28b7ce@ti.com>
+ <cca25c3d-a352-4531-a8ae-5a0fb7de44df@lunn.ch>
+ <ff567495-d966-42c9-9015-ba0ba0dbe011@ti.com>
+ <0039b9d9-9dc5-4b88-99f0-92f275b0b4d3@lunn.ch>
+Content-Language: en-US
+From: "Anwar, Md Danish" <a0501179@ti.com>
+In-Reply-To: <0039b9d9-9dc5-4b88-99f0-92f275b0b4d3@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-From: Wei Fu <wefu@redhat.com>
 
-This patch add Counter Prescaler support in APM X-Gene RTC driver by
-getting prescaler (Optional) property value from dtb.
 
-Signed-off-by: Wei Fu <wefu@redhat.com>
----
- drivers/rtc/Kconfig     | 10 ++++++++++
- drivers/rtc/rtc-xgene.c | 31 +++++++++++++++++++++++++++++++
- 2 files changed, 41 insertions(+)
+On 4/10/2024 6:12 PM, Andrew Lunn wrote:
+>> I have been working on this and have found a way to change firmwares
+>> without bringing the interfaces up / down.
+>>
+>> By default the interfaces are in MAC mode and the ICSSG EMAC firmwares
+>> are running on pru cores. To enable switch mode we will need to stop the
+>> cores and reload them with the ICSSG Switch firmwares. We can do this
+>> without bringing the interfaces up / down.
+>>
+>> When first interface is added to bridge it will still run emac
+>> firmwares. The moment second interface gets added to bridge, we will
+>> disable the ports and stop the pru cores. Load the switch firmwares on
+>> to the cores, start the cores and enable the ports. All of this is done
+>> from the driver.
+>>
+>> The user need not to bring the interfaces up / down. Loading / Reloading
+>> of firmwares will be handled inside the driver only. But we do need to
+>> stop the cores for changing firmwares. For stopping the cores we will
+>> change the port state to disable by sending r30 command to firmware.
+>>
+>> As we are not restarting the interfaces, the DRAM, SMEM and MSMC RAM
+>> doesn't get cleared. As a result with this approach all configurations
+>> will be saved.
+>>
+>> Please let me know if this approach looks ok to you.
+>>
+>> Below will be the commands to enable switch mode now,
+>>
+>>      ip link add name br0 type bridge
+>>      ip link set dev eth1 master br0
+>>      ip link set dev eth2 master br0 (At this point we will stop the
+>> cores, reload switch firmware, start the cores)
+>>      ip link set dev br0 up
+>>      bridge vlan add dev br0 vid 1 pvid untagged
+> 
+> This sounds a lot better.
+> 
+> Note that the bridge interface br0 might already be up when the
+> interfaces are added. So that is a different order to what you showed
+> here.
+> 
 
-diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-index c63e32d012f2..3a89f1e6095d 100644
---- a/drivers/rtc/Kconfig
-+++ b/drivers/rtc/Kconfig
-@@ -1888,6 +1888,16 @@ config RTC_DRV_XGENE
- 	  This driver can also be built as a module, if so, the module
- 	  will be called "rtc-xgene".
- 
-+config RTC_DRV_XGENE_PRESCALER
-+	bool "Pre-scaler Counter support for APM X-Gene RTC driver"
-+	depends on RTC_DRV_XGENE
-+	depends on ARCH_THEAD
-+	default y
-+	help
-+	  Say Y here if your Soc has Pre-scaler Counter support on rtc-xgene.
-+
-+	  This hardware support can only be found in DW_apb_rtc after v2.06a.
-+
- config RTC_DRV_PIC32
- 	tristate "Microchip PIC32 RTC"
- 	depends on MACH_PIC32
-diff --git a/drivers/rtc/rtc-xgene.c b/drivers/rtc/rtc-xgene.c
-index f78efc9760c0..4d6f1629b973 100644
---- a/drivers/rtc/rtc-xgene.c
-+++ b/drivers/rtc/rtc-xgene.c
-@@ -26,11 +26,13 @@
- #define  RTC_CCR_MASK		BIT(1)
- #define  RTC_CCR_EN		BIT(2)
- #define  RTC_CCR_WEN		BIT(3)
-+#define  RTC_CCR_PSCLR_EN	BIT(4)
- #define RTC_STAT		0x10
- #define  RTC_STAT_BIT		BIT(0)
- #define RTC_RSTAT		0x14
- #define RTC_EOI			0x18
- #define RTC_VER			0x1C
-+#define RTC_CPSR		0x20
- 
- struct xgene_rtc_dev {
- 	struct rtc_device *rtc;
-@@ -40,6 +42,33 @@ struct xgene_rtc_dev {
- 	unsigned int irq_enabled;
- };
- 
-+static void xgene_rtc_set_prescaler(struct device *dev)
-+{
-+#ifdef CONFIG_RTC_DRV_XGENE_PRESCALER
-+	u32 ccr;
-+	u32 prescaler;
-+	struct xgene_rtc_dev *pdata = dev_get_drvdata(dev);
-+
-+	if (device_property_read_u32(dev, "prescaler", &prescaler)) {
-+		dev_warn(dev, "Missing the pre-scaler config for RTC.\n");
-+		dev_warn(dev, "The current pre-scaler config is 0x%x.\n",
-+			 readl(pdata->csr_base + RTC_CPSR));
-+		return;
-+	}
-+
-+	/* The clock source on some platform to RTC is NOT 1HZ,
-+	 * so we need to prescale the clock to make the input clock become 1HZ,
-+	 * like (clock_source/prescaler) = 1HZ
-+	 */
-+	writel(prescaler, pdata->csr_base + RTC_CPSR);
-+
-+	/* enable RTC Prescaler feature in CCR register */
-+	ccr = readl(pdata->csr_base + RTC_CCR);
-+	ccr |= RTC_CCR_PSCLR_EN;
-+	writel(ccr, pdata->csr_base + RTC_CCR);
-+#endif /* CONFIG_RTC_DRV_XGENE_PRESCALER */
-+}
-+
- static int xgene_rtc_read_time(struct device *dev, struct rtc_time *tm)
- {
- 	struct xgene_rtc_dev *pdata = dev_get_drvdata(dev);
-@@ -174,6 +203,8 @@ static int xgene_rtc_probe(struct platform_device *pdev)
- 	/* Turn on the clock and the crystal */
- 	writel(RTC_CCR_EN, pdata->csr_base + RTC_CCR);
- 
-+	xgene_rtc_set_prescaler(&pdev->dev);
-+
- 	ret = device_init_wakeup(&pdev->dev, 1);
- 	if (ret) {
- 		clk_disable_unprepare(pdata->clk);
+Hi Andrew, I have tested with that sequence as well and forwarding
+works. Even if the second interface is added to bridge after bridge is
+up, the forwarding works fine.
+
+> There will be some packet losses when you swap firmware, but it
+> probably is not that bad. When interfaces are added to a bridge
+> packets are dropped anywhere while spanning tree determines the
+> network topology. It will just appear your device is slow at doing
+> that.
+> 
+
+Yes there will be packet losses for a slight amount of time but that's
+something we can't avoid.
+
+I will post the next revision with these changes soon. Thanks for the
+review.
+
+> 	Andrew
+
 -- 
-2.44.0
-
+Thanks and Regards,
+Md Danish Anwar
 
