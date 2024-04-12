@@ -1,346 +1,266 @@
-Return-Path: <linux-kernel+bounces-142179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 822418A2884
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:53:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9A428A2887
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:53:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37AE5286E3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:53:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC2E01C22C03
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:53:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0C144DA13;
-	Fri, 12 Apr 2024 07:53:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dZLBX1lD"
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D65B92E3FD;
-	Fri, 12 Apr 2024 07:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D6E50279;
+	Fri, 12 Apr 2024 07:53:25 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23614F613
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:53:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712908393; cv=none; b=MCpaA25HkKXb8+Gut294PASFWlsc/Siiik93B7oIr6Kh2FpRJBlSsFmJv62vBQ3KipPsMu+dTyCN8soIx1J4oHAZIsPTOoQm6QuNEOY6Pyb9Z899ZM2SiscIe/WsbOuE6KfZl45ZRblbNnPutecHy94QDzINb2izrnSufLIUox4=
+	t=1712908404; cv=none; b=Dz1oNYHrKR9B1vZEkjBCMmBuTpQ47+bkCJdfIkJ04i8y9xKmIDnjiatIBbBLLw1rP7U7eMHN1uZbMMYnLE65H4mmZDyX+wOId3fL5W7P2hcJQNSZGiDCDbpOuLjN1BT/k57bHu2iY/2J+xbU1/vCi/pzrSgxVYyuZRYMjAu4dUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712908393; c=relaxed/simple;
-	bh=7AB25A/V09XlHNs7lPaNZ3EFvGY/JQHIdAe7QEQ2SD0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ciLF9xw8/Vth1WKA8+Gy7vc3/3+gbFdpc5kvDXKNZiPAyJTmZBLHGm8Asq9csgccdddSE52XSmqX/ss0DsyAzHsvFy15ff+KBz/GElP3t8ydGayS1YC0Mcali1h0F+EGptaM8FDX6Dvo588TVhEOVSqWpgkCvQmGqxTDN/nx7F0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dZLBX1lD; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4347dadc2cfso3997901cf.3;
-        Fri, 12 Apr 2024 00:53:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712908391; x=1713513191; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sqcmPBebDiY4QLcoIlCZmHKpMW9s+14LtH6kQjNjSCg=;
-        b=dZLBX1lDFfFSbVBX2RYtLHVm3a8TyTl9iYAyMRppATZhTFH2oUUxFL12uMMVkdMp6i
-         cRNTOKRA0DbPQwRoUrc7I/ZJZqJneAFNk2EMvEP7PrBuIA4Q0fUxCSG0Z9BuYitIbSs/
-         p3zC2Bwj1h0xqsTP7edJOurnwDANtMW1geTqMtuTeTFi28MHrQjaLceHV0B9zkfOZX3p
-         ubxsNaHoZrwK6JgdtLFl+pxMIIl6dxQRWu21J1tqFajeMt3B2Df0H5/o/lbOsmFnH1ya
-         fGNzRMbZAOWCGLASh1xNbXcVL74MYKKKu4/7b2tdmEkwUqs21Xa2lY8eQzrZw6bJaZ8s
-         cjFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712908391; x=1713513191;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sqcmPBebDiY4QLcoIlCZmHKpMW9s+14LtH6kQjNjSCg=;
-        b=TZXytvQtyTu3PrDSh+Czl3kcAMFD+HDEIAY4nTy3GzPSi5+BS3s+9hCDrfxMIJ051c
-         eRU50eqjDemal37e0OVju6N2X/LCArSHK6l6GIcseP7nq3ARaTZkDJbLxwGykbsLjufQ
-         1v8OSA0wBnIW7PqBA6h+w3F/pZjRVIkexQ9Wbueq1QGrC+f7uu19AtjrmyIE25UPDxyf
-         bUN1xf65GlUUfcBIqdb2tP/zeCSYmv4ak5mRja9XldSh0BqzrukXfJGpMcDgUSbpkFOw
-         EuXdP2cPJOxDuVoXtC+gpe/ThgbwsiqlMEQRGFt3MiZwZjYcOEhwTSjoX1NyTraoUnUv
-         C6XQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVNtbI7iK9YumH7Zn1p6gqlFvcef4eBhBBA8wrKUi5idoe61kNn042/OVJaIBiOHnhrG/KMbZd14svMpRBTvquZiBKW8ShSdqF/qr/X5hnIh8iVVOMblWDW702M2Omq+zI4cwsk6UP5K1EsHbAKtjWr5xJWTQaaHs4Q7V78Axz4U8CLCyMWArs=
-X-Gm-Message-State: AOJu0Yw14NC2QYMoxqObw/nBN3OeLCzdnA47IId/L4pyVqUst3mv118c
-	p/2DXWjHrlPTypt4JqWHqXkeH4/YGVVlc7QRwbYFOWokEUt4egO1vJPlNVEOyVZjQB9+dRZs50M
-	MXPSE5gO5yJFnu3iKPg8Jhnf4Eiw=
-X-Google-Smtp-Source: AGHT+IFpqZiQTFT2ho41y9YKmKKL18+nC7uhM5EXxW4vHfIUzGSQevTZi1rkMbcHClmFb+FhhvNVaXfiAfEct7nXv+A=
-X-Received: by 2002:ac8:6210:0:b0:436:8612:ba21 with SMTP id
- ks16-20020ac86210000000b004368612ba21mr1448815qtb.68.1712908390559; Fri, 12
- Apr 2024 00:53:10 -0700 (PDT)
+	s=arc-20240116; t=1712908404; c=relaxed/simple;
+	bh=cN8LZzqiF0iXw1IRK2mxtwca3ikor0Lzvme1Z/+UwxI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ryLVpoWoFSGpFeyC1c1qEDnP6ke8aYAl3/my2hBW4e7A/QWVMUd3BVA7UfBp6pDejLcbiM6ZV5qfx2FfmzNgC2FU9QpXGevydUhGxSodrKIqfDSO2DzjkE6ei985d0Oyl8oHKBQZrnsjw0pMg9Qg1l9CjjJb2hd1lU5+VupQ0v0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F1962339;
+	Fri, 12 Apr 2024 00:53:50 -0700 (PDT)
+Received: from [10.57.73.208] (unknown [10.57.73.208])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5199F3F6C4;
+	Fri, 12 Apr 2024 00:53:20 -0700 (PDT)
+Message-ID: <37336367-f876-4429-a8a6-f887fc7f69ee@arm.com>
+Date: Fri, 12 Apr 2024 08:53:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAOQ4uxi9L_Rs7q=fcLGqJMx15jLAArOWGwGfdCL8LOUCPR3L+w@mail.gmail.com>
- <0000000000003b04040615d7afde@google.com>
-In-Reply-To: <0000000000003b04040615d7afde@google.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 12 Apr 2024 10:52:59 +0300
-Message-ID: <CAOQ4uxjY_On6FkkR1YHT2TSUhq=JX2X9ChPg9XgjJuQoAZ3hzg@mail.gmail.com>
-Subject: Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in fsnotify
-To: syzbot <syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com>
-Cc: jack@suse.cz, krisman@suse.de, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	repnop@google.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/4] arm64: mm: Don't remap pgtables for allocate vs
+ populate
+Content-Language: en-GB
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, David Hildenbrand <david@redhat.com>,
+ Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Itaru Kitayama <itaru.kitayama@fujitsu.com>
+References: <20240404143308.2224141-1-ryan.roberts@arm.com>
+ <20240404143308.2224141-4-ryan.roberts@arm.com>
+ <ZhffSyrqCQsMV2pG@FVFF77S0Q05N>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ZhffSyrqCQsMV2pG@FVFF77S0Q05N>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 11, 2024 at 11:06=E2=80=AFPM syzbot
-<syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot tried to test the proposed patch but the build/boot failed:
->
-> viperboard
-> [    7.499011][    T1] usbcore: registered new interface driver dln2
-> [    7.500804][    T1] usbcore: registered new interface driver pn533_usb
-> [    7.507181][    T1] nfcsim 0.2 initialized
-> [    7.508964][    T1] usbcore: registered new interface driver port100
-> [    7.511844][    T1] usbcore: registered new interface driver nfcmrvl
-> [    7.519814][    T1] Loading iSCSI transport class v2.0-870.
-> [    7.539126][    T1] virtio_scsi virtio0: 1/0/0 default/read/poll queue=
-s
-> [    7.550224][    T1] ------------[ cut here ]------------
-> [    7.551264][    T1] refcount_t: decrement hit 0; leaking memory.
-> [    7.552627][    T1] WARNING: CPU: 0 PID: 1 at lib/refcount.c:31 refcou=
-nt_warn_saturate+0xfa/0x1d0
-> [    7.554218][    T1] Modules linked in:
-> [    7.554791][    T1] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.9.0-rc=
-3-syzkaller-00014-geb06a4b6cca5 #0
-> [    7.556609][    T1] Hardware name: Google Google Compute Engine/Google=
- Compute Engine, BIOS Google 03/27/2024
-> [    7.558128][    T1] RIP: 0010:refcount_warn_saturate+0xfa/0x1d0
-> [    7.559937][    T1] Code: b2 00 00 00 e8 87 70 e7 fc 5b 5d c3 cc cc cc=
- cc e8 7b 70 e7 fc c6 05 0c 5d e5 0a 01 90 48 c7 c7 40 4b 1f 8c e8 17 ee a9=
- fc 90 <0f> 0b 90 90 eb d9 e8 5b 70 e7 fc c6 05 e9 5c e5 0a 01 90 48 c7 c7
-> [    7.563097][    T1] RSP: 0000:ffffc90000066e18 EFLAGS: 00010246
-> [    7.564240][    T1] RAX: 6f40bd285f2a6000 RBX: ffff888147ed00fc RCX: f=
-fff8880166d0000
-> [    7.565743][    T1] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0=
-000000000000000
-> [    7.567236][    T1] RBP: 0000000000000004 R08: ffffffff815800a2 R09: f=
-ffffbfff1c39af8
-> [    7.568531][    T1] R10: dffffc0000000000 R11: fffffbfff1c39af8 R12: f=
-fffea000503edc0
-> [    7.570021][    T1] R13: ffffea000503edc8 R14: 1ffffd4000a07db9 R15: 0=
-000000000000000
-> [    7.571764][    T1] FS:  0000000000000000(0000) GS:ffff8880b9400000(00=
-00) knlGS:0000000000000000
-> [    7.573270][    T1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    7.574232][    T1] CR2: ffff88823ffff000 CR3: 000000000e134000 CR4: 0=
-0000000003506f0
-> [    7.575566][    T1] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0=
-000000000000000
-> [    7.576737][    T1] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0=
-000000000000400
-> [    7.578004][    T1] Call Trace:
-> [    7.578712][    T1]  <TASK>
-> [    7.579189][    T1]  ? __warn+0x163/0x4e0
-> [    7.580052][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
-> [    7.580896][    T1]  ? report_bug+0x2b3/0x500
-> [    7.581593][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
-> [    7.582383][    T1]  ? handle_bug+0x3e/0x70
-> [    7.583169][    T1]  ? exc_invalid_op+0x1a/0x50
-> [    7.584335][    T1]  ? asm_exc_invalid_op+0x1a/0x20
-> [    7.585285][    T1]  ? __warn_printk+0x292/0x360
-> [    7.586058][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
-> [    7.586882][    T1]  ? refcount_warn_saturate+0xf9/0x1d0
-> [    7.587666][    T1]  __free_pages_ok+0xc60/0xd90
-> [    7.588339][    T1]  make_alloc_exact+0xa3/0xf0
-> [    7.589220][    T1]  vring_alloc_queue_split+0x20a/0x600
-> [    7.590378][    T1]  ? __pfx_vring_alloc_queue_split+0x10/0x10
-> [    7.591429][    T1]  ? vp_find_vqs+0x4c/0x4e0
-> [    7.592174][    T1]  ? virtscsi_probe+0x3ea/0xf60
-> [    7.592853][    T1]  ? virtio_dev_probe+0x991/0xaf0
-> [    7.593892][    T1]  ? really_probe+0x2b8/0xad0
-> [    7.594581][    T1]  ? driver_probe_device+0x50/0x430
-> [    7.595325][    T1]  vring_create_virtqueue_split+0xc6/0x310
-> [    7.596200][    T1]  ? ret_from_fork+0x4b/0x80
-> [    7.597705][    T1]  ? __pfx_vring_create_virtqueue_split+0x10/0x10
-> [    7.599051][    T1]  vring_create_virtqueue+0xca/0x110
-> [    7.599905][    T1]  ? __pfx_vp_notify+0x10/0x10
-> [    7.600626][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-> [    7.601770][    T1]  setup_vq+0xe9/0x2d0
-> [    7.602429][    T1]  ? __pfx_vp_notify+0x10/0x10
-> [    7.603153][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-> [    7.604003][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-> [    7.604758][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-> [    7.605623][    T1]  vp_setup_vq+0xbf/0x330
-> [    7.606388][    T1]  ? __pfx_vp_config_changed+0x10/0x10
-> [    7.607239][    T1]  ? ioread16+0x2f/0x90
-> [    7.608129][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-> [    7.609047][    T1]  vp_find_vqs_msix+0x8b2/0xc80
-> [    7.609880][    T1]  vp_find_vqs+0x4c/0x4e0
-> [    7.610578][    T1]  virtscsi_init+0x8db/0xd00
-> [    7.611247][    T1]  ? __pfx_virtscsi_init+0x10/0x10
-> [    7.612058][    T1]  ? __pfx_default_calc_sets+0x10/0x10
-> [    7.612860][    T1]  ? scsi_host_alloc+0xa57/0xea0
-> [    7.613671][    T1]  ? vp_get+0xfd/0x140
-> [    7.614243][    T1]  virtscsi_probe+0x3ea/0xf60
-> [    7.614969][    T1]  ? __pfx_virtscsi_probe+0x10/0x10
-> [    7.615847][    T1]  ? kernfs_add_one+0x156/0x8b0
-> [    7.616678][    T1]  ? virtio_no_restricted_mem_acc+0x9/0x10
-> [    7.617627][    T1]  ? virtio_features_ok+0x10c/0x270
-> [    7.618392][    T1]  virtio_dev_probe+0x991/0xaf0
-> [    7.619262][    T1]  ? __pfx_virtio_dev_probe+0x10/0x10
-> [    7.620216][    T1]  really_probe+0x2b8/0xad0
-> [    7.621124][    T1]  __driver_probe_device+0x1a2/0x390
-> [    7.621980][    T1]  driver_probe_device+0x50/0x430
-> [    7.622710][    T1]  __driver_attach+0x45f/0x710
-> [    7.623413][    T1]  ? __pfx___driver_attach+0x10/0x10
-> [    7.624299][    T1]  bus_for_each_dev+0x239/0x2b0
-> [    7.625118][    T1]  ? __pfx___driver_attach+0x10/0x10
-> [    7.625993][    T1]  ? __pfx_bus_for_each_dev+0x10/0x10
-> [    7.626858][    T1]  ? do_raw_spin_unlock+0x13c/0x8b0
-> [    7.627837][    T1]  bus_add_driver+0x347/0x620
-> [    7.628735][    T1]  driver_register+0x23a/0x320
-> [    7.629982][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
-> [    7.631006][    T1]  virtio_scsi_init+0x65/0xe0
-> [    7.631802][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
-> [    7.632612][    T1]  do_one_initcall+0x248/0x880
-> [    7.633404][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
-> [    7.634540][    T1]  ? __pfx_do_one_initcall+0x10/0x10
-> [    7.635786][    T1]  ? lockdep_hardirqs_on_prepare+0x43d/0x780
-> [    7.636889][    T1]  ? __pfx_parse_args+0x10/0x10
-> [    7.637652][    T1]  ? do_initcalls+0x1c/0x80
-> [    7.638456][    T1]  ? rcu_is_watching+0x15/0xb0
-> [    7.639227][    T1]  do_initcall_level+0x157/0x210
-> [    7.640192][    T1]  do_initcalls+0x3f/0x80
-> [    7.640818][    T1]  kernel_init_freeable+0x435/0x5d0
-> [    7.641593][    T1]  ? __pfx_kernel_init_freeable+0x10/0x10
-> [    7.642546][    T1]  ? __pfx_lockdep_hardirqs_on_prepare+0x10/0x10
-> [    7.643506][    T1]  ? __pfx_kernel_init+0x10/0x10
-> [    7.644295][    T1]  ? __pfx_kernel_init+0x10/0x10
-> [    7.645313][    T1]  ? __pfx_kernel_init+0x10/0x10
-> [    7.646036][    T1]  kernel_init+0x1d/0x2b0
-> [    7.646660][    T1]  ret_from_fork+0x4b/0x80
-> [    7.647368][    T1]  ? __pfx_kernel_init+0x10/0x10
-> [    7.648542][    T1]  ret_from_fork_asm+0x1a/0x30
-> [    7.649812][    T1]  </TASK>
-> [    7.650346][    T1] Kernel panic - not syncing: kernel: panic_on_warn =
-set ...
-> [    7.651620][    T1] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.9.0-rc=
-3-syzkaller-00014-geb06a4b6cca5 #0
-> [    7.653389][    T1] Hardware name: Google Google Compute Engine/Google=
- Compute Engine, BIOS Google 03/27/2024
-> [    7.655321][    T1] Call Trace:
-> [    7.655801][    T1]  <TASK>
-> [    7.656252][    T1]  dump_stack_lvl+0x241/0x360
-> [    7.657006][    T1]  ? __pfx_dump_stack_lvl+0x10/0x10
-> [    7.657825][    T1]  ? __pfx__printk+0x10/0x10
-> [    7.658542][    T1]  ? _printk+0xd5/0x120
-> [    7.659343][    T1]  ? vscnprintf+0x5d/0x90
-> [    7.659705][    T1]  panic+0x349/0x860
-> [    7.659705][    T1]  ? __warn+0x172/0x4e0
-> [    7.659705][    T1]  ? __pfx_panic+0x10/0x10
-> [    7.659705][    T1]  ? show_trace_log_lvl+0x4e6/0x520
-> [    7.659705][    T1]  ? ret_from_fork_asm+0x1a/0x30
-> [    7.659705][    T1]  __warn+0x346/0x4e0
-> [    7.659705][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
-> [    7.659705][    T1]  report_bug+0x2b3/0x500
-> [    7.659705][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
-> [    7.659705][    T1]  handle_bug+0x3e/0x70
-> [    7.659705][    T1]  exc_invalid_op+0x1a/0x50
-> [    7.659705][    T1]  asm_exc_invalid_op+0x1a/0x20
-> [    7.659705][    T1] RIP: 0010:refcount_warn_saturate+0xfa/0x1d0
-> [    7.659705][    T1] Code: b2 00 00 00 e8 87 70 e7 fc 5b 5d c3 cc cc cc=
- cc e8 7b 70 e7 fc c6 05 0c 5d e5 0a 01 90 48 c7 c7 40 4b 1f 8c e8 17 ee a9=
- fc 90 <0f> 0b 90 90 eb d9 e8 5b 70 e7 fc c6 05 e9 5c e5 0a 01 90 48 c7 c7
-> [    7.659705][    T1] RSP: 0000:ffffc90000066e18 EFLAGS: 00010246
-> [    7.659705][    T1] RAX: 6f40bd285f2a6000 RBX: ffff888147ed00fc RCX: f=
-fff8880166d0000
-> [    7.659705][    T1] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0=
-000000000000000
-> [    7.659705][    T1] RBP: 0000000000000004 R08: ffffffff815800a2 R09: f=
-ffffbfff1c39af8
-> [    7.659705][    T1] R10: dffffc0000000000 R11: fffffbfff1c39af8 R12: f=
-fffea000503edc0
-> [    7.659705][    T1] R13: ffffea000503edc8 R14: 1ffffd4000a07db9 R15: 0=
-000000000000000
-> [    7.659705][    T1]  ? __warn_printk+0x292/0x360
-> [    7.659705][    T1]  ? refcount_warn_saturate+0xf9/0x1d0
-> [    7.659705][    T1]  __free_pages_ok+0xc60/0xd90
-> [    7.659705][    T1]  make_alloc_exact+0xa3/0xf0
-> [    7.659705][    T1]  vring_alloc_queue_split+0x20a/0x600
-> [    7.659705][    T1]  ? __pfx_vring_alloc_queue_split+0x10/0x10
-> [    7.659705][    T1]  ? vp_find_vqs+0x4c/0x4e0
-> [    7.659705][    T1]  ? virtscsi_probe+0x3ea/0xf60
-> [    7.659705][    T1]  ? virtio_dev_probe+0x991/0xaf0
-> [    7.659705][    T1]  ? really_probe+0x2b8/0xad0
-> [    7.659705][    T1]  ? driver_probe_device+0x50/0x430
-> [    7.659705][    T1]  vring_create_virtqueue_split+0xc6/0x310
-> [    7.659705][    T1]  ? ret_from_fork+0x4b/0x80
-> [    7.659705][    T1]  ? __pfx_vring_create_virtqueue_split+0x10/0x10
-> [    7.659705][    T1]  vring_create_virtqueue+0xca/0x110
-> [    7.659705][    T1]  ? __pfx_vp_notify+0x10/0x10
-> [    7.659705][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-> [    7.659705][    T1]  setup_vq+0xe9/0x2d0
-> [    7.659705][    T1]  ? __pfx_vp_notify+0x10/0x10
-> [    7.659705][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-> [    7.659705][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-> [    7.659705][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-> [    7.659705][    T1]  vp_setup_vq+0xbf/0x330
-> [    7.659705][    T1]  ? __pfx_vp_config_changed+0x10/0x10
-> [    7.659705][    T1]  ? ioread16+0x2f/0x90
-> [    7.659705][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
-> [    7.709861][    T1]  vp_find_vqs_msix+0x8b2/0xc80
-> [    7.709861][    T1]  vp_find_vqs+0x4c/0x4e0
-> [    7.709861][    T1]  virtscsi_init+0x8db/0xd00
-> [    7.709861][    T1]  ? __pfx_virtscsi_init+0x10/0x10
-> [    7.709861][    T1]  ? __pfx_default_calc_sets+0x10/0x10
-> [    7.709861][    T1]  ? scsi_host_alloc+0xa57/0xea0
-> [    7.709861][    T1]  ? vp_get+0xfd/0x140
-> [    7.709861][    T1]  virtscsi_probe+0x3ea/0xf60
-> [    7.709861][    T1]  ? __pfx_virtscsi_probe+0x10/0x10
-> [    7.709861][    T1]  ? kernfs_add_one+0x156/0x8b0
-> [    7.709861][    T1]  ? virtio_no_restricted_mem_acc+0x9/0x10
-> [    7.709861][    T1]  ? virtio_features_ok+0x10c/0x270
-> [    7.709861][    T1]  virtio_dev_probe+0x991/0xaf0
-> [    7.709861][    T1]  ? __pfx_virtio_dev_probe+0x10/0x10
-> [    7.709861][    T1]  really_probe+0x2b8/0xad0
-> [    7.709861][    T1]  __driver_probe_device+0x1a2/0x390
-> [    7.709861][    T1]  driver_probe_device+0x50/0x430
-> [    7.709861][    T1]  __driver_attach+0x45f/0x710
-> [    7.709861][    T1]  ? __pfx___driver_attach+0x10/0x10
-> [    7.709861][    T1]  bus_for_each_dev+0x239/0x2b0
-> [    7.709861][    T1]  ? __pfx___driver_attach+0x10/0x10
-> [    7.709861][    T1]  ? __pfx_bus_for_each_dev+0x10/0x10
-> [    7.709861][    T1]  ? do_raw_spin_unlock+0x13c/0x8b0
-> [    7.709861][    T1]  bus_add_driver+0x347/0x620
-> [    7.709861][    T1]  driver_register+0x23a/0x320
-> [    7.709861][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
-> [    7.709861][    T1]  virtio_scsi_init+0x65/0xe0
-> [    7.709861][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
-> [    7.709861][    T1]  do_one_initcall+0x248/0x880
-> [    7.709861][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
-> [    7.709861][    T1]  ? __pfx_do_one_initcall+0x10/0x10
-> [    7.709861][    T1]  ? lockdep_hardirqs_on_prepare+0x43d/0x780
-> [    7.709861][    T1]  ? __pfx_parse_args+0x10/0x10
-> [    7.709861][    T1]  ? do_initcalls+0x1c/0x80
-> [    7.709861][    T1]  ? rcu_is_watching+0x15/0xb0
-> [    7.709861][    T1]  do_initcall_level+0x157/0x210
-> [    7.709861][    T1]  do_initcalls+0x3f/0x80
-> [    7.709861][    T1]  kernel_init_freeable+0x435/0x5d0
-> [    7.709861][    T1]  ? __pfx_kernel_init_freeable+0x10/0x10
-> [    7.709861][    T1]  ? __pfx_lockdep_hardirqs_on_prepare+0x10/0x10
-> [    7.709861][    T1]  ? __pfx_kernel_init+0x10/0x10
-> [    7.709861][    T1]  ? __pfx_kernel_init+0x10/0x10
-> [    7.709861][    T1]  ? __pfx_kernel_init+0x10/0x10
-> [    7.709861][    T1]  kernel_init+0x1d/0x2b0
-> [    7.709861][    T1]  ret_from_fork+0x4b/0x80
-> [    7.709861][    T1]  ? __pfx_kernel_init+0x10/0x10
-> [    7.709861][    T1]  ret_from_fork_asm+0x1a/0x30
-> [    7.709861][    T1]  </TASK>
-> [    7.709861][    T1] Kernel Offset: disabled
-> [    7.709861][    T1] Rebooting in 86400 seconds..
->
->
+Hi Mark,
 
-Not sure what this is about.
-Let's try again after rebase to current master:
+[...]
 
-#syz test: https://github.com/amir73il/linux fsnotify-fixes
+> Does something like the below look ok to you? The trade-off performance-wise is
+> that late uses will still use the fixmap, and will redundantly zero the tables,
+> but the logic remains fairly simple, and I suspect the overhead for late
+> allocations might not matter since the bulk of late changes are non-allocating.
+> 
+> Mark
+> 
+> ---->8-----
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index 105a95a8845c5..1eecf87021bd0 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -1010,6 +1010,8 @@ static inline p4d_t *p4d_offset_kimg(pgd_t *pgdp, u64 addr)
+>  
+>  static inline bool pgtable_l5_enabled(void) { return false; }
+>  
+> +#define p4d_index(addr)              (((addr) >> P4D_SHIFT) & (PTRS_PER_P4D - 1)
+> +
+>  /* Match p4d_offset folding in <asm/generic/pgtable-nop4d.h> */
+>  #define p4d_set_fixmap(addr)		NULL
+>  #define p4d_set_fixmap_offset(p4dp, addr)	((p4d_t *)p4dp)
+> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+> index dc86dceb0efe6..4b944ef8f618c 100644
+> --- a/arch/arm64/mm/mmu.c
+> +++ b/arch/arm64/mm/mmu.c
+> @@ -109,28 +109,12 @@ EXPORT_SYMBOL(phys_mem_access_prot);
+>  static phys_addr_t __init early_pgtable_alloc(int shift)
+>  {
+>  	phys_addr_t phys;
+> -	void *ptr;
+>  
+>  	phys = memblock_phys_alloc_range(PAGE_SIZE, PAGE_SIZE, 0,
+>  					 MEMBLOCK_ALLOC_NOLEAKTRACE);
+>  	if (!phys)
+>  		panic("Failed to allocate page table page\n");
+>  
+> -	/*
+> -	 * The FIX_{PGD,PUD,PMD} slots may be in active use, but the FIX_PTE
+> -	 * slot will be free, so we can (ab)use the FIX_PTE slot to initialise
+> -	 * any level of table.
+> -	 */
+> -	ptr = pte_set_fixmap(phys);
+> -
+> -	memset(ptr, 0, PAGE_SIZE);
+> -
+> -	/*
+> -	 * Implicit barriers also ensure the zeroed page is visible to the page
+> -	 * table walker
+> -	 */
+> -	pte_clear_fixmap();
+> -
+>  	return phys;
+>  }
+>  
+> @@ -172,6 +156,14 @@ bool pgattr_change_is_safe(u64 old, u64 new)
+>  	return ((old ^ new) & ~mask) == 0;
+>  }
+>  
+> +static void init_clear_pgtable(void *table)
+> +{
+> +	clear_page(table);
+> +
+> +	/* Ensure the zeroing is observed by page table walks. */
+> +	dsb(ishst);
+> +}
+> +
+>  static pte_t *init_pte(pte_t *ptep, unsigned long addr, unsigned long end,
+>  		       phys_addr_t phys, pgprot_t prot)
+>  {
+> @@ -216,12 +208,18 @@ static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
+>  			pmdval |= PMD_TABLE_PXN;
+>  		BUG_ON(!pgtable_alloc);
+>  		pte_phys = pgtable_alloc(PAGE_SHIFT);
+> +
+> +		ptep = pte_set_fixmap(pte_phys);
+> +		init_clear_pgtable(ptep);
+> +
+>  		__pmd_populate(pmdp, pte_phys, pmdval);
+>  		pmd = READ_ONCE(*pmdp);
+> +	} else {
+> +		ptep = pte_set_fixmap(pmd_page_paddr(pmd));
+>  	}
+>  	BUG_ON(pmd_bad(pmd));
+>  
+> -	ptep = pte_set_fixmap_offset(pmdp, addr);
+> +	ptep += pte_index(addr);
+>  	do {
+>  		pgprot_t __prot = prot;
+>  
+> @@ -303,12 +301,18 @@ static void alloc_init_cont_pmd(pud_t *pudp, unsigned long addr,
+>  			pudval |= PUD_TABLE_PXN;
+>  		BUG_ON(!pgtable_alloc);
+>  		pmd_phys = pgtable_alloc(PMD_SHIFT);
+> +
+> +		pmdp = pmd_set_fixmap(pmd_phys);
+> +		init_clear_pgtable(pmdp);
+> +
+>  		__pud_populate(pudp, pmd_phys, pudval);
+>  		pud = READ_ONCE(*pudp);
+> +	} else {
+> +		pmdp = pmd_set_fixmap(pud_page_paddr(pud));
+>  	}
+>  	BUG_ON(pud_bad(pud));
+>  
+> -	pmdp = pmd_set_fixmap_offset(pudp, addr);
+> +	pmdp += pmd_index(addr);
+>  	do {
+>  		pgprot_t __prot = prot;
+>  
+> @@ -345,12 +349,18 @@ static void alloc_init_pud(p4d_t *p4dp, unsigned long addr, unsigned long end,
+>  			p4dval |= P4D_TABLE_PXN;
+>  		BUG_ON(!pgtable_alloc);
+>  		pud_phys = pgtable_alloc(PUD_SHIFT);
+> +
+> +		pudp = pud_set_fixmap(pud_phys);
+> +		init_clear_pgtable(pudp);
+> +
+>  		__p4d_populate(p4dp, pud_phys, p4dval);
+>  		p4d = READ_ONCE(*p4dp);
+> +	} else {
+> +		pudp = pud_set_fixmap(p4d_page_paddr(p4d));
+
+With this change I end up in pgtable folding hell. pXX_set_fixmap() is defined
+as NULL when the level is folded (and pXX_page_paddr() is not defined at all).
+So it all compiles, but doesn't boot.
+
+I think the simplest approach is to follow this pattern:
+
+----8<----
+@@ -340,12 +338,15 @@ static void alloc_init_pud(p4d_t *p4dp, unsigned long
+addr, unsigned long end,
+                        p4dval |= P4D_TABLE_PXN;
+                BUG_ON(!pgtable_alloc);
+                pud_phys = pgtable_alloc(PUD_SHIFT);
++               pudp = pud_set_fixmap(pud_phys);
++               init_clear_pgtable(pudp);
++               pudp += pud_index(addr);
+                __p4d_populate(p4dp, pud_phys, p4dval);
+-               p4d = READ_ONCE(*p4dp);
++       } else {
++               BUG_ON(p4d_bad(p4d));
++               pudp = pud_set_fixmap_offset(p4dp, addr);
+        }
+-       BUG_ON(p4d_bad(p4d));
+
+-       pudp = pud_set_fixmap_offset(p4dp, addr);
+        do {
+                pud_t old_pud = READ_ONCE(*pudp);
+----8<----
+
+For the map case, we continue to use pud_set_fixmap_offset() which is always
+defined (and always works correctly).
+
+Note also that the previously unconditional BUG_ON needs to be prior to the
+fixmap call to be useful, and its really only valuable in the map case because
+for the alloc case we are the ones setting the p4d so we already know its not
+bad. This means we don't need the READ_ONCE() in the alloc case.
+
+Shout if you disagree.
 
 Thanks,
-Amir.
+Ryan
+
+>  	}
+>  	BUG_ON(p4d_bad(p4d));
+>  
+> -	pudp = pud_set_fixmap_offset(p4dp, addr);
+> +	pudp += pud_index(addr);
+>  	do {
+>  		pud_t old_pud = READ_ONCE(*pudp);
+>  
+> @@ -400,12 +410,18 @@ static void alloc_init_p4d(pgd_t *pgdp, unsigned long addr, unsigned long end,
+>  			pgdval |= PGD_TABLE_PXN;
+>  		BUG_ON(!pgtable_alloc);
+>  		p4d_phys = pgtable_alloc(P4D_SHIFT);
+> +
+> +		p4dp = p4d_set_fixmap(p4d_phys);
+> +		init_clear_pgtable(p4dp);
+> +
+>  		__pgd_populate(pgdp, p4d_phys, pgdval);
+>  		pgd = READ_ONCE(*pgdp);
+> +	} else {
+> +		p4dp = p4d_set_fixmap(pgd_page_paddr(pgd));
+>  	}
+>  	BUG_ON(pgd_bad(pgd));
+>  
+> -	p4dp = p4d_set_fixmap_offset(pgdp, addr);
+> +	p4dp += p4d_index(addr);
+>  	do {
+>  		p4d_t old_p4d = READ_ONCE(*p4dp);
+>  
+> @@ -475,8 +491,6 @@ static phys_addr_t __pgd_pgtable_alloc(int shift)
+>  	void *ptr = (void *)__get_free_page(GFP_PGTABLE_KERNEL);
+>  	BUG_ON(!ptr);
+>  
+> -	/* Ensure the zeroed page is visible to the page table walker */
+> -	dsb(ishst);
+>  	return __pa(ptr);
+>  }
+>  
+
 
