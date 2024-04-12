@@ -1,341 +1,217 @@
-Return-Path: <linux-kernel+bounces-143239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4680E8A362C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:08:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0532D8A3631
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 21:09:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD8DF1F23835
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:08:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85C001F23964
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 19:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5D114F13E;
-	Fri, 12 Apr 2024 19:08:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48D4E14F9DF;
+	Fri, 12 Apr 2024 19:09:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="b44b2ODl"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="XjGhncbS"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AC8614EC7C
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 19:08:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A9C21487CB;
+	Fri, 12 Apr 2024 19:09:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712948906; cv=none; b=Ibj/N3hyhhRIgvdv875DR52dA7/xlx5MNDOu5IWURK0AaYKpcsZpgVVySCx9iwCxVtDga7RRvMPGsy7aC7RoxGo/sOvUrP0oqLfTI+jMzthOIVdgQuZUXUzcG9oWhyysZUrW9crwo7jKTKfpwNflqSSy5dGFapKAsuLScrVHx2I=
+	t=1712948955; cv=none; b=OzXuQsfbwbGtxI/6ptUhmHwaJZwKhuArQs9X1IDvDZ0nYYjZN8kE6z7jJA6cbChp0SaHynIjgsoFDNgI1fS5Epdor9KbFs2zJUrt+QHPuJxUCpwVcOWTP8Go/gU+tWJpeoE7nSiSlQW7+NGzxSB1W9POhXG/piwUVCdvWyaGF08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712948906; c=relaxed/simple;
-	bh=ZHY0B2jrDYHH28AXwuw2LEYbH6Qivb5lwAIUg7KPzaA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cLqsb1c2dQEPm76oActs2z/Zo9JOzyzhZ1+ng2lE/X7tvD7PhBZO9m+8tMXcru7u9ZIYPvr6slfJ+5Upn+vjGnMvjxnLe6mJK1bNjP/1dggWiSmMKZfNOeik4mhjooRNL5ZLwp3s2mmIVEJ5h+iARXy7PeZNnEhd2EHqkaVl1ME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=b44b2ODl; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2da01cb187cso21839911fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 12:08:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712948903; x=1713553703; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hh4bjYtVZmJ141zkkU7dHeg5BG8kICTOwvRezA5T/ZI=;
-        b=b44b2ODljVVGCcEQvrwG3GnRwAMD0EbzpDljsEX1LRlASTLQd8AooiMyRX+s/TlXKc
-         +yw3ND8Unc3vzvdzU5Khyb8vWbmtdjExrhEsiGA2UKqJIHHxJuaz0rRjotC6EjD3+dzj
-         eBg3cvbOqcjxJaedTOgyxr9p+4rcw1+zrmnqFQM8zMyhznRsxT8yulbEg3MN292kRp27
-         FUN/ve02+cKY3sGg8omI5j/ml9tXCdvnxEG/Ag4h2sCzntFLC88pM3Pgt7TDRV9NXUiD
-         D/BFAc89R0YJfLU/fY3Rapo5TU90nYGmZ2dEe3WszVHSbsLZuXihoJRnx/LWt2VGF04F
-         yiDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712948903; x=1713553703;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hh4bjYtVZmJ141zkkU7dHeg5BG8kICTOwvRezA5T/ZI=;
-        b=PGfr1bFny2KKt4LoVj4Dhq/hka0chhdKlBIkBgazTOCVKCWmysrYSm2TZU9nN6K581
-         v129P82Gtb9mWVmUdUTmzoy5oMOzCZX4iUs4wXaSdg9O4kBOCtKu31J5gWDVaN3KMFeq
-         TtIBCovMLaYKyWb9lEYvhcjTFj67SKT+Qw+4B1dRN5CE/budpVnQSXNZ2q1zMriWEakg
-         X6mb4H66z3oOZJ7bF5qP5CFfSlUgUL73fxQPALNLMdhachsQMd1bAusvraR7vkF9DbR/
-         DP4zrhtI1mYnUNgDbLeGF/zCEqcyahwq9QSV022O0Ek0AShnyStpTVaVpXSbeUwn0yeC
-         In5g==
-X-Forwarded-Encrypted: i=1; AJvYcCU7NevW2zX0G7jQJ9kqTdnedPSRHJfyjDafT0/0v9eB8jluTn2HDUqBzeUHt/TmeMbF/HlGNMYDyQzkRT/D+9trgfm3WhgMIqH0+Hy5
-X-Gm-Message-State: AOJu0YxYL2hryae+ikal+kezKUzqH3jV7giKgbt17/1vCegDTKdkhDz/
-	i9oLRyTu4nxoIjSryCB7GLnFvFA+QKKOYamkJPABk7IgbYVJnLcMAZTSWm/2J6whdajeRr/mzDV
-	sQDsazM4QNKbu4ogeknRxq80SplcAB/+szB5OBA==
-X-Google-Smtp-Source: AGHT+IGl6gAJ54LC23KvHA5AMy2AeNgnb9ohqcsVWoMxN45Bm5q+S+z58BBmNSsLopQrtbY8P8r7GU/MH9M+uL9kRCM=
-X-Received: by 2002:a2e:be1a:0:b0:2d8:95de:23ed with SMTP id
- z26-20020a2ebe1a000000b002d895de23edmr3111321ljq.17.1712948902720; Fri, 12
- Apr 2024 12:08:22 -0700 (PDT)
+	s=arc-20240116; t=1712948955; c=relaxed/simple;
+	bh=jz3gOrjR0kAdrw+sakHPNu/cSUP8HYvdH4a/SSQMslE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Wjb/iBBfZ+A3Zcfj/ufWXccPig4Qt47pCk0Np8AYGH+R9JRlb7AY1kBvlqwgZGqE78XCBOigXxXBt0ISkP40gvrj9Jw0qUmtpH5vnxm4mCC2gJnmWp2lgChGeekIP3dJ1kNy058rXnsiWUKPH+zYbmK0zX1kcqi3GdYfCahWSF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=XjGhncbS; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43CHQwSa005964;
+	Fri, 12 Apr 2024 19:09:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=U5rFYlmdCzVROqFdptvkIiAyxLYeS5MFcfBO+auJlV4=;
+ b=XjGhncbSNJm8EPJmyvIIyctAKe2F308TKiRub6TqPejdZSv7GWszv1DGxUymAyNKgvFJ
+ XyhI8vcIdnJb8niyds5UTdxiHoR5lF2yhiOc+xNkfIMVeK1yvvMVpwvwhK3uIj5ppDJY
+ dMe3WZxNiju+n9Ff2adk+V2l2sj1JcCLnpVN2k6FRBMwPGc5icIpu9Bk3+l3vGHtnVoG
+ FGxCk4scLs+gbGVRrUOiW7F76QJg+XXLt/VfwOmpGmu0kaeS3U3pyAvf5Pcfb+mNuhW7
+ fZhMA4Zkx4snj8Q1IoM+jlKzJEZIpoUYiRI91ix/6Ri37F3bcFumRCx00pQ25nkv6vRV BQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xf6qv8jah-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 19:09:00 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 43CJ903I021823;
+	Fri, 12 Apr 2024 19:09:00 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xf6qv8jag-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 19:09:00 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 43CHuCEx029951;
+	Fri, 12 Apr 2024 19:08:58 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xbj7mujeb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 12 Apr 2024 19:08:58 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 43CJ8tJf28705444
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 12 Apr 2024 19:08:58 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id ACCE45804B;
+	Fri, 12 Apr 2024 19:08:55 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EF2845805B;
+	Fri, 12 Apr 2024 19:08:54 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 12 Apr 2024 19:08:54 +0000 (GMT)
+Message-ID: <89b4fb29-5906-4b21-8b5b-6b340701ffe4@linux.ibm.com>
+Date: Fri, 12 Apr 2024 15:08:54 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
- <20240411-dev-charlie-support_thead_vector_6_9-v1-16-4af9815ec746@rivosinc.com>
- <CALs-Hss=vuNgq-8bVL1DOR431qFpn-D13yFGn6yf_2saZO0FVQ@mail.gmail.com> <Zhl6lvZzUrCoAB8N@ghost>
-In-Reply-To: <Zhl6lvZzUrCoAB8N@ghost>
-From: Evan Green <evan@rivosinc.com>
-Date: Fri, 12 Apr 2024 12:07:46 -0700
-Message-ID: <CALs-Hsu=SLnTJ+gsGZmv7C=K8WGHRiFCn3Q=isE9+QhawcrqCw@mail.gmail.com>
-Subject: Re: [PATCH 16/19] riscv: hwprobe: Add vendor extension probing
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, 
-	Conor Dooley <conor.dooley@microchip.com>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, linux-riscv@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Palmer Dabbelt <palmer@rivosinc.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-sunxi@lists.linux.dev, linux-doc@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 2/2] ima: Fix detection of read/write violations on stacked
+ filesystems
+Content-Language: en-US
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: linux-integrity@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zohar@linux.ibm.com,
+        roberto.sassu@huawei.com, miklos@szeredi.hu,
+        Christian Brauner <brauner@kernel.org>
+References: <20240412140122.2607743-1-stefanb@linux.ibm.com>
+ <20240412140122.2607743-3-stefanb@linux.ibm.com>
+ <CAOQ4uxjDQO91cjA0sgyPStkwc_7+NxAOhyve94qUvXSM3ytk1g@mail.gmail.com>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <CAOQ4uxjDQO91cjA0sgyPStkwc_7+NxAOhyve94qUvXSM3ytk1g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: aWGKuA4MpOnkWvqTY26m5s8jTg0zuj7J
+X-Proofpoint-GUID: tvy2SPw98Eyp6wEA6jmYKRDVDtmt6wf9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-12_15,2024-04-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ phishscore=0 malwarescore=0 suspectscore=0 adultscore=0 lowpriorityscore=0
+ impostorscore=0 priorityscore=1501 clxscore=1015 mlxscore=0
+ mlxlogscore=979 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404120139
 
-On Fri, Apr 12, 2024 at 11:17=E2=80=AFAM Charlie Jenkins <charlie@rivosinc.=
-com> wrote:
->
-> On Fri, Apr 12, 2024 at 10:05:21AM -0700, Evan Green wrote:
-> > On Thu, Apr 11, 2024 at 9:12=E2=80=AFPM Charlie Jenkins <charlie@rivosi=
-nc.com> wrote:
-> > >
-> > > Add a new hwprobe key "RISCV_HWPROBE_KEY_VENDOR_EXT_0" which allows
-> > > userspace to probe for the new RISCV_ISA_VENDOR_EXT_XTHEADVECTOR vend=
-or
-> > > extension.
-> > >
-> > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > > ---
-> > >  arch/riscv/include/asm/hwprobe.h      |  4 +--
-> > >  arch/riscv/include/uapi/asm/hwprobe.h | 10 +++++-
-> > >  arch/riscv/kernel/sys_hwprobe.c       | 59 +++++++++++++++++++++++++=
-++++++++--
-> > >  3 files changed, 68 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/arch/riscv/include/asm/hwprobe.h b/arch/riscv/include/as=
-m/hwprobe.h
-> > > index 630507dff5ea..e68496b4f8de 100644
-> > > --- a/arch/riscv/include/asm/hwprobe.h
-> > > +++ b/arch/riscv/include/asm/hwprobe.h
-> > > @@ -1,6 +1,6 @@
-> > >  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > >  /*
-> > > - * Copyright 2023 Rivos, Inc
-> > > + * Copyright 2023-2024 Rivos, Inc
-> > >   */
-> > >
-> > >  #ifndef _ASM_HWPROBE_H
-> > > @@ -8,7 +8,7 @@
-> > >
-> > >  #include <uapi/asm/hwprobe.h>
-> > >
-> > > -#define RISCV_HWPROBE_MAX_KEY 6
-> > > +#define RISCV_HWPROBE_MAX_KEY 7
-> > >
-> > >  static inline bool riscv_hwprobe_key_is_valid(__s64 key)
-> > >  {
-> > > diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/inclu=
-de/uapi/asm/hwprobe.h
-> > > index 9f2a8e3ff204..6614d3adfc75 100644
-> > > --- a/arch/riscv/include/uapi/asm/hwprobe.h
-> > > +++ b/arch/riscv/include/uapi/asm/hwprobe.h
-> > > @@ -1,6 +1,6 @@
-> > >  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > >  /*
-> > > - * Copyright 2023 Rivos, Inc
-> > > + * Copyright 2023-2024 Rivos, Inc
-> > >   */
-> > >
-> > >  #ifndef _UAPI_ASM_HWPROBE_H
-> > > @@ -67,6 +67,14 @@ struct riscv_hwprobe {
-> > >  #define                RISCV_HWPROBE_MISALIGNED_UNSUPPORTED    (4 <<=
- 0)
-> > >  #define                RISCV_HWPROBE_MISALIGNED_MASK           (7 <<=
- 0)
-> > >  #define RISCV_HWPROBE_KEY_ZICBOZ_BLOCK_SIZE    6
-> > > +/*
-> > > + * It is not possible for one CPU to have multiple vendor ids, so ea=
-ch vendor
-> > > + * has its own vendor extension "namespace". The keys for each vendo=
-r starts
-> > > + * at zero.
-> > > + */
-> > > +#define RISCV_HWPROBE_KEY_VENDOR_EXT_0 7
-> > > + /* T-Head */
-> > > +#define                RISCV_HWPROBE_VENDOR_EXT_XTHEADVECTOR   (1 <<=
- 0)
-> > >  /* Increase RISCV_HWPROBE_MAX_KEY when adding items. */
-> > >
-> > >  /* Flags */
-> > > diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_=
-hwprobe.c
-> > > index e0a42c851511..365ce7380443 100644
-> > > --- a/arch/riscv/kernel/sys_hwprobe.c
-> > > +++ b/arch/riscv/kernel/sys_hwprobe.c
-> > > @@ -69,7 +69,8 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *=
-pair,
-> > >         if (riscv_isa_extension_available(NULL, c))
-> > >                 pair->value |=3D RISCV_HWPROBE_IMA_C;
-> > >
-> > > -       if (has_vector() && !riscv_has_vendor_extension_unlikely(RISC=
-V_ISA_VENDOR_EXT_XTHEADVECTOR))
-> > > +       if (has_vector() &&
-> > > +           !__riscv_isa_vendor_extension_available(NULL, RISCV_ISA_V=
-ENDOR_EXT_XTHEADVECTOR))
-> > >                 pair->value |=3D RISCV_HWPROBE_IMA_V;
-> > >
-> > >         /*
-> > > @@ -112,7 +113,8 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe=
- *pair,
-> > >                 EXT_KEY(ZACAS);
-> > >                 EXT_KEY(ZICOND);
-> > >
-> > > -               if (has_vector() && !riscv_has_vendor_extension_unlik=
-ely(RISCV_ISA_VENDOR_EXT_XTHEADVECTOR)) {
-> > > +               if (has_vector() &&
-> > > +                   !riscv_has_vendor_extension_unlikely(RISCV_ISA_VE=
-NDOR_EXT_XTHEADVECTOR)) {
-> > >                         EXT_KEY(ZVBB);
-> > >                         EXT_KEY(ZVBC);
-> > >                         EXT_KEY(ZVKB);
-> > > @@ -139,6 +141,55 @@ static void hwprobe_isa_ext0(struct riscv_hwprob=
-e *pair,
-> > >         pair->value &=3D ~missing;
-> > >  }
-> > >
-> > > +static void hwprobe_isa_vendor_ext0(struct riscv_hwprobe *pair,
-> > > +                                   const struct cpumask *cpus)
-> > > +{
-> > > +       int cpu;
-> > > +       u64 missing =3D 0;
-> > > +
-> > > +       pair->value =3D 0;
-> > > +
-> > > +       struct riscv_hwprobe mvendorid =3D {
-> > > +               .key =3D RISCV_HWPROBE_KEY_MVENDORID,
-> > > +               .value =3D 0
-> > > +       };
-> > > +
-> > > +       hwprobe_arch_id(&mvendorid, cpus);
-> > > +
-> > > +       /* Set value to zero if CPUs in the set do not have the same =
-vendor. */
-> > > +       if (mvendorid.value =3D=3D -1ULL)
-> > > +               return;
-> > > +
-> > > +       /*
-> > > +        * Loop through and record vendor extensions that 1) anyone h=
-as, and
-> > > +        * 2) anyone doesn't have.
-> > > +        */
-> > > +       for_each_cpu(cpu, cpus) {
-> > > +               struct riscv_isainfo *isavendorinfo =3D &hart_isa_ven=
-dor[cpu];
-> > > +
-> > > +#define VENDOR_EXT_KEY(ext)                                         =
-                   \
-> > > +       do {                                                         =
-                   \
-> > > +               if (__riscv_isa_vendor_extension_available(isavendori=
-nfo->isa,          \
-> > > +                                                        RISCV_ISA_VE=
-NDOR_EXT_##ext))   \
-> > > +                       pair->value |=3D RISCV_HWPROBE_VENDOR_EXT_##e=
-xt;                  \
-> > > +               else                                                 =
-                   \
-> > > +                       missing |=3D RISCV_HWPROBE_VENDOR_EXT_##ext; =
-                     \
-> > > +       } while (false)
-> > > +
-> > > +       /*
-> > > +        * Only use VENDOR_EXT_KEY() for extensions which can be expo=
-sed to userspace,
-> > > +        * regardless of the kernel's configuration, as no other chec=
-ks, besides
-> > > +        * presence in the hart_vendor_isa bitmap, are made.
-> > > +        */
-> > > +       VENDOR_EXT_KEY(XTHEADVECTOR);
-> > > +
-> > > +#undef VENDOR_EXT_KEY
-> >
-> > Hey Charlie,
-> > Thanks for writing this up! At the very least I think the
-> > THEAD-specific stuff should probably end up in its own file, otherwise
-> > it'll get chaotic with vendors clamoring to add stuff right here.
->
-> Great idea!
->
-> > What do you think about this approach:
-> >  * We leave RISCV_HWPROBE_MAX_KEY as the max key for the "generic
-> > world", eg 6-ish
-> >  * We define that any key above 0x8000000000000000 is in the vendor
-> > space, so the meaning of the keys depends first on the mvendorid
-> > value.
-> >  * In the kernel code, each new vendor adds on to a global struct,
-> > which might look something like:
-> > struct hwprobe_vendor_space vendor_space[] =3D {
-> >         {
-> >                 .mvendorid =3D VENDOR_THEAD,
-> >                 .max_hwprobe_key =3D THEAD_MAX_HWPROBE_KEY, // currentl=
-y
-> > 1 or 0x8000000000000001 with what you've got.
-> >                 .hwprobe_fn =3D thead_hwprobe
-> >         },
-> >         ...
-> > };
-> >
-> >  * A hwprobe_thead.c implements thead_hwprobe(), and is called
-> > whenever the generic hwprobe encounters a key >=3D0x8000000000000000.
-> >  * Generic code for setting up the VDSO can then still call the
-> > vendor-specific hwprobe_fn() repeatedly with an "all CPUs" mask from
-> > the base to max_hwprobe_key and set up the cached tables in userspace.
-> >  * Since the VDSO data has limited space we may have to cap the number
-> > of vendor keys we cache to be lower than max_hwprobe_key. Since the
-> > data itself is not exposed to usermode we can raise this cap later if
-> > needed.
->
-> I know vendor extensions are kind of the "wild west" of riscv, but in
-> spite of that I want to design a consistent API. The issue I had with
-> having this "vendor space" for exposing vendor extensions was that this
-> is something that is inherently the same for all vendors. I see a vendor
-> space like this more applicable for something like
-> "RISCV_HWPROBE_KEY_ZICBOZ_BLOCK_SIZE" where a vendor has a specific
-> value they would like to expose. I do agree that having a vendor space
-> is a good design choice, but I am not convinced that vendor extensions
-> are the proper use-case.
->
-> By having RISCV_HWPROBE_KEY_VENDOR_EXT_0 we can expose the vendor
-> extensions in the same way that standard extensions are exposed, with a
-> bitmask representing each extension. If these are instead in the vendor
-> space, each vendor would probably be inclined to introduce a key like
-> RISCV_HWPROBE_KEY_THEAD_EXT_0 that returns a bitmask of all of the thead
-> vendor extensions. This duplicated effort is what I am trying to avoid.
-> The alternative would be that vendors have a separate key for each
-> vendor extension they would like to expose, but that is strictly less
-> efficient than the existing bitmask probing.
->
-> Do you think that having the vendor space is appropriate for vendor
-> extensions given my concerns?
 
-I do see what you're going for. It's tidy for a bitmask to just let
-anyone allocate the next bit, but leaves you with the same problem
-when a vendor decides they want to expose an enum, or decides they
-want to expose a bazillion things. I think a generalized version of
-the approach you've written would be: simply let vendors allocate keys
-from the same global space we're already using. My worry was that it
-would turn into an expansive suburban sprawl of mostly dead bits, or
-in the case of vendor-specific keys, full of "if (mvendor_id() !=3D
-MINE) return 0;". My hope with the vendored keyspace is it would keep
-the sprawl from polluting the general array of (hopefully valuable)
-info with stuff that's likely to become less relevant as time passes.
-It also lowers the bar a bit to make it easier for vendors to expose
-bits, as they don't consume global space for everyone for all of time,
-just themselves.
 
-So yes, personally I'm still in the camp of siloing the vendor stuff
-off to its own area.
--Evan
+On 4/12/24 14:08, Amir Goldstein wrote:
+> On Fri, Apr 12, 2024 at 5:01 PM Stefan Berger <stefanb@linux.ibm.com> wrote:
+>>
+>> On a stacked filesystem, when one process opens the file holding a file's
+>> data (e.g., on upper or lower layer on overlayfs) then issue a violation
+>> when another process opens the file for reading on the top layer (overlay
+>> layer on overlayfs). This then provides similar behavior to the existing
+>> case where a violation is generated when one process opens a file for
+>> writing and another one opens the same file for reading. On stacked
+>> filesystem also search all the lower layers for relevant files opened for
+>> writing and issue the violation if one is found.
+>>
+>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>> ---
+>>   security/integrity/ima/ima_main.c | 27 ++++++++++++++++++++++-----
+>>   1 file changed, 22 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+>> index f04f43af651c..590dd9d5d99a 100644
+>> --- a/security/integrity/ima/ima_main.c
+>> +++ b/security/integrity/ima/ima_main.c
+>> @@ -121,8 +121,11 @@ static void ima_rdwr_violation_check(struct file *file,
+>>                                       const char **pathname,
+>>                                       char *filename)
+>>   {
+>> +       struct inode *real_inode = d_real_inode(file_dentry(file));
+>>          struct inode *inode = file_inode(file);
+>> +       struct dentry *fd_dentry, *d;
+>>          fmode_t mode = file->f_mode;
+>> +       struct inode *fd_inode;
+>>          bool send_tomtou = false, send_writers = false;
+>>
+>>          if (mode & FMODE_WRITE) {
+>> @@ -134,11 +137,25 @@ static void ima_rdwr_violation_check(struct file *file,
+>>                                                  &iint->atomic_flags))
+>>                                  send_tomtou = true;
+>>                  }
+>> -       } else {
+>> -               if (must_measure)
+>> -                       set_bit(IMA_MUST_MEASURE, &iint->atomic_flags);
+>> -               if (inode_is_open_for_write(inode) && must_measure)
+>> -                       send_writers = true;
+>> +       } else if (must_measure) {
+>> +               set_bit(IMA_MUST_MEASURE, &iint->atomic_flags);
+>> +
+>> +               if (inode == real_inode) {
+>> +                       if (inode_is_open_for_write(inode))
+>> +                               send_writers = true;
+>> +               } else {
+>> +                       d = d_real(file_dentry(file), D_REAL_FILEDATA);
+>> +                       do {
+>> +                               fd_dentry = d;
+>> +                               fd_inode = d_inode(fd_dentry);
+>> +                               if (inode_is_open_for_write(fd_inode)) {
+>> +                                       send_writers = true;
+>> +                                       break;
+>> +                               }
+>> +                               /* next layer of stacked fs */
+>> +                               d = d_real(fd_dentry, D_REAL_FILEDATA);
+>> +                       } while (d != fd_dentry);
+>> +               }
+> 
+> The idea of digging though ovl layers feels wrong to me.
+
+I have a couple of test cases that expect violations to be logged. One 
+test case has 2 overlay filesystems stacked on top of each other (lower 
+= A, upper = B) and it passes those test cases when for example
+
+- opening the file on lower on 'A' for writing
+- opening the file on overlay layer on 'B' for reading
+
+OR
+
+- opening the file on overlay layer on 'A' (= lower layer of 'B') for 
+writing
+- opening the file on overlay layer on 'B' for reading
+
+
+
+After causing a copy-up only the following test case causes a violation 
+to be logged:
+
+- opening the file on upper on 'B' for writing
+- opening the file on overlay layer on 'B' for reading
+
+No violation will the be logged for example for:
+
+- opening the file on overlay layer on 'A' (= lower of 'B') for writing
+- opening the file on overlay layer on 'B' for reading
+
+
+
+> As Miklos is the designer of overlayfs and its vfs architecture,
+
+I was hoping that this would be sufficiently generic to work with 
+potential future stacked filesystems as well that would need to also 
+provide support for D_REAL_FILEDATA.
+
+> I am deferring the call about adding this interface to Miklos.
+> 
+> Thanks,
+> Amir.
+> 
 
