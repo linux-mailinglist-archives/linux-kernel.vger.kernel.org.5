@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-143035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE5A98A3375
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:15:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3ACF8A337E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:17:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63BA91F225E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:15:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D31C61C21232
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 16:17:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13EC91494D7;
-	Fri, 12 Apr 2024 16:15:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF239149DE2;
+	Fri, 12 Apr 2024 16:16:06 +0000 (UTC)
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495ED148853;
-	Fri, 12 Apr 2024 16:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324DE1487FF;
+	Fri, 12 Apr 2024 16:16:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712938535; cv=none; b=REMw8JnscqflJhWlU6ewNJj06sG3NRPhoq28DASuHdIAewNJutMX6Q859gbx2pcuTePXXsyiYn9cy8SfnVN8ipuVzwDBURBzV0BKK6AMnNijO3SfZ7YV5RKyK1om6u7qM5R9PbPJ1fvQOT/rd1eIaPRwnFPI3ySBcBiKPtTnTyA=
+	t=1712938566; cv=none; b=UlGpfDuMTKGqz3hNuw5DwYof4tzaiRsod5UicQUg/mun1JoTqZG7cx0QbBzkP0UOfKNnzXJRAaroxID9rJnx3027DyKsVcGZRuSUSC4MaxZdBHkUEgn5kfiKfiPWjYfpO0B9EONtE5le1JI2mf2Ei1HL0AhOaLa7xRFGAtgXo/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712938535; c=relaxed/simple;
-	bh=/pzofHOtjjBuBu6uCg/ZJgmRq2KbW+P1FAixdoSkvYo=;
+	s=arc-20240116; t=1712938566; c=relaxed/simple;
+	bh=R7LerIn/HSC7R8/axKcxrEFTXj4LE1SX89SZ9pIIKSI=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=urVodN96QpJQYz6eQF1BXlPkzx/qJdKlPhPK25cvAuj5HI/bh81Eycs9q7cih531moXY900qSWUChJMCiOH1FmZzhc7YnBj1zaUZaShfNqkHz/DbHOArMtj8MZK+oOXbNjlO2u/++qlm/kgbOjOcMunJ4rnGIJmSlTQi7kadtMY=
+	 MIME-Version:Content-Type; b=IN/o7LzKn46XbrpLzH9f9/vc5dEAIs9UCbkYGKyoQl8zBj0zvzfYqPkgDlTJ6NhCyxsO/FT0JG7AKB5qoBEx+gEmUW7070DbL7M1lVU+v/uhwaSAEZIyFNIKFq3BUERZcaVZJg70DOUXH6rnAFUyfCI2SHoUj+FMq/S3giuz6Qs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VGM7Z1Ksgz67Lmq;
-	Sat, 13 Apr 2024 00:13:46 +0800 (CST)
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VGM4c4M1Sz6K6hC;
+	Sat, 13 Apr 2024 00:11:12 +0800 (CST)
 Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 25D07140119;
-	Sat, 13 Apr 2024 00:15:32 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 064E7140119;
+	Sat, 13 Apr 2024 00:16:03 +0800 (CST)
 Received: from SecurePC-101-06.china.huawei.com (10.122.247.231) by
  lhrpeml500005.china.huawei.com (7.191.163.240) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 12 Apr 2024 17:15:31 +0100
+ 15.1.2507.35; Fri, 12 Apr 2024 17:16:02 +0100
 From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 To: Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra
 	<peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de
@@ -55,9 +55,9 @@ CC: <linuxarm@huawei.com>, Shaokun Zhang <zhangshaokun@hisilicon.com>, Yicong
 	<hao.wu@intel.com>, Tom Rix <trix@redhat.com>, <linux-fpga@vger.kernel.org>,
 	Suzuki K Poulose <suzuki.poulose@arm.com>, Liang Kan
 	<kan.liang@linux.intel.com>
-Subject: [PATCH v2 09/30] perf/xgene: Assign parents for event_source devices
-Date: Fri, 12 Apr 2024 17:10:36 +0100
-Message-ID: <20240412161057.14099-10-Jonathan.Cameron@huawei.com>
+Subject: [PATCH v2 10/30] Documentation: thunderx2-pmu: Use /sys/bus/event_source/devices paths
+Date: Fri, 12 Apr 2024 17:10:37 +0100
+Message-ID: <20240412161057.14099-11-Jonathan.Cameron@huawei.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240412161057.14099-1-Jonathan.Cameron@huawei.com>
 References: <20240412161057.14099-1-Jonathan.Cameron@huawei.com>
@@ -72,29 +72,27 @@ Content-Type: text/plain
 X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
  lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Currently all these devices appear directly under /sys/devices/
-Only root busses should appear there, so instead assign the pmu->dev
-parents to be the hardware related struct device.
+To allow setting an appropriate parent for the struct pmu device
+remove existing references to /sys/devices/ path.
 
-Link: https://lore.kernel.org/linux-cxl/ZCLI9A40PJsyqAmq@kroah.com/
-Cc: Khuong Dinh <khuong@os.amperecomputing.com>
 Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 ---
- drivers/perf/xgene_pmu.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/admin-guide/perf/thunderx2-pmu.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/perf/xgene_pmu.c b/drivers/perf/xgene_pmu.c
-index 0d49343d704b..8823b4c6b556 100644
---- a/drivers/perf/xgene_pmu.c
-+++ b/drivers/perf/xgene_pmu.c
-@@ -1102,6 +1102,7 @@ static int xgene_init_perf(struct xgene_pmu_dev *pmu_dev, char *name)
+diff --git a/Documentation/admin-guide/perf/thunderx2-pmu.rst b/Documentation/admin-guide/perf/thunderx2-pmu.rst
+index 01f158238ae1..9255f7bf9452 100644
+--- a/Documentation/admin-guide/perf/thunderx2-pmu.rst
++++ b/Documentation/admin-guide/perf/thunderx2-pmu.rst
+@@ -22,7 +22,7 @@ The thunderx2_pmu driver registers per-socket perf PMUs for the DMC and
+ L3C devices.  Each PMU can be used to count up to 4 (DMC/L3C) or up to 8
+ (CCPI2) events simultaneously. The PMUs provide a description of their
+ available events and configuration options under sysfs, see
+-/sys/devices/uncore_<l3c_S/dmc_S/ccpi2_S/>; S is the socket id.
++/sys/bus/event_source/devices/uncore_<l3c_S/dmc_S/ccpi2_S/>; S is the socket id.
  
- 	/* Perf driver registration */
- 	pmu_dev->pmu = (struct pmu) {
-+		.parent		= pmu_dev->parent->dev,
- 		.attr_groups	= pmu_dev->attr_groups,
- 		.task_ctx_nr	= perf_invalid_context,
- 		.pmu_enable	= xgene_perf_pmu_enable,
+ The driver does not support sampling, therefore "perf record" will not
+ work. Per-task perf sessions are also not supported.
 -- 
 2.39.2
 
