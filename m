@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-143166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A43D8A354C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:04:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 309858A354E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:04:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5533C1C22022
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:04:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7981B2309A
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:04:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF48614EC44;
-	Fri, 12 Apr 2024 18:04:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C302614E2F2;
+	Fri, 12 Apr 2024 18:04:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C9fBnjYO"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QFJl4j63"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A688F14D2B7;
-	Fri, 12 Apr 2024 18:04:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6228914E2EF;
+	Fri, 12 Apr 2024 18:04:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712945045; cv=none; b=In3WIEv9jX0N3lRqMYsc3ih+DKnU9TYDvQ/lX6//sEug+qU/WaUGsAfjhUG/bLjQY+BXn8b9mvMMBqiCfk4c9AiFsvw4D0BHB+czPd3wgbeKE13XQj1LAmqEmlR7eC+ylzx7ZWICx1CJ5TVQvqJpSitURHsEt55cQQeHrKOjKkY=
+	t=1712945047; cv=none; b=KjpSyclwpviI4mlfBbJtNAKoj3dZOlaJuDBlN7FYiQ28VSgP1Q5GmQzEnXfva7mAqDOUxqSDvRcRIlE5+l8CaM12tKs+iX0kLEOQnaElmg6I57p7SPt0yjsQZhF1rLLwMxKEAQeJ8plYod/RSvofZ1CpBVI+jKMLiQowdqqGNdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712945045; c=relaxed/simple;
-	bh=pL8DEPrlq502m1lqM9mSVBGYPc5Ax5zq2wRmPF1el9E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mvZownwZqhohE8TIfYUhrD53RFKyOot5CSdz55vS5Q8QV3dBjgZA/ZlqBmtX62PauEUo4EvzUPddXseyhWLlR9dwj7Yag3gZz2qSi10r0Vhuua2jzNw+zsSrwDQHe2biG3quSle1Ll2QaEGGhGtrC6bZzZJKycwJ0rfY2+BoPa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C9fBnjYO; arc=none smtp.client-ip=209.85.167.50
+	s=arc-20240116; t=1712945047; c=relaxed/simple;
+	bh=acuEN0Mam8ygiQBR73EoAgExddMuyxMA+FsHhdYx23Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ag84/2JrMGM1lQ7IfIIu01NHASfY++ZlbRAlGpal4DSUmNrOHppkipRdvTju+dZAhzvCRsKSq2QlhdOko3cpE4heBhXwS7+4c86TT/RhXc5V9WTffx7q3sBCUN7XIwyJjrUeHAinIlDliRRJ4DAt7A8DznVg0CUbKeFT9/X6xCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QFJl4j63; arc=none smtp.client-ip=209.85.208.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-518a3e0d2e4so44470e87.0;
-        Fri, 12 Apr 2024 11:04:03 -0700 (PDT)
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d094bc2244so12438531fa.1;
+        Fri, 12 Apr 2024 11:04:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712945042; x=1713549842; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CocCrXTkILxb+H292FlYFL20d7nBS8XixYwTUqYokkU=;
-        b=C9fBnjYO7Y9Z6XQnUKLVTG5VEbr4FZw8kf7lqt5NMtTgKRBiaDyt86kECrHhwfmNmM
-         6c5iNJUK7v8WH566u9Nyfo7L/mwHi1BBpaN3HkJGxNfyKKHf+aMDCj4fMSW0iJMTmbyR
-         1wK9Tft1GpMJmROclHY3yUY1ehWrkMvq3ucJWSR7nAMxc+vv1n6gZmFGstGJPRuWVy71
-         1FFESmfbBAArhJMdALDNDimKiCgnKo+v8ozR30KPxMX8xcvfqehvpm8iOOvkqhgWxup9
-         rZVB9QmVq6MosUWMdS31lBrQWoK9/ioFUIqOQMF64M0H4p2DCpJVpaznxQJ3EzmJP05T
-         jFdQ==
+        d=gmail.com; s=20230601; t=1712945043; x=1713549843; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CCp+O5zf1XAzEa7QvAx53sYKNLIL8eSplg5NSTorigk=;
+        b=QFJl4j63VKZAY6x/EkZWzOJ1stOxMAw2wr2mfAG9MQ6GdXkyMpgb+TOIb2P89c2nLO
+         Hdw0hlqyWakrgbVElbuvCs8rA/JcuutQ2hmRwXCodwlrs1KTdkJLlsH5Xv/w2eTw3wL+
+         nH/VRhP6Hf55u7FZnRTJiRPLmxkC6cRLey1B71XwllcJF27ZKhuM92fW/Fw5BpmsbZ9R
+         eDXdVgghIqTPSW3xDGcvbXJNNllH4npO9MVRST53kWturIDWLmrEE5yEFkegcZpuj7+t
+         4NZEtU3MgznNNGFWceWLgCcDwLWw0T3TWQThPhnaPaqvWycHkZ993TMdiXGTqx20yXsO
+         zTZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712945042; x=1713549842;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CocCrXTkILxb+H292FlYFL20d7nBS8XixYwTUqYokkU=;
-        b=F1XWe/9kfdtKbDWiMeH3fGyw1STg+cS6IPi2YJev9JQzZz4i1NcjCUi9bfZ8pQz1Na
-         RvKt2CWr/grVE7xquqF/fgVMX3lp/JEu9z2MxR8V1z5OSWWtIzZeJqNoHvD0g6+FlOuA
-         LWrXJ6w7Gt3Hy0Z2ubG4hzYEd+MTb7/p/YEKD4IZIln7dojSMyKVG8xV/PUWy/+21+Pf
-         XHGEyZnxvzcQ1d22hMWprQjUBJErFBbvZAU/M8UgGs3OeX9XdFn03F9DEJjQvfIm2v/d
-         V7/9/eZrqq0sR50n1/SowRob51Yol0duCMIHW+l7AbGpnMwNjBxcU6hi+F2qxYG8wpFU
-         9SeA==
-X-Forwarded-Encrypted: i=1; AJvYcCUaG2H/qLnF7Myk2S4zqbxHIWvUFElp/ueQUUFh189cBBxqpcPlxuo8znJBCkwVkhwTuXS3ornjqhJmUK11iwIB/VPggQCIe5YG/q8ytgliZd9uHOeH/W83XrtzAH5PkEuNMeDn
-X-Gm-Message-State: AOJu0YwjxyOcFyAy6ATEeos0/tFlXm/kbl14um37KxOSDlb5pvommryX
-	/xWmTktqd0zky0GDxJbGTJqAy6KAaatJUbrQXNlXf8PI+CL7iTeg
-X-Google-Smtp-Source: AGHT+IE+YdnghDsV0obcJRUikyE+vRG7Z625VF2VfIjNL7bgReRC31FSjtwU16I1XuF0ATXWLD1vaw==
-X-Received: by 2002:ac2:52a9:0:b0:515:c0cb:3ca2 with SMTP id r9-20020ac252a9000000b00515c0cb3ca2mr1979670lfm.16.1712945041542;
-        Fri, 12 Apr 2024 11:04:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712945043; x=1713549843;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CCp+O5zf1XAzEa7QvAx53sYKNLIL8eSplg5NSTorigk=;
+        b=SbWV61jazi2MYstMNu4VSuykpaEFcr+7L1T2R7xwrFfjWay0cjamIMZW87JviCWiiI
+         jNyVnB0+iOEiVKApwxL46CJlT8W3r+GxYMvcFI6MDKnsC031Z/nicsJzsS5Ei4RAfA9F
+         ulMxIsdc5JU24ZM6nZgmBSNOhv1OEab0fyKH358+7SMUEZGLnOTBP9N6GtjyrGK+RacH
+         QF+W8Fn+J30UhKb7Cw3UKjRDGbjANqkuDZ/ov6zFWdP5MyqRP/upfGoSGGJgueA++wxA
+         0HGjg9MITU2w+YyE2snHL/XeentVJ1ebJg90bsh9VGNkWxujK14oZ0aG+yG0TveOpA4u
+         /ZRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV8V4A2wojIzaFgfFMgA3Dhru3XU3qUh2EARegOBAXmUGlQCtuGBE/9281URnCAMW6hW2Xji9XBoPwGPEmD04Ck0AQjIttzRzIvdLcFW5ZdkM2BD/8co6kwI4eaiClEpVMH7oHT
+X-Gm-Message-State: AOJu0YyHegoixUcjfKES+irdDJ1ET7t5g0HnPOK0ExBpU3q/rtKwMooR
+	uJBcM/UHGLWb7J1J5SRNDhHIxIwsrcxU+rrtaDrMyjRc2zf8FPuX
+X-Google-Smtp-Source: AGHT+IHENBuTlxLf/6N97dtbn3xcV+Dq/EI4bigipZaf5nXjIl76R7vPSnhcP7MwSAR0x+L4seiNwQ==
+X-Received: by 2002:a05:651c:33c:b0:2d9:fe84:a485 with SMTP id b28-20020a05651c033c00b002d9fe84a485mr2395294ljp.29.1712945043444;
+        Fri, 12 Apr 2024 11:04:03 -0700 (PDT)
 Received: from localhost ([95.79.241.172])
-        by smtp.gmail.com with ESMTPSA id s23-20020a197717000000b00516a25e9ce1sm576691lfc.294.2024.04.12.11.04.00
+        by smtp.gmail.com with ESMTPSA id by43-20020a05651c1a2b00b002d88d978484sm547676ljb.132.2024.04.12.11.04.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 11:04:01 -0700 (PDT)
+        Fri, 12 Apr 2024 11:04:03 -0700 (PDT)
 From: Serge Semin <fancer.lancer@gmail.com>
 To: Alexandre Torgue <alexandre.torgue@foss.st.com>,
 	Jose Abreu <joabreu@synopsys.com>,
@@ -72,9 +74,10 @@ To: Alexandre Torgue <alexandre.torgue@foss.st.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>,
 	Russell King <linux@armlinux.org.uk>,
-	Yanteng Si <siyanteng@loongson.cn>
-Cc: Serge Semin <fancer.lancer@gmail.com>,
+	Yanteng Si <siyanteng@loongson.cn>,
 	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Bhadram Varka <vbhadram@nvidia.com>
+Cc: Serge Semin <fancer.lancer@gmail.com>,
 	Simon Horman <horms@kernel.org>,
 	Huacai Chen <chenhuacai@kernel.org>,
 	Chen-Yu Tsai <wens@csie.org>,
@@ -85,10 +88,12 @@ Cc: Serge Semin <fancer.lancer@gmail.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-sunxi@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net 0/4] net: stmmac: Fix MAC-capabilities procedure
-Date: Fri, 12 Apr 2024 21:03:13 +0300
-Message-ID: <20240412180340.7965-1-fancer.lancer@gmail.com>
+Subject: [PATCH net 1/4] net: stmmac: Apply half-duplex-less constraint for DW QoS Eth only
+Date: Fri, 12 Apr 2024 21:03:14 +0300
+Message-ID: <20240412180340.7965-2-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240412180340.7965-1-fancer.lancer@gmail.com>
+References: <20240412180340.7965-1-fancer.lancer@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,68 +102,92 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The series got born as a result of the discussions around the recent
-Yanteng' series adding the Loongson LS7A1000, LS2K1000, LS7A2000, LS2K2000
-MACs support:
-Link: https://lore.kernel.org/netdev/fu3f6uoakylnb6eijllakeu5i4okcyqq7sfafhp5efaocbsrwe@w74xe7gb6x7p
+There are three DW MAC IP-cores which can have the multiple Tx/Rx queues
+enabled:
+DW GMAC v3.7+ with AV feature,
+DW QoS Eth v4.x/v5.x,
+DW XGMAC/XLGMAC
+Based on the respective HW databooks, only the DW QoS Eth IP-core doesn't
+support the half-duplex link mode in case if more than one queues enabled:
 
-In particular the Yanteng' patchset needed to implement the Loongson
-MAC-specific constraints applied to the link speed and link duplex mode.
-As a result of the discussion with Russel the next preliminary patch was
-born:
-Link: https://lore.kernel.org/netdev/df31e8bcf74b3b4ddb7ddf5a1c371390f16a2ad5.1712917541.git.siyanteng@loongson.cn
+"In multiple queue/channel configurations, for half-duplex operation,
+enable only the Q0/CH0 on Tx and Rx. For single queue/channel in
+full-duplex operation, any queue/channel can be enabled."
 
-The patch above was a temporal solution utilized by Yanteng for further
-developments and to move on with the on-going review. This patchset is a
-refactored version of that single patch with formatting required for the
-fixes patches.
+The rest of the IP-cores don't have such constraint. Thus in order to have
+the constraint applied for the DW QoS Eth MACs only, let's move the it'
+implementation to the respective MAC-capabilities getter and make sure the
+getter is called in the queues re-init procedure.
 
-In particular the series starts with fixing the half-duplex-less
-constraint currently applied for all IP-cores. In fact it's specific for
-the DW QoS Eth only (DW GMAC v4.x/v5.x).
-
-The next patch fixes the MAC-capabilities setting up during the active
-Tx/Rx queues re-initialization procedure. Particularly the procedure
-missed the max-speed limit thus possibly activating speeds prohibited on
-the respective platforms.
-
-Third patch fixes the incorrect MAC-capabilities initialization for DW
-MAC100, DW XGMAC and DW XLGMAC devices by moving the correct
-initialization to the IP-core specific setup() methods.
-
-Final patch is just a cleanup moving the MAC-capabilities init/re-init to
-the phylink MAC-capabilities getter.
-
-That's it for now. Thanks for review and testing in advance.
-
+Fixes: b6cfffa7ad92 ("stmmac: fix DMA channel hang in half-duplex mode")
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Simon Horman <horms@kernel.org>
-Cc: Huacai Chen <chenhuacai@kernel.org>
-Cc: Chen-Yu Tsai <wens@csie.org>
-Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc: Samuel Holland <samuel@sholland.org>
-Cc: netdev@vger.kernel.org
-Cc: linux-stm32@st-md-mailman.stormreply.com
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-sunxi@lists.linux.dev
-Cc: linux-kernel@vger.kernel.org
+---
+ .../net/ethernet/stmicro/stmmac/dwmac4_core.c |  7 +++++++
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 19 +++----------------
+ 2 files changed, 10 insertions(+), 16 deletions(-)
 
-Serge Semin (4):
-  net: stmmac: Apply half-duplex-less constraint for DW QoS Eth only
-  net: stmmac: Fix max-speed being ignored on queue re-init
-  net: stmmac: Fix IP-cores specific MAC capabilities
-  net: stmmac: Move MAC caps init to phylink MAC caps getter
-
- drivers/net/ethernet/stmicro/stmmac/common.h  |  1 +
- .../net/ethernet/stmicro/stmmac/dwmac-sun8i.c |  2 +
- .../ethernet/stmicro/stmmac/dwmac1000_core.c  |  2 +
- .../ethernet/stmicro/stmmac/dwmac100_core.c   |  2 +
- .../net/ethernet/stmicro/stmmac/dwmac4_core.c |  7 ++-
- .../ethernet/stmicro/stmmac/dwxgmac2_core.c   | 18 ++++----
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 43 ++++++++-----------
- 7 files changed, 38 insertions(+), 37 deletions(-)
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+index cef25efbdff9..ec6a13e644b3 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+@@ -71,6 +71,13 @@ static void dwmac4_core_init(struct mac_device_info *hw,
+ static void dwmac4_phylink_get_caps(struct stmmac_priv *priv)
+ {
+ 	priv->phylink_config.mac_capabilities |= MAC_2500FD;
++
++	if (priv->plat->tx_queues_to_use > 1)
++		priv->phylink_config.mac_capabilities &=
++			~(MAC_10HD | MAC_100HD | MAC_1000HD);
++	else
++		priv->phylink_config.mac_capabilities |=
++			(MAC_10HD | MAC_100HD | MAC_1000HD);
+ }
+ 
+ static void dwmac4_rx_queue_enable(struct mac_device_info *hw,
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 24cd80490d19..dd58c21b53ee 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -1198,17 +1198,6 @@ static int stmmac_init_phy(struct net_device *dev)
+ 	return ret;
+ }
+ 
+-static void stmmac_set_half_duplex(struct stmmac_priv *priv)
+-{
+-	/* Half-Duplex can only work with single tx queue */
+-	if (priv->plat->tx_queues_to_use > 1)
+-		priv->phylink_config.mac_capabilities &=
+-			~(MAC_10HD | MAC_100HD | MAC_1000HD);
+-	else
+-		priv->phylink_config.mac_capabilities |=
+-			(MAC_10HD | MAC_100HD | MAC_1000HD);
+-}
+-
+ static int stmmac_phy_setup(struct stmmac_priv *priv)
+ {
+ 	struct stmmac_mdio_bus_data *mdio_bus_data;
+@@ -1237,10 +1226,7 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
+ 				    priv->phylink_config.supported_interfaces);
+ 
+ 	priv->phylink_config.mac_capabilities = MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+-						MAC_10FD | MAC_100FD |
+-						MAC_1000FD;
+-
+-	stmmac_set_half_duplex(priv);
++						MAC_10 | MAC_100 | MAC_1000;
+ 
+ 	/* Get the MAC specific capabilities */
+ 	stmmac_mac_phylink_get_caps(priv);
+@@ -7355,7 +7341,8 @@ int stmmac_reinit_queues(struct net_device *dev, u32 rx_cnt, u32 tx_cnt)
+ 			priv->rss.table[i] = ethtool_rxfh_indir_default(i,
+ 									rx_cnt);
+ 
+-	stmmac_set_half_duplex(priv);
++	stmmac_mac_phylink_get_caps(priv);
++
+ 	stmmac_napi_add(dev);
+ 
+ 	if (netif_running(dev))
 -- 
 2.43.0
 
