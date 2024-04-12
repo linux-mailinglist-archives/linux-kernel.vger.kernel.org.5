@@ -1,204 +1,184 @@
-Return-Path: <linux-kernel+bounces-141796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C88328A2387
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 03:59:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CA318A238C
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:03:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52EA31F23122
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 01:59:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92384B21897
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:02:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B818CD2FE;
-	Fri, 12 Apr 2024 01:59:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFDFCD527;
+	Fri, 12 Apr 2024 02:02:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="A29CoSLC"
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2052.outbound.protection.outlook.com [40.107.241.52])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="SToS/+cW"
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03D826AA7;
-	Fri, 12 Apr 2024 01:59:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712887179; cv=fail; b=MgrNhLvgzMQB9r3v1PjCAApoz0HbmOLHE71R64jo2m+PykIOwvT6yPQecPPtC9uxnK7OrLi9Ppw6T/+SfqRee6OFc4uNNa9tGS5iUKf6rZsFtiEieOmHLhwJLjfzCi7xfkXnR6EaoQg4TpNNlBHLFD6qe0GYrq8XDQJMvIs6dfA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712887179; c=relaxed/simple;
-	bh=Nn9EZ+D8QeHckl4f6AQuNEXCGzL5IT/Q1RTKq88V0vg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=p56PBuCNcvkZE0wTgk2LcS73Fw8xafi6Yopqy8ADDTBKtMdzCO8a1ky9wxOZUyLJvqfzUQOmQUitzMLAkyaWBtf60juRYeLtfvioD5f2+i8Wv1O81MZ2Zh/1wHyyy0hV5l9BTCXibDC0/XAFEQeB4dzSYxx16AusvqSFwFBn5nw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=A29CoSLC; arc=fail smtp.client-ip=40.107.241.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eLEVB/Ppm0U75Orh+WS4ZP/N0XyRkc7AMMaMym8dtlhVU+cQ5nz448PVHdlrNlGkZIVCGt4Ida1Bk+d/58ToY8BgC28X3HgI8hpaDkVqleYh4iFpWbmB7FfFBMrVgeEE/aAWxVzxh1IKJ2bRhWWpyX4p4clbfg15wSRc08ZQRsBvVVtmSYOJcH+K8BeuSh2n9zsZhHUdEpU22mRuGpP0Fu/s7U0iZDzw0tKznnAz6JwrPu4iuQKUK78U1yN4E2VB9oGmLfr3hYrYBLgIZiT8oxGMLdhyXbENVBalCD50Z2apU3eBTVrv3OZsjrgY/4DJyXs+oRBToeEDY8EcW2wttg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Nn9EZ+D8QeHckl4f6AQuNEXCGzL5IT/Q1RTKq88V0vg=;
- b=Lux0n5i8SlHXsplifXfil+/Xqz04i4hpPVylsMprc7On/M7zYorYVTLXpee59FeGC6ypE1ATx9qtu0QxZWsxaiPOUIeyTvVglEXsyo9BvS4gsCk1xHM3O1VafmZ/HHk7OhElVI+7wIAE22cd3L4vQlrioASd7X8AXKy8DVsvd8tz7v6y7qsovL/zp4xZWUIvDpiCCQt/LfakKxE7sKomh1Q8dLlvR9esh3lNNUiXGe4za13L8s9DM+9CXx3e5LNnphCEVu9OtSZtyaLJTKk/jNO7nx1sV1OTLlDO9cvhMnR8NN5ngfWYc51egVWoFzF8M+9tLBv/MW6px2TACpxNiA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Nn9EZ+D8QeHckl4f6AQuNEXCGzL5IT/Q1RTKq88V0vg=;
- b=A29CoSLC+e1xK85Le3u5b9nCwD5KxFEXTU7EX1YpFrksPC01p6wdhL5Oe+XK6u1VTwvsuhNuRGhshy05e2VITe9VniIS3TXOiImjyyxmuv6NZIuhinqa+hJGATS6B2wo6ltoDibQ5bEV8mgPzg2ivFYf8r3uJBaHLRoDPYcbf1k=
-Received: from AS4PR04MB9386.eurprd04.prod.outlook.com (2603:10a6:20b:4e9::8)
- by AS1PR04MB9698.eurprd04.prod.outlook.com (2603:10a6:20b:481::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Fri, 12 Apr
- 2024 01:59:32 +0000
-Received: from AS4PR04MB9386.eurprd04.prod.outlook.com
- ([fe80::4f24:3f44:d5b1:70ba]) by AS4PR04MB9386.eurprd04.prod.outlook.com
- ([fe80::4f24:3f44:d5b1:70ba%7]) with mapi id 15.20.7409.042; Fri, 12 Apr 2024
- 01:59:31 +0000
-From: Joy Zou <joy.zou@nxp.com>
-To: Frank Li <frank.li@nxp.com>, Krzysztof Kozlowski <krzk@kernel.org>
-CC: Peng Fan <peng.fan@nxp.com>, "vkoul@kernel.org" <vkoul@kernel.org>,
-	"robh@kernel.org" <robh@kernel.org>, "krzk+dt@kernel.org"
-	<krzk+dt@kernel.org>, "conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"imx@lists.linux.dev" <imx@lists.linux.dev>, "dmaengine@vger.kernel.org"
-	<dmaengine@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>
-Subject: RE: [PATCH v2 2/2] dma: dt-bindings: fsl-edma: clean up unused
- "fsl,imx8qm-adma" compatible stringg
-Thread-Topic: [PATCH v2 2/2] dma: dt-bindings: fsl-edma: clean up unused
- "fsl,imx8qm-adma" compatible stringg
-Thread-Index: AQHajBMuScNMceYv4UW89AkRdFbJ2bFj3TVw
-Date: Fri, 12 Apr 2024 01:59:31 +0000
-Message-ID:
- <AS4PR04MB9386CDE4C44F8540EF4EF1F1E1042@AS4PR04MB9386.eurprd04.prod.outlook.com>
-References: <20240411074326.2462497-1-joy.zou@nxp.com>
- <20240411074326.2462497-3-joy.zou@nxp.com>
- <703311b6-ee3a-4131-ae11-57b8d765db5c@kernel.org>
- <Zhfj2NH7PPqzz3nM@lizhi-Precision-Tower-5810>
-In-Reply-To: <Zhfj2NH7PPqzz3nM@lizhi-Precision-Tower-5810>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS4PR04MB9386:EE_|AS1PR04MB9698:EE_
-x-ms-office365-filtering-correlation-id: eb86ac90-b6ce-43b6-6545-08dc5a9431e7
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- QkHSqbDr4qZus3dRhvuLXRLzpVElr6OVGd8Jjda4WlY7EJRHMieMNvxstZQIhRvtu4OE2ajWpklkYkUGM00TpyMp1yfw3yghNWnf7HuK5gZXof+5Kikj1hSh6dP2lrh/BQulA0u86GoD5CbVa+PFlxH+QtWX2h1pxTAeg4isfP5VuPUU2+8wVZFe6Z1BsqYK4mFtHkt0uUTsidDw0sZCFw8ueDLRRU8scgiA/s4vK4sa1VZV5UtrdJbWP1donhW7Vgc/9cCT38CWwVPE0b9UKuV7XH1SJjc4vcMY6C/oTE9j5i6qJPucFOxQM/HpGTCvkQNjKtrDBTA6zJCvehiaN3ASTebaY+2/SPviMRdP9QYyL59IJZC8JerXsdQCboOlOAdhnEVxPKMpCQHzUoV89a1+lvBryaCVGuMeMg+qU4m9VHIro6JpHKS7e4kOUK+CTPEYDWBMgPnzefQnaIO3H7x4UNfr/VJFaPwCLIDRxlt0Re3P5OPOZsWd+czscRk9Mt2wpv3xQ7fn1IpyO9JAy7TDbXWenUPXLX9qzc9rrOtIrfz0mvvCM42v75JM/e74MkLzfDu4oaH4hniIRBWaDWWhe/7A3E37ic3XigReUjS7mZ2dVAXDKcTeFmCAhtyboXImSNYKtFOb5vp4YblvnepHzK3KcEJYvkCjKvDNRT1Z/KRjjuP+i0NX2enaF/TZ67/orV2HNv7xJ2lnnA/qLFJN1487yAn7BW+xFGF0Scw=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS4PR04MB9386.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?gb2312?B?eXFWaGV0RnI0Wk50UU4rcm1LME9zcXNtejFpVGpyMmsvUXVvK0RPVk51WVZw?=
- =?gb2312?B?YitoZVpNZklQUFVuL0hDUVVvaFpMbUlKTDF0TzBYMnhBRGJOMXdPbTBFYUdG?=
- =?gb2312?B?TnRJck0zSEZtT3p4K2VZUkRUSDZDTDhmbmhSQ3ZlV1ZwV1JjaFgycENVem9w?=
- =?gb2312?B?eW1FZjE4bld2djZHR0lHcXRmb3RKQ0t2MGtFaVNJbk1JYTcrWjQ0S2VTMmxl?=
- =?gb2312?B?WVd5bGY4cHBpWnRxUzNCVWRNaVg2VE1HMWtkOFhsTFg2VnNjOW4zamtvb1Jk?=
- =?gb2312?B?QkJ0WXhaSk1WRVRkZFZ5N2gyL28rUHhLZ0lWSnoxMEFsSGdSQVN4cFZiQ2dV?=
- =?gb2312?B?eDA0WlhuRGkvWUIwc29jcGc2QzRwbUM4V0tVQ2NtRlhhL2kvdHNOd2s0UWZR?=
- =?gb2312?B?K1phNE1GQ1duUThpSGFleitybm4yemQzM2ltRjg1R1hFQU9mZW5mU1BrVmNB?=
- =?gb2312?B?WlJrVEtKUm9nbm5PMktua3U2NXhTK0NhMjhEc1d2RHBKa3I4YTZtc2o3OE1O?=
- =?gb2312?B?TTlBSUp6MEdIcFJVMUhWcHgvK0pVZWYvdCtyOTVETThValVDcmVxTkt6SFNO?=
- =?gb2312?B?aGtwUk50OUxsL0lEOVhuNjAvWEkwTkhvbHd5dUg1a0s3TXJZaWtyUVZJaC9G?=
- =?gb2312?B?RUxacE5GUEN5YTZGOXdwWTgyVm93WnNQK2ZPM1lCUGZTQjBMUDlwc1ZiOTNt?=
- =?gb2312?B?VXBkcDg0UlhvQldtQlR6bXVHaUZvZXlmSHhOaDZUdVNNT3pabFhuK1RtVjIv?=
- =?gb2312?B?bjJCTmFWWEt5VFU5enpGYkJkRmFUL0JSSFlxd3FSaHVnYjRvYVZVeUR4a0Qw?=
- =?gb2312?B?WUcvdFVuV1VOMVB5Q0g3T1RjdHlacTN0YlVoZTJiaUxKbTg2SUVjTVZDTEdv?=
- =?gb2312?B?TDByTnVVNmhSMXMyWUpERk5sZFFHSEE3RFhSenBKQy96UXYvME1vMTBmalBY?=
- =?gb2312?B?Wm5rZ2hqOEFDbzdrTmx2TDJGUm1hdE1GVUpCODRzYXN0ZURENDhrYndFdzEr?=
- =?gb2312?B?eTI3Q00zcENTL1NQazBLMHA5TmlIQ0xQMGpzb3Awbm05TmhEYnBTMVNyUzRs?=
- =?gb2312?B?dFZ4N1lIY2laT05yaWpOaEJNU2laL0dKRzVwNEdqZFRiRDdpSjlxaENYQXNN?=
- =?gb2312?B?OGMwdms4Q01Hdmo5UGZmQytjdDhUbjRTaWJQbGJtUFE1V2tDU3BpLzdJeE5m?=
- =?gb2312?B?YjU0MmlmOE9FSXRNdEgwYVdIYmN4aS9WS0FYUWVhSENqUlFLbDU0VTZvbjB4?=
- =?gb2312?B?ZWt0Ykdjdi9WMkllR2lVZGdhMDdmYkxKc3p0MXZFY3VLNWJuYm81VXd3YzAv?=
- =?gb2312?B?NGdFYW9ZSFdmbEFNNlI5TTZDSCtsMUxrUWtkOS9jM29TSnVHL0JWM1dTbE44?=
- =?gb2312?B?Y2JuVDhIOTBTSnJHdlBmM1ZEZHluZGFJeVJUVWl2NDEyZHJndmFtTW9jc1Zk?=
- =?gb2312?B?TDdCSWhCSC9udkxKMlY3aVJDbG51VnU4VlRFRkxiOXFEYUJ2SWpwSElYNGhI?=
- =?gb2312?B?Z2l6alZ5TTAzVlVzS1Jqa0xKMEFHRGc0UWZaSVM3aEVxZmRLVWxiZk52bkEr?=
- =?gb2312?B?K3FmWXI5Uk5CMC9SUVBybGgvV0pRQTd4WWpzMTRBblRQRmRhK3NkOXhrdHoz?=
- =?gb2312?B?UEVYdmRDa1ljZWlYajlkb3MxV3l5cXZ4d0MwSmhtQytNUUFBeWczMGVIV0xJ?=
- =?gb2312?B?UkMrWVJ5Uy8yN1hwN0pXYWZxZTZXcUthdUFjOWQ0aGduU08vSXhxNWhzYlgz?=
- =?gb2312?B?K2IwMmRHdTlHUEFZQzNOTmNyVnNjblY1TWhsSDF2aSt5Umphdnk4YWxhdGp4?=
- =?gb2312?B?c05TV3dieXNxSWlQcEtBdmJUdTczNnNybGtmNkRheERZeDdlTGJyTzJOdEVk?=
- =?gb2312?B?ZkFqUmpiRWxhT2VBSmFYNlJObmtEckNmam1aSmdPRER2Y2tneW5ab3JPSkh6?=
- =?gb2312?B?TEhPYi8walF4bnh1L2dYSkpjU0VzVGNocHFmRDhIWlJZUTdJTFFqSWtnT1NK?=
- =?gb2312?B?eTJyMnYrSzcrMVAzOEhrRzE1ZHdkQW1Ib3hrK3lBaDdCU2c0WDVGQko3a3ox?=
- =?gb2312?B?emtDTjFIU2RRSFZEcWdJU2RSZWVSTlNTQ3ZrOHNnbDd3amI2SEd3UnhOeVpW?=
- =?gb2312?Q?NBhA=3D?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F8B9523A;
+	Fri, 12 Apr 2024 02:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712887366; cv=none; b=i3QnFML6UTopmxa92Ypxz9LeVTBvKHPi2HRUAkBe2e65bB0wzT5D0rS1cY2Xx0EfpG0oq9xDfGZctLUjZB9puZTM+z3T/BwLshggynmSSyk1RE8wt8r+FcU+5i7BPDGOtZV5dPKySPzrQNRMdUVDzTmrfA6AAmHH96RFN6b539o=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712887366; c=relaxed/simple;
+	bh=+EZtMTU/ARwhQkmhBZM/lagfNPeu0TVZRPivRQMHV8M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OicV7cyhoIoYvmBl6V5whNwuGya5Cgro69H/you89MgGArljo+SJACfluXTWc1XQ100Twww8c2t8cqldWV1CqJ7ngCx+N8Am2Nx3VuQNIA03F4y9cXx1f5bI5GRR/gAKLBcWolcbviHcxA4qPsx6s+rmXFyV9JdKu9zoWoWKLyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=SToS/+cW; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712887360; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=VKbsRDbyF9GBLUuAIXQgOv40gno2BZ2XnQ4Pd7U2cmA=;
+	b=SToS/+cWNzr3GLsIw1Xqhr4XHHC+CzL6VhJbZKCNTBITfRvSH8F88zBTsdhvgtLyECQdH1yQucLuPVX+74hr3jh/60JYJQmYrpEFyG3e8X1UH8ahy2djfhb7o9mHMobKQifANp8g7hiV6R4c4XejoNgsPITsmgC6d9Fuf8Nt9IM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0W4Mc7Bm_1712887358;
+Received: from 30.221.129.174(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W4Mc7Bm_1712887358)
+          by smtp.aliyun-inc.com;
+          Fri, 12 Apr 2024 10:02:39 +0800
+Message-ID: <44ea7d83-4fa7-427b-9d54-678f05fd09e9@linux.alibaba.com>
+Date: Fri, 12 Apr 2024 10:02:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS4PR04MB9386.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb86ac90-b6ce-43b6-6545-08dc5a9431e7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Apr 2024 01:59:31.8576
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: slWuI4pOf96spPLZ8rYp5pmqgitEiOHPWF7fYZrEJ3tZh5xna++wsKL8sUNstqxr
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9698
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v5 04/11] net/smc: implement some unsupported
+ operations of loopback-ism
+To: Alexandra Winter <wintera@linux.ibm.com>,
+ Niklas Schnelle <schnelle@linux.ibm.com>, Gerd Bayer <gbayer@linux.ibm.com>,
+ twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+ agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com, jaka@linux.ibm.com
+Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
+ alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+ linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20240324135522.108564-1-guwen@linux.alibaba.com>
+ <20240324135522.108564-5-guwen@linux.alibaba.com>
+ <3122eece5b484abcf8d23f85d6c18c36f0b939ff.camel@linux.ibm.com>
+ <1db6ccab-b49f-45d2-a93c-05b0f79371a3@linux.alibaba.com>
+ <3b3ff37643e9030ec1246e67720683a2cf5660e5.camel@linux.ibm.com>
+ <7a0fc481-658e-4c99-add7-ccbd5f9dce1e@linux.alibaba.com>
+ <7291dd1b2d16fd9bbd90988ac5bcc3a46d17e3f4.camel@linux.ibm.com>
+ <46e8e227-8058-4062-a9db-6b9c774f63cc@linux.alibaba.com>
+ <12ae995f-4af4-4c6b-9130-04672d157293@linux.ibm.com>
+From: Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <12ae995f-4af4-4c6b-9130-04672d157293@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBGcmFuayBMaSA8ZnJhbmsubGlA
-bnhwLmNvbT4NCj4gU2VudDogMjAyNMTqNNTCMTHI1SAyMToyMQ0KPiBUbzogS3J6eXN6dG9mIEtv
-emxvd3NraSA8a3J6a0BrZXJuZWwub3JnPg0KPiBDYzogSm95IFpvdSA8am95LnpvdUBueHAuY29t
-PjsgUGVuZyBGYW4gPHBlbmcuZmFuQG54cC5jb20+Ow0KPiB2a291bEBrZXJuZWwub3JnOyByb2Jo
-QGtlcm5lbC5vcmc7IGtyemsrZHRAa2VybmVsLm9yZzsNCj4gY29ub3IrZHRAa2VybmVsLm9yZzsg
-aW14QGxpc3RzLmxpbnV4LmRldjsgZG1hZW5naW5lQHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgt
-a2VybmVsQHZnZXIua2VybmVsLm9yZzsgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmcNCj4gU3Vi
-amVjdDogUmU6IFtQQVRDSCB2MiAyLzJdIGRtYTogZHQtYmluZGluZ3M6IGZzbC1lZG1hOiBjbGVh
-biB1cCB1bnVzZWQNCj4gImZzbCxpbXg4cW0tYWRtYSIgY29tcGF0aWJsZSBzdHJpbmdnDQo+IA0K
-PiANCj4gSXQgc2hvdWxkIGJlDQo+IA0KPiBkdC1iaW5kaW5nczogZnNsLWRtYTogZnNsLWVkbWE6
-IGNsZWFuIHVwIHVudXNlZCAiZnNsLGlteDhxbS1hZG1hIg0KPiBjb21wYXRpYmxlIHN0cmluZ2cN
-Cj4gDQo+IA0KPiBiN2I4NzE1YjQzMGVlIGR0LWJpbmRpbmdzOiBmc2wtZG1hOiBmc2wtZWRtYTog
-YWRkIGZzbCxpbXg5NS1lZG1hNQ0KPiBjb21wYXRpYmxlIHN0cmluZyA2ZWI0MzlkZmY2NDVhIGR0
-LWJpbmRpbmdzOiBmc2wtZG1hOiBmc2wtZWRtYTogYWRkIGVkbWEzDQo+IGNvbXBhdGlibGUgc3Ry
-aW5nDQo+IDEwY2FmYTJkNDU4ODUgZHQtYmluZGluZ3M6IGRtYTogZHJvcCB1bm5lZWRlZCBxdW90
-ZXMgY2ZhMTkyN2Y4NDY4Yw0KPiBkdC1iaW5kaW5nczogZG1hOiBmc2wtZWRtYTogQ29udmVydCB0
-byBEVCBzY2hlbWENCj4gDQo+IA0KPiBPbiBUaHUsIEFwciAxMSwgMjAyNCBhdCAxMDoxMzozOEFN
-ICswMjAwLCBLcnp5c3p0b2YgS296bG93c2tpIHdyb3RlOg0KPiA+IE9uIDExLzA0LzIwMjQgMDk6
-NDMsIEpveSBab3Ugd3JvdGU6DQo+ID4gPiBUaGUgY29tcGF0aWJsZSBzdHJpbmcgImZzbCxpbXg4
-cW0tYWRtYSIgaXMgdW51c2VkLg0KPiA+DQo+ID4gV2h5PyBDb21taXQgbXVzdCBzdGFuZCBvbiBp
-dHMgb3duLg0KPiANCj4gSm95Og0KPiAJWW91IGNhbiBjb3B5IHBhdGNoMidzIGNvbWl0DQpUaGFu
-a3MgeW91ciBjb21tZW50cyENCldpbGwgYWRkIG1vcmUgZGVzY3JpcHRpb24gZm9yIHRoZSBkcm9w
-IHJlYXNvbi4NCj4gPg0KPiA+ID4NCj4gPiA+IFNpZ25lZC1vZmYtYnk6IEpveSBab3UgPGpveS56
-b3VAbnhwLmNvbT4NCj4gPiA+IC0tLQ0KPiA+DQo+ID4gUGxlYXNlIHVzZSBzdWJqZWN0IHByZWZp
-eGVzIG1hdGNoaW5nIHRoZSBzdWJzeXN0ZW0uIFlvdSBjYW4gZ2V0IHRoZW0NCj4gPiBmb3IgZXhh
-bXBsZSB3aXRoIGBnaXQgbG9nIC0tb25lbGluZSAtLSBESVJFQ1RPUllfT1JfRklMRWAgb24gdGhl
-DQo+ID4gZGlyZWN0b3J5IHlvdXIgcGF0Y2ggaXMgdG91Y2hpbmcuDQo+ID4NCj4gPiA+ICBEb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZG1hL2ZzbCxlZG1hLnlhbWwgfCAxIC0NCj4g
-PiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBkZWxldGlvbigtKQ0KPiA+ID4NCj4gPiA+IGRpZmYgLS1n
-aXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZG1hL2ZzbCxlZG1hLnlhbWwN
-Cj4gPiA+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2RtYS9mc2wsZWRtYS55
-YW1sDQo+ID4gPiBpbmRleCA4MjVmNDcxNTQ5OWUuLjY0ZmEyN2QwY2Q5YiAxMDA2NDQNCj4gPiA+
-IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kbWEvZnNsLGVkbWEueWFt
-bA0KPiA+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2RtYS9mc2ws
-ZWRtYS55YW1sDQo+ID4gPiBAQCAtMjEsNyArMjEsNiBAQCBwcm9wZXJ0aWVzOg0KPiA+ID4gICAg
-ICAgIC0gZW51bToNCj4gPiA+ICAgICAgICAgICAgLSBmc2wsdmY2MTAtZWRtYQ0KPiA+ID4gICAg
-ICAgICAgICAtIGZzbCxpbXg3dWxwLWVkbWENCj4gPiA+IC0gICAgICAgICAgLSBmc2wsaW14OHFt
-LWFkbWENCj4gPg0KPiA+DQo+ID4gSSBzZWUgbW9yZSB1c2FnZXMuIE9uZSBtb3JlIHRyaXZpYWwg
-cGF0Y2ggd2hpY2ggaXMgaW5jb3JyZWN0Lg0KPiA+DQo+IA0KPiBQbGVhc2UgY2xlYW4gdXAgQWxs
-T2YgYWxzby4NCj4gDQo+IGFsbE9mOg0KPiAgIC0gJHJlZjogZG1hLWNvbnRyb2xsZXIueWFtbCMN
-Cj4gICAtIGlmOg0KPiAgICAgICBwcm9wZXJ0aWVzOg0KPiAgICAgICAgIGNvbXBhdGlibGU6DQo+
-ICAgICAgICAgICBjb250YWluczoNCj4gICAgICAgICAgICAgZW51bToNCj4gICAgICAgICAgICAg
-ICAtIGZzbCxpbXg4cW0tYWRtYQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICBeXl5eDQo+
-ICAgICAgICAgICAgICAgLSBmc2wsaW14OHFtLWVkbWENCj4gDQpZZWFoLCB3aWxsIGNsZWFuIHVw
-IGFsc28uDQpCUg0KSm95IFpvdQ0KPiA+IERpZCB5b3UgaW1wbGVtZW50IHRoZSBpbnRlcm5hbCBy
-ZXZpZXc/DQo+IA0KPiBQYXRjaDIgd2FzIGludGVybmFsIHJldmlld2VkLiBQYXRjaDEgaXMgbmV3
-LiBJIGtub3cgeW91IGFyZSBidXN5LiBDb3VsZCB5b3UNCj4gcGxlYXNlIGdpdmUgbWUgMSBkYXlz
-IHRvIHJldmlldyBueHAncyBwYXRjaGVzLiBZb3Ugc2VlIHBhdGNoIGFsd2F5cyBhaGVhZA0KPiBt
-ZSBpZiBhdXRob3IgYW5kIHlvdSBhcmUgaW4gc2ltaWxhciB0aW1lIHpvbmUuDQo+IA0KPiBJIGtu
-ZXcgdGhleSBhcmUgcXVpdGUgYnVzeSBvbiBoZWF2eSBkZXZlbG9wbWVudCB3b3JrIGFuZCBhbGwg
-a2luZHMNCj4gY3VzdG9tZXIgc3VwcG9ydHMuDQo+IA0KPiBGcmFuaw0KPiANCj4gPiBCZXN0IHJl
-Z2FyZHMsDQo+ID4gS3J6eXN6dG9mDQo+ID4NCg==
+
+
+On 2024/4/11 19:12, Alexandra Winter wrote:
+> 
+> 
+> On 09.04.24 03:44, Wen Gu wrote:
+>>
+>>
+>> On 2024/4/4 23:15, Niklas Schnelle wrote:
+>>> On Thu, 2024-04-04 at 21:12 +0800, Wen Gu wrote:
+>>>>
+>>>> On 2024/4/4 19:42, Niklas Schnelle wrote:
+>>>>> On Thu, 2024-04-04 at 17:32 +0800, Wen Gu wrote:
+>>>>>>
+>>>>>> On 2024/4/4 00:25, Gerd Bayer wrote:
+>>>>>>> On Sun, 2024-03-24 at 21:55 +0800, Wen Gu wrote:
+>>>>>>>> This implements some operations that loopback-ism does not support
+>>>>>>>> currently:
+>>>>>>>>      - vlan operations, since there is no strong use-case for it.
+>>>>>>>>      - signal_event operations, since there is no event to be processed
+>>>>>>>> by the loopback-ism device.
+>>>>>>>
+>>>>>>> Hi Wen,
+>>>>>>>
+>>>>>>> I wonder if the these operations that are not supported by loopback-ism
+>>>>>>> should rather be marked "optional" in the struct smcd_ops, and the
+>>>>>>> calling code should call these only when they are implemented.
+>>>>>>>
+>>>>>>> Of course this would mean more changes to net/smc/smc_core.c - but
+>>>>>>> loopback-ism could omit these "boiler-plate" functions.
+>>>>>>>
+>>>>>>
+>>>>>> Hi Gerd.
+>>>>>>
+>>>>>> Thank you for the thoughts! I agree that checks like 'if(smcd->ops->xxx)'
+>>>>>> can avoid the device driver from implementing unsupported operations. But I
+>>>>>> am afraid that which operations need to be defined as 'optional' may differ
+>>>>>> from different device perspectives (e.g. for loopback-ism they are vlan-related
+>>>>>> opts and signal_event). So I perfer to simply let the smc protocol assume
+>>>>>> that all operations have been implemented, and let drivers to decide which
+>>>>>> ones are unsupported in implementation. What do you think?
+>>>>>>
+>>>>>> Thanks!
+>>>>>>
+>>>>>
+>>>>> I agree with Gerd, in my opinion it is better to document ops as
+>>>>> optional and then allow their function pointers to be NULL and check
+>>>>> for that. Acting like they are supported and then they turn out to be
+>>>>> nops to me seems to contradict the principle of least surprises. I also
+>>>>> think we can find a subset of mandatory ops without which SMC-D is
+>>>>> impossible and then everything else should be optional.
+>>>>
+>>>> I see. If we all agree to classify smcd_ops into mandatory and optional ones,
+>>>> I'll add a patch to mark the optional ops and check if they are implemented.
+>>>
+>>> Keep in mind I don't speak for the SMC maintainers but that does sound
+>>> reasonable to me.
+>>>
+>>
+>> Hi Wenjia and Jan, do you have any comments on this and [1]? Thanks!
+>>
+>> [1] https://lore.kernel.org/netdev/60b4aec0b4bf4474d651b653c86c280dafc4518a.camel@linux.ibm.com/
+>>
+>>>>
+>>>>>
+>>>>> As a first guess I think the following options may be mandatory:
+>>>>>
+>>>>> * query_remote_gid()
+>>>>> * register_dmb()/unregister_dmb()
+>>>>> * move_data()
+>>>>>      For this one could argue that either move_data() or
+>>>>>      attach_dmb()/detach_dmb() is required though personally I would
+>>>>>      prefer to always have move_data() as a fallback and simple API
+>>>>> * supports_v2()
+>>>>> * get_local_gid()
+>>>>> * get_chid()
+>>>>> * get_dev()
+>>>> I agree with this classification. Just one point, maybe we can take
+>>>> supports_v2() as an optional ops, like support_dmb_nocopy()? e.g. if
+>>>> it is not implemented, we treat it as an ISMv1.
+>>>>
+>>>> Thanks!
+>>>
+>>> Interpreting a NULL supports_v2() as not supporting v2 sounds
+>>> reasonable to me.
+>>
+> 
+> Let me add my thoughts to the discussion:
+> For the vlan operations and signal_event operations that loopback-ism does
+> not support:
+> I like the idea to set the ops to NULL and make sure the caller checks that
+> and can live with it. That is readable and efficient.
+> 
+> I don't think there is a need to discuss a strategy now, which ops could be
+> optional in the future. This is all inside the kernel. loopback-ism is even
+> inside the smc module. Such comments in the code get outdated very easily.
+> 
+> I would propose to mark those as optional struct smcd_ops, where all callers can
+> handle a NULL pointer and still be productive.
+> Future support of other devices for SMC-D can update that.
+> 
+> 
+
+Hi Sandy, just to confirm if I understand you correctly.
+
+You are proposing that don't draw a conclusion about the classification now,
+but supplementally mark which one become a optional operation in struct smcd_ops
+during the introduction of new devices for SMC-D.
 
