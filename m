@@ -1,69 +1,72 @@
-Return-Path: <linux-kernel+bounces-141920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FC208A2520
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:26:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D93EB8A2521
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:26:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D10921C2154C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:26:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F2D31F24AA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:26:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09F3218E3F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80B641B5AA;
 	Fri, 12 Apr 2024 04:25:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="cqiCybhM"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="QZunGuw9"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E85D018021;
-	Fri, 12 Apr 2024 04:25:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 793B6182B1;
+	Fri, 12 Apr 2024 04:25:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712895952; cv=none; b=opspDUTbS8l3511ISoEwQV0XndZkm+n9AXWhHLBP8jB9CzFP6Vy+x7mnxmJv4ysqJ0XlrUnO3sbI+krjsNrWSDI62W7UK96p83woPgNFw8ezi2z6CT6FlxNU3YxHSidpOLO5fObzwxCwN9jPfPD3jZED3J/K2tZal1BiVa7aTts=
+	t=1712895952; cv=none; b=j1o2tL/aDvGUThIVtwaVE6my9Wbn/df9iRa3UPonfzt3wqJKQpnX5Tl3FpugsH5B/RzXWY7dperPHoM+YybQ7wkO6CJ5ctkFxpOsEUrziaieANi0sZGvslKS26gB1Vv9RTfObOtETNc8iJT4Gj7dMI0lboCM9vG/CDkSRg1p6pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712895952; c=relaxed/simple;
-	bh=mKgx5cl0/igRDLKCuUQ7DuWyjLoEa3B+wMZEZ+aYBi8=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Kk1LNw3kKxZqQ8lphP0dlTUH4aokB7OHnEouiyZ6nLycnO0nm+MBvmPBT1MrLcGXBdAUGefI3hbGo9A3B8MnqMNDW7DFtM6mjUGeP7YGkH6kl2HYSs+oLYz7PN2LoBFft1MbBiULxak5C//X3pDPmUkBNHLG79QKOlYAZoEcvK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=cqiCybhM; arc=none smtp.client-ip=198.47.23.249
+	bh=z1shp2lDbGf9G99E7ExYumPRY1mwGImvju1nutqdpKM=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=NQgJOKAUmhwZTrvW5N4eb7K85JuJn35FfxeWeZ0I9nsWdF4y379gzlA4KNrQ0PWE9qCw0KyhgL88ouqSRZssT3Ol6UXThxl28buCKhWLp7SQ0ZHyb5fCSpr7b9yEgEBu0H7AMO49vhJUdwMEmL+QVkYlSiC2Mv8l9XuHpUYuDWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=QZunGuw9; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43C4Pf4f064453;
-	Thu, 11 Apr 2024 23:25:41 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43C4PjWx111642;
+	Thu, 11 Apr 2024 23:25:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712895941;
-	bh=K46w1PP0pYtXy4dPOOTNwFZVINedOSSvvS4cQNVlicU=;
-	h=From:To:CC:Subject:Date;
-	b=cqiCybhMzSR7XjQHxq/Miaw34fgOYbNtKa1ufwvoMa7F232pfDrf5v3DxQqE26xxm
-	 /kr/Gf6ovcio73DPR7ssdzkZ51NM6+vVs6nW9Y4zrGBKeoSjSX36FhnJCI2qM3aa4O
-	 FJAGXap8vJCQS87RHZigHMmdcQ5DXMvfTHdidTkk=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43C4PftF030985
+	s=ti-com-17Q1; t=1712895945;
+	bh=h7pbpM3vg0J1IPqj55MU3l706aCm+pPTpUCVzh9YTbY=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=QZunGuw9u1PxWk7yq9ZVN0l3UcLo/r8xi9mV6WOpi4vXxkoJZNCn3cco0+moZ/rew
+	 GK1qKpyGE0mFJlDGH0MvtgJ/J/VhEeUEjPYdBly/Hws1DbcAoWdX86ayZo0JZDmC3n
+	 MIzBcRpRMB7vC+PmUsGk3PPqQ90oVFkTsDmFwFAc=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43C4Pjhg122975
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 11 Apr 2024 23:25:41 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+	Thu, 11 Apr 2024 23:25:45 -0500
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 11
- Apr 2024 23:25:41 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2024 23:25:45 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 11 Apr 2024 23:25:41 -0500
+ Frontend Transport; Thu, 11 Apr 2024 23:25:45 -0500
 Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (a0497641-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.36])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43C4PbNa078207;
-	Thu, 11 Apr 2024 23:25:38 -0500
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43C4PbNb078207;
+	Thu, 11 Apr 2024 23:25:42 -0500
 From: Neha Malcom Francis <n-francis@ti.com>
 To: <robh@kernel.org>, <conor+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <vigneshr@ti.com>, <nm@ti.com>
 CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <kristo@kernel.org>, <u-kumar1@ti.com>,
         <n-francis@ti.com>
-Subject: [PATCH v2 0/5] arm64: dts: ti: k3-j7*: Add missing ESM and watchdog nodes
-Date: Fri, 12 Apr 2024 09:55:32 +0530
-Message-ID: <20240412042537.666137-1-n-francis@ti.com>
+Subject: [PATCH v2 1/5] arm64: dts: ti: k3-j721e-mcu: Add the WKUP ESM instance
+Date: Fri, 12 Apr 2024 09:55:33 +0530
+Message-ID: <20240412042537.666137-2-n-francis@ti.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240412042537.666137-1-n-francis@ti.com>
+References: <20240412042537.666137-1-n-francis@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,32 +77,33 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Add missing ESM and watchdog nodes for the sake of devicetree completion
-of hardware description w.r.t Linux and ESM and WDT enablement on
-U-Boot. This patch series adds the missing nodes for J721E and J7200.
+Add the WKUP ESM instance for J721E. It has three instances in total,
+one in the MAIN domain (main_esm) and two in the MCU-WKUP domain
+(mcu_esm and wkup_esm).
 
-Boot logs (updated for v2):
-https://gist.github.com/nehamalcom/5dc94ab60f57df5d515d0a6d0da6e0d1
-
+Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
+---
 Changes since v1:
-https://lore.kernel.org/all/20240326122723.2329402-1-n-francis@ti.com/
-- modified node name numbering to be in sync with TRM (Udit)
-- disabled wkup_esm node in J721E (Udit)
-- added patch (5/5) for MCU domain watchdog instances in J7200 (Udit)
+- marked status as disabled
 
-Neha Malcom Francis (5):
-  arm64: dts: ti: k3-j721e-mcu: Add the WKUP ESM instance
-  arm64: dts: ti: k3-j721e-mcu: Add the MCU domain watchdog instances
-  arm64: dts: ti: k3-j721e-main: Add the MAIN domain watchdog instances
-  arm64: dts: ti: k3-j7200-main: Add the MAIN domain watchdog instances
-  arm64: dts: ti: k3-j7200-mcu: Add the MCU domain watchdog instances
+ arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 27 ++++++
- .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 26 ++++++
- arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 93 +++++++++++++++++++
- .../boot/dts/ti/k3-j721e-mcu-wakeup.dtsi      | 32 +++++++
- 4 files changed, 178 insertions(+)
-
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
+index 4618b697fbc4..3044e08f6858 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721e-mcu-wakeup.dtsi
+@@ -689,4 +689,10 @@ mcu_esm: esm@40800000 {
+ 		ti,esm-pins = <95>;
+ 		bootph-pre-ram;
+ 	};
++
++	wkup_esm: esm@42080000 {
++		compatible = "ti,j721e-esm";
++		reg = <0x00 0x42080000 0x00 0x1000>;
++		status = "disabled";
++	};
+ };
 -- 
 2.34.1
 
