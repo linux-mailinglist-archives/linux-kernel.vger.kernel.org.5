@@ -1,125 +1,134 @@
-Return-Path: <linux-kernel+bounces-142422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B47398A2B5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:39:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBC9E8A2B61
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 11:40:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5F651C20C72
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:39:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 292761C23339
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0854E51C4D;
-	Fri, 12 Apr 2024 09:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1300853392;
+	Fri, 12 Apr 2024 09:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Oyc966U6"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="N2Q8CcG+"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC511446B6;
-	Fri, 12 Apr 2024 09:39:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E5E53378;
+	Fri, 12 Apr 2024 09:40:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712914742; cv=none; b=TRp4a/8TKGuvU9xljHiVZgHBp6qBBAuhRK2uaU1X31sMqS/okGflYIqmqUi7U0cRzRSJplrSzhQL/ngyBmW8yKpMQrrBI6o3coa3MRPpUiSYE2ryBNp5ISKIFGpZphLDcmX8NEj9yPD+xtqE5MjKOXuvz8is87s6CQSUeTR6LLI=
+	t=1712914824; cv=none; b=Hu7b2agH0tWMBIjx+Dg1PZdR/7XUbmE4ZjtqgsPNHhYaHg9Rb83sW24zMbkesWFRzGB29zsK1VM1B5SwuJvMft6rA27CnmLWw34rHhEcR0XhtLY9bQmsg7Em/bO6wIAz8MUgf4o0eY4qNenuCzIT7Qk/DgdbMlEMJkPd9+G3pJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712914742; c=relaxed/simple;
-	bh=xhZLSdqjCJGkrq/1WHroNk1xCdiol0gprEN4wXQPrlU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U8V/RWzuTUETQYMMEc9Ol0Mw1RVF9ThKLyey0PNqEhUr7Zyx9jVPx4cr2x71McZ5qq2VvKFFWoxrXbvAUDnjrONjuaIwsD9NvQTpcTf1Lj44MlEsjzbIPUCAn4HJVNDEJtKNo2u6S+DGkF6RA2/ffHEYu0d5YPaAyKC7qGesP8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Oyc966U6; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1712914824; c=relaxed/simple;
+	bh=AyddXRv/DnT91t6B+nxCTZtHVLA1ljNAIxVGwn0e3Vk=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hutN5Rz6U1WhJx6LpFrlk+83kUwWq2XV5mBQtofKrO5pM9lT4x1d49lY9s2wylPwl8zUf4wJ4qGwzi6NK4kDLWkpfRIeBInKbLOfWmurGut48nzIZ94MjNo2yYV0QL0zMjSpprvcXm487owvMpE8uRIoNzJd/2m9OaGNvoOlzS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=N2Q8CcG+; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712914741; x=1744450741;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1712914821; x=1744450821;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=xhZLSdqjCJGkrq/1WHroNk1xCdiol0gprEN4wXQPrlU=;
-  b=Oyc966U6AQSKPXz8WeHsn8245G4djhYxi2VH5JA6pqriz/6kragD1Pul
-   MR8UIRYJKr5WlRtJvH+DCpblOhx8phlltOPOKfyxZ+cs8P+zzLG5Iox2F
-   dVyMibwEeW5bpSUpelx3bVz8IHL9myFJCI1XazHAz2ctrtFaxSNPuntFt
-   YSD0jdA/h1fZ7pjHGR/AbftfKpIdOcUG+ffi+xADANXq0ubkrVnD6pxOQ
-   2Na9B9RFM9/06KfFxX+qp/GHFKliUE9Nx05J4WVKL1i5bpinR9mcGDEid
-   iBQYuzWOcM6jBvDd18boDuaVTmGk7ogHkHsVMfWjZlgACFtsWVqq85PA7
-   A==;
-X-CSE-ConnectionGUID: 1NobwrQ+SCuf3UOQvonNDw==
-X-CSE-MsgGUID: z0g6NxYJQ5ax2PUGnINwIA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="12148183"
-X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
-   d="scan'208";a="12148183"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 02:39:00 -0700
-X-CSE-ConnectionGUID: TEnw0//TQtG62goI0XrVyw==
-X-CSE-MsgGUID: XWlRxbLtQnW4iW48NYWBHw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
-   d="scan'208";a="25988920"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 02:38:53 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 304D911FA58;
-	Fri, 12 Apr 2024 12:38:51 +0300 (EEST)
-Date: Fri, 12 Apr 2024 09:38:51 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Zhi Mao <zhi.mao@mediatek.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Paul Elder <paul.elder@ideasonboard.com>,
-	Mehdi Djait <mehdi.djait@bootlin.com>,
-	Bingbu Cao <bingbu.cao@intel.com>, linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, shengnan.wang@mediatek.com,
-	yaya.chang@mediatek.com, yunkec@chromium.org, 10572168@qq.com
-Subject: Re: [PATCH 2/2] media: i2c: Add GT97xx VCM driver
-Message-ID: <ZhkBIee2X0UY40yD@kekkonen.localdomain>
-References: <20240410104002.1197-1-zhi.mao@mediatek.com>
- <20240410104002.1197-3-zhi.mao@mediatek.com>
- <CAHp75VfF0pbrKXjWZg7sTr-T=_CbjP+deFQP-VLCGX8ooahctg@mail.gmail.com>
+  bh=AyddXRv/DnT91t6B+nxCTZtHVLA1ljNAIxVGwn0e3Vk=;
+  b=N2Q8CcG+WSHt61QHSiIgZlntd6c+kdrYKfup268hI/TXB3SBD73Rz5hK
+   mStCII/48F0Y6KW4Q0mnZ7pj8YVkzG//6txzOQ8Hd71M9sC/rJ1enFyoF
+   2P/vz0JEWUOwglHBorqSlUcu3sDh8n1kgpmNULrdQNXq7chX5nRimdj60
+   MQX1LU1umGJs188H8U3VkyY+bpvohleNmbC3LrVc+UKTn88fDOHeCUkbL
+   DTZEEvcF0HViQlG++IMVmHSPLLx3Z7bVS6/o/9KNmJ5nHBObZTprqZvfL
+   i+ulk5ID2c1BUzP6arcw9fXvu/kAx1/o7za3kIILJkgmcLv1dRjK2/KnU
+   w==;
+X-CSE-ConnectionGUID: yozmjWR8Rd+BhRpS7jT2WA==
+X-CSE-MsgGUID: 7iK6SCRqSQyqm/KKGnCunw==
+X-IronPort-AV: E=Sophos;i="6.07,195,1708412400"; 
+   d="asc'?scan'208";a="187998476"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Apr 2024 02:40:19 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 12 Apr 2024 02:40:10 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Fri, 12 Apr 2024 02:40:08 -0700
+Date: Fri, 12 Apr 2024 10:39:17 +0100
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC: <wefu@redhat.com>, <jszhang@kernel.org>, <alexandre.belloni@bootlin.com>,
+	<robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <guoren@kernel.org>, <paul.walmsley@sifive.com>,
+	<palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
+	<linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>
+Subject: Re: [PATCH 3/5] drivers/rtc/rtc-xgene: Add "snps,dw-apb-rtc" into
+ the "compatible"
+Message-ID: <20240412-rummage-superbowl-a342f179e482@wendy>
+References: <20240412080238.134191-1-wefu@redhat.com>
+ <20240412080238.134191-4-wefu@redhat.com>
+ <86bf8248-2443-4ced-a67c-7845fef98fd3@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Ge0GmYIBWwIaJ/Yq"
+Content-Disposition: inline
+In-Reply-To: <86bf8248-2443-4ced-a67c-7845fef98fd3@linaro.org>
+
+--Ge0GmYIBWwIaJ/Yq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75VfF0pbrKXjWZg7sTr-T=_CbjP+deFQP-VLCGX8ooahctg@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-Hi Andy, Zhi,
+On Fri, Apr 12, 2024 at 11:17:38AM +0200, Krzysztof Kozlowski wrote:
+> On 12/04/2024 10:01, wefu@redhat.com wrote:
+> > From: Wei Fu <wefu@redhat.com>
+> >=20
+> > This patch add "snps,dw-apb-rtc" into the "compatible".
+>=20
+>=20
+> Please do not use "This commit/patch/change", but imperative mood. See
+> longer explanation here:
+> https://elixir.bootlin.com/linux/v5.17.1/source/Documentation/process/sub=
+mitting-patches.rst#L95
+>=20
+> This we see from the patch. Say what hardware are you adding?
 
-On Wed, Apr 10, 2024 at 07:00:02PM +0300, Andy Shevchenko wrote:
-> > +static int gt97xx_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
-> > +{
-> > +       return pm_runtime_resume_and_get(sd->dev);
-> > +}
-> > +
-> > +static int gt97xx_close(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
-> > +{
-> > +       return pm_runtime_put(sd->dev);
-> > +}
-> 
-> Hmm... Shouldn't v4l2 take care about these (PM calls)?
+The compatible, unless I misread the patchset, isn't actually documented
+either, only the new property is.
 
-Ideally yes. We don't have a good mechanism for this at the moment as the
-lens isn't part of the image pipeline. Non-data links may be used for this
-in the future but that's not implemented yet.
+>=20
+> Please run scripts/checkpatch.pl and fix reported warnings. Then please
+> run `scripts/checkpatch.pl --strict` and (probably) fix more warnings.
+> Some warnings can be ignored, especially from --strict run, but the code
+> here looks like it needs a fix. Feel free to get in touch if the warning
+> is not clear.
+>=20
+>=20
+> Best regards,
+> Krzysztof
+>=20
 
--- 
-Regards,
+--Ge0GmYIBWwIaJ/Yq
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Sakari Ailus
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhkBOQAKCRB4tDGHoIJi
+0nF3AQCpqrVUssnT4yWndlvpuzz0fOX4zka9/Ej3nX5vfZgsawEAzVtgKBzcU07+
+FaxCvDk/mWbBtLR+GALH91nw0Q+wEg8=
+=Cg5S
+-----END PGP SIGNATURE-----
+
+--Ge0GmYIBWwIaJ/Yq--
 
