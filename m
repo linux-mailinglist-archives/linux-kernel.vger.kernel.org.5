@@ -1,262 +1,262 @@
-Return-Path: <linux-kernel+bounces-141917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 519338A2517
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:22:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CACF38A2519
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:23:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBB2B2836F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:22:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DCF2B22E8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3828918637;
-	Fri, 12 Apr 2024 04:22:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8B2199B8;
+	Fri, 12 Apr 2024 04:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="IZiDCNPG"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="J2wf9glL"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB5D17BCE;
-	Fri, 12 Apr 2024 04:22:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B0E318044
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:22:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712895727; cv=none; b=fJ271P45BAtSUfItqrhmt3wMQjCP3pmk05GTQe6CecsCbgW6ZfEF/YrIQcedNhoUv+rDgd6aBUV3Mb7sFhowcGFPx4r0keglLnu6MYSLDJZniWKjN5ln9Zu/Ve24K5/+RA58eIqsKIf48M1rXLfboi2l99iPo1stm+W36YUOdV8=
+	t=1712895777; cv=none; b=Eh5FAze0Abime2HyoNpqq3NeQveTmrnEsj2PqrcMwUosz84s7VCVDgr+kUQmVzADy1Ffy92TjViBUNgwnrlJ580bv1DafZFw83TAL5vN1rW2yt8Cd31CMUo/TAOAAARvBvejmSlWaMc6J1vkMUYW8mDsqObT0p+o1kXLgrm56F4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712895727; c=relaxed/simple;
-	bh=gP5LcIf5f6zwt9CFFHTn+3rpUH5B2COOjEncatfqQFM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=l/k0u/ZSUCZZB8Lv93dwYTE3FAHgSFRR9qtVo794h/RMdsD6gXM1VTN9zNMEPTMa1h1iuvJaN+9nHtpgWvLoFSYAKhnmIMQzE1f1/kJJyrM0vWzgovSKGApymcPCrXBQBhgs6vQy7k5HISo8hkJ0yOAnZN0R3M+OO3iHNvuAWQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=IZiDCNPG; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 43C4LqrR110576;
-	Thu, 11 Apr 2024 23:21:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712895712;
-	bh=nGD2bN17wRnZMsRcdmhnQoilyoPWepFQGNVdEgjLmYs=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=IZiDCNPGRXfVZKAmwgvy+HWQMADF1YwNU0nmE20GqJB9lH4z/JahoJ9Mx3MA3SV2v
-	 OBjzTqAu94ivxygPVdTSg80x2yZm1FoRTAWFEe1eShD+pCSakgV9kI5cMW/UjLO+9Y
-	 UrJABkoYRx8bp89TMQ8HF0plaBFMFhq3mPBSEmYE=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 43C4Lqic094399
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 11 Apr 2024 23:21:52 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 11
- Apr 2024 23:21:52 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 11 Apr 2024 23:21:52 -0500
-Received: from [172.24.227.36] (a0497641-hp-z2-tower-g9-workstation-desktop-pc.dhcp.ti.com [172.24.227.36])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 43C4LmQ5079580;
-	Thu, 11 Apr 2024 23:21:49 -0500
-Message-ID: <3111e684-249e-42f9-9105-f62700fe9959@ti.com>
-Date: Fri, 12 Apr 2024 09:51:48 +0530
+	s=arc-20240116; t=1712895777; c=relaxed/simple;
+	bh=Ai1IPvil9uFM7PRJoDG9vVMucXOoOd/UrrPNDCt/9Nc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UwtzK1lCT/ynTryD+3W56s5dukbrqQ9wDSgMYJtXRf0Cr11bllDriUCN3ddW6I2+jWCdGrbQLultgH+Ck+U2rCPKyRTN6pKAkIq9G8JEPU6vOZAHL1bnX1u2192DEnu1fOvM+JtXjsn0HIkYDkFGjOkWopAVSrOhS8CzndY3lpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=J2wf9glL; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56fd95160e5so3995a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:22:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712895774; x=1713500574; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S4lta18S1kYp4kd8Rq2W8Lhel8YYapEdSI0oTgvOWvc=;
+        b=J2wf9glLkBwH030lrChzFwS2uVvkjXST7kv08JUwYg4FaY+BpVDFE9A2vytRq24cbe
+         2euRX0FdpkFIudRWvAEK5suD7Wx3b4r0xx4Q/mb38ihuExFZhBI1sTDmBuYD5KKgx5s6
+         kwOPmnkG+aaIIBMhQJawbGKTExIvcSe8/eUNuPZFasPw8Zmv5i7rR4IbtxWS9UIo8vQt
+         +CPn+d0BF2kfJkk505Roo000BcNegcB5kYSTK08Z9ppSGzKCtQ7giqvEttMXd2GksqB+
+         UDElzJihNj+luDmHSWTt8/aZt7UddwndUOSXfAp3p/aJtUH7DNIgHVUsmPuMKSxB33iE
+         mgxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712895774; x=1713500574;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S4lta18S1kYp4kd8Rq2W8Lhel8YYapEdSI0oTgvOWvc=;
+        b=b+1H5KPJnA14Af7QeQ+0avqOfkPCQMc8m0JldZpGQ+XBMlnrehV5u1aSU/RSY9T4KV
+         Fe+jy1rghTPiPFWZKAO90txFVAreknCWUS2BONNX3w15nZkcGZaV7VNJmRoiXQi9bmRd
+         hGHoeVnT8ex2HFvXRChq6nyUVltOrs5ezV3sQLN4/trC7E5dTvFO/IBxc6OUoMoYAl4N
+         tfKX5A9YkMFNfXvx6MDC3j6nMrT4Uxunh6wvDZ6y3QN26zuajJsZjbwP64443ZUIea+A
+         yYhYCx//ZkFnK5qBHy/hHR0BUg983TtFO7JwsXYu/AcHG6JyQ76PeoFBJLgPMDPhkqGN
+         4OOA==
+X-Forwarded-Encrypted: i=1; AJvYcCV3eu9uOiUD99qzZwv5t/syYOvsruX/lZ/e+y8xVsWFT/lEWIuO9QSVNbhCXWLAWaAZwBVzRPnTlxrQRsiUWJ/sqq1gdd/YshE4cqfQ
+X-Gm-Message-State: AOJu0YxUACHlSt5jAMVQfeQM+thyRKdnUICyYA7EfuBrXpfhSYsN1UbN
+	bSsmJFZj3pQt7u+O2s/BOuKVujbvXJTvXZ6Z87E1f9c/WS+T8Me8vpJpe/nWyyBaZM0gTTDX/6F
+	oSL3sPS9dSBAVg3guq+ccEZ9ZmSjXEUOExz0e
+X-Google-Smtp-Source: AGHT+IF6TYWnLEHf+hAivZTJGiZA02FnbcHsJtHyNiawNN6RUD1YB1DYClLRFL6piun2RmeVAf/dgNyppY5qk1lW0ag=
+X-Received: by 2002:aa7:df8c:0:b0:56e:34de:69c1 with SMTP id
+ b12-20020aa7df8c000000b0056e34de69c1mr100971edy.4.1712895773711; Thu, 11 Apr
+ 2024 21:22:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] arm64: dts: ti: k3-j721e-main: Add the MAIN domain
- watchdog instances
-To: "Kumar, Udit" <u-kumar1@ti.com>, <robh@kernel.org>, <conor+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <vigneshr@ti.com>, <nm@ti.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kristo@kernel.org>
-References: <20240326122723.2329402-1-n-francis@ti.com>
- <20240326122723.2329402-4-n-francis@ti.com>
- <a329fc6b-561c-4300-8778-c90ca97b70f3@ti.com>
-Content-Language: en-US
-From: Neha Malcom Francis <n-francis@ti.com>
-In-Reply-To: <a329fc6b-561c-4300-8778-c90ca97b70f3@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240410143446.797262-1-chao.gao@intel.com> <20240410143446.797262-8-chao.gao@intel.com>
+In-Reply-To: <20240410143446.797262-8-chao.gao@intel.com>
+From: Jim Mattson <jmattson@google.com>
+Date: Thu, 11 Apr 2024 21:22:40 -0700
+Message-ID: <CALMp9eQwDJfioseiWinHN8fJSb-nrs8Eq_YezX7y+q3HEaX77Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 07/10] KVM: x86: Advertise ARCH_CAP_VIRTUAL_ENUM support
+To: Chao Gao <chao.gao@intel.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	daniel.sneddon@linux.intel.com, pawan.kumar.gupta@linux.intel.com, 
+	Zhang Chen <chen.zhang@intel.com>, Sean Christopherson <seanjc@google.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Udit
+On Wed, Apr 10, 2024 at 8:08=E2=80=AFAM Chao Gao <chao.gao@intel.com> wrote=
+:
+>
+> From: Zhang Chen <chen.zhang@intel.com>
+>
+> Bit 63 of IA32_ARCH_CAPABILITIES MSR indicates availablility of the
+> VIRTUAL_ENUMERATION_MSR (index 0x50000000) which enumerates features
+> like e.g., mitigation enumeration that in turn is used for the guest to
+> report software mitigations it is using.
+>
+> Advertise ARCH_CAP_VIRTUAL_ENUM support for VMX and emulate read/write
+> of the VIRTUAL_ENUMERATION_MSR. Now VIRTUAL_ENUMERATION_MSR is always 0.
+>
+> Signed-off-by: Zhang Chen <chen.zhang@intel.com>
+> Co-developed-by: Chao Gao <chao.gao@intel.com>
+> Signed-off-by: Chao Gao <chao.gao@intel.com>
+> ---
+>  arch/x86/kvm/svm/svm.c |  1 +
+>  arch/x86/kvm/vmx/vmx.c | 19 +++++++++++++++++++
+>  arch/x86/kvm/vmx/vmx.h |  2 ++
+>  arch/x86/kvm/x86.c     | 16 +++++++++++++++-
+>  4 files changed, 37 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index d1a9f9951635..e3406971a8b7 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -4288,6 +4288,7 @@ static bool svm_has_emulated_msr(struct kvm *kvm, u=
+32 index)
+>  {
+>         switch (index) {
+>         case MSR_IA32_MCG_EXT_CTL:
+> +       case MSR_VIRTUAL_ENUMERATION:
+>         case KVM_FIRST_EMULATED_VMX_MSR ... KVM_LAST_EMULATED_VMX_MSR:
+>                 return false;
+>         case MSR_IA32_SMBASE:
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index cdfcc1290d82..dcb06406fd09 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -1955,6 +1955,8 @@ static inline bool is_vmx_feature_control_msr_valid=
+(struct vcpu_vmx *vmx,
+>         return !(msr->data & ~valid_bits);
+>  }
+>
+> +#define VIRTUAL_ENUMERATION_VALID_BITS 0ULL
+> +
+>  static int vmx_get_msr_feature(struct kvm_msr_entry *msr)
+>  {
+>         switch (msr->index) {
+> @@ -1962,6 +1964,9 @@ static int vmx_get_msr_feature(struct kvm_msr_entry=
+ *msr)
+>                 if (!nested)
+>                         return 1;
+>                 return vmx_get_vmx_msr(&vmcs_config.nested, msr->index, &=
+msr->data);
+> +       case MSR_VIRTUAL_ENUMERATION:
+> +               msr->data =3D VIRTUAL_ENUMERATION_VALID_BITS;
+> +               return 0;
+>         default:
+>                 return KVM_MSR_RET_INVALID;
+>         }
+> @@ -2113,6 +2118,12 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, stru=
+ct msr_data *msr_info)
+>         case MSR_IA32_DEBUGCTLMSR:
+>                 msr_info->data =3D vmcs_read64(GUEST_IA32_DEBUGCTL);
+>                 break;
+> +       case MSR_VIRTUAL_ENUMERATION:
+> +               if (!msr_info->host_initiated &&
+> +                   !(vcpu->arch.arch_capabilities & ARCH_CAP_VIRTUAL_ENU=
+M))
+> +                       return 1;
+> +               msr_info->data =3D vmx->msr_virtual_enumeration;
+> +               break;
+>         default:
+>         find_uret_msr:
+>                 msr =3D vmx_find_uret_msr(vmx, msr_info->index);
+> @@ -2457,6 +2468,14 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, stru=
+ct msr_data *msr_info)
+>                 }
+>                 ret =3D kvm_set_msr_common(vcpu, msr_info);
+>                 break;
+> +       case MSR_VIRTUAL_ENUMERATION:
+> +               if (!msr_info->host_initiated)
+> +                       return 1;
+> +               if (data & ~VIRTUAL_ENUMERATION_VALID_BITS)
+> +                       return 1;
+> +
+> +               vmx->msr_virtual_enumeration =3D data;
+> +               break;
+>
+>         default:
+>         find_uret_msr:
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index a4dfe538e5a8..0519cf6187ac 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -294,6 +294,8 @@ struct vcpu_vmx {
+>         u64                   force_spec_ctrl_mask;
+>         u64                   force_spec_ctrl_value;
+>
+> +       u64                   msr_virtual_enumeration;
+> +
+>         u32                   msr_ia32_umwait_control;
+>
+>         /*
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 9a59b5a93d0e..4721b6fe7641 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -1564,6 +1564,7 @@ static const u32 emulated_msrs_all[] =3D {
+>
+>         MSR_K7_HWCR,
+>         MSR_KVM_POLL_CONTROL,
+> +       MSR_VIRTUAL_ENUMERATION,
+>  };
+>
+>  static u32 emulated_msrs[ARRAY_SIZE(emulated_msrs_all)];
+> @@ -1579,6 +1580,7 @@ static const u32 msr_based_features_all_except_vmx[=
+] =3D {
+>         MSR_IA32_UCODE_REV,
+>         MSR_IA32_ARCH_CAPABILITIES,
+>         MSR_IA32_PERF_CAPABILITIES,
+> +       MSR_VIRTUAL_ENUMERATION,
+>  };
+>
+>  static u32 msr_based_features[ARRAY_SIZE(msr_based_features_all_except_v=
+mx) +
+> @@ -1621,7 +1623,8 @@ static bool kvm_is_immutable_feature_msr(u32 msr)
+>          ARCH_CAP_PSCHANGE_MC_NO | ARCH_CAP_TSX_CTRL_MSR | ARCH_CAP_TAA_N=
+O | \
+>          ARCH_CAP_SBDR_SSDP_NO | ARCH_CAP_FBSDP_NO | ARCH_CAP_PSDP_NO | \
+>          ARCH_CAP_FB_CLEAR | ARCH_CAP_RRSBA | ARCH_CAP_PBRSB_NO | ARCH_CA=
+P_GDS_NO | \
+> -        ARCH_CAP_RFDS_NO | ARCH_CAP_RFDS_CLEAR | ARCH_CAP_BHI_NO)
+> +        ARCH_CAP_RFDS_NO | ARCH_CAP_RFDS_CLEAR | ARCH_CAP_BHI_NO | \
+> +        ARCH_CAP_VIRTUAL_ENUM)
+>
+>  static u64 kvm_get_arch_capabilities(void)
+>  {
+> @@ -1635,6 +1638,17 @@ static u64 kvm_get_arch_capabilities(void)
+>          */
+>         data |=3D ARCH_CAP_PSCHANGE_MC_NO;
+>
+> +       /*
+> +        * Virtual enumeration is a paravirt feature. The only usage for =
+now
+> +        * is to bridge the gap caused by microarchitecture changes betwe=
+en
+> +        * different Intel processors. And its usage is linked to "virtua=
+lize
+> +        * IA32_SPEC_CTRL" which is a VMX feature. Whether AMD SVM can be=
+nefit
+> +        * from the same usage and how to implement it is still unclear. =
+Limit
+> +        * virtual enumeration to VMX.
+> +        */
 
-On 10/04/24 11:06, Kumar, Udit wrote:
-> Hi Neha
-> 
-> On 3/26/2024 5:57 PM, Neha Malcom Francis wrote:
->> There are 10 watchdog instances in the MAIN domain:
->>     * one each for the 2 A72 cores
->>     * one for the GPU core
->>     * one for the C7x core
->>     * one each for the 2 C66x cores
->>     * one each for the 4 R5F cores
->>
->> Currently, the devicetree only describes watchdog instances for the A72
->> cores and enables them. Describe the remaining but reserve them as they
->> will be used by their respective firmware.
->>
->> Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
->> ---
->>   arch/arm64/boot/dts/ti/k3-j721e-main.dtsi | 93 +++++++++++++++++++++++
->>   1 file changed, 93 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi 
->> b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
->> index c7eafbc862f9..d8930b8ea8ec 100644
->> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
->> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
->> @@ -2157,6 +2157,99 @@ watchdog1: watchdog@2210000 {
->>           assigned-clock-parents = <&k3_clks 253 5>;
->>       };
-> 
-> Looking at TRM, SPRUIJ7*3–December 2018–Revised March 2019,
-> 
-> Table 12-22646. RTI Instances, says There is gap in numbering
-> 
-> RTI0, RTI1, RTI15 and so on
-> 
-> IMO, labels for watchdog should be as per TRM.
-> 
-> eg watchdog2 to watchdog15, But I don't have strong opinion on either .
-> 
-> Let maintainer suggest on this
-> 
-> 
-> 
->> +    /*
->> +     * The following RTI instances are coupled with MCU R5Fs, c7x and
->> +     * GPU so keeping them reserved as these will be used by their
->> +     * respective firmware
->> +     */
->> +    watchdog2: watchdog@22f0000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x22f0000 0x00 0x100>;
->> +        clocks = <&k3_clks 257 1>;
->> +        power-domains = <&k3_pds 257 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 257 1>;
->> +        assigned-clock-parents = <&k3_clks 257 5>;
->> +        /* reserved for GPU */
->> +        status = "reserved";
->> +    };
-> 
-> Please help me to understand, where from you got it for GPU,
-> 
-> May be I am looking at wrong data, Again above TRM
-> 
-> Table 12-22645. RTI Hardware Requests. RTI-15 says esm0
-> 
->> +
->> +    watchdog3: watchdog@2300000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x2300000 0x00 0x100>;
->> +        clocks = <&k3_clks 256 1>;
->> +        power-domains = <&k3_pds 256 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 256 1>;
->> +        assigned-clock-parents = <&k3_clks 256 5>;
->> +        /* reserved for C7X */
->> +        status = "reserved";
-> 
-> This I see in above table for Compute Cluster
-> 
-> 
->> +    };
->> +
->> +    watchdog4: watchdog@2380000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x2380000 0x00 0x100>;
->> +        clocks = <&k3_clks 254 1>;
->> +        power-domains = <&k3_pds 254 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 254 1>;
->> +        assigned-clock-parents = <&k3_clks 254 5>;
->> +        /* reserved for C66X_0 */
->> +        status = "reserved";
->> +    };
->> +
->> +    watchdog5: watchdog@2390000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x2390000 0x00 0x100>;
->> +        clocks = <&k3_clks 255 1>;
->> +        power-domains = <&k3_pds 255 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 255 1>;
->> +        assigned-clock-parents = <&k3_clks 255 5>;
->> +        /* reserved for C66X_1 */
->> +        status = "reserved";
->> +    };
->> +
->> +    watchdog6: watchdog@23c0000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x23c0000 0x00 0x100>;
->> +        clocks = <&k3_clks 258 1>;
->> +        power-domains = <&k3_pds 258 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 258 1>;
->> +        assigned-clock-parents = <&k3_clks 258 5>;
->> +        /* reserved for MAIN_R5F0_0 */
-> 
-> TRM says, this covers both MAIN_R5F0_0 and MAIN_R5F0_1.
-> 
-> Suggest , if split is done at fw level
-> 
->> +        status = "reserved";
->> +    };
->> +
->> +    watchdog7: watchdog@23d0000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x23d0000 0x00 0x100>;
->> +        clocks = <&k3_clks 259 1>;
->> +        power-domains = <&k3_pds 259 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 259 1>;
->> +        assigned-clock-parents = <&k3_clks 259 5>;
->> +        /* reserved for MAIN_R5F0_1 */
->> +        status = "reserved";
-> 
-> TRM says, this covers both MAIN_R5F0_0 and MAIN_R5F0_1.
-> 
-> Suggest , if split is done at fw level
-> 
->> +    };
->> +
->> +    watchdog8: watchdog@23e0000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x23e0000 0x00 0x100>;
->> +        clocks = <&k3_clks 260 1>;
->> +        power-domains = <&k3_pds 260 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 260 1>;
->> +        assigned-clock-parents = <&k3_clks 260 5>;
->> +        /* reserved for MAIN_R5F1_0 */
->> +        status = "reserved";
->> +    };
-> 
-> 
-> TRM says, this covers both MAIN_R5F1_0 and MAIN_R5F1_1.
-> 
-> Suggest , if split is done at fw level
-> 
->> +
->> +    watchdog9: watchdog@23f0000 {
->> +        compatible = "ti,j7-rti-wdt";
->> +        reg = <0x00 0x23f0000 0x00 0x100>;
->> +        clocks = <&k3_clks 261 1>;
->> +        power-domains = <&k3_pds 261 TI_SCI_PD_EXCLUSIVE>;
->> +        assigned-clocks = <&k3_clks 261 1>;
->> +        assigned-clock-parents = <&k3_clks 261 5>;
->> +        /* reserved for MAIN_R5F1_1 */
-> 
-> TRM says, this covers both MAIN_R5F1_0 and MAIN_R5F1_1.
-> 
-> Suggest , if split is done at fw level
-> 
->> +        status = "reserved";
->> +    };
->> +
->>       main_r5fss0: r5fss@5c00000 {
->>           compatible = "ti,j721e-r5fss";
->>           ti,cluster-mode = <1>;
+Virtualize IA32_SPEC_CTRL has been an SVM feature for years. See
+https://lore.kernel.org/kvm/160738054169.28590.5171339079028237631.stgit@bm=
+oger-ubuntu/.
 
-At firmware level, the MAIN R5s are set to split mode.
-
--- 
-Thanking You
-Neha Malcom Francis
+> +       if (static_call(kvm_x86_has_emulated_msr)(NULL, MSR_VIRTUAL_ENUME=
+RATION))
+> +               data |=3D ARCH_CAP_VIRTUAL_ENUM;
+> +
+>         /*
+>          * If we're doing cache flushes (either "always" or "cond")
+>          * we will do one whenever the guest does a vmlaunch/vmresume.
+> --
+> 2.39.3
+>
+>
 
