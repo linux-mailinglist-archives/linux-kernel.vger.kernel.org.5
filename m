@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-141821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4D528A23E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:51:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23D728A23E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:51:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30835B23337
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:51:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A680EB2370F
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 02:51:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B1F179BE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B11717BAB;
 	Fri, 12 Apr 2024 02:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rLWzub48"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aR8A+kEm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF31134CE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FED7134BD;
 	Fri, 12 Apr 2024 02:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712890231; cv=none; b=G//B/Gc3BoWKQnygu+H8Am/gtlN4VCQ+u4NcQ4ls5BxhSgqF8nTJfIdCfw5HHiVzwVxfLOUXrc4ua8FLQiW9RgzSoDxzX/dB7/ZIyWwxP7htWnLakpwmytYmR/yZ5cVcVWG1I9kNNBZO9jlRtPMXVMZIeX1hrvqUuHf8/YhyhIA=
+	t=1712890231; cv=none; b=eqe9CjOLpsCBZBd4cqqbYF718mMCBrQWswqBq6QCjT0cutotJqL1DK3/svpS4VdBEv9Fs7Ak5ElbcSEYTmYcQdvejd1PCqi0vMvnR0y0pHqzRrUx+LUnHQbMnxZEphPJzTlRTyZ1Yhntd6q0f5eSdNOUx6jAokN0E1X8T/U3RKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712890231; c=relaxed/simple;
-	bh=zuHFbeFEeS204l/YqzpMFcRAaDus9Cr4Z1+LOMuO/Kc=;
+	bh=cdC80TaevqpFC4O1h6P6DJKVzJoTl6Gm4dF/Z8JWHYs=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=uDmwhyAelIH0V8xiXZp09FWn63CJ4oi26aQi8MPcz0pqOET2k6HZ8xHpCXGVYejFpKxqomr7CeGwTUvfGk9IM93DEJ4hfuTizd5BIbpLhExOpu4EY2aM/x7UfwyYwDgHaAkAAf1G8IbZ4ietGi0KLq0NJWmDc2nd/2lOB3TnZXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rLWzub48; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EE5CBC32786;
+	 In-Reply-To:To:Cc; b=mpQg3WS8faj8TLRD2pQ980uTORimPT6/L0i5PSUWxkgOHFlO0905k7yvNDO7TXrZQoTLzjbdzK22sbN8i4HKwRjNid7dKunD4K79xmmugasbLmQFvc91GPZAAFe+CxJjgWbPsKocbxbdXtjeYp3J6W+6QAikz3glgxHkZGe32gI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aR8A+kEm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E7F3FC2BD10;
 	Fri, 12 Apr 2024 02:50:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1712890231;
-	bh=zuHFbeFEeS204l/YqzpMFcRAaDus9Cr4Z1+LOMuO/Kc=;
+	bh=cdC80TaevqpFC4O1h6P6DJKVzJoTl6Gm4dF/Z8JWHYs=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=rLWzub48BYy3SV9Bxg2cpH+T8AnWWqZK1WTsQi/vNSehXIe78z2aNPClPZtk0ms1J
-	 u30ntN5t+k1WOzd82z1u7OW18JaHS2KttpOOJ2exThBdUIxE8lTMjRgle7AcIqNJiF
-	 yxp9cvsZqdIW+ayr9ABdiuT/PvPGEm/pRsKfr1njQyi9JdiDSIUOM6284uHtob/Ggj
-	 /9BQJFF+BzBRn878E0SZst31juVZtKdX6XEGN6aKXwJ/m+oyzTwYrmhqCHxwkJ8EkT
-	 1ClJTY7s0c8/guWHCal+kewFg2hGawMsSnC4Zq/u+QhJn+5BbwQhHuxlDCKqeMV2Ok
-	 OuXBgoQiwQ9OA==
+	b=aR8A+kEm8u+wZpjAKGx7xspEABPb5lO7m0Y6peYlaE7CFDxM/eKZUsXR7nIDPePn+
+	 jmScGbu2VfOxUA50YkrF4ct680lZLdTUZLiw9qMernKxpIByuXJu8J0ZVhlDDFVisu
+	 BxPfVxSIOR2u4NM6X8TCzTmn4aYBpUOMTCtJ3bKaEiaq0ZmA1Sdsbkm8HcVkcmO0kl
+	 8kh7FFaDv/30qfWdf/Hdb90THS75q1pyYglBXa7tzmMBlxzKw1CrojGaJ5m3IzpFpV
+	 bIAXaA1LN3vyVYsEL+8956e3N3wi7kyY+qG2MING0+l2tUxFk2XMIbOiYtw+UEgldD
+	 LJDXQpuKSHTng==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DCBD3C43440;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D39FBC433E9;
 	Fri, 12 Apr 2024 02:50:30 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,36 +51,43 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] flow_offload: fix flow_offload_has_one_action() kdoc
+Subject: Re: [PATCH net-next v6 0/2] Minor cleanups to skb frag ref/unref
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171289023089.15367.17253750888058630494.git-patchwork-notify@kernel.org>
+ <171289023086.15367.8747822658877342896.git-patchwork-notify@kernel.org>
 Date: Fri, 12 Apr 2024 02:50:30 +0000
-References: <20240410114718.15145-1-ast@fiberby.net>
-In-Reply-To: <20240410114718.15145-1-ast@fiberby.net>
-To: =?utf-8?b?QXNiasO4cm4gU2xvdGggVMO4bm5lc2VuIDxhc3RAZmliZXJieS5uZXQ+?=@codeaurora.org
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, davem@davemloft.net,
+References: <20240410190505.1225848-1-almasrymina@google.com>
+In-Reply-To: <20240410190505.1225848-1-almasrymina@google.com>
+To: Mina Almasry <almasrymina@google.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ linux-rdma@vger.kernel.org, ayush.sawal@chelsio.com, davem@davemloft.net,
  edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- pieter.jansenvanvuuren@netronome.com
+ mlindner@marvell.com, stephen@networkplumber.org, tariqt@nvidia.com,
+ wei.liu@kernel.org, paul@xen.org, steffen.klassert@secunet.com,
+ herbert@gondor.apana.org.au, dsahern@kernel.org, borisp@nvidia.com,
+ john.fastabend@gmail.com, dtatulea@nvidia.com
 
 Hello:
 
-This patch was applied to netdev/net-next.git (main)
+This series was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Wed, 10 Apr 2024 11:47:17 +0000 you wrote:
-> include/net/flow_offload.h:351: warning:
->   No description found for return value of 'flow_offload_has_one_action'
+On Wed, 10 Apr 2024 12:05:00 -0700 you wrote:
+> v6:
+> - Rebased on top of net-next; dropped the merged patches.
+> - Move skb ref helpers to a new header file. (Jakub).
 > 
-> Fixes: ab79af32b0a5 ("mlxsw: use intermediate representation for matchall offload")
-> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
-> ---
->  include/net/flow_offload.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> v5:
+> - Applied feedback from Eric to inline napi_pp_get_page().
+> - Applied Reviewed-By's.
+> 
+> [...]
 
 Here is the summary with links:
-  - [net-next] flow_offload: fix flow_offload_has_one_action() kdoc
-    https://git.kernel.org/netdev/net-next/c/e1eb10f8ef10
+  - [net-next,v6,1/2] net: move skb ref helpers to new header
+    https://git.kernel.org/netdev/net-next/c/f6d827b180bd
+  - [net-next,v6,2/2] net: mirror skb frag ref/unref helpers
+    https://git.kernel.org/netdev/net-next/c/a580ea994fd3
 
 You are awesome, thank you!
 -- 
