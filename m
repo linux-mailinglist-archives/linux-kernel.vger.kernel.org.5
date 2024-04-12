@@ -1,136 +1,270 @@
-Return-Path: <linux-kernel+bounces-142015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54C818A2634
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:08:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 135A38A2637
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:08:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6C4DB244A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:08:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 531E6B22AA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:08:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3AB7200D4;
-	Fri, 12 Apr 2024 06:08:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35A033BB2E;
+	Fri, 12 Apr 2024 06:08:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bBmf5UVE"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VSYdVZRe"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F18F11BF24;
-	Fri, 12 Apr 2024 06:08:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AD1438F84;
+	Fri, 12 Apr 2024 06:08:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712902089; cv=none; b=QA/LylP6eVV8YC3NC1Q43PO0clHNKhBC4QH2gmBTs0qepKHdCchTZDcFoWTzZFWDoKiYAqCNhpwnZuCrzVK4blwRWoL+AqO2LPY3Sq2gltGDFyWNWt1cdZtUFtgR0nZ5tZy0CzMxkmy69R2LoXOoKuR9Bo4P9q2sP0EuovZINN0=
+	t=1712902129; cv=none; b=ae4G+ImkB66M3/WzbqRfOeJOGw00zBJbOGoKgUGVG+T670JqiYkQ6F+ZcZltbc0Ooh8eeHPQGEygp6FxJwL9EEGCd4t9hUuG8Jn6Av5/DphuBFn8X/Ri1c9tVqk30Ma6Fuo2q2Q2ZNUmqQ7rH9SW3Jc15VOQ7gZT7pcrsz+aurU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712902089; c=relaxed/simple;
-	bh=7AS0uyUckK9jdmWhs9kJ6BR0ykSnUy0WjuTyWl8/ohE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cFZ19KvIBUzw1vwI565OPZMpl/KcY/ukg1b/6744cLVW0f28uAb+gn1CgAUBxY35CNfE6PkyhxyhW7DB30NH/VM+XQXtg2qb4rfZg5h22BnHUlvABGCr+XCEfcqs4IGNATI2K2DcHwirN3cjZzXfiAnorbxi7l3ju6zDUv/xiwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bBmf5UVE; arc=none smtp.client-ip=198.175.65.11
+	s=arc-20240116; t=1712902129; c=relaxed/simple;
+	bh=XmQDTHlp8Xgu11tjbD44C6ofZlZ8gr2RpYPC/BYEG5E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VulCRRXq9/7CkjIVTasm6mF5pn+mE8cdG/F6TNtPaCAo/TV3ZgpuugsrKp7k/LbUurOOs6a44f6E0M8j/ODc1TX3k/X8KIO919OfUgpCrbIW6+NkC44dh8flTEoG1EGNbXxCrFPUx7qCRM5ORpW6PErAEm3whyTmNpGw9Wb+caY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=none smtp.mailfrom=ecsmtp.iind.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VSYdVZRe; arc=none smtp.client-ip=198.175.65.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ecsmtp.iind.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712902087; x=1744438087;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=7AS0uyUckK9jdmWhs9kJ6BR0ykSnUy0WjuTyWl8/ohE=;
-  b=bBmf5UVEXmQmSPM5Dcdj3dFQ0GSFPhSDXCh2cIrZ7tt+8LEz97qIXWv1
-   MEAkXcMEdIQYHyhwjj0detXhtWUExCg813H3uWguXt0kH8UHl9nW1xX0p
-   hmy8AkMEISgNVb2r4yplCPkO7Gs8gLJQ7AtS5lU6gjgop6ubwIVwQo3/8
-   9WzApqmIE/5WHPY76u4WLjFJ2fqNMWhv/wdLyqUSTGmBb/QjjOWLdRugO
-   g8dAJN40heq1LYTZWEM2yn7RfaeLAelm0VhJOD7+eLoQskFz5tycdqE9u
-   kE9ulSVIOCrT9gRR/1Xgj5c8L2bu27BFq7YMR7ScB1EOezt6NZJSDgsok
-   Q==;
-X-CSE-ConnectionGUID: NvC5Sz5UQj6656row//eJA==
-X-CSE-MsgGUID: sp62JpVTQ+yz/L6TmHnxFA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="18901351"
+  t=1712902128; x=1744438128;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=XmQDTHlp8Xgu11tjbD44C6ofZlZ8gr2RpYPC/BYEG5E=;
+  b=VSYdVZRepcj9TC7/Lau9WfSfOSmsju5WRscKSTyheOgUlaveJbATK/eC
+   OKmFYLZLek8yzQUySGHP0A/dV6rIn9MT/gRR3uz3ResWYU6Kdfkgk8BDF
+   7/aTszjAbbq0CLl/0IOyPsbsHaC9g0Xvb4rOUQ8urOdpoJr9HEEuvdfCg
+   29yElMQgqlUJ9c58wzYG/hAMmAgP9pXjBOgLKqae2p2KYra8q+jUWji8z
+   5pISAy/7YPYiUuLRxYdDjC4KZlyvz6B8fsCgd9/1VUIhHIYTNR1NqxA2v
+   gAK/lTmz5TSI8wnqd8D8JyJLdA8b4ZLkdgOecfsjMYurAgTzSj0CoPExV
+   g==;
+X-CSE-ConnectionGUID: VZovVwPKTV6x29uiADf77A==
+X-CSE-MsgGUID: GtwHAFfXTmiUg+zw+Iabcg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8195448"
 X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
-   d="scan'208";a="18901351"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 23:08:06 -0700
-X-CSE-ConnectionGUID: HAilMb0TRpqlpVwKICv0Hw==
-X-CSE-MsgGUID: KcPwHYKjR2uqnY1qYhP0uw==
+   d="scan'208";a="8195448"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 23:08:47 -0700
+X-CSE-ConnectionGUID: PIbUNGPKRhuk4pCDV2ypbA==
+X-CSE-MsgGUID: eG+hynucTwi4AuEpkLNZhA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,195,1708416000"; 
-   d="scan'208";a="21195572"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.215.136])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 23:07:55 -0700
-Message-ID: <3a238616-1fd0-4755-b7b7-fdc9c412fb03@intel.com>
-Date: Fri, 12 Apr 2024 09:07:50 +0300
+   d="scan'208";a="21566870"
+Received: from inesxmail01.iind.intel.com ([10.223.57.40])
+  by orviesa006.jf.intel.com with ESMTP; 11 Apr 2024 23:08:45 -0700
+Received: from inlubt0316.iind.intel.com (inlubt0316.iind.intel.com [10.191.20.213])
+	by inesxmail01.iind.intel.com (Postfix) with ESMTP id 2CC5872945;
+	Fri, 12 Apr 2024 11:38:44 +0530 (IST)
+Received: by inlubt0316.iind.intel.com (Postfix, from userid 12101951)
+	id 28D941600100; Fri, 12 Apr 2024 11:38:44 +0530 (IST)
+From: Raag Jadav <raag.jadav@intel.com>
+To: u.kleine-koenig@pengutronix.de,
+	jarkko.nikula@linux.intel.com,
+	mika.westerberg@linux.intel.com,
+	andriy.shevchenko@linux.intel.com
+Cc: linux-pwm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Raag Jadav <raag.jadav@intel.com>
+Subject: [PATCH v1] pwm: dwc: allow suspend/resume for 16 channels
+Date: Fri, 12 Apr 2024 11:38:12 +0530
+Message-Id: <20240412060812.20412-1-raag.jadav@intel.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] perf scripts python: Add a script to run instances of
- perf script in parallel
-To: Ian Rogers <irogers@google.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Andi Kleen <ak@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-References: <20240313123634.4353-1-adrian.hunter@intel.com>
- <CAP-5=fW1bH8qQkD7LrO6_3fJ3NsqoW1GrX8=s-sfaTbrvk58+A@mail.gmail.com>
-Content-Language: en-US
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAP-5=fW1bH8qQkD7LrO6_3fJ3NsqoW1GrX8=s-sfaTbrvk58+A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 11/04/24 21:19, Ian Rogers wrote:
-> On Wed, Mar 13, 2024 at 5:36 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> Add a Python script to run a perf script command multiple times in
->> parallel, using perf script options --cpu and --time so that each job
->> processes a different chunk of the data.
->>
->> The script supports the use of normal perf script options like
->>  --dlfilter and --script, so that the benefit of running parallel jobs
->> naturally extends to them also. In addition, a command can be provided
->> (refer --pipe-to option) to pipe standard output to a custom command.
->>
->> Refer to the script's own help text at the end of the patch for more
->> details.
->>
->> The script is useful for Intel PT traces, that can be efficiently
->> decoded by perf script when split by CPU and/or time ranges. Running
->> jobs in parallel can decrease the overall decoding time.
->>
->> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
->> ---
->>
->>
->> Changes in V2:
->>
->>         Added option to pipe to a custom command
->>         Added option to set a minimum time interval
->>         Minor tidying
->>
->>
->>  tools/perf/scripts/python/parallel-perf.py | 989 +++++++++++++++++++++
->>  1 file changed, 989 insertions(+)
->>  create mode 100755 tools/perf/scripts/python/parallel-perf.py
->>
->> diff --git a/tools/perf/scripts/python/parallel-perf.py b/tools/perf/scripts/python/parallel-perf.py
->> new file mode 100755
->> index 000000000000..8fe398f81a42
->> --- /dev/null
->> +++ b/tools/perf/scripts/python/parallel-perf.py
->> @@ -0,0 +1,989 @@
->> +#!/usr/bin/env python3
->> +# SPDX-License-Identifier: GPL-2.0
-> 
-> With the python summer of code proposal, that no-one applied to, I
-> wanted to package things like a perf.data IO library in some public
-> package index. As GPL 2 isn't permissive then we may need to
-> reimplement this code because of this. Fwiw, my preference is
-> GPL-2.0-only or BSD.
+With 16 channel pwm support, we're registering two instances of pwm_chip
+with 8 channels each. We need to update PM functions to use both instances
+of pwm_chip during power state transitions.
 
-GPL-2.0 is GPL-2.0-only
+Introduce struct dwc_pwm_drvdata and use it as driver_data, which will
+maintain both instances of pwm_chip along with dwc_pwm_info and allow us
+to use them inside suspend/resume handles.
+
+Fixes: ebf2c89eb95e ("pwm: dwc: Add 16 channel support for Intel Elkhart Lake")
+Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+---
+ drivers/pwm/pwm-dwc-core.c |  1 -
+ drivers/pwm/pwm-dwc.c      | 82 +++++++++++++++++++++++++-------------
+ drivers/pwm/pwm-dwc.h      |  6 +++
+ 3 files changed, 60 insertions(+), 29 deletions(-)
+
+diff --git a/drivers/pwm/pwm-dwc-core.c b/drivers/pwm/pwm-dwc-core.c
+index 043736972cb9..c8425493b95d 100644
+--- a/drivers/pwm/pwm-dwc-core.c
++++ b/drivers/pwm/pwm-dwc-core.c
+@@ -172,7 +172,6 @@ struct pwm_chip *dwc_pwm_alloc(struct device *dev)
+ 	dwc->clk_ns = 10;
+ 	chip->ops = &dwc_pwm_ops;
+ 
+-	dev_set_drvdata(dev, chip);
+ 	return chip;
+ }
+ EXPORT_SYMBOL_GPL(dwc_pwm_alloc);
+diff --git a/drivers/pwm/pwm-dwc.c b/drivers/pwm/pwm-dwc.c
+index 676eaf8d7a53..1bf0ee4d3229 100644
+--- a/drivers/pwm/pwm-dwc.c
++++ b/drivers/pwm/pwm-dwc.c
+@@ -31,26 +31,34 @@ static const struct dwc_pwm_info ehl_pwm_info = {
+ 	.size = 0x1000,
+ };
+ 
+-static int dwc_pwm_init_one(struct device *dev, void __iomem *base, unsigned int offset)
++static int dwc_pwm_init_one(struct device *dev, struct dwc_pwm_drvdata *data, unsigned int idx)
+ {
+ 	struct pwm_chip *chip;
+ 	struct dwc_pwm *dwc;
++	int ret;
+ 
+ 	chip = dwc_pwm_alloc(dev);
+ 	if (IS_ERR(chip))
+ 		return PTR_ERR(chip);
+ 
+ 	dwc = to_dwc_pwm(chip);
+-	dwc->base = base + offset;
++	dwc->base = data->io_base + (data->info->size * idx);
+ 
+-	return devm_pwmchip_add(dev, chip);
++	ret = devm_pwmchip_add(dev, chip);
++	if (ret)
++		return ret;
++
++	data->chips[idx] = chip;
++	return 0;
+ }
+ 
+ static int dwc_pwm_probe(struct pci_dev *pci, const struct pci_device_id *id)
+ {
+ 	const struct dwc_pwm_info *info;
+ 	struct device *dev = &pci->dev;
+-	int i, ret;
++	struct dwc_pwm_drvdata *data;
++	unsigned int idx;
++	int ret;
+ 
+ 	ret = pcim_enable_device(pci);
+ 	if (ret)
+@@ -63,17 +71,25 @@ static int dwc_pwm_probe(struct pci_dev *pci, const struct pci_device_id *id)
+ 		return dev_err_probe(dev, ret, "Failed to iomap PCI BAR\n");
+ 
+ 	info = (const struct dwc_pwm_info *)id->driver_data;
++	data = devm_kzalloc(dev, struct_size(data, chips, info->nr), GFP_KERNEL);
++	if (!data)
++		return dev_err_probe(dev, -ENOMEM, "Failed to allocate drvdata\n");
+ 
+-	for (i = 0; i < info->nr; i++) {
+-		/*
+-		 * No need to check for pcim_iomap_table() failure,
+-		 * pcim_iomap_regions() already does it for us.
+-		 */
+-		ret = dwc_pwm_init_one(dev, pcim_iomap_table(pci)[0], i * info->size);
++	/*
++	 * No need to check for pcim_iomap_table() failure,
++	 * pcim_iomap_regions() already does it for us.
++	 */
++	data->io_base = pcim_iomap_table(pci)[0];
++	data->info = info;
++
++	for (idx = 0; idx < data->info->nr; idx++) {
++		ret = dwc_pwm_init_one(dev, data, idx);
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
++	dev_set_drvdata(dev, data);
++
+ 	pm_runtime_put(dev);
+ 	pm_runtime_allow(dev);
+ 
+@@ -88,19 +104,24 @@ static void dwc_pwm_remove(struct pci_dev *pci)
+ 
+ static int dwc_pwm_suspend(struct device *dev)
+ {
+-	struct pwm_chip *chip = dev_get_drvdata(dev);
+-	struct dwc_pwm *dwc = to_dwc_pwm(chip);
+-	int i;
++	struct dwc_pwm_drvdata *data = dev_get_drvdata(dev);
++	unsigned int idx;
+ 
+-	for (i = 0; i < DWC_TIMERS_TOTAL; i++) {
+-		if (chip->pwms[i].state.enabled) {
+-			dev_err(dev, "PWM %u in use by consumer (%s)\n",
+-				i, chip->pwms[i].label);
+-			return -EBUSY;
++	for (idx = 0; idx < data->info->nr; idx++) {
++		struct pwm_chip *chip = data->chips[idx];
++		struct dwc_pwm *dwc = to_dwc_pwm(chip);
++		unsigned int i;
++
++		for (i = 0; i < DWC_TIMERS_TOTAL; i++) {
++			if (chip->pwms[i].state.enabled) {
++				dev_err(dev, "PWM %u in use by consumer (%s)\n",
++					i, chip->pwms[i].label);
++				return -EBUSY;
++			}
++			dwc->ctx[i].cnt = dwc_pwm_readl(dwc, DWC_TIM_LD_CNT(i));
++			dwc->ctx[i].cnt2 = dwc_pwm_readl(dwc, DWC_TIM_LD_CNT2(i));
++			dwc->ctx[i].ctrl = dwc_pwm_readl(dwc, DWC_TIM_CTRL(i));
+ 		}
+-		dwc->ctx[i].cnt = dwc_pwm_readl(dwc, DWC_TIM_LD_CNT(i));
+-		dwc->ctx[i].cnt2 = dwc_pwm_readl(dwc, DWC_TIM_LD_CNT2(i));
+-		dwc->ctx[i].ctrl = dwc_pwm_readl(dwc, DWC_TIM_CTRL(i));
+ 	}
+ 
+ 	return 0;
+@@ -108,14 +129,19 @@ static int dwc_pwm_suspend(struct device *dev)
+ 
+ static int dwc_pwm_resume(struct device *dev)
+ {
+-	struct pwm_chip *chip = dev_get_drvdata(dev);
+-	struct dwc_pwm *dwc = to_dwc_pwm(chip);
+-	int i;
++	struct dwc_pwm_drvdata *data = dev_get_drvdata(dev);
++	unsigned int idx;
+ 
+-	for (i = 0; i < DWC_TIMERS_TOTAL; i++) {
+-		dwc_pwm_writel(dwc, dwc->ctx[i].cnt, DWC_TIM_LD_CNT(i));
+-		dwc_pwm_writel(dwc, dwc->ctx[i].cnt2, DWC_TIM_LD_CNT2(i));
+-		dwc_pwm_writel(dwc, dwc->ctx[i].ctrl, DWC_TIM_CTRL(i));
++	for (idx = 0; idx < data->info->nr; idx++) {
++		struct pwm_chip *chip = data->chips[idx];
++		struct dwc_pwm *dwc = to_dwc_pwm(chip);
++		unsigned int i;
++
++		for (i = 0; i < DWC_TIMERS_TOTAL; i++) {
++			dwc_pwm_writel(dwc, dwc->ctx[i].cnt, DWC_TIM_LD_CNT(i));
++			dwc_pwm_writel(dwc, dwc->ctx[i].cnt2, DWC_TIM_LD_CNT2(i));
++			dwc_pwm_writel(dwc, dwc->ctx[i].ctrl, DWC_TIM_CTRL(i));
++		}
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/pwm/pwm-dwc.h b/drivers/pwm/pwm-dwc.h
+index a8b074841ae8..c6e2df5a6122 100644
+--- a/drivers/pwm/pwm-dwc.h
++++ b/drivers/pwm/pwm-dwc.h
+@@ -38,6 +38,12 @@ struct dwc_pwm_info {
+ 	unsigned int size;
+ };
+ 
++struct dwc_pwm_drvdata {
++	const struct dwc_pwm_info *info;
++	void __iomem *io_base;
++	struct pwm_chip *chips[];
++};
++
+ struct dwc_pwm_ctx {
+ 	u32 cnt;
+ 	u32 cnt2;
+-- 
+2.35.3
 
 
