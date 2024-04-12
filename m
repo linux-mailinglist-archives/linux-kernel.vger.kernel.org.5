@@ -1,151 +1,130 @@
-Return-Path: <linux-kernel+bounces-143432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA1D98A38F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:40:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 527498A38FA
+	for <lists+linux-kernel@lfdr.de>; Sat, 13 Apr 2024 01:42:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 241621C216E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:40:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6AF71F22AB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 23:42:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D44152DE4;
-	Fri, 12 Apr 2024 23:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC67152534;
+	Fri, 12 Apr 2024 23:41:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IPXBUvTS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="R8f/G2ap"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 184D910F4;
-	Fri, 12 Apr 2024 23:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B97E11487E4
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 23:41:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712965233; cv=none; b=th+v11f8vTPsopDz1/Aah+7DjWy46BvzMlwZwnd/f/2+Bux4om4EcPS3EqcGa+cpeZtLuyUrObRB/j/Znttd/oF8F1s3AxnejTl3QWyXsiGyNEna9rr/elBEF/tNnBI93micq5AZXUlMLQU3SYnfh59zpvRq6xrSdGnHemy7tZo=
+	t=1712965314; cv=none; b=h+CWmEGcow5YqcigMzNFXZ0Daes/n0JjnmZwytVm2rbyMzIwXuhppKCI035xBuv8kcLDj2B5x8viXsow9Ux0J4W2xOLHQGKnPHP306Mfh8FNkla+DbeTemnuKRVJZPoSvNjX+R96K0jBQ5hK3TkXo67OzjkFgUbGxEjhEMgs20c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712965233; c=relaxed/simple;
-	bh=9fTY4WZx/alT8Sa+UXHnrqhnRrKl/iF6TU4j2OrIj/0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=khIr6mALESvWFhk9B8AIIKClNZ5iW9IpugBAgYbTaX548rVA7teD+RbhVFLpBu0g403yMhRX+jUERaVbwOkOfvrhlH+dm1mfRVqIxoEZ2cEB4wIR+fmX+vlhftIs/R224HJ2B5c2kYOmTgu9kgeYZNx+dIUem29xocPGjHpJ88c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IPXBUvTS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EDC9C113CC;
-	Fri, 12 Apr 2024 23:40:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712965232;
-	bh=9fTY4WZx/alT8Sa+UXHnrqhnRrKl/iF6TU4j2OrIj/0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IPXBUvTSeM9fF+xXpA07Gpnzgo9A4roMQAV8BMU8Tsh9iCbQaED1Slw64mRvBxR+l
-	 xpT/q0xlzSKtEP7HbPN96NZ3fSnEHd6VmNwbNSSTBjT1QsvogDycYZNb5G8ytc9y3Z
-	 l63WmrYLwUYiRLttqEDcTiRZKaQJS+5b8J59T+FLhWOZ5ajzoO7HjID3hecqtoSZ73
-	 8rWb3Byn3SqU8X0Mg3+d4S7Ugxc4cnRJtRDPzTk2wUey0Iob5bmb0ek6FurxeJggvg
-	 du6yiPVNMMZwsya5CHQHtdtjM8X0fY/3Hn+Hf1/ZB+wOxZpIaMyUvwXxHbQCo5vnML
-	 NXNVXjT7x52IA==
-Date: Sat, 13 Apr 2024 00:40:26 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Evan Green <evan@rivosinc.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>,
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 02/19] riscv: cpufeature: Fix thead vector hwcap removal
-Message-ID: <20240413-sharper-unlivable-5a65660b19e2@spud>
-References: <20240411-dev-charlie-support_thead_vector_6_9-v1-0-4af9815ec746@rivosinc.com>
- <20240411-dev-charlie-support_thead_vector_6_9-v1-2-4af9815ec746@rivosinc.com>
- <20240412-tuesday-resident-d9d07e75463c@wendy>
- <ZhlrdGXfSushUNTp@ghost>
- <20240412-eastcoast-disparity-9c9e7d178df5@spud>
- <ZhmeLoPS+tsfqv1T@ghost>
- <20240412-chemist-haunt-0a30a8f280ca@spud>
- <ZhmoPuoR00aS6qZp@ghost>
+	s=arc-20240116; t=1712965314; c=relaxed/simple;
+	bh=6pQVUvS7PDMEdreKmLs1VF23tmvgXoTGy50ip8xGNZI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rMWPo5okWyVAaghgpLJT9Vqk8sptS9lWOcy1MmcJCqjONOXv2L+RCwHpfKVN9sCuVuiV0rL+kDlBXWu1YVKsrKv/iKt/ZAROIU4N16cJl7zc+S3+eVWzNUG6XcKiO3/aaxtcuNBPQT2Q1o2Yx9rIDVqu2spK3koKlU7e5Guk3Wo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=R8f/G2ap; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from terminus.zytor.com (terminus.zytor.com [IPv6:2607:7c80:54:3:0:0:0:136])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 43CNewXO1106754
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+	Fri, 12 Apr 2024 16:41:03 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 43CNewXO1106754
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024031401; t=1712965263;
+	bh=d1s8ofOUvwo6/1leLihcfYYM2FoneKCZzHrcTwSNRVA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=R8f/G2apzaY/vaFRGDNS4fehkUaZbMS5zXl+w+L/Crw3CM/a7ECFHj4ZkPKNmgW8h
+	 V2cMeVypDkyGFFa9WXMp7M+JTj93xo5STF7nGng6saOXrlmVPIhwG7TaO86ReUSmeE
+	 akpgr9DjtGC+GuZwPicvMt0Cdbwyu0gvf1LtmNNalT/hDVIZ409HrQVCj36qkBKKl9
+	 GwXUhbJTydHQzRRnfdNz7YPrObhJ6i66L3teB4X9eQgiWUEfyyObDLJVLAvdLzFs5x
+	 puGeD7otxVyRRRY/qU0n9g6xXgtu184EZahYZjyn3ifGx3N4ZoGO0pH90v6SWeAco/
+	 MricPwiMcp0vA==
+From: "Xin Li (Intel)" <xin@zytor.com>
+To: linux-kernel@vger.kernel.org
+Cc: luto@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com
+Subject: [PATCH v1 1/1] x86/fred: Fix int80 emulation for FRED
+Date: Fri, 12 Apr 2024 16:40:58 -0700
+Message-ID: <20240412234058.1106744-1-xin@zytor.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fiOPUQP1XJPUpApw"
-Content-Disposition: inline
-In-Reply-To: <ZhmoPuoR00aS6qZp@ghost>
+Content-Transfer-Encoding: 8bit
 
+Commit 55617fb991df added a bunch of tests to the int $0x80 path, however
+they are unnecessary and event wrong in fact under FRED.
 
---fiOPUQP1XJPUpApw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+First FRED distinguishes external interrupts from software interrupts,
+thus int80_emulation() should NEVER be called for handling an external
+interrupt, and then int80_is_external() should be skipped under FRED.
 
-On Fri, Apr 12, 2024 at 02:31:42PM -0700, Charlie Jenkins wrote:
-> On Fri, Apr 12, 2024 at 10:27:47PM +0100, Conor Dooley wrote:
-> > On Fri, Apr 12, 2024 at 01:48:46PM -0700, Charlie Jenkins wrote:
-> > > On Fri, Apr 12, 2024 at 07:47:48PM +0100, Conor Dooley wrote:
-> > > > On Fri, Apr 12, 2024 at 10:12:20AM -0700, Charlie Jenkins wrote:
+Second, the FRED kernel entry handler NEVER dispatches INTx, which is
+of event type EVENT_TYPE_SWINT, so the user mode checking in
+do_int80_emulation() is redundant, and should be skipped.
 
-> > > > > This is already falling back on the boot CPU, but that is not a s=
-olution
-> > > > > that scales. Even though all systems currently have homogenous
-> > > > > marchid/mvendorid I am hesitant to assert that all systems are
-> > > > > homogenous without providing an option to override this.
-> > > >=20
-> > > > There are already is an option. Use the non-deprecated property in =
-your
-> > > > new system for describing what extesions you support. We don't need=
- to
-> > > > add any more properties (for now at least).
-> > >=20
-> > > The issue is that it is not possible to know which vendor extensions =
-are
-> > > associated with a vendor. That requires a global namespace where each
-> > > extension can be looked up in a table. I have opted to have a
-> > > vendor-specific namespace so that vendors don't have to worry about
-> > > stepping on other vendor's toes (or the other way around). In order to
-> > > support that, the vendorid of the hart needs to be known prior.
-> >=20
-> > Nah, I think you're mixing up something like hwprobe and having
-> > namespaces there with needing namespacing on the devicetree probing side
-> > too. You don't need any vendor namespacing, it's perfectly fine (IMO)
-> > for a vendor to implement someone else's extension and I think we should
-> > allow probing any vendors extension on any CPU.
->=20
-> I am not mixing it up. Sure a vendor can implement somebody else's
-> extension, they just need to add it to their namespace too.
+It might be even better to strip down do_int80_emulation() to a lean
+fred_int80_emulation(), not to mention int80_emulation() does a
+CLEAR_BRANCH_HISTORY.
 
-I didn't mean that you were mixing up how your implementation worked, my
-point was that you're mixing up the hwprobe stuff which may need
-namespacing for $a{b,p}i_reason and probing from DT which does not.
-I don't think that the kernel should need to be changed at all if
-someone shows up and implements another vendor's extension - we already
-have far too many kernel changes required to display support for
-extensions and I don't welcome potential for more.
+Suggested-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+Signed-off-by: Xin Li (Intel) <xin@zytor.com>
+---
+ arch/x86/entry/common.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-Another thing I just thought of was systems where the SoC vendor
-implements some extension that gets communicated in the ISA string but
-is not the vendor in mvendorid in their various CPUs. I wouldn't want to
-see several different entries in structs (or several different hwprobe
-keys, but that's another story) for this situation because you're only
-allowing probing what's in the struct matching the vendorid.
+diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
+index 6de50b80702e..aed745fc8333 100644
+--- a/arch/x86/entry/common.c
++++ b/arch/x86/entry/common.c
+@@ -174,6 +174,18 @@ static __always_inline bool int80_is_external(void)
+ 	const unsigned int offs = (0x80 / 32) * 0x10;
+ 	const u32 bit = BIT(0x80 % 32);
+ 
++	/*
++	 * FRED distinguishes external interrupts from software interrupts
++	 * with different event types, EVENT_TYPE_EXTINT v.s. EVENT_TYPE_SWINT,
++	 * thus we should NEVER get here when FRED is enabled, and then the
++	 * following APIC ISR check makes no sense.
++	 *
++	 * Furthermore, the external interrupt vector 0x80 is available as
++	 * a hardware interrupt under FRED.
++	 */
++	if (cpu_feature_enabled(X86_FEATURE_FRED))
++		return false;
++
+ 	/* The local APIC on XENPV guests is fake */
+ 	if (cpu_feature_enabled(X86_FEATURE_XENPV))
+ 		return false;
+@@ -211,8 +223,14 @@ __visible noinstr void do_int80_emulation(struct pt_regs *regs)
+ {
+ 	int nr;
+ 
+-	/* Kernel does not use INT $0x80! */
+-	if (unlikely(!user_mode(regs))) {
++	/*
++	 * Kernel does not use INT $0x80!
++	 *
++	 * The FRED kernel entry handler NEVER dispatches INTx (panic or
++	 * oops otherwise), so it is redundant to check user mode here.
++	 */
++	if (!cpu_feature_enabled(X86_FEATURE_FRED) &&
++	    unlikely(!user_mode(regs))) {
+ 		irqentry_enter(regs);
+ 		instrumentation_begin();
+ 		panic("Unexpected external interrupt 0x80\n");
 
---fiOPUQP1XJPUpApw
-Content-Type: application/pgp-signature; name="signature.asc"
+base-commit: 86d1b22a75cffa50160e4621da00311e6f6f48de
+-- 
+2.44.0
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZhnGaQAKCRB4tDGHoIJi
-0sbXAQDqwcw8csQEWGYwvW1DEpXXN05Grqo2xpuKvGADPYkWUgEAtM5EfnQLdtX7
-xI9bLNJaIswXp9N/DvHPHd37C0Uo1wY=
-=7ovm
------END PGP SIGNATURE-----
-
---fiOPUQP1XJPUpApw--
 
