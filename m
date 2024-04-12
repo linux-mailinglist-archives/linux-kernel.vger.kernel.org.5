@@ -1,111 +1,107 @@
-Return-Path: <linux-kernel+bounces-142927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96B3D8A321C
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:19:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBC688A3223
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:19:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A9B11F2245E
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:19:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B4B11F247D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:19:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6203149C44;
-	Fri, 12 Apr 2024 15:15:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="hK+7XMub"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB09514F9DA;
+	Fri, 12 Apr 2024 15:15:20 +0000 (UTC)
+Received: from luna.linkmauve.fr (luna.linkmauve.fr [82.65.109.163])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446DF1494D2;
-	Fri, 12 Apr 2024 15:15:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22841494D2;
+	Fri, 12 Apr 2024 15:15:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.65.109.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712934913; cv=none; b=c6g0NmQOl9peyGOizmfOr1GnMXNN20eKYYIRQcex3iVU7nUy4PhkHZN98upj9Q7rnXMVWJO9at3GS1yxPUuwHvQkwoJi2qUsyJMf/b8VfQ689GAUPYOxKqvOLhfHn5YrssduBKp6/cFlNd0FfWeyRD9bFLyTlFTp29OAp7wFyaw=
+	t=1712934920; cv=none; b=oAeOD5rLMkZxsNJdw8WGD4LnkSHcB3IDpsZzMHfTkwotWet1SFn1vC/q/QZWCB79rowsPYs4S7KzI3/IXMjGhLyZsLnjbpEIYZUSauFah+OLiyA6EmoSF2fIlvrHMdylZ4ICBJUS60SyijoFnlS0NJpgSZEy6iD11qO5ZcwuZ1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712934913; c=relaxed/simple;
-	bh=iy828oKVlqy5QYuzJ9LrPcNXklGl7u7M6Q8lvH1qjy8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=q7lA/Wv60MvO/RQmAmto6VdX50FDRstWztshqIXbIJHxQ5jZb4m/AenRSgKgi9BEB4m6bZfEb37tqvzj7ISCYQkIA7lnFCA04l0+rurqeUStkb6lPp9uC0I2vUdhwL1P7j30kc1jFyrQMK7uhcc6mwBYq5HcUe8JuHzqzQ6cA60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=hK+7XMub; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
- id 5c93bcff7a742ab9; Fri, 12 Apr 2024 17:15:09 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id AB0F566CC48;
-	Fri, 12 Apr 2024 17:15:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1712934909;
-	bh=iy828oKVlqy5QYuzJ9LrPcNXklGl7u7M6Q8lvH1qjy8=;
-	h=From:To:Cc:Subject:Date;
-	b=hK+7XMub3oYigTkcr8hiCCwooLvJfAIJ48F8ft67ncdrDEu6Y14gFciGVB02n4Wvt
-	 BRiNLWekdzhybLXLmHFkwVFV68AnR+Ddk2FMkWU3Oyis6/fdXpmmKWLWa1PnxZ/lW9
-	 0oced6puw94SVcZiAS5okooli4zCiVAXYuC8Rb55lXuu2H2Agccxaocu+8UIQbkX1z
-	 FVDMbTzoK9nzaHQGnq7QHA1U4skM+Tw3z6V1lFcIvrFPirABKPC4Ajbug8gQuA3OAw
-	 x5cwLjypVINouDUPhupwUrjQTpIs7OUC/BhcB3c9p+zCd+Eof1KwUpONpks1jFfoC7
-	 LfLcMeRLWddtA==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux ACPI <linux-acpi@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Bob Moore <robert.moore@intel.com>,
- Saket Dumbre <saket.dumbre@intel.com>
-Subject: [PATCH v1 00/12] ACPICA: ACPICA 20240322
-Date: Fri, 12 Apr 2024 17:15:08 +0200
-Message-ID: <23477713.6Emhk5qWAg@kreacher>
+	s=arc-20240116; t=1712934920; c=relaxed/simple;
+	bh=D3+ff2nIVEmIX8x1WaPKMezVEZTZ8Wnx3xAMNbQKNRo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TyVl6F0+EswVevtN1kNZpTf1FsoBQajoUHbLjBfDM2dyo04jJVPXvFDx7/PxwrJtQ62b2yPHTbGTsf2QtKqPnZNIJva0ld+7BEL6MYqXKBJ7V9vDmeYSa+TbksVT0vJhjzq4ciGZ1VZ+vxzb12BMNMJT4xEbOcXIP3byuGQESwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linkmauve.fr; spf=pass smtp.mailfrom=linkmauve.fr; arc=none smtp.client-ip=82.65.109.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linkmauve.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linkmauve.fr
+Received: by luna.linkmauve.fr (Postfix, from userid 1000)
+	id 7066A10A2673; Fri, 12 Apr 2024 17:15:17 +0200 (CEST)
+From: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+To: linux-kernel@vger.kernel.org
+Cc: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
+	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Sebastian Reichel <sebastian.reichel@collabora.com>,
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	Dragan Simic <dsimic@manjaro.org>,
+	Shreeya Patel <shreeya.patel@collabora.com>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Andy Yan <andy.yan@rock-chips.com>,
+	Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+	linux-media@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	iommu@lists.linux.dev
+Subject: [PATCH v3 0/2] Enable JPEG encoding on rk3588
+Date: Fri, 12 Apr 2024 17:15:09 +0200
+Message-ID: <20240412151515.837824-1-linkmauve@linkmauve.fr>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudeiuddgkeejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepueffhffgiefhteeffefgtdeuudefkeejjeffteejvdegfefhhfefkeekheetleeknecuffhomhgrihhnpehinhhtvghlrdgtohhmnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehrohgsvghrthdrmhhoohhrvgesihhnthgvlhdrtghomhdprhgtphhtthhopehsrghkvghtrdguuhhmsghrvgesihhn
- thgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi All,
+Only the JPEG encoder is available for now, although there are patches
+for the undocumented VP8 encoder floating around[0].
 
-This series of patches is a set of ACPICA 20240322 changes (described at
-https://cdrdv2.intel.com/v1/dl/getContent/783326) ported to Linux.
+This has been tested on a rock-5b, resulting in four /dev/video*
+encoders.  The userspace program I’ve been using to test them is
+Onix[1], using the jpeg-encoder example, it will pick one of these four
+at random (but displays the one it picked):
+% ffmpeg -i <input image> -pix_fmt yuvj420p temp.yuv
+% jpeg-encoder temp.yuv <width> <height> NV12 <quality> output.jpeg
 
-It contains the following material:
+[0] https://patchwork.kernel.org/project/linux-rockchip/list/?series=789885
+[1] https://crates.io/crates/onix
 
-Ben Cheatham (1):
-      ACPICA: actbl1.h: Add EINJ CXL error types
+Changes since v2:
+- Only expose a single VEPU121, since the driver doesn’t yet support
+  exposing them all as a single video node to userspace.
 
-Colin Ian King (1):
-      ACPICA: Fix various spelling mistakes in text files and code comments
+Changes since v1:
+- Dropped patches 1 and 4.
+- Use the proper compatible form, since this device should be fully
+  compatible with the VEPU of rk356x.
+- Describe where the VEPU121 name comes from, and list other encoders
+  and decoders present in this SoC.
+- Properly test the device tree changes, I previously couldn’t since I
+  was using a too recent version of python-jsonschema…
 
-Daniil Tatianin (1):
-      ACPICA: events/evgpeinit: don't forget to increment registered GPE count
+Emmanuel Gil Peyrot (2):
+  media: dt-binding: media: Document rk3588’s VEPU121
+  arm64: dts: rockchip: Add one VEPU121 to rk3588
 
-Haibo Xu (2):
-      ACPICA: SRAT: Add RISC-V RINTC affinity structure
-      ACPICA: SRAT: Add dump and compiler support for RINTC affinity structure
+ .../bindings/media/rockchip,rk3568-vepu.yaml  |  8 +++--
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi     | 29 +++++++++++++++++++
+ 2 files changed, 35 insertions(+), 2 deletions(-)
 
-Hojin Nam (1):
-      ACPICA: Fix CXL 3.0 structure (RDPAS) in the CEDT table
-
-Saket Dumbre (4):
-      ACPICA: Attempt 1 to fix issue #900
-      ACPICA: Clean up the fix for Issue #900
-      ACPICA: Fix spelling and typos
-      ACPICA: Update acpixf.h for new ACPICA release 20240322
-
-Shiju Jose (1):
-      ACPICA: ACPI 6.5: RAS2: Add support for RAS2 table
-
-lijun (1):
-      ACPICA: Modify ACPI_OBJECT_COMMON_HEADER
-
-Thanks!
-
+-- 
+2.44.0
 
 
