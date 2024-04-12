@@ -1,195 +1,97 @@
-Return-Path: <linux-kernel+bounces-142167-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142168-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F8F48A2867
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DD7F8A2868
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 09:43:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7DCF1F23614
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:43:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 506001F2353D
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:43:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A8044CDEC;
-	Fri, 12 Apr 2024 07:43:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695824D595;
+	Fri, 12 Apr 2024 07:43:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ah/LE93f"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ZHPJPU+D"
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C56F1DFF7
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:43:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89A684AED7
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 07:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712907782; cv=none; b=ATXRn+9gWfw76bnYdVbipYhEuHP8oTDBFmrdPGOwul20b50WFc1742HtvO4nA4mg1QmWRfshoa7+Yan4KtIvOE3oqxc33WhYDaOW4D8AQx3qhvYpEP8gGFb5jAOzUbpn8+t8Y+d+Naw8dEVs9PWoHR2IZkbNWYnnmg1fg3npajY=
+	t=1712907811; cv=none; b=H9BMTXiS0Xf8FvOJygKNECwFhCWkKG3EYBQhoPavwer6+Yp5rGoVUy/ct8jhN5bP60CPDKbGE5F5d7cK0GmqVc0rHb/TdJMmwyszCyJrYua9vQNoy8fEkzbg08jH6inh84ZqsvQFKBNxpbExJLWibElMsyZGALFfBrBHBG/949U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712907782; c=relaxed/simple;
-	bh=hi1ek4H1Sl9fwCdAI2V9cU6Oyh2d+MFh/nNIBD/zwX0=;
+	s=arc-20240116; t=1712907811; c=relaxed/simple;
+	bh=StuD/HabmuU7PxPUah/OQP/1NIIFVO5VCeXkpG1dpsY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OwIWpHyAcaMnshbDvbQGSOGw/wv7nsnsvlJf0mBtUN8qRMAi47zc5ymcAm4hQoQOg2PO+Iw6IoiVW70YRy6JeLiwZryIdrLCBmUf5268nkx1XBYXhuVm4pz2WSUjnYqHpxwggHCcQHNzn/CD04yNp18bfs11JHXsNngKwuV34l0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ah/LE93f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C7FEC113CC;
-	Fri, 12 Apr 2024 07:43:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712907782;
-	bh=hi1ek4H1Sl9fwCdAI2V9cU6Oyh2d+MFh/nNIBD/zwX0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ah/LE93fr2qg3tg8PBLedjLnN0qhcOibXIu9JJyHYqLtwZgXn/rxgasWGzJGU5c9w
-	 bzhSW9TE5LWgj45nwwkZDjXP2va8nPJx25sbnGbV5IQ4Gx0taqzEkUSJlGbTEWjAy/
-	 3oGH3ZuSFmf8ek4cWX7rRSml6AhfyVHMKiNXir6Eud0yESMFnI1Cmnby37uO+9QlWU
-	 nmKOxTy5B21aJ0d2pT1dl6L3115r4N/LfbCU1A2JV483MkJDJp8/UhmlvE0bT5xLmc
-	 ThChiw9RDOnSDgr73AoumEdNoV3bL7peeqz9LWfifVsDkHikR1IgmhAxw2sOZlJc92
-	 vXw7fQisxv1Ug==
-Date: Fri, 12 Apr 2024 08:42:58 +0100
-From: Lee Jones <lee@kernel.org>
-To: Min Li <lnimi@hotmail.com>
-Cc: linux-kernel@vger.kernel.org, Min Li <min.li.xe@renesas.com>
-Subject: Re: [PATCH mfd v1 2/2] mfd: rsmu: add FemtoClock3 support
-Message-ID: <20240412074258.GP2399047@google.com>
-References: <53efc0ac491055cedbef156b3c3410fa5342e637.1712857691.git.lnimi@hotmail.com>
- <LV3P220MB12025D3DF84F591EC0A9262FA0052@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FdV+nZSYBFapVqt3S1dFNRl/yvSpoam5zyBP2RkfTnOeixaCUta+XxfBy5ZMu0t1OsDMxQJdmyDC7wxlQPDNoxzJ+ARSMHJ4cSbbjcE1ZIir2HleEeN2azdG1B8yGMfTlzsUDJiGRnIg+aXQX52wNQlxd/EelnEpE9L2uPClI70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ZHPJPU+D; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=1YvrhE8TYy7MSDseUcEX6cz+zJ82RxWENHKzY8nEqT8=; b=ZHPJPU+D5hwpm4wgpiMkbWmAxe
+	zXeC9sXfI+1FJnmhRYSQcLRzNzJM4biKq0RAhRlaWBiTbu7fVxyM62i/DPuAWZ/QapdcdXA13H69b
+	5CgUBm7Ejn1AeJZHCANVRys0942eAYLDwkZRr5j2FULQtNrk9WDqEtlduc69/83QPIV+RoriSTIRQ
+	a11icLFVn3uMaB36w7E2w9dfiPtrOUhmWSOIVakxOe4fyvcWea1lTxsw7JbE33cJ17IV3dcXJI4ok
+	7embbdWMXspwSvH7rH0e7bQGxpMI4e3BHjN3f+XmScIEf0+vR5qC1i0YeHWWCM8KX8IKjNJK0o5Uu
+	FaqJ+82g==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rvBZ6-000000091se-2gk3;
+	Fri, 12 Apr 2024 07:43:17 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 4DD8A3004D5; Fri, 12 Apr 2024 09:43:16 +0200 (CEST)
+Date: Fri, 12 Apr 2024 09:43:16 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	Luca Abeni <luca.abeni@santannapisa.it>,
+	Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Vineeth Pillai <vineeth@bitbyteword.org>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Phil Auld <pauld@redhat.com>,
+	Suleiman Souhlal <suleiman@google.com>,
+	Youssef Esmat <youssefesmat@google.com>
+Subject: Re: [PATCH V6 3/6] sched/fair: Fair server interface
+Message-ID: <20240412074316.GF30852@noisy.programming.kicks-ass.net>
+References: <cover.1712337227.git.bristot@kernel.org>
+ <1abba9e7f47ad4a5dfd8b2dfb59aa607983cdce4.1712337227.git.bristot@kernel.org>
+ <20240411144327.GB40213@noisy.programming.kicks-ass.net>
+ <e4efd69c-b155-4c13-99c3-9603f5769f93@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <LV3P220MB12025D3DF84F591EC0A9262FA0052@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
+In-Reply-To: <e4efd69c-b155-4c13-99c3-9603f5769f93@kernel.org>
 
-Did you submit this set as --thread?
+On Thu, Apr 11, 2024 at 05:02:41PM +0200, Daniel Bristot de Oliveira wrote:
+> On 4/11/24 16:43, Peter Zijlstra wrote:
 
-The 2 patches are completely separate in my inbox.
-
-On Thu, 11 Apr 2024, Min Li wrote:
-
-> From: Min Li <min.li.xe@renesas.com>
+> > The 'defer' thing is dubious though, I don't suppose anybody would ever
+> > want to actually change that, other than you while poking around at this
+> > code, right?
 > 
-> The RENESAS FemtoClock3 Wireless is a high-performance
-> jitter attenuator, frequency translator, and clock
-> synthesizer. This patch only adds support for I2C.
+> In a setup where all real-time tasks are DL (without fixed-priority tasks (FIFO/RR))
+> the defer = 0 makes more sense because the bandwidth is reserved anyways, and the
+> DL server would have a relatively low prio (long period).
 
-54 chars is too short, should be more like 70+.
-
-What I2C support is being added here?
-
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
-> ---
->  drivers/mfd/rsmu_core.c  | 10 +++++-----
->  drivers/mfd/rsmu_i2c.c   | 16 ++++++++--------
->  include/linux/mfd/rsmu.h |  4 ++--
->  3 files changed, 15 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/mfd/rsmu_core.c b/drivers/mfd/rsmu_core.c
-> index 29437fd0b..951ddd92c 100644
-> --- a/drivers/mfd/rsmu_core.c
-> +++ b/drivers/mfd/rsmu_core.c
-> @@ -40,12 +40,12 @@ static struct mfd_cell rsmu_sabre_devs[] = {
->  	},
->  };
->  
-> -static struct mfd_cell rsmu_sl_devs[] = {
-> +static struct mfd_cell rsmu_fc3_devs[] = {
->  	[RSMU_PHC] = {
-> -		.name = "8v19n85x-phc",
-> +		.name = "rc38xxx-phc",
-
-You don't say anything about why 8v19n85x-phc is being removed in the
-commit message.  Please describe the whole change properly.
-
->  	},
->  	[RSMU_CDEV] = {
-> -		.name = "8v19n85x-cdev",
-> +		.name = "rc38xxx-cdev",
->  	},
->  };
->  
-> @@ -61,8 +61,8 @@ int rsmu_core_init(struct rsmu_ddata *rsmu)
->  	case RSMU_SABRE:
->  		cells = rsmu_sabre_devs;
->  		break;
-> -	case RSMU_SL:
-> -		cells = rsmu_sl_devs;
-> +	case RSMU_FC3:
-> +		cells = rsmu_fc3_devs;
->  		break;
->  	default:
->  		dev_err(rsmu->dev, "Unsupported RSMU device type: %d\n", rsmu->type);
-> diff --git a/drivers/mfd/rsmu_i2c.c b/drivers/mfd/rsmu_i2c.c
-> index cba64f107..a3f50a184 100644
-> --- a/drivers/mfd/rsmu_i2c.c
-> +++ b/drivers/mfd/rsmu_i2c.c
-> @@ -262,11 +262,11 @@ static const struct regmap_config rsmu_sabre_regmap_config = {
->  	.can_multi_write = true,
->  };
->  
-> -static const struct regmap_config rsmu_sl_regmap_config = {
-> +static const struct regmap_config rsmu_fc3_regmap_config = {
->  	.reg_bits = 16,
->  	.val_bits = 8,
->  	.reg_format_endian = REGMAP_ENDIAN_BIG,
-> -	.max_register = 0x340,
-> +	.max_register = 0xE88,
->  	.cache_type = REGCACHE_NONE,
->  	.can_multi_write = true,
->  };
-> @@ -302,8 +302,8 @@ static int rsmu_i2c_probe(struct i2c_client *client)
->  	case RSMU_SABRE:
->  		cfg = &rsmu_sabre_regmap_config;
->  		break;
-> -	case RSMU_SL:
-> -		cfg = &rsmu_sl_regmap_config;
-> +	case RSMU_FC3:
-> +		cfg = &rsmu_fc3_regmap_config;
->  		break;
->  	default:
->  		dev_err(rsmu->dev, "Unsupported RSMU device type: %d\n", rsmu->type);
-> @@ -336,8 +336,8 @@ static const struct i2c_device_id rsmu_i2c_id[] = {
->  	{ "8a34001",  RSMU_CM },
->  	{ "82p33810", RSMU_SABRE },
->  	{ "82p33811", RSMU_SABRE },
-> -	{ "8v19n850", RSMU_SL },
-> -	{ "8v19n851", RSMU_SL },
-> +	{ "rc38xxx0", RSMU_FC3 },
-> +	{ "rc38xxx1", RSMU_FC3 },
->  	{}
->  };
->  MODULE_DEVICE_TABLE(i2c, rsmu_i2c_id);
-> @@ -347,8 +347,8 @@ static const struct of_device_id rsmu_i2c_of_match[] = {
->  	{ .compatible = "idt,8a34001",  .data = (void *)RSMU_CM },
->  	{ .compatible = "idt,82p33810", .data = (void *)RSMU_SABRE },
->  	{ .compatible = "idt,82p33811", .data = (void *)RSMU_SABRE },
-> -	{ .compatible = "idt,8v19n850", .data = (void *)RSMU_SL },
-> -	{ .compatible = "idt,8v19n851", .data = (void *)RSMU_SL },
-> +	{ .compatible = "idt,rc38xxx0", .data = (void *)RSMU_FC3 },
-> +	{ .compatible = "idt,rc38xxx1", .data = (void *)RSMU_FC3 },
->  	{}
->  };
->  MODULE_DEVICE_TABLE(of, rsmu_i2c_of_match);
-> diff --git a/include/linux/mfd/rsmu.h b/include/linux/mfd/rsmu.h
-> index 0379aa207..b4a90fc81 100644
-> --- a/include/linux/mfd/rsmu.h
-> +++ b/include/linux/mfd/rsmu.h
-> @@ -11,11 +11,11 @@
->  #define RSMU_MAX_WRITE_COUNT	(255)
->  #define RSMU_MAX_READ_COUNT	(255)
->  
-> -/* The supported devices are ClockMatrix, Sabre and SnowLotus */
-> +/* The supported devices are ClockMatrix, Sabre and FemtoClock3 */
->  enum rsmu_type {
->  	RSMU_CM		= 0x34000,
->  	RSMU_SABRE	= 0x33810,
-> -	RSMU_SL		= 0x19850,
-> +	RSMU_FC3	= 0x38312,
->  };
->  
->  /**
-> -- 
-> 2.39.2
-> 
-
--- 
-Lee Jones [李琼斯]
+Tell me more -- how is it better in that case? I would think it wouldn't
+matter much.
 
