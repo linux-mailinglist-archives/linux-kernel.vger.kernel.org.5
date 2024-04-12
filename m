@@ -1,249 +1,137 @@
-Return-Path: <linux-kernel+bounces-142936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B43F08A3244
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:22:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 531F88A3246
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 17:23:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4097D1F26767
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:22:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D344BB269EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:23:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57DD148302;
-	Fri, 12 Apr 2024 15:21:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43511148310;
+	Fri, 12 Apr 2024 15:22:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lBC+tMtE"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fo3/czKE"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6068F481B4
-	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 15:21:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0928484A37;
+	Fri, 12 Apr 2024 15:22:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712935274; cv=none; b=LNub/sYnwajAx6o4eqhC4IFpvOMm5zaO+YqoKRbeWtl/N7V4tkruhuX9kHLjavx6CQVYNTIH9XzQTeDTzRU2I/HRNX1iZzeKHl6XCgHIYXFnwHw4nVxSclnqcewF6sQ6rMqjbqzoco8nJriLNuCUXagt2yz7g++hbsPPq+6zJu0=
+	t=1712935327; cv=none; b=YFJQUbu9cwu8Xef2MXa7MW9WePmWz+VSArhzTRIn9LWT/zX2w9b19h1prb7MJoDs1LWBxu6tEwWyC0Js8NBctIPer1sBeAN4gbR4Veyil+pZphc9RWYTkXU4BNkmVApbemsr5ytOIvnqdGFLorl70/l6vyvMAAO8Cjwp+N0Bri0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712935274; c=relaxed/simple;
-	bh=/Xqp+ZNW4RSHrtD5irc9aJv3MxqBECRmAeTcpIzrxAg=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=o5J29tyBstQZN9VfkCDZHRJEOV/ClNSDUDOkh5bhAYHLSncdV2NYOSElrLipy1YdXGUa7l9KjUaMzW0EWBuxllNc8oCqaGKqZflKrBX1HJIPCBHNy/ITSlGh7r59FROuM+06JHtaC4xaODCqdIMK5l/zjbA66mrqUGUw64YP2aU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lBC+tMtE; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712935273; x=1744471273;
-  h=date:from:to:cc:subject:message-id;
-  bh=/Xqp+ZNW4RSHrtD5irc9aJv3MxqBECRmAeTcpIzrxAg=;
-  b=lBC+tMtEtZsomFWmJa0dTPs0NGkyQY6B5HWAGWrbRoKKgBSWJF7rAzoq
-   J1jMVyKLs079CGcevWxF6ofcWYcHQcHEDXc8/mEzmvGf7aPJBQS+J5jwg
-   ACky0a1OSy5BLpKg39ffU/dSgR9ZECLzHZgthm4XCNHw9TmKKCWm/dRE2
-   VhhhywyeiyzIPBxHmpSW2jow4VCdmPgbQmfNoGV3DdjLPCZ3D8qMTURfp
-   Z3tFD6cTsFLy3y3bF0zdBhvgVwUK24v9zwNFRY7YLmUapWm/wL8dl0zNt
-   KzGA3LzGx0jrzy7aogw2YxPZaDIywzbFuaoonohQUnqP38eIkqwQP9FZq
-   g==;
-X-CSE-ConnectionGUID: mdi9uGFMR/6XZ8H0/X9XpQ==
-X-CSE-MsgGUID: DWvCT8MwQFGcgbeLYuZnRA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11042"; a="8240107"
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="8240107"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2024 08:21:12 -0700
-X-CSE-ConnectionGUID: 3s1M1D5pShevqcGiyV/uTw==
-X-CSE-MsgGUID: 8YeSm6gZTcGZsTqhn9Ew0w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,196,1708416000"; 
-   d="scan'208";a="26065738"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by orviesa004.jf.intel.com with ESMTP; 12 Apr 2024 08:21:12 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rvIiD-0000BZ-24;
-	Fri, 12 Apr 2024 15:21:09 +0000
-Date: Fri, 12 Apr 2024 23:20:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:timers/core] BUILD SUCCESS
- 48b7f4d29ac8fcdc35a97ce38e4aecdee83b0e3f
-Message-ID: <202404122339.zUuIaBJa-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1712935327; c=relaxed/simple;
+	bh=mLJgP3qYygteSDbYdScbwbMfDV+pZa7zvSt+jGFVBxs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RpdYsE+9sTKjvzsDf80J75w375fzNwQim+CcdOliPXpUFzqF1CjkWe72GnvBurymd/o7D+SdDDuhenMVuiPHCYHo0XxU601TfBiOM/w3rvA4hQs1+H531sN8G8tic3nvk1tcK6HKl7c1m/eqPWzRSMWzTKcJzFD2u+DiYEx3IvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fo3/czKE; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-34665dd7610so432420f8f.3;
+        Fri, 12 Apr 2024 08:22:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712935324; x=1713540124; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BKUpk57F2e+NylpttQMpo0uer78NWTYRijCbu0kAq8A=;
+        b=Fo3/czKE1i6bpEwszhMDZwNOLWAENGQ3PEzpxT7A6CYK04FElDpqgFRlq3Axy1B2wy
+         DQP+Rik3Shu5wvRXsx2nxwl20rn7IEZ1nyvUlTMW9tRLSAq8jVhXzp0rnLOEqCibj+A1
+         1L5mN3dVN2ziw40qx9uVICY0PYJrf+VROJgfcAjbzP0e2A2k18S2wIVLDqmt0ScSYkP0
+         ywghq1UoigGMo39xorOs/X+YtZlzVI5a9ZdsH38T/Ap/gW1s3tlii+bkaTdoir1ZGe1H
+         TglTR0ZLzSQ/GY4E14eRNSrZHXRvbEZ05YVz1snrstdAu8x0wrd9yd1HMjtof1r2spaE
+         nM1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712935324; x=1713540124;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BKUpk57F2e+NylpttQMpo0uer78NWTYRijCbu0kAq8A=;
+        b=kjji3JScNMtm9MUJh7D1qHluHSP17UKjuTJ6dBudGPz3Xi2Bqz3a6qF9WEkA8+aAx3
+         NryFtkNP1VnoWoEGDBF2o7jL2k5U7WB6nr1W3sDNdOnYAgTLAJQsRxWQzQtNmTlpGfhz
+         WM862QNulBNWSZtOUPMFaKRyKz3NyeKWwhbdfE3DJI4zIpfosnl7WcYPVcdES90bYucH
+         biWEPoRntPcEjYwHc0R0yRfN3dsYapdGev2qYVdDzsoLf37busPVyh7hjnOgRpA+MGj+
+         CXO1M96Q3lRvUDnVLkc0/BniT+DfgDPt7uEXfn4bItXumQN6aFGiwScjXd+3CqidIbZz
+         UWVw==
+X-Forwarded-Encrypted: i=1; AJvYcCWRlkzSw8hjLvyzsofwZqZG0tL3pxTwBaVM/gj3C1BDQQdk7B9EtQINk48V1OJiGpAfEl1nDQ0QexzMKwfrmRMTbgKC+z2asiQq0+U7gqSBYRa4GcQF65zDKefmHrpLWN9BEldR
+X-Gm-Message-State: AOJu0YwcIlpPxTl4OCwoaRXhuTWPVALd4uyfzhKLJEpCqhd8M0visWl2
+	0XMlOpNLlfL5NYZsVFDWyf5algckkbBrNddLUNbaNUEzN5NYWuTV
+X-Google-Smtp-Source: AGHT+IGQImkLmCY7VdyKoOUu0Hnb7lsqT99IXd21vmwG4wcHO9BKu5oHk5B4dbcecaH8k8TajcpQxA==
+X-Received: by 2002:adf:fa8b:0:b0:343:b686:89a0 with SMTP id h11-20020adffa8b000000b00343b68689a0mr1939576wrr.13.1712935324028;
+        Fri, 12 Apr 2024 08:22:04 -0700 (PDT)
+Received: from localhost ([146.70.204.204])
+        by smtp.gmail.com with ESMTPSA id h5-20020adff4c5000000b003437a76565asm4486798wrp.25.2024.04.12.08.22.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Apr 2024 08:22:03 -0700 (PDT)
+From: Richard Gobert <richardbgobert@gmail.com>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	willemdebruijn.kernel@gmail.com,
+	dsahern@kernel.org,
+	aleksander.lobakin@intel.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Richard Gobert <richardbgobert@gmail.com>
+Subject: [PATCH net v1 0/2] net: gro: add flush/flush_id checks and fix wrong offset in udp
+Date: Fri, 12 Apr 2024 17:21:18 +0200
+Message-Id: <20240412152120.115067-1-richardbgobert@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
-branch HEAD: 48b7f4d29ac8fcdc35a97ce38e4aecdee83b0e3f  rust: time: Add Ktime
+This series fixes a bug in the complete phase of UDP in GRO, in which
+socket lookup fails due to using network_header when parsing encapsulated
+packets. The fix is to pass p_off (previous offset, offset to the start of
+the previous layer) parameter in *_gro_complete.
 
-elapsed time: 1075m
+The original series includes a change to a vxlan test which adds the local
+parameter to prevent similar future bugs. I plan to submit it separately
+to net-next.
 
-configs tested: 157
-configs skipped: 3
+In addition p->flush/flush_id should be checked in relevant UDP flows. Same
+logic from tcp_gro_receive is applied for the relevant flows in
+udp_gro_receive_segment.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+This series is part of a previously submitted series to net-next:
+https://lore.kernel.org/all/20240410153423.107381-1-richardbgobert@gmail.com/
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240412   gcc  
-arc                   randconfig-002-20240412   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                        keystone_defconfig   gcc  
-arm                   randconfig-001-20240412   gcc  
-arm                   randconfig-004-20240412   gcc  
-arm                           sama5_defconfig   gcc  
-arm                           u8500_defconfig   gcc  
-arm                         wpcm450_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   clang
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240412   gcc  
-arm64                 randconfig-002-20240412   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240412   gcc  
-csky                  randconfig-002-20240412   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240412   gcc  
-i386         buildonly-randconfig-002-20240412   clang
-i386         buildonly-randconfig-003-20240412   gcc  
-i386         buildonly-randconfig-004-20240412   gcc  
-i386         buildonly-randconfig-005-20240412   gcc  
-i386         buildonly-randconfig-006-20240412   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240412   clang
-i386                  randconfig-002-20240412   gcc  
-i386                  randconfig-003-20240412   clang
-i386                  randconfig-004-20240412   clang
-i386                  randconfig-005-20240412   clang
-i386                  randconfig-006-20240412   gcc  
-i386                  randconfig-011-20240412   clang
-i386                  randconfig-012-20240412   gcc  
-i386                  randconfig-013-20240412   clang
-i386                  randconfig-014-20240412   gcc  
-i386                  randconfig-015-20240412   gcc  
-i386                  randconfig-016-20240412   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240412   gcc  
-loongarch             randconfig-002-20240412   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        stmark2_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                           ip22_defconfig   gcc  
-mips                      maltasmvp_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240412   gcc  
-nios2                 randconfig-002-20240412   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240412   gcc  
-parisc                randconfig-002-20240412   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                      ep88xc_defconfig   gcc  
-powerpc                     powernv_defconfig   gcc  
-powerpc               randconfig-003-20240412   gcc  
-powerpc64             randconfig-001-20240412   gcc  
-powerpc64             randconfig-002-20240412   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240412   gcc  
-s390                  randconfig-002-20240412   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240412   gcc  
-sh                    randconfig-002-20240412   gcc  
-sh                           se7343_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                       sparc32_defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240412   gcc  
-sparc64               randconfig-002-20240412   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-002-20240412   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-004-20240412   clang
-x86_64       buildonly-randconfig-005-20240412   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240412   clang
-x86_64                randconfig-004-20240412   clang
-x86_64                randconfig-005-20240412   clang
-x86_64                randconfig-006-20240412   clang
-x86_64                randconfig-011-20240412   clang
-x86_64                randconfig-013-20240412   clang
-x86_64                randconfig-014-20240412   clang
-x86_64                randconfig-015-20240412   clang
-x86_64                randconfig-072-20240412   clang
-x86_64                randconfig-073-20240412   clang
-x86_64                randconfig-076-20240412   clang
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                          iss_defconfig   gcc  
-xtensa                  nommu_kc705_defconfig   gcc  
-xtensa                randconfig-001-20240412   gcc  
-xtensa                randconfig-002-20240412   gcc  
+Richard Gobert (2):
+  net: gro: add flush check in udp_gro_receive_segment
+  net: gro: add p_off param in *_gro_complete
+
+ drivers/net/geneve.c           |  7 +++---
+ drivers/net/vxlan/vxlan_core.c | 11 ++++++----
+ include/linux/etherdevice.h    |  2 +-
+ include/linux/netdevice.h      |  3 ++-
+ include/linux/udp.h            |  2 +-
+ include/net/gro.h              | 11 +++++-----
+ include/net/inet_common.h      |  2 +-
+ include/net/tcp.h              |  6 ++++--
+ include/net/udp.h              |  8 +++----
+ include/net/udp_tunnel.h       |  2 +-
+ net/8021q/vlan_core.c          |  4 ++--
+ net/core/gro.c                 |  2 +-
+ net/ethernet/eth.c             |  4 ++--
+ net/ipv4/af_inet.c             |  8 +++----
+ net/ipv4/fou_core.c            |  9 ++++----
+ net/ipv4/gre_offload.c         |  5 +++--
+ net/ipv4/tcp_offload.c         |  7 +++---
+ net/ipv4/udp.c                 |  3 ++-
+ net/ipv4/udp_offload.c         | 39 ++++++++++++++++++++++------------
+ net/ipv6/ip6_offload.c         | 22 ++++++++++---------
+ net/ipv6/tcpv6_offload.c       |  7 +++---
+ net/ipv6/udp.c                 |  3 ++-
+ net/ipv6/udp_offload.c         | 13 ++++++------
+ 23 files changed, 105 insertions(+), 75 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.36.1
+
 
