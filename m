@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-143208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-143209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 204018A35C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:33:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9711F8A35C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 20:33:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 433DA1C230B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:33:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8C681C23CD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 18:33:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8D4B14F9EB;
-	Fri, 12 Apr 2024 18:33:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D23F14F9FA;
+	Fri, 12 Apr 2024 18:33:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pKc1bG6x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hGRJdUmR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07D7114F13A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83708142E78;
 	Fri, 12 Apr 2024 18:33:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712946793; cv=none; b=HnzOrTqnFfFMNyJzHicxoIavCoGlZWust7iABs5jjF1NN8Je8VFjO2ELvr8EWeYYLTbAWuOUX7Om+p73hGiRWUtI9qIxUQfgYuxsL8cWEiIATCMrzdRDqbKUFi3TIa8Qc24GA24YwEnk2UNLruc0RL9ittzoeAV5pGWBxqIBvxQ=
+	t=1712946793; cv=none; b=EWejSM85wUsrZRy6edJ01yLFiXbba2xFPFg+Il0S6ERpEWKX7nm9xzyohJnKw4fLlcfPc71S/NDL6ZoYz45sNRciEp/bxiO4mHNokxLrw+sOdwgrcFr3jykyjgvMSwE2djk+OF1f5IyDUWUZwNP3OEyAM/Z8asF1raqfdCglZcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712946793; c=relaxed/simple;
-	bh=MdGKWRljF8Qw40speV6mfVp91ivhhrN0E6WVpTJ1KU8=;
+	bh=d46/j7SfBjlB5pOHNg/gyQVFI44DuFqnaghicJF9/+0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YinOAQdX9N20oGGHdekpe+Rjgsn7v8C8tauNNGj5yafCQIDo0DTsBE3GIAQbIHMLVlbvPPzQBDM1lpbjuaneAQcpkffMSNR/PSRS+mDp22PrwCzBsb8MZkgbSqEQ0DczgStGP1IZtei3UH8X8+x/6RJNwp5DpAY6BnCtMxW1VpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pKc1bG6x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A59EC32781;
+	 MIME-Version; b=cfrmTcP6kK342u3EIYTamiBVTSuGKgSnXDLzvW1nf6dgazr09zN83GRlmo+WZK5TF1vq2Uurl9VwCA9M60yyOtt92aKEZQnSJIj9nqyoQVbt4IwE97P2V5efQo6LWHsbPVOfiggYc/oV/+leLcgUsbdKum26z3M1TKjYnerAeZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hGRJdUmR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 069A6C4AF0F;
 	Fri, 12 Apr 2024 18:33:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712946792;
-	bh=MdGKWRljF8Qw40speV6mfVp91ivhhrN0E6WVpTJ1KU8=;
+	s=k20201202; t=1712946793;
+	bh=d46/j7SfBjlB5pOHNg/gyQVFI44DuFqnaghicJF9/+0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pKc1bG6xBUUOOwZfvk+GES4RLab54aBAQYX5QKGkQKyT4DXmN4B+nNUmoiFHs5/t9
-	 l8AdYR5YjDmtdW3+h23XK/eKqYvQRImgOGvaawwhSk/U+rNQozdkP3Vu0BEDtYp18t
-	 BWrnih5lmEhINYQSYIOAp5ULFee/vrapuwoNLZm3CxECaNXulv8HKOU+9ae2MdVEjI
-	 ZPXmBTKkY3gt9ZrApbBjBcr3Y+oS+ofAgis+6GoqM9asJ0m3+PraBjJF/TOV0BsxJ4
-	 VzmScnmdbU4W1WMrlcrSN8Y6PCFIhFP+T8YupllWYVo7OiWCM7j0fn2ZxJ6IytpAGq
-	 p/TnWClbb3GvQ==
+	b=hGRJdUmRz6JuH14PX2oW4J4iKBjLs5L9muwe1c2FZK29AehqdZ31TOhFYx5EhswF5
+	 BsY0I9tseGqOdZPk7PPwZ6IHEeff65pklUfyKU+Um97Wg0rMcBjnw+csgugB9hFBcY
+	 4/d/SdQtmJcKigKH8GNQD9+e2d2idRXzcZmISzH4e/EyyoMUwHyXBj1/laeRVFsKV3
+	 1HbkK+FZXUBTY/XfRuPyLDgkQ16V07C1ojJZOCJbjcLG8myUlu52tCHCET7deHfNgV
+	 FyCLTOs1z0FntzEseAYfggLgmvCfnQpNdVaaOlDYdKoJcUMMlLhdaQlkb3Ut6CaJVe
+	 rOHkpCkLIFXcA==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -51,9 +51,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-perf-users@vger.kernel.org,
 	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH 2/4] perf dwarf-aux: Check pointer offset when checking variables
-Date: Fri, 12 Apr 2024 11:33:08 -0700
-Message-ID: <20240412183310.2518474-3-namhyung@kernel.org>
+Subject: [PATCH 3/4] perf dwarf-aux: Check variable address range properly
+Date: Fri, 12 Apr 2024 11:33:09 -0700
+Message-ID: <20240412183310.2518474-4-namhyung@kernel.org>
 X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
 In-Reply-To: <20240412183310.2518474-1-namhyung@kernel.org>
 References: <20240412183310.2518474-1-namhyung@kernel.org>
@@ -65,138 +65,83 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In match_var_offset(), it checks the offset range with the target type
-only for non-pointer types.  But it also needs to check the pointer
-types with the target type.
+In match_var_offset(), it just checked the end address of the variable
+with the given offset because it assumed the register holds a pointer
+to the data type and the offset starts from the base.
 
-This is because there can be more than one pointer variables located in
-the same register.  Let's look at the following example.  It's looking
-up a variable for reg3 at tcp_get_info+0x62.  It found "sk" variable but
-it wasn't the right one since it accesses beyond the target type (struct
-'sock' in this case) size.
+But I found some cases that the stack pointer (rsp = reg7) register is
+used to pointer a stack variable while the frame base is maintained by a
+different register (rbp = reg6).  In that case, it cannot simply use the
+stack pointer as it cannot guarantee that it points to the frame base.
+So it needs to check the both boundaries of the variable location.
 
+Before:
   -----------------------------------------------------------
-  find data type for 0x7bc(reg3) at tcp_get_info+0x62
+  find data type for 0x7c(reg7) at tcp_getsockopt+0xb62
   CU for net/ipv4/tcp.c (die:0x7b5f516)
   frame base: cfa=0 fbreg=6
-  offset: 1980 is bigger than size: 760
-  check variable "sk" failed (die: 0x7b92b2c)
-   variable location: reg3
-   type='struct sock' size=0x2f8 (die:0x7b63c3a)
+  no pointer or no type
+  check variable "tss" failed (die: 0x7b95801)
+   variable location: base reg7, offset=0x110
+   type='struct scm_timestamping_internal' size=0x30 (die:0x7b8c126)
 
-Actually there was another variable "tp" in the function and it's
-located at the same (reg3) because it's just type-casted like below.
+So the current code just checks register number for the non-PC and
+non-FB registers and assuming it has offset 0.  But this variable has
+offset 0x110 so it should not match to this.
 
-  void tcp_get_info(struct sock *sk, struct tcp_info *info)
-  {
-      const struct tcp_sock *tp = tcp_sk(sk);
-      ...
-
-The struct tcp_sock contains the struct sock at offset 0 so it can
-just use the same address as a pointer to tcp_sock.  That means it
-should match variables correctly by checking the offset and size.
-Actually it cannot distinguish if the offset was smaller than the size
-of the original struct sock.  But I think it's fine as they are the
-same at that part.
-
-So let's check the target type size and retry if it doesn't match.
-Now it succeeded to find the correct variable.
-
+After:
   -----------------------------------------------------------
-  find data type for 0x7bc(reg3) at tcp_get_info+0x62
+  find data type for 0x7c(reg7) at tcp_getsockopt+0xb62
   CU for net/ipv4/tcp.c (die:0x7b5f516)
   frame base: cfa=0 fbreg=6
-  found "tp" in scope=1/1 (die: 0x7b92b16) type_offset=0x7bc
-   variable location: reg3
-   type='struct tcp_sock' size=0xa68 (die:0x7b81380)
+  no pointer or no type
+  check variable "zc" failed (die: 0x7b9580a)
+   variable location: base=reg7, offset=0x40
+   type='struct tcp_zerocopy_receive' size=0x40 (die:7b947f4)
 
-Fixes: bc10db8eb895 ("perf annotate-data: Support stack variables")
+Now it find the correct variable "zc".  It was located at reg7 + 0x40
+and the size if 0x40 which means it should cover [0x40, 0x80).  And the
+access was for reg7 + 0x7c so it found the right one.  But it still
+failed to use the variable and it would be handled in the next patch.
+
 Cc: Masami Hiramatsu <mhiramat@kernel.org>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/dwarf-aux.c | 28 +++++++++++++++++++++-------
- 1 file changed, 21 insertions(+), 7 deletions(-)
+ tools/perf/util/dwarf-aux.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-index 7dad99ee3ff3..b361fd7ebd56 100644
+index b361fd7ebd56..40cfbdfe2d75 100644
 --- a/tools/perf/util/dwarf-aux.c
 +++ b/tools/perf/util/dwarf-aux.c
-@@ -1361,7 +1361,7 @@ struct find_var_data {
- #define DWARF_OP_DIRECT_REGS  32
+@@ -1372,6 +1372,9 @@ static bool match_var_offset(Dwarf_Die *die_mem, struct find_var_data *data,
+ 		return true;
+ 	}
  
- static bool match_var_offset(Dwarf_Die *die_mem, struct find_var_data *data,
--			     u64 addr_offset, u64 addr_type)
-+			     u64 addr_offset, u64 addr_type, bool is_pointer)
- {
- 	Dwarf_Die type_die;
- 	Dwarf_Word size;
-@@ -1375,6 +1375,12 @@ static bool match_var_offset(Dwarf_Die *die_mem, struct find_var_data *data,
++	if (addr_offset < addr_type)
++		return false;
++
  	if (die_get_real_type(die_mem, &type_die) == NULL)
  		return false;
  
-+	if (is_pointer && dwarf_tag(&type_die) == DW_TAG_pointer_type) {
-+		/* Get the target type of the pointer */
-+		if (die_get_real_type(&type_die, &type_die) == NULL)
-+			return false;
-+	}
-+
- 	if (dwarf_aggregate_size(&type_die, &size) < 0)
- 		return false;
+@@ -1446,7 +1449,6 @@ static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
  
-@@ -1442,31 +1448,38 @@ static int __die_find_var_reg_cb(Dwarf_Die *die_mem, void *arg)
+ 		/* Local variables accessed using frame base register */
  		if (data->is_fbreg && ops->atom == DW_OP_fbreg &&
- 		    data->offset >= (int)ops->number &&
+-		    data->offset >= (int)ops->number &&
  		    check_allowed_ops(ops, nops) &&
--		    match_var_offset(die_mem, data, data->offset, ops->number))
-+		    match_var_offset(die_mem, data, data->offset, ops->number,
-+				     /*is_pointer=*/false))
- 			return DIE_FIND_CB_END;
- 
- 		/* Only match with a simple case */
- 		if (data->reg < DWARF_OP_DIRECT_REGS) {
- 			/* pointer variables saved in a register 0 to 31 */
- 			if (ops->atom == (DW_OP_reg0 + data->reg) &&
--			    check_allowed_ops(ops, nops))
-+			    check_allowed_ops(ops, nops) &&
-+			    match_var_offset(die_mem, data, data->offset, 0,
-+					     /*is_pointer=*/true))
- 				return DIE_FIND_CB_END;
- 
- 			/* Local variables accessed by a register + offset */
- 			if (ops->atom == (DW_OP_breg0 + data->reg) &&
- 			    check_allowed_ops(ops, nops) &&
--			    match_var_offset(die_mem, data, data->offset, ops->number))
-+			    match_var_offset(die_mem, data, data->offset, ops->number,
-+					     /*is_pointer=*/false))
- 				return DIE_FIND_CB_END;
- 		} else {
- 			/* pointer variables saved in a register 32 or above */
- 			if (ops->atom == DW_OP_regx && ops->number == data->reg &&
--			    check_allowed_ops(ops, nops))
-+			    check_allowed_ops(ops, nops) &&
-+			    match_var_offset(die_mem, data, data->offset, 0,
-+					     /*is_pointer=*/true))
- 				return DIE_FIND_CB_END;
- 
- 			/* Local variables accessed by a register + offset */
- 			if (ops->atom == DW_OP_bregx && data->reg == ops->number &&
- 			    check_allowed_ops(ops, nops) &&
--			    match_var_offset(die_mem, data, data->offset, ops->number2))
-+			    match_var_offset(die_mem, data, data->offset, ops->number2,
-+					     /*is_poitner=*/false))
- 				return DIE_FIND_CB_END;
- 		}
- 	}
-@@ -1528,7 +1541,8 @@ static int __die_find_var_addr_cb(Dwarf_Die *die_mem, void *arg)
+ 		    match_var_offset(die_mem, data, data->offset, ops->number,
+ 				     /*is_pointer=*/false))
+@@ -1537,9 +1539,6 @@ static int __die_find_var_addr_cb(Dwarf_Die *die_mem, void *arg)
+ 		if (ops->atom != DW_OP_addr)
  			continue;
  
+-		if (data->addr < ops->number)
+-			continue;
+-
  		if (check_allowed_ops(ops, nops) &&
--		    match_var_offset(die_mem, data, data->addr, ops->number))
-+		    match_var_offset(die_mem, data, data->addr, ops->number,
-+				     /*is_pointer=*/false))
- 			return DIE_FIND_CB_END;
- 	}
- 	return DIE_FIND_CB_SIBLING;
+ 		    match_var_offset(die_mem, data, data->addr, ops->number,
+ 				     /*is_pointer=*/false))
 -- 
 2.44.0.683.g7961c838ac-goog
 
