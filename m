@@ -1,338 +1,117 @@
-Return-Path: <linux-kernel+bounces-141887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DA4B8A24AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:05:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 681058A24B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:07:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E87C4282508
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:05:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07A751F240C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 04:07:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98EBF18628;
-	Fri, 12 Apr 2024 04:05:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D9718633;
+	Fri, 12 Apr 2024 04:07:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="AREF9gYl"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SouzeARN"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A45E1B946;
-	Fri, 12 Apr 2024 04:05:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA97617C7C
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 04:07:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712894706; cv=none; b=H11LuEjL77fbH/dDjCjKX9jSyFb2k8r/eY7Zbhf9WRSnr89DsoAZur2iH1jrVUzVI2B1H6DCMtFRs5QvnNgKGdXhXsxtgmIBjIN87JFkPKqQc8kYTo6GVhqFWZ11id3RPGVO4HxNXn7I7xNiuV+9kjd6C/TiWgRQf4n6A/XyHOo=
+	t=1712894869; cv=none; b=Aicc1VywPAj2kyrifOdOkpyHm6rCGT3UDcwSwhPiGqeIi3dziET1AC/d9MFnEF97yOUKm4sXQp4GUZ1XcKKodUV2srspmgYvtXuWBanPYwWR37/+pdp7FfDL1KsEZ/tXpHEuGj6/rSeyNhjiNeSdTkqCDPQk03uzvYW2lNPLILI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712894706; c=relaxed/simple;
-	bh=Ury93jTtzUbp6a7v4xa3aHj8+1DbebM8CpBColL/r7E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=jVCg4RM21EhpJn4i7EdVmzapmP+1lAZqtfAKbauI0KGuENnEp+NmCUKw4AeKq/QS1LOcB2dwHzT2UxzJPBulVjxublvMX/AsnegF4mtTJBN4zOAnCxNxu2Xzar3iZV7QsO8PmPm9UBxb3skINa0w/umWXUcHtRkWvutX/+O8Ato=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=AREF9gYl; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43C3F0Ln016056;
-	Fri, 12 Apr 2024 04:04:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=5e2hrLn44rYtN+mPPNKHMtVed3mIi9H7P/+byzVPIUs=; b=AR
-	EF9gYlZqkz9wfMrfq+TWG+vGleXDNoXvoJuy6bk8yWClT/gtWnxlAu4O41To59Cl
-	SxwQnHs9FP7JRyUqpFNIS4JQpkGB7V6pcMsaeZ24WNjmBC3wKOjMirn6fNhJEQrU
-	elnvbKiRo42zg6HaiYihW0fn7cSghDLStD5Ld97ZT9d+F5N+69iqI9yXnDChQqCp
-	fnHe8Zs0Nli0n6Eex9g8beOeYZyPUa+Y88jihNjgMs1wlpFsbFI/YQ8gDuctojNX
-	w/OIfsFB3EaGawXYFTO9urITpIzbtmHjyurYor4OQ0C7ANNeo9OOas8v+NUvae2X
-	ggwY6qvdh5aGV9Aq4k6w==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xebqxax0k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Apr 2024 04:04:49 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43C44TWq020509
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 12 Apr 2024 04:04:29 GMT
-Received: from [10.253.12.44] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 11 Apr
- 2024 21:04:23 -0700
-Message-ID: <633c4f8c-c22c-4128-b478-0627da8660bd@quicinc.com>
-Date: Fri, 12 Apr 2024 12:04:21 +0800
+	s=arc-20240116; t=1712894869; c=relaxed/simple;
+	bh=TWGZtsGqJTB94/trEDr9F6ImbwgWZVLIi8X5eo0700A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sTe2Np6565GNDcvFH6N9lKcRoBjgo6Sqi9RrzC7MycgBcYjtoit6gIORV5QLETtRkqZVxJscM9RgbMJ59LIl4RZZzTTpDkySh8gWzGblU5JGQq0vHcSPP7qLUth0OwOfJr6gMR5b2R+207IJ4+nrn6NxFebUEVs+j8sHhcMigA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SouzeARN; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56e2e851794so4383a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 21:07:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712894866; x=1713499666; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TWGZtsGqJTB94/trEDr9F6ImbwgWZVLIi8X5eo0700A=;
+        b=SouzeARNw7rD+rebCEMhpsY+SW7/KHC/Kz+gOFZadUyP+XtPWrtUsN/Cx7/PPUiZlX
+         MajORzxmA5PCgyfiJCxqt8ePbwHq2T2pdYL8SOujg9mEKXmFdI1RrURxaieqqdLBVBE2
+         lTvB50hCigGZp/MhE8V1aoXZJPSoH1gw3N6KnqW6k3xBBnG9IKf4oL8oBnU57h7OgYz6
+         wR+Z3RDrTUyB94mQyjglo2g46SO9h9kxH4aS8va4NHYVq6dY+5bP/cse9QmTHJSLNW61
+         k0FnyvixPb/PK587u5fES9qNE2/HOMgrMy8+3cBUvG7JbON4QEqcdGOpai8QE6zcs0uv
+         jHRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712894866; x=1713499666;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TWGZtsGqJTB94/trEDr9F6ImbwgWZVLIi8X5eo0700A=;
+        b=oK9Gb2PliyQJW2NCoXGUkMNs/HPWO9srXj+uuNCvZ4BH2+qYPTo+sK0mnAg4EvKaSp
+         7Yi6VcCRjnorescsN+wFVW0O4f45UakfQhohMPVv7ZmDNLtFHjHL1CQp2N3OjIFGHcls
+         LKaMRZfdPgNxx5IYTAUgiuiqsMNeAZ8qoF87Ml2a8L3L4LTO++gEdN4JZim3Z8Qfz0VW
+         4Tgrolejhet0FNI7cYFLmVfEoVPz3565g2iXt45y6oEX48xJcmmYq+YB0tZ2hoHk73LN
+         wSKSgjq+MtmVz1AGmWgF0YhmtDT0ilfGfq1wIx5GoZp2s8ZJWCaxFiTSiStbCBKhwpVx
+         df2w==
+X-Forwarded-Encrypted: i=1; AJvYcCXM8kUmlYfUoEt8tCWX9C3vxh6NOtz4nX4W4/kRAbZZ5PMSOGxEsyabfK1zRoW8l4GnkJpIXwVoYhhdFZW8EDvD+Vlhvi8OGqc06KjS
+X-Gm-Message-State: AOJu0YwpKNiAAD64FwRE/At5CwybXIswQZfL26TUef0yDP5ZvjCYpSHS
+	8y7Xsy082FpMue3ZNXJw3n8acMkqNkK/L/Sb/PEBxtbDHnKdVE8cAJv6AYqZajRr5QK53c+T/XU
+	EO0xTlJHSM15SIxRHSYPyNS11AiTvQC0g63T+
+X-Google-Smtp-Source: AGHT+IGacs87JzD3+00IR4DdmXTCoGSOnuLu2Y8Xpg8F2oinFjbxlZn4UjUPETVqKejXadBJjQ2fG2vaWytLNg7ABoM=
+X-Received: by 2002:a05:6402:610:b0:56f:ed6f:2b6d with SMTP id
+ n16-20020a056402061000b0056fed6f2b6dmr90879edv.6.1712894866168; Thu, 11 Apr
+ 2024 21:07:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 4/4] input: pm8xxx-vibrator: add new SPMI vibrator
- support
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: <kernel@quicinc.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Dmitry
- Torokhov" <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-input@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20240411-pm8xxx-vibrator-new-design-v9-0-7bf56cb92b28@quicinc.com>
- <20240411-pm8xxx-vibrator-new-design-v9-4-7bf56cb92b28@quicinc.com>
- <CAA8EJprJ4s-o1uPiPjRpq4nwG4cdV7K8XMhVLOQn2D=kJLiVzQ@mail.gmail.com>
- <c2ee9ab0-ecb2-aba2-2cc9-653f74d27396@quicinc.com>
- <CAA8EJppJOQ+-XtgJZa01uqYdqXJdfNznR1OUbWua_myzUqNBUA@mail.gmail.com>
-From: Fenglin Wu <quic_fenglinw@quicinc.com>
-In-Reply-To: <CAA8EJppJOQ+-XtgJZa01uqYdqXJdfNznR1OUbWua_myzUqNBUA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: EdfxO6J5HCFXjLclegjl88mQYje_kVFm
-X-Proofpoint-ORIG-GUID: EdfxO6J5HCFXjLclegjl88mQYje_kVFm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-11_14,2024-04-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 suspectscore=0
- adultscore=0 spamscore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404120028
+References: <20240410143446.797262-1-chao.gao@intel.com> <20240410143446.797262-2-chao.gao@intel.com>
+In-Reply-To: <20240410143446.797262-2-chao.gao@intel.com>
+From: Jim Mattson <jmattson@google.com>
+Date: Thu, 11 Apr 2024 21:07:31 -0700
+Message-ID: <CALMp9eR294v_2-yXagKR8HM_WbqihJ5JcRwD1NTGvJxsOFsnyw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 01/10] KVM: VMX: Virtualize Intel IA32_SPEC_CTRL
+To: Chao Gao <chao.gao@intel.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	daniel.sneddon@linux.intel.com, pawan.kumar.gupta@linux.intel.com, 
+	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Apr 10, 2024 at 7:35=E2=80=AFAM Chao Gao <chao.gao@intel.com> wrote=
+:
+>
+> From: Daniel Sneddon <daniel.sneddon@linux.intel.com>
+>
+> Currently KVM disables interception of IA32_SPEC_CTRL after a non-0 is
+> written to IA32_SPEC_CTRL by guest. The guest is allowed to write any
+> value directly to hardware. There is a tertiary control for
+> IA32_SPEC_CTRL. This control allows for bits in IA32_SPEC_CTRL to be
+> masked to prevent guests from changing those bits.
+>
+> Add controls setting the mask for IA32_SPEC_CTRL and desired value for
+> masked bits.
+>
+> These new controls are especially helpful for protecting guests that
+> don't know about BHI_DIS_S and that are running on hardware that
+> supports it. This allows the hypervisor to set BHI_DIS_S to fully
+> protect the guest.
+>
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Daniel Sneddon <daniel.sneddon@linux.intel.com>
+> Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+> [ add a new ioctl to report supported bits. Fix the inverted check ]
+> Signed-off-by: Chao Gao <chao.gao@intel.com>
 
-
-On 4/11/2024 10:21 PM, Dmitry Baryshkov wrote:
-> On Thu, 11 Apr 2024 at 16:51, Fenglin Wu <quic_fenglinw@quicinc.com> wrote:
->>
->>
->>
->> On 2024/4/11 19:02, Dmitry Baryshkov wrote:
->>> On Thu, 11 Apr 2024 at 11:32, Fenglin Wu via B4 Relay
->>> <devnull+quic_fenglinw.quicinc.com@kernel.org> wrote:
->>>>
->>>> From: Fenglin Wu <quic_fenglinw@quicinc.com>
->>>>
->>>> Add support for a new SPMI vibrator module which is very similar
->>>> to the vibrator module inside PM8916 but has a finer drive voltage
->>>> step and different output voltage range, its drive level control
->>>> is expanded across 2 registers. The vibrator module can be found
->>>> in following Qualcomm PMICs: PMI632, PM7250B, PM7325B, PM7550BA.
->>>>
->>>> Signed-off-by: Fenglin Wu <quic_fenglinw@quicinc.com>
->>>> ---
->>>>    drivers/input/misc/pm8xxx-vibrator.c | 51 +++++++++++++++++++++++++++++-------
->>>>    1 file changed, 42 insertions(+), 9 deletions(-)
->>>>
->>>> diff --git a/drivers/input/misc/pm8xxx-vibrator.c b/drivers/input/misc/pm8xxx-vibrator.c
->>>> index 2959edca8eb9..35bb6f450fd2 100644
->>>> --- a/drivers/input/misc/pm8xxx-vibrator.c
->>>> +++ b/drivers/input/misc/pm8xxx-vibrator.c
->>>> @@ -12,10 +12,10 @@
->>>>    #include <linux/regmap.h>
->>>>    #include <linux/slab.h>
->>>>
->>>> -#define VIB_MAX_LEVEL_mV       (3100)
->>>> -#define VIB_MIN_LEVEL_mV       (1200)
->>>> -#define VIB_PER_STEP_mV        (100)
->>>> -#define VIB_MAX_LEVELS         (VIB_MAX_LEVEL_mV - VIB_MIN_LEVEL_mV + VIB_PER_STEP_mV)
->>>> +#define VIB_MAX_LEVEL_mV(vib)  (vib->drv2_addr ? 3544 : 3100)
->>>> +#define VIB_MIN_LEVEL_mV(vib)  (vib->drv2_addr ? 1504 : 1200)
->>>> +#define VIB_PER_STEP_mV(vib)   (vib->drv2_addr ? 8 : 100)
->>>> +#define VIB_MAX_LEVELS(vib)    (VIB_MAX_LEVEL_mV(vib) - VIB_MIN_LEVEL_mV(vib) + VIB_PER_STEP_mV(vib))
->>>>
->>>>    #define MAX_FF_SPEED           0xff
->>>>
->>>> @@ -26,6 +26,9 @@ struct pm8xxx_regs {
->>>>           unsigned int drv_offset;
->>>>           unsigned int drv_mask;
->>>>           unsigned int drv_shift;
->>>> +       unsigned int drv2_offset;
->>>> +       unsigned int drv2_mask;
->>>> +       unsigned int drv2_shift;
->>>>           unsigned int drv_en_manual_mask;
->>>>    };
->>>>
->>>> @@ -45,6 +48,18 @@ static struct pm8xxx_regs pm8916_regs = {
->>>>           .drv_en_manual_mask = 0,
->>>>    };
->>>>
->>>> +static struct pm8xxx_regs pmi632_regs = {
->>>> +       .enable_offset = 0x46,
->>>> +       .enable_mask = BIT(7),
->>>> +       .drv_offset = 0x40,
->>>> +       .drv_mask = GENMASK(7, 0),
->>>> +       .drv_shift = 0,
->>>> +       .drv2_offset = 0x41,
->>>> +       .drv2_mask = GENMASK(3, 0),
->>>> +       .drv2_shift = 8,
->>>> +       .drv_en_manual_mask = 0,
->>>> +};
->>>> +
->>>>    /**
->>>>     * struct pm8xxx_vib - structure to hold vibrator data
->>>>     * @vib_input_dev: input device supporting force feedback
->>>> @@ -53,6 +68,7 @@ static struct pm8xxx_regs pm8916_regs = {
->>>>     * @regs: registers' info
->>>>     * @enable_addr: vibrator enable register
->>>>     * @drv_addr: vibrator drive strength register
->>>> + * @drv2_addr: vibrator drive strength upper byte register
->>>>     * @speed: speed of vibration set from userland
->>>>     * @active: state of vibrator
->>>>     * @level: level of vibration to set in the chip
->>>> @@ -65,6 +81,7 @@ struct pm8xxx_vib {
->>>>           const struct pm8xxx_regs *regs;
->>>>           unsigned int enable_addr;
->>>>           unsigned int drv_addr;
->>>> +       unsigned int drv2_addr;
->>>>           int speed;
->>>>           int level;
->>>>           bool active;
->>>> @@ -82,6 +99,10 @@ static int pm8xxx_vib_set(struct pm8xxx_vib *vib, bool on)
->>>>           unsigned int val = vib->reg_vib_drv;
->>>>           const struct pm8xxx_regs *regs = vib->regs;
->>>>
->>>> +       /* vibrator without drv2_addr needs be programmed in step increments */
->>>
->>> How are these two items related? Are you using vib->drv2_addr as a
->>> marker for 'particular generation'? In such a case please use a flag
->>> instead.
->>>
->>> The rest looks good to me.
->>>
->> Are you suggesting to add a flag in pm8xxx_vib as a discriminator for
->> the new generation? I actually tried to avoid that because of this comment:
->> https://lore.kernel.org/linux-arm-msm/ZgXSBiQcBEbwF060@google.com/#t
-> 
-> Add a flag for level being programmed in steps or in mV. Using
-> drv2_addr instead of such flag is a hack.
-> 
-Thanks Dmitry.
-Does this flag look good to you?
-
-diff --git a/drivers/input/misc/pm8xxx-vibrator.c 
-b/drivers/input/misc/pm8xxx-vibrator.c
-index 35bb6f450fd2..4708f441e5ac 100644
---- a/drivers/input/misc/pm8xxx-vibrator.c
-+++ b/drivers/input/misc/pm8xxx-vibrator.c
-@@ -30,6 +30,7 @@ struct pm8xxx_regs {
-         unsigned int drv2_mask;
-         unsigned int drv2_shift;
-         unsigned int drv_en_manual_mask;
-+       bool         drv_in_step;
-  };
-
-  static const struct pm8xxx_regs pm8058_regs = {
-@@ -37,6 +38,7 @@ static const struct pm8xxx_regs pm8058_regs = {
-         .drv_mask = 0xf8,
-         .drv_shift = 3,
-         .drv_en_manual_mask = 0xfc,
-+       .drv_in_step = true;
-  };
-
-  static struct pm8xxx_regs pm8916_regs = {
-@@ -46,6 +48,7 @@ static struct pm8xxx_regs pm8916_regs = {
-         .drv_mask = 0x1F,
-         .drv_shift = 0,
-         .drv_en_manual_mask = 0,
-+       .drv_in_step = true;
-  };
-
-  static struct pm8xxx_regs pmi632_regs = {
-@@ -58,6 +61,7 @@ static struct pm8xxx_regs pmi632_regs = {
-         .drv2_mask = GENMASK(3, 0),
-         .drv2_shift = 8,
-         .drv_en_manual_mask = 0,
-+       .drv_in_step = false,
-  };
-
-  /**
-@@ -100,7 +104,7 @@ static int pm8xxx_vib_set(struct pm8xxx_vib *vib, 
-bool on)
-         const struct pm8xxx_regs *regs = vib->regs;
-
-         /* vibrator without drv2_addr needs be programmed in step 
-increments */
--       if (!vib->drv2_addr)
-+       if (regs->drv_in_step)
-                 vib->level /= VIB_PER_STEP_mV(vib);
-
-         if (on)
-
-
->>
->>>> +       if (!vib->drv2_addr)
->>>> +               vib->level /= VIB_PER_STEP_mV(vib);
->>>> +
->>>>           if (on)
->>>>                   val |= (vib->level << regs->drv_shift) & regs->drv_mask;
->>>>           else
->>>> @@ -93,6 +114,17 @@ static int pm8xxx_vib_set(struct pm8xxx_vib *vib, bool on)
->>>>
->>>>           vib->reg_vib_drv = val;
->>>>
->>>> +       if (regs->drv2_mask) {
->>>> +               if (on)
->>>> +                       val = (vib->level << regs->drv2_shift) & regs->drv2_mask;
->>>> +               else
->>>> +                       val = 0;
->>>> +
->>>> +               rc = regmap_write_bits(vib->regmap, vib->drv2_addr, regs->drv2_mask, val);
->>>> +               if (rc < 0)
->>>> +                       return rc;
->>>> +       }
->>>> +
->>>>           if (regs->enable_mask)
->>>>                   rc = regmap_update_bits(vib->regmap, vib->enable_addr,
->>>>                                           regs->enable_mask, on ? regs->enable_mask : 0);
->>>> @@ -115,17 +147,16 @@ static void pm8xxx_work_handler(struct work_struct *work)
->>>>                   return;
->>>>
->>>>           /*
->>>> -        * pmic vibrator supports voltage ranges from 1.2 to 3.1V, so
->>>> +        * pmic vibrator supports voltage ranges from MIN_LEVEL to MAX_LEVEL, so
->>>>            * scale the level to fit into these ranges.
->>>>            */
->>>>           if (vib->speed) {
->>>>                   vib->active = true;
->>>> -               vib->level = ((VIB_MAX_LEVELS * vib->speed) / MAX_FF_SPEED) +
->>>> -                                               VIB_MIN_LEVEL_mV;
->>>> -               vib->level /= VIB_PER_STEP_mV;
->>>> +               vib->level = VIB_MIN_LEVEL_mV(vib);
->>>> +               vib->level += mult_frac(VIB_MAX_LEVELS(vib), vib->speed, MAX_FF_SPEED);
->>>>           } else {
->>>>                   vib->active = false;
->>>> -               vib->level = VIB_MIN_LEVEL_mV / VIB_PER_STEP_mV;
->>>> +               vib->level = VIB_MIN_LEVEL_mV(vib);
->>>>           }
->>>>
->>>>           pm8xxx_vib_set(vib, vib->active);
->>>> @@ -203,6 +234,7 @@ static int pm8xxx_vib_probe(struct platform_device *pdev)
->>>>
->>>>           vib->enable_addr = reg_base + regs->enable_offset;
->>>>           vib->drv_addr = reg_base + regs->drv_offset;
->>>> +       vib->drv2_addr = reg_base + regs->drv2_offset;
->>>>
->>>>           /* operate in manual mode */
->>>>           error = regmap_read(vib->regmap, vib->drv_addr, &val);
->>>> @@ -257,6 +289,7 @@ static const struct of_device_id pm8xxx_vib_id_table[] = {
->>>>           { .compatible = "qcom,pm8058-vib", .data = &pm8058_regs },
->>>>           { .compatible = "qcom,pm8921-vib", .data = &pm8058_regs },
->>>>           { .compatible = "qcom,pm8916-vib", .data = &pm8916_regs },
->>>> +       { .compatible = "qcom,pmi632-vib", .data = &pmi632_regs },
->>>>           { }
->>>>    };
->>>>    MODULE_DEVICE_TABLE(of, pm8xxx_vib_id_table);
->>>>
->>>> --
->>>> 2.25.1
->>>>
->>>>
->>>
->>>
-> 
-> 
-> 
+This looks quite Intel-centric. Isn't this feature essentially the
+same as AMD's V_SPEC_CTRL? Can't we consolidate the code, rather than
+having completely independent implementations for AMD and Intel?
 
