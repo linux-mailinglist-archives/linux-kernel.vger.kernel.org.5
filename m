@@ -1,95 +1,236 @@
-Return-Path: <linux-kernel+bounces-142056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16B188A26DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:43:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 622908A26E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 08:44:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C10531F21DDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:43:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C0A0B23DC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 06:44:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6CAE44369;
-	Fri, 12 Apr 2024 06:43:20 +0000 (UTC)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59F1345BF0;
+	Fri, 12 Apr 2024 06:44:21 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12027168A8;
-	Fri, 12 Apr 2024 06:43:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 360BD4594A
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 06:44:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712904200; cv=none; b=XntNSv22joVfDUswl4IbOY1ZOhQ/zrSbSxLlJm5p4SBd+ElD2dZm81gNkk3PRSk/6PT3slYepjpD63+i1zKBJvI+86je4GWnfH3F8ty8tT0EdMgGC3y36dwrm4N0t5wvSrt4ehz6SIZ+iJn6t4nmXqvLrUoaZUAUD5SfhKK3LNE=
+	t=1712904260; cv=none; b=CzpvktIT+eC88fNtXnhAR+NZjipybURKFIyonLlLRiE6vceeEoy3vjbC25F5Ka6/aJmAeRRvBXmTSBfcrpJJp85XUdVOQF2QKNgrnfuwpMia3fDtTgpf2oXmz8RkS8goMuDqDFL3jA1g6pl5NQIlclK0DrtDR7qJwT7278o4yK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712904200; c=relaxed/simple;
-	bh=KmsBlh6X0fVEerHCN0c8Qo3/DWdwma+/YNcAIv2VApE=;
-	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
-	 Message-ID:Subject; b=h6OiC6rGKkKEFJ/LMXCVvLfZwPOlD0qqSlczCAXJ06dxvPMSxd6K54SufuZy5llNO51HPGq3HM6eJmcMdxhUnfu3Ek2+RX6SWyyIfdW6QkIn8QYkFEVi/s1REkWE7aaiTpyEEfB+Qk+2bAkIzWRAXCEJi/lleM6nHLP6df0rhyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
-	by madrid.collaboradmins.com (Postfix) with ESMTP id AAC133780C22;
-	Fri, 12 Apr 2024 06:43:15 +0000 (UTC)
-From: "Shreeya Patel" <shreeya.patel@collabora.com>
-In-Reply-To: <20240411095424.875421572@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-References: <20240411095424.875421572@linuxfoundation.org>
-Date: Fri, 12 Apr 2024 07:43:15 +0100
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org, "Gustavo Padovan" <gustavo.padovan@collabora.com>, "kernelci-regressions mailing list" <kernelci-regressions@lists.collabora.co.uk>
-To: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+	s=arc-20240116; t=1712904260; c=relaxed/simple;
+	bh=tn/GBnRICcJdeKMYnrg62lH25ltqM035b4xvTJV5wYw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jcCTVXjxHmPYny8tBiS7Znu/bf9lFA+gMezXiWqnNEX6K95X9NWVw6RW0aMfe6NKudJfvHEaJ06BM43Cf6DjnbN2xIFBpPPnXnggO/yknj2FnET3jceyINnjia/nZZEV56Eyxo1Jo/6rRW/wxTREjX7DzKpE81S7wIppEn99sNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 43C6hw8O003083;
+	Fri, 12 Apr 2024 14:43:58 +0800 (+08)
+	(envelope-from zhaoyang.huang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4VG6RX0KQ1z2K25cX;
+	Fri, 12 Apr 2024 14:41:44 +0800 (CST)
+Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
+ BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Fri, 12 Apr 2024 14:43:56 +0800
+From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+To: Andrew Morton <akpm@linux-foundation.org>, Alex Shi <alexs@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Hugh Dickins
+	<hughd@google.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Zhaoyang Huang
+	<huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
+Subject: [PATCH 1/1] mm: protect xa split stuff under lruvec->lru_lock during migration
+Date: Fri, 12 Apr 2024 14:43:53 +0800
+Message-ID: <20240412064353.133497-1-zhaoyang.huang@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <3c0c9c-6618d800-5cf-194ac52@77440464>
-Subject: =?utf-8?q?Re=3A?= [PATCH =?utf-8?q?5=2E4?= 000/215] 
- =?utf-8?q?5=2E4=2E274-rc1?= review
-User-Agent: SOGoMail 5.10.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ BJMBX01.spreadtrum.com (10.0.64.7)
+X-MAIL:SHSQR01.spreadtrum.com 43C6hw8O003083
 
-On Thursday, April 11, 2024 15:23 IST, Greg Kroah-Hartman <gregkh@linux=
-foundation.org> wrote:
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-> This is the start of the stable review cycle for the 5.4.274 release.
-> There are 215 patches in this series, all will be posted as a respons=
-e
-> to this one.  If anyone has any issues with these being applied, plea=
-se
-> let me know.
->=20
-> Responses should be made by Sat, 13 Apr 2024 09:53:55 +0000.
-> Anything received after that time might be too late.
->=20
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4=
-274-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc=
-git linux-5.4.y
-> and the diffstat can be found below.
->=20
+Livelock in [1] is reported multitimes since v515, where the zero-ref
+folio is repeatly found on the page cache by find_get_entry. A possible
+timing sequence is proposed in [2], which can be described briefly as
+the lockless xarray operation could get harmed by an illegal folio
+remaining on the slot[offset]. This commit would like to protect
+the xa split stuff(folio_ref_freeze and __split_huge_page) under
+lruvec->lock to remove the race window.
 
-KernelCI report for stable-rc/linux-5.4.y for this week.
+[1]
+[167789.800297] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+[167726.780305] rcu: Tasks blocked on level-0 rcu_node (CPUs 0-7): P155
+[167726.780319] (detected by 3, t=17256977 jiffies, g=19883597, q=2397394)
+[167726.780325] task:kswapd0         state:R  running task     stack:   24 pid:  155 ppid:     2 flags:0x00000008
+[167789.800308] rcu: Tasks blocked on level-0 rcu_node (CPUs 0-7): P155
+[167789.800322] (detected by 3, t=17272732 jiffies, g=19883597, q=2397470)
+[167789.800328] task:kswapd0         state:R  running task     stack:   24 pid:  155 ppid:     2 flags:0x00000008
+[167789.800339] Call trace:
+[167789.800342]  dump_backtrace.cfi_jt+0x0/0x8
+[167789.800355]  show_stack+0x1c/0x2c
+[167789.800363]  sched_show_task+0x1ac/0x27c
+[167789.800370]  print_other_cpu_stall+0x314/0x4dc
+[167789.800377]  check_cpu_stall+0x1c4/0x36c
+[167789.800382]  rcu_sched_clock_irq+0xe8/0x388
+[167789.800389]  update_process_times+0xa0/0xe0
+[167789.800396]  tick_sched_timer+0x7c/0xd4
+[167789.800404]  __run_hrtimer+0xd8/0x30c
+[167789.800408]  hrtimer_interrupt+0x1e4/0x2d0
+[167789.800414]  arch_timer_handler_phys+0x5c/0xa0
+[167789.800423]  handle_percpu_devid_irq+0xbc/0x318
+[167789.800430]  handle_domain_irq+0x7c/0xf0
+[167789.800437]  gic_handle_irq+0x54/0x12c
+[167789.800445]  call_on_irq_stack+0x40/0x70
+[167789.800451]  do_interrupt_handler+0x44/0xa0
+[167789.800457]  el1_interrupt+0x34/0x64
+[167789.800464]  el1h_64_irq_handler+0x1c/0x2c
+[167789.800470]  el1h_64_irq+0x7c/0x80
+[167789.800474]  xas_find+0xb4/0x28c
+[167789.800481]  find_get_entry+0x3c/0x178
+[167789.800487]  find_lock_entries+0x98/0x2f8
+[167789.800492]  __invalidate_mapping_pages.llvm.3657204692649320853+0xc8/0x224
+[167789.800500]  invalidate_mapping_pages+0x18/0x28
+[167789.800506]  inode_lru_isolate+0x140/0x2a4
+[167789.800512]  __list_lru_walk_one+0xd8/0x204
+[167789.800519]  list_lru_walk_one+0x64/0x90
+[167789.800524]  prune_icache_sb+0x54/0xe0
+[167789.800529]  super_cache_scan+0x160/0x1ec
+[167789.800535]  do_shrink_slab+0x20c/0x5c0
+[167789.800541]  shrink_slab+0xf0/0x20c
+[167789.800546]  shrink_node_memcgs+0x98/0x320
+[167789.800553]  shrink_node+0xe8/0x45c
+[167789.800557]  balance_pgdat+0x464/0x814
+[167789.800563]  kswapd+0xfc/0x23c
+[167789.800567]  kthread+0x164/0x1c8
+[167789.800573]  ret_from_fork+0x10/0x20
 
-## stable-rc HEAD for linux-5.4.y:
-Date: 2024-04-11
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.=
-git/log/?h=3D82d3ef7640657b7e1fb7091841ba7a47a7a29ab4
+[2]
+Thread_isolate:
+1. alloc_contig_range->isolate_migratepages_block isolate a certain of
+pages to cc->migratepages via pfn
+       (folio has refcount: 1 + n (alloc_pages, page_cache))
 
-## Build failures:
-No build failures seen for the stable-rc/linux-5.4.y commit head \o/
+2. alloc_contig_range->migrate_pages->folio_ref_freeze(folio, 1 +
+extra_pins) set the folio->refcnt to 0
 
-## Boot failures:
-No **new** boot failures seen for the stable-rc/linux-5.4.y commit head=
- \o/
+3. alloc_contig_range->migrate_pages->xas_split split the folios to
+each slot as folio from slot[offset] to slot[offset + sibs]
 
-Tested-by: kernelci.org bot <bot@kernelci.org>
+4. alloc_contig_range->migrate_pages->__split_huge_page->folio_lruvec_lock
+failed which have the folio be failed in setting refcnt to 2
 
-Thanks,
-Shreeya Patel
+5. Thread_kswapd enter the livelock by the chain below
+      rcu_read_lock();
+   retry:
+        find_get_entry
+            folio = xas_find
+            if(!folio_try_get_rcu)
+                xas_reset;
+            goto retry;
+      rcu_read_unlock();
+
+5'. Thread_holdlock as the lruvec->lru_lock holder could be stalled in
+the same core of Thread_kswapd.
+
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+ mm/huge_memory.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 9859aa4f7553..418e8d03480a 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2891,7 +2891,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+ {
+ 	struct folio *folio = page_folio(page);
+ 	struct page *head = &folio->page;
+-	struct lruvec *lruvec;
++	struct lruvec *lruvec = folio_lruvec(folio);
+ 	struct address_space *swap_cache = NULL;
+ 	unsigned long offset = 0;
+ 	int i, nr_dropped = 0;
+@@ -2908,8 +2908,6 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+ 		xa_lock(&swap_cache->i_pages);
+ 	}
+ 
+-	/* lock lru list/PageCompound, ref frozen by page_ref_freeze */
+-	lruvec = folio_lruvec_lock(folio);
+ 
+ 	ClearPageHasHWPoisoned(head);
+ 
+@@ -2942,7 +2940,6 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+ 
+ 		folio_set_order(new_folio, new_order);
+ 	}
+-	unlock_page_lruvec(lruvec);
+ 	/* Caller disabled irqs, so they are still disabled here */
+ 
+ 	split_page_owner(head, order, new_order);
+@@ -2961,7 +2958,6 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+ 		folio_ref_add(folio, 1 + new_nr);
+ 		xa_unlock(&folio->mapping->i_pages);
+ 	}
+-	local_irq_enable();
+ 
+ 	if (nr_dropped)
+ 		shmem_uncharge(folio->mapping->host, nr_dropped);
+@@ -3048,6 +3044,7 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+ 	int extra_pins, ret;
+ 	pgoff_t end;
+ 	bool is_hzp;
++	struct lruvec *lruvec;
+ 
+ 	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
+ 	VM_BUG_ON_FOLIO(!folio_test_large(folio), folio);
+@@ -3159,6 +3156,14 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+ 
+ 	/* block interrupt reentry in xa_lock and spinlock */
+ 	local_irq_disable();
++
++	/*
++	 * take lruvec's lock before freeze the folio to prevent the folio
++	 * remains in the page cache with refcnt == 0, which could lead to
++	 * find_get_entry enters livelock by iterating the xarray.
++	 */
++	lruvec = folio_lruvec_lock(folio);
++
+ 	if (mapping) {
+ 		/*
+ 		 * Check if the folio is present in page cache.
+@@ -3203,12 +3208,16 @@ int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+ 		}
+ 
+ 		__split_huge_page(page, list, end, new_order);
++		unlock_page_lruvec(lruvec);
++		local_irq_enable();
+ 		ret = 0;
+ 	} else {
+ 		spin_unlock(&ds_queue->split_queue_lock);
+ fail:
+ 		if (mapping)
+ 			xas_unlock(&xas);
++
++		unlock_page_lruvec(lruvec);
+ 		local_irq_enable();
+ 		remap_page(folio, folio_nr_pages(folio));
+ 		ret = -EAGAIN;
+-- 
+2.25.1
 
 
