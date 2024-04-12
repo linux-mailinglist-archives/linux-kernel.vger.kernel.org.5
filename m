@@ -1,93 +1,111 @@
-Return-Path: <linux-kernel+bounces-141981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-141983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDE308A25BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:29:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FF988A25C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 07:33:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8752A286D11
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:29:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C304283EDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 05:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4CD1B946;
-	Fri, 12 Apr 2024 05:29:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF74A1EB26;
+	Fri, 12 Apr 2024 05:33:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="JK0N/ubr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="A7Q22T6u"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3391E1F934;
-	Fri, 12 Apr 2024 05:29:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F9EB1C6B6
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 05:33:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712899760; cv=none; b=FHP8lr6S6+y2hhd1hDDbDrQ5+eWzh1M8MBRySkxXOm9y0v7lazI42Zlzm5z0QO3aZGsuT5UbX0u7r8c0g5NX0+NglMWmttymRHNmGckJ2pJHnxb73elWsCpaY2wSIzkku4GZVeEk1iM2e2jbtcqf75qJHd6kkWfnatIIQ/lhsEs=
+	t=1712899983; cv=none; b=u08o+B9a8TPqJRB8y+4ahmhDWuqJPZYVVHTO5oA7jP74iEhnFbYmG03ELV6wy5ZYXgU+rpg6MAoFxRVSTmJ4lEIGa85+PzBgU5v/w9X4vKfMaf4XWskCqLIrbpztLnLLJwgOsTDr3x9cCnRkYEWPBPwUdpRjdsnQ83xbbXykBvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712899760; c=relaxed/simple;
-	bh=8bi6ee2KE7tWw9jg23MVgqYOY0sTFVighRqcEyShMDI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kQaOlQY4qmiD8h/DaXuK624M85u5sKl3h19wlNgjkIKnYcHtTOI2oUGAOQWMPLr2D68BWcvgH2RopiAFG2Uo54ctiMFMWnguU7n+3JTBrTW4yIHva4VaHh+AoYrQx4fUYdjF1QTLy96YIXOePGUc1qL5PCNJWNt15O7GJpRIm4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=JK0N/ubr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40DC5C2BD10;
-	Fri, 12 Apr 2024 05:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712899759;
-	bh=8bi6ee2KE7tWw9jg23MVgqYOY0sTFVighRqcEyShMDI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JK0N/ubrIi9OdOk2tmSbS505wxEfErtUdnCRVa9rBz4Vw3z02RncjXTp8P3pfx2Ct
-	 pjqzWjahjrwIpelDreVQFYYvgxdbZumuCOODxIT9LwO315sdiTCaUZEWnSf2P5dotC
-	 YMTxYV7IAExtWZvt2Y4h6/dRB5C7kI7etlxJ4s3M=
-Date: Fri, 12 Apr 2024 07:29:16 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: parker@finest.io
-Cc: Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	Parker Newman <pnewman@connecttech.com>
-Subject: Re: [PATCH v2 3/7] serial: exar: add support for config/set single
- MPIO
-Message-ID: <2024041213-uncouple-justness-35fa@gregkh>
-References: <cover.1712863999.git.pnewman@connecttech.com>
- <3e671b6c0d11a2d0c292947675ed087eaaa5445e.1712863999.git.pnewman@connecttech.com>
+	s=arc-20240116; t=1712899983; c=relaxed/simple;
+	bh=RhU7H8LigBvMKXz0iBQO81D77/UFtCO8smHv/Pw+CsE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=MvEtXqTCX+YjHsTUYfngIZUG9wBSlZKMyuDJV6jDaO8Ey2xgF5ovQItEZ5vU6kWVTUmpz723Z0empK7bmz0J0aRwVjtto9bKDfJ3xik1Z04/mWJKzCYqi1052wBiEudeSzuZDYGXJFeuUszrEnJUmQF27nBLFXaSI/ZuywhgmFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jfraker.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=A7Q22T6u; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jfraker.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6ed0a1396abso528840b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 11 Apr 2024 22:33:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712899981; x=1713504781; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=I18PVS5+hp88W36auOHHd3utzWkizZTfFP6CdDHLunQ=;
+        b=A7Q22T6uIJ4XQLbs5EGEA9P6yiv4s1cHoM/1CMTQt6lOFQBuwQPYvRbymlyuN60CdB
+         ofm2FNPA6HoBv+HocLyPyp4+lAx6wTf7JVbid8pljgs6h0fGJOxHwjsmDmxQhknm3xjv
+         n3oanEAARrZ2YCzzDSn7KdjgizdoBdxf4WHhf80TwRBMazWBOQZj0Nqtg8wSpCydMa5H
+         23qNS45SZk+Z8fCHugnqcKL6VfbUrFq+Zn5qWOgCulMPfxY9tl+aBYsbDj1OZKBYgBi4
+         3CeujhRW3qBG8JkwPhPB5fuFalsgynyUxY4yNuwDfKF6S6kpO7jC9cVYLHX5U+sJEh50
+         9pHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712899981; x=1713504781;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=I18PVS5+hp88W36auOHHd3utzWkizZTfFP6CdDHLunQ=;
+        b=nZXoYnK7Veacl1fTGYmiPbW7WsR9LpPwTFo5JxhnXavYVlP32hEfYheBGhbpRTC8op
+         Xm5t0jWUsW0jY2SFuB65fYG0LEUHXNvaFunuikPoiez92M57PL/uX3ziS9oN0TU9NVIn
+         9afF29XWLRRIkbBKGbJIMOF8ESUFECu0xVT2/2dWju/PWuY+/1Y+rqqq/IbJ5MpC5YCB
+         0DTbkEGxEsyd7HqczriD2+tOvEP8GBIqK8T5XOMeLdyBHEKYrX1GPv09sY6MlXuGNCNK
+         Uh8KMk0l15XleVsWBfQumIrgGgwm3LwBagHrVIkriV5qzTG8lvuCKSBydaMeJGJf+46Q
+         Be7g==
+X-Forwarded-Encrypted: i=1; AJvYcCXiU/zQ4a0uvXdc+99Em+1E6tW2OtF2zgxYzB/ClHug7IXFdUuy8DIG1JDGYI6gfbZK+10Jny75kjW5LsIye83pD7B2rkonFz/XGp5d
+X-Gm-Message-State: AOJu0YxICumPFAOnN2wMDD2eF1zbhCpWDZWd4BbbOY4DPpS2OWInOnTG
+	cPHNyLQzhaKj60mAFt0pbG0mxqa1oaRB0uUEKETICTcOwMwAZtwykgsjiMd9sOcCKWBgtcJevdA
+	+GRkpGw==
+X-Google-Smtp-Source: AGHT+IFaNpZHpB9MK3Cn3XiFZhZknOnR/sTxD2BrCTzipkjLHznnmowuIgla7funhNYy30T2RQnz+gwgGqQv
+X-Received: from jfraker202.plv.corp.google.com ([2620:15c:11c:202:9ba8:8a0e:3bd5:11ae])
+ (user=jfraker job=sendgmr) by 2002:a05:6a00:3986:b0:6ed:beec:8496 with SMTP
+ id fi6-20020a056a00398600b006edbeec8496mr124382pfb.6.1712899981155; Thu, 11
+ Apr 2024 22:33:01 -0700 (PDT)
+Date: Thu, 11 Apr 2024 22:32:29 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3e671b6c0d11a2d0c292947675ed087eaaa5445e.1712863999.git.pnewman@connecttech.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.683.g7961c838ac-goog
+Message-ID: <20240412053245.3328123-1-jfraker@google.com>
+Subject: [PATCH net-next 12] gve: Correctly report software timestamping capabilities
+From: John Fraker <jfraker@google.com>
+To: netdev@vger.kernel.org
+Cc: John Fraker <jfraker@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shailend Chand <shailend@google.com>, Willem de Bruijn <willemb@google.com>, 
+	"David S. Miller" <davem@davemloft.net>, Jeroen de Borst <jeroendb@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Junfeng Guo <junfeng.guo@intel.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Apr 11, 2024 at 04:25:41PM -0400, parker@finest.io wrote:
-> +/**
-> + * exar_mpio_config() - Configure an EXar MPIO as input or output
-> + * @priv: Device's private structure
-> + * @mpio_num: MPIO number/offset to configure
-> + * @output: Configure as output if true, inout if false
-> + *
-> + * Configure a single MPIO as an input or output and disable trisate.
-> + * If configuring as output it is reccomended to set value with
-> + * exar_mpio_set prior to calling this function to ensure default state.
-> + *
-> + * Return: 0 on success, negative error code on failure
-> + */
-> +static int exar_mpio_config(struct exar8250 *priv,
-> +			unsigned int mpio_num, bool output)
+gve has supported software timestamp generation since its inception,
+but has not advertised that support via ethtool. This patch correctly
+advertises that support.
 
-When you have a bool in a function, every time you read the code you
-have to go and figure out what that boolean means.
+Signed-off-by: John Fraker <jfraker@google.com>
+Reviewed-by: Harshitha Ramamurthy <hramamurthy@google.com>
+---
+v2: Used ethtool_op_get_ts_info instead of our own implementation, as
+    suggested by Jakub
+    
+ drivers/net/ethernet/google/gve/gve_ethtool.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Have 2 functions:
-	exar_mpio_config_input()
-	exar_mpio_config_output()
+diff --git a/drivers/net/ethernet/google/gve/gve_ethtool.c b/drivers/net/ethernet/google/gve/gve_ethtool.c
+index 815dead..299206d 100644
+--- a/drivers/net/ethernet/google/gve/gve_ethtool.c
++++ b/drivers/net/ethernet/google/gve/gve_ethtool.c
+@@ -784,5 +784,6 @@ const struct ethtool_ops gve_ethtool_ops = {
+ 	.set_tunable = gve_set_tunable,
+ 	.get_priv_flags = gve_get_priv_flags,
+ 	.set_priv_flags = gve_set_priv_flags,
+-	.get_link_ksettings = gve_get_link_ksettings
++	.get_link_ksettings = gve_get_link_ksettings,
++	.get_ts_info = ethtool_op_get_ts_info,
+ };
+-- 
+2.44.0.683.g7961c838ac-goog
 
-and then have THEM call this function with the bool set or not.  That
-way when reading the code you know exactly what is happening.
-
-Same with other functions in this patch.  Naming is hard, make it easy
-please.
-
-thanks,
-
-greg k-h
 
