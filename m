@@ -1,149 +1,213 @@
-Return-Path: <linux-kernel+bounces-142677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-142678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8074C8A2EC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 343A78A2EC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 15:03:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B13A31C20D00
-	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:03:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 582501C21441
+	for <lists+linux-kernel@lfdr.de>; Fri, 12 Apr 2024 13:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1B75BAC3;
-	Fri, 12 Apr 2024 13:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980EE5EE73;
+	Fri, 12 Apr 2024 13:03:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ctdkXiC+"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PIOoV7FF"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3BC5A7AE;
-	Fri, 12 Apr 2024 13:03:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0463155E4C
+	for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 13:03:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712927009; cv=none; b=L6GJBxIPMUgb3oJ9Sv0SVXE8Nux2dXj0VHZJfhJaMWmfiJ48pUEDPhwpsgBUssDScK7XnUR19vmXURwzYvvsdzxia2/RppfQRYqeFJjBjkYQteKyU6TqlHygiqnTDPOT5KSFrZEm8/rIMW3p2VfAV64Ue0xe2iGJgzwPyLB8lwM=
+	t=1712927010; cv=none; b=tcZNwbRnOookFZO1YA9tjtgaBEmNJ3FAMUFnToXodX6QDY6yQbiUt+oG8AMRwotPYAUgrbpJgrElFyb2lpt4oitaAOxWUaAvt79Kr5Bqvj2UHM5z/mY4ysraMbfLXqAzKIM/YwvGuIDKPzRW9sKgSFNIUDgju4D/Kf+VfPf2A3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712927009; c=relaxed/simple;
-	bh=2mfkII1UFgJ/UcAysczGES4ndZ4OYOJnqliLmLwA/ss=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nI5a2DdtJFa3H1KV+/BBoByuCniN9fKeFgt29h4pGoCj2bVR9YdTcFeVweL+bTk6qUoRJmeniMYh+t8eIdnpIocjML0FoVBHX/++iY6Ma4PnqK11by0RJ+CZ6UptWOHbl+kaFeQKbmRYwpUVFp2mILh9RTRVW5lvTmbLVBBBFwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ctdkXiC+; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ed3cafd766so816038b3a.0;
-        Fri, 12 Apr 2024 06:03:24 -0700 (PDT)
+	s=arc-20240116; t=1712927010; c=relaxed/simple;
+	bh=fLML18J7yDvY0kAxAiabw/PSTupFBpzee1x9+m9hqUo=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=TyC4rdrhkx+4duDhZ72/RDUBI+S09211dTNHffO7OrfZM8SWEWyt8Zl621Gewg4IyhZ/DvD7rxw5M7B3+gW2ZeVI8rLBGLHgVsb//P1GGT0hXySxECUlN36X+vpmTc47oyfmR8LENzGrzrBwcvH9O7NPU0udkbFc1NxozPdZ7OI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PIOoV7FF; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d485886545so13127161fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 12 Apr 2024 06:03:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712927004; x=1713531804; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1712927007; x=1713531807; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=NIsjf3aLoig4q1mbYS+gmuEcYpav6PcrUNtXYP3Kx60=;
-        b=ctdkXiC+kUd+C/cJBEylAVhNByIzbtqFukDIeDy93YlzrLYFatfuC1yh4mXv6A8dQH
-         2lbb8TJmTNn4R75Xbw/Hnji1mgrcEQVq698/D4GeD15leKGCh1HCxRASntwMLF7Z6IBM
-         6e13lmPjMCH2BPfxhtXi8kApU8qcD5b0julAgU/KVkC/UfBIs0Apz9VdwB+cp1xut5T9
-         plqVkmo9tA7qIDSxOqRRfM2HXhdqgRNaEBj/NdEUVlVUURDOnJYn5lU0KtDsJi3CC+Eb
-         +SGd+ZuIwjAGAHk1u9YUo/o/6h9ncScEkHgwou4kpdlEfd96N99YF2RAHqVWP5iUqNX9
-         0Wtw==
+        bh=Nm8LSvH+A0aysY1LVMvbC5kt2UeJVTw7St9EkLFip3k=;
+        b=PIOoV7FFVOm8A4CWOuxzb3QNZR8cJOuyjSqNu51RhhMd8U4G+uaOWmImwfaGdiBOio
+         w+2QZCyenB6qUYgYtmsLvomJKH1T2N+Tq4RGLD01nDx7K8YionwRnua1B6FDeM/Di9Zb
+         rqIYv9tXLHoVqLnOL5Cxn5mwDNSAlvpJTzm2aEPICKNUcR/mWITBjzWsI2CUwD5NzRwt
+         JOJj520HZUN4IomzljoSKpFfhZeEt0CNzH2K0SlUMJKH3QV2lkTBylPRyXBsLA9Hgp4I
+         w7C9sC4tB4WVQKJg2I2qLZa2GyyDuHBtCYyLMj7wqAZzYzGpUhVei+9rzfDqSspUmzzT
+         j0mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712927004; x=1713531804;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NIsjf3aLoig4q1mbYS+gmuEcYpav6PcrUNtXYP3Kx60=;
-        b=aMH/dwowbFiw/m832m2WvJ0fGEUGvsS3T+n4wog/Yrw6agVTpps4HA/23UclC19PpL
-         iuPpF1EgBj0ri3bab5Il7Kv/ZXY4lC6uJqw61Hhsa6YDUbio7CAy3dZ9EgKpyQss8J1F
-         XNI4Lx6PfAyjJwk9KdHGz0J8fNacwspgLotkq6WL5JWIelydcdc7A5rWXbrbf2KfZhe7
-         lL2vbYR+UOzEVDMb4Uec6ftK56NnAhVITZf4LcaQNcWQJ+D+0K1mLlfnx2toKONcD99M
-         ckCxR8TyZzWNnkZuotNWCG39ZP9XVZqzGyndyyZRlt8OLnWvndBMs7wi8wuf6bqnWXPX
-         5j7A==
-X-Forwarded-Encrypted: i=1; AJvYcCUirwOa6hqA1DaUBCA3drBtfzL91smtAS1uX5hJSLRKleMoXjpEMKrhrkrEmru5UQLhai71P4EOYpoEWxSNRnx4AbmOHLJAAdAMNWFr2lDN+fj+DtOeVmeCINjehclG1TKwoqowkmkeFYk=
-X-Gm-Message-State: AOJu0YxQl7IMhY/72/cHFszerSz6fRgtrh0wTFQUbAzWXgoXtH9OUaw8
-	YCb58DtaNgLT9fHWqH9aWX1Dsya20pXzxLqOaL1cN95mE5q4zF+t30Up5Q==
-X-Google-Smtp-Source: AGHT+IF0XuluccTFbg8j3Mg7G+GD3aqe+WpyKIX9ogwEPa2Yk+UDznXRGU7eXJxACr9rZ3Av8aKPcQ==
-X-Received: by 2002:a05:6a21:1f09:b0:1a9:3ac0:f1f1 with SMTP id ry9-20020a056a211f0900b001a93ac0f1f1mr2310292pzb.34.1712927003750;
-        Fri, 12 Apr 2024 06:03:23 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m3-20020a056a00080300b006ecfc3a8d6csm2811458pfk.124.2024.04.12.06.03.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 06:03:23 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Fri, 12 Apr 2024 06:03:21 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-Cc: patrick@stwcx.xyz, Jean Delvare <jdelvare@suse.com>,
-	linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] hwmon: max31790: revise the scale to write pwm
-Message-ID: <d82d5585-ec6c-4611-ad33-9c2d00745176@roeck-us.net>
-References: <20240412032559.3352846-1-Delphine_CC_Chiu@wiwynn.com>
+        d=1e100.net; s=20230601; t=1712927007; x=1713531807;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:references:cc:to:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Nm8LSvH+A0aysY1LVMvbC5kt2UeJVTw7St9EkLFip3k=;
+        b=qCNFR74UIm++Cj8UMylv3lMUx8kHV9ta+kSlu85hV7chkq9pv16Gtbjjke5InsjN2B
+         4eVb/cvHR32x8CdRjP1Jw92f9/DP9jX4u0sV3cZQ03BsgzG5hwADWNZDK/2hh2Vf6p7S
+         Yv+Jeefw0flylaOtZznkTgWTjLZrJ4KvuROHG3yX7HTSV5eJaynIVvBaa9yPeC4Ba9YL
+         JBhX1sk2YbHtGBeZsj5TSPSE6X7t+1ouXCRlPlT0bssiCxxmtn6vw96BOWwtGZ8rOBHo
+         yvEtc0fsTWrX/FQ3tIow5CI179bKyfpfS00TOTaUx4l8x5UBki2BMhKQxnBK5rvfxf0W
+         1EVw==
+X-Forwarded-Encrypted: i=1; AJvYcCV4HbjoQDwY+7tzW2tEBrGRdjtrVg7IAugMy8kBOO2YkKT/6YJt7XuSeA/uA5jAR3tgdkr+dZHyObEoayZSxPGvYmHKXVpha7eIVlMe
+X-Gm-Message-State: AOJu0Ywb7ykU90r6zeNqJZSTkcTFGhpL2h4eyOH2sGKh49yxBhFEUYLG
+	mXW7uL1tAw0ASNSWbaSg00SXNXru03ko3L3fjNddkotqH6FguDz8aRIt5g+nFJ4=
+X-Google-Smtp-Source: AGHT+IHK4CQtsJnkc980vV5S8swNBkt4lBLxARVMCpXsWDOLaK3XIHiJ4ubaGIkNoNRiom/1KZvtjQ==
+X-Received: by 2002:a2e:a545:0:b0:2d8:58b6:c10d with SMTP id e5-20020a2ea545000000b002d858b6c10dmr2214877ljn.18.1712927006961;
+        Fri, 12 Apr 2024 06:03:26 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:986c:54c:12ce:a121? ([2a01:e0a:982:cbb0:986c:54c:12ce:a121])
+        by smtp.gmail.com with ESMTPSA id n9-20020a05651c000900b002d2697570fcsm502800lja.93.2024.04.12.06.03.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Apr 2024 06:03:26 -0700 (PDT)
+Message-ID: <00b0e513-bb8a-4db7-aa8e-57632add4752@linaro.org>
+Date: Fri, 12 Apr 2024 15:03:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240412032559.3352846-1-Delphine_CC_Chiu@wiwynn.com>
+User-Agent: Mozilla Thunderbird
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v12 4/7] drm/meson: gate px_clk when setting rate
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jerome Brunet <jbrunet@baylibre.com>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Jagan Teki <jagan@amarulasolutions.com>, Nicolas Belin
+ <nbelin@baylibre.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+ linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ dri-devel@lists.freedesktop.org
+References: <20240403-amlogic-v6-4-upstream-dsi-ccf-vim3-v12-0-99ecdfdc87fc@linaro.org>
+ <20240403-amlogic-v6-4-upstream-dsi-ccf-vim3-v12-4-99ecdfdc87fc@linaro.org>
+ <CAFBinCChEc+GH+tdmByWDM=Gs_BUpDh=6S=ch3QbGUt501_Ejw@mail.gmail.com>
+Content-Language: en-US, fr
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro
+In-Reply-To: <CAFBinCChEc+GH+tdmByWDM=Gs_BUpDh=6S=ch3QbGUt501_Ejw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 12, 2024 at 11:25:58AM +0800, Delphine CC Chiu wrote:
-> Since the value for PWMOUT Target Duty Cycle register is a 9 bit
-> left-justified value that ranges from 0 to 511 and is contained in 2
-> bytes.
+On 10/04/2024 21:34, Martin Blumenstingl wrote:
+> Hi Neil,
 > 
-> There is an issue that the LSB of the 9 bit would always be zero if it
-> just left shift 8 bit for the value that write to PWMOUT Target Duty
-> Cycle register.
+> On Wed, Apr 3, 2024 at 9:46 AM Neil Armstrong <neil.armstrong@linaro.org> wrote:
+>>
+>> Disable the px_clk when setting the rate to recover a fully
+>> configured and correctly reset VCLK clock tree after the rate
+>> is set.
+>>
+>> Fixes: 77d9e1e6b846 ("drm/meson: add support for MIPI-DSI transceiver")
+>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>> ---
+>>   drivers/gpu/drm/meson/meson_dw_mipi_dsi.c | 7 +++++++
+>>   1 file changed, 7 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/meson/meson_dw_mipi_dsi.c b/drivers/gpu/drm/meson/meson_dw_mipi_dsi.c
+>> index a6bc1bdb3d0d..a10cff3ca1fe 100644
+>> --- a/drivers/gpu/drm/meson/meson_dw_mipi_dsi.c
+>> +++ b/drivers/gpu/drm/meson/meson_dw_mipi_dsi.c
+>> @@ -95,6 +95,7 @@ static int dw_mipi_dsi_phy_init(void *priv_data)
+>>                  return ret;
+>>          }
+>>
+>> +       clk_disable_unprepare(mipi_dsi->px_clk);
+> nit-pick: clk_disable(mipi_dsi->px_clk); should be enough here as my
+> understanding is that we only need to {un,}prepare a clock once.
 > 
-> Therefore, revise the scale of the value that was writen to pwm input
-> from 255 to 511 and modify the value to left-justified value.
+>>          ret = clk_set_rate(mipi_dsi->px_clk, mipi_dsi->mode->clock * 1000);
+>>
+>>          if (ret) {
+>> @@ -103,6 +104,12 @@ static int dw_mipi_dsi_phy_init(void *priv_data)
+>>                  return ret;
+>>          }
+>>
+>> +       ret = clk_prepare_enable(mipi_dsi->px_clk);
+>> +       if (ret) {
+>> +               dev_err(mipi_dsi->dev, "Failed to enable DSI Pixel clock (ret %d)\n", ret);
+>> +               return ret;
+> If we ever hit this error case then there will be a lot of additional
+> errors in the kernel log:
+> - initially the clock is prepared and enabled in
+> meson_dw_mipi_dsi_probe() by calling devm_clk_get_enabled()
+> - we then disable the clock above (generally disabling a clock is
+> expected to always succeed)
+> - if the clock can NOT be re-enabled here we just log the error
+> - in case a user tries to rmmod the driver (to modprobe it again) to
+> try and recover from an error the automatic disabling of the pix_clk
+> (based on devm_clk_get_enabled() where it was enabled initially) there
+> will be a splat because the clock is already disabled (and enabled
+> count is zero, so it cannot be disabled any further)
 > 
+> For the 32-bit SoC video clocks I keep track of them being enabled or
+> disabled, see [0], [1] and [2].
+> In my case this is important because we can run into cases where the
+> PLL doesn't lock (I am not sure how likely this is for your case).
+> 
+> It *seems* like we need to do something similar as
+> dw_mipi_dsi_phy_init() can be called when changing the display
+> resolution (or whenever drm_bridge_funcs.atomic_pre_enable) is called.
+> To illustrate what I have in mind I attached a diff (it's based on
+> this patch) - it's compile tested only as I have no DSI hardware.
+> In case dw_mipi_dsi_phy_init() is called only once per device
+> lifecycle things may get easier.
 
-The only difference is that it writes 511 instead of 510. All other
-values are the same. I am not sure if that is really worth the
-trouble. It would have made a little more sense to me if you had
-used DIV_ROUND_CLOSEST(), but you didn't do that. As it is, I really
-don't understand the point. If it is really important to write 511
-instead of 510, the commit description should explain that and not
-talk about the last bit always being zero (which it still is after
-this patch except, again, when writing 511 instead of 510).
+Indeed your scheme looks good, I'll try it since indeed we only need
+to prepare it once in the lifetime of the driver.
 
-Thanks,
-Guenter
+> 
+> PS: I'm so happy that we don't need any clock notifiers for this!
+> So: good work with the clock driver bits.
 
-> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
-> ---
->  drivers/hwmon/max31790.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+Thx !
+
 > 
-> diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
-> index 3dc95196b229..bd201191da1c 100644
-> --- a/drivers/hwmon/max31790.c
-> +++ b/drivers/hwmon/max31790.c
-> @@ -49,6 +49,9 @@
->  
->  #define NR_CHANNEL			6
->  
-> +#define PWM_INPUT_SCALE	255
-> +#define MAX31790_REG_PWMOUT_SCALE	511
-> +
->  /*
->   * Client data (each client gets its own)
->   */
-> @@ -343,10 +346,12 @@ static int max31790_write_pwm(struct device *dev, u32 attr, int channel,
->  			err = -EINVAL;
->  			break;
->  		}
-> +
-> +		val = val * MAX31790_REG_PWMOUT_SCALE / PWM_INPUT_SCALE;
->  		data->valid = false;
->  		err = i2c_smbus_write_word_swapped(client,
->  						   MAX31790_REG_PWMOUT(channel),
-> -						   val << 8);
-> +						   val << 7);
->  		break;
->  	case hwmon_pwm_enable:
->  		fan_config = data->fan_config[channel];
-> -- 
-> 2.25.1
 > 
+> Let me know what you think,
+> Martin
+> 
+> 
+> [0] https://github.com/xdarklight/linux/blob/meson-mx-integration-6.9-20240323/drivers/gpu/drm/meson/meson_vclk.c#L1177-L1179
+> [1] https://github.com/xdarklight/linux/blob/meson-mx-integration-6.9-20240323/drivers/gpu/drm/meson/meson_vclk.c#L1077
+> [2] https://github.com/xdarklight/linux/blob/meson-mx-integration-6.9-20240323/drivers/gpu/drm/meson/meson_vclk.c#L1053
+
 
